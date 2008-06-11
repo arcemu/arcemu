@@ -1,9 +1,9 @@
 ## Process this file with autoconf to produce a configure script.
 
-AC_INIT([Ascent],
+AC_INIT([ArcEmu],
         [3.6],
-        [www.ascentemu.com],
-        [ascent])
+        [www.arcemu.org],
+        [arcemu])
 
 AC_PREREQ(2.5)
 
@@ -296,7 +296,7 @@ AC_OUTPUT
 
 echo
 echo "===================================="
-echo "Ascent configure report:"
+echo "ArcEmu configure report:"
 echo
 echo " Core:" 
 echo "             os: ${OSNAME}"
