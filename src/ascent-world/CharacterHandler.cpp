@@ -1,6 +1,6 @@
 /*
- * OpenAscent MMORPG Server
- * Copyright (C) 2008 <http://www.openascent.com/>
+ * ArcEmu MMORPG Server
+ * Copyright (C) 2008 <http://www.ArcEmu.org/>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -889,10 +889,10 @@ void WorldSession::FullLogin(Player * plr)
 
 	// Send revision (if enabled)
 #ifdef WIN32
-	_player->BroadcastMessage("Server: %sOpenAscent %s r%u/%s-Win-%s %s(www.openascent.com)", MSG_COLOR_WHITE, BUILD_TAG,
+	_player->BroadcastMessage("Server: %sArcEmu %s r%u/%s-Win-%s %s(www.ArcEmu.org)", MSG_COLOR_WHITE, BUILD_TAG,
 		BUILD_REVISION, CONFIG, ARCH, MSG_COLOR_LIGHTBLUE);		
 #else
-	_player->BroadcastMessage("Server: %sOpenAscent %s r%u/%s-%s %s(www.openascent.com)", MSG_COLOR_WHITE, BUILD_TAG,
+	_player->BroadcastMessage("Server: %sArcEmu %s r%u/%s-%s %s(www.ArcEmu.org)", MSG_COLOR_WHITE, BUILD_TAG,
 		BUILD_REVISION, PLATFORM_TEXT, ARCH, MSG_COLOR_LIGHTBLUE);
 #endif
 

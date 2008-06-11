@@ -1,6 +1,6 @@
 /*
- * OpenAscent MMORPG Server
- * Copyright (C) 2008 <http://www.openascent.com/>
+ * ArcEmu MMORPG Server
+ * Copyright (C) 2008 <http://www.ArcEmu.org/>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -50,7 +50,7 @@ ClusterInterface::~ClusterInterface()
 string ClusterInterface::GenerateVersionString()
 {
 	char str[200];
-	snprintf(str, 200, "OpenAscent r%u/%s-%s-%s", g_getRevision(), CONFIG, PLATFORM_TEXT, ARCH);
+	snprintf(str, 200, "ArcEmu r%u/%s-%s-%s", g_getRevision(), CONFIG, PLATFORM_TEXT, ARCH);
 	return string(str);
 }
 
