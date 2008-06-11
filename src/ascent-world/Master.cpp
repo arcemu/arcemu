@@ -19,7 +19,7 @@
 
 #include "StdAfx.h"
 
-#define BANNER "OpenAscent %s r%u/%s-%s-%s :: World Server"
+#define BANNER "ArcEmu %s r%u/%s-%s-%s :: World Server"
 
 #ifndef WIN32
 #include <sched.h>
@@ -176,18 +176,20 @@ bool Master::Run(int argc, char ** argv)
 #ifdef REPACK
 	printf("\nRepack: %s | Author: %s | %s\n", REPACK, REPACK_AUTHOR, REPACK_WEBSITE);
 #endif
-	printf("\nCopyright (C) 2008 OpenAscent. http://www.openascent.com/\n");
-	printf("This work is licensed under the Creative Commons\n");
-	printf("Attribution-Noncommercial-ShareAlike 3.0 Unported License. To\n");
-	printf("view a copy of this license, visit\n");
-	printf("http://creativecommons.org/licenses/by-nc-sa/3.0/ or send a letter to\n");
-	printf("Creative Commons, 171 Second Street, Suite 300, San Francisco,\n");
-	printf("California, 94105, USA.\n");
+	printf("\nCopyright (C) 2008 ArcEmu. http://www.arcemu.org/\n");
+	printf("This program is free software: you can redistribute it and/or modify\n");
+	printf("it under the terms of the GNU Affero General Public License as published by\n");
+	printf("the Free Software Foundation, either version 3 of the License, or\n");
+	printf("any later version.\n");
+	printf("This program is distributed in the hope that it will be useful,\n");
+	printf("but WITHOUT ANY WARRANTY; without even the implied warranty of\n");
+	printf("MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n");
+	printf("GNU Affero General Public License for more details.\n");
 	Log.Line();
 #ifdef REPACK
 	Log.Color(TRED);
 	printf("Warning: Using repacks is potentially dangerous. You should always compile\n");
-	printf("from the source yourself at www.openascentemu.com.\n");
+	printf("from the source yourself at www.arcemu.org.\n");
 	printf("By using this repack, you agree to not visit the ascent website and ask\nfor support.\n");
 	printf("For all support, you should visit the repacker's website at %s\n", REPACK_WEBSITE);
 	Log.Color(TNORMAL);
@@ -231,7 +233,7 @@ bool Master::Run(int argc, char ** argv)
     
 #ifndef WIN32
 	if(geteuid() == 0 || getegid() == 0)
-		Log.LargeErrorMessage( LARGERRORMESSAGE_WARNING, "You are running Ascent as root.", "This is not needed, and may be a possible security risk.", "It is advised to hit CTRL+C now and", "start as a non-privileged user.", NULL);
+		Log.LargeErrorMessage( LARGERRORMESSAGE_WARNING, "You are running ArcEmu as root.", "This is not needed, and may be a possible security risk.", "It is advised to hit CTRL+C now and", "start as a non-privileged user.", NULL);
 #endif
 
 	InitRandomNumberGenerators();

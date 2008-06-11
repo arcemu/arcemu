@@ -314,9 +314,9 @@ void StatDumper::DumpStats()
     {
         // Dump server information.
 #ifdef WIN32
-		fprintf(f, "    <platform>OpenAscent %s r%u/%s-Win-%s (www.openascent.com)</platform>\n", BUILD_TAG, BUILD_REVISION, CONFIG, ARCH);		
+		fprintf(f, "    <platform>ArcEmu %s r%u/%s-Win-%s (www.arcemu.org)</platform>\n", BUILD_TAG, BUILD_REVISION, CONFIG, ARCH);		
 #else
-		fprintf(f, "    <platform>OpenAscent %s r%u/%s-%s (www.openascent.com)</platform>\n", BUILD_TAG, BUILD_REVISION, PLATFORM_TEXT, ARCH);
+		fprintf(f, "    <platform>ArcEmu %s r%u/%s-%s (www.arcemu.org)</platform>\n", BUILD_TAG, BUILD_REVISION, PLATFORM_TEXT, ARCH);
 #endif
 
         char uptime[80];

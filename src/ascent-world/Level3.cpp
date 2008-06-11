@@ -2812,7 +2812,7 @@ bool ChatHandler::HandleCollisionTestIndoor(const char * args, WorldSession * m_
 	SystemMessage(m_session, "Result was: %s.", res ? "indoors" : "outside");
 	return true;
 #else
-	SystemMessage(m_session, "Ascent was not compiled with collision support.");
+	SystemMessage(m_session, "ArcEmu was not compiled with collision support.");
 	return true;
 #endif
 }
@@ -2842,7 +2842,7 @@ bool ChatHandler::HandleCollisionTestLOS(const char * args, WorldSession * m_ses
 	SystemMessage(m_session, "Result was: %s %s %s.", res ? "in LOS" : "not in LOS", res2 ? "in LOS" : "not in LOS", res3 ? "in LOS" : "not in LOS");
 	return true;
 #else
-	SystemMessage(m_session, "Ascent was not compiled with collision support.");
+	SystemMessage(m_session, "ArcEmu was not compiled with collision support.");
 	return true;
 #endif
 }
@@ -2858,7 +2858,7 @@ bool ChatHandler::HandleCollisionGetHeight(const char * args, WorldSession * m_s
 	SystemMessage(m_session, "Results were: %f %f %f", z, z2, z3);
 	return true;
 #else
-	SystemMessage(m_session, "Ascent was not compiled with collision support.");
+	SystemMessage(m_session, "ArcEmu was not compiled with collision support.");
 	return true;
 #endif
 }
