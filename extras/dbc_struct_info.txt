@@ -1,0 +1,1447 @@
+//for 3.0.0 client - thanks for kekers for sharing this
+
+Spells.dbc
+m_ID = 0,
+m_category = 1,
+m_castUI = 2,
+m_dispelType = 3,
+m_mechanic = 4,
+m_attributes = 5,
+m_attributesEx = 6,
+m_attributesExB = 7,
+m_attributesExC = 8,
+m_attributesExD = 9,
+m_attributesExE = 10,
+m_attributesExF = 11,
+m_shapeshiftMask = 12,
+m_shapeshiftExclude = 13,
+m_targets = 14,
+m_targetCreatureType = 15,
+m_requiresSpellFocus = 16,
+m_facingCasterFlags = 17,
+m_casterAuraState = 18,
+m_targetAuraState = 19,
+m_excludeCasterAuraState = 20,
+m_excludeTargetAuraState = 21,
+m_castingTimeIndex = 22,
+m_recoveryTime = 23,
+m_categoryRecoveryTime = 24,
+m_interruptFlags = 25,
+m_auraInterruptFlags = 26,
+m_channelInterruptFlags = 27,
+m_procTypeMask = 28,
+m_procChance = 29,
+m_procCharges = 30,
+m_maxLevel = 31,
+m_baseLevel = 32,
+m_spellLevel = 33,
+m_durationIndex = 34,
+m_powerType = 35,
+m_manaCost = 36,
+m_manaCostPerLevel = 37,
+m_manaPerSecond = 38,
+m_manaPerSecondPerLevel = 39,
+m_rangeIndex = 40,
+m_speed = 41,
+m_modalNextSpell = 42,
+m_cumulativeAura = 43,
+m_totem = 44,
+m_reagent = 45,
+m_reagentCount = 46,
+m_equippedItemClass = 47,
+m_equippedItemSubclass = 48,
+m_equippedItemInvTypes = 49,
+m_effect = 50,
+m_effectDieSides = 51,
+m_effectBaseDice = 52,
+m_effectDicePerLevel = 53,
+m_effectRealPointsPerLevel = 54,
+m_effectBasePoints = 55,
+m_effectMechanic = 56,
+m_implicitTargetA = 57,
+m_implicitTargetB = 58,
+m_effectRadiusIndex = 59,
+m_effectAura = 60,
+m_effectAuraPeriod = 61,
+m_effectAmplitude = 62,
+m_effectChainTargets = 63,
+m_effectItemType = 64,
+m_effectMiscValue = 65,
+m_effectMiscValueB = 66,
+m_effectTriggerSpell = 67,
+m_effectPointsPerCombo = 68,
+m_spellVisualID = 69,
+m_spellIconID = 70,
+m_activeIconID = 71,
+m_spellPriority = 72,
+m_name_lang = 73,
+m_nameSubtext_lang = 74,
+m_description_lang = 75,
+m_auraDescription_lang = 76,
+m_manaCostPct = 77,
+m_startRecoveryCategory = 78,
+m_startRecoveryTime = 79,
+m_maxTargetLevel = 80,
+m_spellClassSet = 81,
+m_spellClassMask = 82,
+m_maxTargets = 83,
+m_defenseType = 84,
+m_preventionType = 85,
+m_stanceBarOrder = 86,
+m_effectChainAmplitude = 87,
+m_minFactionID = 88,
+m_minReputation = 89,
+m_requiredAuraVision = 90,
+m_requiredTotemCategoryID = 91,
+m_requiredAreaID = 92,
+m_schoolMask = 93,
+m_runeCostID = 94,
+m_spellMissileID = 95,
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+ItemDisplayInfo.dbc
+m_ID = 0,
+m_modelName = 1,
+m_modelTexture = 2,
+m_inventoryIcon = 3,
+m_geosetGroup = 4,
+m_flags = 5,
+m_spellVisualID = 6,
+m_groupSoundIndex = 7,
+m_helmetGeosetVis = 8,
+m_texture = 9,
+m_itemVisual = 10,
+m_particleColorID = 11,
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+CreatureFamily
+m_ID = 0,
+m_minScale = 1,
+m_minScaleLevel = 2,
+m_maxScale = 3,
+m_maxScaleLevel = 4,
+m_skillLine = 5,
+m_petFoodMask = 6,
+m_name_lang = 7,
+m_iconFile = 8,
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+CreatureSpellData
+m_ID = 0,
+m_spells = 1,
+m_availability = 2,
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+Faction
+m_ID = 0,
+m_reputationIndex = 1,
+m_reputationRaceMask = 2,
+m_reputationClassMask = 3,
+m_reputationBase = 4,
+m_reputationFlags = 5,
+m_parentFactionID = 6,
+m_name_lang = 7,
+m_description_lang = 8,
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+FactionTemplate
+m_ID = 0,
+m_faction = 1,
+m_flags = 2,
+m_factionGroup = 3,
+m_friendGroup = 4,
+m_enemyGroup = 5,
+m_enemies = 6,
+m_friend = 7,
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+ItemRandomProperties
+m_ID = 0,
+m_Name = 1,
+m_Enchantment = 2,
+m_name_lang = 3,
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+ItemRandomSuffix
+m_ID = 0,
+m_name_lang = 1,
+m_internalName = 2,
+m_enchantment = 3,
+m_allocationPct = 4,
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+ItemSet
+m_ID = 0,
+m_name_lang = 1,
+m_itemID = 2,
+m_setSpellID = 3,
+m_setThreshold = 4,
+m_requiredSkill = 5,
+m_requiredSkillRank = 6,
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+ItemVisualEffects
+m_ID = 0,
+m_Model = 1,
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+ItemVisuals
+m_ID = 0,
+m_Slot = 1,
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+Lock
+m_ID = 0,
+m_Type = 1,
+m_Index = 2,
+m_Skill = 3,
+m_Action = 4,
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+QuestInfo
+m_ID = 0,
+m_InfoName_lang = 1,
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+QuestSort
+m_ID = 0,
+m_SortName_lang = 1,
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+SkillLineAbility
+m_ID = 0,
+m_skillLine = 1,
+m_spell = 2,
+m_raceMask = 3,
+m_classMask = 4,
+m_excludeRace = 5,
+m_excludeClass = 6,
+m_minSkillLineRank = 7,
+m_supercededBySpell = 8,
+m_acquireMethod = 9,
+m_trivialSkillLineRankHigh = 10,
+m_trivialSkillLineRankLow = 11,
+m_abandonable = 12,
+m_characterPoints = 13,
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+SkillLine
+m_ID = 0,
+m_categoryID = 1,
+m_skillCostsID = 2,
+m_displayName_lang = 3,
+m_description_lang = 4,
+m_spellIconID = 5,
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+SkillLineCategory
+m_ID = 0,
+m_name_lang = 1,
+m_sortIndex = 2,
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+SkillRaceClassInfo
+m_ID = 0,
+m_skillID = 1,
+m_raceMask = 2,
+m_classMask = 3,
+m_flags = 4,
+m_minLevel = 5,
+m_skillTierID = 6,
+m_skillCostIndex = 7,
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+SkillTiers
+m_ID = 0,
+m_cost = 1,
+m_value = 2,
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+SoundEntries
+m_ID = 0,
+m_soundType = 1,
+m_name = 2,
+m_File = 3,
+m_Freq = 4,
+m_DirectoryBase = 5,
+m_volumeFloat = 6,
+m_flags = 7,
+m_minDistance = 8,
+m_distanceCutoff = 9,
+m_EAXDef = 10,
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+SpellChainEffects
+m_ID = 0,
+m_AvgSegLen = 1,
+m_Width = 2,
+m_NoiseScale = 3,
+m_TexCoordScale = 4,
+m_SegDuration = 5,
+m_SegDelay = 6,
+m_Texture = 7,
+m_Flags = 8,
+m_JointCount = 9,
+m_JointOffsetRadius = 10,
+m_JointsPerMinorJoint = 11,
+m_MinorJointsPerMajorJoint = 12,
+m_MinorJointScale = 13,
+m_MajorJointScale = 14,
+m_JointMoveSpeed = 15,
+m_JointSmoothness = 16,
+m_MinDurationBetweenJointJumps = 17,
+m_MaxDurationBetweenJointJumps = 18,
+m_WaveHeight = 19,
+m_WaveFreq = 20,
+m_WaveSpeed = 21,
+m_MinWaveAngle = 22,
+m_MaxWaveAngle = 23,
+m_MinWaveSpin = 24,
+m_MaxWaveSpin = 25,
+m_ArcHeight = 26,
+m_MinArcAngle = 27,
+m_MaxArcAngle = 28,
+m_MinArcSpin = 29,
+m_MaxArcSpin = 30,
+m_DelayBetweenEffects = 31,
+m_MinFlickerOnDuration = 32,
+m_MaxFlickerOnDuration = 33,
+m_MinFlickerOffDuration = 34,
+m_MaxFlickerOffDuration = 35,
+m_PulseSpeed = 36,
+m_PulseOnLength = 37,
+m_PulseFadeLength = 38,
+m_Alpha = 39,
+m_Red = 40,
+m_Green = 41,
+m_Blue = 42,
+m_BlendMode = 43,
+m_Combo = 44,
+m_RenderLayer = 45,
+m_TextureLength = 46,
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+SpellItemEnchants
+m_ID = 0,
+m_charges = 1,
+m_effect = 2,
+m_effectPointsMin = 3,
+m_effectPointsMax = 4,
+m_effectArg = 5,
+m_name_lang = 6,
+m_itemVisual = 7,
+m_flags = 8,
+m_src_itemID = 9,
+m_condition_id = 10,
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+SpellItemEnchantmentCondition
+m_ID = 0,
+m_lt_operandType = 1,
+m_lt_operand = 2,
+m_operator = 3,
+m_rt_operandType = 4,
+m_rt_operand = 5,
+m_logic = 6,
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+SpellMissile
+m_ID = 0,
+m_flags = 1,
+m_defaultPitchMin = 2,
+m_defaultPitchMax = 3,
+m_defaultSpeedMin = 4,
+m_defaultSpeedMax = 5,
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+SpellMissileMotion
+m_ID = 0,
+m_name = 1,
+m_scriptBody = 2,
+m_flags = 3,
+m_missileCount = 4,
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+SpellVisualEffectName
+m_ID = 0,
+m_name = 1,
+m_fileName = 2,
+m_areaEffectSize = 3,
+m_scale = 4,
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+SpellVisualKit
+m_ID = 0,
+m_kitType = 1,
+m_animID = 2,
+m_headEffect = 3,
+m_chestEffect = 4,
+m_baseEffect = 5,
+m_leftHandEffect = 6,
+m_rightHandEffect = 7,
+m_breathEffect = 8,
+m_leftWeaponEffect = 9,
+m_rightWeaponEffect = 10,
+m_specialEffect = 11,
+m_worldEffect = 12,
+m_soundID = 13,
+m_shakeID = 14,
+m_charProc = 15,
+m_charParamZero = 16,
+m_charParamOne = 17,
+m_charParamTwo = 18,
+m_charParamThree = 19,
+m_flags = 20,
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+SpellVisual
+m_ID = 0,
+m_precastKit = 1,
+m_castKit = 2,
+m_impactKit = 3,
+m_stateKit = 4,
+m_channelKit = 5,
+m_hasMissile = 6,
+m_missileModel = 7,
+m_missilePathType = 8,
+m_missileDestinationAttachment = 9,
+m_missileSound = 10,
+m_animEventSoundID = 11,
+m_flags = 12,
+m_casterImpactKit = 13,
+m_targetImpactKit = 14,
+m_missileAttachment = 15,
+m_missileFollowGroundHeight = 16,
+m_missileFollowGroundDropSpeed = 17,
+m_missileFollowGroundApproach = 18,
+m_missileFollowGroundFlags = 19,
+m_missileMotion = 20,
+m_missileTargetingKit = 21,
+m_instantAreaKit = 22,
+m_impactAreaKit = 23,
+m_persistentAreaKit = 24,
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+TaxiPathNode
+m_ID = 0,
+m_PathID = 1,
+m_NodeIndex = 2,
+m_ContinentID = 3,
+m_LocX = 4,
+m_LocY = 5,
+m_LocZ = 6,
+m_flags = 7,
+m_delay = 8,
+m_arrivalEventID = 9,
+m_departureEventID = 10,
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+TaxiPath
+m_ID = 0,
+m_FromTaxiNode = 1,
+m_ToTaxiNode = 2,
+m_Cost = 3,
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+Vehicle
+m_ID = 0,
+m_flags = 1,
+m_turnSpeed = 2,
+m_pitchSpeed = 3,
+m_pitchMin = 4,
+m_pitchMax = 5,
+m_seatID = 6,
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+VehicleSeat
+m_ID = 0,
+m_flags = 1,
+m_attachmentID = 2,
+m_attachmentOffsetX = 3,
+m_attachmentOffsetY = 4,
+m_attachmentOffsetZ = 5,
+m_enterPreDelay = 6,
+m_enterSpeed = 7,
+m_enterGravity = 8,
+m_enterMinDuration = 9,
+m_enterMaxDuration = 10,
+m_enterMinArcHeight = 11,
+m_enterMaxArcHeight = 12,
+m_enterAnimStart = 13,
+m_enterAnimLoop = 14,
+m_rideAnimStart = 15,
+m_rideAnimLoop = 16,
+m_rideUpperAnimStart = 17,
+m_rideUpperAnimLoop = 18,
+m_exitPreDelay = 19,
+m_exitSpeed = 20,
+m_exitGravity = 21,
+m_exitMinDuration = 22,
+m_exitMaxDuration = 23,
+m_exitMinArcHeight = 24,
+m_exitMaxArcHeight = 25,
+m_exitAnimStart = 26,
+m_exitAnimLoop = 27,
+m_exitAnimEnd = 28,
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+Weather
+m_ID = 0,
+m_ambienceID = 1,
+m_effectType = 2,
+m_effectColor = 3,
+m_effectTexture = 4,
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+WorldStateUI
+m_ID = 0,
+m_mapID = 1,
+m_areaID = 2,
+m_icon = 3,
+m_string_lang = 4,
+m_tooltip_lang = 5,
+m_factionID = 6,
+m_stateVariable = 7,
+m_type = 8,
+m_dynamicIcon = 9,
+m_dynamicTooltip_lang = 10,
+m_extendedUI = 11,
+m_extendedUIStateVariable = 12,
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+AreaTrigger
+m_ContinentID = 0,
+m_radius = 1,
+m_box_length = 2,
+m_box_width = 3,
+m_box_height = 4,
+m_box_yaw = 5,
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//same but extracted in a bulky way to get all
+
+Startup_Strings.dbc
+m_ID
+m_name
+tartup_StringsRec
+$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+Spell.dbc
+m_category
+m_castUI
+m_dispelType
+m_mechanic
+m_attributes
+m_attributesEx
+m_attributesExB
+m_attributesExC
+m_attributesExD
+m_attributesExE
+m_attributesExF
+m_shapeshiftMask
+m_shapeshiftExclude
+m_targets
+m_targetCreatureType
+m_requiresSpellFocus
+m_facingCasterFlags
+m_casterAuraState
+m_targetAuraState
+m_excludeCasterAuraState
+m_excludeTargetAuraState
+m_castingTimeIndex
+m_recoveryTime
+m_categoryRecoveryTime
+m_interruptFlags
+m_auraInterruptFlags
+m_channelInterruptFlags
+m_procTypeMask
+m_procChance
+m_procCharges
+m_maxLevel
+m_baseLevel
+m_spellLevel
+m_durationIndex
+m_powerType
+m_manaCost
+m_manaCostPerLevel
+m_manaPerSecond
+m_manaPerSecondPerLevel
+m_rangeIndex
+m_speed
+m_modalNextSpell
+m_cumulativeAura
+m_totem
+m_reagent
+m_reagentCount
+m_equippedItemClass
+m_equippedItemSubclass
+m_equippedItemInvTypes
+m_effect
+m_effectDieSides
+m_effectBaseDice
+m_effectDicePerLevel
+m_effectRealPointsPerLevel
+m_effectBasePoints
+m_effectMechanic
+m_implicitTargetA
+m_implicitTargetB
+m_effectRadiusIndex
+m_effectAura
+m_effectAuraPeriod
+m_effectAmplitude
+m_effectChainTargets
+m_effectItemType
+m_effectMiscValue
+m_effectMiscValueB
+m_effectTriggerSpell
+m_effectPointsPerCombo
+m_spellVisualID
+m_spellIconID
+m_activeIconID
+m_spellPriority
+m_name_lang
+m_nameSubtext_lang
+m_description_lang
+m_auraDescription_lang
+m_manaCostPct
+m_startRecoveryCategory
+m_startRecoveryTime
+m_maxTargetLevel
+m_spellClassSet
+m_spellClassMask
+m_maxTargets
+m_defenseType
+m_preventionType
+m_stanceBarOrder
+m_effectChainAmplitude
+m_minFactionID
+m_minReputation
+m_requiredAuraVision
+m_requiredTotemCategoryID
+m_requiredAreaID
+m_schoolMask
+m_runeCostID
+m_spellMissileID
+$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+ItemDisplayInfo.dbc
+m_modelName
+m_modelTexture
+m_inventoryIcon
+m_geosetGroup
+m_flags
+m_groupSoundIndex
+m_helmetGeosetVis
+m_texture
+m_itemVisual
+m_particleColorID
+$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+CreatureModelData.dbc
+m_soundID
+reatureModelDataRec
+DBFilesClient\Achievement.dbc
+m_faction
+chievementRec
+DBFilesClient\Achievement_Criteria.dbc
+m_type
+chievement_CriteriaRec
+DBFilesClient\Achievement_Category.dbc
+chievement_CategoryRec
+DBFilesClient\AnimationData.dbc
+m_Name
+m_Flags
+nimationDataRec
+DBFilesClient\AreaPOI.dbc
+m_icon
+m_factionID
+m_x
+m_y
+m_z
+m_areaID
+reaPOIRec
+DBFilesClient\AreaTable.dbc
+m_ContinentID
+reaTableRec
+DBFilesClient\AreaTrigger.dbc
+m_radius
+m_box_length
+m_box_width
+m_box_height
+m_box_yaw
+$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+AttackAnimKits.dbc
+ttackAnimKitsRec
+DBFilesClient\AttackAnimTypes.dbc
+ttackAnimTypesRec
+DBFilesClient\AuctionHouse.dbc
+uctionHouseRec
+DBFilesClient\BankBagSlotPrices.dbc
+m_Cost
+ankBagSlotPricesRec
+DBFilesClient\BattlemasterList.dbc
+m_mapID
+m_minLevel
+attlemasterListRec
+DBFilesClient\CameraShakes.dbc
+ameraShakesRec
+DBFilesClient\Cfg_Categories.dbc
+fg_CategoriesRec
+DBFilesClient\Cfg_Configs.dbc
+fg_ConfigsRec
+DBFilesClient\CharBaseInfo.dbc
+harBaseInfoRec
+DBFilesClient\CharHairGeosets.dbc
+harHairGeosetsRec
+DBFilesClient\CharStartOutfit.dbc
+harStartOutfitRec
+DBFilesClient\CharTitles.dbc
+harTitlesRec
+DBFilesClient\CharVariations.dbc
+harVariationsRec
+DBFilesClient\CharacterFacialHairStyles.dbc
+haracterFacialHairStylesRec
+DBFilesClient\ChatChannels.dbc
+m_factionGroup
+hatChannelsRec
+DBFilesClient\ChrClasses.dbc
+hrClassesRec
+DBFilesClient\ChrRaces.dbc
+hrRacesRec
+DBFilesClient\CinematicCamera.dbc
+inematicCameraRec
+DBFilesClient\CinematicSequences.dbc
+inematicSequencesRec
+DBFilesClient\CreatureDisplayInfoExtra.dbc
+reatureDisplayInfoExtraRec
+DBFilesClient\CreatureDisplayInfo.dbc
+reatureDisplayInfoRec
+DBFilesClient\CreatureFamily.dbc
+m_minScale
+m_minScaleLevel
+m_maxScale
+m_maxScaleLevel
+m_skillLine
+m_petFoodMask
+m_iconFile
+$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+CreatureSoundData.dbc
+reatureSoundDataRec
+DBFilesClient\CreatureSpellData.dbc
+m_spells
+m_availability
+$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+CreatureType.dbc
+reatureTypeRec
+DBFilesClient\DanceMoves.dbc
+m_Name_lang
+anceMovesRec
+DBFilesClient\DeathThudLookups.dbc
+eathThudLookupsRec
+DBFilesClient\DeclinedWord.dbc
+eclinedWordRec
+DBFilesClient\DeclinedWordCases.dbc
+eclinedWordCasesRec
+DBFilesClient\DungeonMap.dbc
+ungeonMapRec
+DBFilesClient\DungeonMapChunk.dbc
+ungeonMapChunkRec
+DBFilesClient\DurabilityCosts.dbc
+urabilityCostsRec
+DBFilesClient\DurabilityQuality.dbc
+urabilityQualityRec
+DBFilesClient\Emotes.dbc
+motesRec
+DBFilesClient\EmotesTextData.dbc
+motesTextDataRec
+DBFilesClient\EmotesTextSound.dbc
+motesTextSoundRec
+DBFilesClient\EmotesText.dbc
+motesTextRec
+DBFilesClient\EnvironmentalDamage.dbc
+nvironmentalDamageRec
+DBFilesClient\Exhaustion.dbc
+xhaustionRec
+DBFilesClient\FactionGroup.dbc
+m_internalName
+actionGroupRec
+DBFilesClient\Faction.dbc
+m_reputationIndex
+m_reputationRaceMask
+m_reputationClassMask
+m_reputationBase
+m_reputationFlags
+m_parentFactionID
+$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+FactionTemplate.dbc
+m_friendGroup
+m_enemyGroup
+m_enemies
+m_friend
+$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+FootprintTextures.dbc
+ootprintTexturesRec
+DBFilesClient\FootstepTerrainLookup.dbc
+ootstepTerrainLookupRec
+DBFilesClient\GameObjectArtKit.dbc
+ameObjectArtKitRec
+DBFilesClient\GameObjectDisplayInfo.dbc
+ameObjectDisplayInfoRec
+DBFilesClient\GameTables.dbc
+ameTablesRec
+DBFilesClient\GameTips.dbc
+ameTipsRec
+DBFilesClient\GemProperties.dbc
+emPropertiesRec
+DBFilesClient\GMSurveyCurrentSurvey.dbc
+MSurveyCurrentSurveyRec
+DBFilesClient\GMSurveyQuestions.dbc
+MSurveyQuestionsRec
+DBFilesClient\GMSurveySurveys.dbc
+MSurveySurveysRec
+DBFilesClient\GMTicketCategory.dbc
+MTicketCategoryRec
+DBFilesClient\GroundEffectDoodad.dbc
+roundEffectDoodadRec
+DBFilesClient\GroundEffectTexture.dbc
+roundEffectTextureRec
+DBFilesClient\gtCombatRatings.dbc
+tCombatRatingsRec
+DBFilesClient\gtChanceToMeleeCrit.dbc
+tChanceToMeleeCritRec
+DBFilesClient\gtChanceToMeleeCritBase.dbc
+tChanceToMeleeCritBaseRec
+DBFilesClient\gtChanceToSpellCrit.dbc
+tChanceToSpellCritRec
+DBFilesClient\gtChanceToSpellCritBase.dbc
+tChanceToSpellCritBaseRec
+DBFilesClient\gtOCTRegenHP.dbc
+tOCTRegenHPRec
+DBFilesClient\gtOCTRegenMP.dbc
+tOCTRegenMPRec
+DBFilesClient\gtRegenHPPerSpt.dbc
+tRegenHPPerSptRec
+DBFilesClient\gtRegenMPPerSpt.dbc
+tRegenMPPerSptRec
+DBFilesClient\HelmetGeosetVisData.dbc
+elmetGeosetVisDataRec
+DBFilesClient\HolidayDescriptions.dbc
+olidayDescriptionsRec
+DBFilesClient\HolidayNames.dbc
+olidayNamesRec
+DBFilesClient\Holidays.dbc
+olidaysRec
+DBFilesClient\Item.dbc
+temRec
+DBFilesClient\ItemBagFamily.dbc
+temBagFamilyRec
+DBFilesClient\ItemClass.dbc
+temClassRec
+DBFilesClient\ItemCondExtCosts.dbc
+temCondExtCostsRec
+DBFilesClient\ItemExtendedCost.dbc
+m_itemID
+temExtendedCostRec
+DBFilesClient\ItemGroupSounds.dbc
+temGroupSoundsRec
+DBFilesClient\ItemPetFood.dbc
+temPetFoodRec
+DBFilesClient\ItemRandomProperties.dbc
+m_Enchantment
+$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+ItemRandomSuffix.dbc
+m_enchantment
+m_allocationPct
+$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+ItemSet.dbc
+m_setSpellID
+m_setThreshold
+m_requiredSkill
+m_requiredSkillRank
+$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+ItemSubClassMask.dbc
+temSubClassMaskRec
+DBFilesClient\ItemSubClass.dbc
+m_displayName_lang
+temSubClassRec
+DBFilesClient\ItemVisualEffects.dbc
+m_Model
+temVisualEffectsRec
+DBFilesClient\ItemVisuals.dbc
+m_Slot
+$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+LanguageWords.dbc
+anguageWordsRec
+DBFilesClient\Languages.dbc
+anguagesRec
+DBFilesClient\LfgDungeons.dbc
+fgDungeonsRec
+DBFilesClient\LightFloatBand.dbc
+ightFloatBandRec
+DBFilesClient\LightIntBand.dbc
+ightIntBandRec
+DBFilesClient\LightParams.dbc
+ightParamsRec
+DBFilesClient\Light.dbc
+ightRec
+DBFilesClient\LightSkybox.dbc
+ightSkyboxRec
+DBFilesClient\LiquidType.dbc
+iquidTypeRec
+DBFilesClient\LoadingScreens.dbc
+m_fileName
+oadingScreensRec
+DBFilesClient\LoadingScreenTaxiSplines.dbc
+m_PathID
+oadingScreenTaxiSplinesRec
+DBFilesClient\Lock.dbc
+m_Type
+m_Index
+m_Skill
+m_Action
+$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+LockType.dbc
+ockTypeRec
+DBFilesClient\MailTemplate.dbc
+ailTemplateRec
+DBFilesClient\Map.dbc
+apRec
+DBFilesClient\Material.dbc
+aterialRec
+DBFilesClient\NameGen.dbc
+ameGenRec
+DBFilesClient\NPCSounds.dbc
+PCSoundsRec
+DBFilesClient\ChatProfanity.dbc
+hatProfanityRec
+DBFilesClient\Package.dbc
+m_cost
+ackageRec
+DBFilesClient\PageTextMaterial.dbc
+ageTextMaterialRec
+DBFilesClient\PaperDollItemFrame.dbc
+aperDollItemFrameRec
+DBFilesClient\ParticleColor.dbc
+articleColorRec
+DBFilesClient\PetLoyalty.dbc
+etLoyaltyRec
+DBFilesClient\PetPersonality.dbc
+etPersonalityRec
+DBFilesClient\QuestInfo.dbc
+m_InfoName_lang
+uestInfoRec
+DBFilesClient\QuestSort.dbc
+m_SortName_lang
+$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+RandPropPoints.dbc
+andPropPointsRec
+DBFilesClient\Resistances.dbc
+esistancesRec
+DBFilesClient\ScreenEffect.dbc
+creenEffectRec
+DBFilesClient\ServerMessages.dbc
+erverMessagesRec
+DBFilesClient\SheatheSoundLookups.dbc
+heatheSoundLookupsRec
+DBFilesClient\SkillCostsData.dbc
+m_skillCostsID
+killCostsDataRec
+DBFilesClient\SkillLineAbility.dbc
+m_spell
+m_raceMask
+m_classMask
+m_excludeRace
+m_excludeClass
+m_minSkillLineRank
+m_supercededBySpell
+m_acquireMethod
+m_trivialSkillLineRankHigh
+m_trivialSkillLineRankLow
+m_abandonable
+m_characterPoints
+$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+SkillLine.dbc
+m_categoryID
+$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+SkillLineCategory.dbc
+m_sortIndex
+$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+SkillRaceClassInfo.dbc
+m_skillID
+m_skillTierID
+m_skillCostIndex
+$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+SkillTiers.dbc
+m_value
+$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+SoundAmbience.dbc
+oundAmbienceRec
+DBFilesClient\SoundEntries.dbc
+m_soundType
+m_File
+m_Freq
+m_DirectoryBase
+m_volumeFloat
+m_minDistance
+m_distanceCutoff
+m_EAXDef
+$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+SoundProviderPreferences.dbc
+oundProviderPreferencesRec
+DBFilesClient\SoundSamplePreferences.dbc
+oundSamplePreferencesRec
+DBFilesClient\SoundWaterType.dbc
+oundWaterTypeRec
+DBFilesClient\SpamMessages.dbc
+pamMessagesRec
+DBFilesClient\SpellCastTimes.dbc
+pellCastTimesRec
+DBFilesClient\SpellCategory.dbc
+pellCategoryRec
+DBFilesClient\SpellChainEffects.dbc
+m_AvgSegLen
+m_Width
+m_NoiseScale
+m_TexCoordScale
+m_SegDuration
+m_SegDelay
+m_Texture
+m_JointCount
+m_JointOffsetRadius
+m_JointsPerMinorJoint
+m_MinorJointsPerMajorJoint
+m_MinorJointScale
+m_MajorJointScale
+m_JointMoveSpeed
+m_JointSmoothness
+m_MinDurationBetweenJointJumps
+m_MaxDurationBetweenJointJumps
+m_WaveHeight
+m_WaveFreq
+m_WaveSpeed
+m_MinWaveAngle
+m_MaxWaveAngle
+m_MinWaveSpin
+m_MaxWaveSpin
+m_ArcHeight
+m_MinArcAngle
+m_MaxArcAngle
+m_MinArcSpin
+m_MaxArcSpin
+m_DelayBetweenEffects
+m_MinFlickerOnDuration
+m_MaxFlickerOnDuration
+m_MinFlickerOffDuration
+m_MaxFlickerOffDuration
+m_PulseSpeed
+m_PulseOnLength
+m_PulseFadeLength
+m_Alpha
+m_Red
+m_Green
+m_Blue
+m_BlendMode
+m_Combo
+m_RenderLayer
+m_TextureLength
+$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+SpellDispelType.dbc
+pellDispelTypeRec
+DBFilesClient\SpellDuration.dbc
+pellDurationRec
+DBFilesClient\SpellEffectCameraShakes.dbc
+pellEffectCameraShakesRec
+DBFilesClient\SpellFocusObject.dbc
+pellFocusObjectRec
+DBFilesClient\SpellIcon.dbc
+pellIconRec
+DBFilesClient\SpellItemEnchantment.dbc
+m_charges
+m_effectPointsMin
+m_effectPointsMax
+m_effectArg
+m_src_itemID
+m_condition_id
+$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+SpellItemEnchantmentCondition.dbc
+m_lt_operandType
+m_lt_operand
+m_operator
+m_rt_operandType
+m_rt_operand
+m_logic
+$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+SpellMechanic.dbc
+pellMechanicRec
+DBFilesClient\SpellMissile.dbc
+m_defaultPitchMin
+m_defaultPitchMax
+m_defaultSpeedMin
+m_defaultSpeedMax
+$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+SpellMissileMotion.dbc
+m_scriptBody
+m_missileCount
+$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+SpellRadius.dbc
+pellRadiusRec
+DBFilesClient\SpellRange.dbc
+pellRangeRec
+DBFilesClient\SpellRuneCost.dbc
+pellRuneCostRec
+DBFilesClient\SpellShapeshiftForm.dbc
+pellShapeshiftFormRec
+DBFilesClient\SpellVisualEffectName.dbc
+m_areaEffectSize
+m_scale
+$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+SpellVisualKit.dbc
+m_kitType
+m_animID
+m_headEffect
+m_chestEffect
+m_baseEffect
+m_leftHandEffect
+m_rightHandEffect
+m_breathEffect
+m_leftWeaponEffect
+m_rightWeaponEffect
+m_specialEffect
+m_worldEffect
+m_shakeID
+m_charProc
+m_charParamZero
+m_charParamOne
+m_charParamTwo
+m_charParamThree
+$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+SpellVisual.dbc
+m_precastKit
+m_castKit
+m_impactKit
+m_stateKit
+m_channelKit
+m_hasMissile
+m_missileModel
+m_missilePathType
+m_missileDestinationAttachment
+m_missileSound
+m_animEventSoundID
+m_casterImpactKit
+m_targetImpactKit
+m_missileAttachment
+m_missileFollowGroundHeight
+m_missileFollowGroundDropSpeed
+m_missileFollowGroundApproach
+m_missileFollowGroundFlags
+m_missileMotion
+m_missileTargetingKit
+m_instantAreaKit
+m_impactAreaKit
+m_persistentAreaKit
+$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+StableSlotPrices.dbc
+tableSlotPricesRec
+DBFilesClient\Stationery.dbc
+tationeryRec
+DBFilesClient\StringLookups.dbc
+tringLookupsRec
+DBFilesClient\SummonProperties.dbc
+ummonPropertiesRec
+DBFilesClient\Talent.dbc
+alentRec
+DBFilesClient\TalentTab.dbc
+alentTabRec
+DBFilesClient\TaxiNodes.dbc
+m_X
+m_Y
+m_Z
+m_MountCreatureID
+$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+TaxiPathNode.dbc
+m_NodeIndex
+m_LocX
+m_LocY
+m_LocZ
+m_delay
+m_arrivalEventID
+m_departureEventID
+$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+TaxiPath.dbc
+m_FromTaxiNode
+m_ToTaxiNode
+$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+TerrainType.dbc
+errainTypeRec
+DBFilesClient\TerrainTypeSounds.dbc
+errainTypeSoundsRec
+DBFilesClient\TotemCategory.dbc
+otemCategoryRec
+DBFilesClient\TransportAnimation.dbc
+ransportAnimationRec
+DBFilesClient\TransportPhysics.dbc
+ransportPhysicsRec
+DBFilesClient\UISoundLookups.dbc
+ISoundLookupsRec
+DBFilesClient\UnitBloodLevels.dbc
+nitBloodLevelsRec
+DBFilesClient\UnitBlood.dbc
+nitBloodRec
+DBFilesClient\Vehicle.dbc
+m_turnSpeed
+m_pitchSpeed
+m_pitchMin
+m_pitchMax
+m_seatID
+$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+VehicleSeat.dbc
+m_attachmentID
+m_attachmentOffsetX
+m_attachmentOffsetY
+m_attachmentOffsetZ
+m_enterPreDelay
+m_enterSpeed
+m_enterGravity
+m_enterMinDuration
+m_enterMaxDuration
+m_enterMinArcHeight
+m_enterMaxArcHeight
+m_enterAnimStart
+m_enterAnimLoop
+m_rideAnimStart
+m_rideAnimLoop
+m_rideUpperAnimStart
+m_rideUpperAnimLoop
+m_exitPreDelay
+m_exitSpeed
+m_exitGravity
+m_exitMinDuration
+m_exitMaxDuration
+m_exitMinArcHeight
+m_exitMaxArcHeight
+m_exitAnimStart
+m_exitAnimLoop
+m_exitAnimEnd
+$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+VocalUISounds.dbc
+ocalUISoundsRec
+DBFilesClient\WeaponImpactSounds.dbc
+eaponImpactSoundsRec
+DBFilesClient\WeaponSwingSounds2.dbc
+eaponSwingSounds2Rec
+DBFilesClient\Weather.dbc
+m_ambienceID
+m_effectType
+m_effectColor
+m_effectTexture
+$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+WorldMapArea.dbc
+worldMapAreaRec
+DBFilesClient\WorldMapContinent.dbc
+orldMapContinentRec
+DBFilesClient\WorldMapOverlay.dbc
+orldMapOverlayRec
+DBFilesClient\WorldMapTransforms.dbc
+orldMapTransformsRec
+DBFilesClient\WorldSafeLocs.dbc
+orldSafeLocsRec
+DBFilesClient\WorldStateUI.dbc
+m_string_lang
+m_tooltip_lang
+m_stateVariable
+m_dynamicIcon
+m_dynamicTooltip_lang
+m_extendedUI
+m_extendedUIStateVariable
+$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+NamesProfanity.dbc
+amesProfanityRec
+DBFilesClient\NamesReserved.dbc
+amesReservedRec
+DBFilesClient\CharSections.dbc
+harSectionsRec
+DBFilesClient\ZoneIntroMusicTable.dbc
+oneIntroMusicTableRec
+DBFilesClient\ZoneMusic.dbc
+oneMusicRec
+DBFilesClient\WorldStateZoneSounds.dbc
+orldStateZoneSoundsRec
+DBFilesClient\WorldChunkSounds.dbc
+orldChunkSoundsRec
+DBFilesClient\VolumetricSoundKits.dbc
+olumetricSoundKitsRec
+DBFilesClient\Movie.dbc
+ovieRec
+DBFilesClient\WMOAreaTable.dbc
+MOAreaTableRec
+lyphPropertiesRec
+lyphSlotRec
+Cower
+Emerge
+StealthRun
+CustomSpell10
+CustomSpell09
+CustomSpell08
+CustomSpell07
+CustomSpell06
+CustomSpell05
+CustomSpell04
+CustomSpell03
+CustomSpell02
+CustomSpell01
+Mutilate
+EmoteDanceSpecial
+EmoteSaluteNoSheathe
+EmotePointNoSheathe
+EmoteTalkNoSheathe
+GuideArrowBirth
+CorpseArrowBirth
+GroupArrowBirth
+ArrowBirth
+Cannibalize
+Submerged
+Submerge
+Land
+EmoteEatNoSheathe
+Deflect
+EmoteDanceOnce
+EmoteDead
+EmoteTrain
+SuccubusEntice
+Hover
+LiftOff
+Impact
+LootUp
+LootHold
+JumpLandRun
+EmoteNo
+EmoteYes
+DragonSpitFly
+DragonSpitHover
+DragonSpit
+DragonStomp
+DragonTail
+DruidBearBash
+DruidBearMaul
+DruidBearBite
+DruidBearSwipe
+DruidCatCower
+DruidCatClaw
+DruidCatRavage
+DruidCatRake
+DruidCatRip
+DruidCatPounce
+Sway
+GuideArrow
+CorpseArrow
+Arrow
+GroupArrow
+ShipStop
+ShipMoving
+ShipStart
+Sprint
+SpellKneelEnd
+SpellKneelLoop
+SpellKneelStart
+SpellSleepDown
+EmoteUseStandingNoSheathe
+EmoteStunNoSheathe
+EmoteWorkNoSheathe
+Fly
+FishingLoop
+FishingCast
+Drowned
+Drown
+CreatureSpecial
+UseStandingEnd
+UseStandingStart
+Birth
+Whirlwind
+ChannelCastOmni
+ChannelCastDirected
+UseStandingLoop
+EatingLoop
+Knockdown
+StealthStand
+StealthWalk
+SpecialUnarmed
+AttackUnarmedOff
+KneelEnd
+KneelLoop
+KneelStart
+EmoteSalute
+LoadThrown
+HoldThrown
+HoldRifle
+HoldBow
+ReadyThrown
+AttackThrown
+LoadRifle
+LoadBow
+SitChairHigh
+SitChairMed
+SitChairLow
+SleepUp
+Sleep
+SleepDown
+SitGroundUp
+SitGround
+SitGroundDown
+Kick
+MountSpecial
+RunLeft
+RunRight
+Mount
+HipSheath
+Sheath
+AttackOffPierce
+AttackOff
+Attack2HLoosePierce
+Attack1HPierce
+EmotePoint
+EmoteShy
+EmoteFlex
+EmoteShout
+EmoteApplaud
+EmoteBeg
+EmoteChicken
+EmoteCry
+EmoteKiss
+EmoteKneel
+EmoteRoar
+EmoteRude
+EmoteSitGround
+EmoteSleep
+EmoteLaugh
+EmoteDance
+EmoteCheer
+EmoteWave
+EmoteBow
+EmoteTalkQuestion
+EmoteTalkExclamation
+EmoteUseStanding
+EmoteWork
+EmoteEat
+EmoteTalk
+ShieldBash
+Special2H
+Special1H
+ReadyAbility
+BattleRoar
+SpellCastOmni
+SpellCastDirected
+ReadySpellOmni
+ReadySpellDirected
+Loot
+AttackRifle
+ReadyRifle
+FireBow
+AttackBow
+SwimBackwards
+SwimRight
+SwimLeft
+SwimIdle
+JumpEnd
+JumpStart
+Block
+NPCGoodbye
+NPCWelcome
+SpellCastArea
+SpellCast
+SpellPrecast
+Dodge
+ReadyBow
+Ready2HL
+Ready2H
+Ready1H
+ReadyUnarmed
+ShieldBlock
+Parry2HL
+Parry2H
+Parry1H
+ParryUnarmed
+Attack2HL
+Attack2H
+Attack1H
+AttackUnarmed
+HandsClosed
+Stun
+Walkbackwards
+ShuffleRight
+ShuffleLeft
+CombatCritical
+CombatWound
+StandWound
+Rise
+Dead
+Run
+Walk
+Spell
+Death
+DBFilesClient\VideoHardware.dbc
+ideoHardwareRec
+$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$

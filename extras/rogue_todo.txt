@@ -1,0 +1,48 @@
+revision: 87
+bug: talent [Cheat Death] , does not work at all.
+How it should work: You have a 100% chance to completely avoid any damaging attack that would otherwise kill you and reduce all damage taken by 90% for 3 sec. This effect cannot occur more than once per minute.
+
+revision: 87
+bug: spell [Shiv] Does not apply offhand poisen to the target
+How it should work: Performs an instant off-hand weapon attack that automatically applies the poison from your off-hand weapon to the target. Slower weapons require more Energy. Awards 1 combo point.
+
+revision: 87
+bug: talent [Camouflage] , only reduce Cooldown
+How it should work: must reduce cooldown and increase speed while in stealth by 3%
+and every next rank plus 3% speed in stealth
+http://www.wowwiki.com/Camouflage
+
+revision: 87
+bug: Endurance, doesn't reduce cd
+How it should work: Reduces the cooldown of your Sprint and Evasion abilities by 45/90 sec.
+http://www.wowwiki.com/Endurance
+
+revision: 87
+bug: Improved Sprint, doesn't remove impairing effects
+How it should work: Gives a 50/100% chance to remove all movement impairing effects when you activate your Sprint ability.
+http://www.wowwiki.com/Improved_Sprint
+
+revision: 87
+bug: Weapon Expertise, doesn't work?? The expertise rating is not shown on the melee stats.
+How it should work: Increases your Expertise by 5/10.
+http://www.wowwiki.com/Weapon_Expertise
+
+revision: 145
+bug: Vanish won't free you from any movement impairing effect.
+How it should work: Skilltooltip: "Allows the rogue to vanish from sight, entering an improved stealth mode for 10 sec. Also breaks movement impairing effects."
+http://www.wowwiki.com/Vanish
+
+revision: 87
+bug: talent [Serrated Blades], doesn't reduce armor , this moment is 0
+How it should work: must Reduces armor by 400-500...
+http://www.wowwiki.com/Serrated_Blades
+
+revision: 87
+bug: talent [Shadowstep] , only cast moved speed for 3 secods
+How it should work: must give 20% damage for next atack with 10 seconds with moved speed by 70% for 3 second
+http://www.wowwiki.com/Shadowstep
+
+revision: 87
+bug: you are in vanish , but player with pet cast bar still cast spell on you(magic)
+and break vanish(stealth)...
+How it should work: if player cast magic on you and you are using vanish , must break player(pet) cast bar on you

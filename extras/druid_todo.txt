@@ -1,0 +1,8 @@
+revision: 87
+bug: Nature's Grace, only trigger with Wrath
+How it should work: Should Trigger with any spell heal or Ofensive spells according http://www.wowwiki.com/Nature's_Grace
+
+revision: 87
+bug: Force of Nature, only spawns trees when you cast over an enemy faction. If are more than one enemy into the target area, will be X * 3 trees, where X is the number of enemies into the target area. Don't attack the enemy if he's passive enemy (Yellow Enemies) or your duel's enemy.
+How it should work: Should spawn the trees event if you don't have a target. Should spawn only 3 trees . Should attack any enemy who is on combat with the caster event if they are passive, or etc...
+http://www.wowwiki.com/Force_of_Nature

@@ -1,0 +1,109 @@
+/************************************** Header ****************************************/
+/*										      */
+/*			       Ascent Script Development			      */
+/*			           						      */
+/*			Brings completely new view on WoW reality.		      */
+/*										      */
+/*										      */
+/*				Documentation includes:				      */
+/*										      */
+/*				     *TO DO LIST*				      */
+/*				 *WHAT'S DONE SO FAR*				      */
+/*				      *ROAD-MAP*				      */
+/*				     *MILESTONES*				      */
+/*				       *LEGEND*					      */
+/*										      */
+/*										      */
+/************************************ Header End **************************************/
+
+
+
+*TO DO LIST*
+
+MAIN TASK: Finish Outland Instances (Instances not Raids!)
+
+WHAT LEFT TO FINISH MAIN TASK:
+- Check all instances
+- Rewrite all instances to fit cooldowns as well as percent chance to cast spell
+- Write proper documentations what must be done when:
+                                       - There will be additional core support
+                                       - When someone will gather data for other mobs/bosses
+                                       - Others?
+
+Note: Documentation will be in HTML or in PDF or (eventually) wiki style.
+
+TASKS *FOR NOW*:
+-> Add all trash (or nearly all) mobs from Mechanar instance 			[+]
+-> Add all trash (or nearly all) mobs from Arcatraz instance			[-]
+-> Add all trash (or nearly all) mobs from Botanica instance			[-]
+-> Rewrite The Shattered Halls Script to fit new coding style (also add missing [*]
+   mobs scripts, check spells and fully done it).				
+-> Rewrite Blood Furnace script bosses and add all trash mobs. 			[*]
+-> Rewrite The Slave Pens (and add eventuall some more monster scripts) 	[*]
+    - no info in DBC =(	
+-> Rewrite The Underbog and add rest of mobs (if there are any).		[*]
+-> Rewrite SteamVaults and add rest of stuff.					[-]
+-> More ? 
+
+
+GossipScripts:
+   - Fix Shaman Gossip in Stormwind 	[+]
+   - Fix missing "break;" in switches 	[+]
+   - More?
+
+InstanceScripts:
+ *Outland: Instances* 
+    - Hellfire Rampage 		[*] Note: Herald Event must be done!
+    - Blood Furnace 		[*] Note: Rewrite to new coding style (DONE), add trash mobs (DONE - not sure if 100%)
+    - The Shattered Halls 	[*] Note: Rewrite to new coding style (DONE), add rest of stuff (DONE)
+    - The Slave Pens		[*] Note: Rewrite to new coding style (DONE), add rest of stuff
+    - The Underbog		[*] Note: Rewrite to new coding style, add rest of stuff
+    - The Steamvault		[-] Note: Rewrite to new coding style, add rest of stuff
+
+
+
+*WHAT'S DONE SO FAR*
+
+Done:
+ *Outland: Instances*
+   - None fully done
+
+
+
+*ROAD-MAP*
+
+RoadMap:
+ *Outland Instances* - > *?* - > *?* - > ...
+
+
+
+*MILESTONES*
+
+Milestones:
+ *Milestone 0.1 - OutlandN00bZ0R*
+    - Finish Instances in Hellfire Peninsula	[*] Note: I would like to add to it that EVENT, but 
+							  without it this Milestone will be finished too.
+    - Finish Instances in Zangarmarsh		[*] Note: To further discussion!
+
+ *Milestone 0.2 - BoneStorm*
+    - Finish Instances in Bone Wastes		[*] Note: To future discussion!
+    - Finish Instances in Netherstorm		[*] Note: So far nearly untouched Instances. 
+
+ *Milestone 0.5*
+    - *?*
+
+ *Milestone 1.0*
+    - *?*
+
+
+
+*LEGEND*
+
+[-] - not started
+[*] - done partially (leave notes!)
+[+] - fully done
+[!] - crash bugs
+[?] - not sure to many things
+[R] - to redo
+[C] - checks needed
+*?* - to discuss

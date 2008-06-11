@@ -1,0 +1,34 @@
+- blink : should tel you instnatly not move you
+- frostbolt has fire dmg instead of "water" ?
+
+• Ice Block  - http://www.wowwiki.com/Ice_Block
+a. When cast on retail it brings you to a stop in mid-air. i.e. I jump off a cliff, I Ice Block before I hit the ground, the spell should stop me and keep me in mid-air, instead of me continuing to fall. Currently any momentum/movement it will carry out when you Ice Block.
+b. On retail it blocks any spell/attack about to hit you. i.e. Ice Lance in mid-air coming at you, I ice block, the spell should have no effect on me.
+
+• Counterspell - http://www.wowwiki.com/Counterspell
+a. Counterspell should stop any spell from being cast in that school, even Invulnerabilities (Divine Shield and Ice Block). Currently from what I have seen Divine Shield has still been able to be cast.
+
+• Icy Veins - http://www.wowwiki.com/Icy_Veins
+a. Currently it does not provide protection from interrupts, which on retail it is a 100% protection.
+
+• Blink - http://www.wowwiki.com/Blink
+a. Currently it propels you a small bit into the air and pushes you forward. Retail it “teleports” you forward, saving you from falls as well.
+
+• Invisibility - http://www.wowwiki.com/Invisibility
+a. Currently invisibility only fades you. On retail the spell has a 5 or so second fade time, then a 20 second invisibility effect.
+
+• Arcane Concentration - http://www.wowwiki.com/Arcane_Concentration
+a. Currently this spell does not work. On retail this spell is suppose to ‘proc’ on any spell, and enter a clearcasting state (100% mana reduced spell).
+
+• Molten Fury - http://www.wowwiki.com/Molten_Fury
+a. This spell currently does not increase damage. On retail it is suppose to increase your damage output by 20% on any target below 20% current health.
+
+• Combustion - http://www.wowwiki.com/Combustion
+a. Currently this spell does not give you +crit. On retail this spell is suppose to give you +10% chance to crit after every damage spell until you receive 3 critical strikes total.
+
+• Frostbite - http://www.wowwiki.com/Frostbite_(mage_talent)
+a. Currently it only ‘procs’ on the initial slow effect. i.e. When I cast frostbolt, it has a 15% chance to ‘proc’ on that attack only. The slow effect would have to wear off before another chance for it to ‘proc’. On retail frostbite would have a 15% chance to ‘proc’ every time a slow spell is refreshed (Frost Armor slow, Frostbolt, Improved Blizzard, and Cone of Cold).
+b. Frostbite typically is applied after the spell hits you, such as I cast 'Frostbolt', and it hits the target and deals damage, at that point the slow effect and the chance to 'proc' 'Frostbite' should take effect. Currently it is all applied as soon as the projectile leaves you (i.e. the 'Frostbolt').
+
+• Presence of Mind - http://www.wowwiki.com/Presence_of_Mind
+a. When casting this spell immediately after a spell, it occasionally ate up the Presence of Mind effect. i.e. Casting 'Frostbolt' and spamming 'Presence of Mind' to immediately cast another 'Frostbolt', it seems that it would think that the spell just cast was used by 'Presence of Mind'.

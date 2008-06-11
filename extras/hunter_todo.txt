@@ -1,0 +1,60 @@
+Major Bugs:
+
+Hunters Mark
+
+- Does nothing except look good... makes no inpact on any ranged dmg.
+- Meant to add AP on ranged attacks and stacks with each attack.
+
+
+Auto Shoot (yes its that bad)
+
+- Meant to - Auto attacks ranged weapon... shoots in intervals of attack speed... LOL
+- Currently - works fine until you use a ranged attack spell then it just stops auto attacking at times and wont let u attack unless u re-select the target.
+
+Beast Mastery (yes its that bad)
+
+Dont want to be general here but only the basic stat+ bonuses from talents work here..
+Thats about 10% of talents working There is literally no interaction between pet / advancement and talents. Beast Mastery and Pets are still way below possibility.
+I think a real project needs to be initiated here to actually make some progress on pets and Hunters because they are falling way behind compared to the great work on other classes.
+
+Other known:
+
+Talent: Ranged Weapon Spec
+- Increases ranged damage by up to 5%
+- Dosent seem to make any difference in tests.
+
+Talent: Improved Hunters Mark
+- Gives some AP from Hunters mark for melee dmg
+- Hunters Mark does nothing so this dosnet work either.
+
+Trueshot aura
+- You cannot use this inside raids / dungeons no idea why.
+
+revision: 145
+bug: Wyvern Sting, It isnt apply that nature damage when target woke up.
+How it should work: It should apply 942 nature damage over 12 sec.
+http://www.wowwiki.com/Wyvern_Sting
+
+revision: 51
+bug: Frost Trap, This trap is no more working since ages..
+How it should work:Place a frost trap that creates an ice slick around itself for 30 sec when the first enemy approaches it. All enemies within 10 yards will be slowed by 60% while in the area of effect.
+http://www.wowwiki.com/Frost_Trap
+revision: 51
+bug: Snake Trap, This trap is not working since it came out ..
+How it should work: Place a trap that will release several venomous snakes to attack the first enemy to approach. The snakes will die after 15 sec .
+http://www.wowwiki.com/Snake_Trap
+
+revision: 51
+bug: Hunter`s Mark ,Can`t see the target on the mini-map.
+How it should work: Should be able to see the marked player on the mini map as small red dot.
+http://www.wowwiki.com/Hunter's_Mark
+
+
+//recheck
+Steady Shot
+- Has no influence from stuns / dazed targets
+- Should increase Damage against dazed targets.
+Talent: Improved Wing Clip
+- Immobalize target on chance 30%
+- The spell triggered in the chance does nothing except display the spell Immobalized.. it dosent really work.
+

@@ -1,0 +1,20 @@
+revision: 183
+bug: Stoneclaw Totem won't stun attacking mob at all.
+How it should work: Tooltip für TotemRank1: "Summons a Stoneclaw Totem with 50 health at the feet of the caster for 15 sec that taunts creatures within 8 yards to attack it. Enemies attacking the Stoneclaw Totem have a 50% chance to be stunned for 3 sec."
+http://www.wowwiki.com/Stoneclaw_Totem
+
+revision:183
+bug:Bloodlust
+How it should work:Increases melee, ranged speed by 30% for all party members. Lasts 40 seconds.
+
+revision:183
+bug:StormStrike
+How it should work:The next 2 sources of nature damage dealt to the target are increased by 20%. Lasts 12 sec.
+
+revision:183
+bug:Talent Mental Quicness
+How it should work:Increases your spell damage and healing by an amount equal to 30% of your attack power.
+
+revision: 251
+bug: fire nova totem dissapear after 1 tick of fire instaed of doing few tick's:
+How it should work: its shouldnt do dmg to itself

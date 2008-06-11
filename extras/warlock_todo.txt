@@ -1,0 +1,74 @@
+revision: 193
+db: RusDB
+bug: Some pets are unable to learn spells from grimoires, specially felhunter who can't learn anything succubus works great.
+
+revision: 145
+bug: Seed of Corruption does not do the explode damage
+How it should work: Causes 1044 Shadow damage over 18 sec. When the target takes 1044 total damage or dies, the seed will inflict 1110 to 1290 Shadow damage to all enemies within 15 yards of the target.
+http://www.wowwiki.com/Seed_of_Corruption
+
+revision: 145
+bug:Talent: Shadow and Flame: not working or partially working
+How it should work:Shadow Bolt and Incinerate spells gain an additional 4-8-12-16-20% of your bonus spell damage.
+http://www.wowwiki.com/Shadow_and_Flame
+
+revision: 145
+Warlock T6 :Set: Malefic Raiment
+bug: Set effect not working
+How it should work:
+for 2 parts: Each time your Corruption or Immolate spells deals periodic damage, you heal 70 health.
+for 4 parts: Increases the damage dealt by your Shadow Bolt and Incinerate abilities by 6%.
+
+revision: 145
+Warlock minions are not receiving bonus stats from their owner
+Pet scaling
+* 1 stam gives 0.3 to your pet.
+* 1 resistance gives 0.4 to your pet.
+* 1 armor gives 0.35 armor to the pet.
+* 1 spell damage gives 0.15 spell damage, and 0.57 attack power to your pet.
+* 1 int gives your pet 0.3 int.
+
+revision: 145
+General bugs:
+-Warlocks are not receiving soulshards from players that yield honor
+-Arena preparation buff does not reduce the soul shards cost of spells
+-In Bg's Pets must be Revived with their master after dying
+
+revision: 185
+db: RusDB
+bug: Improved shadowbolt: on spell crit it procs and grants you 20% more shadow damage however it shouldn't disappear from another people,pet or dot damage and it's disappearing (in blizz nice pve warlocks have at least 25% crit to grant this buff always on and this way do an additional 20% dmg)
+How it should work: Not disappearing with another people/pet/dot damage
+http://www.wowwiki.com/Improved_shadowbolt
+
+revision: 185
+db: RusDB
+bug: NIghtfall procs on the first hit of corruption not on every tick
+How it should work: procs on every corruption tick
+http://www.wowwiki.com/Nightfall_%28Warlock_Talent%29
+
+revision: 185
+db: RusDB
+bug: Corruption. It can be casted without infront requirement
+How it should work: read above
+http://www.wowwiki.com/Corruption
+
+revision: 185
+db: RusDB
+bug: Shyphon life
+How it should work: Like corruption, no infront check is necessary
+http://www.wowwiki.com/Shyphon_life
+
+revision: 143
+bug: Ritual of Summoning doesn't work, portal doesn't show up.
+How it should work: Summoning portal opens up, deduct one soul shard is basically what it does.
+More information here: http://www.wowwiki.com/Ritual_of_Summoning
+
+revision:--
+bug:Phase Shift(imps spell) only visual
+How it should work:Phase Shift makes the Imp invulnerable to all hostile and beneficial abilities, with the exception of Soul Link and Health Funnel. Phase shift can be canceled simply by clicking the spell icon. The Imp cannot attack while in this state; if it attacks, it will automatically cancel Phase Shift. It has a 10 second cooldown and does not cost the Imp any mana to use, however, it can only be cast while out of combat.
+
+revision: 145
+bug: backlash
+bug: Ranged attacks (Arrows-Bullets) does not proc this talent
+How it should work: Ranged attacks (Arrows-Bullets) should hvae a chance to proc this talent
+http://www.wowwiki.com/Backlash
