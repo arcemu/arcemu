@@ -60,8 +60,6 @@ SMT_RESIST_DISPEL - check if it is used
 - spellsteal does not seam to have effect and does not steal all charges
 - accept group porting while on a flyght would make you buget badly
 - spells with speeds do not consider immunitys
-- pets walk slowly ?
-- duel flag does not despawn ?
 - professions consume item before succefull result so if server crashes there is no result item and mats are missing
 - knockback triggers Speed Detector.
 - when a team leaves arena the other team should receive win points
