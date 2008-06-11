@@ -66,6 +66,13 @@ SMT_RESIST_DISPEL - check if it is used
 - knockback triggers Speed Detector.
 - when a team leaves arena the other team should receive win points
 - resisted spells should still agro mob
+- get mental protection on self then get a sap from a rogue. Should make stun stay infinit
+- additem 33208, send it through mail then equip it. It should have randomly count 0. So what ?
+- http://forums.ascentemu.com/viewtopic.php?f=11&t=864
+- get two mages in a duel, let them cast ice barrier and frost ward. Then at the "same time", cast frost nova. The casting of the frost nova instantly
+- rogue is attacking enemy but ene,y does not attack back. Rogue can restealth
+- http://www.wowhead.com/?spell=31230
+- wining arena teams do not gain arena points
 
 ==========================================================================
 ! BUGS !
@@ -94,6 +101,7 @@ SMT_RESIST_DISPEL - check if it is used
 - you can cast windfurry on other player weapons in trade window
 - reloadtable not working ?
 - shaman elementals from elemental totems respawn over time ?
+- you can pull people into instance if you are reviveing people out of team..
 
 ==========================================================================
 Zack - test my shit :
