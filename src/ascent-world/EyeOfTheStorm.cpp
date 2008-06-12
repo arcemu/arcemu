@@ -692,8 +692,11 @@ bool EyeOfTheStorm::GivePoints(uint32 team, uint32 points)
 
 void EyeOfTheStorm::HookOnPlayerKill(Player * plr, Unit * pVictim)
 {
-	plr->m_bgScore.KillingBlows++;
-	UpdatePvPData();
+	if ( pVictim->IsPlayer() )
+	{
+		plr->m_bgScore.KillingBlows++;
+		UpdatePvPData();
+	}
 }
 
 void EyeOfTheStorm::HookOnHK(Player * plr)

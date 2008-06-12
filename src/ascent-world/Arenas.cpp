@@ -142,8 +142,11 @@ void Arena::OnRemovePlayer(Player * plr)
 
 void Arena::HookOnPlayerKill(Player * plr, Unit * pVictim)
 {
-	plr->m_bgScore.KillingBlows++;
-	UpdatePlayerCounts();
+	if ( pVictim->IsPlayer() )
+	{
+		plr->m_bgScore.KillingBlows++;
+		UpdatePlayerCounts();
+	}
 }
 
 void Arena::HookOnHK(Player * plr)
