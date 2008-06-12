@@ -1422,9 +1422,15 @@ void WorldSession::HandleGameObjectUse(WorldPacket & recv_data)
 			SendPacket(&pkt);*/
 
 			/* these are usually scripted effects. but in the case of some, (e.g. orb of translocation) the spellid is located in unknown1 */
-			SpellEntry * sp = dbcSpell.LookupEntryForced(goinfo->Unknown1);
+			/*SpellEntry * sp = dbcSpell.LookupEntryForced(goinfo->Unknown1);
 			if(sp != NULL)
-				_player->CastSpell(_player,sp,true);
+				_player->CastSpell(_player,sp,true);  -   WTF?  Cast spell 1 ?*/  
+
+			if(goinfo->Unknown1)
+			{
+				uint32 cinematicid = goinfo->Unknown1;
+				plyr->GetSession()->OutPacket(SMSG_TRIGGER_CINEMATIC, 4, &cinematicid);
+			}
 		}break;
 	case GAMEOBJECT_TYPE_MEETINGSTONE:	// Meeting Stone
 		{
