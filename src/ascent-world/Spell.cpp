@@ -3544,6 +3544,11 @@ uint8 Spell::CanCast(bool tolerate)
 					if(!target->isInFront(p_caster))
 						return SPELL_FAILED_NOT_INFRONT;
 
+				if( m_spellInfo->NameHash == SPELL_HASH_MOONFIRE )// Moonfire
+					if(!p_caster->isInFront(target))
+						return SPELL_FAILED_UNIT_NOT_INFRONT;
+
+
 				if( m_spellInfo->Category==1131)//Hammer of wrath, requires target to have 20- % of hp
 				{
 					if(target->GetUInt32Value(UNIT_FIELD_HEALTH) == 0)
