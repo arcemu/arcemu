@@ -23,8 +23,10 @@
 
 TerrainMgr::TerrainMgr(string MapPath, uint32 MapId, bool Instanced) : mapPath(MapPath), mapId(MapId), Instance(Instanced)
 {
+#ifndef USE_MEMORY_MAPPING_FOR_MAPS
 	FileDescriptor = NULL;
 	CellInformation = NULL;
+#endif
 }
 
 TerrainMgr::~TerrainMgr()

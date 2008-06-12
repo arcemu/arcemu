@@ -71,6 +71,7 @@ SMT_RESIST_DISPEL - check if it is used
 - rogue is attacking enemy but ene,y does not attack back. Rogue can restealth
 - http://www.wowhead.com/?spell=31230
 - wining arena teams do not gain arena points
+- .go info -> does not work ?
 
 ==========================================================================
 ! BUGS !
@@ -100,6 +101,7 @@ SMT_RESIST_DISPEL - check if it is used
 - reloadtable not working ?
 - shaman elementals from elemental totems respawn over time ?
 - you can pull people into instance if you are reviveing people out of team..
+- frecvent crashes here : if ( m_nextTarget != NULL && m_nextTarget->GetTypeId() == TYPEID_UNIT && m_AIState == EVADE)
 
 ==========================================================================
 Zack - test my shit :
