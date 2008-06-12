@@ -45,6 +45,11 @@ typedef unsigned char uint8;
 typedef unsigned short uint16;
 typedef unsigned int uint32;
 
+#define		ModelDBC_ModelId_col		0
+#define		DisplayDBC_DisplayId_col	0
+#define		DisplayDBC_ModelId_col		1
+#define		DisplayDBC_Scale_col		4
+
 char		input_path[1024]=".";
 DBCFile		modeldbc;
 DBCFile		displaydbc;
@@ -83,7 +88,7 @@ int FindModelIdForM2(const char *m2name,unsigned int prev_model_id)
 	//skip already processed ones
 	if( prev_model_id )
 		for(x=0;x<modeldbc.getRecordCount();x++)
-			if( modeldbc.getRecord (x).getUInt(0) == prev_model_id )
+			if( modeldbc.getRecord (x).getUInt( ModelDBC_ModelId_col ) == prev_model_id )
 			{
 				x++;
 				break;
@@ -100,7 +105,7 @@ int FindModelIdForM2(const char *m2name,unsigned int prev_model_id)
 		for(unsigned int charc=0;charc<comparecharcount;charc++)
 		{
 			if( loverm2[charc]=='.' )
-				return modeldbc.getRecord (x).getUInt(0); // the model id
+				return modeldbc.getRecord (x).getUInt( ModelDBC_ModelId_col ); // the model id
 			if(  loverm2[charc] != tolower( recname[charc] ) )
 				break;
 		}
@@ -112,8 +117,9 @@ int FindModelIdForM2(const char *m2name,unsigned int prev_model_id)
 void GenerateDisplaySizeSQLs(const char *model_name, unsigned int model_id,float model_halfsize)
 {
 	for(unsigned int x=0;x<displaydbc.getRecordCount();x++)
-		if( displaydbc.getRecord (x).getUInt(1) == model_id )
-			fprintf(out_sql_f,"Replace into unit_display_sizes ( displayid, halfsize, modelid, modelname ) values (%u,%f,%u,'%s');\n",displaydbc.getRecord (x).getUInt(0),model_halfsize,model_id,model_name);
+		if( displaydbc.getRecord (x).getUInt( DisplayDBC_ModelId_col ) == model_id )
+//			fprintf(out_sql_f,"Replace into unit_display_sizes ( displayid, halfsize, modelid, modelname ) values (%u,%f,%u,'%s');\n",displaydbc.getRecord (x).getUInt(DisplayDBC_DisplayId_col),model_halfsize,model_id,model_name);
+			fprintf(out_sql_f,"Replace into unit_display_sizes ( displayid, halfsize, modelid, modelname ) values (%u,%f,%u,'%s');\n",displaydbc.getRecord (x).getUInt(DisplayDBC_DisplayId_col),model_halfsize*displaydbc.getRecord (x).getFloat(DisplayDBC_Scale_col),model_id,model_name);
 }
 
 //----------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -376,7 +382,7 @@ int main()
 	}
 	fprintf(out_sql_f,"DROP TABLE IF EXISTS `unit_display_sizes`;\n");
 	fprintf(out_sql_f,"CREATE TABLE IF NOT EXISTS `unit_display_sizes` (\n");
-	fprintf(out_sql_f,"  `DisplayID` int(11) unsigned NOT NULL DEFAULT '' ,\n");
+	fprintf(out_sql_f,"  `DisplayID` int(11) unsigned NOT NULL DEFAULT 0 ,\n");
 	fprintf(out_sql_f,"  `halfsize` float NOT NULL DEFAULT '1' ,\n");
 	fprintf(out_sql_f,"  `modelid` int(11) unsigned NOT NULL DEFAULT '0' ,\n");
 	fprintf(out_sql_f,"  `modelname` varchar(500) ,\n");
