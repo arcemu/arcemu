@@ -15618,28 +15618,28 @@ void ApplyNormalFixes()
 		sp = dbcSpell.LookupEntryForced( 20925 ); // -- rank 1
 		if( sp != NULL )
 		{
-			sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_DAMAGE;
+			sp->EffectApplyAuraName[1] = SPELL_AURA_PROC_TRIGGER_DAMAGE;
 			sp->procFlags = PROC_ON_BLOCK_VICTIM;
 			sp->procChance = 100;
 		}
 		sp = dbcSpell.LookupEntryForced( 20927 ); // -- rank 2
 		if( sp != NULL )
 		{
-			sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_DAMAGE;
+			sp->EffectApplyAuraName[1] = SPELL_AURA_PROC_TRIGGER_DAMAGE;
 			sp->procFlags = PROC_ON_BLOCK_VICTIM;
 			sp->procChance = 100;
 		}
 		sp = dbcSpell.LookupEntryForced( 20928 ); // -- rank 3
 		if( sp != NULL )
 		{
-			sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_DAMAGE;
+			sp->EffectApplyAuraName[1] = SPELL_AURA_PROC_TRIGGER_DAMAGE;
 			sp->procFlags = PROC_ON_BLOCK_VICTIM;
 			sp->procChance = 100;
 		}
 		sp = dbcSpell.LookupEntryForced( 27179 ); // -- rank 4
 		if( sp != NULL )
 		{
-			sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_DAMAGE;
+			sp->EffectApplyAuraName[1] = SPELL_AURA_PROC_TRIGGER_DAMAGE;
 			sp->procFlags = PROC_ON_BLOCK_VICTIM;
 			sp->procChance = 100;
 		}
