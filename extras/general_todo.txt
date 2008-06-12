@@ -43,7 +43,7 @@ SMT_RESIST_DISPEL - check if it is used
 - priest levitate that doens't work anymore.
 - you should get honorless target buff on neutral or hostal zones (i'm not really sure about this)
 - vendors should use extendedcost column
-- The arror that points you to where your party memebrs are dont show
+- The arrow that points you to where your party memebrs are dont show
 - when someone logs out in your group there HP bar ect dont go semi-transparent it stays the same.
 - general plugin is not dumping data to other folders
 - delayed execution of some spells
@@ -57,7 +57,7 @@ SMT_RESIST_DISPEL - check if it is used
 - dnd sends out text in general language and everyone can undestand it
 - additem 25539 -> should have 3 charges but it loses all in 1 usage
 - additem 25539 -> when aura expires you should start drowning
-- spellsteal does not seam to have effect and does not steal all charges
+	- spellsteal does not seam to have effect and does not steal all charges
 - accept group porting while on a flyght would make you buget badly
 - spells with speeds do not consider immunitys
 - professions consume item before succefull result so if server crashes there is no result item and mats are missing
@@ -68,7 +68,7 @@ SMT_RESIST_DISPEL - check if it is used
 - additem 33208, send it through mail then equip it. It should have randomly count 0. So what ?
 - http://forums.ascentemu.com/viewtopic.php?f=11&t=864
 - get two mages in a duel, let them cast ice barrier and frost ward. Then at the "same time", cast frost nova. The casting of the frost nova instantly
-- rogue is attacking enemy but ene,y does not attack back. Rogue can restealth
+- rogue is attacking enemy but enemy does not attack back. Rogue can restealth
 - http://www.wowhead.com/?spell=31230
 - wining arena teams do not gain arena points
 - .go info -> does not work ?
@@ -77,10 +77,8 @@ SMT_RESIST_DISPEL - check if it is used
 ! BUGS !
 - creatures keep yelling no content messgs
 - some teleportation spells have target_type 17 and they will not generate a target to be teleported. Right now there is a special if for this in spell.cpp (ugly)
-- why do we need enslavecount ?
 - Pets - You can attack players from your faction with pets
 - starfire stuns the caster instead of target.
-- i can request and accept at the same time a duel ? request on second login char the duel then simply accept it :S
 - "if I have a mob or player dotted when I use fear on them, it causes me to become feared when the dot ticks. This one really pwns warlocks, priests and even warriors."
 - "you can have 2 water elementals"
 - you gain combo point even on spell failed (backstab)
@@ -94,12 +92,11 @@ SMT_RESIST_DISPEL - check if it is used
 - cannibalize should be cheked for targets and animation is only for caster.
 - readd earth shield to spellindex and make spellindex support stacking
 - some spells are procing spell id = 1. Why and who ?
-- socketing thrown weapons, a very ugly fix in object.cpp line 1095
+- socketing thrown weapons makes server crash
 - charge and intercept needs to retarget the mob in order to attack it again
 - eventtable might hold pointers to objects that were dealocated before event ocured = crash
 - you can cast windfurry on other player weapons in trade window
 - reloadtable not working ?
-- shaman elementals from elemental totems respawn over time ?
 - you can pull people into instance if you are reviveing people out of team..
 - frecvent crashes here : if ( m_nextTarget != NULL && m_nextTarget->GetTypeId() == TYPEID_UNIT && m_AIState == EVADE)
 

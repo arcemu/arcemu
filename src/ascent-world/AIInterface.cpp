@@ -3793,6 +3793,7 @@ void AIInterface::Event_Summon_EE_totem(uint32 summon_duration)
 	if(ourslave)
 	{
 		static_cast<Creature*>(ourslave)->ResistanceModPct[NATURE_DAMAGE]=100;//we should be imune to nature dmg. This can be also set in db
+		static_cast<Creature*>(ourslave)->m_noRespawn = true;
 		/*
 		- Earth Stun (37982)
 		- taunt
@@ -3815,6 +3816,7 @@ void AIInterface::Event_Summon_FE_totem(uint32 summon_duration)
 	if(ourslave)
 	{
 		static_cast<Creature*>(ourslave)->ResistanceModPct[FIRE_DAMAGE]=100;//we should be imune to fire dmg. This can be also set in db
+		static_cast<Creature*>(ourslave)->m_noRespawn = true;
 		/*
 		- also : select * from dbc_spell where name like "%fire blast%"
 		- also : select * from dbc_spell where name like "%fire nova"

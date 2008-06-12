@@ -5444,7 +5444,9 @@ void Spell::SpellEffectSpellSteal( uint32 i )
 	if(unitTarget->m_auras[x])
 	{
 		aur = unitTarget->m_auras[x];
-		if(aur->GetSpellId() != 15007 && !aur->IsPassive() && aur->IsPositive()) //Nothing can dispel resurrection sickness
+		if(aur->GetSpellId() != 15007 && !aur->IsPassive()
+//			&& aur->IsPositive()	// Zack : We are only checking positiv auras. There is no meaning to check again
+			) //Nothing can dispel resurrection sickness
 		{
 			if(aur->GetSpellProto()->DispelType == DISPEL_MAGIC)
 			{
@@ -5455,8 +5457,9 @@ void Spell::SpellEffectSpellSteal( uint32 i )
 				data << aur->GetSpellId();
 				m_caster->SendMessageToSet(&data,true);
 				Aura *aura = new Aura(aur->GetSpellProto(), (aur->GetDuration()>120000) ? 120000 : aur->GetDuration(), u_caster, u_caster);
-				u_caster->AddAura(aura);
-				unitTarget->RemoveAura(aur);
+				uint32 times_to_add = unitTarget->RemoveAllPosAuraByNameHash( aur->GetSpellProto()->NameHash );
+//				for(uint32 tadd=0;tadd<times_to_add;tadd++)
+					u_caster->AddAura(aura);
 				if( --spells_to_steal <= 0 )
 					break; //exit loop now
 			}			

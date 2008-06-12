@@ -790,8 +790,8 @@ public:
 	bool RemoveAllAuras(uint32 spellId,uint64 guid); //remove stacked auras but only if they come from the same caster. Shaman purge If GUID = 0 then removes all auras with this spellid
     void RemoveAllAuraType(uint32 auratype);//ex:to remove morph spells
 	bool RemoveAllAuraByNameHash(uint32 namehash);//required to remove weaker instances of a spell
-	bool RemoveAllPosAuraByNameHash(uint32 namehash);//required to remove weaker instances of a spell
-	bool RemoveAllNegAuraByNameHash(uint32 namehash);//required to remove weaker instances of a spell
+	uint32 RemoveAllPosAuraByNameHash(uint32 namehash);//required to remove weaker instances of a spell
+	uint32 RemoveAllNegAuraByNameHash(uint32 namehash);//required to remove weaker instances of a spell
 	bool RemoveAllAurasByMechanic( uint32 MechanicType , uint32 MaxDispel , bool HostileOnly ); // Removes all (de)buffs on unit of a specific mechanic type.
 	
 	void RemoveNegativeAuras();

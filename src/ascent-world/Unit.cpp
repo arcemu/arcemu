@@ -3827,9 +3827,9 @@ bool Unit::RemoveAllAuraByNameHash(uint32 namehash)
 	return res;
 }
 
-bool Unit::RemoveAllPosAuraByNameHash(uint32 namehash)
+uint32 Unit::RemoveAllPosAuraByNameHash(uint32 namehash)
 {
-	bool res = false;
+	uint32 res = 0;
 	for(uint32 x=0;x<MAX_POSITIVE_AURAS;x++)
 	{
 		if(m_auras[x])
@@ -3837,16 +3837,16 @@ bool Unit::RemoveAllPosAuraByNameHash(uint32 namehash)
 			if(m_auras[x]->GetSpellProto()->NameHash==namehash)
 			{
 				m_auras[x]->Remove();
-				res=true;
+				res++;
 			}
 		}
 	}
 	return res;
 }
 
-bool Unit::RemoveAllNegAuraByNameHash(uint32 namehash)
+uint32 Unit::RemoveAllNegAuraByNameHash(uint32 namehash)
 {
-	bool res = false;
+	uint32 res = 0;
 	for(uint32 x=MAX_POSITIVE_AURAS;x<MAX_AURAS;x++)
 	{
 		if(m_auras[x])
@@ -3854,7 +3854,7 @@ bool Unit::RemoveAllNegAuraByNameHash(uint32 namehash)
 			if(m_auras[x]->GetSpellProto()->NameHash==namehash)
 			{
 				m_auras[x]->Remove();
-				res=true;
+				res++;
 			}
 		}
 	}
