@@ -57,7 +57,6 @@ SMT_RESIST_DISPEL - check if it is used
 - dnd sends out text in general language and everyone can undestand it
 - additem 25539 -> should have 3 charges but it loses all in 1 usage
 - additem 25539 -> when aura expires you should start drowning
-	- spellsteal does not seam to have effect and does not steal all charges
 - accept group porting while on a flyght would make you buget badly
 - spells with speeds do not consider immunitys
 - professions consume item before succefull result so if server crashes there is no result item and mats are missing
@@ -67,8 +66,6 @@ SMT_RESIST_DISPEL - check if it is used
 - get mental protection on self then get a sap from a rogue. Should make stun stay infinit
 - additem 33208, send it through mail then equip it. It should have randomly count 0. So what ?
 - http://forums.ascentemu.com/viewtopic.php?f=11&t=864
-- get two mages in a duel, let them cast ice barrier and frost ward. Then at the "same time", cast frost nova. The casting of the frost nova instantly
-- rogue is attacking enemy but enemy does not attack back. Rogue can restealth
 - http://www.wowhead.com/?spell=31230
 - wining arena teams do not gain arena points
 - .go info -> does not work ?
