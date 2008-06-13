@@ -3457,6 +3457,10 @@ void Spell::SpellEffectEnchantItemTemporary(uint32 i)  // Enchant Item Temporary
 	if(!itemTarget || !p_caster) return;
 	uint32 Duration = damage > 1 ? damage : 1800;
 
+	// dont allow temporary enchants unless we're the owner of the item
+	if(itemTarget->GetOwner() != p_caster)
+		return;
+
 	EnchantEntry * Enchantment = dbcEnchant.LookupEntry(m_spellInfo->EffectMiscValue[i]);
 	if(!Enchantment) return;
 
