@@ -416,6 +416,9 @@
 				RelativePath="..\src\SpellHandlers\WarriorSpells.cpp"
 				>
 			</File>
+			<File
+				RelativePath="..\src\SpellHandlers\QIspells.cpp"
+				>
 		</Filter>
 	</Files>
 	<Globals>

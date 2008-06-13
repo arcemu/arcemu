@@ -26,5 +26,6 @@ void SetupItemSpells_1(ScriptMgr * mgr);
 void SetupMageSpells(ScriptMgr * mgr);
 void SetupPaladinSpells(ScriptMgr * mgr);
 void SetupRogueSpells(ScriptMgr * mgr);
+void SetupQuestItems(ScriptMgr * mgr);
 
 #endif
