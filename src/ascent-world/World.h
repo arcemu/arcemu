@@ -601,7 +601,6 @@ public:
 	static float m_movementCompressThresholdCreatures;
 	static uint32 m_movementCompressRate;
 	static uint32 m_movementCompressInterval;
-	static float m_speedHackThreshold;
 };
 
 #define sWorld World::getSingleton()

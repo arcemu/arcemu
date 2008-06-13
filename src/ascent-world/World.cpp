@@ -26,7 +26,6 @@ float World::m_movementCompressThreshold;
 float World::m_movementCompressThresholdCreatures;
 uint32 World::m_movementCompressRate;
 uint32 World::m_movementCompressInterval;
-float World::m_speedHackThreshold;
 
 World::World()
 {
@@ -70,7 +69,6 @@ World::World()
 	start_level=1;
 	m_limitedNames=false;
 	m_banTable = NULL;
-	m_speedHackThreshold = -600.0f;
 }
 
 void CleanupRandomNumberGenerators();
@@ -1316,7 +1314,6 @@ void World::Rehash(bool load)
 	antihack_flight = Config.MainConfig.GetBoolDefault("AntiHack", "Flight", true);
 	flyhack_threshold = Config.MainConfig.GetIntDefault("AntiHack", "FlightThreshold", 8);
 	no_antihack_on_gm = Config.MainConfig.GetBoolDefault("AntiHack", "DisableOnGM", false);
-	m_speedHackThreshold = Config.MainConfig.GetFloatDefault("AntiHack", "SpeedThreshold", -600.0f);
 	SpeedhackProtection = antihack_speed;
 	m_levelCap = Config.OptionalConfig.GetIntDefault("Optional", "LevelCap", 70);
 	m_genLevelCap = Config.OptionalConfig.GetIntDefault("Optional", "GenLevelCap", 70);
