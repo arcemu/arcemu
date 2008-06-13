@@ -64,7 +64,6 @@ SMT_RESIST_DISPEL - check if it is used
 - resisted spells should still agro mob
 - get mental protection on self then get a sap from a rogue. Should make stun stay infinit
 - additem 33208, send it through mail then equip it. It should have randomly count 0. So what ?
-- http://forums.ascentemu.com/viewtopic.php?f=11&t=864
 - http://www.wowhead.com/?spell=31230
 - wining arena teams do not gain arena points
 

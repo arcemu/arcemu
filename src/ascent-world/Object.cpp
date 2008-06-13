@@ -26,6 +26,81 @@ using namespace std;
 #define M_H_PI		1.57079632679489661923
 #define M_Q_PI		0.785398163397448309615
 
+static float DamageToRageConversionTable[71]=
+{
+	0.0f,
+	3.33333332596f,
+	2.32494760373f,
+	1.78264780661f,
+	1.44396357117f,
+	1.2123533165f,
+	1.04397785496f,
+	0.916056052096f,
+	0.815576431602f,
+	0.734567160417f,
+	0.66787149277f,
+	0.612005960162f,
+	0.564532608393f,
+	0.523694129722f,
+	0.488191825581f,
+	0.457045164141f,
+	0.429499969492f,
+	0.404966667879f,
+	0.382977704896f,
+	0.363157531812f,
+	0.345201035638f,
+	0.328857765668f,
+	0.313920217094f,
+	0.300215004319f,
+	0.287596125288f,
+	0.27593976089f,
+	0.265140216201f,
+	0.255106721412f,
+	0.24576088725f,
+	0.23703466382f,
+	0.228868690383f,
+	0.221210951417f,
+	0.214015674635f,
+	0.20724242161f,
+	0.200855332852f,
+	0.194822497576f,
+	0.189115424762f,
+	0.183708597032f,
+	0.178579092584f,
+	0.17370626337f,
+	0.169071460011f,
+	0.164657795691f,
+	0.160449942759f,
+	0.156433956854f,
+	0.152597124314f,
+	0.148927829351f,
+	0.145415438059f,
+	0.142050196824f,
+	0.138823143098f,
+	0.1357260268f,
+	0.132751240913f,
+	0.129891760035f,
+	0.127141085846f,
+	0.124493198595f,
+	0.121942513852f,
+	0.119483843862f,
+	0.117112362949f,
+	0.114823576474f,
+	0.112613292937f,
+	0.110477598847f,
+	0.108412836061f,
+	0.106415581293f,
+	0.104482627572f,
+	0.102610967429f,
+	0.100797777624f,
+	0.0990404052564f,
+	0.0973363551185f,
+	0.0956832781503f,
+	0.094078960901f,
+	0.0925213158854f,
+	0.0910083727537f
+};
+
 Object::Object() : m_position(0,0,0,0), m_spawnLocation(0,0,0,0)
 {
 	m_mapId = 0;
@@ -1705,16 +1780,20 @@ void Object::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
 	}
 
         ///Rage
-        float val;
-
 		if( pVictim->GetPowerType() == POWER_TYPE_RAGE 
 			//&& !spellId //zack : general opinion is that spells should generate rage. I share the feeling
 			&& pVictim != this
-			&& pVictim->IsPlayer())
+//			&& pVictim->IsPlayer()
+			)
 		{
-			float level = (float)pVictim->getLevel();
-			float c = 0.0091107836f * level * level + 3.225598133f * level + 4.2652911f;
-			val = 2.5f * damage / c;
+	        float val;
+			uint32 level = pVictim->getLevel();
+			float conv;
+			if( level <= 70 )
+				conv = DamageToRageConversionTable[ level ];
+			else 
+				conv = ( 2.5f * 10 ) / (0.0091107836f * level * level + 3.225598133f * level + 4.2652911f);
+			val = damage * conv;
 			uint32 rage = pVictim->GetUInt32Value( UNIT_FIELD_POWER2 );
 			if( rage + float2int32( val ) > 1000 )
 			  val = 1000.0f - (float)pVictim->GetUInt32Value( UNIT_FIELD_POWER2 );
