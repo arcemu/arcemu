@@ -7359,7 +7359,31 @@ void Player::DuelBoundaryTest()
 void Player::EndDuel(uint8 WinCondition)
 {
 	if( m_duelState == DUEL_STATE_FINISHED )
+	{
+		//if loggingout player requested a duel then we have to make the cleanups
+		if( GetUInt32Value(PLAYER_DUEL_ARBITER) )
+		{
+			GameObject* arbiter = m_mapMgr ? GetMapMgr()->GetGameObject(GetUInt32Value(PLAYER_DUEL_ARBITER)) : 0;
+
+			if( arbiter != NULL )
+			{
+				arbiter->RemoveFromWorld( true );
+				delete arbiter;
+			}
+
+			//we do not wish to lock the other player in duel state
+			DuelingWith->SetUInt64Value( PLAYER_DUEL_ARBITER, 0 );
+			DuelingWith->SetUInt32Value( PLAYER_DUEL_TEAM, 0 );
+			SetUInt64Value( PLAYER_DUEL_ARBITER, 0 );
+			SetUInt32Value( PLAYER_DUEL_TEAM, 0 );
+			sEventMgr.RemoveEvents( DuelingWith, EVENT_PLAYER_DUEL_BOUNDARY_CHECK );
+			sEventMgr.RemoveEvents( DuelingWith, EVENT_PLAYER_DUEL_COUNTDOWN );
+			DuelingWith->DuelingWith = NULL;
+			DuelingWith = NULL;
+			//the duel did not start so we are not in combat or cast any spells yet.
+		}
 		return;
+	}
 
 	// Remove the events
 	sEventMgr.RemoveEvents( this, EVENT_PLAYER_DUEL_COUNTDOWN );
