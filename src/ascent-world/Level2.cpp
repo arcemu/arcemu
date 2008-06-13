@@ -761,7 +761,6 @@ bool ChatHandler::HandleGOSpawn(const char *args, WorldSession *m_session)
 
 bool ChatHandler::HandleGOInfo(const char *args, WorldSession *m_session)
 {
-	std::stringstream sstext;
 	GameObjectInfo *GOInfo = NULL;
 	GameObject *GObj = m_session->GetPlayer()->GetSelectedGo();
 	if( !GObj )
@@ -770,68 +769,60 @@ bool ChatHandler::HandleGOInfo(const char *args, WorldSession *m_session)
 		return true;
 	}
 	
-	sstext
-		<< MSG_COLOR_SUBWHITE << "Informations:\n"
-		<< MSG_COLOR_GREEN << "Entry: " << MSG_COLOR_LIGHTBLUE << GObj->GetEntry()						  << "\n"
-		<< MSG_COLOR_GREEN << "Model: " << MSG_COLOR_LIGHTBLUE << GObj->GetUInt32Value(GAMEOBJECT_DISPLAYID)<< "\n"
-		<< MSG_COLOR_GREEN << "State: " << MSG_COLOR_LIGHTBLUE << GObj->GetUInt32Value(GAMEOBJECT_STATE)<< "\n"
-		<< MSG_COLOR_GREEN << "flags: " << MSG_COLOR_LIGHTBLUE << GObj->GetUInt32Value(GAMEOBJECT_FLAGS)<< "\n"
-		<< MSG_COLOR_GREEN << "dynflags:" << MSG_COLOR_LIGHTBLUE << GObj->GetUInt32Value(GAMEOBJECT_DYN_FLAGS) << "\n"
-		<< MSG_COLOR_GREEN << "faction: " << MSG_COLOR_LIGHTBLUE << GObj->GetUInt32Value(GAMEOBJECT_FACTION)<< "\n"
-		<< MSG_COLOR_GREEN << "Type: "  << MSG_COLOR_LIGHTBLUE << GObj->GetUInt32Value(GAMEOBJECT_TYPE_ID)  << " -- ";
+	SystemMessage(m_session, "%s Informations:",MSG_COLOR_SUBWHITE);
+	SystemMessage(m_session, "%s Entry:%s%u",MSG_COLOR_GREEN,MSG_COLOR_LIGHTBLUE,GObj->GetEntry());
+	SystemMessage(m_session, "%s Model:%s%u",MSG_COLOR_GREEN,MSG_COLOR_LIGHTBLUE,GObj->GetUInt32Value(GAMEOBJECT_DISPLAYID));
+	SystemMessage(m_session, "%s State:%s%u",MSG_COLOR_GREEN,MSG_COLOR_LIGHTBLUE,GObj->GetUInt32Value(GAMEOBJECT_STATE));
+	SystemMessage(m_session, "%s flags:%s%u",MSG_COLOR_GREEN,MSG_COLOR_LIGHTBLUE,GObj->GetUInt32Value(GAMEOBJECT_FLAGS));
+	SystemMessage(m_session, "%s dynflags:%s%u",MSG_COLOR_GREEN,MSG_COLOR_LIGHTBLUE,GObj->GetUInt32Value(GAMEOBJECT_DYN_FLAGS));
+	SystemMessage(m_session, "%s faction:%s%u",MSG_COLOR_GREEN,MSG_COLOR_LIGHTBLUE,GObj->GetUInt32Value(GAMEOBJECT_FACTION));
 
+	char gotypetxt[50];
 	switch( GObj->GetUInt32Value(GAMEOBJECT_TYPE_ID) )
 	{
-	case GAMEOBJECT_TYPE_DOOR:		  sstext << "Door";	break;
-	case GAMEOBJECT_TYPE_BUTTON:		sstext << "Button";	break;
-	case GAMEOBJECT_TYPE_QUESTGIVER:	sstext << "Quest Giver";	break;
-	case GAMEOBJECT_TYPE_CHEST:		 sstext << "Chest";	break;
-	case GAMEOBJECT_TYPE_BINDER:		sstext << "Binder";	break;
-	case GAMEOBJECT_TYPE_GENERIC:	   sstext << "Generic";	break;
-	case GAMEOBJECT_TYPE_TRAP:		  sstext << "Trap";	break;
-	case GAMEOBJECT_TYPE_CHAIR:		 sstext << "Chair";	break;
-	case GAMEOBJECT_TYPE_SPELL_FOCUS:   sstext << "Spell Focus";	break;
-	case GAMEOBJECT_TYPE_TEXT:		  sstext << "Text";	break;
-	case GAMEOBJECT_TYPE_GOOBER:		sstext << "Goober";	break;
-	case GAMEOBJECT_TYPE_TRANSPORT:	 sstext << "Transport";	break;
-	case GAMEOBJECT_TYPE_AREADAMAGE:	sstext << "Area Damage";	break;
-	case GAMEOBJECT_TYPE_CAMERA:		sstext << "Camera";	break;
-	case GAMEOBJECT_TYPE_MAP_OBJECT:	sstext << "Map Object";	break;
-	case GAMEOBJECT_TYPE_MO_TRANSPORT:  sstext << "Mo Transport";	break;
-	case GAMEOBJECT_TYPE_DUEL_ARBITER:  sstext << "Duel Arbiter";	break;
-	case GAMEOBJECT_TYPE_FISHINGNODE:   sstext << "Fishing Node";	break;
-	case GAMEOBJECT_TYPE_RITUAL:		sstext << "Ritual";	break;
-	case GAMEOBJECT_TYPE_MAILBOX:	   sstext << "Mailbox";	break;
-	case GAMEOBJECT_TYPE_AUCTIONHOUSE:  sstext << "Auction House";	break;
-	case GAMEOBJECT_TYPE_GUARDPOST:	 sstext << "Guard Post";	break;
-	case GAMEOBJECT_TYPE_SPELLCASTER:   sstext << "Spell Caster";	break;
-	case GAMEOBJECT_TYPE_MEETINGSTONE:  sstext << "Meeting Stone";	break;
-	case GAMEOBJECT_TYPE_FLAGSTAND:	 sstext << "Flag Stand";	break;
-	case GAMEOBJECT_TYPE_FISHINGHOLE:   sstext << "Fishing Hole";	break;
-	case GAMEOBJECT_TYPE_FLAGDROP:	  sstext << "Flag Drop";	break;
-	default:							sstext << "Unknown.";	break;
+	case GAMEOBJECT_TYPE_DOOR:			strcpy(gotypetxt,"Door");	break;
+	case GAMEOBJECT_TYPE_BUTTON:		strcpy(gotypetxt,"Button");	break;
+	case GAMEOBJECT_TYPE_QUESTGIVER:	strcpy(gotypetxt,"Quest Giver");	break;
+	case GAMEOBJECT_TYPE_CHEST:			strcpy(gotypetxt,"Chest");	break;
+	case GAMEOBJECT_TYPE_BINDER:		strcpy(gotypetxt,"Binder");	break;
+	case GAMEOBJECT_TYPE_GENERIC:		strcpy(gotypetxt,"Generic");	break;
+	case GAMEOBJECT_TYPE_TRAP:			strcpy(gotypetxt,"Trap");	break;
+	case GAMEOBJECT_TYPE_CHAIR:			strcpy(gotypetxt,"Chair");	break;
+	case GAMEOBJECT_TYPE_SPELL_FOCUS:   strcpy(gotypetxt,"Spell Focus");	break;
+	case GAMEOBJECT_TYPE_TEXT:			strcpy(gotypetxt,"Text");	break;
+	case GAMEOBJECT_TYPE_GOOBER:		strcpy(gotypetxt,"Goober");	break;
+	case GAMEOBJECT_TYPE_TRANSPORT:		strcpy(gotypetxt,"Transport");	break;
+	case GAMEOBJECT_TYPE_AREADAMAGE:	strcpy(gotypetxt,"Area Damage");	break;
+	case GAMEOBJECT_TYPE_CAMERA:		strcpy(gotypetxt,"Camera");	break;
+	case GAMEOBJECT_TYPE_MAP_OBJECT:	strcpy(gotypetxt,"Map Object");	break;
+	case GAMEOBJECT_TYPE_MO_TRANSPORT:  strcpy(gotypetxt,"Mo Transport");	break;
+	case GAMEOBJECT_TYPE_DUEL_ARBITER:  strcpy(gotypetxt,"Duel Arbiter");	break;
+	case GAMEOBJECT_TYPE_FISHINGNODE:   strcpy(gotypetxt,"Fishing Node");	break;
+	case GAMEOBJECT_TYPE_RITUAL:		strcpy(gotypetxt,"Ritual");	break;
+	case GAMEOBJECT_TYPE_MAILBOX:		strcpy(gotypetxt,"Mailbox");	break;
+	case GAMEOBJECT_TYPE_AUCTIONHOUSE:  strcpy(gotypetxt,"Auction House");	break;
+	case GAMEOBJECT_TYPE_GUARDPOST:		strcpy(gotypetxt,"Guard Post");	break;
+	case GAMEOBJECT_TYPE_SPELLCASTER:   strcpy(gotypetxt,"Spell Caster");	break;
+	case GAMEOBJECT_TYPE_MEETINGSTONE:  strcpy(gotypetxt,"Meeting Stone");	break;
+	case GAMEOBJECT_TYPE_FLAGSTAND:		strcpy(gotypetxt,"Flag Stand");	break;
+	case GAMEOBJECT_TYPE_FISHINGHOLE:   strcpy(gotypetxt,"Fishing Hole");	break;
+	case GAMEOBJECT_TYPE_FLAGDROP:		strcpy(gotypetxt,"Flag Drop");	break;
+	default:							strcpy(gotypetxt,"Unknown.");	break;
 	}
+	SystemMessage(m_session, "%s Type:%s%u -- %s",MSG_COLOR_GREEN,MSG_COLOR_LIGHTBLUE,GObj->GetUInt32Value(GAMEOBJECT_TYPE_ID),gotypetxt);
 
-	sstext
-		<< "\n"
-		<< MSG_COLOR_GREEN << "Distance: " << MSG_COLOR_LIGHTBLUE << GObj->CalcDistance((Object*)m_session->GetPlayer());
+	SystemMessage(m_session, "%s Distance:%s%u",MSG_COLOR_GREEN,MSG_COLOR_LIGHTBLUE,GObj->CalcDistance((Object*)m_session->GetPlayer()));
 
 	GOInfo = GameObjectNameStorage.LookupEntry(GObj->GetEntry());
 	if( !GOInfo )
 	{
 		RedSystemMessage(m_session, "This GameObject doesn't have template, you won't be able to get some informations nor to spawn a GO with this entry.");
-		sstext << "|r";
-		SystemMessage(m_session, sstext.str().c_str());
 		return true;
 	}
 
-	sstext
-		<< "\n"
-		<< MSG_COLOR_GREEN << "Name: "  << MSG_COLOR_LIGHTBLUE << GOInfo->Name	  << "\n"
-		<< MSG_COLOR_GREEN << "Size: "  << MSG_COLOR_LIGHTBLUE << GObj->GetFloatValue(OBJECT_FIELD_SCALE_X)	  << "\n"
-		<< "|r";
-
-	SystemMessage(m_session, sstext.str().c_str());
+	if( GOInfo->Name )
+		SystemMessage(m_session, "%s Name:%s%s",MSG_COLOR_GREEN,MSG_COLOR_LIGHTBLUE,GOInfo->Name);
+	SystemMessage(m_session, "%s Size:%s%u",MSG_COLOR_GREEN,MSG_COLOR_LIGHTBLUE,GObj->GetFloatValue(OBJECT_FIELD_SCALE_X));
 
 	return true;
 }

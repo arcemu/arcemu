@@ -58,7 +58,6 @@ SMT_RESIST_DISPEL - check if it is used
 - additem 25539 -> should have 3 charges but it loses all in 1 usage
 - additem 25539 -> when aura expires you should start drowning
 - accept group porting while on a flyght would make you buget badly
-- spells with speeds do not consider immunitys
 - professions consume item before succefull result so if server crashes there is no result item and mats are missing
 - knockback triggers Speed Detector.
 - when a team leaves arena the other team should receive win points
@@ -68,7 +67,6 @@ SMT_RESIST_DISPEL - check if it is used
 - http://forums.ascentemu.com/viewtopic.php?f=11&t=864
 - http://www.wowhead.com/?spell=31230
 - wining arena teams do not gain arena points
-- .go info -> does not work ?
 
 ==========================================================================
 ! BUGS !
