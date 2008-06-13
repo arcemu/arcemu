@@ -1918,7 +1918,7 @@ void AIInterface::_CalcDestinationAndMove(Unit *target, float dist)
 		return;
 	}
 	
-	if(target->GetTypeId() == TYPEID_UNIT || target->GetTypeId() == TYPEID_PLAYER)
+	if( target && ( target->GetTypeId() == TYPEID_UNIT || target->GetTypeId() == TYPEID_PLAYER) )
 	{
 		float ResX = target->GetPositionX();
 		float ResY = target->GetPositionY();
