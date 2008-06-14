@@ -419,6 +419,7 @@
 			<File
 				RelativePath="..\src\SpellHandlers\QIspells.cpp"
 				>
+			</File>
 		</Filter>
 	</Files>
 	<Globals>
