@@ -94,7 +94,7 @@ bool ChatHandler::CreateGuildCommand(const char* args, WorldSession *m_session)
 	{
 		// send message to user
 		char buf[256];
-		snprintf((char*)buf,256,"The name was too long by %i", strlen((char*)args)-75);
+		snprintf((char*)buf,256,"The name was too long by %lu", strlen((char*)args)-75);
 		SystemMessage(m_session, buf);
 		return true;
 	}
@@ -277,7 +277,7 @@ bool ChatHandler::HandleItemRemoveCommand(const char* args, WorldSession *m_sess
 		{
 			sstext << "Item '" << itemguid << "' Deleted from list" << '\0';
 		}
-
+		sGMLog.writefromsession( m_session, "removed item %u from vendor %u", itemguid, guidlow );
 	}
 	else
 	{
@@ -313,6 +313,8 @@ bool ChatHandler::HandleNPCFlagCommand(const char* args, WorldSession *m_session
 	pCreature->SetUInt32Value(UNIT_NPC_FLAGS , npcFlags);
 	pCreature->SaveToDB();
 	SystemMessage(m_session, "Value saved, you may need to rejoin or clean your client cache.");
+
+	sGMLog.writefromsession( m_session, "changed npc flags of creature %u [%s] to %u", pCreature->GetEntry(), pCreature->GetCreatureName()->Name, npcFlags );
 
 	return true;
 }
@@ -357,7 +359,7 @@ bool ChatHandler::HandleKillCommand(const char *args, WorldSession *m_session)
 		break;
 
 	case TYPEID_UNIT:
-		sGMLog.writefromsession(m_session, "used kill command on CREATURE %s", static_cast< Creature* >( target )->GetCreatureName() ? static_cast< Creature* >( target )->GetCreatureName()->Name : "unknown");
+		sGMLog.writefromsession( m_session, "used kill command on CREATURE %u [%s], sqlid %u%s", static_cast< Creature* >( target )->GetEntry(), static_cast< Creature* >( target )->GetCreatureName() ? static_cast< Creature* >( target )->GetCreatureName()->Name : "unknown", static_cast< Creature* >( target )->GetSQL_id(), m_session->GetPlayer()->InGroup() ? ", in group" : "" );
 		break;
 	}
 	
@@ -447,6 +449,18 @@ bool ChatHandler::HandleCastSpellCommand(const char* args, WorldSession *m_sessi
 	SpellCastTargets targets;
 	targets.m_unitTarget = target->GetGUID();
 	sp->prepare(&targets);
+
+	switch ( target->GetTypeId() )
+	{
+		case TYPEID_PLAYER:
+			if ( caster != target )
+				sGMLog.writefromsession( m_session, "casted spell %d on PLAYER %s", spellid, static_cast< Player* >( target )->GetName() );
+			break;
+		case TYPEID_UNIT:
+			sGMLog.writefromsession( m_session, "casted spell %d on CREATURE %u [%s], sqlid %u", spellid, static_cast< Creature* >( target )->GetEntry(), static_cast< Creature* >( target )->GetCreatureName() ? static_cast< Creature* >( target )->GetCreatureName()->Name : "unknown", static_cast< Creature* >( target )->GetSQL_id() );
+			break;
+	}
+
 	return true;
 }
 
@@ -498,6 +512,18 @@ bool ChatHandler::HandleCastSpellNECommand(const char* args, WorldSession *m_ses
 	data << target->GetGUID();
 	//		WPAssert(data.size() == 42);
 	m_session->SendPacket( &data );
+
+	switch ( target->GetTypeId() )
+	{
+		case TYPEID_PLAYER:
+			if ( caster != target )
+				sGMLog.writefromsession( m_session, "casted spell %d on PLAYER %s", spellId, static_cast< Player* >( target )->GetName() );
+			break;
+		case TYPEID_UNIT:
+			sGMLog.writefromsession( m_session, "casted spell %d on CREATURE %u [%s], sqlid %u", spellId, static_cast< Creature* >( target )->GetEntry(), static_cast< Creature* >( target )->GetCreatureName() ? static_cast< Creature* >( target )->GetCreatureName()->Name : "unknown", static_cast< Creature* >( target )->GetSQL_id() );
+			break;
+	}
+
 	return true;
 }
 
@@ -660,6 +686,8 @@ bool ChatHandler::HandleGODelete(const char *args, WorldSession *m_session)
 	delete GObj;
 
 	m_session->GetPlayer()->m_GM_SelectedGO = 0;
+
+	sGMLog.writefromsession( m_session, "deleted gameobject %s, entry %u", GameObjectNameStorage.LookupEntry(GObj->GetEntry())->Name, GObj->GetEntry() );
   /*  std::stringstream sstext;
 
 	GameObject *GObj = m_session->GetPlayer()->m_GM_SelectedGO;
@@ -756,6 +784,7 @@ bool ChatHandler::HandleGOSpawn(const char *args, WorldSession *m_session)
 		// If we're saving, create template and add index
 		go->SaveToDB();
 	}
+	sGMLog.writefromsession( m_session, "spawned gameobject %s, entry %u at %u %f %f %f%s", GameObjectNameStorage.LookupEntry(gs->entry)->Name, gs->entry, m_session->GetPlayer()->GetMapId(), gs->x, gs->y, gs->z, Save ? ", saved in DB" : "" );
 	return true;
 }
 
@@ -844,6 +873,7 @@ bool ChatHandler::HandleGOEnable(const char *args, WorldSession *m_session)
 		GObj->SetUInt32Value(GAMEOBJECT_DYN_FLAGS, 1);
 	}
 	BlueSystemMessage(m_session, "Gameobject activate/deactivated.");
+	sGMLog.writefromsession( m_session, "activated/deactivated gameobject %s, entry %u", GameObjectNameStorage.LookupEntry( GObj->GetEntry() )->Name, GObj->GetEntry() );
 	return true;
 }
 
@@ -866,6 +896,7 @@ bool ChatHandler::HandleGOActivate(const char* args, WorldSession *m_session)
 		GObj->SetUInt32Value(GAMEOBJECT_FLAGS, (GObj->GetUInt32Value(GAMEOBJECT_FLAGS)+1));
 	}
 	BlueSystemMessage(m_session, "Gameobject opened/closed.");
+	sGMLog.writefromsession( m_session, "opened/closed gameobject %s, entry %u", GameObjectNameStorage.LookupEntry( GObj->GetEntry() )->Name, GObj->GetEntry() );
 	return true;
 }
 
@@ -886,6 +917,7 @@ bool ChatHandler::HandleGOScale(const char* args, WorldSession* m_session)
 	if(!scale) scale = 1;
 	go->SetFloatValue(OBJECT_FIELD_SCALE_X, scale);
 	BlueSystemMessage(m_session, "Set scale to %.3f", scale);
+	sGMLog.writefromsession(m_session,"set scale on gameobject %s to %.3f, entry %u",GameObjectNameStorage.LookupEntry(go->GetEntry())->Name,scale,go->GetEntry());
 	return true;
 }
 
@@ -906,6 +938,7 @@ bool ChatHandler::HandleReviveStringcommand(const char* args, WorldSession* m_se
 			sEventMgr.AddEvent(plr, &Player::RemoteRevive, EVENT_PLAYER_REST, 1, 1,0);
 
 		GreenSystemMessage(m_session, "Revived player %s.", args);
+		sGMLog.writefromsession(m_session, "revived player %s", args);
 	} else {
 		GreenSystemMessage(m_session, "Player %s is not dead.", args);
 	}
@@ -953,6 +986,7 @@ bool ChatHandler::HandleMountCommand(const char *args, WorldSession *m_session)
 	//m_target->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_MOUNTED_TAXI);
 	
 	BlueSystemMessage(m_session, "Now mounted with model %d.", modelid);
+	sGMLog.writefromsession( m_session, "used mount command on PLAYER %s, model %u", m_plyr->GetName(), modelid );
 	return true;
 }
 
@@ -1121,5 +1155,6 @@ bool ChatHandler::HandleNpcComeCommand(const char* args, WorldSession* m_session
 	if(!crt) return true;
 
 	crt->GetAIInterface()->MoveTo(plr->GetPositionX(), plr->GetPositionY(), plr->GetPositionZ(), plr->GetOrientation());
+	sGMLog.writefromsession(m_session,"used npc come command on %s, sqlid %u",crt->GetCreatureName()->Name,crt->GetSQL_id());
 	return true;
 }

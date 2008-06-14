@@ -196,6 +196,7 @@ bool ChatHandler::HandleRecallPortPlayerCommand(const char* args, WorldSession *
 
 		if (strnicmp((char*)location,locname,strlen(args))==0)
 		{
+			sGMLog.writefromsession( m_session, "ported %s to %s ( map: %u, x: %f, y: %f, z: %f )", plr->GetName(), locname, locmap, x, y, z );
 			if(plr->GetInstanceID() != m_session->GetPlayer()->GetInstanceID())
 				sEventMgr.AddEvent(plr, &Player::EventSafeTeleport, locmap, uint32(0), LocationVector(x, y, z), EVENT_PLAYER_TELEPORT, 1, 1,EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
 			else

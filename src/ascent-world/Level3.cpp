@@ -292,6 +292,10 @@ bool ChatHandler::HandleReviveCommand(const char* args, WorldSession *m_session)
 	SelectedPlayer->SetMovement(MOVE_UNROOT, 1);
 	SelectedPlayer->ResurrectPlayer();
 	SelectedPlayer->SetUInt32Value(UNIT_FIELD_HEALTH, SelectedPlayer->GetUInt32Value(UNIT_FIELD_MAXHEALTH) );
+
+	if ( SelectedPlayer != m_session->GetPlayer() )
+		sGMLog.writefromsession( m_session, "revived player %s", SelectedPlayer->GetName() );
+
 	return true;
 }
 
@@ -315,23 +319,23 @@ bool ChatHandler::HandleExploreCheatCommand(const char* args, WorldSession *m_se
 	if (flag != 0)
 	{
 		snprintf((char*)buf,256,"%s has explored all zones now.", chr->GetName());
+		sGMLog.writefromsession( m_session, "explored all zones for player %s", chr->GetName() );
 	}
 	else
 	{
 		snprintf((char*)buf,256,"%s has no more explored zones.", chr->GetName());
+		sGMLog.writefromsession( m_session, "hid all zones for player %s", chr->GetName() );
 	}
 	SystemMessage(m_session, buf);
 
 	// send message to player
 	if (flag != 0)
 	{
-		snprintf((char*)buf,256,"%s has explored all zones for you.",
-			m_session->GetPlayer()->GetName());
+		snprintf((char*)buf,256,"%s has explored all zones for you.", m_session->GetPlayer()->GetName());
 	}
 	else
 	{
-		snprintf((char*)buf,256,"%s has hidden all zones from you.", 
-			m_session->GetPlayer()->GetName());
+		snprintf((char*)buf,256,"%s has hidden all zones from you.", m_session->GetPlayer()->GetName());
 	}
 	SystemMessage(m_session,  buf);
 
@@ -410,11 +414,13 @@ bool ChatHandler::HandleBanCharacterCommand(const char* args, WorldSession *m_se
 		pPlayer->Kick();
 	}
 
-	sGMLog.writefromsession(m_session, "used ban character on %s reason %s for %s", pCharacter, pReason, BanTime ? ConvertTimeStampToString(BanTime).c_str() : "ever");
+	sGMLog.writefromsession(m_session, "banned %s, reason %s, for %s", pCharacter, pReason, BanTime ? ConvertTimeStampToString(BanTime).c_str() : "ever");
+	char msg[200];
+	snprintf( msg, 200, "%sGM: %s has been banned by %s for %s. Reason: %s", MSG_COLOR_RED, pCharacter, m_session->GetPlayer()->GetName(), BanTime ? ConvertTimeStampToString( BanTime ).c_str() : "ever", pReason );
+	sWorld.SendWorldText( msg, NULL );
 	if( sWorld.m_banTable && pInfo )
 	{
-		CharacterDatabase.Execute("INSERT INTO %s VALUES('%s', '%s', %u, %u, '%s')", sWorld.m_banTable,
-			m_session->GetPlayer()->GetName(), pInfo->name, (uint32)UNIXTIME, (uint32)UNIXTIME + BanTime, CharacterDatabase.EscapeString(string(pReason)).c_str() );
+		CharacterDatabase.Execute("INSERT INTO %s VALUES('%s', '%s', %u, %u, '%s')", sWorld.m_banTable, m_session->GetPlayer()->GetName(), pInfo->name, (uint32)UNIXTIME, (uint32)UNIXTIME + BanTime, CharacterDatabase.EscapeString(string(pReason)).c_str() );
 	}
 	return true;
 }
@@ -447,7 +453,7 @@ bool ChatHandler::HandleUnBanCharacterCommand(const char* args, WorldSession *m_
 	CharacterDatabase.Execute("UPDATE characters SET banned = 0 WHERE name = '%s'", CharacterDatabase.EscapeString(string(Character)).c_str());
 
 	SystemMessage(m_session, "Unbanned character %s in database.", Character);
-	sGMLog.writefromsession(m_session, "used unban character on %s", Character);
+	sGMLog.writefromsession(m_session, "unbanned %s", Character);
 	return true;
 }
 
@@ -961,6 +967,7 @@ bool ChatHandler::HandleParalyzeCommand(const char* args, WorldSession *m_sessio
 
 	BlueSystemMessage(m_session, "Rooting target.");
 	BlueSystemMessageToPlr( static_cast< Player* >( plr ), "You have been rooted by %s.", m_session->GetPlayer()->GetName() );
+	sGMLog.writefromsession( m_session, "rooted player %s", static_cast< Player* >( plr )->GetName() );
 	WorldPacket data;
 	data.Initialize(SMSG_FORCE_MOVE_ROOT);
 	data << plr->GetNewGUID();
@@ -983,6 +990,7 @@ bool ChatHandler::HandleUnParalyzeCommand(const char* args, WorldSession *m_sess
 	
 	BlueSystemMessage(m_session, "Unrooting target.");
 	BlueSystemMessageToPlr( static_cast< Player* >( plr ), "You have been unrooted by %s.", m_session->GetPlayer()->GetName() );
+	sGMLog.writefromsession( m_session, "unrooted player %s", static_cast< Player* >( plr )->GetName() );
 	WorldPacket data;
 	data.Initialize(SMSG_FORCE_MOVE_UNROOT);
 	data << plr->GetNewGUID();
@@ -1078,7 +1086,8 @@ bool ChatHandler::HandleCastTimeCheatCommand(const char* args, WorldSession* m_s
 	GreenSystemMessageToPlr(plyr, "%s %s a cast time cheat on you.", m_session->GetPlayer()->GetName(), val ? "deactivated" : "activated");
 
 	plyr->CastTimeCheat = !val;
-	sGMLog.writefromsession(m_session, "%s cast time cheat on %s", val ? "disabled" : "enabled", plyr->GetName());
+	if ( plyr != m_session->GetPlayer() )
+		sGMLog.writefromsession(m_session, "%s cast time cheat on %s", val ? "disabled" : "enabled", plyr->GetName());
 	return true;
 }
 
@@ -1099,7 +1108,8 @@ bool ChatHandler::HandleCooldownCheatCommand(const char* args, WorldSession* m_s
 	GreenSystemMessageToPlr(plyr, "%s %s a cooldown cheat on you.", m_session->GetPlayer()->GetName(), val ? "deactivated" : "activated");
 
 	plyr->CooldownCheat = !val;
-	sGMLog.writefromsession(m_session, "%s cooldown cheat on %s", val ? "disabled" : "enabled", plyr->GetName());
+	if ( plyr != m_session->GetPlayer() )
+		sGMLog.writefromsession(m_session, "%s cooldown cheat on %s", val ? "disabled" : "enabled", plyr->GetName());
 
 	return true;
 }
@@ -1114,7 +1124,8 @@ bool ChatHandler::HandleGodModeCommand(const char* args, WorldSession* m_session
 	GreenSystemMessageToPlr(plyr, "%s %s a godmode cheat on you.", m_session->GetPlayer()->GetName(), val ? "deactivated" : "activated");
 
 	plyr->GodModeCheat = !val;
-	sGMLog.writefromsession(m_session, "%s godmode cheat on %s", val ? "disabled" : "enabled", plyr->GetName());
+	if ( plyr != m_session->GetPlayer() )
+		sGMLog.writefromsession(m_session, "%s godmode cheat on %s", val ? "disabled" : "enabled", plyr->GetName());
 	return true;
 }
 
@@ -1128,7 +1139,8 @@ bool ChatHandler::HandlePowerCheatCommand(const char* args, WorldSession* m_sess
 	GreenSystemMessageToPlr(plyr, "%s %s a power cheat on you.", m_session->GetPlayer()->GetName(), val ? "deactivated" : "activated");
 
 	plyr->PowerCheat = !val;
-	sGMLog.writefromsession(m_session, "%s powertime cheat on %s", val ? "disabled" : "enabled", plyr->GetName());
+	if ( plyr != m_session->GetPlayer() )
+		sGMLog.writefromsession(m_session, "%s powertime cheat on %s", val ? "disabled" : "enabled", plyr->GetName());
 	return true;
 }
 
@@ -1174,7 +1186,7 @@ bool ChatHandler::HandleFlyCommand(const char* args, WorldSession* m_session)
 	chr->SendMessageToSet(&fly, true);
 	BlueSystemMessage(chr->GetSession(), "Flying mode enabled.");
 	if(chr != m_session->GetPlayer())
-		sGMLog.writefromsession(m_session, "Enabled flying mode for %s", chr->GetName());
+		sGMLog.writefromsession(m_session, "enabled flying mode for %s", chr->GetName());
 	return 1;
 }
 
@@ -1192,6 +1204,8 @@ bool ChatHandler::HandleLandCommand(const char* args, WorldSession* m_session)
 	fly << uint32(5);
 	chr->SendMessageToSet(&fly, true);
 	BlueSystemMessage(chr->GetSession(), "Flying mode disabled.");
+	if( chr != m_session->GetPlayer() )
+		sGMLog.writefromsession( m_session, "disabled flying mode for %s", chr->GetName() );
 	return 1;
 }
 
@@ -1226,6 +1240,8 @@ bool ChatHandler::HandleFlySpeedCheatCommand(const char* args, WorldSession* m_s
 
 	BlueSystemMessage(m_session, "Setting the fly speed of %s to %f.", plr->GetName(), Speed);
 	GreenSystemMessage(plr->GetSession(), "%s set your fly speed to %f.", m_session->GetPlayer()->GetName(), Speed);
+	if ( plr != m_session->GetPlayer() )
+		sGMLog.writefromsession( m_session, "set %s's fly speed to %2.2f", plr->GetName(), Speed );
 	
 	WorldPacket data(SMSG_FORCE_MOVE_SET_FLY_SPEED, 16);
 	data << plr->GetNewGUID();
@@ -1605,6 +1621,7 @@ bool ChatHandler::HandleKillByPlayerCommand(const char* args, WorldSession* m_se
 	}
 
 	sWorld.DisconnectUsersWithPlayerName(args,m_session);
+	sGMLog.writefromsession( m_session, "disconnected player %s", args );
 	return true;
 }
 
@@ -1617,6 +1634,7 @@ bool ChatHandler::HandleKillBySessionCommand(const char* args, WorldSession* m_s
 	}
 
 	sWorld.DisconnectUsersWithAccount(args,m_session);
+	sGMLog.writefromsession( m_session, "disconnected player with account %s", args );
 	return true;
 }
 bool ChatHandler::HandleKillByIPCommand(const char* args, WorldSession* m_session)
@@ -1628,6 +1646,7 @@ bool ChatHandler::HandleKillByIPCommand(const char* args, WorldSession* m_sessio
 	}
 
 	sWorld.DisconnectUsersWithIP(args,m_session);
+	sGMLog.writefromsession( m_session, "disconnected players with IP %s", args );
 	return true;
 }
 
@@ -1725,6 +1744,8 @@ bool ChatHandler::HandleNpcReturnCommand(const char* args, WorldSession* m_sessi
 	creature->GetAIInterface()->WipeTargetList();
 	creature->GetAIInterface()->MoveTo(x, y, z, o);
 
+	sGMLog.writefromsession( m_session, "returned NPC %s, sqlid %u", creature->GetCreatureName()->Name, creature->GetSQL_id() );
+
 	return true;
 }
 
@@ -1801,6 +1822,8 @@ bool ChatHandler::HandleNpcFollowCommand(const char* args, WorldSession * m_sess
 	if(!creature) return true;
 
 	creature->GetAIInterface()->SetUnitToFollow(m_session->GetPlayer());
+
+	sGMLog.writefromsession( m_session, "used npc follow command on %s, sqlid %u", creature->GetCreatureName()->Name, creature->GetSQL_id() );
 	return true;
 }
 
@@ -1827,6 +1850,8 @@ bool ChatHandler::HandleNullFollowCommand(const char* args, WorldSession * m_ses
 	// restart movement
 	c->GetAIInterface()->SetAIState(STATE_IDLE);
 	c->GetAIInterface()->SetUnitToFollow(0);
+
+	sGMLog.writefromsession( m_session, "cancelled npc follow command on %s, sqlid %u", c->GetCreatureName()->Name, c->GetSQL_id() );
 	return true;
 }
 
@@ -2213,8 +2238,8 @@ bool ChatHandler::HandleGetStandingCommand(const char * args, WorldSession * m_s
 	int32 bstanding = plr->GetBaseStanding(faction);
 
 	GreenSystemMessage(m_session, "Reputation for faction %u:", faction);
-	SystemMessage(m_session,	  "   Base Standing: %d", bstanding);
-	BlueSystemMessage(m_session,  "   Standing: %d", standing);
+	SystemMessage(m_session, "Base Standing: %d", bstanding);
+	BlueSystemMessage(m_session, "Standing: %d", standing);
 	return true;
 }
 
@@ -2450,6 +2475,15 @@ bool ChatHandler::HandleNpcPossessCommand(const char * args, WorldSession * m_se
 
 	m_session->GetPlayer()->Possess(pTarget);
 	BlueSystemMessage(m_session, "Possessed "I64FMT, pTarget->GetGUID());
+	switch( pTarget->GetTypeId() )
+	{
+		case TYPEID_PLAYER:
+			sGMLog.writefromsession( m_session, "used possess command on PLAYER %s", static_cast< Player* >( pTarget )->GetName() );
+			break;
+		case TYPEID_UNIT:
+			sGMLog.writefromsession( m_session, "used possess command on CREATURE %s, sqlid %u", static_cast< Creature* >( pTarget )->GetCreatureName() ? static_cast< Creature* >( pTarget )->GetCreatureName()->Name : "unknown", static_cast< Creature* >( pTarget )->GetSQL_id() );
+			break;
+	}
 	return true;
 }
 
@@ -2476,6 +2510,7 @@ bool ChatHandler::HandleNpcUnPossessCommand(const char * args, WorldSession * m_
 			}
 	}
 	GreenSystemMessage(m_session, "Removed any possessed targets.");
+	sGMLog.writefromsession(m_session, "used unpossess command");
 	return true;
 }
 

@@ -63,6 +63,7 @@ SMT_RESIST_DISPEL - check if it is used
 - additem 33208, send it through mail then equip it. It should have randomly count 0. So what ?
 - http://www.wowhead.com/?spell=31230
 - wining arena teams do not gain arena points
+- mob spell casting can not be interrupted by ex : shield bash
 
 ==========================================================================
 ! BUGS !
@@ -88,6 +89,7 @@ SMT_RESIST_DISPEL - check if it is used
 - eventtable might hold pointers to objects that were dealocated before event ocured = crash
 - reloadtable not working ?
 - you can pull people into instance if you are reviveing people out of team..
+- with guid hacking make sure to not target frendly / enemy npc when not supposed to
 
 ==========================================================================
 Zack - test my shit :
