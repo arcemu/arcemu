@@ -1144,7 +1144,7 @@ void Player::EventAttackStart()
 
 void Player::EventAttackStop()
 {
-	if(m_CurrentCharm != NULL)
+	if( m_CurrentCharm != 0 )
 		sEventMgr.RemoveEvents(this, EVENT_PLAYER_CHARM_ATTACK);
 
 	m_attacking = false;
@@ -4265,7 +4265,7 @@ void Player::RepopAtGraveyard(float ox, float oy, float oz, uint32 mapid)
 		AreaTable * at = dbcArea.LookupEntry(areaid);
 		if(!at) return;
 
-		uint32 mzone = ( at->ZoneId ? at->ZoneId : at->AreaId);
+		//uint32 mzone = ( at->ZoneId ? at->ZoneId : at->AreaId);
 
 		itr = GraveyardStorage.MakeIterator();
 		while(!itr->AtEnd())
@@ -7904,8 +7904,10 @@ void Player::LoginPvPSetup()
 	// Make sure we know our area ID.
 	_EventExploration();
 
-    if(isAlive())
-        CastSpell(this, PLAYER_HONORLESS_TARGET_SPELL, true);
+	AreaTable * at = dbcArea.LookupEntry( ( m_AreaID != 0 ) ? m_AreaID : m_zoneId );
+
+	if ( at != NULL && isAlive() && ( at->category == AREAC_CONTESTED || ( GetTeam() == 0 && at->category == AREAC_HORDE_TERRITORY ) || ( GetTeam() == 1 && at->category == AREAC_ALLIANCE_TERRITORY ) ) )
+		CastSpell(this, PLAYER_HONORLESS_TARGET_SPELL, true);
 }
 
 void Player::PvPToggle()
