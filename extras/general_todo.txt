@@ -45,7 +45,6 @@ SMT_RESIST_DISPEL - check if it is used
 - when someone logs out in your group there HP bar ect dont go semi-transparent it stays the same.
 - general plugin is not dumping data to other folders
 - delayed execution of some spells
-- you should not be able to prematurely choose PVP titles
 - should not be able to skill up on mining nodes more then once
 - ability to reset instances
 - maybe add settings for packet chokings
