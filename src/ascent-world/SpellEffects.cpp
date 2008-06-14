@@ -1850,7 +1850,9 @@ void Spell::SpellEffectCreateItem(uint32 i) // Create item
 		if (m_itemProto->Class != ITEM_CLASS_CONSUMABLE || m_spellInfo->SpellFamilyName != 3) //SpellFamilyName 3 is mage
 			item_count = damage;
 		else if(p_caster->getLevel() >= m_spellInfo->spellLevel)
-			item_count = ((p_caster->getLevel() - (m_spellInfo->spellLevel-1))*damage);
+//			item_count = ((p_caster->getLevel() - (m_spellInfo->spellLevel-1))*damage);
+			//kenjiro says damage already contains correct item amount now
+			item_count = damage;
 
 		if(!item_count)
 			item_count = damage;

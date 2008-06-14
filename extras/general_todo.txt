@@ -18,7 +18,6 @@ SMT_RESIST_DISPEL - check if it is used
 - handleproc is getting huge, maybe we should break it into pieces
 - maybe rewrite procspell on spell. There are like 140 spells who use this, and to function correctly most of them would need this
 - hunter : curently you can equip only 1 Ammo Bag. This is wrong (INV_ERR_CAN_EQUIP_ONLY1_AMMOPOUCH). It should only use effects of ammo bag that is actively used.
-- paladin - illumination - nasty spell. Started workin on it but just delayed it for a while
 - make Fishing chair item spell work. Should spawn a chair and auto sits you in it. While your fishing.
 - add new column to quests to be able to make required_quest_alternative
 - summon guardians not working : 49,
@@ -29,7 +28,6 @@ SMT_RESIST_DISPEL - check if it is used
 - Quagmirran's eye proc doesn't work. Never got the spell haste proc off any harmful spell.
 - The lightning Capacitor- no electrical charge saved from spell criticals so it doesn't fire off lightning bolts.
 - effect 121 should come before eff 31. (bonus calc -> damage) or bonus will not be applied
-- intellect does not increase spell crit chance
 - detect all proc spells that have same name as mother spell and can be stacked more then once
 - cast druid tranquility on target then target enters instance .. tranquility will remain on him
 - buged ? : avenger's shield, avenging wrath, judgement of seal of crusader (when they judge the seal of crusader the mob gets is like using the judgment of seal of light)
@@ -89,10 +87,8 @@ SMT_RESIST_DISPEL - check if it is used
 - socketing thrown weapons makes server crash
 - charge and intercept needs to retarget the mob in order to attack it again
 - eventtable might hold pointers to objects that were dealocated before event ocured = crash
-- you can cast windfurry on other player weapons in trade window
 - reloadtable not working ?
 - you can pull people into instance if you are reviveing people out of team..
-- frecvent crashes here : if ( m_nextTarget != NULL && m_nextTarget->GetTypeId() == TYPEID_UNIT && m_AIState == EVADE)
 
 ==========================================================================
 Zack - test my shit :
