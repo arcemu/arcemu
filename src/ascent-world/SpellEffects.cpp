@@ -2514,6 +2514,7 @@ void Spell::SpellEffectOpenLock(uint32 i) // Open Lock
 				}
 			}
 		}
+		break;
 		case LOCKTYPE_HERBALISM:
 		{
 			if(!gameObjTarget) return;	  
