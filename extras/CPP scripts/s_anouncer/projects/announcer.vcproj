@@ -75,14 +75,15 @@
 			OutputDirectory="Release"
 			IntermediateDirectory="Release"
 			ConfigurationType="2"
-			UseOfMFC="2"
+			UseOfMFC="0"
 			CharacterSet="2">
 			<Tool
 				Name="VCCLCompilerTool"
-				PreprocessorDefinitions="WIN32;_WINDOWS;NDEBUG;_USRDLL"
-				RuntimeLibrary="2"
+				AdditionalIncludeDirectories="..\..\ascent-shared;..\..\ascent-world;..\..\..\dep\include;..\..\..\dep\src"
+				PreprocessorDefinitions="WIN32;_WINDOWS;NDEBUG;_USRDLL;SCRIPTLIB"
+				RuntimeLibrary="0"
 				TreatWChar_tAsBuiltInType="TRUE"
-				UsePrecompiledHeader="3"
+				UsePrecompiledHeader="0"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="TRUE"
 				DebugInformationFormat="3"/>
@@ -90,10 +91,13 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				OutputFile="$(OutDir)/announcer.dll"
+				AdditionalDependencies="ascent-world.lib"
+				OutputFile="../../../bin/release/script_bin/announcer.dll"
 				LinkIncremental="1"
-				ModuleDefinitionFile=".\announcer.def"
+				AdditionalLibraryDirectories="..\..\..\bin\release"
+				ModuleDefinitionFile=""
 				GenerateDebugInformation="TRUE"
+				ProgramDatabaseFile="../../../bin/release/script_bin/announcer.pdb"
 				SubSystem="2"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
