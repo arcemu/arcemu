@@ -1772,7 +1772,10 @@ void Spell::SpellEffectHeal(uint32 i) // Heal
 
 void Spell::SpellEffectQuestComplete(uint32 i) // Quest Complete
 {
-	//misc value is id of the quest to complete
+	if ( p_caster == NULL ) return;
+	QuestLogEntry * en = p_caster->GetQuestLogForEntry( m_spellInfo->EffectMiscValue[i] );
+	if ( en != NULL && !en->CanBeFinished() )
+		en->SendQuestComplete();
 }
 
 //wand->
