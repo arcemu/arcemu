@@ -25,7 +25,7 @@
 
 <xsl:template match="status">
 	<table width="100%" border="0" cellspacing="1" cellpadding="3">
-		<tr class="head"><th colspan="4">Ascent Server Status (<b>www.ascentemu.com</b>)</th></tr>
+		<tr class="head"><th colspan="4">ArcEmu Server Status (<b>www.ArcEmu.org</b>)</th></tr>
 		<tr>
 			<th>Platform: </th><td><xsl:value-of select="platform"/></td>
 			<th>Uptime: </th><td><xsl:value-of select="uptime"/></td>
