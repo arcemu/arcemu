@@ -528,6 +528,7 @@ void CommandTableStorage::Init()
 		{ "castall", 'z', &ChatHandler::HandleCastAllCommand, "Makes all players online cast spell <x>.", NULL, 0, 0, 0},
 		{ "dispelall", 'z', &ChatHandler::HandleDispelAllCommand, "Dispels all negative (or positive w/ 1) auras on all players.",NULL,0,0,0},
 		{ "castspell",   'd', &ChatHandler::HandleCastSpellCommand,	 ".castspell <spellid> - Casts spell on target.",  NULL, 0, 0, 0 },
+		{ "castself",    'd', &ChatHandler::HandleCastSelfCommand, ".castself <spellId> - Target casts spell <spellId> on itself." },
 		{ "modperiod" , 'm', &ChatHandler::HandleModPeriodCommand, "Changes period of current transporter.", NULL, 0, 0, 0 },
 		{ "npcfollow", 'm', &ChatHandler::HandleNpcFollowCommand, "Sets npc to follow you", NULL, 0, 0, 0 },
 		{ "nullfollow", 'm', &ChatHandler::HandleNullFollowCommand, "Sets npc to not follow anything", NULL, 0, 0, 0 },

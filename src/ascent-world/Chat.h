@@ -324,6 +324,7 @@ protected:
 	bool HandleIncreaseWeaponSkill(const char* args, WorldSession *m_session);
 	bool HandleCastSpellCommand(const char* args, WorldSession *m_session);
 	bool HandleCastSpellNECommand(const char* args, WorldSession *m_session);
+	bool HandleCastSelfCommand(const char* args, WorldSession *m_session);
 	bool HandleLevelUpCommand(const char* args, WorldSession *m_session);
 	bool HandleModifyGoldCommand(const char* args, WorldSession *m_session);
 	bool HandleMonsterSayCommand(const char* args, WorldSession *m_session);

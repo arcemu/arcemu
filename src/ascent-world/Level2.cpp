@@ -417,6 +417,7 @@ bool ChatHandler::HandleKillByPlrCommand( const char *args , WorldSession *m_ses
 	}
 	return true;
 }
+
 bool ChatHandler::HandleCastSpellCommand(const char* args, WorldSession *m_session)
 {
 	Unit *caster = m_session->GetPlayer();
@@ -463,8 +464,6 @@ bool ChatHandler::HandleCastSpellCommand(const char* args, WorldSession *m_sessi
 
 	return true;
 }
-
-
 
 bool ChatHandler::HandleCastSpellNECommand(const char* args, WorldSession *m_session)
 {
@@ -521,6 +520,52 @@ bool ChatHandler::HandleCastSpellNECommand(const char* args, WorldSession *m_ses
 			break;
 		case TYPEID_UNIT:
 			sGMLog.writefromsession( m_session, "casted spell %d on CREATURE %u [%s], sqlid %u", spellId, static_cast< Creature* >( target )->GetEntry(), static_cast< Creature* >( target )->GetCreatureName() ? static_cast< Creature* >( target )->GetCreatureName()->Name : "unknown", static_cast< Creature* >( target )->GetSQL_id() );
+			break;
+	}
+
+	return true;
+}
+
+bool ChatHandler::HandleCastSelfCommand(const char* args, WorldSession *m_session)
+{
+	Unit *target = getSelectedChar(m_session, false);
+	if(!target)
+		target = getSelectedCreature(m_session, false);
+	if(!target)
+	{
+		RedSystemMessage(m_session, "Must select a char or creature.");
+		return false;
+	}
+
+	uint32 spellid = atol(args);
+	SpellEntry *spellentry = dbcSpell.LookupEntry(spellid);
+	if(!spellentry)
+	{
+		RedSystemMessage(m_session, "Invalid spell id!");
+		return false;
+	}
+	
+	Spell *sp = new Spell(target, spellentry, false, NULL);
+	if(!sp)
+	{
+		RedSystemMessage(m_session, "Spell failed creation!");
+		delete sp;
+		return false;
+	}
+
+	BlueSystemMessage(m_session, "Target is casting spell %d on himself.", spellid);
+	SpellCastTargets targets;
+	targets.m_unitTarget = target->GetGUID();
+	sp->prepare(&targets);
+
+	switch ( target->GetTypeId() )
+	{
+		case TYPEID_PLAYER:
+			if ( m_session->GetPlayer() != target )
+				sGMLog.writefromsession( m_session, "used castself with spell %d on PLAYER %s", spellid, static_cast< Player* >( target )->GetName() );
+			break;
+		case TYPEID_UNIT:
+			sGMLog.writefromsession( m_session, "used castself with spell %d on CREATURE %u [%s], sqlid %u", spellid, static_cast< Creature* >( target )->GetEntry(), static_cast< Creature* >( target )->GetCreatureName() ? static_cast< Creature* >( target )->GetCreatureName()->Name : "unknown", static_cast< Creature* >( target )->GetSQL_id() );
 			break;
 	}
 
