@@ -2969,6 +2969,11 @@ void Player::LoadFromDBProc(QueryResultVector & results)
                 *end=0;
                 la.positive = (bool)start;
                 start = end +1;
+		end = strchr(start,',');
+		if(!end)break;
+		*end=0;
+		la.charges = atol(start);
+		start = end +1;
 		loginauras.push_back(la);
 	} while(true);
 
@@ -8110,7 +8115,7 @@ void Player::CompleteLoading()
    
 	std::list<LoginAura>::iterator i =  loginauras.begin();
 
-	for(;i!=loginauras.end(); i++)
+	for ( ; i != loginauras.end(); i++ )
 	{
 
 		//check if we already have this aura
@@ -8125,26 +8130,46 @@ void Player::CompleteLoading()
 				count_appearence++;
 			}
 */
-
-		// this stuff REALLY needs to be fixed - Burlex
 		SpellEntry * sp = dbcSpell.LookupEntry((*i).id);
 
 		if ( sp->c_is_flags & SPELL_FLAG_IS_EXPIREING_WITH_PET )
 			continue; //do not load auras that only exist while pet exist. We should recast these when pet is created anyway
 
-		Aura * a = new Aura(sp,(*i).dur,this,this);
-		if ( !(*i).positive )
-			a->SetNegative();
+		Aura * aura = new Aura(sp,(*i).dur,this,this);
+		if ( !(*i).positive ) // do we need this? - vojta
+			aura->SetNegative();
 
-		for(uint32 x =0;x<3;x++)
+		for ( uint32 x = 0; x < 3; x++ )
 		{
-		    if(sp->Effect[x]==SPELL_EFFECT_APPLY_AURA)
-		    {
-			    a->AddMod(sp->EffectApplyAuraName[x],sp->EffectBasePoints[x]+1,sp->EffectMiscValue[x],x);
-		    }
+			if ( sp->Effect[x]==SPELL_EFFECT_APPLY_AURA )
+			{
+				aura->AddMod( sp->EffectApplyAuraName[x], sp->EffectBasePoints[x]+1, sp->EffectMiscValue[x], x );
+			}
 		}
 
-		this->AddAura(a);		//FIXME: must save amt,pos/neg
+		if ( sp->procCharges > 0 )
+		{
+			Aura * a = NULL;
+			for ( uint32 x = 0; x < (*i).charges - 1; x++ )
+			{
+				a = new Aura( sp, (*i).dur, this, this );
+				this->AddAura( a );
+				a = NULL;
+			}
+			if ( m_chargeSpells.find( sp->Id ) == m_chargeSpells.end() && !( sp->procFlags & PROC_REMOVEONUSE ) )
+			{
+				SpellCharge charge;
+				if ( sp->proc_interval == 0 )
+					charge.count = (*i).charges;
+				else
+					charge.count = sp->procCharges;
+				charge.spellId = sp->Id;
+				charge.ProcFlag = sp->procFlags;
+				charge.lastproc = 0;
+				m_chargeSpells.insert( make_pair( sp->Id , charge ) );
+			}
+		}
+		this->AddAura( aura );
 		//Somehow we should restore number of appearence. Right now i have no idea how :(
 //		if(count_appearence>1)
 //			this->AddAuraVisual((*i).id,count_appearence-1,a->IsPositive());
@@ -8423,6 +8448,7 @@ void Player::SaveAuras(stringstream &ss)
    
 	// Add player auras
 //	for(uint32 x=0;x<MAX_AURAS+MAX_PASSIVE_AURAS;x++)
+	uint32 prevId = 0;
 	for(uint32 x=0;x<MAX_AURAS;x++)
 	{
 		if(m_auras[x])
@@ -8466,29 +8492,30 @@ void Player::SaveAuras(stringstream &ss)
 				break;
 			}*/
 
-			//disabled proc spells until proper loading is fixed. Some spells tend to block or not remove when restored
-			if(aur->GetSpellProto()->procFlags)
-			{
-//				sLog.outDebug("skipping aura %d because has flags %d",aur->GetSpellId(),aur->GetSpellProto()->procFlags);
-				skip = true;
-			}
-			//disabled proc spells until proper loading is fixed. We cannot recover the charges that were used up. Will implement later
-			if(aur->GetSpellProto()->procCharges)
-			{
-//				sLog.outDebug("skipping aura %d because has proccharges %d",aur->GetSpellId(),aur->GetSpellProto()->procCharges);
-				skip = true;
-			}
 			//we are going to cast passive spells anyway on login so no need to save auras for them
-            if(aur->IsPassive() && !(aur->GetSpellProto()->AttributesEx & 1024))
+			if(aur->IsPassive() && !(aur->GetSpellProto()->AttributesEx & 1024))
 				skip = true;
-			//shapeshift
-//			if(m_ShapeShifted==aur->m_spellProto->Id)
-//				skip=true;
 
 			if ( skip ) continue;
+
 			uint32 d = aur->GetTimeLeft();
-			if ( d > 3000 )
-				ss << aur->GetSpellId() << "," << d << "," << aur->IsPositive() << ",";			
+			if ( d > 3000 && aur->GetSpellId() != prevId )
+			{
+				uint32 charges = 0;
+				map< uint32, SpellCharge >::const_iterator it = m_chargeSpells.find( aur->GetSpellId() );
+				if ( it != m_chargeSpells.end() && aur->GetSpellProto()->proc_interval == 0  && !( aur->GetSpellProto()->procFlags & PROC_REMOVEONUSE ) )
+				{
+					charges = it->second.count;
+				}
+				else if ( aur->GetSpellProto()->procCharges > 0 )
+				{
+					for( uint32 i = 0; i < MAX_AURAS + MAX_PASSIVE_AURAS; i++ )
+						if ( m_auras[i] != NULL && m_auras[i]->GetSpellId() == aur->GetSpellId() )
+							charges++;
+				}
+				ss << aur->GetSpellId() << "," << d << "," << aur->IsPositive() << "," << charges << ",";
+			}
+			prevId = aur->GetSpellId();
 		}
 	}
 

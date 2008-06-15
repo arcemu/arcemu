@@ -293,6 +293,7 @@ struct LoginAura
 	uint32 id;
 	uint32 dur;
 	bool positive;
+	uint32 charges;
 };
 
 // Dodge ( class base ) - UNUSED, Warrior, Paladin, Hunter, Rogue, Priest, UNUSED, Shaman, Mage, Warlock, UNUSED, Druid
