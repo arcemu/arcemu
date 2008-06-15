@@ -1099,6 +1099,10 @@ void CBattleground::RemovePlayer(Player * plr, bool logout)
 		plr->ResurrectPlayer();
 	}
 
+	/* remove buffs */
+	plr->RemoveAura(32727); // Arena preparation
+	plr->RemoveAura(44521); // BG preparation
+
 	/* teleport out */
 	if(!logout)
 	{
