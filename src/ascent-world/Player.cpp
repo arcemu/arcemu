@@ -2964,6 +2964,11 @@ void Player::LoadFromDBProc(QueryResultVector & results)
 		*end=0;
 		la.dur = atol(start);
 		start = end +1;
+		end = strchr(start,',');
+                if(!end)break;
+                *end=0;
+                la.positive = (bool)start;
+                start = end +1;
 		loginauras.push_back(la);
 	} while(true);
 
@@ -8105,7 +8110,7 @@ void Player::CompleteLoading()
    
 	std::list<LoginAura>::iterator i =  loginauras.begin();
 
-    for(;i!=loginauras.end(); i++)
+	for(;i!=loginauras.end(); i++)
 	{
 
 		//check if we already have this aura
@@ -8127,29 +8132,17 @@ void Player::CompleteLoading()
 		if ( sp->c_is_flags & SPELL_FLAG_IS_EXPIREING_WITH_PET )
 			continue; //do not load auras that only exist while pet exist. We should recast these when pet is created anyway
 
-		Aura * a;
-		if(sp->Id == 8326 || sp->Id == 9036 || sp->Id == 20584 || sp->Id == 15007)	// death auras
-		{
-			if(!isDead())
-				continue;
-
-			a = new Aura(sp,(*i).dur,this,this);
+		Aura * a = new Aura(sp,(*i).dur,this,this);
+		if ( !(*i).positive )
 			a->SetNegative();
-		}
-		else
-		{
-			a = new Aura(sp,(*i).dur,this,this);
-		}
-		
 
 		for(uint32 x =0;x<3;x++)
-        {
+		{
 		    if(sp->Effect[x]==SPELL_EFFECT_APPLY_AURA)
 		    {
 			    a->AddMod(sp->EffectApplyAuraName[x],sp->EffectBasePoints[x]+1,sp->EffectMiscValue[x],x);
 		    }
-        }
-
+		}
 
 		this->AddAura(a);		//FIXME: must save amt,pos/neg
 		//Somehow we should restore number of appearence. Right now i have no idea how :(
@@ -8492,10 +8485,10 @@ void Player::SaveAuras(stringstream &ss)
 //			if(m_ShapeShifted==aur->m_spellProto->Id)
 //				skip=true;
 
-			if(skip)continue;
-			uint32 d=aur->GetTimeLeft();
-			if(d>3000)
-				ss  << aur->GetSpellId() << "," << d << ",";
+			if ( skip ) continue;
+			uint32 d = aur->GetTimeLeft();
+			if ( d > 3000 )
+				ss << aur->GetSpellId() << "," << d << "," << aur->IsPositive() << ",";			
 		}
 	}
 
