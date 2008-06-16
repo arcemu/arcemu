@@ -8115,7 +8115,6 @@ void Player::CompleteLoading()
 		}
 	}
 
-   
 	std::list<LoginAura>::iterator i =  loginauras.begin();
 
 	for ( ; i != loginauras.end(); i++ )
@@ -8150,7 +8149,7 @@ void Player::CompleteLoading()
 			}
 		}
 
-		if ( sp->procCharges > 0 )
+		if ( sp->procCharges > 0 && (*i).charges > 0 )
 		{
 			Aura * a = NULL;
 			for ( uint32 x = 0; x < (*i).charges - 1; x++ )
@@ -8448,20 +8447,16 @@ bool Player::CanSignCharter(Charter * charter, Player * requester)
 
 void Player::SaveAuras(stringstream &ss)
 {
-   
-	// Add player auras
-//	for(uint32 x=0;x<MAX_AURAS+MAX_PASSIVE_AURAS;x++)
-	uint32 prevId = 0;
-	for(uint32 x=0;x<MAX_AURAS;x++)
+	uint32 charges = 0, prevX = 0;
+	for ( uint32 x = 0; x < MAX_AURAS; x++ )
 	{
-		if(m_auras[x])
+		if ( m_auras[x] != NULL && m_auras[x]->GetTimeLeft() > 3000 )
 		{
-			Aura *aur=m_auras[x];
+			Aura * aur = m_auras[x];
 			bool skip = false;
-			for(uint32 i = 0; i < 3; ++i)
+			for ( uint32 i = 0; i < 3; ++i )
 			{
-				if(aur->m_spellProto->Effect[i] == SPELL_EFFECT_APPLY_AREA_AURA ||
-					aur->m_spellProto->Effect[i] == SPELL_EFFECT_ADD_FARSIGHT)
+				if(aur->m_spellProto->Effect[i] == SPELL_EFFECT_APPLY_AREA_AURA || aur->m_spellProto->Effect[i] == SPELL_EFFECT_ADD_FARSIGHT)
 				{
 					skip = true;
 					break;
@@ -8474,55 +8469,30 @@ void Player::SaveAuras(stringstream &ss)
 			if ( aur->m_spellProto->c_is_flags & SPELL_FLAG_IS_EXPIREING_WITH_PET )
 				skip = true;
 
-			// skipped spells due to bugs
-/*			why these should't be save??
-			switch(aur->m_spellProto->Id)
-			{
-			case 12043: // Presence of mind
-			case 11129: // Combustion
-			case 28682: // Combustion proc
-			case 16188: // Natures Swiftness
-			case 17116: // Natures Swiftness
-			case 34936: // Backlash
-			case 35076: // Blessing of A'dal
-			case 23333:	// WSG
-			case 23335:	// WSG
-			case 45438:	// Ice Block
-			case 642:
-			case 1020:	//divine shield
-
-				skip = true;
-				break;
-			}*/
-
 			//we are going to cast passive spells anyway on login so no need to save auras for them
-			if(aur->IsPassive() && !(aur->GetSpellProto()->AttributesEx & 1024))
+			if ( aur->IsPassive() && !( aur->GetSpellProto()->AttributesEx & 1024 ) )
 				skip = true;
 
 			if ( skip ) continue;
 
-			uint32 d = aur->GetTimeLeft();
-			if ( d > 3000 && aur->GetSpellId() != prevId )
+			if ( charges > 0 && aur->GetSpellId() != m_auras[prevX]->GetSpellId() )
 			{
-				uint32 charges = 0;
-				map< uint32, SpellCharge >::const_iterator it = m_chargeSpells.find( aur->GetSpellId() );
-				if ( it != m_chargeSpells.end() && aur->GetSpellProto()->proc_interval == 0  && !( aur->GetSpellProto()->procFlags & PROC_REMOVEONUSE ) )
-				{
-					charges = it->second.count;
-				}
-				else if ( aur->GetSpellProto()->procCharges > 0 )
-				{
-					for( uint32 i = 0; i < MAX_AURAS + MAX_PASSIVE_AURAS; i++ )
-						if ( m_auras[i] != NULL && m_auras[i]->GetSpellId() == aur->GetSpellId() )
-							charges++;
-				}
-				ss << aur->GetSpellId() << "," << d << "," << aur->IsPositive() << "," << charges << ",";
+				ss << m_auras[prevX]->GetSpellId() << "," << m_auras[prevX]->GetTimeLeft() << "," << m_auras[prevX]->IsPositive() << "," << charges << ",";
+				charges = 0;
 			}
-			prevId = aur->GetSpellId();
+
+			if ( aur->GetSpellProto()->procCharges == 0 )
+				ss << aur->GetSpellId() << "," << aur->GetTimeLeft() << "," << aur->IsPositive() << "," << 0 << ",";
+			else
+				charges++;
+
+			prevX = x;
 		}
 	}
-
-  
+	if ( charges > 0 && m_auras[prevX] != NULL )
+	{
+		ss << m_auras[prevX]->GetSpellId() << "," << m_auras[prevX]->GetTimeLeft() << "," << m_auras[prevX]->IsPositive() << "," << charges << ",";
+	}
 }
 
 void Player::SetShapeShift(uint8 ss)
