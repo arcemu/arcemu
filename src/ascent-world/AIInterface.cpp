@@ -880,6 +880,11 @@ void AIInterface::_UpdateCombat(uint32 p_time)
 	if( m_nextTarget == m_Unit )
 		SetNextTarget( GetMostHated() );
 
+	//recvent crash report regarding this. Unit somehow gets deallocated and we get an invalid pointer. Probably becasue scripts
+	Unit *t = m_Unit->GetMapMgr()->GetUnit( m_nextTarget_guid );
+	if( t != m_nextTarget )
+		SetNextTarget( GetMostHated() );
+
 	uint16 agent = m_aiCurrentAgent;
 
 	// If creature is very far from spawn point return to spawnpoint
@@ -1472,6 +1477,7 @@ void AIInterface::OnDeath(Object* pKiller)
 		HandleEvent(EVENT_UNITDIED, m_Unit, 0);
 }
 
+//this function might be slow but so it should not be spammed
 Unit* AIInterface::FindTarget()
 {// find nearest hostile Target to attack
 	if( !m_AllowedToEnterCombat ) 
@@ -1483,8 +1489,8 @@ Unit* AIInterface::FindTarget()
 	Unit* target = NULL;
 	Unit* critterTarget = NULL;
 	float distance = 999999.0f; // that should do it.. :p
-	float crange;
-	float z_diff;
+//	float crange;
+//	float z_diff;
 #ifdef LOS_CHECKS
 #ifdef LOS_ONLY_IN_INSTANCE
 	bool los = true;
@@ -1494,8 +1500,8 @@ Unit* AIInterface::FindTarget()
 #endif
 #endif
 
-	std::set<Object*>::iterator itr, it2;
-	Object *pObj;
+	std::set<Object*>::iterator itr, itr2;
+//	Object *pObj;
 	Unit *pUnit;
 	float dist;
 	bool pvp=true;
@@ -1508,79 +1514,30 @@ Unit* AIInterface::FindTarget()
 		return 0;
 	}
 
-#ifdef _DEBUG
-	//this is only for debug purpuses !
-	uint32 list_size = (uint32)m_Unit->m_oppFactsInRange.size();
-	uint32 itereated_until_now=0;
-	uint32 list_size_now = (uint32)m_Unit->m_oppFactsInRange.size();
-	int list_size_dif = 0;
-#endif
-	for( itr = m_Unit->GetInRangeOppFactsSetBegin(); itr != m_Unit->GetInRangeOppFactsSetEnd(); )
+	//this is slower then oppfaction list BUT it has a lower chance that contains invalid pointers
+	for( itr2 = m_Unit->GetInRangeSetBegin(); itr2 != m_Unit->GetInRangeSetEnd(); )
 	{
-#ifdef _DEBUG
-		itereated_until_now++;
-		list_size_now = (uint32)m_Unit->m_oppFactsInRange.size();
-		list_size_dif = list_size - list_size_now;
-#endif
+		itr = itr2;
+		++itr2;
 
-		it2 = itr;
-		++itr;
-
-		pObj = (*it2);
-
-		if( pObj->GetTypeId() == TYPEID_PLAYER )
-		{
-			if(static_cast< Player* >( pObj )->GetTaxiState() )	  // skip players on taxi
-				continue;
-		}
-		else if( pObj->GetTypeId() != TYPEID_UNIT )
-				continue;
-
-		pUnit = static_cast< Unit* >( pObj );
-		if( pUnit->bInvincible )
+		if( !(*itr)->IsUnit() || !isAttackable(m_Unit,(*itr) ) )
 			continue;
 
-		// don't agro players on flying mounts
-		/*if(pUnit->GetTypeId() == TYPEID_PLAYER && static_cast< Player* >(pUnit)->FlyCheat)
-			continue;*/
+		pUnit = static_cast< Unit* >( (*itr) );
+
+		if( pUnit->bInvincible )
+			continue;
 
 		//do not agro units that are faking death. Should this be based on chance ?
 		if( pUnit->HasFlag( UNIT_FIELD_FLAGS, UNIT_FLAG_FEIGN_DEATH ) )
 			continue;
 
-		//target is immune to unit attacks however can be targeted
-		//as a part of AI we allow this mode to attack creatures as seen many times on oficial.
-		if( m_Unit->HasFlag( UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_ATTACKABLE_9 ) )
-		{
-			if( pUnit->IsPlayer() || pUnit->IsPet() )
-			{
-				continue;
-			}
-		}
+		//don't attack owner
+		if( m_Unit->GetUInt64Value(UNIT_FIELD_CREATEDBY) == pUnit->GetGUID() )
+			continue; 
 
-		/* is it a player? we have to check for our pvp flag. */
-//		if(m_U)
-		crange = _CalcCombatRange(pUnit,false);
-		if(m_isGuard)
-			crange *= 4;
-
-		z_diff = fabs(m_Unit->GetPositionZ() - pUnit->GetPositionZ());
-		if(z_diff > crange)
-		{
-			continue;
-		}
-
-		/*if(pUnit->m_invisible) // skip invisible units
-			continue;*/
-		
-		if(!pUnit->isAlive()
-			|| m_Unit == pUnit /* wtf? */
-			|| m_Unit->GetUInt64Value(UNIT_FIELD_CREATEDBY) == pUnit->GetGUID())
-			continue;
-
-		dist = m_Unit->GetDistanceSq(pUnit);
-		if(!pUnit->m_faction || !pUnit->m_factionDBC)
-			continue;
+		//on blizz there is no Z limit check 
+		dist = m_Unit->GetDistance2dSq(pUnit);
 
 		if(pUnit->m_faction->Faction == 28)// only Attack a critter if there is no other Enemy in range
 		{
@@ -3815,6 +3772,7 @@ void AIInterface::Event_Summon_FE_totem(uint32 summon_duration)
 	Unit *ourslave=m_Unit->create_guardian(15438,summon_duration,float(-M_PI*2), new_level);
 	if(ourslave)
 	{
+		m_Unit->summonPet = ourslave;
 		static_cast<Creature*>(ourslave)->ResistanceModPct[FIRE_DAMAGE]=100;//we should be imune to fire dmg. This can be also set in db
 		static_cast<Creature*>(ourslave)->m_noRespawn = true;
 		/*

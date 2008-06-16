@@ -27,7 +27,7 @@
 
 #define M_PI	   3.14159265358979323846
 #define UNIT_MOVEMENT_INTERPOLATE_INTERVAL 400/*750*/ // ms smoother server/client side moving vs less cpu/ less b/w
-#define TARGET_UPDATE_INTERVAL 600 // ms
+#define TARGET_UPDATE_INTERVAL 1000 // m0
 #define oocr 50.0f // out of combat range
 #define PLAYER_SIZE 1.5f
 

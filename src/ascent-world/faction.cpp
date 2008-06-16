@@ -161,15 +161,15 @@ bool isAttackable(Object* objA, Object* objB, bool CheckStealth)// A can attack 
 			return false;*/
 
 	// Checks for untouchable, unattackable
-	if(objA->IsUnit() && objA->HasFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_ATTACKABLE_9 | UNIT_FLAG_MOUNTED_TAXI | UNIT_FLAG_NOT_SELECTABLE))
+	if(objA->IsUnit() && objA->HasFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_ATTACKABLE_9 | UNIT_FLAG_MOUNTED_TAXI | UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_DEAD))
 		return false;
 	if(objB->IsUnit())
 	{
-		if(objB->HasFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_ATTACKABLE_9 | UNIT_FLAG_MOUNTED_TAXI | UNIT_FLAG_NOT_SELECTABLE))
+		if(objB->HasFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_ATTACKABLE_9 | UNIT_FLAG_MOUNTED_TAXI | UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_DEAD))
 			return false;
 
 		/// added by Zack : 
-        /// we cannot attack sheathed units. Maybe checked in other places too ?
+        /// we cannot attack shealthed units. Maybe checked in other places too ?
 		/// !! warning, this presumes that objA is attacking ObjB
         /// Capt: Added the possibility to disregard this (regarding the spell class)
 		if(static_cast<Unit *>(objB)->IsStealth() && CheckStealth)
@@ -403,6 +403,7 @@ bool isAlliance(Object* objA)// A is alliance?
 
 	return true;
 }
+
 
 
 

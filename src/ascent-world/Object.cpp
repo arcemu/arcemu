@@ -2094,6 +2094,9 @@ void Object::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
 
 			// We will no longer be attacking this target, as it's dead.
 			//static_cast<Unit*>(this)->setAttackTarget(NULL);
+
+			/* Tell Unit that it's target has Died */
+			static_cast< Unit* >( this )->SetFlag( UNIT_FIELD_FLAGS, UNIT_FLAG_DEAD );
 		}
 		//so now we are completely dead
 		//lets see if we have spirit of redemption
