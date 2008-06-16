@@ -1,0 +1,177 @@
+Index: trunk/src/ascent-world/AIInterface.cpp
+===================================================================
+--- trunk/src/ascent-world/AIInterface.cpp	(revision 55)
++++ trunk/src/ascent-world/AIInterface.cpp	(working copy)
+@@ -1472,6 +1472,7 @@
+ 		HandleEvent(EVENT_UNITDIED, m_Unit, 0);
+ }
+ 
++//this function might be slow but so it should not be spammed
+ Unit* AIInterface::FindTarget()
+ {// find nearest hostile Target to attack
+ 	if( !m_AllowedToEnterCombat ) 
+@@ -1483,8 +1484,8 @@
+ 	Unit* target = NULL;
+ 	Unit* critterTarget = NULL;
+ 	float distance = 999999.0f; // that should do it.. :p
+-	float crange;
+-	float z_diff;
++//	float crange;
++//	float z_diff;
+ #ifdef LOS_CHECKS
+ #ifdef LOS_ONLY_IN_INSTANCE
+ 	bool los = true;
+@@ -1494,8 +1495,8 @@
+ #endif
+ #endif
+ 
+-	std::set<Object*>::iterator itr, it2;
+-	Object *pObj;
++	std::set<Object*>::iterator itr, itr2;
++//	Object *pObj;
+ 	Unit *pUnit;
+ 	float dist;
+ 	bool pvp=true;
+@@ -1508,80 +1509,31 @@
+ 		return 0;
+ 	}
+ 
+-#ifdef _DEBUG
+-	//this is only for debug purpuses !
+-	uint32 list_size = (uint32)m_Unit->m_oppFactsInRange.size();
+-	uint32 itereated_until_now=0;
+-	uint32 list_size_now = (uint32)m_Unit->m_oppFactsInRange.size();
+-	int list_size_dif = 0;
+-#endif
+-	for( itr = m_Unit->GetInRangeOppFactsSetBegin(); itr != m_Unit->GetInRangeOppFactsSetEnd(); )
++	//this is slower then oppfaction list BUT it has a lower chance that contains invalid pointers
++	for( itr2 = m_Unit->GetInRangeSetBegin(); itr2 != m_Unit->GetInRangeSetEnd(); )
+ 	{
+-#ifdef _DEBUG
+-		itereated_until_now++;
+-		list_size_now = (uint32)m_Unit->m_oppFactsInRange.size();
+-		list_size_dif = list_size - list_size_now;
+-#endif
++		itr = itr2;
++		++itr2;
+ 
+-		it2 = itr;
+-		++itr;
++		if( !(*itr)->IsUnit() || !isAttackable(m_Unit,(*itr) ) )
++			continue;
+ 
+-		pObj = (*it2);
++		pUnit = static_cast< Unit* >( (*itr) );
+ 
+-		if( pObj->GetTypeId() == TYPEID_PLAYER )
+-		{
+-			if(static_cast< Player* >( pObj )->GetTaxiState() )	  // skip players on taxi
+-				continue;
+-		}
+-		else if( pObj->GetTypeId() != TYPEID_UNIT )
+-				continue;
+-
+-		pUnit = static_cast< Unit* >( pObj );
+ 		if( pUnit->bInvincible )
+ 			continue;
+ 
+-		// don't agro players on flying mounts
+-		/*if(pUnit->GetTypeId() == TYPEID_PLAYER && static_cast< Player* >(pUnit)->FlyCheat)
+-			continue;*/
+-
+ 		//do not agro units that are faking death. Should this be based on chance ?
+ 		if( pUnit->HasFlag( UNIT_FIELD_FLAGS, UNIT_FLAG_FEIGN_DEATH ) )
+ 			continue;
+ 
+-		//target is immune to unit attacks however can be targeted
+-		//as a part of AI we allow this mode to attack creatures as seen many times on oficial.
+-		if( m_Unit->HasFlag( UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_ATTACKABLE_9 ) )
+-		{
+-			if( pUnit->IsPlayer() || pUnit->IsPet() )
+-			{
+-				continue;
+-			}
+-		}
++		//don't attack owner
++		if( m_Unit->GetUInt64Value(UNIT_FIELD_CREATEDBY) == pUnit->GetGUID() )
++			continue; 
+ 
+-		/* is it a player? we have to check for our pvp flag. */
+-//		if(m_U)
+-		crange = _CalcCombatRange(pUnit,false);
+-		if(m_isGuard)
+-			crange *= 4;
++		//on blizz there is no Z limit check 
++		dist = m_Unit->GetDistance2dSq(pUnit);
+ 
+-		z_diff = fabs(m_Unit->GetPositionZ() - pUnit->GetPositionZ());
+-		if(z_diff > crange)
+-		{
+-			continue;
+-		}
+-
+-		/*if(pUnit->m_invisible) // skip invisible units
+-			continue;*/
+-		
+-		if(!pUnit->isAlive()
+-			|| m_Unit == pUnit /* wtf? */
+-			|| m_Unit->GetUInt64Value(UNIT_FIELD_CREATEDBY) == pUnit->GetGUID())
+-			continue;
+-
+-		dist = m_Unit->GetDistanceSq(pUnit);
+-		if(!pUnit->m_faction || !pUnit->m_factionDBC)
+-			continue;
+-
+ 		if(pUnit->m_faction->Faction == 28)// only Attack a critter if there is no other Enemy in range
+ 		{
+ 			if(dist < 225.0f)	// was 10
+Index: trunk/src/ascent-world/AIInterface.h
+===================================================================
+--- trunk/src/ascent-world/AIInterface.h	(revision 55)
++++ trunk/src/ascent-world/AIInterface.h	(working copy)
+@@ -27,7 +27,7 @@
+ 
+ #define M_PI	   3.14159265358979323846
+ #define UNIT_MOVEMENT_INTERPOLATE_INTERVAL 400/*750*/ // ms smoother server/client side moving vs less cpu/ less b/w
+-#define TARGET_UPDATE_INTERVAL 600 // ms
++#define TARGET_UPDATE_INTERVAL 1000 // m0
+ #define oocr 50.0f // out of combat range
+ #define PLAYER_SIZE 1.5f
+ 
+Index: trunk/src/ascent-world/faction.cpp
+===================================================================
+--- trunk/src/ascent-world/faction.cpp	(revision 55)
++++ trunk/src/ascent-world/faction.cpp	(working copy)
+@@ -161,15 +161,15 @@
+ 			return false;*/
+ 
+ 	// Checks for untouchable, unattackable
+-	if(objA->IsUnit() && objA->HasFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_ATTACKABLE_9 | UNIT_FLAG_MOUNTED_TAXI | UNIT_FLAG_NOT_SELECTABLE))
++	if(objA->IsUnit() && objA->HasFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_ATTACKABLE_9 | UNIT_FLAG_MOUNTED_TAXI | UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_DEAD))
+ 		return false;
+ 	if(objB->IsUnit())
+ 	{
+-		if(objB->HasFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_ATTACKABLE_9 | UNIT_FLAG_MOUNTED_TAXI | UNIT_FLAG_NOT_SELECTABLE))
++		if(objB->HasFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_ATTACKABLE_9 | UNIT_FLAG_MOUNTED_TAXI | UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_DEAD))
+ 			return false;
+ 
+ 		/// added by Zack : 
+-        /// we cannot attack sheathed units. Maybe checked in other places too ?
++        /// we cannot attack shealthed units. Maybe checked in other places too ?
+ 		/// !! warning, this presumes that objA is attacking ObjB
+         /// Capt: Added the possibility to disregard this (regarding the spell class)
+ 		if(static_cast<Unit *>(objB)->IsStealth() && CheckStealth)
+Index: trunk/src/ascent-world/Object.cpp
+===================================================================
+--- trunk/src/ascent-world/Object.cpp	(revision 55)
++++ trunk/src/ascent-world/Object.cpp	(working copy)
+@@ -2094,6 +2094,9 @@
+ 
+ 			// We will no longer be attacking this target, as it's dead.
+ 			//static_cast<Unit*>(this)->setAttackTarget(NULL);
++
++			/* Tell Unit that it's target has Died */
++			static_cast< Unit* >( this )->SetFlag( UNIT_FIELD_FLAGS, UNIT_FLAG_DEAD );
+ 		}
+ 		//so now we are completely dead
+ 		//lets see if we have spirit of redemption
