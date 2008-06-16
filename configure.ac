@@ -299,22 +299,9 @@ echo "   ${NETWORKING}"
 echo
 echo " Features: " 
 
-echo -n "    voicechat: "
-if test "x$enable_voicechat" = "xyes" ; then
-  echo "enabled"
-else
-  echo "disabled"
-fi
 
 echo -n "    collision: "
 if test "x$enable_collision" = "xyes" ; then
-  echo "enabled"
-else
-  echo "disabled"
-fi
-
-echo -n "   clustering: "
-if test "x$enable_clustering" = "xyes" ; then
   echo "enabled"
 else
   echo "disabled"
