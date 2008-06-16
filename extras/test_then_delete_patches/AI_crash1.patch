@@ -2,7 +2,19 @@ Index: trunk/src/ascent-world/AIInterface.cpp
 ===================================================================
 --- trunk/src/ascent-world/AIInterface.cpp	(revision 55)
 +++ trunk/src/ascent-world/AIInterface.cpp	(working copy)
-@@ -1472,6 +1472,7 @@
+@@ -880,6 +880,11 @@
+ 	if( m_nextTarget == m_Unit )
+ 		SetNextTarget( GetMostHated() );
+ 
++	//recvent crash report regarding this. Unit somehow gets deallocated and we get an invalid pointer. Probably becasue scripts
++	Unit *t = m_Unit->GetMapMgr()->GetUnit( m_nextTarget_guid );
++	if( t != m_nextTarget )
++		SetNextTarget( GetMostHated() );
++
+ 	uint16 agent = m_aiCurrentAgent;
+ 
+ 	// If creature is very far from spawn point return to spawnpoint
+@@ -1472,6 +1477,7 @@
  		HandleEvent(EVENT_UNITDIED, m_Unit, 0);
  }
  
@@ -10,7 +22,7 @@ Index: trunk/src/ascent-world/AIInterface.cpp
  Unit* AIInterface::FindTarget()
  {// find nearest hostile Target to attack
  	if( !m_AllowedToEnterCombat ) 
-@@ -1483,8 +1484,8 @@
+@@ -1483,8 +1489,8 @@
  	Unit* target = NULL;
  	Unit* critterTarget = NULL;
  	float distance = 999999.0f; // that should do it.. :p
@@ -21,7 +33,7 @@ Index: trunk/src/ascent-world/AIInterface.cpp
  #ifdef LOS_CHECKS
  #ifdef LOS_ONLY_IN_INSTANCE
  	bool los = true;
-@@ -1494,8 +1495,8 @@
+@@ -1494,8 +1500,8 @@
  #endif
  #endif
  
@@ -32,7 +44,7 @@ Index: trunk/src/ascent-world/AIInterface.cpp
  	Unit *pUnit;
  	float dist;
  	bool pvp=true;
-@@ -1508,80 +1509,31 @@
+@@ -1508,80 +1514,31 @@
  		return 0;
  	}
  
