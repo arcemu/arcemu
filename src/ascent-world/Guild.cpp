@@ -781,13 +781,19 @@ void Guild::RemoveGuildMember(PlayerInfo * pMember, WorldSession * pClient)
 		m_members.erase(itr);
 	}
 
-	LogGuildEvent(GUILD_EVENT_LEFT, 1, pMember->name);
 	if(pClient && pClient->GetPlayer()->m_playerInfo != pMember)
 	{
+		if(pMember->m_loggedInPlayer)
+		{
+			Player * plr = objmgr.GetPlayer(pMember->guid);
+			sChatHandler.SystemMessageToPlr(plr, "You has been kicked from guild by %s", pClient->GetPlayer()->GetName());
+		}
+		LogGuildEvent(GUILD_EVENT_REMOVED, 2, pMember->name, pClient->GetPlayer()->GetName());
 		AddGuildLogEntry(GUILD_LOG_EVENT_REMOVAL, 2, pClient->GetPlayer()->GetLowGUID(), pMember->guid);
 	}
 	else
 	{
+		LogGuildEvent(GUILD_EVENT_LEFT, 1, pMember->name);
 		AddGuildLogEntry(GUILD_LOG_EVENT_LEFT, 1, pMember->guid);
 	}
 
@@ -972,7 +978,7 @@ void Guild::ChangeGuildMaster(PlayerInfo * pNewMaster, WorldSession * pClient)
 	itr2->second->pRank = newRank;
 	itr2->first->guildRank = newRank;
 	CharacterDatabase.Execute("UPDATE guild_data SET guildRank = 0 WHERE playerid = %u AND guildid = %u", itr->first->guid, m_guildId);
-	CharacterDatabase.Execute("UPDATE guild_data SET guildRank = %u WHERE playerid = %u AND guildid = %u", newRank->iId, itr->first->guid, m_guildId);
+	CharacterDatabase.Execute("UPDATE guild_data SET guildRank = %u WHERE playerid = %u AND guildid = %u", newRank->iId, itr2->first->guid, m_guildId);
 	CharacterDatabase.Execute("UPDATE guilds SET leaderGuid = %u WHERE guildId = %u", itr->first->guid, m_guildId);
 	m_guildLeader = itr->first->guid;
 	m_lock.Release();

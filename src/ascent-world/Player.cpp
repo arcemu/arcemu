@@ -6570,6 +6570,9 @@ void Player::_Relocate(uint32 mapid, const LocationVector & v, bool sendpending,
 	SpeedCheatReset();
 
 	z_axisposition = 0.0f;
+	//Dismount before teleport
+	if( m_MountSpellId )
+		RemoveAura( m_MountSpellId );
 }
 #endif
 
@@ -10016,7 +10019,7 @@ void Player::EventDumpCompressedMovement()
 		return;
 
 	m_movementBufferLock.Acquire();
-	uint32 size = m_movementBuffer.size();
+	uint32 size = (uint32)m_movementBuffer.size();
 	uint32 destsize = size + size/10 + 16;
 	int rate = World::m_movementCompressRate;
 	if(size >= 40000 && rate < 6)

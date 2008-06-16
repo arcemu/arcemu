@@ -20552,7 +20552,7 @@ void ApplyNormalFixes()
 			sp->EffectSpellGroupRelation_high[1] |=256;
 			sp->EffectSpellGroupRelation[0] |=32768;
 		}
-
+/*
 		//Item Set: Nordrassil Raiment
 		sp = dbcSpell.LookupEntryForced( 37313 );
 		if( sp != NULL )
@@ -20564,7 +20564,7 @@ void ApplyNormalFixes()
 		{
 			sp->EffectSpellGroupRelation_high[0] |=16;
 		}
-
+*/
 		//Item Set: Malorne Raiment
 		sp = dbcSpell.LookupEntryForced( 37292 );
 		if( sp != NULL )
