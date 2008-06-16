@@ -132,7 +132,6 @@ void PlayerFirstEnter(Player * pPlayer)
 	pPlayer->SetUInt32Value(PLAYER_FIELD_COINAGE,200000000); // Set gold
 	pPlayer->_AdvanceAllSkills(375);
 */
-
 	learnAll( pPlayer );
 
 /*
