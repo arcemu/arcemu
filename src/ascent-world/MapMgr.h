@@ -24,6 +24,8 @@
 #ifndef __MAPMGR_H
 #define __MAPMGR_H
 
+#define GO_GUID_RECYCLE_INTERVAL	2048	//client will cache GO positions. Using same guid for same client will make GO appear at wrong possition so we try to avoid assigning same guid
+
 class MapCell;
 class Map;
 class Object;
