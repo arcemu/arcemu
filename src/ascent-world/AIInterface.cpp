@@ -1513,7 +1513,6 @@ Unit* AIInterface::FindTarget()
 	{
 		return 0;
 	}
-
 	//this is slower then oppfaction list BUT it has a lower chance that contains invalid pointers
 	for( itr2 = m_Unit->GetInRangeSetBegin(); itr2 != m_Unit->GetInRangeSetEnd(); )
 	{
@@ -3772,7 +3771,7 @@ void AIInterface::Event_Summon_FE_totem(uint32 summon_duration)
 	Unit *ourslave=m_Unit->create_guardian(15438,summon_duration,float(-M_PI*2), new_level);
 	if(ourslave)
 	{
-		m_Unit->summonPet = ourslave;
+		//m_Unit->summonPet = ourslave;
 		static_cast<Creature*>(ourslave)->ResistanceModPct[FIRE_DAMAGE]=100;//we should be imune to fire dmg. This can be also set in db
 		static_cast<Creature*>(ourslave)->m_noRespawn = true;
 		/*

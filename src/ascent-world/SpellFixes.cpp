@@ -17362,6 +17362,16 @@ void ApplyNormalFixes()
 		if( parentsp != NULL && triggersp != NULL )
 			triggersp->EffectBasePoints[0] = parentsp->EffectBasePoints[0];
 
+		//summon only 1 elemental totem
+		sp = dbcSpell.LookupEntryForced( 2894 );
+		if( sp != NULL && sp->Id == 2894 )
+			sp->EffectImplicitTargetA[0] = 0; //remove this targeting. it is enough to get 1 target
+
+		//summon only 1 elemental totem
+		sp = dbcSpell.LookupEntryForced( 2062 );
+		if( sp != NULL && sp->Id == 2062 )
+			sp->EffectImplicitTargetA[0] = 0; //remove this targeting. it is enough to get 1 target
+
 		/**********************************************************
 		 *	Elemental Focus
 		 **********************************************************/
