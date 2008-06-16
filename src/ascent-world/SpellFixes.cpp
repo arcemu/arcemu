@@ -16922,13 +16922,22 @@ void ApplyNormalFixes()
 		//priest- Blessed Resilience
 		sp = dbcSpell.LookupEntryForced( 33142 );
 		if( sp != NULL )
+		{
 			sp->procFlags = PROC_ON_CRIT_HIT_VICTIM;
+			sp->procChance = 20;
+		}
 		sp = dbcSpell.LookupEntryForced( 33145 );
 		if( sp != NULL )
+		{
 			sp->procFlags = PROC_ON_CRIT_HIT_VICTIM;
+			sp->procChance = 40;
+		}
 		sp = dbcSpell.LookupEntryForced( 33146 );
 		if( sp != NULL )
+		{
 			sp->procFlags = PROC_ON_CRIT_HIT_VICTIM;
+			sp->procChance = 60;
+		}
 
 		//priest- Focused Will
 		sp = dbcSpell.LookupEntryForced( 45234 );

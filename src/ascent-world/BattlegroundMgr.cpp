@@ -272,8 +272,11 @@ void CBattlegroundManager::EventQueueUpdate()
 						{
 							plr = *tempPlayerVec[k].begin();
 							tempPlayerVec[k].pop_front();
-							bg->AddPlayer(plr, plr->GetTeam());
-							ErasePlayerFromList(plr->GetLowGUID(), &m_queuedPlayers[i][j]);
+							if(bg->CanPlayerJoin(plr))
+							{
+								bg->AddPlayer(plr, plr->GetTeam());
+								ErasePlayerFromList(plr->GetLowGUID(), &m_queuedPlayers[i][j]);
+							}
 						}
 					}
 				}
@@ -1530,5 +1533,5 @@ void CBattlegroundManager::HandleArenaJoin(WorldSession * m_session, uint32 Batt
 
 bool CBattleground::CanPlayerJoin(Player * plr)
 {
-	return HasFreeSlots(plr->m_bgTeam);
+	return HasFreeSlots(plr->m_bgTeam)&&(GetLevelGrouping(plr->getLevel())==GetLevelGroup());
 }

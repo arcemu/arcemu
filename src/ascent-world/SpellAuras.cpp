@@ -2864,6 +2864,36 @@ void Aura::SpellAuraModStealth(bool apply)
 		// hack fix for vanish stuff
 		if( m_spellProto->NameHash == SPELL_HASH_VANISH && m_target->GetTypeId() == TYPEID_PLAYER )	 // Vanish
 		{
+
+		bool freeMovements = false;
+		freeMovements = true;
+
+		// remove the caster from imparing movements
+		if( freeMovements )
+		{
+			for( uint32 x = MAX_POSITIVE_AURAS; x < MAX_AURAS; x++ )
+			{
+				if( m_target->m_auras[x] != NULL )
+				{
+					if( m_target->m_auras[x]->GetSpellProto()->MechanicsType == 7 || m_target->m_auras[x]->GetSpellProto()->MechanicsType == 11 ) // Remove roots and slow spells
+					{
+						m_target->m_auras[x]->Remove();
+					}
+					else // if got immunity for slow, remove some that are not in the mechanics
+					{
+						for( int i = 0; i < 3; i++ )
+						{
+							if( m_target->m_auras[x]->GetSpellProto()->EffectApplyAuraName[i] == SPELL_AURA_MOD_DECREASE_SPEED || m_target->m_auras[x]->GetSpellProto()->EffectApplyAuraName[i] == SPELL_AURA_MOD_ROOT )
+							{
+								m_target->m_auras[x]->Remove();
+								break;
+							}
+						}
+					}
+			   }
+			}
+		}
+
 			// check for stealh spells
 			Player* p_caster = static_cast< Player* >( m_target );
 			uint32 stealth_id = 0;
