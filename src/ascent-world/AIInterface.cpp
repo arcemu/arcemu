@@ -1513,7 +1513,8 @@ Unit* AIInterface::FindTarget()
 		pvp=false;
 
 	//target is immune to all form of attacks, cant attack either.
-	if(m_Unit->HasFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE))
+	// not attackable creatures sometimes fight enemies in scripted fights though
+	if(m_Unit->HasFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_NOT_ATTACKABLE_2))
 	{
 		return 0;
 	}

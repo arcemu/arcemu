@@ -66,6 +66,7 @@ SMT_RESIST_DISPEL - check if it is used
 - mob spell casting can not be interrupted by ex : shield bash
 - add to scripts columns like : ReqCastSpellId, optionalquestid....
 - ip bans do not get active when adding a new one. Reload is needed. Maybe an instant add would be more efficient.
+- spell hasting should not stack
 
 ==========================================================================
 ! BUGS !
