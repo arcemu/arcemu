@@ -1,12 +1,3 @@
-/*
-MySQL Data Transfer
-Source Host: localhost
-Source Database: testse
-Target Host: localhost
-Target Database: testse
-Date: 5/12/2008 11:48:13 PM
-*/
-
 SET FOREIGN_KEY_CHECKS=0;
 -- ----------------------------
 -- Table structure for accounts

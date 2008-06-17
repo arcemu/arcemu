@@ -1,12 +1,3 @@
-/*
-MySQL Data Transfer
-Source Host: admirator.wowscape.net
-Source Database: lolwut
-Target Host: admirator.wowscape.net
-Target Database: lolwut
-Date: 5/12/2008 11:42:43 PM
-*/
-
 SET FOREIGN_KEY_CHECKS=0;
 -- ----------------------------
 -- Table structure for account_data
