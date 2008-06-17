@@ -1407,6 +1407,9 @@ void MapMgr::KillThreadWithCleanup()
 {
 	try
 	{
+		// remove all events regarding to this map
+		sEventMgr.RemoveEvents( this );
+
 		// Teleport any left-over players out.
 		TeleportCorruptedPlayers();	
 
