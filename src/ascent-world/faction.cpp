@@ -301,8 +301,8 @@ bool isAttackable(Object* objA, Object* objB, bool CheckStealth)// A can attack 
 	/*if((objA->m_faction->HostileMask & 8) && (objB->m_factionDBC->RepListId != 0) && 
 		(objB->GetTypeId() != TYPEID_PLAYER) && objB->m_faction->Faction != 31) // B is attackable if its a neutral Creature*/
 
-	// Neutral Creature Check - not needed, isHostile should take care of this
-	/*if(objA->IsPlayer() || objA->IsPet())
+	// Neutral Creature Check
+	if(objA->IsPlayer() || objA->IsPet())
 	{
 		if(objB->m_factionDBC->RepListId == -1 && objB->m_faction->HostileMask == 0 && objB->m_faction->FriendlyMask == 0)
 		{
@@ -315,7 +315,7 @@ bool isAttackable(Object* objA, Object* objB, bool CheckStealth)// A can attack 
 		{
 			attackable = true;
 		}
-	}*/
+	}
 
 	return attackable;
 }

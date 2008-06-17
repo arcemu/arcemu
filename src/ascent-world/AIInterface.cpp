@@ -1538,6 +1538,20 @@ Unit* AIInterface::FindTarget()
 		//on blizz there is no Z limit check 
 		dist = m_Unit->GetDistance2dSq(pUnit);
 
+		//don't agro neutrals
+		if( ( pUnit->IsPlayer() || pUnit->IsPet() )
+			&& m_Unit->m_factionDBC->RepListId == -1 
+			&& m_Unit->m_faction->HostileMask == 0 
+			&& m_Unit->m_faction->FriendlyMask == 0
+			)
+				continue;
+		else if( ( m_Unit->IsPlayer() || m_Unit->IsPet() )
+			 && pUnit->m_factionDBC->RepListId == -1 
+			 && pUnit->m_faction->HostileMask == 0 
+			 && pUnit->m_faction->FriendlyMask == 0
+			 )
+				continue;
+
 		if(pUnit->m_faction->Faction == 28)// only Attack a critter if there is no other Enemy in range
 		{
 			if(dist < 225.0f)	// was 10
