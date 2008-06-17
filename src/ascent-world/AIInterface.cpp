@@ -1535,9 +1535,6 @@ Unit* AIInterface::FindTarget()
 		if( m_Unit->GetUInt64Value(UNIT_FIELD_CREATEDBY) == pUnit->GetGUID() )
 			continue; 
 
-		//on blizz there is no Z limit check 
-		dist = m_Unit->GetDistance2dSq(pUnit);
-
 		//don't agro neutrals
 		if( ( pUnit->IsPlayer() || pUnit->IsPet() )
 			&& m_Unit->m_factionDBC->RepListId == -1 
@@ -1551,6 +1548,13 @@ Unit* AIInterface::FindTarget()
 			 && pUnit->m_faction->FriendlyMask == 0
 			 )
 				continue;
+
+		//make sure we do not agro flying stuff
+		if( abs( pUnit->GetPositionZ() - m_Unit->GetPositionZ() ) > _CalcCombatRange( pUnit, false ) )
+			continue; //blizz has this set to 250 but uses pathfinding
+
+		//on blizz there is no Z limit check 
+		dist = m_Unit->GetDistance2dSq(pUnit);
 
 		if(pUnit->m_faction->Faction == 28)// only Attack a critter if there is no other Enemy in range
 		{
