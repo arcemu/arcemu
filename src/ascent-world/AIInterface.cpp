@@ -19,6 +19,10 @@
 
 #include "StdAfx.h"
 
+#ifndef UNIX
+#include <cmath>
+#endif
+
 // only enable with COLLISION define.
 #ifdef COLLISION
 #define LOS_CHECKS 1
