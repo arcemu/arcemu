@@ -3792,38 +3792,33 @@ void Spell::RemoveItems()
 	if(i_caster)
 	{
 		// Stackable Item -> remove 1 from stack
-		if(i_caster->GetUInt32Value(ITEM_FIELD_STACK_COUNT) > 1)
+		if ( i_caster->GetUInt32Value(ITEM_FIELD_STACK_COUNT) > 1 )
 		{
-			i_caster->ModUnsigned32Value(ITEM_FIELD_STACK_COUNT, -1);
+			i_caster->ModUnsigned32Value( ITEM_FIELD_STACK_COUNT, -1 );
 			i_caster->m_isDirty = true;
 		}
-		// Expendable Item
-		else if(i_caster->GetProto()->Spells[0].Charges < 0
-		     || i_caster->GetProto()->Spells[1].Charges == -1) // hackfix for healthstones/mana gems/depleted items
+		else
 		{
-			// if item has charges remaining -> remove 1 charge
-			if(((int32)i_caster->GetUInt32Value(ITEM_FIELD_SPELL_CHARGES)) < -1)
+			for ( uint32 x = 0; x < 5; x++ )
 			{
-				i_caster->ModUnsigned32Value(ITEM_FIELD_SPELL_CHARGES, 1);
-				i_caster->m_isDirty = true;
-			}
-			// if item has no charges remaining -> delete item
-			else
-			{
-				//i bet this crashed happend due to some script. Items wihtout owners ?
-				if( i_caster->GetOwner() && i_caster->GetOwner()->GetItemInterface() )
-					i_caster->GetOwner()->GetItemInterface()->SafeFullRemoveItemByGuid(i_caster->GetGUID());
-				i_caster = NULL;
+				int32 charges = (int32)i_caster->GetUInt32Value( ITEM_FIELD_SPELL_CHARGES + x );
+				if ( charges == -1 ) // if expendable item && item has no charges remaining -> delete item
+				{
+					//i bet this crashed happend due to some script. Items wihtout owners ?
+					if( i_caster->GetOwner() && i_caster->GetOwner()->GetItemInterface() )
+						i_caster->GetOwner()->GetItemInterface()->SafeFullRemoveItemByGuid( i_caster->GetGUID() );
+					i_caster = NULL;
+					break;
+				}
+				else if ( charges > 0 || charges < -1 ) // remove 1 charge
+				{
+					i_caster->ModSignedInt32Value( ITEM_FIELD_SPELL_CHARGES + x, ( charges < 0 ) ? +1 : -1 ); // if charges < 0 then -1 else +1
+					i_caster->m_isDirty = true;
+					break;
+				}
 			}
 		}
-		// Non-Expendable Item -> remove 1 charge
-		else if(i_caster->GetProto()->Spells[0].Charges > 0)
-		{
-			i_caster->ModUnsigned32Value(ITEM_FIELD_SPELL_CHARGES, -1);
-			i_caster->m_isDirty = true;
-		}
-	} 
-
+	}
 	// Ammo Removal
 	if( m_spellInfo->AttributesExB == FLAGS3_REQ_RANGED_WEAPON || m_spellInfo->AttributesExC & FLAGS4_PLAYER_RANGED_SPELLS)
 	{
