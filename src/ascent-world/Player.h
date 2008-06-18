@@ -1484,7 +1484,8 @@ public:
 	ASCENT_INLINE Corpse * getMyCorpse() { return myCorpse; }
 	bool bCorpseCreateable;
 	uint32 m_resurrectHealth, m_resurrectMana;
-	uint32 resurrector;
+	uint32 m_resurrectInstanceID, m_resurrectMapId;
+	LocationVector m_resurrectPosition;
 	bool blinked;
 	uint32 m_explorationTimer;
 	// DBC stuff

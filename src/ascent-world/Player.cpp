@@ -35,7 +35,7 @@ Player::Player( uint32 guid ) : m_mailBox(guid)
 
 	m_finishingmovesdodge = false;
 	iActivePet			  = 0;
-	resurrector			 = 0;
+	// resurrector			 = 0;
 	SpellCrtiticalStrikeRatingBonus=0;
 	SpellHasteRatingBonus   = 0;
 	m_lifetapbonus		  = 0;
@@ -4052,20 +4052,14 @@ void Player::ResurrectPlayer()
 	}else
 		RemoveAura(8326);
 
-	m_resurrecter = 0;
-
 	RemoveFlag(PLAYER_FLAGS, 0x10);
 	setDeathState(ALIVE);
 	UpdateVisibility();
-	if(resurrector && IsInWorld())
+	if ( m_resurrecter && IsInWorld() )
 	{
-		Player * p= objmgr.GetPlayer(resurrector);
-		resurrector=0;
-
-		if(p == 0) return;
-		//_Relocate(p->GetMapMgr()->GetMapId(), p->GetPosition(),false,false);
-		SafeTeleport(p->GetMapId(),p->GetInstanceID(),p->GetPosition());
+		SafeTeleport( m_resurrectMapId, m_resurrectInstanceID, m_resurrectPosition );
 	}
+	m_resurrecter = 0;
 	SetMovement(MOVE_LAND_WALK, 1);
 }
 
@@ -8247,7 +8241,7 @@ void Player::OnWorldPortAck()
 		{
 			if(pMapinfo->type != INSTANCE_NULL)
 			{
-                resurrector = 0; // ceberwow: This should be seriously BUG.It makes player statz stackable.
+				// resurrector = 0; // ceberwow: This should be seriously BUG.It makes player statz stackable.
 				ResurrectPlayer();
 			}
 		}

@@ -942,10 +942,10 @@ void WorldSession::HandleCorpseReclaimOpcode(WorldPacket &recv_data)
 
 void WorldSession::HandleResurrectResponseOpcode(WorldPacket & recv_data)
 {
-	if(!_player->IsInWorld()) return;
+	if ( !_player->IsInWorld() ) return;
 	sLog.outDetail("WORLD: Received CMSG_RESURRECT_RESPONSE");
 
-	if(GetPlayer()->isAlive())
+	if ( _player->isAlive() )
 		return;
 
 	uint64 guid;
@@ -954,15 +954,16 @@ void WorldSession::HandleResurrectResponseOpcode(WorldPacket & recv_data)
 	recv_data >> status;
 
 	// need to check guid
-	Player * pl = _player->GetMapMgr()->GetPlayer((uint32)guid);
-	if(!pl)
-		pl = objmgr.GetPlayer((uint32)guid);
+	Player * pl = _player->GetMapMgr()->GetPlayer( (uint32)guid );
+	if ( pl == NULL )
+		pl = objmgr.GetPlayer( (uint32)guid );
 
 	// checking valid resurrecter fixes exploits
-	if(pl == 0 || status != 1 || !_player->m_resurrecter || _player->m_resurrecter != guid)
+	if ( pl == NULL || status != 1 || !_player->m_resurrecter || _player->m_resurrecter != guid )
 	{
 		_player->m_resurrectHealth = 0;
 		_player->m_resurrectMana = 0;
+		_player->m_resurrecter = 0;
 		return;
 	}
 

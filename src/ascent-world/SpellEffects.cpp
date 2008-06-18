@@ -5603,12 +5603,15 @@ void Spell::SpellEffectResurrectNew(uint32 i)
 
 	if(playerTarget->isAlive() || !playerTarget->IsInWorld())
 		return;
-   //resurr
-	playerTarget->resurrector = p_caster->GetLowGUID();
+	//resurr
+	//playerTarget->resurrector = p_caster->GetLowGUID();
+	playerTarget->m_resurrectMapId = p_caster->GetMapId();
+	playerTarget->m_resurrectInstanceID = p_caster->GetInstanceID();
+	playerTarget->m_resurrectPosition = p_caster->GetPosition();
 	playerTarget->m_resurrectHealth = damage;
 	playerTarget->m_resurrectMana = m_spellInfo->EffectMiscValue[i];
 
-	SendResurrectRequest(playerTarget);
+	SendResurrectRequest( playerTarget );
 }
 
 void Spell::SpellEffectTranformItem(uint32 i)

@@ -2268,27 +2268,33 @@ bool Spell::HasPower()
 
 	switch(m_spellInfo->powerType)
 	{
-	case POWER_TYPE_HEALTH:{
-		powerField = UNIT_FIELD_HEALTH;
-						   }break;
-	case POWER_TYPE_MANA:{
-		powerField = UNIT_FIELD_POWER1;
-		m_usesMana=true;
-						 }break;
-	case POWER_TYPE_RAGE:{
-		powerField = UNIT_FIELD_POWER2;
-						 }break;
-	case POWER_TYPE_FOCUS:{
-		powerField = UNIT_FIELD_POWER3;
-						  }break;
-	case POWER_TYPE_ENERGY:{
-		powerField = UNIT_FIELD_POWER4;
-						   }break;
-	default:{
-		sLog.outDebug("unknown power type");
-		// we should'nt be here to return
-		return false;
-			}break;
+	case POWER_TYPE_HEALTH:
+		{
+			powerField = UNIT_FIELD_HEALTH;
+		} break;
+	case POWER_TYPE_MANA:
+		{
+			powerField = UNIT_FIELD_POWER1;
+			m_usesMana = true;
+		} break;
+	case POWER_TYPE_RAGE:
+		{
+			powerField = UNIT_FIELD_POWER2;
+		} break;
+	case POWER_TYPE_FOCUS:
+		{
+			powerField = UNIT_FIELD_POWER3;
+		}	break;
+	case POWER_TYPE_ENERGY:
+		{
+			powerField = UNIT_FIELD_POWER4;
+		} break;
+	default:
+		{
+			sLog.outDebug("unknown power type");
+			// we should'nt be here to return
+			return false;
+		} break;
 	}
 	
 
