@@ -3946,6 +3946,10 @@ exit:
 			value += (uint32)(u_caster->GetRAP()*0.2);
 		}
 	}
+	else if( m_spellInfo->Id == 19574 && i == 0 && u_caster && u_caster->HasAura(34692) )
+	{
+		u_caster->CastSpell(u_caster,34471,true);
+	}
     // HACK FIX
     else if( m_spellInfo->NameHash == SPELL_HASH_VICTORY_RUSH )
 	{//causing ${$AP*$m1/100} damage
