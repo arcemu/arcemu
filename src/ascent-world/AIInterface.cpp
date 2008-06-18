@@ -1042,7 +1042,7 @@ void AIInterface::_UpdateCombat(uint32 p_time)
 				float combatReach[2]; // Calculate Combat Reach
 				float distance = m_Unit->CalcDistance(m_nextTarget);
 
-				combatReach[0] = PLAYER_SIZE;
+				combatReach[0] = m_nextTarget->GetModelHalfSize();
 				combatReach[1] = _CalcCombatRange(m_nextTarget, false);
 
 				if(	
@@ -1107,10 +1107,8 @@ void AIInterface::_UpdateCombat(uint32 p_time)
 				else // Target out of Range -> Run to it
 				{
 					//calculate next move
-					float dist = combatReach[1]-PLAYER_SIZE;
+					float dist = combatReach[1];
 
-					if(dist < PLAYER_SIZE)
-						dist = PLAYER_SIZE; //unbelievable how this could happen
 					if (distance<combatReach[0])
 						dist = -(distance+combatReach[0]*0.6666f);
 
@@ -1961,7 +1959,7 @@ float AIInterface::_CalcCombatRange(Unit* target, bool ranged)
 		return 0;
 	}
 	float range = 0.0f;
-	float rang = PLAYER_SIZE;
+	float rang = 0.0f;
 	if(ranged)
 	{
 		rang = 5.0f;
@@ -1980,8 +1978,6 @@ float AIInterface::_CalcCombatRange(Unit* target, bool ranged)
 //	range = ((((targetradius*targetradius)*targetscale) + selfreach) + ((selfradius*selfscale) + rang));
 	range = targetradius + selfreach + selfradius + rang;
 //	if(range > 28.29f) range = 28.29f;
-	if(range < PLAYER_SIZE)
-		range = PLAYER_SIZE; //unbeleavable to get here :)
 	return range;
 }
 
