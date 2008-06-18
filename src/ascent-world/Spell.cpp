@@ -3908,7 +3908,20 @@ exit:
 		value = basePoints + rand() % randomPoints;
 
 	//scripted shit
-	if( m_spellInfo->Id == 34120)
+	if( m_spellInfo->Id == 34074)
+		/*Aspect of the Viper
+		The hunter takes on the aspects of a viper,
+		regenerating mana equal to up to 55% of <his/her> Intellect 
+		plus 35% of <his/her> level every 5 sec.*/
+	{
+		if(i==0 && u_caster)
+		{
+			float formula = ((u_caster->GetUInt32Value(UNIT_FIELD_STAT3) * 55 / 100) + (u_caster->getLevel() * 35 / 100));
+			value = float2int32(formula);
+		}
+	}
+
+	else if( m_spellInfo->Id == 34120)
 	{	//A steady shot that causes ${$RAP*0.3+$m1} damage. 
 		//	Actual Equation (http://www.wowwiki.com/Steady_Shot)
 		//		* The tooltip is proven to be wrong and the following is the best player worked out formula so far with data taken from [1]
