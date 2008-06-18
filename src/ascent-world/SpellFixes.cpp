@@ -12177,24 +12177,6 @@ void Apply112SpellFixes()
 		sp->EffectSpellGroupRelation[0] = 16384;
 	}
 
-	// Spell 19498 Group Relation (Hawk Eye Rank 1)
-	sp = dbcSpell.LookupEntryForced(19498);
-	if(sp != NULL) {
-		sp->EffectSpellGroupRelation[0] = 522753;
-	}
-
-	// Spell 19499 Group Relation (Hawk Eye Rank 2)
-	sp = dbcSpell.LookupEntryForced(19499);
-	if(sp != NULL) {
-		sp->EffectSpellGroupRelation[0] = 522753;
-	}
-
-	// Spell 19500 Group Relation (Hawk Eye Rank 3)
-	sp = dbcSpell.LookupEntryForced(19500);
-	if(sp != NULL) {
-		sp->EffectSpellGroupRelation[0] = 522753;
-	}
-
 	// Spell 19549 Group Relation (Improved Aspect of the Monkey Rank 1)
 	sp = dbcSpell.LookupEntryForced(19549);
 	if(sp != NULL) {
@@ -16030,13 +16012,22 @@ void ApplyNormalFixes()
 		// Hunter - Hawk Eye
 		sp = dbcSpell.LookupEntryForced( 19498 );
 		if( sp != NULL )
-			sp->EffectSpellGroupRelation[0] = 1 | 4;
+		{	
+			sp->EffectSpellGroupRelation[0] = 1 | 512 | 2048 | 4096 | 16384 | 262144 | 32768 | 65536 | 131072 ;
+			sp->EffectSpellGroupRelation_high[0] = 1 | 128 | 4096 ;
+		}
 		sp = dbcSpell.LookupEntryForced( 19499 );
 		if( sp != NULL )
-			sp->EffectSpellGroupRelation[0] = 1 | 4;
+		{	
+			sp->EffectSpellGroupRelation[0] = 1 | 512 | 2048 | 4096 | 16384 | 262144 | 32768 | 65536 | 131072 ;
+			sp->EffectSpellGroupRelation_high[0] = 1 | 128 | 4096 ;
+		}
 		sp = dbcSpell.LookupEntryForced( 19500 );
 		if( sp != NULL )
-			sp->EffectSpellGroupRelation[0] = 1 | 4;
+		{	
+			sp->EffectSpellGroupRelation[0] = 1 | 512 | 2048 | 4096 | 16384 | 262144 | 32768 | 65536 | 131072 ;
+			sp->EffectSpellGroupRelation_high[0] = 1 | 128 | 4096 ;
+		}
 
 		//Hunter - Frenzy
 		sp = dbcSpell.LookupEntryForced( 19621 );
