@@ -12147,36 +12147,6 @@ void Apply112SpellFixes()
 		sp->EffectSpellGroupRelation[1] = 8192;
 	}
 
-	// Spell 19464 Group Relation (Improved Stings Rank 1)
-	sp = dbcSpell.LookupEntryForced(19464);
-	if(sp != NULL) {
-		sp->EffectSpellGroupRelation[0] = 16384;
-	}
-
-	// Spell 19465 Group Relation (Improved Stings Rank 2)
-	sp = dbcSpell.LookupEntryForced(19465);
-	if(sp != NULL) {
-		sp->EffectSpellGroupRelation[0] = 16384;
-	}
-
-	// Spell 19466 Group Relation (Improved Stings Rank 3)
-	sp = dbcSpell.LookupEntryForced(19466);
-	if(sp != NULL) {
-		sp->EffectSpellGroupRelation[0] = 16384;
-	}
-
-	// Spell 19467 Group Relation (Improved Stings Rank 4)
-	sp = dbcSpell.LookupEntryForced(19467);
-	if(sp != NULL) {
-		sp->EffectSpellGroupRelation[0] = 16384;
-	}
-
-	// Spell 19468 Group Relation (Improved Stings Rank 5)
-	sp = dbcSpell.LookupEntryForced(19468);
-	if(sp != NULL) {
-		sp->EffectSpellGroupRelation[0] = 16384;
-	}
-
 	// Spell 19549 Group Relation (Improved Aspect of the Monkey Rank 1)
 	sp = dbcSpell.LookupEntryForced(19549);
 	if(sp != NULL) {
@@ -16168,37 +16138,47 @@ void ApplyNormalFixes()
 		sp = dbcSpell.LookupEntryForced( 19464 );
 		if( sp != NULL )
 		{
-			sp->EffectSpellGroupRelation[0] = 16384 | 65536;
-			sp->EffectSpellGroupRelation[1] = 65536;
-			sp->EffectSpellGroupRelation[2] = 16384 | 65536 | 32768;
+			sp->EffectSpellGroupRelation[0] = 16384;
+			sp->EffectSpellGroupRelation_high[0] = 256;
+			sp->EffectSpellGroupRelation_high[1] = 128;
+			sp->EffectSpellGroupRelation[2] = 16384 | 32768;
+			sp->EffectSpellGroupRelation_high[2] = 128 | 4096;
 		}
 		sp = dbcSpell.LookupEntryForced( 19465 );
 		if( sp != NULL )
 		{
-			sp->EffectSpellGroupRelation[0] = 16384 | 65536;
-			sp->EffectSpellGroupRelation[1] = 65536;
-			sp->EffectSpellGroupRelation[2] = 16384 | 65536 | 32768;
+			sp->EffectSpellGroupRelation[0] = 16384;
+			sp->EffectSpellGroupRelation_high[0] = 256;
+			sp->EffectSpellGroupRelation_high[1] = 128;
+			sp->EffectSpellGroupRelation[2] = 16384 | 32768;
+			sp->EffectSpellGroupRelation_high[2] = 128 | 4096;
 		}
 		sp = dbcSpell.LookupEntryForced( 19466 );
 		if( sp != NULL )
 		{
-			sp->EffectSpellGroupRelation[0] = 16384 | 65536;
-			sp->EffectSpellGroupRelation[1] = 65536;
-			sp->EffectSpellGroupRelation[2] = 16384 | 65536 | 32768;
+			sp->EffectSpellGroupRelation[0] = 16384;
+			sp->EffectSpellGroupRelation_high[0] = 256;
+			sp->EffectSpellGroupRelation_high[1] = 128;
+			sp->EffectSpellGroupRelation[2] = 16384 | 32768;
+			sp->EffectSpellGroupRelation_high[2] = 128 | 4096;
 		}
 		sp = dbcSpell.LookupEntryForced( 19467 );
 		if( sp != NULL )
 		{
-			sp->EffectSpellGroupRelation[0] = 16384 | 65536;
-			sp->EffectSpellGroupRelation[1] = 65536;
-			sp->EffectSpellGroupRelation[2] = 16384 | 65536 | 32768;
+			sp->EffectSpellGroupRelation[0] = 16384;
+			sp->EffectSpellGroupRelation_high[0] = 256;
+			sp->EffectSpellGroupRelation_high[1] = 128;
+			sp->EffectSpellGroupRelation[2] = 16384 | 32768;
+			sp->EffectSpellGroupRelation_high[2] = 128 | 4096;
 		}
 		sp = dbcSpell.LookupEntryForced( 19468 );
 		if( sp != NULL )
 		{
-			sp->EffectSpellGroupRelation[0] = 16384 | 65536;
-			sp->EffectSpellGroupRelation[1] = 65536;
-			sp->EffectSpellGroupRelation[2] = 16384 | 65536 | 32768;
+			sp->EffectSpellGroupRelation[0] = 16384;
+			sp->EffectSpellGroupRelation_high[0] = 256;
+			sp->EffectSpellGroupRelation_high[1] = 128;
+			sp->EffectSpellGroupRelation[2] = 16384 | 32768;
+			sp->EffectSpellGroupRelation_high[2] = 128 | 4096;
 		}
 
 		//we need to adress this somehow : shot
