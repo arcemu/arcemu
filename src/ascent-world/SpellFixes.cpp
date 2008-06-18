@@ -12049,20 +12049,6 @@ void Apply112SpellFixes()
 	if(sp != NULL)
 		sp->procChance = 12;
 
-	// Spell 19239 Group Relation (Clever Traps Rank 1)
-	sp = dbcSpell.LookupEntryForced(19239);
-	if(sp != NULL) {
-		sp->EffectSpellGroupRelation[0] = 24;
-		sp->EffectSpellGroupRelation[1] = 4;
-	}
-
-	// Spell 19245 Group Relation (Clever Traps Rank 2)
-	sp = dbcSpell.LookupEntryForced(19245);
-	if(sp != NULL) {
-		sp->EffectSpellGroupRelation[0] = 24;
-		sp->EffectSpellGroupRelation[1] = 4;
-	}
-
 	// Spell 19387 Proc Chance (Entrapment Rank 2)
 	sp = dbcSpell.LookupEntryForced(19387);
 	if(sp != NULL)
@@ -16263,16 +16249,16 @@ void ApplyNormalFixes()
 		sp = dbcSpell.LookupEntryForced( 19239 );
 		if( sp != NULL )
 		{
-			sp->EffectSpellGroupRelation[0] = 16 | 8;
-			sp->EffectSpellGroupRelation[0] = 4;
-			sp->EffectSpellGroupRelation[0] = 128;
+			sp->EffectSpellGroupRelation[0] = 8 | 16;
+			sp->EffectSpellGroupRelation[1] = 4;
+			sp->EffectSpellGroupRelation_high[1] = 8192;
 		}
 		sp = dbcSpell.LookupEntryForced( 19245 );
 		if( sp != NULL )
 		{
-			sp->EffectSpellGroupRelation[0] = 16 | 8;
-			sp->EffectSpellGroupRelation[0] = 4;
-			sp->EffectSpellGroupRelation[0] = 128;
+			sp->EffectSpellGroupRelation[0] = 8 | 16;
+			sp->EffectSpellGroupRelation[1] = 4;
+			sp->EffectSpellGroupRelation_high[1] = 8192;
 		}
 
 		//Hunter : Resourcefulness
