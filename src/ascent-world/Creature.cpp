@@ -254,8 +254,66 @@ void Creature::generateLoot()
 	
 	loot.gold = proto ? proto->money : 0;
 
-	//For now let fill according to entry
-	if(!loot.gold)
+	/*
+	 * If there's an amount given, take it as an expected value and
+	 * generated a corresponding random value. The random value is
+	 * something similar to a normal distribution.
+	 *
+	 * You'd get a ``better'' distribution if you called `rand()' for each
+	 * copper individually. However, if the loot was 1G we'd call `rand()'
+	 * 15000 times, which is not ideal. So we use one call to `rand()' to
+	 * (hopefully) get 24 random bits, which is then used to create a
+	 * normal distribution over 1/24th of the difference.
+	 */
+	if ((loot.gold > 0) && (loot.gold < 12))
+	{
+		/* Don't use the below formula for very small cash - rouding
+		 * errors will be too bad.. */
+	}
+	else if (loot.gold >= 12)
+	{
+		uint32 random_bits;
+		double chunk_size;
+		double gold_fp;
+
+		/* Split up the difference into 12 chunks.. */
+		chunk_size = ((double) loot.gold) / 12.0;
+
+		/* Get 24 random bits. We use the low order bits, because we're
+		 * too lazy to check how many random bits the system actually
+		 * returned. */
+		random_bits = rand () & 0x00ffffff;
+
+		gold_fp = 0.0;
+		while (random_bits != 0)
+		{
+			/* If last bit is one .. */
+			if ((random_bits & 0x01) == 1)
+				/* .. increase loot by 1/12th of expected value */
+				gold_fp += chunk_size;
+
+			/* Shift away the LSB */
+			random_bits >>= 1;
+		}
+
+		/* To hide your discrete values a bit, add another random
+		 * amount between -(chunk_size/2) and +(chunk_size/2). */
+		gold_fp += chunk_size
+			* ((((double) rand ()) / (((double) RAND_MAX) + 1.0)) - .5);
+
+		/*
+		 * In theory we can end up with a negative amount. Give at
+		 * least one chunk_size here to prevent this from happening. In
+		 * case you're interested, the probability is around 2.98e-8.
+		 */
+		if (gold_fp < chunk_size)
+			gold_fp = chunk_size;
+
+		/* Convert the floating point gold value to an integer again
+		 * and we're done. */
+		loot.gold = (uint32) (.5 + gold_fp);
+	}
+	else /* if(!loot.gold) */
 	{
 		CreatureInfo *info=GetCreatureName();
 		if (info && info->Type != BEAST)

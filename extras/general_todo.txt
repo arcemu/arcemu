@@ -67,6 +67,9 @@ SMT_RESIST_DISPEL - check if it is used
 - add to scripts columns like : ReqCastSpellId, optionalquestid....
 - ip bans do not get active when adding a new one. Reload is needed. Maybe an instant add would be more efficient.
 - spell hasting should not stack
+- only players can stealth ?
+- make aura stacking based on casters
+- battleground player grouping is not the best. There should some lvl range limitation
 
 ==========================================================================
 ! BUGS !
@@ -95,6 +98,7 @@ SMT_RESIST_DISPEL - check if it is used
 - with guid hacking make sure to not target frendly / enemy npc when not supposed to
 - fix exploit trading soulbound items
 - crash recovery should make sure to cleanup eventmanager of pointers forcedly deleted.
+- streangth totem and instances exploit exists at all ?
 
 ==========================================================================
 Zack - test my shit :
