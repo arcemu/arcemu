@@ -12061,32 +12061,42 @@ void Apply112SpellFixes()
 
 	// Spell 19416 Group Relation (Efficiency Rank 1)
 	sp = dbcSpell.LookupEntryForced(19416);
-	if(sp != NULL) {
+	if(sp != NULL)
+	{
 		sp->EffectSpellGroupRelation[0] = 522752;
+		sp->EffectSpellGroupRelation_high[0] = 1 | 128;
 	}
 
 	// Spell 19417 Group Relation (Efficiency Rank 2)
 	sp = dbcSpell.LookupEntryForced(19417);
-	if(sp != NULL) {
+	if(sp != NULL)
+	{
 		sp->EffectSpellGroupRelation[0] = 522752;
+		sp->EffectSpellGroupRelation_high[0] = 1 | 128;
 	}
 
 	// Spell 19418 Group Relation (Efficiency Rank 3)
 	sp = dbcSpell.LookupEntryForced(19418);
-	if(sp != NULL) {
+	if(sp != NULL)
+	{
 		sp->EffectSpellGroupRelation[0] = 522752;
+		sp->EffectSpellGroupRelation_high[0] = 1 | 128;
 	}
 
 	// Spell 19419 Group Relation (Efficiency Rank 4)
 	sp = dbcSpell.LookupEntryForced(19419);
-	if(sp != NULL) {
+	if(sp != NULL)
+	{
 		sp->EffectSpellGroupRelation[0] = 522752;
+		sp->EffectSpellGroupRelation_high[0] = 1 | 128;
 	}
 
 	// Spell 19420 Group Relation (Efficiency Rank 5)
 	sp = dbcSpell.LookupEntryForced(19420);
-	if(sp != NULL) {
+	if(sp != NULL)
+	{
 		sp->EffectSpellGroupRelation[0] = 522752;
+		sp->EffectSpellGroupRelation_high[0] = 1 | 128;
 	}
 
 	// Spell 19421 Group Relation (Improved Hunter's Mark Rank 1)
