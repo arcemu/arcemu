@@ -16280,18 +16280,21 @@ void ApplyNormalFixes()
 		if( sp != NULL )
 		{
 			sp->EffectSpellGroupRelation[0] = 128 | 2 | 64; 
+			sp->EffectSpellGroupRelation_high[0] = 524288; //was missing Counterattack =P
 			sp->EffectSpellGroupRelation[1] = 128;
 		}
 		sp = dbcSpell.LookupEntryForced( 34492 );
 		if( sp != NULL )
 		{
 			sp->EffectSpellGroupRelation[0] = 128 | 2 | 64; 
+			sp->EffectSpellGroupRelation_high[0] = 524288; //was missing Counterattack =P
 			sp->EffectSpellGroupRelation[1] = 128;
 		}
 		sp = dbcSpell.LookupEntryForced( 34493 );
 		if( sp != NULL )
 		{
 			sp->EffectSpellGroupRelation[0] = 128 | 2 | 64; 
+			sp->EffectSpellGroupRelation_high[0] = 524288; //was missing Counterattack =P
 			sp->EffectSpellGroupRelation[1] = 128;
 		}
 
