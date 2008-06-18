@@ -12167,97 +12167,118 @@ void Apply112SpellFixes()
 
 	// Spell 19552 Group Relation (Improved Aspect of the Hawk Rank 1)
 	sp = dbcSpell.LookupEntryForced(19552);
-	if(sp != NULL) {
+	if(sp != NULL) 
+	{
 		sp->EffectSpellGroupRelation[0] = 1048576;
+		sp->EffectSpellGroupRelation_high[1] = 512;
 	}
 
 	// Spell 19553 Group Relation (Improved Aspect of the Hawk Rank 2)
 	sp = dbcSpell.LookupEntryForced(19553);
-	if(sp != NULL) {
+	if(sp != NULL) 
+	{
 		sp->EffectSpellGroupRelation[0] = 1048576;
+		sp->EffectSpellGroupRelation_high[1] = 512;
 	}
 
 	// Spell 19554 Group Relation (Improved Aspect of the Hawk Rank 3)
 	sp = dbcSpell.LookupEntryForced(19554);
-	if(sp != NULL) {
+	if(sp != NULL) 
+	{
 		sp->EffectSpellGroupRelation[0] = 1048576;
+		sp->EffectSpellGroupRelation_high[1] = 512;
 	}
 
 	// Spell 19555 Group Relation (Improved Aspect of the Hawk Rank 4)
 	sp = dbcSpell.LookupEntryForced(19555);
-	if(sp != NULL) {
+	if(sp != NULL)
+	{
 		sp->EffectSpellGroupRelation[0] = 1048576;
+		sp->EffectSpellGroupRelation_high[1] = 512;
 	}
 
 	// Spell 19556 Group Relation (Improved Aspect of the Hawk Rank 5)
 	sp = dbcSpell.LookupEntryForced(19556);
-	if(sp != NULL) {
+	if(sp != NULL)
+	{
 		sp->EffectSpellGroupRelation[0] = 1048576;
+		sp->EffectSpellGroupRelation_high[1] = 512;
 	}
 
 	// Spell 19559 Group Relation (Pathfinding Rank 1)
 	sp = dbcSpell.LookupEntryForced(19559);
-	if(sp != NULL) {
+	if(sp != NULL) 
+	{
 		sp->EffectSpellGroupRelation[0] = 2097152;
 	}
 
 	// Spell 19560 Group Relation (Pathfinding Rank 2)
 	sp = dbcSpell.LookupEntryForced(19560);
-	if(sp != NULL) {
+	if(sp != NULL)
+	{
 		sp->EffectSpellGroupRelation[0] = 2097152;
 	}
 
 	// Spell 19572 Group Relation (Improved Mend Pet Rank 1)
 	sp = dbcSpell.LookupEntryForced(19572);
-	if(sp != NULL) {
+	if(sp != NULL)
+	{
 		sp->EffectSpellGroupRelation[0] = 8388608;
 	}
 
 	// Spell 19573 Group Relation (Improved Mend Pet Rank 2)
 	sp = dbcSpell.LookupEntryForced(19573);
-	if(sp != NULL) {
+	if(sp != NULL) 
+	{
 		sp->EffectSpellGroupRelation[0] = 8388608;
 	}
 
 	// Spell 19583 Group Relation (Endurance Training Rank 1)
 	sp = dbcSpell.LookupEntryForced(19583);
-	if(sp != NULL) {
+	if(sp != NULL)
+	{
 		sp->EffectSpellGroupRelation[0] = 134217728;
 	}
 
 	// Spell 19584 Group Relation (Endurance Training Rank 2)
 	sp = dbcSpell.LookupEntryForced(19584);
-	if(sp != NULL) {
+	if(sp != NULL) 
+	{
 		sp->EffectSpellGroupRelation[0] = 134217728;
 	}
 
 	// Spell 19585 Group Relation (Endurance Training Rank 3)
 	sp = dbcSpell.LookupEntryForced(19585);
-	if(sp != NULL) {
+	if(sp != NULL) 
+	{
 		sp->EffectSpellGroupRelation[0] = 134217728;
 	}
 
 	// Spell 19586 Group Relation (Endurance Training Rank 4)
 	sp = dbcSpell.LookupEntryForced(19586);
-	if(sp != NULL) {
+	if(sp != NULL)
+	{
 		sp->EffectSpellGroupRelation[0] = 134217728;
 	}
 
 	// Spell 19587 Group Relation (Endurance Training Rank 5)
 	sp = dbcSpell.LookupEntryForced(19587);
-	if(sp != NULL) {
+	if(sp != NULL)
+	{
 		sp->EffectSpellGroupRelation[0] = 134217728;
 	}
 
 	// Spell 19590 Group Relation (Bestial Discipline Rank 1)
 	sp = dbcSpell.LookupEntryForced(19590);
-	if(sp != NULL) {
+	if(sp != NULL)
+	{
 		sp->EffectSpellGroupRelation[0] = 536870912;
 	}
 
 	// Spell 19592 Group Relation (Bestial Discipline Rank 2)
 	sp = dbcSpell.LookupEntryForced(19592);
-	if(sp != NULL) {
+	if(sp != NULL) 
+	{
 		sp->EffectSpellGroupRelation[0] = 536870912;
 	}
 
