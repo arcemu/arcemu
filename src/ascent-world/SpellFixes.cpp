@@ -16333,15 +16333,12 @@ void ApplyNormalFixes()
 		/* aspect of the pack - change to AA */
 		sp = dbcSpell.LookupEntryForced( 13159 );
 		if( sp != NULL )
-			sp->Effect[0] = SPELL_EFFECT_APPLY_AREA_AURA;
-		sp = dbcSpell.LookupEntryForced( 13159 );
-		if( sp != NULL )
-			sp->Effect[1] = SPELL_EFFECT_APPLY_AREA_AURA;
+			sp->procFlags = PROC_ON_ANY_DAMAGE_VICTIM;
 
 		/* aspect of the cheetah - add proc flags */
 		sp = dbcSpell.LookupEntryForced( 5118 );
 		if( sp != NULL )
-			sp->procFlags = 139944;
+			sp->procFlags = PROC_ON_ANY_DAMAGE_VICTIM;
 
 		sp = dbcSpell.LookupEntryForced(34471);
 		if(sp!=NULL)
