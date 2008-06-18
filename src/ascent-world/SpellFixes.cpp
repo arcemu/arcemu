@@ -15625,6 +15625,20 @@ void ApplyNormalFixes()
 
 	// Insert hunter spell fixes here
 
+		//Hunter - Go for the Throat
+		sp = dbcSpell.LookupEntryForced( 34950 );
+		if( sp != NULL )
+			sp->procFlags = PROC_ON_RANGED_CRIT_ATTACK;
+		sp = dbcSpell.LookupEntryForced( 34954 );
+		if( sp != NULL )
+			sp->procFlags = PROC_ON_RANGED_CRIT_ATTACK;
+		sp = dbcSpell.LookupEntryForced( 34952 );
+		if( sp != NULL )
+			sp->EffectImplicitTargetA[0] = EFF_TARGET_PET;
+		sp = dbcSpell.LookupEntryForced( 34953 );
+		if( sp != NULL )
+			sp->EffectImplicitTargetA[0] = EFF_TARGET_PET;
+
 		// Hunter - Improved Wing Clip
 		sp = dbcSpell.LookupEntryForced( 19228 );
 		if( sp != NULL )
