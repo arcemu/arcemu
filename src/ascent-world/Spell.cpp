@@ -2465,7 +2465,7 @@ bool Spell::TakePower()
 }
 
 void Spell::HandleEffects(uint64 guid, uint32 i)
-{   
+{
 	if(guid == m_caster->GetGUID() || guid == 0)
 	{
 		unitTarget = u_caster;
@@ -2505,8 +2505,10 @@ void Spell::HandleEffects(uint64 guid, uint32 i)
 				break;
 			case HIGHGUID_TYPE_PLAYER:
 				{
-					unitTarget =  m_caster->GetMapMgr()->GetPlayer((uint32)guid);
-					playerTarget = static_cast< Player* >(unitTarget);
+					unitTarget =  m_caster->GetMapMgr()->GetPlayer( (uint32)guid );
+					if ( unitTarget == NULL )
+						unitTarget = objmgr.GetPlayer( (uint32)guid );
+					playerTarget = static_cast< Player* >( unitTarget );
 				}break;
 			case HIGHGUID_TYPE_ITEM:
 				if( p_caster != NULL )
@@ -2521,10 +2523,10 @@ void Spell::HandleEffects(uint64 guid, uint32 i)
 				break;
 			}
 		}
-	}	
+	}
 
-	damage = CalculateEffect(i,unitTarget);  
-	sLog.outDebug( "WORLD: Spell effect id = %u, damage = %d", m_spellInfo->Effect[i], damage); 
+	damage = CalculateEffect(i,unitTarget);
+	sLog.outDebug( "WORLD: Spell effect id = %u, damage = %d", m_spellInfo->Effect[i], damage);
 	
 	if( m_spellInfo->Effect[i]<TOTAL_SPELL_EFFECTS)
 	{

@@ -164,16 +164,16 @@ pSpellEffect SpellEffectsHandler[TOTAL_SPELL_EFFECTS]={
 		&Spell::SpellEffectNULL,					// unknown - 141 // triggers spell, magic one,  (Mother spell) http://www.thottbot.com/s41065
 		&Spell::SpellEffectTriggerSpellWithValue,	//SPELL_EFFECT_TRIGGER_SPELL_WITH_VALUE - 142 // triggers some kind of "Put spell on target" thing... (dono for sure) http://www.thottbot.com/s40872 and http://www.thottbot.com/s33076
 		&Spell::SpellEffectNULL,					// unknown - 143 // Master -> deamon effecting spell, http://www.thottbot.com/s25228 and http://www.thottbot.com/s35696
-		&Spell::SpellEffectNULL,					// unknown - 144 // no spells
-		&Spell::SpellEffectNULL,					// unknown - 145 // http://thottbot.com/s46230
-		&Spell::SpellEffectNULL,					// unknown - 146 // no spells
-		&Spell::SpellEffectNULL,					// unknown - 147 // http://thottbot.com/s46070
-		&Spell::SpellEffectNULL,					// unknown - 148 // no spells
-		&Spell::SpellEffectNULL,					// unknown - 149 // http://thottbot.com/s23685 , http://thottbot.com/s44732 and http://thottbot.com/s45105
-		&Spell::SpellEffectNULL,					// unknown - 150 // no spells
-		&Spell::SpellEffectNULL,					// unknown - 151 // http://thottbot.com/s698 and http://thottbot.com/s45840 
-		&Spell::SpellEffectNULL,					// unknown - 152 // http://thottbot.com/s45927
-		&Spell::SpellEffectNULL,					// unknown - 153 // http://thottbot.com/s46686 , http://thottbot.com/s46716 , http://thottbot.com/s46717, http://thottbot.com/s46718 ...  // spelleffect summon pet ??
+		&Spell::SpellEffectNULL, // unknown - 144 // no spells
+		&Spell::SpellEffectNULL, // unknown - 145 // http://thottbot.com/s46230
+		&Spell::SpellEffectNULL, // unknown - 146 // no spells
+		&Spell::SpellEffectNULL, // SPELL_EFFECT_QUEST_FAIL - 147 // http://thottbot.com/s46070
+		&Spell::SpellEffectNULL, // unknown - 148 // no spells
+		&Spell::SpellEffectNULL, // unknown - 149 // http://thottbot.com/s23685 , http://thottbot.com/s44732 and http://thottbot.com/s45105
+		&Spell::SpellEffectNULL, // unknown - 150 // no spells
+		&Spell::SpellEffectSummonTarget, // SPELL_EFFECT_SUMMON_TARGET - 151 // trigger ritual of summoning
+		&Spell::SpellEffectNULL, // unknown - 152 // http://thottbot.com/s45927
+		&Spell::SpellEffectNULL, // SPELL_EFFECT_TAME_CREATURE - 153 // http://thottbot.com/s46686 , http://thottbot.com/s46716 , http://thottbot.com/s46717, http://thottbot.com/s46718 ...  // spelleffect summon pet ??
 };
 
 void Spell::SpellEffectNULL(uint32 i)
@@ -3397,8 +3397,7 @@ void Spell::SpellEffectSummonObject(uint32 i)
 		{
 			if( p_caster != NULL )
 			{
-				sChatHandler.BlueSystemMessage(p_caster->GetSession(),
-				"non-existant gameobject %u tried to be created by SpellEffectSummonObject. Report to devs!", entry);
+				sChatHandler.BlueSystemMessage(p_caster->GetSession(), "non-existant gameobject %u tried to be created by SpellEffectSummonObject. Report to devs!", entry);
 			}
 			return;
 		}
@@ -3406,37 +3405,36 @@ void Spell::SpellEffectSummonObject(uint32 i)
 		
 		go->SetInstanceID(m_caster->GetInstanceID());
 		go->CreateFromProto(entry,mapid,posx,posy,pz,orient);
-		go->SetUInt32Value(GAMEOBJECT_STATE, 1);		
+		go->SetUInt32Value(GAMEOBJECT_STATE, 1);
 		go->SetUInt64Value(OBJECT_FIELD_CREATED_BY,m_caster->GetGUID());
-		go->PushToWorld(m_caster->GetMapMgr());	  
+		go->PushToWorld(m_caster->GetMapMgr());
 		sEventMgr.AddEvent(go, &GameObject::ExpireAndDelete, EVENT_GAMEOBJECT_EXPIRE, GetDuration(), 1,0);
-		if(entry ==17032)//this is a portal
-		{//enable it for party only
-			go-> SetUInt32Value( GAMEOBJECT_STATE,0);
+		if ( entry == 17032 ) // this is a portal
+		{
+			// enable it for party only
+			go->SetUInt32Value( GAMEOBJECT_STATE, 0 );
 			//disable by default
-			WorldPacket *pkt = go->BuildFieldUpdatePacket(GAMEOBJECT_STATE, 1);
-			SubGroup * pGroup = p_caster->GetGroup() ?
-				p_caster->GetGroup()->GetSubGroup(p_caster->GetSubGroup()) : 0;
+			WorldPacket * pkt = go->BuildFieldUpdatePacket( GAMEOBJECT_STATE, 1 );
+			SubGroup * pGroup = p_caster->GetGroup() ? p_caster->GetGroup()->GetSubGroup(p_caster->GetSubGroup()) : NULL;
 
-			if(pGroup)
+			if ( pGroup != NULL )
 			{
 				p_caster->GetGroup()->Lock();
-				for(GroupMembersSet::iterator itr = pGroup->GetGroupMembersBegin();
-					itr != pGroup->GetGroupMembersEnd(); ++itr)
+				for ( GroupMembersSet::iterator itr = pGroup->GetGroupMembersBegin(); itr != pGroup->GetGroupMembersEnd(); ++itr )
 				{
-					if((*itr)->m_loggedInPlayer && m_caster != (*itr)->m_loggedInPlayer)
-						(*itr)->m_loggedInPlayer->GetSession()->SendPacket(pkt);
+					if( (*itr)->m_loggedInPlayer && m_caster != (*itr)->m_loggedInPlayer )
+						(*itr)->m_loggedInPlayer->GetSession()->SendPacket( pkt );
 				}
 				p_caster->GetGroup()->Unlock();
 			}
 			delete pkt;
 		}
-		else if(entry == 36727 || entry == 177193) // Portal of Summoning and portal of doom
+		else if ( entry == 36727 || entry == 177193 ) // Portal of Summoning and portal of doom
 		{
-			Player * pTarget = p_caster->GetMapMgr()->GetPlayer((uint32)p_caster->GetSelection());
-			if(!pTarget)
+			//Player * pTarget = p_caster->GetMapMgr()->GetPlayer( p_caster->GetSelection() );
+			Player * pTarget = objmgr.GetPlayer( p_caster->GetSelection() );
+			if ( pTarget == NULL || !pTarget->IsInWorld() )
 				return;
-
 			go->m_ritualmembers[0] = p_caster->GetLowGUID();
 			go->m_ritualcaster = p_caster->GetLowGUID();
 			go->m_ritualtarget = pTarget->GetLowGUID();
@@ -4427,14 +4425,16 @@ void Spell::SpellEffectStuck(uint32 i)
 
 void Spell::SpellEffectSummonPlayer(uint32 i)
 {
-	if(!playerTarget)
+	if( playerTarget == NULL )
 		return;
 
-	if(m_caster->GetMapMgr()->GetMapInfo() && m_caster->GetMapMgr()->GetMapInfo()->type != INSTANCE_NULL && m_caster->GetMapId() != playerTarget->GetMapId())
+	// vojta: from 2.4 players can be summoned on another map
+	//if( m_caster->GetMapMgr()->GetMapInfo() && m_caster->GetMapMgr()->GetMapInfo()->type != INSTANCE_NULL && m_caster->GetMapId() != playerTarget->GetMapId())
+	//	return;
+	if ( m_caster->GetMapMgr()->GetMapInfo() && playerTarget->getLevel() < m_caster->GetMapMgr()->GetMapInfo()->minlevel ) // we need some blizzlike message that player needs level xx - feel free to add it ;)
 		return;
-	
-	playerTarget->SummonRequest(m_caster->GetLowGUID(), m_caster->GetZoneId(), m_caster->GetMapId(),
-		m_caster->GetInstanceID(), m_caster->GetPosition());
+
+	playerTarget->SummonRequest( m_caster->GetLowGUID(), m_caster->GetZoneId(), m_caster->GetMapId(), m_caster->GetInstanceID(), m_caster->GetPosition() );
 }
 
 void Spell::SpellEffectActivateObject(uint32 i) // Activate Object
@@ -4730,8 +4730,8 @@ void Spell::SpellEffectCharge(uint32 i)
 	//	return;
 	if(!unitTarget->isAlive())
 		return;
-    if (u_caster->IsStunned() || u_caster->m_rooted || u_caster->IsPacified() || u_caster->IsFeared())
-        return;
+	if (u_caster->IsStunned() || u_caster->m_rooted || u_caster->IsPacified() || u_caster->IsFeared())
+		return;
 
 	float x, y, z;
 	float dx,dy;
@@ -5032,15 +5032,14 @@ void Spell::SpellEffectSummonObjectSlot(uint32 i)
 		}
 	}
 
-   
+
 	// spawn a new one
 	GoSummon = u_caster->GetMapMgr()->CreateGameObject(m_spellInfo->EffectMiscValue[i]);
-   if(! GoSummon->CreateFromProto(m_spellInfo->EffectMiscValue[i],
-		m_caster->GetMapId(), m_caster->GetPositionX(), m_caster->GetPositionY(), m_caster->GetPositionZ(), m_caster->GetOrientation() ))
-   {
+	if(! GoSummon->CreateFromProto(m_spellInfo->EffectMiscValue[i], m_caster->GetMapId(), m_caster->GetPositionX(), m_caster->GetPositionY(), m_caster->GetPositionZ(), m_caster->GetOrientation() ))
+	{
 		delete GoSummon;
 		return;
-   }
+	}
 	
 	GoSummon->SetUInt32Value(GAMEOBJECT_LEVEL, u_caster->getLevel());
 	GoSummon->SetUInt64Value(OBJECT_FIELD_CREATED_BY, m_caster->GetGUID()); 
@@ -5759,4 +5758,14 @@ void Spell::SpellEffectTriggerSpellWithValue(uint32 i)
 
 	SpellCastTargets tgt(unitTarget->GetGUID());
 	sp->prepare(&tgt);
+}
+
+void Spell::SpellEffectSummonTarget(uint32 i) // ritual of summoning
+{
+	if ( unitTarget == NULL )
+		return;
+
+	Spell * sp = new Spell( m_caster, dbcSpell.LookupEntry( m_spellInfo->EffectTriggerSpell[i] ), true, NULL );
+	SpellCastTargets tgt( unitTarget->GetGUID() );
+	sp->prepare( &tgt );
 }
