@@ -3923,7 +3923,7 @@ exit:
 					it = p_caster->GetItemInterface()->GetInventoryItem(EQUIPMENT_SLOT_RANGED);
 					if(it)
 					{
-						float weapondmg = it->GetProto()->Damage[0].Min + RandomFloat( it->GetProto()->Damage[0].Max );
+						float weapondmg = RandomFloat(1)*(it->GetProto()->Damage[0].Max - it->GetProto()->Damage[0].Min) + it->GetProto()->Damage[0].Min;
 						value += float2int32(150 + weapondmg/float(it->GetProto()->Delay/1000.0f)*2.8f);
 					}
 				}
