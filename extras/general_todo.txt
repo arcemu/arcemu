@@ -99,6 +99,8 @@ SMT_RESIST_DISPEL - check if it is used
 - fix exploit trading soulbound items
 - crash recovery should make sure to cleanup eventmanager of pointers forcedly deleted.
 - streangth totem and instances exploit exists at all ?
+- player in stealth must become visible when he start using bg flag or control point
+- if started bg have not enough players bg'll finished in 5 minutes all players recive 2marks
 
 ==========================================================================
 Zack - test my shit :

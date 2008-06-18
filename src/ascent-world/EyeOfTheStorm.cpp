@@ -20,6 +20,22 @@
 
 #include "StdAfx.h"
 
+static float EOTSBuffCoordinates[4][4] = {
+	{ 2050.542236f, 1372.680176f, 1194.561279f, 1.67552f },
+	{ 2047.728271f, 1749.736084f, 1190.198608f, -0.872665f },
+	{ 2283.300049f, 1748.891235f, 1189.706787f, 1.76278f },
+	{ 2050.542236f, 1372.680176f, 1194.561279f, -1.50098f },
+};
+
+static float EOTSBuffRotations[4][2] = {
+	{ 0.681998f, -0.731354f },
+	{ 0.771625f, 0.636078f },
+	{ 0.422618f, -0.906308f },
+	{ 0.743145f, 0.669131f },
+};
+
+uint32 EOTSbuffentrys[4] = {184964,184971,184978,184973};
+
 const float EOTSGraveyardLocations[EOTS_TOWER_COUNT][3] = {
 	{ 2012.403442f, 1455.412354f, 1172.201782f },			// BE Tower
 	{ 2013.061890f, 1677.238037f, 1182.125732f },			// Fel Reaver Ruins
@@ -89,6 +105,7 @@ EyeOfTheStorm::EyeOfTheStorm(MapMgr * mgr, uint32 id, uint32 lgroup, uint32 t) :
 
 	for(i = 0; i < EOTS_TOWER_COUNT; ++i)
 	{
+		EOTSm_buffs[i] = NULL;
 		m_CPStatus[i] = 50;
 		m_CPBanner[i] = NULL;
 		m_CPStatusGO[i] = NULL;
@@ -98,11 +115,21 @@ EyeOfTheStorm::EyeOfTheStorm(MapMgr * mgr, uint32 id, uint32 lgroup, uint32 t) :
 
 	m_flagHolder = 0;
 	m_points[0] = m_points[1] = 0;
+
+	m_playerCountPerTeam = 15;
 }
 
 EyeOfTheStorm::~EyeOfTheStorm()
 {
-
+	for(uint32 i = 0; i < EOTS_TOWER_COUNT; ++i)
+	{
+		if(EOTSm_buffs[i] != NULL)
+		{
+			EOTSm_buffs[i]->m_battleground = NULL;
+			if( !EOTSm_buffs[i]->IsInWorld() )
+			delete EOTSm_buffs[i];
+		}
+	}
 }
 
 void EyeOfTheStorm::RepopPlayersOfTeam(int32 team, Creature * sh)
@@ -185,6 +212,20 @@ void EyeOfTheStorm::HookOnAreaTrigger(Player * plr, uint32 id)
 		return;
 	}
 #endif
+	uint32 spellid=0;
+	uint32 x = (uint32)tid;
+	if(EOTSm_buffs[x] && EOTSm_buffs[x]->IsInWorld())
+	{
+		spellid = EOTSm_buffs[x]->GetInfo()->sound3;
+		SpellEntry * sp = dbcSpell.LookupEntryForced(spellid);
+		if(sp)
+		{
+			Spell * pSpell = new Spell(plr, sp, true, NULL);
+			SpellCastTargets targets(plr->GetGUID());
+			pSpell->prepare(&targets);
+		}
+		EOTSm_buffs[x]->Despawn(EOTS_BUFF_RESPAWN_TIME);
+	}
 
 	uint32 team = plr->GetTeam();
 	if( plr->GetLowGUID() != m_flagHolder )
@@ -233,6 +274,10 @@ void EyeOfTheStorm::HookOnAreaTrigger(Player * plr, uint32 id)
 void EyeOfTheStorm::HookOnPlayerDeath(Player * plr)
 {
 	plr->m_bgScore.Deaths++;
+	
+	if(plr->m_bgHasFlag)// m_flagHolder == plr->GetLowGUID() maybe need this
+		plr->RemoveAura( EOTS_NETHERWING_FLAG_SPELL );
+	
 	UpdatePvPData();
 }
 
@@ -283,7 +328,8 @@ void EyeOfTheStorm::HookOnMount(Player * plr)
 
 void EyeOfTheStorm::OnAddPlayer(Player * plr)
 {
-
+	if(!m_started)
+		plr->CastSpell(plr, BG_PREPARATION, true);
 }
 
 void EyeOfTheStorm::OnRemovePlayer(Player * plr)
@@ -300,6 +346,9 @@ void EyeOfTheStorm::OnRemovePlayer(Player * plr)
 		plr->RemoveAura( EOTS_NETHERWING_FLAG_SPELL );
 		//DropFlag( plr );
 	}
+
+	if(!m_started)
+		plr->RemoveAura(BG_PREPARATION);
 }
 
 void EyeOfTheStorm::DropFlag(Player * plr)
@@ -423,6 +472,11 @@ void EyeOfTheStorm::OnCreate()
 
 		m_bubbles[i]->PushToWorld( m_mapMgr );
 	}
+
+	SpawnBuff(EOTS_TOWER_DRAENEI);
+	SpawnBuff(EOTS_TOWER_MAGE);
+	SpawnBuff(EOTS_TOWER_FELREAVER);
+	SpawnBuff(EOTS_TOWER_BE);
 
 	/* Flag */
 	m_standFlag = m_mapMgr->CreateGameObject(184141);
@@ -645,37 +699,41 @@ bool EyeOfTheStorm::GivePoints(uint32 team, uint32 points)
 			{
 				(*itr)->Root();
 				
-				ItemPrototype *proto = ItemPrototypeStorage.LookupEntry(29024);
-				SlotResult slotresult;
-				slotresult = (*itr)->GetItemInterface()->FindFreeInventorySlot(proto);
+				if ( (*itr)==NULL )// never happen?
+					continue;
 
-				if(i == m_winningteam) {
-					if(!slotresult.Result)
+				if(i == m_winningteam)
+				{				
+					Item *item;
+					item = objmgr.CreateItem( 29024 , *itr);
+					item->SetUInt32Value(ITEM_FIELD_STACK_COUNT,3);
+					item->SoulBind();
+					if(!(*itr)->GetItemInterface()->AddItemToFreeSlot(item))
 					{
-						(*itr)->GetItemInterface()->BuildInventoryChangeError(NULL, NULL, INV_ERR_INVENTORY_FULL);
+						(*itr)->GetSession()->SendNotification("No free slots were found in your inventory!");
+						delete item;
 					}
 					else
 					{
-						Item *itm = objmgr.CreateItem(29024, (*itr));
-						itm->SetUInt32Value(ITEM_FIELD_STACK_COUNT, 100);
-						itm->SetUInt32Value(ITEM_FIELD_STACK_COUNT, 3);
-						(*itr)->GetItemInterface()->SafeAddItem(itm,slotresult.ContainerSlot, slotresult.Slot);
-						itm->m_isDirty = true;
+						SlotResult *lr = (*itr)->GetItemInterface()->LastSearchResult();
+						(*itr)->GetSession()->SendItemPushResult(item,false,true,false,true,lr->ContainerSlot,lr->Slot,3);
 					}
 				}
 				else
 				{
-					if(!slotresult.Result)
+					Item *item;
+					item = objmgr.CreateItem( 29024 , *itr);
+					item->SetUInt32Value(ITEM_FIELD_STACK_COUNT,1);
+					item->SoulBind();
+					if(!(*itr)->GetItemInterface()->AddItemToFreeSlot(item))
 					{
-						(*itr)->GetItemInterface()->BuildInventoryChangeError(NULL, NULL, INV_ERR_INVENTORY_FULL);
+						(*itr)->GetSession()->SendNotification("No free slots were found in your inventory!");
+						delete item;
 					}
 					else
 					{
-						Item *itm = objmgr.CreateItem(29024, (*itr));
-						itm->SetUInt32Value(ITEM_FIELD_STACK_COUNT, 100);
-						itm->SetUInt32Value(ITEM_FIELD_STACK_COUNT, 1);
-						(*itr)->GetItemInterface()->SafeAddItem(itm,slotresult.ContainerSlot, slotresult.Slot);
-						itm->m_isDirty = true;
+						SlotResult *lr = (*itr)->GetItemInterface()->LastSearchResult();
+						(*itr)->GetSession()->SendItemPushResult(item,false,true,false,true,lr->ContainerSlot,lr->Slot,1);
 					}
 				}
 			}
@@ -707,7 +765,36 @@ void EyeOfTheStorm::HookOnHK(Player * plr)
 
 void EyeOfTheStorm::SpawnBuff(uint32 x)
 {
+	uint32 chosen_buffid = EOTSbuffentrys[RandomUInt(3)];
+	GameObjectInfo * goi = GameObjectNameStorage.LookupEntry(chosen_buffid);
+	if(goi == NULL)
+		return;
 
+	if(EOTSm_buffs[x] == NULL)
+	{
+		EOTSm_buffs[x] = SpawnGameObject(chosen_buffid, m_mapMgr->GetMapId(), EOTSBuffCoordinates[x][0], EOTSBuffCoordinates[x][1], EOTSBuffCoordinates[x][2], EOTSBuffCoordinates[x][3], 0, 114, 1);
+
+		EOTSm_buffs[x]->SetFloatValue(GAMEOBJECT_ROTATION_02, EOTSBuffRotations[x][0]);
+		EOTSm_buffs[x]->SetFloatValue(GAMEOBJECT_ROTATION_03, EOTSBuffRotations[x][1]);
+		EOTSm_buffs[x]->SetUInt32Value(GAMEOBJECT_STATE, 1);
+		EOTSm_buffs[x]->SetUInt32Value(GAMEOBJECT_TYPE_ID, 6);
+		EOTSm_buffs[x]->SetUInt32Value(GAMEOBJECT_ANIMPROGRESS, 100);
+		EOTSm_buffs[x]->PushToWorld(m_mapMgr);
+	}
+	else
+	{
+		if(EOTSm_buffs[x]->IsInWorld())
+			EOTSm_buffs[x]->RemoveFromWorld(false);
+
+		if(chosen_buffid != EOTSm_buffs[x]->GetEntry())
+		{
+			EOTSm_buffs[x]->SetNewGuid(m_mapMgr->GenerateGameobjectGuid());
+			EOTSm_buffs[x]->SetUInt32Value(OBJECT_FIELD_ENTRY, chosen_buffid);
+			EOTSm_buffs[x]->SetInfo(goi);
+		}
+
+		EOTSm_buffs[x]->PushToWorld(m_mapMgr);
+}
 }
 
 LocationVector EyeOfTheStorm::GetStartingCoords(uint32 Team)
@@ -719,6 +806,12 @@ LocationVector EyeOfTheStorm::GetStartingCoords(uint32 Team)
 
 void EyeOfTheStorm::OnStart()
 {
+	for(uint32 i = 0; i < 2; ++i) {
+		for(set<Player*>::iterator itr = m_players[i].begin(); itr != m_players[i].end(); ++itr) {
+			(*itr)->RemoveAura(BG_PREPARATION);
+		}
+	}
+
 	uint32 i;
 
 	/* start the events */

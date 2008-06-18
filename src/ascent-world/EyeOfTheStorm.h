@@ -23,6 +23,8 @@
 
 #define EOTS_TOWER_COUNT 4
 
+#define EOTS_BUFF_RESPAWN_TIME 90000
+
 class EyeOfTheStorm : public CBattleground
 {
 public:
@@ -70,6 +72,7 @@ protected:
 	GameObject * m_CPStatusGO[EOTS_TOWER_COUNT];
 	GameObject * m_CPBanner[EOTS_TOWER_COUNT];
 	GameObject * m_bubbles[2];
+	GameObject * EOTSm_buffs[4];
 
 	typedef set<Player*> EOTSCaptureDisplayList;
 	EOTSCaptureDisplayList m_CPDisplay[EOTS_TOWER_COUNT];
