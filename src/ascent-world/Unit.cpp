@@ -6377,7 +6377,11 @@ void Unit::EventModelChange()
 		newmodelhalfsize = UnitModelSizeStorage.LookupEntry( GetUInt32Value( UNIT_FIELD_DISPLAYID ) );
 
 	if( newmodelhalfsize )
+	{
 		ModelHalfSize = newmodelhalfsize->HalfSize;
+//		if( IsCreature() && static_cast<Creature*>(this)->proto )
+//			ModelHalfSize *=  static_cast<Creature*>(this)->proto->BoundingRadius;
+	}
 	else
 		ModelHalfSize = 1.0f; //baaad, but it happens :(
 }

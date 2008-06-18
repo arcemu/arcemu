@@ -1045,10 +1045,13 @@ void AIInterface::_UpdateCombat(uint32 p_time)
 				combatReach[0] = m_nextTarget->GetModelHalfSize();
 				combatReach[1] = _CalcCombatRange(m_nextTarget, false);
 
-				if(	
-					distance >= combatReach[0] && 
-					distance <= combatReach[1] + DISTANCE_TO_SMALL_TO_WALK) // Target is in Range -> Attack
+				if(	(
+//					distance >= combatReach[0] &&  //removed by Zack. You can create an exploit with this that creature will never attack
+					distance <= combatReach[1] + DISTANCE_TO_SMALL_TO_WALK ) 
+//					|| gracefull_hit_on_target == m_nextTarget 
+					) // Target is in Range -> Attack
 				{
+//					gracefull_hit_on_target = NULL;
 					if(UnitToFollow != NULL)
 					{
 						UnitToFollow = NULL; //we shouldn't be following any one
@@ -1109,8 +1112,10 @@ void AIInterface::_UpdateCombat(uint32 p_time)
 					//calculate next move
 					float dist = combatReach[1];
 
-					if (distance<combatReach[0])
-						dist = -(distance+combatReach[0]*0.6666f);
+					//removed by Zack. You can create an exploit with this that creature will never attack
+//					if (distance<combatReach[0]) //if we are inside one each other
+//						dist = -(combatReach[1] - distance);
+//					gracefull_hit_on_target = m_nextTarget; // this is an exploit where you manage to move the exact speed that mob will reposition itself all the time
 
 					m_moveRun = true;
 					_CalcDestinationAndMove(m_nextTarget, dist);
@@ -1194,12 +1199,14 @@ void AIInterface::_UpdateCombat(uint32 p_time)
 				if(GetCastTime(sd) != 0)
 					StopMovement(0);
 
-				float distance = m_Unit->GetDistanceSq(m_nextTarget);
+				float distance = m_Unit->CalcDistance(m_nextTarget);
 				bool los = true;
 #ifdef COLLISION
 				los = CollideInterface.CheckLOS(m_Unit->GetMapId(), m_Unit->GetPositionNC(),m_nextTarget->GetPositionNC());
 #endif
-				if(los && ((distance <= (m_nextSpell->maxrange*m_nextSpell->maxrange)  && distance >= (m_nextSpell->minrange*m_nextSpell->minrange)) || m_nextSpell->maxrange == 0)) // Target is in Range -> Attack
+				if(los 
+					&& ( ( distance <= m_nextSpell->maxrange + m_Unit->GetModelHalfSize() && distance >= m_nextSpell->minrange ) 
+							|| m_nextSpell->maxrange == 0) ) // Target is in Range -> Attack
 				{
 					SpellEntry* spellInfo = m_nextSpell->spell;
 /*					if(m_nextSpell->procCount)
@@ -1243,10 +1250,10 @@ void AIInterface::_UpdateCombat(uint32 p_time)
 				{
 					//calculate next move
 					m_moveRun = true;
-					if(m_nextSpell->maxrange < 5.0f)
-						_CalcDestinationAndMove(m_nextTarget, 0.0f);
-					else
-						_CalcDestinationAndMove(m_nextTarget, m_nextSpell->maxrange - 5.0f);
+					if( distance > m_nextSpell->maxrange )
+						_CalcDestinationAndMove(m_nextTarget, m_nextSpell->maxrange ); //if we make exact movement we will never position perfectly
+					else // if( distance < m_nextSpell->minrange )
+						_CalcDestinationAndMove(m_nextTarget, m_nextSpell->minrange ); //if we make exact movement we will never position perfectly
 					/*Destination* dst = _CalcDestination(m_nextTarget, dist);
 					MoveTo(dst->x, dst->y, dst->z,0);
 					delete dst;*/

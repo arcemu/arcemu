@@ -2967,7 +2967,7 @@ void Player::LoadFromDBProc(QueryResultVector & results)
 		end = strchr(start,',');
                 if(!end)break;
                 *end=0;
-                la.positive = (bool)start;
+                la.positive = (start!=NULL);
                 start = end +1;
 		end = strchr(start,',');
 		if(!end)break;

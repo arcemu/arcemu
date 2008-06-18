@@ -37,7 +37,7 @@
 	#define CREATURE_DAZE_TRIGGER_ANGLE M_PI/2 //for the beginners this means 45 degrees 
 #endif
 
-#define DISTANCE_TO_SMALL_TO_WALK 1.0f
+#define DISTANCE_TO_SMALL_TO_WALK 2.0f //this is required so creature will not try to reposition itself to obtain perfect combat range. Not using this might lead to exploits
 
 class Object;
 class Creature;
@@ -448,6 +448,7 @@ protected:
 	bool m_hasCalledForHelp;
 	uint32 m_outOfCombatRange;
 
+//	Unit *gracefull_hit_on_target;
 	Unit *m_Unit;
 	Unit *m_PetOwner;
 	float FollowDistance;
