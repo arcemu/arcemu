@@ -64,6 +64,7 @@ public:
 	ASCENT_INLINE size_t GetNodeCount() { return m_pathNodes.size(); }
 	TaxiPathNode* GetPathNode(uint32 i);
 	ASCENT_INLINE uint32 GetPrice() { return price; }
+	ASCENT_INLINE uint32 GetSourceNode() { return from; }
 
 protected:
 

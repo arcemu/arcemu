@@ -740,7 +740,7 @@ enum SpellEffects
     SPELL_EFFECT_TELEPORT_GRAVEYARD,        //    120
     SPELL_EFFECT_DUMMYMELEE,                //    121
     SPELL_EFFECT_UNKNOWN1,                  //    122
-    SPELL_EFFECT_UNKNOWN2,                  //    123
+    SPELL_EFFECT_FILMING,                  //    123
     SPELL_EFFECT_PLAYER_PULL,               //    124
     SPELL_EFFECT_UNKNOWN4,                  //    125
     SPELL_EFFECT_UNKNOWN5,                  //    126
@@ -762,7 +762,17 @@ enum SpellEffects
     SPELL_EFFECT_UNKNOWN21,                 //    141
     SPELL_EFFECT_TRIGGER_SPELL_WITH_VALUE,	//    142
     SPELL_EFFECT_UNKNOWN23,                 //    143
-    TOTAL_SPELL_EFFECTS,                    //    144
+	SPELL_EFFECT_UNKNOWN24,					//    144
+	SPELL_EFFECT_UNKNOWN25,					//    145
+	SPELL_EFFECT_UNKNOWN26,					//    146
+	SPELL_EFFECT_UNKNOWN27,					//    147
+	SPELL_EFFECT_UNKNOWN28,					//    148
+	SPELL_EFFECT_UNKNOWN29,					//    149
+	SPELL_EFFECT_UNKNOWN30,					//    150
+	SPELL_EFFECT_UNKNOWN31,					//    151
+	SPELL_EFFECT_UNKNOWN32,					//    152
+	SPELL_EFFECT_UNKNOWN33,					//    153
+    TOTAL_SPELL_EFFECTS,                    //    154
 };
 
 // spell target system
@@ -1566,6 +1576,7 @@ public:
     void SpellEffectSkill(uint32 i);
     void SpellEffectApplyPetAura(uint32 i);
     void SpellEffectDummyMelee(uint32 i);
+	void SpellEffectFilming(uint32 i);
     void SpellEffectPlayerPull( uint32 i );
     void SpellEffectSpellSteal(uint32 i);
     void SpellEffectProspecting(uint32 i);
