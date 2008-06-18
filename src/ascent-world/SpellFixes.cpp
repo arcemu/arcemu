@@ -14327,6 +14327,22 @@ void ApplyNormalFixes()
 			if( sp->NameHash == SPELL_HASH_SEAL_OF_RIGHTEOUSNESS )
 				sp->spell_can_crit = false;
 
+		/**********************************************************
+		* Holy Shield
+		**********************************************************/
+		sp = dbcSpell.LookupEntryForced( 20925 ); // -- rank 1
+		if( sp != NULL )
+			sp->procFlags = PROC_ON_BLOCK_VICTIM;
+		sp = dbcSpell.LookupEntryForced( 20927 ); // -- rank 2
+		if( sp != NULL )
+			sp->procFlags = PROC_ON_BLOCK_VICTIM;
+		sp = dbcSpell.LookupEntryForced( 20928 ); // -- rank 3
+		if( sp != NULL )
+			sp->procFlags = PROC_ON_BLOCK_VICTIM;
+		sp = dbcSpell.LookupEntryForced( 27179 ); // -- rank 4
+		if( sp != NULL )
+			sp->procFlags = PROC_ON_BLOCK_VICTIM;
+
 		//////////////////////////////////////////
 		// HUNTER								//
 		//////////////////////////////////////////
