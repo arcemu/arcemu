@@ -56,6 +56,17 @@ const static CreateBattlegroundFunc BGCFuncs[BATTLEGROUND_NUM_TYPES] = {
 #endif
 };
 
+const static uint32 BGMinimumPlayers[BATTLEGROUND_NUM_TYPES] = {
+	0,							// 0
+	0,							// AV
+	5,							// WSG
+	5,							// AB
+	4,							// 2v2
+	6,							// 3v3
+	10,							// 5v5
+	5,							// Netherstorm
+};
+
 CBattlegroundManager::CBattlegroundManager() : EventableObject()
 {
 	m_maxBattlegroundId = 0;
@@ -285,7 +296,7 @@ void CBattlegroundManager::EventQueueUpdate()
 			if(IS_ARENA(i))
 			{
 				// enough players to start a round?
-				if(tempPlayerVec[0].size() < 2)
+				if(tempPlayerVec[0].size() < BGMinimumPlayers[i])
 					continue;
 
 				if(CanCreateInstance(i,j))
@@ -309,11 +320,11 @@ void CBattlegroundManager::EventQueueUpdate()
 			else
 			{
 #ifdef ONLY_ONE_PERSON_REQUIRED_TO_JOIN_DEBUG
-				if(tempPlayerVec[0].size() >= MINIMUM_PLAYERS_ON_EACH_SIDE_FOR_BG ||
-					tempPlayerVec[1].size() >= MINIMUM_PLAYERS_ON_EACH_SIDE_FOR_BG)
+				if(tempPlayerVec[0].size() >= 1 ||
+					tempPlayerVec[1].size() >= 1)
 #else
-				if(tempPlayerVec[0].size() >= MINIMUM_PLAYERS_ON_EACH_SIDE_FOR_BG &&
-					tempPlayerVec[1].size() >= MINIMUM_PLAYERS_ON_EACH_SIDE_FOR_BG)
+				if(tempPlayerVec[0].size() >= BGMinimumPlayers[i] &&
+					tempPlayerVec[1].size() >= BGMinimumPlayers[i])
 #endif
 				{
 					if(CanCreateInstance(i,j))
@@ -404,7 +415,10 @@ void CBattlegroundManager::EventQueueUpdate()
 				if((*itx)->m_loggedInPlayer)
 				{
 					if( ar->HasFreeSlots(0) )
+					{
 						ar->AddPlayer((*itx)->m_loggedInPlayer, 0);
+						(*itx)->m_loggedInPlayer->SetTeam(0);
+					}
 				}
 			}
 
@@ -413,7 +427,10 @@ void CBattlegroundManager::EventQueueUpdate()
 				if((*itx)->m_loggedInPlayer)
 				{
 					if( ar->HasFreeSlots(1) )
+					{
 						ar->AddPlayer((*itx)->m_loggedInPlayer, 1);
+						(*itx)->m_loggedInPlayer->SetTeam(1);
+					}
 				}
 			}
 		}
@@ -1019,7 +1036,7 @@ void CBattlegroundManager::SendBattlefieldStatus(Player * plr, uint32 Status, ui
 	{
 		if(Type >= BATTLEGROUND_ARENA_2V2 && Type <= BATTLEGROUND_ARENA_5V5)
 		{
-			data << uint32(plr->m_bgTeam);
+			data << uint32(0);		// Queue Slot 0..2. Only the first slot is used in Ascent!
 			switch(Type)
 			{
 			case BATTLEGROUND_ARENA_2V2:
