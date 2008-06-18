@@ -12177,36 +12177,6 @@ void Apply112SpellFixes()
 		sp->EffectSpellGroupRelation[0] = 16384;
 	}
 
-	// Spell 19485 Group Relation (Mortal Shots Rank 1)
-	sp = dbcSpell.LookupEntryForced(19485);
-	if(sp != NULL) {
-		sp->EffectSpellGroupRelation[0] = 408065;
-	}
-
-	// Spell 19487 Group Relation (Mortal Shots Rank 2)
-	sp = dbcSpell.LookupEntryForced(19487);
-	if(sp != NULL) {
-		sp->EffectSpellGroupRelation[0] = 408065;
-	}
-
-	// Spell 19488 Group Relation (Mortal Shots Rank 3)
-	sp = dbcSpell.LookupEntryForced(19488);
-	if(sp != NULL) {
-		sp->EffectSpellGroupRelation[0] = 408065;
-	}
-
-	// Spell 19489 Group Relation (Mortal Shots Rank 4)
-	sp = dbcSpell.LookupEntryForced(19489);
-	if(sp != NULL) {
-		sp->EffectSpellGroupRelation[0] = 408065;
-	}
-
-	// Spell 19490 Group Relation (Mortal Shots Rank 5)
-	sp = dbcSpell.LookupEntryForced(19490);
-	if(sp != NULL) {
-		sp->EffectSpellGroupRelation[0] = 408065;
-	}
-
 	// Spell 19498 Group Relation (Hawk Eye Rank 1)
 	sp = dbcSpell.LookupEntryForced(19498);
 	if(sp != NULL) {
@@ -16248,19 +16218,34 @@ void ApplyNormalFixes()
 		//Hunter : Mortal Shots
 		sp = dbcSpell.LookupEntryForced( 19485 );
 		if( sp != NULL )
-			sp->EffectSpellGroupRelation[0] = 4 ; //simple shot
+		{
+			sp->EffectSpellGroupRelation[0] = 1 | 2048 | 4096 | 131072 | 262144 ;
+			sp->EffectSpellGroupRelation_high[0] = 1 ;
+		}
 		sp = dbcSpell.LookupEntryForced( 19487 );
 		if( sp != NULL )
-			sp->EffectSpellGroupRelation[0] = 4 ; //simple shot
+		{
+			sp->EffectSpellGroupRelation[0] = 1 | 2048 | 4096 | 131072 | 262144 ;
+			sp->EffectSpellGroupRelation_high[0] = 1 ;
+		}
 		sp = dbcSpell.LookupEntryForced( 19488 );
 		if( sp != NULL )
-			sp->EffectSpellGroupRelation[0] = 4 ; //simple shot
+		{
+			sp->EffectSpellGroupRelation[0] = 1 | 2048 | 4096 | 131072 | 262144 ;
+			sp->EffectSpellGroupRelation_high[0] = 1 ;
+		}
 		sp = dbcSpell.LookupEntryForced( 19489 );
 		if( sp != NULL )
-			sp->EffectSpellGroupRelation[0] = 4 ; //simple shot
+		{
+			sp->EffectSpellGroupRelation[0] = 1 | 2048 | 4096 | 131072 | 262144 ;
+			sp->EffectSpellGroupRelation_high[0] = 1 ;
+		}
 		sp = dbcSpell.LookupEntryForced( 19490 );
 		if( sp != NULL )
-			sp->EffectSpellGroupRelation[0] = 4 ; //simple shot
+		{
+			sp->EffectSpellGroupRelation[0] = 1 | 2048 | 4096 | 131072 | 262144 ;
+			sp->EffectSpellGroupRelation_high[0] = 1 ;
+		}
 
 		//Hunter : Improved Barrage
 		sp = dbcSpell.LookupEntryForced( 35104 );
