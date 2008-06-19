@@ -145,7 +145,7 @@ pSpellEffect SpellEffectsHandler[TOTAL_SPELL_EFFECTS]={
 		&Spell::SpellEffectNULL,					// unknown - 122 //not used
 		&Spell::SpellEffectFilming,					//SPELL_EFFECT_FILMING - 123 // http://www.thottbot.com/?sp=27998: flightpath 
 		&Spell::SpellEffectPlayerPull,				//SPELL_EFFECT_PLAYER_PULL - 124 - http://thottbot.com/e2312
-		&Spell::SpellEffectNULL,					// unknown - 125 // Reduce Threat by % //http://www.thottbot.com/?sp=32835
+		&Spell::SpellEffectNULL,					//SPELL_EFFECT_REDUCE_THREAT_PERCENT - 125 // Reduce Threat by % //http://www.thottbot.com/?sp=32835
 		&Spell::SpellEffectSpellSteal,				//SPELL_EFFECT_SPELL_STEAL - 126 // Steal Beneficial Buff (Magic) //http://www.thottbot.com/?sp=30449
 		&Spell::SpellEffectProspecting,				// unknown - 127 // Search 5 ore of a base metal for precious gems.  This will destroy the ore in the process.
 		&Spell::SpellEffectApplyAura128,			// unknown - 128 // Adjust a stats by %: Mod Stat // ITS FLAT
@@ -153,7 +153,7 @@ pSpellEffect SpellEffectsHandler[TOTAL_SPELL_EFFECTS]={
 		&Spell::SpellEffectNULL,					// unknown - 130 // http://www.thottbot.com/s34477
 		&Spell::SpellEffectNULL,					// unknown - 131 // test spell
 		&Spell::SpellEffectNULL,					// unknown - 132 // no spells
-		&Spell::SpellEffectNULL,					//SPELL_EFFECT_FORGET_SPECIALIZATION - 133 // http://www.thottbot.com/s36441 // I think this is a gm/npc spell
+		&Spell::SpellEffectForgetSpecialization,	//SPELL_EFFECT_FORGET_SPECIALIZATION - 133 // http://www.thottbot.com/s36441 // I think this is a gm/npc spell
 		&Spell::SpellEffectNULL,					// unknown - 134 // related to summoning objects and removing them, http://www.thottbot.com/s39161
 		&Spell::SpellEffectNULL,					// unknown - 135 // no spells
 		&Spell::SpellEffectNULL,					// unknown - 136 // http://www.thottbot.com/s41542 and http://www.thottbot.com/s39703
@@ -5771,4 +5771,15 @@ void Spell::SpellEffectSummonTarget(uint32 i) // ritual of summoning
 	Spell * sp = new Spell( m_caster, dbcSpell.LookupEntry( m_spellInfo->EffectTriggerSpell[i] ), true, NULL );
 	SpellCastTargets tgt( unitTarget->GetGUID() );
 	sp->prepare( &tgt );
+}
+
+void Spell::SpellEffectForgetSpecialization(uint32 i)
+{
+	if (!playerTarget)
+		return;
+
+	uint32 spellid = m_spellInfo->EffectTriggerSpell[i];
+	playerTarget->removeSpell( spellid, false, false, 0);
+
+	sLog.outDebug("Player %u have forgot spell %u from spell %u ( caster: %u)", playerTarget->GetLowGUID(), spellid, m_spellInfo->Id, m_caster->GetLowGUID());
 }
