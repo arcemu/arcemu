@@ -3276,6 +3276,9 @@ void Player::OnPushToWorld()
 	// Update PVP Situation
 	LoginPvPSetup();
 
+	if ( m_playerInfo->lastOnline + 900 < UNIXTIME ) // did we logged out for more than 15 minutes?
+		m_ItemInterface->RemoveAllConjured();
+
 	Unit::OnPushToWorld();
    
 	if(m_FirstLogin)

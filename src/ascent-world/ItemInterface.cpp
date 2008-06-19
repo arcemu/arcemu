@@ -2727,16 +2727,13 @@ void ItemInterface::mSaveItemsToDatabase(bool first, QueryBuffer * buf)
 		{
 			if( GetInventoryItem( x )->GetProto() != NULL )
 			{
-				if( !( (GetInventoryItem( x )->GetProto()->Flags) & 2 ) ) // skip conjured item on save
+				if( IsBagSlot( x ) && GetInventoryItem( x )->IsContainer() )
 				{
-					if( IsBagSlot( x ) && GetInventoryItem( x )->IsContainer() )
-					{
-						static_cast< Container* >( GetInventoryItem( x ) )->SaveBagToDB( x, first, buf );
-					}
-					else
-					{
-						GetInventoryItem( x )->SaveToDB( INVENTORY_SLOT_NOT_SET, x, first, buf );
-					}
+					static_cast< Container* >( GetInventoryItem( x ) )->SaveBagToDB( x, first, buf );
+				}
+				else
+				{
+					GetInventoryItem( x )->SaveToDB( INVENTORY_SLOT_NOT_SET, x, first, buf );
 				}
 			}
 		}
