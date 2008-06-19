@@ -3342,16 +3342,16 @@ void Spell::SpellEffectSummonObject(uint32 i)
 		{
 			posx = px+r*co;
 			posy = py+r*si;
-			if( !(map->GetWaterType( posx, posy ) & 1) )//water 
+			if( !(map->GetWaterType( posx, posy ) & 1) )//water
 				continue;
 			posz = map->GetWaterHeight( posx, posy );
-			if( posz > map->GetLandHeight( posx, posy ) )//water 
+			if( posz > map->GetLandHeight( posx, posy ) )//water
 				break;
 		}
 
 		posx = px + r * co;
 		posy = py + r * si;
-		   
+
 		// Todo / Fix me: This should be loaded / cached
 		uint32 zone = p_caster->GetAreaID();
 		if( zone == 0 ) // If the player's area ID is 0, use the zone ID instead
@@ -3379,7 +3379,7 @@ void Spell::SpellEffectSummonObject(uint32 i)
 			 
 		go->SetInstanceID( m_caster->GetInstanceID() );
 		go->PushToWorld( m_caster->GetMapMgr() );
-	   
+
 		if( lootmgr.IsFishable( zone ) ) // Only set a 'splash' if there is any loot in this area / zone
 		{
 			uint32 seconds = RandomUInt(17) + 2;
@@ -3389,7 +3389,7 @@ void Spell::SpellEffectSummonObject(uint32 i)
 		p_caster->SetSummonedObject( go );
 	}
 	else
-	{//portal, lightwell
+	{
 		posx=px;
 		posy=py;		
 		GameObjectInfo * goI = GameObjectNameStorage.LookupEntry(entry);
@@ -3401,7 +3401,7 @@ void Spell::SpellEffectSummonObject(uint32 i)
 			}
 			return;
 		}
-		GameObject *go=u_caster->GetMapMgr()->CreateGameObject(entry);
+		GameObject *go=m_caster->GetMapMgr()->CreateGameObject(entry);
 		
 		go->SetInstanceID(m_caster->GetInstanceID());
 		go->CreateFromProto(entry,mapid,posx,posy,pz,orient);
@@ -3438,13 +3438,24 @@ void Spell::SpellEffectSummonObject(uint32 i)
 			go->m_ritualmembers[0] = p_caster->GetLowGUID();
 			go->m_ritualcaster = p_caster->GetLowGUID();
 			go->m_ritualtarget = pTarget->GetLowGUID();
-			go->m_ritualspell = m_spellInfo->Id;	 
+			go->m_ritualspell = m_spellInfo->Id;
+		}
+		else if ( entry == 186811 || entry == 181622 ) // ritual of refreshment, ritual of souls
+		{
+			go->m_ritualmembers[0] = p_caster->GetLowGUID();
+			go->m_ritualcaster = p_caster->GetLowGUID();
+			go->m_ritualtarget = 0;
+			go->m_ritualspell = m_spellInfo->Id;
+		}
+		else if ( entry == 186812 || entry == 181621 ) // Refreshment Table, Soulwell
+		{
+			go->charges = goI->sound1;
 		}
 		else//Lightwell,if there is some other type -- add it
 		{
-			go->charges=5;//Max 5 charges
+			go->charges = 5;//Max 5 charges
 		}
-		p_caster->SetSummonedObject(go);		
+		p_caster->SetSummonedObject(go);
 	}
 }
 

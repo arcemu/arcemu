@@ -1310,7 +1310,7 @@ void WorldSession::HandleGameObjectUse(WorldPacket & recv_data)
 			SpellCastTargets targets;
 			targets.m_unitTarget = plyr->GetGUID();
 			spell->prepare(&targets);
-			if(obj->charges>0 && !--obj->charges)
+			if ( obj->charges > 0 && !--obj->charges )
 				obj->ExpireAndDelete();
 		}break;
 	case GAMEOBJECT_TYPE_RITUAL: 
@@ -1352,7 +1352,7 @@ void WorldSession::HandleGameObjectUse(WorldPacket & recv_data)
 					}
 				}
 				
-				SpellEntry *info = NULL;				
+				SpellEntry *info = NULL;
 				if( goinfo->ID == 36727 ) // summon portal
 				{
 					if ( !obj->m_ritualtarget )
@@ -1363,12 +1363,12 @@ void WorldSession::HandleGameObjectUse(WorldPacket & recv_data)
 					Player * target = objmgr.GetPlayer( obj->m_ritualtarget );
 					if( target == NULL || !target->IsInWorld() )
 						return;
-					spell = new Spell( _player->GetMapMgr()->GetPlayer( obj->m_ritualmembers[0] ), info, true, NULL );
+					spell = new Spell( _player->GetMapMgr()->GetPlayer( obj->m_ritualcaster ), info, true, NULL );
 					SpellCastTargets targets;
 					targets.m_unitTarget = target->GetGUID();
 					spell->prepare( &targets );
 				}
-				else if(goinfo->ID == 177193) // doom portal
+				else if ( goinfo->ID == 177193 ) // doom portal
 				{
 					Player *psacrifice = NULL;
 					Spell * spell = NULL;
@@ -1393,7 +1393,7 @@ void WorldSession::HandleGameObjectUse(WorldPacket & recv_data)
 					targets.m_unitTarget = pCaster->GetGUID();
 					spell->prepare(&targets);
 				}
-				else if(goinfo->ID == 179944)			// Summoning portal for meeting stones
+				else if ( goinfo->ID == 179944 ) // Summoning portal for meeting stones
 				{
 					Player * plr = _player->GetMapMgr()->GetPlayer(obj->m_ritualtarget);
 					if(!plr)
@@ -1404,11 +1404,21 @@ void WorldSession::HandleGameObjectUse(WorldPacket & recv_data)
 						return;
 
 					info = dbcSpell.LookupEntry(goinfo->sound1);
-					Spell * spell = new Spell(pleader, info, true, 0);
-					SpellCastTargets targets(plr->GetGUID());
+					Spell * spell = new Spell( pleader, info, true, NULL );
+					SpellCastTargets targets( plr->GetGUID() );
 					spell->prepare(&targets);
 
 					/* expire the gameobject */
+					obj->ExpireAndDelete();
+				}
+				else if ( goinfo->ID == 186811 || goinfo->ID == 181622 )
+				{
+					info = dbcSpell.LookupEntry( goinfo->sound1 );
+					if ( info == NULL )
+						return;
+					Spell * spell = new Spell( _player->GetMapMgr()->GetPlayer( obj->m_ritualcaster ), info, true, NULL );
+					SpellCastTargets targets( obj->m_ritualcaster );
+					spell->prepare( &targets );
 					obj->ExpireAndDelete();
 				}
 			}

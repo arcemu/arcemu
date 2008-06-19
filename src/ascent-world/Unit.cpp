@@ -4100,7 +4100,7 @@ void Unit::castSpell( Spell * pSpell )
 			sEventMgr.AddEvent(this,&Unit::CancelSpell,m_currentSpell,EVENT_UNIT_DELAYED_SPELL_CANCEL,1,1,EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
 		}
 		else*/
-			m_currentSpell->cancel();
+		m_currentSpell->cancel();
 	}
 
 	m_currentSpell = pSpell;

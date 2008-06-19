@@ -18304,6 +18304,11 @@ void ApplyNormalFixes()
 		if( sp != NULL )
 			sp->EffectSpellGroupRelation[0] = 33554432;
 
+		// mage - Conjure Refreshment Table
+		sp = dbcSpell.LookupEntryForced( 43985 );
+		if ( sp != NULL )
+			sp->EffectImplicitTargetA[0] = EFF_TARGET_DYNAMIC_OBJECT;
+
 	//////////////////////////////////////////
 	// WARLOCK								//
 	//////////////////////////////////////////
