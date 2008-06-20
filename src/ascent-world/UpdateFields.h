@@ -1464,6 +1464,17 @@
 #define CORPSE_FIELD_DYNAMIC_FLAGS                             	OBJECT_END + 0x01E	//  Size: 1, Type: Int32, Flags: 256
 #define CORPSE_END                                              OBJECT_END + 0x01F
 
+
+
+#define UNIT_FIELD_STRENGTH						  UNIT_FIELD_STAT0
+#define UNIT_FIELD_AGILITY                        UNIT_FIELD_STAT1
+#define UNIT_FIELD_STAMINA                        UNIT_FIELD_STAT2
+#define UNIT_FIELD_INTELLECT                      UNIT_FIELD_STAT3
+#define UNIT_FIELD_SPIRIRT                        UNIT_FIELD_STAT4
+
+
+
+
 #endif		// __ASCENT_UPDATEFIELDS_H
 
 /*
