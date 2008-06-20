@@ -70,6 +70,9 @@ SMT_RESIST_DISPEL - check if it is used
 - only players can stealth ?
 - make aura stacking based on casters
 - battleground player grouping is not the best. There should some lvl range limitation
+- reloadtable does not work
+- you can spellsteal and stack as many auras you wish on yourself. Eventually it will crash server. Test with lightning shield.
+- on full account ban, client should get DCed
 
 ==========================================================================
 ! BUGS !
@@ -100,6 +103,7 @@ SMT_RESIST_DISPEL - check if it is used
 - streangth totem and instances exploit exists at all ?
 - player in stealth must become visible when he start using bg flag or control point
 - if started bg have not enough players bg'll finished in 5 minutes all players recive 2marks
+- focused fire and Spirit Bond reamins on caster after pet is dismissed : SPELL_FLAG_IS_EXPIREING_WITH_PET
 
 ==========================================================================
 Zack - test my shit :
