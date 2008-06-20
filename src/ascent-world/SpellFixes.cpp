@@ -162,7 +162,7 @@ void ApplyExtraDataFixes()
 	// Spell 589 (Shadow Word: Pain Rank 1) is infront from spell extra.
 	sp = dbcSpell.LookupEntryForced(589);
 	if( sp != NULL )
-		sp->in_front_status = SPELL_INFRONT_STATUS_REQUIRE_INFRONT;
+		sp->in_front_status = SPELL_INFRONT_STATUS_REQUIRE_SKIPCHECK;
 
 	// Spell 591 (Smite Rank 2) is infront from spell extra.
 	sp = dbcSpell.LookupEntryForced(591);
@@ -172,7 +172,7 @@ void ApplyExtraDataFixes()
 	// Spell 594 (Shadow Word: Pain Rank 2) is infront from spell extra.
 	sp = dbcSpell.LookupEntryForced(594);
 	if( sp != NULL )
-		sp->in_front_status = SPELL_INFRONT_STATUS_REQUIRE_INFRONT;
+		sp->in_front_status = SPELL_INFRONT_STATUS_REQUIRE_SKIPCHECK;
 
 	// Spell 598 (Smite Rank 3) is infront from spell extra.
 	sp = dbcSpell.LookupEntryForced(598);
@@ -282,7 +282,7 @@ void ApplyExtraDataFixes()
 	// Spell 851 (Polymorph: Sheep Rank 3) is infront from spell extra.
 	sp = dbcSpell.LookupEntryForced(851);
 	if( sp != NULL )
-		sp->in_front_status = SPELL_INFRONT_STATUS_REQUIRE_INFRONT;
+		sp->in_front_status = SPELL_INFRONT_STATUS_REQUIRE_SKIPCHECK;
 
 	// Spell 853 (Hammer of Justice Rank 1) is infront from spell extra.
 	sp = dbcSpell.LookupEntryForced(853);
@@ -317,7 +317,7 @@ void ApplyExtraDataFixes()
 	// Spell 970 (Shadow Word: Pain Rank 3) is infront from spell extra.
 	sp = dbcSpell.LookupEntryForced(970);
 	if( sp != NULL )
-		sp->in_front_status = SPELL_INFRONT_STATUS_REQUIRE_INFRONT;
+		sp->in_front_status = SPELL_INFRONT_STATUS_REQUIRE_SKIPCHECK;
 
 	// Spell 980 (Curse of Agony Rank 1) is infront from spell extra.
 	sp = dbcSpell.LookupEntryForced(980);
@@ -332,7 +332,7 @@ void ApplyExtraDataFixes()
 	// Spell 992 (Shadow Word: Pain Rank 4) is infront from spell extra.
 	sp = dbcSpell.LookupEntryForced(992);
 	if( sp != NULL )
-		sp->in_front_status = SPELL_INFRONT_STATUS_REQUIRE_INFRONT;
+		sp->in_front_status = SPELL_INFRONT_STATUS_REQUIRE_SKIPCHECK;
 
 	// Spell 1004 (Smite Rank 5) is infront from spell extra.
 	sp = dbcSpell.LookupEntryForced(1004);
@@ -612,7 +612,7 @@ void ApplyExtraDataFixes()
 	// Spell 2767 (Shadow Word: Pain Rank 5) is infront from spell extra.
 	sp = dbcSpell.LookupEntryForced(2767);
 	if( sp != NULL )
-		sp->in_front_status = SPELL_INFRONT_STATUS_REQUIRE_INFRONT;
+		sp->in_front_status = SPELL_INFRONT_STATUS_REQUIRE_SKIPCHECK;
 
 	// Spell 2812 (Holy Wrath Rank 1) is infront from spell extra.
 	sp = dbcSpell.LookupEntryForced(2812);
@@ -2167,17 +2167,17 @@ void ApplyExtraDataFixes()
 	// Spell 10892 (Shadow Word: Pain Rank 6) is infront from spell extra.
 	sp = dbcSpell.LookupEntryForced(10892);
 	if( sp != NULL )
-		sp->in_front_status = SPELL_INFRONT_STATUS_REQUIRE_INFRONT;
+		sp->in_front_status = SPELL_INFRONT_STATUS_REQUIRE_SKIPCHECK;
 
 	// Spell 10893 (Shadow Word: Pain Rank 7) is infront from spell extra.
 	sp = dbcSpell.LookupEntryForced(10893);
 	if( sp != NULL )
-		sp->in_front_status = SPELL_INFRONT_STATUS_REQUIRE_INFRONT;
+		sp->in_front_status = SPELL_INFRONT_STATUS_REQUIRE_SKIPCHECK;
 
 	// Spell 10894 (Shadow Word: Pain Rank 8) is infront from spell extra.
 	sp = dbcSpell.LookupEntryForced(10894);
 	if( sp != NULL )
-		sp->in_front_status = SPELL_INFRONT_STATUS_REQUIRE_INFRONT;
+		sp->in_front_status = SPELL_INFRONT_STATUS_REQUIRE_SKIPCHECK;
 
 	// Spell 10933 (Smite Rank 7) is infront from spell extra.
 	sp = dbcSpell.LookupEntryForced(10933);
@@ -6982,12 +6982,12 @@ void ApplyExtraDataFixes()
 	// Spell 25367 (Shadow Word: Pain Rank 9) is infront from spell extra.
 	sp = dbcSpell.LookupEntryForced(25367);
 	if( sp != NULL )
-		sp->in_front_status = SPELL_INFRONT_STATUS_REQUIRE_INFRONT;
+		sp->in_front_status = SPELL_INFRONT_STATUS_REQUIRE_SKIPCHECK;
 
 	// Spell 25368 (Shadow Word: Pain Rank 10) is infront from spell extra.
 	sp = dbcSpell.LookupEntryForced(25368);
 	if( sp != NULL )
-		sp->in_front_status = SPELL_INFRONT_STATUS_REQUIRE_INFRONT;
+		sp->in_front_status = SPELL_INFRONT_STATUS_REQUIRE_SKIPCHECK;
 
 	// Spell 25372 (Mind Blast Rank 10) is infront from spell extra.
 	sp = dbcSpell.LookupEntryForced(25372);
@@ -7627,7 +7627,7 @@ void ApplyExtraDataFixes()
 	// Spell 27605 (Shadow Word: Pain Rank 8) is infront from spell extra.
 	sp = dbcSpell.LookupEntryForced(27605);
 	if( sp != NULL )
-		sp->in_front_status = SPELL_INFRONT_STATUS_REQUIRE_INFRONT;
+		sp->in_front_status = SPELL_INFRONT_STATUS_REQUIRE_SKIPCHECK;
 
 	// Spell 27611 (Eviscerate ) is infront from spell extra.
 	sp = dbcSpell.LookupEntryForced(27611);
