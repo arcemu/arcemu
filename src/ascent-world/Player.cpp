@@ -10360,7 +10360,7 @@ void Player::_FlyhackCheck()
 	if(!mi) return; //wtf?
 
 	// Falling, CCs, etc. All stuff that could potentially trap a player in mid-air.
-	if(!(mi->flags & MOVEFLAG_FALLING) && !(mi->flags & MOVEFLAG_SWIMMING) && !(mi->flags & MOVEFLAG_LEVITATE)&& 
+	if(!(mi->flags & MOVEFLAG_FALLING) && !(mi->flags & MOVEFLAG_SWIMMING) && !(mi->flags & MOVEFLAG_LEVITATE) && !(mi->flags & MOVEFLAG_FEATHER_FALL) &&
 		!(m_special_state & UNIT_STATE_CHARM || m_special_state & UNIT_STATE_FEAR || m_special_state & UNIT_STATE_ROOT || m_special_state & UNIT_STATE_STUN || m_special_state & UNIT_STATE_POLYMORPH || m_special_state & UNIT_STATE_CONFUSE || m_special_state & UNIT_STATE_FROZEN)
 		&& !flying_aura && !FlyCheat)
 	{
