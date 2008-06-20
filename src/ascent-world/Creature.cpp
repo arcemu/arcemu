@@ -474,6 +474,9 @@ void Creature::_LoadQuests()
 
 void Creature::setDeathState(DeathState s) 
 {
+	if(s == ALIVE)
+		this->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_DEAD);
+
 	if(s == JUST_DIED) 
 	{
 
