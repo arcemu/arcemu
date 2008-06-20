@@ -31,7 +31,7 @@ bool ChatHandler::HandleResetReputationCommand(const char *args, WorldSession *m
 		SystemMessage(m_session, "Select a player or yourself first.");
 		return true;
 	}
-	
+
 	plr->_InitialReputation();
 	SystemMessage(m_session, "Done. Relog for changes to take effect.");
 	sGMLog.writefromsession(m_session, "used reset reputation for %s", plr->GetName());
@@ -72,7 +72,7 @@ bool ChatHandler::HandleInvisibleCommand(const char *args, WorldSession *m_sessi
 		pChar->m_isGmInvisible = true;
 		pChar->m_invisible = true;
 		pChar->bInvincible = true;
-		pChar->Social_TellFriendsOffline();		
+		pChar->Social_TellFriendsOffline();
 		snprintf(msg, 256, "%s ON.", msg);
 	}
 
@@ -362,7 +362,7 @@ bool ChatHandler::HandleKillCommand(const char *args, WorldSession *m_session)
 		sGMLog.writefromsession( m_session, "used kill command on CREATURE %u [%s], sqlid %u%s", static_cast< Creature* >( target )->GetEntry(), static_cast< Creature* >( target )->GetCreatureName() ? static_cast< Creature* >( target )->GetCreatureName()->Name : "unknown", static_cast< Creature* >( target )->GetSQL_id(), m_session->GetPlayer()->InGroup() ? ", in group" : "" );
 		break;
 	}
-	
+
 
 	// If we're killing a player, send a message indicating a gm killed them.
 	if(target->IsPlayer())
@@ -386,7 +386,7 @@ bool ChatHandler::HandleKillCommand(const char *args, WorldSession *m_session)
 
 /*		SpellEntry * se = dbcSpell.LookupEntry(20479);
 		if(se == 0) return false;
-		
+
 		SpellCastTargets targets(target->GetGUID());
 		Spell * sp = new Spell(target, se, true, 0);
 		sp->prepare(&targets);*/
@@ -437,7 +437,7 @@ bool ChatHandler::HandleCastSpellCommand(const char* args, WorldSession *m_sessi
 		RedSystemMessage(m_session, "Invalid spell id!");
 		return false;
 	}
-	
+
 	Spell *sp = new Spell(caster, spellentry, false, NULL);
 	if(!sp)
 	{
@@ -544,7 +544,7 @@ bool ChatHandler::HandleCastSelfCommand(const char* args, WorldSession *m_sessio
 		RedSystemMessage(m_session, "Invalid spell id!");
 		return false;
 	}
-	
+
 	Spell *sp = new Spell(target, spellentry, false, NULL);
 	if(!sp)
 	{
@@ -706,7 +706,7 @@ bool ChatHandler::HandleGODelete(const char *args, WorldSession *m_session)
 		RedSystemMessage(m_session, "No selected GameObject...");
 		return true;
 	}
-	
+
 	if(GObj->m_spawn != 0 && GObj->m_spawn->entry == GObj->GetEntry())
 	{
 		uint32 cellx=float2int32(((_maxX-GObj->m_spawn->x)/_cellSize));
@@ -727,12 +727,13 @@ bool ChatHandler::HandleGODelete(const char *args, WorldSession *m_session)
 		}
 	}
 	GObj->Despawn(0);
-	
+
+	sGMLog.writefromsession( m_session, "deleted gameobject %s, entry %u", GameObjectNameStorage.LookupEntry(GObj->GetEntry())->Name, GObj->GetEntry() );
+
 	delete GObj;
 
 	m_session->GetPlayer()->m_GM_SelectedGO = 0;
 
-	sGMLog.writefromsession( m_session, "deleted gameobject %s, entry %u", GameObjectNameStorage.LookupEntry(GObj->GetEntry())->Name, GObj->GetEntry() );
   /*  std::stringstream sstext;
 
 	GameObject *GObj = m_session->GetPlayer()->m_GM_SelectedGO;
@@ -763,7 +764,7 @@ bool ChatHandler::HandleGOSpawn(const char *args, WorldSession *m_session)
 		return false;
 
 	uint32 EntryID  = atoi(pEntryID);
-	
+
 	bool Save = false;
 	char* pSave = strtok(NULL, " ");
 	if (pSave)
@@ -782,7 +783,7 @@ bool ChatHandler::HandleGOSpawn(const char *args, WorldSession *m_session)
 	SystemMessage(m_session, sstext.str().c_str());
 
 	GameObject *go = m_session->GetPlayer()->GetMapMgr()->CreateGameObject(EntryID);
-	
+
 	Player *chr = m_session->GetPlayer();
 	uint32 mapid = chr->GetMapId();
 	float x = chr->GetPositionX();
@@ -792,7 +793,7 @@ bool ChatHandler::HandleGOSpawn(const char *args, WorldSession *m_session)
 
 	go->SetInstanceID(chr->GetInstanceID());
 	go->CreateFromProto(EntryID,mapid,x,y,z,o);
-	
+
 	/* fuck blizz coordinate system */
 	go->SetFloatValue(GAMEOBJECT_ROTATION_02, sinf(o / 2));
 	go->SetFloatValue(GAMEOBJECT_ROTATION_03, cosf(o / 2));
@@ -842,7 +843,7 @@ bool ChatHandler::HandleGOInfo(const char *args, WorldSession *m_session)
 		RedSystemMessage(m_session, "No selected GameObject...");
 		return true;
 	}
-	
+
 	SystemMessage(m_session, "%s Informations:",MSG_COLOR_SUBWHITE);
 	SystemMessage(m_session, "%s Entry:%s%u",MSG_COLOR_GREEN,MSG_COLOR_LIGHTBLUE,GObj->GetEntry());
 	SystemMessage(m_session, "%s Model:%s%u",MSG_COLOR_GREEN,MSG_COLOR_LIGHTBLUE,GObj->GetUInt32Value(GAMEOBJECT_DISPLAYID));
@@ -1020,7 +1021,7 @@ bool ChatHandler::HandleMountCommand(const char *args, WorldSession *m_session)
 		RedSystemMessage(m_session, "No target found.");
 		return true;
 	}
-	
+
 	if(m_target->GetUInt32Value(UNIT_FIELD_MOUNTDISPLAYID) != 0)
 	{
 		RedSystemMessage(m_session, "Target is already mounted.");
@@ -1029,7 +1030,7 @@ bool ChatHandler::HandleMountCommand(const char *args, WorldSession *m_session)
 
 	m_target->SetUInt32Value( UNIT_FIELD_MOUNTDISPLAYID , modelid);
 	//m_target->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_MOUNTED_TAXI);
-	
+
 	BlueSystemMessage(m_session, "Now mounted with model %d.", modelid);
 	sGMLog.writefromsession( m_session, "used mount command on PLAYER %s, model %u", m_plyr->GetName(), modelid );
 	return true;
@@ -1160,7 +1161,7 @@ bool ChatHandler::HandleGOExport(const char * args, WorldSession * m_session)
 {
 	/*if(!m_session->GetPlayer()->m_GM_SelectedGO)
 		return false;
-	
+
 	std::stringstream name;
 	if (*args)
 	{
@@ -1170,7 +1171,7 @@ bool ChatHandler::HandleGOExport(const char * args, WorldSession * m_session)
 	{
 		name << "GO_" << m_session->GetPlayer()->m_GM_SelectedGO->GetEntry() << ".sql";
 	}
-   
+
 	m_session->GetPlayer()->m_GM_SelectedGO->SaveToFile(name);
 
 	BlueSystemMessage(m_session, "Go saved to: %s", name.str().c_str());*/
@@ -1183,7 +1184,7 @@ bool ChatHandler::HandleGOExport(const char * args, WorldSession * m_session)
 	QueryResult * qr = WorldDatabase.Query("SELECT * FROM vendors WHERE entry = %u", pCreature->GetEntry());
 	if(qr != NULL)
 	{
-		do 
+		do
 		{
 			WorldDatabase.WaitExecute("INSERT INTO items_export SELECT * FROM items WHERE entry = %u", qr->Fetch()[1].GetUInt32());
 		} while (qr->NextRow());
