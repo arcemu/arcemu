@@ -659,8 +659,8 @@ void Creature::CalcStat(uint32 type)
 	//borrowed from player warrior formulas
 
 	//AP
-	int AP = GetUInt32Value( UNIT_FIELD_LEVEL ) * 3 + GetUInt32Value( UNIT_FIELD_STRENGTH ) * 2 - 20;
-	int RAP = GetUInt32Value( UNIT_FIELD_LEVEL ) + GetUInt32Value( UNIT_FIELD_AGILITY ) - 10;
+	int AP = GetUInt32Value( UNIT_FIELD_LEVEL ) * 3 + ( GetUInt32Value( UNIT_FIELD_STRENGTH ) - BaseStats[ 0 ] ) * 2 - 20;
+	int RAP = GetUInt32Value( UNIT_FIELD_LEVEL ) + GetUInt32Value( UNIT_FIELD_AGILITY ) - BaseStats[ 1 ] - 10;
 	if( RAP < 0 )RAP = 0;
 	if( AP < 0 )AP = 0;
 	SetUInt32Value( UNIT_FIELD_ATTACK_POWER, AP );
