@@ -16324,18 +16324,18 @@ void ApplyNormalFixes()
 			sp->EffectSpellGroupRelation[1] = 128;
 		}
 
-		/*
+		
 		//Hunter : Entrapment
 		sp = dbcSpell.LookupEntryForced( 19184 );
 		if( sp != NULL )
-			sp->procFlags = PROC_ON_CAST_SPELL;
+			sp->procFlags = PROC_ON_TRAP_TRIGGER;
 		sp = dbcSpell.LookupEntryForced( 19387 );
 		if( sp != NULL )
-			sp->procFlags = PROC_ON_CAST_SPELL;
+			sp->procFlags = PROC_ON_TRAP_TRIGGER;
 		sp = dbcSpell.LookupEntryForced( 19388 );
 		if( sp != NULL )
-			sp->procFlags = PROC_ON_CAST_SPELL;
-		*/
+			sp->procFlags = PROC_ON_TRAP_TRIGGER;
+		
 		/* aspect of the pack - change to AA */
 		sp = dbcSpell.LookupEntryForced( 13159 );
 		if( sp != NULL )

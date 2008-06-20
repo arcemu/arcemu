@@ -975,19 +975,6 @@ void Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, uint
 							if( myroll > chance )
 								continue;
 						}break;
-/*						//disabled by zack until finished : this needs to get trigered on trap trigger and not trap cast
-						// hunter - Entrapment
-						case 19185:
-						{
-							if( CastingSpell == NULL )
-								continue;
-								//only trigger effect for specified spells
-								if( CastingSpell->NameHash!=SPELL_HASH_BACKSTAB && //immolation trap
-									CastingSpell->NameHash!=SPELL_HASH_SINISTER_STRIKE && //frost trap
-									CastingSpell->NameHash!=SPELL_HASH_SHIV && //shiv
-									CastingSpell->NameHash!=SPELL_HASH_GOUGE ) //gouge
-									continue;
-						}break;*/
 						// Mage ignite talent only for fire dmg
 						case 12654:
 						{

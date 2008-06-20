@@ -4276,7 +4276,28 @@ void Spell::SpellEffectScriptEffect(uint32 i) // Script Effect
 				sp->prepare( &tgt1 );
 			}
 		}break;
-	case 35708:
+		case 34026: //Hunter: Kill Command
+		{
+			// in this case unitTarget == pet
+			if( p_caster == NULL || unitTarget == NULL || unitTarget->getDeathState() != ALIVE )
+				return;
+
+			AI_Spell* Sp = static_cast< Pet* >( unitTarget )->CreateAISpell( dbcSpell.LookupEntry( 34027 ) );
+
+			Unit* tgt = p_caster->GetMapMgr()->GetUnit( p_caster->GetSelection() );
+
+			if( tgt != NULL && isAttackable( p_caster, tgt ) )
+			{
+				unitTarget->GetAIInterface()->AttackReaction( tgt, 1 );
+				unitTarget->GetAIInterface()->SetNextTarget( tgt );
+			}
+			else if( unitTarget->CombatStatus.GetPrimaryAttackTarget() == NULL )
+				return;				
+			unitTarget->GetAIInterface()->SetNextSpell( Sp );
+			//TODO: Kill Command - return to previous pet target after cast
+
+         }break; 
+		case 35708:
 		{
 			if( p_caster == NULL || unitTarget == NULL)
 				return; //can't imagine how this talent got to anybody else then a player casted on pet

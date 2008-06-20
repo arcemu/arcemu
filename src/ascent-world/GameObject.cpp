@@ -200,6 +200,14 @@ void GameObject::Update(uint32 p_time)
 				tgt.m_destY = GetPositionY();
 				tgt.m_destZ = GetPositionZ();
 				sp->prepare(&tgt);
+
+				// proc on trap trigger
+				if( pInfo->Type == GAMEOBJECT_TYPE_TRAP )
+				{
+					if( m_summoner != NULL )
+						m_summoner->HandleProc( PROC_ON_TRAP_TRIGGER, pUnit, spell );
+				} 
+
 				if(m_summonedGo)
 				{
 					ExpireAndDelete();
