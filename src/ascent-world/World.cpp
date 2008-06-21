@@ -1292,6 +1292,7 @@ void World::Rehash(bool load)
 	crossover_chars = Config.OptionalConfig.GetBoolDefault("Interfaction", "CrossOverCharacters", false);
 	start_level = Config.OptionalConfig.GetIntDefault("Optional", "StartingLevel", 1);
 	if(start_level > 70) {start_level = 70;}
+	realmAllowTBCcharacters = Config.OptionalConfig.GetBoolDefault("Optional", "AllowTBC", true);
 
 	announce_tag = Config.MainConfig.GetStringDefault("Announce", "Tag", "Staff");
 	GMAdminTag = Config.MainConfig.GetBoolDefault("Announce", "GMAdminTag", false);

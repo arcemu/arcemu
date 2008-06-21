@@ -503,6 +503,8 @@ public:
 	bool interfaction_friend;
 	bool interfaction_misc;
 	bool crossover_chars;
+
+	bool realmAllowTBCcharacters;
 	
 	std::string announce_tag;
 	bool GMAdminTag;
