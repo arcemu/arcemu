@@ -6514,7 +6514,7 @@ void Player::RemovePlayerPet(uint32 pet_number)
 	{
 		delete itr->second;
 		m_Pets.erase(itr);
-		EventDismissPet();
+		RemovePetAuras();
 	}
 }
 #ifndef CLUSTERING
@@ -9928,7 +9928,7 @@ void Player::EventSummonPet( Pet *new_pet )
 
 //if pet/charm died or whatever hapened we should call this function
 //!! note function might get called multiple times :P
-void Player::EventDismissPet()
+void Player::RemovePetAuras()
 {
 	for(uint32 x=0;x<MAX_AURAS+MAX_PASSIVE_AURAS;x++)
 		if(m_auras[x] && m_auras[x]->GetSpellProto()->c_is_flags & SPELL_FLAG_IS_EXPIREING_WITH_PET)

@@ -1044,7 +1044,7 @@ public:
 		return 0;
 	}
 	void						EventSummonPet(Pet *new_pet); //if we charmed or simply summoned a pet, this function should get called
-	void						EventDismissPet(); //if pet/charm died or whatever happned we should call this function
+	void						RemovePetAuras(); //if pet/charm died or whatever happned we should call this function
 
     /************************************************************************/
     /* Item Interface                                                       */
