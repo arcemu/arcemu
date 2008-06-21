@@ -415,6 +415,7 @@ CREATE TABLE `creature_spawns` (
   `channel_target_sqlid` int(30) NOT NULL default '0',
   `channel_target_sqlid_creature` int(30) NOT NULL default '0',
   `standstate` int(10) NOT NULL default '0',
+  `mount` int(10) unsigned NOT NULL default '0',
   PRIMARY KEY  (`id`)
 ) ENGINE=MyISAM /*!40100 DEFAULT CHARSET=latin1 COMMENT='Spawn System'*/;
 
