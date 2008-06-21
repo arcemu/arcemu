@@ -1741,6 +1741,7 @@ void Spell::finish()
 		{
 			p_caster->EventAttackStop();
 			p_caster->smsg_AttackStop( p_caster->GetSelection() );
+			p_caster->GetSession()->OutPacket( SMSG_CANCEL_COMBAT );
 		}
 
 		if(m_requiresCP && !GetSpellFailed())
