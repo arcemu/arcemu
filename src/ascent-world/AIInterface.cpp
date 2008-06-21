@@ -1110,7 +1110,8 @@ void AIInterface::_UpdateCombat(uint32 p_time)
 				else // Target out of Range -> Run to it
 				{
 					//calculate next move
-					float dist = combatReach[1];
+//					float dist = combatReach[1]; //this is theoretically right but annoying formula in game
+					float dist = combatReach[1] - m_Unit->GetFloatValue( UNIT_FIELD_COMBATREACH ); //ignore our combat reach, make sure target (player) can reach us first.
 
 					//removed by Zack. You can create an exploit with this that creature will never attack
 //					if (distance<combatReach[0]) //if we are inside one each other
