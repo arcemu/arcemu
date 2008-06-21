@@ -1031,6 +1031,9 @@ bool Item::IsGemRelated( EnchantEntry* Enchantment )
 
 uint32 Item::GetSocketsCount()
 {
+	if(this->GetTypeId() == TYPEID_CONTAINER) // no sockets on containers.
+		return 0;
+
 	uint32 c = 0;
 	for( uint32 x = 0; x < 3; x++ )
 		if( GetProto()->Sockets[x].SocketColor )
