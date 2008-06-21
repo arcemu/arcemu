@@ -73,6 +73,7 @@ SMT_RESIST_DISPEL - check if it is used
 - reloadtable does not work
 - you can spellsteal and stack as many auras you wish on yourself. Eventually it will crash server. Test with lightning shield.
 - on full account ban, client should get DCed
+- http://www.wowhead.com/?spell=45819 -> make this spell to have max 1 targets
 
 ==========================================================================
 ! BUGS !
