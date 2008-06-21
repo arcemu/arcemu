@@ -6514,7 +6514,7 @@ void Player::RemovePlayerPet(uint32 pet_number)
 	{
 		delete itr->second;
 		m_Pets.erase(itr);
-		RemovePetAuras();
+		EventDismissPet();
 	}
 }
 #ifndef CLUSTERING
@@ -9928,7 +9928,7 @@ void Player::EventSummonPet( Pet *new_pet )
 
 //if pet/charm died or whatever hapened we should call this function
 //!! note function might get called multiple times :P
-void Player::RemovePetAuras()
+void Player::EventDismissPet()
 {
 	for(uint32 x=0;x<MAX_AURAS+MAX_PASSIVE_AURAS;x++)
 		if(m_auras[x] && m_auras[x]->GetSpellProto()->c_is_flags & SPELL_FLAG_IS_EXPIREING_WITH_PET)
@@ -10360,8 +10360,8 @@ void Player::_FlyhackCheck()
 	if(!mi) return; //wtf?
 
 	// Falling, CCs, etc. All stuff that could potentially trap a player in mid-air.
-	if(!(mi->flags & MOVEFLAG_FALLING) && !(mi->flags & MOVEFLAG_SWIMMING) && !(mi->flags & MOVEFLAG_LEVITATE) && !(mi->flags & MOVEFLAG_FEATHER_FALL) &&
-		!(m_special_state & UNIT_STATE_CHARM || m_special_state & UNIT_STATE_FEAR || m_special_state & UNIT_STATE_ROOT || m_special_state & UNIT_STATE_STUN || m_special_state & UNIT_STATE_POLYMORPH || m_special_state & UNIT_STATE_CONFUSE || m_special_state & UNIT_STATE_FROZEN)
+	if(!(mi->flags & (MOVEFLAG_FALLING | MOVEFLAG_SWIMMING | MOVEFLAG_LEVITATE | MOVEFLAG_FEATHER_FALL)) &&
+		!(m_special_state & (UNIT_STATE_CHARM | UNIT_STATE_FEAR | UNIT_STATE_ROOT | UNIT_STATE_STUN | UNIT_STATE_POLYMORPH | UNIT_STATE_CONFUSE | UNIT_STATE_FROZEN))
 		&& !flying_aura && !FlyCheat)
 	{
 		float t_height = CollideInterface.GetHeight(GetMapId(), GetPositionX(), GetPositionY(), GetPositionZ() + 2.0f);

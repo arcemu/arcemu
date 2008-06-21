@@ -440,6 +440,7 @@ void Pet::LoadFromDB(Player* owner, PlayerPet * pi)
 	Create(pi->name.c_str(), owner->GetMapId(), owner->GetPositionX() + 2 , owner->GetPositionY() +2, owner->GetPositionZ(), owner->GetOrientation());
 
 	LoadValues(mPi->fields.c_str());
+
 	m_PetNumber = mPi->number;
 	m_PetXP = mPi->xp;
 	m_name = mPi->name;
@@ -494,6 +495,13 @@ void Pet::LoadFromDB(Player* owner, PlayerPet * pi)
 		ApplyStatsForLevel();
 	}
 	
+	//if pet was dead on logout then it should be dead now too
+	if( HasFlag( UNIT_FIELD_FLAGS, UNIT_FLAG_DEAD ) )
+	{
+		SetUInt32Value(UNIT_FIELD_HEALTH, 0); //this is probably already 0
+		setDeathState( JUST_DIED );
+		m_Owner->EventDismissPet();	//just in case in near future(or any other) on loading auras get applied then make sure we remove those
+	}
 }
 
 void Pet::OnPushToWorld()
@@ -654,7 +662,7 @@ void Pet::Remove(bool bSafeDelete, bool bUpdate, bool bSetOffline)
 		// remove association with player
 		m_Owner->SetUInt64Value(UNIT_FIELD_SUMMON, 0);
 
-		m_Owner->RemovePetAuras();
+		m_Owner->EventDismissPet();
 
 		if(bUpdate) 
 		{
