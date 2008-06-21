@@ -734,27 +734,19 @@ void Pet::GiveXP( uint32 xp )
 	if(changed) ApplyStatsForLevel();
 }
 
-uint32 Pet::GetNextLevelXP(uint32 currentlevel)
+uint32 Pet::GetNextLevelXP(uint32 level)
 {
-	uint32 level = currentlevel + 1;
+	// Pets need only 1/6 of xp to level up compared to players
 	uint32 nextLvlXP = 0;
-	if( level > 0 && level <= 30 )
+	if( level > 0 && level <= MAX_PREDEFINED_NEXTLEVELXP )
 	{
-		nextLvlXP = ((int)((((double)(8 * level * ((level * 5) + 45)))/100)+0.5))*100;
-	}
-	else if( level == 31 )
-	{
-		nextLvlXP = ((int)((((double)(((8 * level) + 3) * ((level * 5) + 45)))/100)+0.5))*100;
-	}
-	else if( level == 32 )
-	{
-		nextLvlXP = ((int)((((double)(((8 * level) + 6) * ((level * 5) + 45)))/100)+0.5))*100;
+		nextLvlXP = NextLevelXp[ level - 1 ];
 	}
 	else
 	{
 		nextLvlXP = ((int)((((double)(((8 * level) + ((level - 30) * 5)) * ((level * 5) + 45)))/100)+0.5))*100;
 	}
-	double xp = double(nextLvlXP) / 4.0;
+	double xp = double(nextLvlXP) / 6;
 	return FL2UINT(xp);
 }
 
@@ -1600,7 +1592,6 @@ void Pet::AddPetSpellToOwner(uint32 spellId)
 			m_Owner->addSpell(TeachingSpellID);
 			return;
 		}
-	
 	}
 	else
 		sLog.outDebug("WORLD: Could not find teaching spell for spell %u", spellId);
@@ -1828,4 +1819,5 @@ uint32 Pet::GetUntrainCost()
 	// costs are: 10s, 50s, 1g, 2g, ..(+1g).. 10g cap
 	return 1000;
 }
+
 

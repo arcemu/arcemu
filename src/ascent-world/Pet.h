@@ -142,7 +142,6 @@ public:
 
 	ASCENT_INLINE void SetPetDiet(uint32 diet) { m_Diet = diet; }
 	ASCENT_INLINE void SetPetDiet() { m_Diet = myFamily->petdietflags; }
-
 	ASCENT_INLINE uint32 GetPetDiet(void) { return m_Diet; }
 	
 	ASCENT_INLINE AI_Spell* GetAISpellForSpellId(uint32 spellid)
@@ -260,7 +259,6 @@ protected:
 #define PET_LOYALTY_UPDATE_TIMER 120000
 #define PET_HAPPINESS_UPDATE_VALUE 333000
 #define PET_HAPPINESS_UPDATE_TIMER 7500
-#define PET_PARTY_SPELLS_UPDATE_TIMER 10000
 
 #define PET_ACTION_ACTION   0x700
 #define PET_ACTION_STATE	0x600
@@ -269,5 +267,4 @@ protected:
 #define PET_ACTION_SPELL	0xC100
 #define PET_ACTION_SPELL_1  0x8100
 #define PET_ACTION_SPELL_2  0x0100
-#define PET_SPELL_AUTOCAST_CHANCE 50
 #endif
