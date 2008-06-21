@@ -610,7 +610,7 @@ void GossipScript::GossipHello(Object* pObject, Player* Plr, bool AutoSend)
 		Plr->getClass() == HUNTER &&					// hunter class
 		Plr->GetSummon() != NULL )						// have pet
 	{
-		Menu->AddItem(0, "I would like to untrain my pet.", 13); //TODO: Find proper message
+		Menu->AddItem(0, "I wish to untrain my pet.", 13);
 	}
 
 	if(AutoSend)

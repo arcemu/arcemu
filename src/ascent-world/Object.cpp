@@ -2359,10 +2359,12 @@ void Object::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
 		if(pVictim != this /* && updateskill */)
 		{
 			// Send AI Reaction UNIT vs UNIT
+			/* Weird: why should WE react on OUR damage?
+			If meaning of this is to get reaction of victim, then its already handled few rows below... 
 			if( GetTypeId() ==TYPEID_UNIT )
 			{
 				static_cast< Unit* >( this )->GetAIInterface()->AttackReaction( pVictim, damage, spellId );
-			}
+			}*/
 			
 			// Send AI Victim Reaction
 			if( this->IsPlayer() || this->GetTypeId() == TYPEID_UNIT )
@@ -2370,6 +2372,15 @@ void Object::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
 				if( pVictim->GetTypeId() != TYPEID_PLAYER )
 				{
 					static_cast< Creature* >( pVictim )->GetAIInterface()->AttackReaction( static_cast< Unit* >( this ), damage, spellId );
+				}
+			}
+			if( pVictim->GetTypeId() == TYPEID_PLAYER )
+			{
+				// Defensive pet
+				Pet* pPet = static_cast< Player* >( pVictim )->GetSummon();
+				if( pPet != NULL && pPet->GetPetState() != PET_STATE_PASSIVE )
+				{
+					pPet->GetAIInterface()->AttackReaction( static_cast< Unit* >( this ), 1 );
 				}
 			}
 		}

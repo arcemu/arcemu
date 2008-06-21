@@ -74,10 +74,6 @@ void WorldSession::HandlePetAction(WorldPacket & recv_data)
 		if(!pTarget) pTarget = pPet;	// target self
 	}
 
-	if(action==PET_ACTION_ACTION && misc==PET_ACTION_STAY)//sit if STAY commanded
-		pPet->SetStandState(STANDSTATE_SIT);
-	else 
-		pPet->SetStandState(STANDSTATE_STAND);
 	switch(action)
 	{
 	case PET_ACTION_ACTION:
@@ -247,7 +243,7 @@ void WorldSession::HandlePetNameQuery(WorldPacket & recv_data)
 
 	WorldPacket data(8 + pPet->GetName().size());
 	data.SetOpcode(SMSG_PET_NAME_QUERY_RESPONSE);
-	data << (uint32)pPet->GetUIdFromGUID();
+	data << ((uint32)pPet->GetUIdFromGUID() | 0x00000040);
 	data << pPet->GetName();
 	data << pPet->GetUInt32Value(UNIT_FIELD_PET_NAME_TIMESTAMP);		// stops packet flood
 	SendPacket(&data);
