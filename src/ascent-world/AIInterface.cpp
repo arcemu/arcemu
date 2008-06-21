@@ -2241,6 +2241,14 @@ void AIInterface::UpdateMove()
 	//m_nextPosX = m_nextPosY = m_nextPosZ = 0;
 
 	uint32 moveTime;
+#ifdef INHERIT_FOLLOWED_UNIT_SPEED
+	if( UnitToFollow )
+	{
+//		moveTime = (uint32) (distance * 1000 / UnitToFollow->m_runSpeed ); //i wonder if runpeed can ever frop to 0
+		//life sucks, due to calculations the pet will move slower with corect formulas. We add some catch-up speed
+		moveTime = (uint32) (distance * 1000 / ( UnitToFollow->m_runSpeed * sqrt( distance ) ) ); //i wonder if runpeed can ever frop to 0
+	}
+#endif
 	if(m_moveFly)
 		moveTime = (uint32) (distance / m_flySpeed);
 	else if(m_moveRun)
@@ -2280,6 +2288,7 @@ void AIInterface::UpdateMove()
 	if(m_moveTimer == 0)
 	{
 		m_moveTimer =  UNIT_MOVEMENT_INTERPOLATE_INTERVAL; // update every few msecs
+		m_moveTimer = moveTime;
 	}
 
 	m_creatureState = MOVING;

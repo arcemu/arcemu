@@ -39,6 +39,8 @@
 
 #define DISTANCE_TO_SMALL_TO_WALK 2.0f //this is required so creature will not try to reposition itself to obtain perfect combat range. Not using this might lead to exploits
 
+//#define INHERIT_FOLLOWED_UNIT_SPEED 1
+
 class Object;
 class Creature;
 class Unit;
