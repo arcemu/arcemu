@@ -413,6 +413,7 @@ Aura::Aura( SpellEntry* proto, int32 duration, Object* caster, Unit* target )
 	//sLog.outDetail("Aura::Constructor %u (%s) from %u.", m_spellProto->Id, m_spellProto->Name, m_target->GetLowGUID());
 	m_auraSlot = 0xffffffff;
 	m_interrupted = -1;
+	m_flags = 0;
 	//fixed_amount = 0;//used only por percent values to be able to recover value correctly.No need to init this if we are not using it
 }
 
@@ -572,23 +573,6 @@ void Aura::ApplyModifiers( bool apply )
 		sLog.outDebug( "WORLD: target = %u , Spell Aura id = %u, SpellId  = %u, i = %u, apply = %s, duration = %u, damage = %d",
 			m_target->GetLowGUID(),mod->m_type, m_spellProto->Id, mod->i, apply ? "true" : "false",GetDuration(),mod->m_amount);
 
-		/*if(m_target->SchoolImmunityList[m_spellProto->School] &&
-			m_target->GetGUID() != m_casterGuid)	// make sure that we dont block self spells
-		{
-			// hack fix for bubble :p
-			switch(mod->m_type)
-			{
-			case SPELL_AURA_MOD_STUN:
-			case SPELL_AURA_MOD_FEAR:
-			case SPELL_AURA_MOD_CHARM:
-			case SPELL_AURA_MOD_ROOT:
-			case SPELL_AURA_MOD_CHARM:
-			case SPELL_AURA_MOD_CONFUSE:
-				continue;
-				break;
-			}
-		}*/
-
 		if(mod->m_type<TOTAL_SPELL_AURAS)
 		{
 			sLog.outDebug("Known Aura id %d, value %d", (uint32)mod->m_type, (uint32)mod->m_amount );
@@ -597,53 +581,6 @@ void Aura::ApplyModifiers( bool apply )
 		else
 			sLog.outError("Unknown Aura id %d", (uint32)mod->m_type);
 	}
-
-/*
-	//this is worng, and might cause double procs. Did not completly remove this since it was put here to solve some problems
-	//once those problems were found then completly remove it
-	if(GetSpellProto()->procFlags)
-	{
-		for(uint32 x=0; x<3; x++)
-			if(GetSpellProto()->EffectApplyAuraName[x] == SPELL_AURA_PROC_TRIGGER_SPELL||GetSpellId()==974||GetSpellId()==32593||GetSpellId()==32594)
-				return;//already have proc for this aura
-
-		if(apply)
-		{
-			ProcTriggerSpell pts;
-			pts.origId = GetSpellId();
-			pts.caster = m_casterGuid;
-			pts.spellId = 0;
-			for(uint32 x=0; x<3; x++)
-			{
-				if(GetSpellProto()->EffectTriggerSpell[x] != 0)
-				{
-					pts.spellId = GetSpellProto()->EffectTriggerSpell[x];
-					break;
-				}
-			}
-			if(!pts.spellId)
-				return;
-
-			pts.procChance = GetSpellProto()->procChance;
-			pts.procFlags = GetSpellProto()->procFlags;
-			pts.procCharges = GetSpellProto()->procCharges;
-			pts.LastTrigger = 0;
-			pts.deleted = false;
-			m_target->m_procSpells.push_front(pts);
-		}
-		else
-		{
-			for(std::list<struct ProcTriggerSpell>::iterator itr = m_target->m_procSpells.begin();itr != m_target->m_procSpells.end();itr++)
-			{
-				if(itr->origId == GetSpellId() && itr->caster == m_casterGuid && !itr->deleted)
-				{
-					itr->deleted = true;
-					break;
-				}
-			}
-		}
-	}
-*/
 }
 
 void Aura::AddAuraVisual()
@@ -1085,7 +1022,10 @@ void Aura::SpellAuraPeriodicDamage(bool apply)
 		if( m_target )
 		{
 			if( m_spellProto->MechanicsType == MECHANIC_BLEEDING && m_target->MechanicsDispels[MECHANIC_BLEEDING] )
+			{
+				m_flags |= 1 << mod->i;
 				return;
+			}
 		}
 		int32 dmg	= mod->m_amount;
 		Unit *c = GetUnitCaster();
@@ -1196,7 +1136,7 @@ void Aura::SpellAuraPeriodicDamage(bool apply)
 			m_target->SetFlag(UNIT_FIELD_AURASTATE,AURASTATE_FLAG_POISON);
 		}
 	}
-	else
+	else if( (m_flags & (1 << mod->i)) == 0 ) //add these checks to mods where imunity can cancel only 1 mod and not whole spell
 	{
 		if( m_spellProto->buffType & SPELL_TYPE_WARLOCK_IMMOLATE )
 			m_target->RemoveFlag( UNIT_FIELD_AURASTATE,AURASTATE_FLAG_IMMOLATE );
@@ -2136,7 +2076,10 @@ void Aura::SpellAuraModConfuse(bool apply)
 			if( m_target->MechanicsDispels[MECHANIC_DISORIENTED]
 			|| ( m_spellProto->MechanicsType == MECHANIC_POLYMORPHED && m_target->MechanicsDispels[MECHANIC_POLYMORPHED] )
 			)
+			{
+				m_flags |= 1 << mod->i;
 				return;
+			}
 		}
 		SetNegative();
 
@@ -2156,7 +2099,7 @@ void Aura::SpellAuraModConfuse(bool apply)
 			p_target->SpeedCheatDelay( GetDuration() );
 		}
 	}
-	else
+	else if( (m_flags & (1 << mod->i)) == 0 ) //add these checks to mods where imunity can cancel only 1 mod and not whole spell
 	{
 		m_target->m_special_state &= ~UNIT_STATE_CONFUSE;
 		m_target->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_CONFUSED);
@@ -2280,7 +2223,10 @@ void Aura::SpellAuraModFear(bool apply)
 		if( m_target )
 		{
 			if( m_target->MechanicsDispels[MECHANIC_FLEEING] )
+			{
+				m_flags |= 1 << mod->i;
 				return;
+			}
 		}
 
 		SetNegative();
@@ -2301,7 +2247,7 @@ void Aura::SpellAuraModFear(bool apply)
 			p_target->SpeedCheatDelay( GetDuration() );
 		}
 	}
-	else
+	else if( (m_flags & (1 << mod->i)) == 0 ) //add these checks to mods where imunity can cancel only 1 mod and not whole spell
 	{
 		m_target->m_fearmodifiers--;
 
@@ -2618,7 +2564,10 @@ void Aura::SpellAuraModStun(bool apply)
 			|| ( m_spellProto->MechanicsType == MECHANIC_SAPPED && m_target->MechanicsDispels[MECHANIC_SAPPED] )
 			|| ( m_target->MechanicsDispels[MECHANIC_STUNNED] )
 				)
-					return;
+			{
+				m_flags |= 1 << mod->i;
+				return;
+			}
 		}
 		SetNegative();
 
@@ -2649,7 +2598,7 @@ void Aura::SpellAuraModStun(bool apply)
 		if( m_target && m_target->IsPlayer() && caster )
 			static_cast<Player*>(m_target)->EventStunOrImmobilize( caster, true );
 	}
-	else
+	else if( (m_flags & (1 << mod->i)) == 0 ) //add these checks to mods where imunity can cancel only 1 mod and not whole spell
 	{
 		m_target->m_rooted--;
 
@@ -3351,7 +3300,10 @@ void Aura::SpellAuraModRoot(bool apply)
 		if( m_target )
 		{
 			if( m_target->MechanicsDispels[MECHANIC_ROOTED] )
-					return;
+			{
+				m_flags |= 1 << mod->i;
+				return;
+			}
 		}
 		SetNegative();
 
@@ -3362,7 +3314,7 @@ void Aura::SpellAuraModRoot(bool apply)
 
 		/* -Supalosa- TODO: Mobs will attack nearest enemy in range on aggro list when rooted. */
 	}
-	else
+	else if( (m_flags & (1 << mod->i)) == 0 ) //add these checks to mods where imunity can cancel only 1 mod and not whole spell
 	{
 		m_target->m_rooted--;
 
@@ -3576,7 +3528,10 @@ void Aura::SpellAuraModDecreaseSpeed(bool apply)
 		if( m_target )
 		{
 			if( m_target->MechanicsDispels[MECHANIC_ENSNARED] )
-					return;
+			{
+				m_flags |= 1 << mod->i;
+				return;
+			}
 		}
 		switch(m_spellProto->NameHash)
 		{
@@ -3609,7 +3564,7 @@ void Aura::SpellAuraModDecreaseSpeed(bool apply)
 		//m_target->m_slowdown=this;
 		//m_target->m_speedModifier += mod->m_amount;
 	}
-	else
+	else if( (m_flags & (1 << mod->i)) == 0 ) //add these checks to mods where imunity can cancel only 1 mod and not whole spell
 	{
 		map< uint32, int32 >::iterator itr = m_target->speedReductionMap.find(m_spellProto->Id);
 		if(itr != m_target->speedReductionMap.end())

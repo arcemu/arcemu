@@ -52,7 +52,7 @@ void SpeedCheatDetector::AddSample(float x, float y, int stamp, float player_spe
 		float cur_speed = dist / (float)time_dif * 1000.0f;
 #ifdef _DEBUG
 //		sLog.outDebug("adding speed sample dist=%f tdif = %u sp=%f shouldbes=%f, cheatspeed=%f\n",dist,time_dif,cur_speed,player_speed,cur_speed * SPDT_DETECTION_ERROR);
-		sLog.outDebug("adding speed sample sp=%f, shouldbes=%f, cheatDspeed=%f, threat lvl = %d, ischeat detected = %u\n",cur_speed,player_speed,cur_speed * SPDT_DETECTION_ERROR,cheat_threat,IsCheatDetected());
+//		sLog.outDebug("adding speed sample sp=%f, shouldbes=%f, cheatDspeed=%f, threat lvl = %d, ischeat detected = %u\n",cur_speed,player_speed,cur_speed * SPDT_DETECTION_ERROR,cheat_threat,IsCheatDetected());
 #endif
 
 		//check if we really got a cheater here

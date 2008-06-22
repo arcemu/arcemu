@@ -3656,7 +3656,16 @@ void Unit::AddAura(Aura *aur)
 	
 	aur->m_auraSlot=255;
 	aur->ApplyModifiers(true);
-	
+	//Zack : if all mods were resisted it means we did not apply anything and we do not need to delete this spell eighter
+	if( aur->TargetWasImuneToMods() )
+	{
+		//notify client that we are imune to this spell
+		aur->ApplyModifiers( false );	//this should have no effect
+		sEventMgr.RemoveEvents(aur);
+		delete aur;
+		return;
+	}
+
 	if(!aur->IsPassive())
 	{	
 		aur->AddAuraVisual();

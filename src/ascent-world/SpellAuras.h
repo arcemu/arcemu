@@ -24,6 +24,15 @@ enum AURA_FLAGS
 	AFLAG_SET = 0x9
 };
 
+enum AURA_INTERNAL_USAGE_FLAGS
+{
+	//if all 3 mods are resisted then we can send client as a fully resisted spell.
+	//don't change the value of these !
+	MOD_0_RESISTED	= 1,
+	MOD_1_RESISTED	= 2,
+	MOD_2_RESISTED	= 4,
+};
+
 enum AUARA_STAE_FLAGS
 {
 	AURASTATE_FLAG_DODGE_BLOCK			= 1,        //1
@@ -680,6 +689,10 @@ public:
 	}
 
 	bool m_castInDuel;
+	inline bool TargetWasImuneToMods()
+	{ 
+		return ( (( m_flags & MOD_0_RESISTED)+( m_flags & MOD_1_RESISTED)+( m_flags & MOD_2_RESISTED)) == m_modcount );
+	}
 
 private:
 	uint32 GetCasterFaction() { return m_casterfaction; }
@@ -708,7 +721,8 @@ private:
 	uint32 m_modcount;
 	Modifier m_modList[3];
 
-	uint32 m_dynamicValue;
+	uint32	m_dynamicValue;
+	uint32	m_flags;
 
 protected:
 	uint32 m_casterfaction;
