@@ -2288,7 +2288,6 @@ void AIInterface::UpdateMove()
 	if(m_moveTimer == 0)
 	{
 		m_moveTimer =  UNIT_MOVEMENT_INTERPOLATE_INTERVAL; // update every few msecs
-		m_moveTimer = moveTime;
 	}
 
 	m_creatureState = MOVING;
