@@ -261,10 +261,10 @@ bool ChatHandler::HandleItemRemoveCommand(const char* args, WorldSession *m_sess
 	std::stringstream sstext;
 	if(slot != -1)
 	{
-		uint32 guidlow = GUID_LOPART(guid);
+		uint32 creatureId = pCreature->GetUInt32Value(OBJECT_FIELD_ENTRY);
 
 		std::stringstream ss;
-		ss << "DELETE FROM vendors WHERE entry = " << guidlow << " AND item = " << itemguid << '\0';
+		ss << "DELETE FROM vendors WHERE entry = " << creatureId << " AND item = " << itemguid << '\0';
 		WorldDatabase.Execute( ss.str().c_str() );
 
 		pCreature->RemoveVendorItem(itemguid);
@@ -277,7 +277,7 @@ bool ChatHandler::HandleItemRemoveCommand(const char* args, WorldSession *m_sess
 		{
 			sstext << "Item '" << itemguid << "' Deleted from list" << '\0';
 		}
-		sGMLog.writefromsession( m_session, "removed item %u from vendor %u", itemguid, guidlow );
+		sGMLog.writefromsession( m_session, "removed item %u from vendor %u", itemguid, creatureId );
 	}
 	else
 	{
