@@ -515,9 +515,14 @@ void WorldSession::HandleTextEmoteOpcode( WorldPacket & recv_data )
 	Unit * pUnit = _player->GetMapMgr()->GetUnit(guid);
 	if(pUnit)
 	{
-		if(pUnit->IsPlayer())
+		if( pUnit->IsPlayer() )
 		{
 			name = static_cast< Player* >( pUnit )->GetName();
+			namelen = (uint32)strlen(name) + 1;
+		}
+		else if ( pUnit->IsPet() )
+		{
+			name = static_cast< Pet* >( pUnit )->GetName().c_str();
 			namelen = (uint32)strlen(name) + 1;
 		}
 		else if(pUnit->GetTypeId() == TYPEID_UNIT)
