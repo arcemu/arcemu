@@ -811,7 +811,7 @@ public:
 	//caller is the caster
 	int32 GetSpellDmgBonus(Unit *pVictim, SpellEntry *spellInfo,int32 base_dmg, bool isdot);
    
-	Unit* create_guardian(uint32 guardian_entry,uint32 duration,float angle, uint32 lvl = 0);//guardians are temporary spawn that will inherit master faction and will folow them. Apart from that they have their own mind
+	Unit* create_guardian(uint32 guardian_entry,uint32 duration,float angle, uint32 lvl = 0, GameObject * obj = NULL);//guardians are temporary spawn that will inherit master faction and will folow them. Apart from that they have their own mind
 
 	uint32 m_addDmgOnce;
 	Creature *m_TotemSlots[4];

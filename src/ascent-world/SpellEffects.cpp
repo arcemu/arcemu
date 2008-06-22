@@ -3148,12 +3148,23 @@ void Spell::SpellEffectSummonWild(uint32 i)  // Summon Wild
 
 void Spell::SpellEffectSummonGuardian(uint32 i) // Summon Guardian
 {
-	if ( !u_caster )
+	GameObject * obj = NULL; //Snake trap part 1
+	
+	if ( g_caster ) 
+	{
+		if ( g_caster->m_summoner )
+		{
+			u_caster = g_caster->m_summoner; //set the caster to the summoner unit
+			obj = g_caster; //and keep the trap info
+		}
+		else
+			return;
+	}
+	else if ( !u_caster )
 		return;
 
 	uint32 cr_entry = m_spellInfo->EffectMiscValue[i];
-
-	uint32 level = 0;//u_caster->getLevel();
+	uint32 level = 0;
 
 	if( m_spellInfo->c_is_flags & SPELL_FLAG_IS_INHERITING_LEVEL )
 		level = u_caster->getLevel();
@@ -3173,7 +3184,7 @@ void Spell::SpellEffectSummonGuardian(uint32 i) // Summon Guardian
 	for( int i = 0; i < damage; i++ )
 	{
 		float m_fallowAngle = angle_for_each_spawn * i;
-		u_caster->create_guardian(cr_entry,GetDuration(),m_fallowAngle,level);
+		u_caster->create_guardian(cr_entry,GetDuration(),m_fallowAngle,level,obj);
 	}
 }
 

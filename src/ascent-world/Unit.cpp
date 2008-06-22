@@ -3539,7 +3539,7 @@ void Unit::AddAura(Aura *aur)
 			}
 		}
 	}
-
+	
 	if( aur->GetSpellProto()->School && SchoolImmunityList[aur->GetSpellProto()->School] )
 	{
 		delete aur;
@@ -5546,36 +5546,53 @@ void Unit::SetFacing(float newo)
 }
 
 //guardians are temporary spawn that will inherit master faction and will folow them. Apart from that they have their own mind
-Unit* Unit::create_guardian(uint32 guardian_entry,uint32 duration,float angle, uint32 lvl)
+Unit* Unit::create_guardian(uint32 guardian_entry,uint32 duration,float angle, uint32 lvl, GameObject * obj )
 {
 	CreatureProto * proto = CreatureProtoStorage.LookupEntry(guardian_entry);
 	CreatureInfo * info = CreatureNameStorage.LookupEntry(guardian_entry);
+	float m_fallowAngle = angle;
+	float x = 3 * ( cosf( m_fallowAngle + GetOrientation() ) );
+	float y = 3 * ( sinf( m_fallowAngle + GetOrientation() ) );
+	float z = 0;
+	
 	if(!proto || !info)
 	{
 		sLog.outDetail("Warning : Missing summon creature template %u !",guardian_entry);
 		return NULL;
 	}
-	float m_fallowAngle=angle;
-	float x = GetPositionX()+(3*(cosf(m_fallowAngle+GetOrientation())));
-	float y = GetPositionY()+(3*(sinf(m_fallowAngle+GetOrientation())));
-	float z = GetPositionZ();
-	Creature * p = GetMapMgr()->CreateCreature(guardian_entry);
+	
+	Creature* p = GetMapMgr()->CreateCreature(guardian_entry);
 	p->SetInstanceID(GetMapMgr()->GetInstanceID());
-	p->Load(proto, x, y, z);
-
-	if (lvl != 0)
+	
+	//Summoned by a GameObject?
+	if ( !obj ) 
 	{
-		/* MANA */
-		p->SetPowerType(POWER_TYPE_MANA);
-		p->SetUInt32Value(UNIT_FIELD_MAXPOWER1,p->GetUInt32Value(UNIT_FIELD_MAXPOWER1)+28+10*lvl);
-		p->SetUInt32Value(UNIT_FIELD_POWER1,p->GetUInt32Value(UNIT_FIELD_POWER1)+28+10*lvl);
-		/* HEALTH */
-		p->SetUInt32Value(UNIT_FIELD_MAXHEALTH,p->GetUInt32Value(UNIT_FIELD_MAXHEALTH)+28+30*lvl);
-		p->SetUInt32Value(UNIT_FIELD_HEALTH,p->GetUInt32Value(UNIT_FIELD_HEALTH)+28+30*lvl);
-		/* LEVEL */
-		p->SetUInt32Value(UNIT_FIELD_LEVEL, lvl);
+		x += GetPositionX();
+		y += GetPositionY();
+		z += GetPositionZ();
+		p->Load(proto, x, y, z);
+	}
+	else //if so, we should appear on it's location ;)
+	{
+		x += obj->GetPositionX();
+		y += obj->GetPositionY();
+		z += obj->GetPositionZ();
+		p->Load(proto, x, y, z);
 	}
 
+	if ( lvl != 0 )
+		{
+			/* MANA */
+			p->SetPowerType(POWER_TYPE_MANA);
+			p->SetUInt32Value(UNIT_FIELD_MAXPOWER1,p->GetUInt32Value(UNIT_FIELD_MAXPOWER1)+28+10*lvl);
+			p->SetUInt32Value(UNIT_FIELD_POWER1,p->GetUInt32Value(UNIT_FIELD_POWER1)+28+10*lvl);
+			/* HEALTH */
+			p->SetUInt32Value(UNIT_FIELD_MAXHEALTH,p->GetUInt32Value(UNIT_FIELD_MAXHEALTH)+28+30*lvl);
+			p->SetUInt32Value(UNIT_FIELD_HEALTH,p->GetUInt32Value(UNIT_FIELD_HEALTH)+28+30*lvl);
+			/* LEVEL */
+			p->SetUInt32Value(UNIT_FIELD_LEVEL, lvl);
+		}
+	
 	p->SetUInt64Value(UNIT_FIELD_SUMMONEDBY, GetGUID());
     p->SetUInt64Value(UNIT_FIELD_CREATEDBY, GetGUID());
     p->SetZoneId(GetZoneId());
@@ -6383,6 +6400,7 @@ void Unit::EventModelChange()
 	else
 		ModelHalfSize = 1.0f; //baaad, but it happens :(
 }
+
 
 
 
