@@ -3637,17 +3637,6 @@ void Unit::AddAura(Aura *aur)
 			return;
 		}
 	}
-	//avoid talent stacking exploit with WPE
-	else
-	{
-		//we simply check if we already have an aura with same namehash. Talent lines should have same name so the last added one will stay on
-		for(uint32 x=MAX_AURAS;x<MAX_AURAS+MAX_PASSIVE_AURAS;x++)
-			if(m_auras[x] && m_auras[x]->m_spellProto->NameHash == aur->m_spellProto->NameHash )
-			{
-				m_auras[x]->Remove();
-				break; //there is only 1 instance active for this spelline so we can exit
-			}	
-	}
 			
 	////////////////////////////////////////////////////////
 	if(aur->GetSpellProto()->SpellGroupType && m_objectTypeId == TYPEID_PLAYER)
