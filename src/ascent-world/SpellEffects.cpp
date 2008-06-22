@@ -3036,7 +3036,7 @@ void Spell::SpellEffectDispel(uint32 i) // Dispel
 			{
 				unitTarget->HandleProc( PROC_ON_PRE_DISPELL_AURA_VICTIM , u_caster , m_spellInfo, aur->GetSpellId() );
 				
-				if( aur->m_spellProto->NameHash == SPELL_HASH_UNSTABLE_AFFLICTION )
+				if( aur->m_spellProto && aur->m_spellProto->NameHash == SPELL_HASH_UNSTABLE_AFFLICTION )
 					UARank = aur->m_spellProto->RankNumber;
 
 				data.clear();
@@ -3053,7 +3053,7 @@ void Spell::SpellEffectDispel(uint32 i) // Dispel
 			{
 				unitTarget->HandleProc( PROC_ON_PRE_DISPELL_AURA_VICTIM , u_caster , m_spellInfo, aur->GetSpellId() );
 
-				if( aur->m_spellProto->NameHash == SPELL_HASH_UNSTABLE_AFFLICTION )
+				if( aur->m_spellProto && aur->m_spellProto->NameHash == SPELL_HASH_UNSTABLE_AFFLICTION )
 					UARank = aur->m_spellProto->RankNumber;
 
 				data.clear();
@@ -3443,7 +3443,7 @@ void Spell::SpellEffectSummonObject(uint32 i)
 		else if ( entry == 36727 || entry == 177193 ) // Portal of Summoning and portal of doom
 		{
 			//Player * pTarget = p_caster->GetMapMgr()->GetPlayer( p_caster->GetSelection() );
-			Player * pTarget = objmgr.GetPlayer( p_caster->GetSelection() );
+			Player * pTarget = objmgr.GetPlayer( (uint32)p_caster->GetSelection() );
 			if ( pTarget == NULL || !pTarget->IsInWorld() )
 				return;
 			go->m_ritualmembers[0] = p_caster->GetLowGUID();

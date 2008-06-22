@@ -33,7 +33,7 @@ enum AURA_INTERNAL_USAGE_FLAGS
 	MOD_2_RESISTED	= 4,
 };
 
-enum AUARA_STAE_FLAGS
+enum AURA_STAE_FLAGS
 {
 	AURASTATE_FLAG_DODGE_BLOCK			= 1,        //1
     AURASTATE_FLAG_HEALTH20             = 2,        //2
@@ -41,6 +41,7 @@ enum AUARA_STAE_FLAGS
     AURASTATE_FLAG_JUDGEMENT            = 16,       //5
     AURASTATE_FLAG_PARRY                = 64,       //7
     AURASTATE_FLAG_LASTKILLWITHHONOR    = 512,      //10
+	AURASTATE_FLAG_HUNTER_CRIT			= 512,		//10
     AURASTATE_FLAG_CRITICAL             = 1024,     //11
     AURASTATE_FLAG_HEALTH35             = 4096,     //13
     AURASTATE_FLAG_IMMOLATE             = 8192,     //14

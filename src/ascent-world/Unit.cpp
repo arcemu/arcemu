@@ -2966,12 +2966,15 @@ else
 						aproc |= PROC_ON_RANGED_CRIT_ATTACK;
 					}
 
-					if(this->IsPlayer())
+					if( IsPlayer() )
 					{
-						this->SetFlag(UNIT_FIELD_AURASTATE,AURASTATE_FLAG_CRITICAL);	//SB@L: Enables spells requiring critical strike
-						if(!sEventMgr.HasEvent(this,EVENT_CRIT_FLAG_EXPIRE))
-							sEventMgr.AddEvent((Unit*)this,&Unit::EventAurastateExpire,(uint32)AURASTATE_FLAG_CRITICAL,EVENT_CRIT_FLAG_EXPIRE,5000,1,0);
-						else sEventMgr.ModifyEventTimeLeft(this,EVENT_CRIT_FLAG_EXPIRE,5000);
+						uint32 toset = AURASTATE_FLAG_CRITICAL;
+						if( getClass() == HUNTER )
+							toset |= AURASTATE_FLAG_HUNTER_CRIT; //required by Kill Command
+						this->SetFlag( UNIT_FIELD_AURASTATE, toset );
+						if( !sEventMgr.HasEvent( this, EVENT_CRIT_FLAG_EXPIRE ) )
+							sEventMgr.AddEvent( ( Unit* )this, &Unit::EventAurastateExpire, toset , EVENT_CRIT_FLAG_EXPIRE, 5000, 1, 0 );
+						else sEventMgr.ModifyEventTimeLeft( this, EVENT_CRIT_FLAG_EXPIRE, 5000 );
 					}
 
 					CALL_SCRIPT_EVENT(pVictim, OnTargetCritHit)(this, float(dmg.full_damage));

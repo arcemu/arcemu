@@ -2507,10 +2507,8 @@ void Spell::HandleEffects(uint64 guid, uint32 i)
 				break;
 			case HIGHGUID_TYPE_PLAYER:
 				{
-					unitTarget =  m_caster->GetMapMgr()->GetPlayer( (uint32)guid );
-					if ( unitTarget == NULL )
-						unitTarget = objmgr.GetPlayer( (uint32)guid );
-					playerTarget = static_cast< Player* >( unitTarget );
+					unitTarget =  m_caster->GetMapMgr()->GetPlayer((uint32)guid);
+					playerTarget = static_cast< Player* >(unitTarget);
 				}break;
 			case HIGHGUID_TYPE_ITEM:
 				if( p_caster != NULL )
