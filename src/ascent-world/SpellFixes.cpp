@@ -14316,6 +14316,18 @@ void ApplyNormalFixes()
 		sp = dbcSpell.LookupEntryForced(11585);
 		if(sp != NULL)
 			sp->Attributes |= ATTRIBUTES_CANT_BE_DPB;
+		//Warrior - Tactical Mastery Rank 1
+		sp = dbcSpell.LookupEntry(0x00003007);
+		if(sp != NULL)
+			sp->RequiredShapeShift = 0x00070000;
+		//Warrior - Tactical Mastery Rank 2
+		sp = dbcSpell.LookupEntry(0x00003184);
+		if(sp != NULL)
+			sp->RequiredShapeShift = 0x00070000;
+		//Warrior - Tactical Mastery Rank 3
+		sp = dbcSpell.LookupEntry(0x00003185);
+		if(sp != NULL)
+			sp->RequiredShapeShift = 0x00070000;
 
 		//////////////////////////////////////////
 		// PALADIN								//
