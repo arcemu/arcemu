@@ -78,6 +78,7 @@ SMT_RESIST_DISPEL - check if it is used
 - WPE hack : move from anyslot to bankslot anytime. This is a memory hack
 - revision number extractor. Maybe include it into the compiler steps ?
 - spell 16346 is spamming console. Why ?
+- people say that pets do not follow with collision enabled due to andys patch that made mobs stay on the ground
 
 ==========================================================================
 ! BUGS !

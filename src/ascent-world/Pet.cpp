@@ -249,6 +249,8 @@ Pet::Pet(uint64 guid) : Creature(guid)
 	TP = 0;
 	LoyaltyPts = LoyLvlRange[1];
 	LoyaltyXP = 0;
+	reset_time = 0;
+	reset_cost = 0;
 }
 
 Pet::~Pet()
@@ -451,6 +453,9 @@ void Pet::LoadFromDB(Player* owner, PlayerPet * pi)
 	LoyaltyPts = mPi->loyaltypts;
 	LoyaltyXP = mPi->loyaltyxp;
 
+	reset_time = mPi->reset_time;
+	reset_cost = mPi->reset_cost;
+
 	bExpires = false;
 
 	// Setup actionbar
@@ -640,6 +645,8 @@ void Pet::UpdatePetInfo(bool bSetToOffline)
 
 	pi->actionbar = ss.str();
 	pi->summon = Summon;
+	pi->reset_cost = reset_cost;
+	pi->reset_time = reset_time;
 }
 
 void Pet::Dismiss(bool bSafeDelete)//Abandon pet
@@ -1829,9 +1836,18 @@ void Pet::SetAutoCast(AI_Spell * sp, bool on)
 }
 uint32 Pet::GetUntrainCost()
 {
-	// TODO: implement penalty
-	// costs are: 10s, 50s, 1g, 2g, ..(+1g).. 10g cap
-	return 1000;
+	uint32 days = (uint32)(sWorld.GetGameTime() - reset_time)/60*60*24;
+
+	if(reset_cost < 1000 || days > 0)
+		reset_cost = 1000;
+	else if(reset_cost < 5000)
+		reset_cost = 5000;
+	else if(reset_cost < 10000)
+		reset_cost = 10000;
+	else
+		reset_cost = reset_cost + 10000 > 100000 ? 100000 : reset_cost + 10000;
+
+	return reset_cost;
 }
 
 

@@ -445,6 +445,8 @@ struct PlayerPet
 	uint32 loyaltypts;
 	uint32 loyaltyupdate;
 	char loyaltylvl;
+	time_t reset_time;
+	uint32 reset_cost;
 };
 enum MeetingStoneQueueStatus
 {

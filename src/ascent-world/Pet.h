@@ -245,6 +245,8 @@ protected:
 	int16 TP;
 	int32 LoyaltyPts;
 	uint32 LoyaltyXP;
+	time_t reset_time;
+	uint32 reset_cost;
 	bool bExpires;
 	bool Summon;
 	string m_name;

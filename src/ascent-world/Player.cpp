@@ -1686,7 +1686,9 @@ void Player::_SavePet(QueryBuffer * buf)
 			<< itr->second->happinessupdate << "','"
 			<< itr->second->summon << "','"
 			<< itr->second->loyaltypts << "','"
-			<< itr->second->loyaltyupdate << "')";
+			<< itr->second->loyaltyupdate << "','"
+			<< (long)itr->second->reset_time << "','"
+			<< itr->second->reset_cost << "')";
 			
 		if(buf == NULL)
 			CharacterDatabase.ExecuteNA(ss.str().c_str());
@@ -1784,6 +1786,8 @@ void Player::_LoadPet(QueryResult * result)
 		pet->summon = (fields[11].GetUInt32()>0 ? true : false);
 		pet->loyaltypts = fields[12].GetUInt32();
 		pet->loyaltyupdate = fields[13].GetUInt32();
+		pet->reset_time = fields[14].GetUInt32();
+		pet->reset_cost = fields[15].GetUInt32();
 
 		m_Pets[pet->number] = pet;
 		if(pet->active)
