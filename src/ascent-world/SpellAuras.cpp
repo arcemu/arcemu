@@ -5257,15 +5257,9 @@ void Aura::SpellAuraMounted(bool apply)
 
 void Aura::SpellAuraModDamagePercDone(bool apply)
 {
-
 	float val = (apply) ? mod->m_amount/100.0f : -mod->m_amount/100.0f;
 
-/* Shady: Don't know what this does, but it's not good.
-Cause this aura effects only spells by school or combination of it.
-Don't know why there is any weapon modifiers.
-
-[wtf did you do shady? 8)] - Supalosa */
-		switch (GetSpellId()) //dirty or mb not fix bug with wand specializations
+	switch (GetSpellId()) //dirty or mb not fix bug with wand specializations
 	{
 	case 6057:
 	case 6085:
@@ -5278,36 +5272,23 @@ Don't know why there is any weapon modifiers.
 	}
 	if(m_target->IsPlayer())
 	{
-
-		//126 == melee,
-		//127 == evrything
-		//else - schools
-
-		//this is somehow wrong since fixed value will be owerwritten by other values
-
 		if(GetSpellProto()->EquippedItemClass==-1)//does not depend on weapon
 		{
 			for(uint32 x=0;x<7;x++)
 			{
 				if (mod->m_miscValue & (((uint32)1)<<x) )
 				{
-					m_target->ModFloatValue(PLAYER_FIELD_MOD_DAMAGE_DONE_PCT + x,val);
+					m_target->ModFloatValue(PLAYER_FIELD_MOD_DAMAGE_DONE_PCT + x, val); // display to client (things that are weapon dependant dont get displayed)
 				}
 			}
 		}
-		// WEAPON MODIFIER PART DISABLED BY SUPALOSA: compile errors, WeaponModifier implementation changed.
-		/*else
-
-		//if(mod->m_miscValue&1 || mod->m_miscValue == 126)
+		if(mod->m_miscValue & 1)
 		{
 			if(apply)
 			{
 				WeaponModifier md;
-				md.value = (float)mod->m_amount;
+				md.value = val;
 				md.wclass = GetSpellProto()->EquippedItemClass;
-				//in case i'm wrong you will still not be able to attack with consumables i guess :P :D
-				if(md.wclass==0)
-					md.wclass=-1;//shoot me if i'm wrong but i found values that are 0 and should effect all weapons
 				md.subclass = GetSpellProto()->EquippedItemSubClass;
 				static_cast< Player* >( m_target )->damagedone.insert(make_pair(GetSpellId(), md));
 			}
@@ -5326,7 +5307,6 @@ Don't know why there is any weapon modifiers.
 				static_cast< Player* >( m_target )->damagedone.erase(GetSpellId());
 			}
 		}
-		*/
 	}
 	else
 	{
@@ -5339,65 +5319,6 @@ Don't know why there is any weapon modifiers.
 		}
 	}
 	m_target->CalcDamage();
-
-
-	uint32 school_selector=1;
-	for (uint32 x=0;x<7;x++)
-	{
-		if(school_selector & mod->m_miscValue)
-			m_target->DamageDoneModPCT[x] += val;
-		school_selector = school_selector << 1;
-	}
-
-	/*
-	if(m_target->IsPlayer())
-	{
-		//1 == melee
-		//127 == evrything
-		if( GetSpellProto()->EquippedItemClass == -1 )//does not depend on weapon
-		{
-			for(uint32 x=0;x<7;x++)
-			{
-				if (mod->m_miscValue & (((uint32)1)<<x) )
-				{
-					m_target->ModFloatValue(PLAYER_FIELD_MOD_DAMAGE_DONE_PCT + x,val);
-				}
-			}
-		}
-		if(mod->m_miscValue & 1)
-		{
-			std::map<uint32, WeaponModifier> *dlist = &(static_cast<Player*>(m_target)->damagedone);
-			if(apply)
-			{
-				//!! this does not allow stacking ! Report spells that require this to stack
-				WeaponModifier md;
-				md.value = ( float )mod->m_amount;
-				md.wclass = GetSpellProto()->EquippedItemClass;
-				md.subclass = GetSpellProto()->EquippedItemSubClass;
-				dlist->insert(make_pair(GetSpellId(), md));
-			}
-			else
-			{
-				std::map<uint32, WeaponModifier>::iterator i = dlist->find( GetSpellId() );
-				if( i != dlist->end() )
-					dlist->erase( i );
-			}
-		}
-	}
-	else if ( m_target->IsCreature() )
-	{
-		Creature *c_target = static_cast<Creature *>(m_target);
-		uint32 school_selector=1;
-		for (uint32 x=0;x<7;x++)
-		{
-			if(school_selector & mod->m_miscValue)
-				c_target->ModDamageDonePct[x] += val;
-			school_selector = school_selector << 1;
-		}
-	}
-	m_target->CalcDamage();
-	*/
-
 }
 
 void Aura::SpellAuraModPercStat(bool apply)

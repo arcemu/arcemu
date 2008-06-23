@@ -8625,7 +8625,7 @@ void Player::CalcDamage()
 			if((i->second.wclass == (uint32)-1) || //any weapon
 				(it && ((1 << it->GetProto()->SubClass) & i->second.subclass) )
 				)
-					tmp+=i->second.value/100.0f;
+					tmp+=i->second.value;
 		}
 		
 		r = BaseDamage[0]+delta+bonus;
@@ -8668,7 +8668,7 @@ void Player::CalcDamage()
 				if((i->second.wclass==(uint32)-1) || //any weapon
 					(( (1 << it->GetProto()->SubClass) & i->second.subclass)  )
 					)
-					tmp+=i->second.value/100.0f;
+					tmp+=i->second.value;
 			}
 
 			r = (BaseOffhandDamage[0]+delta+bonus)*offhand_dmg_mod;
@@ -8700,7 +8700,7 @@ void Player::CalcDamage()
 					( ((1 << it->GetProto()->SubClass) & i->second.subclass)  )
 					)
 				{
-					tmp+=i->second.value/100.0f;
+					tmp+=i->second.value;
 				}
 			}
 
@@ -8742,17 +8742,7 @@ void Player::CalcDamage()
 
 /////////////////////////////////RANGED end
 
-		//tmp = 1;
-		tmp = 0;
-		for(i = damagedone.begin();i != damagedone.end();i++)
-		if(i->second.wclass==(uint32)-1)  //any weapon
-			tmp += i->second.value/100.0f;
-		
-		//display only modifiers for any weapon
 
-		// OMG?
-		ModFloatValue(PLAYER_FIELD_MOD_DAMAGE_DONE_PCT ,tmp);
- 
 }
 
 uint32 Player::GetMainMeleeDamage(uint32 AP_owerride)
