@@ -1111,7 +1111,15 @@ void AIInterface::_UpdateCombat(uint32 p_time)
 				{
 					//calculate next move
 //					float dist = combatReach[1]; //this is theoretically right but annoying formula in game
-					float dist = combatReach[1] - m_Unit->GetFloatValue( UNIT_FIELD_COMBATREACH ); //ignore our combat reach, make sure target (player) can reach us first.
+//					float dist = combatReach[1] - m_Unit->GetFloatValue( UNIT_FIELD_COMBATREACH ); //ignore our combat reach, make sure target (player) can reach us first.
+
+					//practical tests show that we really should try to jump on target to get good results :S
+					//simply ignore combat reach and move as close as visually not annoying 
+					float dist;
+					if( m_Unit->GetModelHalfSize() > m_nextTarget->GetModelHalfSize() )
+						dist = m_Unit->GetModelHalfSize(); 
+					else 
+						dist = m_nextTarget->GetModelHalfSize();
 
 					//removed by Zack. You can create an exploit with this that creature will never attack
 //					if (distance<combatReach[0]) //if we are inside one each other
