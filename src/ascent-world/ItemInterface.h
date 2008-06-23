@@ -49,8 +49,8 @@ class SERVER_DECL ItemInterface
 private:
 	SlotResult result;
 	Player *m_pOwner;
-	Item* m_pItems[MAX_INVENTORY_SLOT];
-	Item* m_pBuyBack[MAX_BUYBACK_SLOT];
+	Item* m_pItems[MAX_INVENTORY_SLOT+1];
+	Item* m_pBuyBack[MAX_BUYBACK_SLOT+1];
 
 	AddItemResult m_AddItem(Item *item, int8 ContainerSlot, int8 slot);
 
@@ -121,7 +121,7 @@ public:
 	//buyback stuff
 	ASCENT_INLINE Item* GetBuyBack(int32 slot) 
 	{ 
-		if(slot >= 0 && slot <= 12)
+		if(slot >= 0 && slot <= MAX_BUYBACK_SLOT)
 			return m_pBuyBack[slot];
 		else 
 			return NULL;

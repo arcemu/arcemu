@@ -76,6 +76,8 @@ SMT_RESIST_DISPEL - check if it is used
 - http://www.wowhead.com/?spell=45819 -> make this spell to have max 1 targets
 - if cancel lifebloom it gives you the benefit of dispell ?
 - WPE hack : move from anyslot to bankslot anytime. This is a memory hack
+- revision number extractor. Maybe include it into the compiler steps ?
+- spell 16346 is spamming console. Why ?
 
 ==========================================================================
 ! BUGS !
