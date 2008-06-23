@@ -539,6 +539,13 @@ void Pet::InitializeMe(bool first)
 	if(GetEntry() == 416)
 		m_aiInterface->disable_melee = true;
 
+	if(GetEntry() == 17252) //felguard
+	{
+		SetUInt32Value( UNIT_VIRTUAL_ITEM_SLOT_DISPLAY, 23904 );
+		SetUInt32Value( UNIT_VIRTUAL_ITEM_INFO, 33489154 );
+		SetUInt32Value( UNIT_VIRTUAL_ITEM_INFO_01, 273 );
+	}
+
 	// Load our spells
 	if(Summon)
 	{
@@ -1827,5 +1834,6 @@ uint32 Pet::GetUntrainCost()
 	// costs are: 10s, 50s, 1g, 2g, ..(+1g).. 10g cap
 	return 1000;
 }
+
 
 
