@@ -92,7 +92,6 @@ uint32 GetAutoCastTypeForSpell(SpellEntry * ent)
 	/************************************************************************/
 
 	case SPELL_HASH_WATERBOLT:			// Waterbolt
-	case SPELL_HASH_FREEZE:				// Freez -> it's the frost nova thing
 		return AUTOCAST_EVENT_ATTACK;
 		break;
 	}
