@@ -692,7 +692,7 @@ public:
 	bool m_castInDuel;
 	inline bool TargetWasImuneToMods()
 	{ 
-		return ( (( m_flags & MOD_0_RESISTED)+( m_flags & MOD_1_RESISTED)+( m_flags & MOD_2_RESISTED)) == m_modcount );
+		return (m_modcount && ((( m_flags & MOD_0_RESISTED)+( m_flags & MOD_1_RESISTED)+( m_flags & MOD_2_RESISTED)) == m_modcount) );
 	}
 
 private:
