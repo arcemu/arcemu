@@ -235,8 +235,9 @@ bool ChatHandler::HandleAddInvItemCommand(const char *args, WorldSession *m_sess
 	if(sscanf(args, "%u %u %d", &itemid, &count, &randomprop) < 1)
 		return false;
 
-	Player *chr = getSelectedChar(m_session);
-	if (chr == NULL) return true;
+	Player * chr = getSelectedChar( m_session, false );
+	if ( chr == NULL )
+		chr = m_session->GetPlayer();
 	
 	ItemPrototype* it = ItemPrototypeStorage.LookupEntry(itemid);
 	if(it)
