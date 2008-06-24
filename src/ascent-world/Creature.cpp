@@ -657,34 +657,50 @@ void Creature::CalcStat(uint32 type)
 	SetUInt32Value(UNIT_FIELD_STAT0+type,res>0?res:0);
 
 	//borrowed from player warrior formulas
-
-	//AP
-	int AP = GetUInt32Value( UNIT_FIELD_LEVEL ) * 3 + ( GetUInt32Value( UNIT_FIELD_STRENGTH ) - BaseStats[ 0 ] ) * 2 - 20;
-	int RAP = GetUInt32Value( UNIT_FIELD_LEVEL ) + GetUInt32Value( UNIT_FIELD_AGILITY ) - BaseStats[ 1 ] - 10;
-	if( RAP < 0 )RAP = 0;
-	if( AP < 0 )AP = 0;
-	SetUInt32Value( UNIT_FIELD_ATTACK_POWER, AP );
-	SetUInt32Value( UNIT_FIELD_RANGED_ATTACK_POWER, AP );
-
-	//health
-	int32 hpbonus = (GetUInt32Value( UNIT_FIELD_STAMINA ) - BaseStats[2] ) * 10;
-	if( hpbonus < 0 )
-		hpbonus = 0;
-	SetUInt32Value( UNIT_FIELD_MAXHEALTH, GetUInt32Value( UNIT_FIELD_BASE_HEALTH ) + hpbonus );
-
-	if( GetUInt32Value( UNIT_FIELD_HEALTH ) > GetUInt32Value( UNIT_FIELD_MAXHEALTH ) )
-		SetUInt32Value( UNIT_FIELD_HEALTH, GetUInt32Value( UNIT_FIELD_MAXHEALTH ) );
-
-	if( GetPowerType() == POWER_TYPE_MANA )
+	switch( type )
 	{
-		int stat_bonus = ( GetUInt32Value( UNIT_FIELD_INTELLECT ) - BaseStats[3] ) * 15;
-		if( stat_bonus < 0 )
-			stat_bonus = 0;
+	case STAT_STRENGTH:
+		{
+			// attack power
+			int AP = GetUInt32Value( UNIT_FIELD_LEVEL ) * 3 + ( GetUInt32Value( UNIT_FIELD_STRENGTH ) - BaseStats[ STAT_STRENGTH ] ) * 2 - 20;
+			if( AP < 0 )
+				AP = 0;
+			SetUInt32Value( UNIT_FIELD_ATTACK_POWER, AP );
+		} break;
 
-		SetUInt32Value(UNIT_FIELD_MAXPOWER1, GetUInt32Value( UNIT_FIELD_BASE_MANA ) + stat_bonus );
+	case STAT_AGILITY:
+		{
+			// ranged attack power
+			int RAP = GetUInt32Value( UNIT_FIELD_LEVEL ) + GetUInt32Value( UNIT_FIELD_AGILITY ) - BaseStats[ STAT_AGILITY ] - 10;
+			if( RAP < 0 )
+				RAP = 0;
+			SetUInt32Value( UNIT_FIELD_RANGED_ATTACK_POWER, RAP );
+		} break;
 
-		if((int32)GetUInt32Value(UNIT_FIELD_POWER1)>GetUInt32Value( UNIT_FIELD_MAXPOWER1 ) )
-			SetUInt32Value(UNIT_FIELD_POWER1, GetUInt32Value( UNIT_FIELD_MAXPOWER1 ) );
+	case STAT_STAMINA:
+		{
+			// health
+			int32 hpbonus = ( GetUInt32Value( UNIT_FIELD_STAMINA ) - BaseStats[ STAT_STAMINA ] ) * 10;
+			if( hpbonus < 0 )
+				hpbonus = 0;
+			SetUInt32Value( UNIT_FIELD_MAXHEALTH, GetUInt32Value( UNIT_FIELD_BASE_HEALTH ) + hpbonus );
+			if( GetUInt32Value( UNIT_FIELD_HEALTH ) > GetUInt32Value( UNIT_FIELD_MAXHEALTH ) )
+				SetUInt32Value( UNIT_FIELD_HEALTH, GetUInt32Value( UNIT_FIELD_MAXHEALTH ) );
+		}break;
+
+	case STAT_INTELLECT:
+		{
+			if( GetPowerType() == POWER_TYPE_MANA )
+			{
+				// mana
+				int stat_bonus = ( GetUInt32Value( UNIT_FIELD_INTELLECT ) - BaseStats[ STAT_INTELLECT ] ) * 15;
+				if( stat_bonus < 0 )
+					stat_bonus = 0;
+				SetUInt32Value(UNIT_FIELD_MAXPOWER1, GetUInt32Value( UNIT_FIELD_BASE_MANA ) + stat_bonus );
+				if( (int32)GetUInt32Value( UNIT_FIELD_POWER1 ) > GetUInt32Value( UNIT_FIELD_MAXPOWER1 ) )
+					SetUInt32Value( UNIT_FIELD_POWER1, GetUInt32Value( UNIT_FIELD_MAXPOWER1 ) );
+			}
+		} break;
 	}
 }
 
