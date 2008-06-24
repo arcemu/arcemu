@@ -729,14 +729,17 @@ void Spell::SpellTargetPartyMember(uint32 i, uint32 j)
 	SubGroup * subgroup = Target->GetGroup() ?
 		Target->GetGroup()->GetSubGroup(Target->GetSubGroup()) : 0;
 
+	float rsqr = GetRadius( i );
+	if( rsqr == 0 )
+		rsqr = 40*40;//kinda like a bug. 0 range to target a party member ? Highly impossible
+	else rsqr *= rsqr;	
 	if(subgroup)
 	{
 		Target->GetGroup()->Lock();
 		for(GroupMembersSet::iterator itr = subgroup->GetGroupMembersBegin(); itr != subgroup->GetGroupMembersEnd(); ++itr)
-		{
-			if((*itr)->m_loggedInPlayer)
+			//if you are picky you could also check if on same map. Let's face it you won't similar positions on different maps
+			if((*itr)->m_loggedInPlayer && IsInrange(Target,(*itr)->m_loggedInPlayer, rsqr) )
 				SafeAddTarget(tmpMap,(*itr)->m_loggedInPlayer->GetGUID());
-		}
 		Target->GetGroup()->Unlock();
 	}
 	else
