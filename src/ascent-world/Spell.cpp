@@ -4016,7 +4016,8 @@ exit:
 	}
 	else if ( m_spellInfo->Id == 34501 && ( i == 0 || i == 1 ) ) //Hunter - Expose Weakness
 	{
-		value = ( u_caster->GetUInt32Value( UNIT_FIELD_STAT1 ) * 25 / 100 );
+//		value = ( u_caster->GetUInt32Value( UNIT_FIELD_STAT1 ) * 25 / 100 );
+		value = u_caster->GetUInt32Value( UNIT_FIELD_STAT1 ) >> 2;
 	}
 
 	if( p_caster != NULL )
