@@ -23,7 +23,7 @@ CREATE TABLE `accounts` (
 -- Table structure for ipbans
 -- ----------------------------
 CREATE TABLE `ipbans` (
-  `ip` varchar(16) collate utf8_unicode_ci NOT NULL default '' COMMENT 'Remote host',
+  `ip` varchar(20) collate utf8_unicode_ci NOT NULL default '' COMMENT 'Remote host',
   `expire` timestamp NOT NULL default '0000-00-00 00:00:00' COMMENT 'Expiry time (s)',
   PRIMARY KEY  (`ip`),
   UNIQUE KEY `a` (`ip`)
