@@ -5531,6 +5531,11 @@ void Spell::SpellEffectSpellSteal( uint32 i )
 {
 	if (!unitTarget || !u_caster || !unitTarget->isAlive())
 		return;
+	if(unitTarget->IsPlayer() && p_caster && p_caster != static_cast< Player* >(unitTarget))
+	{
+		if(static_cast< Player* >(unitTarget)->IsPvPFlagged())
+			p_caster->SetPvPFlag();
+	}
 
 		Aura *aur;
 	uint32 start,end;
@@ -5561,12 +5566,38 @@ void Spell::SpellEffectSpellSteal( uint32 i )
 				data << (uint32)1;
 				data << aur->GetSpellId();
 				m_caster->SendMessageToSet(&data,true);
-				Aura *aura = new Aura(aur->GetSpellProto(), (aur->GetDuration()>120000) ? 120000 : aur->GetDuration(), u_caster, u_caster);
-				uint32 times_to_add = unitTarget->RemoveAllPosAuraByNameHash( aur->GetSpellProto()->NameHash );
-				for(uint32 tadd=0;tadd<times_to_add;tadd++)
-					u_caster->AddAura(aura);
-				if( --spells_to_steal <= 0 )
-					break; //exit loop now
+
+				uint32 aurdur = ( aur->GetDuration()>120000 ? 120000 : aur->GetDuration() );
+				Aura *aura = new Aura(aur->GetSpellProto(), aurdur, u_caster, u_caster );
+				uint32 aur_removed = unitTarget->RemoveAllPosAuraByNameHash( aur->GetSpellProto()->NameHash );
+				for ( uint32 i = 0; i < 3; i++ )
+				{
+					if ( aura->GetSpellProto()->Effect[i] )
+					{
+						aura->AddMod( aura->GetSpellProto()->EffectApplyAuraName[i], aura->GetSpellProto()->EffectBasePoints[i]+1, aura->GetSpellProto()->EffectMiscValue[i], i );
+					}
+				}
+				if( aura->GetSpellProto()->procCharges>0 )
+				{
+					Aura *aur = NULL;
+					for(uint32 i = 0; i<aur_removed-1; i++)
+					{
+						aur = new Aura( aura->GetSpellProto(), aurdur, u_caster, u_caster );
+						u_caster->AddAura(aur);
+						aur = NULL;
+					}
+					if(!(aura->GetSpellProto()->procFlags & PROC_REMOVEONUSE))
+					{
+						SpellCharge charge;
+						charge.count=aur_removed;
+						charge.spellId=aura->GetSpellId();
+						charge.ProcFlag=aura->GetSpellProto()->procFlags;
+						charge.lastproc = 0;
+						u_caster->m_chargeSpells.insert(make_pair(aura->GetSpellId(),charge));
+					}
+				}
+				u_caster->AddAura(aura);
+				break;
 			}			
 		}
 	}   
