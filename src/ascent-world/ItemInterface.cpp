@@ -1298,7 +1298,7 @@ AddItemResult ItemInterface::AddItemToFreeSlot(Item *item)
 	//detect special bag item
 	if( item->GetProto()->BagFamily )
 	{
-		if( item->GetProto()->BagFamily == ITEM_TYPE_KEYRING )
+		if( item->GetProto()->BagFamily == ITEM_TYPE_KEYRING || item->GetProto()->Class == ITEM_CLASS_KEY )
 		{
 			for(i=INVENTORY_KEYRING_START; i<INVENTORY_KEYRING_END; i++ )
 			{
@@ -1391,7 +1391,7 @@ uint32 ItemInterface::CalculateFreeSlots(ItemPrototype *proto)
 	{
 		if(proto->BagFamily)
 		{
-			if(proto->BagFamily == ITEM_TYPE_KEYRING)
+			if(proto->BagFamily == ITEM_TYPE_KEYRING || proto->Class == ITEM_CLASS_KEY)
 			{
 				for(uint32 i = INVENTORY_KEYRING_START; i < INVENTORY_KEYRING_END; i++)
 				{
@@ -1917,7 +1917,7 @@ int8 ItemInterface::CanEquipItemInSlot(int8 DstInvSlot, int8 slot, ItemPrototype
 	case INVENTORY_KEYRING_31:
 	case INVENTORY_KEYRING_32:
 		{
-			if(proto->BagFamily == ITEM_TYPE_KEYRING )
+			if(proto->BagFamily == ITEM_TYPE_KEYRING || proto->Class == ITEM_CLASS_KEY)
 			{
 					return 0;
 			}
@@ -2820,7 +2820,7 @@ SlotResult ItemInterface::FindFreeInventorySlot(ItemPrototype *proto)
 		//sLog.outDebug( "ItemInterface::FindFreeInventorySlot called for item %s" , proto->Name1 );
 		if( proto->BagFamily)
 		{
-			if( proto->BagFamily == ITEM_TYPE_KEYRING )
+			if( proto->BagFamily == ITEM_TYPE_KEYRING || proto->Class == ITEM_CLASS_KEY )
 			{
 				for(uint32 i = INVENTORY_KEYRING_START; i < INVENTORY_KEYRING_END; i++ )
 				{
