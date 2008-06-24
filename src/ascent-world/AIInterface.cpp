@@ -916,9 +916,18 @@ void AIInterface::_UpdateCombat(uint32 p_time)
 	}
 
 #ifdef HACKY_SERVER_CLIENT_POS_SYNC
-	if( m_nextTarget && moved_for_attack && m_creatureState == STOPPED )
+	if( moved_for_attack && m_nextTarget && m_creatureState != MOVING )
 	{
-		StopMovement(0); //send a forced update position to client
+		//make sure we reached the exact desired location. 
+		// due to combat updates creature might interrupt moving and start attacking and does not get to destination making us get out of range errors
+		if(	m_destinationX )
+		{
+			m_Unit->m_position.x = m_destinationX;
+			m_Unit->m_position.y = m_destinationY;
+		}
+		//send a forced update position to client
+		StopMovement(0); 
+		//no need to update position until mob moves to nev target
 		moved_for_attack = false;
 	}
 #endif
@@ -1929,6 +1938,15 @@ void AIInterface::_CalcDestinationAndMove(Unit *target, float dist)
 #endif
 		float ResX = target->GetPositionX();
 		float ResY = target->GetPositionY();
+
+		//avoid eating bandwidth with useless movement packets when target did not move since last position
+		//this will work since it turned into a common mith that when you pull mob you should not move :D
+		if( abs(m_last_target_x - m_nextPosX) < DISTANCE_TO_SMALL_TO_WALK
+			|| abs(m_last_target_y - m_nextPosY) < DISTANCE_TO_SMALL_TO_WALK)
+			return;
+		m_last_target_x = ResX;
+		m_last_target_y = ResY;
+
 		float ResZ = target->GetPositionZ();
 
 		float angle = m_Unit->calcAngle(m_Unit->GetPositionX(), m_Unit->GetPositionY(), ResX, ResY) * float(M_PI) / 180.0f;
@@ -2243,7 +2261,8 @@ void AIInterface::UpdateMove()
 	//use MoveTo()
 	float distance = m_Unit->CalcDistance(m_nextPosX,m_nextPosY,m_nextPosZ);
 	
-	if(distance < DISTANCE_TO_SMALL_TO_WALK) return; //we don't want little movements here and there
+	if(distance < DISTANCE_TO_SMALL_TO_WALK) 
+		return; //we don't want little movements here and there
 
 	m_destinationX = m_nextPosX;
 	m_destinationY = m_nextPosY;

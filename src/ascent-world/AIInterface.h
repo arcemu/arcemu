@@ -41,7 +41,7 @@
 
 //#define INHERIT_FOLLOWED_UNIT_SPEED 1
 
-//#define HACKY_SERVER_CLIENT_POS_SYNC
+#define HACKY_SERVER_CLIENT_POS_SYNC
 
 class Object;
 class Creature;
@@ -483,6 +483,8 @@ protected:
 	float m_destinationX;
 	float m_destinationY;
 	float m_destinationZ;
+	float m_last_target_x;
+	float m_last_target_y;
 	
 	float m_nextPosX;
 	float m_nextPosY;
