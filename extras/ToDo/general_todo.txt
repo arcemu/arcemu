@@ -113,6 +113,7 @@ SMT_RESIST_DISPEL - check if it is used
 - if started bg have not enough players bg'll finished in 5 minutes all players recive 2marks
 - focused fire and Spirit Bond reamins on caster after pet is dismissed : SPELL_FLAG_IS_EXPIREING_WITH_PET
 - pets do not work with collision enabled
+- sockets for thrown weapons disabled - was causing server crash - fix in item.cpp itemhandler.cpp
 
 ==========================================================================
 Zack - test my shit :

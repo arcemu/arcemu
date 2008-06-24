@@ -168,7 +168,7 @@ void Item::LoadFromDB(Field* fields, Player* plr, bool light )
 		if( sscanf( (*itr).c_str(), "%u,%u,%u", (unsigned int*)&enchant_id, (unsigned int*)&time_left, (unsigned int*)&enchslot) == 3 )
 		{
 			entry = dbcEnchant.LookupEntry( enchant_id );
-			if( entry && entry->Id == enchant_id )
+			if( entry && entry->Id == enchant_id && m_itemProto->SubClass != ITEM_SUBCLASS_WEAPON_THROWN)
 			{
 				AddEnchantment( entry, time_left, ( time_left == 0 ), false, false, enchslot );
 				//(enchslot != 2) ? false : true, false);
@@ -569,7 +569,7 @@ int32 Item::AddEnchantment( EnchantEntry* Enchantment, uint32 Duration, bool Per
 	SetUInt32Value( EnchantBase + 2, 0 ); // charges
 
 	// Add it to our map.
-	Enchantments[Slot] = Instance;
+	Enchantments.insert(make_pair((uint32)Slot, Instance));
 
 	if( m_owner == NULL )
 		return Slot;

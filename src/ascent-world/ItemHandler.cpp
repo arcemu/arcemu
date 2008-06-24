@@ -1910,7 +1910,7 @@ void WorldSession::HandleInsertGemOpcode(WorldPacket &recvPacket)
 				FilledSlots++;
 
 			Enchantment = dbcEnchant.LookupEntry(gp->EnchantmentID);
-			if(Enchantment)
+			if(Enchantment && TargetItem->GetProto()->SubClass != ITEM_SUBCLASS_WEAPON_THROWN)
 				TargetItem->AddEnchantment(Enchantment, 0, true,apply,false,2+i);
 		}
 	}
@@ -1924,7 +1924,7 @@ void WorldSession::HandleInsertGemOpcode(WorldPacket &recvPacket)
 				return;
 
 			Enchantment = dbcEnchant.LookupEntry(TargetItem->GetProto()->SocketBonus);
-			if(Enchantment)
+			if(Enchantment && TargetItem->GetProto()->SubClass != ITEM_SUBCLASS_WEAPON_THROWN)
 			{
 				uint32 Slot = TargetItem->FindFreeEnchantSlot(Enchantment,0);
 				TargetItem->AddEnchantment(Enchantment, 0, true,apply,false, Slot);

@@ -106,7 +106,7 @@ const static double SuffixMods[NUM_INVENTORY_TYPES] = { 0.0,
 														0.0,		// QUIVER
 														0.26, };	// RELIC
 
-typedef map< uint32, EnchantmentInstance > EnchantmentMap;
+typedef std::map<uint32, EnchantmentInstance> EnchantmentMap;
 
 #define APPLY true
 #define REMOVE false
@@ -240,7 +240,7 @@ public:
 		random_suffix = id;
 	}
 
-	bool HasEnchantments() { return ( Enchantments.size() > 0 ) ? true : false; }
+	bool HasEnchantments() { return (Enchantments.size() > 0 ) ? true : false; }
 
 	uint32 wrapped_item_id;
 
