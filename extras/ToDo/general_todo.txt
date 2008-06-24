@@ -78,7 +78,9 @@ SMT_RESIST_DISPEL - check if it is used
 - WPE hack : move from anyslot to bankslot anytime. This is a memory hack
 - revision number extractor. Maybe include it into the compiler steps ?
 - spell 16346 is spamming console. Why ?
-- people say that pets do not follow with collision enabled due to andys patch that made mobs stay on the ground
+- skilline is not set for spells
+	.additem 16112
+	.additem 16084
 
 ==========================================================================
 ! BUGS !
@@ -116,4 +118,5 @@ SMT_RESIST_DISPEL - check if it is used
 Zack - test my shit :
 
 - test healsupport or remove it
+- test hacky client server mob position sync. Maybe it would be better so players have this too. Check if melee fighters need this too.
 

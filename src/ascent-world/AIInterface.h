@@ -41,6 +41,8 @@
 
 //#define INHERIT_FOLLOWED_UNIT_SPEED 1
 
+//#define HACKY_SERVER_CLIENT_POS_SYNC
+
 class Object;
 class Creature;
 class Unit;
@@ -465,10 +467,13 @@ protected:
 	AI_State m_AIState;
 	AI_Agent m_aiCurrentAgent;
 
-	Unit* tauntedBy; //This mob will hit only tauntedBy mob.
-	bool isTaunted;
-	Unit* soullinkedWith; //This mob can be hitten only by soullinked unit
-	bool isSoulLinked;
+	Unit*	tauntedBy; //This mob will hit only tauntedBy mob.
+	bool	isTaunted;
+	Unit*	soullinkedWith; //This mob can be hitten only by soullinked unit
+	bool	isSoulLinked;
+#ifdef HACKY_SERVER_CLIENT_POS_SYNC
+	bool	moved_for_attack;
+#endif
 
 
 	// Movement

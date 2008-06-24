@@ -114,6 +114,9 @@ AIInterface::AIInterface()
 	skip_reset_hp=false;
 	timed_emotes =  NULL;
 	timed_emote_expire = 0xFFFFFFFF;
+#ifdef HACKY_SERVER_CLIENT_POS_SYNC
+	moved_for_attack = false;
+#endif
 }
 
 void AIInterface::EventAiInterfaceParamsetFinish()
@@ -911,6 +914,14 @@ void AIInterface::_UpdateCombat(uint32 p_time)
 			HandleEvent( EVENT_LEAVECOMBAT, m_Unit, 0 );
 		}
 	}
+
+#ifdef HACKY_SERVER_CLIENT_POS_SYNC
+	if( m_nextTarget && moved_for_attack && m_creatureState == STOPPED )
+	{
+		StopMovement(0); //send a forced update position to client
+		moved_for_attack = false;
+	}
+#endif
 
 #ifdef COLLISION
 	/*float target_land_z=0.0f;
@@ -1913,6 +1924,9 @@ void AIInterface::_CalcDestinationAndMove(Unit *target, float dist)
 	
 	if( target && ( target->GetTypeId() == TYPEID_UNIT || target->GetTypeId() == TYPEID_PLAYER) )
 	{
+#ifdef HACKY_SERVER_CLIENT_POS_SYNC
+		moved_for_attack = true;
+#endif
 		float ResX = target->GetPositionX();
 		float ResY = target->GetPositionY();
 		float ResZ = target->GetPositionZ();
