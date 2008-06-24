@@ -4014,6 +4014,10 @@ exit:
 		if( u_caster != NULL )
 			value+=float2int32(u_caster->GetAP()*0.06f);
 	}
+	else if ( m_spellInfo->Id == 34501 && ( i == 0 || i == 1 ) ) //Hunter - Expose Weakness
+	{
+		value = ( u_caster->GetUInt32Value( UNIT_FIELD_STAT1 ) * 25 / 100 );
+	}
 
 	if( p_caster != NULL )
 	{
