@@ -15681,19 +15681,19 @@ void ApplyNormalFixes()
 		sp = dbcSpell.LookupEntryForced( 19228 );
 		if( sp != NULL )
 		{
-			sp->procFlags = PROC_ON_CAST_SPELL;
+			sp->procFlags = PROC_ON_CAST_SPECIFIC_SPELL;
 			sp->ProcOnNameHash[0] = SPELL_HASH_WING_CLIP;
 		}
 		sp = dbcSpell.LookupEntryForced( 19232 );
 		if( sp != NULL )
 		{
-			sp->procFlags = PROC_ON_CAST_SPELL;
+			sp->procFlags = PROC_ON_CAST_SPECIFIC_SPELL;
 			sp->ProcOnNameHash[0] = SPELL_HASH_WING_CLIP;
 		}
 		sp = dbcSpell.LookupEntryForced( 19233 );
 		if( sp != NULL )
 		{
-			sp->procFlags = PROC_ON_CAST_SPELL;
+			sp->procFlags = PROC_ON_CAST_SPECIFIC_SPELL;
 			sp->ProcOnNameHash[0] = SPELL_HASH_WING_CLIP;
 		}
 
