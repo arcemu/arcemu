@@ -1528,11 +1528,11 @@ int8 ItemInterface::CanEquipItemInSlot(int8 DstInvSlot, int8 slot, ItemPrototype
 			return INV_ERR_CANT_CARRY_MORE_OF_THIS;
 		
 		// Check to see if we have the correct race
-		if(!(proto->AllowableRace& (1<<m_pOwner->getRace())))
+		if(!(proto->AllowableRace& m_pOwner->getRaceMask()))
 			return INV_ERR_YOU_CAN_NEVER_USE_THAT_ITEM;
 
 		// Check to see if we have the correct class
-		if(!(proto->AllowableClass & (1<<(m_pOwner->getClass()-1))))
+		if(!(proto->AllowableClass & m_pOwner->getClassMask()))
 			return INV_ERR_YOU_CAN_NEVER_USE_THAT_ITEM2;
 
 		// Check to see if we have the reqs for that reputation
