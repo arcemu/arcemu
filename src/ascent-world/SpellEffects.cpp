@@ -4366,13 +4366,14 @@ void Spell::SpellEffectSanctuary(uint32 i) // Stop all attacks made to you
 	if(!u_caster)
 		return;
 
+	//!warning this is not updated frequently
 	Object::InRangeSet::iterator itr = u_caster->GetInRangeOppFactsSetBegin();
 	Object::InRangeSet::iterator itr_end = u_caster->GetInRangeOppFactsSetBegin();
 	Unit * pUnit;
 
-	for( ; itr != itr_end; ++itr ) {
+	for( ; itr != itr_end; ++itr )
+	{
 		pUnit = static_cast<Unit*>(*itr);
-		++itr;
 
 		if( pUnit->GetTypeId() == TYPEID_UNIT )
 			pUnit->GetAIInterface()->RemoveThreatByPtr( u_caster );

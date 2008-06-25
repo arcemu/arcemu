@@ -116,6 +116,17 @@ SMT_RESIST_DISPEL - check if it is used
 - sockets for thrown weapons disabled - was causing server crash - fix in item.cpp itemhandler.cpp
 
 ==========================================================================
+Char: Lvl 20 Warlock
+Mobs: Stonesplinter Bonesnapper f.e. http://www.wowhead.com/?npc=1164
+Used Spells:
+Fear, http://www.wowhead.com/?spell=5782
+Corruption, http://www.wowhead.com/?spell=6222
+Curse of Agony http://www.wowhead.com/?spell=1014
+If you attack the Mob and use Corruption and Curse of Agony it happens sometimes that they will regen HP ONCE directly AFTER the debuff runs out. If you use fear on them, they will regenerate about 10% of life each tick.
+Easy to reproduce.
+You will only see this on low lvl mobs I bet high level regen the same but due the more dmg dealt to them in higher levels this won't really noticed.
+
+==========================================================================
 Zack - test my shit :
 
 - test healsupport or remove it
