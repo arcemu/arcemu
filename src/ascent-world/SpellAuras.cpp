@@ -715,7 +715,11 @@ void Aura::EventUpdateAA(float r)
 
 	// if the caster is no longer valid->remove the aura
 	if(u_caster == 0)
+	{
 		Remove();
+		//since we lost the caster we cannot do anything more
+		return;
+	}
 
 	Player * plr = 0;
 
