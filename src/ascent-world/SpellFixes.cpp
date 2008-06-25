@@ -17747,6 +17747,19 @@ void ApplyNormalFixes()
 		if( sp != NULL )
 			sp->EffectSpellGroupRelation[0] = group_relation_shaman_totems;
 		
+		/********************************************************
+		Call of Flame
+		*******************************/
+		sp = dbcSpell.LookupEntryForced( 16038 );
+		if( sp != NULL )
+			sp->EffectSpellGroupRelation[0] = 1073741824;    
+		sp = dbcSpell.LookupEntryForced( 16160 );
+		if( sp != NULL )
+			sp->EffectSpellGroupRelation[0] = 1073741824;
+		sp = dbcSpell.LookupEntryForced( 16161 );
+		if( sp != NULL )
+			sp->EffectSpellGroupRelation[0] = 1073741824;
+
 		/**********************************************************
 		 *	Lightning - Grouping
 		 **********************************************************/
