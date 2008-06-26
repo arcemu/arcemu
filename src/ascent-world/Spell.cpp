@@ -3348,24 +3348,29 @@ uint8 Spell::CanCast(bool tolerate)
 			// scripted spell stuff
 			switch(m_spellInfo->Id)
 			{
+				case 41621: // Wolpertinger Net
+				{
+					if( !target || !target->IsCreature() || target->GetEntry()!=23487 ) // Wild Wolpertinger
+						return SPELL_FAILED_BAD_TARGETS;
+				}break;
 				case 32578: // Gor'drek's Ointment
 				{
-					if( target && target->IsCreature() && target->GetEntry()!=20748) // Thunderlord Dire Wolf NPC
+					if( !target || !target->IsCreature() || target->GetEntry()!=20748) // Thunderlord Dire Wolf NPC
 						return SPELL_FAILED_BAD_TARGETS;
-				}
+				}break;
 				case 44997:
 				{
-					if( target && target->IsCreature() && target->GetEntry()!=24972 ) // Erratic Sentry
+					if( !target || !target->IsCreature() || target->GetEntry()!=24972 ) // Erratic Sentry
 						return SPELL_FAILED_BAD_TARGETS;
 
-					if( target && target->IsCreature() && !target->isDead() )
+					if( !target || !target->IsCreature() || !target->isDead() )
 						return SPELL_FAILED_TARGET_NOT_DEAD;
-				}
+				}break;
 				case 30077:
 				{
-					if( target && target->IsCreature() && target->GetEntry()!=17226 ) // Viera Sunwhisper
+					if( !target || !target->IsCreature() || target->GetEntry()!=17226 ) // Viera Sunwhisper
 						return SPELL_FAILED_BAD_TARGETS;
-				}
+				}break;
 				case 19938: // Awaken Peon (Foreman's Blackjack)
 				case 27907: // Disciplinary Rod
 				case 603: //curse of doom, can't be casted on players
