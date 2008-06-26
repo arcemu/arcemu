@@ -659,6 +659,7 @@ void Creature::CalcStat(uint32 type)
 	//borrowed from player warrior formulas
 	switch( type )
 	{
+/*
 	case STAT_STRENGTH:
 		{
 			// attack power
@@ -676,7 +677,7 @@ void Creature::CalcStat(uint32 type)
 				RAP = 0;
 			SetUInt32Value( UNIT_FIELD_RANGED_ATTACK_POWER, RAP );
 		} break;
-
+*/
 	case STAT_STAMINA:
 		{
 			// health
