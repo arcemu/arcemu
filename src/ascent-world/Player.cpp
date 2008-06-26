@@ -4381,7 +4381,6 @@ void Player::setAction(uint8 button, uint16 action, uint8 type, uint8 misc)
 {
 	if( button > 120 )
 		return; //packet hack to crash server
-	assert(button < 120);
 	mActions[button].Action = action;
 	mActions[button].Type = type;
 	mActions[button].Misc = misc;
@@ -4968,6 +4967,9 @@ bool Player::CanSee(Object* obj) // * Invisibility & Stealth Detection - Partha 
 						return bGMTagOn; // GM can see invisible players
 				}
 
+				if( m_invisible && pObj->m_invisDetect[m_invisFlag] < 1 ) // Invisible - can see those that detect, but not others
+					return bGMTagOn;
+
 				if(pObj->IsStealth()) // Stealth Detection (  I Hate Rogues :P  )
 				{
 					if(GetGroup() && pObj->GetGroup() == GetGroup() // can see stealthed group members except when dueling them
@@ -5016,6 +5018,9 @@ bool Player::CanSee(Object* obj) // * Invisibility & Stealth Detection - Partha 
 				if(uObj->m_invisible // Invisibility - Detection of Units
 						&& m_invisDetect[uObj->m_invisFlag] < 1) // can't see invisible without proper detection
 					return bGMTagOn; // GM can see invisible units
+				
+				if( m_invisible && uObj->m_invisDetect[m_invisFlag] < 1 ) // Invisible - can see those that detect, but not others
+					return bGMTagOn;
 
 				return true;
 			}

@@ -2915,10 +2915,20 @@ void Aura::SpellAuraModInvisibility(bool apply)
 	if(apply)
 	{
 		m_target->m_invisFlag = mod->m_miscValue;
+		if( m_target->GetTypeId() == TYPEID_PLAYER )
+		{
+			if( GetSpellId() == 32612 ) 
+				static_cast<Player*>(m_target)->SetFlag( PLAYER_FIELD_BYTES2, 0x4000 ); //Mage Invis self visual
+		}
 	}
 	else
 	{
 		m_target->m_invisFlag = INVIS_FLAG_NORMAL;
+		if( m_target->GetTypeId() == TYPEID_PLAYER )
+		{
+			if( GetSpellId() == 32612 ) 
+				static_cast<Player*>(m_target)->RemoveFlag( PLAYER_FIELD_BYTES2, 0x4000 );
+		}
 	}
 
 	m_target->m_invisible = apply;

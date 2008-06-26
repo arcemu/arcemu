@@ -14414,6 +14414,18 @@ void ApplyNormalFixes()
 			sp->EffectApplyAuraName[0] = SPELL_AURA_DUMMY;
 		}
 
+		sp = dbcSpell.LookupEntryForced( 66 );
+		if( sp != NULL )
+		{
+			sp->EffectApplyAuraName[2] = SPELL_AURA_PERIODIC_TRIGGER_SPELL;
+			sp->Effect[2] = SPELL_EFFECT_APPLY_AURA;
+			sp->EffectAmplitude[2] = 6000;
+			sp->EffectImplicitTargetA[2] = EFF_TARGET_SELF;
+			sp->EffectBaseDice[2] = 1;
+			sp->EffectDieSides[2] = 1;
+			sp->EffectTriggerSpell[2] = 32612;
+			sp->EffectBasePoints[2] = -1;
+		}
 			// Hypothermia: undispellable
 			if( sp->NameHash == SPELL_HASH_HYPOTHERMIA )
 				sp->c_is_flags |= SPELL_FLAG_IS_FORCEDDEBUFF;
