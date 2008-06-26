@@ -290,6 +290,30 @@ void WorldSession::HandleSendMail(WorldPacket & recv_data )
 	recv_data >> msg.subject >> msg.body >> msg.stationary;
 	recv_data >> unk2 >> itemcount;
 
+	//!!!!!!!!!!!!!!!!!!temoporary hacker fix
+	//he simply ads chars to string that are recognized by vsnprintf function
+	//this is very shitty code. Have to rewrite it later
+	char *t=(char*)msg.subject.c_str();
+	int ind=0;
+	while(t[ind]!=0 && ind<5000)
+	{
+		if(t[ind]=='%')
+			t[ind]='#';//just remove chars that could be interpreted
+		ind++;
+	}
+	msg.subject = t;
+	t=(char*)msg.body.c_str();
+	ind=0;
+	while(t[ind]!=0 && ind<5000)
+	{
+		if(t[ind]=='%')
+			t[ind]='#';//just remove chars that could be interpreted
+		ind++;
+	}
+	msg.body = t;
+	//!!!!!!!!!!!!!!!!!!temoporary hacker fix - end
+
+
 	if( itemcount > 12 )
 	{
 		//SystemMessage("Sorry, Ascent does not support sending multiple items at this time. (don't want to lose your item do you) Remove some items, and try again.");
