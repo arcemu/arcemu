@@ -4379,6 +4379,8 @@ void Player::SendInitialActions()
 
 void Player::setAction(uint8 button, uint16 action, uint8 type, uint8 misc)
 {
+	if( button > 120 )
+		return; //packet hack to crash server
 	assert(button < 120);
 	mActions[button].Action = action;
 	mActions[button].Type = type;
