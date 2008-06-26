@@ -5186,7 +5186,7 @@ void Player::EventCannibalize(uint32 amount)
 
 void Player::EventReduceDrunk(bool full)
 {
-	uint8 drunk = ((GetUInt32Value(PLAYER_BYTES_3) >> 24) & 0xFF);
+	uint8 drunk = ((GetUInt32Value(PLAYER_BYTES_3) >> 8) & 0xFF);
 	if(full) drunk = 0;
 	else drunk -= 10;
 	SetUInt32Value(PLAYER_BYTES_3, ((GetUInt32Value(PLAYER_BYTES_3) & 0xFFFF00FF) | (drunk << 8)));

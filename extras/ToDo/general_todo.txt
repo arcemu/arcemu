@@ -133,3 +133,14 @@ Zack - test my shit :
 - test healsupport or remove it
 - test hacky client server mob position sync. Maybe it would be better so players have this too. Check if melee fighters need this too.
 
+========================================
+http://www.wowhead.com/?item=34349
+Blade of Life's Inevitability
+http://www.wowhead.com/?item=32735
+Radiant Spencerite
+Step one : get these items
+Step two : open your bag up and Shift+rightclick on
+Blade of Life's Inevitability
+Step three : then add the Radiant Spencerite and equipt the item.
+Step four.. : server crash in about 10 seconds.
+
