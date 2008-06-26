@@ -1854,31 +1854,16 @@ void Spell::SpellEffectCreateItem(uint32 i) // Create item
 		ItemPrototype *m_itemProto;
 		m_itemProto = ItemPrototypeStorage.LookupEntry( m_spellInfo->EffectSpellGroupRelation[j] );
 		if (!m_itemProto)
-			 continue;
+			continue;
 
 		if(m_spellInfo->EffectSpellGroupRelation[j] == 0)
 			continue;
 
-		uint32 item_count = 0;
-		if (m_itemProto->Class != ITEM_CLASS_CONSUMABLE || m_spellInfo->SpellFamilyName != 3) //SpellFamilyName 3 is mage
-			item_count = damage;
-		else if(p_caster->getLevel() >= m_spellInfo->spellLevel)
-//			item_count = ((p_caster->getLevel() - (m_spellInfo->spellLevel-1))*damage);
-			//kenjiro says damage already contains correct item amount now
-			item_count = damage;
+		uint32 item_count = damage;
 
-		if(!item_count)
-			item_count = damage;
-
-		//conjure water ranks 7,8 & 9 and conjure food ranks 7 & 8 have different starting amounts
 		// tailoring specializations get +1 cloth bonus
 		switch(m_spellInfo->Id)
 		{
-		case 27389: //Conjure Food 7
-		case 10140: //Conjure Water 7
-		case 37420: //Conjure Water 8
-			item_count += 8;
-			break;
 		case 36686: //Shadowcloth
 			if(p_caster->HasSpell(26801)) item_count += 1;
 			break;
@@ -1966,7 +1951,7 @@ void Spell::SpellEffectCreateItem(uint32 i) // Create item
 						item_count = item_count_filled;
 					}
 					else
-						p_caster->GetSession()->SendItemPushResult(newItem, true, false, true, true, slotresult.ContainerSlot, slotresult.Slot, item_count-item_count_filled);
+						p_caster->GetSession()->SendItemPushResult(newItem, true, false, true, true, slotresult.ContainerSlot, slotresult.Slot, item_count);
                 }
 			}
 			else
