@@ -211,6 +211,12 @@ bool ChatHandler::HandleItemCommand(const char* args, WorldSession *m_session)
 	if (pamount)
 		amount = atoi(pamount);
 
+	if (amount == -1)
+	{
+		SystemMessage(m_session, "You need to specify an amount.");
+		return true;
+	}
+
 	ItemPrototype* tmpItem = ItemPrototypeStorage.LookupEntry(item);
 
 	std::stringstream sstext;
