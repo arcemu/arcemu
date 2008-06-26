@@ -81,6 +81,7 @@ SMT_RESIST_DISPEL - check if it is used
 - skilline is not set for spells
 	.additem 16112
 	.additem 16084
+- orb of translocation not working anymore ?
 
 ==========================================================================
 ! BUGS !
