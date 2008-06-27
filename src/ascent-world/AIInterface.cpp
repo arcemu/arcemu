@@ -1972,6 +1972,7 @@ void AIInterface::_CalcDestinationAndMove(Unit *target, float dist)
 		m_nextPosZ = m_Unit->GetPositionZ();
 	}
 
+/*
 #ifdef COLLISION
 	float target_land_z=0.0f;
 	if( m_Unit->GetMapMgr() != NULL )
@@ -1987,6 +1988,7 @@ void AIInterface::_CalcDestinationAndMove(Unit *target, float dist)
 	if (m_nextPosZ > m_Unit->GetMapMgr()->GetWaterHeight(m_nextPosX, m_nextPosY) && target_land_z != 0.0f)
 		m_nextPosZ=target_land_z;
 #endif
+*/
 
 	float dx = m_nextPosX - m_Unit->GetPositionX();
 	float dy = m_nextPosY - m_Unit->GetPositionY();
