@@ -164,7 +164,7 @@ struct Quest
 	int32 reward_repvalue[2];
 	uint32 reward_replimit;
 
-	uint32 reward_money;
+	int32 reward_money;
 	uint32 reward_xp;
 	uint32 reward_spell;
 	uint32 effect_on_player;
@@ -174,7 +174,7 @@ struct Quest
 	uint32 point_y;
 	uint32 point_opt;
 
-	uint32 required_money;
+	uint32 rew_money_at_max_level;
 	uint32 required_triggers[4];
 	uint32 required_quests[4];
 	uint32 receive_items[4];

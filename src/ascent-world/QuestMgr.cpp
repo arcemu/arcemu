@@ -419,7 +419,7 @@ void QuestMgr::BuildRequestItems(WorldPacket *data, Quest* qst, Object* qst_give
 
 	*data << uint32(0);				 // Emote delay
 	*data << uint32(1);				 // Emote type
-	*data << qst->required_money;	   // Required Money
+	*data << uint32( qst->reward_money < 0 ? -qst->reward_money : 0 );	   // Required Money
 
 	// item count
 	*data << qst->count_required_item;
@@ -886,10 +886,11 @@ void QuestMgr::OnQuestAccepted(Player* plr, Quest* qst, Object *qst_giver)
 
 void QuestMgr::OnQuestFinished(Player* plr, Quest* qst, Object *qst_giver, uint32 reward_slot)
 {
-//Re-Check for Gold Requirement (needed for possible xploit)
-    if(qst->required_money && (plr->GetUInt32Value(PLAYER_FIELD_COINAGE) < qst->required_money)) 
-       return;
-    QuestLogEntry *qle = NULL;
+	//Re-Check for Gold Requirement (needed for possible xploit) - reward money < 0 means required money
+	if ( qst->reward_money < 0 && plr->GetUInt32Value( PLAYER_FIELD_COINAGE ) < uint32(-qst->reward_money) )
+		return;
+
+	QuestLogEntry *qle = NULL;
 	qle = plr->GetQuestLogForEntry(qst->id);
 	if(!qle)
 		return;
@@ -1115,12 +1116,6 @@ void QuestMgr::OnQuestFinished(Player* plr, Quest* qst, Object *qst_giver, uint3
 	    {
 		    if(qst->required_item[i]) plr->GetItemInterface()->RemoveItemAmt(qst->required_item[i],qst->required_itemcount[i]);
 	    }
-
-			for(uint32 i = 0; i < 4; ++i)
-			{
-				if(qst->required_money && (plr->GetUInt32Value(PLAYER_FIELD_COINAGE) >= qst->required_money))
-					plr->ModUnsigned32Value(PLAYER_FIELD_COINAGE, qst->required_money);
-			}
 
 	    // Remove srcitem
 	    if(qst->srcitem && qst->srcitem != qst->receive_items[0])

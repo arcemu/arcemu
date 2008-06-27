@@ -61,7 +61,7 @@ WorldPacket* WorldSession::BuildQuestQueryResponse(Quest *qst)
 	// srcitem
 	// flags
 	
-	*data << uint32(qst->required_money);		   // Required Money
+	*data << uint32(qst->reward_money<0 ? -qst->reward_money : 0);		   // Required Money
 	*data << uint32(qst->effect_on_player);		 // Spell casted on player upon completion
 	*data << uint32(qst->reward_spell);			 // Spell added to spellbook upon completion
 	*data << uint32(0);								// 2.3.0 - bonus honor
@@ -286,11 +286,12 @@ bool QuestLogEntry::CanBeFinished()
 		}
 	}
 
-//Check for Gold & AreaTrigger Requirement s
+	//Check for Gold & AreaTrigger Requirements
+	if ( m_quest->reward_money < 0 && m_plr->GetUInt32Value( PLAYER_FIELD_COINAGE ) < uint32(-m_quest->reward_money) )
+		return false;
+
 	for(i = 0; i < 4; ++i)
 	{
-		if(m_quest->required_money && (m_plr->GetUInt32Value(PLAYER_FIELD_COINAGE) < m_quest->required_money)) 
-			return false;
 		if(m_quest->required_triggers[i])
 		{
 			if(m_explored_areas[i] == 0)
@@ -425,5 +426,6 @@ void QuestLogEntry::SendUpdateAddKill(uint32 i)
 {
 	sQuestMgr.SendQuestUpdateAddKill(m_plr, m_quest->id, m_quest->required_mob[i], m_mobcount[i], m_quest->required_mobcount[i], 0);
 }
+
 
 

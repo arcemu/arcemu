@@ -601,7 +601,7 @@ public:
 
 			case 'i':	// Signed integer
 				*(int32*)&structpointer[offset] = f->GetInt32();
-				offset += sizeof(uint64);
+				offset += sizeof(int32);
 				break;
 
 			case 's':	// Null-terminated string
