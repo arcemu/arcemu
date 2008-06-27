@@ -290,28 +290,32 @@ void WorldSession::HandleSendMail(WorldPacket & recv_data )
 	recv_data >> msg.subject >> msg.body >> msg.stationary;
 	recv_data >> unk2 >> itemcount;
 
-	//!!!!!!!!!!!!!!!!!!temoporary hacker fix
-	//he simply ads chars to string that are recognized by vsnprintf function
-	//this is very shitty code. Have to rewrite it later
+	//he simply ads ' ' after each '%' to string so that vsnprintf function would not find tokens in string
 	char *t=(char*)msg.subject.c_str();
-	int ind=0;
-	while(t[ind]!=0 && ind<5000)
+	if( t[0] != 0 ) //if not an empty string
 	{
-		if(t[ind]=='%')
-			t[ind]='#';//just remove chars that could be interpreted
-		ind++;
+		int ind=1;
+		//make sure we do not have any recognizable tokens here
+		while(t[ind]!=0 && ind<5000)
+		{
+			if(t[ind-1]=='%')
+				t[ind]=' ';//just remove chars that could be interpreted
+			ind++;
+		}
 	}
 	msg.subject = t;
 	t=(char*)msg.body.c_str();
-	ind=0;
-	while(t[ind]!=0 && ind<5000)
+	if( t[0] != 0 ) //if not an empty string
 	{
-		if(t[ind]=='%')
-			t[ind]='#';//just remove chars that could be interpreted
-		ind++;
+		int ind=1;
+		while(t[ind]!=0 && ind<5000)
+		{
+			if(t[ind-1]=='%')
+				t[ind]='#';//just remove chars that could be interpreted
+			ind++;
+		}
 	}
 	msg.body = t;
-	//!!!!!!!!!!!!!!!!!!temoporary hacker fix - end
 
 
 	if( itemcount > 12 )
