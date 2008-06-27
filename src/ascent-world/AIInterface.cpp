@@ -2207,7 +2207,8 @@ void AIInterface::MoveTo(float x, float y, float z, float o)
 		m_nextPosZ=target_land_z;
 #endif*/
 
-	UpdateMove();
+	if ( m_creatureState != MOVING )
+		UpdateMove();
 }
 
 bool AIInterface::IsFlying()
@@ -2284,14 +2285,14 @@ void AIInterface::UpdateMove()
 	//m_nextPosX = m_nextPosY = m_nextPosZ = 0;
 
 	uint32 moveTime;
-#ifdef INHERIT_FOLLOWED_UNIT_SPEED
+/* #ifdef INHERIT_FOLLOWED_UNIT_SPEED vojta - this is pointless and we dont need it anymore
 	if( UnitToFollow )
 	{
 //		moveTime = (uint32) (distance * 1000 / UnitToFollow->m_runSpeed ); //i wonder if runpeed can ever frop to 0
 		//life sucks, due to calculations the pet will move slower with corect formulas. We add some catch-up speed
 		moveTime = (uint32) (distance * 1000 / ( UnitToFollow->m_runSpeed * sqrt( distance ) ) ); //i wonder if runpeed can ever frop to 0
 	}
-#endif
+#endif */
 	if(m_moveFly)
 		moveTime = (uint32) (distance / m_flySpeed);
 	else if(m_moveRun)
