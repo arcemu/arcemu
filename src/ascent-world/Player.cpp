@@ -4968,7 +4968,7 @@ bool Player::CanSee(Object* obj) // * Invisibility & Stealth Detection - Partha 
 				}
 
 				if( m_invisible && pObj->m_invisDetect[m_invisFlag] < 1 ) // Invisible - can see those that detect, but not others
-					return bGMTagOn;
+					return m_isGmInvisible;
 
 				if(pObj->IsStealth()) // Stealth Detection (  I Hate Rogues :P  )
 				{
@@ -5020,7 +5020,7 @@ bool Player::CanSee(Object* obj) // * Invisibility & Stealth Detection - Partha 
 					return bGMTagOn; // GM can see invisible units
 				
 				if( m_invisible && uObj->m_invisDetect[m_invisFlag] < 1 ) // Invisible - can see those that detect, but not others
-					return bGMTagOn;
+					return m_isGmInvisible;
 
 				return true;
 			}

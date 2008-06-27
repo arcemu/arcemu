@@ -311,7 +311,7 @@ void WorldSession::HandleSendMail(WorldPacket & recv_data )
 		while(t[ind]!=0 && ind<5000)
 		{
 			if(t[ind-1]=='%')
-				t[ind]='#';//just remove chars that could be interpreted
+				t[ind]=' ';//just remove chars that could be interpreted
 			ind++;
 		}
 	}
