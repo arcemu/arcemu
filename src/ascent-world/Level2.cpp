@@ -1038,7 +1038,7 @@ bool ChatHandler::HandleMountCommand(const char *args, WorldSession *m_session)
 	//m_target->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_MOUNTED_TAXI);
 
 	BlueSystemMessage(m_session, "Now mounted with model %d.", modelid);
-	sGMLog.writefromsession( m_session, "used mount command on PLAYER %s, model %u", m_plyr->GetName(), modelid );
+	sGMLog.writefromsession( m_session, "used mount command to model %u", modelid );
 	return true;
 }
 
