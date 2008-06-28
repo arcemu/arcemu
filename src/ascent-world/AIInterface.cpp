@@ -1234,7 +1234,9 @@ void AIInterface::_UpdateCombat(uint32 p_time)
 				los = CollideInterface.CheckLOS(m_Unit->GetMapId(), m_Unit->GetPositionNC(),m_nextTarget->GetPositionNC());
 #endif
 				if(los 
-					&& ( ( distance <= m_nextSpell->maxrange + m_Unit->GetModelHalfSize() && distance >= m_nextSpell->minrange ) 
+					&& ( ( distance <= m_nextSpell->maxrange + m_Unit->GetModelHalfSize() 
+//					&& distance >= m_nextSpell->minrange 
+					) 
 							|| m_nextSpell->maxrange == 0) ) // Target is in Range -> Attack
 				{
 					SpellEntry* spellInfo = m_nextSpell->spell;
@@ -1279,10 +1281,16 @@ void AIInterface::_UpdateCombat(uint32 p_time)
 				{
 					//calculate next move
 					m_moveRun = true;
+					float close_to_enemy;
 					if( distance > m_nextSpell->maxrange )
-						_CalcDestinationAndMove(m_nextTarget, m_nextSpell->maxrange ); //if we make exact movement we will never position perfectly
-					else // if( distance < m_nextSpell->minrange )
-						_CalcDestinationAndMove(m_nextTarget, m_nextSpell->minrange ); //if we make exact movement we will never position perfectly
+						close_to_enemy = m_nextSpell->maxrange - DISTANCE_TO_SMALL_TO_WALK ;
+					else if( distance < m_nextSpell->minrange )
+						close_to_enemy = m_nextSpell->minrange + DISTANCE_TO_SMALL_TO_WALK ;
+
+					if( close_to_enemy < 0 )
+						close_to_enemy = 0;
+						
+					_CalcDestinationAndMove(m_nextTarget, close_to_enemy ); //if we make exact movement we will never position perfectly
 					/*Destination* dst = _CalcDestination(m_nextTarget, dist);
 					MoveTo(dst->x, dst->y, dst->z,0);
 					delete dst;*/
