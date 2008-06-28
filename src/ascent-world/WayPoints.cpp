@@ -45,7 +45,7 @@ bool ChatHandler::HandleWPAddCommand(const char* args, WorldSession *m_session)
 		}
 
 		pCreature = (Creature*)ai->GetUnit();
-		if(!pCreature)
+		if( !pCreature || pCreature->IsPet() )
 		{
 			SystemMessage(m_session, "Invalid Creature, please select another one.");
 			return true;
@@ -54,7 +54,7 @@ bool ChatHandler::HandleWPAddCommand(const char* args, WorldSession *m_session)
 	else
 	{
 		pCreature = m_session->GetPlayer()->GetMapMgr()->GetCreature(GET_LOWGUID_PART(guid));
-		if(!pCreature)
+		if( !pCreature || pCreature->IsPet() )
 		{
 			SystemMessage(m_session, "You should select a creature.");
 			return true;
@@ -771,11 +771,18 @@ bool ChatHandler::HandleGenerateWaypoints(const char* args, WorldSession * m_ses
 
 bool ChatHandler::HandleSaveWaypoints(const char* args, WorldSession * m_session)
 {
-	Creature * cr = 
-		m_session->GetPlayer()->GetMapMgr()->GetCreature(GET_LOWGUID_PART(m_session->GetPlayer()->GetSelection()));
-	if(!cr)return false;
-	if(!cr->GetSQL_id())
+	Creature * cr = m_session->GetPlayer()->GetMapMgr()->GetCreature( GET_LOWGUID_PART( m_session->GetPlayer()->GetSelection() ) );
+	if ( !cr || !cr->GetSQL_id() )
 		return false;
+
+	Player* pPlayer = m_session->GetPlayer();
+
+	if ( pPlayer->waypointunit == cr->GetAIInterface() )
+	{
+		if ( cr->GetAIInterface()->m_WayPointsShowing )
+			pPlayer->waypointunit->hideWayPoints( pPlayer );
+		pPlayer->waypointunit = NULL;
+	}
 	
 	cr->GetAIInterface()->saveWayPoints();
 	return true;
@@ -825,7 +832,7 @@ bool ChatHandler::HandleWaypointAddFlyCommand(const char * args, WorldSession * 
 		}
 
 		pCreature = (Creature*)ai->GetUnit();
-		if(!pCreature)
+		if ( !pCreature || pCreature->IsPet() )
 		{
 			SystemMessage(m_session, "Invalid Creature, please select another one.");
 			return true;
@@ -834,7 +841,7 @@ bool ChatHandler::HandleWaypointAddFlyCommand(const char * args, WorldSession * 
 	else
 	{
 		pCreature = m_session->GetPlayer()->GetMapMgr()->GetCreature(GET_LOWGUID_PART(guid));
-		if(!pCreature)
+		if ( !pCreature || pCreature->IsPet() )
 		{
 			SystemMessage(m_session, "You should select a creature.");
 			return true;
