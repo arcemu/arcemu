@@ -252,7 +252,10 @@ public:
 	bool	modThreatByPtr(Unit* obj, int32 mod);
 	void	RemoveThreatByPtr(Unit* obj);
 	ASCENT_INLINE AssistTargetSet GetAssistTargets() { return m_assistTargets; }
-	ASCENT_INLINE void LockAITargets(bool lock) { lock? m_aiTargetsLock.Acquire(): m_aiTargetsLock.Release(); };
+	ASCENT_INLINE void LockAITargets(bool lock) 
+	{ 
+//		lock? m_aiTargetsLock.Acquire(): m_aiTargetsLock.Release(); 
+	};
 	ASCENT_INLINE TargetMap *GetAITargets() { return &m_aiTargets; }
 	void addAssistTargets(Unit* Friends);
 	void ClearHateList();
