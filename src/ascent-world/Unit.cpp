@@ -5604,6 +5604,7 @@ Unit* Unit::create_guardian(uint32 guardian_entry,uint32 duration,float angle, u
 	p->GetAIInterface()->SetUnitToFollow(this);
 	p->GetAIInterface()->SetUnitToFollowAngle(m_fallowAngle);
 	p->GetAIInterface()->SetFollowDistance(3.0f);
+	p->m_noRespawn = true;
 
 	p->PushToWorld(GetMapMgr());
 
