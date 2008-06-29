@@ -1780,26 +1780,22 @@ void Object::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
 	}
 
         ///Rage
-		if( pVictim->GetPowerType() == POWER_TYPE_RAGE 
-			//&& !spellId //zack : general opinion is that spells should generate rage. I share the feeling
-			&& pVictim != this
-//			&& pVictim->IsPlayer()
-			)
-		{
-	        float val;
-			uint32 level = pVictim->getLevel();
-			float conv;
-			if( level <= 70 )
-				conv = DamageToRageConversionTable[ level ];
-			else 
-				conv = ( 2.5f * 10 ) / (0.0091107836f * level * level + 3.225598133f * level + 4.2652911f);
-			val = damage * conv;
-			uint32 rage = pVictim->GetUInt32Value( UNIT_FIELD_POWER2 );
-			if( rage + float2int32( val ) > 1000 )
-			  val = 1000.0f - (float)pVictim->GetUInt32Value( UNIT_FIELD_POWER2 );
+	if( pVictim->GetPowerType() == POWER_TYPE_RAGE && pVictim != this )
+	{
+		float val;
+		uint32 level = pVictim->getLevel();
+		float conv;
+		if( level <= 70 )
+			conv = DamageToRageConversionTable[ level ];
+		else 
+			conv = ( 2.5f * 10 ) / (0.0091107836f * level * level + 3.225598133f * level + 4.2652911f);
+		val = damage * conv;
+		uint32 rage = pVictim->GetUInt32Value( UNIT_FIELD_POWER2 );
+		if( rage + float2int32( val ) > 1000 )
+			val = 1000.0f - (float)pVictim->GetUInt32Value( UNIT_FIELD_POWER2 );
 
-			ModUnsigned32Value(UNIT_FIELD_POWER2, (int32)val);
-		}
+		pVictim->ModUnsigned32Value( UNIT_FIELD_POWER2, (int32)val) ;
+	}
 
 	if( pVictim->IsPlayer() )
 	{
