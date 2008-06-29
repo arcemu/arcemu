@@ -1117,7 +1117,7 @@ void WorldSession::HandleGuildBankModifyTab(WorldPacket & recv_data)
 		if( !(pTab->szTabIcon && strcmp(pTab->szTabIcon, tabicon.c_str()) == 0) )
 		{
 			ptmp = pTab->szTabIcon;
-			pTab->szTabIcon = strdup(tabname.c_str());
+			pTab->szTabIcon = strdup(tabicon.c_str());
 			if(ptmp)
 				free(ptmp);
 
