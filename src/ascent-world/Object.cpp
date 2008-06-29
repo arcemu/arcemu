@@ -2369,14 +2369,14 @@ void Object::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
 				{
 					static_cast< Creature* >( pVictim )->GetAIInterface()->AttackReaction( static_cast< Unit* >( this ), damage, spellId );
 				}
-			}
-			if( pVictim->GetTypeId() == TYPEID_PLAYER )
-			{
-				// Defensive pet
-				Pet* pPet = static_cast< Player* >( pVictim )->GetSummon();
-				if( pPet != NULL && pPet->GetPetState() != PET_STATE_PASSIVE )
+				else if( pVictim->GetTypeId() == TYPEID_PLAYER )
 				{
-					pPet->GetAIInterface()->AttackReaction( static_cast< Unit* >( this ), 1 );
+					// Defensive pet
+					Pet* pPet = static_cast< Player* >( pVictim )->GetSummon();
+					if( pPet != NULL && pPet->GetPetState() != PET_STATE_PASSIVE )
+					{
+						pPet->GetAIInterface()->AttackReaction( static_cast< Unit* >( this ), 1, 0 );
+					}
 				}
 			}
 		}
