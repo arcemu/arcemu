@@ -19,6 +19,11 @@
 
 #include "../ascent-shared/CallBack.h"
 
+#ifndef WIN32
+static pthread_cond_t abortcond;
+static pthread_mutex_t abortmutex;
+#endif
+
 template<class Type>
 class PeriodicFunctionCaller : public ThreadBase
 {
@@ -39,39 +44,42 @@ public:
 	bool run()
 	{
 #ifndef WIN32
-		uint32 start = getMSTime();
-		uint32 end;
-		uint32 etime;
-		// initial rest
-		Sleep(interval);
+		struct timeval now;
+		struct timespec tv;
+		uint32 next = getMSTime() + interval;
 
-		while(running && mrunning)
+		pthread_mutex_init( &abortmutex, NULL );
+		pthread_cond_init( &abortcond, NULL );
+
+		while ( running && mrunning )
 		{
-			start = getMSTime();
-			
-			// execute the callback
-			cb->execute();
-
-			end = getMSTime();
-			etime = end - start;
-			if(etime < interval)
-				Sleep(interval - etime);
+			if ( getMSTime() < ( getMSTime() + next ) )
+			{
+				cb->execute();
+				next = getMSTime() + interval;
+			}
+			gettimeofday( &now, NULL );
+			tv.tv_sec = now.tv_sec + 120;
+			tv.tv_nsec = now.tv_usec * 1000;
+			pthread_mutex_lock( &abortmutex );
+			pthread_cond_timedwait( &abortcond, &abortmutex, &tv );
+			pthread_mutex_unlock( &abortmutex );
 		}
 #else
-		thread_active=true;
-		hEvent = CreateEvent(NULL, TRUE, FALSE, NULL);
-		for(;;)
+		thread_active = true;
+		hEvent = CreateEvent( NULL, TRUE, FALSE, NULL );
+		for ( ;; )
 		{
-			WaitForSingleObject(hEvent, interval);
+			WaitForSingleObject( hEvent, interval );
 
-			if(!running)
+			if ( !running )
 				break;	/* we got killed */
 
 			/* times up */
-			ResetEvent(hEvent);
+			ResetEvent( hEvent );
 			cb->execute();
 		}
-		thread_active=false;
+		thread_active = false;
 #endif
 		return false;
 	}
@@ -81,14 +89,16 @@ public:
 		running = false;
 #ifdef WIN32
 		/* push the event */
-		SetEvent(hEvent);
-		printf("Waiting for PFC thread to exit...");
+		SetEvent( hEvent );
+		printf( "Waiting for PFC thread to exit..." );
 		/* wait for the thread to exit */
-		while(thread_active)
+		while( thread_active )
 		{
-			Sleep(100);
+			Sleep( 100 );
 		}
-		printf(" done.\n");
+		printf( " done.\n" );
+#else
+		pthread_cond_signal( &abortcond );
 #endif
 	}
 

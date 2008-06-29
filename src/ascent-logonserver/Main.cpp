@@ -361,8 +361,7 @@ void LogonServer::Run(int argc, char ** argv)
 	int atime = Config.MainConfig.GetIntDefault("Rates", "AccountRefresh",600);
 	atime *= 1000;
 	//SpawnPeriodicCallThread(AccountMgr, AccountMgr::getSingletonPtr(), &AccountMgr::ReloadAccountsCallback, time);
-	PeriodicFunctionCaller<AccountMgr> * pfc = new PeriodicFunctionCaller<AccountMgr>(AccountMgr::getSingletonPtr(),
-		&AccountMgr::ReloadAccountsCallback, atime);
+	PeriodicFunctionCaller<AccountMgr> * pfc = new PeriodicFunctionCaller<AccountMgr>(AccountMgr::getSingletonPtr(), &AccountMgr::ReloadAccountsCallback, atime);
 	ThreadPool.ExecuteTask(pfc);
 
 	// Load conf settings..
