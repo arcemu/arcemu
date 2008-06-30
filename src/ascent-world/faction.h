@@ -34,6 +34,8 @@ ASCENT_INLINE bool isFriendly(Object* objA, Object* objB)// B is friendly to A i
 
 ASCENT_INLINE bool isSameFaction(Object* objA, Object* objB)
 {
+	if( !objB->m_faction || !objA->m_faction )
+		return true; //we return true to not give any agro to this object since it might cause other problems later
 	return (objB->m_faction->Faction == objA->m_faction->Faction);
 }
 

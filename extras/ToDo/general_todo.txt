@@ -117,7 +117,6 @@ SMT_RESIST_DISPEL - check if it is used
 - focused fire and Spirit Bond reamins on caster after pet is dismissed : SPELL_FLAG_IS_EXPIREING_WITH_PET
 - pets do not work with collision enabled
 - sockets for thrown weapons disabled - was causing server crash - fix in item.cpp itemhandler.cpp
-- exploit with region based items
 - exploit to increase player count in instance to X amount.
 
 ==========================================================================
@@ -140,14 +139,7 @@ Curse of Agony http://www.wowhead.com/?spell=1014
 If you attack the Mob and use Corruption and Curse of Agony it happens sometimes that they will regen HP ONCE directly AFTER the debuff runs out. If you use fear on them, they will regenerate about 10% of life each tick.
 Easy to reproduce.
 You will only see this on low lvl mobs I bet high level regen the same but due the more dmg dealt to them in higher levels this won't really noticed.
-
 ==========================================================================
-Zack - test my shit :
-
-- test healsupport or remove it
-- test hacky client server mob position sync. Maybe it would be better so players have this too. Check if melee fighters need this too.
-
-========================================
 http://www.wowhead.com/?item=34349
 Blade of Life's Inevitability
 http://www.wowhead.com/?item=32735
@@ -157,4 +149,10 @@ Step two : open your bag up and Shift+rightclick on
 Blade of Life's Inevitability
 Step three : then add the Radiant Spencerite and equipt the item.
 Step four.. : server crash in about 10 seconds.
+
+==========================================================================
+Zack - test my shit :
+
+- test healsupport or remove it
+
 
