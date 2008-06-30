@@ -1,11 +1,5 @@
 Major Bugs:
 
-Hunters Mark
-
-- Does nothing except look good... makes no inpact on any ranged dmg.
-- Meant to add AP on ranged attacks and stacks with each attack.
-
-
 Auto Shoot (yes its that bad)
 
 - Meant to - Auto attacks ranged weapon... shoots in intervals of attack speed... LOL

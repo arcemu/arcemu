@@ -13242,8 +13242,8 @@ void ApplyNormalFixes()
             type |= SPELL_TYPE_ELIXIR_GUARDIAN;
         else if( strstr( desc, "Battle and Guardian elixir"))
             type |= SPELL_TYPE_ELIXIR_FLASK;
-		else if( namehash == SPELL_HASH_HUNTER_S_MARK )		// hunter's mark
-			type |= SPELL_TYPE_HUNTER_MARK;
+//		else if( namehash == SPELL_HASH_HUNTER_S_MARK )		// hunter's mark
+//			type |= SPELL_TYPE_HUNTER_MARK;
         else if( namehash == SPELL_HASH_COMMANDING_SHOUT || namehash == SPELL_HASH_BATTLE_SHOUT )
             type |= SPELL_TYPE_WARRIOR_SHOUT;
 		else if( strstr( desc, "Finishing move")==desc)
@@ -14329,11 +14329,23 @@ void ApplyNormalFixes()
 			// Note that talents etc also come under this, however it does not matter
 			// if they get flagged as ranged spells because is_ranged_spell is only used for
 			// differentiating between resistable and physically avoidable spells.
-			if( sp->EquippedItemClass == 2 && sp->EquippedItemSubClass & 262156 ) // 4 + 8 + 262144 ( becomes item classes 2, 3 and 18 which correspond to bow, gun and crossbow respectively)
-			{
-				sp->is_ranged_spell = true;
-			}
+//			if( sp->EquippedItemClass == 2 && sp->EquippedItemSubClass & 262156 ) // 4 + 8 + 262144 ( becomes item classes 2, 3 and 18 which correspond to bow, gun and crossbow respectively)
+//				sp->is_ranged_spell = true;
 
+		// !!! not sure this is good !!! have to test
+		// Hunter's mark r1
+		sp = dbcSpell.LookupEntryForced( 1130 ); 
+		if( sp != NULL )
+			sp->maxstack = (sp->EffectBasePoints[1]*4) / (sp->EffectBasePoints[1]/10);
+		sp = dbcSpell.LookupEntryForced( 14323 ); 
+		if( sp != NULL )
+			sp->maxstack = (sp->EffectBasePoints[1]*4) / (sp->EffectBasePoints[1]/10);
+		sp = dbcSpell.LookupEntryForced( 14324 ); 
+		if( sp != NULL )
+			sp->maxstack = (sp->EffectBasePoints[1]*4) / (sp->EffectBasePoints[1]/10);
+		sp = dbcSpell.LookupEntryForced( 14325 ); 
+		if( sp != NULL )
+			sp->maxstack = (sp->EffectBasePoints[1]*4) / (sp->EffectBasePoints[1]/10);
 		//////////////////////////////////////////
 		// ROGUE								//
 		//////////////////////////////////////////
@@ -14682,14 +14694,6 @@ void ApplyNormalFixes()
 	sp = dbcSpell.LookupEntryForced(33663); 
 	if( sp != NULL )
 		sp->c_is_flags |= SPELL_FLAG_IS_INHERITING_LEVEL;
-	//Force of Nature
-	sp = dbcSpell.LookupEntryForced(33831); 
-	if( sp != NULL )
-	{
-		sp->c_is_flags |= SPELL_FLAG_IS_INHERITING_LEVEL;
-		sp->EffectImplicitTargetA[0] = EFF_TARGET_SELF; //some land under target is used that gathers multiple targets ...
-		sp->EffectImplicitTargetA[1] = EFF_TARGET_NONE;
-	}
 
 	//////////////////////////////////////////////////////
 	// CLASS-SPECIFIC SPELL FIXES						//
@@ -15116,6 +15120,15 @@ void ApplyNormalFixes()
 		//////////////////////////////////////////
 		// DRUID								//
 		//////////////////////////////////////////
+
+		//Force of Nature
+		sp = dbcSpell.LookupEntryForced(33831); 
+		if( sp != NULL )
+		{
+			sp->c_is_flags |= SPELL_FLAG_IS_INHERITING_LEVEL;
+			sp->EffectImplicitTargetA[0] = EFF_TARGET_SELF; //some land under target is used that gathers multiple targets ...
+			sp->EffectImplicitTargetA[1] = EFF_TARGET_NONE;
+		}
 
 		// Spell 22570 (Maim Rank 1)
 		sp = dbcSpell.LookupEntryForced(22570);

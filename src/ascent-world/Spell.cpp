@@ -4024,6 +4024,10 @@ exit:
 //		value = ( u_caster->GetUInt32Value( UNIT_FIELD_STAT1 ) * 25 / 100 );
 		value = u_caster->GetUInt32Value( UNIT_FIELD_STAT1 ) >> 2;
 	}
+	else if ( m_spellInfo->NameHash == SPELL_HASH_HUNTER_S_MARK && target && target->HasAurasWithNameHash( SPELL_HASH_HUNTER_S_MARK ) ) //Hunter - Hunter's Mark
+	{
+		value = value / 10; //aditional stacks only increase value by X
+	}
 
 	if( p_caster != NULL )
 	{

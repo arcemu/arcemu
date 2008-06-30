@@ -154,5 +154,6 @@ Zack - test my shit :
 
 - test healsupport or remove it
 - druid - force of nature : 33831
+- hunter - hunter's mark should stack AP : 1130
 
 
