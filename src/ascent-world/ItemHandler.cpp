@@ -869,11 +869,6 @@ void WorldSession::HandleBuyBackOpcode( WorldPacket & recv_data )
 	recv_data >> guid >> stuff;
 	stuff -= 74;
 
-	// prevent crashes
-	if( stuff > MAX_BUYBACK_SLOT)
-		return;
-
-	//what a magical number 69???
 	Item *it = _player->GetItemInterface()->GetBuyBack(stuff);
 	if (it)
 	{
