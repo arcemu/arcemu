@@ -1390,7 +1390,7 @@ void AIInterface::DismissPet()
 
 void AIInterface::AttackReaction(Unit* pUnit, uint32 damage_dealt, uint32 spellId)
 {
-	if( m_AIState == STATE_EVADE || m_fleeTimer != 0 || !pUnit || !pUnit->isAlive() || m_Unit->IsPacified() || m_Unit->IsFeared() || m_Unit->IsStunned() || !m_Unit->isAlive() )
+	if( m_AIState == STATE_EVADE || m_fleeTimer != 0 || !pUnit || !pUnit->isAlive() || m_Unit->IsPacified() || m_Unit->IsFeared() || m_Unit->IsStunned() )
 	{
 		return;
 	}
