@@ -117,7 +117,19 @@ SMT_RESIST_DISPEL - check if it is used
 - focused fire and Spirit Bond reamins on caster after pet is dismissed : SPELL_FLAG_IS_EXPIREING_WITH_PET
 - pets do not work with collision enabled
 - sockets for thrown weapons disabled - was causing server crash - fix in item.cpp itemhandler.cpp
+- exploit with region based items
+- exploit to increase player count in instance to X amount.
 
+==========================================================================
+player A must have any unsoulbound bag and he must party with player B ..
+after party player A must add that bag at Container slot 2.. (bag must empty)
+1. player A must open all bag .
+2. player A must drag empty bag shoutcut to party member(player B ) and make trade window .
+3. After trade window open, player A must put Hearthstone 1st into empty bag and press trade (trade window will close but at player A that bag still have at Container slot 2 and still open),and after that you all can put any soulbound item into that bag (all item your put into that bag will missing)
+4.after finish all proses ... player A must logout 1st and after that player B .
+5. player B must login 1st before player A login..
+6. Now player B have all trade soulbound item in they bag.
+http://www.wowhead.com/?item=856
 ==========================================================================
 Char: Lvl 20 Warlock
 Mobs: Stonesplinter Bonesnapper f.e. http://www.wowhead.com/?npc=1164

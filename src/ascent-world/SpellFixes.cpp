@@ -89,11 +89,6 @@ void ApplyExtraDataFixes()
 	if( sp != NULL )
 		sp->in_front_status = SPELL_INFRONT_STATUS_REQUIRE_INFRONT;
 
-	// Spell 172 (Corruption Rank 1) is infront from spell extra.
-	sp = dbcSpell.LookupEntryForced(172);
-	if( sp != NULL )
-		sp->in_front_status = SPELL_INFRONT_STATUS_REQUIRE_INFRONT;
-
 	// Spell 205 (Frostbolt Rank 2) is infront from spell extra.
 	sp = dbcSpell.LookupEntryForced(205);
 	if( sp != NULL )
@@ -969,16 +964,6 @@ void ApplyExtraDataFixes()
 	if( sp != NULL )
 		sp->in_front_status = SPELL_INFRONT_STATUS_REQUIRE_INFRONT;
 
-	// Spell 6222 (Corruption Rank 2) is infront from spell extra.
-	sp = dbcSpell.LookupEntryForced(6222);
-	if( sp != NULL )
-		sp->in_front_status = SPELL_INFRONT_STATUS_REQUIRE_INFRONT;
-
-	// Spell 6223 (Corruption Rank 3) is infront from spell extra.
-	sp = dbcSpell.LookupEntryForced(6223);
-	if( sp != NULL )
-		sp->in_front_status = SPELL_INFRONT_STATUS_REQUIRE_INFRONT;
-
 	// Spell 6226 (Drain Mana Rank 2) is infront from spell extra.
 	sp = dbcSpell.LookupEntryForced(6226);
 	if( sp != NULL )
@@ -1241,11 +1226,6 @@ void ApplyExtraDataFixes()
 
 	// Spell 7646 (Curse of Weakness Rank 4) is infront from spell extra.
 	sp = dbcSpell.LookupEntryForced(7646);
-	if( sp != NULL )
-		sp->in_front_status = SPELL_INFRONT_STATUS_REQUIRE_INFRONT;
-
-	// Spell 7648 (Corruption Rank 4) is infront from spell extra.
-	sp = dbcSpell.LookupEntryForced(7648);
 	if( sp != NULL )
 		sp->in_front_status = SPELL_INFRONT_STATUS_REQUIRE_INFRONT;
 
@@ -2471,16 +2451,6 @@ void ApplyExtraDataFixes()
 
 	// Spell 11668 (Immolate Rank 7) is infront from spell extra.
 	sp = dbcSpell.LookupEntryForced(11668);
-	if( sp != NULL )
-		sp->in_front_status = SPELL_INFRONT_STATUS_REQUIRE_INFRONT;
-
-	// Spell 11671 (Corruption Rank 5) is infront from spell extra.
-	sp = dbcSpell.LookupEntryForced(11671);
-	if( sp != NULL )
-		sp->in_front_status = SPELL_INFRONT_STATUS_REQUIRE_INFRONT;
-
-	// Spell 11672 (Corruption Rank 6) is infront from spell extra.
-	sp = dbcSpell.LookupEntryForced(11672);
 	if( sp != NULL )
 		sp->in_front_status = SPELL_INFRONT_STATUS_REQUIRE_INFRONT;
 
@@ -6954,11 +6924,6 @@ void ApplyExtraDataFixes()
 	if( sp != NULL )
 		sp->in_front_status = SPELL_INFRONT_STATUS_REQUIRE_INFRONT;
 
-	// Spell 25311 (Corruption Rank 7) is infront from spell extra.
-	sp = dbcSpell.LookupEntryForced(25311);
-	if( sp != NULL )
-		sp->in_front_status = SPELL_INFRONT_STATUS_REQUIRE_INFRONT;
-
 	// Spell 25345 (Arcane Missiles Rank 8) is infront from spell extra.
 	sp = dbcSpell.LookupEntryForced(25345);
 	if( sp != NULL )
@@ -7491,11 +7456,6 @@ void ApplyExtraDataFixes()
 
 	// Spell 27215 (Immolate Rank 9) is infront from spell extra.
 	sp = dbcSpell.LookupEntryForced(27215);
-	if( sp != NULL )
-		sp->in_front_status = SPELL_INFRONT_STATUS_REQUIRE_INFRONT;
-
-	// Spell 27216 (Corruption Rank 8) is infront from spell extra.
-	sp = dbcSpell.LookupEntryForced(27216);
 	if( sp != NULL )
 		sp->in_front_status = SPELL_INFRONT_STATUS_REQUIRE_INFRONT;
 
