@@ -6643,7 +6643,7 @@ void Aura::SpellAuraModHaste( bool apply )
 		SetPositive();
 
 	// TODO: fix this hacky fix
-	if( abs( mod->m_amount ) >= 100 )
+	if( abs( mod->m_amount ) > 100 )
 		return;
 
 	if( m_target->GetTypeId() == TYPEID_PLAYER )
