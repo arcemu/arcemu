@@ -11277,12 +11277,6 @@ void Apply112SpellFixes()
 	if(sp != NULL)
 		sp->procChance = 3;
 
-	// Spell 16886 Group Relation (Nature's Grace )
-	sp = dbcSpell.LookupEntryForced(16886);
-	if(sp != NULL) {
-		sp->EffectSpellGroupRelation[0] = 16777831;
-	}
-
 	// Spell 16896 Group Relation (Moonfury Rank 1)
 	sp = dbcSpell.LookupEntryForced(16896);
 	if(sp != NULL) {
@@ -14691,7 +14685,11 @@ void ApplyNormalFixes()
 	//Force of Nature
 	sp = dbcSpell.LookupEntryForced(33831); 
 	if( sp != NULL )
+	{
 		sp->c_is_flags |= SPELL_FLAG_IS_INHERITING_LEVEL;
+		sp->EffectImplicitTargetA[0] = EFF_TARGET_SELF; //some land under target is used that gathers multiple targets ...
+		sp->EffectImplicitTargetA[1] = EFF_TARGET_NONE;
+	}
 
 	//////////////////////////////////////////////////////
 	// CLASS-SPECIFIC SPELL FIXES						//
@@ -20074,7 +20072,7 @@ void ApplyNormalFixes()
 		sp = dbcSpell.LookupEntryForced( 16886 );
 		if( sp != NULL )
 		{
-			sp->EffectSpellGroupRelation[0] = 0xFFFFFFFF; //all spells, too bad not all spells have grouping flags :S
+			sp->EffectSpellGroupRelation[0] = 16777831;
 			sp->procCharges = 1;
 		}
 
