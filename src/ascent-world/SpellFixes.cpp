@@ -20246,6 +20246,20 @@ void ApplyNormalFixes()
 			sp->EffectSpellGroupRelation_high[0]=128;
 		}
 	#endif
+		//Compact Harvest Reaper
+		sp = dbcSpell.LookupEntryForced( 4078 );
+		if( sp != NULL )
+		{
+			sp->DurationIndex = 6;
+		}
+
+		//Graccu's Mince Meat Fruitcake
+		sp = dbcSpell.LookupEntryForced(25990);
+		if( sp != NULL )
+		{
+			sp->EffectAmplitude[1] = 1000;
+		}
+
 		//Extract Gas 
 		sp = dbcSpell.LookupEntryForced( 30427 );
 		if( sp != NULL )
