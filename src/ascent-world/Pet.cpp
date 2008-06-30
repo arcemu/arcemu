@@ -1725,7 +1725,9 @@ AI_Spell * Pet::HandleAutoCastEvent()
 		AI_Spell * sp = *m_autoCastSpells[AUTOCAST_EVENT_ATTACK].begin();
 		if( sp->autocast_type == AUTOCAST_EVENT_ATTACK )
 		{
-			if( sp->cooldowntime && getMSTime() >= sp->cooldowntime )
+			// If the spell has a cooldown check it, else it hasn't been cast yet
+			if( sp->cooldowntime == 0 ||
+				(sp->cooldowntime && getMSTime() >= sp->cooldowntime) )
 				return *m_autoCastSpells[AUTOCAST_EVENT_ATTACK].begin();
 			else
 				return NULL;
