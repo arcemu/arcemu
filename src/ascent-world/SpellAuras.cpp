@@ -3829,9 +3829,14 @@ void Aura::SpellAuraModShapeshift(bool apply)
 	case FORM_FLIGHT:
 		{// druid
 			freeMovements = true;
-			spellId = 33948; //Flight Form Passive
-			modelId = 20857;
-			//FIXME: model?
+			spellId = 33948;
+			if(apply)
+			{
+			    if(m_target->getRace() == RACE_NIGHTELF)
+				    modelId = 20857;
+			    else
+				    modelId = 20872;			
+			}
 		}break;
 	case FORM_STEALTH:
 		{// rogue
