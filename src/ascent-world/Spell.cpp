@@ -2947,24 +2947,77 @@ uint8 Spell::CanCast(bool tolerate)
 		{
 			switch(m_spellInfo->Id)
 			{
-				// stealth spells
-				case 1784:
-				case 1785:
-				case 1786:
-				case 1787:
-				case 5215:
-				case 6783:
-				case 9913:
-				case 1856:
-				case 1857:
-				case 26889:
+				// stealth & bubble & ice block
+				case 498:
+				case 642:
+				case 1020:
+				case 1022:
+ 				case 1784:
+ 				case 1785:
+ 				case 1786:
+ 				case 1787:
+ 				case 5215:
+				case 5573:
+				case 5599:
+ 				case 6783:
+ 				case 9913:
+ 				case 1856:
+ 				case 1857:
+				case 10278:
+ 				case 26889:
+				case 45438:
+ 				{
+					p_caster->RemoveAura( 23333 + (p_caster->GetTeam() * 2) );
+
+					if( p_caster->m_bg->GetType() == BATTLEGROUND_WARSUNG_GULCH )
+    					((WarsongGulch*)p_caster->m_bg)->DropFlag(p_caster);
+					/*else if( p_caster->m_bg->GetType() == BATTLEGROUND_EYE_OF_THE_STORM )
+						((EyeOfTheStorm*)p_caster->m_bg)->DropFlag(p_caster);*/
+				}
+			}
+		}
+
+		// Arathi's Flags take by stealthed --> Remove stealth
+		if(p_caster->m_bg && p_caster->IsStealth())
+		{
+			switch(m_spellInfo->Id)
+			{
+				// opening spell: arathi basin flags
+				case 21651:
+				{
+					p_caster->RemoveAura(p_caster->m_stealth);
+					p_caster->m_stealth = 0;
+				}
+			}
+		}
+
+		// check if BG Flags can take while bubbled
+		if(p_caster->HasAurasWithNameHash( SPELL_HASH_DIVINE_SHIELD ) || p_caster->HasAurasWithNameHash( SPELL_HASH_DIVINE_PROTECTION ))
+		{
+			switch(m_spellInfo->Id)
+			{
+				// opening spell: arathi basin flags
+				case 21651:
 				{
 					return SPELL_FAILED_SPELL_UNAVAILABLE;
 					break;
 				}
 			}
 		}
-
+		// check if BG Flags can takes while bubbled
+		if(p_caster->HasAurasWithNameHash( SPELL_HASH_DIVINE_SHIELD ) || p_caster->HasAurasWithNameHash( SPELL_HASH_DIVINE_PROTECTION ))
+		{
+			switch(m_spellInfo->Id)
+			{
+				// opening spell: warsong/silverwing flag & arathi basin flags
+				case 23333:
+				case 23335:
+				{
+					return SPELL_FAILED_SPELL_UNAVAILABLE;
+					break;
+				}
+			}
+		}
 		// item spell checks
 		if(i_caster)
 		{
