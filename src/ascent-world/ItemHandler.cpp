@@ -847,6 +847,7 @@ void WorldSession::HandleItemQuerySingleOpcode( WorldPacket & recv_data )
 	data << itemProto->DisenchantReqSkill;
 	data << itemProto->ArmorDamageModifier;
 	//WPAssert(data.size() == 453 + itemProto->Name1.length() + itemProto->Description.length());
+	data << uint32(0);					// added in 2.4.2 duration(seconds) 0 = permanent
 	SendPacket( &data );
 	
 	/*if(SendThrottledPacket(data, true))
