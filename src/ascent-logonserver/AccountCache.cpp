@@ -147,10 +147,13 @@ void AccountMgr::AddAccount(Field* field)
 		// prefer encrypted passwords over nonencrypted
 		BigNumber bn;
 		bn.SetHexStr( EncryptedPassword.c_str() );
-		if( bn.GetNumBytes() != 20 )
+		if( bn.GetNumBytes() < 20 )
 		{
-			printf("Account `%s` has incorrect number of bytes (%u) in encrypted password! Disabling.\n", Username.c_str(), bn.GetNumBytes());
-			memset(acct->SrpHash, 0, 20);
+			// Hacky fix
+			memcpy(acct->SrpHash, bn.AsByteArray(), bn.GetNumBytes());
+			for (int n=bn.GetNumBytes(); n<=19; n++)
+				acct->SrpHash[n] = (uint8)0;
+			reverse_array(acct->SrpHash, 20);
 		}
 		else
 		{
