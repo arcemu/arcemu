@@ -374,7 +374,7 @@ void Spell::SpellTargetSingleTargetEnemy(uint32 i, uint32 j)
 						break;
 					}
 			}
-			if ( HasMagnetSpell && MagnetCaster )
+			if ( HasMagnetSpell && MagnetCaster && m_spellInfo->School )
 			{
 				pTarget = MagnetCaster;
 			}
