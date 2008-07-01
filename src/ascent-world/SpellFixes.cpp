@@ -14332,20 +14332,21 @@ void ApplyNormalFixes()
 //			if( sp->EquippedItemClass == 2 && sp->EquippedItemSubClass & 262156 ) // 4 + 8 + 262144 ( becomes item classes 2, 3 and 18 which correspond to bow, gun and crossbow respectively)
 //				sp->is_ranged_spell = true;
 
-		// !!! not sure this is good !!! have to test
+/*		// !!! not sure this is good !!! have to test
 		// Hunter's mark r1
 		sp = dbcSpell.LookupEntryForced( 1130 ); 
 		if( sp != NULL )
-			sp->maxstack = (sp->EffectBasePoints[1]*4) / (sp->EffectBasePoints[1]/10);
+			sp->maxstack = (sp->EffectBasePoints[1]*3) / (sp->EffectBasePoints[1]/10);
 		sp = dbcSpell.LookupEntryForced( 14323 ); 
 		if( sp != NULL )
-			sp->maxstack = (sp->EffectBasePoints[1]*4) / (sp->EffectBasePoints[1]/10);
+			sp->maxstack = (sp->EffectBasePoints[1]*3) / (sp->EffectBasePoints[1]/10);
 		sp = dbcSpell.LookupEntryForced( 14324 ); 
 		if( sp != NULL )
-			sp->maxstack = (sp->EffectBasePoints[1]*4) / (sp->EffectBasePoints[1]/10);
+			sp->maxstack = (sp->EffectBasePoints[1]*3) / (sp->EffectBasePoints[1]/10);
 		sp = dbcSpell.LookupEntryForced( 14325 ); 
 		if( sp != NULL )
-			sp->maxstack = (sp->EffectBasePoints[1]*4) / (sp->EffectBasePoints[1]/10);
+			sp->maxstack = (sp->EffectBasePoints[1]*3) / (sp->EffectBasePoints[1]/10);
+			*/
 		//////////////////////////////////////////
 		// ROGUE								//
 		//////////////////////////////////////////
@@ -17883,8 +17884,10 @@ void ApplyNormalFixes()
 		sp = dbcSpell.LookupEntryForced( 12472 );
 		if( sp != NULL )
 		{
-			sp->EffectSpellGroupRelation_high[1] = 512;
-			sp->EffectMiscValue[1] = SMT_TRIGGER;
+			sp->EffectSpellGroupRelation[1] = 0xFFFFFFFF; // ads 100% interruption avoidance to all spells
+			sp->EffectSpellGroupRelation_high[1] = 0xFFFFFFFF; // ads 100% interruption avoidance to all spells
+//			sp->EffectSpellGroupRelation_high[1] = 512;
+//			sp->EffectMiscValue[1] = SMT_TRIGGER; //removed by zack. WTF ?
 		}
 		//Mage - Wand Specialization. Not the forst thing we messed up. Blizz uses attack as magic and wandds as weapons :S
 		sp = dbcSpell.LookupEntryForced( 6057 );
@@ -18258,11 +18261,6 @@ void ApplyNormalFixes()
 		sp = dbcSpell.LookupEntryForced( 31642 );
 		if( sp != NULL )
 			sp->EffectTriggerSpell[0] = 31643;
-
-		// Mage: Cold Snap ( set spell group relation for second effect, "gives you 100% chance to avoid interruption caused by damage while casting."
-		sp = dbcSpell.LookupEntryForced( 12472 ); 
-		if( sp != NULL )
-			sp->EffectSpellGroupRelation[1] = 0xFFFFFFFF; // we can be sure this won't fuck up like Spell Power did, since it's 100%, not additive :P
 
 		//mage talent "frostbyte". we make it to be dummy
 		sp = dbcSpell.LookupEntryForced( 11071 );

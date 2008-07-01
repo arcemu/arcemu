@@ -1,5 +1,4 @@
 - blink : should tel you instnatly not move you
-- frostbolt has fire dmg instead of "water" ?
 
 • Ice Block  - http://www.wowwiki.com/Ice_Block
 a. When cast on retail it brings you to a stop in mid-air. i.e. I jump off a cliff, I Ice Block before I hit the ground, the spell should stop me and keep me in mid-air, instead of me continuing to fall. Currently any momentum/movement it will carry out when you Ice Block.
@@ -8,14 +7,8 @@ b. On retail it blocks any spell/attack about to hit you. i.e. Ice Lance in mid-
 • Counterspell - http://www.wowwiki.com/Counterspell
 a. Counterspell should stop any spell from being cast in that school, even Invulnerabilities (Divine Shield and Ice Block). Currently from what I have seen Divine Shield has still been able to be cast.
 
-• Icy Veins - http://www.wowwiki.com/Icy_Veins
-a. Currently it does not provide protection from interrupts, which on retail it is a 100% protection.
-
 • Blink - http://www.wowwiki.com/Blink
 a. Currently it propels you a small bit into the air and pushes you forward. Retail it “teleports” you forward, saving you from falls as well.
-
-• Invisibility - http://www.wowwiki.com/Invisibility
-a. Currently invisibility only fades you. On retail the spell has a 5 or so second fade time, then a 20 second invisibility effect.
 
 • Arcane Concentration - http://www.wowwiki.com/Arcane_Concentration
 a. Currently this spell does not work. On retail this spell is suppose to ‘proc’ on any spell, and enter a clearcasting state (100% mana reduced spell).
