@@ -10,9 +10,6 @@ a. Counterspell should stop any spell from being cast in that school, even Invul
 • Blink - http://www.wowwiki.com/Blink
 a. Currently it propels you a small bit into the air and pushes you forward. Retail it “teleports” you forward, saving you from falls as well.
 
-• Arcane Concentration - http://www.wowwiki.com/Arcane_Concentration
-a. Currently this spell does not work. On retail this spell is suppose to ‘proc’ on any spell, and enter a clearcasting state (100% mana reduced spell).
-
 • Molten Fury - http://www.wowwiki.com/Molten_Fury
 a. This spell currently does not increase damage. On retail it is suppose to increase your damage output by 20% on any target below 20% current health.
 

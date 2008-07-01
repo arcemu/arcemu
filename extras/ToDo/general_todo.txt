@@ -157,4 +157,5 @@ Zack - test my shit :
 - druid - force of nature : 33831
 - hunter - hunter's mark should stack AP : 1130
 - mage - icy veins - 12472
+- mage - clearcasting - 12536
 

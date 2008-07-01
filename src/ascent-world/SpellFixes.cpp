@@ -10105,12 +10105,6 @@ void Apply112SpellFixes()
 		sp->EffectSpellGroupRelation[0] = 736;
 	}
 
-	// Spell 11213 Group Relation (Arcane Concentration Rank 1)
-	sp = dbcSpell.LookupEntryForced(11213);
-	if(sp != NULL) {
-		sp->EffectSpellGroupRelation[1] = 128;
-	}
-
 	// Spell 11222 Group Relation (Arcane Focus Rank 1)
 	sp = dbcSpell.LookupEntryForced(11222);
 	if(sp != NULL) {
@@ -10254,30 +10248,6 @@ void Apply112SpellFixes()
 	sp = dbcSpell.LookupEntryForced(12571);
 	if(sp != NULL) {
 		sp->EffectSpellGroupRelation[1] = 1048576;
-	}
-
-	// Spell 12574 Group Relation (Arcane Concentration Rank 2)
-	sp = dbcSpell.LookupEntryForced(12574);
-	if(sp != NULL) {
-		sp->EffectSpellGroupRelation[1] = 128;
-	}
-
-	// Spell 12575 Group Relation (Arcane Concentration Rank 3)
-	sp = dbcSpell.LookupEntryForced(12575);
-	if(sp != NULL) {
-		sp->EffectSpellGroupRelation[1] = 128;
-	}
-
-	// Spell 12576 Group Relation (Arcane Concentration Rank 4)
-	sp = dbcSpell.LookupEntryForced(12576);
-	if(sp != NULL) {
-		sp->EffectSpellGroupRelation[1] = 128;
-	}
-
-	// Spell 12577 Group Relation (Arcane Concentration Rank 5)
-	sp = dbcSpell.LookupEntryForced(12577);
-	if(sp != NULL) {
-		sp->EffectSpellGroupRelation[1] = 128;
 	}
 
 	// Spell 12658 Group Relation (Improved Rend Rank 2)
@@ -14595,30 +14565,26 @@ void ApplyNormalFixes()
 	sp = dbcSpell.LookupEntryForced( 12536 );
 	if( sp != NULL )
 	{
-		sp->EffectApplyAuraName[0] = SPELL_AURA_ADD_PCT_MODIFIER;
-		sp->EffectMiscValue[0] = SMT_COST;
 		sp->EffectSpellGroupRelation[0] = 0xFFFFFFFF; //all possible spells we can affect
+		sp->EffectSpellGroupRelation_high[0] = 0xFFFFFFFF; //all possible spells we can affect
 	}
 	sp = dbcSpell.LookupEntryForced( 16246 );
 	if( sp != NULL )
 	{
-		sp->EffectApplyAuraName[0] = SPELL_AURA_ADD_PCT_MODIFIER;
-		sp->EffectMiscValue[0] = SMT_COST;
 		sp->EffectSpellGroupRelation[0] = 0xFFFFFFFF; //all possible spells we can affect
+		sp->EffectSpellGroupRelation_high[0] = 0xFFFFFFFF; //all possible spells we can affect
 	}
 	sp = dbcSpell.LookupEntryForced( 16870 );
 	if( sp != NULL )
 	{
-		sp->EffectApplyAuraName[0] = SPELL_AURA_ADD_PCT_MODIFIER;
-		sp->EffectMiscValue[0] = SMT_COST;
 		sp->EffectSpellGroupRelation[0] = 0xFFFFFFFF; //all possible spells we can affect
+		sp->EffectSpellGroupRelation_high[0] = 0xFFFFFFFF; //all possible spells we can affect
 	}
 	sp = dbcSpell.LookupEntryForced( 34754 );
 	if( sp != NULL )
 	{
-		sp->EffectApplyAuraName[0] = SPELL_AURA_ADD_PCT_MODIFIER;
-		sp->EffectMiscValue[0] = SMT_COST;
 		sp->EffectSpellGroupRelation[0] = 0xFFFFFFFF; //all possible spells we can affect
+		sp->EffectSpellGroupRelation_high[0] = 0xFFFFFFFF; //all possible spells we can affect
 	}
 
 	/**********************************************************
@@ -17864,6 +17830,7 @@ void ApplyNormalFixes()
 		/**********************************************************
 		 *	Arcane Concentration
 		 **********************************************************/
+
 		sp = dbcSpell.LookupEntryForced( 11213 );
 		if( sp != NULL )
 			sp->procFlags = PROC_ON_SPELL_HIT | PROC_TARGET_SELF;
