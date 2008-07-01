@@ -1611,13 +1611,27 @@ void Guild::SendGuildBank(WorldSession * pClient, GuildBankTab * pTab, int8 upda
 			++count;
 
 			// what i don't understand here, where is the field for random properties? :P - Burlex
-			data << uint8(j);
+			data << uint8(j);			// slot
 			data << pTab->pSlots[j]->GetEntry();
-			data << uint32(0);			// this is an enchant
-			data << pTab->pSlots[j]->GetUInt32Value(ITEM_FIELD_STACK_COUNT);
-			if(pClient->GetClientBuild() >= 8278)   // new 2.4.2
-				data << uint8(0);
-			data << uint16(0);
+
+			data << (uint32)pTab->pSlots[j]->GetItemRandomPropertyId();
+			if (pTab->pSlots[j]->GetItemRandomPropertyId())
+				data << (uint32)pTab->pSlots[j]->GetItemRandomSuffixFactor();
+
+			data << uint8(pTab->pSlots[j]->GetUInt32Value(ITEM_FIELD_STACK_COUNT));
+			data << uint32(0);			// unknown value
+			data << uint8(0);			// unknown 2.4.2
+			uint32 Enchant0 = 0;
+			if (pTab->pSlots[j]->GetEnchantment(0))
+				Enchant0 = pTab->pSlots[j]->GetEnchantment(0)->Enchantment->Id;
+			if (Enchant0)
+			{
+				data << uint8(1);			// number of enchants
+				data << uint8(0);			// enchantment slot
+				data << uint32(Enchant0);	// enchantment id
+			}
+			else
+				data << uint8(0);		// no enchantment
 		}
 	}
 

@@ -222,6 +222,7 @@ public:
 	EnchantmentInstance* GetEnchantment( uint32 slot );
 	bool IsGemRelated( EnchantEntry* Enchantment );
 
+	ASCENT_INLINE uint32 GetItemRandomPropertyId() const { return m_uint32Values[ITEM_FIELD_RANDOM_PROPERTIES_ID]; }
 	ASCENT_INLINE uint32 GetItemRandomSuffixFactor() { return m_uint32Values[ITEM_FIELD_PROPERTY_SEED]; }
 	static uint32 GenerateRandomSuffixFactor( ItemPrototype* m_itemProto );
 
