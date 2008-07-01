@@ -1385,6 +1385,33 @@ float Object::CalcDistance(float OaX, float OaY, float OaZ, float ObX, float ObY
 	return sqrtf(zdest*zdest + ydest*ydest + xdest*xdest);
 }
 
+bool Object::IsWithinDistInMap(Object* obj, const float dist2compare) const
+{
+	float xdest = this->GetPositionX() - obj->GetPositionX();
+	float ydest = this->GetPositionY() - obj->GetPositionY();
+	float zdest = this->GetPositionZ() - obj->GetPositionZ();
+	return sqrtf(zdest*zdest + ydest*ydest + xdest*xdest) <= dist2compare;
+}
+
+bool Object::IsWithinLOSInMap(Object* obj)
+{
+    if (!IsInMap(obj)) return false;
+	LocationVector location;
+    location = obj->GetPosition();
+    return IsWithinLOS(location );
+}
+
+bool Object::IsWithinLOS( LocationVector location )
+{
+    LocationVector location2;
+    location2 = GetPosition();
+#ifdef COLLISION
+	return CollideInterface.CheckLOS(GetMapId(), location2.x, location2.y, location2.z+2.0f, location.x, location.y, location.z+2.0f);
+#endif
+	return true;
+}
+
+
 float Object::calcAngle( float Position1X, float Position1Y, float Position2X, float Position2Y )
 {
 	float dx = Position2X-Position1X;
@@ -1549,6 +1576,11 @@ bool Object::isInBack(Object* target)
 bool Object::isInArc(Object* target , float angle) // angle in degrees
 {
     return inArc( GetPositionX() , GetPositionY() , angle , GetOrientation() , target->GetPositionX() , target->GetPositionY() );
+}
+
+bool Object::HasInArc( float degrees, Object* target )
+{
+	return isInArc(target, degrees);
 }
 
 bool Object::isInRange(Object* target, float range)

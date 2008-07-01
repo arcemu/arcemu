@@ -1486,11 +1486,27 @@ void GossipMenu::AddItem(uint8 Icon, const char* Text, int32 Id /* = -1 */, int8
 	Item.Icon = Icon;
 	Item.Extra = Extra;
 	Item.Text = Text;
+	Item.m_gBoxMessage = "";
+	Item.m_gBoxMoney = 0;
 	Item.Id = (uint32)Menu.size();
 	if(Id > 0)
 		Item.IntId = Id;
 	else
 		Item.IntId = Item.Id;		
+
+	Menu.push_back(Item);
+}
+
+void GossipMenu::AddMenuItem(uint8 Icon, std::string Message, uint32 dtSender, uint32 dtAction, std::string BoxMessage, uint32 BoxMoney, bool Coded)
+{
+	GossipMenuItem Item;
+	Item.Icon = Icon;
+	Item.Extra = Coded;
+	Item.Text = Message.c_str();
+	Item.m_gBoxMessage = BoxMessage;
+	Item.m_gBoxMoney = BoxMoney;
+	Item.Id = (uint32)Menu.size();
+	Item.IntId = Item.Id;		
 
 	Menu.push_back(Item);
 }
@@ -1513,9 +1529,9 @@ void GossipMenu::BuildPacket(WorldPacket& Packet)
 		Packet << iter->Id;
 		Packet << iter->Icon;
 		Packet << iter->Extra;
-		Packet << uint32(0);	// something new in tbc. maybe gold requirement or smth?
+		Packet << uint32(iter->m_gBoxMoney);    // money required to open menu, 2.0.3
 		Packet << iter->Text;
-		Packet << uint8(0); // ?
+		Packet << iter->m_gBoxMessage;          // accept text (related to money) pop up box, 2.0.3
 	}
 }
 

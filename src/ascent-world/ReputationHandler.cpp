@@ -251,6 +251,11 @@ Standing Player::GetStandingRank(uint32 Faction)
 	return Standing(GetReputationRankFromStanding(GetStanding(Faction)));
 }
 
+ReputationRank	Player::GetReputationRank(uint32 Faction)
+{
+	return ReputationRank(GetReputationRankFromStanding(GetStanding(Faction)));
+}
+
 bool Player::IsHostileBasedOnReputation(FactionDBC * dbc)
 {
 	if(dbc->RepListId < 0 || dbc->RepListId >= 128)

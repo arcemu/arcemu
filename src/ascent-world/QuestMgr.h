@@ -48,6 +48,7 @@ public:
 	uint32 CalcStatus(Object* quest_giver, Player* plr);
 	uint32 CalcQuestStatus(Object* quest_giver, Player* plr, QuestRelation* qst);
 	uint32 CalcQuestStatus(Object* quest_giver, Player* plr, Quest* qst, uint8 type, bool skiplevelcheck);
+	uint32 CalcQuestStatus(Player* plr, uint32 qst);
 	uint32 ActiveQuestsCount(Object* quest_giver, Player* plr);
 
 	//Packet Forging...
@@ -70,6 +71,8 @@ public:
 	void OnPlayerCast(Player* plr, uint32 spellid, uint64& victimguid);
 	void OnPlayerItemPickup(Player* plr, Item* item);
 	void OnPlayerExploreArea(Player* plr, uint32 AreaID);
+	void AreaExplored(Player* plr, uint32 QuestID);// scriptdev2
+
 	void OnQuestAccepted(Player* plr, Quest* qst, Object *qst_giver);
 	void OnQuestFinished(Player* plr, Quest* qst, Object *qst_giver, uint32 reward_slot);
 

@@ -85,11 +85,15 @@ class Group;
 
 struct GossipMenuItem
 {
-	uint32 Id;
-	uint32 IntId;
-	uint8 Icon;
-	uint8 Extra;
-	string Text;
+	uint32		Id;
+	uint32		IntId;
+	uint8		Icon;
+	uint8		Extra;
+	string		Text;
+	uint32      m_gSender;
+	uint32      m_gAction;
+	string		m_gBoxMessage;
+    uint32      m_gBoxMoney;
 };
 struct SpellEntry;
 struct TrainerSpell
@@ -213,8 +217,10 @@ public:
 	GossipMenu(uint64 Creature_Guid, uint32 Text_Id);
 	void AddItem(GossipMenuItem* GossipItem);
 	void AddItem(uint8 Icon, const char* Text, int32 Id = -1, int8 Extra = 0);
+	void AddMenuItem(uint8 Icon, std::string Message, uint32 dtSender, uint32 dtAction, std::string BoxMessage, uint32 BoxMoney, bool Coded = false);
 	void BuildPacket(WorldPacket& Packet);
 	void SendTo(Player* Plr);
+	void SendGossipMenu( uint32 TitleTextId, uint64 npcGUID );
 	GossipMenuItem GetItem(uint32 Id);
 	ASCENT_INLINE void SetTextID(uint32 TID) { TextId = TID; }
 

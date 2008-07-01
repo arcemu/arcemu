@@ -153,6 +153,19 @@ enum Standing
     STANDING_EXALTED
 };
 
+enum ReputationRank			// scriptdev2
+{
+    REP_HATED       = 0,
+    REP_HOSTILE     = 1,
+    REP_UNFRIENDLY  = 2,
+    REP_NEUTRAL     = 3,
+    REP_FRIENDLY    = 4,
+    REP_HONORED     = 5,
+    REP_REVERED     = 6,
+    REP_EXALTED     = 7
+};
+
+
 enum PlayerFlags
 {
     PLAYER_FLAG_PARTY_LEADER		= 0x01,
@@ -784,8 +797,10 @@ public:
 	ASCENT_INLINE bool		HasFinishedDaily(uint32 questid) { return (m_finishedDailies.find(questid) == m_finishedDailies.end() ? false : true); }
     void                AddToFinishedQuests(uint32 quest_id);
     void                EventTimedQuestExpire(Quest *qst, QuestLogEntry *qle, uint32 log_slot);
-	
+	void				AreaExploredOrEventHappens( uint32 questId ); // scriptdev2
+
 	bool                HasFinishedQuest(uint32 quest_id);
+	bool				GetQuestRewardStatus(uint32 quest_id);
 	bool                HasQuestForItem(uint32 itemid);
     bool                CanFinishQuest(Quest* qst);
 	bool                HasQuestSpell(uint32 spellid);
@@ -911,6 +926,7 @@ public:
 	void                SetAtWar(uint32 Faction, bool Set);
 	bool                IsAtWar(uint32 Faction);
 	Standing            GetStandingRank(uint32 Faction);
+	ReputationRank		GetReputationRank(uint32 Faction);  // scriptdev2
 	bool                IsHostileBasedOnReputation(FactionDBC * dbc);
 	void                UpdateInrangeSetsBasedOnReputation();
 	void                Reputation_OnKilledUnit(Unit * pUnit, bool InnerLoop);
@@ -1052,7 +1068,8 @@ public:
     /* Item Interface                                                       */
     /************************************************************************/
 	ASCENT_INLINE ItemInterface* GetItemInterface() { return m_ItemInterface; } // Player Inventory Item storage
-	ASCENT_INLINE void         ApplyItemMods(Item *item, int8 slot, bool apply,bool justdrokedown=false) {  _ApplyItemMods(item, slot, apply,justdrokedown); }
+	ASCENT_INLINE void			ApplyItemMods(Item *item, int8 slot, bool apply,bool justdrokedown=false) {  _ApplyItemMods(item, slot, apply,justdrokedown); }
+	ASCENT_INLINE bool			HasItemCount( uint32 item, uint32 count, bool inBankAlso = false ) const;
     // item interface variables
     ItemInterface *     m_ItemInterface;
 	
@@ -1224,6 +1241,14 @@ public:
 	int m_lifetapbonus;
 	uint32 m_lastShotTime;
 	
+	// scriptdev2
+	GossipMenu* PlayerTalkClass;
+	void PrepareQuestMenu( uint64 guid );
+	void SendGossipMenu( uint32 TitleTextId, uint64 npcGUID );
+	void CloseGossip();
+	QuestStatus GetQuestStatus( uint32 quest_id );
+
+
 	bool m_bUnlimitedBreath;
 	uint32 m_UnderwaterTime;
 	uint32 m_UnderwaterState;

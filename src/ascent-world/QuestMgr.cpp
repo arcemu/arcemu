@@ -135,6 +135,28 @@ uint32 QuestMgr::CalcQuestStatus(Object* quest_giver, Player* plr, Quest* qst, u
 	return QMGR_QUEST_NOT_AVAILABLE;
 }
 
+uint32 QuestMgr::CalcQuestStatus(Player* plr, uint32 qst)
+{
+	QuestLogEntry* qle;
+
+	qle = plr->GetQuestLogForEntry(qst);
+
+	if (qle)
+	{		
+		if (!qle->CanBeFinished())
+		{
+			return QMGR_QUEST_NOT_FINISHED;
+		}
+		else
+		{
+			return QMGR_QUEST_FINISHED;					
+		}
+	}
+
+	return QMGR_QUEST_NOT_AVAILABLE;
+}
+
+
 uint32 QuestMgr::CalcStatus(Object* quest_giver, Player* plr)
 {
 	uint32 status = QMGR_QUEST_NOT_AVAILABLE;
@@ -844,6 +866,37 @@ void QuestMgr::OnPlayerExploreArea(Player* plr, uint32 AreaID)
 		}
 	}
 }
+
+void QuestMgr::AreaExplored(Player* plr, uint32 QuestID)
+{
+	uint32 i, j;
+	QuestLogEntry *qle;
+	for( i = 0; i < 25; ++i )
+	{
+		if((qle = plr->GetQuestLogInSlot(i)))
+		{
+			// search for quest
+			if( qle->GetQuest()->id == QuestID )
+			for( j = 0; j < 4; ++j )
+			{
+				if(qle->GetQuest()->required_triggers[j] &&
+					!qle->m_explored_areas[j])
+				{
+					qle->SetTrigger(j);
+					CALL_QUESTSCRIPT_EVENT(qle, OnExploreArea)(qle->m_explored_areas[j], plr, qle);
+					qle->UpdatePlayerFields();
+					if(qle->CanBeFinished())
+					{
+						plr->UpdateNearbyGameObjects();
+						qle->SendQuestComplete();
+					}
+					break;
+				}
+			}
+		}
+	}
+}
+
 
 void QuestMgr::GiveQuestRewardReputation(Player* plr, Quest* qst, Object *qst_giver)
 {

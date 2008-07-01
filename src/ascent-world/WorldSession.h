@@ -667,6 +667,7 @@ protected:
 public:
 
 	void SendInventoryList(Creature* pCreature);
+	void SendListInventory(Creature* pCreature); // scriptdev2
 	void SendTrainerList(Creature* pCreature);
 	void SendCharterRequest(Creature* pCreature);
 	void SendTaxiList(Creature* pCreature);

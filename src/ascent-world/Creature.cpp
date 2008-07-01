@@ -1657,3 +1657,8 @@ void Creature::SetGuardWaypoints()
 		GetAIInterface()->addWayPoint(wp);
 	}
 }
+
+uint32 Creature::GetNpcTextId()
+{
+	return objmgr.GetGossipTextForNpc(this->GetEntry());
+}

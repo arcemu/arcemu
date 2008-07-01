@@ -4421,6 +4421,12 @@ bool Player::HasFinishedQuest(uint32 quest_id)
 	return (m_finishedQuests.find(quest_id) != m_finishedQuests.end());
 }
 
+
+bool Player::GetQuestRewardStatus(uint32 quest_id)
+{
+	return HasFinishedQuest(quest_id);
+}
+
 //From Mangos Project
 void Player::_LoadTutorials(QueryResult * result)
 {	
@@ -5242,6 +5248,14 @@ bool Player::HasQuestForItem(uint32 itemid)
 	return false;
 }
 
+
+//scriptdev2
+bool Player::HasItemCount( uint32 item, uint32 count, bool inBankAlso ) const
+{
+	return (m_ItemInterface->GetItemCount(item, inBankAlso) == count);
+}
+
+
 /*Loot type MUST be
 1-corpse, go
 2-skinning/herbalism/minning
@@ -5854,6 +5868,13 @@ void Player::EventTimedQuestExpire(Quest *qst, QuestLogEntry *qle, uint32 log_sl
 	GetSession()->SendPacket(&fail);
 	CALL_QUESTSCRIPT_EVENT(qle, OnQuestCancel)(this);
 	qle->Finish();
+}
+
+//scriptdev2
+
+void Player::AreaExploredOrEventHappens( uint32 questId )
+{
+	sQuestMgr.AreaExplored(this,questId);
 }
 
 void Player::SendInitialLogonPackets()
@@ -7143,6 +7164,37 @@ void Player::Gossip_Complete()
 	GetSession()->OutPacket(SMSG_GOSSIP_COMPLETE, 0, NULL);
 	CleanupGossipMenu();
 }
+
+
+void Player::CloseGossip()
+{
+	Gossip_Complete();
+}
+
+void Player::PrepareQuestMenu(uint64 guid )
+{
+	uint32 TextID = 820;
+    objmgr.CreateGossipMenuForPlayer(&PlayerTalkClass, guid, TextID, this);
+}
+
+void Player::SendGossipMenu( uint32 TitleTextId, uint64 npcGUID )
+{
+	PlayerTalkClass->SetTextID(TitleTextId);
+	PlayerTalkClass->SendTo(this);
+}
+
+QuestStatus Player::GetQuestStatus( uint32 quest_id )
+{
+	uint32 status = sQuestMgr.CalcQuestStatus( this, quest_id);
+	switch (status)
+	{
+		case QMGR_QUEST_NOT_FINISHED: return QUEST_STATUS_INCOMPLETE;
+		case QMGR_QUEST_FINISHED: return QUEST_STATUS_COMPLETE;
+		case QMGR_QUEST_NOT_AVAILABLE: return QUEST_STATUS_UNAVAILABLE;
+	}
+	return QUEST_STATUS_UNAVAILABLE;
+}
+
 
 void Player::ZoneUpdate(uint32 ZoneId)
 {

@@ -1455,6 +1455,13 @@ void WorldSession::SendInventoryList(Creature* unit)
 	SendPacket( &data );
 	sLog.outDetail( "WORLD: Sent SMSG_LIST_INVENTORY" );
 }
+
+void WorldSession::SendListInventory(Creature* unit)
+{
+	SendInventoryList(unit);
+}
+
+
 void WorldSession::HandleAutoStoreBagItemOpcode( WorldPacket & recv_data )
 {
 	CHECK_PACKET_SIZE(recv_data, 3);

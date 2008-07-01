@@ -132,6 +132,10 @@ typedef set<QuestScript*> QuestScripts;
 typedef list<void*> ServerHookList;
 typedef list<SCRIPT_MODULE> LibraryHandleMap;
 
+#define VISIBLE_RANGE (26.46f)
+#define MAX_SCRIPTS 1000
+#define MAX_INSTANCE_SCRIPTS 1000
+
 class SERVER_DECL ScriptMgr : public Singleton<ScriptMgr>
 {
 public:

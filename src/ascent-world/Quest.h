@@ -47,6 +47,18 @@ enum QUEST_STATUS
 	//QUEST_ITEM_UPDATE					= 0x06	 // Yellow Question "?" Mark. //Unknown
 };
 
+enum QuestStatus		// dupe for scriptdev2
+{
+    QUEST_STATUS_NONE           = 0,
+    QUEST_STATUS_COMPLETE       = 1,
+    QUEST_STATUS_UNAVAILABLE    = 2,
+    QUEST_STATUS_INCOMPLETE     = 3,
+    QUEST_STATUS_AVAILABLE      = 4,
+    MAX_QUEST_STATUS
+};
+
+
+
 enum QUESTGIVER_QUEST_TYPE
 {
 	QUESTGIVER_QUEST_START  = 0x01,

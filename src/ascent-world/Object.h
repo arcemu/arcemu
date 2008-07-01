@@ -200,6 +200,11 @@ public:
 	float CalcDistance(Object *Oa, Object *Ob);
 	float CalcDistance(Object *Oa, float ObX, float ObY, float ObZ);
 	float CalcDistance(float OaX, float OaY, float OaZ, float ObX, float ObY, float ObZ);
+	// scriptdev2
+	bool IsInMap( Object* obj) { return GetMapId()==obj->GetMapId() && GetInstanceID()==obj->GetInstanceID(); }
+ 	bool IsWithinDistInMap( Object* obj, const float dist2compare) const;
+	bool IsWithinLOSInMap( Object* obj);
+	bool IsWithinLOS( LocationVector location  );
 
 	//! Only for MapMgr use
 	ASCENT_INLINE MapCell* GetMapCell() const { return m_mapCell; }
@@ -310,6 +315,7 @@ public:
 	bool isInBack(Object* target);
 	// Check to see if an object is in front of a target in a specified arc (in degrees)
 	bool isInArc(Object* target , float degrees); 
+	bool HasInArc( float degrees, Object* target );  // scriptdev2
 	/* Calculates the angle between two Positions */
 	float calcAngle( float Position1X, float Position1Y, float Position2X, float Position2Y );
 	float calcRadAngle( float Position1X, float Position1Y, float Position2X, float Position2Y );
