@@ -140,7 +140,7 @@ pSpellAura SpellAuraHandler[TOTAL_SPELL_AURAS]={
 		&Aura::SpellAuraModMechanicResistance,//SPELL_AURA_MOD_MECHANIC_RESISTANCE = 117,
 		&Aura::SpellAuraModHealingPCT,//SPELL_AURA_MOD_HEALING_PCT = 118,
 		&Aura::SpellAuraNULL,//SPELL_AURA_SHARE_PET_TRACKING = 119,//obselete
-		&Aura::SpellAuraNULL,//SPELL_AURA_UNTRACKABLE = 120,
+		&Aura::SpellAuraUntrackable,//SPELL_AURA_UNTRACKABLE = 120,
 		&Aura::SpellAuraEmphaty,//SPELL_AURA_EMPATHY = 121,
 		&Aura::SpellAuraModOffhandDamagePCT,//SPELL_AURA_MOD_OFFHAND_DAMAGE_PCT = 122,
 		&Aura::SpellAuraModPenetration,//SPELL_AURA_MOD_POWER_COST_PCT = 123, --> armor penetration & spell penetration, NOT POWER COST!
@@ -6452,6 +6452,14 @@ void Aura::SpellAuraModHealingPCT(bool apply)
 			m_target->HealTakenPctMod[x] += ((float)(val))/100;
 		}
 	}
+}
+
+void Aura::SpellAuraUntrackable(bool apply)
+{
+    if(apply)
+        m_target->SetFlag(UNIT_FIELD_BYTES_1, STANDSTATE_FLAG_UNTRACKABLE);
+    else
+        m_target->RemoveFlag(UNIT_FIELD_BYTES_1, STANDSTATE_FLAG_UNTRACKABLE);
 }
 
 void Aura::SpellAuraModRangedAttackPower(bool apply)

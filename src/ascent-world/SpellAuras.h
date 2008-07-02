@@ -523,6 +523,7 @@ public:
 	void SpellAuraIgnoreRegenInterrupt(bool apply);
 	void SpellAuraModMechanicResistance(bool apply);
 	void SpellAuraModHealingPCT(bool apply);   
+	void SpellAuraUntrackable(bool apply);
 	void SpellAuraEmphaty(bool apply);
 	void SpellAuraModOffhandDamagePCT(bool apply);
 	void SpellAuraModPenetration(bool apply);
