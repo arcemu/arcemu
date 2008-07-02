@@ -1119,9 +1119,9 @@ public:
 
 	void SetFacing(float newo);//only working if creature is idle
 
-	void RemoveAurasByBuffIndexType(uint32 buff_index_type, const uint64 &guid);
-	void RemoveAurasByBuffType(uint32 buff_type, const uint64 &guid,uint32 skip);
-	bool HasAurasOfBuffType(uint32 buff_type, const uint64 &guid,uint32 skip);
+	void RemoveAurasByBGR_one_buff_from_caster(uint32 buff_index_type, const uint64 &guid);
+	void RemoveAurasByBGR_one_buff_from_caster(uint32 buff_type, const uint64 &guid,uint32 skip);
+	bool HasAurasOfBGR_one_buff_from_caster(uint32 buff_type, const uint64 &guid,uint32 skip);
 	int	 HasAurasWithNameHash(uint32 name_hash);
 	bool HasNegativeAuraWithNameHash(uint32 name_hash); //just to reduce search range in some cases
 	bool HasNegativeAura(uint32 spell_id); //just to reduce search range in some cases

@@ -799,7 +799,7 @@ enum SpellTargetTypes
     SPELL_TARGET_TYPE_DEATH             = 0x8000,
 };
 
-enum SpellTypes // SPELL_ENTRY_buffType
+enum SpellTypes // SPELL_ENTRY_BGR_one_buff_from_caster
 {
     SPELL_TYPE_NONE                 = 0x00000000,
     SPELL_TYPE_SEAL                 = 0x00000001,

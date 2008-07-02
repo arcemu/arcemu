@@ -348,9 +348,11 @@ struct SpellEntry
     /// CUSTOM: these fields are used for the modifications made in the world.cpp
     uint32 DiminishStatus;                  //
     uint32 proc_interval;                   //!!! CUSTOM, <Fill description for variable>
-    uint32 buffIndexType;					//!!! CUSTOM, <Fill description for variable>
+	//Buff Groupin Rule -> caster can cast this spell only on 1 target. Value represents the group spell is part of. Can be part of only 1 group
+    uint32 BGR_one_buff_from_caster;		//!!! CUSTOM, <Fill description for variable>
+	//target can have only buff of this type on self. Value represents the group spell is part of. Can be part of only 1 group
+    uint32 BGR_one_buff_on_target;          //!!! CUSTOM, these are related to creating a item through a spell
     uint32 c_is_flags;						//!!! CUSTOM, store spell checks in a static way : isdamageind,ishealing
-    uint32 buffType;                        //!!! CUSTOM, these are related to creating a item through a spell
     uint32 RankNumber;                      //!!! CUSTOM, this protects players from having >1 rank of a spell
     uint32 NameHash;                        //!!! CUSTOM, related to custom spells, summon spell quest related spells
 	uint32 talent_tree;						//!!! CUSTOM,

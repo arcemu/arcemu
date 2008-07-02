@@ -12155,7 +12155,6 @@ void ApplyNormalFixes()
 		const char* nametext = dbc.getRecord(x).getString(124);
 
 		uint32 rank = 0;
-		uint32 type = 0;
 		uint32 namehash = 0;
 
 		// get spellentry
@@ -12240,7 +12239,7 @@ void ApplyNormalFixes()
 		else if(sp->School & 64)
 			SET_SCHOOL(SCHOOL_ARCANE);
 		else
-			printf("UNKNOWN SCHOOL %u\n", sp->School);
+			printf("UNKNOWN SCHOOL %u for spell %u\n", sp->School, sp->Id);
 #undef SET_SCHOOL
 
 		/*
@@ -12504,63 +12503,63 @@ void ApplyNormalFixes()
         // look for seal, etc in name
         if( strstr( nametext, "Seal"))
 		{
-            type |= SPELL_TYPE_SEAL;
+            sp->BGR_one_buff_from_caster |= SPELL_TYPE_SEAL;
 			All_Seal_Groups_Combined |= sp->SpellGroupType;
 		}
         else if( strstr( nametext, "Blessing"))
-            type |= SPELL_TYPE_BLESSING;
+            sp->BGR_one_buff_from_caster |= SPELL_TYPE_BLESSING;
         else if( strstr( nametext, "Curse"))
 		{
-            type |= SPELL_TYPE_CURSE;
+            sp->BGR_one_buff_from_caster |= SPELL_TYPE_CURSE;
 			sp->in_front_status = SPELL_INFRONT_STATUS_REQUIRE_SKIPCHECK;
 		}
         else if( strstr( nametext, "Aspect"))
-            type |= SPELL_TYPE_ASPECT;
+            sp->BGR_one_buff_from_caster |= SPELL_TYPE_ASPECT;
         else if( strstr( nametext, "Sting") || strstr( nametext, "sting"))
-            type |= SPELL_TYPE_STING;
+            sp->BGR_one_buff_from_caster |= SPELL_TYPE_STING;
         // don't break armor items!
         else if(strcmp(nametext, "Armor") && strstr( nametext, "Armor") || strstr( nametext, "Demon Skin"))
-            type |= SPELL_TYPE_ARMOR;
+            sp->BGR_one_buff_from_caster |= SPELL_TYPE_ARMOR;
         else if( strstr( nametext, "Aura"))
-            type |= SPELL_TYPE_AURA;
+            sp->BGR_one_buff_from_caster |= SPELL_TYPE_AURA;
 		else if( strstr( nametext, "Track")==nametext)
-            type |= SPELL_TYPE_TRACK;
+            sp->BGR_one_buff_from_caster |= SPELL_TYPE_TRACK;
 		else if( namehash == SPELL_HASH_GIFT_OF_THE_WILD || namehash == SPELL_HASH_MARK_OF_THE_WILD )
-            type |= SPELL_TYPE_MARK_GIFT;
+            sp->BGR_one_buff_from_caster |= SPELL_TYPE_MARK_GIFT;
 		else if( namehash == SPELL_HASH_IMMOLATION_TRAP || namehash == SPELL_HASH_FREEZING_TRAP || namehash == SPELL_HASH_FROST_TRAP || namehash == SPELL_HASH_EXPLOSIVE_TRAP || namehash == SPELL_HASH_SNAKE_TRAP )
-            type |= SPELL_TYPE_HUNTER_TRAP;
+            sp->BGR_one_buff_from_caster |= SPELL_TYPE_HUNTER_TRAP;
 		else if( namehash == SPELL_HASH_ARCANE_INTELLECT || namehash == SPELL_HASH_ARCANE_BRILLIANCE )
-            type |= SPELL_TYPE_MAGE_INTEL;
+            sp->BGR_one_buff_from_caster |= SPELL_TYPE_MAGE_INTEL;
 		else if( namehash == SPELL_HASH_AMPLIFY_MAGIC || namehash == SPELL_HASH_DAMPEN_MAGIC )
-            type |= SPELL_TYPE_MAGE_MAGI;
+            sp->BGR_one_buff_from_caster |= SPELL_TYPE_MAGE_MAGI;
 		else if( namehash == SPELL_HASH_FIRE_WARD || namehash == SPELL_HASH_FROST_WARD )
-            type |= SPELL_TYPE_MAGE_WARDS;
+            sp->BGR_one_buff_from_caster |= SPELL_TYPE_MAGE_WARDS;
 		else if( namehash == SPELL_HASH_SHADOW_PROTECTION || namehash == SPELL_HASH_PRAYER_OF_SHADOW_PROTECTION )
-            type |= SPELL_TYPE_PRIEST_SH_PPROT;
+            sp->BGR_one_buff_from_caster |= SPELL_TYPE_PRIEST_SH_PPROT;
 		else if( namehash == SPELL_HASH_WATER_SHIELD || namehash == SPELL_HASH_EARTH_SHIELD || namehash == SPELL_HASH_LIGHTNING_SHIELD )
-            type |= SPELL_TYPE_SHIELD;
+            sp->BGR_one_buff_from_caster |= SPELL_TYPE_SHIELD;
 		else if( namehash == SPELL_HASH_POWER_WORD__FORTITUDE || namehash == SPELL_HASH_PRAYER_OF_FORTITUDE )
-            type |= SPELL_TYPE_FORTITUDE;
+            sp->BGR_one_buff_from_caster |= SPELL_TYPE_FORTITUDE;
 		else if( namehash == SPELL_HASH_DIVINE_SPIRIT || namehash == SPELL_HASH_PRAYER_OF_SPIRIT )
-            type |= SPELL_TYPE_SPIRIT;
+            sp->BGR_one_buff_from_caster |= SPELL_TYPE_SPIRIT;
 //		else if( strstr( nametext, "Curse of Weakness") || strstr( nametext, "Curse of Agony") || strstr( nametext, "Curse of Recklessness") || strstr( nametext, "Curse of Tongues") || strstr( nametext, "Curse of the Elements") || strstr( nametext, "Curse of Idiocy") || strstr( nametext, "Curse of Shadow") || strstr( nametext, "Curse of Doom"))
 //		else if(namehash==4129426293 || namehash==885131426 || namehash==626036062 || namehash==3551228837 || namehash==2784647472 || namehash==776142553 || namehash==3407058720 || namehash==202747424)
 //		else if( strstr( nametext, "Curse of "))
 //            type |= SPELL_TYPE_WARLOCK_CURSES;
 		else if( strstr( nametext, "Immolate") || strstr( nametext, "Conflagrate"))
-			type |= SPELL_TYPE_WARLOCK_IMMOLATE;
+			sp->BGR_one_buff_from_caster |= SPELL_TYPE_WARLOCK_IMMOLATE;
 		else if( strstr( nametext, "Amplify Magic") || strstr( nametext, "Dampen Magic"))
-			type |= SPELL_TYPE_MAGE_AMPL_DUMP;
+			sp->BGR_one_buff_from_caster |= SPELL_TYPE_MAGE_AMPL_DUMP;
         else if( strstr( desc, "Battle Elixir"))
-            type |= SPELL_TYPE_ELIXIR_BATTLE;
+            sp->BGR_one_buff_from_caster |= SPELL_TYPE_ELIXIR_BATTLE;
         else if( strstr( desc, "Guardian Elixir"))
-            type |= SPELL_TYPE_ELIXIR_GUARDIAN;
+            sp->BGR_one_buff_from_caster |= SPELL_TYPE_ELIXIR_GUARDIAN;
         else if( strstr( desc, "Battle and Guardian elixir"))
-            type |= SPELL_TYPE_ELIXIR_FLASK;
-//		else if( namehash == SPELL_HASH_HUNTER_S_MARK )		// hunter's mark
-//			type |= SPELL_TYPE_HUNTER_MARK;
+            sp->BGR_one_buff_from_caster |= SPELL_TYPE_ELIXIR_FLASK;
+		else if( namehash == SPELL_HASH_HUNTER_S_MARK )		// hunter's mark
+			sp->BGR_one_buff_from_caster |= SPELL_TYPE_HUNTER_MARK;
         else if( namehash == SPELL_HASH_COMMANDING_SHOUT || namehash == SPELL_HASH_BATTLE_SHOUT )
-            type |= SPELL_TYPE_WARRIOR_SHOUT;
+            sp->BGR_one_buff_from_caster |= SPELL_TYPE_WARRIOR_SHOUT;
 		else if( strstr( desc, "Finishing move")==desc)
 			sp->c_is_flags |= SPELL_FLAG_IS_FINISHING_MOVE;
 		if( IsDamagingSpell( sp ) )
@@ -12610,11 +12609,11 @@ void ApplyNormalFixes()
 
 		// find diminishing status
 		sp->DiminishStatus = GetDiminishingGroup(namehash);
-		sp->buffIndexType=0;
+		sp->BGR_one_buff_from_caster=0;
 		switch(namehash)
 		{
 		case SPELL_HASH_HUNTER_S_MARK:		// Hunter's mark
-			sp->buffIndexType = SPELL_TYPE_INDEX_MARK;
+			sp->BGR_one_buff_from_caster |= SPELL_TYPE_INDEX_MARK;
 			break;
 
 		case SPELL_HASH_POLYMORPH:			// Polymorph
@@ -12622,36 +12621,36 @@ void ApplyNormalFixes()
 		case SPELL_HASH_POLYMORPH__PIG:		// Polymorph: Pig
 		case SPELL_HASH_POLYMORPH__SHEEP:	// Polymorph: Sheep
 		case SPELL_HASH_POLYMORPH__TURTLE:	// Polymorph: Turtle
-			sp->buffIndexType = SPELL_TYPE_INDEX_POLYMORPH;
+			sp->BGR_one_buff_from_caster |= SPELL_TYPE_INDEX_POLYMORPH;
 			break;
 
 		case SPELL_HASH_FEAR:				// Fear
-			sp->buffIndexType = SPELL_TYPE_INDEX_FEAR;
+			sp->BGR_one_buff_from_caster |= SPELL_TYPE_INDEX_FEAR;
 			break;
 
 		case SPELL_HASH_SAP:				// Sap
-			sp->buffIndexType = SPELL_TYPE_INDEX_SAP;
+			sp->BGR_one_buff_from_caster |= SPELL_TYPE_INDEX_SAP;
 			break;
 
 		case SPELL_HASH_SCARE_BEAST:		// Scare Beast
-			sp->buffIndexType = SPELL_TYPE_INDEX_SCARE_BEAST;
+			sp->BGR_one_buff_from_caster |= SPELL_TYPE_INDEX_SCARE_BEAST;
 			break;
 
 		case SPELL_HASH_HIBERNATE:			// Hibernate
-			sp->buffIndexType = SPELL_TYPE_INDEX_HIBERNATE;
+			sp->BGR_one_buff_from_caster |= SPELL_TYPE_INDEX_HIBERNATE;
 			break;
 
 //		removed by Zack Earth shield stacks 10 times. Current code does not support it
 //		case SPELL_HASH_EARTH_SHIELD:		// Earth Shield
-//			sp->buffIndexType = SPELL_TYPE_INDEX_EARTH_SHIELD;
+//			sp->BGR_one_buff_from_caster |= SPELL_TYPE_INDEX_EARTH_SHIELD;
 //			break;
 
 		case SPELL_HASH_CYCLONE:			// Cyclone
-			sp->buffIndexType = SPELL_TYPE_INDEX_CYCLONE;
+			sp->BGR_one_buff_from_caster |= SPELL_TYPE_INDEX_CYCLONE;
 			break;
 
 		case SPELL_HASH_BANISH:				// Banish
-			sp->buffIndexType = SPELL_TYPE_INDEX_BANISH;
+			sp->BGR_one_buff_from_caster |= SPELL_TYPE_INDEX_BANISH;
 			break;
 
 		//case SPELL_HASH_JUDGEMENT_OF_VENGEANCE:
@@ -12659,7 +12658,7 @@ void ApplyNormalFixes()
 		case SPELL_HASH_JUDGEMENT_OF_LIGHT:
 		case SPELL_HASH_JUDGEMENT_OF_WISDOM:
 		case SPELL_HASH_JUDGEMENT_OF_JUSTICE:
-			sp->buffIndexType = SPELL_TYPE_INDEX_JUDGEMENT;
+			sp->BGR_one_buff_from_caster |= SPELL_TYPE_INDEX_JUDGEMENT;
 			break;
 		}
 
@@ -12685,7 +12684,6 @@ void ApplyNormalFixes()
 		}
 
 		// set extra properties
-		sp->buffType   = type;
 		sp->RankNumber = rank;
 
 		uint32 pr=sp->procFlags;

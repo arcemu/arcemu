@@ -2562,8 +2562,8 @@ void Spell::HandleAddAura(uint64 guid)
 	}
 
 	// remove any auras with same type
-	if( m_spellInfo->buffType > 0)
-		Target->RemoveAurasByBuffType(m_spellInfo->buffType, m_caster->GetGUID(),m_spellInfo->Id);
+	if( m_spellInfo->BGR_one_buff_from_caster > 0)
+		Target->RemoveAurasByBGR_one_buff_from_caster(m_spellInfo->BGR_one_buff_from_caster, m_caster->GetGUID(),m_spellInfo->Id);
 
 	uint32 spellid = 0;
 
