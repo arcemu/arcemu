@@ -502,6 +502,8 @@ void Pet::LoadFromDB(Player* owner, PlayerPet * pi)
 			SetUInt32Value(UNIT_FIELD_PETNEXTLEVELEXP, GetNextLevelXP(m_Owner->getLevel()));
 			ApplyStatsForLevel();
 		}
+		else if(m_uint32Values[UNIT_CREATED_BY_SPELL])
+			ApplySummonLevelAbilities();
 		else
 			ApplyPetLevelAbilities();
 	}
@@ -1870,6 +1872,7 @@ uint32 Pet::GetUntrainCost()
 
 	return reset_cost;
 }
+
 
 
 
