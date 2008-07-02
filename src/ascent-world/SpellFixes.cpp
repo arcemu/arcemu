@@ -574,11 +574,6 @@ void ApplyExtraDataFixes()
 	if( sp != NULL )
 		sp->in_front_status = SPELL_INFRONT_STATUS_REQUIRE_INFRONT;
 
-	// Spell 2944 (Devouring Plague Rank 1) is infront from spell extra.
-	sp = dbcSpell.LookupEntryForced(2944);
-	if( sp != NULL )
-		sp->in_front_status = SPELL_INFRONT_STATUS_REQUIRE_INFRONT;
-
 	// Spell 2948 (Scorch Rank 1) is infront from spell extra.
 	sp = dbcSpell.LookupEntryForced(2948);
 	if( sp != NULL )
@@ -4744,31 +4739,6 @@ void ApplyExtraDataFixes()
 	if( sp != NULL )
 		sp->in_front_status = SPELL_INFRONT_STATUS_REQUIRE_INFRONT;
 
-	// Spell 19276 (Devouring Plague Rank 2) is infront from spell extra.
-	sp = dbcSpell.LookupEntryForced(19276);
-	if( sp != NULL )
-		sp->in_front_status = SPELL_INFRONT_STATUS_REQUIRE_INFRONT;
-
-	// Spell 19277 (Devouring Plague Rank 3) is infront from spell extra.
-	sp = dbcSpell.LookupEntryForced(19277);
-	if( sp != NULL )
-		sp->in_front_status = SPELL_INFRONT_STATUS_REQUIRE_INFRONT;
-
-	// Spell 19278 (Devouring Plague Rank 4) is infront from spell extra.
-	sp = dbcSpell.LookupEntryForced(19278);
-	if( sp != NULL )
-		sp->in_front_status = SPELL_INFRONT_STATUS_REQUIRE_INFRONT;
-
-	// Spell 19279 (Devouring Plague Rank 5) is infront from spell extra.
-	sp = dbcSpell.LookupEntryForced(19279);
-	if( sp != NULL )
-		sp->in_front_status = SPELL_INFRONT_STATUS_REQUIRE_INFRONT;
-
-	// Spell 19280 (Devouring Plague Rank 6) is infront from spell extra.
-	sp = dbcSpell.LookupEntryForced(19280);
-	if( sp != NULL )
-		sp->in_front_status = SPELL_INFRONT_STATUS_REQUIRE_INFRONT;
-
 	// Spell 19281 (Hex of Weakness Rank 2) is infront from spell extra.
 	sp = dbcSpell.LookupEntryForced(19281);
 	if( sp != NULL )
@@ -6801,11 +6771,6 @@ void ApplyExtraDataFixes()
 
 	// Spell 25464 (Frost Shock Rank 5) is infront from spell extra.
 	sp = dbcSpell.LookupEntryForced(25464);
-	if( sp != NULL )
-		sp->in_front_status = SPELL_INFRONT_STATUS_REQUIRE_INFRONT;
-
-	// Spell 25467 (Devouring Plague Rank 7) is infront from spell extra.
-	sp = dbcSpell.LookupEntryForced(25467);
 	if( sp != NULL )
 		sp->in_front_status = SPELL_INFRONT_STATUS_REQUIRE_INFRONT;
 
