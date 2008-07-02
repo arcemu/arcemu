@@ -1556,6 +1556,7 @@ void WorldSession::HandleInspectOpcode( WorldPacket & recv_data )
 
 	WorldPacket data( SMSG_INSPECT_TALENTS, 4 + talent_points );
 
+	FastGUIDPack(data, _player->GetGUID());
 	data << uint32( talent_points );
 
 	uint32 talent_tab_pos = 0;
