@@ -13,9 +13,6 @@ a. Currently it propels you a small bit into the air and pushes you forward. Ret
 • Molten Fury - http://www.wowwiki.com/Molten_Fury
 a. This spell currently does not increase damage. On retail it is suppose to increase your damage output by 20% on any target below 20% current health.
 
-• Combustion - http://www.wowwiki.com/Combustion
-a. Currently this spell does not give you +crit. On retail this spell is suppose to give you +10% chance to crit after every damage spell until you receive 3 critical strikes total.
-
 • Frostbite - http://www.wowwiki.com/Frostbite_(mage_talent)
 a. Currently it only ‘procs’ on the initial slow effect. i.e. When I cast frostbolt, it has a 15% chance to ‘proc’ on that attack only. The slow effect would have to wear off before another chance for it to ‘proc’. On retail frostbite would have a 15% chance to ‘proc’ every time a slow spell is refreshed (Frost Armor slow, Frostbolt, Improved Blizzard, and Cone of Cold).
 b. Frostbite typically is applied after the spell hits you, such as I cast 'Frostbolt', and it hits the target and deals damage, at that point the slow effect and the chance to 'proc' 'Frostbite' should take effect. Currently it is all applied as soon as the projectile leaves you (i.e. the 'Frostbolt').

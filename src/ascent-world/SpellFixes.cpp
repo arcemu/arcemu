@@ -2299,11 +2299,6 @@ void ApplyExtraDataFixes()
 	if( sp != NULL )
 		sp->in_front_status = SPELL_INFRONT_STATUS_REQUIRE_INFRONT;
 
-	// Spell 11639 (Shadow Word: Pain ) is infront from spell extra.
-	sp = dbcSpell.LookupEntryForced(11639);
-	if( sp != NULL )
-		sp->in_front_status = SPELL_INFRONT_STATUS_REQUIRE_INFRONT;
-
 	// Spell 11659 (Shadow Bolt Rank 7) is infront from spell extra.
 	sp = dbcSpell.LookupEntryForced(11659);
 	if( sp != NULL )
@@ -2891,11 +2886,6 @@ void ApplyExtraDataFixes()
 
 	// Spell 13901 (Arcane Bolt ) is infront from spell extra.
 	sp = dbcSpell.LookupEntryForced(13901);
-	if( sp != NULL )
-		sp->in_front_status = SPELL_INFRONT_STATUS_REQUIRE_INFRONT;
-
-	// Spell 14032 (Shadow Word: Pain ) is infront from spell extra.
-	sp = dbcSpell.LookupEntryForced(14032);
 	if( sp != NULL )
 		sp->in_front_status = SPELL_INFRONT_STATUS_REQUIRE_INFRONT;
 
@@ -3524,11 +3514,6 @@ void ApplyExtraDataFixes()
 	if( sp != NULL )
 		sp->in_front_status = SPELL_INFRONT_STATUS_REQUIRE_INFRONT;
 
-	// Spell 15654 (Shadow Word: Pain ) is infront from spell extra.
-	sp = dbcSpell.LookupEntryForced(15654);
-	if( sp != NULL )
-		sp->in_front_status = SPELL_INFRONT_STATUS_REQUIRE_INFRONT;
-
 	// Spell 15655 (Shield Slam ) is infront from spell extra.
 	sp = dbcSpell.LookupEntryForced(15655);
 	if( sp != NULL )
@@ -4021,11 +4006,6 @@ void ApplyExtraDataFixes()
 
 	// Spell 17145 (Blast Wave ) is infront from spell extra.
 	sp = dbcSpell.LookupEntryForced(17145);
-	if( sp != NULL )
-		sp->in_front_status = SPELL_INFRONT_STATUS_REQUIRE_INFRONT;
-
-	// Spell 17146 (Shadow Word: Pain ) is infront from spell extra.
-	sp = dbcSpell.LookupEntryForced(17146);
 	if( sp != NULL )
 		sp->in_front_status = SPELL_INFRONT_STATUS_REQUIRE_INFRONT;
 
@@ -4931,11 +4911,6 @@ void ApplyExtraDataFixes()
 
 	// Spell 19729 (Shadow Bolt ) is infront from spell extra.
 	sp = dbcSpell.LookupEntryForced(19729);
-	if( sp != NULL )
-		sp->in_front_status = SPELL_INFRONT_STATUS_REQUIRE_INFRONT;
-
-	// Spell 19776 (Shadow Word: Pain ) is infront from spell extra.
-	sp = dbcSpell.LookupEntryForced(19776);
 	if( sp != NULL )
 		sp->in_front_status = SPELL_INFRONT_STATUS_REQUIRE_INFRONT;
 
@@ -6029,11 +6004,6 @@ void ApplyExtraDataFixes()
 	if( sp != NULL )
 		sp->in_front_status = SPELL_INFRONT_STATUS_REQUIRE_INFRONT;
 
-	// Spell 23268 (Shadow Word: Pain ) is infront from spell extra.
-	sp = dbcSpell.LookupEntryForced(23268);
-	if( sp != NULL )
-		sp->in_front_status = SPELL_INFRONT_STATUS_REQUIRE_INFRONT;
-
 	// Spell 23269 (Holy Blast ) is infront from spell extra.
 	sp = dbcSpell.LookupEntryForced(23269);
 	if( sp != NULL )
@@ -6184,11 +6154,6 @@ void ApplyExtraDataFixes()
 	if( sp != NULL )
 		sp->in_front_status = SPELL_INFRONT_STATUS_REQUIRE_INFRONT;
 
-	// Spell 23952 (Shadow Word: Pain ) is infront from spell extra.
-	sp = dbcSpell.LookupEntryForced(23952);
-	if( sp != NULL )
-		sp->in_front_status = SPELL_INFRONT_STATUS_REQUIRE_INFRONT;
-
 	// Spell 23953 (Mind Flay ) is infront from spell extra.
 	sp = dbcSpell.LookupEntryForced(23953);
 	if( sp != NULL )
@@ -6256,11 +6221,6 @@ void ApplyExtraDataFixes()
 
 	// Spell 24193 (Charge ) is infront from spell extra.
 	sp = dbcSpell.LookupEntryForced(24193);
-	if( sp != NULL )
-		sp->in_front_status = SPELL_INFRONT_STATUS_REQUIRE_INFRONT;
-
-	// Spell 24212 (Shadow Word: Pain ) is infront from spell extra.
-	sp = dbcSpell.LookupEntryForced(24212);
 	if( sp != NULL )
 		sp->in_front_status = SPELL_INFRONT_STATUS_REQUIRE_INFRONT;
 
@@ -8069,18 +8029,8 @@ void ApplyExtraDataFixes()
 	if( sp != NULL )
 		sp->in_front_status = SPELL_INFRONT_STATUS_REQUIRE_INFRONT;
 
-	// Spell 30854 (Shadow Word: Pain ) is infront from spell extra.
-	sp = dbcSpell.LookupEntryForced(30854);
-	if( sp != NULL )
-		sp->in_front_status = SPELL_INFRONT_STATUS_REQUIRE_INFRONT;
-
 	// Spell 30859 (Hellfire ) is infront from spell extra.
 	sp = dbcSpell.LookupEntryForced(30859);
-	if( sp != NULL )
-		sp->in_front_status = SPELL_INFRONT_STATUS_REQUIRE_INFRONT;
-
-	// Spell 30898 (Shadow Word: Pain ) is infront from spell extra.
-	sp = dbcSpell.LookupEntryForced(30898);
 	if( sp != NULL )
 		sp->in_front_status = SPELL_INFRONT_STATUS_REQUIRE_INFRONT;
 
@@ -8324,16 +8274,6 @@ void ApplyExtraDataFixes()
 	if( sp != NULL )
 		sp->in_front_status = SPELL_INFRONT_STATUS_REQUIRE_INFRONT;
 
-	// Spell 32379 (Shadow Word: Death Rank 1) is infront from spell extra.
-	sp = dbcSpell.LookupEntryForced(32379);
-	if( sp != NULL )
-		sp->in_front_status = SPELL_INFRONT_STATUS_REQUIRE_INFRONT;
-
-	// Spell 32409 (Shadow Word: Death Rank 1) is infront from spell extra.
-	sp = dbcSpell.LookupEntryForced(32409);
-	if( sp != NULL )
-		sp->in_front_status = SPELL_INFRONT_STATUS_REQUIRE_INFRONT;
-
 	// Spell 32416 (Hammer of Justice ) is infront from spell extra.
 	sp = dbcSpell.LookupEntryForced(32416);
 	if( sp != NULL )
@@ -8451,11 +8391,6 @@ void ApplyExtraDataFixes()
 
 	// Spell 32967 (Flame Shock ) is infront from spell extra.
 	sp = dbcSpell.LookupEntryForced(32967);
-	if( sp != NULL )
-		sp->in_front_status = SPELL_INFRONT_STATUS_REQUIRE_INFRONT;
-
-	// Spell 32996 (Shadow Word: Death Rank 2) is infront from spell extra.
-	sp = dbcSpell.LookupEntryForced(32996);
 	if( sp != NULL )
 		sp->in_front_status = SPELL_INFRONT_STATUS_REQUIRE_INFRONT;
 
@@ -8634,11 +8569,6 @@ void ApplyExtraDataFixes()
 	if( sp != NULL )
 		sp->in_front_status = SPELL_INFRONT_STATUS_REQUIRE_INFRONT;
 
-	// Spell 34441 (Shadow Word: Pain ) is infront from spell extra.
-	sp = dbcSpell.LookupEntryForced(34441);
-	if( sp != NULL )
-		sp->in_front_status = SPELL_INFRONT_STATUS_REQUIRE_INFRONT;
-
 	// Spell 34620 (Slam ) is infront from spell extra.
 	sp = dbcSpell.LookupEntryForced(34620);
 	if( sp != NULL )
@@ -8726,16 +8656,6 @@ void ApplyExtraDataFixes()
 
 	// Spell 34940 (Gouge ) is infront from spell extra.
 	sp = dbcSpell.LookupEntryForced(34940);
-	if( sp != NULL )
-		sp->in_front_status = SPELL_INFRONT_STATUS_REQUIRE_INFRONT;
-
-	// Spell 34941 (Shadow Word: Pain ) is infront from spell extra.
-	sp = dbcSpell.LookupEntryForced(34941);
-	if( sp != NULL )
-		sp->in_front_status = SPELL_INFRONT_STATUS_REQUIRE_INFRONT;
-
-	// Spell 34942 (Shadow Word: Pain ) is infront from spell extra.
-	sp = dbcSpell.LookupEntryForced(34942);
 	if( sp != NULL )
 		sp->in_front_status = SPELL_INFRONT_STATUS_REQUIRE_INFRONT;
 
@@ -9096,11 +9016,6 @@ void ApplyExtraDataFixes()
 
 	// Spell 37259 (Hammer of Wrath ) is infront from spell extra.
 	sp = dbcSpell.LookupEntryForced(37259);
-	if( sp != NULL )
-		sp->in_front_status = SPELL_INFRONT_STATUS_REQUIRE_INFRONT;
-
-	// Spell 37275 (Shadow Word: Pain ) is infront from spell extra.
-	sp = dbcSpell.LookupEntryForced(37275);
 	if( sp != NULL )
 		sp->in_front_status = SPELL_INFRONT_STATUS_REQUIRE_INFRONT;
 

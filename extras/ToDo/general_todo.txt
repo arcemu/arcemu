@@ -84,6 +84,7 @@ SMT_RESIST_DISPEL - check if it is used
 - The spell Creeping Paralysis places a debuff on a player, where after the 6 seconds has expired it should place a debuff Paralyzed on the target.
 	Currently is does not do so, though it works in reverse. Paralyzed places a debuff Creeping Paralysis on the target.
 - make both tarrgetting available for ai_agents
+- earth shield does not consider caster's bonus healing
 
 ==========================================================================
 ! BUGS !
