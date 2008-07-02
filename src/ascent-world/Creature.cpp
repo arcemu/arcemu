@@ -85,8 +85,8 @@ Creature::Creature(uint64 guid)
 	spawnid = 0;
 	auctionHouse = 0;
 	has_waypoint_text = has_combat_text = false;
-	SetFloatValue(UNIT_FIELD_ATTACK_POWER_MULTIPLIER,1);
-	SetFloatValue(UNIT_FIELD_RANGED_ATTACK_POWER_MULTIPLIER,1);
+	SetFloatValue(UNIT_FIELD_ATTACK_POWER_MULTIPLIER,0.0f);
+	SetFloatValue(UNIT_FIELD_RANGED_ATTACK_POWER_MULTIPLIER,0.0f);
 	m_custom_waypoint_map = 0;
 	m_escorter = 0;
 	m_limbostate = false;
@@ -102,6 +102,7 @@ Creature::Creature(uint64 guid)
 	m_transportPosition = NULL;
 	BaseAttackType = SCHOOL_NORMAL;
 	m_lootMethod = -1;
+	m_healthfromspell = 0;
 }
 
 
@@ -639,72 +640,129 @@ void Creature::ClearInRangeSet()
 
 void Creature::CalcResistance(uint32 type)
 {
-	int32 res = (BaseResistance[type] * (100 + BaseResistanceModPct[type])) / 100;
-	res += FlatResistanceMod[type];
-	res += (res * ResistanceModPct[type]) / 100;
-	if(type==0)res+=GetUInt32Value(UNIT_FIELD_STAT1)*2;//fix armor from agi
-	SetUInt32Value(UNIT_FIELD_RESISTANCES + type, res > 0 ? res : 0);
+	int32 pos = 0;
+	int32 neg = 0;
+
+	if( BaseResistanceModPct[ type ] < 0 )
+		neg = ( BaseResistance[ type ] * abs(BaseResistanceModPct[ type ]) / 100 );
+	else
+		pos = ( BaseResistance[ type ] * BaseResistanceModPct[ type ] ) / 100;
+	
+	if( IsPet() )
+	{
+		Player* owner = static_cast< Pet* >( this )->GetPetOwner();
+		if( type == 0 && owner )
+			pos += int32(0.35f * owner->GetUInt32Value( UNIT_FIELD_RESISTANCES + type ));
+		else if( owner )
+			pos += int32(0.40f * owner->GetUInt32Value( UNIT_FIELD_RESISTANCES + type ));
+	}
+	
+	if( ResistanceModPct[ type ] < 0 )
+		neg += ( BaseResistance[ type ] + pos - neg ) * abs(ResistanceModPct[ type ]) / 100;
+	else
+		pos += ( BaseResistance[ type ] + pos - neg ) * ResistanceModPct[ type ] / 100;
+	
+	if( FlatResistanceMod[ type ] < 0 )
+		neg += abs(FlatResistanceMod[ type ]);
+	else
+		pos += FlatResistanceMod[ type ];
+		
+	SetUInt32Value( UNIT_FIELD_RESISTANCEBUFFMODSPOSITIVE + type, pos );
+	SetUInt32Value( UNIT_FIELD_RESISTANCEBUFFMODSNEGATIVE + type, neg );
+
+    int32 tot = BaseResistance[ type ] + pos - neg;
+	
+	SetUInt32Value( UNIT_FIELD_RESISTANCES + type, tot > 0 ? tot : 0);
 }
 
 void Creature::CalcStat(uint32 type)
 {
-	int32 res=(BaseStats[type]*(100+StatModPct[type]))/100;
-		
-	res+=FlatStatMod[type];
-	if(res<0)res=0;
-		
-	res+=(res*(TotalStatModPct[type]))/100;
-	SetUInt32Value(UNIT_FIELD_STAT0+type,res>0?res:0);
+	int32 pos = 0;
+	int32 neg = 0;
 
-	//borrowed from player warrior formulas
+	if( StatModPct[ type ] < 0 )
+		neg = ( BaseStats[ type ] * abs(StatModPct[ type ]) / 100 );
+	else
+		pos = ( BaseStats[ type ] * StatModPct[ type ] ) / 100;
+	
+	if( IsPet() )
+	{
+		Player* owner = static_cast< Pet* >( this )->GetPetOwner();
+		if( type == 2 && owner )
+			pos += int32( 0.30f * owner->GetUInt32Value( UNIT_FIELD_STAT2 ) );
+		else if( type == 3 && owner && GetUInt32Value( UNIT_CREATED_BY_SPELL ) )
+			pos += int32( 0.30f * owner->GetUInt32Value( UNIT_FIELD_STAT3 ) );
+	}
+
+	if( TotalStatModPct[ type ] < 0 )
+		neg += ( BaseStats[ type ] + pos - neg ) * abs(TotalStatModPct[ type ]) / 100;
+	else
+		pos += ( BaseStats[ type ] + pos - neg ) * TotalStatModPct[ type ] / 100;
+	
+	if( FlatStatMod[ type ] < 0 )
+		neg += abs(FlatStatMod[ type ]);
+	else
+		pos += FlatStatMod[ type ];
+	
+	SetUInt32Value( UNIT_FIELD_POSSTAT0 + type, pos );
+	SetUInt32Value( UNIT_FIELD_NEGSTAT0 + type, neg );
+
+    int32 tot = BaseStats[ type ] + pos - neg;
+	SetUInt32Value( UNIT_FIELD_STAT0 + type, tot > 0 ? tot : 0);
+
 	switch( type )
 	{
-/*
-	case STAT_STRENGTH:
+	case 0:
 		{
-			// attack power
-			int AP = GetUInt32Value( UNIT_FIELD_LEVEL ) * 3 + ( GetUInt32Value( UNIT_FIELD_STRENGTH ) - BaseStats[ STAT_STRENGTH ] ) * 2 - 20;
-			if( AP < 0 )
-				AP = 0;
-			SetUInt32Value( UNIT_FIELD_ATTACK_POWER, AP );
-		} break;
-
-	case STAT_AGILITY:
+			//Attack Power
+			if( !IsPet() )//We calculate pet's later
+			{
+				uint32 str = GetUInt32Value( UNIT_FIELD_STAT0 );
+				int32 AP = ( str * 2 - 20 );
+				if( AP < 0 ) AP = 0;
+				SetUInt32Value( UNIT_FIELD_ATTACK_POWER, AP );
+			}
+			CalcDamage();
+		}break;
+	case 1:
 		{
-			// ranged attack power
-			int RAP = GetUInt32Value( UNIT_FIELD_LEVEL ) + GetUInt32Value( UNIT_FIELD_AGILITY ) - BaseStats[ STAT_AGILITY ] - 10;
-			if( RAP < 0 )
-				RAP = 0;
+			//Ranged Attack Power (Does any creature use this?)
+			int32 RAP = GetUInt32Value( UNIT_FIELD_LEVEL ) + GetUInt32Value( UNIT_FIELD_STAT1 ) - 10;
+			if( RAP < 0 ) RAP = 0;
 			SetUInt32Value( UNIT_FIELD_RANGED_ATTACK_POWER, RAP );
-		} break;
-*/
-	case STAT_STAMINA:
+		}break;
+	case 2:
 		{
-			// health
-			int32 hpbonus = ( GetUInt32Value( UNIT_FIELD_STAMINA ) - BaseStats[ STAT_STAMINA ] ) * 10;
-			if( hpbonus < 0 )
-				hpbonus = 0;
-			SetUInt32Value( UNIT_FIELD_MAXHEALTH, GetUInt32Value( UNIT_FIELD_BASE_HEALTH ) + hpbonus );
+			//Health
+			uint32 hp = GetUInt32Value( UNIT_FIELD_BASE_HEALTH );
+			uint32 stat_bonus = GetUInt32Value( UNIT_FIELD_POSSTAT2 ) - GetUInt32Value( UNIT_FIELD_NEGSTAT2 );
+			if ( stat_bonus < 0 ) stat_bonus = 0;
+	
+			uint32 bonus = stat_bonus * 10 + m_healthfromspell;
+			uint32 res = hp + bonus;
+	
+			if( res < hp ) res = hp;
+			SetUInt32Value( UNIT_FIELD_MAXHEALTH, res );
 			if( GetUInt32Value( UNIT_FIELD_HEALTH ) > GetUInt32Value( UNIT_FIELD_MAXHEALTH ) )
 				SetUInt32Value( UNIT_FIELD_HEALTH, GetUInt32Value( UNIT_FIELD_MAXHEALTH ) );
 		}break;
-
-	case STAT_INTELLECT:
+	case 3:
 		{
 			if( GetPowerType() == POWER_TYPE_MANA )
 			{
-				// mana
-				int stat_bonus = ( GetUInt32Value( UNIT_FIELD_INTELLECT ) - BaseStats[ STAT_INTELLECT ] ) * 15;
-				if( stat_bonus < 0 )
-					stat_bonus = 0;
-				SetUInt32Value(UNIT_FIELD_MAXPOWER1, GetUInt32Value( UNIT_FIELD_BASE_MANA ) + stat_bonus );
-				if( (int32)GetUInt32Value( UNIT_FIELD_POWER1 ) > GetUInt32Value( UNIT_FIELD_MAXPOWER1 ) )
-					SetUInt32Value( UNIT_FIELD_POWER1, GetUInt32Value( UNIT_FIELD_MAXPOWER1 ) );
+				uint32 mana = GetUInt32Value( UNIT_FIELD_BASE_MANA );
+				uint32 stat_bonus = ( GetUInt32Value( UNIT_FIELD_POSSTAT3 ) - GetUInt32Value( UNIT_FIELD_NEGSTAT3 ) );
+				if( stat_bonus < 0 ) stat_bonus = 0;
+
+				uint32 bonus = stat_bonus * 15;
+				uint32 res = mana + bonus;
+
+				if( res < mana ) res = mana;
+				SetUInt32Value( UNIT_FIELD_MAXPOWER1, res );
 			}
-		} break;
+		}break;
 	}
 }
-
 
 void Creature::RegenerateHealth()
 {

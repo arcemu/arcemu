@@ -6106,7 +6106,9 @@ void Player::CalcResistance(uint32 type)
 	SetUInt32Value(UNIT_FIELD_RESISTANCEBUFFMODSPOSITIVE+type,pos);
 	SetUInt32Value(UNIT_FIELD_RESISTANCEBUFFMODSNEGATIVE+type,neg);
 	SetUInt32Value(UNIT_FIELD_RESISTANCES+type,res>0?res:0);
-
+	
+	if( GetSummon() )
+		GetSummon()->CalcResistance( type );//Re-calculate pet's too.
 }
 
 
@@ -6444,6 +6446,9 @@ void Player::CalcStat(uint32 type)
 	SetUInt32Value( UNIT_FIELD_STAT0 + type, res > 0 ?res : 0 );
 	if( type == 1 )
 	   CalcResistance( 0 );
+
+	if( GetSummon() && ( type == 2 || type == 3 ) )
+		GetSummon()->CalcStat( type );//Re-calculate pet's too
 }
 
 void Player::RegenerateMana(bool is_interrupted)
@@ -8804,7 +8809,8 @@ void Player::CalcDamage()
 		SetUInt32Value( PLAYER_RATING_MODIFIER_RANGED_SKILL, cr );
 
 /////////////////////////////////RANGED end
-
+		if( GetSummon() )
+			GetSummon()->CalcDamage();//Re-calculate pet's too
 
 }
 

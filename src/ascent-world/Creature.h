@@ -374,6 +374,9 @@ public:
         }
     ASCENT_INLINE bool isSpiritService() const { return HasFlag( UNIT_NPC_FLAGS, UNIT_NPC_FLAG_SPIRITHEALER | UNIT_NPC_FLAG_SPIRITGUIDE ); }
 	
+	ASCENT_INLINE uint32 GetHealthFromSpell() { return m_healthfromspell; }
+	void SetHealthFromSpell(uint32 value) { m_healthfromspell = value;}
+
 	int32 FlatResistanceMod[7];
 	int32 BaseResistanceModPct[7];
 	int32 ResistanceModPct[7];
@@ -386,6 +389,7 @@ public:
 	float ModDamageDonePct[7];
 	void CalcResistance(uint32 type);
 	void CalcStat(uint32 type);
+	
 	bool m_canRegenerateHP;
 	void RegenerateHealth();
 	void RegenerateMana();
@@ -578,6 +582,7 @@ protected:
 
 	bool m_PickPocketed;
 	uint32 _fields[UNIT_END];
+	uint32 m_healthfromspell;
 
 public:
 	int8 m_lootMethod;

@@ -70,23 +70,25 @@ uint32 GetAutoCastTypeForSpell(SpellEntry * ent)
 	case SPELL_HASH_CHARGE:				// Charge
 	case SPELL_HASH_CLAW:				// Claw
 	case SPELL_HASH_COWER:				// Cower
-	case SPELL_HASH_DASH:				// Dash
-	case SPELL_HASH_DIVE:				// Dive 
-	case SPELL_HASH_FIRE_BREATH:		// Fire Breath
-	case SPELL_HASH_FURIOUS_HOWL:		// Furious Howl
 	case SPELL_HASH_GORE:				// Gore
 	case SPELL_HASH_GROWL:				// Growl
-	case SPELL_HASH_LIGHTNING_BREATH:	// Lightning Breath
 	case SPELL_HASH_POISON_SPIT:		// Poison Spit 
-	case SPELL_HASH_PROWL:				// Prowl
 	case SPELL_HASH_SCORPID_POISON:		// Scorpid Poison
 	case SPELL_HASH_SCREECH:			// Screech
-	case SPELL_HASH_SHELL_SHIELD:		// Shell Shield
-	case SPELL_HASH_THUNDERSTOMP:		// Thunderstomp
 	case SPELL_HASH_WARP:				// Warp 
 		return AUTOCAST_EVENT_ATTACK;
 		break;
-
+	
+	case SPELL_HASH_THUNDERSTOMP:		// Thunderstomp
+	case SPELL_HASH_FURIOUS_HOWL:		// Furious Howl
+	case SPELL_HASH_DASH:				// Dash
+	case SPELL_HASH_DIVE:				// Dive 
+	case SPELL_HASH_FIRE_BREATH:		// Fire Breath
+	case SPELL_HASH_LIGHTNING_BREATH:	// Lightning Breath
+	case SPELL_HASH_PROWL:				// Prowl
+	case SPELL_HASH_SHELL_SHIELD:		// Shell Shield
+		return AUTOCAST_EVENT_NONE;
+		break;
 	/************************************************************************/
 	/* Mage Pet Spells														*/
 	/************************************************************************/
@@ -188,16 +190,16 @@ void Pet::CreateAsSummon(uint32 entry, CreatureInfo *ci, Creature* created_from_
 		// create our spellz
 		SetDefaultSpells();
 	}
-
+	
+	BaseDamage[0] = 0;
+	BaseDamage[1] = 0;
+	BaseOffhandDamage[0 ] = 0;
+	BaseOffhandDamage[1] = 0;
+	BaseRangedDamage[0] = 0;
+	BaseRangedDamage[1] = 0;
+	
 	// Apply stats.
 	ApplyStatsForLevel();
-
-	BaseDamage[0]=GetFloatValue(UNIT_FIELD_MINDAMAGE);
-	BaseDamage[1]=GetFloatValue(UNIT_FIELD_MAXDAMAGE);
-	BaseOffhandDamage[0]=GetFloatValue(UNIT_FIELD_MINOFFHANDDAMAGE);
-	BaseOffhandDamage[1]=GetFloatValue(UNIT_FIELD_MAXOFFHANDDAMAGE);
-	BaseRangedDamage[0]=GetFloatValue(UNIT_FIELD_MINRANGEDDAMAGE);
-	BaseRangedDamage[1]=GetFloatValue(UNIT_FIELD_MAXRANGEDDAMAGE);
 
 	SetUInt32Value(UNIT_FIELD_FACTIONTEMPLATE, owner->GetUInt32Value(UNIT_FIELD_FACTIONTEMPLATE));
 	m_PartySpellsUpdateTimer = 0;
@@ -491,12 +493,17 @@ void Pet::LoadFromDB(Player* owner, PlayerPet * pi)
 
 	InitializeMe(false);
 
-	if(m_Owner && getLevel() > m_Owner->getLevel())
+	if( m_Owner )
 	{
-		SetUInt32Value(UNIT_FIELD_LEVEL, m_Owner->getLevel());
-		SetUInt32Value(UNIT_FIELD_PETEXPERIENCE, 0);
-		SetUInt32Value(UNIT_FIELD_PETNEXTLEVELEXP, GetNextLevelXP(m_Owner->getLevel()));
-		ApplyStatsForLevel();
+		if( getLevel() > m_Owner->getLevel() )
+		{
+			SetUInt32Value(UNIT_FIELD_LEVEL, m_Owner->getLevel());
+			SetUInt32Value(UNIT_FIELD_PETEXPERIENCE, 0);
+			SetUInt32Value(UNIT_FIELD_PETNEXTLEVELEXP, GetNextLevelXP(m_Owner->getLevel()));
+			ApplyStatsForLevel();
+		}
+		else
+			ApplyPetLevelAbilities();
 	}
 	
 	//if pet was dead on logout then it should be dead now too
@@ -585,7 +592,7 @@ void Pet::InitializeMe(bool first)
 
 	InitializeSpells(); 
 	PushToWorld(m_Owner->GetMapMgr());
-
+	
 	if(first)
 	{
 		// Set up default actionbar
@@ -1323,17 +1330,14 @@ void Pet::ApplySummonLevelAbilities()
 	double pet_sta_to_hp = R_pet_sta_to_hp[stat_index];
 
 	// Calculate bonuses
-	double pet_sta_bonus = 0.3 * (double)m_Owner->BaseStats[STAT_STAMINA];	  // + sta_buffs
-	double pet_int_bonus = 0.3 * (double)m_Owner->BaseStats[STAT_INTELLECT];	// + int_buffs
-	double pet_arm_bonus = 0.35 * (double)m_Owner->BaseResistance[0];		   // + arm_buffs
-
+	
 	double pet_str = base_str + pet_level * mod_str;
 	double pet_agi = base_agi + pet_level * mod_agi;
-	double pet_sta = base_sta + pet_level * mod_sta + pet_sta_bonus;
-	double pet_int = base_int + pet_level * mod_int + pet_int_bonus;
+	double pet_sta = base_sta + pet_level * mod_sta;
+	double pet_int = base_int + pet_level * mod_int;
 	double pet_spr = base_spr + pet_level * mod_spr;
 	double pet_pwr = base_pwr + pet_level * mod_pwr;
-	double pet_arm = base_armor + pet_level * mod_armor + pet_arm_bonus;
+	double pet_arm = base_armor + pet_level * mod_armor;
 
 	// Calculate values
 	BaseStats[STAT_STRENGTH] = FL2UINT(pet_str);
@@ -1347,19 +1351,17 @@ void Pet::ApplySummonLevelAbilities()
 	BaseDamage[0] = float(pet_min_dmg);
 	BaseDamage[1] = float(pet_max_dmg);
 
-	for(uint32 x = 0; x < 5; ++x)
-		CalcStat(x);
-
-	// Apply armor and attack power.
+	// Apply attack power.
 	SetUInt32Value(UNIT_FIELD_ATTACK_POWER, FL2UINT(pet_pwr));
-	BaseResistance[0] = FL2UINT(pet_arm);
-	CalcResistance(0);
+		
 	// Priest's Shadowfiend
 	if (m_uint32Values[OBJECT_FIELD_ENTRY]==19668) {
 	    SetUInt32Value(UNIT_FIELD_BASEATTACKTIME, 1500);
 	    SetUInt32Value(UNIT_FIELD_ATTACK_POWER,((uint32)(350+0.57*m_Owner->GetUInt32Value(PLAYER_FIELD_MOD_DAMAGE_DONE_POS_05)))/2);
 	}
-	CalcDamage();
+	
+	BaseResistance[0] = FL2UINT(pet_arm);
+	CalcResistance(0);
 
 	// Calculate health / mana
 	double health = pet_sta * pet_sta_to_hp;
@@ -1370,130 +1372,100 @@ void Pet::ApplySummonLevelAbilities()
 		health = 100;
 	}
 	SetUInt32Value(UNIT_FIELD_BASE_HEALTH, FL2UINT(health));
+	SetUInt32Value(UNIT_FIELD_MAXHEALTH, FL2UINT(health));
 	SetUInt32Value(UNIT_FIELD_BASE_MANA, FL2UINT(mana));
+	SetUInt32Value(UNIT_FIELD_MAXPOWER1, FL2UINT(mana));
+
+	for(uint32 x = 0; x < 5; ++x)
+		CalcStat(x);
 }
 
 void Pet::ApplyPetLevelAbilities()
 {
-	uint32 level = m_uint32Values[UNIT_FIELD_LEVEL];
-	double dlevel = (double)level;
-
 	/*
 	----------[Pets]----------
-		Family		 pet_mod_sta			 pet_mod_arm		   pet_mod_dps
-	(1)	Wolf			 1.00				  1.05				  1.00
-	(2)	 Cat			 0.98				1.00				1.10
-	(3)	 Spider			 1.00				  1.00				 1.07
-	(4)	 Bear			 1.08				 1.05				 0.91
-	(5)	 Boar			 1.04				1.09				0.90
-	(6)	 Crocolisk	   0.95				1.10				1.00
-	(7)	 Carrion Bird	1.00				 1.05				 1.00
-	(8)	 Crab			0.96				1.13				0.95
-	(9)	 Gorilla		 1.04				1.00				1.02
+	Family			  pet_mod_sta		pet_mod_arm			pet_mod_dps			family_aura
+	(1)	 Wolf			 1.00				1.05				1.00				17223
+	(2)	 Cat			 0.98				1.00				1.10				17210
+	(3)	 Spider			 1.00				1.00				1.07				17129
+	(4)	 Bear			 1.08				1.05				0.91				17208
+	(5)	 Boar			 1.04				1.09				0.90				7000
+	(6)	 Crocolisk		 0.95				1.10				1.00				17212
+	(7)	 Carrion Bird	 1.00				1.05				1.00				17209
+	(8)	 Crab			 0.96				1.13				0.95				17211
+	(9)	 Gorilla		 1.04				1.00				1.02				17214
 	(10)
-	(11)	Raptor			  0.95				  1.03				  1.10	 
-	(12)	Tallstrider	 1.05				  1.00				  1.00
+	(11) Raptor			 0.95				1.03				1.10				17217
+	(12) Tallstrider	 1.05				1.00				1.00				17220
 	(13)
 	(14)
-	(15)	Felhunter
-	(16)	Voidwalker
-	(17)	Succubus
+	(15) Felhunter
+	(16) Voidwalker
+	(17) Succubus
 	(18)
-	(19)	Doomguard
-	(20)	Scorpid		 1.00				 1.10				  0.94
-	(21)	Turtle			 1.00				  1.13				  0.90
+	(19) Doomguard
+	(20) Scorpid		 1.00				1.10				0.94				17218
+	(21) Turtle			 1.00				1.13				0.90				17221
 	(22)
-	(23)	Imp
-	(24)	Bat			 1.00					 1.00					 1.07
-	(25)	Hyena		   1.00				  1.05				  1.00	
-	(26)	Owl			 1.00					 1.00				  1.07
-	(27)	Wind Serpent	1.00				  1.00				  1.07
-	(28)	Remote Control
-	(29)	Felguard
-	(30)	Dragonhawk	  1.00					1.00					1.00
-	(31)	Ravager	 0.93				  1.05				  1.10
-	(32)	Warp Stalker	1.00				  1.05				  0.94
-	(33)	Spore Bat	   1.00				  1.00				  1.00
-	(34)	Nether Ray	 1.10				 0.90				  1.03	 
-	(35)	Serpent	 1.00				 1.00				  1.00
+	(23) Imp
+	(24) Bat			 1.00				1.00				1.07				17206
+	(25) Hyena			 1.00				1.05				1.00				17215
+	(26) Owl			 1.00				1.00				1.07				17216
+	(27) Wind Serpent	 1.00				1.00				1.07				17222
+	(28) Remote Control
+	(29) Felguard
+	(30) Dragonhawk		 1.00				1.00				1.00				34887
+	(31) Ravager		 0.93				1.05				1.10				35257
+	(32) Warp Stalker	 1.00				1.05				0.94				35254
+	(33) Spore Bat		 1.00				1.00				1.00				35258
+	(34) Nether Ray		 1.10				0.90				1.03				35253
+	(35) Serpent		 1.00				1.00				1.00				35383
 	*/
-
-	static double R_pet_mod_sta[36] = { 0, 1, 0.98, 1, 1.08, 1.04, 0.95, 1, 0.96, 1.04, 0, 0.95, 1.05, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 1, 0.93, 1, 1, 1.1, 1 };
-	static double R_pet_mod_arm[36] = { 0, 1.05, 1, 1, 1.05, 1.09, 1.1, 1.05, 1.13, 1, 0, 1.03, 1, 0, 0, 0, 0, 0, 0, 0, 1.1, 1.13, 0, 0, 1, 1.05, 1, 1, 0, 0, 1, 1.05, 1.05, 1, 0.9, 1 };
-	static double R_pet_mod_dps[36] = { 0, 1, 1.10, 1.07, 0.91, 0.9, 1, 1, 0.95, 1.02, 0, 1.1, 1, 0, 0, 0, 0, 0, 0, 0, 0.94, 0.9, 0, 0, 1.07, 1, 1.07, 1.07, 0, 0, 1, 1.1, 0.94, 1, 1.03, 1 };
-
-	double pet_mod_sta = 1, pet_mod_arm = 1, pet_mod_dps = 1;
-	if(creature_info->Family > 35 || R_pet_mod_sta[creature_info->Family] == 0)
-	{
-		if( myFamily == NULL && myFamily->name != NULL )
-            sLog.outError("PETSTAT: Creature family %u has missing data. Assuming to be 1.", creature_info->Family);
-		else
-			sLog.outError("PETSTAT: Creature family %u [%s] has missing data. Assuming to be 1.", creature_info->Family, myFamily->name);
-	}
-	else
-	{
-		pet_mod_sta = R_pet_mod_sta[creature_info->Family];
-		pet_mod_arm = R_pet_mod_arm[creature_info->Family];
-		pet_mod_dps = R_pet_mod_dps[creature_info->Family];
-	}
-
-	// Calculate Bonuses
-//	double pet_sta_bonus = 0.3 * (double)m_Owner->BaseStats[STAT_STAMINA];
-	//patch from darken
-	double pet_sta_bonus = 0.3 * (double)m_Owner->GetUInt32Value(UNIT_FIELD_STAT2);
-	double pet_arm_bonus = 0.35 * (double)m_Owner->BaseResistance[0];	   // Armor
-	double pet_ap_bonus = 0.22 * (double)m_Owner->GetUInt32Value(UNIT_FIELD_RANGED_ATTACK_POWER);
+	
+	uint32 pet_family = creature_info->Family;
+	uint32 level = getLevel();
+	if( level > 70 )
+		level = 70;
+	static uint32 family_aura[36] = { 0, 17223, 17210, 17129, 17208, 7000, 17212, 17209, 17211, 17214, 0, 17217, 17220, 0, 0, 0, 0, 0, 0, 0, 17218, 17221, 0, 0, 17206, 17215, 17216, 17222, 0, 0, 34887, 35257, 35254, 35258, 35253, 35383 };
+		
+	RemoveAura( family_aura[ pet_family ] );//If the pet gained a level, we need to remove the auras to re-calculate everything.
+	LoadPetAuras(-1);//These too
 
 	//Base attributes from http://petopia.brashendeavors.net/html/art...ttributes.shtml
-	static double R_pet_base_armor[70] = { 20, 21, 46, 82, 126, 180, 245, 322, 412, 518, 545, 580, 615,650, 685, 721, 756, 791, 826, 861, 897, 932, 967, 1002, 1037, 1072, 1108, 1142, 1177, 1212, 1247, 1283, 1317, 1353, 1387, 1494, 1607, 1724, 1849, 1980, 2117, 2262, 2414, 2574, 2742, 2798, 2853,2907, 2963, 3018, 3072, 3128, 3183, 3237, 3292, 3348, 3402, 3457, 3512, 3814, 4113, 4410, 4708, 5006, 5303, 5601, 5900, 6197, 6495, 6790 };
-	static double R_pet_base_hp[70] = { 42, 55, 71, 86, 102, 120, 137, 156, 176, 198, 222, 247, 273, 300, 328, 356, 386, 417, 449, 484, 521, 562, 605, 651, 699, 750, 800, 853, 905, 955, 1006, 1057, 1110, 1163, 1220, 1277, 1336, 1395, 1459, 1524, 1585, 1651, 1716, 1782, 1848, 1919, 1990, 2062, 2138, 2215, 2292, 2371, 2453, 2533, 2614, 2699, 2784, 2871, 2961, 3052, 3144, 3237, 3331, 3425, 3524, 3624, 3728, 3834, 3941, 4049 };
+	static uint32 R_pet_base_armor[70] = { 15, 16, 41, 76, 120, 174, 239, 316, 406, 512, 538, 573, 608, 642, 677, 713, 748, 782, 817, 852, 888, 922, 957, 992, 1026, 1061, 1097, 1130, 1165, 1200, 1234, 1270, 1304, 1340, 1373, 1480, 1593, 1709, 1834, 1964, 2101, 2246, 2397, 2557, 2725, 2780, 2835, 2888, 2944, 2999, 3052, 3108, 3163, 3216, 3271, 3327, 3380, 3435, 3489, 3791, 4091, 4391, 4691, 4991, 5291, 5591, 5892, 6192, 6492, 6792 };
+	static uint32 R_pet_base_str[70] = { 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 37, 38, 40, 42, 44, 45, 47, 49, 50, 52, 53, 55, 56, 58, 60, 61, 63, 64, 66, 67, 69, 70, 72, 74, 76, 78, 81, 86, 91, 97, 102, 104, 106, 108, 110, 113, 115, 117, 119, 122, 124, 127, 129, 131, 134, 136, 139, 141, 144, 146, 149, 151, 154, 156, 159, 162 };
+	static uint32 R_pet_base_agi[70] = { 15, 16, 16, 16, 17, 18, 18, 19, 20, 20, 20, 21, 23, 23, 24, 25, 26, 27, 28, 30, 30, 30, 32, 33, 34, 35, 36, 37, 38, 40, 40, 41, 43, 44, 45, 46, 47, 48, 49, 50, 52, 53, 54, 55, 57, 57, 59, 60, 61, 63, 64, 65, 67, 68, 70, 71, 72, 74, 75, 77, 82, 87, 92, 97, 102, 107, 112, 117, 122, 127 };
+	static uint32 R_pet_base_sta[70] = { 22, 24, 25, 27, 28, 30, 32, 34, 36, 38, 40, 43, 45, 48, 51, 54, 57, 60, 63, 66, 70, 74, 79, 83, 88, 93, 98, 103, 109, 114, 119, 124, 129, 134, 140, 146, 152, 158, 164, 170, 177, 183, 190, 196, 203, 210, 217, 224, 232, 240, 247, 255, 263, 271, 279, 288, 296, 305, 314, 323, 332, 342, 351, 361, 370, 380, 391, 401, 412, 423 };
+	static uint32 R_pet_base_int[70] = { 20, 20, 20, 20, 20, 21, 21, 21, 21, 21, 21, 21, 21, 22, 22, 22, 22, 22, 22, 22, 23, 23, 23, 23, 23, 23, 23, 24, 24, 24, 24, 24, 24, 25, 25, 25, 25, 25, 26, 26, 26, 26, 26, 26, 27, 27, 27, 27, 28, 28, 28, 28, 28, 29, 29, 29, 29, 30, 30, 30, 30, 30, 31, 31, 31, 32, 32, 32, 32, 33 };
+	static uint32 R_pet_base_spi[70] = { 20, 20, 21, 21, 21, 21, 22, 22, 22, 23, 23, 24, 25, 26, 27, 28, 29, 29, 31, 32, 32, 34, 34, 36, 37, 37, 39, 39, 41, 42, 42, 44, 44, 46, 47, 48, 49, 49, 51, 52, 53, 54, 55, 56, 58, 58, 60, 60, 62, 63, 64, 65, 66, 68, 69, 70, 71, 72, 73, 75, 78, 80, 84, 86, 88, 91, 93, 95, 96, 99 };
 
-	// Calculate HP
-	//patch from darken
-	double pet_hp;
-	double pet_armor;
-	if(level-1<70)
-	{
-		pet_hp= ( ( ( R_pet_base_hp[level-1]) + ( pet_sta_bonus * 10 ) ) * pet_mod_sta);
-		pet_armor= ( (R_pet_base_armor[level-1] ) * pet_mod_arm + pet_arm_bonus );
-	}
-	else
-	{
-		pet_hp	= ( ( ( 0.6 * dlevel * dlevel + 10.6 * dlevel + 33 ) + ( pet_sta_bonus * 10 ) ) * pet_mod_sta);
-		pet_armor = ( ( -75 + 50 * dlevel ) * pet_mod_arm + pet_arm_bonus );
-	}
-//	double pet_attack_power = ( ( ( 20 * dlevel) - 60 ) + pet_ap_bonus ) * pet_mod_dps;
-	double pet_attack_power = ( ( 7.9 * ( ( dlevel * dlevel ) / ( dlevel * 3 ) ) ) + ( pet_ap_bonus ) ) * pet_mod_dps;
+	BaseResistance[0] = R_pet_base_armor[ level - 1 ];
+	BaseStats[0] = R_pet_base_str[ level - 1 ];
+	BaseStats[1] = R_pet_base_agi[ level - 1 ];
+	BaseStats[2] = R_pet_base_sta[ level - 1 ];
+	BaseStats[3] = R_pet_base_int[ level - 1 ];
+	BaseStats[4] = R_pet_base_spi[ level - 1 ];
 
-	if(pet_attack_power <= 0.0f) pet_attack_power = 1;
-	if(pet_armor <= 0.0f) pet_armor = 1;
+	uint32 base_hp = BaseStats[2] * 10;
+	SetUInt32Value( UNIT_FIELD_BASE_HEALTH, base_hp );
+	SetUInt32Value( UNIT_FIELD_MAXHEALTH, base_hp );
 
-	// Set base values.
-	SetUInt32Value(UNIT_FIELD_BASE_HEALTH, FL2UINT(pet_hp));
-	BaseResistance[0] = FL2UINT(pet_armor);
-	CalcResistance(0);
-
-	// Calculate damage.
-	SetUInt32Value(UNIT_FIELD_ATTACK_POWER, FL2UINT(pet_attack_power));
-	CalcDamage();
-
-	// These are just for visuals, no other actual purpose.
-	BaseStats[0] = uint32(20+getLevel()*1.55);
-	BaseStats[1] = uint32(20+getLevel()*0.64);
-	BaseStats[3] = uint32(20+getLevel()*0.18);
-	BaseStats[4] = uint32(20+getLevel()*0.36);
-
-	// Reverse the health value to calculate stamina
-	BaseStats[STAT_STAMINA] = FL2UINT(pet_hp / 10);
-
-	for(uint32 x = 0; x < 5; ++x)
-		CalcStat(x);
+	//Family Aura
+	if( pet_family > 35 )
+		sLog.outError( "PETSTAT: Creature family %i [%s] has missing data.", pet_family, myFamily->name );
+	else if( family_aura[ pet_family ] != 0 )
+		this->CastSpell( this, family_aura[ pet_family ], true );
+		
+	for( uint32 x = 0; x < 5; ++x )
+		CalcStat( x );
+	
 	UpdateTP();
+	LoadPetAuras(-2);//Load all BM auras
 }
 
 void Pet::ApplyStatsForLevel()
 {
-	if(m_uint32Values[UNIT_CREATED_BY_SPELL])	   // Summon
+	if(m_uint32Values[UNIT_CREATED_BY_SPELL])// Summon
 		ApplySummonLevelAbilities();
 	else
 		ApplyPetLevelAbilities();
@@ -1509,10 +1481,57 @@ void Pet::ApplyStatsForLevel()
 	SetFloatValue(OBJECT_FIELD_SCALE_X, scale);
 
 	// Apply health fields.
-	SetUInt32Value(UNIT_FIELD_HEALTH, m_uint32Values[UNIT_FIELD_BASE_HEALTH]);
-	SetUInt32Value(UNIT_FIELD_MAXHEALTH, m_uint32Values[UNIT_FIELD_BASE_HEALTH]);
-	SetUInt32Value(UNIT_FIELD_POWER1, m_uint32Values[UNIT_FIELD_BASE_MANA]);
-	SetUInt32Value(UNIT_FIELD_MAXPOWER1, m_uint32Values[UNIT_FIELD_BASE_MANA]);
+	SetUInt32Value(UNIT_FIELD_HEALTH, m_uint32Values[UNIT_FIELD_MAXHEALTH]);
+	SetUInt32Value(UNIT_FIELD_POWER1, m_uint32Values[UNIT_FIELD_MAXPOWER1]);
+	SetUInt32Value(UNIT_FIELD_POWER3, m_uint32Values[UNIT_FIELD_MAXPOWER3]);	
+}
+
+void Pet::LoadPetAuras(int32 id)
+{
+	/*
+	   Talent			   Aura Id
+	Unleashed Fury			8875
+	Thick Hde				19580
+	Endurance Training		19581
+	Bestial Swiftness		19582
+	Bestial Discipline		19589
+	Ferocity				19591
+	Animal Handler			34666
+	Catlike Reflexes		34667
+	Serpent's Swiftness		34675
+	*/
+	
+	static uint32 mod_auras[9] = { 8875, 19580, 19581, 19582, 19589, 19591, 34666, 34667, 34675 };//Beastmastery Talent's auras.
+	InheritSMMods( m_Owner );
+	
+	if( id == -1 )//unload all
+	{
+		for( uint32 x = 0; x < 9; ++x )
+			RemoveAura( mod_auras[x] );
+	}
+	else if( id == -2 )//load all
+	{
+		for( uint32 x = 0; x < 9; ++x )
+			CastSpell( this, mod_auras[x], true );
+	}
+	else if( mod_auras[id] )//reload one
+	{
+		RemoveAura( mod_auras[id] );
+		CastSpell( this, mod_auras[id], true );
+	}
+}
+
+void Pet::UpdateAP()
+{
+	if( m_uint32Values[ UNIT_CREATED_BY_SPELL ] )
+		return;//Only for hunter's. Gtfo warlock's
+
+	uint32 str = GetUInt32Value( UNIT_FIELD_STAT0 );
+	uint32 AP = ( str * 2 - 20 );
+	if( m_Owner )
+		AP += m_Owner->GetRAP() * 22 / 100;
+	if( AP < 0 ) AP = 0;
+	SetUInt32Value( UNIT_FIELD_ATTACK_POWER, AP );
 }
 
 uint16 Pet::SpellTP(uint32 spellId)
@@ -1851,6 +1870,7 @@ uint32 Pet::GetUntrainCost()
 
 	return reset_cost;
 }
+
 
 
 

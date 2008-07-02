@@ -6557,12 +6557,18 @@ void Aura::SpellAuraModIncreaseHealthPerc( bool apply )
 		m_target->ModUnsigned32Value( UNIT_FIELD_MAXHEALTH, mod->fixed_amount[mod->i] );
 		if( m_target->IsPlayer() )
 			( ( Player* )m_target )->SetHealthFromSpell( ( ( Player* )m_target )->GetHealthFromSpell() + mod->fixed_amount[mod->i] );
+		else if( m_target->IsPet() )
+			static_cast< Pet* >( m_target )->SetHealthFromSpell( ( ( Pet* )m_target )->GetHealthFromSpell() + mod->fixed_amount[mod->i] );
 	}
 	else
 	{
 		m_target->ModUnsigned32Value( UNIT_FIELD_MAXHEALTH, -mod->fixed_amount[mod->i] );
+		if( m_target->GetUInt32Value( UNIT_FIELD_HEALTH ) > m_target->GetUInt32Value( UNIT_FIELD_MAXHEALTH ) )
+			m_target->SetUInt32Value( UNIT_FIELD_HEALTH, m_target->GetUInt32Value( UNIT_FIELD_MAXHEALTH ) );
 		if( m_target->IsPlayer() )
 			( ( Player* )m_target )->SetHealthFromSpell( ( ( Player* )m_target )->GetHealthFromSpell() - mod->fixed_amount[mod->i] );
+		else if( m_target->IsPet() )
+			static_cast< Pet* >( m_target )->SetHealthFromSpell( ( ( Pet* )m_target )->GetHealthFromSpell() - mod->fixed_amount[mod->i] );
 	}
 }
 
@@ -7360,8 +7366,44 @@ void Aura::SpellAuraAddFlatModifier(bool apply)
 		//don't add val, though we could formaly could do,but as we don't know what it is-> no sense
 		break;
 	}
-
-
+	//Hunter's BeastMastery talents.
+	if( m_target->IsPlayer() )
+	{
+		Pet * p = static_cast< Player * >(m_target)->GetSummon();
+		if( p )
+		{
+			switch( GetSpellProto()->NameHash )
+			{
+			case SPELL_HASH_UNLEASHED_FURY:
+				p->LoadPetAuras(0);
+				break;
+			case SPELL_HASH_THICK_HIDE:
+				p->LoadPetAuras(1);
+				break;
+			case SPELL_HASH_ENDURANCE_TRAINING:
+				p->LoadPetAuras(2);
+				break;
+			case SPELL_HASH_BESTIAL_SWIFTNESS:
+				p->LoadPetAuras(3);
+				break;
+			case SPELL_HASH_BESTIAL_DISCIPLINE:
+				p->LoadPetAuras(4);
+				break;
+			case SPELL_HASH_FEROCITY:
+				p->LoadPetAuras(5);
+				break;
+			case SPELL_HASH_ANIMAL_HANDLER:
+				p->LoadPetAuras(6);
+				break;
+			case SPELL_HASH_CATLIKE_REFLEXES:
+				p->LoadPetAuras(7);
+				break;
+			case SPELL_HASH_SERPENT_S_SWIFTNESS:
+				p->LoadPetAuras(8);
+				break;
+			}
+		}
+	}
 }
 
 

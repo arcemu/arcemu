@@ -166,9 +166,9 @@ public:
 	void ApplyStatsForLevel();
 	void ApplySummonLevelAbilities();
 	void ApplyPetLevelAbilities();
-
+	void UpdateAP();
 	void PetSafeDelete();
-
+	void LoadPetAuras(int32 id);
 	void SetDefaultSpells();
 	void SetDefaultActionbar();
 	void SetActionBarSlot(uint32 slot, uint32 spell){ ActionBar[ slot ] = spell; }
@@ -236,7 +236,6 @@ protected:
 	uint32 m_HappinessTimer;
 	uint32 m_LoyaltyTimer;
 	uint32 m_PetNumber;
-
 	uint32 m_Action;
 	uint32 m_State;
 	uint32 m_ExpireTime;

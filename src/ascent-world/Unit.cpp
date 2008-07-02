@@ -4485,20 +4485,22 @@ void Unit::CalcDamage()
 		static_cast< Player* >( this )->CalcDamage();
 	else
 	{
-	float r;
-	float delta;
-	float mult;
+		if( IsPet() )
+			static_cast< Pet * >(this)->UpdateAP();
+		float r;
+		float delta;
+		float mult;
 	
-	float ap_bonus = float(GetAP())/14000.0f;
+		float ap_bonus = float(GetAP())/14000.0f;
 
 		float bonus = ap_bonus*GetUInt32Value(UNIT_FIELD_BASEATTACKTIME);
 	
 		delta = float(((Creature*)this)->ModDamageDone[0]);
 		mult = float(((Creature*)this)->ModDamageDonePct[0]);
-		r = BaseDamage[0]*mult+delta+bonus;
+		r = ( BaseDamage[0] + bonus ) * mult + delta;
 		// give some diversity to pet damage instead of having a 77-78 damage range (as an example)
 		SetFloatValue(UNIT_FIELD_MINDAMAGE,r > 0 ? ( IsPet() ? r * 0.9f : r ) : 0 );
-		r = BaseDamage[1]*mult+delta+bonus;
+		r = ( BaseDamage[1] + bonus ) * mult + delta;
 		SetFloatValue(UNIT_FIELD_MAXDAMAGE, r > 0 ? ( IsPet() ? r * 1.1f : r ) : 0 );
 	
 	//	SetFloatValue(UNIT_FIELD_MINRANGEDDAMAGE,BaseRangedDamage[0]*mult+delta);
@@ -6402,6 +6404,7 @@ void Unit::EventModelChange()
 	else
 		ModelHalfSize = 1.0f; //baaad, but it happens :(
 }
+
 
 
 
