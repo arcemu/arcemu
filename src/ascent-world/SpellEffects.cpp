@@ -1535,15 +1535,15 @@ void Spell::SpellEffectApplyAura(uint32 i)  // Apply Aura
 		{
 			switch(m_spellInfo->EffectApplyAuraName[i])
 			{
-			case 5:  // confuse
-			case 6:  // charm
-			case 7:  // fear
-			case 12: // stun
-			case 25: // pacify
-			case 26: // root
-			case 27: // silence
-			case 31: // increase speed
-			case 33: // decrease speed
+			case SPELL_AURA_MOD_CONFUSE:  // confuse
+			case SPELL_AURA_MOD_CHARM:  // charm
+			case SPELL_AURA_MOD_FEAR:  // fear
+			case SPELL_AURA_MOD_STUN: // stun
+			case SPELL_AURA_MOD_PACIFY: // pacify
+			case SPELL_AURA_MOD_ROOT: // root
+			case SPELL_AURA_MOD_SILENCE: // silence
+			case SPELL_AURA_MOD_INCREASE_SPEED: // increase speed
+			case SPELL_AURA_MOD_DECREASE_SPEED: // decrease speed
 				//SendCastResult(SPELL_FAILED_IMMUNE);
 				return;
 			}

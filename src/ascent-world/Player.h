@@ -1290,7 +1290,7 @@ public:
 	float m_TransporterY;
 	float m_TransporterZ;
 	float m_TransporterO;
-	float m_TransporterUnk;
+	float m_TransporterTime;
 	// Misc
 	void EventCannibalize(uint32 amount);
 	void EventReduceDrunk(bool full);

@@ -492,7 +492,7 @@ void Object::_BuildMovementUpdate(ByteBuffer * data, uint8 flags, uint32 flags2,
 			{
 				*data << pThis->m_TransporterGUID;
 				*data << pThis->m_TransporterX << pThis->m_TransporterY << pThis->m_TransporterZ << pThis->m_TransporterO;
-				*data << pThis->m_TransporterUnk;
+				*data << pThis->m_TransporterTime;
 			}
 			else if(m_objectTypeId==TYPEID_UNIT && ((Creature*)this)->m_transportPosition != NULL)
 			{

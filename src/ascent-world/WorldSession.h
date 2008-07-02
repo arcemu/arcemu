@@ -131,7 +131,7 @@ public:
 	uint32 flags;
 	uint32 FallTime;
 	uint64 transGuid;
-	float transX, transY, transZ, transO, transUnk;
+	float transX, transY, transZ, transO, transTime;
 
 	void init(WorldPacket & data);
 	void write(WorldPacket & data);

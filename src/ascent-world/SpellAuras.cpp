@@ -261,6 +261,17 @@ pSpellAura SpellAuraHandler[TOTAL_SPELL_AURAS]={
 		&Aura::SpellAuraNULL,//238
 		&Aura::SpellAuraNULL,//239
 		&Aura::SpellAuraAxeSkillModifier,//240 Increase Axe Skill http://www.wowhead.com/?spell=20574
+		&Aura::SpellAuraNULL,//241
+		&Aura::SpellAuraNULL,//242
+		&Aura::SpellAuraNULL,//243
+		&Aura::SpellAuraNULL,//244
+		&Aura::SpellAuraNULL,//245
+		&Aura::SpellAuraNULL,//246
+		&Aura::SpellAuraNULL,//247
+		&Aura::SpellAuraNULL,//248
+		&Aura::SpellAuraNULL,//249
+		&Aura::SpellAuraNULL,//250
+		&Aura::SpellAuraNULL,//251
 };
 /*
 ASCENT_INLINE void ApplyFloatSM(float ** m,float v,uint32 mask, float def)

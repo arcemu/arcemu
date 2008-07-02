@@ -456,7 +456,7 @@ void WorldSession::HandleMovementOpcodes( WorldPacket & recv_data )
 
 				/* set variables */
 				_player->m_TransporterGUID = movement_info.transGuid;
-				_player->m_TransporterUnk = movement_info.transUnk;
+				_player->m_TransporterTime = movement_info.transTime;
 				_player->m_TransporterX = movement_info.transX;
 				_player->m_TransporterY = movement_info.transY;
 				_player->m_TransporterZ = movement_info.transZ;
@@ -464,7 +464,7 @@ void WorldSession::HandleMovementOpcodes( WorldPacket & recv_data )
 			else
 			{
 				/* no changes */
-				_player->m_TransporterUnk = movement_info.transUnk;
+				_player->m_TransporterTime = movement_info.transTime;
 				_player->m_TransporterX = movement_info.transX;
 				_player->m_TransporterY = movement_info.transY;
 				_player->m_TransporterZ = movement_info.transZ;
@@ -639,7 +639,7 @@ void MovementInfo::init(WorldPacket & data)
 
 	if (flags & MOVEFLAG_TAXI)
 	{
-		data >> transGuid >> transX >> transY >> transZ >> transO >> transUnk;
+		data >> transGuid >> transX >> transY >> transZ >> transO >> transTime;
 	}
 	if (flags & MOVEFLAG_SWIMMING)
 	{
@@ -672,7 +672,7 @@ void MovementInfo::write(WorldPacket & data)
 
 	if (flags & MOVEFLAG_TAXI)
 	{
-		data << transGuid << transX << transY << transZ << transO << transUnk;
+		data << transGuid << transX << transY << transZ << transO << transTime;
 	}
 	if (flags & MOVEFLAG_SWIMMING)
 	{

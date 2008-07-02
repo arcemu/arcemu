@@ -201,7 +201,7 @@ Player::Player( uint32 guid ) : m_mailBox(guid)
 	m_TransporterY			= 0.0f;
 	m_TransporterZ			= 0.0f;
 	m_TransporterO			= 0.0f;
-	m_TransporterUnk		= 0.0f;
+	m_TransporterTime		= 0.0f;
 	m_lockTransportVariables= false;
 
 	// Autoshot variables
