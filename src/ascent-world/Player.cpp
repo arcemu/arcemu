@@ -5711,6 +5711,10 @@ void Player::EventRepeatSpell()
 			m_AutoShotAttackTimer = 0; 
 			m_onAutoShot=false;
 		}
+		else if( m_isMoving )
+		{
+			m_AutoShotAttackTimer = 100;
+		}
 		else
 		{
 			m_AutoShotAttackTimer = m_AutoShotDuration;//avoid flooding client with error mesages
