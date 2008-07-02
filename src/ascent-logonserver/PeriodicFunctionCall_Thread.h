@@ -53,7 +53,7 @@ public:
 
 		while ( running && mrunning )
 		{
-			if ( getMSTime() < ( getMSTime() + next ) )
+			if ( getMSTime() > next )
 			{
 				cb->execute();
 				next = getMSTime() + interval;

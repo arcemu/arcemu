@@ -4287,7 +4287,7 @@ void Spell::SpellEffectScriptEffect(uint32 i) // Script Effect
 				unitTarget->GetAIInterface()->AttackReaction( tgt, 1 );
 				unitTarget->GetAIInterface()->SetNextTarget( tgt );
 			}
-			else if( unitTarget->CombatStatus.GetPrimaryAttackTarget() == NULL )
+			else if( unitTarget->CombatStatus.GetPrimaryAttackTarget() == 0 )
 				return;				
 			unitTarget->GetAIInterface()->SetNextSpell( Sp );
 			//TODO: Kill Command - return to previous pet target after cast
@@ -5524,8 +5524,7 @@ void Spell::SpellEffectSpellSteal( uint32 i )
 	}
 
 		Aura *aur;
-	uint32 start,end;
-	int32 spells_to_steal = damage;
+	uint32 start, end;
 	if(isAttackable(u_caster,unitTarget))
 	{
 		start=0;

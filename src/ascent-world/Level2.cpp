@@ -138,10 +138,13 @@ bool ChatHandler::HandleDeleteCommand(const char* args, WorldSession *m_session)
 		SystemMessage(m_session, "You should select a creature.");
 		return true;
 	}
-	sGMLog.writefromsession(m_session, "used npc delete, sqlid %u, creature %s, pos %f %f %f",
-		unit->GetSQL_id(), unit->GetCreatureName() ? unit->GetCreatureName()->Name : "wtfbbqhax", unit->GetPositionX(), unit->GetPositionY(),
-		unit->GetPositionZ());
-	if(unit->m_spawn == 0)
+	if ( unit->IsPet() )
+	{
+		SystemMessage(m_session, "You can't delete a pet." );
+		return true;
+	}
+	sGMLog.writefromsession(m_session, "used npc delete, sqlid %u, creature %s, pos %f %f %f", unit->GetSQL_id(), unit->GetCreatureName() ? unit->GetCreatureName()->Name : "wtfbbqhax", unit->GetPositionX(), unit->GetPositionY(), unit->GetPositionZ());
+	if( unit->m_spawn == NULL )
 		return false;
 	BlueSystemMessage(m_session, "Deleted creature ID %u", unit->spawnid);
 
