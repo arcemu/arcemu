@@ -1980,6 +1980,7 @@ void Player::InitVisibleUpdateBits()
 	Player::m_visibleUpdateMask.SetBit(UNIT_FIELD_CHANNEL_OBJECT+1);
 	Player::m_visibleUpdateMask.SetBit(UNIT_CHANNEL_SPELL);
 	Player::m_visibleUpdateMask.SetBit(UNIT_DYNAMIC_FLAGS);
+	Player::m_visibleUpdateMask.SetBit(UNIT_NPC_EMOTESTATE);
 
 	Player::m_visibleUpdateMask.SetBit(PLAYER_FLAGS);
 	Player::m_visibleUpdateMask.SetBit(PLAYER_BYTES);
