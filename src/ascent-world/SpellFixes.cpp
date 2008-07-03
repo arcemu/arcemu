@@ -12503,63 +12503,63 @@ void ApplyNormalFixes()
         // look for seal, etc in name
         if( strstr( nametext, "Seal"))
 		{
-            sp->BGR_one_buff_from_caster |= SPELL_TYPE_SEAL;
+            sp->BGR_one_buff_on_target |= SPELL_TYPE_SEAL;
 			All_Seal_Groups_Combined |= sp->SpellGroupType;
 		}
         else if( strstr( nametext, "Blessing"))
-            sp->BGR_one_buff_from_caster |= SPELL_TYPE_BLESSING;
+            sp->BGR_one_buff_on_target |= SPELL_TYPE_BLESSING;
         else if( strstr( nametext, "Curse"))
 		{
-            sp->BGR_one_buff_from_caster |= SPELL_TYPE_CURSE;
+            sp->BGR_one_buff_on_target |= SPELL_TYPE_CURSE;
 			sp->in_front_status = SPELL_INFRONT_STATUS_REQUIRE_SKIPCHECK;
 		}
         else if( strstr( nametext, "Aspect"))
-            sp->BGR_one_buff_from_caster |= SPELL_TYPE_ASPECT;
+            sp->BGR_one_buff_on_target |= SPELL_TYPE_ASPECT;
         else if( strstr( nametext, "Sting") || strstr( nametext, "sting"))
-            sp->BGR_one_buff_from_caster |= SPELL_TYPE_STING;
+            sp->BGR_one_buff_on_target |= SPELL_TYPE_STING;
         // don't break armor items!
         else if(strcmp(nametext, "Armor") && strstr( nametext, "Armor") || strstr( nametext, "Demon Skin"))
-            sp->BGR_one_buff_from_caster |= SPELL_TYPE_ARMOR;
+            sp->BGR_one_buff_on_target |= SPELL_TYPE_ARMOR;
         else if( strstr( nametext, "Aura"))
-            sp->BGR_one_buff_from_caster |= SPELL_TYPE_AURA;
+            sp->BGR_one_buff_on_target |= SPELL_TYPE_AURA;
 		else if( strstr( nametext, "Track")==nametext)
-            sp->BGR_one_buff_from_caster |= SPELL_TYPE_TRACK;
+            sp->BGR_one_buff_on_target |= SPELL_TYPE_TRACK;
 		else if( namehash == SPELL_HASH_GIFT_OF_THE_WILD || namehash == SPELL_HASH_MARK_OF_THE_WILD )
-            sp->BGR_one_buff_from_caster |= SPELL_TYPE_MARK_GIFT;
+            sp->BGR_one_buff_on_target |= SPELL_TYPE_MARK_GIFT;
 		else if( namehash == SPELL_HASH_IMMOLATION_TRAP || namehash == SPELL_HASH_FREEZING_TRAP || namehash == SPELL_HASH_FROST_TRAP || namehash == SPELL_HASH_EXPLOSIVE_TRAP || namehash == SPELL_HASH_SNAKE_TRAP )
-            sp->BGR_one_buff_from_caster |= SPELL_TYPE_HUNTER_TRAP;
+            sp->BGR_one_buff_on_target |= SPELL_TYPE_HUNTER_TRAP;
 		else if( namehash == SPELL_HASH_ARCANE_INTELLECT || namehash == SPELL_HASH_ARCANE_BRILLIANCE )
-            sp->BGR_one_buff_from_caster |= SPELL_TYPE_MAGE_INTEL;
+            sp->BGR_one_buff_on_target |= SPELL_TYPE_MAGE_INTEL;
 		else if( namehash == SPELL_HASH_AMPLIFY_MAGIC || namehash == SPELL_HASH_DAMPEN_MAGIC )
-            sp->BGR_one_buff_from_caster |= SPELL_TYPE_MAGE_MAGI;
+            sp->BGR_one_buff_on_target |= SPELL_TYPE_MAGE_MAGI;
 		else if( namehash == SPELL_HASH_FIRE_WARD || namehash == SPELL_HASH_FROST_WARD )
-            sp->BGR_one_buff_from_caster |= SPELL_TYPE_MAGE_WARDS;
+            sp->BGR_one_buff_on_target |= SPELL_TYPE_MAGE_WARDS;
 		else if( namehash == SPELL_HASH_SHADOW_PROTECTION || namehash == SPELL_HASH_PRAYER_OF_SHADOW_PROTECTION )
-            sp->BGR_one_buff_from_caster |= SPELL_TYPE_PRIEST_SH_PPROT;
+            sp->BGR_one_buff_on_target |= SPELL_TYPE_PRIEST_SH_PPROT;
 		else if( namehash == SPELL_HASH_WATER_SHIELD || namehash == SPELL_HASH_EARTH_SHIELD || namehash == SPELL_HASH_LIGHTNING_SHIELD )
-            sp->BGR_one_buff_from_caster |= SPELL_TYPE_SHIELD;
+            sp->BGR_one_buff_on_target |= SPELL_TYPE_SHIELD;
 		else if( namehash == SPELL_HASH_POWER_WORD__FORTITUDE || namehash == SPELL_HASH_PRAYER_OF_FORTITUDE )
-            sp->BGR_one_buff_from_caster |= SPELL_TYPE_FORTITUDE;
+            sp->BGR_one_buff_on_target |= SPELL_TYPE_FORTITUDE;
 		else if( namehash == SPELL_HASH_DIVINE_SPIRIT || namehash == SPELL_HASH_PRAYER_OF_SPIRIT )
-            sp->BGR_one_buff_from_caster |= SPELL_TYPE_SPIRIT;
+            sp->BGR_one_buff_on_target |= SPELL_TYPE_SPIRIT;
 //		else if( strstr( nametext, "Curse of Weakness") || strstr( nametext, "Curse of Agony") || strstr( nametext, "Curse of Recklessness") || strstr( nametext, "Curse of Tongues") || strstr( nametext, "Curse of the Elements") || strstr( nametext, "Curse of Idiocy") || strstr( nametext, "Curse of Shadow") || strstr( nametext, "Curse of Doom"))
 //		else if(namehash==4129426293 || namehash==885131426 || namehash==626036062 || namehash==3551228837 || namehash==2784647472 || namehash==776142553 || namehash==3407058720 || namehash==202747424)
 //		else if( strstr( nametext, "Curse of "))
 //            type |= SPELL_TYPE_WARLOCK_CURSES;
 		else if( strstr( nametext, "Immolate") || strstr( nametext, "Conflagrate"))
-			sp->BGR_one_buff_from_caster |= SPELL_TYPE_WARLOCK_IMMOLATE;
+			sp->BGR_one_buff_on_target |= SPELL_TYPE_WARLOCK_IMMOLATE;
 		else if( strstr( nametext, "Amplify Magic") || strstr( nametext, "Dampen Magic"))
-			sp->BGR_one_buff_from_caster |= SPELL_TYPE_MAGE_AMPL_DUMP;
+			sp->BGR_one_buff_on_target |= SPELL_TYPE_MAGE_AMPL_DUMP;
         else if( strstr( desc, "Battle Elixir"))
-            sp->BGR_one_buff_from_caster |= SPELL_TYPE_ELIXIR_BATTLE;
+            sp->BGR_one_buff_on_target |= SPELL_TYPE_ELIXIR_BATTLE;
         else if( strstr( desc, "Guardian Elixir"))
-            sp->BGR_one_buff_from_caster |= SPELL_TYPE_ELIXIR_GUARDIAN;
+            sp->BGR_one_buff_on_target |= SPELL_TYPE_ELIXIR_GUARDIAN;
         else if( strstr( desc, "Battle and Guardian elixir"))
-            sp->BGR_one_buff_from_caster |= SPELL_TYPE_ELIXIR_FLASK;
+            sp->BGR_one_buff_on_target |= SPELL_TYPE_ELIXIR_FLASK;
 		else if( namehash == SPELL_HASH_HUNTER_S_MARK )		// hunter's mark
-			sp->BGR_one_buff_from_caster |= SPELL_TYPE_HUNTER_MARK;
+			sp->BGR_one_buff_on_target |= SPELL_TYPE_HUNTER_MARK;
         else if( namehash == SPELL_HASH_COMMANDING_SHOUT || namehash == SPELL_HASH_BATTLE_SHOUT )
-            sp->BGR_one_buff_from_caster |= SPELL_TYPE_WARRIOR_SHOUT;
+            sp->BGR_one_buff_on_target |= SPELL_TYPE_WARRIOR_SHOUT;
 		else if( strstr( desc, "Finishing move")==desc)
 			sp->c_is_flags |= SPELL_FLAG_IS_FINISHING_MOVE;
 		if( IsDamagingSpell( sp ) )
@@ -12609,7 +12609,6 @@ void ApplyNormalFixes()
 
 		// find diminishing status
 		sp->DiminishStatus = GetDiminishingGroup(namehash);
-		sp->BGR_one_buff_from_caster=0;
 		switch(namehash)
 		{
 		case SPELL_HASH_HUNTER_S_MARK:		// Hunter's mark
