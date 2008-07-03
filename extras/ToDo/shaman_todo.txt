@@ -18,3 +18,5 @@ How it should work:Increases your spell damage and healing by an amount equal to
 revision: 251
 bug: fire nova totem dissapear after 1 tick of fire instaed of doing few tick's:
 How it should work: its shouldnt do dmg to itself
+
+there should be totem timers ?
