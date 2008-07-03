@@ -1706,61 +1706,24 @@ bool Pet::UpdateLoyalty( char pts )
 
 AI_Spell * Pet::HandleAutoCastEvent()
 {
-	if(m_autoCastSpells[AUTOCAST_EVENT_ATTACK].size() > 1)
+	list<AI_Spell*>::iterator itr;
+	
+	for(  itr = m_autoCastSpells[AUTOCAST_EVENT_ATTACK].begin(); itr != m_autoCastSpells[AUTOCAST_EVENT_ATTACK].end(); itr++ )
 	{
-		// more than one autocast spell. pick a random one.
-		// WRONG! it should choose the left-most autocast spell! 
-		uint32 c = RandomUInt((uint32)m_autoCastSpells[AUTOCAST_EVENT_ATTACK].size());
-		uint32 j = 0;
-		list<AI_Spell*>::iterator itr = m_autoCastSpells[AUTOCAST_EVENT_ATTACK].begin();
-
-		for(; itr != m_autoCastSpells[AUTOCAST_EVENT_ATTACK].end(), j < c; ++j, ++itr);
-		if(itr == m_autoCastSpells[AUTOCAST_EVENT_ATTACK].end())
+		if((*itr)->autocast_type == AUTOCAST_EVENT_ATTACK)
 		{
-			if( (*m_autoCastSpells[AUTOCAST_EVENT_ATTACK].begin())->autocast_type == AUTOCAST_EVENT_ATTACK 
-				 && getMSTime() >= (*m_autoCastSpells[AUTOCAST_EVENT_ATTACK].begin())->cooldowntime //water elemental would spam it's frost nova like hell
-				)
-				return *m_autoCastSpells[AUTOCAST_EVENT_ATTACK].begin();
-			else
-			{
-				// bad pointers somehow end up here :S
-				m_autoCastSpells[AUTOCAST_EVENT_ATTACK].erase(m_autoCastSpells[AUTOCAST_EVENT_ATTACK].begin());
-				return HandleAutoCastEvent();
-			}
-		}
-		else
-		{
-			if( (*itr)->autocast_type == AUTOCAST_EVENT_ATTACK 
-				 && getMSTime() >= (*itr)->cooldowntime //water elemental would spam it's frost nova like hell
-				)
+			// spells still spammed, I think the cooldowntime is being set incorrectly somewhere else
+			if(getMSTime() >= (*itr)->cooldowntime)
 				return *itr;
-			else
-			{
-				m_autoCastSpells[AUTOCAST_EVENT_ATTACK].erase(itr);
-				return HandleAutoCastEvent();
-			}
-		}
-	}
-	else if(m_autoCastSpells[AUTOCAST_EVENT_ATTACK].size())
-	{
-		AI_Spell * sp = *m_autoCastSpells[AUTOCAST_EVENT_ATTACK].begin();
-		if( sp->autocast_type == AUTOCAST_EVENT_ATTACK )
-		{
-			// If the spell has a cooldown check it, else it hasn't been cast yet
-			if( sp->cooldowntime == 0 ||
-				(sp->cooldowntime && getMSTime() >= sp->cooldowntime) )
-				return *m_autoCastSpells[AUTOCAST_EVENT_ATTACK].begin();
-			else
-				return NULL;
 		}
 		else
 		{
 			// bad pointers somehow end up here :S
-			m_autoCastSpells[AUTOCAST_EVENT_ATTACK].erase(m_autoCastSpells[AUTOCAST_EVENT_ATTACK].begin());
-			return NULL;
+			m_autoCastSpells[AUTOCAST_EVENT_ATTACK].erase(itr);
+			return HandleAutoCastEvent();
 		}
 	}
-	
+
 	return NULL;
 }
 
@@ -1775,27 +1738,19 @@ void Pet::HandleAutoCastEvent(uint32 Type)
 	{
 		if(m_autoCastSpells[AUTOCAST_EVENT_ATTACK].size() > 1)
 		{
-			// more than one autocast spell. pick a random one.
-			uint32 i;
-			uint32 ms = getMSTime();
-			for(i=0;i<m_autoCastSpells[AUTOCAST_EVENT_ATTACK].size();++i)
+			for(  itr = m_autoCastSpells[AUTOCAST_EVENT_ATTACK].begin(); itr != m_autoCastSpells[AUTOCAST_EVENT_ATTACK].end(); itr++ )
 			{
-				uint32 c = RandomUInt((uint32)m_autoCastSpells[AUTOCAST_EVENT_ATTACK].size());
-				uint32 j = 0;
-				itr = m_autoCastSpells[AUTOCAST_EVENT_ATTACK].begin();
-
-				for(; itr != m_autoCastSpells[AUTOCAST_EVENT_ATTACK].end(), j < c; ++j, ++itr);
 				if(itr == m_autoCastSpells[AUTOCAST_EVENT_ATTACK].end())
 				{
-					if(  (*m_autoCastSpells[AUTOCAST_EVENT_ATTACK].begin())->cooldowntime > ms )
- 						m_aiInterface->SetNextSpell(*m_autoCastSpells[AUTOCAST_EVENT_ATTACK].begin());
+					if(getMSTime() >= (*itr)->cooldowntime)
+						m_aiInterface->SetNextSpell(*itr);
 					else
 						return;
 					break;
 				}
 				else
 				{
-					if((*itr)->cooldowntime && (*itr)->cooldowntime > ms)
+					if((*itr)->cooldowntime > getMSTime())
 						continue;
 
 					m_aiInterface->SetNextSpell(*itr);
@@ -1807,9 +1762,10 @@ void Pet::HandleAutoCastEvent(uint32 Type)
 			sp =*m_autoCastSpells[AUTOCAST_EVENT_ATTACK].begin();
 			if(sp->cooldown && getMSTime() < sp->cooldowntime)
 				return;
-
-			m_aiInterface->SetNextSpell(*m_autoCastSpells[AUTOCAST_EVENT_ATTACK].begin());
+			
+			m_aiInterface->SetNextSpell(sp);
 		}
+
 		return;
 	}
 
@@ -1872,7 +1828,6 @@ uint32 Pet::GetUntrainCost()
 
 	return reset_cost;
 }
-
 
 
 
