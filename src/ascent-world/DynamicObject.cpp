@@ -65,7 +65,14 @@ void DynamicObject::Create(Unit * caster, Spell * pSpell, float x, float y, floa
 	{
 		m_parentSpell = pSpell;
 	}
-	p_caster = pSpell->p_caster;
+	if( pSpell->p_caster == NULL )
+	{
+		// try to find player caster here
+		if( caster->IsPlayer() )
+			p_caster = static_cast<Player*>( caster );
+	}
+	else
+		p_caster = pSpell->p_caster;
 
 	m_spellProto = pSpell->m_spellInfo;
 	SetUInt64Value(DYNAMICOBJECT_CASTER, caster->GetGUID());
@@ -232,4 +239,5 @@ void DynamicObject::Remove()
 		RemoveFromWorld(true);
 	delete this;
 }
+
 
