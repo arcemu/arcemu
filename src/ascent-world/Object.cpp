@@ -2395,13 +2395,13 @@ void Object::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
 			}*/
 			
 			// Send AI Victim Reaction
-			if( this->IsPlayer() || this->GetTypeId() == TYPEID_UNIT )
+			if( this->IsPlayer() || this->IsCreature() )
 			{
-				if( pVictim->GetTypeId() != TYPEID_PLAYER )
+				if( !pVictim->IsPlayer() )
 				{
 					static_cast< Creature* >( pVictim )->GetAIInterface()->AttackReaction( static_cast< Unit* >( this ), damage, spellId );
 				}
-				else if( pVictim->GetTypeId() == TYPEID_PLAYER )
+				else if( pVictim->IsPlayer() )
 				{
 					// Defensive pet
 					Pet* pPet = static_cast< Player* >( pVictim )->GetSummon();
