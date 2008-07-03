@@ -1537,6 +1537,7 @@ void WorldSession::HandleInspectOpcode( WorldPacket & recv_data )
 
 	uint64 guid;
 	uint32 talent_points = 0x0000003D;
+	ByteBuffer m_Packed_GUID;
 	recv_data >> guid;
 
 	Player * player = _player->GetMapMgr()->GetPlayer( (uint32)guid );
@@ -1556,16 +1557,20 @@ void WorldSession::HandleInspectOpcode( WorldPacket & recv_data )
 
 	WorldPacket data( SMSG_INSPECT_TALENTS, 4 + talent_points );
 
-	FastGUIDPack(data, _player->GetGUID());
+	m_Packed_GUID.appendPackGUID( player->GetGUID());
+	uint32 guid_size;
+	guid_size = m_Packed_GUID.size();
+
+	data.append(m_Packed_GUID);
 	data << uint32( talent_points );
 
 	uint32 talent_tab_pos = 0;
 	uint32 talent_max_rank;
 	uint32 talent_tab_id;
 	uint32 talent_index;
-	uint32 rank_index;
-	uint32 rank_slot;
-	uint32 rank_offset;
+	uint32 rank_index,rank_index2;
+	uint32 rank_slot,rank_slot7;
+	uint32 rank_offset,rank_offset7;
 	uint32 mask;
 
 	for( uint32 i = 0; i < talent_points; ++i )
@@ -1614,13 +1619,30 @@ void WorldSession::HandleInspectOpcode( WorldPacket & recv_data )
 			//else
 				//sLog.outDebug( "HandleInspectOpcode: talent(%i) rank_id(%i) talent_index(%i) talent_tab_pos(%i) rank_index(%i) rank_slot(%i) rank_offset(%i)", talent_info->TalentID, talent_info->RankID[talent_max_rank-1], talent_index, talent_tab_pos, rank_index, rank_slot, rank_offset );
 
-			rank_index = ( uint32( ( talent_index + talent_max_rank - 1 ) / 7 ) ) * 8  + ( uint32( ( talent_index + talent_max_rank - 1 ) % 7 ) );
-			rank_slot = rank_index / 8;
-			rank_offset = rank_index % 8;
-			mask = 1 << rank_offset;
-			data.put< uint8 >( 4 + rank_slot, mask & 0xFF );
+			// not learned talent
+                if(!talent_max_rank)
+                    continue;
 
-			sLog.outDebug( "HandleInspectOpcode: talent(%i) talent_max_rank(%i) rank_id(%i) talent_index(%i) talent_tab_pos(%i) rank_index(%i) rank_slot(%i) rank_offset(%i)", talent_info->TalentID, talent_max_rank, talent_info->RankID[talent_max_rank-1], talent_index, talent_tab_pos, rank_index, rank_slot, rank_offset );
+
+            rank_index = talent_index + talent_max_rank - 1;
+
+            // slot/offset in 7-bit bytes
+            rank_slot7   = rank_index / 7;
+            rank_offset7 = rank_index % 7;
+
+            // rank pos with skipped 8 bit
+            rank_index2 = rank_slot7 * 8 + rank_offset7;
+
+            // slot/offset in 8-bit bytes with skipped high bit
+            rank_slot = rank_index2 / 8;
+            rank_offset =  rank_index2 % 8;
+
+            // apply mask
+            mask = data.read<uint8>(guid_size + 4 + rank_slot);
+            mask |= (1 << rank_offset);
+            data.put<uint8>(guid_size + 4 + rank_slot, mask & 0xFF);
+
+			sLog.outDebug( "HandleInspectOpcode: talent(%i) talent_max_rank(%i) rank_id(%i) talent_index(%i) talent_tab_pos(%i) rank_index(%i) rank_slot(%i) rank_offset(%i) mask(%i)", talent_info->TalentID, talent_max_rank, talent_info->RankID[talent_max_rank-1], talent_index, talent_tab_pos, rank_index, rank_slot, rank_offset , mask);
 		}
 
 		std::map< uint32, uint32 >::iterator itr = sWorld.InspectTalentTabSize.find( talent_tab_id );

@@ -366,6 +366,22 @@ public:
 		if(buffer.size() > 0) append(buffer.contents(),buffer.size());
 	}
 
+	void appendPackGUID(uint64 guid)
+        {
+            size_t mask_position = wpos();
+            *this << uint8(0);
+            for(uint8 i = 0; i < 8; i++)
+            {
+                if(guid & 0xFF)
+                {
+                    _storage[mask_position] |= (1<<i);
+                    *this << ((uint8)(guid & 0xFF));
+                }
+
+                guid >>= 8;
+            }
+        }
+
 	void put(size_t pos, const uint8 *src, size_t cnt) {
 		ASSERT(pos + cnt <= size());
 		memcpy(&_storage[pos], src, cnt);
