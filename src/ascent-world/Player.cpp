@@ -9537,7 +9537,7 @@ void Player::RemoveSpellTargets(uint32 Type)
 	{
 		Unit * pUnit = m_mapMgr ? m_mapMgr->GetUnit(m_spellIndexTypeTargets[Type]) : NULL;
 		if(pUnit)
-            pUnit->RemoveAurasByBGR_one_buff_from_caster(Type, GetGUID());
+            pUnit->RemoveAurasByBuffIndexType(Type, GetGUID());
 
 		m_spellIndexTypeTargets[Type] = 0;
 	}

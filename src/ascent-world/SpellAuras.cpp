@@ -1141,7 +1141,7 @@ void Aura::SpellAuraPeriodicDamage(bool apply)
 		/*static_cast< Player* >( c )->GetSession()->SystemMessage("dot will do %u damage every %u seconds (total of %u)", dmg,m_spellProto->EffectAmplitude[mod->i],(GetDuration()/m_spellProto->EffectAmplitude[mod->i])*dmg);
 		printf("dot will do %u damage every %u seconds (total of %u)\n", dmg,m_spellProto->EffectAmplitude[mod->i],(GetDuration()/m_spellProto->EffectAmplitude[mod->i])*dmg);*/
 		SetNegative();
-		if( m_spellProto->BGR_one_buff_from_caster & SPELL_TYPE_WARLOCK_IMMOLATE )
+		if( m_spellProto->BGR_one_buff_on_target & SPELL_TYPE_WARLOCK_IMMOLATE )
 		{
 			m_target->SetFlag(UNIT_FIELD_AURASTATE,AURASTATE_FLAG_IMMOLATE);
 		}
@@ -1153,7 +1153,7 @@ void Aura::SpellAuraPeriodicDamage(bool apply)
 	}
 	else if( (m_flags & (1 << mod->i)) == 0 ) //add these checks to mods where imunity can cancel only 1 mod and not whole spell
 	{
-		if( m_spellProto->BGR_one_buff_from_caster & SPELL_TYPE_WARLOCK_IMMOLATE )
+		if( m_spellProto->BGR_one_buff_on_target & SPELL_TYPE_WARLOCK_IMMOLATE )
 			m_target->RemoveFlag( UNIT_FIELD_AURASTATE,AURASTATE_FLAG_IMMOLATE );
 		//maybe poison aurastate should get triggered on other spells too ?
 		else if( m_spellProto->c_is_flags & SPELL_FLAG_IS_POISON )//deadly poison
@@ -1291,7 +1291,7 @@ void Aura::SpellAuraDummy(bool apply)
 	uint32 TamingSpellid = 0;
 
 	// for seal -> set judgement crap
-	if( GetSpellProto()->BGR_one_buff_from_caster & SPELL_TYPE_SEAL && mod->i == 2 )
+	if( GetSpellProto()->BGR_one_buff_on_target & SPELL_TYPE_SEAL && mod->i == 2 )
 	{
 		Player* c = static_cast< Player* >( GetUnitCaster() );
 
@@ -5555,7 +5555,7 @@ void Aura::EventPeriodicHeal1(uint32 amount)
 	}
 	else
 	{
-		if(!(m_spellProto->BGR_one_buff_from_caster & SPELL_TYPE_ARMOR))
+		if(!(m_spellProto->BGR_one_buff_on_target & SPELL_TYPE_ARMOR))
 			SendPeriodicHealAuraLog(amount);
 	}
 }

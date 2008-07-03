@@ -3582,8 +3582,8 @@ void Unit::AddAura(Aura *aur)
 						// Check for auras by specific type.
 						// Check for auras with the same name and a different rank.
 						
-						if(info->BGR_one_buff_from_caster > 0 && m_auras[x]->GetSpellProto()->BGR_one_buff_from_caster & info->BGR_one_buff_from_caster && maxStack == 0)
-							deleteAur = HasAurasOfBGR_one_buff_from_caster(info->BGR_one_buff_from_caster, aur->m_casterGuid,0);
+						if(info->BGR_one_buff_on_target > 0 && m_auras[x]->GetSpellProto()->BGR_one_buff_on_target & info->BGR_one_buff_on_target && maxStack == 0)
+							deleteAur = HasAurasOfBuffType(info->BGR_one_buff_on_target, aur->m_casterGuid,0);
 						else
 						{
 							acr = AuraCheck(info->NameHash, info->RankNumber, m_auras[x],aur->GetCaster());
@@ -4905,19 +4905,19 @@ void Unit::Unroot()
 	}
 }
 
-void Unit::RemoveAurasByBGR_one_buff_from_caster(uint32 buff_type, const uint64 &guid, uint32 skip)
+void Unit::RemoveAurasByBuffType(uint32 buff_type, const uint64 &guid, uint32 skip)
 {
 	uint64 sguid = buff_type >= SPELL_TYPE_BLESSING ? guid : 0;
 
 	for(uint32 x=0;x<MAX_AURAS;x++)
 	{
-		if(m_auras[x] && m_auras[x]->GetSpellProto()->BGR_one_buff_from_caster & buff_type && m_auras[x]->GetSpellId()!=skip)
+		if(m_auras[x] && m_auras[x]->GetSpellProto()->BGR_one_buff_on_target & buff_type && m_auras[x]->GetSpellId()!=skip)
 			if(!sguid || (sguid && m_auras[x]->m_casterGuid == sguid))
 				m_auras[x]->Remove();
 	}
 }
 
-void Unit::RemoveAurasByBGR_one_buff_from_caster(uint32 buff_index_type, const uint64 &guid)
+void Unit::RemoveAurasByBuffIndexType(uint32 buff_index_type, const uint64 &guid)
 {
 	for(uint32 x=0;x<MAX_AURAS;x++)
 	{
@@ -4927,13 +4927,13 @@ void Unit::RemoveAurasByBGR_one_buff_from_caster(uint32 buff_index_type, const u
 	}
 }
 
-bool Unit::HasAurasOfBGR_one_buff_from_caster(uint32 buff_type, const uint64 &guid,uint32 skip)
+bool Unit::HasAurasOfBuffType(uint32 buff_type, const uint64 &guid,uint32 skip)
 {
 	uint64 sguid = (buff_type == SPELL_TYPE_BLESSING || buff_type == SPELL_TYPE_WARRIOR_SHOUT) ? guid : 0;
 
 	for(uint32 x=0;x<MAX_AURAS;x++)
 	{
-		if(m_auras[x] && m_auras[x]->GetSpellProto()->BGR_one_buff_from_caster & buff_type && m_auras[x]->GetSpellId()!=skip)
+		if(m_auras[x] && m_auras[x]->GetSpellProto()->BGR_one_buff_on_target & buff_type && m_auras[x]->GetSpellId()!=skip)
 			if(!sguid || (m_auras[x]->m_casterGuid == sguid))
 				return true;
 	}
