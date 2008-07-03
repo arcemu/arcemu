@@ -129,9 +129,9 @@ void PlayerFirstEnter(Player * pPlayer)
 /*
 	LevelInfo * Info = objmgr.GetLevelInfo(pPlayer->getRace(), pPlayer->getClass(), 70);
 	pPlayer->ApplyLevelInfo(Info, 70);
-	pPlayer->SetUInt32Value(PLAYER_FIELD_COINAGE,200000000); // Set gold
 	pPlayer->_AdvanceAllSkills(375);
 */
+	pPlayer->SetUInt32Value(PLAYER_FIELD_COINAGE,200000000); // Set gold
 	learnAll( pPlayer );
 
 /*
