@@ -174,4 +174,5 @@
 #include "CConsole.h"
 //#define COLLECTION_OF_UNTESTED_STUFF_AND_TESTERS 1
 #include "SpeedDetector.h"
+//#define PVP_REALM_MEANS_CONSTANT_PVP
 #endif

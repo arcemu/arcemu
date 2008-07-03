@@ -7866,6 +7866,15 @@ void Player::UpdatePvPArea()
 	if(at == 0)
         return;
 
+#ifdef PVP_REALM_MEANS_CONSTANT_PVP
+	//zack : This might be huge crap. I have no idea how it is on blizz but i think a pvp realm should alow me to gank anybody anywhere :(
+	if(sWorld.GetRealmType() == REALM_PVP)
+    {
+		SetPvPFlag();
+		return;
+    }
+#endif
+
 	// This is where all the magic happens :P
     if((at->category == AREAC_ALLIANCE_TERRITORY && GetTeam() == 0) || (at->category == AREAC_HORDE_TERRITORY && GetTeam() == 1))
 	{
@@ -7991,6 +8000,15 @@ void Player::LoginPvPSetup()
 
 	if ( at != NULL && isAlive() && ( at->category == AREAC_CONTESTED || ( GetTeam() == 0 && at->category == AREAC_HORDE_TERRITORY ) || ( GetTeam() == 1 && at->category == AREAC_ALLIANCE_TERRITORY ) ) )
 		CastSpell(this, PLAYER_HONORLESS_TARGET_SPELL, true);
+
+#ifdef PVP_REALM_MEANS_CONSTANT_PVP
+	//zack : This might be huge crap. I have no idea how it is on blizz but i think a pvp realm should alow me to gank anybody anywhere :(
+	if(sWorld.GetRealmType() == REALM_PVP)
+    {
+		SetPvPFlag();
+		return;
+    }
+#endif
 }
 
 void Player::PvPToggle()
@@ -8039,6 +8057,14 @@ void Player::PvPToggle()
 		    }		
 	    }
     }
+#ifdef PVP_REALM_MEANS_CONSTANT_PVP
+	//zack : This might be huge crap. I have no idea how it is on blizz but i think a pvp realm should alow me to gank anybody anywhere :(
+	else if(sWorld.GetRealmType() == REALM_PVP)
+    {
+		SetPvPFlag();
+		return;
+    }
+#else
     else if(sWorld.GetRealmType() == REALM_PVP)
     {
         AreaTable * at = dbcArea.LookupEntry(m_AreaID);
@@ -8122,6 +8148,7 @@ void Player::PvPToggle()
             }
         }
     }
+#endif
 }
 
 void Player::ResetPvPTimer()
