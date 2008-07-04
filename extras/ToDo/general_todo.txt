@@ -85,6 +85,9 @@ SMT_RESIST_DISPEL - check if it is used
 	Currently is does not do so, though it works in reverse. Paralyzed places a debuff Creeping Paralysis on the target.
 - make both tarrgetting available for ai_agents
 - earth shield does not consider caster's bonus healing
+- you get stuck in combat pretty often
+- player.cpp line 4068. Make sure we cannot pull people into instance with this exploit
+- when mage invisibility expires CPU goes to 100% ? Maybe this gives some insight into high lag problems ?
 
 ==========================================================================
 ! BUGS !

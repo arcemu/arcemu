@@ -447,7 +447,7 @@ void WorldSession::HandleSendMail(WorldPacket & recv_data )
 	
 	// 30 day expiry time for unread mail mail
 	if(!sMailSystem.MailOption(MAIL_FLAG_NO_EXPIRY))
-		msg.expire_time = (uint32)UNIXTIME + (TIME_DAY * 30);
+		msg.expire_time = (uint32)UNIXTIME + (TIME_DAY * MAIL_DEFAULT_EXPIRATION_TIME);
 	else
 		msg.expire_time = 0;
 
@@ -475,12 +475,19 @@ void WorldSession::HandleMarkAsRead(WorldPacket & recv_data )
 	// mark the message as read
 	message->read_flag = 1;
 
-	// mail now has a 3 day expiry time
+  // mail now has a minimum expiry time of 3 days and a maximum expiry time of 30 days
 	if(!sMailSystem.MailOption(MAIL_FLAG_NO_EXPIRY))
-		message->expire_time = (uint32)UNIXTIME + (TIME_DAY * 3);
-
+  {
+    if(message->expire_time > ((uint32)UNIXTIME + (TIME_DAY * MAIL_DEFAULT_EXPIRATION_TIME)))
+		  message->expire_time = (uint32)UNIXTIME + (TIME_DAY * MAIL_DEFAULT_EXPIRATION_TIME);
+    if(message->expire_time < ((uint32)UNIXTIME + (TIME_DAY * 3)))
+      message->expire_time = (uint32)UNIXTIME + (TIME_DAY * 3);
+  }
+	
 	// update it in sql
-	CharacterDatabase.WaitExecute("UPDATE mailbox SET read_flag = 1, expiry_time = %u WHERE message_id = %u", message->message_id, message->expire_time);
+	CharacterDatabase.WaitExecute("UPDATE mailbox SET read_flag = 1, expiry_time = %u WHERE message_id = %u", message->expire_time, message->message_id);
+
+  //TODO: Send changes to player... (read-mark and expiry time changed..)
 }
 
 void WorldSession::HandleMailDelete(WorldPacket & recv_data )
@@ -857,7 +864,7 @@ void MailSystem::SendAutomatedMessage(uint32 type, uint64 sender, uint64 receive
 
 	msg.stationary = stationary;
 	msg.delivery_time = (uint32)UNIXTIME;
-	msg.expire_time = 0;
+	msg.expire_time = (uint32)UNIXTIME + (TIME_DAY * MAIL_DEFAULT_EXPIRATION_TIME);
 	msg.read_flag = false;
 	msg.copy_made = false;
 	msg.deleted_flag = false;

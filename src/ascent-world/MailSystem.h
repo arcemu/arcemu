@@ -130,5 +130,6 @@ public:
 };
 
 #define sMailSystem MailSystem::getSingleton()
+#define MAIL_DEFAULT_EXPIRATION_TIME 30
 
 #endif
