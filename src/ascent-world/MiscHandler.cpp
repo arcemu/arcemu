@@ -1559,7 +1559,7 @@ void WorldSession::HandleInspectOpcode( WorldPacket & recv_data )
 
 	m_Packed_GUID.appendPackGUID( player->GetGUID());
 	uint32 guid_size;
-	guid_size = m_Packed_GUID.size();
+	guid_size = (uint32)m_Packed_GUID.size();
 
 	data.append(m_Packed_GUID);
 	data << uint32( talent_points );

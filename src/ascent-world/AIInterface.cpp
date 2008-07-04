@@ -67,7 +67,8 @@ AIInterface::AIInterface()
 	m_updateAssist = false;
 	m_updateTargets = false;
 	m_updateAssistTimer = 1;
-	m_updateTargetsTimer = TARGET_UPDATE_INTERVAL;
+	m_updateTargetsTimer = TARGET_UPDATE_INTERVAL_ON_PLAYER;
+	m_updateTargetsTimer2 = 0;
 
 	m_nextSpell = NULL;
 	m_nextTarget = NULL;
@@ -728,7 +729,7 @@ void AIInterface::_UpdateTimer(uint32 p_time)
 	}else
 	{
 		m_updateAssist = true;
-		m_updateAssistTimer = TARGET_UPDATE_INTERVAL * 2 - m_updateAssistTimer - p_time;
+		m_updateAssistTimer = TARGET_UPDATE_INTERVAL_ON_PLAYER * 2 - m_updateAssistTimer - p_time;
 	}
 
 	if(m_updateTargetsTimer > p_time)
@@ -737,7 +738,7 @@ void AIInterface::_UpdateTimer(uint32 p_time)
 	}else
 	{
 		m_updateTargets = true;
-		m_updateTargetsTimer = TARGET_UPDATE_INTERVAL * 2 - m_updateTargetsTimer - p_time;
+		m_updateTargetsTimer = TARGET_UPDATE_INTERVAL_ON_PLAYER * 2 - m_updateTargetsTimer - p_time;
 	}
 }
 
@@ -1525,7 +1526,49 @@ void AIInterface::OnDeath(Object* pKiller)
 		HandleEvent(EVENT_UNITDIED, m_Unit, 0);
 }
 
+//function is designed to make a quick check on target to decide if we can attack it
+bool AIInterface::UnsafeCanOwnerAttackUnit(Unit *pUnit)
+{
+	if( !isHostile(m_Unit,pUnit ) )
+		return false;
+
+	if( !pUnit->isAlive() )
+		return false;
+
+	if( pUnit->bInvincible )
+		return false;
+
+	//do not agro units that are faking death. Should this be based on chance ?
+	if( pUnit->HasFlag( UNIT_FIELD_FLAGS, UNIT_FLAG_FEIGN_DEATH ) )
+		return false;
+
+	//don't attack owner
+	if( m_Unit->GetUInt64Value(UNIT_FIELD_CREATEDBY) == pUnit->GetGUID() )
+		return false; 
+
+	//don't agro neutrals
+	if( ( pUnit->IsPlayer() || pUnit->IsPet() )
+		&& m_Unit->m_factionDBC->RepListId == -1 
+		&& m_Unit->m_faction->HostileMask == 0 
+		&& m_Unit->m_faction->FriendlyMask == 0
+		)
+			return false;
+	else if( ( m_Unit->IsPlayer() || m_Unit->IsPet() )
+			&& pUnit->m_factionDBC->RepListId == -1 
+			&& pUnit->m_faction->HostileMask == 0 
+			&& pUnit->m_faction->FriendlyMask == 0
+			)
+			return false;
+
+	//make sure we do not agro flying stuff
+	if( abs( pUnit->GetPositionZ() - m_Unit->GetPositionZ() ) > _CalcCombatRange( pUnit, false ) )
+		return false; //blizz has this set to 250 but uses pathfinding
+
+	return true;
+}
+
 //this function might be slow but so it should not be spammed
+//!!!this function has been reported the biggest bottleneck on emu in 2008 07 04
 Unit* AIInterface::FindTarget()
 {// find nearest hostile Target to attack
 	if( !m_AllowedToEnterCombat ) 
@@ -1549,6 +1592,7 @@ Unit* AIInterface::FindTarget()
 #endif
 
 	std::set<Object*>::iterator itr, itr2;
+	std::set<Player *>::iterator pitr, pitr2;
 //	Object *pObj;
 	Unit *pUnit;
 	float dist;
@@ -1562,59 +1606,24 @@ Unit* AIInterface::FindTarget()
 	{
 		return 0;
 	}
+	//we have a high chance that we will agro a player
 	//this is slower then oppfaction list BUT it has a lower chance that contains invalid pointers
-	for( itr2 = m_Unit->GetInRangeSetBegin(); itr2 != m_Unit->GetInRangeSetEnd(); )
+	for( pitr2 = m_Unit->GetInRangePlayerSetBegin(); pitr2 != m_Unit->GetInRangePlayerSetEnd(); )
 	{
-		itr = itr2;
-		++itr2;
+		pitr = pitr2;
+		++pitr2;
 
-		if( !(*itr)->IsUnit() || !isAttackable(m_Unit,(*itr) ) )
+		pUnit = *pitr;
+
+		if( UnsafeCanOwnerAttackUnit( pUnit ) == false )
 			continue;
-
-		pUnit = static_cast< Unit* >( (*itr) );
-
-		if( pUnit->bInvincible )
-			continue;
-
-		//do not agro units that are faking death. Should this be based on chance ?
-		if( pUnit->HasFlag( UNIT_FIELD_FLAGS, UNIT_FLAG_FEIGN_DEATH ) )
-			continue;
-
-		//don't attack owner
-		if( m_Unit->GetUInt64Value(UNIT_FIELD_CREATEDBY) == pUnit->GetGUID() )
-			continue; 
-
-		//don't agro neutrals
-		if( ( pUnit->IsPlayer() || pUnit->IsPet() )
-			&& m_Unit->m_factionDBC->RepListId == -1 
-			&& m_Unit->m_faction->HostileMask == 0 
-			&& m_Unit->m_faction->FriendlyMask == 0
-			)
-				continue;
-		else if( ( m_Unit->IsPlayer() || m_Unit->IsPet() )
-			 && pUnit->m_factionDBC->RepListId == -1 
-			 && pUnit->m_faction->HostileMask == 0 
-			 && pUnit->m_faction->FriendlyMask == 0
-			 )
-				continue;
-
-		//make sure we do not agro flying stuff
-		if( abs( pUnit->GetPositionZ() - m_Unit->GetPositionZ() ) > _CalcCombatRange( pUnit, false ) )
-			continue; //blizz has this set to 250 but uses pathfinding
 
 		//on blizz there is no Z limit check 
 		dist = m_Unit->GetDistance2dSq(pUnit);
 
-		if(pUnit->m_faction->Faction == 28)// only Attack a critter if there is no other Enemy in range
-		{
-			if(dist < 225.0f)	// was 10
-				critterTarget = pUnit;
-			continue;
-		}
-
 		if(dist > distance)	 // we want to find the CLOSEST target
-			continue;
-		
+			return false;
+	
 		if(dist <= _CalcAggroRange(pUnit) )
 		{
 #ifdef LOS_CHECKS
@@ -1629,7 +1638,7 @@ Unit* AIInterface::FindTarget()
 
 	#endif		// LOS_ONLY_IN_INSTANCE
 
-            if( CollideInterface.CheckLOS( m_Unit->GetMapId( ), m_Unit->GetPositionNC( ), pUnit->GetPositionNC( ) ) )
+			if( CollideInterface.CheckLOS( m_Unit->GetMapId( ), m_Unit->GetPositionNC( ), pUnit->GetPositionNC( ) ) )
 			{
 				distance = dist;
 				target = pUnit;
@@ -1638,7 +1647,63 @@ Unit* AIInterface::FindTarget()
 			distance = dist;
 			target = pUnit;
 #endif		// LOS_CHECKS
+		}
+	}
 
+	//a lot less times are check inter faction mob wars :)
+	if( m_updateTargetsTimer2 < GetTickCount() )
+	{
+		m_updateTargetsTimer2 = GetTickCount() + TARGET_UPDATE_INTERVAL;
+		for( itr2 = m_Unit->GetInRangeSetBegin(); itr2 != m_Unit->GetInRangeSetEnd(); )
+		{
+			itr = itr2;
+			++itr2;
+
+			if( !(*itr)->IsUnit() )
+				continue;
+
+			pUnit = static_cast< Unit* >( (*itr) );
+
+			if( UnsafeCanOwnerAttackUnit( pUnit ) == false )
+				continue;
+
+			if(pUnit->m_faction->Faction == 28)// only Attack a critter if there is no other Enemy in range
+			{
+				if(dist < 225.0f)	// was 10
+					critterTarget = pUnit;
+				return false;
+			}
+
+			//on blizz there is no Z limit check 
+			dist = m_Unit->GetDistance2dSq(pUnit);
+
+			if(dist > distance)	 // we want to find the CLOSEST target
+				return false;
+	
+			if(dist <= _CalcAggroRange(pUnit) )
+			{
+	#ifdef LOS_CHECKS
+
+		#ifdef LOS_ONLY_IN_INSTANCE
+				if( !check_los )
+				{
+					distance = dist;
+					target = pUnit;	
+					continue;
+				}
+
+		#endif		// LOS_ONLY_IN_INSTANCE
+
+				if( CollideInterface.CheckLOS( m_Unit->GetMapId( ), m_Unit->GetPositionNC( ), pUnit->GetPositionNC( ) ) )
+				{
+					distance = dist;
+					target = pUnit;
+				}
+	#else
+				distance = dist;
+				target = pUnit;
+	#endif		// LOS_CHECKS
+			}
 		}
 	}
 
