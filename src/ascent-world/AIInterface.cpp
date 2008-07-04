@@ -1651,9 +1651,9 @@ Unit* AIInterface::FindTarget()
 	}
 
 	//a lot less times are check inter faction mob wars :)
-	if( m_updateTargetsTimer2 < GetTickCount() )
+	if( m_updateTargetsTimer2 < getMSTime() )
 	{
-		m_updateTargetsTimer2 = GetTickCount() + TARGET_UPDATE_INTERVAL;
+		m_updateTargetsTimer2 = getMSTime() + TARGET_UPDATE_INTERVAL;
 		for( itr2 = m_Unit->GetInRangeSetBegin(); itr2 != m_Unit->GetInRangeSetEnd(); )
 		{
 			itr = itr2;
