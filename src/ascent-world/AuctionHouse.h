@@ -35,11 +35,11 @@ enum AUCTIONRESULT
 };
 enum AUCTIONRESULTERROR
 {
-	AUCTION_ERROR_NONE,
-	AUCTION_ERROR_UNK1,
-	AUCTION_ERROR_INTERNAL,
-	AUCTION_ERROR_MONEY,
-	AUCTION_ERROR_ITEM,
+	AUCTION_ERROR_NONE = 0,
+	AUCTION_ERROR_INTERNAL = 2,
+	AUCTION_ERROR_MONEY = 3,
+	AUCTION_ERROR_ITEM = 4,
+	AUCTION_ERROR_BID_OWN_AUCTION = 10
 };
 enum AuctionMailResult
 {
@@ -54,14 +54,14 @@ enum AuctionMailResult
 struct Auction
 {
 	uint32 Id;
-	
+
 	uint32 Owner;
 	uint32 HighestBidder;
 	uint32 HighestBid;
-	
+
 	uint32 BuyoutPrice;
 	uint32 DepositAmount;
-	
+
 	uint32 ExpiryTime;
 	Item * pItem;
 
@@ -92,7 +92,9 @@ public:
 
 	void SendOwnerListPacket(Player * plr, WorldPacket * packet);
 	void SendBidListPacket(Player * plr, WorldPacket * packet);
-	void SendAuctionNotificationPacket(Player * plr, Auction * auct);
+	void SendAuctionBuyOutNotificationPacket(Auction * auct);
+	void SendAuctionOutBidNotificationPacket(Auction * auct, uint64 newBidder, uint32 newHighestBid);
+	void SendAuctionExpiredNotificationPacket(Auction * auct);
 	void SendAuctionList(Player * plr, WorldPacket * packet);
 
 private:

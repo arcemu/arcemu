@@ -266,6 +266,7 @@ public:
 	void SendBuyFailed(uint64 guid, uint32 itemid, uint8 error);
 	void SendSellItem(uint64 vendorguid, uint64 itemid, uint8 error);
 	void SendNotification(const char *message, ...);
+	void SendAuctionPlaceBidResultPacket(uint32 itemId, uint32 error);
 
 	ASCENT_INLINE void SetInstance(uint32 Instance) { instanceId = Instance; }
 	ASCENT_INLINE uint32 GetLatency() { return _latency; }
