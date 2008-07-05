@@ -19,6 +19,22 @@
 
 #include "StdAfx.h"
 
+bool ChatHandler::HandleInitializeAllQueuedBattlegroundsCommand(const char *args, WorldSession *m_session)
+{
+	SystemMessage(m_session, "Forcing initialitation of all battlegrounds...");
+	BattlegroundManager.EventQueueUpdate(true);
+	SystemMessage(m_session, "...done");
+	return true;
+}
+
+bool ChatHandler::HandleGetBattlegroundQueueCommand(const char *args, WorldSession *m_session)
+{
+	SystemMessage(m_session, "Getting battleground queues...");
+	BattlegroundManager.HandleGetBattlegroundQueueCommand(m_session);
+	SystemMessage(m_session, "...done");
+	return true;
+}
+
 bool ChatHandler::HandleSetBGScoreCommand(const char* args, WorldSession *m_session)
 {
 	return true;

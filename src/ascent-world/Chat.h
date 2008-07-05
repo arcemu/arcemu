@@ -356,6 +356,8 @@ protected:
 
 	//BG
 	bool HandleSetBGScoreCommand(const char* args, WorldSession *m_session);
+	bool HandleInitializeAllQueuedBattlegroundsCommand(const char *args, WorldSession *m_session);
+	bool HandleGetBattlegroundQueueCommand(const char *args, WorldSession *m_session);
 
 	Player* getSelectedChar(WorldSession *m_session, bool showerror = true);
 	Creature * getSelectedCreature(WorldSession *m_session, bool showerror = true);

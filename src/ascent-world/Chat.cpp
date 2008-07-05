@@ -329,6 +329,8 @@ void CommandTableStorage::Init()
 		{ "playsound",   'e', &ChatHandler::HandlePlaySoundCommand,	 "<val>. Val can be in hex.",		   NULL, 0, 0, 0 },
 		{ "setbfstatus", 'e', &ChatHandler::HandleSetBattlefieldStatusCommand,".setbfstatus - NYI.",		   NULL, 0, 0, 0 },
 		{ "leave",	   'e', &ChatHandler::HandleBattlegroundExitCommand, "Leaves the current battleground.", NULL, 0, 0, 0 },
+		{ "getqueue",   'z', &ChatHandler::HandleGetBattlegroundQueueCommand, "Gets common battleground queue information.", NULL, 0, 0, 0 },
+		{ "forcestart", 'z', &ChatHandler::HandleInitializeAllQueuedBattlegroundsCommand, "Forces initialitation of all battlegrounds with active queue.", NULL, 0, 0, 0 },
 		{ NULL,			0, NULL,									 "",									NULL, 0, 0  }
 	};
 	dupe_command_table(BattlegroundCommandTable, _BattlegroundCommandTable);

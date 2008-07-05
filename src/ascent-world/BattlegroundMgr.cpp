@@ -185,7 +185,127 @@ void ErasePlayerFromList(uint32 guid, list<uint32>* l)
 	}
 }
 
+void CBattlegroundManager::HandleGetBattlegroundQueueCommand(WorldSession * m_session)
+{
+	std::stringstream ss;
+
+	uint32 i,j;
+	Player * plr;
+	list<uint32>::iterator it3, it4;
+
+	m_queueLock.Acquire();
+
+	bool foundSomething = false;
+
+	for(i = 0; i < BATTLEGROUND_NUM_TYPES; ++i)
+	{
+		for(j = 0; j < MAX_LEVEL_GROUP; ++j)
+		{
+			if(!m_queuedPlayers[i][j].size())
+				continue;
+
+			foundSomething = true;
+
+			switch(i)
+			{
+			case BATTLEGROUND_ALTERAC_VALLEY:
+				ss << "Alterac Valley";
+				break;
+			case BATTLEGROUND_WARSUNG_GULCH:
+				ss << "Warsong Gulch";
+				break;
+			case BATTLEGROUND_ARATHI_BASIN:
+				ss << "Arathi Basin";
+				break;
+			case BATTLEGROUND_ARENA_2V2:
+				ss << "Arena 2v2";
+				break;
+			case BATTLEGROUND_ARENA_3V3:
+				ss << "Arena 3v3";
+				break;
+			case BATTLEGROUND_ARENA_5V5:
+				ss << "Arena 5v5";
+				break;
+			case BATTLEGROUND_EYE_OF_THE_STORM:
+				ss << "Eye of the Storm";
+				break;
+			default:
+				ss << "Unknown Battleground";
+				break;
+			}
+
+			switch(j)
+			{
+			case 0:
+				ss << "(<10)";
+				break;
+			case 1:
+				ss << "(<20)";
+				break;
+			case 2:
+				ss << "(<30)";
+				break;
+			case 3:
+				ss << "(<40)";
+				break;
+			case 4:
+				ss << "(<50)";
+				break;
+			case 5:
+				ss << "(<60)";
+				break;
+			case 6:
+				ss << "(<70)";
+				break;
+			}
+
+			ss << ": ";
+
+			ss << (int)m_queuedPlayers[i][j].size() << " queued";
+
+			if(!IS_ARENA(i))
+			{
+				int ally = 0, horde = 0;
+
+				for(it3 = m_queuedPlayers[i][j].begin(); it3 != m_queuedPlayers[i][j].end();)
+				{
+					it4 = it3++;
+					plr = objmgr.GetPlayer(*it4);
+
+					if(!plr || GetLevelGrouping(plr->getLevel()) != j)
+					{
+						continue;
+					}
+
+					if(plr->GetTeam() == 0)
+						ally++;
+					if(plr->GetTeam() == 1)
+						horde++;
+				}
+
+				ss << " (Alliance: " << ally << " Horde: " << horde;
+				if((int)m_queuedPlayers[i][j].size() > (ally + horde))
+					ss << " Unknown: " << ((int)m_queuedPlayers[i][j].size() - ally - horde);
+				ss << ")";
+			}
+
+			m_session->SystemMessage( ss.str().c_str() );
+			ss.rdbuf()->str("");
+		}
+	}
+
+	m_queueLock.Release();
+
+	if(!foundSomething)
+		m_session->SystemMessage( "There's nobody queued." );
+}
+
 void CBattlegroundManager::EventQueueUpdate()
+{
+	this->EventQueueUpdate(false);
+}
+
+void CBattlegroundManager::EventQueueUpdate(bool forceStart)
 {
 	deque<Player*> tempPlayerVec[2];
 	uint32 i,j,k;
@@ -319,13 +439,7 @@ void CBattlegroundManager::EventQueueUpdate()
 			}
 			else
 			{
-#ifdef ONLY_ONE_PERSON_REQUIRED_TO_JOIN_DEBUG
-				if(tempPlayerVec[0].size() >= 1 ||
-					tempPlayerVec[1].size() >= 1)
-#else
-				if(tempPlayerVec[0].size() >= BGMinimumPlayers[i] &&
-					tempPlayerVec[1].size() >= BGMinimumPlayers[i])
-#endif
+				if(forceStart || (tempPlayerVec[0].size() >= BGMinimumPlayers[i] && tempPlayerVec[1].size() >= BGMinimumPlayers[i]))
 				{
 					if(CanCreateInstance(i,j))
 					{
