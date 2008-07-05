@@ -1,4 +1,0 @@
-In order for these to work you must have LUA++ or the latest Moon++ LUA's installed, these
-use additional functions not included in ArcEmu's LUA Engine as of 6/30/08.
-
--Darknation
