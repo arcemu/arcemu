@@ -1,0 +1,78 @@
+Notes:
+* GetDistance2dSq is irrelevant, silly me (does not include z-position)
+* CalcDist is the Square Root of DistSq, rounded. (not ceil/floor)
+* Generally ascent has 2 yards too much range checking (grammar?)
+* We already have 3 extra yards.
+
+Internal Research
+{
+Full 30 Yards: Throw
+{
+DistSq: 1052
+CalcDistance: 32
+GetDistance2dSq: 1048
+}
+
+In Range: 30 Yards
+{
+Attempt No.	1		2		3		4		5
+------------------------------------------------
+DistSq		895 	893		906		906		903
+CalcDist	29 		29		30		30		30
+Dist2dSq	842		875		881		869		886
+}
+
+Full 35 Yards: Fireball
+{
+DistSq: 1397
+CalcDistance: 37
+GetDistance2dSq: 1368
+}
+
+In Range: 35 Yards
+{
+Attempt No.	1		2		3		4		5
+-------------------------------------------------
+DistSq		1216	1223	1231	1229	1231	
+CalcDist	34		34		35		35		35
+Dist2dSq	1195	1201	1209	1207	1208
+}
+
+Full 10 Yards: Hammer of Justice
+{
+DistSq: 153
+CalcDistance: 12
+GetDistance2dSq: 142
+}
+}
+
+Simplified Research
+{
+When the client said I was 30 yards away from the target, Ascent reported that I was 32.43 yards away.
+Similarly, when I was 35 yards away, Ascent reported that I was 37.37 yards away.
+Finally, when I was 10 yards away, Ascent says 12.36.
+Note that the point values were probably errors on my part - I obtained this 'client side' data by moving to the max range of the spell.
+
+
+}
+Conclusion:
+* Since we already have 3 extra yards, we need another 2.
+
+
+Edit by Partha: 
+
+Actually only about 0.5yds was being added to the max range.
+
+It appears that the client is indicating that you are in range at exactly 2.52yds outside of the range.
+The amount is the same for spells with 10yd range all the way up to 45yd range.
+Not sure why this is happening, but it must be either that the client is adding some kind of buffer zone,
+or it is using something like the bounding radius of the 2 units.
+
+Don't forget, the client won't let you attack if your not inside the range it calculates.
+This is actually just to prevent cheaters.
+
+I added a total of 2.52 true yards to the range, and the client and server is now synced up perfectly.
+
+Thanks to Supalosa for his work, and his great .debug rangecheck command!
+
+
