@@ -6719,7 +6719,7 @@ void Player::_Kick()
 		// remove now
 		GetSession()->LogoutPlayer(true);
 	} else {
-		if((m_KickDelay - 1000) < 500)
+		if(m_KickDelay < 1500)
 		{
 			m_KickDelay = 0;
 		} else {

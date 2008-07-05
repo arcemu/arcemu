@@ -287,8 +287,12 @@ void WarsongGulch::HookFlagStand(Player * plr, GameObject * obj)
 #ifdef ANTI_CHEAT
 	if(!m_started)
 	{
-		SendChatMessage(CHAT_MSG_BG_EVENT_NEUTRAL, plr->GetGUID(), "%s has been removed from the game for cheating!", plr->GetName());
-		plr->SoftDisconnect();
+		Anticheat_Log->writefromsession(plr->GetSession(), "%s tryed to hook the flag in warsong gluch before battleground (ID %u) started.", plr->GetName(), this->m_id);
+		SendChatMessage(CHAT_MSG_BG_EVENT_NEUTRAL, plr->GetGUID(), "%s will be removed from the game for cheating.", plr->GetName());
+		// Remove player from battleground.
+		this->RemovePlayer(plr, false);
+		// Kick player from server.
+		plr->Kick(6000);
 		return;
 	}
 #endif
@@ -531,5 +535,6 @@ void WarsongGulch::OnStart()
 
 	m_started = true;
 }
+
 
 

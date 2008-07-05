@@ -207,8 +207,12 @@ void EyeOfTheStorm::HookOnAreaTrigger(Player * plr, uint32 id)
 #ifdef ANTI_CHEAT
 	if(!m_started)
 	{
-		SendChatMessage(CHAT_MSG_BG_EVENT_NEUTRAL, plr->GetGUID(), "%s has removed from the battleground for cheating.",  plr->GetName());
-		plr->SoftDisconnect();
+		Anticheat_Log->writefromsession(plr->GetSession(), "%s tryed to hook the flag in eye of the storm before battleground (ID %u) started.", plr->GetName(), this->m_id);
+		SendChatMessage(CHAT_MSG_BG_EVENT_NEUTRAL, plr->GetGUID(), "%s will be removed from the game for cheating.", plr->GetName());
+		// Remove player from battleground.
+		this->RemovePlayer(plr, false);
+		// Kick	player from server.
+		plr->Kick(6000);
 		return;
 	}
 #endif
