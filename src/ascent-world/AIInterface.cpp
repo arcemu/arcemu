@@ -3290,7 +3290,9 @@ AI_Spell *AIInterface::getSpell()
 		{
 			sp = *itr;
 			++itr;
-			if(sp->cooldowntime && nowtime < sp->cooldowntime && sp->procChance >= 100)
+			if(sp->cooldowntime && nowtime < sp->cooldowntime 
+//				&& sp->procChance >= 100 //Zack: why was this put here ? It makes mobs spam spells like no tomorrow
+				)
 			{
 				cool_time2=sp->cooldowntime-nowtime;
 				if(!cool_time || cool_time2<cool_time)
