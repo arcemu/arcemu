@@ -327,17 +327,22 @@ CREATE TABLE `corpses` (
 -- Table structure for gm_tickets
 -- ----------------------------
 CREATE TABLE `gm_tickets` (
-  `guid` int(6) NOT NULL default '0',
-  `name` varchar(200) NOT NULL default '',
-  `level` int(6) NOT NULL default '0',
-  `type` int(2) NOT NULL default '0',
-  `posX` float NOT NULL default '0',
-  `posY` float NOT NULL default '0',
-  `posZ` float NOT NULL default '0',
-  `message` text NOT NULL,
-  `timestamp` text,
-  PRIMARY KEY  (`guid`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+  `guid` INTEGER(11) NOT NULL,
+  `playerGuid` INTEGER(11) NOT NULL,
+  `name` VARCHAR(200) NOT NULL DEFAULT '',
+  `level` INTEGER(6) NOT NULL DEFAULT '0',
+  `type` INTEGER(2) NOT NULL DEFAULT '0',
+  `posX` FLOAT NOT NULL DEFAULT '0',
+  `posY` FLOAT NOT NULL DEFAULT '0',
+  `posZ` FLOAT NOT NULL DEFAULT '0',
+  `message` TEXT NOT NULL,
+  `timestamp` TEXT,
+  `deleted` BIT(1) NOT NULL DEFAULT 0,
+  `assignedto` INTEGER(11) NOT NULL DEFAULT '0',
+  `comment` TEXT NOT NULL,
+  PRIMARY KEY (`guid`),
+  UNIQUE KEY `guid` (`guid`)
+)ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 -- ----------------------------
 -- Table structure for groups

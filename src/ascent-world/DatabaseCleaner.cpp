@@ -328,20 +328,9 @@ void DatabaseCleaner::CleanCharacters()
 	Log.Notice("DatabaseCleaner", "Deleted %u petspells.", tokill_ps.size());
 	Log.Line();
 	Log.Notice("DatabaseCleaner", "Cleaning gm_tickets...");
-	set<uint32> tokill_gm;
-	result = CharacterDatabase.Query("SELECT guid FROM gm_tickets");
-	if(result)
-	{
-		do 
-		{
-			if(chr_guids.find( result->Fetch()[0].GetUInt32() ) == chr_guids.end())
-				tokill_gm.insert(result->Fetch()[0].GetUInt32());
-		} while(result->NextRow());
-		delete result;
-	}
-	for(set<uint32>::iterator itr = tokill_gm.begin(); itr != tokill_gm.end(); ++itr)
-		CharacterDatabase.WaitExecute("DELETE FROM gm_tickets WHERE guid = %u", *itr);
-	Log.Notice("DatabaseCleaner", "Deleted %u gm tickets.", tokill_gm.size());
+	CharacterDatabase.WaitExecute("DELETE FROM gm_tickets WHERE playerGuid NOT IN (SELECT guid FROM characters)");
+	//TODO: Print out count of removed gm_tickets
+	Log.Notice("DatabaseCleaner", "Deleted dead gm tickets.");
 	Log.Line();
 	Log.Notice("DatabaseCleaner", "Cleaning charters...");
 	vector<uint32> tokill_charters;

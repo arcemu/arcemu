@@ -310,9 +310,13 @@ protected:
 	bool HandleAddGraveCommand(const char* args, WorldSession *m_session);
 	bool HandleAddSHCommand(const char* args, WorldSession *m_session);
 	bool HandleExploreCheatCommand(const char* args, WorldSession *m_session);
-	bool HandleGMTicketGetAllCommand(const char* args, WorldSession *m_session);
+	bool HandleGMTicketListCommand(const char* args, WorldSession *m_session);
 	bool HandleGMTicketGetByIdCommand(const char* args, WorldSession *m_session);
-	bool HandleGMTicketDelByIdCommand(const char* args, WorldSession *m_session);
+	bool HandleGMTicketRemoveByIdCommand(const char* args, WorldSession *m_session);
+	bool HandleGMTicketAssignToCommand(const char* args, WorldSession *m_session);
+	bool HandleGMTicketReleaseCommand(const char* args, WorldSession *m_session);
+	bool HandleGMTicketCommentCommand(const char* args, WorldSession *m_session);
+	bool HandleGMTicketDeletePermanentCommand(const char* args, WorldSession *m_session);
 	bool HandleAddSkillCommand(const char* args, WorldSession *m_session);
 	bool HandleAddInvItemCommand(const char* args, WorldSession *m_session);
 	bool HandleResetReputationCommand(const char* args, WorldSession *m_session);

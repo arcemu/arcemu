@@ -2291,7 +2291,10 @@ void Player::SaveToDB(bool bNewCharacter /* =false */)
 	_SaveTutorials(buf);
 
 	// GM Ticket
-	objmgr.SaveGMTicket(GetGUID(), buf);
+	//TODO: Is this really necessary? Tickets will allways be saved on creation, update and so on...
+	GM_Ticket* ticket = objmgr.GetGMTicketByPlayer(GetGUID());
+	if(ticket != NULL)
+		objmgr.SaveGMTicket(ticket, buf);
 
 	// Cooldown Items
 	_SavePlayerCooldowns( buf );

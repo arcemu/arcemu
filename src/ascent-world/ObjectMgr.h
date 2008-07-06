@@ -28,6 +28,7 @@ ASCENT_INLINE bool FindXinYString(std::string& x, std::string& y)
 struct GM_Ticket
 {
 	uint64 guid;
+	uint64 playerGuid;
 	std::string name;
 	uint32 level;
 	uint32 type;
@@ -36,6 +37,26 @@ struct GM_Ticket
 	float posZ;
 	std::string message;
 	uint32 timestamp;
+	bool deleted;
+	uint64 assignedToPlayer;
+	std::string comment;
+};
+
+//HACK: GmTicket system still in development, so...
+#define GM_TICKET_MY_MASTER_COMPATIBLE
+
+enum
+{
+	GM_TICKET_CHAT_OPCODE_NEWTICKET     = 1,
+	GM_TICKET_CHAT_OPCODE_LISTSTART     = 2,
+	GM_TICKET_CHAT_OPCODE_LISTENTRY     = 3,
+	GM_TICKET_CHAT_OPCODE_CONTENT       = 4,
+	GM_TICKET_CHAT_OPCODE_APPENDCONTENT = 5,
+	GM_TICKET_CHAT_OPCODE_REMOVED       = 6,
+	GM_TICKET_CHAT_OPCODE_UPDATED       = 7, 
+	GM_TICKET_CHAT_OPCODE_ASSIGNED      = 8,
+	GM_TICKET_CHAT_OPCODE_RELEASED      = 9, 
+	GM_TICKET_CHAT_OPCODE_COMMENT       = 10
 };
 
 #pragma pack(push,1)
@@ -452,9 +473,15 @@ public:
 	uint32 GetGossipTextForNpc(uint32 ID);
 
 	// Gm Tickets
-	void AddGMTicket(GM_Ticket *ticket,bool startup);
-	void remGMTicket(uint64 guid);
-	GM_Ticket* GetGMTicket(uint64 guid);
+	void AddGMTicket(GM_Ticket *ticket, bool startup = false);
+	void UpdateGMTicket(GM_Ticket *ticket);
+	void RemoveGMTicketByPlayer(uint64 playerGuid);
+	void RemoveGMTicket(uint64 ticketGuid);
+	void DeleteGMTicketPermanently(uint64 ticketGuid);
+	void DeleteAllRemovedGMTickets();
+	GM_Ticket* GetGMTicket(uint64 ticketGuid);
+	GM_Ticket* GetGMTicketByPlayer(uint64 playerGuid);
+	//std::list<GM_Ticket*>* GetGMTicketsByPlayer(uint64 playerGuid);
 
 	skilllinespell* GetSpellSkill(uint32 id);
 
@@ -500,7 +527,7 @@ public:
 	Corpse* LoadCorpse(uint32 guid);
 	void LoadCorpses(MapMgr * mgr);
 	void LoadGMTickets();
-	void SaveGMTicket(uint64 guid, QueryBuffer * buf);
+	void SaveGMTicket(GM_Ticket* ticket, QueryBuffer * buf);
 	void LoadAuctions();
 	void LoadAuctionItems();
 	void LoadSpellSkills();
@@ -517,6 +544,7 @@ public:
 	void SetHighestGuids();
 	uint32 GenerateLowGuid(uint32 guidhigh);
 	uint32 GenerateMailID();
+	uint64 GenerateTicketID();
 	
 	void LoadTransporters();
 	void ProcessGameobjectQuests();
@@ -606,6 +634,7 @@ public:
 protected:
 	RWLock playernamelock;
 	uint32 m_mailid;
+	uint64 m_ticketid;
 	// highest GUIDs, used for creating new objects
 	Mutex m_guidGenMutex;
     union
