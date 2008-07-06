@@ -1946,6 +1946,7 @@ void Unit::HandleProcDmgShield(uint32 flag, Unit* attacker)
 				data << attacker->GetGUID();
 				data << (*i2).m_spellId;
 				data << (*i2).m_damage;
+				data << ( 1 << (*i2).m_school );
 				SendMessageToSet(&data,true);
 				this->DealDamage(attacker,(*i2).m_damage,0,0,(*i2).m_spellId);
 			}
