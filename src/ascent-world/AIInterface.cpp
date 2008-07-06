@@ -1108,7 +1108,7 @@ void AIInterface::_UpdateCombat(uint32 p_time)
 #ifdef ENABLE_CREATURE_DAZE
 							//now if the target is facing his back to us then we could just cast dazed on him :P
 							//as far as i know dazed is casted by most of the creatures but feel free to remove this code if you think otherwise
-							if(m_nextTarget &&
+							if(m_nextTarget && m_Unit->m_factionDBC &&
 								!(m_Unit->m_factionDBC->RepListId == -1 && m_Unit->m_faction->FriendlyMask==0 && m_Unit->m_faction->HostileMask==0) /* neutral creature */
 								&& m_nextTarget->IsPlayer() && !m_Unit->IsPet() && health_before_strike>m_nextTarget->GetUInt32Value(UNIT_FIELD_HEALTH)
 								&& Rand(m_Unit->get_chance_to_daze(m_nextTarget)))
@@ -1548,12 +1548,14 @@ bool AIInterface::UnsafeCanOwnerAttackUnit(Unit *pUnit)
 
 	//don't agro neutrals
 	if( ( pUnit->IsPlayer() || pUnit->IsPet() )
+		&& m_Unit->m_factionDBC
 		&& m_Unit->m_factionDBC->RepListId == -1 
 		&& m_Unit->m_faction->HostileMask == 0 
 		&& m_Unit->m_faction->FriendlyMask == 0
 		)
 			return false;
 	else if( ( m_Unit->IsPlayer() || m_Unit->IsPet() )
+			&& m_Unit->m_factionDBC
 			&& pUnit->m_factionDBC->RepListId == -1 
 			&& pUnit->m_faction->HostileMask == 0 
 			&& pUnit->m_faction->FriendlyMask == 0
@@ -1670,7 +1672,7 @@ Unit* AIInterface::FindTarget()
 			//on blizz there is no Z limit check 
 			dist = m_Unit->GetDistance2dSq(pUnit);
 
-			if(pUnit->m_faction->Faction == 28)// only Attack a critter if there is no other Enemy in range
+			if(pUnit->m_faction && pUnit->m_faction->Faction == 28)// only Attack a critter if there is no other Enemy in range
 			{
 				if(dist < 225.0f)	// was 10
 					critterTarget = pUnit;
