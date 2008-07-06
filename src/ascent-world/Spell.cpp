@@ -4498,7 +4498,7 @@ void Spell::Heal(int32 amount, bool ForceCrit)
 		if( (curHealth + base_amount) >= maxHealth )
 			base_amount = maxHealth - curHealth;
 
-		uint32 base_threat=GetBaseThreat(base_amount);
+		uint32 base_threat=GetBaseThreat(base_amount) / 2;
 		int count = 0;
 		Unit *unit;
 		std::vector<Unit*> target_threat;

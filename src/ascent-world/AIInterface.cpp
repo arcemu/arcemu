@@ -1667,15 +1667,15 @@ Unit* AIInterface::FindTarget()
 			if( UnsafeCanOwnerAttackUnit( pUnit ) == false )
 				continue;
 
+			//on blizz there is no Z limit check 
+			dist = m_Unit->GetDistance2dSq(pUnit);
+
 			if(pUnit->m_faction->Faction == 28)// only Attack a critter if there is no other Enemy in range
 			{
 				if(dist < 225.0f)	// was 10
 					critterTarget = pUnit;
 				return false;
 			}
-
-			//on blizz there is no Z limit check 
-			dist = m_Unit->GetDistance2dSq(pUnit);
 
 			if(dist > distance)	 // we want to find the CLOSEST target
 				return false;
