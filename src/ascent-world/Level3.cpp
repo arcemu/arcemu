@@ -707,7 +707,7 @@ bool ChatHandler::HandleGMTicketAssignToCommand(const char* args, WorldSession *
 
 	if(ticket->assignedToPlayer == plr->GetGUID())
 	{
-		chn->Say(cplr, "GmTicket:0:Ticket allready assigned to this GM.", cplr, true);
+		chn->Say(cplr, "GmTicket:0:Ticket already assigned to this GM.", cplr, true);
 		return true;
 	}
 
@@ -716,7 +716,7 @@ bool ChatHandler::HandleGMTicketAssignToCommand(const char* args, WorldSession *
 		Player *aplr = objmgr.GetPlayer((uint32)ticket->assignedToPlayer);
 		if(aplr != NULL && aplr->IsInWorld() && !cplr->GetSession()->CanUseCommand('z'))
 		{
-			chn->Say(cplr, "GmTicket:0:Ticket allready assigned to another GM.", cplr, true);
+			chn->Say(cplr, "GmTicket:0:Ticket already assigned to another GM.", cplr, true);
 			return true;
 		}
 	}
