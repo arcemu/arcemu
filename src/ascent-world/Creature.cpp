@@ -255,6 +255,29 @@ void Creature::generateLoot()
 	
 	loot.gold = proto ? proto->money : 0;
 
+	// Master Looting Ninja Checker
+	if(sWorld.antiMasterLootNinja && this->m_lootMethod == PARTY_LOOT_MASTER)
+	{
+		Player *looter = objmgr.GetPlayer((uint32)this->TaggerGuid);
+		if(looter)
+		{
+			uint16 lootThreshold = looter->GetGroup()->GetThreshold();
+
+			for(vector<__LootItem>::iterator itr = loot.items.begin(); itr != loot.items.end(); itr++)
+			{
+				if(itr->item.itemproto->Quality < lootThreshold)
+					continue;
+
+				// Master Loot Stuff - Let the rest of the raid know what dropped..
+				//TODO: Shouldn't we move this array to a global position? Or maybe it allready exists^^ (VirtualAngel) --- I can see (dead) talking pigs...^^
+				char* itemColours[7] = { "9d9d9d", "ffffff", "1eff00", "0070dd", "a335ee", "ff8000", "e6cc80" };
+				char buffer[256];
+				sprintf(buffer, "\174cff%s\174Hitem:%u:0:0:0:0:0:0:0\174h[%s]\174h\174r", itemColours[itr->item.itemproto->Quality], itr->item.itemproto->ItemId, itr->item.itemproto->Name1);
+				this->SendChatMessage(CHAT_MSG_MONSTER_SAY, LANG_UNIVERSAL, buffer);
+			}
+		}
+	}
+
 	/*
 	 * If there's an amount given, take it as an expected value and
 	 * generated a corresponding random value. The random value is

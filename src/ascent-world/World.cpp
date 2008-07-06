@@ -60,6 +60,7 @@ World::World()
 	NameinWAnnounce = false;
 	announce_output = true;
 	map_unload_time=0;
+	antiMasterLootNinja = false;
 #ifndef CLUSTERING
 	SocketSendBufSize = WORLDSOCKET_SENDBUF_SIZE;
 	SocketRecvBufSize = WORLDSOCKET_RECVBUF_SIZE;
@@ -1292,6 +1293,7 @@ void World::Rehash(bool load)
 	crossover_chars = Config.OptionalConfig.GetBoolDefault("Interfaction", "CrossOverCharacters", false);
 	start_level = Config.OptionalConfig.GetIntDefault("Optional", "StartingLevel", 1);
 	if(start_level > 70) {start_level = 70;}
+	antiMasterLootNinja = Config.OptionalConfig.GetBoolDefault("Optional", "AntiMasterLootNinja", false);
 	realmAllowTBCcharacters = Config.OptionalConfig.GetBoolDefault("Optional", "AllowTBC", true);
 
 	announce_tag = Config.MainConfig.GetStringDefault("Announce", "Tag", "Staff");

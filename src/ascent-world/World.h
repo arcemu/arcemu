@@ -503,6 +503,7 @@ public:
 	bool interfaction_friend;
 	bool interfaction_misc;
 	bool crossover_chars;
+	bool antiMasterLootNinja;
 
 	bool realmAllowTBCcharacters;
 	
