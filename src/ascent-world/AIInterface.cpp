@@ -3290,7 +3290,9 @@ AI_Spell *AIInterface::getSpell()
 		{
 			sp = *itr;
 			++itr;
-			if(sp->cooldowntime && nowtime < sp->cooldowntime 
+			if(	
+//				sp->cooldowntime && //Zack : no need for this double check here
+				nowtime < sp->cooldowntime 
 //				&& sp->procChance >= 100 //Zack: why was this put here ? It makes mobs spam spells like no tomorrow
 				)
 			{
@@ -3340,6 +3342,16 @@ AI_Spell *AIInterface::getSpell()
 							break;
 						}
 						def_spell = sp;
+						//we got a selected spell, we can exit loop now
+						break;
+					}
+					else //we failed casting it due to given chance, we activate false cooldown on it to not spam searching this list
+					{
+//						sp->cooldowntime = nowtime + sp->cooldown / ( sp->procChance + 1 ); 
+						cool_time2 = 2000;
+						sp->cooldowntime = nowtime + cool_time2; 
+						if( !cool_time || cool_time2 < cool_time )
+							cool_time = cool_time2;
 					}
 				}
 			}
@@ -3367,7 +3379,10 @@ AI_Spell *AIInterface::getSpell()
 			next_spell_time = (uint32)UNIXTIME + cool_time2;
 	}
 	else
+	{
 		next_spell_time = (uint32)UNIXTIME + 1;
+		waiting_for_cooldown = false;
+	}
 
 #ifdef _AI_DEBUG
 	sLog.outString("AI DEBUG: Returning no spell for unit %u", m_Unit->GetEntry());
