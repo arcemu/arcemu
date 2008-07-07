@@ -1479,7 +1479,7 @@ void Spell::SpellEffectTeleportUnits( uint32 i )  // Teleport Units
 			/* try to get a selection */
  			unitTarget = m_caster->GetMapMgr()->GetUnit(p_caster->GetSelection());
 //			if( (unitTarget == NULL ) || !isHostile(p_caster, unitTarget) || (unitTarget->CalcDistance(p_caster) > 25.0f)) //removed by Zack : no idea why hostile is used. Isattackable should give a wider solution range
-			if( (unitTarget == NULL ) || !isAttackable(p_caster, unitTarget, !(m_spellInfo->c_is_flags & SPELL_FLAG_IS_TARGETINGSTEALTHED) ) || (unitTarget->CalcDistance(p_caster) > 25.0f))
+			if( (unitTarget == NULL ) || !isAttackable(p_caster, unitTarget, !(m_spellInfo->c_is_flags & SPELL_FLAG_IS_TARGETINGSTEALTHED) ) || (unitTarget->CalcDistance(p_caster) > 28.0f))
 				return;
 		}
 

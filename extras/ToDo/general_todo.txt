@@ -90,6 +90,7 @@ SMT_RESIST_DISPEL - check if it is used
 - when mage invisibility expires CPU goes to 100% ? Maybe this gives some insight into high lag problems ?
 - drunkness is not reseted by death
 - should make gracefull hit after all to avoid bug to run from monster while others gank him
+- sell produces memeory corruption ?
 
 ==========================================================================
 ! BUGS !
