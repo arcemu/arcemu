@@ -4351,18 +4351,25 @@ void Spell::SpellEffectSanctuary(uint32 i) // Stop all attacks made to you
 	if(!u_caster)
 		return;
 
-	//!warning this is not updated frequently
-	Object::InRangeSet::iterator itr = u_caster->GetInRangeOppFactsSetBegin();
-	Object::InRangeSet::iterator itr_end = u_caster->GetInRangeOppFactsSetBegin();
+	//warning this causes crashes !
+//	Object::InRangeSet::iterator itr = u_caster->GetInRangeOppFactsSetBegin();
+//	Object::InRangeSet::iterator itr_end = u_caster->GetInRangeOppFactsSetEnd();
+	//use these instead
+	Object::InRangeSet::iterator itr = u_caster->GetInRangeSetBegin();
+	Object::InRangeSet::iterator itr_end = u_caster->GetInRangeSetEnd();
 	Unit * pUnit;
 
-	for( ; itr != itr_end; ++itr )
-	{
-		pUnit = static_cast<Unit*>(*itr);
+	if(u_caster->IsPlayer())
+		static_cast<Player*>(u_caster)->RemoveAllAuraType(SPELL_AURA_MOD_ROOT);
 
-		if( pUnit->GetTypeId() == TYPEID_UNIT )
-			pUnit->GetAIInterface()->RemoveThreatByPtr( u_caster );
-	}
+	for( ; itr != itr_end; ++itr )
+		if( (*itr)->IsUnit() )
+		{
+			pUnit = static_cast<Unit*>(*itr);
+
+			if( pUnit && pUnit->GetTypeId() == TYPEID_UNIT )
+				pUnit->GetAIInterface()->RemoveThreatByPtr( u_caster );
+		}
 }
 
 void Spell::SpellEffectAddComboPoints(uint32 i) // Add Combo Points
