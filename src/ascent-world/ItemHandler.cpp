@@ -1393,7 +1393,7 @@ void WorldSession::HandleListInventoryOpcode( WorldPacket & recv_data )
 		return;
 
 	//this is a blizzlike check
-	if( _player->GetDistanceSq( unit ) > 10 )
+	if( _player->GetDistanceSq( unit ) > 100 )
 		return; //avoid talking to anyone by guid hacking. Like sell farmed items anytime ? Low chance hack
 
 	/*if(unit->GetAIInterface())
@@ -1666,7 +1666,7 @@ void WorldSession::HandleRepairItemOpcode(WorldPacket &recvPacket)
 		return;
 
 	//this is a blizzlike check
-	if( _player->GetDistanceSq( pCreature ) > 10 )
+	if( _player->GetDistanceSq( pCreature ) > 100 )
 		return; //avoid talking to anyone by guid hacking. Like repair items anytime in raid ? Low chance hack
 
 	if( !itemguid ) 
