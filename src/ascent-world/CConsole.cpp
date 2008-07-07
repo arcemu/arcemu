@@ -21,7 +21,7 @@
 LocalConsole g_localConsole;
 
 #ifndef WIN32
-    #include <termios.h>
+    #include <poll.h>
 #endif
 
 void ConsoleThread::terminate()
@@ -62,8 +62,11 @@ bool ConsoleThread::run()
 	size_t len;
 	char cmd[300];
 #ifndef WIN32
-	fd_set fds;
-	struct timeval tv;
+	struct pollfd input;
+
+	input.fd      = 0;
+	input.events  = POLLIN | POLLPRI;
+	input.revents = 0;
 #endif
 
 	m_killSwitch = false;
@@ -81,11 +84,12 @@ bool ConsoleThread::run()
 			break;
 
 #else
-		tv.tv_sec = 1;
-		tv.tv_usec = 0;
-		FD_ZERO( &fds );
-		FD_SET( STDIN_FILENO, &fds );
-		if( select( 1, &fds, NULL, NULL, &tv ) <= 0 )
+		int ret = poll(&input, 1, 1000);
+		if (ret < 0)
+		{
+			break;
+		}
+		else if( ret == 0 )
 		{
 			if(!m_killSwitch)	// timeout
 				continue;
@@ -93,10 +97,11 @@ bool ConsoleThread::run()
 				break;
 		}
 
-		// Read in single line from "stdin"
-		memset( cmd, 0, sizeof( cmd ) ); 
-		if( fgets( cmd, 300, stdin ) == NULL )
-			continue;
+		ret = read(0, cmd, sizeof(cmd));
+		if (ret <= 0)
+		{
+			break;
+		}
 #endif
 
 		len = strlen(cmd);
