@@ -2354,7 +2354,7 @@ void ItemInterface::AddBuyBackItem(Item *it,uint32 price)
 		return;
 	}
 
-	for(i=0; i < (MAX_BUYBACK_SLOT - 1)*2;i+=2) //at last slot is empty
+	for(i=0; i <= (MAX_BUYBACK_SLOT - 1)*2;i+=2) //at least 1 slot is empty
 	{
 		if((m_pOwner->GetUInt32Value(PLAYER_FIELD_VENDORBUYBACK_SLOT_1 + i) == 0) || (m_pBuyBack[i/2] == NULL))
 		{
