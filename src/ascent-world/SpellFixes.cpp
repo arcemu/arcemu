@@ -13705,9 +13705,17 @@ void ApplyNormalFixes()
 			sp->EffectTriggerSpell[2] = 32612;
 			sp->EffectBasePoints[2] = -1;
 		}
-			// Hypothermia: undispellable
-			if( sp->NameHash == SPELL_HASH_HYPOTHERMIA )
-				sp->c_is_flags |= SPELL_FLAG_IS_FORCEDDEBUFF;
+
+		// Invisibility triggered spell, should be removed on cast
+		sp = dbcSpell.LookupEntryForced( 32612 );
+		if( sp != NULL )
+		{
+			sp->AuraInterruptFlags |= AURA_INTERRUPT_ON_CAST_SPELL;
+		}
+
+		// Hypothermia: undispellable
+		if( sp->NameHash == SPELL_HASH_HYPOTHERMIA )
+			sp->c_is_flags |= SPELL_FLAG_IS_FORCEDDEBUFF;
 
 		//////////////////////////////////////////
 		// WARLOCK								//
