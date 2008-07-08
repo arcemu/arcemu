@@ -125,6 +125,7 @@ SMT_RESIST_DISPEL - check if it is used
 - pets do not work with collision enabled
 - sockets for thrown weapons disabled - was causing server crash - fix in item.cpp itemhandler.cpp
 - exploit to increase player count in instance to X amount.
+- pets summoned in instances crash the server
 
 ==========================================================================
 player A must have any unsoulbound bag and he must party with player B ..

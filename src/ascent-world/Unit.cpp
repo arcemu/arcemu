@@ -1529,13 +1529,18 @@ void Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, uint
 									continue;//this should not ocur unless we made a fuckup somewhere
 								if(!(CastingSpell->c_is_flags & SPELL_FLAG_IS_DAMAGING))
 									continue;
-									
+
+								//this should contain the same values as the fixed ones
+								dmg_overwrite = ( dmg *  (ospinfo->EffectBasePoints[0] + 1 )) / 100 ; //only half dmg
+
+								/*
+								provided by a patch to give same result ?
 								if(itr2->origId == 9799)
 									dmg_overwrite = (dmg *  15) / 100;
 								
 								if(itr2->origId == 25988)
 									dmg_overwrite = ( dmg *  30) / 100;
-								
+									*/
 
 								int32 half_health = this->GetUInt32Value(UNIT_FIELD_HEALTH) >> 1;
 								if( dmg_overwrite > half_health )
@@ -6412,7 +6417,6 @@ void Unit::EventModelChange()
 	else
 		ModelHalfSize = 1.0f; //baaad, but it happens :(
 }
-
 
 
 
