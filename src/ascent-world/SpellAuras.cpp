@@ -4337,9 +4337,9 @@ void Aura::SpellAuraPeriodicLeech(bool apply)
 
 void Aura::EventPeriodicLeech(uint32 amount)
 {
-	Unit*m_caster = GetUnitCaster();
+	Unit* m_caster = GetUnitCaster();
 
-	if(!m_caster)
+	if(!m_caster || !m_target)
 		return;
 
 	if(m_target->isAlive() && m_caster->isAlive())
