@@ -9930,10 +9930,11 @@ void Apply112SpellFixes()
 		sp->EffectSpellGroupRelation[0] = 131072;
 	}
 
-	// Spell 14177 Group Relation (Cold Blood )
+	// Spell 14177 Group Relation\Interrupt Flag (Cold Blood )
 	sp = dbcSpell.LookupEntryForced(14177);
 	if(sp != NULL) {
 		sp->EffectSpellGroupRelation[0] = 131590;
+		sp->AuraInterruptFlags |= AURA_INTERRUPT_ON_HOSTILE_SPELL_INFLICTED;
 	}
 
 	// Spell 14179 Group Relation (Relentless Strikes )
