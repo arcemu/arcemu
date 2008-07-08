@@ -316,6 +316,8 @@ struct SERVER_DECL GuildBankTab
 
 class Charter;
 
+typedef map<PlayerInfo*, GuildMember*> GuildMemberMap;
+
 class SERVER_DECL Guild
 {
 public:
@@ -502,6 +504,15 @@ public:
 		return ret;
 	}
 
+	/* Get iterators */
+	ASCENT_INLINE GuildMemberMap::iterator GetGuildMembersBegin() { return m_members.begin(); }
+	ASCENT_INLINE GuildMemberMap::iterator GetGuildMembersEnd() { return m_members.end(); }
+
+	/* Get, Lock, Unlock Mutex */
+        ASCENT_INLINE Mutex& getLock() { return m_lock; }
+	ASCENT_INLINE void Lock() { m_lock.Acquire(); }
+	ASCENT_INLINE void Unlock() { return m_lock.Release(); }
+
 	/** Sends the guild bank to this client.
 	 */
 	void SendGuildBank(WorldSession * pClient, GuildBankTab * pTab, int8 updated_slot1 = -1, int8 updated_slot2 = -1);
@@ -544,7 +555,7 @@ protected:
 	
 	/** Guild Member Map.
 	 */
-	typedef map<PlayerInfo*, GuildMember*> GuildMemberMap;
+	//typedef map<PlayerInfo*, GuildMember*> GuildMemberMap;
 	GuildMemberMap m_members;
 
 	/** Guild Rank Information.
