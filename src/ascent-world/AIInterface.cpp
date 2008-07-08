@@ -1555,7 +1555,7 @@ bool AIInterface::UnsafeCanOwnerAttackUnit(Unit *pUnit)
 		)
 			return false;
 	else if( ( m_Unit->IsPlayer() || m_Unit->IsPet() )
-			&& m_Unit->m_factionDBC
+			&& pUnit->m_factionDBC
 			&& pUnit->m_factionDBC->RepListId == -1 
 			&& pUnit->m_faction->HostileMask == 0 
 			&& pUnit->m_faction->FriendlyMask == 0
