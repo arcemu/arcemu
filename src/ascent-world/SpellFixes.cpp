@@ -20368,6 +20368,42 @@ void ApplyNormalFixes()
 			sp->EffectTriggerSpell[0] = 37515;
 			sp->procChance = 25;
 		}
+		
+		//Thorium Grenade
+		sp = dbcSpell.LookupEntryForced(19769);
+		if(sp != NULL)
+		{
+			sp->InterruptFlags |= ~(CAST_INTERRUPT_ON_MOVEMENT);
+		}
+
+		//M73 Frag Grenade
+		sp = dbcSpell.LookupEntryForced(13808);
+		if(sp != NULL)
+		{
+			sp->InterruptFlags |= ~(CAST_INTERRUPT_ON_MOVEMENT);
+		}
+
+		//Iron Grenade
+		sp = dbcSpell.LookupEntryForced(4068);
+		if(sp != NULL)
+		{
+			sp->InterruptFlags |= ~(CAST_INTERRUPT_ON_MOVEMENT);
+		}
+
+		//Frost Grenade
+		sp = dbcSpell.LookupEntryForced(39965);
+		if(sp != NULL)
+		{
+			sp->InterruptFlags |= ~(CAST_INTERRUPT_ON_MOVEMENT);
+		}
+
+		//Adamantine Grenade
+		sp = dbcSpell.LookupEntryForced(30217);
+		if(sp != NULL)
+		{
+			sp->InterruptFlags |= ~(CAST_INTERRUPT_ON_MOVEMENT);
+		}
+		
 		sp = dbcSpell.LookupEntryForced( 40475 );		// Black temple melee trinket
 		if( sp != NULL )
 			sp->procChance = 50;
