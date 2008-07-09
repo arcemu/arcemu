@@ -3401,6 +3401,11 @@ uint8 Spell::CanCast(bool tolerate)
 			// scripted spell stuff
 			switch(m_spellInfo->Id)
 			{
+				case 28369:
+				{
+					if( !target->IsCreature() || target->GetEntry() != 18879 ) // Phase Hunter
+						return SPELL_FAILED_BAD_TARGETS;
+				} break;
 				case 41621: // Wolpertinger Net
 				{
 					if( !target || !target->IsCreature() || target->GetEntry()!=23487 ) // Wild Wolpertinger
