@@ -5114,9 +5114,12 @@ void Spell::SpellEffectDispelMechanic(uint32 i)
 		}
 	}
 	*/
-	unitTarget->RemoveAllAurasByMechanic( m_spellInfo->EffectMiscValue[i] , m_spellInfo->EffectBasePoints[i] , true );
-	if( playerTarget && m_spellInfo->NameHash == SPELL_HASH_DAZED && playerTarget->IsMounted() )
-		playerTarget->RemoveAura(playerTarget->m_MountSpellId);
+	unitTarget->RemoveAllAurasByMechanic( m_spellInfo->EffectMiscValue[i] , m_spellInfo->EffectBasePoints[i] , false );
+
+	/*Shady: if it's about Daze spell - dismount should be done by RemoveAllAurasByMechanic.
+	We don't need useless code or hackfixes here, so commented.*/
+	//if( playerTarget && m_spellInfo->NameHash == SPELL_HASH_DAZED && playerTarget->IsMounted() )
+	//	playerTarget->RemoveAura(playerTarget->m_MountSpellId);
 }
 
 void Spell::SpellEffectSummonDeadPet(uint32 i)

@@ -5234,12 +5234,14 @@ void Aura::SpellAuraMounted(bool apply)
 {
 	if(!p_target) return;
 
-	if(m_target->IsStealth())
+	/*Shady: Is it necessary? Stealth should be broken since all spells with Mounted SpellEffect don't have "does not break stealth" flag (except internal Video mount spell). 
+	So commented, cause we don't need useless checks and hackfixes*/
+	/* if(m_target->IsStealth())
 	{
 		uint32 id = m_target->m_stealth;
 		m_target->m_stealth = 0;
 		m_target->RemoveAura(id);
-	}
+	}*/
 
 	if(apply)
 	{
