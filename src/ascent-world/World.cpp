@@ -55,6 +55,8 @@ World::World()
 	interfaction_friend = false;
 	interfaction_misc = false;
 	crossover_chars = true;
+	gamemaster_listOnlyActiveGMs = false;
+	gamemaster_hidePermissions = false;
 	GMAdminTag = true;
 	NameinAnnounce = false;
 	NameinWAnnounce = false;
@@ -1291,6 +1293,8 @@ void World::Rehash(bool load)
 	interfaction_friend= Config.OptionalConfig.GetBoolDefault("Interfaction", "InterfactionFriends", false);
 	interfaction_misc = Config.OptionalConfig.GetBoolDefault("Interfaction", "InterfactionMisc", false);
 	crossover_chars = Config.OptionalConfig.GetBoolDefault("Interfaction", "CrossOverCharacters", false);
+	gamemaster_listOnlyActiveGMs = Config.OptionalConfig.GetBoolDefault("GameMaster", "ListOnlyActiveGMs", false);
+	gamemaster_hidePermissions = Config.OptionalConfig.GetBoolDefault("GameMaster", "HidePermissions", false);
 	start_level = Config.OptionalConfig.GetIntDefault("Optional", "StartingLevel", 1);
 	if(start_level > 70) {start_level = 70;}
 	antiMasterLootNinja = Config.OptionalConfig.GetBoolDefault("Optional", "AntiMasterLootNinja", false);

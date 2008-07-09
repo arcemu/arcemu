@@ -504,6 +504,8 @@ public:
 	bool interfaction_misc;
 	bool crossover_chars;
 	bool antiMasterLootNinja;
+	bool gamemaster_listOnlyActiveGMs;
+	bool gamemaster_hidePermissions;
 
 	bool realmAllowTBCcharacters;
 	

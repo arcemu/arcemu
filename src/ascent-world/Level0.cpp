@@ -348,11 +348,12 @@ bool ChatHandler::HandleSaveCommand(const char* args, WorldSession *m_session)
 	return true;
 }
 
-
 bool ChatHandler::HandleGMListCommand(const char* args, WorldSession *m_session)
 {
 	WorldPacket data;
 	bool first = true;
+
+	bool isGM = m_session->GetPermissionCount() != 0;
 
 	PlayerStorageMap::const_iterator itr;
 	objmgr._playerslock.AcquireReadLock();
@@ -360,12 +361,23 @@ bool ChatHandler::HandleGMListCommand(const char* args, WorldSession *m_session)
 	{
 		if(itr->second->GetSession()->GetPermissionCount())
 		{
-			if(first)
-				GreenSystemMessage(m_session, "There are following active GMs on this server:");
+			if(isGM || !sWorld.gamemaster_listOnlyActiveGMs || (sWorld.gamemaster_listOnlyActiveGMs && itr->second->bGMTagOn))
+			{
+				if(first)
+					GreenSystemMessage(m_session, "There are following active GMs on this server:");
 
-			SystemMessage(m_session, "%s [%s]", itr->second->GetName(), itr->second->GetSession()->GetPermissions());
+				if(sWorld.gamemaster_hidePermissions && !isGM)
+					SystemMessage(m_session, " - %s", itr->second->GetName());
+				else
+				{
+					if(sWorld.gamemaster_listOnlyActiveGMs && !itr->second->bGMTagOn)
+						SystemMessage(m_session, "|cff888888 - %s [%s]|r", itr->second->GetName(), itr->second->GetSession()->GetPermissions());
+					else
+						SystemMessage(m_session, " - %s [%s]", itr->second->GetName(), itr->second->GetSession()->GetPermissions());
+				}
 
-			first = false;
+				first = false;
+			}
 		}
 	}
 	objmgr._playerslock.ReleaseReadLock();
@@ -422,6 +434,7 @@ bool ChatHandler::HandleRatingsCommand( const char *args , WorldSession *m_sessi
 	m_plyr->UpdateStats();
 	return true;
 }
+
 
 
 
