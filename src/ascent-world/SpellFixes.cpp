@@ -343,6 +343,54 @@ void ApplyExtraDataFixes()
 	sp = dbcSpell.LookupEntryForced(1608);
 	if( sp != NULL )
 		sp->in_front_status = SPELL_INFRONT_STATUS_REQUIRE_INFRONT;
+		
+    // Intercept - all ranks  
+	// Spell 20252 (Intercept rank 1) is infront from spell extra.
+	sp = dbcSpell.LookupEntryForced(20252);
+	if( sp != NULL )
+		sp->in_front_status = SPELL_INFRONT_STATUS_REQUIRE_INFRONT;
+		
+	// Spell 20616  (Intercept rank 2) is infront from spell extra.
+	sp = dbcSpell.LookupEntryForced(20616);
+	if( sp != NULL )
+		sp->in_front_status = SPELL_INFRONT_STATUS_REQUIRE_INFRONT;
+		
+	// Spell 20617 (Intercept rank 3) is infront from spell extra.
+	sp = dbcSpell.LookupEntryForced(20617);
+	if( sp != NULL )
+		sp->in_front_status = SPELL_INFRONT_STATUS_REQUIRE_INFRONT;
+		
+	// Spell  25272 (Intercept rank 4) is infront from spell extra.
+	sp = dbcSpell.LookupEntryForced(25272);
+	if( sp != NULL )
+		sp->in_front_status = SPELL_INFRONT_STATUS_REQUIRE_INFRONT;
+		
+	// Spell 25275  (Intercept rank 5) is infront from spell extra.
+	sp = dbcSpell.LookupEntryForced(25275);
+	if( sp != NULL )
+		sp->in_front_status = SPELL_INFRONT_STATUS_REQUIRE_INFRONT;
+		
+    // Charge - all ranks
+	// Spell 100 (Charge rank 1) is infront from spell extra.
+	sp = dbcSpell.LookupEntryForced(100);
+	if( sp != NULL )
+		sp->in_front_status = SPELL_INFRONT_STATUS_REQUIRE_INFRONT;
+		
+	// Spell 6178 (Charge rank 2) is infront from spell extra.
+	sp = dbcSpell.LookupEntryForced(6178);
+	if( sp != NULL )
+	sp->in_front_status = SPELL_INFRONT_STATUS_REQUIRE_INFRONT;
+	
+	// Spell 11578 (Charge rank 3) is infront from spell extra.
+	sp = dbcSpell.LookupEntryForced(11578);
+	if( sp != NULL )
+		sp->in_front_status = SPELL_INFRONT_STATUS_REQUIRE_INFRONT;
+	
+    // Feral Charge 
+	// Spell 16979 (Feral Charge) is infront from spell extra.
+	sp = dbcSpell.LookupEntryForced(16979);
+	if( sp != NULL )
+		sp->in_front_status = SPELL_INFRONT_STATUS_REQUIRE_INFRONT;
 
 	// Spell 1671 (Shield Bash Rank 2) is infront from spell extra.
 	sp = dbcSpell.LookupEntryForced(1671);
