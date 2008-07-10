@@ -126,6 +126,7 @@ SMT_RESIST_DISPEL - check if it is used
 - sockets for thrown weapons disabled - was causing server crash - fix in item.cpp itemhandler.cpp
 - exploit to increase player count in instance to X amount.
 - pets summoned in instances crash the server
+- split damage code in Unit.cpp (lines 3054 - 3086) and Object.cpp (lines 2617 - 2649) crashes server, crash dump: http://arcemu.org/forums/index.php?showtopic=1105
 
 ==========================================================================
 player A must have any unsoulbound bag and he must party with player B ..
