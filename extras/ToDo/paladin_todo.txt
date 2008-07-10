@@ -30,13 +30,6 @@ How Divine Favor should work
 -Increases the change your holy light, flash of light or holy shock will crit by 100%
 -one charge, the cooldown starts when skill is used
 
-bug: Talent: Vindication
--Can be casted on every mob found from the world, even on bossess
-
-How Talent: Vindication should work
--Reduces the attributes of player's target by 5,10,15% (3 point talent)
--Can't be casted on bossess nor instance bossess (Ie, Kazzak, Lord Baron)
-
 Revision: 291
 bug: Greater blessing of X
 -When dismounted the spell can't be casted and gives you an error saying "Spell is not ready yet"

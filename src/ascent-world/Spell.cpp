@@ -2737,6 +2737,12 @@ uint8 Spell::CanCast(bool tolerate)
 				if (m_spellInfo->NameHash == SPELL_HASH_MIND_CONTROL && target->HasAurasWithNameHash(SPELL_HASH_MIND_CONTROL))
 					return SPELL_FAILED_BAD_TARGETS;
 
+				else  if(m_spellInfo->NameHash == SPELL_HASH_VINDICATION)
+				{
+					if( !target->IsPlayer() )
+						return SPELL_FAILED_BAD_TARGETS;
+				}
+
 				else if(m_spellInfo->Id == 12699)
 				{
 					if(target->GetEntry() != 5307 || target->isAlive())
