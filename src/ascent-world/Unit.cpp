@@ -4192,7 +4192,7 @@ void Unit::castSpell( Spell * pSpell )
 	}
 
 	m_currentSpell = pSpell;
-	pLastSpell = pSpell->m_spellInfo;
+	pLastSpell = pSpell->GetProto();
 }
 
 int32 Unit::GetSpellDmgBonus(Unit *pVictim, SpellEntry *spellInfo,int32 base_dmg, bool isdot)
@@ -5163,7 +5163,7 @@ void Unit::RemoveAurasByInterruptFlagButSkip(uint32 flag, uint32 skip)
 					case 33151:
 						{
 							//our luck. it got trigered on smite..we do not remove it just yet
-							if( m_currentSpell && m_currentSpell->m_spellInfo->NameHash == SPELL_HASH_SMITE )
+							if( m_currentSpell && m_currentSpell->GetProto()->NameHash == SPELL_HASH_SMITE )
 								continue;
 
 							//this spell gets removed only when casting smite
@@ -5173,9 +5173,9 @@ void Unit::RemoveAurasByInterruptFlagButSkip(uint32 flag, uint32 skip)
 						}break;
 					case 34936:	// Backlash
 						{
-							if( m_currentSpell && m_currentSpell->m_spellInfo->NameHash == SPELL_HASH_SHADOW_BOLT )
+							if( m_currentSpell && m_currentSpell->GetProto()->NameHash == SPELL_HASH_SHADOW_BOLT )
 								continue;
-							if( m_currentSpell && m_currentSpell->m_spellInfo->NameHash == SPELL_HASH_INCINERATE )
+							if( m_currentSpell && m_currentSpell->GetProto()->NameHash == SPELL_HASH_INCINERATE )
 								continue;
 							SpellEntry *spi = dbcSpell.LookupEntry( skip );
 							if( spi && spi->NameHash != SPELL_HASH_SHADOW_BOLT && spi->NameHash != SPELL_HASH_INCINERATE )
@@ -5184,7 +5184,7 @@ void Unit::RemoveAurasByInterruptFlagButSkip(uint32 flag, uint32 skip)
 
 					case 17941: //Shadow Trance
 						{
-							if( m_currentSpell && m_currentSpell->m_spellInfo->NameHash == SPELL_HASH_SHADOW_BOLT)
+							if( m_currentSpell && m_currentSpell->GetProto()->NameHash == SPELL_HASH_SHADOW_BOLT)
 								continue;
 							SpellEntry *spi = dbcSpell.LookupEntry( skip );
 							if( spi && spi->NameHash != SPELL_HASH_SHADOW_BOLT )

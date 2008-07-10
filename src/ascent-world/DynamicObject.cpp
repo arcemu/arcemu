@@ -74,7 +74,7 @@ void DynamicObject::Create(Unit * caster, Spell * pSpell, float x, float y, floa
 	else
 		p_caster = pSpell->p_caster;
 
-	m_spellProto = pSpell->m_spellInfo;
+	m_spellProto = pSpell->GetProto();
 	SetUInt64Value(DYNAMICOBJECT_CASTER, caster->GetGUID());
 
 	m_uint32Values[OBJECT_FIELD_ENTRY] = m_spellProto->Id;

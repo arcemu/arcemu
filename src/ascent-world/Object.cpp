@@ -2034,12 +2034,12 @@ void Object::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
 		
 		if(pVictim->GetUInt64Value(UNIT_FIELD_CHANNEL_OBJECT) > 0)
 		{
-			if(pVictim->GetCurrentSpell())
+			Spell *spl = pVictim->GetCurrentSpell();
+			if(spl != NULL)
 			{
-				Spell *spl = pVictim->GetCurrentSpell();
 				for(int i = 0; i < 3; i++)
 				{
-					if(spl->m_spellInfo->Effect[i] == SPELL_EFFECT_PERSISTENT_AREA_AURA)
+					if(spl->GetProto()->Effect[i] == SPELL_EFFECT_PERSISTENT_AREA_AURA)
 					{
 						DynamicObject *dObj = GetMapMgr()->GetDynamicObject(pVictim->GetUInt32Value(UNIT_FIELD_CHANNEL_OBJECT));
 						if(!dObj)
@@ -2051,7 +2051,7 @@ void Object::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
 						delete dObj;
 					}
 				}
-				if(spl->m_spellInfo->ChannelInterruptFlags == 48140) spl->cancel();
+				if(spl->GetProto()->ChannelInterruptFlags == 48140) spl->cancel();
 			}
 		}
 		
@@ -2622,8 +2622,8 @@ void Object::SpellNonMeleeDamageLog(Unit *pVictim, uint32 spellID, uint32 damage
 			for( itr = pVictim->m_damageSplitTargets.begin() ; itr != pVictim->m_damageSplitTargets.end() ; itr ++ )
 			{
 				// TODO: Separate damage based on school.
-				splittarget = pVictim->GetMapMgr() ? pVictim->GetMapMgr()->GetUnit( itr->m_target ) : NULL;
-				if( splittarget && res > 0 )
+				splittarget = (pVictim->GetMapMgr() != NULL) ? pVictim->GetMapMgr()->GetUnit( itr->m_target ) : NULL;
+				if( splittarget != NULL && res > 0 )
 				{
 					// calculate damage
 					tmpsplit = itr->m_flatDamageSplit;

@@ -550,8 +550,8 @@ void AIInterface::Update(uint32 p_time)
 				(m_nextTarget && 
 					(!m_Unit->GetMapMgr()->GetUnit(m_nextTarget->GetGUID()) || 
 					!m_nextTarget->isAlive() ||
-					!IsInrange(m_Unit,m_nextTarget,pSpell->m_spellInfo->base_range_or_radius_sqr) ||
-					!isAttackable(m_Unit, m_nextTarget,!(pSpell->m_spellInfo->c_is_flags & SPELL_FLAG_IS_TARGETINGSTEALTHED))
+					!IsInrange(m_Unit,m_nextTarget,pSpell->GetProto()->base_range_or_radius_sqr) ||
+					!isAttackable(m_Unit, m_nextTarget,!(pSpell->GetProto()->c_is_flags & SPELL_FLAG_IS_TARGETINGSTEALTHED))
 					)
 				)
 				)

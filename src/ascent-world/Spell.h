@@ -1475,7 +1475,6 @@ public:
     void writeSpellGoTargets( WorldPacket * data );
     void writeSpellMissedTargets( WorldPacket * data );
 
-    SpellEntry* m_spellInfo;
     uint32 pSpellId;
     SpellEntry *ProcedOnSpell; //some spells need to know the origins of the proc too
     SpellCastTargets m_targets;
@@ -1637,7 +1636,7 @@ public:
 	
 	// This returns SPELL_ENTRY_Spell_Dmg_Type where 0 = SPELL_DMG_TYPE_NONE, 1 = SPELL_DMG_TYPE_MAGIC, 2 = SPELL_DMG_TYPE_MELEE, 3 = SPELL_DMG_TYPE_RANGED
 	// It should NOT be used for weapon_damage_type which needs: 0 = MELEE, 1 = OFFHAND, 2 = RANGED
-	ASCENT_INLINE uint32 GetType() { return ( m_spellInfo->Spell_Dmg_Type == SPELL_DMG_TYPE_NONE ? SPELL_DMG_TYPE_MAGIC : m_spellInfo->Spell_Dmg_Type ); }
+	ASCENT_INLINE uint32 GetType() { return ( GetProto()->Spell_Dmg_Type == SPELL_DMG_TYPE_NONE ? SPELL_DMG_TYPE_MAGIC : GetProto()->Spell_Dmg_Type ); }
 
     std::vector<uint64> UniqueTargets;
     SpellTargetsList    ModeratedTargets;
@@ -1653,15 +1652,22 @@ public:
     bool IsAspect();
     bool IsSeal();
 
+	ASCENT_INLINE SpellEntry* GetProto() { return (m_spellInfo_override == NULL) ?  m_spellInfo : m_spellInfo_override; }
+	void InitProtoOverride()
+	{
+		if (m_spellInfo_override != NULL)
+			return;
+		m_spellInfo_override = dbcSpell.CreateCopy(m_spellInfo);
+	}
     uint32 GetDuration()
     {
         if(bDurSet)return Dur;
         bDurSet=true;
         int32 c_dur = 0;
 
-        if(m_spellInfo->DurationIndex)
+        if(GetProto()->DurationIndex)
         {
-            SpellDuration *sd=dbcSpellDuration.LookupEntry(m_spellInfo->DurationIndex);
+            SpellDuration *sd=dbcSpellDuration.LookupEntry(GetProto()->DurationIndex);
             if(sd)
             {
                 //check for negative and 0 durations.
@@ -1697,17 +1703,17 @@ public:
                     }
                 }
 
-                if(m_spellInfo->SpellGroupType && u_caster)
+                if(GetProto()->SpellGroupType && u_caster)
                 {
-                    SM_FIValue(u_caster->SM_FDur,(int32*)&this->Dur,m_spellInfo->SpellGroupType);
-                    SM_PIValue(u_caster->SM_PDur,(int32*)&this->Dur,m_spellInfo->SpellGroupType);
+                    SM_FIValue(u_caster->SM_FDur,(int32*)&this->Dur,GetProto()->SpellGroupType);
+                    SM_PIValue(u_caster->SM_PDur,(int32*)&this->Dur,GetProto()->SpellGroupType);
 #ifdef COLLECTION_OF_UNTESTED_STUFF_AND_TESTERS
 					int spell_flat_modifers=0;
 					int spell_pct_modifers=0;
-					SM_FIValue(u_caster->SM_FDur,&spell_flat_modifers,m_spellInfo->SpellGroupType);
-					SM_FIValue(u_caster->SM_PDur,&spell_pct_modifers,m_spellInfo->SpellGroupType);
+					SM_FIValue(u_caster->SM_FDur,&spell_flat_modifers,GetProto()->SpellGroupType);
+					SM_FIValue(u_caster->SM_PDur,&spell_pct_modifers,GetProto()->SpellGroupType);
 					if(spell_flat_modifers!=0 || spell_pct_modifers!=0)
-						printf("!!!!!spell duration mod flat %d , spell duration mod pct %d , spell duration %d, spell group %u\n",spell_flat_modifers,spell_pct_modifers,Dur,m_spellInfo->SpellGroupType);
+						printf("!!!!!spell duration mod flat %d , spell duration mod pct %d , spell duration %d, spell group %u\n",spell_flat_modifers,spell_pct_modifers,Dur,GetProto()->SpellGroupType);
 #endif
                 }
             }
@@ -1728,18 +1734,18 @@ public:
     {
         if(bRadSet[i])return Rad[i];
         bRadSet[i]=true;
-        Rad[i]=::GetRadius(dbcSpellRadius.LookupEntry(m_spellInfo->EffectRadiusIndex[i]));
-        if(m_spellInfo->SpellGroupType && u_caster)
+        Rad[i]=::GetRadius(dbcSpellRadius.LookupEntry(GetProto()->EffectRadiusIndex[i]));
+		if(GetProto()->SpellGroupType && u_caster)
         {
-            SM_FFValue(u_caster->SM_FRadius,&Rad[i],m_spellInfo->SpellGroupType);
-            SM_PFValue(u_caster->SM_PRadius,&Rad[i],m_spellInfo->SpellGroupType);
+            SM_FFValue(u_caster->SM_FRadius,&Rad[i],GetProto()->SpellGroupType);
+            SM_PFValue(u_caster->SM_PRadius,&Rad[i],GetProto()->SpellGroupType);
 #ifdef COLLECTION_OF_UNTESTED_STUFF_AND_TESTERS
 			float spell_flat_modifers=0;
 			float spell_pct_modifers=1;
-			SM_FFValue(u_caster->SM_FRadius,&spell_flat_modifers,m_spellInfo->SpellGroupType);
-			SM_PFValue(u_caster->SM_PRadius,&spell_pct_modifers,m_spellInfo->SpellGroupType);
+			SM_FFValue(u_caster->SM_FRadius,&spell_flat_modifers,GetProto()->SpellGroupType);
+			SM_PFValue(u_caster->SM_PRadius,&spell_pct_modifers,GetProto()->SpellGroupType);
 			if(spell_flat_modifers!=0 || spell_pct_modifers!=1)
-				printf("!!!!!spell radius mod flat %f , spell radius mod pct %f , spell radius %f, spell group %u\n",spell_flat_modifers,spell_pct_modifers,Rad[i],m_spellInfo->SpellGroupType);
+				printf("!!!!!spell radius mod flat %f , spell radius mod pct %f , spell radius %f, spell group %u\n",spell_flat_modifers,spell_pct_modifers,Rad[i],GetProto()->SpellGroupType);
 #endif
         }
 
@@ -1749,7 +1755,7 @@ public:
     ASCENT_INLINE static uint32 GetBaseThreat(uint32 dmg)
     {
         //there should be a formula to determine what spell cause threat and which don't
-/*        switch(m_spellInfo->NameHash)
+/*        switch(GetProto()->NameHash)
         {
             //hunter's mark
             case 4287212498:
@@ -1825,7 +1831,6 @@ protected:
     int32   m_castTime;
     int32   m_timer;
     
-    
 
     // Current Targets to be used in effect handler
     Unit*       unitTarget;
@@ -1867,6 +1872,10 @@ private:
     friend class DynamicObject;
     void DetermineSkillUp(uint32 skillid,uint32 targetlevel);
     void DetermineSkillUp(uint32 skillid);
+
+	SpellEntry* m_spellInfo;
+	SpellEntry* m_spellInfo_override;//used by spells that should have dynamic variables in spellentry.
+
 };
 
 void ApplyDiminishingReturnTimer(uint32 * Duration, Unit * Target, SpellEntry * spell);

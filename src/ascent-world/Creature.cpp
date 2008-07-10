@@ -1522,10 +1522,11 @@ void Creature::AISpellUpdate()
 	if (!IsInWorld() || !isAlive())
 		return;
 
-	if ( GetCurrentSpell() ) //check everythings going well on current spells
+	Spell* s=GetCurrentSpell();
+	if (s != NULL) //check everythings going well on current spells
 	{
-		Spell* s=GetCurrentSpell();
-		SpellRange* range=dbcSpellRange.LookupEntry(s->m_spellInfo->rangeIndex);
+		
+		SpellRange* range=dbcSpellRange.LookupEntry(s->GetProto()->rangeIndex);
 
 		if (s->GetUnitTarget() != NULL && range != NULL && (CalcDistance(s->GetUnitTarget()) > range->maxRange || CalcDistance(s->GetUnitTarget()) < range->minRange))
 			s->cancel();

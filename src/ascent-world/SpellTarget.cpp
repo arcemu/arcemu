@@ -973,7 +973,7 @@ void Spell::SpellTargetTargetPartyMember(uint32 i, uint32 j)
 	if(!Target)
 		return;
 
-	float r=GetMaxRange(dbcSpellRange.LookupEntry(m_spellInfo->rangeIndex));
+	float r=GetMaxRange(dbcSpellRange.LookupEntry(GetProto()->rangeIndex));
 	if(IsInrange(m_caster->GetPositionX(),m_caster->GetPositionY(),m_caster->GetPositionZ(),Target,r*r))
 		SafeAddTarget(tmpMap,m_targets.m_unitTarget);
 }
