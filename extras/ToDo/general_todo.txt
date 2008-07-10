@@ -171,3 +171,4 @@ Zack - test my shit :
 - paladin - Seal of Vengeance( 31801 ) -> Holy Vengeance ( 31803 )
 - paladin - Sanctified Judgement ( 31878 ) 
 - paladin - Spiritual Attunement( 31786 )
+- shaman - Mental Quicness(30814)

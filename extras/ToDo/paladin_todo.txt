@@ -34,7 +34,3 @@ Revision: 291
 bug: Greater blessing of X
 -When dismounted the spell can't be casted and gives you an error saying "Spell is not ready yet"
 -After this no paladin can cast greater blessings on anyone
-
-Revision: 291
-bug: Spiritual Attument - Does not return mana
-How it should work returns 11% mana from healing castd on you (ie 1100 fol casted on you you gain, ~100mana (Highly unclear yet)

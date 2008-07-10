@@ -257,8 +257,8 @@ pSpellAura SpellAuraHandler[TOTAL_SPELL_AURAS]={
         &Aura::SpellAuraNULL,//234 Apply Aura: Reduces Silence or Interrupt effects, Item spell magic http://www.thottbot.com/s42184
 		&Aura::SpellAuraNULL,//235 33206 Instantly reduces a friendly target's threat by $44416s1%, reduces all damage taken by $s1% and increases resistance to Dispel mechanics by $s2% for $d.
 		&Aura::SpellAuraNULL,//236
-		&Aura::SpellAuraNULL,//237
-		&Aura::SpellAuraNULL,//238
+		&Aura::SpellAuraModHealingByAP,//237	//increase spell healing by X pct from attack power
+		&Aura::SpellAuraModSpellDamageByAP,//238	//increase spell dmg by X pct from attack power
 		&Aura::SpellAuraNULL,//239
 		&Aura::SpellAuraAxeSkillModifier,//240 Increase Axe Skill http://www.wowhead.com/?spell=20574
 		&Aura::SpellAuraNULL,//241
@@ -7240,7 +7240,6 @@ void Aura::SpellAuraIncreaseSpellDamageByAttribute(bool apply)
 		else
 			SetPositive();
 
-		SM_FIValue(pCaster->SM_FEffectBonus,&val,m_spellProto->SpellGroupType);
 		mod->fixed_amount[mod->i] = val; //we wish to have the same amount when we are removing the spell as when we were applying !
 	}
 	else
@@ -7280,6 +7279,38 @@ void Aura::SpellAuraIncreaseSpellDamageByAttribute(bool apply)
 	}
 }
 
+void Aura::SpellAuraModSpellDamageByAP(bool apply)
+{
+	int32 val;
+
+	if(apply)
+	{
+		//!! caster may log out before spell expires on target !
+		Unit * pCaster = GetUnitCaster();
+		if(!pCaster)
+			return;
+
+		val = mod->m_amount * GetUnitCaster()->GetAP() / 100;
+		if(val<0)
+			SetNegative();
+		else
+			SetPositive();
+
+		mod->fixed_amount[mod->i] = val; //we wish to have the same amount when we are removing the spell as when we were applying !
+	}
+	else
+		val = -mod->fixed_amount[mod->i];
+
+	if(m_target->IsPlayer())
+	{
+		for(uint32 x=0;x<7;x++)
+			if (mod->m_miscValue & (((uint32)1)<<x) )
+				m_target->ModUnsigned32Value( PLAYER_FIELD_MOD_DAMAGE_DONE_POS + x, val );
+		if(m_target->IsPlayer())
+			static_cast< Player* >( m_target )->UpdateChanceFields();
+	}
+}
+
 void Aura::SpellAuraIncreaseHealingByAttribute(bool apply)
 {
 	int32 val;
@@ -7297,7 +7328,6 @@ void Aura::SpellAuraIncreaseHealingByAttribute(bool apply)
 		else
 			SetPositive();
 
-		SM_FIValue(pCaster->SM_FEffectBonus,&val,m_spellProto->SpellGroupType);
 		mod->fixed_amount[mod->i] = val; //we wish to have the same amount when we are removing the spell as when we were applying !
 	}
 	else
@@ -7331,6 +7361,35 @@ void Aura::SpellAuraIncreaseHealingByAttribute(bool apply)
 			else
 				m_target->ModUnsigned32Value(PLAYER_FIELD_MOD_HEALING_DONE_POS, -mod->realamount);
 		}
+	}
+}
+
+void Aura::SpellAuraModHealingByAP(bool apply)
+{
+	int32 val;
+
+	if(apply)
+	{
+		//!! caster may log out before spell expires on target !
+		Unit * pCaster = GetUnitCaster();
+		if(!pCaster)
+			return;
+
+		val = mod->m_amount * pCaster->GetAP() / 100;
+		if(val<0)
+			SetNegative();
+		else
+			SetPositive();
+
+		mod->fixed_amount[mod->i] = val; //we wish to have the same amount when we are removing the spell as when we were applying !
+	}
+	else
+		val = -mod->fixed_amount[mod->i];
+
+	if(m_target->IsPlayer())
+	{
+		m_target->ModUnsigned32Value(PLAYER_FIELD_MOD_HEALING_DONE_POS, val);
+		static_cast< Player* >( m_target )->UpdateChanceFields();
 	}
 }
 
