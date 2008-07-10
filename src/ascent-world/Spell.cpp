@@ -693,7 +693,6 @@ uint8 Spell::DidHit(uint32 effindex,Unit* target)
 		if (res == SPELL_DID_HIT_SUCCESS) // proc handling. mb should be moved outside this function
 		{
 //			u_caster->HandleProc(PROC_ON_SPELL_LAND,target,m_spellInfo);
-			target->HandleProc(PROC_ON_SPELL_LAND_VICTIM,u_caster,m_spellInfo);
 		}
 
 		return res;
@@ -1510,6 +1509,7 @@ void Spell::cast(bool check)
 						if(!m_triggeredSpell)
 						{
 							p_caster->HandleProc(PROC_ON_CAST_SPECIFIC_SPELL | PROC_ON_CAST_SPELL,Target, m_spellInfo);
+							Target->HandleProc(PROC_ON_SPELL_LAND_VICTIM,u_caster,m_spellInfo);
 							p_caster->m_procCounter = 0; //this is required for to be able to count the depth of procs (though i have no idea where/why we use proc on proc)
 						}
 
@@ -2526,6 +2526,7 @@ void Spell::HandleEffects(uint64 guid, uint32 i)
 	}
 
 	damage = CalculateEffect(i,unitTarget);
+
 	sLog.outDebug( "WORLD: Spell effect id = %u, damage = %d", m_spellInfo->Effect[i], damage);
 
 	if( m_spellInfo->Effect[i]<TOTAL_SPELL_EFFECTS)

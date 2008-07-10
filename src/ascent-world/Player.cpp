@@ -398,6 +398,7 @@ Player::Player( uint32 guid ) : m_mailBox(guid)
 	m_changingMaps = true;
 	m_outStealthDamageBonusPct = m_outStealthDamageBonusPeriod = m_outStealthDamageBonusTimer = 0;
 	m_vampiricEmbrace = m_vampiricTouch = 0;
+	LastSeal = 0;
 #ifdef COLLISION
 	m_flyhackCheckTimer = 0;
 #endif

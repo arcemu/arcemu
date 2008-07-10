@@ -1311,7 +1311,10 @@ void Aura::SpellAuraDummy(bool apply)
 			if( !c->judgespell )
 				c->judgespell = mod->m_amount;
 			if( !c->Seal )
+			{
 				c->Seal = m_spellProto->Id;
+				c->LastSeal = c->Seal;
+			}
 		}
 		else
 		{
@@ -4215,7 +4218,7 @@ void Aura::SpellAuraProcTriggerDamage(bool apply)
 		ds.m_flags = m_spellProto->procFlags;
 		ds.owner = (void*)this;
 		m_target->m_damageShields.push_back(ds);
-		sLog.outDebug("registering dmg proc %u, school %u, flags %u, charges %u \n",ds.m_spellId,ds.m_school,ds.m_flags,m_spellProto->procCharges);
+		sLog.outDebug("registering dmg proc %u, school %u, flags %u, charges at least %u \n",ds.m_spellId,ds.m_school,ds.m_flags,m_spellProto->procCharges);
 	}
 	else
 	{

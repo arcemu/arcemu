@@ -14809,6 +14809,8 @@ void ApplyNormalFixes()
 			sp->procFlags = PROC_ON_CAST_SPELL;
 			sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
 			sp->EffectTriggerSpell[0] = 31930;
+			sp->procChance = sp->EffectBasePoints[0]+1;
+			sp->EffectBasePoints[0] = 79;
 		}
 		sp = dbcSpell.LookupEntryForced( 31877 );
 		if( sp != NULL )
@@ -14816,6 +14818,8 @@ void ApplyNormalFixes()
 			sp->procFlags = PROC_ON_CAST_SPELL;
 			sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
 			sp->EffectTriggerSpell[0] = 31930;
+			sp->procChance = sp->EffectBasePoints[0]+1;
+			sp->EffectBasePoints[0] = 79;
 		}
 		sp = dbcSpell.LookupEntryForced( 31878 );
 		if( sp != NULL )
@@ -14823,7 +14827,8 @@ void ApplyNormalFixes()
 			sp->procFlags = PROC_ON_CAST_SPELL;
 			sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
 			sp->EffectTriggerSpell[0] = 31930;
-			//sp->procChance=100;
+			sp->procChance = sp->EffectBasePoints[0]+1;
+			sp->EffectBasePoints[0] = 79;
 		}
 
 		/**********************************************************
@@ -14898,14 +14903,14 @@ void ApplyNormalFixes()
 		sp = dbcSpell.LookupEntryForced( 31785 );
 		if( sp != NULL )
 		{
-			sp->procFlags = PROC_ON_SPELL_HIT_VICTIM | PROC_TARGET_SELF ;
+			sp->procFlags = PROC_ON_SPELL_LAND_VICTIM | PROC_TARGET_SELF ;
 			sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
 			sp->EffectTriggerSpell[0] = 31786;
 		}
 		sp = dbcSpell.LookupEntryForced( 33776 );
 		if( sp != NULL )
 		{
-			sp->procFlags = PROC_ON_SPELL_HIT_VICTIM | PROC_TARGET_SELF;
+			sp->procFlags = PROC_ON_SPELL_LAND_VICTIM | PROC_TARGET_SELF;
 			sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
 			sp->EffectTriggerSpell[0] = 31786;
 		}

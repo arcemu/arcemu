@@ -1488,6 +1488,7 @@ void Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, uint
 									continue;
 							}break;
 /*						//paladin - Seal of Vengeance -> Holy Vengeance
+						//lol, i leave this code in case it gets reported again. IT IS WORKING ! :D
 						case 31803:
 							{
 								//this aura mods the damage made as it stacks up
@@ -1521,7 +1522,8 @@ void Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, uint
 								//trigger only on heal spell cast by NOT us
 								if( !( CastingSpell->c_is_flags & SPELL_FLAG_IS_HEALING ) || this == victim )
 									continue; 
-								dmg_overwrite = dmg * (ospinfo->EffectBasePoints[0] + 1 ) / 100;
+								//this is not counting the bonus effects on heal
+								dmg_overwrite = (CastingSpell->EffectBasePoints[IsHealingSpell(CastingSpell)-1] + 1) * (ospinfo->EffectBasePoints[0] + 1 ) / 100;
 							}break;
 						//paladin - Light's Grace
 						case 31834:
@@ -1576,14 +1578,14 @@ void Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, uint
 								if( !IsPlayer() )
 									continue; //great, we can only make this for players 
 								Player* c = static_cast< Player* >( this );
-								//printf("is there a seal on the player ? %u \n",c->Seal);
-								if( !c->Seal )
+//printf("is there a seal on the player ? %u \n",c->Seal);
+								if( !c->LastSeal )
 									continue; //how the hack did we manage to cast judgement without a seal ?
-								SpellEntry *spellInfo = dbcSpell.LookupEntry( c->Seal ); //null pointer check was already made
+								SpellEntry *spellInfo = dbcSpell.LookupEntry( c->LastSeal ); //null pointer check was already made
 								if( !spellInfo )
 									continue;	//now this is getting freeky, how the hell did we manage to create this bug ?
 								dmg_overwrite = spellInfo->manaCost * (ospinfo->EffectBasePoints[0] + 1 ) / 100 ; //only half dmg
-								//printf("is there a seal on the player ? %u \n",dmg_overwrite);
+//printf("is there a seal on the player ? %u \n",dmg_overwrite);
 							}break;
 						//Energized
 						case 43751:
@@ -1977,7 +1979,7 @@ void Unit::HandleProcDmgShield(uint32 flag, Unit* attacker)
 			else
 			{
 				SpellEntry	*ability=dbcSpell.LookupEntry((*i2).m_spellId);
-				this->Strike( attacker, RANGED, ability, 0, 0, (*i2).m_damage, true, false );
+				this->Strike( attacker, RANGED, ability, 0, 0, (*i2).m_damage, true, true );//can dmg shields miss at all ?
 			}
 		}
 	}
@@ -3117,17 +3119,18 @@ else
 	// the above code was remade it for reasons : damage shield needs moslty same flags as handleproc + dual wield should proc too ?
 	if( !disable_proc && weapon_damage_type != OFFHAND )
     {
-		this->HandleProc(aproc,pVictim, ability,realdamage,abs); //maybe using dmg.resisted_damage is better sometimes but then if using godmode dmg is resisted instead of absorbed....bad
-		m_procCounter = 0;
-
-		pVictim->HandleProc(vproc,this, ability,realdamage,abs);
-		pVictim->m_procCounter = 0;
-
+		//damage shield must come before handleproc to not loose 1 charge : speel gets removed before last charge
 		if( realdamage > 0 || vproc & PROC_ON_BLOCK_VICTIM )
 		{
 			pVictim->HandleProcDmgShield(vproc,this);
 			HandleProcDmgShield(aproc,pVictim);
 		}
+
+		this->HandleProc(aproc,pVictim, ability,realdamage,abs); //maybe using dmg.resisted_damage is better sometimes but then if using godmode dmg is resisted instead of absorbed....bad
+		m_procCounter = 0;
+
+		pVictim->HandleProc(vproc,this, ability,realdamage,abs);
+		pVictim->m_procCounter = 0;
 	}
 //--------------------------spells triggering-----------------------------------------------
 	if(realdamage > 0 && ability == 0)

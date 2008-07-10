@@ -163,12 +163,5 @@ Step four.. : server crash in about 10 seconds.
 Zack - test my shit :
 
 - test healsupport or remove it
-- druid - force of nature : 33831
-- hunter - hunter's mark should stack AP : 1130
-- mage - icy veins - 12472
 - mage - clearcasting - 12536
-- test - SMT_CHARGES - can use paladin Holy shield(20925) and Improved Holy Shield ( 41021 )
-- paladin - Seal of Vengeance( 31801 ) -> Holy Vengeance ( 31803 )
-- paladin - Sanctified Judgement ( 31878 ) 
-- paladin - Spiritual Attunement( 31786 )
-- shaman - Mental Quicness(30814)
+- hunter - hunter's mark should stack AP : 1130
