@@ -17,12 +17,6 @@ bug: Improved shadowbolt: on spell crit it procs and grants you 20% more shadow 
 How it should work: Not disappearing with another people/pet/dot damage
 http://www.wowwiki.com/Improved_shadowbolt
 
-revision: 185
-db: RusDB
-bug: Shyphon life
-How it should work: Like corruption, no infront check is necessary
-http://www.wowwiki.com/Shyphon_life
-
 revision: 143
 bug: Ritual of Summoning doesn't work, portal doesn't show up.
 How it should work: Summoning portal opens up, deduct one soul shard is basically what it does.

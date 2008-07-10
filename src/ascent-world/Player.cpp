@@ -3103,6 +3103,49 @@ void Player::LoadFromDBProc(QueryResultVector & results)
 
 	if( !isAlive() )
 		myCorpse = objmgr.GetCorpseByOwner(GetLowGUID());
+
+	// check for multiple gems with unique-equipped flag
+	uint32 count;
+	uint32 uniques[64];
+	int nuniques=0;
+
+	for( uint32 x = EQUIPMENT_SLOT_START; x < EQUIPMENT_SLOT_END; ++x )
+	{
+		ItemInterface *itemi = GetItemInterface();
+		Item * it = itemi->GetInventoryItem(x);
+
+		if( it != NULL )
+		{
+			for( count=0; count<it->GetSocketsCount(); count++ )
+			{
+				EnchantmentInstance *ei = it->GetEnchantment(2+count);
+
+				if (ei && ei->Enchantment)
+				{
+					ItemPrototype * ip = ItemPrototypeStorage.LookupEntry(ei->Enchantment->GemEntry);
+					
+					if (ip && ip->Flags & ITEM_FLAG_UNIQUE_EQUIP && 
+						itemi->IsEquipped(ip->ItemId))
+					{
+						int i;
+
+						for (i=0; i<nuniques; i++)
+						{
+							if (uniques[i] == ip->ItemId)
+							{
+								// found a duplicate unique-equipped gem, remove it
+								it->RemoveEnchantment(2+count);
+								break;
+							}
+						}
+
+						if (i == nuniques) // not found
+							uniques[nuniques++] = ip->ItemId;
+					}
+				}
+			}
+		}
+	}
 }
 
 void Player::RolloverHonor()

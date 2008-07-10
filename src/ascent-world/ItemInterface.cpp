@@ -1510,6 +1510,38 @@ int8 ItemInterface::GetInternalBankSlotFromPlayer(int8 islot)
 
 //-------------------------------------------------------------------//
 //Description: checks if the item can be equiped on a specific slot
+//             this will check unique-equipped gems as well
+//-------------------------------------------------------------------//
+int8 ItemInterface::CanEquipItemInSlot2(int8 DstInvSlot, int8 slot, Item* item, bool ignore_combat /* = false */, bool skip_2h_check /* = false */)
+{
+	ItemPrototype *proto=item->GetProto();
+	uint32 count;
+	int8 ret;
+
+	ret = CanEquipItemInSlot(DstInvSlot, slot, proto, ignore_combat, skip_2h_check);
+	if (ret) return ret;
+
+	if((slot < INVENTORY_SLOT_BAG_END && DstInvSlot == INVENTORY_SLOT_NOT_SET) || (slot >= BANK_SLOT_BAG_START && slot < BANK_SLOT_BAG_END && DstInvSlot == INVENTORY_SLOT_NOT_SET))
+	{
+		for (count=0; count<item->GetSocketsCount(); count++) {
+			EnchantmentInstance *ei = item->GetEnchantment(2+count);
+			if (ei)
+			{
+				ItemPrototype * ip = ItemPrototypeStorage.LookupEntry(ei->Enchantment->GemEntry);
+
+				if (ip->Flags & ITEM_FLAG_UNIQUE_EQUIP && IsEquipped(ip->ItemId))
+				{
+					return INV_ERR_CANT_CARRY_MORE_OF_THIS;
+				}
+			}
+		}
+	}
+
+	return 0;
+}
+
+//-------------------------------------------------------------------//
+//Description: checks if the item can be equiped on a specific slot
 //-------------------------------------------------------------------//
 int8 ItemInterface::CanEquipItemInSlot(int8 DstInvSlot, int8 slot, ItemPrototype* proto, bool ignore_combat /* = false */, bool skip_2h_check /* = false */)
 {
@@ -3009,9 +3041,27 @@ bool ItemInterface::IsEquipped(uint32 itemid)
 {
 	for( uint32 x = EQUIPMENT_SLOT_START; x < EQUIPMENT_SLOT_END; ++x )
 	{
-		if( m_pItems[x] != NULL )
-			if( m_pItems[x]->GetProto()->ItemId == itemid )
-				return true;
+		Item * it = m_pItems[x];
+
+		if( it != NULL )
+		{
+			if( it->GetProto()->ItemId == itemid )
+ 				return true;
+
+			// check gems as well
+			for( uint32 count=0; count<it->GetSocketsCount(); count++ )
+			{
+				EnchantmentInstance *ei = it->GetEnchantment(2+count);
+				
+				if (ei && ei->Enchantment)
+				{
+					ItemPrototype * ip = ItemPrototypeStorage.LookupEntry(ei->Enchantment->GemEntry);
+					
+					if (ip && ip->ItemId == itemid)
+						return true;
+				}
+			}
+		}
 	}
 	return false;
 }
