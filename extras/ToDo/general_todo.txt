@@ -114,7 +114,6 @@ SMT_RESIST_DISPEL - check if it is used
 - socketing thrown weapons makes server crash
 - charge and intercept needs to retarget the mob in order to attack it again
 - eventtable might hold pointers to objects that were dealocated before event ocured = crash
-- reloadtable not working ?
 - with guid hacking make sure to not target frendly / enemy npc when not supposed to
 - fix exploit trading soulbound items
 - crash recovery should make sure to cleanup eventmanager of pointers forcedly deleted.
