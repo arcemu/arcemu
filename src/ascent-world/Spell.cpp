@@ -4514,6 +4514,8 @@ void Spell::Heal(int32 amount, bool ForceCrit)
 		p_caster->HandleProc( PROC_ON_CAST_SPECIFIC_SPELL | PROC_ON_CAST_SPELL, unitTarget, m_spellInfo );
 	}
 
+	unitTarget->RemoveAurasByHeal();
+
 	int doneTarget = 0;
 
 	// add threat

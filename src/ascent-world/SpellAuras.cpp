@@ -2441,6 +2441,8 @@ void Aura::EventPeriodicHeal( uint32 amount )
 
 	SendPeriodicHealAuraLog( add );
 
+	m_target->RemoveAurasByHeal();
+
 	if( GetSpellProto()->AuraInterruptFlags & AURA_INTERRUPT_ON_STAND_UP )
 	{
 		m_target->Emote( EMOTE_ONESHOT_EAT );
@@ -3014,6 +3016,8 @@ void Aura::EventPeriodicHealPct(float RegenPct)
 	{
 		m_target->Emote(EMOTE_ONESHOT_EAT);
 	}
+
+	m_target->RemoveAurasByHeal();
 }
 
 void Aura::SpellAuraModTotalManaRegenPct(bool apply)
@@ -4427,6 +4431,8 @@ void Aura::EventPeriodicLeech(uint32 amount)
 		m_target->HandleProc(PROC_ON_ANY_HOSTILE_ACTION|PROC_ON_ANY_DAMAGE_VICTIM|PROC_ON_SPELL_HIT_VICTIM,m_caster,m_spellProto,Amount);
 		m_target->m_procCounter = 0;
 
+		m_target->RemoveAurasByHeal();
+
 		//add here bonus to healing taken. Maybe not all spells should receive it ?
 		/*
 		//zack : have no idea if we should use downranking here so i'm removing it until confirmed
@@ -4851,6 +4857,8 @@ void Aura::EventPeriodicHealthFunnel(uint32 amount)
 			m_caster->SetUInt32Value(UNIT_FIELD_HEALTH, mh);
 
 		SendPeriodicAuraLog(m_target, m_target, m_spellProto->Id, m_spellProto->School, 1000, 0, 0, FLAG_PERIODIC_LEECH);
+
+		m_caster->RemoveAurasByHeal();
 	}
 }
 
@@ -5595,6 +5603,8 @@ void Aura::EventPeriodicHeal1(uint32 amount)
 		if(!(m_spellProto->BGR_one_buff_on_target & SPELL_TYPE_ARMOR))
 			SendPeriodicHealAuraLog(amount);
 	}
+
+	m_target->RemoveAurasByHeal();
 }
 
 void Aura::SpellAuraModPowerRegen(bool apply)

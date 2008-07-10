@@ -3844,6 +3844,51 @@ bool Unit::RemoveAuras(uint32 * SpellIds)
 	return res;
 }
 
+bool Unit::RemoveAurasByHeal()
+{
+	bool res = false;
+	for( uint32 x = 0; x < MAX_AURAS + MAX_PASSIVE_AURAS; x++ )
+	{
+		if ( m_auras[x] )
+		{
+			switch( m_auras[x]->GetSpellId() )
+			{
+				// remove after heal
+				case 35321:
+				case 38363:
+				case 39215:
+				{
+					m_auras[x]->Remove();
+					res = true;
+				} break;
+				// remove when healed to 100%
+				case 31956:
+				case 38801:
+				case 43093:
+				{
+					if ( GetUInt32Value( UNIT_FIELD_HEALTH ) == GetUInt32Value( UNIT_FIELD_MAXHEALTH ) )
+					{
+						m_auras[x]->Remove();
+						res = true;
+					}
+				} break;
+				// remove at p% health
+				case 38772:
+				{
+					uint32 p = m_auras[x]->GetSpellProto()->EffectBasePoints[1];
+					if ( GetUInt32Value( UNIT_FIELD_MAXHEALTH ) * p <= GetUInt32Value( UNIT_FIELD_HEALTH ) * 100 )
+					{
+						m_auras[x]->Remove();
+						res = true;
+					}
+				} break;
+			}
+		}
+	}
+
+	return res;
+}
+
 bool Unit::RemoveAura(uint32 spellId, uint64 guid)
 {   
 	for(uint32 x=0;x<MAX_AURAS+MAX_PASSIVE_AURAS;x++)
@@ -6044,6 +6089,8 @@ void Unit::Heal(Unit *target, uint32 SpellId, uint32 amount)
 		data << uint32(amount);   
 		data << uint8(0);
 		this->SendMessageToSet(&data,true);
+
+		target->RemoveAurasByHeal();
 	}
 }
 void Unit::Energize(Unit* target,uint32 SpellId, uint32 amount,uint32 type)

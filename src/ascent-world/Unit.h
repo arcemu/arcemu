@@ -784,6 +784,7 @@ public:
 	bool RemoveAuraPosByNameHash(uint32 namehash);//required to remove weaker instances of a spell
 	bool RemoveAuraNegByNameHash(uint32 namehash);//required to remove weaker instances of a spell
 	bool RemoveAuras(uint32 * SpellIds);
+	bool RemoveAurasByHeal();
 
 	void EventRemoveAura(uint32 SpellId)
 	{
