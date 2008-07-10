@@ -216,6 +216,9 @@ Spell::~Spell()
 	if( p_caster )
 		if( hadEffect || ( cancastresult == SPELL_CANCAST_OK && !GetSpellFailed() ) )
 			RemoveItems();
+
+	if (m_spellInfo_override !=NULL)
+		delete[] m_spellInfo_override;
 }
 
 //i might forget conditions here. Feel free to add them
