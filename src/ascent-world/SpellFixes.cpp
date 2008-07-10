@@ -20206,12 +20206,13 @@ void ApplyNormalFixes()
 			sp->procFlags = PROC_ON_SPELL_CRIT_HIT;
 		}
 
-		//Item Set: Lightbringer Armor
+		//paladin - Improved Spiritual Attunement
 		sp = dbcSpell.LookupEntryForced( 38421 );
 		if( sp != NULL )
 		{
 			sp->EffectSpellGroupRelation_high[0] = 4096;
 		}
+		//Item Set: Lightbringer Armor
 		sp = dbcSpell.LookupEntryForced( 38422 );
 		if( sp != NULL )
 		{

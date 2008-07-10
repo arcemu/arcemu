@@ -170,3 +170,4 @@ Zack - test my shit :
 - test - SMT_CHARGES - can use paladin Holy shield(20925) and Improved Holy Shield ( 41021 )
 - paladin - Seal of Vengeance( 31801 ) -> Holy Vengeance ( 31803 )
 - paladin - Sanctified Judgement ( 31878 ) 
+- paladin - Spiritual Attunement( 31786 )

@@ -1521,6 +1521,7 @@ void Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, uint
 								//trigger only on heal spell cast by NOT us
 								if( !( CastingSpell->c_is_flags & SPELL_FLAG_IS_HEALING ) || this == victim )
 									continue; 
+								dmg_overwrite = dmg * (ospinfo->EffectBasePoints[0] + 1 ) / 100;
 							}break;
 						//paladin - Light's Grace
 						case 31834:
