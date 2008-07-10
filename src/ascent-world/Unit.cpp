@@ -1487,6 +1487,13 @@ void Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, uint
 								if( it == NULL || it->GetProto()->InventoryType != INVTYPE_WEAPON )
 									continue;
 							}break;
+/*						//paladin - Seal of Vengeance -> Holy Vengeance
+						case 31803:
+							{
+								//this aura mods the damage made as it stacks up
+								SpellEntry *spellInfo = dbcSpell.LookupEntry(spellId);
+								dmg_overwrite = victim->CountNegativeAura( 31803 ) * (spellInfo->EffectBasePoints[0] + 1 );
+							}break;*/
 						//paladin - Seal of Blood
 						case 31893:
 							{
@@ -1574,7 +1581,7 @@ void Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, uint
 								SpellEntry *spellInfo = dbcSpell.LookupEntry( c->Seal ); //null pointer check was already made
 								if( !spellInfo )
 									continue;	//now this is getting freeky, how the hell did we manage to create this bug ?
-								dmg_overwrite = spellInfo->manaCost / 2 ; //only half dmg
+								dmg_overwrite = spellInfo->manaCost * (ospinfo->EffectBasePoints[0] + 1 ) / 100 ; //only half dmg
 								//printf("is there a seal on the player ? %u \n",dmg_overwrite);
 							}break;
 						//Energized
@@ -5172,6 +5179,18 @@ bool Unit::HasNegativeAura(uint32 spell_id)
 	}
 
 	return false;
+}
+
+bool Unit::CountNegativeAura(uint32 spell_id)
+{
+	uint32 ret=0;
+	for(uint32 x = MAX_POSITIVE_AURAS; x < MAX_AURAS; ++x)
+	{
+		if(m_auras[x] && m_auras[x]->GetSpellProto()->Id == spell_id)
+			ret++;
+	}
+
+	return ret;
 }
 
 bool Unit::IsPoisoned()
