@@ -5181,7 +5181,7 @@ bool Unit::HasNegativeAura(uint32 spell_id)
 	return false;
 }
 
-bool Unit::CountNegativeAura(uint32 spell_id)
+uint32 Unit::CountNegativeAura(uint32 spell_id)
 {
 	uint32 ret=0;
 	for(uint32 x = MAX_POSITIVE_AURAS; x < MAX_AURAS; ++x)
