@@ -90,7 +90,8 @@ SMT_RESIST_DISPEL - check if it is used
 - when mage invisibility expires CPU goes to 100% ? Maybe this gives some insight into high lag problems ?
 - drunkness is not reseted by death
 - should make gracefull hit after all to avoid bug to run from monster while others gank him
-- sell produces memeory corruption ?
+- pet spells are reseted sometimes when using portals and such. They are not saved to db ?
+- accounts get stuck when map crashes
 
 ==========================================================================
 ! BUGS !
@@ -165,4 +166,4 @@ Zack - test my shit :
 - hunter - hunter's mark should stack AP : 1130
 - mage - icy veins - 12472
 - mage - clearcasting - 12536
-
+- priest - MC - mobs should attack after releaseing

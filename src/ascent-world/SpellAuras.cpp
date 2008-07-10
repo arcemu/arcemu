@@ -1027,6 +1027,13 @@ void Aura::SpellAuraModPossess(bool apply)
 			m_target->_setFaction();
 			m_target->UpdateOppFactionSet();
 		}
+		else
+		{
+			//mob woke up and realized he was controlled. He will turn to controller and also notify the other mobs he is fighting that they should attack the caster
+			//sadly i got only 3 test cases about this so i might be wrong :(
+			//zack : disabled until tested
+//			m_target->GetAIInterface()->EventChangeFaction( caster );
+		}
 	}
 }
 

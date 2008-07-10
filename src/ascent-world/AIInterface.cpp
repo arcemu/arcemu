@@ -3964,6 +3964,40 @@ void AIInterface::CancelSpellCast()
 }
 */
 
+/*
+Zack : disabled until tested
+void AIInterface::EventChangeFaction( Unit *ForceAttackersToHateThisInstead )
+{
+	m_nextSpell = 0;
+	m_currentHighestThreat = 0;
+	//we need a new hatred list
+	LockAITargets(true);
+	m_aiTargets.clear();
+	LockAITargets(false);
+	//we need a new assist list
+	m_assistTargets.clear();
+	//Clear targettable
+	if( ForceAttackersToHateThisInstead == NULL )
+	{
+		for(set<Object*>::iterator itr = m_Unit->GetInRangeSetBegin(); itr != m_Unit->GetInRangeSetEnd(); ++itr)
+			if( (*itr) && (*itr)->GetTypeId() == TYPEID_UNIT && static_cast<Unit*>(*itr)->GetAIInterface() )
+				static_cast<Unit*>(*itr)->GetAIInterface()->RemoveThreatByPtr( m_Unit );
+		SetNextTarget( (Unit*)NULL );
+	}
+	else
+	{
+		for(set<Object*>::iterator itr = m_Unit->GetInRangeSetBegin(); itr != m_Unit->GetInRangeSetEnd(); ++itr)
+			if( (*itr) && (*itr)->GetTypeId() == TYPEID_UNIT && static_cast<Unit*>(*itr)->GetAIInterface() )
+			{
+				static_cast<Unit*>(*itr)->GetAIInterface()->modThreatByPtr( ForceAttackersToHateThisInstead, 10 ); //just aping to be bale to hate him in case we got nothing else
+				static_cast<Unit*>(*itr)->GetAIInterface()->RemoveThreatByPtr( m_Unit );
+			}
+		modThreatByPtr( ForceAttackersToHateThisInstead, 1 );
+		SetNextTarget( ForceAttackersToHateThisInstead );
+	}
+}
+*/
+
 bool isGuard(uint32 id)
 {
 	switch(id)
