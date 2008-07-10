@@ -76,6 +76,11 @@ void oLog::outString( const char * str, ... )
 		vprintf(str, ap);
 		putc('\n', stdout);
 	}
+	if(m_fileLogLevel >= 0 && m_file)
+	{
+		vfprintf(m_file, str, ap);
+		putc('\n', m_file);
+	}
 
 	va_end(ap);
 }
@@ -103,6 +108,11 @@ void oLog::outError( const char * err, ... )
 		puts(colorstrings[TNORMAL]);
 #endif
 	}
+	if(m_fileLogLevel >= 1 && m_file)
+	{
+		vfprintf(m_file, err, ap);
+		putc('\n', m_file);
+	}
 
 	va_end(ap);
 }
@@ -119,6 +129,11 @@ void oLog::outBasic( const char * str, ... )
 	{
 		vprintf(str, ap);
 		putc('\n', stdout);
+	}
+	if(m_fileLogLevel >= 1 && m_file)
+	{
+		vfprintf(m_file, str, ap);
+		putc('\n', m_file);
 	}
 
 	va_end(ap);
@@ -137,6 +152,11 @@ void oLog::outDetail( const char * str, ... )
 		vprintf(str, ap);
 		putc('\n', stdout);
 	}
+	if(m_fileLogLevel >= 2 && m_file)
+	{
+		vfprintf(m_file, str, ap);
+		putc('\n', m_file);
+	}
 
 	va_end(ap);
 }
@@ -153,6 +173,11 @@ void oLog::outDebug( const char * str, ... )
 	{
 		vprintf(str, ap);
 		putc('\n', stdout);
+	}
+	if(m_fileLogLevel >= 3 && m_file)
+	{
+		vfprintf(m_file, str, ap);
+		putc('\n', m_file);
 	}
 
 	va_end(ap);
@@ -187,6 +212,16 @@ void oLog::SetScreenLoggingLevel(int32 level)
 void oLog::SetFileLoggingLevel(int32 level)
 {
 	m_fileLogLevel = level;
+
+	if (m_fileLogLevel >= 0)
+	{
+		char *filename = "file.log";
+		m_file = fopen(filename, "w");
+		if (m_file == NULL)
+		{
+			fprintf(stderr, "%s: Error opening '%s': %s\n", __FUNCTION__, filename, strerror(errno));
+		}
+	}
 }
 
 void SessionLogWriter::write(const char* format, ...)

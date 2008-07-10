@@ -70,6 +70,8 @@ public:
 #endif
   int32 m_fileLogLevel;
   int32 m_screenLogLevel;
+  
+  FILE *m_file;
 };
 
 class SessionLogWriter
