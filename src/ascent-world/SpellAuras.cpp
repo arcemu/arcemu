@@ -1587,7 +1587,21 @@ void Aura::SpellAuraDummy(bool apply)
 				return;
 			pts.procChance = GetSpellProto()->procChance;
 			pts.procFlags = GetSpellProto()->procFlags;
-			pts.procCharges = GetSpellProto()->procCharges;
+			int charges = GetSpellProto()->procCharges;
+			if( GetSpellProto()->SpellGroupType && GetUnitCaster() != NULL )
+			{
+				SM_FIValue( GetUnitCaster()->SM_FCharges, &charges, GetSpellProto()->SpellGroupType );
+				SM_PIValue( GetUnitCaster()->SM_PCharges, &charges, GetSpellProto()->SpellGroupType );
+#ifdef COLLECTION_OF_UNTESTED_STUFF_AND_TESTERS
+				float spell_flat_modifers=0;
+				float spell_pct_modifers=0;
+				SM_FIValue(GetUnitCaster()->SM_FCharges,&spell_flat_modifers,GetSpellProto()->SpellGroupType);
+				SM_FIValue(GetUnitCaster()->SM_PCharges,&spell_pct_modifers,GetSpellProto()->SpellGroupType);
+				if(spell_flat_modifers!=0 || spell_pct_modifers!=0)
+					printf("!!!!!spell charge bonus mod flat %f , spell range bonus pct %f , spell range %f, spell group %u\n",spell_flat_modifers,spell_pct_modifers,maxRange,m_spellInfo->SpellGroupType);
+#endif
+			}
+			pts.procCharges = charges;
 			pts.LastTrigger = 0;
 			pts.deleted = false;
 			m_target->m_procSpells.push_front(pts);
@@ -4113,7 +4127,21 @@ void Aura::SpellAuraProcTriggerSpell(bool apply)
 		}
 		pts.procChance = GetSpellProto()->procChance;
 		pts.procFlags = GetSpellProto()->procFlags;
-		pts.procCharges = GetSpellProto()->procCharges;
+		int charges = GetSpellProto()->procCharges;
+		if( GetSpellProto()->SpellGroupType && GetUnitCaster() != NULL )
+		{
+			SM_FIValue( GetUnitCaster()->SM_FCharges, &charges, GetSpellProto()->SpellGroupType );
+			SM_PIValue( GetUnitCaster()->SM_PCharges, &charges, GetSpellProto()->SpellGroupType );
+#ifdef COLLECTION_OF_UNTESTED_STUFF_AND_TESTERS
+			float spell_flat_modifers=0;
+			float spell_pct_modifers=0;
+			SM_FIValue(GetUnitCaster()->SM_FCharges,&spell_flat_modifers,GetSpellProto()->SpellGroupType);
+			SM_FIValue(GetUnitCaster()->SM_PCharges,&spell_pct_modifers,GetSpellProto()->SpellGroupType);
+			if(spell_flat_modifers!=0 || spell_pct_modifers!=0)
+				printf("!!!!!spell charge bonus mod flat %f , spell range bonus pct %f , spell range %f, spell group %u\n",spell_flat_modifers,spell_pct_modifers,maxRange,m_spellInfo->SpellGroupType);
+#endif
+		}
+		pts.procCharges = charges;
 		pts.LastTrigger = 0;
 		pts.deleted = false;
 
@@ -4157,7 +4185,7 @@ void Aura::SpellAuraProcTriggerSpell(bool apply)
 			return;
 		}*/
 		m_target->m_procSpells.push_front(pts);
-		sLog.outDebug("%u is registering %u chance %u flags %u charges %u triggeronself %u interval %u\n",pts.origId,pts.spellId,pts.procChance,m_spellProto->procFlags & ~PROC_TARGET_SELF,m_spellProto->procCharges,m_spellProto->procFlags & PROC_TARGET_SELF,m_spellProto->proc_interval);
+		sLog.outDebug("%u is registering %u chance %u flags %u charges %u triggeronself %u interval %u\n",pts.origId,pts.spellId,pts.procChance,m_spellProto->procFlags & ~PROC_TARGET_SELF,charges,m_spellProto->procFlags & PROC_TARGET_SELF,m_spellProto->proc_interval);
 	}
 	else
 	{
@@ -6081,9 +6109,11 @@ void Aura::SpellAuraAddPctMod( bool apply )
 				SendModifierLog( &m_target->SM_PAPBonus, val, AffectedGroups, mod->m_miscValue, true );
 			}
 		}break;
+	case SMT_CHARGES:
+		SendModifierLog(&m_target->SM_PCharges, val, AffectedGroups,mod->m_miscValue);
+		break;
 	//TODO:
 	/*
-	case SMT_BLOCK:
 	case SMT_THREAT_REDUCED:
 
 	case SMT_TRIGGER:
@@ -6213,7 +6243,21 @@ void Aura::SpellAuraAddTargetTrigger(bool apply)
 		ProcTriggerSpell pts;
 		pts.parentId = GetSpellProto()->Id;
 		pts.caster = m_casterGuid;
-		pts.procCharges = GetSpellProto()->procCharges;
+		int charges = GetSpellProto()->procCharges;
+		if( GetSpellProto()->SpellGroupType && u_caster != NULL )
+		{
+			SM_FIValue( u_caster->SM_FCharges, &charges, GetSpellProto()->SpellGroupType );
+			SM_PIValue( u_caster->SM_PCharges, &charges, GetSpellProto()->SpellGroupType );
+#ifdef COLLECTION_OF_UNTESTED_STUFF_AND_TESTERS
+			float spell_flat_modifers=0;
+			float spell_pct_modifers=0;
+			SM_FIValue(u_caster->SM_FCharges,&spell_flat_modifers,GetSpellProto()->SpellGroupType);
+			SM_FIValue(u_caster->SM_PCharges,&spell_pct_modifers,GetSpellProto()->SpellGroupType);
+			if(spell_flat_modifers!=0 || spell_pct_modifers!=0)
+				printf("!!!!!spell charge bonus mod flat %f , spell range bonus pct %f , spell range %f, spell group %u\n",spell_flat_modifers,spell_pct_modifers,maxRange,m_spellInfo->SpellGroupType);
+#endif
+		}
+		pts.procCharges = charges;
 		pts.i = mod->i;
 		pts.LastTrigger = 0;
 
@@ -6225,7 +6269,7 @@ void Aura::SpellAuraAddTargetTrigger(bool apply)
 			return;
 		}
 		m_target->m_procSpells.push_front(pts);
-		sLog.outDebug("%u is registering %u chance %u flags %u charges %u triggeronself %u interval %u\n",pts.origId,pts.spellId,pts.procChance,m_spellProto->procFlags & ~PROC_TARGET_SELF,m_spellProto->procCharges,m_spellProto->procFlags & PROC_TARGET_SELF,m_spellProto->proc_interval);
+		sLog.outDebug("%u is registering %u chance %u flags %u charges %u triggeronself %u interval %u\n",pts.origId,pts.spellId,pts.procChance,m_spellProto->procFlags & ~PROC_TARGET_SELF,charges,m_spellProto->procFlags & PROC_TARGET_SELF,m_spellProto->proc_interval);
 	}
 	else
 	{
@@ -7364,8 +7408,10 @@ void Aura::SpellAuraAddFlatModifier(bool apply)
 		SendModifierLog(&m_target->SM_FChanceOfSuccess,val,AffectedGroups,mod->m_miscValue);
 		break;
 
+	case SMT_CHARGES:
+		SendModifierLog(&m_target->SM_FCharges, val, AffectedGroups,mod->m_miscValue);
+		break;
 /*	case SMT_THREAT_REDUCED:
-	case SMT_BLOCK:
 	case SMT_TRIGGER:
 	case SMT_TIME:*/
 		break;

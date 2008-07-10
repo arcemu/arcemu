@@ -13669,6 +13669,21 @@ void ApplyNormalFixes()
 		sp = dbcSpell.LookupEntryForced( 27179 ); // -- rank 4
 		if( sp != NULL )
 			sp->procFlags = PROC_ON_BLOCK_VICTIM;
+		/**********************************************************
+		* Improved Holy Shield
+		**********************************************************/
+		sp = dbcSpell.LookupEntryForced( 41021 ); // -- rank 1
+		if( sp != NULL )
+		{
+			sp->EffectSpellGroupRelation_high[0] = 64;
+			sp->EffectSpellGroupRelation_high[1] = 64;
+		}
+		sp = dbcSpell.LookupEntryForced( 41026 ); // -- rank 2
+		if( sp != NULL )
+		{
+			sp->EffectSpellGroupRelation_high[0] = 64;
+			sp->EffectSpellGroupRelation_high[1] = 64;
+		}
 
 		//////////////////////////////////////////
 		// HUNTER								//

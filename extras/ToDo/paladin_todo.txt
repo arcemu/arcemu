@@ -1,14 +1,3 @@
-revision: 254
-bug: Retribution Aura, It doesent hit on enemy who attack you. BTW. IT hit sometimes, but it hit only 1
-How it should work: Causes 26 Holy damage to any creature that strikes a party member within 30 yards. Players may only have one Aura on them per Paladin at any one time.
-http://www.wowhead.com/?spell=27150
-
-bug Holy shield:
--only 4 charges, even if you would have improved holy shield taken from the talents
--Appearently the damage doesn't grow up when player has improved version
--Increase player's change to block by additional 3%
--Threat works as it should be as far as I can tell
-
 Now how holy shield should work:
 -4 charges as a base amount, if you take improved holy shield you receive additional 2 charges per talent point used (2/2 talents = +4 charges)
 -Damage dealt by holy shield when player has succesfully blocked an attack is SplDmg*59 (holy damage), not sure though how they calculate these things, the block's threat made is +35% to the holy damage delivered

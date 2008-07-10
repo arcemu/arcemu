@@ -2603,7 +2603,21 @@ void Spell::HandleAddAura(uint64 guid)
 			if(itr->second->GetSpellProto()->procCharges>0)
 			{
 				Aura *aur=NULL;
-				for(int i=0;i<itr->second->GetSpellProto()->procCharges-1;i++)
+				int charges = itr->second->GetSpellProto()->procCharges;
+				if( itr->second->GetSpellProto()->SpellGroupType && u_caster != NULL )
+				{
+					SM_FIValue( u_caster->SM_FCharges, &charges, itr->second->GetSpellProto()->SpellGroupType );
+					SM_PIValue( u_caster->SM_PCharges, &charges, itr->second->GetSpellProto()->SpellGroupType );
+#ifdef COLLECTION_OF_UNTESTED_STUFF_AND_TESTERS
+					float spell_flat_modifers=0;
+					float spell_pct_modifers=0;
+					SM_FIValue(u_caster->SM_FCharges,&spell_flat_modifers,itr->second->GetSpellProto()->SpellGroupType);
+					SM_FIValue(u_caster->SM_PCharges,&spell_pct_modifers,itr->second->GetSpellProto()->SpellGroupType);
+					if(spell_flat_modifers!=0 || spell_pct_modifers!=0)
+						printf("!!!!!spell charge bonus mod flat %f , spell range bonus pct %f , spell range %f, spell group %u\n",spell_flat_modifers,spell_pct_modifers,maxRange,m_spellInfo->SpellGroupType);
+#endif
+				}
+				for(int i=0;i<charges-1;i++)
 				{
 					aur = new Aura(itr->second->GetSpellProto(),itr->second->GetDuration(),itr->second->GetCaster(),itr->second->GetTarget());
 					Target->AddAura(aur);
@@ -2612,7 +2626,7 @@ void Spell::HandleAddAura(uint64 guid)
 				if(!(itr->second->GetSpellProto()->procFlags & PROC_REMOVEONUSE))
 				{
 					SpellCharge charge;
-					charge.count=itr->second->GetSpellProto()->procCharges;
+					charge.count=charges;
 					charge.spellId=itr->second->GetSpellId();
 					charge.ProcFlag=itr->second->GetSpellProto()->procFlags;
 					charge.lastproc = 0;

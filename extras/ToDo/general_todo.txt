@@ -167,3 +167,4 @@ Zack - test my shit :
 - mage - icy veins - 12472
 - mage - clearcasting - 12536
 - priest - MC - mobs should attack after releaseing
+- test - SMT_CHARGES - can use paladin Holy shield(20925) and Improved Holy Shield ( 41021 )

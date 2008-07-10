@@ -936,6 +936,8 @@ public:
 	int32 * SM_FChanceOfSuccess;
 	int32 * SM_FRezist_dispell;
 	int32 * SM_PRezist_dispell;
+	int32 * SM_FCharges;
+	int32 * SM_PCharges;
 	void InheritSMMods(Unit *inherit_from);
 
 	//Events

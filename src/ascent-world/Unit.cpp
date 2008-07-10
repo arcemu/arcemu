@@ -173,6 +173,8 @@ Unit::Unit()
 	SM_FChanceOfSuccess = 0;
 	SM_FRezist_dispell = 0;
 	SM_PRezist_dispell = 0;
+	SM_FCharges = 0;
+	SM_PCharges = 0;
 
 	m_pacified = 0;
 	m_interruptRegen = 0;
@@ -347,6 +349,8 @@ Unit::~Unit()
 	if(SM_FChanceOfSuccess != 0) delete [] SM_FChanceOfSuccess ;
 	if(SM_FRezist_dispell != 0) delete [] SM_FRezist_dispell ;
 	if(SM_PRezist_dispell != 0) delete [] SM_PRezist_dispell ;
+	if(SM_FCharges != 0) delete [] SM_FCharges ;
+	if(SM_PCharges != 0) delete [] SM_PCharges ;
 
 	delete m_aiInterface;
 
@@ -3568,7 +3572,23 @@ void Unit::AddAura(Aura *aur)
 		//uint32 aurRank = aur->GetSpellProto()->Rank;
 		uint32 maxStack = aur->GetSpellProto()->maxstack;
 		if( aur->GetSpellProto()->procCharges > 0 )
-			maxStack=aur->GetSpellProto()->procCharges;
+		{
+			int charges = aur->GetSpellProto()->procCharges;
+			if( aur->GetSpellProto()->SpellGroupType && aur->GetUnitCaster() != NULL )
+			{
+				SM_FIValue( aur->GetUnitCaster()->SM_FCharges, &charges, aur->GetSpellProto()->SpellGroupType );
+				SM_PIValue( aur->GetUnitCaster()->SM_PCharges, &charges, aur->GetSpellProto()->SpellGroupType );
+#ifdef COLLECTION_OF_UNTESTED_STUFF_AND_TESTERS
+				float spell_flat_modifers=0;
+				float spell_pct_modifers=0;
+				SM_FIValue(aur->GetUnitCaster()->SM_FCharges,&spell_flat_modifers,aur->GetSpellProto()->SpellGroupType);
+				SM_FIValue(aur->GetUnitCaster()->SM_PCharges,&spell_pct_modifers,aur->GetSpellProto()->SpellGroupType);
+				if(spell_flat_modifers!=0 || spell_pct_modifers!=0)
+					printf("!!!!!spell charge bonus mod flat %f , spell range bonus pct %f , spell range %f, spell group %u\n",spell_flat_modifers,spell_pct_modifers,maxRange,m_spellInfo->SpellGroupType);
+#endif
+			}
+			maxStack=charges;
+		}
 		if( IsPlayer() && static_cast< Player* >( this )->stack_cheat )
 			maxStack = 999;
 
@@ -6232,6 +6252,18 @@ void Unit::InheritSMMods(Unit *inherit_from)
 		if(SM_PRezist_dispell==0)
 			SM_PRezist_dispell = new int32[SPELL_GROUPS];
 		memcpy(SM_PRezist_dispell,inherit_from->SM_PRezist_dispell,sizeof(int)*SPELL_GROUPS);
+	}
+	if(inherit_from->SM_FCharges)
+	{
+		if(SM_FCharges==0)
+			SM_FCharges = new int32[SPELL_GROUPS];
+		memcpy(SM_FCharges,inherit_from->SM_FCharges,sizeof(int)*SPELL_GROUPS);
+	}
+	if(inherit_from->SM_PCharges)
+	{
+		if(SM_PCharges==0)
+			SM_PCharges = new int32[SPELL_GROUPS];
+		memcpy(SM_PCharges,inherit_from->SM_PCharges,sizeof(int)*SPELL_GROUPS);
 	}
 }
 
