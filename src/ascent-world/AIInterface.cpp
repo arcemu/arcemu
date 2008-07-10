@@ -3964,8 +3964,6 @@ void AIInterface::CancelSpellCast()
 }
 */
 
-/*
-Zack : disabled until tested
 void AIInterface::EventChangeFaction( Unit *ForceAttackersToHateThisInstead )
 {
 	m_nextSpell = 0;
@@ -3987,7 +3985,8 @@ void AIInterface::EventChangeFaction( Unit *ForceAttackersToHateThisInstead )
 	else
 	{
 		for(set<Object*>::iterator itr = m_Unit->GetInRangeSetBegin(); itr != m_Unit->GetInRangeSetEnd(); ++itr)
-			if( (*itr) && (*itr)->GetTypeId() == TYPEID_UNIT && static_cast<Unit*>(*itr)->GetAIInterface() )
+			if( (*itr) && (*itr)->GetTypeId() == TYPEID_UNIT && static_cast<Unit*>(*itr)->GetAIInterface() 
+				&& static_cast<Unit*>(*itr)->GetAIInterface()->getThreatByPtr( m_Unit ) )//this guy will join me in fight since i'm telling him "sorry i was controlled"
 			{
 				static_cast<Unit*>(*itr)->GetAIInterface()->modThreatByPtr( ForceAttackersToHateThisInstead, 10 ); //just aping to be bale to hate him in case we got nothing else
 				static_cast<Unit*>(*itr)->GetAIInterface()->RemoveThreatByPtr( m_Unit );
@@ -3996,7 +3995,6 @@ void AIInterface::EventChangeFaction( Unit *ForceAttackersToHateThisInstead )
 		SetNextTarget( ForceAttackersToHateThisInstead );
 	}
 }
-*/
 
 bool isGuard(uint32 id)
 {
