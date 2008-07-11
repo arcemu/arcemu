@@ -25,7 +25,7 @@
 bool RockbiterWeapon(uint32 i, Spell* pSpell)
 {
     uint32 enchantment_entry = 0;
-    switch(pSpell->m_spellInfo->RankNumber)
+    switch(pSpell->GetProto()->RankNumber)
     {
     case 1:
         enchantment_entry = 3021;
@@ -76,7 +76,7 @@ bool RockbiterWeapon(uint32 i, Spell* pSpell)
         if(Slot < 0) return true;
     }
 
-    sLog.outDebug("ShamanSpells.cpp :: Rockbiter Weapon Rank %u, enchant %u, slot %u", pSpell->m_spellInfo->RankNumber,
+    sLog.outDebug("ShamanSpells.cpp :: Rockbiter Weapon Rank %u, enchant %u, slot %u", pSpell->GetProto()->RankNumber,
         enchantment_entry, Slot);
     
     return true;

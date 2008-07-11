@@ -25,7 +25,7 @@
 bool Charge(uint32 i, Spell* pSpell)
 {
     uint32 rage_to_gen;
-    switch(pSpell->m_spellInfo->Id)
+    switch(pSpell->GetProto()->Id)
     {
     case 100:   // Charge Rank 1
         rage_to_gen = 90;
@@ -88,7 +88,7 @@ bool Charge(uint32 i, Spell* pSpell)
 
 bool Execute(uint32 i, Spell* pSpell)
 {
-    //uint32 uSpellId = pSpell->m_spellInfo->Id;
+    //uint32 uSpellId = pSpell->GetProto()->Id;
     uint32 base_dmg = pSpell->damage;
     /*
     Attempt to finish off a wounded foe, causing 125 damage and converting each extra point
@@ -108,7 +108,7 @@ bool Execute(uint32 i, Spell* pSpell)
 
     // get the caster's rage points, and convert them
     // formula is 3 damage * spell rank * rage points
-    uint32 add_damage = (3 * pSpell->m_spellInfo->RankNumber);
+    uint32 add_damage = (3 * pSpell->GetProto()->RankNumber);
     add_damage *= pSpell->u_caster->GetUInt32Value(UNIT_FIELD_POWER2) / 10;   // rage is *10 always
     
     // send spell damage log

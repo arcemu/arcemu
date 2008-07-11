@@ -21,7 +21,7 @@
 bool ColdSnap(uint32 i, Spell * pSpell)
 {
     if(!pSpell->p_caster) return true;
-    pSpell->p_caster->ClearCooldownsOnLine(6, pSpell->m_spellInfo->Id);
+    pSpell->p_caster->ClearCooldownsOnLine(6, pSpell->GetProto()->Id);
     return true;
 }
 

@@ -184,7 +184,7 @@ bool BanishExile(uint32 i, Spell * pSpell)
 	Unit* target = pSpell->GetUnitTarget();
 	if(!pSpell->p_caster || !target) return true;
 
-	pSpell->p_caster->SpellNonMeleeDamageLog(target, pSpell->m_spellInfo->Id, target->GetUInt32Value(UNIT_FIELD_HEALTH), true);
+	pSpell->p_caster->SpellNonMeleeDamageLog(target, pSpell->GetProto()->Id, target->GetUInt32Value(UNIT_FIELD_HEALTH), true);
 	return true;
 }
 
@@ -310,7 +310,7 @@ bool SummonCritterDummy(uint32 i, Spell *pSpell)
 
 	uint32 newspell = 0;
 
-	switch(pSpell->m_spellInfo->Id)
+	switch(pSpell->GetProto()->Id)
 	{
 		case 26469: // Snowman Kit
 		{
