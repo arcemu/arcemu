@@ -75,14 +75,14 @@ bool SealOfRighteousness(uint32 i, Aura* pAura, bool apply)
 			break;
 	}
 
-	SpellEntry * GetProto() = dbcSpell.LookupEntry(applyId);
+	SpellEntry * entry = dbcSpell.LookupEntry(applyId);
 
 	if(apply == true)
 	{
 		int32 value = 0;
-		float randomPointsPerLevel = GetProto()->EffectDicePerLevel[2];
-		int32 basePoints = GetProto()->EffectBasePoints[2] + 1;
-		int32 randomPoints = GetProto()->EffectDieSides[2];
+		float randomPointsPerLevel = entry->EffectDicePerLevel[2];
+		int32 basePoints = entry->EffectBasePoints[2] + 1;
+		int32 randomPoints = entry->EffectDieSides[2];
 		if(u_caster)
 				randomPoints += u_caster->getLevel() * (int32)randomPointsPerLevel;
 
