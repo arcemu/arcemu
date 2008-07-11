@@ -3016,13 +3016,25 @@ void Spell::SpellEffectDispel(uint32 i) // Dispel
 		//Nothing can dispel resurrection sickness;
 		if(!aur->IsPassive() && !(aur->GetSpellProto()->Attributes & ATTRIBUTES_IGNORE_INVULNERABILITY))
 		{
-			uint32 UARank = 0;
 			if(GetProto()->DispelType == DISPEL_ALL)
 			{
 				unitTarget->HandleProc( PROC_ON_PRE_DISPELL_AURA_VICTIM , u_caster , GetProto(), aur->GetSpellId() );
 				
-				if( aur->m_spellProto && aur->m_spellProto->NameHash == SPELL_HASH_UNSTABLE_AFFLICTION )
-					UARank = aur->m_spellProto->RankNumber;
+				if( aur->GetSpellProto() && aur->GetSpellProto()->NameHash == SPELL_HASH_UNSTABLE_AFFLICTION )
+				{
+					uint32 dmg = aur->GetDuration() * (aur->GetSpellProto()->EffectBasePoints[0]+1) * 1500 / aur->GetSpellProto()->EffectAmplitude[0];
+					SpellEntry* entry = dbcSpell.LookupEntryForced(31117);
+					if (entry)
+					{
+						Spell* sp = new Spell(u_caster,entry,true,NULL);
+						sp->forced_basepoints[0] = dmg;
+						sp->ProcedOnSpell = aur->GetSpellProto();
+						sp->pSpellId=aur->GetSpellProto()->Id;
+						SpellCastTargets targets;
+						targets.m_unitTarget = u_caster->GetGUID();
+						sp->prepare(&targets);
+					}
+				}
 
 				data.clear();
 				data << m_caster->GetNewGUID();
@@ -3038,8 +3050,21 @@ void Spell::SpellEffectDispel(uint32 i) // Dispel
 			{
 				unitTarget->HandleProc( PROC_ON_PRE_DISPELL_AURA_VICTIM , u_caster , GetProto(), aur->GetSpellId() );
 
-				if( aur->m_spellProto && aur->m_spellProto->NameHash == SPELL_HASH_UNSTABLE_AFFLICTION )
-					UARank = aur->m_spellProto->RankNumber;
+				if( aur->GetSpellProto() && aur->GetSpellProto()->NameHash == SPELL_HASH_UNSTABLE_AFFLICTION )
+				{
+					uint32 dmg = aur->GetDuration() * (aur->GetSpellProto()->EffectBasePoints[0]+1) * 1500 / aur->GetSpellProto()->EffectAmplitude[0];
+					SpellEntry* entry = dbcSpell.LookupEntryForced(31117);
+					if (entry)
+					{
+						Spell* sp = new Spell(u_caster,entry,true,NULL);
+						sp->forced_basepoints[0] = dmg;
+						sp->ProcedOnSpell = aur->GetSpellProto();
+						sp->pSpellId=aur->GetSpellProto()->Id;
+						SpellCastTargets targets;
+						targets.m_unitTarget = u_caster->GetGUID();
+						sp->prepare(&targets);
+					}
+				}
 
 				data.clear();
 				data << m_caster->GetNewGUID();
@@ -3051,23 +3076,6 @@ void Spell::SpellEffectDispel(uint32 i) // Dispel
 				if(!--damage)
 					return;
 			}	
-			if( UARank != 0 )
-			{
-				uint32 dmg = 0;
-				switch ( UARank ) // BRRR, FUCKING BLIZZ
-				{
-					case 1:
-						dmg = 990;
-						break;
-					case 2:
-						dmg = 1260;
-						break;
-					case 3:
-						dmg = 1575;
-						break;
-				}
-				u_caster->SpellNonMeleeDamageLog(u_caster,31117,dmg,true,true);
-			}
 		}
 	}   
 }
@@ -5429,30 +5437,6 @@ void Spell::SpellEffectDummyMelee( uint32 i ) // Normalized Weapon damage +
 	//Hemorrhage
 	if( p_caster != NULL && GetProto()->NameHash == SPELL_HASH_HEMORRHAGE )
 		p_caster->AddComboPoints(p_caster->GetSelection(), 1);
-
-	switch( GetProto()->Id )
-	{
-			// AMBUSH
-	case 8676: add_damage = 70; return; break;			// r1
-	case 8724: add_damage = 100; return; break;			// r2
-	case 8725: add_damage = 125; return; break;			// r3
-	case 11267: add_damage = 185; return; break;		// r4
-	case 11268: add_damage = 230; return; break;		// r5
-	case 11269: add_damage = 290; return; break;		// r6
-	case 27441: add_damage = 335; return; break;		// r7
-
-			// BACKSTAB
-	case 53: add_damage = 15; return; break;			// r1
-	case 2589: add_damage = 30; return; break;			// r2
-	case 2590: add_damage = 48; return; break;			// r3
-	case 2591: add_damage = 69; return; break;			// r4
-	case 8721: add_damage = 90; return; break;			// r5
-	case 11279: add_damage = 135; return; break;		// r6
-	case 11280: add_damage = 165; return; break;		// r7
-	case 11281: add_damage = 210; return; break;		// r8
-	case 25300: add_damage = 225; return; break;		// r9
-	case 26863: add_damage = 255; return; break;		// r10
-	}
 
 	// rogue ambush etc
 	for (uint32 x =0;x<3;x++)
