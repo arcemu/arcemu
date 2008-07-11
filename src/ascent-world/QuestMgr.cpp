@@ -26,7 +26,7 @@ uint32 QuestMgr::CalcQuestStatus(Object* quest_giver, Player* plr, QuestRelation
 
 bool QuestMgr::isRepeatableQuestFinished(Player *plr, Quest *qst)
 {
-    uint32 i;
+	uint32 i;
 
 	for(i = 0; i < 4; ++i)
 	{
@@ -303,34 +303,34 @@ void QuestMgr::BuildOfferReward(WorldPacket *data, Quest* qst, Object* qst_giver
 
 	*data << qst->count_reward_choiceitem;
 	if (qst->count_reward_choiceitem)
-    {
-        for(uint32 i = 0; i < 6; ++i)
-        {
-            if(qst->reward_choiceitem[i])
-            {
-                *data << qst->reward_choiceitem[i];
-                *data << qst->reward_choiceitemcount[i];
-                it = ItemPrototypeStorage.LookupEntry(qst->reward_choiceitem[i]);
-                *data << (it ? it->DisplayInfoID : uint32(0));
-            }
-        }
-    }
+	{
+		for(uint32 i = 0; i < 6; ++i)
+		{
+			if(qst->reward_choiceitem[i])
+			{
+				*data << qst->reward_choiceitem[i];
+				*data << qst->reward_choiceitemcount[i];
+				it = ItemPrototypeStorage.LookupEntry(qst->reward_choiceitem[i]);
+				*data << (it ? it->DisplayInfoID : uint32(0));
+			}
+		}
+	}
     
 
 	*data << qst->count_reward_item;
-    if (qst->count_reward_item)
-    {
-        for(uint32 i = 0; i < 4; ++i)
-        {
-            if(qst->reward_item[i])
-            {
-                *data << qst->reward_item[i];
-                *data << qst->reward_itemcount[i];
-                it = ItemPrototypeStorage.LookupEntry(qst->reward_item[i]);
-                *data << (it ? it->DisplayInfoID : uint32(0));
-            }
-        }
-    }
+	if (qst->count_reward_item)
+	{
+		for(uint32 i = 0; i < 4; ++i)
+		{
+			if(qst->reward_item[i])
+			{
+				*data << qst->reward_item[i];
+				*data << qst->reward_itemcount[i];
+				it = ItemPrototypeStorage.LookupEntry(qst->reward_item[i]);
+				*data << (it ? it->DisplayInfoID : uint32(0));
+			}
+		}
+	}
 	
 
 	*data << GenerateRewardMoney( plr, qst );
@@ -983,17 +983,17 @@ void QuestMgr::OnQuestFinished(Player* plr, Quest* qst, Object *qst_giver, uint3
 		// Reputation reward
 		GiveQuestRewardReputation(plr, qst, qst_giver);
         // Static Item reward
-	    for(uint32 i = 0; i < 4; ++i)
-	    {
-		    if(qst->reward_item[i])
-		    {
-			    ItemPrototype *proto = ItemPrototypeStorage.LookupEntry(qst->reward_item[i]);
-			    if(!proto)
-			    {
-				    sLog.outError("Invalid item prototype in quest reward! ID %d, quest %d", qst->reward_item[i], qst->id);
-			    }
-			    else
-			    {   
+		for(uint32 i = 0; i < 4; ++i)
+		{
+			if(qst->reward_item[i])
+			{
+				ItemPrototype *proto = ItemPrototypeStorage.LookupEntry(qst->reward_item[i]);
+				if(!proto)
+				{
+					sLog.outError("Invalid item prototype in quest reward! ID %d, quest %d", qst->reward_item[i], qst->id);
+				}
+				else
+				{   
 					Item *add;
 					SlotResult slotresult;
 					add = plr->GetItemInterface()->FindItemLessMax(qst->reward_item[i], qst->reward_itemcount[i], false);
@@ -1017,20 +1017,20 @@ void QuestMgr::OnQuestFinished(Player* plr, Quest* qst, Object *qst_giver, uint3
 						add->SetCount(add->GetUInt32Value(ITEM_FIELD_STACK_COUNT) + qst->reward_itemcount[i]);
 						add->m_isDirty = true;
 					}
-			    }
-		    }
-	    }
+				}
+			}
+		}
 
 	    // Choice Rewards
-	    if(qst->reward_choiceitem[reward_slot])
-	    {
-		    ItemPrototype *proto = ItemPrototypeStorage.LookupEntry(qst->reward_choiceitem[reward_slot]);
-		    if(!proto)
-		    {
-			    sLog.outError("Invalid item prototype in quest reward! ID %d, quest %d", qst->reward_choiceitem[reward_slot], qst->id);
-		    }
-		    else
-		    {
+		if(qst->reward_choiceitem[reward_slot])
+		{
+			ItemPrototype *proto = ItemPrototypeStorage.LookupEntry(qst->reward_choiceitem[reward_slot]);
+			if(!proto)
+			{
+				sLog.outError("Invalid item prototype in quest reward! ID %d, quest %d", qst->reward_choiceitem[reward_slot], qst->id);
+			}
+			else
+			{
 				Item *add;
 				SlotResult slotresult;
 				add = plr->GetItemInterface()->FindItemLessMax(qst->reward_choiceitem[reward_slot], qst->reward_choiceitemcount[reward_slot], false);
@@ -1055,52 +1055,56 @@ void QuestMgr::OnQuestFinished(Player* plr, Quest* qst, Object *qst_giver, uint3
 					add->SetCount(add->GetUInt32Value(ITEM_FIELD_STACK_COUNT) + qst->reward_choiceitemcount[reward_slot]);
 					add->m_isDirty = true;
 				}
-		    }
-	    }
+			}
+		}
 
-	    // Remove items
-	    for(uint32 i = 0; i < 4; ++i)
-	    {
-		    if(qst->required_item[i]) plr->GetItemInterface()->RemoveItemAmt(qst->required_item[i],qst->required_itemcount[i]);
-	    }
+		 // Remove items
+		for(uint32 i = 0; i < 4; ++i)
+		{
+			if(qst->required_item[i]) plr->GetItemInterface()->RemoveItemAmt(qst->required_item[i],qst->required_itemcount[i]);
+		}
 
-	    // Remove srcitem
-	    if(qst->srcitem && qst->srcitem != qst->receive_items[0])
-		    plr->GetItemInterface()->RemoveItemAmt(qst->srcitem, qst->srcitemcount ? qst->srcitemcount : 1);
+		// Remove srcitem
+		if(qst->srcitem && qst->srcitem != qst->receive_items[0])
+			plr->GetItemInterface()->RemoveItemAmt(qst->srcitem, qst->srcitemcount ? qst->srcitemcount : 1);
 
-        // cast Effect Spell
-	    if(qst->effect_on_player)
-	    {
-		    SpellEntry  * inf =dbcSpell.LookupEntry(qst->effect_on_player);
-		    if(inf)
-		    {
-			    Spell * spe = new Spell(qst_giver,inf,true,NULL);
-			    SpellCastTargets tgt;
-			    tgt.m_unitTarget = plr->GetGUID();
-			    spe->prepare(&tgt);
-		    }
-	    }
+		// cast Effect Spell
+		if(qst->effect_on_player)
+		{
+			SpellEntry  * inf =dbcSpell.LookupEntry(qst->effect_on_player);
+			if(inf)
+			{
+				Spell * spe = new Spell(qst_giver,inf,true,NULL);
+				SpellCastTargets tgt;
+				tgt.m_unitTarget = plr->GetGUID();
+				spe->prepare(&tgt);
+			}
+		}
 
-	    plr->ModUnsigned32Value( PLAYER_FIELD_COINAGE, GenerateRewardMoney( plr, qst ) );
-    }
-    else
-    {
-	    plr->ModUnsigned32Value( PLAYER_FIELD_COINAGE, GenerateRewardMoney( plr, qst ) );
-  	
-	    // Reputation reward
+		plr->ModUnsigned32Value( PLAYER_FIELD_COINAGE, GenerateRewardMoney( plr, qst ) );
+
+		// if daily then append to finished dailies
+		if ( qst->is_repeatable == ASCENT_QUEST_REPEATABLE_DAILY )
+			plr->PushToFinishedDailies( qst->id );
+	}
+	else
+	{
+		plr->ModUnsigned32Value( PLAYER_FIELD_COINAGE, GenerateRewardMoney( plr, qst ) );
+	  
+		// Reputation reward
 		GiveQuestRewardReputation(plr, qst, qst_giver);
-	    // Static Item reward
-	    for(uint32 i = 0; i < 4; ++i)
-	    {
-		    if(qst->reward_item[i])
-		    {
-			    ItemPrototype *proto = ItemPrototypeStorage.LookupEntry(qst->reward_item[i]);
-			    if(!proto)
-			    {
-				    sLog.outError("Invalid item prototype in quest reward! ID %d, quest %d", qst->reward_item[i], qst->id);
-			    }
-			    else
-			    {   
+		// Static Item reward
+		for(uint32 i = 0; i < 4; ++i)
+		{
+			if(qst->reward_item[i])
+			{
+				ItemPrototype *proto = ItemPrototypeStorage.LookupEntry(qst->reward_item[i]);
+				if(!proto)
+				{
+					sLog.outError("Invalid item prototype in quest reward! ID %d, quest %d", qst->reward_item[i], qst->id);
+				}
+				else
+				{   
 					Item *add;
 					SlotResult slotresult;
 					add = plr->GetItemInterface()->FindItemLessMax(qst->reward_item[i], qst->reward_itemcount[i], false);
@@ -1124,20 +1128,20 @@ void QuestMgr::OnQuestFinished(Player* plr, Quest* qst, Object *qst_giver, uint3
 						add->SetCount(add->GetUInt32Value(ITEM_FIELD_STACK_COUNT) + qst->reward_itemcount[i]);
 						add->m_isDirty = true;
 					}
-			    }
-		    }
-	    }
+				}
+			}
+		}
 
-	    // Choice Rewards
-	    if(qst->reward_choiceitem[reward_slot])
-	    {
-		    ItemPrototype *proto = ItemPrototypeStorage.LookupEntry(qst->reward_choiceitem[reward_slot]);
-		    if(!proto)
-		    {
-			    sLog.outError("Invalid item prototype in quest reward! ID %d, quest %d", qst->reward_choiceitem[reward_slot], qst->id);
-		    }
-		    else
-		    {
+		// Choice Rewards
+		if(qst->reward_choiceitem[reward_slot])
+		{
+			ItemPrototype *proto = ItemPrototypeStorage.LookupEntry(qst->reward_choiceitem[reward_slot]);
+			if(!proto)
+			{
+				sLog.outError("Invalid item prototype in quest reward! ID %d, quest %d", qst->reward_choiceitem[reward_slot], qst->id);
+			}
+			else
+			{
 				Item *add;
 				SlotResult slotresult;
 				add = plr->GetItemInterface()->FindItemLessMax(qst->reward_choiceitem[reward_slot], qst->reward_choiceitemcount[reward_slot], false);
@@ -1161,67 +1165,67 @@ void QuestMgr::OnQuestFinished(Player* plr, Quest* qst, Object *qst_giver, uint3
 					add->SetCount(add->GetUInt32Value(ITEM_FIELD_STACK_COUNT) + qst->reward_choiceitemcount[reward_slot]);
 					add->m_isDirty = true;
 				}
-		    }
-	    }
+			}
+		}
 
-	    // Remove items
-	    for(uint32 i = 0; i < 4; ++i)
-	    {
-		    if(qst->required_item[i]) plr->GetItemInterface()->RemoveItemAmt(qst->required_item[i],qst->required_itemcount[i]);
-	    }
+		// Remove items
+		for(uint32 i = 0; i < 4; ++i)
+		{
+			if(qst->required_item[i]) plr->GetItemInterface()->RemoveItemAmt(qst->required_item[i],qst->required_itemcount[i]);
+		}
 
-	    // Remove srcitem
-	    if(qst->srcitem && qst->srcitem != qst->receive_items[0])
-		    plr->GetItemInterface()->RemoveItemAmt(qst->srcitem, qst->srcitemcount ? qst->srcitemcount : 1);
+		// Remove srcitem
+		if(qst->srcitem && qst->srcitem != qst->receive_items[0])
+			plr->GetItemInterface()->RemoveItemAmt(qst->srcitem, qst->srcitemcount ? qst->srcitemcount : 1);
 
-	    // cast learning spell
-	    if(qst->reward_spell)
-	    {
-		    if(!plr->HasSpell(qst->reward_spell))
-		    {
-			    // "Teaching" effect
-			    WorldPacket data(SMSG_SPELL_START, 42);
-			    data << qst_giver->GetNewGUID() << qst_giver->GetNewGUID();
-			    data << uint32(7763);
+		// cast learning spell
+		if(qst->reward_spell)
+		{
+			if(!plr->HasSpell(qst->reward_spell))
+			{
+				// "Teaching" effect
+				WorldPacket data(SMSG_SPELL_START, 42);
+				data << qst_giver->GetNewGUID() << qst_giver->GetNewGUID();
+				data << uint32(7763);
 				data << uint8(0);
-			    data << uint16(0);
-			    data << uint32(0);
-			    data << uint16(2);
-			    data << plr->GetGUID();
-			    plr->GetSession()->SendPacket( &data );
+				data << uint16(0);
+				data << uint32(0);
+				data << uint16(2);
+				data << plr->GetGUID();
+				plr->GetSession()->SendPacket( &data );
 
-			    data.Initialize( SMSG_SPELL_GO );
-			    data << qst_giver->GetNewGUID() << qst_giver->GetNewGUID();
-			    data << uint32(7763);		   // spellID
-			    data << uint8(0) << uint8(1);   // flags
-			    data << uint8(1);			   // amount of targets
-			    data << plr->GetGUID();		 // target
-			    data << uint8(0);
-			    data << uint16(2);
-			    data << plr->GetGUID();
-			    plr->GetSession()->SendPacket( &data );
+				data.Initialize( SMSG_SPELL_GO );
+				data << qst_giver->GetNewGUID() << qst_giver->GetNewGUID();
+				data << uint32(7763);		   // spellID
+				data << uint8(0) << uint8(1);   // flags
+				data << uint8(1);			   // amount of targets
+				data << plr->GetGUID();		 // target
+				data << uint8(0);
+				data << uint16(2);
+				data << plr->GetGUID();
+				plr->GetSession()->SendPacket( &data );
 
-			    // Teach the spell
-			    plr->addSpell(qst->reward_spell);
-		    }
-	    }
+				// Teach the spell
+				plr->addSpell(qst->reward_spell);
+			}
+		}
 
-	    // cast Effect Spell
-	    if(qst->effect_on_player)
-	    {
-		    SpellEntry  * inf =dbcSpell.LookupEntry(qst->effect_on_player);
-		    if(inf)
-		    {
-			    Spell * spe = new Spell(qst_giver,inf,true,NULL);
-			    SpellCastTargets tgt;
-			    tgt.m_unitTarget = plr->GetGUID();
-			    spe->prepare(&tgt);
-		    }
-	    }
+		// cast Effect Spell
+		if(qst->effect_on_player)
+		{
+			SpellEntry  * inf =dbcSpell.LookupEntry(qst->effect_on_player);
+			if(inf)
+			{
+				Spell * spe = new Spell(qst_giver,inf,true,NULL);
+				SpellCastTargets tgt;
+				tgt.m_unitTarget = plr->GetGUID();
+				spe->prepare(&tgt);
+			}
+		}
 
-	    //Add to finished quests
-	    plr->AddToFinishedQuests(qst->id);
-    }
+		//Add to finished quests
+		plr->AddToFinishedQuests(qst->id);
+	}
 }
 
 /////////////////////////////////////

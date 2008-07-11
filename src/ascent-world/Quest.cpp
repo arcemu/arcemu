@@ -339,13 +339,7 @@ void QuestLogEntry::Finish()
 
 	// clear from player log
 	m_plr->SetQuestLogSlot(NULL, m_slot);
-	if(GetQuest()->is_repeatable != ASCENT_QUEST_REPEATABLE_DAILY)
-		m_plr->PushToRemovedQuests(m_quest->id);
-
-	if(GetQuest()->is_repeatable == ASCENT_QUEST_REPEATABLE_DAILY)
-	{
-		m_plr->PushToFinishedDailies(m_quest->id);
-	}
+	m_plr->PushToRemovedQuests(m_quest->id);
 	// delete ourselves
 
 
