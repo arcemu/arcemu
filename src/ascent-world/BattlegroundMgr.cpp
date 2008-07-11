@@ -21,7 +21,6 @@
 
 #define ENABLE_AB
 #define ENABLE_EOTS
-//#define ONLY_ONE_PERSON_REQUIRED_TO_JOIN_DEBUG
 
 initialiseSingleton(CBattlegroundManager);
 typedef CBattleground*(*CreateBattlegroundFunc)(MapMgr* mgr,uint32 iid,uint32 group, uint32 type);
@@ -88,7 +87,6 @@ void CBattlegroundManager::HandleBattlegroundListPacket(WorldSession * m_session
 		return;
 	}
 
-	uint32 LevelGroup = GetLevelGrouping(m_session->GetPlayer()->getLevel());
 	uint32 Count = 0;
 	WorldPacket data(SMSG_BATTLEFIELD_LIST, 200);
 	data << m_session->GetPlayer()->GetGUID();
@@ -100,7 +98,7 @@ void CBattlegroundManager::HandleBattlegroundListPacket(WorldSession * m_session
 	m_instanceLock.Acquire();
 	for(map<uint32, CBattleground*>::iterator itr = m_instances[BattlegroundType].begin(); itr != m_instances[BattlegroundType].end(); ++itr)
 	{
-		if( itr->second->GetLevelGroup() == LevelGroup && itr->second->CanPlayerJoin(m_session->GetPlayer()) && !itr->second->HasEnded() )
+		if(itr->second->CanPlayerJoin(m_session->GetPlayer()) && !itr->second->HasEnded() )
 		{
 			data << itr->first;
 			++Count;
@@ -399,14 +397,13 @@ void CBattlegroundManager::EventQueueUpdate(bool forceStart)
 					bg = iitr->second;
 					for(k = 0; k < 2; ++k)
 					{
-						while(tempPlayerVec[k].size() && bg->HasFreeSlots(k))
+						for(deque<Player*>::iterator itr = tempPlayerVec[k].begin(); itr != tempPlayerVec[k].end(); itr++)
 						{
-							plr = *tempPlayerVec[k].begin();
-							tempPlayerVec[k].pop_front();
-							if(bg->CanPlayerJoin(plr))
+							if(bg->CanPlayerJoin(*itr))
 							{
-								bg->AddPlayer(plr, plr->GetTeam());
-								ErasePlayerFromList(plr->GetLowGUID(), &m_queuedPlayers[i][j]);
+								tempPlayerVec[k].erase(itr);
+								bg->AddPlayer(*itr, plr->GetTeam());
+								ErasePlayerFromList((*itr)->GetLowGUID(), &m_queuedPlayers[i][j]);
 							}
 						}
 					}
@@ -444,6 +441,7 @@ void CBattlegroundManager::EventQueueUpdate(bool forceStart)
 					if(CanCreateInstance(i,j))
 					{
 						bg = CreateInstance(i,j);
+
 						ASSERT(bg);
 
 						// push as many as possible in
