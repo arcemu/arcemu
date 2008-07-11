@@ -46,7 +46,7 @@ public:
 	bool Send(const uint8 * Bytes, uint32 Size);
 
 	// Burst system - Locks the sending mutex.
-	arcemu_INLINE void BurstBegin() { m_writeMutex.Acquire(); }
+	ARCEMU_INLINE void BurstBegin() { m_writeMutex.Acquire(); }
 
 	// Burst system - Adds bytes to output buffer.
 	bool BurstSend(const uint8 * Bytes, uint32 Size);
@@ -55,14 +55,14 @@ public:
 	void BurstPush();
 
 	// Burst system - Unlocks the sending mutex.
-	arcemu_INLINE void BurstEnd() { m_writeMutex.Release(); }
+	ARCEMU_INLINE void BurstEnd() { m_writeMutex.Release(); }
 
 /* Client Operations */
 
 	// Get the client's ip in numerical form.
 	string GetRemoteIP();
-	arcemu_INLINE uint32 GetRemotePort() { return ntohs(m_client.sin_port); }
-	arcemu_INLINE SOCKET GetFd() { return m_fd; }
+	ARCEMU_INLINE uint32 GetRemotePort() { return ntohs(m_client.sin_port); }
+	ARCEMU_INLINE SOCKET GetFd() { return m_fd; }
 	
 /* Platform-specific methods */
 
@@ -70,16 +70,16 @@ public:
 	void ReadCallback(uint32 len);
 	void WriteCallback();
 
-	arcemu_INLINE bool IsDeleted() { return m_deleted; }
-	arcemu_INLINE bool IsConnected() { return m_connected; }
-	arcemu_INLINE sockaddr_in & GetRemoteStruct() { return m_client; }
-	arcemu_INLINE CircularBuffer& GetReadBuffer() { return readBuffer; }
-	arcemu_INLINE CircularBuffer& GetWriteBuffer() { return writeBuffer; }
+	ARCEMU_INLINE bool IsDeleted() { return m_deleted; }
+	ARCEMU_INLINE bool IsConnected() { return m_connected; }
+	ARCEMU_INLINE sockaddr_in & GetRemoteStruct() { return m_client; }
+	ARCEMU_INLINE CircularBuffer& GetReadBuffer() { return readBuffer; }
+	ARCEMU_INLINE CircularBuffer& GetWriteBuffer() { return writeBuffer; }
 
 /* Deletion */
 	void Delete();
 
-	arcemu_INLINE in_addr GetRemoteAddress() { return m_client.sin_addr; }
+	ARCEMU_INLINE in_addr GetRemoteAddress() { return m_client.sin_addr; }
 
 protected:
 
@@ -108,12 +108,12 @@ protected:
 public:
 
 	// Set completion port that this socket will be assigned to.
-	arcemu_INLINE void SetCompletionPort(HANDLE cp) { m_completionPort = cp; }
+	ARCEMU_INLINE void SetCompletionPort(HANDLE cp) { m_completionPort = cp; }
 	
 	// Atomic wrapper functions for increasing read/write locks
-	arcemu_INLINE void IncSendLock() { InterlockedIncrement(&m_writeLock); }
-	arcemu_INLINE void DecSendLock() { InterlockedDecrement(&m_writeLock); }
-	arcemu_INLINE bool AcquireSendLock()
+	ARCEMU_INLINE void IncSendLock() { InterlockedIncrement(&m_writeLock); }
+	ARCEMU_INLINE void DecSendLock() { InterlockedDecrement(&m_writeLock); }
+	ARCEMU_INLINE bool AcquireSendLock()
 	{
 		if(m_writeLock)
 			return false;
@@ -145,9 +145,9 @@ public:
 	void PostEvent(uint32 events);
 
 	// Atomic wrapper functions for increasing read/write locks
-	arcemu_INLINE void IncSendLock() { m_writeLockMutex.Acquire(); m_writeLock++; m_writeLockMutex.Release(); }
-	arcemu_INLINE void DecSendLock() { m_writeLockMutex.Acquire(); m_writeLock--; m_writeLockMutex.Release(); }
-	arcemu_INLINE bool HasSendLock() { bool res; m_writeLockMutex.Acquire(); res = (m_writeLock != 0); m_writeLockMutex.Release(); return res; }
+	ARCEMU_INLINE void IncSendLock() { m_writeLockMutex.Acquire(); m_writeLock++; m_writeLockMutex.Release(); }
+	ARCEMU_INLINE void DecSendLock() { m_writeLockMutex.Acquire(); m_writeLock--; m_writeLockMutex.Release(); }
+	ARCEMU_INLINE bool HasSendLock() { bool res; m_writeLockMutex.Acquire(); res = (m_writeLock != 0); m_writeLockMutex.Release(); return res; }
 	bool AcquireSendLock()
 	{
 	  bool rv;
@@ -174,9 +174,9 @@ public:
 	// Posts a epoll event with the specifed arguments.
 	void PostEvent(int events, bool oneshot);
 	// Atomic wrapper functions for increasing read/write locks
-	arcemu_INLINE void IncSendLock() { m_writeLockMutex.Acquire(); m_writeLock++; m_writeLockMutex.Release(); }
-	arcemu_INLINE void DecSendLock() { m_writeLockMutex.Acquire(); m_writeLock--; m_writeLockMutex.Release(); }
-	arcemu_INLINE bool HasSendLock() { bool res; m_writeLockMutex.Acquire(); res = (m_writeLock != 0); m_writeLockMutex.Release(); return res; }
+	ARCEMU_INLINE void IncSendLock() { m_writeLockMutex.Acquire(); m_writeLock++; m_writeLockMutex.Release(); }
+	ARCEMU_INLINE void DecSendLock() { m_writeLockMutex.Acquire(); m_writeLock--; m_writeLockMutex.Release(); }
+	ARCEMU_INLINE bool HasSendLock() { bool res; m_writeLockMutex.Acquire(); res = (m_writeLock != 0); m_writeLockMutex.Release(); return res; }
 	bool AcquireSendLock()
 	{
 		bool rv;

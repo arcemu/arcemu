@@ -95,7 +95,7 @@ public:
 #endif
 	}
 
-	arcemu_INLINE void Time()
+	ARCEMU_INLINE void Time()
 	{
         /*tm * t = localtime(&UNIXTIME);
 		printf("%02u:%02u ", t->tm_hour, t->tm_min);*/

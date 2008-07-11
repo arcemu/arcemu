@@ -35,7 +35,7 @@ public:
 
 	/** Acquires this mutex. If it cannot be acquired immediately, it will block.
 	 */
-	arcemu_INLINE void Acquire()
+	ARCEMU_INLINE void Acquire()
 	{
 #ifndef WIN32
 		pthread_mutex_lock(&mutex);
@@ -46,7 +46,7 @@ public:
 
 	/** Releases this mutex. No error checking performed
 	 */
-	arcemu_INLINE void Release()
+	ARCEMU_INLINE void Release()
 	{
 #ifndef WIN32
 		pthread_mutex_unlock(&mutex);
@@ -59,7 +59,7 @@ public:
 	 * it will return false.
 	 * @return false if cannot be acquired, true if it was acquired.
 	 */
-	arcemu_INLINE bool AttemptAcquire()
+	ARCEMU_INLINE bool AttemptAcquire()
 	{
 #ifndef WIN32
 		return (pthread_mutex_trylock(&mutex) == 0);
@@ -96,10 +96,10 @@ class SERVER_DECL FastMutex
 	DWORD m_recursiveCount;
 
 public:
-	arcemu_INLINE FastMutex() : m_lock(0),m_recursiveCount(0) {}
-	arcemu_INLINE ~FastMutex() {}
+	ARCEMU_INLINE FastMutex() : m_lock(0),m_recursiveCount(0) {}
+	ARCEMU_INLINE ~FastMutex() {}
 
-	arcemu_INLINE void Acquire()
+	ARCEMU_INLINE void Acquire()
 	{
 		DWORD thread_id = GetCurrentThreadId(), owner;
 		if(thread_id == (DWORD)m_lock)
@@ -120,7 +120,7 @@ public:
 		++m_recursiveCount;
 	}
 
-	arcemu_INLINE bool AttemptAcquire()
+	ARCEMU_INLINE bool AttemptAcquire()
 	{
 		DWORD thread_id = GetCurrentThreadId();
 		if(thread_id == (DWORD)m_lock)
@@ -139,7 +139,7 @@ public:
 		return false;
 	}
 
-	arcemu_INLINE void Release()
+	ARCEMU_INLINE void Release()
 	{
 		if((--m_recursiveCount) == 0)
 			InterlockedExchange(&m_lock, 0);

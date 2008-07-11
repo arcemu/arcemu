@@ -54,12 +54,12 @@ public:
 
 	void SaveToDB();
 	void DeleteFromDB();
-	arcemu_INLINE void SetCorpseState(uint32 state) { m_state = state; }
-	arcemu_INLINE uint32 GetCorpseState() { return m_state; }
+	ARCEMU_INLINE void SetCorpseState(uint32 state) { m_state = state; }
+	ARCEMU_INLINE uint32 GetCorpseState() { return m_state; }
 	void Despawn();
 	
-	arcemu_INLINE void SetLoadedFromDB(bool value) { _loadedfromdb = value; }
-	arcemu_INLINE bool GetLoadedFromDB(void) { return _loadedfromdb; }
+	ARCEMU_INLINE void SetLoadedFromDB(bool value) { _loadedfromdb = value; }
+	ARCEMU_INLINE bool GetLoadedFromDB(void) { return _loadedfromdb; }
 	Loot loot;
 	void generateLoot();
 

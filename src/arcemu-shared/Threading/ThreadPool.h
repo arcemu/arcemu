@@ -105,7 +105,7 @@ public:
 		pthread_join(handle, NULL);
 	}
 
-	arcemu_INLINE uint32 GetId() { return (uint32)thread_id; }
+	ARCEMU_INLINE uint32 GetId() { return (uint32)thread_id; }
 };
 
 #else
@@ -141,7 +141,7 @@ public:
 	{
 		pthread_join(handle,NULL);
 	}
-	arcemu_INLINE uint32 GetId() { return (uint32)thread_id; }
+	ARCEMU_INLINE uint32 GetId() { return (uint32)thread_id; }
 };
 
 #endif
@@ -201,13 +201,13 @@ public:
 	void KillFreeThreads(uint32 count);
 
 	// resets the gobble counter
-	arcemu_INLINE void Gobble() { _threadsEaten=(int32)m_freeThreads.size(); }
+	ARCEMU_INLINE void Gobble() { _threadsEaten=(int32)m_freeThreads.size(); }
 
 	// gets active thread count
-	arcemu_INLINE uint32 GetActiveThreadCount() { return (uint32)m_activeThreads.size(); }
+	ARCEMU_INLINE uint32 GetActiveThreadCount() { return (uint32)m_activeThreads.size(); }
 
 	// gets free thread count
-	arcemu_INLINE uint32 GetFreeThreadCount() { return (uint32)m_freeThreads.size(); }
+	ARCEMU_INLINE uint32 GetFreeThreadCount() { return (uint32)m_freeThreads.size(); }
 };
 
 extern SERVER_DECL CThreadPool ThreadPool;

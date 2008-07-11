@@ -98,52 +98,52 @@ public:
 
 #else
 
-	arcemu_INLINE bool CheckLOS(uint32 mapId, float x1, float y1, float z1, float x2, float y2, float z2)
+	ARCEMU_INLINE bool CheckLOS(uint32 mapId, float x1, float y1, float z1, float x2, float y2, float z2)
 	{
 		return CollisionMgr->isInLineOfSight( mapId, x1, y1, z1, x2, y2, z2 );
 	}
 
-	arcemu_INLINE bool GetFirstPoint(uint32 mapId, float x1, float y1, float z1, float x2, float y2, float z2, float & outx, float & outy, float & outz, float distmod)
+	ARCEMU_INLINE bool GetFirstPoint(uint32 mapId, float x1, float y1, float z1, float x2, float y2, float z2, float & outx, float & outy, float & outz, float distmod)
 	{
 		return CollisionMgr->getObjectHitPos( mapId, x1, y1, z1, x2, y2, z2, outx, outy, outz, distmod );
 	}
 	
-	arcemu_INLINE bool IsIndoor(uint32 mapId, float x, float y, float z)
+	ARCEMU_INLINE bool IsIndoor(uint32 mapId, float x, float y, float z)
 	{
 		return CollisionMgr->isInDoors( mapId, x, y, z );
 	}
 
-	arcemu_INLINE bool IsOutdoor(uint32 mapId, float x, float y, float z)
+	ARCEMU_INLINE bool IsOutdoor(uint32 mapId, float x, float y, float z)
 	{
 		return CollisionMgr->isOutDoors( mapId, x, y, z );
 	}
 
-	arcemu_INLINE float GetHeight(uint32 mapId, float x, float y, float z)
+	ARCEMU_INLINE float GetHeight(uint32 mapId, float x, float y, float z)
 	{
 		return CollisionMgr->getHeight( mapId, x, y, z );
 	}
 
-	arcemu_INLINE bool CheckLOS(uint32 mapId, LocationVector & pos1, LocationVector & pos2)
+	ARCEMU_INLINE bool CheckLOS(uint32 mapId, LocationVector & pos1, LocationVector & pos2)
 	{
 		return CollisionMgr->isInLineOfSight( mapId, pos1, pos2 );
 	}
 
-	arcemu_INLINE bool GetFirstPoint(uint32 mapId, LocationVector & pos1, LocationVector & pos2, LocationVector & outvec, float distmod)
+	ARCEMU_INLINE bool GetFirstPoint(uint32 mapId, LocationVector & pos1, LocationVector & pos2, LocationVector & outvec, float distmod)
 	{
 		return CollisionMgr->getObjectHitPos( mapId, pos1, pos2, outvec, distmod );
 	}
 
-	arcemu_INLINE bool IsIndoor(uint32 mapId, LocationVector & pos)
+	ARCEMU_INLINE bool IsIndoor(uint32 mapId, LocationVector & pos)
 	{
 		return CollisionMgr->isInDoors( mapId, pos );
 	}
 
-	arcemu_INLINE bool IsOutdoor(uint32 mapId, LocationVector & pos)
+	ARCEMU_INLINE bool IsOutdoor(uint32 mapId, LocationVector & pos)
 	{
 		return CollisionMgr->isOutDoors( mapId, pos );
 	}
 
-	arcemu_INLINE float GetHeight(uint32 mapId, LocationVector & pos)
+	ARCEMU_INLINE float GetHeight(uint32 mapId, LocationVector & pos)
 	{
 		return CollisionMgr->getHeight( mapId, pos );
 	}

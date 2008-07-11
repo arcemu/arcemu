@@ -25,8 +25,8 @@
 class DummyLock
 {
 public:
-	arcemu_INLINE void Acquire() { }
-	arcemu_INLINE void Release() { }
+	ARCEMU_INLINE void Acquire() { }
+	ARCEMU_INLINE void Release() { }
 };
 
 /** linked-list style queue

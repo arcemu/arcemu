@@ -1,6 +1,7 @@
 #include "Stdafx.h"
 #include "ItemPool.h"
 
+//put some objects in pool
 oItemBufferPool::oItemBufferPool()
 {
 	max_avails = INITI_POOL_WITH_SIZE;
@@ -9,9 +10,9 @@ oItemBufferPool::oItemBufferPool()
 	InitPoolNewSection(0,max_avails);
 }
 
+//get rid of all objects
 oItemBufferPool::~oItemBufferPool()
 {
-	ObjLock.Acquire();
 
 #ifdef TRACK_LEAKED_ITEMS_AND_MEMORY_CORRUPTION
 	if( next_free_avail != 0 )
@@ -24,19 +25,20 @@ oItemBufferPool::~oItemBufferPool()
 	}
 #endif
 
-	for(uint32 i=next_free_avail;i<max_avails;i++)
-		delete avail_list[i];
-	free( avail_list );
+//	for(uint32 i=next_free_avail;i<max_avails;i++)
+//		delete avail_list[i];
 
-	ObjLock.Release();
+	free( avail_list );
 }
 
+//new pool must be filled with item objects
 inline void oItemBufferPool::InitPoolNewSection(uint32 from, uint32 to)
 {
 	for(uint32 i=from;i<to;i++)
 		avail_list[i] = new Item;
 }
 
+//we increase our pool size if we run out of it
 inline void oItemBufferPool::ExtedLimitAvailLimit()
 {
 	uint32 prev_max = max_avails;
@@ -49,7 +51,10 @@ inline Item *oItemBufferPool::PooledNew()
 {
 	ObjLock.Acquire();
 
-	avail_list[ next_free_avail ]->Item_Recycle();
+	//recycle the item object
+	avail_list[ next_free_avail ]->Virtual_Constructor();
+
+	//move our index to next free object
 	uint32 free_index = next_free_avail;
 	next_free_avail++;
 
@@ -67,11 +72,29 @@ inline Item *oItemBufferPool::PooledNew()
 
 inline void oItemBufferPool::PooledDelete( Item *dumped )
 {
+	//containers are items and not stored in this pool atm
+	if( dumped->IsContainer() )
+	{
+		delete dumped;
+		return;
+	}
+
+	//remove events and remove objkect from world ...
+	dumped->Virtual_Destructor();
+
 	ObjLock.Acquire();
 
 #ifdef _DEBUG
 	if( next_free_avail == 0 )
+	{
+		sLog.outDebug("Pool is full and we still tried to add more items to it. Maybe item was alocated not from pool ? \n" );
 		return; // OMG, We made more deletes then inserts ? This should not happen !
+	}
+	if( dumped->GetTypeId() != TYPEID_ITEM )
+	{
+		sLog.outDebug("We tried to add to the item pool an non item object ! \n" );
+		return;
+	}
 #endif
 
 #ifdef TRACK_LEAKED_ITEMS_AND_MEMORY_CORRUPTION
@@ -91,7 +114,7 @@ inline void oItemBufferPool::PooledDelete( Item *dumped )
 	}
 #endif
 
-	//yes we overwrite some pointer here. If we would be using list instead of array we could check for memory corruptions too. We try to not have those right now 
+	//We do not care about used up guids only available ones. Note that with this overwrite used guid list is not valid anymore
 	next_free_avail--;
 	avail_list[ next_free_avail ] = dumped;
 

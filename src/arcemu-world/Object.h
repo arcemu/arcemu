@@ -117,7 +117,7 @@ public:
   //! True if object exists in world
  
 	
-	arcemu_INLINE bool IsInWorld() { return m_mapMgr != NULL; }
+	ARCEMU_INLINE bool IsInWorld() { return m_mapMgr != NULL; }
 	virtual void AddToWorld();
 	virtual void AddToWorld(MapMgr * pMapMgr);
 	void PushToWorld(MapMgr*);
@@ -127,15 +127,15 @@ public:
 
 	// guid always comes first
 #ifndef USING_BIG_ENDIAN
-	arcemu_INLINE const uint64& GetGUID() const { return *((uint64*)m_uint32Values); }
+	ARCEMU_INLINE const uint64& GetGUID() const { return *((uint64*)m_uint32Values); }
 #else
-	arcemu_INLINE const uint64 GetGUID() const { return GetUInt64Value(0); }
+	ARCEMU_INLINE const uint64 GetGUID() const { return GetUInt64Value(0); }
 #endif
 
-	arcemu_INLINE const WoWGuid& GetNewGUID() const { return m_wowGuid; }
-	arcemu_INLINE uint32 GetEntry(){return m_uint32Values[3];}
+	ARCEMU_INLINE const WoWGuid& GetNewGUID() const { return m_wowGuid; }
+	ARCEMU_INLINE uint32 GetEntry(){return m_uint32Values[3];}
 	
-	arcemu_INLINE const uint32 GetEntryFromGUID() const
+	ARCEMU_INLINE const uint32 GetEntryFromGUID() const
 	{
 /*		uint64 entry = *(uint64*)m_uint32Values;
 		entry >>= 24;
@@ -144,15 +144,15 @@ public:
 		return uint32( (*(uint64*)m_uint32Values >> 24) & 0xFFFFFFFF );
 	}
 
-	arcemu_INLINE const uint32 GetTypeFromGUID() const { return (m_uint32Values[1] & HIGHGUID_TYPE_MASK); }
-	arcemu_INLINE const uint32 GetUIdFromGUID() const { return (m_uint32Values[0] & LOWGUID_ENTRY_MASK); }
-	arcemu_INLINE const uint32 GetLowGUID() const { return (m_uint32Values[0]); }
+	ARCEMU_INLINE const uint32 GetTypeFromGUID() const { return (m_uint32Values[1] & HIGHGUID_TYPE_MASK); }
+	ARCEMU_INLINE const uint32 GetUIdFromGUID() const { return (m_uint32Values[0] & LOWGUID_ENTRY_MASK); }
+	ARCEMU_INLINE const uint32 GetLowGUID() const { return (m_uint32Values[0]); }
 
 	// type
-	arcemu_INLINE const uint8& GetTypeId() const { return m_objectTypeId; }
-	arcemu_INLINE bool IsUnit()	{ return ( m_objectTypeId == TYPEID_UNIT || m_objectTypeId == TYPEID_PLAYER ); }
-	arcemu_INLINE bool IsPlayer() { return m_objectTypeId == TYPEID_PLAYER; }
-	arcemu_INLINE bool IsCreature() { return m_objectTypeId == TYPEID_UNIT; }
+	ARCEMU_INLINE const uint8& GetTypeId() const { return m_objectTypeId; }
+	ARCEMU_INLINE bool IsUnit()	{ return ( m_objectTypeId == TYPEID_UNIT || m_objectTypeId == TYPEID_PLAYER ); }
+	ARCEMU_INLINE bool IsPlayer() { return m_objectTypeId == TYPEID_PLAYER; }
+	ARCEMU_INLINE bool IsCreature() { return m_objectTypeId == TYPEID_UNIT; }
 	bool IsPet();
 
 	//! This includes any nested objects we have, inventory for example.
@@ -179,20 +179,20 @@ public:
 	bool SetPosition( const LocationVector & v, bool allowPorting = false);
 	void SetRotation( uint64 guid );
 
-	arcemu_INLINE const float& GetPositionX( ) const { return m_position.x; }
-	arcemu_INLINE const float& GetPositionY( ) const { return m_position.y; }
-	arcemu_INLINE const float& GetPositionZ( ) const { return m_position.z; }
-	arcemu_INLINE const float& GetOrientation( ) const { return m_position.o; }
-	arcemu_INLINE void SetOrientation( float &o ) { m_position.o = o; }
+	ARCEMU_INLINE const float& GetPositionX( ) const { return m_position.x; }
+	ARCEMU_INLINE const float& GetPositionY( ) const { return m_position.y; }
+	ARCEMU_INLINE const float& GetPositionZ( ) const { return m_position.z; }
+	ARCEMU_INLINE const float& GetOrientation( ) const { return m_position.o; }
+	ARCEMU_INLINE void SetOrientation( float &o ) { m_position.o = o; }
 
-	arcemu_INLINE const float& GetSpawnX( ) const { return m_spawnLocation.x; }
-	arcemu_INLINE const float& GetSpawnY( ) const { return m_spawnLocation.y; }
-	arcemu_INLINE const float& GetSpawnZ( ) const { return m_spawnLocation.z; }
-	arcemu_INLINE const float& GetSpawnO( ) const { return m_spawnLocation.o; }
+	ARCEMU_INLINE const float& GetSpawnX( ) const { return m_spawnLocation.x; }
+	ARCEMU_INLINE const float& GetSpawnY( ) const { return m_spawnLocation.y; }
+	ARCEMU_INLINE const float& GetSpawnZ( ) const { return m_spawnLocation.z; }
+	ARCEMU_INLINE const float& GetSpawnO( ) const { return m_spawnLocation.o; }
 
-	arcemu_INLINE const LocationVector & GetPosition() { return m_position; }
-	arcemu_INLINE LocationVector & GetPositionNC() { return m_position; }
-	arcemu_INLINE LocationVector * GetPositionV() { return &m_position; }
+	ARCEMU_INLINE const LocationVector & GetPosition() { return m_position; }
+	ARCEMU_INLINE LocationVector & GetPositionNC() { return m_position; }
+	ARCEMU_INLINE LocationVector * GetPositionV() { return &m_position; }
 
 	//Distance Calculation
 	float CalcDistance(Object* Ob);
@@ -207,20 +207,20 @@ public:
 	bool IsWithinLOS( LocationVector location  );
 
 	//! Only for MapMgr use
-	arcemu_INLINE MapCell* GetMapCell() const { return m_mapCell; }
+	ARCEMU_INLINE MapCell* GetMapCell() const { return m_mapCell; }
 	//! Only for MapMgr use
-	arcemu_INLINE void SetMapCell(MapCell* cell) { m_mapCell = cell; }
+	ARCEMU_INLINE void SetMapCell(MapCell* cell) { m_mapCell = cell; }
 	//! Only for MapMgr use
-	arcemu_INLINE MapMgr* GetMapMgr() const { return m_mapMgr; }
+	ARCEMU_INLINE MapMgr* GetMapMgr() const { return m_mapMgr; }
 
-	arcemu_INLINE void SetMapId(uint32 newMap) { m_mapId = newMap; }
+	ARCEMU_INLINE void SetMapId(uint32 newMap) { m_mapId = newMap; }
 	void SetZoneId(uint32 newZone);
 
-	arcemu_INLINE const uint32 GetMapId( ) const { return m_mapId; }
-	arcemu_INLINE const uint32& GetZoneId( ) const { return m_zoneId; }
+	ARCEMU_INLINE const uint32 GetMapId( ) const { return m_mapId; }
+	ARCEMU_INLINE const uint32& GetZoneId( ) const { return m_zoneId; }
 
 	//! Get uint32 property
-	arcemu_INLINE const uint32& GetUInt32Value( uint32 index ) const
+	ARCEMU_INLINE const uint32& GetUInt32Value( uint32 index ) const
 	{
 		ASSERT( index < m_valuesCount );
 		return m_uint32Values[ index ];
@@ -230,7 +230,7 @@ public:
 #ifdef USING_BIG_ENDIAN
         __inline const uint64 GetUInt64Value( uint32 index ) const
 #else
-	arcemu_INLINE const uint64& GetUInt64Value( uint32 index ) const
+	ARCEMU_INLINE const uint64& GetUInt64Value( uint32 index ) const
 #endif
 	{
 		ASSERT( index + uint32(1) < m_valuesCount );
@@ -243,7 +243,7 @@ public:
 	}
 
 	//! Get float property
-	arcemu_INLINE const float& GetFloatValue( uint32 index ) const
+	ARCEMU_INLINE const float& GetFloatValue( uint32 index ) const
 	{
 		ASSERT( index < m_valuesCount );
 		return m_floatValues[ index ];
@@ -257,7 +257,7 @@ public:
 	//! Set uint32 property
 	void SetByte(uint32 index, uint32 index1,uint8 value);
 
-	arcemu_INLINE uint8 GetByte(uint32 i,uint32 i1)
+	ARCEMU_INLINE uint8 GetByte(uint32 i,uint32 i1)
 	{
 		ASSERT( i < m_valuesCount);
 		ASSERT(i1 < 4);
@@ -268,7 +268,7 @@ public:
 #endif
 	}
 	
-	arcemu_INLINE void SetNewGuid(uint32 Guid)
+	ARCEMU_INLINE void SetNewGuid(uint32 Guid)
 	{
 		SetUInt32Value(OBJECT_FIELD_GUID, Guid);
 		m_wowGuid.Init(GetGUID());
@@ -287,7 +287,7 @@ public:
 
 	void __fastcall RemoveFlag( const uint32 index, uint32 oldFlag );
 
-	arcemu_INLINE bool HasFlag( const uint32 index, uint32 flag ) const
+	ARCEMU_INLINE bool HasFlag( const uint32 index, uint32 flag ) const
 	{
 		ASSERT( index < m_valuesCount );
 		return (m_uint32Values[ index ] & flag) != 0;
@@ -323,28 +323,28 @@ public:
 	/* converts to 360 > x > 0 */
 	float getEasyAngle( float angle );
 
-	arcemu_INLINE const float GetDistanceSq(Object* obj)
+	ARCEMU_INLINE const float GetDistanceSq(Object* obj)
 	{
 		if(obj->GetMapId() != m_mapId) return 40000.0f; //enough for out of range
 		return m_position.DistanceSq(obj->GetPosition());
 	}
 
-	arcemu_INLINE float GetDistanceSq(LocationVector & comp)
+	ARCEMU_INLINE float GetDistanceSq(LocationVector & comp)
 	{
 		return comp.DistanceSq(m_position);
 	}
 
-	arcemu_INLINE float CalcDistance(LocationVector & comp)
+	ARCEMU_INLINE float CalcDistance(LocationVector & comp)
 	{
 		return comp.Distance(m_position);
 	}
 
-	arcemu_INLINE const float GetDistanceSq(float x, float y, float z)
+	ARCEMU_INLINE const float GetDistanceSq(float x, float y, float z)
 	{
 		return m_position.DistanceSq(x, y, z);
 	}
 
-	arcemu_INLINE const float GetDistance2dSq( Object* obj )
+	ARCEMU_INLINE const float GetDistance2dSq( Object* obj )
 	{
 		if( obj->GetMapId() != m_mapId )
 			return 40000.0f; //enough for out of range
@@ -352,7 +352,7 @@ public:
 	}
 
 	// In-range object management, not sure if we need it
-	arcemu_INLINE bool IsInRangeSet( Object* pObj )
+	ARCEMU_INLINE bool IsInRangeSet( Object* pObj )
 	{
 		return !( m_objectsInRange.find( pObj ) == m_objectsInRange.end() );
 	}
@@ -373,7 +373,7 @@ public:
 			m_inRangePlayers.insert( reinterpret_cast< Player* >( pObj ) );
 	}
 
-	arcemu_INLINE void RemoveInRangeObject( Object* pObj )
+	ARCEMU_INLINE void RemoveInRangeObject( Object* pObj )
 	{
 		if( pObj == NULL )
 			return;
@@ -382,7 +382,7 @@ public:
 		m_objectsInRange.erase( pObj );
 	}
 
-	arcemu_INLINE bool HasInRangeObjects()
+	ARCEMU_INLINE bool HasInRangeObjects()
 	{
 		return ( m_objectsInRange.size() > 0 );
 	}
@@ -401,11 +401,11 @@ public:
 		m_sameFactsInRange.clear();
 	}
 
-	arcemu_INLINE size_t GetInRangeCount() { return m_objectsInRange.size(); }
-	arcemu_INLINE size_t GetInRangePlayersCount() { return m_inRangePlayers.size();}
-	arcemu_INLINE InRangeSet::iterator GetInRangeSetBegin() { return m_objectsInRange.begin(); }
-	arcemu_INLINE InRangeSet::iterator GetInRangeSetEnd() { return m_objectsInRange.end(); }
-	arcemu_INLINE InRangeSet::iterator FindInRangeSet(Object * obj) { return m_objectsInRange.find(obj); }
+	ARCEMU_INLINE size_t GetInRangeCount() { return m_objectsInRange.size(); }
+	ARCEMU_INLINE size_t GetInRangePlayersCount() { return m_inRangePlayers.size();}
+	ARCEMU_INLINE InRangeSet::iterator GetInRangeSetBegin() { return m_objectsInRange.begin(); }
+	ARCEMU_INLINE InRangeSet::iterator GetInRangeSetEnd() { return m_objectsInRange.end(); }
+	ARCEMU_INLINE InRangeSet::iterator FindInRangeSet(Object * obj) { return m_objectsInRange.find(obj); }
 
 	void RemoveInRangeObject(InRangeSet::iterator itr)
 	{ 
@@ -413,7 +413,7 @@ public:
 		m_objectsInRange.erase(itr);
 	}
 
-	arcemu_INLINE bool RemoveIfInRange( Object * obj )
+	ARCEMU_INLINE bool RemoveIfInRange( Object * obj )
 	{
 		InRangeSet::iterator itr = m_objectsInRange.find(obj);
 		if( obj->GetTypeId() == TYPEID_PLAYER )
@@ -426,38 +426,38 @@ public:
 		return true;
 	}
 
-	arcemu_INLINE void AddInRangePlayer( Object * obj )
+	ARCEMU_INLINE void AddInRangePlayer( Object * obj )
 	{
 		m_inRangePlayers.insert( reinterpret_cast< Player* >( obj ) );
 	}
 
-	arcemu_INLINE void RemoveInRangePlayer( Object * obj )
+	ARCEMU_INLINE void RemoveInRangePlayer( Object * obj )
 	{
 		m_inRangePlayers.erase( reinterpret_cast< Player* >( obj ) );
 	}
 
 	bool IsInRangeSameFactSet(Object* pObj) { return (m_sameFactsInRange.count(pObj) > 0); }
 	void UpdateSameFactionSet();
-	arcemu_INLINE std::set<Object*>::iterator GetInRangeSameFactsSetBegin() { return m_sameFactsInRange.begin(); }
-	arcemu_INLINE std::set<Object*>::iterator GetInRangeSameFactsSetEnd() { return m_sameFactsInRange.end(); }
+	ARCEMU_INLINE std::set<Object*>::iterator GetInRangeSameFactsSetBegin() { return m_sameFactsInRange.begin(); }
+	ARCEMU_INLINE std::set<Object*>::iterator GetInRangeSameFactsSetEnd() { return m_sameFactsInRange.end(); }
 
 	bool IsInRangeOppFactSet(Object* pObj) { return (m_oppFactsInRange.count(pObj) > 0); }
 	void UpdateOppFactionSet();
-	arcemu_INLINE size_t GetInRangeOppFactsSize(){ return m_oppFactsInRange.size(); }
-	arcemu_INLINE std::set<Object*>::iterator GetInRangeOppFactsSetBegin() { return m_oppFactsInRange.begin(); }
-	arcemu_INLINE std::set<Object*>::iterator GetInRangeOppFactsSetEnd() { return m_oppFactsInRange.end(); }
-	arcemu_INLINE std::set<Player*>::iterator GetInRangePlayerSetBegin() { return m_inRangePlayers.begin(); }
-	arcemu_INLINE std::set<Player*>::iterator GetInRangePlayerSetEnd() { return m_inRangePlayers.end(); }
-	arcemu_INLINE std::set<Player*> * GetInRangePlayerSet() { return &m_inRangePlayers; };
+	ARCEMU_INLINE size_t GetInRangeOppFactsSize(){ return m_oppFactsInRange.size(); }
+	ARCEMU_INLINE std::set<Object*>::iterator GetInRangeOppFactsSetBegin() { return m_oppFactsInRange.begin(); }
+	ARCEMU_INLINE std::set<Object*>::iterator GetInRangeOppFactsSetEnd() { return m_oppFactsInRange.end(); }
+	ARCEMU_INLINE std::set<Player*>::iterator GetInRangePlayerSetBegin() { return m_inRangePlayers.begin(); }
+	ARCEMU_INLINE std::set<Player*>::iterator GetInRangePlayerSetEnd() { return m_inRangePlayers.end(); }
+	ARCEMU_INLINE std::set<Player*> * GetInRangePlayerSet() { return &m_inRangePlayers; };
 
 	void __fastcall SendMessageToSet(WorldPacket *data, bool self,bool myteam_only=false);
-	arcemu_INLINE void SendMessageToSet(StackBufferBase * data, bool self) { OutPacketToSet(data->GetOpcode(), data->GetSize(), data->GetBufferPointer(), self); }
+	ARCEMU_INLINE void SendMessageToSet(StackBufferBase * data, bool self) { OutPacketToSet(data->GetOpcode(), data->GetSize(), data->GetBufferPointer(), self); }
 	void OutPacketToSet(uint16 Opcode, uint16 Len, const void * Data, bool self);
 
 	//! Fill values with data from a space seperated string of uint32s.
 	void LoadValues(const char* data);
 
-	arcemu_INLINE uint16 GetValuesCount() const { return m_valuesCount; }
+	ARCEMU_INLINE uint16 GetValuesCount() const { return m_valuesCount; }
 
 	//! Blizzard seem to send those for all object types. weird.
 	float m_walkSpeed;
@@ -488,8 +488,8 @@ public:
 	FactionTemplateDBC *m_faction;
 	FactionDBC *m_factionDBC;
 
-	arcemu_INLINE void SetInstanceID(int32 instance) { m_instanceId = instance; }
-	arcemu_INLINE int32 GetInstanceID() { return m_instanceId; }
+	ARCEMU_INLINE void SetInstanceID(int32 instance) { m_instanceId = instance; }
+	ARCEMU_INLINE int32 GetInstanceID() { return m_instanceId; }
 
 	int32 event_GetInstanceID();
 
@@ -498,7 +498,7 @@ public:
 	void Activate(MapMgr * mgr);
 	void Deactivate(MapMgr * mgr);
 	bool m_inQueue;
-	arcemu_INLINE void SetMapMgr(MapMgr * mgr) { m_mapMgr = mgr; }
+	ARCEMU_INLINE void SetMapMgr(MapMgr * mgr) { m_mapMgr = mgr; }
 
 	void Delete()
 	{
@@ -508,7 +508,7 @@ public:
 	}
 
 	void GMScriptEvent(void * function, uint32 argc, uint32 * argv, uint32 * argt);
-	arcemu_INLINE size_t GetInRangeOppFactCount() { return m_oppFactsInRange.size(); }
+	ARCEMU_INLINE size_t GetInRangeOppFactCount() { return m_oppFactsInRange.size(); }
 	void PlaySoundToSet(uint32 sound_entry);
 
 protected:

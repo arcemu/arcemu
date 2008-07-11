@@ -6,13 +6,15 @@
 #define _ITEM_BUFFER_POOL
 
 //hmm with 2000 players each have 50 items ...Decrease it if you need the space ;)
-#define INITI_POOL_WITH_SIZE 100000
+//#define INITI_POOL_WITH_SIZE 100000
+#define INITI_POOL_WITH_SIZE 2
 //too big values migh create lag spikes on buffer limit extension !
-#define EXTEND_POOL_WITH_SIZE 1000
+//#define EXTEND_POOL_WITH_SIZE 1000
+#define EXTEND_POOL_WITH_SIZE 2
 
 //noob protection :P
 #ifdef _DEBUG
-	#define TRACK_LEAKED_ITEMS_AND_MEMORY_CORRUPTION
+//	#define TRACK_LEAKED_ITEMS_AND_MEMORY_CORRUPTION
 #endif
 
 class Item;

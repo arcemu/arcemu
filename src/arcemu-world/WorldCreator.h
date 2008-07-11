@@ -110,7 +110,7 @@ public:
 	InstanceMgr();	
 	~InstanceMgr();
 
-	arcemu_INLINE Map* GetMap(uint32 mapid)
+	ARCEMU_INLINE Map* GetMap(uint32 mapid)
 	{
 		if(mapid>NUM_MAPS)
 			return NULL;
@@ -135,7 +135,7 @@ public:
 
 	// has an instance expired?
 	// can a player join?
-    arcemu_INLINE bool PlayerOwnsInstance(Instance * pInstance, Player * pPlayer)
+    ARCEMU_INLINE bool PlayerOwnsInstance(Instance * pInstance, Player * pPlayer)
 	{
 		// expired?
 		if( pInstance->m_expiration && (UNIXTIME+20) >= pInstance->m_expiration)
@@ -152,7 +152,7 @@ public:
 	}
 
 	// has an instance expired?
-	arcemu_INLINE bool HasInstanceExpired(Instance * pInstance)
+	ARCEMU_INLINE bool HasInstanceExpired(Instance * pInstance)
 	{
 		// expired?
 		if( pInstance->m_expiration && (UNIXTIME+20) >= pInstance->m_expiration)

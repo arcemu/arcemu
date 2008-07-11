@@ -94,7 +94,7 @@ public:
 			SocketOps::CloseSocket(m_socket);
 	}
 
-	arcemu_INLINE bool IsOpen() { return m_opened; }
+	ARCEMU_INLINE bool IsOpen() { return m_opened; }
 
 private:
 	SOCKET m_socket;

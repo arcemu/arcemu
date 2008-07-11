@@ -62,7 +62,7 @@ ChatCommand * CommandTableStorage::GetSubCommandTable(const char * name)
 }
 
 #define dupe_command_table(ct, dt) this->dt = (ChatCommand*)allocate_and_copy(sizeof(ct)/* / sizeof(ct[0])*/, ct)
-arcemu_INLINE void* allocate_and_copy(uint32 len, void * pointer)
+ARCEMU_INLINE void* allocate_and_copy(uint32 len, void * pointer)
 {
 	void * data = (void*)malloc(len);
 	memcpy(data, pointer, len);

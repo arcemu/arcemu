@@ -156,7 +156,7 @@ protected:
 	   Parameter 2: cell y co-ordinate.
 	   Returns the offset in bytes of that cell's information, or 0 if it doesn't exist.
 	  */
-	arcemu_INLINE uint32 GetCellInformationOffset(uint32 x, uint32 y)
+	ARCEMU_INLINE uint32 GetCellInformationOffset(uint32 x, uint32 y)
 	{
 		return CellOffsets[x][y];
 	}
@@ -166,7 +166,7 @@ protected:
 	   Parameter 2: cell y co-ordinate.
 	   Returns the memory address of the information for that cell.
 	  */
-	arcemu_INLINE CellTerrainInformation* GetCellInformation(uint32 x, uint32 y)
+	ARCEMU_INLINE CellTerrainInformation* GetCellInformation(uint32 x, uint32 y)
 	{
 		return CellInformation[x][y];
 	}
@@ -175,7 +175,7 @@ protected:
 	   Parameter 1: global x co-ordinate.
 	   Returns the cell x co-ordinate.
 	  */
-	arcemu_INLINE uint32 ConvertGlobalXCoordinate(float x)
+	ARCEMU_INLINE uint32 ConvertGlobalXCoordinate(float x)
 	{
 		return FL2UINT((_maxX-x)/_cellSize);
 	}
@@ -184,7 +184,7 @@ protected:
 	   Parameter 1: global y co-ordinate.
 	   Returns the cell y co-ordinate.
 	*/
-	arcemu_INLINE uint32 ConvertGlobalYCoordinate(float y)
+	ARCEMU_INLINE uint32 ConvertGlobalYCoordinate(float y)
 	{
 		return FL2UINT((_maxY-y)/_cellSize);
 	}
@@ -194,7 +194,7 @@ protected:
 	   Parameter 2: the cell x co-ordinate.
 	   Returns the internal x co-ordinate.
 	*/
-	arcemu_INLINE float ConvertInternalXCoordinate(float x, uint32 cellx)
+	ARCEMU_INLINE float ConvertInternalXCoordinate(float x, uint32 cellx)
 	{
 		float X = (_maxX - x);
 		X -= (cellx * _cellSize);
@@ -206,7 +206,7 @@ protected:
 	   Parameter 2: the cell y co-ordinate.
 	   Returns the internal y co-ordinate.
 	*/
-	arcemu_INLINE float ConvertInternalYCoordinate(float y, uint32 celly)
+	ARCEMU_INLINE float ConvertInternalYCoordinate(float y, uint32 celly)
 	{
 		float Y = (_maxY - y);
 		Y -= (celly * _cellSize);
@@ -215,7 +215,7 @@ protected:
 
 	/* Checks whether a cell information is loaded or not.
 	  */
-	arcemu_INLINE bool CellInformationLoaded(uint32 x, uint32 y)
+	ARCEMU_INLINE bool CellInformationLoaded(uint32 x, uint32 y)
 	{
 		if(CellInformation[x][y] != 0)
 			return true;
@@ -226,14 +226,14 @@ protected:
 	/* Converts the internal co-ordinate to an index in the 
 	   2 dimension areaid, or liquid type arrays.
 	  */
-	arcemu_INLINE uint32 ConvertTo2dArray(float c)
+	ARCEMU_INLINE uint32 ConvertTo2dArray(float c)
 	{
 		return FL2UINT(c*(16/CellsPerTile/_cellSize));
 	}
 
 	/* Checks that the co-ordinates are within range.
 	  */
-	arcemu_INLINE bool AreCoordinatesValid(float x, float y)
+	ARCEMU_INLINE bool AreCoordinatesValid(float x, float y)
 	{
 		if(x > _maxX || x < _minX)
 			return false;

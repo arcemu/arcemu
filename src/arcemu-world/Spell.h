@@ -858,7 +858,7 @@ enum SpellCoefficientsFlags
 	SPELL_FLAG_ADITIONAL_EFFECT			= 0x00000008, //Spells with aditional effect not DD or DoT or HoT
 };
 
-arcemu_INLINE bool CanAgroHash(uint32 spellhashname)
+ARCEMU_INLINE bool CanAgroHash(uint32 spellhashname)
 {
     if (spellhashname == 4287212498UL) //hunter's mark
         return false;
@@ -869,7 +869,7 @@ arcemu_INLINE bool CanAgroHash(uint32 spellhashname)
 /************************************************************************/
 /* IsDamagingSpell, this function seems slow, its only used rarely      */
 /************************************************************************/
-arcemu_INLINE bool IsDamagingSpell(SpellEntry *sp)
+ARCEMU_INLINE bool IsDamagingSpell(SpellEntry *sp)
 {
     switch (sp->Effect[0])
     {
@@ -946,7 +946,7 @@ arcemu_INLINE bool IsDamagingSpell(SpellEntry *sp)
     return false;
 }
 
-arcemu_INLINE uint32 IsHealingSpell(SpellEntry *sp)
+ARCEMU_INLINE uint32 IsHealingSpell(SpellEntry *sp)
 {
     switch( sp->Effect[0] )
     {
@@ -1015,19 +1015,19 @@ arcemu_INLINE uint32 IsHealingSpell(SpellEntry *sp)
     return false;
 }
 
-arcemu_INLINE bool IsInrange(LocationVector & location, Object * o, float square_r)
+ARCEMU_INLINE bool IsInrange(LocationVector & location, Object * o, float square_r)
 {
     float r = o->GetDistanceSq(location);
     return ( r<=square_r);
 }
 
-arcemu_INLINE bool IsInrange(float x1,float y1, float z1, Object * o,float square_r)
+ARCEMU_INLINE bool IsInrange(float x1,float y1, float z1, Object * o,float square_r)
 {
     float r = o->GetDistanceSq(x1, y1, z1);
     return ( r<=square_r);
 }
 
-arcemu_INLINE bool IsInrange(float x1,float y1, float z1,float x2,float y2, float z2,float square_r)
+ARCEMU_INLINE bool IsInrange(float x1,float y1, float z1,float x2,float y2, float z2,float square_r)
 {
     float t;
     float r;
@@ -1040,13 +1040,13 @@ arcemu_INLINE bool IsInrange(float x1,float y1, float z1,float x2,float y2, floa
     return ( r<=square_r);
 }
    
-arcemu_INLINE bool IsInrange(Object * o1,Object * o2,float square_r)
+ARCEMU_INLINE bool IsInrange(Object * o1,Object * o2,float square_r)
 {
     return IsInrange(o1->GetPositionX(),o1->GetPositionY(),o1->GetPositionZ(),
         o2->GetPositionX(),o2->GetPositionY(),o2->GetPositionZ(),square_r);
 }
 
-arcemu_INLINE bool TargetTypeCheck(Object *obj,uint32 ReqCreatureTypeMask)
+ARCEMU_INLINE bool TargetTypeCheck(Object *obj,uint32 ReqCreatureTypeMask)
 {
 	if( !ReqCreatureTypeMask )
 		return true;
@@ -1329,7 +1329,7 @@ inline int GetAiTargetType(SpellEntry *sp)
 	return TTYPE_NULL;
 }
 
-arcemu_INLINE bool IsTargetingStealthed(SpellEntry *sp)
+ARCEMU_INLINE bool IsTargetingStealthed(SpellEntry *sp)
 {
 	if(
 		HasTargetType(sp,EFF_TARGET_INVISIBLE_OR_HIDDEN_ENEMIES_AT_LOCATION_RADIUS) ||
@@ -1455,8 +1455,8 @@ public:
 
     bool Reflect(Unit * refunit);
 
-    arcemu_INLINE uint32 getState() { return m_spellState; }
-    arcemu_INLINE void SetUnitTarget(Unit *punit){unitTarget=punit;}
+    ARCEMU_INLINE uint32 getState() { return m_spellState; }
+    ARCEMU_INLINE void SetUnitTarget(Unit *punit){unitTarget=punit;}
 
     // Send Packet functions
     void SendCastResult(uint8 result);
@@ -1636,15 +1636,15 @@ public:
 	
 	// This returns SPELL_ENTRY_Spell_Dmg_Type where 0 = SPELL_DMG_TYPE_NONE, 1 = SPELL_DMG_TYPE_MAGIC, 2 = SPELL_DMG_TYPE_MELEE, 3 = SPELL_DMG_TYPE_RANGED
 	// It should NOT be used for weapon_damage_type which needs: 0 = MELEE, 1 = OFFHAND, 2 = RANGED
-	arcemu_INLINE uint32 GetType() { return ( GetProto()->Spell_Dmg_Type == SPELL_DMG_TYPE_NONE ? SPELL_DMG_TYPE_MAGIC : GetProto()->Spell_Dmg_Type ); }
+	ARCEMU_INLINE uint32 GetType() { return ( GetProto()->Spell_Dmg_Type == SPELL_DMG_TYPE_NONE ? SPELL_DMG_TYPE_MAGIC : GetProto()->Spell_Dmg_Type ); }
 
     std::vector<uint64> UniqueTargets;
     SpellTargetsList    ModeratedTargets;
 
-    arcemu_INLINE Item* GetItemTarget() { return itemTarget; }
-    arcemu_INLINE Unit* GetUnitTarget() { return unitTarget; }
-    arcemu_INLINE Player* GetPlayerTarget() { return playerTarget; }
-    arcemu_INLINE GameObject* GetGameObjectTarget() { return gameObjTarget; }
+    ARCEMU_INLINE Item* GetItemTarget() { return itemTarget; }
+    ARCEMU_INLINE Unit* GetUnitTarget() { return unitTarget; }
+    ARCEMU_INLINE Player* GetPlayerTarget() { return playerTarget; }
+    ARCEMU_INLINE GameObject* GetGameObjectTarget() { return gameObjTarget; }
 
     uint32 chaindamage;
     // -------------------------------------------
@@ -1652,7 +1652,7 @@ public:
     bool IsAspect();
     bool IsSeal();
 
-	arcemu_INLINE SpellEntry* GetProto() { return (m_spellInfo_override == NULL) ?  m_spellInfo : m_spellInfo_override; }
+	ARCEMU_INLINE SpellEntry* GetProto() { return (m_spellInfo_override == NULL) ?  m_spellInfo : m_spellInfo_override; }
 	void InitProtoOverride()
 	{
 		if (m_spellInfo_override != NULL)
@@ -1730,7 +1730,7 @@ public:
         return this->Dur;
     }
 
-    arcemu_INLINE float GetRadius(uint32 i)
+    ARCEMU_INLINE float GetRadius(uint32 i)
     {
         if(bRadSet[i])return Rad[i];
         bRadSet[i]=true;
@@ -1752,7 +1752,7 @@ public:
         return Rad[i];
     }
 
-    arcemu_INLINE static uint32 GetBaseThreat(uint32 dmg)
+    ARCEMU_INLINE static uint32 GetBaseThreat(uint32 dmg)
     {
         //there should be a formula to determine what spell cause threat and which don't
 /*        switch(GetProto()->NameHash)
@@ -1791,22 +1791,22 @@ public:
 
     bool duelSpell;
 
-	arcemu_INLINE void safe_cancel()
+	ARCEMU_INLINE void safe_cancel()
 	{
 		m_cancelled = true;
 	}
 
     /// Spell state's
     /// Spell failed
-    arcemu_INLINE bool GetSpellFailed(){return m_Spell_Failed;}
-    arcemu_INLINE void SetSpellFailed(bool failed = true){m_Spell_Failed = failed;}
+    ARCEMU_INLINE bool GetSpellFailed(){return m_Spell_Failed;}
+    ARCEMU_INLINE void SetSpellFailed(bool failed = true){m_Spell_Failed = failed;}
 
-    arcemu_INLINE bool IsReflected() {return m_IsReflected;}
-    arcemu_INLINE void SetReflected(bool reflected = true) {m_IsReflected = reflected;}
+    ARCEMU_INLINE bool IsReflected() {return m_IsReflected;}
+    ARCEMU_INLINE void SetReflected(bool reflected = true) {m_IsReflected = reflected;}
     
     /// Spell possibility's
-    arcemu_INLINE bool GetCanReflect() {return m_CanRelect;}
-    arcemu_INLINE void SetCanReflect(bool reflect = true) {m_CanRelect = reflect;}
+    ARCEMU_INLINE bool GetCanReflect() {return m_CanRelect;}
+    ARCEMU_INLINE void SetCanReflect(bool reflect = true) {m_CanRelect = reflect;}
 
 
 	Spell * m_reflectedParent;
@@ -1849,7 +1849,7 @@ protected:
 	bool m_isCasting;
     //void _DamageRangeUpdate();
 
-	arcemu_INLINE bool HasTarget(const uint64& guid, TargetsList* tmpMap)
+	ARCEMU_INLINE bool HasTarget(const uint64& guid, TargetsList* tmpMap)
 	{
 		for(TargetsList::iterator itr = tmpMap->begin(); itr != tmpMap->end(); ++itr)
 			if((*itr)==guid)

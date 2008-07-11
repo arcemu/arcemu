@@ -47,7 +47,7 @@ Container::~Container( )
 			if(m_Slot[i]->IsContainer())
 				delete ((Container*)m_Slot[i]);
 			else
-				delete m_Slot[i];
+				ItemPool.PooledDelete( m_Slot[i] );
 		}
 	}
 
@@ -276,7 +276,7 @@ bool Container::SafeFullRemoveItemFromSlot(int8 slot)
 		pItem->RemoveFromWorld();
 	}
 	pItem->DeleteFromDB();
-	delete pItem;
+	ItemPool.PooledDelete( pItem );
 
 	return true;
 }

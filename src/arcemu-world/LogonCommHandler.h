@@ -100,7 +100,7 @@ public:
 	void LoadRealmConfiguration();
 	void AddServer(string Name, string Address, uint32 Port);
 
-	arcemu_INLINE uint32 GetRealmType() { return _realmType; }
+	ARCEMU_INLINE uint32 GetRealmType() { return _realmType; }
 	void SetRealmType(uint32 type) { _realmType = type; }
 
 	/////////////////////////////
@@ -121,7 +121,7 @@ public:
 		//pendingLock.Release();
 		return sock;
 	}
-	arcemu_INLINE Mutex & GetPendingLock() { return pendingLock; }		
+	ARCEMU_INLINE Mutex & GetPendingLock() { return pendingLock; }		
 	const string* GetForcedPermissions(string& username);
 
 	void TestConsoleLogon(string& username, string& password, uint32 requestnum);

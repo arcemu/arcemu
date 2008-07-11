@@ -388,7 +388,7 @@ void WorldSession::HandleAcceptTrade(WorldPacket & recv_data)
 				{
 					pItem->SetOwner(pTarget);
 					if( !pTarget->m_ItemInterface->AddItemToFreeSlot(pItem) )
-						delete pItem;
+						ItemPool.PooledDelete( pItem );
 				}
 
 				pItem = pTarget->mTradeItems[Index];
@@ -396,7 +396,7 @@ void WorldSession::HandleAcceptTrade(WorldPacket & recv_data)
 				{
 					pItem->SetOwner(_player);
 					if( !_player->m_ItemInterface->AddItemToFreeSlot(pItem) )
-						delete pItem;
+						ItemPool.PooledDelete( pItem );
 				}
 			}
 

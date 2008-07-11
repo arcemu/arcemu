@@ -51,7 +51,7 @@ public:
 	~AsyncQuery();
 	void AddQuery(const char * format, ...);
 	void Perform();
-	arcemu_INLINE void SetDB(Database * dbb) { db = dbb; }
+	ARCEMU_INLINE void SetDB(Database * dbb) { db = dbb; }
 };
 
 class SERVER_DECL QueryBuffer
@@ -97,9 +97,9 @@ public:
 
 	bool ThreadRunning;
 
-	arcemu_INLINE const string& GetHostName() { return mHostname; }
-	arcemu_INLINE const string& GetDatabaseName() { return mDatabaseName; }
-	arcemu_INLINE const uint32 GetQueueSize() { return queries_queue.get_size(); }
+	ARCEMU_INLINE const string& GetHostName() { return mHostname; }
+	ARCEMU_INLINE const string& GetDatabaseName() { return mDatabaseName; }
+	ARCEMU_INLINE const uint32 GetQueueSize() { return queries_queue.get_size(); }
 
 	virtual string EscapeString(string Escape) = 0;
 	virtual void EscapeLongString(const char * str, uint32 len, stringstream& out) = 0;
@@ -164,9 +164,9 @@ public:
 	virtual bool NextRow() = 0;
 	void Delete() { delete this; }
 
-	arcemu_INLINE Field* Fetch() { return mCurrentRow; }
-	arcemu_INLINE uint32 GetFieldCount() const { return mFieldCount; }
-	arcemu_INLINE uint32 GetRowCount() const { return mRowCount; }
+	ARCEMU_INLINE Field* Fetch() { return mCurrentRow; }
+	ARCEMU_INLINE uint32 GetFieldCount() const { return mFieldCount; }
+	ARCEMU_INLINE uint32 GetRowCount() const { return mRowCount; }
 
 protected:
 	uint32 mFieldCount;

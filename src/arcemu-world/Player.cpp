@@ -494,7 +494,7 @@ Player::~Player ( )
 	}
 }
 
-arcemu_INLINE uint32 GetSpellForLanguage(uint32 SkillID)
+ARCEMU_INLINE uint32 GetSpellForLanguage(uint32 SkillID)
 {
 	switch(SkillID)
 	{
@@ -754,12 +754,12 @@ bool Player::Create(WorldPacket& data )
 				if((*is).slot<INVENTORY_SLOT_BAG_END)
 				{
 					if( !GetItemInterface()->SafeAddItem(item, INVENTORY_SLOT_NOT_SET, (*is).slot) )
-						delete item;
+						ItemPool.PooledDelete( item );
 				}
 				else
 				{
 					if( !GetItemInterface()->AddItemToFreeSlot(item) )
-						delete item;
+						ItemPool.PooledDelete( item );
 				}
 			}
 		}
@@ -4901,7 +4901,7 @@ void Player::AddCalculatedRestXP(uint32 seconds)
 	float bubblerate = sWorld.getRate(RATE_RESTXP);
 
 	// One bubble (5% of xp_to_level) for every 8 hours logged out.
-	// if multiplier RestXP (from arcemu.config) is f.e 2, you only need 4hrs/bubble.
+	// if multiplier RestXP (from ascent.config) is f.e 2, you only need 4hrs/bubble.
 	uint32 rested_xp = uint32(0.05f * xp_to_lvl * ( seconds / (3600 * ( 8 / bubblerate))));
 
 	// if we are at a resting area rest_XP goes 4 times faster (making it 1 bubble every 2 hrs)

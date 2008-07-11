@@ -42,7 +42,7 @@ Standing Player::GetReputationRankFromStanding(int32 Standing_)
 	return STANDING_HATED;  
 }
 
-arcemu_INLINE void SetFlagAtWar(uint8 & flag)
+ARCEMU_INLINE void SetFlagAtWar(uint8 & flag)
 {
 	if(flag & FACTION_FLAG_AT_WAR)
 		return;
@@ -50,7 +50,7 @@ arcemu_INLINE void SetFlagAtWar(uint8 & flag)
 	flag |= FACTION_FLAG_AT_WAR;
 }
 
-arcemu_INLINE void UnsetFlagAtWar(uint8 & flag)
+ARCEMU_INLINE void UnsetFlagAtWar(uint8 & flag)
 {
 	if(!(flag & FACTION_FLAG_AT_WAR))
 		return;
@@ -58,7 +58,7 @@ arcemu_INLINE void UnsetFlagAtWar(uint8 & flag)
 	flag &= ~FACTION_FLAG_AT_WAR;
 }
 
-arcemu_INLINE void SetFlagVisible(uint8 & flag)
+ARCEMU_INLINE void SetFlagVisible(uint8 & flag)
 {
 	if(flag & FACTION_FLAG_VISIBLE)
 		return;
@@ -66,7 +66,7 @@ arcemu_INLINE void SetFlagVisible(uint8 & flag)
 	flag |= FACTION_FLAG_VISIBLE;
 }
 
-arcemu_INLINE void UnsetFlagVisible(uint8 & flag)
+ARCEMU_INLINE void UnsetFlagVisible(uint8 & flag)
 {
 	if(!(flag & FACTION_FLAG_VISIBLE))
 		return;
@@ -74,10 +74,10 @@ arcemu_INLINE void UnsetFlagVisible(uint8 & flag)
 	flag &= ~FACTION_FLAG_VISIBLE;
 }
 
-arcemu_INLINE bool AtWar(uint8 flag) { return (flag & FACTION_FLAG_AT_WAR) ? true : false; }
-arcemu_INLINE bool Visible(uint8 flag) { return (flag & FACTION_FLAG_VISIBLE) ? true : false; }
+ARCEMU_INLINE bool AtWar(uint8 flag) { return (flag & FACTION_FLAG_AT_WAR) ? true : false; }
+ARCEMU_INLINE bool Visible(uint8 flag) { return (flag & FACTION_FLAG_VISIBLE) ? true : false; }
 
-arcemu_INLINE bool RankChanged(int32 Standing, int32 Change)
+ARCEMU_INLINE bool RankChanged(int32 Standing, int32 Change)
 {
 	if(Player::GetReputationRankFromStanding(Standing) != Player::GetReputationRankFromStanding(Standing + Change))
 		return true;
@@ -85,7 +85,7 @@ arcemu_INLINE bool RankChanged(int32 Standing, int32 Change)
 		return false;
 }
 
-arcemu_INLINE bool RankChangedFlat(int32 Standing, int32 NewStanding)
+ARCEMU_INLINE bool RankChangedFlat(int32 Standing, int32 NewStanding)
 {
 	if(Player::GetReputationRankFromStanding(Standing) != Player::GetReputationRankFromStanding(NewStanding))
 		return true;

@@ -625,14 +625,14 @@ public:
 
 	void OnRemoveFromWorld();										// called when we are removed from world, kills all references to us.
 	
-	arcemu_INLINE void Vanished()
+	ARCEMU_INLINE void Vanished()
 	{
 		ClearAttackers();
 		ClearHealers();
 	}
 
-	arcemu_INLINE const uint64& GetPrimaryAttackTarget() { return m_primaryAttackTarget; }
-	arcemu_INLINE void SetUnit(Unit * p) { m_Unit = p; }
+	ARCEMU_INLINE const uint64& GetPrimaryAttackTarget() { return m_primaryAttackTarget; }
+	ARCEMU_INLINE void SetUnit(Unit * p) { m_Unit = p; }
 	void TryToClearAttackTargets();									// for pvp timeout
 	void AttackersForgetHate();										// used right now for Feign Death so attackers go home
 
@@ -680,7 +680,7 @@ public:
     void setAttackTimer(int32 time, bool offhand);
 	bool isAttackReady(bool offhand);
 
-	arcemu_INLINE void SetDuelWield(bool enabled)
+	ARCEMU_INLINE void SetDuelWield(bool enabled)
 	{
 		m_duelWield = enabled;
 	}
@@ -690,21 +690,21 @@ public:
   //void StrikeWithAbility( Unit* pVictim, Spell* spell, uint32 addspelldmg, uint32 weapon_damage_type );
 
 	/// State flags are server-only flags to help me know when to do stuff, like die, or attack
-	arcemu_INLINE void addStateFlag(uint32 f) { m_state |= f; };
-	arcemu_INLINE bool hasStateFlag(uint32 f) { return (m_state & f ? true : false); }
-	arcemu_INLINE void clearStateFlag(uint32 f) { m_state &= ~f; };
+	ARCEMU_INLINE void addStateFlag(uint32 f) { m_state |= f; };
+	ARCEMU_INLINE bool hasStateFlag(uint32 f) { return (m_state & f ? true : false); }
+	ARCEMU_INLINE void clearStateFlag(uint32 f) { m_state &= ~f; };
 
 	/// Stats
-	arcemu_INLINE uint32 getLevel() { return m_uint32Values[ UNIT_FIELD_LEVEL ]; };
-	arcemu_INLINE uint8 getRace() { return GetByte(UNIT_FIELD_BYTES_0,0); }
-	arcemu_INLINE uint8 getClass() { return GetByte(UNIT_FIELD_BYTES_0,1); }
-	arcemu_INLINE void setRace(uint8 race) { SetByte(UNIT_FIELD_BYTES_0,0,race); }
-	arcemu_INLINE void setClass(uint8 class_) { SetByte(UNIT_FIELD_BYTES_0,1, class_ ); }
-	arcemu_INLINE uint32 getClassMask() { return 1 << (getClass() - 1); }
-	arcemu_INLINE uint32 getRaceMask() { return 1 << (getRace() - 1); }
-	arcemu_INLINE uint8 getGender() { return GetByte(UNIT_FIELD_BYTES_0,2); }
-	arcemu_INLINE void setGender(uint8 gender) { SetByte(UNIT_FIELD_BYTES_0,2,gender); }
-	arcemu_INLINE uint8 getStandState() { return ((uint8)m_uint32Values[UNIT_FIELD_BYTES_1]); }
+	ARCEMU_INLINE uint32 getLevel() { return m_uint32Values[ UNIT_FIELD_LEVEL ]; };
+	ARCEMU_INLINE uint8 getRace() { return GetByte(UNIT_FIELD_BYTES_0,0); }
+	ARCEMU_INLINE uint8 getClass() { return GetByte(UNIT_FIELD_BYTES_0,1); }
+	ARCEMU_INLINE void setRace(uint8 race) { SetByte(UNIT_FIELD_BYTES_0,0,race); }
+	ARCEMU_INLINE void setClass(uint8 class_) { SetByte(UNIT_FIELD_BYTES_0,1, class_ ); }
+	ARCEMU_INLINE uint32 getClassMask() { return 1 << (getClass() - 1); }
+	ARCEMU_INLINE uint32 getRaceMask() { return 1 << (getRace() - 1); }
+	ARCEMU_INLINE uint8 getGender() { return GetByte(UNIT_FIELD_BYTES_0,2); }
+	ARCEMU_INLINE void setGender(uint8 gender) { SetByte(UNIT_FIELD_BYTES_0,2,gender); }
+	ARCEMU_INLINE uint8 getStandState() { return ((uint8)m_uint32Values[UNIT_FIELD_BYTES_1]); }
  
 	//// Combat
    // void DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32 unitEvent, uint32 spellId = 0);   // to stop from falling, etc
@@ -733,9 +733,9 @@ public:
     void CalculateResistanceReduction(Unit *pVictim,dealdamage *dmg,SpellEntry* ability) ;
 	void RegenerateHealth();
 	void RegeneratePower(bool isinterrupted);
-	arcemu_INLINE void setHRegenTimer(uint32 time) {m_H_regenTimer = time; }
-	arcemu_INLINE void setPRegenTimer(uint32 time) {m_P_regenTimer = time; }
-	arcemu_INLINE void DelayPowerRegeneration(uint32 time) { m_P_regenTimer = time; if (!m_interruptedRegenTime) m_interruptedRegenTime = 2000; }
+	ARCEMU_INLINE void setHRegenTimer(uint32 time) {m_H_regenTimer = time; }
+	ARCEMU_INLINE void setPRegenTimer(uint32 time) {m_P_regenTimer = time; }
+	ARCEMU_INLINE void DelayPowerRegeneration(uint32 time) { m_P_regenTimer = time; if (!m_interruptedRegenTime) m_interruptedRegenTime = 2000; }
 	void DeMorph();
 	uint32 ManaShieldAbsorb(uint32 dmg);
 	void smsg_AttackStart(Unit* pVictim);
@@ -747,10 +747,10 @@ public:
 	float get_chance_to_daze(Unit *target);
 
 	// Stealth  
-	arcemu_INLINE int32 GetStealthLevel() { return m_stealthLevel; }
-	arcemu_INLINE int32 GetStealthDetectBonus() { return m_stealthDetectBonus; }
-	arcemu_INLINE void SetStealth(uint32 id) { m_stealth = id; }
-	arcemu_INLINE bool IsStealth() { return (m_stealth!=0 ? true : false); }
+	ARCEMU_INLINE int32 GetStealthLevel() { return m_stealthLevel; }
+	ARCEMU_INLINE int32 GetStealthDetectBonus() { return m_stealthDetectBonus; }
+	ARCEMU_INLINE void SetStealth(uint32 id) { m_stealth = id; }
+	ARCEMU_INLINE bool IsStealth() { return (m_stealth!=0 ? true : false); }
 	float detectRange;
 
 	// Invisibility
@@ -766,8 +766,8 @@ public:
 	void GiveGroupXP(Unit *pVictim, Player *PlayerInGroup);
 
 	/// Combat / Death Status
-	arcemu_INLINE bool isAlive() { return m_deathState == ALIVE; };
-	arcemu_INLINE bool isDead() { return  m_deathState !=ALIVE; };
+	ARCEMU_INLINE bool isAlive() { return m_deathState == ALIVE; };
+	ARCEMU_INLINE bool isDead() { return  m_deathState !=ALIVE; };
 	virtual void setDeathState(DeathState s) {
 		m_deathState = s;
 	};
@@ -838,8 +838,8 @@ public:
 	std::map<uint32,struct SpellCharge> m_chargeSpells;
 	deque<uint32> m_chargeSpellRemoveQueue;
 	bool m_chargeSpellsInUse;
-	arcemu_INLINE void SetOnMeleeSpell(uint32 spell ) { m_meleespell = spell; }
-	arcemu_INLINE uint32 GetOnMeleeSpell() { return m_meleespell; }
+	ARCEMU_INLINE void SetOnMeleeSpell(uint32 spell ) { m_meleespell = spell; }
+	ARCEMU_INLINE uint32 GetOnMeleeSpell() { return m_meleespell; }
 
 	// Spell Crit
 	float spellcritperc;
@@ -850,7 +850,7 @@ public:
 	void ClearHateList();
 	void WipeHateList();
 	void WipeTargetList();
-	arcemu_INLINE void setAItoUse(bool value){m_useAI = value;}
+	ARCEMU_INLINE void setAItoUse(bool value){m_useAI = value;}
 
 
 	int32 GetThreatModifyer() { return m_threatModifyer; }
@@ -859,17 +859,17 @@ public:
 	void ModGeneratedThreatModifyer(int32 mod) { m_generatedThreatModifyer += mod; }
 
 	void SetHitFromMeleeSpell(float value) { m_hitfrommeleespell = value; }
-	arcemu_INLINE float GetHitFromMeleeSpell() { return m_hitfrommeleespell; }
+	ARCEMU_INLINE float GetHitFromMeleeSpell() { return m_hitfrommeleespell; }
 	float m_hitfrommeleespell;
 
 	// DK:Affect
-	arcemu_INLINE uint32 IsPacified() { return m_pacified; }
-	arcemu_INLINE uint32 IsStunned() { return m_stunned; }
-	arcemu_INLINE uint32 IsFeared() { return m_fearmodifiers; }
-	arcemu_INLINE uint32 GetResistChanceMod() { return m_resistChance; }
-	arcemu_INLINE void SetResistChanceMod(uint32 amount) { m_resistChance=amount; }
+	ARCEMU_INLINE uint32 IsPacified() { return m_pacified; }
+	ARCEMU_INLINE uint32 IsStunned() { return m_stunned; }
+	ARCEMU_INLINE uint32 IsFeared() { return m_fearmodifiers; }
+	ARCEMU_INLINE uint32 GetResistChanceMod() { return m_resistChance; }
+	ARCEMU_INLINE void SetResistChanceMod(uint32 amount) { m_resistChance=amount; }
 	
-	arcemu_INLINE uint16 HasNoInterrupt() { return m_noInterrupt; }
+	ARCEMU_INLINE uint16 HasNoInterrupt() { return m_noInterrupt; }
 	bool setDetectRangeMod(uint64 guid, int32 amount);
 	void unsetDetectRangeMod(uint64 guid);
 	int32 getDetectRangeMod(uint64 guid);
@@ -945,15 +945,15 @@ public:
 	void Emote (EmoteType emote);
 	void EventAddEmote(EmoteType emote, uint32 time);
 	void EmoteExpire();
-	arcemu_INLINE void setEmoteState(uint8 emote) { m_emoteState = emote; };
-	arcemu_INLINE uint32 GetOldEmote() { return m_oldEmote; }
+	ARCEMU_INLINE void setEmoteState(uint8 emote) { m_emoteState = emote; };
+	ARCEMU_INLINE uint32 GetOldEmote() { return m_oldEmote; }
 	void EventSummonPetExpire();
 	void EventAurastateExpire(uint32 aurastateflag){RemoveFlag(UNIT_FIELD_AURASTATE,aurastateflag);} //hmm this looks like so not necesary :S
 	void EventHealthChangeSinceLastUpdate();
 
 	void SetStandState (uint8 standstate);
 
-	arcemu_INLINE StandState GetStandState()
+	ARCEMU_INLINE StandState GetStandState()
 	{
 		uint32 bytes1 = GetUInt32Value (UNIT_FIELD_BYTES_1);
 		return StandState (uint8 (bytes1));
@@ -964,7 +964,7 @@ public:
 	void SendChatMessageAlternateEntry(uint32 entry, uint8 type, uint32 lang, const char * msg);
 	void RegisterPeriodicChatMessage(uint32 delay, uint32 msgid, std::string message, bool sendnotify);
 
-	arcemu_INLINE int GetHealthPct()
+	ARCEMU_INLINE int GetHealthPct()
 	{
 		//shitty db? pet/guardian bug?
 		if (GetUInt32Value(UNIT_FIELD_HEALTH) == 0 || GetUInt32Value(UNIT_FIELD_MAXHEALTH) == 0)
@@ -973,9 +973,9 @@ public:
 		return (int)(GetUInt32Value(UNIT_FIELD_HEALTH) * 100 / GetUInt32Value(UNIT_FIELD_MAXHEALTH));
 	};
 
-    arcemu_INLINE void SetHealthPct(uint32 val) { if (val>0) SetUInt32Value(UNIT_FIELD_HEALTH,float2int32(val*0.01f*GetUInt32Value(UNIT_FIELD_MAXHEALTH))); };
+    ARCEMU_INLINE void SetHealthPct(uint32 val) { if (val>0) SetUInt32Value(UNIT_FIELD_HEALTH,float2int32(val*0.01f*GetUInt32Value(UNIT_FIELD_MAXHEALTH))); };
 
-	arcemu_INLINE int GetManaPct()
+	ARCEMU_INLINE int GetManaPct()
 	{
 		if (GetUInt32Value(UNIT_FIELD_POWER1) == 0 || GetUInt32Value(UNIT_FIELD_MAXPOWER1) == 0)
 			return 0;
@@ -986,19 +986,19 @@ public:
 	uint32 GetResistance(uint32 type);	
 	
 	//Pet
-	arcemu_INLINE void SetIsPet(bool chck) { m_isPet = chck; }
+	ARCEMU_INLINE void SetIsPet(bool chck) { m_isPet = chck; }
 	
 	//In-Range
 	virtual void AddInRangeObject(Object* pObj);
 	virtual void OnRemoveInRangeObject(Object* pObj);
 	void ClearInRangeSet();
 
-	arcemu_INLINE Spell * GetCurrentSpell(){return m_currentSpell;}
-	arcemu_INLINE void SetCurrentSpell(Spell* cSpell) { m_currentSpell = cSpell; }
+	ARCEMU_INLINE Spell * GetCurrentSpell(){return m_currentSpell;}
+	ARCEMU_INLINE void SetCurrentSpell(Spell* cSpell) { m_currentSpell = cSpell; }
 
 	uint32 m_CombatUpdateTimer;
 
-	arcemu_INLINE void setcanperry(bool newstatus){can_parry=newstatus;}
+	ARCEMU_INLINE void setcanperry(bool newstatus){can_parry=newstatus;}
 		
 	std::map<uint32,Aura*> tmpAura;
 
@@ -1019,7 +1019,7 @@ public:
 
 	float PctRegenModifier;//1.0 by default
 	float PctPowerRegenModifier[4];
-	arcemu_INLINE uint32 GetPowerType(){ return (GetUInt32Value(UNIT_FIELD_BYTES_0)>> 24);}
+	ARCEMU_INLINE uint32 GetPowerType(){ return (GetUInt32Value(UNIT_FIELD_BYTES_0)>> 24);}
 	void RemoveSoloAura(uint32 type);
 
 	void RemoveAurasByInterruptFlag(uint32 flag);
@@ -1091,19 +1091,19 @@ public:
 	Creature *critterPet;
 	Creature *summonPet;
 
-	arcemu_INLINE uint32 GetCharmTempVal() { return m_charmtemp; }
-	arcemu_INLINE void SetCharmTempVal(uint32 val) { m_charmtemp = val; }
+	ARCEMU_INLINE uint32 GetCharmTempVal() { return m_charmtemp; }
+	ARCEMU_INLINE void SetCharmTempVal(uint32 val) { m_charmtemp = val; }
 	set<uint32> m_SpellList;
 
-	arcemu_INLINE void DisableAI() { m_useAI = false; }
-	arcemu_INLINE void EnableAI() { m_useAI = true; }
+	ARCEMU_INLINE void DisableAI() { m_useAI = false; }
+	ARCEMU_INLINE void EnableAI() { m_useAI = true; }
 
-	arcemu_INLINE void SetPowerType(uint8 type)
+	ARCEMU_INLINE void SetPowerType(uint8 type)
 	{
 		SetByte(UNIT_FIELD_BYTES_0,3,type);
 	}
 
-	arcemu_INLINE bool IsSpiritHealer()
+	ARCEMU_INLINE bool IsSpiritHealer()
 	{
 		switch(GetEntry())
 		{

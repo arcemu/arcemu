@@ -64,11 +64,11 @@ public:
 			if(mUpdateMask[x])break;
 		return (x+1); 
 	}
-	arcemu_INLINE uint32 GetBlockCount() const {return mBlocks;}
+	ARCEMU_INLINE uint32 GetBlockCount() const {return mBlocks;}
 	
-	arcemu_INLINE uint32 GetLength() const { return (mBlocks *sizeof(uint32)); }
-	arcemu_INLINE uint32 GetCount() const { return mCount; }
-	arcemu_INLINE const uint8* GetMask() const { return (uint8*)mUpdateMask; }
+	ARCEMU_INLINE uint32 GetLength() const { return (mBlocks *sizeof(uint32)); }
+	ARCEMU_INLINE uint32 GetCount() const { return mCount; }
+	ARCEMU_INLINE const uint8* GetMask() const { return (uint8*)mUpdateMask; }
 
 	void SetCount(uint32 valuesCount)
 	{

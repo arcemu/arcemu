@@ -341,7 +341,7 @@ void WorldSession::HandleQuestgiverAcceptQuestOpcode( WorldPacket & recv_data )
 			Item *item = objmgr.CreateItem( qst->receive_items[i], GetPlayer());
 			if(!GetPlayer()->GetItemInterface()->AddItemToFreeSlot(item))
 			{
-				delete item;
+				ItemPool.PooledDelete( item );
 			}
 			else
 				SendItemPushResult(item, false, true, false, true, 
@@ -357,7 +357,7 @@ void WorldSession::HandleQuestgiverAcceptQuestOpcode( WorldPacket & recv_data )
 		{
 			item->SetUInt32Value(ITEM_FIELD_STACK_COUNT, qst->srcitemcount ? qst->srcitemcount : 1);
 			if(!_player->GetItemInterface()->AddItemToFreeSlot(item))
-				delete item;
+				ItemPool.PooledDelete( item );
 		}
 	}
 

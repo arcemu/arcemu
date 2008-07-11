@@ -48,13 +48,13 @@ public:
 	~WorldSocket();
 
 	// vs8 fix - send null on empty buffer
-	arcemu_INLINE void SendPacket(WorldPacket* packet) { if(!packet) return; OutPacket(packet->GetOpcode(), packet->size(), (packet->size() ? (const void*)packet->contents() : NULL)); }
-	arcemu_INLINE void SendPacket(StackBufferBase * packet) { if(!packet) return; OutPacket(packet->GetOpcode(), packet->GetSize(), (packet->GetSize() ? (const void*)packet->GetBufferPointer() : NULL)); }
+	ARCEMU_INLINE void SendPacket(WorldPacket* packet) { if(!packet) return; OutPacket(packet->GetOpcode(), packet->size(), (packet->size() ? (const void*)packet->contents() : NULL)); }
+	ARCEMU_INLINE void SendPacket(StackBufferBase * packet) { if(!packet) return; OutPacket(packet->GetOpcode(), packet->GetSize(), (packet->GetSize() ? (const void*)packet->GetBufferPointer() : NULL)); }
 
 	void __fastcall OutPacket(uint16 opcode, size_t len, const void* data);
 	OUTPACKET_RESULT __fastcall _OutPacket(uint16 opcode, size_t len, const void* data);
    
-	arcemu_INLINE uint32 GetLatency() { return _latency; }
+	ARCEMU_INLINE uint32 GetLatency() { return _latency; }
 
 	void Authenticate();
 	void InformationRetreiveCallback(WorldPacket & recvData, uint32 requestid);
@@ -65,8 +65,8 @@ public:
 	void OnConnect();
 	void OnDisconnect();
 
-	arcemu_INLINE void SetSession(WorldSession * session) { mSession = session; }
-	arcemu_INLINE WorldSession * GetSession() { return mSession; }
+	ARCEMU_INLINE void SetSession(WorldSession * session) { mSession = session; }
+	ARCEMU_INLINE WorldSession * GetSession() { return mSession; }
 	bool Authed;
 
 	void UpdateQueuedPackets();
@@ -239,13 +239,13 @@ public:
 
 	void Disconnect();
 	bool IsConnected();
-	arcemu_INLINE string GetRemoteIP() { return string(inet_ntoa(m_address.sin_addr)); }
-	arcemu_INLINE uint32 GetRemotePort() { return ntohs(m_address.sin_port); }
+	ARCEMU_INLINE string GetRemoteIP() { return string(inet_ntoa(m_address.sin_addr)); }
+	ARCEMU_INLINE uint32 GetRemotePort() { return ntohs(m_address.sin_port); }
 
-	arcemu_INLINE void SendPacket(WorldPacket* packet) { if(!packet) return; OutPacket(packet->GetOpcode(), (uint16)packet->size(), (packet->size() ? (const void*)packet->contents() : NULL)); }
-	arcemu_INLINE void SendPacket(StackBufferBase * packet) { if(!packet) return; OutPacket(packet->GetOpcode(), packet->GetSize(), (packet->GetSize() ? (const void*)packet->GetBufferPointer() : NULL)); }
+	ARCEMU_INLINE void SendPacket(WorldPacket* packet) { if(!packet) return; OutPacket(packet->GetOpcode(), (uint16)packet->size(), (packet->size() ? (const void*)packet->contents() : NULL)); }
+	ARCEMU_INLINE void SendPacket(StackBufferBase * packet) { if(!packet) return; OutPacket(packet->GetOpcode(), packet->GetSize(), (packet->GetSize() ? (const void*)packet->GetBufferPointer() : NULL)); }
 	void __fastcall OutPacket(uint16 opcode, uint16 len, const void* data);
-	arcemu_INLINE uint32 GetSessionId() { return m_sessionId; }
+	ARCEMU_INLINE uint32 GetSessionId() { return m_sessionId; }
 
 protected:
 	uint32 m_sessionId;

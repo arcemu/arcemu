@@ -52,9 +52,9 @@ enum MsTimeVariables
 };
 
 #ifdef WIN32
-#define arcemu_INLINE __forceinline
+#define ARCEMU_INLINE __forceinline
 #else
-#define arcemu_INLINE inline
+#define ARCEMU_INLINE inline
 #endif
 
 #ifdef HAVE_CONFIG_H
@@ -337,16 +337,16 @@ typedef uint32_t DWORD;
 /* these can be optimized into assembly */
 #ifdef USING_BIG_ENDIAN
 
-/*arcemu_INLINE static void swap16(uint16* p) { *p = ((*p >> 8) & 0xff) | (*p << 8); }
-arcemu_INLINE static void swap32(uint32* p) { *p = ((*p >> 24 & 0xff)) | ((*p >> 8) & 0xff00) | ((*p << 8) & 0xff0000) | (*p << 24); }
-arcemu_INLINE static void swap64(uint64* p) { *p = ((*p >> 56)) | ((*p >> 40) & 0x000000000000ff00ULL) | ((*p >> 24) & 0x0000000000ff0000ULL) | ((*p >> 8 ) & 0x00000000ff000000ULL) |
+/*ARCEMU_INLINE static void swap16(uint16* p) { *p = ((*p >> 8) & 0xff) | (*p << 8); }
+ARCEMU_INLINE static void swap32(uint32* p) { *p = ((*p >> 24 & 0xff)) | ((*p >> 8) & 0xff00) | ((*p << 8) & 0xff0000) | (*p << 24); }
+ARCEMU_INLINE static void swap64(uint64* p) { *p = ((*p >> 56)) | ((*p >> 40) & 0x000000000000ff00ULL) | ((*p >> 24) & 0x0000000000ff0000ULL) | ((*p >> 8 ) & 0x00000000ff000000ULL) |
 								((*p << 8 ) & 0x000000ff00000000ULL) | ((*p << 24) & 0x0000ff0000000000ULL) | ((*p << 40) & 0x00ff000000000000ULL) | ((*p << 56)); }*/
 
-arcemu_INLINE static void swap16(uint16* p) { *p = bswap_16((uint16_t)*p); }
-arcemu_INLINE static void swap32(uint32* p) { *p = bswap_32((uint32_t)*p); }
-arcemu_INLINE static void swap64(uint64* p) { *p = bswap_64((uint64_t)*p);; }
+ARCEMU_INLINE static void swap16(uint16* p) { *p = bswap_16((uint16_t)*p); }
+ARCEMU_INLINE static void swap32(uint32* p) { *p = bswap_32((uint32_t)*p); }
+ARCEMU_INLINE static void swap64(uint64* p) { *p = bswap_64((uint64_t)*p);; }
 
-arcemu_INLINE static float swapfloat(float p)
+ARCEMU_INLINE static float swapfloat(float p)
 {
 	union { float asfloat; uint8 asbytes[4]; } u1, u2;
 	u1.asfloat = p;
@@ -359,7 +359,7 @@ arcemu_INLINE static float swapfloat(float p)
 	return u2.asfloat;
 }
 
-arcemu_INLINE static double swapdouble(double p)
+ARCEMU_INLINE static double swapdouble(double p)
 {
 	union { double asfloat; uint8 asbytes[8]; } u1, u2;
 	u1.asfloat = p;
@@ -376,7 +376,7 @@ arcemu_INLINE static double swapdouble(double p)
 	return u2.asfloat;
 }
 
-arcemu_INLINE static void swapfloat(float * p)
+ARCEMU_INLINE static void swapfloat(float * p)
 {
 	union { float asfloat; uint8 asbytes[4]; } u1, u2;
 	u1.asfloat = *p;
@@ -388,7 +388,7 @@ arcemu_INLINE static void swapfloat(float * p)
 	*p = u2.asfloat;
 }
 
-arcemu_INLINE static void swapdouble(double * p)
+ARCEMU_INLINE static void swapdouble(double * p)
 {
 	union { double asfloat; uint8 asbytes[8]; } u1, u2;
 	u1.asfloat = *p;
@@ -404,32 +404,32 @@ arcemu_INLINE static void swapdouble(double * p)
 	*p = u2.asfloat;
 }
 
-/*arcemu_INLINE static uint16 swap16(uint16 p) { return ((p >> 8) & 0xff) | (p << 8); }
-arcemu_INLINE static uint32 swap32(uint32 p) { return ((p >> 24) & 0xff) | ((p >> 8) & 0xff00) | ((p << 8) & 0xff0000) | (p << 24); }
-arcemu_INLINE static uint64 swap64(uint64 p)  { p = (((p >> 56) & 0xff)) | ((p >> 40) & 0x000000000000ff00ULL) | ((p >> 24) & 0x0000000000ff0000ULL) | ((p >> 8 ) & 0x00000000ff000000ULL) |
+/*ARCEMU_INLINE static uint16 swap16(uint16 p) { return ((p >> 8) & 0xff) | (p << 8); }
+ARCEMU_INLINE static uint32 swap32(uint32 p) { return ((p >> 24) & 0xff) | ((p >> 8) & 0xff00) | ((p << 8) & 0xff0000) | (p << 24); }
+ARCEMU_INLINE static uint64 swap64(uint64 p)  { p = (((p >> 56) & 0xff)) | ((p >> 40) & 0x000000000000ff00ULL) | ((p >> 24) & 0x0000000000ff0000ULL) | ((p >> 8 ) & 0x00000000ff000000ULL) |
 								((p << 8 ) & 0x000000ff00000000ULL) | ((p << 24) & 0x0000ff0000000000ULL) | ((p << 40) & 0x00ff000000000000ULL) | ((p << 56)); }
 
-arcemu_INLINE static void swap16(int16* p) { *p = ((*p >> 8) & 0xff) | (*p << 8); }
-arcemu_INLINE static void swap32(int32* p) { *p = ((*p >> 24) & 0xff) | ((*p >> 8) & 0xff00) | ((*p << 8) & 0xff0000) | (*p << 24); }
-arcemu_INLINE static void swap64(int64* p) { *p = ((*p >> 56) & 0xff) | ((*p >> 40) & 0x000000000000ff00ULL) | ((*p >> 24) & 0x0000000000ff0000ULL) | ((*p >> 8 ) & 0x00000000ff000000ULL) |
+ARCEMU_INLINE static void swap16(int16* p) { *p = ((*p >> 8) & 0xff) | (*p << 8); }
+ARCEMU_INLINE static void swap32(int32* p) { *p = ((*p >> 24) & 0xff) | ((*p >> 8) & 0xff00) | ((*p << 8) & 0xff0000) | (*p << 24); }
+ARCEMU_INLINE static void swap64(int64* p) { *p = ((*p >> 56) & 0xff) | ((*p >> 40) & 0x000000000000ff00ULL) | ((*p >> 24) & 0x0000000000ff0000ULL) | ((*p >> 8 ) & 0x00000000ff000000ULL) |
 								((*p << 8 ) & 0x000000ff00000000ULL) | ((*p << 24) & 0x0000ff0000000000ULL) | ((*p << 40) & 0x00ff000000000000ULL) | ((*p << 56)); }
 
-arcemu_INLINE static int16 swap16(int16 p) { return ((p >> 8) & 0xff) | (p << 8); }
-arcemu_INLINE static int32 swap32(int32 p) { return ((p >> 24) & 0xff) | ((p >> 8) & 0xff00) | ((p << 8) & 0xff0000) | (p << 24); }
-arcemu_INLINE static int64 swap64(int64 p)  { return ((((p >> 56) & 0xff)) | ((p >> 40) & 0x000000000000ff00ULL) | ((p >> 24) & 0x0000000000ff0000ULL) | ((p >> 8 ) & 0x00000000ff000000ULL) |
+ARCEMU_INLINE static int16 swap16(int16 p) { return ((p >> 8) & 0xff) | (p << 8); }
+ARCEMU_INLINE static int32 swap32(int32 p) { return ((p >> 24) & 0xff) | ((p >> 8) & 0xff00) | ((p << 8) & 0xff0000) | (p << 24); }
+ARCEMU_INLINE static int64 swap64(int64 p)  { return ((((p >> 56) & 0xff)) | ((p >> 40) & 0x000000000000ff00ULL) | ((p >> 24) & 0x0000000000ff0000ULL) | ((p >> 8 ) & 0x00000000ff000000ULL) |
 								((p << 8 ) & 0x000000ff00000000ULL) | ((p << 24) & 0x0000ff0000000000ULL) | ((p << 40) & 0x00ff000000000000ULL) | ((p << 56))); }*/
 
-arcemu_INLINE static uint16 swap16(uint16 p) { return bswap_16((uint16_t)p); }
-arcemu_INLINE static uint32 swap32(uint32 p) { return bswap_32((uint32_t)p); }
-arcemu_INLINE static uint64 swap64(uint64 p)  { return bswap_64((uint64_t)p); }
+ARCEMU_INLINE static uint16 swap16(uint16 p) { return bswap_16((uint16_t)p); }
+ARCEMU_INLINE static uint32 swap32(uint32 p) { return bswap_32((uint32_t)p); }
+ARCEMU_INLINE static uint64 swap64(uint64 p)  { return bswap_64((uint64_t)p); }
 
-arcemu_INLINE static void swap16(int16* p) { *p = bswap_16((uint16_t)*p); }
-arcemu_INLINE static void swap32(int32* p) { *p = bswap_32((uint32_t)*p); }
-arcemu_INLINE static void swap64(int64* p) { *p = bswap_64((uint64_t)*p); }
+ARCEMU_INLINE static void swap16(int16* p) { *p = bswap_16((uint16_t)*p); }
+ARCEMU_INLINE static void swap32(int32* p) { *p = bswap_32((uint32_t)*p); }
+ARCEMU_INLINE static void swap64(int64* p) { *p = bswap_64((uint64_t)*p); }
 
-arcemu_INLINE static int16 swap16(int16 p) { return bswap_16((uint16_t)p); }
-arcemu_INLINE static int32 swap32(int32 p) { return bswap_32((uint32_t)p); }
-arcemu_INLINE static int64 swap64(int64 p)  { return bswap_64((uint64_t)p); }
+ARCEMU_INLINE static int16 swap16(int16 p) { return bswap_16((uint16_t)p); }
+ARCEMU_INLINE static int32 swap32(int32 p) { return bswap_32((uint32_t)p); }
+ARCEMU_INLINE static int64 swap64(int64 p)  { return bswap_64((uint64_t)p); }
 
 #endif
 /* 
@@ -566,7 +566,7 @@ static inline int long2int32(const double value)
 #include <sys/timeb.h>
 #endif
 
-arcemu_INLINE uint32 now()
+ARCEMU_INLINE uint32 now()
 {	
 #ifdef WIN32
 	return GetTickCount();
@@ -639,7 +639,7 @@ struct spawn_timed_emotes
 };
 typedef std::list<spawn_timed_emotes*> TimedEmoteList;
 
-arcemu_INLINE void reverse_array(uint8 * pointer, size_t count)
+ARCEMU_INLINE void reverse_array(uint8 * pointer, size_t count)
 {
 	size_t x;
 	uint8 * temp = (uint8*)malloc(count);
@@ -655,13 +655,13 @@ int32 GetTimePeriodFromString(const char * str);
 std::string ConvertTimeStampToString(uint32 timestamp);
 std::string ConvertTimeStampToDataTime(uint32 timestamp);
 
-arcemu_INLINE void arcemu_TOLOWER(std::string& str)
+ARCEMU_INLINE void arcemu_TOLOWER(std::string& str)
 {
 	for(size_t i = 0; i < str.length(); ++i)
 		str[i] = (char)tolower(str[i]);
 };
 
-arcemu_INLINE void arcemu_TOUPPER(std::string& str)
+ARCEMU_INLINE void arcemu_TOUPPER(std::string& str)
 {
 	for(size_t i = 0; i < str.length(); ++i)
 		str[i] = (char)toupper(str[i]);

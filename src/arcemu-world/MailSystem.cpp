@@ -320,7 +320,7 @@ void WorldSession::HandleSendMail(WorldPacket & recv_data )
 
 	if( itemcount > 12 )
 	{
-		//SystemMessage("Sorry, arcemu does not support sending multiple items at this time. (don't want to lose your item do you) Remove some items, and try again.");
+		//SystemMessage("Sorry, Ascent does not support sending multiple items at this time. (don't want to lose your item do you) Remove some items, and try again.");
 		SendMailError(MAIL_ERR_INTERNAL_ERROR);
 		return;
 	}
@@ -428,7 +428,7 @@ void WorldSession::HandleSendMail(WorldPacket & recv_data )
 				sGMLog.writefromsession(this, "sent mail with item entry %u to %s, with gold %u.", pItem->GetEntry(), player->name, msg.money);
 			}
 
-			delete pItem;
+			ItemPool.PooledDelete( pItem );
 		}
 	}
 
@@ -594,7 +594,7 @@ void WorldSession::HandleTakeItem(WorldPacket & recv_data )
 		data << uint32(MAIL_ERR_BAG_FULL);
 		SendPacket(&data);
 
-		delete item;
+		ItemPool.PooledDelete( item );
 		return;
 	}
 
@@ -611,7 +611,7 @@ void WorldSession::HandleTakeItem(WorldPacket & recv_data )
 	data << item->GetUInt32Value(ITEM_FIELD_STACK_COUNT);
 
 	if( !_player->GetItemInterface()->AddItemToFreeSlot(item) )
-		delete item;
+		ItemPool.PooledDelete( item );
 
 	message->items.erase( itr );
 
@@ -756,7 +756,7 @@ void WorldSession::HandleMailCreateTextItem(WorldPacket & recv_data )
 	}
 	else
 	{
-		delete pItem;
+		ItemPool.PooledDelete( pItem );
 	}
 }
 

@@ -274,7 +274,7 @@ pSpellAura SpellAuraHandler[TOTAL_SPELL_AURAS]={
 		&Aura::SpellAuraNULL,//251
 };
 /*
-ASCENT_INLINE void ApplyFloatSM(float ** m,float v,uint32 mask, float def)
+ARCEMU_INLINE void ApplyFloatSM(float ** m,float v,uint32 mask, float def)
 {
 	if(*m == 0)
 	{
@@ -297,7 +297,7 @@ ASCENT_INLINE void ApplyFloatSM(float ** m,float v,uint32 mask, float def)
 	}
 }*/
 /*
-ASCENT_INLINE void ApplyFloatPSM(float ** m,int32 v,uint32 mask, float def)
+ARCEMU_INLINE void ApplyFloatPSM(float ** m,int32 v,uint32 mask, float def)
 {
 	if(*m == 0)
 	{
@@ -2601,6 +2601,7 @@ void Aura::SpellAuraModStun(bool apply)
 		{
 			if( ( m_spellProto->MechanicsType == MECHANIC_CHARMED &&  m_target->MechanicsDispels[MECHANIC_CHARMED] )
 			|| ( m_spellProto->MechanicsType == MECHANIC_INCAPACIPATED && m_target->MechanicsDispels[MECHANIC_INCAPACIPATED] )
+
 			|| ( m_spellProto->MechanicsType == MECHANIC_SAPPED && m_target->MechanicsDispels[MECHANIC_SAPPED] )
 			|| ( m_target->MechanicsDispels[MECHANIC_STUNNED] )
 				)
@@ -5666,7 +5667,7 @@ void Aura::SpellAuraChannelDeathItem(bool apply)
 					if(!pCaster->GetItemInterface()->AddItemToFreeSlot(item))
 					{
 						pCaster->GetItemInterface()->BuildInventoryChangeError(0, 0, INV_ERR_INVENTORY_FULL);
-						delete item;
+						ItemPool.PooledDelete( item );
 						return;
 					}
 					/*WorldPacket data(45);

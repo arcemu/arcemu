@@ -4269,7 +4269,7 @@ void Spell::CreateItem(uint32 itemId)
 		AddItemResult result = pUnit->GetItemInterface()->SafeAddItem(newItem, slotresult.ContainerSlot, slotresult.Slot);
 		if(!result)
 		{
-			delete newItem;
+			ItemPool.PooledDelete( newItem );
 			return;
 		}
 

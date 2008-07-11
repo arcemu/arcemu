@@ -27,12 +27,12 @@ SERVER_DECL bool isAttackable(Object* objA, Object* objB, bool CheckStealth = tr
 SERVER_DECL bool isCombatSupport(Object* objA, Object* objB); // B combat supports A?;
 SERVER_DECL bool isAlliance(Object* objA); // A is alliance?
 
-arcemu_INLINE bool isFriendly(Object* objA, Object* objB)// B is friendly to A if its not hostile
+ARCEMU_INLINE bool isFriendly(Object* objA, Object* objB)// B is friendly to A if its not hostile
 {
 	return !isHostile(objA, objB);
 }
 
-arcemu_INLINE bool isSameFaction(Object* objA, Object* objB)
+ARCEMU_INLINE bool isSameFaction(Object* objA, Object* objB)
 {
 	if( !objB->m_faction || !objA->m_faction )
 		return true; //we return true to not give any agro to this object since it might cause other problems later

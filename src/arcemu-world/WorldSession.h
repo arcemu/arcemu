@@ -158,19 +158,19 @@ public:
 	~WorldSession();
 
 	Player * m_loggingInPlayer;
-	arcemu_INLINE void SendPacket(WorldPacket* packet)
+	ARCEMU_INLINE void SendPacket(WorldPacket* packet)
 	{
 		if(_socket && _socket->IsConnected())
 			_socket->SendPacket(packet);
 	}
 
-	arcemu_INLINE void SendPacket(StackBufferBase * packet)
+	ARCEMU_INLINE void SendPacket(StackBufferBase * packet)
 	{
 		if(_socket && _socket->IsConnected())
 			_socket->SendPacket(packet);
 	}
 
-	arcemu_INLINE void OutPacket(uint16 opcode)
+	ARCEMU_INLINE void OutPacket(uint16 opcode)
 	{
 		if(_socket && _socket->IsConnected())
 			_socket->OutPacket(opcode, 0, NULL);
@@ -183,8 +183,8 @@ public:
 	uint32 m_currMsTime;
 	uint32 m_lastPing;
 
-	arcemu_INLINE uint32 GetAccountId() const { return _accountId; }
-	arcemu_INLINE Player* GetPlayer() { return _player; }
+	ARCEMU_INLINE uint32 GetAccountId() const { return _accountId; }
+	ARCEMU_INLINE Player* GetPlayer() { return _player; }
 	
 	/* Acct flags */
 	void SetAccountFlags(uint32 flags) { _accountFlags = flags; }
@@ -193,10 +193,10 @@ public:
 	/* GM Permission System */
 	void LoadSecurity(std::string securitystring);
 	void SetSecurity(std::string securitystring);
-	arcemu_INLINE char* GetPermissions() { return permissions; }
-	arcemu_INLINE int GetPermissionCount() { return permissioncount; }
-	arcemu_INLINE bool HasPermissions() { return (permissioncount > 0) ? true : false; }
-	arcemu_INLINE bool HasGMPermissions()
+	ARCEMU_INLINE char* GetPermissions() { return permissions; }
+	ARCEMU_INLINE int GetPermissionCount() { return permissioncount; }
+	ARCEMU_INLINE bool HasPermissions() { return (permissioncount > 0) ? true : false; }
+	ARCEMU_INLINE bool HasGMPermissions()
 	{
 		if(!permissioncount)
 			return false;
@@ -207,13 +207,13 @@ public:
 	bool CanUseCommand(char cmdstr);
 
 	
-	arcemu_INLINE void SetSocket(WorldSocket *sock)
+	ARCEMU_INLINE void SetSocket(WorldSocket *sock)
 	{
 		_socket = sock;
 	}
-	arcemu_INLINE void SetPlayer(Player *plr) { _player = plr; }
+	ARCEMU_INLINE void SetPlayer(Player *plr) { _player = plr; }
 	
-	arcemu_INLINE void SetAccountData(uint32 index, char* data, bool initial,uint32 sz)
+	ARCEMU_INLINE void SetAccountData(uint32 index, char* data, bool initial,uint32 sz)
 	{
 		ASSERT(index < 8);
 		if(sAccountData[index].data)
@@ -226,7 +226,7 @@ public:
 			sAccountData[index].bIsDirty = false;
 	}
 	
-	arcemu_INLINE AccountDataEntry* GetAccountData(uint32 index)
+	ARCEMU_INLINE AccountDataEntry* GetAccountData(uint32 index)
 	{
 		ASSERT(index < 8);
 		return &sAccountData[index];
@@ -240,7 +240,7 @@ public:
 
 	void LogoutPlayer(bool Save);
 
-	arcemu_INLINE void QueuePacket(WorldPacket* packet)
+	ARCEMU_INLINE void QueuePacket(WorldPacket* packet)
 	{
 		m_lastPing = (uint32)UNIXTIME;
 		_recvQueue.Push(packet);
@@ -252,7 +252,7 @@ public:
 			_socket->OutPacket(opcode, len, data);
 	}
 
-	arcemu_INLINE WorldSocket* GetSocket() { return _socket; }
+	ARCEMU_INLINE WorldSocket* GetSocket() { return _socket; }
 	
 	void Disconnect()
 	{
@@ -268,15 +268,15 @@ public:
 	void SendNotification(const char *message, ...);
 	void SendAuctionPlaceBidResultPacket(uint32 itemId, uint32 error);
 
-	arcemu_INLINE void SetInstance(uint32 Instance) { instanceId = Instance; }
-	arcemu_INLINE uint32 GetLatency() { return _latency; }
-	arcemu_INLINE string GetAccountName() { return _accountName; }
-	arcemu_INLINE const char * GetAccountNameS() { return _accountName.c_str(); }
+	ARCEMU_INLINE void SetInstance(uint32 Instance) { instanceId = Instance; }
+	ARCEMU_INLINE uint32 GetLatency() { return _latency; }
+	ARCEMU_INLINE string GetAccountName() { return _accountName; }
+	ARCEMU_INLINE const char * GetAccountNameS() { return _accountName.c_str(); }
 
-	arcemu_INLINE uint32 GetClientBuild() { return client_build; }
-	arcemu_INLINE void SetClientBuild(uint32 build) { client_build = build; }
+	ARCEMU_INLINE uint32 GetClientBuild() { return client_build; }
+	ARCEMU_INLINE void SetClientBuild(uint32 build) { client_build = build; }
 	bool bDeleted;
-	arcemu_INLINE uint32 GetInstance() { return instanceId; }
+	ARCEMU_INLINE uint32 GetInstance() { return instanceId; }
 	Mutex deleteMutex;
 	void _HandleAreaTriggerOpcode(uint32 id);//real handle
 	int32 m_moveDelayTime;
@@ -284,7 +284,7 @@ public:
 
 	void CharacterEnumProc(QueryResult * result);
 	void LoadAccountDataProc(QueryResult * result);
-	arcemu_INLINE bool IsLoggingOut() { return _loggingOut; }
+	ARCEMU_INLINE bool IsLoggingOut() { return _loggingOut; }
 
 protected:
 
@@ -713,7 +713,7 @@ private:
 	uint32 instanceId;
 	uint8 _updatecount;
 public:
-	arcemu_INLINE MovementInfo* GetMovementInfo() { return &movement_info; }
+	ARCEMU_INLINE MovementInfo* GetMovementInfo() { return &movement_info; }
 	static void InitPacketHandlerTable();
 	uint32 floodLines;
 	time_t floodTime;

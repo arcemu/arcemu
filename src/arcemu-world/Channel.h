@@ -90,7 +90,7 @@ public:
 	bool m_muted;
 	bool m_announce;
 	uint32 m_team;
-	arcemu_INLINE size_t GetNumMembers() { return m_members.size(); }
+	ARCEMU_INLINE size_t GetNumMembers() { return m_members.size(); }
 #ifdef VOICE_CHAT
 	bool voice_enabled;
 	uint16 i_voice_channel_id;
@@ -193,8 +193,8 @@ public:
 		++m_itr;
 	}
 
-	arcemu_INLINE Player* Grab() { return m_itr->first; }
-	arcemu_INLINE bool End() { return (m_itr==m_endItr)?true:false; }
+	ARCEMU_INLINE Player* Grab() { return m_itr->first; }
+	ARCEMU_INLINE bool End() { return (m_itr==m_endItr)?true:false; }
 };
 
 #endif

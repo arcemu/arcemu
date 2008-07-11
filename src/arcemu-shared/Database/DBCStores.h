@@ -983,23 +983,23 @@ struct DurabilityCostsEntry
 
 #pragma pack(pop)
 
-arcemu_INLINE float GetRadius(SpellRadius *radius)
+ARCEMU_INLINE float GetRadius(SpellRadius *radius)
 {
     return radius->Radius;
 }
-arcemu_INLINE uint32 GetCastTime(SpellCastTime *time)
+ARCEMU_INLINE uint32 GetCastTime(SpellCastTime *time)
 {
     return time->CastTime;
 }
-arcemu_INLINE float GetMaxRange(SpellRange *range)
+ARCEMU_INLINE float GetMaxRange(SpellRange *range)
 {
     return range->maxRange;
 }
-arcemu_INLINE float GetMinRange(SpellRange *range)
+ARCEMU_INLINE float GetMinRange(SpellRange *range)
 {
     return range->minRange;
 }
-arcemu_INLINE uint32 GetDuration(SpellDuration *dur)
+ARCEMU_INLINE uint32 GetDuration(SpellDuration *dur)
 {
     return dur->Duration1;
 }
@@ -1168,7 +1168,7 @@ public:
 		}
 	}
 
-	arcemu_INLINE uint32 GetNumRows()
+	ARCEMU_INLINE uint32 GetNumRows()
 	{
 		return m_numrows;
 	}

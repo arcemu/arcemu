@@ -27,7 +27,7 @@ template<class T>
 class FQueue 
 {
 public:
-	arcemu_INLINE FQueue() : cond(&lock) {first=last=NULL;size=0;}
+	ARCEMU_INLINE FQueue() : cond(&lock) {first=last=NULL;size=0;}
 	volatile unsigned int size;
 
 	uint32 get_size()
@@ -128,7 +128,7 @@ public:
 		return returnVal;
 	}	
 
-	arcemu_INLINE Condition& GetCond() { return cond; }
+	ARCEMU_INLINE Condition& GetCond() { return cond; }
 	
 private:
 	struct h

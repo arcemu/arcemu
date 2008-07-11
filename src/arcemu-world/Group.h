@@ -75,20 +75,20 @@ public:
 
 	~SubGroup();
 
-	arcemu_INLINE GroupMembersSet::iterator GetGroupMembersBegin(void) { return m_GroupMembers.begin(); }
-	arcemu_INLINE GroupMembersSet::iterator GetGroupMembersEnd(void)   { return m_GroupMembers.end();   }
+	ARCEMU_INLINE GroupMembersSet::iterator GetGroupMembersBegin(void) { return m_GroupMembers.begin(); }
+	ARCEMU_INLINE GroupMembersSet::iterator GetGroupMembersEnd(void)   { return m_GroupMembers.end();   }
 
 	bool AddPlayer(PlayerInfo * info);
 	void RemovePlayer(PlayerInfo * info);
 	
-	arcemu_INLINE bool IsFull(void)				{ return m_GroupMembers.size() >= MAX_GROUP_SIZE_PARTY; }
-	arcemu_INLINE size_t GetMemberCount(void)		{ return m_GroupMembers.size(); }
+	ARCEMU_INLINE bool IsFull(void)				{ return m_GroupMembers.size() >= MAX_GROUP_SIZE_PARTY; }
+	ARCEMU_INLINE size_t GetMemberCount(void)		{ return m_GroupMembers.size(); }
 	
-	arcemu_INLINE uint32 GetID(void)			   { return m_Id; }
-	arcemu_INLINE void SetID(uint32 newid)		 { m_Id = newid; }
+	ARCEMU_INLINE uint32 GetID(void)			   { return m_Id; }
+	ARCEMU_INLINE void SetID(uint32 newid)		 { m_Id = newid; }
 
-	arcemu_INLINE void   SetParent(Group* parent)  { m_Parent = parent; }
-	arcemu_INLINE Group* GetParent(void)		   { return m_Parent; }
+	ARCEMU_INLINE void   SetParent(Group* parent)  { m_Parent = parent; }
+	ARCEMU_INLINE Group* GetParent(void)		   { return m_Parent; }
 
 	void   Disband();
 	bool HasMember(uint32 guid);
@@ -123,10 +123,10 @@ public:
 	// Transferring data to clients
 	void Update();
 
-	arcemu_INLINE void SendPacketToAll(WorldPacket *packet) { SendPacketToAllButOne(packet, NULL); }
+	ARCEMU_INLINE void SendPacketToAll(WorldPacket *packet) { SendPacketToAllButOne(packet, NULL); }
 	void SendPacketToAllButOne(WorldPacket *packet, Player *pSkipTarget);
 
-	arcemu_INLINE void OutPacketToAll(uint16 op, uint16 len, const void* data) { OutPacketToAllButOne(op, len, data, NULL); }
+	ARCEMU_INLINE void OutPacketToAll(uint16 op, uint16 len, const void* data) { OutPacketToAllButOne(op, len, data, NULL); }
 	void OutPacketToAllButOne(uint16 op, uint16 len, const void* data, Player *pSkipTarget);
 
 	void SendNullUpdate(Player *pPlayer);
@@ -139,7 +139,7 @@ public:
 	Player* FindFirstPlayer();
 	
 	// Accessing functions
-	arcemu_INLINE SubGroup* GetSubGroup(uint32 Id)
+	ARCEMU_INLINE SubGroup* GetSubGroup(uint32 Id)
 	{
 		if(Id >= 8)
 			return 0;
@@ -147,19 +147,19 @@ public:
 		return m_SubGroups[Id];
 	}
 
-	arcemu_INLINE uint32 GetSubGroupCount(void) { return m_SubGroupCount; }
+	ARCEMU_INLINE uint32 GetSubGroupCount(void) { return m_SubGroupCount; }
 
-	arcemu_INLINE uint8 GetMethod(void) { return m_LootMethod; }
-	arcemu_INLINE uint16 GetThreshold(void) { return m_LootThreshold; }
-	arcemu_INLINE PlayerInfo* GetLeader(void) { return m_Leader; }
-	arcemu_INLINE PlayerInfo* GetLooter(void) { return m_Looter; }
+	ARCEMU_INLINE uint8 GetMethod(void) { return m_LootMethod; }
+	ARCEMU_INLINE uint16 GetThreshold(void) { return m_LootThreshold; }
+	ARCEMU_INLINE PlayerInfo* GetLeader(void) { return m_Leader; }
+	ARCEMU_INLINE PlayerInfo* GetLooter(void) { return m_Looter; }
 
 	void MovePlayer(PlayerInfo* info, uint8 subgroup);
 
 	bool HasMember(Player *pPlayer);
 	bool HasMember(PlayerInfo * info);
-	arcemu_INLINE uint32 MemberCount(void) { return m_MemberCount; }
-	arcemu_INLINE bool IsFull() { return ((m_GroupType == GROUP_TYPE_PARTY && m_MemberCount >= MAX_GROUP_SIZE_PARTY) || (m_GroupType == GROUP_TYPE_RAID && m_MemberCount >= MAX_GROUP_SIZE_RAID)); }
+	ARCEMU_INLINE uint32 MemberCount(void) { return m_MemberCount; }
+	ARCEMU_INLINE bool IsFull() { return ((m_GroupType == GROUP_TYPE_PARTY && m_MemberCount >= MAX_GROUP_SIZE_PARTY) || (m_GroupType == GROUP_TYPE_RAID && m_MemberCount >= MAX_GROUP_SIZE_RAID)); }
 
 	SubGroup* FindFreeSubGroup();
 
@@ -168,8 +168,8 @@ public:
 	void SaveToDB();
 	void LoadFromDB(Field *fields);
 
-	arcemu_INLINE uint8 GetGroupType() { return m_GroupType; }
-	arcemu_INLINE uint32 GetID() { return m_Id; }
+	ARCEMU_INLINE uint8 GetGroupType() { return m_GroupType; }
+	ARCEMU_INLINE uint32 GetID() { return m_Id; }
 
 	void UpdateOutOfRangePlayer(Player * pPlayer, uint32 Flags, bool Distribute, WorldPacket * Packet);
 	void UpdateAllOutOfRangePlayersFor(Player * pPlayer);
@@ -178,18 +178,18 @@ public:
 
 	uint64 m_targetIcons[8];
 	bool m_disbandOnNoMembers;
-	arcemu_INLINE Mutex& getLock() { return m_groupLock; }
-	arcemu_INLINE void Lock() { m_groupLock.Acquire(); }
-	arcemu_INLINE void Unlock() { return m_groupLock.Release(); }
+	ARCEMU_INLINE Mutex& getLock() { return m_groupLock; }
+	ARCEMU_INLINE void Lock() { m_groupLock.Acquire(); }
+	ARCEMU_INLINE void Unlock() { return m_groupLock.Release(); }
 	bool m_isqueued;
 
 	void SetAssistantLeader(PlayerInfo * pMember);
 	void SetMainTank(PlayerInfo * pMember);
 	void SetMainAssist(PlayerInfo * pMember);
 
-	arcemu_INLINE PlayerInfo * GetAssistantLeader() { return m_assistantLeader; }
-	arcemu_INLINE PlayerInfo * GetMainTank() { return m_mainTank; }
-	arcemu_INLINE PlayerInfo * GetMainAssist() { return m_mainAssist; }
+	ARCEMU_INLINE PlayerInfo * GetAssistantLeader() { return m_assistantLeader; }
+	ARCEMU_INLINE PlayerInfo * GetMainTank() { return m_mainTank; }
+	ARCEMU_INLINE PlayerInfo * GetMainAssist() { return m_mainAssist; }
 
 	void SetDifficulty(uint8 difficulty);
 	

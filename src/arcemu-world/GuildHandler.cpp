@@ -593,7 +593,7 @@ void WorldSession::HandleCharterBuy(WorldPacket & recv_data)
 			if( !_player->GetItemInterface()->AddItemToFreeSlot(i) )
 			{
 				c->Destroy();
-				delete i;
+				ItemPool.PooledDelete( i );
 				return;
 			}
 
@@ -660,7 +660,7 @@ void WorldSession::HandleCharterBuy(WorldPacket & recv_data)
 			if( !_player->GetItemInterface()->AddItemToFreeSlot(i) )
 			{
 				c->Destroy();
-				delete i;
+				ItemPool.PooledDelete( i );
 				return;
 			}
 
@@ -1480,7 +1480,7 @@ void WorldSession::HandleGuildBankDepositItem(WorldPacket & recv_data)
 				if(!_player->GetItemInterface()->AddItemToFreeSlot(pDestItem))
 				{
 					//pDestItem->DeleteFromDB();
-					delete pDestItem;
+					ItemPool.PooledDelete( pDestItem );
 				}
 			}
 			else

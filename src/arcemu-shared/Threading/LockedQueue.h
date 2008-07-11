@@ -32,14 +32,14 @@ public:
 
 	}
 
-	arcemu_INLINE void add(const TYPE& element)
+	ARCEMU_INLINE void add(const TYPE& element)
 	{
 		mutex.Acquire();
 		queue.push_back(element);
 		mutex.Release();
 	}
 
-	arcemu_INLINE TYPE next()
+	ARCEMU_INLINE TYPE next()
 	{
 		mutex.Acquire();
 		assert(queue.size() > 0);
@@ -49,7 +49,7 @@ public:
 		return t;
 	}
 
-	arcemu_INLINE size_t size()
+	ARCEMU_INLINE size_t size()
 	{
 		mutex.Acquire();
 		size_t c = queue.size();
@@ -57,7 +57,7 @@ public:
 		return c;
 	}
 
-	arcemu_INLINE TYPE get_first_element()
+	ARCEMU_INLINE TYPE get_first_element()
 	{
 		mutex.Acquire();
 		TYPE t; 
@@ -69,7 +69,7 @@ public:
 		return t;			
 	}
 
-	arcemu_INLINE void pop()
+	ARCEMU_INLINE void pop()
 	{
 		mutex.Acquire();
 		ASSERT(queue.size() > 0);

@@ -44,7 +44,7 @@ ItemInterface::~ItemInterface()
 			}
 			else
 			{
-				delete m_pItems[i];
+				ItemPool.PooledDelete( m_pItems[i] );
 			}
 		}
 	}
@@ -150,13 +150,13 @@ Item *ItemInterface::SafeAddItem(uint32 ItemId, int8 ContainerSlot, int8 slot)
 		}
 		else
 		{
-			delete pItem;
+			ItemPool.PooledDelete( pItem );
 			return NULL;
 		}
 	}
 	else
 	{
-		pItem = new Item;
+		pItem = ItemPool.PooledNew();
 		pItem->Init(HIGHGUID_TYPE_ITEM,objmgr.GenerateLowGuid(HIGHGUID_TYPE_ITEM));
 		pItem->Create( ItemId, m_pOwner);
 		if(m_AddItem(pItem, ContainerSlot, slot))
@@ -165,7 +165,7 @@ Item *ItemInterface::SafeAddItem(uint32 ItemId, int8 ContainerSlot, int8 slot)
 		}
 		else
 		{
-			delete pItem;
+			ItemPool.PooledDelete( pItem );
 			return NULL;
 		}
 	}
@@ -567,7 +567,7 @@ bool ItemInterface::SafeFullRemoveItemFromSlot(int8 ContainerSlot, int8 slot)
 			}
 
 			pItem->DeleteFromDB();
-			delete pItem;
+			ItemPool.PooledDelete( pItem );
 		}
 	}
 	else
@@ -2331,7 +2331,7 @@ void ItemInterface::EmptyBuyBack()
 			 {
 				if (m_pBuyBack[j]->IsInWorld())
 					m_pBuyBack[j]->RemoveFromWorld();
-				delete m_pBuyBack[j];
+				ItemPool.PooledDelete( m_pBuyBack[j] );
 			 }
 
 			 m_pOwner->SetUInt64Value(PLAYER_FIELD_VENDORBUYBACK_SLOT_1 + (2*j),0);
@@ -2365,7 +2365,7 @@ void ItemInterface::AddBuyBackItem(Item *it,uint32 price)
 			 {
 				if (m_pBuyBack[0]->IsInWorld())
 					m_pBuyBack[0]->RemoveFromWorld();
-				delete m_pBuyBack[0];
+				ItemPool.PooledDelete( m_pBuyBack[0] );
 			 }
 
 			m_pBuyBack[0] = NULL;
@@ -2733,7 +2733,7 @@ void ItemInterface::mLoadItemsFromDatabase(QueryResult * result)
 				}
 				else
 				{
-					item = new Item;
+					item = ItemPool.PooledNew();
 					item->Init( HIGHGUID_TYPE_ITEM, fields[1].GetUInt32() );
 					item->LoadFromDB( fields, m_pOwner, false);
 
@@ -2741,7 +2741,7 @@ void ItemInterface::mLoadItemsFromDatabase(QueryResult * result)
 				if( SafeAddItem( item, containerslot, slot ) )
 				    item->m_isDirty = false;
 				else
-					delete item;
+					ItemPool.PooledDelete( item );
 			}
 		}
 		while( result->NextRow() );
