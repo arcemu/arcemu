@@ -221,6 +221,16 @@
 					RelativePath="..\..\src\ascent-world\AIAHealSupport.h">
 				</File>
 			</Filter>
+			<Filter
+				Name="Buffer Pools"
+				Filter="">
+				<File
+					RelativePath="..\..\src\ascent-world\BufferPools\ItemPool.cpp">
+				</File>
+				<File
+					RelativePath="..\..\src\ascent-world\BufferPools\ItemPool.h">
+				</File>
+			</Filter>
 		</Filter>
 		<File
 			RelativePath="..\..\src\ascent-world\AddonMgr.cpp">

@@ -28,7 +28,7 @@ Item::Item()//this is called when constructing as container
 	wrapped_item_id = 0;
 }
 
-Item::Item( uint32 high, uint32 low )
+void Item::Init( uint32 high, uint32 low )
 {
 	m_objectTypeId = TYPEID_ITEM;
 	m_valuesCount = ITEM_END;
@@ -49,6 +49,15 @@ Item::Item( uint32 high, uint32 low )
 	m_isDirty = true;
 	random_prop = 0;
 	random_suffix = 0;
+	wrapped_item_id = 0;
+}
+
+void Item::Item_Recycle()
+{
+	m_itemProto = NULL;
+	m_owner = NULL;
+	loot = NULL;
+	locked = false;
 	wrapped_item_id = 0;
 }
 
