@@ -85,6 +85,13 @@ const float EOTSBubbleRotations[2][4] = {
 #define EOTS_CAPTURE_DISTANCE 900 /*30*/
 const uint32 EOTSTowerIds[EOTS_TOWER_COUNT] = { EOTS_GO_BE_TOWER, EOTS_GO_FELREAVER, EOTS_GO_MAGE_TOWER, EOTS_GO_DRAENEI_TOWER };
 
+const uint32 m_iconsStates[EOTS_TOWER_COUNT][3] = {
+    {2722, 2723, 2724},
+    {2725, 2726, 2727},
+    {2728, 2730, 2729},
+    {2731, 2732, 2733}
+     };
+
 /**
  * WorldStates
  */
@@ -97,7 +104,7 @@ const uint32 EOTSTowerIds[EOTS_TOWER_COUNT] = { EOTS_GO_BE_TOWER, EOTS_GO_FELREA
 #define EOTS_NETHERWING_FLAG_SPELL 34976
 
 
-#define EOTS_CAPTURE_RATE 20
+#define EOTS_CAPTURE_RATE 4
 
 EyeOfTheStorm::EyeOfTheStorm(MapMgr * mgr, uint32 id, uint32 lgroup, uint32 t) : CBattleground(mgr,id,lgroup,t)
 {
@@ -115,8 +122,6 @@ EyeOfTheStorm::EyeOfTheStorm(MapMgr * mgr, uint32 id, uint32 lgroup, uint32 t) :
 
 	m_flagHolder = 0;
 	m_points[0] = m_points[1] = 0;
-
-	m_playerCountPerTeam = 15;
 }
 
 EyeOfTheStorm::~EyeOfTheStorm()
@@ -273,6 +278,8 @@ void EyeOfTheStorm::HookOnAreaTrigger(Player * plr, uint32 id)
 	SetWorldState( 2757, 1 );
 
 	plr->RemoveAura( EOTS_NETHERWING_FLAG_SPELL );
+	plr->m_bgScore.Misc1++;
+	UpdatePvPData();
 }
 
 void EyeOfTheStorm::HookOnPlayerDeath(Player * plr)
@@ -529,7 +536,7 @@ void EyeOfTheStorm::UpdateCPs()
 		for( ; itr != itrend; ++itr )
 		{
 			plr = *itr;
-			if( plr->GetDistance2dSq( go ) <= EOTS_CAPTURE_DISTANCE )
+			if( plr->isAlive() && plr->GetDistance2dSq( go ) <= EOTS_CAPTURE_DISTANCE )
 			{
 				playercounts[plr->GetTeam()]++;
 
@@ -570,10 +577,14 @@ void EyeOfTheStorm::UpdateCPs()
 						RemoveSpiritGuide( m_spiritGuides[i] );
 						m_spiritGuides[i] = NULL;
 					}
-
 					m_spiritGuides[i] = SpawnSpiritGuide( EOTSGraveyardLocations[i][0], EOTSGraveyardLocations[i][1], EOTSGraveyardLocations[i][2], 0, 1 );
 					AddSpiritGuide( m_spiritGuides[i] );
+
+					SetWorldState(m_iconsStates[i][0], 0);
+					SetWorldState(m_iconsStates[i][1], 0);
+					SetWorldState(m_iconsStates[i][2], 1);
 				}
+
 			}
 			else if( m_CPStatus[i] == 100 )
 			{
@@ -590,6 +601,10 @@ void EyeOfTheStorm::UpdateCPs()
 
 					m_spiritGuides[i] = SpawnSpiritGuide( EOTSGraveyardLocations[i][0], EOTSGraveyardLocations[i][1], EOTSGraveyardLocations[i][2], 0, 0 );
 					AddSpiritGuide( m_spiritGuides[i] );
+
+					SetWorldState(m_iconsStates[i][0], 0);
+					SetWorldState(m_iconsStates[i][1], 1);
+					SetWorldState(m_iconsStates[i][2], 0);
 				}
 			}
 			else
@@ -604,6 +619,9 @@ void EyeOfTheStorm::UpdateCPs()
 						RemoveSpiritGuide( m_spiritGuides[i] );
 						m_spiritGuides[i] = NULL;
 					}
+					SetWorldState(m_iconsStates[i][0], 1);
+					SetWorldState(m_iconsStates[i][1], 0);
+					SetWorldState(m_iconsStates[i][2], 0);
 				}
 			}
 		}

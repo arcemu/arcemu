@@ -430,7 +430,6 @@ void ArathiBasin::OnStart()
 ArathiBasin::ArathiBasin(MapMgr * mgr, uint32 id, uint32 lgroup, uint32 t) : CBattleground(mgr,id,lgroup,t)
 {
 	uint32 i;
-	m_playerCountPerTeam=15;
 
 	for(i = 0; i < AB_NUM_CONTROL_POINTS; ++i)
 	{

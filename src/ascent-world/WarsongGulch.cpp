@@ -57,7 +57,6 @@ WarsongGulch::WarsongGulch(MapMgr * mgr, uint32 id, uint32 lgroup, uint32 t) : C
 
 	m_scores[0] = m_scores[1] = 0;
 
-	m_playerCountPerTeam = 10;
 }
 
 WarsongGulch::~WarsongGulch()

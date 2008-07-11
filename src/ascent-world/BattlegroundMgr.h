@@ -52,6 +52,30 @@ struct BGScore
 	uint32 Misc2;
 };
 
+//Shady: mb use dbc?
+const static uint32 BGMaximumPlayers[BATTLEGROUND_NUM_TYPES] = {
+    0,                            // 0
+    40,                            // AV
+    10,                            // WSG
+    15,                            // AB
+    4,                            // 2v2
+    6,                            // 3v3
+    10,                            // 5v5
+    15,                            // EOTS
+};
+
+const static uint32 BGMinimumPlayers[BATTLEGROUND_NUM_TYPES] = {
+	0,							// 0
+	0,							// AV
+	5,							// WSG
+	5,							// AB
+	4,							// 2v2
+	6,							// 3v3
+	10,							// 5v5
+	5,							// EotS
+};
+
+
 #define SOUND_BATTLEGROUND_BEGIN			0xD6F
 #define SOUND_HORDE_SCORES					8213
 #define SOUND_ALLIANCE_SCORES				8173
@@ -290,10 +314,10 @@ public:
 	void PlaySoundToAll(uint32 Sound);
 
 	/* Full? */
-	ASCENT_INLINE bool IsFull() { return !(HasFreeSlots(0) || HasFreeSlots(1)); }
+	ASCENT_INLINE bool IsFull() { return !(HasFreeSlots(0,m_type) || HasFreeSlots(1,m_type)); }
 
 	/* Are we full? */
-	bool HasFreeSlots(uint32 Team) {m_mainLock.Acquire(); bool res = ((m_players[Team].size() + m_pendPlayers[Team].size()) < m_playerCountPerTeam); m_mainLock.Release(); return res; }
+	bool HasFreeSlots(uint32 Team, uint32 type) {m_mainLock.Acquire(); bool res = ((m_players[Team].size() + m_pendPlayers[Team].size()) < BGMaximumPlayers[type]); m_mainLock.Release(); return res; }
 
 	/* Add Player */
 	void AddPlayer(Player * plr, uint32 team);
@@ -311,10 +335,10 @@ public:
 	void RemovePendingPlayer(Player * plr);
 
 	/* Gets the number of free slots */
-	uint32 GetFreeSlots(uint32 t)
+	uint32 GetFreeSlots(uint32 t, uint32 type)
 	{
 		m_mainLock.Acquire();
-		size_t s = m_playerCountPerTeam - m_players[t].size() - m_pendPlayers[t].size();
+		size_t s = BGMaximumPlayers[type] - m_players[t].size() - m_pendPlayers[t].size();
 		m_mainLock.Release();
 		return (uint32)s;
 	}
@@ -346,7 +370,7 @@ public:
 	void QueuePlayerForResurrect(Player * plr, Creature * spirit_healer);
 	void RemovePlayerFromResurrect(Player * plr, Creature * spirit_healer);
 	void EventResurrectPlayers();
-	virtual bool CanPlayerJoin(Player * plr);
+	virtual bool CanPlayerJoin(Player * plr,uint32 type);
 	virtual bool CreateCorpse(Player * plr) { return true; }
 	virtual bool HookSlowLockOpen(GameObject * pGo, Player * pPlayer, Spell * pSpell) { return false; }
 

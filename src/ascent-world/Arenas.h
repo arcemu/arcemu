@@ -41,12 +41,12 @@ public:
 	LocationVector GetStartingCoords(uint32 Team);
 	virtual const char * GetName() { return "Arena"; }
 	void OnStart();
-	bool CanPlayerJoin(Player * plr)
+	bool CanPlayerJoin(Player * plr, uint32 type)
 	{
 		if(m_started)
 			return false;
 		else
-			return CBattleground::CanPlayerJoin(plr);
+			return CBattleground::CanPlayerJoin(plr,type);
 	}
 
 	bool CreateCorpse(Player * plr) { return false; }

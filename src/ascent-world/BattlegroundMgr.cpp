@@ -33,7 +33,7 @@ const static uint32 BGMapIds[BATTLEGROUND_NUM_TYPES] = {
 	0,      // 2v2
 	0,      // 3v3
 	0,      // 5v5
-	566,   // Netherstorm BG
+	566,   // EOTS
 };
 
 const static CreateBattlegroundFunc BGCFuncs[BATTLEGROUND_NUM_TYPES] = {
@@ -49,22 +49,12 @@ const static CreateBattlegroundFunc BGCFuncs[BATTLEGROUND_NUM_TYPES] = {
 	NULL,                  // 3v3
 	NULL,                  // 5v5
 #ifdef ENABLE_EOTS
-	&EyeOfTheStorm::Create,      // Netherstorm
+	&EyeOfTheStorm::Create,      // EotS
 #else
-	NULL,                  // Netherstorm
+	NULL,                  // EotS
 #endif
 };
 
-const static uint32 BGMinimumPlayers[BATTLEGROUND_NUM_TYPES] = {
-	0,							// 0
-	0,							// AV
-	5,							// WSG
-	5,							// AB
-	4,							// 2v2
-	6,							// 3v3
-	10,							// 5v5
-	5,							// Netherstorm
-};
 
 CBattlegroundManager::CBattlegroundManager() : EventableObject()
 {
@@ -98,7 +88,7 @@ void CBattlegroundManager::HandleBattlegroundListPacket(WorldSession * m_session
 	m_instanceLock.Acquire();
 	for(map<uint32, CBattleground*>::iterator itr = m_instances[BattlegroundType].begin(); itr != m_instances[BattlegroundType].end(); ++itr)
 	{
-		if(itr->second->CanPlayerJoin(m_session->GetPlayer()) && !itr->second->HasEnded() )
+		if(itr->second->CanPlayerJoin(m_session->GetPlayer(),BattlegroundType) && !itr->second->HasEnded() )
 		{
 			data << itr->first;
 			++Count;
@@ -354,7 +344,7 @@ void CBattlegroundManager::EventQueueUpdate(bool forceStart)
 
 					// can we join?
 					bg = iitr->second;
-					if(bg->CanPlayerJoin(plr))
+					if(bg->CanPlayerJoin(plr,bg->GetType()))
 					{
 						bg->AddPlayer(plr, plr->GetTeam());
 						m_queuedPlayers[i][j].erase(it4);
@@ -399,7 +389,7 @@ void CBattlegroundManager::EventQueueUpdate(bool forceStart)
 					{
 						for(deque<Player*>::iterator itr = tempPlayerVec[k].begin(); itr != tempPlayerVec[k].end(); itr++)
 						{
-							if(bg->CanPlayerJoin(*itr))
+							if(bg->CanPlayerJoin(*itr,bg->GetType()))
 							{
 								tempPlayerVec[k].erase(itr);
 								bg->AddPlayer(*itr, plr->GetTeam());
@@ -447,7 +437,7 @@ void CBattlegroundManager::EventQueueUpdate(bool forceStart)
 						// push as many as possible in
 						for(k = 0; k < 2; ++k)
 						{
-							while(tempPlayerVec[k].size() && bg->HasFreeSlots(k))
+							while(tempPlayerVec[k].size() && bg->HasFreeSlots(k,bg->GetType()))
 							{
 								plr = *tempPlayerVec[k].begin();
 								tempPlayerVec[k].pop_front();
@@ -526,7 +516,7 @@ void CBattlegroundManager::EventQueueUpdate(bool forceStart)
 			{
 				if((*itx)->m_loggedInPlayer)
 				{
-					if( ar->HasFreeSlots(0) )
+					if( ar->HasFreeSlots(0,ar->GetType()) )
 					{
 						ar->AddPlayer((*itx)->m_loggedInPlayer, 0);
 						(*itx)->m_loggedInPlayer->SetTeam(0);
@@ -538,7 +528,7 @@ void CBattlegroundManager::EventQueueUpdate(bool forceStart)
 			{
 				if((*itx)->m_loggedInPlayer)
 				{
-					if( ar->HasFreeSlots(1) )
+					if( ar->HasFreeSlots(1,ar->GetType()) )
 					{
 						ar->AddPlayer((*itx)->m_loggedInPlayer, 1);
 						(*itx)->m_loggedInPlayer->SetTeam(1);
@@ -1660,7 +1650,7 @@ void CBattlegroundManager::HandleArenaJoin(WorldSession * m_session, uint32 Batt
 	m_queueLock.Release();
 }
 
-bool CBattleground::CanPlayerJoin(Player * plr)
+bool CBattleground::CanPlayerJoin(Player * plr, uint32 type)
 {
-	return HasFreeSlots(plr->m_bgTeam)&&(GetLevelGrouping(plr->getLevel())==GetLevelGroup());
+	return HasFreeSlots(plr->m_bgTeam,type)&&(GetLevelGrouping(plr->getLevel())==GetLevelGroup());
 }
