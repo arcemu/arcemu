@@ -8665,24 +8665,22 @@ void Player::SetShapeShift(uint8 ss)
 
 			if( this->getClass() == DRUID )
 			{
-				for (uint32 y = 0; y < 3; ++y )
+				switch( m_auras[x]->GetSpellProto()->MechanicsType)
 				{
-					switch( m_auras[x]->GetSpellProto()->EffectApplyAuraName[y])
+                case MECHANIC_ROOTED: //Rooted
+                case MECHANIC_ENSNARED: //Movement speed
+                case MECHANIC_POLYMORPHED:  //Polymorphed
 					{
-					case SPELL_AURA_MOD_ROOT: //Root
-					case SPELL_AURA_MOD_DECREASE_SPEED: //Movement speed
-					case SPELL_AURA_MOD_CONFUSE:  //Confuse (polymorph)
-						{
-							m_auras[x]->Remove();
-						}
-						break;
-					default:
-						break;
+						m_auras[x]->Remove();
 					}
-
-					if( m_auras[x] == NULL )
-						break;
+					break;
+				default:
+					break;
 				}
+
+				/*Shady: is this check neccessary? anyway m_auras[x]!=NULL check already done in next iteration. Commented*/
+				//if( m_auras[x] == NULL )
+				//	break;
 			}
 		} 
 	}
