@@ -1,5 +1,5 @@
 #include "StdAfx.h"
-#include "../../../ascent-shared/svn_revision.h"
+#include "../../../arcemu-shared/svn_revision.h"
 
 #define SKIP_ALLOCATOR_SHARING 1
 #include <ScriptSetup.h>

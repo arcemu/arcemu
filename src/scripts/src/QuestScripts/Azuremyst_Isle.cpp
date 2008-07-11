@@ -1,8 +1,8 @@
 /*
- * OpenAscentScripts for OpenAscent MMORPG Server
- * Copyright (C) 2008 OpenAscentScripts Team
+ * OpenarcemuScripts for Openarcemu MMORPG Server
+ * Copyright (C) 2008 OpenarcemuScripts Team
  * Copyright (C) 2008 WEmu Team
- * Based on Moon++ Scripts for Ascent MMORPG Server
+ * Based on Moon++ Scripts for arcemu MMORPG Server
  * Copyright (C) 2007-2008 Moon++ Team
  *
  * This program is free software: you can redistribute it and/or modify

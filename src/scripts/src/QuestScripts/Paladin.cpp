@@ -1,8 +1,8 @@
 /*
  * WEmu Scripts for WEmu MMORPG Server
  * Copyright (C) 2008 WEmu Team
- * Based on Moon++ Scripts for Ascent MMORPG Server
- * Copyright (C) 2005-2007 Ascent Team
+ * Based on Moon++ Scripts for arcemu MMORPG Server
+ * Copyright (C) 2005-2007 arcemu Team
  * Copyright (C) 2007-2008 Moon++ Team
  *
  * This program is free software: you can redistribute it and/or modify

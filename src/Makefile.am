@@ -1,1 +1,1 @@
-SUBDIRS = ascent-shared ascent-logonserver ascent-world scripts
+SUBDIRS = arcemu-shared arcemu-logonserver arcemu-world scripts

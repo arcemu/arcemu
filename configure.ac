@@ -256,9 +256,9 @@ AC_DEFINE_UNQUOTED([SVN_REVISION_DONE], `sh ./extract_svn_revision.sh`, [SVN rev
 AC_CONFIG_FILES([
    Makefile
    src/Makefile
-   src/ascent-shared/Makefile
-   src/ascent-world/Makefile
-   src/ascent-logonserver/Makefile
+   src/arcemu-shared/Makefile
+   src/arcemu-world/Makefile
+   src/arcemu-logonserver/Makefile
    src/scripts/Makefile
    src/scripts/src/Makefile
    src/scripts/src/GossipScripts/Makefile
