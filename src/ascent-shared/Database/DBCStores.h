@@ -1215,7 +1215,6 @@ public:
 	{
 		T * oCopy = (T*)malloc(sizeof(T));
 		ASSERT(oCopy);
-		memset(oCopy,0,sizeof(T));
 		memcpy(oCopy,obj,sizeof(T));
 		return oCopy;
 	}
