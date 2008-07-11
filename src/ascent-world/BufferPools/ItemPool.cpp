@@ -13,7 +13,18 @@ oItemBufferPool::~oItemBufferPool()
 {
 	ObjLock.Acquire();
 
-	for(uint32 i=0;i<max_avails;i++)
+#ifdef TRACK_LEAKED_ITEMS_AND_MEMORY_CORRUPTION
+	if( next_free_avail != 0 )
+	{
+		sLog.outDebug("Memory leak detected in Object Pool for items having %u leaked items. Listing pointers: \n",next_free_avail);
+		std::list<Item *>::iterator itr=used_list.begin();
+		uint32 foundit = 0;
+		for(itr=used_list.begin();itr!=used_list.end();itr++ )
+			sLog.outDebug("Leaked item p = %u with owner %u \n",*itr,(*itr)->GetOwner() );
+	}
+#endif
+
+	for(uint32 i=next_free_avail;i<max_avails;i++)
 		delete avail_list[i];
 	free( avail_list );
 
@@ -46,6 +57,9 @@ inline Item *oItemBufferPool::PooledNew()
 	if( next_free_avail == max_avails )
 		ExtedLimitAvailLimit();
 
+#ifdef TRACK_LEAKED_ITEMS_AND_MEMORY_CORRUPTION
+	used_list.push_back( avail_list[ free_index ] );
+#endif
 	ObjLock.Release();
 
 	return avail_list[ free_index ];
@@ -60,10 +74,30 @@ inline void oItemBufferPool::PooledDelete( Item *dumped )
 		return; // OMG, We made more deletes then inserts ? This should not happen !
 #endif
 
+#ifdef TRACK_LEAKED_ITEMS_AND_MEMORY_CORRUPTION
+	//check if item is in list
+	std::list<Item *>::iterator itr=used_list.begin();
+	uint32 foundit = 0;
+	for(itr=used_list.begin();itr!=used_list.end();itr++ )
+		if( *itr == dumped )
+		{
+			foundit = 1;
+			break;
+		}
+	if( foundit == 0 )
+	{
+		sLog.outDebug("Possible memory corruption while trying to delete object %u \n",dumped );
+		return;
+	}
+#endif
+
 	//yes we overwrite some pointer here. If we would be using list instead of array we could check for memory corruptions too. We try to not have those right now 
 	next_free_avail--;
 	avail_list[ next_free_avail ] = dumped;
 
+#ifdef TRACK_LEAKED_ITEMS_AND_MEMORY_CORRUPTION
+	used_list.remove( dumped );
+#endif
 	ObjLock.Release();
 }
 

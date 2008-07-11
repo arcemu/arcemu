@@ -10,6 +10,11 @@
 //too big values migh create lag spikes on buffer limit extension !
 #define EXTEND_POOL_WITH_SIZE 1000
 
+//noob protection :P
+#ifdef _DEBUG
+	#define TRACK_LEAKED_ITEMS_AND_MEMORY_CORRUPTION
+#endif
+
 class Item;
 
 class SERVER_DECL oItemBufferPool : public Singleton< oItemBufferPool > 
@@ -27,6 +32,9 @@ private:
 	uint32				max_avails;
 	uint32				next_free_avail;
 	Mutex				ObjLock;
+#ifdef TRACK_LEAKED_ITEMS_AND_MEMORY_CORRUPTION
+	std::list<Item *>	used_list;
+#endif
 };
 
 #define ItemPool oItemBufferPool::getSingleton()
