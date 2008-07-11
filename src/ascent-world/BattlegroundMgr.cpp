@@ -1228,6 +1228,9 @@ void CBattleground::RemovePlayer(Player * plr, bool logout)
 	/* teleport out */
 	if(!logout)
 	{
+		if(m_started && !m_ended)
+			plr->CastSpell(plr, BG_DESERTER, true);
+
 		if(!IS_INSTANCE(plr->m_bgEntryPointMap))
 		{
 			LocationVector vec(plr->m_bgEntryPointX, plr->m_bgEntryPointY, plr->m_bgEntryPointZ, plr->m_bgEntryPointO);
@@ -1652,5 +1655,5 @@ void CBattlegroundManager::HandleArenaJoin(WorldSession * m_session, uint32 Batt
 
 bool CBattleground::CanPlayerJoin(Player * plr, uint32 type)
 {
-	return HasFreeSlots(plr->m_bgTeam,type)&&(GetLevelGrouping(plr->getLevel())==GetLevelGroup());
+	return HasFreeSlots(plr->m_bgTeam,type)&&(GetLevelGrouping(plr->getLevel())==GetLevelGroup())&&(!plr->HasAura(BG_DESERTER));
 }

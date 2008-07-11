@@ -97,6 +97,7 @@ const static uint32 BGMinimumPlayers[BATTLEGROUND_NUM_TYPES] = {
 #define BG_PREPARATION 44521
 #define BG_REVIVE_PREPARATION	44535
 #define RESURRECT_SPELL			21074   // Spirit Healer Res
+#define BG_DESERTER 26013
 
 // WSG define's
 #define WSG_ALLIANCE_FLAG_CAPTURED		  0x922

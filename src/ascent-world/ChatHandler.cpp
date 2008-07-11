@@ -464,6 +464,10 @@ void WorldSession::HandleMessagechatOpcode( WorldPacket & recv_data )
 			else
 			{
 				GetPlayer()->SetFlag(PLAYER_FLAGS, 0x02);
+
+                if( GetPlayer()->m_bg )
+                    GetPlayer()->m_bg->RemovePlayer( GetPlayer(), false );
+
 				if(sWorld.GetKickAFKPlayerTime())
 					sEventMgr.AddEvent(GetPlayer(),&Player::SoftDisconnect,EVENT_PLAYER_SOFT_DISCONNECT,sWorld.GetKickAFKPlayerTime(),1,0);
 			}			
