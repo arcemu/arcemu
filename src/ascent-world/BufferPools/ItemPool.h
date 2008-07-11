@@ -18,7 +18,8 @@ public:
 	oItemBufferPool();
 	~oItemBufferPool();
 	Item *PooledNew();				//fetch from internal list a new Item object
-	void PooledDelete(Item *);		//insert into free object list
+	void	PooledDelete( Item *dumped );		//insert into free object list
+	inline uint32	GetUsedItemCount(){ return next_free_avail; }	//use this to check for memory leaks at server shutdown
 private:
 	void				InitPoolNewSection(uint32 from, uint32 to);
 	void				ExtedLimitAvailLimit();

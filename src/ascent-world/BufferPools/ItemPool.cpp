@@ -34,7 +34,7 @@ inline void oItemBufferPool::ExtedLimitAvailLimit()
 	InitPoolNewSection( prev_max, max_avails );
 }
 
-Item *oItemBufferPool::PooledNew()
+inline Item *oItemBufferPool::PooledNew()
 {
 	ObjLock.Acquire();
 
@@ -51,7 +51,7 @@ Item *oItemBufferPool::PooledNew()
 	return avail_list[ free_index ];
 }
 
-void oItemBufferPool::PooledDelete(Item *)
+inline void oItemBufferPool::PooledDelete( Item *dumped )
 {
 	ObjLock.Acquire();
 
@@ -60,7 +60,9 @@ void oItemBufferPool::PooledDelete(Item *)
 		return; // OMG, We made more deletes then inserts ? This should not happen !
 #endif
 
+	//yes we overwrite some pointer here. If we would be using list instead of array we could check for memory corruptions too. We try to not have those right now 
 	next_free_avail--;
+	avail_list[ next_free_avail ] = dumped;
 
 	ObjLock.Release();
 }
