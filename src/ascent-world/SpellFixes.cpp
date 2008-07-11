@@ -17338,6 +17338,9 @@ void ApplyNormalFixes()
 		sp = dbcSpell.LookupEntryForced( 11129 );
 		if( sp != NULL )
 		{
+			sp->Effect[0] = SPELL_EFFECT_NONE;
+			sp->Effect[1] = SPELL_EFFECT_TRIGGER_SPELL;
+			sp->EffectTriggerSpell[1] = 28682;
 			sp->procFlags = PROC_ON_CAST_SPELL | PROC_ON_SPELL_CRIT_HIT | PROC_TARGET_SELF;
 			sp->procCharges = 0;
 			sp->c_is_flags |= SPELL_FLAG_IS_REQUIRECOOLDOWNUPDATE;
