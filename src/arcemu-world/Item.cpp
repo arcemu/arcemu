@@ -87,6 +87,7 @@ Item::~Item()
 			itr->second.Enchantment = NULL;
 		}
 	}
+	Enchantments.clear();
 
 	if( IsInWorld() )
 		RemoveFromWorld();
@@ -110,6 +111,7 @@ void Item::Virtual_Destructor()
 			itr->second.Enchantment = NULL;
 		}
 	}
+	Enchantments.clear();
 
 	if( IsInWorld() )
 		RemoveFromWorld();
