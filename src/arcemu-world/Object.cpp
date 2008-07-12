@@ -2666,10 +2666,12 @@ void Object::SpellNonMeleeDamageLog(Unit *pVictim, uint32 spellID, uint32 damage
 			static_cast< Player* >( this )->m_casted_amount[school] = ( uint32 )res;
 	}
 
-	
-
-	if( pVictim->GetCurrentSpell() )
-		pVictim->GetCurrentSpell()->AddTime( school );
+	if( !(dmg.full_damage == 0 && abs_dmg) )
+	{
+		//Only pushback the victim current spell if it's not fully absorbed
+		if( pVictim->GetCurrentSpell() )
+			pVictim->GetCurrentSpell()->AddTime( school );
+	}
 
 //==========================================================================================
 //==============================Post Damage Processing======================================
