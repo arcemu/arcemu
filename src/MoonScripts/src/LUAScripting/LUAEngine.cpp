@@ -682,7 +682,7 @@ void LuaEngine::OnUnitEvent(Unit * pUnit, const char * FunctionName, uint32 Even
 	lua_gettable(L, LUA_GLOBALSINDEX);
 	if(lua_isnil(L,-1))
 	{
-		printf("Tried to call invalid LUA function '%s' from Ascent (Unit)!\n", FunctionName);
+		printf("Tried to call invalid LUA function '%s' from arcemu (Unit)!\n", FunctionName);
 		m_Lock.Release();
 		return;
 	}
@@ -712,7 +712,7 @@ void LuaEngine::OnQuestEvent(Player * QuestOwner, const char * FunctionName, uin
 	lua_gettable(L, LUA_GLOBALSINDEX);
 	if(lua_isnil(L,-1))
 	{
-		printf("Tried to call invalid LUA function '%s' from Ascent (Quest)!\n", FunctionName);
+		printf("Tried to call invalid LUA function '%s' from arcemu (Quest)!\n", FunctionName);
 		m_Lock.Release();
 		return;
 	}
@@ -744,7 +744,7 @@ void LuaEngine::CallFunction(Unit * pUnit, const char * FuncName)
 	lua_gettable(L, LUA_GLOBALSINDEX);
 	if(lua_isnil(L,-1))
 	{
-		printf("Tried to call invalid LUA function '%s' from Ascent (Unit)!\n", FuncName);
+		printf("Tried to call invalid LUA function '%s' from arcemu (Unit)!\n", FuncName);
 		m_Lock.Release();
 		return;
 	}
@@ -767,7 +767,7 @@ void LuaEngine::OnGameObjectEvent(GameObject * pGameObject, const char * Functio
 	lua_gettable(L, LUA_GLOBALSINDEX);
 	if(lua_isnil(L,-1))
 	{
-		printf("Tried to call invalid LUA function '%s' from Ascent! (GO)\n", FunctionName);
+		printf("Tried to call invalid LUA function '%s' from arcemu! (GO)\n", FunctionName);
 		m_Lock.Release();
 		return;
 	}
@@ -795,7 +795,7 @@ void LuaEngine::OnGossipEvent(Object * pObject, const char * FunctionName, uint3
 	lua_gettable(L, LUA_GLOBALSINDEX);
 	if(lua_isnil(L, -1))
 	{
-		printf("Tried to call invalid LUA function '%s' from Ascent (Gossip)!\n", FunctionName);
+		printf("Tried to call invalid LUA function '%s' from arcemu (Gossip)!\n", FunctionName);
 		m_Lock.Release();
 		return;
 	}

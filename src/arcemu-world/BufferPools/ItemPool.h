@@ -40,5 +40,4 @@ private:
 };
 
 #define ItemPool oItemBufferPool::getSingleton()
-
 #endif

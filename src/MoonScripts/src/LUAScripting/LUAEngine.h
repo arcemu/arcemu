@@ -1,5 +1,5 @@
 /*
- * Ascent MMORPG Server
+ * arcemu MMORPG Server
  * LUA Interface
  * Copyright (C) 2007 Burlex <burlex@gmail.com>
  *

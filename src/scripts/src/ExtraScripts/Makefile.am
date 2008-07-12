@@ -1,5 +1,5 @@
-INCLUDES += -I$(srcdir) -I$(srcdir)/../../../../dep/include -I$(srcdir)/../../../ascent-shared
-INCLUDES += -I$(srcdir)/../../../ascent-world -I$(srcdir)/../../../../dep/src
+INCLUDES += -I$(srcdir) -I$(srcdir)/../../../../dep/include -I$(srcdir)/../../../arcemu-shared
+INCLUDES += -I$(srcdir)/../../../arcemu-world -I$(srcdir)/../../../../dep/src
 
 AM_CXXFLAGS = -DSCRIPTLIB
 
