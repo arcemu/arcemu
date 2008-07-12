@@ -1,4 +1,4 @@
-#include "Stdafx.h"
+#include "StdAfx.h"
 #include "ItemPool.h"
 
 //put some objects in pool
