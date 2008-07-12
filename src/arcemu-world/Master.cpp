@@ -96,9 +96,9 @@ struct Addr
 		static const char* default_optional_config_file = "configs/arcemu-optional.conf";
         static const char* default_realm_config_file = "configs/arcemu-realms.conf";
 #else
-        static const char* default_config_file = CONFDIR "/configs/arcemu-world.conf";
-		static const char* default_optional_config_file = CONFDIR "/configs/arcemu-optional.conf";
-        static const char* default_realm_config_file = CONFDIR "/configs/arcemu-realms.conf";
+        static const char* default_config_file = CONFDIR "/arcemu-world.conf";
+		static const char* default_optional_config_file = CONFDIR "/arcemu-optional.conf";
+        static const char* default_realm_config_file = CONFDIR "/arcemu-realms.conf";
 #endif
 
 bool bServerShutdown = false;

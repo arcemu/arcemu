@@ -170,7 +170,7 @@ bool Rehash()
 #ifdef WIN32
 	char * config_file = "configs/arcemu-logonserver.conf";
 #else
-	char * config_file = (char*)CONFDIR "/configs/arcemu-logonserver.conf";
+	char * config_file = (char*)CONFDIR "/arcemu-logonserver.conf";
 #endif
 	if(!Config.MainConfig.SetSource(config_file))
 	{
@@ -257,7 +257,7 @@ void LogonServer::Run(int argc, char ** argv)
 #ifdef WIN32
 	char * config_file = "configs/arcemu-logonserver.conf";
 #else
-	char * config_file = (char*)CONFDIR "/configs/arcemu-logonserver.conf";
+	char * config_file = (char*)CONFDIR "/arcemu-logonserver.conf";
 #endif
 	int file_log_level = DEF_VALUE_NOT_SET;
 	int screen_log_level = DEF_VALUE_NOT_SET;
