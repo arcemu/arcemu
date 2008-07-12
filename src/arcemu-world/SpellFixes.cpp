@@ -13945,7 +13945,9 @@ void ApplyNormalFixes()
 	**********************************************************/
 	sp = dbcSpell.LookupEntryForced( 28734 );
 	if( sp != NULL )
-		sp->Effect[0] = SPELL_EFFECT_POWER_BURN; // should be Power Burn, not Power Drain. Power Drain leeches mana which is incorrect.
+//		sp->Effect[0] = SPELL_EFFECT_POWER_BURN; // should be Power Burn, not Power Drain. Power Drain leeches mana which is incorrect.
+		//Zazk : tested on retail and it is only leech and not burn !
+		sp->Effect[0] = SPELL_EFFECT_POWER_DRAIN; // should be Power Burn, not Power Drain. Power Drain leeches mana which is incorrect.
 
 	/**********************************************************
 	 * thrown - add a 1.6 second cooldown
