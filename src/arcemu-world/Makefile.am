@@ -184,7 +184,7 @@ arcemu_world_SOURCES = \
     WordFilter.h \
     WordFilter.cpp \
     BufferPools/ItemPool.cpp \
-    BufferPools/ItemPool.h \ 
+    BufferPools/ItemPool.h \
 	Main.cpp \
 	Master.cpp \
 	Master.h \
