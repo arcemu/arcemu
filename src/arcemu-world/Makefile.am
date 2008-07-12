@@ -37,6 +37,8 @@ arcemu_world_SOURCES = \
     BattlegroundHandler.cpp \
     BattlegroundMgr.cpp \
     BattlegroundMgr.h \
+    BufferPools/ItemPool.cpp \
+    BufferPools/ItemPool.h \
     CellHandler.h \
     Channel.cpp \
     Channel.h \
@@ -183,8 +185,6 @@ arcemu_world_SOURCES = \
     WorldRunnable.cpp \
     WordFilter.h \
     WordFilter.cpp \
-    BufferPools/ItemPool.cpp \
-    BufferPools/ItemPool.h \
 	Main.cpp \
 	Master.cpp \
 	Master.h \

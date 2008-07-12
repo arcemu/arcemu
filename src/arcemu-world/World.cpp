@@ -1142,11 +1142,11 @@ void World::Rehash(bool load)
 	if(load)
 	{
 		#ifdef WIN32
-		Config.MainConfig.SetSource("arcemu-world.conf", true);
-		Config.OptionalConfig.SetSource("arcemu-optional.conf", true);
+		Config.MainConfig.SetSource("configs/arcemu-world.conf", true);
+		Config.OptionalConfig.SetSource("configs/arcemu-optional.conf", true);
 		#else
-		Config.MainConfig.SetSource((char*)CONFDIR "/arcemu-world.conf", true);
-		Config.OptionalConfig.SetSource((char*)CONFDIR "/arcemu-optional.conf", true);
+		Config.MainConfig.SetSource((char*)CONFDIR "/configs/arcemu-world.conf", true);
+		Config.OptionalConfig.SetSource((char*)CONFDIR "/configs/arcemu-optional.conf", true);
 		#endif
 	}
 	if(!ChannelMgr::getSingletonPtr())
