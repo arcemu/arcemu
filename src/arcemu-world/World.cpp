@@ -1142,11 +1142,11 @@ void World::Rehash(bool load)
 	if(load)
 	{
 		#ifdef WIN32
-		Config.MainConfig.SetSource("ascent-world.conf", true);
-		Config.OptionalConfig.SetSource("ascent-optional.conf", true);
+		Config.MainConfig.SetSource("arcemu-world.conf", true);
+		Config.OptionalConfig.SetSource("arcemu-optional.conf", true);
 		#else
-		Config.MainConfig.SetSource((char*)CONFDIR "/ascent-world.conf", true);
-		Config.OptionalConfig.SetSource((char*)CONFDIR "/ascent-optional.conf", true);
+		Config.MainConfig.SetSource((char*)CONFDIR "/arcemu-world.conf", true);
+		Config.OptionalConfig.SetSource((char*)CONFDIR "/arcemu-optional.conf", true);
 		#endif
 	}
 	if(!ChannelMgr::getSingletonPtr())
@@ -1191,7 +1191,7 @@ void World::Rehash(bool load)
 	setRate(RATE_ARENAPOINTMULTIPLIER3X, Config.MainConfig.GetFloatDefault("Rates", "ArenaMultiplier3x", 1.0f));
 	setRate(RATE_ARENAPOINTMULTIPLIER5X, Config.MainConfig.GetFloatDefault("Rates", "ArenaMultiplier5x", 1.0f));
 	SetPlayerLimit(Config.MainConfig.GetIntDefault("Server", "PlayerLimit", 1000));
-	SetMotd(Config.MainConfig.GetStringDefault("Server", "Motd", "Ascent Default MOTD").c_str());
+	SetMotd(Config.MainConfig.GetStringDefault("Server", "Motd", "Arcemu Default MOTD").c_str());
 	mQueueUpdateInterval = Config.MainConfig.GetIntDefault("Server", "QueueUpdateInterval", 5000);
 	SetKickAFKPlayerTime(Config.MainConfig.GetIntDefault("Server", "KickAFKPlayers", 0));
 	sLog.SetScreenLoggingLevel(Config.MainConfig.GetIntDefault("LogLevel", "Screen", 1));

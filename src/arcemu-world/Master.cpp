@@ -92,13 +92,13 @@ struct Addr
 #define DEF_VALUE_NOT_SET 0xDEADBEEF
 
 #ifdef WIN32
-        static const char* default_config_file = "ascent-world.conf";
-		static const char* default_optional_config_file = "ascent-optional.conf";
-        static const char* default_realm_config_file = "ascent-realms.conf";
+        static const char* default_config_file = "arcemu-world.conf";
+		static const char* default_optional_config_file = "arcemu-optional.conf";
+        static const char* default_realm_config_file = "arcemu-realms.conf";
 #else
-        static const char* default_config_file = CONFDIR "/ascent-world.conf";
-		static const char* default_optional_config_file = CONFDIR "/ascent-optional.conf";
-        static const char* default_realm_config_file = CONFDIR "/ascent-realms.conf";
+        static const char* default_config_file = CONFDIR "/arcemu-world.conf";
+		static const char* default_optional_config_file = CONFDIR "/arcemu-optional.conf";
+        static const char* default_realm_config_file = CONFDIR "/arcemu-realms.conf";
 #endif
 
 bool bServerShutdown = false;
@@ -190,7 +190,7 @@ bool Master::Run(int argc, char ** argv)
 	Log.Color(TRED);
 	printf("Warning: Using repacks is potentially dangerous. You should always compile\n");
 	printf("from the source yourself at www.arcemu.org.\n");
-	printf("By using this repack, you agree to not visit the ascent website and ask\nfor support.\n");
+	printf("By using this repack, you agree to not visit the arcemu website and ask\nfor support.\n");
 	printf("For all support, you should visit the repacker's website at %s\n", REPACK_WEBSITE);
 	Log.Color(TNORMAL);
 	Log.Line();
@@ -244,18 +244,18 @@ bool Master::Run(int argc, char ** argv)
 
 	Log.Notice( "Config", "Loading Config Files...\n" );
 	if( Config.MainConfig.SetSource( config_file ) )
-		Log.Success( "Config", ">> ascent-world.conf" );
+		Log.Success( "Config", ">> arcemu-world.conf" );
 	else
 	{
-		Log.Error( "Config", ">> ascent-world.conf" );
+		Log.Error( "Config", ">> arcemu-world.conf" );
 		return false;
 	}
 
 	if(Config.OptionalConfig.SetSource(optional_config_file))
-		Log.Success( "Config", ">> ascent-optional.conf");
+		Log.Success( "Config", ">> arcemu-optional.conf");
 	else
 	{
-		Log.Error("Config", ">> ascent-optional.conf");
+		Log.Error("Config", ">> arcemu-optional.conf");
 		return false;
 	}
 
@@ -267,10 +267,10 @@ bool Master::Run(int argc, char ** argv)
 	}	
 
 	if(Config.RealmConfig.SetSource(realm_config_file))
-		Log.Success( "Config", ">> ascent-realms.conf" );
+		Log.Success( "Config", ">> arcemu-realms.conf" );
 	else
 	{
-		Log.Error( "Config", ">> ascent-realms.conf" );
+		Log.Error( "Config", ">> arcemu-realms.conf" );
 		return false;
 	}
 
@@ -380,7 +380,7 @@ bool Master::Run(int argc, char ** argv)
 	
  
 	/* write pid file */
-	FILE * fPid = fopen( "ascent.pid", "w" );
+	FILE * fPid = fopen( "arcemu.pid", "w" );
 	if( fPid )
 	{
 		uint32 pid;
@@ -598,7 +598,7 @@ bool Master::Run(int argc, char ** argv)
 	delete Player_Log;
 
 	// remove pid
-	remove( "ascent.pid" );
+	remove( "arcemu.pid" );
 
 	Log.Notice( "Shutdown", "Shutdown complete." );
 
