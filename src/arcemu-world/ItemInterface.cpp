@@ -1524,13 +1524,20 @@ int8 ItemInterface::CanEquipItemInSlot2(int8 DstInvSlot, int8 slot, Item* item, 
 
 	if((slot < INVENTORY_SLOT_BAG_END && DstInvSlot == INVENTORY_SLOT_NOT_SET) || (slot >= BANK_SLOT_BAG_START && slot < BANK_SLOT_BAG_END && DstInvSlot == INVENTORY_SLOT_NOT_SET))
 	{
-		for (count=0; count<item->GetSocketsCount(); count++) {
-			EnchantmentInstance *ei = item->GetEnchantment(2+count);
-			if (ei)
+		for (count=0; count<item->GetSocketsCount(); count++)
+		{
+			EnchantmentInstance *ei = item->GetEnchantment( 2 + count );
+			if (ei 
+				&& ei->Enchantment->GemEntry //huh ? Gem without entry ?
+				)
 			{
 				ItemPrototype * ip = ItemPrototypeStorage.LookupEntry(ei->Enchantment->GemEntry);
 
-				if (ip->Flags & ITEM_FLAG_UNIQUE_EQUIP && IsEquipped(ip->ItemId))
+				if (
+					ip //maybe gem got removed from db due to update ?
+					&& ip->Flags & ITEM_FLAG_UNIQUE_EQUIP 
+					&& IsEquipped(ip->ItemId)
+					)
 				{
 					return INV_ERR_CANT_CARRY_MORE_OF_THIS;
 				}
