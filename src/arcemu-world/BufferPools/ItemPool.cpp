@@ -6,12 +6,18 @@ oItemBufferPool::oItemBufferPool()
 {
 	max_avails = INITI_POOL_WITH_SIZE;
 	avail_list = (Item **)malloc(sizeof(Item*) * max_avails); //list that contains pointers to objects
+	if( !avail_list )
+		sLog.outError("Item Pool failed to alocate more memory = %u bytes",sizeof(Item*) * max_avails);
 	next_free_avail = 0;
 	InitPoolNewSection(0,max_avails);
 }
 
 //get rid of all objects
 oItemBufferPool::~oItemBufferPool()
+{
+}
+
+void oItemBufferPool::DestroyPool()
 {
 
 #ifdef TRACK_LEAKED_ITEMS_AND_MEMORY_CORRUPTION
@@ -25,17 +31,21 @@ oItemBufferPool::~oItemBufferPool()
 	}
 #endif
 
-//	for(uint32 i=next_free_avail;i<max_avails;i++)
-//		delete avail_list[i];
+	for(uint32 i=next_free_avail;i<max_avails;i++)
+		delete avail_list[i];
 
 	free( avail_list );
+	avail_list = NULL;
 }
 
 //new pool must be filled with item objects
 inline void oItemBufferPool::InitPoolNewSection(uint32 from, uint32 to)
 {
 	for(uint32 i=from;i<to;i++)
+	{
 		avail_list[i] = new Item;
+		ASSERT( avail_list[i] );
+	}
 }
 
 //we increase our pool size if we run out of it
@@ -44,6 +54,8 @@ inline void oItemBufferPool::ExtedLimitAvailLimit()
 	uint32 prev_max = max_avails;
 	max_avails += EXTEND_POOL_WITH_SIZE;
 	avail_list = (Item **)realloc( avail_list, sizeof(Item*) * max_avails );
+	if( !avail_list )
+		sLog.outError("Item Pool failed to alocate more memory = %u bytes",sizeof(Item*) * max_avails);
 	InitPoolNewSection( prev_max, max_avails );
 }
 

@@ -559,8 +559,8 @@ bool Master::Run(int argc, char ** argv)
 	delete LogonCommHandler::getSingletonPtr();
 
 	//should delete pools before other handlers !
-//	Log.Notice( "Item Pool", "Item Pool" );
-//	delete oItemBufferPool::getSingletonPtr();
+	Log.Notice( "Item Pool", "Item Pool" );
+	ItemPool.DestroyPool();
 
 	sWorld.ShutdownClasses();
 	Log.Notice( "World", "~World()" );
