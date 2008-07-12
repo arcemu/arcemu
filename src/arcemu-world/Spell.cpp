@@ -2989,6 +2989,7 @@ uint8 Spell::CanCast(bool tolerate)
  				case 1856:
  				case 1857:
 				case 10278:
+				case 20580:
  				case 26889:
 				case 45438:
  				{
