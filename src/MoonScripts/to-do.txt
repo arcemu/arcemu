@@ -1,0 +1,29 @@
+To Do List to get this team somewhere structured.
+
+Please use it.
+
+Please Report Bugs at: www.moonplusplus.info thank you.
+
+Magisters Terrace:
+
+*Kael'thas:
+-Fly Phase.
+-Spawn and cast of his Phoenix.
+
+
+
+*Priestess Dellrissa:
+she random spawns 4 of 8 Minions(before on_combat)
+-> Find a solution for that problem. (Maybe do an On_Spawn function in lua that randomly generates which creatures go with her, so each time a seperate raid enters the instance, 4 different bosses will be there?)
+
+
+Sunwell:
+
+
+Thanks to Xaximbo for Report:
+*Keal'thas -> does nothing(just stands in his place)
+*Curator---->  flares use chain lightning on retail
+*Solarian-----> His arcane missiles don't hurt but OK!
+*Archimonde---> OK! Fire missing.
+*Azgalor----> Quite boring, need to work on this.
+*Kazrogal---> work needed

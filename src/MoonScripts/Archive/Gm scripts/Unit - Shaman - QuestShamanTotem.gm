@@ -1,0 +1,133 @@
+/* 
+* Copyright (C) 2007 GMScripts <http://projects.emupedia.com/svn/gmscripts>
+*
+* This program is free software; you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation; either version 2 of the License, or
+* (at your option) any later version.
+*
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License
+* along with this program; if not, write to the Free Software
+* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+*/
+
+// Horde
+// bracer for fire Durotar
+global Minor_Manifestation_Fire_Object = function(plr)
+{
+    //if(plr.GetClass() == 7 && (plr.GetRace() == 6 || plr.GetRace() == 2 || plr.GetRace() == 8)){
+    if(plr.HasQuest(1526) && plr.HasItem(6653)){
+    plr.SpawnMonster(5893, -253.237335, -4013.72363, 187.302185); //Spawn Minor Manifestation of Fire.
+    plr.Despawn(600000,0); // Despawn him after 10 minutes.
+    };
+};
+.RegisterGameObjectEvent(61934, 2, Minor_Manifestation_Fire_Object);
+
+global Minor_Manifestation_Fire_OnEnterInCombat = function(plr)
+{
+      .SendChatMessage("Youuu... I kill you...");
+};
+.RegisterUnitEvent(5893, 1, Minor_Manifestation_Fire_OnEnterInCombat);
+
+global Minor_Manifestation_Fire_OnLeaveInCombat = function(plr)
+{
+      .Despawn(0, 0);
+};
+.RegisterUnitEvent(5893, 2, Minor_Manifestation_Fire_OnLeaveInCombat);
+
+global Minor_Manifestation_Fire_OnKillTarget = function(plr)
+{
+      .SendChatMessage("Haha... I killed you...");
+      .Despawn(0, 0);
+};
+.RegisterUnitEvent(5893, 3, Minor_Manifestation_Fire_OnKillTarget);
+
+global Minor_Manifestation_Fire_Dead = function(plr)
+{
+      .SendChatMessage("Noooo... I dead...");
+};
+.RegisterUnitEvent(5893, 4, Minor_Manifestation_Fire_Dead);
+
+// Bracers for water Silverpine - tauren
+global Corrupt_Minor_Manifestation_Water_Object = function(plr)
+{
+    //if(plr.GetClass() == 7 && (plr.GetRace() == 6 || plr.GetRace() == 2 || plr.GetRace() == 8)){
+    if(plr.HasQuest(63) && plr.HasItem(7811)){
+    plr.SpawnMonster(5894, 397.530426, 1826.756836, 10.385081); //Spawn Corrupt Minor Manifestation of Water.
+    plr.Despawn(600000,0); // Despawn him after 10 minutes.
+    }else if(plr.HasQuest(63) && plr.HasItem(7811) && plr.HasItem(7812)){};
+};
+.RegisterGameObjectEvent(113791, 2, Corrupt_Minor_Manifestation_Water_Object);
+
+global Corrupt_Minor_Manifestation_Water_OnEnterInCombat = function(plr)
+{
+      .SendChatMessage("Youuu... I kill you...");
+};
+.RegisterUnitEvent(5894, 1, Corrupt_Minor_Manifestation_Water_OnEnterInCombat);
+
+global Corrupt_Minor_Manifestation_Water_OnLeaveInCombat = function(plr)
+{
+      .Despawn(0, 0);
+};
+.RegisterUnitEvent(5894, 2, Corrupt_Minor_Manifestation_Water_OnLeaveInCombat);
+
+global Corrupt_Minor_Manifestation_Water_OnKillTarget = function(plr)
+{
+      .SendChatMessage("Haha... I killed you...");
+      .Despawn(0, 0);
+};
+.RegisterUnitEvent(5894, 3, Corrupt_Minor_Manifestation_Water_OnKillTarget);
+
+global Corrupt_Minor_Manifestation_Water_Dead = function(plr)
+{
+      .SendChatMessage("Noooo... I dead...");
+      .SpawnMonster(5895, 397.530426, 1826.756836, 10.385081); //Spawn Minor Manifestation of Water.
+      .Despawn(600000,0); // Despawn him after 10 minutes.
+};
+.RegisterUnitEvent(5894, 4, Corrupt_Minor_Manifestation_Water_Dead);
+
+
+
+// Ally
+// Water totem
+global Telathion_the_Impure_Object = function(plr)
+{
+    //if(plr.GetClass() == 7 && plr.GetRace() == 11){
+    if(plr.HasQuest(9508) && plr.HasItem(23751)){
+    plr.SpawnMonster(17359, -1645.693481, -10917.804688, 58.897659); //Spawn Tel'athion the Impure.
+    plr.Despawn(600000,0); // Despawn him after 10 minutes.
+    }else if(plr.HasQuest(9508) && plr.HasItem(23751) && plr.HasItem(23997)){};
+};
+.RegisterGameObjectEvent(181699, 2, Telathion_the_Impure_Object);
+
+global Telathion_the_Impure_OnEnterInCombat = function(plr)
+{
+      .SendChatMessage("Youuu... I kill you...");
+};
+.RegisterUnitEvent(17359, 1, Telathion_the_Impure_OnEnterInCombat);
+
+global Telathion_the_Impure_OnLeaveInCombat = function(plr)
+{
+      .Despawn(0, 0);
+};
+.RegisterUnitEvent(17359, 2, Telathion_the_Impure_OnLeaveInCombat);
+
+global Telathion_the_Impure_OnKillTarget = function(plr)
+{
+      .SendChatMessage("Haha... I killed you...");
+	.Emote(11);
+      .Despawn(0, 0);
+};
+.RegisterUnitEvent(17359, 3, Telathion_the_Impure_OnKillTarget);
+
+global Telathion_the_Impure_Dead = function(plr)
+{
+      .SendChatMessage("Noooo... I dead...");
+	.RemoveItem(23751, 1);
+};
+.RegisterUnitEvent(17359, 4, Telathion_the_Impure_Dead);

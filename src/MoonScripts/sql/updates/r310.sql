@@ -1,0 +1,2 @@
+-- Needed for Alar
+insert into `creature_proto` (`entry`, `minlevel`, `maxlevel`, `faction`, `minhealth`, `maxhealth`, `mana`, `scale`, `bounding_radius`, `auras`) values('20602','70','70','16','10000','10000','0','1','1','0');

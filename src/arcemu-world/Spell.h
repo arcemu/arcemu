@@ -1862,7 +1862,7 @@ protected:
 		return false;
 	}
 
-private:
+public:
     TargetsList m_targetUnits[3];
     void SafeAddTarget(TargetsList* tgt,uint64 guid);
     

@@ -1,0 +1,49 @@
+/* 
+* Copyright (C) 2007 GMScripts <http://projects.emupedia.com/svn/gmscripts>
+*
+* This program is free software; you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation; either version 2 of the License, or
+* (at your option) any later version.
+*
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License
+* along with this program; if not, write to the Free Software
+* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+*/
+
+// Spawn Lunaclaw when using  "Moonkin Stone".
+global Lunaclaw_Object = function(plr)
+{
+    // Alliance Quest
+    if(plr.HasQuest(6001) && plr.HasItem(15208)){
+	plr.SpawnMonster(12138, 6136.38, -69.5633, 36.1584); //Spawn Lunaclaw.
+      plr.Despawn(600000,0); // Despawn him after 10 minutes.
+    };
+    // Horde Quest
+    if(plr.HasQuest(6002) && plr.HasItem(15710)){
+	plr.SpawnMonster(12138, -2486.178, -1629.732, 91.666); //Spawn Lunaclaw.
+      plr.Despawn(600000,0); // Despawn him after 10 minutes.
+    };
+};
+.RegisterGameObjectEvent(177525, 2, Lunaclaw_Object);
+
+// Spawn Lunaclaw Spirit When Lunaclaw is dead.
+global Lunaclaw_SpiritSpawn = function(plr)
+{
+     // Alliance Quest
+     if(plr.HasQuest(6001) && plr.HasItem(15208)){
+	.SpawnMonster(12144, 6136.38, -69.5633, 36.1584); //Spawn LunaclawSpirit.
+	.Despawn(600000, 0); // Despawn him after 10 minutes.
+     };
+     // Horde Quest
+          if(plr.HasQuest(6002) && plr.HasItem(15710)){
+	.SpawnMonster(12144, -2486.178, -1629.732, 91.666); //Spawn LunaclawSpirit.
+	.Despawn(600000, 0); // Despawn him after 10 minutes.
+     };
+};
+.RegisterUnitEvent(12138, 4, Lunaclaw_SpiritSpawn);

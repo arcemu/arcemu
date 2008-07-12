@@ -1,0 +1,69 @@
+/* 
+* Copyright (C) 2007 GMScripts <http://projects.emupedia.com/svn/gmscripts>
+*
+* This program is free software; you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation; either version 2 of the License, or
+* (at your option) any later version.
+*
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License
+* along with this program; if not, write to the Free Software
+* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+*/
+
+// BreadVendor of Ironforge
+global IF_BREAD_SELLER_SPAWN = function(mob, plr)
+{
+    .SetMovementType(11);
+    .CreateWaypoint(-4931.69, -954.53,501.565, 2.30, 0, 256, 0);
+    .CreateWaypoint(-4961.89, -979.187,501.637, 1.88, 0, 256, 0);
+    .CreateWaypoint(-4981.35, -965.17,501.659, 1.12, 0, 256, 0);
+    .CreateWaypoint(-4944.42, -928.605,501.659, 5.76, 0, 256, 0);
+    .CreateWaypoint(-4899.81, -897.791,501.659, 5.55, 0, 256, 0);
+    .CreateWaypoint(-4889.72, -921.59,501.624, 4.51, 0, 256, 0);
+};
+
+global IF_BREAD_SELLER_WAYPOINT = function(waypoint_id)
+{
+    if(waypoint_id == 4) {.SendChatMessage("Fresh bread, baked this very morning.");}
+    if(waypoint_id == 1) {.SendChatMessage("Fresh bread, baked this very morning.");}
+    if(waypoint_id == 2) {.SendChatMessage("Come get yer fresh bread!");}
+    if(waypoint_id == 6) {.SendChatMessage("Fresh bread for sale!");}
+};
+.RegisterUnitEvent(5109, 6,IF_BREAD_SELLER_SPAWN );
+.RegisterUnitEvent(5109, 8,IF_BREAD_SELLER_WAYPOINT);
+
+// FruitVendor of Ironforge
+global IF_FRUIT_SELLER_SPAWN = function(mob, plr)
+{
+.SetMovementType(2);
+.CreateWaypoint(-4680.991699,	-970.090454,	501.658295,	2.30, 0, 256, 0);
+.CreateWaypoint(-4693.670410,	-944.227600,	501.667389,	1.88, 0, 256, 0);
+.CreateWaypoint(-4694.562012,	-918.898987,	501.660919,	1.12, 0, 256, 0);
+.CreateWaypoint(-4670.797852,	-922.369873,	501.660065,	5.76, 0, 256, 0);
+.CreateWaypoint(-4647.173828,	-939.691162,	501.658264,	5.55, 0, 256, 0);
+.CreateWaypoint(-4636.800781,	-967.015930,	501.660706,	4.51, 0, 256, 0);
+.CreateWaypoint(-4660.826660,	-988.344177,	501.659790,	1.59, 0, 256, 0);
+};
+
+global IF_FRUIT_SELLER_WAYPOINT = function(waypoint_id)
+{
+
+if(waypoint_id == 3) {.SendChatMessage("Sink your teeth into a fresh, ripe apple.");}
+if(waypoint_id == 6) {.SendChatMessage("Juicy fruits for sale!");}
+if(waypoint_id == 7) {.SendChatMessage("Stright from the lush forests of Elwynn, get your fresh fruit right here.");}
+};
+.RegisterUnitEvent(7978, 8,IF_FRUIT_SELLER_WAYPOINT );
+.RegisterUnitEvent(7978, 6,IF_FRUIT_SELLER_SPAWN );
+
+// KingMagniBronzebeard_onCombat
+global KingMagniBronzebeard_onCombat = function(plr)
+{
+  .PlaySoundToSet(5896);
+};
+.RegisterUnitEvent(2784, 1, KingMagniBronzebeard_onCombat);             // KingMagniBronzebeard_onCombat
