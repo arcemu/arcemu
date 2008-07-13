@@ -1432,21 +1432,24 @@ void Spell::cast(bool check)
 					break;
 			}
 
-			if(GetCanReflect() && m_caster->IsInWorld())
+			if(!IsReflected() && GetCanReflect() && m_caster->IsInWorld())
 			{
 				for(i= UniqueTargets.begin();i != UniqueTargets.end();i++)
 				{
 					Unit *Target = m_caster->GetMapMgr()->GetUnit(*i);
 					if(Target)
-                    {
-                       SetReflected(Reflect(Target));
-                    }
+					{
+					   SetReflected(Reflect(Target));
+					}
 
-                    // if the spell is reflected
+					// if the spell is reflected
 					if(IsReflected())
 						break;
 				}
 			}
+			else
+				SetReflected(false);
+
 			bool isDuelEffect = false;
 			//uint32 spellid = GetProto()->Id;
 
@@ -4682,7 +4685,7 @@ bool Spell::Reflect(Unit *refunit)
 			if(Rand((float)(*i)->chance))
 			{
 				//the god blessed special case : mage - Frost Warding = is an augmentation to frost warding
-				if((*i)->require_aura_hash && u_caster && !u_caster->HasAurasWithNameHash((*i)->require_aura_hash))
+				if((*i)->require_aura_hash && refunit && !refunit->HasAurasWithNameHash((*i)->require_aura_hash))
                 {
 					continue;
                 }
@@ -4694,6 +4697,7 @@ bool Spell::Reflect(Unit *refunit)
 	if(!refspell || m_caster == refunit) return false;
 
 	Spell *spell = new Spell(refunit, refspell, true, NULL);
+	spell->SetReflected();
 	SpellCastTargets targets;
 	targets.m_unitTarget = m_caster->GetGUID();
 	spell->prepare(&targets);

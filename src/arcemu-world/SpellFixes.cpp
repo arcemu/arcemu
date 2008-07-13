@@ -17477,10 +17477,16 @@ void ApplyNormalFixes()
 		// mage - Frost Warding
 		sp = dbcSpell.LookupEntryForced( 11189 );
 		if( sp != NULL )
+		{
 			sp->EffectSpellGroupRelation[0] = 33554432;
+			sp->procChance = 10;
+		}
 		sp = dbcSpell.LookupEntryForced( 28332 );
 		if( sp != NULL )
+		{
 			sp->EffectSpellGroupRelation[0] = 33554432;
+			sp->procChance = 20;
+		}
 
 		// mage - Conjure Refreshment Table
 		sp = dbcSpell.LookupEntryForced( 43985 );

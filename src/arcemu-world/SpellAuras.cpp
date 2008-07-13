@@ -3425,6 +3425,7 @@ void Aura::SpellAuraReflectSpells(bool apply)
 		rss->chance = mod->m_amount;
 		rss->spellId = GetSpellId();
 		rss->school = -1;
+		rss->require_aura_hash = 0;
 		m_target->m_reflectSpellSchool.push_back(rss);
 	}
 	else
