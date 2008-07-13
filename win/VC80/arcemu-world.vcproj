@@ -476,6 +476,19 @@
 				</File>
 			</Filter>
 		</Filter>
+			<Filter
+				Name="BufferPools"
+				>
+				<File
+				RelativePath="..\..\src\arcemu-world\BufferPools\ItemPool.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\arcemu-world\BufferPools\ItemPool.h"
+				>
+			</File>
+		</Filter>
+
 		<File
 			RelativePath="..\..\src\arcemu-world\AddonMgr.cpp"
 			>
