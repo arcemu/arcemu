@@ -39,7 +39,7 @@ void oItemBufferPool::DestroyPool()
 }
 
 //new pool must be filled with item objects
-inline void oItemBufferPool::InitPoolNewSection(uint32 from, uint32 to)
+void oItemBufferPool::InitPoolNewSection(uint32 from, uint32 to)
 {
 	for(uint32 i=from;i<to;i++)
 	{
@@ -49,7 +49,7 @@ inline void oItemBufferPool::InitPoolNewSection(uint32 from, uint32 to)
 }
 
 //we increase our pool size if we run out of it
-inline void oItemBufferPool::ExtedLimitAvailLimit()
+void oItemBufferPool::ExtedLimitAvailLimit()
 {
 	uint32 prev_max = max_avails;
 	max_avails += EXTEND_POOL_WITH_SIZE;
@@ -59,7 +59,7 @@ inline void oItemBufferPool::ExtedLimitAvailLimit()
 	InitPoolNewSection( prev_max, max_avails );
 }
 
-inline Item *oItemBufferPool::PooledNew()
+Item *oItemBufferPool::PooledNew()
 {
 	ObjLock.Acquire();
 
@@ -82,7 +82,7 @@ inline Item *oItemBufferPool::PooledNew()
 	return avail_list[ free_index ];
 }
 
-inline void oItemBufferPool::PooledDelete( Item *dumped )
+void oItemBufferPool::PooledDelete( Item *dumped )
 {
 	//containers are items and not stored in this pool atm
 	if( dumped->IsContainer() )
