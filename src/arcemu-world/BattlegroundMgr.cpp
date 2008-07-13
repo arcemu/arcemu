@@ -196,9 +196,9 @@ void CBattlegroundManager::HandleGetBattlegroundQueueCommand(WorldSession * m_se
 
 			switch(i)
 			{
-			case BATTLEGROUND_ALTERAC_VALLEY:
-				ss << "Alterac Valley";
-				break;
+			//case BATTLEGROUND_ALTERAC_VALLEY:
+			//	ss << "Alterac Valley";
+			//	break;
 			case BATTLEGROUND_WARSUNG_GULCH:
 				ss << "Warsong Gulch";
 				break;
