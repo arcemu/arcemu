@@ -96,14 +96,23 @@ bool ChatHandler::HandleQuestLookupCommand(const char * args, WorldSession * m_s
 	while(!itr->AtEnd())
 	{
 		i = itr->Get();
-
 		y = string(i->title);
-		arcemu_TOLOWER(y);
 
-		if(FindXinYString(x, y))
-		{
-			string questid = MyConvertIntToString(i->id);
-			const char * questtitle = i->title;
+		LocalizedQuest *li	= (m_session->language>0) ? sLocalizationMgr.GetLocalizedQuest(i->id, m_session->language) : NULL;
+
+		std::string liName	= std::string(li ? li->Title : "");
+
+		arcemu_TOLOWER(liName);
+ 		arcemu_TOLOWER(y);
+ 
+		bool localizedFound	= false;
+		if(FindXinYString(x, liName))
+			localizedFound	= true;
+
+		if(FindXinYString(x, y) || localizedFound)
+ 		{
+ 			string questid = MyConvertIntToString(i->id);
+			const char * questtitle = localizedFound ? li->Title : i->title;
 			recout = "|cff00ccff";
 			recout += questid.c_str();
 			recout += ": ";

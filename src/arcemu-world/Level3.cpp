@@ -2502,9 +2502,12 @@ bool ChatHandler::HandleRemoveItemCommand(const char * args, WorldSession * m_se
 		++loop_count;
 	}
 
-	sGMLog.writefromsession(m_session, "used remove item id %u count %u from %s", item_id, ocount, plr->GetName());
-	BlueSystemMessage(m_session, "Removing %u copies of item %u from %s's inventory.", ocount, item_id, plr->GetName());
-	BlueSystemMessage(plr->GetSession(), "%s removed %u copies of item %u from your inventory.", m_session->GetPlayer()->GetName(), ocount, item_id);
+	ItemPrototype * iProto	= ItemPrototypeStorage.LookupEntry(item_id);
+
+	sGMLog.writefromsession(m_session, "used remove item %s (id: %u) count %u from %s", iProto->Name1, item_id, ocount, plr->GetName());
+	BlueSystemMessage(m_session, "Removing %u copies of item %s (id: %u) from %s's inventory.", ocount, GetItemLinkByProto(iProto, m_session->language), item_id, plr->GetName());
+	BlueSystemMessage(plr->GetSession(), "%s removed %u copies of item %s from your inventory.", m_session->GetPlayer()->GetName(), ocount, GetItemLinkByProto(iProto, plr->GetSession()->language));
+
 	return true;
 }
 
@@ -2571,13 +2574,13 @@ bool ChatHandler::HandleSetStandingCommand(const char * args, WorldSession * m_s
 	return true;
 }
 
-void SendHighlightedName(WorldSession * m_session, char* full_name, string& lowercase_name, string& highlight, uint32 id, bool item)
+void SendHighlightedName(WorldSession * m_session, char* full_name, string& lowercase_name, string& highlight, uint32 id)
 {
 	char message[1024];
 	char start[50];
 	start[0] = message[0] = 0;
 
-	snprintf(start, 50, "%s %u: %s", item ? "Item" : "Creature", (unsigned int)id, MSG_COLOR_WHITE);
+	snprintf(start, 50, "Creature %u: %s", (unsigned int)id, MSG_COLOR_WHITE);
 
 	string::size_type hlen = highlight.length();
 	string fullname = string(full_name);
@@ -2596,37 +2599,17 @@ void SendHighlightedName(WorldSession * m_session, char* full_name, string& lowe
 	sChatHandler.SystemMessage(m_session, message);
 }
 
-void SendItemLinkToPlayer(ItemPrototype * iProto, WorldSession * pSession, bool ItemCount, Player * owner = NULL)
+void SendItemLinkToPlayer(ItemPrototype * iProto, WorldSession * pSession, bool ItemCount, Player * owner = NULL, uint32 language = NULL)
 {
 	if(!iProto || !pSession)
 		return;
 	if(ItemCount && owner == NULL)
 		return;
 		
-	string q;
-	switch(iProto->Quality)
-	{
-	case 0:{ q = "cff9d9d9d";}
-		break;
-	case 1:{ q = "cffffffff";}
-		break;
-	case 2:{ q = "cff1eff00";}
-		break;
-	case 3:{ q = "cff0070dd";}
-		break;
-	case 4:{ q = "cffa335ee";}
-		break;
-	case 5:{ q = "cffff8000";}
-		break;
-	case 6:{ q = "c00fce080";}
-		break;
-	default:{ q = "cff9d9d9d";}
-	}
-		
-	if(ItemCount)
-		sChatHandler.SystemMessage(pSession,"Item %u |%s|Hitem:%u:0:0:0:0:0:0:0|h[%s]|h|r  count %u", iProto->ItemId ,q.c_str(),iProto->ItemId,iProto->Name1, owner->GetItemInterface()->GetItemCount(iProto->ItemId, true));
-	else
-		sChatHandler.SystemMessage(pSession,"Item %u |%s|Hitem:%u:0:0:0:0:0:0:0|h[%s]|h|r", iProto->ItemId ,q.c_str(),iProto->ItemId,iProto->Name1);
+ 	if(ItemCount)
+		sChatHandler.SystemMessage(pSession,"Item %u %s  count %u", iProto->ItemId, GetItemLinkByProto(iProto, language), owner->GetItemInterface()->GetItemCount(iProto->ItemId, true));
+ 	else
+		sChatHandler.SystemMessage(pSession,"Item %u %s", iProto->ItemId, GetItemLinkByProto(iProto, language));
 }
 
 
@@ -2652,11 +2635,21 @@ bool ChatHandler::HandleLookupItemCommand(const char * args, WorldSession * m_se
 	while(!itr->AtEnd())
 	{
 		it = itr->Get();
-		if(FindXinYString(x, it->lowercase_name))
+		LocalizedItem *lit	= (m_session->language>0) ? sLocalizationMgr.GetLocalizedItem(it->ItemId, m_session->language) : NULL;
+
+		std::string litName	= std::string(lit ? lit->Name : "");
+		
+		arcemu_TOLOWER(litName);
+		
+		bool localizedFound	= false;
+		if(FindXinYString(x, litName))
+			localizedFound	= true;
+
+		if(FindXinYString(x, it->lowercase_name) || localizedFound)
 		{
 			// Print out the name in a cool highlighted fashion
 			//SendHighlightedName(m_session, it->Name1, it->lowercase_name, x, it->ItemId, true);
-			SendItemLinkToPlayer(it, m_session, false);
+			SendItemLinkToPlayer(it, m_session, false, 0, localizedFound ? m_session->language : 0);
 			++count;
 			if(count == 25)
 			{
@@ -2695,11 +2688,21 @@ bool ChatHandler::HandleLookupCreatureCommand(const char * args, WorldSession * 
 	while(!itr->AtEnd())
 	{
 		i = itr->Get();
-		if(FindXinYString(x, i->lowercase_name))
-		{
-			// Print out the name in a cool highlighted fashion
-			SendHighlightedName(m_session, i->Name, i->lowercase_name, x, i->Id, false);
+		LocalizedCreatureName *li	= (m_session->language>0) ? sLocalizationMgr.GetLocalizedCreatureName(i->Id, m_session->language) : NULL;
 
+		std::string liName	= std::string(li ? li->Name : "");
+		
+		arcemu_TOLOWER(liName);
+		
+		bool localizedFound	= false;
+
+		if(FindXinYString(x, liName))
+			localizedFound	= true;
+
+		if(FindXinYString(x, i->lowercase_name) || localizedFound)
+ 		{
+ 			// Print out the name in a cool highlighted fashion
+			SendHighlightedName(m_session, localizedFound ? li->Name : i->Name, localizedFound ? liName : i->lowercase_name, x, i->Id);
 			++count;
 			if(count == 25)
 			{
@@ -3125,7 +3128,7 @@ bool ChatHandler::HandleShowItems(const char * args, WorldSession * m_session)
 		if(!(*itr))
 			return false;
 
-		SendItemLinkToPlayer((*itr)->GetProto(), m_session, true, plr);
+		SendItemLinkToPlayer((*itr)->GetProto(), m_session, true, plr, m_session->language);
 	}
 	itr.EndSearch();
 	sGMLog.writefromsession(m_session, "used show items command on %s,", plr->GetName());

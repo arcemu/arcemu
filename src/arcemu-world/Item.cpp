@@ -1097,3 +1097,55 @@ uint32 Item::GenerateRandomSuffixFactor( ItemPrototype* m_itemProto )
 	value = ( value * double( m_itemProto->ItemLevel ) ) + 0.5;
 	return long2int32( value );
 }
+
+const char * Item::GetItemLink(uint32 language = NULL)
+{
+	return GetItemLinkByProto(GetProto(), language);
+}
+
+const char * GetItemLinkByProto(ItemPrototype * iProto, uint32 language = NULL)
+{
+	const char * ItemLink;
+	char buffer[256];
+	std::string colour;
+
+	switch(iProto->Quality)
+	{
+		case 0:
+			colour = "cff9d9d9d";
+		break;
+		case 1:
+			colour = "cffffffff";
+		break;
+		case 2:
+			colour = "cff1eff00";
+		break;
+		case 3:
+			colour = "cff0070dd";
+		break;
+		case 4:
+			colour = "cffa335ee";
+		break;
+		case 5:
+			colour = "cffff8000";
+		break;
+		case 6:
+			colour = "c00fce080";
+		break;
+		default:
+			colour = "cff9d9d9d";
+	}
+	
+	// try to get localized version
+	LocalizedItem *lit	= (language>0) ? sLocalizationMgr.GetLocalizedItem(iProto->ItemId, language) : NULL;
+
+	if(lit)
+		snprintf(buffer, 256, "|%s|Hitem:%u:0:0:0:0:0:0:0|h[%s]|h|r", colour.c_str(), iProto->ItemId, lit->Name);
+	else
+		snprintf(buffer, 256, "|%s|Hitem:%u:0:0:0:0:0:0:0|h[%s]|h|r", colour.c_str(), iProto->ItemId, iProto->Name1);
+	
+
+	ItemLink	= static_cast<const char*>(buffer);
+
+	return ItemLink;
+}

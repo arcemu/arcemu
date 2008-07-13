@@ -265,10 +265,12 @@ bool ChatHandler::HandleAddInvItemCommand(const char *args, WorldSession *m_sess
 			return true;
 		}
 
-		char messagetext[128];
-		snprintf(messagetext, 128, "Adding item %d (%s) to %s's inventory.",(unsigned int)it->ItemId,it->Name1, chr->GetName());
+		char messagetext[512];
+		snprintf(messagetext, 512, "Adding item %s (id: %d) to %s's inventory.", GetItemLinkByProto(it, m_session->language), (unsigned int)it->ItemId, chr->GetName());
 		SystemMessage(m_session, messagetext);
 		snprintf(messagetext, 128, "%s added item %d (%s) to your inventory.", m_session->GetPlayer()->GetName(), (unsigned int)itemid, it->Name1);
+		snprintf(messagetext, 512, "%s added item %s to your inventory.", m_session->GetPlayer()->GetName(), GetItemLinkByProto(it, chr->GetSession()->language));
+		
 		SystemMessageToPlr(chr,  messagetext);
 
 		SlotResult *lr = chr->GetItemInterface()->LastSearchResult();
@@ -276,7 +278,7 @@ bool ChatHandler::HandleAddInvItemCommand(const char *args, WorldSession *m_sess
 
 		return true;
 	} else {
-		RedSystemMessage(m_session, "Item %d is not a valid item!",itemid);
+		RedSystemMessage(m_session, "Item %d is not a valid item!", itemid);
 		return true;
 	}
 }
