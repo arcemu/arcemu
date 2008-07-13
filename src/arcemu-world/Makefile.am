@@ -37,8 +37,6 @@ arcemu_world_SOURCES = \
     BattlegroundHandler.cpp \
     BattlegroundMgr.cpp \
     BattlegroundMgr.h \
-    BufferPools/ItemPool.cpp \
-    BufferPools/ItemPool.h \
     CellHandler.h \
     Channel.cpp \
     Channel.h \
@@ -83,6 +81,8 @@ arcemu_world_SOURCES = \
     ItemHandler.cpp \
     ItemInterface.cpp \
     ItemInterface.h \
+    BufferPools/ItemPool.cpp \
+    BufferPools/ItemPool.h \
     ItemPrototype.h \
     Level0.cpp \
     Level1.cpp \
