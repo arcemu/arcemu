@@ -2278,7 +2278,6 @@ void Object::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
 				{
 					//Calc Group XP
 					static_cast< Player* >( this )->GiveGroupXP( pVictim, static_cast< Player* >( this ) );
-					//TODO: pet xp if player in group
 				}
 				else
 				{
@@ -2310,7 +2309,6 @@ void Object::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
 						{
 							//Calc Group XP
 							static_cast< Unit* >( this )->GiveGroupXP( pVictim, petOwner );
-							//TODO: pet xp if player in group
 						}
 						else
 						{

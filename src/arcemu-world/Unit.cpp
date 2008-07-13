@@ -605,7 +605,16 @@ void Unit::GiveGroupXP(Unit *pVictim, Player *PlayerInGroup)
 		xp = CalculateXpToGive(pVictim, pHighLvlPlayer);
 		//i'm not sure about this formula is correct or not. Maybe some brackets are wrong placed ?
 		for(int i=0;i<active_player_count;i++)
-			active_player_list[i]->GiveXP( float2int32(((xp*active_player_list[i]->getLevel()) / total_level)*xp_mod), pVictim->GetGUID(), true );
+		{
+			Player * plr = active_player_list[i];
+			plr->GiveXP( float2int32( ( ( xp * plr->getLevel() ) / total_level ) * xp_mod ), pVictim->GetGUID(), true );
+			if ( plr->GetSummon() && plr->GetSummon()->GetUInt32Value( UNIT_CREATED_BY_SPELL ) == 0 )
+			{
+				uint32 pet_xp = CalculateXpToGive( pVictim, plr->GetSummon() ) * xp_mod; // vojta: this isn't blizzlike probably but i have no idea, feel free to correct it
+				if ( pet_xp > 0 )
+					plr->GetSummon()->GiveXP( pet_xp );
+			}
+		}
 	}
 		/* old code start before 2007 04 22
 		GroupMembersSet::iterator itr;
