@@ -202,6 +202,7 @@ void MapCell::LoadObjects(CellSpawns * sp)
 		for(GOSpawnList::iterator i=sp->GOSpawns.begin();i!=sp->GOSpawns.end();i++)
 		{
 			GameObject * go=_mapmgr->CreateGameObject((*i)->entry);
+			go->SetInstanceID(_mapmgr->GetInstanceID());
 			if(go->Load(*i))
 			{
 				//uint32 state = go->GetUInt32Value(GAMEOBJECT_STATE);
