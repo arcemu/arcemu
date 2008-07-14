@@ -9603,12 +9603,12 @@ void Player::_ModifySkillMaximum(uint32 SkillLine, uint32 NewMax)
 	}
 }
 
-void Player::RemoveSpellTargets(uint32 Type)
+void Player::RemoveSpellTargets(uint32 Type, Unit* target)
 {
 	if(m_spellIndexTypeTargets[Type] != 0)
 	{
 		Unit * pUnit = m_mapMgr ? m_mapMgr->GetUnit(m_spellIndexTypeTargets[Type]) : NULL;
-		if(pUnit)
+		if( pUnit != target ) //some auras can stack on target. There is no need to remove them if target is same as previous one
             pUnit->RemoveAurasByBuffIndexType(Type, GetGUID());
 
 		m_spellIndexTypeTargets[Type] = 0;

@@ -382,7 +382,7 @@ Aura::Aura( SpellEntry* proto, int32 duration, Object* caster, Unit* target )
 	{
 		if( m_spellProto->BGR_one_buff_from_caster > 0 && caster->IsPlayer() )
 		{
-			( ( Player* )caster )->RemoveSpellTargets( m_spellProto->BGR_one_buff_from_caster);
+			( ( Player* )caster )->RemoveSpellTargets( m_spellProto->BGR_one_buff_from_caster, target);
 			( ( Player* )caster )->SetSpellTargetType( m_spellProto->BGR_one_buff_from_caster, target);
 		}
 

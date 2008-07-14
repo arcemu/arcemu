@@ -12601,10 +12601,9 @@ void ApplyNormalFixes()
 			sp->BGR_one_buff_from_caster |= SPELL_TYPE_INDEX_HIBERNATE;
 			break;
 
-//		removed by Zack Earth shield stacks 10 times. Current code does not support it
-//		case SPELL_HASH_EARTH_SHIELD:		// Earth Shield
-//			sp->BGR_one_buff_from_caster |= SPELL_TYPE_INDEX_EARTH_SHIELD;
-//			break;
+		case SPELL_HASH_EARTH_SHIELD:		// Earth Shield
+			sp->BGR_one_buff_from_caster |= SPELL_TYPE_INDEX_EARTH_SHIELD;
+			break;
 
 		case SPELL_HASH_CYCLONE:			// Cyclone
 			sp->BGR_one_buff_from_caster |= SPELL_TYPE_INDEX_CYCLONE;

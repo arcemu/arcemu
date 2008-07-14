@@ -610,7 +610,7 @@ void Unit::GiveGroupXP(Unit *pVictim, Player *PlayerInGroup)
 			plr->GiveXP( float2int32( ( ( xp * plr->getLevel() ) / total_level ) * xp_mod ), pVictim->GetGUID(), true );
 			if ( plr->GetSummon() && plr->GetSummon()->GetUInt32Value( UNIT_CREATED_BY_SPELL ) == 0 )
 			{
-				uint32 pet_xp = CalculateXpToGive( pVictim, plr->GetSummon() ) * xp_mod; // vojta: this isn't blizzlike probably but i have no idea, feel free to correct it
+				uint32 pet_xp = (int)(CalculateXpToGive( pVictim, plr->GetSummon() ) * xp_mod); // vojta: this isn't blizzlike probably but i have no idea, feel free to correct it
 				if ( pet_xp > 0 )
 					plr->GetSummon()->GiveXP( pet_xp );
 			}
