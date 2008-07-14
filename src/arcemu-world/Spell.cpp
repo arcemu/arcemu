@@ -3343,12 +3343,18 @@ uint8 Spell::CanCast(bool tolerate)
 
 			if( tolerate ) // add an extra 33% to range on final check (squared = 1.78x)
 			{
-				if( !IsInrange( m_caster->GetPositionX(), m_caster->GetPositionY(), m_caster->GetPositionZ(), target, ( ( maxRange + 2.52f ) * ( maxRange + 2.52f ) * 1.78f ) ) )
+//				float localrange=maxRange + 2.52f;
+//				float localrange=maxRange + target->GetFloatValue(UNIT_FIELD_BOUNDINGRADIUS);
+				float localrange=maxRange + target->GetModelHalfSize();
+				if( !IsInrange( m_caster->GetPositionX(), m_caster->GetPositionY(), m_caster->GetPositionZ(), target, ( localrange * localrange * 1.78f ) ) )
 					return SPELL_FAILED_OUT_OF_RANGE;
 			}
 			else
 			{
-				if( !IsInrange( m_caster->GetPositionX(), m_caster->GetPositionY(), m_caster->GetPositionZ(), target, ( ( maxRange + 2.52f ) * ( maxRange + 2.52f ) ) ) )
+//				float localrange=maxRange + 2.52f;
+//				float localrange=maxRange + target->GetFloatValue(UNIT_FIELD_BOUNDINGRADIUS);
+				float localrange=maxRange + target->GetModelHalfSize();
+				if( !IsInrange( m_caster->GetPositionX(), m_caster->GetPositionY(), m_caster->GetPositionZ(), target, ( localrange * localrange ) ) )
 					return SPELL_FAILED_OUT_OF_RANGE;
 			}
 
