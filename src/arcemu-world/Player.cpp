@@ -9609,9 +9609,10 @@ void Player::RemoveSpellTargets(uint32 Type, Unit* target)
 	{
 		Unit * pUnit = m_mapMgr ? m_mapMgr->GetUnit(m_spellIndexTypeTargets[Type]) : NULL;
 		if( pUnit != target ) //some auras can stack on target. There is no need to remove them if target is same as previous one
+		{
             pUnit->RemoveAurasByBuffIndexType(Type, GetGUID());
-
-		m_spellIndexTypeTargets[Type] = 0;
+			m_spellIndexTypeTargets[Type] = 0;
+		}
 	}
 }
 
