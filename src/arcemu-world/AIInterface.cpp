@@ -3395,6 +3395,7 @@ void AIInterface::addSpellToList(AI_Spell *sp)
 	if(!sp->spell)
 		return;
 
+	//seems stupid but spells that are not used by mobs just exist on server are used from template. In case they are used then secodn time a copy is created
 	if(sp->procCount || sp->cooldown)
 	{
 		AI_Spell * sp2 = new AI_Spell;
@@ -3402,7 +3403,7 @@ void AIInterface::addSpellToList(AI_Spell *sp)
 		sp2->procCounter=0;
 		sp2->cooldowntime=0;
 		sp2->custom_pointer = true;
-		m_spells.push_back(sp);
+		m_spells.push_back(sp2);
 	}
 	else
 		m_spells.push_back(sp);
