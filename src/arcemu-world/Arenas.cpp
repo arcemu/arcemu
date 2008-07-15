@@ -405,7 +405,8 @@ void Arena::Finish()
 		for(; itr != m_players[i].end(); itr++)
 		{
 			Player * plr = (Player *)(*itr);
-			sHookInterface.OnArenaFinish(plr, plr->m_arenaTeams[m_arenateamtype], victorious, rated_match);
+			if (plr != NULL)
+				sHookInterface.OnArenaFinish(plr, plr->m_arenaTeams[m_arenateamtype], victorious, rated_match);
 		}
 	}
 }
