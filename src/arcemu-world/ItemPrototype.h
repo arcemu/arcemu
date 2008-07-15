@@ -454,14 +454,14 @@ enum SPECIAL_ITEM_TYPE
 	ITEM_TYPE_GUNAMMO	    = 0x2,	// Bullets
     ITEM_TYPE_SOULSHARD     = 0x4,    // Soul Shards
     ITEM_TYPE_LEATHERWORK   = 0x8,    // Leatherworking Supplies
-    ITEM_TYPE_HERBALISM     = 0x10,    // Herbs
-    ITEM_TYPE_ENCHANTMENT   = 0x20,    // Enchanting Supplies
-    ITEM_TYPE_ENGINEERING   = 0x40,    // Engineering Supplies
-    ITEM_TYPE_KEYRING       = 0x80,    // Keys
-    ITEM_TYPE_GEMS          = 0x100,    // Gems
-    ITEM_TYPE_MINING        = 0x200,    // Mining Supplies
-    ITEM_TYPE_SBEQUIPMENT   = 0x400,    // Soulbound Equipment
-    ITEM_TYPE_VANITYPETS    = 0x800    // Vanity Pets
+    ITEM_TYPE_HERBALISM     = 0x20,    // Herbs
+    ITEM_TYPE_ENCHANTMENT   = 0x40,    // Enchanting Supplies
+    ITEM_TYPE_ENGINEERING   = 0x80,    // Engineering Supplies
+    ITEM_TYPE_KEYRING       = 0x100,    // Keys
+    ITEM_TYPE_GEMS          = 0x200,    // Gems
+    ITEM_TYPE_MINING        = 0x400,    // Mining Supplies
+    ITEM_TYPE_SBEQUIPMENT   = 0x800,    // Soulbound Equipment
+    ITEM_TYPE_VANITYPETS    = 0x1000    // Vanity Pets
 };
 
 enum SOCKET_GEM_COLOR
