@@ -854,7 +854,8 @@ public:
 			return false;
 
 		//Fight forms that do not use player's weapon
-		return ( s == 1 || s == 5 || s == 8 );
+		return ( s == FORM_BEAR || s == FORM_DIREBEAR || s == FORM_CAT );
+		//Shady: actually ghostwolf form doesn't use weapon too.
 	}
 	void CalcDamage();
 	uint32 GetMainMeleeDamage(uint32 AP_owerride); //i need this for windfury

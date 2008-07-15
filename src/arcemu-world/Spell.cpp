@@ -3503,16 +3503,6 @@ uint8 Spell::CanCast(bool tolerate)
 					if(target->GetEntry() != 21387)
 						return SPELL_FAILED_BAD_TARGETS;
 				}break;
-				case 44041://Chastise 1
-				case 44043://Chastise 2
-				case 44044://Chastise 3
-				case 44045://Chastise 4
-				case 44046://Chastise 5
-				case 44047://Chastise 6
-				{
-					if (p_caster->getRace()!=RACE_DWARF || p_caster->getRace()!=RACE_DRAENEI )
-						return SPELL_FAILED_SPELL_UNAVAILABLE;
-				}break;
 			}
 
 			// if the target is not the unit caster and not the masters pet
