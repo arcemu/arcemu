@@ -1299,7 +1299,7 @@ AddItemResult ItemInterface::AddItemToFreeSlot(Item *item)
 	//detect special bag item
 	if( item->GetProto()->BagFamily )
 	{
-		if( item->GetProto()->BagFamily == ITEM_TYPE_KEYRING || item->GetProto()->Class == ITEM_CLASS_KEY )
+		if( item->GetProto()->BagFamily & ITEM_TYPE_KEYRING || item->GetProto()->Class == ITEM_CLASS_KEY )
 		{
 			for(i=INVENTORY_KEYRING_START; i<INVENTORY_KEYRING_END; i++ )
 			{
@@ -1322,7 +1322,7 @@ AddItemResult ItemInterface::AddItemToFreeSlot(Item *item)
 			{
 				if(m_pItems[i])
 				{
-					if (m_pItems[i]->GetProto()->BagFamily == item->GetProto()->BagFamily)
+					if (m_pItems[i]->GetProto()->BagFamily & item->GetProto()->BagFamily)
 					{
 						if(m_pItems[i]->IsContainer())
 						{
@@ -1392,7 +1392,7 @@ uint32 ItemInterface::CalculateFreeSlots(ItemPrototype *proto)
 	{
 		if(proto->BagFamily)
 		{
-			if(proto->BagFamily == ITEM_TYPE_KEYRING || proto->Class == ITEM_CLASS_KEY)
+			if(proto->BagFamily & ITEM_TYPE_KEYRING || proto->Class == ITEM_CLASS_KEY)
 			{
 				for(uint32 i = INVENTORY_KEYRING_START; i < INVENTORY_KEYRING_END; i++)
 				{
@@ -1408,7 +1408,7 @@ uint32 ItemInterface::CalculateFreeSlots(ItemPrototype *proto)
 				{
 					if(m_pItems[i] && m_pItems[i]->IsContainer())
 					{
-						if (m_pItems[i]->GetProto()->BagFamily == proto->BagFamily)
+						if (m_pItems[i]->GetProto()->BagFamily & proto->BagFamily)
 						{
 							int8 slot = ((Container*)m_pItems[i])->FindFreeSlot();
 							if(slot != ITEM_NO_SLOT_AVAILABLE) 
@@ -1835,7 +1835,7 @@ int8 ItemInterface::CanEquipItemInSlot(int8 DstInvSlot, int8 slot, ItemPrototype
 						}
 					}
 
-					if(proto->BagFamily == GetInventoryItem(INVENTORY_SLOT_NOT_SET,slot)->GetProto()->BagFamily)
+					if(proto->BagFamily & GetInventoryItem(INVENTORY_SLOT_NOT_SET,slot)->GetProto()->BagFamily)
 					{
 						return 0;
 					}
@@ -1879,7 +1879,7 @@ int8 ItemInterface::CanEquipItemInSlot(int8 DstInvSlot, int8 slot, ItemPrototype
 						}
 					}
 					
-					if(proto->BagFamily == GetInventoryItem(INVENTORY_SLOT_NOT_SET,slot)->GetProto()->BagFamily)
+					if(proto->BagFamily & GetInventoryItem(INVENTORY_SLOT_NOT_SET,slot)->GetProto()->BagFamily)
 					{
 						return 0;
 					}
@@ -1957,7 +1957,7 @@ int8 ItemInterface::CanEquipItemInSlot(int8 DstInvSlot, int8 slot, ItemPrototype
 	case INVENTORY_KEYRING_31:
 	case INVENTORY_KEYRING_32:
 		{
-			if(proto->BagFamily == ITEM_TYPE_KEYRING || proto->Class == ITEM_CLASS_KEY)
+			if(proto->BagFamily & ITEM_TYPE_KEYRING || proto->Class == ITEM_CLASS_KEY)
 			{
 					return 0;
 			}
@@ -2788,7 +2788,7 @@ AddItemResult ItemInterface::AddItemToFreeBankSlot(Item *item)
 	{
 		if( m_pItems[i] != NULL )
 		{
-			if( m_pItems[i]->GetProto()->BagFamily == item->GetProto()->BagFamily )
+			if( m_pItems[i]->GetProto()->BagFamily & item->GetProto()->BagFamily )
 			{
 				if( m_pItems[i]->IsContainer() )
 				{
@@ -2831,7 +2831,7 @@ int8 ItemInterface::FindSpecialBag(Item *item)
 	{
 		if( m_pItems[i] != NULL )
 		{
-			if( m_pItems[i]->GetProto()->BagFamily == item->GetProto()->BagFamily )
+			if( m_pItems[i]->GetProto()->BagFamily & item->GetProto()->BagFamily )
 			{
 				return i;
 			}
@@ -2861,7 +2861,7 @@ SlotResult ItemInterface::FindFreeInventorySlot(ItemPrototype *proto)
 		//sLog.outDebug( "ItemInterface::FindFreeInventorySlot called for item %s" , proto->Name1 );
 		if( proto->BagFamily)
 		{
-			if( proto->BagFamily == ITEM_TYPE_KEYRING || proto->Class == ITEM_CLASS_KEY )
+			if( proto->BagFamily & ITEM_TYPE_KEYRING || proto->Class == ITEM_CLASS_KEY )
 			{
 				for(uint32 i = INVENTORY_KEYRING_START; i < INVENTORY_KEYRING_END; i++ )
 				{
@@ -2880,7 +2880,7 @@ SlotResult ItemInterface::FindFreeInventorySlot(ItemPrototype *proto)
 				{
 					if( m_pItems[i] != NULL && m_pItems[i]->IsContainer() )
 					{
-						if( m_pItems[i]->GetProto()->BagFamily == proto->BagFamily )
+						if( m_pItems[i]->GetProto()->BagFamily & proto->BagFamily )
 						{
 							int32 slot = static_cast< Container* >( m_pItems[i] )->FindFreeSlot();
 							if( slot != ITEM_NO_SLOT_AVAILABLE ) 
@@ -2949,7 +2949,7 @@ SlotResult ItemInterface::FindFreeBankSlot(ItemPrototype *proto)
 			{
 				if( m_pItems[i] != NULL && m_pItems[i]->IsContainer() )
 				{
-					if( m_pItems[i]->GetProto()->BagFamily == proto->BagFamily )
+					if( m_pItems[i]->GetProto()->BagFamily & proto->BagFamily )
 					{
 						int32 slot = static_cast< Container* >( m_pItems[i] )->FindFreeSlot();
 						if( slot != ITEM_NO_SLOT_AVAILABLE ) 
