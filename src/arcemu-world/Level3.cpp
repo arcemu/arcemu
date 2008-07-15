@@ -3266,7 +3266,7 @@ bool ChatHandler::HandleFixScaleCommand(const char * args, WorldSession * m_sess
 	}
 
 	pCreature->SetFloatValue(OBJECT_FIELD_SCALE_X, sc);
-	pCreature->proto->Scale = sc;
+	pCreature->GetProto()->Scale = sc;
 	WorldDatabase.Execute("UPDATE creature_proto SET scale = '%f' WHERE entry = %u", sc, pCreature->GetEntry());
 	return true;
 }

@@ -2795,7 +2795,7 @@ bool ObjectMgr::HandleInstanceReputationModifiers(Player * pPlayer, Unit * pVict
 		return false;
 
 	is_boss = 0;//static_cast< Creature* >( pVictim )->GetCreatureName() ? ((Creature*)pVictim)->GetCreatureName()->Rank : 0;
-	if( !is_boss && static_cast< Creature* >( pVictim )->proto && static_cast< Creature* >( pVictim )->proto->boss )
+	if( !is_boss && static_cast< Creature* >( pVictim )->GetProto() && static_cast< Creature* >( pVictim )->GetProto()->boss )
 		is_boss = 1;
 
 	// Apply the bonuses as normal.

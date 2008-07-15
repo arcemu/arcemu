@@ -1044,8 +1044,8 @@ bool ChatHandler::CmdSetValueField(WorldSession *m_session, uint32 field, uint32
 				}break;
 			case UNIT_NPC_FLAGS:
 				{
-					if(cr->proto)
-						WorldDatabase.Execute("UPDATE creature_proto SET npcflags = %u WHERE entry = %u", av, cr->proto->Id);
+					if(cr->GetProto())
+						WorldDatabase.Execute("UPDATE creature_proto SET npcflags = %u WHERE entry = %u", av, cr->GetProto()->Id);
 				}break;
 			}
 

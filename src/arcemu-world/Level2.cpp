@@ -1078,7 +1078,7 @@ bool ChatHandler::HandleAddAIAgentCommand(const char* args, WorldSession *m_sess
 	if(!Misc2)
 		return false;
 
-	Unit* target = m_session->GetPlayer()->GetMapMgr()->GetCreature(GET_LOWGUID_PART(m_session->GetPlayer()->GetSelection()));
+	Creature* target = m_session->GetPlayer()->GetMapMgr()->GetCreature(GET_LOWGUID_PART(m_session->GetPlayer()->GetSelection()));
 	if(!target)
 	{
 		RedSystemMessage(m_session, "You have to select a Creature!");
@@ -1102,9 +1102,11 @@ bool ChatHandler::HandleAddAIAgentCommand(const char* args, WorldSession *m_sess
 	sp->procCount=0;
 	sp->procCounter=0;
 	sp->cooldowntime=0;
-	sp->custom_pointer=false;
 	sp->minrange = GetMinRange(dbcSpellRange.LookupEntry(dbcSpell.LookupEntry(atoi(spellId))->rangeIndex));
 	sp->maxrange = GetMaxRange(dbcSpellRange.LookupEntry(dbcSpell.LookupEntry(atoi(spellId))->rangeIndex));
+
+	target->GetProto()->spells.push_back(sp);
+
 	if(sp->agent == AGENT_CALLFORHELP)
 		target->GetAIInterface()->m_canCallForHelp = true;
 	else if(sp->agent == AGENT_FLEE)

@@ -392,8 +392,8 @@ void Object::_BuildMovementUpdate(ByteBuffer * data, uint8 flags, uint32 flags2,
 	ByteBuffer *splinebuf = (m_objectTypeId == TYPEID_UNIT) ? target->GetAndRemoveSplinePacket(GetGUID()) : 0;
 	*data << (uint8)flags;
 
-	Player * pThis = 0;
-	if(m_objectTypeId == TYPEID_PLAYER)
+	Player * pThis = NULL;
+	if(GetTypeId() == TYPEID_PLAYER)
 	{
 		pThis = static_cast< Player* >( this );
 		if(target == this)
@@ -402,25 +402,30 @@ void Object::_BuildMovementUpdate(ByteBuffer * data, uint8 flags, uint32 flags2,
 			pThis->UpdateLastSpeeds();
 		}
 	}
+	Creature * uThis = NULL;
+	if (GetTypeId() == TYPEID_UNIT)
+	{
+		uThis = static_cast<Creature*>(this);
+	}
 
 	if (flags & 0x20)
 	{
 		if(pThis && pThis->m_TransporterGUID != 0)
 			flags2 |= 0x200;
-		else if(m_objectTypeId==TYPEID_UNIT && ((Creature*)this)->m_transportGuid != 0 && ((Creature*)this)->m_transportPosition != NULL)
+		else if(uThis != NULL && uThis->m_transportGuid != 0 && uThis->m_transportPosition != NULL)
 			flags2 |= 0x200;
 
 		if(splinebuf)
 		{
 			flags2 |= 0x08000001;	   //1=move forward
-			if(GetTypeId() == TYPEID_UNIT)
+			if(uThis != NULL)
 			{
-				if(static_cast<Unit*>(this)->GetAIInterface()->m_moveRun == false)
+				if(uThis->GetAIInterface()->m_moveRun == false)
 					flags2 |= 0x100;	//100=walk
 			}			
 		}
 
-		if(GetTypeId() == TYPEID_UNIT)
+		if(uThis != NULL)
 		{
 			//		 Don't know what this is, but I've only seen it applied to spirit healers.
 			//		 maybe some sort of invisibility flag? :/
@@ -435,13 +440,13 @@ void Object::_BuildMovementUpdate(ByteBuffer * data, uint8 flags, uint32 flags2,
 				}break;
 			}
 		
-			if(static_cast<Unit*>(this)->GetAIInterface()->IsFlying())
+			if(uThis->GetAIInterface()->IsFlying())
 //				flags2 |= 0x800; //in 2.3 this is some state that i was not able to decode yet
 				flags2 |= 0x400; //Zack : Teribus the Cursed had flag 400 instead of 800 and he is flying all the time 
-			if(static_cast<Creature*>(this)->proto && static_cast<Creature*>(this)->proto->extra_a9_flags)
+			if(uThis->GetProto() && uThis->GetProto()->extra_a9_flags)
 			{
 				if(!(flags2 & 0x0200))
-					flags2 |= static_cast<Creature*>(this)->proto->extra_a9_flags;
+					flags2 |= uThis->GetProto()->extra_a9_flags;
 			}
 /*			if(GetGUIDHigh() == HIGHGUID_WAYPOINT)
 			{
@@ -494,12 +499,12 @@ void Object::_BuildMovementUpdate(ByteBuffer * data, uint8 flags, uint32 flags2,
 				*data << pThis->m_TransporterX << pThis->m_TransporterY << pThis->m_TransporterZ << pThis->m_TransporterO;
 				*data << pThis->m_TransporterTime;
 			}
-			else if(m_objectTypeId==TYPEID_UNIT && ((Creature*)this)->m_transportPosition != NULL)
+			else if(uThis != NULL && uThis->m_transportPosition != NULL)
 			{
-				*data << ((Creature*)this)->m_transportGuid;
+				*data << uThis->m_transportGuid;
 				*data << uint32(HIGHGUID_TYPE_TRANSPORTER);
-				*data << ((Creature*)this)->m_transportPosition->x << ((Creature*)this)->m_transportPosition->y << 
-					((Creature*)this)->m_transportPosition->z << ((Creature*)this)->m_transportPosition->o;
+				*data << uThis->m_transportPosition->x << uThis->m_transportPosition->y << 
+					uThis->m_transportPosition->z << uThis->m_transportPosition->o;
 				*data << float(0.0f);
 			}
 		}

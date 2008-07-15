@@ -918,13 +918,13 @@ void Spell::SpellEffectDummy(uint32 i) // Dummy(Scripted events)
 					Item * it=objmgr.CreateItem(item,p_caster);  
 					it->SetUInt32Value( ITEM_FIELD_STACK_COUNT, count);
 					p_caster->GetItemInterface()->SafeAddItem(it,slotresult.ContainerSlot, slotresult.Slot);
-					creature->Despawn(3500,creature->proto->RespawnTime);
+					creature->Despawn(3500,creature->GetProto()->RespawnTime);
 				}
 				else
 				{
 					add->SetCount(add->GetUInt32Value(ITEM_FIELD_STACK_COUNT) + count);
 					add->m_isDirty = true;
-					creature->Despawn(3500,creature->proto->RespawnTime);
+					creature->Despawn(3500,creature->GetProto()->RespawnTime);
 				}
 			}
 		}break;
@@ -3111,7 +3111,7 @@ void Spell::SpellEffectSummonWild(uint32 i)  // Summon Wild
 		p->Load(proto, x, y, z);
 		p->SetZoneId( m_caster->GetZoneId() );
 
-		if ( p->proto && p->proto->Faction == 35 )
+		if ( p->GetProto() && p->GetProto()->Faction == 35 )
 		{
 			p->SetUInt64Value( UNIT_FIELD_SUMMONEDBY, m_caster->GetGUID() );
 			p->SetUInt64Value( UNIT_FIELD_CREATEDBY, m_caster->GetGUID() );
@@ -3534,7 +3534,7 @@ void Spell::SpellEffectTameCreature(uint32 i)
 	pPet->CreateAsSummon(tame->GetEntry(), tame->GetCreatureName(), tame, static_cast<Unit*>(p_caster), NULL, 2, 0);
 	//tame->SafeDelete();
 	//delete tame;
-	tame->Despawn(0,tame->proto? tame->proto->RespawnTime:0);
+	tame->Despawn(0,tame->GetProto()? tame->GetProto()->RespawnTime:0);
 }
 
 void Spell::SpellEffectSummonPet(uint32 i) //summon - pet

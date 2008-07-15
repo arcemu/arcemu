@@ -427,7 +427,6 @@ AI_Spell * Pet::CreateAISpell(SpellEntry * info)
 		sp->spellType = STYPE_BUFF;
 
 	sp->autocast_type = GetAutoCastTypeForSpell(info);
-	sp->custom_pointer = false;
 	sp->procCount=0;
 	m_AISpellStore[info->Id] = sp;
 	return sp;

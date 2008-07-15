@@ -184,7 +184,6 @@ struct AI_Spell
 	float minrange;
 	float maxrange;
 	uint32 autocast_type;
-	bool custom_pointer;
 };
 
 bool isGuard(uint32 id);

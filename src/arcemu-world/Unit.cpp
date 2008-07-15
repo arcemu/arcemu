@@ -4352,7 +4352,7 @@ void Unit::Emote(EmoteType emote)
 void Unit::SendChatMessageToPlayer(uint8 type, uint32 lang, const char *msg, Player *plr)
 {
 	size_t UnitNameLength = 0, MessageLength = 0;
-	CreatureInfo *ci = (m_objectTypeId == TYPEID_UNIT) ? ((Creature*)this)->creature_info : NULL;
+	CreatureInfo *ci = (m_objectTypeId == TYPEID_UNIT) ? ((Creature*)this)->GetCreatureName() : NULL;
 
 	if(ci == NULL || plr == NULL)
 		return;
@@ -4403,7 +4403,7 @@ void Unit::SendChatMessageAlternateEntry(uint32 entry, uint8 type, uint32 lang, 
 void Unit::SendChatMessage(uint8 type, uint32 lang, const char *msg)
 {
 	size_t UnitNameLength = 0, MessageLength = 0;
-	CreatureInfo *ci = (m_objectTypeId == TYPEID_UNIT) ? ((Creature*)this)->creature_info : NULL;
+	CreatureInfo *ci = (m_objectTypeId == TYPEID_UNIT) ? ((Creature*)this)->GetCreatureName() : NULL;
 
 	if(ci == NULL)
 		return;
@@ -6522,8 +6522,8 @@ void Unit::EventModelChange()
 	if( newmodelhalfsize )
 	{
 		ModelHalfSize = newmodelhalfsize->HalfSize;
-//		if( IsCreature() && static_cast<Creature*>(this)->proto )
-//			ModelHalfSize *=  static_cast<Creature*>(this)->proto->BoundingRadius;
+//		if( IsCreature() && static_cast<Creature*>(this)->GetProto() )
+//			ModelHalfSize *=  static_cast<Creature*>(this)->GetProto()->BoundingRadius;
 	}
 	else
 		ModelHalfSize = 1.0f; //baaad, but it happens :(

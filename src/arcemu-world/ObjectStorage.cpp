@@ -152,17 +152,18 @@ void ObjectMgr::LoadExtraCreatureProtoStuff()
 	}
 
 	// Load AI Agents
-	QueryResult * result = WorldDatabase.Query( "SELECT * FROM ai_agents" );
-	CreatureProto * cn;
-
-	if( result != NULL )
+	if(Config.MainConfig.GetBoolDefault("Server", "LoadAIAgents", true))
 	{
-		AI_Spell *sp;
-		SpellEntry * spe;
-		uint32 entry;
+		QueryResult * result = WorldDatabase.Query( "SELECT * FROM ai_agents" );
+		CreatureProto * cn;
 
-		if(Config.MainConfig.GetBoolDefault("Server", "LoadAIAgents", true))
+		if( result != NULL )
 		{
+			AI_Spell *sp;
+			SpellEntry * spe;
+			uint32 entry;
+
+
 			do
 			{
 				Field *fields = result->Fetch();
@@ -183,23 +184,18 @@ void ObjectMgr::LoadExtraCreatureProtoStuff()
 				sp->procCount = fields[4].GetUInt32();
 				sp->spell = spe;
 				sp->spellType = fields[6].GetUInt32();
-//				sp->spelltargetType = fields[7].GetUInt32();
+	//				sp->spelltargetType = fields[7].GetUInt32();
 				sp->cooldown = fields[8].GetUInt32();
 				sp->floatMisc1 = fields[9].GetFloat();
 				sp->autocast_type=(uint32)-1;
-				sp->custom_pointer=false;
 				sp->cooldowntime=getMSTime();
 				sp->procCounter=0;
-
-		/*		if (!sp->procCountDB) 
-					sp->procCount = uint32(-1);
-				else sp->procCount = sp->procCountDB;*/
 				sp->Misc2 = fields[10].GetUInt32();
 				if(sp->agent == AGENT_SPELL)
 				{
 					if(!sp->spell)
 					{
-						//printf("SpellId %u in ai_agent for %u is invalid.\n", (unsigned int)fields[5].GetUInt32(), (unsigned int)sp->entryId);
+						sLog.outDebug("SpellId %u in ai_agent for %u is invalid.\n", (unsigned int)fields[5].GetUInt32(), (unsigned int)sp->entryId);
 						delete sp;
 						continue;
 					}
@@ -207,7 +203,7 @@ void ObjectMgr::LoadExtraCreatureProtoStuff()
 					if(sp->spell->Effect[0] == SPELL_EFFECT_LEARN_SPELL || sp->spell->Effect[1] == SPELL_EFFECT_LEARN_SPELL ||
 						sp->spell->Effect[2] == SPELL_EFFECT_LEARN_SPELL)
 					{
-						//printf("Teaching spell %u in ai_agent for %u\n", (unsigned int)fields[5].GetUInt32(), (unsigned int)sp->entryId);
+						sLog.outDebug("Teaching spell %u in ai_agent for %u\n", (unsigned int)fields[5].GetUInt32(), (unsigned int)sp->entryId);
 						delete sp;
 						continue;
 					}
@@ -285,9 +281,9 @@ void ObjectMgr::LoadExtraCreatureProtoStuff()
 					cn->spells.push_back(sp);
 				}
 			} while( result->NextRow() );
-		}
 
-		delete result;
+			delete result;
+		}
 	}
 }
 

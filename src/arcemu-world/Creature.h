@@ -264,6 +264,7 @@ public:
 	ARCEMU_INLINE uint32 GetItemAmountBySlot(uint32 slot) { return m_SellItems->at(slot).amount; }
 
 	ARCEMU_INLINE bool HasItems() { return ((m_SellItems != NULL) ? true : false); }
+	ARCEMU_INLINE CreatureProto* GetProto() { return proto; }
 
 	int32 GetSlotByItemId(uint32 itemid)
 	{
@@ -505,11 +506,8 @@ public:
 	void CallScriptUpdate();
 
 	uint32 m_TaxiNode;
-	CreatureInfo *creature_info;
-	ARCEMU_INLINE CreatureInfo *GetCreatureName()
-	{
-		return creature_info; 
-	}
+	
+	ARCEMU_INLINE CreatureInfo *GetCreatureName() { return creature_info; }
 	ARCEMU_INLINE void SetCreatureName(CreatureInfo *ci) { creature_info = ci; }
 	ARCEMU_INLINE Trainer* GetTrainer() { return mTrainer; }
 	void RegenerateFocus();
@@ -524,7 +522,7 @@ public:
 	WayPoint * CreateWaypointStruct();
 	uint32 spawnid;
 	uint32 original_emotestate;
-	CreatureProto * proto;
+	
 	CreatureSpawn * m_spawn;
 
 	void AISpellUpdate();
@@ -556,6 +554,8 @@ public:
 	LocationVector * m_transportPosition;
 	uint32 m_transportGuid;
 protected:
+	CreatureInfo *creature_info;
+	CreatureProto * proto;
 	CreatureAIScript *_myScriptClass;
 	bool m_limbostate;
 	Trainer* mTrainer;

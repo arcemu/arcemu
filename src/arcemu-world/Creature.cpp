@@ -139,7 +139,7 @@ void Creature::Update( uint32 p_time )
 	if(m_corpseEvent)
 	{
 		sEventMgr.RemoveEvents(this);
-		if(this->proto==NULL)
+		if(this->GetProto()==NULL)
 			sEventMgr.AddEvent(this, &Creature::OnRemoveCorpse, EVENT_CREATURE_REMOVE_CORPSE, 1000, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
 		else if (this->creature_info->Rank == ELITE_WORLDBOSS)
 			sEventMgr.AddEvent(this, &Creature::OnRemoveCorpse, EVENT_CREATURE_REMOVE_CORPSE, TIME_CREATURE_REMOVE_BOSSCORPSE, 1,EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
@@ -175,7 +175,7 @@ void Creature::OnRemoveCorpse()
 
 		sLog.outDetail("Removing corpse of "I64FMT"...", GetGUID());
 	   
-			if((GetMapMgr()->GetMapInfo() && GetMapMgr()->GetMapInfo()->type == INSTANCE_RAID && this->proto && this->proto->boss) || m_noRespawn)
+			if((GetMapMgr()->GetMapInfo() && GetMapMgr()->GetMapInfo()->type == INSTANCE_RAID && this->GetProto() && this->GetProto()->boss) || m_noRespawn)
 			{
 				RemoveFromWorld(false, true);
 			}
@@ -1464,7 +1464,7 @@ void Creature::OnPushToWorld()
 			CastSpell(this, sp, 0);
 		}
 		//generic ai stuff
-		if ( this->proto->AISpells[0] != 0 )
+		if ( this->GetProto()->AISpells[0] != 0 )
 			sEventMgr.AddEvent(this, &Creature::AISpellUpdate, EVENT_CREATURE_AISPELL, 500, 0, 0);
 	}
 	LoadScript();
@@ -1541,7 +1541,7 @@ void Creature::AISpellUpdate()
 	}
 	else //guess we can cast a spell now
 	{
-		if (!(this->proto->AISpellsFlags & CREATURE_AI_FLAG_CASTOUTOFCOMBAT) && !CombatStatus.IsInCombat())
+		if (!(this->GetProto()->AISpellsFlags & CREATURE_AI_FLAG_CASTOUTOFCOMBAT) && !CombatStatus.IsInCombat())
 			return;
 
 		bool random_chosen=false;
@@ -1549,19 +1549,19 @@ void Creature::AISpellUpdate()
 		//calculate global cooldown
 		int32 GCD=RandomUInt(2000)+5000;
 
-		if (this->proto->AISpellsFlags & CREATURE_AI_FLAG_PLAYERGCD)
+		if (this->GetProto()->AISpellsFlags & CREATURE_AI_FLAG_PLAYERGCD)
 			GCD=1500;
 
 		//do we have a spell to use?
 		for (int i=0; i<4; i++)
 		{
-			if (this->proto->AISpellsFlags & CREATURE_AI_FLAG_RANDOMCAST && !random_chosen)
+			if (this->GetProto()->AISpellsFlags & CREATURE_AI_FLAG_RANDOMCAST && !random_chosen)
 			{
 				//find the max spell
 				uint32 maxindex=0;
 				for (int j=0; j<4; j++)
 				{
-					if (this->proto->AISpells[j]==0)
+					if (this->GetProto()->AISpells[j]==0)
 						break;
 					else
 						maxindex=j;
@@ -1574,13 +1574,13 @@ void Creature::AISpellUpdate()
 				random_chosen=true;
 			}
 
-			if (this->proto->AISpells[i]==0)
+			if (this->GetProto()->AISpells[i]==0)
 				continue;
 
 			if (AISpellsCooldown[i]==0) //we can cast?
 			{
 				//get the spell
-				SpellEntry* newspell=dbcSpell.LookupEntry(this->proto->AISpells[i]);
+				SpellEntry* newspell=dbcSpell.LookupEntry(this->GetProto()->AISpells[i]);
 				SpellCastTime* casttime=dbcSpellCastTime.LookupEntry(newspell->CastingTimeIndex);
 				Spell* spell=new Spell(this, newspell, false, 0);
 				SpellCastTargets t(0);

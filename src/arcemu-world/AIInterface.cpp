@@ -161,7 +161,6 @@ void AIInterface::Init(Unit *un, AIType at, MovementType mt)
 AIInterface::~AIInterface()
 {
 	for(list<AI_Spell*>::iterator itr = m_spells.begin(); itr != m_spells.end(); ++itr)
-		if((*itr)->custom_pointer)
 			delete (*itr);
 }
 
@@ -345,8 +344,8 @@ void AIInterface::HandleEvent(uint32 event, Unit* pUnit, uint32 misc1)
 				// Remount if mounted
 				if(m_Unit->GetTypeId() == TYPEID_UNIT)
 				{
-					if( static_cast< Creature* >( m_Unit )->proto )
-						m_Unit->SetUInt32Value( UNIT_FIELD_MOUNTDISPLAYID, static_cast< Creature* >( m_Unit )->proto->MountedDisplayID );
+					if( static_cast< Creature* >( m_Unit )->GetProto() )
+						m_Unit->SetUInt32Value( UNIT_FIELD_MOUNTDISPLAYID, static_cast< Creature* >( m_Unit )->GetProto()->MountedDisplayID );
 				}
 			}break;
 		case EVENT_DAMAGETAKEN:
@@ -3392,23 +3391,14 @@ AI_Spell *AIInterface::getSpell()
 
 void AIInterface::addSpellToList(AI_Spell *sp)
 {
-	if(!sp->spell)
+	if(!sp || !sp->spell)
 		return;
 
-	//seems stupid but spells that are not used by mobs just exist on server are used from template. In case they are used then secodn time a copy is created
-	if(sp->procCount || sp->cooldown)
-	{
-		AI_Spell * sp2 = new AI_Spell;
-		memcpy(sp2, sp, sizeof(AI_Spell));
-		sp2->procCounter=0;
-		sp2->cooldowntime=0;
-		sp2->custom_pointer = true;
-		m_spells.push_back(sp2);
-	}
-	else
-		m_spells.push_back(sp);
+	AI_Spell * sp2 = new AI_Spell;
+	memcpy(sp2, sp, sizeof(AI_Spell));
+	m_spells.push_back(sp2);
 
-	m_Unit->m_SpellList.insert(sp->spell->Id); // add to list
+	m_Unit->m_SpellList.insert(sp2->spell->Id); // add to list
 }
 
 uint32 AIInterface::getThreatByGUID(uint64 guid)
