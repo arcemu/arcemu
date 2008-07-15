@@ -147,6 +147,9 @@ Object::~Object( )
 	if(m_objectTypeId != TYPEID_ITEM)
 		ASSERT(!m_inQueue);
 
+	if ( IsCreature() && static_cast< Creature * >( this )->GetScript() != NULL )
+		static_cast< Creature * >( this )->GetScript()->Destroy();
+
 	if (this->IsInWorld() && m_objectTypeId != TYPEID_ITEM && m_objectTypeId != TYPEID_CONTAINER)
 	{
 		this->RemoveFromWorld(false);
