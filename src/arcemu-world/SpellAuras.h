@@ -605,6 +605,7 @@ public:
 	void SpellAuraModPossessPet(bool apply);
 	void SpellAuraModHealingByAP(bool apply);
 	void SpellAuraModSpellDamageByAP(bool apply);
+	void SpellAuraMeleeHaste(bool apply);
 	void EventPeriodicDrink(uint32 amount);
 
 	void SendModifierLog(int32 ** m,int32 v,uint64 mask,uint8 type,bool pct = false);

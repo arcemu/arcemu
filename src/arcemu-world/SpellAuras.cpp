@@ -212,7 +212,7 @@ pSpellAura SpellAuraHandler[TOTAL_SPELL_AURAS]={
 		&Aura::SpellAuraIncreaseRating,//missing = 189 //Apply Aura: Increases Rating
 		&Aura::SpellAuraIncreaseRepGainPct,//SPELL_AURA_MOD_FACTION_REPUTATION_GAIN //used // Apply Aura: Increases Reputation Gained by % //http://www.thottbot.com/?sp=30754
 		&Aura::SpellAuraLimitSpeed,//missing = 191 //used // noname //http://www.thottbot.com/?sp=29894
-		&Aura::SpellAuraNULL,//192 Apply Aura: Melee Slow %
+		&Aura::SpellAuraMeleeHaste,//192 Apply Aura: Melee Slow %
 		&Aura::SpellAuraIncreaseTimeBetweenAttacksPCT,//193 Apply Aura: Increase Time Between Attacks (Melee, Ranged and Spell) by %
 		&Aura::SpellAuraNULL,//194 //&Aura::SpellAuraIncreaseSpellDamageByInt,//194 Apply Aura: Increase Spell Damage by % of Intellect (All)
 		&Aura::SpellAuraNULL,//195 //&Aura::SpellAuraIncreaseHealingByInt,//195 Apply Aura: Increase Healing by % of Intellect
@@ -7791,6 +7791,48 @@ void Aura::SpellAuraIncreaseTimeBetweenAttacksPCT(bool apply)
 	int32 val =  (apply) ? mod->m_amount : -mod->m_amount;
 	float pct_value = -val/100.0f;
 	m_target->ModFloatValue(UNIT_MOD_CAST_SPEED,pct_value);
+}
+
+void Aura::SpellAuraMeleeHaste(bool apply)
+{
+	if( mod->m_amount < 0 )
+		SetNegative();
+	else 
+		SetPositive();
+	
+	if( m_target->IsPlayer() )
+	{
+		if( apply )
+		{
+			static_cast< Player* >( m_target )->m_meleeattackspeedmod += mod->m_amount;
+		}
+		else
+		{
+			static_cast< Player* >( m_target )->m_meleeattackspeedmod -= mod->m_amount;
+		}
+		static_cast< Player* >(m_target)->UpdateAttackSpeed();
+	}
+	else
+	{
+		if( apply )
+		{
+			mod->fixed_amount[0] = m_target->GetModPUInt32Value( UNIT_FIELD_BASEATTACKTIME, mod->m_amount );
+			mod->fixed_amount[1] = m_target->GetModPUInt32Value( UNIT_FIELD_BASEATTACKTIME_01, mod->m_amount );
+
+			if( (int32)m_target->GetUInt32Value ( UNIT_FIELD_BASEATTACKTIME ) <= mod->fixed_amount[0] )
+				mod->fixed_amount[0] = m_target->GetUInt32Value ( UNIT_FIELD_BASEATTACKTIME );
+			if( (int32)m_target->GetUInt32Value ( UNIT_FIELD_BASEATTACKTIME_01 ) <= mod->fixed_amount[1] )
+				mod->fixed_amount[1] = m_target->GetUInt32Value ( UNIT_FIELD_BASEATTACKTIME_01 );
+
+			m_target->ModUnsigned32Value( UNIT_FIELD_BASEATTACKTIME, -mod->fixed_amount[0] );
+			m_target->ModUnsigned32Value( UNIT_FIELD_BASEATTACKTIME_01, -mod->fixed_amount[1] );
+		}
+		else
+		{
+			m_target->ModUnsigned32Value( UNIT_FIELD_BASEATTACKTIME, mod->fixed_amount[0] );
+			m_target->ModUnsigned32Value( UNIT_FIELD_BASEATTACKTIME_01, mod->fixed_amount[1] );
+		}
+	}
 }
 
 /*
