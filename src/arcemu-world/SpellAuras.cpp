@@ -2348,16 +2348,18 @@ void Aura::EventPeriodicHeal( uint32 amount )
 
 	int32 bonus = 0;
 
-	if( c != NULL && c->IsPlayer() )
-	{
-		for(uint32 a = 0; a < 6; a++)
-			bonus += float2int32( static_cast< Player* >( c )->SpellHealDoneByAttribute[a][m_spellProto->School] * static_cast< Player* >( c )->GetUInt32Value( UNIT_FIELD_STAT0 + a) );
-
+	if( c != NULL)
+	{ 
 		bonus += c->HealDoneMod[GetSpellProto()->School] + m_target->HealTakenMod[m_spellProto->School];
-		//Druid Tree of Life form. it should work not like this, but it's better then nothing.
-		if( static_cast< Player* >( c )->IsInFeralForm() && static_cast< Player* >( c )->GetShapeShift() == FORM_TREE)
-			bonus += float2int32( 0.25f * static_cast< Player* >( c )->GetUInt32Value( UNIT_FIELD_STAT4 ) );
+		if( c->IsPlayer() )
+		{
+			for(uint32 a = 0; a < 6; a++)
+				bonus += float2int32( static_cast< Player* >( c )->SpellHealDoneByAttribute[a][m_spellProto->School] * static_cast< Player* >( c )->GetUInt32Value( UNIT_FIELD_STAT0 + a) );
 
+			//Druid Tree of Life form. it should work not like this, but it's better then nothing.
+			if( static_cast< Player* >( c )->IsInFeralForm() && static_cast< Player* >( c )->GetShapeShift() == FORM_TREE)
+				bonus += float2int32( 0.25f * static_cast< Player* >( c )->GetUInt32Value( UNIT_FIELD_STAT4 ) );
+		}
 		//Spell Coefficient
 		if( m_spellProto->OTspell_coef_override >= 0 ) //In case we have forced coefficients
 			bonus = float2int32( float( bonus ) * m_spellProto->OTspell_coef_override );
@@ -2400,15 +2402,16 @@ void Aura::EventPeriodicHeal( uint32 amount )
 	int amp = m_spellProto->EffectAmplitude[mod->i];
 	if( !amp )
 		amp = static_cast< EventableObject* >( this )->event_GetEventPeriod( EVENT_AURA_PERIODIC_HEAL );
-
-	if( GetDuration() )
-	{
-		int ticks = ( amp > 0 ) ? GetDuration() / amp : 0;
-		bonus = ( ticks > 0 ) ? bonus / ticks : 0;
+//	if(m_spellProto->NameHash != SPELL_HASH_HEALING_STREAM)// Healing Stream is not a HOT
+	{  
+		if( GetDuration() )
+		{
+			int ticks = ( amp > 0 ) ? GetDuration() / amp : 0;
+			bonus = ( ticks > 0 ) ? bonus / ticks : 0;
+		}
+		//removed by Zack : Why is this directly setting bonus to 0 ? It's not logical
+//		else bonus = 0;
 	}
-	else
-		bonus = 0;
-
     //Downranking
     if( c != NULL && c->IsPlayer() )
     {
@@ -7407,6 +7410,13 @@ void Aura::SpellAuraModHealingByAP(bool apply)
 
 	if(m_target->IsPlayer())
 	{
+		for(uint32 x=0;x<7;x++)
+		{
+			if (mod->m_miscValue  & (((uint32)1)<<x) )
+			{
+				m_target->HealDoneMod[x] += val;
+			}
+		}
 		m_target->ModUnsigned32Value(PLAYER_FIELD_MOD_HEALING_DONE_POS, val);
 		static_cast< Player* >( m_target )->UpdateChanceFields();
 	}

@@ -4609,6 +4609,11 @@ void Spell::SpellEffectSummonTotem(uint32 i) // Summon Totem
 	//added by Zack : Some shaman talents are casted on player but it should be inherited or something by totems
 	pTotem->InheritSMMods(p_caster);
 
+	// Totems get spell damage and healing bonus from the Shaman
+	for(int school=0;school<7;school++){
+		pTotem->ModDamageDone[school] = (int32)(p_caster->GetUInt32Value( PLAYER_FIELD_MOD_DAMAGE_DONE_POS + school ) - (int32)p_caster->GetUInt32Value( PLAYER_FIELD_MOD_DAMAGE_DONE_NEG + school ));
+		pTotem->HealDoneMod[school] = p_caster->HealDoneMod[school];
+	}
 	// Set up AI, depending on our spells.
 	uint32 j;
 	for( j = 0; j < 3; ++j )
@@ -5767,6 +5772,10 @@ void Spell::SpellEffectEnchantHeldItem( uint32 i )
 	switch( GetProto()->NameHash )
 	{
 		case SPELL_HASH_WINDFURY_TOTEM_EFFECT: // Windfury Totem Effect
+		{   
+			Duration = 10;
+		}
+		case SPELL_HASH_FLAMETONGUE_TOTEM_EFFECT: // Flametongue Totem Effect
 		{   
 			Duration = 10;
 		}
