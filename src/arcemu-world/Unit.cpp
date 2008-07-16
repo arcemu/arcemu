@@ -257,7 +257,7 @@ Unit::Unit()
 		DamageTakenMod[x] = 0;
 		DamageDoneModPCT[x]= 0;
 		SchoolCastPrevent[x]=0;
-		DamageTakenPctMod[x] = 1;
+		DamageTakenPctMod[x] = 0;
 		SpellCritChanceSchool[x] = 0;
 		PowerCostMod[x] = 0;
 		PowerCostPctMod[x] = 0; // armor penetration & spell penetration
@@ -2909,32 +2909,19 @@ else
 			if( ability && ability->MechanicsType == MECHANIC_BLEEDING )
 				disable_dR = true; 
 			
-			//float summaryPCTmod = (pVictim->DamageTakenPctMod[dmg.school_type] / 100.0f) + (GetDamageDonePctMod( dmg.school_type ) / 100.0f) + 1;
-
 			if( pct_dmg_mod > 0 )
 				dmg.full_damage = float2int32( dmg.full_damage *  ( float( pct_dmg_mod) / 100.0f ) );
 
 			dmg.full_damage += add_damage;
 
-			//a bit dirty fix
-			/*if( ability != NULL && ability->NameHash == SPELL_HASH_SHRED )
-			{
-				summaryPCTmod *= 1 + pVictim->ModDamageTakenByMechPCT[MECHANIC_BLEEDING];
-			}*/
+			dmg.full_damage += float2int32( dmg.full_damage * pVictim->DamageTakenPctMod[ dmg.school_type ] );
+			dmg.full_damage += float2int32( dmg.full_damage * DamageDoneModPCT[dmg.school_type] );
 
-			//dmg.full_damage = (dmg.full_damage < 0) ? 0 : float2int32(dmg.full_damage*summaryPCTmod);
-
-			// burlex: fixed this crap properly
-			float inital_dmg = float(dmg.full_damage);
-			float dd_mod = GetDamageDonePctMod( dmg.school_type );
-			if( pVictim->DamageTakenPctMod[dmg.school_type] != 1.0f )
-				dmg.full_damage += float2int32( ( inital_dmg * pVictim->DamageTakenPctMod[ dmg.school_type ] ) - inital_dmg );
-
-			if( dd_mod > 1.0f )
-				dmg.full_damage += float2int32( ( inital_dmg * dd_mod) - inital_dmg );
+			if( dmg.school_type != SCHOOL_NORMAL )
+				dmg.full_damage += float2int32( dmg.full_damage * (GetDamageDonePctMod( dmg.school_type ) - 1) );
 
 			if( ability != NULL && ability->NameHash == SPELL_HASH_SHRED )
-				dmg.full_damage += float2int32( ( inital_dmg * (1 + pVictim->ModDamageTakenByMechPCT[MECHANIC_BLEEDING]) ) - inital_dmg );
+				dmg.full_damage += float2int32( dmg.full_damage *  pVictim->ModDamageTakenByMechPCT[MECHANIC_BLEEDING] );
 
 			//pet happiness state dmg modifier
 			if( IsPet() && !static_cast<Pet*>(this)->IsSummon() )
@@ -3044,9 +3031,9 @@ else
 					dmg.full_damage += dmgbonus;
 
 					if( weapon_damage_type == RANGED )
-						dmg.full_damage = dmg.full_damage - float2int32(dmg.full_damage * CritRangedDamageTakenPctMod[dmg.school_type]) / 100;
+						dmg.full_damage = dmg.full_damage - float2int32(dmg.full_damage * CritRangedDamageTakenPctMod[dmg.school_type]);
 					else 
-						dmg.full_damage = dmg.full_damage - float2int32(dmg.full_damage * CritMeleeDamageTakenPctMod[dmg.school_type]) / 100;
+						dmg.full_damage = dmg.full_damage - float2int32(dmg.full_damage * CritMeleeDamageTakenPctMod[dmg.school_type]);
 
 					if(pVictim->IsPlayer())
 					{
@@ -4370,10 +4357,10 @@ int32 Unit::GetSpellDmgBonus(Unit *pVictim, SpellEntry *spellInfo,int32 base_dmg
 	}
 //------------------------------by school----------------------------------------------
 	float summaryPCTmod = caster->GetDamageDonePctMod(school)-1; //value is initialized with 1
-	summaryPCTmod += pVictim->DamageTakenPctMod[school]-1;//value is initialized with 1
+	summaryPCTmod += pVictim->DamageTakenPctMod[school];
 	summaryPCTmod += caster->DamageDoneModPCT[school];	// BURLEX FIXME
 	summaryPCTmod += pVictim->ModDamageTakenByMechPCT[spellInfo->MechanicsType];
-	int32 res = (int32)((base_dmg+bonus_damage)*summaryPCTmod + bonus_damage); // 1.x*(base_dmg+bonus_damage) == 1.0*base_dmg + 1.0*bonus_damage + 0.x*(base_dmg+bonus_damage) -> we add the returned value to base damage so we do not add it here (function returns bonus only)
+	int32 res = (int32)((base_dmg+bonus_damage)*summaryPCTmod + bonus_damage);
 return res;
 }
 

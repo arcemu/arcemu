@@ -6578,10 +6578,10 @@ void Aura::SpellAuraModMeleeDamageTakenPct(bool apply)
 			SetNegative();
 		else
 			SetPositive();
-		m_target->DamageTakenPctMod[0]+=mod->m_amount;
+		m_target->DamageTakenPctMod[0]+=mod->m_amount/100.0f;
 	}
 	else
-		m_target->DamageTakenPctMod[0]-=mod->m_amount;
+		m_target->DamageTakenPctMod[0]-=mod->m_amount/100.0f;
 }
 
 void Aura::SpellAuraRAPAttackerBonus(bool apply)
@@ -7983,7 +7983,7 @@ void Aura::SpellAuraReduceCritMeleeAttackDmg(bool apply)
 
 	for(uint32 x=1;x<7;x++)
 		if (mod->m_miscValue & (((uint32)1)<<x) )
-			m_target->CritMeleeDamageTakenPctMod[x] += val;
+			m_target->CritMeleeDamageTakenPctMod[x] += val/100.0f;
 }
 
 void Aura::SpellAuraReduceCritRangedAttackDmg(bool apply)
@@ -7999,7 +7999,7 @@ void Aura::SpellAuraReduceCritRangedAttackDmg(bool apply)
 
 	for(uint32 x=1;x<7;x++)
 		if (mod->m_miscValue & (((uint32)1)<<x) )
-			m_target->CritRangedDamageTakenPctMod[x] += val;
+			m_target->CritRangedDamageTakenPctMod[x] += val/100.0f;
 }
 
 void Aura::SpellAuraEnableFlight(bool apply)
