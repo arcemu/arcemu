@@ -170,7 +170,8 @@ void DynamicObject::UpdateTargets()
 
 			if(GetDistanceSq(target) <= radius)
 			{
-				pAura = new Aura(m_spellProto, m_aliveDuration, u_caster, target);
+				pAura = AuraPool.PooledNew();
+				pAura->Init(m_spellProto, m_aliveDuration, u_caster, target);
 				for(uint32 i = 0; i < 3; ++i)
 				{
 					if(m_spellProto->Effect[i] == 27)

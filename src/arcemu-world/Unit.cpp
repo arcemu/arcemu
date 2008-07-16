@@ -1214,7 +1214,7 @@ void Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, uint
 								spell->Init(this, spellInfo ,true, NULL);
 								spell->SetUnitTarget(this);
 								spell->Heal(amount*(ospinfo->EffectBasePoints[0]+1)/100);
-								delete spell;
+								SpellPool.PooledDelete( spell );
 								continue;
 							}break;
 						//warlock - pyroclasm
@@ -1930,7 +1930,7 @@ void Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, uint
 				{
 					spell->pSpellId=itr2->spellId;
 					spell->SpellEffectDummy(0);
-					delete spell;
+					SpellPool.PooledDelete( spell );
 					continue;
 				}
 				spell->pSpellId=origId;
@@ -3634,7 +3634,7 @@ void Unit::AddAura(Aura *aur)
 			// Can't use flying auras in non-outlands.
 			if( aur->GetSpellProto()->EffectApplyAuraName[i] == 208 || aur->GetSpellProto()->EffectApplyAuraName[i] == 207 )
 			{
-				delete aur;
+				AuraPool.PooledDelete( aur );
 				return;
 			}
 		}
@@ -3642,7 +3642,7 @@ void Unit::AddAura(Aura *aur)
 	
 	if( aur->GetSpellProto()->School && SchoolImmunityList[aur->GetSpellProto()->School] )
 	{
-		delete aur;
+		AuraPool.PooledDelete( aur );
 		return;
 	}
 
@@ -3749,7 +3749,7 @@ void Unit::AddAura(Aura *aur)
 		if(deleteAur)
 		{
 			sEventMgr.RemoveEvents(aur);
-			delete aur;
+			AuraPool.PooledDelete( aur );
 			return;
 		}
 	}
@@ -3778,7 +3778,7 @@ void Unit::AddAura(Aura *aur)
 		//notify client that we are imune to this spell
 		aur->ApplyModifiers( false );	//this should have no effect
 		sEventMgr.RemoveEvents(aur);
-		delete aur;
+		AuraPool.PooledDelete( aur );
 		return;
 	}
 

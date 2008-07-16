@@ -570,7 +570,7 @@ void AIInterface::Update(uint32 p_time)
 				// need proper cooldown time!
 				m_totemspelltimer = m_totemspelltime;
 			}
-			else delete pSpell;
+			else SpellPool.PooledDelete( pSpell );
 			// these will *almost always* be AoE, so no need to find a target here.
 //			SpellCastTargets targets(m_Unit->GetGUID());
 //			Spell * pSpell = new Spell(m_Unit, totemspell, true, 0);

@@ -343,7 +343,7 @@ Object* Aura::GetCaster()
 		return NULL;
 }
 
-Aura::Aura( SpellEntry* proto, int32 duration, Object* caster, Unit* target )
+void Aura::Init( SpellEntry* proto, int32 duration, Object* caster, Unit* target )
 {
 	m_castInDuel = false;
 	m_spellProto = proto;
@@ -439,14 +439,18 @@ Aura::~Aura()
 
 void Aura::Virtual_Destructor()
 {
+	sEventMgr.RemoveEvents( this );
 }
 
 void Aura::Remove()
 {
-	if( m_deleted )
-		return;
+	//just lol, this should be properly solved ?
+	{
+		if( m_deleted )
+			return;
+		m_deleted = true;
+	}
 
-	m_deleted = true;
 	sEventMgr.RemoveEvents( this );
 
 	if( !IsPassive() || IsPassive() && m_spellProto->AttributesEx & 1024 )
@@ -556,7 +560,7 @@ void Aura::Remove()
 		}
 	}
 
-	delete this; // suicide xD	leaking this shit out
+	AuraPool.PooledDelete( this ); // suicide xD	leaking this shit out
 }
 
 void Aura::AddMod( uint32 t, int32 a, uint32 miscValue, uint32 i )
@@ -763,7 +767,8 @@ void Aura::EventUpdateAA(float r)
 	{
 		if(!plr->HasActiveAura(m_spellProto->Id))
 		{
-			Aura * aura = new Aura(m_spellProto, -1, u_caster, plr);
+			Aura * aura = AuraPool.PooledNew();
+			aura->Init(m_spellProto, -1, u_caster, plr);
 			aura->m_areaAura = true;
 			aura->AddMod(mod->m_type, mod->m_amount, mod->m_miscValue, mod->i);
 			plr->AddAura(aura);
@@ -783,7 +788,8 @@ void Aura::EventUpdateAA(float r)
 		Unit *summon = plr->GetSummon();
 		if( summon && summon->isAlive() && summon->GetDistanceSq(u_caster) <= r && !summon->HasActiveAura( m_spellProto->Id ))
 		{
-			Aura * aura = new Aura(m_spellProto, -1, u_caster, summon );
+			Aura * aura = AuraPool.PooledNew();
+			aura->Init(m_spellProto, -1, u_caster, summon );
 			aura->m_areaAura = true;
 			aura->AddMod( mod->m_type, mod->m_amount, mod->m_miscValue, mod->i);
 			summon->AddAura( aura );
@@ -816,7 +822,8 @@ void Aura::EventUpdateAA(float r)
 						{
 							if(!aura)
 							{
-								aura = new Aura(m_spellProto, -1, u_caster, (*itr)->m_loggedInPlayer);
+								aura = AuraPool.PooledNew();
+								aura->Init(m_spellProto, -1, u_caster, (*itr)->m_loggedInPlayer);
 								aura->m_areaAura = true;
 							}
 							aura->AddMod(m_modList[i].m_type, m_modList[i].m_amount,

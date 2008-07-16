@@ -8290,7 +8290,8 @@ void Player::CompleteLoading()
 		if ( sp->c_is_flags & SPELL_FLAG_IS_EXPIREING_WITH_PET )
 			continue; //do not load auras that only exist while pet exist. We should recast these when pet is created anyway
 
-		Aura * aura = new Aura(sp,(*i).dur,this,this);
+		Aura * aura = AuraPool.PooledNew();
+		aura->Init(sp,(*i).dur,this,this);
 		if ( !(*i).positive ) // do we need this? - vojta
 			aura->SetNegative();
 
@@ -8307,7 +8308,8 @@ void Player::CompleteLoading()
 			Aura * a = NULL;
 			for ( uint32 x = 0; x < (*i).charges - 1; x++ )
 			{
-				a = new Aura( sp, (*i).dur, this, this );
+				a = AuraPool.PooledNew();
+				a->Init( sp, (*i).dur, this, this );
 				this->AddAura( a );
 				a = NULL;
 			}

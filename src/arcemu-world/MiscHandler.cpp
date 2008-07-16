@@ -151,7 +151,7 @@ void WorldSession::HandleAutostoreLootItemOpcode( WorldPacket & recv_data )
 			_player->GetSession()->SendItemPushResult(item,false,true,true,true,slotresult.ContainerSlot,slotresult.Slot,1);
 		}
 		else
-			delete item;
+			ItemPool.PooledDelete( item );
 	}
 	else 
 	{	
@@ -1936,7 +1936,7 @@ void WorldSession::HandleLootMasterGiveOpcode(WorldPacket& recv_data)
 		sQuestMgr.OnPlayerItemPickup(player,item);
 	}
 	else
-		delete item;
+		ItemPool.PooledDelete( item );
 
 	pLoot->items.at(slotid).iItemsCount=0;
 

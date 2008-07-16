@@ -1575,10 +1575,11 @@ void Spell::SpellEffectApplyAura(uint32 i)  // Apply Aura
 			//maybe add some resist messege to client here ?
 			return;
 		}
+		pAura=AuraPool.PooledNew();
 		if(g_caster && g_caster->GetUInt32Value(OBJECT_FIELD_CREATED_BY) && g_caster->m_summoner)
-			pAura=new Aura(GetProto(), Duration, g_caster->m_summoner, unitTarget);
+			 pAura->Init(GetProto(), Duration, g_caster->m_summoner, unitTarget);
 		else
-			pAura=new Aura(GetProto(), Duration, m_caster, unitTarget);
+			pAura->Init(GetProto(), Duration, m_caster, unitTarget);
 
 		pAura->pSpellId = pSpellId; //this is required for triggered spells
 		
@@ -1740,7 +1741,7 @@ void Spell::SpellEffectHeal(uint32 i) // Heal
 						Spell *spell = SpellPool.PooledNew();
 						spell->Init( m_caster, taura->GetSpellProto(), false, NULL );				
 						uint32 healamount = spell->CalculateEffect( 1, unitTarget );  
-						delete spell;
+						SpellPool.PooledDelete( spell );
 						new_dmg = healamount * 18 / amplitude;
 
 						unitTarget->RemoveAura( taura );
@@ -1765,7 +1766,7 @@ void Spell::SpellEffectHeal(uint32 i) // Heal
 							Spell *spell = SpellPool.PooledNew();
 							spell->Init( m_caster, taura->GetSpellProto(), false, NULL );				
 							uint32 healamount = spell->CalculateEffect( 0, unitTarget );  
-							delete spell;
+							SpellPool.PooledDelete( spell );
 							new_dmg = healamount * 12 / amplitude;
 
 							unitTarget->RemoveAura( taura );
@@ -2817,7 +2818,8 @@ void Spell::SpellEffectApplyAA(uint32 i) // Apply Area Aura
 	std::map<uint32,Aura*>::iterator itr=unitTarget->tmpAura.find(GetProto()->Id);
 	if(itr==unitTarget->tmpAura.end())
 	{
-		pAura=new Aura(GetProto(),GetDuration(),m_caster,unitTarget);
+		pAura=AuraPool.PooledNew();
+		pAura->Init(GetProto(),GetDuration(),m_caster,unitTarget);
 		
 		unitTarget->tmpAura [GetProto()->Id]= pAura;
 	
@@ -5603,7 +5605,8 @@ void Spell::SpellEffectSpellSteal( uint32 i )
 				m_caster->SendMessageToSet(&data,true);
 
 				uint32 aurdur = ( aur->GetDuration()>120000 ? 120000 : aur->GetDuration() );
-				Aura *aura = new Aura(aur->GetSpellProto(), aurdur, u_caster, u_caster );
+				Aura *aura = AuraPool.PooledNew();
+				aura->Init(aur->GetSpellProto(), aurdur, u_caster, u_caster );
 				uint32 aur_removed = unitTarget->RemoveAllPosAuraByNameHash( aur->GetSpellProto()->NameHash );
 				for ( uint32 i = 0; i < 3; i++ )
 				{
@@ -5617,7 +5620,8 @@ void Spell::SpellEffectSpellSteal( uint32 i )
 					Aura *aur = NULL;
 					for(uint32 i = 0; i<aur_removed-1; i++)
 					{
-						aur = new Aura( aura->GetSpellProto(), aurdur, u_caster, u_caster );
+						aur = AuraPool.PooledNew();
+						aur->Init( aura->GetSpellProto(), aurdur, u_caster, u_caster );
 						u_caster->AddAura(aur);
 						aur = NULL;
 					}

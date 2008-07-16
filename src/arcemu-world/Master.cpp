@@ -562,6 +562,12 @@ bool Master::Run(int argc, char ** argv)
 	Log.Notice( "Item Pool", "Item Pool" );
 	ItemPool.DestroyPool();
 
+	Log.Notice( "Spell Pool", "Spell Pool" );
+	SpellPool.DestroyPool();
+
+	Log.Notice( "Aura Pool", "Aura Pool" );
+	AuraPool.DestroyPool();
+
 	sWorld.ShutdownClasses();
 	Log.Notice( "World", "~World()" );
 	delete World::getSingletonPtr();

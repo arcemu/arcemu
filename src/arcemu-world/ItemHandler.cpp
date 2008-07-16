@@ -1349,7 +1349,7 @@ void WorldSession::HandleBuyItemOpcode( WorldPacket & recv_data ) // right-click
 			if(Item *bag = _player->GetItemInterface()->GetInventoryItem(slotresult.ContainerSlot))
 			{
 				if( !((Container*)bag)->AddItem(slotresult.Slot, itm) )
-					delete itm;
+					ItemPool.PooledDelete( itm );
 				else
 					SendItemPushResult(itm, false, true, false, true, slotresult.ContainerSlot, slotresult.Result, 1);
 			}
