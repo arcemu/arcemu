@@ -113,6 +113,9 @@ Creature::~Creature()
 	if(IsTotem())
 		totemOwner->m_TotemSlots[totemSlot] = 0;
 
+	if (GetScript() != NULL )
+		GetScript()->Destroy();
+
 	if(m_custom_waypoint_map != 0)
 	{
 		for(WayPointMap::iterator itr = m_custom_waypoint_map->begin(); itr != m_custom_waypoint_map->end(); ++itr)
