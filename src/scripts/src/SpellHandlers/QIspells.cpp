@@ -1372,7 +1372,7 @@ bool TemporalPhaseModulator(uint32 i, Spell* pSpell)
 	if(qle == NULL)
 		return true;
 
-	srand ( time(NULL) );
+	srand ( (int)time(NULL) );
 	int random = static_cast<int>(rand()*4.33);
 	srand ( random * 23 );
 
