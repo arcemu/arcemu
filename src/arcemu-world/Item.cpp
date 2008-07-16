@@ -807,7 +807,8 @@ void Item::ApplyEnchantmentBonus( uint32 Slot, bool Apply )
 							if( sp == NULL )
 								continue;
 
-							spell = new Spell( m_owner, sp, true, 0 );
+							spell = SpellPool.PooledNew();
+							spell->Init( m_owner, sp, true, 0 );
 							spell->i_caster = this;
 							spell->prepare( &targets );
 						}

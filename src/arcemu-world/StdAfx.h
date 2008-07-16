@@ -176,4 +176,6 @@
 #include "SpeedDetector.h"
 //#define PVP_REALM_MEANS_CONSTANT_PVP
 #include "BufferPools/ItemPool.h"
+#include "BufferPools/SpellPool.h"
+#include "BufferPools/AuraPool.h"
 #endif

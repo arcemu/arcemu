@@ -171,7 +171,8 @@ void WorldSession::HandleUseItemOpcode(WorldPacket& recvPacket)
 		}
 	}
 
-	Spell *spell = new Spell(_player, spellInfo, false, NULL);
+	Spell *spell = SpellPool.PooledNew();
+	spell->Init(_player, spellInfo, false, NULL);
 	uint8 result;
 	spell->extra_cast_number=cn;
 	spell->i_caster = tmpItem;
@@ -300,7 +301,8 @@ void WorldSession::HandleCastSpellOpcode(WorldPacket& recvPacket)
 			}
 		}
 
-		Spell *spell = new Spell(GetPlayer(), spellInfo, false, NULL);
+		Spell *spell = SpellPool.PooledNew();
+		spell->Init(GetPlayer(), spellInfo, false, NULL);
 		spell->extra_cast_number=cn;
 		spell->prepare(&targets);
 	}
@@ -401,7 +403,8 @@ void WorldSession::HandleAddDynamicTargetOpcode(WorldPacket & recvPacket)
 	}
 	if(spellid == 33395)	// Summoned Water Elemental's freeze
 	{
-		Spell * pSpell = new Spell(_player->m_Summon, sp, false, 0);
+		Spell * pSpell = SpellPool.PooledNew();
+		pSpell->Init(_player->m_Summon, sp, false, 0);
 		pSpell->prepare(&targets);
 	}
 	else			// trinket?
@@ -409,7 +412,8 @@ void WorldSession::HandleAddDynamicTargetOpcode(WorldPacket & recvPacket)
 		Unit *nc = _player->GetMapMgr()->GetUnit( _player->m_CurrentCharm );
 		if( nc )
 		{
-			Spell * pSpell = new Spell(nc, sp, false, 0);
+			Spell * pSpell = SpellPool.PooledNew();
+			pSpell->Init(nc, sp, false, 0);
 			pSpell->prepare(&targets);
 		}
 	}

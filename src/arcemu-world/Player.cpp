@@ -1038,7 +1038,8 @@ void Player::_EventAttack( bool offhand )
 		{ 
 			SpellEntry *spellInfo = dbcSpell.LookupEntry(GetOnMeleeSpell());
 			SetOnMeleeSpell(0);
-			Spell *spell = new Spell(this,spellInfo,true,NULL);
+			Spell *spell = SpellPool.PooledNew();
+			spell->Init(this,spellInfo,true,NULL);
 			SpellCastTargets targets;
 			targets.m_unitTarget = GetSelection();
 			spell->prepare(&targets);
@@ -1126,7 +1127,8 @@ void Player::_EventCharmAttack()
 			{ 
 				SpellEntry *spellInfo = dbcSpell.LookupEntry(currentCharm->GetOnMeleeSpell());
 				currentCharm->SetOnMeleeSpell(0);
-				Spell *spell = new Spell(currentCharm,spellInfo,true,NULL);
+				Spell *spell = SpellPool.PooledNew();
+				spell->Init(currentCharm,spellInfo,true,NULL);
 				SpellCastTargets targets;
 				targets.m_unitTarget = GetSelection();
 				spell->prepare(&targets);
@@ -3624,7 +3626,8 @@ void Player::_ApplyItemMods(Item* item, int8 slot, bool apply, bool justdrokedow
 					if( Set->itemscount==set->itemscount[x])
 					{//cast new spell
 						SpellEntry *info = dbcSpell.LookupEntry( set->SpellID[x] );
-						Spell * spell = new Spell( this, info, true, NULL );
+						Spell * spell = SpellPool.PooledNew();
+						spell->Init( this, info, true, NULL );
 						SpellCastTargets targets;
 						targets.m_unitTarget = this->GetGUID();
 						spell->prepare( &targets );
@@ -3761,7 +3764,8 @@ void Player::_ApplyItemMods(Item* item, int8 slot, bool apply, bool justdrokedow
 					continue;
 				}
 
-				Spell *spell = new Spell( this, spells ,true, NULL );
+				Spell *spell = SpellPool.PooledNew();
+				spell->Init( this, spells ,true, NULL );
 				SpellCastTargets targets;
 				targets.m_unitTarget = this->GetGUID();
 				spell->castedItemId = item->GetEntry();
@@ -3978,17 +3982,20 @@ void Player::BuildPlayerRepop()
 	if(getRace()==RACE_NIGHTELF)
 	{
 		SpellEntry *inf=dbcSpell.LookupEntry(20584);
-		Spell*sp=new Spell(this,inf,true,NULL);
+		Spell*sp=SpellPool.PooledNew();
+		sp->Init(this,inf,true,NULL);
 		sp->prepare(&tgt);
 		inf=dbcSpell.LookupEntry(9036);
-		sp=new Spell(this,inf,true,NULL);
+		sp=SpellPool.PooledNew();
+		sp->Init(this,inf,true,NULL);
 		sp->prepare(&tgt);
 	}
 	else
 	{
 	
 		SpellEntry *inf=dbcSpell.LookupEntry(8326);
-		Spell*sp=new Spell(this,inf,true,NULL);
+		Spell*sp=SpellPool.PooledNew();
+		sp->Init(this,inf,true,NULL);
 		sp->prepare(&tgt);
 	}
 
@@ -5773,7 +5780,8 @@ void Player::EventRepeatSpell()
 	{		
 		m_AutoShotAttackTimer = m_AutoShotDuration;
 	
-		Spell* sp = new Spell( this, m_AutoShotSpell, true, NULL );
+		Spell* sp = SpellPool.PooledNew();
+		sp->Init( this, m_AutoShotSpell, true, NULL );
 		SpellCastTargets tgt;
 		tgt.m_unitTarget = m_curSelection;
 		tgt.m_targetMask = TARGET_FLAG_UNIT;
@@ -8254,7 +8262,8 @@ void Player::CompleteLoading()
 					continue;
 			}
 
-			Spell * spell=new Spell(this,info,true,NULL);
+			Spell * spell=SpellPool.PooledNew();
+			spell->Init(this,info,true,NULL);
 			spell->prepare(&targets);
 		}
 	}
@@ -8352,7 +8361,8 @@ void Player::CompleteLoading()
 
 
 	// useless logon spell
-	Spell *logonspell = new Spell(this, dbcSpell.LookupEntry(836), false, NULL);
+	Spell *logonspell = SpellPool.PooledNew();
+	logonspell->Init(this, dbcSpell.LookupEntry(836), false, NULL);
 	logonspell->prepare(&targets);
 
 	// Banned
@@ -8698,7 +8708,8 @@ void Player::SetShapeShift(uint8 ss)
 		{
 			if( sp->RequiredShapeShift && ((uint32)1 << (ss-1)) & sp->RequiredShapeShift )
 			{
-				spe = new Spell( this, sp, true, NULL );
+				spe = SpellPool.PooledNew();
+				spe->Init( this, sp, true, NULL );
 				spe->prepare( &t );
 			}
 		}
@@ -8710,7 +8721,8 @@ void Player::SetShapeShift(uint8 ss)
 		sp = dbcSpell.LookupEntry( *itr );
 		if( sp->RequiredShapeShift && ((uint32)1 << (ss-1)) & sp->RequiredShapeShift )
 		{
-			spe = new Spell( this, sp, true, NULL );
+			spe = SpellPool.PooledNew();
+			spe->Init( this, sp, true, NULL );
 			spe->prepare( &t );
 		}
 	}
@@ -9214,7 +9226,8 @@ void Player::EventStunOrImmobilize(Unit *proc_target, bool is_victim)
 		if(t_trigger_on_stun_chance<100 && !Rand(t_trigger_on_stun_chance))
 			return;
 
-		Spell *spell = new Spell(this, spellInfo ,true, NULL);
+		Spell *spell = SpellPool.PooledNew();
+		spell->Init(this, spellInfo ,true, NULL);
 		SpellCastTargets targets;
 
 		if ( spellInfo->procFlags & PROC_TARGET_SELF )
@@ -10044,14 +10057,16 @@ void Player::EventSummonPet( Pet *new_pet )
 		{
 			this->RemoveAllAuras( SpellID, this->GetGUID() ); //this is required since unit::addaura does not check for talent stacking
 			SpellCastTargets targets( this->GetGUID() );
-			Spell *spell = new Spell(this, spellInfo ,true, NULL);	//we cast it as a proc spell, maybe we should not !
+			Spell *spell = SpellPool.PooledNew();
+			spell->Init(this, spellInfo ,true, NULL);	//we cast it as a proc spell, maybe we should not !
 			spell->prepare(&targets);
 		}
 		if( spellInfo->c_is_flags & SPELL_FLAG_IS_CASTED_ON_PET_SUMMON_ON_PET )
 		{
 			this->RemoveAllAuras( SpellID, this->GetGUID() ); //this is required since unit::addaura does not check for talent stacking
 			SpellCastTargets targets( new_pet->GetGUID() );
-			Spell *spell = new Spell(this, spellInfo ,true, NULL);	//we cast it as a proc spell, maybe we should not !
+			Spell *spell = SpellPool.PooledNew();
+			spell->Init(this, spellInfo ,true, NULL);	//we cast it as a proc spell, maybe we should not !
 			spell->prepare(&targets);
 		}
 	}
@@ -10205,7 +10220,8 @@ void Player::AddShapeShiftSpell(uint32 id)
 
 	if( sp->RequiredShapeShift && ((uint32)1 << (GetShapeShift()-1)) & sp->RequiredShapeShift )
 	{
-		Spell * spe = new Spell( this, sp, true, NULL );
+		Spell * spe = SpellPool.PooledNew();
+		spe->Init( this, sp, true, NULL );
 		SpellCastTargets t(this->GetGUID());
 		spe->prepare( &t );
 	}

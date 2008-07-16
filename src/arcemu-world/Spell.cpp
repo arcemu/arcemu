@@ -109,7 +109,15 @@ void SpellCastTargets::write( WorldPacket& data )
 		data << m_strTarget;
 }
 
-Spell::Spell(Object* Caster, SpellEntry *info, bool triggered, Aura* aur)
+Spell::Spell()
+{
+}
+
+void Spell::Virtual_Constructor()
+{
+}
+
+void Spell::Init(Object* Caster, SpellEntry *info, bool triggered, Aura* aur)
 {
 	ASSERT( Caster != NULL && info != NULL );
 
@@ -210,6 +218,10 @@ Spell::Spell(Object* Caster, SpellEntry *info, bool triggered, Aura* aur)
 
 Spell::~Spell()
 {
+}
+
+void Spell::Virtual_Destructor()
+{
 	if( u_caster != NULL && u_caster->GetCurrentSpell() == this )
 		u_caster->SetCurrentSpell(NULL);
 
@@ -219,6 +231,8 @@ Spell::~Spell()
 
 	if (m_spellInfo_override !=NULL)
 		delete[] m_spellInfo_override;
+
+//	sEventMgr.RemoveEvents( this ); //do even spells have events ?
 }
 
 //i might forget conditions here. Feel free to add them
@@ -1808,7 +1822,7 @@ void Spell::finish()
 		if(!m_triggeredSpell && (GetProto()->ChannelInterruptFlags || m_castTime>0))
 			u_caster->SetCurrentSpell(NULL);
 
-		delete this;
+		SpellPool.PooledDelete( this );
 	}
 }
 
@@ -2594,7 +2608,8 @@ void Spell::HandleAddAura(uint64 guid)
 	{
 		SpellEntry *spellInfo = dbcSpell.LookupEntry( spellid );
 		if(!spellInfo) return;
-		Spell *spell = new Spell(p_caster, spellInfo ,true, NULL);
+		Spell *spell = SpellPool.PooledNew();
+		spell->Init(p_caster, spellInfo ,true, NULL);
 		SpellCastTargets targets(Target->GetGUID());
 		spell->prepare(&targets);
 	}
@@ -4692,7 +4707,8 @@ bool Spell::Reflect(Unit *refunit)
 
 	if(!refspell || m_caster == refunit) return false;
 
-	Spell *spell = new Spell(refunit, refspell, true, NULL);
+	Spell *spell = SpellPool.PooledNew();
+	spell->Init(refunit, refspell, true, NULL);
 	spell->SetReflected();
 	SpellCastTargets targets;
 	targets.m_unitTarget = m_caster->GetGUID();

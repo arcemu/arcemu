@@ -194,7 +194,8 @@ void GameObject::Update(uint32 p_time)
 					if(!isAttackable(m_summoner,pUnit))continue;
 				}
 				
-				Spell * sp=new Spell((Object*)this,spell,true,NULL);
+				Spell * sp=SpellPool.PooledNew();
+				sp->Init((Object*)this,spell,true,NULL);
 				SpellCastTargets tgt((*itr)->GetGUID());
 				tgt.m_destX = GetPositionX();
 				tgt.m_destY = GetPositionY();

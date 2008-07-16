@@ -1067,7 +1067,8 @@ void Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, uint
 							if( new_caster && new_caster->isAlive() )
 							{
 								SpellEntry *spellInfo = dbcSpell.LookupEntry( spellId ); //we already modified this spell on server loading so it must exist
-								Spell *spell = new Spell( new_caster, spellInfo ,true, NULL );
+								Spell *spell = SpellPool.PooledNew();
+								spell->Init( new_caster, spellInfo ,true, NULL );
 								SpellCastTargets targets;
 								targets.m_destX = GetPositionX();
 								targets.m_destY = GetPositionY();
@@ -1110,7 +1111,8 @@ void Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, uint
 								if( new_caster != NULL && new_caster->isAlive() )
 								{
 									SpellEntry* spellInfo = dbcSpell.LookupEntry( 25228 ); //we already modified this spell on server loading so it must exist
-									Spell* spell = new Spell( new_caster, spellInfo, true, NULL );
+									Spell* spell = SpellPool.PooledNew();
+									spell->Init( new_caster, spellInfo, true, NULL );
 									spell->forced_basepoints[0] = dmg;
 									SpellCastTargets targets;
 									targets.m_unitTarget = GetGUID();
@@ -1208,7 +1210,8 @@ void Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, uint
 								SpellEntry *spellInfo = dbcSpell.LookupEntry(spellId );
 								if(!spellInfo)
 									continue;
-								Spell *spell = new Spell(this, spellInfo ,true, NULL);
+								Spell *spell = SpellPool.PooledNew();
+								spell->Init(this, spellInfo ,true, NULL);
 								spell->SetUnitTarget(this);
 								spell->Heal(amount*(ospinfo->EffectBasePoints[0]+1)/100);
 								delete spell;
@@ -1298,7 +1301,8 @@ void Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, uint
 								if (!parentproc || !spellInfo)
 									continue;
 								int32 val = parentproc->EffectBasePoints[0] + 1;
-                                Spell *spell = new Spell(this, spellInfo ,true, NULL);
+                                Spell *spell = SpellPool.PooledNew();
+								spell->Init(this, spellInfo ,true, NULL);
                                 spell->forced_basepoints[0] = (val*dmg)/300; //per tick
                                 SpellCastTargets targets;
                                 targets.m_unitTarget = GetGUID();
@@ -1917,7 +1921,8 @@ void Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, uint
 				if(spellId==22858 && isInBack(victim)) //retatliation needs target to be not in front. Can be casted by creatures too
 					continue;
 				SpellEntry *spellInfo = dbcSpell.LookupEntry(spellId );
-				Spell *spell = new Spell(this, spellInfo ,true, NULL);
+				Spell *spell = SpellPool.PooledNew();
+				spell->Init(this, spellInfo ,true, NULL);
 				spell->forced_basepoints[0] = dmg_overwrite;
 				spell->ProcedOnSpell = CastingSpell;
 				//Spell *spell = new Spell(this,spellInfo,false,0,true,false);
@@ -3218,12 +3223,14 @@ else
 					}
 
 					// Cast.
-					cspell = new Spell(this, itr->first, true, NULL);
+					cspell = SpellPool.PooledNew();
+					cspell->Init(this, itr->first, true, NULL);
 					cspell->prepare(&targets);
 				}
 				else
 				{
-					cspell = new Spell(this, itr->first, true, NULL);
+					cspell = SpellPool.PooledNew();
+					cspell->Init(this, itr->first, true, NULL);
 					cspell->prepare(&targets);
 				}			
 			}
@@ -3260,7 +3267,8 @@ else
 				Aura * aur = pVictim->m_auras[x];
 				SpellEntry * spinfo = aur->GetSpellProto();
 				aur->Remove();
-				Spell * sp = new Spell( this , spinfo , true , NULL );
+				Spell * sp = SpellPool.PooledNew();
+				sp->Init( this , spinfo , true , NULL );
 				SpellCastTargets tgt;
 				tgt.m_unitTarget = pVictim->GetGUID();
 				sp->prepare( &tgt );
@@ -4946,7 +4954,8 @@ void Unit::EventSummonPetExpire()
 			if(!spInfo)
 				return;
 
-			Spell*sp=new Spell(summonPet,spInfo,true,NULL);
+			Spell*sp=SpellPool.PooledNew();
+			sp->Init(summonPet,spInfo,true,NULL);
 			SpellCastTargets tgt;
 			tgt.m_unitTarget=summonPet->GetGUID();
 			sp->prepare(&tgt);
@@ -4966,7 +4975,8 @@ void Unit::CastSpell(Unit* Target, SpellEntry* Sp, bool triggered)
 	if( Sp == NULL )
 		return;
 
-	Spell *newSpell = new Spell(this, Sp, triggered, 0);
+	Spell *newSpell = SpellPool.PooledNew();
+	newSpell->Init(this, Sp, triggered, 0);
 	SpellCastTargets targets(0);
 	if(Target)
 	{
@@ -4994,7 +5004,8 @@ void Unit::CastSpell(uint64 targetGuid, SpellEntry* Sp, bool triggered)
 		return;
 
 	SpellCastTargets targets(targetGuid);
-	Spell *newSpell = new Spell(this, Sp, triggered, 0);
+	Spell *newSpell = SpellPool.PooledNew();
+	newSpell->Init(this, Sp, triggered, 0);
 	newSpell->prepare(&targets);
 }
 
@@ -5015,7 +5026,8 @@ void Unit::CastSpellAoF(float x,float y,float z,SpellEntry* Sp, bool triggered)
 	targets.m_destY = y;
 	targets.m_destZ = z;
 	targets.m_targetMask=TARGET_FLAG_DEST_LOCATION;
-	Spell *newSpell = new Spell(this, Sp, triggered, 0);
+	Spell *newSpell = SpellPool.PooledNew();
+	newSpell->Init(this, Sp, triggered, 0);
 	newSpell->prepare(&targets);
 }
 
@@ -5681,7 +5693,8 @@ bool Unit::GetSpeedDecrease()
 
 void Unit::EventCastSpell(Unit * Target, SpellEntry * Sp)
 {
-	Spell * pSpell = new Spell(Target, Sp, true, NULL);
+	Spell * pSpell = SpellPool.PooledNew();
+	pSpell->Init(Target, Sp, true, NULL);
 	SpellCastTargets targets(Target->GetGUID());
 	pSpell->prepare(&targets);
 }

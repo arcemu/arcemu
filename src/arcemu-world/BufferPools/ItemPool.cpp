@@ -91,15 +91,16 @@ void oItemBufferPool::PooledDelete( Item *dumped )
 		return;
 	}
 
-	//remove events and remove objkect from world ...
+	//remove events and remove object from world ...
 	dumped->Virtual_Destructor();
 
 	ObjLock.Acquire();
 
 #ifdef _DEBUG
-	if( next_free_avail == 0 )
+	if( next_free_avail == POOL_IS_FULL_INDEX )
 	{
 		sLog.outDebug("Pool is full and we still tried to add more items to it. Maybe item was alocated not from pool ? \n" );
+		delete dumped;
 		return; // OMG, We made more deletes then inserts ? This should not happen !
 	}
 	if( dumped->GetTypeId() != TYPEID_ITEM )
@@ -136,4 +137,36 @@ void oItemBufferPool::PooledDelete( Item *dumped )
 	ObjLock.Release();
 }
 
+#ifdef TRACK_LEAKED_ITEMS_AND_MEMORY_CORRUPTION
+uint32 oItemBufferPool::IsValidPointer( Item *objpointer )
+{
+	ObjLock.Acquire();
+	std::list<Item *>::iterator itr=used_list.begin();
+	uint32 Object_is_in_use = 0;
+	for(itr=used_list.begin();itr!=used_list.end();itr++ )
+		if( *itr == objpointer )
+		{
+			Object_is_in_use = 1;
+			break;
+		}
+	ObjLock.Release();
+	return Object_is_in_use;
+}
+#endif
+#ifdef _DEBUG
+//maybe we want to see if this pointer is really expired at some point
+uint32	oItemBufferPool::IsDeletedPointer( Item *objpointer )
+{
+	ObjLock.Acquire();
+	uint32 object_is_deleted = 0;
+	for(int i=next_free_avail;i<max_avails;i++)
+		if( objpointer == avail_list[ i ] )
+		{
+			object_is_deleted = 1;
+			break;
+		}
+	ObjLock.Release();
+	return object_is_deleted;
+}
+#endif
 createFileSingleton( oItemBufferPool );

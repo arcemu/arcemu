@@ -428,9 +428,17 @@ Aura::Aura( SpellEntry* proto, int32 duration, Object* caster, Unit* target )
 	//fixed_amount = 0;//used only por percent values to be able to recover value correctly.No need to init this if we are not using it
 }
 
+void Aura::Virtual_Constructor()
+{
+}
+
 Aura::~Aura()
 {
 	sEventMgr.RemoveEvents( this );
+}
+
+void Aura::Virtual_Destructor()
+{
 }
 
 void Aura::Remove()
@@ -1079,7 +1087,8 @@ void Aura::SpellAuraPeriodicDamage(bool apply)
 				{
 					if (!dmg)
 						return;
-					Spell *spell = new Spell(GetUnitCaster(), parentsp ,false,NULL);
+					Spell *spell = SpellPool.PooledNew();
+					spell->Init(GetUnitCaster(), parentsp ,false,NULL);
 					SpellCastTargets targets(m_target->GetGUID());
 					//this is so not good, maybe parent spell has more then dmg effect and we use it to calc our new dmg :(
 					dmg = 0;
@@ -1088,7 +1097,7 @@ void Aura::SpellAuraPeriodicDamage(bool apply)
 					  //dmg +=parentsp->EffectBasePoints[i]*m_spellProto->EffectBasePoints[0];
 						dmg +=spell->CalculateEffect(i,m_target->IsUnit()?(Unit*)m_target:NULL)*parentsp->EffectBasePoints[0]/100;
 					}
-					delete spell;
+					SpellPool.PooledDelete( spell );
 				}
 			}
 		};
@@ -1989,9 +1998,10 @@ void Aura::SpellAuraDummy(bool apply)
 				pCaster = m_target;
 
 			// this is an ugly hack because i don't want to copy/paste code ;P
-			Spell spell(pCaster, m_spellProto, true, NULL);
-			spell.SetUnitTarget( m_target );
-			spell.Heal( mod->m_amount );
+			Spell *spell=SpellPool.PooledNew();
+			spell->Init(pCaster, m_spellProto, true, NULL);
+			spell->SetUnitTarget( m_target );
+			spell->Heal( mod->m_amount );
 			// Remove other Lifeblooms - but do NOT handle unapply again
 			for(uint32 x=0;x<MAX_AURAS;x++)
 			{
@@ -3178,7 +3188,8 @@ void Aura::EventPeriodicTriggerSpell(SpellEntry* spellInfo)
 
 	if( spellInfo->EffectImplicitTargetA[0] == 18 )			// Hellfire, if there are any others insert here
 	{
-		Spell *spell = new Spell(m_caster, spellInfo, true, this);
+		Spell *spell = SpellPool.PooledNew();
+		spell->Init(m_caster, spellInfo, true, this);
 		SpellCastTargets targets;
 		targets.m_targetMask = TARGET_FLAG_SOURCE_LOCATION;
 		targets.m_srcX = m_caster->GetPositionX();
@@ -3194,7 +3205,8 @@ void Aura::EventPeriodicTriggerSpell(SpellEntry* spellInfo)
 
 	if(oTarget->GetTypeId()==TYPEID_DYNAMICOBJECT)
 	{
-		Spell *spell = new Spell(m_caster, spellInfo, true, this);
+		Spell *spell = SpellPool.PooledNew();
+		spell->Init(m_caster, spellInfo, true, this);
 		SpellCastTargets targets;
 		targets.m_targetMask = TARGET_FLAG_DEST_LOCATION;
 		targets.m_destX = oTarget->GetPositionX();
@@ -3247,7 +3259,8 @@ void Aura::EventPeriodicTriggerSpell(SpellEntry* spellInfo)
 		return;
 	}
 
-	Spell *spell = new Spell(m_caster, spellInfo, true, this);
+	Spell *spell = SpellPool.PooledNew();
+	spell->Init(m_caster, spellInfo, true, this);
 	SpellCastTargets targets;
 	targets.m_unitTarget = pTarget->GetGUID();
 	targets.m_targetMask = TARGET_FLAG_UNIT;
@@ -3801,7 +3814,8 @@ void Aura::SpellAuraModShapeshift(bool apply)
 				//some say there is a second effect
 				SpellEntry* spellInfo = dbcSpell.LookupEntry( 21178 );
 
-				Spell *sp = new Spell( m_target, spellInfo, true, NULL );
+				Spell *sp = SpellPool.PooledNew();
+				sp->Init( m_target, spellInfo, true, NULL );
 				SpellCastTargets tgt;
 				tgt.m_unitTarget = m_target->GetGUID();
 				sp->prepare( &tgt );
@@ -3939,7 +3953,8 @@ void Aura::SpellAuraModShapeshift(bool apply)
 				{
 					SpellEntry *spellInfo = dbcSpell.LookupEntry( furorSpell );
 
-					Spell *sp = new Spell( m_target, spellInfo, true, NULL );
+					Spell *sp = SpellPool.PooledNew();
+					sp->Init( m_target, spellInfo, true, NULL );
 					SpellCastTargets tgt;
 					tgt.m_unitTarget = m_target->GetGUID();
 					sp->prepare(&tgt);
@@ -3969,7 +3984,8 @@ void Aura::SpellAuraModShapeshift(bool apply)
 
 		SpellEntry* spellInfo = dbcSpell.LookupEntry(spellId );
 
-		Spell *sp = new Spell( m_target, spellInfo, true, NULL );
+		Spell *sp = SpellPool.PooledNew();
+		sp->Init( m_target, spellInfo, true, NULL );
 		SpellCastTargets tgt;
 		tgt.m_unitTarget = m_target->GetGUID();
 		sp->prepare( &tgt );
@@ -8193,7 +8209,8 @@ void Aura::SpellAuraSpiritOfRedemption(bool apply)
 		m_target->SetUInt32Value(UNIT_FIELD_HEALTH, 1);
 		SpellEntry * sorInfo = dbcSpell.LookupEntry(27792);
 		if(!sorInfo) return;
-		Spell * sor = new Spell(m_target, sorInfo, true, NULL);
+		Spell * sor = SpellPool.PooledNew();
+		sor->Init(m_target, sorInfo, true, NULL);
 		SpellCastTargets targets;
 		targets.m_unitTarget = m_target->GetGUID();
 		sor->prepare(&targets);
