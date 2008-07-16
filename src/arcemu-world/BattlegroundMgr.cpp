@@ -409,6 +409,12 @@ void CBattlegroundManager::EventQueueUpdate(bool forceStart)
 				if(CanCreateInstance(i,j))
 				{
 					arena = ((Arena*)CreateInstance(i, j));
+					if ( arena == NULL )
+					{
+						m_queueLock.Release();
+						m_instanceLock.Release();
+						return;
+					}
 					team = arena->GetFreeTeam();
 					while(!arena->IsFull() && tempPlayerVec[0].size() && team >= 0)
 					{
@@ -432,7 +438,13 @@ void CBattlegroundManager::EventQueueUpdate(bool forceStart)
 					{
 						bg = CreateInstance(i,j);
 
-						ASSERT(bg);
+						//ASSERT(bg);
+						if ( bg == NULL )
+						{
+							m_queueLock.Release();
+							m_instanceLock.Release();
+ 							return;
+						}
 
 						// push as many as possible in
 						for(k = 0; k < 2; ++k)
