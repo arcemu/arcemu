@@ -1097,7 +1097,7 @@ bool Creature::Load(CreatureSpawn *spawn, uint32 mode, MapInfo *info)
     //SetUInt32Value(UNIT_FIELD_LEVEL, (mode ? proto->Level + (info ? info->lvl_mod_a : 0) : proto->Level));
 	SetUInt32Value(UNIT_FIELD_LEVEL, proto->MinLevel + (RandomUInt(proto->MaxLevel - proto->MinLevel)));
 	if(mode && info)
-		ModUnsigned32Value(UNIT_FIELD_LEVEL, info->lvl_mod_a);
+		ModUnsigned32Value(UNIT_FIELD_LEVEL, min(73 - GetUInt32Value(UNIT_FIELD_LEVEL), info->lvl_mod_a));
 
 	for(uint32 i = 0; i < 7; ++i)
 		SetUInt32Value(UNIT_FIELD_RESISTANCES+i,proto->Resistances[i]);
