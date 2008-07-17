@@ -159,7 +159,7 @@ uint32	oItemBufferPool::IsDeletedPointer( Item *objpointer )
 {
 	ObjLock.Acquire();
 	uint32 object_is_deleted = 0;
-	for(int i=next_free_avail;i<max_avails;i++)
+	for(uint32 i=next_free_avail;i<max_avails;i++)
 		if( objpointer == avail_list[ i ] )
 		{
 			object_is_deleted = 1;

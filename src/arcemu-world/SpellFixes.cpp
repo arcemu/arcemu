@@ -14548,6 +14548,38 @@ void ApplyNormalFixes()
 
 		// Insert paladin spell fixes here
 
+		//Benediction
+		sp = dbcSpell.LookupEntryForced( 20101 );
+		if( sp != NULL )
+		{
+			sp->EffectSpellGroupRelation[0] = 512 | 8388608 | 33554432 | 134217728;
+			sp->EffectSpellGroupRelation_high[0] = 1024;
+		}
+		sp = dbcSpell.LookupEntryForced( 20102 );
+		if( sp != NULL )
+		{
+			sp->EffectSpellGroupRelation[0] = 512 | 8388608 | 33554432 | 134217728;
+			sp->EffectSpellGroupRelation_high[0] = 1024;
+		}
+		sp = dbcSpell.LookupEntryForced( 20103 );
+		if( sp != NULL )
+		{
+			sp->EffectSpellGroupRelation[0] = 512 | 8388608 | 33554432 | 134217728;
+			sp->EffectSpellGroupRelation_high[0] = 1024;
+		}
+		sp = dbcSpell.LookupEntryForced( 20104 );
+		if( sp != NULL )
+		{
+			sp->EffectSpellGroupRelation[0] = 512 | 8388608 | 33554432 | 134217728;
+			sp->EffectSpellGroupRelation_high[0] = 1024;
+		}
+		sp = dbcSpell.LookupEntryForced( 20105 );
+		if( sp != NULL )
+		{
+			sp->EffectSpellGroupRelation[0] = 512 | 8388608 | 33554432 | 134217728;
+			sp->EffectSpellGroupRelation_high[0] = 1024;
+		}
+
 		/**********************************************************
 		* Holy Shield
 		**********************************************************/
