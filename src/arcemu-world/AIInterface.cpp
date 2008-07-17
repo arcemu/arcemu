@@ -236,7 +236,7 @@ void AIInterface::HandleEvent(uint32 event, Unit* pUnit, uint32 misc1)
 				{
 					if(m_Unit->GetTypeId() == TYPEID_UNIT)
 					{
-						if(static_cast<Creature*>(m_Unit)->GetCreatureName() && static_cast<Creature*>(m_Unit)->GetCreatureName()->Rank == 3)
+						if(static_cast<Creature*>(m_Unit)->GetCreatureInfo() && static_cast<Creature*>(m_Unit)->GetCreatureInfo()->Rank == 3)
 						{
 							 m_Unit->GetMapMgr()->AddCombatInProgress(m_Unit->GetGUID());
 						}
@@ -334,7 +334,7 @@ void AIInterface::HandleEvent(uint32 event, Unit* pUnit, uint32 misc1)
 				{
 					if(m_Unit->GetTypeId() == TYPEID_UNIT)
 					{
-						if(static_cast<Creature*>(m_Unit)->GetCreatureName() && static_cast<Creature*>(m_Unit)->GetCreatureName()->Rank == 3)
+						if(static_cast<Creature*>(m_Unit)->GetCreatureInfo() && static_cast<Creature*>(m_Unit)->GetCreatureInfo()->Rank == 3)
 						{
 							  m_Unit->GetMapMgr()->RemoveCombatInProgress(m_Unit->GetGUID());
 						}
@@ -746,7 +746,7 @@ void AIInterface::_UpdateTargets()
 {
 	if( m_Unit->IsPlayer() || (m_AIType != AITYPE_PET && disable_targeting ))
 		return;
-	if( ( ( Creature* )m_Unit )->GetCreatureName() && ( ( Creature* )m_Unit )->GetCreatureName()->Type == CRITTER )
+	if( ( ( Creature* )m_Unit )->GetCreatureInfo() && ( ( Creature* )m_Unit )->GetCreatureInfo()->Type == CRITTER )
 		return;
 
 	if(  m_Unit->GetMapMgr() == NULL )
@@ -1326,8 +1326,8 @@ void AIInterface::_UpdateCombat(uint32 p_time)
 				string msg = "%s attempts to run away in fear!";
 				data << (uint8)CHAT_MSG_CHANNEL;
 				data << (uint32)LANG_UNIVERSAL;
-				data << (uint32)( strlen( static_cast< Creature* >( m_Unit )->GetCreatureName()->Name ) + 1 );
-				data << static_cast< Creature* >( m_Unit )->GetCreatureName()->Name;
+				data << (uint32)( strlen( static_cast< Creature* >( m_Unit )->GetCreatureInfo()->Name ) + 1 );
+				data << static_cast< Creature* >( m_Unit )->GetCreatureInfo()->Name;
 				data << (uint64)0;
 				data << (uint32)(msg.size() + 1);
 				data << msg;
@@ -1601,7 +1601,7 @@ Unit* AIInterface::FindTarget()
 	Unit *pUnit;
 	float dist;
 	bool pvp=true;
-	if(m_Unit->GetTypeId()==TYPEID_UNIT&&((Creature*)m_Unit)->GetCreatureName()&&((Creature*)m_Unit)->GetCreatureName()->Civilian)
+	if(m_Unit->GetTypeId()==TYPEID_UNIT&&((Creature*)m_Unit)->GetCreatureInfo()&&((Creature*)m_Unit)->GetCreatureInfo()->Civilian)
 		pvp=false;
 
 	//target is immune to all form of attacks, cant attack either.
@@ -1855,8 +1855,8 @@ bool AIInterface::FindFriends(float dist)
 	}
 
 	// check if we're a civillan, in which case summon guards on a despawn timer
-	uint8 civilian = (((Creature*)m_Unit)->GetCreatureName()) ? (((Creature*)m_Unit)->GetCreatureName()->Civilian) : 0;
-	uint32 family = (((Creature*)m_Unit)->GetCreatureName()) ? (((Creature*)m_Unit)->GetCreatureName()->Type) : 0;
+	uint8 civilian = (((Creature*)m_Unit)->GetCreatureInfo()) ? (((Creature*)m_Unit)->GetCreatureInfo()->Civilian) : 0;
+	uint32 family = (((Creature*)m_Unit)->GetCreatureInfo()) ? (((Creature*)m_Unit)->GetCreatureInfo()->Type) : 0;
 	if(family == HUMANOID && civilian && getMSTime() > m_guardTimer && !IS_INSTANCE(m_Unit->GetMapId()))
 	{
 		m_guardTimer = getMSTime() + 15000;
@@ -1971,8 +1971,8 @@ float AIInterface::_CalcAggroRange(Unit* target)
 	}
 
 	// Multiply by elite value
-	if(((Creature*)m_Unit)->GetCreatureName() && ((Creature*)m_Unit)->GetCreatureName()->Rank > 0)
-		AggroRange *= (((Creature*)m_Unit)->GetCreatureName()->Rank) * 1.50f;
+	if(((Creature*)m_Unit)->GetCreatureInfo() && ((Creature*)m_Unit)->GetCreatureInfo()->Rank > 0)
+		AggroRange *= (((Creature*)m_Unit)->GetCreatureInfo()->Rank) * 1.50f;
 
 	if(AggroRange > 40.0f) // cap at 40.0f
 	{

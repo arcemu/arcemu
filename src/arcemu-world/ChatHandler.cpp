@@ -532,9 +532,9 @@ void WorldSession::HandleTextEmoteOpcode( WorldPacket & recv_data )
 		else if(pUnit->GetTypeId() == TYPEID_UNIT)
 		{
 			Creature * p = static_cast<Creature*>(pUnit);
-			if(p->GetCreatureName())
+			if(p->GetCreatureInfo())
 			{
-				name = p->GetCreatureName()->Name;
+				name = p->GetCreatureInfo()->Name;
 				namelen = (uint32)strlen(name) + 1;
 			}
 			else

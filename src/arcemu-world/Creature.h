@@ -507,8 +507,8 @@ public:
 
 	uint32 m_TaxiNode;
 	
-	ARCEMU_INLINE CreatureInfo *GetCreatureName() { return creature_info; }
-	ARCEMU_INLINE void SetCreatureName(CreatureInfo *ci) { creature_info = ci; }
+	ARCEMU_INLINE CreatureInfo *GetCreatureInfo() { return creature_info; }
+	ARCEMU_INLINE void SetCreatureInfo(CreatureInfo *ci) { creature_info = ci; }
 	ARCEMU_INLINE Trainer* GetTrainer() { return mTrainer; }
 	void RegenerateFocus();
 
@@ -534,6 +534,7 @@ public:
 	AuctionHouse * auctionHouse;
 	bool has_waypoint_text;
 	bool has_combat_text;
+	int8 m_lootMethod;
 
 	void DeleteMe();
 	bool CanAddToWorld();
@@ -554,8 +555,6 @@ public:
 	LocationVector * m_transportPosition;
 	uint32 m_transportGuid;
 protected:
-	CreatureInfo *creature_info;
-	CreatureProto * proto;
 	CreatureAIScript *_myScriptClass;
 	bool m_limbostate;
 	Trainer* mTrainer;
@@ -583,9 +582,9 @@ protected:
 	bool m_PickPocketed;
 	uint32 _fields[UNIT_END];
 	uint32 m_healthfromspell;
-
-public:
-	int8 m_lootMethod;
+private:
+	CreatureInfo *creature_info;
+	CreatureProto * proto;	
 };
 
 #endif

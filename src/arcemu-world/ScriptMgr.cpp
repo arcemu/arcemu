@@ -512,7 +512,7 @@ void GossipScript::GossipHello(Object* pObject, Player* Plr, bool AutoSend)
 	
 	if((flags & UNIT_NPC_FLAG_TRAINER || flags & UNIT_NPC_FLAG_TRAINER_PROF) && pTrainer != 0)
 	{
-		string name = pCreature->GetCreatureName()->Name;
+		string name = pCreature->GetCreatureInfo()->Name;
 		string::size_type pos = name.find(" ");	  // only take first name
 		if(pos != string::npos)
 			name = name.substr(0, pos);

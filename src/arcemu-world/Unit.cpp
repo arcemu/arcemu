@@ -2295,7 +2295,7 @@ uint32 Unit::GetSpellDidHitResult( Unit* pVictim, uint32 weapon_damage_type, Spe
 		if(pVictim->m_objectTypeId == TYPEID_UNIT) 
 		{ 
 			Creature * c = (Creature*)(pVictim);
-			if(c&&c->GetCreatureName()&&c->GetCreatureName()->Rank == ELITE_WORLDBOSS)
+			if(c&&c->GetCreatureInfo()&&c->GetCreatureInfo()->Rank == ELITE_WORLDBOSS)
 			{
 				victim_skill = std::max(victim_skill,((int32)this->getLevel()+3)*5); //used max to avoid situation when lowlvl hits boss.
 			}
@@ -2366,7 +2366,7 @@ uint32 Unit::GetSpellDidHitResult( Unit* pVictim, uint32 weapon_damage_type, Spe
 		if(m_objectTypeId == TYPEID_UNIT) 
 		{ 
 			Creature * c = (Creature*)(this);
-			if(c&&c->GetCreatureName()&&c->GetCreatureName()->Rank == ELITE_WORLDBOSS)
+			if(c&&c->GetCreatureInfo()&&c->GetCreatureInfo()->Rank == ELITE_WORLDBOSS)
 				self_skill = std::max(self_skill,((int32)pVictim->getLevel()+3)*5);//used max to avoid situation when lowlvl hits boss.
 		} 
 	}
@@ -2553,7 +2553,7 @@ void Unit::Strike( Unit* pVictim, uint32 weapon_damage_type, SpellEntry* ability
 		if( pVictim->m_objectTypeId == TYPEID_UNIT ) 
 		{ 
 			Creature* c = static_cast< Creature* >( pVictim );
-			if( c != NULL && c->GetCreatureName()&&c->GetCreatureName()->Rank == ELITE_WORLDBOSS )
+			if( c != NULL && c->GetCreatureInfo()&&c->GetCreatureInfo()->Rank == ELITE_WORLDBOSS )
 			{
 				victim_skill = std::max( victim_skill, ( (int32)getLevel() + 3 ) * 5 ); //used max to avoid situation when lowlvl hits boss.
 			}
@@ -2621,7 +2621,7 @@ void Unit::Strike( Unit* pVictim, uint32 weapon_damage_type, SpellEntry* ability
 		if(m_objectTypeId == TYPEID_UNIT) 
 		{ 
 			Creature * c = (Creature*)(this);
-			if(c&&c->GetCreatureName()&&c->GetCreatureName()->Rank == ELITE_WORLDBOSS)
+			if(c&&c->GetCreatureInfo()&&c->GetCreatureInfo()->Rank == ELITE_WORLDBOSS)
 				self_skill = std::max(self_skill,((int32)pVictim->getLevel()+3)*5);//used max to avoid situation when lowlvl hits boss.
 		} 
 		crit = 5.0f; //will be modified later
@@ -3029,7 +3029,7 @@ else
 							dmg.full_damage += int32((float(dmg.full_damage)*critextra/100.0f));
 						}
 						if(!pVictim->IsPlayer())
-							dmg.full_damage += float2int32(dmg.full_damage*static_cast< Player* >( this )->IncreaseCricticalByTypePCT[((Creature*)pVictim)->GetCreatureName() ? ((Creature*)pVictim)->GetCreatureName()->Type : 0]);
+							dmg.full_damage += float2int32(dmg.full_damage*static_cast< Player* >( this )->IncreaseCricticalByTypePCT[((Creature*)pVictim)->GetCreatureInfo() ? ((Creature*)pVictim)->GetCreatureInfo()->Type : 0]);
 					//sLog.outString( "DEBUG: After IncreaseCricticalByTypePCT: %u" , dmg.full_damage );
 					}
 
@@ -4282,8 +4282,8 @@ int32 Unit::GetSpellDmgBonus(Unit *pVictim, SpellEntry *spellInfo,int32 base_dmg
 	plus_damage += caster->GetDamageDoneMod(school);
 	plus_damage += pVictim->DamageTakenMod[school];
 //------------------------------by victim type----------------------------------------------
-	if(((Creature*)pVictim)->GetCreatureName() && caster->IsPlayer()&& !pVictim->IsPlayer())
-		plus_damage += static_cast< Player* >(caster)->IncreaseDamageByType[((Creature*)pVictim)->GetCreatureName()->Type];
+	if(((Creature*)pVictim)->GetCreatureInfo() && caster->IsPlayer()&& !pVictim->IsPlayer())
+		plus_damage += static_cast< Player* >(caster)->IncreaseDamageByType[((Creature*)pVictim)->GetCreatureInfo()->Type];
 //==========================================================================================
 //==============================+Spell Damage Bonus Modifications===========================
 //==========================================================================================
@@ -4412,7 +4412,7 @@ void Unit::Emote(EmoteType emote)
 void Unit::SendChatMessageToPlayer(uint8 type, uint32 lang, const char *msg, Player *plr)
 {
 	size_t UnitNameLength = 0, MessageLength = 0;
-	CreatureInfo *ci = (m_objectTypeId == TYPEID_UNIT) ? ((Creature*)this)->GetCreatureName() : NULL;
+	CreatureInfo *ci = (m_objectTypeId == TYPEID_UNIT) ? ((Creature*)this)->GetCreatureInfo() : NULL;
 
 	if(ci == NULL || plr == NULL)
 		return;
@@ -4463,7 +4463,7 @@ void Unit::SendChatMessageAlternateEntry(uint32 entry, uint8 type, uint32 lang, 
 void Unit::SendChatMessage(uint8 type, uint32 lang, const char *msg)
 {
 	size_t UnitNameLength = 0, MessageLength = 0;
-	CreatureInfo *ci = (m_objectTypeId == TYPEID_UNIT) ? ((Creature*)this)->GetCreatureName() : NULL;
+	CreatureInfo *ci = (m_objectTypeId == TYPEID_UNIT) ? ((Creature*)this)->GetCreatureInfo() : NULL;
 
 	if(ci == NULL)
 		return;

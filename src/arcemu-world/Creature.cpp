@@ -113,9 +113,6 @@ Creature::~Creature()
 	if(IsTotem())
 		totemOwner->m_TotemSlots[totemSlot] = 0;
 
-	if (GetScript() != NULL )
-		GetScript()->Destroy();
-
 	if(m_custom_waypoint_map != 0)
 	{
 		for(WayPointMap::iterator itr = m_custom_waypoint_map->begin(); itr != m_custom_waypoint_map->end(); ++itr)
@@ -339,7 +336,7 @@ void Creature::generateLoot()
 	}
 	else /* if(!loot.gold) */
 	{
-		CreatureInfo *info=GetCreatureName();
+		CreatureInfo *info=GetCreatureInfo();
 		if (info && info->Type != BEAST)
 		{
 			if(m_uint32Values[UNIT_FIELD_MAXHEALTH] <= 1667)
@@ -565,6 +562,9 @@ bool Creature::CanAddToWorld()
 
 void Creature::RemoveFromWorld(bool addrespawnevent, bool free_guid)
 {
+	if (GetScript() != NULL )
+		GetScript()->Destroy();
+
 	RemoveAllAuras();
 	
 	if(IsPet()) /* Is a pet: IsPet() actually returns false on a pet? o_X */
@@ -609,7 +609,7 @@ void Creature::EnslaveExpire()
 	m_walkSpeed = m_base_walkSpeed;
 	m_runSpeed = m_base_runSpeed;
 
-	switch(GetCreatureName()->Type)
+	switch(GetCreatureInfo()->Type)
 	{
 	case DEMON:
 		SetUInt32Value(UNIT_FIELD_FACTIONTEMPLATE, 90);
@@ -1704,7 +1704,7 @@ void Creature::RemoveLimboState(Unit * healer)
 void Creature::SetGuardWaypoints()
 {
 	if(!GetMapMgr()) return;
-	if(!GetCreatureName()) return;
+	if(!GetCreatureInfo()) return;
 
 	GetAIInterface()->setMoveType(1);
 	for(int i = 1; i <= 4; i++)

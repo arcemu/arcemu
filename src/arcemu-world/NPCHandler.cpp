@@ -413,7 +413,7 @@ void WorldSession::HandleGossipHelloOpcode( WorldPacket & recv_data )
 
 	sLog.outDebug( "WORLD: Received CMSG_GOSSIP_HELLO from %u",GUID_LOPART(guid) );
 
-	GossipScript * Script = qst_giver->GetCreatureName() ? qst_giver->GetCreatureName()->gossip_script : NULL;
+	GossipScript * Script = qst_giver->GetCreatureInfo() ? qst_giver->GetCreatureInfo()->gossip_script : NULL;
 	if(!Script)
 		return;
 
@@ -505,7 +505,7 @@ void WorldSession::HandleGossipSelectOptionOpcode( WorldPacket & recv_data )
 			return;
 
 		qst_giver=crt;
-		Script=crt->GetCreatureName()?crt->GetCreatureName()->gossip_script:NULL;
+		Script=crt->GetCreatureInfo()?crt->GetCreatureInfo()->gossip_script:NULL;
 	}
 	else if(guidtype==HIGHGUID_TYPE_ITEM)
 	{

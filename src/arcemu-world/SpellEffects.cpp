@@ -1031,7 +1031,7 @@ void Spell::SpellEffectDummy(uint32 i) // Dummy(Scripted events)
 				{
 					if(static_cast<Creature *>((*i))->getDeathState() == CORPSE)
 					{
-						CreatureInfo *cn = static_cast<Creature *>((*i))->GetCreatureName();
+						CreatureInfo *cn = static_cast<Creature *>((*i))->GetCreatureInfo();
 							if(cn && cn->Type == HUMANOID || cn->Type == UNDEAD)
 							{
 								if(p_caster->GetDistance2dSq((*i)) < rad)
@@ -1534,7 +1534,7 @@ void Spell::SpellEffectApplyAura(uint32 i)  // Apply Aura
 	if ( !playerTarget )
 	{
 		Creature * c = (Creature*)( unitTarget );
-		if (c&&c->GetCreatureName()&&c->GetCreatureName()->Rank == ELITE_WORLDBOSS)
+		if (c&&c->GetCreatureInfo()&&c->GetCreatureInfo()->Rank == ELITE_WORLDBOSS)
 		{
 			switch(GetProto()->EffectApplyAuraName[i])
 			{
@@ -3515,20 +3515,20 @@ void Spell::SpellEffectTameCreature(uint32 i)
 
 	if(!tame || !p_caster || !p_caster->isAlive() || !tame->isAlive() || p_caster->getClass() != HUNTER )
 		result = SPELL_FAILED_BAD_TARGETS;
-	else if(!tame->GetCreatureName())
+	else if(!tame->GetCreatureInfo())
 		result = SPELL_FAILED_BAD_TARGETS;
-	else if(tame->GetCreatureName()->Type != BEAST)
+	else if(tame->GetCreatureInfo()->Type != BEAST)
 		result = SPELL_FAILED_BAD_TARGETS;
 	else if(tame->getLevel() > p_caster->getLevel())
 		result = SPELL_FAILED_HIGHLEVEL;
 	else if(p_caster->GeneratePetNumber() == 0)
 		result = SPELL_FAILED_BAD_TARGETS;
-	else if(!tame->GetCreatureName()->Family)
+	else if(!tame->GetCreatureInfo()->Family)
 		result = SPELL_FAILED_BAD_TARGETS;
 	else if(p_caster->GetSummon() || p_caster->GetUnstabledPetNumber())
 		result = SPELL_FAILED_ALREADY_HAVE_SUMMON;
 	{
-		CreatureFamilyEntry *cf = dbcCreatureFamily.LookupEntry(tame->GetCreatureName()->Family);
+		CreatureFamilyEntry *cf = dbcCreatureFamily.LookupEntry(tame->GetCreatureInfo()->Family);
 		if(cf && !cf->tameable)
 				result = SPELL_FAILED_BAD_TARGETS;
 	}
@@ -3541,7 +3541,7 @@ void Spell::SpellEffectTameCreature(uint32 i)
 	tame->GetAIInterface()->HandleEvent(EVENT_LEAVECOMBAT, p_caster, 0);
 	Pet *pPet = objmgr.CreatePet();
 	pPet->SetInstanceID(p_caster->GetInstanceID());
-	pPet->CreateAsSummon(tame->GetEntry(), tame->GetCreatureName(), tame, static_cast<Unit*>(p_caster), NULL, 2, 0);
+	pPet->CreateAsSummon(tame->GetEntry(), tame->GetCreatureInfo(), tame, static_cast<Unit*>(p_caster), NULL, 2, 0);
 	//tame->SafeDelete();
 	//delete tame;
 	tame->Despawn(0,tame->GetProto()? tame->GetProto()->RespawnTime:0);
@@ -3729,7 +3729,7 @@ void Spell::SpellEffectInterruptCast(uint32 i) // Interrupt Cast
 	if(unitTarget->GetTypeId()==TYPEID_UNIT)
 	{
 		Creature * c = (Creature*)( unitTarget );
-		if (c&&c->GetCreatureName()&&c->GetCreatureName()->Rank == ELITE_WORLDBOSS)
+		if (c&&c->GetCreatureInfo()&&c->GetCreatureInfo()->Rank == ELITE_WORLDBOSS)
 			return;
 	}
 	// FIXME:This thing prevent target from spell casting too but cant find.
@@ -3782,7 +3782,7 @@ void Spell::SpellEffectPickpocket(uint32 i) // pickpocket
 		return;
 
 	Creature *target = static_cast<Creature*>( unitTarget );
-	if(target->IsPickPocketed() || (target->GetCreatureName() && target->GetCreatureName()->Type != HUMANOID))
+	if(target->IsPickPocketed() || (target->GetCreatureInfo() && target->GetCreatureInfo()->Type != HUMANOID))
 	{
 		SendCastResult(SPELL_FAILED_TARGET_NO_POCKETS);
 		return;
@@ -3790,7 +3790,7 @@ void Spell::SpellEffectPickpocket(uint32 i) // pickpocket
 			
   lootmgr.FillPickpocketingLoot(&((Creature*)unitTarget)->loot,unitTarget->GetEntry());
 
-	uint32 _rank = ((Creature*)unitTarget)->GetCreatureName() ? ((Creature*)unitTarget)->GetCreatureName()->Rank : 0;
+	uint32 _rank = ((Creature*)unitTarget)->GetCreatureInfo() ? ((Creature*)unitTarget)->GetCreatureInfo()->Rank : 0;
 	unitTarget->loot.gold = float2int32((_rank+1) * unitTarget->getLevel() * (RandomUInt(5) + 1) * sWorld.getRate(RATE_MONEY));
 
 	p_caster->SendLoot(unitTarget->GetGUID(), LOOT_PICKPOCKETING );
@@ -3896,7 +3896,7 @@ void Spell::SpellEffectHealMechanical(uint32 i)
 		return;
 	if(unitTarget->GetTypeId() != TYPEID_UNIT)
 		return;
-	if(((Creature*)unitTarget)->GetCreatureName()->Type != MECHANICAL)
+	if(((Creature*)unitTarget)->GetCreatureInfo()->Type != MECHANICAL)
 		return;
 
 	Heal((int32)damage);
@@ -4908,7 +4908,7 @@ void Spell::SpellEffectSummonCritter(uint32 i)
 	if(u_caster->critterPet)
 	{
 		// if we already have this critter, we will just dismiss it and return
-		if(u_caster->critterPet->GetCreatureName() && u_caster->critterPet->GetCreatureName()->Id == SummonCritterID)
+		if(u_caster->critterPet->GetCreatureInfo() && u_caster->critterPet->GetCreatureInfo()->Id == SummonCritterID)
 		{
 			u_caster->critterPet->RemoveFromWorld(false,true);
 			delete u_caster->critterPet;

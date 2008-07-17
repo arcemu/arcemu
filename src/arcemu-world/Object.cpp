@@ -1762,7 +1762,7 @@ void Object::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
 			// Tagging
 			Creature *victim = static_cast<Creature*>(pVictim);
 			bool taggable;
-			if(victim->GetCreatureName() && victim->GetCreatureName()->Type == CRITTER || victim->IsPet())
+			if(victim->GetCreatureInfo() && victim->GetCreatureInfo()->Type == CRITTER || victim->IsPet())
 				taggable = false;
 			else taggable = true;
 
@@ -1914,9 +1914,9 @@ void Object::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
 	/*------------------------------------ DUEL HANDLERS END--------------------------*/
 
 	bool isCritter = false;
-	if(pVictim->GetTypeId() == TYPEID_UNIT && ((Creature*)pVictim)->GetCreatureName())
+	if(pVictim->GetTypeId() == TYPEID_UNIT && ((Creature*)pVictim)->GetCreatureInfo())
 	{
-			if(((Creature*)pVictim)->GetCreatureName()->Type == CRITTER)
+			if(((Creature*)pVictim)->GetCreatureInfo()->Type == CRITTER)
 				isCritter = true;
 	}
 	/* -------------------------- HIT THAT CAUSES VICTIM TO DIE ---------------------------*/
@@ -2162,7 +2162,7 @@ void Object::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
 			}			
 
 			// it Seems that pets some how dont get a name and cause a crash here
-			//bool isCritter = (pVictim->GetCreatureName() != NULL)? pVictim->GetCreatureName()->Type : 0;
+			//bool isCritter = (pVictim->GetCreatureInfo() != NULL)? pVictim->GetCreatureInfo()->Type : 0;
 
 			//-----------------------------------LOOOT--------------------------------------------
 			if ((!pVictim->IsPet())&& ( !isCritter ))

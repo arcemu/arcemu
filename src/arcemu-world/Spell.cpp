@@ -276,7 +276,7 @@ void Spell::FillSpecifiedTargetsInArea(uint32 i,float srcx,float srcy,float srcz
 		{
 			if((*itr)->GetTypeId()!= TYPEID_UNIT)
 				continue;
-			CreatureInfo *inf = ((Creature*)(*itr))->GetCreatureName();
+			CreatureInfo *inf = ((Creature*)(*itr))->GetCreatureInfo();
 			if(!inf || !(1<<(inf->Type-1) & GetProto()->TargetCreatureType))
 				continue;
 		}
@@ -339,7 +339,7 @@ void Spell::FillAllTargetsInArea(uint32 i,float srcx,float srcy,float srcz, floa
 		{
 			if( (*itr)->GetTypeId()!= TYPEID_UNIT )
 				continue;
-			CreatureInfo *inf = ((Creature*)(*itr))->GetCreatureName();
+			CreatureInfo *inf = ((Creature*)(*itr))->GetCreatureInfo();
 			if( !inf || !( 1 << (inf->Type-1) & GetProto()->TargetCreatureType ) )
 				continue;
 		}
@@ -389,7 +389,7 @@ void Spell::FillAllFriendlyInArea( uint32 i, float srcx, float srcy, float srcz,
 		{
 			if((*itr)->GetTypeId()!= TYPEID_UNIT)
 				continue;
-			CreatureInfo *inf = ((Creature*)(*itr))->GetCreatureName();
+			CreatureInfo *inf = ((Creature*)(*itr))->GetCreatureInfo();
 			if(!inf || !(1<<(inf->Type-1) & GetProto()->TargetCreatureType))
 				continue;
 		}
@@ -449,7 +449,7 @@ uint64 Spell::GetSinglePossibleEnemy(uint32 i,float prange)
 		{
 			if( (*itr)->GetTypeId() != TYPEID_UNIT )
 				continue;
-			CreatureInfo *inf = ((Creature*)(*itr))->GetCreatureName();
+			CreatureInfo *inf = ((Creature*)(*itr))->GetCreatureInfo();
 			if(!inf || !(1<<(inf->Type-1) & GetProto()->TargetCreatureType))
 				continue;
 		}
@@ -497,7 +497,7 @@ uint64 Spell::GetSinglePossibleFriend(uint32 i,float prange)
 		{
 			if((*itr)->GetTypeId()!= TYPEID_UNIT)
 				continue;
-			CreatureInfo *inf = ((Creature*)(*itr))->GetCreatureName();
+			CreatureInfo *inf = ((Creature*)(*itr))->GetCreatureInfo();
 				if(!inf || !(1<<(inf->Type-1) & GetProto()->TargetCreatureType))
 					continue;
 		}
@@ -538,7 +538,7 @@ uint8 Spell::DidHit(uint32 effindex,Unit* target)
 	/************************************************************************/
 	/* Elite mobs always hit                                                */
 	/************************************************************************/
-	if(u_caster && u_caster->GetTypeId()==TYPEID_UNIT && ((Creature*)u_caster)->GetCreatureName() && ((Creature*)u_caster)->GetCreatureName()->Rank >= 3)
+	if(u_caster && u_caster->GetTypeId()==TYPEID_UNIT && ((Creature*)u_caster)->GetCreatureInfo() && ((Creature*)u_caster)->GetCreatureInfo()->Rank >= 3)
 		return SPELL_DID_HIT_SUCCESS;
 
 	/************************************************************************/
@@ -3442,7 +3442,7 @@ uint8 Spell::CanCast(bool tolerate)
 						else if(target->GetTypeId() == TYPEID_UNIT)
 						{
 							Creature * c = (Creature*)(target);
-							if (c&&c->GetCreatureName()&&c->GetCreatureName()->Rank >ELITE_ELITE)
+							if (c&&c->GetCreatureInfo()&&c->GetCreatureInfo()->Rank >ELITE_ELITE)
 								return SPELL_FAILED_HIGHLEVEL;
 						}
 					}

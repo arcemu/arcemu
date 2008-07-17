@@ -917,8 +917,8 @@ bool ChatHandler::HandleNpcInfoCommand(const char *args, WorldSession *m_session
 	uint32 guid = GUID_LOPART(m_session->GetPlayer()->GetSelection());
 	Creature *crt = getSelectedCreature(m_session);
 	if(!crt) return false;
-	if(crt->GetCreatureName())
-		BlueSystemMessage(m_session, "Showing creature info for %s", crt->GetCreatureName()->Name);
+	if(crt->GetCreatureInfo())
+		BlueSystemMessage(m_session, "Showing creature info for %s", crt->GetCreatureInfo()->Name);
 	SystemMessage(m_session, "GUID: %d", guid);
 	SystemMessage(m_session, "Faction: %d", crt->GetUInt32Value(UNIT_FIELD_FACTIONTEMPLATE));
 	SystemMessage(m_session, "NPCFlags: %d", crt->GetUInt32Value(UNIT_NPC_FLAGS));
@@ -2057,7 +2057,7 @@ bool ChatHandler::HandleNpcReturnCommand(const char* args, WorldSession* m_sessi
 	creature->GetAIInterface()->WipeTargetList();
 	creature->GetAIInterface()->MoveTo(x, y, z, o);
 
-	sGMLog.writefromsession( m_session, "returned NPC %s, sqlid %u", creature->GetCreatureName()->Name, creature->GetSQL_id() );
+	sGMLog.writefromsession( m_session, "returned NPC %s, sqlid %u", creature->GetCreatureInfo()->Name, creature->GetSQL_id() );
 
 	return true;
 }
@@ -2090,7 +2090,7 @@ bool ChatHandler::HandleFormationLink1Command(const char* args, WorldSession * m
 	if(pCreature == 0) return true;
 
 	m_session->GetPlayer()->linkTarget = pCreature;
-	BlueSystemMessage(m_session, "Linkup \"master\" set to %s.", pCreature->GetCreatureName()->Name);
+	BlueSystemMessage(m_session, "Linkup \"master\" set to %s.", pCreature->GetCreatureInfo()->Name);
 	return true;
 }
 
@@ -2123,8 +2123,8 @@ bool ChatHandler::HandleFormationLink2Command(const char* args, WorldSession * m
 	WorldDatabase.Execute("INSERT INTO creature_formations VALUES(%u, %u, '%f', '%f')", 
 		slave->GetSQL_id(), slave->GetAIInterface()->m_formationLinkSqlId, ang, dist);
 
-	BlueSystemMessage(m_session, "%s linked up to %s with a distance of %f at %f radians.", slave->GetCreatureName()->Name, 
-		static_cast< Creature* >( m_session->GetPlayer()->linkTarget )->GetCreatureName()->Name, dist, ang );
+	BlueSystemMessage(m_session, "%s linked up to %s with a distance of %f at %f radians.", slave->GetCreatureInfo()->Name, 
+		static_cast< Creature* >( m_session->GetPlayer()->linkTarget )->GetCreatureInfo()->Name, dist, ang );
 
 	return true;
 }
@@ -2136,7 +2136,7 @@ bool ChatHandler::HandleNpcFollowCommand(const char* args, WorldSession * m_sess
 
 	creature->GetAIInterface()->SetUnitToFollow(m_session->GetPlayer());
 
-	sGMLog.writefromsession( m_session, "used npc follow command on %s, sqlid %u", creature->GetCreatureName()->Name, creature->GetSQL_id() );
+	sGMLog.writefromsession( m_session, "used npc follow command on %s, sqlid %u", creature->GetCreatureInfo()->Name, creature->GetSQL_id() );
 	return true;
 }
 
@@ -2164,7 +2164,7 @@ bool ChatHandler::HandleNullFollowCommand(const char* args, WorldSession * m_ses
 	c->GetAIInterface()->SetAIState(STATE_IDLE);
 	c->GetAIInterface()->SetUnitToFollow(0);
 
-	sGMLog.writefromsession( m_session, "cancelled npc follow command on %s, sqlid %u", c->GetCreatureName()->Name, c->GetSQL_id() );
+	sGMLog.writefromsession( m_session, "cancelled npc follow command on %s, sqlid %u", c->GetCreatureInfo()->Name, c->GetSQL_id() );
 	return true;
 }
 
@@ -2797,7 +2797,7 @@ bool ChatHandler::HandleNpcPossessCommand(const char * args, WorldSession * m_se
 			sGMLog.writefromsession( m_session, "used possess command on PLAYER %s", static_cast< Player* >( pTarget )->GetName() );
 			break;
 		case TYPEID_UNIT:
-			sGMLog.writefromsession( m_session, "used possess command on CREATURE %s, sqlid %u", static_cast< Creature* >( pTarget )->GetCreatureName() ? static_cast< Creature* >( pTarget )->GetCreatureName()->Name : "unknown", static_cast< Creature* >( pTarget )->GetSQL_id() );
+			sGMLog.writefromsession( m_session, "used possess command on CREATURE %s, sqlid %u", static_cast< Creature* >( pTarget )->GetCreatureInfo() ? static_cast< Creature* >( pTarget )->GetCreatureInfo()->Name : "unknown", static_cast< Creature* >( pTarget )->GetSQL_id() );
 			break;
 	}
 	return true;

@@ -143,7 +143,7 @@ bool ChatHandler::HandleDeleteCommand(const char* args, WorldSession *m_session)
 		SystemMessage(m_session, "You can't delete a pet." );
 		return true;
 	}
-	sGMLog.writefromsession(m_session, "used npc delete, sqlid %u, creature %s, pos %f %f %f", unit->GetSQL_id(), unit->GetCreatureName() ? unit->GetCreatureName()->Name : "wtfbbqhax", unit->GetPositionX(), unit->GetPositionY(), unit->GetPositionZ());
+	sGMLog.writefromsession(m_session, "used npc delete, sqlid %u, creature %s, pos %f %f %f", unit->GetSQL_id(), unit->GetCreatureInfo() ? unit->GetCreatureInfo()->Name : "wtfbbqhax", unit->GetPositionX(), unit->GetPositionY(), unit->GetPositionZ());
 	if( unit->m_spawn == NULL )
 		return false;
 	BlueSystemMessage(m_session, "Deleted creature ID %u", unit->spawnid);
@@ -323,7 +323,7 @@ bool ChatHandler::HandleNPCFlagCommand(const char* args, WorldSession *m_session
 	pCreature->SaveToDB();
 	SystemMessage(m_session, "Value saved, you may need to rejoin or clean your client cache.");
 
-	sGMLog.writefromsession( m_session, "changed npc flags of creature %u [%s] to %u", pCreature->GetEntry(), pCreature->GetCreatureName()->Name, npcFlags );
+	sGMLog.writefromsession( m_session, "changed npc flags of creature %u [%s] to %u", pCreature->GetEntry(), pCreature->GetCreatureInfo()->Name, npcFlags );
 
 	return true;
 }
@@ -368,7 +368,7 @@ bool ChatHandler::HandleKillCommand(const char *args, WorldSession *m_session)
 		break;
 
 	case TYPEID_UNIT:
-		sGMLog.writefromsession( m_session, "used kill command on CREATURE %u [%s], sqlid %u%s", static_cast< Creature* >( target )->GetEntry(), static_cast< Creature* >( target )->GetCreatureName() ? static_cast< Creature* >( target )->GetCreatureName()->Name : "unknown", static_cast< Creature* >( target )->GetSQL_id(), m_session->GetPlayer()->InGroup() ? ", in group" : "" );
+		sGMLog.writefromsession( m_session, "used kill command on CREATURE %u [%s], sqlid %u%s", static_cast< Creature* >( target )->GetEntry(), static_cast< Creature* >( target )->GetCreatureInfo() ? static_cast< Creature* >( target )->GetCreatureInfo()->Name : "unknown", static_cast< Creature* >( target )->GetSQL_id(), m_session->GetPlayer()->InGroup() ? ", in group" : "" );
 		break;
 	}
 
@@ -469,7 +469,7 @@ bool ChatHandler::HandleCastSpellCommand(const char* args, WorldSession *m_sessi
 				sGMLog.writefromsession( m_session, "casted spell %d on PLAYER %s", spellid, static_cast< Player* >( target )->GetName() );
 			break;
 		case TYPEID_UNIT:
-			sGMLog.writefromsession( m_session, "casted spell %d on CREATURE %u [%s], sqlid %u", spellid, static_cast< Creature* >( target )->GetEntry(), static_cast< Creature* >( target )->GetCreatureName() ? static_cast< Creature* >( target )->GetCreatureName()->Name : "unknown", static_cast< Creature* >( target )->GetSQL_id() );
+			sGMLog.writefromsession( m_session, "casted spell %d on CREATURE %u [%s], sqlid %u", spellid, static_cast< Creature* >( target )->GetEntry(), static_cast< Creature* >( target )->GetCreatureInfo() ? static_cast< Creature* >( target )->GetCreatureInfo()->Name : "unknown", static_cast< Creature* >( target )->GetSQL_id() );
 			break;
 	}
 
@@ -530,7 +530,7 @@ bool ChatHandler::HandleCastSpellNECommand(const char* args, WorldSession *m_ses
 				sGMLog.writefromsession( m_session, "casted spell %d on PLAYER %s", spellId, static_cast< Player* >( target )->GetName() );
 			break;
 		case TYPEID_UNIT:
-			sGMLog.writefromsession( m_session, "casted spell %d on CREATURE %u [%s], sqlid %u", spellId, static_cast< Creature* >( target )->GetEntry(), static_cast< Creature* >( target )->GetCreatureName() ? static_cast< Creature* >( target )->GetCreatureName()->Name : "unknown", static_cast< Creature* >( target )->GetSQL_id() );
+			sGMLog.writefromsession( m_session, "casted spell %d on CREATURE %u [%s], sqlid %u", spellId, static_cast< Creature* >( target )->GetEntry(), static_cast< Creature* >( target )->GetCreatureInfo() ? static_cast< Creature* >( target )->GetCreatureInfo()->Name : "unknown", static_cast< Creature* >( target )->GetSQL_id() );
 			break;
 	}
 
@@ -577,7 +577,7 @@ bool ChatHandler::HandleCastSelfCommand(const char* args, WorldSession *m_sessio
 				sGMLog.writefromsession( m_session, "used castself with spell %d on PLAYER %s", spellid, static_cast< Player* >( target )->GetName() );
 			break;
 		case TYPEID_UNIT:
-			sGMLog.writefromsession( m_session, "used castself with spell %d on CREATURE %u [%s], sqlid %u", spellid, static_cast< Creature* >( target )->GetEntry(), static_cast< Creature* >( target )->GetCreatureName() ? static_cast< Creature* >( target )->GetCreatureName()->Name : "unknown", static_cast< Creature* >( target )->GetSQL_id() );
+			sGMLog.writefromsession( m_session, "used castself with spell %d on CREATURE %u [%s], sqlid %u", spellid, static_cast< Creature* >( target )->GetEntry(), static_cast< Creature* >( target )->GetCreatureInfo() ? static_cast< Creature* >( target )->GetCreatureInfo()->Name : "unknown", static_cast< Creature* >( target )->GetSQL_id() );
 			break;
 	}
 
@@ -1215,6 +1215,6 @@ bool ChatHandler::HandleNpcComeCommand(const char* args, WorldSession* m_session
 	if(!crt) return true;
 
 	crt->GetAIInterface()->MoveTo(plr->GetPositionX(), plr->GetPositionY(), plr->GetPositionZ(), plr->GetOrientation());
-	sGMLog.writefromsession(m_session,"used npc come command on %s, sqlid %u",crt->GetCreatureName()->Name,crt->GetSQL_id());
+	sGMLog.writefromsession(m_session,"used npc come command on %s, sqlid %u",crt->GetCreatureInfo()->Name,crt->GetSQL_id());
 	return true;
 }

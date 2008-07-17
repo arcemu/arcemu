@@ -2094,7 +2094,7 @@ void Aura::SpellAuraDummy(bool apply)
 				tamed->GetAIInterface()->HandleEvent( EVENT_LEAVECOMBAT, p_caster, 0 );
 				Pet *pPet = objmgr.CreatePet();
 				pPet->SetInstanceID( p_caster->GetInstanceID() );
-				pPet->CreateAsSummon( tamed->GetEntry(), tamed->GetCreatureName(), tamed, static_cast<Unit*>(p_caster), triggerspell, 2, 900000 );
+				pPet->CreateAsSummon( tamed->GetEntry(), tamed->GetCreatureInfo(), tamed, static_cast<Unit*>(p_caster), triggerspell, 2, 900000 );
 				pPet->CastSpell( tamed, triggerspell, false );
 				tamed->SafeDelete();
 				qle->SetMobCount( 0, 1 );
@@ -5674,7 +5674,7 @@ void Aura::SpellAuraChannelDeathItem(bool apply)
 	{
 		if( m_target->GetTypeId() == TYPEID_UNIT || m_target->GetTypeId() == TYPEID_PLAYER )
 		{
-			if ( m_target->GetTypeId() == TYPEID_UNIT && ((Creature*)m_target)->GetCreatureName() != NULL && ((Creature*)m_target)->GetCreatureName()->Type == CRITTER )
+			if ( m_target->GetTypeId() == TYPEID_UNIT && ((Creature*)m_target)->GetCreatureInfo() != NULL && ((Creature*)m_target)->GetCreatureInfo()->Type == CRITTER )
 				return;
 
 			if(m_target->isDead())

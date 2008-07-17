@@ -336,8 +336,8 @@ void Spell::SpellTargetSingleTargetEnemy(uint32 i, uint32 j)
 		if( cr == NULL )
 			return;
 
-		if( cr->GetCreatureName() )
-			if(!(1<<(cr->GetCreatureName()->Type-1) & m_spellInfo->TargetCreatureType))
+		if( cr->GetCreatureInfo() )
+			if(!(1<<(cr->GetCreatureInfo()->Type-1) & m_spellInfo->TargetCreatureType))
 				return;
 	}
 

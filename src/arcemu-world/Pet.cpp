@@ -537,7 +537,7 @@ void Pet::InitializeMe(bool first)
 	GetAIInterface()->SetUnitToFollow(m_Owner);
 	GetAIInterface()->SetFollowDistance(3.0f);
 
-	SetCreatureName(CreatureNameStorage.LookupEntry(GetEntry()));
+	SetCreatureInfo(CreatureNameStorage.LookupEntry(GetEntry()));
 	proto=CreatureProtoStorage.LookupEntry(GetEntry());
 	m_Owner->SetSummon(this);
 	m_Owner->SetUInt64Value(UNIT_FIELD_SUMMON, this->GetGUID());
@@ -800,7 +800,7 @@ void Pet::SetDefaultSpells()
 	else
 	{
 
-		uint32 Line = GetCreatureName()->SpellDataID;
+		uint32 Line = GetCreatureInfo()->SpellDataID;
 		if(Line)
 		{
 			CreatureSpellDataEntry * SpellData = dbcCreatureSpellData.LookupEntry(Line);

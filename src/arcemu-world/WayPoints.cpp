@@ -915,6 +915,6 @@ bool ChatHandler::HandleNpcSelectCommand(const char * args, WorldSession * m_ses
 	}
 
 	plr->SetSelection(un->GetGUID());
-	SystemMessage(m_session, "Set selection to "I64FMT" (%s)", un->GetGUID(), un->GetCreatureName() ? un->GetCreatureName()->Name : "Unknown");
+	SystemMessage(m_session, "Set selection to "I64FMT" (%s)", un->GetGUID(), un->GetCreatureInfo() ? un->GetCreatureInfo()->Name : "Unknown");
 	return true;
 }
