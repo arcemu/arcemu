@@ -1198,6 +1198,7 @@
 #define PLAYER_SPELL_CRIT_PERCENTAGE06                         	UNIT_END + 0x448	//  Size: 7, Type: Float, Flags: 2
 #define PLAYER_SHIELD_BLOCK                                    	UNIT_END + 0x449	//  Size: 1, Type: Int32, Flags: 2
 #define PLAYER_EXPLORED_ZONES_1                                	UNIT_END + 0x44A	//  Size: 64, Type: Bytes, Flags: 2
+/*
 #define PLAYER_EXPLORED_ZONES_01                               	UNIT_END + 0x44B	//  Size: 64, Type: Bytes, Flags: 2
 #define PLAYER_EXPLORED_ZONES_02                               	UNIT_END + 0x44C	//  Size: 64, Type: Bytes, Flags: 2
 #define PLAYER_EXPLORED_ZONES_03                               	UNIT_END + 0x44D	//  Size: 64, Type: Bytes, Flags: 2
@@ -1261,38 +1262,45 @@
 #define PLAYER_EXPLORED_ZONES_61                               	UNIT_END + 0x487	//  Size: 64, Type: Bytes, Flags: 2
 #define PLAYER_EXPLORED_ZONES_62                               	UNIT_END + 0x488	//  Size: 64, Type: Bytes, Flags: 2
 #define PLAYER_EXPLORED_ZONES_63                               	UNIT_END + 0x489	//  Size: 64, Type: Bytes, Flags: 2
-#define PLAYER_REST_STATE_EXPERIENCE                           	UNIT_END + 0x48A	//  Size: 1, Type: Int32, Flags: 2
-#define PLAYER_FIELD_COINAGE                                   	UNIT_END + 0x48B	//  Size: 1, Type: Int32, Flags: 2
-#define PLAYER_FIELD_MOD_DAMAGE_DONE_POS                       	UNIT_END + 0x48C	//  Size: 7, Type: Int32, Flags: 2
+*/
+#define PLAYER_REST_STATE_EXPERIENCE                           	UNIT_END + 0x4CA	//  Size: 1, Type: Int32, Flags: 2
+#define PLAYER_FIELD_COINAGE                                   	UNIT_END + 0x4CB	//  Size: 1, Type: Int32, Flags: 2
+#define PLAYER_FIELD_MOD_DAMAGE_DONE_POS                       	UNIT_END + 0x4CC	//  Size: 7, Type: Int32, Flags: 2
+/*
 #define PLAYER_FIELD_MOD_DAMAGE_DONE_POS_01                    	UNIT_END + 0x48D	//  Size: 7, Type: Int32, Flags: 2
 #define PLAYER_FIELD_MOD_DAMAGE_DONE_POS_02                    	UNIT_END + 0x48E	//  Size: 7, Type: Int32, Flags: 2
 #define PLAYER_FIELD_MOD_DAMAGE_DONE_POS_03                    	UNIT_END + 0x48F	//  Size: 7, Type: Int32, Flags: 2
 #define PLAYER_FIELD_MOD_DAMAGE_DONE_POS_04                    	UNIT_END + 0x490	//  Size: 7, Type: Int32, Flags: 2
 #define PLAYER_FIELD_MOD_DAMAGE_DONE_POS_05                    	UNIT_END + 0x491	//  Size: 7, Type: Int32, Flags: 2
 #define PLAYER_FIELD_MOD_DAMAGE_DONE_POS_06                    	UNIT_END + 0x492	//  Size: 7, Type: Int32, Flags: 2
-#define PLAYER_FIELD_MOD_DAMAGE_DONE_NEG                       	UNIT_END + 0x493	//  Size: 7, Type: Int32, Flags: 2
+*/
+#define PLAYER_FIELD_MOD_DAMAGE_DONE_NEG                       	UNIT_END + 0x4D3	//  Size: 7, Type: Int32, Flags: 2
+/*
 #define PLAYER_FIELD_MOD_DAMAGE_DONE_NEG_01                    	UNIT_END + 0x494	//  Size: 7, Type: Int32, Flags: 2
 #define PLAYER_FIELD_MOD_DAMAGE_DONE_NEG_02                    	UNIT_END + 0x495	//  Size: 7, Type: Int32, Flags: 2
 #define PLAYER_FIELD_MOD_DAMAGE_DONE_NEG_03                    	UNIT_END + 0x496	//  Size: 7, Type: Int32, Flags: 2
 #define PLAYER_FIELD_MOD_DAMAGE_DONE_NEG_04                    	UNIT_END + 0x497	//  Size: 7, Type: Int32, Flags: 2
 #define PLAYER_FIELD_MOD_DAMAGE_DONE_NEG_05                    	UNIT_END + 0x498	//  Size: 7, Type: Int32, Flags: 2
-#define PLAYER_FIELD_MOD_DAMAGE_DONE_NEG_06                    	UNIT_END + 0x499	//  Size: 7, Type: Int32, Flags: 2
-#define PLAYER_FIELD_MOD_DAMAGE_DONE_PCT                       	UNIT_END + 0x49A	//  Size: 7, Type: Int32, Flags: 2
+#define PLAYER_FIELD_MOD_DAMAGE_DONE_NEG_06						UNIT_END + 0x499	//  Size: 7, Type: Int32, Flags: 2
+*/
+#define PLAYER_FIELD_MOD_DAMAGE_DONE_PCT                       	UNIT_END + 0x4DA	//  Size: 7, Type: Int32, Flags: 2
+/*
 #define PLAYER_FIELD_MOD_DAMAGE_DONE_PCT_01                    	UNIT_END + 0x49B	//  Size: 7, Type: Int32, Flags: 2
 #define PLAYER_FIELD_MOD_DAMAGE_DONE_PCT_02                    	UNIT_END + 0x49C	//  Size: 7, Type: Int32, Flags: 2
 #define PLAYER_FIELD_MOD_DAMAGE_DONE_PCT_03                    	UNIT_END + 0x49D	//  Size: 7, Type: Int32, Flags: 2
 #define PLAYER_FIELD_MOD_DAMAGE_DONE_PCT_04                    	UNIT_END + 0x49E	//  Size: 7, Type: Int32, Flags: 2
 #define PLAYER_FIELD_MOD_DAMAGE_DONE_PCT_05                    	UNIT_END + 0x49F	//  Size: 7, Type: Int32, Flags: 2
 #define PLAYER_FIELD_MOD_DAMAGE_DONE_PCT_06                    	UNIT_END + 0x4A0	//  Size: 7, Type: Int32, Flags: 2
-#define PLAYER_FIELD_MOD_HEALING_DONE_POS                      	UNIT_END + 0x4A1	//  Size: 1, Type: Int32, Flags: 2
-#define PLAYER_FIELD_MOD_TARGET_RESISTANCE                     	UNIT_END + 0x4A2	//  Size: 1, Type: Int32, Flags: 2
-#define PLAYER_FIELD_MOD_TARGET_PHYSICAL_RESISTANCE            	UNIT_END + 0x4A3	//  Size: 1, Type: Int32, Flags: 2
-#define PLAYER_FIELD_BYTES                                     	UNIT_END + 0x4A4	//  Size: 1, Type: Bytes, Flags: 2
-#define PLAYER_AMMO_ID                                         	UNIT_END + 0x4A5	//  Size: 1, Type: Int32, Flags: 2
-#define PLAYER_SELF_RES_SPELL                                  	UNIT_END + 0x4A6	//  Size: 1, Type: Int32, Flags: 2
-#define PLAYER_FIELD_PVP_MEDALS                                	UNIT_END + 0x4A7	//  Size: 1, Type: Int32, Flags: 2
-#define PLAYER_FIELD_BUYBACK_PRICE_1                           	UNIT_END + 0x4A8	//  Size: 12, Type: Int32, Flags: 2
-#define PLAYER_FIELD_BUYBACK_PRICE_01                          	UNIT_END + 0x4A9	//  Size: 12, Type: Int32, Flags: 2
+*/
+#define PLAYER_FIELD_MOD_HEALING_DONE_POS                      	UNIT_END + 0x4E1	//  Size: 1, Type: Int32, Flags: 2
+#define PLAYER_FIELD_MOD_TARGET_RESISTANCE                     	UNIT_END + 0x4E2	//  Size: 1, Type: Int32, Flags: 2
+#define PLAYER_FIELD_MOD_TARGET_PHYSICAL_RESISTANCE            	UNIT_END + 0x4E3	//  Size: 1, Type: Int32, Flags: 2
+#define PLAYER_FIELD_BYTES                                     	UNIT_END + 0x4E4	//  Size: 1, Type: Bytes, Flags: 2
+#define PLAYER_AMMO_ID                                         	UNIT_END + 0x4E5	//  Size: 1, Type: Int32, Flags: 2
+#define PLAYER_SELF_RES_SPELL                                  	UNIT_END + 0x4E6	//  Size: 1, Type: Int32, Flags: 2
+#define PLAYER_FIELD_PVP_MEDALS                                	UNIT_END + 0x4E7	//  Size: 1, Type: Int32, Flags: 2
+#define PLAYER_FIELD_BUYBACK_PRICE_1                           	UNIT_END + 0x4E8	//  Size: 12, Type: Int32, Flags: 2
+/*#define PLAYER_FIELD_BUYBACK_PRICE_01                          	UNIT_END + 0x4A9	//  Size: 12, Type: Int32, Flags: 2
 #define PLAYER_FIELD_BUYBACK_PRICE_02                          	UNIT_END + 0x4AA	//  Size: 12, Type: Int32, Flags: 2
 #define PLAYER_FIELD_BUYBACK_PRICE_03                          	UNIT_END + 0x4AB	//  Size: 12, Type: Int32, Flags: 2
 #define PLAYER_FIELD_BUYBACK_PRICE_04                          	UNIT_END + 0x4AC	//  Size: 12, Type: Int32, Flags: 2
@@ -1303,7 +1311,9 @@
 #define PLAYER_FIELD_BUYBACK_PRICE_09                          	UNIT_END + 0x4B1	//  Size: 12, Type: Int32, Flags: 2
 #define PLAYER_FIELD_BUYBACK_PRICE_10                          	UNIT_END + 0x4B2	//  Size: 12, Type: Int32, Flags: 2
 #define PLAYER_FIELD_BUYBACK_PRICE_11                          	UNIT_END + 0x4B3	//  Size: 12, Type: Int32, Flags: 2
-#define PLAYER_FIELD_BUYBACK_TIMESTAMP_1                       	UNIT_END + 0x4B4	//  Size: 12, Type: Int32, Flags: 2
+*/
+#define PLAYER_FIELD_BUYBACK_TIMESTAMP_1                       	UNIT_END + 0x4F4	//  Size: 12, Type: Int32, Flags: 2
+/*
 #define PLAYER_FIELD_BUYBACK_TIMESTAMP_01                      	UNIT_END + 0x4B5	//  Size: 12, Type: Int32, Flags: 2
 #define PLAYER_FIELD_BUYBACK_TIMESTAMP_02                      	UNIT_END + 0x4B6	//  Size: 12, Type: Int32, Flags: 2
 #define PLAYER_FIELD_BUYBACK_TIMESTAMP_03                      	UNIT_END + 0x4B7	//  Size: 12, Type: Int32, Flags: 2
@@ -1315,13 +1325,15 @@
 #define PLAYER_FIELD_BUYBACK_TIMESTAMP_09                      	UNIT_END + 0x4BD	//  Size: 12, Type: Int32, Flags: 2
 #define PLAYER_FIELD_BUYBACK_TIMESTAMP_10                      	UNIT_END + 0x4BE	//  Size: 12, Type: Int32, Flags: 2
 #define PLAYER_FIELD_BUYBACK_TIMESTAMP_11                      	UNIT_END + 0x4BF	//  Size: 12, Type: Int32, Flags: 2
-#define PLAYER_FIELD_KILLS                                     	UNIT_END + 0x4C0	//  Size: 1, Type: Chars?, Flags: 2
-#define PLAYER_FIELD_TODAY_CONTRIBUTION                        	UNIT_END + 0x4C1	//  Size: 1, Type: Int32, Flags: 2
-#define PLAYER_FIELD_YESTERDAY_CONTRIBUTION                    	UNIT_END + 0x4C2	//  Size: 1, Type: Int32, Flags: 2
-#define PLAYER_FIELD_LIFETIME_HONORBALE_KILLS                  	UNIT_END + 0x4C3	//  Size: 1, Type: Int32, Flags: 2
-#define PLAYER_FIELD_BYTES2                                    	UNIT_END + 0x4C4	//  Size: 1, Type: Bytes, Flags: 2
-#define PLAYER_FIELD_WATCHED_FACTION_INDEX                     	UNIT_END + 0x4C5	//  Size: 1, Type: Int32, Flags: 2
-#define PLAYER_FIELD_COMBAT_RATING_1                           	UNIT_END + 0x4C6	//  Size: 24, Type: Int32, Flags: 2
+*/
+#define PLAYER_FIELD_KILLS										UNIT_END + 0x500	//  Size: 1, Type: Chars?, Flags: 2
+#define PLAYER_FIELD_TODAY_CONTRIBUTION                        	UNIT_END + 0x501	//  Size: 1, Type: Int32, Flags: 2
+#define PLAYER_FIELD_YESTERDAY_CONTRIBUTION                    	UNIT_END + 0x502	//  Size: 1, Type: Int32, Flags: 2
+#define PLAYER_FIELD_LIFETIME_HONORBALE_KILLS                  	UNIT_END + 0x503	//  Size: 1, Type: Int32, Flags: 2
+#define PLAYER_FIELD_BYTES2                                    	UNIT_END + 0x504	//  Size: 1, Type: Bytes, Flags: 2
+#define PLAYER_FIELD_WATCHED_FACTION_INDEX                     	UNIT_END + 0x505	//  Size: 1, Type: Int32, Flags: 2
+#define PLAYER_FIELD_COMBAT_RATING_1                           	UNIT_END + 0x506	//  Size: 24, Type: Int32, Flags: 2
+/*
 #define PLAYER_FIELD_COMBAT_RATING_01                          	UNIT_END + 0x4C7	//  Size: 24, Type: Int32, Flags: 2
 #define PLAYER_FIELD_COMBAT_RATING_02                          	UNIT_END + 0x4C8	//  Size: 24, Type: Int32, Flags: 2
 #define PLAYER_FIELD_COMBAT_RATING_03                          	UNIT_END + 0x4C9	//  Size: 24, Type: Int32, Flags: 2
@@ -1344,8 +1356,10 @@
 #define PLAYER_FIELD_COMBAT_RATING_20                          	UNIT_END + 0x4DA	//  Size: 24, Type: Int32, Flags: 2
 #define PLAYER_FIELD_COMBAT_RATING_21                          	UNIT_END + 0x4DB	//  Size: 24, Type: Int32, Flags: 2
 #define PLAYER_FIELD_COMBAT_RATING_22                          	UNIT_END + 0x4DC	//  Size: 24, Type: Int32, Flags: 2
-#define PLAYER_FIELD_COMBAT_RATING_23                          	UNIT_END + 0x4DD	//  Size: 24, Type: Int32, Flags: 2
-#define PLAYER_FIELD_ARENA_TEAM_INFO_1_1                       	UNIT_END + 0x4DE	//  Size: 18, Type: Int32, Flags: 2
+#define PLAYER_FIELD_COMBAT_RATING_23							UNIT_END + 0x4DD	//  Size: 24, Type: Int32, Flags: 2
+*/
+#define PLAYER_FIELD_ARENA_TEAM_INFO_1_1                       	UNIT_END + 0x51E	//  Size: 18, Type: Int32, Flags: 2
+/*
 #define PLAYER_FIELD_ARENA_TEAM_INFO_1_01                      	UNIT_END + 0x4DF	//  Size: 18, Type: Int32, Flags: 2
 #define PLAYER_FIELD_ARENA_TEAM_INFO_1_02                      	UNIT_END + 0x4E0	//  Size: 18, Type: Int32, Flags: 2
 #define PLAYER_FIELD_ARENA_TEAM_INFO_1_03                      	UNIT_END + 0x4E1	//  Size: 18, Type: Int32, Flags: 2
@@ -1363,13 +1377,14 @@
 #define PLAYER_FIELD_ARENA_TEAM_INFO_1_15                      	UNIT_END + 0x4ED	//  Size: 18, Type: Int32, Flags: 2
 #define PLAYER_FIELD_ARENA_TEAM_INFO_1_16                      	UNIT_END + 0x4EE	//  Size: 18, Type: Int32, Flags: 2
 #define PLAYER_FIELD_ARENA_TEAM_INFO_1_17                      	UNIT_END + 0x4EF	//  Size: 18, Type: Int32, Flags: 2
-#define PLAYER_FIELD_HONOR_CURRENCY                            	UNIT_END + 0x4F0	//  Size: 1, Type: Int32, Flags: 2
-#define PLAYER_FIELD_ARENA_CURRENCY                            	UNIT_END + 0x4F1	//  Size: 1, Type: Int32, Flags: 2
-#define PLAYER_FIELD_MOD_MANA_REGEN                            	UNIT_END + 0x4F2	//  Size: 1, Type: Float, Flags: 2
-#define PLAYER_FIELD_MOD_MANA_REGEN_INTERRUPT                  	UNIT_END + 0x4F3	//  Size: 1, Type: Float, Flags: 2
-#define PLAYER_FIELD_MAX_LEVEL                                 	UNIT_END + 0x4F4	//  Size: 1, Type: Int32, Flags: 2
-#define PLAYER_FIELD_DAILY_QUESTS_00                            UNIT_END + 0x4F5	//  Size: 25, Type: Int32, Flags: 2
-#define PLAYER_FIELD_DAILY_QUESTS_01                           	UNIT_END + 0x4F6	//  Size: 25, Type: Int32, Flags: 2
+*/
+#define PLAYER_FIELD_HONOR_CURRENCY                            	UNIT_END + 0x530	//  Size: 1, Type: Int32, Flags: 2
+#define PLAYER_FIELD_ARENA_CURRENCY                            	UNIT_END + 0x531	//  Size: 1, Type: Int32, Flags: 2
+#define PLAYER_FIELD_MOD_MANA_REGEN                            	UNIT_END + 0x532	//  Size: 1, Type: Float, Flags: 2
+#define PLAYER_FIELD_MOD_MANA_REGEN_INTERRUPT                  	UNIT_END + 0x533	//  Size: 1, Type: Float, Flags: 2
+#define PLAYER_FIELD_MAX_LEVEL                                 	UNIT_END + 0x534	//  Size: 1, Type: Int32, Flags: 2
+#define PLAYER_FIELD_DAILY_QUESTS_00                            UNIT_END + 0x535	//  Size: 25, Type: Int32, Flags: 2
+/*#define PLAYER_FIELD_DAILY_QUESTS_01                           	UNIT_END + 0x4F6	//  Size: 25, Type: Int32, Flags: 2
 #define PLAYER_FIELD_DAILY_QUESTS_02                           	UNIT_END + 0x4F7	//  Size: 25, Type: Int32, Flags: 2
 #define PLAYER_FIELD_DAILY_QUESTS_03                           	UNIT_END + 0x4F8	//  Size: 25, Type: Int32, Flags: 2
 #define PLAYER_FIELD_DAILY_QUESTS_04                           	UNIT_END + 0x4F9	//  Size: 25, Type: Int32, Flags: 2
@@ -1393,7 +1408,8 @@
 #define PLAYER_FIELD_DAILY_QUESTS_22                           	UNIT_END + 0x50B	//  Size: 25, Type: Int32, Flags: 2
 #define PLAYER_FIELD_DAILY_QUESTS_23                           	UNIT_END + 0x50C	//  Size: 25, Type: Int32, Flags: 2
 #define PLAYER_FIELD_DAILY_QUESTS_24                           	UNIT_END + 0x50D	//  Size: 25, Type: Int32, Flags: 2
-#define PLAYER_END                                              UNIT_END + 0x50E
+*/
+#define PLAYER_END                                              UNIT_END + 0x54E
 
 //OBJECT:
 #define OBJECT_FIELD_CREATED_BY                                	OBJECT_END + 0x000	//  Size: 2, Type: GUID, Flags: 1
@@ -1433,12 +1449,14 @@
 
 //CORPSE:
 #define CORPSE_FIELD_OWNER                                     	OBJECT_END + 0x000	//  Size: 2, Type: GUID, Flags: 1
-#define CORPSE_FIELD_FACING                                    	OBJECT_END + 0x002	//  Size: 1, Type: Float, Flags: 1
-#define CORPSE_FIELD_POS_X                                     	OBJECT_END + 0x003	//  Size: 1, Type: Float, Flags: 1
-#define CORPSE_FIELD_POS_Y                                     	OBJECT_END + 0x004	//  Size: 1, Type: Float, Flags: 1
-#define CORPSE_FIELD_POS_Z                                     	OBJECT_END + 0x005	//  Size: 1, Type: Float, Flags: 1
-#define CORPSE_FIELD_DISPLAY_ID                                	OBJECT_END + 0x006	//  Size: 1, Type: Int32, Flags: 1
-#define CORPSE_FIELD_ITEM                                      	OBJECT_END + 0x007	//  Size: 19, Type: Int32, Flags: 1
+#define CORPSE_FIELD_PARTY										OBJECT_END + 0x002
+#define CORPSE_FIELD_FACING                                    	OBJECT_END + 0x004	//  Size: 1, Type: Float, Flags: 1
+#define CORPSE_FIELD_POS_X                                     	OBJECT_END + 0x005	//  Size: 1, Type: Float, Flags: 1
+#define CORPSE_FIELD_POS_Y                                     	OBJECT_END + 0x006	//  Size: 1, Type: Float, Flags: 1
+#define CORPSE_FIELD_POS_Z                                     	OBJECT_END + 0x007	//  Size: 1, Type: Float, Flags: 1
+#define CORPSE_FIELD_DISPLAY_ID                                	OBJECT_END + 0x008	//  Size: 1, Type: Int32, Flags: 1
+#define CORPSE_FIELD_ITEM                                      	OBJECT_END + 0x009	//  Size: 19, Type: Int32, Flags: 1
+/*
 #define CORPSE_FIELD_ITEM_01                                   	OBJECT_END + 0x008	//  Size: 19, Type: Int32, Flags: 1
 #define CORPSE_FIELD_ITEM_02                                   	OBJECT_END + 0x009	//  Size: 19, Type: Int32, Flags: 1
 #define CORPSE_FIELD_ITEM_03                                   	OBJECT_END + 0x00A	//  Size: 19, Type: Int32, Flags: 1
@@ -1457,12 +1475,14 @@
 #define CORPSE_FIELD_ITEM_16                                   	OBJECT_END + 0x017	//  Size: 19, Type: Int32, Flags: 1
 #define CORPSE_FIELD_ITEM_17                                   	OBJECT_END + 0x018	//  Size: 19, Type: Int32, Flags: 1
 #define CORPSE_FIELD_ITEM_18                                   	OBJECT_END + 0x019	//  Size: 19, Type: Int32, Flags: 1
-#define CORPSE_FIELD_BYTES_1                                   	OBJECT_END + 0x01A	//  Size: 1, Type: Bytes, Flags: 1
-#define CORPSE_FIELD_BYTES_2                                   	OBJECT_END + 0x01B	//  Size: 1, Type: Bytes, Flags: 1
-#define CORPSE_FIELD_GUILD                                     	OBJECT_END + 0x01C	//  Size: 1, Type: Int32, Flags: 1
-#define CORPSE_FIELD_FLAGS                                     	OBJECT_END + 0x01D	//  Size: 1, Type: Int32, Flags: 1
-#define CORPSE_FIELD_DYNAMIC_FLAGS                             	OBJECT_END + 0x01E	//  Size: 1, Type: Int32, Flags: 256
-#define CORPSE_END                                              OBJECT_END + 0x01F
+*/
+#define CORPSE_FIELD_BYTES_1                                   	OBJECT_END + 0x01C	//  Size: 1, Type: Bytes, Flags: 1
+#define CORPSE_FIELD_BYTES_2                                   	OBJECT_END + 0x01D	//  Size: 1, Type: Bytes, Flags: 1
+#define CORPSE_FIELD_GUILD                                     	OBJECT_END + 0x01E	//  Size: 1, Type: Int32, Flags: 1
+#define CORPSE_FIELD_FLAGS                                     	OBJECT_END + 0x01F	//  Size: 1, Type: Int32, Flags: 1
+#define CORPSE_FIELD_DYNAMIC_FLAGS                             	OBJECT_END + 0x020	//  Size: 1, Type: Int32, Flags: 256
+#define CORPSE_FIELD_PAD										OBJECT_END + 0x021
+#define CORPSE_END                                              OBJECT_END + 0x022
 
 
 
