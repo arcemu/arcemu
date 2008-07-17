@@ -582,7 +582,7 @@ protected:
 	bool m_PickPocketed;
 	uint32 _fields[UNIT_END];
 	uint32 m_healthfromspell;
-private:
+
 	CreatureInfo *creature_info;
 	CreatureProto * proto;	
 };

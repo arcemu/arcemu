@@ -115,7 +115,7 @@ void Pet::CreateAsSummon(uint32 entry, CreatureInfo *ci, Creature* created_from_
 	m_Owner = static_cast< Player* >(owner);
 	m_OwnerGuid = m_Owner->GetGUID();
 	creature_info = ci;
-	myFamily = dbcCreatureFamily.LookupEntry(creature_info->Family);
+	myFamily = dbcCreatureFamily.LookupEntry(GetCreatureInfo()->Family);
 	//m_name = objmgr.GetCreatureFamilyName(myFamily->ID);
 	if( myFamily->name == NULL )
 		m_name = "Pet";
@@ -543,7 +543,7 @@ void Pet::InitializeMe(bool first)
 	m_Owner->SetUInt64Value(UNIT_FIELD_SUMMON, this->GetGUID());
 	SetUInt32Value(UNIT_FIELD_PETNUMBER, GetUIdFromGUID());
 	SetUInt32Value(UNIT_FIELD_PET_NAME_TIMESTAMP, (uint32)UNIXTIME);
-	myFamily = dbcCreatureFamily.LookupEntry(creature_info->Family);
+	myFamily = dbcCreatureFamily.LookupEntry(GetCreatureInfo()->Family);
 	bHasLoyalty = m_Owner->getClass() == HUNTER ? true : false;
 	SetPetDiet();
 	_setFaction();
@@ -1093,7 +1093,7 @@ void Pet::ApplySummonLevelAbilities()
 
 	if(stat_index < 0)
 	{
-		sLog.outError("PETSTAT: No stat index found for entry %u, `%s`!", GetEntry(), creature_info->Name);
+		sLog.outError("PETSTAT: No stat index found for entry %u, `%s`!", GetEntry(), GetCreatureInfo()->Name);
 		return;
 	}
 
@@ -1425,7 +1425,7 @@ void Pet::ApplyPetLevelAbilities()
 	(35) Serpent		 1.00				1.00				1.00				35383
 	*/
 	
-	uint32 pet_family = creature_info->Family;
+	uint32 pet_family = GetCreatureInfo()->Family;
 	uint32 level = getLevel();
 	if( level > 70 )
 		level = 70;
