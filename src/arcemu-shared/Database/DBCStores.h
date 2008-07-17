@@ -197,7 +197,7 @@ struct SpellEntry
 	uint32 AttributesExE;                   //11 // Flags 2.0.1 unknown one
 	uint32 AttributesExF;					//12
 	uint32 RequiredShapeShift;              //13 // Flags BitMask for shapeshift spells
-	uint32 ShapeshiftExclude;             //14-> this is wrong // Flags BitMask for which shapeshift forms this spell can NOT be used in.
+	uint32 ShapeshiftExclude;               //14-> this is wrong // Flags BitMask for which shapeshift forms this spell can NOT be used in.
 	uint32 Targets;                         //15 - N / M
 	uint32 TargetCreatureType;              //16
 	uint32 RequiresSpellFocus;              //17
@@ -231,7 +231,7 @@ struct SpellEntry
 	uint32 Totem[2];                        //45 - 46
 	uint32 Reagent[8];                      //47 - 54
 	uint32 ReagentCount[8];                 //55 - 62
-	int32 EquippedItemClass;               //63
+	int32 EquippedItemClass;                //63
 	uint32 EquippedItemSubClass;            //64
 	uint32 RequiredItemFlags;               //65
 	uint32 Effect[3];                       //66 - 68
@@ -250,101 +250,102 @@ struct SpellEntry
 	uint32 EffectChainTarget[3];            //105 - 107
 	uint32 EffectSpellGroupRelation[3];     //108 - 110     Not sure maybe we should rename it. its the relation to field: SpellGroupType
 	uint32 EffectMiscValue[3];              //111 - 113
-	uint32 EffectTriggerSpell[3];           //114 - 116
-	float  EffectPointsPerComboPoint[3];    //117 - 117
-	uint32 SpellVisual;                     //120
-	uint32 field114;                        //121
-	uint32 spellIconID;                     //122
-	uint32 activeIconID;                    //123   activeIconID;
-	uint32 spellPriority;                   //124
-	char* Name;                             //125
-	//uint32 NameAlt1;                        //126
-	//uint32 NameAlt2;                        //127
-	//uint32 NameAlt3;                        //128
-	//uint32 NameAlt4;                        //129
-	//uint32 NameAlt5;                        //130
-	//uint32 NameAlt6;                        //131
-	//uint32 NameAlt7;                        //132
-	//uint32 NameAlt8;                        //133
-	//uint32 NameAlt9;                        //134
-	//uint32 NameAlt10;                       //135
-	//uint32 NameAlt11;                       //136
-	//uint32 NameAlt12;                       //137
-	//uint32 NameAlt13;                       //138
-	//uint32 NameAlt14;                       //139
-	//uint32 NameAlt15;                       //140
-	//uint32 NameFlags;                       //141
-	char * Rank;                            //142
-	//uint32 RankAlt1;                        //143
-	//uint32 RankAlt2;                        //144
-	//uint32 RankAlt3;                        //145
-	//uint32 RankAlt4;                        //146
-	//uint32 RankAlt5;                        //147
-	//uint32 RankAlt6;                        //148
-	//uint32 RankAlt7;                        //149
-	//uint32 RankAlt8;                        //150
-	//uint32 RankAlt9;                        //151
-	//uint32 RankAlt10;                       //152
-	//uint32 RankAlt11;                       //153
-	//uint32 RankAlt12;                       //154
-	//uint32 RankAlt13;                       //155
-	//uint32 RankAlt14;                       //156
-	//uint32 RankAlt15;                       //157
-	//uint32 RankFlags;                       //158
-	char * Description;                     //159
-	//uint32 DescriptionAlt1;                 //160
-	//uint32 DescriptionAlt2;                 //161
-	//uint32 DescriptionAlt3;                 //162
-	//uint32 DescriptionAlt4;                 //163
-	//uint32 DescriptionAlt5;                 //164
-	//uint32 DescriptionAlt6;                 //165
-	//uint32 DescriptionAlt7;                 //166
-	//uint32 DescriptionAlt8;                 //167
-	//uint32 DescriptionAlt9;                 //168
-	//uint32 DescriptionAlt10;                //169
-	//uint32 DescriptionAlt11;                //170
-	//uint32 DescriptionAlt12;                //171
-	//uint32 DescriptionAlt13;                //172
-	//uint32 DescriptionAlt14;                //173
-	//uint32 DescriptionAlt15;                //174
-	//uint32 DescriptionFlags;                //175
-	char * BuffDescription;                 //176
-	//uint32 BuffDescriptionAlt1;             //177
-	//uint32 BuffDescriptionAlt2;             //178
-	//uint32 BuffDescriptionAlt3;             //179
-	//uint32 BuffDescriptionAlt4;             //180
-	//uint32 BuffDescriptionAlt5;             //181
-	//uint32 BuffDescriptionAlt6;             //182
-	//uint32 BuffDescriptionAlt7;             //183
-	//uint32 BuffDescriptionAlt8;             //184
-	//uint32 BuffDescriptionAlt9;             //185
-	//uint32 BuffDescriptionAlt10;            //186
-	//uint32 BuffDescriptionAlt11;            //187
-	//uint32 BuffDescriptionAlt12;            //188
-	//uint32 BuffDescriptionAlt13;            //189
-	//uint32 BuffDescriptionAlt14;            //190
-	//uint32 BuffDescriptionAlt15;            //191
-	//uint32 buffdescflags;                   //192
-	uint32 ManaCostPercentage;              //193
-	uint32 unkflags;                        //194 
-	uint32 StartRecoveryTime;               //195
-	uint32 StartRecoveryCategory;           //196
+	//uint32 EffectMiscValueB[3];              //114 - 116  2.4.3
+	uint32 EffectTriggerSpell[3];           //117 - 119
+	float  EffectPointsPerComboPoint[3];    //120 - 122
+	uint32 SpellVisual;                     //123
+	uint32 field114;                        //124
+	uint32 spellIconID;                     //125
+	uint32 activeIconID;                    //126   activeIconID;
+	uint32 spellPriority;                   //127
+	char* Name;                             //128
+	//uint32 NameAlt1;                        //129
+	//uint32 NameAlt2;                        //130
+	//uint32 NameAlt3;                        //131
+	//uint32 NameAlt4;                        //132
+	//uint32 NameAlt5;                        //133
+	//uint32 NameAlt6;                        //134
+	//uint32 NameAlt7;                        //135
+	//uint32 NameAlt8;                        //136
+	//uint32 NameAlt9;                        //137
+	//uint32 NameAlt10;                       //138
+	//uint32 NameAlt11;                       //139
+	//uint32 NameAlt12;                       //140
+	//uint32 NameAlt13;                       //141
+	//uint32 NameAlt14;                       //142
+	//uint32 NameAlt15;                       //143
+	//uint32 NameFlags;                       //144
+	char * Rank;                            //145
+	//uint32 RankAlt1;                        //146
+	//uint32 RankAlt2;                        //147
+	//uint32 RankAlt3;                        //148
+	//uint32 RankAlt4;                        //149
+	//uint32 RankAlt5;                        //150
+	//uint32 RankAlt6;                        //151
+	//uint32 RankAlt7;                        //152
+	//uint32 RankAlt8;                        //153
+	//uint32 RankAlt9;                        //154
+	//uint32 RankAlt10;                       //155
+	//uint32 RankAlt11;                       //156
+	//uint32 RankAlt12;                       //157
+	//uint32 RankAlt13;                       //158
+	//uint32 RankAlt14;                       //159
+	//uint32 RankAlt15;                       //160
+	//uint32 RankFlags;                       //161
+	char * Description;                     //162
+	//uint32 DescriptionAlt1;                 //163
+	//uint32 DescriptionAlt2;                 //164
+	//uint32 DescriptionAlt3;                 //165
+	//uint32 DescriptionAlt4;                 //166
+	//uint32 DescriptionAlt5;                 //167
+	//uint32 DescriptionAlt6;                 //168
+	//uint32 DescriptionAlt7;                 //169
+	//uint32 DescriptionAlt8;                 //170
+	//uint32 DescriptionAlt9;                 //171
+	//uint32 DescriptionAlt10;                //172
+	//uint32 DescriptionAlt11;                //173
+	//uint32 DescriptionAlt12;                //174
+	//uint32 DescriptionAlt13;                //175
+	//uint32 DescriptionAlt14;                //176
+	//uint32 DescriptionAlt15;                //177
+	//uint32 DescriptionFlags;                //178
+	char * BuffDescription;                 //179
+	//uint32 BuffDescriptionAlt1;             //180
+	//uint32 BuffDescriptionAlt2;             //181
+	//uint32 BuffDescriptionAlt3;             //182
+	//uint32 BuffDescriptionAlt4;             //183
+	//uint32 BuffDescriptionAlt5;             //184
+	//uint32 BuffDescriptionAlt6;             //185
+	//uint32 BuffDescriptionAlt7;             //186
+	//uint32 BuffDescriptionAlt8;             //187
+	//uint32 BuffDescriptionAlt9;             //188
+	//uint32 BuffDescriptionAlt10;            //189
+	//uint32 BuffDescriptionAlt11;            //190
+	//uint32 BuffDescriptionAlt12;            //191
+	//uint32 BuffDescriptionAlt13;            //192
+	//uint32 BuffDescriptionAlt14;            //193
+	//uint32 BuffDescriptionAlt15;            //194
+	//uint32 buffdescflags;                   //195
+	uint32 ManaCostPercentage;              //196
+	uint32 unkflags;                        //197 
+	uint32 StartRecoveryTime;               //198
+	uint32 StartRecoveryCategory;           //199
 //	uint32 MaxTargetLevel						from 3.0.1
-	uint32 SpellFamilyName;                 //197
-	uint64 SpellGroupType;					//198+199
-	uint32 MaxTargets;                      //200 
-	uint32 Spell_Dmg_Type;                  //201   dmg_class Integer      0=None, 1=Magic, 2=Melee, 3=Ranged
-	uint32 PreventionType;                  //202   0,1,2 related to Spell_Dmg_Type I think
-	int32 StanceBarOrder;                   //203   related to paladin aura's 
-	float dmg_multiplier[3];                //204 - 206   if the name is correct I dono
-	uint32 MinFactionID;                    //207   only one spellid:6994 has this value = 369 UNUSED
-	uint32 MinReputation;                   //208   only one spellid:6994 has this value = 4 UNUSED
-	uint32 RequiredAuraVision;              //209  3 spells 1 or 2   
-	uint32 TotemCategory[2];				//210-211
-	uint32 RequiresAreaId;					//212 
-	uint32 School;							//213
-//	uint32 RuneCostID;						//214 from 3.0.1
-//	uint32 SpellMissileID;					//215 from 3.0.1
+	uint32 SpellFamilyName;                 //200
+	uint64 SpellGroupType;					//201+202
+	uint32 MaxTargets;                      //203 
+	uint32 Spell_Dmg_Type;                  //204   dmg_class Integer      0=None, 1=Magic, 2=Melee, 3=Ranged
+	uint32 PreventionType;                  //205   0,1,2 related to Spell_Dmg_Type I think
+	int32 StanceBarOrder;                   //206   related to paladin aura's 
+	float dmg_multiplier[3];                //207 - 208   if the name is correct I dono
+	uint32 MinFactionID;                    //209   only one spellid:6994 has this value = 369 UNUSED
+	uint32 MinReputation;                   //210   only one spellid:6994 has this value = 4 UNUSED
+	uint32 RequiredAuraVision;              //211  3 spells 1 or 2   
+	uint32 TotemCategory[2];				//212-213
+	uint32 RequiresAreaId;					//214 
+	uint32 School;							//215
+//	uint32 RuneCostID;						//216 from 3.0.1
+//	uint32 SpellMissileID;					//217 from 3.0.1
     /// CUSTOM: these fields are used for the modifications made in the world.cpp
     uint32 DiminishStatus;                  //
     uint32 proc_interval;                   //!!! CUSTOM, <Fill description for variable>

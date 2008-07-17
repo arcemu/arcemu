@@ -23,7 +23,7 @@
 #include <stdlib.h>
 #include "../Common.h"
 #include <vector>
-#include "auth/sha1.h"
+#include "Auth/Sha1.h"
 
 class WowCrypt {
 public:
