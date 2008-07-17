@@ -94,10 +94,4 @@ public:
 	PatchJob * m_patchJob;
 };
 
-class AutheticationPacketKey
-{
-	public:
-        static void GenerateKey(uint8 *, uint8 *);
-};
-
 #endif

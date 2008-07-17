@@ -23,6 +23,7 @@
 #include <stdlib.h>
 #include "../Common.h"
 #include <vector>
+#include "auth/sha1.h"
 
 class WowCrypt {
 public:
@@ -43,6 +44,9 @@ public:
     void EncryptFourSend(uint8 * data);
     // decrypt 6 bytes
     void DecryptSixRecv(uint8 *data);
+	
+	// 2.4.3 new key generation procedure
+	static void GenerateKey(uint8 *, uint8 *);
 
 	bool IsInitialized() { return _initialized; }
 

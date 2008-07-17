@@ -294,7 +294,7 @@ void WorldSocket::InformationRetreiveCallback(WorldPacket & recvData, uint32 req
 	BNK.SetBinary(K, 40);
 	
 	uint8 *key = new uint8[20];
-	AuthenticationPacketKey::GenerateKey(key, K);
+	WowCrypt::GenerateKey(key, K);
 	
 	// Initialize crypto.
 	_crypt.SetKey(key, 20);
