@@ -1577,6 +1577,8 @@ QuestMgr::~QuestMgr()
 	HM_NAMESPACE::hash_map<uint32, Quest*>::iterator itr1;
 	HM_NAMESPACE::hash_map<uint32, list<QuestRelation *>* >::iterator itr2;
 	list<QuestRelation*>::iterator itr3;
+	HM_NAMESPACE::hash_map<uint32, list<QuestAssociation *>* >::iterator itr4;
+	list<QuestAssociation *>::iterator itr5;
 
 	// clear relations
 	for(itr2 = m_obj_quests.begin(); itr2 != m_obj_quests.end(); ++itr2)
@@ -1620,7 +1622,19 @@ QuestMgr::~QuestMgr()
 		itr2->second->clear();
 		delete itr2->second;
 	}
+	for(itr4 = m_quest_associations.begin(); itr4 != m_quest_associations.end(); ++itr4)
+	{
+		if(!itr4->second)
+			continue;
 
+		itr5 = itr4->second->begin();
+		for(; itr5 != itr4->second->end(); ++itr5)
+		{
+			delete (*itr5);
+		}
+		itr4->second->clear();
+		delete itr4->second;
+	}
 }
 
 
