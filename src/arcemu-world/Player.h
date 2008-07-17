@@ -1068,13 +1068,8 @@ public:
 	}
 	void						SpawnPet(uint32 pet_number);
 	void						DespawnPet();
-	uint32						GetFirstPetNumber(void)
-	{
-		if(m_Pets.size() == 0) return 0;
-		std::map<uint32, PlayerPet*>::iterator itr = m_Pets.begin();
-		return itr->first;
-	}
-	ARCEMU_INLINE PlayerPet*	GetFirstPet(void) { return GetPlayerPet(GetFirstPetNumber()); }
+
+	ARCEMU_INLINE uint8            GetPetCount(void) { return m_Pets.size(); }
 	ARCEMU_INLINE void			SetStableSlotCount(uint8 count) { m_StableSlotCount = count; }
 	ARCEMU_INLINE uint8			GetStableSlotCount(void) { return m_StableSlotCount; }
 	uint32						GetUnstabledPetNumber(void)

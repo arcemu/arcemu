@@ -2286,6 +2286,16 @@ void Spell::SendResurrectRequest(Player* target)
 	target->m_resurrecter = m_caster->GetGUID();
 }
 
+void Spell::SendTameFailure( uint8 result )
+{
+    if( p_caster != NULL )
+    {
+        WorldPacket data( SMSG_PET_TAME_FAILURE, 1 );
+        data << uint8( result );
+        p_caster->GetSession()->SendPacket( &data );
+    }
+}
+
 bool Spell::HasPower()
 {
 	int32 powerField;
@@ -3465,6 +3475,51 @@ uint8 Spell::CanCast(bool tolerate)
 			// scripted spell stuff
 			switch(GetProto()->Id)
 			{
+                case 1515: // tame beast
+                {
+                    
+                    uint8 result = NULL;
+                   Unit* tgt = unitTarget;
+                    if( tgt == NULL )
+                    {
+                        // we have to pick a target manually as this is a dummy spell which triggers tame effect at end of channeling
+                        if( p_caster->GetSelection() != NULL )
+                           tgt =  p_caster->GetMapMgr()->GetUnit( p_caster->GetSelection() );
+                        else
+                            return SPELL_FAILED_UNKNOWN;
+                    }
+
+                    Creature *tame = tgt->GetTypeId() == TYPEID_UNIT ? ( Creature* ) tgt : NULL;
+                    
+                    if( tame == NULL )
+                       result = PETTAME_INVALIDCREATURE;
+                    else if( !tame->isAlive() )
+                        result = PETTAME_DEAD;
+                    else if( tame->IsPet() )
+                        result = PETTAME_CREATUREALREADYOWNED;
+                    else if( !tame->GetCreatureInfo() || tame->GetCreatureInfo()->Type != BEAST || !tame->GetCreatureInfo()->Family )
+                        result = PETTAME_NOTTAMEABLE;
+                    else if( !p_caster->isAlive() || p_caster->getClass() != HUNTER )
+                       result = PETTAME_UNITSCANTTAME;
+                    else if( tame->getLevel() > p_caster->getLevel() )
+                       result = PETTAME_TOOHIGHLEVEL;
+                    else if( p_caster->GetSummon() || p_caster->GetUnstabledPetNumber() )
+                       result = PETTAME_ANOTHERSUMMONACTIVE;
+                    else if( p_caster->GetPetCount() >= 3 )
+                       result = PETTAME_TOOMANY;
+                    else
+                    {
+                        CreatureFamilyEntry* cf = dbcCreatureFamily.LookupEntry( tame->GetCreatureInfo()->Family );
+                        if( cf && !cf->tameable )
+                                result = PETTAME_NOTTAMEABLE;
+                    }
+                    if( result != NULL )
+                    {
+                        SendTameFailure( result );
+                        return SPELL_FAILED_DONT_REPORT;
+                    }
+                }break;
+
 				case 28369:
 				{
 					if( !target->IsCreature() || target->GetEntry() != 18879 ) // Phase Hunter

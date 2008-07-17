@@ -1144,10 +1144,6 @@ void Spell::SpellEffectDummy(uint32 i) // Dummy(Scripted events)
 
 			//FIXME:Add here remove in time event
 		}break;
-	case 13535:// Tame Beast
-		{
-			
-		}break;
 	case 13006:// Shrink Ray
 		{
 			//FIXME:Schematic is learned from the gnomish engineering trainer. The gnomish/gobblin engineering decision is made when you are lvl40+ and your engineering is 200+. Interestingly, however, when this item fails to shrink the target, it can do a variety of things, such as...
@@ -3507,36 +3503,10 @@ void Spell::SpellEffectEnchantItemTemporary(uint32 i)  // Enchant Item Temporary
 
 void Spell::SpellEffectTameCreature(uint32 i)
 {
-	Creature *tame = ((unitTarget->GetTypeId() == TYPEID_UNIT) ? ((Creature*)unitTarget) : 0);
-	if(!tame)
+    Creature* tame = ( ( unitTarget->GetTypeId() == TYPEID_UNIT ) ? static_cast< Creature* >( unitTarget ) : NULL );
+    if( tame == NULL )
 		return;
 
-	uint8 result = SPELL_CANCAST_OK;
-
-	if(!tame || !p_caster || !p_caster->isAlive() || !tame->isAlive() || p_caster->getClass() != HUNTER )
-		result = SPELL_FAILED_BAD_TARGETS;
-	else if(!tame->GetCreatureInfo())
-		result = SPELL_FAILED_BAD_TARGETS;
-	else if(tame->GetCreatureInfo()->Type != BEAST)
-		result = SPELL_FAILED_BAD_TARGETS;
-	else if(tame->getLevel() > p_caster->getLevel())
-		result = SPELL_FAILED_HIGHLEVEL;
-	else if(p_caster->GeneratePetNumber() == 0)
-		result = SPELL_FAILED_BAD_TARGETS;
-	else if(!tame->GetCreatureInfo()->Family)
-		result = SPELL_FAILED_BAD_TARGETS;
-	else if(p_caster->GetSummon() || p_caster->GetUnstabledPetNumber())
-		result = SPELL_FAILED_ALREADY_HAVE_SUMMON;
-	{
-		CreatureFamilyEntry *cf = dbcCreatureFamily.LookupEntry(tame->GetCreatureInfo()->Family);
-		if(cf && !cf->tameable)
-				result = SPELL_FAILED_BAD_TARGETS;
-	}
-	if(result != SPELL_CANCAST_OK)
-	{
-		SendCastResult(result);
-		return;
-	}
 	// Remove target
 	tame->GetAIInterface()->HandleEvent(EVENT_LEAVECOMBAT, p_caster, 0);
 	Pet *pPet = objmgr.CreatePet();

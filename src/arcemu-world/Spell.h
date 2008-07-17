@@ -1448,6 +1448,7 @@ public:
     void SendResurrectRequest(Player* target);
     void SendHealSpellOnPlayer(Object* caster, Object* target, uint32 dmg,bool critical);
     void SendHealManaSpellOnPlayer(Object * caster, Object * target, uint32 dmg, uint32 powertype);
+	void SendTameFailure( uint8 failure );
     
 
     void HandleAddAura(uint64 guid);

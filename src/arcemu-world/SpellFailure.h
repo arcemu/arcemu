@@ -194,6 +194,20 @@ enum SpellCastError
 	SPELL_FAILED_UNKNOWN                                         = 169,
 	SPELL_CANCAST_OK                                             = 255,
 };
-
+enum PetTameFailure
+{
+    PETTAME_INVALIDCREATURE            = 1,
+    PETTAME_TOOMANY                    = 2,
+    PETTAME_CREATUREALREADYOWNED    = 3,
+    PETTAME_NOTTAMEABLE                = 4,
+    PETTAME_ANOTHERSUMMONACTIVE        = 5,
+    PETTAME_UNITSCANTTAME            = 6,
+    PETTAME_NOPETAVAILABLE            = 7,
+    PETTAME_INTERNALERROR            = 8,
+    PETTAME_TOOHIGHLEVEL            = 9,
+    PETTAME_DEAD                    = 10,
+    PETTAME_NOTDEAD                    = 11,
+    PETTAME_UNKNOWNERROR            = 12,
+};
 #endif
 
