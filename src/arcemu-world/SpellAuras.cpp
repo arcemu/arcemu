@@ -771,12 +771,27 @@ void Aura::EventUpdateAA(float r)
 	{
 		if(!plr->HasActiveAura(m_spellProto->Id))
 		{
-			Aura * aura = AuraPool.PooledNew();
-			aura->Init(m_spellProto, -1, u_caster, plr);
-			aura->m_areaAura = true;
-			aura->AddMod(mod->m_type, mod->m_amount, mod->m_miscValue, mod->i);
-			plr->AddAura(aura);
-			NewTargets.push_back(plr->GetLowGUID());
+			Aura * aura = NULL;
+			for(i = 0; i < m_modcount; ++i)
+			{
+				/* is this an area aura modifier? */
+				if(m_spellProto->Effect[m_modList[i].i] == SPELL_EFFECT_APPLY_AREA_AURA)
+				{
+					if(!aura)
+					{
+						aura = AuraPool.PooledNew();
+						aura->Init(m_spellProto, -1, u_caster, plr);
+						aura->m_areaAura = true;
+					}
+					aura->AddMod(m_modList[i].m_type, m_modList[i].m_amount,
+						m_modList[i].m_miscValue, m_modList[i].i);
+				}
+			}
+			if(aura)
+			{
+				plr->AddAura(aura);
+				NewTargets.push_back(plr->GetLowGUID());
+			}
 		}
 	}
 
@@ -2425,7 +2440,7 @@ void Aura::EventPeriodicHeal( uint32 amount )
 		amp = static_cast< EventableObject* >( this )->event_GetEventPeriod( EVENT_AURA_PERIODIC_HEAL );
 //	if(m_spellProto->NameHash != SPELL_HASH_HEALING_STREAM)// Healing Stream is not a HOT
 	{  
-		if( GetDuration() )
+		if( GetDuration() && GetDuration()!=-1)
 		{
 			int ticks = ( amp > 0 ) ? GetDuration() / amp : 0;
 			bonus = ( ticks > 0 ) ? bonus / ticks : 0;

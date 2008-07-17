@@ -4490,7 +4490,7 @@ void Spell::Heal(int32 amount, bool ForceCrit)
 		amount += float2int32( float( amount ) * unitTarget->HealTakenPctMod[GetProto()->School] );
 
 		if (GetProto()->SpellGroupType)
-			SM_FIValue(u_caster->SM_PDamageBonus,&amount,GetProto()->SpellGroupType);
+			SM_PIValue(u_caster->SM_PDamageBonus,&amount,GetProto()->SpellGroupType);
 
 		if( critical = Rand(critchance) || ForceCrit )
 		{

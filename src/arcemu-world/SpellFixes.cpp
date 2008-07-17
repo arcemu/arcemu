@@ -10355,24 +10355,6 @@ void Apply112SpellFixes()
 		sp->procFlags = PROC_ON_CAST_SPELL;
 	}
 
-	// Spell 16261 Group Relation (Improved Lightning Shield Rank 1)
-	sp = dbcSpell.LookupEntryForced(16261);
-	if(sp != NULL) {
-		sp->EffectSpellGroupRelation[0] = 1024;
-	}
-
-	// Spell 16290 Group Relation (Improved Lightning Shield Rank 2)
-	sp = dbcSpell.LookupEntryForced(16290);
-	if(sp != NULL) {
-		sp->EffectSpellGroupRelation[0] = 1024;
-	}
-
-	// Spell 16291 Group Relation (Improved Lightning Shield Rank 3)
-	sp = dbcSpell.LookupEntryForced(16291);
-	if(sp != NULL) {
-		sp->EffectSpellGroupRelation[0] = 1024;
-	}
-
 	// Spell 16352 Proc Chance (Frostbrand Attack Rank 4)
 	sp = dbcSpell.LookupEntryForced(16352);
 	if(sp != NULL)
@@ -13532,6 +13514,7 @@ void ApplyNormalFixes()
 		//////////////////////////////////////////////////////
 
 		/* Note: when applying spell hackfixes, please follow a template */
+		/* Please don't put fixes like "sp = dbcSpell.LookupEntryForced( 15270 );" inside the loop */
 
 		//////////////////////////////////////////
 		// WARRIOR								//
@@ -13599,37 +13582,6 @@ void ApplyNormalFixes()
 		//////////////////////////////////////////
 
 		// Insert priest spell fixes here
-		// Spirit Tap
-		sp = dbcSpell.LookupEntryForced( 15270 ); //rank 1
-		if( sp != NULL )
-		{
-//			sp->procFlags = PROC_ON_TARGET_DIE;
-			sp->procFlags = PROC_ON_GAIN_EXPIERIENCE;
-		}
-		sp = dbcSpell.LookupEntryForced( 15335 ); //rank 2
-		if( sp != NULL )
-		{
-//			sp->procFlags = PROC_ON_TARGET_DIE;
-			sp->procFlags = PROC_ON_GAIN_EXPIERIENCE;
-		}
-		sp = dbcSpell.LookupEntryForced( 15336 ); //rank 3
-		if( sp != NULL )
-		{
-//			sp->procFlags = PROC_ON_TARGET_DIE;
-			sp->procFlags = PROC_ON_GAIN_EXPIERIENCE;
-		}
-		sp = dbcSpell.LookupEntryForced( 15337 ); //rank 4
-		if( sp != NULL )
-		{
-//			sp->procFlags = PROC_ON_TARGET_DIE;
-			sp->procFlags = PROC_ON_GAIN_EXPIERIENCE;
-		}
-		sp = dbcSpell.LookupEntryForced( 15338 ); //rank 5
-		if( sp != NULL )
-		{
-//			sp->procFlags = PROC_ON_TARGET_DIE;
-			sp->procFlags = PROC_ON_GAIN_EXPIERIENCE;
-		}
 
 		//////////////////////////////////////////
 		// SHAMAN								//
@@ -13645,10 +13597,6 @@ void ApplyNormalFixes()
 			if( sp->NameHash == SPELL_HASH_FROSTBRAND_ATTACK )
 				sp->fixed_dddhcoef = 0.1f;
 
-			// Flametongue Weapon - 10% spd coefficient
-			if( sp->NameHash == SPELL_HASH_FLAMETONGUE_ATTACK )
-				sp->fixed_dddhcoef = 0.1f;
-
 			// Fire Nova - 0% spd coefficient
 			if( sp->NameHash == SPELL_HASH_FIRE_NOVA )
 				sp->fixed_dddhcoef = 0.0f;
@@ -13657,7 +13605,7 @@ void ApplyNormalFixes()
 			if( sp->NameHash == SPELL_HASH_ATTACK )
 				sp->fixed_dddhcoef = 0.08f;
 
-			// Mana Spring Totem - 8% healing coefficient
+			// Healing Stream Totem - 8% healing coefficient
 			if( sp->NameHash == SPELL_HASH_HEALING_STREAM )
 				sp->OTspell_coef_override = 0.08f;
 			
@@ -16155,6 +16103,38 @@ void ApplyNormalFixes()
 
 	// Insert priest spell fixes here
 
+		// Spirit Tap
+		sp = dbcSpell.LookupEntryForced( 15270 ); //rank 1
+		if( sp != NULL )
+		{
+//			sp->procFlags = PROC_ON_TARGET_DIE;
+			sp->procFlags = PROC_ON_GAIN_EXPIERIENCE;
+		}
+		sp = dbcSpell.LookupEntryForced( 15335 ); //rank 2
+		if( sp != NULL )
+		{
+//			sp->procFlags = PROC_ON_TARGET_DIE;
+			sp->procFlags = PROC_ON_GAIN_EXPIERIENCE;
+		}
+		sp = dbcSpell.LookupEntryForced( 15336 ); //rank 3
+		if( sp != NULL )
+		{
+//			sp->procFlags = PROC_ON_TARGET_DIE;
+			sp->procFlags = PROC_ON_GAIN_EXPIERIENCE;
+		}
+		sp = dbcSpell.LookupEntryForced( 15337 ); //rank 4
+		if( sp != NULL )
+		{
+//			sp->procFlags = PROC_ON_TARGET_DIE;
+			sp->procFlags = PROC_ON_GAIN_EXPIERIENCE;
+		}
+		sp = dbcSpell.LookupEntryForced( 15338 ); //rank 5
+		if( sp != NULL )
+		{
+//			sp->procFlags = PROC_ON_TARGET_DIE;
+			sp->procFlags = PROC_ON_GAIN_EXPIERIENCE;
+		}
+
 		//shadowfiend
 		sp = dbcSpell.LookupEntryForced( 41913 );
 		if( sp != NULL )
@@ -16989,11 +16969,61 @@ void ApplyNormalFixes()
 		
 		//shaman - Improved Chain Heal
 		sp = dbcSpell.LookupEntryForced( 30873 ); 
-		if( sp != NULL )
+		if( sp != NULL ){
 			sp->EffectSpellGroupRelation[0] = 256;
+			sp->EffectDieSides[0] = 0;
+		}
 		sp = dbcSpell.LookupEntryForced( 30872 ); 
-		if( sp != NULL )
+		if( sp != NULL ){
 			sp->EffectSpellGroupRelation[0] = 256;
+			sp->EffectDieSides[0] = 0;
+		}
+
+		// Flametongue Weapon - 10% spd coefficient
+		sp = dbcSpell.LookupEntryForced( 29469 );
+		if( sp != NULL )
+			sp->fixed_dddhcoef = 0.1f;
+
+		// Flametongue Totem - 0% spd coefficient
+		sp = dbcSpell.LookupEntryForced( 16368 );
+		if( sp != NULL )
+			sp->fixed_dddhcoef = 0.0f;
+
+		//shaman - Improved Weapon Totems
+		sp = dbcSpell.LookupEntryForced( 29193 ); 
+		if( sp != NULL ){
+			sp->EffectApplyAuraName[0]=SPELL_AURA_ADD_PCT_MODIFIER;
+			sp->EffectApplyAuraName[1]=SPELL_AURA_ADD_PCT_MODIFIER;
+			sp->EffectMiscValue[0] = SMT_SPELL_VALUE;
+			sp->EffectMiscValue[1] = SMT_SPELL_VALUE;
+			sp->EffectSpellGroupRelation_high[0] = 0x2;
+			sp->EffectSpellGroupRelation[1] = 0x2000000;
+		}
+		sp = dbcSpell.LookupEntryForced( 29192 ); 
+		if( sp != NULL ){
+			sp->EffectApplyAuraName[0]=SPELL_AURA_ADD_PCT_MODIFIER;
+			sp->EffectApplyAuraName[1]=SPELL_AURA_ADD_PCT_MODIFIER;
+			sp->EffectMiscValue[0] = SMT_SPELL_VALUE;
+			sp->EffectMiscValue[1] = SMT_SPELL_VALUE;
+			sp->EffectSpellGroupRelation_high[0] = 0x2;
+			sp->EffectSpellGroupRelation[1] = 0x2000000;
+		}
+
+		// Shaman - Improved Fire Totems
+		sp = dbcSpell.LookupEntryForced( 16544 ); 
+		if( sp != NULL ){
+			sp->EffectMiscValue[0] = SMT_DURATION;
+			sp->EffectSpellGroupRelation[0] = 0x40000000;
+			sp->EffectSpellGroupRelation[1] = 0x8000000;
+			sp->EffectSpellGroupRelation[2] = 0x4;
+		}
+		sp = dbcSpell.LookupEntryForced( 16086 ); 
+		if( sp != NULL ){
+			sp->EffectMiscValue[0] = SMT_DURATION;
+			sp->EffectSpellGroupRelation[0] = 0x40000000;
+			sp->EffectSpellGroupRelation[1] = 0x8000000;
+			sp->EffectSpellGroupRelation[2] = 0x4;
+		}
 
 		// Shaman Arena totems fix
 		// Totem of Survival
@@ -17067,16 +17097,22 @@ void ApplyNormalFixes()
 		if( sp != NULL ){
 			sp->EffectSpellGroupRelation[1] = 0x200000 | 0x1000000;
 			sp->EffectSpellGroupRelation_high[2] = 0x800;
+			sp->EffectMiscValue[1] = SMT_DAMAGE_DONE;
+			sp->EffectMiscValue[2] = SMT_DAMAGE_DONE;
 		}
 		sp = dbcSpell.LookupEntryForced( 29079 ); 
 		if( sp != NULL ){
 			sp->EffectSpellGroupRelation[1] = 0x200000 | 0x1000000;
 			sp->EffectSpellGroupRelation_high[2] = 0x800;
+			sp->EffectMiscValue[1] = SMT_DAMAGE_DONE;
+			sp->EffectMiscValue[2] = SMT_DAMAGE_DONE;
 		}
 		sp = dbcSpell.LookupEntryForced( 16266 ); 
 		if( sp != NULL ){
 			sp->EffectSpellGroupRelation[1] = 0x200000 | 0x1000000;
 			sp->EffectSpellGroupRelation_high[2] = 0x800;
+			sp->EffectMiscValue[1] = SMT_DAMAGE_DONE;
+			sp->EffectMiscValue[2] = SMT_DAMAGE_DONE;
 		}
 	 
 		// Magma Totem - 0% spd coefficient
@@ -17286,6 +17322,11 @@ void ApplyNormalFixes()
 		 *	Shock Grouping
 		 **********************************************************/
 		group_relation_shaman_shock = 0x00100000 | 0x10000000 | 0x80000000;
+
+		// Shaman Shock Range Bonus (Gauntlets bonus)
+		sp = dbcSpell.LookupEntryForced( 32973 ); 
+		if( sp != NULL )
+			sp->EffectSpellGroupRelation[0] = group_relation_shaman_shock;
 
 		/**********************************************************
 		 *	Convection

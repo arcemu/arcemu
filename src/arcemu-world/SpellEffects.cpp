@@ -385,7 +385,7 @@ void Spell::SpellEffectSchoolDMG(uint32 i) // dmg school
 					{
 						float block_multiplier = ( 100.0f + float( p_caster->m_modblockabsorbvalue ) ) / 100.0f;
 						if( block_multiplier < 1.0f )block_multiplier = 1.0f;
-						int32 blockable_damage = float2int32( float( it->GetProto()->Block ) +( float( p_caster->m_modblockvaluefromspells + p_caster->GetUInt32Value( PLAYER_RATING_MODIFIER_BLOCK ) ) * block_multiplier ) + ( ( float( p_caster->GetUInt32Value( UNIT_FIELD_STAT0 ) ) / 20.0f ) - 1.0f ) );
+						int32 blockable_damage = float2int32( (float( it->GetProto()->Block ) + ( float( p_caster->m_modblockvaluefromspells + p_caster->GetUInt32Value( PLAYER_RATING_MODIFIER_BLOCK ) )) + ( ( float( p_caster->GetUInt32Value( UNIT_FIELD_STAT0 ) ) / 20.0f ) - 1.0f ) ) * block_multiplier);
 						dmg += blockable_damage;
 					}
 				}
@@ -4681,10 +4681,28 @@ void Spell::SpellEffectSummonTotem(uint32 i) // Summon Totem
 		pTotem->EnableAI();
 		pTotem->GetAIInterface()->Init(pTotem, AITYPE_TOTEM, MOVEMENTTYPE_NONE, p_caster);
 		pTotem->GetAIInterface()->totemspell = TotemSpell;
-		uint32 timer = 3000;	// need a proper resource for this.
+		int32 totemspelltimer = 3000, totemspelltime = 3000;	// need a proper resource for this.
 
 		switch(TotemSpell->Id)
 		{
+		case 8167: //Poison Cleansing Totem
+		case 8172: //Disease Cleansing Totem
+		{
+			if(TotemSpell->Id == 8167)
+				TotemSpell = dbcSpell.LookupEntry( 8168 );	// Better to use this spell
+			else
+				TotemSpell = dbcSpell.LookupEntry( 8171 );
+			pTotem->GetAIInterface()->totemspell = TotemSpell;
+			totemspelltime =  5000;
+			totemspelltimer = 0; //First tick done immediately
+			break;
+		}
+		case 8146: //Tremor Totem
+		{
+			totemspelltime = 3000;
+			totemspelltimer = 0; //First tick done immediately
+			break;
+		}
 		case 8349: //Fire Nova Totem 1
 		case 8502: //Fire Nova Totem 2
 		case 8503: //Fire Nova Totem 3
@@ -4692,13 +4710,18 @@ void Spell::SpellEffectSummonTotem(uint32 i) // Summon Totem
 		case 11307: //Fire Nova Totem 5
 		case 25535: //Fire Nova Totem 6
 		case 25537: //Fire Nova Totem 7
-			timer =  4000;
+		{
+			totemspelltimer =  4000;
+			// Improved Fire Totems
+			SM_FIValue(p_caster->SM_FDur, &totemspelltimer, TotemSpell->SpellGroupType);
+			totemspelltime = totemspelltimer;
 			break;
+		}
 		default:break;
 		}
 
-		pTotem->GetAIInterface()->m_totemspelltimer = timer;
-		pTotem->GetAIInterface()->m_totemspelltime = timer;
+		pTotem->GetAIInterface()->m_totemspelltimer = totemspelltimer;
+		pTotem->GetAIInterface()->m_totemspelltime = totemspelltime;
 	}
 
 	//in case these are our elemental totems then we should set them up
