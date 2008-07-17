@@ -343,6 +343,10 @@ Object* Aura::GetCaster()
 		return NULL;
 }
 
+Aura::Aura()
+{
+}
+
 void Aura::Init( SpellEntry* proto, int32 duration, Object* caster, Unit* target )
 {
 	m_castInDuel = false;
@@ -1047,7 +1051,7 @@ void Aura::SpellAuraModPossess(bool apply)
 			//mob woke up and realized he was controlled. He will turn to controller and also notify the other mobs he is fighting that they should attack the caster
 			//sadly i got only 3 test cases about this so i might be wrong :(
 			//zack : disabled until tested
-//			m_target->GetAIInterface()->EventChangeFaction( caster );
+			m_target->GetAIInterface()->EventChangeFaction( caster );
 		}
 	}
 }

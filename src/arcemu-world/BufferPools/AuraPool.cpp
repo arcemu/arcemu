@@ -43,7 +43,7 @@ void oAuraBufferPool::InitPoolNewSection(uint32 from, uint32 to)
 {
 	for(uint32 i=from;i<to;i++)
 	{
-//		avail_list[i] = new Aura;
+		avail_list[i] = new Aura;
 		ASSERT( avail_list[i] );
 	}
 }

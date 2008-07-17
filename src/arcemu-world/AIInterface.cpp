@@ -909,7 +909,9 @@ void AIInterface::_UpdateCombat(uint32 p_time)
 	else if( m_nextTarget == NULL && m_AIState != STATE_FOLLOWING && m_AIState != STATE_SCRIPTMOVE )
 	{
 //		SetNextTarget(FindTargetForSpell(m_nextSpell));
-		SetNextTarget( GetMostHated() );
+		if( m_is_in_instance )
+			SetNextTarget( FindTarget() );
+		else SetNextTarget( GetMostHated() );
 		if( m_nextTarget == NULL )
 		{
 			HandleEvent( EVENT_LEAVECOMBAT, m_Unit, 0 );
@@ -1626,7 +1628,7 @@ Unit* AIInterface::FindTarget()
 		dist = m_Unit->GetDistance2dSq(pUnit);
 
 		if(dist > distance)	 // we want to find the CLOSEST target
-			return false;
+			continue;
 	
 		if(dist <= _CalcAggroRange(pUnit) )
 		{
@@ -1678,11 +1680,11 @@ Unit* AIInterface::FindTarget()
 			{
 				if(dist < 225.0f)	// was 10
 					critterTarget = pUnit;
-				return false;
+				continue;
 			}
 
 			if(dist > distance)	 // we want to find the CLOSEST target
-				return false;
+				continue;
 	
 			if(dist <= _CalcAggroRange(pUnit) )
 			{
