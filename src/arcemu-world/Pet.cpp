@@ -1296,8 +1296,8 @@ void Pet::ApplySummonLevelAbilities()
 	static double R_mod_str[6] = {1.811594203, 2.4, 2.4, 2.4, 2.4, 2.4};
 	static double R_base_agi[6] = {19.72463768, -1.25, -1.25, -1.25, -1.25, -1.25};
 	static double R_mod_agi[6] = {0.275362319, 1.575, 1.575, 1.575, 1.575, 1.575};
-	static double R_base_sta[6] = {17.23188406, -17.75, -17.75, -17.75, -17.75, 0};
-	static double R_mod_sta[6] = {2.768115942, 4.525, 4.525, 4.525, 4.525, 4.044};
+	static double R_base_sta[6] = {18.82608695, -3.5, -17.75, -17.75, -17.75, 0};
+	static double R_mod_sta[6] = {1.173913043, 4.05, 4.525, 4.525, 4.525, 4.044};
 	static double R_base_int[6] = {19.44927536, 12.75, 12.75, 12.75, 12.75, 20};
 	static double R_mod_int[6] = {4.550724638, 1.875, 1.875, 1.875, 1.875, 2.8276};
 	static double R_base_spr[6] = {19.52173913, -2.25, -2.25, -2.25, -2.25, 20.5};
@@ -1306,7 +1306,7 @@ void Pet::ApplySummonLevelAbilities()
 	static double R_mod_pwr[6] = {2.797101449, 6.5, 6.5, 6.5, 6.5, 6.5};
 	static double R_base_armor[6] = {-11.69565217, -702, -929.4, -1841.25, -1157.55, -1000};
 	static double R_mod_armor[6] = {31.69565217, 139.6, 74.62, 89.175, 101.1316667, 100};
-	static double R_pet_sta_to_hp[6] = {6.405982906, 15.91304348, 7.956521739, 10.79813665, 11.55590062, 10.0};
+	static double R_pet_sta_to_hp[6] = {4.5, 15.0, 7.5, 10.0, 10.6, 10.0};
 	static double R_base_min_dmg[6] = {0.550724638, 4.566666667, 26.82, 29.15, 20.17888889, 20};
 	static double R_mod_min_dmg[6] = {1.449275362, 1.433333333, 2.18, 1.85, 1.821111111, 1};
 	static double R_base_max_dmg[6] = {1.028985507, 7.133333333, 36.16, 39.6, 27.63111111, 20};
