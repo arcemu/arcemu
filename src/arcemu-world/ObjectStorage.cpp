@@ -173,6 +173,7 @@ void ObjectMgr::LoadExtraCreatureProtoStuff()
 				if( spe == NULL )
 				{
 					Log.Warning("AIAgent", "For %u has nonexistant spell %u.", fields[0].GetUInt32(), fields[5].GetUInt32());
+					continue;
 				}
 				if(!cn)
 					continue;
