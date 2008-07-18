@@ -1627,19 +1627,20 @@ ARCEMU_INLINE uint32 RepairItemCost(Player * pPlayer, Item * pItem)
 	return cost;
 }
 
-ARCEMU_INLINE void RepairItem(Player * pPlayer, Item * pItem)
+ARCEMU_INLINE bool RepairItem(Player * pPlayer, Item * pItem)
 {
 	//int32 cost = (int32)pItem->GetUInt32Value( ITEM_FIELD_MAXDURABILITY ) - (int32)pItem->GetUInt32Value( ITEM_FIELD_DURABILITY );
 	int32 cost = RepairItemCost(pPlayer, pItem);
 	if( cost <= 0 )
-		return;
+		return FALSE;
 
 	if( cost > (int32)pPlayer->GetUInt32Value( PLAYER_FIELD_COINAGE ) )
-		return;
+		return FALSE;
 
 	pPlayer->ModUnsigned32Value( PLAYER_FIELD_COINAGE, -cost );
 	pItem->SetDurabilityToMax();
 	pItem->m_isDirty = true;
+	return TRUE;
 }
 
 void WorldSession::HandleRepairItemOpcode(WorldPacket &recvPacket)
@@ -1688,15 +1689,8 @@ void WorldSession::HandleRepairItemOpcode(WorldPacket &recvPacket)
 				}
 				else
 				{
-					if( pItem->GetProto()->MaxDurability > 0 && i < INVENTORY_SLOT_BAG_END && pItem->GetDurability() <= 0 )
-					{
-						RepairItem( _player, pItem );
+					if(pItem->GetDurability() == 0 && RepairItem( _player, pItem ) && i < INVENTORY_SLOT_BAG_END)
 						_player->ApplyItemMods( pItem, i, true );
-					}
-					else
-					{
-						RepairItem( _player, pItem );
-					}					
 				}
 			}
 		}
@@ -1711,23 +1705,10 @@ void WorldSession::HandleRepairItemOpcode(WorldPacket &recvPacket)
 
 			if (dDurability)
 			{
-				// the amount of durability that is needed to be added is the amount of money to be payed
-				if (dDurability <= _player->GetUInt32Value(PLAYER_FIELD_COINAGE))
-				{
-					int32 cDurability = item->GetDurability();
-					_player->ModUnsigned32Value( PLAYER_FIELD_COINAGE , -(int32)dDurability );
-					item->SetDurabilityToMax();
-					item->m_isDirty = true;
-					
-					//only apply item mods if they are on char equiped
-	//printf("we are fixing a single item in inventory at bagslot %u and slot %u\n",searchres->ContainerSlot,searchres->Slot);
-					if(cDurability <= 0 && searchres->ContainerSlot==INVALID_BACKPACK_SLOT && searchres->Slot<INVENTORY_SLOT_BAG_END)
-						_player->ApplyItemMods(item, searchres->Slot, true);
-				}
-				else
-				{
-					// not enough money
-				}
+                uint32 cDurability = item->GetDurability();
+                //only apply item mods if they are on char equiped
+                if( RepairItem( _player, item ) && cDurability == 0 && searchres->ContainerSlot==INVALID_BACKPACK_SLOT && searchres->Slot<INVENTORY_SLOT_BAG_END)
+                    _player->ApplyItemMods(item, searchres->Slot, true);
 			}
 		}
 	}
