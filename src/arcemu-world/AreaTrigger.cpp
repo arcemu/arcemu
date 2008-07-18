@@ -59,9 +59,6 @@ const char * AreaTriggerFailureMessages[] = {
 
 uint32 CheckTriggerPrerequsites(AreaTrigger * pAreaTrigger, WorldSession * pSession, Player * pPlayer, MapInfo * pMapInfo)
 {
-	if(pAreaTrigger->required_level && pPlayer->getLevel() < pAreaTrigger->required_level)
-		return AREA_TRIGGER_FAILURE_LEVEL;
-
 	if(!pMapInfo || !pMapInfo->HasFlag(WMI_INSTANCE_ENABLED))
 		return AREA_TRIGGER_FAILURE_UNAVAILABLE;
 
@@ -71,6 +68,9 @@ uint32 CheckTriggerPrerequsites(AreaTrigger * pAreaTrigger, WorldSession * pSess
 	// These can be overridden by cheats/GM
 	if(pPlayer->triggerpass_cheat)
 		return AREA_TRIGGER_FAILURE_OK;
+
+	if(pAreaTrigger->required_level && pPlayer->getLevel() < pAreaTrigger->required_level)
+		return AREA_TRIGGER_FAILURE_LEVEL;
 
 	if(pPlayer->iInstanceType >= MODE_HEROIC && pMapInfo->type != INSTANCE_MULTIMODE && pMapInfo->type != INSTANCE_NULL)
 		return AREA_TRIGGER_FAILURE_NO_HEROIC;
