@@ -480,6 +480,7 @@ void LogonServer::Run(int argc, char ** argv)
 
 	delete AccountMgr::getSingletonPtr();
 	delete InformationCore::getSingletonPtr();
+	delete PatchMgr::getSingletonPtr();
 	delete IPBanner::getSingletonPtr();
 	delete SocketMgr::getSingletonPtr();
 	delete SocketGarbageCollector::getSingletonPtr();

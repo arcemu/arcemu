@@ -200,6 +200,8 @@ class InformationCore : public Singleton<InformationCore>
 	bool usepings;
 
 public:
+	~InformationCore();
+
 	ARCEMU_INLINE Mutex & getServerSocketLock() { return serverSocketLock; }
 	ARCEMU_INLINE Mutex & getRealmLock() { return realmLock; }
 

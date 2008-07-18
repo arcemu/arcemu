@@ -329,6 +329,14 @@ bool IPBanner::Add(const char * ip, uint32 dur)
 	return true;
 }
 
+InformationCore::~InformationCore()
+{
+	for( map<uint32, Realm*>::iterator itr = m_realms.begin(); itr != m_realms.end(); ++itr )
+		delete itr->second;
+
+	m_realms.clear();
+}
+
 bool IPBanner::Remove(const char * ip)
 {
 	listBusy.Acquire();
