@@ -1226,12 +1226,6 @@ void AIInterface::_UpdateCombat(uint32 p_time)
 					return;  // this shouldnt happen
 
 				SpellCastTime *sd = dbcSpellCastTime.LookupEntry(m_nextSpell->spell->CastingTimeIndex);
-				/* if in range stop moving so we don't interrupt the spell */
-				//this the way justly suggested
-				//if(m_nextSpell->spell->CastingTimeIndex != 1)
-				//do not stop for instant spells
-				if(GetCastTime(sd) != 0)
-					StopMovement(0);
 
 				float distance = m_Unit->CalcDistance(m_nextTarget);
 				bool los = true;
@@ -1246,6 +1240,10 @@ void AIInterface::_UpdateCombat(uint32 p_time)
 				{
 					SpellEntry* spellInfo = m_nextSpell->spell;
 
+					/* if in range stop moving so we don't interrupt the spell */
+					//do not stop for instant spells
+					if(sd && GetCastTime(sd) != 0)
+						StopMovement(0);
 
 /*					if(m_nextSpell->procCount)
 						m_nextSpell->procCount--;*/
