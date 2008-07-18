@@ -1467,7 +1467,7 @@ int luaUnit_GetName(lua_State * L, Unit * ptr)
 	switch(ptr->GetTypeId())
 	{
 	case TYPEID_UNIT:
-		lua_pushstring(L, ((Creature*)ptr)->GetCreatureName() ? ((Creature*)ptr)->GetCreatureName()->Name : "Unknown");
+		lua_pushstring(L, ((Creature*)ptr)->GetCreatureInfo() ? ((Creature*)ptr)->GetCreatureInfo()->Name : "Unknown");
 		break;
 
 	case TYPEID_PLAYER:
