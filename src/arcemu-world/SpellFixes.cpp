@@ -18466,12 +18466,17 @@ void ApplyNormalFixes()
 		//warlock - Grim Reach
 		sp = dbcSpell.LookupEntryForced( 18218 );
 		if( sp != NULL )
+		{
 			sp->EffectSpellGroupRelation[0] = 2 | 8 | 32768 | 2147483648UL | 1024 | 16384 | 262144 | 16 | 524288 | 4194304;
-			sp->EffectSpellGroupRelation_high[0] = 1 | 2 | 1024 ;
+			sp->EffectSpellGroupRelation_high[0] = 1 | 2 | 16 | 256 | 512 | 1024 ;
+		}
 		sp = dbcSpell.LookupEntryForced( 18219 );
 		if( sp != NULL )
+		{
 			sp->EffectSpellGroupRelation[0] = 2 | 8 | 32768 | 2147483648UL | 1024 | 16384 | 262144 | 16 | 524288 | 4194304;
-			sp->EffectSpellGroupRelation_high[0] = 1 | 2 | 1024 ;
+			sp->EffectSpellGroupRelation_high[0] = 1 | 2 | 16 | 256 | 512 | 1024 ;
+		}
+
 		//warlock - Demonic Sacrifice
 		sp = dbcSpell.LookupEntryForced( 18789 );
 		if( sp != NULL )

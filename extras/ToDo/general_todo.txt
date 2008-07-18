@@ -131,6 +131,9 @@ SMT_RESIST_DISPEL - check if it is used
 - Using the etnerium scope or building the Green Lens's crashes server
 - drain life still crashes server
 - socketing armors crash the server ?
+- imp is attacking self
+- totems chase targets
+- paladin auras stack all
 
 ==========================================================================
 player A must have any unsoulbound bag and he must party with player B ..
