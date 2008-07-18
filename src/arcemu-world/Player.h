@@ -1069,7 +1069,7 @@ public:
 	void						SpawnPet(uint32 pet_number);
 	void						DespawnPet();
 
-	ARCEMU_INLINE uint8            GetPetCount(void) { return m_Pets.size(); }
+	ARCEMU_INLINE uint8         GetPetCount(void) { return (uint8)m_Pets.size(); }
 	ARCEMU_INLINE void			SetStableSlotCount(uint8 count) { m_StableSlotCount = count; }
 	ARCEMU_INLINE uint8			GetStableSlotCount(void) { return m_StableSlotCount; }
 	uint32						GetUnstabledPetNumber(void)

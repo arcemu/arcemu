@@ -133,6 +133,7 @@ public:
 	void InitializeMe(bool first);
 	void SendSpellsToOwner();
 	void SendNullSpellsToOwner();
+	void SendCastFailed( uint32 spellid, uint8 fail );
 
 	ARCEMU_INLINE void SetPetAction(uint32 act) { m_Action = act; }
 	ARCEMU_INLINE uint32 GetPetAction(void) { return m_Action; }

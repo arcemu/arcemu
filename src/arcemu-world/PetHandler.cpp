@@ -84,11 +84,9 @@ void WorldSession::HandlePetAction(WorldPacket & recv_data)
 			case PET_ACTION_ATTACK:
 				{
 					// make sure the target is attackable
-					if(pTarget == pPet || !isAttackable(pPet, pTarget))
-					{
-						WorldPacket data(SMSG_SPELL_FAILURE, 20);
-						data << _player->GetNewGUID() << uint32(0) << uint8(SPELL_FAILED_BAD_TARGETS);
-						SendPacket(&data);
+					if( pTarget == pPet || !isAttackable( pPet, pTarget ) )
+ 					{
+						pPet->SendCastFailed( 0, SPELL_FAILED_BAD_TARGETS );
 						return;
 					}
 
@@ -136,33 +134,27 @@ void WorldSession::HandlePetAction(WorldPacket & recv_data)
 	case PET_ACTION_SPELL:
 		{
 			// misc == spellid
-			SpellEntry *entry = dbcSpell.LookupEntry(misc);
-			if(!entry) 
+			SpellEntry * entry = dbcSpell.LookupEntry( misc );
+			if( entry == NULL ) 
 				return;
 
-			AI_Spell * sp = pPet->GetAISpellForSpellId(entry->Id);
-			if(sp)
+			AI_Spell * sp = pPet->GetAISpellForSpellId( entry->Id );
+			if( sp != NULL )
 			{
 				// Check the cooldown
 				if(sp->cooldowntime && getMSTime() < sp->cooldowntime)
 				{
-					//SendNotification("That spell is still cooling down.");
-					WorldPacket data(SMSG_SPELL_FAILURE, 20);
-					data << pPet->GetNewGUID();
-					data << sp->spell->Id;
-					data << uint8(SPELL_FAILED_NOT_READY);
-					SendPacket(&data);
+					pPet->SendCastFailed( misc, SPELL_FAILED_NOT_READY );
+					return;
 				}
 				else
 				{
-					if(sp->spellType != STYPE_BUFF)
+					if( sp->spellType != STYPE_BUFF )
 					{
 						// make sure the target is attackable
-						if(pTarget == pPet || !isAttackable(pPet, pTarget))
+						if( pTarget == pPet || !isAttackable( pPet, pTarget ) )
 						{
-							WorldPacket data(SMSG_SPELL_FAILURE, 20);
-							data << _player->GetNewGUID() << sp->spell->Id << uint8(SPELL_FAILED_BAD_TARGETS);
-							SendPacket(&data);
+							pPet->SendCastFailed( misc, SPELL_FAILED_BAD_TARGETS );
 							return;
 						}
 					}
@@ -185,29 +177,6 @@ void WorldSession::HandlePetAction(WorldPacket & recv_data)
 					}
 				}
 			}
-
-			/*// cast spell
-			SpellCastTargets targets;
-			
-			//HACK HACK HACK
-			switch (misc)
-			{
-				case 7812:
-				case 19438:
-				case 19440:
-				case 19441:
-				case 19442:
-				case 19443:
-					targets.m_unitTarget = pPet->GetGUID(); // dono maybe it should be NULL;
-					break;
-				default:
-					targets.m_unitTarget = (pTarget ? pTarget->GetGUID() : pPet->GetGUID());
-					break;
-			}
-						
-			targets.m_targetMask = 0x2; // unit
-
-			pPet->GetAIInterface()->CastSpell(pPet, entry, targets);*/
 		}break;
 	case PET_ACTION_STATE:
 		{
@@ -464,3 +433,49 @@ void WorldSession::HandlePetUnlearn(WorldPacket & recv_data)
 	_player->ModUnsigned32Value( PLAYER_FIELD_COINAGE, -cost );
 	pPet->WipeSpells();
 }
+void WorldSession::HandlePetSpellAutocast( WorldPacket& recvPacket )
+{
+	// handles toggle autocast from spellbook
+	if( !_player->IsInWorld() )
+		return;
+
+	uint64 guid;
+    uint16 spellid;
+    uint16 unk;
+    uint8  state;
+    recvPacket >> guid >> spellid >> unk >> state;
+
+	Pet * pPet = _player->GetSummon();
+	if( pPet == NULL )
+		return;
+	
+	SpellEntry * spe = dbcSpell.LookupEntryForced( spellid );
+	if( spe == NULL )
+		return;
+	
+	// do we have the spell? if not don't set it (exploit fix)
+	PetSpellMap::iterator itr = pPet->GetSpells()->find( spe );
+	if( itr == pPet->GetSpells()->end( ) )
+		return;
+
+	pPet->SetSpellState( spellid, state > 0 ? AUTOCAST_SPELL_STATE : DEFAULT_SPELL_STATE );
+}
+void WorldSession::HandlePetCancelAura( WorldPacket& recvPacket )
+{
+	if( !_player->IsInWorld() )
+		return;
+
+	uint64 guid;
+    uint16 spellid;
+
+	recvPacket >> guid >> spellid;
+
+	Pet * pPet = _player->GetSummon();
+	if( pPet == NULL )
+		return;
+
+	if( !pPet->RemoveAura( spellid ) )
+		sLog.outError("PET SYSTEM: Player "I64FMT" failed to cancel aura %u from pet", _player->GetGUID(), spellid );
+}
+
+

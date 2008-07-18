@@ -271,24 +271,24 @@ void Pet::Update(uint32 time)
 
 	Creature::Update(time); // passthrough
 
-	if(bHasLoyalty && !bExpires)
+	if( bHasLoyalty && !bExpires )
 	{
 		//Happiness
-		if(m_HappinessTimer == 0)
+		if( m_HappinessTimer == 0 )
 		{	
-			int32 val = GetUInt32Value(UNIT_FIELD_POWER5);
+			int32 val = GetUInt32Value( UNIT_FIELD_POWER5 );
 			//amount of burned happiness is loyalty_lvl depended
 			int32 burn = HappinessTicks[ GetLoyaltyLevel() - 1 ];
 			if( CombatStatus.IsInCombat() )
 				burn = burn >> 1; //in combat reduce burn by half (guessed) 
-			if((val - burn)<0)
+			if( ( val - burn ) < 0 )
 				val = 0;
 			else
 				val -= burn;
-			SetUInt32Value(UNIT_FIELD_POWER5, val);// Set the value
+			SetUInt32Value( UNIT_FIELD_POWER5, val );// Set the value
 			m_HappinessTimer = PET_HAPPINESS_UPDATE_TIMER;// reset timer
 		} 
-		else 
+		else if( m_Owner->m_bg == NULL )
 		{
 			if( time > m_HappinessTimer )
 				m_HappinessTimer = 0;
@@ -368,6 +368,17 @@ void Pet::SendNullSpellsToOwner()
 	WorldPacket data(8);
 	data.SetOpcode(SMSG_PET_SPELLS);
 	data << uint64(0);
+	m_Owner->GetSession()->SendPacket(&data);
+}
+
+void Pet::SendCastFailed( uint32 spellid, uint8 fail )
+{
+	if( m_Owner == NULL )
+		return;
+
+	WorldPacket data( SMSG_PET_CAST_FAILED, (4+1) );
+	data << uint32( spellid );
+	data << uint8( fail );
 	m_Owner->GetSession()->SendPacket(&data);
 }
 
@@ -1829,6 +1840,7 @@ uint32 Pet::GetUntrainCost()
 
 	return reset_cost;
 }
+
 
 
 

@@ -2187,34 +2187,39 @@ void Spell::SendLogExecute(uint32 damage, uint64 & targetGuid)
 	m_caster->SendMessageToSet(&data,true);
 }
 
-void Spell::SendInterrupted(uint8 result)
+void Spell::SendInterrupted( uint8 result )
 {
 	SetSpellFailed();
 
-	if(m_caster == NULL || !m_caster->IsInWorld())
+	if( m_caster == NULL || !m_caster->IsInWorld() )
 		return;
 
-	WorldPacket data(SMSG_SPELL_FAILURE, 20);
+	WorldPacket data( SMSG_SPELL_FAILURE, 20 );
 
 	// send the failure to pet owner if we're a pet
 	Player *plr = p_caster;
-	if(plr == NULL && m_caster->IsPet())
-		plr = static_cast<Pet*>(m_caster)->GetPetOwner();
-	if(plr == NULL && u_caster != NULL && u_caster->m_redirectSpellPackets != NULL)
-		plr = u_caster->m_redirectSpellPackets;
-
-	if(plr != NULL && plr->IsPlayer())
+	if( plr == NULL && m_caster->IsPet() )
+ 	{
+		static_cast<Pet*>(m_caster)->SendCastFailed( m_spellInfo->Id, result );
+ 	}
+	else
 	{
-		data << m_caster->GetNewGUID();
-		data << GetProto()->Id;
-		data << uint8(result);
-		plr->GetSession()->SendPacket(&data);
+		if( plr == NULL && u_caster != NULL && u_caster->m_redirectSpellPackets != NULL )
+			plr = u_caster->m_redirectSpellPackets;
+	
+		if( plr != NULL && plr->IsPlayer() )
+		{
+			data << m_caster->GetNewGUID();
+			data << m_spellInfo->Id;
+			data << uint8( result );
+			plr->GetSession()->SendPacket( &data );
+		}
 	}
-
-	data.Initialize(SMSG_SPELL_FAILED_OTHER);
+ 
+	data.Initialize( SMSG_SPELL_FAILED_OTHER );
 	data << m_caster->GetNewGUID();
 	data << GetProto()->Id;
-	m_caster->SendMessageToSet(&data, false);
+	m_caster->SendMessageToSet( &data, false );
 }
 
 void Spell::SendChannelUpdate(uint32 time)
@@ -3291,6 +3296,10 @@ uint8 Spell::CanCast(bool tolerate)
 				// check if we have a pet
 				if(!pPet)
 					return SPELL_FAILED_NO_PET;
+				
+				// check if pet lives
+				if( !pPet->isAlive() )
+					return SPELL_FAILED_TARGETS_DEAD;
 
 				// check if item is food
 				if(!proto->FoodType)
