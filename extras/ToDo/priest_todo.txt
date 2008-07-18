@@ -1,1 +1,3 @@
 vampiric touch
+vampiric embrace must show healed hp... not in background mode =\
+holy concetration must be canceled on successfull cast of healing spell... not all spells without mana costs (how its working now)
