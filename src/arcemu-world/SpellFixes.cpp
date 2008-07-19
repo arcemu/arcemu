@@ -12112,7 +12112,7 @@ void ApplyNormalFixes()
 		// Description field
 		char* desc = (char*)dbc.getRecord(x).getString(158); 
 		const char* ranktext = dbc.getRecord(x).getString(141);
-		const char* nametext = dbc.getRecord(x).getString(124);
+		const char* nametext = dbc.getRecord(x).getString(127);
 
 		uint32 rank = 0;
 		uint32 namehash = 0;
