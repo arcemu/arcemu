@@ -4117,7 +4117,10 @@ void Player::ResurrectPlayer()
 	RemoveFlag(PLAYER_FLAGS, 0x10);
 	setDeathState(ALIVE);
 	UpdateVisibility();
-	if ( m_resurrecter && IsInWorld() )
+	if ( m_resurrecter && IsInWorld()
+		//don't pull players inside instances with this trick. Also fixes the part where you were able to double item bonuses
+		&& m_resurrectInstanceID == GetInstanceID() 
+		)
 	{
 		SafeTeleport( m_resurrectMapId, m_resurrectInstanceID, m_resurrectPosition );
 	}
