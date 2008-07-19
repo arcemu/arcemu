@@ -72,8 +72,7 @@ const char* skilllinespellFormat = "uuuxxxxxuuuuxxu";
 const char* EnchantEntrYFormat = "uuuuuuuuuuuuusxxxxxxxxxxxxxxxxuuuu";
 const char* GemPropertyEntryFormat = "uuuuu";
 const char* skilllineentrYFormat = "uuusxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx";
-//const char* spellentryFormat = "uuuuuuuuuuuuuuuuuuuuuuuuuuuuuuiuuuuuuuuuufuuuuuuuuuuuuuuuuuuuuiuuuuuuuuuuuffffffiiiiiiuuuuuuuuuuuuuuufffuuuuuuuuuuuufffuuuuusxxxxxxxxxxxxxxxxsxxxxxxxxxxxxxxxxsxxxxxxxxxxxxxxxxsxxxxxxxxxxxxxxxxuuuuuuuuuuifffuuuuuuu";
-const char* spellentryFormat = "uuuuuuuuuuuuuuuuuuuuuuuuuuuuuuiuuuuuuuuuufuuuuuuuuuuuuuuuuuuuuiuuuuuuuuuuuffffffiiiiiiuuuuuuuuuuuuuuufffuuuuuuuuuxxxuuufffuuuuusxxxxxxxxxxxxxxxxsxxxxxxxxxxxxxxxxsxxxxxxxxxxxxxxxxsxxxxxxxxxxxxxxxxuuuuuuuuuuifffuuuuuuu";
+const char* spellentryFormat = "uuuuuuuuuuuuuuuuuuuuuuuuuuuuuuiuuuuuuuuuufuuuuuuuuuuuuuuuuuuuuiuuuuuuuuuuuffffffiiiiiiuuuuuuuuuuuuuuufffuuuuuuuuuuuuuuufffuuuuusxxxxxxxxxxxxxxxxsxxxxxxxxxxxxxxxxsxxxxxxxxxxxxxxxxsxxxxxxxxxxxxxxxxuuuuuuuuuuifffuuuuuuu";
 const char* itemextendedcostFormat = "uuuuuuuuuuuuux";
 const char* talententryFormat = "uuuuuuuuuxxxxuxxuxxxx";
 const char* talenttabentryFormat = "uxxxxxxxxxxxxxxxxxxxuux";
@@ -157,4 +156,5 @@ bool LoadDBCs()
 	LOAD_DBC("DBC/gtOCTRegenHP.dbc", gtfloatformat, false, dbcHPRegen, false); //it's not a mistake.
 	return true;
 }
+
 

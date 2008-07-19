@@ -250,7 +250,7 @@ struct SpellEntry
 	uint32 EffectChainTarget[3];            //105 - 107
 	uint32 EffectSpellGroupRelation[3];     //108 - 110     Not sure maybe we should rename it. its the relation to field: SpellGroupType
 	uint32 EffectMiscValue[3];              //111 - 113
-	//uint32 EffectMiscValueB[3];              //114 - 116  2.4.3
+	uint32 EffectMiscValueB[3];             //114 - 116  2.4.3
 	uint32 EffectTriggerSpell[3];           //117 - 119
 	float  EffectPointsPerComboPoint[3];    //120 - 122
 	uint32 SpellVisual;                     //123
