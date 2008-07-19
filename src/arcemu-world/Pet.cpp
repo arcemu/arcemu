@@ -266,12 +266,12 @@ Pet::~Pet()
 
 void Pet::Update(uint32 time)
 {
-	if(!m_Owner)
+	Creature::Update(time); // passthrough
+	
+	if( m_Owner == NULL )
 		return;
 
-	Creature::Update(time); // passthrough
-
-	if( bHasLoyalty && !bExpires )
+	if( bHasLoyalty && !bExpires && isAlive() )
 	{
 		//Happiness
 		if( m_HappinessTimer == 0 )
@@ -331,6 +331,9 @@ void Pet::Update(uint32 time)
 
 void Pet::SendSpellsToOwner()
 {
+	if( m_Owner == NULL )
+		return;
+
 	int packetsize = (m_uint32Values[OBJECT_FIELD_ENTRY] != WATER_ELEMENTAL) ? ((int)mSpells.size() * 4 + 20) : 64;
 	WorldPacket * data = new WorldPacket(SMSG_PET_SPELLS, packetsize);
 	*data << GetGUID();
