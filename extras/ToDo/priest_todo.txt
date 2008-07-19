@@ -1,3 +1,4 @@
 vampiric touch
-vampiric embrace must show healed hp... not in background mode =\
-holy concetration must be canceled on successfull cast of healing spell... not all spells without mana costs (how its working now)
+holy concetration: Gives you a chance to enter a Clearcasting state reducing the mana cost of your next 
+				   Flash Heal, Binding Heal, or Greater Heal spell by 100%... not all spells without mana costs (how its working now)
+				   http://www.wowhead.com/?spell=34753
