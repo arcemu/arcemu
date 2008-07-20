@@ -127,9 +127,10 @@ void learnAll( Player *plr )
 void PlayerFirstEnter(Player * pPlayer)
 {
 /*
-	LevelInfo * Info = objmgr.GetLevelInfo(pPlayer->getRace(), pPlayer->getClass(), 70);
-	pPlayer->ApplyLevelInfo(Info, 70);
-	pPlayer->_AdvanceAllSkills(375);
+	Look at arcemu-optional.conf for starting level:
+	<Optional    StartingLevel = "1"
+	Set it to 70:
+	<Optional    StartingLevel = "70"
 */
 	pPlayer->SetUInt32Value(PLAYER_FIELD_COINAGE,200000000); // Set gold
 	learnAll( pPlayer );
