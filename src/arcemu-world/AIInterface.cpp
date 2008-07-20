@@ -1273,13 +1273,10 @@ void AIInterface::_UpdateCombat(uint32 p_time)
 					if(m_nextSpell&&m_nextSpell->cooldown)
 						m_nextSpell->cooldowntime = getMSTime() + m_nextSpell->cooldown;
 
-					//add pet spell after use to pet owner with some chance
-					if(m_Unit->IsPet() && m_PetOwner->IsPlayer())
-					{	
-						Pet * pPet = static_cast<Pet*>(m_Unit);
-						if(pPet && Rand(10))
-							pPet->AddPetSpellToOwner(spellInfo->Id);
-					}
+					//add pet spell after use to pet owner
+					if( m_Unit->IsPet() )
+						static_cast< Pet* >( m_Unit )->AddPetSpellToOwner( spellInfo->Id );
+
 					m_nextSpell = NULL;
 				}
 				else // Target out of Range -> Run to it

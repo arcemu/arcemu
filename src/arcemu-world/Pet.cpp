@@ -1633,25 +1633,32 @@ HappinessState Pet::GetHappinessState()
 }
 void Pet::AddPetSpellToOwner(uint32 spellId)
 {
-	//exit if owner hasn't Beast training ability (id 5149)
-	if(!m_Owner || !m_Owner->HasSpell(5149))
+	// Hunter can learn pets "wild" ability and teach it other pets
+
+	if( Summon || !m_Owner )
 		return;
+	//exit if owner hasn't Beast training ability (id 5149)
+	if( !m_Owner->HasSpell( 5149 ) || !Rand( 10 ) )
+		return;
+	//all wild abilities require training points (just for sure)
+	if( !SpellTP( spellId ) )
+		return;
+	
 	//find appropriate teaching spell...
-	uint32 TeachingSpellID = 0;
-	TeachingSpellID = sWorld.GetTeachingSpell(spellId);
-    if(TeachingSpellID)
+	uint32 TeachingSpellID = sWorld.GetTeachingSpell( spellId );
+    if( TeachingSpellID != NULL )
 	{
-		if(m_Owner->HasSpell(TeachingSpellID))
+		if( m_Owner->HasSpell( TeachingSpellID ) )
 			return;
 		else
 		{
 			//...and add it to pet owner to be able teach other pets
-			m_Owner->addSpell(TeachingSpellID);
+			m_Owner->addSpell( TeachingSpellID );
 			return;
 		}
 	}
 	else
-		sLog.outDebug("WORLD: Could not find teaching spell for spell %u", spellId);
+		sLog.outDebug( "WORLD: Could not find teaching spell for spell %u", spellId );
 }
 uint32 Pet::GetHighestRankSpell(uint32 spellId)
 {	
@@ -1796,6 +1803,8 @@ void Pet::HandleAutoCastEvent(uint32 Type)
 			//modified by Zack: Spell targetting will be generated in the castspell function now.You cannot force to target self all the time
 			CastSpell( static_cast< Unit* >( NULL ), sp->spell, false);
 		}
+		
+		AddPetSpellToOwner( sp->spell->Id );
 	}
 }
 
