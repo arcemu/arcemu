@@ -1393,12 +1393,6 @@ void Aura::SpellAuraDummy(bool apply)
 				}
 			}
 		}break;
-	case 66:
-		{
-			// mage - invisibility
-			if( !apply && !this->IsInterrupted() && !m_ignoreunapply )
-				m_target->CastSpell( m_target, 32612, true );
-		}break;
 	//paladin - Blessing of Light.
 /*	case 19977:
 	case 19978:

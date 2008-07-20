@@ -1344,6 +1344,9 @@ public:
 	uint32 m_AutoShotAttackTimer;
 	bool m_onAutoShot;
 	uint64 m_AutoShotTarget;
+	float m_AutoShotStartX;
+	float m_AutoShotStartY;
+	float m_AutoShotStartZ;
 	SpellEntry *m_AutoShotSpell;
 	void _InitialReputation();
 	void EventActivateGameObject(GameObject* obj);

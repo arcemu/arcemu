@@ -205,6 +205,9 @@ Player::Player( uint32 guid ) : m_mailBox(guid)
 	m_lockTransportVariables= false;
 
 	// Autoshot variables
+	m_AutoShotStartX		= 0;
+	m_AutoShotStartY		= 0;
+	m_AutoShotStartZ		= 0;
 	m_AutoShotTarget		= 0;
 	m_onAutoShot			= false;
 	m_AutoShotDuration		= 0;
@@ -5639,6 +5642,14 @@ int32 Player::CanShootRangedWeapon( uint32 spellid, Unit* target, bool autoshot 
 	if( iprot && getLevel()< iprot->RequiredLevel)
 		return SPELL_FAILED_LOWLEVEL;
 
+	// Check if we have moved
+	if(this->m_AutoShotStartX != GetPositionX() ||
+		this->m_AutoShotStartY != GetPositionY() ||
+		this->m_AutoShotStartZ != GetPositionZ())
+	{
+		return SPELL_FAILED_INTERRUPTED;
+	}
+
 	// Player has clicked off target. Fail spell.
 	if( m_curSelection != m_AutoShotTarget )
 		return SPELL_FAILED_INTERRUPTED;
@@ -5768,10 +5779,6 @@ void Player::EventRepeatSpell()
 		{
 			m_AutoShotAttackTimer = 0; 
 			m_onAutoShot=false;
-		}
-		else if( m_isMoving )
-		{
-			m_AutoShotAttackTimer = 100;
 		}
 		else
 		{

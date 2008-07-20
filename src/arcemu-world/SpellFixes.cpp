@@ -13609,33 +13609,6 @@ void ApplyNormalFixes()
 		//////////////////////////////////////////
 
 		// Insert mage spell fixes here
-		// Invisibility: changed to "Dummy" effect for invisibility to trigger.
-		if( sp->NameHash == SPELL_HASH_INVISIBILITY )
-		{
-			sp->Effect[0] = SPELL_EFFECT_APPLY_AURA;
-			sp->EffectApplyAuraName[0] = SPELL_AURA_DUMMY;
-		}
-
-		sp = dbcSpell.LookupEntryForced( 66 );
-		if( sp != NULL )
-		{
-			sp->EffectApplyAuraName[2] = SPELL_AURA_PERIODIC_TRIGGER_SPELL;
-			sp->Effect[2] = SPELL_EFFECT_APPLY_AURA;
-			sp->EffectAmplitude[2] = 6000;
-			sp->EffectImplicitTargetA[2] = EFF_TARGET_SELF;
-			sp->EffectBaseDice[2] = 1;
-			sp->EffectDieSides[2] = 1;
-			sp->EffectTriggerSpell[2] = 32612;
-			sp->EffectBasePoints[2] = -1;
-		}
-
-		// Invisibility triggered spell, should be removed on cast
-		sp = dbcSpell.LookupEntryForced( 32612 );
-		if( sp != NULL )
-		{
-			sp->AuraInterruptFlags |= AURA_INTERRUPT_ON_CAST_SPELL;
-		}
-
 		// Hypothermia: undispellable
 		if( sp->NameHash == SPELL_HASH_HYPOTHERMIA )
 			sp->c_is_flags |= SPELL_FLAG_IS_FORCEDDEBUFF;
@@ -17669,6 +17642,27 @@ void ApplyNormalFixes()
 			sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
 			sp->EffectTriggerSpell[0] = 12486;
 			sp->procFlags = PROC_ON_CAST_SPELL;
+		}
+
+		//Invisibility
+		sp = dbcSpell.LookupEntryForced( 66 );
+		if( sp != NULL )
+		{
+			sp->EffectApplyAuraName[2] = SPELL_AURA_PERIODIC_TRIGGER_SPELL;
+			sp->Effect[2] = SPELL_EFFECT_APPLY_AURA;
+			sp->EffectAmplitude[2] = 6000;
+			sp->EffectImplicitTargetA[2] = EFF_TARGET_SELF;
+			sp->EffectBaseDice[2] = 1;
+			sp->EffectDieSides[2] = 1;
+			sp->EffectTriggerSpell[2] = 32612;
+			sp->EffectBasePoints[2] = -1;
+		}
+
+		 //Invisibility triggered spell, should be removed on cast
+		sp = dbcSpell.LookupEntryForced( 32612 );
+		if( sp != NULL )
+		{
+			sp->AuraInterruptFlags |= AURA_INTERRUPT_ON_CAST_SPELL;
 		}
 
 		//mage: Fire Power
