@@ -3529,7 +3529,7 @@ uint8 Spell::CanCast(bool tolerate)
                     }
                 }break;
 
-				case 28369:
+				case 28369: // Gas
 				{
 					if( !target->IsCreature() || target->GetEntry() != 18879 ) // Phase Hunter
 						return SPELL_FAILED_BAD_TARGETS;
@@ -3544,7 +3544,7 @@ uint8 Spell::CanCast(bool tolerate)
 					if( !target || !target->IsCreature() || target->GetEntry()!=20748) // Thunderlord Dire Wolf NPC
 						return SPELL_FAILED_BAD_TARGETS;
 				}break;
-				case 44997:
+				case 44997: // Converting Sentry
 				{
 					if( !target || !target->IsCreature() || target->GetEntry()!=24972 ) // Erratic Sentry
 						return SPELL_FAILED_BAD_TARGETS;
@@ -3552,20 +3552,33 @@ uint8 Spell::CanCast(bool tolerate)
 					if( !target || !target->IsCreature() || !target->isDead() )
 						return SPELL_FAILED_TARGET_NOT_DEAD;
 				}break;
-				case 30077:
+				case 30077: // Carinda's Retribution
 				{
 					if( !target || !target->IsCreature() || target->GetEntry()!=17226 ) // Viera Sunwhisper
 						return SPELL_FAILED_BAD_TARGETS;
 				}break;
-				case 19938: // Awaken Peon (Foreman's Blackjack)
+				case 32825: // Soul Cannon
+				{
+					if( !target || !target->IsCreature() || target->GetEntry() != 22357 ) // Reth'hedron the Subduer
+						return SPELL_FAILED_BAD_TARGETS;
+				}break;
 				case 27907: // Disciplinary Rod
+				{
+					if( !target || !target->IsCreature() || target->GetEntry() != 15945 && target->GetEntry() != 15941 ) // 'Apprentice Meledor' and 'Apprentice Ralen'
+						return SPELL_FAILED_BAD_TARGETS;
+				}break;
+				case 19938: // Awaken Peon (Foreman's Blackjack)
+				{
+					if( !target || !target->IsCreature() || target->GetEntry() != 10556 ) // Lazy Peon
+						return SPELL_FAILED_BAD_TARGETS;
+				}break;
 				case 603: //curse of doom, can't be casted on players
 				case 30910:
 				{
 					if(target->IsPlayer())
 						return SPELL_FAILED_TARGET_IS_PLAYER;
 				}break;
-				case 13907:
+				case 13907: // Smite Demon
 				{
 					if (!target || target->IsPlayer() || target->getClass()!=TARGET_TYPE_DEMON )
 						return SPELL_FAILED_SPELL_UNAVAILABLE;
@@ -3591,9 +3604,9 @@ uint8 Spell::CanCast(bool tolerate)
 					if(pPet && !pPet->isDead())
 						return SPELL_FAILED_TARGET_NOT_DEAD;
 				}break;
-				case 38177:
+				case 38177: // Blackwhelp Net
 				{
-					if(target->GetEntry() != 21387)
+					if( !target || !target->GetEntry() != 21387)
 						return SPELL_FAILED_BAD_TARGETS;
 				}break;
 			}
