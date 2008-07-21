@@ -1429,7 +1429,7 @@
 #define PLAYER_FIELD_ARENA_TEAM_INFO_1_15                      	UNIT_END + 0x52D	//  Size: 18, Type: Int32, Flags: 2
 #define PLAYER_FIELD_ARENA_TEAM_INFO_1_16                      	UNIT_END + 0x52E	//  Size: 18, Type: Int32, Flags: 2
 #define PLAYER_FIELD_ARENA_TEAM_INFO_1_17                      	UNIT_END + 0x52F	//  Size: 18, Type: Int32, Flags: 2
-#define PLAYER_FIELD_HONOR_CURRENCY                            	UNIT_END + 0x520	//  Size: 1, Type: Int32, Flags: 2
+#define PLAYER_FIELD_HONOR_CURRENCY                            	UNIT_END + 0x530	//  Size: 1, Type: Int32, Flags: 2
 #define PLAYER_FIELD_ARENA_CURRENCY                            	UNIT_END + 0x531	//  Size: 1, Type: Int32, Flags: 2
 #define PLAYER_FIELD_MOD_MANA_REGEN                            	UNIT_END + 0x532	//  Size: 1, Type: Float, Flags: 2
 #define PLAYER_FIELD_MOD_MANA_REGEN_INTERRUPT                  	UNIT_END + 0x533	//  Size: 1, Type: Float, Flags: 2
