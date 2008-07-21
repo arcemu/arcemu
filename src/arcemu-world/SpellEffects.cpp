@@ -700,6 +700,12 @@ void Spell::SpellEffectDummy(uint32 i) // Dummy(Scripted events)
 //		{
 //		}break;
 
+	// Aspect of the Viper
+//	case 34074:
+// 		{
+			// included in the dummy aura for simplicity
+// 		}break;
+
 	/*************************
 	 * PALADIN SPELLS
 	 *************************

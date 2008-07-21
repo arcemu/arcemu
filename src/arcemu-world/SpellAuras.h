@@ -621,6 +621,7 @@ public:
 	void EventPeriodicHeal(uint32);
 	void EventPeriodicTriggerSpell(SpellEntry* spellInfo);
 	void EventPeriodicEnergize(uint32,uint32);
+	void EventPeriodicEnergizeVariable(uint32,uint32);
 	void EventPeriodicHeal1(uint32);
 	void EventPeriodicLeech(uint32);
 	void EventPeriodicBurn(uint32,uint32);

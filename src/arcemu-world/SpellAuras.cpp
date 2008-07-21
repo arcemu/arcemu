@@ -246,7 +246,7 @@ pSpellAura SpellAuraHandler[TOTAL_SPELL_AURAS]={
 		&Aura::SpellAuraNULL,//223 // used in one spell, cold stare 43593
 		&Aura::SpellAuraNULL,//224 // not used
 		&Aura::SpellAuraNULL,//225 // Prayer of Mending "Places a spell on the target that heals them for $s1 the next time they take damage.  When the heal occurs, Prayer of Mending jumps to a raid member within $a1 yards.  Jumps up to $n times and lasts $d after each jump.  This spell can only be placed on one target at a time."
-		&Aura::SpellAuraDrinkNew,//226 // used in brewfest spells, headless hoerseman
+		&Aura::SpellAuraDrinkNew,//226 // used in brewfest spells, headless hoerseman, Aspect of the Viper
 		&Aura::SpellAuraNULL,//227 Inflicts [SPELL DAMAGE] damage to enemies in a cone in front of the caster. (based on combat range) http://www.thottbot.com/s40938
 		&Aura::SpellAuraNULL,//228 Stealth Detection. http://www.thottbot.com/s34709
 		&Aura::SpellAuraNULL,//229 Apply Aura:Reduces the damage your pet takes from area of effect attacks http://www.thottbot.com/s35694
@@ -5616,12 +5616,70 @@ void Aura::SpellAuraModRegen(bool apply)
 
 void Aura::SpellAuraDrinkNew(bool apply)
 {
-	if( apply )
+	switch( m_spellProto->NameHash )
 	{
-		SetPositive();
-		sEventMgr.AddEvent(this, &Aura::EventPeriodicDrink, uint32(float2int32(float(mod->m_amount)/5.0f)),
-			EVENT_AURA_PERIODIC_REGEN, 1000, 0, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
+		case SPELL_HASH_ASPECT_OF_THE_VIPER:
+			if( p_target )
+			{
+				if( apply )
+				{
+					SetPositive();
+					sEventMgr.AddEvent(this, &Aura::EventPeriodicEnergizeVariable,(uint32)mod->m_amount,(uint32)mod->m_miscValue,
+			EVENT_AURA_PERIODIC_ENERGIZE_VARIABLE,GetSpellProto()->EffectAmplitude[mod->i],0,EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
+
+				}
+			}
+		break;
+		default:
+			if( apply )
+			{
+				SetPositive();
+				sEventMgr.AddEvent(this, &Aura::EventPeriodicDrink, uint32(float2int32(float(mod->m_amount)/5.0f)),
+				EVENT_AURA_PERIODIC_REGEN, 1000, 0, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
+			}
 	}
+}
+
+void Aura::EventPeriodicEnergizeVariable(uint32 amount,uint32 type)
+{
+	uint32 POWER_TYPE=UNIT_FIELD_POWER1+type;
+	
+	ASSERT(POWER_TYPE<=UNIT_FIELD_POWER5);
+	uint32 curEnergy = m_target->GetUInt32Value(POWER_TYPE);
+	uint32 maxEnergy = m_target->GetUInt32Value(POWER_TYPE+6);
+
+	switch( m_spellProto->NameHash )
+	{
+		case SPELL_HASH_ASPECT_OF_THE_VIPER:
+			float regen, manaPct;
+			// http://www.wowwiki.com/Aspect_of_the_Viper
+			// MP5Viper = Intellect × 22/35 × ( 0.9 - Manacurrent / Manamax ) + Intellect × 0.11 -- by wowwiki
+			// MP5Viper = Intellect × ( 0.55 - 22/35 × ( Manacurrent / Manamax - 0.2 ) -- by emsy... 55 is stored in DBC, maybe blizz changes it in future
+			// We're including also the Effect[1]:Dummy (35% of player's level) from the AotV in this
+			//   it's missing some values in dbc plus it saves one event this way
+							
+			manaPct = (float)curEnergy / (float)maxEnergy;
+			if( manaPct < 0.2f )
+				manaPct = 0.2f;
+			if( manaPct > 0.9f )
+				manaPct = 0.9f;
+
+			regen = ( (float)amount / 100 - 22.0f / 35.0f * (manaPct - 0.2f) ) * (float)p_target->GetUInt32Value( UNIT_FIELD_STAT3 ) + (float)p_target->getLevel()*m_spellProto->EffectBasePoints[1]/100;
+			amount = (int)regen;
+		break;
+		default:
+			//something
+			;
+	}					
+
+	uint32 totalEnergy = curEnergy+amount;
+	if(totalEnergy > maxEnergy)
+		m_target->SetUInt32Value(POWER_TYPE,maxEnergy);
+	else
+		m_target->SetUInt32Value(POWER_TYPE,totalEnergy);
+	
+	SendPeriodicAuraLog( m_casterGuid, m_target, m_spellProto->Id, m_spellProto->School, amount, 0, 0, FLAG_PERIODIC_ENERGIZE);
+
 }
 
 void Aura::EventPeriodicDrink(uint32 amount)
