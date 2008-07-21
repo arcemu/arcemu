@@ -736,6 +736,6 @@ inline static unsigned int MakeIP(const char * str)
 // there might be a lot of cases where each saved crash will lead to memory leaks or unhandled cases
 // crashreports are still created and do use them to report the actaul problem that casued the crash
 // fixing the problem that causes the crash is the proper way to fix things
-#define FORCED_SERVER_KEEPALIVE
+//#define FORCED_SERVER_KEEPALIVE
 
 #endif
