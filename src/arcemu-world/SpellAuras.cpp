@@ -2671,6 +2671,8 @@ void Aura::SpellAuraModStun(bool apply)
 			static_cast<Player*>(caster)->EventStunOrImmobilize( m_target );
 		if( m_target && m_target->IsPlayer() && caster )
 			static_cast<Player*>(m_target)->EventStunOrImmobilize( caster, true );
+		if (m_target->isCasting())
+			m_target->CancelSpell(NULL); //cancel spells.
 	}
 	else if( (m_flags & (1 << mod->i)) == 0 ) //add these checks to mods where imunity can cancel only 1 mod and not whole spell
 	{
