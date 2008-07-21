@@ -683,8 +683,8 @@ uint8 Spell::DidHit(uint32 effindex,Unit* target)
 
 	if( this->GetProto()->Effect[effindex] == SPELL_EFFECT_DISPEL && GetProto()->SpellGroupType && u_caster)
 	{
-		SM_FFValue(u_caster->SM_FRezist_dispell,&resistchance,GetProto()->SpellGroupType);
-		SM_PFValue(u_caster->SM_PRezist_dispell,&resistchance,GetProto()->SpellGroupType);
+		SM_FFValue(u_victim->SM_FRezist_dispell,&resistchance,GetProto()->SpellGroupType);
+		SM_PFValue(u_victim->SM_PRezist_dispell,&resistchance,GetProto()->SpellGroupType);
 #ifdef COLLECTION_OF_UNTESTED_STUFF_AND_TESTERS
 		int spell_flat_modifers=0;
 		int spell_pct_modifers=0;
@@ -1100,6 +1100,8 @@ uint8 Spell::prepare( SpellCastTargets * targets )
 
 	m_timer = m_castTime;
 
+	m_magnetTarget = 0;
+
 	//if( p_caster != NULL )
 	//   m_castTime -= 100;	  // session update time
 
@@ -1323,6 +1325,18 @@ void Spell::cast(bool check)
 			if( GetProto()->Effect[i] && GetProto()->Effect[i] != SPELL_EFFECT_PERSISTENT_AREA_AURA)
 				 FillTargetMap(i);
         }
+
+		if(m_magnetTarget){ // Spell was redirected
+			// Grounding Totem gets destroyed after redirecting 1 spell
+			Unit *MagnetTarget = m_caster->GetMapMgr()->GetUnit(m_magnetTarget);
+			m_magnetTarget = 0;
+			if ( MagnetTarget && MagnetTarget->IsCreature()){
+				Creature *MagnetCreature = static_cast< Creature* >( MagnetTarget );
+				if(MagnetCreature->IsTotem()){
+					sEventMgr.ModifyEventTimeLeft(MagnetCreature, EVENT_TOTEM_EXPIRE, 0);
+				}
+			}
+		}
 
 		SendCastResult(cancastresult);
 		if(cancastresult != SPELL_CANCAST_OK)

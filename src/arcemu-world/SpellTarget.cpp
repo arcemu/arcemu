@@ -359,24 +359,13 @@ void Spell::SpellTargetSingleTargetEnemy(uint32 i, uint32 j)
 				m_spellInfo->is_melee_spell )
 				break;		
 
-		if( pTarget && pTarget->IsPlayer() && x == 3)
+		if( pTarget && x == 3 && pTarget->m_magnetcaster != 0)
 		{	
-			Unit *MagnetCaster;
-			bool HasMagnetSpell = false;
-			for(uint32 x=0;x<MAX_POSITIVE_AURAS;x++)
-			if(	pTarget->m_auras[x] ) 
+			Unit *MagnetTarget = pTarget->GetMapMgr()->GetUnit(pTarget->m_magnetcaster);
+			if ( MagnetTarget && m_spellInfo->School )
 			{
-				for(uint32 y = 0; y < 3; ++y)
-					if ( pTarget->m_auras[x]->m_spellProto->EffectApplyAuraName[y] == SPELL_AURA_SPELL_MAGNET )
-					{
-						MagnetCaster = pTarget->m_auras[x]->GetUnitCaster();
-						HasMagnetSpell = true;
-						break;
-					}
-			}
-			if ( HasMagnetSpell && MagnetCaster && m_spellInfo->School )
-			{
-				pTarget = MagnetCaster;
+				m_magnetTarget = pTarget->m_magnetcaster;	
+				pTarget = MagnetTarget; // Redirected
 			}
 		}
 
@@ -408,7 +397,8 @@ void Spell::SpellTargetSingleTargetEnemy(uint32 i, uint32 j)
 		{
 			if((*itr)->GetGUID()==m_targets.m_unitTarget)
 				continue;
-			if( !((*itr)->IsUnit()) || !((Unit*)(*itr))->isAlive())
+			if( !((*itr)->IsUnit()) || !((Unit*)(*itr))->isAlive() || 
+				((*itr)->IsCreature() && ((Creature*)(*itr))->IsTotem()))
 				continue;
 
 			if(IsInrange(m_caster->GetPositionX(),m_caster->GetPositionY(),m_caster->GetPositionZ(),(*itr),range))

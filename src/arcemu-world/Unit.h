@@ -878,6 +878,7 @@ public:
 
 	Loot loot;
 	uint32 SchoolCastPrevent[7];
+	int32 MechanicDurationPctMod[28];
 	int32 GetDamageDoneMod(uint32 school);
 	float GetDamageDonePctMod(uint32 school);
 	float DamageDoneModPCT[7];
@@ -1033,6 +1034,7 @@ public:
 	int32 m_extraattacks;   
 	int32 m_extrastriketargets;
 	int32 m_fearmodifiers;
+	int64 m_magnetcaster; // Unit who acts as a magnet for this unit
 	//std::set<SpellEntry*> m_onStrikeSpells;
 
 	int32 m_noInterrupt;

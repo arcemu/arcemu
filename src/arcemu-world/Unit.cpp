@@ -193,6 +193,7 @@ Unit::Unit()
 	m_canMove = 0;
 	m_noInterrupt = 0;
 	m_modlanguage = -1;
+	m_magnetcaster = 0;
 	
 	critterPet = NULL;
 	summonPet = NULL;
@@ -1402,6 +1403,8 @@ void Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, uint
 							}break;
 						case 16246:
 							{
+								if(origId == 39805)
+									continue; // Lightning Overload Proc is already free
 								if(CastingSpell->NameHash!=SPELL_HASH_LIGHTNING_BOLT&&
 									CastingSpell->NameHash!=SPELL_HASH_CHAIN_LIGHTNING&&
 									CastingSpell->NameHash!=SPELL_HASH_EARTH_SHOCK&&
@@ -1426,8 +1429,7 @@ void Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, uint
 								SpellEntry *sp_for_the_logs = dbcSpell.LookupEntry(spellId);
 								Strike( victim, MELEE, sp_for_the_logs, dmg, 0, 0, true, false );
 								Strike( victim, MELEE, sp_for_the_logs, dmg, 0, 0, true, false );
-								//nothing else to be done for this trigger
-								continue;
+								spellId = 33010; // WF animation
 							}break;
 						//rogue - Ruthlessness
 						case 14157:
@@ -1700,6 +1702,7 @@ void Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, uint
 								if(	CastingSpell->NameHash == SPELL_HASH_LIGHTNING_BOLT || CastingSpell->NameHash == SPELL_HASH_CHAIN_LIGHTNING )
 								{
 									spellId = CastingSpell->Id;
+									origId = 39805;
 									dmg_overwrite = (CastingSpell->EffectBasePoints[0] + 1) / 2; //only half dmg
 								}
 								else continue;
@@ -6602,6 +6605,7 @@ void Unit::EventModelChange()
 	else
 		ModelHalfSize = 1.0f; //baaad, but it happens :(
 }
+
 
 
 

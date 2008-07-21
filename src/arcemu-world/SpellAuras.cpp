@@ -252,9 +252,9 @@ pSpellAura SpellAuraHandler[TOTAL_SPELL_AURAS]={
 		&Aura::SpellAuraNULL,//229 Apply Aura:Reduces the damage your pet takes from area of effect attacks http://www.thottbot.com/s35694
 		&Aura::SpellAuraIncreaseMaxHealth,//230 Increase Max Health (commanding shout);
         &Aura::SpellAuraNULL,//231 curse a target http://www.thottbot.com/s40303
-        &Aura::SpellAuraNULL,//232 // Reduces duration of Magic effects by $s2%.
+        &Aura::SpellAuraReduceEffectDuration,//232 // Reduces duration of Magic effects by $s2%.
         &Aura::SpellAuraNULL,//233 // Beer Goggles
-        &Aura::SpellAuraNULL,//234 Apply Aura: Reduces Silence or Interrupt effects, Item spell magic http://www.thottbot.com/s42184
+        &Aura::SpellAuraReduceEffectDuration,//234 Apply Aura: Reduces Silence or Interrupt effects, Item spell magic http://www.thottbot.com/s42184
 		&Aura::SpellAuraNULL,//235 33206 Instantly reduces a friendly target's threat by $44416s1%, reduces all damage taken by $s1% and increases resistance to Dispel mechanics by $s2% for $d.
 		&Aura::SpellAuraNULL,//236
 		&Aura::SpellAuraModHealingByAP,//237	//increase spell healing by X pct from attack power
@@ -362,6 +362,14 @@ void Aura::Init( SpellEntry* proto, int32 duration, Object* caster, Unit* target
 		p_target = static_cast< Player* >( m_target );
 	else
 		p_target = NULL;
+
+	// Modifies current aura duration based on its mechanic type
+	if(m_target->IsPlayer()){
+		int32 DurationModifier = static_cast< Player* >( m_target )->MechanicDurationPctMod[proto->MechanicsType];
+		if(DurationModifier < - 100)
+			DurationModifier = -100; // Can't reduce by more than 100%
+		SetDuration((GetDuration()*(100+DurationModifier))/100);
+	}
 
 	/*if( caster->GetTypeId() == TYPEID_PLAYER && target->GetTypeId() == TYPEID_PLAYER )
 	{
@@ -5306,6 +5314,7 @@ void Aura::SpellAuraMechanicImmunity(bool apply)
 							case SPELL_AURA_MOD_CONFUSE:
 							case SPELL_AURA_MOD_ROOT:
 							case SPELL_AURA_MOD_FEAR:
+							case SPELL_AURA_MOD_DECREASE_SPEED:
 								m_target->m_auras[x]->Remove();
 								goto out;
 								break;
@@ -5943,7 +5952,16 @@ void Aura::SpellAuraGhost(bool apply)
 
 void Aura::SpellAuraMagnet(bool apply)
 {
-// fixed in cast function
+	if(apply){
+		Unit *caster = GetUnitCaster();
+		if (!caster)
+			return;
+		SetPositive();
+		m_target->m_magnetcaster = caster->GetGUID();
+	}
+	else{
+		m_target->m_magnetcaster = NULL;
+	}
 }
 
 void Aura::SpellAuraManaShield(bool apply)
@@ -7777,8 +7795,12 @@ void Aura::SpellAuraModPenetration(bool apply) // armor penetration & spell pene
 				m_target->PowerCostPctMod[x] -= mod->m_amount;
 		}
 
-		if(mod->m_miscValue & 124 && m_target->IsPlayer())
-			m_target->ModUnsigned32Value(PLAYER_FIELD_MOD_TARGET_RESISTANCE, mod->m_amount);
+		if(m_target->IsPlayer()){
+			if(mod->m_miscValue & 124)
+				m_target->ModSignedInt32Value(PLAYER_FIELD_MOD_TARGET_RESISTANCE, mod->m_amount);
+			if(mod->m_miscValue & 1)
+				m_target->ModSignedInt32Value(PLAYER_FIELD_MOD_TARGET_PHYSICAL_RESISTANCE, mod->m_amount);
+		}
 	}
 	else
 	{
@@ -7787,8 +7809,12 @@ void Aura::SpellAuraModPenetration(bool apply) // armor penetration & spell pene
 			if (mod->m_miscValue & (((uint32)1)<<x))
 				m_target->PowerCostPctMod[x] += mod->m_amount;
 		}
-		if(mod->m_miscValue & 124 && m_target->IsPlayer())
-			m_target->ModUnsigned32Value(PLAYER_FIELD_MOD_TARGET_RESISTANCE, -mod->m_amount);
+		if(m_target->IsPlayer()){
+			if(mod->m_miscValue & 124)
+				m_target->ModSignedInt32Value(PLAYER_FIELD_MOD_TARGET_RESISTANCE, -mod->m_amount);
+			if(mod->m_miscValue & 1)
+				m_target->ModSignedInt32Value(PLAYER_FIELD_MOD_TARGET_PHYSICAL_RESISTANCE, -mod->m_amount);
+		}
 	}
 }
 
@@ -8486,5 +8512,21 @@ void Aura::SpellAuraModPossessPet(bool apply)
 			data << pCaster->GetNewGUID() << uint8(1);
 			pCaster->GetSession()->SendPacket(&data);
 		}
+	}
+}
+
+void Aura::SpellAuraReduceEffectDuration(bool apply){
+	if(!m_target->IsPlayer())
+		return;
+	int32 val;
+	if(apply){
+		SetPositive();
+		val = mod->m_amount; // TODO Only maximum effect should be used for Silence or Interrupt effects reduction
+	}
+	else{
+		val = -mod->m_amount;
+	}
+	if(mod->m_miscValue > 0 && mod->m_miscValue < 28){
+		static_cast< Player* >( m_target )->MechanicDurationPctMod[mod->m_miscValue] += val;
 	}
 }

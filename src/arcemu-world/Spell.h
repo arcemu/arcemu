@@ -1810,7 +1810,7 @@ protected:
     uint32  m_spellState;
     int32   m_castTime;
     int32   m_timer;
-    
+	int64 m_magnetTarget;
 
     // Current Targets to be used in effect handler
     Unit*       unitTarget;

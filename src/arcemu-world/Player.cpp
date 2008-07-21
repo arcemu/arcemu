@@ -104,6 +104,10 @@ Player::Player( uint32 guid ) : m_mailBox(guid)
 		LfgDungeonId[i]=0;
 	}
 	
+	for(int32 i=0;i<28;i++){
+		MechanicDurationPctMod[i]=0;
+	}
+
 	m_Autojoin = false;
 	m_AutoAddMem = false;
 	LfmDungeonId=0;
@@ -10324,7 +10328,12 @@ void Player::Cooldown_AddStart(SpellEntry * pSpell)
 #ifdef _DEBUG
 		Log.Debug("Cooldown", "Global cooldown adding: %u ms", atime );
 #endif
-		m_globalCooldown = mstime + atime;
+		m_globalCooldown = mstime;
+		if(m_floatValues[UNIT_MOD_CAST_SPEED]<1)	// Global cooldown can't be increased
+			m_globalCooldown += atime;
+		else
+			m_globalCooldown += pSpell->StartRecoveryTime;
+
 	}
 }
 

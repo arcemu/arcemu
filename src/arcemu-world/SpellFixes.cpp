@@ -13218,6 +13218,18 @@ void ApplyNormalFixes()
 				sp->EffectApplyAuraName[1] == 7 ||
 				sp->EffectApplyAuraName[2] == 7 )
 				sp->MechanicsType = MECHANIC_FLEEING;
+		
+			//Set Snare spells mech
+			if( sp->EffectApplyAuraName[0] == SPELL_AURA_MOD_DECREASE_SPEED || 
+				sp->EffectApplyAuraName[1] == SPELL_AURA_MOD_DECREASE_SPEED ||
+				sp->EffectApplyAuraName[2] == SPELL_AURA_MOD_DECREASE_SPEED )
+				sp->MechanicsType = MECHANIC_ENSNARED;
+
+			//Set Interrupted spells mech
+			if( sp->Effect[0] == SPELL_EFFECT_INTERRUPT_CAST || 
+				sp->Effect[1] == SPELL_EFFECT_INTERRUPT_CAST ||
+				sp->Effect[2] == SPELL_EFFECT_INTERRUPT_CAST )
+				sp->MechanicsType = MECHANIC_INTERRUPTED;
 		}
 
 		if( sp->proc_interval != 0 )
@@ -14524,6 +14536,26 @@ void ApplyNormalFixes()
 		sp = dbcSpell.LookupEntryForced( 20424 );
 		if( sp != NULL )
 			sp->is_melee_spell = true;
+
+		// paladin - Vindication
+		sp = dbcSpell.LookupEntryForced( 26021 );
+		if( sp != NULL )
+		{
+			sp->procChance = 30;
+			sp->procFlags = PROC_ON_MELEE_ATTACK;
+		}
+		sp = dbcSpell.LookupEntryForced( 26016 );
+		if( sp != NULL )
+		{
+			sp->procChance = 30;
+			sp->procFlags = PROC_ON_MELEE_ATTACK;
+		}
+		sp = dbcSpell.LookupEntryForced( 9452 );
+		if( sp != NULL )
+		{
+			sp->procChance = 30;
+			sp->procFlags = PROC_ON_MELEE_ATTACK;
+		}
 
 		/**********************************************************
 		 *	Blessing of Light
@@ -16887,6 +16919,13 @@ void ApplyNormalFixes()
 		if( sp != NULL ){
 			sp->EffectSpellGroupRelation[0] = 0x8;
 			sp->EffectSpellGroupRelation_high[1] = 0x1;
+		}
+
+		//shaman - Healing Grace
+		sp = dbcSpell.LookupEntryForced( 29191 ); 
+		if( sp != NULL ){
+			sp->EffectSpellGroupRelation[1] = 0xFFFFFFFF; // all spells
+			sp->EffectSpellGroupRelation_high[1] = 0xFFFFFFFF; // all spells
 		}
 
 		//shaman - Stormstrike Cooldown Reduction (set bonus)
@@ -20064,10 +20103,12 @@ void ApplyNormalFixes()
 			sp->EffectImplicitTargetB[2] = 0;
 		}
 
-		sp = dbcSpell.LookupEntryForced( 34774 );
-		if( sp != NULL ) //dragonspine trophy proc
-		{
+		// Dragonspine Trophy
+ 		sp = dbcSpell.LookupEntryForced( 34774 );
+		if( sp != NULL ){
 			sp->procChance = 6;
+			sp->procFlags  = PROC_ON_MELEE_ATTACK | PROC_ON_RANGED_ATTACK;
+			sp->proc_interval = 30000;
 		}
 	#ifndef NEW_PROCFLAGS
 		//Ashtongue Talisman of Lethality
@@ -20106,6 +20147,31 @@ void ApplyNormalFixes()
 			sp->EffectSpellGroupRelation[0]=8519680;
 			sp->EffectSpellGroupRelation_high[0]=8;
 		}
+
+		// Band of the Eternal Champion
+		sp = dbcSpell.LookupEntryForced( 35080 );
+		if( sp != NULL ){
+			sp->procFlags  = PROC_ON_MELEE_ATTACK;
+			sp->proc_interval = 60000;
+		}
+		// Band of the Eternal Sage
+		sp = dbcSpell.LookupEntryForced( 35083 );
+		if( sp != NULL ){
+			sp->procFlags  = PROC_ON_CAST_SPELL;
+			sp->proc_interval = 60000;
+		}
+		// Band of the Eternal Restorer
+		sp = dbcSpell.LookupEntryForced( 35086 );
+		if( sp != NULL ){
+			sp->procFlags  = PROC_ON_CAST_SPELL;
+			sp->proc_interval = 60000;
+		}
+		// Band of the Eternal Defender
+		sp = dbcSpell.LookupEntryForced( 35077 );
+		if( sp != NULL ){
+			sp->procFlags  = PROC_ON_MELEE_ATTACK_VICTIM | PROC_ON_SPELL_HIT_VICTIM | PROC_ON_RANGED_ATTACK_VICTIM;
+			sp->proc_interval = 60000;
+		}	
 
 		//Item Set: Thunderheart Harness
 		sp = dbcSpell.LookupEntryForced( 38447 );
