@@ -248,6 +248,8 @@ void _HandleBreathing(MovementInfo &movement_info, Player * _player, WorldSessio
 
 void WorldSession::HandleMovementOpcodes( WorldPacket & recv_data )
 {
+	bool moved = true;
+	
 	if(!_player->IsInWorld() || _player->m_uint32Values[UNIT_FIELD_CHARMEDBY] || _player->GetPlayerStatus() == TRANSFER_PENDING || _player->GetTaxiState())
 		return;
 
@@ -277,6 +279,42 @@ void WorldSession::HandleMovementOpcodes( WorldPacket & recv_data )
 	/************************************************************************/
 	/* Update player movement state                                         */
 	/************************************************************************/
+	
+	switch( recv_data.GetOpcode() )
+	{
+	case MSG_MOVE_START_FORWARD:
+	case MSG_MOVE_START_BACKWARD:
+		_player->moving = true;
+		break;
+	case MSG_MOVE_START_STRAFE_LEFT:
+	case MSG_MOVE_START_STRAFE_RIGHT:
+		_player->strafing = true;
+		break;
+	case MSG_MOVE_JUMP:
+		_player->jumping = true;
+		break;
+	case MSG_MOVE_STOP:
+		_player->moving = false;
+		break;
+	case MSG_MOVE_STOP_STRAFE:
+		_player->strafing = false;
+		break;
+	case MSG_MOVE_FALL_LAND:
+		_player->jumping = false;
+		break;
+	default:
+		moved = false;
+		break;
+	}
+	
+	if( moved )
+	{
+		if( !_player->moving && !_player->strafing && !_player->jumping )
+			_player->m_isMoving = false;
+		else
+			_player->m_isMoving = true;
+	}
+	
 	//update the detector
 	if( sWorld.antihack_speed && !_player->GetTaxiState() && _player->m_TransporterGUID == 0 )
 	{
