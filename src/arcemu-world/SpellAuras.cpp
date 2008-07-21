@@ -2650,6 +2650,9 @@ void Aura::SpellAuraModStun(bool apply)
 		if(m_target->m_rooted == 1)
 			m_target->Root();
 
+		if (m_target->IsStealth())
+			m_target->RemoveStealth();
+
 		m_target->m_stunned++;
 		m_target->m_special_state |= UNIT_STATE_STUN;
 		m_target->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_STUNNED);
