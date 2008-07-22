@@ -185,8 +185,13 @@ void ObjectMgr::LoadExtraCreatureProtoStuff()
 				sp->procCount = fields[4].GetUInt32();
 				sp->spell = spe;
 				sp->spellType = fields[6].GetUInt32();
-	//				sp->spelltargetType = fields[7].GetUInt32();
-				sp->cooldown = fields[8].GetUInt32();
+
+				int32  targettype = fields[7].GetInt32();
+				if( targettype == -1 )
+					sp->spelltargetType = GetAiTargetType( spe );
+				else sp->spelltargetType = targettype;
+
+				int32 cooldown = fields[8].GetInt32();
 				sp->floatMisc1 = fields[9].GetFloat();
 				sp->autocast_type=(uint32)-1;
 				sp->cooldowntime=getMSTime();
@@ -213,7 +218,7 @@ void ObjectMgr::LoadExtraCreatureProtoStuff()
 					sp->maxrange = GetMaxRange(dbcSpellRange.LookupEntry(sp->spell->rangeIndex));
 
 					//omg the poor darling has no clue about making ai_agents
-					if(sp->cooldown==0xffffffff)
+					if(sp->cooldown == -1)
 					{
 						//now this will not be exact cooldown but maybe a bigger one to not make him spam spells to often
 						int cooldown;
@@ -226,9 +231,12 @@ void ObjectMgr::LoadExtraCreatureProtoStuff()
 						Casttime=GetCastTime(dbcSpellCastTime.LookupEntry(sp->spell->CastingTimeIndex));
 						cooldown=Dur+Casttime+RecoveryTime;
 						if(cooldown<0)
-							sp->cooldown=0;//huge value that should not loop while adding some timestamp to it
+							sp->cooldown=2000;//huge value that should not loop while adding some timestamp to it
 						else sp->cooldown=cooldown;
 					}
+					else
+						sp->cooldown = cooldown;
+
 
 					/*
 					//now apply the morron filter

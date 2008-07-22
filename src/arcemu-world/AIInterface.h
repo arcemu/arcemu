@@ -174,7 +174,7 @@ struct AI_Spell
 	//uint32 procCountDB;
 	SpellEntry * spell;
 	uint8 spellType;
-//	uint8 spelltargetType;
+	uint8 spelltargetType;
 	uint32 cooldown;
 	uint32 cooldowntime;
 	uint32 procCount;

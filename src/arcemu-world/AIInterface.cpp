@@ -1249,7 +1249,7 @@ void AIInterface::_UpdateCombat(uint32 p_time)
 						m_nextSpell->procCount--;*/
 
 					SpellCastTargets targets = setSpellTargets(spellInfo, m_nextTarget);
-					uint32 targettype = m_nextSpell->spell->ai_target_type;
+					uint32 targettype = m_nextSpell->spelltargetType;
 					switch(targettype)
 					{
 					case TTYPE_CASTER:
@@ -3238,26 +3238,26 @@ SpellCastTargets AIInterface::setSpellTargets(SpellEntry *spellInfo, Unit* targe
 	targets.m_srcY = targets.m_destY = m_Unit->GetPositionY();
 	targets.m_srcZ = targets.m_destZ = m_Unit->GetPositionZ();
 
-	if(m_nextSpell->spell->ai_target_type == TTYPE_SINGLETARGET)
+	if(m_nextSpell->spelltargetType == TTYPE_SINGLETARGET)
 	{
 		targets.m_targetMask = 2;
 		targets.m_unitTarget = target->GetGUID();
 	}
-	else if(m_nextSpell->spell->ai_target_type == TTYPE_SOURCE)
+	else if(m_nextSpell->spelltargetType == TTYPE_SOURCE)
 	{
 		targets.m_targetMask = 32;
 //		targets.m_srcX = m_Unit->GetPositionX();
 //		targets.m_srcY = m_Unit->GetPositionY();
 //		targets.m_srcZ = m_Unit->GetPositionZ();
 	}
-	else if(m_nextSpell->spell->ai_target_type == TTYPE_DESTINATION)
+	else if(m_nextSpell->spelltargetType == TTYPE_DESTINATION)
 	{
 		targets.m_targetMask = 64;
 		targets.m_destX = target->GetPositionX();
 		targets.m_destY = target->GetPositionY();
 		targets.m_destZ = target->GetPositionZ();
 	}
-	else if(m_nextSpell->spell->ai_target_type == TTYPE_CASTER)
+	else if(m_nextSpell->spelltargetType == TTYPE_CASTER)
 	{
 		targets.m_targetMask = 2;
 		targets.m_unitTarget = m_Unit->GetGUID();

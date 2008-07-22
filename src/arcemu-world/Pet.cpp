@@ -1796,7 +1796,7 @@ void Pet::HandleAutoCastEvent(uint32 Type)
 		it2 = itr++;
 		sp = *it2;
 
-		if( sp->spell->ai_target_type == TTYPE_OWNER )
+		if( sp->spelltargetType == TTYPE_OWNER )
 			CastSpell( m_Owner, sp->spell, false );
 		else
 		{
