@@ -1689,8 +1689,13 @@ void WorldSession::HandleRepairItemOpcode(WorldPacket &recvPacket)
 				}
 				else
 				{
-					if(pItem->GetDurability() == 0 && RepairItem( _player, pItem ) && i < INVENTORY_SLOT_BAG_END)
-						_player->ApplyItemMods( pItem, i, true );
+					if( i < INVENTORY_SLOT_BAG_END )
+					{
+						if( pItem->GetDurability() == 0 && RepairItem( _player, pItem ) )
+							_player->ApplyItemMods( pItem, i, true );
+						else
+							RepairItem( _player, pItem );
+					}
 				}
 			}
 		}
