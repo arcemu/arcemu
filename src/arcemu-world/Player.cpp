@@ -6084,6 +6084,11 @@ void Player::Reset_Talents()
 				spellInfo = dbcSpell.LookupEntry( tmpTalent->RankID[j] );
 				if(spellInfo)
 				{
+					if (spellInfo->NameHash == SPELL_HASH_DUAL_WIELD)
+					{
+						if (getClass() != SHAMAN)
+							continue; //only shamans should lose it when they reset talents - opti
+					}
 					for(int k=0;k<3;k++)
 						if(spellInfo->Effect[k] == SPELL_EFFECT_LEARN_SPELL)
 						{
