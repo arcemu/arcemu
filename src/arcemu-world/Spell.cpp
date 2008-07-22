@@ -3565,20 +3565,20 @@ uint8 Spell::CanCast(bool tolerate)
 				}break;
 				case 44997: // Converting Sentry
 				{
-					if( !target || !target->IsCreature() || target->GetEntry()!=24972 ) // Erratic Sentry
+					if( !target->IsCreature() || target->GetEntry()!=24972 ) // Erratic Sentry
 						return SPELL_FAILED_BAD_TARGETS;
 
-					if( !target || !target->IsCreature() || !target->isDead() )
+					if( !target->IsCreature() || !target->isDead() )
 						return SPELL_FAILED_TARGET_NOT_DEAD;
 				}break;
 				case 30077: // Carinda's Retribution
 				{
-					if( !target || !target->IsCreature() || target->GetEntry()!=17226 ) // Viera Sunwhisper
+					if(!target->IsCreature() || target->GetEntry()!=17226 ) // Viera Sunwhisper
 						return SPELL_FAILED_BAD_TARGETS;
 				}break;
 				case 32825: // Soul Cannon
 				{
-					if( !target || !target->IsCreature() || target->GetEntry() != 22357 ) // Reth'hedron the Subduer
+					if( !target->IsCreature() || target->GetEntry() != 22357 ) // Reth'hedron the Subduer
 						return SPELL_FAILED_BAD_TARGETS;
 				}break;
 				case 27907: // Disciplinary Rod
@@ -3588,7 +3588,7 @@ uint8 Spell::CanCast(bool tolerate)
 				}break;
 				case 19938: // Awaken Peon (Foreman's Blackjack)
 				{
-					if( !target || !target->IsCreature() || target->GetEntry() != 10556 ) // Lazy Peon
+					if( !target->IsCreature() || target->GetEntry() != 10556 ) // Lazy Peon
 						return SPELL_FAILED_BAD_TARGETS;
 				}break;
 				case 603: //curse of doom, can't be casted on players
@@ -3599,7 +3599,7 @@ uint8 Spell::CanCast(bool tolerate)
 				}break;
 				case 13907: // Smite Demon
 				{
-					if (!target || target->IsPlayer() || target->getClass()!=TARGET_TYPE_DEMON )
+					if ( target->IsPlayer() || target->getClass()!=TARGET_TYPE_DEMON )
 						return SPELL_FAILED_SPELL_UNAVAILABLE;
 				}break;
 				// disable spell
@@ -3625,7 +3625,7 @@ uint8 Spell::CanCast(bool tolerate)
 				}break;
 				case 38177: // Blackwhelp Net
 				{
-					if( !target || !target->GetEntry() != 21387)
+					if( target->GetEntry() != 21387)
 						return SPELL_FAILED_BAD_TARGETS;
 				}break;
 			}
