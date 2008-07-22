@@ -29,8 +29,8 @@ bool isHostile(Object* objA, Object* objB)// B is hostile for A?
 		return false;
 	bool hostile = false;
 
-	if(objB->m_faction == NULL || objA->m_faction == NULL)
-		return true;
+//	if(objB->m_faction == NULL || objA->m_faction == NULL)
+//		return true;
 
 	if(objA == objB)
 		return false;   // can't attack self.. this causes problems with buffs if we dont have it :p
@@ -136,11 +136,13 @@ bool isHostile(Object* objA, Object* objB)// B is hostile for A?
 /// Including the spell class and the player class.
 bool isAttackable(Object* objA, Object* objB, bool CheckStealth)// A can attack B?
 {
-	if(!objA || !objB || objB->m_factionDBC == NULL || objA->m_factionDBC == NULL)
+	if(!objA || !objB 
+//		|| objB->m_factionDBC == NULL || objA->m_factionDBC == NULL
+		)
 		return false;
 
-	if(objB->m_faction == NULL || objA->m_faction == NULL )
-		return true;
+//	if(objB->m_faction == NULL || objA->m_faction == NULL )
+//		return true;
 
 	if(objA == objB)
 		return false;   // can't attack self.. this causes problems with buffs if we don't have it :p
@@ -331,8 +333,8 @@ bool isCombatSupport(Object* objA, Object* objB)// B combat supports A?
 	if(objB->GetTypeId() == TYPEID_CORPSE)
 		return false;
 
-	if(objB->m_faction == 0 || objA->m_faction == 0)
-		return false;
+//	if(objB->m_faction == 0 || objA->m_faction == 0)
+//		return false;
 
 	if( objA->IsPet() || objB->IsPet() ) // fixes an issue where horde pets would chain aggro horde guards and vice versa for alliance.
 		return false;
@@ -368,7 +370,9 @@ bool isAlliance(Object* objA)// A is alliance?
 {
 	FactionTemplateDBC * m_sw_faction = dbcFactionTemplate.LookupEntry(11);
 	FactionDBC * m_sw_factionDBC = dbcFaction.LookupEntry(72);
-	if(!objA || objA->m_factionDBC == NULL || objA->m_faction == NULL)
+	if(!objA 
+//		|| objA->m_factionDBC == NULL || objA->m_faction == NULL
+		)
 		return true;
 
 	if(m_sw_faction == objA->m_faction || m_sw_factionDBC == objA->m_factionDBC)

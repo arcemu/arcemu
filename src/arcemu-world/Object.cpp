@@ -1612,19 +1612,27 @@ void Object::_setFaction()
 	if(GetTypeId() == TYPEID_UNIT || GetTypeId() == TYPEID_PLAYER)
 	{
 		factT = dbcFactionTemplate.LookupEntry(GetUInt32Value(UNIT_FIELD_FACTIONTEMPLATE));
+		if( !factT )
+			sLog.outDetail("Unit does not have a valid faction. It will make him act stupid in world. Don't blame us, blame yourself for not checking :P, faction %u set to entry %u",GetUInt32Value(UNIT_FIELD_FACTIONTEMPLATE),GetUInt32Value(OBJECT_FIELD_ENTRY) );
 	}
 	else
 	if(GetTypeId() == TYPEID_GAMEOBJECT)
 	{
 		factT = dbcFactionTemplate.LookupEntry(GetUInt32Value(GAMEOBJECT_FACTION));
+		if( !factT )
+			sLog.outDetail("Game Object does not have a valid faction. It will make him act stupid in world. Don't blame us, blame yourself for not checking :P, faction %u set to entry %u",GetUInt32Value(GAMEOBJECT_FACTION),GetUInt32Value(OBJECT_FIELD_ENTRY) );
 	}
 
 	if(!factT)
 	{
-		return;
+		factT = dbcFactionTemplate.LookupRow( 0 );
+		//this is causeing a lot of crashes cause people have shitty dbs
+//		return;
 	}
 	m_faction = factT;
 	m_factionDBC = dbcFaction.LookupEntry(factT->Faction);
+	if( !m_factionDBC )
+		m_factionDBC = dbcFaction.LookupRow( 0 );
 }
 
 void Object::UpdateOppFactionSet()

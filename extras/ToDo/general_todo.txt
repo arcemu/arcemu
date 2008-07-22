@@ -134,6 +134,7 @@ SMT_RESIST_DISPEL - check if it is used
 - imp is attacking self
 - totems chase targets
 - paladin auras stack all
+- crash on dyn objects : spellId = 27173
 
 ==========================================================================
 player A must have any unsoulbound bag and he must party with player B ..
