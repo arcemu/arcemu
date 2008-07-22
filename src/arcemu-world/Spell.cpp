@@ -3548,6 +3548,11 @@ uint8 Spell::CanCast(bool tolerate)
 					if( !target->IsCreature() || target->GetEntry() != 18879 ) // Phase Hunter
 						return SPELL_FAILED_BAD_TARGETS;
 				} break;
+				case 29528: // Inoculation
+				{
+					if( !target->IsCreature() || target->GetEntry() != 16518 ) // Nestlewood Owlkin
+						return SPELL_FAILED_BAD_TARGETS;
+				}break;
 				case 41621: // Wolpertinger Net
 				{
 					if( !target || !target->IsCreature() || target->GetEntry()!=23487 ) // Wild Wolpertinger
