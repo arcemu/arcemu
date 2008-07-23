@@ -5530,6 +5530,9 @@ void Aura::SpellAuraSplitDamage(bool apply)
 	if( !m_target->IsUnit() )
 		return;
 
+	//Shady: Commented since it crashes server.
+	return;
+
 	//SUPA:FIXU
 	// rewrite, copy-paste DamageProc struct.
 	if(apply)
@@ -7073,6 +7076,9 @@ void Aura::SpellAuraSplitDamageFlat(bool apply)
 {
 	//DK:FIXME
 	//SUPA:FIXU
+
+	//Shady: commented since it crashes server.
+	return;
 
 	// rewrite, copy-paste DamageProc struct.
 	if(apply)

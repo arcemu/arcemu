@@ -22,8 +22,8 @@
 
 struct SpellEntry;
 
-typedef set<Unit*>  DynamicObjectList;
-typedef set<Unit*>  FactionRangeList;
+typedef std::set<Unit*>  DynamicObjectList;
+typedef std::set<Unit*>  FactionRangeList;
 
 class SERVER_DECL DynamicObject : public Object
 {

@@ -42,18 +42,6 @@ DynamicObject::DynamicObject(uint32 high, uint32 low)
 
 DynamicObject::~DynamicObject()
 {
-	// remove aura from all targets
-	DynamicObjectList::iterator jtr  = targets.begin();
-	DynamicObjectList::iterator jend = targets.end();
-	Unit * target;
-
-	while(jtr != jend)
-	{
-		target = *jtr;
-		++jtr;
-		target->RemoveAura(m_spellProto->Id);
-	}
-
 	if(u_caster->dynObj == this)
 		u_caster->dynObj = 0;
 }
@@ -174,7 +162,7 @@ void DynamicObject::UpdateTargets()
 				pAura->Init(m_spellProto, m_aliveDuration, u_caster, target);
 				for(uint32 i = 0; i < 3; ++i)
 				{
-					if(m_spellProto->Effect[i] == 27)
+					if(m_spellProto->Effect[i] == SPELL_EFFECT_PERSISTENT_AREA_AURA)
 					{
 						pAura->AddMod(m_spellProto->EffectApplyAuraName[i],
 							m_spellProto->EffectBasePoints[i]+1, m_spellProto->EffectMiscValue[i], i);
@@ -205,8 +193,8 @@ void DynamicObject::UpdateTargets()
 
 			if(GetDistanceSq(target) > radius)
 			{
-				targets.erase(jtr2);
 				target->RemoveAura(m_spellProto->Id);
+				targets.erase(jtr2);
 			}
 		}
 
@@ -219,23 +207,24 @@ void DynamicObject::UpdateTargets()
 
 	if(m_aliveDuration == 0)
 	{
-		DynamicObjectList::iterator jtr  = targets.begin();
-		DynamicObjectList::iterator jend = targets.end();
-		Unit * target;
-
-		while(jtr != jend)
-		{
-			target = *jtr;
-			++jtr;
-			target->RemoveAura(m_spellProto->Id);
-		}
-
 		Remove();
 	}
 }
 
 void DynamicObject::Remove()
 {
+	// remove aura from all targets
+	DynamicObjectList::iterator jtr  = targets.begin();
+	DynamicObjectList::iterator jend = targets.end();
+	Unit * target;
+
+	while(jtr != jend)
+	{
+		target = *jtr;
+		++jtr;
+		target->RemoveAura(m_spellProto->Id);
+	}
+
 	if(IsInWorld())
 		RemoveFromWorld(true);
 	delete this;

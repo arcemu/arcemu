@@ -3813,11 +3813,15 @@ void Spell::SpellEffectAddFarsight(uint32 i) // Add Farsight
 
 	DynamicObject * dynObj = p_caster->GetMapMgr()->CreateDynamicObject();
 	dynObj->Create(u_caster, this, x, y, z, GetDuration(), GetRadius(i));
+
+	ASSERT(dynObj);
+/*
 	if( dynObj == NULL ) //i <3 burlex :P
 	{
 		delete dynObj;
 		return;
 	}
+	*/
     dynObj->SetUInt32Value(OBJECT_FIELD_TYPE, 65);
     dynObj->SetUInt32Value(DYNAMICOBJECT_BYTES, 0x80000002);
 	dynObj->SetInstanceID(p_caster->GetInstanceID());	
