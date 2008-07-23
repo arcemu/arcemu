@@ -1896,6 +1896,8 @@ void WorldSession::HandleInsertGemOpcode(WorldPacket &recvPacket)
 			}
 
 			it = itemi->SafeRemoveAndRetreiveItemByGuid(gemguid,true);
+			if( !it ) 
+				return; //someone sending hacked packets to crash server
 			ip = it->GetProto();
 
 			gp = dbcGemProperty.LookupEntry(it->GetProto()->GemProperties);
