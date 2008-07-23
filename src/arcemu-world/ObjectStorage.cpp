@@ -191,7 +191,7 @@ void ObjectMgr::LoadExtraCreatureProtoStuff()
 					sp->spelltargetType = GetAiTargetType( spe );
 				else sp->spelltargetType = targettype;
 
-				int32 cooldown = fields[8].GetInt32();
+				sp->cooldown = fields[8].GetInt32();
 				sp->floatMisc1 = fields[9].GetFloat();
 				sp->autocast_type=(uint32)-1;
 				sp->cooldowntime=getMSTime();
@@ -234,9 +234,6 @@ void ObjectMgr::LoadExtraCreatureProtoStuff()
 							sp->cooldown=2000;//huge value that should not loop while adding some timestamp to it
 						else sp->cooldown=cooldown;
 					}
-					else
-						sp->cooldown = cooldown;
-
 
 					/*
 					//now apply the morron filter
