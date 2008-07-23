@@ -78,19 +78,18 @@ void DynamicObject::Create(Unit * caster, Spell * pSpell, float x, float y, floa
 	u_caster = caster;
 	m_faction = caster->m_faction;
 	m_factionDBC = caster->m_factionDBC;
-	if(caster->dynObj != 0)
+
+	if(pSpell->g_caster)
+		PushToWorld(pSpell->g_caster->GetMapMgr());
+	else 
+		PushToWorld(caster->GetMapMgr());
+
+	if(caster->dynObj != NULL)
 	{
-		// expire next update
-		caster->dynObj->m_aliveDuration = 1;
-		caster->dynObj->UpdateTargets();
+		//expires
+		caster->dynObj->Remove();
 	}
 	caster->dynObj = this;
-	if(pSpell->g_caster)
-	{
-	   PushToWorld(pSpell->g_caster->GetMapMgr());
-	}else 
-		PushToWorld(caster->GetMapMgr());
-	
   
 	sEventMgr.AddEvent(this, &DynamicObject::UpdateTargets, EVENT_DYNAMICOBJECT_UPDATE, 100, 0,EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
 }
@@ -222,7 +221,8 @@ void DynamicObject::Remove()
 	{
 		target = *jtr;
 		++jtr;
-		target->RemoveAura(m_spellProto->Id);
+		if (target != NULL)
+			target->RemoveAura(m_spellProto->Id);
 	}
 
 	if(IsInWorld())
