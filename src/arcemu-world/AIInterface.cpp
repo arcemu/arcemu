@@ -111,9 +111,9 @@ AIInterface::AIInterface()
 	waiting_for_cooldown = false;
 	UnitToFollow_backup = NULL;
 	m_isGuard = false;
-	m_is_in_instance=false;
-	skip_reset_hp=false;
-	timed_emotes =  NULL;
+	m_is_in_instance = false;
+	skip_reset_hp = false;
+	timed_emotes = NULL;
 	timed_emote_expire = 0xFFFFFFFF;
 #ifdef HACKY_SERVER_CLIENT_POS_SYNC
 	moved_for_attack = false;
