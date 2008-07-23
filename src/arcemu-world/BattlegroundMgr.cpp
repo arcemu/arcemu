@@ -904,7 +904,7 @@ void CBattleground::PortPlayer(Player * plr, bool skip_teleport /* = false*/)
 		//Do not let everyone know an invisible gm has joined.
 		WorldPacket data(SMSG_BATTLEGROUND_PLAYER_JOINED, 8);
 		data << plr->GetGUID();
-		DistributePacketToAll(&data);
+		DistributePacketToTeam(&data,plr->m_bgTeam);
 	}
 	m_players[plr->m_bgTeam].insert(plr);
 
