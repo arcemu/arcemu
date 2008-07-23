@@ -358,7 +358,7 @@ void Aura::Init( SpellEntry* proto, int32 duration, Object* caster, Unit* target
 	m_casterGuid = caster->GetGUID();
 	m_target = target;
 
-	if( m_target->GetTypeId() == TYPEID_PLAYER )
+	if( m_target && m_target->GetTypeId() == TYPEID_PLAYER )
 		p_target = static_cast< Player* >( m_target );
 	else
 		p_target = NULL;
