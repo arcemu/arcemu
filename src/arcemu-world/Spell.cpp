@@ -4879,7 +4879,7 @@ void ApplyDiminishingReturnTimer(uint32 * Duration, Unit * Target, SpellEntry * 
 
 	// Reset the diminishing return counter, and add to the aura count (we don't decrease the timer till we
 	// have no auras of this type left.
-	++Target->m_diminishAuraCount[Grp];
+	//++Target->m_diminishAuraCount[Grp];
 	++Target->m_diminishCount[Grp];
 }
 
@@ -4888,6 +4888,7 @@ void UnapplyDiminishingReturnTimer(Unit * Target, SpellEntry * spell)
 	uint32 status = GetDiminishingGroup(spell->NameHash);
 	uint32 Grp = status & 0xFFFF;   // other bytes are if apply to pvp
 	uint32 PvE = (status >> 16) & 0xFFFF;
+	uint32 aura_grp;
 
 	// Make sure we have a group
 	if(Grp == 0xFFFF) return;
@@ -4896,7 +4897,21 @@ void UnapplyDiminishingReturnTimer(Unit * Target, SpellEntry * spell)
 	if(!PvE && Target->GetTypeId() != TYPEID_PLAYER && !Target->IsPet())
 		return;
 
-	Target->m_diminishAuraCount[Grp]--;
+	//Target->m_diminishAuraCount[Grp]--;
+	
+	/*There are cases in which you just refresh an aura duration instead of the whole aura,
+	causing corruption on the diminishAura counter and locking the entire diminishing group.
+	So it's better to check the active auras one by one*/
+	Target->m_diminishAuraCount[Grp] = 0;
+	for( uint32 x = MAX_POSITIVE_AURAS; x < MAX_AURAS; x++ )
+	{
+		if( Target->m_auras[x] )
+		{	
+			aura_grp = GetDiminishingGroup( Target->m_auras[x]->GetSpellProto()->NameHash );
+			if( aura_grp == status )
+				Target->m_diminishAuraCount[Grp]++;
+		}
+	}
 
 	// start timer decrease
 	if(!Target->m_diminishAuraCount[Grp])
@@ -4916,100 +4931,90 @@ uint32 GetDiminishingGroup(uint32 NameHash)
 
 	switch(NameHash)
 	{
-	case SPELL_HASH_SAP:					// Sap
-	case SPELL_HASH_GOUGE:					// Gouge
-	case SPELL_HASH_REPENTANCE:			// Repentance
-	case SPELL_HASH_MAIM:
-		grp = 0;
-		break;
-
+	case SPELL_HASH_BASH:
+	case SPELL_HASH_IMPACT:
+	case SPELL_HASH_CHEAP_SHOT:
+	case SPELL_HASH_SHADOWFURY:
+	case SPELL_HASH_CHARGE_STUN:
+	case SPELL_HASH_INTERCEPT_STUN:
+	case SPELL_HASH_CONCUSSION_BLOW:
+	case SPELL_HASH_INTIMIDATION:
+	case SPELL_HASH_WAR_STOMP:
 	case SPELL_HASH_POUNCE:
- 	case SPELL_HASH_CHEAP_SHOT:				// Cheap Shot
-	case SPELL_HASH_KIDNEY_SHOT:			// Kidney Shot
-	case SPELL_HASH_HAMMER_OF_JUSTICE:		// Hammer of Justice
-	case SPELL_HASH_CHARGE:					// Charge
-	case SPELL_HASH_INTERCEPT :				// Intercept
-	case SPELL_HASH_CONCUSSION_BLOW:		// Concussion Blow
-	case SPELL_HASH_CELESTIAL_FOCUS:		// Celestial Focus
-	case SPELL_HASH_IMPACT:					// Impact
-	case SPELL_HASH_BLACKOUT:				// Blackout
-	case SPELL_HASH_SHADOWFURY:				// Shadowfury
 		{
-			grp = 1;
+			grp = DIMINISHING_GROUP_STUN;
 			pve = true;
 		}break;
 
-	case SPELL_HASH_STUN:					// Stuns (all of them)
-	case SPELL_HASH_BASH:					// Bash
+	case SPELL_HASH_STARFIRE_STUN:
+ 	case SPELL_HASH_STONECLAW_STUN:
+	case SPELL_HASH_STUN:					// Generic ones
+	case SPELL_HASH_BLACKOUT:
+	case SPELL_HASH_MACE_STUN_EFFECT:		// Mace Specialization
 		{
-			grp = 2;
+			grp = DIMINISHING_GROUP_STUN_PROC;
+			pve = true;
 		}break;
 
-	case SPELL_HASH_FROST_NOVA:				// Frost Nova
-	case SPELL_HASH_FROSTBITE:				// Frostbite
-	case SPELL_HASH_ENTANGLING_ROOTS:		// Entangling Roots
-	case SPELL_HASH_IMPROVED_HAMSTRING:		// Improved Hamstring
+	case SPELL_HASH_ENTANGLING_ROOTS:
+	case SPELL_HASH_FROST_NOVA:
+		grp = DIMINISHING_GROUP_ROOT;
+		break;
+
+	case SPELL_HASH_IMPROVED_WING_CLIP:	
+	case SPELL_HASH_FROSTBITE:
+	case SPELL_HASH_IMPROVED_HAMSTRING:
+	case SPELL_HASH_ENTRAPMENT:
+		grp = DIMINISHING_GROUP_ROOT_PROC;
+		break;
+
+	case SPELL_HASH_HIBERNATE:
+ 	case SPELL_HASH_WYVERN_STING:
+ 	case SPELL_HASH_RECKLESS_CHARGE:		//Gobling Rocket Helmet
+	case SPELL_HASH_FREEZING_TRAP_EFFECT:
+		grp = DIMINISHING_GROUP_SLEEP;
+		break;
+
+	case SPELL_HASH_CYCLONE:
+	case SPELL_HASH_BLIND:
 		{
-			grp = 3;
+			grp = DIMINISHING_GROUP_BLIND_CYCLONE;
+			pve = true;
 		}break;
 
-	case SPELL_HASH_SEDUCTION:				// Seduction
- 	case SPELL_HASH_FEAR:					// Fear
- 	case SPELL_HASH_HOWL_OF_TERROR:			// Howl of Terror
-	case SPELL_HASH_DEATH_COIL:			// Death Coil
-	case SPELL_HASH_PSYCHIC_SCREAM:			// Psychic Scream
-	case SPELL_HASH_SCARE_BEAST:			// Scare Beast
-		{
-			grp = 4;
-		}break;
-
+	case SPELL_HASH_GOUGE:
+	case SPELL_HASH_SAP:
 	case SPELL_HASH_POLYMORPH:				// Polymorph
 	case SPELL_HASH_POLYMORPH__CHICKEN:		// Chicken
 	case SPELL_HASH_POLYMORPH__PIG:			// Pig
 	case SPELL_HASH_POLYMORPH__TURTLE:		// Turtle
 	case SPELL_HASH_POLYMORPH__SHEEP:		// Good ol' sheep
-		{
-			grp = 5;
-			pve = true;   
-		}break;
+	case SPELL_HASH_MAIM:					// Maybe here?
+		grp = DIMINISHING_GROUP_GOUGE_POLY_SAP;
+		break;
 
-	case SPELL_HASH_ENSLAVE_DEMON:			// Enslave Demon
-	case SPELL_HASH_MIND_CONTROL:			// Mind Control
-		{
-			grp = 6;
-		}break;
+	case SPELL_HASH_FEAR:
+	case SPELL_HASH_PSYCHIC_SCREAM:
+	case SPELL_HASH_SEDUCTION:
+	case SPELL_HASH_HOWL_OF_TERROR:
+		grp = DIMINISHING_GROUP_FEAR;
+		break;
 
-	case SPELL_HASH_HIBERNATE:				// Hibernate
-		{
-			grp = 7;
-		}break;
+	case SPELL_HASH_MIND_CONTROL:
+		grp = DIMINISHING_GROUP_CHARM;		//Charm???
+		break;
 
-	case SPELL_HASH_CYCLONE:				// Cyclone
-	case SPELL_HASH_BLIND:					// Blind
+	case SPELL_HASH_KIDNEY_SHOT:
 		{
-			grp = 8;
+			grp = DIMINISHING_GROUP_KIDNEY_SHOT;
 			pve = true;
 		}break;
-	case SPELL_HASH_BANISH:					// Banish
-		{
-			grp = 9;
-		}break;
 
-	case SPELL_HASH_FREEZING_TRAP_EFFECT:	// Freezing Trap Effect
-		{
-			grp = 10;
-		}break;
-
-	case SPELL_HASH_SLEEP:					// Sleep
-	case SPELL_HASH_RECKLESS_CHARGE:		// Reckless Charge
-		{
-			grp = 11;
-		}break;
-	case SPELL_HASH_RIPOSTE:
-		{
-			grp = 12;
-		}break;
+	case SPELL_HASH_DEATH_COIL:
+		grp = DIMINISHING_GROUP_HORROR;
+		break;
 	}
+
 	uint32 ret;
 	if( pve )
 		ret = grp | (1 << 16);

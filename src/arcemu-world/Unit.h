@@ -1136,9 +1136,9 @@ public:
 	AuraCheckResponse AuraCheck(uint32 name_hash, uint32 rank, Object *caster=NULL);
 	AuraCheckResponse AuraCheck(uint32 name_hash, uint32 rank, Aura* aur, Object *caster=NULL);
 
-	uint16 m_diminishCount[13];
-	uint8  m_diminishAuraCount[13];
-	uint16 m_diminishTimer[13];
+	uint16 m_diminishCount[11];
+	uint8  m_diminishAuraCount[11];
+	uint16 m_diminishTimer[11];
 	bool   m_diminishActive;
 
 	void SetDiminishTimer(uint32 index)

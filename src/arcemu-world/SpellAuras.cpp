@@ -470,9 +470,6 @@ void Aura::Remove()
 
 	ApplyModifiers( false );
 
-	// reset diminishing return timer if needed
-	::UnapplyDiminishingReturnTimer( m_target, m_spellProto );
-
 	for( uint32 x = 0; x < 3; x++ )
 	{
 		if( !m_spellProto->Effect[x] )
@@ -511,6 +508,9 @@ void Aura::Remove()
 	}
 
 	m_target->m_auras[m_auraSlot] = NULL;
+
+	// reset diminishing return timer if needed
+	::UnapplyDiminishingReturnTimer( m_target, m_spellProto );
 
 	if( GetSpellProto()->SpellGroupType && m_target->GetTypeId() == TYPEID_PLAYER )
 	{

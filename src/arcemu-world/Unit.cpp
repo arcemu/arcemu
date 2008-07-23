@@ -400,7 +400,7 @@ void Unit::Update( uint32 p_time )
 		if(m_diminishActive)
 		{
 			uint32 count = 0;
-			for(uint32 x = 0; x < 16; ++x)
+			for(uint32 x = 0; x < 11; ++x)
 			{
 				// diminishing return stuff
 				if(m_diminishTimer[x] && !m_diminishAuraCount[x])
