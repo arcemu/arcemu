@@ -140,6 +140,9 @@ Object::Object() : m_position(0,0,0,0), m_spawnLocation(0,0,0,0)
 	m_inQueue = false;
 	m_extensions = NULL;
 	m_loadedFromDB = false;
+
+	m_faction = dbcFactionTemplate.LookupRow( 0 );
+	m_factionDBC = dbcFaction.LookupRow( 0 );
 }
 
 Object::~Object( )
