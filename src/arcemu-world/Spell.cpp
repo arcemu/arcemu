@@ -4538,6 +4538,8 @@ void Spell::Heal(int32 amount, bool ForceCrit)
 		if(GetProto()->NameHash == SPELL_HASH_CITRINE_PENDANT_OF_GOLDEN_HEALING) //Citrine Pendant of Golden Healing
 			healdoneaffectperc = 0.0f;
 
+		if(GetProto()->NameHash == SPELL_HASH_LIVING_RUBY_PENDANT) //Living Ruby Pendant
+			healdoneaffectperc = 0.0f;
 
 		//Spells affected by Bonus Healing
 		if(GetProto()->NameHash == SPELL_HASH_EARTH_SHIELD) //Earth Shield
