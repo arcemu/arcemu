@@ -29,6 +29,94 @@
 
 #define MAX(a,b) (a>b?a:b)
 
+#define BOREDOM_TIMER_TO_START_TRIGGERING	10*60*1000
+#define BOREDOM_TRIGGER_INTERVAL			2*60*1000
+
+#define BOREDOM_TEXTCOUNT	49
+char	bored_texts[BOREDOM_TEXTCOUNT][200]=
+{
+	"I can't heal boredom",
+	"Even your natural healing is better then me right now",
+	"Let's to kick some but ",
+	"I could do this with my eyes closed",
+	"You know anyone who wants to buy my full mana ?",
+	"I could even tank this imaginary enemy",
+	"Scared maybe ?",
+	"Don't worry, be happy",
+	"Stay a while and listen....but not this much",
+	"Did that rock got smaller or my eyes aged since we are standing here ?",
+
+	"Look an enemy ... and we are going to wrong way ",
+	"I counted to 10000...10 times and nothing happened",
+	"There is a good part in doing nothing...just can't remmeber of it",
+	"If you do nothing, nothing can go wrong",
+	"Look what i can do....",
+	"If i change into a sexy nurse maybe we will ge more action",
+	"If stare at the sun a whole day you will see your future",
+	"Can i take a vacation now ?",
+	"If i would be payed i would be happy to earn money for free",
+	"BRB, playing solitare",
+
+	"Wooot, a new boredom score record",
+	"Did something happen cause i felt asleep for a second ?",
+	"I'll go peal a banana tree, will be back some other age",
+	"Book of boredom : how to kill time. We found someone that ressed it it seems ",
+	"Robots are so lucky. They can shutdown to make time pass faster",
+	"I don't like acting dumb i'm dumb naturaly",
+	"People tell me I don't listen...or something like that",
+	"My life is based on a true story",
+	"Rehab is for quitters!",
+	"Life is never boring, but some people choose to be bored.",
+
+	"If you think nobody cares you're alive, try not filing your taxes",
+	"Hard work never killed anybody, but why take a chance?",
+	"If Tylenol, duct tape, or a band-aid can't fix it, you've got a serious problem",
+	"Always forgive your enemies. Nothing annoys them more",
+	"By the time you have finished reading this, you will have realized you just wasted 10 seconds of your life.",
+	"Alpha, beta, gamma, delta....epsilon...damn it, what comes next?!",
+	"I pretend to work, and You'll pretend to pay me",
+	"f**k the fast food, f**k the pepsi, all what we need is milk and strudel.",
+	"Love is like hair; it can be found in the strangest places.",
+	"Moo. I'm a pig",
+
+	"Actually no, I will not STFU",
+	"When I'm feeling down, I like to whistle. It makes the neighbor's dog run to the end of his chain and gag himself.",
+	"Follow your dream! Unless it's the one where you're at work in your underwear during a fire drill",
+	"Do I have hippotomonstrosesquippedaliophobia?",
+	"Bull**** makes the flowers grow and that's beautiful!",
+	"LET DO SOMETHING DARING...LETS ALL EAT FROZEN YORGERT!!!",
+	"Squirrels juggling knives in my head",
+	"Only dead fish go with the flow.",
+	"",
+};
+
+#define BOREDOM_EMOTECOUNT	21
+int bored_emotes[BOREDOM_TEXTCOUNT]=
+{
+	EMOTE_ONESHOT_TALK,
+	EMOTE_ONESHOT_WAVE,
+	EMOTE_ONESHOT_CHEER,
+	EMOTE_STATE_DANCE,
+	EMOTE_STATE_DANCE,
+	EMOTE_STATE_DANCE,
+	EMOTE_STATE_DANCE,
+	EMOTE_STATE_SLEEP,
+	EMOTE_STATE_SLEEP,
+	EMOTE_STATE_SLEEP,
+
+	EMOTE_STATE_SLEEP,
+	EMOTE_ONESHOT_CHICKEN,
+	EMOTE_ONESHOT_FLEX,
+	EMOTE_STATE_DEAD,
+	EMOTE_STATE_TALK,
+	EMOTE_STATE_WHIRLWIND,
+	EMOTE_ONESHOT_STOMP,
+	EMOTE_STATE_ROAR,
+	EMOTE_STATE_DANCESPECIAL,
+	EMOTE_ONESHOT_DANCESPECIAL,
+
+	EMOTE_STATE_EXCLAIM,
+}
 //will get bigger if it is better to cast this spell then some other version
 float GetSpellEficiencyFactor(SpellEntry *sp)
 {
@@ -42,13 +130,13 @@ void AiAgentHealSupport::Init(Unit *un, AIType at, MovementType mt, Unit *owner)
 	m_Unit->SetUInt32Value( UNIT_FIELD_BASE_MANA , m_Unit->GetUInt32Value( UNIT_FIELD_POWER1 ));
 
 	AIInterface::Init(un,at,mt,owner);//run the original init and we add our custom stuff too
+	m_Unit->m_noRespawn = true;
 
 	m_fallowAngle = 2 * PI - PI / 6;
 	FollowDistance = 5 ; //we are support, we stand behind our master 
 
-	DifficultyLevel = m_PetOwner->GetUInt32Value(UNIT_FIELD_LEVEL) / HealSpellLevels;
-	if( DifficultyLevel > HealSpellLevels - 2 )
-		DifficultyLevel = HealSpellLevels - 2;
+	DifficultyLevel = 1;
+
 	//scale health and mana
 	m_Unit->SetUInt32Value( UNIT_FIELD_MAXHEALTH , m_Unit->GetUInt32Value( UNIT_FIELD_BASE_HEALTH ) * DifficultyLevel * CREATURE_STATS_SCALE_WITH_DIFFICULTY );
 	m_Unit->SetUInt32Value( UNIT_FIELD_MAXPOWER1 , m_Unit->GetUInt32Value( UNIT_FIELD_BASE_MANA ) * DifficultyLevel * CREATURE_STATS_SCALE_WITH_DIFFICULTY );
@@ -64,294 +152,72 @@ void AiAgentHealSupport::Init(Unit *un, AIType at, MovementType mt, Unit *owner)
 
 	last_time_full_health = true; //before we start healing we should try to quick augment our master
 
-	m_defend_self = dbcSpell.LookupEntry( 642 ); // Divine Shield 1
+	m_defend_self.sp = dbcSpell.LookupEntry( 642 ); // Divine Shield 1
+	m_defend_self.chance_to_cast = 75;
+	revive_spell.sp = dbcSpell.LookupEntry( 2006 ); // resurrection 1
+	revive_spell.chance_to_cast = 100;
 
-	uint32 local_itr,local_itr2;
+	healagentspell *the;
 
-	memset(m_HealSpells,NULL,HealSpellCount*HealSpellLevels*sizeof(SpellEntry*));
-	memset(m_HealSpellsEficiency,NULL,HealSpellCount*HealSpellLevels*sizeof(float));
+	the = new healagentspell;
+	the->chance_to_cast = 5;
+	the->sp = dbcSpell.LookupEntry( 596 );// Prayer of Healing
+	the->max_scale = 2000;
+	m_healspells.push_back( the );
 
-	//we are using const lists. You don't like it ? Write your own AI :P
-	//owner : Lesser Heal, Flash Heal, heal, Healing Touch, Greater Heal, Great Heal, Heal Brethren, Debuff Uber Heal Over Time
-	//group : Prayer of Healing, Chain Heal, Healing Aura
-	//augment : Uber Heal Over Time, Spiritual Healing,Healing Light, renew
-	//augment : renew, power word shield, Dampen Magic, Blessing of Sanctuary 
-	local_itr = 0;
-	local_itr2 = 0;
-	m_PartySpells[local_itr2++][local_itr] = dbcSpell.LookupEntry( 596 ); // Prayer of Healing 1
-	m_PartySpells[local_itr2++][local_itr] = dbcSpell.LookupEntry( 10960 ); // Prayer of Healing 1
-	m_PartySpells[local_itr2++][local_itr] = dbcSpell.LookupEntry( 10961 ); // Prayer of Healing 1
-	m_PartySpells[local_itr2++][local_itr] = dbcSpell.LookupEntry( 25308 ); // Prayer of Healing 1
+	the = new healagentspell;
+	the->chance_to_cast = 5;
+	the->sp = dbcSpell.LookupEntry( 1064 );// Chain Heal
+	the->max_scale = 1500;
+	m_healspells.push_back( the );
 
-	local_itr++;
-	local_itr2 = 0;
-	m_PartySpells[local_itr2++][local_itr] = dbcSpell.LookupEntry( 1064 ); // Chain Heal 1
-	m_PartySpells[local_itr2++][local_itr] = dbcSpell.LookupEntry( 10623 ); // Chain Heal 1
-	m_PartySpells[local_itr2++][local_itr] = dbcSpell.LookupEntry( 25423 ); // Chain Heal 1
-	m_PartySpells[local_itr2++][local_itr] = dbcSpell.LookupEntry( 33642 ); // Chain Heal 1
+	the = new healagentspell;
+	the->chance_to_cast = 2;
+	the->sp = dbcSpell.LookupEntry( 5607 );// Healing Aura
+	the->max_scale = 1000;
+	m_healspells.push_back( the );
 
-	local_itr++;
-	local_itr2 = 0;
-	m_PartySpells[local_itr2++][local_itr] = dbcSpell.LookupEntry( 5607 ); // Healing Aura 1
-	m_PartySpells[local_itr2++][local_itr] = dbcSpell.LookupEntry( 5016 ); // Healing Aura 1
-	m_PartySpells[local_itr2++][local_itr] = dbcSpell.LookupEntry( 15870 ); // Healing Aura 1
-	m_PartySpells[local_itr2++][local_itr] = dbcSpell.LookupEntry( 11900 ); // Healing Aura 1
+	the = new healagentspell;
+	the->chance_to_cast = 100;
+	the->sp = dbcSpell.LookupEntry( 139 );// Renew
+	the->max_scale = 1700;
+	m_healspells.push_back( the );
 
-	local_itr = 0;
-	local_itr2 = 0;
-	m_AugmentSpells[local_itr2++][local_itr] = dbcSpell.LookupEntry( 139 ); // Renew 1
-	m_AugmentSpells[local_itr2++][local_itr] = dbcSpell.LookupEntry( 6076 ); // Renew 1
-	m_AugmentSpells[local_itr2++][local_itr] = dbcSpell.LookupEntry( 10927 ); // Renew 1
-	m_AugmentSpells[local_itr2++][local_itr] = dbcSpell.LookupEntry( 25221 ); // Renew 1
-	m_AugmentSpells[local_itr2++][local_itr] = dbcSpell.LookupEntry( 37260 ); // Renew 1
-	m_AugmentSpells[local_itr2++][local_itr] = dbcSpell.LookupEntry( 36969 ); // Renew 2
+	the = new healagentspell;
+	the->chance_to_cast = 30;
+	the->sp = dbcSpell.LookupEntry( 27169 );// Blessing of Sanctuary
+	the->max_scale = 200;
+	m_healspells.push_back( the );
 
-	local_itr++;
-	local_itr2 = 0;
-	m_AugmentSpells[local_itr2++][local_itr] = dbcSpell.LookupEntry( 17 ); // Power Word: Shield 1
-	m_AugmentSpells[local_itr2++][local_itr] = dbcSpell.LookupEntry( 3747 ); // Power Word: Shield 1
-	m_AugmentSpells[local_itr2++][local_itr] = dbcSpell.LookupEntry( 10898 ); // Power Word: Shield 1
-	m_AugmentSpells[local_itr2++][local_itr] = dbcSpell.LookupEntry( 10901 ); // Power Word: Shield 1
-	m_AugmentSpells[local_itr2++][local_itr] = dbcSpell.LookupEntry( 25217 ); // Power Word: Shield 1
-	m_AugmentSpells[local_itr2++][local_itr] = dbcSpell.LookupEntry( 25218 ); // Power Word: Shield 2
+	the = new healagentspell;
+	the->chance_to_cast = 100;
+	the->sp = dbcSpell.LookupEntry( 2060 );// Greater Heal
+	the->max_scale = 3500;
+	m_healspells.push_back( the );
 
-	local_itr++;
-	local_itr2 = 0;
-	m_AugmentSpells[local_itr2++][local_itr] = dbcSpell.LookupEntry( 604 ); // Dampen Magic 1
-	m_AugmentSpells[local_itr2++][local_itr] = dbcSpell.LookupEntry( 8450 ); // Dampen Magic 1
-	m_AugmentSpells[local_itr2++][local_itr] = dbcSpell.LookupEntry( 8451 ); // Dampen Magic 1
-	m_AugmentSpells[local_itr2++][local_itr] = dbcSpell.LookupEntry( 10173 ); // Dampen Magic 1
-	m_AugmentSpells[local_itr2++][local_itr] = dbcSpell.LookupEntry( 10174 ); // Dampen Magic 1
-	m_AugmentSpells[local_itr2++][local_itr] = dbcSpell.LookupEntry( 33944 ); // Dampen Magic 2
+	the = new healagentspell;
+	the->chance_to_cast = 5;
+	the->sp = dbcSpell.LookupEntry( 26565 );// Heal Brethren
+	the->max_scale = 0;
+	m_healspells.push_back( the );
 
-	local_itr++;
-	local_itr2 = 0;
-	m_AugmentSpells[local_itr2++][local_itr] = dbcSpell.LookupEntry( 20911 ); // Blessing of Sanctuary 1
-	m_AugmentSpells[local_itr2++][local_itr] = dbcSpell.LookupEntry( 20913 ); // Blessing of Sanctuary 1
-	m_AugmentSpells[local_itr2++][local_itr] = dbcSpell.LookupEntry( 20914 ); // Blessing of Sanctuary 1
-	m_AugmentSpells[local_itr2++][local_itr] = dbcSpell.LookupEntry( 20914 ); // Blessing of Sanctuary 1
-	m_AugmentSpells[local_itr2++][local_itr] = dbcSpell.LookupEntry( 27168 ); // Blessing of Sanctuary 1
-	m_AugmentSpells[local_itr2++][local_itr] = dbcSpell.LookupEntry( 27169 ); // Blessing of Sanctuary 2
+	the = new healagentspell;
+	the->chance_to_cast = 5;
+	the->sp = dbcSpell.LookupEntry( 36347 );// Healing Power
+	the->max_scale = 0;
+	m_AugmentSelf.push_back( the );
 
-	local_itr = 0;
-	local_itr2 = 0;
-	m_HealSpells[local_itr2++][local_itr] = dbcSpell.LookupEntry( 2050 ); // Lesser Heal 1
-	m_HealSpellsEficiency[local_itr2][local_itr] = GetSpellEficiencyFactor(m_HealSpells[local_itr2][local_itr]);
-	m_HealSpells[local_itr2++][local_itr] = dbcSpell.LookupEntry( 2050 ); // Lesser Heal 1
-	m_HealSpellsEficiency[local_itr2][local_itr] = GetSpellEficiencyFactor(m_HealSpells[local_itr2][local_itr]);
-	m_HealSpells[local_itr2++][local_itr] = dbcSpell.LookupEntry( 2050 ); // Lesser Heal 1
-	m_HealSpellsEficiency[local_itr2][local_itr] = GetSpellEficiencyFactor(m_HealSpells[local_itr2][local_itr]);
-	m_HealSpells[local_itr2++][local_itr] = dbcSpell.LookupEntry( 2050 ); // Lesser Heal 1
-	m_HealSpellsEficiency[local_itr2][local_itr] = GetSpellEficiencyFactor(m_HealSpells[local_itr2][local_itr]);
-	m_HealSpells[local_itr2++][local_itr] = dbcSpell.LookupEntry( 2050 ); // Lesser Heal 1
-	m_HealSpellsEficiency[local_itr2][local_itr] = GetSpellEficiencyFactor(m_HealSpells[local_itr2][local_itr]);
-	m_HealSpells[local_itr2++][local_itr] = dbcSpell.LookupEntry( 2052 ); // Lesser Heal 2
-	m_HealSpellsEficiency[local_itr2][local_itr] = GetSpellEficiencyFactor(m_HealSpells[local_itr2][local_itr]);
-	m_HealSpells[local_itr2++][local_itr] = dbcSpell.LookupEntry( 2052 ); // Lesser Heal 2
-	m_HealSpellsEficiency[local_itr2][local_itr] = GetSpellEficiencyFactor(m_HealSpells[local_itr2][local_itr]);
-	m_HealSpells[local_itr2++][local_itr] = dbcSpell.LookupEntry( 2052 ); // Lesser Heal 2
-	m_HealSpellsEficiency[local_itr2][local_itr] = GetSpellEficiencyFactor(m_HealSpells[local_itr2][local_itr]);
-	m_HealSpells[local_itr2++][local_itr] = dbcSpell.LookupEntry( 2052 ); // Lesser Heal 2
-	m_HealSpellsEficiency[local_itr2][local_itr] = GetSpellEficiencyFactor(m_HealSpells[local_itr2][local_itr]);
-	m_HealSpells[local_itr2++][local_itr] = dbcSpell.LookupEntry( 2052 ); // Lesser Heal 2
-	m_HealSpellsEficiency[local_itr2][local_itr] = GetSpellEficiencyFactor(m_HealSpells[local_itr2][local_itr]);
-	m_HealSpells[local_itr2++][local_itr] = dbcSpell.LookupEntry( 2053 ); // Lesser Heal 3
-	m_HealSpellsEficiency[local_itr2][local_itr] = GetSpellEficiencyFactor(m_HealSpells[local_itr2][local_itr]);
-	m_HealSpells[local_itr2++][local_itr] = dbcSpell.LookupEntry( 2053 ); // Lesser Heal 3
-	m_HealSpellsEficiency[local_itr2][local_itr] = GetSpellEficiencyFactor(m_HealSpells[local_itr2][local_itr]);
-	m_HealSpells[local_itr2++][local_itr] = dbcSpell.LookupEntry( 2053 ); // Lesser Heal 3
-	m_HealSpellsEficiency[local_itr2][local_itr] = GetSpellEficiencyFactor(m_HealSpells[local_itr2][local_itr]);
-	m_HealSpells[local_itr2++][local_itr] = dbcSpell.LookupEntry( 2053 ); // Lesser Heal 3
-	m_HealSpellsEficiency[local_itr2][local_itr] = GetSpellEficiencyFactor(m_HealSpells[local_itr2][local_itr]);
-	m_HealSpells[local_itr2++][local_itr] = dbcSpell.LookupEntry( 2053 ); // Lesser Heal 3
-	m_HealSpellsEficiency[local_itr2][local_itr] = GetSpellEficiencyFactor(m_HealSpells[local_itr2][local_itr]);
+	the = new healagentspell;
+	the->chance_to_cast = 5;
+	the->sp = dbcSpell.LookupEntry( 32200 );// Increased Healing
+	the->max_scale = 0;
+	m_AugmentSelf.push_back( the );
 
-	local_itr++;
-	local_itr2 = 0;
-	m_HealSpells[local_itr2++][local_itr] = dbcSpell.LookupEntry( 2061 ); // Flash Heal 1
-	m_HealSpellsEficiency[local_itr2][local_itr] = GetSpellEficiencyFactor(m_HealSpells[local_itr2][local_itr]);
-	m_HealSpells[local_itr2++][local_itr] = dbcSpell.LookupEntry( 2061 ); // Flash Heal 1
-	m_HealSpellsEficiency[local_itr2][local_itr] = GetSpellEficiencyFactor(m_HealSpells[local_itr2][local_itr]);
-	m_HealSpells[local_itr2++][local_itr] = dbcSpell.LookupEntry( 9472 ); // Flash Heal 2
-	m_HealSpellsEficiency[local_itr2][local_itr] = GetSpellEficiencyFactor(m_HealSpells[local_itr2][local_itr]);
-	m_HealSpells[local_itr2++][local_itr] = dbcSpell.LookupEntry( 9472 ); // Flash Heal 2
-	m_HealSpellsEficiency[local_itr2][local_itr] = GetSpellEficiencyFactor(m_HealSpells[local_itr2][local_itr]);
-	m_HealSpells[local_itr2++][local_itr] = dbcSpell.LookupEntry( 9473 ); // Flash Heal 3
-	m_HealSpellsEficiency[local_itr2][local_itr] = GetSpellEficiencyFactor(m_HealSpells[local_itr2][local_itr]);
-	m_HealSpells[local_itr2++][local_itr] = dbcSpell.LookupEntry( 9473 ); // Flash Heal 3
-	m_HealSpellsEficiency[local_itr2][local_itr] = GetSpellEficiencyFactor(m_HealSpells[local_itr2][local_itr]);
-	m_HealSpells[local_itr2++][local_itr] = dbcSpell.LookupEntry( 10915 ); // Flash Heal 4
-	m_HealSpellsEficiency[local_itr2][local_itr] = GetSpellEficiencyFactor(m_HealSpells[local_itr2][local_itr]);
-	m_HealSpells[local_itr2++][local_itr] = dbcSpell.LookupEntry( 10915 ); // Flash Heal 4
-	m_HealSpellsEficiency[local_itr2][local_itr] = GetSpellEficiencyFactor(m_HealSpells[local_itr2][local_itr]);
-	m_HealSpells[local_itr2++][local_itr] = dbcSpell.LookupEntry( 10915 ); // Flash Heal 4
-	m_HealSpellsEficiency[local_itr2][local_itr] = GetSpellEficiencyFactor(m_HealSpells[local_itr2][local_itr]);
-	m_HealSpells[local_itr2++][local_itr] = dbcSpell.LookupEntry( 10916 ); // Flash Heal 5
-	m_HealSpellsEficiency[local_itr2][local_itr] = GetSpellEficiencyFactor(m_HealSpells[local_itr2][local_itr]);
-	m_HealSpells[local_itr2++][local_itr] = dbcSpell.LookupEntry( 10916 ); // Flash Heal 5
-	m_HealSpellsEficiency[local_itr2][local_itr] = GetSpellEficiencyFactor(m_HealSpells[local_itr2][local_itr]);
-	m_HealSpells[local_itr2++][local_itr] = dbcSpell.LookupEntry( 10916 ); // Flash Heal 5
-	m_HealSpellsEficiency[local_itr2][local_itr] = GetSpellEficiencyFactor(m_HealSpells[local_itr2][local_itr]);
-	m_HealSpells[local_itr2++][local_itr] = dbcSpell.LookupEntry( 10917 ); // Flash Heal 6
-	m_HealSpellsEficiency[local_itr2][local_itr] = GetSpellEficiencyFactor(m_HealSpells[local_itr2][local_itr]);
-	m_HealSpells[local_itr2++][local_itr] = dbcSpell.LookupEntry( 10917 ); // Flash Heal 6
-	m_HealSpellsEficiency[local_itr2][local_itr] = GetSpellEficiencyFactor(m_HealSpells[local_itr2][local_itr]);
-	m_HealSpells[local_itr2++][local_itr] = dbcSpell.LookupEntry( 10917 ); // Flash Heal 6
-	m_HealSpellsEficiency[local_itr2][local_itr] = GetSpellEficiencyFactor(m_HealSpells[local_itr2][local_itr]);
-
-	local_itr++;
-	local_itr2 = 0;
-	m_HealSpells[local_itr2++][local_itr] = dbcSpell.LookupEntry( 2054 ); // Heal 1
-	m_HealSpellsEficiency[local_itr2][local_itr] = GetSpellEficiencyFactor(m_HealSpells[local_itr2][local_itr]);
-	m_HealSpells[local_itr2++][local_itr] = dbcSpell.LookupEntry( 2054 ); // Heal 1
-	m_HealSpellsEficiency[local_itr2][local_itr] = GetSpellEficiencyFactor(m_HealSpells[local_itr2][local_itr]);
-	m_HealSpells[local_itr2++][local_itr] = dbcSpell.LookupEntry( 2054 ); // Heal 1
-	m_HealSpellsEficiency[local_itr2][local_itr] = GetSpellEficiencyFactor(m_HealSpells[local_itr2][local_itr]);
-	m_HealSpells[local_itr2++][local_itr] = dbcSpell.LookupEntry( 2055 ); // Heal 2
-	m_HealSpellsEficiency[local_itr2][local_itr] = GetSpellEficiencyFactor(m_HealSpells[local_itr2][local_itr]);
-	m_HealSpells[local_itr2++][local_itr] = dbcSpell.LookupEntry( 2055 ); // Heal 2
-	m_HealSpellsEficiency[local_itr2][local_itr] = GetSpellEficiencyFactor(m_HealSpells[local_itr2][local_itr]);
-	m_HealSpells[local_itr2++][local_itr] = dbcSpell.LookupEntry( 2055 ); // Heal 2
-	m_HealSpellsEficiency[local_itr2][local_itr] = GetSpellEficiencyFactor(m_HealSpells[local_itr2][local_itr]);
-	m_HealSpells[local_itr2++][local_itr] = dbcSpell.LookupEntry( 6063 ); // Heal 3
-	m_HealSpellsEficiency[local_itr2][local_itr] = GetSpellEficiencyFactor(m_HealSpells[local_itr2][local_itr]);
-	m_HealSpells[local_itr2++][local_itr] = dbcSpell.LookupEntry( 6063 ); // Heal 3
-	m_HealSpellsEficiency[local_itr2][local_itr] = GetSpellEficiencyFactor(m_HealSpells[local_itr2][local_itr]);
-	m_HealSpells[local_itr2++][local_itr] = dbcSpell.LookupEntry( 6063 ); // Heal 3
-	m_HealSpellsEficiency[local_itr2][local_itr] = GetSpellEficiencyFactor(m_HealSpells[local_itr2][local_itr]);
-	m_HealSpells[local_itr2++][local_itr] = dbcSpell.LookupEntry( 6064 ); // Heal 4
-	m_HealSpellsEficiency[local_itr2][local_itr] = GetSpellEficiencyFactor(m_HealSpells[local_itr2][local_itr]);
-	m_HealSpells[local_itr2++][local_itr] = dbcSpell.LookupEntry( 6064 ); // Heal 4
-	m_HealSpellsEficiency[local_itr2][local_itr] = GetSpellEficiencyFactor(m_HealSpells[local_itr2][local_itr]);
-	m_HealSpells[local_itr2++][local_itr] = dbcSpell.LookupEntry( 6064 ); // Heal 4
-	m_HealSpellsEficiency[local_itr2][local_itr] = GetSpellEficiencyFactor(m_HealSpells[local_itr2][local_itr]);
-	m_HealSpells[local_itr2++][local_itr] = dbcSpell.LookupEntry( 8812 ); // Heal 5
-	m_HealSpellsEficiency[local_itr2][local_itr] = GetSpellEficiencyFactor(m_HealSpells[local_itr2][local_itr]);
-	m_HealSpells[local_itr2++][local_itr] = dbcSpell.LookupEntry( 8812 ); // Heal 5
-	m_HealSpellsEficiency[local_itr2][local_itr] = GetSpellEficiencyFactor(m_HealSpells[local_itr2][local_itr]);
-	m_HealSpells[local_itr2++][local_itr] = dbcSpell.LookupEntry( 8812 ); // Heal 5
-	m_HealSpellsEficiency[local_itr2][local_itr] = GetSpellEficiencyFactor(m_HealSpells[local_itr2][local_itr]);
-
-	local_itr++;
-	local_itr2 = 0;
-	m_HealSpells[local_itr2++][local_itr] = dbcSpell.LookupEntry( 5185 ); // Healing Touch 1
-	m_HealSpellsEficiency[local_itr2][local_itr] = GetSpellEficiencyFactor(m_HealSpells[local_itr2][local_itr]);
-	m_HealSpells[local_itr2++][local_itr] = dbcSpell.LookupEntry( 5186 ); // Healing Touch 2
-	m_HealSpellsEficiency[local_itr2][local_itr] = GetSpellEficiencyFactor(m_HealSpells[local_itr2][local_itr]);
-	m_HealSpells[local_itr2++][local_itr] = dbcSpell.LookupEntry( 5187 ); // Healing Touch 3
-	m_HealSpellsEficiency[local_itr2][local_itr] = GetSpellEficiencyFactor(m_HealSpells[local_itr2][local_itr]);
-	m_HealSpells[local_itr2++][local_itr] = dbcSpell.LookupEntry( 5188 ); // Healing Touch 4
-	m_HealSpellsEficiency[local_itr2][local_itr] = GetSpellEficiencyFactor(m_HealSpells[local_itr2][local_itr]);
-	m_HealSpells[local_itr2++][local_itr] = dbcSpell.LookupEntry( 5189 ); // Healing Touch 5
-	m_HealSpellsEficiency[local_itr2][local_itr] = GetSpellEficiencyFactor(m_HealSpells[local_itr2][local_itr]);
-	m_HealSpells[local_itr2++][local_itr] = dbcSpell.LookupEntry( 6778 ); // Healing Touch 6
-	m_HealSpellsEficiency[local_itr2][local_itr] = GetSpellEficiencyFactor(m_HealSpells[local_itr2][local_itr]);
-	m_HealSpells[local_itr2++][local_itr] = dbcSpell.LookupEntry( 8903 ); // Healing Touch 7
-	m_HealSpellsEficiency[local_itr2][local_itr] = GetSpellEficiencyFactor(m_HealSpells[local_itr2][local_itr]);
-	m_HealSpells[local_itr2++][local_itr] = dbcSpell.LookupEntry( 9758 ); // Healing Touch 8
-	m_HealSpellsEficiency[local_itr2][local_itr] = GetSpellEficiencyFactor(m_HealSpells[local_itr2][local_itr]);
-	m_HealSpells[local_itr2++][local_itr] = dbcSpell.LookupEntry( 9888 ); // Healing Touch 9
-	m_HealSpellsEficiency[local_itr2][local_itr] = GetSpellEficiencyFactor(m_HealSpells[local_itr2][local_itr]);
-	m_HealSpells[local_itr2++][local_itr] = dbcSpell.LookupEntry( 9889 ); // Healing Touch 10
-	m_HealSpellsEficiency[local_itr2][local_itr] = GetSpellEficiencyFactor(m_HealSpells[local_itr2][local_itr]);
-	m_HealSpells[local_itr2++][local_itr] = dbcSpell.LookupEntry( 25297 ); // Healing Touch 11
-	m_HealSpellsEficiency[local_itr2][local_itr] = GetSpellEficiencyFactor(m_HealSpells[local_itr2][local_itr]);
-	m_HealSpells[local_itr2++][local_itr] = dbcSpell.LookupEntry( 26978 ); // Healing Touch 12
-	m_HealSpellsEficiency[local_itr2][local_itr] = GetSpellEficiencyFactor(m_HealSpells[local_itr2][local_itr]);
-	m_HealSpells[local_itr2++][local_itr] = dbcSpell.LookupEntry( 26979 ); // Healing Touch 13
-	m_HealSpellsEficiency[local_itr2][local_itr] = GetSpellEficiencyFactor(m_HealSpells[local_itr2][local_itr]);
-	m_HealSpells[local_itr2++][local_itr] = dbcSpell.LookupEntry( 27527 ); // Healing Touch 14
-	m_HealSpellsEficiency[local_itr2][local_itr] = GetSpellEficiencyFactor(m_HealSpells[local_itr2][local_itr]);
-	m_HealSpells[local_itr2++][local_itr] = dbcSpell.LookupEntry( 29339 ); // Healing Touch 15
-	m_HealSpellsEficiency[local_itr2][local_itr] = GetSpellEficiencyFactor(m_HealSpells[local_itr2][local_itr]);
-
-	local_itr++;
-	local_itr2 = 0;
-	m_HealSpells[local_itr2++][local_itr] = dbcSpell.LookupEntry( 2060 ); // Greater Heal 1
-	m_HealSpellsEficiency[local_itr2][local_itr] = GetSpellEficiencyFactor(m_HealSpells[local_itr2][local_itr]);
-	m_HealSpells[local_itr2++][local_itr] = dbcSpell.LookupEntry( 10963 ); // Greater Heal 2
-	m_HealSpellsEficiency[local_itr2][local_itr] = GetSpellEficiencyFactor(m_HealSpells[local_itr2][local_itr]);
-	m_HealSpells[local_itr2++][local_itr] = dbcSpell.LookupEntry( 10964 ); // Greater Heal 3
-	m_HealSpellsEficiency[local_itr2][local_itr] = GetSpellEficiencyFactor(m_HealSpells[local_itr2][local_itr]);
-	m_HealSpells[local_itr2++][local_itr] = dbcSpell.LookupEntry( 10965 ); // Greater Heal 4
-	m_HealSpellsEficiency[local_itr2][local_itr] = GetSpellEficiencyFactor(m_HealSpells[local_itr2][local_itr]);
-	m_HealSpells[local_itr2++][local_itr] = dbcSpell.LookupEntry( 10965 ); // Greater Heal 4
-	m_HealSpellsEficiency[local_itr2][local_itr] = GetSpellEficiencyFactor(m_HealSpells[local_itr2][local_itr]);
-	m_HealSpells[local_itr2++][local_itr] = dbcSpell.LookupEntry( 25210 ); // Greater Heal 5
-	m_HealSpellsEficiency[local_itr2][local_itr] = GetSpellEficiencyFactor(m_HealSpells[local_itr2][local_itr]);
-	m_HealSpells[local_itr2++][local_itr] = dbcSpell.LookupEntry( 25210 ); // Greater Heal 5
-	m_HealSpellsEficiency[local_itr2][local_itr] = GetSpellEficiencyFactor(m_HealSpells[local_itr2][local_itr]);
-	m_HealSpells[local_itr2++][local_itr] = dbcSpell.LookupEntry( 25213 ); // Greater Heal 6
-	m_HealSpellsEficiency[local_itr2][local_itr] = GetSpellEficiencyFactor(m_HealSpells[local_itr2][local_itr]);
-	m_HealSpells[local_itr2++][local_itr] = dbcSpell.LookupEntry( 25213 ); // Greater Heal 6
-	m_HealSpellsEficiency[local_itr2][local_itr] = GetSpellEficiencyFactor(m_HealSpells[local_itr2][local_itr]);
-	m_HealSpells[local_itr2++][local_itr] = dbcSpell.LookupEntry( 34119 ); // Greater Heal 7
-	m_HealSpellsEficiency[local_itr2][local_itr] = GetSpellEficiencyFactor(m_HealSpells[local_itr2][local_itr]);
-	m_HealSpells[local_itr2++][local_itr] = dbcSpell.LookupEntry( 34119 ); // Greater Heal 7
-	m_HealSpellsEficiency[local_itr2][local_itr] = GetSpellEficiencyFactor(m_HealSpells[local_itr2][local_itr]);
-	m_HealSpells[local_itr2++][local_itr] = dbcSpell.LookupEntry( 35096 ); // Greater Heal 8
-	m_HealSpellsEficiency[local_itr2][local_itr] = GetSpellEficiencyFactor(m_HealSpells[local_itr2][local_itr]);
-	m_HealSpells[local_itr2++][local_itr] = dbcSpell.LookupEntry( 35096 ); // Greater Heal 8
-	m_HealSpellsEficiency[local_itr2][local_itr] = GetSpellEficiencyFactor(m_HealSpells[local_itr2][local_itr]);
-	m_HealSpells[local_itr2++][local_itr] = dbcSpell.LookupEntry( 38580 ); // Greater Heal 9
-	m_HealSpellsEficiency[local_itr2][local_itr] = GetSpellEficiencyFactor(m_HealSpells[local_itr2][local_itr]);
-	m_HealSpells[local_itr2++][local_itr] = dbcSpell.LookupEntry( 38580 ); // Greater Heal 9
-	m_HealSpellsEficiency[local_itr2][local_itr] = GetSpellEficiencyFactor(m_HealSpells[local_itr2][local_itr]);
-
-	local_itr++;
-	local_itr2 = HealSpellLevels / 2;
-	m_HealSpells[local_itr2++][local_itr] = dbcSpell.LookupEntry( 28306 ); // Great Heal 1
-	m_HealSpellsEficiency[local_itr2][local_itr] = GetSpellEficiencyFactor(m_HealSpells[local_itr2][local_itr]);
-	m_HealSpells[local_itr2++][local_itr] = dbcSpell.LookupEntry( 28306 ); // Great Heal 1
-	m_HealSpellsEficiency[local_itr2][local_itr] = GetSpellEficiencyFactor(m_HealSpells[local_itr2][local_itr]);
-	m_HealSpells[local_itr2++][local_itr] = dbcSpell.LookupEntry( 28306 ); // Great Heal 1
-	m_HealSpellsEficiency[local_itr2][local_itr] = GetSpellEficiencyFactor(m_HealSpells[local_itr2][local_itr]);
-	m_HealSpells[local_itr2++][local_itr] = dbcSpell.LookupEntry( 28306 ); // Great Heal 1
-	m_HealSpellsEficiency[local_itr2][local_itr] = GetSpellEficiencyFactor(m_HealSpells[local_itr2][local_itr]);
-	m_HealSpells[local_itr2++][local_itr] = dbcSpell.LookupEntry( 28306 ); // Great Heal 1
-	m_HealSpellsEficiency[local_itr2][local_itr] = GetSpellEficiencyFactor(m_HealSpells[local_itr2][local_itr]);
-	m_HealSpells[local_itr2++][local_itr] = dbcSpell.LookupEntry( 33387 ); // Great Heal 2
-	m_HealSpellsEficiency[local_itr2][local_itr] = GetSpellEficiencyFactor(m_HealSpells[local_itr2][local_itr]);
-	m_HealSpells[local_itr2++][local_itr] = dbcSpell.LookupEntry( 33387 ); // Great Heal 2
-	m_HealSpellsEficiency[local_itr2][local_itr] = GetSpellEficiencyFactor(m_HealSpells[local_itr2][local_itr]);
-	m_HealSpells[local_itr2++][local_itr] = dbcSpell.LookupEntry( 33387 ); // Great Heal 2
-	m_HealSpellsEficiency[local_itr2][local_itr] = GetSpellEficiencyFactor(m_HealSpells[local_itr2][local_itr]);
-	m_HealSpells[local_itr2++][local_itr] = dbcSpell.LookupEntry( 33387 ); // Great Heal 2
-	m_HealSpellsEficiency[local_itr2][local_itr] = GetSpellEficiencyFactor(m_HealSpells[local_itr2][local_itr]);
-	m_HealSpells[local_itr2++][local_itr] = dbcSpell.LookupEntry( 33387 ); // Great Heal 2
-	m_HealSpellsEficiency[local_itr2][local_itr] = GetSpellEficiencyFactor(m_HealSpells[local_itr2][local_itr]);
-	m_HealSpells[local_itr2++][local_itr] = dbcSpell.LookupEntry( 24208 ); // Great Heal 3
-	m_HealSpellsEficiency[local_itr2][local_itr] = GetSpellEficiencyFactor(m_HealSpells[local_itr2][local_itr]);
-	m_HealSpells[local_itr2++][local_itr] = dbcSpell.LookupEntry( 24208 ); // Great Heal 3
-	m_HealSpellsEficiency[local_itr2][local_itr] = GetSpellEficiencyFactor(m_HealSpells[local_itr2][local_itr]);
-	m_HealSpells[local_itr2++][local_itr] = dbcSpell.LookupEntry( 24208 ); // Great Heal 3
-	m_HealSpellsEficiency[local_itr2][local_itr] = GetSpellEficiencyFactor(m_HealSpells[local_itr2][local_itr]);
-	m_HealSpells[local_itr2++][local_itr] = dbcSpell.LookupEntry( 24208 ); // Great Heal 3
-	m_HealSpellsEficiency[local_itr2][local_itr] = GetSpellEficiencyFactor(m_HealSpells[local_itr2][local_itr]);
-	m_HealSpells[local_itr2++][local_itr] = dbcSpell.LookupEntry( 24208 ); // Great Heal 3
-	m_HealSpellsEficiency[local_itr2][local_itr] = GetSpellEficiencyFactor(m_HealSpells[local_itr2][local_itr]);
-
-	local_itr++;
-	local_itr2 = HealSpellLevels - 2; //kinda uber spells :P
-	m_HealSpells[local_itr2++][local_itr] = dbcSpell.LookupEntry( 26565 ); // Heal Brethren 1
-	m_HealSpellsEficiency[local_itr2][local_itr] = GetSpellEficiencyFactor(m_HealSpells[local_itr2][local_itr]);
-
-	local_itr++;
-	local_itr2 = HealSpellLevels - 2; //kinda uber spells :P
-	m_HealSpells[local_itr2++][local_itr] = dbcSpell.LookupEntry( 30839 ); // Debuff Uber Heal Over Time 1
-	m_HealSpellsEficiency[local_itr2][local_itr] = GetSpellEficiencyFactor(m_HealSpells[local_itr2][local_itr]);
-
-/*	//group : Prayer of Healing, Chain Heal, Healing Aura, Powerful Healing Ward
-	//augment : Uber Heal Over Time, Spiritual Healing,Healing Light, renew
-	sp = dbcSpell.LookupEntry( 122 ); // frost nova 1
-	m_DefendSpells.push_back( sp ); */
-
-	revive_spell = dbcSpell.LookupEntry( 2006 ); // resurrection 1
+	Boredom_cooldown = 0;
 }
 
 bool AiAgentHealSupport::CheckCanCast(SpellEntry *sp, Unit *target)
 {
-	uint32 Time_Now = getMSTime();
 	if ( !sp )
 		return false;
 
@@ -361,54 +227,10 @@ bool AiAgentHealSupport::CheckCanCast(SpellEntry *sp, Unit *target)
 	if( m_Unit->GetUInt32Value(UNIT_FIELD_POWER1) < sp->manaCost )
 		return false; //we do not have enough juice
 
-	CooldownMap::iterator itr = spell_cooldown_map.find( sp->Id );
-	if( itr != spell_cooldown_map.end() && itr->second >= Time_Now )
-		return false; // this spell is still cooling down
+	if( spell_cooldown_map[ sp->id ] >= getMSTime() )
+		return false
 
 	return true;
-}
-
-SpellEntry*	AiAgentHealSupport::Get_Best_Heal_Spell(Unit *for_unit)
-{
-	uint32 now_health = for_unit->GetUInt32Value(UNIT_FIELD_HEALTH);
-	uint32 max_health = for_unit->GetUInt32Value(UNIT_FIELD_MAXHEALTH);
-	uint32 health_to_heal = max_health - now_health;
-	//get best spell to match our needs :D
-	float best_match= 1 << 30 ;
-	uint32 selected_spell_index = MAX_INT;
-	for(uint32 i=0;i<HealSpellCount-1;i++)
-#ifdef SPELL_EFF_PCT_SCALE_WITH_DIFFICULTY
-		if( m_HealSpells[DifficultyLevel][i]
-			&& SPELL_EFF_PCT_SCALE_WITH_DIFFICULTY * DifficultyLevel * m_HealSpells[DifficultyLevel][i]->EffectBasePoints[0] <= health_to_heal
-			&& SPELL_EFF_PCT_SCALE_WITH_DIFFICULTY * DifficultyLevel * m_HealSpells[DifficultyLevel][i]->EffectBasePoints[0] >= health_to_heal)
-#else
-		if( m_HealSpells[DifficultyLevel][spell_slector]
-			&& m_HealSpells[DifficultyLevel][i]->EffectBasePoints[0] <= health_to_heal
-			&& m_HealSpells[DifficultyLevel][i+1]->EffectBasePoints[0] >= health_to_heal
-#endif
-		{
-			uint32 spell_slector = ( i + 1 ) % HealSpellCount;
-			if(	CheckCanCast ( m_HealSpells[DifficultyLevel][spell_slector] , for_unit) )
-			{ 
-#ifdef SPELL_EFF_PCT_SCALE_WITH_DIFFICULTY
-				float cur_efficiency = ( SPELL_EFF_PCT_SCALE_WITH_DIFFICULTY * DifficultyLevel * m_HealSpellsEficiency[DifficultyLevel][spell_slector] * MAX( 1.0f,( health_to_heal - m_HealSpells[DifficultyLevel][spell_slector]->EffectBasePoints[0] ) ) );
-#else
-				float cur_efficiency = ( m_HealSpellsEficiency[DifficultyLevel][spell_slector] * max(1,( health_to_heal - m_HealSpells[DifficultyLevel][spell_slector]->EffectBasePoints[0] ) ) );
-#endif
-				if( cur_efficiency <  best_match)
-				{
-printf("found a better match with id %u , old price %f new price %f\n",m_HealSpells[DifficultyLevel][spell_slector]->Id,best_match,cur_efficiency);
-					best_match = cur_efficiency;
-					selected_spell_index = spell_slector;
-				}
-			}
-		}
-	if( selected_spell_index != MAX_INT )
-	{
-printf("selected spell with id %u and price %f\n",m_HealSpells[ DifficultyLevel ][ selected_spell_index ]->Id,best_match);
-		return m_HealSpells[ DifficultyLevel ][ selected_spell_index ];
-	}
-	return NULL ;
 }
 
 void AiAgentHealSupport::_UpdateCombat(uint32 p_time)
@@ -425,29 +247,161 @@ printf("we do have a target\n");
 	if( m_Unit->isCasting() )
 		return; // we are already supporting someone ...get back later
 
-	//for fun : mimic master standstate. Note that this might give strange results
-	if( m_PetOwner->GetStandState() != m_Unit->GetStandState() )
-		m_Unit->SetStandState( m_PetOwner->GetStandState() );
-
 	//we should be at same level at owner so we profit of fighting formulas same as owner
 	if(	m_Unit->GetUInt32Value( UNIT_FIELD_LEVEL ) != m_PetOwner->GetUInt32Value( UNIT_FIELD_LEVEL ) )
 		m_Unit->SetUInt32Value( UNIT_FIELD_LEVEL, m_PetOwner->GetUInt32Value( UNIT_FIELD_LEVEL ) );
 
 printf("we are not casting\n");
+	uint32 new_DifficultyLevel = DifficultyLevel;
+	if( DifficultyPrevHealth > m_nextTarget->GetUInt32Value( UNIT_FIELD_HEALTH ) )
+		new_DifficultyLevel += DIFFICULTY_UPDATE_SPEED;
+	else if( DifficultyPrevHealth < m_nextTarget->GetUInt32Value( UNIT_FIELD_HEALTH ) )
+		new_DifficultyLevel -= DIFFICULTY_UPDATE_SPEED;
+	DifficultyPrevHealth = m_nextTarget->GetUInt32Value( UNIT_FIELD_HEALTH );
 
-	uint32 new_DifficultyLevel = m_PetOwner->GetUInt32Value(UNIT_FIELD_LEVEL) / HealSpellLevels;
 	if( new_DifficultyLevel != new_DifficultyLevel)
 	{
-		if( new_DifficultyLevel > HealSpellLevels - 2 )
-			new_DifficultyLevel = HealSpellLevels - 2;
 		DifficultyLevel = new_DifficultyLevel;
 		//scale health and mana.when we level we max out our stats
 		m_Unit->SetUInt32Value( UNIT_FIELD_MAXHEALTH , m_Unit->GetUInt32Value( UNIT_FIELD_BASE_HEALTH ) * new_DifficultyLevel * CREATURE_STATS_SCALE_WITH_DIFFICULTY );
 		m_Unit->SetUInt32Value( UNIT_FIELD_MAXPOWER1 , m_Unit->GetUInt32Value( UNIT_FIELD_BASE_MANA ) * new_DifficultyLevel * CREATURE_STATS_SCALE_WITH_DIFFICULTY );
-		m_Unit->SetUInt32Value( UNIT_FIELD_HEALTH , m_Unit->GetUInt32Value( UNIT_FIELD_MAXHEALTH ) );
-		m_Unit->SetUInt32Value( UNIT_FIELD_POWER1 , m_Unit->GetUInt32Value( UNIT_FIELD_MAXPOWER1 ) );
+		m_Unit->SetUInt32Value( UNIT_FIELD_HEALTH , m_Unit->GetUInt32Value( UNIT_FIELD_HEALTH ) * new_DifficultyLevel * CREATURE_STATS_SCALE_WITH_DIFFICULTY );
+		m_Unit->SetUInt32Value( UNIT_FIELD_POWER1 , m_Unit->GetUInt32Value( UNIT_FIELD_POWER1 ) * new_DifficultyLevel * CREATURE_STATS_SCALE_WITH_DIFFICULTY );
 	}
 
+	uint32 Time_Now = getMSTime();
+
+	std::list<healagentspell>::iterator itr;
+	SpellCastTargets targets;
+	m_castingSpell = NULL;
+
+	//poor thing died. Res him. Probably will never work
+	if( !m_nextTarget->isAlive() && CheckCanCast( revive_spell, m_nextTarget ) )
+	{
+		m_castingSpell = revive_spell;
+		setSpellTargets(m_castingSpell, m_PetOwner);
+printf("master died, we are going to resurect him\n");
+	}
+
+	//if we are injusred we should try to survive it
+	if ( m_castingSpell== NULL && m_Unit->GetUInt32Value( UNIT_FIELD_HEALTH ) == m_Unit->GetUInt32Value( UNIT_FIELD_MAXHEALTH ) )
+	{
+		if(	!Protect_self() ) //first we try to escape combat
+		{
+printf("we are injured, will try to heal us\n");
+			for(itr=m_healspells.begin();itr!=m_healspells.end();itr++)
+				if( CheckCanCast( itr->sp, m_nextTarget ) && Rand( itr->chance_to_cast ) )
+				{
+					m_castingSpell = itr;
+					setSpellTargets( m_castingSpell, m_Unit );
+					break;
+				}
+		}
+		else
+		{
+			m_castingSpell = &m_defend_self;
+			setSpellTargets( m_castingSpell, m_Unit );
+		}
+	}
+
+	//select an augment spell if we have nothing better to do
+	if( m_castingSpell== NULL && m_nextTarget->GetUInt32Value( UNIT_FIELD_HEALTH ) == m_nextTarget->GetUInt32Value( UNIT_FIELD_MAXHEALTH ) )
+	{
+		for(itr=m_AugmentSelf.begin();itr!=m_AugmentSelf.end();itr++)
+			if( CheckCanCast( itr->sp, m_nextTarget ) && Rand( itr->chance_to_cast ) )
+			{
+				m_castingSpell = itr;
+				setSpellTargets( m_castingSpell, m_Unit );
+				break;
+			}
+		//try augment owner ?
+		if( !m_castingSpell )
+		{
+			for(itr=m_AugmentTarget.begin();itr!=m_AugmentTarget.end();itr++)
+				if( CheckCanCast( itr->sp, m_nextTarget ) && Rand( itr->chance_to_cast ) )
+				{
+					m_castingSpell = itr;
+					setSpellTargets( m_castingSpell, m_nextTarget );
+					break;
+				}
+		}
+	}
+
+	//master is injured, this should be most common case
+	if( m_castingSpell==NULL && m_nextTarget->GetUInt32Value( UNIT_FIELD_HEALTH ) < m_nextTarget->GetUInt32Value( UNIT_FIELD_MAXHEALTH ) )
+	{
+printf("master is injured, will try to heal him\n");
+		for(itr=m_healspells.begin();itr!=m_healspells.end();itr++)
+			if( CheckCanCast( itr->sp, m_nextTarget ) && Rand( itr->chance_to_cast ) )
+			{
+				m_castingSpell = itr;
+				setSpellTargets( m_castingSpell, m_nextTarget );
+				break;
+			}
+
+		//try to cast a group spell ?
+		if ( m_castingSpell == NULL && m_PetOwner->IsPlayer() && static_cast< Player*>( m_PetOwner )->InGroup())
+		{
+			for(itr=m_healspells.begin();itr!=m_healspells.end();itr++)
+				if( CheckCanCast( itr->sp, m_nextTarget ) && Rand( itr->chance_to_cast ) )
+				{
+					m_castingSpell = itr;
+					setSpellTargets( m_castingSpell, m_nextTarget );
+					break;
+				}
+		}
+	}
+
+	if( m_castingSpell )
+	{
+printf("we have a spell to cast\n");
+
+		SpellCastTime *sd = dbcSpellCastTime.LookupEntry( m_castingSpell->sp->CastingTimeIndex );
+
+		//do not stop for instant casts
+		if(GetCastTime(sd) != 0)
+		{
+			StopMovement(0);
+	printf("spell is not instant so we are going to stop movement \n");
+		}
+
+		float distance = m_Unit->GetDistanceSq(m_nextTarget);
+		if(	distance <= m_castingSpell->base_range_or_radius_sqr || m_castingSpell->base_range_or_radius_sqr == 0 )
+		{
+
+	printf("we are in range and going to cast spell \n");
+			m_AIState = STATE_CASTING;
+			
+			Spell *nspell = new Spell(m_Unit, m_castingSpell, false, NULL);
+
+#ifdef SPELL_EFF_PCT_SCALE_WITH_DIFFICULTY
+			nspell->forced_basepoints[ 0 ] = (uint32)( m_castingSpell->EffectBasePoints[0] * SPELL_EFF_PCT_SCALE_WITH_DIFFICULTY * DifficultyLevel );
+			if( nspell->forced_basepoints[ 0 ] > m_castingSpell->max_scale )
+				nspell->forced_basepoints[ 0 ] = m_castingSpell->max_scale;
+			nspell->forced_basepoints[ 1 ] = (uint32)( m_castingSpell->EffectBasePoints[1] * SPELL_EFF_PCT_SCALE_WITH_DIFFICULTY * DifficultyLevel );
+			if( nspell->forced_basepoints[ 1 ] > m_castingSpell->max_scale )
+				nspell->forced_basepoints[ 1 ] = m_castingSpell->max_scale;
+			nspell->forced_basepoints[ 2 ] = (uint32)( m_castingSpell->EffectBasePoints[2] * SPELL_EFF_PCT_SCALE_WITH_DIFFICULTY * DifficultyLevel );
+			if( nspell->forced_basepoints[ 2 ] > m_castingSpell->max_scale )
+				nspell->forced_basepoints[ 2 ] = m_castingSpell->max_scale;
+#endif
+
+			nspell->prepare( &targets );
+
+			CastSpell( m_Unit, m_castingSpell, targets );
+
+			SetSpellDuration( m_castingSpell );
+
+		}
+		else // Target out of Range -> Run to it
+		{
+	printf("we are going to move closer \n");
+			m_moveRun = true;
+			_CalcDestinationAndMove(m_nextTarget, sqrt( m_castingSpell->base_range_or_radius_sqr ) );
+		}
+	}
+
+// check if pets regenrate mana, If not then we should implement that too
 	//if owner is mounted then we mount too. Speed is not set though
 	if( m_PetOwner->GetUInt32Value( UNIT_FIELD_MOUNTDISPLAYID ) && m_Unit->GetUInt32Value( UNIT_FIELD_MOUNTDISPLAYID ) == 0 )
 	{
@@ -463,112 +417,27 @@ printf("we are not casting\n");
 		m_moveSprint = false;
 	}
 
-	if ( m_PetOwner->GetHealthPct() == 100 )
-		last_time_full_health = true;
-	
-	uint32 Time_Now = getMSTime();
+	//for fun : mimic master standstate. Note that this might give strange results
+	if( m_PetOwner->GetStandState() != m_Unit->GetStandState() )
+		m_Unit->SetStandState( m_PetOwner->GetStandState() );
 
-	SpellCastTargets targets;
-	m_castingSpell = NULL;
+	if( m_castingSpell == NULL && First_noaction_stamp == 0 )
+		First_noaction_stamp = Time_Now;
+	else First_noaction_stamp = 0;
 
-	//poor thing died. Res him
-	if( !m_nextTarget->isAlive() 
-		&& m_Unit->GetUInt32Value(UNIT_FIELD_POWER1) >= revive_spell->manaCost
-		&& spell_cooldown_map[ revive_spell->Id ] < Time_Now
+	if( 
+		First_noaction_stamp
+		&& First_noaction_stamp + BOREDOM_TIMER_TO_START_TRIGGERING < Time_Now 
+		&& Boredom_cooldown < Time_Now
 		)
 	{
-		m_castingSpell = revive_spell;
-		setSpellTargets(m_castingSpell, m_PetOwner);
-printf("master died, we are going to resurect him\n");
+		//some chance to say something
+		if( Rand( 50 ) )
+			m_Unit->SendChatMessage(CHAT_MSG_MONSTER_SAY, LANG_UNIVERSAL, bored_texts[ RandomUInt( BOREDOM_TEXTCOUNT ) ]);
+		else
+			m_Unit->SetUInt32Value ( UNIT_NPC_EMOTESTATE, bored_emotes[ RandomUInt( BOREDOM_EMOTECOUNT ) ] );
+		Boredom_cooldown = Time_Now + BOREDOM_TRIGGER_INTERVAL;
 	}
-
-	if ( last_time_full_health == true && m_PetOwner->GetHealthPct() != 100 && m_castingSpell == NULL )
-	{
-		uint32 augment_DifficultyLevel = m_PetOwner->GetUInt32Value(UNIT_FIELD_LEVEL) / AugmentSpellCount;
-		//pick 1 random augment spell
-		uint32 augment_spell = RandomUInt( AugmentSpellLevels );
-		if( m_AugmentSpells [ augment_DifficultyLevel ] [ augment_spell ] )
-		{
-			m_castingSpell = m_AugmentSpells [ augment_DifficultyLevel ] [ augment_spell ];
-			setSpellTargets( m_castingSpell, m_PetOwner );
-		}
-	}
-
-	if ( m_PetOwner->GetHealthPct() < 100 && m_castingSpell == NULL )
-	{
-printf("master is injured, will try to heal him\n");
-		m_castingSpell = Get_Best_Heal_Spell( m_PetOwner );
-		if ( m_castingSpell ) 
-			setSpellTargets( m_castingSpell, m_PetOwner );
-else printf("we were not able to select any heal spells due to power %u or cooldown issues\n",m_Unit->GetUInt32Value(UNIT_FIELD_POWER1));
-	}
-
-	if ( m_Unit->GetHealthPct() < 100 && m_castingSpell == NULL )
-	{
-		if(	!Protect_self() ) //first we try to escape combat
-		{
-printf("we are injured, will try to heal us\n");
-			m_castingSpell = Get_Best_Heal_Spell( m_Unit );
-			if ( m_castingSpell ) 
-				setSpellTargets( m_castingSpell, m_Unit );
-		}
-else printf("we were not able to select any heal spells due to power %u or cooldown issues\n",m_Unit->GetUInt32Value(UNIT_FIELD_POWER1));
-	}
-
-	if ( m_PetOwner->GetHealthPct() == 100 && m_castingSpell == NULL && m_PetOwner->IsPlayer() && static_cast< Player*>( m_PetOwner )->InGroup())
-	{
-		uint32 party_DifficultyLevel = m_PetOwner->GetUInt32Value(UNIT_FIELD_LEVEL) / PartySpellCount;
-		//pick 1 random augment spell
-		uint32 party_spell = RandomUInt( PartySpellLevels );
-		if( m_PartySpells [ party_DifficultyLevel ] [ party_spell ] )
-		{
-			m_castingSpell = m_PartySpells [ party_DifficultyLevel ] [ party_spell ];
-			setSpellTargets( m_castingSpell, m_PetOwner );
-		}
-	}
-
-	if( !m_castingSpell )
-		return; //sorry but we are out of juice
-
-printf("we have a spell to cast\n");
-
-	SpellCastTime *sd = dbcSpellCastTime.LookupEntry(m_castingSpell->CastingTimeIndex);
-
-	//do not stop for instant casts
-	if(GetCastTime(sd) != 0)
-	{
-		StopMovement(0);
-printf("spell is not instant so we are going to stop movement \n");
-	}
-
-	float distance = m_Unit->GetDistanceSq(m_nextTarget);
-	if(	distance <= m_castingSpell->base_range_or_radius_sqr || m_castingSpell->base_range_or_radius_sqr == 0 )
-	{
-
-printf("we are in range and going to cast spell \n");
-		m_AIState = STATE_CASTING;
-		
-		Spell *nspell = new Spell(m_Unit, m_castingSpell, false, NULL);
-
-#ifdef SPELL_EFF_PCT_SCALE_WITH_DIFFICULTY
-		nspell->forced_basepoints[ 0 ] = (uint32)( m_castingSpell->EffectBasePoints[0] * SPELL_EFF_PCT_SCALE_WITH_DIFFICULTY * DifficultyLevel );
-#endif
-
-		nspell->prepare( &targets );
-
-		CastSpell( m_Unit, m_castingSpell, targets );
-
-		SetSpellDuration( m_castingSpell );
-
-	}
-	else // Target out of Range -> Run to it
-	{
-printf("we are going to move closer \n");
-		m_moveRun = true;
-		_CalcDestinationAndMove(m_nextTarget, sqrt( m_castingSpell->base_range_or_radius_sqr ) );
-	}
-
-// check if pets regenrate mana, If not then we should implement that too
 }
 
 void AiAgentHealSupport::SetSpellDuration(SpellEntry *sp)
@@ -587,13 +456,16 @@ void AiAgentHealSupport::SetSpellDuration(SpellEntry *sp)
 
     if(sp->DurationIndex)
     {
-        SpellDuration *sd=dbcSpellDuration.LookupEntry(sp->DurationIndex);
-		uint32 maxduration;
-		maxduration = MAX ( sd->Duration1, sd->Duration2 ) ;
-		maxduration = MAX ( maxduration , sd->Duration3 );
-
-		if( maxduration > cooldowntime )
-			cooldowntime = maxduration; //do not recast aura or heal over time spells on target
+		SpellDuration *sd=dbcSpellDuration.LookupEntry(sp->DurationIndex);
+		int Dur=0;
+		int Casttime=0;//most of the time 0
+		int RecoveryTime=sp->spell->RecoveryTime;
+		if(sp->spell->DurationIndex)
+			Dur =::GetDuration(sd);
+		Casttime=GetCastTime(dbcSpellCastTime.LookupEntry(sp->CastingTimeIndex));
+		cooldowntime=Dur+Casttime+RecoveryTime;
+		if(cooldowntime<0)
+			cooldowntime=2000;//huge value that should not loop while adding some timestamp to it
 	}
 
 	if( cooldowntime )
