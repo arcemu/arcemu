@@ -74,4 +74,5 @@ public:
 	void Finish();
 	uint8 Rated() { return rated_match; }
 	ARCEMU_INLINE uint32 GetArenaTeamType() { return m_arenateamtype; }
+	uint32 CalcDeltaRating(uint32 oldRating, uint32 opponentRating, bool outcome);
 };

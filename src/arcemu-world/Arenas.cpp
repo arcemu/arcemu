@@ -345,6 +345,30 @@ void Arena::UpdatePlayerCounts()
 	Finish();
 }
 
+uint32 Arena::CalcDeltaRating(uint32 oldRating, uint32 opponentRating, bool outcome) 
+{
+	// ---- Elo Rating System ----
+	// Expected Chance to Win for Team A vs Team B
+	//                     1
+	// -------------------------------------------
+	//                   (PB - PA)/400
+	//              1 + 10
+
+	double power = (int)(opponentRating - oldRating) / 400.0f;
+	double divisor = pow(((double)(10.0)), power);
+	divisor += 1.0;
+
+	double winChance = 1.0 / divisor;
+
+	// New Rating Calculation via Elo
+	// New Rating = Old Rating + K * (outcome - Expected Win Chance)
+	// outcome = 1 for a win and 0 for a loss (0.5 for a draw ... but we cant have that)
+	// K is the maximum possible change
+	// Through investigation, K was estimated to be 32 (same as chess)
+	double multiplier = (outcome ? 1.0 : 0.0) - winChance;
+	return long2int32(32.0 * multiplier);
+}
+
 void Arena::Finish()
 {
 	m_ended = true;
@@ -386,19 +410,6 @@ void Arena::Finish()
 
 			outcome = (i == m_winningteam);
 
-			// ---- Elo Rating System ----
-			// Expected Chance to Win for Team A vs Team B
-			//                     1
-			// -------------------------------------------
-			//                   (PB - PA)/400
-			//              1 + 10
-
-			double power = (int)(averageRating[j] - averageRating[i]) / 400.0f;
-			double divisor = pow(((double)(10.0)), power);
-			divisor += 1.0;
-
-			double winChance = 1.0 / divisor;
-
 			for(set<Player*>::iterator itr = m_players[i].begin(); itr != m_players[i].end(); ++itr)
 			{
 				Player * plr = *itr;
@@ -413,26 +424,25 @@ void Arena::Finish()
 							t->m_stat_gameswonseason++;
 							t->m_stat_gameswonweek++;
 						}
-						// New Rating Calculation via Elo
-						// New Rating = Old Rating + K * (outcome - Expected Win Chance)
-						// outcome = 1 for a win and 0 for a loss (0.5 for a draw ... but we cant have that)
-						// K is the maximum possible change
-						// Through investigation, K was estimated to be 32 (same as chess)
-						double multiplier = (outcome ? 1.0 : 0.0) - winChance;
-						double deltaRating = 32.0 * multiplier;
-						if ( deltaRating < 0 && (-1.0 * deltaRating) > t->m_stat_rating )
-							t->m_stat_rating = 0;
-						else
-							t->m_stat_rating += long2int32(deltaRating);
+
+						t->m_stat_rating += CalcDeltaRating(t->m_stat_rating, averageRating[j], outcome);
+						if (t->m_stat_rating < 0) t->m_stat_rating = 0;
+
 						objmgr.UpdateArenaTeamRankings();
 
 						doneteams.insert(t);
 					}
 
-					if(tp != NULL && outcome)
+					if(tp != NULL)
 					{
-						tp->Won_ThisWeek++;
-						tp->Won_ThisSeason++;
+						tp->PersonalRating += CalcDeltaRating(tp->PersonalRating, averageRating[j], outcome);
+						if (tp->PersonalRating < 0) tp->PersonalRating = 0;
+
+						if(outcome)
+						{
+							tp->Won_ThisWeek++;
+							tp->Won_ThisSeason++;
+						}
 					}
 
 					t->SaveToDB();

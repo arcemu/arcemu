@@ -27,6 +27,7 @@ struct ArenaTeamMember
 	uint32 Won_ThisWeek;
 	uint32 Played_ThisSeason;
 	uint32 Won_ThisSeason;
+	uint32 PersonalRating;
 };
 
 class SERVER_DECL ArenaTeam
