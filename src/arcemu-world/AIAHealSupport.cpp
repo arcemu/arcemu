@@ -116,7 +116,8 @@ int bored_emotes[BOREDOM_TEXTCOUNT]=
 	EMOTE_ONESHOT_DANCESPECIAL,
 
 	EMOTE_STATE_EXCLAIM,
-}
+};
+
 //will get bigger if it is better to cast this spell then some other version
 float GetSpellEficiencyFactor(SpellEntry *sp)
 {
@@ -126,20 +127,19 @@ float GetSpellEficiencyFactor(SpellEntry *sp)
 
 void AiAgentHealSupport::Init(Unit *un, AIType at, MovementType mt, Unit *owner)
 {
+	AIInterface::Init(un,at,mt,owner);//run the original init and we add our custom stuff too
+
 	m_Unit->SetUInt32Value( UNIT_FIELD_BASE_HEALTH , m_Unit->GetUInt32Value( UNIT_FIELD_HEALTH ));
 	m_Unit->SetUInt32Value( UNIT_FIELD_BASE_MANA , m_Unit->GetUInt32Value( UNIT_FIELD_POWER1 ));
 
-	AIInterface::Init(un,at,mt,owner);//run the original init and we add our custom stuff too
-	m_Unit->m_noRespawn = true;
-
-	m_fallowAngle = 2 * PI - PI / 6;
+	m_fallowAngle = PI - PI / 6;
 	FollowDistance = 5 ; //we are support, we stand behind our master 
 
 	DifficultyLevel = 1;
 
 	//scale health and mana
-	m_Unit->SetUInt32Value( UNIT_FIELD_MAXHEALTH , m_Unit->GetUInt32Value( UNIT_FIELD_BASE_HEALTH ) * DifficultyLevel * CREATURE_STATS_SCALE_WITH_DIFFICULTY );
-	m_Unit->SetUInt32Value( UNIT_FIELD_MAXPOWER1 , m_Unit->GetUInt32Value( UNIT_FIELD_BASE_MANA ) * DifficultyLevel * CREATURE_STATS_SCALE_WITH_DIFFICULTY );
+	m_Unit->SetUInt32Value( UNIT_FIELD_MAXHEALTH , (uint32)(m_Unit->GetUInt32Value( UNIT_FIELD_BASE_HEALTH ) * DifficultyLevel * CREATURE_STATS_SCALE_WITH_DIFFICULTY) );
+	m_Unit->SetUInt32Value( UNIT_FIELD_MAXPOWER1 , (uint32)(m_Unit->GetUInt32Value( UNIT_FIELD_BASE_MANA ) * DifficultyLevel * CREATURE_STATS_SCALE_WITH_DIFFICULTY) );
 	m_Unit->SetUInt32Value( UNIT_FIELD_HEALTH , m_Unit->GetUInt32Value( UNIT_FIELD_MAXHEALTH ) );
 	m_Unit->SetUInt32Value( UNIT_FIELD_POWER1 , m_Unit->GetUInt32Value( UNIT_FIELD_MAXPOWER1 ) );
 
@@ -151,6 +151,8 @@ void AiAgentHealSupport::Init(Unit *un, AIType at, MovementType mt, Unit *owner)
 		Owner_side = OWNER_SIDE_HORDE;
 
 	last_time_full_health = true; //before we start healing we should try to quick augment our master
+
+	SetNextTarget( m_Unit );
 
 	m_defend_self.sp = dbcSpell.LookupEntry( 642 ); // Divine Shield 1
 	m_defend_self.chance_to_cast = 75;
@@ -227,8 +229,8 @@ bool AiAgentHealSupport::CheckCanCast(SpellEntry *sp, Unit *target)
 	if( m_Unit->GetUInt32Value(UNIT_FIELD_POWER1) < sp->manaCost )
 		return false; //we do not have enough juice
 
-	if( spell_cooldown_map[ sp->id ] >= getMSTime() )
-		return false
+	if( spell_cooldown_map[ sp->Id ] >= getMSTime() )
+		return false;
 
 	return true;
 }
@@ -237,12 +239,8 @@ void AiAgentHealSupport::_UpdateCombat(uint32 p_time)
 {
 	m_nextTarget = m_PetOwner;
 
-printf("we have just overwritten updatecombat\n");
-
 	if( !m_nextTarget )
 		return; //oh noez, our master has abandoned us ! Where is te luv ?
-
-printf("we do have a target\n");
 
 	if( m_Unit->isCasting() )
 		return; // we are already supporting someone ...get back later
@@ -252,7 +250,7 @@ printf("we do have a target\n");
 		m_Unit->SetUInt32Value( UNIT_FIELD_LEVEL, m_PetOwner->GetUInt32Value( UNIT_FIELD_LEVEL ) );
 
 printf("we are not casting\n");
-	uint32 new_DifficultyLevel = DifficultyLevel;
+	float new_DifficultyLevel = DifficultyLevel;
 	if( DifficultyPrevHealth > m_nextTarget->GetUInt32Value( UNIT_FIELD_HEALTH ) )
 		new_DifficultyLevel += DIFFICULTY_UPDATE_SPEED;
 	else if( DifficultyPrevHealth < m_nextTarget->GetUInt32Value( UNIT_FIELD_HEALTH ) )
@@ -263,44 +261,44 @@ printf("we are not casting\n");
 	{
 		DifficultyLevel = new_DifficultyLevel;
 		//scale health and mana.when we level we max out our stats
-		m_Unit->SetUInt32Value( UNIT_FIELD_MAXHEALTH , m_Unit->GetUInt32Value( UNIT_FIELD_BASE_HEALTH ) * new_DifficultyLevel * CREATURE_STATS_SCALE_WITH_DIFFICULTY );
-		m_Unit->SetUInt32Value( UNIT_FIELD_MAXPOWER1 , m_Unit->GetUInt32Value( UNIT_FIELD_BASE_MANA ) * new_DifficultyLevel * CREATURE_STATS_SCALE_WITH_DIFFICULTY );
-		m_Unit->SetUInt32Value( UNIT_FIELD_HEALTH , m_Unit->GetUInt32Value( UNIT_FIELD_HEALTH ) * new_DifficultyLevel * CREATURE_STATS_SCALE_WITH_DIFFICULTY );
-		m_Unit->SetUInt32Value( UNIT_FIELD_POWER1 , m_Unit->GetUInt32Value( UNIT_FIELD_POWER1 ) * new_DifficultyLevel * CREATURE_STATS_SCALE_WITH_DIFFICULTY );
+		m_Unit->SetUInt32Value( UNIT_FIELD_MAXHEALTH , (uint32)(m_Unit->GetUInt32Value( UNIT_FIELD_BASE_HEALTH ) * new_DifficultyLevel * CREATURE_STATS_SCALE_WITH_DIFFICULTY) );
+		m_Unit->SetUInt32Value( UNIT_FIELD_MAXPOWER1 , (uint32)(m_Unit->GetUInt32Value( UNIT_FIELD_BASE_MANA ) * new_DifficultyLevel * CREATURE_STATS_SCALE_WITH_DIFFICULTY) );
+		m_Unit->SetUInt32Value( UNIT_FIELD_HEALTH , (uint32)(m_Unit->GetUInt32Value( UNIT_FIELD_HEALTH ) * new_DifficultyLevel * CREATURE_STATS_SCALE_WITH_DIFFICULTY) );
+		m_Unit->SetUInt32Value( UNIT_FIELD_POWER1 , (uint32)(m_Unit->GetUInt32Value( UNIT_FIELD_POWER1 ) * new_DifficultyLevel * CREATURE_STATS_SCALE_WITH_DIFFICULTY) );
 	}
 
 	uint32 Time_Now = getMSTime();
 
-	std::list<healagentspell>::iterator itr;
+	std::list<healagentspell*>::iterator itr;
 	SpellCastTargets targets;
-	m_castingSpell = NULL;
+	healagentspell *m_castingSpell = NULL;
 
 	//poor thing died. Res him. Probably will never work
-	if( !m_nextTarget->isAlive() && CheckCanCast( revive_spell, m_nextTarget ) )
+	if( !m_nextTarget->isAlive() && CheckCanCast( revive_spell.sp, m_nextTarget ) )
 	{
-		m_castingSpell = revive_spell;
-		setSpellTargets(m_castingSpell, m_PetOwner);
+		m_castingSpell = &revive_spell;
+		m_Unit->CastSpell( m_PetOwner, m_castingSpell->sp, false);
 printf("master died, we are going to resurect him\n");
 	}
 
 	//if we are injusred we should try to survive it
-	if ( m_castingSpell== NULL && m_Unit->GetUInt32Value( UNIT_FIELD_HEALTH ) == m_Unit->GetUInt32Value( UNIT_FIELD_MAXHEALTH ) )
+	if ( m_castingSpell== NULL && m_Unit->GetUInt32Value( UNIT_FIELD_HEALTH ) < m_Unit->GetUInt32Value( UNIT_FIELD_MAXHEALTH ) )
 	{
 		if(	!Protect_self() ) //first we try to escape combat
 		{
 printf("we are injured, will try to heal us\n");
 			for(itr=m_healspells.begin();itr!=m_healspells.end();itr++)
-				if( CheckCanCast( itr->sp, m_nextTarget ) && Rand( itr->chance_to_cast ) )
+				if( CheckCanCast( (*itr)->sp, m_nextTarget ) && Rand( (*itr)->chance_to_cast ) )
 				{
-					m_castingSpell = itr;
-					setSpellTargets( m_castingSpell, m_Unit );
+					m_castingSpell = *itr;
+					m_Unit->CastSpell( m_PetOwner, m_castingSpell->sp, false);
 					break;
 				}
 		}
 		else
 		{
 			m_castingSpell = &m_defend_self;
-			setSpellTargets( m_castingSpell, m_Unit );
+			m_Unit->CastSpell( m_Unit, m_castingSpell->sp, false);
 		}
 	}
 
@@ -308,20 +306,20 @@ printf("we are injured, will try to heal us\n");
 	if( m_castingSpell== NULL && m_nextTarget->GetUInt32Value( UNIT_FIELD_HEALTH ) == m_nextTarget->GetUInt32Value( UNIT_FIELD_MAXHEALTH ) )
 	{
 		for(itr=m_AugmentSelf.begin();itr!=m_AugmentSelf.end();itr++)
-			if( CheckCanCast( itr->sp, m_nextTarget ) && Rand( itr->chance_to_cast ) )
+			if( CheckCanCast( (*itr)->sp, m_nextTarget ) && Rand( (*itr)->chance_to_cast ) )
 			{
-				m_castingSpell = itr;
-				setSpellTargets( m_castingSpell, m_Unit );
+				m_castingSpell = *itr;
+				m_Unit->CastSpell( m_Unit, m_castingSpell->sp, false);
 				break;
 			}
 		//try augment owner ?
 		if( !m_castingSpell )
 		{
 			for(itr=m_AugmentTarget.begin();itr!=m_AugmentTarget.end();itr++)
-				if( CheckCanCast( itr->sp, m_nextTarget ) && Rand( itr->chance_to_cast ) )
+				if( CheckCanCast( (*itr)->sp, m_nextTarget ) && Rand( (*itr)->chance_to_cast ) )
 				{
-					m_castingSpell = itr;
-					setSpellTargets( m_castingSpell, m_nextTarget );
+					m_castingSpell = *itr;
+					m_Unit->CastSpell( m_nextTarget, m_castingSpell->sp, false);
 					break;
 				}
 		}
@@ -332,10 +330,10 @@ printf("we are injured, will try to heal us\n");
 	{
 printf("master is injured, will try to heal him\n");
 		for(itr=m_healspells.begin();itr!=m_healspells.end();itr++)
-			if( CheckCanCast( itr->sp, m_nextTarget ) && Rand( itr->chance_to_cast ) )
+			if( CheckCanCast( (*itr)->sp, m_nextTarget ) && Rand( (*itr)->chance_to_cast ) )
 			{
-				m_castingSpell = itr;
-				setSpellTargets( m_castingSpell, m_nextTarget );
+				m_castingSpell = *itr;
+				m_Unit->CastSpell( m_nextTarget, m_castingSpell->sp, false);
 				break;
 			}
 
@@ -343,10 +341,10 @@ printf("master is injured, will try to heal him\n");
 		if ( m_castingSpell == NULL && m_PetOwner->IsPlayer() && static_cast< Player*>( m_PetOwner )->InGroup())
 		{
 			for(itr=m_healspells.begin();itr!=m_healspells.end();itr++)
-				if( CheckCanCast( itr->sp, m_nextTarget ) && Rand( itr->chance_to_cast ) )
+				if( CheckCanCast( (*itr)->sp, m_nextTarget ) && Rand( (*itr)->chance_to_cast ) )
 				{
-					m_castingSpell = itr;
-					setSpellTargets( m_castingSpell, m_nextTarget );
+					m_castingSpell = *itr;
+					m_Unit->CastSpell( m_nextTarget, m_castingSpell->sp, false);
 					break;
 				}
 		}
@@ -366,38 +364,39 @@ printf("we have a spell to cast\n");
 		}
 
 		float distance = m_Unit->GetDistanceSq(m_nextTarget);
-		if(	distance <= m_castingSpell->base_range_or_radius_sqr || m_castingSpell->base_range_or_radius_sqr == 0 )
+		if(	distance <= m_castingSpell->sp->base_range_or_radius_sqr || m_castingSpell->sp->base_range_or_radius_sqr == 0 )
 		{
 
 	printf("we are in range and going to cast spell \n");
 			m_AIState = STATE_CASTING;
 			
-			Spell *nspell = new Spell(m_Unit, m_castingSpell, false, NULL);
+			Spell *nspell = SpellPool.PooledNew();
+			nspell->Init(m_Unit, m_castingSpell->sp, false, NULL);
 
 #ifdef SPELL_EFF_PCT_SCALE_WITH_DIFFICULTY
-			nspell->forced_basepoints[ 0 ] = (uint32)( m_castingSpell->EffectBasePoints[0] * SPELL_EFF_PCT_SCALE_WITH_DIFFICULTY * DifficultyLevel );
+			nspell->forced_basepoints[ 0 ] = (uint32)( m_castingSpell->sp->EffectBasePoints[0] * SPELL_EFF_PCT_SCALE_WITH_DIFFICULTY * DifficultyLevel );
 			if( nspell->forced_basepoints[ 0 ] > m_castingSpell->max_scale )
 				nspell->forced_basepoints[ 0 ] = m_castingSpell->max_scale;
-			nspell->forced_basepoints[ 1 ] = (uint32)( m_castingSpell->EffectBasePoints[1] * SPELL_EFF_PCT_SCALE_WITH_DIFFICULTY * DifficultyLevel );
+			nspell->forced_basepoints[ 1 ] = (uint32)( m_castingSpell->sp->EffectBasePoints[1] * SPELL_EFF_PCT_SCALE_WITH_DIFFICULTY * DifficultyLevel );
 			if( nspell->forced_basepoints[ 1 ] > m_castingSpell->max_scale )
 				nspell->forced_basepoints[ 1 ] = m_castingSpell->max_scale;
-			nspell->forced_basepoints[ 2 ] = (uint32)( m_castingSpell->EffectBasePoints[2] * SPELL_EFF_PCT_SCALE_WITH_DIFFICULTY * DifficultyLevel );
+			nspell->forced_basepoints[ 2 ] = (uint32)( m_castingSpell->sp->EffectBasePoints[2] * SPELL_EFF_PCT_SCALE_WITH_DIFFICULTY * DifficultyLevel );
 			if( nspell->forced_basepoints[ 2 ] > m_castingSpell->max_scale )
 				nspell->forced_basepoints[ 2 ] = m_castingSpell->max_scale;
 #endif
 
 			nspell->prepare( &targets );
 
-			CastSpell( m_Unit, m_castingSpell, targets );
+			CastSpell( m_Unit, m_castingSpell->sp, targets );
 
-			SetSpellDuration( m_castingSpell );
+			SetSpellDuration( m_castingSpell->sp );
 
 		}
 		else // Target out of Range -> Run to it
 		{
 	printf("we are going to move closer \n");
 			m_moveRun = true;
-			_CalcDestinationAndMove(m_nextTarget, sqrt( m_castingSpell->base_range_or_radius_sqr ) );
+			_CalcDestinationAndMove(m_nextTarget, sqrt( m_castingSpell->sp->base_range_or_radius_sqr ) );
 		}
 	}
 
@@ -449,9 +448,9 @@ void AiAgentHealSupport::SetSpellDuration(SpellEntry *sp)
 	uint32 cooldowntime;
 
 #ifdef SPELL_COOLD_PCT_SCALE_WITH_DIFFICULTY
-	cooldowntime = (uint32) (m_castingSpell->RecoveryTime / ( SPELL_COOLD_PCT_SCALE_WITH_DIFFICULTY * DifficultyLevel ) );
+	cooldowntime = (uint32) (sp->RecoveryTime / ( SPELL_COOLD_PCT_SCALE_WITH_DIFFICULTY * DifficultyLevel ) );
 #else
-	cooldowntime = m_castingSpell->RecoveryTime;
+	cooldowntime = sp->RecoveryTime;
 #endif
 
     if(sp->DurationIndex)
@@ -459,8 +458,8 @@ void AiAgentHealSupport::SetSpellDuration(SpellEntry *sp)
 		SpellDuration *sd=dbcSpellDuration.LookupEntry(sp->DurationIndex);
 		int Dur=0;
 		int Casttime=0;//most of the time 0
-		int RecoveryTime=sp->spell->RecoveryTime;
-		if(sp->spell->DurationIndex)
+		int RecoveryTime=sp->RecoveryTime;
+		if(sp->DurationIndex)
 			Dur =::GetDuration(sd);
 		Casttime=GetCastTime(dbcSpellCastTime.LookupEntry(sp->CastingTimeIndex));
 		cooldowntime=Dur+Casttime+RecoveryTime;
@@ -469,12 +468,12 @@ void AiAgentHealSupport::SetSpellDuration(SpellEntry *sp)
 	}
 
 	if( cooldowntime )
-		spell_cooldown_map[ m_castingSpell->Id ] = Time_Now + cooldowntime;
+		spell_cooldown_map[ sp->Id ] = Time_Now + cooldowntime;
 }
 
 bool AiAgentHealSupport::Protect_self()
 {
-	if ( CheckCanCast ( m_defend_self , m_Unit ) )
+	if ( CheckCanCast ( m_defend_self.sp , m_Unit ) && !m_Unit->HasAura( m_defend_self.sp->Id ) )
 		return true;
 	return false;
 }

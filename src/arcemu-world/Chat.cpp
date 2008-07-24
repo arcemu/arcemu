@@ -415,6 +415,7 @@ void CommandTableStorage::Init()
 		{ "renamepet",'m',&ChatHandler::HandleRenamePetCommand, "Renames a pet to <name>.", NULL, 0, 0, 0 },
 		{ "addspell",'m',&ChatHandler::HandleAddPetSpellCommand, "Teaches pet <spell>.", NULL, 0, 0, 0 },
 		{ "removespell",'m',&ChatHandler::HandleRemovePetSpellCommand, "Removes pet spell <spell>.", NULL, 0, 0, 0 },
+#define USE_SPECIFIC_AIAGENTS
 #ifdef USE_SPECIFIC_AIAGENTS
 		{ "spawnbot", 'a', &ChatHandler::HandlePetSpawnAIBot, ".pet spawnbot <type> - spawn a helper bot for your aid", NULL, 0, 0, 0 },
 #endif

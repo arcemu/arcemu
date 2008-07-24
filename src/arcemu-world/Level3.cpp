@@ -1705,28 +1705,12 @@ bool ChatHandler::HandlePetSpawnAIBot(const char* args, WorldSession *m_session)
 		return true;
 	}
 	Player * plr = m_session->GetPlayer();
+	Unit *newguard = plr->create_guardian(Entry,2*60*1000,float(-M_PI*2), plr->getLevel() );
+	AiAgentHealSupport *new_interface = new AiAgentHealSupport;
+	new_interface->Init(newguard,AITYPE_PET,MOVEMENTTYPE_NONE,plr);
+	newguard->ReplaceAIInterface( (AIInterface *) new_interface );
 
-	// spawn a creature of this id to create from
-	Creature * pCreature = new Creature(HIGHGUID_UNIT ,1);//no need in guid
-	CreatureSpawn * sp = new CreatureSpawn;
-	sp->id = 1;
-	sp->bytes = 0;
-	sp->bytes2 = 0;
-	sp->displayid = pCreatureInfo->Male_DisplayID;
-	sp->emote_state = 0;
-	sp->entry = pCreatureInfo->Id;
-	sp->factionid = pTemplate->Faction;
-	sp->flags = 0;
-	sp->form = 0;
-	sp->movetype = 0;
-	sp->o = plr->GetOrientation();
-	sp->x = plr->GetPositionX();
-	sp->y = plr->GetPositionY();
-	sp->respawnNpcLink = 0;
-	sp->channel_spell=sp->channel_target_creature=sp->channel_target_go=0;
-	pCreature->Load(sp, (uint32)NULL, NULL);
-
-	Pet *old_tame = plr->GetSummon();
+/*	Pet *old_tame = plr->GetSummon();
 	if(old_tame != NULL)
 	{
 		old_tame->Dismiss(true);
@@ -1761,7 +1745,7 @@ bool ChatHandler::HandlePetSpawnAIBot(const char* args, WorldSession *m_session)
 
 	// remove the temp creature
 	delete sp;
-	delete pCreature;
+	delete pCreature;*/
 
 	sGMLog.writefromsession(m_session, "used create an AI bot");
 	return true;

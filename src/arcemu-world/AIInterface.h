@@ -429,7 +429,7 @@ public:
 	bool m_isGuard;
 //	bool m_fastMove;
 	void setGuardTimer(uint32 timer) { m_guardTimer = timer; }
-	void _UpdateCombat(uint32 p_time);
+	virtual void _UpdateCombat(uint32 p_time);
 
 protected:
 	bool	UnsafeCanOwnerAttackUnit(Unit *pUnit);		//this is designed for internal use only

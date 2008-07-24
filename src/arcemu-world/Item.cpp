@@ -113,6 +113,9 @@ void Item::Virtual_Destructor()
 	}
 	Enchantments.clear();
 
+	//don't want to keep context ....
+	static_cast< EventableObject* >( this )->Virtual_Destructor();
+
 	if( IsInWorld() )
 		RemoveFromWorld();
 
