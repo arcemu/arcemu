@@ -281,6 +281,9 @@ public:
 	/* On Area Trigger */
 	virtual void HookOnAreaTrigger(Player * plr, uint32 id) = 0;
 
+	/* On Shadow Sight */
+	virtual void HookOnShadowSight() = 0;
+
 	/* Retreival Functions */
 	ARCEMU_INLINE uint32 GetId() { return m_id; }
 	ARCEMU_INLINE uint32 GetLevelGroup() { return m_levelGroup; }

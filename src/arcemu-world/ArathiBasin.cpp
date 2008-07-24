@@ -863,3 +863,8 @@ bool ArathiBasin::HookSlowLockOpen(GameObject * pGo, Player * pPlayer, Spell * p
 
 	return false;
 }
+
+void ArathiBasin::HookOnShadowSight() 
+{
+}
+

@@ -82,6 +82,7 @@ public:
 	void OnCreate();
 	void HookOnPlayerKill(Player * plr, Unit * pVictim);
 	void HookOnHK(Player * plr);
+	void HookOnShadowSight();
 	void SpawnBuff(uint32 x);
 	LocationVector GetStartingCoords(uint32 Team);
 	void DropFlag(Player * plr);

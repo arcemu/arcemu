@@ -29,6 +29,7 @@ Arena::Arena(MapMgr * mgr, uint32 id, uint32 lgroup, uint32 t, uint32 players_pe
 {
 	m_started = false;
 	m_playerCountPerTeam = players_per_side;
+	m_buffs[0] = m_buffs[1] = NULL;
 	switch(t)
 	{
 	case BATTLEGROUND_ARENA_5V5:
@@ -52,7 +53,12 @@ Arena::Arena(MapMgr * mgr, uint32 id, uint32 lgroup, uint32 t, uint32 players_pe
 
 Arena::~Arena()
 {
-
+	for(uint32 i = 0; i < 2; ++i)
+	{
+		// buffs may not be spawned, so delete them if they're not
+		if(m_buffs[i] && m_buffs[i]->IsInWorld()==false)
+			delete m_buffs[i];
+	}
 }
 
 void Arena::OnAddPlayer(Player * plr)
@@ -252,6 +258,39 @@ void Arena::OnCreate()
 	SetWorldState(0x09F3	,0x0001);
 }
 
+void Arena::HookOnShadowSight()
+{
+	switch(m_mapMgr->GetMapId())
+	{
+		/* loraedeon */
+	case 572:
+		break;
+
+		/* blades edge arena */
+	case 562:
+		m_buffs[0] = SpawnGameObject(184664, 562, 6249.276855f, 275.187714f, 11.201481f, -2.260201f, 32, 1375, 1.0f);
+		m_buffs[0]->SetUInt32Value(GAMEOBJECT_STATE, 1);
+		m_buffs[0]->SetFloatValue(GAMEOBJECT_ROTATION_02, 0.904455f);
+		m_buffs[0]->SetFloatValue(GAMEOBJECT_ROTATION_03, -0.426569f);
+		m_buffs[0]->SetUInt32Value(GAMEOBJECT_TYPE_ID, 6);
+		m_buffs[0]->SetUInt32Value(GAMEOBJECT_ANIMPROGRESS, 100);
+		m_buffs[0]->PushToWorld(m_mapMgr);
+
+		m_buffs[1] = SpawnGameObject(184664, 562, 6228.546387f, 249.709854f, 11.201481f, 0.881392f, 32, 1375, 1.0f);
+		m_buffs[1]->SetUInt32Value(GAMEOBJECT_STATE, 1);
+		m_buffs[1]->SetFloatValue(GAMEOBJECT_ROTATION_02, 0.90445f);
+		m_buffs[1]->SetFloatValue(GAMEOBJECT_ROTATION_03, -0.426569f);
+		m_buffs[1]->SetUInt32Value(GAMEOBJECT_TYPE_ID, 6);
+		m_buffs[1]->SetUInt32Value(GAMEOBJECT_ANIMPROGRESS, 100);
+		m_buffs[1]->PushToWorld(m_mapMgr);
+		break;
+
+		/* nagrand arena */
+	case 559:
+		break;
+	}
+}
+
 void Arena::OnStart()
 {
 	/* remove arena readyness buff */
@@ -272,6 +311,9 @@ void Arena::OnStart()
 
 	/* Incase all players left */
 	UpdatePlayerCounts();
+
+	sEventMgr.RemoveEvents(this, EVENT_ARENA_SHADOW_SIGHT);
+	sEventMgr.AddEvent(((CBattleground*)this), &CBattleground::HookOnShadowSight, EVENT_ARENA_SHADOW_SIGHT, 90000, 1,0);
 }
 
 void Arena::UpdatePlayerCounts()
@@ -508,7 +550,39 @@ bool Arena::HookHandleRepop(Player * plr)
 
 void Arena::HookOnAreaTrigger(Player * plr, uint32 id)
 {
+	int32 buffslot = -1;
 
+	ASSERT(plr != NULL);
+
+	switch (id) 
+	{
+		case 4538:
+			buffslot = 0;
+			break;
+		case 4539:
+			buffslot = 1;
+			break;
+	}
+
+	if(buffslot >= 0)
+	{
+		if(m_buffs[buffslot] != NULL && m_buffs[buffslot]->IsInWorld())
+		{
+			/* apply the buff */
+			SpellEntry * sp = dbcSpell.LookupEntry(m_buffs[buffslot]->GetInfo()->sound3);
+			Spell * s = SpellPool.PooledNew();
+
+			ASSERT(sp != NULL);
+			ASSERT(s != NULL);
+
+			s->Init(plr, sp, true, 0);
+			SpellCastTargets targets(plr->GetGUID());
+			s->prepare(&targets);
+
+			/* despawn the gameobject (not delete!) */
+			m_buffs[buffslot]->Despawn(BUFF_RESPAWN_TIME);
+		}
+	}
 }
 
 void Player::FullHPMP()

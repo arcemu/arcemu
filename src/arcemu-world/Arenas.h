@@ -22,6 +22,7 @@ class ArenaTeam;
 class Arena : public CBattleground
 {
 	set<GameObject*> m_gates;
+	GameObject * m_buffs[2];
 	set<ArenaTeam*> doneteams;
 	bool m_started;
 	uint32 m_arenateamtype;
@@ -37,6 +38,7 @@ public:
 	void HookOnPlayerDeath(Player * plr);
 	void HookOnPlayerKill(Player * plr, Unit * pVictim);
 	void HookOnHK(Player * plr);
+	void HookOnShadowSight();
 	void UpdatePlayerCounts();
 	LocationVector GetStartingCoords(uint32 Team);
 	virtual const char * GetName() { return "Arena"; }

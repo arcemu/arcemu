@@ -538,5 +538,7 @@ void WarsongGulch::OnStart()
 	m_started = true;
 }
 
-
+void WarsongGulch::HookOnShadowSight() 
+{
+}
 

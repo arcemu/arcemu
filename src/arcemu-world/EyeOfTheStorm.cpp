@@ -854,3 +854,7 @@ void EyeOfTheStorm::OnStart()
 	}
 	m_started = true;
 }
+
+void EyeOfTheStorm::HookOnShadowSight() 
+{
+}
