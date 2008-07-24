@@ -527,8 +527,8 @@ void AIInterface::HandleEvent(uint32 event, Unit* pUnit, uint32 misc1)
 			}
 
 			//remove negative auras
-			if( pUnit->IsCreature() )
-				pUnit->RemoveNegativeAuras();
+			if( m_Unit->IsCreature() )
+				m_Unit->RemoveNegativeAuras();
 
 		}break;
 	}
