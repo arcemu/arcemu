@@ -451,6 +451,7 @@ Aura::~Aura()
 
 void Aura::Virtual_Destructor()
 {
+	static_cast< EventableObject* >( this )->Virtual_Destructor();
 	sEventMgr.RemoveEvents( this );
 }
 

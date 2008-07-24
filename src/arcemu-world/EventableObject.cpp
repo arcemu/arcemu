@@ -34,6 +34,23 @@ EventableObject::~EventableObject()
 	m_events.clear();
 }
 
+//we virtually are destroying this object that means we will have no more events and we do not belong to any holder anymore
+void EventableObject::Virtual_Destructor()
+{
+	/* decrement event count on all events */
+	EventMap::iterator itr = m_events.begin();
+	for(; itr != m_events.end(); ++itr)
+	{
+		itr->second->deleted = true;
+		itr->second->DecRef();
+	}
+
+	m_events.clear();
+
+	m_holder = 0;
+	m_event_Instanceid = -1;
+}
+
 EventableObject::EventableObject()
 {
 	/* commented, these will be allocated when the first event is added. */
@@ -362,7 +379,7 @@ void EventableObjectHolder::Update(uint32 time_difference)
 			else if(ev->deleted)
 			{
 				// event is now deleted
-				ev->DecRef();
+				ev->DecRef(); //this was added on "addevent"
 				m_events.erase(it2);
 				continue;
 			}
@@ -458,8 +475,9 @@ void EventableObjectHolder::AddObject(EventableObject * obj)
 
 			if(mInstanceId == WORLD_INSTANCE && itr->second->eventFlag & EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT)
 				continue;
-
-			itr->second->IncRef();
+		// Zack : removed. There is no need to increase reference if we are not going to delete it from old list. 
+		//	we add reference on addevent and remove reference after we finished triggering X times the event 
+//			itr->second->IncRef();	
 			itr->second->instanceId = mInstanceId;
 			m_insertPool.push_back(itr->second);
 		}
@@ -470,19 +488,23 @@ void EventableObjectHolder::AddObject(EventableObject * obj)
 		// Ignore the rest of this stuff
 		return;
 	}
-
-	for(EventMap::iterator itr = obj->m_events.begin(); itr != obj->m_events.end(); ++itr)
+	else
 	{
-		// ignore deleted events
-		if(itr->second->deleted)
-			continue;
+		for(EventMap::iterator itr = obj->m_events.begin(); itr != obj->m_events.end(); ++itr)
+		{
+			// ignore deleted events
+			if(itr->second->deleted)
+				continue;
 
-		if(mInstanceId == WORLD_INSTANCE && itr->second->eventFlag & EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT)
-			continue;
+			if(mInstanceId == WORLD_INSTANCE && itr->second->eventFlag & EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT)
+				continue;
 
-		itr->second->IncRef();
-		itr->second->instanceId = mInstanceId;
-		m_events.push_back( itr->second );
+		// Zack : removed. There is no need to increase reference if we are not going to delete it from old list. 
+		//	we add reference on addevent and remove reference after we finished triggering X times the event 
+//			itr->second->IncRef();
+			itr->second->instanceId = mInstanceId;
+			m_events.push_back( itr->second );
+		}
 	}
 
 	m_lock.Release();

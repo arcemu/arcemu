@@ -92,6 +92,7 @@ SMT_RESIST_DISPEL - check if it is used
 - should make gracefull hit after all to avoid bug to run from monster while others gank him
 - pet spells are reseted sometimes when using portals and such. They are not saved to db ?
 - accounts get stuck when map crashes
+- cancel lifebloom to get final effect
 
 ==========================================================================
 ! BUGS !
