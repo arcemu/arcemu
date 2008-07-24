@@ -26,7 +26,7 @@ using namespace std;
 #define M_H_PI		1.57079632679489661923
 #define M_Q_PI		0.785398163397448309615
 
-static float DamageToRageConversionTable[71]=
+static float DamageToRageConversionTable[PLAYER_LEVEL_CAP+1]=
 {
 	0.0f,
 	3.33333332596f,
@@ -98,7 +98,18 @@ static float DamageToRageConversionTable[71]=
 	0.0956832781503f,
 	0.094078960901f,
 	0.0925213158854f,
-	0.0910083727537f
+	0.0910083727537f,
+#if PLAYER_LEVEL_CAP==80
+	0.0910083727537f,
+	0.0910083727537f,
+	0.0910083727537f,
+	0.0910083727537f,
+	0.0910083727537f,
+	0.0910083727537f,
+	0.0910083727537f,
+	0.0910083727537f,
+	0.0910083727537f,
+#endif
 };
 
 Object::Object() : m_position(0,0,0,0), m_spawnLocation(0,0,0,0)
@@ -1833,7 +1844,7 @@ void Object::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
 		float val;
 		uint32 level = pVictim->getLevel();
 		float conv;
-		if( level <= 70 )
+		if( level <= PLAYER_LEVEL_CAP )
 			conv = DamageToRageConversionTable[ level ];
 		else 
 			conv = ( 2.5f * 10 ) / (0.0091107836f * level * level + 3.225598133f * level + 4.2652911f);

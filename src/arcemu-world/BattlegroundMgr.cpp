@@ -1594,7 +1594,7 @@ void CBattlegroundManager::HandleArenaJoin(WorldSession * m_session, uint32 Batt
 					return;
 				}
 
-				if((*itx)->lastLevel < 70)
+				if((*itx)->lastLevel < PLAYER_LEVEL_CAP_70)
 				{
 					m_session->SystemMessage("Sorry, some of your party members are not level 70.");
 					pGroup->Unlock();

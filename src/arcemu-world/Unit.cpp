@@ -20,7 +20,7 @@
 #include "StdAfx.h"
 
 
-static float AttackToRageConversionTable[71]=
+static float AttackToRageConversionTable[PLAYER_LEVEL_CAP + 1]=
 {
 	0.0f,
 	0.499999998893f,
@@ -92,7 +92,19 @@ static float AttackToRageConversionTable[71]=
 	0.0143524917226f,
 	0.0141118441351f,
 	0.0138781973828f,
-	0.0136512559131f
+	0.0136512559131f,
+#if PLAYER_LEVEL_CAP==80
+	0.0136512559131f,
+	0.0136512559131f,
+	0.0136512559131f,
+	0.0136512559131f,
+	0.0136512559131f,
+	0.0136512559131f,
+	0.0136512559131f,
+	0.0136512559131f,
+	0.0136512559131f,
+	0.0136512559131f,
+#endif
 };
 
 Unit::Unit()
@@ -2222,7 +2234,7 @@ void Unit::CalculateResistanceReduction(Unit *pVictim,dealdamage * dmg, SpellEnt
 		//dmg reduction formula from xinef
 		double Reduction = 0;
 		if(getLevel() < 60) Reduction = double(pVictim->GetResistance(0) - ArmorReduce) / double(pVictim->GetResistance(0)+400+(85*getLevel()));
-		else if(getLevel() > 59 && getLevel() < 70) Reduction = double(pVictim->GetResistance(0) - ArmorReduce) / double(pVictim->GetResistance(0)-22167.5+(467.5*getLevel()));
+		else if(getLevel() > 59 && getLevel() < PLAYER_LEVEL_CAP) Reduction = double(pVictim->GetResistance(0) - ArmorReduce) / double(pVictim->GetResistance(0)-22167.5+(467.5*getLevel()));
 		//
 		else Reduction = double(pVictim->GetResistance(0) - ArmorReduce) / double(pVictim->GetResistance(0)+10557.5);
 		if(Reduction > 0.75f) Reduction = 0.75f;
@@ -3432,7 +3444,7 @@ else
 		float val;
 		uint32 level = pVictim->getLevel();
 		float conv;
-		if( level <= 70 )
+		if( level <= PLAYER_LEVEL_CAP )
 			conv = AttackToRageConversionTable[ level ];
 		else 
 			conv = 3.75f / (0.0091107836f * level * level + 3.225598133f * level + 4.2652911f);

@@ -67,8 +67,8 @@ World::World()
 	SocketSendBufSize = WORLDSOCKET_SENDBUF_SIZE;
 	SocketRecvBufSize = WORLDSOCKET_RECVBUF_SIZE;
 #endif
-	m_levelCap=70;
-	m_genLevelCap=70;
+	m_levelCap=PLAYER_LEVEL_CAP;
+	m_genLevelCap=PLAYER_LEVEL_CAP;
 	start_level=1;
 	m_limitedNames=false;
 	m_banTable = NULL;
@@ -1296,7 +1296,7 @@ void World::Rehash(bool load)
 	gamemaster_listOnlyActiveGMs = Config.OptionalConfig.GetBoolDefault("GameMaster", "ListOnlyActiveGMs", false);
 	gamemaster_hidePermissions = Config.OptionalConfig.GetBoolDefault("GameMaster", "HidePermissions", false);
 	start_level = Config.OptionalConfig.GetIntDefault("Optional", "StartingLevel", 1);
-	if(start_level > 70) {start_level = 70;}
+	if(start_level > PLAYER_LEVEL_CAP) {start_level = PLAYER_LEVEL_CAP;}
 	antiMasterLootNinja = Config.OptionalConfig.GetBoolDefault("Optional", "AntiMasterLootNinja", false);
 	realmAllowTBCcharacters = Config.OptionalConfig.GetBoolDefault("Optional", "AllowTBC", true);
 
@@ -1322,8 +1322,8 @@ void World::Rehash(bool load)
 	flyhack_threshold = Config.MainConfig.GetIntDefault("AntiHack", "FlightThreshold", 8);
 	no_antihack_on_gm = Config.MainConfig.GetBoolDefault("AntiHack", "DisableOnGM", false);
 	SpeedhackProtection = antihack_speed;
-	m_levelCap = Config.OptionalConfig.GetIntDefault("Optional", "LevelCap", 70);
-	m_genLevelCap = Config.OptionalConfig.GetIntDefault("Optional", "GenLevelCap", 70);
+	m_levelCap = Config.OptionalConfig.GetIntDefault("Optional", "LevelCap", PLAYER_LEVEL_CAP);
+	m_genLevelCap = Config.OptionalConfig.GetIntDefault("Optional", "GenLevelCap", PLAYER_LEVEL_CAP);
 	m_limitedNames = Config.MainConfig.GetBoolDefault("Server", "LimitedNames", true);
 	m_useAccountData = Config.MainConfig.GetBoolDefault("Server", "UseAccountData", false);
 

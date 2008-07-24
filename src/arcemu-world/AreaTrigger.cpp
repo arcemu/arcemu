@@ -93,7 +93,7 @@ uint32 CheckTriggerPrerequsites(AreaTrigger * pAreaTrigger, WorldSession * pSess
 		!pPlayer->GetItemInterface()->GetItemCount(pMapInfo->heroic_key_2, false))
 		return AREA_TRIGGER_FAILURE_NO_KEY;
 
-	if(pPlayer->getLevel()<70 && pPlayer->iInstanceType>=MODE_HEROIC && pMapInfo->type != INSTANCE_NULL)
+	if(pPlayer->getLevel()<PLAYER_LEVEL_CAP_70 && pPlayer->iInstanceType>=MODE_HEROIC && pMapInfo->type != INSTANCE_NULL)
 		return AREA_TRIGGER_FAILURE_LEVEL_HEROIC;
 
 	return AREA_TRIGGER_FAILURE_OK;

@@ -670,7 +670,7 @@ bool Player::Create(WorldPacket& data )
 	SetUInt32Value(UNIT_FIELD_LEVEL, sWorld.start_level);
 	//ApplyLevelInfo(Info, sWorld.start_level);
 
-/*	if(sWorld.start_level >= 10 && sWorld.start_level <= 70)
+/*	if(sWorld.start_level >= 10 && sWorld.start_level <= PLAYER_LEVEL_CAP)
 		{int startingTalents;
 		startingTalents = sWorld.start_level - 9;
 		SetUInt32Value(PLAYER_CHARACTER_POINTS1,startingTalents);}*/
@@ -2505,8 +2505,8 @@ void Player::LoadFromDBProc(QueryResultVector & results)
 
 	// set level
 	m_uint32Values[UNIT_FIELD_LEVEL] = get_next_field.GetUInt32();
-	/*if(m_uint32Values[UNIT_FIELD_LEVEL] > 70)
-		m_uint32Values[UNIT_FIELD_LEVEL] = 70;*/
+	/*if(m_uint32Values[UNIT_FIELD_LEVEL] > PLAYER_LEVEL_CAP)
+		m_uint32Values[UNIT_FIELD_LEVEL] = PLAYER_LEVEL_CAP;*/
 
 	// obtain level/stats information
 	lvlinfo = objmgr.GetLevelInfo(getRace(), getClass(), getLevel());
@@ -4582,7 +4582,7 @@ void Player::UpdateHit(int32 hit)
 void Player::UpdateChances()
 {
 	uint32 pClass = (uint32)getClass();
-	uint32 pLevel = (getLevel() > 70) ? 70 : getLevel();
+	uint32 pLevel = (getLevel() > PLAYER_LEVEL_CAP) ? PLAYER_LEVEL_CAP : getLevel();
 
 	float tmp = 0;
 	float defence_contribution = 0;
@@ -5053,7 +5053,7 @@ bool Player::CanSee(Object* obj) // * Invisibility & Stealth Detection - Partha 
 					if(isInFront(pObj)) // stealthed player is in front of us
 					{
 						// Detection Range = 5yds + (Detection Skill - Stealth Skill)/5
-						if(getLevel() < 70)
+						if(getLevel() < PLAYER_LEVEL_CAP)
 							detectRange = 5.0f + getLevel() + 0.2f * (float)(GetStealthDetectBonus() - pObj->GetStealthLevel());
 						else
 							detectRange = 75.0f + 0.2f * (float)(GetStealthDetectBonus() - pObj->GetStealthLevel());

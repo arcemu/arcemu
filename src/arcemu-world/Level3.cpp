@@ -3236,8 +3236,8 @@ bool ChatHandler::HandleLevelUpCommand(const char* args, WorldSession *m_session
 
 	levels += plr->getLevel();
 
-	if(levels>70)
-		levels=70;
+	if(levels>PLAYER_LEVEL_CAP)
+		levels=PLAYER_LEVEL_CAP;
 
 	LevelInfo * inf = objmgr.GetLevelInfo(plr->getRace(),plr->getClass(),levels);
 	if(!inf)
