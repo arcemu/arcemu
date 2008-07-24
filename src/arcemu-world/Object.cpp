@@ -2892,3 +2892,39 @@ void Object::_SetExtension(const string& name, void* ptr)
 
 	m_extensions->insert( make_pair( name, ptr ) );
 }
+
+bool Object::IsInBg()
+{
+	MapInfo *pMapinfo = WorldMapInfoStorage.LookupEntry(this->GetMapId());
+	if(pMapinfo)
+	{
+		return (pMapinfo->type == INSTANCE_PVP);
+	}
+
+	return false;
+}
+
+uint32 Object::GetTeam()
+{
+	if (IsPlayer())
+	{
+		return static_cast< Player* >( this )->GetTeam();
+	}
+	if (IsPet())
+	{
+		if (static_cast< Pet* >( this )->GetPetOwner() != NULL)
+		{
+			return static_cast< Pet* >( this )->GetPetOwner()->GetTeam();
+		}
+	}
+	if (IsUnit() && !IsPlayer() && static_cast< Creature* >( this )->IsTotem() )
+	{
+		if (static_cast< Creature* >( this )->GetTotemOwner() != NULL)
+		{
+			return static_cast< Creature* >( this )->GetTotemOwner()->GetTeam();
+		}
+	}
+
+	return -1;
+}
+

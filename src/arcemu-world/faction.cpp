@@ -41,6 +41,30 @@ bool isHostile(Object* objA, Object* objB)// B is hostile for A?
 	if(objB->GetTypeId() == TYPEID_CORPSE)
 		return false;
 
+	// if objA is in battleground check objB hostile based on teams
+	if( ( objA->IsInBg() && (objA->IsPlayer() || objA->IsPet() || ( objA->IsUnit() && !objA->IsPlayer() && static_cast< Creature* >( objA )->IsTotem() ) ) ) )
+	{
+		if ( (objB->IsPlayer() || objB->IsPet() || ( objB->IsUnit() && !objB->IsPlayer() && static_cast< Creature* >( objB )->IsTotem() ) ) )
+		{
+			if ( objB->IsInBg() == false )
+			{
+				// objA is in battleground, objB no, so return false
+				return false;
+			}
+			else
+			{
+				uint32 teamA = objA->GetTeam();
+				uint32 teamB = objB->GetTeam();
+				if (teamA == -1 || teamB == -1)
+				{
+					return false;
+				}
+
+				return teamA != teamB;
+			}
+		}
+	}
+
 	uint32 faction = objB->m_faction->Mask;
 	uint32 host = objA->m_faction->HostileMask;
 
@@ -152,7 +176,7 @@ bool isAttackable(Object* objA, Object* objB, bool CheckStealth)// A can attack 
 
 	if(objB->GetTypeId() == TYPEID_CORPSE)
 		return false;
-	
+
 	// Players in feign death flags can't be attacked (where did you get this information from?)
 	// Changed by Supa: Creatures cannot attack players with feign death flags.
 	/*if(!objA->IsPlayer())
@@ -176,6 +200,30 @@ bool isAttackable(Object* objA, Object* objB, bool CheckStealth)// A can attack 
         /// Capt: Added the possibility to disregard this (regarding the spell class)
 		if(static_cast<Unit *>(objB)->IsStealth() && CheckStealth)
 			return false;
+	}
+
+	// if objA is in battleground check objB hostile based on teams
+	if( ( objA->IsInBg() && (objA->IsPlayer() || objA->IsPet() || ( objA->IsUnit() && !objA->IsPlayer() && static_cast< Creature* >( objA )->IsTotem() ) ) ) )
+	{
+		if ( (objB->IsPlayer() || objB->IsPet() || ( objB->IsUnit() && !objB->IsPlayer() && static_cast< Creature* >( objB )->IsTotem() ) ) )
+		{
+			if ( objB->IsInBg() == false )
+			{
+				// objA is in battleground, objB no, so return false
+				return false;
+			}
+			else
+			{
+				uint32 teamA = objA->GetTeam();
+				uint32 teamB = objB->GetTeam();
+				if (teamA == -1 || teamB == -1)
+				{
+					return false;
+				}
+
+				return teamA != teamB;
+			}
+		}
 	}
 
 	if(objA->IsPlayer() && objB->IsPlayer())

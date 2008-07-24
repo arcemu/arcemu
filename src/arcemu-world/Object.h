@@ -510,6 +510,8 @@ public:
 	void GMScriptEvent(void * function, uint32 argc, uint32 * argv, uint32 * argt);
 	ARCEMU_INLINE size_t GetInRangeOppFactCount() { return m_oppFactsInRange.size(); }
 	void PlaySoundToSet(uint32 sound_entry);
+	bool IsInBg();
+	uint32 GetTeam();
 
 protected:
 	Object (  );
