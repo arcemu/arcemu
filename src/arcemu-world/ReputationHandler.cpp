@@ -131,7 +131,8 @@ void Player::_InitialReputation()
 		// Get Base Reputation
 		for(j = 0; j < 4; ++j)
 		{
-			if(f->baseRepMask[j] & RaceMask)
+			if(f->repRaceMask[j] & RaceMask)
+			// TODO: Implement classMask check + loading flags from dbc
 			{
 				BaseRep = f->baseRepValue[j];
 				break;
