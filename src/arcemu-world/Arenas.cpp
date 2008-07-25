@@ -30,6 +30,7 @@ Arena::Arena(MapMgr * mgr, uint32 id, uint32 lgroup, uint32 t, uint32 players_pe
 	m_started = false;
 	m_playerCountPerTeam = players_per_side;
 	m_buffs[0] = m_buffs[1] = NULL;
+	m_playersCount[0] = m_playersCount[1] = 0;
 	switch(t)
 	{
 	case BATTLEGROUND_ARENA_5V5:
@@ -63,6 +64,8 @@ Arena::~Arena()
 
 void Arena::OnAddPlayer(Player * plr)
 {
+	if (plr == NULL) return;
+
 	if( !m_started )
 	{
 		/* cast arena readyness buff */
@@ -97,6 +100,7 @@ void Arena::OnAddPlayer(Player * plr)
 	if( !m_started )
 		plr->CastSpell(plr, ARENA_PREPARATION, true);
 
+	m_playersCount[plr->GetTeam()]++;
 	UpdatePlayerCounts();
 
 	if (plr->m_bgIsQueued)
@@ -138,6 +142,7 @@ void Arena::OnRemovePlayer(Player * plr)
 	/* remove arena readyness buff */
 	plr->m_deathVision = false;
 	plr->RemoveAura(ARENA_PREPARATION);
+	m_playersCount[plr->GetTeam()]--;
 	UpdatePlayerCounts();
 	
 	plr->RemoveAura(plr->GetTeam() ? 35775-plr->m_bgTeam : 32725-plr->m_bgTeam);
@@ -162,6 +167,7 @@ void Arena::HookOnHK(Player * plr)
 
 void Arena::HookOnPlayerDeath(Player * plr)
 {
+	m_playersCount[plr->GetTeam()]--;
 	UpdatePlayerCounts();
 }
 
@@ -297,6 +303,7 @@ void Arena::OnStart()
 	for(uint32 i = 0; i < 2; ++i) {
 		for(set<Player*>::iterator itr = m_players[i].begin(); itr != m_players[i].end(); ++itr) {
 			(*itr)->RemoveAura(ARENA_PREPARATION);
+			m_players2[i].insert(*itr);
 		}
 	}
 
@@ -321,23 +328,15 @@ void Arena::UpdatePlayerCounts()
 	if(m_ended)
 		return;
 
-	uint32 players[2] = {0,0};
-	for(uint32 i = 0; i < 2; ++i) {
-		for(set<Player*>::iterator itr = m_players[i].begin(); itr != m_players[i].end(); ++itr) {
-			if ((*itr)->isAlive())
-				players[(*itr)->GetTeam()]++;
-		}
-	}
-
-	SetWorldState(ARENA_WORLD_STATE_A_PLAYER_COUNT, players[0]);
-	SetWorldState(ARENA_WORLD_STATE_H_PLAYER_COUNT, players[1]);
+	SetWorldState(ARENA_WORLD_STATE_A_PLAYER_COUNT, m_playersCount[0]);
+	SetWorldState(ARENA_WORLD_STATE_H_PLAYER_COUNT, m_playersCount[1]);
 
 	if(!m_started)
 		return;
 
-	if(players[1] == 0)
+	if(m_playersCount[1] == 0)
 		m_winningteam = 0;
-	else if(players[0] == 0)
+	else if(m_playersCount[0] == 0)
 		m_winningteam = 1;
 	else
 		return;
@@ -373,20 +372,20 @@ void Arena::Finish()
 {
 	m_ended = true;
 	m_nextPvPUpdateTime = 0;
-	UpdatePvPData();
+//	UpdatePvPData(); // crashes client
 	PlaySoundToAll(m_winningteam ? SOUND_ALLIANCEWINS : SOUND_HORDEWINS);
 
 	sEventMgr.RemoveEvents(this, EVENT_BATTLEGROUND_CLOSE);
 	sEventMgr.AddEvent(((CBattleground*)this), &CBattleground::Close, EVENT_BATTLEGROUND_CLOSE, 120000, 1,0);
 
 	/* update arena team stats */
-	doneteams.clear();
 	if(rated_match)
 	{
 		uint32 averageRating[2] = {0,0};
+		doneteams.clear();
 		for(uint32 i = 0; i < 2; ++i) {
 			uint32 teamCount = 0;
-			for(set<Player*>::iterator itr = m_players[i].begin(); itr != m_players[i].end(); ++itr)
+			for(set<Player*>::iterator itr = m_players2[i].begin(); itr != m_players2[i].end(); ++itr)
 			{
 				Player * plr = *itr;
 				if(plr->m_arenaTeams[m_arenateamtype] != NULL)
@@ -410,7 +409,7 @@ void Arena::Finish()
 
 			outcome = (i == m_winningteam);
 
-			for(set<Player*>::iterator itr = m_players[i].begin(); itr != m_players[i].end(); ++itr)
+			for(set<Player*>::iterator itr = m_players2[i].begin(); itr != m_players2[i].end(); ++itr)
 			{
 				Player * plr = *itr;
 				if(plr->m_arenaTeams[m_arenateamtype] != NULL)
