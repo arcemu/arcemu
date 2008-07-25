@@ -2464,6 +2464,14 @@ uint32 Unit::GetSpellDidHitResult( Unit* pVictim, uint32 weapon_damage_type, Spe
 			printf("!!!!!spell resist mod flat %f,  spell resist bonus %f, spell group %u\n",spell_flat_modifers,hitchance,ability->SpellGroupType);
 #endif
 	}
+
+	if( ability && ability->Attributes & ATTRIBUTES_CANT_BE_DPB )
+	{
+		dodge = 0.0f;
+		parry = 0.0f;
+		block = 0.0f;
+	}
+
 	//==========================================================================================
 	//==============================One Roll Processing=========================================
 	//==========================================================================================
