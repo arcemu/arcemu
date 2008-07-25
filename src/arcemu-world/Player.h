@@ -994,6 +994,7 @@ public:
 	{
 		SetUInt32Value(PLAYER_BYTES_3, ((GetUInt32Value(PLAYER_BYTES_3) & 0x00FFFFFF) | (uint8(newrank) << 24)));
 	}
+	uint32 GetMaxPersonalRating();
 
     /************************************************************************/
     /* Groups                                                               */

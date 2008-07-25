@@ -10993,3 +10993,29 @@ void Player::SpeedCheatReset()
 { 
 	SDetector->EventSpeedChange(); 
 }
+
+uint32 Player::GetMaxPersonalRating()
+{
+	uint32 maxrating = 0;
+	int i;
+
+	ASSERT(m_playerInfo != NULL);
+
+	for (i=0; i<NUM_ARENA_TEAM_TYPES; i++)
+	{
+		if(m_arenaTeams[i] != NULL)
+		{
+			ArenaTeamMember *m = m_arenaTeams[i]->GetMemberByGuid(m_playerInfo->guid);
+			if (m)
+			{
+				if (m->PersonalRating > maxrating) maxrating = m->PersonalRating;
+			}
+			else
+			{
+				sLog.outError("%s: GetMemberByGuid returned NULL for player guid = %u\n", __FUNCTION__, m_playerInfo->guid);
+			}
+		}
+	}
+
+	return maxrating;
+}

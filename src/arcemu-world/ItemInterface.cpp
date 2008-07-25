@@ -2054,6 +2054,8 @@ int8 ItemInterface::CanAffordItem(ItemPrototype * item,uint32 amount, Creature *
 			return CAN_AFFORD_ITEM_ERROR_NOT_ENOUGH_MONEY;
 		if(m_pOwner->GetUInt32Value(PLAYER_FIELD_ARENA_CURRENCY ) < (ex->arena*amount))
 			return CAN_AFFORD_ITEM_ERROR_NOT_ENOUGH_MONEY;
+		if(m_pOwner->GetMaxPersonalRating() < ex->personalrating)
+			return CAN_AFFORD_ITEM_ERROR_NOT_REQUIRED_RANK;
 	}
 
 	if(item->BuyPrice)
