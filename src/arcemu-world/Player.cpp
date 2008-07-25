@@ -9119,7 +9119,7 @@ void Player::Possess(Unit * pTarget)
 	SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_LOCK_PLAYER);
 	
 	/* send "switch mover" packet */
-	WorldPacket data1(SMSG_DEATH_NOTIFY_OBSOLETE, 10);		/* burlex: this should be renamed SMSG_SWITCH_ACTIVE_MOVER :P */
+	WorldPacket data1( SMSG_CLIENT_CONTROL_UPDATE, 10 );
 	data1 << pTarget->GetNewGUID() << uint8(1);
 	m_session->SendPacket(&data1);
 
@@ -9127,49 +9127,54 @@ void Player::Possess(Unit * pTarget)
 	pTarget->_setFaction();
 	pTarget->UpdateOppFactionSet();
 
-	list<uint32> avail_spells;
-	for(list<AI_Spell*>::iterator itr = pTarget->GetAIInterface()->m_spells.begin(); itr != pTarget->GetAIInterface()->m_spells.end(); ++itr)
-	{
-		if((*itr)->agent == AGENT_SPELL)
-			avail_spells.push_back((*itr)->spell->Id);
-	}
-	list<uint32>::iterator itr = avail_spells.begin();
 
 	/* build + send pet_spells packet */
 	if(pTarget->m_temp_summon)
 		return;
-
-	WorldPacket data(SMSG_PET_SPELLS, pTarget->GetAIInterface()->m_spells.size() * 4 + 20);
-	data << pTarget->GetGUID();
-	data << uint32(0x00000000);//unk1
-	data << uint32(0x00000101);//unk2
-
-	// First spell is attack.
-	data << uint32(PET_SPELL_ATTACK);
-
-	// Send the actionbar
-	for(uint32 i = 1; i < 10; ++i)
-	{
-		if(itr != avail_spells.end())
-		{
-			data << uint16((*itr)) << uint16(DEFAULT_SPELL_STATE);
-			++itr;
-		}
-		else
-			data << uint16(0) << uint8(0) << uint8(i+5);
-	}
-	// Send the rest of the spells.
-	data << uint8(avail_spells.size());
-	for(itr = avail_spells.begin(); itr != avail_spells.end(); ++itr)
-		data << uint16(*itr) << uint16(DEFAULT_SPELL_STATE);
 	
-	data << uint64(0);
-	m_session->SendPacket(&data);
+	if( pTarget->m_isPet && static_cast< Pet* >( pTarget ) != m_Summon )
+	{
+		list<uint32> avail_spells;
+		for(list<AI_Spell*>::iterator itr = pTarget->GetAIInterface()->m_spells.begin(); itr != pTarget->GetAIInterface()->m_spells.end(); ++itr)
+		{
+			if((*itr)->agent == AGENT_SPELL)
+				avail_spells.push_back((*itr)->spell->Id);
+		}
+		list<uint32>::iterator itr = avail_spells.begin();
+
+		WorldPacket data(SMSG_PET_SPELLS, pTarget->GetAIInterface()->m_spells.size() * 4 + 20);
+		data << pTarget->GetGUID();
+		data << uint32(0x00000000);//unk1
+		data << uint32(0x00000101);//unk2
+
+		// First spell is attack.
+		data << uint32(PET_SPELL_ATTACK);
+
+		// Send the actionbar
+		for(uint32 i = 1; i < 10; ++i)
+		{
+			if(itr != avail_spells.end())
+			{
+				data << uint16((*itr)) << uint16(DEFAULT_SPELL_STATE);
+				++itr;
+			}
+			else
+				data << uint16(0) << uint8(0) << uint8(i+5);
+		}
+		// Send the rest of the spells.
+		data << uint8(avail_spells.size());
+		for(itr = avail_spells.begin(); itr != avail_spells.end(); ++itr)
+			data << uint16(*itr) << uint16(DEFAULT_SPELL_STATE);
+		
+		data << uint64(0);
+		m_session->SendPacket(&data);
+	}
+	
 }
 
 void Player::UnPossess()
 {
-	if( m_Summon || !m_CurrentCharm )
+	if( !m_CurrentCharm )
 		return;
 
 	Unit * pTarget = GetMapMgr()->GetUnit( m_CurrentCharm ); 
@@ -9199,16 +9204,19 @@ void Player::UnPossess()
 	pTarget->UpdateOppFactionSet();
 
 	/* send "switch mover" packet */
-	WorldPacket data(SMSG_DEATH_NOTIFY_OBSOLETE, 10);
+	WorldPacket data(SMSG_CLIENT_CONTROL_UPDATE, 10);
 	data << GetNewGUID() << uint8(1);
 	m_session->SendPacket(&data);
 
 	if(pTarget->m_temp_summon)
 		return;
-
-	data.Initialize(SMSG_PET_SPELLS);
-	data << uint64(0);
-	m_session->SendPacket(&data);
+ 
+	if( pTarget->m_isPet && static_cast< Pet* >( pTarget ) != m_Summon )
+	{
+		data.Initialize( SMSG_PET_SPELLS );
+		data << uint64( 0 );
+		m_session->SendPacket( &data );
+	}
 }
 
 //what is an Immobilize spell ? Have to add it later to spell effect handler

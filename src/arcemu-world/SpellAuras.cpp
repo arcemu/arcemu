@@ -1662,7 +1662,7 @@ void Aura::SpellAuraDummy(bool apply)
 			}
 			}
 		}break;
-	case 126: //Eye of Killrog
+	case 126: //Eye of Kilrogg
 		{
 			/*if(m_target->IsInWorld() == false)
 				return;
@@ -2173,7 +2173,7 @@ void Aura::SpellAuraModConfuse(bool apply)
 		{
 			// this is a hackfix to stop player from moving -> see AIInterface::_UpdateMovement() Wander AI for more info
 			WorldPacket data1(9);
-			data1.Initialize(SMSG_DEATH_NOTIFY_OBSOLETE);
+			data1.Initialize( SMSG_CLIENT_CONTROL_UPDATE );
 			data1 << m_target->GetNewGUID() << uint8(0x00);
 			p_target->GetSession()->SendPacket(&data1);
 			p_target->SpeedCheatDelay( GetDuration() );
@@ -2192,7 +2192,7 @@ void Aura::SpellAuraModConfuse(bool apply)
 		{
 			// re-enable movement
 			WorldPacket data1(9);
-			data1.Initialize(SMSG_DEATH_NOTIFY_OBSOLETE);
+			data1.Initialize( SMSG_CLIENT_CONTROL_UPDATE );
 			data1 << m_target->GetNewGUID() << uint8(0x01);
 			p_target->GetSession()->SendPacket(&data1);
 
@@ -2321,7 +2321,7 @@ void Aura::SpellAuraModFear(bool apply)
 		{
 			// this is a hackfix to stop player from moving -> see AIInterface::_UpdateMovement() Fear AI for more info
 			WorldPacket data1(9);
-			data1.Initialize(SMSG_DEATH_NOTIFY_OBSOLETE);
+			data1.Initialize( SMSG_CLIENT_CONTROL_UPDATE );
 			data1 << m_target->GetNewGUID() << uint8(0x00);
 			p_target->GetSession()->SendPacket(&data1);
 			p_target->SpeedCheatDelay( GetDuration() );
@@ -2342,7 +2342,7 @@ void Aura::SpellAuraModFear(bool apply)
 			{
 				// re-enable movement
 				WorldPacket data1(9);
-				data1.Initialize(SMSG_DEATH_NOTIFY_OBSOLETE);
+				data1.Initialize( SMSG_CLIENT_CONTROL_UPDATE );
 				data1 << m_target->GetNewGUID() << uint8(0x01);
 				p_target->GetSession()->SendPacket(&data1);
 
@@ -8479,7 +8479,7 @@ void Aura::SpellAuraModPossessPet(bool apply)
 {
 	Unit *caster = GetUnitCaster();
 	Player* pCaster;
-	if( caster->IsPlayer() )
+	if( caster != NULL && caster->IsPlayer() && caster->IsInWorld() )
 		pCaster = static_cast< Player* >( caster );
 	else
 		return;
@@ -8489,38 +8489,15 @@ void Aura::SpellAuraModPossessPet(bool apply)
 		return;
 
 
-	if(apply)
+	if( apply )
 	{
-		if( caster != NULL && caster->IsInWorld() )
-		{
-			pCaster->Possess( m_target );
-			pCaster->SpeedCheatDelay( GetDuration() );
-		}
+		pCaster->Possess( m_target );
+		pCaster->SpeedCheatDelay( GetDuration() );
 	}
 	else
 	{
-		if( caster != NULL && caster->IsInWorld() )
-		{
-			// Thats UGLY
-			m_target->setAItoUse(true);
-			m_target->m_redirectSpellPackets = 0;
-//			pCaster->SpeedCheatReset();
+		pCaster->UnPossess();
 
-			pCaster->m_noInterrupt--;
-			pCaster->SetUInt64Value(PLAYER_FARSIGHT, 0);
-			pCaster->SetUInt64Value(UNIT_FIELD_CHARM, 0);
-
-			pCaster->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_LOCK_PLAYER);
-			m_target->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_PLAYER_CONTROLLED_CREATURE);
-			m_target->SetUInt32Value(UNIT_FIELD_FACTIONTEMPLATE, m_target->GetCharmTempVal());
-			m_target->_setFaction();
-			m_target->UpdateOppFactionSet();
-
-			/* send "switch mover" packet */
-			WorldPacket data(SMSG_DEATH_NOTIFY_OBSOLETE, 10);
-			data << pCaster->GetNewGUID() << uint8(1);
-			pCaster->GetSession()->SendPacket(&data);
-		}
 	}
 }
 

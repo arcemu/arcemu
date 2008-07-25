@@ -317,16 +317,16 @@ void WorldSession::HandleCancelCastOpcode(WorldPacket& recvPacket)
 		GetPlayer()->m_currentSpell->cancel();
 }
 
-void WorldSession::HandleCancelAuraOpcode( WorldPacket& recvPacket)
+void WorldSession::HandleCancelAuraOpcode( WorldPacket& recvPacket )
 {
 	uint32 spellId;
 	recvPacket >> spellId;
 	
-	for(uint32 x = 0; x < MAX_AURAS+MAX_POSITIVE_AURAS; ++x)
-	{
-		if(_player->m_auras[x] && _player->m_auras[x]->IsPositive() && _player->m_auras[x]->GetSpellId() == spellId)
-			_player->m_auras[x]->Remove();
-	}
+	if( _player->m_currentSpell && _player->m_currentSpell->GetProto()->Id == spellId )
+		_player->m_currentSpell->cancel();
+	else
+		_player->RemoveAura( spellId );
+
 	sLog.outDebug("removing aura %u",spellId);
 }
 
