@@ -1,0 +1,1 @@
+INSERT INTO `spell_coef_override` (`id`,`name`,`Dspell_coef_override`,`OTspell_coef_override`) VALUES ('25608','Citrine Pendant of Golden Healing','0','0');
