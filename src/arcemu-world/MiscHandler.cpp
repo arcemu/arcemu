@@ -2219,6 +2219,14 @@ void WorldSession::HandleDungeonDifficultyOpcode(WorldPacket& recv_data)
 
 void WorldSession::HandleSummonResponseOpcode(WorldPacket & recv_data)
 {
+	uint32 unk;
+	uint32 SummonerGUID;
+	uint8 IsClickOk;
+
+	recv_data >> SummonerGUID >> unk >> IsClickOk;
+
+	if(!IsClickOk)
+		return;
 	if(!_player->m_summoner)
 	{
 		SendNotification(NOTIFICATION_MESSAGE_NO_PERMISSION);
