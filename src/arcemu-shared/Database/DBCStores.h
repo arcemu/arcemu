@@ -55,6 +55,14 @@ struct Lock
     //uint32 unk2[3];
     uint32 minlockskill[5]; // min skill in lockpiking to unlock.
     //uint32 unk3[11];
+
+	/* Actually it is:
+	uint32 Id;
+    uint32 locktype[8];
+    uint32 lockmisc[8];
+    uint32 minlockskill[8];
+    uint32 action[8];
+	*/
 };
 
 struct emoteentry
@@ -85,13 +93,13 @@ struct skilllinespell //SkillLineAbility.dbc
     uint32 Id;
     uint32 skilline;
     uint32 spell;
-    //uint32 unk1;
-    //uint32 unk2;
-    //uint32 unk3;
-    //uint32 unk4;
-    //uint32 unk5;
+    //uint32 raceMask;
+	//uint32 classMask;
+    //uint32 excludeRace;
+    //uint32 excludeClass;
+    //uint32 minSkillLineRank;
     uint32 next;
-    uint32 minrank;
+    uint32 acquireMethod;
     uint32 grey;
     uint32 green;
     //uint32 unk10;
@@ -142,7 +150,7 @@ struct skilllineentry //SkillLine.dbc
 {
     uint32 id;
     uint32 type;
-    uint32 unk1;
+    uint32 skillCostsID;
     char* Name;
     //int32 NameAlt1;
     //uint32 NameAlt2;
@@ -683,10 +691,10 @@ struct FactionDBC
 {
     uint32 ID;
     int32 RepListId;
-    uint32 baseRepMask[4];
-    //uint32 unk1[4];
+    uint32 repRaceMask[4];
+    //uint32 repClassMask[4];
     int32 baseRepValue[4];
-    //uint32 unk2[4];
+    //uint32 repFlags[4];
     uint32 parentFaction;
     char* Name;
     //uint32 shit[16];
@@ -817,7 +825,7 @@ struct CreatureFamilyEntry
     //uint32 namealt14;
     //uint32 namealt15;
     //uint32 nameflags;
-    //uint32 unk1;
+    //uint32 iconFile;
 };
 
 struct MapEntry

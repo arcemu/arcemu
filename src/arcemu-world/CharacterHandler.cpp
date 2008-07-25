@@ -21,25 +21,32 @@
 #include "AuthCodes.h"
 #include "svn_revision.h"
 
-bool VerifyName(const char * name, size_t nlen)
+LoginErrorCode VerifyName(const char * name, size_t nlen)
 {
 	const char * p;
 	size_t i;
 
 	static const char * bannedCharacters = "\t\v\b\f\a\n\r\\\"\'\? <>[](){}_=+-|/!@#$%^&*~`.,0123456789\0";
 	static const char * allowedCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
-	if(sWorld.m_limitedNames)
+
+	if( sWorld.m_limitedNames )
 	{
-		for(i = 0; i < nlen; ++i)
+		if( nlen == 0 )
+			return CHAR_NAME_NO_NAME;
+		else if( nlen < 2 )
+			return CHAR_NAME_TOO_SHORT;
+		else if( nlen > 12 )
+			return CHAR_NAME_TOO_LONG;
+
+		for( i = 0; i < nlen; ++i )
 		{
 			p = allowedCharacters;
-			for(; *p != 0; ++p)
+			for( ; *p != 0; ++p )
 			{
-				if(name[i] == *p)
+				if( name[i] == *p )
 					goto cont;
 			}
-
-			return false;
+			return CHAR_NAME_INVALID_CHARACTER;
 cont:
 			continue;
 		}
@@ -53,11 +60,11 @@ cont:
 				++p;
 
 			if(*p != 0)
-				return false;
+				return CHAR_NAME_INVALID_CHARACTER;
 		}
 	}
 	
-	return true;
+	return CHAR_NAME_SUCCESS;
 }
 
 bool ChatHandler::HandleRenameAllCharacter(const char * args, WorldSession * m_session)
@@ -73,7 +80,7 @@ bool ChatHandler::HandleRenameAllCharacter(const char * args, WorldSession * m_s
 			const char * pName = result->Fetch()[1].GetString();
 			size_t szLen = strlen(pName);
 
-			if( !VerifyName(pName, szLen) )
+			if( VerifyName(pName, szLen) != CHAR_NAME_SUCCESS )
 			{
 				printf("renaming character %s, %u\n", pName,uGuid);
                 Player * pPlayer = objmgr.GetPlayer(uGuid);
@@ -215,13 +222,13 @@ void WorldSession::CharacterEnumProc(QueryResult * result)
 				{
 					containerslot = res->Fetch()[0].GetInt8();
 					slot = res->Fetch()[1].GetInt8();
-					if( containerslot == -1 && slot < 19 && slot >= 0 )
+					if( containerslot == -1 && slot < EQUIPMENT_SLOT_END && slot >= EQUIPMENT_SLOT_START )
 					{
 						proto = ItemPrototypeStorage.LookupEntry(res->Fetch()[2].GetUInt32());
-						if(proto)
+						if( proto )
 						{
-							// slot0 = head, slot14 = cloak
-							if(!(slot == 0 && (flags & (uint32)PLAYER_FLAG_NOHELM) != 0) && !(slot == 14 && (flags & (uint32)PLAYER_FLAG_NOCLOAK) != 0)) 
+							if( !( slot == EQUIPMENT_SLOT_HEAD && ( flags & ( uint32 )PLAYER_FLAG_NOHELM ) != 0 ) && 
+								!( slot == EQUIPMENT_SLOT_BACK && ( flags & ( uint32 )PLAYER_FLAG_NOCLOAK ) != 0 ) ) 
 							{
 								items[slot].displayid = proto->DisplayInfoID;
 								items[slot].invtype = proto->InventoryType;
@@ -246,7 +253,7 @@ void WorldSession::CharacterEnumProc(QueryResult * result)
 				delete res;
 			}
 
-			for( i = 0; i < 20; ++i )
+			for( i = 0; i < EQUIPMENT_SLOT_END + 1; ++i )
 			{
 				// 2.4.0 added a uint32 here, it's obviously one of the itemtemplate fields,
 				// we just gotta figure out which one :P
@@ -306,27 +313,30 @@ void WorldSession::HandleCharCreateOpcode( WorldPacket & recv_data )
 	recv_data >> name >> race >> class_;
 	recv_data.rpos(0);
 
-	if(!VerifyName(name.c_str(), name.length()))
+	LoginErrorCode res = VerifyName( name.c_str(), name.length() );
+	if( res != CHAR_NAME_SUCCESS )
 	{
-		OutPacket(SMSG_CHAR_CREATE, 1, "\x32");
+		OutPacket( SMSG_CHAR_CREATE, 1, &res );
 		return;
 	}
-
-	if(g_characterNameFilter->Parse(name, false))
+	
+	res = g_characterNameFilter->Parse( name, false ) ? CHAR_NAME_PROFANE : CHAR_NAME_SUCCESS;
+	if( res != CHAR_NAME_SUCCESS )
 	{
-		OutPacket(SMSG_CHAR_CREATE, 1, "\x32");
+		OutPacket( SMSG_CHAR_CREATE, 1, &res );
 		return;
 	}
-
-	if(objmgr.GetPlayerInfoByName(name.c_str()) != 0)
+	
+	res = objmgr.GetPlayerInfoByName(name.c_str()) == NULL ? CHAR_CREATE_SUCCESS : CHAR_CREATE_NAME_IN_USE;
+	if( res != CHAR_CREATE_SUCCESS )
 	{
-		OutPacket(SMSG_CHAR_CREATE, 1, "\x32");
+		OutPacket( SMSG_CHAR_CREATE, 1, &res );
 		return;
 	}
-
-	if(!sHookInterface.OnNewCharacter(race, class_, this, name.c_str()))
+	res = sHookInterface.OnNewCharacter( race, class_, this, name.c_str() ) ? CHAR_CREATE_SUCCESS : CHAR_CREATE_ERROR;
+	if( res != CHAR_CREATE_SUCCESS )
 	{
-		OutPacket(SMSG_CHAR_CREATE, 1, "\x32");
+		OutPacket( SMSG_CHAR_CREATE, 1, &res );
 		return;
 	}
 
@@ -336,7 +346,8 @@ void WorldSession::HandleCharCreateOpcode( WorldPacket & recv_data )
 		if(result->Fetch()[0].GetUInt32() > 0)
 		{
 			// That name is banned!
-			OutPacket(SMSG_CHAR_CREATE, 1, "\x51"); // You cannot use that name
+			res = CHAR_NAME_PROFANE;
+			OutPacket( SMSG_CHAR_CREATE, 1, &res );
 			delete result;
 			return;
 		}
@@ -354,6 +365,8 @@ void WorldSession::HandleCharCreateOpcode( WorldPacket & recv_data )
 		// failed.
 		pNewChar->ok_to_remove = true;
 		delete pNewChar;
+		res = CHAR_CREATE_FAILED;
+		OutPacket( SMSG_CHAR_CREATE, 1, &res );
 		return;
 	}
 
@@ -365,10 +378,8 @@ void WorldSession::HandleCharCreateOpcode( WorldPacket & recv_data )
 		{
 			pNewChar->ok_to_remove = true;
 			delete pNewChar;
-			WorldPacket data(1);
-			data.SetOpcode(SMSG_CHAR_CREATE);
-			data << (uint8)ALL_CHARS_ON_PVP_REALM_MUST_AT_SAME_SIDE+1;
-			SendPacket( &data );
+			res = CHAR_CREATE_PVP_TEAMS_VIOLATION;
+			OutPacket( SMSG_CHAR_CREATE, 1, &res);
 			return;
 		}
 	}
@@ -407,112 +418,23 @@ void WorldSession::HandleCharCreateOpcode( WorldPacket & recv_data )
 	pNewChar->ok_to_remove = true;
 	delete  pNewChar;
 
-	// CHAR_CREATE_SUCCESS
-	OutPacket(SMSG_CHAR_CREATE, 1, "\x2F");
+	res = CHAR_CREATE_SUCCESS;
+	OutPacket( SMSG_CHAR_CREATE, 1, &res );
 
-	sLogonCommHandler.UpdateAccountCount(GetAccountId(), 1);
+	sLogonCommHandler.UpdateAccountCount( GetAccountId(), 1 );
 }
-
-/* FOR 1.10.1
-SMSG_CHAR_CREATE Error Codes:
-0x00 Success
-0x01 Failure
-0x02 Canceled
-0x03 Disconnect from server
-0x04 Failed to connect
-0x05 Connected
-0x06 Wrong client version
-0x07 Connecting to server
-0x08 Negotiating security
-0x09 Negotiating security complete
-0x0A Negotiating security failed
-0x0B Authenticating
-0x0C Authentication successful
-0x0D Authentication failed
-0x0E Login unavailable - Please contact Tech Support
-0x0F Server is not valid
-0x10 System unavailable 
-0x11 System error
-0x12 Billing system error
-0x13 Account billing has expired
-0x14 Wrong client version
-0x15 Unknown account
-0x16 Incorrect password
-0x17 Session expired
-0x18 Server Shutting Down
-0x19 Already logged in
-0x1A Invalid login server
-0x1B Position in Queue: 0
-0x1C This account has been banned
-0x1D This character is still logged on
-0x1E Your WoW subscription has expired
-0x1F This session has timed out
-0x20 This account has been temporarily suspended
-0x21 Access to this account blocked by parental controls 
-0x22 Retrieving realmlist
-0x23 Realmlist retrieved
-0x24 Unable to connect to realmlist server
-0x25 Invalid realmlist
-0x26 The game server is currently down
-0x27 Creating account
-0x28 Account created
-0x29 Account creation failed
-0x2A Retrieving character list
-0x2B Character list retrieved
-0x2C Error retrieving character list
-0x2D Creating character
-0x2E Character created
-0x2F Error creating character
-0x30 Character creation failed
-0x31 That name is unavailable
-0x32 Creation of that race/class is disabled
-0x33 You cannot have both horde and alliance character at pvp realm
-0x33 All characters on a PVP realm must be on the same team
-0x34 You already have maximum number of characters
-0x35 You already have maximum number of characters
-0x36 The server is currently queued
-0x37 Only players who have characters on this realm..
-0x38 Creation of that race requires an account that has been upgraded to the approciate expansion
-0x39 Deleting character
-0x3A Character deleted
-0x3B Char deletion failed
-0x3c Entering world of warcraft
-0x3D Login successful
-0x3E World server is down
-0x3F A character with that name already exists
-0x40 No instance server available
-0x41 Login failed
-0x42 Login for that race/class is disabled
-0x43 Character not found
-0x44 Enter a name for your character
-0x45 Names must be atleast 2 characters long
-0x46 Names must be no more then 12 characters
-0x47 Names can only contain letters
-0x48 Names must contain only one language
-0x49 That name contains profanity
-0x4A That name is unavailable
-0x4B You cannot use an apostrophe
-0x4C You can only have one apostrophe
-0x4D You cannot use the same letter three times consecutively
-0x4E You cannit use space as the first or last character of your name
-0x4F <Blank>
-0x50 Invalid character name
-0x51 <Blank>
-All further codes give the number in dec.
-*/
 
 void WorldSession::HandleCharDeleteOpcode( WorldPacket & recv_data )
 {
 	CHECK_PACKET_SIZE(recv_data, 8);
-	uint8 fail = 0x3B;
+	uint8 fail = CHAR_DELETE_SUCCESS;
 
 	uint64 guid;
 	recv_data >> guid;
 
-	if(objmgr.GetPlayer((uint32)guid) != NULL)
+	if( objmgr.GetPlayer( (uint32)guid) != NULL )
 	{
-		// "Char deletion failed"
-		fail = 0x3C;
+		fail = CHAR_DELETE_FAILED;
 	} else {
 
 		PlayerInfo * inf = objmgr.GetPlayerInfo((uint32)guid);
@@ -574,7 +496,7 @@ void WorldSession::HandleCharDeleteOpcode( WorldPacket & recv_data )
 			objmgr.DeletePlayerInfo((uint32)guid);
 		}
 		else
-			fail = 0x3C;
+			fail = CHAR_DELETE_FAILED;
     _side = -1; // ceberwow added it
 	}
 
@@ -583,7 +505,7 @@ void WorldSession::HandleCharDeleteOpcode( WorldPacket & recv_data )
 
 void WorldSession::HandleCharRenameOpcode(WorldPacket & recv_data)
 {
-	WorldPacket data(SMSG_CHAR_RENAME, recv_data.size() + 1);
+	WorldPacket data( SMSG_CHAR_RENAME, recv_data.size() + 1 );
 
 	uint64 guid;
 	string name;
@@ -602,16 +524,14 @@ void WorldSession::HandleCharRenameOpcode(WorldPacket & recv_data)
 	delete result;
 
 	// Check name for rule violation.
-	const char * szName=name.c_str();
-	for(uint32 x=0;x<strlen(szName);x++)
+	
+	LoginErrorCode err = VerifyName( name.c_str(), name.length() );
+	if( err != CHAR_NAME_SUCCESS )
 	{
-		if((int)szName[x]<65||((int)szName[x]>90&&(int)szName[x]<97)||(int)szName[x]>122)
-		{
-			data << uint8(0x32);
-			data << guid << name;
-			SendPacket(&data);
-			return;
-		}
+		data << uint8( err );
+		data << guid << name;
+		SendPacket(&data);
+		return;
 	}
 
 	QueryResult * result2 = CharacterDatabase.Query("SELECT COUNT(*) FROM banned_names WHERE name = '%s'", CharacterDatabase.EscapeString(name).c_str());
@@ -620,7 +540,7 @@ void WorldSession::HandleCharRenameOpcode(WorldPacket & recv_data)
 		if(result2->Fetch()[0].GetUInt32() > 0)
 		{
 			// That name is banned!
-			data << uint8(0x31);
+			data << uint8( CHAR_NAME_PROFANE );
 			data << guid << name;
 			SendPacket(&data);
 		}
@@ -628,9 +548,9 @@ void WorldSession::HandleCharRenameOpcode(WorldPacket & recv_data)
 	}
 
 	// Check if name is in use.
-	if(objmgr.GetPlayerInfoByName(name.c_str()) != 0)
+	if( objmgr.GetPlayerInfoByName( name.c_str() ) != NULL )
 	{
-		data << uint8(0x32);
+		data << uint8( CHAR_CREATE_NAME_IN_USE );
 		data << guid << name;
 		SendPacket(&data);
 		return;
@@ -648,8 +568,8 @@ void WorldSession::HandleCharRenameOpcode(WorldPacket & recv_data)
 	CharacterDatabase.WaitExecute("UPDATE characters SET name = '%s' WHERE guid = %u", name.c_str(), (uint32)guid);
 	CharacterDatabase.WaitExecute("UPDATE characters SET forced_rename_pending = 0 WHERE guid = %u", (uint32)guid);
 	
-	data << uint8(0) << guid << name;
-	SendPacket(&data);
+	data << uint8( CHAR_NAME_SUCCESS ) << guid << name;
+	SendPacket( &data );
 }
 
 
@@ -665,7 +585,7 @@ void WorldSession::HandlePlayerLoginOpcode( WorldPacket & recv_data )
 	{
 		// A character with that name already exists 0x3E
 		uint8 respons = CHAR_LOGIN_DUPLICATE_CHARACTER;
-		OutPacket(SMSG_CHARACTER_LOGIN_FAILED, 1, &respons);
+		OutPacket( SMSG_CHARACTER_LOGIN_FAILED, 1, &respons );
 		return;
 	}
 
@@ -947,7 +867,7 @@ bool ChatHandler::HandleRenameCommand(const char * args, WorldSession * m_sessio
 	if(sscanf(args, "%s %s", name1, name2) != 2)
 		return false;
 
-	if(VerifyName(name2, strlen(name2)) == false)
+	if( VerifyName( name2, strlen( name2 ) ) != CHAR_NAME_SUCCESS )
 	{
 		RedSystemMessage(m_session, "That name is invalid or contains invalid characters.");
 		return true;

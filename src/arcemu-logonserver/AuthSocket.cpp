@@ -141,8 +141,6 @@ void AuthSocket::HandleChallenge()
 
 		Log.Debug("Patch", "Selected patch %u%s for client.", m_patch->Version,m_patch->Locality);
 
-		BigNumber unk;
-		unk.SetRand(128);
 
 		uint8 response[119] = {
 			0x00, 0x00, 0x00, 0x72, 0x50, 0xa7, 0xc9, 0x27, 0x4a, 0xfa, 0xb8, 0x77, 0x80, 0x70, 0x22,
