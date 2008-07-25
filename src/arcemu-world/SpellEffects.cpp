@@ -4530,7 +4530,10 @@ void Spell::SpellEffectSummonTotem(uint32 i) // Summon Totem
 	float y = p_caster->GetPositionY();
 	uint32 slot = m_spellInfo->EffectImplicitTargetA[i] - EFF_TARGET_TOTEM_EARTH;
 	if(slot < 0 || slot > 3)
+	{
+		sLog.outDebug("Totem slot is : %u and max shoud be 3, i = %u , target = %u \n",slot,i,m_spellInfo->EffectImplicitTargetA[i]);
 		return; // Just 4 totems
+	}
 
 	switch(m_spellInfo->EffectMiscValueB[i])
 	{

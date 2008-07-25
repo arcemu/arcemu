@@ -40,6 +40,10 @@
 
 #define DISTANCE_TO_SMALL_TO_WALK 2.0f //this is required so creature will not try to reposition itself to obtain perfect combat range. Not using this might lead to exploits
 
+//!!! it is in seconds and not Milliseconds
+#define MOB_SPELLCAST_GLOBAL_COOLDOWN	2 //there are individual cooldown and global ones. Global cooldown stops mob from casting 1 instant speels on you per second
+#define MOB_SPELLCAST_REFRESH_COOLDOWN_INTERVAL	2
+
 //#define INHERIT_FOLLOWED_UNIT_SPEED 1
 
 #define HACKY_SERVER_CLIENT_POS_SYNC

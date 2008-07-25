@@ -393,7 +393,7 @@ void CBattlegroundManager::EventQueueUpdate(bool forceStart)
 					bg = iitr->second;
 					for(k = 0; k < 2; ++k)
 				{
-						int size = tempPlayerVec[k].size();
+						int size = (int)tempPlayerVec[k].size();
 						for(int counter = 0; counter < size; counter++)
 						{
 							plrguid = *tempPlayerVec[k].begin();

@@ -1274,6 +1274,8 @@ void AIInterface::_UpdateCombat(uint32 p_time)
 					if(m_nextSpell&&m_nextSpell->cooldown)
 						m_nextSpell->cooldowntime = getMSTime() + m_nextSpell->cooldown;
 
+					next_spell_time = (uint32)UNIXTIME + MOB_SPELLCAST_GLOBAL_COOLDOWN;
+
 					//add pet spell after use to pet owner
 					if( m_Unit->IsPet() )
 						static_cast< Pet* >( m_Unit )->AddPetSpellToOwner( spellInfo->Id );
@@ -3381,7 +3383,7 @@ AI_Spell *AIInterface::getSpell()
 	}
 	else
 	{
-		next_spell_time = (uint32)UNIXTIME + 1;
+		next_spell_time = (uint32)UNIXTIME + MOB_SPELLCAST_REFRESH_COOLDOWN_INTERVAL;
 		waiting_for_cooldown = false;
 	}
 

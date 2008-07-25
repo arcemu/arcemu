@@ -16679,12 +16679,12 @@ void ApplyNormalFixes()
 		//summon only 1 elemental totem
 		sp = dbcSpell.LookupEntryForced( 2894 );
 		if( sp != NULL && sp->Id == 2894 )
-			sp->EffectImplicitTargetA[0] = 0; //remove this targeting. it is enough to get 1 target
+			sp->EffectImplicitTargetA[0] = EFF_TARGET_TOTEM_FIRE; //remove this targeting. it is enough to get 1 target
 
 		//summon only 1 elemental totem
 		sp = dbcSpell.LookupEntryForced( 2062 );
 		if( sp != NULL && sp->Id == 2062 )
-			sp->EffectImplicitTargetA[0] = 0; //remove this targeting. it is enough to get 1 target
+			sp->EffectImplicitTargetA[0] = EFF_TARGET_TOTEM_EARTH; //remove this targeting. it is enough to get 1 target
 
 		/**********************************************************
 		 *	Elemental Focus
