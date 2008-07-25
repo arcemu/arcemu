@@ -238,6 +238,9 @@ void WorldSession::LogoutPlayer(bool Save)
 
 	if( _player != NULL )
 	{
+		objmgr.RemovePlayer( _player );
+		_player->ok_to_remove = true;
+		
 		sHookInterface.OnLogout( pPlayer );
 		if( _player->DuelingWith )
 			_player->EndDuel( DUEL_WINNER_RETREAT );
@@ -307,9 +310,6 @@ void WorldSession::LogoutPlayer(bool Save)
 		// Save HP/Mana
 		_player->load_health = _player->GetUInt32Value( UNIT_FIELD_HEALTH );
 		_player->load_mana = _player->GetUInt32Value( UNIT_FIELD_POWER1 );
-		
-		objmgr.RemovePlayer( _player );		
-		_player->ok_to_remove = true;
 
 		if( _player->GetSummon() != NULL )
 			_player->GetSummon()->Remove( false, true, false );

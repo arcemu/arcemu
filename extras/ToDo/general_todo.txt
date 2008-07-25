@@ -134,6 +134,7 @@ SMT_RESIST_DISPEL - check if it is used
 - socketing armors crash the server ?
 - imp is attacking self
 - totems chase targets
+- you can extract infinite amount of gold from guild bank if amm is not max/day amount.
 
 ==========================================================================
 player A must have any unsoulbound bag and he must party with player B ..
