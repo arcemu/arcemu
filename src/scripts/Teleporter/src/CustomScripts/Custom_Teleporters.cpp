@@ -30,13 +30,18 @@ public:
         GossipMenu *Menu;
         objmgr.CreateGossipMenuForPlayer(&Menu, pCreature->GetGUID(), 1, Plr);
 
-		Menu->AddItem(5, "Set Bindpoint Here", 98);
+		Menu->AddItem(5, "Set Hearthstone here", 98);
 		if (Plr->GetTeam() > 0) 
-		{ Menu->AddItem(0, "Horde Cities", 1); } 
+		{ 
+		Menu->AddItem(0, "Horde Cities", 1);
+	/*	UNCOMMENT THE LINE BELOW THIS IF YOU WANT IT TO WORK */
+	//Menu->Additem(0, "Horde Mall", 2);
+		} 
 		else
-		{ Menu->AddItem(0, "Alliance Cities", 2); }
-        Menu->AddItem(0, "Outland Locations", 3);
-
+		{ Menu->AddItem(0, "Alliance Cities", 3); }
+        Menu->AddItem(0, "Outland Locations", 4);
+	/*	UNCOMMENT THE LINE BELOW THIS IF YOU WANT IT TO WORK */
+	//Menu->Additem(0, "Alliance Mall", 5);
         if(AutoSend)
             Menu->SendTo(Plr);
     }
@@ -56,38 +61,38 @@ public:
 
         case 1:     // Horde
                 objmgr.CreateGossipMenuForPlayer(&Menu, pCreature->GetGUID(), 1, Plr);
-                Menu->AddItem(5, "Silvermoon", 4);
-                Menu->AddItem(5, "Orgrimmar", 5);
-                Menu->AddItem(5, "Thunderbluff", 6);
-                Menu->AddItem(5, "UnderCity", 7);
+                Menu->AddItem(5, "Silvermoon", 6);
+                Menu->AddItem(5, "Orgrimmar", 7);
+                Menu->AddItem(5, "Thunderbluff", 8);
+                Menu->AddItem(5, "UnderCity", 9);
 				Menu->AddItem(0, "[Back]", 99);
                 Menu->SendTo(Plr);
             break;
 
-        case 2:     // Alliance
+		case 3:     // Alliance
                 objmgr.CreateGossipMenuForPlayer(&Menu, pCreature->GetGUID(), 1, Plr);
-                Menu->AddItem(5, "The Exodar", 8);
-                Menu->AddItem(5, "Stormwind", 9);
-                Menu->AddItem(5, "Ironforge", 10);
-                Menu->AddItem(5, "Darnassus", 11);
+                Menu->AddItem(5, "The Exodar", 10);
+                Menu->AddItem(5, "Stormwind", 11);
+                Menu->AddItem(5, "Ironforge", 12);
+                Menu->AddItem(5, "Darnassus", 13);
 				Menu->AddItem(0, "[Back]", 99);
                 Menu->SendTo(Plr);
             break;
 
-        case 3:     // Outland
-	        if(Plr->getLevel() < 60)
+        case 4:     // Outland
+	        if(Plr->getLevel() < 58)
 	        {
 				pCreature->SendChatMessage(CHAT_MSG_MONSTER_SAY, LANG_UNIVERSAL, "You do not qualify for entry to Outland." );
                 Plr->Gossip_Complete();
 			}else{
                 objmgr.CreateGossipMenuForPlayer(&Menu, pCreature->GetGUID(), 1, Plr);
-                Menu->AddItem(5, "Hellfire Peninsula", 12);
-                Menu->AddItem(5, "Zangermarsh", 13);
-                Menu->AddItem(5, "Nagrand", 14);
-                Menu->AddItem(5, "Blades Edge Mountains", 15);
-                Menu->AddItem(5, "Netherstorm", 16);
-                Menu->AddItem(5, "Terokkar Forest", 17);
-                Menu->AddItem(5, "Shadowmoon Valley", 18);
+                Menu->AddItem(5, "Hellfire Peninsula", 14);
+                Menu->AddItem(5, "Zangermarsh", 15);
+                Menu->AddItem(5, "Nagrand", 16);
+                Menu->AddItem(5, "Blades Edge Mountains", 17);
+                Menu->AddItem(5, "Netherstorm", 18);
+                Menu->AddItem(5, "Terokkar Forest", 19);
+                Menu->AddItem(5, "Shadowmoon Valley", 20);
 				Menu->AddItem(0, "[Back]", 99);
                 Menu->SendTo(Plr);
 			}
@@ -97,23 +102,23 @@ public:
             // Horde submenu
             ////////
 
-        case 4://Silvermoon
+        case 6://Silvermoon
             {
                 Plr->EventTeleport(530, 9400.486328, -7278.376953, 14.206780);
 
             }break;
 
-        case 5://Orgrimmar
+        case 7://Orgrimmar
             {
                 Plr->EventTeleport(1, 1371.068970, -4370.801758, 26.052483);
             }break;
 
-        case 6://ThunderBluff
+        case 8://ThunderBluff
             {
                 Plr->EventTeleport(1, -1304.569946, 205.285004, 68.681396);
             }break;
 
-        case 7://UnderCity
+		case 9://UnderCity
             {
                 Plr->EventTeleport(0, 2050.203125, 285.650604, 56.994549);
             }break;
@@ -122,22 +127,22 @@ public:
             // Alliance Menu
             ////////
 
-        case 8: //Exodar
+        case 10: //Exodar
             {
                 Plr->EventTeleport(530, -4072.202393, -12014.337891, -1.277277);
             }break;
 
-        case 9: //Stormwind
+        case 11: //Stormwind
             {
                 Plr->EventTeleport(0, -9100.480469, 406.950745, 92.594185);
             }break;
 
-        case 10: //Ironforge
+        case 12: //Ironforge
             {
                 Plr->EventTeleport(0, -5028.265137, -825.976563, 495.301575);
             }break;
 
-        case 11: //Darnassus
+        case 13: //Darnassus
             {
                 Plr->EventTeleport(1, 9985.907227, 1971.155640, 1326.815674);
             }break;
@@ -146,57 +151,84 @@ public:
             // Outland Menu
             ////////
 
-        case 12: //Hellfire Peninsula
+        case 14: //Hellfire Peninsula
             {
                 Plr->EventTeleport(530, -248.160004, 922.348999, 84.379799);
             }break;
 
-        case 13: //Zangermarsh
+        case 15: //Zangermarsh
             {
                 Plr->EventTeleport(530, -225.863632, 5405.927246, 22.346397);
             }break;
 
-        case 14: //Nagrand
+        case 16: //Nagrand
             {
                 Plr->EventTeleport(530, -468.232330, 8418.666016, 28.031298);
 
             }break;
 
-        case 15: //Blades Edge Mountains
+        case 17: //Blades Edge Mountains
             {
                 Plr->EventTeleport(530, 1471.672852, 6828.047852, 107.759239);
 
             }break;
 
-        case 16: //Netherstorm
+        case 18: //Netherstorm
             {
                 Plr->EventTeleport(530, 3396.123779, 4182.208008, 137.097992);
 
             }break;
 
-        case 17: //Terokkar Forest
+        case 19: //Terokkar Forest
             {
                 Plr->EventTeleport(530, -1202.426636, 5313.692871, 33.774723);
 
             }break;
 
-        case 18: //Shadowmoon Valley
+        case 20: //Shadowmoon Valley
             {
                 Plr->EventTeleport(530, -2859.522461, 3182.34773, 10.008426);
 
-            }break;
-		case 99: //main menu
+				}break;
+/*	UNCOMMENT THIS IF YOU WANT IT TO WORK = MapID, X, Y, Z */
+
+	/*
+		case 2: //Horde Mall
+            {
+                Plr->EventTeleport(1, X, Y, Z);
+
+				}break;
+	*/
+
+
+	/*	UNCOMMENT THE LINE BELOW THIS IF YOU WANT IT TO WORK = MapID, X, Y, Z */
+
+	/*
+		case 5: //Alliance Mall
+          {
+              Plr->EventTeleport(0, X, Y, Z);
+	
+				}break;
+
+	*/
+       		case 99: //main menu
 			{
 				objmgr.CreateGossipMenuForPlayer(&Menu, pCreature->GetGUID(), 1, Plr);
 
-				Menu->AddItem(5, "Set Bindpoint Here", 98);
-				if (Plr->GetTeam() > 0) 
-				{ Menu->AddItem(0, "Horde Cities", 1); } 
-				else
-				{ Menu->AddItem(0, "Alliance Cities", 2); }
-				Menu->AddItem(0, "Outland Locations", 3);
-				Menu->SendTo(Plr);
+			Menu->AddItem(5, "Set Hearthstone here", 98);
+			if (Plr->GetTeam() > 0) 
+			{ 
+			Menu->AddItem(0, "Horde Cities", 1);
+		/* Menu->Additem(0, "Horde Mall", 2); Custom teleport location Horde
+			} 
+			else
+			{ Menu->AddItem(0, "Alliance Cities", 3); }
+			Menu->AddItem(0, "Outland Locations", 4);
+		/* Menu->Additem(0, "Alliance Mall", 5); Custom teleport location Alliance */
+			if(AutoSend)
+            Menu->SendTo(Plr);
 			}
+
         }
     }
 };
@@ -206,3 +238,5 @@ void SetupCustom_Teleporters(ScriptMgr * mgr)
     /* Teleporter List */
     mgr->register_gossip_script(30001, &TeleportNPC::Create);          // Osciron
 }
+
+// Be sure to make an npc with the id of 30001 =D
