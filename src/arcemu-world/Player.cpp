@@ -3536,7 +3536,7 @@ void Player::_ApplyItemMods(Item* item, int8 slot, bool apply, bool justdrokedow
 
 	// * Gladiator's Battlegear
 	if( setid == 701 || setid == 736 || setid == 567 )
-		setid = 746;
+		setid = 736;
 	
 	// * Gladiator's Dreadgear
 	if( setid == 702 || setid == 734 || setid == 568 )
