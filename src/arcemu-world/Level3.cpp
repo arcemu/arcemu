@@ -3052,6 +3052,7 @@ bool ChatHandler::HandleGenderChanger(const char* args, WorldSession *m_session)
 		SystemMessage(m_session, "Select A Player first.");
 		return true;
 	}
+	uint32 displayId = target->GetUInt32Value(UNIT_FIELD_NATIVEDISPLAYID);
 	if (!*args)
 	{
 		if (target->getGender()== 1)
@@ -3062,7 +3063,15 @@ bool ChatHandler::HandleGenderChanger(const char* args, WorldSession *m_session)
 	else
 		gender = min((int)atoi((char*)args),1);
 	target->setGender(gender);
-	SystemMessage(m_session, "Gender changed to %u",gender);
+	if( target->getGender() == 0 )
+	{
+		target->SetUInt32Value(UNIT_FIELD_DISPLAYID, (target->getRace()==RACE_BLOODELF)?displayId+1:displayId-1 );
+		target->SetUInt32Value(UNIT_FIELD_NATIVEDISPLAYID, (target->getRace()==RACE_BLOODELF)?displayId+1:displayId-1 );
+	} else {
+		target->SetUInt32Value(UNIT_FIELD_DISPLAYID, (target->getRace()==RACE_BLOODELF)?displayId-1:displayId+1 );
+		target->SetUInt32Value(UNIT_FIELD_NATIVEDISPLAYID, (target->getRace()==RACE_BLOODELF)?displayId-1:displayId+1 );
+	}
+	SystemMessage(m_session, "Set %s's gender to %s(%u).", target->GetName(), gender?"Female":"Male", gender);
 	return true;
 }
 
