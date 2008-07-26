@@ -2914,7 +2914,7 @@ void Aura::SpellAuraModStealth(bool apply)
 			{
 				if( m_target->m_auras[x] != NULL )
 				{
-					if( m_target->m_auras[x]->GetSpellProto()->MechanicsType == 7 || m_target->m_auras[x]->GetSpellProto()->MechanicsType == 11 ) // Remove roots and slow spells
+					if( m_target->m_auras[x]->GetSpellProto()->MechanicsType == MECHANIC_ROOTED || m_target->m_auras[x]->GetSpellProto()->MechanicsType == MECHANIC_ENSNARED ) // Remove roots and slow spells
 					{
 						m_target->m_auras[x]->Remove();
 					}
@@ -4033,7 +4033,7 @@ void Aura::SpellAuraModShapeshift(bool apply)
 			{
 				if( m_target->m_auras[x] != NULL )
 				{
-					if( m_target->m_auras[x]->GetSpellProto()->MechanicsType == 7 || m_target->m_auras[x]->GetSpellProto()->MechanicsType == 11 ) // Remove roots and slow spells
+					if( m_target->m_auras[x]->GetSpellProto()->MechanicsType == MECHANIC_ROOTED || m_target->m_auras[x]->GetSpellProto()->MechanicsType == MECHANIC_ENSNARED ) // Remove roots and slow spells
 					{
 						m_target->m_auras[x]->Remove();
 					}
@@ -6617,10 +6617,10 @@ void Aura::SpellAuraModMechanicResistance(bool apply)
 	//mecanics=9 ?
 	if(apply)
 	{
-		assert(mod->m_miscValue < 27);
+		assert( mod->m_miscValue < 31 );
 		m_target->MechanicsResistancesPCT[mod->m_miscValue]+=mod->m_amount;
 
-		if(mod->m_miscValue != 16 && mod->m_miscValue != 25 && mod->m_miscValue != 19) // dont remove bandages, Power Word and protection effect
+		if(mod->m_miscValue != MECHANIC_HEALING && mod->m_miscValue != MECHANIC_INVULNARABLE && mod->m_miscValue != MECHANIC_SHIELDED ) // dont remove bandages, Power Word and protection effect
 		{
 			SetPositive();
 		}

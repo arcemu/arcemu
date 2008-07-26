@@ -429,7 +429,6 @@ AI_Spell * Pet::CreateAISpell(SpellEntry * info)
 	sp->Misc2 = 0;
 	sp->procChance = 0;
 	sp->spell = info;
-	sp->spellType = STYPE_DAMAGE;
 	sp->cooldown = objmgr.GetPetSpellCooldown(info->Id);
 	if( sp->cooldown == 0 )
 		sp->cooldown = info->StartRecoveryTime; //avoid spell spaming
@@ -438,11 +437,15 @@ AI_Spell * Pet::CreateAISpell(SpellEntry * info)
 	if( sp->cooldown == 0 )
 		sp->cooldown = PET_SPELL_SPAM_COOLDOWN; //omg, avoid spaming at least
 	sp->cooldowntime = 0;
+	
 	if(info->Effect[0] == SPELL_EFFECT_APPLY_AURA || info->Effect[0] == SPELL_EFFECT_APPLY_AREA_AURA)
 		sp->spellType = STYPE_BUFF;
-
+	else 
+		sp->spellType = STYPE_DAMAGE;
+	
+	sp->spelltargetType = info->ai_target_type;
 	sp->autocast_type = GetAutoCastTypeForSpell(info);
-	sp->procCount=0;
+	sp->procCount = 0;
 	m_AISpellStore[info->Id] = sp;
 	return sp;
 }
@@ -1760,7 +1763,8 @@ AI_Spell * Pet::HandleAutoCastEvent()
 		{
 			// spells still spammed, I think the cooldowntime is being set incorrectly somewhere else
 			if( getMSTime() >= (*itr)->cooldowntime &&
-				GetUInt32Value( UNIT_FIELD_POWER1 + (*itr)->spell->powerType ) >= (*itr)->spell->manaCost )
+				GetUInt32Value( UNIT_FIELD_POWER1 + (*itr)->spell->powerType ) >= (*itr)->spell->manaCost &&
+				Rand( 100 / m_autoCastSpells[AUTOCAST_EVENT_ATTACK].size() ) ) // or maybe a procChance here
 			{
 				return *itr;
 			}

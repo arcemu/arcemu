@@ -13260,7 +13260,7 @@ void ApplyNormalFixes()
 			sp->SpellGroupType |= 1;
 
 		if( sp->NameHash == SPELL_HASH_DIVINE_SHIELD || sp->NameHash == SPELL_HASH_DIVINE_PROTECTION || sp->NameHash == SPELL_HASH_BLESSING_OF_PROTECTION )
-			sp->MechanicsType = 25;
+			sp->MechanicsType = MECHANIC_INVULNARABLE;
 
 		/* hackfix for this - FIX ME LATER - Burlex */
 		if( namehash == SPELL_HASH_SEAL_FATE )

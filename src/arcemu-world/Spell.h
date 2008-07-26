@@ -1269,13 +1269,8 @@ inline bool HasTargetType(SpellEntry *sp,uint32 ttype)
 
 inline int GetAiTargetType(SpellEntry *sp)
 {
-	if( 
-		HasTargetType(sp,EFF_TARGET_SELF) ||
-		HasTargetType(sp,4) ||
-		HasTargetType(sp,EFF_TARGET_PET) ||
-		HasTargetType(sp,EFF_TARGET_MINION)
-		)
-		return TTYPE_CASTER;
+	/*	this is not good as one spell effect can target self and other one an enemy,
+		maybe we should make it for each spell effect or use as flags */	
 	if( 
 		HasTargetType(sp,EFF_TARGET_INVISIBLE_OR_HIDDEN_ENEMIES_AT_LOCATION_RADIUS) ||
 		HasTargetType(sp,EFF_TARGET_ALL_TARGETABLE_AROUND_LOCATION_IN_RADIUS) ||
@@ -1317,6 +1312,13 @@ inline int GetAiTargetType(SpellEntry *sp)
 		HasTargetType(sp,EFF_TARGET_AREAEFFECT_PARTY_AND_CLASS)
 		)
 		return TTYPE_OWNER;
+	if( 
+		HasTargetType(sp,EFF_TARGET_SELF) ||
+		HasTargetType(sp,4) ||
+		HasTargetType(sp,EFF_TARGET_PET) ||
+		HasTargetType(sp,EFF_TARGET_MINION)
+		)
+		return TTYPE_CASTER;
 	return TTYPE_NULL;
 }
 

@@ -1269,6 +1269,8 @@ void AIInterface::_UpdateCombat(uint32 p_time)
 							m_Unit->CastSpellAoF(targets.m_destX,targets.m_destY,targets.m_destZ, spellInfo, true);
 							break;
 						}
+					default:
+						sLog.outError("AI Agents: Targettype of AI agent spell %u for creature %u not set", spellInfo->Id, static_cast< Creature* >( m_Unit )->GetCreatureInfo()->Id );
 					}
 					// CastSpell(m_Unit, spellInfo, targets);
 					if(m_nextSpell&&m_nextSpell->cooldown)

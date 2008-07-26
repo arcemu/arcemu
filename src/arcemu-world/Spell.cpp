@@ -635,7 +635,7 @@ uint8 Spell::DidHit(uint32 effindex,Unit* target)
 	/************************************************************************/
 	/* Check if the spell is resisted.                                      */
 	/************************************************************************/
-	if( GetProto()->School==0  || GetProto()->is_ranged_spell ) // all ranged spells are physical too...
+	if( GetProto()->School == 0  && !GetProto()->MechanicsType )
 		return SPELL_DID_HIT_SUCCESS;
 
 	bool pvp =(p_caster && p_victim);
@@ -664,7 +664,7 @@ uint8 Spell::DidHit(uint32 effindex,Unit* target)
 	}
 	//check mechanical resistance
 	//i have no idea what is the best pace for this code
-	if( GetProto()->MechanicsType<27)
+	if( GetProto()->MechanicsType < 31 )
 	{
 		if(p_victim)
 			resistchance += p_victim->MechanicsResistancesPCT[GetProto()->MechanicsType];
@@ -2626,13 +2626,13 @@ void Spell::HandleAddAura(uint64 guid)
 
 	uint32 spellid = 0;
 
-	if( GetProto()->MechanicsType == 25 && GetProto()->Id != 25771) // Cast spell Forbearance
+	if( GetProto()->MechanicsType == MECHANIC_INVULNARABLE && GetProto()->Id != 25771) // Cast spell Forbearance
 		spellid = 25771;
 	else if( GetProto()->NameHash == SPELL_HASH_AVENGING_WRATH )
 		spellid = 25771;
-	else if( GetProto()->MechanicsType == 16 && GetProto()->Id != 11196) // Cast spell Recently Bandaged
+	else if( GetProto()->MechanicsType == MECHANIC_HEALING && GetProto()->Id != 11196) // Cast spell Recently Bandaged
 		spellid = 11196;
-	else if( GetProto()->MechanicsType == 19 && GetProto()->Id != 6788) // Cast spell Weakened Soul
+	else if( GetProto()->MechanicsType == MECHANIC_SHIELDED && GetProto()->Id != 6788) // Cast spell Weakened Soul
 		spellid = 6788;
 	else if( GetProto()->Id == 45438) // Cast spell Hypothermia
 		spellid = 41425;
@@ -3822,15 +3822,15 @@ uint8 Spell::CanCast(bool tolerate)
 	}
 
 	//Checking for Debuffs that dont allow power word:shield, those Pala spells, ice block or use first aid, hacky, is there any way to check if he has "immune mechanic"?
-	if (GetProto()->MechanicsType == 19 && ((target) ? target->HasAura(6788) : u_caster->HasAura(6766))) //Weakened Soul
+	if (GetProto()->MechanicsType == MECHANIC_SHIELDED && ((target) ? target->HasAura(6788) : u_caster->HasAura(6766))) //Weakened Soul
 		return SPELL_FAILED_DAMAGE_IMMUNE;
-	if (GetProto()->MechanicsType == 25 && ((target) ? target->HasAura(25771) : u_caster->HasAura(25771))) //Forbearance
+	if (GetProto()->MechanicsType == MECHANIC_INVULNARABLE && ((target) ? target->HasAura(25771) : u_caster->HasAura(25771))) //Forbearance
 		return SPELL_FAILED_DAMAGE_IMMUNE;
 	if( GetProto()->NameHash == SPELL_HASH_AVENGING_WRATH && ((target) ? target->HasAura(25771) : u_caster->HasAura(25771))) // forbearance, avenging wrath
 		return SPELL_FAILED_DAMAGE_IMMUNE;
 	if (GetProto()->NameHash == SPELL_HASH_ICE_BLOCK && u_caster->HasAura(41425))
 		return SPELL_FAILED_DAMAGE_IMMUNE;
-	if (GetProto()->MechanicsType == 16 && ((target) ? target->HasAura(11196) : u_caster->HasAura(11196)))
+	if (GetProto()->MechanicsType == MECHANIC_HEALING && ((target) ? target->HasAura(11196) : u_caster->HasAura(11196)))
 		return SPELL_FAILED_DAMAGE_IMMUNE;
 
 	// Special State Checks (for creatures & players)
