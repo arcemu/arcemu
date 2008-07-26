@@ -1,1 +1,1 @@
-SUBDIRS = src Teleporter
+SUBDIRS = src
