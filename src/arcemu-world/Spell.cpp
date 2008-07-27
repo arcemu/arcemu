@@ -4582,6 +4582,15 @@ void Spell::Heal(int32 amount, bool ForceCrit)
 #endif
 		}
 
+		if(u_caster->IsPlayer())
+		{
+			if(m_spellInfo->NameHash == SPELL_HASH_FLASH_HEAL || m_spellInfo->NameHash == SPELL_HASH_BINDING_HEAL || m_spellInfo->NameHash == SPELL_HASH_GREATER_HEAL)
+			{
+				if(u_caster->HasAura(34754))
+					u_caster->RemoveAura(34754, u_caster->GetGUID());
+			}
+		}
+
 		amount += float2int32( float( bonus ) * healdoneaffectperc ); //apply downranking on final value ?
 		amount += amount*u_caster->HealDonePctMod[GetProto()->School]/100;
 		amount += float2int32( float( amount ) * unitTarget->HealTakenPctMod[GetProto()->School] );

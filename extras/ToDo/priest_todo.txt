@@ -1,4 +1,1 @@
-vampiric touch
-holy concetration: Gives you a chance to enter a Clearcasting state reducing the mana cost of your next 
-				   Flash Heal, Binding Heal, or Greater Heal spell by 100%... not all spells without mana costs (how its working now)
-				   http://www.wowhead.com/?spell=34753
+vampiric touch (need to test)
