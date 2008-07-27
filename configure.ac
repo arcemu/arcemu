@@ -274,6 +274,7 @@ AC_CONFIG_FILES([
    src/sun++/src/InstanceScripts/Makefile
    src/sun++/src/ServerStatusPlugin/Makefile
    src/sun++/src/SpellHandlers/Makefile
+   src/sun++/src/MiscScripts/Makefile
    src/sun++/src/LUAScripting/Makefile
    src/sun++/src/QuestScripts/Makefile
    extras/Makefile
