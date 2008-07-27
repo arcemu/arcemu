@@ -4591,6 +4591,43 @@ void Spell::Heal(int32 amount, bool ForceCrit)
 			}
 		}
 
+		// Paladin: Healing Light talent
+		if(u_caster->IsPlayer())
+		{
+			if(m_spellInfo->NameHash == SPELL_HASH_FLASH_OF_LIGHT || m_spellInfo->NameHash == SPELL_HASH_HOLY_LIGHT)
+			{
+				uint8 TalentRank = 0;
+				if(static_cast<Player*>(u_caster)->HasSpell(20237))
+					TalentRank = 1;
+				if(static_cast<Player*>(u_caster)->HasSpell(20238))
+					TalentRank = 2;
+				if(static_cast<Player*>(u_caster)->HasSpell(20239))
+					TalentRank = 3;
+
+				if(TalentRank)
+				{
+					float TalentPct = 0.0f;
+					switch(TalentRank)
+					{
+						case 1:
+							TalentPct = 0.04f;
+							break;
+						case 2:
+							TalentPct = 0.08f;
+							break;
+						case 3:
+							TalentPct = 0.12f;
+							break;
+						default:
+							TalentPct = 0.0f;
+							break;
+					}
+					TalentPct += 1.0f;
+					amount *= TalentPct;
+				}
+			}
+		}
+
 		amount += float2int32( float( bonus ) * healdoneaffectperc ); //apply downranking on final value ?
 		amount += amount*u_caster->HealDonePctMod[GetProto()->School]/100;
 		amount += float2int32( float( amount ) * unitTarget->HealTakenPctMod[GetProto()->School] );
