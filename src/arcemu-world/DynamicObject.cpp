@@ -96,17 +96,6 @@ void DynamicObject::Create(Unit * caster, Spell * pSpell, float x, float y, floa
 
 void DynamicObject::AddInRangeObject( Object* pObj )
 {
-	if( pObj->IsUnit() )
-	{
-		bool attackable;
-		if( p_caster != NULL)
-			attackable = isAttackable( p_caster, pObj );
-		else
-			attackable = isAttackable( this, pObj );
-		
-		if( attackable )
-			m_inRangeOppFactions.insert( static_cast< Unit* >( pObj ) );
-	}
 	Object::AddInRangeObject( pObj );
 }
 
@@ -114,7 +103,6 @@ void DynamicObject::OnRemoveInRangeObject( Object* pObj )
 {
 	if( pObj->IsUnit() )
 	{
-		m_inRangeOppFactions.erase( static_cast< Unit* >( pObj ) );
 		targets.erase( pObj->GetGUID() );
 	}
 	Object::OnRemoveInRangeObject( pObj );
@@ -127,8 +115,6 @@ void DynamicObject::UpdateTargets()
 
 	if(m_aliveDuration >= 100)
 	{
-//		FactionRangeList::iterator itr  = m_inRangeOppFactions.begin();
-//		FactionRangeList::iterator iend = m_inRangeOppFactions.end();
 		std::set<Object*>::iterator itr = GetInRangeSetBegin(),itr2;
 		std::set<Object*>::iterator iend = GetInRangeSetEnd();
 		Unit * target;

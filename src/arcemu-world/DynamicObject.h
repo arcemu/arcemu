@@ -23,7 +23,6 @@
 struct SpellEntry;
 
 typedef std::set<uint64>  DynamicObjectList;
-typedef std::set<Unit*>  FactionRangeList;
 
 class SERVER_DECL DynamicObject : public Object
 {
@@ -45,7 +44,6 @@ protected:
 	Player * p_caster;
 	Spell* m_parentSpell;
 	DynamicObjectList targets;
-	FactionRangeList  m_inRangeOppFactions;
 	
 	uint32 m_aliveDuration;
 	uint32 _fields[DYNAMICOBJECT_END];
