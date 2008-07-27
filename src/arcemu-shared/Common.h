@@ -229,6 +229,9 @@ enum MsTimeVariables
 #include <queue>
 #include <sstream>
 #include <algorithm>
+#include <cstring>
+#include <climits>
+#include <cstdlib>
 //#include <iostream>
 
 #if defined (__GNUC__)

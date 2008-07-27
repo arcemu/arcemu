@@ -27,6 +27,8 @@ All rights reserved.
 //#include "G3D/BinaryOutput.h"
 #include "G3D/CollisionDetection.h"
 #include <algorithm>
+#include <climits>
+#include <cstring>
 
 #include "RayIntersectionIterator.h"
 
