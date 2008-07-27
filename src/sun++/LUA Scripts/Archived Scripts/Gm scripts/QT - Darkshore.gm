@@ -1,0 +1,81 @@
+/* 
+* Copyright (C) 2007 GMScripts <http://projects.emupedia.com/svn/gmscripts>
+*
+* This program is free software; you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation; either version 2 of the License, or
+* (at your option) any later version.
+*
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License
+* along with this program; if not, write to the Free Software
+* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+*/
+
+
+/********************************/
+/*     Begin on Auberdine       */
+/********************************/
+// The Family and the Fishing Pole
+global TheFamilyAndTheFishingPole_OnAccept = function(QuestGiver, plr)
+{
+	QuestGiver.SendChatMessage("I got some extras with me; if you pay me back what i paid for them, you can have one. I got some bait too.");
+};
+.RegisterQuestEvent(1141, 2, TheFamilyAndTheFishingPole_OnAccept);
+
+
+// Plagued Lands
+global PlaguedLands_OnComplete = function(QuestGiver, plr)
+{
+	QuestGiver.SendChatMessage("Be cleansed!");
+};
+.RegisterQuestEvent(2118, 1, PlaguedLands_OnComplete);
+
+
+// Cave Mushrooms
+global CaveMushrooms_say1 = function(QuestGiver)
+{
+	.SendChatMessage("Thank you, $N. And luck to you.");
+	.Emote(25);
+};
+
+global CaveMushrooms_say2 = function(QuestGiver)
+{
+	.SendChatMessage("Cliffspring Falls lies along the mountains to the east and north.");
+};
+
+global ReturnToOnu_OnComplete = function(QuestGiver, plr)
+{
+	QuestGiver.RegisterTimer(1000, CaveMushrooms_say1, 1);
+	QuestGiver.RegisterTimer(5000, CaveMushrooms_say2, 1);
+};
+.RegisterQuestEvent(947, 2, ReturnToOnu_OnComplete);
+
+
+// Return to Onu
+global ReturnToOnu_TextEmote1 = function(QuestGiver)
+{
+	.TextEmote("Onu studies the parchment from the Twilight Tome...");
+};
+
+global ReturnToOnu_TextEmote2 = function(QuestGiver)
+{
+	.TextEmote("Onu is struck by unleashed magic!");
+};
+
+global ReturnToOnu_say = function(QuestGiver)
+{
+	.SendChatMessage("Hmm...");
+};
+
+global ReturnToOnu_OnComplete = function(QuestGiver, plr)
+{
+	QuestGiver.RegisterTimer(1000, ReturnToOnu_TextEmote1, 1);
+	QuestGiver.RegisterTimer(4000, ReturnToOnu_TextEmote2, 1);
+	QuestGiver.RegisterTimer(8000, ReturnToOnu_say, 1);
+};
+.RegisterQuestEvent(950, 1, ReturnToOnu_OnComplete);

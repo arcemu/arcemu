@@ -1,0 +1,33 @@
+//The Binding - Warlock succubus summon quest
+//StewTheGreat
+
+//Spawn Summoned Succubus when using correct item
+global Succubus_Object_Storm = function(plr)
+{
+	//Stormwind
+	if(plr.HasQuest(1379) && plr.HasItem(6913)){
+	plr.SpawnMonster(5677, -9032.744141, 1028.457520, 55.548859); //Spawn Summoned Succubus
+		plr.Despawn(600000,0); //Despawn after 10 minutes
+	};
+};
+.RegisterGameObjectEvent(92015, 2, Succubus_Object_Storm);
+
+global Succubus_Object_Under = function(plr)
+{
+	//Undercity
+	if(plr.HasQuest(1474) && plr.HasItem(6286)){
+	plr.SpawnMonster(5677, 1704.803467, 41.591446, 63.843269);
+		plr.Despawn(600000,0);
+	};
+};
+.RegisterGameObjectEvent(37097, 2, Succubus_Object_Under);
+
+global Succubus_Object_Org = function(plr)
+{
+	//Orgrimmar
+	if(plr.HasQuest(1513) && plr.HasItem(6626)){
+	plr.SpawnMonster(5677, 1803.300781, -4372.512207, 17.464327);
+		plr.Despawn(600000,0);
+	};
+};
+.RegisterGameObjectEvent(ID, 2, Succubus_Object_Org);

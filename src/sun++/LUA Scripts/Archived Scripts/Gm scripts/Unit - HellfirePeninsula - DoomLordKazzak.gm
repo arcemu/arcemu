@@ -1,0 +1,51 @@
+/* 
+* Copyright (C) 2007 GMScripts <http://projects.emupedia.com/svn/gmscripts>
+*
+* This program is free software; you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation; either version 2 of the License, or
+* (at your option) any later version.
+*
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License
+* along with this program; if not, write to the Free Software
+* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+*/
+
+// Doom Lord Kazzak
+global DoomLordKazzak_OnCombat = function(plr)
+{
+.SendYellMessage("All mortals will perish!");
+};
+.RegisterUnitEvent(18728, 1, DoomLordKazzak_OnCombat);
+
+global DoomLordKazzak_OnLeaveCombat = function(plr)
+{
+.SendYellMessage("The universe will be remade.");
+.DeregisterTimer();
+};
+.RegisterUnitEvent(18728, 2, DoomLordKazzak_OnLeaveCombat);
+
+global DoomLordKazzak_OnKillTarget = function(plr)
+{
+.CastSpell(32966);
+.SendYellMessage("Your own strength feeds me, " + plr.GetName() + "!");
+};
+.RegisterUnitEvent(18728, 3, DoomLordKazzak_OnKillTarget);
+
+global DoomLordKazzak_OnDead = function(plr)
+{
+.SendYellMessage("The Legion... will never... fall.");
+.DeregisterTimer();
+};
+.RegisterUnitEvent(18728, 4, DoomLordKazzak_OnDead);
+
+global DoomLordKazzak_OnSpawn = function(plr)
+{
+.SendYellMessage("I remember well the sting of defeat at the conclusion of the Third War. I have waited far too long for my revenge. Now the shadow of the Legion falls over this world. It is only a matter of time until all of your failed creation... is undone.");
+};
+.RegisterUnitEvent(18728, 6, DoomLordKazzak_OnSpawn);

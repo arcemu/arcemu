@@ -1,0 +1,135 @@
+/* 
+* Copyright (C) 2007 GMScripts <http://projects.emupedia.com/svn/gmscripts>
+*
+* This program is free software; you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation; either version 2 of the License, or
+* (at your option) any later version.
+*
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License
+* along with this program; if not, write to the Free Software
+* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+*/
+
+// Lord Bilemaw
+global Lord_Bilemaw = function(plr, unit)
+{
+	if(plr.HasQuest(5216) == 1 || plr.HasQuest(5229) == 1)
+	{
+		if(isLord_Bilemawspawned == 0)
+		{
+			plr.SpawnMonster(11075, 1732.71, -1179.07, 60.83);
+		}
+	}
+};
+
+global Lord_Bilemawspawned = function(unit)
+{
+	global isLord_Bilemawspawned = 1;
+	.Despawn(180000, 0);
+	.RegisterTimer(179900, Lord_Bilemawallowspawn, 1);
+};
+
+global Lord_Bilemawdead = function(unit)
+	{global isLord_Bilemawspawned = 0;};
+
+global Lord_Bilemawallowspawn = function(unit)
+	{global isLord_Bilemawspawned = 0;};
+
+// Lord Malvinious 
+global Lord_Malvinious = function(plr, unit)
+{
+	if(plr.HasQuest(5219) == 1 || plr.HasQuest(5231) == 1)
+	{
+		if(isLord_Malviniousspawned == 0)
+		{
+			plr.SpawnMonster(11077, 1870.11, -1568.93, 60.45);
+		}
+	}
+};
+
+global Lord_Malviniousspawned = function(unit)
+{
+	global isLord_Malviniousspawned = 1;
+	.Despawn(180000, 0);
+	.RegisterTimer(179900, Lord_Malviniousallowspawn, 1);
+};
+
+global Lord_Malviniousdead = function(unit)
+	{global isLord_Malviniousspawned = 0;};
+
+global Lord_Malviniousallowspawn = function(unit)
+	{global isLord_Malviniousspawned = 0;};
+
+// Lord Razarch
+global Lord_Razarch = function(plr, unit)
+{
+	if(plr.HasQuest(5222) == 1 || plr.HasQuest(5233) == 1)
+	{
+		if(isLord_Razarchspawned == 0)
+		{
+			plr.SpawnMonster(11076, 1476.82, -1862.76, 59.86);
+		}
+	}
+};
+
+global Lord_Razarchspawned = function(unit)
+{
+	global isLord_Razarchspanwed = 1;
+	.Despawn(180000, 0);
+	.RegisterTimer(179900, Lord_Razarchallowspawn, 1);
+};
+
+global Lord_Razarchdead = function(unit)
+	{global isLord_Razarchspawned = 0;};
+
+global Lord_Razarchallowspawn = function(unit)
+	{global isLord_Razarchspawned = 0;};
+
+// Lord Soulwrath
+global Lord_Soulwrath = function(plr, unit)
+{
+	if(plr.HasQuest(5225) == 1 || plr.HasQuest(5235) == 1)
+	{
+		if(isLord_Soulwrathspawned == 0)
+		{
+			plr.SpawnMonster(11078, 1681.04, -2276.62, 60.43);
+		}
+	}
+};
+
+global Lord_Soulwrathspawned = function(unit)
+{
+	global isLord_Soulwrathspawned = 1;
+	.Despawn(180000, 0);
+	.RegisterTimer(179900, Lord_Soulwrathallowspawn, 1);
+};
+
+global Lord_Soulwrathdead = function(unit)
+	{global isLord_Bilemawspawned = 0;};
+
+global Lord_Soulwrathallowspawn = function(unit)
+	{global isLord_Soulwrathspawned = 0;};
+
+
+// Register Lord Bilemaw
+	.RegisterAreaTriggerEvent(2246, Lord_Bilemaw);
+	.RegisterUnitEvent(11075, 6, Lord_Bilemawspawned);
+	.RegisterUnitEvent(11075, 4, Lord_Bilemawdead);
+// Register Lord Malvinious
+	.RegisterAreaTriggerEvent(2248, Lord_Malvinious);
+	.RegisterUnitEvent(11077, 6, Lord_Malviniousspawned);
+	.RegisterUnitEvent(11077, 4, Lord_Malviniousdead);
+// Register Lord Razarch
+	.RegisterAreaTriggerEvent(2250, Lord_Razarch);
+	.RegisterUnitEvent(11076, 6, Lord_Razarchspawned);
+	.RegisterUnitEvent(11076, 4, Lord_Razarchdead);
+// Register Lord Soulwrath
+	.RegisterAreaTriggerEvent(2252, Lord_Soulwrath);
+	.RegisterUnitEvent(11078, 6, Lord_Soulwrathspawned);
+	.RegisterUnitEvent(11078, 4, Lord_Soulwrathdead);
