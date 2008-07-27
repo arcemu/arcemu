@@ -1764,7 +1764,7 @@ AI_Spell * Pet::HandleAutoCastEvent()
 			// spells still spammed, I think the cooldowntime is being set incorrectly somewhere else
 			if( getMSTime() >= (*itr)->cooldowntime &&
 				GetUInt32Value( UNIT_FIELD_POWER1 + (*itr)->spell->powerType ) >= (*itr)->spell->manaCost &&
-				Rand( 100 / m_autoCastSpells[AUTOCAST_EVENT_ATTACK].size() ) ) // or maybe a procChance here
+				Rand( 100.0f / m_autoCastSpells[AUTOCAST_EVENT_ATTACK].size() ) ) // or maybe a procChance here
 			{
 				return *itr;
 			}

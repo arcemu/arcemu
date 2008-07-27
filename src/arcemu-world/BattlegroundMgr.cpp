@@ -423,7 +423,7 @@ void CBattlegroundManager::EventQueueUpdate(bool forceStart)
 			if(IS_ARENA(i))
 			{
 				// enough players to start a round?
-				if(tempPlayerVec[0].size() < BGMinimumPlayers[i])
+				if(!forceStart && tempPlayerVec[0].size() < BGMinimumPlayers[i])
 					continue;
 
 					if(CanCreateInstance(i,j))
@@ -1000,8 +1000,8 @@ CBattleground * CBattlegroundManager::CreateInstance(uint32 Type, uint32 LevelGr
 		/* arenas follow a different procedure. */
 		static const uint32 arena_map_ids[3] = { 559, 562, 572 };
 		uint32 mapid = arena_map_ids[RandomUInt(2)];
-		mapid=562;
 		uint32 players_per_side;
+
 		mgr = sInstanceMgr.CreateBattlegroundInstance(mapid);
 		if(mgr == NULL)
 		{
