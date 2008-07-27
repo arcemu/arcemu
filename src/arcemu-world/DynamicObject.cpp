@@ -205,7 +205,7 @@ void DynamicObject::Remove()
 
 	while(jtr != jend)
 	{
-		target = target = GetMapMgr() ? GetMapMgr()->GetUnit(*jtr) : NULL;
+		target = GetMapMgr() ? GetMapMgr()->GetUnit(*jtr) : NULL;
 		++jtr;
 		if (target != NULL)
 			target->RemoveAura(m_spellProto->Id);

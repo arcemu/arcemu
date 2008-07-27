@@ -124,7 +124,7 @@ bool ChatHandler::HandleMoveInfoCommand(const char* args, WorldSession *m_sessio
 	uint32 attackerscount = (uint32)((Creature *)obj)->GetAIInterface()->getAITargetsCount();
 	uint32 creatureState = ((Creature *)obj)->GetAIInterface()->m_creatureState;
 	uint32 curwp = ((Creature *)obj)->GetAIInterface()->getCurrentWaypoint();
-	Unit* unitToFollow = ((Creature *)obj)->GetAIInterface()->getUnitToFollow();
+//	Unit* unitToFollow = ((Creature *)obj)->GetAIInterface()->getUnitToFollow();
 	uint32 aistate = ((Creature *)obj)->GetAIInterface()->getAIState();
 	uint32 aitype = ((Creature *)obj)->GetAIInterface()->getAIType();
 	uint32 aiagent = ((Creature *)obj)->GetAIInterface()->getCurrentAgent();

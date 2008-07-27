@@ -129,7 +129,7 @@ int DBCFile::AddRecord() //simply add an empty record to the end of the data sec
 	{
 		printf(" Error : Could not resize DBC data partition\n");
 		recordCount = 0;
-		return NULL;
+		return -1;
 	}
 
 	return (recordCount - 1);
@@ -158,7 +158,7 @@ int DBCFile::AddString(const char *new_string) //simply add an empty record to t
 	{
 		printf(" Error : Could not resize DBC string partition\n");
 		stringSize = 0;
-		return NULL;
+		return -1;
 	}
 
 	memcpy( stringTable + stringSize, new_string, new_str_len );

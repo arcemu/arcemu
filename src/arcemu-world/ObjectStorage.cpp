@@ -218,7 +218,7 @@ void ObjectMgr::LoadExtraCreatureProtoStuff()
 					sp->maxrange = GetMaxRange(dbcSpellRange.LookupEntry(sp->spell->rangeIndex));
 
 					//omg the poor darling has no clue about making ai_agents
-					if(sp->cooldown == -1)
+					if(sp->cooldown == (uint32)-1)
 					{
 						//now this will not be exact cooldown but maybe a bigger one to not make him spam spells to often
 						int cooldown;

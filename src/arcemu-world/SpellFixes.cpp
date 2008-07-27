@@ -12102,8 +12102,6 @@ void ApplyNormalFixes()
 		SpellEntry * sp = dbcSpell.LookupRow(x);
 
 		uint32 result = 0;
-		// SpellID
-		uint32 spellid = sp->Id;
 		uint32 rank = 0;
 		uint32 namehash = 0;
 
@@ -13286,8 +13284,6 @@ void ApplyNormalFixes()
 	{
 		// get spellentry
 		SpellEntry * sp = dbcSpell.LookupRow(x);
-		// SpellID
-		uint32 spellid = sp->Id;
 
 		//Setting Cast Time Coefficient
 		SpellCastTime *sd = dbcSpellCastTime.LookupEntry(sp->CastingTimeIndex);
@@ -13655,8 +13651,6 @@ void ApplyNormalFixes()
 		// get spellentry
 		SpellEntry * sp = dbcSpell.LookupRow(x);
 		SpellEntry * spz;
-		// SpellID
-		uint32 spellid = sp->Id;
 
 		//Case SPELL_AURA_PERIODIC_TRIGGER_SPELL
 		for( uint8 i = 0 ; i < 3 ; i++ )

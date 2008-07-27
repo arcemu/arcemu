@@ -961,7 +961,7 @@ void AIInterface::_UpdateCombat(uint32 p_time)
 	}*/
 #endif
 
-	if ( GetNextTarget() != NULL && GetNextTarget()->GetTypeId() == TYPEID_UNIT && m_AIState == EVADE)
+	if ( GetNextTarget() != NULL && GetNextTarget()->GetTypeId() == TYPEID_UNIT && m_AIState == STATE_EVADE)
 		HandleEvent( EVENT_LEAVECOMBAT, m_Unit, 0);
 #ifdef HACKY_CRASH_FIXES
 	bool cansee = (GetNextTarget() != NULL) ? CheckCurrentTarget() : NULL;

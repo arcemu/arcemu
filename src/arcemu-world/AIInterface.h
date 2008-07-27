@@ -229,7 +229,7 @@ class SERVER_DECL AIInterface
 public:
 
 	AIInterface();
-	~AIInterface();
+	virtual ~AIInterface();
 
 	// Misc
 	void Init(Unit *un, AIType at, MovementType mt);
