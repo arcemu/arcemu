@@ -167,8 +167,14 @@ void Arena::HookOnHK(Player * plr)
 
 void Arena::HookOnPlayerDeath(Player * plr)
 {
-	m_playersCount[plr->GetTeam()]--;
-	UpdatePlayerCounts();
+	ASSERT(plr != NULL);
+
+	if (m_playersAlive.find((uint32)plr->GetGUID()) != m_playersAlive.end())
+	{
+		m_playersCount[plr->GetTeam()]--;
+		UpdatePlayerCounts();
+		m_playersAlive.erase((uint32)plr->GetGUID());
+	}
 }
 
 void Arena::OnCreate()
@@ -176,7 +182,7 @@ void Arena::OnCreate()
 	GameObject * obj;
 	switch(m_mapMgr->GetMapId())
 	{
-		/* loraedeon */
+		/* ruins of lordaeron */
 	case 572: {
 		obj = SpawnGameObject(185917, 572, 1278.647705f, 1730.556641f, 31.605574f, 1.684245f, 32, 1375, 1.0f);
 		obj->SetUInt32Value(GAMEOBJECT_STATE, 1);
@@ -333,7 +339,8 @@ void Arena::OnStart()
 	for(uint32 i = 0; i < 2; ++i) {
 		for(set<Player*>::iterator itr = m_players[i].begin(); itr != m_players[i].end(); ++itr) {
 			(*itr)->RemoveAura(ARENA_PREPARATION);
-			m_players2[i].insert(*itr);
+			m_players2[i].insert((uint32)(*itr)->GetGUID());
+			m_playersAlive.insert((uint32)(*itr)->GetGUID());
 		}
 	}
 
@@ -415,10 +422,10 @@ void Arena::Finish()
 		doneteams.clear();
 		for(uint32 i = 0; i < 2; ++i) {
 			uint32 teamCount = 0;
-			for(set<Player*>::iterator itr = m_players2[i].begin(); itr != m_players2[i].end(); ++itr)
+			for(set<uint32>::iterator itr = m_players2[i].begin(); itr != m_players2[i].end(); ++itr)
 			{
-				Player * plr = *itr;
-				if(plr->m_arenaTeams[m_arenateamtype] != NULL)
+				Player * plr = objmgr.GetPlayer(*itr);
+				if(plr && plr->m_arenaTeams[m_arenateamtype] != NULL)
 				{
 					ArenaTeam * t = plr->m_arenaTeams[m_arenateamtype];
 					if(doneteams.find(t) == doneteams.end())
@@ -439,9 +446,9 @@ void Arena::Finish()
 
 			outcome = (i == m_winningteam);
 
-			for(set<Player*>::iterator itr = m_players2[i].begin(); itr != m_players2[i].end(); ++itr)
+			for(set<uint32>::iterator itr = m_players2[i].begin(); itr != m_players2[i].end(); ++itr)
 			{
-				Player * plr = *itr;
+				Player * plr = objmgr.GetPlayer(*itr);
 				if(plr->m_arenaTeams[m_arenateamtype] != NULL)
 				{
 					ArenaTeam * t = plr->m_arenaTeams[m_arenateamtype];
