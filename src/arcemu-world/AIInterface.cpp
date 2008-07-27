@@ -4104,7 +4104,10 @@ Unit* AIInterface::GetNextTarget()
 }
 
 void AIInterface::SetNextTarget (Unit *nextTarget) {
-	if (nextTarget) SetNextTarget(nextTarget->GetGUID());
+	if (nextTarget)
+		SetNextTarget(nextTarget->GetGUID());
+	else
+		SetNextTarget((uint64)NULL);
 }
 
 void AIInterface::SetNextTarget (uint64 nextTarget) 
