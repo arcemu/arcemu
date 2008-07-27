@@ -322,6 +322,7 @@ Unit::Unit()
 	m_interruptedRegenTime = 0;
 	m_hasVampiricEmbrace = m_hasVampiricTouch = 0;
 	m_hitfrommeleespell	 = 0;
+	m_damageSplitTarget = NULL;
 	ModelHalfSize = 1.0f; //worst case unit size. (Should be overwritten)
 }
 
@@ -373,6 +374,8 @@ Unit::~Unit()
 
 	if(m_currentSpell)
 		m_currentSpell->cancel();
+
+	if (m_damageSplitTarget) delete m_damageSplitTarget;
 }
 
 void Unit::Update( uint32 p_time )
@@ -3163,40 +3166,42 @@ else
 //==========================================================================================
 //------------------------------- Special Effects Processing
 	// Paladin: Blessing of Sacrifice, and Warlock: Soul Link
-	if( !pVictim->m_damageSplitTargets.empty() )
+	if( pVictim->m_damageSplitTarget )
 	{
-		std::list< DamageSplitTarget >::iterator itr;
 		Unit * splittarget;
 		int32 splitdamage, tmpsplit;
-		for( itr = pVictim->m_damageSplitTargets.begin() ; itr != pVictim->m_damageSplitTargets.end() ; itr ++ )
+		DamageSplitTarget * ds = pVictim->m_damageSplitTarget;
+
+		splittarget = pVictim->GetMapMgr() ? pVictim->GetMapMgr()->GetUnit( ds->m_target ) : NULL;
+		if( splittarget && dmg.full_damage > 0 )
 		{
-			// TODO: Separate damage based on school.
-			splittarget = pVictim->GetMapMgr() ? pVictim->GetMapMgr()->GetUnit( itr->m_target ) : NULL;
-			if( splittarget && dmg.full_damage > 0 )
+			// calculate damage
+			tmpsplit = ds->m_flatDamageSplit;
+			if( tmpsplit > dmg.full_damage )
+				tmpsplit = dmg.full_damage; // prevent < 0 damage
+			splitdamage = tmpsplit;
+			dmg.full_damage -= tmpsplit;
+			tmpsplit = (int32)(ds->m_pctDamageSplit * dmg.full_damage);
+			if( tmpsplit > dmg.full_damage )
+				tmpsplit = dmg.full_damage;
+			splitdamage += tmpsplit;
+			dmg.full_damage -= tmpsplit;
+			if( splitdamage )
 			{
-				// calculate damage
-				tmpsplit = itr->m_flatDamageSplit;
-				if( tmpsplit > dmg.full_damage )
-					tmpsplit = dmg.full_damage; // prevent < 0 damage
-				splitdamage = tmpsplit;
-				dmg.full_damage -= tmpsplit;
-					tmpsplit = (int32)(itr->m_pctDamageSplit * dmg.full_damage);
-				if( tmpsplit > dmg.full_damage )
-					tmpsplit = dmg.full_damage;
-				splitdamage += tmpsplit;
-				dmg.full_damage -= tmpsplit;
-				// TODO: pct damage
-				if( splitdamage )
-				{
-					pVictim->DealDamage( splittarget , splitdamage , 0 , 0 , 0 , false );
-					// Send damage log
-					pVictim->SendSpellNonMeleeDamageLog( pVictim , splittarget , 27148 , splitdamage , SCHOOL_HOLY , 0 , 0 , true , 0 , 0 , true );
-				}
+				dealdamage sdmg;
+
+				pVictim->DealDamage( splittarget , splitdamage , 0 , 0 , 0 , false );
+				// Send damage log
+				sdmg.full_damage = splitdamage;
+				sdmg.resisted_damage = 0;
+				sdmg.school_type = dmg.school_type;
+				SendAttackerStateUpdate(this, splittarget, &sdmg, splitdamage, 0, 0, 0, ATTACK);
 			}
 		}
 		realdamage = dmg.full_damage;
 	}
-//--------------------------special states processing---------------------------------------
+
+	//--------------------------special states processing---------------------------------------
 	if(pVictim->GetTypeId() == TYPEID_UNIT)
 	{
 		if(pVictim->GetAIInterface() && (pVictim->GetAIInterface()->getAIState()== STATE_EVADE ||
@@ -3328,10 +3333,6 @@ else
 //==========================================================================================
 //==============================Data Sending================================================
 //==========================================================================================
-	WorldPacket data(SMSG_ATTACKERSTATEUPDATE, 70);
-	//0x4--dualwield,0x10 miss,0x20 absorbed,0x80 crit,0x4000 -glancing,0x8000-crushing
-	//only for melee!
-
 	if( !ability )
 	{
 		if( dmg.full_damage > 0 )
@@ -3351,26 +3352,7 @@ else
 		if( realdamage < 0 )
 			realdamage = 0;
 
-		data << (uint32)hit_status;   
-		data << GetNewGUID();
-		data << pVictim->GetNewGUID();
-		
-		data << (uint32)realdamage;		 // Realdamage;
-		data << (uint8)1;				   // Damage type counter / swing type
-
-		data << (uint32)g_spellSchoolConversionTable[dmg.school_type];				  // Damage school
-		data << (float)dmg.full_damage;	 // Damage float
-		data << (uint32)dmg.full_damage;	// Damage amount
-		data << (uint32)abs;// Damage absorbed
-		data << (uint32)dmg.resisted_damage;				  // Damage resisted
-
-		data << (uint32)vstate;			 // new victim state
-		data << (uint32)0x03e8;					// can be 0,1000 or -1
-		data << (uint32)0;				  // unknown
-		data << (uint32)blocked_damage;	 // Damage amount blocked
-		//data << (uint32) 0;
-
-		SendMessageToSet(&data, this->IsPlayer());
+		SendAttackerStateUpdate(this, pVictim, &dmg, realdamage, abs, blocked_damage, hit_status, vstate);
 	}
 	else
 	{

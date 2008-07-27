@@ -94,6 +94,13 @@ enum OBJECT_UPDATE_TYPE {
 
 };
 
+typedef struct
+{ 
+	uint32 school_type;
+	int32 full_damage;
+	uint32 resisted_damage;
+} dealdamage;
+
 class WorldPacket;
 class ByteBuffer;
 class WorldSession;
@@ -480,6 +487,7 @@ public:
 	//*****************************************************************************************
 	void SendSpellLog(Object *Caster, Object *Target,uint32 Ability, uint8 SpellLogType);
 	void SendSpellNonMeleeDamageLog( Object* Caster, Object* Target, uint32 SpellID, uint32 Damage, uint8 School, uint32 AbsorbedDamage, uint32 ResistedDamage, bool PhysicalDamage, uint32 BlockedDamage, bool CriticalHit, bool bToSet );
+	void SendAttackerStateUpdate( Object* Caster, Object* Target, dealdamage *Dmg, uint32 Damage, uint32 Abs, uint32 BlockedDamage, uint32 HitStatus, uint32 VState );
 
 	//object faction
 	void _setFaction();

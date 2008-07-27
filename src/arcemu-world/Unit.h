@@ -45,13 +45,6 @@ struct FactionTemplateDBC;
 struct FactionDBC;
 
 
-typedef struct
-{ 
-	uint32 school_type;
-	int32 full_damage;
-	uint32 resisted_damage;
-}dealdamage;
-
 struct ReflectSpellSchool
 {
 	uint32 spellId;
@@ -831,7 +824,7 @@ public:
 	bool m_damgeShieldsInUse;
 	std::list<struct DamageProc> m_damageShields;
 	std::list<struct ReflectSpellSchool*> m_reflectSpellSchool;
-	std::list<struct DamageSplitTarget> m_damageSplitTargets;
+	struct DamageSplitTarget *m_damageSplitTarget;
  
 	std::list<struct ProcTriggerSpell> m_procSpells;
 //	std::map<uint32,ProcTriggerSpellOnSpellList> m_procSpellonSpell; //index is namehash

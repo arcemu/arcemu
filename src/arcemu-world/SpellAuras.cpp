@@ -5530,93 +5530,30 @@ void Aura::SpellAuraModPercStat(bool apply)
 
 void Aura::SpellAuraSplitDamage(bool apply)
 {
-	if( !m_target->IsUnit() )
+	Unit * caster;
+
+	if( !m_target || !m_target->IsUnit() )
 		return;
 
-	//Shady: Commented since it crashes server.
-	return;
+	caster = static_cast< Unit* >( GetCaster() );
 
-	//SUPA:FIXU
-	// rewrite, copy-paste DamageProc struct.
+	if(caster->m_damageSplitTarget)
+	{
+		delete caster->m_damageSplitTarget;
+		caster->m_damageSplitTarget = NULL;
+	}
+
 	if(apply)
 	{
-		DamageSplitTarget ds;
-		ds.m_flatDamageSplit = 0;
-		ds.m_spellId = GetSpellProto()->Id;
-		ds.m_pctDamageSplit = mod->m_amount / 100.0f;
-		ds.damage_type = mod->m_miscValue;
-		ds.creator = (void*)this;
-		ds.m_target = GetCaster()->GetGUID();
-		m_target->m_damageSplitTargets.push_back(ds);
-		//sLog.outDebug("registering dmg split %u, school %u, flags %u, charges %u \n",ds.m_spellId,ds.m_school,ds.m_flags,m_spellProto->procCharges);
+		DamageSplitTarget *ds = new DamageSplitTarget;
+		ds->m_flatDamageSplit = 0;
+		ds->m_spellId = GetSpellProto()->Id;
+		ds->m_pctDamageSplit = mod->m_miscValue / 100.0f;
+		ds->damage_type = mod->m_type;
+		ds->creator = (void*)this;
+		ds->m_target = m_target->GetGUID();
+		caster->m_damageSplitTarget = ds;
 	}
-	else
-	{
-		for(std::list<struct DamageSplitTarget>::iterator i = m_target->m_damageSplitTargets.begin();i != m_target->m_damageSplitTargets.end();i++)
-		{
-			if(i->creator == this)
-			{
-				m_target->m_damageSplitTargets.erase(i);
-				break;
-			}
-		}
-	}
-
-	//Unit* uCaster = GetUnitCaster();
-	//if( !uCaster )
-	//	return;
-
-	//if( m_target == uCaster )
-	//	return;
-
-	// Correct (?) implementation of SplitDamage.
-	/* COPY: DamageShield
-		if(apply)
-	{
-		SetPositive();
-		DamageProc ds;// = new DamageShield();
-		ds.m_damage = mod->m_amount;
-		ds.m_spellId = GetSpellProto()->Id;
-		ds.m_school = GetSpellProto()->School;
-		ds.m_flags = PROC_ON_MELEE_ATTACK_VICTIM | PROC_MISC; //maybe later we might want to add other flags too here
-		ds.owner = (void*)this;
-		m_target->m_damageShields.push_back(ds);
-	}
-	else
-	{
-		for(std::list<struct DamageProc>::iterator i = m_target->m_damageShields.begin();i != m_target->m_damageShields.end();i++)
-		{
-			if(i->owner==this)
-			{
-				m_target->m_damageShields.erase(i);
-				return;
-			}
-		}
-	}
-*/
-	//brrr, temporarty fix, this is used only by soul link atm:P
-/*
-	if( !m_target->IsPet() )
-		return;
-
-	Player* petOwner = static_cast< Pet* >( m_target )->GetPetOwner();
-
-	float val;
-	if(apply)
-	{
-		val = mod->m_miscValue/100.0f;
-	}
-	else
-	{
-		val = -mod->m_miscValue/100.0f;
-	}
-
-	for(uint32 x=0;x<7;x++)
-	{
-		petOwner->DamageTakenPctMod[x] -= val;
-		m_target->DamageTakenPctMod[x] += val;
-	}
-	*/
 }
 
 void Aura::SpellAuraModRegen(bool apply)
@@ -7077,35 +7014,26 @@ void Aura::SpellAuraModDetectedRange(bool apply)
 
 void Aura::SpellAuraSplitDamageFlat(bool apply)
 {
-	//DK:FIXME
-	//SUPA:FIXU
+	if( !m_target || !m_target->IsUnit() )
+		return;
 
-	//Shady: commented since it crashes server.
-	return;
+	if (m_target->m_damageSplitTarget)
+	{
+		delete m_target->m_damageSplitTarget;
+		m_target->m_damageSplitTarget = NULL;
+	}
 
-	// rewrite, copy-paste DamageProc struct.
 	if(apply)
 	{
-		DamageSplitTarget ds;
-		ds.m_flatDamageSplit = mod->m_amount;
-		ds.m_spellId = GetSpellProto()->Id;
-		ds.m_pctDamageSplit = 0;
-		ds.damage_type = mod->m_miscValue;
-		ds.creator = (void*)this;
-		ds.m_target = GetCaster()->GetGUID();
-		m_target->m_damageSplitTargets.push_back(ds);
-		//sLog.outDebug(\\\\\\\"registering dmg split %u, school %u, flags %u, charges %u \\\\\\\\n\\\\\\\",ds.m_spellId,ds.m_school,ds.m_flags,m_spellProto->procCharges);
-	}
-	else
-	{
-		for(std::list<struct DamageSplitTarget>::iterator i = m_target->m_damageSplitTargets.begin();i != m_target->m_damageSplitTargets.end();i++)
-		{
-			if(i->creator == this)
-			{
-				m_target->m_damageSplitTargets.erase(i);
-				break;
-			}
-		}
+		DamageSplitTarget *ds = new DamageSplitTarget;
+		ds->m_flatDamageSplit = mod->m_miscValue;
+		ds->m_spellId = GetSpellProto()->Id;
+		ds->m_pctDamageSplit = 0;
+		ds->damage_type = mod->m_type;
+		ds->creator = (void*)this;
+		ds->m_target = GetCaster()->GetGUID();
+		m_target->m_damageSplitTarget = ds;
+		printf("registering dmg split %u, amout= %u \n",ds->m_spellId, mod->m_amount, mod->m_miscValue, mod->m_type);
 	}
 }
 

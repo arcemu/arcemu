@@ -2637,42 +2637,37 @@ void Object::SpellNonMeleeDamageLog(Unit *pVictim, uint32 spellID, uint32 damage
 		res = float(dmg.full_damage);
 		dmg.resisted_damage = dmg.full_damage;
 	}
-	//DK:FIXME->SplitDamage
-	// Completed (Supa)
-	// Paladin: Blessing of Sacrifice, and Warlock: Soul Link
-		if( !pVictim->m_damageSplitTargets.empty() )
-		{
-			std::list< DamageSplitTarget >::iterator itr;
-			Unit * splittarget;
-			uint32 splitdamage, tmpsplit;
-			for( itr = pVictim->m_damageSplitTargets.begin() ; itr != pVictim->m_damageSplitTargets.end() ; itr ++ )
-			{
-				// TODO: Separate damage based on school.
-				splittarget = (pVictim->GetMapMgr() != NULL) ? pVictim->GetMapMgr()->GetUnit( itr->m_target ) : NULL;
-				if( splittarget != NULL && res > 0 )
-				{
-					// calculate damage
-					tmpsplit = itr->m_flatDamageSplit;
-					if( (int)tmpsplit > float2int32( res ))
-						tmpsplit = float2int32( res ); // prevent < 0 damage
-					splitdamage = tmpsplit;
-					res -= (float)tmpsplit;
-					tmpsplit = float2int32( itr->m_pctDamageSplit * res );
-					if( (int)tmpsplit > float2int32( res ) )
-					tmpsplit = float2int32( res );
-					splitdamage += tmpsplit;
-					res -= (float)tmpsplit;
-				// TODO: pct damage
 
-					if( splitdamage )
-					{
-						pVictim->DealDamage( splittarget , splitdamage , 0 , 0 , 0 , false );
-						// Send damage log
-						pVictim->SendSpellNonMeleeDamageLog( pVictim , splittarget , 27148 , splitdamage , SCHOOL_HOLY , 0 , 0 , true , 0 , 0 , true );
-					}
-				}
+	// Paladin: Blessing of Sacrifice, and Warlock: Soul Link
+	if( pVictim->m_damageSplitTarget)
+	{
+		Unit * splittarget;
+		uint32 splitdamage, tmpsplit;
+		DamageSplitTarget * ds = pVictim->m_damageSplitTarget;
+		
+		splittarget = (pVictim->GetMapMgr() != NULL) ? pVictim->GetMapMgr()->GetUnit( ds->m_target ) : NULL;
+		if( splittarget != NULL && res > 0 )
+		{
+			// calculate damage
+			tmpsplit = ds->m_flatDamageSplit;
+			if( (int)tmpsplit > float2int32( res ))
+				tmpsplit = float2int32( res ); // prevent < 0 damage
+			splitdamage = tmpsplit;
+			res -= (float)tmpsplit;
+			tmpsplit = float2int32( ds->m_pctDamageSplit * res );
+			if( (int)tmpsplit > float2int32( res ) )
+				tmpsplit = float2int32( res );
+			splitdamage += tmpsplit;
+			res -= (float)tmpsplit;
+
+			if( splitdamage )
+			{
+				pVictim->DealDamage( splittarget , splitdamage , 0 , 0 , 0 , false );
+				// Send damage log
+				pVictim->SendSpellNonMeleeDamageLog( pVictim , splittarget , ds->m_spellId , splitdamage , SCHOOL_HOLY/*ds->damage_type*/, 0 , 0 , true , 0 , 0 , true );
 			}
 		}
+	}
 	
 //==========================================================================================
 //==============================Data Sending ProcHandling===================================
@@ -2782,6 +2777,37 @@ void Object::SendSpellNonMeleeDamageLog( Object* Caster, Object* Target, uint32 
 	data << uint32(0);
 
 	Caster->SendMessageToSet( &data, bToset );
+}
+
+void Object::SendAttackerStateUpdate( Object* Caster, Object* Target, dealdamage *Dmg, uint32 Damage, uint32 Abs, uint32 BlockedDamage, uint32 HitStatus, uint32 VState )
+{
+	if (!Caster || !Target || !Dmg)
+		return;
+
+	WorldPacket data(SMSG_ATTACKERSTATEUPDATE, 70);
+	//0x4--dualwield,0x10 miss,0x20 absorbed,0x80 crit,0x4000 -glancing,0x8000-crushing
+	//only for melee!
+
+	data << (uint32)HitStatus;   
+	data << Caster->GetNewGUID();
+	data << Target->GetNewGUID();
+		
+	data << (uint32)Damage;				// Realdamage;
+	data << (uint8)1;					// Damage type counter / swing type
+
+	data << (uint32)g_spellSchoolConversionTable[Dmg->school_type];				  // Damage school
+	data << (float)Dmg->full_damage;	// Damage float
+	data << (uint32)Dmg->full_damage;	// Damage amount
+	data << (uint32)Abs;				// Damage absorbed
+	data << (uint32)Dmg->resisted_damage;	// Damage resisted
+
+	data << (uint32)VState;				// new victim state
+	data << (uint32)0x03e8;				// can be 0,1000 or -1
+	data << (uint32)0;					// unknown
+	data << (uint32)BlockedDamage;		// Damage amount blocked
+	//data << (uint32) 0;
+
+	SendMessageToSet(&data, Caster->IsPlayer());
 }
 
 int32 Object::event_GetInstanceID()
