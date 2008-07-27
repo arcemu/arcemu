@@ -115,7 +115,7 @@ void DynamicObject::OnRemoveInRangeObject( Object* pObj )
 	if( pObj->IsUnit() )
 	{
 		m_inRangeOppFactions.erase( static_cast< Unit* >( pObj ) );
-		targets.erase( static_cast< Unit* >( pObj ) );
+		targets.erase( pObj->GetGUID() );
 	}
 	Object::OnRemoveInRangeObject( pObj );
 }
@@ -152,7 +152,7 @@ void DynamicObject::UpdateTargets()
 				continue;
 
 			// skip units already hit, their range will be tested later
-			if(targets.find(target) != targets.end())
+			if(targets.find(target->GetGUID()) != targets.end())
 				continue;
 
 			if(GetDistanceSq(target) <= radius)
@@ -175,7 +175,7 @@ void DynamicObject::UpdateTargets()
 				}
 
 				// add to target list
-				targets.insert(target);
+				targets.insert(target->GetGUID());
 			}
 		}
 
@@ -186,7 +186,7 @@ void DynamicObject::UpdateTargets()
 		
 		while(jtr != jend)
 		{
-			target = *jtr;
+			target = GetMapMgr() ? GetMapMgr()->GetUnit(*jtr) : NULL;
 			jtr2 = jtr;
 			++jtr;
 
@@ -219,7 +219,7 @@ void DynamicObject::Remove()
 
 	while(jtr != jend)
 	{
-		target = *jtr;
+		target = target = GetMapMgr() ? GetMapMgr()->GetUnit(*jtr) : NULL;
 		++jtr;
 		if (target != NULL)
 			target->RemoveAura(m_spellProto->Id);
