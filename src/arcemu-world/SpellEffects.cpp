@@ -4405,7 +4405,7 @@ void Spell::SpellEffectSanctuary(uint32 i) // Stop all attacks made to you
 			pUnit = static_cast<Unit*>(*itr);
 
 			if( pUnit && pUnit->GetTypeId() == TYPEID_UNIT )
-				pUnit->GetAIInterface()->RemoveThreatByPtr( u_caster );
+				pUnit->GetAIInterface()->RemoveThreatByPtr( unitTarget );
 		}
 }
 
