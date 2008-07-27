@@ -271,7 +271,6 @@ AC_CONFIG_FILES([
    src/sun++/Makefile
    src/sun++/src/Makefile
    src/sun++/src/GossipScripts/Makefile
-   src/sun++/src/ExtraScripts/Makefile
    src/sun++/src/InstanceScripts/Makefile
    src/sun++/src/ServerStatusPlugin/Makefile
    src/sun++/src/SpellHandlers/Makefile
