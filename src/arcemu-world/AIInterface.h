@@ -367,26 +367,9 @@ public:
 	uint32 m_totalMoveTime;
 	ARCEMU_INLINE void AddStopTime(uint32 Time) { m_moveTimer += Time; }
 	ARCEMU_INLINE void SetNextSpell(AI_Spell * sp) { m_nextSpell = sp; }
-	ARCEMU_INLINE Unit* GetNextTarget() { return m_nextTarget; }
-	ARCEMU_INLINE void SetNextTarget (Unit *nextTarget) 
-	{ 
-		m_nextTarget = nextTarget; 
-		if(nextTarget)
-		{
-			m_nextTarget_guid = nextTarget->GetGUID();
-			m_Unit->SetUInt64Value(UNIT_FIELD_TARGET, m_nextTarget->GetGUID());
-#ifdef ENABLE_GRACEFULL_HIT
-			have_graceful_hit=false;
-#endif
-		}
-		else 
-		{
-			m_Unit->SetUInt64Value(UNIT_FIELD_TARGET, 0);
-			m_nextTarget_guid = 0;
-		}
-	}
-	//this is the safe way to do it !
-	void SetNextTarget (uint64 nextTarget_guid);
+	Unit* GetNextTarget();
+	void SetNextTarget (Unit *nextTarget);
+	void SetNextTarget (uint64 nextTarget); 
 
 	/*ARCEMU_INLINE void ResetProcCounts()
 	{
@@ -455,8 +438,7 @@ protected:
 	Unit* FindTargetForSpell(AI_Spell *sp);
 	bool FindFriends(float dist);
 	AI_Spell *m_nextSpell;
-	Unit* m_nextTarget;
-	uint64 m_nextTarget_guid;
+	uint64 m_nextTarget;
 	uint32 m_fleeTimer;
 	bool m_hasFleed;
 	bool m_hasCalledForHelp;
