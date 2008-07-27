@@ -596,6 +596,7 @@ public:
 	void SpellAuraIncreaseCastTimePCT(bool apply);
 	void SpellAuraRegenManaStatPCT(bool apply);
 	void SpellAuraSpellHealingStatPCT(bool apply);
+	void SpellAuraModStealthDetection(bool apply);
 	void SpellAuraIncreaseMaxHealth(bool apply);
 	void SpellAuraSpiritOfRedemption(bool apply);
 	void SpellAuraIncreaseAttackerSpellCrit(bool apply);
