@@ -3083,7 +3083,7 @@ void Spell::SpellEffectDispel(uint32 i) // Dispel
 			if( UARank != 0 )
 			{
 				uint32 dmg = 0;
-				switch ( UARank )
+				switch ( UARank ) // BRRR, FUCKING BLIZZ
 				{
 					case 1:
 						dmg = 990;
@@ -3096,8 +3096,6 @@ void Spell::SpellEffectDispel(uint32 i) // Dispel
 						break;
 				}
 				u_caster->SpellNonMeleeDamageLog(u_caster,31117,dmg,true,true);
-				Aura * pAura = new Aura(dbcSpell.LookupEntry(31117), 5, static_cast<Unit*>(objmgr.GetPlayer(aur->m_casterGuid)), u_caster);
-				u_caster->AddAura(pAura);
 			}
 		}
 	}   
