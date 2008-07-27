@@ -1396,6 +1396,8 @@ void AIInterface::AttackReaction(Unit* pUnit, uint32 damage_dealt, uint32 spellI
 	{
 		return;
 	}
+	if( m_Unit->isDead() )
+		return;
 
 #ifdef COLLISION
 	/*float target_land_z=0.0f;

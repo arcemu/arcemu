@@ -75,7 +75,9 @@ uint32 GetAutoCastTypeForSpell(SpellEntry * ent)
 	case SPELL_HASH_POISON_SPIT:		// Poison Spit 
 	case SPELL_HASH_SCORPID_POISON:		// Scorpid Poison
 	case SPELL_HASH_SCREECH:			// Screech
-	case SPELL_HASH_WARP:				// Warp 
+	case SPELL_HASH_WARP:				// Warp
+	case SPELL_HASH_LIGHTNING_BREATH:	// Lightning Breath
+	case SPELL_HASH_FIRE_BREATH:		// Fire Breath
 		return AUTOCAST_EVENT_ATTACK;
 		break;
 	
@@ -83,8 +85,6 @@ uint32 GetAutoCastTypeForSpell(SpellEntry * ent)
 	case SPELL_HASH_FURIOUS_HOWL:		// Furious Howl
 	case SPELL_HASH_DASH:				// Dash
 	case SPELL_HASH_DIVE:				// Dive 
-	case SPELL_HASH_FIRE_BREATH:		// Fire Breath
-	case SPELL_HASH_LIGHTNING_BREATH:	// Lightning Breath
 	case SPELL_HASH_PROWL:				// Prowl
 	case SPELL_HASH_SHELL_SHIELD:		// Shell Shield
 		return AUTOCAST_EVENT_NONE;
