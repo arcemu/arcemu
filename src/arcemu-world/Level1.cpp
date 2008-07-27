@@ -727,18 +727,18 @@ bool ChatHandler::HandleTriggerCommand(const char* args, WorldSession* m_session
 	if(valcount == 1)
 		instance_id = 0;
 
-	AreaTrigger *pTrigger = AreaTriggerStorage.LookupEntry(trigger_id);
-	if(trigger_id == 0 || pTrigger == NULL)
+	AreaTriggerEntry *entry = dbcAreaTrigger.LookupEntry(trigger_id);
+	if(trigger_id == 0 || entry == NULL)
 	{
 		RedSystemMessage(m_session, "Could not find trigger %s", (args == NULL ? "NULL" : args));
 		return true;
 	}
 
-	m_session->GetPlayer()->SafeTeleport(pTrigger->Mapid, instance_id, LocationVector(pTrigger->x, pTrigger->y,
-			pTrigger->z, pTrigger->o));
+	m_session->GetPlayer()->SafeTeleport(entry->mapid, instance_id, LocationVector(entry->x, entry->y,
+			entry->z, entry->o));
 
-	BlueSystemMessage(m_session, "Teleported to trigger %u on [%u][%.2f][%.2f][%.2f]", pTrigger->AreaTriggerID,
-		pTrigger->Mapid, pTrigger->x, pTrigger->y, pTrigger->z);
+	BlueSystemMessage(m_session, "Teleported to trigger %u on [%u][%.2f][%.2f][%.2f]", entry->id,
+		entry->mapid, entry->x, entry->y, entry->z);
 	return true;
 }
 

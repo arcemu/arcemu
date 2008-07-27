@@ -268,8 +268,23 @@ void Arena::HookOnShadowSight()
 {
 	switch(m_mapMgr->GetMapId())
 	{
-		/* loraedeon */
+		/* ruins of lordaeron */
 	case 572:
+		m_buffs[0] = SpawnGameObject(184664, 572, 1328.729268f, 1632.738403f, 34.838585f, 2.611449f, 32, 1375, 1.0f);
+		m_buffs[0]->SetUInt32Value(GAMEOBJECT_STATE, 1);
+		m_buffs[0]->SetFloatValue(GAMEOBJECT_ROTATION_02, 0.904455f);
+		m_buffs[0]->SetFloatValue(GAMEOBJECT_ROTATION_03, -0.426569f);
+		m_buffs[0]->SetUInt32Value(GAMEOBJECT_TYPE_ID, 6);
+		m_buffs[0]->SetUInt32Value(GAMEOBJECT_ANIMPROGRESS, 100);
+		m_buffs[0]->PushToWorld(m_mapMgr);
+
+		m_buffs[1] = SpawnGameObject(184664, 572, 1243.306763f, 1699.334351f, 34.837566f, 5.713773f, 32, 1375, 1.0f);
+		m_buffs[1]->SetUInt32Value(GAMEOBJECT_STATE, 1);
+		m_buffs[1]->SetFloatValue(GAMEOBJECT_ROTATION_02, 0.90445f);
+		m_buffs[1]->SetFloatValue(GAMEOBJECT_ROTATION_03, -0.426569f);
+		m_buffs[1]->SetUInt32Value(GAMEOBJECT_TYPE_ID, 6);
+		m_buffs[1]->SetUInt32Value(GAMEOBJECT_ANIMPROGRESS, 100);
+		m_buffs[1]->PushToWorld(m_mapMgr);
 		break;
 
 		/* blades edge arena */
@@ -293,7 +308,7 @@ void Arena::HookOnShadowSight()
 
 		/* nagrand arena */
 	case 559:
-		m_buffs[0] = SpawnGameObject(184664, 562, 4011.113232f, 2896.879980f, 12.523950f, 0.486944f, 32, 1375, 1.0f);
+		m_buffs[0] = SpawnGameObject(184664, 559, 4011.113232f, 2896.879980f, 12.523950f, 0.486944f, 32, 1375, 1.0f);
 		m_buffs[0]->SetUInt32Value(GAMEOBJECT_STATE, 1);
 		m_buffs[0]->SetFloatValue(GAMEOBJECT_ROTATION_02, 0.904455f);
 		m_buffs[0]->SetFloatValue(GAMEOBJECT_ROTATION_03, -0.426569f);
@@ -301,7 +316,7 @@ void Arena::HookOnShadowSight()
 		m_buffs[0]->SetUInt32Value(GAMEOBJECT_ANIMPROGRESS, 100);
 		m_buffs[0]->PushToWorld(m_mapMgr);
 
-		m_buffs[1] = SpawnGameObject(184664, 562, 4102.111426f, 2945.843262f, 12.662578f, 3.628544f, 32, 1375, 1.0f);
+		m_buffs[1] = SpawnGameObject(184664, 559, 4102.111426f, 2945.843262f, 12.662578f, 3.628544f, 32, 1375, 1.0f);
 		m_buffs[1]->SetUInt32Value(GAMEOBJECT_STATE, 1);
 		m_buffs[1]->SetFloatValue(GAMEOBJECT_ROTATION_02, 0.90445f);
 		m_buffs[1]->SetFloatValue(GAMEOBJECT_ROTATION_03, -0.426569f);
@@ -582,10 +597,12 @@ void Arena::HookOnAreaTrigger(Player * plr, uint32 id)
 	{
 		case 4536:
 		case 4538:
+		case 4696:
 			buffslot = 0;
 			break;
 		case 4537:
 		case 4539:
+		case 4697:
 			buffslot = 1;
 			break;
 	}

@@ -110,9 +110,10 @@ void WorldSession::_HandleAreaTriggerOpcode(uint32 id)
     // Search quest log, find any exploration quests
 	sQuestMgr.OnPlayerExploreArea(GetPlayer(),id);
 
-	AreaTrigger* pAreaTrigger = AreaTriggerStorage.LookupEntry( id );
+	AreaTriggerEntry* entry = dbcAreaTrigger.LookupEntry(id);
+	AreaTrigger* pAreaTrigger = AreaTriggerStorage.LookupEntry(id);
 
-	if( pAreaTrigger == NULL )
+	if( entry == NULL )
 	{
 		sLog.outDebug("Missing AreaTrigger: %u", id);
 		return;
@@ -121,7 +122,7 @@ void WorldSession::_HandleAreaTriggerOpcode(uint32 id)
 	sHookInterface.OnAreaTrigger(GetPlayer(), id);
 
 	if( _player->GetSession()->CanUseCommand('z') )
-		sChatHandler.BlueSystemMessage( this, "[%sSystem%s] |rEntered areatrigger: %s%u (%s).", MSG_COLOR_WHITE, MSG_COLOR_LIGHTBLUE, MSG_COLOR_SUBWHITE, id, pAreaTrigger->Name );
+		sChatHandler.BlueSystemMessage( this, "[%sSystem%s] |rEntered areatrigger: %s%u. (%s)", MSG_COLOR_WHITE, MSG_COLOR_LIGHTBLUE, MSG_COLOR_SUBWHITE, id, pAreaTrigger ? pAreaTrigger->Name : "Unknown name" );
 
 	// if in BG handle is triggers
 	if( _player->m_bg )
@@ -133,13 +134,15 @@ void WorldSession::_HandleAreaTriggerOpcode(uint32 id)
 	// Hook for Scripted Areatriggers
 	_player->GetMapMgr()->HookOnAreaTrigger(_player, id);
 
+	if (pAreaTrigger == NULL) return;
+
 	switch(pAreaTrigger->Type)
 	{
 	case ATTYPE_INSTANCE:
 		{
 			if(GetPlayer()->GetPlayerStatus() != TRANSFER_PENDING) //only ports if player is out of pendings
 			{
-				uint32 reason = CheckTriggerPrerequsites(pAreaTrigger, this, _player, WorldMapInfoStorage.LookupEntry(pAreaTrigger->Mapid));
+				uint32 reason = CheckTriggerPrerequsites(pAreaTrigger, this, _player, WorldMapInfoStorage.LookupEntry(entry->mapid));
 				if(reason != AREA_TRIGGER_FAILURE_OK)
 				{
 					const char * pReason = AreaTriggerFailureMessages[reason];
