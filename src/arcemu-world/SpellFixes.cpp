@@ -13074,17 +13074,6 @@ void ApplyNormalFixes()
 		{
 			sp->EffectDieSides[0] = 49;
 		}
-		//this starts to be an issue for trigger spell id : Deep Wounds
-		else if( strstr( sp->Name, "Deep Wounds") && sp->EffectTriggerSpell[0])
-		{
-			//check if we can find in the desription
-			char *startofid=strstr(sp->Description, "over $");
-			if(startofid)
-			{
-				startofid += strlen("over $");
-				sp->EffectTriggerSpell[0] = atoi(startofid);
-			}
-		}
 		else if( strstr( sp->Name, "Holy Shock"))
 		{
 			//check if we can find in the desription
@@ -14004,6 +13993,26 @@ void ApplyNormalFixes()
 	//////////////////////////////////////////
 
 	// Insert warrior spell fixes here
+		//Warrior - Deep Wounds
+		sp = dbcSpell.LookupEntryForced( 12834 );
+		if(sp != NULL)
+		{
+			sp->EffectTriggerSpell[0] = 12721;
+			sp->procFlags = PROC_ON_CRIT_ATTACK | PROC_ON_RANGED_CRIT_ATTACK | PROC_ON_SPELL_CRIT_HIT;
+		}
+		sp = dbcSpell.LookupEntryForced( 12849 );
+		if(sp != NULL)
+		{
+			sp->EffectTriggerSpell[0] = 12721;
+			sp->procFlags = PROC_ON_CRIT_ATTACK | PROC_ON_RANGED_CRIT_ATTACK | PROC_ON_SPELL_CRIT_HIT;
+		}
+		sp = dbcSpell.LookupEntryForced( 12867 );
+		if(sp != NULL)
+		{
+			sp->EffectTriggerSpell[0] = 12721;
+			sp->procFlags = PROC_ON_CRIT_ATTACK | PROC_ON_RANGED_CRIT_ATTACK | PROC_ON_SPELL_CRIT_HIT;
+		}
+
 		//Warrior - Charge Rank 1
 		sp = dbcSpell.LookupEntryForced(100);
 		if(sp != NULL)

@@ -1551,7 +1551,7 @@ void Spell::cast(bool check)
 						if(!Target)
 							continue; //we already made this check, so why make it again ?
 
-						if(!m_triggeredSpell)
+						if(!m_triggeredSpell || GetProto()->NameHash == SPELL_HASH_DEEP_WOUND )//Deep Wounds may trigger Blood Frenzy
 						{
 							p_caster->HandleProc(PROC_ON_CAST_SPECIFIC_SPELL | PROC_ON_CAST_SPELL,Target, GetProto());
 							Target->HandleProc(PROC_ON_SPELL_LAND_VICTIM,u_caster,GetProto());

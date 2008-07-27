@@ -986,7 +986,7 @@ void Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, uint
 							if( CastingSpell == NULL )
 								continue;
 								if( CastingSpell->NameHash != SPELL_HASH_REND && 
-									CastingSpell->NameHash != SPELL_HASH_DEEP_WOUNDS )
+									CastingSpell->NameHash != SPELL_HASH_DEEP_WOUND )
 									continue;
 						}break;
 						//warrior - Unbridled Wrath

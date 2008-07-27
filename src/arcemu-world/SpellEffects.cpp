@@ -1566,7 +1566,10 @@ void Spell::SpellEffectApplyAura(uint32 i)  // Apply Aura
 	//if we do not make a check to see if the aura owner is the same as the caster then we will stack the 2 auras and they will not be visible client sided
 	if(itr==unitTarget->tmpAura.end())
 	{
-		uint32 Duration=this->GetDuration();
+		if( GetProto()->NameHash == SPELL_HASH_BLOOD_FRENZY && this->ProcedOnSpell )//Warrior's Blood Frenzy
+			this->GetProto()->DurationIndex = this->ProcedOnSpell->DurationIndex;
+		
+		uint32 Duration = this->GetDuration();
 		
 		// Handle diminishing returns, if it should be resisted, it'll make duration 0 here.
 		if(!(GetProto()->Attributes & ATTRIBUTES_PASSIVE)) // Passive
