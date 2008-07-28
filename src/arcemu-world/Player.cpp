@@ -8774,9 +8774,9 @@ void Player::CalcDamage()
 			//SetFloatValue(UNIT_FIELD_MAXDAMAGE,r);
 
 			r *= 0.9f;
-			r *= 1.1f;
-
 			SetFloatValue(UNIT_FIELD_MINDAMAGE,r>0?r:0);
+
+			r *= 1.2222f;
 			SetFloatValue(UNIT_FIELD_MAXDAMAGE,r>0?r:0);
 
 			return;
