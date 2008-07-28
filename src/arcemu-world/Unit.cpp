@@ -1987,6 +1987,14 @@ void Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, uint
 						continue;
 					switch(iter2->second.spellId)
 					{
+					//Shaman - Shamanist Focus
+					case 43339:
+							{
+								if( CastingSpell->NameHash != SPELL_HASH_EARTH_SHOCK &&
+									CastingSpell->NameHash != SPELL_HASH_FLAME_SHOCK &&
+									CastingSpell->NameHash != SPELL_HASH_FROST_SHOCK )
+									continue;
+							}break;
 					case 12043:
 						{
 							//Presence of Mind and Nature's Swiftness should only get removed
