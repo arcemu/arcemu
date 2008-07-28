@@ -13987,6 +13987,18 @@ void ApplyNormalFixes()
 	//////////////////////////////////////////
 
 	// Insert warrior spell fixes here
+		
+		//Warrior - Blood Craze Procflags
+		sp = dbcSpell.LookupEntryForced( 16487 );
+		if( sp != NULL )
+			sp->procFlags = PROC_ON_CRIT_HIT_VICTIM | PROC_ON_RANGED_CRIT_ATTACK_VICTIM | PROC_ON_SPELL_CRIT_HIT_VICTIM;
+		sp = dbcSpell.LookupEntryForced( 16489 );
+		if( sp != NULL )
+			sp->procFlags = PROC_ON_CRIT_HIT_VICTIM | PROC_ON_RANGED_CRIT_ATTACK_VICTIM | PROC_ON_SPELL_CRIT_HIT_VICTIM;
+		sp = dbcSpell.LookupEntryForced( 16492 );
+		if( sp != NULL )
+			sp->procFlags = PROC_ON_CRIT_HIT_VICTIM | PROC_ON_RANGED_CRIT_ATTACK_VICTIM | PROC_ON_SPELL_CRIT_HIT_VICTIM;
+	
 		//Warrior - Deep Wounds
 		sp = dbcSpell.LookupEntryForced( 12834 );
 		if(sp != NULL)
