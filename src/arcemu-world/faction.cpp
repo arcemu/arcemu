@@ -23,6 +23,35 @@
 #define HACKY_CRASH_FIXES 1		// SEH stuff
 #endif
 
+int isBgEnemy(Object* objA, Object* objB)
+{
+	// if objA is in battleground check objB hostile based on teams
+	if( ( objA->IsInBg() && (objA->IsPlayer() || objA->IsPet() || ( objA->IsUnit() && !objA->IsPlayer() && static_cast< Creature* >( objA )->IsTotem() ) ) ) )
+	{
+		if ( (objB->IsPlayer() || objB->IsPet() || ( objB->IsUnit() && !objB->IsPlayer() && static_cast< Creature* >( objB )->IsTotem() ) ) )
+		{
+			if ( objB->IsInBg() == false )
+			{
+				// objA is in battleground, objB no, so return false
+				return 0;
+			}
+			else
+			{
+				uint32 teamA = objA->GetTeam();
+				uint32 teamB = objB->GetTeam();
+				if (teamA == -1 || teamB == -1)
+				{
+					return 0;
+				}
+
+				return teamA != teamB;
+			}
+		}
+	}
+
+	return -1;
+}
+
 bool isHostile(Object* objA, Object* objB)// B is hostile for A?
 {
 	if(!objA || !objB)
@@ -41,29 +70,8 @@ bool isHostile(Object* objA, Object* objB)// B is hostile for A?
 	if(objB->GetTypeId() == TYPEID_CORPSE)
 		return false;
 
-	// if objA is in battleground check objB hostile based on teams
-	if( ( objA->IsInBg() && (objA->IsPlayer() || objA->IsPet() || ( objA->IsUnit() && !objA->IsPlayer() && static_cast< Creature* >( objA )->IsTotem() ) ) ) )
-	{
-		if ( (objB->IsPlayer() || objB->IsPet() || ( objB->IsUnit() && !objB->IsPlayer() && static_cast< Creature* >( objB )->IsTotem() ) ) )
-		{
-			if ( objB->IsInBg() == false )
-			{
-				// objA is in battleground, objB no, so return false
-				return false;
-			}
-			else
-			{
-				uint32 teamA = objA->GetTeam();
-				uint32 teamB = objB->GetTeam();
-				if (teamA == -1 || teamB == -1)
-				{
-					return false;
-				}
-
-				return teamA != teamB;
-			}
-		}
-	}
+	int ret = isBgEnemy(objA, objB);
+	if (ret != -1) return ret == 1;
 
 	uint32 faction = objB->m_faction->Mask;
 	uint32 host = objA->m_faction->HostileMask;
@@ -202,29 +210,8 @@ bool isAttackable(Object* objA, Object* objB, bool CheckStealth)// A can attack 
 			return false;
 	}
 
-	// if objA is in battleground check objB hostile based on teams
-	if( ( objA->IsInBg() && (objA->IsPlayer() || objA->IsPet() || ( objA->IsUnit() && !objA->IsPlayer() && static_cast< Creature* >( objA )->IsTotem() ) ) ) )
-	{
-		if ( (objB->IsPlayer() || objB->IsPet() || ( objB->IsUnit() && !objB->IsPlayer() && static_cast< Creature* >( objB )->IsTotem() ) ) )
-		{
-			if ( objB->IsInBg() == false )
-			{
-				// objA is in battleground, objB no, so return false
-				return false;
-			}
-			else
-			{
-				uint32 teamA = objA->GetTeam();
-				uint32 teamB = objB->GetTeam();
-				if (teamA == -1 || teamB == -1)
-				{
-					return false;
-				}
-
-				return teamA != teamB;
-			}
-		}
-	}
+	int ret = isBgEnemy(objA, objB);
+	if (ret != -1) return ret == 1;
 
 	if(objA->IsPlayer() && objB->IsPlayer())
 	{
