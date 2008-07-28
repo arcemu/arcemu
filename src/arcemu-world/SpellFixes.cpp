@@ -13988,6 +13988,39 @@ void ApplyNormalFixes()
 
 	// Insert warrior spell fixes here
 		
+		//Warrior - Enrage Procflags
+		sp = dbcSpell.LookupEntryForced( 12317 );
+		if(sp != NULL)
+			sp->procFlags = PROC_ON_CRIT_HIT_VICTIM | PROC_ON_RANGED_CRIT_ATTACK_VICTIM | PROC_ON_SPELL_CRIT_HIT_VICTIM;
+		sp = dbcSpell.LookupEntryForced( 13045 );
+		if(sp != NULL)
+			sp->procFlags = PROC_ON_CRIT_HIT_VICTIM | PROC_ON_RANGED_CRIT_ATTACK_VICTIM | PROC_ON_SPELL_CRIT_HIT_VICTIM;
+		sp = dbcSpell.LookupEntryForced( 13046 );
+		if(sp != NULL)
+			sp->procFlags = PROC_ON_CRIT_HIT_VICTIM | PROC_ON_RANGED_CRIT_ATTACK_VICTIM | PROC_ON_SPELL_CRIT_HIT_VICTIM;
+		sp = dbcSpell.LookupEntryForced( 13047 );
+		if(sp != NULL)
+			sp->procFlags = PROC_ON_CRIT_HIT_VICTIM | PROC_ON_RANGED_CRIT_ATTACK_VICTIM | PROC_ON_SPELL_CRIT_HIT_VICTIM;
+		sp = dbcSpell.LookupEntryForced( 13048 );
+		if(sp != NULL)
+			sp->procFlags = PROC_ON_CRIT_HIT_VICTIM | PROC_ON_RANGED_CRIT_ATTACK_VICTIM | PROC_ON_SPELL_CRIT_HIT_VICTIM;
+		/* Remove the charges only on melee attacks */
+		sp = dbcSpell.LookupEntryForced( 12880 );
+		if(sp != NULL)
+			sp->procFlags = PROC_ON_MELEE_ATTACK;
+		sp = dbcSpell.LookupEntryForced( 14201 );
+		if(sp != NULL)
+			sp->procFlags = PROC_ON_MELEE_ATTACK;
+		sp = dbcSpell.LookupEntryForced( 14202 );
+		if(sp != NULL)
+			sp->procFlags = PROC_ON_MELEE_ATTACK;
+		sp = dbcSpell.LookupEntryForced( 14203 );
+		if(sp != NULL)
+			sp->procFlags = PROC_ON_MELEE_ATTACK;
+		sp = dbcSpell.LookupEntryForced( 14204 );
+		if(sp != NULL)
+			sp->procFlags = PROC_ON_MELEE_ATTACK;
+
 		//Warrior - Blood Craze Procflags
 		sp = dbcSpell.LookupEntryForced( 16487 );
 		if( sp != NULL )
