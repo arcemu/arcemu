@@ -449,7 +449,7 @@ void Arena::Finish()
 			for(set<uint32>::iterator itr = m_players2[i].begin(); itr != m_players2[i].end(); ++itr)
 			{
 				Player * plr = objmgr.GetPlayer(*itr);
-				if(plr->m_arenaTeams[m_arenateamtype] != NULL)
+				if(plr && plr->m_arenaTeams[m_arenateamtype] != NULL)
 				{
 					ArenaTeam * t = plr->m_arenaTeams[m_arenateamtype];
 					ArenaTeamMember * tp = t->GetMember(plr->m_playerInfo);
