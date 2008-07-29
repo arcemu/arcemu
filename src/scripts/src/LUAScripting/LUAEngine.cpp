@@ -77,7 +77,7 @@ RegType<Unit> UnitMethods[] = {
 	{ "SetMovementType", &luaUnit_SetMovementType },
 	{ "CastSpell", &luaUnit_CastSpell },
 	{ "FullCastSpell", &luaUnit_FullCastSpell },
-	{ "CastSpellOnTarget", &luaUnit_CastSpell },
+	{ "CastSpellOnTarget", &luaUnit_CastSpellOnTarget },
 	{ "FullCastSpellOnTarget", &luaUnit_FullCastSpellOnTarget },
 	{ "SpawnCreature", &luaUnit_SpawnCreature },
 	{ "SpawnGameObject", &luaUnit_SpawnGameObject },
@@ -1586,7 +1586,7 @@ int luaUnit_CastSpellOnTarget(lua_State * L, Unit * ptr)
 		return 0;
 
 	Spell * spp = SpellPool.PooledNew();
-	spp->Init(ptr, dbcSpell.LookupEntry(sp), false, NULL);
+	spp->Init(ptr, dbcSpell.LookupEntry(sp), true, NULL);
 	SpellCastTargets tar(target->GetGUID());
 	spp->prepare(&tar);
 	return 0;

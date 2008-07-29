@@ -39,7 +39,7 @@ int isBgEnemy(Object* objA, Object* objB)
 			{
 				uint32 teamA = objA->GetTeam();
 				uint32 teamB = objB->GetTeam();
-				if (teamA == -1 || teamB == -1)
+				if (teamA == (uint32)-1 || teamB == (uint32)-1)
 				{
 					return 0;
 				}

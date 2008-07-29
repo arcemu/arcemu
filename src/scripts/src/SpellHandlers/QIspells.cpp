@@ -92,6 +92,8 @@ bool ElementalPowerExtractor(uint32 i, Spell* pSpell)
 {
     Player *plr = (Player*)pSpell->u_caster;
     Creature * creat = ((Creature*)pSpell->GetUnitTarget());
+	if (creat == NULL)
+		return true;
 	if(creat->GetEntry() == 18881 || creat->GetEntry() == 18865 && creat->isAlive())
 		sEAS.AddItem( 28548, plr);
 	return true;
@@ -1140,6 +1142,8 @@ bool ZappedGiants(uint32 i, Spell* pSpell)
   }
 
   Creature* creat = static_cast<Creature*>(pSpell->GetUnitTarget());
+  if (creat == NULL)
+  	return true;
 
   float X = creat->GetPositionX();
   float Y = creat->GetPositionY();
