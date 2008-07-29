@@ -37,7 +37,7 @@ public:
 		if(pObject->GetTypeId()!=TYPEID_UNIT)
 			return;
 
-        plr->GetSession()->SendBattlegroundList(((Creature*)pObject), 2);  // WSG = 2
+        plr->GetSession()->SendBattlegroundList(((Creature*)pObject), 2);
     }
 
     void Destroy()
@@ -82,7 +82,7 @@ public:
 		if(pObject->GetTypeId()!=TYPEID_UNIT)
 			return;
 
-		plr->GetSession()->SendBattlegroundList(((Creature*)pObject), 3);  // WSG = 2
+		plr->GetSession()->SendBattlegroundList(((Creature*)pObject), 3);
     }
 
     void Destroy()
@@ -127,7 +127,7 @@ public:
 		if(pObject->GetTypeId()!=TYPEID_UNIT)
 			return;
 
-		plr->GetSession()->SendBattlegroundList(((Creature*)pObject), 0);  // WSG = 2
+		plr->GetSession()->SendBattlegroundList(((Creature*)pObject), 1);
     }
 
     void Destroy()
@@ -136,11 +136,53 @@ public:
     }
 };
 
+class SCRIPT_DECL EyeOfTheStormBattlemaster : public GossipScript
+{
+public:
+	void GossipHello(Object* pObject, Player * plr, bool AutoSend)
+	{
+		GossipMenu *Menu;
+		uint32 Team = plr->GetTeam();
+		if(Team > 1) Team = 1;
+
+		if(plr->getLevel() < 61)
+		{
+			uint32 FactMessages[2] = { 7658,7658 };
+
+			objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), FactMessages[Team], plr);
+			}
+			else
+			{
+				uint32 FactMessages[2] = { 7658,7659 };
+
+				objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), FactMessages[Team], plr);
+				Menu->AddItem( 0, "I would like to enter the battleground", 1);
+			}
+
+			if (AutoSend)
+				Menu->SendTo(plr);
+		}
+
+		void GossipSelectOption(Object* pObject, Player * plr, uint32 Id, uint32 IntId, const char * Code)
+		{
+			if(pObject->GetTypeId()!=TYPEID_UNIT)
+				return;
+
+			plr->GetSession()->SendBattlegroundList(((Creature*)pObject), 7);
+			}
+
+			void Destroy()
+			{
+				delete this;
+		}
+};
+
 void SetupBattlemaster(ScriptMgr * mgr)
 {
 	GossipScript * wsg = (GossipScript*) new WarsongGulchBattlemaster;
 	GossipScript * ab = (GossipScript*) new ArathiBasinBattlemaster;
 	GossipScript * av = (GossipScript*) new AlteracValleyBattlemaster;
+	GossipScript * eots = (GossipScript*) new EyeOfTheStormBattlemaster;
 
     /* Battlemaster List */
     mgr->register_gossip_script(19910, wsg); // Gargok
@@ -184,8 +226,21 @@ void SetupBattlemaster(ScriptMgr * mgr)
     mgr->register_gossip_script(15106, av); // Frostwolf Emissary
     mgr->register_gossip_script(15103, av); // Stormpike Emissary
     mgr->register_gossip_script(14942, av); // Kartra Bloodsnarl
+	mgr->register_gossip_script(20383, eots); // Enlae
+	mgr->register_gossip_script(20374, eots); // Kandaar
+	mgr->register_gossip_script(20381, eots); // Jovil
+	mgr->register_gossip_script(20382, eots); // Mitia
+	mgr->register_gossip_script(20362, eots); // Iravar
+	mgr->register_gossip_script(20385, eots); // Andrissa Heartspear
+	mgr->register_gossip_script(20388, eots); // Althallen Brightblade
+	mgr->register_gossip_script(20386, eots); // Lyrlia Blacksheild
+	mgr->register_gossip_script(20390, eots); // Duyash the Cruel
+	mgr->register_gossip_script(20384, eots); // Yula the Fair
 
-   //cleanup:
-   //removed Sandfury Soul Eater(hes a npc in Zul'Farrak and has noting to do whit the battleground masters) 
-   //added Warsong Emissary, Stormpike Emissary , League of Arathor Emissary
+	/* 
+		= Klar =
+	- Fixed AV BG list
+	- Added Eye of the Storm
+	
+	*/
 }
