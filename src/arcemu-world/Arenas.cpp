@@ -20,8 +20,6 @@
 #include "StdAfx.h"
 
 #define ARENA_PREPARATION 32727
-#define ARENA_WORLD_STATE_A_PLAYER_COUNT 2544
-#define ARENA_WORLD_STATE_H_PLAYER_COUNT 2545
 #define GREEN_TEAM 0
 #define GOLD_TEAM 1
 
@@ -264,10 +262,26 @@ void Arena::OnCreate()
 	SetWorldState(0x08D6	,0x0000);
 	SetWorldState(0x08D5	,0x0000);
 	SetWorldState(0x08D3	,0x0000);
-	SetWorldState(0x09F1	,0x0000);
-	SetWorldState(0x09F0	,0x0000);
 	SetWorldState(0x0C0D	,0x017B);
-	SetWorldState(0x09F3	,0x0001);
+
+	// Show players count
+	switch(m_mapMgr->GetMapId())
+	{
+		/* ruins of lordaeron */
+	case 572:
+		SetWorldState(3002, 1);
+		break;
+
+		/* blades edge arena */
+	case 562:
+		SetWorldState(2547, 1);
+		break;
+
+		/* nagrand arena */
+	case 559:
+		SetWorldState(2577, 1);
+		break;
+	}
 }
 
 void Arena::HookOnShadowSight()
@@ -365,8 +379,26 @@ void Arena::UpdatePlayerCounts()
 	if(m_ended)
 		return;
 
-	SetWorldState(ARENA_WORLD_STATE_A_PLAYER_COUNT, m_playersCount[0]);
-	SetWorldState(ARENA_WORLD_STATE_H_PLAYER_COUNT, m_playersCount[1]);
+	switch(m_mapMgr->GetMapId())
+	{
+		/* ruins of lordaeron */
+	case 572:
+		SetWorldState(3000, m_playersCount[0]);
+		SetWorldState(3001, m_playersCount[1]);
+		break;
+
+		/* blades edge arena */
+	case 562:
+		SetWorldState(2544, m_playersCount[0]);
+		SetWorldState(2545, m_playersCount[1]);
+		break;
+
+		/* nagrand arena */
+	case 559:
+		SetWorldState(2575, m_playersCount[0]);
+		SetWorldState(2576, m_playersCount[1]);
+		break;
+	}
 
 	if(!m_started)
 		return;
