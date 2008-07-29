@@ -22,8 +22,7 @@
 #define BASE_RESOURCES_GAIN 10
 #define RESOURCES_WARNING_THRESHOLD 1800
 #define RESOURCES_WINVAL 2000
-#define RESOURCES_TO_GAIN_BH 200
-#define BASE_BH_GAIN 14
+#define RESOURCES_TO_GAIN_BH 330
 uint32 buffentrys[3] = {180380,180362,180146};
 // AB define's
 #define AB_CAPTURED_STABLES_ALLIANCE		0x6E7 //1767
@@ -162,6 +161,10 @@ uint32 buffentrys[3] = {180380,180362,180146};
 		10,
 		30,
 	};
+
+//								<10 <20 <30 <40 <50 <60 <70 70
+static int resHonorTable[8] = { 0,  0,  4,  7,  11, 19, 20, 20 };
+static int winHonorTable[8] = { 0,  0,  4,  7,  11, 19, 20, 20 };
 
 /* End BG Data */
 
@@ -448,6 +451,8 @@ ArathiBasin::ArathiBasin(MapMgr * mgr, uint32 id, uint32 lgroup, uint32 t) : CBa
 		m_lastHonorGainResources[i] = 0;
 		m_nearingVictory[i] = false;
 	}
+
+	m_lgroup = lgroup;
 }
 
 ArathiBasin::~ArathiBasin()
@@ -505,7 +510,10 @@ void ArathiBasin::EventUpdateResources(uint32 Team)
 	{
 		m_mainLock.Acquire();
 		for(set<Player*>::iterator itr = m_players[Team].begin(); itr != m_players[Team].end(); ++itr)
-			(*itr)->m_bgScore.BonusHonor += BASE_BH_GAIN;
+		{
+			(*itr)->m_bgScore.BonusHonor += resHonorTable[m_lgroup];
+			HonorHandler::AddHonorPointsToPlayer((*itr), resHonorTable[m_lgroup]);
+		}
 
 		UpdatePvPData();
 		m_mainLock.Release();
@@ -534,6 +542,12 @@ void ArathiBasin::EventUpdateResources(uint32 Team)
 
 		/* add the marks of honor to all players */
 		m_mainLock.Acquire();
+
+		for(set<Player*>::iterator itr = m_players[Team].begin(); itr != m_players[Team].end(); ++itr)
+		{
+			(*itr)->m_bgScore.BonusHonor += winHonorTable[m_lgroup];
+			HonorHandler::AddHonorPointsToPlayer((*itr), winHonorTable[m_lgroup]);
+		}
 
 		SpellEntry * winner_spell = dbcSpell.LookupEntry(24953);
 		SpellEntry * loser_spell = dbcSpell.LookupEntry(24952);

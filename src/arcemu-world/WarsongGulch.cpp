@@ -19,9 +19,9 @@
 
 #include "StdAfx.h"
 
-//						  <10 <20 <30 <40 <50 <60 <70 70
-int flagHonorTable[8] = { 0,  5,  8,  14, 23, 38, 40, 40 };
-int winHonorTable[8]  = { 0,  2,  4,  7,  11, 19, 20, 20 };
+//								 <10 <20 <30 <40 <50 <60 <70 70
+static int flagHonorTable[8] = { 0,  5,  8,  14, 23, 38, 40, 40 };
+static int winHonorTable[8]  = { 0,  2,  4,  7,  11, 19, 20, 20 };
 
 WarsongGulch::WarsongGulch(MapMgr * mgr, uint32 id, uint32 lgroup, uint32 t) : CBattleground(mgr, id, lgroup, t)
 {
