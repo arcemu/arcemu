@@ -2876,6 +2876,15 @@ uint8 Spell::CanCast(bool tolerate)
 				else
 					return SPELL_FAILED_NOT_HERE;
 			}
+
+			else if(GetProto()->Id == 32307)
+			{
+				Creature *kilsorrow = p_caster->GetMapMgr()->GetInterface()->GetCreatureNearestCoords(p_caster->GetPositionX(), p_caster->GetPositionY(), p_caster->GetPositionZ());
+				if(kilsorrow == NULL || kilsorrow->isAlive() || p_caster->CalcDistance(p_caster, kilsorrow) > 1)
+					return SPELL_FAILED_NOT_HERE;
+				if(kilsorrow->GetEntry() != 17147 && kilsorrow->GetEntry() != 17148 && kilsorrow->GetEntry() != 18397 && kilsorrow->GetEntry() != 18658 && kilsorrow->GetEntry() != 17146)
+					return SPELL_FAILED_NOT_HERE;
+			}
 		}
 
 	if( p_caster != NULL )
