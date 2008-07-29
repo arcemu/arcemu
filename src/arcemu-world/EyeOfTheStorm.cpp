@@ -699,6 +699,7 @@ void EyeOfTheStorm::GeneratePoints()
 
 bool EyeOfTheStorm::GivePoints(uint32 team, uint32 points)
 {
+	uint32 honor;
 	//printf("EOTS: Give team %u %u points.\n", team, points);
 
 	m_points[team] += points;
@@ -724,6 +725,12 @@ bool EyeOfTheStorm::GivePoints(uint32 team, uint32 points)
 				
 				if ( (*itr)==NULL )// never happen?
 					continue;
+
+				/* Winning team will gain 2000 / 12 = 166.6 extran honor points */
+				/* Losing team will also gain the honor from already earned points */
+				honor = m_points[i] / 12;
+				(*itr)->m_bgScore.BonusHonor += honor;
+				HonorHandler::AddHonorPointsToPlayer((*itr), honor);
 
 				if(i == m_winningteam)
 				{				
