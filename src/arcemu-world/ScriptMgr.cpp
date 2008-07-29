@@ -459,6 +459,16 @@ GameObjectAIScript::GameObjectAIScript(GameObject* goinstance) : _gameobject(goi
 
 }
 
+void GameObjectAIScript::ModifyAIUpdateEvent(uint32 newfrequency)
+{
+	sEventMgr.ModifyEventTimeAndTimeLeft(_gameobject, EVENT_SCRIPT_UPDATE_EVENT, newfrequency);
+}
+ 
+void GameObjectAIScript::RemoveAIUpdateEvent()
+{
+	sEventMgr.RemoveEvents(_gameobject, EVENT_SCRIPT_UPDATE_EVENT);
+}
+
 void GameObjectAIScript::RegisterAIUpdateEvent(uint32 frequency)
 {
 	sEventMgr.AddEvent(_gameobject, &GameObject::CallScriptUpdate, EVENT_SCRIPT_UPDATE_EVENT, frequency, 0,0);

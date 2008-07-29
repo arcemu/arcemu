@@ -237,7 +237,8 @@ public:
 	virtual void Destroy() {}
 
 	void RegisterAIUpdateEvent(uint32 frequency);
-
+	void ModifyAIUpdateEvent(uint32 newfrequency);
+	void RemoveAIUpdateEvent();
 protected:
 
 	GameObject* _gameobject;
