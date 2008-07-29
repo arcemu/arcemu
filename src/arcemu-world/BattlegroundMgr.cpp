@@ -431,6 +431,7 @@ void CBattlegroundManager::EventQueueUpdate(bool forceStart)
 					arena = ((Arena*)CreateInstance(i, j));
 					if ( arena == NULL )
 						{
+							Log.Error("BattlegroundMgr", "%s (%u): Couldn't create Arena Instance", __FILE__, __LINE__);
 							m_queueLock.Release();
 							m_instanceLock.Release();
  							return;
@@ -550,6 +551,13 @@ void CBattlegroundManager::EventQueueUpdate(bool forceStart)
 			}
 
 			Arena * ar = ((Arena*)CreateInstance(i,LEVEL_GROUP_70));
+			if (ar == NULL)
+			{
+				Log.Error("BattlegroundMgr", "%s (%u): Couldn't create Arena Instance", __FILE__, __LINE__);
+				m_queueLock.Release();
+				m_instanceLock.Release();
+				return;
+			}
 			GroupMembersSet::iterator itx;
 			ar->rated_match=true;
 
