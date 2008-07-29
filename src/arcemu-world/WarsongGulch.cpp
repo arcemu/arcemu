@@ -19,9 +19,14 @@
 
 #include "StdAfx.h"
 
+//						  <10 <20 <30 <40 <50 <60 <70 70
+int flagHonorTable[8] = { 0,  5,  8,  14, 23, 38, 40, 40 };
+int winHonorTable[8]  = { 0,  2,  4,  7,  11, 19, 20, 20 };
+
 WarsongGulch::WarsongGulch(MapMgr * mgr, uint32 id, uint32 lgroup, uint32 t) : CBattleground(mgr, id, lgroup, t)
 {
 	m_flagHolders[0] = m_flagHolders[1] = 0;
+	m_lgroup = lgroup;
 	
 	/* create the buffs */
 	for(int i = 0; i < 6; ++i)
@@ -143,11 +148,11 @@ void WarsongGulch::HookOnAreaTrigger(Player * plr, uint32 id)
 		if( !m_homeFlags[plr->GetTeam()]->IsInWorld() )
 			m_homeFlags[plr->GetTeam()]->PushToWorld(m_mapMgr);
 
-		/* give each player on that team a bonus 82 honor - burlex: is this correct amount? */
+		/* give each player on that team a bonus according to flagHonorTable */
 		for(set<Player*>::iterator itr = m_players[plr->GetTeam()].begin(); itr != m_players[plr->GetTeam()].end(); ++itr)
 		{
-			(*itr)->m_bgScore.BonusHonor += 82;
-			HonorHandler::AddHonorPointsToPlayer((*itr), 82);
+			(*itr)->m_bgScore.BonusHonor += flagHonorTable[m_lgroup];
+			HonorHandler::AddHonorPointsToPlayer((*itr), flagHonorTable[m_lgroup]);
 		}
 
 		m_scores[plr->GetTeam()]++;
@@ -155,7 +160,7 @@ void WarsongGulch::HookOnAreaTrigger(Player * plr, uint32 id)
 		{
 			/* victory! */
 			m_ended = true;
-			m_winningteam = plr->GetTeam() ? 0 : 1;
+			m_winningteam = plr->GetTeam() ? 1 : 0;
 			m_nextPvPUpdateTime = 0;
 
 			sEventMgr.RemoveEvents(this, EVENT_BATTLEGROUND_CLOSE);
@@ -171,7 +176,11 @@ void WarsongGulch::HookOnAreaTrigger(Player * plr, uint32 id)
 				{
 					(*itr)->Root();
 					if(i == m_winningteam)
+					{
+						(*itr)->m_bgScore.BonusHonor += winHonorTable[m_lgroup];
+						HonorHandler::AddHonorPointsToPlayer((*itr), winHonorTable[m_lgroup]);
 						(*itr)->CastSpell((*itr), winner_spell, true);
+					}
 					else
 						(*itr)->CastSpell((*itr), loser_spell, true);
 				}
@@ -184,7 +193,6 @@ void WarsongGulch::HookOnAreaTrigger(Player * plr, uint32 id)
 
 		UpdatePvPData();
 	}
-
 }
 
 void WarsongGulch::DropFlag(Player * plr)

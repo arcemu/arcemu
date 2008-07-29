@@ -27,6 +27,7 @@ class WarsongGulch : public CBattleground
 	uint32 m_flagHolders[2];
 	list<GameObject*> m_gates;
 	uint32 m_scores[2];
+	uint32 m_lgroup;
 public:
 	WarsongGulch(MapMgr * mgr, uint32 id, uint32 lgroup, uint32 t);
 	~WarsongGulch();
