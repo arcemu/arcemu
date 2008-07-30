@@ -12468,7 +12468,7 @@ void ApplyNormalFixes()
             sp->BGR_one_buff_on_target |= SPELL_TYPE_ARMOR;
         else if( strstr( sp->Name, "Aura") 
 			&& !strstr( sp->Name, "Trueshot") && !strstr( sp->Name, "Moonkin")
-			&& !strstr( sp->Name, "Sanctity") && !strstr( sp->Name, "Devotion") && !strstr( sp->Name, "Retribution") && !strstr( sp->Name, "Thorns") && !strstr( sp->Name, "Concentration") && !strstr( sp->Name, "Shadow Resistance") && !strstr( sp->Name, "Frost Resistance") && !strstr( sp->Name, "Fire Resistance")
+//			&& !strstr( sp->Name, "Sanctity") && !strstr( sp->Name, "Devotion") && !strstr( sp->Name, "Retribution") && !strstr( sp->Name, "Thorns") && !strstr( sp->Name, "Concentration") && !strstr( sp->Name, "Shadow Resistance") && !strstr( sp->Name, "Frost Resistance") && !strstr( sp->Name, "Fire Resistance")
 			)
             sp->BGR_one_buff_on_target |= SPELL_TYPE_AURA;
 		else if( strstr( sp->Name, "Track")==sp->Name)
