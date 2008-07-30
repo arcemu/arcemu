@@ -628,6 +628,9 @@ void AuthSocket::HandleReconnectProof()
 	Read(58, const_cast<uint8*>(buf.contents()));
 	buf.hexlike();*/
 
+	if (!m_account)
+		return;
+
 	// Don't update when IP banned, but update anyway if it's an account ban
 	sLogonSQL->Execute("UPDATE accounts SET lastlogin=NOW(), lastip='%s' WHERE acct=%u;", GetRemoteIP().c_str(), m_account->AccountId);
 	//RemoveReadBufferBytes(GetReadBufferSize(), true);
