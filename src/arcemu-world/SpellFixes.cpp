@@ -12468,7 +12468,7 @@ void ApplyNormalFixes()
             sp->BGR_one_buff_on_target |= SPELL_TYPE_ARMOR;
         else if( strstr( sp->Name, "Aura") 
 			&& !strstr( sp->Name, "Trueshot") && !strstr( sp->Name, "Moonkin")
-//			&& !strstr( sp->Name, "Sanctity") && !strstr( sp->Name, "Devotion") && !strstr( sp->Name, "Retribution") && !strstr( sp->Name, "Thorns") && !strstr( sp->Name, "Concentration") && !strstr( sp->Name, "Shadow Resistance") && !strstr( sp->Name, "Frost Resistance") && !strstr( sp->Name, "Fire Resistance")
+			&& !strstr( sp->Name, "Crusader") && !strstr( sp->Name, "Sanctity") && !strstr( sp->Name, "Devotion") && !strstr( sp->Name, "Retribution") && !strstr( sp->Name, "Concentration") && !strstr( sp->Name, "Shadow Resistance") && !strstr( sp->Name, "Frost Resistance") && !strstr( sp->Name, "Fire Resistance")
 			)
             sp->BGR_one_buff_on_target |= SPELL_TYPE_AURA;
 		else if( strstr( sp->Name, "Track")==sp->Name)
@@ -12558,10 +12558,27 @@ void ApplyNormalFixes()
 
 		// find diminishing status
 		sp->DiminishStatus = GetDiminishingGroup(namehash);
+
+		//another grouping rule
+		switch(namehash)
+		{
+		case SPELL_HASH_SANCTITY_AURA:		
+		case SPELL_HASH_DEVOTION_AURA:		
+		case SPELL_HASH_RETRIBUTION_AURA:		
+		case SPELL_HASH_CONCENTRATION_AURA:		
+		case SPELL_HASH_SHADOW_RESISTANCE_AURA:		
+		case SPELL_HASH_FIRE_RESISTANCE_AURA:		
+		case SPELL_HASH_FROST_RESISTANCE_AURA:		
+		case SPELL_HASH_CRUSADER_AURA:		
+			sp->BGR_one_buff_from_caster_on_self = SPELL_TYPE2_PALADIN_AURA;
+			break;
+		}
+
+		//grouping rule
 		switch(namehash)
 		{
 		case SPELL_HASH_HUNTER_S_MARK:		// Hunter's mark
-			sp->BGR_one_buff_from_caster |= SPELL_TYPE_INDEX_MARK;
+			sp->BGR_one_buff_from_caster_on_1target = SPELL_TYPE_INDEX_MARK;
 			break;
 
 		case SPELL_HASH_POLYMORPH:			// Polymorph
@@ -12569,35 +12586,35 @@ void ApplyNormalFixes()
 		case SPELL_HASH_POLYMORPH__PIG:		// Polymorph: Pig
 		case SPELL_HASH_POLYMORPH__SHEEP:	// Polymorph: Sheep
 		case SPELL_HASH_POLYMORPH__TURTLE:	// Polymorph: Turtle
-			sp->BGR_one_buff_from_caster |= SPELL_TYPE_INDEX_POLYMORPH;
+			sp->BGR_one_buff_from_caster_on_1target = SPELL_TYPE_INDEX_POLYMORPH;
 			break;
 
 		case SPELL_HASH_FEAR:				// Fear
-			sp->BGR_one_buff_from_caster |= SPELL_TYPE_INDEX_FEAR;
+			sp->BGR_one_buff_from_caster_on_1target = SPELL_TYPE_INDEX_FEAR;
 			break;
 
 		case SPELL_HASH_SAP:				// Sap
-			sp->BGR_one_buff_from_caster |= SPELL_TYPE_INDEX_SAP;
+			sp->BGR_one_buff_from_caster_on_1target = SPELL_TYPE_INDEX_SAP;
 			break;
 
 		case SPELL_HASH_SCARE_BEAST:		// Scare Beast
-			sp->BGR_one_buff_from_caster |= SPELL_TYPE_INDEX_SCARE_BEAST;
+			sp->BGR_one_buff_from_caster_on_1target = SPELL_TYPE_INDEX_SCARE_BEAST;
 			break;
 
 		case SPELL_HASH_HIBERNATE:			// Hibernate
-			sp->BGR_one_buff_from_caster |= SPELL_TYPE_INDEX_HIBERNATE;
+			sp->BGR_one_buff_from_caster_on_1target = SPELL_TYPE_INDEX_HIBERNATE;
 			break;
 
 		case SPELL_HASH_EARTH_SHIELD:		// Earth Shield
-			sp->BGR_one_buff_from_caster |= SPELL_TYPE_INDEX_EARTH_SHIELD;
+			sp->BGR_one_buff_from_caster_on_1target = SPELL_TYPE_INDEX_EARTH_SHIELD;
 			break;
 
 		case SPELL_HASH_CYCLONE:			// Cyclone
-			sp->BGR_one_buff_from_caster |= SPELL_TYPE_INDEX_CYCLONE;
+			sp->BGR_one_buff_from_caster_on_1target = SPELL_TYPE_INDEX_CYCLONE;
 			break;
 
 		case SPELL_HASH_BANISH:				// Banish
-			sp->BGR_one_buff_from_caster |= SPELL_TYPE_INDEX_BANISH;
+			sp->BGR_one_buff_from_caster_on_1target = SPELL_TYPE_INDEX_BANISH;
 			break;
 
 		//case SPELL_HASH_JUDGEMENT_OF_VENGEANCE:
@@ -12605,7 +12622,7 @@ void ApplyNormalFixes()
 		case SPELL_HASH_JUDGEMENT_OF_LIGHT:
 		case SPELL_HASH_JUDGEMENT_OF_WISDOM:
 		case SPELL_HASH_JUDGEMENT_OF_JUSTICE:
-			sp->BGR_one_buff_from_caster |= SPELL_TYPE_INDEX_JUDGEMENT;
+			sp->BGR_one_buff_from_caster_on_1target = SPELL_TYPE_INDEX_JUDGEMENT;
 			break;
 		}
 

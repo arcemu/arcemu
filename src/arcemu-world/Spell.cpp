@@ -4632,7 +4632,7 @@ void Spell::Heal(int32 amount, bool ForceCrit)
 							break;
 					}
 					TalentPct += 1.0f;
-					amount *= TalentPct;
+					amount = (int)( amount * TalentPct );
 				}
 			}
 		}

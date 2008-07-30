@@ -3307,7 +3307,7 @@ else
 		// DONE: Remove + readded it :P
 		for( uint32 x = MAX_POSITIVE_AURAS; x <= MAX_AURAS; x++ )
 		{
-			if( pVictim->m_auras[x] != NULL && pVictim->m_auras[x]->GetUnitCaster() != NULL && pVictim->m_auras[x]->GetUnitCaster()->GetGUID() == GetGUID() && pVictim->m_auras[x]->GetSpellProto()->BGR_one_buff_from_caster == SPELL_TYPE_INDEX_JUDGEMENT )
+			if( pVictim->m_auras[x] != NULL && pVictim->m_auras[x]->GetUnitCaster() != NULL && pVictim->m_auras[x]->GetUnitCaster()->GetGUID() == GetGUID() && pVictim->m_auras[x]->GetSpellProto()->BGR_one_buff_from_caster_on_1target == SPELL_TYPE_INDEX_JUDGEMENT )
 			{
 				Aura * aur = pVictim->m_auras[x];
 				SpellEntry * spinfo = aur->GetSpellProto();
@@ -4154,6 +4154,21 @@ void Unit::RemoveAllAuraType(uint32 auratype)
 		{
 			SpellEntry *proto=m_auras[x]->GetSpellProto();
 			if(proto->EffectApplyAuraName[0]==auratype || proto->EffectApplyAuraName[1]==auratype || proto->EffectApplyAuraName[2]==auratype)
+				RemoveAura(m_auras[x]->GetSpellId());//remove all morph auras containig to this spell (like wolf motph also gives speed)
+		}
+    }
+}
+
+
+//ex:to remove morph spells
+void Unit::RemoveAllAuraFromSelfType2(uint32 auratype)
+{
+    for(uint32 x=0;x<MAX_AURAS;x++)
+    {
+		if(m_auras[x])
+		{
+			SpellEntry *proto=m_auras[x]->GetSpellProto();
+			if( proto->BGR_one_buff_from_caster_on_self == auratype && m_auras[x]->GetCaster() == this )
 				RemoveAura(m_auras[x]->GetSpellId());//remove all morph auras containig to this spell (like wolf motph also gives speed)
 		}
     }
@@ -5105,7 +5120,7 @@ void Unit::RemoveAurasByBuffIndexType(uint32 buff_index_type, const uint64 &guid
 {
 	for(uint32 x=0;x<MAX_AURAS;x++)
 	{
-		if(m_auras[x] && m_auras[x]->GetSpellProto()->BGR_one_buff_from_caster == buff_index_type)
+		if(m_auras[x] && m_auras[x]->GetSpellProto()->BGR_one_buff_from_caster_on_1target == buff_index_type)
 			if(!guid || (guid && m_auras[x]->m_casterGuid == guid))
 				m_auras[x]->Remove();
 	}

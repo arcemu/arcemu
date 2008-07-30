@@ -392,11 +392,13 @@ void Aura::Init( SpellEntry* proto, int32 duration, Object* caster, Unit* target
 		SetPositive( 100 );
 	if( caster->IsUnit() )
 	{
-		if( m_spellProto->BGR_one_buff_from_caster > 0 && caster->IsPlayer() )
+		if( m_spellProto->BGR_one_buff_from_caster_on_1target > 0 && caster->IsPlayer() )
 		{
-			( ( Player* )caster )->RemoveSpellTargets( m_spellProto->BGR_one_buff_from_caster, target);
-			( ( Player* )caster )->SetSpellTargetType( m_spellProto->BGR_one_buff_from_caster, target);
+			( ( Player* )caster )->RemoveSpellTargets( m_spellProto->BGR_one_buff_from_caster_on_1target, target);
+			( ( Player* )caster )->SetSpellTargetType( m_spellProto->BGR_one_buff_from_caster_on_1target, target);
 		}
+		if( m_spellProto->BGR_one_buff_from_caster_on_self != 0 )
+			static_cast<Unit*>(caster)->RemoveAllAuraFromSelfType2( m_spellProto->BGR_one_buff_from_caster_on_self );
 
 		if( isAttackable( ( Unit* )caster, target ) )
 		{
@@ -536,8 +538,8 @@ void Aura::Remove()
 			m_target->CombatStatus.RemoveAttacker( caster, caster->GetGUID() );
 		}
 
-		if( m_spellProto->BGR_one_buff_from_caster != 0 && m_target->IsPlayer() )
-			( ( Player* )m_target )->RemoveSpellIndexReferences( m_spellProto->BGR_one_buff_from_caster );
+		if( m_spellProto->BGR_one_buff_from_caster_on_1target != 0 && m_target->IsPlayer() )
+			( ( Player* )m_target )->RemoveSpellIndexReferences( m_spellProto->BGR_one_buff_from_caster_on_1target );
 	}
 	else
 		m_target->CombatStatus.RemoveAttacker( NULL, m_casterGuid );
