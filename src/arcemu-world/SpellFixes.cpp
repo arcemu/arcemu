@@ -17806,15 +17806,20 @@ void ApplyNormalFixes()
 		if( sp != NULL )
 		{
 			sp->Effect[0] = 0;
-			sp->Effect[1] = SPELL_EFFECT_TRIGGER_SPELL;
+			sp->Effect[1] = SPELL_EFFECT_APPLY_AURA;
+			sp->EffectApplyAuraName[1] = SPELL_AURA_PROC_TRIGGER_SPELL;
 			sp->EffectTriggerSpell[1] = 28682;
-			sp->procFlags = PROC_ON_CAST_SPELL | PROC_ON_SPELL_CRIT_HIT | PROC_TARGET_SELF;
+			sp->procFlags = PROC_ON_SPELL_HIT | PROC_ON_SPELL_CRIT_HIT | PROC_TARGET_SELF;
 			sp->procCharges = 0;
 			sp->c_is_flags |= SPELL_FLAG_IS_REQUIRECOOLDOWNUPDATE;
 		}
 		sp = dbcSpell.LookupEntryForced( 28682 );
 		if( sp != NULL )
-			sp->EffectSpellGroupRelation[0] = 8388608 | 16 | 2 | 4 | 4194304 | 1;
+		{
+			sp->EffectSpellGroupRelation[0] = 1 | 2 | 4 | 8 | 16 | 262144 | 4194304 | 8388608;
+			sp->EffectSpellGroupRelation_high[0] = 64;
+		}
+
 
 		//mage - Empowered Fireball
 		sp = dbcSpell.LookupEntryForced( 31656 );

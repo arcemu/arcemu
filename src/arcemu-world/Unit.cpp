@@ -1266,8 +1266,10 @@ void Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, uint
 								{
 									itr2->procCharges++;
 									if( itr2->procCharges >= 3 ) //whatch that number cause it depends on original stack count !
+									{
 										RemoveAllAuraByNameHash( SPELL_HASH_COMBUSTION );
-									continue;
+										continue;
+									}
 								}
 							}break;
 						//priest - Misery
