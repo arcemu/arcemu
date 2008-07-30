@@ -168,8 +168,8 @@ void WarsongGulch::HookOnAreaTrigger(Player * plr, uint32 id)
 
 			m_mainLock.Acquire();
 			/* add the marks of honor to all players */
-			SpellEntry * winner_spell = dbcSpell.LookupEntry(24950);
-			SpellEntry * loser_spell = dbcSpell.LookupEntry(24951);
+			SpellEntry * winner_spell = dbcSpell.LookupEntry(24951);
+			SpellEntry * loser_spell = dbcSpell.LookupEntry(24950);
 			for(uint32 i = 0; i < 2; ++i)
 			{
 				for(set<Player*>::iterator itr = m_players[i].begin(); itr != m_players[i].end(); ++itr)
@@ -549,4 +549,5 @@ void WarsongGulch::OnStart()
 void WarsongGulch::HookOnShadowSight() 
 {
 }
+
 
