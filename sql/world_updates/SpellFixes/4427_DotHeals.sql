@@ -1,2 +1,0 @@
-INSERT INTO `spell_proc` VALUES ('38395', '719070679');
-INSERT INTO `spell_proc` VALUES ('38395', '1037420658');

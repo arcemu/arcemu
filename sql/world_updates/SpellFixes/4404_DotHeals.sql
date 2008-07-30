@@ -1,1 +1,0 @@
-INSERT INTO `spellfixes` (`spellId`,`procFlags`,`SpellGroupType`) VALUES ('38394','1024','6');

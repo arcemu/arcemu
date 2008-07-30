@@ -1,3 +1,0 @@
-lifebloom: if u applied 2+ ticks on target its must be healed in one pack.
-		   e.g. we have 3 ticks, 39+39+39 every one sec,and it will heal 39,39,39
-		   but must to heal 117 in one pack.
