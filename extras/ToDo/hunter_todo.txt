@@ -1,0 +1,18 @@
+Other known:
+
+revision: 145
+bug: Wyvern Sting, It isnt apply that nature damage when target woke up.
+How it should work: It should apply 942 nature damage over 12 sec.
+http://www.wowwiki.com/Wyvern_Sting
+
+revision: 51
+bug: Frost Trap, This trap is no more working since ages..
+How it should work:Place a frost trap that creates an ice slick around itself for 30 sec when the first enemy approaches it. All enemies within 10 yards will be slowed by 60% while in the area of effect.
+http://www.wowwiki.com/Frost_Trap
+
+revision: 51
+bug: Hunter`s Mark ,Can`t see the target on the mini-map.
+How it should work: Should be able to see the marked player on the mini map as small red dot.
+http://www.wowwiki.com/Hunter's_Mark
+
+viper sting leeches mana ?

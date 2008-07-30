@@ -1,0 +1,195 @@
+/* 
+* Copyright (C) 2007 GMScripts <http://projects.emupedia.com/svn/gmscripts>
+*
+* This program is free software; you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation; either version 2 of the License, or
+* (at your option) any later version.
+*
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License
+* along with this program; if not, write to the Free Software
+* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+*/
+
+
+/********************************/
+/*        The Oracle Glade      */
+/********************************/
+// Bloodfeather Rogue
+global BloodfeatherRogue_onCombat = function(plr)
+{
+	BloodfeatherRogue_SpeakChance = Rand(0,1);
+	if(BloodfeatherRogue_SpeakChance == 1)
+	{
+		if (plr.GetRace()==1){ .SendChatMessage("My talons will shred your puny body, Human."); };
+		if (plr.GetRace()==2){ .SendChatMessage("My talons will shred your puny body, Orc."); };
+		if (plr.GetRace()==3){ .SendChatMessage("My talons will shred your puny body, Dwarf."); };
+		if (plr.GetRace()==4){ .SendChatMessage("My talons will shred your puny body, Night Elf."); };
+		if (plr.GetRace()==5){ .SendChatMessage("My talons will shred your puny body, Undead."); };
+		if (plr.GetRace()==6){ .SendChatMessage("My talons will shred your puny body, Tauren."); };
+		if (plr.GetRace()==7){ .SendChatMessage("My talons will shred your puny body, Gnome."); };
+		if (plr.GetRace()==8){ .SendChatMessage("My talons will shred your puny body, Troll."); };
+		if (plr.GetRace()==10){ .SendChatMessage("My talons will shred your puny body, Blood Elf."); };
+		if (plr.GetRace()==11){ .SendChatMessage("My talons will shred your puny body, Draenei."); };
+	};
+};
+.RegisterUnitEvent(2017, 1, BloodfeatherRogue_onCombat);
+
+// Bloodfeather Harpy
+global BloodfeatherHarpy_onCombat = function(plr)
+{
+	BloodfeatherHarpy_SpeakShance = Rand(0,1);
+	if(BloodfeatherHarpy_SpeakShance == 1)
+	{
+		if (plr.GetClass()==1){ .SendChatMessage("You will be easy prey, Warrior."); };
+		if (plr.GetClass()==2){ .SendChatMessage("You will be easy prey, Paladin."); };
+		if (plr.GetClass()==3){ .SendChatMessage("You will be easy prey, Hunter."); };
+		if (plr.GetClass()==4){ .SendChatMessage("You will be easy prey, Rogue."); };
+		if (plr.GetClass()==5){ .SendChatMessage("You will be easy prey, Priest."); };
+		if (plr.GetClass()==7){ .SendChatMessage("You will be easy prey, Shaman."); };
+		if (plr.GetClass()==8){ .SendChatMessage("You will be easy prey, Mage."); };
+		if (plr.GetClass()==9){ .SendChatMessage("You will be easy prey, Warlock."); };
+		if (plr.GetClass()==11){ .SendChatMessage("You will be easy prey, Druid."); };
+	};
+};
+.RegisterUnitEvent(2015, 1, BloodfeatherHarpy_onCombat);
+
+
+
+/********************************/
+/*       Ban'ethis Hollow       */
+/********************************/
+// Gnarlpine Ambusher
+global GnarlpineAmbusher_var = 0;
+global GnarlpineAmbusher_CheckHealt = function(plr)
+{
+	global GnarlpineAmbusher_var;
+	if(.GetHealthPct() <= 15 && GnarlpineAmbusher_var == 0)
+	{
+		.TextEmote("Gnarlpine Ambusher attempts to run away in fear!");
+		GnarlpineAmbusher_var = 1;
+	}
+};
+
+global GnarlpineAmbusher_onCombat = function(plr)
+{
+     .RegisterTimer(500, GnarlpineAmbusher_CheckHealt, 0);
+};
+.RegisterUnitEvent(2152, 1, GnarlpineAmbusher_onCombat);
+
+global GnarlpineAmbusher_reset = function(plr)
+{
+	global GnarlpineAmbusher_var = 0;
+	.DeregisterTimer();
+};
+.RegisterUnitEvent(2152, 2, GnarlpineAmbusher_reset);
+.RegisterUnitEvent(2152, 3, GnarlpineAmbusher_reset);
+.RegisterUnitEvent(2152, 4, GnarlpineAmbusher_reset);
+
+
+
+
+/********************************/
+/*       Starbreeze Village     */
+/********************************/
+// Gaerolas Talvethren
+global GaerolasTalvethren_onSpawn = function(plr)
+{
+	.SetStandState(7);
+	.SetCombatCapable(0);
+};
+.RegisterUnitEvent(2107, 6, GaerolasTalvethren_onSpawn);
+
+
+
+
+/********************************/
+/*           Dolanaar           */
+/********************************/
+// Sentinel Shaya
+global SentinelShaya_onSpawn = function(plr)
+{
+	.SetStandState(8);
+};
+.RegisterUnitEvent(12429, 6, SentinelShaya_onSpawn);
+.RegisterUnitEvent(12429, 2, SentinelShaya_onSpawn);
+.RegisterUnitEvent(12429, 3, SentinelShaya_onSpawn);
+
+global SentinelShaya_OnCombat = function(plr)
+{
+	.SetStandState(0);
+};
+.RegisterUnitEvent(12429, 1, SentinelShaya_OnCombat);
+
+
+
+
+/********************************/
+/*           Shadowglen         */
+/********************************/
+// Iverron
+global Iverron_onSpawn = function(plr)
+{
+	.SetStandState(1);
+	.SetCombatCapable(0);
+};
+.RegisterUnitEvent(8584, 6, Iverron_onSpawn);
+
+
+/********************************/
+/*            Fel Rock          */
+/********************************/
+// Vicious Grell
+global ViciousGrell_onCombat = function(plr)
+{
+	ViciousGrell_CastChance = Rand(0, 9);
+	if(ViciousGrell_CastChance <= 2)
+	{
+		plr = .GetClosestPlayer();                    
+		if(plr != null){ .CastSpellOnTarget(20656, plr); }
+	};
+};
+.RegisterUnitEvent(2005, 1, ViciousGrell_onCombat);
+
+// Lord Melenas
+global LordMelenas_OnCombat = function(plr)
+{
+	.CastSpell(32356);
+	.ChangeModel(892);
+};
+.RegisterUnitEvent(2038, 1, LordMelenas_OnCombat);
+
+global LordMelenas_Reset = function(plr)
+{
+	.RemoveAura(32356);
+	.ChangeModel(1013);
+};
+.RegisterUnitEvent(2038, 2, LordMelenas_Reset);
+.RegisterUnitEvent(2038, 3, LordMelenas_Reset);
+.RegisterUnitEvent(2038, 4, LordMelenas_Reset);
+
+
+/********************************/
+/*    Ban'ethil Barrow Den      */
+/********************************/
+// Rageclaw
+global Rageclaw_OnCombat = function(plr)
+{
+	.CastSpell(32357);
+	.ChangeModel(2281);
+};
+.RegisterUnitEvent(7318, 1, Rageclaw_OnCombat);
+
+global Rageclaw_Reset = function(plr)
+{
+	.RemoveAura(32357);
+	.ChangeModel(6231);
+};
+.RegisterUnitEvent(7318, 2, Rageclaw_Reset);
+.RegisterUnitEvent(7318, 3, Rageclaw_Reset);
+.RegisterUnitEvent(7318, 4, Rageclaw_Reset);

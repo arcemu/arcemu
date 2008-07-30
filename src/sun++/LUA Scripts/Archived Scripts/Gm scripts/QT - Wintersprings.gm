@@ -1,0 +1,40 @@
+/* 
+* Copyright (C) 2007 GMScripts <http://projects.emupedia.com/svn/gmscripts>
+*
+* This program is free software; you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation; either version 2 of the License, or
+* (at your option) any later version.
+*
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License
+* along with this program; if not, write to the Free Software
+* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+*/
+
+
+/********************************/
+/*          Mazthoril           */
+/********************************/
+// Wrath of the Blue Flight (Group)
+global WrathOfTheBlueFlight_Tele = function(plr)
+{
+	plr.Teleport(0, 1234.0, -2125.0, 400.0);
+};
+
+global WrathOfTheBlueFlight_OnAccept = function(QuestGiver, plr)
+{
+	QuestGiver.Emote(60);											// one shot emote that kicks you to WPL 100' over the middle of the lake.
+	plr = QuestGiver.GetClosestPlayer();
+	if(plr != null)
+	{
+		// QuestGiver.CastSpellOnTarget(17168, plr);						// Heleh kicks you around the world.
+	};
+	// Not teleport if have fix pm me (Whiroph)
+	// QuestGiver.RegisterEvent(5000, WrathOfTheBlueFlight_Tele, 1);
+};
+.RegisterQuestEvent(5162, 2, WrathOfTheBlueFlight_OnAccept);					// When accepting Heleh's quest Wrath of the Blue Flight.

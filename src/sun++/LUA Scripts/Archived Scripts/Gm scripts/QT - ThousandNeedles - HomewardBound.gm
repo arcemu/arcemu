@@ -1,0 +1,158 @@
+/* 
+* Copyright (C) 2007 GMScripts <http://projects.emupedia.com/svn/gmscripts>
+*
+* This program is free software; you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation; either version 2 of the License, or
+* (at your option) any later version.
+*
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License
+* along with this program; if not, write to the Free Software
+* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+*/
+
+// Homeward Bound
+global OnHomewardBoundStart = function(mob, plr)
+{
+	// Create all the waypoints for the mob
+	mob.CreateCustomWaypointMap();
+	mob.CreateWaypoint(-5005.66, -882.705, -6.05186, 3.098398, 0, 256, 0);
+	mob.CreateWaypoint(-4968.67, -937.131, -4.99042, 3.098398, 0, 256, 0);
+	mob.CreateWaypoint(-4968.03, -958.455, -5.53631, 3.098398, 0, 256, 0);
+	mob.CreateWaypoint(-4968.48, -986.432, -4.80345, 3.098398, 0, 256, 0);
+	mob.CreateWaypoint(-4975.32, -998.646, -5.12671, 3.098398, 0, 256, 0);
+	mob.CreateWaypoint(-4970.91, -1014.12, -5.47358, 3.098398, 0, 256, 0);
+	mob.CreateWaypoint(-4963.23, -1026.1, -4.9985, 3.098398, 0, 256, 0);    
+	mob.CreateWaypoint(-4957.29, -1035.31, -5.62972, 3.098398, 0, 256, 0);
+	mob.CreateWaypoint(-4952.49, -1042.99, -8.61785, 3.098398, 0, 256, 0);
+	mob.CreateWaypoint(-4946.27, -1053.72, -15.9727, 3.098398, 0, 256, 0);
+	mob.CreateWaypoint(-4936.83, -1054.79, -22.0583, 3.098398, 0, 256, 0);
+	mob.CreateWaypoint(-4929.3, -1054.22, -25.8246, 3.098398, 0, 256, 0);
+	mob.CreateWaypoint(-4917.66, -1051.53, -30.242, 3.098398, 0, 256, 0);
+	mob.CreateWaypoint(-4909.1, -1049.48, -33.0802, 3.098398, 0, 256, 0);  
+	mob.CreateWaypoint(-4902.48, -1052.76, -33.4847, 3.098398, 0, 256, 0);
+	mob.CreateWaypoint(-4904.48, -1056.73, -33.8546, 3.098398, 0, 256, 0);
+	mob.CreateWaypoint(-4910.38, -1064.18, -38.8506, 3.098398, 0, 256, 0);
+	mob.CreateWaypoint(-4914.76, -1069.12, -42.8664, 3.098398, 0, 256, 0);
+	mob.CreateWaypoint(-4918.88, -1073.68, -45.7238, 3.098398, 0, 256, 0);
+	mob.CreateWaypoint(-4924.54, -1078.76, -48.3099, 3.098398, 0, 256, 0);
+	mob.CreateWaypoint(-4931.68, -1084.4, -51.0179, 3.098398, 0, 256, 0);
+	mob.CreateWaypoint(-4926.66, -1090.7, -53.2325, 3.098398, 0, 256, 0);
+	mob.CreateWaypoint(-4919.66, -1096.19, -53.3382, 3.098398, 0, 256, 0);
+	mob.CreateWaypoint(-4911.05, -1099.43, -53.7044, 3.098398, 0, 256, 0);
+	mob.CreateWaypoint(-4903.92, -1102.06, -54.9974, 3.098398, 0, 256, 0);
+	mob.CreateWaypoint(-4897.52, -1101.48, -55.4563, 3.098398, 0, 256, 0);
+	mob.CreateWaypoint(-4896.49, -1104.66, -55.2742, 3.098398, 0, 256, 0);
+	mob.CreateWaypoint(-4894.82, -1110.74, -53.9336, 3.098398, 0, 256, 0);
+	mob.CreateWaypoint(-4892.71, -1118.51, -51.0561, 3.098398, 0, 256, 0);
+	mob.CreateWaypoint(-4888.98, -1125.24, -50.4447, 3.098398, 0, 256, 0);
+	mob.CreateWaypoint(-4884.62, -1131.47, -50.44, 3.098398, 0, 256, 0);  
+	mob.CreateWaypoint(-4880.34, -1137.57, -50.5127, 3.098398, 0, 256, 0);
+	mob.CreateWaypoint(-4875.03, -1144.52, -50.5812, 3.098398, 0, 256, 0);
+	mob.CreateWaypoint(-4868.65, -1152.74, -50.9722, 3.098398, 0, 256, 0);
+	mob.CreateWaypoint(-4860.4, -1160.88, -50.6212, 3.098398, 0, 256, 0);
+	mob.CreateWaypoint(-4854.03, -1167.17, -49.6659, 3.098398, 0, 256, 0);
+	mob.CreateWaypoint(-4849.72, -1171.42, -48.9519, 3.098398, 0, 256, 0);
+	mob.CreateWaypoint(-4844.17, -1176.9, -48.3381, 3.098398, 0, 256, 0);
+	mob.CreateWaypoint(-4841.19, -1182.11, -48.7754, 3.098398, 0, 256, 0);
+	mob.CreateWaypoint(-4836.73, -1189.87, -49.3734, 3.098398, 0, 256, 0);
+	mob.CreateWaypoint(-4841.24, -1195.48, -49.4889, 3.098398, 0, 256, 0);
+	mob.CreateWaypoint(-4848.26, -1198.64, -49.3465, 3.098398, 0, 256, 0);
+	mob.CreateWaypoint(-4855.31, -1202.44, -48.8531, 3.098398, 0, 256, 0);
+	mob.CreateWaypoint(-4862.2, -1206.18, -48.6235, 3.098398, 0, 256, 0);
+	mob.CreateWaypoint(-4869.06, -1209.9, -46.1434, 3.098398, 0, 256, 0);
+	mob.CreateWaypoint(-4877.32, -1214.39, -44.1166, 3.098398, 0, 256, 0);
+	mob.CreateWaypoint(-4885.63, -1218.9, -43.5811, 3.098398, 0, 256, 0);
+	mob.CreateWaypoint(-4893.63, -1223.24, -42.5644, 3.098398, 0, 256, 0);
+	mob.CreateWaypoint(-4899.27, -1228.69, -42.2637, 3.098398, 0, 256, 0);
+	mob.CreateWaypoint(-4906.03, -1235.23, -41.9083, 3.098398, 0, 256, 0);
+	mob.CreateWaypoint(-4911.57, -1240.58, -42.9282, 3.098398, 0, 256, 0);
+	mob.CreateWaypoint(-4916.96, -1245.79, -43.973, 3.098398, 0, 256, 0);
+	mob.CreateWaypoint(-4921.24, -1249.92, -45.7031, 3.098398, 0, 256, 0);
+	mob.CreateWaypoint(-4924.52, -1256.67, -46.0392, 3.098398, 0, 256, 0);
+	mob.CreateWaypoint(-4927.78, -1263.37, -46.5725, 3.098398, 0, 256, 0);
+	mob.CreateWaypoint(-4932.77, -1273.62, -47.139, 3.098398, 0, 256, 0);
+	mob.CreateWaypoint(-4935.51, -1279.24, -47.1182, 3.098398, 0, 256, 0);
+	mob.CreateWaypoint(-4935.57, -1285.64, -46.7144, 3.098398, 0, 256, 0);
+	mob.CreateWaypoint(-4935.14, -1293.67, -46.2301, 3.098398, 0, 256, 0);
+	mob.CreateWaypoint(-4934.16, -1302.12, -46.1045, 3.098398, 0, 256, 0);
+	mob.CreateWaypoint(-4933.4, -1308.37, -46.5583, 3.098398, 0, 256, 0);
+	mob.CreateWaypoint(-4931.24, -1315.97, -47.6485, 3.098398, 0, 256, 0);
+	mob.CreateWaypoint(-4929.03, -1323.71, -48.8701, 3.098398, 0, 256, 0);
+	mob.CreateWaypoint(-4926.87, -1331.31, -49.926, 3.098398, 0, 256, 0);
+	mob.CreateWaypoint(-4922.54, -1338.16, -50.7557, 3.098398, 0, 256, 0);
+	mob.CreateWaypoint(-4917.05, -1344.31, -51.2097, 3.098398, 0, 256, 0);
+	mob.CreateWaypoint(-4910.32, -1348.82, -51.5222, 3.098398, 0, 256, 0);
+	mob.CreateWaypoint(-4903.97, -1353.76, -50.9117, 3.098398, 0, 256, 0);
+	mob.CreateWaypoint(-4901.07, -1361.11, -51.4375, 3.098398, 0, 256, 0);
+	mob.CreateWaypoint(-4901.38, -1369.51, -52.6119, 3.098398, 0, 256, 0);
+	mob.CreateWaypoint(-4904.58, -1376.73, -52.6119, 3.098398, 0, 256, 0);
+	mob.CreateWaypoint(-4910.54, -1378.76, -52.6119, 3.098398, 0, 256, 0);
+                      
+	// Set the escort target. This is needed to clean up and move him back to the spawn if the player
+	// goes out of range.
+	mob.SetEscortTarget(plr);
+                      
+	// Make sure he is on the correct movement type (move to the end of the waypoint path then stop)
+	mob.SetMovementType(11);
+                      
+	// He shouldn't attack anything.
+	mob.SetCombatCapable(0);
+                      
+	// Halt his movement for 3 seconds, so he can say his stuff.
+	mob.StopMovement(3000);
+                      
+	// Send his chat message.
+	mob.SendChatMessage("Please help me, you gotta protect me and stuff, I can't fight on my own!");
+
+	// Set his NPC flags to 0, so no one else can accept the quest.
+	mob.SetNPCFlags(0);
+
+	// If all goes well, he should proceed to his first waypoint.
+};
+
+global OnHomewardBoundCheck = function(mob, plr)
+{
+	if(mob.HasEscortTarget() == 1)
+	{
+		plr.SendSystemMessage("Someone else is already doing that quest.");
+		return 0;
+	}
+	return 1;
+};
+
+global OnHomewardBoundReachWaypoint = function(waypoint_id)
+{
+	if(waypoint_id == 72)
+	{
+		// Send the chat message.
+		.SendChatMessage("I appreciate the help you have shown Pao'ka. I hope this covers any misfortunes this deed has cost you.");
+	      
+		// Despawn him after 5 seconds, and return back to the spawn.
+		.Despawn(5000, 1000);
+
+		// Destroy the custom waypoint map we created.
+		.DestroyCustomWaypointMap();
+
+		// Last but not least, complete the quest objective for the player.
+		if(.HasEscortTarget() == 0)
+		{
+			return;
+		}
+
+		plr = .GetEscortTarget();
+
+		// We're no longer being escorted.
+		.ClearEscortTarget();
+
+		plr.MarkQuestObjectiveAsComplete(4770, 0);
+	}
+};
+.RegisterQuestEvent(4770, 2, OnHomewardBoundStart);			// HomewardBound - on accept
+.RegisterQuestEvent(4770, 3, OnHomewardBoundCheck);        
+.RegisterUnitEvent(10427, 8, OnHomewardBoundReachWaypoint);		// HomewardBound - on reach waypoint

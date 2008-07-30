@@ -1,0 +1,33 @@
+//The Binding - Warlock voidwalker summon quest
+//StewTheGreat
+
+//Spawn Summoned Voidwalker when using correct item
+global Voidwalker_Object_Storm = function(plr)
+{
+	//Stormwind
+	if(plr.HasQuest(1689) && plr.HasItem(6928)){
+	plr.SpawnMonster(5676, -9032.744141, 1028.457520, 55.548859); //Spawn Summoned Voidwalker
+		plr.Despawn(600000,0); //Despawn after 10 minutes
+	};
+};
+.RegisterGameObjectEvent(92015, 2, Voidwalker_Object_Storm);
+	
+global Voidwalker_Object_Under = function(plr)	
+{	
+	//Undercity
+	if(plr.HasQuest(1471) && plr.HasItem(6284)){
+	plr.SpawnMonster(5676, 1704.803467, 41.591446, 63.843269);
+		plr.Despawn(600000,0);
+	};
+};
+.RegisterGameObjectEvent(37097, 2, Voidwalker_Object_Under);	
+
+global Voidwalker_Object_Org = function(plr)
+{	
+	//Orgrimmar
+	if(plr.HasQuest(1504) && plr.HasItem(7464)){
+	plr.SpawnMonster(5676, 1803.300781, -4372.512207, 17.464327);
+		plr.Despawn(600000,0);
+	};
+};
+.RegisterGameObjectEvent(105576, 2, Voidwalker_Object_Org);

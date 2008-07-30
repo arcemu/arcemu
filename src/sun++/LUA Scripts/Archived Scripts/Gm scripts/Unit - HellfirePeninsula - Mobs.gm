@@ -1,0 +1,67 @@
+/* 
+* Copyright (C) 2007 GMScripts <http://projects.emupedia.com/svn/gmscripts>
+*
+* This program is free software; you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation; either version 2 of the License, or
+* (at your option) any later version.
+*
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License
+* along with this program; if not, write to the Free Software
+* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+*/
+
+// Bonechewer Raider and Bleeding Hollow Tormentor Mounts
+global x = 0;
+global y = 0;
+global z = 0;
+global Bonechewer_OnCombat = function(plr)
+{
+	x = .GetPositionX() + 1;			// Gets position for the mounts spawn.
+	y = .GetPositionY();
+	z = .GetPositionZ();
+	.SpawnMonster(18706, x, y, z);		// Spawns the mount.
+};
+
+global BleedingHollow_OnCombat = function(plr)
+{
+	x = .GetPositionX() + 1;			// Gets x position for the mounts spawn.
+	y = .GetPositionY();				// Gets y position for the mounts spawn.
+	z = .GetPositionZ();				// Gets z position for the mounts spawn.
+	.SpawnMonster(19423, x, y, z);		// Spawn
+};
+
+global DismountMountHelfire_OnLeaveCombat = function(plr)
+{
+	.Despawn(1000, 0);					 // Despawns the mount in HFP and SMV as well as the silkwing if the attacker runs.
+};
+.RegisterUnitEvent(16925, 1, Bonechewer_OnCombat);
+.RegisterUnitEvent(19424, 1, BleedingHollow_OnCombat);
+.RegisterUnitEvent(18706, 2, DismountMountHelfire_OnLeaveCombat);
+.RegisterUnitEvent(19423, 2, DismountMountHelfire_OnLeaveCombat);
+
+
+// Bonechewer Raider spawn on dead the Silkwing
+global BonechewerRaider_Dead = function(mob)
+{
+	x = .GetPositionX();					// Gets X position for the mounts spawn.
+	y = .GetPositionY();					// Gets Y position for the mounts spawn.
+	z = .GetPositionZ();					// Gets Z position for the mounts spawn.
+	DoSpawn = Rand(1, 4);					// 25% chance a silkwing will spawn from silkwing larva.
+	if(DoSpawn == 2)
+	{
+		.SpawnMonster(21373, x, y, z);		// Spawns the silkwing.
+	}; 
+};
+
+global Silkwing_OnLeaveCombat = function(plr)
+{
+	.Despawn(500, 0);
+};
+.RegisterUnitEvent(16925, 4, BonechewerRaider_Dead);
+.RegisterUnitEvent(21373, 2, Silkwing_OnLeaveCombat);

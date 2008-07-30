@@ -1,0 +1,9 @@
+revision:183
+bug:Bloodlust
+How it should work:Increases melee, ranged speed by 30% for all party members. Lasts 40 seconds.
+
+revision:183
+bug:StormStrike
+How it should work:The next 2 sources of nature damage dealt to the target are increased by 20%. Lasts 12 sec.
+
+there should be totem timers ?

@@ -1,0 +1,4101 @@
+Index: trunk/src/ascent-shared/AscentConfig.h
+===================================================================
+--- trunk/src/ascent-shared/AscentConfig.h	(revision 4109)
++++ trunk/src/ascent-shared/AscentConfig.h	(working copy)
+@@ -95,5 +95,16 @@
+  */
+ #define OPTIMIZE_SERVER_FOR_MYSQL 1
+ 
++/**
++* New ProcFlags system. May affect a lot of procspells.
++* This may give a boost to performance.
++* Enable it if you want to play with fire a bit :P
++*/
++#define NEW_PROCFLAGS 1
++
+ #endif		// __ASCENTCONFIG_H
+ 
++
++
++
++
+Index: trunk/src/ascent-shared/Database/DBCStores.h
+===================================================================
+--- trunk/src/ascent-shared/Database/DBCStores.h	(revision 4109)
++++ trunk/src/ascent-shared/Database/DBCStores.h	(working copy)
+@@ -344,6 +344,11 @@
+     /// CUSTOM: these fields are used for the modifications made in the world.cpp
+     uint32 DiminishStatus;                  //
+     uint32 proc_interval;                   //!!! CUSTOM, <Fill description for variable>
++#ifndef NEW_PROCFLAGS
++#else
++	uint32 CustomProcFlags;                 //!!! CUSTOM, <Fill description for variable>
++	uint32 ProcReqFlags;                    //!!! CUSTOM, procflags requirement. Uses by "child" procspell see enum CustomProcReq
++#endif
+     uint32 buffIndexType;					//!!! CUSTOM, <Fill description for variable>
+     uint32 c_is_flags;						//!!! CUSTOM, store spell checks in a static way : isdamageind,ishealing
+     uint32 buffType;                        //!!! CUSTOM, these are related to creating a item through a spell
+Index: trunk/src/ascent-world/DynamicObject.cpp
+===================================================================
+--- trunk/src/ascent-world/DynamicObject.cpp	(revision 4109)
++++ trunk/src/ascent-world/DynamicObject.cpp	(working copy)
+@@ -175,8 +175,10 @@
+ 				target->AddAura(pAura);
+ 				if(p_caster)
+ 				{
++#ifndef NEW_PROCFLAGS
+ 					p_caster->HandleProc(PROC_ON_CAST_SPECIFIC_SPELL | PROC_ON_CAST_SPELL,target, m_spellProto);
+ 					p_caster->m_procCounter = 0;
++#endif
+ 				}
+ 
+ 				// add to target list
+@@ -233,3 +235,7 @@
+ 	delete this;
+ }
+ 
++
++
++
++
+Index: trunk/src/ascent-world/HonorHandler.cpp
+===================================================================
+--- trunk/src/ascent-world/HonorHandler.cpp	(revision 4109)
++++ trunk/src/ascent-world/HonorHandler.cpp	(working copy)
+@@ -34,9 +34,10 @@
+ {
+ 	pPlayer->m_honorPointsToAdd += uAmount;
+ 	pPlayer->m_honorToday += uAmount;
+-	
++#ifndef NEW_PROCFLAGS	
+ 	pPlayer->HandleProc(PROC_ON_GAIN_EXPIERIENCE, pPlayer, NULL);
+ 	pPlayer->m_procCounter = 0;
++#endif
+ 
+ 	RecalculateHonorFields(pPlayer);
+ }
+Index: trunk/src/ascent-world/Item.cpp
+===================================================================
+--- trunk/src/ascent-world/Item.cpp	(revision 4109)
++++ trunk/src/ascent-world/Item.cpp	(working copy)
+@@ -679,7 +679,9 @@
+ 						ProcTriggerSpell TS;
+ 						TS.caster = m_owner->GetGUID();
+ 						TS.origId = 0;
++#ifndef NEW_PROCFLAGS
+ 						TS.procFlags = PROC_ON_MELEE_ATTACK;
++#endif
+ 						TS.procCharges = 0;
+ 						/* This needs to be modified based on the attack speed of the weapon.
+ 						 * Secondly, need to assign some static chance for instant attacks (ss,
+Index: trunk/src/ascent-world/ItemInterface.cpp
+===================================================================
+--- trunk/src/ascent-world/ItemInterface.cpp	(revision 4109)
++++ trunk/src/ascent-world/ItemInterface.cpp	(working copy)
+@@ -1156,7 +1156,7 @@
+ 	//detect special bag item
+ 	if( item->GetProto()->BagFamily )
+ 	{
+-		if( item->GetProto()->BagFamily == ITEM_TYPE_KEYRING )
++		if( item->GetProto()->BagFamily == ITEM_TYPE_KEYS )
+ 		{
+ 			for(i=INVENTORY_KEYRING_START; i<INVENTORY_KEYRING_END; i++ )
+ 			{
+@@ -1249,7 +1249,7 @@
+ 	{
+ 		if(proto->BagFamily)
+ 		{
+-			if(proto->BagFamily == ITEM_TYPE_KEYRING)
++			if(proto->BagFamily == ITEM_TYPE_KEYS)
+ 			{
+ 				for(uint32 i = INVENTORY_KEYRING_START; i < INVENTORY_KEYRING_END; i++)
+ 				{
+@@ -1775,7 +1775,7 @@
+ 	case INVENTORY_KEYRING_31:
+ 	case INVENTORY_KEYRING_32:
+ 		{
+-			if(proto->BagFamily == ITEM_TYPE_KEYRING )
++			if(proto->BagFamily == ITEM_TYPE_KEYS )
+ 			{
+ 					return 0;
+ 			}
+@@ -2628,7 +2628,7 @@
+ 		//sLog.outDebug( "ItemInterface::FindFreeInventorySlot called for item %s" , proto->Name1 );
+ 		if( proto->BagFamily)
+ 		{
+-			if( proto->BagFamily == ITEM_TYPE_KEYRING )
++			if( proto->BagFamily == ITEM_TYPE_KEYS )
+ 			{
+ 				for(uint32 i = INVENTORY_KEYRING_START; i < INVENTORY_KEYRING_END; i++ )
+ 				{
+Index: trunk/src/ascent-world/ItemPrototype.h
+===================================================================
+--- trunk/src/ascent-world/ItemPrototype.h	(revision 4109)
++++ trunk/src/ascent-world/ItemPrototype.h	(working copy)
+@@ -448,12 +448,18 @@
+ 
+ enum SPECIAL_ITEM_TYPE
+ {
+-	ITEM_TYPE_KEYRING	 = 9,
+-	ITEM_TYPE_ENCHANTMENT = 7,
+-	ITEM_TYPE_HERBALISM   = 6,
+-	ITEM_TYPE_SOULSHARD   = 3,
+-	ITEM_TYPE_GUNAMMO	 = 2,
+-	ITEM_TYPE_BOWAMMO	 = 1
++	ITEM_TYPE_NULL,
++	ITEM_TYPE_BOWAMMO,
++	ITEM_TYPE_GUNAMMO,
++	ITEM_TYPE_SOULSHARD,
++	ITEM_TYPE_LEATHERWORKING,
++	ITEM_TYPE_UNUSED,
++	ITEM_TYPE_HERBALISM,
++	ITEM_TYPE_ENCHANTING,
++	ITEM_TYPE_ENGINEERING,
++	ITEM_TYPE_KEYS,
++	ITEM_TYPE_GEMS,
++	ITEM_TYPE_MINING
+ };
+ 
+ enum SOCKET_GEM_COLOR
+Index: trunk/src/ascent-world/Object.cpp
+===================================================================
+--- trunk/src/ascent-world/Object.cpp	(revision 4109)
++++ trunk/src/ascent-world/Object.cpp	(working copy)
+@@ -1741,10 +1741,15 @@
+ 			if( spellId )
+ 				killerspell = dbcSpell.LookupEntry( spellId );
+ 			else killerspell = NULL;
++#ifndef NEW_PROCFLAGS
++			
+ 			pVictim->HandleProc( PROC_ON_DIE, static_cast< Unit* >( this ), killerspell );
+ 			pVictim->m_procCounter = 0;
+ 			static_cast< Unit* >( this )->HandleProc( PROC_ON_TARGET_DIE, pVictim, killerspell );
+ 			static_cast< Unit* >( this )->m_procCounter = 0;
++#else
++			pVictim->m_procCustomFlags |= PROC_ON_DIE;
++#endif
+ 		}
+ 
+ 		/* victim died! */
+@@ -1912,6 +1917,9 @@
+ 					if( diff <= 8 )
+ 					{
+ 						HonorHandler::OnPlayerKilledUnit(plr, pVictim);
++#ifdef NEW_PROCFLAGS
++						plr->m_procFlags |=PROC_ON_XP_GAIN;
++#endif
+ 						SetFlag( UNIT_FIELD_AURASTATE, AURASTATE_FLAG_LASTKILLWITHHONOR );
+ 					}
+ 					else
+@@ -1920,6 +1928,9 @@
+ 				else
+ 				{
+ 					HonorHandler::OnPlayerKilledUnit( plr, pVictim );
++#ifdef NEW_PROCFLAGS
++					plr->m_procFlags |=PROC_ON_XP_GAIN;
++#endif
+ 					SetFlag( UNIT_FIELD_AURASTATE, AURASTATE_FLAG_LASTKILLWITHHONOR );
+ 				}
+ 			}
+@@ -2049,14 +2060,16 @@
+ 				// that way no local loadhitstore and its just one assignment 
+ 
+ 				// Is this player part of a group
+-				if( static_cast< Player* >( this)->InGroup() )
+-				{
+-					//Calc Group XP
++				uint32 xp = CalculateXpToGive( pVictim, static_cast< Unit* >( this ) );
++#ifdef NEW_PROCFLAGS
++				if (xp)
++					static_cast< Unit* >( this )->m_procFlags |= PROC_ON_XP_GAIN;
++#endif
++
++				if( static_cast< Player* >( this )->InGroup() )//Calc Group XP
+ 					static_cast< Player* >( this )->GiveGroupXP( pVictim, static_cast< Player* >( this ) );
+-				}
+ 				else
+ 				{
+-					uint32 xp = CalculateXpToGive( pVictim, static_cast< Unit* >( this ) );
+ 					if( xp )
+ 						static_cast< Player* >( this )->GiveXP( xp, victimGuid, true );
+ 
+@@ -2181,8 +2194,16 @@
+ //========================================================================================== 
+ 	uint32 school = spellInfo->School;
+ 	float res = float(damage);
++#ifndef NEW_PROCFLAGS
+ 	uint32 aproc = PROC_ON_ANY_HOSTILE_ACTION;
+ 	uint32 vproc = PROC_ON_ANY_HOSTILE_ACTION | PROC_ON_ANY_DAMAGE_VICTIM | PROC_ON_SPELL_HIT_VICTIM;
++#else
++	uint32 cProcFlags =0;
++	uint32 aproc = 0;
++	uint32 vproc = pVictim->m_procFlags;
++	if (this->IsUnit())
++		aproc |= static_cast<Unit*>(this)->m_procFlags;
++#endif
+ 	bool critical = false;
+ //==========================================================================================
+ //==============================+Spell Damage Bonus Calculations============================
+@@ -2268,8 +2289,12 @@
+ 				}
+ 
+ 				pVictim->Emote( EMOTE_ONESHOT_WOUNDCRITICAL );
++#ifndef NEW_PROCFLAGS
+ 				aproc |= PROC_ON_SPELL_CRIT_HIT;
+ 				vproc |= PROC_ON_SPELL_CRIT_HIT_VICTIM;
++#else
++				cProcFlags |= PROC_ON_CRITICAL;
++#endif
+ 			}
+ 		}
+ 	}
+@@ -2295,6 +2320,14 @@
+ 		abs_dmg += ms_abs_dmg;
+ 	}
+ 
++	if (abs_dmg>0)
++	{
++#ifndef NEW_PROCFLAGS
++		vproc |= PROC_ON_ABSORB;
++#else
++		cProcFlags |= PROC_ON_ABSORB;
++#endif
++	}
+ 	if(ress < 0) ress = 0;
+ 
+ 	res=(float)ress;
+@@ -2311,7 +2344,13 @@
+ 	{
+ 		static_cast<Unit*>(this)->CalculateResistanceReduction(pVictim,&dmg,spellInfo);
+ 		if((int32)dmg.resisted_damage > dmg.full_damage)
++		{
++#ifndef NEW_PROCFLAGS
++#else
++			cProcFlags |=PROC_ON_RESIST;
++#endif
+ 			res = 0;
++		}
+ 		else
+ 			res = float(dmg.full_damage - dmg.resisted_damage);
+ 	}
+@@ -2329,6 +2368,7 @@
+ 	SendSpellNonMeleeDamageLog(this, pVictim, spellID, float2int32(res), school, abs_dmg, dmg.resisted_damage, false, 0, critical, IsPlayer());
+ 	DealDamage( pVictim, float2int32( res ), 2, 0, spellID );
+ 	
++#ifndef NEW_PROCFLAGS
+ 	if( this->IsUnit() && allowProc && spellInfo->Id != 25501 )
+ 	{
+ 		pVictim->HandleProc( vproc, static_cast< Unit* >( this ), spellInfo, float2int32( res ) );
+@@ -2336,13 +2376,26 @@
+ 		static_cast< Unit* >( this )->HandleProc( aproc, pVictim, spellInfo, float2int32( res ) );
+ 		static_cast< Unit* >( this )->m_procCounter = 0;
+ 	}
++#else
++	if (allowProc)
++	{
++		if(this->IsUnit())
++		{
++			Unit* u_caster = (Unit*)(this);
++			u_caster->m_procCustomFlags |=cProcFlags;
++			u_caster->m_procDmg = float2int32(res);
++			u_caster->m_procFlags |= aproc;
++			u_caster->m_procAbs = abs_dmg;
++		}
++		pVictim->m_procCustomFlags |=cProcFlags;
++		pVictim->m_procDmg = float2int32(res);
++		pVictim->m_procFlags |= vproc;
++		pVictim->m_procAbs = abs_dmg;
++	}
++#endif
+ 	if( this->IsPlayer() )
+-	{
+ 			static_cast< Player* >( this )->m_casted_amount[school] = ( uint32 )res;
+-	}
+ 
+-	
+-
+ 	if( pVictim->GetCurrentSpell() )
+ 		pVictim->GetCurrentSpell()->AddTime( school );
+ 
+Index: trunk/src/ascent-world/Player.cpp
+===================================================================
+--- trunk/src/ascent-world/Player.cpp	(revision 4109)
++++ trunk/src/ascent-world/Player.cpp	(working copy)
+@@ -1462,9 +1462,10 @@
+ 	}
+ 	// Set the update bit
+ 	SetUInt32Value(PLAYER_XP, newxp);
+-	
++#ifndef NEW_PROCFLAGS	
+ 	HandleProc(PROC_ON_GAIN_EXPIERIENCE, this, NULL);
+ 	m_procCounter = 0;
++#endif
+ }
+ 
+ void Player::smsg_InitialSpells()
+@@ -3694,7 +3695,9 @@
+ 				ts.spellId = item->GetProto()->Spells[k].Id;
+ 				ts.procChance = 5;
+ 				ts.caster = this->GetGUID();
++#ifndef NEW_PROCFLAGS
+ 				ts.procFlags = PROC_ON_MELEE_ATTACK;
++#endif
+ 				ts.deleted = false;
+ 				m_procSpells.push_front( ts );			
+ 			}
+Index: trunk/src/ascent-world/Spell.cpp
+===================================================================
+--- trunk/src/ascent-world/Spell.cpp	(revision 4109)
++++ trunk/src/ascent-world/Spell.cpp	(working copy)
+@@ -687,8 +687,10 @@
+ 		else
+ 			res =  (Rand(resistchance) ? SPELL_DID_HIT_RESIST : SPELL_DID_HIT_SUCCESS);
+ 
++#ifndef NEW_PROCFLAGS
+ 		if (res == SPELL_DID_HIT_SUCCESS) // proc handling. mb should be moved outside this function
+ 			target->HandleProc(PROC_ON_SPELL_LAND_VICTIM,this->u_caster,this->m_spellInfo);
++#endif
+ 
+ 		return res;
+ 	}
+@@ -1223,14 +1225,13 @@
+ 		finish();
+ 		return;
+ 	}
+-
+-	sLog.outDebug("Spell::cast %u, Unit: %u", m_spellInfo->Id, m_caster->GetGUIDLow());
+-
+ 	if(check)
+ 		cancastresult = CanCast(true);
+ 	else 
+ 		cancastresult = SPELL_CANCAST_OK;
+ 
++	sLog.outDebug("Spell::cast %u, Unit: %u CanCast: %u", m_spellInfo->Id, m_caster->GetGUIDLow(),cancastresult);
++
+ 	if(cancastresult == SPELL_CANCAST_OK)
+ 	{
+ 		if (p_caster && !m_triggeredSpell && p_caster->IsInWorld() && GUID_HIPART(m_targets.m_unitTarget)==HIGHGUID_UNIT)
+@@ -1433,57 +1434,57 @@
+ 					if( m_spellInfo->Effect[x])
+ 					{
+ 						isDuelEffect = isDuelEffect ||  m_spellInfo->Effect[x] == SPELL_EFFECT_DUEL;
+-						if( m_spellInfo->Effect[x] == SPELL_EFFECT_PERSISTENT_AREA_AURA)
+-                        {
++						// Capt: The way this is done is NOT GOOD. Target code should be redone.
++						if( m_spellInfo->Effect[x] == SPELL_EFFECT_PERSISTENT_AREA_AURA || m_spellInfo->Effect[x] == SPELL_EFFECT_TELEPORT_UNITS || m_spellInfo->Effect[x] == SPELL_EFFECT_SUMMON_WILD)
+ 							HandleEffects(m_caster->GetGUID(),x);
+-                        }
+ 						else if (m_targetUnits[x].size()>0)
+ 						{
+ 							for(i= m_targetUnits[x].begin();i != m_targetUnits[x].end();i++)
+-                            {
+ 								HandleEffects((*i),x);
+-                            }
+ 						}
+-
+-						// Capt: The way this is done is NOT GOOD. Target code should be redone.
+-						else if( m_spellInfo->Effect[x] == SPELL_EFFECT_TELEPORT_UNITS)
+-                        {
+-							HandleEffects(m_caster->GetGUID(),x);
+-                        }
+-						else if( m_spellInfo->Effect[x] == SPELL_EFFECT_SUMMON_WILD)
+-                        {
+-							HandleEffects(m_caster->GetGUID(),x);
+-                        }
+ 					}
+ 				}
+-	
+ 				/* don't call HandleAddAura unless we actually have auras... - Burlex*/
+-				if( m_spellInfo->EffectApplyAuraName[0] != 0 || m_spellInfo->EffectApplyAuraName[1] != 0 ||
+-				   m_spellInfo->EffectApplyAuraName[2] != 0)
++				if( m_spellInfo->EffectApplyAuraName[0] != 0 || m_spellInfo->EffectApplyAuraName[1] != 0 || m_spellInfo->EffectApplyAuraName[2] != 0)
+ 				{
+ 					hadEffect = true; // spell has had an effect (for item removal & possibly other things)
+ 
+ 					for(i= UniqueTargets.begin();i != UniqueTargets.end();i++)
+-					{
+ 						HandleAddAura((*i));
+-					}
+ 				}
+ 				// spells that proc on spell cast, some talents
+-				if(p_caster && p_caster->IsInWorld())
++				if(u_caster && u_caster->IsInWorld())
+ 				{
+ 					for(i= UniqueTargets.begin();i != UniqueTargets.end();i++)
+ 					{
+-						Unit * Target = p_caster->GetMapMgr()->GetUnit((*i));
++						Unit * Target = u_caster->GetMapMgr()->GetUnit((*i));
+ 
+ 						if(!Target)
+ 							continue; //we already made this check, so why make it again ?
+ 
+ 						if(!m_triggeredSpell)
+ 						{
+-							p_caster->HandleProc(PROC_ON_CAST_SPECIFIC_SPELL | PROC_ON_CAST_SPELL,Target, m_spellInfo);
+-							p_caster->m_procCounter = 0; //this is required for to be able to count the depth of procs (though i have no idea where/why we use proc on proc)
++#ifndef NEW_PROCFLAGS
++							u_caster->HandleProc(PROC_ON_CAST_SPECIFIC_SPELL | PROC_ON_CAST_SPELL,Target, m_spellInfo);
++							u_caster->m_procCounter = 0; //this is required for to be able to count the depth of procs (though i have no idea where/why we use proc on proc)
++#else
++							if (m_spellInfo && m_spellInfo->c_is_flags & SPELL_FLAG_IS_DAMAGING)
++							{
++								u_caster->m_procFlags |= PROC_ON_HARMFULSPELL_LAND;
++								Target->m_procFlags |=PROC_ON_HARMFULSPELL_LAND_VICTIM;
++							}
++							else if (m_spellInfo && m_spellInfo->c_is_flags & SPELL_FLAG_IS_HEALING)
++							{
++								u_caster->m_procFlags |= PROC_ON_HEALSPELL_LAND;
++								Target->m_procFlags |=PROC_ON_HEALSPELL_LAND_VICTIM;
++							}
++							/************************************************************************/
++							/* PROC HANDLER CALLING                                                 */
++							/************************************************************************/
++							u_caster->HandleProc(Target,m_spellInfo);
++							Target->HandleProc(u_caster,m_spellInfo);
++#endif
+ 						}
+-
+ 						Target->RemoveFlag(UNIT_FIELD_AURASTATE,m_spellInfo->TargetAuraState);
+ 					}
+ 				}
+@@ -2047,8 +2048,10 @@
+ 			*data << (*i).TargetModType;    // uint8
+ 			///handle proc on resist spell
+ 			Unit* target = u_caster->GetMapMgr()->GetUnit((*i).TargetGuid);
++#ifndef NEW_PROCFLAGS
+ 			if(target && target->isAlive())
+ 				u_caster->HandleProc(PROC_ON_RESIST_VICTIM,target,m_spellInfo/*,damage*/);		/** Damage is uninitialized at this point - burlex */
++#endif
+ 		}
+ 	}
+ 	else
+@@ -3996,7 +3999,15 @@
+ 			p_caster->SetPvPFlag();
+ 	}
+ 
+-	//Make it critical
++
++#ifndef NEW_PROCFLAGS
++#else
++	uint32 aproc = 0;
++	uint32 cProcFlags = 0;
++	uint32 vproc = unitTarget->m_procFlags;
++	if (p_caster != NULL)
++		aproc |= p_caster->m_procFlags;
++#endif
+ 	bool critical = false;
+ 	int32 critchance = 0; 
+ 	int32 bonus = 0;
+@@ -4074,15 +4085,13 @@
+ 			if( m_spellInfo->SpellGroupType)
+ 					SM_PIValue(static_cast<Unit*>(u_caster)->SM_PCriticalDamage, &critbonus, m_spellInfo->SpellGroupType);
+ 			amount += critbonus;
+-			//Shady: does it correct> caster casts heal and proc ..._VICTIM ? 
+-			// Or mb i'm completely wrong? So if true  - just replace with old string. 
+-			//u_caster->HandleProc(PROC_ON_SPELL_CRIT_HIT_VICTIM, unitTarget, m_spellInfo, amount);
+-			//Replaced with following one:
+-			
++#ifndef NEW_PROCFLAGS			
+ 			unitTarget->HandleProc(PROC_ON_SPELL_CRIT_HIT_VICTIM, u_caster, m_spellInfo, amount);
+ 			u_caster->HandleProc(PROC_ON_SPELL_CRIT_HIT, unitTarget, m_spellInfo, amount);
++#else
++			cProcFlags |= PROC_ON_CRITICAL;
++#endif
+ 		}
+-		
+ 	}
+ 
+ 	if(amount < 0) 
+@@ -4105,11 +4114,26 @@
+ 	else
+ 		unitTarget->ModUInt32Value(UNIT_FIELD_HEALTH, amount);
+ 
++
+ 	if (p_caster)
+ 	{
+ 		p_caster->m_casted_amount[m_spellInfo->School]=amount;
++#ifndef NEW_PROCFLAGS
+ 		p_caster->HandleProc( PROC_ON_CAST_SPECIFIC_SPELL | PROC_ON_CAST_SPELL, unitTarget, m_spellInfo );
++#endif
+ 	}
++#ifndef NEW_PROCFLAGS
++#else
++	if (u_caster != NULL)
++	{
++		u_caster->m_procFlags |=aproc;
++		u_caster->m_procCustomFlags |=cProcFlags;
++		u_caster->m_procDmg = amount;
++	}
++	unitTarget->m_procFlags |=aproc;
++	unitTarget->m_procCustomFlags |=cProcFlags;
++	unitTarget->m_procDmg = amount;
++#endif
+ 
+ 	int doneTarget = 0;
+ 
+@@ -4536,6 +4560,48 @@
+ 
+ 	plr->GetSession()->OutPacket(SMSG_TARGET_CAST_RESULT, c, buffer);
+ }
++
++#ifdef NEW_PROCFLAGS
++initialiseSingleton( SpellProcReqMgr );
++
++SpellProcReqMgr::SpellProcReqMgr()
++{
++
++}
++
++SpellProcReqMgr::~SpellProcReqMgr()
++{
++	for (list<ProcReqEntry*>::iterator x = spelllist.begin(); x!=spelllist.end();x++)
++		spelllist.erase(x);
++}
++
++bool SpellProcReqMgr::AddRequirement(ProcReqEntry* entry)
++{
++	if (entry == NULL)
++		return false;
++	for (list<ProcReqEntry*>::iterator x = spelllist.begin(); x!=spelllist.end();x++)
++	{
++		if ((*x)->SpellId == entry->SpellId)
++		{
++			sLog.outDebug("[ERROR] SpellProc Requirement adding failed. Requirement %u already exists",entry->SpellId);
++			return false;
++		}
++	}
++	spelllist.push_back(entry);
++	return true;
++}
++
++ProcReqEntry* SpellProcReqMgr::GetRequirement(uint32 spellid)
++{
++	for (list<ProcReqEntry*>::iterator x = spelllist.begin(); x!=spelllist.end();x++)
++	{
++		if ((*x)->SpellId == spellid)
++			return (*x);
++	}
++	return NULL;
++}
++#endif
++
+ /*
+ bool IsBeneficSpell(SpellEntry *sp)
+ {
+Index: trunk/src/ascent-world/Spell.h
+===================================================================
+--- trunk/src/ascent-world/Spell.h	(revision 4109)
++++ trunk/src/ascent-world/Spell.h	(working copy)
+@@ -220,7 +220,7 @@
+     TARGET_FLAG_UNK9                = 0x4000,
+     TARGET_FLAG_CORPSE2             = 0x8000
+ };
+-#ifndef NEW_PROCFLAGS 
++#ifndef NEW_PROCFLAGS
+ enum procFlags
+ {
+     PROC_NULL                       = 0x0,
+@@ -268,46 +268,68 @@
+ enum procFlags
+ {
+ 	PROC_NULL                          = 0x0,
+-	PROC_ON_NPC_ACTION                 = 0x1, //on GO action too btw. related to quests in general.
+-	PROC_ON_XP_GAIN                    = 0x2, //on honor gain too btw.
+-	PROC_ON_MELEE_HIT                  = 0x4, //on successful white melee attack
+-	PROC_ON_MELEE_HIT_VICTIM           = 0x8, //on successful white melee attack victim
+-	PROC_ON_MELEE_ABILITY_LAND         = 0x10, //on successful melee ability attack. Abilities that was resisted/dodged etc doesn't proc with this flag
+-	PROC_ON_MELEE_ABILITY_LAND_VICTIM  = 0x20, //on successful melee ability victim but not white damage. Abilities that was resisted/dodged etc doesn't proc with this flag
+-	PROC_ON_RANGED_HIT                 = 0x40,  //on successful ranged white attack
+-	PROC_ON_RANGED_HIT_VICTIM          = 0x80,  //on successful ranged white attack victim
+-	PROC_ON_RANGED_ABILITY_LAND        = 0x100, //on successful ranged ability attack. Abilities that was resisted/dodged etc doesn't proc with this flag
+-	PROC_ON_RANGED_ABILITY_LAND_VICTIM = 0x200,  //on successful ranged ability victim but not white damage. Abilities that was resisted/dodged etc doesn't proc with this flag
+-	PROC_ON_CAST_SPELL                 = 0x400, //on nonability (spell) cast. Spells that was resisted don't proc with this flag
+-	PROC_ON_CAST_SPELL_VICTIM          = 0x800,  //on nonability (spell) cast victim. Spells that was resisted don't proc with this flag.
+-	PROC_ON_ANY_DAMAGE                 = 0x1000, // mb wrong
+-	PROC_ON_ANY_DAMAGE_VICTIM          = 0x2000, // mb wrong
+-	PROC_ON_HEALSPELL_LAND             = 0x4000, //on heal (direct or HoT) spell land.
+-	PROC_ON_HEALSPELL_LAND_VICTIM      = 0x8000,  //on heal (direct or HoT) spell land victim.
+-	PROC_ON_HARMFULSPELL_LAND          = 0x10000, //on harmfull spell land (DoT damage not included in this flag!)
+-	PROC_ON_HARMFULSPELL_LAND_VICTIM   = 0x20000, //on harmfull spell land victim (DoT damage not included in this flag!)
+-	PROC_ON_DOT_DAMAGE                 = 0x40000, //on harmfull non direct damage (DoTs)
+-	PROC_ON_DOT_DAMAGE_VICTIM          = 0x80000,  //on harmfull non direct damage (DoTs) victim
+-	PROC_REMOVEONUSE                   = 0x100000, //something supercustom. 99% wrong :P used by bombs and grenades in general.
+-	PROC_ON_TRAP_TRIGGER               = 0x200000,
++	PROC_ON_NPC_ACTION                 = 0x1, //on GO action too btw. related to quests in general. NOT IMPLEMENTED
++	PROC_ON_XP_GAIN                    = 0x2, //on honor gain too btw. +
++	PROC_ON_MELEE_HIT                  = 0x4, //on successful white melee attack +
++	PROC_ON_MELEE_HIT_VICTIM           = 0x8, //on successful white melee attack victim +
++	PROC_ON_MELEE_ABILITY_LAND         = 0x10, //on successful melee ability attack. Abilities that was resisted/dodged etc doesn't proc with this flag +
++	PROC_ON_MELEE_ABILITY_LAND_VICTIM  = 0x20, //on successful melee ability victim but not white damage. Abilities that was resisted/dodged etc doesn't proc with this flag +
++	PROC_ON_RANGED_HIT                 = 0x40,  //on successful ranged white attack +
++	PROC_ON_RANGED_HIT_VICTIM          = 0x80,  //on successful ranged white attack victim +
++	PROC_ON_RANGED_ABILITY_LAND        = 0x100, //on successful ranged ability attack. Abilities that was resisted/dodged etc doesn't proc with this flag +
++	PROC_ON_RANGED_ABILITY_LAND_VICTIM = 0x200,  //on successful ranged ability victim but not white damage. Abilities that was resisted/dodged etc doesn't proc with this flag +
++	PROC_ON_SPELL_LAND                 = 0x400, //on nonability (spell) cast. Spells that was resisted don't proc with this flag NOT IMPLEMENTED
++	PROC_ON_SPELL_LAND_VICTIM          = 0x800,  //on nonability (spell) cast victim. Spells that was resisted don't proc with this flag. NOT IMPLEMENTED
++	PROC_ON_ANY_DAMAGE                 = 0x1000, // mb wrong so not implemented
++	PROC_ON_ANY_DAMAGE_VICTIM          = 0x2000, // mb wrong so not implemented
++	PROC_ON_HEALSPELL_LAND             = 0x4000, //on heal (direct or HoT) spell land. +
++	PROC_ON_HEALSPELL_LAND_VICTIM      = 0x8000,  //on heal (direct or HoT) spell land victim. +
++	PROC_ON_HARMFULSPELL_LAND          = 0x10000, //on harmfull spell land (DoT damage not included in this flag!) +
++	PROC_ON_HARMFULSPELL_LAND_VICTIM   = 0x20000, //on harmfull spell land victim (DoT damage not included in this flag!) +
++	PROC_ON_DOT_DAMAGE                 = 0x40000, //on harmfull non direct damage (DoTs) +
++	PROC_ON_DOT_DAMAGE_VICTIM          = 0x80000,  //on harmfull non direct damage (DoTs) victim +
++	PROC_REMOVEONUSE                   = 0x100000, //something supercustom. 99% wrong :P used by bombs and grenades in general. NOT IMPLEMENTED
++	PROC_ON_TRAP_TRIGGER               = 0x200000, // NOT IMPLEMENTED
+ 	PROC_UNUSED1                       = 0x400000,
+-	PROC_ON_OFFHAND_HIT                = 0x800000, //only 1 spellname "Combat Potency"
+-	PROC_ON_UNK1                       = 0x1000000,//only 1 spellname "Captured Totem"
++	PROC_ON_OFFHAND_HIT                = 0x800000, //only 1 spellname "Combat Potency" +
++	PROC_ON_UNK1                       = 0x1000000,//only 1 spellname "Captured Totem" NOT IMPLEMENTED
+ };
+-enum customProcFlags
++enum CustomProcFlags
+ {
+-	CUSTOMPROC_NULL                       = 0x0;
+-	CUSTOMPROC_ON_CRIT                    = 0x1; //doesn't matter victim or not. 
+-	CUSTOMPROC_ON_MISS_VICTIM             = 0x2;
+-	CUSTOMPROC_ON_DODGE_VICTIM            = 0x4;
+-	CUSTOMPROC_ON_BLOCK_VICTIM            = 0x8;
+-	CUSTOMPROC_ON_PARRY_VICTIM            = 0x10;
+-	CUSTOMPROC_ON_RESIST_VICTIM           = 0x20;
+-	CUSTOMPROC_ON_DIE                     = 0x40;//proc on our death
+-	CUSTOMPROC_ON_FINISHMOVE              = 0x80; //procs when we use finish move ability
+-	CUSTOMPROC_ON_ADDCOMBO                = 0x100; //procs when we use ability with +combo point
+-	CUSTOMPROC_PROC_ON_SELF               = 0x200; //proc on self
++	PROC_TARGET_SELF               = 0x1, //forcing selftargeting :P
++	PROC_ON_CRITICAL               = 0x2, // this one is exception from the rule. it's handled not by PROC_REQ_SPECSTATE but PROC_REQ_CRITICAL
++	PROC_ON_DODGE                  = 0x4,
++	PROC_ON_PARRY                  = 0x8,
++	PROC_ON_BLOCK                  = 0x10,
++	PROC_ON_RESIST                 = 0x20,
++	PROC_ON_ABSORB                 = 0x40,
++	PROC_ON_DIE                    = 0x80,
+ };
++enum CustomProcReq
++{
++	PROC_REQ_DAMAGING_SPELL                  = 0x1, // y/n
++	PROC_REQ_HEALING_SPELL                   = 0x2, // y/n
++	PROC_REQ_NOT_SELF                        = 0x4, // y/n
++	PROC_REQ_CRITICAL                        = 0x8, // y/n
++	PROC_REQ_ADDCOMBO                        = 0x10, // y/n
++	PROC_REQ_FINISHMOVE                      = 0x20, // y/n
++	PROC_REQ_SPEC_STATE_VICTIM               = 0x40, //requires bitmask value in ProcReqEntry see CustomProcFlags
++	PROC_REQ_PPM                             = 0x80, //requires float value in ProcReqEntry //ProcChance based on weapon speed.
++	PROC_REQ_SPELL_SCHOOL                    = 0x100, //requires bitmask value in ProcReqEntry 1 = phys 2 = holy 4 = fire etc
++	PROC_REQ_SPELL_SKILLINE                  = 0x200, //requires integer valuein ProcReqEntry
++	PROC_REQ_NAMEHASH                        = 0x400, //requires (4 values max) in ProcReqEntry
++	PROC_REQ_WEAPON_TYPE                     = 0x800, //requires integer value in ProcReqEntry (0=any weapon)
++};
++struct ProcReqEntry
++{
++	uint32 SpellId;
++	float PPM;
++	uint32 SpellSchool;
++	uint32 SpellSkillLine;
++	uint32 SpecState;
++	uint32 NameHash[4];
++	uint32 WeaponType;
++};
+ #endif
+ 
+ enum CastInterruptFlags
+@@ -961,6 +983,7 @@
+ };
+ 
+ // target type flags
++
+ enum SpellTargetTypes
+ {
+     SPELL_TARGET_TYPE_NONE              = 0x01,
+@@ -1997,4 +2020,22 @@
+ void UnapplyDiminishingReturnTimer(Unit * Target, SpellEntry * spell);
+ uint32 GetDiminishingGroup(uint32 NameHash);
+ 
++#ifndef NEW_PROCFLAGS
++#else
++class SERVER_DECL SpellProcReqMgr : public Singleton < SpellProcReqMgr >
++{
++public:	
++
++	SpellProcReqMgr();
++	~SpellProcReqMgr();
++
++	bool AddRequirement(ProcReqEntry*);
++	ProcReqEntry* GetRequirement(uint32 spellid);
++private:
++	list<ProcReqEntry*> spelllist;
++};
++#define sSpellProcReqMgr SpellProcReqMgr::getSingleton()
+ #endif
++
++
++#endif
+Index: trunk/src/ascent-world/SpellAuras.cpp
+===================================================================
+--- trunk/src/ascent-world/SpellAuras.cpp	(revision 4109)
++++ trunk/src/ascent-world/SpellAuras.cpp	(working copy)
+@@ -1120,6 +1120,14 @@
+ 	uint32 school = GetSpellProto()->School;
+ 	Unit * c = GetUnitCaster();
+ 
++	uint32 aproc = 0;
++	uint32 vproc = 0;
++#ifndef NEW_PROCFLAGS
++#else
++	uint32 cProcFlags = 0;
++#endif
++	uint32 abs_dmg=0;
++
+ 	if(m_target->GetGUID()!=m_casterGuid)//don't use resist when cast on self-- this is some internal stuff
+ 	{
+ 		if(c)
+@@ -1165,7 +1173,7 @@
+ 		}
+ 
+ 		uint32 ress=(uint32)res;
+-		uint32 abs_dmg = m_target->AbsorbDamage(school, &ress);
++		abs_dmg = m_target->AbsorbDamage(school, &ress);
+ 		uint32 ms_abs_dmg= m_target->ManaShieldAbsorb(ress);
+ 		if (ms_abs_dmg)
+ 		{
+@@ -1176,7 +1184,12 @@
+ 
+ 			abs_dmg += ms_abs_dmg;
+ 		}
+-
++		if (abs_dmg)
++#ifndef NEW_PROCFLAGS
++			vproc |= PROC_ON_ABSORB;
++#else
++			cProcFlags |=PROC_ON_ABSORB;
++#endif;
+ 		
+ 		if(ress < 0) ress = 0;
+ 		res=(float)ress;
+@@ -1230,16 +1243,35 @@
+ 	else
+ 		m_target->DealDamage(m_target, float2int32(res),  2, 0,  GetSpellId ());
+ 
++#ifndef NEW_PROCFLAGS
+ 	if(mtarget->GetGUID()!=cguid && c)//don't use resist when cast on self-- this is some internal stuff
+ 	{
+-		uint32 aproc = PROC_ON_ANY_HOSTILE_ACTION;
+-		uint32 vproc = PROC_ON_ANY_HOSTILE_ACTION | PROC_ON_ANY_DAMAGE_VICTIM | PROC_ON_SPELL_HIT_VICTIM;
++		aproc |= PROC_ON_ANY_HOSTILE_ACTION;
++		vproc |= PROC_ON_ANY_HOSTILE_ACTION | PROC_ON_ANY_DAMAGE_VICTIM | PROC_ON_SPELL_HIT_VICTIM;
+ 		c->HandleProc(aproc, mtarget, sp, float2int32(res));
+ 		c->m_procCounter = 0;
+ 		
+ 		mtarget->HandleProc(vproc,c,sp, float2int32(res));
+ 		mtarget->m_procCounter = 0;
+ 	}
++#else
++	if (this->GetUnitCaster() != NULL && m_target != NULL && res>0)
++	{
++		GetUnitCaster()->m_procFlags |= PROC_ON_DOT_DAMAGE;
++		GetUnitCaster()->m_procCustomFlags |=cProcFlags;
++		GetUnitCaster()->m_procDmg =float2int32(res);
++		GetUnitCaster()->m_procAbs =abs_dmg;
++		m_target->m_procFlags |= PROC_ON_DOT_DAMAGE_VICTIM;
++		m_target->m_procCustomFlags |=cProcFlags;
++		m_target->m_procDmg = float2int32(res);
++		m_target->m_procAbs =abs_dmg;
++		/************************************************************************/
++		/* PROC HANDLER CALLING                                                 */
++		/************************************************************************/
++		GetUnitCaster()->HandleProc(m_target,GetSpellProto());
++		m_target->HandleProc(GetUnitCaster(),GetSpellProto());
++	}
++#endif
+ }
+ 
+ void Aura::SpellAuraDummy(bool apply)
+@@ -2131,8 +2163,6 @@
+ 		if (m_spellProto->SpellGroupType)
+ 			SM_PIValue(c->SM_PDOT,&add,m_spellProto->SpellGroupType);
+ 	}
+-
+-	
+ 	uint32 newHealth = m_target->GetUInt32Value( UNIT_FIELD_HEALTH ) + (uint32)add;
+ 	
+ 	if( newHealth <= m_target->GetUInt32Value( UNIT_FIELD_MAXHEALTH ) )
+@@ -2192,7 +2222,24 @@
+ 
+ 		if(m_target->IsInWorld() && u_caster->IsInWorld())
+ 			u_caster->CombatStatus.WeHealed(m_target);
++
+ 	}   
++#ifndef NEW_PROCFLAGS
++#else
++	//Mb should be removed at all cause Hots not Dots :P
++	if (u_caster != NULL && m_target != NULL && add>0)
++	{
++		u_caster->m_procFlags |= PROC_ON_DOT_DAMAGE;
++		u_caster->m_procDmg = add;
++		m_target->m_procFlags |= PROC_ON_DOT_DAMAGE_VICTIM;
++		m_target->m_procDmg = add;
++		/************************************************************************/
++		/* HANDLE PROC CALLING                                                  */
++		/************************************************************************/
++		u_caster->HandleProc(m_target,GetSpellProto());
++		m_target->HandleProc(u_caster,GetSpellProto());
++	}
++#endif
+ }
+ 
+ void Aura::SpellAuraModAttackSpeed(bool apply)
+@@ -2498,7 +2545,9 @@
+ 		ds.m_damage = mod->m_amount;
+ 		ds.m_spellId = GetSpellProto()->Id;
+ 		ds.m_school = GetSpellProto()->School;
++#ifndef NEW_PROCFLAGS
+ 		ds.m_flags = PROC_ON_MELEE_ATTACK_VICTIM | PROC_MISC; //maybe later we might want to add other flags too here
++#endif
+ 		ds.owner = (void*)this;
+ 		m_target->m_damageShields.push_back(ds);
+ 	}
+@@ -3685,7 +3734,14 @@
+ 		pts.procCharges = GetSpellProto()->procCharges;
+ 		pts.LastTrigger = 0;
+ 		pts.deleted = false;
++#ifdef NEW_PROCFLAGS
++		pts.i = mod->i;
++		pts.customProcFlags = GetSpellProto()->CustomProcFlags;
++#endif
+ 
++
++#ifndef NEW_PROCFLAGS
++		//Should be not here.
+ 		if( m_spellProto->NameHash == SPELL_HASH_THE_TWIN_BLADES_OF_AZZINOTH )
+ 		{
+ 			/* The Twin Blades of Azzinoth.
+@@ -3699,7 +3755,6 @@
+ 				pts.procChance = FL2UINT( float( mhs * ohs / ( 800.0f * ( mhs + ohs ) ) ) ); // 0.75 ppm
+ 			}
+ 		}
+-
+ 		/* We have a custom formula for seal of command. */
+ 		else if( m_spellProto->NameHash == SPELL_HASH_SEAL_OF_COMMAND )
+ 		{
+@@ -3718,15 +3773,13 @@
+ 					pts.procChance = 50;
+ 			}
+ 		}
+-/*		pts.ospinfo = m_spellProto;
+-		pts.spinfo = sSpellStore.LookupEntry(pts.spellId);
+-		if(!pts.spinfo)
+-		{
+-			sLog.outDebug("Error, could not register procspell %u\n",pts.spellId);
+-			return;
+-		}*/
++#endif
++
+ 		m_target->m_procSpells.push_front(pts);
+ 		sLog.outDebug("%u is registering %u chance %u flags %u charges %u triggeronself %u interval %u\n",pts.origId,pts.spellId,pts.procChance,m_spellProto->procFlags & ~PROC_TARGET_SELF,m_spellProto->procCharges,m_spellProto->procFlags & PROC_TARGET_SELF,m_spellProto->proc_interval);
++#ifdef NEW_PROCFLAGS
++		sLog.outDebug("index = %u",pts.i);
++#endif
+ 	}
+ 	else
+ 	{
+@@ -5690,9 +5743,14 @@
+ 	if( apply )
+ 	{
+ 		ProcTriggerSpell pts;
+-		pts.parentId = GetSpellProto()->Id;
++		pts.origId = GetSpellProto()->Id;
+ 		pts.caster = m_casterGuid;
+ 		pts.procCharges = GetSpellProto()->procCharges;
++		pts.procChance = GetSpellProto()->procChance;
++		pts.procFlags = GetSpellProto()->procFlags;
++		pts.customProcFlags = GetSpellProto()->CustomProcFlags;
++		pts.caster = (GetUnitCaster() != NULL) ? GetUnitCaster()->GetGUID() : 0;
++		pts.deleted = false;
+ 		pts.i = mod->i;
+ 		pts.LastTrigger = 0;
+ 
+@@ -5705,12 +5763,13 @@
+ 		}
+ 		m_target->m_procSpells.push_front(pts);
+ 		sLog.outDebug("%u is registering %u chance %u flags %u charges %u triggeronself %u interval %u\n",pts.origId,pts.spellId,pts.procChance,m_spellProto->procFlags & ~PROC_TARGET_SELF,m_spellProto->procCharges,m_spellProto->procFlags & PROC_TARGET_SELF,m_spellProto->proc_interval);
++		sLog.outDebug("index = $u",pts.i);
+ 	}
+ 	else
+ 	{
+ 		for(std::list<struct ProcTriggerSpell>::iterator itr = m_target->m_procSpells.begin();itr != m_target->m_procSpells.end();itr++)
+ 		{
+-			if(itr->parentId == GetSpellId() && itr->caster == m_casterGuid && !itr->deleted)
++			if(itr->origId == GetSpellId() && itr->caster == m_casterGuid && !itr->deleted)
+ 			{
+ 				itr->deleted = true;
+ 				break; //only 1 instance of a proc spell per caster ?
+Index: trunk/src/ascent-world/SpellAuras.h
+===================================================================
+--- trunk/src/ascent-world/SpellAuras.h	(revision 4109)
++++ trunk/src/ascent-world/SpellAuras.h	(working copy)
+@@ -24,19 +24,19 @@
+ 	AFLAG_SET = 0x9
+ };
+ 
+-enum AUARA_STAE_FLAGS
++enum AUARA_STATE_FLAGS
+ {
+-	AURASTATE_FLAG_DODGE_BLOCK			= 1,        //1
+-    AURASTATE_FLAG_HEALTH20             = 2,        //2
+-    AURASTATE_FLAG_BERSERK              = 4,        //3
+-    AURASTATE_FLAG_JUDGEMENT            = 16,       //5
+-    AURASTATE_FLAG_PARRY                = 64,       //7
+-    AURASTATE_FLAG_LASTKILLWITHHONOR    = 512,      //10
+-    AURASTATE_FLAG_CRITICAL             = 1024,     //11
+-    AURASTATE_FLAG_HEALTH35             = 4096,     //13
+-    AURASTATE_FLAG_IMMOLATE             = 8192,     //14
+-    AURASTATE_FLAG_REJUVENATE           = 16384,    //15 //where do i use this ?
+-    AURASTATE_FLAG_POISON               = 32768,    //16
++	AURASTATE_FLAG_DODGE_BLOCK			= 0x1,        //1
++    AURASTATE_FLAG_HEALTH20             = 0x2,        //2
++    AURASTATE_FLAG_BERSERK              = 0x4,        //3
++    AURASTATE_FLAG_JUDGEMENT            = 0x10,       //5
++    AURASTATE_FLAG_PARRY                = 0x40,       //7
++    AURASTATE_FLAG_LASTKILLWITHHONOR    = 0x200,      //10
++    AURASTATE_FLAG_CRITICAL             = 0x400,     //11
++    AURASTATE_FLAG_HEALTH35             = 0x1000,     //13
++    AURASTATE_FLAG_IMMOLATE             = 0x2000,     //14
++    AURASTATE_FLAG_REJUVENATE           = 0x4000,    //15 //where do i use this ?
++    AURASTATE_FLAG_POISON               = 0x8000,    //16
+ };
+ 
+ enum MOD_TYPES
+@@ -249,11 +249,11 @@
+ };
+ enum AuraTickFlags
+ {
+-    FLAG_PERIODIC_DAMAGE            = 2,
+-    FLAG_PERIODIC_TRIGGER_SPELL     = 4,
+-    FLAG_PERIODIC_HEAL              = 8,
+-    FLAG_PERIODIC_LEECH             = 16,
+-    FLAG_PERIODIC_ENERGIZE          = 32,
++    FLAG_PERIODIC_DAMAGE            = 0x2,
++    FLAG_PERIODIC_TRIGGER_SPELL     = 0x4,
++    FLAG_PERIODIC_HEAL              = 0x8,
++    FLAG_PERIODIC_LEECH             = 0x10,
++    FLAG_PERIODIC_ENERGIZE          = 0x20,
+ };
+ 
+ struct Modifier
+@@ -314,11 +314,15 @@
+ struct ProcTriggerSpell
+ {
+ 	uint32 spellId;
+-	uint32 parentId;
++	uint32 origId;
++	uint64 caster;
+ 	uint32 procFlags;
++	uint32 customProcFlags;
+ 	uint32 procChance;
+ 	uint32 procCharges;
+ 	uint32 LastTrigger;
++	uint32 i;
++	bool deleted;
+ };
+ #endif
+ 
+Index: trunk/src/ascent-world/SpellEffects.cpp
+===================================================================
+--- trunk/src/ascent-world/SpellEffects.cpp	(revision 4109)
++++ trunk/src/ascent-world/SpellEffects.cpp	(working copy)
+@@ -1124,7 +1124,12 @@
+ 			ILotP.origId = 34299;
+ 			ILotP.spellId = 34299;
+ 			ILotP.procChance = 100;
++#ifndef NEW_PROCFLAGS
+ 			ILotP.procFlags = PROC_ON_CRIT_ATTACK | PROC_TARGET_SELF;
++#else
++			ILotP.i = i;
++			ILotP.procFlags = PROC_ON_MELEE_HIT | PROC_ON_MELEE_ABILITY_LAND;
++#endif
+ 			ILotP.deleted = false;
+ 			ILotP.caster = u_caster->GetGUID();
+ 			ILotP.LastTrigger = 0;
+@@ -2690,7 +2695,9 @@
+ 		{
+ 			if(m_spellInfo->DispelType == DISPEL_ALL)
+ 			{
++#ifndef NEW_PROCFLAGS
+ 				unitTarget->HandleProc( PROC_ON_PRE_DISPELL_AURA_VICTIM , u_caster , m_spellInfo, aur->GetSpellId() );
++#endif
+ 				data.clear();
+ 				data << m_caster->GetNewGUID();
+ 				data << unitTarget->GetNewGUID();
+Index: trunk/src/ascent-world/Unit.cpp
+===================================================================
+--- trunk/src/ascent-world/Unit.cpp	(revision 4109)
++++ trunk/src/ascent-world/Unit.cpp	(working copy)
+@@ -217,7 +217,14 @@
+ 
+ 	polySpell = 0;
+ 	RangedDamageTaken = 0;
++#ifndef NEW_PROCFLAGS
+ 	m_procCounter = 0;
++#else
++	m_procFlags =0;
++	m_procCustomFlags =0;
++	m_procDmg =0;
++	m_procAbs =0;
++#endif;
+ 	m_extrastriketargets = 0;
+ 	m_damgeShieldsInUse = false;
+ //	fearSpell = 0;
+@@ -549,7 +556,7 @@
+ 		}
+ 	}*/
+ }
+-
++#ifndef NEW_PROCFLAGS
+ void Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, uint32 dmg, uint32 abs )
+ {
+ 	++m_procCounter;
+@@ -645,6 +652,7 @@
+ 					case 16870:
+ 						ppm = 2.0f;
+ 						break; //druid: clearcasting
++
+ 				}
+ 
+ 				Item * mh = static_cast< Player* >( this )->GetItemInterface()->GetInventoryItem( EQUIPMENT_SLOT_MAINHAND );
+@@ -796,8 +804,9 @@
+ 							//let's recalc chance to cast since we have a full 100 all time on this one
+ 							//how lame to get talentpointlevel for this spell :(
+ 							//float chance=it->GetProto()->Delay*100*talentlevel/60000;
+-							float chance = float( it->GetProto()->Delay ) * float( talentlevel ) / 600.0f;
+-							if( !Rand( chance ) )
++							float chance = float( it->GetProto()->Delay ) * float( talentlevel/2 ) / 600.0f;
++							uint32 myroll = RandomUInt( 100 );
++							if( myroll > chance )
+ 								continue;
+ 						}break;
+ 						case 4350:
+@@ -1130,7 +1139,7 @@
+ 									continue;
+ 							}break;
+ 						//priest - Inspiration
+-						case 15363:
++						case 15359:
+ 						case 14893:
+ 						case 15357:
+ 							{
+@@ -1747,9 +1756,609 @@
+ 		bProcInUse = false;
+ }
+ 
++#else
++void Unit::HandleProc(Unit* Victim, SpellEntry* CastingSpell)
++{
++	if (CastingSpell != NULL)
++		sLog.outDebug("HandleProc: SpellID: %u Flags:%u CFalgs: %u ",CastingSpell->Id,m_procFlags,m_procCustomFlags);
++	else
++		sLog.outDebug("HandleProc: 0 Flags:%u CFalgs: %u ",m_procFlags,m_procCustomFlags);
++
++	uint32 Flag = this->m_procFlags;
++	uint32 CustomFlag = this->m_procCustomFlags;
++	uint32 dmg = this->m_procDmg;
++	uint32 abs = this->m_procAbs;
++	this->m_procFlags = 0;
++	this->m_procCustomFlags =0;
++	this->m_procDmg =0;
++	this->m_procAbs = 0;
++
++	bool can_delete = !bProcInUse; //if this is a nested proc then we should have this set to TRUE by the father proc
++	bProcInUse = true; //locking the proc list
++
++	std::list< uint32 > remove;
++	std::list< struct ProcTriggerSpell >::iterator itr,itr2;
++	for( itr = m_procSpells.begin(); itr != m_procSpells.end(); )  // Proc Trigger Spells for Victim
++	{
++		itr2 = itr;
++		++itr;
++		if( itr2->deleted )
++		{
++			if( can_delete )
++				m_procSpells.erase( itr2 );
++			continue;
++		}
++
++		uint32 ParentId = itr2->origId;
++		if( CastingSpell != NULL )
++		{
++			//this is to avoid spell proc on spellcast loop. We use dummy that is same for both spells
++			//if( CastingSpell->Id == itr2->spellId )
++			if( CastingSpell->Id == ParentId || CastingSpell->Id == itr2->spellId )
++			{
++				//printf("WOULD CRASH HERE ON PROC: CastingId: %u, OrigId: %u, SpellId: %u\n", CastingSpell->Id, itr2->origId, itr2->spellId);
++				continue;
++			}
++		}
++		SpellEntry* ospinfo = dbcSpell.LookupEntry( ParentId );//no need to check if exists or not since we were not able to register this trigger if it would not exist :P
++
++		sLog.outDebug("FlagComp: CS %u F %u PF %u ",itr2->spellId,Flag,itr2->procFlags);
++
++		if( itr2->procFlags & Flag )
++		{
++			uint32 spellId = itr2->spellId;
++			uint32 proc_Chance = itr2->procChance;
++			SpellEntry* spe  = dbcSpell.LookupEntry( spellId );
++
++			if (spe->ProcReqFlags & PROC_REQ_PPM)
++			{  
++				if (!this->IsPlayer())
++					continue;
++
++				ProcReqEntry* pre = sSpellProcReqMgr.GetRequirement(spellId);
++				if (!pre)
++					continue;
++
++				float ppm = pre->PPM;
++
++				//Why not to do this calcs only on weapon wearing? There was a bug but i don't remember it
++
++				Item * mh = static_cast< Player* >( this )->GetItemInterface()->GetInventoryItem( EQUIPMENT_SLOT_MAINHAND );
++				Item * of = static_cast< Player* >( this )->GetItemInterface()->GetInventoryItem( EQUIPMENT_SLOT_OFFHAND );
++				if( mh != NULL && of != NULL )
++				{
++					float mhs = float( mh->GetProto()->Delay );
++					float ohs = float( of->GetProto()->Delay );
++					proc_Chance = FL2UINT( ( mhs + ohs ) * 0.001f * ppm / 0.6f );
++				}
++				else if( mh != NULL )
++				{
++					float mhs = float( mh->GetProto()->Delay );
++					proc_Chance = float2int32( mhs * 0.001f * ppm / 0.6f );
++				}
++				else
++					proc_Chance = 0;
++
++				if( static_cast< Player* >( this )->IsInFeralForm() )
++				{
++					if( static_cast< Player* >( this )->GetShapeShift() == FORM_CAT )
++					{
++						proc_Chance = FL2UINT( ppm / 0.6f );
++					}
++					else if( static_cast< Player* >( this )->GetShapeShift() == FORM_BEAR || static_cast< Player* >( this )->GetShapeShift() == FORM_DIREBEAR )
++					{
++						proc_Chance = FL2UINT( ppm / 0.24f );
++					}
++				}
++			}
++
++			SM_FIValue( SM_FChanceOfSuccess, (int32*)&proc_Chance, ospinfo->SpellGroupType );
++//-----------------------------POST ROLL CALCS----------------------------------------------------
++
++			if (spe != NULL)
++				sLog.outDebug("HandleProcChild: SpellID: %u RFlags: %u C %u",spellId,spe->ProcReqFlags,proc_Chance);
++
++			if( spellId && Rand( proc_Chance ) )
++			{
++				sLog.outDebug("Rolled");
++				SpellCastTargets targets;
++
++				if( itr2->customProcFlags & PROC_TARGET_SELF )
++					targets.m_unitTarget = GetGUID();
++				else
++					targets.m_unitTarget = Victim->GetGUID();
++
++				//check if we can trigger due to time limitation
++				if( ospinfo->proc_interval )
++				{
++					uint32 now_in_ms=getMSTime();
++					if( itr2->LastTrigger + ospinfo->proc_interval > now_in_ms )
++						continue; //we can't trigger it yet.
++					itr2->LastTrigger = now_in_ms; // consider it triggered
++				}
++				//since we did not allow to remove auras like these with interrupt flag we have to remove them manually.
++				//Why did we not allow it?
++				//if( itr2->procFlags & PROC_REMOVEONUSE )
++				//	RemoveAura( origId );
++				int dmg_overwrite = 0;
++
++
++				ProcReqEntry* reqEntry = NULL; 
++				if (spe->ProcReqFlags & PROC_REQ_DAMAGING_SPELL)
++				{
++					if (CastingSpell == NULL)
++						continue;
++					if(!(CastingSpell->c_is_flags & SPELL_FLAG_IS_DAMAGING))
++						continue;
++				}
++				if (spe->ProcReqFlags & PROC_REQ_HEALING_SPELL)
++				{
++					if (CastingSpell == NULL)
++						continue;
++					if(!(CastingSpell->c_is_flags & SPELL_FLAG_IS_HEALING))
++						continue;
++				}
++				if (spe->ProcReqFlags & PROC_REQ_CRITICAL)
++				{
++					if (!(CustomFlag & PROC_ON_CRITICAL))
++						continue;
++				}
++				if (spe->ProcReqFlags & PROC_REQ_NOT_SELF)
++				{
++					if (this==Victim)
++						continue;
++				}
++				if (spe->ProcReqFlags & PROC_REQ_ADDCOMBO)
++				{
++					if (CastingSpell == NULL)
++						continue;
++
++					if( CastingSpell->Effect[0] != 80 &&
++						CastingSpell->Effect[1] != 80 &&
++						CastingSpell->Effect[2] != 80)
++						continue;
++				}
++				if (spe->ProcReqFlags & PROC_REQ_FINISHMOVE)
++				{
++					if (CastingSpell == NULL)
++						continue;
++					if(!(CastingSpell->c_is_flags & SPELL_FLAG_IS_FINISHING_MOVE))
++						continue;
++				}
++				if (spe->ProcReqFlags & PROC_REQ_SPEC_STATE_VICTIM)
++				{
++					if (reqEntry == NULL)
++						reqEntry = sSpellProcReqMgr.GetRequirement(spellId);
++					if (reqEntry == NULL) //still no info?
++					{
++						sLog.outDebug("[ERROR] No reqEntry for spell %u",spellId);
++						continue;
++					}
++					if (!(CustomFlag & reqEntry->SpecState))
++						continue;
++				}
++				if (spe->ProcReqFlags & PROC_REQ_SPELL_SCHOOL)
++				{
++					if (CastingSpell == NULL)
++						continue;
++					if (reqEntry == NULL)
++						reqEntry = sSpellProcReqMgr.GetRequirement(spellId);
++					if (reqEntry == NULL) //still no info?
++					{
++						sLog.outDebug("[ERROR] No reqEntry for spell %u",spellId);
++						continue;
++					}
++					if (!(reqEntry->SpellSchool & (1 << CastingSpell->School)))
++						continue;
++				}
++				if (spe->ProcReqFlags & PROC_REQ_SPELL_SKILLINE)
++				{
++					if (CastingSpell == NULL)
++						continue;
++					if (reqEntry == NULL)
++						reqEntry = sSpellProcReqMgr.GetRequirement(spellId);
++					if (reqEntry == NULL) //still no info?
++					{
++						sLog.outDebug("[ERROR] No reqEntry for spell %u",spellId);
++						continue;
++					}
++					skilllinespell* skillability = objmgr.GetSpellSkill(CastingSpell->Id);
++					if( skillability == NULL || skillability->skilline != reqEntry->SpellSkillLine )
++						continue;
++				}
++				if (spe->ProcReqFlags & PROC_REQ_NAMEHASH)
++				{
++					if (CastingSpell == NULL)
++						continue;
++					if (reqEntry == NULL)
++						reqEntry = sSpellProcReqMgr.GetRequirement(spellId);
++					if (reqEntry == NULL) //still no info?
++					{
++						sLog.outDebug("[ERROR] No reqEntry for spell %u",spellId);
++						continue;
++					}
++					bool skip = true;
++					for (uint32 x=0;x<4;x++)
++					{
++						if (reqEntry->NameHash[x] == CastingSpell->NameHash)
++						{
++							skip=false;
++							break;
++						}
++					}
++					if (skip)
++						continue;
++				}
++				if (spe->ProcReqFlags & PROC_REQ_WEAPON_TYPE)
++				{   //Supports only 1 WeaponType per spell. need work use const static uint32 weap_skills probably
++					if (reqEntry == NULL)
++						reqEntry = sSpellProcReqMgr.GetRequirement(spellId);
++					if (reqEntry == NULL) //still no info?
++					{
++						sLog.outDebug("[ERROR] No reqEntry for spell %u",spellId);
++						continue;
++					}
++					if (!this->IsPlayer() || static_cast< Player* >( this )->GetItemInterface() || static_cast< Player* >( this )->disarmed)
++						continue;
++					Item* it = static_cast< Player* >( this )->GetItemInterface()->GetInventoryItem( EQUIPMENT_SLOT_MAINHAND );	
++					if( it != NULL && it->GetProto() )
++					{
++						if (reqEntry->WeaponType == 0)
++						{
++							if (it->GetProto()->Class != 2)
++								continue;
++						}
++						else
++						{
++							uint32 reqskill = GetSkillByProto( it->GetProto()->Class, it->GetProto()->SubClass );
++							if( reqskill != reqEntry->WeaponType)
++								continue;
++						}
++					}
++					else
++						continue; //no weapon no joy
++				}
++				if (spe->RequiredShapeShift)
++				{
++					if (!this->IsPlayer() || !((1 << static_cast<Player*>(this)->GetShapeShift()) & spe->RequiredShapeShift))
++						continue;
++				}
++				//SPELL_AURA_ADD_TARGET_TRIGGER = 109 handling. SpellGroupType based.
++				//temp  fix to avoid crash
++				if (itr2->i > 2)
++					itr2->i = 0;
++
++				if (CastingSpell != NULL && ospinfo != NULL && (ospinfo->EffectSpellGroupRelation[itr2->i] || ospinfo->EffectSpellGroupRelation_high[itr2->i]))
++				{
++					if (!(CastingSpell->SpellGroupType & ((uint64)ospinfo->EffectSpellGroupRelation[itr2->i] + ((uint64)ospinfo->EffectSpellGroupRelation_high[itr2->i] << 32))))
++						continue;
++				}
++
++				switch( spellId )
++				{
++				case 31616:
++					{
++						//yep, another special case: Nature's grace
++						if( GetHealthPct() > 30 )
++							continue;
++					}break;
++					// warlock - Improved Drain Soul
++				case 18371:
++					{
++						dmg_overwrite = ( ospinfo->EffectBasePoints[2] + 1 ) * GetUInt32Value( UNIT_FIELD_MAXPOWER1 ) / 100;
++					}break;
++					// warlock - Unstable Affliction
++				case 43523:
++					{
++						dmg_overwrite = ( ospinfo->EffectBasePoints[0] + 1 ) * 9;
++					}break;
++					//warlock soul link
++				case 25228:
++					{
++						//we need a pet for this, else we do not trigger it at all
++						if( IsPlayer() )
++							continue;
++						Unit* new_caster;
++						if( static_cast< Player* >( this )->GetSummon() )
++							new_caster = static_cast< Player* >( this )->GetSummon();
++						else if( GetUInt64Value( UNIT_FIELD_CHARM ) )
++							new_caster = GetMapMgr()->GetUnit( GetUInt64Value( UNIT_FIELD_CHARM ) );
++						else
++							new_caster = NULL;
++						if( new_caster != NULL && new_caster->isAlive() )
++						{
++							SpellEntry* spellInfo = dbcSpell.LookupEntry( 25228 ); //we already modified this spell on server loading so it must exist
++							Spell* spell = new Spell( new_caster, spellInfo, true, NULL );
++							spell->forced_basepoints[0] = dmg;
++							SpellCastTargets targets;
++							targets.m_unitTarget = GetGUID();
++							spell->prepare( &targets );
++						}
++						continue;
++					}break;
++					//warlock - Soul Leech
++					//this whole spell should get rewriten. Uses bad formulas, bad trigger method, spell is rewriten ...
++				case 30294:
++					{
++						if( CastingSpell == NULL )
++							continue;//this should not ocur unless we made a fuckup somewhere
++						//only trigger effect for specified spells
++						uint32 amount;
++						switch( CastingSpell->NameHash )
++						{
++						case SPELL_HASH_SHADOW_BOLT: //Shadow Bolt
++						case SPELL_HASH_SOUL_FIRE: //Soul Fire
++						case SPELL_HASH_INCINERATE: //Incinerate
++						case SPELL_HASH_SEARING_PAIN: //Searing Pain
++						case SPELL_HASH_CONFLAGRATE: //Conflagrate
++							{
++								amount = CastingSpell->EffectBasePoints[0]+1;
++							}break;
++						case SPELL_HASH_SHADOWBURN: //Shadowburn
++							{
++								amount = CastingSpell->EffectBasePoints[1]+1;
++							}break;
++						default:
++							amount=0;
++						}
++						if(!amount)
++							continue;
++						SpellEntry *spellInfo = dbcSpell.LookupEntry(spellId );
++						if(!spellInfo)
++							continue;
++						Spell *spell = new Spell(this, spellInfo ,true, NULL);
++						spell->SetUnitTarget(this);
++						spell->Heal(amount*(ospinfo->EffectBasePoints[0]+1)/100);
++						delete spell;
++						continue;
++					}break;
++					//mage - Combustion
++				case 28682:
++					{
++						if( CustomFlag & PROC_ON_CRITICAL )
++						{
++							itr2->procCharges++;
++							if( itr2->procCharges >= 3 ) //whatch that number cause it depends on original stack count !
++							{
++								RemoveAllAuraByNameHash( SPELL_HASH_COMBUSTION );
++								RemoveAllAuraByNameHash( SPELL_HASH_COMBUSTION_PROC );
++							}
++							continue;
++						}
++					}break;
++				//priest - Blessed Recovery
++				case 27813:
++				case 27817:
++				case 27818:
++					{
++						if(!IsPlayer() || !dmg)
++							continue;
++						SpellEntry *parentproc= dbcSpell.LookupEntry(ParentId);
++						SpellEntry *spellInfo = dbcSpell.LookupEntry(spellId);
++						if (!parentproc || !spellInfo)
++							continue;
++						int32 val = parentproc->EffectBasePoints[0] + 1;
++						Spell *spell = new Spell(this, spellInfo ,true, NULL);
++						spell->forced_basepoints[0] = (val*dmg)/300; //per tick
++						SpellCastTargets targets;
++						targets.m_unitTarget = GetGUID();
++						spell->prepare(&targets);
++						continue;
++					}break;
++					//shaman - windfurry weapon
++				case 8232:
++				case 8235:
++				case 10486:
++				case 16362:
++				case 25505:
++					{
++						if(!IsPlayer())
++							continue;
++						//!! The wierd thing is that we need the spell thet trigegred this enchant spell in order to output logs ..we are using oldspell info too 
++						//we have to recalc the value of this spell
++						SpellEntry *spellInfo = dbcSpell.LookupEntry(ParentId);
++						uint32 AP_owerride=GetAP() + spellInfo->EffectBasePoints[0]+1;
++						uint32 dmg = static_cast< Player* >( this )->GetMainMeleeDamage(AP_owerride);
++						SpellEntry *sp_for_the_logs = dbcSpell.LookupEntry(spellId);
++						Strike( Victim, MELEE, sp_for_the_logs, dmg, 0, 0, true, false );
++						Strike( Victim, MELEE, sp_for_the_logs, dmg, 0, 0, true, false );
++						//nothing else to be done for this trigger
++						continue;
++					}break;
++					//mage - Master of Elements
++				case 29077:
++					{
++						if( CastingSpell == NULL )
++							continue;
++						dmg_overwrite = CastingSpell->manaCost * ( ospinfo->EffectBasePoints[0] + 1 ) / 100;
++					}break;
++					//Hunter - Thrill of the Hunt
++				case 34720:
++					{
++						if( CastingSpell == NULL )
++							continue;
++						dmg_overwrite = CastingSpell->manaCost * 40 / 100;
++					}break;
++					//priest - Reflective Shield 
++				case 33619:
++					{
++						//requires Power Word: Shield active
++						int power_word_id = HasAurasWithNameHash( SPELL_HASH_POWER_WORD__SHIELD );
++						if( !power_word_id )
++							continue;//this should not ocur unless we made a fuckup somewhere
++						//make a direct strike then exit rest of handler
++						int tdmg = abs * ( ospinfo->EffectBasePoints[0] + 1 ) / 100;
++						//somehow we should make this not caused any threat (tobedone)
++						SpellNonMeleeDamageLog( Victim, power_word_id, tdmg, false, true );
++						continue;
++					}break;
++
++				//paladin - Seal of Blood
++				case 31893:
++					{
++						//we loose health depending on father of trigger spell when trigering this effect
++						int32 healthtoloose = ospinfo->EffectBasePoints[1] * GetUInt32Value( UNIT_FIELD_BASE_HEALTH ) / 100;
++						if( healthtoloose > (int32)GetUInt32Value( UNIT_FIELD_HEALTH ) )
++							SetUInt32Value( UNIT_FIELD_HEALTH, 1 );
++						else
++							ModUInt32Value( UNIT_FIELD_HEALTH, -healthtoloose );
++					}break;
++					//paladin - Eye for an Eye
++				case 25997:
++					{
++						if( CastingSpell == NULL )
++							continue;//this should not ocur unless we made a fuckup somewhere
++						dmg_overwrite = ( dmg *  (ospinfo->EffectBasePoints[0] + 1 )) / 100 ; //only half dmg
++						int32 half_health = this->GetUInt32Value(UNIT_FIELD_HEALTH) >> 1;
++						if( dmg_overwrite > half_health )
++							dmg_overwrite = half_health ;
++					}break;
++					//paladin - Blessed Life
++				case 31828:
++					{
++						//we should test is damage is from enviroment or not :S
++						ModUInt32Value(UNIT_FIELD_HEALTH,dmg/2);
++						continue; //there is no visual for this ?
++					}break;
++					//paladin - sanctified judgement
++				case 31930:
++					{
++						//!! not working since we use post even hook and seal disapears before event
++						if( CastingSpell == NULL )
++							continue;//this should not ocur unless we made a fuckup somewhere
++						if( !IsPlayer() )
++							continue; //great, we can only make this for players 
++						Player* c = static_cast< Player* >( this );
++						//printf("is there a seal on the player ? %u \n",c->Seal);
++						if( !c->Seal )
++							continue; //how the hack did we manage to cast judgement without a seal ?
++						SpellEntry *spellInfo = dbcSpell.LookupEntry( c->Seal ); //null pointer check was already made
++						if( !spellInfo )
++							continue;	//now this is getting freeky, how the hell did we manage to create this bug ?
++						dmg_overwrite = spellInfo->manaCost / 2 ; //only half dmg
++						//printf("is there a seal on the player ? %u \n",dmg_overwrite);
++					}break;
++					//shaman - Lightning Overload
++				case 39805:
++					{
++						if( CastingSpell == NULL )
++							continue;//this should not ocur unless we made a fuckup somewhere
++						spellId = CastingSpell->Id;
++						dmg_overwrite = (CastingSpell->EffectBasePoints[0] + 1) / 2; //only half dmg
++					}break;
++				}
++
++				
++				if(spellId==22858 && isInBack(Victim)) //retatliation needs target to be not in front. Can be casted by creatures too
++					continue;
++				Spell *spell = new Spell(this, spe ,true, NULL);
++				spell->forced_basepoints[0] = dmg_overwrite;
++				spell->ProcedOnSpell = CastingSpell;
++				if(spellId==974||spellId==32593||spellId==32594) // Earth Shield handler
++				{
++					spell->pSpellId=itr2->spellId;
++					spell->SpellEffectDummy(0);
++					delete spell;
++					continue;
++				}
++				sLog.outDebug("CASTED");
++				spell->pSpellId=ParentId;
++				spell->prepare(&targets);
++			}//not always we have a spell to cast
++		}
++	}
++
++	m_chargeSpellsInUse=true;
++	std::map<uint32,struct SpellCharge>::iterator iter,iter2;
++	iter=m_chargeSpells.begin();
++	while(iter!= m_chargeSpells.end())
++	{
++		iter2=iter++;
++		if(iter2->second.count)
++		{
++			if((iter2->second.ProcFlag & Flag))
++			{
++				//Fixes for spells that dont lose charges when dmg is absorbd
++				if(iter2->second.ProcFlag==680&&dmg==0) continue;
++				if(CastingSpell)
++				{
++
++					SpellCastTime *sd = dbcSpellCastTime.LookupEntry(CastingSpell->CastingTimeIndex);
++					if(!sd) continue; // this shouldnt happen though :P
++					//if we did not proc these then we should not remove them
++					if( CastingSpell->Id == iter2->second.spellId)
++						continue;
++					switch(iter2->second.spellId)
++					{
++					case 12043:
++						{
++							//Presence of Mind and Nature's Swiftness should only get removed
++							//when a non-instant and bellow 10 sec. Also must be nature :>
++							//							if(!sd->CastTime||sd->CastTime>10000) continue;
++							if(sd->CastTime==0)
++								continue;
++						}break;
++					case 17116: //Shaman - Nature's Swiftness
++					case 16188:
++						{
++							//							if( CastingSpell->School!=SCHOOL_NATURE||(!sd->CastTime||sd->CastTime>10000)) continue;
++							if( CastingSpell->School!=SCHOOL_NATURE||(sd->CastTime==0)) continue;
++						}break;
++					case 16166:
++						{
++							if(!(CastingSpell->School==SCHOOL_FIRE||CastingSpell->School==SCHOOL_FROST||CastingSpell->School==SCHOOL_NATURE))
++								continue;
++						}break;
++					case 14177: //cold blood will get removed on offensive spell
++						{
++							if(Victim==this || isFriendly(this, Victim))
++								continue;
++						}break;
++					}
++				}
++				if(iter2->second.lastproc!=0)
++				{
++					if(iter2->second.procdiff>3000)
++					{
++						//--(iter2->second.count);
++						RemoveAura(iter2->second.spellId);
++					}
++				}
++				else
++				{
++					//--(iter2->second.count);		// done in Aura::Remove
++					this->RemoveAura(iter2->second.spellId);
++				}
++			}
++		}
++		if(!iter2->second.count)
++		{
++			m_chargeSpells.erase(iter2);
++		}
++	}
++
++	for(;!m_chargeSpellRemoveQueue.empty();)
++	{
++		iter = m_chargeSpells.find(m_chargeSpellRemoveQueue.front());
++		if(iter != m_chargeSpells.end())
++		{
++			if(iter->second.count>1)
++				--iter->second.count;
++			else
++				m_chargeSpells.erase(iter);
++		}
++		m_chargeSpellRemoveQueue.pop_front();
++	}
++
++	m_chargeSpellsInUse=false;
++	if(can_delete) //are we the upper level of nested procs ? If yes then we can remove the lock
++		bProcInUse = false;
++}
++#endif
+ //damage shield is a triggered spell by owner to atacker
+ void Unit::HandleProcDmgShield(uint32 flag, Unit* attacker)
+ {
++#ifndef NEW_PROCFLAGS
+ 	//make sure we do not loop dmg procs
+ 	if(this==attacker || !attacker)
+ 		return;
+@@ -1783,6 +2392,7 @@
+ 		}
+ 	}
+ 	m_damgeShieldsInUse = false;
++#endif
+ }
+ 
+ /*
+@@ -2179,7 +2789,7 @@
+ //==========================================================================================
+ //==============================Unacceptable Cases Processing===============================
+ //==========================================================================================
+-	if(!pVictim->isAlive() || !isAlive()  || IsStunned() || IsPacified())
++	if(pVictim == NULL || !pVictim->isAlive() || !isAlive()  || IsStunned() || IsPacified())
+ 		return;
+ 	if(!isInFront(pVictim))
+ 		if(IsPlayer())
+@@ -2211,6 +2821,10 @@
+ 	uint32 vstate			 = 1;
+ 	uint32 aproc			 = 0;
+ 	uint32 vproc			 = 0;
++#ifndef NEW_PROCFLAGS
++#else
++	uint32 cProcFlags        = 0;
++#endif
+ 	   
+ 	float hitmodifier		 = 0;
+ 	int32 self_skill;
+@@ -2521,7 +3135,11 @@
+ 		CALL_SCRIPT_EVENT(this, OnDodged)(this);
+ 		targetEvent = 1;
+ 		vstate = DODGE;
++#ifndef NEW_PROCFLAGS
+ 		vproc |= PROC_ON_DODGE_VICTIM;
++#else
++		cProcFlags |= PROC_ON_DODGE;
++#endif
+ 		pVictim->Emote(EMOTE_ONESHOT_PARRYUNARMED);			// Animation
+ 		if( pVictim->IsPlayer() )
+ 		{
+@@ -2551,6 +3169,10 @@
+ 		CALL_SCRIPT_EVENT(this, OnParried)(this);
+ 		targetEvent = 3;
+ 		vstate = PARRY;
++#ifndef NEW_PROCFLAGS
++#else
++		cProcFlags |=  PROC_ON_PARRY;
++#endif
+ 		pVictim->Emote(EMOTE_ONESHOT_PARRYUNARMED);			// Animation
+ 		if(pVictim->IsPlayer())
+ 		{
+@@ -2577,6 +3199,7 @@
+ 		else
+ 		{
+ //--------------------------------state proc initialization---------------------------------
++#ifndef NEW_PROCFLAGS
+ 			vproc |= PROC_ON_ANY_DAMAGE_VICTIM;			
+ 			if( weapon_damage_type != RANGED )
+ 			{
+@@ -2590,6 +3213,23 @@
+ 				if(ability && ability->Id==3018 && IsPlayer() && getClass()==HUNTER)
+ 					aproc |= PROC_ON_AUTO_SHOT_HIT;
+ 			}
++#else
++			switch (weapon_damage_type)
++			{
++			case MELEE:
++				aproc |= (ability != NULL) ? PROC_ON_MELEE_ABILITY_LAND : PROC_ON_MELEE_HIT;
++				vproc |= (ability != NULL) ? PROC_ON_MELEE_ABILITY_LAND_VICTIM : PROC_ON_MELEE_HIT_VICTIM;
++				break;
++			case RANGED:
++				aproc |= (ability != NULL) ? PROC_ON_RANGED_ABILITY_LAND : PROC_ON_RANGED_HIT;
++				vproc |= (ability != NULL) ? PROC_ON_RANGED_ABILITY_LAND_VICTIM : PROC_ON_RANGED_HIT_VICTIM;
++				break;
++			default:
++				aproc |= (ability != NULL) ? PROC_ON_MELEE_ABILITY_LAND : PROC_ON_MELEE_HIT | PROC_ON_OFFHAND_HIT;
++				vproc |= (ability != NULL) ? PROC_ON_MELEE_ABILITY_LAND_VICTIM : PROC_ON_MELEE_HIT_VICTIM;
++				break;
++			}
++#endif
+ //--------------------------------base damage calculation-----------------------------------
+ 			if(exclusive_damage)
+ 				dmg.full_damage = exclusive_damage;
+@@ -2707,13 +3347,22 @@
+ 						{
+ 							blocked_damage = 0;
+ 						}
++						if (blocked_damage>0)
++						{
++#ifndef NEW_PROCFLAGS
++#else
++							cProcFlags |= PROC_ON_BLOCK;
++#endif
++						}
+ 
+ 						if(dmg.full_damage <= (int32)blocked_damage)
+ 						{
+ 							CALL_SCRIPT_EVENT(pVictim, OnTargetBlocked)(this, blocked_damage);
+ 							CALL_SCRIPT_EVENT(this, OnBlocked)(pVictim, blocked_damage);
+ 							vstate = BLOCK;
++#ifndef NEW_PROCFLAGS
+ 							vproc |= PROC_ON_BLOCK_VICTIM;
++#endif
+ 						}
+ 						if( pVictim->IsPlayer() )//not necessary now but we'll have blocking mobs in future
+ 						{            
+@@ -2774,6 +3423,7 @@
+ 					}
+ 					
+ 					pVictim->Emote(EMOTE_ONESHOT_WOUNDCRITICAL);
++#ifndef NEW_PROCFLAGS
+ 					vproc |= PROC_ON_CRIT_HIT_VICTIM;
+ 					aproc |= PROC_ON_CRIT_ATTACK;
+ 					if( weapon_damage_type == RANGED )
+@@ -2781,7 +3431,9 @@
+ 						vproc |= PROC_ON_RANGED_CRIT_ATTACK_VICTIM;
+ 						aproc |= PROC_ON_RANGED_CRIT_ATTACK;
+ 					}
+-
++#else
++					cProcFlags |= PROC_ON_CRITICAL;
++#endif
+ 					if(this->IsPlayer())
+ 					{
+ 						this->SetFlag(UNIT_FIELD_AURASTATE,AURASTATE_FLAG_CRITICAL);	//SB@L: Enables spells requiring critical strike
+@@ -2827,7 +3479,11 @@
+ 			}
+ 
+ 			if(abs)
++#ifndef NEW_PROCFLAGS
+ 				vproc |= PROC_ON_ABSORB;
++#else
++				cProcFlags |= PROC_ON_ABSORB;
++#endif
+ 
+ 			if (dmg.school_type == SCHOOL_NORMAL)
+ 			{
+@@ -2865,23 +3521,7 @@
+ 	{
+ 		dmg.resisted_damage = dmg.full_damage; //godmode
+ 	}
+-//--------------------------dirty fixes-----------------------------------------------------
+-	//vstate=1-wound,2-dodge,3-parry,4-interrupt,5-block,6-evade,7-immune,8-deflect	
+-	// the above code was remade it for reasons : damage shield needs moslty same flags as handleproc + dual wield should proc too ?
+-	if( !disable_proc && weapon_damage_type != OFFHAND )
+-    {
+-		this->HandleProc(aproc,pVictim, ability,realdamage,abs); //maybe using dmg.resisted_damage is better sometimes but then if using godmode dmg is resisted instead of absorbed....bad
+-		m_procCounter = 0;
+ 
+-		pVictim->HandleProc(vproc,this, ability,realdamage,abs);
+-		pVictim->m_procCounter = 0;
+-
+-		if(realdamage > 0)
+-		{
+-			pVictim->HandleProcDmgShield(vproc,this);
+-			HandleProcDmgShield(aproc,pVictim);
+-		}
+-	}
+ //--------------------------spells triggering-----------------------------------------------
+ 	if(realdamage > 0 && ability == 0)
+ 	{
+@@ -3046,8 +3686,6 @@
+ 	if(realdamage)
+ 	{
+ 		DealDamage(pVictim, realdamage, 0, targetEvent, 0);
+-		//pVictim->HandleProcDmgShield(PROC_ON_MELEE_ATTACK_VICTIM,this);
+-//		HandleProcDmgShield(PROC_ON_MELEE_ATTACK_VICTIM,pVictim);
+ 
+ 		if(pVictim->GetCurrentSpell())
+ 			pVictim->GetCurrentSpell()->AddTime(0);
+@@ -3061,6 +3699,55 @@
+ //==========================================================================================
+ //==============================Post Damage Dealing Processing==============================
+ //==========================================================================================
++	//--------------------------proc handling-----------------------------------------------------
++	//vstate=1-wound,2-dodge,3-parry,4-interrupt,5-block,6-evade,7-immune,8-deflect	
++	// the above code was remade it for reasons : damage shield needs moslty same flags as handleproc + dual wield should proc too ?
++#ifndef NEW_PROCFLAGS
++	if( !disable_proc && weapon_damage_type != OFFHAND )
++	{
++		this->HandleProc(aproc,pVictim, ability,realdamage,abs); //maybe using dmg.resisted_damage is better sometimes but then if using godmode dmg is resisted instead of absorbed....bad
++		m_procCounter = 0;
++
++		pVictim->HandleProc(vproc,this, ability,realdamage,abs);
++		pVictim->m_procCounter = 0;
++
++		if(realdamage > 0)
++		{
++			pVictim->HandleProcDmgShield(vproc,this);
++			HandleProcDmgShield(aproc,pVictim);
++		}
++	}
++#else
++	if (!disable_proc)
++	{
++		/*if(realdamage > 0)
++		{
++		aproc |= PROC_ON_ANY_DAMAGE;
++		vproc |= PROC_ON_ANY_DAMAGE_VICTIM;
++		}*/
++
++		// What is that? 
++		//pVictim->HandleProcDmgShield(vproc,this);
++		//HandleProcDmgShield(aproc,pVictim);
++		if (!ability || ability->Id != SPELL_RANGED_WAND) //wans should not trigger any procs :P
++		{
++			this->m_procDmg = realdamage;
++			this->m_procAbs = abs;
++			this->m_procFlags |= aproc;
++			this->m_procCustomFlags |= cProcFlags;
++			pVictim->m_procDmg = realdamage;
++			pVictim->m_procAbs = abs;
++			pVictim->m_procFlags |= vproc;
++			pVictim->m_procCustomFlags |= cProcFlags;		
++		}
++
++		if (ability == NULL)
++		{
++			this->HandleProc(pVictim);
++			pVictim->HandleProc(this);
++		}
++	}
++#endif
+ //--------------------------durability processing-------------------------------------------
+ 	if(pVictim->IsPlayer())
+ 	{
+@@ -5027,6 +5714,7 @@
+ 	m_aiInterface->WipeReferences();
+ }
+ 
++//TODO: Replace this crap with system like ReqProcFlags
+ void Unit::RemoveAurasByInterruptFlagButSkip(uint32 flag, uint32 skip)
+ {
+ 	Aura * a;
+@@ -5056,6 +5744,20 @@
+ 							if( spi && spi->NameHash != SPELL_HASH_SMITE )
+ 								continue;
+ 						}
++						//priest - holy concentration.
++					case 34754: 
++						{
++							//our luck. it got trigered on 1 of 3 heals..we do not remove it just yet
++							if( m_currentSpell && (m_currentSpell->m_spellInfo->NameHash == SPELL_HASH_GREATER_HEAL || m_currentSpell->m_spellInfo->NameHash == SPELL_HASH_BINDING_HEAL || m_currentSpell->m_spellInfo->NameHash == SPELL_HASH_FLASH_HEAL))
++								continue;
++
++							//this spell gets removed only when casting 1 of 3 heals
++							SpellEntry *spi = dbcSpell.LookupEntry( skip );
++							if( spi && spi->NameHash != SPELL_HASH_FLASH_HEAL && spi->NameHash != SPELL_HASH_GREATER_HEAL && spi->NameHash != SPELL_HASH_BINDING_HEAL)
++								continue;
++
++						}
++						//warlock - backlash
+ 					case 34936:
+ 						{
+ 							SpellEntry *spi = dbcSpell.LookupEntry( skip );
+@@ -6257,3 +6959,7 @@
+ 
+ 
+ 
++
++
++
++
+Index: trunk/src/ascent-world/Unit.h
+===================================================================
+--- trunk/src/ascent-world/Unit.h	(revision 4109)
++++ trunk/src/ascent-world/Unit.h	(working copy)
+@@ -709,8 +709,18 @@
+ 	void Strike( Unit* pVictim, uint32 weapon_damage_type, SpellEntry* ability, int32 add_damage, int32 pct_dmg_mod, uint32 exclusive_damage, bool disable_proc, bool skip_hit_check );
+ //	void PeriodicAuraLog(Unit *pVictim, SpellEntry* spellID, uint32 damage, uint32 damageType);
+ 	//void SpellNonMeleeDamageLog(Unit *pVictim, uint32 spellID, uint32 damage);
++	
++#ifndef NEW_PROCFLAGS
+ 	uint32 m_procCounter;
+ 	void HandleProc(uint32 flag, Unit* Victim, SpellEntry* CastingSpell,uint32 dmg=-1,uint32 abs=0);
++#else
++	//Shady: mb we should have 3x variables. for each Effect. TODO: think about it )
++	uint32 m_procFlags;
++	uint32 m_procCustomFlags;
++	uint32 m_procDmg;
++	uint32 m_procAbs;
++	void HandleProc(Unit* Victim, SpellEntry* CastingSpell = NULL);
++#endif
+ 	void HandleProcDmgShield(uint32 flag, Unit* attacker);//almost the same as handleproc :P
+ //	void HandleProcSpellOnSpell(Unit* Victim,uint32 damage,bool critical);//nasty, some spells proc other spells
+ 
+Index: trunk/src/ascent-world/World.cpp
+===================================================================
+--- trunk/src/ascent-world/World.cpp	(revision 4109)
++++ trunk/src/ascent-world/World.cpp	(working copy)
+@@ -117,6 +117,12 @@
+ 	Log.Notice("BattlegroundMgr", "~BattlegroundMgr()");
+ 	delete CBattlegroundManager::getSingletonPtr();
+ 
++#ifndef NEW_PROCFLAGS
++#else
++	Log.Notice("SpellProcReqMgr", "~SpellProcReqMgr()");
++	delete SpellProcReqMgr::getSingletonPtr();
++#endif
++
+ 	Log.Notice("InstanceMgr", "~InstanceMgr()");
+ 	sInstanceMgr.Shutdown();
+ 
+@@ -447,6 +453,9 @@
+ 	new SocialMgr;
+ 	new WorldLog;
+ 	new ChatHandler;
++#ifdef NEW_PROCFLAGS
++	new SpellProcReqMgr;
++#endif
+ 
+ 	// grep: this only has to be done once between version updates
+ 	// to re-fill the table.
+@@ -894,6 +903,7 @@
+ 		sp->RankNumber = rank;
+ 
+ 		uint32 pr=sp->procFlags;
++
+ 		for(uint32 y=0;y < 3; y++)
+ 		{
+ 			// get the effect number from the spell
+@@ -986,7 +996,7 @@
+ 							result=atoi(p);
+ 						}					
+ 					}
+-					pr=0;
++					pr=sp->procFlags;
+ 
+ 					uint32 len = (uint32)strlen(desc);
+ 					for(i = 0; i < len; ++i)
+@@ -994,6 +1004,7 @@
+ 					//dirty code for procs, if any1 got any better idea-> u are welcome
+ 					//139944 --- some magic number, it will trigger on all hits etc
+ 						//for seems to be smth like custom check
++#ifndef NEW_PROCFLAGS
+ 					if( strstr( desc,"your ranged criticals"))
+ 						pr|=PROC_ON_RANGED_CRIT_ATTACK;
+ 					if( strstr( desc,"chance on hit"))
+@@ -1244,6 +1255,7 @@
+ 						pr|=PROC_ON_AUTO_SHOT_HIT;
+ 					if( strstr( desc,"after getting a critical effect from your"))
+ 						pr=PROC_ON_SPELL_CRIT_HIT;
++#endif
+ //					if( strstr( desc,"Your critical strikes from Fire damage"))
+ //						pr|=PROC_ON_SPELL_CRIT_HIT;
+ 				}//end "if procspellaura"
+@@ -1263,6 +1275,7 @@
+ 					if( strstr( desc, "ranged"))
+ 						sp->AuraInterruptFlags |= AURA_INTERRUPT_ON_START_ATTACK;*/
+ //				}
++
+ 			}//end "if aura"
+ 		}//end "for each effect"
+ 		sp->procFlags = pr;
+@@ -1289,6 +1302,7 @@
+ 			}
+ 			sp->proc_interval = 3000; //few seconds
+ 		}
++#ifndef NEW_PROCFLAGS
+ 		//mage ignite talent should proc only on some chances
+ 		else if( strstr( nametext, "Ignite") && sp->Id>=11119 && sp->Id<=12848 && sp->EffectApplyAuraName[0] == 4 )
+ 		{
+@@ -1303,7 +1317,7 @@
+ 			sp->EffectApplyAuraName[0] = 42; //force him to use procspell effect
+ 			sp->EffectTriggerSpell[0] = 12654; //evil , but this is good for us :D
+ 			sp->procFlags = PROC_ON_SPELL_CRIT_HIT; //add procflag here since this was not processed with the others !
+-		}
++		} 
+ 		// Winter's Chill handled by frost school
+ 		else if( strstr( nametext, "Winter's Chill"))
+ 		{
+@@ -1314,7 +1328,6 @@
+ 		{
+ 			sp->School = 5;
+ 		}
+-#ifndef NEW_PROCFLAGS
+ 		// Shadow Weaving
+ 		else if( strstr( nametext, "Shadow Weaving"))
+ 		{
+@@ -1366,6 +1379,7 @@
+ 				sp->EffectTriggerSpell[1]=atoi(startofid);
+ 			}
+ 		}
++#ifndef NEW_PROCFLAGS
+ 		else if( strstr( nametext, "Touch of Weakness"))
+ 		{
+ 			//check if we can find in the desription
+@@ -1392,11 +1406,16 @@
+ 				sp->procChance = 50;
+ 			}
+ 		}
++#endif
+ 		//some procs trigger at intervals
+ 		else if( strstr( nametext, "Water Shield"))
+ 		{
+ 			sp->proc_interval = 3000; //few seconds
++#ifndef NEW_PROCFLAGS
+ 			sp->procFlags |= PROC_TARGET_SELF;
++#else
++			sp->CustomProcFlags |=PROC_TARGET_SELF;
++#endif
+ 		}
+ 		else if( strstr( nametext, "Earth Shield"))
+ 			sp->proc_interval = 3000; //few seconds
+@@ -1472,8 +1491,10 @@
+ 			sp->EffectApplyAuraName[2] == 7 )
+ 			sp->MechanicsType = MECHANIC_FLEEING;
+ 
++#ifndef NEW_PROCFLAGS
+ 		if( sp->proc_interval != 0 )
+ 			sp->procFlags |= PROC_REMOVEONUSE;
++#endif
+ 
+ 		// Seal of Command - Proc Chance
+ 		if( sp->NameHash == SPELL_HASH_SEAL_OF_COMMAND )
+@@ -1502,10 +1523,6 @@
+ 		if( sp->NameHash == SPELL_HASH_DIVINE_SHIELD || sp->NameHash == SPELL_HASH_DIVINE_PROTECTION || sp->NameHash == SPELL_HASH_BLESSING_OF_PROTECTION )
+ 			sp->MechanicsType = 25;
+ 
+-		/* hackfix for this - FIX ME LATER - Burlex */
+-		if( namehash == SPELL_HASH_SEAL_FATE )
+-			sp->procFlags = 0;
+-
+ 		map< uint32, pair< uint32, int32 > >::iterator itr = procMap.find( namehash );
+ 		if( itr != procMap.end())
+ 		{
+@@ -1832,9 +1849,12 @@
+ 		triggersp->EffectBasePoints[0] = parentsp->EffectBasePoints[0];
+ 
+ 	/// Elemental Focus
++
+ 	SpellEntry* sp = dbcSpell.LookupEntryForced( 16164 );
++#ifndef NEW_PROCFLAGS
+ 	if( sp != NULL && sp->Id == 16164 )
+ 		sp->procFlags = PROC_ON_SPELL_CRIT_HIT;
++#endif
+ 
+ 	//remove stormstrike effect 0
+ 	sp = dbcSpell.LookupEntryForced( 17364 );
+@@ -1861,6 +1881,7 @@
+ 		sp->proc_interval = 13000;
+ 	}
+ 
++#ifndef NEW_PROCFLAGS
+ 	//Warlock: Backlash
+ 	sp = dbcSpell.LookupEntryForced( 34935 );
+ 	if (sp != NULL)
+@@ -1880,6 +1901,7 @@
+ 		sp->proc_interval = 8000;
+ 		sp->procFlags |= PROC_ON_MELEE_ATTACK_VICTIM | PROC_TARGET_SELF;
+ 	}
++#endif
+ 	sp = dbcSpell.LookupEntryForced( 34936 );
+ 	if (sp != NULL)
+ 	{
+@@ -2084,11 +2106,13 @@
+ 		sp->EffectImplicitTargetB[2] = 0;
+ 	}
+ 
++#ifndef NEW_PROCFLAGS
+ 	sp = dbcSpell.LookupEntryForced( 34774 );
+ 	if( sp != NULL ) //dragonspine trophy proc
+ 	{
+ 		sp->procChance = 6;
+ 	}
++#endif
+ 
+ 	//paladin - Blessing of Light. Changed to scripted because it needs to mod target and should not influence holy nova
+ 	sp = dbcSpell.LookupEntryForced( 19977 );
+@@ -2272,6 +2296,7 @@
+ 	if( sp != NULL )
+ 		sp->EffectSpellGroupRelation[0] = 1048576 | 524288 | 1024 | 536870912 | 524288;
+ 
++#ifndef NEW_PROCFLAGS
+ 	//paladin - Seal of Vengeance
+ 	sp = dbcSpell.LookupEntryForced( 31801 );
+ 	if( sp != NULL )
+@@ -2331,6 +2356,7 @@
+ 		sp->procFlags = PROC_ON_ANY_DAMAGE_VICTIM;
+         sp->EffectTriggerSpell[0] = 27165;
+ 	}
++#endif
+ 	sp = dbcSpell.LookupEntryForced( 20268 );
+ 	if( sp != NULL )
+ 		sp->EffectImplicitTargetA[0] = EFF_TARGET_SINGLE_ENEMY;
+@@ -2344,6 +2370,7 @@
+ 	if( sp != NULL )
+ 		sp->EffectImplicitTargetA[0] = EFF_TARGET_SINGLE_ENEMY;
+ 
++#ifndef NEW_PROCFLAGS
+ 	//paladin - Judgement of Light
+ 	sp = dbcSpell.LookupEntryForced( 20185 );
+ 	if( sp != NULL )
+@@ -2375,6 +2402,7 @@
+ 		sp->procFlags = PROC_ON_MELEE_ATTACK_VICTIM;
+         sp->EffectTriggerSpell[0] = 27163;
+ 	}
++#endif
+ 	sp = dbcSpell.LookupEntryForced( 20267 );
+ 	if( sp != NULL )
+ 		sp->EffectImplicitTargetA[0] = EFF_TARGET_SINGLE_ENEMY;
+@@ -2390,7 +2418,7 @@
+ 	sp = dbcSpell.LookupEntryForced( 27163 );
+ 	if( sp != NULL )
+ 		sp->EffectImplicitTargetA[0] = EFF_TARGET_SINGLE_ENEMY;
+-
++#ifndef NEW_PROCFLAGS
+ 	//paladin - Eye for an Eye
+ 	sp = dbcSpell.LookupEntryForced( 9799 );
+ 	if( sp != NULL )
+@@ -2461,7 +2489,7 @@
+ 	sp = dbcSpell.LookupEntryForced( 31836 );
+ 	if( sp != NULL )
+ 		sp->procFlags = PROC_ON_CAST_SPELL;
+-
++#endif
+ 	//shaman - Lightning Mastery
+ 	sp = dbcSpell.LookupEntryForced( 16578 );
+ 	if( sp != NULL )
+@@ -2478,7 +2506,7 @@
+ 	sp = dbcSpell.LookupEntryForced( 16582 );
+ 	if( sp != NULL )
+ 		sp->EffectSpellGroupRelation[0]=1|2;
+-
++#ifndef NEW_PROCFLAGS
+ 	//shaman - Lightning Overload 
+ 	sp = dbcSpell.LookupEntryForced( 30675 ); 
+ 	if( sp != NULL )
+@@ -2515,7 +2543,7 @@
+ 		sp->EffectTriggerSpell[0] = 39805;//proc something (we will owerride this)
+ 		sp->procFlags = PROC_ON_CAST_SPELL;
+ 	}
+-
++#endif
+ 	//shaman - Purge 
+ 	sp = dbcSpell.LookupEntryForced( 370 ); 
+ 	if( sp != NULL )
+@@ -2539,7 +2567,7 @@
+ 		sp->EffectSpellGroupRelation[1] = 0xFFFFFFFF;//nature+fire+frost is all that shaman can do
+ 		sp->EffectSpellGroupRelation_high[1] = 0xFFFFFFFF;//nature+fire+frost is all that shaman can do
+ 	}
+-
++#ifndef NEW_PROCFLAGS
+ 	//Shaman - Eye of the Storm
+ 	sp = dbcSpell.LookupEntryForced( 29062 );
+ 	if( sp != NULL )
+@@ -2550,7 +2578,7 @@
+ 	sp = dbcSpell.LookupEntryForced( 29065 );
+ 	if( sp != NULL )
+ 		sp->procFlags = PROC_ON_CRIT_HIT_VICTIM;
+-
++#endif
+ 	//Shaman - Focused Casting
+ 	sp = dbcSpell.LookupEntryForced( 29063 );
+ 	if( sp != NULL )
+@@ -2678,6 +2706,7 @@
+ 		sp->EffectSpellGroupRelation[0] = 64;
+ #endif
+ 
++#ifndef NEW_PROCFLAGS
+ 	//shaman - Elemental Devastation
+ 	sp = dbcSpell.LookupEntryForced( 29179 ); 
+ 	if( sp != NULL )
+@@ -2699,6 +2728,7 @@
+ 	sp = dbcSpell.LookupEntryForced( 16240 ); 
+ 	if( sp != NULL )
+ 		sp->procFlags = PROC_ON_SPELL_CRIT_HIT;
++#endif
+ 
+     //shaman - Ancestral healing proc spell
+     sp = dbcSpell.LookupEntryForced( 16177 );
+@@ -2889,6 +2919,7 @@
+ 	if( sp != NULL )
+ 		sp->EffectSpellGroupRelation[0] = group_relation_rogue_poisons;
+ 
++#ifndef NEW_PROCFLAGS
+ 	//rogue - Find Weakness.
+ 	sp = dbcSpell.LookupEntryForced( 31233 ); 
+ 	if( sp != NULL )
+@@ -2905,6 +2936,7 @@
+ 	sp = dbcSpell.LookupEntryForced( 31242 ); 
+ 	if( sp != NULL )
+ 		sp->procFlags = PROC_ON_CAST_SPELL;
++#endif
+ 
+ 	//rogue ( grouping ) Find Weakness
+ 	group_relation_rogue_find_weakness = 0x00000008 | 0x00000010 | 0x00000100 | 0x00100000 | 0x00800000 | 0x04000000 | 0x20000000;
+@@ -2962,7 +2994,7 @@
+ 		sp->EffectMiscValue[0] = SMT_SPELL_VALUE;
+ 		sp->EffectSpellGroupRelation[1] = 4194304;
+ 	}
+-
++#ifndef NEW_PROCFLAGS
+ 	//rogue - Mace Specialization.
+ 	sp = dbcSpell.LookupEntryForced( 13709 ); 
+ 	if( sp != NULL )
+@@ -2979,6 +3011,7 @@
+ 	sp = dbcSpell.LookupEntryForced( 13803 ); 
+ 	if( sp != NULL )
+ 		sp->procFlags = PROC_ON_MELEE_ATTACK;
++#endif
+ 
+ 	//rogue - Dirty Tricks 
+ 	sp = dbcSpell.LookupEntryForced( 14076 ); 
+@@ -3051,6 +3084,7 @@
+ 	if( sp != NULL )
+ 		sp->EffectSpellGroupRelation[0] = 64 | 32;	//Sprint + Evasion
+ 
++#ifndef NEW_PROCFLAGS
+      //priest - Holy Concentration
+      sp = dbcSpell.LookupEntryForced( 34753 );
+      if (sp != NULL)
+@@ -3061,6 +3095,7 @@
+      sp = dbcSpell.LookupEntryForced( 34860 );
+      if (sp != NULL)
+           sp->procFlags = PROC_ON_CAST_SPELL;
++#endif
+      sp = dbcSpell.LookupEntryForced( 34754 );
+      if (sp != NULL)
+      {
+@@ -3079,6 +3114,7 @@
+ 	if( sp != NULL )
+ 		sp->EffectSpellGroupRelation[0] = 8192 | 131072 | 8388608; // Mind Blast + Mind Control + Mind Flay
+ 
++#ifndef NEW_PROCFLAGS
+ 	//Priest: Blessed Recovery
+ 	sp = dbcSpell.LookupEntryForced(27811);
+ 	if(sp != NULL)
+@@ -3119,6 +3155,7 @@
+ 	sp = dbcSpell.LookupEntryForced( 45244 );
+ 	if( sp != NULL )
+ 		sp->procFlags = PROC_ON_CRIT_HIT_VICTIM;
++#endif
+ 
+ 	//priest - Improved Divine Spirit 
+ 	sp = dbcSpell.LookupEntryForced( 33174 ); 
+@@ -3219,6 +3256,7 @@
+ 	}
+ 
+ 	//Priest: Shadowguard
++#ifndef NEW_PROCFLAGS
+ 	sp = dbcSpell.LookupEntryForced( 18137 );
+ 	if( sp != NULL )
+ 	{
+@@ -3268,6 +3306,7 @@
+ 		sp->proc_interval = 3000; //every 3 seconds
+ 		sp->EffectTriggerSpell[0] = 28385;
+ 	}
++#endif
+ 
+ 	//priest - Absolution 
+ 	sp = dbcSpell.LookupEntryForced( 33167 ); 
+@@ -3393,6 +3432,7 @@
+ 	if( sp != NULL )
+ 		sp->procChance = procchance;
+ 
++#ifndef NEW_PROCFLAGS
+ 	//Druid: Natural Perfection
+ 	sp = dbcSpell.LookupEntryForced( 33881 );
+ 	if ( sp != NULL )
+@@ -3433,7 +3473,7 @@
+ 		sp->EffectApplyAuraName[0] = SPELL_AURA_PERIODIC_TRIGGER_SPELL;
+ 		sp->EffectTriggerSpell[0] = 22845;
+ 	}
+-
++#endif
+ 	//Druid - Ferocity.
+ 	sp = dbcSpell.LookupEntryForced( 16934 ); 
+ 	if( sp != NULL )
+@@ -3483,7 +3523,7 @@
+ 	sp = dbcSpell.LookupEntryForced( 35364 ); 
+ 	if( sp != NULL )
+ 		sp->EffectSpellGroupRelation[0] = 1 | 4;
+-
++#ifndef NEW_PROCFLAGS
+ 	//Druid - Celestial Focus
+ 	sp = dbcSpell.LookupEntryForced( 16850 ); 
+ 	if( sp != NULL )
+@@ -3503,6 +3543,7 @@
+ 		sp->procFlags = PROC_ON_CAST_SPELL;
+ 		sp->EffectSpellGroupRelation[1] = 1;
+ 	}
++#endif
+ 
+ 	//Druid - Feral Aggression. Blizz made a mistake here ?
+ 	sp = dbcSpell.LookupEntryForced( 16858 ); 
+@@ -3535,7 +3576,7 @@
+ 		sp->EffectSpellGroupRelation[0] = 8;
+ 		sp->EffectSpellGroupRelation[1] = 8388608;
+ 	}
+-
++#ifndef NEW_PROCFLAGS
+ 	//paladin - seal of blood
+ 	sp = dbcSpell.LookupEntryForced( 31892 );
+ 	if( sp != NULL )
+@@ -3567,7 +3608,7 @@
+ 		sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
+ 		sp->EffectTriggerSpell[0] = 31786;
+ 	}
+-
++#endif
+ 	//Druid: Leader of the Pack
+ 	sp = dbcSpell.LookupEntryForced( 24932 );
+ 	if( sp != NULL )
+@@ -3588,7 +3629,7 @@
+ 	sp = dbcSpell.LookupEntryForced( 36285 );
+ 	if( sp != NULL )
+ 		sp->EffectMiscValue[0] = 2998;
+-
++#ifndef NEW_PROCFLAGS
+ 	//muhaha, rewriting Retaliation spell as old one :D
+ 	sp = dbcSpell.LookupEntryForced( 20230 );
+ 	if( sp != NULL )
+@@ -3598,7 +3639,7 @@
+ 		sp->EffectTriggerSpell[0] = 22858; //evil , but this is good for us :D
+ 		sp->procFlags = PROC_ON_MELEE_ATTACK_VICTIM; //add procflag here since this was not processed with the others !
+ 	}
+-
++#endif
+ 	//"bloodthirst" new version is ok but old version is wrong from now on :(
+ 	sp = dbcSpell.LookupEntryForced( 23881 );
+ 	if( sp != NULL )
+@@ -3636,7 +3677,7 @@
+ 		sp->Effect[1] = 64; //aura
+ 		sp->EffectTriggerSpell[1] = 30339; //evil , but this is good for us :D
+ 	}
+-
++#ifndef NEW_PROCFLAGS
+ 	// Hunter - Master Tactician
+ 	sp = dbcSpell.LookupEntryForced( 34506 );
+ 	if( sp != NULL )
+@@ -3653,7 +3694,7 @@
+ 	sp = dbcSpell.LookupEntryForced( 34839 );
+ 	if( sp != NULL )
+ 		sp->procFlags = PROC_ON_RANGED_ATTACK | PROC_TARGET_SELF;
+-
++#endif
+ 	// Hunter - Spirit Bond
+ 	sp = dbcSpell.LookupEntryForced( 19578 );
+ 	if( sp != NULL )
+@@ -3767,7 +3808,7 @@
+ 		sp->EffectApplyAuraName[1] = SPELL_AURA_MOD_HASTE;
+ 		sp->EffectImplicitTargetA[1] = EFF_TARGET_PET;
+ 	}
+-
++#ifndef NEW_PROCFLAGS
+ 	// Hunter - Ferocious Inspiration
+ 	sp = dbcSpell.LookupEntryForced( 34455 );
+ 	if( sp != NULL )
+@@ -3799,7 +3840,7 @@
+ 		sp->procFlags = PROC_ON_SPELL_CRIT_HIT | PROC_TARGET_SELF;
+ 		sp->Effect[1] = 0; //remove this
+ 	}
+-
++#endif
+ 	// Hunter - Focused Fire
+ 	sp = dbcSpell.LookupEntryForced( 35029 );
+ 	if( sp != NULL )
+@@ -3932,7 +3973,7 @@
+ 		sp->EffectApplyAuraName[0] = SPELL_AURA_MOD_INCREASE_HEALTH_PERCENT;
+ 		sp->EffectImplicitTargetA[0] = EFF_TARGET_PET;
+ 	}
+-
++#ifndef NEW_PROCFLAGS
+ 	// Hunter - Thrill of the Hunt
+ 	sp = dbcSpell.LookupEntryForced( 34497 );
+ 	if( sp != NULL )
+@@ -3969,7 +4010,7 @@
+ 	sp = dbcSpell.LookupEntryForced( 34503 );
+ 	if( sp != NULL )
+ 		sp->procFlags = PROC_ON_RANGED_CRIT_ATTACK;
+-
++#endif
+ 	// Hunter - Hawk Eye
+ 	sp = dbcSpell.LookupEntryForced( 19498 );
+ 	if( sp != NULL )
+@@ -3980,7 +4021,7 @@
+ 	sp = dbcSpell.LookupEntryForced( 19500 );
+ 	if( sp != NULL )
+ 		sp->EffectSpellGroupRelation[0] = 1 | 4;
+-
++#ifndef NEW_PROCFLAGS
+ 	//Hunter - Frenzy
+ 	sp = dbcSpell.LookupEntryForced( 19621 );
+ 	if( sp != NULL )
+@@ -4032,7 +4073,7 @@
+ 		sp->procFlags = PROC_ON_CRIT_ATTACK;
+ 		sp->c_is_flags |= SPELL_FLAG_IS_EXPIREING_WITH_PET | SPELL_FLAG_IS_CASTED_ON_PET_SUMMON_ON_PET | PROC_TARGET_SELF;
+ 	}
+-
++#endif
+ 	//Hunter - Unleashed Fury
+ 	sp = dbcSpell.LookupEntryForced( 19616 );
+ 	if( sp != NULL )
+@@ -4094,7 +4135,7 @@
+ 	sp = dbcSpell.LookupEntryForced( 13160 );
+ 	if( sp != NULL )
+ 		sp->SpellGroupType = 2097152;
+-
++#ifndef NEW_PROCFLAGS
+ 	//Hunter : Rapid Killing - might need to add honor trigger too here. I'm guessing you receive Xp too so i'm avoiding double proc
+ 	sp = dbcSpell.LookupEntryForced( 34948 );
+ 	if( sp != NULL )
+@@ -4108,6 +4149,7 @@
+ 		sp->procFlags = PROC_ON_GAIN_EXPIERIENCE | PROC_TARGET_SELF;
+ 		sp->EffectSpellGroupRelation[1] = 32;
+ 	}
++#endif
+ 	//Hunter : Rapid Killing - PROC
+ 	sp = dbcSpell.LookupEntryForced( 35098 );
+ 	if( sp != NULL )
+@@ -4369,7 +4411,7 @@
+ 		sp->EffectSpellGroupRelation_high[0] = 64 | 128 | 1;
+ 		sp->EffectMiscValue[0] = SMT_COST;
+ 	}
+-
++#ifndef NEW_PROCFLAGS
+ 	//Mage - Arcane Concentration
+ 	sp = dbcSpell.LookupEntryForced( 11213 );
+ 	if( sp != NULL )
+@@ -4389,7 +4431,7 @@
+ 		sp->procFlags = PROC_ON_CAST_SPELL | PROC_TARGET_SELF;
+ 		//sp->procChance = 100;
+ 	}
+-
++#endif
+ 	//Mage - ClearCasting Effect
+ 	sp = dbcSpell.LookupEntryForced( 12536 );
+ 	if( sp != NULL )
+@@ -4397,7 +4439,7 @@
+ 		sp->EffectSpellGroupRelation[0] = 0xFFFFFFFF;		//!!!this will set value multiple times but we do not care since it is 100%
+ 		sp->EffectSpellGroupRelation_high[0] = 0xFFFFFFFF;	//!!!this will set value multiple times but we do not care since it is 100%
+ 	}	
+-
++#ifndef NEW_PROCFLAGS
+ 	//Mage - Arcane Blast
+ 	sp = dbcSpell.LookupEntryForced( 30451 );
+ 	if( sp != NULL )
+@@ -4406,7 +4448,7 @@
+ 		sp->EffectTriggerSpell[1] = 36032;
+ 		sp->procFlags = PROC_ON_CAST_SPECIFIC_SPELL;
+ 	}
+-
++#endif
+ 	//Mage - Magic Attunement
+ 	sp = dbcSpell.LookupEntryForced( 11247 );
+ 	if( sp != NULL )
+@@ -4444,7 +4486,7 @@
+ 	sp = dbcSpell.LookupEntryForced( 29000 );
+ 	if( sp != NULL )
+ 		sp->EffectSpellGroupRelation[0] = 2 | 1;
+-
++#ifndef NEW_PROCFLAGS
+ 	//rogue - Seal Fate
+ 	sp = dbcSpell.LookupEntryForced( 14186 );
+ 	if( sp != NULL ) 
+@@ -4476,7 +4518,7 @@
+ 		sp->procFlags = PROC_ON_CRIT_ATTACK;
+ 		sp->procChance = 100;
+ 	}
+-
++#endif
+ 	//druid Savage Fury
+ 	sp = dbcSpell.LookupEntryForced( 16998 );
+ 	if( sp != NULL ) 
+@@ -4492,7 +4534,7 @@
+ 		//sp->EffectSpellGroupRelation_high[1] |= 1024;
+ 		//sp->EffectSpellGroupRelation_high[2] |= 1024;
+ 	}
+-
++#ifndef NEW_PROCFLAGS
+ 	//druid - Blood Frenzy
+ 	sp = dbcSpell.LookupEntryForced( 16954 );
+ 	if( sp != NULL ) 
+@@ -4541,7 +4583,6 @@
+ 		sp->procFlags = PROC_ON_CAST_SPELL;
+ 	}
+ 
+-#ifndef NEW_PROCFLAGS
+ 	//Improved Sprint
+ 	sp = dbcSpell.LookupEntryForced( 13743 );
+ 	if( sp != NULL )
+@@ -4565,6 +4606,7 @@
+ 		sp->EffectSpellGroupRelation[0]=64;
+ #endif
+ 
++#ifndef NEW_PROCFLAGS
+ 	//warlock -  Seed of Corruption
+ 	sp = dbcSpell.LookupEntryForced( 27243 );
+ 	if( sp != NULL )
+@@ -4593,6 +4635,7 @@
+ 		sp->EffectImplicitTargetB[1] = EFF_TARGET_PET ;
+ 		sp->c_is_flags |= SPELL_FLAG_IS_EXPIREING_WITH_PET;
+ 	}
++#endif
+ 	sp = dbcSpell.LookupEntryForced( 25228 );
+ 	if( sp != NULL )
+ 	{
+@@ -4610,7 +4653,7 @@
+ 	sp = dbcSpell.LookupEntryForced( 30145 );
+ 	if( sp != NULL )
+ 		sp->EffectSpellGroupRelation_high[0] = 32;
+-
++#ifndef NEW_PROCFLAGS
+ 	//warlock: Nightfall
+ 	sp = dbcSpell.LookupEntryForced( 18094 );
+ 	if( sp != NULL )
+@@ -4628,6 +4671,7 @@
+ 		sp->procFlags = PROC_ON_CAST_SPELL;
+ 		sp->procChance = 4;
+ 	}
++#endif
+ 
+ 	//warlock: Contagion
+ 	sp = dbcSpell.LookupEntryForced( 30060 );
+@@ -4925,7 +4969,7 @@
+ 	sp = dbcSpell.LookupEntryForced( 15053 );
+ 	if( sp != NULL )
+ 		sp->EffectSpellGroupRelation[0] =  524288 | 131072;
+-
++#ifndef NEW_PROCFLAGS
+ 	//Mage - Improved Blizzard
+ 	sp = dbcSpell.LookupEntryForced( 11185 );
+ 	if( sp != NULL )
+@@ -4948,7 +4992,7 @@
+ 		sp->EffectTriggerSpell[0] = 12486;
+ 		sp->procFlags = PROC_ON_CAST_SPELL;
+ 	}
+-
++#endif
+ 	//mage: Fire Power
+ 	sp = dbcSpell.LookupEntryForced( 11124 );
+ 	if( sp != NULL )
+@@ -4993,8 +5037,10 @@
+ 	sp = dbcSpell.LookupEntryForced( 11129 );
+ 	if( sp != NULL )
+ 	{
++#ifndef NEW_PROCFLAGS
+ 		sp->procFlags = PROC_ON_CAST_SPELL | PROC_ON_SPELL_CRIT_HIT | PROC_TARGET_SELF;
+ 		sp->procCharges = 0;
++#endif
+ 		sp->c_is_flags |= SPELL_FLAG_IS_REQUIRECOOLDOWNUPDATE;
+ 	}
+ 	sp = dbcSpell.LookupEntryForced( 28682 );
+@@ -5049,14 +5095,14 @@
+ 		sp->EffectSpellGroupRelation[0] = 32;
+ 		sp->EffectSpellGroupRelation[1] = 32;
+ 	}
+-
++#ifndef NEW_PROCFLAGS
+ 	//mage - Master of Elements
+ 	sp = dbcSpell.LookupEntryForced( 29074 );
+ 	if( sp != NULL )
+ 	{
+ 		sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
+ 		sp->EffectTriggerSpell[0] = 29077;
+-		sp->procFlags = uint32(PROC_ON_SPELL_CRIT_HIT|PROC_TARGET_SELF);
++		sp->procFlags = (uint32)(PROC_ON_SPELL_CRIT_HIT|PROC_TARGET_SELF);
+ 		sp->procChance = 100;
+ 	}
+ 	sp = dbcSpell.LookupEntryForced( 29075 );
+@@ -5064,7 +5110,7 @@
+ 	{
+ 		sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
+ 		sp->EffectTriggerSpell[0] = 29077;
+-		sp->procFlags = uint32(PROC_ON_SPELL_CRIT_HIT|PROC_TARGET_SELF);
++		sp->procFlags = (uint32)(PROC_ON_SPELL_CRIT_HIT|PROC_TARGET_SELF);
+ 		sp->procChance = 100;
+ 	}
+ 	sp = dbcSpell.LookupEntryForced( 29076 );
+@@ -5072,9 +5118,10 @@
+ 	{
+ 		sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
+ 		sp->EffectTriggerSpell[0] = 29077;
+-		sp->procFlags = uint32(PROC_ON_SPELL_CRIT_HIT|PROC_TARGET_SELF);
++		sp->procFlags = (uint32)(PROC_ON_SPELL_CRIT_HIT|PROC_TARGET_SELF);
+ 		sp->procChance = 100;
+ 	}
++#endif
+ 
+ 	//mage: Blazing Speed
+ 	sp = dbcSpell.LookupEntryForced( 31641 ); 
+@@ -5755,7 +5802,7 @@
+ 		sp->EffectImplicitTargetA[0] = EFF_TARGET_SELF;
+ 		sp->EffectSpellGroupRelation[0] = 65536;
+ 	}
+-
++#ifndef NEW_PROCFLAGS
+ 	//warlock - Unstable Affliction
+ 	sp = dbcSpell.LookupEntryForced( 30108 );
+ 	if( sp != NULL )
+@@ -5845,7 +5892,7 @@
+ 		sp->procFlags = PROC_ON_CAST_SPELL;
+ 		sp->Effect[1] = 0 ; //remove this effect ? Maybe remove the other one :P xD
+ 	}
+-
++#endif
+ 	//warlock - Bane
+ 	sp = dbcSpell.LookupEntryForced( 17788 );
+ 	if( sp != NULL )
+@@ -5877,7 +5924,7 @@
+ 		sp->EffectSpellGroupRelation[0] = 1 | 4;
+ 		sp->EffectSpellGroupRelation_high[1] = 128;
+ 	}
+-
++#ifndef NEW_PROCFLAGS
+ 	//warlock - soul leech
+ 	sp = dbcSpell.LookupEntryForced( 30293 );
+ 	if( sp != NULL )
+@@ -5885,7 +5932,7 @@
+ 		sp->Effect[0] = 6; //aura
+ 		sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
+ 		sp->EffectTriggerSpell[0] = 30294;
+-		sp->procFlags = uint32(PROC_ON_CAST_SPELL|PROC_TARGET_SELF);
++		sp->procFlags = (uint32)(PROC_ON_CAST_SPELL|PROC_TARGET_SELF);
+ 	}
+ 	sp = dbcSpell.LookupEntryForced( 30295 );
+ 	if( sp != NULL )
+@@ -5893,7 +5940,7 @@
+ 		sp->Effect[0] = 6; //aura
+ 		sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
+ 		sp->EffectTriggerSpell[0] = 30294;
+-		sp->procFlags = uint32(PROC_ON_CAST_SPELL|PROC_TARGET_SELF);
++		sp->procFlags = (uint32)(PROC_ON_CAST_SPELL|PROC_TARGET_SELF);
+ 	}
+ 	sp = dbcSpell.LookupEntryForced( 30296 );
+ 	if( sp != NULL )
+@@ -5901,7 +5948,7 @@
+ 		sp->Effect[0] = 6; //aura
+ 		sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
+ 		sp->EffectTriggerSpell[0] = 30294;
+-		sp->procFlags = uint32(PROC_ON_CAST_SPELL|PROC_TARGET_SELF);
++		sp->procFlags = (uint32)(PROC_ON_CAST_SPELL|PROC_TARGET_SELF);
+ 	}
+ 
+ 	//warlock - Pyroclasm
+@@ -6016,7 +6063,7 @@
+ 		sp->procFlags = PROC_ON_MELEE_ATTACK_VICTIM | PROC_REMOVEONUSE;
+ 		sp->AuraInterruptFlags = 0; //we remove it on proc or timeout
+ 	}
+-
++#endif
+ 	//wrath of air totem targets sorounding creatures instead of us
+ 	sp = dbcSpell.LookupEntryForced( 2895 );
+ 	if( sp != NULL )
+@@ -6190,49 +6237,36 @@
+ 		sp->DurationIndex = 0;
+ 
+ 	//Priest: Shadow Power
+-	sp = dbcSpell.LookupEntryForced( 15310 );
++	sp = dbcSpell.LookupEntryForced( 33221 );
+ 	if( sp != NULL )
+ 	{
+-		uint32 group = sp->EffectSpellGroupRelation[0];
+-		sp = dbcSpell.LookupEntryForced( 33221 );
+-		if( sp != NULL )
+-			sp->EffectSpellGroupRelation[0] = group;
+-		sp = dbcSpell.LookupEntryForced( 33222 );
+-		if( sp != NULL )
+-			sp->EffectSpellGroupRelation[0] = group;
+-		sp = dbcSpell.LookupEntryForced( 33223 );
+-		if( sp != NULL )
+-			sp->EffectSpellGroupRelation[0] = group;
+-		sp = dbcSpell.LookupEntryForced( 33224 );
+-		if( sp != NULL )
+-			sp->EffectSpellGroupRelation[0] = group;
+-		sp = dbcSpell.LookupEntryForced( 33225 );
+-		if( sp != NULL )
+-			sp->EffectSpellGroupRelation[0] = group;
++		sp->EffectSpellGroupRelation[0] = 8192;
++		sp->EffectSpellGroupRelation_high[0] = 2;
+ 	}
+-
+-#ifdef NEW_PROCFLAGS
+-	//priest -  Shadow Weaving
+-	if (sp != NULL)
++	sp = dbcSpell.LookupEntryForced( 33222 );
++	if( sp != NULL )
+ 	{
+-		uint32 group = sp->EffectSpellGroupRelation[0];
+-		sp = dbcSpell.LookupEntryForced(15334);
+-		if (sp !=NULL)
+-			sp->EffectSpellGroupRelation[0] = group;
+-		sp = dbcSpell.LookupEntryForced(15333);
+-		if (sp !=NULL)
+-			sp->EffectSpellGroupRelation[0] = group;
+-		sp = dbcSpell.LookupEntryForced(15332);
+-		if (sp !=NULL)
+-			sp->EffectSpellGroupRelation[0] = group;
+-		sp = dbcSpell.LookupEntryForced(15331);
+-		if (sp !=NULL)
+-			sp->EffectSpellGroupRelation[0] = group;
+-		sp = dbcSpell.LookupEntryForced(15257);
+-		if (sp !=NULL)
+-			sp->EffectSpellGroupRelation[0] = group;
++		sp->EffectSpellGroupRelation[0] = 8192;
++		sp->EffectSpellGroupRelation_high[0] = 2;
+ 	}
+-#endif
++	sp = dbcSpell.LookupEntryForced( 33223 );
++	if( sp != NULL )
++	{
++		sp->EffectSpellGroupRelation[0] = 8192;
++		sp->EffectSpellGroupRelation_high[0] = 2;
++	}
++	sp = dbcSpell.LookupEntryForced( 33224 );
++	if( sp != NULL )
++	{
++		sp->EffectSpellGroupRelation[0] = 8192;
++		sp->EffectSpellGroupRelation_high[0] = 2;
++	}
++	sp = dbcSpell.LookupEntryForced( 33225 );
++	if( sp != NULL )
++	{
++		sp->EffectSpellGroupRelation[0] = 8192;
++		sp->EffectSpellGroupRelation_high[0] = 2;
++	}
+ 
+     //Priest - Inspiration proc spell
+     sp = dbcSpell.LookupEntryForced( 14893 );
+@@ -6261,13 +6295,15 @@
+ 		sp->EffectSpellGroupRelation[0]= 262144 | 2097152 | 8388608 | 8519680 | 524288 | 1048576 | 8388608;
+ #endif
+ 
++
++#ifndef NEW_PROCFLAGS
+ 	//priest - surge of light
+ 	sp = dbcSpell.LookupEntryForced( 33150 );
+ 	if( sp != NULL )
+-		sp->procFlags = uint32(PROC_ON_SPELL_CRIT_HIT_VICTIM | PROC_TARGET_SELF);
++		sp->procFlags = (uint32)(PROC_ON_SPELL_CRIT_HIT_VICTIM | PROC_TARGET_SELF);
+ 	sp = dbcSpell.LookupEntryForced( 33154 );
+ 	if( sp != NULL )
+-		sp->procFlags = uint32(PROC_ON_SPELL_CRIT_HIT_VICTIM | PROC_TARGET_SELF);
++		sp->procFlags = (uint32)(PROC_ON_SPELL_CRIT_HIT_VICTIM | PROC_TARGET_SELF);
+ 	sp = dbcSpell.LookupEntryForced( 33151 );
+ 	if( sp != NULL )
+ 	{
+@@ -6276,6 +6312,7 @@
+ 		sp->EffectSpellGroupRelation[2] = 128;
+ 		sp->AuraInterruptFlags = AURA_INTERRUPT_ON_CAST_SPELL;
+ 	}
++#endif
+ 
+ 	//Seal of Justice -lowered proc chance (experimental values !)
+ 	sp = dbcSpell.LookupEntryForced( 20164 );
+@@ -6338,6 +6375,7 @@
+ 		sp->EffectSpellGroupRelation[0] = 8389120 | 256 | 1024;
+ #endif
+ 
++#ifndef NEW_PROCFLAGS
+ 	//this an on equip item spell(2824) :  ice arrow(29501)
+ 	sp = dbcSpell.LookupEntryForced( 29501 );
+ 	if( sp != NULL )
+@@ -6345,8 +6383,10 @@
+ 		sp->procChance = 30;//some say it is triggered every now and then
+ 		sp->procFlags = PROC_ON_RANGED_ATTACK;
+ 	}
++#endif
+ 
+-#ifdef NEW_PROCFLAGS
++#ifndef NEW_PROCFLAGS
++#else
+ 	//warrior - deep wounds
+ 	sp = dbcSpell.LookupEntry( 12162);
+ 	if ( sp!=NULL )
+@@ -6359,6 +6399,7 @@
+ 		sp->SpellGroupType = 32;
+ #endif
+ 
++#ifndef NEW_PROCFLAGS
+ 	//warrior - second wind should trigger on self
+ 	sp = dbcSpell.LookupEntryForced( 29841 );
+ 	if( sp != NULL )
+@@ -6366,7 +6407,7 @@
+ 	sp = dbcSpell.LookupEntryForced( 29842 );
+ 	if( sp != NULL )
+ 		sp->procFlags |= PROC_TARGET_SELF;
+-
++#endif
+ 	//warrior - Improved Disciplines
+ 	sp = dbcSpell.LookupEntryForced( 29725 );
+ 	if (sp != NULL )
+@@ -6392,7 +6433,7 @@
+ 		sp->EffectSpellGroupRelation[1] = 16 | 8192;
+ 		sp->EffectSpellGroupRelation_high[1] = 8;
+ 	}
+-
++#ifndef NEW_PROCFLAGS
+ 	//warrior - berserker rage is missing 1 effect = regenerate rage
+ 	sp = dbcSpell.LookupEntryForced( 18499 );
+ 	if( sp != NULL )
+@@ -6421,7 +6462,6 @@
+ 		sp->procFlags = PROC_ON_ANY_DAMAGE_VICTIM | PROC_TARGET_SELF;
+ 	}
+ 
+-#ifndef NEW_PROCFLAGS
+ 	//warrior - Blood Frenzy
+ 	sp = dbcSpell.LookupEntryForced( 29836 );
+ 	if( sp != NULL )
+@@ -6445,6 +6485,7 @@
+ 		sp->EffectSpellGroupRelation[0] = 32;
+ #endif
+ 
++#ifndef NEW_PROCFLAGS
+ 	//warrior - Rampage
+ 	sp = dbcSpell.LookupEntryForced( 30030 );
+ 	if( sp != NULL )
+@@ -6475,6 +6516,7 @@
+ 	sp = dbcSpell.LookupEntryForced( 13002 );
+ 	if( sp != NULL )
+ 		sp->procFlags = PROC_ON_MELEE_ATTACK | PROC_TARGET_SELF;
++#endif
+ 
+ 	//warrior - Commanding Presence
+ 	sp = dbcSpell.LookupEntryForced( 12318 );
+@@ -6661,6 +6703,7 @@
+ 	if( sp != NULL )
+ 		sp->EffectSpellGroupRelation_high[0] = 128;
+ 
++#ifndef NEW_PROCFLAGS
+ 	// priest - Reflective Shield
+ 	sp = dbcSpell.LookupEntryForced( 33201 );
+ 	if( sp != NULL )
+@@ -6697,6 +6740,7 @@
+ 		sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
+ 		sp->EffectTriggerSpell[0] = 33619; //!! WRONG spell, we will make direct dmg here
+ 	}
++#endif
+ 	//mage - Presence of Mind
+ 	sp = dbcSpell.LookupEntryForced(12043);
+ 	if (sp!= NULL)
+@@ -6944,11 +6988,12 @@
+ 		sp->EffectSpellGroupRelation[0] = 4;
+ 		sp->EffectSpellGroupRelation[1] = 1;
+ 	}
+-
++#ifndef NEW_PROCFLAGS
+ 	// druid - Nature's Grace
+ 	sp = dbcSpell.LookupEntryForced( 16880 );
+ 	if( sp != NULL )
+ 		sp->procFlags = PROC_ON_SPELL_CRIT_HIT;
++#endif
+ 
+ 	sp = dbcSpell.LookupEntryForced( 16886 );
+ 	if( sp != NULL )
+@@ -6973,7 +7018,7 @@
+ 	sp = dbcSpell.LookupEntryForced( 16818 );
+ 	if( sp != NULL )
+ 		sp->EffectSpellGroupRelation[0] = 1 | 4;
+-
++#ifndef NEW_PROCFLAGS
+ 	// Druid: Omen of Clarity
+ 	sp = dbcSpell.LookupEntryForced( 16864 );
+ 	if( sp != NULL )
+@@ -6981,9 +7026,10 @@
+ 		sp->procChance=100; //procchance dynamic. 3ppm
+ 		sp->procFlags = PROC_ON_MELEE_ATTACK | PROC_ON_CRIT_ATTACK;
+ 	}
+-
++#endif
+ 	//---------ITEMS-----------------
+-#ifdef NEW_PROCFLAGS
++#ifndef NEW_PROCFLAGS
++#else
+ 	//Bonescythe Armor
+ 	sp = dbcSpell.LookupEntryForced( 28814 );
+ 	if (sp != NULL)
+@@ -7110,6 +7156,7 @@
+ 	}
+ #endif
+ 
++#ifndef NEW_PROCFLAGS
+ 	//Thunderfury
+ 	sp = dbcSpell.LookupEntryForced( 21992 );
+ 	if( sp != NULL )
+@@ -7118,6 +7165,7 @@
+         sp->EffectTriggerSpell[2] = 27648;
+ 		sp->EffectImplicitTargetA[2] = EFF_TARGET_SELF;
+ 	}
++#endif
+ 
+ 	//Solarian's Sapphire
+ 	sp = dbcSpell.LookupEntryForced( 37536 );
+@@ -7169,6 +7217,7 @@
+ 	if( sp != NULL )
+ 		sp->EffectSpellGroupRelation[0] = 1;
+ 
++#ifndef NEW_PROCFLAGS
+ 	//Energized 
+ 	sp = dbcSpell.LookupEntryForced( 43750 ); 
+ 	if( sp != NULL )
+@@ -7256,7 +7305,6 @@
+ 		sp->maxstack = 1;
+ 	}
+ 
+-#ifndef NEW_PROCFLAGS
+ 	//Ashtongue Talisman of Lethality
+ 	sp = dbcSpell.LookupEntryForced( 40460 );
+ 	if( sp != NULL )
+@@ -7274,6 +7322,7 @@
+ 		sp->EffectSpellGroupRelation[0] = 262144 | 2097152 | 8388608 | 8519680 | 524288 | 1048576 | 8388608;
+ #endif
+ 
++#ifndef NEW_PROCFLAGS
+ 	//Serpent-Coil Braid
+ 	sp = dbcSpell.LookupEntryForced( 37447 );
+ 	if( sp != NULL )
+@@ -7285,6 +7334,7 @@
+ 		sp->EffectTriggerSpell[0] = 37445;
+ 		sp->maxstack = 1;
+ 	}
++#endif
+ 
+ 	//Item: Assassination Armor
+ 	sp = dbcSpell.LookupEntryForced(37166);
+@@ -7366,7 +7416,7 @@
+ 	{
+ 		sp->EffectSpellGroupRelation_high[0] |=4096;
+ 	}
+-
++#ifndef NEW_PROCFLAGS
+ 	//Item Set: Malorne Harness
+ 	sp = dbcSpell.LookupEntryForced( 37306 );
+ 	if( sp != NULL )
+@@ -7380,7 +7430,7 @@
+ 		sp->procChance = 4;
+ 		sp->procFlags = PROC_ON_MELEE_ATTACK;
+ 	}
+-
++#endif
+ 	//Item Set: Slayer's Armor
+ 	sp = dbcSpell.LookupEntryForced( 38388 );
+ 	if( sp != NULL )
+@@ -7393,7 +7443,7 @@
+ 		sp->EffectSpellGroupRelation_high[0] |= 2 | 4;
+ 		sp->EffectSpellGroupRelation[0] |= 8388612 |8388610 |41943040;
+ 	}
+-
++#ifndef NEW_PROCFLAGS
+ 	//Item Set: Deathmantle
+ 	sp = dbcSpell.LookupEntryForced( 37170 );
+ 	if( sp != NULL )
+@@ -7401,7 +7451,7 @@
+ 		sp->procChance = 4;
+ 		sp->procFlags = PROC_ON_MELEE_ATTACK;
+ 	}
+-
++#endif
+ 	//Item Set: Netherblade
+ 	sp = dbcSpell.LookupEntryForced( 37167 );
+ 	if( sp != NULL )
+@@ -7434,11 +7484,13 @@
+ 		sp->EffectSpellGroupRelation[0] = 536870912;
+ 		sp->EffectSpellGroupRelation[1] = 536870912;
+ 	}
++#ifndef NEW_PROCFLAGS
+ 	sp = dbcSpell.LookupEntryForced( 37443 );
+ 	if( sp != NULL )
+ 	{
+ 		sp->procFlags = PROC_ON_SPELL_CRIT_HIT;
+ 	}
++#endif
+ 
+ 	//Item Set: Aldor Regalia
+ 	sp = dbcSpell.LookupEntryForced( 37438 );
+@@ -7484,7 +7536,7 @@
+ 	{
+ 		sp->EffectSpellGroupRelation[0] = 64;
+ 	}
+-
++#ifndef NEW_PROCFLAGS
+ 	//Item Set: Avatar Regalia
+ 	sp = dbcSpell.LookupEntryForced( 37600 );
+ 	if( sp != NULL )
+@@ -7504,7 +7556,7 @@
+ 	{
+ 		sp->EffectSpellGroupRelation[0] = 4096;
+ 	}
+-
++#endif
+ 	//Item Set: Incarnate Regalia
+ 	sp = dbcSpell.LookupEntryForced( 37570 );
+ 	if( sp != NULL )
+@@ -7525,7 +7577,7 @@
+ 		sp->EffectSpellGroupRelation[0] = 1;
+ 		sp->EffectSpellGroupRelation_high[0] = 64;
+ 	}
+-
++#ifndef NEW_PROCFLAGS
+ 	//Item Set: Voidheart Raiment
+ 	sp = dbcSpell.LookupEntryForced( 37377 );
+ 	if( sp != NULL )
+@@ -7547,6 +7599,7 @@
+ 		sp->proc_interval = 20;
+ 		sp->EffectTriggerSpell[0] = 37378;
+ 	}
++#endif
+ 	sp = dbcSpell.LookupEntryForced( 37380 );
+ 	if( sp != NULL )
+ 	{
+@@ -7611,6 +7664,7 @@
+ 	{
+ 		sp->EffectSpellGroupRelation[0] = 128;
+ 	}
++#ifndef NEW_PROCFLAGS
+ 	sp = dbcSpell.LookupEntryForced( 37227 );
+ 	if( sp != NULL )
+ 	{
+@@ -7618,12 +7672,13 @@
+ 		sp->procChance = 100;
+ 		sp->procFlags = PROC_ON_SPELL_CRIT_HIT;
+ 	}
++#endif
+ 	sp = dbcSpell.LookupEntryForced( 39950 );
+ 	if( sp != NULL )
+ 	{
+ 		sp->EffectSpellGroupRelation[0] = 64;
+ 	}
+-
++#ifndef NEW_PROCFLAGS
+ 	//Item Set: Cataclysm Regalia
+ 	sp = dbcSpell.LookupEntryForced( 37228 );
+ 	if( sp != NULL )
+@@ -7631,11 +7686,13 @@
+ 		sp->procChance = 7;
+ 		sp->procFlags = PROC_ON_CAST_SPELL;
+ 	}
++#endif
+ 	sp = dbcSpell.LookupEntryForced( 37234 );
+ 	if( sp != NULL )
+ 	{
+ 		sp->EffectSpellGroupRelation[0] = 128;
+ 	}
++#ifndef NEW_PROCFLAGS
+ 	sp = dbcSpell.LookupEntryForced( 37237 );
+ 	if( sp != NULL )
+ 	{
+@@ -7650,6 +7707,7 @@
+ 		sp->procChance = 2;
+ 		sp->procFlags = PROC_ON_MELEE_ATTACK;
+ 	}
++#endif
+ 	sp = dbcSpell.LookupEntryForced( 37240 );
+ 	if( sp != NULL )
+ 	{
+@@ -7691,13 +7749,14 @@
+ 	{
+ 		sp->EffectSpellGroupRelation_high[0] = 256;
+ 	}
++#ifndef NEW_PROCFLAGS
+ 	sp = dbcSpell.LookupEntryForced( 37213 );
+ 	if( sp != NULL )
+ 	{
+ 		sp->procChance = 11;
+ 		sp->procFlags = PROC_ON_SPELL_CRIT_HIT;
+ 	}
+-
++#endif
+ 	//Item Set: Lightbringer Armor
+ 	sp = dbcSpell.LookupEntryForced( 38421 );
+ 	if( sp != NULL )
+@@ -7709,7 +7768,7 @@
+ 	{
+ 		sp->EffectSpellGroupRelation[0] = 32;
+ 	}
+-
++#ifndef NEW_PROCFLAGS
+ 	//Item Set: Lightbringer Battlegear
+ 	sp = dbcSpell.LookupEntryForced( 38427 );
+ 	if( sp != NULL )
+@@ -7717,6 +7776,7 @@
+ 		sp->procFlags = PROC_ON_MELEE_ATTACK;
+ 		sp->procChance = 20;
+ 	}
++#endif
+ 	sp = dbcSpell.LookupEntryForced( 38424 );
+ 	if( sp != NULL )
+ 	{
+@@ -7742,10 +7802,12 @@
+ 		sp->EffectSpellGroupRelation[0] = 8;
+ 	}
+ 	sp = dbcSpell.LookupEntryForced( 37191 );
++#ifndef NEW_PROCFLAGS
+ 	if( sp != NULL )
+ 	{
+ 		sp->procFlags = PROC_ON_CAST_SPELL;
+ 	}
++#endif
+ 
+ 	//Item Set: Crystalforge Battlegear
+ 	sp = dbcSpell.LookupEntryForced( 37190 );
+@@ -7754,6 +7816,7 @@
+ 		sp->EffectSpellGroupRelation[0] = 1024 | 524288 | 1048576 | 536870912UL;
+ 		sp->EffectSpellGroupRelation_high[0] = 1|520;
+ 	}
++#ifndef NEW_PROCFLAGS
+ 	sp = dbcSpell.LookupEntryForced( 37195 );
+ 	if( sp != NULL )
+ 	{
+@@ -7768,16 +7831,19 @@
+ 		sp->procFlags = PROC_ON_SPELL_CRIT_HIT;
+ 		sp->proc_interval = 60000;
+ 	}
++#endif
+ 	sp = dbcSpell.LookupEntryForced( 43837 );
+ 	if( sp != NULL )
+ 	{
+ 		sp->EffectSpellGroupRelation[0] = 2147483648UL;
+ 	}
++#ifndef NEW_PROCFLAGS
+ 	sp = dbcSpell.LookupEntryForced( 37188 );
+ 	if( sp != NULL )
+ 	{
+ 		sp->procFlags = PROC_ON_CAST_SPELL;
+ 	}
++#endif
+ 
+ 	//Item Set: Justicar Raiment
+ 	sp = dbcSpell.LookupEntryForced( 37182 );
+@@ -7841,7 +7907,7 @@
+ 	{
+ 		sp->EffectSpellGroupRelation_high[0] = 513;
+ 	}
+-
++#ifndef NEW_PROCFLAGS
+ 	//Item Set: Destroyer Armor
+ 	sp = dbcSpell.LookupEntryForced( 37525 );
+ 	if( sp != NULL )
+@@ -7857,13 +7923,14 @@
+ 		sp->procFlags = PROC_ON_CAST_SPELL;
+ 		sp->procChance = 100;
+ 	}
++#endif
+ 	sp = dbcSpell.LookupEntryForced( 37535 );
+ 	if( sp != NULL )
+ 	{
+ 		sp->EffectSpellGroupRelation[0] = 33554432;
+ 		sp->EffectSpellGroupRelation_high[0] = 1024;
+ 	}
+-
++#ifndef NEW_PROCFLAGS
+ 	//Item Set: Warbringer Armor
+ 	sp = dbcSpell.LookupEntryForced( 37516 );
+ 	if( sp != NULL )
+@@ -7871,7 +7938,7 @@
+ 		sp->procFlags = PROC_ON_CAST_SPELL;
+ 		sp->procChance = 100;
+ 	}
+-
++#endif
+ 	//Item Set: Warbringer Battlegear
+ 	sp = dbcSpell.LookupEntryForced( 37518 );
+ 	if( sp != NULL )
+@@ -7893,7 +7960,7 @@
+ 	sp = dbcSpell.LookupEntryForced( 35478 );
+ 	if( sp != NULL )
+ 		sp->RequiredShapeShift = 0;
+-
++#ifndef NEW_PROCFLAGS
+ 	//Paladin - Improved Lay on Hands
+ 	sp = dbcSpell.LookupEntryForced( 20234 );
+ 	if( sp != NULL )
+@@ -7984,7 +8051,7 @@
+ 			sp->maxstack = 1;
+ 		}
+ 	}
+-
++#endif
+ 	//for test only
+ 	//sp = dbcSpell.LookupEntryForced( 32796 );
+ 	//if( sp != NULL )
+@@ -8048,7 +8115,820 @@
+ 	if( sp != NULL )
+ 		sp->Spell_Dmg_Type = SPELL_DMG_TYPE_RANGED;
+ 
++#ifdef NEW_PROCFLAGS
++	/************************************************************************/
++	/*  PROC REQUIREMENTS                                                   */
++	/************************************************************************/
++	//Priest - Focused Casting
++	sp = dbcSpell.LookupEntryForced (27828);
++	if (sp != NULL)
++		sp->ProcReqFlags |= PROC_REQ_CRITICAL;
++	sp = dbcSpell.LookupEntryForced (14743);
++	if (sp != NULL)
++		sp->ProcReqFlags |= PROC_REQ_CRITICAL;
++	//Priest - Focused Will
++	sp = dbcSpell.LookupEntryForced(45237);
++	if (sp!=NULL)
++		sp->ProcReqFlags |= PROC_REQ_CRITICAL;
++	sp = dbcSpell.LookupEntryForced(45242);
++	if (sp!=NULL)
++		sp->ProcReqFlags |= PROC_REQ_CRITICAL;
++	sp = dbcSpell.LookupEntryForced(45241);
++	if (sp!=NULL)
++		sp->ProcReqFlags |= PROC_REQ_CRITICAL;
++	//Priest -  Shadow Weaving
++	sp = dbcSpell.LookupEntryForced(15334);
++	if (sp !=NULL)
++	{
++		sp->procFlags = PROC_ON_HARMFULSPELL_LAND;
++		sp->EffectSpellGroupRelation[0] = 8192 | 32768 | 8388608;
++		sp->EffectSpellGroupRelation_high[0] = 2 | 1024;
++	}
++	sp = dbcSpell.LookupEntryForced(15333);
++	if (sp !=NULL)
++	{
++		sp->procFlags = PROC_ON_HARMFULSPELL_LAND;
++		sp->EffectSpellGroupRelation[0] = 8192 | 32768 | 8388608;
++		sp->EffectSpellGroupRelation_high[0] = 2 | 1024;
++	}
++	sp = dbcSpell.LookupEntryForced(15332);
++	if (sp !=NULL)
++	{
++		sp->procFlags = PROC_ON_HARMFULSPELL_LAND;
++		sp->EffectSpellGroupRelation[0] = 8192 | 32768 | 8388608;
++		sp->EffectSpellGroupRelation_high[0] = 2 | 1024;
++	}
++	sp = dbcSpell.LookupEntryForced(15331);
++	if (sp !=NULL)
++	{
++		sp->procFlags = PROC_ON_HARMFULSPELL_LAND;
++		sp->EffectSpellGroupRelation[0] = 8192 | 32768 | 8388608;
++		sp->EffectSpellGroupRelation_high[0] = 2 | 1024;
++	}
++	sp = dbcSpell.LookupEntryForced(15257);
++	if (sp !=NULL)
++	{
++		sp->procFlags = PROC_ON_HARMFULSPELL_LAND;
++		sp->EffectSpellGroupRelation[0] = 8192 | 32768 | 8388608;
++		sp->EffectSpellGroupRelation_high[0] = 2 | 1024;
++	}
++	//Priest - Misery
++	for (uint32 x=33196;x<33201;x++)
++	{
++		sp = dbcSpell.LookupEntryForced (x);
++		if (sp != NULL)
++		{
++			sp->ProcReqFlags |= PROC_REQ_NAMEHASH;
++			ProcReqEntry* entry = new ProcReqEntry();
++			entry->SpellId=sp->Id;
++			entry->NameHash[0] = SPELL_HASH_SHADOW_WORD__PAIN;
++			entry->NameHash[1] = SPELL_HASH_VAMPIRIC_TOUCH;
++			entry->NameHash[2] = SPELL_HASH_MIND_FLAY;
++			sSpellProcReqMgr.AddRequirement(entry);
++		}
++	}
++	//Priest - Inspiration
++	sp = dbcSpell.LookupEntryForced(14893);
++	if (sp != NULL)
++		sp->ProcReqFlags |= PROC_REQ_HEALING_SPELL | PROC_REQ_CRITICAL;
++	sp = dbcSpell.LookupEntryForced(15357);
++	if (sp != NULL)
++		sp->ProcReqFlags |= PROC_REQ_HEALING_SPELL | PROC_REQ_CRITICAL;
++	sp = dbcSpell.LookupEntryForced(15359);
++	if (sp != NULL)
++		sp->ProcReqFlags |= PROC_REQ_HEALING_SPELL | PROC_REQ_CRITICAL;
++	//Priest - Blessed Resilience
++	sp = dbcSpell.LookupEntryForced(27818);
++	if (sp!=NULL)
++		sp->ProcReqFlags |= PROC_REQ_CRITICAL;
++	sp = dbcSpell.LookupEntryForced(27817);
++	if (sp!=NULL)
++		sp->ProcReqFlags |= PROC_REQ_CRITICAL;
++	sp = dbcSpell.LookupEntryForced(27813);
++	if (sp!=NULL)
++		sp->ProcReqFlags |= PROC_REQ_CRITICAL;
++	sp = dbcSpell.LookupEntryForced(27811);
++	if (sp!=NULL)
++		sp->EffectTriggerSpell[0]=27813;
++	sp = dbcSpell.LookupEntryForced(27816);
++	if (sp!=NULL)
++		sp->EffectTriggerSpell[0]=27818;
++	sp = dbcSpell.LookupEntryForced(27815);
++	if (sp!=NULL)
++		sp->EffectTriggerSpell[0]=27817;
++	//Priest - Surge of Light
++	sp = dbcSpell.LookupEntryForced(33151);
++	if (sp!=NULL)
++	{
++		sp->ProcReqFlags |= PROC_REQ_CRITICAL;
++		sp->EffectSpellGroupRelation[0] = 128;
++		sp->EffectSpellGroupRelation[1] = 128;
++		sp->EffectSpellGroupRelation[2] = 128;
++	}
++	//Priest - Holy Concentration
++	sp = dbcSpell.LookupEntryForced(34754);
++	if (sp != NULL)
++	{
++		sp->ProcReqFlags |= PROC_REQ_NAMEHASH;
++		sp->EffectSpellGroupRelation[0]= 2048 | 4096;
++		sp->EffectSpellGroupRelation_high[0]= 4;
++		ProcReqEntry* entry = new ProcReqEntry();
++		entry->SpellId = sp->Id;
++		entry->NameHash[0] = SPELL_HASH_FLASH_HEAL;
++		entry->NameHash[1] = SPELL_HASH_GREATER_HEAL;
++		entry->NameHash[2] = SPELL_HASH_BINDING_HEAL;
++		sSpellProcReqMgr.AddRequirement(entry);
++	}
++	//Priest - Blessed Resilience
++	sp = dbcSpell.LookupEntryForced(33143);
++	if (sp!=NULL)
++		sp->ProcReqFlags |= PROC_REQ_CRITICAL;
++	//Druid - Omen of Clarity
++	sp = dbcSpell.LookupEntry(16870);
++	if (sp!=NULL)
++	{
++		sp->ProcReqFlags |= PROC_REQ_PPM;
++		ProcReqEntry* entry = new ProcReqEntry();
++		entry->SpellId = sp->Id;
++		entry->PPM = 2.0f;
++		sSpellProcReqMgr.AddRequirement(entry);
++	}
++	//Druid - Natural Perfection
++	for (uint32 x=45281;x<45284;x++)
++	{
++		sp = dbcSpell.LookupEntryForced(x);
++		if (sp!=NULL)
++			sp->ProcReqFlags |= PROC_REQ_CRITICAL;
++	}
++	//Druid - Celestial Focus
++	sp = dbcSpell.LookupEntry(16922);
++	if (sp!=NULL)
++	{
++		sp->ProcReqFlags |= PROC_REQ_NAMEHASH;
++		ProcReqEntry* entry = new ProcReqEntry();
++		entry->SpellId = sp->Id;
++		entry->NameHash[0] = SPELL_HASH_STARFIRE;
++		sSpellProcReqMgr.AddRequirement(entry);
++	}
++	//Druid - Nature'S Grace
++	sp = dbcSpell.LookupEntryForced(16886);
++	if (sp!=NULL)
++	{
++		sp->ProcReqFlags |= PROC_REQ_CRITICAL;
++		sp->EffectSpellGroupRelation[0] = 0xFFFFFFFF; //mb will take too much effect. 
++	}
++	//Druid - Blood Frenzy 
++	sp = dbcSpell.LookupEntryForced(16953);
++	if (sp != NULL)
++		sp->ProcReqFlags |= PROC_REQ_CRITICAL | PROC_REQ_ADDCOMBO;
++	sp = dbcSpell.LookupEntryForced(16959);
++	if (sp != NULL)
++		sp->ProcReqFlags |= PROC_REQ_CRITICAL;	//not a mistake
++	//Druid - Improved Leader of the Pack
++	sp = dbcSpell.LookupEntryForced(34299);
++	if (sp != NULL)
++		sp->ProcReqFlags |= PROC_REQ_CRITICAL;
++	//Rogue - Ruthlessness
++	sp = dbcSpell.LookupEntryForced(34299);
++	if (sp != NULL)
++		sp->ProcReqFlags |= PROC_REQ_FINISHMOVE;
++	//Rogue - Seal Fate
++	sp = dbcSpell.LookupEntryForced(14189);
++	if (sp != NULL)
++		sp->ProcReqFlags |= PROC_REQ_CRITICAL | PROC_REQ_ADDCOMBO;
++	//Rogue - Find Weakness
++	for (uint32 x=31234;x<31239;x++)
++	{
++		sp = dbcSpell.LookupEntryForced(34299);
++		if (sp != NULL)
++			sp->ProcReqFlags |= PROC_REQ_FINISHMOVE;
++	}
++	//Rogue - Mace Specialization (share with warrior. FIXME)
++	sp = dbcSpell.LookupEntryForced(5530);
++	if (sp != NULL)
++	{
++		sp->ProcReqFlags |= PROC_REQ_WEAPON_TYPE | PROC_REQ_PPM;
++		ProcReqEntry* entry = new ProcReqEntry();
++		entry->SpellId = sp->Id;
++		entry->WeaponType = SKILL_MACES;
++		entry->PPM = 1.8f;
++		sSpellProcReqMgr.AddRequirement(entry);
++	}
++	//Rogue - Sword Specialization
++	sp = dbcSpell.LookupEntryForced(16459);
++	if (sp != NULL)
++	{
++		sp->ProcReqFlags |= PROC_REQ_WEAPON_TYPE;
++		ProcReqEntry* entry = new ProcReqEntry();
++		entry->SpellId = sp->Id;
++		entry->WeaponType = SKILL_SWORDS;
++		sSpellProcReqMgr.AddRequirement(entry);
++	}
++	//Rogue - Blade Twisting
++	sp = dbcSpell.LookupEntryForced(31125);
++	if (sp != NULL)
++	{
++		sp->ProcReqFlags |= PROC_REQ_NAMEHASH;
++		ProcReqEntry* entry = new ProcReqEntry();
++		entry->SpellId = sp->Id;
++		entry->NameHash[0] = SPELL_HASH_SINISTER_STRIKE;
++		entry->NameHash[1] = SPELL_HASH_BACKSTAB;
++		entry->NameHash[2] = SPELL_HASH_GOUGE;
++		entry->NameHash[3] = SPELL_HASH_SHIV;
++		sSpellProcReqMgr.AddRequirement(entry);
++	}
++	//Rogue - Setup
++	sp = dbcSpell.LookupEntryForced(15250);
++	if (sp != NULL)
++	{
++		sp->ProcReqFlags |= PROC_REQ_SPEC_STATE_VICTIM;
++		ProcReqEntry* entry = new ProcReqEntry();
++		entry->SpellId = sp->Id;
++		entry->SpecState = PROC_ON_DODGE | PROC_ON_RESIST;
++		sSpellProcReqMgr.AddRequirement(entry);
++	}
++	//Mage - Winter's Chill
++	sp = dbcSpell.LookupEntryForced(12579);
++	if (sp != NULL)
++	{
++		sp->ProcReqFlags |= PROC_REQ_SPELL_SCHOOL;
++		ProcReqEntry* entry = new ProcReqEntry();
++		entry->SpellId = sp->Id;
++		entry->SpellSchool = (1 << SCHOOL_FROST);
++		sSpellProcReqMgr.AddRequirement(entry);
++	}
++	//Mage - Impact
++	sp = dbcSpell.LookupEntryForced(12355);
++	if (sp != NULL)
++	{
++		sp->ProcReqFlags |= PROC_REQ_SPELL_SCHOOL;
++		ProcReqEntry* entry = new ProcReqEntry();
++		entry->SpellId = sp->Id;
++		entry->SpellSchool = (1 << SCHOOL_FIRE);
++		sSpellProcReqMgr.AddRequirement(entry);
++	}
++	//Mage - Improved Scorch
++	sp = dbcSpell.LookupEntryForced(11095);
++	if (sp != NULL)
++		sp->procFlags |= PROC_ON_SPELL_LAND | PROC_ON_HARMFULSPELL_LAND;
++	sp = dbcSpell.LookupEntryForced(12872);
++	if (sp != NULL)
++		sp->procFlags |= PROC_ON_SPELL_LAND | PROC_ON_HARMFULSPELL_LAND;
++	sp = dbcSpell.LookupEntryForced(12873);
++	if (sp != NULL)
++		sp->procFlags |= PROC_ON_SPELL_LAND | PROC_ON_HARMFULSPELL_LAND;
++	//Mage - Combustion
++	sp = dbcSpell.LookupEntryForced(11129);
++	if (sp != NULL)
++		sp->ProcReqFlags |= PROC_REQ_CRITICAL;
+ 
++	//Hunter - Improved Concussive Shot
++	sp = dbcSpell.LookupEntryForced( 19410 );
++	if (sp != NULL)
++	{
++		sp->ProcReqFlags |= PROC_REQ_NAMEHASH;
++		ProcReqEntry* entry = new ProcReqEntry();
++		entry->SpellId = sp->Id;
++		entry->NameHash[0] = SPELL_HASH_CONCUSSIVE_SHOT;
++		sSpellProcReqMgr.AddRequirement(entry);
++	}
++	//Hunter - Improved Wing Clip
++	sp = dbcSpell.LookupEntryForced( 19229 );
++	if (sp != NULL)
++	{
++		sp->ProcReqFlags |= PROC_REQ_NAMEHASH;
++		ProcReqEntry* entry = new ProcReqEntry();
++		entry->SpellId = sp->Id;
++		entry->NameHash[0] = SPELL_HASH_WING_CLIP;
++		sSpellProcReqMgr.AddRequirement(entry);
++	}
++	//Hunter - Thrill of the Hunt
++	sp = dbcSpell.LookupEntryForced( 34720 );
++	if (sp != NULL)
++		sp->ProcReqFlags |= PROC_REQ_CRITICAL;
++	//Paladin - Improved Lay on Hands
++	sp = dbcSpell.LookupEntryForced( 20236 );
++	if (sp != NULL)
++	{
++		sp->ProcReqFlags |= PROC_REQ_NAMEHASH;
++		ProcReqEntry* entry = new ProcReqEntry();
++		entry->SpellId = sp->Id;
++		entry->NameHash[0] = SPELL_HASH_LAY_ON_HANDS;
++		sSpellProcReqMgr.AddRequirement(entry);
++	}
++	sp = dbcSpell.LookupEntryForced( 20233 );
++	if (sp != NULL)
++	{
++		sp->ProcReqFlags |= PROC_REQ_NAMEHASH;
++		ProcReqEntry* entry = new ProcReqEntry();
++		entry->SpellId = sp->Id;
++		entry->NameHash[0] = SPELL_HASH_LAY_ON_HANDS;
++		sSpellProcReqMgr.AddRequirement(entry);
++	}
++	//Paladin - Illumination 
++	sp = dbcSpell.LookupEntryForced( 20272 );
++	if (sp != NULL)
++		sp->ProcReqFlags |= PROC_REQ_CRITICAL;
++	//Paladin - Lights Grace (mb needs adding skip in aura removing
++	sp = dbcSpell.LookupEntryForced( 31834 );
++	if (sp != NULL)
++	{
++		sp->ProcReqFlags |= PROC_REQ_NAMEHASH;
++		ProcReqEntry* entry = new ProcReqEntry();
++		entry->SpellId = sp->Id;
++		entry->NameHash[0] = SPELL_HASH_HOLY_LIGHT;
++		sSpellProcReqMgr.AddRequirement(entry);
++	}
++	//Paladin - Eye for an Eye
++	sp = dbcSpell.LookupEntryForced(25997);
++	if (sp!=NULL)
++		sp->ProcReqFlags |= PROC_REQ_CRITICAL;
++	//Paladin - Sanctified Judgement
++	sp = dbcSpell.LookupEntryForced(31930);
++	if (sp!=NULL)
++	{
++		sp->ProcReqFlags |= PROC_REQ_NAMEHASH;
++		ProcReqEntry* entry = new ProcReqEntry();
++		entry->SpellId = sp->Id;
++		entry->NameHash[0] = SPELL_HASH_JUDGEMENT;
++		sSpellProcReqMgr.AddRequirement(entry);
++	}
++	//Shaman - Elemental Focus
++	sp = dbcSpell.LookupEntryForced(29936);
++	if (sp!=NULL)
++		sp->ProcReqFlags |= PROC_REQ_CRITICAL;
++	//Shaman - Elemental Devastation
++	sp = dbcSpell.LookupEntryForced(30165);
++	if (sp!=NULL)
++		sp->ProcReqFlags |= PROC_REQ_DAMAGING_SPELL | PROC_REQ_CRITICAL;
++	sp = dbcSpell.LookupEntryForced(29177);
++	if (sp!=NULL)
++		sp->ProcReqFlags |= PROC_REQ_DAMAGING_SPELL | PROC_REQ_CRITICAL;
++	sp = dbcSpell.LookupEntryForced(29178);
++	if (sp!=NULL)
++		sp->ProcReqFlags |= PROC_REQ_DAMAGING_SPELL | PROC_REQ_CRITICAL;
++	//Shaman - Lightning Overload
++	sp = dbcSpell.LookupEntryForced(39805);
++	if (sp!=NULL)
++	{
++		sp->ProcReqFlags |= PROC_REQ_NAMEHASH;
++		ProcReqEntry* entry = new ProcReqEntry();
++		entry->SpellId = sp->Id;
++		entry->NameHash[0] = SPELL_HASH_LIGHTNING_BOLT;
++		entry->NameHash[1] = SPELL_HASH_CHAIN_LIGHTNING;
++		sSpellProcReqMgr.AddRequirement(entry);
++	}
++	//Shaman - Shamanistic Focus
++	sp = dbcSpell.LookupEntryForced(43339);
++	if (sp!=NULL)
++		sp->ProcReqFlags |= PROC_REQ_CRITICAL;
++	//Shaman - Flurry
++	sp = dbcSpell.LookupEntryForced(16257);
++	if (sp!=NULL)
++		sp->ProcReqFlags |= PROC_REQ_CRITICAL;
++	sp = dbcSpell.LookupEntryForced(16277);
++	if (sp!=NULL)
++		sp->ProcReqFlags |= PROC_REQ_CRITICAL;
++	sp = dbcSpell.LookupEntryForced(16278);
++	if (sp!=NULL)
++		sp->ProcReqFlags |= PROC_REQ_CRITICAL;
++	sp = dbcSpell.LookupEntryForced(16279);
++	if (sp!=NULL)
++		sp->ProcReqFlags |= PROC_REQ_CRITICAL;
++	sp = dbcSpell.LookupEntryForced(16280);
++	if (sp!=NULL)
++		sp->ProcReqFlags |= PROC_REQ_CRITICAL;
++	//Shaman - Unleashed Rage
++	for (uint32 x=30803;x<30808;x++)
++	{
++		sp = dbcSpell.LookupEntryForced(x);
++		if (sp!=NULL)
++			sp->ProcReqFlags |= PROC_REQ_CRITICAL;
++	}
++	//Shaman - Ancestral Healing
++	sp = dbcSpell.LookupEntryForced(16177);
++	if (sp!=NULL)
++		sp->ProcReqFlags |= PROC_REQ_CRITICAL | PROC_REQ_HEALING_SPELL;
++	sp = dbcSpell.LookupEntryForced(16236);
++	if (sp!=NULL)
++		sp->ProcReqFlags |= PROC_REQ_CRITICAL | PROC_REQ_HEALING_SPELL;
++	sp = dbcSpell.LookupEntryForced(16237);
++	if (sp!=NULL)
++		sp->ProcReqFlags |= PROC_REQ_CRITICAL | PROC_REQ_HEALING_SPELL;
++	//Shaman - Healing Way
++	sp = dbcSpell.LookupEntryForced(29203);
++	if (sp!=NULL)
++	{
++		sp->ProcReqFlags |= PROC_REQ_NAMEHASH;
++		ProcReqEntry* entry = new ProcReqEntry();
++		entry->SpellId = sp->Id;
++		entry->NameHash[0] = SPELL_HASH_HEALING_WAY;
++		sSpellProcReqMgr.AddRequirement(entry);
++	}
++	//Warrior - Deep Wounds
++	sp = dbcSpell.LookupEntryForced(12868);
++	if (sp!=NULL)
++		sp->ProcReqFlags |= PROC_REQ_CRITICAL;
++	sp = dbcSpell.LookupEntryForced(12850);
++	if (sp!=NULL)
++		sp->ProcReqFlags |= PROC_REQ_CRITICAL;
++	sp = dbcSpell.LookupEntryForced(12162);
++	if (sp!=NULL)
++		sp->ProcReqFlags |= PROC_REQ_CRITICAL;
++	//Warlock - Shadow Embrace
++	sp = dbcSpell.LookupEntryForced(32386);
++	if (sp!=NULL)
++	{
++		sp->ProcReqFlags |= PROC_REQ_NAMEHASH;
++		ProcReqEntry* entry = new ProcReqEntry();
++		entry->SpellId = sp->Id;
++		entry->NameHash[0] = SPELL_HASH_CORRUPTION;
++		entry->NameHash[1] = SPELL_HASH_CURSE_OF_AGONY;
++		entry->NameHash[2] = SPELL_HASH_SEED_OF_CORRUPTION;
++		entry->NameHash[3] = SPELL_HASH_SIPHON_LIFE;
++		sSpellProcReqMgr.AddRequirement(entry);
++	}
++	for (uint32 x=32388;x<32392;x++)
++	{
++		sp = dbcSpell.LookupEntryForced(x);
++		if (sp!=NULL)
++		{
++			sp->ProcReqFlags |= PROC_REQ_NAMEHASH;
++			ProcReqEntry* entry = new ProcReqEntry();
++			entry->SpellId = sp->Id;
++			entry->NameHash[0] = SPELL_HASH_CORRUPTION;
++			entry->NameHash[1] = SPELL_HASH_CURSE_OF_AGONY;
++			entry->NameHash[2] = SPELL_HASH_SEED_OF_CORRUPTION;
++			entry->NameHash[3] = SPELL_HASH_SIPHON_LIFE;
++			sSpellProcReqMgr.AddRequirement(entry);
++		}
++	}
++	//Warlock - Improved Shadow Bolt
++	sp = dbcSpell.LookupEntryForced(17794);
++	if (sp!=NULL)
++	{
++		sp->ProcReqFlags |= PROC_REQ_NAMEHASH;
++		ProcReqEntry* entry = new ProcReqEntry();
++		entry->SpellId = sp->Id;
++		entry->NameHash[0] = SPELL_HASH_SHADOW_BOLT;
++		sSpellProcReqMgr.AddRequirement(entry);
++	}
++	for (uint32 x=17797;x<17801;x++)
++	{
++		sp = dbcSpell.LookupEntryForced(x);
++		if (sp!=NULL)
++		{
++			sp->ProcReqFlags |= PROC_REQ_NAMEHASH;
++			ProcReqEntry* entry = new ProcReqEntry();
++			entry->SpellId = sp->Id;
++			entry->NameHash[0] = SPELL_HASH_SHADOW_BOLT;
++			sSpellProcReqMgr.AddRequirement(entry);
++		}
++	}
++	//Warlock - Aftermath
++	sp = dbcSpell.LookupEntryForced(18118);
++	if (sp != NULL)
++	{
++		sp->ProcReqFlags |= PROC_REQ_SPELL_SKILLINE;
++		ProcReqEntry* entry = new ProcReqEntry();
++		entry->SpellId = sp->Id;
++		entry->SpellSkillLine = SKILL_DESTRUCTION;
++		sSpellProcReqMgr.AddRequirement(entry);
++	}
++	//Warlock - Pyroclasm
++	sp = dbcSpell.LookupEntryForced(18093);
++	if (sp != NULL)
++	{
++		sp->ProcReqFlags |= PROC_REQ_NAMEHASH;
++		ProcReqEntry* entry = new ProcReqEntry();
++		entry->SpellId = sp->Id;
++		entry->NameHash[0] = SPELL_HASH_RAIN_OF_FIRE;
++		entry->NameHash[1] = SPELL_HASH_HELLFIRE;
++		entry->NameHash[2] = SPELL_HASH_SOUL_FIRE;
++		sSpellProcReqMgr.AddRequirement(entry);
++	}
++	//Warlock - Nether Protection
++	sp = dbcSpell.LookupEntryForced(30300);
++	if (sp != NULL)
++	{
++		sp->ProcReqFlags |= PROC_REQ_SPELL_SCHOOL;
++		ProcReqEntry* entry = new ProcReqEntry();
++		entry->SpellId = sp->Id;
++		entry->SpellSchool = (1 << SCHOOL_FIRE) + ( 1 << SCHOOL_SHADOW);
++		sSpellProcReqMgr.AddRequirement(entry);
++	}
++	//Item Set: Spirit of Eskhandar
++	sp = dbcSpell.LookupEntryForced(22649);
++	if (sp!=NULL)
++		sp->ProcReqFlags |= PROC_REQ_CRITICAL;
++	//Item - Shiffar's Nexus-Horn
++	sp = dbcSpell.LookupEntryForced(34321);
++	if (sp!=NULL)
++		sp->ProcReqFlags |= PROC_REQ_CRITICAL;
++	//Item - Band of the Eternal Sage
++	sp = dbcSpell.LookupEntryForced(35084);
++	if (sp!=NULL)
++		sp->ProcReqFlags |= PROC_REQ_DAMAGING_SPELL;
++	//Item Set: Battlegear of Eternal Justice
++	sp = dbcSpell.LookupEntryForced(26975);
++	if (sp != NULL)
++	{
++		sp->ProcReqFlags |= PROC_REQ_NAMEHASH;
++		ProcReqEntry* entry = new ProcReqEntry();
++		entry->SpellId = sp->Id;
++		entry->NameHash[0] = SPELL_HASH_JUDGEMENT;
++		sSpellProcReqMgr.AddRequirement(entry);
++	}
++	//Item: Figurine of the Colossus
++	sp = dbcSpell.LookupEntryForced(33090);
++	if (sp != NULL)
++	{
++		sp->ProcReqFlags |= PROC_REQ_SPEC_STATE_VICTIM;
++		ProcReqEntry* entry = new ProcReqEntry();
++		entry->SpellId = sp->Id;
++		entry->SpecState = PROC_ON_BLOCK;
++		sSpellProcReqMgr.AddRequirement(entry);
++	}
++	//Item Set: Warbringer Armor
++	sp = dbcSpell.LookupEntryForced(37515);
++	if (sp != NULL)
++	{
++		sp->ProcReqFlags |= PROC_REQ_SPEC_STATE_VICTIM;
++		ProcReqEntry* entry = new ProcReqEntry();
++		entry->SpellId = sp->Id;
++		entry->SpecState = PROC_ON_PARRY;
++		sSpellProcReqMgr.AddRequirement(entry);
++	}
++	//Item Set: Tirisfal Regalia
++	sp = dbcSpell.LookupEntryForced(37444);
++	if (sp!=NULL)
++		sp->ProcReqFlags |= PROC_REQ_CRITICAL;
++	//Unknown proc
++	sp = dbcSpell.LookupEntryForced(38349);
++	if (sp!=NULL)
++		sp->ProcReqFlags |= PROC_REQ_CRITICAL;
++	//Item Sextant of Unstable Currents
++	sp = dbcSpell.LookupEntryForced(38348);
++	if (sp!=NULL)
++		sp->ProcReqFlags |= PROC_REQ_CRITICAL;
++	//Item Prism of Inner Calm
++	sp = dbcSpell.LookupEntryForced(38329);
++	if (sp!=NULL)
++		sp->ProcReqFlags |= PROC_REQ_CRITICAL;
++	//Item 	Libram of Divine Judgement
++	sp = dbcSpell.LookupEntryForced(37515);
++	if (sp != NULL)
++	{
++		sp->ProcReqFlags |= PROC_REQ_NAMEHASH;
++		ProcReqEntry* entry = new ProcReqEntry();
++		entry->SpellId = sp->Id;
++		entry->NameHash[0] = SPELL_HASH_JUDGEMENT_OF_COMMAND;
++		sSpellProcReqMgr.AddRequirement(entry);
++	}
++	//Curse of Burning Shadows
++	sp = dbcSpell.LookupEntryForced(36543);
++	if (sp != NULL)
++	{
++		sp->ProcReqFlags |= PROC_REQ_SPELL_SCHOOL;
++		ProcReqEntry* entry = new ProcReqEntry();
++		entry->SpellId = sp->Id;
++		entry->SpellSchool = (1 << SCHOOL_FIRE);
++		sSpellProcReqMgr.AddRequirement(entry);
++	}
++	//Item - Wrath of the Titans
++	sp = dbcSpell.LookupEntryForced(30610);
++	if (sp!=NULL)
++		sp->ProcReqFlags |= PROC_REQ_DAMAGING_SPELL;
++	//Item - Redemption of the Fallen
++	sp = dbcSpell.LookupEntryForced(30553);
++	if (sp!=NULL)
++		sp->ProcReqFlags |= PROC_REQ_HEALING_SPELL;
++	//Item - Petrified Lichen Guard
++	sp = dbcSpell.LookupEntryForced(32643);
++	if (sp != NULL)
++	{
++		sp->ProcReqFlags |= PROC_REQ_SPEC_STATE_VICTIM;
++		ProcReqEntry* entry = new ProcReqEntry();
++		entry->SpellId = sp->Id;
++		entry->SpecState = PROC_ON_BLOCK;
++		sSpellProcReqMgr.AddRequirement(entry);
++	}
++	//Item - Hourglass of the Unraveller
++	sp = dbcSpell.LookupEntryForced(33649);
++	if (sp!=NULL)
++		sp->ProcReqFlags |= PROC_REQ_HEALING_SPELL;
++	//Item - High Warlord's Leather Gloves
++	sp = dbcSpell.LookupEntryForced(32747);
++	if (sp != NULL)
++	{
++		sp->ProcReqFlags |= PROC_REQ_NAMEHASH;
++		ProcReqEntry* entry = new ProcReqEntry();
++		entry->SpellId = sp->Id;
++		entry->NameHash[0] = SPELL_HASH_DEADLY_THROW;
++		sSpellProcReqMgr.AddRequirement(entry);
++	}
++	//Item - Vengeful Gladiator's Totem of the Third Wind
++	sp = dbcSpell.LookupEntryForced(43729);
++	if (sp != NULL)
++	{
++		sp->ProcReqFlags |= PROC_REQ_NAMEHASH;
++		ProcReqEntry* entry = new ProcReqEntry();
++		entry->SpellId = sp->Id;
++		entry->NameHash[0] = SPELL_HASH_LESSER_HEALING_WAVE;
++		sSpellProcReqMgr.AddRequirement(entry);
++	}
++	//Item - Vengeful Gladiator's Libram of Justice
++	sp = dbcSpell.LookupEntryForced(43727);
++	if (sp != NULL)
++	{
++		sp->ProcReqFlags |= PROC_REQ_NAMEHASH;
++		ProcReqEntry* entry = new ProcReqEntry();
++		entry->SpellId = sp->Id;
++		entry->NameHash[0] = SPELL_HASH_FLASH_OF_LIGHT;
++		sSpellProcReqMgr.AddRequirement(entry);
++	}
++	//Item - Tsunami Talisman
++	sp = dbcSpell.LookupEntryForced(42084);
++	if (sp!=NULL)
++		sp->ProcReqFlags |= PROC_REQ_CRITICAL;
++	//Item - Stonebreaker's Totem
++	sp = dbcSpell.LookupEntryForced(43749);
++	if (sp!=NULL)
++	{
++		sp->ProcReqFlags |= PROC_REQ_NAMEHASH;
++		ProcReqEntry* entry = new ProcReqEntry();
++		entry->SpellId = sp->Id;
++		entry->NameHash[0] = SPELL_HASH_EARTH_SHOCK;
++		entry->NameHash[0] = SPELL_HASH_FLAME_SHOCK;
++		entry->NameHash[0] = SPELL_HASH_FROST_SHOCK;
++		sSpellProcReqMgr.AddRequirement(entry);
++	}
++	//Item - Staff of the Qiraji Prophets
++	sp = dbcSpell.LookupEntryForced(25767);
++	if (sp!=NULL)
++		sp->ProcReqFlags |= PROC_REQ_DAMAGING_SPELL;
++	//Item - Skycall Totem
++	sp = dbcSpell.LookupEntryForced(43751);
++	if (sp!=NULL)
++	{
++		sp->ProcReqFlags |= PROC_REQ_NAMEHASH;
++		ProcReqEntry* entry = new ProcReqEntry();
++		entry->SpellId = sp->Id;
++		entry->NameHash[0] = SPELL_HASH_LIGHTNING_BOLT;
++		sSpellProcReqMgr.AddRequirement(entry);
++	}
++	//Item - Robe of the Elder Scribes
++	sp = dbcSpell.LookupEntryForced(34597);
++	if (sp!=NULL)
++		sp->ProcReqFlags |= PROC_REQ_DAMAGING_SPELL;
++	//Item - Ribbon of Sacrifice
++	sp = dbcSpell.LookupEntryForced(38333);
++	if (sp!=NULL)
++		sp->ProcReqFlags |= PROC_REQ_HEALING_SPELL;
++	//Item - Merciless Gladiator's Totem of the Third Wind
++	sp = dbcSpell.LookupEntryForced(42371);
++	if (sp != NULL)
++	{
++		sp->ProcReqFlags |= PROC_REQ_NAMEHASH;
++		ProcReqEntry* entry = new ProcReqEntry();
++		entry->SpellId = sp->Id;
++		entry->NameHash[0] = SPELL_HASH_LESSER_HEALING_WAVE;
++		sSpellProcReqMgr.AddRequirement(entry);
++	}
++	//Item - Merciless Gladiator's Libram of Justice
++	sp = dbcSpell.LookupEntryForced(42369);
++	if (sp != NULL)
++	{
++		sp->ProcReqFlags |= PROC_REQ_NAMEHASH;
++		ProcReqEntry* entry = new ProcReqEntry();
++		entry->SpellId = sp->Id;
++		entry->NameHash[0] = SPELL_HASH_FLASH_OF_LIGHT;
++		sSpellProcReqMgr.AddRequirement(entry);
++	}
++	//Item - Libram of Mending
++	sp = dbcSpell.LookupEntryForced(43742);
++	if (sp != NULL)
++	{
++		sp->ProcReqFlags |= PROC_REQ_NAMEHASH;
++		ProcReqEntry* entry = new ProcReqEntry();
++		entry->SpellId = sp->Id;
++		entry->NameHash[0] = SPELL_HASH_HOLY_LIGHT;
++		sSpellProcReqMgr.AddRequirement(entry);
++	}
++	//Item - Jagged Obsidian Shield
++	sp = dbcSpell.LookupEntryForced(27559);
++	if (sp!=NULL)
++		sp->ProcReqFlags |= PROC_REQ_DAMAGING_SPELL;
++	//Item - Idol of the Unseen Moon
++	sp = dbcSpell.LookupEntryForced(43740);
++	if (sp != NULL)
++	{
++		sp->ProcReqFlags |= PROC_REQ_NAMEHASH;
++		ProcReqEntry* entry = new ProcReqEntry();
++		entry->SpellId = sp->Id;
++		entry->NameHash[0] = SPELL_HASH_MOONFIRE;
++		sSpellProcReqMgr.AddRequirement(entry);
++	}
++	//Idol of Terror
++	sp = dbcSpell.LookupEntryForced(43738);
++	if (sp != NULL)
++	{
++		sp->ProcReqFlags |= PROC_REQ_NAMEHASH;
++		ProcReqEntry* entry = new ProcReqEntry();
++		entry->SpellId = sp->Id;
++		entry->NameHash[0] = SPELL_HASH_MANGLE__CAT_;
++		entry->NameHash[1] = SPELL_HASH_MANGLE__BEAR_;
++		sSpellProcReqMgr.AddRequirement(entry);
++	}
++	//Item - Gladiator's Totem of the Third Wind
++	sp = dbcSpell.LookupEntryForced(34132);
++	if (sp != NULL)
++	{
++		sp->ProcReqFlags |= PROC_REQ_NAMEHASH;
++		ProcReqEntry* entry = new ProcReqEntry();
++		entry->SpellId = sp->Id;
++		entry->NameHash[0] = SPELL_HASH_LESSER_HEALING_WAVE;
++		sSpellProcReqMgr.AddRequirement(entry);
++	}
++	//Item - Gladiator's Libram of Justice
++	sp = dbcSpell.LookupEntryForced(34135);
++	if (sp != NULL)
++	{
++		sp->ProcReqFlags |= PROC_REQ_NAMEHASH;
++		ProcReqEntry* entry = new ProcReqEntry();
++		entry->SpellId = sp->Id;
++		entry->NameHash[0] = SPELL_HASH_FLASH_OF_LIGHT;
++		sSpellProcReqMgr.AddRequirement(entry);
++	}
++	//Item - Fel Reaver's Piston
++	sp = dbcSpell.LookupEntryForced(38324);
++	if (sp != NULL)
++		sp->ProcReqFlags |= PROC_REQ_HEALING_SPELL;
++	//Item - Fathom-Brooch of the Tidewalker
++	sp = dbcSpell.LookupEntryForced(37243);
++	if (sp != NULL)
++	{
++		sp->ProcReqFlags |= PROC_REQ_SPELL_SCHOOL;
++		ProcReqEntry* entry = new ProcReqEntry();
++		entry->SpellId = sp->Id;
++		entry->SpellSchool = (1 << SCHOOL_NATURE);
++		sSpellProcReqMgr.AddRequirement(entry);
++	}
++	//Item - Eye of Magtheridon
++	sp = dbcSpell.LookupEntryForced(34747);
++	if (sp != NULL)
++	{
++		sp->ProcReqFlags |= PROC_REQ_SPEC_STATE_VICTIM;
++		ProcReqEntry* entry = new ProcReqEntry();
++		entry->SpellId = sp->Id;
++		entry->SpecState = PROC_ON_RESIST;
++		sSpellProcReqMgr.AddRequirement(entry);
++	}
++	//Item -  	Blade of Wizardry
++	sp = dbcSpell.LookupEntryForced(38317);
++	if (sp!=NULL)
++		sp->ProcReqFlags |= PROC_REQ_DAMAGING_SPELL;
++	//Item - Ashtongue Talisman of Valor
++	sp = dbcSpell.LookupEntryForced(40459);
++	if (sp != NULL)
++	{
++		sp->ProcReqFlags |= PROC_REQ_NAMEHASH;
++		ProcReqEntry* entry = new ProcReqEntry();
++		entry->SpellId = sp->Id;
++		entry->NameHash[0] = SPELL_HASH_MORTAL_STRIKE;
++		entry->NameHash[1] = SPELL_HASH_BLOODTHIRST;
++		entry->NameHash[2] = SPELL_HASH_SHIELD_SLAM;
++		sSpellProcReqMgr.AddRequirement(entry);
++	}
++	//Item - Ashtongue Talisman of Swiftness
++	sp = dbcSpell.LookupEntryForced(40487);
++	if (sp != NULL)
++	{
++		sp->ProcReqFlags |= PROC_REQ_NAMEHASH;
++		ProcReqEntry* entry = new ProcReqEntry();
++		entry->SpellId = sp->Id;
++		entry->NameHash[0] = SPELL_HASH_STEADY_SHOT;
++		sSpellProcReqMgr.AddRequirement(entry);
++	}
++	//Item - Ashtongue Talisman of Insight
++	sp = dbcSpell.LookupEntryForced(40483);
++	if (sp!=NULL)
++		sp->ProcReqFlags |= PROC_REQ_CRITICAL;
++	//Item - Arcane Infused Gem
++	sp = dbcSpell.LookupEntryForced(23722);
++	if (sp != NULL)
++	{
++		sp->ProcReqFlags |= PROC_REQ_NAMEHASH;
++		ProcReqEntry* entry = new ProcReqEntry();
++		entry->SpellId = sp->Id;
++		entry->NameHash[0] = SPELL_HASH_ARCANE_SHOT;
++		sSpellProcReqMgr.AddRequirement(entry);
++	}
++	//Item - Cosmic Infuser
++	sp = dbcSpell.LookupEntryForced(36483);
++	if (sp!=NULL)
++		sp->ProcReqFlags |= PROC_REQ_HEALING_SPELL;
++#endif
+ // ------------------------------------------------------------------------------------------------
+ 
+ 	Log.Notice("World","Starting Transport System...");
+Index: trunk/src/ascent-world/World.h
+===================================================================
+--- trunk/src/ascent-world/World.h	(revision 4109)
++++ trunk/src/ascent-world/World.h	(working copy)
+@@ -33,6 +33,7 @@
+ class EventableObjectHolder;
+ class MapMgr;
+ class Battleground;
++class SpellProcReqMgr;
+ 
+ enum Rates
+ {

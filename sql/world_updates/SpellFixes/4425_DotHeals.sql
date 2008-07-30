@@ -1,0 +1,1 @@
+INSERT INTO `spell_coef_override` (`id`,`name`,`Dspell_coef_override`,`OTspell_coef_override`) VALUES ('38395','Siphon Essence','0','0');

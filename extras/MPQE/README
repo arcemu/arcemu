@@ -1,0 +1,10 @@
+MPQE v1.4 by WRS
+
+MPQE is a wrapper for the ShadowFlare MPQ Library and provides several features for MoPaQ archive extraction.
+
+It is written in C# and makes use of the SFmpqapi class, the author of which is unknown ( its not wowglider ).
+
+For usage instructions, run MPQE.exe with no options or arguments.
+
+Ascent - http://www.ascentemu.com/
+Shadowflare - http://shadowflare.samods.org/

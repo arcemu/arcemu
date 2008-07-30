@@ -1,0 +1,47 @@
+/* 
+* Copyright (C) 2007 GMScripts <http://projects.emupedia.com/svn/gmscripts>
+*
+* This program is free software; you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation; either version 2 of the License, or
+* (at your option) any later version.
+*
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License
+* along with this program; if not, write to the Free Software
+* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+*/
+
+// WANTED: Baron Vardus (mob spawn on Alterac Mountains)
+global BaronVardusAllowSpawn = 1;
+global BaronVardus_OnAcceptQuest = function(pQuestGiver)
+{
+	if(BaronVardusAllowSpawn == 1)
+	{
+		rand = Rand(1, 4);
+		if(rand == 1) {pQuestGiver.SpawnMonster(2306, 692.64, -904.74, 157.79);}
+		if(rand == 2) {pQuestGiver.SpawnMonster(2306, 939.0, -852.46, 114.644);}
+		if(rand == 3) {pQuestGiver.SpawnMonster(2306, 1184.07, -553.43, 71.3346);}
+		if(rand == 4) {pQuestGiver.SpawnMonster(2306, 1001.20, -793.93, 108.65);}
+	}
+};
+
+global BaronVardus_OnSpawn = function(mob)
+{
+	global BaronVardusAllowSpawn = 0;
+	.Despawn(1800000, 0);
+	.RegisterTimer(1799000, BaronVardusCanSpawn);
+};
+
+global BaronVardus_OnDead = function(mob)
+{
+	.DeregisterTimer();
+	global BaronVardusAllowSpawn = 1;
+};
+.RegisterQuestEvent(566, 2, BaronVardus_OnAcceptQuest);
+.RegisterUnitEvent(2306, 6, BaronVardus_OnSpawn);
+.RegisterUnitEvent(2306, 4, BaronVardus_OnDead);

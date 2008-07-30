@@ -1,0 +1,167 @@
+/* 
+ * OpenAscent MMORPG Server
+ * Copyright (C) 2008 OpenAscent <http://www.openascent.com/>
+ *
+ * This work is licensed under the Creative Commons 
+ * Attribution-Noncommercial-NoDerivative Works 3.0 Unported License.
+ * To view a copy of this license,  
+ * visit http://creativecommons.org/licenses/by-nc-nd/3.0/
+ * or send a letter to Creative Commons, 171 Second Street,
+ * Suite 300, San Francisco, California, 94105, USA.
+ */
+
+/* Written en maintained by Captnoord also known as Capt.
+ *
+ *
+ */
+
+
+Small document about packet structures.
+
+PURPOSE OF THIS DOCUMENT:
+The purpose of this document is to supply the developers with packet descriptions that are unknown
+or for some reason not correct.
+
+
+
+
+
+GLOBAL RULES REGARDING THE TYPE DEFENITIONS:
+
+uint64 = 8 bytes
+uint32 = 4 bytes
+uint16 = 2 bytes
+uint8  = 1 byte
+float  = 4 bytes
+guid   = Dynamic guid that can vary between 2 and 8 bytes.
+
+COMMON GRAMMAR RULES:
+
+Dynamic parts are indicated with the "[" and the "]" characters.
+the parts regarding this dynamic content are indicated between the "{" and the "}" characters.
+ 
+
+
+Unhandled and unknown packets:
+
+opcode: 			SMSG_MONSTER_MOVE_TRANSPORT
+Description: 			obviously its a addition to the SMSG_MONSTER_MOVE packet
+Amount of unknown fields:	1 + DYNAMIC PART
+
+Structure
+
+uint64 	guid; - probably monster guid
+uint64 	guid_unknown; - probably transport guid
+float  	PositionX; - source positions
+float  	PositionY;
+float  	PositionZ;
+uint32 	TimeStamp;
+
+uint8	MovementOptionModifier. ( 0 - 4 )
+
+[ dynamic part related to the MovementOptionModifier]
+	{ // 0 : default
+	}
+
+	{ // 1 : don't move
+	}
+
+	{ // 2 : 3 extra floats dono what they do - location to face?
+		float unk1; // possible X
+		float unk2; // possible y
+		float unk3; // possible z
+	}
+	
+	{ // 3 : there is an extra uint64 most likely a guid. - burlex: this is guid to face
+		uint64 unk1; // possible guid	
+	}
+
+	{ // 4 : there is an extra float that causes the orientation to be set.
+		float orientation;
+	}
+
+
+uint32 	MoveFlags;
+uint32 	Time; 		// time it take to get to the next point
+uint32	WaypointCount;
+[ dynamic part related on the amount of way points ]
+	{ float toXpos, toYpos, toZpos } x waypointcount;
+
+
+
+
+
+
+
+**************************************************************************************************************
+Some un structured research.
+
+SMSG_UNIT_UNKNOWN								= 1016,	//(0x03F8)
+|guid|
+
+0x3fb
+GetUint64(Bufferclass, (int)&v12);
+GetUint8(v4, (int)&v13);
+GetUint8(v4, (int)&v14);
+GetUint32(v4, (int)&a2);
+GetString(v4, (int)&v16, 0x80u);
+
+0x3f5
+GetUint64(Bufferclass, (int)&v7);
+GetUint32(v6, (int)&a2);
+
+0x3f4
+GetUint8(a4, (int)&v7);
+
+0x3f3
+GetUint32(Bufferclass, (int)&a2);
+
+0x3f1
+GetUint64(Bufferclass, (int)&v12);
+GetUint8(v4, (int)&v13);
+GetUint8(v4, (int)&v14);
+GetUint32(v4, (int)&a2);
+GetString(v4, (int)&v16, 0x80u);
+
+0x3f0
+GetUint64(Bufferclass, (int)&v14);
+GetUint8(v4, (int)&v15);
+GetUint32(v4, (int)&a2);
+GetString(v4, (int)&v17, 0x80u);
+
+0x3Ef
+GetUint64(Bufferclass, (int)&v12);
+GetUint8(v4, (int)&v13);
+GetUint8(v4, (int)&v14);
+GetUint32(v4, (int)&a2);
+GetString(v4, (int)&v16, 0x80u);
+
+0x3e2 // related to enable mic...
+GetUint8(a4, (int)&v9);
+
+0x3d3
+GetUint32(Bufferclass, (int)&a2);
+
+0x3ae
+GetUint64(Bufferclass, (int)&a2);
+optional GetUint8(v4, (int)&v17);
+
+0x3ad
+GetGuid(a4, (int)&v6); // packed
+
+0x3ac
+GetGuid // packed
+
+0x3aa
+GetUint64(Bufferclass, (int)&v6);
+  GetUint64(v5, (int)&v7);
+  GetUint32(v5, (int)&a2);
+  GetUint32(v5, (int)&v9);
+  GetUint32(v5, (int)&v10);
+
+
+
+
+
+
+

@@ -1,0 +1,21 @@
+Microsoft Visual Studio Solution File, Format Version 8.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MPQE", "MPQE.csproj", "{B3CC3F7B-473A-4F6B-89A8-8C243EF51A7B}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfiguration) = preSolution
+		Debug = Debug
+		Release = Release
+	EndGlobalSection
+	GlobalSection(ProjectConfiguration) = postSolution
+		{B3CC3F7B-473A-4F6B-89A8-8C243EF51A7B}.Debug.ActiveCfg = Debug|.NET
+		{B3CC3F7B-473A-4F6B-89A8-8C243EF51A7B}.Debug.Build.0 = Debug|.NET
+		{B3CC3F7B-473A-4F6B-89A8-8C243EF51A7B}.Release.ActiveCfg = Release|.NET
+		{B3CC3F7B-473A-4F6B-89A8-8C243EF51A7B}.Release.Build.0 = Release|.NET
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+	EndGlobalSection
+	GlobalSection(ExtensibilityAddIns) = postSolution
+	EndGlobalSection
+EndGlobal

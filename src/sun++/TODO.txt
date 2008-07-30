@@ -1,0 +1,68 @@
+***************************
+*      .-.                *
+*      `-.. ..-. + +      *
+*      `-''-'' '          *
+*  OpenSource Scripting   *
+*          Team           *
+* http://sunplusplus.info *
+*                         *
+***************************
+This is a copy updated everyonce a while from our the TODO thread on our forums.
+The Thread is here: http://sunplusplus.info/forum/viewtopic.php?f=1&t=26
+Last Updated on: 27 July 2008
+
+-----------------------------------------PASTE UNDER HERE-------------------------------------------
+This is our TODO list, to keep work organized, and give the community an idea of what they are
+supposed to script if they are not sure.
+
+Please Report Bugs at: http://sunplusplus.info/forum/ thank you.
+Legend:
+[IN] Instance
+[NPC] Monster/Npc/Boss
+[OT] Other
+[QST] Quest
+
+This is our TODO. If you have something to add go to http://sunplusplus.info/forum/viewtopic.php?f=1&t=26 thank you.
+New system, red is high priority, orange is mid, yellow is low.
+As before, everyone is free to work on what they wish, but working on high priority helps us reach milestones faster, and yes, were going to work by those from now on.
+
+---------------------------------------------------------------------
+[OT] Normal WoW Scripts: Finish off everything in retail WoW, instances, quests, bosses.
+
+[OT] LUA Scripts:
+>All scripts in Archieved Scripts/GM Scripts/ need to be rewritten in LUA.
+
+[IN] AQ 20/40
+
+[QST] All Class Quests.
+>Class Quests still in GM scripts, need to be rewritten in LUA.
+
+
+
+[IN] Sunwell:
+-[NPC] Keal'thas
+>Fly Phase.
+>Spawn and cast of his Phoenix.
+-[NPC] Curator
+>Flares use chain lightning on retail.
+-[NPC] Solarian
+>His arcane missiles dont work, for the rest ok.
+-[NPC] Archimonde
+>OK! Fire missing.
+-[NPC] Azgalor
+>Quite boring, need to work on this.
+-[NPC] Kazrogal
+>Work needed
+-[NPC] Priestess Delrissa:
+She random spawns 4 of 8 Minions(before on_combat).
+>Find a solution for that problem. (Maybe do an On_Spawn function in lua that randomly
+generates which creatures go with her, so each time a seperate raid enters the instance,
+4 different bosses will be there?
+
+
+[IN] Kharazan
+
+-[OT] Chess Event
+-[NPC] Still a few bugs with bosses, like Attumen the Huntsman.
+
+[OT] Wotlk Content.

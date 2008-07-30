@@ -1,0 +1,50 @@
+/* 
+* Copyright (C) 2007 GMScripts <http://projects.emupedia.com/svn/gmscripts>
+*
+* This program is free software; you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation; either version 2 of the License, or
+* (at your option) any later version.
+*
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License
+* along with this program; if not, write to the Free Software
+* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+*/
+
+// The Balance of Nature
+global TheBalanceOfNature_OnAccept = function(QuestGiver, plr)
+{
+	QuestGiver.Emote(2);
+};
+.RegisterQuestEvent(456, 2, TheBalanceOfNature_OnAccept);
+
+global TheBalanceOfNature2_OnAccept = function(QuestGiver, plr)
+{
+	QuestGiver.Emote(2);
+};
+.RegisterQuestEvent(457, 2, TheBalanceOfNature2_OnAccept);
+
+
+// Seek Redemption
+global SeekRedemption_transf = function(QuestGiver)
+{
+	.ChangeModel(901);
+};
+
+global SeekRedemption_normal = function(QuestGiver)
+{
+	.ChangeModel(10035);
+};
+
+global SeekRedemption_OnComplete = function(QuestGiver, plr)
+{
+	QuestGiver.SendChatMessage("Ribbit! No!! This cannot...ribbit...be! You have duped me with...ribbit...your foul trickery! Ribbit!");
+	QuestGiver.RegisterTimer(4000, SeekRedemption_transf, 1);
+	QuestGiver.RegisterTimer(60000, SeekRedemption_normal, 1);
+};
+.RegisterQuestEvent(489, 1, SeekRedemption_OnComplete);

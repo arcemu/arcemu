@@ -1,0 +1,26 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 9.00
+# Visual Studio 2005
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MoonNonBlizzLikeScripts", "projects\NonBlizzLikeScripts2005.vcproj", "{EE39B48B-C598-4AAF-9EF0-199402933EE5}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MoonTournamentScripts", "projects\TournamentScripts2005.vcproj", "{EE39B48B-C598-4AAF-9EF0-199402933EE5}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{EE39B48B-C598-4AAF-9EF0-199402933EE5}.Debug.ActiveCfg = Debug|Win32
+		{EE39B48B-C598-4AAF-9EF0-199402933EE5}.Debug.Build.0 = Debug|Win32
+		{EE39B48B-C598-4AAF-9EF0-199402933EE5}.Release.ActiveCfg = Release|Win32
+		{EE39B48B-C598-4AAF-9EF0-199402933EE5}.Release.Build.0 = Release|Win32
+		{EE39B48B-C598-4AAF-9EF0-199402933EE5}.Debug.ActiveCfg = Debug|Win32
+		{EE39B48B-C598-4AAF-9EF0-199402933EE5}.Debug.Build.0 = Debug|Win32
+		{EE39B48B-C598-4AAF-9EF0-199402933EE5}.Release.ActiveCfg = Release|Win32
+		{EE39B48B-C598-4AAF-9EF0-199402933EE5}.Release.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

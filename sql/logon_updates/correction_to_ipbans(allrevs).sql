@@ -1,0 +1,1 @@
+ALTER TABLE ipbans CHANGE ip ip VARCHAR(20)  NOT NULL;

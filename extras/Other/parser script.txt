@@ -1,0 +1,222 @@
+enum PartyUpdateFlags
+{
+	GROUP_UPDATE_FLAG_NONE						= 0,		// 0x00000000
+	GROUP_UPDATE_FLAG_ONLINE					= 1,		// 0x00000001  uint8
+	GROUP_UPDATE_FLAG_HEALTH					= 2,		// 0x00000002  uint16
+	GROUP_UPDATE_FLAG_MAXHEALTH					= 4,		// 0x00000004  uint16
+	GROUP_UPDATE_FLAG_POWER_TYPE				= 8,		// 0x00000008  uint16
+	GROUP_UPDATE_FLAG_POWER						= 16,		// 0x00000010  uint16
+	GROUP_UPDATE_FLAG_MAXPOWER					= 32,		// 0x00000020  uint16
+	GROUP_UPDATE_FLAG_LEVEL						= 64,		// 0x00000040  uint16
+	GROUP_UPDATE_FLAG_ZONEID					= 128,		// 0x00000080  uint16
+	GROUP_UPDATE_FLAG_POSITION_X				= 256,		// 0x00000100  uint16, uint16
+	GROUP_UPDATE_FLAG_POSITION_Y				= 512,		// 0x00000200  uint64, uint16 for each uint64
+	GROUP_UPDATE_FLAG_UNK_1						= 1024,		// 0x00000400  uint64
+	GROUP_UPDATE_FLAG_PET_NAME					= 2048,		// 0x00000800  string
+	GROUP_UPDATE_FLAG_PET_UNK_1					= 4096,		// 0x00001000  uint16
+	GROUP_UPDATE_FLAG_PET_UNK_2					= 8192,		// 0x00002000  uint16
+	GROUP_UPDATE_FLAG_PET_UNK_3					= 16384,	// 0x00004000  uint16
+	GROUP_UPDATE_FLAG_PET_UNK_4					= 32768,	// 0x00008000  uint8
+	GROUP_UPDATE_FLAG_UNK_3						= 65535,	// 0x00010000  uint16
+	GROUP_UPDATE_FLAG_UNK_4						= 131070,	// 0x00020000  uint16
+	GROUP_UPDATE_FLAG_UNK_5						= 262140,	// 0x00040000  uint64, uint16 for each uint64
+};
+
+void IggyOLogStream::_HandleSPartyStatsWOpcode(Packet * packet)
+{
+	fprintf(m_file, "Party Status Packet\n");
+	WoWGuid guid;
+	uint32 mask;
+	*packet >> guid;
+	*packet >> mask;
+	fprintf(m_file, "  GUID: "I64FMT"\n", guid.GetOldGuid());
+	fprintf(m_file, "  Mask: %.4X\n\n", mask);
+	if(mask & GROUP_UPDATE_FLAG_ONLINE)//
+	{
+		uint8 value;
+		*packet >> value;
+		fprintf(m_file, "    Online status: %u\n", value);
+		mask &= ~GROUP_UPDATE_FLAG_ONLINE;
+	}
+	
+	if(mask & GROUP_UPDATE_FLAG_HEALTH)//
+	{
+		uint16 value;
+		*packet >> value;
+		fprintf(m_file, "    Health: %u\n", value);
+		mask &= ~GROUP_UPDATE_FLAG_HEALTH;
+	}
+
+	if(mask & GROUP_UPDATE_FLAG_MAXHEALTH)//
+	{
+		uint16 value;
+		*packet >> value;
+		fprintf(m_file, "    Max Health: %u\n", value);
+		mask &= ~GROUP_UPDATE_FLAG_MAXHEALTH;
+	}
+
+	if(mask & GROUP_UPDATE_FLAG_POWER_TYPE)
+	{
+		uint8 value;
+		*packet >> value;
+		fprintf(m_file, "    Power Type: %u\n", value);
+		mask &= ~GROUP_UPDATE_FLAG_POWER_TYPE;
+	}
+
+	if(mask & GROUP_UPDATE_FLAG_POWER)//
+	{
+		uint16 value;
+		*packet >> value;
+		fprintf(m_file, "    Power: %u\n", value);
+		mask &= ~GROUP_UPDATE_FLAG_POWER;
+	}
+
+	if(mask & GROUP_UPDATE_FLAG_MAXPOWER)//
+	{
+		uint16 value;
+		*packet >> value;
+		fprintf(m_file, "    Max Power: %u\n", value);
+		mask &= ~GROUP_UPDATE_FLAG_MAXPOWER;
+	}
+
+	if(mask & GROUP_UPDATE_FLAG_LEVEL)//
+	{
+		uint16 value;
+		*packet >> value;
+		fprintf(m_file, "    Level: %u\n", value);
+		mask &= ~GROUP_UPDATE_FLAG_LEVEL;
+	}
+
+	if(mask & GROUP_UPDATE_FLAG_ZONEID)//
+	{
+		uint16 value;
+		*packet >> value;
+		fprintf(m_file, "    ZoneID: %u\n", value);
+		mask &= ~GROUP_UPDATE_FLAG_ZONEID;
+	}
+
+	if(mask & GROUP_UPDATE_FLAG_POSITION_X)//
+	{
+		uint16 _value=0;
+		uint16 _value2;
+		*packet >> _value >> _value2;
+		signed __int16 value = *(signed __int16*)&_value;
+		signed __int16 value2 = *(signed __int16*)&_value2;
+		//float x = *(float*)&value;
+		//*packet >> x;
+		fprintf(m_file, "    X: %d Y: %d\n", value, value2);
+		mask &= ~GROUP_UPDATE_FLAG_POSITION_X;
+	}
+
+	if(mask & GROUP_UPDATE_FLAG_POSITION_Y)//
+	{
+		uint64 val;
+		*packet >> val;
+		if(val > (uint32)-1)
+			val = 0;
+
+		for(int i = 0; i < val;)
+		{
+			if(val == 2)
+			{
+				uint8 value;
+				*packet >> value;
+				++i;
+			}else if(val == 1)
+			{
+				uint16 value;
+				*packet >> value;
+				++i;
+			}
+			else
+				++i;
+		}
+		mask &= ~GROUP_UPDATE_FLAG_POSITION_Y;
+	}
+
+	if(mask & GROUP_UPDATE_FLAG_UNK_1)
+	{
+		uint64 value;
+		*packet >> value;
+		fprintf(m_file, "    Unk 1: %u\n", value);
+		mask &= ~GROUP_UPDATE_FLAG_UNK_1;
+	}
+	if(mask & GROUP_UPDATE_FLAG_PET_NAME)
+	{
+		string value;
+		*packet >> value;
+		fprintf(m_file, "    Pet Name: %s\n", value.c_str());
+		mask &= ~GROUP_UPDATE_FLAG_PET_NAME;
+	}
+
+	if(mask & GROUP_UPDATE_FLAG_PET_UNK_1)
+	{
+		uint16 value;
+		*packet >> value;
+		fprintf(m_file, "    Pet Unk1: %u\n", value);
+		mask &= ~GROUP_UPDATE_FLAG_PET_UNK_1;
+	}
+
+	if(mask & GROUP_UPDATE_FLAG_PET_UNK_2)
+	{
+		uint16 value;
+		*packet >> value;
+		fprintf(m_file, "    Pet Unk2: %u\n", value);
+		mask &= ~GROUP_UPDATE_FLAG_PET_UNK_2;
+	}
+
+	if(mask & GROUP_UPDATE_FLAG_PET_UNK_3)
+	{
+		uint16 value;
+		*packet >> value;
+		fprintf(m_file, "    Pet Unk3: %u\n", value);
+		mask &= ~GROUP_UPDATE_FLAG_PET_UNK_3;
+	}
+
+	if(mask & GROUP_UPDATE_FLAG_PET_UNK_4)
+	{
+		uint8 value;
+		*packet >> value;
+		fprintf(m_file, "    Pet Unk4: %u\n", value);
+		mask &= ~GROUP_UPDATE_FLAG_PET_UNK_4;
+	}
+
+	if(mask & GROUP_UPDATE_FLAG_UNK_3)
+	{
+		uint16 value;
+		*packet >> value;
+		fprintf(m_file, "    Unk3: %u\n", value);
+		mask &= ~GROUP_UPDATE_FLAG_UNK_3;
+	}
+
+	if(mask & GROUP_UPDATE_FLAG_UNK_4)
+	{
+		uint16 value, value2;
+		*packet >> value >> value2;
+		fprintf(m_file, "    Unk4: %u %u\n", value, value2);
+		mask &= ~GROUP_UPDATE_FLAG_UNK_4;
+	}
+
+	if(mask & GROUP_UPDATE_FLAG_UNK_5)
+	{
+		uint64 value;
+		*packet >> value;
+		fprintf(m_file, "    Unk5: %u\n", value);
+		mask &= ~GROUP_UPDATE_FLAG_UNK_5;
+			uint16 val2;
+		for(int i = 0; i < value-1; ++i)
+		{
+			*packet >> val2;
+		}
+	}
+
+	if(packet->rpos() != packet->wpos())
+		fprintf(m_file, "  %u bytes left.\n", packet->wpos() - packet->rpos());
+
+	fprintf(m_file, "\n");
+}
+
+void IggyOLogStream::_HandleSPartyFullStatsWOpcode(Packet * packet)
+{
+	_HandleSPartyStatsWOpcode(packet);
+}

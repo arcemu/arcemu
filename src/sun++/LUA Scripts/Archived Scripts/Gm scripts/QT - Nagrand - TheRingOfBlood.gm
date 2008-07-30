@@ -1,0 +1,171 @@
+/* 
+* Copyright (C) 2007 GMScripts <http://projects.emupedia.com/svn/gmscripts>
+*
+* This program is free software; you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation; either version 2 of the License, or
+* (at your option) any later version.
+*
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License
+* along with this program; if not, write to the Free Software
+* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+*/
+
+// The Ring of Blood: Brokentoe
+global TheRingofBloodBrokentoe_spawn = function(QuestGiver)
+{
+	.SpawnMonster(18398, -694.663, 7882.185, 48.485);
+};
+
+global TheRingofBloodBrokentoe_accept = function(QuestGiver, plr)
+{
+	QuestGiver.SendYellMessage("Get in the Ring of Blood, " + plr.GetName() + ". The fight is about to start!");
+	QuestGiver.RegisterTimer(4000, TheRingofBloodBrokentoe_spawn, 1);
+};
+.RegisterQuestEvent(9962, 2, TheRingofBloodBrokentoe_accept);
+
+global TheRingofBloodBrokentoe_ForDespawn = function(plr)
+{
+	.Despawn(600000, 0);
+};
+.RegisterUnitEvent(18398, 6, TheRingofBloodBrokentoe_ForDespawn);
+
+
+// The Ring of Blood: The Blue Brothers
+global TheRingofBloodTheBlueBrothers_yell = function(QuestGiver)
+{
+	.SendYellMessage("The battle is about to begin! The unmerciful Murkblood twins versus $N!");
+};
+
+global TheRingofBloodTheBlueBrothers_spawn = function(QuestGiver)
+{
+	.SpawnMonster(18399, -694.663330, 7882.185547, 47.485245);
+	.SpawnMonster(18399, -702.189758, 7874.325684, 45.594784);
+};
+
+global TheRingofBloodTheBlueBrothers_accept = function(QuestGiver, plr)
+{
+	QuestGiver.SendChatMessage("Get in the Ring of Blood, $N. The fight is about to start!");
+	QuestGiver.RegisterTimer(4000, TheRingofBloodTheBlueBrothers_yell, 1);
+	QuestGiver.RegisterTimer(5000, TheRingofBloodTheBlueBrothers_spawn, 1);
+};
+.RegisterQuestEvent(9967, 2, TheRingofBloodTheBlueBrothers_accept);
+
+global TheRingofBloodTheBlueBrothers_ForDespawn = function(plr)
+{
+	.Despawn(600000, 0);
+};
+.RegisterUnitEvent(18399, 6, TheRingofBloodTheBlueBrothers_ForDespawn);
+
+
+
+// The Ring of Blood: Rokdar the Sundered Lord
+global TheRingofBloodRokdar_yell = function(QuestGiver)
+{
+	.SendYellMessage("Hailing from the mountains of Blade's Edge comes Rokdar the Sundered Lord! $N is in for the fight of his life.");
+};
+
+global TheRingofBloodRokdar_spawn = function(QuestGiver)
+{
+	.SpawnMonster(18400, -694.663330, 7882.185547, 47.485245);
+};
+
+global TheRingofBloodRokdar_accept = function(QuestGiver, plr)
+{
+	QuestGiver.SendChatMessage("Get in the Ring of Blood, $N. The fight is about to start!");
+	QuestGiver.RegisterTimer(4000, TheRingofBloodRokdar_yell, 1);
+	QuestGiver.RegisterTimer(5000, TheRingofBloodRokdar_spawn, 1);
+};
+.RegisterQuestEvent(9970, 2, TheRingofBloodRokdar_accept);
+
+global TheRingofBloodRokdar_ForDespawn = function(mob)
+{
+	.Despawn(600000, 0);
+};
+.RegisterUnitEvent(18400, 6, TheRingofBloodRokdar_ForDespawn);
+
+
+
+// The Ring of Blood: Skra'gath
+global TheRingofBloodSkragath_yell = function(QuestGiver)
+{
+	.SendYellMessage("From the parts unknown: Ska'gath! Can $N possibly survive the onslaught of void energies?");
+};
+
+global TheRingofBloodSkragath_spawn = function(QuestGiver)
+{
+	.SpawnMonster(18401, -694.663330, 7882.185547, 47.485245);
+};
+
+global TheRingofBloodSkragath_accept = function(QuestGiver, plr)
+{
+	QuestGiver.SendChatMessage("Get in the Ring of Blood, $N. The fight is about to start!");
+	QuestGiver.RegisterTimer(4000, TheRingofBloodSkragath_yell, 1);
+	QuestGiver.RegisterTimer(5000, TheRingofBloodSkragath_spawn, 1);
+};
+.RegisterQuestEvent(9972, 2, TheRingofBloodSkragath_accept);
+
+global TheRingofBloodSkragath_ForDespawn = function(plr)
+{
+	.Despawn(600000, 0);
+};
+.RegisterUnitEvent(18401, 6, TheRingofBloodSkragath_ForDespawn);
+
+
+
+// The Ring of Blood: The Warmaul Champion
+global TheRingofBloodWarmaul_yell = function(QuestGiver)
+{
+	.SendYellMessage("They had to ship the champion in from the  Blade's Edge gladiator pits. He was training on mountain giants - three at a time.");
+};
+
+global TheRingofBloodWarmaul_spawn = function(QuestGiver)
+{
+	.SpawnMonster(18402, -694.663330, 7882.185547, 47.485245);
+};
+
+global TheRingofBloodWarmaul_accept = function(QuestGiver, plr)
+{
+	QuestGiver.SendChatMessage("Get in the Ring of Blood, $N. The fight is about to start!");
+	QuestGiver.RegisterTimer(4000, TheRingofBloodWarmaul_yell, 1);
+	QuestGiver.RegisterTimer(5000, TheRingofBloodWarmaul_spawn, 1);
+};
+.RegisterQuestEvent(9973, 2, TheRingofBloodWarmaul_accept);	
+
+global TheRingofBloodWarmaul_ForDespawn = function(plr)
+{
+	.Despawn(600000, 0);
+};
+.RegisterUnitEvent(18402, 6, TheRingofBloodWarmaul_ForDespawn);
+
+
+
+// The Ring of Blood: The Final Challenge
+global TheRingofBloodMogor_yell = function(QuestGiver)
+{
+	.SendYellMessage("For the first time in the Ring of Bloods history. Mogor has chosen to exercise his right of the battle! On this wartorn ground, Mariaen will face Mogor, hero of the Warmaul!");
+};
+
+global TheRingofBloodMogor_spawn = function(QuestGiver)
+{
+	.SpawnMonster(18069, -694.663330, 7882.185547, 47.485245);
+};
+
+global TheRingofBloodMogor_accept = function(QuestGiver, plr)
+{
+	QuestGiver.SendChatMessage("Mogor has challenged you. You have to accept! Get in the right of blood if you are ready to fight.");
+	QuestGiver.RegisterTimer(4000, TheRingofBloodMogor_yell, 1);
+	QuestGiver.RegisterTimer(5000, TheRingofBloodMogor_spawn, 1);
+};
+.RegisterQuestEvent(9977, 2, TheRingofBloodMogor_accept);
+
+global TheRingofBloodMogor_ForDespawn = function(plr)
+{
+	.Despawn(600000, 0);
+};
+.RegisterUnitEvent(18069, 6, TheRingofBloodMogor_ForDespawn);

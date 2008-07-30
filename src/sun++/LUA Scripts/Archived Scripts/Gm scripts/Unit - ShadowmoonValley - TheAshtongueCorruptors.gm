@@ -1,0 +1,445 @@
+/* 
+* Copyright (C) 2007 GMScripts <http://projects.emupedia.com/svn/gmscripts>
+*
+* This program is free software; you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation; either version 2 of the License, or
+* (at your option) any later version.
+*
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License
+* along with this program; if not, write to the Free Software
+* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+*/
+
+/******************************************/
+/* Eykenen Handling                    */
+/******************************************/
+global eykenenSpawnCheck = function(unit)
+{
+    .RegisterTimer(1000, corruptEarthTotemSpawn, 1);
+    .RegisterTimer(10000, checkETotems, 1);
+};
+.RegisterUnitEvent(21709, 6, eykenenSpawnCheck);
+
+/* Removes timer */
+global eykenenDeathCheck = function(unit)
+{
+    .DeregisterTimer();
+};
+.RegisterUnitEvent(21709, 4, eykenenDeathCheck);
+
+/* Used to tell main NPC if their totems exists */
+global checkETotems = function(unit)
+{
+    /* Remove the Channel aura if all totems are now dead */
+    if(cearth_totem_count == 0)
+    {
+       .RemoveAura(37204);
+       .RemoveAura(38101);
+       .RemoveAura(38102);      
+       .DeregisterTimer();
+    } else
+    {
+       .RegisterTimer(10000, checkETotems, 1);
+    }
+
+};
+
+/******************************************/
+/* Corrupted Totem Handling        */
+/******************************************/
+/* Increases count on spawn */
+global corruptEarthTotemSpawn = function(unit)
+{
+    global cearth_totem_count = 3;
+    .SpawnMonster(21704, -3879.86, 1416.28, 45.3178);
+    .SpawnMonster(21704, -3883.99, 1404.3, 43.6317);
+    .SpawnMonster(21704, -3893.05, 1411.49, 44.1571);
+};
+
+/* Decreases count, and spawns the 3 corrupted ele's. */
+global corruptEarthTotemDeathCheck = function(unit)
+{
+    if(cearth_totem_count > 0) { global cearth_totem_count = cearth_totem_count-1; }
+    .Delete();
+    /* Now let's spawn 3 corrupted elementals! */
+    .SpawnMonster(21708, -3863.210693, 1419.049561, 42.022533);
+    .SpawnMonster(21708, -3887.850830, 1378.870361, 43.110649);
+    .SpawnMonster(21708, -3901.666992, 1426.450806, 57.186275);
+};
+.RegisterUnitEvent(21704, 4, corruptEarthTotemDeathCheck);
+
+/******************************************/
+/* Corrupted Elemental Handling    */
+/******************************************/
+/* Increases count on spawn, sets walking patterns. */
+global corruptEarthEleSpawnCheck = function(unit)
+{
+    .RegisterTimer(360000, deSpawnCEElemental, 1);
+    if(cearth_ele_count < 9) { global cearth_ele_count = cearth_ele_count+1; }
+};
+.RegisterUnitEvent(21708, 6, corruptEarthEleSpawnCheck);
+
+/* Removes timer and decreases count on death */
+global corruptEarthEleDeathCheck = function(unit)
+{
+    .DeregisterTimer();
+    if(cearth_ele_count > 0) { global cearth_ele_count = cearth_ele_count-1; }
+};
+.RegisterUnitEvent(21708, 4, corruptEarthEleDeathCheck);
+
+global corruptEarthEleCombat = function(unit)
+{
+    .DeregisterTimer();
+};
+.RegisterUnitEvent(21708, 1, corruptEarthEleCombat);
+
+global corruptEarthEleLeaveCombat = function(unit)
+{
+    .RegisterTimer(360000, deSpawnCEElemental, 1);
+};
+.RegisterUnitEvent(21708, 2, corruptEarthEleLeaveCombat);
+
+global deSpawnCEElemental = function(unit)
+{
+    .Delete();
+    if(cearth_ele_count > 0) { global cearth_ele_count = cearth_ele_count-1; }
+};
+
+/******************************************/
+/* Helper functions. No direct event link */
+/******************************************/
+
+global cearth_totem_count = 3;
+global cearth_ele_count = 0;
+
+/******************************************/
+/* Haalum Handling                    */
+/******************************************/
+global haalumSpawnCheck = function(unit)
+{
+    .RegisterTimer(1000, corruptAirTotemSpawn, 1);
+    .RegisterTimer(10000, checkATotems, 1);
+};
+.RegisterUnitEvent(21711, 6, haalumSpawnCheck);
+
+/* Removes timer */
+global haalumDeathCheck = function(unit)
+{
+    .DeregisterTimer();
+};
+.RegisterUnitEvent(21711, 4, haalumDeathCheck);
+
+/* Used to tell main NPC if their totems exists */
+global checkATotems = function(unit)
+{
+    /* Remove the Channel aura if all totems are now dead */
+    if(cair_totem_count == 0)
+    {
+       .RemoveAura(37205);
+       .RemoveAura(38099);
+       .RemoveAura(38100);      
+       .DeregisterTimer();
+    } else
+    {
+       .RegisterTimer(10000, checkATotems, 1);
+    }
+
+};
+
+/******************************************/
+/* Corrupted Totem Handling        */
+/******************************************/
+/* Increases count on spawn */
+global corruptAirTotemSpawn = function(unit)
+{
+    global cair_totem_count = 3;
+    .SpawnMonster(21705, -4654.15, 1084.94, 1.09807);
+    .SpawnMonster(21705, -4646.82, 1091.07, 0.146058);
+    .SpawnMonster(21705, -4644.95, 1081.28, 1.13135);
+};
+
+/* Decreases count, and spawns the 3 corrupted ele's. */
+global corruptAirTotemDeathCheck = function(unit)
+{
+    if(cair_totem_count > 0) { global cair_totem_count = cair_totem_count-1; }
+    .Delete();
+    /* Now let's spawn 3 corrupted elementals! */
+    .SpawnMonster(21707, -4639.44, 1055.17, 5.97659);
+    .SpawnMonster(21707, -4675.79, 1098.55, 1.23712);
+    .SpawnMonster(21707, -4636.6, 1102.11, -0.921881);
+};
+.RegisterUnitEvent(21705, 4, corruptAirTotemDeathCheck);
+
+/******************************************/
+/* Corrupted Elemental Handling    */
+/******************************************/
+/* Increases count on spawn, sets walking patterns. */
+global corruptAirEleSpawnCheck = function(unit)
+{
+    .RegisterTimer(360000, deSpawnCAElemental, 1);
+    if(cair_ele_count < 9) { global cair_ele_count = cair_ele_count+1; }
+};
+.RegisterUnitEvent(21707, 6, corruptAirEleSpawnCheck);
+
+/* Removes timer and decreases count on death */
+global corruptAirEleDeathCheck = function(unit)
+{
+    .DeregisterTimer();
+    if(cair_ele_count > 0) { global cair_ele_count = cair_ele_count-1; }
+};
+.RegisterUnitEvent(21707, 4, corruptAirEleDeathCheck);
+
+global corruptAirEleCombat = function(unit)
+{
+    .DeregisterTimer();
+};
+.RegisterUnitEvent(21707, 1, corruptAirEleCombat);
+
+global corruptAirEleLeaveCombat = function(unit)
+{
+    .RegisterTimer(360000, deSpawnCAElemental, 1);
+};
+.RegisterUnitEvent(21707, 2, corruptAirEleLeaveCombat);
+
+global deSpawnCAElemental = function(unit)
+{
+    .Delete();
+    if(cair_ele_count > 0) { global cair_ele_count = cair_ele_count-1; }
+};
+
+/******************************************/
+/* Helper functions. No direct event link */
+/******************************************/
+
+global cair_totem_count = 3;
+global cair_ele_count = 0;
+
+/******************************************/
+/* Lakaan Handling                    */
+/******************************************/
+global lakaanSpawnCheck = function(unit)
+{
+    .RegisterTimer(1000, corruptWaterTotemSpawn, 1);
+    .RegisterTimer(10000, checkTotems, 1);
+};
+.RegisterUnitEvent(21416, 6, lakaanSpawnCheck);
+
+/* Removes timer */
+global lakaanDeathCheck = function(unit)
+{
+    .DeregisterTimer();
+};
+.RegisterUnitEvent(21416, 4, lakaanDeathCheck);
+
+/* Used to tell main NPC if their totems exists */
+global checkTotems = function(unit)
+{
+    /* Remove the Channel Water aura if all totems are now dead */
+    if(cwater_totem_count == 0)
+    {
+       .RemoveAura(36817);
+       .DeregisterTimer();
+    } else
+    {
+       .RegisterTimer(10000, checkTotems, 1);
+    }
+
+};
+
+/******************************************/
+/* Corrupted Water Totem Handling        */
+/******************************************/
+/* Increases count on spawn */
+global corruptWaterTotemSpawn = function(unit)
+{
+    global cwater_totem_count = 3;
+    .SpawnMonster(21420, -2783.87, 1483.1, 9.20691);
+    .SpawnMonster(21420, -2795.69, 1486.3, 7.87201);
+    .SpawnMonster(21420, -2791.51, 1476.98, 9.13748);
+};
+
+/* Decreases count, and spawns the 3 corrupted water ele's. */
+global corruptWaterTotemDeathCheck = function(unit)
+{
+    if(cwater_totem_count > 0) { global cwater_totem_count = cwater_totem_count-1; }
+    .Delete();
+    /* Now let's spawn 3 corrupted water elementals! */
+    .SpawnMonster(5897, -2757.745117, 1474.488667, 6.030887);
+    .SpawnMonster(5897, -2776.024170, 1514.744873, 6.477967);
+    .SpawnMonster(5897, -2800.281250, 1465.362183, 6.160744);
+};
+.RegisterUnitEvent(21420, 4, corruptWaterTotemDeathCheck);
+
+/******************************************/
+/* Corrupted Water Elemental Handling    */
+/******************************************/
+/* Increases count on spawn, sets walking patterns. */
+global corruptWaterEleSpawnCheck = function(unit)
+{
+    .RegisterTimer(360000, deSpawnCWElemental, 1);
+    if(cwater_ele_count < 9) { global cwater_ele_count = cwater_ele_count+1; }
+    if((cwater_ele_count == 1) || (cwater_ele_count == 4) || (cwater_ele_count == 7))
+    {
+       .CreateCustomWaypointMap();
+       .CreateWaypoint(-2757.745117, 1474.488667, 6.030887, 0.0, 1000, 0, 0);
+       .CreateWaypoint(-2776.024170, 1514.744873, 6.477967, 0.0, 1000, 0, 0);
+       .CreateWaypoint(-2804.875000, 1484.356445, 6.281591, 0.0, 1000, 0, 0);
+       .CreateWaypoint(-2800.281250, 1465.362183, 6.160744, 0.0, 1000, 0, 0);
+    } else if((cwater_ele_count == 2) || (cwater_ele_count == 5) || (cwater_ele_count == 8))
+    {
+       .CreateCustomWaypointMap();
+       .CreateWaypoint(-2776.024170, 1514.744873, 6.477967, 0.0, 1000, 0, 0);
+       .CreateWaypoint(-2804.875000, 1484.356445, 6.281591, 0.0, 1000, 0, 0);
+       .CreateWaypoint(-2800.281250, 1465.362183, 6.160744, 0.0, 1000, 0, 0);
+       .CreateWaypoint(-2757.745117, 1474.488667, 6.030887, 0.0, 1000, 0, 0);
+    } else if((cwater_ele_count == 3) || (cwater_ele_count == 6) || (cwater_ele_count == 9))
+    {
+       .CreateCustomWaypointMap();
+       .CreateWaypoint(-2800.281250, 1465.362183, 6.160744, 0.0, 1000, 0, 0);
+       .CreateWaypoint(-2757.745117, 1474.488667, 6.030887, 0.0, 1000, 0, 0);
+       .CreateWaypoint(-2776.024170, 1514.744873, 6.477967, 0.0, 1000, 0, 0);
+       .CreateWaypoint(-2804.875000, 1484.356445, 6.281591, 0.0, 1000, 0, 0);
+    }
+};
+.RegisterUnitEvent(5897, 6, corruptWaterEleSpawnCheck);
+
+/* Removes timer and decreases count on death */
+global corruptWaterEleDeathCheck = function(unit)
+{
+    .DeregisterTimer();
+    if(cwater_ele_count > 0) { global cwater_ele_count = cwater_ele_count-1; }
+};
+.RegisterUnitEvent(5897, 4, corruptWaterEleDeathCheck);
+
+global corruptWaterEleCombat = function(unit)
+{
+    .DeregisterTimer();
+};
+.RegisterUnitEvent(5897, 1, corruptWaterEleCombat);
+
+global corruptWaterEleLeaveCombat = function(unit)
+{
+    .RegisterTimer(360000, deSpawnCWElemental, 1);
+};
+.RegisterUnitEvent(5897, 2, corruptWaterEleLeaveCombat);
+
+global deSpawnCWElemental = function(unit)
+{
+    .Delete();
+    if(cwater_ele_count > 0) { global cwater_ele_count = cwater_ele_count-1; }
+};
+
+/******************************************/
+/* Helper functions. No direct event link */
+/******************************************/
+
+global cwater_totem_count = 3;
+global cwater_ele_count = 0;
+
+/******************************************/
+/* Uylaru Handling                    */
+/******************************************/
+global uylaruSpawnCheck = function(unit)
+{
+    .RegisterTimer(1000, corruptFireTotemSpawn, 1);
+    .RegisterTimer(10000, checkFTotems, 1);
+};
+.RegisterUnitEvent(21710, 6, uylaruSpawnCheck);
+
+/* Removes timer */
+global uylaruDeathCheck = function(unit)
+{
+    .DeregisterTimer();
+};
+.RegisterUnitEvent(21710, 4, uylaruDeathCheck);
+
+/* Used to tell main NPC if their totems exists */
+global checkFTotems = function(unit)
+{
+    /* Remove the Channel aura if all totems are now dead */
+    if(cfire_totem_count == 0)
+    {
+       .RemoveAura(37206);
+       .RemoveAura(38103);
+       .RemoveAura(38104);      
+       .DeregisterTimer();
+    } else
+    {
+       .RegisterTimer(10000, checkFTotems, 1);
+    }
+
+};
+
+/******************************************/
+/* Corrupted Totem Handling        */
+/******************************************/
+/* Increases count on spawn */
+global corruptFireTotemSpawn = function(unit)
+{
+    global cfire_totem_count = 3;
+    .SpawnMonster(21703, -3397.85, 1576.28, 47.1459);
+    .SpawnMonster(21703, -3404.08, 1566.57, 47.8847);
+    .SpawnMonster(21703, -3392.4, 1566.67, 47.9718);
+};
+
+/* Decreases count, and spawns the 3 corrupted ele's. */
+global corruptFireTotemDeathCheck = function(unit)
+{
+    if(cfire_totem_count > 0) { global cfire_totem_count = cfire_totem_count-1; }
+    .Delete();
+    /* Now let's spawn 3 corrupted elementals! */
+    .SpawnMonster(21706, -3421.96, 1564.19, 47.5335);
+    .SpawnMonster(21706, -3375.29, 1565.41, 49.4273);
+    .SpawnMonster(21706, -3390.89, 1540.29, 48.845);
+};
+.RegisterUnitEvent(21703, 4, corruptFireTotemDeathCheck);
+
+/******************************************/
+/* Corrupted Elemental Handling    */
+/******************************************/
+/* Increases count on spawn, sets walking patterns. */
+global corruptFireEleSpawnCheck = function(unit)
+{
+    .RegisterTimer(360000, deSpawnCFElemental, 1);
+    if(cfire_ele_count < 9) { global cfire_ele_count = cfire_ele_count+1; }
+};
+.RegisterUnitEvent(21706, 6, corruptFireEleSpawnCheck);
+
+/* Removes timer and decreases count on death */
+global corruptFireEleDeathCheck = function(unit)
+{
+    .DeregisterTimer();
+    if(cfire_ele_count > 0) { global cfire_ele_count = cfire_ele_count-1; }
+};
+.RegisterUnitEvent(21706, 4, corruptFireEleDeathCheck);
+
+global corruptFireEleCombat = function(unit)
+{
+    .DeregisterTimer();
+};
+.RegisterUnitEvent(21706, 1, corruptFireEleCombat);
+
+global corruptFireEleLeaveCombat = function(unit)
+{
+    .RegisterTimer(360000, deSpawnCFElemental, 1);
+};
+.RegisterUnitEvent(21706, 2, corruptFireEleLeaveCombat);
+
+global deSpawnCFElemental = function(unit)
+{
+    .Delete();
+    if(cfire_ele_count > 0) { global cfire_ele_count = cfire_ele_count-1; }
+};
+
+/******************************************/
+/* Helper functions. No direct event link */
+/******************************************/
+
+global cfire_totem_count = 3;
+global cfire_ele_count = 0;

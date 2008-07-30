@@ -1,0 +1,1 @@
+INSERT INTO `spell_coef_override` (`id`,`name`,`Dspell_coef_override`,`OTspell_coef_override`) VALUES ('31024','Living Ruby Pendant','0','0');
