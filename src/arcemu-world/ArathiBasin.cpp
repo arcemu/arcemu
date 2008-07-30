@@ -508,6 +508,8 @@ void ArathiBasin::EventUpdateResources(uint32 Team)
 	m_resources[Team] = current_resources;
 	if((current_resources - m_lastHonorGainResources[Team]) >= RESOURCES_TO_GAIN_BH)
 	{
+		m_lastHonorGainResources[Team]+= RESOURCES_TO_GAIN_BH;
+
 		m_mainLock.Acquire();
 		for(set<Player*>::iterator itr = m_players[Team].begin(); itr != m_players[Team].end(); ++itr)
 		{
