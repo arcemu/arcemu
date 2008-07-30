@@ -398,7 +398,7 @@ public:
 			{
 				if ((i == (j*8)) && ((i != (k*16))))
 				{
-					if (read<uint8>(i) < 0x0F)
+					if (read<uint8>(i) <= 0x0F)
 					{
 						printf("| 0%X ", read<uint8>(i) );
 					}
@@ -419,7 +419,7 @@ public:
 						printf("%c", read<uint8>(i-16 + x) );
 					}
 
-					if (read<uint8>(i) < 0x0F)
+					if (read<uint8>(i) <= 0x0F)
 					{
 						printf("\n0%X ", read<uint8>(i) );
 					}
@@ -433,7 +433,7 @@ public:
 				}
 				else
 				{
-					if (read<uint8>(i) < 0x0F)
+					if (read<uint8>(i) <= 0x0F)
 					{
 						printf("0%X ", read<uint8>(i) );
 					}

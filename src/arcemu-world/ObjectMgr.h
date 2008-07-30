@@ -31,7 +31,7 @@ struct GM_Ticket
 	uint64 playerGuid;
 	std::string name;
 	uint32 level;
-	uint32 type;
+	uint32 map;
 	float posX;
 	float posY;
 	float posZ;

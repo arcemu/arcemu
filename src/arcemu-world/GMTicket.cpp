@@ -35,8 +35,7 @@ enum GMticketType
 
 void WorldSession::HandleGMTicketCreateOpcode(WorldPacket & recv_data)
 {
-	uint32 type;
-	uint8 unk1;
+	uint32 map;
 	float x, y, z;
 	std::string message = "";
 	std::string message2 = "";
@@ -44,8 +43,7 @@ void WorldSession::HandleGMTicketCreateOpcode(WorldPacket & recv_data)
 	WorldPacket data(SMSG_GMTICKET_CREATE, 4);
 
 	// recv Data
-	recv_data >> type;
-	recv_data >> unk1;
+	recv_data >> map;
 	recv_data >> x;
 	recv_data >> y;
 	recv_data >> z;
@@ -57,7 +55,7 @@ void WorldSession::HandleGMTicketCreateOpcode(WorldPacket & recv_data)
 
 	ticket->guid = objmgr.GenerateTicketID();
 	ticket->playerGuid = GetPlayer()->GetGUID();
-	ticket->type = type;
+	ticket->map = map;
 	ticket->posX = x;
 	ticket->posY = y;
 	ticket->posZ = z;
@@ -87,7 +85,7 @@ void WorldSession::HandleGMTicketCreateOpcode(WorldPacket & recv_data)
 #else
 		ss << "GmTicket:" << GM_TICKET_CHAT_OPCODE_NEWTICKET;
 		ss << ":" << ticket->guid;
-		ss << ":" << ticket->type;
+		ss << ":" << ticket->map;
 		ss << ":" << ticket->level;
 		ss << ":" << ticket->name;
 #endif
@@ -97,12 +95,10 @@ void WorldSession::HandleGMTicketCreateOpcode(WorldPacket & recv_data)
 
 void WorldSession::HandleGMTicketUpdateOpcode(WorldPacket & recv_data)
 {
-	uint8 unk1;
 	std::string message = "";
 	WorldPacket data(SMSG_GMTICKET_UPDATETEXT, 4);
 
 	// recv Data
-	recv_data >> unk1;
 	recv_data >> message;
 
 	// Update Ticket
@@ -182,7 +178,7 @@ void WorldSession::HandleGMTicketGetTicketOpcode(WorldPacket & recv_data)
 	// Send current Ticket
 	data << uint32(6); // unk
 	data << ticket->message.c_str();
-	data << (uint8)ticket->type;
+	data << (uint8)ticket->map;
 
 	SendPacket(&data);
 }

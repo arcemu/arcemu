@@ -491,11 +491,11 @@ bool ChatHandler::HandleGMTicketListCommand(const char* args, WorldSession *m_se
 		{
 			zone = plr->GetZoneId();
 		}
-		ss << "GmTicket 0," << (*itr)->name << "," << (*itr)->level << "," << (*itr)->type << "," << zone;
+		ss << "GmTicket 0," << (*itr)->name << "," << (*itr)->level << ",0," << zone;
 #else
 		ss << "GmTicket:" << GM_TICKET_CHAT_OPCODE_LISTENTRY;
 		ss << ":" << (*itr)->guid;
-		ss << ":" << (*itr)->type;
+		ss << ":" << (*itr)->map;
 		ss << ":" << (*itr)->level;
 		ss << ":" << plr->IsInWorld();
 		ss << ":" << (aplr == NULL ? "" : aplr->GetName());

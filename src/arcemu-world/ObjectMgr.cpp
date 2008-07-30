@@ -630,7 +630,7 @@ void ObjectMgr::DelinkPlayerCorpses(Player *pOwner)
 
 void ObjectMgr::LoadGMTickets()
 {
-	QueryResult *result = CharacterDatabase.Query( "SELECT `guid`, `playerGuid`, `name`, `level`, `type`, `posX`, `posY`, `posZ`, `message`, `timestamp`, `deleted`, `assignedto`, `comment` FROM gm_tickets WHERE deleted=0" );
+	QueryResult *result = CharacterDatabase.Query( "SELECT `guid`, `playerGuid`, `name`, `level`, `map`, `posX`, `posY`, `posZ`, `message`, `timestamp`, `deleted`, `assignedto`, `comment` FROM gm_tickets WHERE deleted=0" );
 
 	GM_Ticket *ticket;
 	if(result == 0)
@@ -645,7 +645,7 @@ void ObjectMgr::LoadGMTickets()
 		ticket->playerGuid = fields[1].GetUInt64();
 		ticket->name = fields[2].GetString();
 		ticket->level = fields[3].GetUInt32();
-		ticket->type = fields[4].GetUInt32();
+		ticket->map = fields[4].GetUInt32();
 		ticket->posX = fields[5].GetFloat();
 		ticket->posY = fields[6].GetFloat();
 		ticket->posZ = fields[7].GetFloat();
@@ -666,12 +666,12 @@ void ObjectMgr::LoadGMTickets()
 void ObjectMgr::SaveGMTicket(GM_Ticket* ticket, QueryBuffer * buf)
 {
 	std::stringstream ss;
-	ss << "REPLACE INTO gm_tickets (`guid`, `playerGuid`, `name`, `level`, `type`, `posX`, `posY`, `posZ`, `message`, `timestamp`, `deleted`, `assignedto`, `comment`) VALUES(";
+	ss << "REPLACE INTO gm_tickets (`guid`, `playerGuid`, `name`, `level`, `map`, `posX`, `posY`, `posZ`, `message`, `timestamp`, `deleted`, `assignedto`, `comment`) VALUES(";
 	ss << ticket->guid << ", ";
 	ss << ticket->playerGuid << ", '";
 	ss << CharacterDatabase.EscapeString(ticket->name) << "', ";
 	ss << ticket->level << ", ";
-	ss << ticket->type << ", ";
+	ss << ticket->map << ", ";
 	ss << ticket->posX << ", ";
 	ss << ticket->posY << ", ";
 	ss << ticket->posZ << ", '";
