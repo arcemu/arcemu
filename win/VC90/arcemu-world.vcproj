@@ -744,6 +744,10 @@
 		<File
 			RelativePath="..\..\src\arcemu-world\GMTicket.cpp"
 			>
+    </File>
+    <File
+			RelativePath="..\..\src\arcemu-world\GMTicketCommands.cpp"
+			>
 		</File>
 		<File
 			RelativePath="..\..\src\arcemu-world\Group.cpp"

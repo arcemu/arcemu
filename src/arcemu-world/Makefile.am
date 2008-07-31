@@ -68,6 +68,7 @@ arcemu_world_SOURCES = \
     GameObject.cpp \
     GameObject.h \
     GMTicket.cpp \
+    GMTicketCommands.cpp \
     Group.cpp \
     Group.h \
     GroupHandler.cpp \
