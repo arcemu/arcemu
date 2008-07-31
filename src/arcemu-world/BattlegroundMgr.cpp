@@ -1216,7 +1216,7 @@ void CBattlegroundManager::SendBattlefieldStatus(Player * plr, uint32 Status, ui
 			data << Type;
 			data << uint16(0x1F90);
 			data << InstanceID;
-			data << uint8(plr->m_bgTeam);
+			data << uint8(0);
 		}
 
 		data << Status;
