@@ -786,7 +786,8 @@ void Guild::RemoveGuildMember(PlayerInfo * pMember, WorldSession * pClient)
 		if(pMember->m_loggedInPlayer)
 		{
 			Player * plr = objmgr.GetPlayer(pMember->guid);
-			sChatHandler.SystemMessageToPlr(plr, "You has been kicked from the guild by %s", pClient->GetPlayer()->GetName());
+			if (plr)
+				sChatHandler.SystemMessageToPlr(plr, "You has been kicked from the guild by %s", pClient->GetPlayer()->GetName());
 		}
 		LogGuildEvent(GUILD_EVENT_REMOVED, 2, pMember->name, pClient->GetPlayer()->GetName());
 		AddGuildLogEntry(GUILD_LOG_EVENT_REMOVAL, 2, pClient->GetPlayer()->GetLowGUID(), pMember->guid);

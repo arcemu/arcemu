@@ -1491,6 +1491,7 @@ void Player::GiveXP(uint32 xp, const uint64 &guid, bool allowbonus)
 	{
 		++level;
 		li = objmgr.GetLevelInfo(getRace(), getClass(), level);
+		if (li == NULL) return;
 		newxp -= nextlevelxp;
 		nextlevelxp = li->XPToNextLevel;
 		levelup = true;
@@ -1512,6 +1513,7 @@ void Player::GiveXP(uint32 xp, const uint64 &guid, bool allowbonus)
 		SetUInt32Value(UNIT_FIELD_LEVEL, level);
 		LevelInfo * oldlevel = lvlinfo;
 		lvlinfo = objmgr.GetLevelInfo(getRace(), getClass(), level);
+		if (lvlinfo == NULL) return;
 		CalculateBaseStats();
 
 		// Generate Level Info Packet and Send to client
@@ -7645,6 +7647,8 @@ void Player::EventTeleport(uint32 mapid, float x, float y, float z)
 
 void Player::ApplyLevelInfo(LevelInfo* Info, uint32 Level)
 {
+	ASSERT(Info != NULL);
+
 	// Apply level
 	SetUInt32Value(UNIT_FIELD_LEVEL, Level);
 
@@ -8232,6 +8236,11 @@ void Player::CalculateBaseStats()
 	memcpy(BaseStats, lvlinfo->Stat, sizeof(uint32) * 5);
 
 	LevelInfo * levelone = objmgr.GetLevelInfo(this->getRace(),this->getClass(),1);
+	if (levelone == NULL)
+	{
+		sLog.outError("%s (%d): NULL pointer", __FUNCTION__, __LINE__);
+		return;
+	}
 	SetUInt32Value(UNIT_FIELD_MAXHEALTH, lvlinfo->HP);
 	SetUInt32Value(UNIT_FIELD_BASE_HEALTH, lvlinfo->HP - (lvlinfo->Stat[2]-levelone->Stat[2])*10);
 	SetUInt32Value(PLAYER_NEXT_LEVEL_XP, lvlinfo->XPToNextLevel);

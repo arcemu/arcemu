@@ -117,7 +117,7 @@ void Pet::CreateAsSummon(uint32 entry, CreatureInfo *ci, Creature* created_from_
 	creature_info = ci;
 	myFamily = dbcCreatureFamily.LookupEntry(GetCreatureInfo()->Family);
 	//m_name = objmgr.GetCreatureFamilyName(myFamily->ID);
-	if( myFamily->name == NULL )
+	if( myFamily == NULL || myFamily->name == NULL )
 		m_name = "Pet";
 	else
 		m_name.assign( myFamily->name );

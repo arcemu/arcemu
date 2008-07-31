@@ -1381,6 +1381,7 @@ void Object::RemoveFlag( const uint32 index, uint32 oldFlag )
 
 float Object::CalcDistance(Object *Ob)
 {
+	ASSERT(Ob != NULL);
 	return CalcDistance(this->GetPositionX(), this->GetPositionY(), this->GetPositionZ(), Ob->GetPositionX(), Ob->GetPositionY(), Ob->GetPositionZ());
 }
 float Object::CalcDistance(float ObX, float ObY, float ObZ)
@@ -1389,10 +1390,13 @@ float Object::CalcDistance(float ObX, float ObY, float ObZ)
 }
 float Object::CalcDistance(Object *Oa, Object *Ob)
 {
+	ASSERT(Oa != NULL);
+	ASSERT(Ob != NULL);
 	return CalcDistance(Oa->GetPositionX(), Oa->GetPositionY(), Oa->GetPositionZ(), Ob->GetPositionX(), Ob->GetPositionY(), Ob->GetPositionZ());
 }
 float Object::CalcDistance(Object *Oa, float ObX, float ObY, float ObZ)
 {
+	ASSERT(Oa != NULL);
 	return CalcDistance(Oa->GetPositionX(), Oa->GetPositionY(), Oa->GetPositionZ(), ObX, ObY, ObZ);
 }
 
@@ -1406,6 +1410,7 @@ float Object::CalcDistance(float OaX, float OaY, float OaZ, float ObX, float ObY
 
 bool Object::IsWithinDistInMap(Object* obj, const float dist2compare) const
 {
+	ASSERT(obj != NULL);
 	float xdest = this->GetPositionX() - obj->GetPositionX();
 	float ydest = this->GetPositionY() - obj->GetPositionY();
 	float zdest = this->GetPositionZ() - obj->GetPositionZ();
@@ -1414,6 +1419,7 @@ bool Object::IsWithinDistInMap(Object* obj, const float dist2compare) const
 
 bool Object::IsWithinLOSInMap(Object* obj)
 {
+	ASSERT(obj != NULL);
     if (!IsInMap(obj)) return false;
 	LocationVector location;
     location = obj->GetPosition();
