@@ -808,13 +808,16 @@ void WorldSession::FullLogin(Player * plr)
 	_player->BroadcastMessage(sWorld.GetMotd());
 
 	// Send revision (if enabled)
+	if(sWorld.SendBuildOnJoin)
+	{
 #ifdef WIN32
-	_player->BroadcastMessage("Server: %sArcEmu %s r%u/%s-Win-%s %s(www.ArcEmu.org)", MSG_COLOR_WHITE, BUILD_TAG,
-		BUILD_REVISION, CONFIG, ARCH, MSG_COLOR_LIGHTBLUE);		
+		_player->BroadcastMessage("Server: %sArcEmu %s r%u/%s-Win-%s %s(www.ArcEmu.org)", MSG_COLOR_WHITE, BUILD_TAG,
+			BUILD_REVISION, CONFIG, ARCH, MSG_COLOR_LIGHTBLUE);		
 #else
-	_player->BroadcastMessage("Server: %sArcEmu %s r%u/%s-%s %s(www.ArcEmu.org)", MSG_COLOR_WHITE, BUILD_TAG,
-		BUILD_REVISION, PLATFORM_TEXT, ARCH, MSG_COLOR_LIGHTBLUE);
+		_player->BroadcastMessage("Server: %sArcEmu %s r%u/%s-%s %s(www.ArcEmu.org)", MSG_COLOR_WHITE, BUILD_TAG,
+			BUILD_REVISION, PLATFORM_TEXT, ARCH, MSG_COLOR_LIGHTBLUE);
 #endif
+	}
 
 	if(sWorld.SendStatsOnJoin)
 	{
