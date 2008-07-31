@@ -339,6 +339,8 @@ void WorldSession::HandleQuestgiverAcceptQuestOpcode( WorldPacket & recv_data )
 		if(qst->receive_items[i])
 		{
 			Item *item = objmgr.CreateItem( qst->receive_items[i], GetPlayer());
+			if(item == NULL)
+				continue;
 			if(!GetPlayer()->GetItemInterface()->AddItemToFreeSlot(item))
 			{
 				ItemPool.PooledDelete( item );
