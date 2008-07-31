@@ -19,6 +19,8 @@
 
 #include "StdAfx.h"
 
+#ifdef GM_TICKET_MY_MASTER_COMPATIBLE
+
 bool ChatHandler::HandleGMTicketListCommand(const char* args, WorldSession *m_session)
 {
 	Player *cplr = m_session->GetPlayer();
@@ -27,13 +29,8 @@ bool ChatHandler::HandleGMTicketListCommand(const char* args, WorldSession *m_se
 	if(!chn)
 		return false;
 
-#ifdef GM_TICKET_MY_MASTER_COMPATIBLE
 	chn->Say(cplr, "GmTicket 2", cplr, true);
-#else
-	std::stringstream ss0;
-	ss0 << "GmTicket:" << GM_TICKET_CHAT_OPCODE_LISTSTART;
-	chn->Say(cplr, ss0.str().c_str(), cplr, true);
-#endif
+
 	for(GmTicketList::iterator itr = objmgr.GM_TicketList.begin(); itr != objmgr.GM_TicketList.end(); itr++)
 	{
 		if((*itr)->deleted)
@@ -47,23 +44,13 @@ bool ChatHandler::HandleGMTicketListCommand(const char* args, WorldSession *m_se
 		Player* aplr = ((*itr)->assignedToPlayer == 0 ? NULL : objmgr.GetPlayer((uint32)(*itr)->assignedToPlayer));
 
 		std::stringstream ss;
-#ifdef GM_TICKET_MY_MASTER_COMPATIBLE
+
 		uint32 zone = 0;
 		if(plr->IsInWorld())
 		{
 			zone = plr->GetZoneId();
 		}
 		ss << "GmTicket 0," << (*itr)->name << "," << (*itr)->level << ",0," << zone;
-#else
-		ss << "GmTicket:" << GM_TICKET_CHAT_OPCODE_LISTENTRY;
-		ss << ":" << (*itr)->guid;
-		ss << ":" << (*itr)->map;
-		ss << ":" << (*itr)->level;
-		ss << ":" << plr->IsInWorld();
-		ss << ":" << (aplr == NULL ? "" : aplr->GetName());
-		ss << ":" << (*itr)->name;
-		ss << ":" << (*itr)->comment;
-#endif
 		chn->Say(cplr, ss.str().c_str(), cplr, true);
 	}
 
@@ -72,24 +59,14 @@ bool ChatHandler::HandleGMTicketListCommand(const char* args, WorldSession *m_se
 
 bool ChatHandler::HandleGMTicketGetByIdCommand(const char* args, WorldSession *m_session)
 {
-#ifdef GM_TICKET_MY_MASTER_COMPATIBLE
 	if(!*args)
 		return false;
-#else
-	uint64 ticketGuid = (args ? atoi(args) : 0);
-	if(!ticketGuid)
-	{
-		RedSystemMessage(m_session, "You must specify a ticket id.");
-		return true;
-	}
-#endif
 	
 	Player *cplr = m_session->GetPlayer();
 	Channel *chn = channelmgr.GetChannel(sWorld.getGmClientChannel().c_str(), cplr);
 	if(!chn)
 		return false;
 	
-#ifdef GM_TICKET_MY_MASTER_COMPATIBLE
 	Player *plr = objmgr.GetPlayer(args, false);
 	if(plr == NULL)
 	{
@@ -97,16 +74,9 @@ bool ChatHandler::HandleGMTicketGetByIdCommand(const char* args, WorldSession *m
 		return true;
 	}
 	GM_Ticket *ticket = objmgr.GetGMTicketByPlayer(plr->GetGUID());
-#else
-	GM_Ticket *ticket = objmgr.GetGMTicket(ticketGuid);
-#endif
 	if(ticket == NULL || ticket->deleted)
 	{
-#ifdef GM_TICKET_MY_MASTER_COMPATIBLE
 		RedSystemMessage(m_session, "Ticket not found.");
-#else
-		chn->Say(cplr, "GmTicket:0:Ticket not found.", cplr, true);
-#endif
 		return true;
 	}
 
@@ -123,13 +93,7 @@ bool ChatHandler::HandleGMTicketGetByIdCommand(const char* args, WorldSession *m
 		*end = '\0';
 
 		std::stringstream ss;
-#ifdef GM_TICKET_MY_MASTER_COMPATIBLE
 		ss << "GmTicket " << (firstLine ? "3" : "4") << "," << ticket->name << "," << start;
-#else
-		ss << "GmTicket:" << (firstLine ? GM_TICKET_CHAT_OPCODE_CONTENT : GM_TICKET_CHAT_OPCODE_APPENDCONTENT);
-		ss << ":" << ticket->guid;
-		ss << ":" << start;
-#endif
 		chn->Say(cplr, ss.str().c_str(), cplr, true);
 
 		firstLine = false;
@@ -139,13 +103,7 @@ bool ChatHandler::HandleGMTicketGetByIdCommand(const char* args, WorldSession *m
 	if(*start != '\0')
 	{
 		std::stringstream ss;
-#ifdef GM_TICKET_MY_MASTER_COMPATIBLE
 		ss << "GmTicket " << (firstLine ? "3" : "4") << "," << ticket->name << "," << start;
-#else
-		ss << "GmTicket:" << (firstLine ? GM_TICKET_CHAT_OPCODE_CONTENT : GM_TICKET_CHAT_OPCODE_APPENDCONTENT);
-		ss << ":" << ticket->guid;
-		ss << ":" << start;
-#endif
 		chn->Say(cplr, ss.str().c_str(), cplr, true);
 	}
 	delete[] msg;
@@ -155,24 +113,14 @@ bool ChatHandler::HandleGMTicketGetByIdCommand(const char* args, WorldSession *m
 
 bool ChatHandler::HandleGMTicketRemoveByIdCommand(const char* args, WorldSession *m_session)
 {
-#ifdef GM_TICKET_MY_MASTER_COMPATIBLE
 	if(!*args)
 		return false;
-#else
-	uint64 ticketGuid = (args ? atoi(args) : 0);
-	if(!ticketGuid)
-	{
-		RedSystemMessage(m_session, "You must specify a ticket id.");
-		return true;
-	}
-#endif
 
 	Player *cplr = m_session->GetPlayer();
 	Channel *chn = channelmgr.GetChannel(sWorld.getGmClientChannel().c_str(), cplr);
 	if(!chn)
 		return false;
 
-#ifdef GM_TICKET_MY_MASTER_COMPATIBLE
 	Player *plr = objmgr.GetPlayer(args, true);
 	if(plr == NULL)
 	{
@@ -180,30 +128,154 @@ bool ChatHandler::HandleGMTicketRemoveByIdCommand(const char* args, WorldSession
 		return true;
 	}
 	GM_Ticket *ticket = objmgr.GetGMTicketByPlayer(plr->GetGUID());
-#else
-	GM_Ticket *ticket = objmgr.GetGMTicket(ticketGuid);
-#endif
 	if(ticket == NULL || ticket->deleted)
 	{
-#ifdef GM_TICKET_MY_MASTER_COMPATIBLE
 		RedSystemMessage(m_session, "Ticket not found.");
-#else
-		chn->Say(cplr, "GmTicket:0:Ticket not found.", cplr, true);
-#endif
 		return true;
 	}
 
-#ifndef GM_TICKET_MY_MASTER_COMPATIBLE
+	std::stringstream ss;
+	ss << "GmTicket 1," << ticket->name;
+	chn->Say(cplr, ss.str().c_str(), NULL, true);
+
+	objmgr.RemoveGMTicket(ticket->guid);
+
+	if(!plr)
+		return true;
+	if(!plr->IsInWorld())
+		return true;
+
+	// Notify player about removing ticket
+	WorldPacket data(SMSG_GMTICKET_DELETETICKET, 4);
+	data << uint32(9);
+	plr->GetSession()->SendPacket( &data );
+
+	return true;
+}
+
+#else
+
+bool ChatHandler::HandleGMTicketListCommand(const char* args, WorldSession *m_session)
+{
+	Player *cplr = m_session->GetPlayer();
+
+	Channel *chn = channelmgr.GetChannel(sWorld.getGmClientChannel().c_str(), cplr);
+	if(!chn)
+		return false;
+
+	std::stringstream ss0;
+	ss0 << "GmTicket:" << GM_TICKET_CHAT_OPCODE_LISTSTART;
+	chn->Say(cplr, ss0.str().c_str(), cplr, true);
+
+	for(GmTicketList::iterator itr = objmgr.GM_TicketList.begin(); itr != objmgr.GM_TicketList.end(); itr++)
+	{
+		if((*itr)->deleted)
+			continue;
+
+		Player* plr = objmgr.GetPlayer((uint32)(*itr)->playerGuid);
+
+		if( plr == NULL )
+			continue;
+
+		Player* aplr = ((*itr)->assignedToPlayer == 0 ? NULL : objmgr.GetPlayer((uint32)(*itr)->assignedToPlayer));
+
+		std::stringstream ss;
+		ss << "GmTicket:" << GM_TICKET_CHAT_OPCODE_LISTENTRY;
+		ss << ":" << (*itr)->guid;
+		ss << ":" << (*itr)->map;
+		ss << ":" << (*itr)->level;
+		ss << ":" << plr->IsInWorld();
+		ss << ":" << (aplr == NULL ? "" : aplr->GetName());
+		ss << ":" << (*itr)->name;
+		ss << ":" << (*itr)->comment;
+		chn->Say(cplr, ss.str().c_str(), cplr, true);
+	}
+
+	return true;
+}
+
+bool ChatHandler::HandleGMTicketGetByIdCommand(const char* args, WorldSession *m_session)
+{
+	uint64 ticketGuid = (args ? atoi(args) : 0);
+	if(!ticketGuid)
+	{
+		RedSystemMessage(m_session, "You must specify a ticket id.");
+		return true;
+	}
+	
+	Player *cplr = m_session->GetPlayer();
+	Channel *chn = channelmgr.GetChannel(sWorld.getGmClientChannel().c_str(), cplr);
+	if(!chn)
+		return false;
+	
+	GM_Ticket *ticket = objmgr.GetGMTicket(ticketGuid);
+	if(ticket == NULL || ticket->deleted)
+	{
+		chn->Say(cplr, "GmTicket:0:Ticket not found.", cplr, true);
+		return true;
+	}
+
+	char* msg = new char[ticket->message.size() + 1];
+	strcpy(msg, ticket->message.c_str());
+	char * start = msg, *end;
+	bool firstLine = true;
+	for(;;)
+	{
+		end = strchr(start, '\n');
+		if(!end)
+			break;
+	
+		*end = '\0';
+
+		std::stringstream ss;
+		ss << "GmTicket:" << (firstLine ? GM_TICKET_CHAT_OPCODE_CONTENT : GM_TICKET_CHAT_OPCODE_APPENDCONTENT);
+		ss << ":" << ticket->guid;
+		ss << ":" << start;
+		chn->Say(cplr, ss.str().c_str(), cplr, true);
+
+		firstLine = false;
+
+		start = end + 1;
+	}
+	if(*start != '\0')
+	{
+		std::stringstream ss;
+		ss << "GmTicket:" << (firstLine ? GM_TICKET_CHAT_OPCODE_CONTENT : GM_TICKET_CHAT_OPCODE_APPENDCONTENT);
+		ss << ":" << ticket->guid;
+		ss << ":" << start;
+		chn->Say(cplr, ss.str().c_str(), cplr, true);
+	}
+	delete[] msg;
+
+	return true;
+}
+
+bool ChatHandler::HandleGMTicketRemoveByIdCommand(const char* args, WorldSession *m_session)
+{
+	uint64 ticketGuid = (args ? atoi(args) : 0);
+	if(!ticketGuid)
+	{
+		RedSystemMessage(m_session, "You must specify a ticket id.");
+		return true;
+	}
+
+	Player *cplr = m_session->GetPlayer();
+	Channel *chn = channelmgr.GetChannel(sWorld.getGmClientChannel().c_str(), cplr);
+	if(!chn)
+		return false;
+
+	GM_Ticket *ticket = objmgr.GetGMTicket(ticketGuid);
+	if(ticket == NULL || ticket->deleted)
+	{
+		chn->Say(cplr, "GmTicket:0:Ticket not found.", cplr, true);
+		return true;
+	}
+
 	Player* plr = objmgr.GetPlayer((uint32)ticket->playerGuid);
-#endif
 
 	std::stringstream ss;
-#ifdef GM_TICKET_MY_MASTER_COMPATIBLE
-	ss << "GmTicket 1," << ticket->name;
-#else
 	ss << "GmTicket:" << GM_TICKET_CHAT_OPCODE_REMOVED;
 	ss << ":" << ticket->guid;
-#endif
 	chn->Say(cplr, ss.str().c_str(), NULL, true);
 
 	objmgr.RemoveGMTicket(ticket->guid);
@@ -435,3 +507,5 @@ bool ChatHandler::HandleGMTicketDeletePermanentCommand(const char* args, WorldSe
 	}
 	return true;
 }
+
+#endif

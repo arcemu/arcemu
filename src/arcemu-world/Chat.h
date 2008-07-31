@@ -313,10 +313,12 @@ protected:
 	bool HandleGMTicketListCommand(const char* args, WorldSession *m_session);
 	bool HandleGMTicketGetByIdCommand(const char* args, WorldSession *m_session);
 	bool HandleGMTicketRemoveByIdCommand(const char* args, WorldSession *m_session);
+#ifndef GM_TICKET_MY_MASTER_COMPATIBLE
 	bool HandleGMTicketAssignToCommand(const char* args, WorldSession *m_session);
 	bool HandleGMTicketReleaseCommand(const char* args, WorldSession *m_session);
 	bool HandleGMTicketCommentCommand(const char* args, WorldSession *m_session);
 	bool HandleGMTicketDeletePermanentCommand(const char* args, WorldSession *m_session);
+#endif
 	bool HandleAddSkillCommand(const char* args, WorldSession *m_session);
 	bool HandleAddInvItemCommand(const char* args, WorldSession *m_session);
 	bool HandleResetReputationCommand(const char* args, WorldSession *m_session);

@@ -284,9 +284,9 @@ void CommandTableStorage::Init()
 	static ChatCommand GMTicketCommandTable[] =
 	{
 #ifdef GM_TICKET_MY_MASTER_COMPATIBLE
-		{ "get",   'c', &ChatHandler::HandleGMTicketListCommand, "Gets GM Ticket", NULL, 0, 0, 0},
-		{ "getId", 'c', &ChatHandler::HandleGMTicketGetByIdCommand, "Gets GM Ticket by ID", NULL, 0, 0, 0},
-		{ "delId", 'c', &ChatHandler::HandleGMTicketRemoveByIdCommand, "Deletes GM Ticket by ID", NULL, 0, 0, 0},
+		{ "get",   'c', &ChatHandler::HandleGMTicketListCommand, "Gets GM Ticket list.", NULL, 0, 0, 0},
+		{ "getId", 'c', &ChatHandler::HandleGMTicketGetByIdCommand, "Gets GM Ticket by player name.", NULL, 0, 0, 0},
+		{ "delId", 'c', &ChatHandler::HandleGMTicketRemoveByIdCommand, "Deletes GM Ticket by player name.", NULL, 0, 0, 0},
 #else
 		{ "list",            'c', &ChatHandler::HandleGMTicketListCommand, "Lists all active GM Tickets.", NULL, 0, 0, 0 },
 		{ "get",             'c', &ChatHandler::HandleGMTicketGetByIdCommand, "Gets GM Ticket with ID x.", NULL, 0, 0, 0 },
