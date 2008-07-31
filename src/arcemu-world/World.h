@@ -390,7 +390,6 @@ public:
 	uint32 AlliancePlayers;
 	uint32 PeakSessionCount;
 	bool SendStatsOnJoin;
-	bool SendBuildOnJoin;
 	SessionSet gmList;
 
 	void ShutdownClasses();

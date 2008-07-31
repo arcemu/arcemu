@@ -1161,7 +1161,6 @@ void World::Rehash(bool load)
 	UnloadMapFiles = Config.MainConfig.GetBoolDefault("Terrain", "UnloadMapFiles", true);
 	BreathingEnabled = Config.MainConfig.GetBoolDefault("Server", "EnableBreathing", true);
 	SendStatsOnJoin = Config.MainConfig.GetBoolDefault("Server", "SendStatsOnJoin", true);
-	SendBuildOnJoin = Config.MainConfig.GetBoolDefault("Server", "SendBuildOnJoin", true);
 	compression_threshold = Config.MainConfig.GetIntDefault("Server", "CompressionThreshold", 1000);
 
 	// load regeneration rates.
