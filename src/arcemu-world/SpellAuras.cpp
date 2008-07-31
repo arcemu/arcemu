@@ -398,7 +398,7 @@ void Aura::Init( SpellEntry* proto, int32 duration, Object* caster, Unit* target
 			( ( Player* )caster )->SetSpellTargetType( m_spellProto->BGR_one_buff_from_caster_on_1target, target);
 		}
 		if( m_spellProto->BGR_one_buff_from_caster_on_self != 0 )
-			static_cast<Unit*>(caster)->RemoveAllAuraFromSelfType2( m_spellProto->BGR_one_buff_from_caster_on_self );
+			static_cast<Unit*>(caster)->RemoveAllAuraFromSelfType2( m_spellProto->BGR_one_buff_from_caster_on_self, m_spellProto->NameHash );
 
 		if( isAttackable( ( Unit* )caster, target ) )
 		{
