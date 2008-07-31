@@ -2175,9 +2175,13 @@ void SendItemLinkToPlayer(ItemPrototype * iProto, WorldSession * pSession, bool 
 		return;
 		
  	if(ItemCount)
-		sChatHandler.SystemMessage(pSession,"Item %u %s  count %u", iProto->ItemId, GetItemLinkByProto(iProto, language), owner->GetItemInterface()->GetItemCount(iProto->ItemId, true));
+	{
+		int8 count = owner->GetItemInterface()->GetItemCount(iProto->ItemId, true);
+		int8 slot = owner->GetItemInterface()->GetBagSlotByGuid(iProto->ItemId);
+		sChatHandler.SystemMessage(pSession,"Item %u %s Count %u Slot %u ContainerSlots %u", iProto->ItemId, GetItemLinkByProto(iProto, language), count, slot, iProto->ContainerSlots);
+	}
  	else
-		sChatHandler.SystemMessage(pSession,"Item %u %s", iProto->ItemId, GetItemLinkByProto(iProto, language));
+		sChatHandler.SystemMessage(pSession,"Item %u %s ContainerSlots %u", iProto->ItemId, GetItemLinkByProto(iProto, language), iProto->ContainerSlots);
 }
 
 
