@@ -360,7 +360,6 @@ Player::Player( uint32 guid ) : m_mailBox(guid)
 	m_modblockabsorbvalue = 0;
 	m_modblockvaluefromspells = 0;
 	m_summoner = m_summonInstanceId = m_summonMapId = 0;
-	m_tempSummon = 0;
 	m_spellcomboPoints = 0;
 	m_pendingBattleground = 0;
 	m_deathVision = false;

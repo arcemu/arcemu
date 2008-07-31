@@ -3050,7 +3050,10 @@ void AIInterface::_UpdateMovement(uint32 p_time)
 				MoveTo(Fx, Fy, Fz, Fo);
 				m_FearTimer = m_totalMoveTime + getMSTime() + 400;
 			}
-
+			else
+			{
+				StopMovement(0);
+			}
 #else
 			Fz = m_Unit->GetMapMgr()->GetLandHeight(Fx, Fy);
 			if(fabs(m_Unit->GetPositionZ()-Fz) > 4 || (Fz != 0.0f && Fz < (wl-2.0f)))
@@ -3096,11 +3099,15 @@ void AIInterface::_UpdateMovement(uint32 p_time)
 		{
 			m_WanderTimer=getMSTime() + 1000;
 		}
-		else
+		else if(CollideInterface.CheckLOS(m_Unit->GetMapId(), m_Unit->GetPositionX(), m_Unit->GetPositionY(), m_Unit->GetPositionZ() + 2.0f, wanderX, wanderY, wanderZ))
 		{
 			m_Unit->SetOrientation(wanderO);
 			MoveTo(wanderX, wanderY, wanderZ, wanderO);
 			m_WanderTimer = getMSTime() + m_totalMoveTime + 300; // time till next move (+ pause)
+		}
+		else
+		{
+			StopMovement(0);
 		}
 #else
 		float wanderZ = m_Unit->GetMapMgr()->GetLandHeight(wanderX, wanderY);

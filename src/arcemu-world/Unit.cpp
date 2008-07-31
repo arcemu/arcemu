@@ -323,6 +323,7 @@ Unit::Unit()
 	m_hasVampiricEmbrace = m_hasVampiricTouch = 0;
 	m_hitfrommeleespell	 = 0;
 	m_damageSplitTarget = NULL;
+	m_tempSummon = 0;
 	ModelHalfSize = 1.0f; //worst case unit size. (Should be overwritten)
 }
 

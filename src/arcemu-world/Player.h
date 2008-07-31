@@ -1733,7 +1733,6 @@ public:
 	bool UnpackPlayerData(ByteBuffer & data);
 #endif
 
-	Creature * m_tempSummon;
 	bool m_deathVision;
 	SpellEntry * last_heal_spell;
 	LocationVector m_sentTeleportPosition;

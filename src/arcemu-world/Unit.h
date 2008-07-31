@@ -1086,6 +1086,7 @@ public:
 	
 	Creature *critterPet;
 	Creature *summonPet;
+	Creature *m_tempSummon;
 
 	ARCEMU_INLINE uint32 GetCharmTempVal() { return m_charmtemp; }
 	ARCEMU_INLINE void SetCharmTempVal(uint32 val) { m_charmtemp = val; }

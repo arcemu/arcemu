@@ -2208,7 +2208,7 @@ void Spell::SpellEffectPersistentAA(uint32 i) // Persistent Area Aura
 
 void Spell::SpellEffectSummon(uint32 i) // Summon
 {
-	if(!p_caster || !p_caster->IsInWorld())
+	if(!u_caster || !u_caster->IsInWorld())
 		return;
 
 	switch(m_spellInfo->EffectMiscValueB[i])
@@ -2228,14 +2228,14 @@ void Spell::SpellEffectSummon(uint32 i) // Summon
 			}
 	}	
 
-	if(p_caster->m_tempSummon)
+	if(u_caster->m_tempSummon)
 	{
-		p_caster->m_tempSummon->RemoveFromWorld(false,true);
-		if(p_caster->m_tempSummon)
-			p_caster->m_tempSummon->SafeDelete();
+		u_caster->m_tempSummon->RemoveFromWorld(false,true);
+		if(u_caster->m_tempSummon)
+			u_caster->m_tempSummon->SafeDelete();
 
-		p_caster->m_tempSummon = 0;
-		p_caster->SetUInt64Value(UNIT_FIELD_SUMMON, 0);
+		u_caster->m_tempSummon = 0;
+		u_caster->SetUInt64Value(UNIT_FIELD_SUMMON, 0);
 	}
 
 	/* This is for summon water elemenal, etc */
@@ -2244,44 +2244,36 @@ void Spell::SpellEffectSummon(uint32 i) // Summon
 	if( !ci || !cp )
 		return;
 
-
 	if(GetProto()->EffectMiscValue[i] == 510)	// Water Elemental
 	{
 		Pet *summon = objmgr.CreatePet();
-		summon->SetInstanceID(m_caster->GetInstanceID());
-		summon->CreateAsSummon(GetProto()->EffectMiscValue[i], ci, NULL, p_caster, GetProto(), 1, 45000);
-		summon->SetUInt32Value(UNIT_FIELD_LEVEL, p_caster->getLevel());
+		summon->SetInstanceID(u_caster->GetInstanceID());
+		summon->CreateAsSummon(GetProto()->EffectMiscValue[i], ci, NULL, u_caster, GetProto(), 1, 45000);
+		summon->SetUInt32Value(UNIT_FIELD_LEVEL, u_caster->getLevel());
 		summon->AddSpell(dbcSpell.LookupEntry(31707), true);
 		summon->AddSpell(dbcSpell.LookupEntry(33395), true);
-       summon->SetUInt32Value(UNIT_FIELD_FACTIONTEMPLATE, p_caster->GetUInt32Value(UNIT_FIELD_FACTIONTEMPLATE));
-       summon->_setFaction();
-	   p_caster->m_tempSummon = summon;
+		summon->SetUInt32Value(UNIT_FIELD_FACTIONTEMPLATE, u_caster->GetUInt32Value(UNIT_FIELD_FACTIONTEMPLATE));
+		summon->_setFaction();
+		u_caster->m_tempSummon = summon;
 	}
 	else
 	{
-	       Creature * pCreature = p_caster->GetMapMgr()->CreateCreature(cp->Id);
-	       pCreature->Load(cp, p_caster->GetPositionX(), p_caster->GetPositionY(), p_caster->GetPositionZ());
-	       pCreature->_setFaction();
-	       pCreature->GetAIInterface()->Init(pCreature,AITYPE_PET,MOVEMENTTYPE_NONE,u_caster);
-	       pCreature->GetAIInterface()->SetUnitToFollow(u_caster);
-	       pCreature->GetAIInterface()->SetUnitToFollowAngle(float(-(M_PI/2)));
-	       pCreature->GetAIInterface()->SetFollowDistance(3.0f);
-	       pCreature->SetUInt32Value(UNIT_FIELD_LEVEL, p_caster->getLevel());
-	       pCreature->SetUInt32Value(UNIT_FIELD_FACTIONTEMPLATE, p_caster->GetUInt32Value(UNIT_FIELD_FACTIONTEMPLATE));
-	       pCreature->_setFaction();
-	       p_caster->SetUInt64Value(UNIT_FIELD_SUMMON, pCreature->GetGUID());
-	       p_caster->m_tempSummon = pCreature;
-	       pCreature->PushToWorld(p_caster->GetMapMgr());
+		Creature * pCreature = u_caster->GetMapMgr()->CreateCreature(cp->Id);
+		pCreature->Load(cp, u_caster->GetPositionX(), u_caster->GetPositionY(), u_caster->GetPositionZ());
+		pCreature->_setFaction();
+		pCreature->GetAIInterface()->Init(pCreature,AITYPE_PET,MOVEMENTTYPE_NONE,u_caster);
+		pCreature->GetAIInterface()->SetUnitToFollow(u_caster);
+		pCreature->GetAIInterface()->SetUnitToFollowAngle(float(-(M_PI/2)));
+		pCreature->GetAIInterface()->SetFollowDistance(3.0f);
+		pCreature->SetUInt32Value(UNIT_FIELD_LEVEL, u_caster->getLevel());
+		pCreature->SetUInt32Value(UNIT_FIELD_FACTIONTEMPLATE, u_caster->GetUInt32Value(UNIT_FIELD_FACTIONTEMPLATE));
+		pCreature->_setFaction();
+		u_caster->SetUInt64Value(UNIT_FIELD_SUMMON, pCreature->GetGUID());
+		u_caster->m_tempSummon = pCreature;
+		pCreature->PushToWorld(u_caster->GetMapMgr());
 
-	       /*if(p_caster->isInCombat())
-	       {
-		       Unit * target = p_caster->GetMapMgr()->GetUnit(p_caster->getAttackTarget());
-		       if(target)
-			       pCreature->GetAIInterface()->AttackReaction(target, 1, 0);
-	       }*/
-	       
-	       /* not sure on this */
-	       sEventMgr.AddEvent(pCreature, &Creature::SafeDelete, EVENT_CREATURE_REMOVE_CORPSE, /*GetDuration()*/45000, 1, 0);
+		/* not sure on this */
+		sEventMgr.AddEvent(pCreature, &Creature::SafeDelete, EVENT_CREATURE_REMOVE_CORPSE, /*GetDuration()*/45000, 1, 0);
 	}
 }
 
