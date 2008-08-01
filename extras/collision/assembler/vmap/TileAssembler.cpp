@@ -71,6 +71,7 @@ namespace VMAP
         addWorldAreaMapId(0);                               //Azeroth
         addWorldAreaMapId(1);                               //Kalimdor
         addWorldAreaMapId(530);                             //Expansion01
+        addWorldAreaMapId(571);                             //Northrend
     }
     //=================================================================
 

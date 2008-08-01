@@ -425,6 +425,10 @@ bool fillArchiveNameVector(std::vector<std::string>& pArchiveNames) {
     pArchiveNames.push_back(path);
     sprintf(path, "%scommon.mpq", input_path);
     pArchiveNames.push_back(path);
+    sprintf(path, "%scommon-2.mpq", input_path);
+    pArchiveNames.push_back(path);
+    sprintf(path, "%slichking.mpq", input_path);
+    pArchiveNames.push_back(path);
     printf("\n");
 
     // open locale expansion and common files
@@ -435,6 +439,8 @@ bool fillArchiveNameVector(std::vector<std::string>& pArchiveNames) {
         sprintf(path, "%s%s\\expansion-locale-%s.mpq", input_path, i->c_str(), i->c_str());
         pArchiveNames.push_back(path);
         sprintf(path, "%s%s\\locale-%s.mpq", input_path, i->c_str(), i->c_str());
+        pArchiveNames.push_back(path);
+        sprintf(path, "%s%s\\lichking-locale-%s.mpq", input_path, i->c_str(), i->c_str());
         pArchiveNames.push_back(path);
         printf("\n");
     }
