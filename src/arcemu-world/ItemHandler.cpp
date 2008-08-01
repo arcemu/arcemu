@@ -1440,8 +1440,8 @@ void WorldSession::SendInventoryList(Creature* unit)
 				data << int32(-1);			// wtf is dis?
 				data << itr->amount;
 
-				if( curItem->extended_cost != NULL )
-					data << curItem->extended_cost->costid;
+				if( itr->extended_cost != NULL )
+					data << itr->extended_cost->costid;
 				else
 					data << uint32(0);
 

@@ -1172,16 +1172,17 @@ void ObjectMgr::LoadVendors()
 	QueryResult *result = WorldDatabase.Query("SELECT * FROM vendors");
 	if( result != NULL )
 	{
-		if( result->GetFieldCount() < 5 )
+		if( result->GetFieldCount() < 6 )
 		{
-			Log.Notice("ObjectMgr", "Invalid format in vendors (%u/5) columns, not enough data to proceed.\n", result->GetFieldCount() );
+			Log.Notice("ObjectMgr", "Invalid format in vendors (%u/6) columns, not enough data to proceed.\n", result->GetFieldCount() );
 			return;
 		}
-		else if( result->GetFieldCount() > 5 )
+		else if( result->GetFieldCount() > 6 )
 		{
-			Log.Notice("ObjectMgr", "Invalid format in vendors (%u/5) columns, loading anyway because we have enough data\n", result->GetFieldCount() );
+			Log.Notice("ObjectMgr", "Invalid format in vendors (%u/6) columns, loading anyway because we have enough data\n", result->GetFieldCount() );
 		}
 
+		ItemExtendedCostEntry * ec = NULL;
 		do
 		{
 			Field* fields = result->Fetch();
@@ -1198,11 +1199,20 @@ void ObjectMgr::LoadVendors()
 				items = itr->second;
 			}
 
-			itm.itemid           = fields[1].GetUInt32();
-			itm.amount           = fields[2].GetUInt32();
+			itm.itemid = fields[1].GetUInt32();
+			itm.amount = fields[2].GetUInt32();
 			itm.available_amount = fields[3].GetUInt32();
-			itm.max_amount       = fields[3].GetUInt32();
-			itm.incrtime         = fields[4].GetUInt32();
+			itm.max_amount = fields[3].GetUInt32();
+			itm.incrtime = fields[4].GetUInt32();
+			if ( fields[5].GetUInt32() > 0 )
+			{
+				ec = dbcItemExtendedCost.LookupEntryForced( fields[5].GetUInt32() );
+				if ( ec == NULL )
+					Log.Warning("LoadVendors", "Extendedcost for item %u references nonexistant EC %u", fields[1].GetUInt32(), fields[5].GetUInt32() );
+			}
+			else
+				ec = NULL;
+			itm.extended_cost = ec;
 			items->push_back( itm );
 		}
 		while( result->NextRow() );

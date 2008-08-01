@@ -463,39 +463,12 @@ void ObjectMgr::LoadExtraItemStuff()
 			break;
 		}
 
-		pItemPrototype->extended_cost = NULL;
         if(!itr->Inc())
 			break;
 	}
 
 	itr->Destruct();
 	foodItems.clear();
-
-	result = WorldDatabase.Query("SELECT * FROM items_extendedcost");
-	ItemExtendedCostEntry * ec;
-	if( result != NULL )
-	{
-		do 
-		{
-			ec = dbcItemExtendedCost.LookupEntryForced( result->Fetch()[1].GetUInt32() );
-			if( ec == NULL )
-			{
-				Log.Warning("LoadItems", "Extendedcost for item %u references nonexistant EC %u", result->Fetch()[0].GetUInt32(), result->Fetch()[1].GetUInt32() );
-				continue;
-			}
-
-			pItemPrototype = ItemPrototypeStorage.LookupEntry( result->Fetch()[0].GetUInt32() );
-			if( pItemPrototype == NULL )
-			{
-				Log.Warning("LoadItems", "Extendedcost for item %u references nonexistant item %u", result->Fetch()[0].GetUInt32(), result->Fetch()[1].GetUInt32() );
-				continue;
-			}
-
-			pItemPrototype->extended_cost = ec;
-
-		} while (result->NextRow());
-		delete result;
-	}
 }
 
 #define make_task(storage, itype, storagetype, tablename, format) tl.AddTask( new Task( \

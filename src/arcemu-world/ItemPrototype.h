@@ -572,8 +572,6 @@ struct ItemPrototype
 	uint32 FoodType;		//pet food type
 	GossipScript * gossip_script;
 	int32 ForcedPetId;
-
-	ItemExtendedCostEntry * extended_cost;
 };
 
 typedef struct {

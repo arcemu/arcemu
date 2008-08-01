@@ -2002,9 +2002,9 @@ void ItemInterface::BuyItem(ItemPrototype *item, uint32 total_amount, Creature *
 		else
 			m_pOwner->ModUnsigned32Value(PLAYER_FIELD_COINAGE, -(int32)itemprice);
 	}
-	if( item->extended_cost != NULL )
+	ItemExtendedCostEntry * ex = pVendor->GetItemExtendedCostByItemId( item->ItemId );
+	if( ex != NULL )
 	{
-		ItemExtendedCostEntry * ex = item->extended_cost;
 		for(int i = 0;i<5;i++)
 		{
 			if(ex->item[i])
@@ -2038,9 +2038,9 @@ enum CanAffordItem
 
 int8 ItemInterface::CanAffordItem(ItemPrototype * item,uint32 amount, Creature * pVendor)
 {
-	if( item->extended_cost != NULL )
+	ItemExtendedCostEntry * ex = pVendor->GetItemExtendedCostByItemId( item->ItemId );
+	if( ex != NULL )
 	{
-		ItemExtendedCostEntry * ex = item->extended_cost;
 		for(int i = 0;i<5;i++)
 		{
 			if(ex->item[i])

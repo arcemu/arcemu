@@ -1673,7 +1673,7 @@ void Pet::AddPetSpellToOwner(uint32 spellId)
 	
 	//find appropriate teaching spell...
 	uint32 TeachingSpellID = sWorld.GetTeachingSpell( spellId );
-    if( TeachingSpellID != NULL )
+	if( TeachingSpellID != 0 )
 	{
 		if( m_Owner->HasSpell( TeachingSpellID ) )
 			return;

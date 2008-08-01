@@ -36,6 +36,7 @@ struct CreatureItem
 	uint32 available_amount;
 	uint32 max_amount;
 	uint32 incrtime;
+	ItemExtendedCostEntry * extended_cost;
 };
 
 enum CreatureAISpellFlags
@@ -309,6 +310,16 @@ public:
 		ci.available_amount =0;
 		ci.incrtime=0;
 		ci.itemid = 0;
+	}
+
+	ItemExtendedCostEntry * GetItemExtendedCostByItemId( uint32 itemid )
+	{
+		for( std::vector<CreatureItem>::iterator itr = m_SellItems->begin(); itr != m_SellItems->end(); ++itr )
+		{
+			if ( itr->itemid == itemid )
+				return itr->extended_cost;
+		}
+		return NULL;
 	}
 
 	ARCEMU_INLINE std::vector<CreatureItem>::iterator GetSellItemBegin() { return m_SellItems->begin(); }
