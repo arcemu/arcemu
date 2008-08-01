@@ -2846,11 +2846,6 @@ uint8 Spell::CanCast(bool tolerate)
 					if(target->GetEntry() != 22357)
 						return SPELL_FAILED_BAD_TARGETS;
 				}
-				else if(GetProto()->ID == 28166)
-				{
-					 if(target->GetPowerType() != POWER_TYPE_RAGE || target->GetPowerType() != POWER_TYPE_ENERGY)
-                        return SPELL_FAILED_BAD_TARGETS;
-                 }
 			}
 			if(GetProto()->Id == 32146)
 			{
