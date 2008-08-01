@@ -140,8 +140,8 @@ AC_ARG_ENABLE(gcov,
 AC_ARG_ENABLE(debug,
      AC_HELP_STRING([--enable-debug],[enable debug]),
      [ if test "x$enable_debug" = "xyes" ; then
-           CFLAGS="$CFLAGS -g"
-           CXXFLAGS="$CXXFLAGS -g"
+           CFLAGS="$CFLAGS -g -D__DEBUG__"
+           CXXFLAGS="$CXXFLAGS -g -D__DEBUG__"
        fi
      ],
 )
