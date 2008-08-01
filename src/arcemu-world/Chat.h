@@ -136,21 +136,29 @@ public:
 
 class SERVER_DECL CommandTableStorage : public Singleton<CommandTableStorage>
 {
-	ChatCommand * _modifyCommandTable;
-	ChatCommand * _debugCommandTable;
-	ChatCommand * _waypointCommandTable;
-	ChatCommand * _GMTicketCommandTable;
-	ChatCommand * _GameObjectCommandTable;
-	ChatCommand * _BattlegroundCommandTable;
-	ChatCommand * _NPCCommandTable;
-	ChatCommand * _accountCommandTable;
-	ChatCommand * _CheatCommandTable;
-	ChatCommand * _honorCommandTable;
-	ChatCommand * _questCommandTable;
-	ChatCommand * _petCommandTable;
-	ChatCommand * _recallCommandTable;
-	ChatCommand * _commandTable;
-	ChatCommand * _GuildCommandTable;
+	ChatCommand* _modifyCommandTable;
+	ChatCommand* _debugCommandTable;
+	ChatCommand* _waypointCommandTable;
+	ChatCommand* _GMTicketCommandTable;
+	ChatCommand* _GuildCommandTable;
+	ChatCommand* _GameObjectCommandTable;
+	ChatCommand* _BattlegroundCommandTable;
+	ChatCommand* _NPCCommandTable;
+	ChatCommand* _CheatCommandTable;
+	ChatCommand* _accountCommandTable;
+	ChatCommand* _honorCommandTable;
+	ChatCommand* _petCommandTable;
+	ChatCommand* _recallCommandTable;
+	ChatCommand* _questCommandTable;
+	ChatCommand* _serverCommandTable;
+	ChatCommand* _gmCommandTable;
+	ChatCommand* _characterCommandTable;
+	ChatCommand* _lookupCommandTable;
+	ChatCommand* _adminCommandTable;
+	ChatCommand* _kickCommandTable;
+	ChatCommand* _banCommandTable;
+	ChatCommand* _unbanCommandTable;
+	ChatCommand* _commandTable;
 
 	ChatCommand * GetSubCommandTable(const char * name);
 public:
