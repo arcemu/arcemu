@@ -47,6 +47,7 @@ class ConsoleSocket : public Socket
 	string m_username;
 	string m_password;
 	uint32 m_requestNo;
+	uint8 m_failedLogins;
 
 public:
 	ConsoleSocket(SOCKET iFd);
@@ -166,6 +167,7 @@ ConsoleSocket::ConsoleSocket( SOCKET iFd ) : Socket(iFd, 10000, 1000)
 	m_pBuffer = new char[LOCAL_BUFFER_SIZE];
 	m_pConsole = new RemoteConsole(this);
 	m_state = STATE_USER;
+	m_failedLogins = 0;
 }
 
 ConsoleSocket::~ConsoleSocket( )
@@ -274,6 +276,10 @@ void ConsoleSocket::OnDisconnect()
 		ConsoleAuthMgr::getSingleton().SetRequest(m_requestNo, NULL);
 		m_requestNo=0;
 	}
+	if(m_state == STATE_LOGGED)
+	{
+		Log.Notice("RemoteConsole", "User `%s` disconnected.", m_username.c_str());
+	}
 }
 
 void ConsoleSocket::AuthCallback(bool result)
@@ -284,11 +290,21 @@ void ConsoleSocket::AuthCallback(bool result)
 	if( !result )
 	{
 		m_pConsole->Write("Authentication failed.\r\n\r\n");
-		Disconnect();
+		m_failedLogins++;
+		if(m_failedLogins < 3)
+		{
+			m_pConsole->Write("login: ");
+			m_state = STATE_USER;
+		}
+		else
+		{
+			Disconnect();
+		}
 	}
 	else
 	{
 		m_pConsole->Write("User `%s` authenticated.\r\n\r\n", m_username.c_str());
+		Log.Notice("RemoteConsole", "User `%s` authenticated.", m_username.c_str());
 		const char * argv[1];
 		HandleInfoCommand(m_pConsole,1, argv);
 		m_pConsole->Write("Type ? to see commands, quit to end session.\r\n");
