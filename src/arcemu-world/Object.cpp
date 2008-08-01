@@ -2749,10 +2749,9 @@ void Object::SpellNonMeleeDamageLog(Unit *pVictim, uint32 spellID, uint32 damage
 
 void Object::SendSpellLog(Object *Caster, Object *Target,uint32 Ability, uint8 SpellLogType)
 {
-	if ((!Caster || !Target
+	if ( ( ( !Caster || !Target	) && Ability )
 		//added by Zack until we figure out the fix. !!!! remove this as soon as possible
 		|| IsPet() 
-		) && Ability
 		)
 		return;
 
