@@ -3459,7 +3459,7 @@ else
 	if( dmg.full_damage && IsPlayer() && GetPowerType() == POWER_TYPE_RAGE && !ability)
 	{
 		float val;
-		uint32 level = pVictim->getLevel();
+		uint32 level = getLevel();
 		float conv;
 		if( level <= PLAYER_LEVEL_CAP )
 			conv = AttackToRageConversionTable[ level ];
