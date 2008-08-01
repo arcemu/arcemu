@@ -23,7 +23,7 @@
 
 /// externals for spell system
 extern pSpellEffect SpellEffectsHandler[TOTAL_SPELL_EFFECTS];
-extern pSpellTarget SpellTargetHandler[TOTAL_SPELL_TARGET];
+extern pSpellTarget SpellTargetHandler[EFF_TARGET_LIST_LENGTH_MARKER];
 
 enum SpellTargetSpecification
 {

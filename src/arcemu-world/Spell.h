@@ -775,9 +775,6 @@ enum SpellEffects
 	TOTAL_SPELL_EFFECTS,                    //    154
 };
 
-// spell target system
-#define TOTAL_SPELL_TARGET 81 // note: all spells with target type's > 80 are test spells
-
 // target type flags
 enum SpellTargetTypes
 {
@@ -1251,7 +1248,12 @@ typedef enum {
    EFF_TARGET_ENEMYS_IN_ARE_CHANNELED_WITH_EXCEPTIONS	= 76,
    EFF_TARGET_SELECTED_ENEMY_CHANNELED					= 77,
    EFF_TARGET_SELECTED_ENEMY_DEADLY_POISON				= 86,
+	//these are custom, feel free to move them further if tageting gets extended
+   EFF_TARGET_CUSTOM_PARTY_INJURED_SINGLE				= 99,
+   EFF_TARGET_CUSTOM_PARTY_INJURED_MULTI				= 100,
+   EFF_TARGET_LIST_LENGTH_MARKER						= 101,
 } SpellEffectTarget;
+
 
 inline bool HasTargetType(SpellEntry *sp,uint32 ttype)
 {
@@ -1620,6 +1622,9 @@ public:
     void SpellTargetInFrontOfCaster2(uint32 i, uint32 j);
     void SpellTargetTargetPartyMember(uint32 i, uint32 j);
     void SpellTargetSameGroupSameClass(uint32 i, uint32 j);
+	//these are custom
+    void SpellTargetSinglePartyInjured(uint32 i, uint32 j);
+    void SpellTargetMultiplePartyInjured(uint32 i, uint32 j);
 
     void Heal(int32 amount, bool ForceCrit = false);
 

@@ -21,7 +21,7 @@
 #include "StdAfx.h"
 
 /// Function pointer holder
-pSpellTarget SpellTargetHandler[TOTAL_SPELL_TARGET] = 
+pSpellTarget SpellTargetHandler[EFF_TARGET_LIST_LENGTH_MARKER] = 
 {
 	&Spell::SpellTargetDefault,				 // 0
 	&Spell::SpellTargetSelf,					// 1
@@ -104,6 +104,26 @@ pSpellTarget SpellTargetHandler[TOTAL_SPELL_TARGET] =
 	&Spell::SpellTargetNULL,					// 78
 	&Spell::SpellTargetNULL,					// 79
 	&Spell::SpellTargetNULL,					// 80
+	&Spell::SpellTargetNULL,					// 81
+	&Spell::SpellTargetNULL,					// 82
+	&Spell::SpellTargetNULL,					// 83
+	&Spell::SpellTargetNULL,					// 84
+	&Spell::SpellTargetNULL,					// 85
+	&Spell::SpellTargetNULL,					// 86
+	&Spell::SpellTargetNULL,					// 87
+	&Spell::SpellTargetNULL,					// 88
+	&Spell::SpellTargetNULL,					// 89
+	&Spell::SpellTargetNULL,					// 90
+	&Spell::SpellTargetNULL,					// 91
+	&Spell::SpellTargetNULL,					// 92
+	&Spell::SpellTargetNULL,					// 93
+	&Spell::SpellTargetNULL,					// 94
+	&Spell::SpellTargetNULL,					// 95
+	&Spell::SpellTargetNULL,					// 96
+	&Spell::SpellTargetNULL,					// 97
+	&Spell::SpellTargetNULL,					// 98
+	&Spell::SpellTargetNULL,					// 99
+	&Spell::SpellTargetNULL,					// 100
 	// all 81 > n spelltargettype's are from test spells
 };
 
@@ -213,7 +233,7 @@ void Spell::FillTargetMap(uint32 i)
 	// if all secondary targets are 0 then use only primary targets
 	if(!TypeB)
 	{
-		if(TypeA < TOTAL_SPELL_TARGET)
+		if(TypeA < EFF_TARGET_LIST_LENGTH_MARKER)
 			(this->*SpellTargetHandler[TypeA])(i, 0);		//0=A
 
 		return;
@@ -222,7 +242,7 @@ void Spell::FillTargetMap(uint32 i)
 	// if all primary targets are 0 then use only secondary targets
 	if(!TypeA)
 	{
-		if(TypeB < TOTAL_SPELL_TARGET)
+		if(TypeB < EFF_TARGET_LIST_LENGTH_MARKER)
 			(this->*SpellTargetHandler[TypeB])(i, 1);		//1=B
 
 		return;
@@ -230,14 +250,14 @@ void Spell::FillTargetMap(uint32 i)
 
 	// j = 0
 	cur = m_spellInfo->EffectImplicitTargetA[i];
-	if (cur < TOTAL_SPELL_TARGET)
+	if (cur < EFF_TARGET_LIST_LENGTH_MARKER)
 	{
 		(this->*SpellTargetHandler[cur])(i,0);	//0=A
 	}
 
 	// j = 1
 	cur = m_spellInfo->EffectImplicitTargetB[i];
-	if (cur < TOTAL_SPELL_TARGET)
+	if (cur < EFF_TARGET_LIST_LENGTH_MARKER)
 	{
 		(this->*SpellTargetHandler[cur])(i,1);	//1=B
 	}
@@ -843,9 +863,14 @@ void Spell::SpellTargetChainTargeting(uint32 i, uint32 j)
 			for(itr = pGroup->GetGroupMembersBegin();
 				itr != pGroup->GetGroupMembersEnd(); ++itr)
 			{
-				if(!(*itr)->m_loggedInPlayer || (*itr)->m_loggedInPlayer==u_caster)
+				if(!(*itr)->m_loggedInPlayer || (*itr)->m_loggedInPlayer==u_caster || !(*itr)->m_loggedInPlayer->isAlive() )
 					continue;
-				if(IsInrange(u_caster->GetPositionX(),u_caster->GetPositionY(),u_caster->GetPositionZ(),(*itr)->m_loggedInPlayer, range))
+
+				//we target stuff that has no full health. No idea if we must fill target list or not :(
+				if( (*itr)->m_loggedInPlayer->GetUInt32Value( UNIT_FIELD_HEALTH ) == (*itr)->m_loggedInPlayer->GetUInt32Value( UNIT_FIELD_MAXHEALTH ) )
+					continue;
+
+				if( IsInrange(u_caster,(*itr)->m_loggedInPlayer, range) )
 				{
 					SafeAddTarget(tmpMap,(*itr)->m_loggedInPlayer->GetGUID());
 					if(!--jumps)
@@ -866,7 +891,11 @@ void Spell::SpellTargetChainTargeting(uint32 i, uint32 j)
 			if( !(*itr)->IsUnit() || !((Unit*)(*itr))->isAlive())
 				continue;
 
-			if(IsInrange(firstTarget->GetPositionX(),firstTarget->GetPositionY(),firstTarget->GetPositionZ(),*itr, range))
+			//we target stuff that has no full health. No idea if we must fill target list or not :(
+			if( (*itr)->GetUInt32Value( UNIT_FIELD_HEALTH ) == (*itr)->GetUInt32Value( UNIT_FIELD_MAXHEALTH ) )
+				continue;
+
+			if(IsInrange(firstTarget,*itr, range))
 			{
 				if(!isAttackable(u_caster,(Unit*)(*itr)))
 				{
@@ -994,3 +1023,22 @@ void Spell::SpellTargetSameGroupSameClass(uint32 i, uint32 j)
 		Target->GetGroup()->Unlock();
 	}
 }
+
+//right now we only make sure that party is injured. Maybe later if requested pick the most injured one
+//this is made for prayer of mending
+void Spell::SpellTargetSinglePartyInjured(uint32 i, uint32 j)
+{
+	//! we are prepared that on proc we do not get any specified target but on first cast we do !
+	TargetsList *tmpMap=&m_targetUnits[i];
+	if(!m_caster->IsInWorld())
+		return;
+
+	Player * Target = m_caster->GetMapMgr()->GetPlayer((uint32)m_targets.m_unitTarget);
+	if( Target )
+}
+
+//this is made for : Chain Heal -> if target is non group then select any injured from insight else pick only form group
+void Spell::SpellTargetMultiplePartyInjured(uint32 i, uint32 j)
+{
+}
+
