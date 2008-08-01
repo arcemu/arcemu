@@ -1853,9 +1853,8 @@ void Spell::finish()
 	{
 		if(!m_triggeredSpell && (GetProto()->ChannelInterruptFlags || m_castTime>0))
 			u_caster->SetCurrentSpell(NULL);
-
-		SpellPool.PooledDelete( this );
 	}
+	SpellPool.PooledDelete( this );
 }
 
 void Spell::SendCastResult(uint8 result)
