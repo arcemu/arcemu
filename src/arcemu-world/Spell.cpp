@@ -1051,7 +1051,7 @@ uint8 Spell::prepare( SpellCastTargets * targets )
 	uint8 ccr;
 
 	// In case spell got cast from a script check fear/wander states
-	if (u_caster && u_caster->GetAIInterface())
+	if (!p_caster && u_caster && u_caster->GetAIInterface())
 	{
 		AIInterface *ai = u_caster->GetAIInterface();
 		if (ai->getAIState() == STATE_FEAR || ai->getAIState() == STATE_WANDER)
