@@ -4588,7 +4588,7 @@ void Spell::SpellEffectSummonTotem(uint32 i) // Summon Totem
 
 	uint32 displayID = 0;
 
-	if( p_caster->GetTeam() == 0 )
+	if( p_caster->GetTeamInitial() == 0 )
 	{
 		if ( ci->Female_DisplayID != 0 )
 		{

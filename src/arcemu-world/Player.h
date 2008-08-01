@@ -890,6 +890,7 @@ public:
     
     void EventPortToGM(Player *p);
 	ARCEMU_INLINE uint32 GetTeam() { return m_team; }
+	ARCEMU_INLINE uint32 GetTeamInitial() { return myRace->team_id==7 ? 0 : 1; }
 	ARCEMU_INLINE void SetTeam(uint32 t) { m_team = t; m_bgTeam=t; }
 	ARCEMU_INLINE void ResetTeam() { m_team = myRace->team_id==7 ? 0 : 1; m_bgTeam=m_team; }
 

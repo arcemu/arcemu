@@ -106,7 +106,7 @@ void Arena::OnAddPlayer(Player * plr)
 
 	/* Add the green/gold team flag */
 	Aura * aura = AuraPool.PooledNew();
-	aura->Init(dbcSpell.LookupEntry(plr->GetTeam() ? 35775-plr->m_bgTeam : 32725-plr->m_bgTeam), -1, plr, plr);
+	aura->Init(dbcSpell.LookupEntry((plr->GetTeamInitial()) ? 35775-plr->m_bgTeam : 32725-plr->m_bgTeam), -1, plr, plr);
 	plr->AddAura(aura);
 	
 	/* Set FFA PvP Flag */
@@ -143,7 +143,7 @@ void Arena::OnRemovePlayer(Player * plr)
 	m_playersCount[plr->GetTeam()]--;
 	UpdatePlayerCounts();
 	
-	plr->RemoveAura(plr->GetTeam() ? 35775-plr->m_bgTeam : 32725-plr->m_bgTeam);
+	plr->RemoveAura(plr->GetTeamInitial() ? 35775-plr->m_bgTeam : 32725-plr->m_bgTeam);
 	if(plr->HasFlag(PLAYER_FLAGS, PLAYER_FLAG_FREE_FOR_ALL_PVP))
 		plr->RemoveFlag(PLAYER_FLAGS, PLAYER_FLAG_FREE_FOR_ALL_PVP);
 	
