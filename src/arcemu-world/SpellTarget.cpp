@@ -1028,13 +1028,45 @@ void Spell::SpellTargetSameGroupSameClass(uint32 i, uint32 j)
 //this is made for prayer of mending
 void Spell::SpellTargetSinglePartyInjured(uint32 i, uint32 j)
 {
-	//! we are prepared that on proc we do not get any specified target but on first cast we do !
+	//! we are prepared that on proc we do not get any specified target, we add the possibility however !
 	TargetsList *tmpMap=&m_targetUnits[i];
 	if(!m_caster->IsInWorld())
 		return;
 
 	Player * Target = m_caster->GetMapMgr()->GetPlayer((uint32)m_targets.m_unitTarget);
 	if( Target )
+	{
+		SafeAddTarget(tmpMap,Target->GetGUID());
+	}
+	else
+	{
+		GroupMembersSet::iterator itr;
+		SubGroup * pGroup = p_caster->GetGroup() ?
+			p_caster->GetGroup()->GetSubGroup(p_caster->GetSubGroup()) : 0;
+
+		if(pGroup)
+		{
+			p_caster->GetGroup()->Lock();
+			float range=GetMaxRange(dbcSpellRange.LookupEntry(GetProto()->rangeIndex));
+			for(itr = pGroup->GetGroupMembersBegin();itr != pGroup->GetGroupMembersEnd(); ++itr)
+			{
+				if(!(*itr)->m_loggedInPlayer || (*itr)->m_loggedInPlayer==u_caster || !(*itr)->m_loggedInPlayer->isAlive() )
+					continue;
+
+				//we target stuff that has no full health. No idea if we must fill target list or not :(
+				if( (*itr)->m_loggedInPlayer->GetUInt32Value( UNIT_FIELD_HEALTH ) == (*itr)->m_loggedInPlayer->GetUInt32Value( UNIT_FIELD_MAXHEALTH ) )
+					continue;
+
+				if( IsInrange(u_caster,(*itr)->m_loggedInPlayer, range) )
+				{
+					SafeAddTarget(tmpMap,(*itr)->m_loggedInPlayer->GetGUID());
+					p_caster->GetGroup()->Unlock();
+					return;
+				}
+			}
+			p_caster->GetGroup()->Unlock();
+		}
+	}
 }
 
 //this is made for : Chain Heal -> if target is non group then select any injured from insight else pick only form group

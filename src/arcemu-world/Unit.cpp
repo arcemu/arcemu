@@ -1273,6 +1273,22 @@ void Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, uint
 									}
 								}
 							}break;
+						//priest - prayer of mending	
+						case 41635:
+							{
+								//victim got a hit in the face so we jump on next injured target
+								//find aura on self and get it's value
+								Aura *pa = this->FindAura( origId );
+								if( !pa )
+									return; //omg we have this proc on us and on second check we don't ?
+								SpellEntry *spellInfo = dbcSpell.LookupEntry( origId );
+								Spell *spell = SpellPool.PooledNew();
+								spell->Init(this, spellInfo ,true, NULL);
+								spell->forced_basepoints[1] = pa->GetModAmount( 0 ) - 1 ;
+								SpellCastTargets targets; //no target so spelltargeting will get an injured party member
+								spell->prepare( &targets );
+								continue;
+							}break;
 						//priest - Misery
 						case 33200:
 						case 33199:

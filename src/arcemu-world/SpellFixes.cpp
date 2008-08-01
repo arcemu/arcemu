@@ -16163,6 +16163,22 @@ void ApplyNormalFixes()
 	//////////////////////////////////////////
 
 	// Insert priest spell fixes here
+		// Prayer of mending. !very very overwriten
+		//how i see it : has a heal effect + has a proc effect. In proc we recast it to another target
+/*		sp = dbcSpell.LookupEntryForced( 33076 );
+		if( sp != NULL )
+		{
+			//we already got basepoints and all for this just effect is wrong
+			sp->Effect[0] = SPELL_EFFECT_HEAL;
+			//now the hackpart
+			sp->Effect[1] = SPELL_EFFECT_APPLY_AURA;
+			sp->EffectApplyAuraName[1] = SPELL_AURA_PROC_TRIGGER_SPELL;
+			sp->EffectBasePoints[1] = sp->procCharges - 1; //we loose 1 charge each time we cast so we need this value mobile
+			sp->EffectImplicitTargetA[1] = EFF_TARGET_CUSTOM_PARTY_INJURED_SINGLE; //we jump on an injured party member
+			sp->EffectTriggerSpell[1] = 41635; //!we proc self but our system does not allow proc loops !
+			sp->procCharges = 1;
+			sp->procFlags = PROC_ON_ANY_DAMAGE_VICTIM;
+		}*/
 
 		// Spirit Tap
 		sp = dbcSpell.LookupEntryForced( 15270 ); //rank 1

@@ -5895,7 +5895,7 @@ void Spell::SpellEffectTriggerSpellWithValue(uint32 i)
 	if( TriggeredSpell == NULL )
 		return;
 
-	Spell*sp=SpellPool.PooledNew();
+	Spell *sp=SpellPool.PooledNew();
 	sp->Init(m_caster,dbcSpell.LookupEntry(TriggeredSpell->Id),true,NULL);
 
 	for(uint32 x=0;x<3;x++)

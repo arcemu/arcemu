@@ -717,6 +717,8 @@ public:
 		return (m_modcount && ((( m_flags & MOD_0_RESISTED)+( m_flags & MOD_1_RESISTED)+( m_flags & MOD_2_RESISTED)) == m_modcount) );
 	}
 
+	int32 GetModAmount( uint32 i ) { if(i<3) return m_modList[i].m_amount; return 0; }
+
 private:
 	uint32 GetCasterFaction() { return m_casterfaction; }
 	void SetCasterFaction(uint32 faction){ m_casterfaction = faction; }
