@@ -16164,21 +16164,40 @@ void ApplyNormalFixes()
 
 	// Insert priest spell fixes here
 		// Prayer of mending. !very very overwriten
-		//how i see it : has a heal effect + has a proc effect. In proc we recast it to another target
-/*		sp = dbcSpell.LookupEntryForced( 33076 );
+		// how it is after rewriten : we simply proc on damage and prochandler will get new target + do healing
+		sp = dbcSpell.LookupEntryForced( 33076 );
 		if( sp != NULL )
 		{
-			//we already got basepoints and all for this just effect is wrong
-			sp->Effect[0] = SPELL_EFFECT_HEAL;
-			//now the hackpart
-			sp->Effect[1] = SPELL_EFFECT_APPLY_AURA;
-			sp->EffectApplyAuraName[1] = SPELL_AURA_PROC_TRIGGER_SPELL;
-			sp->EffectBasePoints[1] = sp->procCharges - 1; //we loose 1 charge each time we cast so we need this value mobile
-			sp->EffectImplicitTargetA[1] = EFF_TARGET_CUSTOM_PARTY_INJURED_SINGLE; //we jump on an injured party member
-			sp->EffectTriggerSpell[1] = 41635; //!we proc self but our system does not allow proc loops !
-			sp->procCharges = 1;
-			sp->procFlags = PROC_ON_ANY_DAMAGE_VICTIM;
-		}*/
+			//we use this heal spell when we jump to other player
+			SpellEntry *healsp = dbcSpell.LookupEntryForced( sp->EffectTriggerSpell[1] );
+			if( healsp )
+			{
+				healsp->Effect[0] = SPELL_EFFECT_HEAL;
+				healsp->Effect[1] = healsp->Effect[2] = SPELL_EFFECT_NULL;
+				healsp->EffectBasePoints[0] = sp->EffectBasePoints[0];
+				healsp->EffectBaseDice[0] = sp->EffectBaseDice[0];
+				healsp->EffectDicePerLevel[0] = sp->EffectDicePerLevel[0];
+				healsp->EffectDieSides[0] = sp->EffectDieSides[0];
+				healsp->EffectImplicitTargetA[0] = EFF_TARGET_PARTY_MEMBER;
+			}
+			//this spell is just to register the proc
+			SpellEntry *procsp = dbcSpell.LookupEntryForced( sp->EffectTriggerSpell[0] );
+			if( procsp )
+			{
+				procsp->Effect[0] = SPELL_EFFECT_APPLY_AURA;
+				healsp->Effect[1] = healsp->Effect[2] = SPELL_EFFECT_NULL;
+				procsp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
+				procsp->EffectBasePoints[0] = sp->procCharges - 1; //we loose 1 charge each time we cast so we need this value mobile
+				procsp->EffectImplicitTargetA[0] = EFF_TARGET_PARTY_MEMBER; //we jump on an injured party member
+				procsp->EffectTriggerSpell[0] = sp->EffectTriggerSpell[1]; //!we proc self but our system does not allow proc loops !
+				procsp->procCharges = 1;
+				procsp->procFlags = PROC_ON_ANY_DAMAGE_VICTIM | PROC_TARGET_SELF;
+			}
+			//simplify old system with a simple cast spell
+			sp->Effect[0] = SPELL_EFFECT_TRIGGER_SPELL;
+			sp->Effect[1] = SPELL_EFFECT_NULL;
+			sp->Effect[2] = SPELL_EFFECT_NULL;
+		}
 
 		// Spirit Tap
 		sp = dbcSpell.LookupEntryForced( 15270 ); //rank 1

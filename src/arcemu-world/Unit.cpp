@@ -1274,20 +1274,88 @@ void Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, uint
 								}
 							}break;
 						//priest - prayer of mending	
-						case 41635:
+						case 41637: //the heal spell
 							{
 								//victim got a hit in the face so we jump on next injured target
 								//find aura on self and get it's value
 								Aura *pa = this->FindAura( origId );
-								if( !pa )
-									return; //omg we have this proc on us and on second check we don't ?
-								SpellEntry *spellInfo = dbcSpell.LookupEntry( origId );
-								Spell *spell = SpellPool.PooledNew();
-								spell->Init(this, spellInfo ,true, NULL);
-								spell->forced_basepoints[1] = pa->GetModAmount( 0 ) - 1 ;
-								SpellCastTargets targets; //no target so spelltargeting will get an injured party member
-								spell->prepare( &targets );
-								continue;
+								if( !pa || !this->GetMapMgr() )
+									return; //omg we have this proc on us and on second check we don't ? Return instead of continue since this seems to be a corupted object
+
+								//check if we jumped proctimes
+								if( pa->GetModAmount( 0 ) == 1 )
+									break;
+
+								//we use same caster as firts caster to be able to get heal bonuses !
+								Unit *oricaster = this->GetMapMgr()->GetUnit( pa->GetCasterGUID() );
+								if( !oricaster || !oricaster->IsPlayer() )
+									break;
+
+								//the nasty part : get a new target ^^
+								Player *p_caster = (Player*)oricaster;
+								Player *First_new_target,*Next_new_target,*First_whatever;
+								First_new_target = Next_new_target = First_whatever = NULL;
+								bool passed_prev_target = false;
+								GroupMembersSet::iterator itr;
+								SubGroup * pGroup = p_caster->GetGroup() ?
+									p_caster->GetGroup()->GetSubGroup(p_caster->GetSubGroup()) : 0;
+
+								if(pGroup)
+								{
+									p_caster->GetGroup()->Lock();
+
+									float range=GetMaxRange(dbcSpellRange.LookupEntry(ospinfo->rangeIndex));
+									range*=range;
+
+									for(itr = pGroup->GetGroupMembersBegin();itr != pGroup->GetGroupMembersEnd(); ++itr)
+									{
+										if(!(*itr)->m_loggedInPlayer || !(*itr)->m_loggedInPlayer->isAlive() )
+											continue;
+
+										//we cannot retarget self
+										if( (*itr)->m_loggedInPlayer == this ) 
+										{
+											passed_prev_target = true;
+											continue;
+										}
+
+										if( IsInrange(p_caster,(*itr)->m_loggedInPlayer, range) )
+										{
+
+											if( !First_whatever )
+												First_whatever = (*itr)->m_loggedInPlayer;
+
+											//we target stuff that has no full health. No idea if we must fill target list or not :(
+											if( First_whatever && (*itr)->m_loggedInPlayer->GetUInt32Value( UNIT_FIELD_HEALTH ) == (*itr)->m_loggedInPlayer->GetUInt32Value( UNIT_FIELD_MAXHEALTH ) )
+												continue;
+
+											//first targatable player in group (like make circular buffer from normal list)
+											if( !First_new_target )
+												First_new_target = (*itr)->m_loggedInPlayer; 
+
+											if( passed_prev_target )
+											{
+												Next_new_target = (*itr)->m_loggedInPlayer;
+												break;
+											}
+										}
+									}
+									p_caster->GetGroup()->Unlock();
+								}
+								if( First_new_target && !Next_new_target )
+									Next_new_target = First_new_target; //we passed end of the list and it is time to restart it
+
+								if( !Next_new_target )
+									Next_new_target = First_whatever; //we passed end of the list and it is time to restart it
+
+								if( Next_new_target )
+								{
+									Spell *spell = SpellPool.PooledNew();
+									spell->Init( p_caster, ospinfo ,true, NULL);
+									spell->forced_basepoints[0] = pa->GetModAmount( 0 ) - 1 ;
+									SpellCastTargets targets( Next_new_target->GetGUID() ); //no target so spelltargeting will get an injured party member
+									spell->prepare( &targets );
+								}
 							}break;
 						//priest - Misery
 						case 33200:

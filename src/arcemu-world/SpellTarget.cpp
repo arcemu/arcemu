@@ -1025,10 +1025,9 @@ void Spell::SpellTargetSameGroupSameClass(uint32 i, uint32 j)
 }
 
 //right now we only make sure that party is injured. Maybe later if requested pick the most injured one
-//this is made for prayer of mending
 void Spell::SpellTargetSinglePartyInjured(uint32 i, uint32 j)
 {
-	//! we are prepared that on proc we do not get any specified target, we add the possibility however !
+/*	//! we are prepared that on proc we do not get any specified target, we add the possibility however !
 	TargetsList *tmpMap=&m_targetUnits[i];
 	if(!m_caster->IsInWorld())
 		return;
@@ -1066,10 +1065,10 @@ void Spell::SpellTargetSinglePartyInjured(uint32 i, uint32 j)
 			}
 			p_caster->GetGroup()->Unlock();
 		}
-	}
+	}*/
 }
 
-//this is made for : Chain Heal -> if target is non group then select any injured from insight else pick only form group
+//this is made for
 void Spell::SpellTargetMultiplePartyInjured(uint32 i, uint32 j)
 {
 }

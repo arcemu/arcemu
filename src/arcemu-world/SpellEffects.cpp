@@ -5900,7 +5900,11 @@ void Spell::SpellEffectTriggerSpellWithValue(uint32 i)
 
 	for(uint32 x=0;x<3;x++)
 	{
-		sp->forced_basepoints[x] = TriggeredSpell->EffectBasePoints[i];
+		if( i==x )
+			sp->forced_basepoints[x] = damage;	//prayer of mending should inherit heal bonus ?
+		else
+			sp->forced_basepoints[x] = TriggeredSpell->EffectBasePoints[i];
+
 	}
 
 	SpellCastTargets tgt(unitTarget->GetGUID());
