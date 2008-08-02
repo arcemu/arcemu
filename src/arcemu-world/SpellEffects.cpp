@@ -5195,6 +5195,7 @@ void Spell::SpellEffectSummonDeadPet(uint32 i)
 		pPet->setDeathState( ALIVE );
 		pPet->GetAIInterface()->HandleEvent( EVENT_FOLLOWOWNER, pPet, 0 );
 		sEventMgr.RemoveEvents( pPet, EVENT_PET_DELAYED_REMOVE );
+		pPet->SendSpellsToOwner();
  	}
 }
 
