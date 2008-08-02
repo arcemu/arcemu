@@ -262,6 +262,23 @@ void WorldSession::LogoutPlayer(bool Save)
 			}
 		}
 
+#ifndef GM_TICKET_MY_MASTER_COMPATIBLE
+		GM_Ticket * ticket = objmgr.GetGMTicketByPlayer(_player->GetGUID());
+		if(ticket != NULL)
+		{
+			//Send status change to gm_sync_channel
+			Channel *chn = channelmgr.GetChannel(sWorld.getGmClientChannel().c_str(), _player);
+			if(chn)
+			{
+				std::stringstream ss;
+				ss << "GmTicket:" << GM_TICKET_CHAT_OPCODE_ONLINESTATE;
+				ss << ":" << ticket->guid;
+				ss << ":0";
+				chn->Say(_player, ss.str().c_str(), NULL, true);
+			}
+		}
+#endif
+
 		// part channels
 		_player->CleanupChannels();
 

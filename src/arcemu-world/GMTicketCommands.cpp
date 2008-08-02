@@ -173,20 +173,23 @@ bool ChatHandler::HandleGMTicketListCommand(const char* args, WorldSession *m_se
 			continue;
 
 		Player* plr = objmgr.GetPlayer((uint32)(*itr)->playerGuid);
-
-		if( plr == NULL )
-			continue;
-
-		Player* aplr = ((*itr)->assignedToPlayer == 0 ? NULL : objmgr.GetPlayer((uint32)(*itr)->assignedToPlayer));
+		
+		Player* aplr = NULL;
+		PlayerInfo* aplri = NULL;
+		if((*itr)->assignedToPlayer != 0)
+		{
+			aplr = objmgr.GetPlayer((uint32)(*itr)->assignedToPlayer);
+			if(aplr == NULL)
+				aplri = objmgr.GetPlayerInfo((uint32)(*itr)->assignedToPlayer);
+		}
 
 		std::stringstream ss;
 		ss << "GmTicket:" << GM_TICKET_CHAT_OPCODE_LISTENTRY;
 		ss << ":" << (*itr)->guid;
-		ss << ":" << (*itr)->map;
-		ss << ":" << (*itr)->level;
-		ss << ":" << plr->IsInWorld();
-		ss << ":" << (aplr == NULL ? "" : aplr->GetName());
-		ss << ":" << (*itr)->name;
+		ss << ":" << (plr == NULL ? (*itr)->level : plr->getLevel());
+		ss << ":" << (plr == NULL ? 0 : plr->IsInWorld());
+		ss << ":" << (aplr == NULL ? (aplri == NULL ? "" : aplri->name) : aplr->GetName());
+		ss << ":" << (plr == NULL ? (*itr)->name : plr->GetName());
 		ss << ":" << (*itr)->comment;
 		chn->Say(cplr, ss.str().c_str(), cplr, true);
 	}
@@ -268,6 +271,12 @@ bool ChatHandler::HandleGMTicketRemoveByIdCommand(const char* args, WorldSession
 	if(ticket == NULL || ticket->deleted)
 	{
 		chn->Say(cplr, "GmTicket:0:Ticket not found.", cplr, true);
+		return true;
+	}
+
+	if(ticket->assignedToPlayer != 0 && ticket->assignedToPlayer != cplr->GetGUID() && !cplr->GetSession()->CanUseCommand('z'))
+	{
+		chn->Say(cplr, "GmTicket:0:Ticket is assigned to another GM.", cplr, true);
 		return true;
 	}
 
@@ -397,7 +406,7 @@ bool ChatHandler::HandleGMTicketReleaseCommand(const char* args, WorldSession *m
 	Player *plr = objmgr.GetPlayer((uint32)ticket->assignedToPlayer);
 	if(!cplr->GetSession()->CanUseCommand('z') && plr != NULL && plr->IsInWorld() && plr->GetSession()->CanUseCommand('z'))
 	{
-		chn->Say(cplr, "GmTicket:0:You can not release ticket from admins.", cplr, true);
+		chn->Say(cplr, "GmTicket:0:You can not release tickets from admins.", cplr, true);
 		return true;
 	}
 	
@@ -444,6 +453,12 @@ bool ChatHandler::HandleGMTicketCommentCommand(const char* args, WorldSession *m
 	if(ticket == NULL || ticket->deleted)
 	{
 		chn->Say(cplr, "GmTicket:0:Ticket not found.", cplr, true);
+		return true;
+	}
+
+	if(ticket->assignedToPlayer != 0 && ticket->assignedToPlayer != cplr->GetGUID() && !cplr->GetSession()->CanUseCommand('z'))
+	{
+		chn->Say(cplr, "GmTicket:0:Ticket is assigned to another GM.", cplr, true);
 		return true;
 	}
 

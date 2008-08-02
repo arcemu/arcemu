@@ -85,7 +85,6 @@ void WorldSession::HandleGMTicketCreateOpcode(WorldPacket & recv_data)
 #else
 		ss << "GmTicket:" << GM_TICKET_CHAT_OPCODE_NEWTICKET;
 		ss << ":" << ticket->guid;
-		ss << ":" << ticket->map;
 		ss << ":" << ticket->level;
 		ss << ":" << ticket->name;
 #endif
