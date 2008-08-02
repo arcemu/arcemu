@@ -28,8 +28,8 @@ CREATE TABLE `ai_agents` (
   `maxcount` int(11) unsigned NOT NULL default '0',
   `spell` int(11) unsigned NOT NULL default '0',
   `spelltype` int(11) unsigned NOT NULL default '0',
-  `targettype` int(11) unsigned NOT NULL default '0',
-  `cooldown` int(8) NOT NULL default '0',
+  `targettype_overwrite` int(11) NOT NULL default '-1',
+  `cooldown_overwrite` int(11) NOT NULL default '-1',
   `floatMisc1` float NOT NULL default '0',
   `Misc2` int(11) unsigned NOT NULL default '0',
   PRIMARY KEY  (`entry`,`spell`)
@@ -1841,7 +1841,7 @@ CREATE TABLE `quests` (
   `PointX` float NOT NULL default '0',
   `PointY` float NOT NULL default '0',
   `PointOpt` int(10) unsigned NOT NULL default '0',
-  `RequiredMoney` int(10) unsigned NOT NULL default '0',
+  `RewardMoneyAtMaxLevel` int(10) unsigned NOT NULL default '0',
   `ExploreTrigger1` int(10) unsigned NOT NULL default '0',
   `ExploreTrigger2` int(10) unsigned NOT NULL default '0',
   `ExploreTrigger3` int(10) unsigned NOT NULL default '0',
@@ -19320,6 +19320,7 @@ CREATE TABLE `vendors` (
   `amount` int(11) NOT NULL default '0',
   `max_amount` int(11) NOT NULL default '0',
   `inctime` bigint(20) NOT NULL default '0',
+  `extended_cost` INT NOT NULL DEFAULT '0',
   PRIMARY KEY  (`entry`,`item`)
 ) ENGINE=MyISAM /*!40100 DEFAULT CHARSET=latin1 COMMENT='NPC System'*/;
 

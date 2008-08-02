@@ -331,7 +331,7 @@ CREATE TABLE `gm_tickets` (
   `playerGuid` INTEGER(11) NOT NULL,
   `name` VARCHAR(200) NOT NULL DEFAULT '',
   `level` INTEGER(6) NOT NULL DEFAULT '0',
-  `map` INTEGER(2) NOT NULL DEFAULT '0',
+  `map` INTEGER(11) NOT NULL DEFAULT '0',
   `posX` FLOAT NOT NULL DEFAULT '0',
   `posY` FLOAT NOT NULL DEFAULT '0',
   `posZ` FLOAT NOT NULL DEFAULT '0',
@@ -661,6 +661,8 @@ CREATE TABLE `playerpets` (
   `summon` int(11) NOT NULL default '0',
   `loyaltypts` int(11) NOT NULL,
   `loyaltyupdate` int(11) NOT NULL,
+  `reset_time` int(10) unsigned NOT NULL DEFAULT 0,
+  `reset_cost` int(10) NOT NULL DEFAULT 0,
   PRIMARY KEY  (`ownerguid`,`petnumber`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
