@@ -2267,9 +2267,7 @@ void Spell::SpellEffectSummon(uint32 i) // Summon
 		u_caster->SetUInt64Value(UNIT_FIELD_SUMMON, pCreature->GetGUID());
 		pCreature->PushToWorld(u_caster->GetMapMgr());
 
-		printf("dur = %d\n", GetDuration());
-		/* not sure on this */
-		sEventMgr.AddEvent(pCreature, &Creature::SafeDelete, EVENT_CREATURE_REMOVE_CORPSE, /*GetDuration()*/45000, 1, 0);
+		sEventMgr.AddEvent(pCreature, &Creature::SafeDelete, EVENT_CREATURE_REMOVE_CORPSE, GetDuration(), 1, 0);
 	}
 }
 
