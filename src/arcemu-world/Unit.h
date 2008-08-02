@@ -1086,7 +1086,6 @@ public:
 	
 	Creature *critterPet;
 	Creature *summonPet;
-	Creature *m_tempSummon;
 
 	ARCEMU_INLINE uint32 GetCharmTempVal() { return m_charmtemp; }
 	ARCEMU_INLINE void SetCharmTempVal(uint32 val) { m_charmtemp = val; }
@@ -1181,7 +1180,9 @@ public:
 
 	void			EventModelChange();			//model size changes when model changes
 	inline float	GetModelHalfSize() { return ModelHalfSize*GetFloatValue(OBJECT_FIELD_SCALE_X);	}	//used to calculate combat reach and stuff
-	
+
+	void RemoveFieldSummon();
+
 protected:
 	Unit ();
 

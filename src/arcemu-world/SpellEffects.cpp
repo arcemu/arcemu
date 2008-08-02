@@ -2228,15 +2228,7 @@ void Spell::SpellEffectSummon(uint32 i) // Summon
 			}
 	}	
 
-	if(u_caster->m_tempSummon)
-	{
-		u_caster->m_tempSummon->RemoveFromWorld(false,true);
-		if(u_caster->m_tempSummon)
-			u_caster->m_tempSummon->SafeDelete();
-
-		u_caster->m_tempSummon = 0;
-		u_caster->SetUInt64Value(UNIT_FIELD_SUMMON, 0);
-	}
+	u_caster->RemoveFieldSummon();
 
 	/* This is for summon water elemenal, etc */
 	CreatureInfo * ci = CreatureNameStorage.LookupEntry(GetProto()->EffectMiscValue[i]);
@@ -2254,11 +2246,14 @@ void Spell::SpellEffectSummon(uint32 i) // Summon
 		summon->AddSpell(dbcSpell.LookupEntry(33395), true);
 		summon->SetUInt32Value(UNIT_FIELD_FACTIONTEMPLATE, u_caster->GetUInt32Value(UNIT_FIELD_FACTIONTEMPLATE));
 		summon->_setFaction();
-		u_caster->m_tempSummon = summon;
+
+		u_caster->SetUInt64Value(UNIT_FIELD_SUMMON, summon->GetGUID());
 	}
 	else
 	{
 		Creature * pCreature = u_caster->GetMapMgr()->CreateCreature(cp->Id);
+		ASSERT(pCreature != NULL);
+
 		pCreature->Load(cp, u_caster->GetPositionX(), u_caster->GetPositionY(), u_caster->GetPositionZ());
 		pCreature->_setFaction();
 		pCreature->GetAIInterface()->Init(pCreature,AITYPE_PET,MOVEMENTTYPE_NONE,u_caster);
@@ -2268,10 +2263,11 @@ void Spell::SpellEffectSummon(uint32 i) // Summon
 		pCreature->SetUInt32Value(UNIT_FIELD_LEVEL, u_caster->getLevel());
 		pCreature->SetUInt32Value(UNIT_FIELD_FACTIONTEMPLATE, u_caster->GetUInt32Value(UNIT_FIELD_FACTIONTEMPLATE));
 		pCreature->_setFaction();
+
 		u_caster->SetUInt64Value(UNIT_FIELD_SUMMON, pCreature->GetGUID());
-		u_caster->m_tempSummon = pCreature;
 		pCreature->PushToWorld(u_caster->GetMapMgr());
 
+		printf("dur = %d\n", GetDuration());
 		/* not sure on this */
 		sEventMgr.AddEvent(pCreature, &Creature::SafeDelete, EVENT_CREATURE_REMOVE_CORPSE, /*GetDuration()*/45000, 1, 0);
 	}

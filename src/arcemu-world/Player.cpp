@@ -3421,15 +3421,7 @@ void Player::RemoveFromWorld()
 		m_bg = NULL;
 	}
 
-	if(m_tempSummon)
-	{
-		m_tempSummon->RemoveFromWorld(false, true);
-		if(m_tempSummon)
-			m_tempSummon->SafeDelete();
-
-		m_tempSummon = 0;
-		SetUInt64Value(UNIT_FIELD_SUMMON, 0);
-	}
+	RemoveFieldSummon();
 
 	// Cancel trade if it's active.
 	Player * pTarget;
@@ -5164,14 +5156,9 @@ void Player::OnRemoveInRangeObject(Object* pObj)
 	if (pObj == NULL)
 		return;
 
-	if(m_tempSummon == pObj)
+	if (pObj->GetGUID() == GetUInt64Value(UNIT_FIELD_SUMMON))
 	{
-		m_tempSummon->RemoveFromWorld(false, true);
-		if(m_tempSummon)
-			m_tempSummon->SafeDelete();
-
-		m_tempSummon = 0;
-		SetUInt64Value(UNIT_FIELD_SUMMON, 0);
+		RemoveFieldSummon();
 	}
 
 	m_visibleObjects.erase(pObj);

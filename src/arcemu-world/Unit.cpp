@@ -323,7 +323,6 @@ Unit::Unit()
 	m_hasVampiricEmbrace = m_hasVampiricTouch = 0;
 	m_hitfrommeleespell	 = 0;
 	m_damageSplitTarget = NULL;
-	m_tempSummon = 0;
 	ModelHalfSize = 1.0f; //worst case unit size. (Should be overwritten)
 }
 
@@ -6721,10 +6720,18 @@ void Unit::EventModelChange()
 		ModelHalfSize = 1.0f; //baaad, but it happens :(
 }
 
-
-
-
-
-
-
+void Unit::RemoveFieldSummon()
+{
+	uint64 guid = GetUInt64Value(UNIT_FIELD_SUMMON);
+	if(guid && GetMapMgr())
+	{
+		Creature *summon = static_cast< Creature* >( GetMapMgr()->GetUnit(guid) );
+		if (summon)
+		{
+			summon->RemoveFromWorld(false,true);
+			summon->SafeDelete();
+		}
+		SetUInt64Value(UNIT_FIELD_SUMMON, 0);
+	}
+}
 
