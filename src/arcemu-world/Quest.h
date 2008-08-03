@@ -172,8 +172,8 @@ struct Quest
 	uint32 reward_item[4];
 	uint32 reward_itemcount[4];
 
-	uint32 reward_repfaction[2];
-	int32 reward_repvalue[2];
+	uint32 reward_repfaction[6];
+	int32 reward_repvalue[6];
 	uint32 reward_replimit;
 
 	int32 reward_money;

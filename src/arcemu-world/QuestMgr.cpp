@@ -897,11 +897,10 @@ void QuestMgr::AreaExplored(Player* plr, uint32 QuestID)
 	}
 }
 
-
 void QuestMgr::GiveQuestRewardReputation(Player* plr, Quest* qst, Object *qst_giver)
 {
 	// Reputation reward
-	for(int z = 0; z < 2; z++)
+	for(int z = 0; z < 6; z++)
 	{
 		uint32 fact = 19;   // default to 19 if no factiondbc
 		int32 amt  = float2int32( float( GenerateQuestXP( plr, qst) ) * 0.1f );   // guess
@@ -932,6 +931,7 @@ void QuestMgr::GiveQuestRewardReputation(Player* plr, Quest* qst, Object *qst_gi
 		plr->ModStanding(fact, amt);
 	}
 }
+
 void QuestMgr::OnQuestAccepted(Player* plr, Quest* qst, Object *qst_giver)
 {
 	
