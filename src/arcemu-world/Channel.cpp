@@ -876,7 +876,7 @@ Channel * ChannelMgr::GetCreateChannel(const char *name, Player * p, uint32 type
 	ChannelList::iterator itr;
 	ChannelList * cl = &Channels[0];
 	Channel * chn;
-	if( seperatechannels && p != NULL )
+	if(seperatechannels && p != NULL && stricmp(name, sWorld.getGmClientChannel().c_str()))
 		cl = &Channels[p->GetTeam()];
 
 	lock.Acquire();
@@ -912,7 +912,7 @@ Channel * ChannelMgr::GetChannel(const char *name, Player * p)
 {
 	ChannelList::iterator itr;
 	ChannelList * cl = &Channels[0];
-	if(seperatechannels)
+	if(seperatechannels && stricmp(name, sWorld.getGmClientChannel().c_str()))
 		cl = &Channels[p->GetTeam()];
 
 	lock.Acquire();
@@ -933,7 +933,7 @@ Channel * ChannelMgr::GetChannel(const char *name, uint32 team)
 {
 	ChannelList::iterator itr;
 	ChannelList * cl = &Channels[0];
-	if(seperatechannels)
+	if(seperatechannels && stricmp(name, sWorld.getGmClientChannel().c_str()))
 		cl = &Channels[team];
 
 	lock.Acquire();
