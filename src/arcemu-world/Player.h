@@ -1344,7 +1344,7 @@ public:
 	bool m_AllowAreaTriggerPort;
 	void EventAllowTiggerPort(bool enable);
 	float m_rangedattackspeedmod;
-	int32 m_meleeattackspeedmod;
+	float m_meleeattackspeedmod;
 	uint32 m_modblockabsorbvalue;
 	uint32 m_modblockvaluefromspells;
 	void SendInitialLogonPackets();

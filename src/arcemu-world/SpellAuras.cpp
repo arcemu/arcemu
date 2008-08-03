@@ -2810,12 +2810,12 @@ void Aura::SpellAuraModAttackSpeed(bool apply)
 		if(apply)
 		{
 
-			static_cast< Player* >( m_target )->m_meleeattackspeedmod += mod->m_amount;
+			static_cast< Player* >( m_target )->m_meleeattackspeedmod *= 1.0f + ( ( float )mod->m_amount / 100.0f );
 			static_cast< Player* >( m_target )->m_rangedattackspeedmod *= 1.0f + ( ( float )mod->m_amount / 100.0f );
 		}
 		else
 		{
-			static_cast< Player* >( m_target )->m_meleeattackspeedmod -= mod->m_amount;
+			static_cast< Player* >( m_target )->m_meleeattackspeedmod /= 1.0f + ( ( float )mod->m_amount / 100.0f );
 			static_cast< Player* >( m_target )->m_rangedattackspeedmod /= 1.0f + ( ( float )mod->m_amount / 100.0f );
 		}
 		static_cast< Player* >( m_target )->UpdateStats();
@@ -7068,19 +7068,15 @@ void Aura::SpellAuraModHaste( bool apply )
 	else
 		SetPositive();
 
-	// TODO: fix this hacky fix
-	if( abs( mod->m_amount ) > 100 )
-		return;
-
 	if( m_target->GetTypeId() == TYPEID_PLAYER )
 	{
 		if( apply )
 		{
-			static_cast< Player* >( m_target )->m_meleeattackspeedmod += mod->m_amount;
+			static_cast< Player* >( m_target )->m_meleeattackspeedmod *= 1.0f + ( ( float )mod->m_amount / 100.0f );
 		}
 		else
 		{
-			static_cast< Player* >( m_target )->m_meleeattackspeedmod -= mod->m_amount;
+			static_cast< Player* >( m_target )->m_meleeattackspeedmod /= 1.0f + ( ( float )mod->m_amount / 100.0f );
 		}
 		static_cast< Player* >(m_target)->UpdateAttackSpeed();
 	}
@@ -8123,11 +8119,11 @@ void Aura::SpellAuraMeleeHaste(bool apply)
 	{
 		if( apply )
 		{
-			static_cast< Player* >( m_target )->m_meleeattackspeedmod += mod->m_amount;
+			static_cast< Player* >( m_target )->m_meleeattackspeedmod *= 1.0f + ( ( float )mod->m_amount / 100.0f );
 		}
 		else
 		{
-			static_cast< Player* >( m_target )->m_meleeattackspeedmod -= mod->m_amount;
+			static_cast< Player* >( m_target )->m_meleeattackspeedmod /= 1.0f + ( ( float )mod->m_amount / 100.0f );
 		}
 		static_cast< Player* >(m_target)->UpdateAttackSpeed();
 	}

@@ -75,20 +75,20 @@ Player::Player( uint32 guid ) : m_mailBox(guid)
 	m_taxi_ride_time		= 0;
 
 	// Attack related variables
-	m_blockfromspellPCT	 = 0;
+	m_blockfromspellPCT		= 0;
 	m_blockfromspell		= 0;
-	m_critfromspell		 = 0;
+	m_critfromspell			= 0;
 	m_spellcritfromspell	= 0;
 	m_dodgefromspell		= 0;
 	m_parryfromspell		= 0;
-	m_hitfromspell		  = 0; 
-	m_meleeattackspeedmod   = 0;
-	m_rangedattackspeedmod  = 1;
+	m_hitfromspell			= 0;
+	m_meleeattackspeedmod	= 1;
+	m_rangedattackspeedmod	= 1;
 
-	m_healthfromspell	   = 0;
-	m_manafromspell		 = 0;
-	m_healthfromitems	   = 0;
-	m_manafromitems		 = 0;
+	m_healthfromspell		= 0;
+	m_manafromspell			= 0;
+	m_healthfromitems		= 0;
+	m_manafromitems			= 0;
 
 	m_talentresettimes	  = 0;
 
@@ -4668,39 +4668,40 @@ void Player::UpdateChanceFields()
 
 void Player::UpdateAttackSpeed()
 {
-	uint32 speed=2000;
+	uint32 speed = 2000;
 	Item *weap ;
-	if(GetShapeShift()==FORM_CAT)//cat form
+
+	if( GetShapeShift() == FORM_CAT )
 	{
 		speed = 1000;
-	}else if(GetShapeShift()==FORM_BEAR || GetShapeShift()==FORM_DIREBEAR)
+	}
+	else if( GetShapeShift() == FORM_BEAR || GetShapeShift() == FORM_DIREBEAR )
 	{
 		speed = 2500;
 	}
-	else //regular
-	if( !disarmed )
+	else if( !disarmed )//regular
 	{
 		weap = GetItemInterface()->GetInventoryItem( EQUIPMENT_SLOT_MAINHAND) ;
 		if( weap != NULL )
 			speed = weap->GetProto()->Delay;
 	}
-	SetUInt32Value( UNIT_FIELD_BASEATTACKTIME, 
-				    ( uint32 )( ( speed * (( 100.0f - ( float )m_meleeattackspeedmod ) / 100.0f ) ) * ( ( 100.0f - CalcRating( PLAYER_RATING_MODIFIER_MELEE_HASTE ) ) / 100.0f ) ) );
+	SetUInt32Value( UNIT_FIELD_BASEATTACKTIME,
+		( uint32 )( (float) speed / ( m_meleeattackspeedmod * ( 1.0f + CalcRating( PLAYER_RATING_MODIFIER_MELEE_HASTE ) / 100.0f ) ) ) );
 	
 	weap = GetItemInterface()->GetInventoryItem( EQUIPMENT_SLOT_OFFHAND );
-	if( weap != NULL && weap->GetProto()->Class == 2 )// 2 is a weapon
+	if( weap != NULL && weap->GetProto()->Class == ITEM_CLASS_WEAPON )
 	{
 		speed = weap->GetProto()->Delay;
-		SetUInt32Value( UNIT_FIELD_BASEATTACKTIME_01, 
-					    ( uint32 )( ( speed * ( ( 100.0f - ( float )m_meleeattackspeedmod ) / 100.0f ) ) * ( ( 100.0f - CalcRating( PLAYER_RATING_MODIFIER_MELEE_HASTE ) ) / 100.0f ) ) );
+		SetUInt32Value( UNIT_FIELD_BASEATTACKTIME_01,
+			( uint32 )( (float) speed / ( m_meleeattackspeedmod * ( 1.0f + CalcRating( PLAYER_RATING_MODIFIER_MELEE_HASTE ) / 100.0f ) ) ) );
 	}
-	  
+	
 	weap = GetItemInterface()->GetInventoryItem( EQUIPMENT_SLOT_RANGED );
 	if( weap != NULL )
 	{
 		speed = weap->GetProto()->Delay;
 		SetUInt32Value( UNIT_FIELD_RANGEDATTACKTIME,
-						( uint32 )( (float) speed / ( m_rangedattackspeedmod * ( 1.0f + CalcRating( PLAYER_RATING_MODIFIER_RANGED_HASTE ) / 100.0f ) ) ) ) ;
+			( uint32 )( (float) speed / ( m_rangedattackspeedmod * ( 1.0f + CalcRating( PLAYER_RATING_MODIFIER_RANGED_HASTE ) / 100.0f ) ) ) );
 	}
 }
 
