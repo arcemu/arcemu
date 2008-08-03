@@ -273,6 +273,262 @@ pSpellAura SpellAuraHandler[TOTAL_SPELL_AURAS]={
 		&Aura::SpellAuraNULL,//250
 		&Aura::SpellAuraNULL,//251
 };
+
+char* SpellAuraNames[TOTAL_SPELL_AURAS] = {
+    "NONE",												//   0 None
+    "BIND_SIGHT",										//   1 Bind Sight
+    "MOD_POSSESS",										//   2 Mod Possess
+    "PERIODIC_DAMAGE",									//   3 Periodic Damage
+    "DUMMY",											//   4 Script Aura
+    "MOD_CONFUSE",										//   5 Mod Confuse
+    "MOD_CHARM",										//   6 Mod Charm
+    "MOD_FEAR",											//   7 Mod Fear
+    "PERIODIC_HEAL",									//   8 Periodic Heal
+    "MOD_ATTACKSPEED",									//   9 Mod Attack Speed
+    "MOD_THREAT",										//  10 Mod Threat
+    "MOD_TAUNT",										//  11 Taunt
+    "MOD_STUN",											//  12 Stun
+    "MOD_DAMAGE_DONE",									//  13 Mod Damage Done
+    "MOD_DAMAGE_TAKEN",									//  14 Mod Damage Taken
+    "DAMAGE_SHIELD",									//  15 Damage Shield
+    "MOD_STEALTH",										//  16 Mod Stealth
+    "MOD_DETECT",										//  17 Mod Detect
+    "MOD_INVISIBILITY",									//  18 Mod Invisibility
+    "MOD_INVISIBILITY_DETECTION",						//  19 Mod Invisibility Detection
+    "MOD_TOTAL_HEALTH_REGEN_PCT",						//  20
+    "MOD_TOTAL_MANA_REGEN_PCT",							//  21
+    "MOD_RESISTANCE",									//  22 Mod Resistance
+    "PERIODIC_TRIGGER_SPELL",							//  23 Periodic Trigger
+    "PERIODIC_ENERGIZE",								//  24 Periodic Energize
+    "MOD_PACIFY",										//  25 Pacify
+    "MOD_ROOT",											//  26 Root
+    "MOD_SILENCE",										//  27 Silence
+    "REFLECT_SPELLS",									//  28 Reflect Spells %
+    "MOD_STAT",											//  29 Mod Stat
+    "MOD_SKILL",										//  30 Mod Skill
+    "MOD_INCREASE_SPEED",								//  31 Mod Speed
+    "MOD_INCREASE_MOUNTED_SPEED",						//  32 Mod Speed Mounted
+    "MOD_DECREASE_SPEED",								//  33 Mod Speed Slow
+    "MOD_INCREASE_HEALTH",								//  34 Mod Increase Health
+    "MOD_INCREASE_ENERGY",								//  35 Mod Increase Energy
+    "MOD_SHAPESHIFT",									//  36 Shapeshift
+    "EFFECT_IMMUNITY",									//  37 Immune Effect
+    "STATE_IMMUNITY",									//  38 Immune State
+    "SCHOOL_IMMUNITY",									//  39 Immune School    
+    "DAMAGE_IMMUNITY",									//  40 Immune Damage
+    "DISPEL_IMMUNITY",									//  41 Immune Dispel Type
+    "PROC_TRIGGER_SPELL",								//  42 Proc Trigger Spell
+    "PROC_TRIGGER_DAMAGE",								//  43 Proc Trigger Damage
+    "TRACK_CREATURES",									//  44 Track Creatures
+    "TRACK_RESOURCES",									//  45 Track Resources
+    "MOD_PARRY_SKILL",									//  46 Mod Parry Skill
+    "MOD_PARRY_PERCENT",								//  47 Mod Parry Percent
+    "MOD_DODGE_SKILL",									//  48 Mod Dodge Skill
+    "MOD_DODGE_PERCENT",								//  49 Mod Dodge Percent  
+    "MOD_BLOCK_SKILL",									//  50 Mod Block Skill
+    "MOD_BLOCK_PERCENT",								//  51 Mod Block Percent
+    "MOD_CRIT_PERCENT",									//  52 Mod Crit Percent
+    "PERIODIC_LEECH",									//  53 Periodic Leech
+    "MOD_HIT_CHANCE",									//  54 Mod Hit Chance
+    "MOD_SPELL_HIT_CHANCE",								//  55 Mod Spell Hit Chance
+    "TRANSFORM",										//  56 Transform
+    "MOD_SPELL_CRIT_CHANCE",							//  57 Mod Spell Crit Chance
+    "MOD_INCREASE_SWIM_SPEED",							//  58 Mod Speed Swim
+    "MOD_DAMAGE_DONE_CREATURE",							//  59 Mod Creature Dmg Done   
+    "MOD_PACIFY_SILENCE",								//  60 Pacify & Silence
+    "MOD_SCALE",										//  61 Mod Scale
+    "PERIODIC_HEALTH_FUNNEL",							//  62 Periodic Health Funnel
+    "PERIODIC_MANA_FUNNEL",								//  63 Periodic Mana Funnel
+    "PERIODIC_MANA_LEECH",								//  64 Periodic Mana Leech
+    "MOD_CASTING_SPEED",								//  65 Haste - Spells
+    "FEIGN_DEATH",										//  66 Feign Death
+    "MOD_DISARM",										//  67 Disarm
+    "MOD_STALKED",										//  68 Mod Stalked
+    "SCHOOL_ABSORB",									//  69 School Absorb    
+    "EXTRA_ATTACKS",									//  70 Extra Attacks
+    "MOD_SPELL_CRIT_CHANCE_SCHOOL",						//  71 Mod School Spell Crit Chance
+    "MOD_POWER_COST",									//  72 Mod Power Cost
+    "MOD_POWER_COST_SCHOOL",							//  73 Mod School Power Cost
+    "REFLECT_SPELLS_SCHOOL",							//  74 Reflect School Spells %
+    "MOD_LANGUAGE",										//  75 Mod Language
+    "FAR_SIGHT",										//  76 Far Sight
+    "MECHANIC_IMMUNITY",								//  77 Immune Mechanic
+    "MOUNTED",											//  78 Mounted
+    "MOD_DAMAGE_PERCENT_DONE",							//  79 Mod Dmg %   
+    "MOD_PERCENT_STAT",									//  80 Mod Stat %
+    "SPLIT_DAMAGE",										//  81 Split Damage
+    "WATER_BREATHING",									//  82 Water Breathing
+    "MOD_BASE_RESISTANCE",								//  83 Mod Base Resistance
+    "MOD_REGEN",										//  84 Mod Health Regen
+    "MOD_POWER_REGEN",									//  85 Mod Power Regen
+    "CHANNEL_DEATH_ITEM",								//  86 Create Death Item
+    "MOD_DAMAGE_PERCENT_TAKEN",							//  87 Mod Dmg % Taken
+    "MOD_PERCENT_REGEN",								//  88 Mod Health Regen Percent
+    "PERIODIC_DAMAGE_PERCENT",							//  89 Periodic Damage Percent   
+    "MOD_RESIST_CHANCE",								//  90 Mod Resist Chance
+    "MOD_DETECT_RANGE",									//  91 Mod Detect Range
+    "PREVENTS_FLEEING",									//  92 Prevent Fleeing
+    "MOD_UNATTACKABLE",									//  93 Mod Uninteractible
+    "INTERRUPT_REGEN",									//  94 Interrupt Regen
+    "GHOST",											//  95 Ghost
+    "SPELL_MAGNET",										//  96 Spell Magnet
+    "MANA_SHIELD",										//  97 Mana Shield
+    "MOD_SKILL_TALENT",									//  98 Mod Skill Talent
+    "MOD_ATTACK_POWER",									//  99 Mod Attack Power
+    "AURAS_VISIBLE",									// 100 Auras Visible
+    "MOD_RESISTANCE_PCT",								// 101 Mod Resistance %
+    "MOD_CREATURE_ATTACK_POWER",						// 102 Mod Creature Attack Power
+    "MOD_TOTAL_THREAT",									// 103 Mod Total Threat (Fade)
+    "WATER_WALK",										// 104 Water Walk
+    "FEATHER_FALL",										// 105 Feather Fall
+    "HOVER",											// 106 Hover
+    "ADD_FLAT_MODIFIER",								// 107 Add Flat Modifier
+    "ADD_PCT_MODIFIER",									// 108 Add % Modifier
+    "ADD_TARGET_TRIGGER",								// 109 Add Class Target Trigger    
+    "MOD_POWER_REGEN_PERCENT",							// 110 Mod Power Regen %
+    "ADD_CASTER_HIT_TRIGGER",							// 111 Add Class Caster Hit Trigger
+    "OVERRIDE_CLASS_SCRIPTS",							// 112 Override Class Scripts
+    "MOD_RANGED_DAMAGE_TAKEN",							// 113 Mod Ranged Dmg Taken
+    "MOD_RANGED_DAMAGE_TAKEN_PCT",						// 114 Mod Ranged % Dmg Taken
+    "MOD_HEALING",										// 115 Mod Healing
+    "IGNORE_REGEN_INTERRUPT",							// 116 Regen During Combat
+    "MOD_MECHANIC_RESISTANCE",							// 117 Mod Mechanic Resistance
+    "MOD_HEALING_PCT",									// 118 Mod Healing %
+    "SHARE_PET_TRACKING",								// 119 Share Pet Tracking    
+    "UNTRACKABLE",										// 120 Untrackable
+    "EMPATHY",											// 121 Empathy (Lore, whatever)
+    "MOD_OFFHAND_DAMAGE_PCT",							// 122 Mod Offhand Dmg %
+    "MOD_POWER_COST_PCT",								// 123 Mod Power Cost % --> armor penetration & spell penetration
+    "MOD_RANGED_ATTACK_POWER",							// 124 Mod Ranged Attack Power
+    "MOD_MELEE_DAMAGE_TAKEN",							// 125 Mod Melee Dmg Taken
+    "MOD_MELEE_DAMAGE_TAKEN_PCT",						// 126 Mod Melee % Dmg Taken
+    "RANGED_ATTACK_POWER_ATTACKER_BONUS",				// 127 Rngd Atk Pwr Attckr Bonus
+    "MOD_POSSESS_PET",									// 128 Mod Possess Pet
+    "MOD_INCREASE_SPEED_ALWAYS",						// 129 Mod Speed Always   
+    "MOD_MOUNTED_SPEED_ALWAYS",							// 130 Mod Mounted Speed Always
+    "MOD_CREATURE_RANGED_ATTACK_POWER",					// 131 Mod Creature Ranged Attack Power
+    "MOD_INCREASE_ENERGY_PERCENT",						// 132 Mod Increase Energy %
+    "MOD_INCREASE_HEALTH_PERCENT",						// 133 Mod Max Health %
+    "MOD_MANA_REGEN_INTERRUPT",							// 134 Mod Interrupted Mana Regen
+    "MOD_HEALING_DONE",									// 135 Mod Healing Done
+    "MOD_HEALING_DONE_PERCENT",							// 136 Mod Healing Done %
+    "MOD_TOTAL_STAT_PERCENTAGE",						// 137 Mod Total Stat %
+    "MOD_HASTE",										// 138 Haste - Melee
+    "FORCE_REACTION",									// 139 Force Reaction    
+    "MOD_RANGED_HASTE",									// 140 Haste - Ranged
+    "MOD_RANGED_AMMO_HASTE",							// 141 Haste - Ranged (Ammo Only)
+    "MOD_BASE_RESISTANCE_PCT",							// 142 Mod Base Resistance %
+    "MOD_RESISTANCE_EXCLUSIVE",							// 143 Mod Resistance Exclusive
+    "SAFE_FALL",										// 144 Safe Fall
+    "CHARISMA",											// 145 Charisma
+    "PERSUADED",										// 146 Persuaded
+    "ADD_CREATURE_IMMUNITY",							// 147 Add Creature Immunity
+    "RETAIN_COMBO_POINTS",								// 148 Retain Combo Points
+    "RESIST_PUSHBACK",									// 149 Resist Pushback
+    "MOD_SHIELD_BLOCK_PCT",								// 150 Mod Shield Block %
+    "TRACK_STEALTHED",									// 151 Track Stealthed
+    "MOD_DETECTED_RANGE",								// 152 Mod Detected Range
+    "SPLIT_DAMAGE_FLAT",								// 153 Split Damage Flat
+    "MOD_STEALTH_LEVEL",								// 154 Stealth Level Modifier
+    "MOD_WATER_BREATHING",								// 155 Mod Water Breathing
+    "MOD_REPUTATION_ADJUST",							// 156 Mod Reputation Gain
+    "PET_DAMAGE_MULTI",									// 157 Mod Pet Damage
+    "MOD_SHIELD_BLOCK",									// 158 Mod Shield Block
+    "NO_PVP_CREDIT",									// 159 No PVP Credit 
+    "MOD_SIDE_REAR_PDAE_DAMAGE_TAKEN",					// 160 Mod Side/Rear PBAE Damage Taken 
+    "MOD_HEALTH_REGEN_IN_COMBAT",						// 161 Mod Health Regen In Combat
+    "POWER_BURN",										// 162 Power Burn 
+    "MOD_CRIT_DAMAGE_BONUS_MELEE",						// 163 Mod Critical Damage Bonus (Physical)
+	"",													// 164
+    "MELEE_ATTACK_POWER_ATTACKER_BONUS",				// 165 Melee AP Attacker Bonus
+    "MOD_ATTACK_POWER_PCT",								// 166 Mod Attack Power
+    "MOD_RANGED_ATTACK_POWER_PCT",						// 167 Mod Ranged Attack Power %
+    "INCREASE_DAMAGE",									// 168 Increase Damage Type
+    "INCREASE_CRITICAL",								// 169 Increase Critical Type
+    "DETECT_AMORE",										// 170 Detect Amore
+	"",													// 171
+    "INCREASE_MOVEMENT_AND_MOUNTED_SPEED",				// 172 Increase Movement and Mounted Speed (Non-Stacking)
+    "INCREASE_SPELL_DAMAGE_PCT",						// 174 Increase Spell Damage by % status
+    "INCREASE_SPELL_HEALING_PCT",						// 175 Increase Spell Healing by % status
+    "SPIRIT_OF_REDEMPTION",								// 176 Spirit of Redemption Auras
+    "AREA_CHARM",										// 177 Area Charm 
+	"",													// 178
+    "INCREASE_ATTACKER_SPELL_CRIT",						// 179 Increase Attacker Spell Crit Type
+    "INCREASE_SPELL_DAMAGE_VS_TYPE",					// 180 Increase Spell Damage Type
+	"",													// 181
+    "INCREASE_ARMOR_BASED_ON_INTELLECT_PCT",			// 182 Increase Armor based on Intellect
+    "DECREASE_CRIT_THREAT",								// 183 Decrease Critical Threat by
+    "DECREASE_ATTACKER_CHANCE_TO_HIT_MELEE",			// 184 Reduces Attacker Chance to Hit with Melee
+    "DECREASE_ATTACKER_CHANGE_TO_HIT_RANGED",			// 185 Reduces Attacker Chance to Hit with Ranged 
+    "DECREASE_ATTACKER_CHANGE_TO_HIT_SPELLS",			// 186 Reduces Attacker Chance to Hit with Spells
+    "DECREASE_ATTACKER_CHANGE_TO_CRIT_MELEE",			// 187 Reduces Attacker Chance to Crit with Melee (Ranged?)
+    "DECREASE_ATTACKER_CHANGE_TO_CRIT_RANGED",			// 188 Reduces Attacker Chance to Crit with Ranged (Melee?)
+	"",													// 189
+    "INCREASE_REPUTATION",								// 190 Increases reputation from killed creatures
+    "SPEED_LIMIT",										// 191 speed limit
+    "MELEE_SLOW_PCT",									// 192
+    "INCREASE_TIME_BETWEEN_ATTACKS",					// 193
+    "INREASE_SPELL_DAMAGE_PCT_OF_INTELLECT",			// 194 NOT USED ANYMORE - 174 used instead
+    "INCREASE_HEALING_PCT_OF_INTELLECT",				// 195 NOT USED ANYMORE - 175 used instead
+    "MOD_ALL_WEAPON_SKILLS",							// 196
+    "REDUCE_ATTACKER_CRICTICAL_HIT_CHANCE_PCT",			// 197
+	"",													// 198
+    "INCREASE_SPELL_HIT_PCT",							// 199
+	"",													// 200
+    "CANNOT_BE_DODGED",									// 201
+	"FINISHING_MOVES_CANNOT_BE_DODGED",					// 202
+    "REDUCE_ATTACKER_CRICTICAL_HIT_DAMAGE_MELEE_PCT",	// 203
+    "REDUCE_ATTACKER_CRICTICAL_HIT_DAMAGE_RANGED_PCT",	// 204
+	"",													// 205
+	"",													// 206
+	"",													// 207
+	"",													// 208
+	"",													// 209
+	"",													// 210
+	"",													// 211
+    "INCREASE_RANGED_ATTACK_POWER_PCT_OF_INTELLECT",	// 212
+    "INCREASE_RAGE_FROM_DAMAGE_DEALT_PCT",				// 213
+	"",													// 214
+	"",													// 215
+    "INCREASE_CASTING_TIME_PCT",						// 216
+	"",													// 217
+	"",													// 218
+    "REGEN_MANA_STAT_PCT",								// 219
+    "HEALING_STAT_PCT",									// 220
+	"",													// 221
+	"",													// 222
+	"",													// 223
+	"",													// 224
+	"",													// 225
+	"",													// 226
+	"",													// 227
+	"",													// 228
+	"",													// 229
+    "INCREASE_MAX_HEALTH",								// 230 Used by Commanding Shout
+	"",													// 231
+	"",													// 232
+	"",													// 233
+	"",													// 234
+	"",													// 235
+	"",													// 236
+	"",													// 237
+	"",													// 238
+	"",													// 239
+	"MODIFY_AXE_SKILL",									// 240
+	"241",												// 241
+    "MOD_SPELL_DAMAGE_FROM_HEALING",					// 242
+    "243",												// 243
+    "244",												// 244
+    "MOD_DURATION_OF_MAGIC_EFFECTS",					// 245
+    "246",												// 246
+    "247",												// 247
+    "MOD_COMBAT_RESULT_CHANCE",							// 248
+    "249",												// 249
+    "MOD_INCREASE_HEALTH_2",							// 250
+    "MOD_ENEMY_DODGE",									// 251
+};
+
+
 /*
 ARCEMU_INLINE void ApplyFloatSM(float ** m,float v,uint32 mask, float def)
 {
@@ -610,12 +866,11 @@ void Aura::ApplyModifiers( bool apply )
 	for( uint32 x = 0; x < m_modcount; x++ )
 	{
 		mod = &m_modList[x];
-		sLog.outDebug( "WORLD: target = %u , Spell Aura id = %u, SpellId  = %u, i = %u, apply = %s, duration = %u, damage = %d",
-			m_target->GetLowGUID(),mod->m_type, m_spellProto->Id, mod->i, apply ? "true" : "false",GetDuration(),mod->m_amount);
 
 		if(mod->m_type<TOTAL_SPELL_AURAS)
 		{
-			sLog.outDebug("Known Aura id %d, value %d", (uint32)mod->m_type, (uint32)mod->m_amount );
+			sLog.outDebug( "WORLD: target = %u , Spell Aura id = %u (%s), SpellId  = %u, i = %u, apply = %s, duration = %u, damage = %d",
+				m_target->GetLowGUID(),mod->m_type, SpellAuraNames[mod->m_type], m_spellProto->Id, mod->i, apply ? "true" : "false",GetDuration(),mod->m_amount);
 			(*this.*SpellAuraHandler[mod->m_type])(apply);
 		}
 		else

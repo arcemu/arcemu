@@ -25,6 +25,8 @@
 extern pSpellEffect SpellEffectsHandler[TOTAL_SPELL_EFFECTS];
 extern pSpellTarget SpellTargetHandler[EFF_TARGET_LIST_LENGTH_MARKER];
 
+extern char* SpellEffectNames[TOTAL_SPELL_EFFECTS];
+
 enum SpellTargetSpecification
 {
     TARGET_SPECT_NONE       = 0,
@@ -2533,6 +2535,8 @@ bool Spell::TakePower()
 
 void Spell::HandleEffects(uint64 guid, uint32 i)
 {
+	uint32 id;
+
 	if(guid == m_caster->GetGUID() || guid == 0)
 	{
 		unitTarget = u_caster;
@@ -2592,17 +2596,18 @@ void Spell::HandleEffects(uint64 guid, uint32 i)
 
 	damage = CalculateEffect(i,unitTarget);
 
-	sLog.outDebug( "WORLD: Spell effect id = %u, damage = %d", GetProto()->Effect[i], damage);
-
-	if( GetProto()->Effect[i]<TOTAL_SPELL_EFFECTS)
+	id = GetProto()->Effect[i];
+	if( id<TOTAL_SPELL_EFFECTS)
 	{
+		sLog.outDebug( "WORLD: Spell effect id = %u (%s), damage = %d", id, SpellEffectNames[id], damage);
+
 		/*if(unitTarget && p_caster && isAttackable(p_caster,unitTarget))
 			sEventMgr.ModifyEventTimeLeft(p_caster,EVENT_ATTACK_TIMEOUT,PLAYER_ATTACK_TIMEOUT_INTERVAL);*/
 
-		(*this.*SpellEffectsHandler[GetProto()->Effect[i]])(i);
+		(*this.*SpellEffectsHandler[id])(i);
 	}
 	else
-		sLog.outError("SPELL: unknown effect %u spellid %u",GetProto()->Effect[i], GetProto()->Id);
+		sLog.outError("SPELL: unknown effect %u spellid %u", id, GetProto()->Id);
 }
 
 void Spell::HandleAddAura(uint64 guid)
