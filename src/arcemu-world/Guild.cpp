@@ -85,7 +85,7 @@ Guild::~Guild()
 
 void Guild::SendGuildCommandResult(WorldSession * pClient, uint32 iCmd, const char * szMsg, uint32 iType)
 {
-	WorldPacket data(SMSG_GUILD_COMMAND_RESULT, 100);
+	WorldPacket data(SMSG_GUILD_COMMAND_RESULT, (9+strlen(szMsg)));
 	data << iCmd << szMsg << iType;
 	pClient->SendPacket(&data);
 }
@@ -968,8 +968,16 @@ void Guild::ChangeGuildMaster(PlayerInfo * pNewMaster, WorldSession * pClient)
 	GuildMemberMap::iterator itr = m_members.find(pNewMaster);
 	GuildMemberMap::iterator itr2 = m_members.find(pClient->GetPlayer()->m_playerInfo);
 	ASSERT(m_ranks[0]!=NULL);
-	if(itr==m_members.end() || itr2==m_members.end())
+	if(itr==m_members.end())
 	{
+		Guild::SendGuildCommandResult(pClient, GUILD_PROMOTE_S, pNewMaster->name, GUILD_PLAYER_NOT_IN_GUILD_S);
+		m_lock.Release();
+		return;
+	}
+	if(itr2==m_members.end())
+	{
+		// wtf??
+		Guild::SendGuildCommandResult(pClient, GUILD_PROMOTE_S, "", GUILD_INTERNAL);
 		m_lock.Release();
 		return;
 	}
@@ -983,6 +991,10 @@ void Guild::ChangeGuildMaster(PlayerInfo * pNewMaster, WorldSession * pClient)
 	CharacterDatabase.Execute("UPDATE guilds SET leaderGuid = %u WHERE guildId = %u", itr->first->guid, m_guildId);
 	m_guildLeader = itr->first->guid;
 	m_lock.Release();
+	
+
+	LogGuildEvent(GUILD_EVENT_LEADER_CHANGED, 2, pClient->GetPlayer()->GetName(), pNewMaster->name);
+	//TODO: Figure out the GUILD_LOG_EVENT_LEADER_CHANGED code
 }
 
 uint32 Guild::GenerateGuildLogEventId()

@@ -276,13 +276,16 @@ void WorldSession::HandleGuildLeader(WorldPacket & recv_data)
 
 	if(!_player->m_playerInfo->guild)
 	{
-		Guild::SendGuildCommandResult(this, GUILD_CREATE_S,"",GUILD_PLAYER_NOT_IN_GUILD);
+		Guild::SendGuildCommandResult(this, GUILD_CREATE_S, "", GUILD_PLAYER_NOT_IN_GUILD);
 		return;
 	}
 
 	PlayerInfo * dstplr = objmgr.GetPlayerInfoByName(name.c_str());
 	if(dstplr==NULL)
+	{
+		Guild::SendGuildCommandResult(this, GUILD_CREATE_S, name.c_str(), GUILD_PLAYER_NOT_FOUND);
 		return;
+	}
 
 	_player->m_playerInfo->guild->ChangeGuildMaster(dstplr, this);
 }
