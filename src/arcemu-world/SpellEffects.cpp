@@ -1595,6 +1595,16 @@ void Spell::SpellEffectApplyAura(uint32 i)  // Apply Aura
 		 pAura=itr->second;
 	} 
 	pAura->AddMod(GetProto()->EffectApplyAuraName[i],damage,GetProto()->EffectMiscValue[i],i);
+
+	switch(GetProto()->Id)
+	{
+	case 38177: // Blackwhelp Net
+		{
+			p_caster->CastSpell(unitTarget, 38178, true);
+			((Creature*)unitTarget)->Despawn(1000, 360000);
+		} break;
+	}
+
 }
 
 void Spell::SpellEffectPowerDrain(uint32 i)  // Power Drain
