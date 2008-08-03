@@ -83,7 +83,7 @@ Player::Player( uint32 guid ) : m_mailBox(guid)
 	m_parryfromspell		= 0;
 	m_hitfromspell		  = 0; 
 	m_meleeattackspeedmod   = 0;
-	m_rangedattackspeedmod  = 0;
+	m_rangedattackspeedmod  = 1;
 
 	m_healthfromspell	   = 0;
 	m_manafromspell		 = 0;
@@ -4700,7 +4700,7 @@ void Player::UpdateAttackSpeed()
 	{
 		speed = weap->GetProto()->Delay;
 		SetUInt32Value( UNIT_FIELD_RANGEDATTACKTIME,
-					    ( uint32 )( ( speed * ( ( 100.0f - (float)m_rangedattackspeedmod ) / 100.0f ) ) * ( ( 100.0f - CalcRating(PLAYER_RATING_MODIFIER_RANGED_HASTE)) / 100.0f ) ) );
+						( uint32 )( (float) speed / ( m_rangedattackspeedmod * ( 1.0f + CalcRating( PLAYER_RATING_MODIFIER_RANGED_HASTE ) / 100.0f ) ) ) ) ;
 	}
 }
 

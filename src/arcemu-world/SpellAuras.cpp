@@ -2556,12 +2556,12 @@ void Aura::SpellAuraModAttackSpeed(bool apply)
 		{
 
 			static_cast< Player* >( m_target )->m_meleeattackspeedmod += mod->m_amount;
-			static_cast< Player* >( m_target )->m_rangedattackspeedmod += mod->m_amount;
+			static_cast< Player* >( m_target )->m_rangedattackspeedmod *= 1.0f + ( ( float )mod->m_amount / 100.0f );
 		}
 		else
 		{
 			static_cast< Player* >( m_target )->m_meleeattackspeedmod -= mod->m_amount;
-			static_cast< Player* >( m_target )->m_rangedattackspeedmod -= mod->m_amount;
+			static_cast< Player* >( m_target )->m_rangedattackspeedmod /= 1.0f + ( ( float )mod->m_amount / 100.0f );
 		}
 		static_cast< Player* >( m_target )->UpdateStats();
 	}
@@ -6899,9 +6899,9 @@ void Aura::SpellAuraModRangedHaste(bool apply)
 //		}
 
 		if( apply )
-			static_cast< Player* >( m_target )->m_rangedattackspeedmod += amount;
+			static_cast< Player* >( m_target )->m_rangedattackspeedmod *= 1.0f + ( ( float )mod->m_amount / 100.0f );
 		else
-			static_cast< Player* >( m_target )->m_rangedattackspeedmod -= amount;
+			static_cast< Player* >( m_target )->m_rangedattackspeedmod /= 1.0f + ( ( float )mod->m_amount / 100.0f );
 		static_cast< Player* >( m_target )->UpdateAttackSpeed();
 	}
 	else
@@ -6925,11 +6925,11 @@ void Aura::SpellAuraModRangedAmmoHaste(bool apply)
 
 	if( apply )
 	{
-		p->m_rangedattackspeedmod+=mod->m_amount;
+		p->m_rangedattackspeedmod *= 1.0f + ( ( float )mod->m_amount / 100.0f );
 	}
 	else
 	{
-		p->m_rangedattackspeedmod-=mod->m_amount;
+		p->m_rangedattackspeedmod /= 1.0f + ( ( float )mod->m_amount / 100.0f );
 	}
 
 	p->UpdateAttackSpeed();
