@@ -63,6 +63,21 @@ static const char* colorstrings[TBLUE+1] = {
 };
 #endif
 
+void oLog::outTime()
+{
+#ifndef WIN32
+	char buf[256];
+	time_t t = time(NULL);
+	struct tm *tm = localtime(&t);
+
+	if (tm)
+	{
+		strftime(buf, 256, "[%Y-%m-%d %T] ", tm);
+		fprintf(m_file, buf);
+	}
+#endif
+}
+
 void oLog::outString( const char * str, ... )
 {
 	if(m_fileLogLevel < 0 && m_screenLogLevel < 0)
@@ -78,6 +93,7 @@ void oLog::outString( const char * str, ... )
 	}
 	if(m_fileLogLevel >= 0 && m_file)
 	{
+		outTime();
 		vfprintf(m_file, str, ap);
 		putc('\n', m_file);
 	}
@@ -110,6 +126,7 @@ void oLog::outError( const char * err, ... )
 	}
 	if(m_fileLogLevel >= 1 && m_file)
 	{
+		outTime();
 		vfprintf(m_file, err, ap);
 		putc('\n', m_file);
 	}
@@ -154,6 +171,7 @@ void oLog::outDetail( const char * str, ... )
 	}
 	if(m_fileLogLevel >= 2 && m_file)
 	{
+		outTime();
 		vfprintf(m_file, str, ap);
 		putc('\n', m_file);
 	}
@@ -176,6 +194,7 @@ void oLog::outDebug( const char * str, ... )
 	}
 	if(m_fileLogLevel >= 3 && m_file)
 	{
+		outTime();
 		vfprintf(m_file, str, ap);
 		putc('\n', m_file);
 	}

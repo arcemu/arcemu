@@ -55,6 +55,7 @@ public:
   void outDetail( const char * str, ... );
   void outDebug( const char * str, ... );
   void outMenu( const char * str, ... );
+  void outTime( );
 
   void fLogText(const char *text);
   void SetLogging(bool enabled);
