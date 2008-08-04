@@ -369,6 +369,7 @@ void Creature::SaveToDB()
 		<< m_uint32Values[UNIT_FIELD_FACTIONTEMPLATE] << ","
 		<< m_uint32Values[UNIT_FIELD_FLAGS] << ","
 		<< m_uint32Values[UNIT_FIELD_BYTES_0] << ","
+		<< m_uint32Values[UNIT_FIELD_BYTES_1] << ","
 		<< m_uint32Values[UNIT_FIELD_BYTES_2] << ","
 		<< m_uint32Values[UNIT_NPC_EMOTESTATE] << ",0,";
 		/*<< ((this->m_spawn ? m_spawn->respawnNpcLink : uint32(0))) << ",";*/
