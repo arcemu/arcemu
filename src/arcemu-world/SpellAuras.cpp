@@ -6163,7 +6163,7 @@ void Aura::SpellAuraMagnet(bool apply)
 		m_target->m_magnetcaster = caster->GetGUID();
 	}
 	else{
-		m_target->m_magnetcaster = NULL;
+		m_target->m_magnetcaster = 0;
 	}
 }
 
@@ -7144,7 +7144,7 @@ void Aura::SpellAuraModRangedHaste(bool apply)
 
 	if (m_target->GetTypeId() == TYPEID_PLAYER)
 	{
-		int32 amount = mod->m_amount;
+//		int32 amount = mod->m_amount;
 //		if(GetSpellProto()->Id == 6150)// Quick Shots
 //		{
 //			Unit * pCaster = GetUnitCaster();
@@ -7289,7 +7289,7 @@ void Aura::SpellAuraSplitDamageFlat(bool apply)
 		ds->creator = (void*)this;
 		ds->m_target = GetCaster()->GetGUID();
 		m_target->m_damageSplitTarget = ds;
-		printf("registering dmg split %u, amout= %u \n",ds->m_spellId, mod->m_amount, mod->m_miscValue, mod->m_type);
+//		printf("registering dmg split %u, amout= %u \n",ds->m_spellId, mod->m_amount, mod->m_miscValue, mod->m_type);
 	}
 }
 

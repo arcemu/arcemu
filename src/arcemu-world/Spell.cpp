@@ -3516,12 +3516,12 @@ uint8 Spell::CanCast(bool tolerate)
                 case 1515: // tame beast
                 {
                     
-                    uint8 result = NULL;
-                   Unit* tgt = unitTarget;
+                    uint8 result = 0;
+					Unit* tgt = unitTarget;
                     if( tgt == NULL )
                     {
                         // we have to pick a target manually as this is a dummy spell which triggers tame effect at end of channeling
-                        if( p_caster->GetSelection() != NULL )
+                        if( p_caster->GetSelection() != 0 )
                            tgt =  p_caster->GetMapMgr()->GetUnit( p_caster->GetSelection() );
                         else
                             return SPELL_FAILED_UNKNOWN;
@@ -3551,7 +3551,7 @@ uint8 Spell::CanCast(bool tolerate)
                         if( cf && !cf->tameable )
                                 result = PETTAME_NOTTAMEABLE;
                     }
-                    if( result != NULL )
+                    if( result != 0 )
                     {
                         SendTameFailure( result );
                         return SPELL_FAILED_DONT_REPORT;
