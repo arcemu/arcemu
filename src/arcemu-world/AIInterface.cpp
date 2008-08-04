@@ -1283,7 +1283,7 @@ void AIInterface::_UpdateCombat(uint32 p_time)
 				{
 					//calculate next move
 					m_moveRun = true;
-					float close_to_enemy;
+					float close_to_enemy = 0.0f;
 					if( distance > m_nextSpell->maxrange )
 						close_to_enemy = m_nextSpell->maxrange - DISTANCE_TO_SMALL_TO_WALK ;
 					else if( distance < m_nextSpell->minrange )
