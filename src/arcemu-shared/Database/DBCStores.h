@@ -394,6 +394,7 @@ struct SpellEntry
 	bool is_ranged_spell;					//!!! CUSTOM,
 	bool spell_can_crit;					//!!! CUSTOM,
 
+	uint32 SchoolMask;						// Custom
 /*
 //3.0.1 client column namings
 m_id

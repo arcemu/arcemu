@@ -12131,62 +12131,16 @@ void ApplyNormalFixes()
 		SCHOOL_ARCANE = 64
 		*/
 
-		/*
-				uint32 school = 0;
-#define SET_SCHOOL(x) if( school != 0 ) { printf("Spell %u HAS MULTIPLE SCHOOLS!!!! %u\n", sp->Id, sp->School); } else { school = x; }
-
-		if(sp->School & 1)
+		// Save School as SchoolMask, and set School as an index
+		sp->SchoolMask = sp->School;
+		for (i=0; i<8; i++)
 		{
-			SET_SCHOOL(SCHOOL_NORMAL);
+			if (sp->School & (1<<i))
+			{
+				sp->School = i;
+				break;
+			}
 		}
-		else if(sp->School & 2)
-		{
-			SET_SCHOOL(SCHOOL_HOLY);
-		}
-		else if(sp->School & 4)
-		{
-			SET_SCHOOL(SCHOOL_FIRE);
-		}
-		else if(sp->School & 8)
-		{
-			SET_SCHOOL(SCHOOL_NATURE);
-		}
-		else if(sp->School & 16)
-		{
-			SET_SCHOOL(SCHOOL_FROST);
-		}
-		else if(sp->School & 32)
-		{
-			SET_SCHOOL(SCHOOL_SHADOW);
-		}
-		else if(sp->School & 64)
-		{
-			SET_SCHOOL(SCHOOL_ARCANE);
-		}
-		else
-		{
-			printf("UNKNOWN SCHOOL %u\n", sp->School);
-		}
-		*/
-
-#define SET_SCHOOL(x) sp->School = x
-		if(sp->School & 1)
-			SET_SCHOOL(SCHOOL_NORMAL);
-		else if(sp->School & 2)
-			SET_SCHOOL(SCHOOL_HOLY);
-		else if(sp->School & 4)
-			SET_SCHOOL(SCHOOL_FIRE);
-		else if(sp->School & 8)
-			SET_SCHOOL(SCHOOL_NATURE);
-		else if(sp->School & 16)
-			SET_SCHOOL(SCHOOL_FROST);
-		else if(sp->School & 32)
-			SET_SCHOOL(SCHOOL_SHADOW);
-		else if(sp->School & 64)
-			SET_SCHOOL(SCHOOL_ARCANE);
-		else
-			printf("UNKNOWN SCHOOL %u for spell %u\n", sp->School, sp->Id);
-#undef SET_SCHOOL
 
 		/*
 		AURASTATE_FLAG_DODGE_BLOCK			= 1,        //1
