@@ -1182,7 +1182,8 @@ bool Creature::Load(CreatureSpawn *spawn, uint32 mode, MapInfo *info)
 	BaseAttackType=proto->AttackType;
 
 	SetFloatValue(UNIT_MOD_CAST_SPEED, 1.0f);   // better set this one
-	SetUInt32Value(UNIT_FIELD_BYTES_0, spawn->bytes);
+	SetUInt32Value(UNIT_FIELD_BYTES_0, spawn->bytes0);
+	SetUInt32Value(UNIT_FIELD_BYTES_1, spawn->bytes1);
 	SetUInt32Value(UNIT_FIELD_BYTES_2, spawn->bytes2);
 
 ////////////AI

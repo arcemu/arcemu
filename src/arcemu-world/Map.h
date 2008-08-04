@@ -46,7 +46,8 @@ typedef struct
 	uint32 displayid;
 	uint32 factionid;
 	uint32 flags;
-	uint32 bytes;
+	uint32 bytes0;
+	uint32 bytes1;
 	uint32 bytes2;
 	uint32 emote_state;
 	//uint32 respawnNpcLink;

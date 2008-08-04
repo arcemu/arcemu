@@ -2006,11 +2006,12 @@ bool ChatHandler::HandleCreatureSpawnCommand(const char *args, WorldSession *m_s
 	sp->y = m_session->GetPlayer()->GetPositionY();
 	sp->z = m_session->GetPlayer()->GetPositionZ();
 	sp->o = m_session->GetPlayer()->GetOrientation();
-	sp->emote_state =0;
+	sp->emote_state = 0;
 	sp->flags = 0;
 	sp->factionid = proto->Faction;
-	sp->bytes=0;
-	sp->bytes2=0;
+	sp->bytes0 = 0;
+	sp->bytes1 = 0;
+	sp->bytes2 = 0;
 	//sp->respawnNpcLink = 0;
 	sp->stand_state = 0;
 	sp->channel_spell=sp->channel_target_creature=sp->channel_target_go=0;

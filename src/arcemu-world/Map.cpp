@@ -124,20 +124,20 @@ void Map::LoadSpawns(bool reload)
 {
 	//uint32 st=getMSTime();
 	CreatureSpawnCount = 0;
-	if(reload)//perform cleanup
-	for(uint32 x=0;x<_sizeX;x++)
-		for(uint32 y=0;y<_sizeY;y++)
-		if(spawns[x][y])
-		{	
-			CellSpawns * sp=spawns[x][y];
-			for(CreatureSpawnList::iterator i = sp->CreatureSpawns.begin();i!=sp->CreatureSpawns.end();i++)
-				delete (*i);
-			for(GOSpawnList::iterator it = sp->GOSpawns.begin();it!=sp->GOSpawns.end();it++)
-				delete (*it);
+	if ( reload )//perform cleanup
+		for ( uint32 x = 0; x < _sizeX; x++ )
+			for ( uint32 y = 0; y < _sizeY; y++ )
+				if ( spawns[x][y])
+				{	
+					CellSpawns * sp = spawns[x][y];
+					for ( CreatureSpawnList::iterator i = sp->CreatureSpawns.begin(); i != sp->CreatureSpawns.end(); i++ )
+						delete (*i);
+					for ( GOSpawnList::iterator it = sp->GOSpawns.begin(); it != sp->GOSpawns.end(); it++ )
+						delete (*it);
 
-			delete sp;
-			spawns[x][y]=NULL;
-		}
+					delete sp;
+					spawns[x][y] = NULL;
+				}
 
 	QueryResult * result;
 	set<string>::iterator tableiterator;
@@ -174,14 +174,15 @@ void Map::LoadSpawns(bool reload)
 					cspawn->displayid = fields[8].GetUInt32();
 					cspawn->factionid = fields[9].GetUInt32();
 					cspawn->flags = fields[10].GetUInt32();
-					cspawn->bytes = fields[11].GetUInt32();
-					cspawn->bytes2 = fields[12].GetUInt32();
-					cspawn->emote_state = fields[13].GetUInt32();
-					//cspawn->respawnNpcLink = fields[14].GetUInt32();
-					cspawn->channel_spell = fields[15].GetUInt16();
-					cspawn->channel_target_go = fields[16].GetUInt32();
-					cspawn->channel_target_creature = fields[17].GetUInt32();
-					cspawn->stand_state = fields[18].GetUInt16();
+					cspawn->bytes0 = fields[11].GetUInt32();
+					cspawn->bytes1 = fields[12].GetUInt32();
+					cspawn->bytes2 = fields[13].GetUInt32();
+					cspawn->emote_state = fields[14].GetUInt32();
+					//cspawn->respawnNpcLink = fields[15].GetUInt32();
+					cspawn->channel_spell = fields[16].GetUInt16();
+					cspawn->channel_target_go = fields[17].GetUInt32();
+					cspawn->channel_target_creature = fields[18].GetUInt32();
+					cspawn->stand_state = fields[19].GetUInt16();
 					spawns[cellx][celly]->CreatureSpawns.push_back(cspawn);
 					++CreatureSpawnCount;
 				}while(result->NextRow());
@@ -210,14 +211,15 @@ void Map::LoadSpawns(bool reload)
 				cspawn->displayid = fields[8].GetUInt32();
 				cspawn->factionid = fields[9].GetUInt32();
 				cspawn->flags = fields[10].GetUInt32();
-				cspawn->bytes = fields[11].GetUInt32();
-				cspawn->bytes2 = fields[12].GetUInt32();
-				cspawn->emote_state = fields[13].GetUInt32();
-				//cspawn->respawnNpcLink = fields[14].GetUInt32();
+				cspawn->bytes0 = fields[11].GetUInt32();
+				cspawn->bytes1 = fields[12].GetUInt32();
+				cspawn->bytes2 = fields[13].GetUInt32();
+				cspawn->emote_state = fields[14].GetUInt32();
+				//cspawn->respawnNpcLink = fields[15].GetUInt32();
 				cspawn->channel_spell=0;
 				cspawn->channel_target_creature=0;
 				cspawn->channel_target_go=0;
-				cspawn->stand_state = fields[18].GetUInt16();
+				cspawn->stand_state = fields[19].GetUInt16();
 				staticSpawns.CreatureSpawns.push_back(cspawn);
 				++CreatureSpawnCount;
 			}while(result->NextRow());
