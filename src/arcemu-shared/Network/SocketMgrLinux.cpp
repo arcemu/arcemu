@@ -9,9 +9,33 @@
 #include "Network.h"
 #ifdef CONFIG_USE_EPOLL
 
+//#define ENABLE_ANTI_DOS
+
 initialiseSingleton(SocketMgr);
 void SocketMgr::AddSocket(Socket * s)
 {
+#ifdef ENABLE_ANTI_DOS
+	uint32 saddr;
+	int i, count;
+
+	// Check how many connections we already have from that ip
+	saddr = s->GetRemoteAddress().s_addr;
+	for (i=0, count=0; i<max_fd; i++)
+	{
+		if (fds[i])
+		{
+			if (fds[i]->GetRemoteAddress().s_addr == saddr) count++;
+		}
+	}
+
+	// More than 16 connections from the same ip? enough! xD
+	if (count > 16)
+	{
+		s->Disconnect(false);
+		return;
+	}
+#endif
+
 	if(fds[s->GetFd()] != NULL)
 	{
 		//fds[s->GetFd()]->Delete();
@@ -20,6 +44,9 @@ void SocketMgr::AddSocket(Socket * s)
 		return;
 	}
 
+#ifdef ENABLE_ANTI_DOS
+	if (max_fd < s->GetFd()) max_fd = s->GetFd();
+#endif
     fds[s->GetFd()] = s;
 
     // Add epoll event based on socket activity.

@@ -110,12 +110,15 @@ string Socket::GetRemoteIP()
 		return string( "noip" );
 }
 
-void Socket::Disconnect()
+void Socket::Disconnect(bool remove)
 {
 	m_connected = false;
 
-	// remove from mgr
-	sSocketMgr.RemoveSocket(this);
+	if (remove)
+	{
+		// remove from mgr
+		sSocketMgr.RemoveSocket(this);
+	}
 
 	SocketOps::CloseSocket(m_fd);
 

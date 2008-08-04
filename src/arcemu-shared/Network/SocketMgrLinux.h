@@ -36,6 +36,8 @@ class SocketMgr : public Singleton<SocketMgr>
     /// socket counter
     int socket_count;
 
+	int max_fd;
+
 public:
 
     /// friend class of the worker thread -> it has to access our private resources
@@ -54,6 +56,7 @@ public:
         // null out the pointer array
         memset(fds, 0, sizeof(void*) * SOCKET_HOLDER_SIZE);
 		memset(listenfds, 0, sizeof(void*) * SOCKET_HOLDER_SIZE);
+		max_fd = 0;
     }
 
     /// destructor > destroy epoll handle
