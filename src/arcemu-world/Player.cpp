@@ -9300,9 +9300,13 @@ void Player::_AddSkillLine(uint32 SkillLine, uint32 Curr_sk, uint32 Max_sk)
 		return;
 
 	// force to be within limits
+#if PLAYER_LEVEL_CAP==80
+	Curr_sk = ( Curr_sk > 400 ? 400 : ( Curr_sk <1 ? 1 : Curr_sk ) );
+	Max_sk = ( Max_sk > 400 ? 400 : Max_sk );
+#else
 	Curr_sk = ( Curr_sk > 375 ? 375 : ( Curr_sk <1 ? 1 : Curr_sk ) );
 	Max_sk = ( Max_sk > 375 ? 375 : Max_sk );
-
+#endif
 	ItemProf * prof;
 	SkillMap::iterator itr = m_skills.find(SkillLine);
 	if(itr != m_skills.end())
@@ -9459,8 +9463,13 @@ void Player::_UpdateMaxSkillCounts()
 		}
 
 		// force to be within limits
+#if PLAYER_LEVEL_CAP==80
+		if (new_max > 400)
+			new_max = 400;
+#else
 		if (new_max > 375)
 			new_max = 375;
+#endif
 		if (new_max < 1)
 			new_max = 1;
 
@@ -9621,7 +9630,11 @@ void Player::_AdvanceAllSkills(uint32 count)
 void Player::_ModifySkillMaximum(uint32 SkillLine, uint32 NewMax)
 {
 	// force to be within limits
+#if PLAYER_LEVEL_CAP==80
+	NewMax = ( NewMax > 400 ? 400 : NewMax );
+#else
 	NewMax = ( NewMax > 375 ? 375 : NewMax );
+#endif
 
 	SkillMap::iterator itr = m_skills.find(SkillLine);
 	if(itr == m_skills.end())
