@@ -85,7 +85,7 @@ Map::~Map()
 bool first_table_warning = true;
 bool CheckResultLengthCreatures(QueryResult * res)
 {
-	if( res->GetFieldCount() != 19 )
+	if( res->GetFieldCount() != 20 )
 	{
 		if( first_table_warning )
 		{
