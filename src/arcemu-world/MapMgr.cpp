@@ -1710,11 +1710,11 @@ void MapMgr::_PerformObjectDuties()
 		Creature * ptr;
 		Pet * ptr2;
 
-		for(; itr != activeCreatures.end();)
+		for(; itr != activeCreatures.end(); ++itr)
 		{
-			ptr = *itr;
-			++itr;
-			ptr->Update(difftime);
+			ptr = GetCreature(*itr);
+			if (ptr)
+				ptr->Update(difftime);
 		}
 
 		for(; it2 != m_PetStorage.end();)
