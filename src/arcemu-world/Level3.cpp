@@ -2073,9 +2073,13 @@ bool ChatHandler::HandleRemoveItemCommand(const char * args, WorldSession * m_se
 
 	ItemPrototype * iProto	= ItemPrototypeStorage.LookupEntry(item_id);
 
-	sGMLog.writefromsession(m_session, "used remove item %s (id: %u) count %u from %s", iProto->Name1, item_id, ocount, plr->GetName());
-	BlueSystemMessage(m_session, "Removing %u copies of item %s (id: %u) from %s's inventory.", ocount, GetItemLinkByProto(iProto, m_session->language), item_id, plr->GetName());
-	BlueSystemMessage(plr->GetSession(), "%s removed %u copies of item %s from your inventory.", m_session->GetPlayer()->GetName(), ocount, GetItemLinkByProto(iProto, plr->GetSession()->language));
+	if( iProto )
+	{
+		sGMLog.writefromsession(m_session, "used remove item %s (id: %u) count %u from %s", iProto->Name1, item_id, ocount, plr->GetName());
+		BlueSystemMessage(m_session, "Removing %u copies of item %s (id: %u) from %s's inventory.", ocount, GetItemLinkByProto(iProto, m_session->language), item_id, plr->GetName());
+		BlueSystemMessage(plr->GetSession(), "%s removed %u copies of item %s from your inventory.", m_session->GetPlayer()->GetName(), ocount, GetItemLinkByProto(iProto, plr->GetSession()->language));
+	}
+	else RedSystemMessage(m_session, "Cannot remove non valid item id: %u .",item_id);
 
 	return true;
 }
