@@ -110,7 +110,7 @@ string Socket::GetRemoteIP()
 		return string( "noip" );
 }
 
-void Socket::Disconnect(bool remove)
+void Socket::Disconnect()
 {
 	m_connected = false;
 
