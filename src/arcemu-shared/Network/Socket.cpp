@@ -114,11 +114,8 @@ void Socket::Disconnect(bool remove)
 {
 	m_connected = false;
 
-	if (remove)
-	{
-		// remove from mgr
-		sSocketMgr.RemoveSocket(this);
-	}
+	// remove from mgr
+	sSocketMgr.RemoveSocket(this);
 
 	SocketOps::CloseSocket(m_fd);
 

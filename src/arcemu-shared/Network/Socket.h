@@ -24,7 +24,7 @@ public:
 	bool Connect(const char * Address, uint32 Port);
 
 	// Disconnect the socket.
-	void Disconnect(bool remove = true);
+	void Disconnect();
 
 	// Accept from the already-set fd.
 	void Accept(sockaddr_in * address);
