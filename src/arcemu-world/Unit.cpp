@@ -867,9 +867,27 @@ void Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, uint
 
 					switch( spellId )
 					{
+						case 16959://Druid - Primal Fury Proc
+							{
+								if( !IsPlayer() )
+									continue;
+								Player * p = static_cast< Player * >( this );
+								if( p->GetShapeShift() != FORM_BEAR && p->GetShapeShift() != FORM_DIREBEAR )
+									continue;
+							}break;
+						case 16953: //Druid - Blood Frenzy Proc
+							{
+								if( !IsPlayer() || !CastingSpell )
+									continue;
+								Player * p = static_cast< Player * >( this );
+								if( p->GetShapeShift() != FORM_CAT || (
+									CastingSpell->NameHash != SPELL_HASH_CLAW &&
+									CastingSpell->NameHash != SPELL_HASH_RAKE &&
+									CastingSpell->NameHash != SPELL_HASH_RAVAGE &&
+									CastingSpell->NameHash != SPELL_HASH_SHRED ) )
+									continue;
+							}break;
 						case 14189: //Seal Fate
-						case 16953: //Blood Frenzy
-						case 16959: //Primal Fury
 						{
 							if( !this->IsPlayer() || 
 								!CastingSpell || 

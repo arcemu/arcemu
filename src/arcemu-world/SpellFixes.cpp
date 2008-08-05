@@ -19386,39 +19386,21 @@ void ApplyNormalFixes()
 
 		//druid - Blood Frenzy
 		sp = dbcSpell.LookupEntryForced( 16954 );
-		if( sp != NULL ) 
-		{
-			sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
-			sp->EffectTriggerSpell[0] = 16953;
+		if( sp != NULL )
 			sp->procFlags = PROC_ON_CRIT_ATTACK;
-			sp->procChance = 100;
-		}
+
 		sp = dbcSpell.LookupEntryForced( 16952 );
-		if( sp != NULL ) 
-		{
-			sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
-			sp->EffectTriggerSpell[0] = 16953;
+		if( sp != NULL )
 			sp->procFlags = PROC_ON_CRIT_ATTACK;
-			sp->procChance = 50;
-		}
 
 		//druid - Primal Fury
 		sp = dbcSpell.LookupEntryForced( 16961 );
 		if( sp != NULL ) 
-		{
-			sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
-			sp->EffectTriggerSpell[0] = 16959;
 			sp->procFlags = PROC_ON_CRIT_ATTACK;
-			sp->procChance = 100;
-		}
+
 		sp = dbcSpell.LookupEntryForced( 16958 );
 		if( sp != NULL ) 
-		{
-			sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
-			sp->EffectTriggerSpell[0] = 16959;
 			sp->procFlags = PROC_ON_CRIT_ATTACK;
-			sp->procChance = 50;
-		}
 
 		//druid - Intensity
 		sp = dbcSpell.LookupEntryForced( 17106 );
