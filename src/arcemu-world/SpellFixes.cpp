@@ -19387,7 +19387,16 @@ void ApplyNormalFixes()
 			//sp->EffectSpellGroupRelation_high[2] |= 1024;
 		}
 
-		//druid - Blood Frenzy
+		//druid - Primal Fury (talent)
+		sp = dbcSpell.LookupEntryForced( 37116 );
+		if( sp != NULL )
+			sp->RequiredShapeShift = 0;
+		
+		sp = dbcSpell.LookupEntryForced( 37117 );
+		if( sp != NULL )
+			sp->RequiredShapeShift = 0;
+
+		//druid - Blood Frenzy (proc)
 		sp = dbcSpell.LookupEntryForced( 16954 );
 		if( sp != NULL )
 			sp->procFlags = PROC_ON_CRIT_ATTACK;
@@ -19396,7 +19405,7 @@ void ApplyNormalFixes()
 		if( sp != NULL )
 			sp->procFlags = PROC_ON_CRIT_ATTACK;
 
-		//druid - Primal Fury
+		//druid - Primal Fury (proc)
 		sp = dbcSpell.LookupEntryForced( 16961 );
 		if( sp != NULL ) 
 			sp->procFlags = PROC_ON_CRIT_ATTACK;
