@@ -4846,7 +4846,7 @@ void Player::UpdateStats()
 		uint32 Intellect = GetUInt32Value( UNIT_FIELD_STAT3 );
 		uint32 level = getLevel();
 		if(level > 70) level = 70;
-		float amt = ( 0.001 + sqrt((float)Intellect) * Spirit * BaseRegen[level-1] )*PctPowerRegenModifier[POWER_TYPE_MANA];
+		float amt = ( 0.001f + sqrt((float)Intellect) * Spirit * BaseRegen[level-1] )*PctPowerRegenModifier[POWER_TYPE_MANA];
 		SetFloatValue(PLAYER_FIELD_MOD_MANA_REGEN,amt+m_ModInterrMRegen/5.0f);
 		SetFloatValue(PLAYER_FIELD_MOD_MANA_REGEN_INTERRUPT,amt*m_ModInterrMRegenPCT/100.0f+m_ModInterrMRegen/5.0f);
 	}

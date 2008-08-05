@@ -2864,7 +2864,7 @@ void Object::Activate(MapMgr * mgr)
 	switch(m_objectTypeId)
 	{
 	case TYPEID_UNIT:
-		mgr->activeCreatures.insert(this->GetLowGUID());
+		mgr->activeCreatures.insert((Creature*)this);
 		break;
 
 	case TYPEID_GAMEOBJECT:
@@ -2880,7 +2880,7 @@ void Object::Deactivate(MapMgr * mgr)
 	switch(m_objectTypeId)
 	{
 	case TYPEID_UNIT:
-		mgr->activeCreatures.erase(this->GetLowGUID());
+		mgr->activeCreatures.erase((Creature*)this);
 		break;
 
 	case TYPEID_GAMEOBJECT:

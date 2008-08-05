@@ -64,7 +64,7 @@ typedef std::set<Player*> PUpdateQueue;
 typedef std::set<Player*> PlayerSet;
 typedef HM_NAMESPACE::hash_map<uint32, Object*> StorageMap;
 typedef set<uint64> CombatProgressMap;
-typedef set<uint32> CreatureSet;
+typedef set<Creature*> CreatureSet;
 typedef set<GameObject*> GameObjectSet;
 typedef HM_NAMESPACE::hash_map<uint32, Creature*> CreatureSqlIdMap;
 typedef HM_NAMESPACE::hash_map<uint32, GameObject*> GameObjectSqlIdMap;
@@ -115,7 +115,7 @@ public:
 	__inline Creature * GetCreature(uint32 guid)
 	{
 		if(guid > m_CreatureHighGuid)
-			return 0;
+			return NULL;
 		return m_CreatureStorage[guid];
 	}
 
