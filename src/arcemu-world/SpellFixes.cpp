@@ -10425,15 +10425,15 @@ void Apply112SpellFixes()
 	// Spell 16757 Group Relation (Arctic Reach Rank 1)
 	sp = dbcSpell.LookupEntryForced(16757);
 	if(sp != NULL) {
-		sp->EffectSpellGroupRelation[0] = 160;
-		sp->EffectSpellGroupRelation[1] = 576;
+		sp->EffectSpellGroupRelation[0] = 131072;
+		sp->EffectSpellGroupRelation[1] = 524352;
 	}
 
 	// Spell 16758 Group Relation (Arctic Reach Rank 2)
 	sp = dbcSpell.LookupEntryForced(16758);
 	if(sp != NULL) {
-		sp->EffectSpellGroupRelation[0] = 160;
-		sp->EffectSpellGroupRelation[1] = 576;
+		sp->EffectSpellGroupRelation[0] = 131072;
+		sp->EffectSpellGroupRelation[1] = 524352;
 	}
 
 	// Spell 16763 Group Relation (Improved Frostbolt Rank 3)
