@@ -1691,6 +1691,30 @@ void Aura::SpellAuraDummy(bool apply)
 			int32 val = (apply) ? 30 : -30;
 			m_target->ModDamageTakenByMechPCT[MECHANIC_BLEEDING] += float( val ) / 100.0f;
 		}break;
+	//warrior - berserker rage (Forcing a dummy aura, so we can add the missing 4th effect).
+	case 18499:
+		{
+			if( !m_target->IsPlayer() )
+				return;
+
+			Player * p = static_cast< Player * >( m_target );
+
+			if( apply )
+				p->rageFromDamageTaken += 100;
+			else
+				p->rageFromDamageTaken -= 100;
+
+			for( int32 i = 0; i < 3; i++ )
+			{
+				if( apply )
+				{
+					p->MechanicsDispels[ GetSpellProto()->EffectMiscValue[i] ]++;
+					p->RemoveAllAurasByMechanic( GetSpellProto()->EffectMiscValue[i] , -1 , false );
+				}
+				else
+					p->MechanicsDispels[ GetSpellProto()->EffectMiscValue[i] ]--;
+			}
+		}break;
 	//warrior - sweeping strikes
 	case 12328:
 		{

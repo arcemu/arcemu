@@ -1855,6 +1855,8 @@ void Object::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
 		else 
 			conv = ( 2.5f * 10 ) / (0.0091107836f * level * level + 3.225598133f * level + 4.2652911f);
 		val = damage * conv;
+		if( pVictim->IsPlayer() )
+			val *= ( 1 + ( static_cast< Player * >( pVictim )->rageFromDamageTaken / 100.0f ) );
 		uint32 rage = pVictim->GetUInt32Value( UNIT_FIELD_POWER2 );
 		if( rage + float2int32( val ) > 1000 )
 			val = 1000.0f - (float)pVictim->GetUInt32Value( UNIT_FIELD_POWER2 );

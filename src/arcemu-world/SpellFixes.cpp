@@ -14216,6 +14216,15 @@ void ApplyNormalFixes()
 			sp->EffectSpellGroupRelation_high[1] = 8;
 		}
 
+		//warrior - Berserker Rage
+		sp = dbcSpell.LookupEntryForced( 18499 );
+		if( sp != NULL )
+		{
+			sp->EffectApplyAuraName[0] = SPELL_AURA_DUMMY;//Forcing a dummy aura, so we can add the missing 4th effect.
+			sp->Effect[1] = 0;
+			sp->Effect[2] = 0;
+		}
+
 		//warrior - improved berserker rage
 		sp = dbcSpell.LookupEntryForced( 20500 );
 		if( sp != NULL )

@@ -296,6 +296,7 @@ Player::Player( uint32 guid ) : m_mailBox(guid)
 	m_actionsDirty		  = false;
 	cannibalizeCount		= 0;
 	rageFromDamageDealt	 = 0;
+	rageFromDamageTaken	 = 0;
 
 	m_honorToday			= 0;
 	m_honorYesterday		= 0;

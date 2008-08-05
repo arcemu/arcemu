@@ -3988,6 +3988,12 @@ uint8 Spell::CanCast(bool tolerate)
 				case 0xDD06F1BF: // Stop fucking renaming the spell, Blizzard! (This time it's PvP Trinket)
 					break;
 
+				case SPELL_HASH_BERSERKER_RAGE://Berserker Rage frees the caster from fear effects.
+					{
+						if( u_caster->IsStunned() )
+							return SPELL_FAILED_STUNNED;
+					}break;
+
 				default:
 					return SPELL_FAILED_STUNNED;
 			}

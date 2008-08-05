@@ -1446,6 +1446,7 @@ public:
 	bool cannibalize;
 	uint8 cannibalizeCount;
 	int32 rageFromDamageDealt;
+	int32 rageFromDamageTaken;
 	// GameObject commands
 	inline GameObject* GetSelectedGo()
 	{ 
