@@ -9414,6 +9414,7 @@ void Apply112SpellFixes()
 	// Spell 11175 Group Relation (Permafrost Rank 1)
 	sp = dbcSpell.LookupEntryForced(11175);
 	if(sp != NULL) {
+		sp->EffectMiscValue[1] = SMT_SPELL_VALUE;
 		sp->EffectSpellGroupRelation[1] = 1048576;
 	}
 
@@ -9559,12 +9560,14 @@ void Apply112SpellFixes()
 	// Spell 12569 Group Relation (Permafrost Rank 2)
 	sp = dbcSpell.LookupEntryForced(12569);
 	if(sp != NULL) {
+		sp->EffectMiscValue[1] = SMT_SPELL_VALUE;
 		sp->EffectSpellGroupRelation[1] = 1048576;
 	}
 
 	// Spell 12571 Group Relation (Permafrost Rank 3)
 	sp = dbcSpell.LookupEntryForced(12571);
 	if(sp != NULL) {
+		sp->EffectMiscValue[1] = SMT_SPELL_VALUE;
 		sp->EffectSpellGroupRelation[1] = 1048576;
 	}
 
