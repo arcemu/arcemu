@@ -2502,7 +2502,12 @@ void Player::LoadFromDBProc(QueryResultVector & results)
 
 	// obtain player create info
 	info = objmgr.GetPlayerCreateInfo(getRace(), getClass());
-	assert(info);
+	if(!info)
+	{
+		sLog.outError("%s: player guid %u has no playerCreateInfo!\n", (unsigned int)GetLowGUID());
+		RemovePendingPlayer();
+		return;
+	}
 
 	// set level
 	m_uint32Values[UNIT_FIELD_LEVEL] = get_next_field.GetUInt32();
