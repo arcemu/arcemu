@@ -247,6 +247,13 @@ enum LootType
     LOOT_INSIGNIA               = 2                         // 7 unsupported by client, sending LOOT_SKINNING instead
 };
 
+enum ModType
+{	
+	MOD_MELEE	= 0,
+	MOD_RANGED	= 1,
+	MOD_SPELL	= 2
+};
+
 struct spells
 {
 	uint16  spellId;
@@ -1203,7 +1210,10 @@ public:
 	void JoinedChannel(Channel *c);
 	void LeftChannel(Channel *c);
 	void CleanupChannels();
-	//Attack stuff
+
+	/************************************************************************/
+	/* Attack stuff															*/
+    /************************************************************************/
 	void EventAttackStart();
 	void EventAttackStop();
 	void EventAttackUpdateSpeed() { }
@@ -1213,6 +1223,7 @@ public:
 	//ARCEMU_INLINE std::list<struct skilllines>getSkillLines() { return m_skilllines; }
 	float SpellCrtiticalStrikeRatingBonus;
 	float SpellHasteRatingBonus;
+	void ModAttackSpeed( int32 mod, ModType type );
 	void UpdateAttackSpeed();
 	void UpdateChances();
 	void UpdateStats();
@@ -1259,7 +1270,7 @@ public:
 		m_attackTimer += delay;
 		m_attackTimer_1 += delay;
 	}
-	
+
 	void SetShapeShift(uint8 ss);
 
 	uint32 m_furorChance;
@@ -1343,8 +1354,7 @@ public:
 	void EventReduceDrunk(bool full);
 	bool m_AllowAreaTriggerPort;
 	void EventAllowTiggerPort(bool enable);
-	float m_rangedattackspeedmod;
-	float m_meleeattackspeedmod;
+
 	uint32 m_modblockabsorbvalue;
 	uint32 m_modblockvaluefromspells;
 	void SendInitialLogonPackets();
@@ -1390,6 +1400,7 @@ public:
 	uint32 ResistanceModPctNeg[7];
 	float m_resist_critical[2];//when we are a victim we can have talents to decrease chance for critical hit. This is a negative value and it's added to critchances
 	float m_resist_hit[3]; // 0 = melee; 1= ranged; 2=spells
+	float m_attack_speed[3];
 	float SpellDmgDoneByAttribute[5][7];
 	float SpellHealDoneByAttribute[5][7];
 	uint32 m_modphyscritdmgPCT;

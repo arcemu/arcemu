@@ -82,8 +82,6 @@ Player::Player( uint32 guid ) : m_mailBox(guid)
 	m_dodgefromspell		= 0;
 	m_parryfromspell		= 0;
 	m_hitfromspell			= 0;
-	m_meleeattackspeedmod	= 1;
-	m_rangedattackspeedmod	= 1;
 
 	m_healthfromspell		= 0;
 	m_manafromspell			= 0;
@@ -342,9 +340,10 @@ Player::Player( uint32 guid ) : m_mailBox(guid)
 	UpdateLastSpeeds();
 
 	m_resist_critical[0]=m_resist_critical[1]=0;
-	for (uint32 x =0;x<3;x++)
+	for( uint32 x = 0; x < 3; x++ )
 	{
-		m_resist_hit[x]=0;
+		m_resist_hit[x]		= 0.0f;
+		m_attack_speed[x]	= 1.0f;
 	}
 	ok_to_remove = false;
 	trigger_on_stun = 0;
@@ -4672,6 +4671,17 @@ void Player::UpdateChanceFields()
 	}
 }
 
+void Player::ModAttackSpeed( int32 mod, ModType type )
+{
+	if( mod == 0 )
+		return;
+
+	if( mod > 0 )
+		m_attack_speed[ type ] *= 1.0f + ( ( float )mod / 100.0f );
+	else
+		m_attack_speed[ type ] /= 1.0f + ( ( float )( - mod ) / 100.0f );
+}
+
 void Player::UpdateAttackSpeed()
 {
 	uint32 speed = 2000;
@@ -4692,14 +4702,14 @@ void Player::UpdateAttackSpeed()
 			speed = weap->GetProto()->Delay;
 	}
 	SetUInt32Value( UNIT_FIELD_BASEATTACKTIME,
-		( uint32 )( (float) speed / ( m_meleeattackspeedmod * ( 1.0f + CalcRating( PLAYER_RATING_MODIFIER_MELEE_HASTE ) / 100.0f ) ) ) );
+		( uint32 )( (float) speed / ( m_attack_speed[ MOD_MELEE ] * ( 1.0f + CalcRating( PLAYER_RATING_MODIFIER_MELEE_HASTE ) / 100.0f ) ) ) );
 	
 	weap = GetItemInterface()->GetInventoryItem( EQUIPMENT_SLOT_OFFHAND );
 	if( weap != NULL && weap->GetProto()->Class == ITEM_CLASS_WEAPON )
 	{
 		speed = weap->GetProto()->Delay;
 		SetUInt32Value( UNIT_FIELD_BASEATTACKTIME_01,
-			( uint32 )( (float) speed / ( m_meleeattackspeedmod * ( 1.0f + CalcRating( PLAYER_RATING_MODIFIER_MELEE_HASTE ) / 100.0f ) ) ) );
+			( uint32 )( (float) speed / ( m_attack_speed[ MOD_MELEE ] * ( 1.0f + CalcRating( PLAYER_RATING_MODIFIER_MELEE_HASTE ) / 100.0f ) ) ) );
 	}
 	
 	weap = GetItemInterface()->GetInventoryItem( EQUIPMENT_SLOT_RANGED );
@@ -4707,7 +4717,7 @@ void Player::UpdateAttackSpeed()
 	{
 		speed = weap->GetProto()->Delay;
 		SetUInt32Value( UNIT_FIELD_RANGEDATTACKTIME,
-			( uint32 )( (float) speed / ( m_rangedattackspeedmod * ( 1.0f + CalcRating( PLAYER_RATING_MODIFIER_RANGED_HASTE ) / 100.0f ) ) ) );
+			( uint32 )( (float) speed / ( m_attack_speed[ MOD_RANGED ] * ( 1.0f + CalcRating( PLAYER_RATING_MODIFIER_RANGED_HASTE ) / 100.0f ) ) ) );
 	}
 }
 

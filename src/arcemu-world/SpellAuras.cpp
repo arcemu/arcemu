@@ -2829,25 +2829,25 @@ void Aura::EventPeriodicHeal( uint32 amount )
 	}
 }
 
-void Aura::SpellAuraModAttackSpeed(bool apply)
+void Aura::SpellAuraModAttackSpeed( bool apply )
 {
-	if(mod->m_amount<0)
+	if( mod->m_amount < 0 )
 		SetNegative();
 	else
 		SetPositive();
 
-	if (m_target->GetTypeId() == TYPEID_PLAYER)
+	if ( m_target->GetTypeId() == TYPEID_PLAYER )
 	{
 		if(apply)
 		{
 
-			static_cast< Player* >( m_target )->m_meleeattackspeedmod *= 1.0f + ( ( float )mod->m_amount / 100.0f );
-			static_cast< Player* >( m_target )->m_rangedattackspeedmod *= 1.0f + ( ( float )mod->m_amount / 100.0f );
+			static_cast< Player* >( m_target )->ModAttackSpeed( mod->m_amount, MOD_MELEE );
+			static_cast< Player* >( m_target )->ModAttackSpeed( mod->m_amount, MOD_RANGED );
 		}
 		else
 		{
-			static_cast< Player* >( m_target )->m_meleeattackspeedmod /= 1.0f + ( ( float )mod->m_amount / 100.0f );
-			static_cast< Player* >( m_target )->m_rangedattackspeedmod /= 1.0f + ( ( float )mod->m_amount / 100.0f );
+			static_cast< Player* >( m_target )->ModAttackSpeed( -mod->m_amount, MOD_MELEE );
+			static_cast< Player* >( m_target )->ModAttackSpeed( -mod->m_amount, MOD_RANGED );
 		}
 		static_cast< Player* >( m_target )->UpdateStats();
 	}
@@ -7103,12 +7103,13 @@ void Aura::SpellAuraModHaste( bool apply )
 	{
 		if( apply )
 		{
-			static_cast< Player* >( m_target )->m_meleeattackspeedmod *= 1.0f + ( ( float )mod->m_amount / 100.0f );
+			static_cast< Player* >( m_target )->ModAttackSpeed( mod->m_amount, MOD_MELEE );
 		}
 		else
 		{
-			static_cast< Player* >( m_target )->m_meleeattackspeedmod /= 1.0f + ( ( float )mod->m_amount / 100.0f );
+			static_cast< Player* >( m_target )->ModAttackSpeed( -mod->m_amount, MOD_MELEE );
 		}
+
 		static_cast< Player* >(m_target)->UpdateAttackSpeed();
 	}
 	else
@@ -7163,14 +7164,14 @@ void Aura::SpellAuraForceReaction( bool apply )
 	p_target->GetSession()->SendPacket( &data );
 }
 
-void Aura::SpellAuraModRangedHaste(bool apply)
+void Aura::SpellAuraModRangedHaste( bool apply )
 {
-	if(mod->m_amount<0)
+	if( mod->m_amount < 0 )
 		SetNegative();
 	else
 		SetPositive();
 
-	if (m_target->GetTypeId() == TYPEID_PLAYER)
+	if( m_target->GetTypeId() == TYPEID_PLAYER )
 	{
 //		int32 amount = mod->m_amount;
 //		if(GetSpellProto()->Id == 6150)// Quick Shots
@@ -7181,9 +7182,10 @@ void Aura::SpellAuraModRangedHaste(bool apply)
 //		}
 
 		if( apply )
-			static_cast< Player* >( m_target )->m_rangedattackspeedmod *= 1.0f + ( ( float )mod->m_amount / 100.0f );
+			static_cast< Player* >( m_target )->ModAttackSpeed( mod->m_amount, MOD_RANGED );
 		else
-			static_cast< Player* >( m_target )->m_rangedattackspeedmod /= 1.0f + ( ( float )mod->m_amount / 100.0f );
+			static_cast< Player* >( m_target )->ModAttackSpeed( -mod->m_amount, MOD_RANGED );
+		
 		static_cast< Player* >( m_target )->UpdateAttackSpeed();
 	}
 	else
@@ -7197,24 +7199,18 @@ void Aura::SpellAuraModRangedHaste(bool apply)
 	}
 }
 
-void Aura::SpellAuraModRangedAmmoHaste(bool apply)
+void Aura::SpellAuraModRangedAmmoHaste( bool apply )
 {
 	SetPositive();
 	if( !m_target->IsPlayer() )
 		return;
 
-	Player* p = static_cast< Player* >( m_target );
-
 	if( apply )
-	{
-		p->m_rangedattackspeedmod *= 1.0f + ( ( float )mod->m_amount / 100.0f );
-	}
+		static_cast< Player* >( m_target )->ModAttackSpeed( mod->m_amount, MOD_RANGED );
 	else
-	{
-		p->m_rangedattackspeedmod /= 1.0f + ( ( float )mod->m_amount / 100.0f );
-	}
+		static_cast< Player* >( m_target )->ModAttackSpeed( -mod->m_amount, MOD_RANGED );
 
-	p->UpdateAttackSpeed();
+	static_cast< Player* >( m_target )->UpdateAttackSpeed();
 }
 
 void Aura::SpellAuraModResistanceExclusive(bool apply)
@@ -8069,9 +8065,9 @@ void Aura::SpellAuraReduceAttackerMHitChance(bool apply)
 	if (!m_target->IsPlayer())
 		return;
 	if(apply)
-		static_cast< Player* >( m_target )->m_resist_hit[0]+=mod->m_amount;
+		static_cast< Player* >( m_target )->m_resist_hit[ MOD_MELEE ] += mod->m_amount;
 	else
-		static_cast< Player* >( m_target )->m_resist_hit[0]-=mod->m_amount;
+		static_cast< Player* >( m_target )->m_resist_hit[ MOD_MELEE ] -= mod->m_amount;
 }
 
 void Aura::SpellAuraReduceAttackerRHitChance(bool apply)
@@ -8079,9 +8075,9 @@ void Aura::SpellAuraReduceAttackerRHitChance(bool apply)
 	if (!m_target->IsPlayer())
 		return;
 	if(apply)
-		static_cast< Player* >( m_target )->m_resist_hit[1]+=mod->m_amount;
+		static_cast< Player* >( m_target )->m_resist_hit[ MOD_RANGED ] += mod->m_amount;
 	else
-		static_cast< Player* >( m_target )->m_resist_hit[1]-=mod->m_amount;
+		static_cast< Player* >( m_target )->m_resist_hit[ MOD_RANGED ] -= mod->m_amount;
 }
 
 void Aura::SpellAuraReduceAttackerSHitChance(bool apply)
@@ -8089,9 +8085,9 @@ void Aura::SpellAuraReduceAttackerSHitChance(bool apply)
 	if (!m_target->IsPlayer())
 		return;
 	if(apply)
-		static_cast< Player* >( m_target )->m_resist_hit[2]-=mod->m_amount;
+		static_cast< Player* >( m_target )->m_resist_hit[ MOD_SPELL ] -= mod->m_amount;
 	else
-		static_cast< Player* >( m_target )->m_resist_hit[2]+=mod->m_amount;
+		static_cast< Player* >( m_target )->m_resist_hit[ MOD_SPELL ] += mod->m_amount;
 }
 
 
@@ -8139,7 +8135,7 @@ void Aura::SpellAuraIncreaseTimeBetweenAttacksPCT(bool apply)
 	m_target->ModFloatValue(UNIT_MOD_CAST_SPEED,pct_value);
 }
 
-void Aura::SpellAuraMeleeHaste(bool apply)
+void Aura::SpellAuraMeleeHaste( bool apply )
 {
 	if( mod->m_amount < 0 )
 		SetNegative();
@@ -8149,13 +8145,10 @@ void Aura::SpellAuraMeleeHaste(bool apply)
 	if( m_target->IsPlayer() )
 	{
 		if( apply )
-		{
-			static_cast< Player* >( m_target )->m_meleeattackspeedmod *= 1.0f + ( ( float )mod->m_amount / 100.0f );
-		}
+			static_cast< Player* >( m_target )->ModAttackSpeed( mod->m_amount, MOD_MELEE );
 		else
-		{
-			static_cast< Player* >( m_target )->m_meleeattackspeedmod /= 1.0f + ( ( float )mod->m_amount / 100.0f );
-		}
+			static_cast< Player* >( m_target )->ModAttackSpeed( -mod->m_amount, MOD_MELEE );
+
 		static_cast< Player* >(m_target)->UpdateAttackSpeed();
 	}
 	else

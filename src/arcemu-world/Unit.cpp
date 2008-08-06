@@ -2813,12 +2813,12 @@ else
 		if( weapon_damage_type != RANGED )
 		{
 			crit += static_cast< Player* >(pVictim)->res_M_crit_get();
-			hitmodifier += static_cast< Player* >(pVictim)->m_resist_hit[0];
+			hitmodifier += static_cast< Player* >(pVictim)->m_resist_hit[ MOD_MELEE ];
 		}
 		else 
 		{
 			crit += static_cast< Player* >(pVictim)->res_R_crit_get(); //this could be ability but in that case we overwrite the value
-			hitmodifier += static_cast< Player* >(pVictim)->m_resist_hit[1];
+			hitmodifier += static_cast< Player* >(pVictim)->m_resist_hit[ MOD_RANGED ];
 		}
 	}
 	crit += (float)(pVictim->AttackerCritChanceMod[0]);
