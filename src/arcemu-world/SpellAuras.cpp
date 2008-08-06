@@ -2312,12 +2312,8 @@ void Aura::SpellAuraDummy(bool apply)
 			if( pCaster == NULL )
 				pCaster = m_target;
 
-			// this is an ugly hack because i don't want to copy/paste code ;P
-			Spell *spell=SpellPool.PooledNew();
-			spell->Init(pCaster, m_spellProto, true, NULL);
-			spell->SetUnitTarget( m_target );
-			spell->Heal( mod->m_amount );
 			// Remove other Lifeblooms - but do NOT handle unapply again
+			bool expired = true;
 			for(uint32 x=0;x<MAX_AURAS;x++)
 			{
 				if(m_target->m_auras[x])
@@ -2325,14 +2321,22 @@ void Aura::SpellAuraDummy(bool apply)
 					if( m_target->m_auras[x]->GetSpellId() == 33763 )
 					{
 						m_target->m_auras[x]->m_ignoreunapply = true;
+						if( m_target->m_auras[x]->GetTimeLeft() )
+							expired = false;
 						m_target->m_auras[x]->Remove();
 					}
 				}
 			}
-			//pCaster->RemoveAllAuras(pSpellId,0);
-			//pCaster->Heal( m_target, m_spellProto->Id, mod->m_amount );
+			
+			if( expired )
+			{
+				Spell *spell=SpellPool.PooledNew();
+				spell->Init(pCaster, m_spellProto, true, NULL);
+				spell->SetUnitTarget( m_target );
+				spell->Heal( mod->m_amount );
+			}
+			
 		}break;
-
 
 	case 2584:			// Area spirit healer aura for BG's
 		{
