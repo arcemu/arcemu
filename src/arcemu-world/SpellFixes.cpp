@@ -12690,7 +12690,7 @@ void ApplyNormalFixes()
 					)//search for spellid in description
 				{
 					const char *p=sp->Description;
-					while((p=strstr(p,"$")))
+					while((p=strstr(p,"$")) != 0)
 					{
 						p++;
 						//got $  -> check if spell
@@ -12866,7 +12866,7 @@ void ApplyNormalFixes()
 					if( strstr( sp->Description, "melee critical strike"))
 						pr|=PROC_ON_CRIT_ATTACK;
 					if( strstr( sp->Name, "Bloodthirst"))
-						pr|=PROC_ON_MELEE_ATTACK | PROC_TARGET_SELF;
+						pr|=PROC_ON_MELEE_ATTACK | static_cast<uint32>(PROC_TARGET_SELF);
 					if( strstr( sp->Description, "experience or honor"))
 						pr|=PROC_ON_GAIN_EXPIERIENCE;
 					if( strstr( sp->Description,"your next offensive ability"))
@@ -14152,21 +14152,21 @@ void ApplyNormalFixes()
 		if( sp != NULL )
 		{
 			sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
-			sp->procFlags = PROC_ON_MELEE_ATTACK | PROC_TARGET_SELF;
+			sp->procFlags = PROC_ON_MELEE_ATTACK | static_cast<uint32>(PROC_TARGET_SELF);
 			sp->EffectTriggerSpell[0] = sp->EffectTriggerSpell[1];
 		}
 		sp = dbcSpell.LookupEntryForced( 30030 );
 		if( sp != NULL )
 		{
 			sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
-			sp->procFlags = PROC_ON_MELEE_ATTACK | PROC_TARGET_SELF;
+			sp->procFlags = PROC_ON_MELEE_ATTACK | static_cast<uint32>(PROC_TARGET_SELF);
 			sp->EffectTriggerSpell[0] = sp->EffectTriggerSpell[1];
 		}
 		sp = dbcSpell.LookupEntryForced( 30033 );
 		if( sp != NULL )
 		{
 			sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
-			sp->procFlags = PROC_ON_MELEE_ATTACK | PROC_TARGET_SELF;
+			sp->procFlags = PROC_ON_MELEE_ATTACK | static_cast<uint32>(PROC_TARGET_SELF);
 			sp->EffectTriggerSpell[0] = sp->EffectTriggerSpell[1];
 		}
 	#ifdef NEW_PROCFLAGS
@@ -14228,10 +14228,10 @@ void ApplyNormalFixes()
 		//warrior - improved berserker rage
 		sp = dbcSpell.LookupEntryForced( 20500 );
 		if( sp != NULL )
-			sp->procFlags = PROC_ON_CAST_SPELL | PROC_TARGET_SELF;
+			sp->procFlags = PROC_ON_CAST_SPELL | static_cast<uint32>(PROC_TARGET_SELF);
 		sp = dbcSpell.LookupEntryForced( 20501 );
 		if( sp != NULL )
-			sp->procFlags = PROC_ON_CAST_SPELL | PROC_TARGET_SELF;
+			sp->procFlags = PROC_ON_CAST_SPELL | static_cast<uint32>(PROC_TARGET_SELF);
 
 		//warrior - Blood Frenzy
 		sp = dbcSpell.LookupEntryForced( 29836 );
@@ -14250,19 +14250,19 @@ void ApplyNormalFixes()
 		//warrior - Unbridled Wrath
 		sp = dbcSpell.LookupEntryForced( 12322 );
 		if( sp != NULL )
-			sp->procFlags = PROC_ON_MELEE_ATTACK | PROC_TARGET_SELF;
+			sp->procFlags = PROC_ON_MELEE_ATTACK | static_cast<uint32>(PROC_TARGET_SELF);
 		sp = dbcSpell.LookupEntryForced( 12999 );
 		if( sp != NULL )
-			sp->procFlags = PROC_ON_MELEE_ATTACK | PROC_TARGET_SELF;
+			sp->procFlags = PROC_ON_MELEE_ATTACK | static_cast<uint32>(PROC_TARGET_SELF);
 		sp = dbcSpell.LookupEntryForced( 13000 );
 		if( sp != NULL )
-			sp->procFlags = PROC_ON_MELEE_ATTACK | PROC_TARGET_SELF;
+			sp->procFlags = PROC_ON_MELEE_ATTACK | static_cast<uint32>(PROC_TARGET_SELF);
 		sp = dbcSpell.LookupEntryForced( 13001 );
 		if( sp != NULL )
-			sp->procFlags = PROC_ON_MELEE_ATTACK | PROC_TARGET_SELF;
+			sp->procFlags = PROC_ON_MELEE_ATTACK | static_cast<uint32>(PROC_TARGET_SELF);
 		sp = dbcSpell.LookupEntryForced( 13002 );
 		if( sp != NULL )
-			sp->procFlags = PROC_ON_MELEE_ATTACK | PROC_TARGET_SELF;
+			sp->procFlags = PROC_ON_MELEE_ATTACK | static_cast<uint32>(PROC_TARGET_SELF);
 
 		//warrior - Commanding Presence
 		sp = dbcSpell.LookupEntryForced( 12318 );
@@ -14814,19 +14814,19 @@ void ApplyNormalFixes()
 		 **********************************************************/
 		sp = dbcSpell.LookupEntryForced( 20177 );
 		if( sp != NULL )
-			sp->procFlags = PROC_ON_ANY_DAMAGE_VICTIM | PROC_TARGET_SELF;
+			sp->procFlags = PROC_ON_ANY_DAMAGE_VICTIM | static_cast<uint32>(PROC_TARGET_SELF);
 		sp = dbcSpell.LookupEntryForced( 20179 );
 		if( sp != NULL )
-			sp->procFlags = PROC_ON_ANY_DAMAGE_VICTIM | PROC_TARGET_SELF;
+			sp->procFlags = PROC_ON_ANY_DAMAGE_VICTIM | static_cast<uint32>(PROC_TARGET_SELF);
 		sp = dbcSpell.LookupEntryForced( 20180 );
 		if( sp != NULL )
-			sp->procFlags = PROC_ON_ANY_DAMAGE_VICTIM | PROC_TARGET_SELF;
+			sp->procFlags = PROC_ON_ANY_DAMAGE_VICTIM | static_cast<uint32>(PROC_TARGET_SELF);
 		sp = dbcSpell.LookupEntryForced( 20181 );
 		if( sp != NULL )
-			sp->procFlags = PROC_ON_ANY_DAMAGE_VICTIM | PROC_TARGET_SELF;
+			sp->procFlags = PROC_ON_ANY_DAMAGE_VICTIM | static_cast<uint32>(PROC_TARGET_SELF);
 		sp = dbcSpell.LookupEntryForced( 20182 );
 		if( sp != NULL )
-			sp->procFlags = PROC_ON_ANY_DAMAGE_VICTIM | PROC_TARGET_SELF;
+			sp->procFlags = PROC_ON_ANY_DAMAGE_VICTIM | static_cast<uint32>(PROC_TARGET_SELF);
 
 		/**********************************************************
 		 * Reckoning Effect
@@ -14835,7 +14835,7 @@ void ApplyNormalFixes()
 		if( sp != NULL )
 		{
 			sp->procChance = 100;
-			sp->procFlags = PROC_ON_MELEE_ATTACK | PROC_TARGET_SELF;
+			sp->procFlags = PROC_ON_MELEE_ATTACK | static_cast<uint32>(PROC_TARGET_SELF);
 		}
 
 		/**********************************************************
@@ -15054,14 +15054,14 @@ void ApplyNormalFixes()
 		sp = dbcSpell.LookupEntryForced( 31785 );
 		if( sp != NULL )
 		{
-			sp->procFlags = PROC_ON_SPELL_LAND_VICTIM | PROC_TARGET_SELF ;
+			sp->procFlags = PROC_ON_SPELL_LAND_VICTIM | static_cast<uint32>(PROC_TARGET_SELF) ;
 			sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
 			sp->EffectTriggerSpell[0] = 31786;
 		}
 		sp = dbcSpell.LookupEntryForced( 33776 );
 		if( sp != NULL )
 		{
-			sp->procFlags = PROC_ON_SPELL_LAND_VICTIM | PROC_TARGET_SELF;
+			sp->procFlags = PROC_ON_SPELL_LAND_VICTIM | static_cast<uint32>(PROC_TARGET_SELF);
 			sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
 			sp->EffectTriggerSpell[0] = 31786;
 		}
@@ -15138,19 +15138,19 @@ void ApplyNormalFixes()
 		// Hunter - Master Tactician
 		sp = dbcSpell.LookupEntryForced( 34506 );
 		if( sp != NULL )
-			sp->procFlags = PROC_ON_RANGED_ATTACK | PROC_TARGET_SELF;
+			sp->procFlags = PROC_ON_RANGED_ATTACK | static_cast<uint32>(PROC_TARGET_SELF);
 		sp = dbcSpell.LookupEntryForced( 34507 );
 		if( sp != NULL )
-			sp->procFlags = PROC_ON_RANGED_ATTACK | PROC_TARGET_SELF;
+			sp->procFlags = PROC_ON_RANGED_ATTACK | static_cast<uint32>(PROC_TARGET_SELF);
 		sp = dbcSpell.LookupEntryForced( 34508 );
 		if( sp != NULL )
-			sp->procFlags = PROC_ON_RANGED_ATTACK | PROC_TARGET_SELF;
+			sp->procFlags = PROC_ON_RANGED_ATTACK | static_cast<uint32>(PROC_TARGET_SELF);
 		sp = dbcSpell.LookupEntryForced( 34838 );
 		if( sp != NULL )
-			sp->procFlags = PROC_ON_RANGED_ATTACK | PROC_TARGET_SELF;
+			sp->procFlags = PROC_ON_RANGED_ATTACK | static_cast<uint32>(PROC_TARGET_SELF);
 		sp = dbcSpell.LookupEntryForced( 34839 );
 		if( sp != NULL )
-			sp->procFlags = PROC_ON_RANGED_ATTACK | PROC_TARGET_SELF;
+			sp->procFlags = PROC_ON_RANGED_ATTACK | static_cast<uint32>(PROC_TARGET_SELF);
 
 		// Hunter - Spirit Bond
 		sp = dbcSpell.LookupEntryForced( 19578 );
@@ -15262,7 +15262,7 @@ void ApplyNormalFixes()
 			sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
 			sp->EffectImplicitTargetA[0] = EFF_TARGET_PET;
 			sp->EffectTriggerSpell[0] = 34456;
-			sp->procFlags = PROC_ON_SPELL_CRIT_HIT | PROC_TARGET_SELF; //maybe target master ?
+			sp->procFlags = PROC_ON_SPELL_CRIT_HIT | static_cast<uint32>(PROC_TARGET_SELF); //maybe target master ?
 			sp->Effect[1] = 0; //remove this
 		}
 		sp = dbcSpell.LookupEntryForced( 34459 );
@@ -15272,7 +15272,7 @@ void ApplyNormalFixes()
 			sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
 			sp->EffectImplicitTargetA[0] = EFF_TARGET_PET;
 			sp->EffectTriggerSpell[0] = 34456;
-			sp->procFlags = PROC_ON_SPELL_CRIT_HIT | PROC_TARGET_SELF; 
+			sp->procFlags = PROC_ON_SPELL_CRIT_HIT | static_cast<uint32>(PROC_TARGET_SELF); 
 			sp->Effect[1] = 0; //remove this
 		}
 		sp = dbcSpell.LookupEntryForced( 34460 );
@@ -15282,7 +15282,7 @@ void ApplyNormalFixes()
 			sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
 			sp->EffectImplicitTargetA[0] = EFF_TARGET_PET;
 			sp->EffectTriggerSpell[0] = 34456;
-			sp->procFlags = PROC_ON_SPELL_CRIT_HIT | PROC_TARGET_SELF;
+			sp->procFlags = PROC_ON_SPELL_CRIT_HIT | static_cast<uint32>(PROC_TARGET_SELF);
 			sp->Effect[1] = 0; //remove this
 		}
 
@@ -15321,7 +15321,7 @@ void ApplyNormalFixes()
 		sp = dbcSpell.LookupEntryForced( 34497 );
 		if( sp != NULL )
 		{
-			sp->procFlags = PROC_ON_SPELL_CRIT_HIT | PROC_TARGET_SELF;
+			sp->procFlags = PROC_ON_SPELL_CRIT_HIT | static_cast<uint32>(PROC_TARGET_SELF);
 			sp->procChance = sp->EffectBasePoints[0]+1;
 			sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
 			sp->EffectTriggerSpell[0] = 34720;
@@ -15329,7 +15329,7 @@ void ApplyNormalFixes()
 		sp = dbcSpell.LookupEntryForced( 34498 );
 		if( sp != NULL )
 		{
-			sp->procFlags = PROC_ON_SPELL_CRIT_HIT | PROC_TARGET_SELF;
+			sp->procFlags = PROC_ON_SPELL_CRIT_HIT | static_cast<uint32>(PROC_TARGET_SELF);
 			sp->procChance = sp->EffectBasePoints[0]+1;
 			sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
 			sp->EffectTriggerSpell[0] = 34720;
@@ -15337,7 +15337,7 @@ void ApplyNormalFixes()
 		sp = dbcSpell.LookupEntryForced( 34499 );
 		if( sp != NULL )
 		{
-			sp->procFlags = PROC_ON_SPELL_CRIT_HIT | PROC_TARGET_SELF;
+			sp->procFlags = PROC_ON_SPELL_CRIT_HIT | static_cast<uint32>(PROC_TARGET_SELF);
 			sp->procChance = sp->EffectBasePoints[0]+1;
 			sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
 			sp->EffectTriggerSpell[0] = 34720;
@@ -15383,7 +15383,7 @@ void ApplyNormalFixes()
 			sp->EffectImplicitTargetA[0] = EFF_TARGET_PET;
 			sp->procChance = sp->EffectBasePoints[0];
 			sp->procFlags = PROC_ON_CRIT_ATTACK;
-			sp->c_is_flags |= SPELL_FLAG_IS_EXPIREING_WITH_PET | SPELL_FLAG_IS_CASTED_ON_PET_SUMMON_ON_PET | PROC_TARGET_SELF;
+			sp->c_is_flags |= SPELL_FLAG_IS_EXPIREING_WITH_PET | SPELL_FLAG_IS_CASTED_ON_PET_SUMMON_ON_PET | static_cast<uint32>(PROC_TARGET_SELF);
 		}
 		sp = dbcSpell.LookupEntryForced( 19622 );
 		if( sp != NULL )
@@ -15393,7 +15393,7 @@ void ApplyNormalFixes()
 			sp->EffectImplicitTargetA[0] = EFF_TARGET_PET;
 			sp->procChance = sp->EffectBasePoints[0];
 			sp->procFlags = PROC_ON_CRIT_ATTACK;
-			sp->c_is_flags |= SPELL_FLAG_IS_EXPIREING_WITH_PET | SPELL_FLAG_IS_CASTED_ON_PET_SUMMON_ON_PET | PROC_TARGET_SELF;
+			sp->c_is_flags |= SPELL_FLAG_IS_EXPIREING_WITH_PET | SPELL_FLAG_IS_CASTED_ON_PET_SUMMON_ON_PET | static_cast<uint32>(PROC_TARGET_SELF);
 		}
 		sp = dbcSpell.LookupEntryForced( 19623 );
 		if( sp != NULL )
@@ -15403,7 +15403,7 @@ void ApplyNormalFixes()
 			sp->EffectImplicitTargetA[0] = EFF_TARGET_PET;
 			sp->procChance = sp->EffectBasePoints[0];
 			sp->procFlags = PROC_ON_CRIT_ATTACK;
-			sp->c_is_flags |= SPELL_FLAG_IS_EXPIREING_WITH_PET | SPELL_FLAG_IS_CASTED_ON_PET_SUMMON_ON_PET | PROC_TARGET_SELF;
+			sp->c_is_flags |= SPELL_FLAG_IS_EXPIREING_WITH_PET | SPELL_FLAG_IS_CASTED_ON_PET_SUMMON_ON_PET | static_cast<uint32>(PROC_TARGET_SELF);
 		}
 		sp = dbcSpell.LookupEntryForced( 19624 );
 		if( sp != NULL )
@@ -15413,7 +15413,7 @@ void ApplyNormalFixes()
 			sp->EffectImplicitTargetA[0] = EFF_TARGET_PET;
 			sp->procChance = sp->EffectBasePoints[0];
 			sp->procFlags = PROC_ON_CRIT_ATTACK;
-			sp->c_is_flags |= SPELL_FLAG_IS_EXPIREING_WITH_PET | SPELL_FLAG_IS_CASTED_ON_PET_SUMMON_ON_PET | PROC_TARGET_SELF;
+			sp->c_is_flags |= SPELL_FLAG_IS_EXPIREING_WITH_PET | SPELL_FLAG_IS_CASTED_ON_PET_SUMMON_ON_PET | static_cast<uint32>(PROC_TARGET_SELF);
 		}
 		sp = dbcSpell.LookupEntryForced( 19625 );
 		if( sp != NULL )
@@ -15423,7 +15423,7 @@ void ApplyNormalFixes()
 			sp->EffectImplicitTargetA[0] = EFF_TARGET_PET;
 			sp->procChance = sp->EffectBasePoints[0];
 			sp->procFlags = PROC_ON_CRIT_ATTACK;
-			sp->c_is_flags |= SPELL_FLAG_IS_EXPIREING_WITH_PET | SPELL_FLAG_IS_CASTED_ON_PET_SUMMON_ON_PET | PROC_TARGET_SELF;
+			sp->c_is_flags |= SPELL_FLAG_IS_EXPIREING_WITH_PET | SPELL_FLAG_IS_CASTED_ON_PET_SUMMON_ON_PET | static_cast<uint32>(PROC_TARGET_SELF);
 		}
 
 		//Hunter - Unleashed Fury
@@ -15477,13 +15477,13 @@ void ApplyNormalFixes()
 		sp = dbcSpell.LookupEntryForced( 34948 );
 		if( sp != NULL )
 		{
-			sp->procFlags = PROC_ON_GAIN_EXPIERIENCE | PROC_TARGET_SELF;
+			sp->procFlags = PROC_ON_GAIN_EXPIERIENCE | static_cast<uint32>(PROC_TARGET_SELF);
 			sp->EffectSpellGroupRelation[1] = 32;
 		}
 		sp = dbcSpell.LookupEntryForced( 34949 );
 		if( sp != NULL )
 		{
-			sp->procFlags = PROC_ON_GAIN_EXPIERIENCE | PROC_TARGET_SELF;
+			sp->procFlags = PROC_ON_GAIN_EXPIERIENCE | static_cast<uint32>(PROC_TARGET_SELF);
 			sp->EffectSpellGroupRelation[1] = 32;
 		}
 		//Hunter : Rapid Killing - PROC
@@ -16157,7 +16157,7 @@ void ApplyNormalFixes()
 				procsp->EffectImplicitTargetA[0] = EFF_TARGET_PARTY_MEMBER; //we jump on an injured party member
 				procsp->EffectTriggerSpell[0] = sp->EffectTriggerSpell[1]; //!we proc self but our system does not allow proc loops !
 				procsp->procCharges = 1;
-				procsp->procFlags = PROC_ON_ANY_DAMAGE_VICTIM | PROC_TARGET_SELF;
+				procsp->procFlags = PROC_ON_ANY_DAMAGE_VICTIM | static_cast<uint32>(PROC_TARGET_SELF);
 			}
 			//simplify old system with a simple cast spell
 			sp->Effect[0] = SPELL_EFFECT_TRIGGER_SPELL;
@@ -16682,10 +16682,10 @@ void ApplyNormalFixes()
 		//priest - surge of light
 		sp = dbcSpell.LookupEntryForced( 33150 );
 		if( sp != NULL )
-			sp->procFlags = uint32(PROC_ON_SPELL_CRIT_HIT_VICTIM | PROC_TARGET_SELF);
+			sp->procFlags = uint32(PROC_ON_SPELL_CRIT_HIT_VICTIM | static_cast<uint32>(PROC_TARGET_SELF));
 		sp = dbcSpell.LookupEntryForced( 33154 );
 		if( sp != NULL )
-			sp->procFlags = uint32(PROC_ON_SPELL_CRIT_HIT_VICTIM | PROC_TARGET_SELF);
+			sp->procFlags = uint32(PROC_ON_SPELL_CRIT_HIT_VICTIM | static_cast<uint32>(PROC_TARGET_SELF));
 		sp = dbcSpell.LookupEntryForced( 33151 );
 		if( sp != NULL )
 		{
@@ -17480,19 +17480,19 @@ void ApplyNormalFixes()
 
 		sp = dbcSpell.LookupEntryForced( 11213 );
 		if( sp != NULL )
-			sp->procFlags = PROC_ON_SPELL_HIT | PROC_TARGET_SELF;
+			sp->procFlags = PROC_ON_SPELL_HIT | static_cast<uint32>(PROC_TARGET_SELF);
 		sp = dbcSpell.LookupEntryForced( 12574 );
 		if( sp != NULL )
-			sp->procFlags = PROC_ON_SPELL_HIT | PROC_TARGET_SELF;
+			sp->procFlags = PROC_ON_SPELL_HIT | static_cast<uint32>(PROC_TARGET_SELF);
 		sp = dbcSpell.LookupEntryForced( 12575 );
 		if( sp != NULL )
-			sp->procFlags = PROC_ON_SPELL_HIT | PROC_TARGET_SELF;
+			sp->procFlags = PROC_ON_SPELL_HIT | static_cast<uint32>(PROC_TARGET_SELF);
 		sp = dbcSpell.LookupEntryForced( 12576 );
 		if( sp != NULL )
-			sp->procFlags = PROC_ON_SPELL_HIT | PROC_TARGET_SELF;
+			sp->procFlags = PROC_ON_SPELL_HIT | static_cast<uint32>(PROC_TARGET_SELF);
 		sp = dbcSpell.LookupEntryForced( 12577 );
 		if( sp != NULL )
-			sp->procFlags = PROC_ON_SPELL_HIT | PROC_TARGET_SELF;
+			sp->procFlags = PROC_ON_SPELL_HIT | static_cast<uint32>(PROC_TARGET_SELF);
 
 		//Mage - Icy Veins
 		sp = dbcSpell.LookupEntryForced( 12472 );
@@ -17810,7 +17810,7 @@ void ApplyNormalFixes()
 			sp->Effect[1] = SPELL_EFFECT_APPLY_AURA;
 			sp->EffectApplyAuraName[1] = SPELL_AURA_PROC_TRIGGER_SPELL;
 			sp->EffectTriggerSpell[1] = 28682;
-			sp->procFlags = PROC_ON_SPELL_HIT | PROC_ON_SPELL_CRIT_HIT | PROC_TARGET_SELF;
+			sp->procFlags = PROC_ON_SPELL_HIT | PROC_ON_SPELL_CRIT_HIT | static_cast<uint32>(PROC_TARGET_SELF);
 			sp->procCharges = 0;
 			sp->c_is_flags |= SPELL_FLAG_IS_REQUIRECOOLDOWNUPDATE;
 		}
@@ -17978,7 +17978,7 @@ void ApplyNormalFixes()
 			sp->EffectApplyAuraName[1] = SPELL_AURA_PROC_TRIGGER_SPELL;
 			sp->EffectTriggerSpell[1] = 31117;
 			sp->procChance = 100;
-			sp->procFlags = PROC_ON_PRE_DISPELL_AURA_VICTIM | PROC_TARGET_SELF;
+			sp->procFlags = PROC_ON_PRE_DISPELL_AURA_VICTIM | static_cast<uint32>(PROC_TARGET_SELF);
 		}
 		sp = dbcSpell.LookupEntryForced( 30404 );
 		if (sp != NULL)
@@ -17987,7 +17987,7 @@ void ApplyNormalFixes()
 			sp->EffectApplyAuraName[1] = SPELL_AURA_PROC_TRIGGER_SPELL;
 			sp->EffectTriggerSpell[1] = 31117;
 			sp->procChance = 100;
-			sp->procFlags = PROC_ON_PRE_DISPELL_AURA_VICTIM | PROC_TARGET_SELF;
+			sp->procFlags = PROC_ON_PRE_DISPELL_AURA_VICTIM | static_cast<uint32>(PROC_TARGET_SELF);
 		}
 		sp = dbcSpell.LookupEntryForced( 30405 );
 		if (sp != NULL)
@@ -17996,7 +17996,7 @@ void ApplyNormalFixes()
 			sp->EffectApplyAuraName[1] = SPELL_AURA_PROC_TRIGGER_SPELL;
 			sp->EffectTriggerSpell[1] = 31117;
 			sp->procChance = 100;
-			sp->procFlags = PROC_ON_PRE_DISPELL_AURA_VICTIM | PROC_TARGET_SELF;
+			sp->procFlags = PROC_ON_PRE_DISPELL_AURA_VICTIM | static_cast<uint32>(PROC_TARGET_SELF);
 		}
 		sp = dbcSpell.LookupEntryForced( 31117 );
 		if (sp != NULL)
@@ -18030,19 +18030,19 @@ void ApplyNormalFixes()
 		if (sp != NULL)
 		{
 			sp->proc_interval = 8000;
-			sp->procFlags |= PROC_ON_MELEE_ATTACK_VICTIM | PROC_TARGET_SELF;
+			sp->procFlags |= PROC_ON_MELEE_ATTACK_VICTIM | static_cast<uint32>(PROC_TARGET_SELF);
 		}
 		sp = dbcSpell.LookupEntryForced( 34938 );
 		if (sp != NULL)
 		{
 			sp->proc_interval = 8000;
-			sp->procFlags |= PROC_ON_MELEE_ATTACK_VICTIM | PROC_TARGET_SELF;
+			sp->procFlags |= PROC_ON_MELEE_ATTACK_VICTIM | static_cast<uint32>(PROC_TARGET_SELF);
 		}
 		sp = dbcSpell.LookupEntryForced( 34939 );
 		if (sp != NULL)
 		{
 			sp->proc_interval = 8000;
-			sp->procFlags |= PROC_ON_MELEE_ATTACK_VICTIM | PROC_TARGET_SELF;
+			sp->procFlags |= PROC_ON_MELEE_ATTACK_VICTIM | static_cast<uint32>(PROC_TARGET_SELF);
 		}
 		sp = dbcSpell.LookupEntryForced( 34936 );
 		if (sp != NULL)
@@ -18149,7 +18149,7 @@ void ApplyNormalFixes()
 		{
 			sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
 			sp->EffectTriggerSpell[0] = 17941;
-			sp->procFlags = PROC_ON_ANY_HOSTILE_ACTION | PROC_TARGET_SELF;
+			sp->procFlags = PROC_ON_ANY_HOSTILE_ACTION | static_cast<uint32>(PROC_TARGET_SELF);
 			sp->procChance = 2;
 			sp->EffectSpellGroupRelation[0] = 1; 
 		}
@@ -18158,7 +18158,7 @@ void ApplyNormalFixes()
 		{
 			sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
 			sp->EffectTriggerSpell[0] = 17941;
-			sp->procFlags = PROC_ON_ANY_HOSTILE_ACTION | PROC_TARGET_SELF;
+			sp->procFlags = PROC_ON_ANY_HOSTILE_ACTION | static_cast<uint32>(PROC_TARGET_SELF);
 			sp->procChance = 4;
 			sp->EffectSpellGroupRelation[0] = 1; 
 		}
@@ -19056,7 +19056,7 @@ void ApplyNormalFixes()
 		sp = dbcSpell.LookupEntryForced( 18213 );
 		if( sp != NULL )
 		{
-			sp->procFlags = PROC_ON_TARGET_DIE | PROC_TARGET_SELF;
+			sp->procFlags = PROC_ON_TARGET_DIE | static_cast<uint32>(PROC_TARGET_SELF);
 			sp->procChance = 100;
 			sp->Effect[0] = SPELL_EFFECT_APPLY_AURA;
 			sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
@@ -19068,7 +19068,7 @@ void ApplyNormalFixes()
 		sp = dbcSpell.LookupEntryForced( 18372 );
 		if( sp != NULL )
 		{
-			sp->procFlags = PROC_ON_TARGET_DIE | PROC_TARGET_SELF;
+			sp->procFlags = PROC_ON_TARGET_DIE | static_cast<uint32>(PROC_TARGET_SELF);
 			sp->procChance = 100;
 			sp->Effect[0] = SPELL_EFFECT_APPLY_AURA;
 			sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
@@ -20041,7 +20041,7 @@ void ApplyNormalFixes()
 		//Spell Haste Trinket
 		sp = dbcSpell.LookupEntryForced( 33297 ); 
 		if( sp != NULL )
-			sp->procFlags = PROC_ON_CAST_SPELL | PROC_TARGET_SELF;
+			sp->procFlags = PROC_ON_CAST_SPELL | static_cast<uint32>(PROC_TARGET_SELF);
 
 		// Band of the Eternal Sage
 		sp = dbcSpell.LookupEntryForced( 35083 );

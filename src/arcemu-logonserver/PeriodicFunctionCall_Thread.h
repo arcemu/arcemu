@@ -70,13 +70,15 @@ public:
 		hEvent = CreateEvent( NULL, TRUE, FALSE, NULL );
 		for ( ;; )
 		{
-			WaitForSingleObject( hEvent, interval );
+			if (hEvent)
+				WaitForSingleObject( hEvent, interval );
 
 			if ( !running )
 				break;	/* we got killed */
 
 			/* times up */
-			ResetEvent( hEvent );
+			if (hEvent)
+				ResetEvent( hEvent );
 			cb->execute();
 		}
 		thread_active = false;

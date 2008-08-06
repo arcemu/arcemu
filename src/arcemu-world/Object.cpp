@@ -677,7 +677,7 @@ void Object::_BuildValuesUpdate(ByteBuffer * data, UpdateMask *updateMask, Playe
 									it2 != itr->second.end(); 
 									++it2)
 								{
-									if((qle = target->GetQuestLogForEntry(itr->first->id)))
+									if((qle = target->GetQuestLogForEntry(itr->first->id)) != 0)
 									{
 										if(target->GetItemInterface()->GetItemCount(it2->first) < it2->second)
 										{
@@ -712,7 +712,7 @@ void Object::_BuildValuesUpdate(ByteBuffer * data, UpdateMask *updateMask, Playe
 	if( m_valuesCount > ( 2 * 0x20 ) )//if number of blocks > 2->  unit and player+item container
 	{
 		bc = updateMask->GetUpdateBlockCount();
-		values_count = (uint32)min( bc * 32, m_valuesCount );
+		values_count = min<uint32>( bc * 32, m_valuesCount );
 
 	}
 	else
@@ -2973,6 +2973,6 @@ uint32 Object::GetTeam()
 		}
 	}
 
-	return -1;
+	return static_cast<uint32>(-1);
 }
 

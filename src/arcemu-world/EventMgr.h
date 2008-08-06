@@ -294,7 +294,7 @@ public:
 		obj->event_AddEvent(event);
 	}
 
-	template <class Class> void RemoveEvents(Class *obj) { obj->event_RemoveEvents(-1); }
+	template <class Class> void RemoveEvents(Class *obj) { obj->event_RemoveEvents(static_cast<uint32>(-1)); }
 	template <class Class> void RemoveEvents(Class *obj, int32 type)
 	{
 		obj->event_RemoveEvents(type);

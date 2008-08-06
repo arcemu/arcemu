@@ -92,7 +92,7 @@ bool MySQLDatabase::Initialize(const char* Hostname, unsigned int port, const ch
 
 string MySQLDatabase::EscapeString(string Escape)
 {
-	char a2[16384] = {0};
+	char * a2 = new char[16384];
 
 	DatabaseConnection * con = GetFreeConnection();
 	const char * ret;
@@ -107,7 +107,7 @@ string MySQLDatabase::EscapeString(string Escape)
 
 void MySQLDatabase::EscapeLongString(const char * str, uint32 len, stringstream& out)
 {
-	char a2[65536*3] = {0};
+	char * a2 = new char[65536*3];
 
 	DatabaseConnection * con = GetFreeConnection();
 	const char * ret;

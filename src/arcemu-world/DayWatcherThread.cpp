@@ -133,7 +133,7 @@ bool DayWatcherThread::has_timeout_expired(tm * now_time, tm * last_time, uint32
 		return ((now_time->tm_hour != last_time->tm_hour) || (now_time->tm_mday != last_time->tm_mday) || (now_time->tm_mon != last_time->tm_mon));
 
 	case DAILY:
-		return ((now_time->tm_mday != last_time->tm_mday) || (now_time->tm_mday != last_time->tm_mday));
+		return (now_time->tm_mday != last_time->tm_mday);
 	}
 	return false;
 }
@@ -176,7 +176,8 @@ bool DayWatcherThread::run()
 			break;
 
 #ifdef WIN32
-		WaitForSingleObject(m_abortEvent, 120000);
+		if (m_abortEvent)
+			WaitForSingleObject(m_abortEvent, 120000);
 #else
 		gettimeofday(&now, NULL);
 		tv.tv_sec = now.tv_sec + 120;
@@ -189,7 +190,8 @@ bool DayWatcherThread::run()
 			break;
 	}
 #ifdef WIN32
-	CloseHandle(m_abortEvent);
+	if (m_abortEvent)
+		CloseHandle(m_abortEvent);		
 #else
 	pthread_mutex_destroy(&abortmutex);
 	pthread_cond_destroy(&abortcond);

@@ -286,9 +286,6 @@ static unsigned long WINAPI thread_proc(void* param)
 
 	// at this point the t pointer has already been freed, so we can just cleanly exit.
 	ExitThread(0);
-
-	// not reached
-	return 0;
 }
 
 Thread * CThreadPool::StartThread(ThreadBase * ExecutionTarget)

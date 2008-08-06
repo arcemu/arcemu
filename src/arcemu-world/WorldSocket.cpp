@@ -57,7 +57,7 @@ WorldSocket::WorldSocket(SOCKET fd) : Socket(fd, sWorld.SocketSendBufSize, sWorl
 WorldSocket::~WorldSocket()
 {
 	WorldPacket * pck;
-	while((pck = _queue.Pop()))
+	while((pck = _queue.Pop()) != 0)
 		delete pck;
 
 	if(pAuthenticationPacket)
@@ -131,7 +131,7 @@ void WorldSocket::UpdateQueuedPackets()
 	}
 
 	WorldPacket * pck;
-	while((pck = _queue.front()))
+	while((pck = _queue.front()) != 0)
 	{
 		/* try to push out as many as you can */
 		switch(_OutPacket(pck->GetOpcode(), pck->size(), pck->size() ? pck->contents() : NULL))
@@ -299,7 +299,7 @@ void WorldSocket::InformationRetreiveCallback(WorldPacket & recvData, uint32 req
 	// Initialize crypto.
 	_crypt.SetKey(key, 20);
 	_crypt.Init();
-	delete key;
+	delete [] key;
 
 	//checking if player is already connected
     //disconnect corrent player and login this one(blizzlike)

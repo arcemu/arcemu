@@ -251,7 +251,7 @@ bool HandleCreateAccountCommand(BaseConsole * pConsole, int argc, const char * a
 	const char * username = argv[1];
 	const char * password = argv[2];
 	const char * email = argv[3];
-	uint32 flags = atoi(argv[4]);
+//	uint32 flags = atoi(argv[4]);
 
 	if(strlen(username) == 0 || strlen(password) == 0 || strlen(email) == 0)
 		return false;

@@ -161,7 +161,7 @@ void LfgMgr::UpdateLfgQueue(uint32 LfgDungeonId)
 	LfgPlayerList::iterator itr;
 	LfgPlayerList::iterator it2;
 	LfgPlayerList::iterator it3;
-	Player * plr;
+	Player * plr = 0;
 	uint32 i;
 	//LfgMatch * pMatch;
 

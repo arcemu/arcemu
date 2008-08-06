@@ -1101,7 +1101,8 @@ public:
 			fseek( f, 20 + ( rows * cols * 4 ), SEEK_SET );
 			m_stringData = (char*)malloc(string_length);
 			m_stringlength = string_length;
-			fread( m_stringData, string_length, 1, f );
+			if (m_stringData)
+				fread( m_stringData, string_length, 1, f );
 		}
 
 		fseek(f, pos, SEEK_SET);

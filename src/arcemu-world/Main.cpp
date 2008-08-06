@@ -64,7 +64,6 @@ int win32_main( int argc, char ** argv )
 	}
 	THREAD_HANDLE_CRASH;
 	exit( 0 );
-	return 0;
 }
 
 #endif

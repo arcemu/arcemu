@@ -1950,7 +1950,7 @@ float AIInterface::_CalcAggroRange(Unit* target)
 	float baseAR[17] = {19.0f, 18.5f, 18.0f, 17.5f, 17.0f, 16.5f, 16.0f, 15.5f, 15.0f, 14.5f, 12.0f, 10.5f, 8.5f,  7.5f,  6.5f,  6.5f, 5.0f};
 	// Lvl Diff -8 -7 -6 -5 -4 -3 -2 -1 +0 +1 +2  +3  +4  +5  +6  +7  +8
 	// Arr Pos   0  1  2  3  4  5  6  7  8  9 10  11  12  13  14  15  16
-	int8 lvlDiff = target->getLevel() - m_Unit->getLevel();
+	int8 lvlDiff = static_cast<int8>(target->getLevel() - m_Unit->getLevel());
 	uint8 realLvlDiff = lvlDiff;
 	if(lvlDiff > 8)
 	{

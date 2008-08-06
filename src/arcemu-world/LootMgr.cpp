@@ -801,7 +801,7 @@ void LootRoll::Finalize()
 	ItemPrototype* it = ItemPrototypeStorage.LookupEntry(itemid);
 
 	int8 error;
-	if((error = _player->GetItemInterface()->CanReceiveItem(it, 1)))
+	if((error = _player->GetItemInterface()->CanReceiveItem(it, 1)) != 0)
 	{
 		_player->GetItemInterface()->BuildInventoryChangeError(NULL, NULL, error);
 		return;
@@ -857,7 +857,7 @@ void LootRoll::Finalize()
 	Player * plr;
 	for(LooterSet::iterator itr = pLoot->looters.begin(); itr != pLoot->looters.end(); ++itr)
 	{
-		if((plr = _player->GetMapMgr()->GetPlayer(*itr)))
+		if((plr = _player->GetMapMgr()->GetPlayer(*itr)) != 0)
 			plr->GetSession()->SendPacket(&data);
 	}
 

@@ -181,7 +181,7 @@ void WorldSession::HandleSwapItemOpcode(WorldPacket& recv_data)
 
 			if(SrcSlot <  INVENTORY_KEYRING_END)
 			{
-				if((error=GetPlayer()->GetItemInterface()->CanEquipItemInSlot2(SrcInvSlot, SrcSlot, DstItem)))
+				if((error=GetPlayer()->GetItemInterface()->CanEquipItemInSlot2(SrcInvSlot, SrcSlot, DstItem)) != 0)
 				{
 					_player->GetItemInterface()->BuildInventoryChangeError(SrcItem, DstItem, error);
 					return;
@@ -199,7 +199,7 @@ void WorldSession::HandleSwapItemOpcode(WorldPacket& recv_data)
 				}
 			}
 
-			if((error=GetPlayer()->GetItemInterface()->CanEquipItemInSlot2(SrcInvSlot, SrcInvSlot, DstItem)))
+			if((error=GetPlayer()->GetItemInterface()->CanEquipItemInSlot2(SrcInvSlot, SrcInvSlot, DstItem)) != 0)
 			{
 				_player->GetItemInterface()->BuildInventoryChangeError(SrcItem, DstItem, error);
 				return;
@@ -225,7 +225,7 @@ void WorldSession::HandleSwapItemOpcode(WorldPacket& recv_data)
 
 			if(DstSlot <  INVENTORY_KEYRING_END)
 			{
-				if((error=GetPlayer()->GetItemInterface()->CanEquipItemInSlot2(DstInvSlot, DstSlot, SrcItem)))
+				if((error=GetPlayer()->GetItemInterface()->CanEquipItemInSlot2(DstInvSlot, DstSlot, SrcItem)) != 0)
 				{
 					_player->GetItemInterface()->BuildInventoryChangeError(SrcItem, DstItem, error);
 					return;
@@ -243,7 +243,7 @@ void WorldSession::HandleSwapItemOpcode(WorldPacket& recv_data)
 				}
 			}
 
-			if((error=GetPlayer()->GetItemInterface()->CanEquipItemInSlot2(DstInvSlot, DstInvSlot, SrcItem)))
+			if((error=GetPlayer()->GetItemInterface()->CanEquipItemInSlot2(DstInvSlot, DstInvSlot, SrcItem)) != 0)
 			{
 				_player->GetItemInterface()->BuildInventoryChangeError(SrcItem, DstItem, error);
 				return;
@@ -406,7 +406,7 @@ void WorldSession::HandleSwapInvItemOpcode( WorldPacket & recv_data )
 		return;
 	}
 	
-	if( ( error = _player->GetItemInterface()->CanEquipItemInSlot2( INVENTORY_SLOT_NOT_SET, dstslot, srcitem, skip_combat ) ) )
+	if( ( error = _player->GetItemInterface()->CanEquipItemInSlot2( INVENTORY_SLOT_NOT_SET, dstslot, srcitem, skip_combat ) )  != 0)
 	{
 		if( dstslot < INVENTORY_KEYRING_END )
 		{
@@ -417,7 +417,7 @@ void WorldSession::HandleSwapInvItemOpcode( WorldPacket & recv_data )
 
 	if(dstitem)
 	{
-		if((error=_player->GetItemInterface()->CanEquipItemInSlot2(INVENTORY_SLOT_NOT_SET, srcslot, dstitem, skip_combat)))
+		if((error=_player->GetItemInterface()->CanEquipItemInSlot2(INVENTORY_SLOT_NOT_SET, srcslot, dstitem, skip_combat)) != 0)
 		{
 			if(srcslot < INVENTORY_KEYRING_END)
 			{
@@ -613,7 +613,7 @@ void WorldSession::HandleAutoEquipItemOpcode( WorldPacket & recv_data )
 			}
 		}
 
-		if((error = _player->GetItemInterface()->CanEquipItemInSlot2(INVENTORY_SLOT_NOT_SET, Slot, eitem, true, true)))
+		if((error = _player->GetItemInterface()->CanEquipItemInSlot2(INVENTORY_SLOT_NOT_SET, Slot, eitem, true, true)) != 0)
 		{
 			_player->GetItemInterface()->BuildInventoryChangeError(eitem,NULL, error);
 			return;
@@ -670,7 +670,7 @@ void WorldSession::HandleAutoEquipItemOpcode( WorldPacket & recv_data )
 	}
 	else
 	{
-		if((error = _player->GetItemInterface()->CanEquipItemInSlot2(INVENTORY_SLOT_NOT_SET, Slot, eitem)))
+		if((error = _player->GetItemInterface()->CanEquipItemInSlot2(INVENTORY_SLOT_NOT_SET, Slot, eitem)) != 0)
 		{
 			_player->GetItemInterface()->BuildInventoryChangeError(eitem,NULL, error);
 			return;
@@ -679,7 +679,7 @@ void WorldSession::HandleAutoEquipItemOpcode( WorldPacket & recv_data )
 
 	if( Slot <= INVENTORY_SLOT_BAG_END )
 	{
-		if((error = _player->GetItemInterface()->CanEquipItemInSlot2(INVENTORY_SLOT_NOT_SET, Slot, eitem, false, false)))
+		if((error = _player->GetItemInterface()->CanEquipItemInSlot2(INVENTORY_SLOT_NOT_SET, Slot, eitem, false, false)) != 0)
 		{
 			_player->GetItemInterface()->BuildInventoryChangeError(eitem,NULL, error);
 			return;
@@ -898,7 +898,7 @@ void WorldSession::HandleBuyBackOpcode( WorldPacket & recv_data )
 			return;
 		}
 		// Check for item uniqueness
-		if ((error = _player->GetItemInterface()->CanReceiveItem(it->GetProto(), amount)))
+		if ((error = _player->GetItemInterface()->CanReceiveItem(it->GetProto(), amount)) != 0)
 		{
 			_player->GetItemInterface()->BuildInventoryChangeError(NULL, NULL, error);
 			return;
@@ -1145,13 +1145,13 @@ void WorldSession::HandleBuyItemInSlotOpcode( WorldPacket & recv_data ) // drag 
 			slot=_player->GetItemInterface()->FindFreeBackPackSlot();
 	}
 
-	if((error = _player->GetItemInterface()->CanReceiveItem(it, amount)))
+	if((error = _player->GetItemInterface()->CanReceiveItem(it, amount)) != 0)
 	{
 		_player->GetItemInterface()->BuildInventoryChangeError(NULL, NULL, error);
 		return;
 	}
 
-	if((error = _player->GetItemInterface()->CanAffordItem(it,amount,unit)))
+	if((error = _player->GetItemInterface()->CanAffordItem(it,amount,unit)) != 0)
 	{
 		SendBuyFailed(srcguid, ci.itemid, error);
 		return;
@@ -1195,7 +1195,7 @@ void WorldSession::HandleBuyItemInSlotOpcode( WorldPacket & recv_data ) // drag 
 		if(slot == INVENTORY_SLOT_NOT_SET)
 			slot = c->FindFreeSlot();
 		
-		if(slot==ITEM_NO_SLOT_AVAILABLE || slot == INVENTORY_SLOT_NOT_SET )
+		if(slot==ITEM_NO_SLOT_AVAILABLE)
 		{
 			_player->GetItemInterface()->BuildInventoryChangeError(0, 0, INV_ERR_BAG_FULL);
 			return;
@@ -1297,13 +1297,13 @@ void WorldSession::HandleBuyItemOpcode( WorldPacket & recv_data ) // right-click
 		return;
 	}
 
-	if((error = _player->GetItemInterface()->CanReceiveItem(it, amount*item.amount)))
+	if((error = _player->GetItemInterface()->CanReceiveItem(it, amount*item.amount)) != 0)
 	{
 		_player->GetItemInterface()->BuildInventoryChangeError(NULL, NULL, error);
 		return;
 	}
 
-   if((error = _player->GetItemInterface()->CanAffordItem(it, amount, unit)))
+   if((error = _player->GetItemInterface()->CanAffordItem(it, amount, unit)) != 0)
    {
       SendBuyFailed(srcguid, itemid, error);
       return;
@@ -1342,7 +1342,7 @@ void WorldSession::HandleBuyItemOpcode( WorldPacket & recv_data ) // right-click
 				ItemPool.PooledDelete( itm );
 			}
 			else
-				SendItemPushResult(itm, false, true, false, true, INVENTORY_SLOT_NOT_SET, slotresult.Result, amount*item.amount);
+				SendItemPushResult(itm, false, true, false, true, static_cast<uint8>(INVENTORY_SLOT_NOT_SET), slotresult.Result, amount*item.amount);
 		}
 		else 
 		{
@@ -1424,7 +1424,7 @@ void WorldSession::SendInventoryList(Creature* unit)
 	{
 		if(itr->itemid && (itr->max_amount == 0 || (itr->max_amount>0 && itr->available_amount >0)))
 		{
-			if((curItem = ItemPrototypeStorage.LookupEntry(itr->itemid)))
+			if((curItem = ItemPrototypeStorage.LookupEntry(itr->itemid)) != 0)
 			{
 				if(curItem->AllowableClass && !(_player->getClassMask() & curItem->AllowableClass) && !_player->GetSession()->HasGMPermissions()) // GM looking up for everything.
 					continue;
@@ -1522,7 +1522,7 @@ void WorldSession::HandleAutoStoreBagItemOpcode( WorldPacket & recv_data )
 		}
 		else
 		{
-			if((error=_player->GetItemInterface()->CanEquipItemInSlot2(DstInv,  DstInv, srcitem)))
+			if((error=_player->GetItemInterface()->CanEquipItemInSlot2(DstInv,  DstInv, srcitem)) != 0)
 			{
 				if(DstInv < INVENTORY_KEYRING_END)
 				{

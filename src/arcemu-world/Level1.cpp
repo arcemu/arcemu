@@ -149,7 +149,7 @@ bool ChatHandler::HandleGPSCommand(const char* args, WorldSession *m_session)
 	uint64 guid = m_session->GetPlayer()->GetSelection();
 	if (guid != 0)
 	{
-		if(!(obj = m_session->GetPlayer()->GetMapMgr()->GetUnit(guid)))
+		if((obj = m_session->GetPlayer()->GetMapMgr()->GetUnit(guid)) == 0)
 		{
 			SystemMessage(m_session, "You should select a character or a creature.");
 			return true;

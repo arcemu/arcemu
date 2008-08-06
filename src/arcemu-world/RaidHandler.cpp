@@ -106,6 +106,7 @@ void WorldSession::HandleGroupPromote(WorldPacket& recv_data)
 	recv_data >> guid;
 
 	void(Group::*function_to_call)(PlayerInfo*);
+	function_to_call = 0;
 
 	if(promotetype == 0)
 		function_to_call = &Group::SetMainTank;

@@ -568,7 +568,7 @@ protected:
 	};
 
 	//! Number of properties
-	uint32 m_valuesCount;
+	uint16 m_valuesCount;
 
 	//! List of object properties that need updating.
 	UpdateMask m_updateMask;

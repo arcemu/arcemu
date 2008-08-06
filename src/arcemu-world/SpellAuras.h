@@ -687,7 +687,7 @@ public:
 	AreaAuraList targets;//this is only used for AA
 	uint64 m_casterGuid;
 
-	uint32 m_auraSlot;
+	uint8 m_auraSlot;
 
 	uint32 m_castedItemId;
 	bool m_areaAura;		// Area aura stuff -> never passive.

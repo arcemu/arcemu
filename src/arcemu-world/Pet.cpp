@@ -1583,7 +1583,7 @@ uint16 Pet::SpellTP(uint32 spellId)
 	//returns required training points for spell
 	skilllinespell *sk = objmgr.GetSpellSkill(spellId);
 	if(sk)
-		return sk->reqTP;
+		return static_cast<uint16>(sk->reqTP);
 	return 0;
 }
 uint16 Pet::GetUsedTP()
@@ -1643,7 +1643,7 @@ void Pet::UpdateTP()
 	//formula: TP = level*(loyaltyLvl - 1) - usedTP
 	//http://petopia.brashendeavors.net/html/articles/skills_main.shtml
 	if(!m_Owner || Summon) return;
-	int16 pts = getLevel()*(GetLoyaltyLevel()-1)-GetUsedTP();
+	int16 pts = static_cast<int16>(getLevel()*(GetLoyaltyLevel()-1)-GetUsedTP());
 	TP = pts;
 	SetUInt32Value(UNIT_TRAINING_POINTS, pts < 0?(-pts & 0xffff):(pts<<16));//uff, works, but has anybody better idea?
 }

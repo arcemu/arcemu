@@ -2178,7 +2178,7 @@ void SendItemLinkToPlayer(ItemPrototype * iProto, WorldSession * pSession, bool 
 		
  	if(ItemCount)
 	{
-		int8 count = owner->GetItemInterface()->GetItemCount(iProto->ItemId, true);
+		int8 count = static_cast<int8>(owner->GetItemInterface()->GetItemCount(iProto->ItemId, true));
 		int8 slot = owner->GetItemInterface()->GetBagSlotByGuid(iProto->ItemId);
 		sChatHandler.SystemMessage(pSession,"Item %u %s Count %u Slot %u ContainerSlots %u", iProto->ItemId, GetItemLinkByProto(iProto, language).c_str(), count, slot, iProto->ContainerSlots);
 	}

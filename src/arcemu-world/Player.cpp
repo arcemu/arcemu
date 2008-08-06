@@ -630,7 +630,7 @@ bool Player::Create(WorldPacket& data )
 	else
 		m_team = 1;
 
-	uint8 powertype = myClass->power_type;
+	uint8 powertype = static_cast<uint8>(myClass->power_type);
 
 	// Automatically add the race's taxi hub to the character's taximask at creation time ( 1 << (taxi_node_id-1) )
 	memset(m_taximask,0,sizeof(m_taximask));
@@ -4231,7 +4231,7 @@ void Player::CreateCorpse()
 	Item * pItem;
 	for (int8 i = 0; i < EQUIPMENT_SLOT_END; i++)
 	{
-		if(( pItem = GetItemInterface()->GetInventoryItem(i)))
+		if(( pItem = GetItemInterface()->GetInventoryItem(i)) != 0)
 		{
 			iDisplayID = pItem->GetProto()->DisplayInfoID;
 			iIventoryType = (uint16)pItem->GetProto()->InventoryType;
@@ -4295,7 +4295,7 @@ void Player::DeathDurabilityLoss(double percent)
 
 	for (int8 i = 0; i < EQUIPMENT_SLOT_END; i++)
 	{
-		if((pItem = GetItemInterface()->GetInventoryItem(i)))
+		if((pItem = GetItemInterface()->GetInventoryItem(i)) != 0)
 		{
 			pMaxDurability = pItem->GetUInt32Value(ITEM_FIELD_MAXDURABILITY);
 			pDurability =  pItem->GetUInt32Value(ITEM_FIELD_DURABILITY);
@@ -5302,7 +5302,7 @@ bool Player::HasQuestForItem(uint32 itemid)
 			if( !qst->count_required_item )
 				continue;
 
-			for( uint32 j = 0; j < 4 && j < 4; ++j )
+			for( uint32 j = 0; j < 4; ++j )
 				if( qst->required_item[j] == itemid && ( GetItemInterface()->GetItemCount( itemid ) < qst->required_itemcount[j] ) )
 					return true;
 		}
@@ -6003,7 +6003,7 @@ void Player::SendInitialLogonPackets()
 
     // TODO: Add stuff to handle these variable's
 
-	uint32 DayOfTheWeek = -1;		//	(0b111 = (any) day, 0 = Monday ect)
+	uint32 DayOfTheWeek = static_cast<uint32>(-1);		//	(0b111 = (any) day, 0 = Monday ect)
     uint32 DayOfTheMonth = 20-1;	//	Day - 1 (0 is actual 1) its now the 20e here. TODO: replace this one with the proper date
     uint32 CurrentMonth = 9-1;		//	Month - 1 (0 is actual 1) same as above. TODO: replace it with the proper code
     uint32 CurrentYear = 7;			//	2000 + this number results in a correct value for this crap. TODO: replace this with the propper code
@@ -6204,7 +6204,7 @@ void Player::UpdateNearbyGameObjects()
 					itr != go->GetInfo()->goMap.end();
 					++itr)
 				{
-					if((qle = GetQuestLogForEntry(itr->first->id)))
+					if((qle = GetQuestLogForEntry(itr->first->id)) != 0)
 					{
 						for(uint32 i = 0; i < qle->GetQuest()->count_required_mob; ++i)
 						{
@@ -6279,7 +6279,7 @@ void Player::EventTaxiInterpolate()
 {
 	if(!m_CurrentTaxiPath || m_mapMgr==NULL) return;
 
-	float x,y,z;
+	float x,y,z = 0.0f;
 	uint32 ntime = getMSTime();
 
 	if (ntime > m_taxi_ride_time)
@@ -6296,9 +6296,7 @@ void Player::EventTaxiInterpolate()
 void Player::TaxiStart(TaxiPath *path, uint32 modelid, uint32 start_node)
 {
 	int32 mapchangeid = -1;
-	float mapchangex;
-	float mapchangey;
-	float mapchangez;
+	float mapchangex,mapchangey,mapchangez = 0.0f;
 	uint32 cn = m_taxiMapChangeNode;
 
 	m_taxiMapChangeNode = 0;
@@ -8867,7 +8865,7 @@ void Player::CalcDamage()
 /////////////second hand end
 ///////////////////////////RANGED
 		cr=0;
-		if((it = GetItemInterface()->GetInventoryItem(EQUIPMENT_SLOT_RANGED)))
+		if((it = GetItemInterface()->GetInventoryItem(EQUIPMENT_SLOT_RANGED)) != 0)
 		{
 			i = damagedone.begin();
 			tmp = 1;
@@ -9337,7 +9335,7 @@ void Player::_AddSkillLine(uint32 SkillLine, uint32 Curr_sk, uint32 Max_sk)
 		_UpdateSkillFields();
 	}
 	//Add to proficiency
-	if((prof=(ItemProf *)GetProficiencyBySkill(SkillLine)))
+	if((prof=(ItemProf *)GetProficiencyBySkill(SkillLine)) != 0)
 	{
 		packetSMSG_SET_PROFICICENCY pr;
 		pr.ItemClass = prof->itemclass;
@@ -9579,7 +9577,7 @@ void Player::_AddLanguages(bool All)
             sk.Reset(skills[i]);
 			sk.MaximumValue = sk.CurrentValue = 300;
 			m_skills.insert( make_pair(skills[i], sk) );
-			if((spell_id = ::GetSpellForLanguage(skills[i])))
+			if((spell_id = ::GetSpellForLanguage(skills[i])) != 0)
 				addSpell(spell_id);
 		}
 	}
@@ -9593,7 +9591,7 @@ void Player::_AddLanguages(bool All)
 				sk.Reset(itr->skillid);
 				sk.MaximumValue = sk.CurrentValue = 300;
 				m_skills.insert( make_pair(itr->skillid, sk) );
-				if((spell_id = ::GetSpellForLanguage(itr->skillid)))
+				if((spell_id = ::GetSpellForLanguage(itr->skillid)) != 0)
 					addSpell(spell_id);
 			}
 		}

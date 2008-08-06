@@ -68,9 +68,9 @@ WordFilter::~WordFilter()
 bool WordFilter::CompileExpression(const char * szExpression, void** pOutput, void** pExtraOutput)
 {
 	pcre * re;
-	pcre_extra * ee;
+	pcre_extra * ee = 0;
 	const char * error;
-	const char * error2;
+	const char * error2 = 0;
 	int erroffset;
 
 	re = pcre_compile(szExpression, 0, &error, &erroffset, NULL);

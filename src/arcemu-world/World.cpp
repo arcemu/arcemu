@@ -753,7 +753,7 @@ void World::UpdateSessions(uint32 diff)
 			continue;
 		}
 
-		if((result = session->Update(0)))
+		if((result = session->Update(0)) != 0)
 		{
 			if(result == 1)
 			{
@@ -1654,7 +1654,8 @@ bool CharacterLoaderThread::run()
 			*/
 		con->Busy.Release();
 #ifdef WIN32
-		WaitForSingleObject(hEvent,LOAD_THREAD_SLEEP*1000);
+		if (hEvent)
+			WaitForSingleObject(hEvent,LOAD_THREAD_SLEEP*1000);
 #else
 		gettimeofday(&now, NULL);
 		tv.tv_sec = now.tv_sec + LOAD_THREAD_SLEEP;

@@ -770,7 +770,7 @@ void QuestMgr::OnPlayerCast(Player* plr, uint32 spellid, uint64& victimguid)
 	QuestLogEntry *qle;
 	for(i = 0; i < 25; ++i)
 	{
-		if((qle = plr->GetQuestLogInSlot(i)))
+		if((qle = plr->GetQuestLogInSlot(i)) != 0)
 		{
 			// dont waste time on quests without casts
 			if(!qle->IsCastQuest())
@@ -805,7 +805,7 @@ void QuestMgr::OnPlayerItemPickup(Player* plr, Item* item)
 	QuestLogEntry *qle;
 	for( i = 0; i < 25; ++i )
 	{
-		if( ( qle = plr->GetQuestLogInSlot( i ) ) )
+		if( ( qle = plr->GetQuestLogInSlot( i ) )  != 0)
 		{
 			if( qle->GetQuest()->count_required_item == 0 )
 				continue;
@@ -841,7 +841,7 @@ void QuestMgr::OnPlayerExploreArea(Player* plr, uint32 AreaID)
 	QuestLogEntry *qle;
 	for( i = 0; i < 25; ++i )
 	{
-		if((qle = plr->GetQuestLogInSlot(i)))
+		if((qle = plr->GetQuestLogInSlot(i)) != 0)
 		{
 			// dont waste time on quests without triggers
 			if( qle->GetQuest()->count_requiredtriggers == 0 )
@@ -873,7 +873,7 @@ void QuestMgr::AreaExplored(Player* plr, uint32 QuestID)
 	QuestLogEntry *qle;
 	for( i = 0; i < 25; ++i )
 	{
-		if((qle = plr->GetQuestLogInSlot(i)))
+		if((qle = plr->GetQuestLogInSlot(i)) != 0)
 		{
 			// search for quest
 			if( qle->GetQuest()->id == QuestID )

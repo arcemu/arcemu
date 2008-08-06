@@ -68,7 +68,7 @@ WorldSession::~WorldSession()
 
 	WorldPacket *packet;
 
-	while((packet = _recvQueue.Pop()))
+	while((packet = _recvQueue.Pop()) != 0)
 		delete packet;
 
 	for(uint32 x=0;x<8;x++)
@@ -132,7 +132,7 @@ int WorldSession::Update(uint32 InstanceID)
 		
 	}
 
-	while ((packet = _recvQueue.Pop()))
+	while ((packet = _recvQueue.Pop()) != 0)
 	{
 		ASSERT(packet);
 
@@ -919,7 +919,7 @@ void SessionLogWriter::writefromsession(WorldSession* session, const char* forma
 
 	va_list ap;
 	va_start(ap, format);
-	char out[32768];
+	char * out = new char[32768];
 
 	time_t t = UNIXTIME;
 	tm* aTm = localtime(&t);

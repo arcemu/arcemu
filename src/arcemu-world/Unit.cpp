@@ -1949,7 +1949,7 @@ void Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, uint
 							//http://www.wowhead.com/?item=32485 Ashtongue Talisman of Valor
 						case 40459:
 							{
-								if( CastingSpell == NULL || (CastingSpell->NameHash != SPELL_HASH_MORTAL_STRIKE || CastingSpell->NameHash != SPELL_HASH_BLOODTHIRST || CastingSpell->NameHash != SPELL_HASH_SHIELD_SLAM))
+								if( CastingSpell == NULL || (CastingSpell->NameHash != SPELL_HASH_MORTAL_STRIKE && CastingSpell->NameHash != SPELL_HASH_BLOODTHIRST && CastingSpell->NameHash != SPELL_HASH_SHIELD_SLAM))
 									continue; 
 							}break;
 						case 28804://Epiphany :Each spell you cast can trigger an Epiphany, increasing your mana regeneration by 24 for 30 sec.
@@ -5491,7 +5491,7 @@ uint32 Unit::AddAuraVisual(uint32 spellid, uint32 count, bool positive)
 
 	if(free == -1) return 0xFF;
 
-	uint8 flagslot = (free / 4);
+	uint8 flagslot = static_cast<uint8>((free / 4));
 	uint32 value = GetUInt32Value((uint16)(UNIT_FIELD_AURAFLAGS + flagslot));
 
 	/*uint8 aurapos = (free & 7) << 2;
@@ -5532,7 +5532,7 @@ void Unit::SetAuraSlotLevel(uint32 slot, bool positive)
 
 void Unit::RemoveAuraVisual(uint32 spellid, uint32 count)
 {
-	for(uint32 x = 0; x < MAX_AURAS; ++x)
+	for(uint8 x = 0; x < MAX_AURAS; ++x)
 	{
 		if(m_uint32Values[UNIT_FIELD_AURA+x] == spellid)
 		{

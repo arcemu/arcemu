@@ -692,7 +692,7 @@ void Aura::Init( SpellEntry* proto, int32 duration, Object* caster, Unit* target
 	pSpellId = 0;
 	periodic_target = 0;
 	//sLog.outDetail("Aura::Constructor %u (%s) from %u.", m_spellProto->Id, m_spellProto->Name, m_target->GetLowGUID());
-	m_auraSlot = 0xffffffff;
+	m_auraSlot = 0xff;
 	m_interrupted = -1;
 	m_flags = 0;
 	//fixed_amount = 0;//used only por percent values to be able to recover value correctly.No need to init this if we are not using it
@@ -1709,7 +1709,7 @@ void Aura::SpellAuraDummy(bool apply)
 				if( apply )
 				{
 					p->MechanicsDispels[ GetSpellProto()->EffectMiscValue[i] ]++;
-					p->RemoveAllAurasByMechanic( GetSpellProto()->EffectMiscValue[i] , -1 , false );
+					p->RemoveAllAurasByMechanic( GetSpellProto()->EffectMiscValue[i] , static_cast<uint32>(-1) , false );
 				}
 				else
 					p->MechanicsDispels[ GetSpellProto()->EffectMiscValue[i] ]--;
@@ -5587,7 +5587,7 @@ void Aura::SpellAuraMechanicImmunity(bool apply)
 			/* Supa's test run of Unit::RemoveAllAurasByMechanic */
 			if( m_target ) // just to be sure?
 			{
-				m_target->RemoveAllAurasByMechanic( (uint32)mod->m_miscValue , -1 , false );
+				m_target->RemoveAllAurasByMechanic( (uint32)mod->m_miscValue , static_cast<uint32>(-1) , false );
 			}
 
 			if(m_spellProto->Id==42292)
@@ -6569,7 +6569,7 @@ void Aura::SendDummyModifierLog( std::map< SpellEntry*, uint32 >* m, SpellEntry*
 
 	int32 v = spellInfo->EffectBasePoints[i] + 1;
 	uint32 mask = spellInfo->EffectSpellGroupRelation[i];
-	uint8 type = spellInfo->EffectMiscValue[i];
+	uint8 type = static_cast<uint8>(spellInfo->EffectMiscValue[i]);
 
 	if(apply)
 	{
@@ -7275,7 +7275,7 @@ void Aura::SpellAuraModShieldBlockPCT( bool apply )
 void Aura::SpellAuraTrackStealthed(bool apply)
 {
 	Unit * c;
-	if(!(c=GetUnitCaster()))
+	if((c=GetUnitCaster()) == 0)
 		return;
 
 	c->trackStealth = apply;

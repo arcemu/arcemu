@@ -106,7 +106,7 @@ void Container::Create( uint32 itemid, Player *owner )
 
 int8 Container::FindFreeSlot()
 {
-	int8 TotalSlots = GetUInt32Value( CONTAINER_FIELD_NUM_SLOTS );
+	int8 TotalSlots = static_cast<int8>(GetUInt32Value( CONTAINER_FIELD_NUM_SLOTS ));
 	for (int8 i=0; i < TotalSlots; i++)
 	{
 		if(!m_Slot[i]) 
@@ -120,7 +120,7 @@ int8 Container::FindFreeSlot()
 
 bool Container::HasItems()
 {
-	int8 TotalSlots = GetUInt32Value( CONTAINER_FIELD_NUM_SLOTS );
+	int8 TotalSlots = static_cast<int8>(GetUInt32Value( CONTAINER_FIELD_NUM_SLOTS ));
 	for (int8 i=0; i < TotalSlots; i++)
 	{
 		if(m_Slot[i]) 

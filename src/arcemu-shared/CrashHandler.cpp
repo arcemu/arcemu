@@ -299,13 +299,13 @@ int __cdecl HandleCrash(PEXCEPTION_POINTERS pExceptPtrs)
 	/* only allow one thread to crash. */
 	if(!m_crashLock.AttemptAcquire())
 	{
-		TerminateThread(GetCurrentThread(),-1);
+		TerminateThread(GetCurrentThread(),static_cast<DWORD>(-1));
 		// not reached
 	}
 
 	if(died)
 	{
-		TerminateProcess(GetCurrentProcess(),-1);
+		TerminateProcess(GetCurrentProcess(),static_cast<UINT>(-1));
 		// not reached:P
 	}
 

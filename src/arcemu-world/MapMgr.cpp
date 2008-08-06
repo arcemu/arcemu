@@ -1790,7 +1790,7 @@ void MapMgr::_PerformObjectDuties()
 				continue;
 			}
 
-			if((result = session->Update(m_instanceID)))
+			if((result = session->Update(m_instanceID)) != 0)
 			{
 				if(result == 1)
 				{

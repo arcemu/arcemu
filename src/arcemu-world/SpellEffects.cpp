@@ -827,7 +827,7 @@ void Spell::SpellEffectDummy(uint32 i) // Dummy(Scripted events)
 			ILotP.origId = 34299;
 			ILotP.spellId = 34299;
 			ILotP.procChance = 100;
-			ILotP.procFlags = PROC_ON_CRIT_ATTACK | PROC_TARGET_SELF;
+			ILotP.procFlags = PROC_ON_CRIT_ATTACK | static_cast<uint32>(PROC_TARGET_SELF);
 			ILotP.deleted = false;
 			ILotP.caster = u_caster->GetGUID();
 			ILotP.LastTrigger = 0;
@@ -1034,8 +1034,8 @@ void Spell::SpellEffectDummy(uint32 i) // Dummy(Scripted events)
 	case 30427: // Extract Gas
 		{
 			bool check = false;
-			uint32 cloudtype;
-			Creature *creature;
+			uint32 cloudtype = 0;
+			Creature *creature = 0;
 
 			if(!p_caster)
 				return;
@@ -1060,7 +1060,8 @@ void Spell::SpellEffectDummy(uint32 i) // Dummy(Scripted events)
 			
 			if(check)
 			{
-				uint32 item,count = 3+(rand()%3);
+				uint32 item, count = 0;
+				item = count = 3+(rand()%3);
 			
 				if (cloudtype==24222) item=22572;//-air
 				if (cloudtype==17408) item=22576;//-mana
@@ -2503,7 +2504,7 @@ void Spell::SpellEffectEnergize(uint32 i) // Energize
 
 	uint32 curEnergy = (uint32)unitTarget->GetUInt32Value(POWER_TYPE);
 	uint32 maxEnergy = (uint32)unitTarget->GetUInt32Value(POWER_TYPE+6);
-	uint32 modEnergy;
+	uint32 modEnergy = 0;
 	//yess there is always someone special : shamanistic rage - talent
 	if(GetProto()->Id==30824)
 		modEnergy = damage*GetUnitTarget()->GetAP()/100;
@@ -5237,7 +5238,7 @@ void Spell::SpellEffectFeedPet(uint32 i)  // Feed Pet
 	/**	Cast feed pet effect
 	- effect is item level and pet level dependent, aura ticks are 35, 17, 8 (*1000) happiness
 	- http://petopia.brashendeavors.net/html/articles/basics_feeding.shtml */
-	int8 deltaLvl = pPet->getLevel() - itemTarget->GetProto()->ItemLevel;
+	int8 deltaLvl = static_cast<int8>(pPet->getLevel() - itemTarget->GetProto()->ItemLevel);
 	damage /= 1000; //damage of Feed pet spell is 35000
 	if(deltaLvl > 10) damage = damage >> 1;//divide by 2
 	if(deltaLvl > 20) damage = damage >> 1;

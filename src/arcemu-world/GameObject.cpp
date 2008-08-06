@@ -359,7 +359,7 @@ void GameObject::InitAI()
 
 	if(pInfo->DisplayID == 1027)//Shaman Shrine
 	{
-		if(pInfo->ID != 177964 || pInfo->ID != 153556)
+		if(pInfo->ID != 177964 && pInfo->ID != 153556)
 		{
 			//Deactivate
 			//SetUInt32Value(GAMEOBJECT_DYN_FLAGS, 0);

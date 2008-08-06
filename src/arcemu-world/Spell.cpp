@@ -717,7 +717,7 @@ uint8 Spell::DidHit(uint32 effindex,Unit* target)
 		return SPELL_DID_HIT_RESIST;
 	else
 	{
-		uint32 res;
+		uint8 res;
 		if(resistchance<=1.0)//resist chance >=1
 			res =  (Rand(1.0f) ? SPELL_DID_HIT_RESIST : SPELL_DID_HIT_SUCCESS);
 		else
@@ -3491,7 +3491,7 @@ uint8 Spell::CanCast(bool tolerate)
 
 					uint32 status = pPet->CanLearnSpell( trig );
 					if( status != 0 )
-						return status;
+						return static_cast<uint8>(status);
 				}
 
 				if( GetProto()->EffectApplyAuraName[0]==2)//mind control
@@ -3931,7 +3931,7 @@ uint8 Spell::CanCast(bool tolerate)
 			{
 				if( GetProto()->EffectApplyAuraName[i] == SPELL_AURA_MECHANIC_IMMUNITY )
 				{
-					target->RemoveAllAurasByMechanic( GetProto()->EffectMiscValue[i] , -1 , true );
+					target->RemoveAllAurasByMechanic( GetProto()->EffectMiscValue[i] , static_cast<uint32>(-1) , true );
 					// Remove all debuffs of that mechanic type.
 					// This is also done in SpellAuras.cpp - wtf?
 				}
@@ -4661,7 +4661,7 @@ void Spell::Heal(int32 amount, bool ForceCrit)
 		if (GetProto()->SpellGroupType)
 			SM_PIValue(u_caster->SM_PDamageBonus,&amount,GetProto()->SpellGroupType);
 
-		if( critical = Rand(critchance) || ForceCrit )
+		if( ((critical = Rand(critchance))  != 0) || ForceCrit )
 		{
 			/*int32 critbonus = amount >> 1;
 			if( GetProto()->SpellGroupType)

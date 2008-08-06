@@ -1031,7 +1031,7 @@ public:
 	int64 m_magnetcaster; // Unit who acts as a magnet for this unit
 	//std::set<SpellEntry*> m_onStrikeSpells;
 
-	int32 m_noInterrupt;
+	uint16 m_noInterrupt;
 	int32 m_rooted;
 	bool disarmed;
 	uint64 m_detectRangeGUID[5];

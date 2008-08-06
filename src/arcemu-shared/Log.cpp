@@ -250,7 +250,7 @@ void SessionLogWriter::write(const char* format, ...)
 
 	va_list ap;
 	va_start(ap, format);
-	char out[32768];
+	char * out = new char[32768];
 
 	time_t t = time(NULL);
 	tm* aTm = localtime(&t);
