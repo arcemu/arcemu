@@ -14431,11 +14431,16 @@ void ApplyNormalFixes()
 		//warrior - impale
 		sp = dbcSpell.LookupEntryForced( 16493 );
 		if( sp != NULL )
-			sp->EffectSpellGroupRelation[0] = 8 | 1 | 4 | 32 | 2 | 4194304 | 536870912 | 2097152 | 128 | 134217728 | 1073741824 | 2048 | 64 | 1024;
+		{
+			sp->EffectSpellGroupRelation[0] = 16384 | 33554432 | 8 | 1 | 4 | 32 | 2 | 4194304 | 536870912 | 2097152 | 128 | 134217728 | 1073741824 | 2048 | 64 | 1024;
+			sp->EffectSpellGroupRelation_high[0] = 4 | 256 | 512 | 1024;
+		}
 		sp = dbcSpell.LookupEntryForced( 16494 );
 		if( sp != NULL )
-			sp->EffectSpellGroupRelation[0] = 8 | 1 | 4 | 32 | 2 | 4194304 | 536870912 | 2097152 | 128 | 134217728 | 1073741824 | 2048 | 64 | 1024;
-
+		{
+			sp->EffectSpellGroupRelation[0] = 16384 | 33554432 | 8 | 1 | 4 | 32 | 2 | 4194304 | 536870912 | 2097152 | 128 | 134217728 | 1073741824 | 2048 | 64 | 1024;
+			sp->EffectSpellGroupRelation_high[0] = 4 | 256 | 512 | 1024;
+		}
 		//warrior - Improved Whirlwind
 		sp = dbcSpell.LookupEntryForced( 29721 );
 		if( sp != NULL )
