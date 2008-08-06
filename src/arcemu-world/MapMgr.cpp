@@ -1711,11 +1711,12 @@ void MapMgr::_PerformObjectDuties()
 		Creature * ptr;
 		Pet * ptr2;
 		
-		for(; itr != creatures.end();++itr)
+		for(; itr != creatures.end();)
 		{
 			ptr = *itr;
-			if (ptr)
-				ptr->Update(difftime);
+			++itr;
+//			if (ptr) //Zack : we never set this to null. We simply remove it from list
+			ptr->Update(difftime);
 		}
 
 		for(; it2 != m_PetStorage.end();)
