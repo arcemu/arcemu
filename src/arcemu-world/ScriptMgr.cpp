@@ -184,7 +184,7 @@ void ScriptMgr::LoadScripts()
 	}
 #else
 	/* Loading system for *nix */
-	struct dirent ** list;
+	struct dirent ** list = NULL;
 	int filecount = scandir(PREFIX "/lib/", &list, 0, 0);
 	uint32 count = 0;
 

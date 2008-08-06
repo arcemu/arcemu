@@ -67,7 +67,7 @@ DatabaseConnection * Database::GetFreeConnection()
 
 QueryResult * Database::Query(const char* QueryString, ...)
 {	
-	char * sql = new char[16384];
+	char sql[16384];
 	va_list vlist;
 	va_start(vlist, QueryString);
 	vsnprintf(sql, 16384, QueryString, vlist);
@@ -115,7 +115,7 @@ void Database::FWaitExecute(const char * QueryString, DatabaseConnection * con)
 
 void QueryBuffer::AddQuery(const char * format, ...)
 {
-	char * query = new char[16384];
+	char query[16384];
 	va_list vlist;
 	va_start(vlist, format);
 	vsnprintf(query, 16384, format, vlist);
@@ -171,7 +171,7 @@ void Database::PerformQueryBuffer(QueryBuffer * b, DatabaseConnection * ccon)
 
 bool Database::Execute(const char* QueryString, ...)
 {
-	char * query = new char[16384];
+	char query[16384];
 
 	va_list vlist;
 	va_start(vlist, QueryString);
@@ -205,7 +205,7 @@ bool Database::ExecuteNA(const char* QueryString)
 //this will wait for completion
 bool Database::WaitExecute(const char* QueryString, ...)
 {
-	char * sql = new char[16384];
+	char sql[16384];
 	va_list vlist;
 	va_start(vlist, QueryString);
 	vsnprintf(sql, 16384, QueryString, vlist);
