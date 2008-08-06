@@ -2076,8 +2076,8 @@ bool ChatHandler::HandleRemoveItemCommand(const char * args, WorldSession * m_se
 	if( iProto )
 	{
 		sGMLog.writefromsession(m_session, "used remove item %s (id: %u) count %u from %s", iProto->Name1, item_id, ocount, plr->GetName());
-		BlueSystemMessage(m_session, "Removing %u copies of item %s (id: %u) from %s's inventory.", ocount, GetItemLinkByProto(iProto, m_session->language), item_id, plr->GetName());
-		BlueSystemMessage(plr->GetSession(), "%s removed %u copies of item %s from your inventory.", m_session->GetPlayer()->GetName(), ocount, GetItemLinkByProto(iProto, plr->GetSession()->language));
+		BlueSystemMessage(m_session, "Removing %u copies of item %s (id: %u) from %s's inventory.", ocount, GetItemLinkByProto(iProto, m_session->language).c_str(), item_id, plr->GetName());
+		BlueSystemMessage(plr->GetSession(), "%s removed %u copies of item %s from your inventory.", m_session->GetPlayer()->GetName(), ocount, GetItemLinkByProto(iProto, plr->GetSession()->language).c_str());
 	}
 	else RedSystemMessage(m_session, "Cannot remove non valid item id: %u .",item_id);
 
@@ -2165,7 +2165,6 @@ void SendHighlightedName(WorldSession * m_session, const char* prefix, char* ful
 	strncat(message, (fullname.c_str() + offset), hlen);
 	strcat(message, MSG_COLOR_WHITE);
 	if(remaining > 0) strncat(message, (fullname.c_str() + offset + hlen), remaining);
-	else strcat(message, MSG_COLOR_WHITE);
 
 	sChatHandler.SystemMessage(m_session, message);
 }
@@ -2181,10 +2180,10 @@ void SendItemLinkToPlayer(ItemPrototype * iProto, WorldSession * pSession, bool 
 	{
 		int8 count = owner->GetItemInterface()->GetItemCount(iProto->ItemId, true);
 		int8 slot = owner->GetItemInterface()->GetBagSlotByGuid(iProto->ItemId);
-		sChatHandler.SystemMessage(pSession,"Item %u %s Count %u Slot %u ContainerSlots %u", iProto->ItemId, GetItemLinkByProto(iProto, language), count, slot, iProto->ContainerSlots);
+		sChatHandler.SystemMessage(pSession,"Item %u %s Count %u Slot %u ContainerSlots %u", iProto->ItemId, GetItemLinkByProto(iProto, language).c_str(), count, slot, iProto->ContainerSlots);
 	}
  	else
-		sChatHandler.SystemMessage(pSession,"Item %u %s ContainerSlots %u", iProto->ItemId, GetItemLinkByProto(iProto, language), iProto->ContainerSlots);
+		sChatHandler.SystemMessage(pSession,"Item %u %s ContainerSlots %u", iProto->ItemId, GetItemLinkByProto(iProto, language).c_str(), iProto->ContainerSlots);
 }
 
 

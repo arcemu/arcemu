@@ -209,7 +209,7 @@ public:
 	void RemoveSocketBonusEnchant();
 
 	// gets the itemlink for a message to the player
-	const char * GetItemLink(uint32 language);
+	string GetItemLink(uint32 language);
 
 	ARCEMU_INLINE void SetCount( uint32 amt ) { SetUInt32Value( ITEM_FIELD_STACK_COUNT, amt ); }
 	ARCEMU_INLINE void SetDurability( uint32 Value ) { SetUInt32Value(ITEM_FIELD_DURABILITY, Value ); };
@@ -268,6 +268,6 @@ uint32 GetBuyPriceForItem( ItemPrototype* proto, uint32 count, Player* plr, Crea
 uint32 GetSellPriceForItem( uint32 itemid, uint32 count);
 uint32 GetBuyPriceForItem( uint32 itemid, uint32 count, Player* plr, Creature* vendor );
 
-const char * GetItemLinkByProto(ItemPrototype * iProto, uint32 language);
+string GetItemLinkByProto(ItemPrototype * iProto, uint32 language);
 
 #endif

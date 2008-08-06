@@ -1102,12 +1102,12 @@ uint32 Item::GenerateRandomSuffixFactor( ItemPrototype* m_itemProto )
 	return long2int32( value );
 }
 
-const char * Item::GetItemLink(uint32 language = NULL)
+string Item::GetItemLink(uint32 language = NULL)
 {
 	return GetItemLinkByProto(GetProto(), language);
 }
 
-const char * GetItemLinkByProto(ItemPrototype * iProto, uint32 language = NULL)
+string GetItemLinkByProto(ItemPrototype * iProto, uint32 language = NULL)
 {
 	const char * ItemLink;
 	char buffer[256];

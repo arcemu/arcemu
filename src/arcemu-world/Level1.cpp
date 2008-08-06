@@ -266,10 +266,10 @@ bool ChatHandler::HandleAddInvItemCommand(const char *args, WorldSession *m_sess
 		}
 
 		char messagetext[512];
-		snprintf(messagetext, 512, "Adding item %s (id: %d) to %s's inventory.", GetItemLinkByProto(it, m_session->language), (unsigned int)it->ItemId, chr->GetName());
+		snprintf(messagetext, 512, "Adding item %s (id: %d) to %s's inventory.", GetItemLinkByProto(it, m_session->language).c_str(), (unsigned int)it->ItemId, chr->GetName());
 		SystemMessage(m_session, messagetext);
 		snprintf(messagetext, 128, "%s added item %d (%s) to your inventory.", m_session->GetPlayer()->GetName(), (unsigned int)itemid, it->Name1);
-		snprintf(messagetext, 512, "%s added item %s to your inventory.", m_session->GetPlayer()->GetName(), GetItemLinkByProto(it, chr->GetSession()->language));
+		snprintf(messagetext, 512, "%s added item %s to your inventory.", m_session->GetPlayer()->GetName(), GetItemLinkByProto(it, chr->GetSession()->language).c_str());
 		
 		SystemMessageToPlr(chr,  messagetext);
 
