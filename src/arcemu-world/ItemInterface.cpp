@@ -720,9 +720,16 @@ Item* ItemInterface::FindItemLessMax(uint32 itemid, uint32 cnt, bool IncBank)
 		Item *item = GetInventoryItem(i);
 		if (item)
 		{
-			if((item->GetEntry() == itemid && item->wrapped_item_id==0) && (item->GetProto()->MaxCount >= (item->GetUInt32Value(ITEM_FIELD_STACK_COUNT) + cnt)))
+			if (item->GetProto())
 			{
-				return item; 
+				if((item->GetEntry() == itemid && item->wrapped_item_id==0) && (item->GetProto()->MaxCount >= (item->GetUInt32Value(ITEM_FIELD_STACK_COUNT) + cnt)))
+				{
+					return item; 
+				}
+			}
+			else
+			{
+				sLog.outError("%s: item with no proto :S entry=%d", __FUNCTION__, item->GetEntry());
 			}
 		}
 	}
