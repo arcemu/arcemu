@@ -248,6 +248,7 @@ void Creature::CreateWayPoint (uint32 WayPointID, uint32 mapid, float x, float y
 
 void Creature::generateLoot()
 {
+	if (!loot.items.empty()) return;
 	lootmgr.FillCreatureLoot(&loot,GetEntry(), m_mapMgr ? (m_mapMgr->iInstanceMode > 0 ? true : false) : false);
 	
 	loot.gold = proto ? proto->money : 0;

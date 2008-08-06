@@ -445,6 +445,91 @@ void LootMgr::PushLoot(StoreLootList *list,Loot * loot, bool heroic)
 
 }
 
+void LootMgr::AddLoot(Loot * loot, uint32 itemid, uint32 mincount, uint32 maxcount, uint32 ffa_loot)
+{
+	uint32 i;
+	uint32 count;
+	ItemPrototype *itemproto = ItemPrototypeStorage.LookupEntry(itemid);
+
+	if( itemproto )// this check is needed until loot DB is fixed
+	{
+		if( mincount == maxcount )
+			count = maxcount;
+		else
+			count = RandomUInt(maxcount - mincount) + mincount;
+
+		for( i = 0; i < loot->items.size(); ++i )
+		{
+			//itemid rand match a already placed item, if item is stackable and unique(stack), increment it, otherwise skips
+			if((loot->items[i].item.itemproto == itemproto) && itemproto->MaxCount && ((loot->items[i].iItemsCount + count) < itemproto->MaxCount))
+			{
+				if(itemproto->Unique && ((loot->items[i].iItemsCount+count) < itemproto->Unique))
+				{
+					loot->items[i].iItemsCount += count;
+					break;
+				}
+				else if (!itemproto->Unique)
+				{
+					loot->items[i].iItemsCount += count;
+					break;
+				}
+			}
+		}
+
+		if( i != loot->items.size() )
+			return;
+
+		_LootItem item;
+		item.itemproto = itemproto;
+		item.displayid = itemproto->DisplayInfoID;
+
+		__LootItem itm;
+		itm.item = item;
+		itm.iItemsCount = count;
+		itm.roll = NULL;
+		itm.passed = false;
+		itm.ffa_loot = ffa_loot;
+		itm.has_looted.clear();
+		
+		if( itemproto->Quality > 1 && itemproto->ContainerSlots == 0 )
+		{
+			itm.iRandomProperty=GetRandomProperties( itemproto );
+			itm.iRandomSuffix=GetRandomSuffix( itemproto );
+		}
+		else
+		{
+			// save some calls :P
+			itm.iRandomProperty = NULL;
+			itm.iRandomSuffix = NULL;
+		}
+
+		loot->items.push_back(itm);
+	}
+	if( loot->items.size() > 16 )
+	{
+		std::vector<__LootItem>::iterator item_to_remove;
+		std::vector<__LootItem>::iterator itr;
+		uint32 item_quality;
+		bool quest_item;
+		while( loot->items.size() > 16 )
+		{
+			item_to_remove = loot->items.begin();
+			item_quality = 0;
+			quest_item = false;
+			for( itr = loot->items.begin(); itr != loot->items.end(); ++itr )
+			{
+				item_quality = (*itr).item.itemproto->Quality;
+				quest_item = (*itr).item.itemproto->Class == ITEM_CLASS_QUEST;
+				if( (*item_to_remove).item.itemproto->Quality > item_quality && !quest_item )
+				{
+					item_to_remove = itr;
+				}
+			}
+			loot->items.erase( item_to_remove );
+		}
+	}
+}
+
 void LootMgr::FillCreatureLoot(Loot * loot,uint32 loot_id, bool heroic)
 {
 	loot->items.clear();
