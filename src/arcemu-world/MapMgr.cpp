@@ -1705,12 +1705,13 @@ void MapMgr::_PerformObjectDuties()
 
 	// Update creatures.
 	{
-		CreatureSet::iterator itr = activeCreatures.begin();
+		CreatureSet creatures(activeCreatures);
+		CreatureSet::iterator itr = creatures.begin();
 		PetStorageMap::iterator it2 = m_PetStorage.begin();
 		Creature * ptr;
 		Pet * ptr2;
-
-		for(; itr != activeCreatures.end();++itr)
+		
+		for(; itr != creatures.end();++itr)
 		{
 			ptr = *itr;
 			if (ptr)
