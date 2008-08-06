@@ -1218,3 +1218,53 @@ bool ChatHandler::HandleNpcComeCommand(const char* args, WorldSession* m_session
 	sGMLog.writefromsession(m_session,"used npc come command on %s, sqlid %u",crt->GetCreatureInfo()->Name,crt->GetSQL_id());
 	return true;
 }
+
+ARCEMU_INLINE void RepairItem2(Player * pPlayer, Item * pItem)
+{
+    pItem->SetDurabilityToMax();
+    pItem->m_isDirty = true;
+}
+
+bool ChatHandler::HandleRepairItemsCommand(const char *args, WorldSession *m_session)
+{
+	Item * pItem;
+	Container * pContainer;
+	Player *plr;
+	uint32 j, i;
+
+	plr = getSelectedChar(m_session,false);
+	if (plr == NULL) return false;
+
+	for( i = 0; i < MAX_INVENTORY_SLOT; i++ )
+	{
+		pItem = plr->GetItemInterface()->GetInventoryItem( i );
+		if( pItem != NULL )
+		{
+			if( pItem->IsContainer() )
+			{
+				pContainer = static_cast<Container*>( pItem );
+				for( j = 0; j < pContainer->GetProto()->ContainerSlots; ++j )
+				{
+					pItem = pContainer->GetItem( j );
+					if( pItem != NULL )
+						RepairItem2( plr, pItem );
+				}
+			}
+			else
+			{
+				if( pItem->GetProto()->MaxDurability > 0 && i < INVENTORY_SLOT_BAG_END && pItem->GetDurability() <= 0 )
+				{
+					RepairItem2( plr, pItem );
+					plr->ApplyItemMods( pItem, i, true );
+				}
+				else
+				{
+					RepairItem2( plr, pItem );
+				}                    
+			}
+		}
+	}
+
+	SystemMessage(m_session,"Items Repaired");
+	return true;
+}

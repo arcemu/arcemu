@@ -307,6 +307,7 @@ protected:
 	bool HandleGOMove(const char * args, WorldSession * m_session);
 	bool HandleAddAIAgentCommand(const char* args, WorldSession *m_session);
 	bool HandleListAIAgentCommand(const char* args, WorldSession *m_session);
+	bool HandleRepairItemsCommand(const char *args, WorldSession *m_session);
 
 	// Level 3 commands
 	bool HandleMassSummonCommand(const char* args, WorldSession *m_session);

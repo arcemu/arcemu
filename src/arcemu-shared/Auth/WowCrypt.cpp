@@ -167,8 +167,8 @@ void WowCrypt::GenerateKey(uint8 *key, uint8 *sessionkey)
 
     memcpy(key, sha2.GetDigest(), 20);
 
-    delete firstBuffer;
-    delete secondBuffer;
+    delete[] firstBuffer;
+    delete[] secondBuffer;
 }
 
 WowCrypt::~WowCrypt()
