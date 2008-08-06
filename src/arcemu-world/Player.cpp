@@ -33,37 +33,37 @@ Player::Player( uint32 guid ) : m_mailBox(guid)
 	SetUInt32Value( OBJECT_FIELD_GUID,guid);
 	m_wowGuid.Init(GetGUID());
 
-	m_finishingmovesdodge = false;
-	iActivePet			  = 0;
-	// resurrector			 = 0;
-	SpellCrtiticalStrikeRatingBonus=0;
-	SpellHasteRatingBonus   = 0;
-	m_lifetapbonus		  = 0;
+	m_finishingmovesdodge	= false;
+	iActivePet				= 0;
+	// resurrector			= 0;
+	SpellCrtiticalStrikeRatingBonus	= 0;
+	SpellHasteRatingBonus	= 1.0f;
+	m_lifetapbonus			= 0;
 	info					= NULL;				 // Playercreate info
-	SoulStone			   = 0;
+	SoulStone				= 0;
 	SoulStoneReceiver		= 0;
 	bReincarnation			= false;
 	m_furorChance			= 0;
 	Seal					= 0;
-	judgespell			  = 0;
-	m_session			   = 0;
-	TrackingSpell		   = 0;
+	judgespell				= 0;
+	m_session				= 0;
+	TrackingSpell			= 0;
 	m_status				= 0;
-	offhand_dmg_mod		 = 0.5;
-	m_walkSpeed			= 2.5f;
-	m_runSpeed			  = PLAYER_NORMAL_RUN_SPEED;
-	m_isMoving			  = false;
+	offhand_dmg_mod			= 0.5;
+	m_walkSpeed				= 2.5f;
+	m_runSpeed				= PLAYER_NORMAL_RUN_SPEED;
+	m_isMoving				= false;
 	strafing				= false;
 	jumping					=  false;
 	moving					= false;
-	m_ShapeShifted		  = 0;
-	m_curTarget			 = 0;
-	m_curSelection		  = 0;
-	m_lootGuid			  = 0;
+	m_ShapeShifted			= 0;
+	m_curTarget				= 0;
+	m_curSelection			= 0;
+	m_lootGuid				= 0;
 	m_Summon				= NULL;
 
-	m_PetNumberMax		  = 0;
-	m_lastShotTime		  = 0;
+	m_PetNumberMax			= 0;
+	m_lastShotTime			= 0;
 
 	m_H_regenTimer			= 0;
 	m_P_regenTimer			= 0;
@@ -88,14 +88,14 @@ Player::Player( uint32 guid ) : m_mailBox(guid)
 	m_healthfromitems		= 0;
 	m_manafromitems			= 0;
 
-	m_talentresettimes	  = 0;
+	m_talentresettimes		= 0;
 
-	m_nextSave			  = getMSTime() + sWorld.getIntRate(INTRATE_SAVE);
+	m_nextSave				= getMSTime() + sWorld.getIntRate(INTRATE_SAVE);
 
-	m_currentSpell		  = NULL;
-	m_resurrectHealth	   = m_resurrectMana = 0;
+	m_currentSpell			= NULL;
+	m_resurrectHealth		= m_resurrectMana = 0;
 
-	m_GroupInviter		  = 0;
+	m_GroupInviter			= 0;
 	
 	Lfgcomment = "";
 	
@@ -4862,17 +4862,16 @@ void Player::UpdateStats()
 		SetFloatValue(PLAYER_FIELD_MOD_MANA_REGEN_INTERRUPT,amt*m_ModInterrMRegenPCT/100.0f+m_ModInterrMRegen/5.0f);
 	}
 
-	/////////////////////RATINGS STUFF/////////////////
-	float cast_speed = CalcRating( PLAYER_RATING_MODIFIER_SPELL_HASTE );
-	if( cast_speed >= 50 ) 		// spell haste/slow is limited to 100% fast
-		cast_speed = 50;
-	if( cast_speed != SpellHasteRatingBonus )
+	// Spell haste rating
+	float haste = 1.0f + CalcRating( PLAYER_RATING_MODIFIER_SPELL_HASTE ) / 100.0f;
+	if( haste != SpellHasteRatingBonus )
 	{
-		ModFloatValue( UNIT_MOD_CAST_SPEED, ( SpellHasteRatingBonus - cast_speed ) / 100.0f );
-
-		SpellHasteRatingBonus = cast_speed;
+		float value = GetFloatValue( UNIT_MOD_CAST_SPEED ) * SpellHasteRatingBonus / haste; // remove previous mod and apply current
+		
+		SetFloatValue( UNIT_MOD_CAST_SPEED, value );
+		SpellHasteRatingBonus = haste;	// keep value for next run
 	}
-	////////////////////RATINGS STUFF//////////////////////
+
 
 	// Shield Block
 	Item* shield = GetItemInterface()->GetInventoryItem(EQUIPMENT_SLOT_OFFHAND);
@@ -10347,11 +10346,11 @@ void Player::Cooldown_AddStart(SpellEntry * pSpell)
 		return;
 
 	uint32 mstime = getMSTime();
-	int32 atime = float2int32( float(pSpell->StartRecoveryTime) * m_floatValues[UNIT_MOD_CAST_SPEED] );
-	if( atime <= 0 )
-		return;
-	if( atime >= 1 )
-		atime = 1; // global cooldown is decreased by spell haste, but it's not INCREASED by spell slow.
+	int32 atime = float2int32( float( pSpell->StartRecoveryTime ) / SpellHasteRatingBonus );
+
+
+	if( atime < 1000 )	// global cooldown is limited to 1s
+		atime = 1000;
 
 	if( pSpell->StartRecoveryCategory )		// if we have a different cool category to the actual spell category - only used by few spells
 		_Cooldown_Add( COOLDOWN_TYPE_CATEGORY, pSpell->StartRecoveryCategory, mstime + atime, pSpell->Id, 0 );
@@ -10362,11 +10361,7 @@ void Player::Cooldown_AddStart(SpellEntry * pSpell)
 #ifdef _DEBUG
 		Log.Debug("Cooldown", "Global cooldown adding: %u ms", atime );
 #endif
-		m_globalCooldown = mstime;
-		if(m_floatValues[UNIT_MOD_CAST_SPEED]<1)	// Global cooldown can't be increased
-			m_globalCooldown += atime;
-		else
-			m_globalCooldown += pSpell->StartRecoveryTime;
+		m_globalCooldown = mstime + atime;
 
 	}
 }

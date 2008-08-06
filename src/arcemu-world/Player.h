@@ -1709,11 +1709,11 @@ public:
 	void RemoteRevive()
 	{
 		ResurrectPlayer();
-		SetMovement(MOVE_UNROOT, 5);
-		SetPlayerSpeed(RUN, (float)7);
-		SetPlayerSpeed(SWIM, (float)4.9);
-		SetMovement(MOVE_LAND_WALK, 8);
-		SetUInt32Value(UNIT_FIELD_HEALTH, GetUInt32Value(UNIT_FIELD_MAXHEALTH) );
+		SetMovement( MOVE_UNROOT, 5 );
+		SetPlayerSpeed( RUN, PLAYER_NORMAL_RUN_SPEED );
+		SetPlayerSpeed( SWIM, PLAYER_NORMAL_SWIM_SPEED );
+		SetMovement( MOVE_LAND_WALK, 8 );
+		SetUInt32Value( UNIT_FIELD_HEALTH, GetUInt32Value( UNIT_FIELD_MAXHEALTH ) );
 	}
 
 	LocationVector m_last_group_position;
