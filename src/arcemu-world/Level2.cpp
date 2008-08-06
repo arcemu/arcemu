@@ -220,18 +220,33 @@ bool ChatHandler::HandleItemCommand(const char* args, WorldSession *m_session)
 		return true;
 	}
 
+	uint32 costid = 0;
+	char * pcostid = strtok(NULL, " ");
+	if ( pcostid )
+		costid = atoi( pcostid );
+
+	ItemExtendedCostEntry * ec = ( costid > 0 ) ? dbcItemExtendedCost.LookupEntryForced( costid ) : NULL;
+	if ( costid > 0 && dbcItemExtendedCost.LookupEntryForced( costid ) == NULL )
+	{
+		SystemMessage( m_session, "You've entered invalid extended cost id." );
+		return true;
+	}
+
 	ItemPrototype* tmpItem = ItemPrototypeStorage.LookupEntry(item);
 
 	std::stringstream sstext;
 	if(tmpItem)
 	{
 		std::stringstream ss;
-		ss << "INSERT INTO vendors VALUES ('" << pCreature->GetUInt32Value(OBJECT_FIELD_ENTRY) << "', '" << item << "', '" << amount << "', 0, 0, 0 )" << '\0';
+		ss << "INSERT INTO vendors VALUES ('" << pCreature->GetUInt32Value(OBJECT_FIELD_ENTRY) << "', '" << item << "', '" << amount << "', 0, 0, " << costid << " )" << '\0';
 		WorldDatabase.Execute( ss.str().c_str() );
 
-		pCreature->AddVendorItem(item, amount);
+		pCreature->AddVendorItem( item, amount, ec );
 
-		sstext << "Item '" << item << "' '" << tmpItem->Name1 << "' Added to list" << '\0';
+		sstext << "Item '" << item << "' '" << tmpItem->Name1 << "' Added to list";
+		if ( costid > 0 )
+			sstext << "with extended cost " << costid;
+		sstext << '\0';
 	}
 	else
 	{

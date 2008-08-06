@@ -861,7 +861,7 @@ void Creature::CallScriptUpdate()
 	_myScriptClass->AIUpdate();
 }
 
-void Creature::AddVendorItem(uint32 itemid, uint32 amount)
+void Creature::AddVendorItem(uint32 itemid, uint32 amount, ItemExtendedCostEntry * ec)
 {
 	CreatureItem ci;
 	ci.amount = amount;
@@ -869,6 +869,7 @@ void Creature::AddVendorItem(uint32 itemid, uint32 amount)
 	ci.available_amount = 0;
 	ci.max_amount = 0;
 	ci.incrtime = 0;
+	ci.extended_cost = ec;
 	if(!m_SellItems)
 	{
 		m_SellItems = new vector<CreatureItem>;

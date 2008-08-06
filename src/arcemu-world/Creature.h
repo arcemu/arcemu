@@ -336,7 +336,7 @@ public:
 			}
 		}
 	}
-	void AddVendorItem(uint32 itemid, uint32 amount);
+	void AddVendorItem( uint32 itemid, uint32 amount, ItemExtendedCostEntry * ec );
 	void ModAvItemAmount(uint32 itemid, uint32 value);
 	void UpdateItemAmount(uint32 itemid);
 	/// Quests
