@@ -2330,6 +2330,80 @@ bool ChatHandler::HandleLookupSpellCommand(const char * args, WorldSession * m_s
 	return true;
 }
 
+bool ChatHandler::HandleLookupSkillCommand(const char * args, WorldSession * m_session)
+{
+	if(!*args) return false;
+
+	string x = string(args);
+	arcemu_TOLOWER(x);
+	if(x.length() < 4)
+	{
+		RedSystemMessage(m_session, "Your search string must be at least 5 characters long.");
+		return true;
+	}
+
+	GreenSystemMessage(m_session, "Starting search of skill `%s`...", x.c_str());
+	uint32 t = getMSTime();
+	uint32 count = 0;
+	for (uint32 index = 0; index < dbcSkillLine.GetNumRows(); ++index)
+	{
+		skilllineentry* skill = dbcSkillLine.LookupRow(index);
+		string y = string(skill->Name);
+		arcemu_TOLOWER(y);
+		if(FindXinYString(x, y))
+ 		{
+ 			// Print out the name in a cool highlighted fashion
+			SendHighlightedName(m_session, "Skill", skill->Name, y, x, skill->id);
+			++count;
+			if(count == 25)
+			{
+				RedSystemMessage(m_session, "More than 25 results returned. aborting.");
+				break;
+			}
+		}
+	}
+	
+	GreenSystemMessage(m_session, "Search completed in %u ms.", getMSTime() - t);
+	return true;
+}
+
+bool ChatHandler::HandleLookupFactionCommand(const char * args, WorldSession * m_session)
+{
+	if(!*args) return false;
+
+	string x = string(args);
+	arcemu_TOLOWER(x);
+	if(x.length() < 4)
+	{
+		RedSystemMessage(m_session, "Your search string must be at least 5 characters long.");
+		return true;
+	}
+
+	GreenSystemMessage(m_session, "Starting search of faction `%s`...", x.c_str());
+	uint32 t = getMSTime();
+	uint32 count = 0;
+	for (uint32 index = 0; index < dbcFaction.GetNumRows(); ++index)
+	{
+		FactionDBC* faction = dbcFaction.LookupRow(index);
+		string y = string(faction->Name);
+		arcemu_TOLOWER(y);
+		if(FindXinYString(x, y))
+ 		{
+ 			// Print out the name in a cool highlighted fashion
+			SendHighlightedName(m_session, "Faction", faction->Name, y, x, faction->ID);
+			++count;
+			if(count == 25)
+			{
+				RedSystemMessage(m_session, "More than 25 results returned. aborting.");
+				break;
+			}
+		}
+	}
+	
+	GreenSystemMessage(m_session, "Search completed in %u ms.", getMSTime() - t);
+	return true;
+}
+
 bool ChatHandler::HandleGORotate(const char * args, WorldSession * m_session)
 {
 	GameObject *go = m_session->GetPlayer()->GetSelectedGo();

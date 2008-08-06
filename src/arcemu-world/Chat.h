@@ -476,6 +476,8 @@ protected:
 	bool HandleLookupCreatureCommand(const char * args, WorldSession * m_session);
 	bool HandleLookupObjectCommand(const char * args, WorldSession * m_session);
 	bool HandleLookupSpellCommand(const char * args, WorldSession * m_session);
+	bool HandleLookupSkillCommand(const char * args, WorldSession * m_session);
+	bool HandleLookupFactionCommand(const char * args, WorldSession * m_session);
 
 	//bool HandleReloadScriptsCommand(const char * args, WorldSession * m_session);
 	bool HandleNpcPossessCommand(const char * args, WorldSession * m_session);
