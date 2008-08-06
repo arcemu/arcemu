@@ -549,6 +549,7 @@ void CommandTableStorage::Init()
 		{ "item",     'l', &ChatHandler::HandleLookupItemCommand,     "Looks up item string x.",  NULL, 0, 0, 0 },
 		{ "quest",    'l', &ChatHandler::HandleQuestLookupCommand,    "Looks up quest string x.", NULL, 0, 0, 0 },
 		{ "creature", 'l', &ChatHandler::HandleLookupCreatureCommand, "Looks up item string x.",  NULL, 0, 0, 0 },
+		{ "spell",    '1', &ChatHandler::HandleLookupSpellCommand,    "Looks up spell string x.", NULL, 0, 0, 0 },
 		{ NULL,       '0', NULL,                                      "",                         NULL, 0, 0, 0 }
 	};
 	dupe_command_table(lookupCommandTable, _lookupCommandTable);

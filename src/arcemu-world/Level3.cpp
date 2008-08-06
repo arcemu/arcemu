@@ -2147,13 +2147,13 @@ bool ChatHandler::HandleSetStandingCommand(const char * args, WorldSession * m_s
 	return true;
 }
 
-void SendHighlightedName(WorldSession * m_session, char* full_name, string& lowercase_name, string& highlight, uint32 id)
+void SendHighlightedName(WorldSession * m_session, const char* prefix, char* full_name, string& lowercase_name, string& highlight, uint32 id)
 {
 	char message[1024];
 	char start[50];
 	start[0] = message[0] = 0;
 
-	snprintf(start, 50, "Creature %u: %s", (unsigned int)id, MSG_COLOR_WHITE);
+	snprintf(start, 50, "%s %u: %s", prefix, (unsigned int)id, MSG_COLOR_WHITE);
 
 	string::size_type hlen = highlight.length();
 	string fullname = string(full_name);
@@ -2161,13 +2161,11 @@ void SendHighlightedName(WorldSession * m_session, char* full_name, string& lowe
 	string::size_type remaining = fullname.size() - offset - hlen;
 	strcat(message, start);
 	strncat(message, fullname.c_str(), offset);
-	if(remaining > 0)
-	{
-		strcat(message, MSG_COLOR_LIGHTRED);
-		strncat(message, (fullname.c_str() + offset), hlen);
-		strcat(message, MSG_COLOR_WHITE);
-		strncat(message, (fullname.c_str() + offset + hlen), remaining);
-	}
+	strcat(message, MSG_COLOR_LIGHTRED);
+	strncat(message, (fullname.c_str() + offset), hlen);
+	strcat(message, MSG_COLOR_WHITE);
+	if(remaining > 0) strncat(message, (fullname.c_str() + offset + hlen), remaining);
+	else strcat(message, MSG_COLOR_WHITE);
 
 	sChatHandler.SystemMessage(m_session, message);
 }
@@ -2279,7 +2277,7 @@ bool ChatHandler::HandleLookupCreatureCommand(const char * args, WorldSession * 
 		if(FindXinYString(x, i->lowercase_name) || localizedFound)
  		{
  			// Print out the name in a cool highlighted fashion
-			SendHighlightedName(m_session, localizedFound ? li->Name : i->Name, localizedFound ? liName : i->lowercase_name, x, i->Id);
+			SendHighlightedName(m_session, "Creature", localizedFound ? li->Name : i->Name, localizedFound ? liName : i->lowercase_name, x, i->Id);
 			++count;
 			if(count == 25)
 			{
@@ -2292,6 +2290,43 @@ bool ChatHandler::HandleLookupCreatureCommand(const char * args, WorldSession * 
 	}
 	itr->Destruct();
 
+	GreenSystemMessage(m_session, "Search completed in %u ms.", getMSTime() - t);
+	return true;
+}
+
+bool ChatHandler::HandleLookupSpellCommand(const char * args, WorldSession * m_session)
+{
+	if(!*args) return false;
+
+	string x = string(args);
+	arcemu_TOLOWER(x);
+	if(x.length() < 4)
+	{
+		RedSystemMessage(m_session, "Your search string must be at least 5 characters long.");
+		return true;
+	}
+
+	GreenSystemMessage(m_session, "Starting search of spell `%s`...", x.c_str());
+	uint32 t = getMSTime();
+	uint32 count = 0;
+	for (uint32 index = 0; index < dbcSpell.GetNumRows(); ++index)
+	{
+		SpellEntry* spell = dbcSpell.LookupRow(index);
+		string y = string(spell->Name);
+		arcemu_TOLOWER(y);
+		if(FindXinYString(x, y))
+ 		{
+ 			// Print out the name in a cool highlighted fashion
+			SendHighlightedName(m_session, "Spell", spell->Name, y, x, spell->Id);
+			++count;
+			if(count == 25)
+			{
+				RedSystemMessage(m_session, "More than 25 results returned. aborting.");
+				break;
+			}
+		}
+	}
+	
 	GreenSystemMessage(m_session, "Search completed in %u ms.", getMSTime() - t);
 	return true;
 }
