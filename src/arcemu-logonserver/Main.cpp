@@ -485,6 +485,8 @@ void LogonServer::Run(int argc, char ** argv)
 	delete SocketMgr::getSingletonPtr();
 	delete SocketGarbageCollector::getSingletonPtr();
 	delete pfc;
+	delete cl;
+	delete sl;
 	printf("Shutdown complete.\n");
 }
 
