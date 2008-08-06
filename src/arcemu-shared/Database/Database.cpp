@@ -151,7 +151,7 @@ void Database::PerformQueryBuffer(QueryBuffer * b, DatabaseConnection * ccon)
 	if(!b->queries.size())
 		return;
 
-    DatabaseConnection * con = ccon;
+	DatabaseConnection * con = ccon;
 	if( ccon == NULL )
 		con = GetFreeConnection();
 	

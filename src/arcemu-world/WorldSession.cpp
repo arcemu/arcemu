@@ -919,7 +919,7 @@ void SessionLogWriter::writefromsession(WorldSession* session, const char* forma
 
 	va_list ap;
 	va_start(ap, format);
-	char * out = new char[32768];
+	char out[32768];
 
 	time_t t = UNIXTIME;
 	tm* aTm = localtime(&t);

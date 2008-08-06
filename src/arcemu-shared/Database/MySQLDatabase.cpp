@@ -92,22 +92,23 @@ bool MySQLDatabase::Initialize(const char* Hostname, unsigned int port, const ch
 
 string MySQLDatabase::EscapeString(string Escape)
 {
-	char * a2 = new char[16384];
+	char a2[16384] = { 0 };
 
 	DatabaseConnection * con = GetFreeConnection();
-	const char * ret;
+	string ret;
 	if(mysql_real_escape_string(static_cast<MySQLDatabaseConnection*>(con)->MySql, a2, Escape.c_str(), (unsigned long)Escape.length()) == 0)
 		ret = Escape.c_str();
 	else
 		ret = a2;
 
 	con->Busy.Release();
+
 	return string(ret);
 }
 
 void MySQLDatabase::EscapeLongString(const char * str, uint32 len, stringstream& out)
 {
-	char * a2 = new char[65536*3];
+	char a2[65536*3] = { 0 };
 
 	DatabaseConnection * con = GetFreeConnection();
 	const char * ret;
@@ -122,7 +123,7 @@ void MySQLDatabase::EscapeLongString(const char * str, uint32 len, stringstream&
 
 string MySQLDatabase::EscapeString(const char * esc, DatabaseConnection * con)
 {
-	char a2[16384] = {0};
+	char a2[16384] = { 0 };
 	const char * ret;
 	if(mysql_real_escape_string(static_cast<MySQLDatabaseConnection*>(con)->MySql, a2, (char*)esc, (unsigned long)strlen(esc)) == 0)
 		ret = esc;

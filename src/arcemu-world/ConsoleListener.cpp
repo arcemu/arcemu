@@ -319,10 +319,10 @@ RemoteConsole::RemoteConsole(ConsoleSocket* pSocket)
 
 void RemoteConsole::Write(const char * Format, ...)
 {
-	char * obuf = new char[65536];
+	char obuf[65536];
 	va_list ap;
 
-    va_start(ap, Format);
+	va_start(ap, Format);
 	vsnprintf(obuf, 65536, Format, ap);
 	va_end(ap);
 
