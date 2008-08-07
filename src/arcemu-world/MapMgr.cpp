@@ -23,7 +23,7 @@
 
 #include "StdAfx.h"
 #define MAP_MGR_UPDATE_PERIOD 100
-#define MAPMGR_INACTIVE_MOVE_TIME 10
+#define MAPMGR_INACTIVE_MOVE_TIME 30
 extern bool bServerShutdown;
 
 MapMgr::MapMgr(Map *map, uint32 mapId, uint32 instanceid) : CellHandler<MapCell>(map), _mapId(mapId), eventHolder(instanceid)
@@ -575,7 +575,8 @@ void MapMgr::RemoveObject(Object *obj, bool free_guid)
 
 	if(!HasPlayers() && !InactiveMoveTime && !forced_expire && GetMapInfo()->type != INSTANCE_NULL)
 	{
-		InactiveMoveTime = UNIXTIME + (MAPMGR_INACTIVE_MOVE_TIME * 60);	   // 5 mins -> move to inactive
+		InactiveMoveTime = UNIXTIME + (MAPMGR_INACTIVE_MOVE_TIME * 60);	 
+		sLog.outDetail("Instance %u is now idle. (%s)", m_instanceID, GetBaseMap()->GetName());
 	}
 }
 

@@ -25,6 +25,15 @@ ARCEMU_INLINE bool FindXinYString(std::string& x, std::string& y)
 	return y.find(x) != std::string::npos;
 }
 
+typedef std::set<uint32> InstanceBossTrashList;
+struct InstanceBossInfo
+{
+	uint32 mapid;
+	uint32 spawnid;
+	InstanceBossTrashList trash;
+	uint32 trashRespawnOverride;
+};
+
 struct GM_Ticket
 {
 	uint64 guid;
@@ -320,6 +329,7 @@ public:
 typedef std::map<uint32, std::list<SpellEntry*>* >                  OverrideIdMap;
 typedef HM_NAMESPACE::hash_map<uint32, Player*>                     PlayerStorageMap;
 typedef std::list<GM_Ticket*>                                       GmTicketList;
+typedef std::map<uint32, InstanceBossInfo*>                         InstanceBossInfoMap;
 
 #ifndef WIN32
 #define arcemu_USE_MAP_PLAYER_INDEX
@@ -392,9 +402,10 @@ public:
 	typedef std::map<uint32, SpellEntry*>                               TotemSpellMap;
 
     // object holders
-	GmTicketList        GM_TicketList;
-	TotemSpellMap       m_totemSpells;
-	OverrideIdMap       mOverrideIdMap;
+	GmTicketList         GM_TicketList;
+	TotemSpellMap        m_totemSpells;
+	OverrideIdMap        mOverrideIdMap;
+	InstanceBossInfoMap* m_InstanceBossInfoMap[NUM_MAPS];
 
 	Player* GetPlayer(const char* name, bool caseSensitive = true);
 	Player* GetPlayer(uint32 guid);
@@ -534,6 +545,7 @@ public:
 	void LoadCorpses(MapMgr * mgr);
 	void LoadGMTickets();
 	void SaveGMTicket(GM_Ticket* ticket, QueryBuffer * buf);
+	void LoadInstanceBossInfos();
 	void LoadAuctions();
 	void LoadAuctionItems();
 	void LoadSpellSkills();

@@ -13,6 +13,15 @@
 /*!40100 SET CHARACTER SET latin1*/;
 /*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0*/;
 
+DROP TABLE IF EXISTS `instance_bosses`;
+
+CREATE TABLE `instance_bosses` (
+  `mapid` INT(11) UNSIGNED NOT NULL DEFAULT '0',
+  `spawnid` INT(11) UNSIGNED NOT NULL DEFAULT '0',
+  `trash` TEXT NOT NULL DEFAULT '',
+  `trash_respawn_override` INT(11) UNSIGNED NOT NULL DEFAULT '0',
+  PRIMARY KEY  (`mapid`,`spawnid`)
+) ENGINE=MyISAM /*!40100 DEFAULT CHARSET=latin1 COMMENT='Instance Boss Definitions'*/;
 
 DROP TABLE IF EXISTS `ai_agents`;
 

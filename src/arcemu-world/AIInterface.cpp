@@ -515,15 +515,30 @@ void AIInterface::HandleEvent(uint32 event, Unit* pUnit, uint32 misc1)
 				HandleEvent(EVENT_FOLLOWOWNER, m_Unit, 0);
 			}*/
 
-			if(m_Unit->GetMapMgr())
+			if(m_Unit->GetMapMgr() && m_Unit->GetTypeId() == TYPEID_UNIT && !m_Unit->IsPet() && m_Unit->GetMapMgr()->pInstance && m_Unit->GetMapMgr()->GetMapInfo()->type != INSTANCE_NONRAID)
 			{
-				if(m_Unit->GetTypeId() == TYPEID_UNIT && !m_Unit->IsPet())
+				InstanceBossInfoMap *bossInfoMap = objmgr.m_InstanceBossInfoMap[m_Unit->GetMapMgr()->GetMapId()];
+				uint32 npcGuid = static_cast< Creature* >( m_Unit )->GetSQL_id();
+				if(bossInfoMap != NULL)
 				{
-					if(m_Unit->GetMapMgr()->pInstance && m_Unit->GetMapMgr()->GetMapInfo()->type != INSTANCE_NONRAID)
+					InstanceBossInfoMap::const_iterator bossInfo = bossInfoMap->find(npcGuid);
+					if(bossInfo != bossInfoMap->end())
 					{
-						m_Unit->GetMapMgr()->pInstance->m_killedNpcs.insert( static_cast< Creature* >( m_Unit )->GetSQL_id() );
+						m_Unit->GetMapMgr()->pInstance->m_killedNpcs.insert( npcGuid );
 						m_Unit->GetMapMgr()->pInstance->SaveToDB();
+						for(InstanceBossTrashList::iterator trash = bossInfo->second->trash.begin(); trash != bossInfo->second->trash.end(); ++trash)
+						{
+							Creature *c = m_Unit->GetMapMgr()->GetSqlIdCreature((*trash));
+							if(c != NULL)
+								c->m_noRespawn = true;
+						}
 					}
+				}
+				else
+				{
+					// No instance boss information ... fallback ...
+					m_Unit->GetMapMgr()->pInstance->m_killedNpcs.insert( npcGuid );
+					m_Unit->GetMapMgr()->pInstance->SaveToDB();
 				}
 			}
 

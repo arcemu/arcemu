@@ -97,6 +97,7 @@ Creature::Creature(uint64 guid)
 	m_base_runSpeed = m_runSpeed;
 	m_base_walkSpeed = m_walkSpeed;
 	m_noRespawn=false;
+	m_respawnTimeOverride=0;
     m_canRegenerateHP = true;
 	m_transportGuid = 0;
 	m_transportPosition = NULL;
@@ -178,7 +179,7 @@ void Creature::OnRemoveCorpse()
 			}
 			else
 			{
-				if(proto && proto->RespawnTime)
+				if((proto && proto->RespawnTime) || m_respawnTimeOverride)
 					RemoveFromWorld(true, false);
 				else
 					RemoveFromWorld(false, true);
@@ -197,6 +198,38 @@ void Creature::OnRemoveCorpse()
 
 void Creature::OnRespawn(MapMgr * m)
 {
+	if(m_noRespawn)
+		return;
+
+	InstanceBossInfoMap *bossInfoMap = objmgr.m_InstanceBossInfoMap[m->GetMapId()];
+	if(bossInfoMap != NULL)
+	{
+		bool skip = false;
+		Instance *pInstance = m->pInstance;
+		for(std::set<uint32>::iterator killedNpc = pInstance->m_killedNpcs.begin(); killedNpc != pInstance->m_killedNpcs.end(); ++killedNpc)
+		{
+			// Is killed boss.
+			if((*killedNpc) == this->spawnid)
+			{
+				skip = true;
+				break;
+			}
+			// Is add from killed boss.
+			InstanceBossInfoMap::const_iterator bossInfo = bossInfoMap->find((*killedNpc));
+			if(bossInfo != bossInfoMap->end() && bossInfo->second->trash.find(this->spawnid) != bossInfo->second->trash.end())
+			{
+				skip = true;
+				break;
+			}
+		}
+		if(skip)
+		{
+			this->m_noRespawn = true;
+			this->DeleteMe();
+			return;
+		}
+	}
+
 	sLog.outDetail("Respawning "I64FMT"...", GetGUID());
 	SetUInt32Value(UNIT_FIELD_HEALTH, GetUInt32Value(UNIT_FIELD_MAXHEALTH));
 	SetUInt32Value(UNIT_DYNAMIC_FLAGS, 0); // not tagging shiat
@@ -581,8 +614,8 @@ void Creature::RemoveFromWorld(bool addrespawnevent, bool free_guid)
 	if(IsInWorld())
 	{
 		uint32 delay = 0;
-		if(addrespawnevent && proto && proto->RespawnTime > 0)
-			delay = proto->RespawnTime;
+		if(addrespawnevent && (m_respawnTimeOverride > 0 || (proto && proto->RespawnTime > 0)))
+			delay = m_respawnTimeOverride > 0 ? m_respawnTimeOverride : proto->RespawnTime;
 		Despawn(0, delay);
 	}
 
@@ -1651,7 +1684,7 @@ void Creature::Despawn(uint32 delay, uint32 respawntime)
 	if(!IsInWorld())
 		return;
 
-	if(respawntime)
+	if(respawntime && !m_noRespawn)
 	{
 		/* get the cell with our SPAWN location. if we've moved cell this might break :P */
 		MapCell * pCell = m_mapMgr->GetCellByCoords(m_spawnLocation.x, m_spawnLocation.y);

@@ -165,18 +165,54 @@ void MapCell::LoadObjects(CellSpawns * sp)
 {
 	_loaded = true;
 	Instance * pInstance = _mapmgr->pInstance;
+	InstanceBossInfoMap *bossInfoMap = objmgr.m_InstanceBossInfoMap[_mapmgr->GetMapId()];
 
 	if(sp->CreatureSpawns.size())//got creatures
 	{
 		for(CreatureSpawnList::iterator i=sp->CreatureSpawns.begin();i!=sp->CreatureSpawns.end();i++)
 		{
+			uint32 respawnTimeOverride = 0;
 			if(pInstance)
 			{
-				if(pInstance->m_killedNpcs.find((*i)->id) != pInstance->m_killedNpcs.end())
-					continue;
+				if(bossInfoMap != NULL)
+				{
+					bool skip = false;
+					for(std::set<uint32>::iterator killedNpc = pInstance->m_killedNpcs.begin(); killedNpc != pInstance->m_killedNpcs.end(); ++killedNpc)
+					{
+						// Do not spawn the killed boss.
+						if((*killedNpc) == (*i)->id)
+						{
+							skip = true;
+							break;
+						}
+						// Do not spawn the killed boss' trash.
+						InstanceBossInfoMap::const_iterator bossInfo = bossInfoMap->find((*killedNpc));
+						if (bossInfo != bossInfoMap->end() && bossInfo->second->trash.find((*i)->id) != bossInfo->second->trash.end())
+						{
+							skip = true;
+							break;
+						}
+					}
+					if(skip)
+						continue;
 
-/*				if((*i)->respawnNpcLink && pInstance->m_killedNpcs.find((*i)->respawnNpcLink) != pInstance->m_killedNpcs.end())
+					for(InstanceBossInfoMap::iterator bossInfo = bossInfoMap->begin(); bossInfo != bossInfoMap->end(); ++bossInfo)
+					{
+						if(pInstance->m_killedNpcs.find(bossInfo->second->spawnid) == pInstance->m_killedNpcs.end() && bossInfo->second->trash.find((*i)->id) != bossInfo->second->trash.end())
+						{
+							respawnTimeOverride = bossInfo->second->trashRespawnOverride;
+						}
+					}
+				}
+				else
+				{
+					// No boss information available ... fallback ...
+					if(pInstance->m_killedNpcs.find((*i)->id) != pInstance->m_killedNpcs.end())
+						continue;
+
+					/*	if((*i)->respawnNpcLink && pInstance->m_killedNpcs.find((*i)->respawnNpcLink) != pInstance->m_killedNpcs.end())
 					continue;*/
+				}
 			}
 
 			Creature * c=_mapmgr->CreateCreature((*i)->entry);
@@ -184,6 +220,8 @@ void MapCell::LoadObjects(CellSpawns * sp)
 			c->SetMapId(_mapmgr->GetMapId());
 			c->SetInstanceID(_mapmgr->GetInstanceID());
 			c->m_loadedFromDB = true;
+			if(respawnTimeOverride > 0)
+				c->m_respawnTimeOverride = respawnTimeOverride;
 
             if(c->Load(*i, _mapmgr->iInstanceMode, _mapmgr->GetMapInfo()))
 			{

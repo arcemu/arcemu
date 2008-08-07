@@ -35,6 +35,7 @@ ObjectMgr::ObjectMgr()
 	m_hiArenaTeamId=0;
 	m_hiGuildId=0;
 	m_ticketid = 0;
+	memset(m_InstanceBossInfoMap , 0, sizeof(InstanceBossInfoMap*) * NUM_MAPS);
 }
 
 
@@ -194,6 +195,18 @@ ObjectMgr::~ObjectMgr()
 	Log.Notice("ObjectMgr", "Deleting GM Tickets...");
 	for(GmTicketList::iterator itr = GM_TicketList.begin(); itr != GM_TicketList.end(); ++itr)
 		delete (*itr);
+
+	Log.Notice("ObjectMgr", "Deleting Boss Information...");
+	for(int i=0; i<NUM_MAPS; i++)
+	{
+		if(this->m_InstanceBossInfoMap[i] != NULL)
+		{
+			for(InstanceBossInfoMap::iterator itr = this->m_InstanceBossInfoMap[i]->begin(); itr != m_InstanceBossInfoMap[i]->end(); ++itr)
+				delete (*itr).second;
+			delete this->m_InstanceBossInfoMap[i];
+			this->m_InstanceBossInfoMap[i] = NULL;
+		}
+	}
 }
 
 //
@@ -661,6 +674,61 @@ void ObjectMgr::LoadGMTickets()
 
 	Log.Notice("ObjectMgr", "%u active GM Tickets loaded.", result->GetRowCount());
 	delete result;
+}
+
+void ObjectMgr::LoadInstanceBossInfos()
+{
+	char *p, *q, *trash;
+	MapInfo * mapInfo;
+	QueryResult * result = WorldDatabase.Query("SELECT `mapid`, `spawnid`, `trash`, `trash_respawn_override` FROM `instance_bosses`");
+
+	if(result == NULL)
+		return;
+
+	uint32 cnt = 0;
+	do
+	{
+		InstanceBossInfo * bossInfo = new InstanceBossInfo();
+		bossInfo->mapid = (uint32)result->Fetch()[0].GetUInt32();
+
+		mapInfo = WorldMapInfoStorage.LookupEntry(bossInfo->mapid);
+		if(mapInfo == NULL || mapInfo->type == INSTANCE_NULL)
+		{
+			sLog.outDetail("Not loading boss information for map %u! (continent or unknown map)", bossInfo->mapid);
+			delete bossInfo;
+			continue;
+		}
+		if(bossInfo->mapid >= NUM_MAPS)
+		{
+			sLog.outDetail("Not loading boss information for map %u! (map id out of range)", bossInfo->mapid);
+			delete bossInfo;
+			continue;
+		}
+
+		bossInfo->spawnid = (uint32)result->Fetch()[1].GetUInt32();
+		trash = strdup(result->Fetch()[2].GetString());
+		q = trash;
+		p = strchr(q, ' ');
+		while(p)
+		{
+			*p = 0;
+			uint32 val = atoi(q);
+			if(val)
+				bossInfo->trash.insert(val);
+			q = p + 1;
+			p = strchr(q, ' ');
+		}
+		free(trash);
+		bossInfo->trashRespawnOverride = (uint32)result->Fetch()[3].GetUInt32();
+
+		
+		if(this->m_InstanceBossInfoMap[bossInfo->mapid] == NULL)
+			this->m_InstanceBossInfoMap[bossInfo->mapid] = new InstanceBossInfoMap;
+		this->m_InstanceBossInfoMap[bossInfo->mapid]->insert(InstanceBossInfoMap::value_type(bossInfo->spawnid, bossInfo));
+		cnt++;
+	} while(result->NextRow());
+
+	Log.Notice("ObjectMgr", "%u boss information loaded.", cnt);
 }
 
 void ObjectMgr::SaveGMTicket(GM_Ticket* ticket, QueryBuffer * buf)
