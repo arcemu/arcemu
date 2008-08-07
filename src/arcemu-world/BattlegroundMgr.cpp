@@ -173,6 +173,29 @@ void ErasePlayerFromList(uint32 guid, list<uint32>* l)
 	}
 }
 
+const char *GetBattlegroundCaption(BattleGroundTypes bgType)
+{
+	switch(bgType)
+	{
+	case BATTLEGROUND_ALTERAC_VALLEY:
+		return "Alterac Valley";
+	case BATTLEGROUND_WARSUNG_GULCH:
+		return "Warsong Gulch";
+	case BATTLEGROUND_ARATHI_BASIN:
+		return "Arathi Basin";
+	case BATTLEGROUND_ARENA_2V2:
+		return "Arena 2v2";
+	case BATTLEGROUND_ARENA_3V3:
+		return "Arena 3v3";
+	case BATTLEGROUND_ARENA_5V5:
+		return "Arena 5v5";
+	case BATTLEGROUND_EYE_OF_THE_STORM:
+		return "Eye of the Storm";
+	default:
+		return "Unknown Battleground";
+	}
+}
+
 void CBattlegroundManager::HandleGetBattlegroundQueueCommand(WorldSession * m_session)
 {
 	std::stringstream ss;
@@ -194,62 +217,36 @@ void CBattlegroundManager::HandleGetBattlegroundQueueCommand(WorldSession * m_se
 
 			foundSomething = true;
 
-			switch(i)
-			{
-			//case BATTLEGROUND_ALTERAC_VALLEY:
-			//	ss << "Alterac Valley";
-			//	break;
-			case BATTLEGROUND_WARSUNG_GULCH:
-				ss << "Warsong Gulch";
-				break;
-			case BATTLEGROUND_ARATHI_BASIN:
-				ss << "Arathi Basin";
-				break;
-			case BATTLEGROUND_ARENA_2V2:
-				ss << "Arena 2v2";
-				break;
-			case BATTLEGROUND_ARENA_3V3:
-				ss << "Arena 3v3";
-				break;
-			case BATTLEGROUND_ARENA_5V5:
-				ss << "Arena 5v5";
-				break;
-			case BATTLEGROUND_EYE_OF_THE_STORM:
-				ss << "Eye of the Storm";
-				break;
-			default:
-				ss << "Unknown Battleground";
-				break;
-			}
+			ss << GetBattlegroundCaption((BattleGroundTypes)i);
 
 			switch(j)
 			{
 			case 0:
-				ss << "(<10)";
+				ss << " (<10)";
 				break;
 			case 1:
-				ss << "(<20)";
+				ss << " (<20)";
 				break;
 			case 2:
-				ss << "(<30)";
+				ss << " (<30)";
 				break;
 			case 3:
-				ss << "(<40)";
+				ss << " (<40)";
 				break;
 			case 4:
-				ss << "(<50)";
+				ss << " (<50)";
 				break;
 			case 5:
-				ss << "(<60)";
+				ss << " (<60)";
 				break;
 			case 6:
-				ss << "(<70)";
+				ss << " (<70)";
 				break;
 			}
 
 			ss << ": ";
 
-			ss << (int)m_queuedPlayers[i][j].size() << " queued";
+			ss << (uint32)m_queuedPlayers[i][j].size() << " players queued";
 
 			if(!IS_ARENA(i))
 			{
@@ -279,6 +276,20 @@ void CBattlegroundManager::HandleGetBattlegroundQueueCommand(WorldSession * m_se
 
 			m_session->SystemMessage( ss.str().c_str() );
 			ss.rdbuf()->str("");
+		}
+
+		if(IS_ARENA(i))
+		{
+			if(m_queuedGroups[i].size())
+			{
+				foundSomething = true;
+
+				ss << GetBattlegroundCaption((BattleGroundTypes)i) << " (rated): ";
+				ss << (uint32)m_queuedGroups[i].size() << " groups queued";
+
+				m_session->SystemMessage( ss.str().c_str() );
+				ss.rdbuf()->str("");
+			}
 		}
 	}
 
