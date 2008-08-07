@@ -312,6 +312,37 @@ bool ChatHandler::HandleSummonCommand(const char* args, WorldSession *m_session)
 			SystemMessageToPlr(chr, buf0);
 		}
 
+		if(chr->GetTaxiState())
+		{
+			sEventMgr.RemoveEvents(chr, EVENT_PLAYER_TAXI_DISMOUNT);
+			sEventMgr.RemoveEvents(chr, EVENT_PLAYER_TAXI_INTERPOLATE);
+			chr->SetTaxiState(false);
+			chr->SetTaxiPath(NULL);
+			chr->UnSetTaxiPos();
+			chr->m_taxi_ride_time = 0;
+			chr->SetUInt32Value(UNIT_FIELD_MOUNTDISPLAYID , 0);
+			chr->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_MOUNTED_TAXI);
+			chr->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_LOCK_PLAYER);
+			chr->SetPlayerSpeed(RUN, chr->m_runSpeed);
+		}
+		if(chr->m_TransporterGUID)
+		{
+			Transporter * pTrans = objmgr.GetTransporter(GUID_LOPART(chr->m_TransporterGUID));
+			if(pTrans)
+			{
+				if(chr->m_lockTransportVariables == true)
+				{
+					char buff[256];
+					snprintf((char*)buf,256, "%s is already being teleported.", chr->GetName());
+					SystemMessage(m_session, buff);
+					return true;
+				}
+				pTrans->RemovePlayer(chr);
+				chr->m_CurrentTransporter = NULL;
+				chr->m_TransporterGUID = 0;
+			}
+		}
+
 		Player * plr = m_session->GetPlayer();
 
 		if(plr->GetMapMgr()==chr->GetMapMgr())
