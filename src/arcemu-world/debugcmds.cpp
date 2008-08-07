@@ -717,10 +717,10 @@ bool ChatHandler::HandleThreatModCommand(const char* args, WorldSession *m_sessi
 	if(!v)
 		return false;
 
-	target->ModGeneratedThreatModifyer(atoi(v));
+	target->ModGeneratedThreatModifyer(0, atoi(v));
 
 	std::stringstream sstext;
-	sstext << "new threat caused is now reduced by: " << target->GetGeneratedThreatModifyer() << "%" <<'\0';
+	sstext << "new threat caused is now reduced by: " << target->GetGeneratedThreatModifyer(0) << "%" <<'\0';
 
 	SystemMessage(m_session, sstext.str().c_str());
 	return true;

@@ -288,7 +288,7 @@ public:
 	void HandleEvent(uint32 event, Unit* pUnit, uint32 misc1);
 	void OnDeath(Object* pKiller);
 	void AttackReaction(Unit *pUnit, uint32 damage_dealt, uint32 spellId = 0);
-	bool HealReaction(Unit* caster, Unit* victim, uint32 amount);
+	void HealReaction(Unit* caster, Unit* victim, SpellEntry* sp, uint32 amount);
 	void Event_Summon_EE_totem(uint32 summon_duration);
 	void Event_Summon_FE_totem(uint32 summon_duration);
 	void EventAiInterfaceParamsetFinish();
@@ -433,7 +433,6 @@ protected:
 	uint32 m_updateTargetsTimer2;
 
 	// Misc
-	bool firstLeaveCombat;
 	Unit* FindTarget();
 	Unit* FindTargetForSpell(AI_Spell *sp);
 	bool FindFriends(float dist);

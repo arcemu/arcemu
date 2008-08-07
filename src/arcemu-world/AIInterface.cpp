@@ -79,7 +79,6 @@ AIInterface::AIInterface()
 	m_runSpeed = 0.0f;
 	m_flySpeed = 0.0f;
 	UnitToFear = NULL;
-	firstLeaveCombat = true;
 	m_outOfCombatRange = 2500;
 
 	tauntedBy = NULL;
@@ -228,7 +227,6 @@ void AIInterface::HandleEvent(uint32 event, Unit* pUnit, uint32 misc1)
 					StopMovement(0);
 
 				m_AIState = STATE_ATTACKING;
-				firstLeaveCombat = true;
 				if(pUnit && pUnit->GetInstanceID() == m_Unit->GetInstanceID())
 				{
 					m_Unit->SetUInt64Value(UNIT_FIELD_TARGET, pUnit->GetGUID());
@@ -248,6 +246,31 @@ void AIInterface::HandleEvent(uint32 event, Unit* pUnit, uint32 misc1)
 			{
 				if( pUnit == NULL ) return;
 				
+				Unit* target = NULL;
+				if (m_Unit->GetMapMgr() && m_Unit->GetMapMgr()->GetMapInfo())
+				{
+					switch (m_Unit->GetMapMgr()->GetMapInfo()->type)
+					{
+					case INSTANCE_NULL:
+					case INSTANCE_PVP:
+						if (m_outOfCombatRange && _CalcDistanceFromHome() < m_outOfCombatRange)
+							target = FindTarget();
+						break;
+
+					case INSTANCE_RAID:
+					case INSTANCE_NONRAID:
+					case INSTANCE_MULTIMODE:
+						target = FindTarget();
+						break;
+					}
+
+					if(target != NULL)
+					{
+						AttackReaction(target, 1, 0);
+						return;
+					}
+				}
+
 				if( pUnit->IsCreature() )
 					pUnit->RemoveNegativeAuras();
 				//cancel spells that we are casting. Should remove bug where creatures cast a spell after they died
@@ -778,7 +801,7 @@ void AIInterface::_UpdateTargets()
 	}
 	else if(m_AIState != STATE_IDLE && m_AIState != STATE_SCRIPTIDLE)
 	{
-		FindFriends(16.0f/*4.0f*/);
+		FindFriends(25.0f/*5.0f*/);
 	}
 
 	if( m_updateAssist )
@@ -855,21 +878,7 @@ void AIInterface::_UpdateTargets()
 			&& m_AIState != STATE_EVADE && m_AIState != STATE_FEAR 
 			&& m_AIState != STATE_WANDER && m_AIState != STATE_SCRIPTIDLE)
 		{
-			if(firstLeaveCombat)
-			{
-				Unit* target = FindTarget();
-				if(target)
-				{
-					AttackReaction(target, 1, 0);
-				}else
-				{
-					firstLeaveCombat = false;
-				}
-			}
-			/*else
-			{
-				HandleEvent(EVENT_LEAVECOMBAT, m_Unit, 0);
-			}*/
+			HandleEvent(EVENT_LEAVECOMBAT, m_Unit, 0);
 		}
 		else if( m_aiTargets.size() == 0 && (m_AIType == AITYPE_PET && (m_Unit->IsPet() && static_cast<Pet*>(m_Unit)->GetPetState() == PET_STATE_AGGRESSIVE) || (!m_Unit->IsPet() && disable_melee == false ) ) )
 		{
@@ -1354,7 +1363,7 @@ void AIInterface::_UpdateCombat(uint32 p_time)
 			}break;
 		case AGENT_CALLFORHELP:
 			{
-				FindFriends( 50.0f /*7.0f*/ );
+				FindFriends( 64.0f /*8.0f*/ );
 				m_hasCalledForHelp = true; // We only want to call for Help once in a Fight.
 				if( m_Unit->GetTypeId() == TYPEID_UNIT )
 						objmgr.HandleMonsterSayEvent( static_cast< Creature* >( m_Unit ), MONSTER_SAY_EVENT_CALL_HELP );
@@ -1407,11 +1416,7 @@ void AIInterface::DismissPet()
 
 void AIInterface::AttackReaction(Unit* pUnit, uint32 damage_dealt, uint32 spellId)
 {
-	if( m_AIState == STATE_EVADE || m_fleeTimer != 0 || !pUnit || !pUnit->isAlive() || m_Unit->IsPacified() || m_Unit->IsFeared() || m_Unit->IsStunned() )
-	{
-		return;
-	}
-	if( m_Unit->isDead() )
+	if( m_AIState == STATE_EVADE || !pUnit || !pUnit->isAlive() || m_Unit->isDead() || m_Unit == pUnit )
 		return;
 
 #ifdef COLLISION
@@ -1441,12 +1446,14 @@ void AIInterface::AttackReaction(Unit* pUnit, uint32 damage_dealt, uint32 spellI
 	}*/
 #endif
 
-	if( m_Unit == pUnit )
+	if (pUnit->GetTypeId() == TYPEID_PLAYER && static_cast<Player *>(pUnit)->GetMisdirectionTarget() != 0)
 	{
-		return;
+		Unit *mTarget = m_Unit->GetMapMgr()->GetUnit(static_cast<Player *>(pUnit)->GetMisdirectionTarget());
+		if (mTarget != NULL && mTarget->isAlive())
+			pUnit = mTarget;
 	}
 
-	if( m_AIState == STATE_IDLE || m_AIState == STATE_FOLLOWING )
+	if( (m_AIState == STATE_IDLE || m_AIState == STATE_FOLLOWING) && m_Unit->GetAIInterface()->GetAllowedToEnterCombat())
 	{
 		WipeTargetList();
 		
@@ -1456,64 +1463,44 @@ void AIInterface::AttackReaction(Unit* pUnit, uint32 damage_dealt, uint32 spellI
 	HandleEvent(EVENT_DAMAGETAKEN, pUnit, _CalcThreat(damage_dealt, spellId ? dbcSpell.LookupEntryForced(spellId) : NULL, pUnit));
 }
 
-bool AIInterface::HealReaction(Unit* caster, Unit* victim, uint32 amount)
+void AIInterface::HealReaction(Unit* caster, Unit* victim, SpellEntry* sp, uint32 amount)
 {
 	if(!caster || !victim)
-	{
-		printf("!!!BAD POINTER IN AIInterface::HealReaction!!!\n");
-		return false;
-	}
+		return;
 
-	int casterInList = 0, victimInList = 0;
+	bool casterInList = false, victimInList = false;
 
-	if(m_aiTargets.find( caster->GetGUID()) != m_aiTargets.end())
-		casterInList = 1;
+	if(m_aiTargets.find(caster->GetGUID()) != m_aiTargets.end())
+		casterInList = true;
 
 	if(m_aiTargets.find(victim->GetGUID()) != m_aiTargets.end())
-		victimInList = 1;
+		victimInList = true;
 
-	/*for(i = m_aiTargets.begin(); i != m_aiTargets.end(); i++)
-	{
-		if(casterInList && victimInList)
-		{ // no need to check the rest, just break that
-			break;
-		}
-		if(i->target == victim)
-		{
-			victimInList = true;
-		}
-		if(i->target == caster)
-		{
-			casterInList = true;
-		}
-	}*/
 	if(!victimInList && !casterInList) // none of the Casters is in the Creatures Threat list
-	{
-		return false;
-	}
+		return;
+
+	int32 threat = int32(amount / 2);
+	if (caster->getClass() == PALADIN)
+		threat = threat / 2; //Paladins only get 50% threat per heal than other classes
+
+	if (sp != NULL)
+		threat += (threat * caster->GetGeneratedThreatModifyer(sp->School) / 100);
+
+	if (threat < 1)
+		threat = 1;
+
 	if(!casterInList && victimInList) // caster is not yet in Combat but victim is
 	{
 		// get caster into combat if he's hostile
 		if(isHostile(m_Unit, caster))
-		{
-			//AI_Target trgt;
-			//trgt.target = caster;
-			//trgt.threat = amount;
-			//m_aiTargets.push_back(trgt);
-			m_aiTargets.insert(TargetMap::value_type(caster->GetGUID(), amount));
-			return true;
-		}
-		return false;
+			m_aiTargets.insert(TargetMap::value_type(caster->GetGUID(), threat));
 	}
 	else if(casterInList && victimInList) // both are in combat already
-	{
-		// mod threat for caster
-		modThreatByPtr(caster, amount);
-		return true;
-	}
+		modThreatByPtr(caster, threat);
+
 	else // caster is in Combat already but victim is not
 	{
-		modThreatByPtr(caster, amount);
+		modThreatByPtr(caster, threat);
 		// both are players so they might be in the same group
 		if( caster->GetTypeId() == TYPEID_PLAYER && victim->GetTypeId() == TYPEID_PLAYER )
 		{
@@ -1522,16 +1509,10 @@ bool AIInterface::HealReaction(Unit* caster, Unit* victim, uint32 amount)
 				// get victim into combat since they are both
 				// in the same party
 				if( isHostile( m_Unit, victim ) )
-				{
 					m_aiTargets.insert( TargetMap::value_type( victim->GetGUID(), 1 ) );
-					return true;
-				}
-				return false;
 			}
 		}
 	}
-
-	return false;
 }
 
 void AIInterface::OnDeath(Object* pKiller)
@@ -1847,20 +1828,19 @@ bool AIInterface::FindFriends(float dist)
 		{
 			if( m_Unit->GetDistanceSq(pUnit) < dist)
 			{
-				if( m_assistTargets.count( pUnit ) > 0 ) // already have him
-					break;
+				if( m_assistTargets.count( pUnit ) == 0 )
+				{
+					result = true;
+					m_assistTargets.insert(pUnit);
+				}
 
-				result = true;
-				m_assistTargets.insert(pUnit);
-					
 				LockAITargets(true);
 
 				for(it = m_aiTargets.begin(); it != m_aiTargets.end(); ++it)
 				{
 					Unit *ai_t = m_Unit->GetMapMgr()->GetUnit( it->first );
-					if( !ai_t )
-						continue;
-					static_cast< Unit* >( *itr )->GetAIInterface()->AttackReaction( ai_t, 1, 0 );
+					if( ai_t )
+						static_cast< Unit* >( *itr )->GetAIInterface()->AttackReaction( ai_t, 1, 0 );
 				}
 
 				LockAITargets(false);
@@ -3441,12 +3421,17 @@ uint32 AIInterface::getThreatByGUID(uint64 guid)
 
 uint32 AIInterface::getThreatByPtr(Unit* obj)
 {
-	if( !obj )
+	if( !obj  || m_Unit->GetMapMgr() == NULL)
 		return 0;
 	TargetMap::iterator it = m_aiTargets.find(obj->GetGUID());
 	if(it != m_aiTargets.end())
 	{
-		return it->second;
+		Unit *tempUnit = m_Unit->GetMapMgr()->GetUnit(it->first);
+		if (tempUnit)
+			return it->second + tempUnit->GetThreatModifyer();
+		else
+			return it->second;
+
 	}
 	return 0;
 }
@@ -3608,16 +3593,23 @@ bool AIInterface::modThreatByPtr(Unit* obj, int32 mod)
 
 	LockAITargets(true);
 
+	int32 tempthreat;
 	TargetMap::iterator it = m_aiTargets.find(obj->GetGUID());
 	if(it != m_aiTargets.end())
 	{
 		it->second += mod;
-		if((it->second + obj->GetThreatModifyer()) > m_currentHighestThreat)
+		if (it->second < 1)
+			it->second = 1;
+
+		tempthreat = it->second + obj->GetThreatModifyer();
+		if (tempthreat < 1)
+			tempthreat = 1;
+		if(tempthreat > m_currentHighestThreat)
 		{
 			// new target!
 			if(!isTaunted)
 			{
-				m_currentHighestThreat = it->second + obj->GetThreatModifyer();
+				m_currentHighestThreat = tempthreat;
 				SetNextTarget(obj);
 			}
 		}
@@ -3625,11 +3617,15 @@ bool AIInterface::modThreatByPtr(Unit* obj, int32 mod)
 	else
 	{
 		m_aiTargets.insert( make_pair( obj->GetGUID(), mod ) );
-		if((mod + obj->GetThreatModifyer()) > m_currentHighestThreat)
+
+		tempthreat = mod + obj->GetThreatModifyer();
+		if (tempthreat < 1)
+			tempthreat = 1;
+		if(tempthreat > m_currentHighestThreat)
 		{
 			if(!isTaunted)
 			{
-				m_currentHighestThreat = mod + obj->GetThreatModifyer();
+				m_currentHighestThreat = tempthreat;
 				SetNextTarget(obj);
 			}
 		}
@@ -3885,13 +3881,22 @@ uint32 AIInterface::_CalcThreat(uint32 damage, SpellEntry * sp, Unit* Attacker)
 	{
 		mod = sp->ThreatForSpell;
 	}
+	if( sp != NULL && sp->ThreatForSpellCoef != 0.0f )
+		mod += int32(damage * sp->ThreatForSpellCoef);
 	else
-	{
-		mod = damage;
-	}
+		mod += damage;
 
-	// modify mod by Affects
-	mod += (mod * Attacker->GetGeneratedThreatModifyer() / 100);
+	if (Attacker->getClass() == ROGUE)
+		mod = int32(mod * 0.71); // Rogues generate 0.71x threat per damage.
+
+	// modify threat by Buffs
+	if (sp != NULL)
+		mod += (mod * Attacker->GetGeneratedThreatModifyer(sp->School) / 100);
+	else
+		mod += (mod * Attacker->GetGeneratedThreatModifyer(0) / 100);
+
+	if (mod < 1)
+		mod = 1;
 
 	return mod;
 }

@@ -1447,6 +1447,11 @@ public:
     ARCEMU_INLINE uint32 GetSoulStone(){return SoulStone;}
     ARCEMU_INLINE void SetSoulStone(uint32 StoneID){SoulStone = StoneID;}
 
+	uint64 misdirectionTarget;
+
+	ARCEMU_INLINE uint64 GetMisdirectionTarget(){return misdirectionTarget;}
+	ARCEMU_INLINE void SetMisdirectionTarget(uint64 PlayerGUID){misdirectionTarget = PlayerGUID;}
+
 	bool bReincarnation;
 
 	map<uint32, WeaponModifier> damagedone;

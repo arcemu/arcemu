@@ -373,6 +373,7 @@ struct SpellEntry
 	uint32 in_front_status;					//!!! CUSTOM,
     uint32 EffectSpellGroupRelation_high[3];     //!!! this is not contained in client dbc but server must have it
 	uint32 ThreatForSpell;
+	float ThreatForSpellCoef;
 	uint32 ProcOnNameHash[3];
 	uint32 spell_coef_flags;                                //!!! CUSTOM, store flags for spell coefficient calculations
 

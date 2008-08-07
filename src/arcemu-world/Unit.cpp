@@ -277,6 +277,7 @@ Unit::Unit()
 		AttackerCritChanceMod[x]=0;
 		CritMeleeDamageTakenPctMod[x]=0;
 		CritRangedDamageTakenPctMod[x]=0;
+		m_generatedThreatModifyer[x] = 0;
 	}
 	DamageTakenPctModOnHP35 = 1;
 	RangedDamageTaken = 0;
@@ -290,7 +291,6 @@ Unit::Unit()
 	trackStealth = false;
 
 	m_threatModifyer = 0;
-	m_generatedThreatModifyer = 0;
 	memset(m_auras, 0, (MAX_AURAS+MAX_PASSIVE_AURAS)*sizeof(Aura*));
 	
 	// diminishing return stuff

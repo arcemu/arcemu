@@ -1344,7 +1344,10 @@ void ObjectMgr::LoadAIThreatToSpellId()
 		Field *fields = result->Fetch();
 		sp = dbcSpell.LookupEntryForced( fields[0].GetUInt32() );
 		if( sp != NULL )
+		{
 			sp->ThreatForSpell = fields[1].GetUInt32();
+			sp->ThreatForSpellCoef = fields[2].GetFloat();
+		}
 		else
 			Log.Warning("AIThreatSpell", "Cannot apply to spell %u; spell is nonexistant.", fields[0].GetUInt32());
 

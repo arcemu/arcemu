@@ -1582,6 +1582,8 @@ public:
     void SpellEffectTriggerSpellWithValue(uint32 i);
     void SpellEffectSummonTarget(uint32 i);
 	void SpellEffectForgetSpecialization(uint32 i);
+	void SpellEffectRedirectThreat(uint32 i);
+	void SpellEffectReduceThreatPercent(uint32 i);
 
     // Spell Targets Handlers
     void SpellTargetNULL(uint32 i, uint32 j);

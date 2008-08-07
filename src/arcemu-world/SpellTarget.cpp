@@ -988,8 +988,14 @@ void Spell::SpellTargetTargetPartyMember(uint32 i, uint32 j)
 		return;
 
 	TargetsList *tmpMap=&m_targetUnits[i];
-	Unit* Target = m_caster->GetMapMgr()->GetPlayer ((uint32)m_targets.m_unitTarget);
+	Unit* Target = m_caster->GetMapMgr()->GetUnit(m_targets.m_unitTarget);
 	if(!Target)
+		return;
+
+	if (!Target->IsPet() && !Target->IsPlayer())
+		return;
+
+	if ((Target->IsPet() && static_cast<Pet*>(Target)->GetPetOwner() != p_caster) || (Target->IsPlayer() && static_cast<Player*>(Target)->GetGroup() != p_caster->GetGroup()))
 		return;
 
 	float r=GetMaxRange(dbcSpellRange.LookupEntry(GetProto()->rangeIndex));

@@ -42,6 +42,7 @@ Player::Player( uint32 guid ) : m_mailBox(guid)
 	info					= NULL;				 // Playercreate info
 	SoulStone				= 0;
 	SoulStoneReceiver		= 0;
+	misdirectionTarget		= 0;
 	bReincarnation			= false;
 	m_furorChance			= 0;
 	Seal					= 0;

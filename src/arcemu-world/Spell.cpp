@@ -1158,6 +1158,17 @@ uint8 Spell::prepare( SpellCastTargets * targets )
 	}
 	else
 	{
+		if( p_caster != NULL && p_caster->IsStealth() && m_spellInfo && !(m_spellInfo->AttributesEx & ATTRIBUTESEX_NOT_BREAK_STEALTH) && m_spellInfo->Id != 1 ) // <-- baaaad, baaad hackfix - for some reason some spells were triggering Spell ID #1 and stuffing up the spell system.
+		{
+			/* talents procing - don't remove stealth either */
+			if (!(m_spellInfo->Attributes & ATTRIBUTES_PASSIVE) && 
+				!( pSpellId && dbcSpell.LookupEntry(pSpellId)->Attributes & ATTRIBUTES_PASSIVE ) )
+			{
+				p_caster->RemoveAura(p_caster->m_stealth);
+				p_caster->m_stealth = 0;
+			}
+		}
+
 		SendSpellStart();
 
 		// start cooldown handler
@@ -4707,7 +4718,10 @@ void Spell::Heal(int32 amount, bool ForceCrit)
 	uint32 curHealth = unitTarget->GetUInt32Value(UNIT_FIELD_HEALTH);
 	uint32 maxHealth = unitTarget->GetUInt32Value(UNIT_FIELD_MAXHEALTH);
 	if((curHealth + amount) >= maxHealth)
+	{
+		amount = maxHealth - curHealth;
 		unitTarget->SetUInt32Value(UNIT_FIELD_HEALTH, maxHealth);
+	}
 	else
 		unitTarget->ModUnsigned32Value(UNIT_FIELD_HEALTH, amount);
 
@@ -4719,60 +4733,29 @@ void Spell::Heal(int32 amount, bool ForceCrit)
 
 	unitTarget->RemoveAurasByHeal();
 
-	int doneTarget = 0;
-
 	// add threat
 	if( u_caster != NULL )
 	{
-		//preventing overheal ;)
-		if( (curHealth + base_amount) >= maxHealth )
-			base_amount = maxHealth - curHealth;
-
-		uint32 base_threat=GetBaseThreat(base_amount) / 2;
-		int count = 0;
-		Unit *unit;
 		std::vector<Unit*> target_threat;
-		if(base_threat)
+		int count = 0;
+		for(std::set<Object*>::iterator itr = u_caster->GetInRangeSetBegin(); itr != u_caster->GetInRangeSetEnd(); ++itr)
 		{
-			/*
-			http://www.wowwiki.com/Threat
-			Healing threat is global, and is normally .5x of the amount healed.
-			Healing effects cause no threat if the target is already at full health.
+			if((*itr)->GetTypeId() != TYPEID_UNIT || !static_cast<Unit *>(*itr)->CombatStatus.IsInCombat() || (static_cast<Unit *>(*itr)->GetAIInterface()->getThreatByPtr(u_caster) == 0 && static_cast<Unit *>(*itr)->GetAIInterface()->getThreatByPtr(unitTarget) == 0))
+				continue;
 
-			Example: Player 1 is involved in combat with 5 mobs. Player 2 (priest) heals Player 1 for 1000 health,
-			and has no threat reduction talents. A 1000 heal generates 500 threat,
-			however that 500 threat is split amongst the 5 mobs.
-			Each of the 5 mobs now has 100 threat towards Player 2.
-			*/
-
-			target_threat.reserve(u_caster->GetInRangeCount()); // this helps speed
-
-			for(std::set<Object*>::iterator itr = u_caster->GetInRangeSetBegin(); itr != u_caster->GetInRangeSetEnd(); ++itr)
-			{
-				if((*itr)->GetTypeId() != TYPEID_UNIT)
-					continue;
-				unit = static_cast<Unit*>((*itr));
-				if(unit->GetAIInterface()->GetNextTarget() == unitTarget)
-				{
-					target_threat.push_back(unit);
-					++count;
-				}
-			}
-			count = ( count == 0 ? 1 : count );  // division against 0 protection
-
-			// every unit on threatlist should get 1/2 the threat, divided by size of list
-			uint32 threat = base_threat / (count * 2);
-
-			// update threatlist (HealReaction)
-			for(std::vector<Unit*>::iterator itr = target_threat.begin(); itr != target_threat.end(); ++itr)
-			{
-				// for now we'll just use heal amount as threat.. we'll prolly need a formula though
-				static_cast< Unit* >( *itr )->GetAIInterface()->HealReaction( u_caster, unitTarget, threat );
-
-				if( (*itr)->GetGUID() == u_caster->CombatStatus.GetPrimaryAttackTarget() )
-					doneTarget = 1;
-			}
+			target_threat.push_back(static_cast<Unit *>(*itr));
+			count++;
 		}
+		if (count == 0)
+			return;
+
+		amount = amount / count;
+
+		for(std::vector<Unit*>::iterator itr = target_threat.begin(); itr != target_threat.end(); ++itr)
+		{
+			static_cast<Unit *>(*itr)->GetAIInterface()->HealReaction(u_caster, unitTarget, m_spellInfo, amount);
+		}
+
 		// remember that we healed (for combat status)
 		if(unitTarget->IsInWorld() && u_caster->IsInWorld())
 			u_caster->CombatStatus.WeHealed(unitTarget);

@@ -145,12 +145,12 @@ pSpellEffect SpellEffectsHandler[TOTAL_SPELL_EFFECTS]={
 		&Spell::SpellEffectNULL,					// unknown - 122 //not used
 		&Spell::SpellEffectFilming,					//SPELL_EFFECT_FILMING - 123 // http://www.thottbot.com/?sp=27998: flightpath 
 		&Spell::SpellEffectPlayerPull,				//SPELL_EFFECT_PLAYER_PULL - 124 - http://thottbot.com/e2312
-		&Spell::SpellEffectNULL,					//SPELL_EFFECT_REDUCE_THREAT_PERCENT - 125 // Reduce Threat by % //http://www.thottbot.com/?sp=32835
+		&Spell::SpellEffectReduceThreatPercent,					//SPELL_EFFECT_REDUCE_THREAT_PERCENT - 125 // Reduce Threat by % //http://www.thottbot.com/?sp=32835
 		&Spell::SpellEffectSpellSteal,				//SPELL_EFFECT_SPELL_STEAL - 126 // Steal Beneficial Buff (Magic) //http://www.thottbot.com/?sp=30449
 		&Spell::SpellEffectProspecting,				// unknown - 127 // Search 5 ore of a base metal for precious gems.  This will destroy the ore in the process.
 		&Spell::SpellEffectApplyAura128,			// unknown - 128 // Adjust a stats by %: Mod Stat // ITS FLAT
 		&Spell::SpellEffectNULL,					// unknown - 129 // Mod Dmg % (Spells)
-		&Spell::SpellEffectNULL,					// unknown - 130 // http://www.thottbot.com/s34477
+		&Spell::SpellEffectRedirectThreat,// unknown - 130 // http://www.thottbot.com/s34477
 		&Spell::SpellEffectNULL,					// unknown - 131 // test spell
 		&Spell::SpellEffectNULL,					// unknown - 132 // no spells
 		&Spell::SpellEffectForgetSpecialization,	//SPELL_EFFECT_FORGET_SPECIALIZATION - 133 // http://www.thottbot.com/s36441 // I think this is a gm/npc spell
@@ -1618,6 +1618,13 @@ void Spell::SpellEffectDummy(uint32 i) // Dummy(Scripted events)
 			and you have to kill them. After the last one dies, and a small 
 			break, a boss mob spawns. Successfully completing this event 
 			turns the arena spectators from red to yellow*/
+		}break;
+	case 29858: //Soulshatter
+		{
+			if( !u_caster || !u_caster->isAlive() || !unitTarget || !unitTarget->isAlive() )
+				return;
+
+			u_caster->CastSpell(unitTarget, 32835, false);
 		}break;
 	}										 
 }
@@ -5262,6 +5269,25 @@ void Spell::SpellEffectFeedPet(uint32 i)  // Feed Pet
 		p_caster->GetItemInterface()->SafeFullRemoveItemByGuid(itemTarget->GetGUID());
 		itemTarget=NULL;
 	}
+}
+
+void Spell::SpellEffectRedirectThreat(uint32 i)
+{
+	if (!p_caster || !unitTarget)
+		return;
+
+	if ((unitTarget->GetTypeId() == TYPEID_PLAYER && p_caster->GetGroup() != static_cast<Player *>(unitTarget)->GetGroup()) || (unitTarget->GetTypeId() == TYPEID_UNIT && !unitTarget->IsPet()))
+		return;
+
+	p_caster->SetMisdirectionTarget(unitTarget->GetGUID());
+}
+
+void Spell::SpellEffectReduceThreatPercent(uint32 i)
+{
+	if (!unitTarget || !unitTarget->IsCreature() || !u_caster || unitTarget->GetAIInterface()->getThreatByPtr(u_caster) == 0)
+		return;
+
+		unitTarget->GetAIInterface()->modThreatByPtr(u_caster, (int32)unitTarget->GetAIInterface()->getThreatByPtr(u_caster) * damage / 100);
 }
 
 void Spell::SpellEffectReputation(uint32 i)
