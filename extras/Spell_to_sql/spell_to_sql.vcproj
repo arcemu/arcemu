@@ -123,10 +123,10 @@
 			Name="from ascent"
 			Filter="">
 			<File
-				RelativePath="..\..\src\ascent-shared\Database\dbcfile.cpp">
+				RelativePath="..\..\src\arcemu-shared\Database\dbcfile.cpp">
 			</File>
 			<File
-				RelativePath="..\..\src\ascent-shared\Database\dbcfile.h">
+				RelativePath="..\..\src\arcemu-shared\Database\dbcfile.h">
 			</File>
 		</Filter>
 	</Files>
