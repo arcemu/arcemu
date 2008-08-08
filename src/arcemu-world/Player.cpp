@@ -7768,6 +7768,29 @@ bool Player::SafeTeleport(uint32 MapID, uint32 InstanceID, float X, float Y, flo
 
 bool Player::SafeTeleport(uint32 MapID, uint32 InstanceID, const LocationVector & vec)
 {
+	if ( GetTaxiState() )
+	{
+		sEventMgr.RemoveEvents( this, EVENT_PLAYER_TAXI_DISMOUNT );
+		sEventMgr.RemoveEvents( this, EVENT_PLAYER_TAXI_INTERPOLATE );
+		SetTaxiState( false );
+		SetTaxiPath( NULL );
+		UnSetTaxiPos();
+		m_taxi_ride_time = 0;
+		SetUInt32Value( UNIT_FIELD_MOUNTDISPLAYID , 0 );
+		RemoveFlag( UNIT_FIELD_FLAGS, UNIT_FLAG_MOUNTED_TAXI );
+		RemoveFlag( UNIT_FIELD_FLAGS, UNIT_FLAG_LOCK_PLAYER );
+		SetPlayerSpeed( RUN, m_runSpeed );
+	}
+	if ( m_TransporterGUID )
+	{
+		Transporter * pTrans = objmgr.GetTransporter( GUID_LOPART( m_TransporterGUID ) );
+		if ( pTrans && !m_lockTransportVariables )
+		{
+			pTrans->RemovePlayer( this );
+			m_CurrentTransporter = NULL;
+			m_TransporterGUID = 0;
+		}
+	}
 #ifdef CLUSTERING
 	/* Clustering Version */
 	MapInfo * mi = WorldMapInfoStorage.LookupEntry(MapID);
@@ -7826,21 +7849,17 @@ bool Player::SafeTeleport(uint32 MapID, uint32 InstanceID, const LocationVector 
 	{
 		instance = true;
 		this->SetInstanceID(InstanceID);
-#ifndef COLLISION
-		// if we are mounted remove it
-		if( m_MountSpellId )
-			RemoveAura( m_MountSpellId );
-#endif
 	}
 	else if(m_mapId != MapID)
 	{
 		instance = true;
-#ifndef COLLISION
-		// if we are mounted remove it
-		if( m_MountSpellId )
-			RemoveAura( m_MountSpellId );
-#endif
 	}
+
+#ifndef COLLISION
+	// if we are mounted remove it
+	if( m_MountSpellId )
+		RemoveAura( m_MountSpellId );
+#endif
 
 	// make sure player does not drown when teleporting from under water
 	if (m_UnderwaterState & UNDERWATERSTATE_UNDERWATER)

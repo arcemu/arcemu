@@ -2236,8 +2236,7 @@ void WorldSession::HandleSummonResponseOpcode(WorldPacket & recv_data)
 	if(_player->CombatStatus.IsInCombat())
 		return;
 
-	_player->SafeTeleport(_player->m_summonMapId, _player->m_summonInstanceId, 
-		_player->m_summonPos);
+	_player->SafeTeleport( _player->m_summonMapId, _player->m_summonInstanceId, _player->m_summonPos );
 
 	_player->m_summoner = _player->m_summonInstanceId = _player->m_summonMapId = 0;
 }
