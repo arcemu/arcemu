@@ -2807,120 +2807,87 @@ uint8 Spell::CanCast(bool tolerate)
 	if(objmgr.IsSpellDisabled(GetProto()->Id))
 		return SPELL_FAILED_SPELL_UNAVAILABLE;
 
-		if(m_caster->IsInWorld())
+	if(m_caster->IsInWorld())
+	{
+		Unit *target = m_caster->GetMapMgr()->GetUnit( m_targets.m_unitTarget );
+
+		if( target )
 		{
-			Unit *target = m_caster->GetMapMgr()->GetUnit( m_targets.m_unitTarget );
+			//gm flags can't be targetted by ANY spell, not even their own self casts
+			if (target->IsPlayer() && (Player*)target->HasFlag(PLAYER_FLAGS, PLAYER_FLAG_GM))
+				return SPELL_FAILED_BM_OR_INVISGOD;
 
-			if( target )
+			//you can't mind control someone already mind controlled
+			if (GetProto()->NameHash == SPELL_HASH_MIND_CONTROL && target->HasAurasWithNameHash(SPELL_HASH_MIND_CONTROL))
+				return SPELL_FAILED_BAD_TARGETS;
+
+
+			/* Shady: wtf is that? commented.
+			else  if(GetProto()->NameHash == SPELL_HASH_VINDICATION)
 			{
-				//gm flags can't be targetted by ANY spell, not even their own self casts
-				if (target->IsPlayer() && (Player*)target->HasFlag(PLAYER_FLAGS, PLAYER_FLAG_GM))
-					return SPELL_FAILED_BM_OR_INVISGOD;
-
-				//you can't mind control someone already mind controlled
-				if (GetProto()->NameHash == SPELL_HASH_MIND_CONTROL && target->HasAurasWithNameHash(SPELL_HASH_MIND_CONTROL))
+				if( !target->IsPlayer() )
 					return SPELL_FAILED_BAD_TARGETS;
-
-				else  if(GetProto()->NameHash == SPELL_HASH_VINDICATION)
-				{
-					if( !target->IsPlayer() )
-						return SPELL_FAILED_BAD_TARGETS;
-				}
-
-				else if(GetProto()->Id == 12699)
-				{
-					if(target->GetEntry() != 5307 || target->isAlive())
-						return SPELL_FAILED_BAD_TARGETS;
-				}
-
-				else  if(GetProto()->Id == 30877)
-				{
-					if(target->GetEntry() != 17326 && target != m_caster)
-						return SPELL_FAILED_BAD_TARGETS;
-				}
-
-				else if(GetProto()->Id == 34665)
-				{
-					if(target->GetEntry() != 16880)
-						return SPELL_FAILED_BAD_TARGETS;
-				}
-
-				else if(GetProto()->Id == 3607)
-				{
-					if(target->GetEntry() != 2530)
-						return SPELL_FAILED_BAD_TARGETS;
-				}
-
-				else if(GetProto()->Id == 36310)
-				{
-					if(target->GetEntry() != 20058)
-						return SPELL_FAILED_BAD_TARGETS;
-				}
-
-				else if(GetProto()->Id == 41291)
-				{
-					if(target->GetEntry() != 22357)
-						return SPELL_FAILED_BAD_TARGETS;
-				}
-			}
-			if(GetProto()->Id == 32146)
-			{
-				Creature *corpse = m_caster->GetMapMgr()->GetInterface()->GetCreatureNearestCoords(m_caster->GetPositionX(), m_caster->GetPositionY(), m_caster->GetPositionZ(), 18240);
-				if(corpse != NULL)
-					if (m_caster->CalcDistance(m_caster, corpse) > 5)
-						return SPELL_FAILED_NOT_HERE;
-			}
-
-			else if(GetProto()->Id == 39246)
-			{
-				Creature *cleft = m_caster->GetMapMgr()->GetInterface()->GetCreatureNearestCoords(m_caster->GetPositionX(), m_caster->GetPositionY(), m_caster->GetPositionZ(), 22105);
-				if(cleft == NULL || cleft->isAlive())
-					return SPELL_FAILED_NOT_HERE;
-			}
-
-			else if(GetProto()->Id == 30988)
-			{
-				Creature *corpse = m_caster->GetMapMgr()->GetInterface()->GetCreatureNearestCoords(m_caster->GetPositionX(), m_caster->GetPositionY(), m_caster->GetPositionZ(), 17701);
-				if(corpse != NULL)
-					if (m_caster->CalcDistance(m_caster, corpse) > 5  || corpse->isAlive())
-						return SPELL_FAILED_NOT_HERE;
-			}
-
-			else if(GetProto()->Id == 43723)
-			{
-				Creature *abysal = p_caster->GetMapMgr()->GetInterface()->GetCreatureNearestCoords(p_caster->GetPositionX(), p_caster->GetPositionY(), p_caster->GetPositionZ(), 19973);
-				if(abysal != NULL)
-				{
-					if(!abysal->isAlive())
-						if(!(p_caster->GetItemInterface()->GetItemCount(31672, 0) > 1 && p_caster->GetItemInterface()->GetItemCount(31673, 0) > 0 && p_caster->CalcDistance(p_caster, abysal) < 10))
-							return SPELL_FAILED_NOT_HERE;
-				}
-				else
-					return SPELL_FAILED_NOT_HERE;
-			}
-
-			else if(GetProto()->Id == 32307)
-			{
-				Creature *kilsorrow = p_caster->GetMapMgr()->GetInterface()->GetCreatureNearestCoords(p_caster->GetPositionX(), p_caster->GetPositionY(), p_caster->GetPositionZ());
-				if(kilsorrow == NULL || kilsorrow->isAlive() || p_caster->CalcDistance(p_caster, kilsorrow) > 1)
-					return SPELL_FAILED_NOT_HERE;
-				if(kilsorrow->GetEntry() != 17147 && kilsorrow->GetEntry() != 17148 && kilsorrow->GetEntry() != 18397 && kilsorrow->GetEntry() != 18658 && kilsorrow->GetEntry() != 17146)
-					return SPELL_FAILED_NOT_HERE;
-			}
+			}*/
 		}
+		if(GetProto()->Id == 32146)
+		{
+			Creature *corpse = m_caster->GetMapMgr()->GetInterface()->GetCreatureNearestCoords(m_caster->GetPositionX(), m_caster->GetPositionY(), m_caster->GetPositionZ(), 18240);
+			if(corpse != NULL)
+				if (m_caster->CalcDistance(m_caster, corpse) > 5)
+					return SPELL_FAILED_NOT_HERE;
+		}
+
+		else if(GetProto()->Id == 39246)
+		{
+			Creature *cleft = m_caster->GetMapMgr()->GetInterface()->GetCreatureNearestCoords(m_caster->GetPositionX(), m_caster->GetPositionY(), m_caster->GetPositionZ(), 22105);
+			if(cleft == NULL || cleft->isAlive())
+				return SPELL_FAILED_NOT_HERE;
+		}
+
+		else if(GetProto()->Id == 30988)
+		{
+			Creature *corpse = m_caster->GetMapMgr()->GetInterface()->GetCreatureNearestCoords(m_caster->GetPositionX(), m_caster->GetPositionY(), m_caster->GetPositionZ(), 17701);
+			if(corpse != NULL)
+				if (m_caster->CalcDistance(m_caster, corpse) > 5  || corpse->isAlive())
+					return SPELL_FAILED_NOT_HERE;
+		}
+
+		else if(GetProto()->Id == 43723)
+		{
+			Creature *abysal = p_caster->GetMapMgr()->GetInterface()->GetCreatureNearestCoords(p_caster->GetPositionX(), p_caster->GetPositionY(), p_caster->GetPositionZ(), 19973);
+			if(abysal != NULL)
+			{
+				if(!abysal->isAlive())
+					if(!(p_caster->GetItemInterface()->GetItemCount(31672, FALSE) > 1 && p_caster->GetItemInterface()->GetItemCount(31673, FALSE) > 0 && p_caster->CalcDistance(p_caster, abysal) < 10))
+						return SPELL_FAILED_NOT_HERE;
+			}
+			else
+				return SPELL_FAILED_NOT_HERE;
+		}
+
+		else if(GetProto()->Id == 32307)
+		{
+			Creature *kilsorrow = p_caster->GetMapMgr()->GetInterface()->GetCreatureNearestCoords(p_caster->GetPositionX(), p_caster->GetPositionY(), p_caster->GetPositionZ());
+			if(kilsorrow == NULL || kilsorrow->isAlive() || p_caster->CalcDistance(p_caster, kilsorrow) > 1)
+				return SPELL_FAILED_NOT_HERE;
+			if(kilsorrow->GetEntry() != 17147 && kilsorrow->GetEntry() != 17148 && kilsorrow->GetEntry() != 18397 && kilsorrow->GetEntry() != 18658 && kilsorrow->GetEntry() != 17146)
+				return SPELL_FAILED_NOT_HERE;
+		}
+	}
+
+	if (u_caster != NULL)
+	{
+		if (GetProto()->Attributes & ATTRIBUTES_REQ_STEALTH && !u_caster->IsStealth())
+			return SPELL_FAILED_ONLY_STEALTHED;
+
+		if (GetProto()->Attributes & ATTRIBUTES_REQ_OOC && u_caster->CombatStatus.IsInCombat())
+			return SPELL_FAILED_TARGET_IN_COMBAT;
+	}
+	//Shady: EquippedItemClass, EquippedItemSubClass (doesn't it handled with client?)
+
 
 	if( p_caster != NULL )
 	{
-		// if theres any spells that should be cast while dead let me know
-		if( !p_caster->isAlive() )
-		{
-		  //Spirit of Redemption (20711) fix
-			if ((!(GetProto()->c_is_flags & SPELL_FLAG_IS_HEALING) || !p_caster->HasAura(27827)) && GetProto()->Id != 7355)
-			{
- 			   return SPELL_FAILED_CASTER_DEAD;
- 		    }
-		}
-
 #ifdef COLLISION
 		if (GetProto()->MechanicsType == MECHANIC_MOUNTED)
 		{
@@ -2941,6 +2908,10 @@ uint8 Spell::CanCast(bool tolerate)
 		//	return SPELL_FAILED_SPELL_UNAVAILABLE;
 
 		// backstab/ambush
+		/*Shady: This shit shouldn't be here
+		We have special attribute ATTRIBUTES_REQ_STEALTH for stealth requiring.
+		Also we have EquippedItemClass, EquippedItemSubClass fields in DBC for items handling. 
+		SO FUCKING USE IT!
 		if( GetProto()->NameHash == SPELL_HASH_BACKSTAB || GetProto()->NameHash == SPELL_HASH_AMBUSH )
 		{
 			if( GetProto()->NameHash == SPELL_HASH_AMBUSH && !p_caster->IsStealth() )
@@ -2949,7 +2920,7 @@ uint8 Spell::CanCast(bool tolerate)
 			Item * pMainHand = p_caster->GetItemInterface()->GetInventoryItem( INVENTORY_SLOT_NOT_SET, EQUIPMENT_SLOT_MAINHAND );
 			if( !pMainHand || pMainHand->GetProto()->Class != 2 || pMainHand->GetProto()->SubClass != 15 )
 				return SPELL_FAILED_EQUIPPED_ITEM_CLASS_MAINHAND;
-		}
+		}*/
 
 		// check for cooldowns
 		if(!tolerate && !p_caster->Cooldown_CanCast(GetProto()))
@@ -2981,11 +2952,12 @@ uint8 Spell::CanCast(bool tolerate)
 		}
 
 		// check if spell is allowed while player is on a taxi
-		if(p_caster->m_onTaxi)
-		{
-			if( GetProto()->Id != 33836 || GetProto()->Id != 33655) // exception for Area 52 Special
-				return SPELL_FAILED_NOT_ON_TAXI;
-		}
+		//Shady: handled via ATTRIBUTES_MOUNT_CASTABLE, nah?
+		//if(p_caster->m_onTaxi)
+		//{
+		//	if( GetProto()->Id != 33836 || GetProto()->Id != 33655) // exception for Area 52 Special
+		//		return SPELL_FAILED_NOT_ON_TAXI;
+		//}
 
 		// check if spell is allowed while player is on a transporter
 		if(p_caster->m_CurrentTransporter)
@@ -3042,7 +3014,15 @@ uint8 Spell::CanCast(bool tolerate)
 				//case FORM_DIREBEAR:
 				//case FORM_CREATUREBEAR:
 				//case FORM_GHOSTWOLF:
-				//case FORM_SPIRITOFREDEMPTION:
+
+				case FORM_SPIRITOFREDEMPTION:
+				{
+					//Spirit of Redemption (20711) fix
+					if (!(GetProto()->c_is_flags & SPELL_FLAG_IS_HEALING) && GetProto()->Id != 7355)
+						return SPELL_FAILED_CASTER_DEAD;
+					break;
+				}
+				
 
 				default:
 				{
@@ -3055,6 +3035,14 @@ uint8 Spell::CanCast(bool tolerate)
 		}
 
 		// check if spell is allowed while we have a battleground flag
+		/*Shady: 
+		1. We have 3 AuraInterruptFlags for Warsong Flags (AURA_INTERRUPT_ON_INVINCIBLE,AURA_INTERRUPT_ON_LEAVE_AREA,AURA_INTERRUPT_ON_MOUNTAURA_INTERRUPT_ON_MOUNT)
+		So we should implement all this 3 interruptions, instead of hackfixes.
+		2. As we can see AURA_INTERRUPT_ON_STEALTH doesn't included in DBC so if it blizzlike (flag drops if we r trying to stealth)
+		just add AURA_INTERRUPT_ON_STEALTH flag to WSG\EotS flag auras and check its implementation.
+		3. DropFlag() already called in RemoveAura()
+		4. DUDES, Think about how it should works, before commiting anything!
+		Result: commented.
 		if(p_caster->m_bgHasFlag)
 		{
 			switch(GetProto()->Id)
@@ -3084,14 +3072,16 @@ uint8 Spell::CanCast(bool tolerate)
 
 					if( p_caster->m_bg->GetType() == BATTLEGROUND_WARSUNG_GULCH )
     					((WarsongGulch*)p_caster->m_bg)->DropFlag(p_caster);
-					/*else if( p_caster->m_bg->GetType() == BATTLEGROUND_EYE_OF_THE_STORM )
-						((EyeOfTheStorm*)p_caster->m_bg)->DropFlag(p_caster);*/
+					//else if( p_caster->m_bg->GetType() == BATTLEGROUND_EYE_OF_THE_STORM )
+					//	((EyeOfTheStorm*)p_caster->m_bg)->DropFlag(p_caster);
 				}
 			}
 		}
+		*/
 
 		// Arathi's Flags take by stealthed --> Remove stealth
-		if(p_caster->m_bg && p_caster->IsStealth())
+		//Shady: we have ATTRIBUTESEX_NOT_BREAK_STEALTH for this purposes. All spells without this flag break stealth.
+		/*if(p_caster->m_bg && p_caster->IsStealth())
 		{
 			switch(GetProto()->Id)
 			{
@@ -3102,29 +3092,19 @@ uint8 Spell::CanCast(bool tolerate)
 					p_caster->m_stealth = 0;
 				}
 			}
-		}
+		}*/
 
 		// check if BG Flags can take while bubbled
+		//Shady: is i blizzlike? not sure so i don't comment it, for now but TODO: find out the truth.
 		if(p_caster->HasAurasWithNameHash( SPELL_HASH_DIVINE_SHIELD ) || p_caster->HasAurasWithNameHash( SPELL_HASH_DIVINE_PROTECTION ))
 		{
 			switch(GetProto()->Id)
 			{
-				// opening spell: arathi basin flags
+				// opening spell: warsong/silverwing flag & arathi basin flags & EotS flag
 				case 21651:
-				{
-					return SPELL_FAILED_SPELL_UNAVAILABLE;
-					break;
-				}
-			}
-		}
-		// check if BG Flags can takes while bubbled
-		if(p_caster->HasAurasWithNameHash( SPELL_HASH_DIVINE_SHIELD ) || p_caster->HasAurasWithNameHash( SPELL_HASH_DIVINE_PROTECTION ))
-		{
-			switch(GetProto()->Id)
-			{
-				// opening spell: warsong/silverwing flag & arathi basin flags
 				case 23333:
 				case 23335:
+				case 34976:
 				{
 					return SPELL_FAILED_SPELL_UNAVAILABLE;
 					break;
@@ -3163,23 +3143,22 @@ uint8 Spell::CanCast(bool tolerate)
 		}
 
 		// check if we have the required tools, totems, etc
-		if( GetProto()->Totem[0] != 0)
+		for(i=0; i<2 ;i++)
 		{
-			if(!p_caster->GetItemInterface()->GetItemCount(GetProto()->Totem[0]))
-				return SPELL_FAILED_TOTEMS;
-		}
-		if( GetProto()->Totem[1] != 0)
-		{
-			if(!p_caster->GetItemInterface()->GetItemCount(GetProto()->Totem[1]))
-				return SPELL_FAILED_TOTEMS;
+			if( GetProto()->Totem[i] != 0)
+			{
+				if(!p_caster->GetItemInterface()->GetItemCount(GetProto()->Totem[i]))
+					return SPELL_FAILED_TOTEMS;
+			}
 		}
 
 		// stealth check
-		if( GetProto()->NameHash == SPELL_HASH_STEALTH )
+		//Shady: :\ ATTRIBUTES_REQ_OOC owns!!!
+		/*if( GetProto()->NameHash == SPELL_HASH_STEALTH )
 		{
 			if( p_caster->CombatStatus.IsInCombat() )
 				return SPELL_FAILED_TARGET_IN_COMBAT;
-		}
+		}*/
 
 		// check if we have the required gameobject focus
 		float focusRange;
@@ -3568,7 +3547,36 @@ uint8 Spell::CanCast(bool tolerate)
                         return SPELL_FAILED_DONT_REPORT;
                     }
                 }break;
-
+				case 2699:
+				{
+					if(target->GetEntry() != 5307 || target->isAlive())
+						return SPELL_FAILED_BAD_TARGETS;
+				}break;
+				case 30877:
+				{
+					if(target->GetEntry() != 17326 && target != m_caster)
+						return SPELL_FAILED_BAD_TARGETS;
+				}break;
+				case 34665:
+				{
+					if(target->GetEntry() != 16880)
+						return SPELL_FAILED_BAD_TARGETS;
+				}break;
+				case 3607:
+				{
+					if(target->GetEntry() != 2530)
+						return SPELL_FAILED_BAD_TARGETS;
+				}break;
+				case 36310:
+				{
+					if(target->GetEntry() != 20058)
+						return SPELL_FAILED_BAD_TARGETS;
+				}break;
+				case 41291:
+				{
+					if(target->GetEntry() != 22357)
+						return SPELL_FAILED_BAD_TARGETS;
+				}break;
 				case 28369: // Gas
 				{
 					if( !target->IsCreature() || target->GetEntry() != 18879 ) // Phase Hunter
@@ -3581,12 +3589,12 @@ uint8 Spell::CanCast(bool tolerate)
 				}break;
 				case 41621: // Wolpertinger Net
 				{
-					if( !target || !target->IsCreature() || target->GetEntry()!=23487 ) // Wild Wolpertinger
+					if(!target->IsCreature() || target->GetEntry()!=23487 ) // Wild Wolpertinger
 						return SPELL_FAILED_BAD_TARGETS;
 				}break;
 				case 32578: // Gor'drek's Ointment
 				{
-					if( !target || !target->IsCreature() || target->GetEntry()!=20748) // Thunderlord Dire Wolf NPC
+					if(!target->IsCreature() || target->GetEntry()!=20748) // Thunderlord Dire Wolf NPC
 						return SPELL_FAILED_BAD_TARGETS;
 				}break;
 				case 44997: // Converting Sentry
@@ -3609,7 +3617,7 @@ uint8 Spell::CanCast(bool tolerate)
 				}break;
 				case 27907: // Disciplinary Rod
 				{
-					if( !target || !target->IsCreature() || target->GetEntry() != 15945 && target->GetEntry() != 15941 ) // 'Apprentice Meledor' and 'Apprentice Ralen'
+					if(!target->IsCreature() || target->GetEntry() != 15945 && target->GetEntry() != 15941 ) // 'Apprentice Meledor' and 'Apprentice Ralen'
 						return SPELL_FAILED_BAD_TARGETS;
 				}break;
 				case 19938: // Awaken Peon (Foreman's Blackjack)
@@ -3785,9 +3793,11 @@ uint8 Spell::CanCast(bool tolerate)
 					if(!target->isInFront(p_caster))
 						return SPELL_FAILED_NOT_INFRONT;
 
-				if( GetProto()->NameHash == SPELL_HASH_MOONFIRE )// Moonfire
+			
+				//Shady: use SpellEntry::in_front_status = SPELL_INFRONT_STATUS_REQUIRE_INFRONT
+				/*if( GetProto()->NameHash == SPELL_HASH_MOONFIRE )// Moonfire
 					if(!p_caster->isInFront(target))
-						return SPELL_FAILED_UNIT_NOT_INFRONT;
+						return SPELL_FAILED_UNIT_NOT_INFRONT;*/
 
 
 				if( GetProto()->Category==1131)//Hammer of wrath, requires target to have 20- % of hp
