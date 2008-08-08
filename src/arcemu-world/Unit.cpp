@@ -1653,6 +1653,15 @@ void Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, uint
 									continue;
 								dmg_overwrite = CastingSpell->manaCost * ( ospinfo->EffectBasePoints[0] + 1 ) / 100;
 							}break;
+						//Hunter - The Beast Within
+						case 34471:
+							{
+								if( CastingSpell == NULL )
+									continue;
+
+								if( CastingSpell->Id != 19574 )
+									continue;
+							}
 						//Hunter - Thrill of the Hunt
 						case 34720:
 							{

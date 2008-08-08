@@ -1634,6 +1634,27 @@ void Aura::SpellAuraDummy(bool apply)
 
 	switch(GetSpellId())
 	{
+	//Hunter - Bestial Wrath & The Beast Within
+	//Both should provide immunity for all CC effect, but the dbc specifies only stuns. Imba!
+	case 19574:
+	case 34471:
+		{
+			static uint32 mechanics[14] = { MECHANIC_CHARMED, MECHANIC_DISORIENTED,	MECHANIC_DISTRACED, MECHANIC_FLEEING, 
+											MECHANIC_ROOTED, MECHANIC_ASLEEP, MECHANIC_STUNNED, MECHANIC_FROZEN,
+											MECHANIC_INCAPACIPATED, MECHANIC_POLYMORPHED, MECHANIC_BANISHED,
+											MECHANIC_SEDUCED, MECHANIC_HORRIFIED, MECHANIC_SAPPED };
+			
+			for( uint32 x = 0; x < 14; x++ )
+			{
+				if( apply )
+				{
+					m_target->MechanicsDispels[ mechanics[x] ]++;
+					m_target->RemoveAllAurasByMechanic( mechanics[x], (uint32)(-1), false );
+				}
+				else
+					m_target->MechanicsDispels[ mechanics[x] ]--;
+			}
+		}break;
 	//Warlock - Demonic Knowledge
 	case 35696:
 		{

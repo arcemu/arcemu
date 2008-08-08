@@ -15106,6 +15106,24 @@ void ApplyNormalFixes()
 
 	// Insert hunter spell fixes here
 
+		//Hunter - Bestial Wrath
+		sp = dbcSpell.LookupEntryForced( 19574 );
+		if( sp != NULL )
+			sp->EffectApplyAuraName[2] = SPELL_AURA_DUMMY;
+		
+		//Hunter - The Beast Within
+		sp = dbcSpell.LookupEntryForced( 34692 );
+		if( sp != NULL )
+		{
+			sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
+			sp->procFlags = PROC_ON_CAST_SPELL;
+			sp->procChance = 100;
+			sp->EffectTriggerSpell[0] = 34471;
+		}
+		sp = dbcSpell.LookupEntryForced( 34471 );
+		if( sp != NULL )
+			sp->EffectApplyAuraName[2] = SPELL_AURA_DUMMY;
+
 		//Hunter - Go for the Throat
 		sp = dbcSpell.LookupEntryForced( 34950 );
 		if( sp != NULL )
@@ -15663,14 +15681,6 @@ void ApplyNormalFixes()
 		sp = dbcSpell.LookupEntryForced( 5118 );
 		if( sp != NULL )
 			sp->procFlags = PROC_ON_ANY_DAMAGE_VICTIM;
-
-		sp = dbcSpell.LookupEntryForced(34471);
-		if(sp!=NULL)
-		{
-					sp->EffectApplyAuraName[0] = 72 ;
-					sp->EffectApplyAuraName[1] = 79 ;
-					sp->EffectApplyAuraName[2] = 77 ;
-		}
 
 	//////////////////////////////////////////
 	// ROGUE								//
