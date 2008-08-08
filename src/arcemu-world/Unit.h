@@ -25,7 +25,8 @@ class DynamicObject;
 
 #define MAX_AURAS 56 // 40 buff slots, 16 debuff slots.
 #define MAX_POSITIVE_AURAS 40 // ?
-#define MAX_PASSIVE_AURAS 192   // grep: i mananged to break this.. :p seems we need more
+//you hardly get to this but since i was testing i got to it :) : 20 items * 11 (enchants) + 61 talents
+#define MAX_PASSIVE_AURAS 281   // grep: i mananged to break this.. :p seems we need more
 
 bool SERVER_DECL Rand(float);
 
