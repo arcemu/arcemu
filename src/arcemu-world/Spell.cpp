@@ -4281,17 +4281,22 @@ exit:
 
 		if(comboDamage)
 		{
+			m_requiresCP = true;
+			value = ( comboDamage * p_caster->m_comboPoints );
 
 			if( GetProto()->NameHash == SPELL_HASH_EVISCERATE ) //Eviscerate
-			value += (uint32)( p_caster->GetAP() * ( 0.03 * p_caster->m_comboPoints ) );
-
-			value += ( comboDamage * p_caster->m_comboPoints );
-			m_requiresCP = true;
+			{
+				value += (uint32)( p_caster->GetAP() * ( 0.03 * p_caster->m_comboPoints ) );
+			}
+			else if( GetProto()->NameHash == SPELL_HASH_FEROCIOUS_BITE )
+			{
+				value += (uint32)( ( p_caster->GetAP() * 0.1526f ) + ( p_caster->GetUInt32Value( UNIT_FIELD_POWER4 ) * GetProto()->dmg_multiplier[i] ) );
+				p_caster->SetUInt32Value( UNIT_FIELD_POWER4, 0 );
+			}
 			//this is ugly so i will explain the case maybe someone ha a better idea :
 			// while casting a spell talent will trigger uppon the spell prepare faze
 			// the effect of the talent is to add 1 combo point but when triggering spell finishes it will clear the extra combo point
-			if( p_caster != NULL )
-				p_caster->m_spellcomboPoints = 0;
+			p_caster->m_spellcomboPoints = 0;
 		}
 
 		SpellOverrideMap::iterator itr = p_caster->mSpellOverrideMap.find(GetProto()->Id);
