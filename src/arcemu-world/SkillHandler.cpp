@@ -202,6 +202,9 @@ void WorldSession::HandleLearnTalentOpcode( WorldPacket & recv_data )
 				return;
 			}
 		}
+		for (uint32 i=requested_rank; i<5; ++i)
+			if (talentInfo->RankID[i] != NULL && GetPlayer()->HasSpell(talentInfo->RankID[i]))
+				return; // cheater
 
 		if(!(GetPlayer( )->HasSpell(spellid)))
 		{
