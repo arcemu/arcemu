@@ -507,7 +507,12 @@ void Pet::LoadFromDB(Player* owner, PlayerPet * pi)
 
 		free(ab);
 	}
-
+	
+	//Preventing overbuffs
+	SetUInt32Value( UNIT_FIELD_ATTACK_POWER, 0 );
+	SetUInt32Value( UNIT_FIELD_ATTACK_POWER_MODS, 0 );
+	SetUInt32Value( UNIT_FIELD_BASEATTACKTIME, 2000 );
+	
 	InitializeMe(false);
 
 	if( m_Owner )
