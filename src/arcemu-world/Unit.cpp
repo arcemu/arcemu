@@ -749,7 +749,8 @@ void Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, uint
 				spe->NameHash == SPELL_HASH_MAGTHERIDON_MELEE_TRINKET || 
 				spe->NameHash == SPELL_HASH_ROMULO_S_POISON || 
 				spe->NameHash == SPELL_HASH_BLACK_TEMPLE_MELEE_TRINKET || 
-				spe->NameHash == SPELL_HASH_FROSTBRAND_ATTACK || spellId == 16870 ) )
+				spe->NameHash == SPELL_HASH_FROSTBRAND_ATTACK || spellId == 16870 ||
+				spe->NameHash == SPELL_HASH_HOLY_VENGEANCE ) )
 			{
 				float ppm = 1.0f;
 				switch( spe->NameHash )
@@ -766,6 +767,9 @@ void Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, uint
 					case SPELL_HASH_FROSTBRAND_ATTACK:
 						ppm = 9.0f;
 						break; // Frostbrand Weapon
+					case SPELL_HASH_HOLY_VENGEANCE:
+						ppm = 15.0f; //Seal of Vengeance
+						break;
 				}
 				switch( spellId )
 				{
