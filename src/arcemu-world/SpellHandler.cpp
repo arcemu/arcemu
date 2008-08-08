@@ -202,6 +202,12 @@ void WorldSession::HandleCastSpellOpcode(WorldPacket& recvPacket)
 		return;
 	}
 
+	if (spellInfo->Attributes & ATTRIBUTES_NO_CAST)
+	{
+		sLog.outError("WORLD: attempt to cast spell %i, %s which has ATTRIBUTES_NO_CAST\n", spellId, spellInfo->Name);
+		return;
+	}
+
 	sLog.outDetail("WORLD: got cast spell packet, spellId - %i (%s), data length = %i",
 		spellId, spellInfo->Name, recvPacket.size());
 	

@@ -393,7 +393,7 @@ enum Attributes
 	ATTRIBUTES_UNK7								= 0x20, // Tradeskill recipies
 	ATTRIBUTES_PASSIVE							= 0x40,
 	ATTRIBUTES_NO_VISUAL_AURA					= 0x80,
-	ATTRIBUTES_UNK10							= 0x100,	//seems to be afflicts pet
+	ATTRIBUTES_NO_CAST							= 0x100,	//seems to be afflicts pet
 	ATTRIBUTES_UNK11							= 0x200, // looks like temp enchants.
 	ATTRIBUTES_UNK12							= 0x400, //completely the same as ATTRIBUTE_ON_NEXT_ATTACK for class spells. So difference somewhere in mob abilities.
 	ATTRIBUTES_UNK13							= 0x800,
