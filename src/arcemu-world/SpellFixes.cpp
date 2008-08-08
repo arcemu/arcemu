@@ -13502,6 +13502,10 @@ void ApplyNormalFixes()
 		// Insert hunter spell fixes here
 		
 			// THESE FIXES ARE GROUPED FOR CODE CLEANLINESS.
+			//Mend Pet
+			if( sp->NameHash == SPELL_HASH_MEND_PET )
+				sp->ChannelInterruptFlags = 0;
+			
 			/*
 			// Concussive Shot, Distracting Shot, Silencing Shot - ranged spells
 			if( sp->NameHash == SPELL_HASH_CONCUSSIVE_SHOT || sp->NameHash == SPELL_HASH_DISTRACTING_SHOT || sp->NameHash == SPELL_HASH_SILENCING_SHOT || sp->NameHash == SPELL_HASH_SCATTER_SHOT || sp->NameHash == SPELL_HASH_TRANQUILIZING_SHOT )
