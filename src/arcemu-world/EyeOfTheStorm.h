@@ -63,6 +63,8 @@ public:
 	void EventResetFlag();
 	void RepopPlayersOfTeam(int32 team, Creature * sh);
 
+	void SetIsWeekend(bool isweekend);
+
 protected:
 	int32 m_CPStatus[EOTS_TOWER_COUNT];		
 	uint32 m_flagHolder;

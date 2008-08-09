@@ -66,6 +66,8 @@ const float EOTSBubbleRotations[2][4] = {
 	{ -0.173642f, -0.001515f, 0.984770f, -0.008594f },
 };
 
+static int extraHonorDiv = 12;
+
 //===================================================
 // 184083 - Draenei Tower Cap Pt, 184082 - Human Tower Cap Pt, 184081 - Fel Reaver Cap Pt, 184080 - BE Tower Cap Pt
 #define EOTS_GO_BE_TOWER 184080
@@ -726,9 +728,10 @@ bool EyeOfTheStorm::GivePoints(uint32 team, uint32 points)
 				if ( (*itr)==NULL )// never happen?
 					continue;
 
-				/* Winning team will gain 2000 / 12 = 166.6 extran honor points */
+				/* Winning team will gain 2000 / 12 = 166.6 extra honor points */
+				/* On weekend 2000 / 8 = 250 (guessing) */
 				/* Losing team will also gain the honor from already earned points */
-				honor = m_points[i] / 12;
+				honor = m_points[i] / extraHonorDiv;
 				(*itr)->m_bgScore.BonusHonor += honor;
 				HonorHandler::AddHonorPointsToPlayer((*itr), honor);
 
@@ -865,3 +868,16 @@ void EyeOfTheStorm::OnStart()
 void EyeOfTheStorm::HookOnShadowSight() 
 {
 }
+
+void EyeOfTheStorm::SetIsWeekend(bool isweekend) 
+{
+	if (isweekend)
+	{
+		extraHonorDiv = 8;
+	}
+	else
+	{
+		extraHonorDiv = 12;
+	}
+}
+

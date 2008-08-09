@@ -1012,7 +1012,11 @@ CBattleground * CBattlegroundManager::CreateInstance(uint32 Type, uint32 LevelGr
 	CreateBattlegroundFunc cfunc = BGCFuncs[Type];
 	MapMgr * mgr = 0;
 	CBattleground * bg;
+	bool isWeekend = false;
+	struct tm tm;
 	uint32 iid;
+	time_t t;
+	int n;
 
 	if(Type == BATTLEGROUND_ARENA_2V2 || Type == BATTLEGROUND_ARENA_3V3 || Type == BATTLEGROUND_ARENA_5V5)
 	{
@@ -1057,11 +1061,29 @@ CBattleground * CBattlegroundManager::CreateInstance(uint32 Type, uint32 LevelGr
 		return bg;
 	}
 
-
 	if(cfunc == NULL)
 	{
 		Log.Error("BattlegroundManager", "Could not find CreateBattlegroundFunc pointer for type %u level group %u", Type, LevelGroup);
 		return NULL;
+	}
+
+	t = time(NULL);
+#ifdef WIN32
+	localtime_s(&tm, &t);
+#else
+	localtime_r(&t, &tm);
+#endif
+
+	switch (Type)
+	{
+		case BATTLEGROUND_WARSUNG_GULCH: n = 0; break;
+		case BATTLEGROUND_ARATHI_BASIN: n = 1; break;
+		case BATTLEGROUND_EYE_OF_THE_STORM: n = 2; break;
+	}
+	if (((tm.tm_yday / 7) % 3) == n)
+	{
+		/* Set weekend from thursday night at midnight until tuesday morning */
+		isWeekend = tm.tm_wday >= 5 || tm.tm_wday < 2;
 	}
 
 	/* Create Map Manager */
@@ -1074,7 +1096,8 @@ CBattleground * CBattlegroundManager::CreateInstance(uint32 Type, uint32 LevelGr
 
 	/* Call the create function */
 	iid = ++m_maxBattlegroundId;
-	bg = cfunc(mgr, iid, LevelGroup, Type);   
+	bg = cfunc(mgr, iid, LevelGroup, Type);
+	bg->SetIsWeekend(isWeekend);
 	mgr->m_battleground = bg;
 	sEventMgr.AddEvent(bg, &CBattleground::EventCreate, EVENT_BATTLEGROUND_QUEUE_UPDATE, 1, 1,0);
 	Log.Success("BattlegroundManager", "Created battleground type %u for level group %u.", Type, LevelGroup);

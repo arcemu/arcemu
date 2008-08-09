@@ -19,9 +19,11 @@
 
 #include "StdAfx.h"
 
-//								 <10 <20 <30 <40 <50 <60 <70 70
-static int flagHonorTable[8] = { 0,  5,  8,  14, 23, 38, 40, 40 };
-static int winHonorTable[8]  = { 0,  2,  4,  7,  11, 19, 20, 20 };
+//										   <10 <20 <30 <40 <50 <60 <70  70
+static int flagHonorTable[8]			= {  0,  5,  8, 14, 23, 38, 40, 40 };
+static int winHonorTable[8]				= {  0,  2,  4,  7, 11, 19, 20, 20 };
+static int extraCompleteHonorTable[8]	= {  0,  7, 12, 20, 34, 57, 59, 59 }; // extras only for weekends
+static int extraWinHonorTable[8]		= {  0,  5,  8, 14, 23, 38, 40, 40 };
 
 WarsongGulch::WarsongGulch(MapMgr * mgr, uint32 id, uint32 lgroup, uint32 t) : CBattleground(mgr, id, lgroup, t)
 {
@@ -177,12 +179,26 @@ void WarsongGulch::HookOnAreaTrigger(Player * plr, uint32 id)
 					(*itr)->Root();
 					if(i == m_winningteam)
 					{
-						(*itr)->m_bgScore.BonusHonor += winHonorTable[m_lgroup];
-						HonorHandler::AddHonorPointsToPlayer((*itr), winHonorTable[m_lgroup]);
+						int honor = winHonorTable[m_lgroup];
+						if (m_isWeekend)
+						{
+							honor+= extraWinHonorTable[m_lgroup];
+							honor+= extraCompleteHonorTable[m_lgroup];
+						}
+						(*itr)->m_bgScore.BonusHonor += honor;
+						HonorHandler::AddHonorPointsToPlayer((*itr), honor);
 						(*itr)->CastSpell((*itr), winner_spell, true);
 					}
 					else
+					{
+						if (m_isWeekend)
+						{
+							int honor = extraCompleteHonorTable[m_lgroup];
+							(*itr)->m_bgScore.BonusHonor += honor;
+							HonorHandler::AddHonorPointsToPlayer((*itr), honor);
+						}
 						(*itr)->CastSpell((*itr), loser_spell, true);
+					}
 				}
 			}
 			m_mainLock.Release();
@@ -550,4 +566,8 @@ void WarsongGulch::HookOnShadowSight()
 {
 }
 
+void WarsongGulch::SetIsWeekend(bool isweekend) 
+{
+	m_isWeekend = isweekend;
+}
 

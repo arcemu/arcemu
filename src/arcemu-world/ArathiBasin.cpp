@@ -22,7 +22,6 @@
 #define BASE_RESOURCES_GAIN 10
 #define RESOURCES_WARNING_THRESHOLD 1800
 #define RESOURCES_WINVAL 2000
-#define RESOURCES_TO_GAIN_BH 330
 uint32 buffentrys[3] = {180380,180362,180146};
 // AB define's
 #define AB_CAPTURED_STABLES_ALLIANCE		0x6E7 //1767
@@ -165,6 +164,8 @@ uint32 buffentrys[3] = {180380,180362,180146};
 //								<10 <20 <30 <40 <50 <60 <70 70
 static int resHonorTable[8] = { 0,  0,  4,  7,  11, 19, 20, 20 };
 static int winHonorTable[8] = { 0,  0,  4,  7,  11, 19, 20, 20 };
+
+static uint32 resourcesToGainBH = 330;
 
 /* End BG Data */
 
@@ -506,9 +507,9 @@ void ArathiBasin::EventUpdateResources(uint32 Team)
 		current_resources = RESOURCES_WINVAL;
 
 	m_resources[Team] = current_resources;
-	if((current_resources - m_lastHonorGainResources[Team]) >= RESOURCES_TO_GAIN_BH)
+	if((current_resources - m_lastHonorGainResources[Team]) >= resourcesToGainBH)
 	{
-		m_lastHonorGainResources[Team]+= RESOURCES_TO_GAIN_BH;
+		m_lastHonorGainResources[Team]+= resourcesToGainBH;
 
 		m_mainLock.Acquire();
 		for(set<Player*>::iterator itr = m_players[Team].begin(); itr != m_players[Team].end(); ++itr)
@@ -882,5 +883,17 @@ bool ArathiBasin::HookSlowLockOpen(GameObject * pGo, Player * pPlayer, Spell * p
 
 void ArathiBasin::HookOnShadowSight() 
 {
+}
+
+void ArathiBasin::SetIsWeekend(bool isweekend) 
+{
+	if (isweekend)
+	{
+		resourcesToGainBH = 200;
+	}
+	else
+	{
+		resourcesToGainBH = 330;
+	}
 }
 

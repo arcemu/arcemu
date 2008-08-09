@@ -53,4 +53,6 @@ public:
 
 	const char * GetName() { return "Warsong Gulch"; }
 	void OnStart();
+
+	void SetIsWeekend(bool isweekend);
 };

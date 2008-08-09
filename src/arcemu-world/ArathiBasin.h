@@ -100,4 +100,6 @@ public:
 	void SpawnControlPoint(uint32 Id, uint32 Type);
 	void CaptureControlPoint(uint32 Id, uint32 Team);
 	void AssaultControlPoint(Player * pPlayer, uint32 Id);
+
+	void SetIsWeekend(bool isweekend);
 };

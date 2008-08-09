@@ -268,6 +268,8 @@ protected:
 	map<Creature*, set<uint32> > m_resurrectMap;
 	uint32 m_lastResurrect;
 
+	bool m_isWeekend;
+
 public:
 
 	void SendChatMessage(uint32 Type, uint64 Guid, const char * Format, ...);
@@ -392,6 +394,8 @@ public:
 	void BuildPvPUpdateDataPacket(WorldPacket * data);
 	virtual uint8 Rated() { return 0; }
 	void OnPlayerPushed(Player* plr);
+
+	virtual void SetIsWeekend(bool isweekend) {}
 };
 
 #define BattlegroundManager CBattlegroundManager::getSingleton( )
