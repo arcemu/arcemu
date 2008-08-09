@@ -295,7 +295,7 @@ public:
 	void EventChangeFaction( Unit *ForceAttackersToHateThisInstead=NULL );	//we have to tell our current enemies to stop atacking us, we should also forget about our targets
 
 	// Update
-	void Update(uint32 p_time);
+	virtual void Update(uint32 p_time);
 
 	// Movement
 	void SendMoveToPacket(float toX, float toY, float toZ, float toO, uint32 time, uint32 MoveFlags);

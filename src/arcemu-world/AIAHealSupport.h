@@ -29,7 +29,7 @@ class SpellCastTargets;
 
 #define SPELL_EFF_PCT_SCALE_WITH_DIFFICULTY		1.2f	//given as a float value we influence the effectiveness of our spells
 #define CREATURE_STATS_SCALE_WITH_DIFFICULTY	1
-#define DIFFICULTY_UPDATE_SPEED					0.001f	//suppose we have 500 ms update interval -> 1 sec = 0.1
+#define DIFFICULTY_UPDATE_SPEED					0.004f	//suppose we have 500 ms update interval -> 1 sec = 0.1
 
 #define HELPER_MOUNT_A_DISPLAY 14584
 #define HELPER_MOUNT_H_DISPLAY 5228
@@ -61,7 +61,7 @@ private:
 	bool				Protect_self();
 	bool				CheckCanCast(SpellEntry *sp,Unit *target);
 	void				SetSpellDuration(healagentspell *sp);
-	healagentspell		*PickSpellFromList(SpellList *spl);
+	healagentspell		*PickSpellFromList(SpellList *spl,Unit *target);
 
 
 	SpellList			m_healspells;			

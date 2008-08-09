@@ -412,9 +412,11 @@ void Spell::SpellTargetSingleTargetEnemy(uint32 i, uint32 j)
 		uint32 jumps=m_spellInfo->EffectChainTarget[i]-1;
 		float range=GetMaxRange(dbcSpellRange.LookupEntry(m_spellInfo->rangeIndex));//this is probably wrong
 		range*=range;
-		std::set<Object*>::iterator itr;
-		for( itr = m_caster->GetInRangeSetBegin(); itr != m_caster->GetInRangeSetEnd(); itr++ )
+		std::set<Object*>::iterator itr,itr2;
+		for( itr2 = m_caster->GetInRangeSetBegin(); itr2 != m_caster->GetInRangeSetEnd(); )
 		{
+			itr = itr2;
+			itr2++;
 			if((*itr)->GetGUID()==m_targets.m_unitTarget)
 				continue;
 			if( !((*itr)->IsUnit()) || !((Unit*)(*itr))->isAlive() || 
@@ -775,8 +777,11 @@ void Spell::SpellTargetDummyTarget(uint32 i, uint32 j)
 		if(!p_caster)
 			return;
 
-		for(Object::InRangeSet::iterator itr = p_caster->GetInRangeSetBegin(); itr != p_caster->GetInRangeSetEnd(); ++itr)
+		Object::InRangeSet::iterator itr,itr2;
+		for(itr2 = p_caster->GetInRangeSetBegin(); itr2 != p_caster->GetInRangeSetEnd(); )
 		{
+			itr=itr2;
+			++itr2;
 			if((*itr)->GetTypeId() == TYPEID_UNIT && p_caster->GetDistance2dSq((*itr)) < 400)
 			{
 				creature=static_cast<Creature *>((*itr));
@@ -947,10 +952,12 @@ void Spell::SpellTargetTargetAreaSelectedUnit(uint32 i, uint32 j)
 void Spell::SpellTargetInFrontOfCaster2(uint32 i, uint32 j)
 {
 	TargetsList *tmpMap=&m_targetUnits[i];
-	std::set<Object*>::iterator itr;
+	std::set<Object*>::iterator itr,itr2;
 	uint8 did_hit_result;
-	for( itr = m_caster->GetInRangeSetBegin(); itr != m_caster->GetInRangeSetEnd(); itr++ )
+	for( itr2 = m_caster->GetInRangeSetBegin(); itr2 != m_caster->GetInRangeSetEnd();)
 	{
+		itr = itr2;
+		itr2++;
 		if(!((*itr)->IsUnit()) || !((Unit*)(*itr))->isAlive())
 			continue;
 		//is Creature in range
