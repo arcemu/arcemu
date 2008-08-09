@@ -1046,7 +1046,7 @@ void Object::_SetCreateBits(UpdateMask *updateMask, Player *target) const
 void Object::AddToWorld()
 {
 	MapMgr *mapMgr = sInstanceMgr.GetInstance(this);
-	if(!mapMgr)
+	if( !mapMgr|| (mapMgr->GetMapInfo()->playerlimit && this->IsPlayer() && mapMgr->GetPlayerCount() >= mapMgr->GetMapInfo()->playerlimit) )
 		return; //instance add failed
 
 	m_mapMgr = mapMgr;
@@ -1062,7 +1062,7 @@ void Object::AddToWorld()
 
 void Object::AddToWorld(MapMgr * pMapMgr)
 {
-	if(!pMapMgr)
+	if( !pMapMgr|| (pMapMgr->GetMapInfo()->playerlimit && this->IsPlayer() && pMapMgr->GetPlayerCount() >= pMapMgr->GetMapInfo()->playerlimit) )
 		return; //instance add failed
 
 	m_mapMgr = pMapMgr;
