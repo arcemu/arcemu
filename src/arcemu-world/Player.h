@@ -1561,6 +1561,7 @@ public:
 	uint32 m_lastSeenWeather;
 	set<Object*> m_visibleFarsightObjects;
 	void EventTeleport(uint32 mapid, float x, float y, float z);
+	void EventTeleportTaxi(uint32 mapid, float x, float y, float z);
 	void ApplyLevelInfo(LevelInfo* Info, uint32 Level);
 	void BroadcastMessage(const char* Format, ...);
 	map<uint32, set<uint32> > SummonSpells;

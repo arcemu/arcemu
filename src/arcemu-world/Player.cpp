@@ -6454,7 +6454,7 @@ void Player::TaxiStart(TaxiPath *path, uint32 modelid, uint32 start_node)
 	}
 	else
 	{
-		sEventMgr.AddEvent( this, &Player::EventTeleport, (uint32)mapchangeid, mapchangex, mapchangey, mapchangez, EVENT_PLAYER_TELEPORT, traveltime, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
+		sEventMgr.AddEvent( this, &Player::EventTeleportTaxi, (uint32)mapchangeid, mapchangex, mapchangey, mapchangez, EVENT_PLAYER_TELEPORT, traveltime, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
 	}
 }
 
@@ -7649,6 +7649,20 @@ void Player::EventTeleport(uint32 mapid, float x, float y, float z)
 	SafeTeleport(mapid, 0, LocationVector(x, y, z));
 }
 
+void Player::EventTeleportTaxi(uint32 mapid, float x, float y, float z)
+{
+	if(mapid == 530 && !m_session->HasFlag(ACCOUNT_FLAG_XPACK_01))
+	{
+		WorldPacket msg(SMSG_BROADCAST_MSG, 50);
+		msg << uint32(3) << "You must have The Burning Crusade Expansion to access this content." << uint8(0);
+		m_session->SendPacket(&msg);
+		RepopAtGraveyard(GetPositionX(), GetPositionY(), GetPositionZ(), GetMapId());
+		return;
+	}
+	_Relocate(mapid, LocationVector(x, y, z), (mapid==GetMapId() ? false:true), true, 0);
+	ForceZoneUpdate();
+}
+
 void Player::ApplyLevelInfo(LevelInfo* Info, uint32 Level)
 {
 	ASSERT(Info != NULL);
@@ -7770,6 +7784,7 @@ bool Player::SafeTeleport(uint32 MapID, uint32 InstanceID, const LocationVector 
 {
 	if ( GetTaxiState() )
 	{
+		sEventMgr.RemoveEvents( this, EVENT_PLAYER_TELEPORT );
 		sEventMgr.RemoveEvents( this, EVENT_PLAYER_TAXI_DISMOUNT );
 		sEventMgr.RemoveEvents( this, EVENT_PLAYER_TAXI_INTERPOLATE );
 		SetTaxiState( false );
