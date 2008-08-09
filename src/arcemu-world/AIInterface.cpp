@@ -1965,7 +1965,7 @@ float AIInterface::_CalcAggroRange(Unit* target)
 	}
 
 	// Multiply by elite value
-	if(((Creature*)m_Unit)->GetCreatureInfo() && ((Creature*)m_Unit)->GetCreatureInfo()->Rank > 0)
+	if(m_Unit->IsCreature() && ((Creature*)m_Unit)->GetCreatureInfo() && ((Creature*)m_Unit)->GetCreatureInfo()->Rank > 0)
 		AggroRange *= (((Creature*)m_Unit)->GetCreatureInfo()->Rank) * 1.50f;
 
 	if(AggroRange > 40.0f) // cap at 40.0f
