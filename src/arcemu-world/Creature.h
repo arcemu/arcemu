@@ -388,6 +388,7 @@ public:
 	
 	ARCEMU_INLINE uint32 GetHealthFromSpell() { return m_healthfromspell; }
 	void SetHealthFromSpell(uint32 value) { m_healthfromspell = value;}
+	int32 m_speedFromHaste;
 
 	int32 FlatResistanceMod[7];
 	int32 BaseResistanceModPct[7];

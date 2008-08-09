@@ -7136,11 +7136,17 @@ void Aura::SpellAuraModHaste( bool apply )
 
 			m_target->ModUnsigned32Value( UNIT_FIELD_BASEATTACKTIME, -mod->fixed_amount[mod->i] );
 			m_target->ModUnsigned32Value( UNIT_FIELD_BASEATTACKTIME_01, -mod->fixed_amount[mod->i*2] );
+			
+			if ( m_target->GetTypeId() == TYPEID_UNIT )
+				static_cast< Creature* >( m_target )->m_speedFromHaste += mod->fixed_amount[mod->i];
 		}
 		else
 		{
 			m_target->ModUnsigned32Value( UNIT_FIELD_BASEATTACKTIME, mod->fixed_amount[mod->i] );
 			m_target->ModUnsigned32Value( UNIT_FIELD_BASEATTACKTIME_01, mod->fixed_amount[mod->i*2] );
+
+			if ( m_target->GetTypeId() == TYPEID_UNIT )
+				static_cast< Creature* >( m_target )->m_speedFromHaste -= mod->fixed_amount[mod->i];
 		}
 	}
 }

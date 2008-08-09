@@ -4808,7 +4808,7 @@ void Unit::CalcDamage()
 	
 		float ap_bonus = float(GetAP())/14000.0f;
 
-		float bonus = ap_bonus*GetUInt32Value(UNIT_FIELD_BASEATTACKTIME);
+		float bonus = ap_bonus * ( GetUInt32Value(UNIT_FIELD_BASEATTACKTIME) + static_cast< Creature* >( this )->m_speedFromHaste );
 	
 		delta = float(((Creature*)this)->ModDamageDone[0]);
 		mult = float(((Creature*)this)->ModDamageDonePct[0]);
