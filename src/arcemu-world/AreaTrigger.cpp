@@ -142,7 +142,7 @@ void WorldSession::_HandleAreaTriggerOpcode(uint32 id)
 		{
 			if(GetPlayer()->GetPlayerStatus() != TRANSFER_PENDING) //only ports if player is out of pendings
 			{
-				uint32 reason = CheckTriggerPrerequsites(pAreaTrigger, this, _player, WorldMapInfoStorage.LookupEntry(entry->mapid));
+				uint32 reason = CheckTriggerPrerequsites(pAreaTrigger, this, _player, WorldMapInfoStorage.LookupEntry(pAreaTrigger->Mapid));
 				if(reason != AREA_TRIGGER_FAILURE_OK)
 				{
 					const char * pReason = AreaTriggerFailureMessages[reason];
