@@ -31,6 +31,7 @@ InstanceMgr::InstanceMgr()
 	memset(m_maps, 0, sizeof(Map*)* NUM_MAPS);
 	memset(m_instances, 0, sizeof(InstanceMap*) * NUM_MAPS);
 	memset(m_singleMaps,0, sizeof(MapMgr*) * NUM_MAPS);
+	memset(&m_nextInstanceReset, 0, sizeof(time_t) * NUM_MAPS);
 }
 
 void InstanceMgr::Load(TaskList * l)
@@ -90,6 +91,24 @@ void InstanceMgr::Load(TaskList * l)
 	}
 	itr->Destruct();
 	l->wait();
+
+	// load reset times
+	result = CharacterDatabase.Query("SELECT `setting_id`, `setting_value` FROM `server_settings` WHERE `setting_id` LIKE 'next_instance_reset_%%'");
+	if(result)
+	{
+		do
+		{
+			const char *id = result->Fetch()[0].GetString();
+			uint32 value = result->Fetch()[1].GetUInt32();
+			if(strlen(id) <= 20)
+				continue;
+			uint32 mapId = atoi(id + 20);
+			if(mapId > NUM_MAPS)
+				continue;
+			m_nextInstanceReset[mapId] = value;
+		}while(result->NextRow());
+		delete result;
+	}
 
 	// load saved instances
 	_LoadInstances();
@@ -316,17 +335,52 @@ uint32 InstanceMgr::PreTeleport(uint32 mapid, Player * plr, uint32 instanceid)
 	// if we're here, it means we need to create a new instance.
 	in = new Instance;
 	in->m_creation = UNIXTIME;
-	//TODO: Expiration handling for raids & heroic instances
-	in->m_expiration = (inf->type == INSTANCE_NONRAID || (inf->type == INSTANCE_MULTIMODE && plr->iInstanceType == MODE_NORMAL)) ? 0 : UNIXTIME + inf->cooldown;		// expire time 0 is 10 minutes after last player leaves
 	in->m_difficulty = pGroup ? pGroup->m_difficulty : plr->iInstanceType;
 	in->m_instanceId = GenerateInstanceID();
 	in->m_mapId = mapid;
-	in->m_mapMgr = NULL;		// always start off without a map manager, it is created in GetInstance()
 	in->m_mapInfo = inf;
+	in->m_mapMgr = NULL;		// always start off without a map manager, it is created in GetInstance()
 	in->m_isBattleground = false;
 	in->m_persistent = IS_PERSISTENT_INSTANCE(in) && objmgr.m_InstanceBossInfoMap[mapid] == NULL;
 	in->m_creatorGuid = pGroup ? 0 : plr->GetLowGUID();		// creator guid is 0 if its owned by a group.
 	in->m_creatorGroup = pGroup ? pGroup->GetID() : 0;
+	if(sWorld.instance_SlidingExpiration)
+	{
+		if(inf->type == INSTANCE_MULTIMODE && in->m_difficulty >= MODE_HEROIC)
+			in->m_expiration = UNIXTIME + TIME_DAY;
+		else
+			in->m_expiration = (inf->type == INSTANCE_NONRAID || (inf->type == INSTANCE_MULTIMODE && in->m_difficulty == MODE_NORMAL)) ? 0 : UNIXTIME + inf->cooldown;
+	}
+	else
+	{
+		if(inf->type == INSTANCE_MULTIMODE && in->m_difficulty >= MODE_HEROIC)
+		{
+			in->m_expiration = UNIXTIME - (UNIXTIME % TIME_DAY) + 82800 + ((sWorld.instance_DailyHeroicInstanceResetHour - sWorld.GMTTimeZone) * TIME_HOUR);
+		}
+		else if(IS_PERSISTENT_INSTANCE(in))
+		{
+			if(m_nextInstanceReset[in->m_mapId] == 0)
+			{
+				m_nextInstanceReset[in->m_mapId] = UNIXTIME - (UNIXTIME % TIME_DAY) - ((sWorld.GMTTimeZone + 1) * TIME_HOUR) + (in->m_mapInfo->cooldown == 0 ? TIME_DAY : in->m_mapInfo->cooldown);
+				CharacterDatabase.Execute("REPLACE INTO `server_settings` (`setting_id`, `setting_value`) VALUES ('next_instance_reset_%u', '%u')", in->m_mapId, m_nextInstanceReset[in->m_mapId]);
+			}
+			if(m_nextInstanceReset[in->m_mapId] + (TIME_MINUTE * 15) < UNIXTIME)
+			{
+				do
+				{
+					time_t tmp = m_nextInstanceReset[in->m_mapId];
+					if(tmp + (TIME_MINUTE * 15) < UNIXTIME)
+						m_nextInstanceReset[in->m_mapId] = tmp + (in->m_mapInfo->cooldown == 0 ? TIME_DAY : in->m_mapInfo->cooldown);
+				} while(m_nextInstanceReset[in->m_mapId] + (TIME_MINUTE * 15) < UNIXTIME);
+				CharacterDatabase.Execute("REPLACE INTO `server_settings` (`setting_id`, `setting_value`) VALUES ('next_instance_reset_%u', '%u')", in->m_mapId, m_nextInstanceReset[in->m_mapId]);
+			}
+			in->m_expiration = m_nextInstanceReset[in->m_mapId];
+		}
+		else
+		{
+			in->m_expiration = (inf->type == INSTANCE_NONRAID || (inf->type == INSTANCE_MULTIMODE && in->m_difficulty == MODE_NORMAL)) ? 0 : UNIXTIME + inf->cooldown;
+		}
+	}
 	plr->SetInstanceID(in->m_instanceId);
 	Log.Debug("InstanceMgr", "Creating instance for player %u and group %u on map %u. (%u)", in->m_creatorGuid, in->m_creatorGroup, in->m_mapId, in->m_instanceId);
 	

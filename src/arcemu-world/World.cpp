@@ -1262,6 +1262,7 @@ void World::Rehash(bool load)
 
 	realmtype = Config.MainConfig.GetBoolDefault("Server", "RealmType", false);
 	TimeOut= uint32(1000* Config.MainConfig.GetIntDefault("Server", "ConnectionTimeout", 180) );
+	GMTTimeZone = Config.MainConfig.GetIntDefault("Server", "TimeZone", 0);
 
 	uint32 config_flags = 0;
 	if(Config.MainConfig.GetBoolDefault("Mail", "DisablePostageCostsForGM", true))
@@ -1329,6 +1330,13 @@ void World::Rehash(bool load)
 	m_useAccountData = Config.MainConfig.GetBoolDefault("Server", "UseAccountData", false);
 
 	instance_TakeGroupLeaderID = Config.MainConfig.GetBoolDefault("InstanceHandling", "TakeGroupLeaderID", true);
+	instance_SlidingExpiration = Config.MainConfig.GetBoolDefault("InstanceHandling", "SlidingExpiration", false);
+	instance_DailyHeroicInstanceResetHour = Config.MainConfig.GetIntDefault("InstanceHandling", "DailyHeroicInstanceResetHour", 5);
+
+	if(instance_DailyHeroicInstanceResetHour < 0)
+		instance_DailyHeroicInstanceResetHour = 0;
+	if(instance_DailyHeroicInstanceResetHour > 23)
+		instance_DailyHeroicInstanceResetHour = 23;
 
 	// ======================================
 	m_movementCompressInterval = Config.MainConfig.GetIntDefault("Movement", "FlushInterval", 1000);

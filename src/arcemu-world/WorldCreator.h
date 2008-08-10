@@ -214,6 +214,7 @@ private:
 	Map * m_maps[NUM_MAPS];
 	InstanceMap* m_instances[NUM_MAPS];
 	MapMgr * m_singleMaps[NUM_MAPS];
+	time_t m_nextInstanceReset[NUM_MAPS];
 };
 
 extern SERVER_DECL InstanceMgr sInstanceMgr;

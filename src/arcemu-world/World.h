@@ -447,6 +447,10 @@ public:
 	bool no_antihack_on_gm;
 
 	bool instance_TakeGroupLeaderID;
+	bool instance_SlidingExpiration;
+	int instance_DailyHeroicInstanceResetHour;
+
+	int GMTTimeZone;
 
 	void CharacterEnumProc(QueryResultVector& results, uint32 AccountId);
 	void LoadAccountDataProc(QueryResultVector& results, uint32 AccountId);
