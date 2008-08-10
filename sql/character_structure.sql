@@ -26,6 +26,18 @@ CREATE TABLE `account_forced_permissions` (
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 -- ----------------------------
+-- Table structure for instanceids
+-- ----------------------------
+CREATE TABLE `instanceids` (
+  `playerguid` INT(11) UNSIGNED NOT NULL DEFAULT '0',
+  `mapid` INT(11) UNSIGNED NOT NULL DEFAULT '0',
+  `mode` INT(11) UNSIGNED NOT NULL DEFAULT '0',
+  `instanceid` INT(11) UNSIGNED NOT NULL DEFAULT '0',
+  PRIMARY KEY  (`playerguid`,`mapid`,`mode`), 
+  KEY `ix_instanceid` (`playerguid`)
+) ENGINE=MyISAM /*!40100 DEFAULT CHARSET=latin1 COMMENT='Player / InstanceID - Reference Table'*/;
+
+-- ----------------------------
 -- Table structure for arenateams
 -- ----------------------------
 CREATE TABLE `arenateams` (
@@ -398,6 +410,7 @@ CREATE TABLE `groups` (
   `group8member4` int(50) NOT NULL,
   `group8member5` int(50) NOT NULL,
   `timestamp` int(30) NOT NULL,
+  `instanceids` TEXT NOT NULL,
   PRIMARY KEY  (`group_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
@@ -543,6 +556,7 @@ CREATE TABLE `instances` (
   `difficulty` int(30) NOT NULL,
   `creator_group` int(30) NOT NULL,
   `creator_guid` int(30) NOT NULL,
+  `persistent` TINYINT NOT NULL DEFAULT '0',
   PRIMARY KEY  (`id`),
   KEY `a` (`mapid`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
