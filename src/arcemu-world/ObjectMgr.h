@@ -51,9 +51,6 @@ struct GM_Ticket
 	std::string comment;
 };
 
-//HACK: GmTicket system still in development, so...
-#define GM_TICKET_MY_MASTER_COMPATIBLE
-
 enum
 {
 	GM_TICKET_CHAT_OPCODE_NEWTICKET     = 1,
