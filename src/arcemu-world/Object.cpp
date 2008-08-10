@@ -1046,8 +1046,38 @@ void Object::_SetCreateBits(UpdateMask *updateMask, Player *target) const
 void Object::AddToWorld()
 {
 	MapMgr *mapMgr = sInstanceMgr.GetInstance(this);
-	if( !mapMgr|| (mapMgr->GetMapInfo()->playerlimit && this->IsPlayer() && mapMgr->GetPlayerCount() >= mapMgr->GetMapInfo()->playerlimit) )
-		return; //instance add failed
+	if(!mapMgr)
+		return;
+
+	if(this->IsPlayer())
+	{
+		Player *plr = static_cast< Player* >( this );
+		if(mapMgr->pInstance != NULL && !plr->bGMTagOn)
+		{
+			// Player limit?
+			if(mapMgr->GetMapInfo()->playerlimit && mapMgr->GetPlayerCount() >= mapMgr->GetMapInfo()->playerlimit)
+				return;
+			Group* group = plr->GetGroup();
+			// Player in group?
+			if(group == NULL && mapMgr->pInstance->m_creatorGuid == 0)
+				return;
+			// If set: Owns player the instance?
+			if(mapMgr->pInstance->m_creatorGuid != 0 && mapMgr->pInstance->m_creatorGuid != plr->GetLowGUID())
+				return;
+			// Is instance empty or owns our group the instance?
+			if(mapMgr->pInstance->m_creatorGroup != 0 && mapMgr->pInstance->m_creatorGroup != group->GetID())
+			{
+				// Player not in group or another group is already playing this instance.
+				sChatHandler.SystemMessageToPlr(plr, "Another group is already inside this instance of the dungeon.");
+				if(plr->GetSession()->GetPermissionCount() > 0)
+					sChatHandler.BlueSystemMessageToPlr(plr, "Enable your GameMaster flag to ignore this rule.");
+				return; 
+			}
+			else if(group != NULL && mapMgr->pInstance->m_creatorGroup == 0)
+				// Players group now "owns" the instance.
+				mapMgr->pInstance->m_creatorGroup = group->GetID(); 
+		}
+	}
 
 	m_mapMgr = mapMgr;
 	m_inQueue = true;

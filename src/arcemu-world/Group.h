@@ -191,6 +191,8 @@ public:
 	ARCEMU_INLINE PlayerInfo * GetMainTank() { return m_mainTank; }
 	ARCEMU_INLINE PlayerInfo * GetMainAssist() { return m_mainAssist; }
 
+	uint32 m_instanceIds[NUM_MAPS][NUM_INSTANCE_MODES];
+
 	void SetDifficulty(uint8 difficulty);
 	
 	/************************************************************************/

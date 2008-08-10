@@ -693,6 +693,10 @@
 			RelativePath="..\..\src\arcemu-world\debugcmds.cpp"
 			>
 		</File>
+    <File
+			RelativePath="..\..\src\arcemu-world\Definitions.h"
+			>
+		</File>
 		<File
 			RelativePath="..\..\src\arcemu-world\DuelHandler.cpp"
 			>
@@ -784,6 +788,10 @@
 		<File
 			RelativePath="..\..\src\arcemu-world\HonorHandler.h"
 			>
+		</File>
+    <File
+      RelativePath="..\..\src\arcemu-world\InstanceCommands.cpp"
+      >
 		</File>
 		<File
 			RelativePath="..\..\src\arcemu-world\Item.cpp"

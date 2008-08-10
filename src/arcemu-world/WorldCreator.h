@@ -33,13 +33,6 @@ enum INSTANCE_TYPE
 	INSTANCE_MULTIMODE,
 };
 
-enum INSTANCE_MODE
-{
-    MODE_NORMAL = 0,
-    MODE_HEROIC = 1,
-    MODE_EPIC   = 2,
-};
-
 enum INSTANCE_ABORT_ERROR
 {
 	INSTANCE_ABORT_ERROR_ERROR	 = 0x00,
@@ -88,6 +81,7 @@ public:
 	MapMgr * m_mapMgr;
 	uint32 m_creatorGuid;
 	uint32 m_creatorGroup;
+	bool m_persistent;
 	uint32 m_difficulty;
     set<uint32> m_killedNpcs;
 	time_t m_creation;
@@ -100,7 +94,6 @@ public:
 	void DeleteFromDB();
 };
 
-#define NUM_MAPS 600
 typedef HM_NAMESPACE::hash_map<uint32, Instance*> InstanceMap; 
 
 class SERVER_DECL InstanceMgr
@@ -137,15 +130,20 @@ public:
 	// can a player join?
     ARCEMU_INLINE bool PlayerOwnsInstance(Instance * pInstance, Player * pPlayer)
 	{
-		// expired?
+		// Expired?
 		if( pInstance->m_expiration && (UNIXTIME+20) >= pInstance->m_expiration)
 		{
-			// delete the instance
 			_DeleteInstance(pInstance, true);
 			return false;
 		}
 
-		if( (pPlayer->GetGroup() && pInstance->m_creatorGroup == pPlayer->GetGroup()->GetID()) || pPlayer->GetLowGUID() == pInstance->m_creatorGuid )
+		// Persistent instance handling
+		if(pInstance->m_persistent)
+		{
+			return (pPlayer->GetPersistentInstanceId(pInstance->m_mapId, pInstance->m_difficulty) == pInstance->m_instanceId);
+		}
+		// Default instance handling
+		else if((pPlayer->GetGroup() && pInstance->m_creatorGroup == pPlayer->GetGroup()->GetID()) || pPlayer->GetLowGUID() == pInstance->m_creatorGuid)
 			return true;
 
 		return false;
@@ -175,6 +173,33 @@ public:
 	// this only frees the instance pointer, not the mapmgr itself
 	void DeleteBattlegroundInstance(uint32 mapid, uint32 instanceid);
 	MapMgr* GetMapMgr(uint32 mapId);
+
+	bool InstanceExists(uint32 mapid, uint32 instanceId)
+	{
+		return GetInstanceByIds(mapid, instanceId) != NULL;
+	}
+
+	Instance* GetInstanceByIds(uint32 mapid, uint32 instanceId)
+	{
+		if(mapid > NUM_MAPS)
+			return NULL;
+		if(mapid == NUM_MAPS)
+		{
+			Instance *in;
+			for(int i=0; i<NUM_MAPS; i++)
+			{
+				in = GetInstanceByIds(i, instanceId);
+				if(in != NULL)
+					return in;
+			}
+			return NULL;
+		}
+		InstanceMap *map = m_instances[mapid];
+		if(map == NULL)
+			return NULL;
+		InstanceMap::iterator instance = map->find(instanceId);
+		return instance == map->end() ? NULL : instance->second;
+	}
 
 private:
 	void _LoadInstances();

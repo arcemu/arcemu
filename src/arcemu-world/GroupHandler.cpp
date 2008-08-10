@@ -157,6 +157,16 @@ void WorldSession::HandleGroupAcceptOpcode( WorldPacket & recv_data )
 #else
     _player->GetSession()->OutPacket(CMSG_DUNGEON_DIFFICULTY, 4, &player->iInstanceType);
 #endif
+
+	Instance *instance = sInstanceMgr.GetInstanceByIds(player->GetMapId(), player->GetInstanceID());
+	if(instance != NULL && instance->m_creatorGuid == player->GetLowGUID())
+	{
+		grp->m_instanceIds[instance->m_mapId][instance->m_difficulty] = instance->m_instanceId;
+		instance->m_creatorGroup = grp->GetID();
+		instance->m_creatorGuid = 0;
+		instance->SaveToDB();
+	}
+
     //sInstanceSavingManager.ResetSavedInstancesForPlayer(_player);
 
 	// Currentgroup and all that shit are set by addmember.

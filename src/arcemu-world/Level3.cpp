@@ -957,20 +957,6 @@ bool ChatHandler::HandleAddItemSetCommand(const char* args, WorldSession* m_sess
 	return true;
 }
 
-bool ChatHandler::HandleExitInstanceCommand(const char* args, WorldSession* m_session)
-{
-	BlueSystemMessage(m_session, "Attempting to exit from instance...");
-	bool result = m_session->GetPlayer()->ExitInstance();
-	if(!result)
-	{
-		RedSystemMessage(m_session, "Entry points not found.");
-		return true;
-	} else {
-		GreenSystemMessage(m_session, "Removal successful.");
-		return true;
-	}
-}
-
 bool ChatHandler::HandleCastTimeCheatCommand(const char* args, WorldSession* m_session)
 {
 	Player * plyr = getSelectedChar(m_session, true);

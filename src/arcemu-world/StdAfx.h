@@ -30,6 +30,8 @@
 
 #define _GAME
 
+#include "Definitions.h"
+
 #include <list>
 #include <vector>
 #include <map>

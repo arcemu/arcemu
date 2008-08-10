@@ -158,6 +158,7 @@ class SERVER_DECL CommandTableStorage : public Singleton<CommandTableStorage>
 	ChatCommand* _kickCommandTable;
 	ChatCommand* _banCommandTable;
 	ChatCommand* _unbanCommandTable;
+	ChatCommand* _instanceCommandTable;
 	ChatCommand* _commandTable;
 
 	ChatCommand * GetSubCommandTable(const char * name);
@@ -373,6 +374,14 @@ protected:
 	bool HandleSetBGScoreCommand(const char* args, WorldSession *m_session);
 	bool HandleInitializeAllQueuedBattlegroundsCommand(const char *args, WorldSession *m_session);
 	bool HandleGetBattlegroundQueueCommand(const char *args, WorldSession *m_session);
+
+	//Instance
+	bool HandleResetAllInstancesCommand(const char* args, WorldSession *m_session);
+	bool HandleResetInstanceCommand(const char* args, WorldSession *m_session);
+	bool HandleShutdownInstanceCommand(const char* args, WorldSession *m_session);
+	//bool HandleDeleteInstanceCommand(const char* args, WorldSession *m_session);
+	bool HandleGetInstanceInfoCommand(const char* args, WorldSession *m_session);
+	bool HandleShowInstancesCommand(const char* args, WorldSession *m_session);
 
 	Player* getSelectedChar(WorldSession *m_session, bool showerror = true);
 	Creature * getSelectedCreature(WorldSession *m_session, bool showerror = true);

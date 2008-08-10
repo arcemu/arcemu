@@ -77,6 +77,7 @@ arcemu_world_SOURCES = \
     GuildHandler.cpp \
     HonorHandler.cpp \
     HonorHandler.h \
+    InstanceCommands.cpp \
     Item.cpp \
     Item.h \
     ItemHandler.cpp \

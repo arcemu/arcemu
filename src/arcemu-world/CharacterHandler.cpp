@@ -397,6 +397,7 @@ void WorldSession::HandleCharCreateOpcode( WorldPacket & recv_data )
 	pNewChar->SaveToDB(true);	
 
 	PlayerInfo *pn=new PlayerInfo ;
+	memset(&pn->m_savedInstanceIds, 0, sizeof(uint32) * NUM_MAPS * NUM_INSTANCE_MODES);
 	pn->guid = pNewChar->GetLowGUID();
 	pn->name = strdup(pNewChar->GetName());
 	pn->cl = pNewChar->getClass();
@@ -659,6 +660,7 @@ void WorldSession::FullLogin(Player * plr)
 	if(info == 0)
 	{
 		info = new PlayerInfo;
+		memset(&info->m_savedInstanceIds, 0, sizeof(uint32) * NUM_MAPS * NUM_INSTANCE_MODES);
 		info->cl = plr->getClass();
 		info->gender = plr->getGender();
 		info->guid = plr->GetLowGUID();

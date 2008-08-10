@@ -364,6 +364,7 @@ void ObjectMgr::LoadPlayersInfo()
 		{
 			Field *fields = result->Fetch();
 			pn=new PlayerInfo;
+			memset(&pn->m_savedInstanceIds, 0, sizeof(uint32) * NUM_MAPS * NUM_INSTANCE_MODES);
 			pn->guid = fields[0].GetUInt32();
 			pn->name = strdup(fields[1].GetString());
 			pn->race = fields[2].GetUInt8();
@@ -382,6 +383,28 @@ void ObjectMgr::LoadPlayersInfo()
 #ifdef VOICE_CHAT
 			pn->groupVoiceId = -1;
 #endif
+			// Raid & heroic Instance IDs
+			// Must be done before entering world...
+			QueryResult *result2 = CharacterDatabase.Query("SELECT `instanceid`, `mode`, `mapid` FROM `instanceids` WHERE `playerguid` = %u", pn->guid);
+			if(result2)
+			{
+				do 
+				{
+					uint32 instanceId = result2->Fetch()[0].GetUInt32();
+					uint32 mode = result2->Fetch()[1].GetUInt32();
+					uint32 mapId = result2->Fetch()[2].GetUInt32();
+					if(mode >= NUM_INSTANCE_MODES || mapId >= NUM_MAPS)
+						continue;
+					pn->m_savedInstanceIds[mapId][mode] = instanceId;
+					//TODO: Instances not loaded yet ~.~
+					//if(!sInstanceMgr.InstanceExists(mapId, pn->m_savedInstanceIds[mapId][mode]))
+					//{
+					//	pn->m_savedInstanceIds[mapId][mode] = 0;
+					//	CharacterDatabase.Execute("DELETE FROM `instanceids` WHERE `mapId` = %u AND `instanceId` = %u AND `mode` = %u", mapId, instanceId, mode);
+					//}
+				} while (result2->NextRow());
+				delete result2;
+			}
 
 			if(pn->race==RACE_HUMAN||pn->race==RACE_DWARF||pn->race==RACE_GNOME||pn->race==RACE_NIGHTELF||pn->race==RACE_DRAENEI)
 				pn->team = 0;

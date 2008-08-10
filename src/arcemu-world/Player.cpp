@@ -3166,6 +3166,46 @@ void Player::LoadFromDBProc(QueryResultVector & results)
 	}
 }
 
+void Player::SetPersistentInstanceId(Instance *pInstance)
+{
+	if(pInstance == NULL)
+		return;
+	// Skip this handling for flagged GMs.
+	if(bGMTagOn)
+		return;
+	// Bind instance to "my" group.
+	if(m_playerInfo && m_playerInfo->m_Group && pInstance->m_creatorGroup == 0)
+		pInstance->m_creatorGroup = m_playerInfo && m_playerInfo->m_Group->GetID();
+	// Skip handling for non-persistent instances.
+	if(!IS_PERSISTENT_INSTANCE(pInstance))
+		return;
+	// Set instance for group if not done yet.
+	if(m_playerInfo && m_playerInfo->m_Group && (m_playerInfo->m_Group->m_instanceIds[pInstance->m_mapId][pInstance->m_difficulty] == 0 || !sInstanceMgr.InstanceExists(pInstance->m_mapId, m_playerInfo->m_Group->m_instanceIds[pInstance->m_mapId][pInstance->m_difficulty])))
+	{
+		m_playerInfo->m_Group->m_instanceIds[pInstance->m_mapId][pInstance->m_difficulty] = pInstance->m_instanceId;
+		m_playerInfo->m_Group->SaveToDB();
+	}
+	// Instance is not saved yet (no bosskill)
+	if(!pInstance->m_persistent)
+	{
+		SetPersistentInstanceId(pInstance->m_mapId, pInstance->m_difficulty, 0);
+	}
+	// Set instance id to player.
+	else
+	{
+		SetPersistentInstanceId(pInstance->m_mapId, pInstance->m_difficulty, pInstance->m_instanceId);
+	}
+	sLog.outDebug("Added player %u to saved instance %u on map %u.", (uint32)GetGUID(), pInstance->m_instanceId, pInstance->m_mapId);
+}
+
+void Player::SetPersistentInstanceId(uint32 mapId, uint32 difficulty, uint32 instanceId)
+{
+	if(mapId >= NUM_MAPS || difficulty >= NUM_INSTANCE_MODES || m_playerInfo == NULL)
+		return;
+	m_playerInfo->m_savedInstanceIds[mapId][difficulty] = instanceId;
+	CharacterDatabase.Execute("REPLACE INTO `instanceids` (`playerguid`, `mapid`, `mode`, `instanceid`) VALUES ( %u, %u, %u, %u )", m_playerInfo->guid, mapId, difficulty, instanceId);
+}
+
 void Player::RolloverHonor()
 {
 	uint32 current_val = (g_localTime.tm_year << 16) | g_localTime.tm_yday;
@@ -8480,7 +8520,7 @@ void Player::OnWorldPortAck()
 			welcome_msg = "Welcome to ";
 			welcome_msg += pMapinfo->name;
 			welcome_msg += ". ";
-            if(pMapinfo->type != INSTANCE_NONRAID && m_mapMgr->pInstance)
+			if(pMapinfo->type != INSTANCE_NONRAID && !(pMapinfo->type == INSTANCE_MULTIMODE && iInstanceType >= MODE_HEROIC) && m_mapMgr->pInstance)
 			{
 				/*welcome_msg += "This instance is scheduled to reset on ";
 				welcome_msg += asctime(localtime(&m_mapMgr->pInstance->m_expiration));*/

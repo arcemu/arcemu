@@ -59,6 +59,8 @@ Group::Group(bool Assign)
     memset(m_SubGroups,0, sizeof(SubGroup*)*8);
 	m_SubGroups[0] = new SubGroup(this, 0);
 
+	memset(m_instanceIds, 0, sizeof(uint32) * NUM_MAPS * NUM_INSTANCE_MODES);
+
 	m_Leader = NULL;
 	m_Looter = NULL;
 	m_LootMethod = PARTY_LOOT_GROUP;
@@ -785,6 +787,35 @@ void Group::LoadFromDB(Field *fields)
 			m_dirty=false;
 		}
 	}
+
+	char *ids = strdup(fields[50].GetString());
+	char *q = ids;
+	char *p = strchr(q, ' ');
+	while(p)
+	{
+		char *r = strchr(q, ':');
+		if(r == NULL || r > p)
+			continue;
+		*p = 0;
+		*r = 0;
+		char *s = strchr(r+1, ':');
+		if(s == NULL || s > p)
+			continue;
+		*s = 0;
+		uint32 mapId = atoi(q);
+		uint32 mode = atoi(r+1);
+		uint32 instanceId = atoi(s+1);
+
+		if(mapId >= NUM_MAPS)
+			continue;
+
+		m_instanceIds[mapId][mode] = instanceId;
+
+		q = p+1;
+		p = strchr(q, ' ');
+	}
+	free(ids);
+
 	m_updateblock=false;
 }
 
@@ -835,7 +866,18 @@ void Group::SaveToDB()
 	for(uint32 i = 0; i < fillers; ++i)
 		ss << "0,0,0,0,0,";
 
-	ss << (uint32)UNIXTIME << ")";
+	ss << (uint32)UNIXTIME << ",'";
+	for(int i=0; i<NUM_MAPS; i++)
+	{
+		for(int j=0; j<NUM_INSTANCE_MODES; j++)
+		{
+			if(m_instanceIds[i][j] > 0)
+			{
+				ss << i << ":" << j << ":" << m_instanceIds[i][j] << " ";
+			}
+		}
+	}
+	ss << "')";
 	/*printf("==%s==\n", ss.str().c_str());*/
 	CharacterDatabase.Execute(ss.str().c_str());
 }

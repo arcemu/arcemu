@@ -538,7 +538,10 @@ void AIInterface::HandleEvent(uint32 event, Unit* pUnit, uint32 misc1)
 				HandleEvent(EVENT_FOLLOWOWNER, m_Unit, 0);
 			}*/
 
-			if(m_Unit->GetMapMgr() && m_Unit->GetTypeId() == TYPEID_UNIT && !m_Unit->IsPet() && m_Unit->GetMapMgr()->pInstance && m_Unit->GetMapMgr()->GetMapInfo()->type != INSTANCE_NONRAID)
+			Instance *pInstance = NULL;
+			if(m_Unit->GetMapMgr())
+				pInstance = m_Unit->GetMapMgr()->pInstance;
+			if(m_Unit->GetMapMgr() && m_Unit->GetTypeId() == TYPEID_UNIT && !m_Unit->IsPet() && pInstance && (pInstance->m_mapInfo->type == INSTANCE_RAID || pInstance->m_mapInfo->type == INSTANCE_NONRAID || pInstance->m_mapInfo->type == INSTANCE_MULTIMODE))
 			{
 				InstanceBossInfoMap *bossInfoMap = objmgr.m_InstanceBossInfoMap[m_Unit->GetMapMgr()->GetMapId()];
 				uint32 npcGuid = static_cast< Creature* >( m_Unit )->GetSQL_id();
@@ -554,6 +557,15 @@ void AIInterface::HandleEvent(uint32 event, Unit* pUnit, uint32 misc1)
 							Creature *c = m_Unit->GetMapMgr()->GetSqlIdCreature((*trash));
 							if(c != NULL)
 								c->m_noRespawn = true;
+						}
+						if(!pInstance->m_persistent && IS_PERSISTENT_INSTANCE(pInstance))
+						{
+							pInstance->m_persistent = true;
+							pInstance->SaveToDB();
+							for(PlayerStorageMap::iterator itr = m_Unit->GetMapMgr()->m_PlayerStorage.begin(); itr != m_Unit->GetMapMgr()->m_PlayerStorage.end(); ++itr)
+							{
+								(*itr).second->SetPersistentInstanceId(pInstance);
+							}
 						}
 					}
 				}

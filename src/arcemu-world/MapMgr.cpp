@@ -573,10 +573,15 @@ void MapMgr::RemoveObject(Object *obj, bool free_guid)
 			sWorld.AddGlobalSession(plObj->GetSession());
 	}
 
-	if(!HasPlayers() && !InactiveMoveTime && !forced_expire && GetMapInfo()->type != INSTANCE_NULL)
+	if(!HasPlayers())
 	{
-		InactiveMoveTime = UNIXTIME + (MAPMGR_INACTIVE_MOVE_TIME * 60);	 
-		sLog.outDetail("Instance %u is now idle. (%s)", m_instanceID, GetBaseMap()->GetName());
+		if(this->pInstance != NULL && this->pInstance->m_persistent)
+			this->pInstance->m_creatorGroup = 0;
+		if(!InactiveMoveTime && !forced_expire && GetMapInfo()->type != INSTANCE_NULL)
+		{
+			InactiveMoveTime = UNIXTIME + (MAPMGR_INACTIVE_MOVE_TIME * 60);	 
+			Log.Debug("MapMgr", "Instance %u is now idle. (%s)", m_instanceID, GetBaseMap()->GetName());
+		}
 	}
 }
 

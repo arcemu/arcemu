@@ -480,6 +480,7 @@ struct PlayerInfo
 	uint32 lastLevel;
 	Group * m_Group;
 	int8 subGroup;
+	uint32 m_savedInstanceIds[NUM_MAPS][NUM_INSTANCE_MODES];
 #ifdef VOICE_CHAT
 	int8 groupVoiceId;
 #endif
@@ -1534,6 +1535,20 @@ public:
 	ARCEMU_INLINE uint32 GetAreaID() { return m_AreaID; }
 	void SetAreaID(uint32 area) { m_AreaID = area; }
 	
+	// Instance IDs
+
+	ARCEMU_INLINE uint32 GetPersistentInstanceId(uint32 mapId, uint32 difficulty)
+	{
+		if(mapId >= NUM_MAPS || difficulty >= NUM_INSTANCE_MODES || m_playerInfo == NULL)
+			return 0;
+		return m_playerInfo->m_savedInstanceIds[mapId][difficulty];
+	}
+
+	void SetPersistentInstanceId(Instance *pInstance);
+	//Use this method carefully.. 
+	void SetPersistentInstanceId(uint32 mapId, uint32 difficulty, uint32 instanceId);
+
+public:
 	
 	std::string Lfgcomment;
 	uint16 LfgDungeonId[3];

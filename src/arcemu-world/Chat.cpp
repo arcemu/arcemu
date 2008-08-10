@@ -74,6 +74,8 @@ ChatCommand * CommandTableStorage::GetSubCommandTable(const char * name)
 		return _banCommandTable;
 	else if(!strcmp(name, "unban"))
 		return _unbanCommandTable;
+	else if(!strcmp(name, "instance"))
+		return _instanceCommandTable;
 	return 0;
 }
 
@@ -206,6 +208,7 @@ void CommandTableStorage::Dealloc()
 	free( _kickCommandTable );
 	free( _banCommandTable );
 	free( _unbanCommandTable );
+	free( _instanceCommandTable );
 	free( _commandTable );
 }
 
@@ -541,6 +544,7 @@ void CommandTableStorage::Init()
 		{ "setstanding",         'm', &ChatHandler::HandleSetStandingCommand,      "Sets stanging of faction %u.",                                                                                      NULL, 0, 0, 0 },
 		{ "showitems",           'm', &ChatHandler::HandleShowItems,               "Shows items of selected Player",                                                                                    NULL, 0, 0, 0 },
 		{ "showskills",          'm', &ChatHandler::HandleShowSkills,              "Shows skills of selected Player",                                                                                   NULL, 0, 0, 0 },
+		{ "showinstances",       'z', &ChatHandler::HandleShowInstancesCommand,    "Shows persistent instances of selected Player",                                                                     NULL, 0, 0, 0 },
 		{ "rename",              'm', &ChatHandler::HandleRenameCommand,           "Renames character x to y.",                                                                                         NULL, 0, 0, 0 },
 		{ "forcerename",         'm', &ChatHandler::HandleForceRenameCommand,      "Forces character x to rename his char next login",                                                                  NULL, 0, 0, 0 },
 		{ "repairitems",         'n', &ChatHandler::HandleRepairItemsCommand,      ".repairitems - Repair all items from selected player",                                                              NULL, 0, 0, 0 },
@@ -598,6 +602,18 @@ void CommandTableStorage::Init()
 	};
 	dupe_command_table(unbanCommandTable, _unbanCommandTable);
 
+	static ChatCommand instanceCommandTable[] =
+	{
+		{ "reset",    'z', &ChatHandler::HandleResetInstanceCommand,     "Removes instance ID x from target player.",                         NULL, 0, 0, 0 },
+		{ "resetall", 'm', &ChatHandler::HandleResetAllInstancesCommand, "Removes all instance IDs from target player.",                      NULL, 0, 0, 0 },
+		{ "shutdown", 'z', &ChatHandler::HandleShutdownInstanceCommand,  "Shutdown instance with ID x (default is current instance).",        NULL, 0, 0, 0 },
+		//{ "delete",   'z', &ChatHandler::HandleDeleteInstanceCommand,    "Deletes instance with ID x (default is current instance).",         NULL, 0, 0, 0 },
+		{ "info",     'm', &ChatHandler::HandleGetInstanceInfoCommand,   "Gets info about instance with ID x (default is current instance).", NULL, 0, 0, 0 },
+		{ "exit",     'm', &ChatHandler::HandleExitInstanceCommand,      "Exits current instance, return to entry point.",                    NULL, 0, 0, 0 },
+		{ NULL,       '0', NULL,                                         "",                                                                  NULL, 0, 0, 0 }
+	};
+	dupe_command_table(instanceCommandTable, _instanceCommandTable);
+
 	static ChatCommand commandTable[] =
 	{
 		{ "commands",        '0', &ChatHandler::HandleCommandsCommand,                      "Shows Commands",                                                                                                                          NULL,                     0, 0, 0 },
@@ -642,6 +658,7 @@ void CommandTableStorage::Init()
 		{ "kick",            'm', NULL,                                                     "",                                                                                                                                        kickCommandTable,         0, 0, 0 },
 		{ "ban",             'm', NULL,                                                     "",                                                                                                                                        banCommandTable,          0, 0, 0 },
 		{ "unban",           'm', NULL,                                                     "",                                                                                                                                        unbanCommandTable,        0, 0, 0 },
+		{ "instance",        'm', NULL,                                                     "",                                                                                                                                        instanceCommandTable,     0, 0, 0 },
 		{ "kickplayer",      'b', &ChatHandler::HandleKickCommand,                          "Kicks player from server",                                                                                                                NULL,                     0, 0, 0 },
 		{ "gmannounce",      'u', &ChatHandler::HandleGMAnnounceCommand,                    "Sends Msg to all online GMs",                                                                                                             NULL,                     0, 0, 0 },
 		{ "clearcooldowns",  'm', &ChatHandler::HandleClearCooldownsCommand,                "Clears all cooldowns for your class.",                                                                                                    NULL,                     0, 0, 0 },
@@ -649,7 +666,6 @@ void CommandTableStorage::Init()
 		{ "paralyze",        'b', &ChatHandler::HandleParalyzeCommand,                      "Roots/Paralyzes the target.",                                                                                                             NULL,                     0, 0, 0 },
 		{ "unparalyze",      'b', &ChatHandler::HandleUnParalyzeCommand,                    "Unroots/Unparalyzes the target.",                                                                                                         NULL,                     0, 0, 0 },
 		{ "gotrig",          'v', &ChatHandler::HandleTriggerCommand,                       "Warps to areatrigger <id>",                                                                                                               NULL,                     0, 0, 0 },
-		{ "exitinstance",    'm', &ChatHandler::HandleExitInstanceCommand,                  "Exits current instance, return to entry point.",                                                                                          NULL,                     0, 0, 0 },
 		{ "modperiod",       'm', &ChatHandler::HandleModPeriodCommand,                     "Changes period of current transporter.",                                                                                                  NULL,                     0, 0, 0 },
 		{ "createarenateam", 'g', &ChatHandler::HandleCreateArenaTeamCommands,              "Creates arena team",                                                                                                                      NULL,                     0, 0, 0 },
 		{ "logcomment",      '1', &ChatHandler::HandleGmLogCommentCommand,                  "Adds a comment to the GM log for the admins to read.",                                                                                    NULL,                     0, 0, 0 },
