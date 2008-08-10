@@ -385,7 +385,7 @@ void SubGroup::Disband()
 {
 	WorldPacket data(SMSG_GROUP_DESTROYED, 1);
 	WorldPacket data2(SMSG_PARTY_COMMAND_RESULT, 12);
-	data2 << uint32(2) << uint8(0) << uint32(0);	// you leave the group
+	data2 << uint32(2) << uint8(m_Parent == NULL ? 0 : m_Parent->m_difficulty) << uint32(0);	// you leave the group
 
 	GroupMembersSet::iterator itr = m_GroupMembers.begin();
 	GroupMembersSet::iterator it2;
@@ -398,6 +398,7 @@ void SubGroup::Disband()
 				if( (*itr)->m_loggedInPlayer->GetSession() != NULL )
 				{
 					(*itr)->m_loggedInPlayer->GetSession()->SendPacket(&data);
+					data2.put(4, (uint8)(*itr)->m_loggedInPlayer->iInstanceType);
 					(*itr)->m_loggedInPlayer->GetSession()->SendPacket(&data2);
 				}
 			}

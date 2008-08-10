@@ -233,6 +233,7 @@ protected:
 	Mutex m_groupLock;
 	bool m_dirty;
 	bool m_updateblock;
+public:
 	uint8 m_difficulty;
 };
 

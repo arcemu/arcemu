@@ -133,30 +133,20 @@ void WorldSession::HandleGroupAcceptOpcode( WorldPacket & recv_data )
 	if(grp)
 	{
 		grp->AddMember(_player->m_playerInfo);
-		if(grp->GetLeader()->m_loggedInPlayer)
-			_player->iInstanceType = grp->GetLeader()->m_loggedInPlayer->iInstanceType;
+		_player->iInstanceType = grp->m_difficulty;
+		_player->SendDungeonDifficulty();
 
-#ifdef USING_BIG_ENDIAN
-		uint32 swapped = swap32(_player->iInstanceType);
-		_player->GetSession()->OutPacket(CMSG_DUNGEON_DIFFICULTY, 4, &swapped);
-#else
-        _player->GetSession()->OutPacket(CMSG_DUNGEON_DIFFICULTY, 4, &_player->iInstanceType);
-#endif
         //sInstanceSavingManager.ResetSavedInstancesForPlayer(_player);
 		return;
 	}
 	
 	// If we're this far, it means we have no existing group, and have to make one.
 	grp = new Group(true);
+	grp->m_difficulty = player->iInstanceType;
 	grp->AddMember(player->m_playerInfo);		// add the inviter first, therefore he is the leader
 	grp->AddMember(_player->m_playerInfo);	   // add us.
-    _player->iInstanceType = player->iInstanceType;
-#ifdef USING_BIG_ENDIAN
-	uint32 swapped2 = swap32(player->iInstanceType);
-	_player->GetSession()->OutPacket(CMSG_DUNGEON_DIFFICULTY, 4, &swapped2);
-#else
-    _player->GetSession()->OutPacket(CMSG_DUNGEON_DIFFICULTY, 4, &player->iInstanceType);
-#endif
+	_player->iInstanceType = grp->m_difficulty;
+	_player->SendDungeonDifficulty();
 
 	Instance *instance = sInstanceMgr.GetInstanceByIds(player->GetMapId(), player->GetInstanceID());
 	if(instance != NULL && instance->m_creatorGuid == player->GetLowGUID())

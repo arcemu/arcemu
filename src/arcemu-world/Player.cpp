@@ -4018,6 +4018,17 @@ void Player::SetPlayerSpeed(uint8 SpeedType, float value)
 	SendMessageToSet(&data , true);
 }
 
+void Player::SendDungeonDifficulty()
+{
+	// Why CMSG_DUNGEON_DIFFICULTY ? CMSG == Client Message...
+	//TODO: Should rename it to MSG_DUNGEON_DIFFICULTY
+    WorldPacket data(CMSG_DUNGEON_DIFFICULTY, 12);
+	data << (uint32)iInstanceType;
+    data << (uint32)0x1;
+    data << (uint32)InGroup();
+    GetSession()->SendPacket(&data);
+}
+
 void Player::BuildPlayerRepop()
 {
 	SetUInt32Value( UNIT_FIELD_HEALTH, 1 );

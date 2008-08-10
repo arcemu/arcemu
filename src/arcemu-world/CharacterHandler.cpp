@@ -610,16 +610,6 @@ void WorldSession::FullLogin(Player * plr)
 	movement_packet[0] = m_MoverWoWGuid.GetNewGuidMask();
 	memcpy(&movement_packet[1], m_MoverWoWGuid.GetNewGuid(), m_MoverWoWGuid.GetNewGuidLen());
 
-#ifndef USING_BIG_ENDIAN
-	StackWorldPacket<20> datab(CMSG_DUNGEON_DIFFICULTY);
-#else
-	WorldPacket datab(CMSG_DUNGEON_DIFFICULTY, 20);
-#endif
-	datab << plr->iInstanceType;
-	datab << uint32(0x01);
-	datab << uint32(0x00);
-	SendPacket(&datab);
-
 	/* world preload */
 	packetSMSG_LOGIN_VERIFY_WORLD vwpck;
 	vwpck.MapId = plr->GetMapId();
@@ -638,6 +628,13 @@ void WorldSession::FullLogin(Player * plr)
 	|02 01							               |..              |
 	-------------------------------------------------------------------
 	*/
+
+
+#ifndef USING_BIG_ENDIAN
+	StackWorldPacket<20> datab(SMSG_VOICE_SYSTEM_STATUS);
+#else
+	WorldPacket datab(SMSG_VOICE_SYSTEM_STATUS, 20);
+#endif
 
 #ifdef VOICE_CHAT
 	datab.Initialize(SMSG_VOICE_SYSTEM_STATUS);
@@ -717,8 +714,7 @@ void WorldSession::FullLogin(Player * plr)
 	SendPacket(&data);
 
 	// Set TIME OF LOGIN
-	CharacterDatabase.Execute (
-		"UPDATE characters SET online = 1 WHERE guid = %u" , plr->GetLowGUID());
+	CharacterDatabase.Execute("UPDATE characters SET online = 1 WHERE guid = %u" , plr->GetLowGUID());
 
 	bool enter_world = true;
 #ifndef CLUSTERING
@@ -872,6 +868,9 @@ void WorldSession::FullLogin(Player * plr)
 	}
 
 	objmgr.AddPlayer(_player);
+
+	if(info->m_Group == NULL)
+		plr->SendDungeonDifficulty();
 }
 
 bool ChatHandler::HandleRenameCommand(const char * args, WorldSession * m_session)

@@ -773,6 +773,7 @@ public:
 	void RemoveSpellIndexReferences(uint32 Type);
 	void SetSpellTargetType(uint32 Type, Unit* target);
 	void SendMeetingStoneQueue(uint32 DungeonId, uint8 Status);
+	void SendDungeonDifficulty();
 
 	void AddToWorld();
 	void AddToWorld(MapMgr * pMapMgr);
