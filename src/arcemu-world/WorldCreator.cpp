@@ -232,26 +232,34 @@ uint32 InstanceMgr::PreTeleport(uint32 mapid, Player * plr, uint32 instanceid)
 			in = NULL;
 			if(pGroup != NULL)
 			{
-				if((inf->type == INSTANCE_MULTIMODE && plr->iInstanceType >= MODE_HEROIC) || inf->type == INSTANCE_RAID)
+				if((inf->type == INSTANCE_MULTIMODE && pGroup->m_difficulty >= MODE_HEROIC) || inf->type == INSTANCE_RAID)
 				{
-					if(plr->GetPersistentInstanceId(mapid, plr->iInstanceType) == 0)
+					if(plr->GetPersistentInstanceId(mapid, pGroup->m_difficulty) == 0)
 					{
-						if(pGroup->m_instanceIds[mapid][plr->iInstanceType] != 0)
+						if(pGroup->m_instanceIds[mapid][pGroup->m_difficulty] != 0)
 						{
-							in = sInstanceMgr.GetInstanceByIds(mapid, pGroup->m_instanceIds[mapid][plr->iInstanceType]);
+							in = sInstanceMgr.GetInstanceByIds(mapid, pGroup->m_instanceIds[mapid][pGroup->m_difficulty]);
+						}
+						else if(sWorld.instance_TakeGroupLeaderID)
+						{
+							PlayerInfo *pLeaderInfo = pGroup->GetLeader();
+							if(pLeaderInfo && pLeaderInfo->m_savedInstanceIds[mapid][pGroup->m_difficulty] != 0)
+							{
+								in = sInstanceMgr.GetInstanceByIds(mapid, pLeaderInfo->m_savedInstanceIds[mapid][pGroup->m_difficulty]);
+							}							
 						}
 					}
 
-					if(in == NULL && plr->GetPersistentInstanceId(mapid, plr->iInstanceType) != 0)
+					if(in == NULL && plr->GetPersistentInstanceId(mapid, pGroup->m_difficulty) != 0)
 					{
-						in = sInstanceMgr.GetInstanceByIds(mapid, plr->GetPersistentInstanceId(mapid, plr->iInstanceType));
+						in = sInstanceMgr.GetInstanceByIds(mapid, plr->GetPersistentInstanceId(mapid, pGroup->m_difficulty));
 					}
 				}
 				else
 				{
-					if(pGroup->m_instanceIds[mapid][plr->iInstanceType] != 0)
+					if(pGroup->m_instanceIds[mapid][pGroup->m_difficulty] != 0)
 					{
-						in = sInstanceMgr.GetInstanceByIds(mapid, pGroup->m_instanceIds[mapid][plr->iInstanceType]);
+						in = sInstanceMgr.GetInstanceByIds(mapid, pGroup->m_instanceIds[mapid][pGroup->m_difficulty]);
 					}
 				}
 			}
@@ -310,7 +318,7 @@ uint32 InstanceMgr::PreTeleport(uint32 mapid, Player * plr, uint32 instanceid)
 	in->m_creation = UNIXTIME;
 	//TODO: Expiration handling for raids & heroic instances
 	in->m_expiration = (inf->type == INSTANCE_NONRAID || (inf->type == INSTANCE_MULTIMODE && plr->iInstanceType == MODE_NORMAL)) ? 0 : UNIXTIME + inf->cooldown;		// expire time 0 is 10 minutes after last player leaves
-	in->m_difficulty = plr->iInstanceType;
+	in->m_difficulty = pGroup ? pGroup->m_difficulty : plr->iInstanceType;
 	in->m_instanceId = GenerateInstanceID();
 	in->m_mapId = mapid;
 	in->m_mapMgr = NULL;		// always start off without a map manager, it is created in GetInstance()

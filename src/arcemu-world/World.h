@@ -446,6 +446,8 @@ public:
 	uint32 flyhack_threshold;
 	bool no_antihack_on_gm;
 
+	bool instance_TakeGroupLeaderID;
+
 	void CharacterEnumProc(QueryResultVector& results, uint32 AccountId);
 	void LoadAccountDataProc(QueryResultVector& results, uint32 AccountId);
 
