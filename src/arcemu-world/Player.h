@@ -1298,6 +1298,7 @@ public:
 	void Gossip_Complete();
 	int m_lifetapbonus;
 	uint32 m_lastShotTime;
+	bool m_requiresNoAmmo;
 	
 	// scriptdev2
 	GossipMenu* PlayerTalkClass;

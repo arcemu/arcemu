@@ -1634,6 +1634,13 @@ void Aura::SpellAuraDummy(bool apply)
 
 	switch(GetSpellId())
 	{
+	//Requires No Ammo
+	case 46699:
+		{
+			if( m_target->IsPlayer() )
+				static_cast< Player* >( m_target )->m_requiresNoAmmo = apply;
+
+		}break;
 	//Hunter - Bestial Wrath & The Beast Within
 	//Both should provide immunity for all CC effect, but the dbc specifies only stuns. Imba!
 	case 19574:

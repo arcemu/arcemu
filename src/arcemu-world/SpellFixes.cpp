@@ -12517,6 +12517,14 @@ void ApplyNormalFixes()
 		sp->DiminishStatus = GetDiminishingGroup(namehash);
 
 		//another grouping rule
+
+		//Quivers, Ammo Pouches and Thori'dal the Star's Fury
+		if( ( namehash == SPELL_HASH_HASTE && sp->Attributes & 0x10000 ) || sp->Id == 44972 )
+		{
+			sp->Attributes &= ~ATTRIBUTES_PASSIVE;//Otherwise we couldn't remove them
+			sp->BGR_one_buff_on_target |= SPELL_TYPE_QUIVER_HASTE;
+		}
+		
 		switch(namehash)
 		{
 		case SPELL_HASH_SANCTITY_AURA:		

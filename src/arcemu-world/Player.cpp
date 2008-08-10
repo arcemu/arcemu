@@ -396,7 +396,8 @@ Player::Player( uint32 guid ) : m_mailBox(guid)
 #ifdef ENABLE_COMPRESSED_MOVEMENT
 	m_movementBuffer.reserve(5000);
 #endif
-
+	
+	m_requiresNoAmmo = false;
 	m_safeFall = 0;
 	m_noFallDamage = false;
 	z_axisposition = 0.0f;
@@ -8931,7 +8932,7 @@ void Player::CalcDamage()
 				ap_bonus = GetRAP()/14000.0f;
 				bonus = ap_bonus*it->GetProto()->Delay;
 				
-				if(GetUInt32Value(PLAYER_AMMO_ID))
+				if( GetUInt32Value(PLAYER_AMMO_ID) && !m_requiresNoAmmo )
 				{
 					ItemPrototype * xproto=ItemPrototypeStorage.LookupEntry(GetUInt32Value(PLAYER_AMMO_ID));
 					if(xproto)
