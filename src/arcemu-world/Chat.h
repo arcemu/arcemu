@@ -329,6 +329,7 @@ protected:
 	bool HandleGMTicketCommentCommand(const char* args, WorldSession *m_session);
 	bool HandleGMTicketDeletePermanentCommand(const char* args, WorldSession *m_session);
 #endif
+	bool HandleGMTicketToggleTicketSystemStatusCommand(const char* args, WorldSession *m_session);
 	bool HandleAddSkillCommand(const char* args, WorldSession *m_session);
 	bool HandleAddInvItemCommand(const char* args, WorldSession *m_session);
 	bool HandleResetReputationCommand(const char* args, WorldSession *m_session);
