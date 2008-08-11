@@ -355,7 +355,7 @@ uint32 InstanceMgr::PreTeleport(uint32 mapid, Player * plr, uint32 instanceid)
 	{
 		if(inf->type == INSTANCE_MULTIMODE && in->m_difficulty >= MODE_HEROIC)
 		{
-			in->m_expiration = UNIXTIME - (UNIXTIME % TIME_DAY) + 82800 + ((sWorld.instance_DailyHeroicInstanceResetHour - sWorld.GMTTimeZone) * TIME_HOUR);
+			in->m_expiration = UNIXTIME - (UNIXTIME % TIME_DAY) + ( (UNIXTIME % TIME_DAY) > (sWorld.instance_DailyHeroicInstanceResetHour * TIME_HOUR) ? 82800 : -3600 ) + ((sWorld.instance_DailyHeroicInstanceResetHour - sWorld.GMTTimeZone) * TIME_HOUR);
 		}
 		else if(IS_PERSISTENT_INSTANCE(in))
 		{
