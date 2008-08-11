@@ -349,6 +349,7 @@ protected:
 	bool HandleClearCooldownsCommand(const char* args, WorldSession *m_session);
 	bool HandleBattlegroundCommand(const char* args, WorldSession *m_session);
 	bool HandleSetWorldStateCommand(const char* args, WorldSession *m_session);
+	bool HandleSetWorldStatesCommand(const char* args, WorldSession *m_session);
 	bool HandlePlaySoundCommand(const char* args, WorldSession *m_session);
 	bool HandleSetBattlefieldStatusCommand(const char* args, WorldSession *m_session);
 	bool HandleNpcReturnCommand(const char* args, WorldSession* m_session);

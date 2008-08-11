@@ -87,6 +87,23 @@ bool ChatHandler::HandleSetWorldStateCommand(const char* args, WorldSession *m_s
 	return true;
 }
 
+bool ChatHandler::HandleSetWorldStatesCommand(const char* args, WorldSession *m_session)
+{
+	uint32 first,last,val;
+	if(sscanf(args,"%u %u %u", &first, &last, &val)!=3)
+		return false;
+
+	if(m_session->GetPlayer()->m_bg)
+	{
+		for (uint32 i=first; i<last; i++)
+		{
+			m_session->GetPlayer()->m_bg->SetWorldState(i,val);
+		}
+	}
+
+	return true;
+}
+
 bool ChatHandler::HandlePlaySoundCommand(const char* args, WorldSession *m_session)
 {
 	if(!m_session->GetPlayer()->m_bg)
