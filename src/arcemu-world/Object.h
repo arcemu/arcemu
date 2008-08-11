@@ -257,6 +257,7 @@ public:
 	}
 
 	void __fastcall ModFloatValue(const uint32 index, const float value );
+	void ModFloatValueByPCT(const uint32 index, int32 byPct );
 	void ModSignedInt32Value(uint32 index, int32 value);
 	void ModUnsigned32Value(uint32 index, int32 mod);
 	uint32 GetModPUInt32Value(const uint32 index, const int32 value);

@@ -626,11 +626,11 @@ void Pet::InitializeMe(bool first)
 	SendSpellsToOwner();
 
 	// set to active
-	if(!bExpires)
-		UpdatePetInfo(false);
+	if( !bExpires )
+		UpdatePetInfo( false );
 
-	sEventMgr.AddEvent(this, &Pet::HandleAutoCastEvent, uint32(AUTOCAST_EVENT_ON_SPAWN), EVENT_UNK, 1000, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
-	sEventMgr.AddEvent(this, &Pet::HandleAutoCastEvent, uint32(AUTOCAST_EVENT_LEAVE_COMBAT), EVENT_UNK, 1000, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
+	sEventMgr.AddEvent( this, &Pet::HandleAutoCastEvent, AUTOCAST_EVENT_ON_SPAWN,		EVENT_UNK, 1000, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT );
+	sEventMgr.AddEvent( this, &Pet::HandleAutoCastEvent, AUTOCAST_EVENT_LEAVE_COMBAT,	EVENT_UNK, 1000, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT );
 }
 
 void Pet::UpdatePetInfo(bool bSetToOffline)
@@ -1785,22 +1785,22 @@ AI_Spell * Pet::HandleAutoCastEvent()
 	return NULL;
 }
 
-void Pet::HandleAutoCastEvent(uint32 Type)
+void Pet::HandleAutoCastEvent( AutoCastEvents Type )
 {
 	list<AI_Spell*>::iterator itr, it2;
 	AI_Spell * sp;
-	if(!m_Owner)
+	if( m_Owner == NULL )
 		return;
 
-	if(Type == AUTOCAST_EVENT_ATTACK)
+	if( Type == AUTOCAST_EVENT_ATTACK )
 	{
-		if(m_autoCastSpells[AUTOCAST_EVENT_ATTACK].size() > 1)
+		if( m_autoCastSpells[ AUTOCAST_EVENT_ATTACK ].size() > 1 )
 		{
-			for(  itr = m_autoCastSpells[AUTOCAST_EVENT_ATTACK].begin(); itr != m_autoCastSpells[AUTOCAST_EVENT_ATTACK].end(); itr++ )
+			for( itr = m_autoCastSpells[ AUTOCAST_EVENT_ATTACK ].begin(); itr != m_autoCastSpells[ AUTOCAST_EVENT_ATTACK ].end(); itr++ )
 			{
-				if(itr == m_autoCastSpells[AUTOCAST_EVENT_ATTACK].end())
+				if( itr == m_autoCastSpells[ AUTOCAST_EVENT_ATTACK ].end() )
 				{
-					if(getMSTime() >= (*itr)->cooldowntime)
+					if( getMSTime() >= (*itr)->cooldowntime )
 						m_aiInterface->SetNextSpell(*itr);
 					else
 						return;
@@ -1808,32 +1808,35 @@ void Pet::HandleAutoCastEvent(uint32 Type)
 				}
 				else
 				{
-					if((*itr)->cooldowntime > getMSTime())
+					if( (*itr)->cooldowntime > getMSTime() )
 						continue;
 
 					m_aiInterface->SetNextSpell(*itr);
 				}
 			}
 		}
-		else if(m_autoCastSpells[AUTOCAST_EVENT_ATTACK].size())
+		else if( m_autoCastSpells[ AUTOCAST_EVENT_ATTACK ].size() )
 		{
-			sp =*m_autoCastSpells[AUTOCAST_EVENT_ATTACK].begin();
-			if(sp->cooldown && getMSTime() < sp->cooldowntime)
+			sp =*m_autoCastSpells[ AUTOCAST_EVENT_ATTACK ].begin();
+			if( sp->cooldown && getMSTime() < sp->cooldowntime )
 				return;
 			
-			m_aiInterface->SetNextSpell(sp);
+			m_aiInterface->SetNextSpell( sp );
 		}
 
 		return;
 	}
 
-	for(  itr = m_autoCastSpells[Type].begin(); itr != m_autoCastSpells[Type].end(); )
+	for( itr = m_autoCastSpells[ Type ].begin(); itr != m_autoCastSpells[ Type ].end(); )
 	{
 		it2 = itr++;
 		sp = *it2;
 
 		if( sp->spelltargetType == TTYPE_OWNER )
-			CastSpell( m_Owner, sp->spell, false );
+		{
+			if( !m_Owner->HasAura( sp->spell->Id ) )
+				CastSpell( m_Owner, sp->spell, false );
+		}
 		else
 		{
 			//modified by Zack: Spell targetting will be generated in the castspell function now.You cannot force to target self all the time

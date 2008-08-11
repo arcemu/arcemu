@@ -5693,16 +5693,14 @@ void Aura::SpellAuraMounted(bool apply)
 		if( p_target->GetShapeShift() && !(p_target->GetShapeShift() & FORM_BATTLESTANCE | FORM_DEFENSIVESTANCE | FORM_BERSERKERSTANCE ) && p_target->m_ShapeShifted != m_spellProto->Id )
 			p_target->RemoveAura( p_target->m_ShapeShifted );
 
-		/*
 		//desummon summons
 		if( p_target->GetSummon() != NULL )
 		{
-			if(p_target->GetSummon()->GetUInt32Value(UNIT_CREATED_BY_SPELL) > 0)
-				p_target->GetSummon()->Dismiss(false); // warlock summon -> dismiss
+			if( p_target->GetSummon()->GetUInt32Value( UNIT_CREATED_BY_SPELL ) > 0 )
+				p_target->GetSummon()->Dismiss( false ); // warlock summon -> dismiss
 			else
-				p_target->GetSummon()->Remove(false, true, true); // hunter pet -> just remove for later re-call
+				p_target->GetSummon()->Remove( false, true, false ); // hunter pet -> just remove for later re-call
 		}
-		*/
 	}
 	else
 	{
@@ -5710,6 +5708,8 @@ void Aura::SpellAuraMounted(bool apply)
 		p_target->flying_aura = 0;
 		m_target->SetUInt32Value(UNIT_FIELD_MOUNTDISPLAYID, 0);
 		//m_target->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_MOUNTED_TAXI);
+			
+		p_target->SpawnActivePet();// get pet back
 	}
 }
 
@@ -8696,6 +8696,7 @@ void Aura::SendChannelUpdate(uint32 time, Object * m_caster)
 
 void Aura::SpellAuraAxeSkillModifier(bool apply)
 {
+	/* Since 2.3.0 patch this is an expertise mod aura
 	if( p_target != NULL )
 	{
 		SetPositive();
@@ -8710,7 +8711,7 @@ void Aura::SpellAuraAxeSkillModifier(bool apply)
 			p_target->_ModifySkillBonus( SKILL_2H_AXES, -mod->m_amount );
 		}
 		p_target->UpdateStats();
-	}
+	}*/
 }
 
 void Aura::SpellAuraModPossessPet(bool apply)
@@ -8722,8 +8723,7 @@ void Aura::SpellAuraModPossessPet(bool apply)
 	else
 		return;
 
-	if( !m_target->IsPet() ||
-		pCaster->GetSummon() != m_target )
+	if( !m_target->IsPet() || pCaster->GetSummon() != m_target )
 		return;
 
 

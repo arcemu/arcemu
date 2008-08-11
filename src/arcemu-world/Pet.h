@@ -215,7 +215,7 @@ public:
 	void UpdateTP();
 	uint32 CanLearnSpell( SpellEntry* sp );
 	
-	void HandleAutoCastEvent(uint32 Type);
+	void HandleAutoCastEvent( AutoCastEvents Type );
 	AI_Spell * HandleAutoCastEvent();
 	void SetPetSpellState(uint32 spell, uint16 state);
 	void SetAutoCast(AI_Spell * sp, bool on);

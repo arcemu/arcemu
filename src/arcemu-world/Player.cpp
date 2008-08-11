@@ -1830,6 +1830,19 @@ void Player::SpawnPet(uint32 pet_number)
 	pPet->SetInstanceID(GetInstanceID());
 	pPet->LoadFromDB(this, itr->second);
 }
+void Player::SpawnActivePet()
+{
+	if( getClass() == HUNTER )
+	{
+		std::map< uint32, PlayerPet* >::iterator itr = m_Pets.begin();
+		for( ; itr != m_Pets.end(); itr++ )
+			if( itr->second->stablestate == STABLE_STATE_ACTIVE && itr->second->active )
+			{
+				SpawnPet( itr->first );
+				return;
+			}
+	}
+}
 
 void Player::_LoadPetSpells(QueryResult * result)
 {
@@ -4733,6 +4746,9 @@ void Player::ModAttackSpeed( int32 mod, ModType type )
 		m_attack_speed[ type ] *= 1.0f + ( ( float )mod / 100.0f );
 	else
 		m_attack_speed[ type ] /= 1.0f + ( ( float )( - mod ) / 100.0f );
+
+	if( type == MOD_SPELL )
+		SetFloatValue( UNIT_MOD_CAST_SPEED, 1.0f / ( m_attack_speed[ MOD_SPELL ] * SpellHasteRatingBonus ) );
 }
 
 void Player::UpdateAttackSpeed()

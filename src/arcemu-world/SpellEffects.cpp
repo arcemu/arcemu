@@ -5775,7 +5775,7 @@ void Spell::SpellEffectFilming( uint32 i )
 		if(playerTarget->GetSummon()->GetUInt32Value(UNIT_CREATED_BY_SPELL) > 0)
 			playerTarget->GetSummon()->Dismiss(false);						   // warlock summon -> dismiss
 		else
-			playerTarget->GetSummon()->Remove(false, true, true);					  // hunter pet -> just remove for later re-call
+			playerTarget->GetSummon()->Remove( false, true, false );					  // hunter pet -> just remove for later re-call
 	}
 
 	playerTarget->TaxiStart(taxipath, modelid, 0);

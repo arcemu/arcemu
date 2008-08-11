@@ -313,12 +313,12 @@ void AIInterface::HandleEvent(uint32 event, Unit* pUnit, uint32 misc1)
 					UnitToFollow = m_PetOwner;
 					FollowDistance = 3.0f;
 					m_lastFollowX = m_lastFollowY = 0;
-					if(m_Unit->IsPet())
+					if( m_Unit->IsPet() )
 					{
-						((Pet*)m_Unit)->SetPetAction(PET_ACTION_FOLLOW);
-						if( m_Unit->GetEntry() == 416 && m_Unit->isAlive() && m_Unit->IsInWorld() )
+						static_cast< Pet* >( m_Unit )->SetPetAction( PET_ACTION_FOLLOW );
+						if( m_Unit->isAlive() && m_Unit->IsInWorld() )
 						{
-							((Pet*)m_Unit)->HandleAutoCastEvent(AUTOCAST_EVENT_LEAVE_COMBAT);
+							static_cast< Pet* >( m_Unit )->HandleAutoCastEvent( AUTOCAST_EVENT_LEAVE_COMBAT );
 						}
 					}
 					HandleEvent(EVENT_FOLLOWOWNER, 0, 0);

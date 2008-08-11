@@ -1312,6 +1312,27 @@ void Object::ModFloatValue(const uint32 index, const float value )
 		}
 	}
 }
+void Object::ModFloatValueByPCT( const uint32 index, int32 byPct )
+{
+	ASSERT( index < m_valuesCount );
+	if( byPct > 0 )
+		m_floatValues[ index ] *= 1.0f + float( byPct ) / 100.0f;
+	else
+		m_floatValues[ index ] /= 1.0f + float( -byPct ) / 100.0f;
+
+
+	if( IsInWorld() )
+	{
+		m_updateMask.SetBit( index );
+
+		if( !m_objectUpdated )
+		{
+			m_mapMgr->ObjectUpdated( this );
+			m_objectUpdated = true;
+		}
+	}
+}
+
 //! Set uint64 property
 void Object::SetUInt64Value( const uint32 index, const uint64 value )
 {
@@ -2112,8 +2133,7 @@ void Object::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
 						WorldPacket data(SMSG_GAMEOBJECT_DESPAWN_ANIM, 8);
 						data << dObj->GetGUID();
 						dObj->SendMessageToSet(&data, false);
-						dObj->RemoveFromWorld(true);
-						delete dObj;
+						dObj->Remove();
 					}
 				}
 				if(spl->GetProto()->ChannelInterruptFlags == 48140) spl->cancel();
@@ -2440,7 +2460,7 @@ void Object::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
 				if( pVictim->GetUInt32Value( UNIT_CREATED_BY_SPELL ) > 0 )
 					static_cast< Player* >( pVictim )->GetSummon()->Dismiss( true );
 				else
-					static_cast< Player* >( pVictim )->GetSummon()->Remove( true, true, true );
+					static_cast< Player* >( pVictim )->GetSummon()->Remove( true, true, false );
 			}
 			/* -------------------- KILL PET WHEN PLAYER DIES END---------------*/
 		}
@@ -2465,13 +2485,14 @@ void Object::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
 				{
 					static_cast< Creature* >( pVictim )->GetAIInterface()->AttackReaction( static_cast< Unit* >( this ), damage, spellId );
 				}
-				else if( pVictim->IsPlayer() )
+				else
 				{
 					// Defensive pet
 					Pet* pPet = static_cast< Player* >( pVictim )->GetSummon();
 					if( pPet != NULL && pPet->GetPetState() != PET_STATE_PASSIVE )
 					{
 						pPet->GetAIInterface()->AttackReaction( static_cast< Unit* >( this ), 1, 0 );
+						pPet->HandleAutoCastEvent( AUTOCAST_EVENT_OWNER_ATTACKED );
 					}
 				}
 			}
