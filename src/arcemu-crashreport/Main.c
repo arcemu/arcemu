@@ -23,9 +23,11 @@
 #include <dirent.h>
 #include <string.h>
 #include <unistd.h>
+#include <time.h>
 
 
 struct {
+	char uptime[256];
 	char *revision;
 	char *details;
 } opts;
@@ -37,7 +39,7 @@ int sendCrashdump() {
 	char cmd[1024];
 	int ret;
 
-	snprintf(cmd, 1024, "curl --silent --header \"Expect:\" --form-string group_id=230683 --form-string atid=1081311 --form-string func=postadd --form-string category_id=100 --form-string artifact_group_id=100 --form-string summary=\"ArcEmu crashdump rev%s\" --form-string details=\"%s\" --form-string file_description=crashdump --form input_file=@crashdump.log --form-string submit=SUBMIT http://sourceforge.net/tracker/index.php &> /dev/null", opts.revision, opts.details);
+	snprintf(cmd, 1024, "curl --silent --header \"Expect:\" --form-string group_id=230683 --form-string atid=1081311 --form-string func=postadd --form-string category_id=100 --form-string artifact_group_id=100 --form-string summary=\"ArcEmu crashdump rev%s\" --form-string details=\"%s; Uptime = %s\" --form-string file_description=crashdump --form input_file=@crashdump.log --form-string submit=SUBMIT http://sourceforge.net/tracker/index.php &> /dev/null", opts.revision, opts.details, opts.uptime);
 	printf("%s: sending crashdump.. '%s'\n", __FUNCTION__, cmd);
 	ret = system(cmd);
 	if (ret != 0) {
@@ -73,6 +75,9 @@ int filter(const struct dirent *entry) {
 
 int main(int argc, char *argv[]) {
 	struct dirent **list;
+	struct tm tm;
+	FILE *f;
+	time_t t;
 	int n, i;
 
 	for (;;) {
@@ -84,6 +89,21 @@ int main(int argc, char *argv[]) {
 			case 'd': opts.details = strdup(optarg); break;
 			default: printf("default\n");
 		}
+	}
+
+	f = fopen("arcemu.uptime", "r");
+	if (f == NULL) return 1;
+
+	fscanf(f, "%ld", &t);
+	fclose(f);
+
+	gmtime_r(&t, &tm);
+	snprintf(opts.uptime, 256, "%u days, %u hours, %u minutes, %u seconds.", tm.tm_yday, tm.tm_hour, tm.tm_min, tm.tm_sec);
+
+	/* Check for uptime, at last 10min, this way we will filter crashes 
+	   by missing sql updates/wrong configs/etc */
+	if (t < (10*60)) {
+		return 0;
 	}
 
 	n = scandir(".", &list, filter, NULL);

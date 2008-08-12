@@ -274,7 +274,7 @@ bool Master::Run(int argc, char ** argv)
 		return false;
 	}
 
-#ifdef __DEBUG__
+#if !defined(WIN32) && defined(__DEBUG__)
 	if (Config.MainConfig.GetIntDefault( "LogLevel", "DisableCrashdumpReport", 0) == 0)
 	{
 		char cmd[1024];
@@ -283,6 +283,7 @@ bool Master::Run(int argc, char ** argv)
 		snprintf(cmd, 1024, "./arcemu-crashreport -r %d -d \"%s\"", BUILD_REVISION, banner);
 		system(cmd);
 	}
+	unlink("arcemu.uptime");
 #endif
 
 	if( !_StartDB() )
@@ -441,6 +442,14 @@ bool Master::Run(int argc, char ** argv)
 		{
 			ThreadPool.ShowStats();
 			ThreadPool.IntegrityCheck();
+#if !defined(WIN32) && defined(__DEBUG__)
+			FILE * f = fopen( "arcemu.uptime", "w" );
+			if( f )
+			{
+				fprintf(f, "%ld", sWorld.GetUptime());
+				fclose(f);
+			}
+#endif
 		}
 
 		/* since time() is an expensive system call, we only update it once per server loop */
