@@ -1550,7 +1550,7 @@ void Spell::cast(bool check)
                         {
 							HandleEffects(m_caster->GetGUID(),x);
                         }
-						else if( GetProto()->Effect[x] == SPELL_EFFECT_SUMMON_WILD)
+						else if( GetProto()->Effect[x] == SPELL_EFFECT_SUMMON )
                         {
 							HandleEffects(m_caster->GetGUID(),x);
                         }
