@@ -2393,13 +2393,36 @@ void Spell::SpellEffectSummon(uint32 i) // Summon
 		case 81:
 		case 82:
 		case 83:
+		case 121:
 			{
 				SpellEffectSummonTotem(i);
 				return;
 			}
 		case 41:
+		case 407:
 			{
 				SpellEffectSummonCritter(i);
+				return;
+			}
+		case 61:
+			{
+				SpellEffectSummonGuardian(i);
+				return;
+			}
+		case 64:
+			{
+				SpellEffectSummonWild(i);
+				return;
+			}
+		case 65:
+		case 428:
+			{
+				SpellEffectSummonPossessed(i);
+				return;
+			}
+		case 66:
+			{
+				SpellEffectSummonDemon(i);
 				return;
 			}
 	}	

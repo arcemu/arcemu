@@ -847,6 +847,7 @@ void CBattleground::BuildPvPUpdateDataPacket(WorldPacket * data)
 		if(m_ended)
 		{
 			*data << uint8(1);
+		sLog.outDebug("%s %d\n", __FUNCTION__, m_winningteam);
 			*data << uint8(m_winningteam);
 		}
 		else
