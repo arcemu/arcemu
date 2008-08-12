@@ -440,17 +440,12 @@ uint32 Arena::CalcDeltaRating(uint32 oldRating, uint32 opponentRating, bool outc
 void Arena::Finish()
 {
 	m_ended = true;
-	m_nextPvPUpdateTime = 0;
-//	UpdatePvPData(); // crashes client
-	PlaySoundToAll(m_winningteam ? SOUND_ALLIANCEWINS : SOUND_HORDEWINS);
-
-	sEventMgr.RemoveEvents(this, EVENT_BATTLEGROUND_CLOSE);
-	sEventMgr.AddEvent(((CBattleground*)this), &CBattleground::Close, EVENT_BATTLEGROUND_CLOSE, 120000, 1,0);
 
 	/* update arena team stats */
 	if(rated_match)
 	{
 		uint32 averageRating[2] = {0,0};
+		m_deltaRating[0] = m_deltaRating[1] = 0;
 		doneteams.clear();
 		for(uint32 i = 0; i < 2; ++i) {
 			uint32 teamCount = 0;
@@ -493,7 +488,8 @@ void Arena::Finish()
 							t->m_stat_gameswonweek++;
 						}
 
-						t->m_stat_rating += CalcDeltaRating(t->m_stat_rating, averageRating[j], outcome);
+						m_deltaRating[j] = CalcDeltaRating(t->m_stat_rating, averageRating[j], outcome);
+						t->m_stat_rating += m_deltaRating[j];
 						if (t->m_stat_rating < 0) t->m_stat_rating = 0;
 
 						objmgr.UpdateArenaTeamRankings();
@@ -518,6 +514,13 @@ void Arena::Finish()
 			}
 		}
 	}
+
+	m_nextPvPUpdateTime = 0;
+	UpdatePvPData();
+	PlaySoundToAll(m_winningteam ? SOUND_ALLIANCEWINS : SOUND_HORDEWINS);
+
+	sEventMgr.RemoveEvents(this, EVENT_BATTLEGROUND_CLOSE);
+	sEventMgr.AddEvent(((CBattleground*)this), &CBattleground::Close, EVENT_BATTLEGROUND_CLOSE, 120000, 1,0);
 
 	for(int i = 0; i < 2; i++)
 	{

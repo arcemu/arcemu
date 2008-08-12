@@ -231,6 +231,7 @@ protected:
 	uint32 m_id;
 	uint32 m_type;
 	uint32 m_levelGroup;
+	uint32 m_deltaRating[2];
 
 public:
 	/* Team->Player Map */

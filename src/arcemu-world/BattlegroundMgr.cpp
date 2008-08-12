@@ -509,13 +509,13 @@ void CBattlegroundManager::EventQueueUpdate(bool forceStart)
 	Group * group1, *group2;
 	uint32 n;
 	list<uint32>::iterator itz;
-	for(i = BATTLEGROUND_ARENA_2V2; i < BATTLEGROUND_ARENA_5V5+1; ++i)
+	for(i = BATTLEGROUND_ARENA_2V2; i <= BATTLEGROUND_ARENA_5V5; ++i)
 	{
 		for(;;)
 		{
-			if(m_queuedGroups[i].size() < 2)      /* got enough to have an arena battle ;P */
+			if(!forceStart && m_queuedGroups[i].size() < 2)      /* got enough to have an arena battle ;P */
 			{
-				break;            
+				break;
 			}
 
 			group1 = group2 = NULL;
@@ -551,6 +551,10 @@ void CBattlegroundManager::EventQueueUpdate(bool forceStart)
 
 				if(itz == m_queuedGroups[i].end())
 				{
+					if (forceStart)
+					{
+						break;
+					}
 					Log.Error("BattlegroundMgr", "Internal error at %s:%u", __FILE__, __LINE__);
 					m_queueLock.Release();
 					m_instanceLock.Release();
@@ -572,26 +576,32 @@ void CBattlegroundManager::EventQueueUpdate(bool forceStart)
 			GroupMembersSet::iterator itx;
 			ar->rated_match=true;
 
-			for(itx = group1->GetSubGroup(0)->GetGroupMembersBegin(); itx != group1->GetSubGroup(0)->GetGroupMembersEnd(); ++itx)
+			if (group1)
 			{
-				if((*itx)->m_loggedInPlayer)
+				for(itx = group1->GetSubGroup(0)->GetGroupMembersBegin(); itx != group1->GetSubGroup(0)->GetGroupMembersEnd(); ++itx)
 				{
-					if( ar->HasFreeSlots(0,ar->GetType()) )
+					if((*itx)->m_loggedInPlayer)
 					{
-						ar->AddPlayer((*itx)->m_loggedInPlayer, 0);
-						(*itx)->m_loggedInPlayer->SetTeam(0);
+						if( ar->HasFreeSlots(0,ar->GetType()) )
+						{
+							ar->AddPlayer((*itx)->m_loggedInPlayer, 0);
+							(*itx)->m_loggedInPlayer->SetTeam(0);
+						}
 					}
 				}
 			}
 
-			for(itx = group2->GetSubGroup(0)->GetGroupMembersBegin(); itx != group2->GetSubGroup(0)->GetGroupMembersEnd(); ++itx)
+			if (group2)
 			{
-				if((*itx)->m_loggedInPlayer)
+				for(itx = group2->GetSubGroup(0)->GetGroupMembersBegin(); itx != group2->GetSubGroup(0)->GetGroupMembersEnd(); ++itx)
 				{
-					if( ar->HasFreeSlots(1,ar->GetType()) )
+					if((*itx)->m_loggedInPlayer)
 					{
-						ar->AddPlayer((*itx)->m_loggedInPlayer, 1);
-						(*itx)->m_loggedInPlayer->SetTeam(1);
+						if( ar->HasFreeSlots(1,ar->GetType()) )
+						{
+							ar->AddPlayer((*itx)->m_loggedInPlayer, 1);
+							(*itx)->m_loggedInPlayer->SetTeam(1);
+						}
 					}
 				}
 			}
@@ -775,10 +785,8 @@ void CBattleground::BuildPvPUpdateDataPacket(WorldPacket * data)
 		*data << uint8(1);
 		if(!Rated())
 		{
-			*data << uint32(0x61272A5C);
-			*data << uint8(0);
-			*data << uint32(m_players[0].size() + m_players[1].size());
-			*data << uint8(0);
+			*data << uint32(0) << uint32(0) << uint8(0);
+			*data << uint32(0) << uint32(0) << uint8(0);
 		}
 		else
 		{
@@ -796,28 +804,20 @@ void CBattleground::BuildPvPUpdateDataPacket(WorldPacket * data)
 
 			if(teams[0])
 			{
-				*data << uint32(teams[0]->m_id);
-				*data << uint32(0);
-				*data << teams[0]->m_name;
+				*data << uint32(0) << uint32(3000+m_deltaRating[0]) << uint8(0);
 			}
 			else
 			{
-				*data << uint32(0x61272A5C);
-				*data << uint32(0);
-				*data << uint8(0);
+				*data << uint32(0) << uint32(0) << uint8(0);
 			}
 
 			if(teams[1])
 			{
-				*data << uint32(teams[1]->m_id);
-				*data << uint32(0);
-				*data << teams[1]->m_name;
+				*data << uint32(0) << uint32(3000+m_deltaRating[1]) << uint8(0);
 			}
 			else
 			{
-				*data << uint32(m_players[0].size() + m_players[1].size());
-				*data << uint32(0);
-				*data << uint8(0);
+				*data << uint32(0) << uint32(0) << uint8(0);
 			}
 		}
 
@@ -833,20 +833,11 @@ void CBattleground::BuildPvPUpdateDataPacket(WorldPacket * data)
 				bs = &(*itr)->m_bgScore;
 				*data << bs->KillingBlows;
 
-				// would this be correct?
-				if( Rated() )
-				{
-					*data << uint8((*itr)->m_bgTeam);
-				}
-				else
-				{
-					*data << uint32(0);      // w
-					*data << uint32(0);      // t
-					*data << uint32(0);      // f
-				}
+				*data << uint8((*itr)->m_bgTeam);
 
-				*data << uint32(1);         // count of values after this
-				*data << uint32(bs->Misc1);   // rating change
+				*data << bs->DamageDone;
+				*data << bs->HealingDone;
+				*data << uint32(0);
 			}
 		}
 	}
