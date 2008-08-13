@@ -113,6 +113,7 @@ void SpellCastTargets::write( WorldPacket& data )
 
 Spell::Spell()
 {
+	m_bufferPoolId = -1;
 }
 
 void Spell::Virtual_Constructor()

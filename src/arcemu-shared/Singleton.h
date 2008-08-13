@@ -26,6 +26,9 @@
 #define initialiseSingleton( type ) \
   template <> type * Singleton < type > :: mSingleton = 0
 
+#define initialiseTemplateSingleton( temp, type ) \
+  template <> temp< type > * Singleton < temp< type > > :: mSingleton = 0
+
 /// To be used as a replacement for initialiseSingleton( )
 ///  Creates a file-scoped Singleton object, to be retrieved with getSingleton
 #define createFileSingleton( type ) \
@@ -37,27 +40,20 @@ public:
   /// Constructor
   Singleton( ) {
 	/// If you hit this assert, this singleton already exists -- you can't create another one!
-	WPAssert( mSingleton == 0 );
-	mSingleton = static_cast<type *>(this);
+	WPAssert( this->mSingleton == 0 );
+	this->mSingleton = static_cast<type *>(this);
   }
   /// Destructor
   virtual ~Singleton( ) {
-	mSingleton = 0;
+	this->mSingleton = 0;
   }
 
-#ifdef WIN32
-	__forceinline static type & getSingleton( ) { WPAssert( mSingleton ); return *mSingleton; }
-	__forceinline static type * getSingletonPtr( ) { return mSingleton; }
-#else
-	ARCEMU_INLINE static type & getSingleton( ) { WPAssert( mSingleton ); return *mSingleton; }
-	ARCEMU_INLINE static type * getSingletonPtr( ) { return mSingleton; }
-#endif
+  ARCEMU_INLINE static type & getSingleton( ) { WPAssert( mSingleton ); return *mSingleton; }
+  ARCEMU_INLINE static type * getSingletonPtr( ) { return mSingleton; }
 
 protected:
 
   /// Singleton pointer, must be set to 0 prior to creating the object
   static type * mSingleton;
 };
-
 #endif
-

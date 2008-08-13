@@ -177,7 +177,5 @@
 //#define COLLECTION_OF_UNTESTED_STUFF_AND_TESTERS 1
 #include "SpeedDetector.h"
 //#define PVP_REALM_MEANS_CONSTANT_PVP
-#include "BufferPools/ItemPool.h"
-#include "BufferPools/SpellPool.h"
-#include "BufferPools/AuraPool.h"
+#include "BufferPools/BufferPools.h"
 #endif

@@ -476,28 +476,12 @@
 		<Filter
 			Name="BufferPools"
 			>
-			<File
-				RelativePath="..\..\src\arcemu-world\BufferPools\ItemPool.cpp"
+				<File
+				RelativePath="..\..\src\arcemu-world\BufferPools\BufferPools.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\arcemu-world\BufferPools\ItemPool.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\arcemu-world\BufferPools\SpellPool.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\arcemu-world\BufferPools\SpellPool.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\arcemu-world\BufferPools\AuraPool.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\arcemu-world\BufferPools\AuraPool.h"
+				RelativePath="..\..\src\arcemu-world\BufferPools\BufferPools.h"
 				>
 			</File>
 		</Filter>

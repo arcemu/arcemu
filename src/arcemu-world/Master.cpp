@@ -313,6 +313,10 @@ bool Master::Run(int argc, char ** argv)
 
 	new EventMgr;
 	new World;
+	//have to init this ones for singleton
+	new tPPoolClass<Item>;
+	new tPPoolClass<Aura>;
+	new tPPoolClass<Spell>;
 
 	// open cheat log file
 	Anticheat_Log = new SessionLogWriter(FormatOutputString( "logs", "cheaters", false).c_str(), false );
