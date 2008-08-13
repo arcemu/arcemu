@@ -3510,50 +3510,50 @@ uint8 Spell::CanCast(bool tolerate)
 			// scripted spell stuff
 			switch(GetProto()->Id)
 			{
-                case 1515: // tame beast
-                {
+				case 1515: // tame beast
+				{
                     
-                    uint8 result = 0;
+					uint8 result = 0;
 					Unit* tgt = unitTarget;
-                    if( tgt == NULL )
-                    {
-                        // we have to pick a target manually as this is a dummy spell which triggers tame effect at end of channeling
-                        if( p_caster->GetSelection() != 0 )
-                           tgt =  p_caster->GetMapMgr()->GetUnit( p_caster->GetSelection() );
-                        else
-                            return SPELL_FAILED_UNKNOWN;
-                    }
+					if( tgt == NULL )
+					{
+						// we have to pick a target manually as this is a dummy spell which triggers tame effect at end of channeling
+						if( p_caster->GetSelection() != 0 )
+							tgt =  p_caster->GetMapMgr()->GetUnit( p_caster->GetSelection() );
+						else
+							return SPELL_FAILED_UNKNOWN;
+					}
 
-                    Creature *tame = tgt->GetTypeId() == TYPEID_UNIT ? ( Creature* ) tgt : NULL;
+					Creature *tame = tgt->GetTypeId() == TYPEID_UNIT ? ( Creature* ) tgt : NULL;
                     
-                    if( tame == NULL )
-                       result = PETTAME_INVALIDCREATURE;
-                    else if( !tame->isAlive() )
-                        result = PETTAME_DEAD;
-                    else if( tame->IsPet() )
-                        result = PETTAME_CREATUREALREADYOWNED;
-                    else if( !tame->GetCreatureInfo() || tame->GetCreatureInfo()->Type != BEAST || !tame->GetCreatureInfo()->Family )
-                        result = PETTAME_NOTTAMEABLE;
-                    else if( !p_caster->isAlive() || p_caster->getClass() != HUNTER )
-                       result = PETTAME_UNITSCANTTAME;
-                    else if( tame->getLevel() > p_caster->getLevel() )
-                       result = PETTAME_TOOHIGHLEVEL;
-                    else if( p_caster->GetSummon() || p_caster->GetUnstabledPetNumber() )
-                       result = PETTAME_ANOTHERSUMMONACTIVE;
-                    else if( p_caster->GetPetCount() >= 3 )
-                       result = PETTAME_TOOMANY;
-                    else
-                    {
-                        CreatureFamilyEntry* cf = dbcCreatureFamily.LookupEntry( tame->GetCreatureInfo()->Family );
-                        if( cf && !cf->tameable )
-                                result = PETTAME_NOTTAMEABLE;
-                    }
-                    if( result != 0 )
-                    {
-                        SendTameFailure( result );
-                        return SPELL_FAILED_DONT_REPORT;
-                    }
-                }break;
+					if ( tame == NULL )
+						result = PETTAME_INVALIDCREATURE;
+					else if( !tame->isAlive() )
+						result = PETTAME_DEAD;
+					else if( tame->IsPet() )
+						result = PETTAME_CREATUREALREADYOWNED;
+					else if( !tame->GetCreatureInfo() || tame->GetCreatureInfo()->Type != BEAST || !tame->GetCreatureInfo()->Family )
+						result = PETTAME_NOTTAMEABLE;
+					else if( !p_caster->isAlive() || p_caster->getClass() != HUNTER )
+						result = PETTAME_UNITSCANTTAME;
+					else if( tame->getLevel() > p_caster->getLevel() )
+						result = PETTAME_TOOHIGHLEVEL;
+					else if( p_caster->GetSummon() || p_caster->GetUnstabledPetNumber() )
+						result = PETTAME_ANOTHERSUMMONACTIVE;
+					else if( p_caster->GetPetCount() >= 3 )
+						result = PETTAME_TOOMANY;
+					else
+					{
+						CreatureFamilyEntry* cf = dbcCreatureFamily.LookupEntry( tame->GetCreatureInfo()->Family );
+						if( cf && !cf->tameable )
+							result = PETTAME_NOTTAMEABLE;
+					}
+					if( result != 0 )
+					{
+						SendTameFailure( result );
+						return SPELL_FAILED_DONT_REPORT;
+					}
+				}break;
 				case 2699:
 				{
 					if(target->GetEntry() != 5307 || target->isAlive())
@@ -3664,39 +3664,40 @@ uint8 Spell::CanCast(bool tolerate)
 					if(pPet && !pPet->isDead())
 						return SPELL_FAILED_TARGET_NOT_DEAD;
 				}break;
-				case 38177: // Blackwhelp Net
-				{
-					if( target->GetEntry() != 21387)
-						return SPELL_FAILED_BAD_TARGETS;
-				}break;
 			}
 
 			// if the target is not the unit caster and not the masters pet
 			if(target != u_caster && !m_caster->IsPet())
 			{
 				// Dummy spells check
-				if( GetProto()->Id == 4130)// Banish Burning Exile
+				switch ( GetProto()->Id )
 				{
-					if(target->GetEntry()!= 2760) // target needs to be a Burning Exile
-						return SPELL_FAILED_BAD_TARGETS;
+					case 4130: // Banish Burning Exile
+					{
+						if(target->GetEntry()!= 2760) // target needs to be a Burning Exile
+							return SPELL_FAILED_BAD_TARGETS;
+					} break;
+					case 4131:// Banish Cresting Exile
+					{
+						if(target->GetEntry()!= 2761) // target needs to be a Cresting Exile
+							return SPELL_FAILED_BAD_TARGETS;
+					} break;
+					case 4132:// Banish Thundering Exile
+					{
+						if(target->GetEntry()!= 2762) // target needs to be a Thundering Exile
+							return SPELL_FAILED_BAD_TARGETS;
+					} break;
+					case 38177: //Blackwhelp Net
+					{
+						if(target->GetEntry()!= 21387) // castable only on Wyrmcult Blackwhelps
+							return SPELL_FAILED_BAD_TARGETS;
+					} break;
+					case 35772: // Energy Field Modulator
+					{
+						if ( target->GetEntry() != 20774 ) // castable only on Farahlon Lasher
+							return SPELL_FAILED_BAD_TARGETS;
+					} break;
 				}
-				if( GetProto()->Id == 4131)// Banish Cresting Exile
-				{
-					if(target->GetEntry()!= 2761) // target needs to be a Cresting Exile
-						return SPELL_FAILED_BAD_TARGETS;
-				}
-				if( GetProto()->Id == 4132)// Banish Thundering Exile
-				{
-					if(target->GetEntry()!= 2762) // target needs to be a Thundering Exile
-						return SPELL_FAILED_BAD_TARGETS;
-				}
-				if( GetProto()->Id == 38177) //Blackwhelp Net
-				{
-					// should only affect Wyrmcult Blackwhelps
-					if(target->GetEntry()!= 21387)
-						return SPELL_FAILED_BAD_TARGETS;
-				}
-
 				/***********************************************************
 				* Inface checks, these are checked in 2 ways
 				* 1e way is check for damage type, as 3 is always ranged
