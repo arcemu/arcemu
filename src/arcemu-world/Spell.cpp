@@ -113,7 +113,7 @@ void SpellCastTargets::write( WorldPacket& data )
 
 Spell::Spell()
 {
-	m_bufferPoolId = -1;
+	m_bufferPoolId = OBJECT_WAS_ALLOCATED_STABDARD_WAY;
 }
 
 void Spell::Virtual_Constructor()

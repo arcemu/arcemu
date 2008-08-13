@@ -8,6 +8,9 @@
 //too big values migh create lag spikes on buffer limit extension !
 #define EXTEND_POOL_WITH_SIZE 100
 #define POOL_IS_FULL_INDEX 0
+#define OBJECT_WAS_ALLOCATED_WITHIN_POOL 0x0FFFFFF0
+#define OBJECT_WAS_ALLOCATED_STABDARD_WAY -1	//should add this to constructors instead of constant number :)
+#define OBJECT_WAS_DEALLOCATED_WITHIN_POOL 0x0FFFFFF2
 
 //noob protection :P
 #ifdef _DEBUG
@@ -75,6 +78,15 @@ public:
 	//insert into free object list
 	void PooledDelete(T* dumped)
 	{
+		if( dumped->m_bufferPoolId == OBJECT_WAS_ALLOCATED_STABDARD_WAY )
+			sLog.outError("Object was not created from pool and we are inserting it!");
+		else if( dumped->m_bufferPoolId == OBJECT_WAS_ALLOCATED_WITHIN_POOL )
+			sLog.outError("Object not even handed out to a request and it is inserted back into pool (unbeleavable) !");
+		else if( dumped->m_bufferPoolId == OBJECT_WAS_DEALLOCATED_WITHIN_POOL )
+			sLog.outError("Object was already inserted back into a pool. We are making a double delete somewhere !");
+
+		ObjLock.Acquire();
+
 		//non pooled object requested or invalid
 		if( dumped->m_bufferPoolId < 0 || dumped->m_bufferPoolId >= (int32)max_avails ) {
 			delete dumped;
@@ -87,10 +99,9 @@ public:
 		//remove events and remove object from world ...
 		dumped->Virtual_Destructor();
 
-		ObjLock.Acquire();
-
 		//We do not care about used up guids only available ones. Note that with this overwrite used guid list is not valid anymore
 		avail_list[ myPoolId ] = dumped;
+		dumped->m_bufferPoolId = OBJECT_WAS_DEALLOCATED_WITHIN_POOL;
 		avail_indexes.push_back( myPoolId );
 
 		ObjLock.Release();
@@ -112,6 +123,9 @@ private:
 		{
 			avail_list[i] = new T;
 			ASSERT( avail_list[i] );
+
+			//to be ablt to track object created not from pool
+			avail_list[i]->m_bufferPoolId = OBJECT_WAS_ALLOCATED_WITHIN_POOL;
 
 			//all avail on creating new
 			avail_indexes.push_back( i );
