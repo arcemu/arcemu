@@ -39,7 +39,7 @@ private:
 public:
 	tPPoolClass()
 		//lol i get compile error here. Is it my old VS 2k3 ?
-		: Singleton()
+		//: Singleton()
 	{
 		max_avails = INITI_POOL_WITH_SIZE;
 

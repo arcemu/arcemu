@@ -83,12 +83,8 @@ arcemu_world_SOURCES = \
     ItemHandler.cpp \
     ItemInterface.cpp \
     ItemInterface.h \
-    BufferPools/ItemPool.cpp \
-    BufferPools/ItemPool.h \
-    BufferPools/SpellPool.cpp \
-    BufferPools/SpellPool.h \
-    BufferPools/AuraPool.cpp \
-    BufferPools/AuraPool.h \
+    BufferPools/BufferPools.cpp \
+    BufferPools/BufferPools.h \
     ItemPrototype.h \
     Level0.cpp \
     Level1.cpp \

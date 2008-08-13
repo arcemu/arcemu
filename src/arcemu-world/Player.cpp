@@ -9374,7 +9374,7 @@ void Player::EventStunOrImmobilize(Unit *proc_target, bool is_victim)
 		else if ( proc_target ) 
 			targets.m_unitTarget = proc_target->GetGUID() ;
 		else 
-			targets.m_unitTarget = NULL ;
+			targets.m_unitTarget = 0 ;
 /*		if(proc_target)
 			targets.m_unitTarget = proc_target->GetGUID();
 		else targets.m_unitTarget = GetGUID();*/
