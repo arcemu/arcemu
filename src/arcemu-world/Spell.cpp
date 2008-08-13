@@ -3664,6 +3664,16 @@ uint8 Spell::CanCast(bool tolerate)
 					if(pPet && !pPet->isDead())
 						return SPELL_FAILED_TARGET_NOT_DEAD;
 				}break;
+				case 38177: //Blackwhelp Net
+				{
+					if( !target->IsCreature() || target->GetEntry()!= 21387 ) // castable only on Wyrmcult Blackwhelps
+						return SPELL_FAILED_BAD_TARGETS;
+				} break;
+				case 35772: // Energy Field Modulator
+				{
+					if ( !target->IsCreature() || target->GetEntry() != 20774 ) // castable only on Farahlon Lasher
+						return SPELL_FAILED_BAD_TARGETS;
+				} break;
 			}
 
 			// if the target is not the unit caster and not the masters pet
@@ -3685,16 +3695,6 @@ uint8 Spell::CanCast(bool tolerate)
 					case 4132:// Banish Thundering Exile
 					{
 						if(target->GetEntry()!= 2762) // target needs to be a Thundering Exile
-							return SPELL_FAILED_BAD_TARGETS;
-					} break;
-					case 38177: //Blackwhelp Net
-					{
-						if(target->GetEntry()!= 21387) // castable only on Wyrmcult Blackwhelps
-							return SPELL_FAILED_BAD_TARGETS;
-					} break;
-					case 35772: // Energy Field Modulator
-					{
-						if ( target->GetEntry() != 20774 ) // castable only on Farahlon Lasher
 							return SPELL_FAILED_BAD_TARGETS;
 					} break;
 				}
