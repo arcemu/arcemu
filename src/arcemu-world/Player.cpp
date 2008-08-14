@@ -3215,7 +3215,18 @@ void Player::SetPersistentInstanceId(uint32 mapId, uint32 difficulty, uint32 ins
 {
 	if(mapId >= NUM_MAPS || difficulty >= NUM_INSTANCE_MODES || m_playerInfo == NULL)
 		return;
-	m_playerInfo->m_savedInstanceIds[mapId][difficulty] = instanceId;
+	m_playerInfo->savedInstanceIdsLock.Acquire();
+	PlayerInstanceMap::iterator itr = m_playerInfo->savedInstanceIds[difficulty].find(mapId);
+	if(itr == m_playerInfo->savedInstanceIds[difficulty].end())
+		m_playerInfo->savedInstanceIds[difficulty].insert(PlayerInstanceMap::value_type(mapId, instanceId));
+	else
+	{
+		if(instanceId == 0)
+			m_playerInfo->savedInstanceIds[difficulty].erase(itr);
+		else
+			(*itr).second = instanceId;
+	}
+	m_playerInfo->savedInstanceIdsLock.Release();
 	CharacterDatabase.Execute("REPLACE INTO `instanceids` (`playerguid`, `mapid`, `mode`, `instanceid`) VALUES ( %u, %u, %u, %u )", m_playerInfo->guid, mapId, difficulty, instanceId);
 }
 

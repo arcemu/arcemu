@@ -464,6 +464,8 @@ struct FactionReputation
 	ARCEMU_INLINE int32 CalcStanding() { return standing - baseStanding; }
 	ARCEMU_INLINE bool Positive() { return standing >= 0; }
 };
+
+typedef HM_NAMESPACE::hash_map<uint32, uint32> PlayerInstanceMap;
 struct PlayerInfo
 {
 	~PlayerInfo();
@@ -480,7 +482,8 @@ struct PlayerInfo
 	uint32 lastLevel;
 	Group * m_Group;
 	int8 subGroup;
-	uint32 m_savedInstanceIds[NUM_MAPS][NUM_INSTANCE_MODES];
+	Mutex savedInstanceIdsLock;
+	PlayerInstanceMap savedInstanceIds[NUM_INSTANCE_MODES];
 #ifdef VOICE_CHAT
 	int8 groupVoiceId;
 #endif
@@ -1542,7 +1545,15 @@ public:
 	{
 		if(mapId >= NUM_MAPS || difficulty >= NUM_INSTANCE_MODES || m_playerInfo == NULL)
 			return 0;
-		return m_playerInfo->m_savedInstanceIds[mapId][difficulty];
+		m_playerInfo->savedInstanceIdsLock.Acquire();
+		PlayerInstanceMap::iterator itr = m_playerInfo->savedInstanceIds[difficulty].find(mapId);
+		if(itr == m_playerInfo->savedInstanceIds[difficulty].end())
+		{
+			m_playerInfo->savedInstanceIdsLock.Release();
+			return 0;
+		}
+		m_playerInfo->savedInstanceIdsLock.Release();
+		return (*itr).second;
 	}
 
 	void SetPersistentInstanceId(Instance *pInstance);

@@ -262,10 +262,16 @@ uint32 InstanceMgr::PreTeleport(uint32 mapid, Player * plr, uint32 instanceid)
 						else if(sWorld.instance_TakeGroupLeaderID)
 						{
 							PlayerInfo *pLeaderInfo = pGroup->GetLeader();
-							if(pLeaderInfo && pLeaderInfo->m_savedInstanceIds[mapid][pGroup->m_difficulty] != 0)
+							if(pLeaderInfo)
 							{
-								in = sInstanceMgr.GetInstanceByIds(mapid, pLeaderInfo->m_savedInstanceIds[mapid][pGroup->m_difficulty]);
-							}							
+								pLeaderInfo->savedInstanceIdsLock.Acquire();
+								PlayerInstanceMap::iterator itrLeader = pLeaderInfo->savedInstanceIds[pGroup->m_difficulty].find(mapid);
+								if(itrLeader != pLeaderInfo->savedInstanceIds[pGroup->m_difficulty].end())
+								{
+									in = sInstanceMgr.GetInstanceByIds(mapid, (*itrLeader).second);
+								}
+								pLeaderInfo->savedInstanceIdsLock.Release();
+							}
 						}
 					}
 
@@ -663,6 +669,7 @@ void InstanceMgr::_LoadInstances()
 	// clear any instances that have expired.
 	Log.Notice("InstanceMgr", "Deleting Expired Instances...");
 	CharacterDatabase.WaitExecute("DELETE FROM `instances` WHERE `expiration` > 0 AND `expiration` <= %u", UNIXTIME);
+	CharacterDatabase.Execute("DELETE FROM `instanceids` WHERE `instanceid` NOT IN (SELECT `id` FROM `instances`)");
 	
 	// load saved instances
 	result = CharacterDatabase.Query("SELECT `id`, `mapid`, `creation`, `expiration`, `killed_npc_guids`, `difficulty`, `creator_group`, `creator_guid`, `persistent` FROM instances");

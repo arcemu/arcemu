@@ -19,6 +19,40 @@
 
 #include "StdAfx.h"
 
+const char * GetDifficultyString(uint8 difficulty)
+{
+	switch(difficulty)
+	{
+	case MODE_NORMAL:
+		return "normal";
+	case MODE_HEROIC:
+		return "heroic";
+	case MODE_EPIC:
+		return "epic";
+	default:
+		return "unknown";
+	}
+}
+
+const char * GetMapTypeString(uint8 type)
+{
+	switch(type)
+	{
+	case INSTANCE_NULL:
+		return "Continent";
+	case INSTANCE_RAID:
+		return "Raid";
+	case INSTANCE_NONRAID:
+		return "Non-Raid";
+	case INSTANCE_PVP:
+		return "PvP";
+	case INSTANCE_MULTIMODE:
+		return "MultiMode";
+	default:
+		return "Unknown";
+	}
+}
+
 bool ChatHandler::HandleResetAllInstancesCommand(const char* args, WorldSession *m_session)
 {
 	Player * plr = getSelectedChar(m_session, true);
@@ -54,19 +88,20 @@ bool ChatHandler::HandleResetInstanceCommand(const char* args, WorldSession *m_s
 	{
 		if(m_session->CanUseCommand('z'))
 		{
-			for(int i=0; i<NUM_MAPS; i++)
+			bool foundSomething = false;
+			plr->m_playerInfo->savedInstanceIdsLock.Acquire();
+			for(int difficulty=0; difficulty<NUM_INSTANCE_MODES; difficulty++)
 			{
-				for(int j=0; j<NUM_INSTANCE_MODES; j++)
-				{
-					if(plr->GetPersistentInstanceId(i, j) == instance->m_instanceId)
-					{
-						plr->SetPersistentInstanceId(i, j, 0);
-						SystemMessage(m_session, "Instance with id %u is persistent and will only be revoked from player.", instanceId);
-						return true;
-					}
-				}
+				PlayerInstanceMap::iterator itr = plr->m_playerInfo->savedInstanceIds[difficulty].find(instance->m_mapId);
+				if(itr == plr->m_playerInfo->savedInstanceIds[difficulty].end() || (*itr).second != instance->m_instanceId)
+					continue;
+				plr->SetPersistentInstanceId(instance->m_mapId, difficulty, 0);
+				SystemMessage(m_session, "Instance with id %u (%s) is persistent and will only be revoked from player.", instanceId, GetDifficultyString(difficulty));
+				foundSomething = true;
 			}
-			RedSystemMessage(m_session, "Player is not assigned to persistent instance with id %u.", instanceId);
+			plr->m_playerInfo->savedInstanceIdsLock.Release();
+			if(!foundSomething)
+				RedSystemMessage(m_session, "Player is not assigned to persistent instance with id %u.", instanceId);
 			return true;
 		}
 		else
@@ -144,40 +179,6 @@ bool ChatHandler::HandleShutdownInstanceCommand(const char* args, WorldSession *
 //	return true;
 //	//sGMLog.writefromsession(m_session, "used delete instance command on instance %u,", 0);
 //}
-
-const char * GetDifficultyString(uint8 difficulty)
-{
-	switch(difficulty)
-	{
-	case MODE_NORMAL:
-		return "normal";
-	case MODE_HEROIC:
-		return "heroic";
-	case MODE_EPIC:
-		return "epic";
-	default:
-		return "unknown";
-	}
-}
-
-const char * GetMapTypeString(uint8 type)
-{
-	switch(type)
-	{
-	case INSTANCE_NULL:
-		return "Continent";
-	case INSTANCE_RAID:
-		return "Raid";
-	case INSTANCE_NONRAID:
-		return "Non-Raid";
-	case INSTANCE_PVP:
-		return "PvP";
-	case INSTANCE_MULTIMODE:
-		return "MultiMode";
-	default:
-		return "Unknown";
-	}
-}
 
 bool ChatHandler::HandleGetInstanceInfoCommand(const char* args, WorldSession *m_session)
 {
@@ -287,42 +288,42 @@ bool ChatHandler::HandleShowInstancesCommand(const char* args, WorldSession* m_s
 	uint32 count = 0;
 	std::stringstream ss;
 	ss << "Show persistent instances of " << MSG_COLOR_CYAN << plr->GetName() << "|r\n";
-	for(int i=0; i<NUM_MAPS; i++)
+	plr->m_playerInfo->savedInstanceIdsLock.Acquire();
+	for(int difficulty=0; difficulty<NUM_INSTANCE_MODES; difficulty++)
 	{
-		for(int j=0; j<NUM_INSTANCE_MODES; j++)
+		for(PlayerInstanceMap::iterator itr = plr->m_playerInfo->savedInstanceIds[difficulty].begin(); itr != plr->m_playerInfo->savedInstanceIds[difficulty].end(); ++itr)
 		{
-			if(plr->GetPersistentInstanceId(i, j) != 0)
+			count++;
+			ss << " - " << MSG_COLOR_CYAN << (*itr).second << "|r";
+			MapInfo *mapInfo = WorldMapInfoStorage.LookupEntry((*itr).first);
+			if(mapInfo != NULL)
+				ss << " (" << MSG_COLOR_CYAN << mapInfo->name << "|r)";
+			Instance *pInstance = sInstanceMgr.GetInstanceByIds((*itr).first, (*itr).second);
+			if(pInstance == NULL)
+				ss << " - " << MSG_COLOR_RED << "Expired!|r";
+			else
 			{
-				count++;
-				ss << " - " << MSG_COLOR_CYAN << plr->GetPersistentInstanceId(i, j) << "|r";
-				MapInfo *mapInfo = WorldMapInfoStorage.LookupEntry(i);
-				if(mapInfo != NULL)
-					ss << " (" << MSG_COLOR_CYAN << mapInfo->name << "|r)";
-				Instance *pInstance = sInstanceMgr.GetInstanceByIds(i, plr->GetPersistentInstanceId(i ,j));
-				if(pInstance == NULL)
-					ss << " - " << MSG_COLOR_RED << "Not Found!|r";
+				ss << " [" << GetMapTypeString(pInstance->m_mapInfo->type) << "]";
+				if(pInstance->m_mapInfo->type == INSTANCE_MULTIMODE)
+				{
+					ss << " [" << GetDifficultyString(pInstance->m_difficulty) << "]";
+				}
+				ss << " - ";
+				if(pInstance->m_mapMgr == NULL)
+					ss << MSG_COLOR_LIGHTRED << "Shut Down|r";
 				else
 				{
-					ss << " [" << GetMapTypeString(pInstance->m_mapInfo->type) << "]";
-					if(pInstance->m_mapInfo->type == INSTANCE_MULTIMODE)
-					{
-						ss << " [" << GetDifficultyString(pInstance->m_difficulty) << "]";
-					}
-					ss << " - ";
-					if(pInstance->m_mapMgr == NULL)
-						ss << MSG_COLOR_LIGHTRED << "Shut Down|r";
+					if(!pInstance->m_mapMgr->HasPlayers())
+						ss << MSG_COLOR_LIGHTRED << "Idle|r";
 					else
-					{
-						if(!pInstance->m_mapMgr->HasPlayers())
-							ss << MSG_COLOR_LIGHTRED << "Idle|r";
-						else
-							ss << MSG_COLOR_GREEN << "In use|r";
-					}
+						ss << MSG_COLOR_GREEN << "In use|r";
 				}
-				ss << "\n";
 			}
+			ss << "\n";
 		}
 	}
+	plr->m_playerInfo->savedInstanceIdsLock.Release();
+
 	if(count == 0)
 		ss << "Player is not assigned to any persistent instances.\n";
 	else
