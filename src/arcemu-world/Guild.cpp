@@ -67,9 +67,9 @@ Guild::~Guild()
 
 	for(GuildBankTabVector::iterator itr = m_bankTabs.begin(); itr != m_bankTabs.end(); ++itr)
 	{
-		for(uint32 i = 0; i < MAX_GUILD_BANK_SLOTS; ++i)
-			if((*itr)->pSlots[i] != NULL)
-				delete (*itr)->pSlots[i];
+		//for(uint32 i = 0; i < MAX_GUILD_BANK_SLOTS; ++i) vojta: we've deleted this in ItemPool
+		//	if((*itr)->pSlots[i] != NULL)
+		//		delete (*itr)->pSlots[i];
 
 		for(list<GuildBankEvent*>::iterator it2 = (*itr)->lLog.begin(); it2 != (*itr)->lLog.end(); ++it2)
 			delete (*it2);
