@@ -531,54 +531,61 @@ void GossipScript::GossipHello(Object* pObject, Player* Plr, bool AutoSend)
 			Menu->SetTextID(pTrainer->Can_Train_Gossip_TextId);
 		else
 			Menu->SetTextID(pTrainer->Cannot_Train_GossipTextId);
-        
-		string msg = "I seek ";
-		if(pTrainer->RequiredClass)
+        if(pTrainer->TrainerType != TRAINER_TYPE_PET)
 		{
-			switch(Plr->getClass())
+			string msg = "I seek ";
+			if(pTrainer->RequiredClass)
 			{
-			case MAGE:
-				msg += "mage";
-				break;
-			case SHAMAN:
-				msg += "shaman";
-				break;
-			case WARRIOR:
-				msg += "warrior";
-				break;
-			case PALADIN:
-				msg += "paladin";
-				break;
-			case WARLOCK:
-				msg += "warlock";
-				break;
-			case HUNTER:
-				msg += "hunter";
-				break;
-			case ROGUE:
-				msg += "rogue";
-				break;
-			case DRUID:
-				msg += "druid";
-				break;
-			case PRIEST:
-				msg += "priest";
-				break;
+				switch(Plr->getClass())
+				{
+				case MAGE:
+					msg += "mage";
+					break;
+				case SHAMAN:
+					msg += "shaman";
+					break;
+				case WARRIOR:
+					msg += "warrior";
+					break;
+				case PALADIN:
+					msg += "paladin";
+					break;
+				case WARLOCK:
+					msg += "warlock";
+					break;
+				case HUNTER:
+					msg += "hunter";
+					break;
+				case ROGUE:
+					msg += "rogue";
+					break;
+				case DRUID:
+					msg += "druid";
+					break;
+				case PRIEST:
+					msg += "priest";
+					break;
+				}
+				msg += " training, ";
+				msg += name;
+				msg += ".";
+
+				Menu->AddItem(3, msg.c_str(), 2);
+
 			}
-			msg += " training, ";
-			msg += name;
-			msg += ".";
+			else
+			{
+				msg += "training, ";
+				msg += name;
+				msg += ".";
 
-			Menu->AddItem(3, msg.c_str(), 2);
-
+				Menu->AddItem(3, msg.c_str(), 2);
+			}
 		}
 		else
 		{
-			msg += "training, ";
-			msg += name;
-			msg += ".";
-
-			Menu->AddItem(3, msg.c_str(), 2);
+			
+			Menu->AddItem(3, "Train me in the ways of the beast.", 2);
 		}
 	}
 
@@ -610,6 +617,7 @@ void GossipScript::GossipHello(Object* pObject, Player* Plr, bool AutoSend)
 		pTrainer->RequiredClass &&					  // class trainer
 		pTrainer->RequiredClass == Plr->getClass() &&   // correct class
 		pCreature->getLevel() > 10 &&				   // creature level
+		pTrainer->TrainerType != TRAINER_TYPE_PET &&  // Pet Trainers do not respec hunter talents
 		Plr->getLevel() > 10 )						  // player level
 	{
 		Menu->AddItem(0, "I would like to reset my talents.", 11);
