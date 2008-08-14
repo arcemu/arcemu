@@ -294,6 +294,7 @@ void DayWatcherThread::update_arena()
 
 			arenapointsPerTeam[0] = (uint32)max(arenapointsPerTeam[0],arenapointsPerTeam[1]);
 			arenapoints += (uint32)max(arenapointsPerTeam[0],arenapointsPerTeam[2]);
+			if (arenapoints > 5000) arenapoints = 5000;
 
 			if(orig_arenapoints != arenapoints)
 			{

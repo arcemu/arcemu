@@ -2806,6 +2806,7 @@ void Player::LoadFromDBProc(QueryResultVector & results)
 	m_FirstLogin = get_next_field.GetBool();
 	rename_pending = get_next_field.GetBool();
 	m_arenaPoints = get_next_field.GetUInt32();
+	if (m_arenaPoints > 5000) m_arenaPoints = 5000;
 	for(uint32 z = 0; z < NUM_CHARTER_TYPES; ++z)
 		m_charters[z] = objmgr.GetCharterByGuid(GetGUID(), (CharterTypes)z);
 	for(uint32 z = 0; z < NUM_ARENA_TEAM_TYPES; ++z)
