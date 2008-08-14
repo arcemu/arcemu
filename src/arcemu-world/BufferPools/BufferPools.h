@@ -83,7 +83,10 @@ public:
 		else if( dumped->m_bufferPoolId == OBJECT_WAS_ALLOCATED_WITHIN_POOL )
 			sLog.outError("Object not even handed out to a request and it is inserted back into pool (unbeleavable) !");
 		else if( dumped->m_bufferPoolId == OBJECT_WAS_DEALLOCATED_WITHIN_POOL )
+		{
 			sLog.outError("Object was already inserted back into a pool. We are making a double delete somewhere !");
+			return; //if we would delete it again then we would have a bad pointer in the pool
+		}
 
 		ObjLock.Acquire();
 

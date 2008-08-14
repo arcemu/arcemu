@@ -52,7 +52,7 @@
 #include "../arcemu-logonserver/AutoPatcher.h"
 #include "../arcemu-logonserver/AuthSocket.h"
 #include "../arcemu-logonserver/AuthStructs.h"
-#include "../arcemu-logonserver/LogonOpcodes.h"
+//#include "../arcemu-logonserver/LogonOpcodes.h"
 #include "../arcemu-logonserver/LogonCommServer.h"
 #include "../arcemu-logonserver/LogonConsole.h"
 #include "../arcemu-shared/WorldPacket.h"
