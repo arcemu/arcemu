@@ -3047,6 +3047,7 @@ void Player::LoadFromDBProc(QueryResultVector & results)
 	m_honorToday = get_next_field.GetUInt32();
 	m_honorYesterday = get_next_field.GetUInt32();
 	m_honorPoints = get_next_field.GetUInt32();
+	if (m_honorPoints > 75000) m_honorPoints = 75000;
 
 	RolloverHonor();
     iInstanceType = get_next_field.GetUInt32();
