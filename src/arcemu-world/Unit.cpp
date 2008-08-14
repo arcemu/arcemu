@@ -677,6 +677,17 @@ void Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, uint
 	bool can_delete = !bProcInUse; //if this is a nested proc then we should have this set to TRUE by the father proc
 	bProcInUse = true; //locking the proc list
 
+#if 0
+	//will be used only on new system
+	ProcCondSharedDataStruct sharedprocdata;
+	sharedprocdata.owner = this;
+	sharedprocdata.ProcFlags = flag;
+	sharedprocdata.CastingSpell = CastingSpell;
+	sharedprocdata.Fulldmg = dmg;
+	sharedprocdata.Absdmg = abs;
+	sharedprocdata.victim = victim;
+#endif
+
 	std::list< uint32 > remove;
 	std::list< struct ProcTriggerSpell >::iterator itr,itr2;
 	for( itr = m_procSpells.begin(); itr != m_procSpells.end(); )  // Proc Trigger Spells for Victim
@@ -689,6 +700,24 @@ void Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, uint
 				m_procSpells.erase( itr2 );
 			continue;
 		}
+		if( ! (itr2->procFlags & flag ) )
+			continue;
+
+#if 0
+		if( itr2->spellId < MAX_SPELL_ID_FROMDBC && G_ProcCondHandlers[ itr2->spellId ] )
+		{
+			sharedprocdata.cur_itr = itr2;
+			ProcCondHandlerRes res = (*G_ProcCondHandlers[ itr2->spellId ])( &sharedprocdata );
+			if( res == PROCCOND_BREAK_EXECUTION )
+				continue;
+			else if( res == PROCCOND_FATAL_EXIT )
+			{
+				//this is panic situation and should not happen !
+				bProcInUse = false;
+				return; 
+			}
+		}
+#endif
 
 		uint32 origId = itr2->origId;
 		if( CastingSpell != NULL )
@@ -706,8 +735,8 @@ void Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, uint
 		SpellEntry* ospinfo = dbcSpell.LookupEntry( origId );//no need to check if exists or not since we were not able to register this trigger if it would not exist :P
 		
 		//this requires some specific spell check,not yet implemented
-		if( itr2->procFlags & flag )
 		{
+
 			uint32 spellId = itr2->spellId;
 			SpellEntry* spe  = dbcSpell.LookupEntry( spellId );
 

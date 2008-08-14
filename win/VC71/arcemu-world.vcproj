@@ -211,6 +211,12 @@
 		<Filter
 			Name="experimental"
 			Filter="">
+			<File
+				RelativePath="..\..\src\arcemu-world\ProcCondHandler.cpp">
+			</File>
+			<File
+				RelativePath="..\..\src\arcemu-world\ProcCondHandler.h">
+			</File>
 			<Filter
 				Name="AiAgents"
 				Filter="">

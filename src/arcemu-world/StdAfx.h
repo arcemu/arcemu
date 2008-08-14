@@ -178,4 +178,5 @@
 #include "SpeedDetector.h"
 //#define PVP_REALM_MEANS_CONSTANT_PVP
 #include "BufferPools/BufferPools.h"
+#include "ProcCondHandler.h"
 #endif
