@@ -3708,7 +3708,9 @@ void AIInterface::WipeTargetList()
 
 	m_nextSpell = NULL;
 	m_currentHighestThreat = 0;
+	LockAITargets( true );
 	m_aiTargets.clear();
+	LockAITargets( false );
 	m_Unit->CombatStatus.Vanished();
 }
 
