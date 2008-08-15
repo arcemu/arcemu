@@ -1,0 +1,119 @@
+﻿Version 0.10a
+------------
++Ticket Buddy Added!
+
+Version 0.09a
+------------
++ Mini Menu Added!
++ Minimap button added!
+
+Version 0.08a
+------------
++End Conversation now checks to make sure you have the option set for the
+goodbye message.
++Goodbye message now sent in proper language.
++GM Buddy Added!
++Added/removed sets from set creator
++Updated slash commands (added /ma gm)
+
+Version 0.07a
+------------
++ Created Item Buddy Interface.
++ Set spawning functionality added.
++ Individual Item spawning functionality added.
++ Allow for adding own sets.
++ Allow for adding own items.
++ Added t0, t0.5, t1, and t2 armors to the default set list.
++ Had to remove t0 and t0.5
++ Allow for sending of own sets/items to another user.
+<0.07b>
++ Added new slash commands
++ Added reset command
++ Added lua notes text
+<0.07c>
++ Fixed language bug.
+<0.07d>
++ Added End Conversation Button on PMMessenger.
++ Added Snowball to Item Buddy.
+<0.07e>
++ Added PM Buddy List Scroll buttons
++ Fixed end conversation button
+<0.07f>
++ Added a drop list in PM Messenger to change languages. 
+
+Version 0.06a
+------------
++ Added default Teleport Buddy locatations.
++ You can now create your own Teleport Buddy locations.
++ You can now send your Teleport Budy locations to other users.   
+<0.06b>
++ Teleport Buddy send ignores duplicate names.
+<0.06c>
++ Fixed send bug.
+<0.06d>
++ Removed debug info from Teleport Buddy.
+
+Version 0.05a
+------------
++ Changed the PMList
+  + Now anyone who messages you is added regardless of AutoGreet.
++ PM Buddy List layout complete.
++ PM Buddy List Made Moveable.
+<0.05b>
++ Added Supress Whispers option.
++ Redesigned the PM Buddy Messenger window.
++ Added PM Buddy List functionality.
++ PM Buddy Messenger window now moveable.
+<0.05c>
++ PM Supress Option saves properly.
++ PM Supress works properly.
++ PM Buddy Messenger fixed.
+  + Debug Text removed
+  + Clears between opening
+  + Live updating
+  + Added outgoing messages.
+<0.05d>
++ PM Buddy names change colour on new messages.
++ New PMs make a sound even if they are supressed.
++ If enabled, PM Buddy opens on startup.
+
+Version 0.04a
+------------
++ Added PM Buddy dissabled message.
++ Enabled Teleport Buddy Go & Bring boxes.
+<0.04b>
++ Enabled Teleport Buddy drop down boxes.
+  + Contains list of session's pm senders.
++ Fixed version bug in the MangAdmin Info section.
+  + Version now properly displays.
+<0.04c>
++ Fixed Dropdown boxes.
+  + Now correctly choose the user that you select.
+<0.04d>
++ PM Box is now moveable.
++ All Options now save.
++ Default mark location is now in stormwind.
+
+Version 0.03a
+------------
++ Auto Greet Created.
+  + Users who message you for the first time that session get an auto greet message.
+<0.03b>
++ Auto Greet messag can me edited & enabled/disabled.
+  + option is in the MangAdmin options page.
+
+Version 0.02a
+-------------
++ Bookmarks Created.
+  + Use .gps to set & /ma mark to return.
++ Added startup messages.
++ Fixed Buttons.
+  + Added Lable overlays on all buttons.
+
+Version 0.01a
+-------------
++ Basic Interface Created.
+<0.01b>
++ Created slash commands.
+  +/mangadmin
+  +/ma

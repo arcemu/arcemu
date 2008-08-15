@@ -1,0 +1,12 @@
+﻿<!--
+**********************************************************************
+$Author: rushowr $
+$Date: 2007-07-25 15:26:16 -0400 (Wed, 25 Jul 2007) $
+$Revision: 5 $
+**********************************************************************
+-->
+<Bindings>
+  <Binding name="TOGLEADDON" description="Hide/Show GM Helper" header="GMHelper">
+    TogleAddon();
+  </Binding>
+</Bindings>
