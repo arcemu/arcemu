@@ -3212,13 +3212,6 @@ void Aura::SpellAuraModStealth(bool apply)
 		// hack fix for vanish stuff
 		if( m_spellProto->NameHash == SPELL_HASH_VANISH && m_target->GetTypeId() == TYPEID_PLAYER )	 // Vanish
 		{
-
-		bool freeMovements = false;
-		freeMovements = true;
-
-		// remove the caster from imparing movements
-		if( freeMovements )
-		{
 			for( uint32 x = MAX_POSITIVE_AURAS; x < MAX_AURAS; x++ )
 			{
 				if( m_target->m_auras[x] != NULL )
@@ -3238,9 +3231,8 @@ void Aura::SpellAuraModStealth(bool apply)
 							}
 						}
 					}
-			   }
+				}
 			}
-		}
 
 			// check for stealh spells
 			Player* p_caster = static_cast< Player* >( m_target );
