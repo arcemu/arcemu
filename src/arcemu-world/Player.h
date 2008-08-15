@@ -934,6 +934,7 @@ public:
 	void addSpell(uint32 spell_idy);
 	void removeSpellByHashName(uint32 hash);
 	bool removeSpell(uint32 SpellID, bool MoveToDeleted, bool SupercededSpell, uint32 SupercededSpellID);
+	bool removeDeletedSpell( uint32 SpellID );
 
     // PLEASE DO NOT INLINE!
     void AddOnStrikeSpell(SpellEntry* sp, uint32 delay)

@@ -296,7 +296,7 @@ void WorldSession::HandleUnlearnSkillOpcode(WorldPacket& recv_data)
 	//added by Zack : This is probably wrong or already made elsewhere : restore skill learnability
 	if(points_remaining==_player->GetUInt32Value(PLAYER_CHARACTER_POINTS2))
 	{
-		//we unlearned a kill so we enable a new one to be learned
+		//we unlearned a skill so we enable a new one to be learned
 		skilllineentry *sk=dbcSkillLine.LookupEntry(skill_line);
 		if(!sk)
 			return;

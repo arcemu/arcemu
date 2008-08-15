@@ -5997,6 +5997,16 @@ bool Player::removeSpell(uint32 SpellID, bool MoveToDeleted, bool SupercededSpel
 	return true;
 }
 
+bool Player::removeDeletedSpell( uint32 SpellID )
+{
+	SpellSet::iterator it = mDeletedSpells.find( SpellID );
+	if ( it == mDeletedSpells.end() )
+		return false;
+	
+	mDeletedSpells.erase( it );
+	return true;
+}
+
 void Player::EventActivateGameObject(GameObject* obj)
 {
 	obj->BuildFieldUpdatePacket(this, GAMEOBJECT_DYN_FLAGS, 1);
@@ -6568,7 +6578,9 @@ void Player::RemoveSpellsFromLine(uint32 skill_line)
 			if(sp->skilline == skill_line)
 			{
 				// Check ourselves for this spell, and remove it..
-					removeSpell(sp->spell, 0, 0, 0);
+				if ( !removeSpell(sp->spell, 0, 0, 0) )
+					// if we didnt unlearned spell check deleted spells
+					removeDeletedSpell( sp->spell );
 			}
 		}
 	}
