@@ -387,8 +387,8 @@ public:
     ARCEMU_INLINE int32 GetDuration() const { return m_duration; }
     void SetDuration(int32 duration) { m_duration = duration; }
 
-    ARCEMU_INLINE uint8 GetAuraSlot() const { return m_auraSlot; }
-	void SetAuraSlot(uint8 slot) { m_auraSlot = slot; }
+    ARCEMU_INLINE uint16 GetAuraSlot() const { return m_auraSlot; }
+	void SetAuraSlot( uint16 slot ) { m_auraSlot = slot; }
 
 	ARCEMU_INLINE bool IsPositive() { return m_positive>0; }
 	void SetNegative(signed char value=1) { m_positive -= value; }
@@ -688,7 +688,7 @@ public:
 	AreaAuraList targets;//this is only used for AA
 	uint64 m_casterGuid;
 
-	uint8 m_auraSlot;
+	uint16 m_auraSlot;
 
 	uint32 m_castedItemId;
 	bool m_areaAura;		// Area aura stuff -> never passive.

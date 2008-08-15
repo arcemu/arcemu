@@ -701,7 +701,7 @@ void Pet::Dismiss(bool bSafeDelete)//Abandon pet
 void Pet::Remove(bool bSafeDelete, bool bUpdate, bool bSetOffline)
 {
 	RemoveAllAuras(); // Prevent pet overbuffing
-	if(m_Owner)
+	if( m_Owner )
 	{
 		// remove association with player
 		m_Owner->SetUInt64Value(UNIT_FIELD_SUMMON, 0);
@@ -741,15 +741,15 @@ void Pet::PetSafeDelete()
 	Creature::SafeDelete();
 }
 
-void Pet::DelayedRemove(bool bTime, bool bDeath)
+void Pet::DelayedRemove( bool bTime, bool bDeath )
 {
-	m_Owner = objmgr.GetPlayer((uint32)m_OwnerGuid);
-	if(bTime)
+	if( bTime )
 	{
-		if(GetUInt32Value(UNIT_CREATED_BY_SPELL) > 0 || bDeath)
-			Dismiss(true);  // remove us..
+		m_Owner = objmgr.GetPlayer( ( uint32 )this->m_OwnerGuid ); // if we need this, then it should be here
+		if( GetUInt32Value( UNIT_CREATED_BY_SPELL ) > 0 /*|| bDeath*/ ) // why should we perma delete our dead pet??
+			Dismiss( true );  // remove us..
 		else
-			Remove(true, true, true);
+			Remove( true, true, false );
 	}
 	else
 		sEventMgr.AddEvent(this, &Pet::DelayedRemove, true, bDeath, EVENT_PET_DELAYED_REMOVE, PET_DELAYED_REMOVAL_TIME, 1,EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);

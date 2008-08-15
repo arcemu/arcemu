@@ -693,7 +693,7 @@ void Aura::Init( SpellEntry* proto, int32 duration, Object* caster, Unit* target
 	pSpellId = 0;
 	periodic_target = 0;
 	//sLog.outDetail("Aura::Constructor %u (%s) from %u.", m_spellProto->Id, m_spellProto->Name, m_target->GetLowGUID());
-	m_auraSlot = 0xff;
+	m_auraSlot = 0xffff;
 	m_interrupted = -1;
 	m_flags = 0;
 	//fixed_amount = 0;//used only por percent values to be able to recover value correctly.No need to init this if we are not using it
@@ -769,7 +769,7 @@ void Aura::Remove()
 		}
 	}
 
-	m_target->m_auras[m_auraSlot] = NULL;
+	m_target->m_auras[ m_auraSlot ] = NULL;
 
 	// reset diminishing return timer if needed
 	::UnapplyDiminishingReturnTimer( m_target, m_spellProto );

@@ -2420,18 +2420,20 @@ void Object::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
 				/* ----------------------------- PET DEATH HANDLING -------------- */
 				if( pVictim->IsPet() )
 				{
-					// dying pet looses 1 happiness level
-					if( !static_cast< Pet* >( pVictim )->IsSummon() )
+					Pet* pPet = static_cast< Pet* >( pVictim );
+					Player* owner = pPet->GetPetOwner();
+
+					// dying pet looses 1 happiness level (not in BG)
+					if( !pPet->IsSummon() && !pPet->IsInBg() )
 					{
-						uint32 hap = static_cast< Pet* >( pVictim )->GetUInt32Value( UNIT_FIELD_POWER5 );
+						uint32 hap = pPet->GetUInt32Value( UNIT_FIELD_POWER5 );
 						hap = hap - PET_HAPPINESS_UPDATE_VALUE > 0 ? hap - PET_HAPPINESS_UPDATE_VALUE : 0;
-						static_cast< Pet* >( pVictim )->SetUInt32Value( UNIT_FIELD_POWER5, hap );
+						pPet->SetUInt32Value( UNIT_FIELD_POWER5, hap );
 					}
 					
-					static_cast< Pet* >( pVictim )->DelayedRemove( false, true );
+					pPet->DelayedRemove( false, true );
 					
 					//remove owner warlock soul link from caster
-					Player* owner = static_cast<Pet*>( pVictim )->GetPetOwner();
 					if( owner != NULL )
 						owner->EventDismissPet();
 				}

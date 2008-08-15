@@ -3935,10 +3935,10 @@ void Unit::AddAura(Aura *aur)
 	}
 	////////////////////////////////////////////////////////
 
-	if( aur->m_auraSlot != 0xffffffff )
-		m_auras[aur->m_auraSlot] = NULL;
+	if( aur->m_auraSlot != 0xffff )
+		m_auras[ aur->m_auraSlot ] = NULL;
 	
-	aur->m_auraSlot=255;
+	aur->m_auraSlot = 0xffff;
 	aur->ApplyModifiers(true);
 	//Zack : if all mods were resisted it means we did not apply anything and we do not need to delete this spell eighter
 	if( aur->TargetWasImuneToMods() )
@@ -3950,22 +3950,22 @@ void Unit::AddAura(Aura *aur)
 		return;
 	}
 
-	if(!aur->IsPassive())
+	if( !aur->IsPassive() )
 	{	
 		aur->AddAuraVisual();
-		if(aur->m_auraSlot==255)
+		if( aur->m_auraSlot == 0xffff )
 		{
 			//add to invisible slot
-			for(uint32 x=MAX_AURAS;x<MAX_AURAS+MAX_PASSIVE_AURAS;x++)
+			for( uint16 x = MAX_AURAS; x < MAX_AURAS + MAX_PASSIVE_AURAS; x++ )
 			{
-				if(!m_auras[x])
+				if( !m_auras[x] )
 				{
-					m_auras[x]=aur;
-					aur->m_auraSlot=x;
+					aur->m_auraSlot = x;
+					m_auras[x] = aur;
 					break;
 				}
 			}
-			if(aur->m_auraSlot == 255)
+			if( aur->m_auraSlot == 0xffff )
 			{
 				sLog.outError("Aura error in active aura. ");
 				// for next loop.. lets kill the fucker
@@ -3978,7 +3978,7 @@ void Unit::AddAura(Aura *aur)
 		}
 		else
 		{
-			m_auras[aur->m_auraSlot]=aur;
+			m_auras[ aur->m_auraSlot ] = aur;
 		}
 	}
 	else
@@ -3991,12 +3991,12 @@ void Unit::AddAura(Aura *aur)
 		{
 			if(!m_auras[x])
 			{
-				m_auras[x]=aur;
-				aur->m_auraSlot=x;
+				aur->m_auraSlot = x;
+				m_auras[x] = aur;
 				break;
 			}
 		}
-		if(aur->m_auraSlot==255)
+		if( aur->m_auraSlot == 0xFFFF )
 		{
 			sLog.outError("Aura error in passive aura. removing. SpellId: %u", aur->GetSpellProto()->Id);
 			// for next loop.. lets kill the fucker

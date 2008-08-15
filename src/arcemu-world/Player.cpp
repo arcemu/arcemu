@@ -450,8 +450,8 @@ Player::~Player ( )
 	if(pTarget)
 		pTarget->SetInviter(0);
 
-	if(m_Summon)
-		m_Summon->ClearPetOwner();
+	if( m_Summon )
+		m_Summon->Remove( true, true, false );
 
 	mTradeTarget = 0;
 
@@ -485,13 +485,6 @@ Player::~Player ( )
 
 	if(m_playerInfo)
 		m_playerInfo->m_loggedInPlayer=NULL;
-
-	if(m_Summon)
-	{
-		m_Summon->ClearPetOwner();
-		m_Summon->Delete();
-		m_Summon=NULL;
-	}
 
 	delete SDetector;
 
@@ -1653,7 +1646,7 @@ void Player::_SavePet(QueryBuffer * buf)
 	else
 		buf->AddQuery("DELETE FROM playerpets WHERE ownerguid=%u", GetUInt32Value(OBJECT_FIELD_GUID));
 
-	if(m_Summon&&m_Summon->IsInWorld()&&m_Summon->GetPetOwner()==this)	// update PlayerPets array with current pet's info
+	if( m_Summon && m_Summon->IsInWorld() && m_Summon->GetPetOwner() == this )	// update PlayerPets array with current pet's info
 	{
 		PlayerPet*pPet = GetPlayerPet(m_Summon->m_PetNumber);
 		if(!pPet || pPet->active == false)
@@ -3517,15 +3510,10 @@ void Player::RemoveFromWorld()
 
 	ClearSplinePackets();
 
-	if(m_Summon)
+	if( m_Summon )
 	{
 		m_Summon->GetAIInterface()->SetPetOwner(0);
-		m_Summon->Remove(false, true, false);
-		if(m_Summon)
-		{	
-			m_Summon->ClearPetOwner();
-			m_Summon=NULL;
-		}
+		m_Summon->Remove( false, true, false );
 	}
 
 	if(m_SummonedObject)
