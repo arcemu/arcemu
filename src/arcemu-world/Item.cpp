@@ -21,7 +21,7 @@
 
 Item::Item()//this is called when constructing as container
 {
-	m_bufferPoolId = OBJECT_WAS_ALLOCATED_STABDARD_WAY;
+	m_bufferPoolId = OBJECT_WAS_ALLOCATED_STANDARD_WAY;
 	m_itemProto = NULL;
 	m_owner = NULL;
 	loot = NULL;

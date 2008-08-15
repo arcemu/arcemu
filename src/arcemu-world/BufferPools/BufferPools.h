@@ -9,7 +9,7 @@
 #define EXTEND_POOL_WITH_SIZE 100
 #define POOL_IS_FULL_INDEX 0
 #define OBJECT_WAS_ALLOCATED_WITHIN_POOL 0x0FFFFFF0
-#define OBJECT_WAS_ALLOCATED_STABDARD_WAY -1	//should add this to constructors instead of constant number :)
+#define OBJECT_WAS_ALLOCATED_STANDARD_WAY -1	//should add this to constructors instead of constant number :)
 #define OBJECT_WAS_DEALLOCATED_WITHIN_POOL 0x0FFFFFF2
 
 //noob protection :P
@@ -78,8 +78,11 @@ public:
 	//insert into free object list
 	void PooledDelete(T* dumped)
 	{
-		if( dumped->m_bufferPoolId == OBJECT_WAS_ALLOCATED_STABDARD_WAY )
-			sLog.outError("Object was not created from pool and we are inserting it!");
+		if( dumped->m_bufferPoolId == OBJECT_WAS_ALLOCATED_STANDARD_WAY )
+		{
+			sLog.outDebug("Object was not created from pool and we are inserting it!");
+			delete dumped;
+		}
 		else if( dumped->m_bufferPoolId == OBJECT_WAS_ALLOCATED_WITHIN_POOL )
 			sLog.outError("Object not even handed out to a request and it is inserted back into pool (unbeleavable) !");
 		else if( dumped->m_bufferPoolId == OBJECT_WAS_DEALLOCATED_WITHIN_POOL )
@@ -88,10 +91,9 @@ public:
 			return; //if we would delete it again then we would have a bad pointer in the pool
 		}
 
-		ObjLock.Acquire();
-
 		//non pooled object requested or invalid
-		if( dumped->m_bufferPoolId < 0 || dumped->m_bufferPoolId >= (int32)max_avails ) {
+		if( dumped->m_bufferPoolId < 0 || dumped->m_bufferPoolId >= (int32)max_avails )
+		{
 			delete dumped;
 			return;
 		}
@@ -101,6 +103,8 @@ public:
 
 		//remove events and remove object from world ...
 		dumped->Virtual_Destructor();
+
+		ObjLock.Acquire();
 
 		//We do not care about used up guids only available ones. Note that with this overwrite used guid list is not valid anymore
 		avail_list[ myPoolId ] = dumped;

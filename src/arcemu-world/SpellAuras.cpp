@@ -601,7 +601,7 @@ Object* Aura::GetCaster()
 
 Aura::Aura()
 {
-	m_bufferPoolId = OBJECT_WAS_ALLOCATED_STABDARD_WAY;
+	m_bufferPoolId = OBJECT_WAS_ALLOCATED_STANDARD_WAY;
 }
 
 void Aura::Init( SpellEntry* proto, int32 duration, Object* caster, Unit* target )
