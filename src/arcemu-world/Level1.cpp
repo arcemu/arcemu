@@ -392,49 +392,34 @@ bool ChatHandler::HandleTaxiCheatCommand(const char* args, WorldSession *m_sessi
 	if (!*args)
 		return false;
 
-	int flag = atoi((char*)args);
-
 	Player *chr = getSelectedChar(m_session);
-	if (chr == NULL) return true;
-	
-	char buf[256];
+	if (chr == NULL) 
+		return true;
 
-	// send message to user
-	if (flag != 0)
+	if(strcmp(args, "on") == 0)
 	{
-		snprintf((char*)buf,256, "%s has all taxi nodes now.", chr->GetName());
+		GreenSystemMessage(m_session, "%s has all taxi nodes now.", chr->GetName());
+		SystemMessage(m_session, "%s has given you all taxi nodes.", m_session->GetPlayer()->GetName());
+	}
+	else if(strcmp(args, "off") == 0)
+	{
+		GreenSystemMessage(m_session, "%s has no more taxi nodes now.", chr->GetName());
+		SystemMessage(chr->GetSession(), "%s has deleted all your taxi nodes.", m_session->GetPlayer()->GetName());
 	}
 	else
-	{
-		snprintf((char*)buf,256, "%s has no more taxi nodes now.", chr->GetName());
-	}
-	GreenSystemMessage(m_session, buf);
-	
-	// send message to player
-	if (flag != 0)
-	{
-		snprintf((char*)buf,256, "%s has given you all taxi nodes.",
-			m_session->GetPlayer()->GetName());
-	}
-	else
-	{
-		snprintf((char*)buf,256, "%s has deleted all your taxi nodes.",
-			m_session->GetPlayer()->GetName());
-	}
-	SystemMessage(chr->GetSession(), buf);
+		return false;
 
 	for (uint8 i=0; i<8; i++)
 	{
-		if (flag != 0)
+		if(strcmp(args, "on") == 0)
 		{
 			chr->SetTaximask(i, 0xFFFFFFFF);
 		}
-		else
+		else if(strcmp(args, "off") == 0)
 		{
 			chr->SetTaximask(i, 0);
 		}
 	}
-
 	return true;
 }
 

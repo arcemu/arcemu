@@ -1,3 +1,4 @@
+
 /*
  * ArcEmu MMORPG Server
  * Copyright (C) 2008 <http://www.ArcEmu.org/>
@@ -286,8 +287,8 @@ bool ChatHandler::HandleLearnCommand(const char* args, WorldSession *m_session)
 bool ChatHandler::HandleReviveCommand(const char* args, WorldSession *m_session)
 {
 	Player* SelectedPlayer = getSelectedChar(m_session, true);
-	if(!SelectedPlayer) return true;
-
+	if(!SelectedPlayer) 
+		return true;
 	
 	SelectedPlayer->SetMovement(MOVE_UNROOT, 1);
 	SelectedPlayer->ResurrectPlayer();
@@ -304,54 +305,39 @@ bool ChatHandler::HandleExploreCheatCommand(const char* args, WorldSession *m_se
 	if (!*args)
 		return false;
 
-	int flag = atoi((char*)args);
-
 	Player *chr = getSelectedChar(m_session);
 	if (chr == NULL)
 	{
-		SystemMessage(m_session, "No character selected.");
-		return true;
+		chr = m_session->GetPlayer();
+		SystemMessage(m_session, "Auto-targeting self.");
 	}
 
-	char buf[256];
-
-	// send message to user
-	if (flag != 0)
+	if (strcmp(args, "on") == 0)
 	{
-		snprintf((char*)buf,256,"%s has explored all zones now.", chr->GetName());
+		SystemMessage(m_session, "%s has explored all zones now.", chr->GetName());
+		SystemMessage(m_session, "%s has explored all zones for you.", m_session->GetPlayer()->GetName());
 		sGMLog.writefromsession( m_session, "explored all zones for player %s", chr->GetName() );
 	}
-	else
+	else if(strcmp(args, "off") == 0)
 	{
-		snprintf((char*)buf,256,"%s has no more explored zones.", chr->GetName());
+		SystemMessage(m_session, "%s has no more explored zones.", chr->GetName());
+		SystemMessage(m_session, "%s has hidden all zones from you.", m_session->GetPlayer()->GetName());
 		sGMLog.writefromsession( m_session, "hid all zones for player %s", chr->GetName() );
 	}
-	SystemMessage(m_session, buf);
-
-	// send message to player
-	if (flag != 0)
-	{
-		snprintf((char*)buf,256,"%s has explored all zones for you.", m_session->GetPlayer()->GetName());
-	}
-	else
-	{
-		snprintf((char*)buf,256,"%s has hidden all zones from you.", m_session->GetPlayer()->GetName());
-	}
-	SystemMessage(m_session,  buf);
-
+	else 
+		return false;
 
 	for (uint8 i=0; i<64; i++)
 	{
-		if (flag != 0)
+		if (strcmp(args, "on") == 0)
 		{
 			chr->SetFlag(PLAYER_EXPLORED_ZONES_1+i,0xFFFFFFFF);
 		}
-		else
+		else if(strcmp(args, "off") == 0)
 		{
 			chr->SetFlag(PLAYER_EXPLORED_ZONES_1+i,0);
 		}
 	}
-
 	return true;
 }
 
@@ -960,68 +946,132 @@ bool ChatHandler::HandleAddItemSetCommand(const char* args, WorldSession* m_sess
 bool ChatHandler::HandleCastTimeCheatCommand(const char* args, WorldSession* m_session)
 {
 	Player * plyr = getSelectedChar(m_session, true);
-	if(!plyr) return true;
+	if(!plyr) 
+		return true;
 
-	bool val = plyr->CastTimeCheat;
-	BlueSystemMessage(m_session, "%s cast time cheat on %s.", val ? "Deactivating" : "Activating", plyr->GetName());
-	GreenSystemMessageToPlr(plyr, "%s %s a cast time cheat on you.", m_session->GetPlayer()->GetName(), val ? "deactivated" : "activated");
+	if(!*args) 
+		if (plyr->CastTimeCheat) 
+			args = "off"; 
+		else 
+			args = "on";
 
-	plyr->CastTimeCheat = !val;
-	if ( plyr != m_session->GetPlayer() )
-		sGMLog.writefromsession(m_session, "%s cast time cheat on %s", val ? "disabled" : "enabled", plyr->GetName());
+	if(strcmp(args, "on") == 0)
+	{
+		plyr->CastTimeCheat = true;
+		BlueSystemMessage(m_session, "activated the cast time cheat on %s.", plyr->GetName());
+		GreenSystemMessageToPlr(plyr, "activated the cast time cheat on you.", m_session->GetPlayer()->GetName());
+	}
+	else if(strcmp(args, "off") == 0)
+	{
+		plyr->CastTimeCheat = false;
+		BlueSystemMessage(m_session, "activated the cast time cheat on %s.", plyr->GetName());
+		GreenSystemMessageToPlr(plyr, "activated the cast time cheat on you.", m_session->GetPlayer()->GetName());
+	
+		if ( plyr != m_session->GetPlayer() )
+			sGMLog.writefromsession(m_session, "god cast time on %s set to %s", plyr->GetName(), args);
+	}
+	else
+		return false;
 	return true;
 }
 
 bool ChatHandler::HandleCooldownCheatCommand(const char* args, WorldSession* m_session)
 {
 	Player * plyr = getSelectedChar(m_session, true);
-	if(!plyr) return true;
+	if(!plyr) 
+		return true;
 
-	bool val = plyr->CooldownCheat;
-	BlueSystemMessage(m_session, "%s cooldown cheat on %s.", val ? "Deactivating" : "Activating", plyr->GetName());
-	if( val == false )
+	if(!*args) 
+		if (plyr->CooldownCheat) 
+			args = "off"; 
+		else 
+			args = "on";
+
+	if(strcmp(args, "on") == 0)
 	{
+		plyr->CooldownCheat = true;
 		//best case we could simply iterate through cooldowns or create a special function ...
 		SpellSet::const_iterator itr = plyr->mSpells.begin();
 		for(; itr != plyr->mSpells.end(); ++itr)
 			plyr->ClearCooldownForSpell( (*itr) );
+		BlueSystemMessage(m_session, "activated the cooldown cheat on %s.", plyr->GetName());
+		GreenSystemMessageToPlr(plyr, "activated the cooldown cheat on you.", m_session->GetPlayer()->GetName());
 	}
-	GreenSystemMessageToPlr(plyr, "%s %s a cooldown cheat on you.", m_session->GetPlayer()->GetName(), val ? "deactivated" : "activated");
-
-	plyr->CooldownCheat = !val;
-	if ( plyr != m_session->GetPlayer() )
-		sGMLog.writefromsession(m_session, "%s cooldown cheat on %s", val ? "disabled" : "enabled", plyr->GetName());
-
+	else if(strcmp(args, "off") == 0)
+	{
+		plyr->CooldownCheat = false;
+		BlueSystemMessage(m_session, "activated the cooldown cheat on %s.", plyr->GetName());
+		GreenSystemMessageToPlr(plyr, "activated the cooldown cheat on you.", m_session->GetPlayer()->GetName());
+	
+		if ( plyr != m_session->GetPlayer() )
+			sGMLog.writefromsession(m_session, "cooldown cheat on %s set to %s", plyr->GetName(), args);
+	}
+	else
+		return false;
 	return true;
 }
 
 bool ChatHandler::HandleGodModeCommand(const char* args, WorldSession* m_session)
 {
 	Player * plyr = getSelectedChar(m_session, true);
-	if(!plyr) return true;
+	if(!plyr) 
+		return true;
 
-	bool val = plyr->GodModeCheat;
-	BlueSystemMessage(m_session, "%s godmode cheat on %s.", val ? "Deactivating" : "Activating", plyr->GetName());
-	GreenSystemMessageToPlr(plyr, "%s %s a godmode cheat on you.", m_session->GetPlayer()->GetName(), val ? "deactivated" : "activated");
+	if(!*args) 
+		if (plyr->GodModeCheat) 
+			args = "off"; 
+		else 
+			args = "on";
 
-	plyr->GodModeCheat = !val;
-	if ( plyr != m_session->GetPlayer() )
-		sGMLog.writefromsession(m_session, "%s godmode cheat on %s", val ? "disabled" : "enabled", plyr->GetName());
+	if(strcmp(args, "on") == 0)
+	{
+		plyr->GodModeCheat = true;
+		BlueSystemMessage(m_session, "activated the god mode cheat on %s.", plyr->GetName());
+		GreenSystemMessageToPlr(plyr, "activated the god mode cheat on you.", m_session->GetPlayer()->GetName());
+	}
+	else if(strcmp(args, "off") == 0)
+	{
+		plyr->GodModeCheat = false;
+		BlueSystemMessage(m_session, "activated the god mode cheat on %s.", plyr->GetName());
+		GreenSystemMessageToPlr(plyr, "activated the god mode cheat on you.", m_session->GetPlayer()->GetName());
+	
+		if ( plyr != m_session->GetPlayer() )
+			sGMLog.writefromsession(m_session, "god mode cheat on %s set to %s", plyr->GetName(), args);
+	}
+	else
+		return false;
 	return true;
 }
 
 bool ChatHandler::HandlePowerCheatCommand(const char* args, WorldSession* m_session)
 {
 	Player * plyr = getSelectedChar(m_session, true);
-	if(!plyr) return true;
+	if(!plyr) 
+		return true;
 
-	bool val = plyr->PowerCheat;
-	BlueSystemMessage(m_session, "%s power cheat on %s.", val ? "Deactivating" : "Activating", plyr->GetName());
-	GreenSystemMessageToPlr(plyr, "%s %s a power cheat on you.", m_session->GetPlayer()->GetName(), val ? "deactivated" : "activated");
+	if(!*args) 
+		if (plyr->PowerCheat) 
+			args = "off"; 
+		else 
+			args = "on";
 
-	plyr->PowerCheat = !val;
-	if ( plyr != m_session->GetPlayer() )
-		sGMLog.writefromsession(m_session, "%s powertime cheat on %s", val ? "disabled" : "enabled", plyr->GetName());
+	if(strcmp(args, "on") == 0)
+	{
+		plyr->PowerCheat = true;
+		BlueSystemMessage(m_session, "activated the power cheat on %s.", plyr->GetName());
+		GreenSystemMessageToPlr(plyr, "activated the power cheat on you.", m_session->GetPlayer()->GetName());
+	}
+	else if(strcmp(args, "off") == 0)
+	{
+		plyr->PowerCheat = false;
+		BlueSystemMessage(m_session, "activated the power cheat on %s.", plyr->GetName());
+		GreenSystemMessageToPlr(plyr, "activated the power cheat on you.", m_session->GetPlayer()->GetName());
+	
+		if ( plyr != m_session->GetPlayer() )
+			sGMLog.writefromsession(m_session, "power cheat on %s set to %s", plyr->GetName(), args);
+	}
+	else
+		return false;
 	return true;
 }
 
@@ -1044,7 +1094,8 @@ bool ChatHandler::HandleShowCheatsCommand(const char* args, WorldSession* m_sess
 	print_cheat_status("GodMode", plyr->GodModeCheat);
 	print_cheat_status("Power", plyr->PowerCheat);
 	print_cheat_status("Fly", plyr->FlyCheat);
-	print_cheat_status("AuraStack", plyr->stack_cheat);
+	print_cheat_status("AuraStack", plyr->AuraStackCheat);
+	print_cheat_status("TriggerPass", plyr->TriggerpassCheat);
 	SystemMessage(m_session, "%u cheats active, %u inactive.", active, inactive);
 
 #undef print_cheat_status
@@ -1054,40 +1105,42 @@ bool ChatHandler::HandleShowCheatsCommand(const char* args, WorldSession* m_sess
 
 bool ChatHandler::HandleFlyCommand(const char* args, WorldSession* m_session)
 {
-	WorldPacket fly(835, 13);
-	
 	Player *chr = getSelectedChar(m_session);
 	
 	if(!chr)
 		chr = m_session->GetPlayer();
-	
-	chr->m_setflycheat = true;
-	fly << chr->GetNewGUID();
-	fly << uint32(2);
-	chr->SendMessageToSet(&fly, true);
-	BlueSystemMessage(chr->GetSession(), "Flying mode enabled.");
-	if(chr != m_session->GetPlayer())
-		sGMLog.writefromsession(m_session, "enabled flying mode for %s", chr->GetName());
-	return 1;
-}
 
-bool ChatHandler::HandleLandCommand(const char* args, WorldSession* m_session)
-{
-	WorldPacket fly(836, 13);
-	
-	Player *chr = getSelectedChar(m_session);
-	
-	if(!chr)
-		chr = m_session->GetPlayer();
-	
-	chr->m_setflycheat = false;
-	fly << chr->GetNewGUID();
-	fly << uint32(5);
-	chr->SendMessageToSet(&fly, true);
-	BlueSystemMessage(chr->GetSession(), "Flying mode disabled.");
-	if( chr != m_session->GetPlayer() )
-		sGMLog.writefromsession( m_session, "disabled flying mode for %s", chr->GetName() );
-	return 1;
+	if(!*args) 
+		if (chr->FlyCheat) 
+			args = "off"; 
+		else 
+			args = "on";
+
+	if(strcmp(args, "on") == 0)
+	{
+		WorldPacket fly(835, 13);
+		chr->m_setflycheat = true;
+		fly << chr->GetNewGUID();
+		fly << uint32(2);
+		chr->SendMessageToSet(&fly, true);
+		BlueSystemMessage(chr->GetSession(), "Flying mode enabled.");
+		if(chr != m_session->GetPlayer())
+			sGMLog.writefromsession(m_session, "enabled flying mode for %s", chr->GetName());
+	}
+	else if(strcmp(args, "off") == 0)
+	{
+		WorldPacket fly(836, 13);
+		chr->m_setflycheat = false;
+		fly << chr->GetNewGUID();
+		fly << uint32(5);
+		chr->SendMessageToSet(&fly, true);
+		BlueSystemMessage(chr->GetSession(), "Flying mode disabled.");
+		if( chr != m_session->GetPlayer() )
+			sGMLog.writefromsession( m_session, "disabled flying mode for %s", chr->GetName() );
+	}
+	else
+		return false;
+	return true;
 }
 
 bool ChatHandler::HandleDBReloadCommand(const char* args, WorldSession* m_session)
@@ -1721,32 +1774,67 @@ bool ChatHandler::HandleNullFollowCommand(const char* args, WorldSession * m_ses
 	return true;
 }
 
-bool ChatHandler::HandleStackCheatCommand(const char* args, WorldSession * m_session)
+bool ChatHandler::HandleAuraStackCheatCommand(const char* args, WorldSession * m_session)
 {
 	Player * plyr = getSelectedChar(m_session, true);
-	if(!plyr) return true;
+	if(!plyr) 
+		return true;
 
-	bool val = plyr->stack_cheat;
-	BlueSystemMessage(m_session, "%s aura stack cheat on %s.", val ? "Deactivating" : "Activating", plyr->GetName());
-	GreenSystemMessageToPlr(plyr, "%s %s an aura stack cheat on you.", m_session->GetPlayer()->GetName(), val ? "deactivated" : "activated");
+	if(!*args) 
+		if (plyr->AuraStackCheat)
+			args = "off"; 
+		else 
+			args = "on";
 
-	plyr->stack_cheat = !val;
-	sGMLog.writefromsession(m_session, "used stack cheat on %s", plyr->GetName());
+	if(strcmp(args, "on") == 0)
+	{
+		plyr->AuraStackCheat = true;
+		BlueSystemMessage(m_session, "activated the aura stack cheat on %s.", plyr->GetName());
+		GreenSystemMessageToPlr(plyr, "activated the aura stack cheat on you.", m_session->GetPlayer()->GetName());
+	}
+	else if(strcmp(args, "off") == 0)
+	{
+		plyr->AuraStackCheat = false;
+		BlueSystemMessage(m_session, "activated the aura stack cheat on %s.", plyr->GetName());
+		GreenSystemMessageToPlr(plyr, "activated the aura stack cheat on you.", m_session->GetPlayer()->GetName());
+	
+		if ( plyr != m_session->GetPlayer() )
+			sGMLog.writefromsession(m_session, "aura stack cheat on %s set to %s", plyr->GetName(), args);
+	}
+	else
+		return false;
 	return true;
 }
 
 bool ChatHandler::HandleTriggerpassCheatCommand(const char* args, WorldSession * m_session)
 {
-	Player * plr = getSelectedChar(m_session, true);
-	if (!plr)
+	Player * plyr = getSelectedChar(m_session, true);
+	if(!plyr) 
 		return true;
 
-	bool val = plr->triggerpass_cheat;
-	BlueSystemMessage(m_session, "%s areatrigger prerequisites immunity cheat on %s.", val ? "Deactivated" : "Activated", plr->GetName());
-	GreenSystemMessageToPlr(plr, "%s %s areatrigger prerequisites immunity cheat on you.", m_session->GetPlayer()->GetName(), val ? "deactivated" : "activated");
+	if(!*args) 
+		if (plyr->TriggerpassCheat) 
+			args = "off"; 
+		else 
+			args = "on";
 
-	plr->triggerpass_cheat = !val;
-	sGMLog.writefromsession(m_session, "used areatrigger cheat on %s", plr->GetName());
+	if(strcmp(args, "on") == 0)
+	{
+		plyr->TriggerpassCheat = true;
+		BlueSystemMessage(m_session, "activated the triggerpass cheat on %s.", plyr->GetName());
+		GreenSystemMessageToPlr(plyr, "activated the triggerpass cheat on you.", m_session->GetPlayer()->GetName());
+	}
+	else if(strcmp(args, "off") == 0)
+	{
+		plyr->TriggerpassCheat = false;
+		BlueSystemMessage(m_session, "activated the triggerpass cheat on %s.", plyr->GetName());
+		GreenSystemMessageToPlr(plyr, "activated the triggerpass cheat on you.", m_session->GetPlayer()->GetName());
+	
+		if ( plyr != m_session->GetPlayer() )
+			sGMLog.writefromsession(m_session, "triggerpass cheat on %s set to %s", plyr->GetName(), args);
+	}
+	else
+		return false;
 	return true;
 }
 

@@ -533,3 +533,4 @@ bool ChatHandler::HandleGMTicketToggleTicketSystemStatusCommand(const char* args
 		GreenSystemMessage(m_session, "TicketSystem disabled.");
 	return true;
 }
+

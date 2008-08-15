@@ -66,7 +66,7 @@ uint32 CheckTriggerPrerequsites(AreaTrigger * pAreaTrigger, WorldSession * pSess
 		return AREA_TRIGGER_FAILURE_NO_BC;
 
 	// These can be overridden by cheats/GM
-	if(pPlayer->triggerpass_cheat)
+	if(pPlayer->TriggerpassCheat)
 		return AREA_TRIGGER_FAILURE_OK;
 
 	if(pAreaTrigger->required_level && pPlayer->getLevel() < pAreaTrigger->required_level)

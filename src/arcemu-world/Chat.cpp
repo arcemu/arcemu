@@ -421,10 +421,9 @@ void CommandTableStorage::Init()
 		{ "power",       'm', &ChatHandler::HandlePowerCheatCommand,       "Disables mana consumption etc.",                  NULL, 0, 0, 0 },
 		{ "god",         'm', &ChatHandler::HandleGodModeCommand,          "Sets god mode, prevents you from taking damage.", NULL, 0, 0, 0 },
 		{ "fly",         'm', &ChatHandler::HandleFlyCommand,              "Sets fly mode",                                   NULL, 0, 0, 0 },
-		{ "land",        'm', &ChatHandler::HandleLandCommand,             "Unsets fly mode",                                 NULL, 0, 0, 0 },
 		{ "explore",     'm', &ChatHandler::HandleExploreCheatCommand,     "Reveals the unexplored parts of the map.",        NULL, 0, 0, 0 },
 		{ "flyspeed",    'm', &ChatHandler::HandleFlySpeedCheatCommand,    "Modifies fly speed.",                             NULL, 0, 0, 0 },
-		{ "stack",       'm', &ChatHandler::HandleStackCheatCommand,       "Enables aura stacking cheat.",                    NULL, 0, 0, 0 },
+		{ "stack",       'm', &ChatHandler::HandleAuraStackCheatCommand,       "Enables aura stacking cheat.",                    NULL, 0, 0, 0 },
 		{ "triggerpass", 'm', &ChatHandler::HandleTriggerpassCheatCommand, "Ignores area trigger prerequisites.",             NULL, 0, 0, 0 },
 		{ NULL,          '0', NULL,                                        "",                                                NULL, 0, 0, 0 }
 	};

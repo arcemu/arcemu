@@ -3837,7 +3837,7 @@ void Unit::AddAura(Aura *aur)
 			}
 			maxStack=charges;
 		}
-		if( IsPlayer() && static_cast< Player* >( this )->stack_cheat )
+		if( IsPlayer() && static_cast< Player* >( this )->AuraStackCheat )
 			maxStack = 999;
 
 		SpellEntry * info = aur->GetSpellProto();

@@ -312,8 +312,8 @@ Player::Player( uint32 guid ) : m_mailBox(guid)
 	blinked				 = false;
 	m_explorationTimer	  = getMSTime();
 	linkTarget			  = 0;
-	stack_cheat			 = false;
-	triggerpass_cheat = false;
+	AuraStackCheat			 = false;
+	TriggerpassCheat = false;
 	m_pvpTimer			  = 0;
 	m_globalCooldown = 0;
 	m_lastHonorResetTime	= 0;

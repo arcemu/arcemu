@@ -1613,8 +1613,8 @@ public:
 	CharRaceEntry * myRace;
 	CharClassEntry * myClass;
 	Unit * linkTarget;
-	bool stack_cheat;
-	bool triggerpass_cheat;
+	bool AuraStackCheat;
+	bool TriggerpassCheat;
 	bool SafeTeleport(uint32 MapID, uint32 InstanceID, float X, float Y, float Z, float O);
 	bool SafeTeleport(uint32 MapID, uint32 InstanceID, const LocationVector & vec);
 	void SafeTeleport(MapMgr * mgr, const LocationVector & vec);
