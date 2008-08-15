@@ -964,8 +964,8 @@ bool ChatHandler::HandleCastTimeCheatCommand(const char* args, WorldSession* m_s
 	else if(strcmp(args, "off") == 0)
 	{
 		plyr->CastTimeCheat = false;
-		BlueSystemMessage(m_session, "activated the cast time cheat on %s.", plyr->GetName());
-		GreenSystemMessageToPlr(plyr, "activated the cast time cheat on you.", m_session->GetPlayer()->GetName());
+		BlueSystemMessage(m_session, "deactivated the cast time cheat on %s.", plyr->GetName());
+		GreenSystemMessageToPlr(plyr, "deactivated the cast time cheat on you.", m_session->GetPlayer()->GetName());
 	
 		if ( plyr != m_session->GetPlayer() )
 			sGMLog.writefromsession(m_session, "god cast time on %s set to %s", plyr->GetName(), args);
@@ -1000,8 +1000,8 @@ bool ChatHandler::HandleCooldownCheatCommand(const char* args, WorldSession* m_s
 	else if(strcmp(args, "off") == 0)
 	{
 		plyr->CooldownCheat = false;
-		BlueSystemMessage(m_session, "activated the cooldown cheat on %s.", plyr->GetName());
-		GreenSystemMessageToPlr(plyr, "activated the cooldown cheat on you.", m_session->GetPlayer()->GetName());
+		BlueSystemMessage(m_session, "deactivated the cooldown cheat on %s.", plyr->GetName());
+		GreenSystemMessageToPlr(plyr, "deactivated the cooldown cheat on you.", m_session->GetPlayer()->GetName());
 	
 		if ( plyr != m_session->GetPlayer() )
 			sGMLog.writefromsession(m_session, "cooldown cheat on %s set to %s", plyr->GetName(), args);
@@ -1032,8 +1032,8 @@ bool ChatHandler::HandleGodModeCommand(const char* args, WorldSession* m_session
 	else if(strcmp(args, "off") == 0)
 	{
 		plyr->GodModeCheat = false;
-		BlueSystemMessage(m_session, "activated the god mode cheat on %s.", plyr->GetName());
-		GreenSystemMessageToPlr(plyr, "activated the god mode cheat on you.", m_session->GetPlayer()->GetName());
+		BlueSystemMessage(m_session, "deactivated the god mode cheat on %s.", plyr->GetName());
+		GreenSystemMessageToPlr(plyr, "deactivated the god mode cheat on you.", m_session->GetPlayer()->GetName());
 	
 		if ( plyr != m_session->GetPlayer() )
 			sGMLog.writefromsession(m_session, "god mode cheat on %s set to %s", plyr->GetName(), args);
@@ -1064,8 +1064,8 @@ bool ChatHandler::HandlePowerCheatCommand(const char* args, WorldSession* m_sess
 	else if(strcmp(args, "off") == 0)
 	{
 		plyr->PowerCheat = false;
-		BlueSystemMessage(m_session, "activated the power cheat on %s.", plyr->GetName());
-		GreenSystemMessageToPlr(plyr, "activated the power cheat on you.", m_session->GetPlayer()->GetName());
+		BlueSystemMessage(m_session, "deactivated the power cheat on %s.", plyr->GetName());
+		GreenSystemMessageToPlr(plyr, "deactivated the power cheat on you.", m_session->GetPlayer()->GetName());
 	
 		if ( plyr != m_session->GetPlayer() )
 			sGMLog.writefromsession(m_session, "power cheat on %s set to %s", plyr->GetName(), args);
@@ -1795,8 +1795,8 @@ bool ChatHandler::HandleAuraStackCheatCommand(const char* args, WorldSession * m
 	else if(strcmp(args, "off") == 0)
 	{
 		plyr->AuraStackCheat = false;
-		BlueSystemMessage(m_session, "activated the aura stack cheat on %s.", plyr->GetName());
-		GreenSystemMessageToPlr(plyr, "activated the aura stack cheat on you.", m_session->GetPlayer()->GetName());
+		BlueSystemMessage(m_session, "deactivated the aura stack cheat on %s.", plyr->GetName());
+		GreenSystemMessageToPlr(plyr, "deactivated the aura stack cheat on you.", m_session->GetPlayer()->GetName());
 	
 		if ( plyr != m_session->GetPlayer() )
 			sGMLog.writefromsession(m_session, "aura stack cheat on %s set to %s", plyr->GetName(), args);
@@ -1827,8 +1827,8 @@ bool ChatHandler::HandleTriggerpassCheatCommand(const char* args, WorldSession *
 	else if(strcmp(args, "off") == 0)
 	{
 		plyr->TriggerpassCheat = false;
-		BlueSystemMessage(m_session, "activated the triggerpass cheat on %s.", plyr->GetName());
-		GreenSystemMessageToPlr(plyr, "activated the triggerpass cheat on you.", m_session->GetPlayer()->GetName());
+		BlueSystemMessage(m_session, "deactivated the triggerpass cheat on %s.", plyr->GetName());
+		GreenSystemMessageToPlr(plyr, "deactivated the triggerpass cheat on you.", m_session->GetPlayer()->GetName());
 	
 		if ( plyr != m_session->GetPlayer() )
 			sGMLog.writefromsession(m_session, "triggerpass cheat on %s set to %s", plyr->GetName(), args);
