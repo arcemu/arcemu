@@ -450,7 +450,7 @@ bool Master::Run(int argc, char ** argv)
 			FILE * f = fopen( "arcemu.uptime", "w" );
 			if( f )
 			{
-				fprintf(f, "%li", sWorld.GetUptime());
+				fprintf(f, "%u", sWorld.GetUptime());
 				fclose(f);
 			}
 #endif
