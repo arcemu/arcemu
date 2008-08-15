@@ -544,9 +544,9 @@ void AIInterface::HandleEvent(uint32 event, Unit* pUnit, uint32 misc1)
 			if(m_Unit->GetMapMgr() && m_Unit->GetTypeId() == TYPEID_UNIT && !m_Unit->IsPet() && pInstance && (pInstance->m_mapInfo->type == INSTANCE_RAID || pInstance->m_mapInfo->type == INSTANCE_NONRAID || pInstance->m_mapInfo->type == INSTANCE_MULTIMODE))
 			{
 				InstanceBossInfoMap *bossInfoMap = objmgr.m_InstanceBossInfoMap[m_Unit->GetMapMgr()->GetMapId()];
-				uint32 npcGuid = static_cast< Creature* >( m_Unit )->GetSQL_id();
 				if(bossInfoMap != NULL)
 				{
+					uint32 npcGuid = static_cast< Creature* >( m_Unit )->GetCreatureInfo()->Id;
 					InstanceBossInfoMap::const_iterator bossInfo = bossInfoMap->find(npcGuid);
 					if(bossInfo != bossInfoMap->end())
 					{
@@ -572,6 +572,7 @@ void AIInterface::HandleEvent(uint32 event, Unit* pUnit, uint32 misc1)
 				else
 				{
 					// No instance boss information ... fallback ...
+					uint32 npcGuid = static_cast< Creature* >( m_Unit )->GetSQL_id();
 					m_Unit->GetMapMgr()->pInstance->m_killedNpcs.insert( npcGuid );
 					m_Unit->GetMapMgr()->pInstance->SaveToDB();
 				}

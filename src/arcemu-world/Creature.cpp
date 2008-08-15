@@ -209,13 +209,13 @@ void Creature::OnRespawn(MapMgr * m)
 		Instance *pInstance = m->pInstance;
 		for(std::set<uint32>::iterator killedNpc = pInstance->m_killedNpcs.begin(); killedNpc != pInstance->m_killedNpcs.end(); ++killedNpc)
 		{
-			// Is killed boss.
-			if((*killedNpc) == this->spawnid)
+			// Is killed boss?
+			if((*killedNpc) == this->creature_info->Id)
 			{
 				skip = true;
 				break;
 			}
-			// Is add from killed boss.
+			// Is add from killed boss?
 			InstanceBossInfoMap::const_iterator bossInfo = bossInfoMap->find((*killedNpc));
 			if(bossInfo != bossInfoMap->end() && bossInfo->second->trash.find(this->spawnid) != bossInfo->second->trash.end())
 			{

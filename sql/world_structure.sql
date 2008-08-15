@@ -17,7 +17,7 @@ DROP TABLE IF EXISTS `instance_bosses`;
 
 CREATE TABLE `instance_bosses` (
   `mapid` INT(11) UNSIGNED NOT NULL DEFAULT '0',
-  `spawnid` INT(11) UNSIGNED NOT NULL DEFAULT '0',
+  `creatureid` INT(11) UNSIGNED NOT NULL DEFAULT '0',
   `trash` TEXT NOT NULL,
   `trash_respawn_override` INT(11) UNSIGNED NOT NULL DEFAULT '0',
   PRIMARY KEY  (`mapid`,`spawnid`)

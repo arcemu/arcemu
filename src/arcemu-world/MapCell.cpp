@@ -180,7 +180,7 @@ void MapCell::LoadObjects(CellSpawns * sp)
 					for(std::set<uint32>::iterator killedNpc = pInstance->m_killedNpcs.begin(); killedNpc != pInstance->m_killedNpcs.end(); ++killedNpc)
 					{
 						// Do not spawn the killed boss.
-						if((*killedNpc) == (*i)->id)
+						if((*killedNpc) == (*i)->entry)
 						{
 							skip = true;
 							break;
@@ -198,7 +198,7 @@ void MapCell::LoadObjects(CellSpawns * sp)
 
 					for(InstanceBossInfoMap::iterator bossInfo = bossInfoMap->begin(); bossInfo != bossInfoMap->end(); ++bossInfo)
 					{
-						if(pInstance->m_killedNpcs.find(bossInfo->second->spawnid) == pInstance->m_killedNpcs.end() && bossInfo->second->trash.find((*i)->id) != bossInfo->second->trash.end())
+						if(pInstance->m_killedNpcs.find(bossInfo->second->creatureid) == pInstance->m_killedNpcs.end() && bossInfo->second->trash.find((*i)->id) != bossInfo->second->trash.end())
 						{
 							respawnTimeOverride = bossInfo->second->trashRespawnOverride;
 						}
@@ -209,9 +209,6 @@ void MapCell::LoadObjects(CellSpawns * sp)
 					// No boss information available ... fallback ...
 					if(pInstance->m_killedNpcs.find((*i)->id) != pInstance->m_killedNpcs.end())
 						continue;
-
-					/*	if((*i)->respawnNpcLink && pInstance->m_killedNpcs.find((*i)->respawnNpcLink) != pInstance->m_killedNpcs.end())
-					continue;*/
 				}
 			}
 

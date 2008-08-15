@@ -712,7 +712,7 @@ void ObjectMgr::LoadInstanceBossInfos()
 {
 	char *p, *q, *trash;
 	MapInfo * mapInfo;
-	QueryResult * result = WorldDatabase.Query("SELECT `mapid`, `spawnid`, `trash`, `trash_respawn_override` FROM `instance_bosses`");
+	QueryResult * result = WorldDatabase.Query("SELECT `mapid`, `creatureid`, `trash`, `trash_respawn_override` FROM `instance_bosses`");
 
 	if(result == NULL)
 		return;
@@ -737,7 +737,7 @@ void ObjectMgr::LoadInstanceBossInfos()
 			continue;
 		}
 
-		bossInfo->spawnid = (uint32)result->Fetch()[1].GetUInt32();
+		bossInfo->creatureid = (uint32)result->Fetch()[1].GetUInt32();
 		trash = strdup(result->Fetch()[2].GetString());
 		q = trash;
 		p = strchr(q, ' ');
@@ -756,7 +756,7 @@ void ObjectMgr::LoadInstanceBossInfos()
 		
 		if(this->m_InstanceBossInfoMap[bossInfo->mapid] == NULL)
 			this->m_InstanceBossInfoMap[bossInfo->mapid] = new InstanceBossInfoMap;
-		this->m_InstanceBossInfoMap[bossInfo->mapid]->insert(InstanceBossInfoMap::value_type(bossInfo->spawnid, bossInfo));
+		this->m_InstanceBossInfoMap[bossInfo->mapid]->insert(InstanceBossInfoMap::value_type(bossInfo->creatureid, bossInfo));
 		cnt++;
 	} while(result->NextRow());
 

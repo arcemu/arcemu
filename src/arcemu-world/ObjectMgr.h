@@ -29,7 +29,7 @@ typedef std::set<uint32> InstanceBossTrashList;
 struct InstanceBossInfo
 {
 	uint32 mapid;
-	uint32 spawnid;
+	uint32 creatureid;
 	InstanceBossTrashList trash;
 	uint32 trashRespawnOverride;
 };
