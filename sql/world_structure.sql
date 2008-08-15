@@ -2264,6 +2264,9 @@ CREATE TABLE `spellfixes` (
   `SpellGroupType` int(30) NOT NULL default '0',
   `procChance` int(30) NOT NULL default '0',
   `procCharges` int(30) NOT NULL default '0',
+  `groupRelation0` bigint(20) unsigned NOT NULL DEFAULT '0',
+  `groupRelation1` bigint(20) unsigned NOT NULL DEFAULT '0',
+  `groupRelation2` bigint(20) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY  (`spellId`)
 ) ENGINE=MyISAM /*!40100 DEFAULT CHARSET=latin1*/;
 
