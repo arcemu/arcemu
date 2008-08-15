@@ -228,12 +228,12 @@ void WorldSession::HandleTrainerBuySpellOpcode(WorldPacket& recvPacket)
 		_player->addSpell( pSpell->pLearnSpell->Id );
 
 		uint32 i;
-		for( i = 0; i < 3; ++i)
+		for( i = 0; i < 3; ++i )
 		{
-			if(pSpell->pLearnSpell->Effect[i] == SPELL_EFFECT_PROFICIENCY || pSpell->pLearnSpell->Effect[i] == SPELL_EFFECT_LEARN_SPELL ||
-				pSpell->pLearnSpell->Effect[i] == SPELL_EFFECT_WEAPON)
+			if( pSpell->pLearnSpell->Effect[i] == SPELL_EFFECT_PROFICIENCY || pSpell->pLearnSpell->Effect[i] == SPELL_EFFECT_WEAPON ||
+				( pSpell->pLearnSpell->Effect[i] == SPELL_EFFECT_LEARN_SPELL && pSpell->pLearnSpell->EffectImplicitTargetA[i] != EFF_TARGET_PET ) )  // avoid direct pet teaching
 			{
-				_player->CastSpell(_player, pSpell->pLearnSpell, true);
+				_player->CastSpell( _player, pSpell->pLearnSpell, true );
 				break;
 			}
 		}

@@ -702,7 +702,7 @@ void Object::_BuildValuesUpdate(ByteBuffer * data, UpdateMask *updateMask, Playe
 		oldflags = m_uint32Values[GAMEOBJECT_DYN_FLAGS];
 		if(!updateMask->GetBit(GAMEOBJECT_DYN_FLAGS))
 			updateMask->SetBit(GAMEOBJECT_DYN_FLAGS);
-		m_uint32Values[GAMEOBJECT_DYN_FLAGS] = 1;
+		m_uint32Values[GAMEOBJECT_DYN_FLAGS] = 1 | 8; // 8 to show sparkling
 		reset = true;
 	}
 
