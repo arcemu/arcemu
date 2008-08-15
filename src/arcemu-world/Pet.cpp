@@ -1760,10 +1760,12 @@ bool Pet::UpdateLoyalty( char pts )
 
 AI_Spell * Pet::HandleAutoCastEvent()
 {
-	list<AI_Spell*>::iterator itr;
+	list<AI_Spell*>::iterator itr,itr2;
 	
-	for(  itr = m_autoCastSpells[AUTOCAST_EVENT_ATTACK].begin(); itr != m_autoCastSpells[AUTOCAST_EVENT_ATTACK].end(); itr++ )
+	for(  itr2 = m_autoCastSpells[AUTOCAST_EVENT_ATTACK].begin(); itr2 != m_autoCastSpells[AUTOCAST_EVENT_ATTACK].end(); )
 	{
+		itr = itr2;
+		itr2++;
 		if((*itr)->autocast_type == AUTOCAST_EVENT_ATTACK)
 		{
 			// spells still spammed, I think the cooldowntime is being set incorrectly somewhere else
@@ -1778,7 +1780,6 @@ AI_Spell * Pet::HandleAutoCastEvent()
 		{
 			// bad pointers somehow end up here :S
 			m_autoCastSpells[AUTOCAST_EVENT_ATTACK].erase(itr);
-			return HandleAutoCastEvent();
 		}
 	}
 
