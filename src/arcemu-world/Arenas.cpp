@@ -112,27 +112,6 @@ void Arena::OnAddPlayer(Player * plr)
 	/* Set FFA PvP Flag */
 	if(!plr->HasFlag(PLAYER_FLAGS, PLAYER_FLAG_FREE_FOR_ALL_PVP))
 		plr->SetFlag(PLAYER_FLAGS, PLAYER_FLAG_FREE_FOR_ALL_PVP);
-
-	/* update arena team stats */
-	if(rated_match && plr->m_arenaTeams[m_arenateamtype] != NULL)
-	{
-		ArenaTeam * t = plr->m_arenaTeams[m_arenateamtype];
-		ArenaTeamMember * tp = t->GetMember(plr->m_playerInfo);
-		if(doneteams.find(t) == doneteams.end())
-		{
-			t->m_stat_gamesplayedseason++;
-			t->m_stat_gamesplayedweek++;
-			doneteams.insert(t);
-		}
-
-		if(tp != NULL)
-		{
-			tp->Played_ThisWeek++;
-			tp->Played_ThisSeason++;
-		}
-
-		t->SaveToDB();
-	}
 }
 
 void Arena::OnRemovePlayer(Player * plr)
@@ -352,9 +331,31 @@ void Arena::OnStart()
 	/* remove arena readyness buff */
 	for(uint32 i = 0; i < 2; ++i) {
 		for(set<Player*>::iterator itr = m_players[i].begin(); itr != m_players[i].end(); ++itr) {
-			(*itr)->RemoveAura(ARENA_PREPARATION);
-			m_players2[i].insert((uint32)(*itr)->GetGUID());
-			m_playersAlive.insert((uint32)(*itr)->GetGUID());
+			Player *plr = *itr;
+			plr->RemoveAura(ARENA_PREPARATION);
+			m_players2[i].insert((uint32)plr->GetGUID());
+			m_playersAlive.insert((uint32)plr->GetGUID());
+
+			/* update arena team stats */
+			if(rated_match && plr->m_arenaTeams[m_arenateamtype] != NULL)
+			{
+				ArenaTeam * t = plr->m_arenaTeams[m_arenateamtype];
+				ArenaTeamMember * tp = t->GetMember(plr->m_playerInfo);
+				if(doneteams.find(t) == doneteams.end())
+				{
+					t->m_stat_gamesplayedseason++;
+					t->m_stat_gamesplayedweek++;
+					doneteams.insert(t);
+				}
+
+				if(tp != NULL)
+				{
+					tp->Played_ThisWeek++;
+					tp->Played_ThisSeason++;
+				}
+
+				t->SaveToDB();
+			}
 		}
 	}
 
