@@ -44,6 +44,7 @@ struct ProcCondSharedDataStruct
 	uint32			Fulldmg;		//un case of a damage proc this contains full damage that can char receive
 	uint32			Absdmg;			//fulldmg - absdmg = damage applied to target
 	std::list< struct ProcTriggerSpell >::iterator cur_itr;		//we are iterating through a list of registered handlers. We are at this one atm;
+	int				dmg_overwrite[3];	//we can force spell effects to take values as we desire like spells that recover health based on dmg
 };
 
 //we registerer our functions in handler lists. This is made through function since we set non used 
@@ -53,5 +54,13 @@ void InitProcCondHandlers();
 //an idea is to make this for spellhashes instead of ids
 //at this step i just move old way to this one and maybe in next phase improve it
 extern ProcCondHandlerRes (*G_ProcCondHandlers[MAX_SPELL_ID_FROMDBC])(ProcCondSharedDataStruct *shareddata);
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////
+//							Same thing but PPM related conditions
+///////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+extern float (*G_ProcPPMCondHandlers[MAX_SPELL_ID_FROMDBC])(ProcCondSharedDataStruct *shareddata);
 
 #endif
