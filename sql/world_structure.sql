@@ -20,7 +20,7 @@ CREATE TABLE `instance_bosses` (
   `creatureid` INT(11) UNSIGNED NOT NULL DEFAULT '0',
   `trash` TEXT NOT NULL,
   `trash_respawn_override` INT(11) UNSIGNED NOT NULL DEFAULT '0',
-  PRIMARY KEY  (`mapid`,`spawnid`)
+  PRIMARY KEY  (`mapid`,`creatureid`)
 ) ENGINE=MyISAM /*!40100 DEFAULT CHARSET=latin1 COMMENT='Instance Boss Definitions'*/;
 
 DROP TABLE IF EXISTS `ai_agents`;
