@@ -1825,6 +1825,9 @@ void Player::SpawnPet(uint32 pet_number)
 }
 void Player::SpawnActivePet()
 {
+	if( m_Summon != NULL )
+		return;
+
 	if( getClass() == HUNTER )
 	{
 		std::map< uint32, PlayerPet* >::iterator itr = m_Pets.begin();

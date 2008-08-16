@@ -2427,6 +2427,8 @@ void Spell::SpellEffectSummon(uint32 i) // Summon
 			}
 	}	
 
+	if( !p_caster )
+		return;
 	u_caster->RemoveFieldSummon();
 
 	/* This is for summon water elemenal, etc */
@@ -2439,7 +2441,7 @@ void Spell::SpellEffectSummon(uint32 i) // Summon
 	{
 		Pet *summon = objmgr.CreatePet();
 		summon->SetInstanceID(u_caster->GetInstanceID());
-		summon->CreateAsSummon(GetProto()->EffectMiscValue[i], ci, NULL, u_caster, GetProto(), 1, 45000);
+		summon->CreateAsSummon(GetProto()->EffectMiscValue[i], ci, NULL, p_caster, GetProto(), 1, 45000);
 		summon->SetUInt32Value(UNIT_FIELD_LEVEL, u_caster->getLevel());
 		summon->AddSpell(dbcSpell.LookupEntry(31707), true);
 		summon->AddSpell(dbcSpell.LookupEntry(33395), true);
@@ -3722,7 +3724,7 @@ void Spell::SpellEffectTameCreature(uint32 i)
 	tame->GetAIInterface()->HandleEvent(EVENT_LEAVECOMBAT, p_caster, 0);
 	Pet *pPet = objmgr.CreatePet();
 	pPet->SetInstanceID(p_caster->GetInstanceID());
-	pPet->CreateAsSummon(tame->GetEntry(), tame->GetCreatureInfo(), tame, static_cast<Unit*>(p_caster), NULL, 2, 0);
+	pPet->CreateAsSummon(tame->GetEntry(), tame->GetCreatureInfo(), tame, p_caster, NULL, 2, 0);
 	//tame->SafeDelete();
 	//delete tame;
 	tame->Despawn(0,tame->GetProto()? tame->GetProto()->RespawnTime:0);
@@ -3785,7 +3787,7 @@ void Spell::SpellEffectSummonPet(uint32 i) //summon - pet
 
 		Pet *summon = objmgr.CreatePet();
 		summon->SetInstanceID(m_caster->GetInstanceID());
-		summon->CreateAsSummon(GetProto()->EffectMiscValue[i], ci, NULL, u_caster, GetProto(), 1, 0);
+		summon->CreateAsSummon(GetProto()->EffectMiscValue[i], ci, NULL, p_caster, GetProto(), 1, 0);
 	}
 }
 

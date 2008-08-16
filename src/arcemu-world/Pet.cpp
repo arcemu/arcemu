@@ -105,14 +105,14 @@ uint32 GetAutoCastTypeForSpell(SpellEntry * ent)
 	return AUTOCAST_EVENT_NONE;
 }
 
-void Pet::CreateAsSummon(uint32 entry, CreatureInfo *ci, Creature* created_from_creature, Unit *owner, SpellEntry* created_by_spell, uint32 type, uint32 expiretime)
+void Pet::CreateAsSummon(uint32 entry, CreatureInfo *ci, Creature* created_from_creature, Player* owner, SpellEntry* created_by_spell, uint32 type, uint32 expiretime)
 {
 	SetIsPet(true);
 
 	//std::string myname = sWorld.GenerateName();
 
 	if(!ci) return;
-	m_Owner = static_cast< Player* >(owner);
+	m_Owner = owner;
 	m_OwnerGuid = m_Owner->GetGUID();
 	creature_info = ci;
 	myFamily = dbcCreatureFamily.LookupEntry(GetCreatureInfo()->Family);
@@ -268,9 +268,6 @@ void Pet::Update(uint32 time)
 {
 	Creature::Update(time); // passthrough
 	
-	if( m_Owner == NULL )
-		return;
-
 	if( bHasLoyalty && !bExpires && isAlive() )
 	{
 		//Happiness
@@ -288,7 +285,7 @@ void Pet::Update(uint32 time)
 			SetUInt32Value( UNIT_FIELD_POWER5, val );// Set the value
 			m_HappinessTimer = PET_HAPPINESS_UPDATE_TIMER;// reset timer
 		} 
-		else if( m_Owner->m_bg == NULL )
+		else if( !IsInBg() )
 		{
 			if( time > m_HappinessTimer )
 				m_HappinessTimer = 0;
@@ -368,6 +365,9 @@ void Pet::SendSpellsToOwner()
 
 void Pet::SendNullSpellsToOwner()
 {
+	if( m_Owner == NULL )
+		return;
+
 	WorldPacket data(8);
 	data.SetOpcode(SMSG_PET_SPELLS);
 	data << uint64(0);
@@ -546,8 +546,8 @@ void Pet::OnPushToWorld()
 		SetUInt32Value(x, 0);
 
 	//before we initialize pet spells so we can apply spell mods on them 
-	if( m_Owner && m_Owner->IsPlayer() )
-		static_cast< Player* >( m_Owner )->EventSummonPet( this );
+	if( m_Owner )
+		m_Owner->EventSummonPet( this );
 
 	Creature::OnPushToWorld();
 }
@@ -1761,17 +1761,22 @@ bool Pet::UpdateLoyalty( char pts )
 AI_Spell * Pet::HandleAutoCastEvent()
 {
 	list<AI_Spell*>::iterator itr,itr2;
+	bool chance = true;
+	uint32 size = 0;
 	
 	for(  itr2 = m_autoCastSpells[AUTOCAST_EVENT_ATTACK].begin(); itr2 != m_autoCastSpells[AUTOCAST_EVENT_ATTACK].end(); )
 	{
 		itr = itr2;
 		itr2++;
+		size = m_autoCastSpells[ AUTOCAST_EVENT_ATTACK ].size();
+		if( size > 1 )
+			chance = Rand( 100.0f / float( size ) );
+		
 		if((*itr)->autocast_type == AUTOCAST_EVENT_ATTACK)
 		{
 			// spells still spammed, I think the cooldowntime is being set incorrectly somewhere else
-			if( getMSTime() >= (*itr)->cooldowntime &&
-				GetUInt32Value( UNIT_FIELD_POWER1 + (*itr)->spell->powerType ) >= (*itr)->spell->manaCost &&
-				Rand( 100.0f / m_autoCastSpells[AUTOCAST_EVENT_ATTACK].size() ) ) // or maybe a procChance here
+			if( chance && getMSTime() >= (*itr)->cooldowntime &&
+				GetUInt32Value( UNIT_FIELD_POWER1 + (*itr)->spell->powerType ) >= (*itr)->spell->manaCost )
 			{
 				return *itr;
 			}
