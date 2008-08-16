@@ -174,7 +174,7 @@ void MapCell::LoadObjects(CellSpawns * sp)
 			uint32 respawnTimeOverride = 0;
 			if(pInstance)
 			{
-				if(bossInfoMap != NULL)
+				if(bossInfoMap != NULL && IS_PERSISTENT_INSTANCE(pInstance))
 				{
 					bool skip = false;
 					for(std::set<uint32>::iterator killedNpc = pInstance->m_killedNpcs.begin(); killedNpc != pInstance->m_killedNpcs.end(); ++killedNpc)
