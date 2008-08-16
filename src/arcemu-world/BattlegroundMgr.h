@@ -218,6 +218,12 @@ public:
 
 	/* Build SMSG_BATTLEFIELD_STATUS */
 	void SendBattlefieldStatus(Player * plr, uint32 Status, uint32 Type, uint32 InstanceID, uint32 Time, uint32 MapId, uint8 RatedMatch);
+
+	/* Gets ArenaTeam info from group */
+	uint32 GetArenaGroupQInfo(Group * group, int type, uint32 *avgRating);
+
+	/* Creates an arena with groups group1 and group2 */
+	int CreateArenaType(int type, Group * group1, Group * group2);
 };
 
 class CBattleground : public EventableObject

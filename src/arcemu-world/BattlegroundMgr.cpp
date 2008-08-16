@@ -304,6 +304,82 @@ void CBattlegroundManager::EventQueueUpdate()
 	this->EventQueueUpdate(false);
 }
 
+uint32 CBattlegroundManager::GetArenaGroupQInfo(Group * group, int type, uint32 *avgRating)
+{
+	ArenaTeam *team = NULL;
+	ArenaTeamMember *atm;
+	uint32 count=0;
+	uint32 rating=0;
+	GroupMembersSet::iterator itx;
+	for(itx = group->GetSubGroup(0)->GetGroupMembersBegin(); itx != group->GetSubGroup(0)->GetGroupMembersEnd(); ++itx)
+	{
+		Player *plr = (*itx)->m_loggedInPlayer;
+		if(plr)
+		{
+			team = plr->m_arenaTeams[type-BATTLEGROUND_ARENA_2V2];
+			if (team)
+			{
+				atm = team->GetMemberByGuid(plr->GetLowGUID());
+				if (atm)
+				{
+					rating+= atm->PersonalRating;
+					count++;
+				}
+			}
+		}
+	}
+
+	*avgRating = count > 0 ? rating/count : 0;
+
+	return team ? team->m_id : 0;
+}
+
+int CBattlegroundManager::CreateArenaType(int type, Group * group1, Group * group2)
+{
+	Arena * ar = ((Arena*)CreateInstance(type, LEVEL_GROUP_70));
+	if (ar == NULL)
+	{
+		Log.Error("BattlegroundMgr", "%s (%u): Couldn't create Arena Instance", __FILE__, __LINE__);
+		m_queueLock.Release();
+		m_instanceLock.Release();
+		return -1;
+	}
+	ar->rated_match=true;
+
+	GroupMembersSet::iterator itx;
+	if (group1)
+	{
+		for(itx = group1->GetSubGroup(0)->GetGroupMembersBegin(); itx != group1->GetSubGroup(0)->GetGroupMembersEnd(); ++itx)
+		{
+			if((*itx)->m_loggedInPlayer)
+			{
+				if( ar->HasFreeSlots(0,ar->GetType()) )
+				{
+					ar->AddPlayer((*itx)->m_loggedInPlayer, 0);
+					(*itx)->m_loggedInPlayer->SetTeam(0);
+				}
+			}
+		}
+	}
+
+	if (group2)
+	{
+		for(itx = group2->GetSubGroup(0)->GetGroupMembersBegin(); itx != group2->GetSubGroup(0)->GetGroupMembersEnd(); ++itx)
+		{
+			if((*itx)->m_loggedInPlayer)
+			{
+				if( ar->HasFreeSlots(1,ar->GetType()) )
+				{
+					ar->AddPlayer((*itx)->m_loggedInPlayer, 1);
+					(*itx)->m_loggedInPlayer->SetTeam(1);
+				}
+			}
+		}
+	}
+
+	return 0;
+}
+
 void CBattlegroundManager::EventQueueUpdate(bool forceStart)
 {
 	deque<uint32> tempPlayerVec[2];
@@ -507,54 +583,76 @@ void CBattlegroundManager::EventQueueUpdate(bool forceStart)
 
 	/* Handle paired arena team joining */
 	Group * group1, *group2;
+	uint32 teamids[2] = {0,0};
+	uint32 avgRating[2] = {0,0};
 	uint32 n;
 	list<uint32>::iterator itz;
 	for(i = BATTLEGROUND_ARENA_2V2; i <= BATTLEGROUND_ARENA_5V5; ++i)
 	{
-		for(;;)
+		if(!forceStart && m_queuedGroups[i].size() < 2)      /* got enough to have an arena battle ;P */
 		{
-			if(!forceStart && m_queuedGroups[i].size() < 2)      /* got enough to have an arena battle ;P */
-			{
-				break;
-			}
+			continue;
+		}
 
+		for (j=0; j<(uint32)m_queuedGroups[i].size(); j++)
+		{
 			group1 = group2 = NULL;
-			while(group1 == NULL)
+			n =	RandomUInt((uint32)m_queuedGroups[i].size()) - 1;
+			for(itz = m_queuedGroups[i].begin(); itz != m_queuedGroups[i].end() && n>0; ++itz)
+				--n;
+
+			if(itz == m_queuedGroups[i].end())
+				itz=m_queuedGroups[i].begin();
+
+			if(itz == m_queuedGroups[i].end())
 			{
-				n = RandomUInt((uint32)m_queuedGroups[i].size()) - 1;
-				for(itz = m_queuedGroups[i].begin(); itz != m_queuedGroups[i].end() && n>0; ++itz)
-					--n;
-
-				if(itz == m_queuedGroups[i].end())
-					itz=m_queuedGroups[i].begin();
-
-				if(itz == m_queuedGroups[i].end())
-				{
-					Log.Error("BattlegroundMgr", "Internal error at %s:%u", __FILE__, __LINE__);
-					m_queueLock.Release();
-					m_instanceLock.Release();
-					return;
-				}
-
-				group1 = objmgr.GetGroupById(*itz);
-				m_queuedGroups[i].erase(itz);
+				Log.Error("BattlegroundMgr", "Internal error at %s:%u", __FILE__, __LINE__);
+				m_queueLock.Release();
+				m_instanceLock.Release();
+				return;
 			}
 
-			while(group2 == NULL)
+			group1 = objmgr.GetGroupById(*itz);
+			if (group1 == NULL)
 			{
-				n = RandomUInt((uint32)m_queuedGroups[i].size()) - 1;
-				for(itz = m_queuedGroups[i].begin(); itz != m_queuedGroups[i].end() && n>0; ++itz)
+				continue;
+			}
+
+			if (forceStart && m_queuedGroups[i].size() == 1)
+			{
+				if (CreateArenaType(i, group1, NULL) == -1) return;
+				m_queuedGroups[i].remove(group1->GetID());
+				continue;
+			}
+
+			teamids[0] = GetArenaGroupQInfo(group1, i, &avgRating[0]);
+
+			list<uint32> possibleGroups;
+			for(itz = m_queuedGroups[i].begin(); itz != m_queuedGroups[i].end(); ++itz)
+			{
+				group2 = objmgr.GetGroupById(*itz);
+				if (group2)
+				{
+					teamids[1] = GetArenaGroupQInfo(group2, i, &avgRating[1]);
+					uint32 delta = abs((int32)avgRating[0] - (int32)avgRating[1]);
+					if (teamids[0] != teamids[1] && delta <= 150)
+					{
+						possibleGroups.push_back(group2->GetID());
+					}
+				}
+			}
+
+			if (possibleGroups.size() > 0)
+			{
+				n = RandomUInt((uint32)possibleGroups.size()) - 1;
+				for(itz = possibleGroups.begin(); itz != possibleGroups.end() && n>0; ++itz)
 					--n;
 
-				if(itz == m_queuedGroups[i].end())
-					itz=m_queuedGroups[i].begin();
+				if(itz == possibleGroups.end())
+					itz=possibleGroups.begin();
 
-				if(itz == m_queuedGroups[i].end())
+				if(itz == possibleGroups.end())
 				{
-					if (forceStart)
-					{
-						break;
-					}
 					Log.Error("BattlegroundMgr", "Internal error at %s:%u", __FILE__, __LINE__);
 					m_queueLock.Release();
 					m_instanceLock.Release();
@@ -562,47 +660,11 @@ void CBattlegroundManager::EventQueueUpdate(bool forceStart)
 				}
 
 				group2 = objmgr.GetGroupById(*itz);
-				m_queuedGroups[i].erase(itz);
-			}
-
-			Arena * ar = ((Arena*)CreateInstance(i,LEVEL_GROUP_70));
-			if (ar == NULL)
-			{
-				Log.Error("BattlegroundMgr", "%s (%u): Couldn't create Arena Instance", __FILE__, __LINE__);
-				m_queueLock.Release();
-				m_instanceLock.Release();
-				return;
-			}
-			GroupMembersSet::iterator itx;
-			ar->rated_match=true;
-
-			if (group1)
-			{
-				for(itx = group1->GetSubGroup(0)->GetGroupMembersBegin(); itx != group1->GetSubGroup(0)->GetGroupMembersEnd(); ++itx)
+				if (group2)
 				{
-					if((*itx)->m_loggedInPlayer)
-					{
-						if( ar->HasFreeSlots(0,ar->GetType()) )
-						{
-							ar->AddPlayer((*itx)->m_loggedInPlayer, 0);
-							(*itx)->m_loggedInPlayer->SetTeam(0);
-						}
-					}
-				}
-			}
-
-			if (group2)
-			{
-				for(itx = group2->GetSubGroup(0)->GetGroupMembersBegin(); itx != group2->GetSubGroup(0)->GetGroupMembersEnd(); ++itx)
-				{
-					if((*itx)->m_loggedInPlayer)
-					{
-						if( ar->HasFreeSlots(1,ar->GetType()) )
-						{
-							ar->AddPlayer((*itx)->m_loggedInPlayer, 1);
-							(*itx)->m_loggedInPlayer->SetTeam(1);
-						}
-					}
+					if (CreateArenaType(i, group1, group2) == -1) return;
+					m_queuedGroups[i].remove(group1->GetID());
+					m_queuedGroups[i].remove(group2->GetID());
 				}
 			}
 		}
@@ -1627,12 +1689,9 @@ void CBattlegroundManager::HandleArenaJoin(WorldSession * m_session, uint32 Batt
 		{
 			/* make sure all players are 70 */
 			uint32 maxplayers;
+			uint32 type=BattlegroundType-BATTLEGROUND_ARENA_2V2;
 			switch(BattlegroundType)
 			{
-			case BATTLEGROUND_ARENA_2V2:
-				maxplayers=2;
-				break;
-
 			case BATTLEGROUND_ARENA_3V3:
 				maxplayers=3;
 				break;
@@ -1641,9 +1700,16 @@ void CBattlegroundManager::HandleArenaJoin(WorldSession * m_session, uint32 Batt
 				maxplayers=5;
 				break;
 
+			case BATTLEGROUND_ARENA_2V2:
 			default:
 				maxplayers=2;
 				break;
+			}
+
+			if(pGroup->GetLeader()->m_loggedInPlayer && pGroup->GetLeader()->m_loggedInPlayer->m_arenaTeams[type] == NULL)
+			{
+				m_session->SystemMessage("You must be in a team to join rated arena.");
+				return;
 			}
 
 			pGroup->Lock();
@@ -1668,6 +1734,12 @@ void CBattlegroundManager::HandleArenaJoin(WorldSession * m_session, uint32 Batt
 					if((*itx)->m_loggedInPlayer->m_bg || (*itx)->m_loggedInPlayer->m_bg || (*itx)->m_loggedInPlayer->m_bgIsQueued)
 					{
 						m_session->SystemMessage("One or more of your party members are already queued or inside a battleground.");
+						pGroup->Unlock();
+						return;
+					};
+					if((*itx)->m_loggedInPlayer->m_arenaTeams[type] != pGroup->GetLeader()->m_loggedInPlayer->m_arenaTeams[type])
+					{
+						m_session->SystemMessage("One or more of your party members are not members of your team.");
 						pGroup->Unlock();
 						return;
 					}
