@@ -20,7 +20,7 @@
 #ifndef _R_LOGON_COMM_CLIENT_H
 #define _R_LOGON_COMM_CLIENT_H
 
-#include "../ascent-logonserver/LogonOpcodes.h"
+#include "../arcemu-logonserver/LogonOpcodes.h"
 #include <RC4Engine.h>
 
 class LogonCommClientSocket : public Socket
