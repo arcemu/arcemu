@@ -101,7 +101,7 @@ void WorldSession::HandleBattleMasterHelloOpcode(WorldPacket &recv_data)
 
 	uint64 guid;
 	recv_data >> guid;
-	sLog.outString("Received CMSG_BATTLEMASTER_HELLO from " I64FMT, guid);
+	sLog.outDebug("Received CMSG_BATTLEMASTER_HELLO from " I64FMT, guid);
 
 	Creature * bm = _player->GetMapMgr()->GetCreature(GET_LOWGUID_PART(guid));
 
