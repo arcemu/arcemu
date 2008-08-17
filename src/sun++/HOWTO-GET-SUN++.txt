@@ -1,0 +1,10 @@
+Sun++ has been removed from the trunk because it is not maintained. You can  
+obtain sun++ from their SVN at http://svn.assembla.com/svn/sunplusplus/Trunk
+Checkout sun++ to this directory
+
+Linux:
+Open trunk/src/Makefile.am, add sun++ to the end of the line.
+Build as normal.
+
+Winodws
+Checkout Sun++ into this directory and build like normal.
