@@ -26,34 +26,34 @@
 #include <string>
 //#include <fstream>
 
-#include "../ascent-shared/Common.h"
-#include "../ascent-shared/MersenneTwister.h"
-#include "../ascent-shared/WorldPacket.h"
-#include "../ascent-shared/Log.h"
-#include "../ascent-shared/NGLog.h"
-#include "../ascent-shared/ByteBuffer.h"
-#include "../ascent-shared/StackBuffer.h"
-#include "../ascent-shared/Config/ConfigEnv.h"
-#include "../ascent-shared/crc32.h"
-#include "../ascent-shared/LocationVector.h"
+#include "../arcemu-shared/Common.h"
+#include "../arcemu-shared/MersenneTwister.h"
+#include "../arcemu-shared/WorldPacket.h"
+#include "../arcemu-shared/Log.h"
+#include "../arcemu-shared/NGLog.h"
+#include "../arcemu-shared/ByteBuffer.h"
+#include "../arcemu-shared/StackBuffer.h"
+#include "../arcemu-shared/Config/ConfigEnv.h"
+#include "../arcemu-shared/crc32.h"
+#include "../arcemu-shared/LocationVector.h"
 
 #include <zlib.h>
 
-#include "../ascent-shared/Database/DatabaseEnv.h"
-#include "../ascent-shared/Database/DBCStores.h"
-#include "../ascent-shared/Database/dbcfile.h"
-#include "../ascent-shared/FastQueue.h"
+#include "../arcemu-shared/Database/DatabaseEnv.h"
+#include "../arcemu-shared/Database/DBCStores.h"
+#include "../arcemu-shared/Database/dbcfile.h"
+#include "../arcemu-shared/FastQueue.h"
 
 #include <Network/Network.h>
 
-#include "../ascent-shared/Auth/MD5.h"
-#include "../ascent-shared/Auth/BigNumber.h"
-#include "../ascent-shared/Auth/Sha1.h"
-#include "../ascent-shared/Auth/WowCrypt.h"
-#include "../ascent-shared/CrashHandler.h"
+#include "../arcemu-shared/Auth/MD5.h"
+#include "../arcemu-shared/Auth/BigNumber.h"
+#include "../arcemu-shared/Auth/Sha1.h"
+#include "../arcemu-shared/Auth/WowCrypt.h"
+#include "../arcemu-shared/CrashHandler.h"
 
-#include "../ascent-world/Opcodes.h"
-#include "../ascent-shared/CallBack.h"
+#include "../arcemu-world/Opcodes.h"
+#include "../arcemu-shared/CallBack.h"
 
 #include "Master.h"
 #include "WorkerOpcodes.h"
@@ -66,5 +66,5 @@
 #include "ClientManager.h"
 #include "LogonCommClient.h"
 #include "LogonCommHandler.h"
-#include "../ascent-shared/Storage.h"
+#include "../arcemu-shared/Storage.h"
 #include "ObjectStorage.h"
