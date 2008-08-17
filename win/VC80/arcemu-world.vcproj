@@ -954,6 +954,10 @@
 			>
 		</File>
 		<File
+			RelativePath="..\..\src\arcemu-world\Packets.h"
+			>
+		</File>
+		<File
 			RelativePath="..\..\src\arcemu-world\Pet.cpp"
 			>
 		</File>
@@ -1023,6 +1027,10 @@
 		</File>
 		<File
 			RelativePath="..\..\src\arcemu-world\ScriptMgr.h"
+			>
+		</File>
+		<File
+			RelativePath="..\..\src\arcemu-world\ScriptSetup.h"
 			>
 		</File>
 		<File

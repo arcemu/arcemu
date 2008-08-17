@@ -548,6 +548,10 @@
 				RelativePath="..\..\src\arcemu-shared\Network\CircularBuffer.cpp"
 				>
 			</File>
+			<File
+				RelativePath="..\..\src\arcemu-shared\Network\CircularBuffer.h"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="Threading"
