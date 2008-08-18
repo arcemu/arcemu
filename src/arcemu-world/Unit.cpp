@@ -294,9 +294,9 @@ Unit::Unit()
 	memset(m_auras, 0, (MAX_AURAS+MAX_PASSIVE_AURAS)*sizeof(Aura*));
 	
 	// diminishing return stuff
-	memset(m_diminishAuraCount, 0, 23);
-	memset(m_diminishCount, 0, 23*2);
-	memset(m_diminishTimer, 0, 23*2);
+	memset(m_diminishAuraCount, 0, 14);
+	memset(m_diminishCount, 0, 14*2);
+	memset(m_diminishTimer, 0, 14*2);
 	memset(m_auraStackCount, 0, MAX_AURAS);
 	m_diminishActive = false;
 	dynObj = 0;
@@ -415,7 +415,7 @@ void Unit::Update( uint32 p_time )
 		if(m_diminishActive)
 		{
 			uint32 count = 0;
-			for(uint32 x = 0; x < 11; ++x)
+			for(uint32 x = 0; x < 14; ++x)
 			{
 				// diminishing return stuff
 				if(m_diminishTimer[x] && !m_diminishAuraCount[x])

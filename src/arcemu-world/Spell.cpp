@@ -4923,6 +4923,12 @@ void ApplyDiminishingReturnTimer(uint32 * Duration, Unit * Target, SpellEntry * 
 		if (( Target->IsPlayer() || Target->IsPet() ) && Dur > 10000)
 		{
 			Dur = 10000;
+
+			// for this group only lower duration to 10s
+			if (status == DIMINISHING_GROUP_NOT_DIMINISHED) {
+				*Duration = FL2UINT(Dur);
+				return;
+			}
 		}
 		break;
 
@@ -5033,21 +5039,21 @@ uint32 GetDiminishingGroup(uint32 NameHash)
 
 	case SPELL_HASH_ENTANGLING_ROOTS:
 	case SPELL_HASH_FROST_NOVA:
-		grp = DIMINISHING_GROUP_ROOT;
+			grp = DIMINISHING_GROUP_ROOT;
 		break;
 
 	case SPELL_HASH_IMPROVED_WING_CLIP:	
 	case SPELL_HASH_FROSTBITE:
 	case SPELL_HASH_IMPROVED_HAMSTRING:
 	case SPELL_HASH_ENTRAPMENT:
-		grp = DIMINISHING_GROUP_ROOT_PROC;
+			grp = DIMINISHING_GROUP_ROOT_PROC;
 		break;
 
 	case SPELL_HASH_HIBERNATE:
  	case SPELL_HASH_WYVERN_STING:
+ 	case SPELL_HASH_SLEEP:
  	case SPELL_HASH_RECKLESS_CHARGE:		//Gobling Rocket Helmet
-	case SPELL_HASH_FREEZING_TRAP_EFFECT:
-		grp = DIMINISHING_GROUP_SLEEP;
+			grp = DIMINISHING_GROUP_SLEEP;
 		break;
 
 	case SPELL_HASH_CYCLONE:
@@ -5058,6 +5064,7 @@ uint32 GetDiminishingGroup(uint32 NameHash)
 		}break;
 
 	case SPELL_HASH_GOUGE:
+	case SPELL_HASH_REPENTANCE:			// Repentance
 	case SPELL_HASH_SAP:
 	case SPELL_HASH_POLYMORPH:				// Polymorph
 	case SPELL_HASH_POLYMORPH__CHICKEN:		// Chicken
@@ -5065,18 +5072,19 @@ uint32 GetDiminishingGroup(uint32 NameHash)
 	case SPELL_HASH_POLYMORPH__TURTLE:		// Turtle
 	case SPELL_HASH_POLYMORPH__SHEEP:		// Good ol' sheep
 	case SPELL_HASH_MAIM:					// Maybe here?
-		grp = DIMINISHING_GROUP_GOUGE_POLY_SAP;
+			grp = DIMINISHING_GROUP_GOUGE_POLY_SAP;
 		break;
 
 	case SPELL_HASH_FEAR:
 	case SPELL_HASH_PSYCHIC_SCREAM:
 	case SPELL_HASH_SEDUCTION:
 	case SPELL_HASH_HOWL_OF_TERROR:
-		grp = DIMINISHING_GROUP_FEAR;
+			grp = DIMINISHING_GROUP_FEAR;
 		break;
 
+	case SPELL_HASH_ENSLAVE_DEMON:			// Enslave Demon
 	case SPELL_HASH_MIND_CONTROL:
-		grp = DIMINISHING_GROUP_CHARM;		//Charm???
+			grp = DIMINISHING_GROUP_CHARM;		//Charm???
 		break;
 
 	case SPELL_HASH_KIDNEY_SHOT:
@@ -5086,8 +5094,26 @@ uint32 GetDiminishingGroup(uint32 NameHash)
 		}break;
 
 	case SPELL_HASH_DEATH_COIL:
-		grp = DIMINISHING_GROUP_HORROR;
+			grp = DIMINISHING_GROUP_HORROR;
 		break;
+	
+
+	case SPELL_HASH_BANISH:					// Banish
+			grp = DIMINISHING_GROUP_BANISH;
+		break;
+
+	// group where only 10s limit is pvp is applied, not DR
+	case SPELL_HASH_FREEZING_TRAP_EFFECT:	// Freezing Trap Effect
+	case SPELL_HASH_HAMSTRING:	// Hamstring
+		{
+			grp = DIMINISHING_GROUP_NOT_DIMINISHED;
+		}break;
+
+	case SPELL_HASH_RIPOSTE:			// Riposte
+	case SPELL_HASH_DISARM:			// Disarm
+		{
+			grp = DIMINISHING_GROUP_DISARM;
+		}break;
 	}
 
 	uint32 ret;
