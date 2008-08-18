@@ -115,7 +115,9 @@ void Pet::CreateAsSummon(uint32 entry, CreatureInfo *ci, Creature* created_from_
 	m_Owner = owner;
 	m_OwnerGuid = m_Owner->GetGUID();
 	creature_info = ci;
-	myFamily = dbcCreatureFamily.LookupEntry(GetCreatureInfo()->Family);
+	if( GetCreatureInfo() )
+		myFamily = dbcCreatureFamily.LookupEntry(GetCreatureInfo()->Family);
+	else myFamily = NULL;
 	//m_name = objmgr.GetCreatureFamilyName(myFamily->ID);
 	if( myFamily == NULL || myFamily->name == NULL )
 		m_name = "Pet";
@@ -565,7 +567,9 @@ void Pet::InitializeMe(bool first)
 	m_Owner->SetUInt64Value(UNIT_FIELD_SUMMON, this->GetGUID());
 	SetUInt32Value(UNIT_FIELD_PETNUMBER, GetUIdFromGUID());
 	SetUInt32Value(UNIT_FIELD_PET_NAME_TIMESTAMP, (uint32)UNIXTIME);
-	myFamily = dbcCreatureFamily.LookupEntry(GetCreatureInfo()->Family);
+	if( GetCreatureInfo() )
+		myFamily = dbcCreatureFamily.LookupEntry(GetCreatureInfo()->Family);
+	else myFamily = NULL;
 	bHasLoyalty = m_Owner->getClass() == HUNTER ? true : false;
 	SetPetDiet();
 	_setFaction();
@@ -822,7 +826,10 @@ void Pet::SetDefaultSpells()
 	else
 	{
 
-		uint32 Line = GetCreatureInfo()->SpellDataID;
+		uint32 Line;
+		if( GetCreatureInfo() )
+			Line = GetCreatureInfo()->SpellDataID;
+		else Line = 0;
 		if(Line)
 		{
 			CreatureSpellDataEntry * SpellData = dbcCreatureSpellData.LookupEntry(Line);
