@@ -31,6 +31,18 @@ Item::Item()//this is called when constructing as container
 	m_valuesCount = ITEM_END;
 	m_uint32Values = _fields;
 	m_updateMask.SetCount(ITEM_END);
+	random_prop = 0;
+	random_suffix = 0;
+	m_mapMgr = 0;
+	m_mapCell = 0;
+	mSemaphoreTeleport = false;
+	m_faction = NULL;
+	m_factionDBC = NULL;
+	m_instanceId = 0;
+	Active = false;
+	m_inQueue = false;
+	m_extensions = NULL;
+	m_loadedFromDB = false;
 }
 
 //called instead of parametrized constructor

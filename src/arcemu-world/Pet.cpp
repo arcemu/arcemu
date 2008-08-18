@@ -1768,7 +1768,7 @@ AI_Spell * Pet::HandleAutoCastEvent()
 	{
 		itr = itr2;
 		itr2++;
-		size = m_autoCastSpells[ AUTOCAST_EVENT_ATTACK ].size();
+		size = (uint32)m_autoCastSpells[ AUTOCAST_EVENT_ATTACK ].size();
 		if( size > 1 )
 			chance = Rand( 100.0f / float( size ) );
 		
