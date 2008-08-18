@@ -2,8 +2,8 @@
 #define _SPEED_DETECTOR_H_
 
 #define SPDT_SAMPLINGRATE				1000	// there is no point flooding calculations	
-#define SPDT_DETECTION_ERROR			0.90f	// ex: 10% for a speed=7 => 0.7 max speed cheat
-#define CHEAT_ALARMS_TO_TRIGGER_CHEAT	3		// if x alarms stack up over time then it is time to kick the player
+#define SPDT_DETECTION_ERROR			0.70f	// ex: 10% for a speed=7 => 0.7 max speed cheat
+#define CHEAT_ALARMS_TO_TRIGGER_CHEAT	5		// if x alarms stack up over time then it is time to kick the player
 
 // problem : some players advance more then others by using speed cheat
 // solution : check the amount of advance a player does over time to see if it is higher then should be
