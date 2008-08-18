@@ -3312,11 +3312,6 @@ void ApplyExtraDataFixes()
 	if( sp != NULL )
 		sp->in_front_status = SPELL_INFRONT_STATUS_REQUIRE_INFRONT;
 
-	// Spell 15534 (Polymorph ) is infront from spell extra.
-	sp = dbcSpell.LookupEntryForced(15534);
-	if( sp != NULL )
-		sp->in_front_status = SPELL_INFRONT_STATUS_REQUIRE_INFRONT;
-
 	// Spell 15536 (Fireball ) is infront from spell extra.
 	sp = dbcSpell.LookupEntryForced(15536);
 	if( sp != NULL )
@@ -7192,11 +7187,6 @@ void ApplyExtraDataFixes()
 	if( sp != NULL )
 		sp->in_front_status = SPELL_INFRONT_STATUS_REQUIRE_INFRONT;
 
-	// Spell 27760 (Polymorph ) is infront from spell extra.
-	sp = dbcSpell.LookupEntryForced(27760);
-	if( sp != NULL )
-		sp->in_front_status = SPELL_INFRONT_STATUS_REQUIRE_INFRONT;
-
 	// Spell 27794 (Cleave ) is infront from spell extra.
 	sp = dbcSpell.LookupEntryForced(27794);
 	if( sp != NULL )
@@ -7559,11 +7549,6 @@ void ApplyExtraDataFixes()
 
 	// Spell 29722 (Incinerate Rank 1) is infront from spell extra.
 	sp = dbcSpell.LookupEntryForced(29722);
-	if( sp != NULL )
-		sp->in_front_status = SPELL_INFRONT_STATUS_REQUIRE_INFRONT;
-
-	// Spell 29848 (Polymorph ) is infront from spell extra.
-	sp = dbcSpell.LookupEntryForced(29848);
 	if( sp != NULL )
 		sp->in_front_status = SPELL_INFRONT_STATUS_REQUIRE_INFRONT;
 
