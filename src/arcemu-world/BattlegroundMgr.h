@@ -224,6 +224,12 @@ public:
 
 	/* Creates an arena with groups group1 and group2 */
 	int CreateArenaType(int type, Group * group1, Group * group2);
+
+	/* Add player to bg team */
+	void AddPlayerToBgTeam(CBattleground * bg, deque<uint32> *playerVec, uint32 i, uint32 j, int Team);
+
+	/* Add player to bg */
+	void AddPlayerToBg(CBattleground * bg, deque<uint32> *playerVec, uint32 i, uint32 j);
 };
 
 class CBattleground : public EventableObject
@@ -341,7 +347,23 @@ public:
 	ARCEMU_INLINE bool IsFull() { return !(HasFreeSlots(0,m_type) || HasFreeSlots(1,m_type)); }
 
 	/* Are we full? */
-	bool HasFreeSlots(uint32 Team, uint32 type) {m_mainLock.Acquire(); bool res = ((m_players[Team].size() + m_pendPlayers[Team].size()) < BGMaximumPlayers[type]); m_mainLock.Release(); return res; }
+	bool HasFreeSlots(uint32 Team, uint32 type) {
+		bool res;
+		m_mainLock.Acquire();
+		if (type >= BATTLEGROUND_ARENA_2V2 && type <= BATTLEGROUND_ARENA_5V5)
+		{
+			res = ((uint32)m_players[Team].size() + m_pendPlayers[Team].size() < BGMaximumPlayers[type]);
+		}
+		else
+		{
+			uint32 size[2];
+			size[0] = (uint32)m_players[0].size() + m_pendPlayers[0].size();
+			size[1] = (uint32)m_players[1].size() + m_pendPlayers[1].size();
+			res = (size[Team] < BGMaximumPlayers[type]) && (((int)size[Team] - (int)size[1-Team]) <= 0);
+		}
+		m_mainLock.Release();
+		return res; 
+	}
 
 	/* Add Player */
 	void AddPlayer(Player * plr, uint32 team);

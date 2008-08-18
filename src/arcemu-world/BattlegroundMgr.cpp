@@ -380,6 +380,45 @@ int CBattlegroundManager::CreateArenaType(int type, Group * group1, Group * grou
 	return 0;
 }
 
+void CBattlegroundManager::AddPlayerToBg(CBattleground * bg, deque<uint32> *playerVec, uint32 i, uint32 j)
+{
+	uint32 plrguid = *playerVec->begin();
+	playerVec->pop_front();
+	Player *plr = objmgr.GetPlayer(plrguid);
+	if(plr) {
+		if(bg->CanPlayerJoin(plr,bg->GetType()))
+		{
+			bg->AddPlayer(plr, plr->GetTeam());
+			ErasePlayerFromList(plr->GetLowGUID(), &m_queuedPlayers[i][j]);
+		}
+		else 
+		{
+			// Put again the player in the queue
+			playerVec->push_back(plrguid);
+		}
+	}
+	else
+	{
+		ErasePlayerFromList(plrguid, &m_queuedPlayers[i][j]);
+	}
+}
+
+void CBattlegroundManager::AddPlayerToBgTeam(CBattleground * bg, deque<uint32> *playerVec, uint32 i, uint32 j, int Team)
+{
+	if (bg->HasFreeSlots(Team,bg->GetType()))
+	{
+		uint32 plrguid = *playerVec->begin();
+		playerVec->pop_front();
+		Player *plr = objmgr.GetPlayer(plrguid);
+		if(plr)
+		{
+			plr->m_bgTeam=Team;
+			bg->AddPlayer(plr, Team);
+		}
+		ErasePlayerFromList(plrguid, &m_queuedPlayers[i][j]);
+	}
+}
+
 void CBattlegroundManager::EventQueueUpdate(bool forceStart)
 {
 	deque<uint32> tempPlayerVec[2];
@@ -387,7 +426,6 @@ void CBattlegroundManager::EventQueueUpdate(bool forceStart)
 	Player * plr;
 	CBattleground * bg;
 	list<uint32>::iterator it3, it4;
-	//vector<Player*>::iterator it6;
 	map<uint32, CBattleground*>::iterator iitr;
 	Arena * arena;
 	int32 team;
@@ -443,7 +481,7 @@ void CBattlegroundManager::EventQueueUpdate(bool forceStart)
 				{
 					if(IS_ARENA(i))
 						tempPlayerVec[0].push_back(plrguid);
-					else
+					else if (!plr->HasAura(BG_DESERTER))
 						tempPlayerVec[plr->GetTeam()].push_back(plrguid);
 				}
 			}
@@ -467,42 +505,22 @@ void CBattlegroundManager::EventQueueUpdate(bool forceStart)
 						tempPlayerVec[0].pop_front();
 						plr = objmgr.GetPlayer(plrguid);
 						if(plr)
-				{
-							plr->m_bgTeam=team;
-						arena->AddPlayer(plr, team);
-						team = arena->GetFreeTeam();
-					}
-						ErasePlayerFromList(plrguid, &m_queuedPlayers[i][j]);
-				}
-			}
-			else
-			{
-					bg = iitr->second;
-					for(k = 0; k < 2; ++k)
-				{
-						int size = (int)tempPlayerVec[k].size();
-						for(int counter = 0; counter < size; counter++)
 						{
-							plrguid = *tempPlayerVec[k].begin();
-							tempPlayerVec[k].pop_front();
-							plr = objmgr.GetPlayer(plrguid);
-							if(plr) {
-								if(bg->CanPlayerJoin(plr,bg->GetType()))
-								{
-									bg->AddPlayer(plr, plr->GetTeam());
-									ErasePlayerFromList(plr->GetLowGUID(), &m_queuedPlayers[i][j]);
-								}
-								else 
-								{
-									// Put again the player in the queue
-									tempPlayerVec[k].push_back(plrguid);
-								}
-							}
-							else
-							{
-								ErasePlayerFromList(plrguid, &m_queuedPlayers[i][j]);
-							}
+							plr->m_bgTeam=team;
+							arena->AddPlayer(plr, team);
+							team = arena->GetFreeTeam();
 						}
+						ErasePlayerFromList(plrguid, &m_queuedPlayers[i][j]);
+					}
+				}
+				else
+				{
+					bg = iitr->second;
+					int size = min(tempPlayerVec[0].size(),tempPlayerVec[1].size());
+					for(int counter = 0; (counter < size) && (bg->IsFull() == false); counter++)
+					{
+						AddPlayerToBg(bg, &tempPlayerVec[0], i, j);
+						AddPlayerToBg(bg, &tempPlayerVec[1], i, j);
 					}
 				}
 			}
@@ -513,16 +531,17 @@ void CBattlegroundManager::EventQueueUpdate(bool forceStart)
 				if(!forceStart && tempPlayerVec[0].size() < BGMinimumPlayers[i])
 					continue;
 
-					if(CanCreateInstance(i,j))
-					{
+				if(CanCreateInstance(i,j))
+				{
 					arena = ((Arena*)CreateInstance(i, j));
 					if ( arena == NULL )
-						{
-							Log.Error("BattlegroundMgr", "%s (%u): Couldn't create Arena Instance", __FILE__, __LINE__);
-							m_queueLock.Release();
-							m_instanceLock.Release();
- 							return;
-						}
+					{
+						Log.Error("BattlegroundMgr", "%s (%u): Couldn't create Arena Instance", __FILE__, __LINE__);
+						m_queueLock.Release();
+						m_instanceLock.Release();
+ 						return;
+					}
+
 					team = arena->GetFreeTeam();
 					while(!arena->IsFull() && tempPlayerVec[0].size() && team >= 0)
 					{
@@ -549,8 +568,6 @@ void CBattlegroundManager::EventQueueUpdate(bool forceStart)
 					if(CanCreateInstance(i,j))
 					{
 						bg = CreateInstance(i,j);
-
-						//ASSERT(bg);
 						if ( bg == NULL )
 						{
 							m_queueLock.Release();
@@ -559,20 +576,23 @@ void CBattlegroundManager::EventQueueUpdate(bool forceStart)
 						}
 
 						// push as many as possible in
-						for(k = 0; k < 2; ++k)
+						if (forceStart)
 						{
-							while(tempPlayerVec[k].size() && bg->HasFreeSlots(k,bg->GetType()))
+							for(k = 0; k < 2; ++k)
 							{
-								plrguid = *tempPlayerVec[k].begin();
-								tempPlayerVec[k].pop_front();
-								plr = objmgr.GetPlayer(plrguid);
-
-								if(plr)
+								while(tempPlayerVec[k].size() && bg->HasFreeSlots(k, bg->GetType()))
 								{
-								plr->m_bgTeam=k;
-								bg->AddPlayer(plr, k);
+									AddPlayerToBgTeam(bg, &tempPlayerVec[k], i, j, k);
 								}
-								ErasePlayerFromList(plrguid, &m_queuedPlayers[i][j]);
+							}
+						}
+						else
+						{
+							int size = min(tempPlayerVec[0].size(),tempPlayerVec[1].size());
+							for(int counter = 0; (counter < size) && (bg->IsFull() == false); counter++)
+							{
+								AddPlayerToBgTeam(bg, &tempPlayerVec[0], i, j, 0);
+								AddPlayerToBgTeam(bg, &tempPlayerVec[1], i, j, 1);
 							}
 						}
 					}
