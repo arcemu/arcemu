@@ -262,6 +262,8 @@ Pet::~Pet()
 	for(std::map<uint32, AI_Spell*>::iterator itr = m_AISpellStore.begin(); itr != m_AISpellStore.end(); ++itr)
 		delete itr->second;
 
+	m_mapMgr->m_PetStorage.erase( this->GetUIdFromGUID() );
+
 	if(IsInWorld())
 		this->Remove(false, true, true);
 }
