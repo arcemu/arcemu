@@ -78,6 +78,9 @@ public:
 	//insert into free object list
 	void PooledDelete(T* dumped)
 	{
+		if( !dumped )
+			return; //shit happens, in too many forms sadly
+
 		if( dumped->m_bufferPoolId == OBJECT_WAS_ALLOCATED_STANDARD_WAY )
 		{
 			sLog.outDebug("Object was not created from pool and we are inserting it!");
