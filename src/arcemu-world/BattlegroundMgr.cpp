@@ -635,7 +635,7 @@ void CBattlegroundManager::EventQueueUpdate(bool forceStart)
 				{
 					teamids[1] = GetArenaGroupQInfo(group2, i, &avgRating[1]);
 					uint32 delta = abs((int32)avgRating[0] - (int32)avgRating[1]);
-					if (teamids[0] != teamids[1] && delta <= 150)
+					if (teamids[0] != teamids[1] && delta <= sWorld.ArenaQueueDiff)
 					{
 						possibleGroups.push_back(group2->GetID());
 					}

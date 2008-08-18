@@ -389,6 +389,7 @@ public:
 	uint32 HordePlayers;
 	uint32 AlliancePlayers;
 	uint32 PeakSessionCount;
+	uint32 ArenaQueueDiff;
 	bool SendStatsOnJoin;
 	SessionSet gmList;
 
