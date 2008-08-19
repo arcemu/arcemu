@@ -29,7 +29,7 @@ class Map;
 #define MAKE_CELL_EVENT(x,y) ( ((x) * 1000) + 200 + y )
 #define DECODE_CELL_EVENT(dest_x, dest_y, ev) (dest_x) = ((ev-200)/1000); (dest_y) = ((ev-200)%1000);
 
-class MapCell
+class SERVER_DECL MapCell
 {
 	friend class MapMgr;
 public:
