@@ -141,8 +141,10 @@
           </Layer>
         </Layers>
         <Scripts>
-          <OnLoad>this:SetAutoFocus(false);</OnLoad>
-          <OnEscapePressed>WeaponSkillLevel:ClearFocus();</OnEscapePressed>
+          <OnLoad>this:SetAutoFocus(false);
+</OnLoad>
+          <OnEscapePressed>WeaponSkillLevel:ClearFocus();
+</OnEscapePressed>
         </Scripts>
         <FontString font="Fonts\ARIALN.TTF">
           <FontHeight>
@@ -170,7 +172,7 @@
           </Anchor>
         </Anchors>
         <Scripts>
-          <OnClick>WepskForm:Hide(); SkillForm:Show();
+          <OnClick>WepskForm:Hide(); SkillForm:Show(); WeaponSkillLevel:SetText("");
 </OnClick>
         </Scripts>
         <NormalTexture file="Interface\Buttons\UI-Panel-Button-Up">
@@ -660,7 +662,8 @@
           </Anchor>
         </Anchors>
         <Scripts>
-          <OnClick>LearnCrossbows();</OnClick>
+          <OnClick>LearnCrossbows();
+</OnClick>
         </Scripts>
         <NormalTexture file="Interface\Buttons\UI-Panel-Button-Up">
           <TexCoords left="0" right="0.625" top="0" bottom="0.6875" />
@@ -799,7 +802,8 @@
           </Anchor>
         </Anchors>
         <Scripts>
-          <OnClick>LearnPolarms();</OnClick>
+          <OnClick>LearnPolarms();
+</OnClick>
         </Scripts>
         <NormalTexture file="Interface\Buttons\UI-Panel-Button-Up">
           <TexCoords left="0" right="0.625" top="0" bottom="0.6875" />

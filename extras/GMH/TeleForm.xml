@@ -109,7 +109,8 @@
           </Anchor>
         </Anchors>
         <Scripts>
-          <OnClick>TeleForm:Hide(); OpenMain();</OnClick>
+          <OnClick>TeleForm:Hide(); OpenMain(); ToPlayerName:SetText(""); ZoneName:SetText(""); MapID:SetText(""); XCord:SetText(""); YCord:SetText(""); ZCord:SetText("");
+</OnClick>
         </Scripts>
         <NormalTexture file="Interface\Buttons\UI-Panel-Button-Up">
           <TexCoords left="0" right="0.625" top="0" bottom="0.6875" />
@@ -1284,7 +1285,7 @@
         </Anchors>
         <Scripts>
           <OnClick>ToPlayerName:ClearFocus();
-</OnClick>
+ GPS();</OnClick>
         </Scripts>
         <NormalTexture file="Interface\Buttons\UI-Panel-Button-Up">
           <TexCoords left="0" right="0.625" top="0" bottom="0.6875" />

@@ -6,7 +6,7 @@
       <AbsDimension x="192" y="478" />
     </Size>
     <Anchors>
-      <Anchor point="CENTER" relativeTo="UIParent">
+      <Anchor point="RIGHT" relativeTo="UIParent">
         <Offset>
           <AbsDimension x="0" y="0" />
         </Offset>
@@ -63,7 +63,7 @@
       </Layer>
     </Layers>
     <Frames>
-      <EditBox name="$parentSinglelineEditBox1" enableMouse="true">
+      <EditBox name="FlyEntry" enableMouse="true">
         <!--<FrameSkin skinid="dcb143e1-a4ab-4e7c-b934-1efa40101d21" frameid="2d508887-59c2-4f83-ae10-27aaad48391b" />-->
         <Size>
           <AbsDimension x="75" y="32" />
@@ -107,6 +107,12 @@
             </Texture>
           </Layer>
         </Layers>
+        <Scripts>
+          <OnLoad>this:SetAutoFocus(false);
+</OnLoad>
+          <OnEscapePressed>FlyEntry:ClearFocus();
+</OnEscapePressed>
+        </Scripts>
         <FontString font="Fonts\ARIALN.TTF">
           <FontHeight>
             <AbsValue val="14" />
@@ -120,7 +126,7 @@
           </Shadow>
         </FontString>
       </EditBox>
-      <Button name="$parentButton1" text="Status">
+      <Button name="OverStatsBtn" text="Status">
         <!--<FrameSkin skinid="dcb143e1-a4ab-4e7c-b934-1efa40101d21" frameid="2d508884-59c2-4f83-ae10-27aaad48391b" />-->
         <Size>
           <AbsDimension x="143" y="22" />
@@ -132,6 +138,10 @@
             </Offset>
           </Anchor>
         </Anchors>
+        <Scripts>
+          <OnClick>CheatStatus()
+</OnClick>
+        </Scripts>
         <NormalTexture file="Interface\Buttons\UI-Panel-Button-Up">
           <TexCoords left="0" right="0.625" top="0" bottom="0.6875" />
         </NormalTexture>
@@ -186,7 +196,7 @@
           </Shadow>
         </DisabledFont>
       </Button>
-      <CheckButton name="$parentCheckButton1">
+      <CheckButton name="TaxiCheck">
         <!--<FrameSkin skinid="f15d4970-d66d-444e-bb2d-1ad102c87fed" frameid="f15d4974-d66d-444e-bb2d-1ad102c87fed" />-->
         <Size>
           <AbsDimension x="32" y="32" />
@@ -206,7 +216,7 @@
         <CheckedTexture file="Interface\Buttons\UI-CheckBox-Check" />
         <DisabledCheckedTexture file="Interface\Buttons\UI-CheckBox-Check-Disabled" />
       </CheckButton>
-      <Frame name="$parentComponent1">
+      <Frame name="TaxiLbl">
         <!--<FrameSkin skinid="dcb143e1-a4ab-4e7c-b934-1efa40101d21" frameid="2d508885-59c2-4f83-ae10-27aaad48391b" />-->
         <Size>
           <AbsDimension x="105" y="32" />
@@ -239,7 +249,7 @@
           </Layer>
         </Layers>
       </Frame>
-      <CheckButton name="$parentComponent2">
+      <CheckButton name="NCDCheck">
         <!--<FrameSkin skinid="f15d4970-d66d-444e-bb2d-1ad102c87fed" frameid="f15d4974-d66d-444e-bb2d-1ad102c87fed" />-->
         <Size>
           <AbsDimension x="32" y="32" />
@@ -259,7 +269,7 @@
         <CheckedTexture file="Interface\Buttons\UI-CheckBox-Check" />
         <DisabledCheckedTexture file="Interface\Buttons\UI-CheckBox-Check-Disabled" />
       </CheckButton>
-      <Frame name="$parentComponent3">
+      <Frame name="NCDLbl">
         <!--<FrameSkin skinid="dcb143e1-a4ab-4e7c-b934-1efa40101d21" frameid="2d508885-59c2-4f83-ae10-27aaad48391b" />-->
         <Size>
           <AbsDimension x="105" y="32" />
@@ -292,7 +302,7 @@
           </Layer>
         </Layers>
       </Frame>
-      <CheckButton name="$parentComponent4">
+      <CheckButton name="NCTCheck">
         <!--<FrameSkin skinid="f15d4970-d66d-444e-bb2d-1ad102c87fed" frameid="f15d4974-d66d-444e-bb2d-1ad102c87fed" />-->
         <Size>
           <AbsDimension x="32" y="32" />
@@ -312,7 +322,7 @@
         <CheckedTexture file="Interface\Buttons\UI-CheckBox-Check" />
         <DisabledCheckedTexture file="Interface\Buttons\UI-CheckBox-Check-Disabled" />
       </CheckButton>
-      <Frame name="$parentComponent5">
+      <Frame name="NCTLbl">
         <!--<FrameSkin skinid="dcb143e1-a4ab-4e7c-b934-1efa40101d21" frameid="2d508885-59c2-4f83-ae10-27aaad48391b" />-->
         <Size>
           <AbsDimension x="105" y="32" />
@@ -345,7 +355,7 @@
           </Layer>
         </Layers>
       </Frame>
-      <CheckButton name="$parentComponent6">
+      <CheckButton name="GodCheck">
         <!--<FrameSkin skinid="f15d4970-d66d-444e-bb2d-1ad102c87fed" frameid="f15d4974-d66d-444e-bb2d-1ad102c87fed" />-->
         <Size>
           <AbsDimension x="32" y="32" />
@@ -365,7 +375,7 @@
         <CheckedTexture file="Interface\Buttons\UI-CheckBox-Check" />
         <DisabledCheckedTexture file="Interface\Buttons\UI-CheckBox-Check-Disabled" />
       </CheckButton>
-      <Frame name="$parentComponent7">
+      <Frame name="GodLbl">
         <!--<FrameSkin skinid="dcb143e1-a4ab-4e7c-b934-1efa40101d21" frameid="2d508885-59c2-4f83-ae10-27aaad48391b" />-->
         <Size>
           <AbsDimension x="105" y="32" />
@@ -398,7 +408,7 @@
           </Layer>
         </Layers>
       </Frame>
-      <CheckButton name="$parentComponent8">
+      <CheckButton name="FlyCheck">
         <!--<FrameSkin skinid="f15d4970-d66d-444e-bb2d-1ad102c87fed" frameid="f15d4974-d66d-444e-bb2d-1ad102c87fed" />-->
         <Size>
           <AbsDimension x="32" y="32" />
@@ -418,7 +428,7 @@
         <CheckedTexture file="Interface\Buttons\UI-CheckBox-Check" />
         <DisabledCheckedTexture file="Interface\Buttons\UI-CheckBox-Check-Disabled" />
       </CheckButton>
-      <Frame name="$parentComponent9">
+      <Frame name="PowLbl">
         <!--<FrameSkin skinid="dcb143e1-a4ab-4e7c-b934-1efa40101d21" frameid="2d508885-59c2-4f83-ae10-27aaad48391b" />-->
         <Size>
           <AbsDimension x="105" y="32" />
@@ -451,7 +461,7 @@
           </Layer>
         </Layers>
       </Frame>
-      <CheckButton name="$parentComponent10">
+      <CheckButton name="PowCheck">
         <!--<FrameSkin skinid="f15d4970-d66d-444e-bb2d-1ad102c87fed" frameid="f15d4974-d66d-444e-bb2d-1ad102c87fed" />-->
         <Size>
           <AbsDimension x="32" y="32" />
@@ -471,7 +481,7 @@
         <CheckedTexture file="Interface\Buttons\UI-CheckBox-Check" />
         <DisabledCheckedTexture file="Interface\Buttons\UI-CheckBox-Check-Disabled" />
       </CheckButton>
-      <Frame name="$parentComponent11">
+      <Frame name="FlyLbl">
         <!--<FrameSkin skinid="dcb143e1-a4ab-4e7c-b934-1efa40101d21" frameid="2d508885-59c2-4f83-ae10-27aaad48391b" />-->
         <Size>
           <AbsDimension x="26" y="32" />
@@ -504,7 +514,7 @@
           </Layer>
         </Layers>
       </Frame>
-      <CheckButton name="$parentComponent13">
+      <CheckButton name="AuraCheck">
         <!--<FrameSkin skinid="f15d4970-d66d-444e-bb2d-1ad102c87fed" frameid="f15d4974-d66d-444e-bb2d-1ad102c87fed" />-->
         <Size>
           <AbsDimension x="32" y="32" />
@@ -524,7 +534,7 @@
         <CheckedTexture file="Interface\Buttons\UI-CheckBox-Check" />
         <DisabledCheckedTexture file="Interface\Buttons\UI-CheckBox-Check-Disabled" />
       </CheckButton>
-      <Frame name="$parentComponent14">
+      <Frame name="AuraLbl">
         <!--<FrameSkin skinid="dcb143e1-a4ab-4e7c-b934-1efa40101d21" frameid="2d508885-59c2-4f83-ae10-27aaad48391b" />-->
         <Size>
           <AbsDimension x="105" y="32" />
@@ -557,7 +567,7 @@
           </Layer>
         </Layers>
       </Frame>
-      <CheckButton name="$parentComponent15">
+      <CheckButton name="TrigCheck">
         <!--<FrameSkin skinid="f15d4970-d66d-444e-bb2d-1ad102c87fed" frameid="f15d4974-d66d-444e-bb2d-1ad102c87fed" />-->
         <Size>
           <AbsDimension x="32" y="32" />
@@ -577,7 +587,7 @@
         <CheckedTexture file="Interface\Buttons\UI-CheckBox-Check" />
         <DisabledCheckedTexture file="Interface\Buttons\UI-CheckBox-Check-Disabled" />
       </CheckButton>
-      <Frame name="a">
+      <Frame name="TrigLbl">
         <!--<FrameSkin skinid="dcb143e1-a4ab-4e7c-b934-1efa40101d21" frameid="2d508885-59c2-4f83-ae10-27aaad48391b" />-->
         <Size>
           <AbsDimension x="105" y="32" />
@@ -610,7 +620,7 @@
           </Layer>
         </Layers>
       </Frame>
-      <Button name="$parentComponent16" text="Update">
+      <Button name="TaxiBtn" text="Update">
         <!--<FrameSkin skinid="dcb143e1-a4ab-4e7c-b934-1efa40101d21" frameid="2d508884-59c2-4f83-ae10-27aaad48391b" />-->
         <Size>
           <AbsDimension x="143" y="22" />
@@ -676,7 +686,7 @@
           </Shadow>
         </DisabledFont>
       </Button>
-      <Button name="$parentComponent17" text="Done">
+      <Button name="OverDoneBtn" text="Done">
         <!--<FrameSkin skinid="dcb143e1-a4ab-4e7c-b934-1efa40101d21" frameid="2d508884-59c2-4f83-ae10-27aaad48391b" />-->
         <Size>
           <AbsDimension x="143" y="22" />
@@ -688,6 +698,10 @@
             </Offset>
           </Anchor>
         </Anchors>
+        <Scripts>
+          <OnClick>OverridesForm:Hide(); FullForm:Show();
+</OnClick>
+        </Scripts>
         <NormalTexture file="Interface\Buttons\UI-Panel-Button-Up">
           <TexCoords left="0" right="0.625" top="0" bottom="0.6875" />
         </NormalTexture>
@@ -742,7 +756,7 @@
           </Shadow>
         </DisabledFont>
       </Button>
-      <Button name="$parentComponent12" text="Update">
+      <Button name="OverBtn" text="Update">
         <!--<FrameSkin skinid="dcb143e1-a4ab-4e7c-b934-1efa40101d21" frameid="2d508884-59c2-4f83-ae10-27aaad48391b" />-->
         <Size>
           <AbsDimension x="143" y="22" />
@@ -754,6 +768,10 @@
             </Offset>
           </Anchor>
         </Anchors>
+        <Scripts>
+          <OnClick>CheatUpdate()
+; FlyEntry:SetText("");</OnClick>
+        </Scripts>
         <NormalTexture file="Interface\Buttons\UI-Panel-Button-Up">
           <TexCoords left="0" right="0.625" top="0" bottom="0.6875" />
         </NormalTexture>
@@ -810,9 +828,12 @@
       </Button>
     </Frames>
     <Scripts>
-      <OnLoad>GMHelperOnLoad()</OnLoad>
-      <OnDragStart>this:StartMoving()</OnDragStart>
-      <OnDragStop>this:StopMovingOrSizing()</OnDragStop>
+      <OnLoad>GMHelperOnLoad()
+</OnLoad>
+      <OnDragStart>this:StartMoving()
+</OnDragStart>
+      <OnDragStop>this:StopMovingOrSizing()
+</OnDragStop>
     </Scripts>
   </Frame>
 </Ui>

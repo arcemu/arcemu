@@ -109,7 +109,8 @@
           </Anchor>
         </Anchors>
         <Scripts>
-          <OnClick>SpellForm:Hide(); OpenMain();</OnClick>
+          <OnClick>SpellForm:Hide(); OpenMain(); SpellNumber:SetText("");
+</OnClick>
         </Scripts>
         <NormalTexture file="Interface\Buttons\UI-Panel-Button-Up">
           <TexCoords left="0" right="0.625" top="0" bottom="0.6875" />
@@ -311,7 +312,7 @@
           </Anchor>
         </Anchors>
         <Scripts>
-          <OnClick>UnlearnSspell()
+          <OnClick>UnlearnSpell()
 </OnClick>
         </Scripts>
         <NormalTexture file="Interface\Buttons\UI-Panel-Button-Up">

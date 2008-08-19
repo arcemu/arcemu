@@ -11,10 +11,13 @@
 			</Offset>
 		</Anchor>
 	</Anchors>
+    <NormalTexture file = "Interface\AddOns\GMH\Textures\MMB_Up"/>
+    <PushedTexture file = "Interface\AddOns\GMH\Textures\MMB_Down"/>
 	<Layers>
 		<Layer level="BACKGROUND">
-			<Texture name="$parent_Texture" file="Interface\AddOns\GMHelper\icon">
-				<Size>
+			<!--Texture name="$parent_Texture" file="Interface\AddOns\GMHelper\Textures\MMB.jpg"-->
+            <Texture name="$parent_Texture">
+            	<Size>
 					<AbsDimension x="15" y="15"/>
 				</Size>
 				<Anchors>
@@ -58,7 +61,7 @@
 			TogleAddon()
 		</OnClick>
 <OnLoad>
-GMHelperOnLoad()
+this:RegisterForDrag("RightButton");
 </OnLoad>
 		<OnDragStart>
 				this:StartMoving();

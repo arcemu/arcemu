@@ -76,7 +76,8 @@
           </Anchor>
         </Anchors>
         <Scripts>
-          <OnClick>view=1;ViewForm:Hide();OpenMain();</OnClick>
+          <OnClick>view=1;ViewForm:Hide();OpenMain();
+</OnClick>
         </Scripts>
         <NormalTexture file="Interface\Buttons\UI-Panel-Button-Up">
           <TexCoords left="0" right="0.625" top="0" bottom="0.6875" />
@@ -145,7 +146,8 @@
           </Anchor>
         </Anchors>
         <Scripts>
-          <OnClick>view=3;ViewForm:Hide();OpenMain();</OnClick>
+          <OnClick>view=3;ViewForm:Hide();OpenMain();
+</OnClick>
         </Scripts>
         <NormalTexture file="Interface\Buttons\UI-Panel-Button-Up">
           <TexCoords left="0" right="0.625" top="0" bottom="0.6875" />
@@ -214,7 +216,8 @@
           </Anchor>
         </Anchors>
         <Scripts>
-          <OnClick>view=2;ViewForm:Hide();OpenMain();</OnClick>
+          <OnClick>view=2;ViewForm:Hide();OpenMain();
+</OnClick>
         </Scripts>
         <NormalTexture file="Interface\Buttons\UI-Panel-Button-Up">
           <TexCoords left="0" right="0.625" top="0" bottom="0.6875" />
@@ -272,7 +275,7 @@
       </Button>
     </Frames>
     <Scripts>
-      <OnLoad>GMHelperOnLoad()
+      <OnLoad>this:RegisterForDrag("RightButton");
 </OnLoad>
       <OnDragStart>this:StartMoving()
 </OnDragStart>

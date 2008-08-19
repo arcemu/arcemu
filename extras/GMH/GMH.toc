@@ -1,36 +1,62 @@
 ## Interface: 20400
-## Title: GM Addon
-## Author: Stephen Lovik(Omega) [Andrew Black (Bayk)]
-## Version: .86000a
-## Notes: GM Addon - Main Program [Eternal Vendetta Antrix GM Addon - Main Program]
-## eMail: Skate555@gmail.com [andrewfblack@gmail.com]
-## URL: http://www.null.com/ [http://www.bayksworld.com]
+## Title: GMH (GameMaster's Helper) v2.0.0
+## Author: Stephen "Skate" Lovik | Skyler "Maven"
+## Version: 2.0.0
+## Notes: An addon to manage GM commands in an A.R.C. Emu based World of Warcraft private server.
+## eMail: Skate555@gmail.com | Maven01@live.com
+## URL: http://svn.assembla.com/svn/sunplusplus/Branches/GMH/|http://mmoforge.org/svn/gmaddon|svn://arcemu.info/svn/arcemu/
 ## DefaultState: Enabled
 ## LoadOnDemand: 0
 ## SavedVariables: firstannounce,secondannounce,thirdeannounce,forthannounce,fifthannounce,view,TicketChannel,TicketPassword
 FullForm.xml
 MiniForm.xml
 MinipForm.xml
-GMHelper.lua
-CommForm.xml
-ItemForm.xml
-MiscForm.xml
-ObjectForm.xml
-TicketForm.xml
-TeleForm.xml
-ProfessionsForm.xml
-RidingForm.xml
-SkillForm.xml
-SpellForm.xml
-BanForm.xml
-NPCForm.xml
-AnnounceForm.xml
-PlayerForm.xml
-SpawnsForm.xml
 ViewForm.xml
-WepskForm.xml
 bindings.xml
-Skill2Form.xml
-GMHelper.xml
+MinimapButton.xml
+GMH.lua
+CommForm.xml
+CommScript.lua
+ItemForm.xml
+ItemScript.lua
+MiscForm.xml
+MiscScript.lua
+ObjectForm.xml
+ObjectScript.lua
+TicketForm.xml
+TicketScript.lua
+TeleForm.xml
+TeleScript.lua
+ProfessionsForm.xml
+ProfessionsScript.lua
+RidingForm.xml
+RidingScript.lua
+SkillForm.xml
+SkillScript.lua
+SpellForm.xml
+SpellScript.lua
+BanForm.xml
+BanScript.lua
+NPCForm.xml
+NPCScript.lua
+AnnounceForm.xml
+AnnounceScript.lua
+PlayerForm.xml
+PlayerScript.lua
+WepskForm.xml
+WepskScript.lua
 OverridesForm.xml
+OverridesScript.lua
+BattlegroundForm.xml
+BattlegroundScript.lua
+ModifyForm.xml
+ModifyScript.lua
+QuickItemForm.xml
+QuickItemScript.lua
+WaypointForm.xml
+WaypointScript.lua
+Skill2Form.xml
+Skill2Script.lua
 TicketShowForm.xml
+OptionsForm.xml
+OptionsScript.lua

@@ -1319,6 +1319,7 @@ FullForm:Show();
       </Button>
     </Frames>
     <Scripts>
+      <OnLoad>GMHelper_Loaded()</OnLoad>
       <OnShow>tB_Reset();
 </OnShow>
     </Scripts>

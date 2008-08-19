@@ -104,12 +104,12 @@
         <Anchors>
           <Anchor point="TOPLEFT">
             <Offset>
-              <AbsDimension x="44" y="-334" />
+              <AbsDimension x="51" y="-334" />
             </Offset>
           </Anchor>
         </Anchors>
         <Scripts>
-          <OnClick>BanForm:Hide(); OpenMain()
+          <OnClick>BanForm:Hide(); OpenMain(); CharName:SetText(""); BanReason:SetText("");
 </OnClick>
         </Scripts>
         <NormalTexture file="Interface\Buttons\UI-Panel-Button-Up">
