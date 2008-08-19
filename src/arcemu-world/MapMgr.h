@@ -87,6 +87,10 @@ class SERVER_DECL MapMgr : public CellHandler <MapCell>, public EventableObject,
 public:
 		
 	//This will be done in regular way soon
+	std::set< MapCell * > m_forcedcells;
+
+	void AddForcedCell( MapCell * c );
+	void RemoveForcedCell( MapCell * c );
 
 	Mutex m_objectinsertlock;
 	ObjectSet m_objectinsertpool;

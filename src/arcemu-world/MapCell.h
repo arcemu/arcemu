@@ -66,6 +66,8 @@ public:
 	void QueueUnloadPending();
 	void CancelPendingUnload();
 	void Unload();
+	ARCEMU_INLINE uint16 GetPositionX() { return _x; }
+	ARCEMU_INLINE uint16 GetPositionY() { return _y; }
 
 	ObjectSet _respawnObjects;
 
