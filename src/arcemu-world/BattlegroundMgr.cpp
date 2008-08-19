@@ -929,7 +929,7 @@ void CBattleground::BuildPvPUpdateDataPacket(WorldPacket * data)
 		if(m_ended)
 		{
 			*data << uint8(1);
-			*data << uint8(m_winningteam);
+			*data << uint8(m_winningteam ? 0 : 1);
 		}
 		else
 			*data << uint8(0);      // If the game has ended - this will be 1
