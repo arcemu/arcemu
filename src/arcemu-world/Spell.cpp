@@ -5105,6 +5105,7 @@ uint32 GetDiminishingGroup(uint32 NameHash)
 	// group where only 10s limit is pvp is applied, not DR
 	case SPELL_HASH_FREEZING_TRAP_EFFECT:	// Freezing Trap Effect
 	case SPELL_HASH_HAMSTRING:	// Hamstring
+	case SPELL_HASH_CURSE_OF_TONGUES:
 		{
 			grp = DIMINISHING_GROUP_NOT_DIMINISHED;
 		}break;
