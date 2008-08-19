@@ -574,6 +574,12 @@ void WorldSession::HandleArenaTeamLeaveOpcode(WorldPacket & recv_data)
 		return;
 	}
 
+	if (team->m_leader == _player->GetLowGUID() && team->m_memberCount == 1)
+	{
+		team->Destroy();
+		return;
+	}
+
 	if(team->m_leader == _player->GetLowGUID())
 	{
 		SystemMessage("You cannot leave the team yet, promote someone else to captain first.");
