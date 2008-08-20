@@ -3799,15 +3799,15 @@ void Aura::SpellAuraReflectSpells(bool apply)
 	}
 }
 
-void Aura::SpellAuraModStat(bool apply)
+void Aura::SpellAuraModStat( bool apply )
 {
-	int32 stat = (int32)mod->m_miscValue;
+	int32 stat = ( int32 )mod->m_miscValue;
 	int32 val;
 
-	if(apply)
+	if( apply )
 	{
 		val = mod->m_amount;
-		if (val<0)
+		if( val < 0 )
 			SetNegative();
 		else
 			SetPositive();
@@ -3817,13 +3817,13 @@ void Aura::SpellAuraModStat(bool apply)
 		val = -mod->m_amount;
 	}
 
-	if (stat == -1)//all stats
+	if ( stat == -1 )//all stats
 	{
-		if(m_target->IsPlayer())
+		if( m_target->IsPlayer() )
 		{
-			for(uint32 x=0;x<5;x++)
+			for( uint8 x = 0; x < 5; x++ )
 			{
-				if(val>0)
+				if( mod->m_amount > 0 )
 					static_cast< Player* >( m_target )->FlatStatModPos[x] += val;
 				else
 					static_cast< Player* >( m_target )->FlatStatModNeg[x] -= val;
@@ -3834,34 +3834,34 @@ void Aura::SpellAuraModStat(bool apply)
 			static_cast< Player* >( m_target )->UpdateStats();
 			static_cast< Player* >( m_target )->UpdateChances();
 		}
-		else if(m_target->GetTypeId() == TYPEID_UNIT)
+		else if( m_target->GetTypeId() == TYPEID_UNIT )
 		{
-			for(uint32 x=0;x<5;x++)
+			for( uint8 x = 0; x < 5; x++ )
 			{
-				static_cast<Creature*>(m_target)->FlatStatMod[x] += val;
-				static_cast<Creature*>(m_target)->CalcStat(x);
+				static_cast< Creature* >( m_target )->FlatStatMod[x] += val;
+				static_cast< Creature* >( m_target )->CalcStat(x);
 			}
 		}
 	}
-	else if(stat >= 0)
+	else if( stat >= 0 )
 	{
-		ASSERT(mod->m_miscValue < 5);
-		if(m_target->IsPlayer())
+		ASSERT( mod->m_miscValue < 5 );
+		if( m_target->IsPlayer() )
 		{
-			if(mod->m_amount>0)
-				static_cast< Player* >( m_target )->FlatStatModPos[mod->m_miscValue] += val;
+			if( mod->m_amount > 0 )
+				static_cast< Player* >( m_target )->FlatStatModPos[ mod->m_miscValue ] += val;
 			else
-				static_cast< Player* >( m_target )->FlatStatModNeg[mod->m_miscValue] -= val;
+				static_cast< Player* >( m_target )->FlatStatModNeg[ mod->m_miscValue ] -= val;
 
-			static_cast< Player* >( m_target )->CalcStat(mod->m_miscValue);
+			static_cast< Player* >( m_target )->CalcStat( mod->m_miscValue );
 
 			static_cast< Player* >( m_target )->UpdateStats();
 			static_cast< Player* >( m_target )->UpdateChances();
 		}
-		else if(m_target->GetTypeId() == TYPEID_UNIT)
+		else if( m_target->GetTypeId() == TYPEID_UNIT )
 		{
-			static_cast<Creature*>(m_target)->FlatStatMod[mod->m_miscValue]+=val;
-			static_cast<Creature*>(m_target)->CalcStat(mod->m_miscValue);
+			static_cast< Creature* >( m_target )->FlatStatMod[ mod->m_miscValue ] += val;
+			static_cast< Creature* >( m_target )->CalcStat( mod->m_miscValue );
 		}
 	}
 }
@@ -8300,10 +8300,8 @@ void Aura::SpellAuraIncreaseHitRate( bool apply )
 {
 	if( !m_target->IsPlayer() )
 		return;
-	if( apply )
-		static_cast< Player* >( m_target )->ModifyBonuses( SPELL_HIT_RATING, mod->m_amount );
-	else
-		static_cast< Player* >( m_target )->ModifyBonuses( SPELL_HIT_RATING, -mod->m_amount );
+	
+	static_cast< Player* >( m_target )->ModifyBonuses( SPELL_HIT_RATING, mod->m_amount, apply );
 	static_cast< Player* >( m_target )->UpdateStats();
 }
 
@@ -8435,12 +8433,12 @@ void Aura::SpellAuraIncreaseRating( bool apply )
 	Player* plr = static_cast< Player* >( m_target );
 	for( uint32 x = 1; x < 24; x++ )//skip x=0
 		if( ( ( ( uint32 )1 ) << x ) & mod->m_miscValue )
-			plr->ModifyBonuses( 11 + x, v );
+			plr->ModifyBonuses( 11 + x, mod->m_amount, apply );
 
 	//MELEE_CRITICAL_AVOIDANCE_RATING + RANGED_CRITICAL_AVOIDANCE_RATING + SPELL_CRITICAL_AVOIDANCE_RATING
 	//comes only as combination of them  - ModifyBonuses() not adding them individually anyhow
 	if( mod->m_miscValue & (0x0004000|0x0008000|0x0010000) )
-			plr->ModifyBonuses( RESILIENCE_RATING, v );
+			plr->ModifyBonuses( RESILIENCE_RATING, mod->m_amount, apply );
 
 	if( mod->m_miscValue & 1 )//weapon skill
 	{
@@ -8451,7 +8449,7 @@ void Aura::SpellAuraIncreaseRating( bool apply )
 					i = static_cast< Player* >( m_target )->m_wratings.find( y );
 					if( i == static_cast< Player* >( m_target )->m_wratings.end() )//no prev
 					{
-						static_cast< Player* >( m_target )->m_wratings[y]=v;
+						static_cast< Player* >( m_target )->m_wratings[y] = v;
 					}else
 					{
 						i->second += v;

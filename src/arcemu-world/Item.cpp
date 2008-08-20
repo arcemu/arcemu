@@ -862,7 +862,7 @@ void Item::ApplyEnchantmentBonus( uint32 Slot, bool Apply )
 					if( RandomSuffixAmount )
 						val = RANDOM_SUFFIX_MAGIC_CALCULATION( RandomSuffixAmount, GetItemRandomSuffixFactor() );
 
-					m_owner->ModifyBonuses( Entry->spell[c], Apply ? val : -val );
+					m_owner->ModifyBonuses( Entry->spell[c], val, Apply );
 					m_owner->UpdateStats();
 				}break;
 

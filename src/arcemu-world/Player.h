@@ -793,7 +793,7 @@ public:
 	void Die();
 	//void KilledMonster(uint32 entry, const uint64 &guid);
 	void GiveXP(uint32 xp, const uint64 &guid, bool allowbonus);   // to stop rest xp being given
-	void ModifyBonuses(uint32 type,int32 val);
+	void ModifyBonuses( uint32 type, int32 val, bool apply );
 	std::map<uint32, uint32> m_wratings;
 
 	ArenaTeam * m_arenaTeams[NUM_ARENA_TEAM_TYPES];

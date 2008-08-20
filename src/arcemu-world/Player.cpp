@@ -3781,7 +3781,7 @@ void Player::_ApplyItemMods(Item* item, int8 slot, bool apply, bool justdrokedow
 		int32 val = proto->Stats[i].Value;
 		if( val == 0 )
 			continue;
-		ModifyBonuses( proto->Stats[i].Type, apply ? val : -val );
+		ModifyBonuses( proto->Stats[i].Type, val, apply );
 	}
 
 	// Damage
@@ -6589,7 +6589,7 @@ void Player::RemoveSpellsFromLine(uint32 skill_line)
 	}
 }
 
-void Player::CalcStat(uint32 type)
+void Player::CalcStat( uint32 type )
 {
 	int32 res;
 	ASSERT( type < 5 );
@@ -6602,8 +6602,6 @@ void Player::CalcStat(uint32 type)
 	res = pos + BaseStats[type] - neg;
 	if( res <= 0 )
 		res = 1;
-
-
 
 	SetUInt32Value( UNIT_FIELD_POSSTAT0 + type, pos );
 	SetUInt32Value( UNIT_FIELD_NEGSTAT0 + type, neg );
@@ -8577,40 +8575,39 @@ void Player::OnWorldPortAck()
 	SpeedCheatReset();
 }
 
-void Player::ModifyBonuses(uint32 type,int32 val)
+void Player::ModifyBonuses( uint32 type, int32 val, bool apply )
 {
 	// Added some updateXXXX calls so when an item modifies a stat they get updated
 	// also since this is used by auras now it will handle it for those
-	switch (type) 
+	int32 _val = val;
+	if( !apply )
+		val = -val;
+
+	switch ( type ) 
 		{
 		case POWER:
-			ModUnsigned32Value( UNIT_FIELD_MAXPOWER1, val );
-			m_manafromitems += val;
-			break;
+			{
+				ModUnsigned32Value( UNIT_FIELD_MAXPOWER1, val );
+				m_manafromitems += val;
+			}break;
 		case HEALTH:
-			ModUnsigned32Value( UNIT_FIELD_MAXHEALTH, val );
-			m_healthfromitems += val;
-			break;
-		case AGILITY: // modify agility				
-			FlatStatModPos[1] += val;
-			CalcStat( 1 );
-			break;
-		case STRENGTH: //modify strength
-			FlatStatModPos[0] += val;
-			CalcStat( 0 );
-			break;
-		case INTELLECT: //modify intellect 
-			FlatStatModPos[3] += val;
-			CalcStat( 3 );
-			break;
-		 case SPIRIT: //modify spirit
-			FlatStatModPos[4] += val;
-			CalcStat( 4 );
-			break;
-		case STAMINA: //modify stamina
-			FlatStatModPos[2] += val;
-			CalcStat( 2 );
-			break;
+			{
+				ModUnsigned32Value( UNIT_FIELD_MAXHEALTH, val );
+				m_healthfromitems += val;
+			}break;
+		case AGILITY:	//modify agility
+		case STRENGTH:	//modify strength
+		case INTELLECT:	//modify intellect
+		case SPIRIT:	//modify spirit
+		case STAMINA:	//modify stamina
+			{
+				uint8 convert[] = {1, 0, 3, 4, 2};
+				if( _val > 0 )
+					FlatStatModPos[ convert[ type - 3 ] ] += val;
+				else
+					FlatStatModNeg[ convert[ type - 3 ] ] -= val;
+				CalcStat( convert[ type - 3 ] );
+			}break;
 		case WEAPON_SKILL_RATING:
 			{
 				ModUnsigned32Value( PLAYER_RATING_MODIFIER_RANGED_SKILL, val ); // ranged
