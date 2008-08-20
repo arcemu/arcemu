@@ -279,7 +279,7 @@ void AIInterface::HandleEvent(uint32 event, Unit* pUnit, uint32 misc1)
 				if(m_Unit->GetTypeId() == TYPEID_UNIT)
 				{
 					if( static_cast< Creature* >( m_Unit )->has_combat_text )
-					objmgr.HandleMonsterSayEvent( static_cast< Creature* >( m_Unit ), MONSTER_SAY_EVENT_ON_COMBAT_STOP );
+						objmgr.HandleMonsterSayEvent( static_cast< Creature* >( m_Unit ), MONSTER_SAY_EVENT_ON_COMBAT_STOP );
 
 					if(static_cast<Creature*>(m_Unit)->original_emotestate)
 						m_Unit->SetUInt32Value(UNIT_NPC_EMOTESTATE, static_cast< Creature* >( m_Unit )->original_emotestate);
@@ -377,7 +377,7 @@ void AIInterface::HandleEvent(uint32 event, Unit* pUnit, uint32 misc1)
 				if( pUnit == NULL ) return;
 
 				if( static_cast< Creature* >( m_Unit )->has_combat_text )
-				objmgr.HandleMonsterSayEvent( static_cast< Creature* >( m_Unit ), MONSTER_SAY_EVENT_ON_DAMAGE_TAKEN );
+					objmgr.HandleMonsterSayEvent( static_cast< Creature* >( m_Unit ), MONSTER_SAY_EVENT_ON_DAMAGE_TAKEN );
 
 				CALL_SCRIPT_EVENT(m_Unit, OnDamageTaken)(pUnit, float(misc1));
 				if(!modThreatByPtr(pUnit, misc1))
@@ -502,7 +502,7 @@ void AIInterface::HandleEvent(uint32 event, Unit* pUnit, uint32 misc1)
 			if( pUnit == NULL ) return;
 
 			if( static_cast< Creature* >( m_Unit )->has_combat_text )
-			objmgr.HandleMonsterSayEvent( static_cast< Creature* >( m_Unit ), MONSTER_SAY_EVENT_ON_DIED );
+				objmgr.HandleMonsterSayEvent( static_cast< Creature* >( m_Unit ), MONSTER_SAY_EVENT_ON_DIED );
 
 			CALL_SCRIPT_EVENT(m_Unit, OnDied)(pUnit);
 			m_AIState = STATE_IDLE;
@@ -580,8 +580,8 @@ void AIInterface::HandleEvent(uint32 event, Unit* pUnit, uint32 misc1)
 			}
 
 			//remove negative auras
-			if( m_Unit->IsCreature() )
-				m_Unit->RemoveNegativeAuras();
+			//if( m_Unit->IsCreature() )
+			//	m_Unit->RemoveNegativeAuras();
 
 		}break;
 	}
@@ -970,7 +970,7 @@ void AIInterface::_UpdateCombat(uint32 p_time)
 #endif
 
 #ifdef COLLISION
-	/*float target_land_z=0.0f;
+	float target_land_z=0.0f;
 	if ( m_Unit->GetMapMgr() != NULL && GetNextTarget() != NULL )
 	{
 
@@ -996,7 +996,7 @@ void AIInterface::_UpdateCombat(uint32 p_time)
 				}
 			}
 		}
-	}*/
+	}
 #endif
 
 	if ( GetNextTarget() != NULL && GetNextTarget()->GetTypeId() == TYPEID_UNIT && m_AIState == STATE_EVADE)
@@ -1433,8 +1433,11 @@ void AIInterface::AttackReaction(Unit* pUnit, uint32 damage_dealt, uint32 spellI
 	if( m_AIState == STATE_EVADE || !pUnit || !pUnit->isAlive() || m_Unit->isDead() || m_Unit == pUnit )
 		return;
 
+	
 #ifdef COLLISION
-	/*float target_land_z=0.0f;
+	if( pUnit->IsPlayer() )
+	{
+	float target_land_z=0.0f;
 	if ( m_Unit->GetMapMgr() != NULL )
 	{
 
@@ -1457,7 +1460,8 @@ void AIInterface::AttackReaction(Unit* pUnit, uint32 damage_dealt, uint32 spellI
 				}
 			}
 		}
-	}*/
+	}
+	}
 #endif
 
 	if (pUnit->GetTypeId() == TYPEID_PLAYER && static_cast<Player *>(pUnit)->GetMisdirectionTarget() != 0)
@@ -2033,22 +2037,8 @@ void AIInterface::_CalcDestinationAndMove(Unit *target, float dist)
 			return;
 		m_last_target_x = ResX;
 		m_last_target_y = ResY;
-		
-		//float ResZ = target->GetPositionZ();
-		float ResZ = m_Unit->GetMapMgr()->GetLandHeight(m_nextPosX, m_nextPosY);
-		
-		//m_Unit->
-		/*if ( target->GetPositionZ() - ResZ > 10 || ResZ - target->GetPositionZ() > 10 )
-		{
-			m_Unit->SetPosition(m_Unit->GetPositionX(), m_Unit->GetPositionY(), ResZ, m_Unit->GetOrientation() - 180, true);
-			StopMovement(100);
-		}*/
 
-		/*if ( m_Unit->GetPositionZ() + 1 > ResZ )
-		{
-			m_Unit->SetPosition(m_Unit->GetPositionX(), m_Unit->GetPositionY(), ResZ, m_Unit->GetOrientation() - 180, true);
-			StopMovement(100);
-		}*/
+		float ResZ = target->GetPositionZ();
 
 		float angle = m_Unit->calcAngle(m_Unit->GetPositionX(), m_Unit->GetPositionY(), ResX, ResY) * float(M_PI) / 180.0f;
 		float x = dist * cosf(angle);
@@ -2363,14 +2353,14 @@ void AIInterface::UpdateMove()
 {
 	//this should NEVER be called directly !!!!!!
 	//use MoveTo()
-	float distance = m_Unit->CalcDistance(m_nextPosX,m_nextPosY,m_Unit->GetMapMgr()->GetLandHeight(m_nextPosX,m_nextPosY));
+	float distance = m_Unit->CalcDistance(m_nextPosX,m_nextPosY,m_nextPosZ);
 	
 	if(distance < DISTANCE_TO_SMALL_TO_WALK) 
 		return; //we don't want little movements here and there
 
 	m_destinationX = m_nextPosX;
 	m_destinationY = m_nextPosY;
-	m_destinationZ = m_Unit->GetMapMgr()->GetLandHeight(m_nextPosX, m_nextPosY);
+	m_destinationZ = m_nextPosZ;
 	
 	/*if(m_moveFly != true)
 	{
@@ -2856,13 +2846,17 @@ void AIInterface::_UpdateMovement(uint32 p_time)
 					if(m_moveFly != true)
 					{
 						target_land_z = CollideInterface.GetHeight(m_Unit->GetMapId(), x, y, z + 2.0f);
-						if( target_land_z == NO_WMO_HEIGHT )
+						if ( target_land_z == NO_WMO_HEIGHT )
+						{
 							target_land_z = m_Unit->GetMapMgr()->GetLandHeight(x, y);
+							if ( target_land_z == 999999.0f )
+								target_land_z = z;
+						}
 					}
 				}
 
-				if (z > m_Unit->GetMapMgr()->GetWaterHeight(m_nextPosX, m_nextPosY) && target_land_z != 0.0f)
-					z=target_land_z;
+				if ( z > m_Unit->GetMapMgr()->GetWaterHeight( m_nextPosX, m_nextPosY ) && target_land_z != 0.0f )
+					z = target_land_z;
 #endif
 
 				m_Unit->SetPosition(x, y, z, m_Unit->GetOrientation());
