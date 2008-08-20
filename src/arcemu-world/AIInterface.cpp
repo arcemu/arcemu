@@ -2033,8 +2033,22 @@ void AIInterface::_CalcDestinationAndMove(Unit *target, float dist)
 			return;
 		m_last_target_x = ResX;
 		m_last_target_y = ResY;
+		
+		//float ResZ = target->GetPositionZ();
+		float ResZ = m_Unit->GetMapMgr()->GetLandHeight(m_nextPosX, m_nextPosY);
+		
+		//m_Unit->
+		/*if ( target->GetPositionZ() - ResZ > 10 || ResZ - target->GetPositionZ() > 10 )
+		{
+			m_Unit->SetPosition(m_Unit->GetPositionX(), m_Unit->GetPositionY(), ResZ, m_Unit->GetOrientation() - 180, true);
+			StopMovement(100);
+		}*/
 
-		float ResZ = target->GetPositionZ();
+		/*if ( m_Unit->GetPositionZ() + 1 > ResZ )
+		{
+			m_Unit->SetPosition(m_Unit->GetPositionX(), m_Unit->GetPositionY(), ResZ, m_Unit->GetOrientation() - 180, true);
+			StopMovement(100);
+		}*/
 
 		float angle = m_Unit->calcAngle(m_Unit->GetPositionX(), m_Unit->GetPositionY(), ResX, ResY) * float(M_PI) / 180.0f;
 		float x = dist * cosf(angle);
@@ -2349,14 +2363,14 @@ void AIInterface::UpdateMove()
 {
 	//this should NEVER be called directly !!!!!!
 	//use MoveTo()
-	float distance = m_Unit->CalcDistance(m_nextPosX,m_nextPosY,m_nextPosZ);
+	float distance = m_Unit->CalcDistance(m_nextPosX,m_nextPosY,m_Unit->GetMapMgr()->GetLandHeight(m_nextPosX,m_nextPosY));
 	
 	if(distance < DISTANCE_TO_SMALL_TO_WALK) 
 		return; //we don't want little movements here and there
 
 	m_destinationX = m_nextPosX;
 	m_destinationY = m_nextPosY;
-	m_destinationZ = m_nextPosZ;
+	m_destinationZ = m_Unit->GetMapMgr()->GetLandHeight(m_nextPosX, m_nextPosY);
 	
 	/*if(m_moveFly != true)
 	{
