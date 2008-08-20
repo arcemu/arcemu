@@ -2211,7 +2211,7 @@ DoSort( 1 , 0 ); /* Automatically sort by level */
 //Display();
 </script>
 
-<a href="http://www.ArcEmuemu.com">Team ArcEmu</a> - MMORPG Server Package<br>
+<a href="http://www.arcemu.org">Team ArcEmu</a> - MMORPG Server Package<br>
 Protected under the GNU General Public License.<br>
 Original design by <a href="http://www.mmorpg4free.com">MMORPG4Free</a>, rewritten by Supalosa.<br>
 <a href="http://arcemu.org/forums"><img src="http://img148.imageshack.us/img148/5392/bannerarcjl6.jpg" alt="ArcEmu" tite="ArcEmu" /></a>
