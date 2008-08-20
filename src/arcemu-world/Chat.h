@@ -520,6 +520,7 @@ protected:
 	bool HandleAIAgentDebugSkip(const char * args, WorldSession * m_session);
 
 	bool HandleCreateArenaTeamCommands(const char * args, WorldSession * m_session);
+	bool HandleSetArenaTeamLeaderCommands(const char * args, WorldSession * m_session);
 	bool HandleNpcSelectCommand(const char * args, WorldSession * m_session);
 	bool HandleWaypointAddFlyCommand(const char * args, WorldSession * m_session);
 	bool HandleWhisperBlockCommand(const char * args, WorldSession * m_session);
