@@ -2347,6 +2347,14 @@ bool Spell::HasPower()
 	if(p_caster && p_caster->PowerCheat)
 		return true;
 
+	// Free cast for battle preparation
+	if (p_caster && p_caster->HasAura(44521))
+		return true;
+	if (p_caster && p_caster->HasAura(44535))
+		return true;
+	if (p_caster && p_caster->HasAura(32727))
+		return true;
+
 	switch(GetProto()->powerType)
 	{
 	case POWER_TYPE_HEALTH:
@@ -2450,6 +2458,14 @@ bool Spell::TakePower()
 		return true;
 
 	if(p_caster && p_caster->PowerCheat)
+		return true;
+
+		// Free cast for battle preparation
+	if (p_caster && p_caster->HasAura(44521))
+		return true;
+	if (p_caster && p_caster->HasAura(44535))
+		return true;
+	if (p_caster && p_caster->HasAura(32727))
 		return true;
 
 	switch(GetProto()->powerType)
