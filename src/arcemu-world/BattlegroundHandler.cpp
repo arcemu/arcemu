@@ -164,6 +164,15 @@ void WorldSession::HandleBattlegroundPlayerPositionsOpcode(WorldPacket &recv_dat
 void WorldSession::HandleBattleMasterJoinOpcode(WorldPacket &recv_data)
 {
 	CHECK_INWORLD_RETURN
+
+	if(_player->HasAura(BG_DESERTER))
+	{
+		WorldPacket data(SMSG_GROUP_JOINED_BATTLEGROUND, 4);
+		data << (uint32) 0xFFFFFFFE;
+		_player->GetSession()->SendPacket(&data);
+		return;
+	}
+
 	if(_player->GetGroup() && _player->GetGroup()->m_isqueued)
 	{
 		SystemMessage("You are in a group that is already queued for a battleground or inside a battleground. Leave this first.");
