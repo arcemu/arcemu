@@ -10077,6 +10077,10 @@ void Player::save_Auras()
 			case 35076: // Blessing of A'dal
 			case 23333:	// WSG
 			case ARENA_PREPARATION:	// battleground preparation
+			case 32724: // Arena Flags
+			case 32725: // Arena Flags
+			case 35774: // Arena Flags
+			case 35775: // Arena Flags
 				skip = true;
 				break;
 			}
