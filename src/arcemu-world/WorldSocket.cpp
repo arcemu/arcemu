@@ -503,7 +503,8 @@ void WorldSocket::_HandlePing(WorldPacket* recvPacket)
 #ifdef WIN32
 	// Dynamically change nagle buffering status based on latency.
 	//if(_latency >= 250)
-	if(_latency >= 100)
+	// I think 350 is better, in a MMO 350 latency isn't that big that we need to worry about reducing the number of packets being sent.
+	if(_latency >= 350)
 	{
 		if(!m_nagleEanbled)
 		{
