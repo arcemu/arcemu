@@ -638,6 +638,7 @@ void EyeOfTheStorm::UpdateCPs()
 					SetWorldState(m_iconsStates[i][2], 0);
 				}
 			}
+					UpdateIcons();
 		}
 
 		/* update the players with the new value */
@@ -708,6 +709,32 @@ void EyeOfTheStorm::GeneratePoints()
 		if( GivePoints( i, pointspertick[towers[i]] ) )
 			return;
 	}
+}
+
+
+void EyeOfTheStorm::UpdateIcons()
+{
+ 	for(uint32 i = 0; i < 4; i++)
+ 	{
+ 		if(m_CPStatus[i] == 0)
+		{
+ 			SetWorldState(m_iconsStates[i][0], 0);
+ 			SetWorldState(m_iconsStates[i][1], 0);
+ 			SetWorldState(m_iconsStates[i][2], 1);
+ 		} 
+		else if(m_CPStatus[i] == 100)
+ 		{
+ 			SetWorldState(m_iconsStates[i][0], 0);
+ 			SetWorldState(m_iconsStates[i][1], 1);
+ 			SetWorldState(m_iconsStates[i][2], 0);
+ 		} 
+		else
+		{
+ 			SetWorldState(m_iconsStates[i][0], 1);
+ 			SetWorldState(m_iconsStates[i][1], 0);
+ 			SetWorldState(m_iconsStates[i][2], 0);
+ 		}
+ 	}
 }
 
 bool EyeOfTheStorm::GivePoints(uint32 team, uint32 points)

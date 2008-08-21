@@ -51,6 +51,7 @@ public:
 	void OnStart();
 
 	void UpdateCPs();
+	void UpdateIcons();
 	void GeneratePoints();
 
 	// returns true if that team won
