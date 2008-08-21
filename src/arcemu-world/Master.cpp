@@ -578,6 +578,8 @@ bool Master::Run(int argc, char ** argv)
 	bServerShutdown = true;
 	ThreadPool.Shutdown();
 
+	delete ls;
+
 	sWorld.LogoutPlayers();
 	sLog.outString( "" );
 
@@ -651,6 +653,8 @@ bool Master::Run(int argc, char ** argv)
 
 bool Master::_StartDB()
 {
+	Database_World=NULL;
+	Database_Character=NULL;
 	string hostname, username, password, database;
 	int port = 0;
 	int type = 1;
@@ -708,8 +712,11 @@ bool Master::_StartDB()
 
 void Master::_StopDB()
 {
+	if (Database_World != NULL)
 	delete Database_World;
+	if (Database_Character != NULL)
 	delete Database_Character;
+	Database::CleanupLibs();
 }
 
 void Master::_HookSignals()

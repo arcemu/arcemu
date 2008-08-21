@@ -58,6 +58,10 @@ int win32_main( int argc, char ** argv )
 	SetThreadName( "Main Thread" );
 	StartCrashHandler();
 
+	//Andy: windows only, helps fight heap allocation on allocs lower then 16KB
+	unsigned long arg=2;
+	HeapSetInformation(GetProcessHeap(), HeapCompatibilityInformation, &arg, sizeof(arg));
+
 	THREAD_TRY_EXECUTION
 	{
 		sMaster.Run( argc, argv );

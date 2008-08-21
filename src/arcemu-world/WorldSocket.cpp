@@ -502,7 +502,8 @@ void WorldSocket::_HandlePing(WorldPacket* recvPacket)
 
 #ifdef WIN32
 	// Dynamically change nagle buffering status based on latency.
-	if(_latency >= 250)
+	//if(_latency >= 250)
+	if(_latency >= 100)
 	{
 		if(!m_nagleEanbled)
 		{
