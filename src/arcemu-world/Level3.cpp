@@ -2758,7 +2758,7 @@ bool ChatHandler::HandleGuildMembersCommand(const char* args, WorldSession *m_se
 	return true;
 }
 
-bool ChatHandler::HandleCreateArenaTeamCommands(const char * args, WorldSession * m_session)
+bool ChatHandler::HandleArenaCreateTeamCommand(const char * args, WorldSession * m_session)
 {
 	uint32 arena_team_type;
 	char name[1000];
@@ -2809,7 +2809,7 @@ bool ChatHandler::HandleCreateArenaTeamCommands(const char * args, WorldSession 
 	return true;
 }
 
-bool ChatHandler::HandleSetArenaTeamLeaderCommands(const char * args, WorldSession * m_session)
+bool ChatHandler::HandleArenaSetTeamLeaderCommand(const char * args, WorldSession * m_session)
 {
 	uint32 arena_team_type;
 	uint32 real_type;
@@ -2848,6 +2848,12 @@ bool ChatHandler::HandleSetArenaTeamLeaderCommands(const char * args, WorldSessi
 	ArenaTeam * t = plr->m_arenaTeams[real_type];
 	t->SetLeader(plr->m_playerInfo);
 	SystemMessage(m_session, "player is now arena team leader.");
+	return true;
+}
+
+bool ChatHandler::HandleArenaResetAllRatingsCommand(const char * args, WorldSession * m_session)
+{
+	objmgr.ResetArenaTeamRatings();
 	return true;
 }
 

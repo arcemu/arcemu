@@ -76,6 +76,8 @@ ChatCommand * CommandTableStorage::GetSubCommandTable(const char * name)
 		return _unbanCommandTable;
 	else if(!strcmp(name, "instance"))
 		return _instanceCommandTable;
+	else if(!strcmp(name, "arena"))
+		return _arenaCommandTable;
 	return 0;
 }
 
@@ -615,6 +617,15 @@ void CommandTableStorage::Init()
 	};
 	dupe_command_table(instanceCommandTable, _instanceCommandTable);
 
+	static ChatCommand arenaCommandTable[] =
+	{
+		{ "createteam",      'e', &ChatHandler::HandleArenaCreateTeamCommand,      "Creates arena team",                            NULL, 0, 0, 0 },
+		{ "setteamleader",   'e', &ChatHandler::HandleArenaSetTeamLeaderCommand,   "Sets the arena team leader",                    NULL, 0, 0, 0 },
+		{ "resetallratings", 'z', &ChatHandler::HandleArenaResetAllRatingsCommand, "Resets all area teams to their default rating", NULL, 0, 0, 0 },
+		{ NULL,              '0', NULL,                                            "",                                              NULL, 0, 0, 0 }
+	};
+	dupe_command_table(arenaCommandTable, _arenaCommandTable);
+
 	static ChatCommand commandTable[] =
 	{
 		{ "commands",        '0', &ChatHandler::HandleCommandsCommand,                      "Shows Commands",                                                                                                                          NULL,                     0, 0, 0 },
@@ -660,6 +671,7 @@ void CommandTableStorage::Init()
 		{ "ban",             'm', NULL,                                                     "",                                                                                                                                        banCommandTable,          0, 0, 0 },
 		{ "unban",           'm', NULL,                                                     "",                                                                                                                                        unbanCommandTable,        0, 0, 0 },
 		{ "instance",        'm', NULL,                                                     "",                                                                                                                                        instanceCommandTable,     0, 0, 0 },
+		{ "arena",           'e', NULL,                                                     "",                                                                                                                                        arenaCommandTable,        0, 0, 0 },
 		{ "kickplayer",      'b', &ChatHandler::HandleKickCommand,                          "Kicks player from server",                                                                                                                NULL,                     0, 0, 0 },
 		{ "gmannounce",      'u', &ChatHandler::HandleGMAnnounceCommand,                    "Sends Msg to all online GMs",                                                                                                             NULL,                     0, 0, 0 },
 		{ "clearcooldowns",  'm', &ChatHandler::HandleClearCooldownsCommand,                "Clears all cooldowns for your class.",                                                                                                    NULL,                     0, 0, 0 },
@@ -668,8 +680,6 @@ void CommandTableStorage::Init()
 		{ "unparalyze",      'b', &ChatHandler::HandleUnParalyzeCommand,                    "Unroots/Unparalyzes the target.",                                                                                                         NULL,                     0, 0, 0 },
 		{ "gotrig",          'v', &ChatHandler::HandleTriggerCommand,                       "Warps to areatrigger <id>",                                                                                                               NULL,                     0, 0, 0 },
 		{ "modperiod",       'm', &ChatHandler::HandleModPeriodCommand,                     "Changes period of current transporter.",                                                                                                  NULL,                     0, 0, 0 },
-		{ "createarenateam", 'g', &ChatHandler::HandleCreateArenaTeamCommands,              "Creates arena team",                                                                                                                      NULL,                     0, 0, 0 },
-		{ "setarenateamleader", 'g', &ChatHandler::HandleSetArenaTeamLeaderCommands,        "Sets the arena team leader",                                                                                                              NULL,                     0, 0, 0 },
 		{ "logcomment",      '1', &ChatHandler::HandleGmLogCommentCommand,                  "Adds a comment to the GM log for the admins to read.",                                                                                    NULL,                     0, 0, 0 },
 		{ "removesickness",  'm', &ChatHandler::HandleRemoveRessurectionSickessAuraCommand, "Removes ressurrection sickness from the target",                                                                                          NULL,                     0, 0, 0 },
 		{ "fixscale",        'm', &ChatHandler::HandleFixScaleCommand,                      "",                                                                                                                                        NULL,                     0, 0, 0 },
