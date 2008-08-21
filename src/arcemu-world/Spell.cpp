@@ -1,4 +1,4 @@
-﻿/*
+/*
  * ArcEmu MMORPG Server
  * Copyright (C) 2008 <http://www.ArcEmu.org/>
  *
