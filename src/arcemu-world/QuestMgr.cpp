@@ -1595,6 +1595,8 @@ QuestMgr::~QuestMgr()
 		delete itr2->second;
 	}
 
+	m_obj_quests.clear();
+
 	for(itr2 = m_npc_quests.begin(); itr2 != m_npc_quests.end(); ++itr2)
 	{
 		if(!itr2->second)
@@ -1609,6 +1611,8 @@ QuestMgr::~QuestMgr()
 		delete itr2->second;
 	}
 
+	m_npc_quests.clear();
+
 	for(itr2 = m_itm_quests.begin(); itr2 != m_itm_quests.end(); ++itr2)
 	{
 		if(!itr2->second)
@@ -1622,6 +1626,7 @@ QuestMgr::~QuestMgr()
 		itr2->second->clear();
 		delete itr2->second;
 	}
+	m_itm_quests.clear();
 	for(itr4 = m_quest_associations.begin(); itr4 != m_quest_associations.end(); ++itr4)
 	{
 		if(!itr4->second)
@@ -1635,6 +1640,8 @@ QuestMgr::~QuestMgr()
 		itr4->second->clear();
 		delete itr4->second;
 	}
+	// NTY.
+	m_quest_associations.clear();
 }
 
 

@@ -32,6 +32,8 @@
 
 #include "Definitions.h"
 
+#include <cstring>
+#include <cstdlib>
 #include <list>
 #include <vector>
 #include <map>

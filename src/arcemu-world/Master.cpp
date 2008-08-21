@@ -288,6 +288,7 @@ bool Master::Run(int argc, char ** argv)
 
 	if( !_StartDB() )
 	{
+		Database::CleanupLibs();
 		return false;
 	}
 

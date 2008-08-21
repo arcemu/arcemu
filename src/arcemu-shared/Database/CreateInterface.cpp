@@ -14,6 +14,14 @@
 #include "SQLiteDatabase.h"
 #endif
 
+void Database::CleanupLibs()
+{
+#if defined(ENABLE_DATABASE_MYSQL)
+		mysql_library_end();
+#endif
+}
+
+
 Database * Database::CreateDatabaseInterface(uint32 uType)
 {
 	switch(uType)

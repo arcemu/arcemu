@@ -71,6 +71,7 @@ enum MsTimeVariables
 #define bswap_64(x) NXSwapLongLong(x)
 #endif
 
+#include <cstdlib>
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdarg.h>
@@ -222,6 +223,7 @@ enum MsTimeVariables
 #undef max
 #endif
 
+#include <cstdlib>
 #include <set>
 #include <list>
 #include <string>

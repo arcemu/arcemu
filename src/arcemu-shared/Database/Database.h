@@ -117,6 +117,7 @@ public:
 	void AddQueryBuffer(QueryBuffer * b);
 
 	static Database * CreateDatabaseInterface(uint32 uType);
+	static void CleanupLibs();
 
 	virtual bool SupportsReplaceInto() = 0;
 	virtual bool SupportsTableLocking() = 0;

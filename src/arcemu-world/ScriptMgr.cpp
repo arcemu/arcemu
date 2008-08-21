@@ -439,7 +439,8 @@ CreatureAIScript::CreatureAIScript(Creature* creature) : _unit(creature)
 
 void CreatureAIScript::RegisterAIUpdateEvent(uint32 frequency)
 {
-	sEventMgr.AddEvent(_unit, &Creature::CallScriptUpdate, EVENT_SCRIPT_UPDATE_EVENT, frequency, 0,0);
+	//sEventMgr.AddEvent(_unit, &Creature::CallScriptUpdate, EVENT_SCRIPT_UPDATE_EVENT, frequency, 0,0);
+	sEventMgr.AddEvent(_unit, &Creature::CallScriptUpdate, EVENT_SCRIPT_UPDATE_EVENT, frequency, 0,EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
 }
 
 void CreatureAIScript::ModifyAIUpdateEvent(uint32 newfrequency)
