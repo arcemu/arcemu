@@ -116,8 +116,11 @@ void CBattlegroundManager::HandleBattlegroundJoin(WorldSession * m_session, Worl
 	if ( ! guid )
 		return; //crash fix. /script JoinBattlefield(0,1); ;s
 
-	if(bgtype >= BATTLEGROUND_NUM_TYPES)
+	if(bgtype >= BATTLEGROUND_NUM_TYPES || !bgtype)
+	{
+		m_session->Disconnect();
 		return;      // cheater!
+	}
 
 	/* Check the instance id */
 	if(instance)
