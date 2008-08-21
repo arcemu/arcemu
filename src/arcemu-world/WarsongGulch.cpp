@@ -102,7 +102,7 @@ void WarsongGulch::HookOnAreaTrigger(Player * plr, uint32 id)
 		break;
 	}
 
-	if(buffslot > 0)
+	if(buffslot >= 0)
 	{
 		if(m_buffs[buffslot] != 0 && m_buffs[buffslot]->IsInWorld())
 		{
