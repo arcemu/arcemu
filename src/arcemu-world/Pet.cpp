@@ -821,30 +821,32 @@ void Pet::SetDefaultSpells()
 			it2 = it1->second.begin();
 			for(; it2 != it1->second.end(); ++it2)
 			{
-				AddSpell(dbcSpell.LookupEntry(*it2), false);
+				AddSpell( dbcSpell.LookupEntry( *it2 ), false );
 			}
 		}
 	}
 	else
 	{
-
 		uint32 Line;
 		if( GetCreatureInfo() )
 			Line = GetCreatureInfo()->SpellDataID;
 		else Line = 0;
-		if(Line)
+		if( Line )
 		{
-			CreatureSpellDataEntry * SpellData = dbcCreatureSpellData.LookupEntry(Line);
-			if(SpellData)
-				for(uint32 i = 0; i < 3; ++i)
-					if(SpellData->Spells[i] != 0)
-						AddSpell(dbcSpell.LookupEntry(SpellData->Spells[i]), false); //add spell to pet
+			CreatureSpellDataEntry * SpellData = dbcCreatureSpellData.LookupEntry( Line );
+			if( SpellData )
+				for( uint32 i = 0; i < 3; ++i )
+					if( SpellData->Spells[i] != 0 )
+						AddSpell( dbcSpell.LookupEntry( SpellData->Spells[i] ), false ); //add spell to pet
 		}
 	}
 }
 
-void Pet::AddSpell(SpellEntry * sp, bool learning)
+void Pet::AddSpell( SpellEntry * sp, bool learning )
 {
+	if( sp == NULL )
+		return;
+
 	// Cast on self if we're a passive spell
 	if( sp->Attributes & ATTRIBUTES_PASSIVE )
 	{
