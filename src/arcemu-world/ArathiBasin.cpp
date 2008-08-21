@@ -565,7 +565,6 @@ void ArathiBasin::EventUpdateResources(uint32 Team)
 					(*itr)->CastSpell((*itr), loser_spell, true);
 			}
 		}
-		m_winningteam = m_winningteam ? 0 : 1;
 		m_mainLock.Release();
 		UpdatePvPData();
 	}
