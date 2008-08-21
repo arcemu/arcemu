@@ -266,6 +266,13 @@ void WorldSession::HandleSetTradeItem(WorldPacket & recv_data)
 		}
 	}
 
+	if(SourceSlot >= INVENTORY_SLOT_BAG_START && SourceSlot < INVENTORY_SLOT_BAG_END)
+	{
+		//More duping woohoo
+		sCheatLog.writefromsession(this, "tried to cheat trade a soulbound item");
+		Disconnect();
+	}
+
 	_player->mTradeItems[TradeSlot] = pItem;
 	_player->SendTradeUpdate();
 }
