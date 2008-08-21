@@ -3033,8 +3033,15 @@ void AIInterface::_UpdateMovement(uint32 p_time)
 			float dist = m_Unit->CalcDistance(UnitToFear);
 			if(dist > 30.0f || (Rand(25) && dist > 10.0f))	// not too far or too close
 			{
-				Fx = m_Unit->GetPositionX() - (RandomFloat(15.f)+5.0f)*cosf(Fo);
-				Fy = m_Unit->GetPositionY() - (RandomFloat(15.f)+5.0f)*sinf(Fo);
+					if( m_Unit->GetMapId() == 572 || m_Unit->GetMapId() == 562 || m_Unit->GetMapId() == 559 ) //GET MAP ID
+					{
+						Fx = m_Unit->GetPositionX();
+					}
+					else 
+					{
+					Fx = m_Unit->GetPositionX() - (RandomFloat(15.f)+5.0f)*cosf(Fo);
+					Fy = m_Unit->GetPositionY() - (RandomFloat(15.f)+5.0f)*sinf(Fo);
+					}
 			}
 			else
 			{
