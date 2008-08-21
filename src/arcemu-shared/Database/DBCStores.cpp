@@ -65,6 +65,7 @@ SERVER_DECL DBCStorage<gtFloat> dbcManaRegenBase;
 SERVER_DECL DBCStorage<gtFloat> dbcHPRegen;
 SERVER_DECL DBCStorage<gtFloat> dbcHPRegenBase;
 SERVER_DECL DBCStorage<AreaTriggerEntry> dbcAreaTrigger;
+SERVER_DECL DBCStorage<CharTitlesEntry> dbcCharTitle;
 
 const char* ItemSetFormat = "usxxxxxxxxxxxxxxxuuuuuuuuuxxxxxxxxxuuuuuuuuuuuuuuuuuu";
 const char* LockFormat = "uuuuuuxxxuuuuuxxxuuuuuxxxxxxxxxxx";
@@ -101,6 +102,7 @@ const char * durabilitycostsFormat = "uuuuuuuuuuuuuuuuuuuuuuuuuuuuuu";
 const char* bankslotpriceformat = "uu";
 const char* gtfloatformat = "f";
 const char* areatriggerformat = "uuffffffff";
+const char* chartitleFormat = "uxsxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxu";
 
 template<class T>
 bool loader_stub(const char * filename, const char * format, bool ind, T& l, bool loadstrs)
@@ -157,6 +159,7 @@ bool LoadDBCs()
 	LOAD_DBC("DBC/gtRegenHPPerSpt.dbc", gtfloatformat, false, dbcHPRegenBase, false); //it's not a mistake.
 	LOAD_DBC("DBC/gtOCTRegenHP.dbc", gtfloatformat, false, dbcHPRegen, false); //it's not a mistake.
 	LOAD_DBC("DBC/AreaTrigger.dbc", areatriggerformat, true, dbcAreaTrigger, true);
+	LOAD_DBC("DBC/CharTitles.dbc", chartitleFormat, true, dbcCharTitle, true);
 	return true;
 }
 

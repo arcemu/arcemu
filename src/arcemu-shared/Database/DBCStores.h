@@ -1010,6 +1010,13 @@ struct AreaTriggerEntry
     float     box_o;			// 9 extent rotation by about z axis
 };
 
+struct CharTitlesEntry
+{
+	uint32		ID;
+	char*		name;										// Field [2], Name
+	uint32		bit_index;									// Field [36], used in PLAYER_CHOSEN_TITLE and (uint32(1) << bit_index) in PLAYER__FIELD_KNOWN_TITLES and PLAYER__FIELD_KNOWN_TITLES_X
+};
+
 #pragma pack(pop)
 
 ARCEMU_INLINE float GetRadius(SpellRadius *radius)
@@ -1356,6 +1363,7 @@ extern SERVER_DECL DBCStorage<gtFloat> dbcManaRegenBase;
 extern SERVER_DECL DBCStorage<gtFloat> dbcHPRegen;
 extern SERVER_DECL DBCStorage<gtFloat> dbcHPRegenBase;
 extern SERVER_DECL DBCStorage<AreaTriggerEntry> dbcAreaTrigger;
+extern SERVER_DECL DBCStorage<CharTitlesEntry> dbcCharTitle;
 
 bool LoadDBCs();
 
