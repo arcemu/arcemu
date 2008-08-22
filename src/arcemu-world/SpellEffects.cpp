@@ -1701,22 +1701,122 @@ void Spell::SpellEffectApplyAura(uint32 i)  // Apply Aura
 	// can't apply stuns/fear/polymorph/root etc on boss
 	if ( !playerTarget )
 	{
-		Creature * c = (Creature*)( unitTarget );
-		if (c&&c->GetCreatureInfo()&&c->GetCreatureInfo()->Rank == ELITE_WORLDBOSS)
+		if (u_caster && (u_caster != unitTarget))
 		{
-			switch(GetProto()->EffectApplyAuraName[i])
+			Creature * c = (Creature*)( unitTarget );
+			if (c)
 			{
-			case SPELL_AURA_MOD_CONFUSE:  // confuse
-			case SPELL_AURA_MOD_CHARM:  // charm
-			case SPELL_AURA_MOD_FEAR:  // fear
-			case SPELL_AURA_MOD_STUN: // stun
-			case SPELL_AURA_MOD_PACIFY: // pacify
-			case SPELL_AURA_MOD_ROOT: // root
-			case SPELL_AURA_MOD_SILENCE: // silence
-			case SPELL_AURA_MOD_INCREASE_SPEED: // increase speed
-			case SPELL_AURA_MOD_DECREASE_SPEED: // decrease speed
-				//SendCastResult(SPELL_FAILED_IMMUNE);
-				return;
+
+				/*
+				Charm (Mind Control, enslave demon): 1
+				Confuse (Blind etc): 2
+				Fear: 4
+				Root: 8
+				Silence : 16
+				Stun: 32
+				Sheep: 64
+				Banish: 128
+				Sap: 256
+				Taunt (aura): 512
+				Decrease Speed (Hamstring) (aura): 1024
+				Spell Haste (Curse of Tongues) (aura): 2048
+				Interrupt Cast: 4096
+				Mod Healing % (Mortal Strike) (aura): 8192
+				Total Stats % (Vindication) (aura): 16384
+				*/
+
+				//Spells with Mechanic also add other ugly auras, but if the main aura is the effect --> immune to whole spell
+				if (c->GetProto() && c->GetProto()->modImmunities)
+				{
+					bool immune = false;
+					if (m_spellInfo->MechanicsType)
+					{
+						switch(m_spellInfo->MechanicsType)
+						{
+						case MECHANIC_CHARMED:
+							if (c->GetProto()->modImmunities & 1)
+								immune = true;
+							break;
+						case MECHANIC_DISORIENTED:
+							if (c->GetProto()->modImmunities & 2)
+								immune = true;
+							break;
+						case MECHANIC_FLEEING:
+							if (c->GetProto()->modImmunities & 4)
+								immune = true;
+							break;
+						case MECHANIC_ROOTED:
+							if (c->GetProto()->modImmunities & 8)
+								immune = true;
+							break;
+						case MECHANIC_SILENCED:
+							if ( c->GetProto()->modImmunities & 16)
+								immune = true;
+							break;
+						case MECHANIC_STUNNED:
+							if (c->GetProto()->modImmunities & 32)
+								immune = true;
+							break;
+						case MECHANIC_POLYMORPHED:
+							if (c->GetProto()->modImmunities & 64)
+								immune = true;
+							break;
+						case MECHANIC_BANISHED:
+							if (c->GetProto()->modImmunities & 128)
+								immune = true;
+							break;
+						}
+					}
+					else
+					{
+						// Spells wich do more than just one thing (damage and the effect) dont have a mechanic and we should only cancel the aura to be placed
+						switch (m_spellInfo->EffectApplyAuraName[i])
+						{
+						case SPELL_AURA_MOD_CONFUSE:
+							if (c->GetProto()->modImmunities & 2)
+								immune = true;
+							break;
+						case SPELL_AURA_MOD_FEAR:
+							if (c->GetProto()->modImmunities & 4)
+								immune = true;
+							break;
+						case SPELL_AURA_MOD_TAUNT:
+							if (c->GetProto()->modImmunities & 512)
+								immune = true;
+							break;
+						case SPELL_AURA_MOD_STUN: // no idea if its needed, just to be sure
+							if (c->GetProto()->modImmunities & 32)
+								immune = true;
+							break;
+						case SPELL_AURA_MOD_SILENCE:
+							if ((c->GetProto()->modImmunities & 4096) || (c->GetProto()->modImmunities & 16))
+								immune = true;
+							break;
+						case SPELL_AURA_MOD_DECREASE_SPEED:
+							if (c->GetProto()->modImmunities & 1024)
+								immune = true;
+							break;
+						case SPELL_AURA_INCREASE_CASTING_TIME_PCT:
+							if (c->GetProto()->modImmunities & 2048)
+								immune = true;
+							break;
+						case SPELL_AURA_MOD_LANGUAGE: //hacky way to prefer that the COT icon is set to mob
+							if (c->GetProto()->modImmunities & 2048)
+								immune = true;
+							break;
+						case SPELL_AURA_MOD_HEALING_DONE_PERCENT:
+							if (c->GetProto()->modImmunities & 8192)
+								immune = true;
+							break;
+						case SPELL_AURA_MOD_TOTAL_STAT_PERCENTAGE:
+							if (c->GetProto()->modImmunities & 16384)
+								immune = true;
+							break;
+						}
+					}
+					if (immune)
+						return;
+				}
 			}
 		}
 	}
@@ -3908,12 +4008,19 @@ void Spell::SpellEffectInterruptCast(uint32 i) // Interrupt Cast
 {
 	if(!unitTarget || !unitTarget->isAlive())
 		return;
-	// can't apply stuns/fear/polymorph/root etc on boss
-	if(unitTarget->GetTypeId()==TYPEID_UNIT)
+
+	if(!playerTarget)
 	{
-		Creature * c = (Creature*)( unitTarget );
-		if (c&&c->GetCreatureInfo()&&c->GetCreatureInfo()->Rank == ELITE_WORLDBOSS)
-			return;
+		if (u_caster && (u_caster != unitTarget))
+		{
+			unitTarget->GetAIInterface()->AttackReaction(u_caster, 1, m_spellInfo->Id);
+			Creature *c = (Creature*)( unitTarget );
+			if (c && c->GetProto() && c->GetProto()->modImmunities)
+			{
+				if (c->GetProto()->modImmunities & 2048)
+					return;
+			}
+		}
 	}
 	// FIXME:This thing prevent target from spell casting too but cant find.
 	uint32 school=0;
