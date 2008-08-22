@@ -3036,11 +3036,12 @@ void AIInterface::_UpdateMovement(uint32 p_time)
 					if( m_Unit->GetMapId() == 572 || m_Unit->GetMapId() == 562 || m_Unit->GetMapId() == 559 ) //GET MAP ID
 					{
 						Fx = m_Unit->GetPositionX();
+						Fy = m_Unit->GetPositionY();
 					}
 					else 
 					{
-					Fx = m_Unit->GetPositionX() - (RandomFloat(15.f)+5.0f)*cosf(Fo);
-					Fy = m_Unit->GetPositionY() - (RandomFloat(15.f)+5.0f)*sinf(Fo);
+						Fx = m_Unit->GetPositionX() - (RandomFloat(15.f)+5.0f)*cosf(Fo);
+						Fy = m_Unit->GetPositionY() - (RandomFloat(15.f)+5.0f)*sinf(Fo);
 					}
 			}
 			else
