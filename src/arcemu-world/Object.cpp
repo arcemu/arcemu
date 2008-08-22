@@ -2079,7 +2079,7 @@ void Object::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
 			pVictim->GetAIInterface()->HandleEvent( EVENT_LEAVECOMBAT, static_cast< Unit* >( this ), 0);
 		}
 
-		if( pVictim->IsPlayer() && (!IsPlayer() || pVictim == this ) )
+		if( pVictim->IsPlayer() && !IsPlayer())
 		{
 			static_cast< Player* >( pVictim )->DeathDurabilityLoss(0.10);
 		}
@@ -2350,74 +2350,79 @@ void Object::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
 				}
 			}
 			//---------------------------------looot-----------------------------------------  
-			
-			if( GetTypeId() == TYPEID_PLAYER && 
-				pVictim->GetUInt64Value( UNIT_FIELD_CREATEDBY ) == 0 && 
-				pVictim->GetUInt64Value( OBJECT_FIELD_CREATED_BY ) == 0 &&
-				!pVictim->IsPet() )
-			{
-				// TODO: lots of casts are bad make a temp member pointer to use for batches like this
-				// that way no local loadhitstore and its just one assignment 
 
-				// Is this player part of a group
-				if( static_cast< Player* >( this)->InGroup() )
+			// ----------------------------- XP --------------
+			if ( pVictim->GetUInt64Value( UNIT_FIELD_CREATEDBY ) == 0 && 
+				pVictim->GetUInt64Value( OBJECT_FIELD_CREATED_BY ) == 0 &&
+				!pVictim->IsPet() && static_cast<Creature*>(pVictim)->Tagged)
+			{
+				Unit *uTagger = pVictim->GetMapMgr()->GetUnit(static_cast<Creature*>(pVictim)->TaggerGuid);
+				if (uTagger != NULL)
 				{
-					//Calc Group XP
-					static_cast< Player* >( this )->GiveGroupXP( pVictim, static_cast< Player* >( this ) );
-				}
-				else
-				{
-					uint32 xp = CalculateXpToGive( pVictim, static_cast< Unit* >( this ) );
-					if( xp > 0 )
+					if (uTagger->IsPlayer())
 					{
-						static_cast< Player* >( this )->GiveXP( xp, victimGuid, true );
-						if( static_cast< Player* >( this )->GetSummon() && static_cast< Player* >( this )->GetSummon()->GetUInt32Value( UNIT_CREATED_BY_SPELL ) == 0 )
+						Player *pTagger = static_cast<Player*>(uTagger);
+						if (pTagger)
 						{
-							xp = CalculateXpToGive( pVictim, static_cast< Player* >( this )->GetSummon() );
-							if( xp > 0 )
-								static_cast< Player* >( this )->GetSummon()->GiveXP( xp );
+							if (pTagger->InGroup())
+							{
+								pTagger->GiveGroupXP( pVictim, pTagger);
+							}
+							else
+							{
+								uint32 xp = CalculateXpToGive( pVictim, uTagger );
+								if( xp > 0 )
+								{
+									pTagger->GiveXP( xp, victimGuid, true );
+									if( pTagger->GetSummon() && !pTagger->GetSummon()->IsSummon() )
+									{
+										xp = CalculateXpToGive( pVictim, pTagger->GetSummon() );
+										if( xp > 0 )
+											pTagger->GetSummon()->GiveXP( xp );
+									}
+								}
+							}
+							if( !pVictim->IsPlayer() )
+								sQuestMgr.OnPlayerKill( pTagger, static_cast< Creature* >( pVictim ) );
 						}
 					}
-				}
-
-				if( pVictim->GetTypeId() != TYPEID_PLAYER )
-					sQuestMgr.OnPlayerKill( static_cast< Player* >( this ), static_cast< Creature* >( pVictim ) );
-			}
-			else /* is Creature or GameObject*/
-			{
-				/* ----------------------------- PET XP HANDLING -------------- */
-				if( owner_participe && IsPet() && !pVictim->IsPet() )
-				{
-					Player* petOwner = static_cast< Pet* >( this )->GetPetOwner();
-					if( petOwner != NULL && petOwner->GetTypeId() == TYPEID_PLAYER )
+					else if (uTagger->IsPet())
 					{
-						if( petOwner->InGroup() )
+						Pet* petTagger = static_cast<Pet*>(uTagger);
+						if (petTagger != NULL)
 						{
-							//Calc Group XP
-							static_cast< Unit* >( this )->GiveGroupXP( pVictim, petOwner );
-						}
-						else
-						{
-							uint32 xp = CalculateXpToGive( pVictim, petOwner );
-							if( xp > 0 )
+							Player* petOwner = petTagger->GetPetOwner();
+							if( petOwner != NULL)
 							{
-								petOwner->GiveXP( xp, victimGuid, true );
-								if( !static_cast< Pet* >( this )->IsSummon() )
+								if( petOwner->InGroup() )
 								{
-									xp = CalculateXpToGive( pVictim, static_cast< Pet* >( this ) );
-									if( xp > 0 )
-										static_cast< Pet* >( this )->GiveXP( xp );
+									//Calc Group XP
+									petOwner->GiveGroupXP( pVictim, petOwner );
 								}
+								else
+								{
+									uint32 xp = CalculateXpToGive( pVictim, petOwner );
+									if( xp > 0 )
+									{
+										petOwner->GiveXP( xp, victimGuid, true );
+										if( !petTagger->IsSummon() )
+										{
+											xp = CalculateXpToGive( pVictim, petTagger );
+											if( xp > 0 )
+												petTagger->GiveXP( xp );
+										}
+									}
+								}
+								if(pVictim->GetTypeId() != TYPEID_PLAYER)
+									sQuestMgr.OnPlayerKill( petOwner, static_cast< Creature* >( pVictim ) );
 							}
 						}
 					}
-					if( petOwner != NULL && pVictim->GetTypeId() != TYPEID_PLAYER && 
-						pVictim->GetTypeId() == TYPEID_UNIT )
-						sQuestMgr.OnPlayerKill( petOwner, static_cast< Creature* >( pVictim ) );
 				}
-				/* ----------------------------- PET XP HANDLING END-------------- */
+				// ----------------------------- XP --------------
+			/* ----------------------------- PET XP HANDLING END-------------- */
 
-				/* ----------------------------- PET DEATH HANDLING -------------- */
+			/* ----------------------------- PET DEATH HANDLING -------------- */
 				if( pVictim->IsPet() )
 				{
 					Pet* pPet = static_cast< Pet* >( pVictim );
