@@ -280,15 +280,6 @@ AC_CONFIG_FILES([
    src/scripts/src/SpellHandlers/Makefile
    src/scripts/src/LUAScripting/Makefile
    src/scripts/src/QuestScripts/Makefile
-   src/sun++/Makefile
-   src/sun++/src/Makefile
-   src/sun++/src/GossipScripts/Makefile
-   src/sun++/src/InstanceScripts/Makefile
-   src/sun++/src/ServerStatusPlugin/Makefile
-   src/sun++/src/SpellHandlers/Makefile
-   src/sun++/src/MiscScripts/Makefile
-   src/sun++/src/LUAScripting/Makefile
-   src/sun++/src/QuestScripts/Makefile
    extras/Makefile
    extras/collision/Makefile
    extras/collision/collision_dll/Makefile
