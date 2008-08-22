@@ -270,7 +270,7 @@ pSpellAura SpellAuraHandler[TOTAL_SPELL_AURAS]={
 		&Aura::SpellAuraNULL,//247
 		&Aura::SpellAuraNULL,//248
 		&Aura::SpellAuraNULL,//249
-		&Aura::SpellAuraNULL,//250
+		&Aura::SpellAuraAddHealth,//250
 		&Aura::SpellAuraNULL,//251
 };
 
@@ -8743,5 +8743,22 @@ void Aura::SpellAuraReduceEffectDuration(bool apply){
 	}
 	if(mod->m_miscValue > 0 && mod->m_miscValue < 28){
 		static_cast< Player* >( m_target )->MechanicDurationPctMod[mod->m_miscValue] += val;
+	}
+}
+
+void Aura::SpellAuraAddHealth(bool apply)
+{
+	if (apply)
+	{
+		SetPositive();
+		m_target->ModUnsigned32Value(UNIT_FIELD_MAXHEALTH, mod->m_amount);
+		m_target->ModUnsigned32Value(UNIT_FIELD_HEALTH, mod->m_amount);
+	}
+	else
+	{
+		m_target->ModUnsigned32Value(UNIT_FIELD_MAXHEALTH, -mod->m_amount);
+		uint32 maxHealth = m_target->GetUInt32Value(UNIT_FIELD_MAXHEALTH);
+		if(m_target->GetUInt32Value(UNIT_FIELD_HEALTH) > maxHealth)
+			m_target->SetUInt32Value(UNIT_FIELD_MAXHEALTH, maxHealth);
 	}
 }
