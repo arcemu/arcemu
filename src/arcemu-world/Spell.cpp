@@ -2924,7 +2924,8 @@ uint8 Spell::CanCast(bool tolerate)
 		}
 #endif
 		//are we in an arena and the spell cooldown is longer then 15mins?
-		if ( p_caster->m_bg && ( p_caster->m_bg->GetType() >= BATTLEGROUND_ARENA_2V2 && p_caster->m_bg->GetType() <= BATTLEGROUND_ARENA_5V5 ) && ( GetProto()->RecoveryTime >= 900000 || GetProto()->CategoryRecoveryTime >= 900000 ) )
+		if ( p_caster->m_bg && ( p_caster->m_bg->GetType() >= BATTLEGROUND_ARENA_2V2 && p_caster->m_bg->GetType() <= BATTLEGROUND_ARENA_5V5 ) &&
+			( GetProto()->RecoveryTime > 900000 || GetProto()->CategoryRecoveryTime > 900000 ) )
 			return SPELL_FAILED_SPELL_UNAVAILABLE;
 
 		//if ( !p_caster->HasSpell(GetProto()->Id) && i_caster == NULL && !tolerate )
