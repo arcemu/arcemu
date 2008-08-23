@@ -98,6 +98,8 @@ void WorldSession::SendBattlegroundList(Creature* pCreature, uint32 mapid)
 void WorldSession::HandleBattleMasterHelloOpcode(WorldPacket &recv_data)
 {
 	CHECK_PACKET_SIZE(recv_data, 8);
+	if( !_player->IsInWorld() )
+		return;
 
 	uint64 guid;
 	recv_data >> guid;
