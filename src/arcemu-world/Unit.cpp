@@ -4479,11 +4479,6 @@ int32 Unit::GetSpellDmgBonus(Unit *pVictim, SpellEntry *spellInfo,int32 base_dmg
 	if( spellInfo->c_is_flags & SPELL_FLAG_IS_NOT_USING_DMG_BONUS )
 		return 0;
 
-	if( caster->IsPlayer() )
-	{
-		for(uint32 a = 0; a < 6; a++)
-			plus_damage += float2int32(static_cast< Player* >(caster)->SpellDmgDoneByAttribute[a][school] * float(caster->GetUInt32Value(UNIT_FIELD_STAT0 + a)));
-	}
 //------------------------------by school---------------------------------------------------
 	plus_damage += caster->GetDamageDoneMod(school);
 	plus_damage += pVictim->DamageTakenMod[school];

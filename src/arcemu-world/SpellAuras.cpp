@@ -7643,8 +7643,6 @@ void Aura::SpellAuraIncreaseSpellDamageByAttribute(bool apply)
 				}
 				else
 					m_target->ModUnsigned32Value( PLAYER_FIELD_MOD_DAMAGE_DONE_POS + x, -mod->realamount );
-
-				static_cast< Player* >( m_target )->SpellDmgDoneByAttribute[stat][x] += ((float)(val))/100;
 			}
 		}
 		if(m_target->IsPlayer())

@@ -237,7 +237,6 @@ Player::Player( uint32 guid ) : m_mailBox(guid)
 	for(uint32 a = 0; a < 6; a++)
 		for(uint32 x = 0; x < 7; x++)
 		{	
-			SpellDmgDoneByAttribute[a][x] = 0;
 			SpellHealDoneByAttribute[a][x] = 0;
 		}
 
