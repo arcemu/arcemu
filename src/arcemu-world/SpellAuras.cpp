@@ -448,6 +448,7 @@ char* SpellAuraNames[TOTAL_SPELL_AURAS] = {
     "DETECT_AMORE",										// 170 Detect Amore
 	"",													// 171
     "INCREASE_MOVEMENT_AND_MOUNTED_SPEED",				// 172 Increase Movement and Mounted Speed (Non-Stacking)
+	"",													// 173
     "INCREASE_SPELL_DAMAGE_PCT",						// 174 Increase Spell Damage by % status
     "INCREASE_SPELL_HEALING_PCT",						// 175 Increase Spell Healing by % status
     "SPIRIT_OF_REDEMPTION",								// 176 Spirit of Redemption Auras
