@@ -1118,7 +1118,7 @@ void AIInterface::_UpdateCombat(uint32 p_time)
 					
 					FollowDistance = 0.0f;
 //					m_moveRun = false;
-					//FIXME: offhand shit
+					//FIXME: offhand stuff
 					if(m_Unit->isAttackReady(false) && !m_fleeTimer)
 					{
 						m_creatureState = ATTACKING;
@@ -1207,7 +1207,7 @@ void AIInterface::_UpdateCombat(uint32 p_time)
 					
 					FollowDistance = 0.0f;
 //					m_moveRun = false;
-					//FIXME: offhand shit
+					//FIXME: offhand stuff
 					if(m_Unit->isAttackReady(false) && !m_fleeTimer)
 					{
 						m_creatureState = ATTACKING;
@@ -1929,7 +1929,7 @@ bool AIInterface::FindFriends(float dist)
 			guard->Load(cp, x, y, z);
 			guard->SetInstanceID(m_Unit->GetInstanceID());
 			guard->SetZoneId(m_Unit->GetZoneId());
-			guard->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_PVP); /* shitty DBs */
+			guard->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_PVP); /* stuffty DBs */
 			guard->m_noRespawn=true;
 		
 			if(guard->CanAddToWorld())

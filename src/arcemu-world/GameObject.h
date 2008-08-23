@@ -42,7 +42,7 @@ enum GAMEOBJECT_FLAG_BIT
 	GAMEOBJECT_CLICKABLE = 0x20,
 };
 
-#if ENABLE_SHITTY_STL_HACKS == 1
+#if ENABLE_stuffTY_STL_HACKS == 1
 typedef HM_NAMESPACE::hash_map<Quest*, uint32 > GameObjectGOMap;
 #else
 namespace HM_NAMESPACE

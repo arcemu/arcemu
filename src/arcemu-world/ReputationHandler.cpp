@@ -149,7 +149,7 @@ void Player::_InitialReputation()
 			if(GetReputationRankFromStanding(BaseRep) <= STANDING_HOSTILE)
 				SetFlagAtWar(rep->flag);
 
-			// Visible-ness shit.
+			// Visible-ness stuff.
 			if((f->parentFaction == 469 && GetTeam() == 0) ||		// Alliance own faction.
 				(f->parentFaction == 67 && GetTeam() == 1) )		 // Horde own faction.
 			{

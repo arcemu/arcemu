@@ -890,7 +890,7 @@ uint32 ItemInterface::GetItemCount(uint32 itemid, bool IncBank)
 //-------------------------------------------------------------------//
 uint32 ItemInterface::RemoveItemAmt(uint32 id, uint32 amt)
 {
-	//this code returns shit return value is fucked
+	//this code returns stuff return value is borked
 	if (GetItemCount(id) < amt)
 	{
 		return 0;
@@ -1018,7 +1018,7 @@ uint32 ItemInterface::RemoveItemAmt(uint32 id, uint32 amt)
 
 uint32 ItemInterface::RemoveItemAmt_ProtectPointer(uint32 id, uint32 amt, Item** pointer)
 {
-	//this code returns shit return value is fucked
+	//this code returns stuff return value is borked
 	if (GetItemCount(id) < amt)
 	{
 		return 0;

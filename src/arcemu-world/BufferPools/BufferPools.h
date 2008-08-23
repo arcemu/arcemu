@@ -79,7 +79,7 @@ public:
 	void PooledDelete(T* dumped)
 	{
 		if( !dumped )
-			return; //shit happens, in too many forms sadly
+			return; //stuff happens, in too many forms sadly
 
 		if( dumped->m_bufferPoolId == OBJECT_WAS_ALLOCATED_STANDARD_WAY )
 		{

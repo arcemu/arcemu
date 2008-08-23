@@ -9854,7 +9854,7 @@ void ApplyNormalFixes()
 			sp->always_apply = true;
 
 		//there are some spells that change the "damage" value of 1 effect to another : devastate = bonus first then damage
-		//this is a total bullshit so remove it when spell system supports effect overwriting
+		//this is a total bullstuff so remove it when spell system supports effect overwriting
 		for( uint32 col1_swap = 0; col1_swap < 2 ; col1_swap++ )
 			for( uint32 col2_swap = col1_swap ; col2_swap < 3 ; col2_swap++ )
 				if( sp->Effect[col1_swap] == SPELL_EFFECT_WEAPON_PERCENT_DAMAGE && sp->Effect[col2_swap] == SPELL_EFFECT_DUMMYMELEE )
@@ -14030,16 +14030,16 @@ void ApplyNormalFixes()
 		sp = dbcSpell.LookupEntryForced( 30242 );
 		if( sp != NULL )
 		{
-			sp->Effect[0] = 0; //disble this. This is just blizz crap. Pure proove that they suck :P
+			sp->Effect[0] = 0; //disble this. This is just blizz doody. Pure proove that they suck :P
 			sp->EffectImplicitTargetB[1] = EFF_TARGET_PET;
-			sp->EffectApplyAuraName[2] = SPELL_AURA_MOD_SPELL_CRIT_CHANCE; //lvl 1 has it fucked up :O
+			sp->EffectApplyAuraName[2] = SPELL_AURA_MOD_SPELL_CRIT_CHANCE; //lvl 1 has it borked up :O
 			sp->EffectImplicitTargetB[2] = EFF_TARGET_PET;
 			sp->c_is_flags |= SPELL_FLAG_IS_CASTED_ON_PET_SUMMON_PET_OWNER ;
 		}
 		sp = dbcSpell.LookupEntryForced( 30245 );
 		if( sp != NULL )
 		{
-			sp->Effect[0] = 0; //disble this. This is just blizz crap. Pure proove that they suck :P
+			sp->Effect[0] = 0; //disble this. This is just blizz doody. Pure proove that they suck :P
 			sp->EffectImplicitTargetB[1] = EFF_TARGET_PET;
 			sp->EffectImplicitTargetB[2] = EFF_TARGET_PET;
 			sp->c_is_flags |= SPELL_FLAG_IS_CASTED_ON_PET_SUMMON_PET_OWNER ;
@@ -14047,7 +14047,7 @@ void ApplyNormalFixes()
 		sp = dbcSpell.LookupEntryForced( 30246 );
 		if( sp != NULL )
 		{
-			sp->Effect[0] = 0; //disble this. This is just blizz crap. Pure proove that they suck :P
+			sp->Effect[0] = 0; //disble this. This is just blizz doody. Pure proove that they suck :P
 			sp->EffectImplicitTargetB[1] = EFF_TARGET_PET;
 			sp->EffectImplicitTargetB[2] = EFF_TARGET_PET;
 			sp->c_is_flags |= SPELL_FLAG_IS_CASTED_ON_PET_SUMMON_PET_OWNER ;
@@ -14055,7 +14055,7 @@ void ApplyNormalFixes()
 		sp = dbcSpell.LookupEntryForced( 30247 );
 		if( sp != NULL )
 		{
-			sp->Effect[0] = 0; //disble this. This is just blizz crap. Pure proove that they suck :P
+			sp->Effect[0] = 0; //disble this. This is just blizz doody. Pure proove that they suck :P
 			sp->EffectImplicitTargetB[1] = EFF_TARGET_PET;
 			sp->EffectImplicitTargetB[2] = EFF_TARGET_PET;
 			sp->c_is_flags |= SPELL_FLAG_IS_CASTED_ON_PET_SUMMON_PET_OWNER ;
@@ -14063,7 +14063,7 @@ void ApplyNormalFixes()
 		sp = dbcSpell.LookupEntryForced( 30248 );
 		if( sp != NULL )
 		{
-			sp->Effect[0] = 0; //disble this. This is just blizz crap. Pure proove that they suck :P
+			sp->Effect[0] = 0; //disble this. This is just blizz doody. Pure proove that they suck :P
 			sp->EffectImplicitTargetB[1] = EFF_TARGET_PET;
 			sp->EffectImplicitTargetB[2] = EFF_TARGET_PET;
 			sp->c_is_flags |= SPELL_FLAG_IS_CASTED_ON_PET_SUMMON_PET_OWNER ;

@@ -159,7 +159,7 @@ void WorldSession::HandleGroupAcceptOpcode( WorldPacket & recv_data )
 
     //sInstanceSavingManager.ResetSavedInstancesForPlayer(_player);
 
-	// Currentgroup and all that shit are set by addmember.
+	// Currentgroup and all that stuff are set by addmember.
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////

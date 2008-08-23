@@ -843,7 +843,7 @@ void Creature::RegenerateHealth()
 	else
 		amt = (lvl*2.0f)*(-1.0f+PctRegenModifier);
 		
-	//Apply shit from conf file
+	//Apply stuff from conf file
 	amt*=sWorld.getRate(RATE_HEALTH);
 	
 	if(amt<=1.0f)//this fixes regen like 0.98
@@ -864,7 +864,7 @@ void Creature::RegenerateMana()
 	if(cur>=mm)return;
 	amt=(getLevel()+10)*PctPowerRegenModifier[POWER_TYPE_MANA];
 	
-	//Apply shit from conf file
+	//Apply stuff from conf file
 	amt*=sWorld.getRate(RATE_POWER1);
 	if(amt<=1.0)//this fixes regen like 0.98
 		cur++;

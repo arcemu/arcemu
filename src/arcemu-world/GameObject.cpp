@@ -348,7 +348,7 @@ void GameObject::InitAI()
 	if(!pInfo)
 		return;
 	
-	// this fixes those fuckers in booty bay
+	// this fixes those messers in booty bay
 	if(pInfo->SpellFocus == 0 &&
 		pInfo->sound1 == 0 &&
 		pInfo->sound2 == 0 &&

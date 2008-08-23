@@ -300,7 +300,7 @@ void LogonCommClientSocket::HandleRequestAccountMapping(WorldPacket & recvData)
 
 	if(!mapping_to_send.size())
 	{
-		// no point sending empty shit
+		// no point sending empty stuff
 		return;
 	}
 

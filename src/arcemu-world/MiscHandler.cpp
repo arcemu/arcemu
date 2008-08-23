@@ -983,7 +983,7 @@ void WorldSession::HandleUpdateAccountData(WorldPacket &recv_data)
 
 	if(uiID > 8)
 	{
-		// Shit..
+		// stuff..
 		sLog.outString("WARNING: Accountdata > 8 (%d) was requested to be updated by %s of account %d!", uiID, GetPlayer()->GetName(), this->GetAccountId());
 		return;
 	}
@@ -1064,7 +1064,7 @@ void WorldSession::HandleRequestAccountData(WorldPacket& recv_data)
 	
 	if(id > 8)
 	{
-		// Shit..
+		// stuff..
 		sLog.outString("WARNING: Accountdata > 8 (%d) was requested by %s of account %d!", id, GetPlayer()->GetName(), this->GetAccountId());
 		return;
 	}

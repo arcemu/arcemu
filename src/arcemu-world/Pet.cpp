@@ -558,7 +558,7 @@ void Pet::OnPushToWorld()
 
 void Pet::InitializeMe(bool first)
 {
-	// set up ai and shit
+	// set up ai and stuff
 	GetAIInterface()->Init(this,AITYPE_PET,MOVEMENTTYPE_NONE,m_Owner);
 	GetAIInterface()->SetUnitToFollow(m_Owner);
 	GetAIInterface()->SetFollowDistance(3.0f);

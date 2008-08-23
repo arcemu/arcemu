@@ -474,7 +474,7 @@ enum Flags3
 	FLAGS3_SPELL_PLAYER_EVENT = 0x4000, // Player event's like logging in, finishing quests, triggering cinematic, being adored, Heartbroken etc
 	FLAGS3_UNUSED3            = 0x8000,
 	FLAGS3_CONTROL_UNIT       = 0x10000, // PvP Controller, RC, Creature taming, Taming Lesson
-	FLAGS3_REQ_RANGED_WEAPON  = 0x20000, // this is shit and has nothing to do with auto shot
+	FLAGS3_REQ_RANGED_WEAPON  = 0x20000, // this is stuff and has nothing to do with auto shot
 	FLAGS3_REVIVE_PET         = 0x40000, // actually 1 spell, revive pet
 	FLAGS3_UNK21              = 0x80000, // this is a group of spells that are triggered by something. (I have no clue on how to name this one)
 	FLAGS3_REQ_BEHIND_TARGET  = 0x100000, //wrong

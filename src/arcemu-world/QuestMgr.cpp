@@ -295,7 +295,7 @@ void QuestMgr::BuildOfferReward(WorldPacket *data, Quest* qst, Object* qst_giver
 	
 	//uint32 a = 0, b = 0, c = 1, d = 0, e = 1;
 
-	*data << (qst->next_quest_id ? uint32(1) : uint32(0));	  // next quest shit
+	*data << (qst->next_quest_id ? uint32(1) : uint32(0));	  // next quest stuff
 	*data << uint32(0);										 // maybe required money
 	*data << uint32(1);										 // emotes count
 	*data << uint32(0);										 // emote delay

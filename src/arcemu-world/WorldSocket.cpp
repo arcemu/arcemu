@@ -246,7 +246,7 @@ void WorldSocket::_HandleAuthSession(WorldPacket* recvPacket)
 		return;
 	}
 
-	// shitty hash !
+	// stuffty hash !
 	m_fullAccountName = new string( account );
 
 	// Set the authentication packet 

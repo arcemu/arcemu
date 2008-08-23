@@ -156,7 +156,7 @@ void AddonMgr::SendAddonInfoPacket(WorldPacket *source, uint32 pos, WorldSession
 		unpacked >> crc;
 		unpacked >> unknown;
 		
-		// Hacky fix, Yea I know its a hacky fix I will make a proper handler one's I got the crc crap
+		// Hacky fix, Yea I know its a hacky fix I will make a proper handler one's I got the crc doody
 		if (crc != 0x4C1C776D) // CRC of public key version 2.0.1
 			returnpacket.append(PublicKey,264); // part of the hacky fix
 		else

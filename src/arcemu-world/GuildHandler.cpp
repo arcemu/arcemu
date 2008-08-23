@@ -511,17 +511,17 @@ void WorldSession::HandleCharterBuy(WorldPacket & recv_data)
 		return;
 
 	uint64 creature_guid;
-	uint64 crap;
-	uint32 crap2;
+	uint64 doody;
+	uint32 doody2;
 	string name;
     uint8 error;
-	uint32 crap3,crap4,crap5,crap6,crap7,crap8,crap9,crap10,crap11,arena_index,crap12;
-	uint16 crap13;
-	uint8 crap14;
-	uint32 crap15;
-	recv_data >> creature_guid >> crap >> crap2 >> name;
-	recv_data >> crap3 >> crap4 >> crap5 >> crap6 >> crap7 >> crap8 >> crap9 >> crap10 >> crap11
-		>> crap12 >> crap13 >> crap14 >> arena_index >> crap15;
+	uint32 doody3,doody4,doody5,doody6,doody7,doody8,doody9,doody10,doody11,arena_index,doody12;
+	uint16 doody13;
+	uint8 doody14;
+	uint32 doody15;
+	recv_data >> creature_guid >> doody >> doody2 >> name;
+	recv_data >> doody3 >> doody4 >> doody5 >> doody6 >> doody7 >> doody8 >> doody9 >> doody10 >> doody11
+		>> doody12 >> doody13 >> doody14 >> arena_index >> doody15;
 
 	Creature * crt = _player->GetMapMgr()->GetCreature(GET_LOWGUID_PART(creature_guid));
 	if(!crt)
@@ -725,7 +725,7 @@ void WorldSession::HandleCharterQuery(WorldPacket & recv_data)
 	uint32 charter_id
 	uint64 leader_guid
 	string guild_name
-	uint8  0			<-- maybe subname? or some shit.. who knows
+	uint8  0			<-- maybe subname? or some stuff.. who knows
 	uint32 9
 	uint32 9
 	uint32[9] signatures
@@ -805,10 +805,10 @@ void WorldSession::HandleCharterQuery(WorldPacket & recv_data)
 
 void WorldSession::HandleCharterOffer( WorldPacket & recv_data )
 {
-	uint32 shit;
+	uint32 stuff;
 	uint64 item_guid, target_guid;
 	Charter * pCharter;
-	recv_data >> shit >> item_guid >> target_guid;
+	recv_data >> stuff >> item_guid >> target_guid;
 	
 	if(!_player->IsInWorld()) return;
 	Player * pTarget = _player->GetMapMgr()->GetPlayer((uint32)target_guid);
@@ -1351,7 +1351,7 @@ void WorldSession::HandleGuildBankDepositItem(WorldPacket & recv_data)
 			// find a free bag slot
 			if(pDestItem == NULL)
 			{
-				// dis is fucked up mate
+				// dis is borked up mate
 				return;
 			}
 

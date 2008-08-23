@@ -30,7 +30,7 @@
 #pragma warning(disable:4996)
 #define _CRT_SECURE_NO_DEPRECATE 1
 #define _CRT_SECURE_COPP_OVERLOAD_STANDARD_NAMES 1
-#pragma warning(disable:4251)		// dll-interface bullshit
+#pragma warning(disable:4251)		// dll-interface bullstuff
 #endif
 
 enum TimeVariables
@@ -281,7 +281,7 @@ using std::hash_set;
 #define HM_NAMESPACE stdext
 using stdext::hash_map;
 using stdext::hash_set;
-#define ENABLE_SHITTY_STL_HACKS 1
+#define ENABLE_stuffTY_STL_HACKS 1
 
 // hacky stuff for vc++
 #define snprintf _snprintf
