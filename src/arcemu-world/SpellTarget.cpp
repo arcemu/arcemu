@@ -1002,27 +1002,30 @@ void Spell::SpellTargetTargetPartyMember(uint32 i, uint32 j)
 	if (!Target->IsPet() && !Target->IsPlayer())
 		return;
 
-	Group *c_group=NULL;
-	if( m_caster->IsPlayer() )
-		c_group = static_cast<Player*>(m_caster)->GetGroup();
-	else if( m_caster->IsPet() && static_cast<Pet*>(m_caster)->GetPetOwner() )
-		c_group = static_cast<Player*>( static_cast<Pet*>(m_caster)->GetPetOwner() )->GetGroup();
+	if (m_caster != Target)
+	{
+		Group *c_group=NULL;
+		if( m_caster->IsPlayer() )
+			c_group = static_cast<Player*>(m_caster)->GetGroup();
+		else if( m_caster->IsPet() && static_cast<Pet*>(m_caster)->GetPetOwner() )
+			c_group = static_cast<Player*>( static_cast<Pet*>(m_caster)->GetPetOwner() )->GetGroup();
 
-	if( !c_group )
-		return; //caster or caster master are not in group, cannot cast spell on this target
+		if( !c_group )
+			return; //caster or caster master are not in group, cannot cast spell on this target
 
-	Group *t_group=NULL;
-	if( Target->IsPlayer() )
-		t_group = static_cast<Player*>(Target)->GetGroup();
-	else if( Target->IsPet() && static_cast<Pet*>(Target)->GetPetOwner() )
-		t_group = static_cast<Player*>( static_cast<Pet*>(Target)->GetPetOwner() )->GetGroup();
+		Group *t_group=NULL;
+		if( Target->IsPlayer() )
+			t_group = static_cast<Player*>(Target)->GetGroup();
+		else if( Target->IsPet() && static_cast<Pet*>(Target)->GetPetOwner() )
+			t_group = static_cast<Player*>( static_cast<Pet*>(Target)->GetPetOwner() )->GetGroup();
 
-	if( !t_group )
-		return; //target does not have a group
+		if( !t_group )
+			return; //target does not have a group
 
-	if( t_group != c_group )
-		return; //caster and target are not in same group
+		if( t_group != c_group )
+			return; //caster and target are not in same group
 
+	}
 	float r=GetMaxRange(dbcSpellRange.LookupEntry(GetProto()->rangeIndex));
 	if(IsInrange(m_caster->GetPositionX(),m_caster->GetPositionY(),m_caster->GetPositionZ(),Target,r*r))
 		SafeAddTarget(tmpMap,m_targets.m_unitTarget);
