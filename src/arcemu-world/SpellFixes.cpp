@@ -8297,26 +8297,6 @@ void ApplyExtraDataFixes()
 	if( sp != NULL )
 		sp->in_front_status = SPELL_INFRONT_STATUS_REQUIRE_INFRONT;
 
-	// Spell 34914 (Vampiric Touch Rank 1) is infront from spell extra.
-	sp = dbcSpell.LookupEntryForced(34914);
-	if( sp != NULL )
-		sp->in_front_status = SPELL_INFRONT_STATUS_REQUIRE_INFRONT;
-
-	// Spell 34916 (Vampiric Touch Rank 2) is infront from spell extra.
-	sp = dbcSpell.LookupEntryForced(34916);
-	if( sp != NULL )
-		sp->in_front_status = SPELL_INFRONT_STATUS_REQUIRE_INFRONT;
-
-	// Spell 34917 (Vampiric Touch Rank 3) is infront from spell extra.
-	sp = dbcSpell.LookupEntryForced(34917);
-	if( sp != NULL )
-		sp->in_front_status = SPELL_INFRONT_STATUS_REQUIRE_INFRONT;
-
-	// Spell 34919 (Vampiric Touch ) is infront from spell extra.
-	sp = dbcSpell.LookupEntryForced(34919);
-	if( sp != NULL )
-		sp->in_front_status = SPELL_INFRONT_STATUS_REQUIRE_INFRONT;
-
 	// Spell 34930 (Mana Burn ) is infront from spell extra.
 	sp = dbcSpell.LookupEntryForced(34930);
 	if( sp != NULL )
