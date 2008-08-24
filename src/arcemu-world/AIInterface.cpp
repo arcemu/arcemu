@@ -881,7 +881,10 @@ void AIInterface::_UpdateTargets()
 #endif
 			*/
 			Unit *ai_t = m_Unit->GetMapMgr()->GetUnit( it2->first );
-			if( !ai_t || ai_t->GetInstanceID() != m_Unit->GetInstanceID() || !ai_t->isAlive() || !isAttackable( m_Unit, ai_t )  || m_Unit->GetDistanceSq(ai_t) >= 6400.0f )
+			bool boss = false;
+			if (m_Unit->GetTypeId() == TYPEID_UNIT && static_cast<Creature*>(m_Unit)->GetCreatureInfo() && static_cast<Creature*>(m_Unit)->GetCreatureInfo()->Rank == 3)
+				boss = true;
+			if( ai_t->event_GetCurrentInstanceId() != m_Unit->event_GetCurrentInstanceId() || !ai_t->isAlive() || (!boss && m_Unit->GetDistanceSq(ai_t) >= 6400.0f))
 				m_aiTargets.erase( it2 );
 		}
 
@@ -892,7 +895,27 @@ void AIInterface::_UpdateTargets()
 			&& m_AIState != STATE_EVADE && m_AIState != STATE_FEAR 
 			&& m_AIState != STATE_WANDER && m_AIState != STATE_SCRIPTIDLE)
 		{
-			HandleEvent(EVENT_LEAVECOMBAT, m_Unit, 0);
+			if (m_Unit->GetMapMgr() && m_Unit->GetMapMgr()->GetMapInfo())
+			{
+				Unit* target = NULL;
+				switch (m_Unit->GetMapMgr()->GetMapInfo()->type)
+				{
+				case INSTANCE_NULL:
+				case INSTANCE_PVP:
+					if (m_outOfCombatRange && _CalcDistanceFromHome() < m_outOfCombatRange)
+						target = FindTarget();
+					break;
+
+				case INSTANCE_RAID:
+				case INSTANCE_NONRAID:
+				case INSTANCE_MULTIMODE:
+					target = FindTarget();
+					break;
+				}
+
+				if(target != NULL)
+					AttackReaction(target, 1, 0);
+			}
 		}
 		else if( m_aiTargets.size() == 0 && (m_AIType == AITYPE_PET && (m_Unit->IsPet() && static_cast<Pet*>(m_Unit)->GetPetState() == PET_STATE_AGGRESSIVE) || (!m_Unit->IsPet() && disable_melee == false ) ) )
 		{
