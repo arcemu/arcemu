@@ -22,6 +22,10 @@ initialiseSingleton(DatabaseCleaner);
 
 void DatabaseCleaner::Run()
 {
+	Log.Error("DatabaseCleaner", "The method is unavailable.");
+	return;
+
+	/*
 	Log.Notice("DatabaseCleaner", "Stage 1 of 3: Cleaning characters...");
 	CleanCharacters();
 
@@ -30,6 +34,7 @@ void DatabaseCleaner::Run()
 
 	Log.Notice("DatabaseCleaner", "Stage 3 of 3: Optimizing databases...");
 	Optimize();
+	*/
 }
 
 void DatabaseCleaner::CleanWorld()
@@ -44,6 +49,9 @@ void DatabaseCleaner::Optimize()
 
 void DatabaseCleaner::CleanCharacters()
 {
+	//TODO: Review this code... currently it would wipe almost the whole character database.. :D
+
+	/*
 	set<uint32> chr_guids;
 	set<uint32> chr_guilds;
 	set<uint32> chr_charters;
@@ -371,4 +379,5 @@ void DatabaseCleaner::CleanCharacters()
 	Log.Notice("DatabaseCleaner", "Deleted %u auctions.", tokill_auct.size());
 	Log.Notice("DatabaseCleaner", "Ending...");
 	Log.Line();
+	*/
 }
