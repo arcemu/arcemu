@@ -5844,6 +5844,8 @@ void Aura::SpellAuraSplitDamage(bool apply)
 		return;
 
 	caster = static_cast< Unit* >( GetCaster() );
+	if(!caster)
+		return;
 
 	if(caster->m_damageSplitTarget)
 	{
