@@ -33,7 +33,7 @@ class AuthSocket : public Socket
 public:
 
 	///////////////////////////////////////////////////
-	// Netcore stuff
+	// Netcore shit
 	//////////////////////////
 	AuthSocket(SOCKET fd);
 	~AuthSocket();

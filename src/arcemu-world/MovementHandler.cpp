@@ -318,7 +318,7 @@ void WorldSession::HandleMovementOpcodes( WorldPacket & recv_data )
 	//update the detector
 	if( sWorld.antihack_speed && !_player->GetTaxiState() && _player->m_TransporterGUID == 0 )
 	{
-		// simplified: just take the fastest speed. less chance of borked ups too
+		// simplified: just take the fastest speed. less chance of fuckups too
 		float speed = ( _player->flying_aura ) ? _player->m_flySpeed : ( _player->m_swimSpeed >_player-> m_runSpeed ) ? _player->m_swimSpeed : _player->m_runSpeed;
 
 		_player->SDetector->AddSample( movement_info.x, movement_info.y, getMSTime(), speed );

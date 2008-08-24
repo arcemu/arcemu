@@ -319,7 +319,7 @@ void Spell::SpellTargetInvisibleAOE(uint32 i, uint32 j)
 /// Spell Target Handling for type 4: Target is holder of the aura
 void Spell::SpellTargetFriendly(uint32 i, uint32 j)
 {
-	// O mess we are contagious...
+	// O fuck we are contagious...
 	// this off course is not tested yet. 
 	if (p_caster)
 	{

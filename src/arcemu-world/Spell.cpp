@@ -952,7 +952,7 @@ void Spell::GenerateTargets(SpellCastTargets *store_buff)
 							store_buff->m_unitTarget = p_caster->GetSelection();
 					}break;
 				case EFF_TARGET_GAMEOBJECT_ITEM:{// Gameobject/Item Target
-						//stuff
+						//shit
 					}break;
 				case 27:{ // target is owner of pet
 					// please correct this if not correct does the caster variablen need a Pet caster variable?
@@ -1039,7 +1039,7 @@ void Spell::GenerateTargets(SpellCastTargets *store_buff)
 						}
 					}break;
 				case 61:{ // targets with the same group/raid and the same class
-					//stuff again
+					//shit again
 				}break;
 				case EFF_TARGET_ALL_FRIENDLY_IN_AREA:{
 
@@ -1236,7 +1236,7 @@ void Spell::cancel()
 				{
 					pTarget->RemoveAura(GetProto()->Id, m_caster->GetGUID());
 				}
-				if(m_AreaAura)//remove of blizz and stuff like this
+				if(m_AreaAura)//remove of blizz and shit like this
 				{
 
 					DynamicObject* dynObj=m_caster->GetMapMgr()->GetDynamicObject(m_caster->GetUInt32Value(UNIT_FIELD_CHANNEL_OBJECT));
@@ -1596,7 +1596,7 @@ void Spell::cast(bool check)
 			if(m_spellState != SPELL_STATE_CASTING)
 				finish();
 		}
-		else //this stuff has nothing to do with instant, this only means it will be on NEXT melee hit
+		else //this shit has nothing to do with instant, this only means it will be on NEXT melee hit
 		{
 			// we're much better to remove this here, because otherwise spells that change powers etc,
 			// don't get applied.
@@ -2932,10 +2932,10 @@ uint8 Spell::CanCast(bool tolerate)
 		//	return SPELL_FAILED_SPELL_UNAVAILABLE;
 
 		// backstab/ambush
-		/*Shady: This stuff shouldn't be here
+		/*Shady: This shit shouldn't be here
 		We have special attribute ATTRIBUTES_REQ_STEALTH for stealth requiring.
 		Also we have EquippedItemClass, EquippedItemSubClass fields in DBC for items handling. 
-		SO messING USE IT!
+		SO FUCKING USE IT!
 		if( GetProto()->NameHash == SPELL_HASH_BACKSTAB || GetProto()->NameHash == SPELL_HASH_AMBUSH )
 		{
 			if( GetProto()->NameHash == SPELL_HASH_AMBUSH && !p_caster->IsStealth() )
@@ -3399,7 +3399,7 @@ uint8 Spell::CanCast(bool tolerate)
 					// this only applies to PvP.
 					uint32 lat = static_cast< Player* >( utarget )->GetSession() ? static_cast< Player* >( utarget )->GetSession()->GetLatency() : 0;
 
-					// if we're over 500 get borked anyway.. your gonna lag! and this stops cheaters too
+					// if we're over 500 get fucked anyway.. your gonna lag! and this stops cheaters too
 					lat = ( lat > 500 ) ? 500 : lat;
 
 					// calculate the added distance
@@ -3943,7 +3943,7 @@ uint8 Spell::CanCast(bool tolerate)
 					// {Insignia|Medallion} of the {Horde|Alliance}
 					case 0xC7C45478: //Immune Movement Impairment and Loss of Control
 					case 0x048c32f9:	// insignia of the alliance/horde
-					case 0xDD06F1BF: // Stop messing renaming the spell, Blizzard! (This time it's PvP Trinket)
+					case 0xDD06F1BF: // Stop fucking renaming the spell, Blizzard! (This time it's PvP Trinket)
 						break;
 
 
@@ -4038,7 +4038,7 @@ uint8 Spell::CanCast(bool tolerate)
 					break;
 
 				case 0x048c32f9:	// insignia of the alliance/horde
-				case 0xDD06F1BF: // Stop messing renaming the spell, Blizzard! (This time it's PvP Trinket)
+				case 0xDD06F1BF: // Stop fucking renaming the spell, Blizzard! (This time it's PvP Trinket)
 					break;
 
 				case SPELL_HASH_BERSERKER_RAGE://Berserker Rage frees the caster from fear effects.
@@ -4196,7 +4196,7 @@ exit:
 	else
 		value = basePoints + rand() % randomPoints;
 
-	//scripted stuff
+	//scripted shit
 	if( GetProto()->Id == 34074 && i==0 && u_caster)
 		/*Aspect of the Viper
 		The hunter takes on the aspects of a viper,
@@ -4344,8 +4344,8 @@ exit:
 			for(itrSO = itr->second->begin(); itrSO != itr->second->end(); ++itrSO)
 			{
 				//DK:FIXME->yeni bir map olu�tur
-                // Capt: WHAT THE mess DOES THIS MEAN....
-				// Supa: WHAT THE mess DOES THIS MEAN?
+                // Capt: WHAT THE FUCK DOES THIS MEAN....
+				// Supa: WHAT THE FUCK DOES THIS MEAN?
 				value += RandomUInt((*itrSO)->damage);
 			}
 		}
@@ -5173,7 +5173,7 @@ void Spell::SendCastSuccess(const uint64& guid)
 	if(!plr || !plr->IsPlayer())
 		return;
 
-	// mess bytebuffers
+	// fuck bytebuffers
 	unsigned char buffer[13];
 	uint32 c = FastGUIDPack(guid, buffer, 0);
 #ifdef USING_BIG_ENDIAN

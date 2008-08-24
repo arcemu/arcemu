@@ -882,7 +882,7 @@ void World::UpdateQueuedSessions(uint32 diff)
 		while(m_sessions.size() < m_playerLimit && mQueuedSessions.size())
 		{
 			// Yay. We can let another player in now.
-			// Grab the first messer from the queue, but guard of course, since
+			// Grab the first fucker from the queue, but guard of course, since
 			// this is in a different thread again.
 
 			QueueSet::iterator iter = mQueuedSessions.begin();

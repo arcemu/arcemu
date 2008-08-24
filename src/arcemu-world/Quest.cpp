@@ -354,7 +354,7 @@ void QuestLogEntry::UpdatePlayerFields()
 	uint32 base = GetBaseField(m_slot);
 	m_plr->SetUInt32Value(base + 0, m_quest->id);
 
-	// next field is kills and stuff like that
+	// next field is kills and shit like that
 	uint32 field1 = 0;
 	int i;
 	

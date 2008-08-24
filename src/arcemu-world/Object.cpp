@@ -223,7 +223,7 @@ uint32 Object::BuildCreateUpdateBlockForPlayer(ByteBuffer *data, Player *target)
 		flags = 0x58;
 		break;
 
-		// anyone else can get borked and die!
+		// anyone else can get fucked and die!
 	}
 
 	if(target == this)
@@ -1697,7 +1697,7 @@ void Object::_setFaction()
 	if(!factT)
 	{
 		factT = dbcFactionTemplate.LookupRow( 0 );
-		//this is causeing a lot of crashes cause people have stuffty dbs
+		//this is causeing a lot of crashes cause people have shitty dbs
 //		return;
 	}
 	m_faction = factT;
@@ -2106,7 +2106,7 @@ void Object::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
 					    teamId = 0;
 				    uint32 AreaID = pVictim->GetMapMgr()->GetAreaID(pVictim->GetPositionX(), pVictim->GetPositionY());
 				    if(!AreaID)
-					    AreaID = pAttacker->GetZoneId(); // Failsafe for a stuffty TerrainMgr
+					    AreaID = pAttacker->GetZoneId(); // Failsafe for a shitty TerrainMgr
 
 				    if(AreaID)
 				    {
@@ -2596,7 +2596,7 @@ void Object::SpellNonMeleeDamageLog(Unit *pVictim, uint32 spellID, uint32 damage
 			}
 			else if( spellInfo->is_melee_spell )
 			{
-				// Same stuff with the melee spells, such as Judgement/Seal of Command
+				// Same shit with the melee spells, such as Judgement/Seal of Command
 				if( IsPlayer() )
 				{
 					CritChance = GetFloatValue(PLAYER_CRIT_PERCENTAGE);
@@ -2811,7 +2811,7 @@ void Object::SpellNonMeleeDamageLog(Unit *pVictim, uint32 spellID, uint32 damage
 				Player* pl = static_cast< Player* >( pVictim );
 				uint32 maxmana = pl->GetUInt32Value( UNIT_FIELD_MAXPOWER1 );
 
-				//TODO: wtf is this ugly mess of casting bullstuff
+				//TODO: wtf is this ugly mess of casting bullshit
 				uint32 amount = uint32(float( float(maxmana)*pl->m_RegenManaOnSpellResist));
 
 				pVictim->Energize( pVictim, 29442, amount, POWER_TYPE_MANA );
@@ -2919,7 +2919,7 @@ void Object::SendAttackerStateUpdate( Object* Caster, Object* Target, dealdamage
 
 int32 Object::event_GetInstanceID()
 {
-	// return -1 for non-inworld.. so we get our stuff moved to the right thread
+	// return -1 for non-inworld.. so we get our shit moved to the right thread
 	if(!IsInWorld())
 		return -1;
 	else

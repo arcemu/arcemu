@@ -194,7 +194,7 @@ bool isGuard(uint32 id);
 uint32 getGuardId(uint32 id);
 
 /*
-#if ENABLE_stuffTY_STL_HACKS == 1
+#if ENABLE_SHITTY_STL_HACKS == 1
 typedef HM_NAMESPACE::hash_map<Unit*, int32> TargetMap;
 #else
 namespace HM_NAMESPACE

@@ -206,7 +206,7 @@ pSpellAura SpellAuraHandler[TOTAL_SPELL_AURAS]={
 		&Aura::SpellAuraNULL,//missing = 183 //used //Apply Aura: Decrease Critical Threat by % (Spells) //http://www.thottbot.com/?sp=28746
 		&Aura::SpellAuraReduceAttackerMHitChance,//184//Apply Aura: Reduces Attacker Chance to Hit with Melee //http://www.thottbot.com/s31678
 		&Aura::SpellAuraReduceAttackerRHitChance,//185//Apply Aura: Reduces Attacker Chance to Hit with Ranged //http://www.thottbot.com/?sp=30895
-		&Aura::SpellAuraReduceAttackerstuffChance,//186//Apply Aura: Reduces Attacker Chance to Hit with Spells (Spells) //http://www.thottbot.com/?sp=30895
+		&Aura::SpellAuraReduceAttackerSHitChance,//186//Apply Aura: Reduces Attacker Chance to Hit with Spells (Spells) //http://www.thottbot.com/?sp=30895
 		&Aura::SpellAuraReduceEnemyMCritChance,//missing = 187 //used //Apply Aura: Reduces Attacker Chance to Crit with Melee (Ranged?) //http://www.thottbot.com/?sp=30893
 		&Aura::SpellAuraReduceEnemyRCritChance,//missing = 188 //used //Apply Aura: Reduces Attacker Chance to Crit with Ranged (Melee?) //http://www.thottbot.com/?sp=30893
 		&Aura::SpellAuraIncreaseRating,//missing = 189 //Apply Aura: Increases Rating
@@ -835,7 +835,7 @@ void Aura::Remove()
 		}
 	}
 
-	AuraPool.PooledDelete( this ); // suicide xD	leaking this stuff out
+	AuraPool.PooledDelete( this ); // suicide xD	leaking this shit out
 }
 
 void Aura::AddMod( uint32 t, int32 a, uint32 miscValue, uint32 i )
@@ -1571,7 +1571,7 @@ void Aura::EventPeriodicDamage(uint32 amount)
 			if( c != NULL && c->isAlive() && c->IsPlayer() && c->getClass() == PRIEST )
 				((Player*)c)->VampiricSpell(float2int32(res), m_target);
 	}
-	// grep: this is hack.. some auras seem to delete this stuff.
+	// grep: this is hack.. some auras seem to delete this shit.
 	SpellEntry * sp = m_spellProto;
 	Unit * mtarget = m_target;
 	uint64 cguid = m_casterGuid;
@@ -1602,7 +1602,7 @@ void Aura::SpellAuraDummy(bool apply)
 
 	uint32 TamingSpellid = 0;
 
-	// for seal -> set judgement doody
+	// for seal -> set judgement crap
 	if( GetSpellProto()->BGR_one_buff_on_target & SPELL_TYPE_SEAL && mod->i == 2 )
 	{
 		Player* c = static_cast< Player* >( GetUnitCaster() );
@@ -8095,7 +8095,7 @@ void Aura::SpellAuraReduceAttackerRHitChance(bool apply)
 		static_cast< Player* >( m_target )->m_resist_hit[ MOD_RANGED ] -= mod->m_amount;
 }
 
-void Aura::SpellAuraReduceAttackerstuffChance(bool apply)
+void Aura::SpellAuraReduceAttackerSHitChance(bool apply)
 {
 	if (!m_target->IsPlayer())
 		return;

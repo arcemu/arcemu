@@ -332,7 +332,7 @@ uint32 LogonCommHandler::ClientConnected(string AccountName, WorldSocket * Socke
 	WorldPacket data(RCMSG_REQUEST_SESSION, 100);
 	data << request_id;
 
-	// strip the stuffty hash from it
+	// strip the shitty hash from it
 	for(; acct[i] != '#' && acct[i] != '\0'; ++i )
 		data.append( &acct[i], 1 );
 

@@ -962,7 +962,7 @@ public:
 
 	ARCEMU_INLINE int GetHealthPct()
 	{
-		//stuffty db? pet/guardian bug?
+		//shitty db? pet/guardian bug?
 		if (GetUInt32Value(UNIT_FIELD_HEALTH) == 0 || GetUInt32Value(UNIT_FIELD_MAXHEALTH) == 0)
 			return 0;
 

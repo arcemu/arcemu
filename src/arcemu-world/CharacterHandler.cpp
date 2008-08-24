@@ -743,7 +743,7 @@ void WorldSession::FullLogin(Player * plr)
 				dataw << pTrans->GetMapId() << c_tposx << c_tposy << c_tposz << plr->GetOrientation();
 				SendPacket(&dataw);
 
-				// stuff is sent in worldport ack.
+				// shit is sent in worldport ack.
 				enter_world = false;
 			}
 

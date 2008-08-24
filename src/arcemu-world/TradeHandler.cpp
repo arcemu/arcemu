@@ -263,7 +263,7 @@ void WorldSession::HandleSetTradeItem(WorldPacket & recv_data)
 
 	for(uint32 i = 0; i < 8; ++i)
 	{
-		// duping little stuffs
+		// duping little shits
 		if(_player->mTradeItems[i] == pItem || pTarget->mTradeItems[i] == pItem)
 		{
 			sCheatLog.writefromsession(this, "tried to dupe an item through trade");

@@ -1309,7 +1309,7 @@ bool MapMgr::_CellActive(uint32 x, uint32 y)
 void MapMgr::ObjectUpdated(Object *obj)
 {
 	// set our fields to dirty
-	// stupid borked up code in places.. i hate doing this but i've got to :<
+	// stupid fucked up code in places.. i hate doing this but i've got to :<
 	// - burlex
 	m_updateMutex.Acquire();
 	_updates.insert(obj);

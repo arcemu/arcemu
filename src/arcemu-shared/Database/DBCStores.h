@@ -36,10 +36,10 @@ struct ItemSetEntry
 {
     uint32 id;                  //1
     char* name;                //2
-    //uint32 unused_stuff[15];      //3 - 9
+    //uint32 unused_shit[15];      //3 - 9
     uint32 flag;                //10 constant
     uint32 itemid[8];           //11 - 18
-    //uint32 more_unused_stuff[9]; //19 - 27
+    //uint32 more_unused_shit[9]; //19 - 27
     uint32 SpellID[8];          //28 - 35
     uint32 itemscount[8];       //36 - 43
     uint32 RequiredSkillID;     //44
@@ -703,9 +703,9 @@ struct FactionDBC
     //uint32 repFlags[4];
     uint32 parentFaction;
     char* Name;
-    //uint32 stuff[16];
+    //uint32 shit[16];
     //uint32 Description;
-    //uint32 stuff2[16];
+    //uint32 shit2[16];
 };
 
 struct DBCTaxiNode
@@ -1056,7 +1056,7 @@ class SERVER_DECL DBCStorage
 
 	uint32 rows;
 	uint32 cols;
-	uint32 useless_stuff;
+	uint32 useless_shit;
 	uint32 header;
 
 public:
@@ -1096,12 +1096,12 @@ public:
 		fread(&header,4,1,f);
 		fread(&rows, 4, 1, f);
 		fread(&cols, 4, 1, f);
-		fread(&useless_stuff, 4, 1, f);
+		fread(&useless_shit, 4, 1, f);
 		fread(&string_length, 4, 1, f);
 		pos = ftell(f);
 
 #ifdef USING_BIG_ENDIAN
-		swap32(&rows); swap32(&cols); swap32(&useless_stuff); swap32(&string_length);
+		swap32(&rows); swap32(&cols); swap32(&useless_shit); swap32(&string_length);
 #endif
 
 		if( load_strings )

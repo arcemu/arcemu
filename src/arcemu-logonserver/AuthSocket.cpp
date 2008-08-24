@@ -177,7 +177,7 @@ void AuthSocket::HandleChallenge()
 	if(m_challenge.I_len >= 0x50) { Disconnect(); return; }
 	m_challenge.I[m_challenge.I_len] = 0;
 
-	// Clear the stuffty hash (for server)
+	// Clear the shitty hash (for server)
 	string AccountName = (char*)&m_challenge.I;
 	string::size_type i = AccountName.rfind("#");
 	if( i != string::npos )
@@ -557,7 +557,7 @@ void AuthSocket::HandleReconnectChallenge()
 	// Null-terminate the account string
 	m_challenge.I[m_challenge.I_len] = 0;
 
-	// Clear the stuffty hash (for server)
+	// Clear the shitty hash (for server)
 /*	size_t i = 0;
 	for( i = m_challenge.I_len; i >= 0; --i )
 	{

@@ -2421,7 +2421,7 @@ void Spell::SpellEffectPersistentAA(uint32 i) // Persistent Area Aura
 	//We are thinking in general so it might be useful later DK
 	
 	// grep: this is a hack!
-	// our stuffty dynobj system doesnt support GO casters, so we gotta
+	// our shitty dynobj system doesnt support GO casters, so we gotta
 	// kinda have 2 summoners for traps that apply AA.
 	DynamicObject * dynObj = m_caster->GetMapMgr()->CreateDynamicObject();
 	 
@@ -3373,7 +3373,7 @@ void Spell::SpellEffectDispel(uint32 i) // Dispel
 			if( UARank != 0 )
 			{
 				uint32 dmg = 0;
-				switch ( UARank ) // BRRR, messING BLIZZ
+				switch ( UARank ) // BRRR, FUCKING BLIZZ
 				{
 					case 1:
 						dmg = 990;

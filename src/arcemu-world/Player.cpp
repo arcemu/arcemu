@@ -190,7 +190,7 @@ Player::Player( uint32 guid ) : m_mailBox(guid)
 	
 	//FIX for professions
 	weapon_proficiency	  = 0x4000;//2^14
-	//FIX for stuff like shirt etc
+	//FIX for shit like shirt etc
 	armor_proficiency	   = 1;
 
 	m_bUnlimitedBreath	  = false;
@@ -201,7 +201,7 @@ Player::Player( uint32 guid ) : m_mailBox(guid)
 	m_SwimmingTime		  = 0;
 	m_BreathDamageTimer	 = 0;
 
-	//transport stuff
+	//transport shit
 	m_TransporterGUID		= 0;
 	m_TransporterX			= 0.0f;
 	m_TransporterY			= 0.0f;
@@ -2021,7 +2021,7 @@ void Player::InitVisibleUpdateBits()
 		Player::m_visibleUpdateMask.SetBit((uint16)(PLAYER_VISIBLE_ITEM_1_0+1 + (i*16))); // visual items for other players
 	}
 
-	/* mess i hate const - burlex */
+	/* fuck i hate const - burlex */
 	/*if(target && target->GetGroup() == const_cast<Player*>(this)->GetGroup() && const_cast<Player*>(this)->GetSubGroup() == target->GetSubGroup())
 	{
 	// quest fields are the same for party members
@@ -2677,7 +2677,7 @@ void Player::LoadFromDBProc(QueryResultVector & results)
 		}
 	}
 
-	// set the rest of the stuff
+	// set the rest of the shit
 	uint32 PvPRanks[] = { PVPTITLE_NONE, PVPTITLE_PRIVATE, PVPTITLE_CORPORAL, PVPTITLE_SERGEANT, PVPTITLE_MASTER_SERGEANT, PVPTITLE_SERGEANT_MAJOR, PVPTITLE_KNIGHT, PVPTITLE_KNIGHT_LIEUTENANT, PVPTITLE_KNIGHT_CAPTAIN, PVPTITLE_KNIGHT_CHAMPION, PVPTITLE_LIEUTENANT_COMMANDER, PVPTITLE_COMMANDER, PVPTITLE_MARSHAL, PVPTITLE_FIELD_MARSHAL, PVPTITLE_GRAND_MARSHAL, PVPTITLE_SCOUT, PVPTITLE_GRUNT, PVPTITLE_HSERGEANT, PVPTITLE_SENIOR_SERGEANT, PVPTITLE_FIRST_SERGEANT, PVPTITLE_STONE_GUARD, PVPTITLE_BLOOD_GUARD, PVPTITLE_LEGIONNAIRE, PVPTITLE_CENTURION, PVPTITLE_CHAMPION, PVPTITLE_LIEUTENANT_GENERAL, PVPTITLE_GENERAL, PVPTITLE_WARLORD, PVPTITLE_HIGH_WARLORD };
 	m_uint32Values[PLAYER_FIELD_WATCHED_FACTION_INDEX]  = get_next_field.GetUInt32();
 	m_uint32Values[PLAYER_CHOSEN_TITLE]				 = get_next_field.GetUInt32();
@@ -3814,7 +3814,7 @@ void Player::_ApplyItemMods(Item* item, int8 slot, bool apply, bool justdrokedow
 
 		for( int k = 0; k < 5; k++ )
 		{
-			// stupid borked dbs
+			// stupid fucked dbs
 			if( item->GetProto()->Spells[k].Id == 0 )
 				continue;
 
@@ -6097,7 +6097,7 @@ void Player::SendInitialLogonPackets()
 	uint32 DayOfTheWeek = static_cast<uint32>(-1);		//	(0b111 = (any) day, 0 = Monday ect)
     uint32 DayOfTheMonth = 20-1;	//	Day - 1 (0 is actual 1) its now the 20e here. TODO: replace this one with the proper date
     uint32 CurrentMonth = 9-1;		//	Month - 1 (0 is actual 1) same as above. TODO: replace it with the proper code
-    uint32 CurrentYear = 7;			//	2000 + this number results in a correct value for this doody. TODO: replace this with the propper code
+    uint32 CurrentYear = 7;			//	2000 + this number results in a correct value for this crap. TODO: replace this with the propper code
 
    #define MINUTE_BITMASK      0x0000003F
     #define HOUR_BITMASK        0x000007C0
@@ -6622,7 +6622,7 @@ void Player::RegenerateMana(bool is_interrupted)
 	if(cur >= mm)return;
 	float amt = (is_interrupted) ? GetFloatValue(PLAYER_FIELD_MOD_MANA_REGEN_INTERRUPT) : GetFloatValue(PLAYER_FIELD_MOD_MANA_REGEN);
 	amt *= 2; //floats are Mana Regen Per Sec. Regen Applied every 2 secs so real value =X*2 . Shady
-	//Apply stuff from conf file
+	//Apply shit from conf file
 	amt *= sWorld.getRate(RATE_POWER1);
 
 	if((amt<=1.0)&&(amt>0))//this fixes regen like 0.98
@@ -6647,7 +6647,7 @@ void Player::RegenerateHealth( bool inCombat )
 		return;
 
 	float amt = (m_uint32Values[UNIT_FIELD_STAT4]*HPRegen->val+HPRegenBase->val*100)*(1+PctRegenModifier);
-	amt *= sWorld.getRate(RATE_HEALTH);//Apply stuff from conf file
+	amt *= sWorld.getRate(RATE_HEALTH);//Apply shit from conf file
 	//Near values from official
 	// wowwiki: Health Regeneration is increased by 33% while sitting.
 	if(m_isResting)
@@ -8059,7 +8059,7 @@ void Player::UpdatePvPArea()
         return;
 
 #ifdef PVP_REALM_MEANS_CONSTANT_PVP
-	//zack : This might be huge doody. I have no idea how it is on blizz but i think a pvp realm should alow me to gank anybody anywhere :(
+	//zack : This might be huge crap. I have no idea how it is on blizz but i think a pvp realm should alow me to gank anybody anywhere :(
 	if(sWorld.GetRealmType() == REALM_PVP)
     {
 		SetPvPFlag();
@@ -8194,7 +8194,7 @@ void Player::LoginPvPSetup()
 		CastSpell(this, PLAYER_HONORLESS_TARGET_SPELL, true);
 
 #ifdef PVP_REALM_MEANS_CONSTANT_PVP
-	//zack : This might be huge doody. I have no idea how it is on blizz but i think a pvp realm should alow me to gank anybody anywhere :(
+	//zack : This might be huge crap. I have no idea how it is on blizz but i think a pvp realm should alow me to gank anybody anywhere :(
 	if(sWorld.GetRealmType() == REALM_PVP)
     {
 		SetPvPFlag();
@@ -8250,7 +8250,7 @@ void Player::PvPToggle()
 	    }
     }
 #ifdef PVP_REALM_MEANS_CONSTANT_PVP
-	//zack : This might be huge doody. I have no idea how it is on blizz but i think a pvp realm should alow me to gank anybody anywhere :(
+	//zack : This might be huge crap. I have no idea how it is on blizz but i think a pvp realm should alow me to gank anybody anywhere :(
 	else if(sWorld.GetRealmType() == REALM_PVP)
     {
 		SetPvPFlag();
@@ -9083,7 +9083,7 @@ void Player::EventPortToGM(Player *p)
 
 void Player::UpdateComboPoints()
 {
-	// mess bytebuffers :D
+	// fuck bytebuffers :D
 	unsigned char buffer[10];
 	uint32 c = 2;
 
@@ -9808,7 +9808,7 @@ void Player::RecalculateHonor()
 	HonorHandler::RecalculateHonorFields(this);
 }
 
-//wooot, doodyy code rulez.....NOT
+//wooot, crapy code rulez.....NOT
 void Player::EventTalentHearthOfWildChange(bool apply)
 {
 	if(!hearth_of_wild_pct)

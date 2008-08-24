@@ -576,7 +576,7 @@ public:
 	void SpellAuraIncreaseArmorByPctInt(bool apply);
 	void SpellAuraReduceAttackerMHitChance(bool apply);
 	void SpellAuraReduceAttackerRHitChance(bool apply);
-	void SpellAuraReduceAttackerstuffChance(bool apply);
+	void SpellAuraReduceAttackerSHitChance(bool apply);
 	void SpellAuraReduceEnemyMCritChance(bool apply);
 	void SpellAuraReduceEnemyRCritChance(bool apply);
 	void SpellAuraLimitSpeed(bool apply);
