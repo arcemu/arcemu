@@ -833,17 +833,6 @@ void Spell::SpellEffectDummy(uint32 i) // Dummy(Scripted events)
 			ILotP.LastTrigger = 0;
 			u_caster->m_procSpells.push_back(ILotP);
 		}break;
-	/*
-		Tree of Life (Passive)
-		Instant
-		Requires Tree of Life Form
-		
-		Effect #1	Dummy
-					Value: 25
-					Server-side script effect.
-	*/
-	case 5420:
-		break;
 	/*************************
 	 * HUNTER SPELLS
 	 *************************
