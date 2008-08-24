@@ -438,6 +438,10 @@ MapMgr * InstanceMgr::GetInstance(Object* obj)
 			itr = instancemap->find(obj->GetInstanceID());
 			if(itr != instancemap->end())
 			{
+				if(itr->second->m_mapMgr == NULL)
+				{
+					itr->second->m_mapMgr = _CreateInstance(itr->second);
+				}
 				if(itr->second->m_mapMgr)
 				{
 					m_mapLock.Release();

@@ -3215,7 +3215,10 @@ void Player::SetPersistentInstanceId(uint32 mapId, uint32 difficulty, uint32 ins
 	m_playerInfo->savedInstanceIdsLock.Acquire();
 	PlayerInstanceMap::iterator itr = m_playerInfo->savedInstanceIds[difficulty].find(mapId);
 	if(itr == m_playerInfo->savedInstanceIds[difficulty].end())
-		m_playerInfo->savedInstanceIds[difficulty].insert(PlayerInstanceMap::value_type(mapId, instanceId));
+	{
+		if(instanceId != 0)
+			m_playerInfo->savedInstanceIds[difficulty].insert(PlayerInstanceMap::value_type(mapId, instanceId));
+	}
 	else
 	{
 		if(instanceId == 0)
