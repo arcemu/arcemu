@@ -11092,7 +11092,7 @@ void Player::VampiricSpell(uint32 dmg, Unit* pTarget)
 			{
 				for( itr = pSubGroup->GetGroupMembersBegin(); itr != pSubGroup->GetGroupMembersEnd(); ++itr )
 				{
-					if( (*itr)->m_loggedInPlayer != NULL && (*itr) != m_playerInfo )
+					if( (*itr)->m_loggedInPlayer != NULL && (*itr) != m_playerInfo && (*itr)->m_loggedInPlayer->isAlive() )
 						Heal( (*itr)->m_loggedInPlayer, 15286, bonus );
 				}
 			}
