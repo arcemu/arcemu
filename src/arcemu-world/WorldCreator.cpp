@@ -750,7 +750,7 @@ void Instance::LoadFromDB(Field * fields)
 
 void InstanceMgr::ResetSavedInstances(Player * plr)
 {
-	WorldPacket data(SMSG_RESET_INSTANCE, 4);
+	WorldPacket *pData;
 	Instance * in;
 	InstanceMap::iterator itr;
 	InstanceMap * instancemap;
@@ -775,7 +775,11 @@ void InstanceMgr::ResetSavedInstances(Player * plr)
 				{
 					if(in->m_mapMgr && in->m_mapMgr->HasPlayers())
 					{
-						plr->GetSession()->SystemMessage("Failed to reset instance %u (%s), due to players still inside.", in->m_instanceId, in->m_mapMgr->GetMapInfo()->name);
+						pData = new WorldPacket(SMSG_RESET_INSTANCE_FAILED, 8);
+						*pData << uint32(INSTANCE_RESET_ERROR_PLAYERS_INSIDE);
+						*pData << uint32(in->m_mapId);
+						plr->GetSession()->SendPacket(pData);
+						delete pData;
 						continue;
 					}
 
@@ -785,8 +789,10 @@ void InstanceMgr::ResetSavedInstances(Player * plr)
 					}
 
 					// <mapid> has been reset.
-					data << uint32(in->m_mapId);
-					plr->GetSession()->SendPacket(&data);
+					pData = new WorldPacket(SMSG_RESET_INSTANCE, 4);
+					*pData << uint32(in->m_mapId);
+					plr->GetSession()->SendPacket(pData);
+					delete pData;
 
 					// destroy the instance
 					_DeleteInstance(in, true);
