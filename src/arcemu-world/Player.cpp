@@ -1827,16 +1827,13 @@ void Player::SpawnActivePet()
 	if( m_Summon != NULL )
 		return;
 
-	if( getClass() == HUNTER )
-	{
-		std::map< uint32, PlayerPet* >::iterator itr = m_Pets.begin();
-		for( ; itr != m_Pets.end(); itr++ )
-			if( itr->second->stablestate == STABLE_STATE_ACTIVE && itr->second->active )
-			{
-				SpawnPet( itr->first );
-				return;
-			}
-	}
+	std::map< uint32, PlayerPet* >::iterator itr = m_Pets.begin();
+	for( ; itr != m_Pets.end(); itr++ )
+		if( itr->second->stablestate == STABLE_STATE_ACTIVE && itr->second->active )
+		{
+			SpawnPet( itr->first );
+			return;
+		}
 }
 
 void Player::_LoadPetSpells(QueryResult * result)

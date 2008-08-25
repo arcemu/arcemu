@@ -5689,12 +5689,7 @@ void Aura::SpellAuraMounted(bool apply)
 
 		//desummon summons
 		if( p_target->GetSummon() != NULL )
-		{
-			if( p_target->GetSummon()->GetUInt32Value( UNIT_CREATED_BY_SPELL ) > 0 )
-				p_target->GetSummon()->Dismiss( false ); // warlock summon -> dismiss
-			else
-				p_target->GetSummon()->Remove( false, true, false ); // hunter pet -> just remove for later re-call
-		}
+			p_target->GetSummon()->Remove( false, true, false ); // just remove for later re-call
 	}
 	else
 	{
