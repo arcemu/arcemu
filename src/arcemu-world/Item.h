@@ -192,6 +192,9 @@ public:
 	//! Check if we have an enchantment of this id?
 	int32 HasEnchantment( uint32 Id );
 
+	//! Check if we have an enchantment on that slot
+	bool HasEnchantmentOnSlot( uint32 slot );
+
 	//! Modify the time of an existing enchantment.
 	void ModifyEnchantmentTime( uint32 Slot, uint32 Duration );
 

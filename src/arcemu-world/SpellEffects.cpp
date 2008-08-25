@@ -6172,6 +6172,9 @@ void Spell::SpellEffectEnchantHeldItem( uint32 i )
 	if( Enchantment == NULL )
 		return;
 
+	if (m_spellInfo->NameHash == SPELL_HASH_WINDFURY_TOTEM_EFFECT && item->HasEnchantmentOnSlot( 1 ) && item->GetEnchantment( 1 )->Enchantment != Enchantment) //dirty fix for Windfury totem not overwriting existing enchantments
+		return;
+
 	item->RemoveEnchantment( 1 );
 	item->AddEnchantment( Enchantment, Duration, false, true, false, 1 );
 }

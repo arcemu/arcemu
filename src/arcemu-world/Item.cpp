@@ -984,6 +984,15 @@ int32 Item::HasEnchantment( uint32 Id )
 	return -1;
 }
 
+bool Item::HasEnchantmentOnSlot( uint32 slot )
+{
+	EnchantmentMap::iterator itr = Enchantments.find( slot );
+	if( itr == Enchantments.end() )
+		return false;
+
+	return true;
+}
+
 void Item::ModifyEnchantmentTime( uint32 Slot, uint32 Duration )
 {
 	EnchantmentMap::iterator itr = Enchantments.find( Slot );
