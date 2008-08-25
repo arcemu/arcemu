@@ -77,6 +77,7 @@
         </Anchors>
         <Scripts>
           <OnClick>LearnLeatherworking()
+; SkillLevel:ClearFocus();
 </OnClick>
         </Scripts>
         <NormalTexture file="Interface\Buttons\UI-Panel-Button-Up">
@@ -213,8 +214,10 @@
         <Scripts>
           <OnLoad>this:SetAutoFocus(false);
 </OnLoad>
-          <OnEscapePressed>SkillLevel:ClearFocus();
+          <OnEscapePressed>this:ClearFocus();
 </OnEscapePressed>
+          <OnTabPressed>this:ClearFocus();
+</OnTabPressed>
         </Scripts>
         <FontString font="Fonts\ARIALN.TTF">
           <FontHeight>
@@ -313,6 +316,7 @@
         </Anchors>
         <Scripts>
           <OnClick>LearnBlackSmithing()
+; SkillLevel:ClearFocus();
 </OnClick>
         </Scripts>
         <NormalTexture file="Interface\Buttons\UI-Panel-Button-Up">
@@ -383,6 +387,7 @@
         </Anchors>
         <Scripts>
           <OnClick>LearnTailoring()
+; SkillLevel:ClearFocus();
 </OnClick>
         </Scripts>
         <NormalTexture file="Interface\Buttons\UI-Panel-Button-Up">
@@ -453,6 +458,7 @@
         </Anchors>
         <Scripts>
           <OnClick>LearnEngineering()
+; SkillLevel:ClearFocus();
 </OnClick>
         </Scripts>
         <NormalTexture file="Interface\Buttons\UI-Panel-Button-Up">
@@ -523,6 +529,7 @@
         </Anchors>
         <Scripts>
           <OnClick>LearnEnchanting()
+; SkillLevel:ClearFocus();
 </OnClick>
         </Scripts>
         <NormalTexture file="Interface\Buttons\UI-Panel-Button-Up">
@@ -593,6 +600,7 @@
         </Anchors>
         <Scripts>
           <OnClick>LearnSkinning()
+; SkillLevel:ClearFocus();
 </OnClick>
         </Scripts>
         <NormalTexture file="Interface\Buttons\UI-Panel-Button-Up">
@@ -663,6 +671,7 @@
         </Anchors>
         <Scripts>
           <OnClick>LearnAlchemy()
+; SkillLevel:ClearFocus();
 </OnClick>
         </Scripts>
         <NormalTexture file="Interface\Buttons\UI-Panel-Button-Up">
@@ -733,6 +742,7 @@
         </Anchors>
         <Scripts>
           <OnClick>LearnFirstAid()
+; SkillLevel:ClearFocus();
 </OnClick>
         </Scripts>
         <NormalTexture file="Interface\Buttons\UI-Panel-Button-Up">
@@ -803,6 +813,7 @@
         </Anchors>
         <Scripts>
           <OnClick>LearnMining()
+; SkillLevel:ClearFocus();
 </OnClick>
         </Scripts>
         <NormalTexture file="Interface\Buttons\UI-Panel-Button-Up">
@@ -873,6 +884,7 @@
         </Anchors>
         <Scripts>
           <OnClick>LearnCooking()
+; SkillLevel:ClearFocus();
 </OnClick>
         </Scripts>
         <NormalTexture file="Interface\Buttons\UI-Panel-Button-Up">
@@ -943,6 +955,7 @@
         </Anchors>
         <Scripts>
           <OnClick>LearnHerbalism()
+; SkillLevel:ClearFocus();
 </OnClick>
         </Scripts>
         <NormalTexture file="Interface\Buttons\UI-Panel-Button-Up">
@@ -1013,6 +1026,7 @@
         </Anchors>
         <Scripts>
           <OnClick>LearnJewel()
+; SkillLevel:ClearFocus();
 </OnClick>
         </Scripts>
         <NormalTexture file="Interface\Buttons\UI-Panel-Button-Up">
@@ -1083,6 +1097,7 @@
         </Anchors>
         <Scripts>
           <OnClick>LearnFishing()
+; SkillLevel:ClearFocus();
 </OnClick>
         </Scripts>
         <NormalTexture file="Interface\Buttons\UI-Panel-Button-Up">
@@ -1153,6 +1168,7 @@
         </Anchors>
         <Scripts>
           <OnClick>LearnPoisons()
+; SkillLevel:ClearFocus();
 </OnClick>
         </Scripts>
         <NormalTexture file="Interface\Buttons\UI-Panel-Button-Up">

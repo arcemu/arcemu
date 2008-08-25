@@ -3,7 +3,7 @@
   <Frame name="ItemForm" hidden="true" movable="true" resizable="true" enableMouse="true">
     <!--<FrameSkin skinid="dcb143e1-a4ab-4e7c-b934-1efa40101d21" frameid="2d508883-59c2-4f83-ae10-27aaad48391b" />-->
     <Size>
-      <AbsDimension x="189" y="428" />
+      <AbsDimension x="246" y="428" />
     </Size>
     <Anchors>
       <Anchor point="RIGHT" relativeTo="UIParent">
@@ -63,6 +63,26 @@
       </Layer>
     </Layers>
     <Frames>
+      <Frame name="$parentTexture1">
+        <!--<FrameSkin skinid="f15d4970-d66d-444e-bb2d-1ad102c87fed" frameid="f15d4979-d66d-444e-bb2d-1ad102c87fed" />-->
+        <Size>
+          <AbsDimension x="26" y="26" />
+        </Size>
+        <Anchors>
+          <Anchor point="TOPLEFT">
+            <Offset>
+              <AbsDimension x="78" y="-293" />
+            </Offset>
+          </Anchor>
+        </Anchors>
+        <Layers>
+          <Layer>
+            <Texture name="$parentTexture" setAllPoints="true" file="interface\moneyframe\ui-moneyicons">
+              <TexCoords left="0" right="0.25" top="0" bottom="1" />
+            </Texture>
+          </Layer>
+        </Layers>
+      </Frame>
       <Button name="Done" text="Done">
         <!--<FrameSkin skinid="dcb143e1-a4ab-4e7c-b934-1efa40101d21" frameid="2d508884-59c2-4f83-ae10-27aaad48391b" />-->
         <Size>
@@ -71,7 +91,7 @@
         <Anchors>
           <Anchor point="TOPLEFT">
             <Offset>
-              <AbsDimension x="50" y="-387" />
+              <AbsDimension x="78" y="-387" />
             </Offset>
           </Anchor>
         </Anchors>
@@ -136,12 +156,12 @@
       <Frame name="$parentComponent1">
         <!--<FrameSkin skinid="dcb143e1-a4ab-4e7c-b934-1efa40101d21" frameid="2d508885-59c2-4f83-ae10-27aaad48391b" />-->
         <Size>
-          <AbsDimension x="150" y="23" />
+          <AbsDimension x="206" y="23" />
         </Size>
         <Anchors>
           <Anchor point="TOPLEFT">
             <Offset>
-              <AbsDimension x="19" y="-264" />
+              <AbsDimension x="20" y="-264" />
             </Offset>
           </Anchor>
         </Anchors>
@@ -169,12 +189,12 @@
       <Frame name="$parentComponent2">
         <!--<FrameSkin skinid="dcb143e1-a4ab-4e7c-b934-1efa40101d21" frameid="2d508885-59c2-4f83-ae10-27aaad48391b" />-->
         <Size>
-          <AbsDimension x="150" y="18" />
+          <AbsDimension x="206" y="18" />
         </Size>
         <Anchors>
           <Anchor point="TOPLEFT">
             <Offset>
-              <AbsDimension x="19" y="-177" />
+              <AbsDimension x="20" y="-177" />
             </Offset>
           </Anchor>
         </Anchors>
@@ -202,12 +222,12 @@
       <Frame name="$parentComponent3">
         <!--<FrameSkin skinid="dcb143e1-a4ab-4e7c-b934-1efa40101d21" frameid="2d508885-59c2-4f83-ae10-27aaad48391b" />-->
         <Size>
-          <AbsDimension x="150" y="18" />
+          <AbsDimension x="206" y="18" />
         </Size>
         <Anchors>
           <Anchor point="TOPLEFT">
             <Offset>
-              <AbsDimension x="19" y="-28" />
+              <AbsDimension x="20" y="-28" />
             </Offset>
           </Anchor>
         </Anchors>
@@ -235,18 +255,19 @@
       <Button name="$parentComponent5" text="Add">
         <!--<FrameSkin skinid="dcb143e1-a4ab-4e7c-b934-1efa40101d21" frameid="2d508884-59c2-4f83-ae10-27aaad48391b" />-->
         <Size>
-          <AbsDimension x="150" y="25" />
+          <AbsDimension x="206" y="25" />
         </Size>
         <Anchors>
           <Anchor point="TOPLEFT">
             <Offset>
-              <AbsDimension x="19" y="-84" />
+              <AbsDimension x="20" y="-84" />
             </Offset>
           </Anchor>
         </Anchors>
         <Scripts>
           <OnClick>AddItem()
-; ItemNumber:ClearFocus();</OnClick>
+; ItemNumber:ClearFocus();
+</OnClick>
         </Scripts>
         <NormalTexture file="Interface\Buttons\UI-Panel-Button-Up">
           <TexCoords left="0" right="0.625" top="0" bottom="0.6875" />
@@ -305,12 +326,12 @@
       <EditBox name="ItemNumber" enableMouse="true">
         <!--<FrameSkin skinid="dcb143e1-a4ab-4e7c-b934-1efa40101d21" frameid="2d508887-59c2-4f83-ae10-27aaad48391b" />-->
         <Size>
-          <AbsDimension x="150" y="26" />
+          <AbsDimension x="206" y="26" />
         </Size>
         <Anchors>
           <Anchor point="TOPLEFT">
             <Offset>
-              <AbsDimension x="19" y="-52" />
+              <AbsDimension x="20" y="-52" />
             </Offset>
           </Anchor>
         </Anchors>
@@ -351,6 +372,7 @@
 </OnLoad>
           <OnEscapePressed>ItemNumber:ClearFocus();
 </OnEscapePressed>
+          <OnTabPressed>this:ClearFocus();</OnTabPressed>
         </Scripts>
         <FontString font="Fonts\ARIALN.TTF">
           <FontHeight>
@@ -368,12 +390,12 @@
       <EditBox name="Silver" enableMouse="true">
         <!--<FrameSkin skinid="dcb143e1-a4ab-4e7c-b934-1efa40101d21" frameid="2d508887-59c2-4f83-ae10-27aaad48391b" />-->
         <Size>
-          <AbsDimension x="20" y="26" />
+          <AbsDimension x="26" y="26" />
         </Size>
         <Anchors>
           <Anchor point="TOPLEFT">
             <Offset>
-              <AbsDimension x="123" y="-293" />
+              <AbsDimension x="110" y="-293" />
             </Offset>
           </Anchor>
         </Anchors>
@@ -414,6 +436,7 @@
 </OnLoad>
           <OnEscapePressed>Silver:ClearFocus();
 </OnEscapePressed>
+          <OnTabPressed>this:ClearFocus(); Copper:SetFocus();</OnTabPressed>
         </Scripts>
         <FontString font="Fonts\ARIALN.TTF">
           <FontHeight>
@@ -431,12 +454,12 @@
       <Button name="$parentComponent8" text="Add Gold">
         <!--<FrameSkin skinid="dcb143e1-a4ab-4e7c-b934-1efa40101d21" frameid="2d508884-59c2-4f83-ae10-27aaad48391b" />-->
         <Size>
-          <AbsDimension x="150" y="25" />
+          <AbsDimension x="206" y="25" />
         </Size>
         <Anchors>
           <Anchor point="TOPLEFT">
             <Offset>
-              <AbsDimension x="19" y="-325" />
+              <AbsDimension x="20" y="-325" />
             </Offset>
           </Anchor>
         </Anchors>
@@ -501,12 +524,12 @@
       <Button name="$parentComponent9" text="Add Item Set">
         <!--<FrameSkin skinid="dcb143e1-a4ab-4e7c-b934-1efa40101d21" frameid="2d508884-59c2-4f83-ae10-27aaad48391b" />-->
         <Size>
-          <AbsDimension x="150" y="25" />
+          <AbsDimension x="206" y="25" />
         </Size>
         <Anchors>
           <Anchor point="TOPLEFT">
             <Offset>
-              <AbsDimension x="19" y="-233" />
+              <AbsDimension x="20" y="-233" />
             </Offset>
           </Anchor>
         </Anchors>
@@ -571,12 +594,12 @@
       <EditBox name="ItemSetNumber" enableMouse="true">
         <!--<FrameSkin skinid="dcb143e1-a4ab-4e7c-b934-1efa40101d21" frameid="2d508887-59c2-4f83-ae10-27aaad48391b" />-->
         <Size>
-          <AbsDimension x="150" y="26" />
+          <AbsDimension x="206" y="26" />
         </Size>
         <Anchors>
           <Anchor point="TOPLEFT">
             <Offset>
-              <AbsDimension x="19" y="-201" />
+              <AbsDimension x="20" y="-201" />
             </Offset>
           </Anchor>
         </Anchors>
@@ -617,6 +640,7 @@
 </OnLoad>
           <OnEscapePressed>ItemSetNumber:ClearFocus();
 </OnEscapePressed>
+          <OnTabPressed>this:ClearFocus();</OnTabPressed>
         </Scripts>
         <FontString font="Fonts\ARIALN.TTF">
           <FontHeight>
@@ -634,18 +658,19 @@
       <Button name="$parentComponent11" text="Remove Item">
         <!--<FrameSkin skinid="dcb143e1-a4ab-4e7c-b934-1efa40101d21" frameid="2d508884-59c2-4f83-ae10-27aaad48391b" />-->
         <Size>
-          <AbsDimension x="150" y="25" />
+          <AbsDimension x="206" y="25" />
         </Size>
         <Anchors>
           <Anchor point="TOPLEFT">
             <Offset>
-              <AbsDimension x="19" y="-115" />
+              <AbsDimension x="20" y="-115" />
             </Offset>
           </Anchor>
         </Anchors>
         <Scripts>
           <OnClick>RemoveItem()
-; ItemNumber:ClearFocus();</OnClick>
+; ItemNumber:ClearFocus();
+</OnClick>
         </Scripts>
         <NormalTexture file="Interface\Buttons\UI-Panel-Button-Up">
           <TexCoords left="0" right="0.625" top="0" bottom="0.6875" />
@@ -704,18 +729,19 @@
       <Button name="$parentComponent12" text="Search Item">
         <!--<FrameSkin skinid="dcb143e1-a4ab-4e7c-b934-1efa40101d21" frameid="2d508884-59c2-4f83-ae10-27aaad48391b" />-->
         <Size>
-          <AbsDimension x="150" y="25" />
+          <AbsDimension x="206" y="25" />
         </Size>
         <Anchors>
           <Anchor point="TOPLEFT">
             <Offset>
-              <AbsDimension x="19" y="-146" />
+              <AbsDimension x="20" y="-146" />
             </Offset>
           </Anchor>
         </Anchors>
         <Scripts>
           <OnClick>SearchItem()
-; ItemNumber:ClearFocus();</OnClick>
+; ItemNumber:ClearFocus();
+</OnClick>
         </Scripts>
         <NormalTexture file="Interface\Buttons\UI-Panel-Button-Up">
           <TexCoords left="0" right="0.625" top="0" bottom="0.6875" />
@@ -774,12 +800,12 @@
       <EditBox name="Gold" enableMouse="true">
         <!--<FrameSkin skinid="dcb143e1-a4ab-4e7c-b934-1efa40101d21" frameid="2d508887-59c2-4f83-ae10-27aaad48391b" />-->
         <Size>
-          <AbsDimension x="98" y="26" />
+          <AbsDimension x="52" y="26" />
         </Size>
         <Anchors>
           <Anchor point="TOPLEFT">
             <Offset>
-              <AbsDimension x="19" y="-293" />
+              <AbsDimension x="20" y="-293" />
             </Offset>
           </Anchor>
         </Anchors>
@@ -820,6 +846,7 @@
 </OnLoad>
           <OnEscapePressed>Gold:ClearFocus();
 </OnEscapePressed>
+          <OnTabPressed>this:ClearFocus(); Silver:SetFocus();</OnTabPressed>
         </Scripts>
         <FontString font="Fonts\ARIALN.TTF">
           <FontHeight>
@@ -842,7 +869,7 @@
         <Anchors>
           <Anchor point="TOPLEFT">
             <Offset>
-              <AbsDimension x="149" y="-293" />
+              <AbsDimension x="174" y="-293" />
             </Offset>
           </Anchor>
         </Anchors>
@@ -883,6 +910,7 @@
 </OnLoad>
           <OnEscapePressed>Copper:ClearFocus();
 </OnEscapePressed>
+          <OnTabPressed>this:ClearFocus();</OnTabPressed>
         </Scripts>
         <FontString font="Fonts\ARIALN.TTF">
           <FontHeight>
@@ -900,12 +928,12 @@
       <Button name="$parentComponent4" text="Quick Items">
         <!--<FrameSkin skinid="dcb143e1-a4ab-4e7c-b934-1efa40101d21" frameid="2d508884-59c2-4f83-ae10-27aaad48391b" />-->
         <Size>
-          <AbsDimension x="150" y="25" />
+          <AbsDimension x="206" y="25" />
         </Size>
         <Anchors>
           <Anchor point="TOPLEFT">
             <Offset>
-              <AbsDimension x="19" y="-356" />
+              <AbsDimension x="20" y="-356" />
             </Offset>
           </Anchor>
         </Anchors>
@@ -969,6 +997,46 @@
           </Shadow>
         </DisabledFont>
       </Button>
+      <Frame name="$parentComponent6">
+        <!--<FrameSkin skinid="f15d4970-d66d-444e-bb2d-1ad102c87fed" frameid="f15d4979-d66d-444e-bb2d-1ad102c87fed" />-->
+        <Size>
+          <AbsDimension x="20" y="20" />
+        </Size>
+        <Anchors>
+          <Anchor point="TOPLEFT">
+            <Offset>
+              <AbsDimension x="142" y="-296" />
+            </Offset>
+          </Anchor>
+        </Anchors>
+        <Layers>
+          <Layer>
+            <Texture name="$parentTexture" setAllPoints="true" file="interface\moneyframe\ui-moneyicons">
+              <TexCoords left="0.25" right="0.5" top="0" bottom="1" />
+            </Texture>
+          </Layer>
+        </Layers>
+      </Frame>
+      <Frame name="$parentComponent7">
+        <!--<FrameSkin skinid="f15d4970-d66d-444e-bb2d-1ad102c87fed" frameid="f15d4979-d66d-444e-bb2d-1ad102c87fed" />-->
+        <Size>
+          <AbsDimension x="13" y="13" />
+        </Size>
+        <Anchors>
+          <Anchor point="TOPLEFT">
+            <Offset>
+              <AbsDimension x="200" y="-298" />
+            </Offset>
+          </Anchor>
+        </Anchors>
+        <Layers>
+          <Layer>
+            <Texture name="$parentTexture" setAllPoints="true" file="interface\moneyframe\ui-moneyicons">
+              <TexCoords left="0.5" right="0.75" top="0" bottom="1" />
+            </Texture>
+          </Layer>
+        </Layers>
+      </Frame>
     </Frames>
     <Scripts>
       <OnLoad>GMHelperOnLoad()

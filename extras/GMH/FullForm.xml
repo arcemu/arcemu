@@ -3,7 +3,7 @@
   <Frame name="FullForm" hidden="true" movable="true" resizable="true" enableMouse="true">
     <!--<FrameSkin skinid="dcb143e1-a4ab-4e7c-b934-1efa40101d21" frameid="2d508883-59c2-4f83-ae10-27aaad48391b" />-->
     <Size>
-      <AbsDimension x="195" y="582" />
+      <AbsDimension x="188" y="557" />
     </Size>
     <Anchors>
       <Anchor point="RIGHT" relativeTo="UIParent">
@@ -421,7 +421,7 @@
         <Anchors>
           <Anchor point="TOPLEFT">
             <Offset>
-              <AbsDimension x="14" y="-531" />
+              <AbsDimension x="14" y="-513" />
             </Offset>
           </Anchor>
         </Anchors>
@@ -496,7 +496,7 @@
           </Anchor>
         </Anchors>
         <Scripts>
-          <OnClick>TicketForm:Show(); FullForm:Hide();
+          <OnClick>TicketTracker:Show(); FullForm:Hide(); JoinChannelByName("gm_sync_channel", ChatFrame1:GetID());
 </OnClick>
         </Scripts>
         <NormalTexture file="Interface\Buttons\UI-Panel-Button-Up">

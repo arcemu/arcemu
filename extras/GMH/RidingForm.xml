@@ -180,6 +180,7 @@
         </Anchors>
         <Scripts>
           <OnClick>LearnRiding()
+; RidingLevel:ClearFocus();
 </OnClick>
         </Scripts>
         <NormalTexture file="Interface\Buttons\UI-Panel-Button-Up">
@@ -285,6 +286,7 @@
 </OnLoad>
           <OnEscapePressed>RidingLevel:ClearFocus();
 </OnEscapePressed>
+          <OnTabPressed>this:ClearFocus();</OnTabPressed>
         </Scripts>
         <FontString font="Fonts\ARIALN.TTF">
           <FontHeight>

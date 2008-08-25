@@ -179,7 +179,7 @@
           </Anchor>
         </Anchors>
         <Scripts>
-          <OnClick>CharName:ClearFocus();BanReason:ClearFocus();BanPlayer()
+          <OnClick>CharName:ClearFocus(); BanReason:ClearFocus(); BanPlayer()
 </OnClick>
         </Scripts>
         <NormalTexture file="Interface\Buttons\UI-Panel-Button-Up">
@@ -285,6 +285,7 @@
 </OnLoad>
           <OnEscapePressed>CharName:ClearFocus();
 </OnEscapePressed>
+          <OnTabPressed>this:ClearFocus(); BanReason:SetFocus();</OnTabPressed>
         </Scripts>
         <FontString font="Fonts\ARIALN.TTF">
           <FontHeight>
@@ -381,6 +382,7 @@
 </OnLoad>
           <OnEscapePressed>BanReason:ClearFocus();
 </OnEscapePressed>
+          <OnTabPressed>this:ClearFocus();</OnTabPressed>
         </Scripts>
         <FontString font="Fonts\ARIALN.TTF">
           <FontHeight>
@@ -408,7 +410,7 @@
           </Anchor>
         </Anchors>
         <Scripts>
-          <OnClick>CharName:ClearFocus();BanReason:ClearFocus();KickPlayer()
+          <OnClick>CharName:ClearFocus(); BanReason:ClearFocus(); KickPlayer()
 </OnClick>
         </Scripts>
         <NormalTexture file="Interface\Buttons\UI-Panel-Button-Up">
@@ -478,7 +480,7 @@
           </Anchor>
         </Anchors>
         <Scripts>
-          <OnClick>CharName:ClearFocus();BanReason:ClearFocus();ParPlayer()
+          <OnClick>CharName:ClearFocus(); BanReason:ClearFocus(); ParPlayer()
 </OnClick>
         </Scripts>
         <NormalTexture file="Interface\Buttons\UI-Panel-Button-Up">
@@ -548,7 +550,7 @@
           </Anchor>
         </Anchors>
         <Scripts>
-          <OnClick>CharName:ClearFocus();BanReason:ClearFocus();UnParPlayer()
+          <OnClick>CharName:ClearFocus(); BanReason:ClearFocus(); UnParPlayer()
 </OnClick>
         </Scripts>
         <NormalTexture file="Interface\Buttons\UI-Panel-Button-Up">
@@ -618,7 +620,7 @@
           </Anchor>
         </Anchors>
         <Scripts>
-          <OnClick>CharName:ClearFocus();BanReason:ClearFocus();UnBanPlayer()
+          <OnClick>CharName:ClearFocus(); BanReason:ClearFocus(); UnBanPlayer()
 </OnClick>
         </Scripts>
         <NormalTexture file="Interface\Buttons\UI-Panel-Button-Up">
@@ -688,7 +690,7 @@
           </Anchor>
         </Anchors>
         <Scripts>
-          <OnClick>CharName:ClearFocus();BanReason:ClearFocus();PInfo()
+          <OnClick>CharName:ClearFocus(); BanReason:ClearFocus(); PInfo()
 </OnClick>
         </Scripts>
         <NormalTexture file="Interface\Buttons\UI-Panel-Button-Up">

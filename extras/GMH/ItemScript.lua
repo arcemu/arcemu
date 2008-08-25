@@ -19,6 +19,19 @@ outSAY(result);
 end
 
 function AddMoney()
-result = ".modify gold " ..Gold:GetNumber()*10000+Silver:GetNumber()*100+Copper:GetNumber();
+IntGold = Gold:GetNumber();
+IntSilver = Silver:GetNumber();
+IntCopper = Copper:GetNumber();
+-- 214748g 35s 47c
+--[[while IntGold >= 214748 do
+	 IntGold = IntGold-100;
+end
+while IntSilver >= 100 do
+	 IntGold = IntGold-100;
+end
+while IntGold >= 100 do
+	 IntGold = IntGold-100;
+end]]
+result = ".modify gold " ..IntGold*10000+IntSilver*100+IntCopper;
 outSAY(result);
 end

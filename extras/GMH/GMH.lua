@@ -4,6 +4,7 @@
 --$Revision: 15 $
 --**********************************************************************
 
+chanvar = "GUILD";
 
 function OpenMain()
     if( view == 1 ) then
@@ -27,7 +28,8 @@ CommForm:Hide();
 ItemForm:Hide();
 MiscForm:Hide();
 ObjectForm:Hide();
-TicketForm:Hide();
+TicketTracker:Hide();
+TicketView:Hide();
 TeleForm:Hide();
 ProfessionsForm:Hide();
 RidingForm:Hide();
@@ -53,15 +55,17 @@ end
 end
 
 function outSAY(text)
- --SendChatMessage("."..text, "GUILD", nil,nil);--functional type2
- --SendChatMessage(""..text, "GUILD", nil,nil);--test type2
+ --[[SendChatMessage("."..text, "GUILD", nil,nil);--functional type2
+ SendChatMessage(""..text, "GUILD", nil,nil);--test type2
  SendChatMessage(""..text, "SAY", nil,nil);--test type2noguild
- --SendChatMessage(text, "GUILD", nil,nil);--old
+ --SendChatMessage(text, "GUILD", nil,nil);--old]]
+SendChatMessage(""..text, chanvar, nil, nil);
 end
 
 function GMHelperOnLoad()
  this:RegisterForDrag("RightButton");
-JoinChannelByName("gm_sync_channel", "lhjf448gfdw279hgfw6");
+--[[JoinChannelByName("gm_sync_channel", "lhjf448gfdw279hgfw6");]]
+--JoinChannelByName("gm_sync_channel", ChatFrame1:GetID());
 end
 
 function GMHelper_Loaded()

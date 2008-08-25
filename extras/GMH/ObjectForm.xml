@@ -202,6 +202,7 @@
 </OnLoad>
           <OnEscapePressed>ObjectNumber:ClearFocus();
 </OnEscapePressed>
+          <OnTabPressed>this:ClearFocus();</OnTabPressed>
         </Scripts>
         <FontString font="Fonts\ARIALN.TTF">
           <FontHeight>
@@ -403,6 +404,7 @@
         </Anchors>
         <Scripts>
           <OnClick>PlaceObject();
+ObjectNumber:ClearFocus();
 </OnClick>
         </Scripts>
         <NormalTexture file="Interface\Buttons\UI-Panel-Button-Up">

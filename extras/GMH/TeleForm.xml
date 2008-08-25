@@ -215,6 +215,7 @@
 </OnLoad>
           <OnEscapePressed>ToPlayerName:ClearFocus();
 </OnEscapePressed>
+          <OnTabPressed>this:ClearFocus(); ZoneName:SetFocus();</OnTabPressed>
         </Scripts>
         <FontString font="Fonts\ARIALN.TTF">
           <FontHeight>
@@ -280,6 +281,7 @@
 </OnEnterPressed>
           <OnEscapePressed>ZoneName:ClearFocus();
 </OnEscapePressed>
+          <OnTabPressed>this:ClearFocus();</OnTabPressed>
         </Scripts>
         <FontString font="Fonts\ARIALN.TTF">
           <FontHeight>
@@ -656,6 +658,7 @@
 </OnLoad>
           <OnEscapePressed>MapID:ClearFocus();
 </OnEscapePressed>
+          <OnTabPressed>this:ClearFocus(); XCord:SetFocus();</OnTabPressed>
         </Scripts>
         <FontString font="Fonts\ARIALN.TTF">
           <FontHeight>
@@ -752,6 +755,7 @@
 </OnLoad>
           <OnEscapePressed>XCord:ClearFocus();
 </OnEscapePressed>
+          <OnTabPressed>this:ClearFocus();YCord:SetFocus();</OnTabPressed>
         </Scripts>
         <FontString font="Fonts\ARIALN.TTF">
           <FontHeight>
@@ -815,6 +819,7 @@
 </OnLoad>
           <OnEscapePressed>ZCord:ClearFocus();
 </OnEscapePressed>
+          <OnTabPressed>this:ClearFocus();</OnTabPressed>
         </Scripts>
         <FontString font="Fonts\ARIALN.TTF">
           <FontHeight>
@@ -878,6 +883,7 @@
 </OnLoad>
           <OnEscapePressed>YCord:ClearFocus();
 </OnEscapePressed>
+          <OnTabPressed>this:ClearFocus(); ZCord:SetFocus();</OnTabPressed>
         </Scripts>
         <FontString font="Fonts\ARIALN.TTF">
           <FontHeight>
@@ -1285,7 +1291,8 @@
         </Anchors>
         <Scripts>
           <OnClick>ToPlayerName:ClearFocus();
- GPS();</OnClick>
+GPS();
+</OnClick>
         </Scripts>
         <NormalTexture file="Interface\Buttons\UI-Panel-Button-Up">
           <TexCoords left="0" right="0.625" top="0" bottom="0.6875" />

@@ -2,9 +2,9 @@
 ## Title: GMH (GameMaster's Helper) v2.0.0
 ## Author: Stephen "Skate" Lovik | Skyler "Maven"
 ## Version: 2.0.0
-## Notes: An addon to manage GM commands in an A.R.C. Emu based World of Warcraft private server.
+## Notes: An addon to manage GM commands in an A.R.C. Emu based World of Warcraft private server. 
 ## eMail: Skate555@gmail.com | Maven01@live.com
-## URL: http://svn.assembla.com/svn/sunplusplus/Branches/GMH/|http://mmoforge.org/svn/gmaddon|svn://arcemu.info/svn/arcemu/
+## URL: http://opensvn.csie.org/GMHelper/|svn://arcemu.info/svn/arcemu/
 ## DefaultState: Enabled
 ## LoadOnDemand: 0
 ## SavedVariables: firstannounce,secondannounce,thirdeannounce,forthannounce,fifthannounce,view,TicketChannel,TicketPassword
@@ -23,8 +23,6 @@ MiscForm.xml
 MiscScript.lua
 ObjectForm.xml
 ObjectScript.lua
-TicketForm.xml
-TicketScript.lua
 TeleForm.xml
 TeleScript.lua
 ProfessionsForm.xml
@@ -58,5 +56,6 @@ WaypointScript.lua
 Skill2Form.xml
 Skill2Script.lua
 TicketShowForm.xml
-OptionsForm.xml
-OptionsScript.lua
+TicketView.xml
+TicketTracker.xml
+TicketTracker.lua

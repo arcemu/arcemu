@@ -215,6 +215,7 @@
 </OnLoad>
           <OnEscapePressed>SpelllNumber:ClearFocus();
 </OnEscapePressed>
+          <OnTabPressed>this:ClearFocus();</OnTabPressed>
         </Scripts>
         <FontString font="Fonts\ARIALN.TTF">
           <FontHeight>
@@ -243,6 +244,7 @@
         </Anchors>
         <Scripts>
           <OnClick>LearnSpell()
+; SpellNumber:ClearFocus();
 </OnClick>
         </Scripts>
         <NormalTexture file="Interface\Buttons\UI-Panel-Button-Up">
@@ -313,6 +315,7 @@
         </Anchors>
         <Scripts>
           <OnClick>UnlearnSpell()
+; SpellNumber:ClearFocus();
 </OnClick>
         </Scripts>
         <NormalTexture file="Interface\Buttons\UI-Panel-Button-Up">

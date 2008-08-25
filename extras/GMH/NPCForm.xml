@@ -353,6 +353,7 @@
         </Anchors>
         <Scripts>
           <OnClick>RemoveItemVendor()
+; NPCItemNumber:ClearFocus();
 </OnClick>
         </Scripts>
         <NormalTexture file="Interface\Buttons\UI-Panel-Button-Up">
@@ -423,6 +424,7 @@
         </Anchors>
         <Scripts>
           <OnClick>AddItemVendor()
+; NPCItemNumber:ClearFocus();
 </OnClick>
         </Scripts>
         <NormalTexture file="Interface\Buttons\UI-Panel-Button-Up">
@@ -528,6 +530,7 @@
 </OnLoad>
           <OnEscapePressed>NPCItemNumber:ClearFocus();
 </OnEscapePressed>
+          <OnTabPressed>this:ClearFocus();</OnTabPressed>
         </Scripts>
         <FontString font="Fonts\ARIALN.TTF">
           <FontHeight>
@@ -589,6 +592,7 @@
         </Anchors>
         <Scripts>
           <OnClick>SpawnNPC()
+; NPCNumber:ClearFocus();
 </OnClick>
         </Scripts>
         <NormalTexture file="Interface\Buttons\UI-Panel-Button-Up">
@@ -694,6 +698,7 @@
 </OnLoad>
           <OnEscapePressed>NPCNumber:ClearFocus();
 </OnEscapePressed>
+          <OnTabPressed>this:ClearFocus();</OnTabPressed>
         </Scripts>
         <FontString font="Fonts\ARIALN.TTF">
           <FontHeight>
@@ -778,7 +783,7 @@
           </Shadow>
         </DisabledFont>
       </Button>
-      <Button name="$parentComponent6" hidden="true" text="Possess">
+      <Button name="$parentComponent6" text="Possess">
         <!--<FrameSkin skinid="dcb143e1-a4ab-4e7c-b934-1efa40101d21" frameid="2d508884-59c2-4f83-ae10-27aaad48391b" />-->
         <Size>
           <AbsDimension x="144" y="25" />

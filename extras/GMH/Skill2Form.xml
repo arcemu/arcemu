@@ -421,6 +421,7 @@ UIDropDownMenu_Initialize(this, cb_init_fn)
 </OnLoad>
           <OnEscapePressed>SkillLevel:ClearFocus();
 </OnEscapePressed>
+          <OnTabPressed>this:ClearFocus();</OnTabPressed>
         </Scripts>
         <FontString font="Fonts\ARIALN.TTF">
           <FontHeight>
@@ -773,6 +774,8 @@ UIDropDownMenu_Initialize(this, cb_init_fn)
     <Scripts>
       <OnLoad>GMHelperOnLoad()
 </OnLoad>
+      <OnShow>UIErrorsFrame:AddMessage("This Form is under Development!! Not 100% Working!", 1.0, 0.0, 0.0, 53, 5);
+</OnShow>
       <OnDragStart>this:StartMoving()
 </OnDragStart>
       <OnDragStop>this:StopMovingOrSizing()

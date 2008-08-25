@@ -216,7 +216,7 @@
           </Anchor>
         </Anchors>
         <Scripts>
-          <OnClick>TicketForm:Show(); MiniForm:Hide();
+          <OnClick>TicketTracker:Show(); MiniForm:Hide();
 </OnClick>
         </Scripts>
         <NormalTexture file="Interface\Buttons\UI-Panel-Button-Up">

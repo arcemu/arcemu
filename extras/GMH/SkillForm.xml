@@ -3,7 +3,7 @@
   <Frame name="SkillForm" hidden="true" movable="true" resizable="true" enableMouse="true">
     <!--<FrameSkin skinid="dcb143e1-a4ab-4e7c-b934-1efa40101d21" frameid="2d508883-59c2-4f83-ae10-27aaad48391b" />-->
     <Size>
-      <AbsDimension x="184" y="418" />
+      <AbsDimension x="184" y="408" />
     </Size>
     <Anchors>
       <Anchor point="RIGHT" relativeTo="UIParent">
@@ -99,12 +99,12 @@
       <Button name="Done" text="Done">
         <!--<FrameSkin skinid="dcb143e1-a4ab-4e7c-b934-1efa40101d21" frameid="2d508884-59c2-4f83-ae10-27aaad48391b" />-->
         <Size>
-          <AbsDimension x="90" y="19" />
+          <AbsDimension x="97" y="19" />
         </Size>
         <Anchors>
           <Anchor point="TOPLEFT">
             <Offset>
-              <AbsDimension x="43" y="-341" />
+              <AbsDimension x="44" y="-372" />
             </Offset>
           </Anchor>
         </Anchors>
@@ -215,6 +215,8 @@
 </OnLoad>
           <OnEscapePressed>SkillNumber:ClearFocus();
 </OnEscapePressed>
+          <OnTabPressed>this:ClearFocus(); SkillLvl:SetFocus();
+</OnTabPressed>
         </Scripts>
         <FontString font="Fonts\ARIALN.TTF">
           <FontHeight>
@@ -382,7 +384,7 @@
           </Anchor>
         </Anchors>
         <Scripts>
-          <OnClick>LearnSkill()
+          <OnClick>LearnSkill(); SkillNumber:ClearFocus(); SkillLvl:ClearFocus(); SkillMax:ClearFocus();
 </OnClick>
         </Scripts>
         <NormalTexture file="Interface\Buttons\UI-Panel-Button-Up">
@@ -453,6 +455,7 @@
         </Anchors>
         <Scripts>
           <OnClick>UnLearnSkill()
+; SkillNumber:ClearFocus(); SkillLvl:ClearFocus(); SkillMax:ClearFocus();
 </OnClick>
         </Scripts>
         <NormalTexture file="Interface\Buttons\UI-Panel-Button-Up">
@@ -589,6 +592,7 @@
         </Anchors>
         <Scripts>
           <OnClick>AdvanceAll()
+; SkillsBy:ClearFocus();
 </OnClick>
         </Scripts>
         <NormalTexture file="Interface\Buttons\UI-Panel-Button-Up">
@@ -694,6 +698,8 @@
 </OnLoad>
           <OnEscapePressed>SkillMax:ClearFocus();
 </OnEscapePressed>
+          <OnTabPressed>this:ClearFocus();
+</OnTabPressed>
         </Scripts>
         <FontString font="Fonts\ARIALN.TTF">
           <FontHeight>
@@ -757,6 +763,8 @@
 </OnLoad>
           <OnEscapePressed>SkillBy:ClearFocus();
 </OnEscapePressed>
+          <OnTabPressed>this:ClearFocus();
+</OnTabPressed>
         </Scripts>
         <FontString font="Fonts\ARIALN.TTF">
           <FontHeight>
@@ -853,6 +861,8 @@
 </OnLoad>
           <OnEscapePressed>SkillLevel:ClearFocus();
 </OnEscapePressed>
+          <OnTabPressed>this:ClearFocus(); SkillMax:SetFocus();
+</OnTabPressed>
         </Scripts>
         <FontString font="Fonts\ARIALN.TTF">
           <FontHeight>
@@ -945,12 +955,13 @@
         <Anchors>
           <Anchor point="TOPLEFT">
             <Offset>
-              <AbsDimension x="16" y="-366" />
+              <AbsDimension x="16" y="-341" />
             </Offset>
           </Anchor>
         </Anchors>
         <Scripts>
-          <OnClick>Skill2Form:Show();SkillForm:Hide();</OnClick>
+          <OnClick>Skill2Form:Show();SkillForm:Hide();
+</OnClick>
         </Scripts>
         <NormalTexture file="Interface\Buttons\UI-Panel-Button-Up">
           <TexCoords left="0" right="0.625" top="0" bottom="0.6875" />

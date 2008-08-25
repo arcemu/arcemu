@@ -189,6 +189,7 @@ GameTooltip:Show();
 </OnEnter>
           <OnLeave>GameTooltip:Hide();
 </OnLeave>
+          <OnTabPressed>this:ClearFocus();</OnTabPressed>
         </Scripts>
         <FontString font="Fonts\ARIALN.TTF">
           <FontHeight>

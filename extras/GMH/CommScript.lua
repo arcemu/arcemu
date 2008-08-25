@@ -1,24 +1,34 @@
-﻿function GMHAnnounce()
-result=".announce "..AnnounceText:GetText();    
-outSAY(result);
+﻿function AnnounceChecked()
+if (AnnounceCheck:GetChecked() or ScreenCheck:GetChecked() or GMAnnounceCheck:GetChecked() ) then
+Announce();
+else
+UIErrorsFrame:AddMessage("Please choose where to Announce!", 1.0, 0.0, 0.0, 53, 2);
+end
 end
 
 
-function RaidStyleAnnounce()
-result=".wannounce "..AnnounceText:GetText();    
-outSAY(result);
+function Announce()
+if ( AnnounceCheck:GetChecked() ) then--Announce
+	result=".announce "..AnnounceText:GetText();
+	outSAY(result);
+else
+    result="";
+	outSAY(result);
 end
-
-function GMAnnounce()
-result=".gmannounce "..AnnounceText:GetText();    
-outSAY(result);
+if ( ScreenCheck:GetChecked() ) then--Announce
+	result=".wannounce "..AnnounceText:GetText();
+	outSAY(result);
+else
+    result="";
+	outSAY(result);
 end
-
-function WideBroadcast()
-result=".wannounce "..AnnounceText:GetText();
-outSAY(result);
-result=".announce "..AnnounceText:GetText();
-outSAY(result);
+if ( GMAnnounceCheck:GetChecked() ) then--Announce
+	result=".gmannounce "..AnnounceText:GetText();
+	outSAY(result);
+else
+    result="";
+	outSAY(result);
+end
 end
 
 function WhisperOn()
