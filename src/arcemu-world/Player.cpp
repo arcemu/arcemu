@@ -5822,7 +5822,7 @@ int32 Player::CanShootRangedWeapon( uint32 spellid, Unit* target, bool autoshot 
 
 void Player::EventRepeatSpell()
 {
-	if( !m_curSelection && IsInWorld() )
+	if( !m_curSelection || !IsInWorld() )
 		return;
 	
 	Unit* target = GetMapMgr()->GetUnit( m_curSelection );
