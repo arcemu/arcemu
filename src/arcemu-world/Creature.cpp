@@ -1685,6 +1685,14 @@ void Creature::Despawn(uint32 delay, uint32 respawntime)
 	if(!IsInWorld())
 		return;
 
+	if(GetMapMgr() && GetMapMgr()->GetMapInfo() && GetMapMgr()->GetMapInfo()->type == INSTANCE_RAID)
+	{
+		if(GetCreatureInfo() && GetCreatureInfo()->Rank == 3)
+		{
+			GetMapMgr()->RemoveCombatInProgress(GetGUID());
+		}
+	}
+
 	if(respawntime && !m_noRespawn)
 	{
 		/* get the cell with our SPAWN location. if we've moved cell this might break :P */
