@@ -840,7 +840,7 @@ void LootRoll::Finalize()
 			sQuestMgr.OnPlayerItemPickup(_player,item);
 		}
 		else
-			ItemPool.PooledDelete( item );
+			item->DeleteMe();
 	}
 	else 
 	{	

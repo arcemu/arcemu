@@ -704,7 +704,7 @@ void WorldSession::SendInnkeeperBind(Creature* pCreature)
 				SendItemPushResult(item,false,true,false,true,lr->ContainerSlot,lr->Slot,1);
 			}
 			else
-				ItemPool.PooledDelete( item );
+				item->DeleteMe();
 		}
 	}
 

@@ -151,7 +151,7 @@ void WorldSession::HandleAutostoreLootItemOpcode( WorldPacket & recv_data )
 			_player->GetSession()->SendItemPushResult(item,false,true,true,true,slotresult.ContainerSlot,slotresult.Slot,1);
 		}
 		else
-			ItemPool.PooledDelete( item );
+			item->DeleteMe();
 	}
 	else 
 	{	
@@ -745,7 +745,8 @@ void WorldSession::HandleLogoutRequestOpcode( WorldPacket & recv_data )
 			pPlayer->GetTaxiState() ||  // or we are on a taxi
 			HasGMPermissions())		   // or we are a gm
 		{
-			LogoutPlayer(true);
+			//Logout on NEXT sessionupdate to preserve processing of dead packets (all pending ones should be processed)
+			SetLogoutTimer(1);
 			return;
 		}
 
@@ -1938,7 +1939,7 @@ void WorldSession::HandleLootMasterGiveOpcode(WorldPacket& recv_data)
 		sQuestMgr.OnPlayerItemPickup(player,item);
 	}
 	else
-		ItemPool.PooledDelete( item );
+		item->DeleteMe();
 
 	pLoot->items.at(slotid).iItemsCount=0;
 

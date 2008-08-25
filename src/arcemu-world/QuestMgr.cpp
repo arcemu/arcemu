@@ -1009,7 +1009,7 @@ void QuestMgr::OnQuestFinished(Player* plr, Quest* qst, Object *qst_giver, uint3
 							Item *itm = objmgr.CreateItem(qst->reward_item[i], plr);
 							itm->SetUInt32Value(ITEM_FIELD_STACK_COUNT, uint32(qst->reward_itemcount[i]));
 							if( !plr->GetItemInterface()->SafeAddItem(itm,slotresult.ContainerSlot, slotresult.Slot) )
-								ItemPool.PooledDelete( itm );
+								itm->DeleteMe();
 						}
 					}
 					else
@@ -1046,7 +1046,7 @@ void QuestMgr::OnQuestFinished(Player* plr, Quest* qst, Object *qst_giver, uint3
 						Item *itm = objmgr.CreateItem(qst->reward_choiceitem[reward_slot], plr);
 						itm->SetUInt32Value(ITEM_FIELD_STACK_COUNT, uint32(qst->reward_choiceitemcount[reward_slot]));
 						if( !plr->GetItemInterface()->SafeAddItem(itm,slotresult.ContainerSlot, slotresult.Slot) )
-							ItemPool.PooledDelete( itm );
+							itm->DeleteMe();
 
 					}
 				}
@@ -1121,7 +1121,7 @@ void QuestMgr::OnQuestFinished(Player* plr, Quest* qst, Object *qst_giver, uint3
 							Item *itm = objmgr.CreateItem(qst->reward_item[i], plr);
 							itm->SetUInt32Value(ITEM_FIELD_STACK_COUNT, uint32(qst->reward_itemcount[i]));
 							if( !plr->GetItemInterface()->SafeAddItem(itm,slotresult.ContainerSlot, slotresult.Slot) )
-								ItemPool.PooledDelete( itm );
+								itm->DeleteMe();
 						}
 					}
 					else
@@ -1158,7 +1158,7 @@ void QuestMgr::OnQuestFinished(Player* plr, Quest* qst, Object *qst_giver, uint3
 						Item *itm = objmgr.CreateItem(qst->reward_choiceitem[reward_slot], plr);
 						itm->SetUInt32Value(ITEM_FIELD_STACK_COUNT, uint32(qst->reward_choiceitemcount[reward_slot]));
 						if( !plr->GetItemInterface()->SafeAddItem(itm,slotresult.ContainerSlot, slotresult.Slot) )
-							ItemPool.PooledDelete( itm );
+							itm->DeleteMe();
 					}
 				}
 				else

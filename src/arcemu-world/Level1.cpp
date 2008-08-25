@@ -261,7 +261,7 @@ bool ChatHandler::HandleAddInvItemCommand(const char *args, WorldSession *m_sess
 		if(!chr->GetItemInterface()->AddItemToFreeSlot(item))
 		{
 			m_session->SendNotification("No free slots were found in your inventory!");
-			ItemPool.PooledDelete( item );
+			item->DeleteMe();
 			return true;
 		}
 

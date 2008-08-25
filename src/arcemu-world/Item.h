@@ -138,6 +138,7 @@ public:
 	void SaveToDB( int8 containerslot, int8 slot, bool firstsave, QueryBuffer* buf );
 	bool LoadAuctionItemFromDB( uint64 guid );
 	void DeleteFromDB();
+	void DeleteMe();
 	
 	ARCEMU_INLINE void SoulBind()
 	{

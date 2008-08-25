@@ -38,14 +38,7 @@ ItemInterface::~ItemInterface()
 	{
 		if( m_pItems[i] != NULL && m_pItems[i]->GetOwner() == m_pOwner )
 		{
-			if( m_pItems[i]->IsContainer() )
-			{
-				delete static_cast< Container* >( m_pItems[i] );
-			}
-			else
-			{
-				ItemPool.PooledDelete( m_pItems[i] );
-			}
+			m_pItems[i]->DeleteMe();
 		}
 	}
 }
@@ -150,7 +143,7 @@ Item *ItemInterface::SafeAddItem(uint32 ItemId, int8 ContainerSlot, int8 slot)
 		}
 		else
 		{
-			ItemPool.PooledDelete( pItem );
+			pItem->DeleteMe();
 			return NULL;
 		}
 	}

@@ -44,10 +44,7 @@ Container::~Container( )
 	{
 		if(m_Slot[i] && m_Slot[i]->GetOwner() == m_owner)
 		{
-			if(m_Slot[i]->IsContainer())
-				delete ((Container*)m_Slot[i]);
-			else
-				ItemPool.PooledDelete( m_Slot[i] );
+			m_Slot[i]->DeleteMe();
 		}
 	}
 
@@ -276,7 +273,7 @@ bool Container::SafeFullRemoveItemFromSlot(int8 slot)
 		pItem->RemoveFromWorld();
 	}
 	pItem->DeleteFromDB();
-	ItemPool.PooledDelete( pItem );
+	pItem->DeleteMe();
 
 	return true;
 }

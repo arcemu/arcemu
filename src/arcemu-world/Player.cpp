@@ -754,12 +754,12 @@ bool Player::Create(WorldPacket& data )
 				if((*is).slot<INVENTORY_SLOT_BAG_END)
 				{
 					if( !GetItemInterface()->SafeAddItem(item, INVENTORY_SLOT_NOT_SET, (*is).slot) )
-						ItemPool.PooledDelete( item );
+						item->DeleteMe();
 				}
 				else
 				{
 					if( !GetItemInterface()->AddItemToFreeSlot(item) )
-						ItemPool.PooledDelete( item );
+						item->DeleteMe();
 				}
 			}
 		}

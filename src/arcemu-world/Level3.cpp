@@ -931,7 +931,7 @@ bool ChatHandler::HandleAddItemSetCommand(const char* args, WorldSession* m_sess
 		if(!chr->GetItemInterface()->AddItemToFreeSlot(itm))
 		{
 			m_session->SendNotification("No free slots left!");
-			ItemPool.PooledDelete( itm );
+			itm->DeleteMe();
 			return true;
 		} else {
 			//SystemMessage(m_session, "Added item: %s [%u]", (*itr)->Name1, (*itr)->ItemId);

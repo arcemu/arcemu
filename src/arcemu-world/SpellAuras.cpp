@@ -6036,7 +6036,7 @@ void Aura::SpellAuraChannelDeathItem(bool apply)
 					if(!pCaster->GetItemInterface()->AddItemToFreeSlot(item))
 					{
 						pCaster->GetItemInterface()->BuildInventoryChangeError(0, 0, INV_ERR_INVENTORY_FULL);
-						ItemPool.PooledDelete( item );
+						item->DeleteMe();
 						return;
 					}
 					/*WorldPacket data(45);

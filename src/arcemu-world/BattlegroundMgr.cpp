@@ -1145,7 +1145,7 @@ CBattleground * CBattlegroundManager::CreateInstance(uint32 Type, uint32 LevelGr
 
 	t = time(NULL);
 #ifdef WIN32
-	localtime_s(&tm, &t);
+//	localtime_s(&tm, &t);
 #else
 	localtime_r(&t, &tm);
 #endif

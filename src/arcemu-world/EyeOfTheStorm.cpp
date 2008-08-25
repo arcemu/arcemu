@@ -800,7 +800,7 @@ bool EyeOfTheStorm::GivePoints(uint32 team, uint32 points)
 					if(!(*itr)->GetItemInterface()->AddItemToFreeSlot(item))
 					{
 						(*itr)->GetSession()->SendNotification("No free slots were found in your inventory!");
-						ItemPool.PooledDelete( item );
+						item->DeleteMe();
 					}
 					else
 					{
@@ -817,7 +817,7 @@ bool EyeOfTheStorm::GivePoints(uint32 team, uint32 points)
 					if(!(*itr)->GetItemInterface()->AddItemToFreeSlot(item))
 					{
 						(*itr)->GetSession()->SendNotification("No free slots were found in your inventory!");
-						ItemPool.PooledDelete( item );
+						item->DeleteMe();
 					}
 					else
 					{
