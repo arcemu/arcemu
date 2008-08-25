@@ -15084,6 +15084,11 @@ void ApplyNormalFixes()
 		if( sp != NULL )
 			sp->procFlags = PROC_ON_CAST_SPELL | static_cast<uint32>(PROC_TARGET_SELF);
 
+		//Spell Focus Trigger (Mystical Skyfire Diamond)
+		sp = dbcSpell.LookupEntryForced( 32837 );
+		if( sp != NULL )
+			sp->procChance = 15;
+
 		// Band of the Eternal Sage
 		sp = dbcSpell.LookupEntryForced( 35083 );
 		if( sp != NULL )
