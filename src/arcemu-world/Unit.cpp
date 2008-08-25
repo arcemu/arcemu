@@ -3394,8 +3394,12 @@ else
 //--------------------------dirty fixes-----------------------------------------------------
 	//vstate=1-wound,2-dodge,3-parry,4-interrupt,5-block,6-evade,7-immune,8-deflect	
 	// the above code was remade it for reasons : damage shield needs moslty same flags as handleproc + dual wield should proc too ?
+	if (ability && ability->noproc)
+	{
+		disable_proc = true;
+	}
 	if( !disable_proc && weapon_damage_type != OFFHAND )
-    {
+	{
 		//damage shield must come before handleproc to not loose 1 charge : speel gets removed before last charge
 		if( realdamage > 0 || vproc & PROC_ON_BLOCK_VICTIM )
 		{

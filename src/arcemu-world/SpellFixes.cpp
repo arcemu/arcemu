@@ -12202,6 +12202,11 @@ void ApplyNormalFixes()
 		if( sp != NULL )
 			sp->procFlags = PROC_ON_CAST_SPELL;
 
+		//Paladin - Crusader Strike
+		sp = dbcSpell.LookupEntryForced( 35395 );
+		if( sp != NULL )
+			sp->noproc = true;
+
 	//////////////////////////////////////////
 	// HUNTER								//
 	//////////////////////////////////////////

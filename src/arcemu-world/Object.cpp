@@ -2779,7 +2779,7 @@ void Object::SpellNonMeleeDamageLog(Unit *pVictim, uint32 spellID, uint32 damage
 	SendSpellNonMeleeDamageLog(this, pVictim, spellID, float2int32(res), school, abs_dmg, dmg.resisted_damage, false, 0, critical, IsPlayer());
 	DealDamage( pVictim, float2int32( res ), 2, 0, spellID );
 	
-	if( this->IsUnit() && allowProc && spellInfo->Id != 25501 )
+	if( this->IsUnit() && allowProc && spellInfo->Id != 25501 && spellInfo->noproc == false)
 	{
 		pVictim->HandleProc( vproc, static_cast< Unit* >( this ), spellInfo, float2int32( res ) );
 		pVictim->m_procCounter = 0;
