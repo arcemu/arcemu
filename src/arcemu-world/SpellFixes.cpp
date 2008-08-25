@@ -13779,23 +13779,6 @@ void ApplyNormalFixes()
 		if ( sp != NULL )
 			sp->EffectImplicitTargetA[0] = EFF_TARGET_DYNAMIC_OBJECT;
 
-		// Mage - Winter's Chill
-		sp = dbcSpell.LookupEntryForced( 11180 );
-		if( sp != NULL )
-			sp->procFlags = PROC_ON_SPELL_HIT;
-		sp = dbcSpell.LookupEntryForced( 28592 );
-		if( sp != NULL )
-			sp->procFlags = PROC_ON_SPELL_HIT;
-		sp = dbcSpell.LookupEntryForced( 28593 );
-		if( sp != NULL )
-			sp->procFlags = PROC_ON_SPELL_HIT;
-		sp = dbcSpell.LookupEntryForced( 28594 );
-		if( sp != NULL )
-			sp->procFlags = PROC_ON_SPELL_HIT;
-		sp = dbcSpell.LookupEntryForced( 28595 );
-		if( sp != NULL )
-			sp->procFlags = PROC_ON_SPELL_HIT;
-
 	//////////////////////////////////////////
 	// WARLOCK								//
 	//////////////////////////////////////////
