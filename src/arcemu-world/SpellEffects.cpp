@@ -451,7 +451,14 @@ void Spell::SpellEffectInstantKill(uint32 i)
 
 			static_cast<Pet*>(u_caster)->Dismiss( true );
 			return;
+		}break;
+	case SPELL_HASH_DEMONIC_SACRIFICE:
+		{
+			if( !p_caster->IsPlayer() )
+				return;
 
+			static_cast<Pet*>(unitTarget)->Dismiss( true );
+			return;
 		}break;
 
 	default:
