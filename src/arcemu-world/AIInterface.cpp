@@ -241,6 +241,8 @@ void AIInterface::HandleEvent(uint32 event, Unit* pUnit, uint32 misc1)
 						}
 					}
 				}
+				//Zack : Put mob into combat animation. Take out weapons and start to look serious :P
+				m_Unit->smsg_AttackStart( pUnit );
 			}break;
 		case EVENT_LEAVECOMBAT:
 			{
@@ -371,6 +373,8 @@ void AIInterface::HandleEvent(uint32 event, Unit* pUnit, uint32 misc1)
 					if( static_cast< Creature* >( m_Unit )->GetProto() )
 						m_Unit->SetUInt32Value( UNIT_FIELD_MOUNTDISPLAYID, static_cast< Creature* >( m_Unit )->GetProto()->MountedDisplayID );
 				}
+				//Zack : not sure we need to send this. Did not see it in the dumps since mob died eventually but it seems logical to make this
+				m_Unit->smsg_AttackStop( pUnit );
 			}break;
 		case EVENT_DAMAGETAKEN:
 			{
