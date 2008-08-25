@@ -431,6 +431,12 @@ void MapMgr::RemoveObject(Object *obj, bool free_guid)
 	if(obj->Active)
 		obj->Deactivate(this);
 
+	//there is a very small chance that on double player ports on same update player is added to multiple insertpools but not removed
+	//one clear example was the double port proc when exploiting double resurect 
+	m_objectinsertlock.Acquire();
+	m_objectinsertpool.erase( obj );
+	m_objectinsertlock.Release();
+
 	_updates.erase( obj );
 	obj->ClearUpdateMask();
 	Player* plObj = (obj->GetTypeId() == TYPEID_PLAYER) ? static_cast< Player* >( obj ) : 0;
