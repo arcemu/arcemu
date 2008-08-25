@@ -15570,6 +15570,12 @@ void ApplyNormalFixes()
 		if( sp != NULL )
 			sp->procChance = 5;
 
+		// Deadly Throw Interrupt
+		sp = dbcSpell.LookupEntryForced( 32748 );
+		if( sp != NULL )
+		{
+			sp->procFlags = PROC_ON_RANGED_ATTACK | PROC_ON_CAST_SPELL;
+		}
 
 
 

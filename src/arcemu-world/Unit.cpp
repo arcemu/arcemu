@@ -1045,6 +1045,13 @@ void Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, uint
 
 			switch( spellId )
 			{
+				case 32747: //Deadly Throw Interrupt (rogue arena gloves set)
+					{
+						if( CastingSpell == NULL )
+							continue;
+						if( CastingSpell->NameHash != SPELL_HASH_DEADLY_THROW )
+							continue;
+					}break;
 				case 16959://Druid - Primal Fury Proc
 					{
 						if( !IsPlayer() )

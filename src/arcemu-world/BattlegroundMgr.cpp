@@ -519,7 +519,7 @@ void CBattlegroundManager::EventQueueUpdate(bool forceStart)
 				else
 				{
 					bg = iitr->second;
-					int size = min(tempPlayerVec[0].size(),tempPlayerVec[1].size());
+					int size = (int)min(tempPlayerVec[0].size(),tempPlayerVec[1].size());
 					for(int counter = 0; (counter < size) && (bg->IsFull() == false); counter++)
 					{
 						AddPlayerToBg(bg, &tempPlayerVec[0], i, j);
@@ -591,7 +591,7 @@ void CBattlegroundManager::EventQueueUpdate(bool forceStart)
 						}
 						else
 						{
-							int size = min(tempPlayerVec[0].size(),tempPlayerVec[1].size());
+							int size = (int)min(tempPlayerVec[0].size(),tempPlayerVec[1].size());
 							for(int counter = 0; (counter < size) && (bg->IsFull() == false); counter++)
 							{
 								AddPlayerToBgTeam(bg, &tempPlayerVec[0], i, j, 0);
