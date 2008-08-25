@@ -3199,7 +3199,9 @@ void Aura::SpellAuraModStealth(bool apply)
 	if(apply)
 	{
 		SetPositive();
-		m_target->SetStealth(GetSpellId());
+		if( m_spellProto->NameHash != SPELL_HASH_VANISH)
+			m_target->SetStealth(GetSpellId());
+
 		if( m_spellProto->NameHash == SPELL_HASH_STEALTH)
 			m_target->SetFlag(UNIT_FIELD_BYTES_2,0x1E000000);//sneak anim
 
@@ -3257,7 +3259,9 @@ void Aura::SpellAuraModStealth(bool apply)
 	}
 	else
 	{
-		m_target->SetStealth(0);
+		if( m_spellProto->NameHash != SPELL_HASH_VANISH)
+			m_target->SetStealth(0);
+
 		m_target->m_stealthLevel -= mod->m_amount;
 		if( m_spellProto->NameHash == SPELL_HASH_STEALTH)
 			m_target->RemoveFlag(UNIT_FIELD_BYTES_2,0x1E000000);
