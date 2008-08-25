@@ -1469,6 +1469,11 @@ void Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, uint
 							}
 						}
 					}break;
+				//mage - Winter's Chill
+				case 12579:
+					// Winter's Chill shouldn't proc on self
+					if (victim == this) continue;
+					break;
 				//priest - prayer of mending	
 				case 41637: //the heal spell
 					{
