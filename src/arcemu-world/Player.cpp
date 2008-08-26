@@ -1320,6 +1320,8 @@ void Player::_EventExploration()
 		SetUInt32Value(offset, (uint32)(currFields | val));
 
 		uint32 explore_xp = at->level * 10;
+		explore_xp *= float2int32(sWorld.getRate(RATE_EXPLOREXP));
+
 		WorldPacket data(SMSG_EXPLORATION_EXPERIENCE, 8);
 		data << at->AreaId << explore_xp;
 		m_session->SendPacket(&data);

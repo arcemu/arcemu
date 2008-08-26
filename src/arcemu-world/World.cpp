@@ -1179,6 +1179,7 @@ void World::Rehash(bool load)
 	setRate(RATE_XP,Config.MainConfig.GetFloatDefault("Rates", "XP",1));
 	setRate(RATE_RESTXP,Config.MainConfig.GetFloatDefault("Rates", "RestXP", 1));
 	setRate(RATE_QUESTXP,Config.MainConfig.GetFloatDefault("Rates", "QuestXP", 1));
+	setRate(RATE_EXPLOREXP,Config.MainConfig.GetFloatDefault("Rates", "ExploreXP", 1));
 	setIntRate(INTRATE_SAVE, Config.MainConfig.GetIntDefault("Rates", "Save", 1));
 	setRate(RATE_MONEY, Config.MainConfig.GetFloatDefault("Rates", "DropMoney", 1.0f));
 	setRate(RATE_QUESTREPUTATION, Config.MainConfig.GetFloatDefault("Rates", "QuestReputation", 1.0f));
