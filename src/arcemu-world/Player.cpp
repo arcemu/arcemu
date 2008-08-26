@@ -44,6 +44,7 @@ Player::Player( uint32 guid ) : m_mailBox(guid)
 	SoulStoneReceiver		= 0;
 	misdirectionTarget		= 0;
 	bReincarnation			= false;
+	removeReagentCost		= false;
 	m_furorChance			= 0;
 	Seal					= 0;
 	judgespell				= 0;

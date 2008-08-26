@@ -3164,13 +3164,16 @@ uint8 Spell::CanCast(bool tolerate)
 		}
 
 		// check if we have the required reagents
-		for(i=0; i<8 ;i++)
+		if (!p_caster->removeReagentCost)
 		{
-			if( GetProto()->Reagent[i] == 0 || GetProto()->ReagentCount[i] == 0)
-				continue;
+			for(i=0; i<8 ;i++)
+			{
+				if( GetProto()->Reagent[i] == 0 || GetProto()->ReagentCount[i] == 0)
+					continue;
 
-			if(p_caster->GetItemInterface()->GetItemCount(GetProto()->Reagent[i]) < GetProto()->ReagentCount[i])
-				return SPELL_FAILED_ITEM_GONE;
+				if(p_caster->GetItemInterface()->GetItemCount(GetProto()->Reagent[i]) < GetProto()->ReagentCount[i])
+					return SPELL_FAILED_ITEM_GONE;
+			}
 		}
 
 		// check if we have the required tools, totems, etc
@@ -4115,11 +4118,14 @@ void Spell::RemoveItems()
 	}
 
 	// Reagent Removal
-	for(uint32 i=0; i<8 ;i++)
+	if (!p_caster->removeReagentCost)
 	{
-		if( GetProto()->Reagent[i])
+		for(uint32 i=0; i<8 ;i++)
 		{
-			p_caster->GetItemInterface()->RemoveItemAmt_ProtectPointer(GetProto()->Reagent[i], GetProto()->ReagentCount[i], &i_caster);
+			if( GetProto()->Reagent[i])
+			{
+				p_caster->GetItemInterface()->RemoveItemAmt_ProtectPointer(GetProto()->Reagent[i], GetProto()->ReagentCount[i], &i_caster);
+			}
 		}
 	}
 }

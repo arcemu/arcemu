@@ -235,7 +235,7 @@ pSpellAura SpellAuraHandler[TOTAL_SPELL_AURAS]={
 		&Aura::SpellAuraIncreaseRangedAPStatPCT,//SPELL_AURA_MOD_RANGED_ATTACK_POWER_OF_INTELLECT //212 Apply Aura: Increase Ranged Atk Power by % of Intellect
 		&Aura::SpellAuraIncreaseRageFromDamageDealtPCT, //213 Apply Aura: Increase Rage from Damage Dealt by %
 		&Aura::SpellAuraNULL,//214 // Tamed Pet Passive (DND)
-		&Aura::SpellAuraNULL,//215 // arena preparation buff - cancel soul shard requirement?
+		&Aura::SpellAuraRemoveReagentCost,//215 // arena preparation buff - cancel soul shard requirement?
 		&Aura::SpellAuraModCastingSpeed,//216 Increases casting time %, reuse existing handler...
 		&Aura::SpellAuraNULL,//217 // not used
 		&Aura::SpellAuraNULL,//218 // increases time between ranged attacks
@@ -8737,6 +8737,7 @@ void Aura::SpellAuraModPossessPet(bool apply)
 void Aura::SpellAuraReduceEffectDuration(bool apply){
 	if(!m_target->IsPlayer())
 		return;
+
 	int32 val;
 	if(apply){
 		SetPositive();
@@ -8764,5 +8765,20 @@ void Aura::SpellAuraAddHealth(bool apply)
 		uint32 maxHealth = m_target->GetUInt32Value(UNIT_FIELD_MAXHEALTH);
 		if(m_target->GetUInt32Value(UNIT_FIELD_HEALTH) > maxHealth)
 			m_target->SetUInt32Value(UNIT_FIELD_MAXHEALTH, maxHealth);
+	}
+}
+
+void Aura::SpellAuraRemoveReagentCost(bool apply)
+{
+	if(!m_target->IsPlayer())
+		return;
+
+	if (apply)
+	{
+		static_cast<Player*>(m_target)->removeReagentCost = true;
+	}
+	else
+	{
+		static_cast<Player*>(m_target)->removeReagentCost = false;
 	}
 }

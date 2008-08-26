@@ -1459,6 +1459,7 @@ public:
 	ARCEMU_INLINE void SetMisdirectionTarget(uint64 PlayerGUID){misdirectionTarget = PlayerGUID;}
 
 	bool bReincarnation;
+	bool removeReagentCost;
 
 	map<uint32, WeaponModifier> damagedone;
 	map<uint32, WeaponModifier> tocritchance;
