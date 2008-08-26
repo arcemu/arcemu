@@ -1147,6 +1147,7 @@ void Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, uint
 					if( !Rand( chance ) )
 						continue;
 				}break;
+				case 16459:
 				case 4350:
 				{
 					//sword specialization

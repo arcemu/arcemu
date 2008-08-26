@@ -3884,6 +3884,16 @@ void Player::_ApplyItemMods(Item* item, int8 slot, bool apply, bool justdrokedow
 		}
 	}
 	
+	if( !apply ) // force remove auras added by using this item
+	{
+		for(uint32 k = 0; k < MAX_POSITIVE_AURAS; ++k)
+		{
+			Aura* m_aura = this->m_auras[k];
+			if( m_aura != NULL && m_aura->m_castedItemId && m_aura->m_castedItemId == proto->ItemId )
+				m_aura->Remove();
+		}
+	}
+
 	if( !skip_stat_apply )
 		UpdateStats();
 }

@@ -605,7 +605,7 @@ Aura::Aura()
 	m_bufferPoolId = OBJECT_WAS_ALLOCATED_STANDARD_WAY;
 }
 
-void Aura::Init( SpellEntry* proto, int32 duration, Object* caster, Unit* target )
+void Aura::Init( SpellEntry* proto, int32 duration, Object* caster, Unit* target, Item* i_caster )
 {
 	m_castInDuel = false;
 	m_spellProto = proto;
@@ -620,6 +620,11 @@ void Aura::Init( SpellEntry* proto, int32 duration, Object* caster, Unit* target
 		p_target = static_cast< Player* >( m_target );
 	else
 		p_target = NULL;
+
+	if ( i_caster != NULL && i_caster->GetProto() )
+		m_castedItemId = i_caster->GetProto()->ItemId;
+	else
+		m_castedItemId = 0;
 
 	// Modifies current aura duration based on its mechanic type
 	if(m_target->IsPlayer()){
@@ -689,7 +694,6 @@ void Aura::Init( SpellEntry* proto, int32 duration, Object* caster, Unit* target
 		timeleft = ( uint32 )UNIXTIME;
 	}
 
-	m_castedItemId = 0;
 	m_visualSlot = 0xFF;
 	pSpellId = 0;
 	periodic_target = 0;

@@ -357,8 +357,8 @@ public:
 		else
 		{
 			uint32 size[2];
-			size[0] = (uint32)m_players[0].size() + m_pendPlayers[0].size();
-			size[1] = (uint32)m_players[1].size() + m_pendPlayers[1].size();
+			size[0] = uint32(m_players[0].size() + m_pendPlayers[0].size());
+			size[1] = uint32(m_players[1].size() + m_pendPlayers[1].size());
 			res = (size[Team] < BGMaximumPlayers[type]) && (((int)size[Team] - (int)size[1-Team]) <= 0);
 		}
 		m_mainLock.Release();

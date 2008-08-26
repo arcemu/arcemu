@@ -1855,9 +1855,9 @@ void Spell::SpellEffectApplyAura(uint32 i)  // Apply Aura
 		}
 		pAura=AuraPool.PooledNew();
 		if(g_caster && g_caster->GetUInt32Value(OBJECT_FIELD_CREATED_BY) && g_caster->m_summoner)
-			 pAura->Init(GetProto(), Duration, g_caster->m_summoner, unitTarget);
+			 pAura->Init(GetProto(), Duration, g_caster->m_summoner, unitTarget, i_caster);
 		else
-			pAura->Init(GetProto(), Duration, m_caster, unitTarget);
+			pAura->Init(GetProto(), Duration, m_caster, unitTarget, i_caster);
 
 		pAura->pSpellId = pSpellId; //this is required for triggered spells
 		
