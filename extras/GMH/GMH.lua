@@ -20,6 +20,7 @@ end
 
 function TogleAddon()
 if( addonopen == 1 ) then
+ItemFormSearch:Hide();
 FullForm:Hide();
 MinipForm:Hide();
 MiniForm:Hide();

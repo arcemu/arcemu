@@ -3,7 +3,7 @@
   <Frame name="ItemForm" hidden="true" movable="true" resizable="true" enableMouse="true">
     <!--<FrameSkin skinid="dcb143e1-a4ab-4e7c-b934-1efa40101d21" frameid="2d508883-59c2-4f83-ae10-27aaad48391b" />-->
     <Size>
-      <AbsDimension x="246" y="428" />
+      <AbsDimension x="246" y="452" />
     </Size>
     <Anchors>
       <Anchor point="RIGHT" relativeTo="UIParent">
@@ -63,6 +63,39 @@
       </Layer>
     </Layers>
     <Frames>
+      <Frame name="$parentLabel1">
+        <!--<FrameSkin skinid="dcb143e1-a4ab-4e7c-b934-1efa40101d21" frameid="2d508885-59c2-4f83-ae10-27aaad48391b" />-->
+        <Size>
+          <AbsDimension x="170" y="30" />
+        </Size>
+        <Anchors>
+          <Anchor point="TOPLEFT">
+            <Offset>
+              <AbsDimension x="56" y="-167" />
+            </Offset>
+          </Anchor>
+        </Anchors>
+        <Layers>
+          <Layer>
+            <FontString name="$parentLabel" font="Fonts\FRIZQT__.TTF" text="Show Results Window?">
+              <Anchors>
+                <Anchor point="TOPLEFT" />
+                <Anchor point="BOTTOMRIGHT" />
+              </Anchors>
+              <FontHeight>
+                <AbsValue val="12" />
+              </FontHeight>
+              <Color r="1" g="0.8196079" b="0" />
+              <Shadow>
+                <Color r="0" g="0" b="0" />
+                <Offset>
+                  <AbsDimension x="1" y="-1" />
+                </Offset>
+              </Shadow>
+            </FontString>
+          </Layer>
+        </Layers>
+      </Frame>
       <Frame name="$parentTexture1">
         <!--<FrameSkin skinid="f15d4970-d66d-444e-bb2d-1ad102c87fed" frameid="f15d4979-d66d-444e-bb2d-1ad102c87fed" />-->
         <Size>
@@ -71,7 +104,7 @@
         <Anchors>
           <Anchor point="TOPLEFT">
             <Offset>
-              <AbsDimension x="78" y="-293" />
+              <AbsDimension x="78" y="-319" />
             </Offset>
           </Anchor>
         </Anchors>
@@ -83,6 +116,51 @@
           </Layer>
         </Layers>
       </Frame>
+      <CheckButton name="ResultsWindow" checked="true">
+        <!--<FrameSkin skinid="dcb143e1-a4ab-4e7c-b934-1efa40101d21" frameid="2d508886-59c2-4f83-ae10-27aaad48391b"><Property name="Size">&lt;?xml version="1.0"?&gt;
+&lt;Size xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
+  &lt;Width&gt;30&lt;/Width&gt;
+  &lt;Height&gt;30&lt;/Height&gt;
+&lt;/Size&gt;</Property></FrameSkin>-->
+        <Size>
+          <AbsDimension x="32" y="32" />
+        </Size>
+        <Anchors>
+          <Anchor point="TOPLEFT">
+            <Offset>
+              <AbsDimension x="20" y="-167" />
+            </Offset>
+          </Anchor>
+        </Anchors>
+        <Layers>
+          <Layer>
+            <FontString name="$parentText" font="Fonts\FRIZQT__.TTF">
+              <Anchors>
+                <Anchor point="LEFT" relativePoint="RIGHT">
+                  <Offset>
+                    <AbsDimension x="-2" y="0" />
+                  </Offset>
+                </Anchor>
+              </Anchors>
+              <FontHeight>
+                <AbsValue val="10" />
+              </FontHeight>
+              <Color r="1" g="0.8196079" b="0" />
+              <Shadow>
+                <Color r="0" g="0" b="0" />
+                <Offset>
+                  <AbsDimension x="1" y="-1" />
+                </Offset>
+              </Shadow>
+            </FontString>
+          </Layer>
+        </Layers>
+        <NormalTexture file="Interface\Buttons\UI-CheckBox-Up" />
+        <PushedTexture file="Interface\Buttons\UI-CheckBox-Down" />
+        <HighlightTexture file="Interface\Buttons\UI-CheckBox-Highlight" alphaMode="ADD" />
+        <CheckedTexture file="Interface\Buttons\UI-CheckBox-Check" />
+        <DisabledCheckedTexture file="Interface\Buttons\UI-CheckBox-Check-Disabled" />
+      </CheckButton>
       <Button name="Done" text="Done">
         <!--<FrameSkin skinid="dcb143e1-a4ab-4e7c-b934-1efa40101d21" frameid="2d508884-59c2-4f83-ae10-27aaad48391b" />-->
         <Size>
@@ -91,7 +169,7 @@
         <Anchors>
           <Anchor point="TOPLEFT">
             <Offset>
-              <AbsDimension x="78" y="-387" />
+              <AbsDimension x="78" y="-413" />
             </Offset>
           </Anchor>
         </Anchors>
@@ -161,7 +239,7 @@
         <Anchors>
           <Anchor point="TOPLEFT">
             <Offset>
-              <AbsDimension x="20" y="-264" />
+              <AbsDimension x="20" y="-290" />
             </Offset>
           </Anchor>
         </Anchors>
@@ -194,7 +272,7 @@
         <Anchors>
           <Anchor point="TOPLEFT">
             <Offset>
-              <AbsDimension x="20" y="-177" />
+              <AbsDimension x="20" y="-203" />
             </Offset>
           </Anchor>
         </Anchors>
@@ -260,7 +338,7 @@
         <Anchors>
           <Anchor point="TOPLEFT">
             <Offset>
-              <AbsDimension x="20" y="-84" />
+              <AbsDimension x="20" y="-74" />
             </Offset>
           </Anchor>
         </Anchors>
@@ -331,7 +409,7 @@
         <Anchors>
           <Anchor point="TOPLEFT">
             <Offset>
-              <AbsDimension x="20" y="-52" />
+              <AbsDimension x="20" y="-42" />
             </Offset>
           </Anchor>
         </Anchors>
@@ -372,7 +450,8 @@
 </OnLoad>
           <OnEscapePressed>ItemNumber:ClearFocus();
 </OnEscapePressed>
-          <OnTabPressed>this:ClearFocus();</OnTabPressed>
+          <OnTabPressed>this:ClearFocus();
+</OnTabPressed>
         </Scripts>
         <FontString font="Fonts\ARIALN.TTF">
           <FontHeight>
@@ -395,7 +474,7 @@
         <Anchors>
           <Anchor point="TOPLEFT">
             <Offset>
-              <AbsDimension x="110" y="-293" />
+              <AbsDimension x="110" y="-319" />
             </Offset>
           </Anchor>
         </Anchors>
@@ -436,7 +515,8 @@
 </OnLoad>
           <OnEscapePressed>Silver:ClearFocus();
 </OnEscapePressed>
-          <OnTabPressed>this:ClearFocus(); Copper:SetFocus();</OnTabPressed>
+          <OnTabPressed>this:ClearFocus(); Copper:SetFocus();
+</OnTabPressed>
         </Scripts>
         <FontString font="Fonts\ARIALN.TTF">
           <FontHeight>
@@ -459,7 +539,7 @@
         <Anchors>
           <Anchor point="TOPLEFT">
             <Offset>
-              <AbsDimension x="20" y="-325" />
+              <AbsDimension x="20" y="-351" />
             </Offset>
           </Anchor>
         </Anchors>
@@ -529,7 +609,7 @@
         <Anchors>
           <Anchor point="TOPLEFT">
             <Offset>
-              <AbsDimension x="20" y="-233" />
+              <AbsDimension x="20" y="-259" />
             </Offset>
           </Anchor>
         </Anchors>
@@ -599,7 +679,7 @@
         <Anchors>
           <Anchor point="TOPLEFT">
             <Offset>
-              <AbsDimension x="20" y="-201" />
+              <AbsDimension x="20" y="-227" />
             </Offset>
           </Anchor>
         </Anchors>
@@ -640,7 +720,8 @@
 </OnLoad>
           <OnEscapePressed>ItemSetNumber:ClearFocus();
 </OnEscapePressed>
-          <OnTabPressed>this:ClearFocus();</OnTabPressed>
+          <OnTabPressed>this:ClearFocus();
+</OnTabPressed>
         </Scripts>
         <FontString font="Fonts\ARIALN.TTF">
           <FontHeight>
@@ -663,7 +744,7 @@
         <Anchors>
           <Anchor point="TOPLEFT">
             <Offset>
-              <AbsDimension x="20" y="-115" />
+              <AbsDimension x="20" y="-105" />
             </Offset>
           </Anchor>
         </Anchors>
@@ -734,13 +815,17 @@
         <Anchors>
           <Anchor point="TOPLEFT">
             <Offset>
-              <AbsDimension x="20" y="-146" />
+              <AbsDimension x="20" y="-136" />
             </Offset>
           </Anchor>
         </Anchors>
         <Scripts>
           <OnClick>SearchItem()
 ; ItemNumber:ClearFocus();
+open_window = ResultsWindow:GetChecked();
+if (open_window == 1) then
+ItemFormSearch:Show();
+end
 </OnClick>
         </Scripts>
         <NormalTexture file="Interface\Buttons\UI-Panel-Button-Up">
@@ -805,7 +890,7 @@
         <Anchors>
           <Anchor point="TOPLEFT">
             <Offset>
-              <AbsDimension x="20" y="-293" />
+              <AbsDimension x="20" y="-319" />
             </Offset>
           </Anchor>
         </Anchors>
@@ -846,7 +931,8 @@
 </OnLoad>
           <OnEscapePressed>Gold:ClearFocus();
 </OnEscapePressed>
-          <OnTabPressed>this:ClearFocus(); Silver:SetFocus();</OnTabPressed>
+          <OnTabPressed>this:ClearFocus(); Silver:SetFocus();
+</OnTabPressed>
         </Scripts>
         <FontString font="Fonts\ARIALN.TTF">
           <FontHeight>
@@ -869,7 +955,7 @@
         <Anchors>
           <Anchor point="TOPLEFT">
             <Offset>
-              <AbsDimension x="174" y="-293" />
+              <AbsDimension x="174" y="-319" />
             </Offset>
           </Anchor>
         </Anchors>
@@ -910,7 +996,8 @@
 </OnLoad>
           <OnEscapePressed>Copper:ClearFocus();
 </OnEscapePressed>
-          <OnTabPressed>this:ClearFocus();</OnTabPressed>
+          <OnTabPressed>this:ClearFocus();
+</OnTabPressed>
         </Scripts>
         <FontString font="Fonts\ARIALN.TTF">
           <FontHeight>
@@ -933,7 +1020,7 @@
         <Anchors>
           <Anchor point="TOPLEFT">
             <Offset>
-              <AbsDimension x="20" y="-356" />
+              <AbsDimension x="20" y="-382" />
             </Offset>
           </Anchor>
         </Anchors>
@@ -1005,7 +1092,7 @@
         <Anchors>
           <Anchor point="TOPLEFT">
             <Offset>
-              <AbsDimension x="142" y="-296" />
+              <AbsDimension x="142" y="-319" />
             </Offset>
           </Anchor>
         </Anchors>
@@ -1025,7 +1112,7 @@
         <Anchors>
           <Anchor point="TOPLEFT">
             <Offset>
-              <AbsDimension x="200" y="-298" />
+              <AbsDimension x="200" y="-319" />
             </Offset>
           </Anchor>
         </Anchors>

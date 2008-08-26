@@ -2,7 +2,7 @@
 ## Title: GMH (GameMaster's Helper) v2.0.0
 ## Author: Stephen "Skate" Lovik | Skyler "Maven"
 ## Version: 2.0.0
-## Notes: An addon to manage GM commands in an A.R.C. Emu based World of Warcraft private server. 
+## Notes: An addon to manage GM commands in an A.R.C. Emu based World of Warcraft private server.
 ## eMail: Skate555@gmail.com | Maven01@live.com
 ## URL: http://opensvn.csie.org/GMHelper/|svn://arcemu.info/svn/arcemu/
 ## DefaultState: Enabled
@@ -18,6 +18,7 @@ GMH.lua
 CommForm.xml
 CommScript.lua
 ItemForm.xml
+ItemFormSearch.xml
 ItemScript.lua
 MiscForm.xml
 MiscScript.lua
