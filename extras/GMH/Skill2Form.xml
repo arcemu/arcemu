@@ -282,8 +282,7 @@ UIDropDownMenu_Initialize(this, cb_init_fn)
           </Anchor>
         </Anchors>
         <Scripts>
-          <OnClick>LearnProf();
-</OnClick>
+          <OnClick>LearnProf123();</OnClick>
         </Scripts>
         <NormalTexture file="Interface\Buttons\UI-Panel-Button-Up">
           <TexCoords left="0" right="0.625" top="0" bottom="0.6875" />
@@ -372,70 +371,6 @@ UIDropDownMenu_Initialize(this, cb_init_fn)
           </Layer>
         </Layers>
       </Frame>
-      <EditBox name="SkillLevel" enableMouse="true">
-        <!--<FrameSkin skinid="dcb143e1-a4ab-4e7c-b934-1efa40101d21" frameid="2d508887-59c2-4f83-ae10-27aaad48391b" />-->
-        <Size>
-          <AbsDimension x="143" y="22" />
-        </Size>
-        <Anchors>
-          <Anchor point="TOPLEFT">
-            <Offset>
-              <AbsDimension x="23" y="-54" />
-            </Offset>
-          </Anchor>
-        </Anchors>
-        <Layers>
-          <Layer level="BACKGROUND">
-            <Texture name="$parentLeft" file="Interface\Common\Common-Input-Border">
-              <Size>
-                <AbsDimension x="8" y="20" />
-              </Size>
-              <Anchors>
-                <Anchor point="LEFT" />
-              </Anchors>
-              <TexCoords left="0" right="0.0625" top="0" bottom="0.625" />
-            </Texture>
-            <Texture name="$parentRight" file="Interface\Common\Common-Input-Border">
-              <Size>
-                <AbsDimension x="8" y="20" />
-              </Size>
-              <Anchors>
-                <Anchor point="RIGHT" />
-              </Anchors>
-              <TexCoords left="0.9375" right="1" top="0" bottom="0.625" />
-            </Texture>
-            <Texture name="$parentMiddle" file="Interface\Common\Common-Input-Border">
-              <Size>
-                <AbsDimension x="10" y="20" />
-              </Size>
-              <Anchors>
-                <Anchor point="LEFT" relativeTo="$parentLeft" relativePoint="RIGHT" />
-                <Anchor point="RIGHT" relativeTo="$parentRight" relativePoint="LEFT" />
-              </Anchors>
-              <TexCoords left="0.0625" right="0.9375" top="0" bottom="0.625" />
-            </Texture>
-          </Layer>
-        </Layers>
-        <Scripts>
-          <OnLoad>this:SetAutoFocus(false);
-</OnLoad>
-          <OnEscapePressed>SkillLevel:ClearFocus();
-</OnEscapePressed>
-          <OnTabPressed>this:ClearFocus();</OnTabPressed>
-        </Scripts>
-        <FontString font="Fonts\ARIALN.TTF">
-          <FontHeight>
-            <AbsValue val="14" />
-          </FontHeight>
-          <Color r="1" g="1" b="1" />
-          <Shadow>
-            <Color r="0" g="0" b="0" />
-            <Offset>
-              <AbsDimension x="1" y="-1" />
-            </Offset>
-          </Shadow>
-        </FontString>
-      </EditBox>
       <Button name="Done" text="Done">
         <!--<FrameSkin skinid="dcb143e1-a4ab-4e7c-b934-1efa40101d21" frameid="2d508884-59c2-4f83-ae10-27aaad48391b" />-->
         <Size>
@@ -449,7 +384,7 @@ UIDropDownMenu_Initialize(this, cb_init_fn)
           </Anchor>
         </Anchors>
         <Scripts>
-          <OnClick>Skill2Form:Hide(); ProfessionsForm:Hide(); OpenMain(); SkillLevel:SetText("");
+          <OnClick>Skill2Form:Hide(); ProfessionsForm:Hide(); OpenMain(); SkillLevel1:SetText("");
 </OnClick>
         </Scripts>
         <NormalTexture file="Interface\Buttons\UI-Panel-Button-Up">
@@ -770,6 +705,71 @@ UIDropDownMenu_Initialize(this, cb_init_fn)
 </OnHide>
         </Scripts>
       </Button>
+      <EditBox name="SkillLevel1" enableMouse="true">
+        <!--<FrameSkin skinid="dcb143e1-a4ab-4e7c-b934-1efa40101d21" frameid="2d508887-59c2-4f83-ae10-27aaad48391b" />-->
+        <Size>
+          <AbsDimension x="143" y="22" />
+        </Size>
+        <Anchors>
+          <Anchor point="TOPLEFT">
+            <Offset>
+              <AbsDimension x="23" y="-54" />
+            </Offset>
+          </Anchor>
+        </Anchors>
+        <Layers>
+          <Layer level="BACKGROUND">
+            <Texture name="$parentLeft" file="Interface\Common\Common-Input-Border">
+              <Size>
+                <AbsDimension x="8" y="20" />
+              </Size>
+              <Anchors>
+                <Anchor point="LEFT" />
+              </Anchors>
+              <TexCoords left="0" right="0.0625" top="0" bottom="0.625" />
+            </Texture>
+            <Texture name="$parentRight" file="Interface\Common\Common-Input-Border">
+              <Size>
+                <AbsDimension x="8" y="20" />
+              </Size>
+              <Anchors>
+                <Anchor point="RIGHT" />
+              </Anchors>
+              <TexCoords left="0.9375" right="1" top="0" bottom="0.625" />
+            </Texture>
+            <Texture name="$parentMiddle" file="Interface\Common\Common-Input-Border">
+              <Size>
+                <AbsDimension x="10" y="20" />
+              </Size>
+              <Anchors>
+                <Anchor point="LEFT" relativeTo="$parentLeft" relativePoint="RIGHT" />
+                <Anchor point="RIGHT" relativeTo="$parentRight" relativePoint="LEFT" />
+              </Anchors>
+              <TexCoords left="0.0625" right="0.9375" top="0" bottom="0.625" />
+            </Texture>
+          </Layer>
+        </Layers>
+        <Scripts>
+          <OnLoad>this:SetAutoFocus(false);
+</OnLoad>
+          <OnEscapePressed>this:ClearFocus();
+</OnEscapePressed>
+          <OnTabPressed>this:ClearFocus();
+</OnTabPressed>
+        </Scripts>
+        <FontString font="Fonts\ARIALN.TTF">
+          <FontHeight>
+            <AbsValue val="14" />
+          </FontHeight>
+          <Color r="1" g="1" b="1" />
+          <Shadow>
+            <Color r="0" g="0" b="0" />
+            <Offset>
+              <AbsDimension x="1" y="-1" />
+            </Offset>
+          </Shadow>
+        </FontString>
+      </EditBox>
     </Frames>
     <Scripts>
       <OnLoad>GMHelperOnLoad()
