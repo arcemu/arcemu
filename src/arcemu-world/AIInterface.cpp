@@ -888,7 +888,7 @@ void AIInterface::_UpdateTargets()
 			bool boss = false;
 			if (m_Unit->GetTypeId() == TYPEID_UNIT && static_cast<Creature*>(m_Unit)->GetCreatureInfo() && static_cast<Creature*>(m_Unit)->GetCreatureInfo()->Rank == 3)
 				boss = true;
-			if( ai_t->event_GetCurrentInstanceId() != m_Unit->event_GetCurrentInstanceId() || !ai_t->isAlive() || (!boss && m_Unit->GetDistanceSq(ai_t) >= 6400.0f))
+			if( !ai_t || ai_t->event_GetCurrentInstanceId() != m_Unit->event_GetCurrentInstanceId() || !ai_t->isAlive() || (!boss && m_Unit->GetDistanceSq(ai_t) >= 6400.0f))
 				m_aiTargets.erase( it2 );
 		}
 
