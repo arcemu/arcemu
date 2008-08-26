@@ -3934,41 +3934,41 @@ void Unit::smsg_AttackStop(uint64 victimGuid)
 
 void Unit::smsg_AttackStart(Unit* pVictim)
 {
-	if(GetTypeId() != TYPEID_PLAYER) 
-		return;
+    // Prevent user from ignoring attack speed and stopping and start combat really really fast
+    /*if(!isAttackReady())
+        setAttackTimer(uint32(0));
+    else if(!canReachWithAttack(pVictim))
+    {
+        setAttackTimer(uint32(500));
+        //pThis->GetSession()->OutPacket(SMSG_ATTACKSWING_NOTINRANGE);
+    }
+    else if(!isInFront(pVictim))
+    {
+        setAttackTimer(uint32(500));
+        //pThis->GetSession()->OutPacket(SMSG_ATTACKSWING_NOTINRANGE);
+    }*/
 
-	Player* pThis = static_cast< Player* >( this );
+    // Send out ATTACKSTART
+    WorldPacket data(SMSG_ATTACKSTART, 16);
+    data << GetGUID();
+    data << pVictim->GetGUID();
+//    SendMessageToSet(&data, true);
+    SendMessageToSet(&data, false);
+    sLog.outDebug( "WORLD: Sent SMSG_ATTACKSTART" );
 
-	// Prevent user from ignoring attack speed and stopping and start combat really really fast
-	/*if(!isAttackReady())
-		setAttackTimer(uint32(0));
-	else if(!canReachWithAttack(pVictim))
-	{
-		setAttackTimer(uint32(500));
-		//pThis->GetSession()->OutPacket(SMSG_ATTACKSWING_NOTINRANGE);
-	}
-	else if(!isInFront(pVictim))
-	{
-		setAttackTimer(uint32(500));
-		//pThis->GetSession()->OutPacket(SMSG_ATTACKSWING_NOTINRANGE);
-	}*/
-
-	// Send out ATTACKSTART
-	WorldPacket data(SMSG_ATTACKSTART, 16);
-	data << GetGUID();
-	data << pVictim->GetGUID();
-	SendMessageToSet(&data, true);
-	sLog.outDebug( "WORLD: Sent SMSG_ATTACKSTART" );
-
-	// FLAGS changed so other players see attack animation
-	//	addUnitFlag(UNIT_FLAG_COMBAT);
-	//	setUpdateMaskBit(UNIT_FIELD_FLAGS );
-	if(pThis->cannibalize)
-	{
-		sEventMgr.RemoveEvents(pThis, EVENT_CANNIBALIZE);
-		pThis->SetUInt32Value(UNIT_NPC_EMOTESTATE, 0);
-		pThis->cannibalize = false;
-	}
+    // FLAGS changed so other players see attack animation
+    //    addUnitFlag(UNIT_FLAG_COMBAT);
+    //    setUpdateMaskBit(UNIT_FIELD_FLAGS );
+    if(GetTypeId() != TYPEID_PLAYER)
+    {
+        Player* pThis = static_cast< Player* >( this );
+        if( pThis->cannibalize)
+        {
+            sEventMgr.RemoveEvents(pThis, EVENT_CANNIBALIZE);
+            pThis->SetUInt32Value(UNIT_NPC_EMOTESTATE, 0);
+            pThis->cannibalize = false;
+        }
+    }
 }
 
 void Unit::AddAura(Aura *aur)
