@@ -2987,6 +2987,11 @@ void ObjectMgr::LoadGroups()
 	QueryResult * result = CharacterDatabase.Query("SELECT * FROM groups");
 	if(result)
 	{
+		if(result->GetFieldCount() != 51)
+		{
+			Log.LargeErrorMessage(LARGERRORMESSAGE_WARNING, "groups table format is invalid. Please update your database.");
+			return;
+		}
 		do 
 		{
 			Group * g = new Group(false);
@@ -3003,6 +3008,11 @@ void ObjectMgr::LoadArenaTeams()
 	QueryResult * result = CharacterDatabase.Query("SELECT * FROM arenateams");
 	if(result != NULL)
 	{
+		if(result->GetFieldCount() != 22)
+		{
+			Log.LargeErrorMessage(LARGERRORMESSAGE_WARNING, "arenateams table format is invalid. Please update your database.");
+			return;
+		}
 		do 
 		{
 			ArenaTeam * team = new ArenaTeam(result->Fetch());
