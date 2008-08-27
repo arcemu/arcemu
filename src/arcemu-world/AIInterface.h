@@ -191,6 +191,7 @@ struct AI_Spell
 };
 
 bool isGuard(uint32 id);
+bool isNeutralGuard(uint32 id);
 uint32 getGuardId(uint32 id);
 
 /*
@@ -414,6 +415,7 @@ public:
 
 	ARCEMU_INLINE void SetWaypointMap(WayPointMap * m) { m_waypoints = m; }
 	bool m_isGuard;
+	bool m_isNeutralGuard;
 //	bool m_fastMove;
 	void setGuardTimer(uint32 timer) { m_guardTimer = timer; }
 	virtual void _UpdateCombat(uint32 p_time);

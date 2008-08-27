@@ -110,6 +110,7 @@ AIInterface::AIInterface()
 	waiting_for_cooldown = false;
 	UnitToFollow_backup = NULL;
 	m_isGuard = false;
+	m_isNeutralGuard = false;
 	m_is_in_instance = false;
 	skip_reset_hp = false;
 	timed_emotes = NULL;
@@ -337,7 +338,7 @@ void AIInterface::HandleEvent(uint32 event, Unit* pUnit, uint32 misc1)
 					if(m_Unit->isAlive())
 					{
 						if(m_returnX != 0.0f && m_returnY != 0.0f && m_returnZ != 0.0f)
-							MoveTo(m_returnX,m_returnY,m_returnZ,m_Unit->GetOrientation());
+							MoveTo(m_returnX,m_returnY,m_returnZ,m_Unit->GetSpawnO());
 						else
 						{
 							MoveTo(m_Unit->GetSpawnX(),m_Unit->GetSpawnY(),m_Unit->GetSpawnZ(),m_Unit->GetSpawnO());
@@ -885,10 +886,19 @@ void AIInterface::_UpdateTargets()
 #endif
 			*/
 			Unit *ai_t = m_Unit->GetMapMgr()->GetUnit( it2->first );
-			bool boss = false;
-			if (m_Unit->GetTypeId() == TYPEID_UNIT && static_cast<Creature*>(m_Unit)->GetCreatureInfo() && static_cast<Creature*>(m_Unit)->GetCreatureInfo()->Rank == 3)
-				boss = true;
-			if( !ai_t || ai_t->event_GetCurrentInstanceId() != m_Unit->event_GetCurrentInstanceId() || !ai_t->isAlive() || (!boss && m_Unit->GetDistanceSq(ai_t) >= 6400.0f))
+			bool instance = false;
+			if (m_Unit->GetMapMgr() && m_Unit->GetMapMgr()->GetMapInfo())
+			{
+				switch (m_Unit->GetMapMgr()->GetMapInfo()->type)
+				{
+				case INSTANCE_RAID:
+				case INSTANCE_NONRAID:
+				case INSTANCE_MULTIMODE:
+					instance = true;
+					break;
+				}
+			}
+			if( !ai_t || ai_t->event_GetCurrentInstanceId() != m_Unit->event_GetCurrentInstanceId() || !ai_t->isAlive() || (!instance && m_Unit->GetDistanceSq(ai_t) >= 6400.0f))
 				m_aiTargets.erase( it2 );
 		}
 
@@ -904,16 +914,15 @@ void AIInterface::_UpdateTargets()
 				Unit* target = NULL;
 				switch (m_Unit->GetMapMgr()->GetMapInfo()->type)
 				{
-				case INSTANCE_NULL:
-				case INSTANCE_PVP:
-					if (m_outOfCombatRange && _CalcDistanceFromHome() < m_outOfCombatRange)
-						target = FindTarget();
-					break;
-
 				case INSTANCE_RAID:
 				case INSTANCE_NONRAID:
 				case INSTANCE_MULTIMODE:
 					target = FindTarget();
+					break;
+
+				default:
+					if (m_outOfCombatRange && _CalcDistanceFromHome() < m_outOfCombatRange)
+						target = FindTarget();
 					break;
 				}
 
@@ -1650,6 +1659,70 @@ Unit* AIInterface::FindTarget()
 	{
 		return 0;
 	}
+
+	if (m_isNeutralGuard)
+	{
+		Player *tmpPlr;
+		for (std::set<Player*>::iterator itrPlr = m_Unit->GetInRangePlayerSetBegin(); itrPlr != m_Unit->GetInRangePlayerSetEnd(); ++itrPlr)
+		{
+			tmpPlr = (*itrPlr);
+			if (tmpPlr == NULL)
+				continue;
+			if (tmpPlr->GetTaxiState())
+				continue;
+			if (tmpPlr->bInvincible)
+				continue;
+			if (tmpPlr->HasFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_FEIGN_DEATH))
+				continue;
+			if (tmpPlr->HasFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_ATTACKABLE_9))
+				continue;
+			if (tmpPlr->m_invisible)
+				continue;
+			if (tmpPlr->CombatStatus.GetPrimaryAttackTarget() == NULL)
+				continue;
+			else
+			{
+				Unit *pPTarget = GetUnit()->GetMapMgr()->GetUnit( tmpPlr->CombatStatus.GetPrimaryAttackTarget() );
+				if( pPTarget == NULL)
+					continue;
+				if (!pPTarget->IsPlayer())
+					continue;
+				if (tmpPlr->DuelingWith == static_cast<Player*>(pPTarget))
+					continue;
+			}
+
+			dist = m_Unit->GetDistanceSq(tmpPlr);
+
+			if (dist > 2500.0f)
+				continue;
+			if (distance > dist)
+			{
+#ifdef LOS_CHECKS
+				if( CollideInterface.CheckLOS( m_Unit->GetMapId(), m_Unit->GetPositionNC(), tmpPlr->GetPositionNC() ) )
+				{
+					distance = dist;
+					target = static_cast<Unit*>(tmpPlr);
+				}
+#else
+				distance = dist;
+				target = static_cast<Unit*>(tmpPlr);
+#endif		// LOS_CHECKS
+			}
+		}
+		if (target)
+		{
+			m_Unit->m_runSpeed = m_Unit->m_base_runSpeed * 2.0f;
+			AttackReaction(target, 1, 0);
+
+			WorldPacket data(SMSG_AI_REACTION, 12);
+			data << m_Unit->GetGUID() << uint32(2);		// Aggro sound
+			static_cast< Player* >( target )->GetSession()->SendPacket( &data );
+
+			return target;
+		}
+		distance = 999999.0f; //Reset Distance for normal check
+	}
+
 	//we have a high chance that we will agro a player
 	//this is slower then oppfaction list BUT it has a lower chance that contains invalid pointers
 	for( pitr2 = m_Unit->GetInRangePlayerSetBegin(); pitr2 != m_Unit->GetInRangePlayerSetEnd(); )
@@ -4117,6 +4190,51 @@ bool isGuard(uint32 id)
 			return true;
 		}break;
 	}
+	return false;
+}
+
+bool isNeutralGuard(uint32 id)
+{
+	switch(id)
+	{
+		// Ratchet
+	case 3502:
+		// Booty Bay
+	case 4624:
+	case 15088:
+		// Gadgetzan
+	case 9460:
+		// Argent Dawn
+	case 11102:
+	case 16378:
+		// Cenarion Hold
+	case 15184:
+		// Moonglade
+	case 11822:
+		// Everlook
+	case 11190:
+		// Cenarion Refuge
+	case 17855:
+		// Throne of the elements
+	case 18099:
+	case 18101:
+	case 18102:
+		// Area 52
+	case 20484:
+	case 20485:
+		// Cosmowrench
+	case 22494:
+		// Mudsprocket
+	case 23636:
+		// Concert Bruiser
+	case 23721:
+		// Shattered Sun
+	case 26253:
+	case 24994:
+			return true;
+		break;
+	}
+
 	return false;
 }
 
