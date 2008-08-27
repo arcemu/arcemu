@@ -1304,6 +1304,14 @@ void WorldSession::HandleGameObjectUse(WorldPacket & recv_data)
 		}break;
 	case GAMEOBJECT_TYPE_SPELLCASTER:
 		{
+			if (obj->m_summoner != NULL && obj->m_summoner->IsPlayer() && plyr != static_cast<Player*>(obj->m_summoner))
+			{
+				if (static_cast<Player*>(obj->m_summoner)->GetGroup() == NULL)
+					break;
+				else if (static_cast<Player*>(obj->m_summoner)->GetGroup() != plyr->GetGroup())
+					break;
+			}
+
 			SpellEntry *info = dbcSpell.LookupEntry(goinfo->SpellFocus);
 			if(!info)
 				break;
