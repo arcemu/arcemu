@@ -4214,6 +4214,11 @@ void Player::ResurrectPlayer()
 	}
 	m_resurrecter = 0;
 	SetMovement(MOVE_LAND_WALK, 1);
+
+	//Zack : shit on grill. So auras should be removed on player death instead of making this :P
+	//wee can afford this bullshit atm since auras are lost uppon death -> no immunities
+	for(uint32 i = 0; i < 7; i++)
+		SchoolImmunityList[i]=0;
 }
 
 void Player::KillPlayer()
