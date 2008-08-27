@@ -196,7 +196,7 @@ void WorldSession::HandleGroupUninviteOpcode( WorldPacket & recv_data )
 
 	player = objmgr.GetPlayer(membername.c_str(), false);
 	info = objmgr.GetPlayerInfoByName(membername.c_str());
-	if ( player == NULL || info == NULL )
+	if ( info == NULL )
 	{
 		SendPartyCommandResult(_player, 0, membername, ERR_PARTY_CANNOT_FIND);
 		return;
@@ -210,7 +210,12 @@ void WorldSession::HandleGroupUninviteOpcode( WorldPacket & recv_data )
 
 	if ( !_player->IsGroupLeader() )
 	{
-		if(_player != player)
+		if (player == NULL)
+		{
+			SendPartyCommandResult(_player, 0, membername, ERR_PARTY_CANNOT_FIND);
+			return;
+		}
+		else if(_player != player)
 		{
 			SendPartyCommandResult(_player, 0, "", ERR_PARTY_YOU_ARE_NOT_LEADER);
 			return;
