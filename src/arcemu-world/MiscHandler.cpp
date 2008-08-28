@@ -513,7 +513,17 @@ void WorldSession::HandleLootReleaseOpcode( WorldPacket & recv_data )
 									pGO->SetUInt32Value(GAMEOBJECT_STATE, 1);
 									return;
 								}
-								pGO->Despawn((sQuestMgr.GetGameObjectLootQuest(pGO->GetEntry()) ? 60000 : 12000 + ( RandomUInt( 60000 ) ) ) );
+
+								if (pGO->GetMapMgr() && pGO->GetMapMgr()->GetMapInfo() && pGO->GetMapMgr()->GetMapInfo()->type != INSTANCE_NULL)
+								{
+									if (sQuestMgr.GetGameObjectLootQuest(pGO->GetEntry()))
+										pGO->Despawn(60000 + RandomUInt(60000));
+									else
+										pGO->Despawn(0);
+								}
+								else
+									pGO->Despawn((sQuestMgr.GetGameObjectLootQuest(pGO->GetEntry()) ? 60000 : 12000 + ( RandomUInt( 60000 ) ) ) );
+
 								return;
 							}
 						}
@@ -526,7 +536,19 @@ void WorldSession::HandleLootReleaseOpcode( WorldPacket & recv_data )
 						pGO->SetUInt32Value(GAMEOBJECT_STATE, 1);
 						return;
 					}
-					pGO->Despawn((sQuestMgr.GetGameObjectLootQuest(pGO->GetEntry()) ? 60000 : 12000 + ( RandomUInt( 60000 ) ) ) );
+
+					if (pGO->GetMapMgr() && pGO->GetMapMgr()->GetMapInfo() && pGO->GetMapMgr()->GetMapInfo()->type != INSTANCE_NULL)
+					{
+						if (sQuestMgr.GetGameObjectLootQuest(pGO->GetEntry()))
+							pGO->Despawn(60000 + RandomUInt(60000));
+						else
+							pGO->Despawn(0);
+					}
+					else
+						pGO->Despawn((sQuestMgr.GetGameObjectLootQuest(pGO->GetEntry()) ? 60000 : 12000 + ( RandomUInt( 60000 ) ) ) );
+
+					return;
+
 				}
 			}
 		default:
