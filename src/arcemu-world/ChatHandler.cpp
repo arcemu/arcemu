@@ -550,7 +550,7 @@ void WorldSession::HandleTextEmoteOpcode( WorldPacket & recv_data )
 	{
 		WorldPacket data(SMSG_EMOTE, 28 + namelen);
 
-		sHookInterface.OnEmote(_player, (EmoteType)em->textid);
+		sHookInterface.OnEmote(_player, (EmoteType)em->textid, pUnit);
 		if(pUnit)
 			CALL_SCRIPT_EVENT(pUnit,OnEmote)(_player,(EmoteType)em->textid);
 

@@ -382,7 +382,7 @@ void WorldSession::HandleQuestgiverAcceptQuestOpcode( WorldPacket & recv_data )
 	sQuestMgr.OnQuestAccepted(_player,qst,qst_giver);
 
 	sLog.outDebug("WORLD: Added new QLE.");
-	sHookInterface.OnQuestAccept(_player, qst);
+	sHookInterface.OnQuestAccept(_player, qst, qst_giver);
 }
 
 void WorldSession::HandleQuestgiverCancelOpcode(WorldPacket& recvPacket)
@@ -627,7 +627,7 @@ void WorldSession::HandleQuestgiverCompleteQuestOpcode( WorldPacket & recvPacket
 		sLog.outDebug( "WORLD: Sent SMSG_QUESTGIVER_REQUEST_ITEMS." );
 	}
 	
-	sHookInterface.OnQuestFinished(_player, qst);
+	sHookInterface.OnQuestFinished(_player, qst, qst_giver);
 }
 
 void WorldSession::HandleQuestgiverChooseRewardOpcode(WorldPacket& recvPacket)

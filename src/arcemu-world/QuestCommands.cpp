@@ -253,7 +253,7 @@ bool ChatHandler::HandleQuestStartCommand(const char * args, WorldSession * m_se
 					//	plr->UpdateNearbyGameObjects();
 					//ScriptSystem->OnQuestEvent(qst, static_cast< Creature* >( qst_giver ), _player, QUEST_EVENT_ON_ACCEPT);
 				
-					sHookInterface.OnQuestAccept( plr, qst );
+					sHookInterface.OnQuestAccept( plr, qst, NULL );
 
 					recout += "Quest has been added to the player's quest log.";
 				}
