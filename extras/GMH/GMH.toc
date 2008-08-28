@@ -18,8 +18,9 @@ GMH.lua
 CommForm.xml
 CommScript.lua
 ItemForm.xml
-ItemFormSearch.xml
 ItemScript.lua
+ItemFormSearch.xml
+ItemSearchScript.lua
 MiscForm.xml
 MiscScript.lua
 ObjectForm.xml

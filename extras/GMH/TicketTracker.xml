@@ -77,8 +77,8 @@
           </Anchor>
         </Anchors>
         <Scripts>
-          <OnClick>TicketTracker:Hide();
-FullForm:Show();
+          <OnClick>TicketTracker:Hide(); 
+OpenMain();
 </OnClick>
         </Scripts>
         <NormalTexture file="Interface\Buttons\UI-Panel-Button-Up">
@@ -2349,7 +2349,8 @@ FullForm:Show();
       </Frame>
     </Frames>
     <Scripts>
-      <OnLoad>GMHelperOnLoad();</OnLoad>
+      <OnLoad>GMHelperOnLoad();
+</OnLoad>
       <OnEvent>TT_Setup(event);
 </OnEvent>
     </Scripts>

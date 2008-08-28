@@ -112,7 +112,8 @@
 </OnLoad>
           <OnEscapePressed>FlyEntry:ClearFocus();
 </OnEscapePressed>
-          <OnTabPressed>this:ClearFocus();</OnTabPressed>
+          <OnTabPressed>this:ClearFocus();
+</OnTabPressed>
         </Scripts>
         <FontString font="Fonts\ARIALN.TTF">
           <FontHeight>
@@ -704,7 +705,8 @@
           </Anchor>
         </Anchors>
         <Scripts>
-          <OnClick>OverridesForm:Hide(); FullForm:Show();
+          <OnClick>OverridesForm:Hide();
+OpenMain();
 </OnClick>
         </Scripts>
         <NormalTexture file="Interface\Buttons\UI-Panel-Button-Up">

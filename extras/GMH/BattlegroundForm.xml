@@ -76,9 +76,8 @@
           </Anchor>
         </Anchors>
         <Scripts>
-          <OnClick>
-BattlegroundForm:Hide(); 
-FullForm:Show();
+          <OnClick>BattlegroundForm:Hide();
+OpenMain();
 
 </OnClick>
         </Scripts>

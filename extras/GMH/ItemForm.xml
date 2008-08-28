@@ -3,7 +3,7 @@
   <Frame name="ItemForm" hidden="true" movable="true" resizable="true" enableMouse="true">
     <!--<FrameSkin skinid="dcb143e1-a4ab-4e7c-b934-1efa40101d21" frameid="2d508883-59c2-4f83-ae10-27aaad48391b" />-->
     <Size>
-      <AbsDimension x="246" y="452" />
+      <AbsDimension x="246" y="496" />
     </Size>
     <Anchors>
       <Anchor point="RIGHT" relativeTo="UIParent">
@@ -63,6 +63,99 @@
       </Layer>
     </Layers>
     <Frames>
+      <EditBox name="ItemQuantity1" enableMouse="true">
+        <!--<FrameSkin skinid="dcb143e1-a4ab-4e7c-b934-1efa40101d21" frameid="2d508887-59c2-4f83-ae10-27aaad48391b" />-->
+        <Size>
+          <AbsDimension x="206" y="22" />
+        </Size>
+        <Anchors>
+          <Anchor point="TOPLEFT">
+            <Offset>
+              <AbsDimension x="20" y="-96" />
+            </Offset>
+          </Anchor>
+        </Anchors>
+        <Layers>
+          <Layer level="BACKGROUND">
+            <Texture name="$parentLeft" file="Interface\Common\Common-Input-Border">
+              <Size>
+                <AbsDimension x="8" y="20" />
+              </Size>
+              <Anchors>
+                <Anchor point="LEFT" />
+              </Anchors>
+              <TexCoords left="0" right="0.0625" top="0" bottom="0.625" />
+            </Texture>
+            <Texture name="$parentRight" file="Interface\Common\Common-Input-Border">
+              <Size>
+                <AbsDimension x="8" y="20" />
+              </Size>
+              <Anchors>
+                <Anchor point="RIGHT" />
+              </Anchors>
+              <TexCoords left="0.9375" right="1" top="0" bottom="0.625" />
+            </Texture>
+            <Texture name="$parentMiddle" file="Interface\Common\Common-Input-Border">
+              <Size>
+                <AbsDimension x="10" y="20" />
+              </Size>
+              <Anchors>
+                <Anchor point="LEFT" relativeTo="$parentLeft" relativePoint="RIGHT" />
+                <Anchor point="RIGHT" relativeTo="$parentRight" relativePoint="LEFT" />
+              </Anchors>
+              <TexCoords left="0.0625" right="0.9375" top="0" bottom="0.625" />
+            </Texture>
+          </Layer>
+        </Layers>
+        <Scripts>
+          <OnLoad>this:SetAutoFocus(false);</OnLoad>
+        </Scripts>
+        <FontString font="Fonts\ARIALN.TTF">
+          <FontHeight>
+            <AbsValue val="14" />
+          </FontHeight>
+          <Color r="1" g="1" b="1" />
+          <Shadow>
+            <Color r="0" g="0" b="0" />
+            <Offset>
+              <AbsDimension x="1" y="-1" />
+            </Offset>
+          </Shadow>
+        </FontString>
+      </EditBox>
+      <Frame name="$parentLabel2">
+        <!--<FrameSkin skinid="dcb143e1-a4ab-4e7c-b934-1efa40101d21" frameid="2d508885-59c2-4f83-ae10-27aaad48391b" />-->
+        <Size>
+          <AbsDimension x="206" y="18" />
+        </Size>
+        <Anchors>
+          <Anchor point="TOPLEFT">
+            <Offset>
+              <AbsDimension x="20" y="-72" />
+            </Offset>
+          </Anchor>
+        </Anchors>
+        <Layers>
+          <Layer>
+            <FontString name="$parentLabel" font="Fonts\FRIZQT__.TTF" text="Quantity">
+              <Anchors>
+                <Anchor point="TOPLEFT" />
+                <Anchor point="BOTTOMRIGHT" />
+              </Anchors>
+              <FontHeight>
+                <AbsValue val="12" />
+              </FontHeight>
+              <Color r="1" g="0.8196079" b="0" />
+              <Shadow>
+                <Color r="0" g="0" b="0" />
+                <Offset>
+                  <AbsDimension x="1" y="-1" />
+                </Offset>
+              </Shadow>
+            </FontString>
+          </Layer>
+        </Layers>
+      </Frame>
       <Frame name="$parentLabel1">
         <!--<FrameSkin skinid="dcb143e1-a4ab-4e7c-b934-1efa40101d21" frameid="2d508885-59c2-4f83-ae10-27aaad48391b" />-->
         <Size>
@@ -71,7 +164,7 @@
         <Anchors>
           <Anchor point="TOPLEFT">
             <Offset>
-              <AbsDimension x="56" y="-167" />
+              <AbsDimension x="56" y="-217" />
             </Offset>
           </Anchor>
         </Anchors>
@@ -104,7 +197,7 @@
         <Anchors>
           <Anchor point="TOPLEFT">
             <Offset>
-              <AbsDimension x="78" y="-319" />
+              <AbsDimension x="78" y="-369" />
             </Offset>
           </Anchor>
         </Anchors>
@@ -128,7 +221,7 @@
         <Anchors>
           <Anchor point="TOPLEFT">
             <Offset>
-              <AbsDimension x="20" y="-167" />
+              <AbsDimension x="20" y="-217" />
             </Offset>
           </Anchor>
         </Anchors>
@@ -169,7 +262,7 @@
         <Anchors>
           <Anchor point="TOPLEFT">
             <Offset>
-              <AbsDimension x="78" y="-413" />
+              <AbsDimension x="78" y="-463" />
             </Offset>
           </Anchor>
         </Anchors>
@@ -239,7 +332,7 @@
         <Anchors>
           <Anchor point="TOPLEFT">
             <Offset>
-              <AbsDimension x="20" y="-290" />
+              <AbsDimension x="20" y="-340" />
             </Offset>
           </Anchor>
         </Anchors>
@@ -272,7 +365,7 @@
         <Anchors>
           <Anchor point="TOPLEFT">
             <Offset>
-              <AbsDimension x="20" y="-203" />
+              <AbsDimension x="20" y="-253" />
             </Offset>
           </Anchor>
         </Anchors>
@@ -338,7 +431,7 @@
         <Anchors>
           <Anchor point="TOPLEFT">
             <Offset>
-              <AbsDimension x="20" y="-74" />
+              <AbsDimension x="20" y="-124" />
             </Offset>
           </Anchor>
         </Anchors>
@@ -474,7 +567,7 @@
         <Anchors>
           <Anchor point="TOPLEFT">
             <Offset>
-              <AbsDimension x="110" y="-319" />
+              <AbsDimension x="110" y="-369" />
             </Offset>
           </Anchor>
         </Anchors>
@@ -539,7 +632,7 @@
         <Anchors>
           <Anchor point="TOPLEFT">
             <Offset>
-              <AbsDimension x="20" y="-351" />
+              <AbsDimension x="20" y="-401" />
             </Offset>
           </Anchor>
         </Anchors>
@@ -609,7 +702,7 @@
         <Anchors>
           <Anchor point="TOPLEFT">
             <Offset>
-              <AbsDimension x="20" y="-259" />
+              <AbsDimension x="20" y="-309" />
             </Offset>
           </Anchor>
         </Anchors>
@@ -679,7 +772,7 @@
         <Anchors>
           <Anchor point="TOPLEFT">
             <Offset>
-              <AbsDimension x="20" y="-227" />
+              <AbsDimension x="20" y="-277" />
             </Offset>
           </Anchor>
         </Anchors>
@@ -744,7 +837,7 @@
         <Anchors>
           <Anchor point="TOPLEFT">
             <Offset>
-              <AbsDimension x="20" y="-105" />
+              <AbsDimension x="20" y="-155" />
             </Offset>
           </Anchor>
         </Anchors>
@@ -815,7 +908,7 @@
         <Anchors>
           <Anchor point="TOPLEFT">
             <Offset>
-              <AbsDimension x="20" y="-136" />
+              <AbsDimension x="20" y="-186" />
             </Offset>
           </Anchor>
         </Anchors>
@@ -890,7 +983,7 @@ end
         <Anchors>
           <Anchor point="TOPLEFT">
             <Offset>
-              <AbsDimension x="20" y="-319" />
+              <AbsDimension x="20" y="-369" />
             </Offset>
           </Anchor>
         </Anchors>
@@ -955,7 +1048,7 @@ end
         <Anchors>
           <Anchor point="TOPLEFT">
             <Offset>
-              <AbsDimension x="174" y="-319" />
+              <AbsDimension x="168" y="-369" />
             </Offset>
           </Anchor>
         </Anchors>
@@ -1020,7 +1113,7 @@ end
         <Anchors>
           <Anchor point="TOPLEFT">
             <Offset>
-              <AbsDimension x="20" y="-382" />
+              <AbsDimension x="20" y="-432" />
             </Offset>
           </Anchor>
         </Anchors>
@@ -1092,7 +1185,7 @@ end
         <Anchors>
           <Anchor point="TOPLEFT">
             <Offset>
-              <AbsDimension x="142" y="-319" />
+              <AbsDimension x="142" y="-369" />
             </Offset>
           </Anchor>
         </Anchors>
@@ -1112,7 +1205,7 @@ end
         <Anchors>
           <Anchor point="TOPLEFT">
             <Offset>
-              <AbsDimension x="200" y="-319" />
+              <AbsDimension x="194" y="-369" />
             </Offset>
           </Anchor>
         </Anchors>
