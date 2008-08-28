@@ -672,9 +672,9 @@ class SERVER_DECL UnitChain
 {
 public:
 	UnitChain(bool persist = false, float chainrange = 0.0f) : m_persist(persist), m_chainrange(chainrange) {}
-	
-	float m_chainrange;
+
 	bool m_persist;
+	float m_chainrange;
 	std::set<Unit*> m_units;
 	void AddUnit(Unit* u);
 	void RemoveUnit(Unit* u);
