@@ -34,7 +34,7 @@ ConfigFile::~ConfigFile()
 
 void remove_spaces(string& str)
 {
-	while(str.size() && *str.begin() == ' ')
+	while(str.size() && (*str.begin() == ' ' || *str.begin() == '\t'))
 		str.erase(str.begin());
 }
 
@@ -45,6 +45,13 @@ void remove_all_spaces(string& str)
 	{
 		str.erase(off, 1);
 		off = str.find(" ");
+	}
+
+	off = str.find("\t");
+	while(off != string::npos)
+	{
+		str.erase(off, 1);
+		off = str.find("\t");
 	}
 }
 
