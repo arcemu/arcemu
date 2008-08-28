@@ -5317,44 +5317,51 @@ void Spell::SpellEffectKnockBack(uint32 i)
 	playerTarget->blinked = true;
 }
 
-void Spell::SpellEffectDisenchant(uint32 i)
+void Spell::SpellEffectDisenchant( uint32 i )
 {
-	Player* caster = static_cast< Player* >( m_caster );
-	Item* it = caster->GetItemInterface()->GetItemByGUID(m_targets.m_itemTarget);
+	if( p_caster == NULL )
+		return;
+
+	Item* it = p_caster->GetItemInterface()->GetItemByGUID( m_targets.m_itemTarget );
 	if( it == NULL )
 	{
-		SendCastResult(SPELL_FAILED_CANT_BE_DISENCHANTED);
+		SendCastResult( SPELL_FAILED_CANT_BE_DISENCHANTED );
 		return;
 	}
 
-	//Check for skill first, we can increase it upto 75 
-	uint32 skill=caster->_GetSkillLineCurrent( SKILL_ENCHANTING );
-	if(skill < 75)//can up skill
-	{
-		if(Rand(float(100-skill*100.0/75.0)))
-		{
-			caster->_AdvanceSkillLine(SKILL_ENCHANTING, float2int32( 1.0f * sWorld.getRate(RATE_SKILLRATE)));
-		}
-	}
 	//Fill disenchanting loot
-	caster->SetLootGUID(it->GetGUID());
-	if(!it->loot)
+	p_caster->SetLootGUID( it->GetGUID() );
+	if( !it->loot )
 	{
 		it->loot = new Loot;
-		lootmgr.FillDisenchantingLoot(it->loot, it->GetEntry());
+		lootmgr.FillDisenchantingLoot( it->loot, it->GetEntry() );
 	}
 	if ( it->loot->items.size() > 0 )
 	{
-		Log.Debug("SpellEffect","Succesfully disenchanted item %d", uint32(itemTarget->GetEntry()));
+		Log.Debug( "SpellEffect", "Succesfully disenchanted item %d", uint32( itemTarget->GetEntry() ) );
 		p_caster->SendLoot( itemTarget->GetGUID(), LOOT_DISENCHANTING );
+		
+		//We can increase Enchanting skill up to 60 
+		if( uint32 skill = p_caster->_GetSkillLineCurrent( SKILL_ENCHANTING ) && skill < 60 )
+		{
+			if( Rand( 100.0f - float( skill ) * 0.75f ) )
+			{
+				uint32 SkillUp = float2int32( 1.0f * sWorld.getRate( RATE_SKILLRATE ) );
+				if( skill + SkillUp > 60 )
+					SkillUp = 60 - skill;
+
+				p_caster->_AdvanceSkillLine( SKILL_ENCHANTING, SkillUp );
+			}
+	}
+
 	} 
 	else
 	{
-		Log.Debug("SpellEffect","Disenchanting failed, item %d has no loot", uint32(itemTarget->GetEntry()));
-		SendCastResult(SPELL_FAILED_CANT_BE_DISENCHANTED);
+		Log.Debug("SpellEffect","Disenchanting failed, item %d has no loot", uint32( itemTarget->GetEntry() ) );
+		SendCastResult( SPELL_FAILED_CANT_BE_DISENCHANTED );
 	}
-	if(it==i_caster)
-		i_caster=NULL;
+	if( it == i_caster )
+		i_caster = NULL;
 }
 
 void Spell::SpellEffectInebriate(uint32 i) // lets get drunk!
