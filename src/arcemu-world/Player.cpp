@@ -2680,7 +2680,7 @@ void Player::LoadFromDBProc(QueryResultVector & results)
 
 	// set the rest of the stuff
 	m_uint32Values[ PLAYER_FIELD_WATCHED_FACTION_INDEX ]	= get_next_field.GetUInt32();
-	m_uint32Values[ PLAYER_FIELD_KNOWN_TITLES ]				= get_next_field.GetUInt64();
+	SetUInt64Value( PLAYER_FIELD_KNOWN_TITLES, get_next_field.GetUInt64() );
 	m_uint32Values[ PLAYER_CHOSEN_TITLE ]					= get_next_field.GetUInt32();
 	m_uint32Values[ PLAYER_FIELD_COINAGE ]					= get_next_field.GetUInt32();
 	m_uint32Values[ PLAYER_AMMO_ID ]						= get_next_field.GetUInt32();

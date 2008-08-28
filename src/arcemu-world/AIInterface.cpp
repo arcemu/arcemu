@@ -189,7 +189,7 @@ void AIInterface::Init(Unit *un, AIType at, MovementType mt, Unit *owner)
 void AIInterface::HandleEvent(uint32 event, Unit* pUnit, uint32 misc1)
 {
 	if( m_Unit == NULL ) return;
-	
+
 	if(m_AIState != STATE_EVADE)
 	{
 		switch(event)
@@ -212,9 +212,9 @@ void AIInterface::HandleEvent(uint32 event, Unit* pUnit, uint32 misc1)
 						m_Unit->SetUInt64Value(UNIT_FIELD_CHANNEL_OBJECT, 0);
 					}
 				}
-				
-				// Stop the emote
-				m_Unit->SetUInt32Value(UNIT_NPC_EMOTESTATE, 0);
+
+				// Stop the emote - change to fight emote
+				m_Unit->SetUInt32Value( UNIT_NPC_EMOTESTATE, EMOTE_STATE_READY1H );
 				m_returnX = m_Unit->GetPositionX();
 				m_returnY = m_Unit->GetPositionY();
 				m_returnZ = m_Unit->GetPositionZ();
@@ -263,7 +263,7 @@ void AIInterface::HandleEvent(uint32 event, Unit* pUnit, uint32 misc1)
 		case EVENT_LEAVECOMBAT:
 			{
 				if( pUnit == NULL ) return;
-				
+
 				Unit* target = NULL;
 				if (m_Unit->GetMapMgr() && m_Unit->GetMapMgr()->GetMapInfo())
 				{
@@ -299,9 +299,11 @@ void AIInterface::HandleEvent(uint32 event, Unit* pUnit, uint32 misc1)
 					if( static_cast< Creature* >( m_Unit )->has_combat_text )
 						objmgr.HandleMonsterSayEvent( static_cast< Creature* >( m_Unit ), MONSTER_SAY_EVENT_ON_COMBAT_STOP );
 
-					if(static_cast<Creature*>(m_Unit)->original_emotestate)
-						m_Unit->SetUInt32Value(UNIT_NPC_EMOTESTATE, static_cast< Creature* >( m_Unit )->original_emotestate);
-					
+					if( static_cast< Creature* >( m_Unit )->original_emotestate )
+						m_Unit->SetUInt32Value( UNIT_NPC_EMOTESTATE, static_cast< Creature* >( m_Unit )->original_emotestate );
+					else
+						m_Unit->SetUInt32Value( UNIT_NPC_EMOTESTATE, 0 );
+
 					if(static_cast<Creature*>(m_Unit)->m_spawn && (static_cast< Creature* >( m_Unit )->m_spawn->channel_target_go || static_cast< Creature* >( m_Unit )->m_spawn->channel_target_creature ) )
 					{
 						if(static_cast<Creature*>(m_Unit)->m_spawn->channel_target_go)
