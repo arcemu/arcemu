@@ -849,6 +849,19 @@ WorldPacket * Object::BuildTeleportAckMsg(const LocationVector & v)
 	return data;
 }
 
+void Object::SetSpawnPosition(const LocationVector & v)
+{
+	SetSpawnPosition(v.x, v.y, v.z, v.o);
+}
+
+void Object::SetSpawnPosition(float newX, float newY, float newZ, float newOrientation)
+{
+	m_spawnLocation.x=newX;
+	m_spawnLocation.y=newY;
+	m_spawnLocation.z=newZ;
+	m_spawnLocation.o=newOrientation;
+}
+
 bool Object::SetPosition(const LocationVector & v, bool allowPorting /* = false */)
 {
 	bool updateMap = false, result = true;
@@ -2516,6 +2529,9 @@ void Object::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
 		}*/	
 
 		pVictim->SetUInt32Value( UNIT_FIELD_HEALTH, health - damage );
+
+		if (IsCreature() && !IsPet())
+			static_cast<Unit*>(this)->GetAIInterface()->HandleEvent(EVENT_DAMAGEDEALT, pVictim, damage);
 	}
 }
 
