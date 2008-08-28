@@ -3960,7 +3960,7 @@ void Unit::smsg_AttackStart(Unit* pVictim)
     // FLAGS changed so other players see attack animation
     //    addUnitFlag(UNIT_FLAG_COMBAT);
     //    setUpdateMaskBit(UNIT_FIELD_FLAGS );
-    if(GetTypeId() != TYPEID_PLAYER)
+    if(GetTypeId() == TYPEID_PLAYER)
     {
         Player* pThis = static_cast< Player* >( this );
         if( pThis->cannibalize)
