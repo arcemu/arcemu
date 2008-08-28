@@ -5109,6 +5109,7 @@ uint32 GetDiminishingGroup(uint32 NameHash)
 	case SPELL_HASH_PSYCHIC_SCREAM:
 	case SPELL_HASH_SEDUCTION:
 	case SPELL_HASH_HOWL_OF_TERROR:
+	case SPELL_HASH_SCARE_BEAST:
 			grp = DIMINISHING_GROUP_FEAR;
 		break;
 
