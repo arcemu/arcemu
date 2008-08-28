@@ -5342,7 +5342,8 @@ void Spell::SpellEffectDisenchant( uint32 i )
 		p_caster->SendLoot( itemTarget->GetGUID(), LOOT_DISENCHANTING );
 		
 		//We can increase Enchanting skill up to 60 
-		if( uint32 skill = p_caster->_GetSkillLineCurrent( SKILL_ENCHANTING ) && skill < 60 )
+		uint32 skill = p_caster->_GetSkillLineCurrent( SKILL_ENCHANTING );
+		if( skill && skill < 60 )
 		{
 			if( Rand( 100.0f - float( skill ) * 0.75f ) )
 			{
