@@ -8552,6 +8552,7 @@ void Player::CompleteLoading()
 	}
 
 	sInstanceMgr.BuildSavedInstancesForPlayer(this);
+	CombatStatus.UpdateFlag();
 }
 
 void Player::OnWorldPortAck()

@@ -6231,6 +6231,9 @@ void CombatStatusHandler::UpdateFlag()
 
 bool CombatStatusHandler::InternalIsInCombat()
 {
+	if(m_Unit->IsPlayer() && m_Unit->GetMapMgr() && m_Unit->GetMapMgr()->IsCombatInProgress())
+		return true;
+
 	if(m_healed.size() > 0)
 		return true;
 
