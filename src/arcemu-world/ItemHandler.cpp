@@ -1647,7 +1647,7 @@ void WorldSession::HandleRepairItemOpcode(WorldPacket &recvPacket)
 {
 	if(!_player->IsInWorld()) return;
 	CHECK_PACKET_SIZE(recvPacket, 12);
-	CHECK_INWORLD_RETURN
+
 	if(!GetPlayer())
 		return;
 

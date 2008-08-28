@@ -787,8 +787,8 @@ void Player::Update( uint32 p_time )
 		if(mstime >= m_attackTimer)
 			_EventAttack(false);
 
-		if(m_duelWield && mstime >= m_attackTimer_1)
-			_EventAttack(true);
+		if( m_dualWield && mstime >= m_attackTimer_1 )
+			_EventAttack( true );
 	}
 
 	if( m_onAutoShot)
@@ -2129,8 +2129,8 @@ void Player::SaveToDB(bool bNewCharacter /* =false */)
 
 	ss << "', "
 	<< m_uint32Values[PLAYER_FIELD_WATCHED_FACTION_INDEX] << ","
-	<< m_uint32Values[PLAYER_CHOSEN_TITLE] << ","
-	<< m_uint32Values[PLAYER__FIELD_KNOWN_TITLES] << ","
+	<< m_uint32Values[PLAYER_CHOSEN_TITLE]<< ","
+	<< GetUInt64Value(PLAYER_FIELD_KNOWN_TITLES) << ","
 	<< m_uint32Values[PLAYER_FIELD_COINAGE] << ","
 	<< m_uint32Values[PLAYER_AMMO_ID] << ","
 	<< m_uint32Values[PLAYER_CHARACTER_POINTS2] << ",";
@@ -2678,28 +2678,23 @@ void Player::LoadFromDBProc(QueryResultVector & results)
 		}
 	}
 
-	// set the rest of the shit
-	uint32 PvPRanks[] = { PVPTITLE_NONE, PVPTITLE_PRIVATE, PVPTITLE_CORPORAL, PVPTITLE_SERGEANT, PVPTITLE_MASTER_SERGEANT, PVPTITLE_SERGEANT_MAJOR, PVPTITLE_KNIGHT, PVPTITLE_KNIGHT_LIEUTENANT, PVPTITLE_KNIGHT_CAPTAIN, PVPTITLE_KNIGHT_CHAMPION, PVPTITLE_LIEUTENANT_COMMANDER, PVPTITLE_COMMANDER, PVPTITLE_MARSHAL, PVPTITLE_FIELD_MARSHAL, PVPTITLE_GRAND_MARSHAL, PVPTITLE_SCOUT, PVPTITLE_GRUNT, PVPTITLE_HSERGEANT, PVPTITLE_SENIOR_SERGEANT, PVPTITLE_FIRST_SERGEANT, PVPTITLE_STONE_GUARD, PVPTITLE_BLOOD_GUARD, PVPTITLE_LEGIONNAIRE, PVPTITLE_CENTURION, PVPTITLE_CHAMPION, PVPTITLE_LIEUTENANT_GENERAL, PVPTITLE_GENERAL, PVPTITLE_WARLORD, PVPTITLE_HIGH_WARLORD, PVPTITLE_SCARAB_LORD, PVPTITLE_CONQUEROR, PVPTITLE_JUSTICAR, PVPTITLE_CHAMPION_OF_THE_NAARU, PVPTITLE_MERCILESS_GLADIATOR, PVPTITLE_OF_THE_SHATTERED_SUN, PVPTITLE_HAND_OF_ADAL, PVPTITLE_VENGEFUL_GLADIATOR, PVPTITLE_GLADIATOR, PVPTITLE_DUELIST};
-	m_uint32Values[PLAYER_FIELD_WATCHED_FACTION_INDEX]  = get_next_field.GetUInt32();
-	m_uint32Values[PLAYER_CHOSEN_TITLE]				 = get_next_field.GetUInt32();
-	field_index++;
-	m_uint32Values[PLAYER_FIELD_COINAGE]				= get_next_field.GetUInt32();
-	m_uint32Values[PLAYER_AMMO_ID]					  = get_next_field.GetUInt32();
-	m_uint32Values[PLAYER_CHARACTER_POINTS2]			= get_next_field.GetUInt32();
-	m_uint32Values[PLAYER_CHARACTER_POINTS1]			= get_next_field.GetUInt32();
-	load_health										 = get_next_field.GetUInt32();
-	load_mana										   = get_next_field.GetUInt32();
-	SetUInt32Value(UNIT_FIELD_HEALTH, load_health);
+	// set the rest of the stuff
+	m_uint32Values[ PLAYER_FIELD_WATCHED_FACTION_INDEX ]	= get_next_field.GetUInt32();
+	m_uint32Values[ PLAYER_FIELD_KNOWN_TITLES ]				= get_next_field.GetUInt64();
+	m_uint32Values[ PLAYER_CHOSEN_TITLE ]					= get_next_field.GetUInt32();
+	m_uint32Values[ PLAYER_FIELD_COINAGE ]					= get_next_field.GetUInt32();
+	m_uint32Values[ PLAYER_AMMO_ID ]						= get_next_field.GetUInt32();
+	m_uint32Values[ PLAYER_CHARACTER_POINTS2 ]				= get_next_field.GetUInt32();
+	m_uint32Values[ PLAYER_CHARACTER_POINTS1 ]				= get_next_field.GetUInt32();
+	load_health												= get_next_field.GetUInt32();
+	load_mana												= get_next_field.GetUInt32();
+	SetUInt32Value( UNIT_FIELD_HEALTH, load_health );
 	uint8 pvprank = get_next_field.GetUInt8();
-	SetUInt32Value(PLAYER_BYTES, get_next_field.GetUInt32());
-	SetUInt32Value(PLAYER_BYTES_2, get_next_field.GetUInt32());
-	SetUInt32Value(PLAYER_BYTES_3, getGender() | (pvprank << 24));
-	//Both teams have same titles ? => no need for offset
-//	uint32 offset = 13 * GetTeam();
-//	SetUInt32Value(PLAYER__FIELD_KNOWN_TITLES, PvPRanks[GetPVPRank() + offset]);
-	SetUInt32Value(PLAYER__FIELD_KNOWN_TITLES, PvPRanks[GetPVPRank()]);
-	SetUInt32Value(PLAYER_FLAGS, get_next_field.GetUInt32());
-	SetUInt32Value(PLAYER_FIELD_BYTES, get_next_field.GetUInt32());
+	SetUInt32Value( PLAYER_BYTES, get_next_field.GetUInt32() );
+	SetUInt32Value( PLAYER_BYTES_2, get_next_field.GetUInt32() );
+	SetUInt32Value( PLAYER_BYTES_3, getGender() | ( pvprank << 24 ) );
+	SetUInt32Value( PLAYER_FLAGS, get_next_field.GetUInt32() );
+	SetUInt32Value( PLAYER_FIELD_BYTES, get_next_field.GetUInt32() );
 	//m_uint32Values[0x22]=(m_uint32Values[0x22]>0x46)?0x46:m_uint32Values[0x22];
 
 	m_position.x										= get_next_field.GetFloat();
@@ -2707,7 +2702,7 @@ void Player::LoadFromDBProc(QueryResultVector & results)
 	m_position.z										= get_next_field.GetFloat();
 	m_position.o										= get_next_field.GetFloat();
 
-	m_mapId											 = get_next_field.GetUInt32();
+	m_mapId												= get_next_field.GetUInt32();
 	m_zoneId											= get_next_field.GetUInt32();
 
 	// Calculate the base stats now they're all loaded
@@ -10057,7 +10052,7 @@ void Player::save_Misc()
 void Player::save_PVP()
 {
 	CharacterDatabase.Execute("UPDATE characters SET pvprank = %u, selected_pvp_title = %u, available_pvp_title = %u WHERE guid = %u",
-		uint32(GetPVPRank()), m_uint32Values[PLAYER_CHOSEN_TITLE], m_uint32Values[PLAYER__FIELD_KNOWN_TITLES], m_uint32Values[OBJECT_FIELD_GUID]);
+		uint32(GetPVPRank()), m_uint32Values[PLAYER_CHOSEN_TITLE], GetUInt64Value( PLAYER_FIELD_KNOWN_TITLES ), m_uint32Values[OBJECT_FIELD_GUID]);
 }
 
 void Player::save_Auras()

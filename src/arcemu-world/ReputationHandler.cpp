@@ -252,11 +252,6 @@ Standing Player::GetStandingRank(uint32 Faction)
 	return Standing(GetReputationRankFromStanding(GetStanding(Faction)));
 }
 
-ReputationRank	Player::GetReputationRank(uint32 Faction)
-{
-	return ReputationRank(GetReputationRankFromStanding(GetStanding(Faction)));
-}
-
 bool Player::IsHostileBasedOnReputation(FactionDBC * dbc)
 {
 	if(dbc->RepListId < 0 || dbc->RepListId >= 128)
@@ -339,14 +334,47 @@ void Player::ModStanding(uint32 Faction, int32 Value)
 		}
 
 		// Set at war if we're beyond hostile.
-		if(GetReputationRankFromStanding(itr->second->standing) <= STANDING_HOSTILE && !AtWar(itr->second->flag))
-			SetFlagAtWar(itr->second->flag);
+		if( GetReputationRankFromStanding( itr->second->standing ) <= STANDING_HOSTILE && !AtWar( itr->second->flag ) )
+			SetFlagAtWar( itr->second->flag );
 
-		if(IsInWorld() && Visible(itr->second->flag))
+		if( IsInWorld() && Visible( itr->second->flag ) )
 		{
-			WorldPacket data(SMSG_SET_FACTION_STANDING, 12);
+			WorldPacket data( SMSG_SET_FACTION_STANDING, 12 );
 			data << uint32(0) << uint32(1) << dbc->RepListId << itr->second->CalcStanding();
-			m_session->SendPacket(&data);
+			m_session->SendPacket( &data );
+		}
+		
+		// PVP title as a reward for exalted reputations
+		switch( dbc->RepListId )
+		{
+			case FACTION_STORMPIKE_GUARDS:
+			case FACTION_SILVERWING_SENTINELS:
+			case FACTION_THE_LEAGUE_OF_ARATHOR:
+				{
+					if( GetTeam() == 0 && 
+						GetStandingRank( 730 ) == STANDING_EXALTED &&
+						GetStandingRank( 890 ) == STANDING_EXALTED &&
+						GetStandingRank( 509 ) == STANDING_EXALTED )
+					{
+						SetKnownTitle( PVPTITLE_JUSTICAR , true );
+					}
+					else
+						SetKnownTitle( PVPTITLE_JUSTICAR , false );
+				}; break;
+			case FACTION_THE_DEFILERS:
+			case FACTION_FROSTWOLF_CLAN:
+			case FACTION_WARSONG_OUTRIDERS:
+				{
+					if( GetTeam() == 1 && 
+						GetStandingRank( 510 ) == STANDING_EXALTED &&
+						GetStandingRank( 729 ) == STANDING_EXALTED &&
+						GetStandingRank( 889 ) == STANDING_EXALTED )
+					{
+						SetKnownTitle( PVPTITLE_CONQUEROR , true );
+					}
+					else
+						SetKnownTitle( PVPTITLE_CONQUEROR , false );
+				}; break;
 		}
    }
 

@@ -112,7 +112,7 @@ Unit::Unit()
 	m_chain = NULL;
 	m_attackTimer = 0;
 	m_attackTimer_1 = 0;
-	m_duelWield = false;
+	m_dualWield = false;
 
 	m_fearmodifiers = 0;
 	m_state = 0;

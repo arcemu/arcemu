@@ -329,7 +329,7 @@ AddItemResult ItemInterface::m_AddItem(Item *item, int8 ContainerSlot, int8 slot
 	}
 
 	if( ContainerSlot == INVENTORY_SLOT_NOT_SET && slot == EQUIPMENT_SLOT_OFFHAND && item->GetProto()->Class == ITEM_CLASS_WEAPON )
-		m_pOwner->SetDuelWield(true);
+		m_pOwner->SetDualWield( true );
 
 	return ADD_ITEM_RESULT_OK;
 }
@@ -388,7 +388,7 @@ Item *ItemInterface::SafeRemoveAndRetreiveItemFromSlot(int8 ContainerSlot, int8 
 				m_pOwner->ApplyItemMods( pItem, slot, false );
 
 			if(slot == EQUIPMENT_SLOT_OFFHAND)
-				m_pOwner->SetDuelWield(false);
+				m_pOwner->SetDualWield( false );
 
 			if(destroy)
 			{
@@ -551,7 +551,7 @@ bool ItemInterface::SafeFullRemoveItemFromSlot(int8 ContainerSlot, int8 slot)
 				m_pOwner->ApplyItemMods(pItem, slot, false ); //watch containers that give attackspeed and stuff ;)
 
 			if(slot == EQUIPMENT_SLOT_OFFHAND)
-				m_pOwner->SetDuelWield(false);
+				m_pOwner->SetDualWield( false );
 
 			if (pItem->IsInWorld())
 			{
@@ -680,22 +680,22 @@ Item *ItemInterface::GetInventoryItem(int8 slot)
 //-------------------------------------------------------------------//
 //Description: Gets a Item from inventory or container
 //-------------------------------------------------------------------//
-Item *ItemInterface::GetInventoryItem(int8 ContainerSlot, int8 slot)
+Item *ItemInterface::GetInventoryItem( int8 ContainerSlot, int8 slot )
 {
-	if(ContainerSlot <= INVENTORY_SLOT_NOT_SET)
+	if( ContainerSlot <= INVENTORY_SLOT_NOT_SET )
 	{
-		if(slot < 0 || slot > MAX_INVENTORY_SLOT)
+		if( slot < 0 || slot > MAX_INVENTORY_SLOT )
 			return NULL;
 
-		return m_pItems[(int)slot];
+		return m_pItems[ (int)slot ];
 	}
 	else
 	{
-		if(IsBagSlot(ContainerSlot))
+		if( IsBagSlot( ContainerSlot ) )
 		{
-			if(m_pItems[(int)ContainerSlot])
+			if( m_pItems[ (int)ContainerSlot ] )
 			{
-				return static_cast<Container*>(m_pItems[(int)ContainerSlot])->GetItem(slot);
+				return static_cast< Container* >( m_pItems[ (int)ContainerSlot ] )->GetItem( slot );
 			}
 		}
 	}
@@ -2691,9 +2691,9 @@ void ItemInterface::SwapItemSlots(int8 srcslot, int8 dstslot)
 	if( dstslot == EQUIPMENT_SLOT_OFFHAND || srcslot == EQUIPMENT_SLOT_OFFHAND )
 	{
 		if( m_pItems[EQUIPMENT_SLOT_OFFHAND] != NULL && m_pItems[EQUIPMENT_SLOT_OFFHAND]->GetProto()->Class == ITEM_CLASS_WEAPON )
-			m_pOwner->SetDuelWield( true );
+			m_pOwner->SetDualWield( true );
 		else
-			m_pOwner->SetDuelWield( false );
+			m_pOwner->SetDualWield( false );
 	}
 
 	//src item is equiped now

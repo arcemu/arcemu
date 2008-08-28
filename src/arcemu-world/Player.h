@@ -184,6 +184,7 @@ enum RankTitles
 	PVPTITLE_HAND_OF_ADAL			= 39,
 	PVPTITLE_VENGEFUL_GLADIATOR		= 40,
 	PVPTITLE_INVISIBLE_NAME			= 41,
+	PVPTITLE_END					= 42,
 };
 
 enum PvPAreaStatus
@@ -223,19 +224,6 @@ enum Standing
     STANDING_REVERED,
     STANDING_EXALTED
 };
-
-enum ReputationRank			// scriptdev2
-{
-    REP_HATED       = 0,
-    REP_HOSTILE     = 1,
-    REP_UNFRIENDLY  = 2,
-    REP_NEUTRAL     = 3,
-    REP_FRIENDLY    = 4,
-    REP_HONORED     = 5,
-    REP_REVERED     = 6,
-    REP_EXALTED     = 7
-};
-
 
 enum PlayerFlags
 {
@@ -1030,7 +1018,6 @@ public:
 	void                SetAtWar(uint32 Faction, bool Set);
 	bool                IsAtWar(uint32 Faction);
 	Standing            GetStandingRank(uint32 Faction);
-	ReputationRank		GetReputationRank(uint32 Faction);  // scriptdev2
 	bool                IsHostileBasedOnReputation(FactionDBC * dbc);
 	void                UpdateInrangeSetsBasedOnReputation();
 	void                Reputation_OnKilledUnit(Unit * pUnit, bool InnerLoop);
@@ -1057,6 +1044,20 @@ public:
 		SetUInt32Value(PLAYER_BYTES_3, ((GetUInt32Value(PLAYER_BYTES_3) & 0x00FFFFFF) | (uint8(newrank) << 24)));
 	}
 	uint32 GetMaxPersonalRating();
+	
+	ARCEMU_INLINE bool HasKnownTitle( RankTitles title )
+	{
+		return ( GetUInt64Value( PLAYER_FIELD_KNOWN_TITLES ) & uint64(1) << uint8( title ) ) != 0;
+	}
+
+	void SetKnownTitle( RankTitles title, bool set )
+	{	
+		uint64 current = GetUInt64Value( PLAYER_FIELD_KNOWN_TITLES );
+		if( set )
+			SetUInt64Value( PLAYER_FIELD_KNOWN_TITLES, current | uint64(1) << uint8( title ) );
+		else
+			SetUInt64Value( PLAYER_FIELD_KNOWN_TITLES, current & ~uint64(1) << uint8( title ) );
+	}
 
     /************************************************************************/
     /* Groups                                                               */

@@ -790,7 +790,7 @@
 #define PLAYER_FIELD_KEYRING_SLOT_1                            	UNIT_END + 0x24C	//  Size: 64, Type: GUID, Flags: 2
 #define PLAYER_FIELD_VANITYPET_SLOT_1                          	UNIT_END + 0x28C	//  Size: 36, Type: GUID, Flags: 2
 #define PLAYER_FARSIGHT                                        	UNIT_END + 0x2B0	//  Size: 2, Type: GUID, Flags: 2
-#define PLAYER__FIELD_KNOWN_TITLES                             	UNIT_END + 0x2B2	//  Size: 2, Type: GUID, Flags: 2
+#define PLAYER_FIELD_KNOWN_TITLES                             	UNIT_END + 0x2B2	//  Size: 2, Type: GUID, Flags: 2
 #define PLAYER_XP                                              	UNIT_END + 0x2B4	//  Size: 1, Type: Int32, Flags: 2
 #define PLAYER_NEXT_LEVEL_XP                                   	UNIT_END + 0x2B5	//  Size: 1, Type: Int32, Flags: 2
 #define PLAYER_SKILL_INFO_1_1                                  	UNIT_END + 0x2B6	//  Size: 384, Type: Chars?, Flags: 2
@@ -2725,8 +2725,8 @@
 #define PLAYER_FIELD_CURRENCYTOKEN_SLOT_X32                     UNIT_END + 0x0315     
 #define PLAYER_FARSIGHT                                         UNIT_END + 0x0316     
 #define PLAYER_FARSIGHT_X                                       UNIT_END + 0x0317     
-#define PLAYER__FIELD_KNOWN_TITLES                              UNIT_END + 0x0318     
-#define PLAYER__FIELD_KNOWN_TITLES_X                            UNIT_END + 0x0319     
+#define PLAYER_FIELD_KNOWN_TITLES                              UNIT_END + 0x0318     
+#define PLAYER_FIELD_KNOWN_TITLES_X                            UNIT_END + 0x0319     
 #define PLAYER_XP                                               UNIT_END + 0x031A     
 #define PLAYER_NEXT_LEVEL_XP                                    UNIT_END + 0x031B     
 #define PLAYER_SKILL_INFO_1_1                                   UNIT_END + 0x031C     
