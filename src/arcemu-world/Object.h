@@ -182,8 +182,6 @@ public:
 	bool IsBeingTeleported() { return mSemaphoreTeleport; }
 	void SetSemaphoreTeleport(bool semphsetting) { mSemaphoreTeleport = semphsetting; }
 
-	void SetSpawnPosition(float newX, float newY, float newZ, float newOrientation);
-	void SetSpawnPosition(const LocationVector & v);
 	bool SetPosition( float newX, float newY, float newZ, float newOrientation, bool allowPorting = false );
 	bool SetPosition( const LocationVector & v, bool allowPorting = false);
 	void SetRotation( uint64 guid );
