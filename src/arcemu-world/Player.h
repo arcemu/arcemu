@@ -1050,15 +1050,7 @@ public:
 		return ( GetUInt64Value( PLAYER_FIELD_KNOWN_TITLES ) & uint64(1) << uint8( title ) ) != 0;
 	}
 
-	void SetKnownTitle( RankTitles title, bool set )
-	{	
-		uint64 current = GetUInt64Value( PLAYER_FIELD_KNOWN_TITLES );
-		if( set )
-			SetUInt64Value( PLAYER_FIELD_KNOWN_TITLES, current | uint64(1) << uint8( title ) );
-		else
-			SetUInt64Value( PLAYER_FIELD_KNOWN_TITLES, current & ~uint64(1) << uint8( title ) );
-	}
-
+	void SetKnownTitle( RankTitles title, bool set );
     /************************************************************************/
     /* Groups                                                               */
     /************************************************************************/

@@ -11173,3 +11173,22 @@ uint32 Player::GetMaxPersonalRating()
 
 	return maxrating;
 }
+
+void Player::SetKnownTitle( RankTitles title, bool set )
+{	
+	if( !( HasKnownTitle( title ) ^ set ) )
+		return;
+
+	uint64 current = GetUInt64Value( PLAYER_FIELD_KNOWN_TITLES );
+	if( set )
+		SetUInt64Value( PLAYER_FIELD_KNOWN_TITLES, current | uint64(1) << uint8( title ) );
+	else
+		SetUInt64Value( PLAYER_FIELD_KNOWN_TITLES, current & ~uint64(1) << uint8( title ) );
+	
+	if( title >= PVPTITLE_INVISIBLE_NAME ) // to avoid client crash
+		return;
+	
+	WorldPacket *data = new WorldPacket( SMSG_TITLE_EARNED, 8 );
+	*data << uint32( title ) << uint32( set ? 1 : 0 );
+	m_session->SendPacket( data );		
+}
