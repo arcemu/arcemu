@@ -585,6 +585,17 @@ void AIInterface::HandleEvent(uint32 event, Unit* pUnit, uint32 misc1)
 					m_Unit->GetMapMgr()->pInstance->SaveToDB();
 				}
 			}
+			if(m_Unit->GetMapMgr() && m_Unit->GetMapMgr()->GetMapInfo() && m_Unit->GetMapMgr()->GetMapInfo()->type == INSTANCE_RAID)
+			{
+				if(m_Unit->GetTypeId() == TYPEID_UNIT)
+				{
+					if(static_cast<Creature*>(m_Unit)->GetCreatureInfo() && static_cast<Creature*>(m_Unit)->GetCreatureInfo()->Rank == 3)
+					{
+						m_Unit->GetMapMgr()->RemoveCombatInProgress(m_Unit->GetGUID());
+					}
+				}
+			}
+
 
 			//remove negative auras
 			//if( m_Unit->IsCreature() )
