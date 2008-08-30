@@ -838,6 +838,8 @@ void Creature::RegenerateHealth()
 
 	if(PctRegenModifier == 0.0f)
 		amt = lvl*2.0f;
+	if (GetCreatureInfo() && GetCreatureInfo()->Rank == 3)
+		amt *= 10000.0f;
 	else if(PctRegenModifier > 0)
 		amt = (lvl*2.0f)*(1.0f+PctRegenModifier);
 	else
