@@ -910,6 +910,8 @@ void WorldSession::InitPacketHandlerTable()
 	WorldPacketHandlers[0x038C].status = STATUS_AUTHED;
 
 	WorldPacketHandlers[CMSG_INRANGE_QUESTGIVER_STATUS_QUERY].handler = &WorldSession::HandleInrangeQuestgiverQuery;
+
+	WorldPacketHandlers[CMSG_SET_FACTION_INACTIVE].handler          = &WorldSession::HandleSetFactionInactiveOpcode;
 }
 
 void SessionLogWriter::writefromsession(WorldSession* session, const char* format, ...)

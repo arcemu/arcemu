@@ -698,10 +698,10 @@ struct FactionDBC
 {
     uint32 ID;
     int32 RepListId;
-    uint32 repRaceMask[4];
-    //uint32 repClassMask[4];
+    uint32 RaceMask[4];
+    uint32 ClassMask[4];
     int32 baseRepValue[4];
-    //uint32 repFlags[4];
+    uint32 repFlags[4];
     uint32 parentFaction;
     char* Name;
     //uint32 shit[16];

@@ -667,6 +667,8 @@ protected:
 	void Handle38C(WorldPacket & recv_data);
 	void HandleInrangeQuestgiverQuery(WorldPacket & recv_data);
 
+	void HandleSetFactionInactiveOpcode( WorldPacket & recv_data );
+
 public:
 
 	void SendInventoryList(Creature* pCreature);

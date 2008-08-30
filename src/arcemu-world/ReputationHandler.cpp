@@ -19,11 +19,18 @@
 
 #include "StdAfx.h"
 
-//static uint32 INITIALIZE_FACTIONS[128] = { 21, 92, 93, 59, 349, 70, 369, 471, 470, 169, 469, 67, 529, 76, 530, 81, 68, 54, 72, 47, 69, 86, 83, 549, 551, 550, 589, 577, 46, 289, 570, 571, 569, 574, 576, 609, 947, 946, 935, 730, 729, 749, 980, 809, 890, 889, 891, 892, 930, 909, 270, 510, 509, 910, 911, 922, 990, 932, 936, 933, 941, 934, 967, 942, 970, 978, 989, 1005, 1011, 1012, 1015, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-#define FACTION_FLAG_AT_WAR  2
-#define FACTION_FLAG_VISIBLE 1
+enum FactionFlags
+{
+	FACTION_FLAG_VISIBLE            = 0x01,
+	FACTION_FLAG_AT_WAR             = 0x02,
+	FACTION_FLAG_HIDDEN             = 0x04,
+	FACTION_FLAG_FORCED_INVISIBLE   = 0x08,
+	FACTION_FLAG_FORCED_PEACE       = 0x10,
+	FACTION_FLAG_INACTIVE           = 0x20,
+	FACTION_FLAG_RIVAL              = 0x40 // only Scryers and Aldor have this flag
+};
 
-Standing Player::GetReputationRankFromStanding(int32 Standing_)
+Standing Player::GetReputationRankFromStanding( int32 Standing_ )
 {
 	if( Standing_ >= 42000 )  
 		return STANDING_EXALTED;  
@@ -42,204 +49,129 @@ Standing Player::GetReputationRankFromStanding(int32 Standing_)
 	return STANDING_HATED;  
 }
 
-ARCEMU_INLINE void SetFlagAtWar(uint8 & flag)
+ARCEMU_INLINE bool ForcedPeace( uint8 flag ) { return ( flag & FACTION_FLAG_FORCED_PEACE ); }
+ARCEMU_INLINE bool AtWar( uint8 flag ) { return ( flag & FACTION_FLAG_AT_WAR ); }
+ARCEMU_INLINE bool ForcedInvisible( uint8 flag ) { return ( flag & FACTION_FLAG_FORCED_INVISIBLE ); }
+ARCEMU_INLINE bool Visible( uint8 flag ) { return ( flag & FACTION_FLAG_VISIBLE ); }
+ARCEMU_INLINE bool Hidden( uint8 flag ) { return ( flag & FACTION_FLAG_HIDDEN ); }
+ARCEMU_INLINE bool Inactive( uint8 flag ) { return ( flag & FACTION_FLAG_INACTIVE ); }
+
+ARCEMU_INLINE bool SetFlagAtWar( uint8 &flag, bool set )
 {
-	if(flag & FACTION_FLAG_AT_WAR)
-		return;
-
-	flag |= FACTION_FLAG_AT_WAR;
-}
-
-ARCEMU_INLINE void UnsetFlagAtWar(uint8 & flag)
-{
-	if(!(flag & FACTION_FLAG_AT_WAR))
-		return;
-
-	flag &= ~FACTION_FLAG_AT_WAR;
-}
-
-ARCEMU_INLINE void SetFlagVisible(uint8 & flag)
-{
-	if(flag & FACTION_FLAG_VISIBLE)
-		return;
-
-	flag |= FACTION_FLAG_VISIBLE;
-}
-
-ARCEMU_INLINE void UnsetFlagVisible(uint8 & flag)
-{
-	if(!(flag & FACTION_FLAG_VISIBLE))
-		return;
-
-	flag &= ~FACTION_FLAG_VISIBLE;
-}
-
-ARCEMU_INLINE bool AtWar(uint8 flag) { return (flag & FACTION_FLAG_AT_WAR) ? true : false; }
-ARCEMU_INLINE bool Visible(uint8 flag) { return (flag & FACTION_FLAG_VISIBLE) ? true : false; }
-
-ARCEMU_INLINE bool RankChanged(int32 Standing, int32 Change)
-{
-	if(Player::GetReputationRankFromStanding(Standing) != Player::GetReputationRankFromStanding(Standing + Change))
-		return true;
+	if ( ForcedPeace( flag ) )
+		return false;
+	else if ( set && !AtWar( flag ) )
+		flag |= FACTION_FLAG_AT_WAR;
+	else if ( !set && AtWar( flag ) )
+		flag &= ~FACTION_FLAG_AT_WAR;
 	else
 		return false;
+
+	return true;
 }
 
-ARCEMU_INLINE bool RankChangedFlat(int32 Standing, int32 NewStanding)
+ARCEMU_INLINE bool SetFlagVisible( uint8 &flag, bool set )
 {
-	if(Player::GetReputationRankFromStanding(Standing) != Player::GetReputationRankFromStanding(NewStanding))
-		return true;
+	if ( ForcedInvisible( flag ) || Hidden( flag ) )
+		return false;
+	else if ( set && !Visible( flag ) )
+		flag |= FACTION_FLAG_VISIBLE;
+	else if ( !set && Visible( flag ) )
+		flag &= ~FACTION_FLAG_VISIBLE;
 	else
 		return false;
+
+	return true;
+}
+
+ARCEMU_INLINE bool SetFlagInactive( uint8 &flag, bool set )
+{
+	if ( set && !Inactive( flag ) )
+		flag |= FACTION_FLAG_INACTIVE;
+	else if ( !set && Inactive( flag ) )
+		flag &= ~FACTION_FLAG_INACTIVE;
+	else
+		return false;
+
+	return true;
+}
+
+ARCEMU_INLINE bool RankChanged( int32 Standing, int32 Change )
+{
+	return ( Player::GetReputationRankFromStanding( Standing ) != Player::GetReputationRankFromStanding( Standing + Change ) );
+}
+
+ARCEMU_INLINE bool RankChangedFlat( int32 Standing, int32 NewStanding )
+{
+	return ( Player::GetReputationRankFromStanding( Standing ) != Player::GetReputationRankFromStanding( NewStanding ) );
 }
 
 void Player::smsg_InitialFactions()
 {
-	WorldPacket data(SMSG_INITIALIZE_FACTIONS, 644);
-	data << uint32(128);
+	WorldPacket data( SMSG_INITIALIZE_FACTIONS, 644 );
+	data << uint32( 128 );
 	FactionReputation * rep;
-	for(uint32 i = 0; i < 128; ++i)
+	for ( uint32 i = 0; i < 128; ++i )
 	{
 		rep = reputationByListId[i];
-		if(rep)
-		{
-			/*if(rep->flag & 2 && rep->standing >= 0)
-			{
-				printf("listid %u\n", i);
-			}*/
-			data << rep->flag << rep->CalcStanding();
-		}
-		else
+		if ( rep == NULL )
 			data << uint8(0) << uint32(0);
+		else
+			data << rep->flag << rep->CalcStanding();
 	}
 	m_session->SendPacket(&data);
 }
 
 void Player::_InitialReputation()
 {
-	// Generate Initial Reputation Values
-	FactionReputation * rep;
 	FactionDBC * f;
-	int32 BaseRep = 0;
-	uint32 j;
-	uint32 RaceMask = getRaceMask();
-	for(uint32 i = 0; i < dbcFaction.GetNumRows(); ++i)
+	for ( uint32 i = 0; i < dbcFaction.GetNumRows(); i++ )
 	{
-		f = dbcFaction.LookupRow(i);
-		if(f == 0) continue;
-
-		// Get Base Reputation
-		for(j = 0; j < 4; ++j)
-		{
-			if(f->repRaceMask[j] & RaceMask)
-			// TODO: Implement classMask check + loading flags from dbc
-			{
-				BaseRep = f->baseRepValue[j];
-				break;
-			}
-		}
-
-		if(j != 4 && f->RepListId >= 0)
-		{
-			// This is one we can add.
-			rep = new FactionReputation;
-			rep->standing = BaseRep;
-			rep->flag = 0;
-			rep->baseStanding = BaseRep;
-			if(GetReputationRankFromStanding(BaseRep) <= STANDING_HOSTILE)
-				SetFlagAtWar(rep->flag);
-
-			// Visible-ness shit.
-			if((f->parentFaction == 469 && GetTeam() == 0) ||		// Alliance own faction.
-				(f->parentFaction == 67 && GetTeam() == 1) )		 // Horde own faction.
-			{
-				SetFlagVisible(rep->flag);
-			}				 
-				
-			reputationByListId[f->RepListId] = rep;
-		}
-		else
-		{
-			// No default standing.
-			continue;
-		}
-
-		m_reputation[f->ID] = rep;
+		f = dbcFaction.LookupRow( i );
+		AddNewFaction( f, 0, true );
 	}
 }
 
-int32 Player::GetStanding(uint32 Faction)
+int32 Player::GetStanding( uint32 Faction )
 {
-	ReputationMap::iterator itr = m_reputation.find(Faction);
-	if(itr == m_reputation.end()) return 0;
-	else return itr->second->standing;
+	ReputationMap::iterator itr = m_reputation.find( Faction );
+	if ( itr != m_reputation.end() )
+		return itr->second->standing;
+	return 0;
 }
 
-int32 Player::GetBaseStanding(uint32 Faction)
+int32 Player::GetBaseStanding( uint32 Faction )
 {
-	ReputationMap::iterator itr = m_reputation.find(Faction);
-	if(itr == m_reputation.end()) return 0;
-	else return itr->second->baseStanding;
+	ReputationMap::iterator itr = m_reputation.find( Faction );
+	if ( itr != m_reputation.end() )
+		return itr->second->baseStanding;
+	return 0;
 }
 
-void Player::SetStanding(uint32 Faction, int32 Value)
+void Player::SetStanding( uint32 Faction, int32 Value )
 {
-	ReputationMap::iterator itr = m_reputation.find(Faction);
-	FactionDBC * dbc = dbcFaction.LookupEntry(Faction);
-	if(dbc == 0) return;
+	FactionDBC * f = dbcFaction.LookupEntry( Faction );
+	if ( f == NULL || f->RepListId < 0 )
+		return;
+	ReputationMap::iterator itr = m_reputation.find( Faction );
 
-	if(itr == m_reputation.end())
+	if( itr == m_reputation.end() )
 	{
-		// New faction!
-		FactionReputation * rep = new FactionReputation;
-		rep->flag = 0;
-		rep->standing = Value;
-		rep->baseStanding = 0;
-		m_reputation[dbc->ID] = rep;
-		if(dbc->RepListId >= 0)
-			reputationByListId[dbc->RepListId] = rep;
+		if ( !AddNewFaction( f, Value, false ) )
+			return;
 	}
 	else
 	{
 		// Increment it.
-		if(RankChangedFlat(itr->second->standing, Value))
+		if ( RankChangedFlat( itr->second->standing, Value ) )
 		{
 			itr->second->standing = Value;
 			UpdateInrangeSetsBasedOnReputation();
 		}
 		else
-		{
 			itr->second->standing = Value;
-		}
-
-		// Set visible if invisible.
-		if(!Visible(itr->second->flag))
-		{
-			SetFlagVisible(itr->second->flag);
-			if(IsInWorld())
-			{
-#ifdef USING_BIG_ENDIAN
-				uint32 swapped = swap32(dbc->RepListId);
-				m_session->OutPacket(SMSG_SET_FACTION_VISIBLE, 4, &swapped);
-#else
-				m_session->OutPacket(SMSG_SET_FACTION_VISIBLE, 4, &dbc->RepListId);
-#endif
-			}
-		}
-
-		// Set at war if we're beyond hostile.
-		Standing rank = GetReputationRankFromStanding(itr->second->standing);
-		if(rank <= STANDING_HOSTILE && !AtWar(itr->second->flag))
-			SetFlagAtWar(itr->second->flag);
-		else if(rank >= STANDING_NEUTRAL && AtWar(itr->second->flag))
-			UnsetFlagAtWar(itr->second->flag);
-
-		if(IsInWorld())
-		{
-			WorldPacket data(SMSG_SET_FACTION_STANDING, 12);
-			data << uint32(0) << uint32(itr->second->flag) << dbc->RepListId << itr->second->CalcStanding();
-			m_session->SendPacket(&data);
-		}
+		
+		OnModStanding( f, itr->second );
 	}
 
 #ifdef OPTIMIZED_PLAYER_SAVING
@@ -247,68 +179,50 @@ void Player::SetStanding(uint32 Faction, int32 Value)
 #endif
 }
 
-Standing Player::GetStandingRank(uint32 Faction)
+Standing Player::GetStandingRank( uint32 Faction )
 {
-	return Standing(GetReputationRankFromStanding(GetStanding(Faction)));
+	return Standing( GetReputationRankFromStanding( GetStanding( Faction ) ) );
 }
 
-bool Player::IsHostileBasedOnReputation(FactionDBC * dbc)
+bool Player::IsHostileBasedOnReputation( FactionDBC * dbc )
 {
-	if(dbc->RepListId < 0 || dbc->RepListId >= 128)
+	if( dbc->RepListId < 0 || dbc->RepListId >= 128 )
 		return false;
 
 	FactionReputation * rep = reputationByListId[dbc->RepListId];
-	if(!rep) return false;
-
-	// forced reactions take precedence
-	if( m_forcedReactions.size() )
-	{
-		map<uint32,uint32>::iterator itr = m_forcedReactions.find( dbc->ID );
-		if( itr != m_forcedReactions.end() )
-			return ( itr->second <= STANDING_HOSTILE ) ? true : false;
-	}
-
-	if(rep->flag & FACTION_FLAG_AT_WAR || GetReputationRankFromStanding(rep->standing) <= STANDING_HOSTILE)
-		return true;
-	else
+	if ( rep == NULL )
 		return false;
 
-	/*map<uint32, FactionReputation>::iterator itr = m_reputation.find(Faction);
-	if(itr == m_reputation.end()) return false;
-	if(itr->second.flag & FACTION_FLAG_AT_WAR || GetReputationRankFromStanding(itr->second.standing) <= STANDING_HOSTILE)
-		return true;
-	else
-		return false;*/
+	// forced reactions take precedence
+	map<uint32, uint32>::iterator itr = m_forcedReactions.find( dbc->ID );
+	if( itr != m_forcedReactions.end() )
+		return ( itr->second <= STANDING_HOSTILE );
+
+	return ( AtWar( rep->flag ) || GetReputationRankFromStanding( rep->standing ) <= STANDING_HOSTILE );
 }
 
-void Player::ModStanding(uint32 Faction, int32 Value)
+void Player::ModStanding( uint32 Faction, int32 Value )
 {
-	ReputationMap::iterator itr = m_reputation.find(Faction);
-	FactionDBC * dbc = dbcFaction.LookupEntry(Faction);
-	if(dbc == 0) return;
+	FactionDBC * f = dbcFaction.LookupEntry( Faction );
+	if ( f == NULL || f->RepListId < 0 )
+		return;
+	ReputationMap::iterator itr = m_reputation.find( Faction );
 
-	if(itr == m_reputation.end())
+	if ( pctReputationMod > 0 )
 	{
-		// New faction!
-		FactionReputation * rep = new FactionReputation;
-		rep->flag = 0;
-		rep->standing = Value;
-		rep->baseStanding = 0;
-		m_reputation[dbc->ID] = rep;
-		if(dbc->RepListId >= 0)
-			reputationByListId[dbc->RepListId] = rep;
+		float d = float( float( pctReputationMod ) / 100.0f );
+		Value += FL2UINT( float( float( Value ) * d ) );
+	}
+
+	if ( itr == m_reputation.end() )
+	{
+		if ( !AddNewFaction( f, Value, false ) )
+			return;
 	}
 	else
 	{
-		// Bonus
-		if(pctReputationMod > 0)
-		{
-			float d = float(float(pctReputationMod) / 100.0f);
-			Value += FL2UINT( float( float(Value) * d ) );
-		}
-
 		// Increment it.
-		if(RankChanged(itr->second->standing, Value))
+		if ( RankChanged( itr->second->standing, Value ) )
 		{
 			itr->second->standing += Value;
 			UpdateInrangeSetsBasedOnReputation();
@@ -317,65 +231,8 @@ void Player::ModStanding(uint32 Faction, int32 Value)
 		{
 			itr->second->standing += Value;
 		}
-
-		// Set visible if invisible.
-		if(!Visible(itr->second->flag))
-		{
-			SetFlagVisible(itr->second->flag);
-			if(IsInWorld())
-			{
-#ifdef USING_BIG_ENDIAN
-				uint32 swapped = swap32(dbc->RepListId);
-				m_session->OutPacket(SMSG_SET_FACTION_VISIBLE, 4, &swapped);
-#else
-				m_session->OutPacket(SMSG_SET_FACTION_VISIBLE, 4, &dbc->RepListId);
-#endif
-			}
-		}
-
-		// Set at war if we're beyond hostile.
-		if( GetReputationRankFromStanding( itr->second->standing ) <= STANDING_HOSTILE && !AtWar( itr->second->flag ) )
-			SetFlagAtWar( itr->second->flag );
-
-		if( IsInWorld() && Visible( itr->second->flag ) )
-		{
-			WorldPacket data( SMSG_SET_FACTION_STANDING, 12 );
-			data << uint32(0) << uint32(1) << dbc->RepListId << itr->second->CalcStanding();
-			m_session->SendPacket( &data );
-		}
 		
-		// PVP title as a reward for exalted reputations
-		switch( dbc->RepListId )
-		{
-			case FACTION_STORMPIKE_GUARDS:
-			case FACTION_SILVERWING_SENTINELS:
-			case FACTION_THE_LEAGUE_OF_ARATHOR:
-				{
-					if( GetTeam() == 0 && 
-						GetStandingRank( 730 ) == STANDING_EXALTED &&
-						GetStandingRank( 890 ) == STANDING_EXALTED &&
-						GetStandingRank( 509 ) == STANDING_EXALTED )
-					{
-						SetKnownTitle( PVPTITLE_JUSTICAR , true );
-					}
-					else
-						SetKnownTitle( PVPTITLE_JUSTICAR , false );
-				}; break;
-			case FACTION_THE_DEFILERS:
-			case FACTION_FROSTWOLF_CLAN:
-			case FACTION_WARSONG_OUTRIDERS:
-				{
-					if( GetTeam() == 1 && 
-						GetStandingRank( 510 ) == STANDING_EXALTED &&
-						GetStandingRank( 729 ) == STANDING_EXALTED &&
-						GetStandingRank( 889 ) == STANDING_EXALTED )
-					{
-						SetKnownTitle( PVPTITLE_CONQUEROR , true );
-					}
-					else
-						SetKnownTitle( PVPTITLE_CONQUEROR , false );
-				}; break;
-		}
+		OnModStanding( f, itr->second );
    }
 
 #ifdef OPTIMIZED_PLAYER_SAVING
@@ -383,55 +240,34 @@ void Player::ModStanding(uint32 Faction, int32 Value)
 #endif
 }
 
-void Player::SetAtWar(uint32 Faction, bool Set)
+void Player::SetAtWar( uint32 Faction, bool Set )
 {
 	if( Faction >= 128 )
 		return;
 
 	FactionReputation * rep = reputationByListId[Faction];
-	if(!rep) return;
-	
-	if(GetReputationRankFromStanding(rep->standing) <= STANDING_HOSTILE && !Set) // At this point we have to be at war.
+	if ( rep == NULL )
 		return;
 
-	if(Set)
+	if ( GetReputationRankFromStanding( rep->standing ) <= STANDING_HOSTILE && !Set ) // At this point we have to be at war.
+		return;
+
+	if ( SetFlagAtWar( rep->flag, Set ) )
 	{
-		if(!AtWar(rep->flag))
-			SetFlagAtWar(rep->flag);
-
 		UpdateInrangeSetsBasedOnReputation();
-	}
-	else
-	{
-		if(AtWar(rep->flag))
-			UnsetFlagAtWar(rep->flag);
-
-		UpdateInrangeSetsBasedOnReputation();
-	}
-
 #ifdef OPTIMIZED_PLAYER_SAVING
-	save_Reputation();
+		save_Reputation();
 #endif
+	}
 }
 
-void WorldSession::HandleSetAtWarOpcode(WorldPacket& recv_data)
+void WorldSession::HandleSetAtWarOpcode( WorldPacket& recv_data )
 {
 	uint32 id;
 	uint8 state;
 	recv_data >> id >> state;
 
-	/*uint32 faction_id = (id >= 128) ? 0 : INITIALIZE_FACTIONS[id];
-	if(faction_id == 0) return;
-
-	if(state & FACTION_FLAG_AT_WAR)
-		_player->SetAtWar(faction_id, true);
-	else
-		_player->SetAtWar(faction_id, false);*/
-
-	if(state == 1)
-		_player->SetAtWar(id, true);
-	else
-		_player->SetAtWar(id, false);
+	_player->SetAtWar( id, ( state == 1 ) );
 }
 
 void Player::UpdateInrangeSetsBasedOnReputation()
@@ -441,7 +277,7 @@ void Player::UpdateInrangeSetsBasedOnReputation()
 	Unit * pUnit;
 	bool rep_value;
 	bool enemy_current;
-	for( itr = m_objectsInRange.begin(); itr != m_objectsInRange.end(); ++itr )
+	for( itr = m_objectsInRange.begin(); itr != m_objectsInRange.end(); itr++ )
 	{
 		if( (*itr)->GetTypeId() != TYPEID_UNIT )
 			continue;
@@ -460,24 +296,24 @@ void Player::UpdateInrangeSetsBasedOnReputation()
 	}
 }
 
-void Player::Reputation_OnKilledUnit(Unit * pUnit, bool InnerLoop)
+void Player::Reputation_OnKilledUnit( Unit * pUnit, bool InnerLoop )
 {
 	// add rep for on kill
-	if(pUnit->GetTypeId() != TYPEID_UNIT || pUnit->IsPet())
+	if ( pUnit->GetTypeId() != TYPEID_UNIT || pUnit->IsPet() )
 		return;
 
 	Group * m_Group = m_playerInfo->m_Group;
-	if(!InnerLoop && m_Group)
+	if ( !InnerLoop && m_Group )
 	{
 		/* loop the rep for group members */
 		m_Group->getLock().Acquire();
 		GroupMembersSet::iterator it;
-		for(uint32 i = 0; i < m_Group->GetSubGroupCount(); ++i)
+		for ( uint32 i = 0; i < m_Group->GetSubGroupCount(); i++ )
 		{
-			for(it = m_Group->GetSubGroup(i)->GetGroupMembersBegin(); it != m_Group->GetSubGroup(i)->GetGroupMembersEnd(); ++it)
+			for ( it = m_Group->GetSubGroup(i)->GetGroupMembersBegin(); it != m_Group->GetSubGroup(i)->GetGroupMembersEnd(); ++it )
 			{
-				if((*it)->m_loggedInPlayer && (*it)->m_loggedInPlayer->isInRange(this,100.0f))
-					(*it)->m_loggedInPlayer->Reputation_OnKilledUnit(pUnit, true);
+				if ( (*it)->m_loggedInPlayer && (*it)->m_loggedInPlayer->isInRange( this, 100.0f ) )
+					(*it)->m_loggedInPlayer->Reputation_OnKilledUnit( pUnit, true );
 			}
 		}
 		m_Group->getLock().Release();
@@ -485,70 +321,161 @@ void Player::Reputation_OnKilledUnit(Unit * pUnit, bool InnerLoop)
 	}
 
 	int team = GetTeam();
-	ReputationModifier * modifier = objmgr.GetReputationModifier(pUnit->GetEntry(), pUnit->m_factionDBC->ID);
-	if(modifier != 0)
+	ReputationModifier * modifier = objmgr.GetReputationModifier( pUnit->GetEntry(), pUnit->m_factionDBC->ID );
+	if( modifier != 0 )
 	{
 		// Apply this data.
-		for(vector<ReputationMod>::iterator itr = modifier->mods.begin(); itr != modifier->mods.end(); ++itr)
+		for( vector<ReputationMod>::iterator itr = modifier->mods.begin(); itr != modifier->mods.end(); itr++ )
 		{
-			if(!(*itr).faction[team])
+			if ( !(*itr).faction[team] )
 				continue;
 
 			/* rep limit? */
-			if (!IS_INSTANCE(GetMapId()) || (IS_INSTANCE(GetMapId()) && this->iInstanceType != MODE_HEROIC))
+			if ( !IS_INSTANCE( GetMapId() ) || ( IS_INSTANCE( GetMapId() ) && this->iInstanceType != MODE_HEROIC ) )
 			{
-				if((*itr).replimit)
+				if ( (*itr).replimit )
 				{
-					if(GetStanding((*itr).faction[team]) >= (int32)(*itr).replimit)
+					if ( GetStanding( (*itr).faction[team] ) >= (int32)(*itr).replimit )
 						continue;
 				}
 			}
-
-			int32 value = int32(float(itr->value) * sWorld.getRate(RATE_KILLREPUTATION));
-			//value *= sWorld.getRate(RATE_KILLREPUTATION);
-			ModStanding(itr->faction[team], value);
+			ModStanding( itr->faction[team], int32( float( itr->value ) * sWorld.getRate( RATE_KILLREPUTATION ) ) );
 		}
 	}
 	else
 	{
-		if(IS_INSTANCE(GetMapId()) && objmgr.HandleInstanceReputationModifiers(this, pUnit))
+		if ( pUnit->m_factionDBC->RepListId < 0 )
 			return;
 
-		if(pUnit->m_factionDBC->RepListId < 0)
+		if ( IS_INSTANCE( GetMapId() ) && objmgr.HandleInstanceReputationModifiers( this, pUnit ) )
 			return;
 
-		// decrease rep by 5.
-		int change = -5;
-		change = int32((float(change) * sWorld.getRate(RATE_KILLREPUTATION)));
-		ModStanding(pUnit->m_factionDBC->ID, change);
+		int32 change = int32( -5.0f * sWorld.getRate( RATE_KILLREPUTATION ) );
+		ModStanding( pUnit->m_factionDBC->ID, change );
 	}
 }
 
-void Player::Reputation_OnTalk(FactionDBC * dbc)
+void Player::Reputation_OnTalk( FactionDBC * dbc )
 {
 	// set faction visible if not visible
-	if(!dbc || dbc->RepListId < 0)
+	if ( dbc == NULL || dbc->RepListId < 0 )
 		return;
 
 	FactionReputation * rep = reputationByListId[dbc->RepListId];
-	if(!rep)
+	if ( rep == NULL )
 		return;
 
-	if(!Visible(rep->flag))
+	if ( SetFlagVisible( rep->flag, true ) && IsInWorld() )
 	{
-		SetFlagVisible(rep->flag);
-		if(IsInWorld())
-		{
 #ifdef USING_BIG_ENDIAN
-			uint32 swapped = swap32(dbc->RepListId);
-			m_session->OutPacket(SMSG_SET_FACTION_VISIBLE, 4, &swapped);
+		uint32 swapped = swap32( dbc->RepListId );
+		m_session->OutPacket( SMSG_SET_FACTION_VISIBLE, 4, &swapped );
 #else
-			m_session->OutPacket(SMSG_SET_FACTION_VISIBLE, 4, &dbc->RepListId);
+		m_session->OutPacket( SMSG_SET_FACTION_VISIBLE, 4, &dbc->RepListId );
 #endif
-		}
 
 #ifdef OPTIMIZED_PLAYER_SAVING
 		save_Reputation();
 #endif
+	}
+}
+
+void Player::SetFactionInactive( uint32 faction, bool set )
+{
+	FactionReputation * rep = reputationByListId[faction];
+	if ( rep == NULL )
+		return;
+
+	if ( SetFlagInactive( rep->flag, set ) )
+	{
+#ifdef OPTIMIZED_PLAYER_SAVING
+		save_Reputation();
+#endif
+	}
+}
+
+void WorldSession::HandleSetFactionInactiveOpcode( WorldPacket & recv_data )
+{
+	uint32 id;
+	uint8 inactive;
+	recv_data >> id >> inactive;
+
+	_player->SetFactionInactive( id, ( inactive == 1 ) );
+}
+
+bool Player::AddNewFaction( FactionDBC * dbc, int32 standing, bool base ) // if ( base ) standing = baseRepValue
+{
+	if ( dbc == NULL || dbc->RepListId < 0 )
+		return false;
+	uint32 RaceMask = getRaceMask();
+	uint32 ClassMask = getClassMask();
+	for ( uint32 i = 0; i < 4; i++ )
+	{
+		if ( dbc->RaceMask[i] & RaceMask && ( dbc->ClassMask[i] & ClassMask || dbc->ClassMask[i] == 0 ) )
+		{
+			FactionReputation * rep = new FactionReputation;
+			rep->flag = dbc->repFlags[i];
+			rep->baseStanding = dbc->baseRepValue[i];
+			rep->standing = ( base ) ? dbc->baseRepValue[i] : standing;
+			m_reputation[dbc->ID] = rep;
+			reputationByListId[dbc->RepListId] = rep;
+			return true;
+		}
+	}
+	return false;
+}
+
+void Player::OnModStanding( FactionDBC * dbc, FactionReputation * rep )
+{
+	if ( SetFlagVisible( rep->flag, true ) && IsInWorld() )
+	{
+#ifdef USING_BIG_ENDIAN
+		uint32 swapped = swap32( dbc->RepListId );
+		m_session->OutPacket( SMSG_SET_FACTION_VISIBLE, 4, &swapped );
+#else
+		m_session->OutPacket( SMSG_SET_FACTION_VISIBLE, 4, &dbc->RepListId );
+#endif
+	}
+
+	SetFlagAtWar( rep->flag, ( GetReputationRankFromStanding( rep->standing ) <= STANDING_HOSTILE ) );
+
+	if ( Visible( rep->flag ) && IsInWorld() )
+	{
+		WorldPacket data( SMSG_SET_FACTION_STANDING, 12 );
+		data << uint32( 0 ) << uint32( rep->flag ) << dbc->RepListId << rep->CalcStanding();
+		m_session->SendPacket( &data );
+	}
+
+	// PVP title as a reward for exalted reputations
+	switch( dbc->RepListId )
+	{
+		case FACTION_STORMPIKE_GUARDS:
+		case FACTION_SILVERWING_SENTINELS:
+		case FACTION_THE_LEAGUE_OF_ARATHOR:
+		{
+			if( GetTeam() == 0 && 
+				GetStandingRank( 730 ) == STANDING_EXALTED &&
+				GetStandingRank( 890 ) == STANDING_EXALTED &&
+				GetStandingRank( 509 ) == STANDING_EXALTED )
+			{
+				SetKnownTitle( PVPTITLE_JUSTICAR , true );
+			}
+			else
+				SetKnownTitle( PVPTITLE_JUSTICAR , false );
+		} break;
+		case FACTION_THE_DEFILERS:
+		case FACTION_FROSTWOLF_CLAN:
+		case FACTION_WARSONG_OUTRIDERS:
+		{
+			if( GetTeam() == 1 && 
+				GetStandingRank( 510 ) == STANDING_EXALTED &&
+				GetStandingRank( 729 ) == STANDING_EXALTED &&
+				GetStandingRank( 889 ) == STANDING_EXALTED )
+			{
+				SetKnownTitle( PVPTITLE_CONQUEROR , true );
+			}
+			else
+				SetKnownTitle( PVPTITLE_CONQUEROR , false );
+		} break;
 	}
 }

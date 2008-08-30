@@ -1023,6 +1023,9 @@ public:
 	void                Reputation_OnKilledUnit(Unit * pUnit, bool InnerLoop);
 	void                Reputation_OnTalk(FactionDBC * dbc);
 	static Standing     GetReputationRankFromStanding(int32 Standing_);
+	void SetFactionInactive( uint32 faction, bool set );
+	bool AddNewFaction( FactionDBC * dbc, int32 standing, bool base );
+	void OnModStanding( FactionDBC * dbc, FactionReputation * rep );
 	
     /************************************************************************/
     /* Factions                                                             */

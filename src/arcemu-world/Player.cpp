@@ -2939,7 +2939,7 @@ void Player::LoadFromDBProc(QueryResultVector & results)
 
 		// listid stuff
 		factdbc = dbcFaction.LookupEntryForced(id);
-		if(!factdbc) continue;
+		if ( factdbc == NULL || factdbc->RepListId < 0 ) continue;
 		ReputationMap::iterator rtr = m_reputation.find(id);
 		if(rtr != m_reputation.end())
 			delete rtr->second;
@@ -2949,10 +2949,7 @@ void Player::LoadFromDBProc(QueryResultVector & results)
 		rep->standing = standing;
 		rep->flag = fflag;
 		m_reputation[id]=rep;
-
-		// do listid stuff
-		if(factdbc->RepListId >= 0)
-			reputationByListId[factdbc->RepListId] = rep;
+		reputationByListId[factdbc->RepListId] = rep;
 	}
 
 	if(!m_reputation.size())
