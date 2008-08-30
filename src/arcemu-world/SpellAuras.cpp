@@ -5311,7 +5311,7 @@ void Aura::SpellAuraFeignDeath(bool apply)
 			data << uint32( m_spellProto->Id );		// ???
 			pTarget->GetSession()->SendPacket( &data );
 
-			data.Initialize(0x03BE);
+			data.Initialize( SMSG_CLEAR_TARGET );
 			data << pTarget->GetGUID();
 //			pTarget->setDeathState(DEAD);
 
@@ -5321,21 +5321,17 @@ void Aura::SpellAuraFeignDeath(bool apply)
 				if((*itr)->IsUnit() && ((Unit*)(*itr))->isAlive())
 				{
 					if((*itr)->GetTypeId()==TYPEID_UNIT)
-						((Unit*)(*itr))->GetAIInterface()->RemoveThreatByPtr(pTarget);
+						static_cast< Unit* >(*itr)->GetAIInterface()->RemoveThreatByPtr( pTarget );
+					
 					//if this is player and targeting us then we interrupt cast
-					if( ( (*itr) )->IsPlayer() )
+					if( (*itr)->IsPlayer() )
 					{
-						//if player has selection on us
-						if( static_cast< Player* >( *itr )->GetSelection()==pTarget->GetGUID())
-						{
-							//it seems that all these do not work in 2.3
-							//static_cast< Player* >( (*itr) )->SetSelection(0);//loose selection
-							//static_cast< Player* >( (*itr) )->SetUInt64Value(UNIT_FIELD_TARGET, 0);
-						}
-						if( static_cast< Player* >( *itr )->isCasting())
-							static_cast< Player* >( *itr )->CancelSpell( NULL ); //cancel current casting spell
+						Player* plr = static_cast< Player* >( *itr );
 
-						static_cast< Player* >( *itr )->GetSession()->SendPacket( &data );
+						if( plr->isCasting() && plr->GetSelection() == pTarget->GetGUID() )
+							plr->CancelSpell( NULL ); //cancel current casting spell
+
+						plr->GetSession()->SendPacket( &data );
 					}
 				}
 			}

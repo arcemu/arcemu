@@ -15055,6 +15055,13 @@ void ApplyNormalFixes()
 			sp->EffectTriggerSpell[0] = 43740;
 		}
 
+		//Lunar Grace - Idol of the Unseen Moon proc
+		sp = dbcSpell.LookupEntryForced( 43740 );
+		if( sp != NULL )
+		{
+			sp->ProcOnNameHash[0] = SPELL_HASH_MOONFIRE;
+		}
+
 		//Tome of Fiery Redemption
 		sp = dbcSpell.LookupEntryForced( 37197 );
 		if( sp != NULL )
