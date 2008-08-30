@@ -1724,12 +1724,14 @@ void Spell::SpellEffectApplyAura(uint32 i)  // Apply Aura
 				Sheep: 64
 				Banish: 128
 				Sap: 256
-				Taunt (aura): 512
-				Decrease Speed (Hamstring) (aura): 1024
-				Spell Haste (Curse of Tongues) (aura): 2048
-				Interrupt Cast: 4096
-				Mod Healing % (Mortal Strike) (aura): 8192
-				Total Stats % (Vindication) (aura): 16384
+				Frozen : 512
+				Ensnared 1024
+				Taunt (aura): 2048
+				Decrease Speed (Hamstring) (aura): 4096
+				Spell Haste (Curse of Tongues) (aura): 8192
+				Interrupt Cast: 16384
+				Mod Healing % (Mortal Strike) (aura): 32768
+				Total Stats % (Vindication) (aura): 65536
 				*/
 
 				//Spells with Mechanic also add other ugly auras, but if the main aura is the effect --> immune to whole spell
@@ -1772,6 +1774,17 @@ void Spell::SpellEffectApplyAura(uint32 i)  // Apply Aura
 							if (c->GetProto()->modImmunities & 128)
 								immune = true;
 							break;
+						case MECHANIC_SAPPED:
+							if (c->GetProto()->modImmunities & 256)
+								immune = true;
+							break;
+						case MECHANIC_FROZEN:
+							if (c->GetProto()->modImmunities & 512)
+								immune = true;
+							break;
+						case MECHANIC_ENSNARED:
+							if (c->GetProto()->modImmunities & 1024)
+								immune = true;
 						}
 					}
 					else
@@ -1788,35 +1801,35 @@ void Spell::SpellEffectApplyAura(uint32 i)  // Apply Aura
 								immune = true;
 							break;
 						case SPELL_AURA_MOD_TAUNT:
-							if (c->GetProto()->modImmunities & 512)
+							if (c->GetProto()->modImmunities & 2048)
 								immune = true;
 							break;
-						case SPELL_AURA_MOD_STUN: // no idea if its needed, just to be sure
+						case SPELL_AURA_MOD_STUN:
 							if (c->GetProto()->modImmunities & 32)
 								immune = true;
 							break;
 						case SPELL_AURA_MOD_SILENCE:
-							if ((c->GetProto()->modImmunities & 4096) || (c->GetProto()->modImmunities & 16))
+							if ((c->GetProto()->modImmunities & 16384) || (c->GetProto()->modImmunities & 16))
 								immune = true;
 							break;
 						case SPELL_AURA_MOD_DECREASE_SPEED:
-							if (c->GetProto()->modImmunities & 1024)
+							if (c->GetProto()->modImmunities & 4096)
 								immune = true;
 							break;
 						case SPELL_AURA_INCREASE_CASTING_TIME_PCT:
-							if (c->GetProto()->modImmunities & 2048)
-								immune = true;
-							break;
-						case SPELL_AURA_MOD_LANGUAGE: //hacky way to prefer that the COT icon is set to mob
-							if (c->GetProto()->modImmunities & 2048)
-								immune = true;
-							break;
-						case SPELL_AURA_MOD_HEALING_DONE_PERCENT:
 							if (c->GetProto()->modImmunities & 8192)
 								immune = true;
 							break;
+						case SPELL_AURA_MOD_LANGUAGE: //hacky way to prefer that the COT icon is set to mob
+							if (c->GetProto()->modImmunities & 8192)
+								immune = true;
+							break;
+						case SPELL_AURA_MOD_HEALING_DONE_PERCENT:
+							if (c->GetProto()->modImmunities & 32768)
+								immune = true;
+							break;
 						case SPELL_AURA_MOD_TOTAL_STAT_PERCENTAGE:
-							if (c->GetProto()->modImmunities & 16384)
+							if (c->GetProto()->modImmunities & 65536)
 								immune = true;
 							break;
 						}
