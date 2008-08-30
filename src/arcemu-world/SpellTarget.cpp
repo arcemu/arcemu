@@ -459,7 +459,7 @@ void Spell::SpellTargetAreaOfEffect(uint32 i, uint32 j)
 void Spell::SpellTargetLandUnderCaster(uint32 i, uint32 j) /// I don't think this is the correct name for this one
 {
 	TargetsList *tmpMap=&m_targetUnits[i];
-	if(m_spellInfo->Effect[i] != SPELL_EFFECT_SUMMON_DEMON && m_spellInfo->Effect[i] != SPELL_EFFECT_SUMMON_OBJECT_WILD)
+	if(m_spellInfo->Effect[i] != SPELL_EFFECT_SUMMON_DEMON && m_spellInfo->Effect[i] != SPELL_EFFECT_SUMMON_OBJECT_WILD && m_spellInfo->Effect[i] != SPELL_EFFECT_SUMMON_OBJECT)
 		FillAllTargetsInArea(i,m_caster->GetPositionX(),m_caster->GetPositionY(),m_caster->GetPositionZ(),GetRadius(i));
 	else
 		SafeAddTarget(tmpMap,m_caster->GetGUID());

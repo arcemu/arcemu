@@ -6256,10 +6256,7 @@ void Spell::SpellEffectSummonTarget(uint32 i) // ritual of summoning
 	if ( unitTarget == NULL )
 		return;
 
-	Spell * sp = SpellPool.PooledNew();
-	sp->Init( m_caster, dbcSpell.LookupEntry( GetProto()->EffectTriggerSpell[i] ), true, NULL );
-	SpellCastTargets tgt( unitTarget->GetGUID() );
-	sp->prepare( &tgt );
+	SpellEffectTriggerSpell( i );
 }
 
 void Spell::SpellEffectForgetSpecialization(uint32 i)
