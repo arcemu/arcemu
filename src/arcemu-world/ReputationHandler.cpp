@@ -49,7 +49,7 @@ Standing Player::GetReputationRankFromStanding( int32 Standing_ )
 	return STANDING_HATED;  
 }
 
-ARCEMU_INLINE bool CanToggleAtWar( uint8 flag ) { return ( flag & FACTION_FLAG_DISABLE_ATWAR ) ; }
+ARCEMU_INLINE bool CanToggleAtWar( uint8 flag ) { return ( flag & FACTION_FLAG_DISABLE_ATWAR ) == 0 ; }
 ARCEMU_INLINE bool AtWar( uint8 flag ) { return ( flag & FACTION_FLAG_AT_WAR ) != 0; }
 ARCEMU_INLINE bool ForcedInvisible( uint8 flag ) { return ( flag & FACTION_FLAG_FORCED_INVISIBLE ) != 0; }
 ARCEMU_INLINE bool Visible( uint8 flag ) { return ( flag & FACTION_FLAG_VISIBLE ) != 0; }
