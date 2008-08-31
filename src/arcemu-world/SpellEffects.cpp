@@ -1787,8 +1787,9 @@ void Spell::SpellEffectApplyAura(uint32 i)  // Apply Aura
 							if (c->GetProto()->modImmunities & 1024)
 								immune = true;
 							break;
-						case MECHANIC_ENSNARED:
+						case MECHANIC_ASLEEP:
 							if (c->GetProto()->modImmunities & 2048)
+								immune = true;
 							break;
 						}
 					}
