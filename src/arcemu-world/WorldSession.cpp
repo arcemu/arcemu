@@ -600,11 +600,14 @@ void WorldSession::InitPacketHandlerTable()
 	WorldPacketHandlers[CMSG_AREATRIGGER].handler							   = &WorldSession::HandleAreaTriggerOpcode;
 	
 	// Account Data
-	WorldPacketHandlers[CMSG_UPDATE_ACCOUNT_DATA].handler					   = &WorldSession::HandleUpdateAccountData;
-	WorldPacketHandlers[CMSG_REQUEST_ACCOUNT_DATA].handler					  = &WorldSession::HandleRequestAccountData;
-	WorldPacketHandlers[CMSG_SET_FACTION_ATWAR].handler						 = &WorldSession::HandleSetAtWarOpcode;
-	WorldPacketHandlers[CMSG_SET_WATCHED_FACTION_INDEX].handler				 = &WorldSession::HandleSetWatchedFactionIndexOpcode;
+	WorldPacketHandlers[CMSG_UPDATE_ACCOUNT_DATA].handler						= &WorldSession::HandleUpdateAccountData;
+	WorldPacketHandlers[CMSG_REQUEST_ACCOUNT_DATA].handler						= &WorldSession::HandleRequestAccountData;
 	WorldPacketHandlers[CMSG_TOGGLE_PVP].handler								= &WorldSession::HandleTogglePVPOpcode;
+	
+	// Faction / Reputation
+	WorldPacketHandlers[CMSG_SET_FACTION_ATWAR].handler							= &WorldSession::HandleSetAtWarOpcode;
+	WorldPacketHandlers[CMSG_SET_WATCHED_FACTION_INDEX].handler					= &WorldSession::HandleSetWatchedFactionIndexOpcode;
+	WorldPacketHandlers[CMSG_SET_FACTION_INACTIVE].handler						= &WorldSession::HandleSetFactionInactiveOpcode;
 	
 	// Player Interaction
 	WorldPacketHandlers[CMSG_GAMEOBJ_USE].handler							   = &WorldSession::HandleGameObjectUse;
@@ -910,8 +913,6 @@ void WorldSession::InitPacketHandlerTable()
 	WorldPacketHandlers[0x038C].status = STATUS_AUTHED;
 
 	WorldPacketHandlers[CMSG_INRANGE_QUESTGIVER_STATUS_QUERY].handler = &WorldSession::HandleInrangeQuestgiverQuery;
-
-	WorldPacketHandlers[CMSG_SET_FACTION_INACTIVE].handler          = &WorldSession::HandleSetFactionInactiveOpcode;
 }
 
 void SessionLogWriter::writefromsession(WorldSession* session, const char* format, ...)

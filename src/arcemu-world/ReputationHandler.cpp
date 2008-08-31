@@ -24,8 +24,8 @@ enum FactionFlags
 	FACTION_FLAG_VISIBLE            = 0x01,
 	FACTION_FLAG_AT_WAR             = 0x02,
 	FACTION_FLAG_HIDDEN             = 0x04,
-	FACTION_FLAG_FORCED_INVISIBLE   = 0x08,
-	FACTION_FLAG_FORCED_PEACE       = 0x10,
+	FACTION_FLAG_FORCED_INVISIBLE   = 0x08,// if both ACTION_FLAG_VISIBLE and FACTION_FLAG_FORCED_INVISIBLE are set, client crashes!
+	FACTION_FLAG_DISABLE_ATWAR      = 0x10,// disables AtWar button for client, but you can be in war with the faction
 	FACTION_FLAG_INACTIVE           = 0x20,
 	FACTION_FLAG_RIVAL              = 0x40 // only Scryers and Aldor have this flag
 };
@@ -49,18 +49,16 @@ Standing Player::GetReputationRankFromStanding( int32 Standing_ )
 	return STANDING_HATED;  
 }
 
-ARCEMU_INLINE bool ForcedPeace( uint8 flag ) { return ( flag & FACTION_FLAG_FORCED_PEACE ); }
-ARCEMU_INLINE bool AtWar( uint8 flag ) { return ( flag & FACTION_FLAG_AT_WAR ); }
-ARCEMU_INLINE bool ForcedInvisible( uint8 flag ) { return ( flag & FACTION_FLAG_FORCED_INVISIBLE ); }
-ARCEMU_INLINE bool Visible( uint8 flag ) { return ( flag & FACTION_FLAG_VISIBLE ); }
-ARCEMU_INLINE bool Hidden( uint8 flag ) { return ( flag & FACTION_FLAG_HIDDEN ); }
-ARCEMU_INLINE bool Inactive( uint8 flag ) { return ( flag & FACTION_FLAG_INACTIVE ); }
+ARCEMU_INLINE bool CanToggleAtWar( uint8 flag ) { return ( flag & FACTION_FLAG_DISABLE_ATWAR ) ; }
+ARCEMU_INLINE bool AtWar( uint8 flag ) { return ( flag & FACTION_FLAG_AT_WAR ) != 0; }
+ARCEMU_INLINE bool ForcedInvisible( uint8 flag ) { return ( flag & FACTION_FLAG_FORCED_INVISIBLE ) != 0; }
+ARCEMU_INLINE bool Visible( uint8 flag ) { return ( flag & FACTION_FLAG_VISIBLE ) != 0; }
+ARCEMU_INLINE bool Hidden( uint8 flag ) { return ( flag & FACTION_FLAG_HIDDEN ) != 0; }
+ARCEMU_INLINE bool Inactive( uint8 flag ) { return ( flag & FACTION_FLAG_INACTIVE ) != 0; }
 
 ARCEMU_INLINE bool SetFlagAtWar( uint8 &flag, bool set )
 {
-	if ( ForcedPeace( flag ) )
-		return false;
-	else if ( set && !AtWar( flag ) )
+	if ( set && !AtWar( flag ) )
 		flag |= FACTION_FLAG_AT_WAR;
 	else if ( !set && AtWar( flag ) )
 		flag &= ~FACTION_FLAG_AT_WAR;
@@ -246,13 +244,16 @@ void Player::SetAtWar( uint32 Faction, bool Set )
 		return;
 
 	FactionReputation * rep = reputationByListId[Faction];
-	if ( rep == NULL )
+	if( rep == NULL )
 		return;
 
-	if ( GetReputationRankFromStanding( rep->standing ) <= STANDING_HOSTILE && !Set ) // At this point we have to be at war.
+	if( GetReputationRankFromStanding( rep->standing ) <= STANDING_HOSTILE && !Set ) // At this point we have to be at war.
+		return;
+	
+	if( !CanToggleAtWar( rep->flag ) )
 		return;
 
-	if ( SetFlagAtWar( rep->flag, Set ) )
+	if( SetFlagAtWar( rep->flag, Set ) )
 	{
 		UpdateInrangeSetsBasedOnReputation();
 #ifdef OPTIMIZED_PLAYER_SAVING
