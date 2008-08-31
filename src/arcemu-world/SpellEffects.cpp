@@ -1726,11 +1726,12 @@ void Spell::SpellEffectApplyAura(uint32 i)  // Apply Aura
 				Sap: 256
 				Frozen : 512
 				Ensnared 1024
-				Taunt (aura): 2048
-				Decrease Speed (Hamstring) (aura): 4096
-				Spell Haste (Curse of Tongues) (aura): 8192
-				Interrupt Cast: 16384
-				Mod Healing % (Mortal Strike) (aura): 32768
+				Sleep 2048
+				Taunt (aura): 4096
+				Decrease Speed (Hamstring) (aura): 8192
+				Spell Haste (Curse of Tongues) (aura): 16384
+				Interrupt Cast: 32768
+				Mod Healing % (Mortal Strike) (aura): 65536
 				Total Stats % (Vindication) (aura): 65536
 				*/
 
@@ -1785,6 +1786,10 @@ void Spell::SpellEffectApplyAura(uint32 i)  // Apply Aura
 						case MECHANIC_ENSNARED:
 							if (c->GetProto()->modImmunities & 1024)
 								immune = true;
+							break;
+						case MECHANIC_ENSNARED:
+							if (c->GetProto()->modImmunities & 2048)
+							break;
 						}
 					}
 					else
@@ -1801,7 +1806,7 @@ void Spell::SpellEffectApplyAura(uint32 i)  // Apply Aura
 								immune = true;
 							break;
 						case SPELL_AURA_MOD_TAUNT:
-							if (c->GetProto()->modImmunities & 2048)
+							if (c->GetProto()->modImmunities & 4096)
 								immune = true;
 							break;
 						case SPELL_AURA_MOD_STUN:
@@ -1809,27 +1814,27 @@ void Spell::SpellEffectApplyAura(uint32 i)  // Apply Aura
 								immune = true;
 							break;
 						case SPELL_AURA_MOD_SILENCE:
-							if ((c->GetProto()->modImmunities & 16384) || (c->GetProto()->modImmunities & 16))
+							if ((c->GetProto()->modImmunities & 32768) || (c->GetProto()->modImmunities & 16))
 								immune = true;
 							break;
 						case SPELL_AURA_MOD_DECREASE_SPEED:
-							if (c->GetProto()->modImmunities & 4096)
+							if (c->GetProto()->modImmunities & 8192)
 								immune = true;
 							break;
 						case SPELL_AURA_INCREASE_CASTING_TIME_PCT:
-							if (c->GetProto()->modImmunities & 8192)
+							if (c->GetProto()->modImmunities & 16384)
 								immune = true;
 							break;
 						case SPELL_AURA_MOD_LANGUAGE: //hacky way to prefer that the COT icon is set to mob
-							if (c->GetProto()->modImmunities & 8192)
+							if (c->GetProto()->modImmunities & 16384)
 								immune = true;
 							break;
 						case SPELL_AURA_MOD_HEALING_DONE_PERCENT:
-							if (c->GetProto()->modImmunities & 32768)
+							if (c->GetProto()->modImmunities & 65536)
 								immune = true;
 							break;
 						case SPELL_AURA_MOD_TOTAL_STAT_PERCENTAGE:
-							if (c->GetProto()->modImmunities & 65536)
+							if (c->GetProto()->modImmunities & 131072)
 								immune = true;
 							break;
 						}
@@ -4037,7 +4042,7 @@ void Spell::SpellEffectInterruptCast(uint32 i) // Interrupt Cast
 			Creature *c = (Creature*)( unitTarget );
 			if (c && c->GetProto() && c->GetProto()->modImmunities)
 			{
-				if (c->GetProto()->modImmunities & 2048)
+				if (c->GetProto()->modImmunities & 32768)
 					return;
 			}
 		}

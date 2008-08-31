@@ -833,7 +833,7 @@ void AIInterface::_UpdateTargets()
 	}
 	else if(m_AIState != STATE_IDLE && m_AIState != STATE_SCRIPTIDLE)
 	{
-		FindFriends(25.0f/*5.0f*/);
+		FindFriends(100.0f/*10.0f*/);
 	}
 
 	if( m_updateAssist )
