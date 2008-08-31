@@ -1522,7 +1522,6 @@ void Pet::ApplyPetLevelAbilities()
 	
 	UpdateTP();
 	LoadPetAuras(-2);//Load all BM auras
-	CalcDamage();
 }
 
 void Pet::ApplyStatsForLevel()
@@ -1594,7 +1593,6 @@ void Pet::UpdateAP()
 		AP += m_Owner->GetRAP() * 22 / 100;
 	if( AP < 0 ) AP = 0;
 	SetUInt32Value( UNIT_FIELD_ATTACK_POWER, AP );
-	CalcDamage();
 }
 
 uint16 Pet::SpellTP(uint32 spellId)
