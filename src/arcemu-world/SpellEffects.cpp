@@ -1732,7 +1732,7 @@ void Spell::SpellEffectApplyAura(uint32 i)  // Apply Aura
 				Spell Haste (Curse of Tongues) (aura): 16384
 				Interrupt Cast: 32768
 				Mod Healing % (Mortal Strike) (aura): 65536
-				Total Stats % (Vindication) (aura): 65536
+				Total Stats % (Vindication) (aura): 131072
 				*/
 
 				//Spells with Mechanic also add other ugly auras, but if the main aura is the effect --> immune to whole spell
@@ -1793,7 +1793,7 @@ void Spell::SpellEffectApplyAura(uint32 i)  // Apply Aura
 							break;
 						}
 					}
-					else
+					if (!immune)
 					{
 						// Spells wich do more than just one thing (damage and the effect) dont have a mechanic and we should only cancel the aura to be placed
 						switch (m_spellInfo->EffectApplyAuraName[i])
