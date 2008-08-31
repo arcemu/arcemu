@@ -697,7 +697,7 @@ void InstanceMgr::_LoadInstances()
 			// this assumes that groups are already loaded at this point.
 			if(!in->m_persistent && in->m_creatorGroup && objmgr.GetGroupById(in->m_creatorGroup) == NULL)
 			{
-				CharacterDatabase.Execute("DELETE FROM `instances` WHERE `id", in->m_instanceId);
+				CharacterDatabase.Execute("DELETE FROM `instances` WHERE `id` = %u", in->m_instanceId);
 				delete in;
 				continue;
 			}
