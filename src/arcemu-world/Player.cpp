@@ -682,7 +682,7 @@ bool Player::Create(WorldPacket& data )
 	SetUInt32Value(UNIT_FIELD_STAT3, info->intellect );
 	SetUInt32Value(UNIT_FIELD_STAT4, info->spirit );
 	SetFloatValue(UNIT_FIELD_BOUNDINGRADIUS, 0.388999998569489f );
-	SetFloatValue(UNIT_FIELD_COMBATREACH, 4.5f   );
+	SetFloatValue(UNIT_FIELD_COMBATREACH, 1.5f   );
 	if(race != 10)
 	{
 		SetUInt32Value(UNIT_FIELD_DISPLAYID, info->displayId + gender );
@@ -2735,7 +2735,7 @@ void Player::LoadFromDBProc(QueryResultVector & results)
 	SetUInt32Value(UNIT_FIELD_BYTES_2, (0x28 << 8) );
 	SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_PLAYER_CONTROLLED);
 	SetFloatValue(UNIT_FIELD_BOUNDINGRADIUS, 0.388999998569489f );
-	SetFloatValue(UNIT_FIELD_COMBATREACH, 4.5f   );
+	SetFloatValue(UNIT_FIELD_COMBATREACH, 1.5f   );
 
 	if(getRace() != 10)
 	{
