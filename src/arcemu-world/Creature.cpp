@@ -291,7 +291,7 @@ void Creature::generateLoot()
 	if(sWorld.antiMasterLootNinja && this->m_lootMethod == PARTY_LOOT_MASTER)
 	{
 		Player *looter = objmgr.GetPlayer((uint32)this->TaggerGuid);
-		if(looter)
+		if(looter && looter->GetGroup())
 		{
 			uint16 lootThreshold = looter->GetGroup()->GetThreshold();
 
