@@ -994,30 +994,35 @@ void Spell::SpellTargetTargetPartyMember(uint32 i, uint32 j)
 	if(!m_caster->IsInWorld())
 		return;
 
+	if (!m_caster->IsPet() && !m_caster->IsPlayer())
+		return;
+
 	TargetsList *tmpMap=&m_targetUnits[i];
 	Unit* Target = m_caster->GetMapMgr()->GetUnit(m_targets.m_unitTarget);
-	if(!Target)
+	Unit* Caster = static_cast<Unit*>(m_caster);
+
+	if(!Target || !Caster)
 		return;
 
 	if (!Target->IsPet() && !Target->IsPlayer())
 		return;
 
-	if (m_caster != Target)
+	if (Caster->IsPet() && static_cast<Pet*>(Caster)->GetPetOwner() != NULL)
+		Caster = static_cast<Pet*>(Caster)->GetPetOwner();
+
+	if(Target->IsPet() && static_cast<Pet*>(Target)->GetPetOwner() != NULL)
+		Target = static_cast<Pet*>(Target)->GetPetOwner();
+
+		
+
+	if (Caster != Target)
 	{
-		Group *c_group=NULL;
-		if( m_caster->IsPlayer() )
-			c_group = static_cast<Player*>(m_caster)->GetGroup();
-		else if( m_caster->IsPet() && static_cast<Pet*>(m_caster)->GetPetOwner() )
-			c_group = static_cast<Player*>( static_cast<Pet*>(m_caster)->GetPetOwner() )->GetGroup();
+		Group *c_group = c_group = static_cast<Player*>(Caster)->GetGroup();
 
 		if( !c_group )
 			return; //caster or caster master are not in group, cannot cast spell on this target
 
-		Group *t_group=NULL;
-		if( Target->IsPlayer() )
-			t_group = static_cast<Player*>(Target)->GetGroup();
-		else if( Target->IsPet() && static_cast<Pet*>(Target)->GetPetOwner() )
-			t_group = static_cast<Player*>( static_cast<Pet*>(Target)->GetPetOwner() )->GetGroup();
+		Group *t_group = t_group = static_cast<Player*>(Target)->GetGroup();
 
 		if( !t_group )
 			return; //target does not have a group
