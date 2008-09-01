@@ -543,6 +543,7 @@ struct PlayerPet
 	char loyaltylvl;
 	time_t reset_time;
 	uint32 reset_cost;
+	uint32 spellid;
 };
 enum MeetingStoneQueueStatus
 {

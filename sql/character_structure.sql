@@ -677,6 +677,7 @@ CREATE TABLE `playerpets` (
   `loyaltyupdate` int(11) NOT NULL,
   `reset_time` int(10) unsigned NOT NULL DEFAULT 0,
   `reset_cost` int(10) NOT NULL DEFAULT 0,
+  `spellid` int4 UNSIGNED NOT NULL DEFAULT 0,
   PRIMARY KEY  (`ownerguid`,`petnumber`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 

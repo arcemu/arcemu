@@ -1696,7 +1696,8 @@ void Player::_SavePet(QueryBuffer * buf)
 			<< itr->second->loyaltypts << "','"
 			<< itr->second->loyaltyupdate << "','"
 			<< (long)itr->second->reset_time << "','"
-			<< itr->second->reset_cost << "')";
+			<< itr->second->reset_cost << "','"
+			<< itr->second->spellid << "')";
 			
 		if(buf == NULL)
 			CharacterDatabase.ExecuteNA(ss.str().c_str());
@@ -1796,6 +1797,7 @@ void Player::_LoadPet(QueryResult * result)
 		pet->loyaltyupdate = fields[13].GetUInt32();
 		pet->reset_time = fields[14].GetUInt32();
 		pet->reset_cost = fields[15].GetUInt32();
+		pet->spellid = fields[16].GetUInt32();
 
 		m_Pets[pet->number] = pet;
 		if(pet->active)
@@ -1821,9 +1823,30 @@ void Player::SpawnPet(uint32 pet_number)
 		sLog.outError("PET SYSTEM: "I64FMT" Tried to load invalid pet %d", GetGUID(), pet_number);
 		return;
 	}
-	Pet *pPet = objmgr.CreatePet();
-	pPet->SetInstanceID(GetInstanceID());
-	pPet->LoadFromDB(this, itr->second);
+	if (itr->second->spellid == 0)
+	{
+		Pet *pPet = objmgr.CreatePet();
+		pPet->SetInstanceID(GetInstanceID());
+		pPet->LoadFromDB(this, itr->second);
+	}
+	else
+	{
+		SpellEntry *pSpell = dbcSpell.LookupEntry(itr->second->spellid);
+		CreatureInfo *ci = CreatureNameStorage.LookupEntry(pSpell->EffectMiscValue[0]);
+		if(ci)
+		{
+			//if demonic sacrifice auras are still active, remove them
+			RemoveAura(18789);
+			RemoveAura(18790);
+			RemoveAura(18791);
+			RemoveAura(18792);
+			RemoveAura(35701);
+
+			Pet *summon = objmgr.CreatePet();
+			summon->SetInstanceID(GetInstanceID());
+			summon->CreateAsSummon(pSpell->EffectMiscValue[0], ci, NULL, this, pSpell, 1, 0);
+		}
+	}
 }
 void Player::SpawnActivePet()
 {

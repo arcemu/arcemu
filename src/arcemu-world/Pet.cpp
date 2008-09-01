@@ -218,6 +218,7 @@ void Pet::CreateAsSummon(uint32 entry, CreatureInfo *ci, Creature* created_from_
 		PlayerPet *pp = new PlayerPet;
 		pp->number = m_PetNumber;
 		pp->stablestate = STABLE_STATE_ACTIVE;
+		pp->spellid = created_by_spell ? created_by_spell->Id : 0;
 		static_cast< Player* >(owner)->AddPlayerPet(pp, pp->number);
 	}	
 
