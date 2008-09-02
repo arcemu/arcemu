@@ -605,6 +605,28 @@ void WorldSession::FullLogin(Player * plr)
 	SetPlayer(plr); 
 	m_MoverWoWGuid.Init(plr->GetGUID());
 
+	/* Trying to log to an instance that doesn't exists anymore? */
+	MapMgr *mgr = sInstanceMgr.GetInstance(static_cast< Object* >( plr ));  
+	if (!mgr)
+	{
+		if(!IS_INSTANCE(plr->m_bgEntryPointMap))
+		{
+			plr->m_position.x = plr->m_bgEntryPointX;
+			plr->m_position.y = plr->m_bgEntryPointY;
+			plr->m_position.z = plr->m_bgEntryPointZ;
+			plr->m_position.o = plr->m_bgEntryPointO;
+			plr->m_mapId = plr->m_bgEntryPointMap;
+		}
+		else
+		{
+			plr->m_position.x = plr->GetBindPositionX();
+			plr->m_position.y = plr->GetBindPositionY();
+			plr->m_position.z = plr->GetBindPositionZ();
+			plr->m_position.o = 0;
+			plr->m_mapId = plr->GetBindMapId();
+		}
+	}
+
 	// copy to movement array
 	movement_packet[0] = m_MoverWoWGuid.GetNewGuidMask();
 	memcpy(&movement_packet[1], m_MoverWoWGuid.GetNewGuid(), m_MoverWoWGuid.GetNewGuidLen());
