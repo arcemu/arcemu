@@ -13460,21 +13460,33 @@ void ApplyNormalFixes()
 		/**********************************************************
 		 *	Healing Way
 		 **********************************************************/
+		/*
+		Zack : disabled this to not create confusion that it is working. Burlex deleted code so it needs to be reverted in order to work
 		sp = dbcSpell.LookupEntryForced( 29202 ); 
 		if( sp != NULL )
 		{
 			sp->procFlags = PROC_ON_CAST_SPELL;
+            sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
+            sp->EffectImplicitTargetA[0] = EFF_TARGET_SCRIPTED_OR_SINGLE_TARGET;
+			sp->procChance = sp->EffectBasePoints[0] + 1;
 		}
 		sp = dbcSpell.LookupEntryForced( 29205 ); 
 		if( sp != NULL )
 		{
 			sp->procFlags = PROC_ON_CAST_SPELL;
+            sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
+            sp->EffectImplicitTargetA[0] = EFF_TARGET_SCRIPTED_OR_SINGLE_TARGET;
+			sp->procChance = sp->EffectBasePoints[0] + 1;
 		}
 		sp = dbcSpell.LookupEntryForced( 29206 ); 
 		if( sp != NULL )
 		{
 			sp->procFlags = PROC_ON_CAST_SPELL;
+            sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
+            sp->EffectImplicitTargetA[0] = EFF_TARGET_SCRIPTED_OR_SINGLE_TARGET;
+			sp->procChance = sp->EffectBasePoints[0] + 1;
 		}
+		*/
 
 		/**********************************************************
 		 *	Elemental Devastation
