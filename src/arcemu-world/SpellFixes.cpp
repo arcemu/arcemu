@@ -13559,6 +13559,22 @@ void ApplyNormalFixes()
 	// Insert mage spell fixes here
 
 		/**********************************************************
+		*    Improved Blink by Alice
+		**********************************************************/
+	    
+		//Improved Blink - *Rank 1*
+		sp = dbcSpell.LookupEntryForced( 31569 );
+		if( sp != NULL )
+		{        
+			sp->procFlags = PROC_ON_CAST_SPECIFIC_SPELL;
+		}
+			//Improved Blink - *Rank 2*
+		sp = dbcSpell.LookupEntryForced( 31570 );
+		if( sp != NULL )
+		{
+			sp->procFlags = PROC_ON_CAST_SPECIFIC_SPELL;
+		}
+		/**********************************************************
 		 *	Arcane Concentration
 		 **********************************************************/
 
