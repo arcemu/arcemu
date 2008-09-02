@@ -906,7 +906,7 @@ void QuestMgr::GiveQuestRewardReputation(Player* plr, Quest* qst, Object *qst_gi
 		int32 amt  = float2int32( float( GenerateQuestXP( plr, qst) ) * 0.1f );   // guess
 		if(!qst->reward_repfaction[z])
 		{
-			if( z == 1 )
+			if( z >= 1 )
 				break;
 
 			// Let's do this properly. Determine the faction of the creature, and give reputation to his faction.
