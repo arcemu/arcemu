@@ -1104,7 +1104,7 @@ bool ChatHandler::HandleAddAIAgentCommand(const char* args, WorldSession *m_sess
 	}
 
 	std::stringstream qry;
-	qry << "INSERT INTO ai_agents set entryId = '" << target->GetUInt32Value(OBJECT_FIELD_ENTRY) << "', AI_AGENT = '" << atoi(agent) << "', procEvent = '" << atoi(procEvent)<< "', procChance = '" << atoi(procChance)<< "', procCount = '" << atoi(procCount)<< "', spellId = '" << atoi(spellId)<< "', spellType = '" << atoi(spellType)<< "', spelltargetType = '" << atoi(spelltargetType)<< "', spellCooldown = '" << atoi(spellCooldown)<< "', floatMisc1 = '" << atof(floatMisc1)<< "', Misc2  ='" << atoi(Misc2)<< "'";
+	qry << "INSERT INTO ai_agents SET entry = '" << target->GetUInt32Value(OBJECT_FIELD_ENTRY) << "', type = '" << atoi(agent) << "', event = '" << atoi(procEvent)<< "', chance = '" << atoi(procChance)<< "', maxcount = '" << atoi(procCount)<< "', spell = '" << atoi(spellId)<< "', spelltype = '" << atoi(spellType)<< "', targettype_overwrite = '" << atoi(spelltargetType)<< "', cooldown_overwrite = '" << atoi(spellCooldown)<< "', floatMisc1 = '" << atof(floatMisc1)<< "', Misc2  ='" << atoi(Misc2)<< "'";
 	WorldDatabase.Execute( qry.str().c_str( ) );
 
 	AI_Spell * sp = new AI_Spell;
