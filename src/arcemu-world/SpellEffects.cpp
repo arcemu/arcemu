@@ -2121,8 +2121,15 @@ void Spell::SpellEffectHeal(uint32 i) // Heal
 							sEventMgr.RemoveEvents( unitTarget,EVENT_REJUVENATION_FLAG_EXPIRE );
 						}
 					}
+
 					if( new_dmg > 0 )
-						Heal( (int32)new_dmg );
+					{
+						SpellEntry *spellInfo = dbcSpell.LookupEntry(18562);
+						Spell *spell=SpellPool.PooledNew();
+						spell->Init(unitTarget, spellInfo, true, NULL);
+						spell->SetUnitTarget( unitTarget );
+						spell->Heal( (int32)new_dmg );
+					}
 				}
 			}break;
 		default:

@@ -2723,11 +2723,11 @@ void Aura::SpellAuraPeriodicHeal( bool apply )
 			m_target->SetFlag(UNIT_FIELD_AURASTATE,AURASTATE_FLAG_REJUVENATE);
 			if(!sEventMgr.HasEvent( m_target, EVENT_REJUVENATION_FLAG_EXPIRE ) )
 			{
-				sEventMgr.AddEvent( m_target, &Unit::EventAurastateExpire, (uint32)AURASTATE_FLAG_REJUVENATE, EVENT_REJUVENATION_FLAG_EXPIRE, GetSpellProto()->EffectAmplitude[mod->i], 1, 0 );
+				sEventMgr.AddEvent( m_target, &Unit::EventAurastateExpire, (uint32)AURASTATE_FLAG_REJUVENATE, EVENT_REJUVENATION_FLAG_EXPIRE, GetDuration(), 1, 0 );
 			}
 			else
 			{
-				sEventMgr.ModifyEventTimeLeft( m_target,EVENT_REJUVENATION_FLAG_EXPIRE, GetSpellProto()->EffectAmplitude[mod->i], 0 );
+				sEventMgr.ModifyEventTimeLeft( m_target,EVENT_REJUVENATION_FLAG_EXPIRE, GetDuration(), 0 );
 			}
 		}
 	}
@@ -2777,12 +2777,15 @@ void Aura::EventPeriodicHeal( uint32 amount )
 
 	if( c != NULL && m_spellProto->SpellGroupType )
 	{
+		/*
 		int penalty_pct = 0;
 		int penalty_flt = 0;
 		SM_FIValue( c->SM_PPenalty, &penalty_pct, GetSpellProto()->SpellGroupType );
 		bonus += bonus * ( penalty_pct / 100 );
 		SM_FIValue( c->SM_FPenalty, &penalty_flt, GetSpellProto()->SpellGroupType );
 		bonus += penalty_flt;
+		*/
+		SM_PIValue( c->SM_PPenalty, &bonus, m_spellProto->SpellGroupType );
 #ifdef COLLECTION_OF_UNTESTED_STUFF_AND_TESTERS
 		int spell_flat_modifers=0;
 		int spell_pct_modifers=0;
