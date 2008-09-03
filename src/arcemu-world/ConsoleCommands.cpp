@@ -334,6 +334,30 @@ void TestConsoleLogin(string& username, string& password, uint32 requestno)
 	sLogonCommHandler.TestConsoleLogon(username, password, requestno);
 }
 
+bool HandleRevivePlayer(BaseConsole * pConsole, int argc, const char * argv[])
+{
+	if ( !argc )
+		return false;
+
+	Player *plr = objmgr.GetPlayer(argv[1], false);
+	if(!plr)
+	{
+		pConsole->Write( "Could not find player %s.\r\n", argv[1]);
+		return true;
+	}
+
+	if(plr->isDead())
+	{
+		plr->RemoteRevive();
+		pConsole->Write("Revived player %s.\r\n", argv[1]);
+	} else
+	{
+		pConsole->Write("Player %s is not dead.\r\n", argv[1]);
+	}
+	return true;
+}
+
+
 bool HandleRehashCommand(BaseConsole * pConsole, int argc, const char * argv[])
 {
 	pConsole->Write("Config file re-parsed.");

@@ -374,7 +374,8 @@ void HandleConsoleInput(BaseConsole * pConsole, const char * szInput)
 		{ &HandleWAnnounceCommand, "w", "<wannounce string>", "Shows the message in all client title areas." },
 		{ &HandleWAnnounceCommand, "wannounce", "<wannounce string>", "Shows the message in all client title areas." },
 		{ &HandleWhisperCommand, "whisper","<player> <message>", "Whispers a message to someone from the console." },
-		{ &HandleNameHashCommand, "getnamehash" , "<text>" , "Returns the crc32 hash of <text>" } ,		
+		{ &HandleNameHashCommand, "getnamehash" , "<text>" , "Returns the crc32 hash of <text>" } ,
+		{ &HandleRevivePlayer, "reviveplr", "<name>", "Revives a Player" },
 		{ NULL, NULL, NULL, NULL },
 	};
 
