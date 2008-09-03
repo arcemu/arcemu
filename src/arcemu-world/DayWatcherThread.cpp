@@ -120,10 +120,7 @@ bool DayWatcherThread::has_timeout_expired(tm * now_time, tm * last_time, uint32
 	{
 	case WEEKLY:
 		{
-			if( (now_time->tm_mon != last_time->tm_mon) )
-				return true;
-            
-			return ( (now_time->tm_mday / 7) != (last_time->tm_mday / 7) );
+			return ( abs( now_time->tm_yday - last_time->tm_yday ) >= 7 );
 		}
 		
 	case MONTHLY:
