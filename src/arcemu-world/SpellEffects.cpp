@@ -1943,6 +1943,10 @@ void Spell::SpellEffectPowerDrain(uint32 i)  // Power Drain
 	uint32 curPower = unitTarget->GetUInt32Value(powerField);
 	if( powerField == UNIT_FIELD_POWER1 && unitTarget->IsPlayer() )
 	{
+		Player* mPlayer = static_cast< Player* >( unitTarget );
+		if( mPlayer->IsInFeralForm() )
+			return;
+
 		// Resilience - reduces the effect of mana drains by (CalcRating*2)%.
 		damage *= float2int32( 1 - ( ( static_cast<Player*>(unitTarget)->CalcRating( PLAYER_RATING_MODIFIER_SPELL_CRIT_RESILIENCE ) * 2 ) / 100.0f ) );
 	}
@@ -3992,6 +3996,10 @@ void Spell::SpellEffectPowerBurn(uint32 i) // power burn
 
 	if( unitTarget->IsPlayer() )
 	{
+		Player* mPlayer = static_cast< Player* >( unitTarget );
+		if( mPlayer->IsInFeralForm() )
+			return;
+
 		// Resilience - reduces the effect of mana drains by (CalcRating*2)%.
 		damage *= float2int32( 1 - ( ( static_cast<Player*>(unitTarget)->CalcRating( PLAYER_RATING_MODIFIER_SPELL_CRIT_RESILIENCE ) * 2 ) / 100.0f ) );
 	}
