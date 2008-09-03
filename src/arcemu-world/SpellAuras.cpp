@@ -1773,7 +1773,7 @@ void Aura::SpellAuraDummy(bool apply)
 		{
 	      if(apply)
 			 m_target->m_extrastriketargets++;
-		  else
+		  else if( m_target->m_extrastriketargets > 0 )
 			  m_target->m_extrastriketargets--;
 
 		}break;
@@ -7121,7 +7121,7 @@ void Aura::SpellAuraModHaste( bool apply )
 	{
 		if( apply )
 			m_target->m_extrastriketargets++;
-		else
+		else if( m_target->m_extrastriketargets > 0 )
 			m_target->m_extrastriketargets--;
 	}
 
