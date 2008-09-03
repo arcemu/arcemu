@@ -1146,6 +1146,8 @@ bool ChatHandler::HandleFlyCommand(const char* args, WorldSession* m_session)
 bool ChatHandler::HandleDBReloadCommand(const char* args, WorldSession* m_session)
 {
 	char str[200];
+	int ret = 0;
+
 	if(!*args || strlen(args) < 3)
 		return false;
 
@@ -1153,7 +1155,18 @@ bool ChatHandler::HandleDBReloadCommand(const char* args, WorldSession* m_sessio
 	snprintf(str, 200, "%s%s initiated server-side reload of table `%s`. The server may experience some lag while this occurs.",
 		MSG_COLOR_LIGHTRED, m_session->GetPlayer()->GetName(), args);
 	sWorld.SendWorldText(str, 0);
-	if(!Storage_ReloadTable(args))
+
+	if (0 == stricmp(args, "spell_disable"))
+	{
+		objmgr.ReloadDisabledSpells();
+		ret = 1;
+	}
+	else
+	{
+		ret = Storage_ReloadTable(args);
+	}
+
+	if (ret == 0)
 		snprintf(str, 256, "%sDatabase reload failed.", MSG_COLOR_LIGHTRED);
 	else
 		snprintf(str, 256, "%sDatabase reload completed in %u ms.", MSG_COLOR_LIGHTBLUE, (unsigned int)(getMSTime() - mstime));

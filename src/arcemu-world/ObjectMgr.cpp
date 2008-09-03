@@ -2982,6 +2982,12 @@ void ObjectMgr::LoadDisabledSpells()
 	Log.Notice("ObjectMgr", "%u disabled spells.", m_disabled_spells.size());
 }
 
+void ObjectMgr::ReloadDisabledSpells()
+{
+	m_disabled_spells.clear();
+	LoadDisabledSpells();
+}
+
 void ObjectMgr::LoadGroups()
 {
 	QueryResult * result = CharacterDatabase.Query("SELECT * FROM groups");

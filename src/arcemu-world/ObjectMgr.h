@@ -642,6 +642,7 @@ public:
 	}
 
 	void LoadDisabledSpells();
+	void ReloadDisabledSpells();
 	ARCEMU_INLINE GuildMap::iterator GetGuildsBegin() { return mGuild.begin(); }
 	ARCEMU_INLINE GuildMap::iterator GetGuildsEnd() { return mGuild.end(); }
 
