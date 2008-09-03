@@ -6894,6 +6894,35 @@ bool Unit::RemoveAllAurasByMechanic( uint32 MechanicType , uint32 MaxDispel = -1
 	return ( DispelCount == 0 );
 }
 
+void Unit::RemoveAllMovementImpairing()
+{
+	for( uint32 x = MAX_POSITIVE_AURAS; x < MAX_AURAS; x++ )
+	{
+		if( m_auras[x] != NULL )
+		{
+			if( m_auras[x]->GetSpellProto()->MechanicsType == MECHANIC_ROOTED 
+				|| m_auras[x]->GetSpellProto()->MechanicsType == MECHANIC_ENSNARED
+				|| m_auras[x]->GetSpellProto()->MechanicsType == MECHANIC_DAZED)
+
+			{
+				m_auras[x]->Remove();
+			}
+			else
+			{
+				for( int i = 0; i < 3; i++ )
+				{
+					if( m_auras[x]->GetSpellProto()->EffectApplyAuraName[i] == SPELL_AURA_MOD_DECREASE_SPEED 
+					|| m_auras[x]->GetSpellProto()->EffectApplyAuraName[i] == SPELL_AURA_MOD_ROOT )
+					{
+						m_auras[x]->Remove();
+						break;
+					}
+				}
+			}
+		}
+	}
+}
+
 void Unit::setAttackTimer(int32 time, bool offhand)
 {
 	if(!time)

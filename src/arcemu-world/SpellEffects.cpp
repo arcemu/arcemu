@@ -750,6 +750,41 @@ void Spell::SpellEffectDummy(uint32 i) // Dummy(Scripted events)
 	 *  --------------------------------------------
 	 *************************/
 
+	case 5938: //shiv
+	{
+		if( p_caster == NULL || unitTarget == NULL )
+			return;
+
+		p_caster->CastSpell(unitTarget->GetGUID(),5940,true);
+
+		if( p_caster->GetItemInterface() )
+		{
+			Item *it = p_caster->GetItemInterface()->GetInventoryItem( EQUIPMENT_SLOT_OFFHAND );
+			if( it == NULL )
+				return;
+		
+			EnchantmentInstance * ench = it->GetEnchantment( 1 ); // temp enchantment slot
+			if(ench)
+			{
+				EnchantEntry* Entry = ench->Enchantment;
+				for( uint32 c = 0; c < 3; c++ )
+				{
+					if( Entry->type[c] && Entry->spell[c] )
+					{
+						SpellEntry *sp = dbcSpell.LookupEntry( Entry->spell[c] );
+						if( sp == NULL )
+							return;
+					
+						if( sp->c_is_flags & SPELL_FLAG_IS_POISON )
+						{
+							p_caster->CastSpell(unitTarget->GetGUID(),Entry->spell[c], true);
+						}
+					}
+				}
+			}
+		}
+
+	} break;
 	/*
 		Preparation
 		When activated, this ability immediately finishes the cooldown on your Evasion, Sprint, Vanish, Cold Blood, Shadowstep and Premeditation abilities.		

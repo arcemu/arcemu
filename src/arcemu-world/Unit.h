@@ -821,7 +821,8 @@ public:
 	uint32 RemoveAllPosAuraByNameHash(uint32 namehash);//required to remove weaker instances of a spell
 	uint32 RemoveAllNegAuraByNameHash(uint32 namehash);//required to remove weaker instances of a spell
 	bool RemoveAllAurasByMechanic( uint32 MechanicType , uint32 MaxDispel , bool HostileOnly ); // Removes all (de)buffs on unit of a specific mechanic type.
-	
+	void RemoveAllMovementImpairing();
+
 	void RemoveNegativeAuras();
 	void RemoveAllAreaAuras();
 	// Temporary remove all auras
@@ -831,7 +832,7 @@ public:
 	Aura* FindAura(uint32 spellId, uint64 guid);
 	bool SetAurDuration(uint32 spellId,Unit* caster,uint32 duration);
 	bool SetAurDuration(uint32 spellId,uint32 duration);
-	   void DropAurasOnDeath();
+	void DropAurasOnDeath();
 	   
 	void castSpell(Spell * pSpell);
 	void InterruptSpell();

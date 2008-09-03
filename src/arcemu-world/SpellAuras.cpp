@@ -1654,6 +1654,11 @@ void Aura::SpellAuraDummy(bool apply)
 		m_target->InterruptSpell();
 		m_target->SchoolCastPrevent[school]=3000+getMSTime();
 	}break;
+	//improved sprint effect
+	case 30918:
+	{
+		m_target->RemoveAllMovementImpairing();
+	}break;
 	//Requires No Ammo
 	case 46699:
 		{
