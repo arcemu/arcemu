@@ -15076,6 +15076,26 @@ void ApplyNormalFixes()
 			sp->ProcOnNameHash[0] = SPELL_HASH_MOONFIRE;
 		}
 
+		//Relic - Idol of Terror
+		sp = dbcSpell.LookupEntryForced( 43737 );
+		if( sp != NULL )
+		{    
+			sp->proc_interval = 10001; //block proc when is already active.. (Primal Instinct duration = 10 sec)
+			sp->procFlags = PROC_ON_CAST_SPELL | PROC_TARGET_SELF;
+			sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
+			sp->EffectTriggerSpell[0] = 43738;
+			sp->procChance=85;
+		}
+
+		//Primal Instinct - Idol of Terror proc
+		sp = dbcSpell.LookupEntryForced( 43738 );
+		if( sp != NULL )
+		{    
+			sp->self_cast_only = true;
+			sp->ProcOnNameHash[0] = SPELL_HASH_MANGLE__CAT_;
+			sp->ProcOnNameHash[1] = SPELL_HASH_MANGLE__BEAR_;
+		}
+
 		//Tome of Fiery Redemption
 		sp = dbcSpell.LookupEntryForced( 37197 );
 		if( sp != NULL )

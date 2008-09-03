@@ -2125,12 +2125,6 @@ void Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, uint
 						if( CastingSpell == NULL )
 							continue;
 					}break;
-				//http://www.wowhead.com/?item=33509  Idol of Terror
-				case 43738: //Your Mangle ability has a chance to grant 65 agility for 10 sec.
-					{
-						if (!CastingSpell || CastingSpell->NameHash != SPELL_HASH_MANGLE__BEAR_ || CastingSpell->NameHash != SPELL_HASH_MANGLE__CAT_)
-							continue;
-					}break;
 				//http://www.wowhead.com/?item=32488 Ashtongue Talisman of Insight
 				case 40483:
 					{
