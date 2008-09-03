@@ -1640,6 +1640,20 @@ void Aura::SpellAuraDummy(bool apply)
 
 	switch(GetSpellId())
 	{
+	// Deadly Throw Interrupt
+	case 32748:
+	{
+		if ( m_target == NULL )
+			return;
+
+		uint32 school = 0;
+		if(m_target->GetCurrentSpell())
+		{
+			school = m_target->GetCurrentSpell()->GetProto()->School;
+		}
+		m_target->InterruptSpell();
+		m_target->SchoolCastPrevent[school]=3000+getMSTime();
+	}break;
 	//Requires No Ammo
 	case 46699:
 		{
