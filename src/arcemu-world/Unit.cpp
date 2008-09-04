@@ -592,7 +592,12 @@ bool Unit::canReachWithAttack(Unit *pVictim)
 		return false;
 
 //	float targetreach = pVictim->GetFloatValue(UNIT_FIELD_COMBATREACH);
-	float selfreach = m_floatValues[UNIT_FIELD_COMBATREACH];
+	float selfreach;
+	if( IsPlayer() )
+		selfreach = 5.0f; // minimum melee range, UNIT_FIELD_COMBATREACH is too small and used eg. in melee spells
+	else
+		selfreach = m_floatValues[UNIT_FIELD_COMBATREACH];
+
 	float targetradius;
 //	targetradius = pVictim->m_floatValues[UNIT_FIELD_BOUNDINGRADIUS]; //this is plain wrong. Represents i have no idea what :)
 	targetradius = pVictim->GetModelHalfSize();
