@@ -1885,6 +1885,8 @@ void Spell::SpellEffectApplyAura(uint32 i)  // Apply Aura
 	// avoid map corruption.
 	if(unitTarget->GetInstanceID()!=m_caster->GetInstanceID())
 		return;
+	if (!unitTarget->isAlive())
+		return;
 
 	//check if we already have stronger aura
 	Aura *pAura;
@@ -3391,6 +3393,8 @@ void Spell::SpellEffectDispel(uint32 i) // Dispel
 	{
 		start=0;
 		end=MAX_POSITIVE_AURAS;
+		if (unitTarget->SchoolImmunityList[GetProto()->School])
+			return;
 	}
 	else
 	{
