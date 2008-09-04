@@ -970,24 +970,50 @@ void Spell::SpellEffectDummy(uint32 i) // Dummy(Scripted events)
 	*/
 	case 18350:
 		{
-			if(!p_caster) return;
-			SpellEntry * sp = p_caster->last_heal_spell ? p_caster->last_heal_spell : GetProto();
-			uint32 cost = float2int32( float( float(sp->manaCost) * 0.6f ) );
-			uint32 basecost = cost;
-			SendHealManaSpellOnPlayer(p_caster, p_caster, cost, 0);
-			cost+=p_caster->GetUInt32Value(UNIT_FIELD_POWER1);
-			if(cost>p_caster->GetUInt32Value(UNIT_FIELD_MAXPOWER1))
-				p_caster->SetUInt32Value(UNIT_FIELD_POWER1,p_caster->GetUInt32Value(UNIT_FIELD_MAXPOWER1));
-			else
-				p_caster->SetUInt32Value(UNIT_FIELD_POWER1,cost);
+			switch( m_triggeredByAura==NULL ? pSpellId : m_triggeredByAura->GetSpellId() )
+			{
+			case 20210:
+			case 20212:
+			case 20213:
+			case 20214:
+			case 20215:
+				{
+					if(!p_caster) return;
+					SpellEntry * sp = p_caster->last_heal_spell ? p_caster->last_heal_spell : GetProto();
+					uint32 cost = float2int32( float( float(sp->manaCost) * 0.6f ) );
+					uint32 basecost = cost;
+					SendHealManaSpellOnPlayer(p_caster, p_caster, cost, 0);
+					cost+=p_caster->GetUInt32Value(UNIT_FIELD_POWER1);
+					if(cost>p_caster->GetUInt32Value(UNIT_FIELD_MAXPOWER1))
+						p_caster->SetUInt32Value(UNIT_FIELD_POWER1,p_caster->GetUInt32Value(UNIT_FIELD_MAXPOWER1));
+					else
+						p_caster->SetUInt32Value(UNIT_FIELD_POWER1,cost);
 
-			WorldPacket datamr(SMSG_HEALMANASPELL_ON_PLAYER, 30);
-			datamr << unitTarget->GetNewGUID();
-			datamr << u_caster->GetNewGUID();
-			datamr << uint32(20272);
-			datamr << uint32(0);
-			datamr << uint32( basecost );
-			u_caster->SendMessageToSet(&datamr,true);
+					WorldPacket datamr(SMSG_HEALMANASPELL_ON_PLAYER, 30);
+					datamr << unitTarget->GetNewGUID();
+					datamr << u_caster->GetNewGUID();
+					datamr << uint32(20272);
+					datamr << uint32(0);
+					datamr << uint32( basecost );
+					u_caster->SendMessageToSet(&datamr,true);
+				}break;
+			case 38443:
+				{
+					// Shaman - Skyshatter Regalia - Two Piece Bonus
+					// it checks for earth, air, water, fire totems and triggers Totemic Mastery spell 38437.
+					if(!p_caster) return;
+					if(p_caster->m_TotemSlots[0] && p_caster->m_TotemSlots[1] && p_caster->m_TotemSlots[2] && p_caster->m_TotemSlots[3])
+					{
+						Aura *aur = AuraPool.PooledNew();
+						aur->Init(dbcSpell.LookupEntry(38437), 5000, p_caster, p_caster);
+						for( uint32 i=0; i<3; i++ ) 
+							aur->AddMod( aur->GetSpellProto()->EffectApplyAuraName[i], aur->GetSpellProto()->EffectBasePoints[i]+1, aur->GetSpellProto()->EffectMiscValue[i], i );
+						p_caster->AddAura(aur);
+					}
+				}break;
+			default:
+				return;
+			}
 		}break;
 	/*************************
 	 * PRIEST SPELLS
