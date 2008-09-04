@@ -3035,13 +3035,13 @@ else
 	crit += pVictim->IsPlayer() ? vsk * 0.04f : min( vsk * 0.2f, 0.0f ); 
 
 	if(vsk>0)
-			hitchance = std::max(hitchance,95.0f+vsk*0.02f+hitmodifier);
+			hitchance = 95.0f+vsk*0.02f;
 	else
 	{
 		if(pVictim->IsPlayer())
-			hitchance = std::max(hitchance,95.0f+vsk*0.04f+hitmodifier);
+			hitchance = 95.0f+vsk*0.04f;
 		else
-			hitchance = std::max(hitchance,100.0f+vsk*0.6f+hitmodifier); //not wowwiki but more balanced
+			hitchance = 100.0f+vsk*0.6f; //not wowwiki but more balanced
 	}
 
 	if(ability && ability->SpellGroupType)
@@ -3076,6 +3076,7 @@ else
 		glanc=0.0f;
 	}
 	else
+	{
 		if(this->IsPlayer())
 		{
 			it = static_cast< Player* >( this )->GetItemInterface()->GetInventoryItem( EQUIPMENT_SLOT_OFFHAND );
@@ -3088,6 +3089,9 @@ else
 					hitmodifier -= 4.0f;
 			}
 		}
+	}
+
+	hitchance+= hitmodifier;
 
 	//Hackfix for Surprise Attacks
 	if(  this->IsPlayer() && ability && static_cast< Player* >( this )->m_finishingmovesdodge && ability->c_is_flags & SPELL_FLAG_IS_FINISHING_MOVE)
