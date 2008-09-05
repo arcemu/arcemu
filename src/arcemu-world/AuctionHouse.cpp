@@ -318,6 +318,25 @@ void AuctionHouse::SendBidListPacket(Player * plr, WorldPacket * packet)
 	plr->GetSession()->SendPacket(&data);
 }
 
+void AuctionHouse::UpdateOwner(uint32 oldGuid, uint32 newGuid)
+{
+	auctionLock.AcquireWriteLock();
+	HM_NAMESPACE::hash_map<uint32, Auction*>::iterator itr = auctions.begin();
+	Auction * auction;
+	for(; itr != auctions.end(); ++itr)
+	{
+		auction = itr->second;
+		if(auction->Owner == oldGuid)
+			auction->Owner = newGuid;
+		if(auction->HighestBidder == oldGuid)
+		{
+			auction->HighestBidder = newGuid;
+			auction->UpdateInDB();
+		}
+	}
+	auctionLock.ReleaseWriteLock();
+}
+
 void AuctionHouse::SendOwnerListPacket(Player * plr, WorldPacket * packet)
 {
 	uint32 count = 0;
@@ -583,7 +602,7 @@ void WorldSession::HandleAuctionSellItem( WorldPacket & recv_data )
 		return;
 	}
 
-	pItem = _player->GetItemInterface()->SafeRemoveAndRetreiveItemByGuid(item, true);
+	pItem = _player->GetItemInterface()->SafeRemoveAndRetreiveItemByGuid(item, false);
 	if (!pItem){
 		WorldPacket data(SMSG_AUCTION_COMMAND_RESULT, 8);
 		data << uint32(0);
@@ -592,6 +611,11 @@ void WorldSession::HandleAuctionSellItem( WorldPacket & recv_data )
 		SendPacket(&data);
 		return;
 	};
+
+	if( pItem->IsInWorld() )
+	{
+		pItem->RemoveFromWorld();
+	}
 
 	pItem->SetOwner(NULL);
 	pItem->m_isDirty = true;

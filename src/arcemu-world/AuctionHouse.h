@@ -91,6 +91,7 @@ public:
 	void QueueDeletion(Auction * auct, uint32 Reason);
 
 	void SendOwnerListPacket(Player * plr, WorldPacket * packet);
+	void UpdateOwner(uint32 oldGuid, uint32 newGuid);
 	void SendBidListPacket(Player * plr, WorldPacket * packet);
 	void SendAuctionBuyOutNotificationPacket(Auction * auct);
 	void SendAuctionOutBidNotificationPacket(Auction * auct, uint64 newBidder, uint32 newHighestBid);
