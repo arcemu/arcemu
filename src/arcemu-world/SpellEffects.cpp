@@ -5980,9 +5980,12 @@ void Spell::SpellEffectFilming( uint32 i )
 
 	TaxiPath* taxipath = sTaxiMgr.GetTaxiPath(GetProto()->EffectMiscValue[0]);
 
+	if( !taxipath )
+		return;
+
 	TaxiNode* taxinode = sTaxiMgr.GetTaxiNode( taxipath->GetSourceNode() );
 
-	if( !taxinode || !taxipath )
+	if( !taxinode )
 		return;
 
 	uint32 modelid =0;
