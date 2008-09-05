@@ -1160,6 +1160,11 @@ bool ChatHandler::HandleDBReloadCommand(const char* args, WorldSession* m_sessio
 	{
 		objmgr.ReloadDisabledSpells();
 		ret = 1;
+	} else
+	if (0 == stricmp(args, "vendors"))
+	{
+		objmgr.ReloadVendors();
+		ret = 1;
 	}
 	else
 	{

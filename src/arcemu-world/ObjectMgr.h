@@ -547,6 +547,7 @@ public:
 	void LoadAuctionItems();
 	void LoadSpellSkills();
 	void LoadVendors();
+	void ReloadVendors();
 	void LoadTotemSpells();
 	void LoadAIThreatToSpellId();
 	void LoadSpellFixes();

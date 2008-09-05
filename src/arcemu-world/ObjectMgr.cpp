@@ -1322,6 +1322,12 @@ void ObjectMgr::LoadVendors()
 	Log.Notice("ObjectMgr", "%u vendors loaded.", mVendors.size());
 }
 
+void ObjectMgr::ReloadVendors()
+{
+	mVendors.clear();
+	LoadVendors();
+}
+
 std::vector<CreatureItem>* ObjectMgr::GetVendorList(uint32 entry)
 {
 	return mVendors[entry];
