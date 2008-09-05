@@ -981,21 +981,7 @@ void Spell::SpellEffectDummy(uint32 i) // Dummy(Scripted events)
 					if(!p_caster) return;
 					SpellEntry * sp = p_caster->last_heal_spell ? p_caster->last_heal_spell : GetProto();
 					uint32 cost = float2int32( float( float(sp->manaCost) * 0.6f ) );
-					uint32 basecost = cost;
-					SendHealManaSpellOnPlayer(p_caster, p_caster, cost, 0);
-					cost+=p_caster->GetUInt32Value(UNIT_FIELD_POWER1);
-					if(cost>p_caster->GetUInt32Value(UNIT_FIELD_MAXPOWER1))
-						p_caster->SetUInt32Value(UNIT_FIELD_POWER1,p_caster->GetUInt32Value(UNIT_FIELD_MAXPOWER1));
-					else
-						p_caster->SetUInt32Value(UNIT_FIELD_POWER1,cost);
-
-					WorldPacket datamr(SMSG_HEALMANASPELL_ON_PLAYER, 30);
-					datamr << unitTarget->GetNewGUID();
-					datamr << u_caster->GetNewGUID();
-					datamr << uint32(20272);
-					datamr << uint32(0);
-					datamr << uint32( basecost );
-					u_caster->SendMessageToSet(&datamr,true);
+					p_caster->Energize(p_caster, 20272, cost, POWER_TYPE_MANA );
 				}break;
 			case 38443:
 				{
