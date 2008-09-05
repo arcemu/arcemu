@@ -5713,9 +5713,16 @@ void Aura::SpellAuraMounted(bool apply)
 		if( p_target->GetShapeShift() && !(p_target->GetShapeShift() & FORM_BATTLESTANCE | FORM_DEFENSIVESTANCE | FORM_BERSERKERSTANCE ) && p_target->m_ShapeShifted != m_spellProto->Id )
 			p_target->RemoveAura( p_target->m_ShapeShifted );
 
+/*
+		// Zack : disabled due to exploits
+		// 1) summon was not always the same
+		// 2) people were able to heal pet very easely
 		//desummon summons
 		if( p_target->GetSummon() != NULL )
+		{
 			p_target->GetSummon()->Remove( false, true, false ); // just remove for later re-call
+			mod->fixed_amount[mod->i] = 1;
+		}*/
 	}
 	else
 	{
@@ -5724,7 +5731,9 @@ void Aura::SpellAuraMounted(bool apply)
 		m_target->SetUInt32Value(UNIT_FIELD_MOUNTDISPLAYID, 0);
 		//m_target->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_MOUNTED_TAXI);
 			
-		p_target->SpawnActivePet();// get pet back
+		//if we had pet then respawn
+//		if( mod->fixed_amount[mod->i]==1 )
+//			p_target->SpawnActivePet();// get pet back
 	}
 }
 
