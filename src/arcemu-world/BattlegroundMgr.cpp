@@ -383,30 +383,7 @@ int CBattlegroundManager::CreateArenaType(int type, Group * group1, Group * grou
 	return 0;
 }
 
-void CBattlegroundManager::AddPlayerToBg(CBattleground * bg, deque<uint32> *playerVec, uint32 i, uint32 j)
-{
-	uint32 plrguid = *playerVec->begin();
-	playerVec->pop_front();
-	Player *plr = objmgr.GetPlayer(plrguid);
-	if(plr) {
-		if(bg->CanPlayerJoin(plr,bg->GetType()))
-		{
-			bg->AddPlayer(plr, plr->GetTeam());
-			ErasePlayerFromList(plr->GetLowGUID(), &m_queuedPlayers[i][j]);
-		}
-		else 
-		{
-			// Put again the player in the queue
-			playerVec->push_back(plrguid);
-		}
-	}
-	else
-	{
-		ErasePlayerFromList(plrguid, &m_queuedPlayers[i][j]);
-	}
-}
-
-void CBattlegroundManager::AddPlayerToBgTeam(CBattleground * bg, deque<uint32> *playerVec, uint32 i, uint32 j, int Team)
+void CBattlegroundManager::AddPlayerToBg(CBattleground * bg, deque<uint32> *playerVec, uint32 i, uint32 j, int Team)
 {
 	if (bg->HasFreeSlots(Team,bg->GetType()))
 	{
@@ -522,8 +499,17 @@ void CBattlegroundManager::EventQueueUpdate(bool forceStart)
 					int size = (int)min(tempPlayerVec[0].size(),tempPlayerVec[1].size());
 					for(int counter = 0; (counter < size) && (bg->IsFull() == false); counter++)
 					{
-						AddPlayerToBg(bg, &tempPlayerVec[0], i, j);
-						AddPlayerToBg(bg, &tempPlayerVec[1], i, j);
+						AddPlayerToBg(bg, &tempPlayerVec[0], i, j, 0);
+						AddPlayerToBg(bg, &tempPlayerVec[1], i, j, 1);
+					}
+
+					while (tempPlayerVec[0].size() > 0 && bg->HasFreeSlots(0, bg->GetType()))
+					{
+						AddPlayerToBg(bg, &tempPlayerVec[0], i, j, 0);
+					}
+					while (tempPlayerVec[1].size() > 0 && bg->HasFreeSlots(1, bg->GetType()))
+					{
+						AddPlayerToBg(bg, &tempPlayerVec[1], i, j, 1);
 					}
 				}
 			}
@@ -585,7 +571,7 @@ void CBattlegroundManager::EventQueueUpdate(bool forceStart)
 							{
 								while(tempPlayerVec[k].size() && bg->HasFreeSlots(k, bg->GetType()))
 								{
-									AddPlayerToBgTeam(bg, &tempPlayerVec[k], i, j, k);
+									AddPlayerToBg(bg, &tempPlayerVec[k], i, j, k);
 								}
 							}
 						}
@@ -594,8 +580,8 @@ void CBattlegroundManager::EventQueueUpdate(bool forceStart)
 							int size = (int)min(tempPlayerVec[0].size(),tempPlayerVec[1].size());
 							for(int counter = 0; (counter < size) && (bg->IsFull() == false); counter++)
 							{
-								AddPlayerToBgTeam(bg, &tempPlayerVec[0], i, j, 0);
-								AddPlayerToBgTeam(bg, &tempPlayerVec[1], i, j, 1);
+								AddPlayerToBg(bg, &tempPlayerVec[0], i, j, 0);
+								AddPlayerToBg(bg, &tempPlayerVec[1], i, j, 1);
 							}
 						}
 					}
