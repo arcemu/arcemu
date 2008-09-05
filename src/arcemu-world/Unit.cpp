@@ -3911,17 +3911,17 @@ void Unit::smsg_AttackStop(Unit* pVictim)
 	}
 	else
 	{
-		if(!IsPlayer() || getClass() == ROGUE)
+		if( !IsPlayer() || getClass() == ROGUE )
 		{
 			m_cTimer = getMSTime() + 5000;
-			sEventMgr.RemoveEvents(this, EVENT_COMBAT_TIMER); 
-			sEventMgr.AddEvent(this, &Unit::EventUpdateFlag, EVENT_COMBAT_TIMER, 5000, 1, 0);
-			sEventMgr.AddEvent(pVictim, &Unit::EventUpdateFlag, EVENT_COMBAT_TIMER, 5000, 1, 0);
-		}
+			sEventMgr.RemoveEvents( this, EVENT_COMBAT_TIMER ); 
+			sEventMgr.AddEvent( this, &Unit::EventUpdateFlag, EVENT_COMBAT_TIMER, 5000, 1, 0 );
+			if( pVictim->IsUnit() ) // there could be damage coming from objects/enviromental
+				sEventMgr.AddEvent( pVictim, &Unit::EventUpdateFlag, EVENT_COMBAT_TIMER, 5000, 1, 0 );		}
 		else
 		{
-			pVictim->CombatStatus.RemoveAttacker(this, GetGUID());
-			CombatStatus.RemoveAttackTarget(pVictim);
+			pVictim->CombatStatus.RemoveAttacker( this, GetGUID() );
+			CombatStatus.RemoveAttackTarget( pVictim );
 		}
 	}
 }
@@ -6955,7 +6955,7 @@ void Unit::ReplaceAIInterface(AIInterface *new_interface)
 
 void Unit::EventUpdateFlag()  
 {  
-static_cast< Player * >( this )->CombatStatus.UpdateFlag(); 
+	CombatStatus.UpdateFlag(); 
 }
 
 bool Unit::HasAurasOfNameHashWithCaster(uint32 namehash, Unit * caster)
