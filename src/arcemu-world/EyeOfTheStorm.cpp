@@ -827,7 +827,6 @@ bool EyeOfTheStorm::GivePoints(uint32 team, uint32 points)
 				}
 			}
 		}
-		m_winningteam = m_winningteam ? 0 : 1;
 		m_mainLock.Release();
 		SetWorldState( EOTS_WORLDSTATE_ALLIANCE_VICTORYPOINTS + team, m_points[team] );
 		UpdatePvPData();
