@@ -3648,61 +3648,20 @@ void Aura::SpellAuraPeriodicEnergize(bool apply)
 	}
 }
 
-void Aura::EventPeriodicEnergize(uint32 amount,uint32 type)
+void Aura::EventPeriodicEnergize( uint32 amount, uint32 type )
 {
-	/*Unit*m_caster=GetUnitCaster();
-	if(!m_caster) return;
+	uint32 POWER_TYPE = UNIT_FIELD_POWER1 + type;
 
-	if(m_target->isAlive() && m_caster->isAlive())
+	ASSERT( POWER_TYPE <= UNIT_FIELD_POWER5 );
+
+	if( GetUnitCaster() == NULL )
+		return;
+	
+	GetUnitCaster()->Energize( m_target, m_spellProto->Id, amount, type );
+
+	if( ( GetSpellProto()->AuraInterruptFlags & AURA_INTERRUPT_ON_STAND_UP ) && type == POWER_TYPE_MANA )
 	{
-			uint32 powerField;
-			uint32 currentPower;
-			switch(GetSpellProto()->powerType)
-			{
-				case POWER_TYPE_HEALTH:{
-						powerField = UNIT_FIELD_HEALTH;
-									   }break;
-				case POWER_TYPE_MANA:{
-						powerField = UNIT_FIELD_POWER1;
-									 }break;
-				case POWER_TYPE_RAGE:{
-						powerField = UNIT_FIELD_POWER2;
-									 }break;
-				case POWER_TYPE_ENERGY:{
-						powerField = UNIT_FIELD_POWER4;
-									   }break;
-				default:{
-						sLog.outDebug("unknown power type");
-						}break;
-			};
-			if((GetSpellProto()->powerType != type) && (GetSpellId() != 1539))//Feed Pet
-			{
-
-				currentPower = m_target->GetUInt32Value(powerField);
-
-				if(currentPower < (GetSpellProto()->manaCost ))//wtf??
-					m_target->SetUInt32Value(powerField, 0);
-				else
-					m_target->SetUInt32Value(powerField, currentPower - GetSpellProto()->manaCost );
-			}*/
-			//meaning of this is unknown....reenable it if's needed
-	uint32 POWER_TYPE=UNIT_FIELD_POWER1+type;
-
-	ASSERT(POWER_TYPE<=UNIT_FIELD_POWER5);
-
-	uint32 curEnergy = m_target->GetUInt32Value(POWER_TYPE);
-	uint32 maxEnergy = m_target->GetUInt32Value(POWER_TYPE+6);
-	uint32 totalEnergy = curEnergy+amount;
-	if(totalEnergy > maxEnergy)
-		m_target->SetUInt32Value(POWER_TYPE,maxEnergy);
-	else
-		m_target->SetUInt32Value(POWER_TYPE,totalEnergy);
-
-	SendPeriodicAuraLog( m_casterGuid, m_target, m_spellProto->Id, m_spellProto->School, amount, 0, 0, FLAG_PERIODIC_ENERGIZE);
-
-	if((GetSpellProto()->AuraInterruptFlags & AURA_INTERRUPT_ON_STAND_UP) && type == 0)
-	{
-		m_target->Emote(EMOTE_ONESHOT_EAT);
+		m_target->Emote( EMOTE_ONESHOT_EAT );
 	}
 }
 
@@ -5932,13 +5891,13 @@ void Aura::SpellAuraDrinkNew(bool apply)
 	}
 }
 
-void Aura::EventPeriodicEnergizeVariable(uint32 amount,uint32 type)
+void Aura::EventPeriodicEnergizeVariable( uint32 amount, uint32 type )
 {
-	uint32 POWER_TYPE=UNIT_FIELD_POWER1+type;
+	uint32 POWER_TYPE = UNIT_FIELD_POWER1 + type;
 	
 	ASSERT(POWER_TYPE<=UNIT_FIELD_POWER5);
-	uint32 curEnergy = m_target->GetUInt32Value(POWER_TYPE);
-	uint32 maxEnergy = m_target->GetUInt32Value(POWER_TYPE+6);
+	uint32 curEnergy = m_target->GetUInt32Value( POWER_TYPE );
+	uint32 maxEnergy = m_target->GetUInt32Value( POWER_TYPE + 6 );
 
 	switch( m_spellProto->NameHash )
 	{
@@ -5962,16 +5921,10 @@ void Aura::EventPeriodicEnergizeVariable(uint32 amount,uint32 type)
 		default:
 			//something
 			;
-	}					
+	}
 
-	uint32 totalEnergy = curEnergy+amount;
-	if(totalEnergy > maxEnergy)
-		m_target->SetUInt32Value(POWER_TYPE,maxEnergy);
-	else
-		m_target->SetUInt32Value(POWER_TYPE,totalEnergy);
-	
-	SendPeriodicAuraLog( m_casterGuid, m_target, m_spellProto->Id, m_spellProto->School, amount, 0, 0, FLAG_PERIODIC_ENERGIZE);
-
+	if( GetUnitCaster() != NULL )
+		GetUnitCaster()->Energize( m_target, m_spellProto->Id, amount, type );
 }
 
 void Aura::EventPeriodicDrink(uint32 amount)

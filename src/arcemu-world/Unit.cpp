@@ -6536,31 +6536,29 @@ void Unit::Heal(Unit *target, uint32 SpellId, uint32 amount)
 		target->RemoveAurasByHeal();
 	}
 }
-void Unit::Energize(Unit* target,uint32 SpellId, uint32 amount,uint32 type)
-{//Static energize
-	if(!target || !SpellId || !amount)
+void Unit::Energize( Unit* target, uint32 SpellId, uint32 amount, uint32 type )
+{	//Static energize
+	if( !target || !SpellId || !amount )
 		return;
-	uint32 cm=target->GetUInt32Value(UNIT_FIELD_POWER1+type);
-	uint32 mm=target->GetUInt32Value(UNIT_FIELD_MAXPOWER1+type);
-	if(mm!=cm)
-	{
-		cm += amount;
-		if(cm > mm)
-		{
-			target->SetUInt32Value(UNIT_FIELD_POWER1+type, mm);
-			amount += mm-cm;
-		}
-		else 
-			target->SetUInt32Value(UNIT_FIELD_POWER1+type, cm);
+	
+	uint32 cur = target->GetUInt32Value( UNIT_FIELD_POWER1 + type );
+	uint32 max = target->GetUInt32Value( UNIT_FIELD_MAXPOWER1 + type );
+	
+	/*if( max == cur ) // can we show null power gains in client? eg. zero happiness gain should be show...
+		return;*/
 
-		WorldPacket datamr(SMSG_HEALMANASPELL_ON_PLAYER, 30);
-		datamr << target->GetNewGUID();
-		datamr << this->GetNewGUID();
-		datamr << uint32(SpellId);
-		datamr << uint32(0);
-		datamr << uint32(amount);
-		this->SendMessageToSet(&datamr,true);
-	}
+	if( cur + amount > max )
+		amount = max - cur;
+
+	target->SetUInt32Value( UNIT_FIELD_POWER1 + type, cur + amount );
+
+	WorldPacket datamr( SMSG_SPELLENERGIZELOG, 30 );
+	datamr << target->GetNewGUID();
+	datamr << this->GetNewGUID();
+	datamr << SpellId;
+	datamr << type;
+	datamr << amount;
+	this->SendMessageToSet( &datamr, true );
 }
 
 void Unit::InheritSMMods(Unit *inherit_from)

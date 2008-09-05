@@ -1369,6 +1369,8 @@ typedef void(Spell::*pSpellTarget)(uint32 i, uint32 j);
 #define POWER_TYPE_RAGE 1
 #define POWER_TYPE_FOCUS 2
 #define POWER_TYPE_ENERGY 3
+#define POWER_TYPE_HAPPINESS 4
+#define POWER_TYPE_RUNES 5
 // we have power type 15 and 31 :S
 
 #define GO_FISHING_BOBBER 35591
@@ -1471,7 +1473,6 @@ public:
     void SendChannelStart(uint32 duration);
     void SendResurrectRequest(Player* target);
     void SendHealSpellOnPlayer(Object* caster, Object* target, uint32 dmg,bool critical);
-    void SendHealManaSpellOnPlayer(Object * caster, Object * target, uint32 dmg, uint32 powertype);
 	void SendTameFailure( uint8 failure );
     
 

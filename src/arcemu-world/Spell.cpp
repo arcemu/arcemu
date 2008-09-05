@@ -4569,22 +4569,6 @@ void Spell::SendHealSpellOnPlayer(Object* caster, Object* target, uint32 dmg,boo
 	caster->SendMessageToSet(&data, true);
 }
 
-void Spell::SendHealManaSpellOnPlayer(Object * caster, Object * target, uint32 dmg, uint32 powertype)
-{
-	if(!caster || !target || !target->IsPlayer())
-		return;
-
-	WorldPacket data(SMSG_HEALMANASPELL_ON_PLAYER, 30);
-
-	data << target->GetNewGUID();
-	data << caster->GetNewGUID();
-	data << (pSpellId ? pSpellId : GetProto()->Id);
-	data << powertype;
-	data << dmg;
-
-	caster->SendMessageToSet(&data, true);
-}
-
 void Spell::Heal(int32 amount, bool ForceCrit)
 {
 	int32 base_amount = amount; //store base_amount for later use
