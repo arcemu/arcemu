@@ -225,8 +225,11 @@ public:
 	/* Creates an arena with groups group1 and group2 */
 	int CreateArenaType(int type, Group * group1, Group * group2);
 
+	/* Add player to bg team */
+	void AddPlayerToBgTeam(CBattleground * bg, deque<uint32> *playerVec, uint32 i, uint32 j, int Team);
+
 	/* Add player to bg */
-	void AddPlayerToBg(CBattleground * bg, deque<uint32> *playerVec, uint32 i, uint32 j, int Team);
+	void AddPlayerToBg(CBattleground * bg, deque<uint32> *playerVec, uint32 i, uint32 j);
 };
 
 class CBattleground : public EventableObject
