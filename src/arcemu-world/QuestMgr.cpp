@@ -978,7 +978,7 @@ void QuestMgr::OnQuestFinished(Player* plr, Quest* qst, Object *qst_giver, uint3
 	}
 
     //details: hmm as i can remember, repeatable quests give faction rep still after first completation
-    if(IsQuestRepeatable(qst))
+    if(IsQuestRepeatable(qst) || IsQuestDaily(qst))
     {
 		// Reputation reward
 		GiveQuestRewardReputation(plr, qst, qst_giver);
