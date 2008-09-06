@@ -583,8 +583,10 @@ uint8 Spell::DidHit(uint32 effindex,Unit* target)
 
 	/************************************************************************/
 	/* Check if the target is immune to this spell school                   */
+	/* Unless the spell would actually dispel invulnerabilities             */
 	/************************************************************************/
-	if(u_victim->SchoolImmunityList[GetProto()->School])
+	int dispelMechanic = GetProto()->Effect[0] == SPELL_EFFECT_DISPEL_MECHANIC && GetProto()->EffectMiscValue[0] == MECHANIC_INVULNERABLE;
+	if(u_victim->SchoolImmunityList[GetProto()->School] && !dispelMechanic)
 		return SPELL_DID_HIT_IMMUNE;
 
 	/*************************************************************************/
@@ -1547,11 +1549,9 @@ void Spell::cast(bool check)
 						}
 
 						// Capt: The way this is done is NOT GOOD. Target code should be redone.
-						else if( GetProto()->Effect[x] == SPELL_EFFECT_TELEPORT_UNITS)
-                        {
-							HandleEffects(m_caster->GetGUID(),x);
-                        }
-						else if( GetProto()->Effect[x] == SPELL_EFFECT_SUMMON )
+						else if( GetProto()->Effect[x] == SPELL_EFFECT_TELEPORT_UNITS ||
+							     GetProto()->Effect[x] == SPELL_EFFECT_SUMMON ||
+								 GetProto()->Effect[x] == SPELL_EFFECT_TRIGGER_SPELL)
                         {
 							HandleEffects(m_caster->GetGUID(),x);
                         }

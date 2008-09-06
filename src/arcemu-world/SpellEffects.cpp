@@ -4027,16 +4027,13 @@ void Spell::SpellEffectThreat(uint32 i) // Threat
 
 void Spell::SpellEffectTriggerSpell(uint32 i) // Trigger Spell
 {
-	if(!unitTarget)
-		return;
+	SpellEntry *entry = dbcSpell.LookupEntry(GetProto()->EffectTriggerSpell[i]);
+	if (entry == NULL) return;
 
-	Spell*sp=SpellPool.PooledNew();
-	sp->Init(m_caster,dbcSpell.LookupEntry(GetProto()->EffectTriggerSpell[i]),true,NULL);
-	SpellCastTargets tgt(unitTarget->GetGUID());
-	sp->prepare(&tgt);
-
-	//if(GetProto()->EffectTriggerSpell[i] != 0)
-	  //  TriggerSpellId = GetProto()->EffectTriggerSpell[i];	
+	SpellCastTargets targets = m_targets;
+	Spell *sp = SpellPool.PooledNew();
+	sp->Init(m_caster,entry,true,NULL);
+	sp->prepare(&targets);
 }
 
 void Spell::SpellEffectHealthFunnel(uint32 i) // Health Funnel
