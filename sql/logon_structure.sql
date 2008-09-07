@@ -24,7 +24,7 @@ CREATE TABLE `accounts` (
 -- ----------------------------
 CREATE TABLE `ipbans` (
   `ip` varchar(20) collate utf8_unicode_ci NOT NULL default '' COMMENT 'Remote host',
-  `expire` timestamp NOT NULL default '0000-00-00 00:00:00' COMMENT 'Expiry time (s)',
+  `expire`  int(10) NOT NULL COMMENT 'Expiry time (s)',
   PRIMARY KEY  (`ip`),
   UNIQUE KEY `a` (`ip`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='IPBanner';
