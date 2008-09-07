@@ -1682,7 +1682,7 @@ void Player::_SavePet(QueryBuffer * buf)
 	for(std::map<uint32, PlayerPet*>::iterator itr = m_Pets.begin(); itr != m_Pets.end(); itr++)
 	{
 		ss.rdbuf()->str("");
-		ss << "INSERT INTO playerpets VALUES('"
+		ss << "REPLACE INTO playerpets VALUES('"
 			<< GetLowGUID() << "','"
 			<< itr->second->number << "','"
 			<< CharacterDatabase.EscapeString(itr->second->name) << "','"
