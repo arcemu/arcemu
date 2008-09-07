@@ -1961,7 +1961,7 @@ void Spell::SpellEffectPowerDrain(uint32 i)  // Power Drain
 		damage *= float2int32( 1 - ( ( static_cast<Player*>(unitTarget)->CalcRating( PLAYER_RATING_MODIFIER_SPELL_CRIT_RESILIENCE ) * 2 ) / 100.0f ) );
 	}
 	uint32 amt = damage + ( ( u_caster->GetDamageDoneMod( GetProto()->School ) * 80 ) / 100 );
-	u_caster->Energize( u_caster, amt, GetProto()->Id, GetProto()->EffectMiscValue[i] );
+	u_caster->Energize( u_caster, GetProto()->Id, amt, GetProto()->EffectMiscValue[i] );
 }
 
 void Spell::SpellEffectHealthLeech(uint32 i) // Health Leech
