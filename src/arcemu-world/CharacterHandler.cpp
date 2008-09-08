@@ -568,7 +568,7 @@ void WorldSession::HandleCharRenameOpcode(WorldPacket & recv_data)
 	CharacterDatabase.WaitExecute("UPDATE characters SET name = '%s' WHERE guid = %u", name.c_str(), (uint32)guid);
 	CharacterDatabase.WaitExecute("UPDATE characters SET forced_rename_pending = 0 WHERE guid = %u", (uint32)guid);
 	
-	data << uint8( CHAR_NAME_SUCCESS ) << guid << name;
+	data << uint8( RESPONSE_SUCCESS ) << guid << name;
 	SendPacket( &data );
 }
 
@@ -844,10 +844,10 @@ void WorldSession::FullLogin(Player * plr)
 
 	// Send revision (if enabled)
 #ifdef WIN32
-	_player->BroadcastMessage("Powered by: %sArcEmu %s r%u/%s-Win-%s %s(Please report ALL bugs to www.ArcEmu.org/forums/)", MSG_COLOR_WHITE, BUILD_TAG,
+	_player->BroadcastMessage("%sArcEmu/ABCWoW %s r%u/%s-Win-%s %s(www.ArcEmu.org)", MSG_COLOR_WHITE, BUILD_TAG,
 		BUILD_REVISION, CONFIG, ARCH, MSG_COLOR_LIGHTBLUE);		
 #else
-	_player->BroadcastMessage("Powered by: %sArcEmu %s r%u/%s-%s %s(Please report ALL bugs to www.ArcEmu.org/forums/)", MSG_COLOR_WHITE, BUILD_TAG,
+	_player->BroadcastMessage("%sArcEmu/ABCWoW %s r%u/%s-%s %s(www.ArcEmu.org)", MSG_COLOR_WHITE, BUILD_TAG,
 		BUILD_REVISION, PLATFORM_TEXT, ARCH, MSG_COLOR_LIGHTBLUE);
 #endif
 
