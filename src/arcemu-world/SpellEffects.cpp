@@ -1893,8 +1893,6 @@ void Spell::SpellEffectApplyAura(uint32 i)  // Apply Aura
 	// avoid map corruption.
 	if(unitTarget->GetInstanceID()!=m_caster->GetInstanceID())
 		return;
-	if (!unitTarget->isAlive())
-		return;
 
 	//check if we already have stronger aura
 	Aura *pAura;
