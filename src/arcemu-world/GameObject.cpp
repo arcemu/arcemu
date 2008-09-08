@@ -372,15 +372,14 @@ void GameObject::InitAI()
 	{	
 		spellid = pInfo->sound3;
 	}
-	else if(pInfo->Type == GAMEOBJECT_TYPE_SPELL_FOCUS)//redirect to properties of another go
+	else if(pInfo->Type == GAMEOBJECT_TYPE_SPELL_FOCUS)
 	{
-		uint32 new_entry = pInfo->sound2;
-		if(!new_entry)
+		// get spellid from attached gameobject - by sound2 field
+		if( pInfo->sound2 == 0 )
 			return;
-		pInfo = GameObjectNameStorage.LookupEntry( new_entry );
-		if(!pInfo)
+		if( GameObjectNameStorage.LookupEntry( pInfo->sound2 ) == NULL )
 			return;
-		spellid = pInfo->sound3;
+		spellid = GameObjectNameStorage.LookupEntry( pInfo->sound2 )->sound3;
 	}
 	else if(pInfo->Type == GAMEOBJECT_TYPE_RITUAL)
 	{	
