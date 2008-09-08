@@ -3487,12 +3487,24 @@ void Spell::SpellEffectSummonWild(uint32 i)  // Summon Wild
 		sLog.outDetail("Warning : Missing summon creature template %u used by spell %u!",cr_entry,GetProto()->Id);
 		return;
 	}
+	float x, y, z;
+	if( m_targets.m_targetMask & TARGET_FLAG_DEST_LOCATION && m_targets.m_destX && m_targets.m_destY && m_targets.m_destZ )
+	{
+		x = m_targets.m_destX;
+		y = m_targets.m_destY;
+		z = m_targets.m_destZ;
+	}
+	else
+	{
+		x = u_caster->GetPositionX();
+		y = u_caster->GetPositionY();
+		z = u_caster->GetPositionZ();
+	}
 	for(int i=0;i<damage;i++)
 	{
 		float m_fallowAngle=-(float(M_PI)/2*i);
-		float x = u_caster->GetPositionX()+(3*(cosf(m_fallowAngle+u_caster->GetOrientation())));
-		float y = u_caster->GetPositionY()+(3*(sinf(m_fallowAngle+u_caster->GetOrientation())));
-		float z = u_caster->GetPositionZ();
+		x += (3*(cosf(m_fallowAngle+u_caster->GetOrientation())));
+		y += (3*(sinf(m_fallowAngle+u_caster->GetOrientation())));
 		Creature * p = u_caster->GetMapMgr()->CreateCreature(cr_entry);
 		//ASSERT(p);
 		p->Load(proto, x, y, z);
@@ -3521,6 +3533,7 @@ void Spell::SpellEffectSummonWild(uint32 i)  // Summon Wild
 void Spell::SpellEffectSummonGuardian(uint32 i) // Summon Guardian
 {
 	GameObject * obj = NULL; //Snake trap part 1
+	LocationVector * vec = NULL;
 	
 	if ( g_caster ) 
 	{
@@ -3551,12 +3564,16 @@ void Spell::SpellEffectSummonGuardian(uint32 i) // Summon Guardian
 			}
 		}
 	}*/
+	if( m_targets.m_targetMask & TARGET_FLAG_DEST_LOCATION && m_targets.m_destX && m_targets.m_destY && m_targets.m_destZ )
+	{
+		vec = &LocationVector(m_targets.m_destX,m_targets.m_destY,m_targets.m_destZ);
+	}
 
 	float angle_for_each_spawn = -float(M_PI) * 2 / damage;
 	for( int i = 0; i < damage; i++ )
 	{
 		float m_fallowAngle = angle_for_each_spawn * i;
-		u_caster->create_guardian(cr_entry,GetDuration(),m_fallowAngle,level,obj);
+		u_caster->create_guardian(cr_entry,GetDuration(),m_fallowAngle,level,obj,vec );
 	}
 }
 
@@ -3783,6 +3800,12 @@ void Spell::SpellEffectSummonObject(uint32 i)
 				sChatHandler.BlueSystemMessage(p_caster->GetSession(), "non-existant gameobject %u tried to be created by SpellEffectSummonObject. Report to devs!", entry);
 			}
 			return;
+		}
+		if( m_targets.m_targetMask & TARGET_FLAG_DEST_LOCATION && m_targets.m_destX && m_targets.m_destY && m_targets.m_destZ )
+		{
+			posx = m_targets.m_destX;
+			posy = m_targets.m_destY;
+			pz = m_targets.m_destZ;
 		}
 		GameObject *go=m_caster->GetMapMgr()->CreateGameObject(entry);
 		
@@ -5648,10 +5671,14 @@ void Spell::SpellEffectSummonDemon(uint32 i)
 	CreatureInfo *ci = CreatureNameStorage.LookupEntry(GetProto()->EffectMiscValue[i]);
 	if(ci)
 	{
-
+		LocationVector *vec = NULL;
+		if( m_targets.m_targetMask & TARGET_FLAG_DEST_LOCATION && m_targets.m_destX && m_targets.m_destY && m_targets.m_destZ )
+		{
+			vec = &LocationVector(m_targets.m_destX, m_targets.m_destY, m_targets.m_destZ);
+		}
 		pPet = objmgr.CreatePet();
 		pPet->SetInstanceID(p_caster->GetInstanceID());
-		pPet->CreateAsSummon(GetProto()->EffectMiscValue[i], ci, NULL, p_caster, GetProto(), 1, 300000);
+		pPet->CreateAsSummon(GetProto()->EffectMiscValue[i], ci, NULL, p_caster, GetProto(), 1, 300000, vec);
 	}
 	//Create Enslave Aura if its inferno spell
 	if(GetProto()->Id == 1122)

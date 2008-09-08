@@ -105,7 +105,7 @@ uint32 GetAutoCastTypeForSpell(SpellEntry * ent)
 	return AUTOCAST_EVENT_NONE;
 }
 
-void Pet::CreateAsSummon(uint32 entry, CreatureInfo *ci, Creature* created_from_creature, Player* owner, SpellEntry* created_by_spell, uint32 type, uint32 expiretime)
+void Pet::CreateAsSummon(uint32 entry, CreatureInfo *ci, Creature* created_from_creature, Player* owner, SpellEntry* created_by_spell, uint32 type, uint32 expiretime, LocationVector* Vec)
 {
 	SetIsPet(true);
 
@@ -124,8 +124,21 @@ void Pet::CreateAsSummon(uint32 entry, CreatureInfo *ci, Creature* created_from_
 	else
 		m_name.assign( myFamily->name );
 
+	float x, y, z;
+	if( Vec )
+	{
+		x = Vec->x;
+		y = Vec->y;
+		z = Vec->z;
+	}
+	else
+	{
+		x = owner->GetPositionX();
+		y = owner->GetPositionY();
+		z = owner->GetPositionZ();
+	}
 	// Create ourself	
-	Create(m_name.c_str(), owner->GetMapId(), owner->GetPositionX(), owner->GetPositionY(), owner->GetPositionZ(), owner->GetOrientation());
+	Create(m_name.c_str(), owner->GetMapId(), x, y, z, owner->GetOrientation());
 	SetUInt32Value(OBJECT_FIELD_ENTRY, entry);
 	SetFloatValue(UNIT_MOD_CAST_SPEED, 1.0f);	// better set this one
 
