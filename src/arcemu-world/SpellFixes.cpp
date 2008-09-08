@@ -44,6 +44,16 @@ void CreateDummySpell(uint32 id)
 void ApplyExtraDataFixes()
 {
 	SpellEntry * sp;
+	// Spell 30455 (Ice Lance) 
+	sp = dbcSpell.LookupEntryForced(30455);
+	if( sp != NULL )
+		sp->in_front_status = SPELL_INFRONT_STATUS_REQUIRE_INFRONT;
+
+	// Spell 17364 (Stormstrike) 
+	sp = dbcSpell.LookupEntryForced(17364);
+	if( sp != NULL )
+		sp->in_front_status = SPELL_INFRONT_STATUS_REQUIRE_INFRONT;
+
 	// Spell 53 (Backstab Rank 1) is in behind from spell extra.
 	sp = dbcSpell.LookupEntryForced(53);
 	if( sp != NULL )
@@ -1809,6 +1819,16 @@ void ApplyExtraDataFixes()
 
 	// Spell 9912 (Wrath Rank 8) is infront from spell extra.
 	sp = dbcSpell.LookupEntryForced(9912);
+	if( sp != NULL )
+		sp->in_front_status = SPELL_INFRONT_STATUS_REQUIRE_INFRONT;
+
+	// Spell 26984 (Wrath Rank 9) 
+	sp = dbcSpell.LookupEntryForced(26984);
+	if( sp != NULL )
+		sp->in_front_status = SPELL_INFRONT_STATUS_REQUIRE_INFRONT;
+
+	// Spell 26985 (Wrath Rank 10) 
+	sp = dbcSpell.LookupEntryForced(26985);
 	if( sp != NULL )
 		sp->in_front_status = SPELL_INFRONT_STATUS_REQUIRE_INFRONT;
 
