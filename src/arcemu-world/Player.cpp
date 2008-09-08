@@ -8842,7 +8842,8 @@ void Player::SetShapeShift(uint8 ss)
 			uint32 reqss = m_auras[x]->GetSpellProto()->RequiredShapeShift;
 			if( reqss != 0 && m_auras[x]->IsPositive() )
 			{
-				if( old_ss > 0 )
+				if( old_ss > 0 && old_ss != 28 )	// 28 = FORM_SHADOW - Didn't find any aura that required this form
+													// not sure why all priest spell proto's RequiredShapeShift are set [to 134217728]
 				{
 					if(  ( ((uint32)1 << (old_ss-1)) & reqss ) &&		// we were in the form that required it
 						!( ((uint32)1 << (ss-1) & reqss) ) )			// new form doesnt have the right form
