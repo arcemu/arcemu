@@ -1310,11 +1310,60 @@ bool ChatHandler::HandleQuestRewardCommand(const char * args, WorldSession * m_s
 {
 	if(!*args) return false;
 
-	string recout = "";
+	stringstream recout;
 
-	recout += "\n\n";
+	uint32 qu_id = atol(args);
+	Quest* q = QuestStorage.LookupEntry(qu_id);
+	if(q)
+	{
+		for( uint32 r = 0; r < q->count_reward_item; r++ )
+		{
+			uint32 itemid = q->reward_item[r];
+			ItemPrototype *itemProto = ItemPrototypeStorage.LookupEntry(itemid);
+			if(!itemProto)
+			{
+				recout << "Unknown item id %lu", itemid;
+				sLog.outError( "WORLD: Unknown item id 0x%08x", itemid );
+			}
+			else
+			{
+				recout << "Reward (" << itemid << "): " << GetItemLinkByProto(itemProto,m_session->language);
+				if(q->reward_itemcount[r]==1)
+					recout << "\n";
+				else
+					recout << "[x" << q->reward_itemcount[r] << "]\n";
+			}
+		}
+		for( uint32 r = 0; r < q->count_reward_choiceitem; r++ )
+		{
+			uint32 itemid = q->reward_choiceitem[r];
+			ItemPrototype *itemProto = ItemPrototypeStorage.LookupEntry(itemid);
+			if(!itemProto)
+			{
+				recout << "Unknown item id %lu", itemid;
+				sLog.outError( "WORLD: Unknown item id 0x%08x", itemid );
+			}
+			else
+			{
+				recout << "Reward choice (" << itemid << "): " << GetItemLinkByProto(itemProto,m_session->language);
+				if(q->reward_choiceitemcount[r] == 1)
+					recout << "\n";
+				else
+					recout << "[x" << q->reward_choiceitemcount[r] << "]\n";
+			}
+		}
+		if((q->count_reward_choiceitem == 0) && (q->count_reward_item == 0))
+		{
+			recout << "Quest " << qu_id << " has no item rewards.";
+		}
+	}
+	else
+	{
+		recout << "Quest ID " << qu_id << " not found.\n";
+		sLog.outError("Quest ID %lu not found.", qu_id);
+	}
 
-	SendMultilineMessage(m_session, recout.c_str());
+	SendMultilineMessage(m_session, recout.str().data());
 
 	return true;
 }
