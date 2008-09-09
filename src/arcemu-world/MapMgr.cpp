@@ -1715,6 +1715,10 @@ void MapMgr::_PerformObjectDuties()
 	if(difftime > 500)
 		difftime = 500;
 
+	// Update any events.
+	// we make update of events before objects so in case there are 0 timediff events they do not get deleted after update but on next server update loop
+	eventHolder.Update(difftime);
+
 	// Update creatures.
 	{
 		CreatureSet creatures(activeCreatures);
@@ -1739,9 +1743,6 @@ void MapMgr::_PerformObjectDuties()
 			ptr2->Update(difftime);
 		}		
 	}
-
-	// Update any events.
-	eventHolder.Update(difftime);
 
 	// Update players.
 	{
