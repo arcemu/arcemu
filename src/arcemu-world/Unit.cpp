@@ -3417,7 +3417,7 @@ else
 						//sLog.outString( "DEBUG: After Resilience check: %u" , dmg.full_damage );
 					}
 					
-					if (pVictim->GetTypeId() != TYPEID_UNIT || (static_cast<Creature*>(m_Unit)->GetCreatureInfo() && static_cast<Creature*>(m_Unit)->GetCreatureInfo()->Rank != ELITE_WORLDBOSS))
+					if (pVictim->GetTypeId() == TYPEID_UNIT && static_cast<Creature*>(pVictim)->GetCreatureInfo() && static_cast<Creature*>(pVictim)->GetCreatureInfo()->Rank != ELITE_WORLDBOSS)
 						pVictim->Emote( EMOTE_ONESHOT_WOUNDCRITICAL );
 					vproc |= PROC_ON_CRIT_HIT_VICTIM;
 					aproc |= PROC_ON_CRIT_ATTACK;
