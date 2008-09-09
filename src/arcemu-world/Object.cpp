@@ -2198,7 +2198,7 @@ void Object::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
 				static_cast< Player* >( this )->GetGroup()->SendPartyKillLog( this, pVictim );*/
 
 		/* Stop Unit from attacking */
-		if( this->IsPlayer() )
+		if( this->IsPlayer() && (((Player*)this)->GetSelection() == pVictim->GetGUID()) )
 			static_cast< Player* >( this )->EventAttackStop();
 	   
 		if( this->IsUnit() )
