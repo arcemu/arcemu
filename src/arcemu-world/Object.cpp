@@ -2673,7 +2673,8 @@ void Object::SpellNonMeleeDamageLog(Unit *pVictim, uint32 spellID, uint32 damage
 					res = res - res * dmg_reduction_pct;
 				}
 
-				pVictim->Emote( EMOTE_ONESHOT_WOUNDCRITICAL );
+				if (pVictim->GetTypeId() != TYPEID_UNIT || (pVictim->GetTypeId() == TYPEID_UNIT && static_cast<Creature *>(pVictim)->GetCreatureName() && static_cast<Creature *>(pVictim)->GetCreatureName()->Rank != ELITE_WORLDBOSS))
+					pVictim->Emote( EMOTE_ONESHOT_WOUNDCRITICAL );
 				/*aproc |= PROC_ON_SPELL_CRIT_HIT;
 				vproc |= PROC_ON_SPELL_CRIT_HIT_VICTIM;*/
 

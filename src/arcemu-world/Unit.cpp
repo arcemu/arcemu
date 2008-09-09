@@ -3417,7 +3417,8 @@ else
 						//sLog.outString( "DEBUG: After Resilience check: %u" , dmg.full_damage );
 					}
 					
-					pVictim->Emote(EMOTE_ONESHOT_WOUNDCRITICAL);
+					if (pVictim->GetTypeId() != TYPEID_UNIT || (pVictim->GetTypeId() == TYPEID_UNIT && static_cast<Creature *>(pVictim)->GetCreatureName() && static_cast<Creature *>(pVictim)->GetCreatureName()->Rank != ELITE_WORLDBOSS))
+						pVictim->Emote( EMOTE_ONESHOT_WOUNDCRITICAL );
 					vproc |= PROC_ON_CRIT_HIT_VICTIM;
 					aproc |= PROC_ON_CRIT_ATTACK;
 					if( weapon_damage_type == RANGED )
