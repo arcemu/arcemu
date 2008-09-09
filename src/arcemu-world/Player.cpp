@@ -4859,11 +4859,14 @@ void Player::UpdateStats()
 	case DRUID:
 		AP = str * 2 - 20;
 
-		if( GetShapeShift() == FORM_CAT )
+		// lev * 2 and lev * 3 bonus to attack power is already added elsewhere (in Cat Form and Bear From aura i think)
+		/* if( GetShapeShift() == FORM_CAT )
 			AP += agi + lev * 2;
 
 		if( GetShapeShift() == FORM_BEAR || GetShapeShift() == FORM_DIREBEAR )
-			AP += lev * 3;
+			AP += lev * 3; */
+		if (GetShapeShift() == FORM_CAT)
+			AP += agi; 
 
 		break;
 
@@ -8931,28 +8934,61 @@ void Player::CalcDamage()
 
 		if(IsInFeralForm())
 		{
+			float tmp = 1; // multiplicative damage modifier
+			for (map<uint32, WeaponModifier>::iterator i = damagedone.begin(); i!=damagedone.end();i++)
+			{
+				if (i->second.wclass == (uint32) - 1) // applying only "any weapon" modifiers
+					tmp += i->second.value;
+			}
 			uint32 lev = getLevel();
-			/*if(ss==FORM_CAT)
-				r = delta + ap_bonus * 1000.0;
-			else
-				r = delta + ap_bonus * 2500.0;*/
+			float feral_damage; // average base damage before bonuses and modifiers
+			uint32 x; // itemlevel of the two hand weapon with dps equal to cat or bear dps
 
-			if(ss == FORM_CAT)
-				r = lev + delta + ap_bonus * 1000.0f;
-			else
-				r = lev + delta + ap_bonus * 2500.0f;
-			
-			//SetFloatValue(UNIT_FIELD_MINDAMAGE,r);
-			//SetFloatValue(UNIT_FIELD_MAXDAMAGE,r);
+			if (ss == FORM_CAT)
+			{
+				if (lev < 42) x = lev - 1;
+				else if (lev < 46) x = lev;
+				else if (lev < 49) x = 2 * lev - 45;
+				else if (lev < 60) x = lev + 4;
+				else x = 64; 
 
-			r *= 0.9f;
-			SetFloatValue(UNIT_FIELD_MINDAMAGE,r>0?r:0);
+				// 3rd grade polinom for calculating blue two-handed weapon dps based on itemlevel (from Hyzenthlei)
+				if (x <= 28) feral_damage = 1.563e-03f * x*x*x - 1.219e-01f * x*x + 3.802e+00f * x - 2.227e+01f;
+				else if (x <= 41) feral_damage = -3.817e-03f * x*x*x + 4.015e-01f * x*x - 1.289e+01f * x + 1.530e+02f;
+				else feral_damage = 1.829e-04f * x*x*x - 2.692e-02f * x*x + 2.086e+00f * x - 1.645e+01f;
 
-			r *= 1.2222f;
-			SetFloatValue(UNIT_FIELD_MAXDAMAGE,r>0?r:0);
+				r = feral_damage * 0.79f + delta + ap_bonus * 1000.0f;
+				r *= tmp;
+				SetFloatValue(UNIT_FIELD_MINDAMAGE,r>0?r:0);
+
+				r = feral_damage * 1.21f + delta + ap_bonus * 1000.0f;
+				r *= tmp;
+				SetFloatValue(UNIT_FIELD_MAXDAMAGE,r>0?r:0);
+			}
+			else // Bear or Dire Bear Form
+			{
+				if (ss == FORM_BEAR) x = lev;
+				else x = lev + 5; // DIRE_BEAR dps is slightly better than bear dps
+				if (x > 70) x = 70;
+
+				// 3rd grade polinom for calculating green two-handed weapon dps based on itemlevel (from Hyzenthlei)
+				if (x <= 30) feral_damage = 7.638e-05f * x*x*x + 1.874e-03f * x*x + 4.967e-01f * x + 1.906e+00f;
+				else if (x <= 44) feral_damage = -1.412e-03f * x*x*x + 1.870e-01f * x*x - 7.046e+00f * x + 1.018e+02f;
+				else feral_damage = 2.268e-04f * x*x*x - 3.704e-02f * x*x + 2.784e+00f * x - 3.616e+01f;
+				feral_damage *= 2.5f; // Bear Form attack speed
+
+				r = feral_damage * 0.79f + delta + ap_bonus * 2500.0f;
+				r *= tmp;
+				SetFloatValue(UNIT_FIELD_MINDAMAGE,r>0?r:0);
+
+				r = feral_damage * 1.21f + delta + ap_bonus * 2500.0f;
+				r *= tmp;
+				SetFloatValue(UNIT_FIELD_MAXDAMAGE,r>0?r:0);
+			}
 
 			return;
 		}
+
 //////no druid ss	
 		uint32 speed=2000;
 		Item *it = GetItemInterface()->GetInventoryItem(EQUIPMENT_SLOT_MAINHAND);
