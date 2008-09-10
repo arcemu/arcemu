@@ -5821,6 +5821,20 @@ int32 Player::CanShootRangedWeapon( uint32 spellid, Unit* target, bool autoshot 
 	//bonusRange = 2.52f;
 	//sLog.outString( "Bonus range = %f" , bonusRange );
 
+	// check if facing target
+	if(!isInFront(target))
+	{
+		fail = SPELL_FAILED_UNIT_NOT_INFRONT;
+	}
+ 
+	// Check ammo count
+	if( iprot )
+	{
+		uint32 ammocount = GetItemInterface()->GetItemCount(iprot->ItemId);
+		if(ammocount == 0)
+			fail = SPELL_FAILED_NO_AMMO;
+	}
+
 	// Check for too close
 	if( spellid != SPELL_RANGED_WAND )//no min limit for wands
 		if( minrange > dist )
