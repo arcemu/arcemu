@@ -763,21 +763,37 @@ void WorldSession::HandleLogoutRequestOpcode( WorldPacket & recv_data )
 	if(pPlayer)
 	{
 		sHookInterface.OnLogoutRequest(pPlayer);
-		if(pPlayer->m_isResting ||	  // We are resting so log out instantly
-			pPlayer->GetTaxiState() ||  // or we are on a taxi
-			HasGMPermissions())		   // or we are a gm
+
+		if(HasGMPermissions())
 		{
 			//Logout on NEXT sessionupdate to preserve processing of dead packets (all pending ones should be processed)
 			SetLogoutTimer(1);
 			return;
 		}
 
-		if(pPlayer->DuelingWith != NULL || pPlayer->CombatStatus.IsInCombat())
+		if(pPlayer->CombatStatus.IsInCombat())
+		{
+			//can't quit still in combat
+			data << uint32(0x1); //Filler
+			data << uint8(0); //Logout accepted
+			SendPacket( &data );
+			return;
+		}
+
+		if(pPlayer->DuelingWith != NULL)
 		{
 			//can't quit still dueling or attacking
 			data << uint32(0x1); //Filler
 			data << uint8(0); //Logout accepted
 			SendPacket( &data );
+			return;
+		}
+
+		if(pPlayer->m_isResting ||	  // We are resting so log out instantly
+			pPlayer->GetTaxiState())  // or we are on a taxi
+		{
+			//Logout on NEXT sessionupdate to preserve processing of dead packets (all pending ones should be processed)
+			SetLogoutTimer(1);
 			return;
 		}
 
