@@ -86,6 +86,26 @@ void Item::Virtual_Constructor()
 
 Item::~Item()
 {
+	if( loot != NULL )
+		delete loot;
+
+	sEventMgr.RemoveEvents( this );
+
+	EnchantmentMap::iterator itr;
+	for( itr = Enchantments.begin(); itr != Enchantments.end(); ++itr )
+	{
+		if( itr->second.Enchantment->type == 0 && itr->second.Slot == 0 && itr->second.ApplyTime == 0 && itr->second.Duration == 0 )
+		{
+			delete itr->second.Enchantment;
+			itr->second.Enchantment = NULL;
+		}
+	}
+	Enchantments.clear();
+
+	if( IsInWorld() )
+		RemoveFromWorld();
+
+	m_owner = NULL;
 }
 
 void Item::Virtual_Destructor()
