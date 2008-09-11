@@ -87,7 +87,10 @@ void Item::Virtual_Constructor()
 Item::~Item()
 {
 	if( loot != NULL )
+	{
 		delete loot;
+		loot = NULL;
+	}
 
 	sEventMgr.RemoveEvents( this );
 
@@ -111,7 +114,10 @@ Item::~Item()
 void Item::Virtual_Destructor()
 {
 	if( loot != NULL )
+	{
 		delete loot;
+		loot = NULL;
+	}
 
 	sEventMgr.RemoveEvents( this );
 
