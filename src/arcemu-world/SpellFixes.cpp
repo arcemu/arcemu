@@ -7002,6 +7002,16 @@ void ApplyExtraDataFixes()
 	if( sp != NULL )
 		sp->in_front_status = SPELL_INFRONT_STATUS_REQUIRE_INFRONT;
 
+	// Spell 27078 (Fire blast Rank 8) is infront from spell extra.
+	sp = dbcSpell.LookupEntryForced(27078);
+	if( sp != NULL )
+		sp->in_front_status = SPELL_INFRONT_STATUS_REQUIRE_INFRONT;
+
+	// Spell 27079 (Fire blast Rank 9) is infront from spell extra.
+	sp = dbcSpell.LookupEntryForced(27079);
+	if( sp != NULL )
+		sp->in_front_status = SPELL_INFRONT_STATUS_REQUIRE_INFRONT;
+
 	// Spell 27138 (Exorcism Rank 7) is infront from spell extra.
 	sp = dbcSpell.LookupEntryForced(27138);
 	if( sp != NULL )

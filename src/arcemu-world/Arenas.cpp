@@ -119,9 +119,10 @@ void Arena::OnRemovePlayer(Player * plr)
 	/* remove arena readyness buff */
 	plr->m_deathVision = false;
 	plr->RemoveAura(ARENA_PREPARATION);
-	m_playersCount[plr->GetTeam()]--;
-	UpdatePlayerCounts();
-	
+
+	/* plr left arena, call HookOnPlayerDeath as if he died */
+	HookOnPlayerDeath(plr);
+
 	plr->RemoveAura(plr->GetTeamInitial() ? 35775-plr->m_bgTeam : 32725-plr->m_bgTeam);
 	if(plr->HasFlag(PLAYER_FLAGS, PLAYER_FLAG_FREE_FOR_ALL_PVP))
 		plr->RemoveFlag(PLAYER_FLAGS, PLAYER_FLAG_FREE_FOR_ALL_PVP);
@@ -146,11 +147,11 @@ void Arena::HookOnPlayerDeath(Player * plr)
 {
 	ASSERT(plr != NULL);
 
-	if (m_playersAlive.find((uint32)plr->GetGUID()) != m_playersAlive.end())
+	if (m_playersAlive.find(plr->GetLowGUID()) != m_playersAlive.end())
 	{
 		m_playersCount[plr->GetTeam()]--;
 		UpdatePlayerCounts();
-		m_playersAlive.erase((uint32)plr->GetGUID());
+		m_playersAlive.erase(plr->GetLowGUID());
 	}
 }
 
@@ -333,8 +334,8 @@ void Arena::OnStart()
 		for(set<Player*>::iterator itr = m_players[i].begin(); itr != m_players[i].end(); ++itr) {
 			Player *plr = *itr;
 			plr->RemoveAura(ARENA_PREPARATION);
-			m_players2[i].insert((uint32)plr->GetGUID());
-			m_playersAlive.insert((uint32)plr->GetGUID());
+			m_players2[i].insert(plr->GetLowGUID());
+			m_playersAlive.insert(plr->GetLowGUID());
 
 			/* update arena team stats */
 			if(rated_match && plr->m_arenaTeams[m_arenateamtype] != NULL)
