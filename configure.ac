@@ -160,8 +160,8 @@ fi
 AC_ARG_ENABLE(optimize,
      AC_HELP_STRING([--enable-optimize],[enable code optimization]),
      [ if test "x$enable_optimize" = "xyes" ; then
-           CFLAGS="$CFLAGS -O2"
-           CXXFLAGS="$CXXFLAGS -O2"
+           CFLAGS="$CFLAGS -O2 -fomit-frame-pointer -pipe"
+           CXXFLAGS="$CXXFLAGS -O2 -fomit-frame-pointer -pipe"
        fi
      ],
 )
