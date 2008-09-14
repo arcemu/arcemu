@@ -4089,6 +4089,10 @@ void Unit::AddAura(Aura *aur)
 						}
 						if(maxStack <= f)
 						{
+							if (f == 1)
+							{
+								m_auras[x]->UpdateModifiers();
+							}
 							deleteAur = true;
 							break;
 						}
@@ -4120,7 +4124,7 @@ void Unit::AddAura(Aura *aur)
 
 	if( aur->m_auraSlot != 0xffff )
 		m_auras[ aur->m_auraSlot ] = NULL;
-	
+
 	aur->m_auraSlot = 0xffff;
 	aur->ApplyModifiers(true);
 	//Zack : if all mods were resisted it means we did not apply anything and we do not need to delete this spell eighter
@@ -5334,10 +5338,10 @@ void Unit::EventSummonPetExpire()
 	sEventMgr.RemoveEvents(this, EVENT_SUMMON_PET_EXPIRE);
 }
 
-void Unit::CastSpell(Unit* Target, SpellEntry* Sp, bool triggered)
+uint8 Unit::CastSpell(Unit* Target, SpellEntry* Sp, bool triggered)
 {
 	if( Sp == NULL )
-		return;
+		return SPELL_FAILED_UNKNOWN;
 
 	Spell *newSpell = SpellPool.PooledNew();
 	newSpell->Init(this, Sp, triggered, 0);
@@ -5351,34 +5355,34 @@ void Unit::CastSpell(Unit* Target, SpellEntry* Sp, bool triggered)
 	{
 		newSpell->GenerateTargets(&targets);
 	}
-	newSpell->prepare(&targets);
+	return newSpell->prepare(&targets);
 }
 
-void Unit::CastSpell(Unit* Target, uint32 SpellID, bool triggered)
+uint8 Unit::CastSpell(Unit* Target, uint32 SpellID, bool triggered)
 {
 	SpellEntry * ent = dbcSpell.LookupEntry(SpellID);
-	if(ent == 0) return;
+	if(ent == 0) return SPELL_FAILED_UNKNOWN;
 
-	CastSpell(Target, ent, triggered);
+	return CastSpell(Target, ent, triggered);
 }
 
-void Unit::CastSpell(uint64 targetGuid, SpellEntry* Sp, bool triggered)
+uint8 Unit::CastSpell(uint64 targetGuid, SpellEntry* Sp, bool triggered)
 {
 	if( Sp == NULL )
-		return;
+		return SPELL_FAILED_UNKNOWN;
 
 	SpellCastTargets targets(targetGuid);
 	Spell *newSpell = SpellPool.PooledNew();
 	newSpell->Init(this, Sp, triggered, 0);
-	newSpell->prepare(&targets);
+	return newSpell->prepare(&targets);
 }
 
-void Unit::CastSpell(uint64 targetGuid, uint32 SpellID, bool triggered)
+uint8 Unit::CastSpell(uint64 targetGuid, uint32 SpellID, bool triggered)
 {
 	SpellEntry * ent = dbcSpell.LookupEntry(SpellID);
-	if(ent == 0) return;
+	if(ent == 0) return SPELL_FAILED_UNKNOWN;
 
-	CastSpell(targetGuid, ent, triggered);
+	return CastSpell(targetGuid, ent, triggered);
 }
 void Unit::CastSpellAoF(float x,float y,float z,SpellEntry* Sp, bool triggered)
 {
@@ -7007,6 +7011,48 @@ void Unit::RemoveFieldSummon()
 			summon->SafeDelete();
 		}
 		SetUInt64Value(UNIT_FIELD_SUMMON, 0);
+	}
+}
+
+//what is an Immobilize spell ? Have to add it later to spell effect handler
+void Unit::EventStunOrImmobilize(Unit *proc_target, bool is_victim)
+{
+	if ( this == proc_target )
+		return; //how and why would we stun ourselfs
+
+	int32 t_trigger_on_stun,t_trigger_on_stun_chance;
+	if( is_victim == false )
+	{
+		t_trigger_on_stun = trigger_on_stun;
+		t_trigger_on_stun_chance = trigger_on_stun_chance;
+	}
+	else
+	{
+		t_trigger_on_stun = trigger_on_stun_victim;
+		t_trigger_on_stun_chance = trigger_on_stun_chance_victim;
+	}
+
+	if( t_trigger_on_stun )
+	{
+		if( t_trigger_on_stun_chance < 100 && !Rand( t_trigger_on_stun_chance ) )
+			return;
+
+		SpellEntry *spellInfo = dbcSpell.LookupEntry(t_trigger_on_stun);
+
+		if(!spellInfo)
+			return;
+
+		Spell *spell = SpellPool.PooledNew();
+		spell->Init(this, spellInfo ,true, NULL);
+		SpellCastTargets targets;
+
+		if ( spellInfo->procFlags & PROC_TARGET_SELF )
+			targets.m_unitTarget = GetGUID();
+		else if ( proc_target ) 
+			targets.m_unitTarget = proc_target->GetGUID();
+		else 
+			targets.m_unitTarget = GetGUID();
+		spell->prepare(&targets);
 	}
 }
 

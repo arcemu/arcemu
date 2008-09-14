@@ -868,7 +868,6 @@ void Aura::AddMod( uint32 t, int32 a, uint32 miscValue, uint32 i )
 
 void Aura::ApplyModifiers( bool apply )
 {
-
 	for( uint32 x = 0; x < m_modcount; x++ )
 	{
 		mod = &m_modList[x];
@@ -878,6 +877,27 @@ void Aura::ApplyModifiers( bool apply )
 			sLog.outDebug( "WORLD: target = %u , Spell Aura id = %u (%s), SpellId  = %u, i = %u, apply = %s, duration = %u, damage = %d",
 				m_target->GetLowGUID(),mod->m_type, SpellAuraNames[mod->m_type], m_spellProto->Id, mod->i, apply ? "true" : "false",GetDuration(),mod->m_amount);
 			(*this.*SpellAuraHandler[mod->m_type])(apply);
+		}
+		else
+			sLog.outError("Unknown Aura id %d", (uint32)mod->m_type);
+	}
+}
+
+void Aura::UpdateModifiers( )
+{
+	for( uint32 x = 0; x < m_modcount; x++ )
+	{
+		mod = &m_modList[x];
+
+		if(mod->m_type<TOTAL_SPELL_AURAS)
+		{
+			sLog.outDebug( "WORLD: target = %u , Spell Aura id = %u (%s), SpellId  = %u, i = %u, duration = %u, damage = %d",
+				m_target->GetLowGUID(),mod->m_type, SpellAuraNames[mod->m_type], m_spellProto->Id, mod->i, GetDuration(),mod->m_amount);
+			switch (mod->m_type)
+			{
+				case 33: UpdateAuraModDecreaseSpeed(); break;
+
+			}
 		}
 		else
 			sLog.outError("Unknown Aura id %d", (uint32)mod->m_type);
@@ -3017,10 +3037,10 @@ void Aura::SpellAuraModStun(bool apply)
 
 		//warrior talent - second wind triggers on stun and immobilize. This is not used as proc to be triggered always !
 		Unit *caster = GetUnitCaster();
-		if( caster && caster->IsPlayer() && m_target )
-			static_cast<Player*>(caster)->EventStunOrImmobilize( m_target );
-		if( m_target && m_target->IsPlayer() && caster )
-			static_cast<Player*>(m_target)->EventStunOrImmobilize( caster, true );
+		if( caster && m_target )
+			static_cast<Unit*>(caster)->EventStunOrImmobilize( m_target );
+		if( m_target && caster )
+			static_cast<Unit*>(m_target)->EventStunOrImmobilize( caster, true );
 		if (m_target->isCasting())
 			m_target->CancelSpell(NULL); //cancel spells.
 	}
@@ -3956,9 +3976,9 @@ void Aura::SpellAuraModDecreaseSpeed(bool apply)
 			//yes we are freezing the bastard, so can we proc anything on this ?
 			Unit *caster = GetUnitCaster();
 			if( caster && caster->IsPlayer() && m_target )
-				static_cast<Player*>(caster)->EventStunOrImmobilize( m_target );
+				static_cast<Unit*>(caster)->EventStunOrImmobilize( m_target );
 			if( m_target && m_target->IsPlayer() && caster )
-				static_cast<Player*>(m_target)->EventStunOrImmobilize( caster, true );
+				static_cast<Unit*>(m_target)->EventStunOrImmobilize( caster, true );
 		}
 		m_target->speedReductionMap.insert(make_pair(m_spellProto->Id, mod->m_amount));
 		//m_target->m_slowdown=this;
@@ -3974,7 +3994,29 @@ void Aura::SpellAuraModDecreaseSpeed(bool apply)
 	}
 	if(m_target->GetSpeedDecrease())
 		m_target->UpdateSpeed();
+}
 
+void Aura::UpdateAuraModDecreaseSpeed()
+{
+	if( m_target )
+	{
+		if( m_target->MechanicsDispels[MECHANIC_ENSNARED] )
+		{
+			m_flags |= 1 << mod->i;
+			return;
+		}
+	}
+
+	//let's check Mage talents if we proc anythig
+	if(m_spellProto->School==SCHOOL_FROST)
+	{
+		//yes we are freezing the bastard, so can we proc anything on this ?
+		Unit *caster = GetUnitCaster();
+		if( caster && caster->IsPlayer() && m_target )
+			static_cast<Unit*>(caster)->EventStunOrImmobilize( m_target );
+		if( m_target && m_target->IsPlayer() && caster )
+			static_cast<Unit*>(m_target)->EventStunOrImmobilize( caster, true );
+	}
 }
 
 void Aura::SpellAuraModIncreaseHealth(bool apply)

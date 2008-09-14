@@ -913,25 +913,6 @@ public:
 	std::set<uint32>    quest_spells;
 	std::set<uint32>    quest_mobs;
 
-    /************************************************************************/
-    /* Stun Immobilize                                                      */
-    /************************************************************************/
-    void SetTriggerStunOrImmobilize(uint32 newtrigger,uint32 new_chance,bool is_victim=false)
-    {
-		if( is_victim == false )
-		{
-			trigger_on_stun = newtrigger;
-			trigger_on_stun_chance = new_chance;
-		}
-		else
-		{
-			trigger_on_stun_victim = newtrigger;
-			trigger_on_stun_chance_victim = new_chance;
-		}
-    }
-    void EventStunOrImmobilize(Unit *proc_target,bool is_victim=false);
-
-    
     void EventPortToGM(Player *p);
 	ARCEMU_INLINE uint32 GetTeam() { return m_team; }
 	ARCEMU_INLINE uint32 GetTeamInitial() { return myRace->team_id==7 ? 0 : 1; }
@@ -1989,10 +1970,6 @@ protected:
 
 	uint32      m_lastHonorResetTime;
 	uint32      _fields[PLAYER_END];
-	uint32	    trigger_on_stun;        //bah, warrior talent but this will not get triggered on triggered spells if used on proc so i'm forced to used a special variable
-	uint32	    trigger_on_stun_chance; //also using this for mage "Frostbite" talent
-	uint32	    trigger_on_stun_victim;        //bah, warrior talent but this will not get triggered on triggered spells if used on proc so i'm forced to used a special variable
-	uint32	    trigger_on_stun_chance_victim; //also using this for mage "Frostbite" talent
 	int			hearth_of_wild_pct;		//druid hearth of wild talent used on shapeshifting. We eighter know what is last talent level or memo on learn
 
 	uint32 m_team;

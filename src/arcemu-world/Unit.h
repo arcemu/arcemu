@@ -742,10 +742,10 @@ public:
 	int32 GetAP();
 	int32 GetRAP();
 
-	void CastSpell(Unit* Target, uint32 SpellID, bool triggered);
-	void CastSpell(Unit* Target, SpellEntry* Sp, bool triggered);
-	void CastSpell(uint64 targetGuid, uint32 SpellID, bool triggered);
-	void CastSpell(uint64 targetGuid, SpellEntry* Sp, bool triggered);
+	uint8 CastSpell(Unit* Target, uint32 SpellID, bool triggered);
+	uint8 CastSpell(Unit* Target, SpellEntry* Sp, bool triggered);
+	uint8 CastSpell(uint64 targetGuid, uint32 SpellID, bool triggered);
+	uint8 CastSpell(uint64 targetGuid, SpellEntry* Sp, bool triggered);
 	void CastSpellAoF(float x,float y,float z,SpellEntry* Sp, bool triggered);
 	void EventCastSpell(Unit * Target, SpellEntry * Sp);
 
@@ -775,6 +775,7 @@ public:
 	float detectRange;
 
 	// Invisibility
+	ARCEMU_INLINE bool IsInvisible() { return (m_invisible!=0 ? true : false); }
 	bool m_invisible;
 	uint8 m_invisFlag;
 	int32 m_invisDetect[INVIS_FLAG_TOTAL];
@@ -974,6 +975,29 @@ public:
 	void EventSummonPetExpire();
 	void EventAurastateExpire(uint32 aurastateflag){RemoveFlag(UNIT_FIELD_AURASTATE,aurastateflag);} //hmm this looks like so not necesary :S
 	void EventHealthChangeSinceLastUpdate();
+
+    /************************************************************************/
+    /* Stun Immobilize                                                      */
+    /************************************************************************/
+	uint32	    trigger_on_stun;        //bah, warrior talent but this will not get triggered on triggered spells if used on proc so i'm forced to used a special variable
+	uint32	    trigger_on_stun_chance; //also using this for mage "Frostbite" talent
+	uint32	    trigger_on_stun_victim;        //bah, warrior talent but this will not get triggered on triggered spells if used on proc so i'm forced to used a special variable
+	uint32	    trigger_on_stun_chance_victim; //also using this for mage "Frostbite" talent
+
+	void SetTriggerStunOrImmobilize(uint32 newtrigger,uint32 new_chance,bool is_victim=false)
+    {
+		if( is_victim == false )
+		{
+			trigger_on_stun = newtrigger;
+			trigger_on_stun_chance = new_chance;
+		}
+		else
+		{
+			trigger_on_stun_victim = newtrigger;
+			trigger_on_stun_chance_victim = new_chance;
+		}
+    }
+    void EventStunOrImmobilize(Unit *proc_target,bool is_victim=false);
 
 	void SetStandState (uint8 standstate);
 

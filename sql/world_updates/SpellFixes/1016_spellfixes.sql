@@ -45,5 +45,10 @@ INSERT INTO spellfixes(spellId, groupRelation2) VALUES(20255, 0x20000) ON DUPLIC
 INSERT INTO spellfixes(spellId, groupRelation1) VALUES(20256, 0x20000) ON DUPLICATE KEY UPDATE groupRelation1=VALUES(groupRelation1);
 INSERT INTO spellfixes(spellId, groupRelation2) VALUES(20256, 0x20000) ON DUPLICATE KEY UPDATE groupRelation2=VALUES(groupRelation2);
 
--- Improved Bloodrage
+-- [Warrior] Improved Bloodrage
 INSERT INTO spellfixes(spellId, groupRelation0) VALUES(12301, 0x100) ON DUPLICATE KEY UPDATE groupRelation0=VALUES(groupRelation0);
+
+-- [Rogue] Improved Kidney Shot
+INSERT INTO spellfixes(spellId, groupRelation0) VALUES(14174, 0x200000) ON DUPLICATE KEY UPDATE groupRelation0=VALUES(groupRelation0);
+INSERT INTO spellfixes(spellId, groupRelation0) VALUES(14175, 0x200000) ON DUPLICATE KEY UPDATE groupRelation0=VALUES(groupRelation0);
+INSERT INTO spellfixes(spellId, groupRelation0) VALUES(14176, 0x200000) ON DUPLICATE KEY UPDATE groupRelation0=VALUES(groupRelation0);

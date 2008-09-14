@@ -401,6 +401,7 @@ public:
 
 	Aura* StrongerThat(Aura *aur);
 	void ApplyModifiers(bool apply);
+	void UpdateModifiers();
 	void AddAuraVisual();
 	void RemoveAuraVisual();
 	void EventUpdateAA(float r);
@@ -616,6 +617,8 @@ public:
 	void EventPeriodicDrink(uint32 amount);
 	void SpellAuraAddHealth(bool apply);
 	void SpellAuraRemoveReagentCost(bool apply);
+
+	void UpdateAuraModDecreaseSpeed();
 
 	void SendModifierLog(int32 ** m,int32 v,uint64 mask,uint8 type,bool pct = false);
 	void SendDummyModifierLog(std::map<SpellEntry*,uint32> * m,SpellEntry * spellInfo,uint32 i,bool apply,bool pct = false);

@@ -9441,55 +9441,6 @@ void Player::UnPossess()
 	}
 }
 
-//what is an Immobilize spell ? Have to add it later to spell effect handler
-void Player::EventStunOrImmobilize(Unit *proc_target, bool is_victim)
-{
-	if ( this == proc_target )
-		return; //how and why would we stun ourselfs
-	int32 t_trigger_on_stun,t_trigger_on_stun_chance;
-	if( is_victim == false )
-	{
-		t_trigger_on_stun = trigger_on_stun;
-		t_trigger_on_stun_chance = trigger_on_stun_chance;
-	}
-	else
-	{
-		t_trigger_on_stun = trigger_on_stun_victim;
-		t_trigger_on_stun_chance = trigger_on_stun_chance_victim;
-	}
-
-	if( t_trigger_on_stun )
-	{
-		if( t_trigger_on_stun_chance < 100 && !Rand( t_trigger_on_stun_chance ) )
-			return;
-
-		SpellEntry *spellInfo = dbcSpell.LookupEntry(t_trigger_on_stun);
-
-		if(!spellInfo)
-			return;
-
-		SM_FIValue(SM_FChanceOfSuccess,&t_trigger_on_stun_chance,spellInfo->SpellGroupType);
-
-		if(t_trigger_on_stun_chance<100 && !Rand(t_trigger_on_stun_chance))
-			return;
-
-		Spell *spell = SpellPool.PooledNew();
-		spell->Init(this, spellInfo ,true, NULL);
-		SpellCastTargets targets;
-
-		if ( spellInfo->procFlags & PROC_TARGET_SELF )
-			targets.m_unitTarget = GetGUID() ;
-		else if ( proc_target ) 
-			targets.m_unitTarget = proc_target->GetGUID() ;
-		else 
-			targets.m_unitTarget = 0 ;
-/*		if(proc_target)
-			targets.m_unitTarget = proc_target->GetGUID();
-		else targets.m_unitTarget = GetGUID();*/
-		spell->prepare(&targets);
-	}
-}
-
 void Player::SummonRequest(uint32 Requestor, uint32 ZoneID, uint32 MapID, uint32 InstanceID, const LocationVector & Position)
 {
 	m_summonInstanceId = InstanceID;

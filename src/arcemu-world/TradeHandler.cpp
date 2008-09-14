@@ -447,6 +447,9 @@ void WorldSession::HandleAcceptTrade(WorldPacket & recv_data)
 			
 			plr->mTradeTarget = 0;
 			_player->mTradeTarget = 0;
+
+			plr->SaveToDB(false);
+			_player->SaveToDB(false);
 		}
 	}
 }
