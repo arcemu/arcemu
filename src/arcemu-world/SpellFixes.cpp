@@ -14589,13 +14589,13 @@ void ApplyNormalFixes()
 		if ( sp != NULL )
 		{
 			sp->Effect[1] = SPELL_EFFECT_TRIGGER_SPELL;
-			sp->EffectTriggerSpell[1] = 24864;
+			sp->EffectTriggerSpell[1] = 24867;
 		}
 		sp = dbcSpell.LookupEntryForced( 24866 );
 		if ( sp != NULL )
 		{
 			sp->Effect[1] = SPELL_EFFECT_TRIGGER_SPELL;
-			sp->EffectTriggerSpell[1] = 24867;
+			sp->EffectTriggerSpell[1] = 24864;
 		}
 
 		//Druid: Natural Perfection
