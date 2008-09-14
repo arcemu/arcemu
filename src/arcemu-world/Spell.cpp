@@ -689,7 +689,7 @@ uint8 Spell::DidHit(uint32 effindex,Unit* target)
 		resistchance -= p_caster->GetHitFromSpell();
 	}
 
-	if(p_victim)
+	if(p_victim && GetProto()->School != 0)
 		resistchance += p_victim->m_resist_hit[ MOD_SPELL ];
 
 	if( this->GetProto()->Effect[effindex] == SPELL_EFFECT_DISPEL && GetProto()->SpellGroupType && u_caster)
