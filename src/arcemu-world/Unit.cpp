@@ -6368,7 +6368,7 @@ void CombatStatusHandler::OnDamageDealt(Unit * pTarget)
 	if(pTarget == m_Unit)
 		return;
 
-	if(!pTarget->isAlive())
+	if( !pTarget->isAlive() || !m_Unit->isAlive() )
 		return;
 
 	AttackerMap::iterator itr = m_attackTargets.find(pTarget->GetGUID());
