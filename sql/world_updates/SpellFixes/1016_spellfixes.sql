@@ -52,3 +52,29 @@ INSERT INTO spellfixes(spellId, groupRelation0) VALUES(12301, 0x100) ON DUPLICAT
 INSERT INTO spellfixes(spellId, groupRelation0) VALUES(14174, 0x200000) ON DUPLICATE KEY UPDATE groupRelation0=VALUES(groupRelation0);
 INSERT INTO spellfixes(spellId, groupRelation0) VALUES(14175, 0x200000) ON DUPLICATE KEY UPDATE groupRelation0=VALUES(groupRelation0);
 INSERT INTO spellfixes(spellId, groupRelation0) VALUES(14176, 0x200000) ON DUPLICATE KEY UPDATE groupRelation0=VALUES(groupRelation0);
+
+-- [Mage] Arcane Power
+INSERT INTO spellfixes(spellId, groupRelation0) VALUES(12042, 0x20E01AF7) ON DUPLICATE KEY UPDATE groupRelation0=VALUES(groupRelation0);
+INSERT INTO spellfixes(spellId, groupRelation1) VALUES(12042, 0x20E01AF7) ON DUPLICATE KEY UPDATE groupRelation1=VALUES(groupRelation1);
+INSERT INTO spellfixes(spellId, groupRelation2) VALUES(12042, 0x20E01AF7) ON DUPLICATE KEY UPDATE groupRelation2=VALUES(groupRelation2);
+
+-- [Mage] Spell Power
+INSERT INTO spellfixes(spellId, groupRelation0) VALUES(35578, 0x28E212F7) ON DUPLICATE KEY UPDATE groupRelation0=VALUES(groupRelation0);
+INSERT INTO spellfixes(spellId, groupRelation0) VALUES(35581, 0x28E212F7) ON DUPLICATE KEY UPDATE groupRelation0=VALUES(groupRelation0);
+
+-- [Priest] Force of Will
+INSERT INTO spellfixes(spellId, groupRelation0) VALUES(18544, 0x41202F8A090) ON DUPLICATE KEY UPDATE groupRelation0=VALUES(groupRelation0);
+INSERT INTO spellfixes(spellId, groupRelation1) VALUES(18544, 0x1202582090) ON DUPLICATE KEY UPDATE groupRelation1=VALUES(groupRelation1);
+INSERT INTO spellfixes(spellId, groupRelation2) VALUES(18544, 0x40000A08000) ON DUPLICATE KEY UPDATE groupRelation2=VALUES(groupRelation2);
+INSERT INTO spellfixes(spellId, groupRelation0) VALUES(18547, 0x41202F8A090) ON DUPLICATE KEY UPDATE groupRelation0=VALUES(groupRelation0);
+INSERT INTO spellfixes(spellId, groupRelation1) VALUES(18547, 0x1202582090) ON DUPLICATE KEY UPDATE groupRelation1=VALUES(groupRelation1);
+INSERT INTO spellfixes(spellId, groupRelation2) VALUES(18547, 0x40000A08000) ON DUPLICATE KEY UPDATE groupRelation2=VALUES(groupRelation2);
+INSERT INTO spellfixes(spellId, groupRelation0) VALUES(18548, 0x41202F8A090) ON DUPLICATE KEY UPDATE groupRelation0=VALUES(groupRelation0);
+INSERT INTO spellfixes(spellId, groupRelation1) VALUES(18548, 0x1202582090) ON DUPLICATE KEY UPDATE groupRelation1=VALUES(groupRelation1);
+INSERT INTO spellfixes(spellId, groupRelation2) VALUES(18548, 0x40000A08000) ON DUPLICATE KEY UPDATE groupRelation2=VALUES(groupRelation2);
+INSERT INTO spellfixes(spellId, groupRelation0) VALUES(18549, 0x41202F8A090) ON DUPLICATE KEY UPDATE groupRelation0=VALUES(groupRelation0);
+INSERT INTO spellfixes(spellId, groupRelation1) VALUES(18549, 0x1202582090) ON DUPLICATE KEY UPDATE groupRelation1=VALUES(groupRelation1);
+INSERT INTO spellfixes(spellId, groupRelation2) VALUES(18549, 0x40000A08000) ON DUPLICATE KEY UPDATE groupRelation2=VALUES(groupRelation2);
+INSERT INTO spellfixes(spellId, groupRelation0) VALUES(18550, 0x41202F8A090) ON DUPLICATE KEY UPDATE groupRelation0=VALUES(groupRelation0);
+INSERT INTO spellfixes(spellId, groupRelation1) VALUES(18550, 0x1202582090) ON DUPLICATE KEY UPDATE groupRelation1=VALUES(groupRelation1);
+INSERT INTO spellfixes(spellId, groupRelation2) VALUES(18550, 0x40000A08000) ON DUPLICATE KEY UPDATE groupRelation2=VALUES(groupRelation2);
