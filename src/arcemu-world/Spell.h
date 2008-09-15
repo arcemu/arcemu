@@ -1883,6 +1883,7 @@ private:
     void DetermineSkillUp(uint32 skillid,uint32 targetlevel);
     void DetermineSkillUp(uint32 skillid);
 
+public:
 	SpellEntry* m_spellInfo;
 	SpellEntry* m_spellInfo_override;//used by spells that should have dynamic variables in spellentry.
 

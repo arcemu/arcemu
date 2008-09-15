@@ -6368,6 +6368,7 @@ void CombatStatusHandler::OnDamageDealt(Unit * pTarget)
 	if(pTarget == m_Unit)
 		return;
 
+	//no need to be in combat if dead
 	if( !pTarget->isAlive() || !m_Unit->isAlive() )
 		return;
 
