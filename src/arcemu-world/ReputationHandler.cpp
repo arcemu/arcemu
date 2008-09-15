@@ -345,10 +345,10 @@ void Player::Reputation_OnKilledUnit( Unit * pUnit, bool InnerLoop )
 	}
 	else
 	{
-		if ( pUnit->m_factionDBC->RepListId < 0 )
+		if ( IS_INSTANCE( GetMapId() ) && objmgr.HandleInstanceReputationModifiers( this, pUnit ) )
 			return;
 
-		if ( IS_INSTANCE( GetMapId() ) && objmgr.HandleInstanceReputationModifiers( this, pUnit ) )
+		if ( pUnit->m_factionDBC->RepListId < 0 )
 			return;
 
 		int32 change = int32( -5.0f * sWorld.getRate( RATE_KILLREPUTATION ) );
