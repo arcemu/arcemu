@@ -78,3 +78,20 @@ INSERT INTO spellfixes(spellId, groupRelation2) VALUES(18549, 0x40000A08000) ON 
 INSERT INTO spellfixes(spellId, groupRelation0) VALUES(18550, 0x41202F8A090) ON DUPLICATE KEY UPDATE groupRelation0=VALUES(groupRelation0);
 INSERT INTO spellfixes(spellId, groupRelation1) VALUES(18550, 0x1202582090) ON DUPLICATE KEY UPDATE groupRelation1=VALUES(groupRelation1);
 INSERT INTO spellfixes(spellId, groupRelation2) VALUES(18550, 0x40000A08000) ON DUPLICATE KEY UPDATE groupRelation2=VALUES(groupRelation2);
+
+-- [Warlock] Contagion
+INSERT INTO spellfixes(spellId, groupRelation0) VALUES(30060, 0x1000000402) ON DUPLICATE KEY UPDATE groupRelation0=VALUES(groupRelation0);
+INSERT INTO spellfixes(spellId, groupRelation1) VALUES(30060, 0x1000000402) ON DUPLICATE KEY UPDATE groupRelation1=VALUES(groupRelation1);
+INSERT INTO spellfixes(spellId, groupRelation2) VALUES(30060, 0x871B804CC41A) ON DUPLICATE KEY UPDATE groupRelation2=VALUES(groupRelation2);
+INSERT INTO spellfixes(spellId, groupRelation0) VALUES(30061, 0x1000000402) ON DUPLICATE KEY UPDATE groupRelation0=VALUES(groupRelation0);
+INSERT INTO spellfixes(spellId, groupRelation1) VALUES(30061, 0x1000000402) ON DUPLICATE KEY UPDATE groupRelation1=VALUES(groupRelation1);
+INSERT INTO spellfixes(spellId, groupRelation2) VALUES(30061, 0x871B804CC41A) ON DUPLICATE KEY UPDATE groupRelation2=VALUES(groupRelation2);
+INSERT INTO spellfixes(spellId, groupRelation0) VALUES(30062, 0x1000000402) ON DUPLICATE KEY UPDATE groupRelation0=VALUES(groupRelation0);
+INSERT INTO spellfixes(spellId, groupRelation1) VALUES(30062, 0x1000000402) ON DUPLICATE KEY UPDATE groupRelation1=VALUES(groupRelation1);
+INSERT INTO spellfixes(spellId, groupRelation2) VALUES(30062, 0x871B804CC41A) ON DUPLICATE KEY UPDATE groupRelation2=VALUES(groupRelation2);
+INSERT INTO spellfixes(spellId, groupRelation0) VALUES(30063, 0x1000000402) ON DUPLICATE KEY UPDATE groupRelation0=VALUES(groupRelation0);
+INSERT INTO spellfixes(spellId, groupRelation1) VALUES(30063, 0x1000000402) ON DUPLICATE KEY UPDATE groupRelation1=VALUES(groupRelation1);
+INSERT INTO spellfixes(spellId, groupRelation2) VALUES(30063, 0x871B804CC41A) ON DUPLICATE KEY UPDATE groupRelation2=VALUES(groupRelation2);
+INSERT INTO spellfixes(spellId, groupRelation0) VALUES(30064, 0x1000000402) ON DUPLICATE KEY UPDATE groupRelation0=VALUES(groupRelation0);
+INSERT INTO spellfixes(spellId, groupRelation1) VALUES(30064, 0x1000000402) ON DUPLICATE KEY UPDATE groupRelation1=VALUES(groupRelation1);
+INSERT INTO spellfixes(spellId, groupRelation2) VALUES(30064, 0x871B804CC41A) ON DUPLICATE KEY UPDATE groupRelation2=VALUES(groupRelation2);
