@@ -95,3 +95,7 @@ INSERT INTO spellfixes(spellId, groupRelation2) VALUES(30063, 0x871B804CC41A) ON
 INSERT INTO spellfixes(spellId, groupRelation0) VALUES(30064, 0x1000000402) ON DUPLICATE KEY UPDATE groupRelation0=VALUES(groupRelation0);
 INSERT INTO spellfixes(spellId, groupRelation1) VALUES(30064, 0x1000000402) ON DUPLICATE KEY UPDATE groupRelation1=VALUES(groupRelation1);
 INSERT INTO spellfixes(spellId, groupRelation2) VALUES(30064, 0x871B804CC41A) ON DUPLICATE KEY UPDATE groupRelation2=VALUES(groupRelation2);
+
+-- [Priest] Improved Power Word: Fortitude
+INSERT INTO spellfixes(spellId, groupRelation0) VALUES(14749, 0x8) ON DUPLICATE KEY UPDATE groupRelation0=VALUES(groupRelation0);
+INSERT INTO spellfixes(spellId, groupRelation0) VALUES(14767, 0x8) ON DUPLICATE KEY UPDATE groupRelation0=VALUES(groupRelation0);
