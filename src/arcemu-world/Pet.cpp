@@ -22,6 +22,12 @@
 #define GROWL_RANK_1 2649
 #define GROWL_RANK_2 14916
 #define WATER_ELEMENTAL 510
+#define PET_IMP 416
+#define PET_VOIDWALKER 1860
+#define PET_SUCCUBUS 1863
+#define PET_FELHUNTER 417
+#define PET_FELGUARD 17252
+
 
 uint32 GetAutoCastTypeForSpell(SpellEntry * ent)
 {
@@ -173,6 +179,23 @@ void Pet::CreateAsSummon(uint32 entry, CreatureInfo *ci, Creature* created_from_
 			m_name = "Water Elemental";
 		else if(entry == 19668)
 			m_name = "Shadowfiend";
+		else if((entry==PET_IMP) || (entry==PET_VOIDWALKER) || (entry==PET_SUCCUBUS) ||
+			(entry==PET_FELHUNTER) || (entry==PET_FELGUARD)) // check if it has a name
+		{
+			QueryResult* result = CharacterDatabase.Query("SELECT `name` FROM `playersummons` WHERE `ownerguid`=%u AND `entry`=%d",
+				owner->GetLowGUID(), entry);
+			if(result)
+			{
+				m_name = result->Fetch()->GetString();
+				delete result;
+			}
+			else // no name found, generate one and save it
+			{
+				m_name = sWorld.GenerateName();
+				CharacterDatabase.Execute("INSERT INTO playersummons VALUES(%u, %u, '%s')",
+					owner->GetLowGUID(), entry, m_name.data());
+			}
+		}
 		else
 			m_name = sWorld.GenerateName();
 
@@ -1086,6 +1109,12 @@ void Pet::Rename(string NewName)
 
 	// update timestamp to force a re-query
 	SetUInt32Value(UNIT_FIELD_PET_NAME_TIMESTAMP, (uint32)UNIXTIME);
+
+	// save new summoned name to db (.pet renamepet)
+	if(m_Owner->getClass() == WARLOCK) {
+		CharacterDatabase.Execute("UPDATE `playersummons` SET `name`='%s' WHERE `ownerguid`=%u AND `entry`=%u",
+			m_name.data(), m_Owner->GetLowGUID(), GetEntry());
+	}
 }
 
 void Pet::ApplySummonLevelAbilities()
