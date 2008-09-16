@@ -1017,12 +1017,12 @@ void Spell::SpellTargetTargetPartyMember(uint32 i, uint32 j)
 
 	if (Caster != Target)
 	{
-		Group *c_group = c_group = static_cast<Player*>(Caster)->GetGroup();
+		Group *c_group = static_cast<Player*>(Caster)->GetGroup();
 
 		if( !c_group )
 			return; //caster or caster master are not in group, cannot cast spell on this target
 
-		Group *t_group = t_group = static_cast<Player*>(Target)->GetGroup();
+		Group *t_group = static_cast<Player*>(Target)->GetGroup();
 
 		if( !t_group )
 			return; //target does not have a group

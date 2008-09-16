@@ -1691,7 +1691,7 @@ Unit* AIInterface::FindTarget()
 				continue;
 			if (tmpPlr->m_invisible)
 				continue;
-			if (tmpPlr->CombatStatus.GetPrimaryAttackTarget() == NULL)
+			if (tmpPlr->CombatStatus.GetPrimaryAttackTarget() == 0)
 				continue;
 			else
 			{

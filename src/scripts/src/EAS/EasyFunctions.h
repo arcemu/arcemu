@@ -31,8 +31,10 @@
 
 #include "StdAfx.h"
 
+#ifdef WIN32
 #pragma warning(disable:4305) // warning C4305: 'argument' : truncation from 'double' to 'float'
 #pragma warning(disable:4267) // warning C4267: '=' : conversion from 'size_t' to 'uint32', possible loss of data
+#endif
 
 #define CREATE_QUESTSCRIPT(cl) (QuestScript*)new cl
 #define CREATE_GOSSIPSCRIPT(cl) (GossipScript*)new cl

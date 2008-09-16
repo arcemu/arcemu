@@ -1948,7 +1948,6 @@ void Spell::SpellEffectPowerDrain(uint32 i)  // Power Drain
 		return;
 
 	uint32 powerField = UNIT_FIELD_POWER1+GetProto()->EffectMiscValue[i];
-	uint32 curPower = unitTarget->GetUInt32Value(powerField);
 	if( powerField == UNIT_FIELD_POWER1 && unitTarget->IsPlayer() )
 	{
 		Player* mPlayer = static_cast< Player* >( unitTarget );
@@ -2702,10 +2701,6 @@ void Spell::SpellEffectEnergize(uint32 i) // Energize
 	if(!unitTarget || !unitTarget->isAlive())
 		return;
 
-	uint32 POWER_TYPE=UNIT_FIELD_POWER1+GetProto()->EffectMiscValue[i];
-
-	uint32 curEnergy = (uint32)unitTarget->GetUInt32Value(POWER_TYPE);
-	uint32 maxEnergy = (uint32)unitTarget->GetUInt32Value(POWER_TYPE+6);
 	uint32 modEnergy = 0;
 	//yess there is always someone special : shamanistic rage - talent
 	if(GetProto()->Id==30824)
@@ -3566,7 +3561,7 @@ void Spell::SpellEffectSummonGuardian(uint32 i) // Summon Guardian
 	}*/
 	if( m_targets.m_targetMask & TARGET_FLAG_DEST_LOCATION && m_targets.m_destX && m_targets.m_destY && m_targets.m_destZ )
 	{
-		vec = &LocationVector(m_targets.m_destX,m_targets.m_destY,m_targets.m_destZ);
+		vec = new LocationVector(m_targets.m_destX,m_targets.m_destY,m_targets.m_destZ);
 	}
 
 	float angle_for_each_spawn = -float(M_PI) * 2 / damage;
@@ -3575,6 +3570,7 @@ void Spell::SpellEffectSummonGuardian(uint32 i) // Summon Guardian
 		float m_fallowAngle = angle_for_each_spawn * i;
 		u_caster->create_guardian(cr_entry,GetDuration(),m_fallowAngle,level,obj,vec );
 	}
+	if (vec) delete vec;
 }
 
 void Spell::SpellEffectSkillStep(uint32 i) // Skill Step
@@ -5664,11 +5660,12 @@ void Spell::SpellEffectSummonDemon(uint32 i)
 		LocationVector *vec = NULL;
 		if( m_targets.m_targetMask & TARGET_FLAG_DEST_LOCATION && m_targets.m_destX && m_targets.m_destY && m_targets.m_destZ )
 		{
-			vec = &LocationVector(m_targets.m_destX, m_targets.m_destY, m_targets.m_destZ);
+			vec = new LocationVector(m_targets.m_destX, m_targets.m_destY, m_targets.m_destZ);
 		}
 		pPet = objmgr.CreatePet();
 		pPet->SetInstanceID(p_caster->GetInstanceID());
 		pPet->CreateAsSummon(GetProto()->EffectMiscValue[i], ci, NULL, p_caster, GetProto(), 1, 300000, vec);
+		if (vec) delete vec;
 	}
 	//Create Enslave Aura if its inferno spell
 	if(GetProto()->Id == 1122)

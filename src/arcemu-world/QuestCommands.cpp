@@ -1322,7 +1322,7 @@ bool ChatHandler::HandleQuestRewardCommand(const char * args, WorldSession * m_s
 			ItemPrototype *itemProto = ItemPrototypeStorage.LookupEntry(itemid);
 			if(!itemProto)
 			{
-				recout << "Unknown item id %lu", itemid;
+				recout << "Unknown item id %lu" << itemid;
 				sLog.outError( "WORLD: Unknown item id 0x%08x", itemid );
 			}
 			else
@@ -1340,7 +1340,7 @@ bool ChatHandler::HandleQuestRewardCommand(const char * args, WorldSession * m_s
 			ItemPrototype *itemProto = ItemPrototypeStorage.LookupEntry(itemid);
 			if(!itemProto)
 			{
-				recout << "Unknown item id %lu", itemid;
+				recout << "Unknown item id %lu" << itemid;
 				sLog.outError( "WORLD: Unknown item id 0x%08x", itemid );
 			}
 			else
