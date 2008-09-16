@@ -119,3 +119,6 @@ INSERT INTO spellfixes(spellId, groupRelation0) VALUES(19500, 0x210810007FA01) O
 
 -- [Warrior] Spell Reflection
 INSERT INTO spellfixes(spellId, procFlags, procCharges) VALUES(23920, 0x8020000, 1) ON DUPLICATE KEY UPDATE procFlags=VALUES(procFlags), procCharges=VALUES(procCharges);
+
+-- [Paladin] Sanctified Seals
+INSERT INTO spellfixes(spellId, groupRelation1) VALUES(35397, 0x4000A000000) ON DUPLICATE KEY UPDATE groupRelation1=VALUES(groupRelation1);
