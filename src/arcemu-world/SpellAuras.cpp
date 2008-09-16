@@ -3777,6 +3777,9 @@ void Aura::SpellAuraReflectSpells(bool apply)
 {
 	if(apply)
 	{
+		SpellEntry *sp = dbcSpell.LookupEntry(GetSpellId());
+		if (sp == NULL) return;
+
 		for(std::list<struct ReflectSpellSchool*>::iterator i = m_target->m_reflectSpellSchool.begin();i != m_target->m_reflectSpellSchool.end();)
 		{
 			if(GetSpellId() == (*i)->spellId)
@@ -3792,6 +3795,7 @@ void Aura::SpellAuraReflectSpells(bool apply)
 		rss->spellId = GetSpellId();
 		rss->school = -1;
 		rss->require_aura_hash = 0;
+		rss->charges = sp->procCharges;
 		m_target->m_reflectSpellSchool.push_back(rss);
 	}
 	else

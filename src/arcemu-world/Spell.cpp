@@ -4886,7 +4886,7 @@ bool Spell::Reflect(Unit *refunit)
 {
 	SpellEntry * refspell = NULL;
 
-	if( m_reflectedParent != NULL )
+	if( m_reflectedParent != NULL || refunit == NULL || m_caster == refunit )
 		return false;
 
 	// if the spell to reflect is a reflect spell, do nothing.
@@ -4897,21 +4897,32 @@ bool Spell::Reflect(Unit *refunit)
 	}
 	for(std::list<struct ReflectSpellSchool*>::iterator i = refunit->m_reflectSpellSchool.begin();i != refunit->m_reflectSpellSchool.end();i++)
 	{
-		if((*i)->school == -1 || (*i)->school == (int32)GetProto()->School)
+		ReflectSpellSchool *rss = *i;
+		if(rss->school == -1 || rss->school == (int32)GetProto()->School)
 		{
-			if(Rand((float)(*i)->chance))
+			if(Rand((float)rss->chance))
 			{
 				//the god blessed special case : mage - Frost Warding = is an augmentation to frost warding
-				if((*i)->require_aura_hash && refunit && !refunit->HasAurasWithNameHash((*i)->require_aura_hash))
+				if(rss->require_aura_hash && !refunit->HasAurasWithNameHash(rss->require_aura_hash))
                 {
 					continue;
                 }
+				if (rss->charges > 0)
+				{
+					rss->charges--;
+					if (rss->charges <= 0)
+					{
+						refunit->m_reflectSpellSchool.erase(i);
+						refunit->RemoveAura(rss->spellId);
+					}
+				}
 				refspell = GetProto();
+				break;
 			}
 		}
 	}
 
-	if(!refspell || m_caster == refunit) return false;
+	if(!refspell) return false;
 
 	Spell *spell = SpellPool.PooledNew();
 	spell->Init(refunit, refspell, true, NULL);
@@ -4919,6 +4930,7 @@ bool Spell::Reflect(Unit *refunit)
 	SpellCastTargets targets;
 	targets.m_unitTarget = m_caster->GetGUID();
 	spell->prepare(&targets);
+
 	return true;
 }
 

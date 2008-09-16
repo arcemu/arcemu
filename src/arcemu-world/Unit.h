@@ -49,6 +49,7 @@ struct FactionDBC;
 struct ReflectSpellSchool
 {
 	uint32 spellId;
+	uint32 charges;
 	int32 school;
 	int32 chance;
 	int32 require_aura_hash;

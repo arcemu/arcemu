@@ -99,3 +99,23 @@ INSERT INTO spellfixes(spellId, groupRelation2) VALUES(30064, 0x871B804CC41A) ON
 -- [Priest] Improved Power Word: Fortitude
 INSERT INTO spellfixes(spellId, groupRelation0) VALUES(14749, 0x8) ON DUPLICATE KEY UPDATE groupRelation0=VALUES(groupRelation0);
 INSERT INTO spellfixes(spellId, groupRelation0) VALUES(14767, 0x8) ON DUPLICATE KEY UPDATE groupRelation0=VALUES(groupRelation0);
+
+-- [Priest] Darkness
+INSERT INTO spellfixes(spellId, groupRelation0) VALUES(15259, 0x202002000) ON DUPLICATE KEY UPDATE groupRelation0=VALUES(groupRelation0);
+INSERT INTO spellfixes(spellId, groupRelation1) VALUES(15259, 0x40000808000) ON DUPLICATE KEY UPDATE groupRelation1=VALUES(groupRelation1);
+INSERT INTO spellfixes(spellId, groupRelation0) VALUES(15307, 0x202002000) ON DUPLICATE KEY UPDATE groupRelation0=VALUES(groupRelation0);
+INSERT INTO spellfixes(spellId, groupRelation1) VALUES(15307, 0x40000808000) ON DUPLICATE KEY UPDATE groupRelation1=VALUES(groupRelation1);
+INSERT INTO spellfixes(spellId, groupRelation0) VALUES(15308, 0x202002000) ON DUPLICATE KEY UPDATE groupRelation0=VALUES(groupRelation0);
+INSERT INTO spellfixes(spellId, groupRelation1) VALUES(15308, 0x40000808000) ON DUPLICATE KEY UPDATE groupRelation1=VALUES(groupRelation1);
+INSERT INTO spellfixes(spellId, groupRelation0) VALUES(15309, 0x202002000) ON DUPLICATE KEY UPDATE groupRelation0=VALUES(groupRelation0);
+INSERT INTO spellfixes(spellId, groupRelation1) VALUES(15309, 0x40000808000) ON DUPLICATE KEY UPDATE groupRelation1=VALUES(groupRelation1);
+INSERT INTO spellfixes(spellId, groupRelation0) VALUES(15310, 0x202002000) ON DUPLICATE KEY UPDATE groupRelation0=VALUES(groupRelation0);
+INSERT INTO spellfixes(spellId, groupRelation1) VALUES(15310, 0x40000808000) ON DUPLICATE KEY UPDATE groupRelation1=VALUES(groupRelation1);
+
+-- [Hunter] Hawk Eye
+INSERT INTO spellfixes(spellId, groupRelation0) VALUES(19498, 0x210810007FA01) ON DUPLICATE KEY UPDATE groupRelation0=VALUES(groupRelation0);
+INSERT INTO spellfixes(spellId, groupRelation0) VALUES(19499, 0x210810007FA01) ON DUPLICATE KEY UPDATE groupRelation0=VALUES(groupRelation0);
+INSERT INTO spellfixes(spellId, groupRelation0) VALUES(19500, 0x210810007FA01) ON DUPLICATE KEY UPDATE groupRelation0=VALUES(groupRelation0);
+
+-- [Warrior] Spell Reflection
+INSERT INTO spellfixes(spellId, procFlags, procCharges) VALUES(23920, 0x8020000, 1) ON DUPLICATE KEY UPDATE procFlags=VALUES(procFlags), procCharges=VALUES(procCharges);
