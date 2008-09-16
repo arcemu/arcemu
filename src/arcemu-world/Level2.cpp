@@ -67,12 +67,20 @@ bool ChatHandler::HandleInvisibleCommand(const char *args, WorldSession *m_sessi
 		pChar->m_invisible = false;
 		pChar->bInvincible = false;
 		pChar->Social_TellFriendsOnline();
+		if( pChar->m_bg )
+		{
+			pChar->m_bg->RemoveInvisGM();
+		}
 		snprintf(msg, 256, "%s OFF.", msg);
 	} else {
 		pChar->m_isGmInvisible = true;
 		pChar->m_invisible = true;
 		pChar->bInvincible = true;
 		pChar->Social_TellFriendsOffline();
+		if( pChar->m_bg )
+		{
+			pChar->m_bg->AddInvisGM();
+		}
 		snprintf(msg, 256, "%s ON.", msg);
 	}
 

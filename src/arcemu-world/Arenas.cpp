@@ -95,11 +95,13 @@ void Arena::OnAddPlayer(Player * plr)
 	plr->GetItemInterface()->RemoveAllConjured();
 	plr->ResetAllCooldowns();
 
-	if( !m_started )
-		plr->CastSpell(plr, ARENA_PREPARATION, true);
-
-	m_playersCount[plr->GetTeam()]++;
-	UpdatePlayerCounts();
+	if( plr->m_isGmInvisible == false )
+	{
+		if( !m_started )
+			plr->CastSpell(plr, ARENA_PREPARATION, true);
+		m_playersCount[plr->GetTeam()]++;
+		UpdatePlayerCounts();
+	}
 
 	if (plr->m_bgIsQueued)
 		plr->m_bgIsQueued = false;
@@ -146,6 +148,8 @@ void Arena::HookOnHK(Player * plr)
 void Arena::HookOnPlayerDeath(Player * plr)
 {
 	ASSERT(plr != NULL);
+
+	if( plr->m_isGmInvisible == true ) return;
 
 	if (m_playersAlive.find(plr->GetLowGUID()) != m_playersAlive.end())
 	{

@@ -5205,7 +5205,7 @@ bool Player::CanSee(Object* obj) // * Invisibility & Stealth Detection - Partha 
 						return bGMTagOn; // GM can see stealthed players
 				}
 
-				return true;
+				return !pObj->m_isGmInvisible;
 			}
 		//------------------------------------------------------------------
 

@@ -244,12 +244,15 @@ protected:
 	uint32 m_type;
 	uint32 m_levelGroup;
 	uint32 m_deltaRating[2];
+	uint32 m_invisGMs;
 
 public:
 	/* Team->Player Map */
 	set<Player*> m_players[2];
 	void Lock() { m_mainLock.Acquire(); }
 	void Unlock() { m_mainLock.Release(); }
+	void AddInvisGM() {Lock(); m_invisGMs++; Unlock();}
+	void RemoveInvisGM() {Lock(); m_invisGMs--; Unlock();}
 protected:
 	/* World States. This should be moved to mapmgr instead for world pvp :/ */
 	map<uint32, uint32> m_worldStates;

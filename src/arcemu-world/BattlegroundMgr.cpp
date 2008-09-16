@@ -804,6 +804,7 @@ CBattleground::CBattleground(MapMgr * mgr, uint32 id, uint32 levelgroup, uint32 
 	m_winningteam = 0;
 	m_startTime = (uint32)UNIXTIME;
 	m_lastResurrect = (uint32)UNIXTIME;
+	m_invisGMs = 0;
 	sEventMgr.AddEvent(this, &CBattleground::EventResurrectPlayers, EVENT_BATTLEGROUND_QUEUE_UPDATE, 30000, 0,0);
 
 	/* create raid groups */
@@ -909,11 +910,12 @@ void CBattleground::BuildPvPUpdateDataPacket(WorldPacket * data)
 		*data << uint8(1);
 		*data << uint8(m_winningteam);
 
-		*data << uint32(m_players[0].size() + m_players[1].size());
+		*data << uint32((m_players[0].size() + m_players[1].size())-m_invisGMs);
 		for(uint32 i = 0; i < 2; ++i)
 		{
 			for(set<Player*>::iterator itr = m_players[i].begin(); itr != m_players[i].end(); ++itr)
 			{
+				if( (*itr)->m_isGmInvisible )continue;
 				*data << (*itr)->GetGUID();
 				bs = &(*itr)->m_bgScore;
 				*data << bs->KillingBlows;
@@ -937,11 +939,12 @@ void CBattleground::BuildPvPUpdateDataPacket(WorldPacket * data)
 		else
 			*data << uint8(0);      // If the game has ended - this will be 1
 
-		*data << uint32(m_players[0].size() + m_players[1].size());
+		*data << uint32((m_players[0].size() + m_players[1].size())-m_invisGMs);
 		for(uint32 i = 0; i < 2; ++i)
 		{
 			for(set<Player*>::iterator itr = m_players[i].begin(); itr != m_players[i].end(); ++itr)
 			{
+				if( (*itr)->m_isGmInvisible )continue;
 				*data << (*itr)->GetGUID();
 				bs = &(*itr)->m_bgScore;
 
@@ -1029,6 +1032,10 @@ void CBattleground::PortPlayer(Player * plr, bool skip_teleport /* = false*/)
 		WorldPacket data(SMSG_BATTLEGROUND_PLAYER_JOINED, 8);
 		data << plr->GetGUID();
 		DistributePacketToTeam(&data,plr->m_bgTeam);
+	}
+	else
+	{
+		m_invisGMs++;
 	}
 	m_players[plr->m_bgTeam].insert(plr);
 
@@ -1361,6 +1368,10 @@ void CBattleground::RemovePlayer(Player * plr, bool logout)
 	{
 		//Dont show invisble gm's leaving the game.
 		DistributePacketToAll(&data);
+	}
+	else
+	{
+		RemoveInvisGM();
 	}
 	m_mainLock.Acquire();
 	m_players[plr->m_bgTeam].erase(plr);
