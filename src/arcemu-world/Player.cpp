@@ -5828,7 +5828,7 @@ int32 Player::CanShootRangedWeapon( uint32 spellid, Unit* target, bool autoshot 
 	}
  
 	// Check ammo count
-	if( iprot )
+	if( iprot && itm->GetProto()->SubClass != ITEM_SUBCLASS_WEAPON_WAND )
 	{
 		uint32 ammocount = GetItemInterface()->GetItemCount(iprot->ItemId);
 		if(ammocount == 0)
