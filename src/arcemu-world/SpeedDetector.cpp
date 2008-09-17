@@ -12,7 +12,7 @@ SpeedCheatDetector::SpeedCheatDetector()
 void SpeedCheatDetector::EventSpeedChange()
 {
 #ifdef _DEBUG
-	printf("Speedchange Event occured prevspeed=%f\n",last_used_speed);
+	sLog.outDebug("Speedchange Event occured prevspeed=%f\n",last_used_speed);
 #endif
 //	last_stamp = 0;
 	//to reset or not to reset, this is the question
