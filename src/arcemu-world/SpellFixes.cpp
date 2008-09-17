@@ -12893,19 +12893,6 @@ void ApplyNormalFixes()
 			sp->procFlags = PROC_ON_GAIN_EXPIERIENCE;
 		}
 
-		//shadowfiend
-		sp = dbcSpell.LookupEntryForced( 41913 );
-		if( sp != NULL )
-			sp->procFlags = PROC_ON_MELEE_ATTACK;
-		//shadowfiend proc -> kinda rewriting this
-		sp = dbcSpell.LookupEntryForced( 41914 );
-		if( sp != NULL )
-		{
-			sp->Effect[0] = SPELL_EFFECT_ENERGIZE;
-			sp->EffectImplicitTargetA[0] = EFF_TARGET_PET_MASTER;
-			sp->EffectBasePoints[0] = 100; // represent pct value to convert dmg to mana
-			sp->Effect[1] = sp->Effect[2] = 0; //disable these
-		}
 		/**********************************************************
 		 *	Holy Nova
 		 **********************************************************/

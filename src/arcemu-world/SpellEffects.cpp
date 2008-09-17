@@ -2629,12 +2629,25 @@ void Spell::SpellEffectSummon(uint32 i) // Summon
 		pCreature->GetAIInterface()->Init(pCreature,AITYPE_PET,MOVEMENTTYPE_NONE,u_caster);
 		pCreature->GetAIInterface()->SetUnitToFollow(u_caster);
 		pCreature->GetAIInterface()->SetUnitToFollowAngle(float(-(M_PI/2)));
-		pCreature->GetAIInterface()->SetFollowDistance(3.0f);
+		pCreature->GetAIInterface()->SetFollowDistance(GetRadius(GetProto()->EffectRadiusIndex[i]));
 		pCreature->SetUInt32Value(UNIT_FIELD_LEVEL, u_caster->getLevel());
 		pCreature->SetUInt32Value(UNIT_FIELD_FACTIONTEMPLATE, u_caster->GetUInt32Value(UNIT_FIELD_FACTIONTEMPLATE));
 		pCreature->_setFaction();
 
-		u_caster->SetUInt64Value(UNIT_FIELD_SUMMON, pCreature->GetGUID());
+		pCreature->SetUInt64Value(UNIT_FIELD_SUMMONEDBY, p_caster->GetGUID());
+		pCreature->SetUInt64Value(UNIT_FIELD_CREATEDBY, p_caster->GetGUID());
+ 		u_caster->SetUInt64Value(UNIT_FIELD_SUMMON, pCreature->GetGUID());
+
+		if ( m_spellInfo->EffectMiscValue[i] == 19668 ) //shadowfiend
+		{
+			float parent_bonus = (float)(p_caster->GetDamageDoneMod(SCHOOL_SHADOW)*0.065f);
+			pCreature->SetFloatValue(UNIT_FIELD_MINDAMAGE, pCreature->GetFloatValue(UNIT_FIELD_MINDAMAGE) + parent_bonus);
+			pCreature->SetFloatValue(UNIT_FIELD_MAXDAMAGE, pCreature->GetFloatValue(UNIT_FIELD_MAXDAMAGE) + parent_bonus);
+			pCreature->BaseDamage[0] += parent_bonus;
+			pCreature->BaseDamage[1] += parent_bonus;
+			//TODO add avoidance chance 75%
+		}
+
 		pCreature->PushToWorld(u_caster->GetMapMgr());
 
 		sEventMgr.AddEvent(pCreature, &Creature::SafeDelete, EVENT_CREATURE_REMOVE_CORPSE, GetDuration(), 1, 0);
@@ -3498,8 +3511,8 @@ void Spell::SpellEffectSummonWild(uint32 i)  // Summon Wild
 	for(int i=0;i<damage;i++)
 	{
 		float m_fallowAngle=-(float(M_PI)/2*i);
-		x += (3*(cosf(m_fallowAngle+u_caster->GetOrientation())));
-		y += (3*(sinf(m_fallowAngle+u_caster->GetOrientation())));
+		x += (GetRadius(GetProto()->EffectRadiusIndex[i])*(cosf(m_fallowAngle+u_caster->GetOrientation())));
+		y += (GetRadius(GetProto()->EffectRadiusIndex[i])*(sinf(m_fallowAngle+u_caster->GetOrientation())));
 		Creature * p = u_caster->GetMapMgr()->CreateCreature(cr_entry);
 		//ASSERT(p);
 		p->Load(proto, x, y, z);
@@ -5346,7 +5359,7 @@ void Spell::SpellEffectSummonCritter(uint32 i)
 	pCreature->GetAIInterface()->Init(pCreature,AITYPE_PET,MOVEMENTTYPE_NONE,u_caster);
 	pCreature->GetAIInterface()->SetUnitToFollow(u_caster);
 	pCreature->GetAIInterface()->SetUnitToFollowAngle(float(-(M_PI/2)));
-	pCreature->GetAIInterface()->SetFollowDistance(3.0f);
+	pCreature->GetAIInterface()->SetFollowDistance(GetRadius(GetProto()->EffectRadiusIndex[i]));
 	pCreature->GetAIInterface()->disable_melee = true;
 	pCreature->bInvincible = true;
 	pCreature->PushToWorld(u_caster->GetMapMgr());

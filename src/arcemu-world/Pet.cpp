@@ -1434,12 +1434,6 @@ void Pet::ApplySummonLevelAbilities()
 	// Apply attack power.
 	SetUInt32Value(UNIT_FIELD_ATTACK_POWER, FL2UINT(pet_pwr));
 		
-	// Priest's Shadowfiend
-	if (m_uint32Values[OBJECT_FIELD_ENTRY]==19668) {
-	    SetUInt32Value(UNIT_FIELD_BASEATTACKTIME, 1500);
-	    SetUInt32Value(UNIT_FIELD_ATTACK_POWER,((uint32)(350+0.57*m_Owner->GetUInt32Value(PLAYER_FIELD_MOD_DAMAGE_DONE_POS_05)))/2);
-	}
-	
 	BaseResistance[0] = FL2UINT(pet_arm);
 	CalcResistance(0);
 

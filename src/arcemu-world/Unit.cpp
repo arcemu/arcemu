@@ -2236,16 +2236,6 @@ void Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, uint
 						CastingSpell->Id == 16959 )
 						continue;
 				}break;
-				//priest - shadowfiend - proc
-                case 41914:
-                    {
-						//sadly shadowfriend is a summon and will have this field empty
-//								if( !GetUInt64Value( UNIT_FIELD_CREATEDBY ) )
-//									continue; //we have no target to energize ?
-						dmg_overwrite = (spe->EffectBasePoints[0]*dmg) / 100;
-						if( dmg_overwrite == 0 )
-							continue;
-                    }break;
 			}
 		}
 
@@ -3665,6 +3655,13 @@ else
 			}
 		}
 
+		//ugly hack for shadowfiend restoring mana
+		if( GetUInt64Value(UNIT_FIELD_SUMMONEDBY) != 0 && GetUInt32Value(OBJECT_FIELD_ENTRY) == 19668 )
+		{
+			Player* owner = GetMapMgr()->GetPlayer((uint32)GetUInt64Value(UNIT_FIELD_SUMMONEDBY));
+			if ( owner != NULL )
+				this->Energize(owner, 34433, uint32(2.5f*realdamage + 0.5f), POWER_TYPE_MANA );
+		}
 	}
 	
 //==========================================================================================
