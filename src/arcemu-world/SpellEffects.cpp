@@ -1948,6 +1948,7 @@ void Spell::SpellEffectPowerDrain(uint32 i)  // Power Drain
 		return;
 
 	uint32 powerField = UNIT_FIELD_POWER1+GetProto()->EffectMiscValue[i];
+	uint32 curPower = unitTarget->GetUInt32Value(powerField);
 	if( powerField == UNIT_FIELD_POWER1 && unitTarget->IsPlayer() )
 	{
 		Player* mPlayer = static_cast< Player* >( unitTarget );
@@ -1958,6 +1959,9 @@ void Spell::SpellEffectPowerDrain(uint32 i)  // Power Drain
 		damage *= float2int32( 1 - ( ( static_cast<Player*>(unitTarget)->CalcRating( PLAYER_RATING_MODIFIER_SPELL_CRIT_RESILIENCE ) * 2 ) / 100.0f ) );
 	}
 	uint32 amt = damage + ( ( u_caster->GetDamageDoneMod( GetProto()->School ) * 80 ) / 100 );
+	if(amt>curPower)
+		amt=curPower;
+	unitTarget->SetUInt32Value(powerField,curPower-amt);
 	u_caster->Energize( u_caster, GetProto()->Id, amt, GetProto()->EffectMiscValue[i] );
 }
 
