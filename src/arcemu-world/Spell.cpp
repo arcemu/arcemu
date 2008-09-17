@@ -370,7 +370,7 @@ void Spell::FillAllTargetsInArea(uint32 i,float srcx,float srcy,float srcz, floa
 				{
 					did_hit_result = DidHit(i, static_cast< Unit* >( *itr ) );
 					if( did_hit_result == SPELL_DID_HIT_SUCCESS )
-						tmpMap->push_back( (*itr)->GetGUID() );
+						SafeAddTarget(tmpMap, (*itr)->GetGUID());
 					else
 						ModeratedTargets.push_back( SpellTargetMod( (*itr)->GetGUID(), did_hit_result ) );
 				}
@@ -381,10 +381,10 @@ void Spell::FillAllTargetsInArea(uint32 i,float srcx,float srcy,float srcz, floa
 				{
 					//trap, check not to attack owner and friendly
 					if( isAttackable( g_caster->m_summoner, static_cast< Unit* >( *itr ), !(GetProto()->c_is_flags & SPELL_FLAG_IS_TARGETINGSTEALTHED) ) )
-						tmpMap->push_back( (*itr)->GetGUID() );
+						SafeAddTarget(tmpMap, (*itr)->GetGUID());
 				}
 				else
-					tmpMap->push_back( (*itr)->GetGUID() );
+					SafeAddTarget(tmpMap, (*itr)->GetGUID());
 			}
 			if( GetProto()->MaxTargets )
 				if( GetProto()->MaxTargets == tmpMap->size() )
