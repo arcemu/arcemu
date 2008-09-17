@@ -521,7 +521,7 @@ void GossipScript::GossipHello(Object* pObject, Player* Plr, bool AutoSend)
 	if(flags & UNIT_NPC_FLAG_VENDOR)
 		Menu->AddItem(1, "I would like to browse your goods", 1);
 	
-	if((flags & UNIT_NPC_FLAG_TRAINER || flags & UNIT_NPC_FLAG_TRAINER_PROF) && pTrainer != 0)
+	if((flags & UNIT_NPC_FLAG_TRAINER || flags & UNIT_NPC_FLAG_TRAINER_PROF || flags & UNIT_NPC_FLAG_TRAINER_CLASS) && pTrainer != 0)
 	{
 		string name = pCreature->GetCreatureInfo()->Name;
 		string::size_type pos = name.find(" ");	  // only take first name
