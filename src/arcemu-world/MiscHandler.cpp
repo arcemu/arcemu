@@ -464,7 +464,7 @@ void WorldSession::HandleLootReleaseOpcode( WorldPacket & recv_data )
 						{
 							if( pLock->locktype[i] == 1 ) //Item or Quest Required;
 							{
-								pGO->Despawn((sQuestMgr.GetGameObjectLootQuest(pGO->GetEntry()) ? 60000 : 12000 + ( RandomUInt( 60000 ) ) ) );
+								pGO->Despawn((sQuestMgr.GetGameObjectLootQuest(pGO->GetEntry()) ? 180000 + ( RandomUInt( 180000 ) ) : 900000 + ( RandomUInt( 600000 ) ) ) );
 								return;
 							}
 							else if( pLock->locktype[i] == 2 ) //locktype;
@@ -491,7 +491,7 @@ void WorldSession::HandleLootReleaseOpcode( WorldPacket & recv_data )
 									else
 									{
 										pGO->CalcMineRemaining( true );
-										pGO->Despawn( 600000 + ( RandomUInt( 180000 ) ) );
+										pGO->Despawn( 900000 + ( RandomUInt( 600000 ) ) );
 										return;
 									}
 								}
@@ -502,7 +502,7 @@ void WorldSession::HandleLootReleaseOpcode( WorldPacket & recv_data )
 										pGO->SetUInt32Value(GAMEOBJECT_STATE, 1);
 										return;
 									}
-									pGO->Despawn((sQuestMgr.GetGameObjectLootQuest(pGO->GetEntry()) ? 60000 : 12000 + ( RandomUInt( 60000 ) ) ) );
+									pGO->Despawn(sQuestMgr.GetGameObjectLootQuest(pGO->GetEntry()) ? 180000 + ( RandomUInt( 180000 ) ) : (IS_INSTANCE(pGO->GetMapId()) ? 0 : 900000 + ( RandomUInt( 600000 ) ) ) );
 									return;
 								}
 							}
@@ -514,16 +514,7 @@ void WorldSession::HandleLootReleaseOpcode( WorldPacket & recv_data )
 									return;
 								}
 
-								if (pGO->GetMapMgr() && pGO->GetMapMgr()->GetMapInfo() && pGO->GetMapMgr()->GetMapInfo()->type != INSTANCE_NULL)
-								{
-									if (sQuestMgr.GetGameObjectLootQuest(pGO->GetEntry()))
-										pGO->Despawn(60000 + RandomUInt(60000));
-									else
-										pGO->Despawn(0);
-								}
-								else
-									pGO->Despawn((sQuestMgr.GetGameObjectLootQuest(pGO->GetEntry()) ? 60000 : 12000 + ( RandomUInt( 60000 ) ) ) );
-
+								pGO->Despawn(sQuestMgr.GetGameObjectLootQuest(pGO->GetEntry()) ? 180000 + ( RandomUInt( 180000 ) ) : (IS_INSTANCE(pGO->GetMapId()) ? 0 : 900000 + ( RandomUInt( 600000 ) ) ) );
 								return;
 							}
 						}
@@ -537,15 +528,7 @@ void WorldSession::HandleLootReleaseOpcode( WorldPacket & recv_data )
 						return;
 					}
 
-					if (pGO->GetMapMgr() && pGO->GetMapMgr()->GetMapInfo() && pGO->GetMapMgr()->GetMapInfo()->type != INSTANCE_NULL)
-					{
-						if (sQuestMgr.GetGameObjectLootQuest(pGO->GetEntry()))
-							pGO->Despawn(60000 + RandomUInt(60000));
-						else
-							pGO->Despawn(0);
-					}
-					else
-						pGO->Despawn((sQuestMgr.GetGameObjectLootQuest(pGO->GetEntry()) ? 60000 : 12000 + ( RandomUInt( 60000 ) ) ) );
+					pGO->Despawn(sQuestMgr.GetGameObjectLootQuest(pGO->GetEntry()) ? 180000 + ( RandomUInt( 180000 ) ) : (IS_INSTANCE(pGO->GetMapId()) ? 0 : 900000 + ( RandomUInt( 600000 ) ) ) );
 
 					return;
 
