@@ -966,6 +966,8 @@ void Player::_EventAttack( bool offhand )
 {
 	if (m_currentSpell)
 	{
+        if(m_currentSpell->GetProto()->ChannelInterruptFlags != 0) // this is a channeled spell - ignore the attack event
+            return;
 		m_currentSpell->cancel();
 		setAttackTimer(500, offhand);
 		return;
