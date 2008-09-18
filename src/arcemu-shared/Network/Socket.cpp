@@ -8,8 +8,6 @@
 
 #include "Network.h"
 
-initialiseSingleton(SocketGarbageCollector);
-
 Socket::Socket(SOCKET fd, uint32 sendbuffersize, uint32 recvbuffersize) : m_fd(fd), m_connected(false),	m_deleted(false)
 {
 	// Allocate Buffers
@@ -64,6 +62,8 @@ void Socket::Accept(sockaddr_in * address)
 
 void Socket::_OnConnect()
 {
+	int ret;
+
 	// set common parameters on the file descriptor
 	SocketOps::Nonblocking(m_fd);
 	SocketOps::DisableBuffering(m_fd);
@@ -76,7 +76,8 @@ void Socket::_OnConnect()
 	AssignToCompletionPort();
 	SetupReadEvent();
 #endif
-	sSocketMgr.AddSocket(this);
+	ret = sSocketMgr.AddSocket(this);
+	if (ret == -1) return;
 
 	// Call virtual onconnect
 	OnConnect();
@@ -110,12 +111,15 @@ string Socket::GetRemoteIP()
 		return string( "noip" );
 }
 
-void Socket::Disconnect()
+void Socket::Disconnect(bool remove)
 {
 	m_connected = false;
 
-	// remove from mgr
-	sSocketMgr.RemoveSocket(this);
+	if (remove)
+	{
+		// remove from mgr
+		sSocketMgr.RemoveSocket(this);
+	}
 
 	SocketOps::CloseSocket(m_fd);
 
@@ -131,6 +135,6 @@ void Socket::Delete()
 	m_deleted = true;
 
 	if(m_connected) Disconnect();
-	sSocketGarbageCollector.QueueSocket(this);
+	delete this;
 }
 

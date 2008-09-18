@@ -95,11 +95,13 @@ void Socket::SetupReadEvent()
 	m_readMutex.Release();
 }
 
-void Socket::ReadCallback(uint32 len)
+int Socket::ReadCallback(uint32 len)
 {
 	readBuffer.IncrementWritten(len);
 	OnRead();
 	SetupReadEvent();
+
+	return 0;
 }
 
 void Socket::AssignToCompletionPort()

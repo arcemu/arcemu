@@ -63,7 +63,7 @@ bool SocketWorkerThread::run()
 			return true;
 		}
 
-		if(ov->m_event < NUM_SOCKET_IO_EVENTS)
+		if(ov->m_event >= 0 && ov->m_event < NUM_SOCKET_IO_EVENTS)
 			ophandlers[ov->m_event](s, len);
 	}
 

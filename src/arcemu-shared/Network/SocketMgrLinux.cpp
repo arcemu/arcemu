@@ -12,7 +12,7 @@
 //#define ENABLE_ANTI_DOS
 
 initialiseSingleton(SocketMgr);
-void SocketMgr::AddSocket(Socket * s)
+int SocketMgr::AddSocket(Socket * s)
 {
 #ifdef ENABLE_ANTI_DOS
 	uint32 saddr;
@@ -32,7 +32,7 @@ void SocketMgr::AddSocket(Socket * s)
 	if (count > 16)
 	{
 		s->Disconnect(false);
-		return;
+		return -1;
 	}
 #endif
 
@@ -41,7 +41,7 @@ void SocketMgr::AddSocket(Socket * s)
 		//fds[s->GetFd()]->Delete();
 		//fds[s->GetFd()] = NULL;
 		s->Delete();
-		return;
+		return -1;
 	}
 
 #ifdef ENABLE_ANTI_DOS
@@ -58,6 +58,8 @@ void SocketMgr::AddSocket(Socket * s)
     
     if(epoll_ctl(epoll_fd, EPOLL_CTL_ADD, ev.data.fd, &ev))
 		Log.Warning("epoll", "Could not add event to epoll set on fd %u", ev.data.fd);
+
+	return 0;
 }
 
 void SocketMgr::AddListenSocket(ListenSocketBase * s)
@@ -113,7 +115,7 @@ bool SocketWorkerThread::run()
 {
     int fd_count;
     Socket * ptr;
-    int i;
+    int i, ret;
     running = true;
     SocketMgr * mgr = SocketMgr::getSingletonPtr();
 
@@ -147,7 +149,9 @@ bool SocketWorkerThread::run()
             }
 			else if(events[i].events & EPOLLIN)
             {
-                ptr->ReadCallback(0);               // Len is unknown at this point.
+                ret = ptr->ReadCallback(0);               // Len is unknown at this point.
+				if (ret == -1)
+					continue;
 
 				/* changing to written state? */
 				if(ptr->GetWriteBuffer().GetSize() && !ptr->HasSendLock() && ptr->IsConnected())
