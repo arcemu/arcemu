@@ -1792,9 +1792,9 @@ void Aura::SpellAuraDummy(bool apply)
 	case 12328:
 		{
 			if(apply)
-				m_target->AddExtraStrikeTarget(GetSpellId(), 10);
+				m_target->AddExtraStrikeTarget(GetSpellProto(), 10);
 			else
-				m_target->RemoveExtraStrikeTarget(GetSpellId());
+				m_target->RemoveExtraStrikeTarget(GetSpellProto());
 		}break;
 	//taming rod spells
 	case 19548:	{                 //invoke damage to trigger attack
@@ -7130,9 +7130,9 @@ void Aura::SpellAuraModHaste( bool apply )
 	if( m_spellProto->NameHash == SPELL_HASH_BLADE_FLURRY )
 	{
 		if( apply )
-			m_target->AddExtraStrikeTarget(GetSpellId(), 0);
+			m_target->AddExtraStrikeTarget(GetSpellProto(), 0);
 		else
-			m_target->RemoveExtraStrikeTarget(GetSpellId());
+			m_target->RemoveExtraStrikeTarget(GetSpellProto());
 	}
 
 	if( mod->m_amount < 0 )

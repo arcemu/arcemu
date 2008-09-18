@@ -78,7 +78,7 @@ struct AreaAura
 };
 
 typedef struct {
-	uint32 spellId;
+	SpellEntry *spell_info;
 	uint32 charges;
 	bool deleted;
 } ExtraStrike;
@@ -746,8 +746,8 @@ public:
 	void HandleProcDmgShield(uint32 flag, Unit* attacker);//almost the same as handleproc :P
 //	void HandleProcSpellOnSpell(Unit* Victim,uint32 damage,bool critical);//nasty, some spells proc other spells
 
-	void RemoveExtraStrikeTarget(uint32 spellId);
-	void AddExtraStrikeTarget(uint32 spellId, uint32 charges);
+	void RemoveExtraStrikeTarget(SpellEntry *spell_info);
+	void AddExtraStrikeTarget(SpellEntry *spell_info, uint32 charges);
 
 	int32 GetAP();
 	int32 GetRAP();

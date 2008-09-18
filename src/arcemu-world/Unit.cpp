@@ -3875,8 +3875,10 @@ else
 				if(CalcDistance(*itr) < 5.0f && isAttackable(this, (*itr)) && (*itr)->isInFront(this) && !((Unit*)(*itr))->IsPacified())
 				{
 					// Sweeping Strikes hits cannot be dodged, missed or parried (from wowhead)
-					bool skip_hit_check = ex->spellId == 12328 ? true : false;
-					Strike( static_cast< Unit* >( *itr ), weapon_damage_type, ability, add_damage, pct_dmg_mod, exclusive_damage, false, skip_hit_check );
+					bool skip_hit_check = ex->spell_info->Id == 12328 ? true : false;
+					//zack : should we use the spell id the registered this extra strike when striking ? It would solve a few proc on proc problems if so ;)
+//					Strike( static_cast< Unit* >( *itr ), weapon_damage_type, ability, add_damage, pct_dmg_mod, exclusive_damage, false, skip_hit_check );
+					Strike( static_cast< Unit* >( *itr ), weapon_damage_type, ex->spell_info, add_damage, pct_dmg_mod, exclusive_damage, false, skip_hit_check );
 					break;
 				}
 			}
@@ -7071,11 +7073,11 @@ void Unit::EventStunOrImmobilize(Unit *proc_target, bool is_victim)
 	}
 }
 
-void Unit::RemoveExtraStrikeTarget(uint32 spellId)
+void Unit::RemoveExtraStrikeTarget(SpellEntry *spell_info)
 {
 	for(std::list<ExtraStrike*>::iterator i = m_extraStrikeTargets.begin();i != m_extraStrikeTargets.end();i++)
 	{
-		if((*i)->deleted == false && spellId == (*i)->spellId)
+		if((*i)->deleted == false && spell_info == (*i)->spell_info)
 		{
 			m_extrastriketargetc--;
 			(*i)->deleted = true;
@@ -7083,11 +7085,12 @@ void Unit::RemoveExtraStrikeTarget(uint32 spellId)
 	}
 }
 
-void Unit::AddExtraStrikeTarget(uint32 spellId, uint32 charges)
+void Unit::AddExtraStrikeTarget(SpellEntry *spell_info, uint32 charges)
 {
 	for(std::list<ExtraStrike*>::iterator i = m_extraStrikeTargets.begin();i != m_extraStrikeTargets.end();i++)
 	{
-		if(spellId == (*i)->spellId)
+		//a pointer check or id check ...should be the same
+		if(spell_info == (*i)->spell_info)
 		{
 			if ((*i)->deleted == true)
 			{
@@ -7101,7 +7104,7 @@ void Unit::AddExtraStrikeTarget(uint32 spellId, uint32 charges)
 
 	ExtraStrike *es = new ExtraStrike;
 
-	es->spellId = spellId;
+	es->spell_info = spell_info;
 	es->charges = charges;
 	es->deleted = false;
 	m_extraStrikeTargets.push_back(es);
