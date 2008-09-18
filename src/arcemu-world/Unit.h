@@ -77,6 +77,12 @@ struct AreaAura
 	Unit* caster;
 };
 
+typedef struct {
+	uint32 spellId;
+	uint32 charges;
+	bool deleted;
+} ExtraStrike;
+
 enum DeathState
 {
 	ALIVE = 0,  // Unit is alive and well
@@ -740,6 +746,9 @@ public:
 	void HandleProcDmgShield(uint32 flag, Unit* attacker);//almost the same as handleproc :P
 //	void HandleProcSpellOnSpell(Unit* Victim,uint32 damage,bool critical);//nasty, some spells proc other spells
 
+	void RemoveExtraStrikeTarget(uint32 spellId);
+	void AddExtraStrikeTarget(uint32 spellId, uint32 charges);
+
 	int32 GetAP();
 	int32 GetRAP();
 
@@ -1080,7 +1089,9 @@ public:
 	int32 m_powerRegenPCT;
 	int32 m_stunned;
 	int32 m_extraattacks;   
-	int32 m_extrastriketargets;
+	int32 m_extrastriketarget;
+	int32 m_extrastriketargetc;
+	std::list<ExtraStrike*> m_extraStrikeTargets;
 	int32 m_fearmodifiers;
 	int64 m_magnetcaster; // Unit who acts as a magnet for this unit
 	//std::set<SpellEntry*> m_onStrikeSpells;

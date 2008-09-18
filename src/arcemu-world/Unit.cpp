@@ -311,7 +311,6 @@ Unit::Unit()
 	polySpell = 0;
 	RangedDamageTaken = 0;
 	m_procCounter = 0;
-	m_extrastriketargets = 0;
 	m_damgeShieldsInUse = false;
 //	fearSpell = 0;
 	m_extraAttackCounter = false;
@@ -323,6 +322,8 @@ Unit::Unit()
 	m_hasVampiricEmbrace = m_hasVampiricTouch = 0;
 	m_hitfrommeleespell	 = 0;
 	m_damageSplitTarget = NULL;
+	m_extrastriketarget = 0;
+	m_extrastriketargetc = 0;
 	ModelHalfSize = 1.0f; //worst case unit size. (Should be overwritten)
 }
 
@@ -3856,27 +3857,43 @@ else
 		m_extraAttackCounter = false;
 	}
 
-	if(m_extrastriketargets > 0)
+	if(m_extrastriketargetc > 0 && m_extrastriketarget == 0)
 	{
-		int32 m_extra = m_extrastriketargets;
-		int32 m_temp = m_extrastriketargets;
-		m_extrastriketargets = 0;
+		m_extrastriketarget = 1;
 
-		for(set<Object*>::iterator itr = m_objectsInRange.begin(); itr != m_objectsInRange.end() && m_extra; ++itr)
+		for(std::list<ExtraStrike*>::iterator itx = m_extraStrikeTargets.begin();itx != m_extraStrikeTargets.end(); itx++)
 		{
-			if(m_extra <= 0)
-				break;
-			if (!(*itr) || (*itr) == pVictim || !(*itr)->IsUnit())
-				continue;
+			ExtraStrike *ex = *itx;
 
+			if (ex->deleted) continue;
 
-			if(CalcDistance(*itr) < 10.0f && isAttackable(this, (*itr)) && (*itr)->isInFront(this) && !((Unit*)(*itr))->IsPacified())
+			for(set<Object*>::iterator itr = m_objectsInRange.begin(); itr != m_objectsInRange.end(); ++itr)
 			{
-				Strike( static_cast< Unit* >( *itr ), weapon_damage_type, ability, add_damage, pct_dmg_mod, exclusive_damage, false ,false );
-				--m_extra;
+				if (!(*itr) || (*itr) == pVictim || !(*itr)->IsUnit())
+					continue;
+
+				if(CalcDistance(*itr) < 5.0f && isAttackable(this, (*itr)) && (*itr)->isInFront(this) && !((Unit*)(*itr))->IsPacified())
+				{
+					// Sweeping Strikes hits cannot be dodged, missed or parried (from wowhead)
+					bool skip_hit_check = ex->spellId == 12328 ? true : false;
+					Strike( static_cast< Unit* >( *itr ), weapon_damage_type, ability, add_damage, pct_dmg_mod, exclusive_damage, false, skip_hit_check );
+					break;
+				}
+			}
+
+			// Sweeping Strikes charges are used up regardless whether there is a secondary target in range or not. (from wowhead)
+			if (ex->charges > 0)
+			{
+				ex->charges--;
+				if (ex->charges <= 0)
+				{
+					ex->deleted = true;
+					m_extrastriketargetc--;
+				}
 			}
 		}
-		m_extrastriketargets += m_temp;
+
+		m_extrastriketarget = 0;
 	}
 }	
 
@@ -7054,3 +7071,39 @@ void Unit::EventStunOrImmobilize(Unit *proc_target, bool is_victim)
 	}
 }
 
+void Unit::RemoveExtraStrikeTarget(uint32 spellId)
+{
+	for(std::list<ExtraStrike*>::iterator i = m_extraStrikeTargets.begin();i != m_extraStrikeTargets.end();i++)
+	{
+		if((*i)->deleted == false && spellId == (*i)->spellId)
+		{
+			m_extrastriketargetc--;
+			(*i)->deleted = true;
+		}
+	}
+}
+
+void Unit::AddExtraStrikeTarget(uint32 spellId, uint32 charges)
+{
+	for(std::list<ExtraStrike*>::iterator i = m_extraStrikeTargets.begin();i != m_extraStrikeTargets.end();i++)
+	{
+		if(spellId == (*i)->spellId)
+		{
+			if ((*i)->deleted == true)
+			{
+				(*i)->deleted = false;
+				m_extrastriketargetc++;
+			}
+			(*i)->charges = charges;
+			return;
+		}
+	}
+
+	ExtraStrike *es = new ExtraStrike;
+
+	es->spellId = spellId;
+	es->charges = charges;
+	es->deleted = false;
+	m_extraStrikeTargets.push_back(es);
+	m_extrastriketargetc++;
+}

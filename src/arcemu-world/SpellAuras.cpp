@@ -1791,11 +1791,10 @@ void Aura::SpellAuraDummy(bool apply)
 	//warrior - sweeping strikes
 	case 12328:
 		{
-	      if(apply)
-			 m_target->m_extrastriketargets++;
-		  else if( m_target->m_extrastriketargets > 0 )
-			  m_target->m_extrastriketargets--;
-
+			if(apply)
+				m_target->AddExtraStrikeTarget(GetSpellId(), 10);
+			else
+				m_target->RemoveExtraStrikeTarget(GetSpellId());
 		}break;
 	//taming rod spells
 	case 19548:	{                 //invoke damage to trigger attack
@@ -7131,9 +7130,9 @@ void Aura::SpellAuraModHaste( bool apply )
 	if( m_spellProto->NameHash == SPELL_HASH_BLADE_FLURRY )
 	{
 		if( apply )
-			m_target->m_extrastriketargets++;
-		else if( m_target->m_extrastriketargets > 0 )
-			m_target->m_extrastriketargets--;
+			m_target->AddExtraStrikeTarget(GetSpellId(), 0);
+		else
+			m_target->RemoveExtraStrikeTarget(GetSpellId());
 	}
 
 	if( mod->m_amount < 0 )
