@@ -1154,7 +1154,7 @@ uint8 Spell::prepare( SpellCastTargets * targets )
 			// when a spell is channeling and a new spell is casted
 			// that is a channeling spell, but not triggert by a aura
 			// the channel bar/spell is bugged
-			if( u_caster->GetUInt64Value( UNIT_FIELD_CHANNEL_OBJECT) > 0 && u_caster->GetCurrentSpell() )
+			if( u_caster && u_caster->GetUInt64Value( UNIT_FIELD_CHANNEL_OBJECT) > 0 && u_caster->GetCurrentSpell() )
 			{
 				u_caster->GetCurrentSpell()->cancel();
 				SendChannelUpdate( 0 );
