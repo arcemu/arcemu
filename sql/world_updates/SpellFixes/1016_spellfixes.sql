@@ -122,3 +122,10 @@ INSERT INTO spellfixes(spellId, procFlags, procCharges) VALUES(23920, 0x8020000,
 
 -- [Paladin] Sanctified Seals
 INSERT INTO spellfixes(spellId, groupRelation1) VALUES(35397, 0x4000A000000) ON DUPLICATE KEY UPDATE groupRelation1=VALUES(groupRelation1);
+
+-- [Paladin] Improved Seal of Righteousness
+INSERT INTO spellfixes(spellId, groupRelation0) VALUES(20224, 0x8000400) ON DUPLICATE KEY UPDATE groupRelation0=VALUES(groupRelation0);
+INSERT INTO spellfixes(spellId, groupRelation0) VALUES(20225, 0x8000400) ON DUPLICATE KEY UPDATE groupRelation0=VALUES(groupRelation0);
+INSERT INTO spellfixes(spellId, groupRelation0) VALUES(20330, 0x8000400) ON DUPLICATE KEY UPDATE groupRelation0=VALUES(groupRelation0);
+INSERT INTO spellfixes(spellId, groupRelation0) VALUES(20331, 0x8000400) ON DUPLICATE KEY UPDATE groupRelation0=VALUES(groupRelation0);
+INSERT INTO spellfixes(spellId, groupRelation0) VALUES(20332, 0x8000400) ON DUPLICATE KEY UPDATE groupRelation0=VALUES(groupRelation0);
