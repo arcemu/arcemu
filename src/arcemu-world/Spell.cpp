@@ -307,7 +307,7 @@ void Spell::FillSpecifiedTargetsInArea(uint32 i,float srcx,float srcy,float srcz
 					if( did_hit_result != SPELL_DID_HIT_SUCCESS )
 						ModeratedTargets.push_back(SpellTargetMod((*itr)->GetGUID(), did_hit_result));
 					else
-						tmpMap->push_back((*itr)->GetGUID());
+						SafeAddTarget(tmpMap, (*itr)->GetGUID());
 				}
 
 			}
@@ -317,10 +317,10 @@ void Spell::FillSpecifiedTargetsInArea(uint32 i,float srcx,float srcy,float srcz
 				{
 					//trap, check not to attack owner and friendly
 					if(isAttackable(g_caster->m_summoner,(Unit*)(*itr),!(GetProto()->c_is_flags & SPELL_FLAG_IS_TARGETINGSTEALTHED)))
-						tmpMap->push_back((*itr)->GetGUID());
+						SafeAddTarget(tmpMap, (*itr)->GetGUID());
 				}
 				else
-					tmpMap->push_back((*itr)->GetGUID());
+					SafeAddTarget(tmpMap, (*itr)->GetGUID());
 			}
 			if( GetProto()->MaxTargets )
 			{
@@ -424,7 +424,7 @@ void Spell::FillAllFriendlyInArea( uint32 i, float srcx, float srcy, float srcz,
 				{
 					did_hit_result = DidHit(i, static_cast< Unit* >( *itr ) );
 					if( did_hit_result == SPELL_DID_HIT_SUCCESS )
-						tmpMap->push_back( (*itr)->GetGUID() );
+						SafeAddTarget(tmpMap, (*itr)->GetGUID());
 					else
 						ModeratedTargets.push_back( SpellTargetMod( (*itr)->GetGUID(), did_hit_result ) );
 				}
@@ -435,10 +435,10 @@ void Spell::FillAllFriendlyInArea( uint32 i, float srcx, float srcy, float srcz,
 				{
 					//trap, check not to attack owner and friendly
 					if( isFriendly( g_caster->m_summoner, static_cast< Unit* >( *itr ) ) )
-						tmpMap->push_back( (*itr)->GetGUID() );
+						SafeAddTarget(tmpMap, (*itr)->GetGUID());
 				}
 				else
-					tmpMap->push_back( (*itr)->GetGUID() );
+					SafeAddTarget(tmpMap, (*itr)->GetGUID());
 			}
 			if( GetProto()->MaxTargets )
 				if( GetProto()->MaxTargets == tmpMap->size() )
@@ -3180,7 +3180,7 @@ uint8 Spell::CanCast(bool tolerate)
 		}
 
 		// check if we have the required reagents
-		if (!p_caster->removeReagentCost)
+		if (!(p_caster->removeReagentCost && GetProto()->AttributesExD & 2) )
 		{
 			for(i=0; i<8 ;i++)
 			{
@@ -4134,7 +4134,7 @@ void Spell::RemoveItems()
 	}
 
 	// Reagent Removal
-	if (!p_caster->removeReagentCost)
+	if (!(p_caster->removeReagentCost && GetProto()->AttributesExD & 2) )
 	{
 		for(uint32 i=0; i<8 ;i++)
 		{
