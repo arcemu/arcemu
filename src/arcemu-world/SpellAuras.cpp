@@ -3254,7 +3254,7 @@ void Aura::SpellAuraModStealth(bool apply)
 		if( m_target->IsPlayer() )
 			m_target->SetFlag(PLAYER_FIELD_BYTES2, 0x2000);
 
-		m_target->RemoveAurasByInterruptFlag(AURA_INTERRUPT_ON_STEALTH);
+		m_target->RemoveAurasByInterruptFlag(AURA_INTERRUPT_ON_STEALTH | AURA_INTERRUPT_ON_INVINCIBLE);
 		m_target->m_stealthLevel += mod->m_amount;
 
 		// hack fix for vanish stuff
@@ -3351,12 +3351,15 @@ void Aura::SpellAuraModInvisibility(bool apply)
 
 	if(apply)
 	{
+		m_target->SetInvisibility(GetSpellId());
 		m_target->m_invisFlag = mod->m_miscValue;
 		if( m_target->GetTypeId() == TYPEID_PLAYER )
 		{
 			if( GetSpellId() == 32612 ) 
 				static_cast<Player*>(m_target)->SetFlag( PLAYER_FIELD_BYTES2, 0x4000 ); //Mage Invis self visual
 		}
+
+		m_target->RemoveAurasByInterruptFlag(AURA_INTERRUPT_ON_INVINCIBLE);
 	}
 	else
 	{
@@ -4456,6 +4459,11 @@ void Aura::SpellAuraModSchoolImmunity(bool apply)
 				pAura->Remove();
 			}
 		}
+	}
+
+	if( apply && ( m_spellProto->NameHash == SPELL_HASH_DIVINE_SHIELD || m_spellProto->NameHash == SPELL_HASH_BLESSING_OF_PROTECTION || m_spellProto->NameHash == SPELL_HASH_ICE_BLOCK) )
+	{
+		m_target->RemoveAurasByInterruptFlag(AURA_INTERRUPT_ON_INVINCIBLE);
 	}
 
 	if(apply)

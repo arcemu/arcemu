@@ -785,7 +785,9 @@ public:
 	float detectRange;
 
 	// Invisibility
+	ARCEMU_INLINE void SetInvisibility(uint32 id) { m_invisibility = id; }
 	ARCEMU_INLINE bool IsInvisible() { return (m_invisible!=0 ? true : false); }
+	uint32 m_invisibility;
 	bool m_invisible;
 	uint8 m_invisFlag;
 	int32 m_invisDetect[INVIS_FLAG_TOTAL];
@@ -1138,6 +1140,15 @@ public:
 		{
 			RemoveAura( m_stealth );
 			m_stealth = 0;
+		}
+	}
+
+	void RemoveInvisibility()
+	{
+		if( m_invisibility != 0 )
+		{
+			RemoveAura( m_invisibility );
+			m_invisibility = 0;
 		}
 	}
 

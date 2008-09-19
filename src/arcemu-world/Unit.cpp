@@ -223,6 +223,7 @@ Unit::Unit()
 	CreatureAttackPowerMod[11] = 0;
 	CreatureRangedAttackPowerMod[11] = 0;
 
+	m_invisibility = 0;
 	m_invisible = false;
 	m_invisFlag = INVIS_FLAG_NORMAL;
 
@@ -4238,6 +4239,19 @@ void Unit::AddAura(Aura *aur)
 
 			GetAIInterface()->AttackReaction(pCaster, 1, aur->GetSpellId());
 		}*/
+	}
+
+	if (aur->GetSpellProto()->AuraInterruptFlags & AURA_INTERRUPT_ON_INVINCIBLE)
+	{
+		Unit * pCaster = aur->GetUnitCaster();
+		if(pCaster)
+		{
+			pCaster->RemoveStealth();
+			pCaster->RemoveInvisibility();
+			pCaster->RemoveAllAuraByNameHash(SPELL_HASH_ICE_BLOCK);
+			pCaster->RemoveAllAuraByNameHash(SPELL_HASH_DIVINE_SHIELD);
+			pCaster->RemoveAllAuraByNameHash(SPELL_HASH_BLESSING_OF_PROTECTION);
+		}
 	}
 }
 
