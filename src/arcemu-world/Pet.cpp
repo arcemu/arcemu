@@ -1381,9 +1381,10 @@ void Pet::ApplySummonLevelAbilities()
 	static double R_mod_spr[6] = {3.47826087, 1.775, 1.775, 1.775, 1.775, 3.5};
 	static double R_base_pwr[6] = {7.202898551, -101, -101, -101, -101, -101};
 	static double R_mod_pwr[6] = {2.797101449, 6.5, 6.5, 6.5, 6.5, 6.5};
-	static double R_base_armor[6] = {-11.69565217, -702, -929.4, -1841.25, -1157.55, -1000};
-	static double R_mod_armor[6] = {31.69565217, 139.6, 74.62, 89.175, 101.1316667, 100};
-	static double R_pet_sta_to_hp[6] = {4.5, 15.0, 7.5, 10.0, 10.6, 10.0};
+	static double R_base_armor[6] = {-11.69565217, -702, -929.4, -1841.25, -1157.55, 0};
+	static double R_mod_armor[6] = {31.69565217, 139.6, 74.62, 89.175, 101.1316667, 20};
+	static double R_pet_sta_to_hp[6] = {4.5, 15.0, 7.5, 10.0, 10.6, 7.5};
+	static double R_pet_int_to_mana[6] = {15.0, 15.0, 15.0, 15.0, 15.0, 5.0};
 	static double R_base_min_dmg[6] = {0.550724638, 4.566666667, 26.82, 29.15, 20.17888889, 20};
 	static double R_mod_min_dmg[6] = {1.449275362, 1.433333333, 2.18, 1.85, 1.821111111, 1};
 	static double R_base_max_dmg[6] = {1.028985507, 7.133333333, 36.16, 39.6, 27.63111111, 20};
@@ -1408,6 +1409,7 @@ void Pet::ApplySummonLevelAbilities()
 	double base_max_dmg = R_base_max_dmg[stat_index];
 	double mod_max_dmg = R_mod_max_dmg[stat_index];
 	double pet_sta_to_hp = R_pet_sta_to_hp[stat_index];
+	double pet_int_to_mana = R_pet_int_to_mana[stat_index];
 
 	// Calculate bonuses
 	
@@ -1439,7 +1441,7 @@ void Pet::ApplySummonLevelAbilities()
 
 	// Calculate health / mana
 	double health = pet_sta * pet_sta_to_hp;
-	double mana = has_mana ? (pet_int * 15) : 0.0;
+	double mana = has_mana ? (pet_int * pet_int_to_mana) : 0.0;
 	if( health == 0 )
 	{
 		sLog.outError("Pet with entry %u has 0 health !! \n",m_uint32Values[OBJECT_FIELD_ENTRY]);
