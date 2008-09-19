@@ -682,7 +682,7 @@ void WorldSession::HandleWhoOpcode( WorldPacket & recv_data )
 			}
 		}
 
-		if(!(class_mask & plr->getClassMask()) || !(race_mask & plr->getRaceMask()))
+		if(!((class_mask >> 1) & plr->getClassMask()) || !((race_mask >> 1) & plr->getRaceMask()))
 			add = false;
 
 		// skip players that fail zone check
