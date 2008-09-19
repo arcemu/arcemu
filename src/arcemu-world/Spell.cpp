@@ -4218,6 +4218,17 @@ exit:
 	else
 		value = basePoints + rand() % randomPoints;
 
+	int32 comboDamage = (int32)GetProto()->EffectPointsPerComboPoint[i];
+	if(comboDamage && p_caster != NULL )
+	{
+		m_requiresCP = true;
+		value += ( comboDamage * p_caster->m_comboPoints );
+			//this is ugly so i will explain the case maybe someone ha a better idea :
+			// while casting a spell talent will trigger uppon the spell prepare faze
+			// the effect of the talent is to add 1 combo point but when triggering spell finishes it will clear the extra combo point
+		p_caster->m_spellcomboPoints = 0;
+	}
+
 	//scripted shit
 	if( GetProto()->Id == 34120)
 	{	//A steady shot that causes ${$RAP*0.3+$m1} damage.
@@ -4244,6 +4255,15 @@ exit:
 			value += (uint32)(u_caster->GetRAP()*0.2);
 		}
 	}
+	else if( GetProto()->NameHash == SPELL_HASH_EVISCERATE ) //Eviscerate
+	{
+		value += (uint32)( p_caster->GetAP() *  0.03f * p_caster->m_comboPoints  );
+	}
+	else if( GetProto()->NameHash == SPELL_HASH_FEROCIOUS_BITE )
+	{
+		value += (uint32)( ( p_caster->GetAP() * 0.1526f ) + ( p_caster->GetUInt32Value( UNIT_FIELD_POWER4 ) * GetProto()->dmg_multiplier[i] ) );
+		p_caster->SetUInt32Value( UNIT_FIELD_POWER4, 0 );
+	}
 	// HACK FIX
 	else if( GetProto()->NameHash == SPELL_HASH_VICTORY_RUSH )
 	{//causing ${$AP*$m1/100} damage
@@ -4268,10 +4288,9 @@ exit:
 		// Tooltip gives no specific reading, but says ", increased by your attack power.".
 		if( u_caster != NULL )
 		{
-			float ap = (float)u_caster->GetAP();
 			if( i == 0 )
 			{
-				value += (uint32) ceilf( ( ap * 0.18f ) / 6 );
+				value += (uint32) ceilf( ( u_caster->GetAP() * 0.18f ) / 6 );
 			}
 		}
 
@@ -4285,18 +4304,16 @@ exit:
 		4pt = Attack Power * 0.21 + a
 		5pt = Attack Power * 0.24 + b
 		*/
-		if( u_caster->IsPlayer() )
+		if( p_caster != NULL && i == 0 )
 		{
-			float ap = (float)u_caster->GetAP();
-			float cp = (float)static_cast< Player* >(u_caster)->m_comboPoints;
-			value += (uint32) ceilf( ( ap * ( 0.04f * cp ) ) / ( ( 6 + ( cp * 2 ) ) / 2 ) );
+			int8 cp = p_caster->m_comboPoints;
+			value += (uint32) ceilf( ( u_caster->GetAP() * 0.04f * cp ) / ( ( 6 + ( cp * 2 ) ) / 2 ) );
 		}
 	}
 	else if( GetProto()->NameHash == SPELL_HASH_RIP ) //rip
 	{
 		if( u_caster != NULL )
-			value+=(uint32)(u_caster->GetAP()*0.04f);
-
+			value += (uint32)ceilf(u_caster->GetAP() * 0.036f);
 	}
 	else if( GetProto()->NameHash == SPELL_HASH_MONGOOSE_BITE ) //Mongoose Bite
 	{
@@ -4327,27 +4344,6 @@ exit:
 			value *= p_caster->m_comboPoints;
 			value += (uint32)(p_caster->GetAP()*(0.03f*p_caster->m_comboPoints));
 			m_requiresCP=true;
-		}
-		int32 comboDamage = (int32)GetProto()->EffectPointsPerComboPoint[i];
-
-		if(comboDamage)
-		{
-			m_requiresCP = true;
-			value = ( comboDamage * p_caster->m_comboPoints );
-
-			if( GetProto()->NameHash == SPELL_HASH_EVISCERATE ) //Eviscerate
-			{
-				value += (uint32)( p_caster->GetAP() * ( 0.03 * p_caster->m_comboPoints ) );
-			}
-			else if( GetProto()->NameHash == SPELL_HASH_FEROCIOUS_BITE )
-			{
-				value += (uint32)( ( p_caster->GetAP() * 0.1526f ) + ( p_caster->GetUInt32Value( UNIT_FIELD_POWER4 ) * GetProto()->dmg_multiplier[i] ) );
-				p_caster->SetUInt32Value( UNIT_FIELD_POWER4, 0 );
-			}
-			//this is ugly so i will explain the case maybe someone ha a better idea :
-			// while casting a spell talent will trigger uppon the spell prepare faze
-			// the effect of the talent is to add 1 combo point but when triggering spell finishes it will clear the extra combo point
-			p_caster->m_spellcomboPoints = 0;
 		}
 
 		SpellOverrideMap::iterator itr = p_caster->mSpellOverrideMap.find(GetProto()->Id);
