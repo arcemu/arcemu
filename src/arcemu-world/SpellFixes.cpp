@@ -7732,11 +7732,6 @@ void ApplyExtraDataFixes()
 	if( sp != NULL )
 		sp->in_front_status = SPELL_INFRONT_STATUS_REQUIRE_INFRONT;
 
-	// Spell 30482 (Molten Armor Rank 1) is infront from spell extra.
-	sp = dbcSpell.LookupEntryForced(30482);
-	if( sp != NULL )
-		sp->in_front_status = SPELL_INFRONT_STATUS_REQUIRE_INFRONT;
-
 	// Spell 30493 (Shoot Bow ) is infront from spell extra.
 	sp = dbcSpell.LookupEntryForced(30493);
 	if( sp != NULL )
