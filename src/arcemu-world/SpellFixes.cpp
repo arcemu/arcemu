@@ -11126,6 +11126,9 @@ void ApplyNormalFixes()
 		//////////////////////////////////////////
 
 		// Insert priest spell fixes here
+			// Mind Flay,reduces target's movement speed by 50%
+			if ( sp->NameHash == SPELL_HASH_MIND_FLAY )
+				sp->EffectApplyAuraName[1] = SPELL_AURA_MOD_DECREASE_SPEED;
 
 		//////////////////////////////////////////
 		// SHAMAN								//
