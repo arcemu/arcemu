@@ -2734,7 +2734,7 @@ uint32 Unit::GetSpellDidHitResult( Unit* pVictim, uint32 weapon_damage_type, Spe
 		dodge=0.0f;
 		parry=0.0f;
 	}
-	else if(this->IsPlayer())
+	else if(this->IsPlayer() && !(static_cast< Player* >( this )->IsInFeralForm()))
 	{
 		it = static_cast< Player* >( this )->GetItemInterface()->GetInventoryItem( EQUIPMENT_SLOT_OFFHAND );
 		if( it != NULL && it->GetProto()->InventoryType == INVTYPE_WEAPON && !ability )//dualwield to-hit penalty
@@ -3074,7 +3074,7 @@ else
 	}
 	else
 	{
-		if(this->IsPlayer())
+		if(this->IsPlayer() && !(static_cast< Player* >( this )->IsInFeralForm()))
 		{
 			it = static_cast< Player* >( this )->GetItemInterface()->GetInventoryItem( EQUIPMENT_SLOT_OFFHAND );
 			if( it != NULL && it->GetProto()->InventoryType == INVTYPE_WEAPON && !ability )//dualwield to-hit penalty
