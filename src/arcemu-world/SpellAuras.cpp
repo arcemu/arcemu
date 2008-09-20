@@ -6532,9 +6532,9 @@ void Aura::SpellAuraAddPctMod( bool apply )
 		SendModifierLog(&m_target->SM_PCharges, val, AffectedGroups,mod->m_miscValue);
 		break;
 	//TODO:
-	/*
 	case SMT_THREAT_REDUCED:
-
+		break;
+	/*
 	case SMT_TRIGGER:
 	case SMT_TIME:
 		break;

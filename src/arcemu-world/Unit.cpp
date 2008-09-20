@@ -2028,9 +2028,9 @@ void Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, uint
 						//trigger on lightning and chain lightning. Spell should be identical , well maybe next time :P
 						if(	CastingSpell->NameHash == SPELL_HASH_LIGHTNING_BOLT || CastingSpell->NameHash == SPELL_HASH_CHAIN_LIGHTNING )
 						{
+							CastSpell(this, 39805, true);
 							spellId = CastingSpell->Id;
 							origId = 39805;
-							dmg_overwrite = (CastingSpell->EffectBasePoints[0] + 1) / 2; //only half dmg
 						}
 						else continue;
 					}break;
@@ -2255,6 +2255,7 @@ void Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, uint
 		spell->Init(this, spellInfo ,true, NULL);
 		spell->forced_basepoints[0] = dmg_overwrite;
 		spell->ProcedOnSpell = CastingSpell;
+		spell->isproc = 1;
 		//Spell *spell = new Spell(this,spellInfo,false,0,true,false);
 		if(spellId==974||spellId==32593||spellId==32594) // Earth Shield handler
 		{
@@ -2265,6 +2266,12 @@ void Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, uint
 		}
 		spell->pSpellId=origId;
 		spell->prepare(&targets);
+
+		if (origId == 39805)
+		{
+			// Remove lightning overload aura after procing
+			RemoveAura(39805);
+		}
 	}
 
 	m_chargeSpellsInUse=true;

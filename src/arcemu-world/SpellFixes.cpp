@@ -13238,35 +13238,35 @@ void ApplyNormalFixes()
 		{
 			sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
 			sp->EffectTriggerSpell[0] = 39805;//proc something (we will owerride this)
-			sp->procFlags = PROC_ON_CAST_SPELL;
+			sp->procFlags = PROC_ON_SPELL_HIT;
 		}
 		sp = dbcSpell.LookupEntryForced( 30678 ); 
 		if( sp != NULL )
 		{
 			sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
 			sp->EffectTriggerSpell[0] = 39805;//proc something (we will owerride this)
-			sp->procFlags = PROC_ON_CAST_SPELL;
+			sp->procFlags = PROC_ON_SPELL_HIT;
 		}
 		sp = dbcSpell.LookupEntryForced( 30679 ); 
 		if( sp != NULL )
 		{
 			sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
 			sp->EffectTriggerSpell[0] = 39805;//proc something (we will owerride this)
-			sp->procFlags = PROC_ON_CAST_SPELL;
+			sp->procFlags = PROC_ON_SPELL_HIT;
 		}
 		sp = dbcSpell.LookupEntryForced( 30680 ); 
 		if( sp != NULL )
 		{
 			sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
 			sp->EffectTriggerSpell[0] = 39805;//proc something (we will owerride this)
-			sp->procFlags = PROC_ON_CAST_SPELL;
+			sp->procFlags = PROC_ON_SPELL_HIT;
 		}
 		sp = dbcSpell.LookupEntryForced( 30681 ); 
 		if( sp != NULL )
 		{
 			sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
 			sp->EffectTriggerSpell[0] = 39805;//proc something (we will owerride this)
-			sp->procFlags = PROC_ON_CAST_SPELL;
+			sp->procFlags = PROC_ON_SPELL_HIT;
 		}
 		/**********************************************************
 		 *	Purge 

@@ -132,3 +132,8 @@ INSERT INTO spellfixes(spellId, groupRelation0) VALUES(20332, 0x8000400) ON DUPL
 
 -- [Shaman] Elemental Fury
 INSERT INTO spellfixes(spellId, groupRelation0) VALUES(16089, 0x4D3300407) ON DUPLICATE KEY UPDATE groupRelation0=VALUES(groupRelation0);
+
+-- [Shaman] Lightning Overload
+INSERT INTO spellfixes(spellId, groupRelation0) VALUES(39805, 0x3) ON DUPLICATE KEY UPDATE groupRelation0=VALUES(groupRelation0);
+INSERT INTO spellfixes(spellId, groupRelation1) VALUES(39805, 0x3) ON DUPLICATE KEY UPDATE groupRelation1=VALUES(groupRelation1);
+
