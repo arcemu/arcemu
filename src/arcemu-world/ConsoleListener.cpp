@@ -355,8 +355,8 @@ void HandleConsoleInput(BaseConsole * pConsole, const char * szInput)
 	static ConsoleCommand Commands[] = {
 		{ &HandleAnnounceCommand, "a", "<announce string>", "Shows the message in all client chat boxes." },
 		{ &HandleAnnounceCommand, "announce", "<announce string>", "Shows the message in all client chat boxes." },
-		{ &HandleBanAccountCommand, "ban", "<account> <timeperiod>", "Bans account x for time y." },
-		{ &HandleBanAccountCommand, "banaccount", "<account> <timeperiod>", "Bans account x for time y." },
+		{ &HandleBanAccountCommand, "ban", "<account> <timeperiod> [reason]", "Bans account x for time y." },
+		{ &HandleBanAccountCommand, "banaccount", "<account> <timeperiod> [reason]", "Bans account x for time y." },
 		{ &HandleCancelCommand, "cancel", "none", "Cancels a pending shutdown." },
 		{ &HandleCreateAccountCommand, "createaccount", "<name> <pass> <email> <flags>", "Creates an account." },
 		{ &HandleInfoCommand, "info", "none", "Gives server runtime information." },

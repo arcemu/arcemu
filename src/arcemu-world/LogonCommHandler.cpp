@@ -446,7 +446,7 @@ void LogonCommHandler::TestConsoleLogon(string& username, string& password, uint
 }
 
 // db funcs
-void LogonCommHandler::Account_SetBanned(const char * account, uint32 banned)
+void LogonCommHandler::Account_SetBanned(const char * account, uint32 banned, const char *reason)
 {
 	map<LogonServer*, LogonCommClientSocket*>::iterator itr = logons.begin();
 	if(logons.size() == 0 || itr->second == 0)
@@ -455,10 +455,11 @@ void LogonCommHandler::Account_SetBanned(const char * account, uint32 banned)
 		return;
 	}
 
-	WorldPacket data(RCMSG_MODIFY_DATABASE, 50);
+	WorldPacket data(RCMSG_MODIFY_DATABASE, 300);
 	data << uint32(1);		// 1 = ban
 	data << account;
 	data << banned;
+	data << reason;
 	itr->second->SendPacket(&data, false);
 }
 
@@ -494,7 +495,7 @@ void LogonCommHandler::Account_SetMute(const char * account, uint32 muted)
 	itr->second->SendPacket(&data, false);
 }
 
-void LogonCommHandler::IPBan_Add(const char * ip, uint32 duration)
+void LogonCommHandler::IPBan_Add(const char * ip, uint32 duration,const char *reason)
 {
 	map<LogonServer*, LogonCommClientSocket*>::iterator itr = logons.begin();
 	if(logons.size() == 0 || itr->second == 0)
@@ -503,10 +504,11 @@ void LogonCommHandler::IPBan_Add(const char * ip, uint32 duration)
 		return;
 	}
 
-	WorldPacket data(RCMSG_MODIFY_DATABASE, 50);
+	WorldPacket data(RCMSG_MODIFY_DATABASE, 300);
 	data << uint32(4);		// 4 = ipban add
 	data << ip;
 	data << duration;
+	data << reason;
 	itr->second->SendPacket(&data, false);
 }
 

@@ -448,8 +448,9 @@ void LogonCommServerSocket::HandleDatabaseModify(WorldPacket& recvData)
 	case 1:			// set account ban
 		{
 			string account;
+			string banreason;
 			uint32 duration;
-			recvData >> account >> duration;
+			recvData >> account >> duration >> banreason;
 
 			// remember we expect this in uppercase
 			arcemu_TOUPPER(account);
@@ -461,7 +462,7 @@ void LogonCommServerSocket::HandleDatabaseModify(WorldPacket& recvData)
 			pAccount->Banned = duration;
 
 			// update it in the sql (duh)
-			sLogonSQL->Execute("UPDATE accounts SET banned = %u WHERE login = \"%s\"", duration, sLogonSQL->EscapeString(account).c_str());
+			sLogonSQL->Execute("UPDATE accounts SET banned = %u, banreason = '%s' WHERE login = \"%s\"", duration, sLogonSQL->EscapeString( banreason ).c_str(), sLogonSQL->EscapeString(account).c_str());
 
 		}break;
 
@@ -507,12 +508,13 @@ void LogonCommServerSocket::HandleDatabaseModify(WorldPacket& recvData)
 	case 4:		// ip ban add
 		{
 			string ip;
+			string banreason;
 			uint32 duration;
 
-			recvData >> ip >> duration;
+			recvData >> ip >> duration >> banreason;
 
 			if( sIPBanner.Add( ip.c_str(), duration ) )
-				sLogonSQL->Execute("INSERT INTO ipbans VALUES(\"%s\", %u)", sLogonSQL->EscapeString(ip).c_str(), duration);
+				sLogonSQL->Execute("INSERT INTO ipbans VALUES(\"%s\", %u, \"%s\")", sLogonSQL->EscapeString(ip).c_str(), duration, sLogonSQL->EscapeString(banreason).c_str() );
 			
 		}break;
 

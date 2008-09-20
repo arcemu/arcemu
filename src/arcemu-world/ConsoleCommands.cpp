@@ -246,10 +246,17 @@ bool HandleBanAccountCommand(BaseConsole * pConsole, int argc, const char * argv
 
 	uint32 banned = (timeperiod ? (uint32)UNIXTIME+timeperiod : 1);
 
-	/// apply instantly in db
-	sLogonCommHandler.Account_SetBanned(argv[1], banned);
+	char emptystring = 0;
+	char * pReason;
+	if( argc == 4 )
+		pReason = (char *)argv[3];
+	else 
+		pReason = &emptystring;
 
-	pConsole->Write("Account '%s' has been banned %s%s. The change will be effective with the next reload cycle.\r\n", argv[1], 
+	/// apply instantly in db
+	sLogonCommHandler.Account_SetBanned(argv[1], banned, pReason);
+
+	pConsole->Write("Account '%s' has been banned %s%s. The change will be effective imediatly.\r\n", argv[1], 
 		timeperiod ? "until " : "forever", timeperiod ? ConvertTimeStampToDataTime(timeperiod+(uint32)UNIXTIME).c_str() : "");
 	
 	return true;
@@ -260,7 +267,7 @@ bool HandleUnbanAccountCommand(BaseConsole * pConsole, int argc, const char * ar
 	if(argc < 2)
 		return false;
 
-	sLogonCommHandler.Account_SetBanned(argv[1], 0);
+	sLogonCommHandler.Account_SetBanned(argv[1], 0, "");
 
 	pConsole->Write("Account '%s' has been unbanned.\r\n", argv[1]);
 	return true;

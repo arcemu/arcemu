@@ -91,10 +91,10 @@ public:
 	//void LogonDatabaseSQLExecute(const char* str, ...);
 	//void LogonDatabaseReloadAccounts();
 
-	void Account_SetBanned(const char * account, uint32 banned);
+	void Account_SetBanned(const char * account, uint32 banned, const char *reason);
 	void Account_SetGM(const char * account, const char * flags);
 	void Account_SetMute(const char * account, uint32 muted);
-	void IPBan_Add(const char * ip, uint32 duration);
+	void IPBan_Add(const char * ip, uint32 duration,const char *reason);
 	void IPBan_Remove(const char * ip);
 
 	void LoadRealmConfiguration();

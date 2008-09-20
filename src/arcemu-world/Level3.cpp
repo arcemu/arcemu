@@ -685,7 +685,7 @@ bool ChatHandler::HandleAccountUnbanCommand(const char * args, WorldSession * m_
 	if(!*args) return false;
 	char * pAccount = (char*)args;
 	
-	sLogonCommHandler.Account_SetBanned( pAccount, 0 );
+	sLogonCommHandler.Account_SetBanned( pAccount, 0, "" );
 	GreenSystemMessage(m_session, "Account '%s' has been unbanned. This change will be effective immediately.", pAccount);
 	
 	sGMLog.writefromsession(m_session, "unbanned account %s", pAccount);
@@ -715,15 +715,20 @@ bool ChatHandler::HandleAccountBannedCommand(const char * args, WorldSession * m
 
 	uint32 banned = (timeperiod ? (uint32)UNIXTIME+timeperiod : 1);
 
+	char emptystring = 0;
+	char * pReason = strchr(pDuration+1, ' ');
+	if( pReason == NULL )
+		pReason = &emptystring;
+
 	/*stringstream my_sql;
 	my_sql << "UPDATE accounts SET banned = " << banned << " WHERE login = '" << CharacterDatabase.EscapeString(string(pAccount)) << "'";
 
 	sLogonCommHandler.LogonDatabaseSQLExecute(my_sql.str().c_str());
 	sLogonCommHandler.LogonDatabaseReloadAccounts();*/
-	sLogonCommHandler.Account_SetBanned(pAccount, banned);
+	sLogonCommHandler.Account_SetBanned(pAccount, banned, pReason);
 
-	GreenSystemMessage(m_session, "Account '%s' has been banned %s%s. The change will be effective immediately.", pAccount, 
-		timeperiod ? "until " : "forever", timeperiod ? ConvertTimeStampToDataTime(timeperiod+(uint32)UNIXTIME).c_str() : "");
+	GreenSystemMessage(m_session, "Account '%s' has been banned %s%s for reason : %s. The change will be effective immediately.", pAccount, 
+		timeperiod ? "until " : "forever", timeperiod ? ConvertTimeStampToDataTime(timeperiod+(uint32)UNIXTIME).c_str() : "", pReason);
 
 	sWorld.DisconnectUsersWithAccount(pAccount, m_session);
 	sGMLog.writefromsession(m_session, "banned account %s until %s", pAccount, timeperiod ? ConvertTimeStampToDataTime(timeperiod+(uint32)UNIXTIME).c_str() : "permanant");
@@ -2048,8 +2053,15 @@ bool ChatHandler::HandleIPBanCommand(const char * args, WorldSession * m_session
 		IP.append("/32");
 		pIp = (char*)IP.c_str(); //is this correct? - optical
 	}
-	SystemMessage(m_session, "Adding [%s] to IP ban table, expires %s", pIp, (expire_time == 0)? "Never" : ctime( &expire_time ));
-	sLogonCommHandler.IPBan_Add( pIp, (uint32)expire_time );
+
+	//temporal IP or real pro flooder who will change it tomorrow ?
+	char emptystring = 0;
+	char * pReason = strchr(pDuration+1, ' ');
+	if( pReason == NULL )
+		pReason = &emptystring;
+
+	SystemMessage(m_session, "Adding [%s] to IP ban table, expires %s.Reason is :%s", pIp, (expire_time == 0)? "Never" : ctime( &expire_time ),pReason);
+	sLogonCommHandler.IPBan_Add( pIp, (uint32)expire_time, pReason );
 	sWorld.DisconnectUsersWithIP(IP.substr(0,IP.find("/")).c_str(), m_session);
 	sGMLog.writefromsession(m_session, "banned ip address %s, expires %s", pIp, (expire_time == 0)? "Never" : ctime( &expire_time ));
 	return true;
