@@ -160,7 +160,10 @@ bool SocketWorkerThread::run()
 			else if(events[i].events & EPOLLOUT)
             {
                 ptr->BurstBegin();          // Lock receive mutex
-                ptr->WriteCallback();       // Perform actual send()
+                ret = ptr->WriteCallback();       // Perform actual send()
+				if (ret == -1)
+					continue;
+
                 if(ptr->GetWriteBuffer().GetSize() > 0)
                 {
                     /* we don't have to do anything here. no more oneshots :) */

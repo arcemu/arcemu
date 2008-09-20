@@ -66,9 +66,9 @@ public:
 	
 /* Platform-specific methods */
 
-	void SetupReadEvent();
+	int SetupReadEvent();
 	int ReadCallback(uint32 len);
-	void WriteCallback();
+	int WriteCallback();
 
 	ARCEMU_INLINE bool IsDeleted() { return m_deleted; }
 	ARCEMU_INLINE bool IsConnected() { return m_connected; }

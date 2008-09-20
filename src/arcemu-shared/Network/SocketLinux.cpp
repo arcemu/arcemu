@@ -49,7 +49,7 @@ int Socket::ReadCallback(uint32 len)
 	return 0;
 }
 
-void Socket::WriteCallback()
+int Socket::WriteCallback()
 {
     // We should already be locked at this point, so try to push everything out.
     int bytes_written = send(m_fd, writeBuffer.GetBufferStart(), writeBuffer.GetContiguiousBytes(), 0);
@@ -57,11 +57,12 @@ void Socket::WriteCallback()
     {
         // error.
         Disconnect();
-        return;
+        return -1;
     }
 
     //RemoveWriteBufferBytes(bytes_written, false);
     writeBuffer.Remove(bytes_written);
+    return 0;
 }
 
 void Socket::BurstPush()
