@@ -576,7 +576,7 @@ void Spell::SpellEffectSchoolDMG(uint32 i) // dmg school
 	if (GetProto()->NameHash == SPELL_HASH_JUDGEMENT_OF_COMMAND && !unitTarget->IsStunned())
 			dmg = dmg >> 1;
 
-	if(GetProto()->speed > 0 && isproc == 0)
+	if(GetProto()->speed > 0 && m_triggeredSpell)
 	{
 		//FIXME:Use this one and check player movement and update distance
 		//It now only checks the first distance and hits the player after time expires.

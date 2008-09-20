@@ -2255,7 +2255,6 @@ void Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, uint
 		spell->Init(this, spellInfo ,true, NULL);
 		spell->forced_basepoints[0] = dmg_overwrite;
 		spell->ProcedOnSpell = CastingSpell;
-		spell->isproc = 1;
 		//Spell *spell = new Spell(this,spellInfo,false,0,true,false);
 		if(spellId==974||spellId==32593||spellId==32594) // Earth Shield handler
 		{
