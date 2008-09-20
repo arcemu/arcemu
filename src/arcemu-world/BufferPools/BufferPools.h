@@ -7,6 +7,8 @@
 #define INITI_CONTAINER_POOL_WITH_SIZE 5000
 //too big values migh create lag spikes on buffer limit extension !
 #define EXTEND_POOL_WITH_SIZE 100
+//let us have a gap of pool fullness. Some auras get deleted more then once when i write this code and they are overwriting each other
+#define MINIMUM_POOL_FULNESS 10
 #define POOL_IS_FULL_INDEX 0
 #define OBJECT_WAS_ALLOCATED_WITHIN_POOL 0x0FFFFFF0
 #define OBJECT_WAS_ALLOCATED_STANDARD_WAY -1	//should add this to constructors instead of constant number :)
@@ -62,7 +64,7 @@ public:
 		ObjLock.Acquire();
 
 		//out of buffer ? get new ones !
-		if( !avail_indexes.size() )
+		if( avail_indexes.size() < MINIMUM_POOL_FULNESS )
 			ExtedLimitAvailLimit();
 
 		//Get a Element from the availpool
@@ -104,16 +106,14 @@ public:
 			return;
 		}
 
-		//get our PoolId
-		uint32 myPoolId = (uint32)dumped->m_bufferPoolId;
-
 		//remove events and remove object from world ...
 		dumped->Virtual_Destructor();
 
 		ObjLock.Acquire();
 
+		//get our PoolId
+		uint32 myPoolId = (uint32)dumped->m_bufferPoolId;
 		//We do not care about used up guids only available ones. Note that with this overwrite used guid list is not valid anymore
-		avail_list[ myPoolId ] = dumped;
 		dumped->m_bufferPoolId = OBJECT_WAS_DEALLOCATED_WITHIN_POOL;
 		avail_indexes.push_back( myPoolId );
 
