@@ -10691,7 +10691,7 @@ void ApplyNormalFixes()
 			sp->SpellGroupType |= 16384; //some of them do have the flags but i's hard to write down those some from 130 spells
 			sp->c_is_flags |= SPELL_FLAG_IS_POISON;
 		}
-		else if( strstr( sp->Name, "Mind-Numbing Poison"))
+		else if( strstr( sp->Name, "Mind-numbing Poison"))
 		{
 			sp->SpellGroupType |= 32768; //some of them do have the flags but i's hard to write down those some from 130 spells
 			sp->c_is_flags |= SPELL_FLAG_IS_POISON;
