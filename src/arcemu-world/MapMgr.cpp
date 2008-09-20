@@ -526,6 +526,8 @@ void MapMgr::RemoveObject(Object *obj, bool free_guid)
 	}
 	
 	// Remove object from all objects 'seeing' him
+	//there is a small chance for deadlock here. On the a situation i never understood how it can happen and corrupt the list too.
+	obj->AquireInrangeLock(); //make sure to release lock before exit function !
 	for (Object::InRangeSet::iterator iter = obj->GetInRangeSetBegin();
 		iter != obj->GetInRangeSetEnd(); ++iter)
 	{
@@ -539,6 +541,7 @@ void MapMgr::RemoveObject(Object *obj, bool free_guid)
 			(*iter)->RemoveInRangeObject(obj);
 		}
 	}
+	obj->ReleaseInrangeLock();
 	
 	// Clear object's in-range set
 	obj->ClearInRangeSet();
@@ -688,7 +691,9 @@ void MapMgr::ChangeObjectLocation( Object *obj )
 #undef IN_RANGE_LOOP
 #undef END_IN_RANGE_LOOP*/
 
-	if(obj->HasInRangeObjects()) {
+	if(obj->HasInRangeObjects()) 
+	{
+		obj->AquireInrangeLock(); //make sure to release lock before exit function !
 		for (Object::InRangeSet::iterator iter = obj->GetInRangeSetBegin(), iter2;
 			iter != obj->GetInRangeSetEnd();)
 		{
@@ -714,11 +719,13 @@ void MapMgr::ChangeObjectLocation( Object *obj )
 				if( obj->GetMapMgr() != this )
 				{
 					/* Something removed us. */
+					obj->ReleaseInrangeLock();
 					return;
 				}
 				obj->RemoveInRangeObject(iter2);
 			}
 		}
+		obj->ReleaseInrangeLock();
 	}
 
 	///////////////////////////

@@ -121,6 +121,7 @@ void DynamicObject::UpdateTargets()
 		Aura * pAura;
 		float radius = m_floatValues[DYNAMICOBJECT_RADIUS]*m_floatValues[DYNAMICOBJECT_RADIUS];
 
+		this->AquireInrangeLock(); //make sure to release lock before exit function !
 		while(itr != iend)
 		{
 //			target = *itr;
@@ -165,6 +166,7 @@ void DynamicObject::UpdateTargets()
 			}
 		}
 
+		this->ReleaseInrangeLock();
 		// loop the targets, check the range of all of them
 		DynamicObjectList::iterator jtr  = targets.begin();
 		DynamicObjectList::iterator jtr2;
@@ -215,5 +217,6 @@ void DynamicObject::Remove()
 		RemoveFromWorld(true);
 	delete this;
 }
+
 
 

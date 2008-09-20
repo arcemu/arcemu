@@ -6340,6 +6340,7 @@ void Player::CalcResistance(uint32 type)
 
 void Player::UpdateNearbyGameObjects()
 {
+	this->AquireInrangeLock(); //make sure to release lock before exit function !
 	for (Object::InRangeSet::iterator itr = GetInRangeSetBegin(); itr != GetInRangeSetEnd(); ++itr)
 	{
 		if((*itr)->GetTypeId() == TYPEID_GAMEOBJECT)
@@ -6426,6 +6427,7 @@ void Player::UpdateNearbyGameObjects()
 				EventDeActivateGameObject((GameObject*)(*itr));
 		}
 	}
+	this->ReleaseInrangeLock();
 }
 
 
@@ -8227,7 +8229,8 @@ void Player::UpdatePvPArea()
 void Player::BuildFlagUpdateForNonGroupSet(uint32 index, uint32 flag)
 {
     Object *curObj;
-    for (Object::InRangeSet::iterator iter = GetInRangeSetBegin(); iter != GetInRangeSetEnd();)
+	this->AquireInrangeLock(); //make sure to release lock before exit function !
+	for (Object::InRangeSet::iterator iter = GetInRangeSetBegin(); iter != GetInRangeSetEnd();)
 	{
 		curObj = *iter;
 		iter++;
@@ -8244,6 +8247,7 @@ void Player::BuildFlagUpdateForNonGroupSet(uint32 index, uint32 flag)
             }
         }
     }
+	this->ReleaseInrangeLock();
 }
 
 void Player::LoginPvPSetup()

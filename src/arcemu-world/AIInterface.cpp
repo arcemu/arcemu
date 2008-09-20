@@ -1784,6 +1784,7 @@ Unit* AIInterface::FindTarget()
 	if( m_updateTargetsTimer2 < getMSTime() )
 	{
 		m_updateTargetsTimer2 = getMSTime() + TARGET_UPDATE_INTERVAL;
+		m_Unit->AquireInrangeLock(); //make sure to release lock before exit function !
 		for( itr2 = m_Unit->GetInRangeSetBegin(); itr2 != m_Unit->GetInRangeSetEnd(); )
 		{
 			itr = itr2;
@@ -1835,6 +1836,7 @@ Unit* AIInterface::FindTarget()
 	#endif		// LOS_CHECKS
 			}
 		}
+		m_Unit->ReleaseInrangeLock();
 	}
 
 	if( !target )
@@ -1935,8 +1937,7 @@ bool AIInterface::FindFriends(float dist)
 	std::set<Object*>::iterator itr;
 	Unit *pUnit;
 
-	
-
+	m_Unit->AquireInrangeLock(); //make sure to release lock before exit function !
 	for( itr = m_Unit->GetInRangeSetBegin(); itr != m_Unit->GetInRangeSetEnd(); itr++ )
 	{
 		if(!(*itr) || (*itr)->GetTypeId() != TYPEID_UNIT)
@@ -1978,6 +1979,7 @@ bool AIInterface::FindFriends(float dist)
 			}
 		}
 	}
+	m_Unit->ReleaseInrangeLock();
 
 	// check if we're a civillan, in which case summon guards on a despawn timer
 	uint8 civilian = (((Creature*)m_Unit)->GetCreatureInfo()) ? (((Creature*)m_Unit)->GetCreatureInfo()->Civilian) : 0;
@@ -4057,10 +4059,12 @@ void AIInterface::WipeReferences()
 	UnitToFear = 0;
 	UnitToFollow = 0;
 	tauntedBy = 0;
+	m_Unit->AquireInrangeLock(); //make sure to release lock before exit function !
 	//Clear targettable
 	for(set<Object*>::iterator itr = m_Unit->GetInRangeSetBegin(); itr != m_Unit->GetInRangeSetEnd(); ++itr)
 		if( (*itr) && (*itr)->GetTypeId() == TYPEID_UNIT && static_cast<Unit*>(*itr)->GetAIInterface())
 			static_cast<Unit*>(*itr)->GetAIInterface()->RemoveThreatByPtr( m_Unit );
+	m_Unit->ReleaseInrangeLock();
 
 }
 
@@ -4141,13 +4145,16 @@ void AIInterface::EventChangeFaction( Unit *ForceAttackersToHateThisInstead )
 	//Clear targettable
 	if( ForceAttackersToHateThisInstead == NULL )
 	{
+		m_Unit->AquireInrangeLock(); //make sure to release lock before exit function !
 		for(set<Object*>::iterator itr = m_Unit->GetInRangeSetBegin(); itr != m_Unit->GetInRangeSetEnd(); ++itr)
 			if( (*itr) && (*itr)->GetTypeId() == TYPEID_UNIT && static_cast<Unit*>(*itr)->GetAIInterface() )
 				static_cast<Unit*>(*itr)->GetAIInterface()->RemoveThreatByPtr( m_Unit );
+		m_Unit->ReleaseInrangeLock();
 		SetNextTarget( (Unit*)NULL );
 	}
 	else
 	{
+		m_Unit->AquireInrangeLock(); //make sure to release lock before exit function !
 		for(set<Object*>::iterator itr = m_Unit->GetInRangeSetBegin(); itr != m_Unit->GetInRangeSetEnd(); ++itr)
 			if( (*itr) && (*itr)->GetTypeId() == TYPEID_UNIT && static_cast<Unit*>(*itr)->GetAIInterface() 
 				&& static_cast<Unit*>(*itr)->GetAIInterface()->getThreatByPtr( m_Unit ) )//this guy will join me in fight since i'm telling him "sorry i was controlled"
@@ -4155,6 +4162,7 @@ void AIInterface::EventChangeFaction( Unit *ForceAttackersToHateThisInstead )
 				static_cast<Unit*>(*itr)->GetAIInterface()->modThreatByPtr( ForceAttackersToHateThisInstead, 10 ); //just aping to be bale to hate him in case we got nothing else
 				static_cast<Unit*>(*itr)->GetAIInterface()->RemoveThreatByPtr( m_Unit );
 			}
+		m_Unit->ReleaseInrangeLock();
 		modThreatByPtr( ForceAttackersToHateThisInstead, 1 );
 		SetNextTarget( ForceAttackersToHateThisInstead );
 	}

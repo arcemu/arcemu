@@ -370,6 +370,10 @@ public:
 		if( pObj == NULL )
 			return;
 
+		if( pObj == this )
+			printf("!!!!we are in range of self !\n");
+
+		//Zack: as far as i know list inserts do not corrupt iterators
 		m_objectsInRange.insert( pObj );
 
 		// NOTES: Since someone will come along and try and change it.
@@ -381,13 +385,21 @@ public:
 			m_inRangePlayers.insert( reinterpret_cast< Player* >( pObj ) );
 	}
 
+	Mutex m_inrangechangelock;
+	ARCEMU_INLINE void AquireInrangeLock(){ m_inrangechangelock.Acquire(); }
+	ARCEMU_INLINE void ReleaseInrangeLock(){ m_inrangechangelock.Release(); }
+
 	ARCEMU_INLINE void RemoveInRangeObject( Object* pObj )
 	{
 		if( pObj == NULL )
 			return;
 
+		if( pObj == this )
+			printf("!!!!we are in range of self !\n");
+		AquireInrangeLock();
 		OnRemoveInRangeObject( pObj );
 		m_objectsInRange.erase( pObj );
+		ReleaseInrangeLock();
 	}
 
 	ARCEMU_INLINE bool HasInRangeObjects()
@@ -417,8 +429,10 @@ public:
 
 	void RemoveInRangeObject(InRangeSet::iterator itr)
 	{ 
+		AquireInrangeLock();
 		OnRemoveInRangeObject(*itr);
 		m_objectsInRange.erase(itr);
+		ReleaseInrangeLock();
 	}
 
 	ARCEMU_INLINE bool RemoveIfInRange( Object * obj )
@@ -430,7 +444,9 @@ public:
 		if( itr == m_objectsInRange.end() )
 			return false;
 		
+		AquireInrangeLock();
 		m_objectsInRange.erase( itr );
+		ReleaseInrangeLock();
 		return true;
 	}
 
@@ -620,5 +636,6 @@ public:
 };
 
 #endif
+
 
 

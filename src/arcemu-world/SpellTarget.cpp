@@ -413,6 +413,7 @@ void Spell::SpellTargetSingleTargetEnemy(uint32 i, uint32 j)
 		float range=GetMaxRange(dbcSpellRange.LookupEntry(m_spellInfo->rangeIndex));//this is probably wrong
 		range*=range;
 		std::set<Object*>::iterator itr,itr2;
+		m_caster->AquireInrangeLock(); //make sure to release lock before exit function !
 		for( itr2 = m_caster->GetInRangeSetBegin(); itr2 != m_caster->GetInRangeSetEnd(); )
 		{
 			itr = itr2;
@@ -434,10 +435,14 @@ void Spell::SpellTargetSingleTargetEnemy(uint32 i, uint32 j)
 						SafeAddModeratedTarget((*itr)->GetGUID(), did_hit_result);
 
 					if(!--jumps)
+					{
+						m_caster->ReleaseInrangeLock();
 						return;
+					}
 				}
 			}
 		}
+		m_caster->ReleaseInrangeLock();
 	}
 }
 
@@ -549,6 +554,7 @@ void Spell::SpellTargetInFrontOfCaster(uint32 i, uint32 j)
 	TargetsList *tmpMap=&m_targetUnits[i];
 	std::set<Object*>::iterator itr;
 	uint8 did_hit_result;
+	m_caster->AquireInrangeLock(); //make sure to release lock before exit function !
 	for( itr = m_caster->GetInRangeSetBegin(); itr != m_caster->GetInRangeSetEnd(); itr++ )
 	{
 		if(!((*itr)->IsUnit()) || !((Unit*)(*itr))->isAlive())
@@ -569,6 +575,7 @@ void Spell::SpellTargetInFrontOfCaster(uint32 i, uint32 j)
 			}
 		}
 	}
+	m_caster->ReleaseInrangeLock();
 }
 
 /// Spell Target Handling for type 25: Single Target Friend	 // Used o.a. in Duel
@@ -778,6 +785,7 @@ void Spell::SpellTargetDummyTarget(uint32 i, uint32 j)
 			return;
 
 		Object::InRangeSet::iterator itr,itr2;
+		m_caster->AquireInrangeLock(); //make sure to release lock before exit function !
 		for(itr2 = p_caster->GetInRangeSetBegin(); itr2 != p_caster->GetInRangeSetEnd(); )
 		{
 			itr=itr2;
@@ -789,10 +797,12 @@ void Spell::SpellTargetDummyTarget(uint32 i, uint32 j)
 				if(cloudtype == 24222 || cloudtype == 17408 || cloudtype == 17407 || cloudtype == 17378)
 				{
 					p_caster->SetSelection(creature->GetGUID());
+					m_caster->ReleaseInrangeLock();
 					return;
 				}
 			}
 		}
+		m_caster->ReleaseInrangeLock();
 	}
 	SafeAddTarget(tmpMap,m_caster->GetGUID());
 }
@@ -891,6 +901,7 @@ void Spell::SpellTargetChainTargeting(uint32 i, uint32 j)
 	else
 	{
 		std::set<Object*>::iterator itr;
+		m_caster->AquireInrangeLock(); //make sure to release lock before exit function !
 		for( itr = firstTarget->GetInRangeSetBegin(); itr != firstTarget->GetInRangeSetEnd(); itr++ )
 		{
 			if( !(*itr)->IsUnit() || !((Unit*)(*itr))->isAlive())
@@ -906,10 +917,14 @@ void Spell::SpellTargetChainTargeting(uint32 i, uint32 j)
 				{
 					SafeAddTarget(tmpMap,(*itr)->GetGUID());
 					if(!--jumps)
+					{
+						m_caster->ReleaseInrangeLock();
 						return;
+					}
 				}
 			}
 		}
+		m_caster->ReleaseInrangeLock();
 	}
 }
 
@@ -954,6 +969,7 @@ void Spell::SpellTargetInFrontOfCaster2(uint32 i, uint32 j)
 	TargetsList *tmpMap=&m_targetUnits[i];
 	std::set<Object*>::iterator itr,itr2;
 	uint8 did_hit_result;
+	m_caster->AquireInrangeLock(); //make sure to release lock before exit function !
 	for( itr2 = m_caster->GetInRangeSetBegin(); itr2 != m_caster->GetInRangeSetEnd();)
 	{
 		itr = itr2;
@@ -976,6 +992,7 @@ void Spell::SpellTargetInFrontOfCaster2(uint32 i, uint32 j)
 			}
 		}
 	}
+	m_caster->ReleaseInrangeLock();
 }
 
 /// Spell Target Handling for type 56: Target should be infected (Aura holder) caster...
@@ -1111,4 +1128,5 @@ void Spell::SpellTargetSinglePartyInjured(uint32 i, uint32 j)
 void Spell::SpellTargetMultiplePartyInjured(uint32 i, uint32 j)
 {
 }
+
 

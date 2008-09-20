@@ -175,6 +175,7 @@ void GameObject::Update(uint32 p_time)
 		ObjectSet::iterator iend = GetInRangeSetEnd();
 		Unit * pUnit;
 		float dist;
+		this->AquireInrangeLock(); //make sure to release lock before exit function !
 		for(; it2 != iend;)
 		{
 			itr = it2;
@@ -212,14 +213,19 @@ void GameObject::Update(uint32 p_time)
 				if(m_summonedGo)
 				{
 					ExpireAndDelete();
+					this->ReleaseInrangeLock();
 					return;
 				}
 
 				if(spell->EffectImplicitTargetA[0] == 16 ||
 					spell->EffectImplicitTargetB[0] == 16)
+				{
+					this->ReleaseInrangeLock();
 					return;	 // on area dont continue.
+				}
 			}
 		}
+		this->ReleaseInrangeLock();
 	}
 }
 
@@ -524,6 +530,7 @@ void GameObject::UseFishingNode(Player *player)
 		player->_AdvanceSkillLine( SKILL_FISHING, float2int32( 1.0f * sWorld.getRate( RATE_SKILLRATE ) ) );
 
 	GameObject * school = NULL;
+	this->AquireInrangeLock(); //make sure to release lock before exit function !
 	for ( InRangeSet::iterator it = GetInRangeSetBegin(); it != GetInRangeSetEnd(); ++it )
 	{
 		if ( (*it) == NULL || (*it)->GetTypeId() != TYPEID_GAMEOBJECT || (*it)->GetUInt32Value(GAMEOBJECT_TYPE_ID) != GAMEOBJECT_TYPE_FISHINGHOLE)
@@ -537,6 +544,7 @@ void GameObject::UseFishingNode(Player *player)
 		else
 			break;
 	}
+	this->ReleaseInrangeLock();
 
 	if ( school != NULL ) // open school loot if school exists
 	{
@@ -755,5 +763,6 @@ uint32 GameObject::GetGOReqSkill()
 		}
 	return 0;
 }
+
 
 
