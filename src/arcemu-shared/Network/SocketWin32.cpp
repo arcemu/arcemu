@@ -10,10 +10,10 @@
 #include "Network.h"
 #ifdef CONFIG_USE_IOCP
 
-int Socket::WriteCallback()
+void Socket::WriteCallback()
 {
 	if(m_deleted || !m_connected)
-		return -1;
+		return;
 
 	//printf("\nSocket::Writecallback(): sendsize : %u\n", this->m_writeByteCount);
 	// We don't want any writes going on while this is happening.
@@ -49,7 +49,6 @@ int Socket::WriteCallback()
 				m_writeEvent.Unmark();
 				DecSendLock();
 				Disconnect();
-				return -1;
 			}
 		}
 	}
@@ -59,14 +58,12 @@ int Socket::WriteCallback()
 		DecSendLock();
 	}
 	m_writeMutex.Release();
-
-	return 0;
 }
 
-int Socket::SetupReadEvent()
+void Socket::SetupReadEvent()
 {
 	if(m_deleted || !m_connected)
-		return -1;
+		return;
 
 	m_readMutex.Acquire();
 	DWORD r_length = 0;
@@ -92,19 +89,17 @@ int Socket::SetupReadEvent()
 		{
 			m_readEvent.Unmark();
 			Disconnect();
-			return -1;
 		}
 	}
 	//m_readEvent = ov;
 	m_readMutex.Release();
-	return 0;
 }
 
-int Socket::ReadCallback(uint32 len)
+void Socket::ReadCallback(uint32 len)
 {
 	readBuffer.IncrementWritten(len);
 	OnRead();
-	return SetupReadEvent();
+	SetupReadEvent();
 }
 
 void Socket::AssignToCompletionPort()

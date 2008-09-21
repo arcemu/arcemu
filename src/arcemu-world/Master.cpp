@@ -374,6 +374,7 @@ bool Master::Run(int argc, char ** argv)
 	// Start Network Subsystem
 	Log.Notice( "Network","Starting subsystem..." );
 	new SocketMgr;
+	new SocketGarbageCollector;
 	sSocketMgr.SpawnWorkerThreads();
 
 	sScriptMgr.LoadScripts();
@@ -471,6 +472,7 @@ bool Master::Run(int argc, char ** argv)
 #else
 		sClusterInterface.Update();
 #endif
+		sSocketGarbageCollector.Update();
 
 		/* UPDATE */
 		last_time = now();
@@ -611,6 +613,7 @@ bool Master::Run(int argc, char ** argv)
 
 	Log.Notice( "Network", "Deleting Network Subsystem..." );
 	delete SocketMgr::getSingletonPtr();
+	delete SocketGarbageCollector::getSingletonPtr();
 #ifdef VOICE_CHAT
 	Log.Notice( "VoiceChatHandler", "~VoiceChatHandler()" );
 	delete VoiceChatHandler::getSingletonPtr();

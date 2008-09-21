@@ -22,13 +22,11 @@ public:
 	ARCEMU_INLINE HANDLE GetCompletionPort() { return m_completionPort; }
 	void SpawnWorkerThreads();
 	void CloseAll();
-	int AddSocket(Socket * s)
+	void AddSocket(Socket * s)
 	{
 		socketLock.Acquire();
 		_sockets.insert(s);
 		socketLock.Release();
-
-		return 0;
 	}
 
 	void RemoveSocket(Socket * s)

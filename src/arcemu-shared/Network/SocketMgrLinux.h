@@ -67,7 +67,7 @@ public:
     }
 
     /// add a new socket to the epoll set and to the fd mapping
-    int AddSocket(Socket * s);
+    void AddSocket(Socket * s);
 	void AddListenSocket(ListenSocketBase * s);
 
     /// remove a socket from epoll set/fd mapping

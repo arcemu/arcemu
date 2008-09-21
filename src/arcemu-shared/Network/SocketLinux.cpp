@@ -23,7 +23,7 @@ void Socket::PostEvent(uint32 events)
 		Log.Warning("epoll", "Could not post event on fd %u", m_fd);
 }
 
-int Socket::ReadCallback(uint32 len)
+void Socket::ReadCallback(uint32 len)
 {
     // We have to lock here.
     m_readMutex.Acquire();
@@ -34,7 +34,7 @@ int Socket::ReadCallback(uint32 len)
     {
         m_readMutex.Release();
         Disconnect();
-        return -1;
+        return;
     }    
     else if(bytes > 0)
     {
@@ -45,11 +45,9 @@ int Socket::ReadCallback(uint32 len)
     }
 
     m_readMutex.Release();
-
-	return 0;
 }
 
-int Socket::WriteCallback()
+void Socket::WriteCallback()
 {
     // We should already be locked at this point, so try to push everything out.
     int bytes_written = send(m_fd, writeBuffer.GetBufferStart(), writeBuffer.GetContiguiousBytes(), 0);
@@ -57,12 +55,11 @@ int Socket::WriteCallback()
     {
         // error.
         Disconnect();
-        return -1;
+        return;
     }
 
     //RemoveWriteBufferBytes(bytes_written, false);
     writeBuffer.Remove(bytes_written);
-    return 0;
 }
 
 void Socket::BurstPush()

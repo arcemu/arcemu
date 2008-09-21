@@ -24,7 +24,7 @@ public:
 	bool Connect(const char * Address, uint32 Port);
 
 	// Disconnect the socket.
-	void Disconnect(bool remove = true);
+	void Disconnect();
 
 	// Accept from the already-set fd.
 	void Accept(sockaddr_in * address);
@@ -66,9 +66,9 @@ public:
 	
 /* Platform-specific methods */
 
-	int SetupReadEvent();
-	int ReadCallback(uint32 len);
-	int WriteCallback();
+	void SetupReadEvent();
+	void ReadCallback(uint32 len);
+	void WriteCallback();
 
 	ARCEMU_INLINE bool IsDeleted() { return m_deleted; }
 	ARCEMU_INLINE bool IsConnected() { return m_connected; }
@@ -228,5 +228,47 @@ T* ConnectTCPSocket(const char * hostname, u_short port)
 	}
 	return s;	
 }
+
+/* Socket Garbage Collector */
+#define SOCKET_GC_TIMEOUT 15
+
+class SocketGarbageCollector : public Singleton<SocketGarbageCollector>
+{
+	map<Socket*, time_t> deletionQueue;
+	Mutex lock;
+public:
+	~SocketGarbageCollector()
+	{
+		map<Socket*, time_t>::iterator i;
+		for(i=deletionQueue.begin();i!=deletionQueue.end();++i)
+			delete i->first;
+	}
+
+	void Update()
+	{
+		map<Socket*, time_t>::iterator i, i2;
+		time_t t = UNIXTIME;
+		lock.Acquire();
+		for(i = deletionQueue.begin(); i != deletionQueue.end();)
+		{
+			i2 = i++;
+			if(i2->second <= t)
+			{
+				delete i2->first;
+				deletionQueue.erase(i2);
+			}
+		}
+		lock.Release();
+	}
+
+	void QueueSocket(Socket * s)
+	{
+		lock.Acquire();
+		deletionQueue.insert( map<Socket*, time_t>::value_type( s, UNIXTIME + SOCKET_GC_TIMEOUT ) );
+		lock.Release();
+	}
+};
+
+#define sSocketGarbageCollector SocketGarbageCollector::getSingleton()
 
 #endif

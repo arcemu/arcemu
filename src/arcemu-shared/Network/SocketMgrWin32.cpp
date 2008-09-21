@@ -63,7 +63,7 @@ bool SocketWorkerThread::run()
 			return true;
 		}
 
-		if(ov->m_event >= 0 && ov->m_event < NUM_SOCKET_IO_EVENTS)
+		if(ov->m_event < NUM_SOCKET_IO_EVENTS)
 			ophandlers[ov->m_event](s, len);
 	}
 
@@ -96,10 +96,7 @@ void HandleWriteComplete(Socket * s, uint32 len)
 		s->BurstBegin();					// Lock
 		s->GetWriteBuffer().Remove(len);
 		if( s->GetWriteBuffer().GetContiguiousBytes() > 0 )
-		{
-			int ret = s->WriteCallback();
-			if (ret == -1) return;
-		}
+			s->WriteCallback();
 		else
 			s->DecSendLock();
 		s->BurstEnd();					  // Unlock
