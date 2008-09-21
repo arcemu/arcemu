@@ -1602,8 +1602,8 @@ void Aura::EventPeriodicDamage(uint32 amount)
 
 	if(mtarget->GetGUID()!=cguid && c)//don't use resist when cast on self-- this is some internal stuff
 	{
-		uint32 aproc = PROC_ON_ANY_HOSTILE_ACTION | PROC_ON_SPELL_HIT;
-		uint32 vproc = PROC_ON_ANY_HOSTILE_ACTION | PROC_ON_ANY_DAMAGE_VICTIM | PROC_ON_SPELL_HIT_VICTIM;
+		uint32 aproc = PROC_ON_ANY_HOSTILE_ACTION;
+		uint32 vproc = PROC_ON_ANY_HOSTILE_ACTION | PROC_ON_ANY_DAMAGE_VICTIM;
 		c->HandleProc(aproc, mtarget, sp, float2int32(res));
 		c->m_procCounter = 0;
 
