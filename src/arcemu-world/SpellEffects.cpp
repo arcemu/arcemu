@@ -1005,9 +1005,19 @@ void Spell::SpellEffectDummy(uint32 i) // Dummy(Scripted events)
 	 * PRIEST SPELLS
 	 *************************
 	 * IDs:
-	 * NO SPELLS
+	 * 34433 Shadowfiend	STATUS: ToDo
 	 *  --------------------------------------------
 	 *************************/
+	/*
+		Creates a shadowy fiend to attack the target.  Caster receives mana when the Shadowfiend deals damage.  Lasts 15 sec.
+		Effect #1	Summon (19668)
+		Effect #2	Trigger Spell
+					Spell #41967 <--- THIS SPELL
+	*/
+	/*case 41967:
+		{
+		}break;
+	*/
 
 	/*************************
 	 * SHAMAN SPELLS

@@ -3248,11 +3248,14 @@ void Aura::SpellAuraModStealth(bool apply)
 			m_target->SetStealth(GetSpellId());
 
 		if( m_spellProto->NameHash == SPELL_HASH_STEALTH)
-			m_target->SetFlag(UNIT_FIELD_BYTES_2,0x1E000000);//sneak anim
+			m_target->SetFlag(UNIT_FIELD_BYTES_2,0x1E000000);//sneak anim'
 
-		m_target->SetFlag(UNIT_FIELD_BYTES_1, 0x020000);
-		if( m_target->IsPlayer() )
-			m_target->SetFlag(PLAYER_FIELD_BYTES2, 0x2000);
+		if (m_target->m_auracount[SPELL_AURA_MOD_STEALTH] == 1)
+		{
+			m_target->SetFlag(UNIT_FIELD_BYTES_1, 0x020000);
+			if( m_target->IsPlayer() )
+				m_target->SetFlag(PLAYER_FIELD_BYTES2, 0x2000);
+		}
 
 		m_target->RemoveAurasByInterruptFlag(AURA_INTERRUPT_ON_STEALTH | AURA_INTERRUPT_ON_INVINCIBLE);
 		m_target->m_stealthLevel += mod->m_amount;
@@ -3311,15 +3314,18 @@ void Aura::SpellAuraModStealth(bool apply)
 		if( m_spellProto->NameHash == SPELL_HASH_STEALTH)
 			m_target->RemoveFlag(UNIT_FIELD_BYTES_2,0x1E000000);
 
-		m_target->RemoveFlag(UNIT_FIELD_BYTES_1, 0x020000);
+		if (m_target->m_auracount[SPELL_AURA_MOD_STEALTH] == 0)
+		{
+			m_target->RemoveFlag(UNIT_FIELD_BYTES_1, 0x020000);
+
+			if( m_target->GetTypeId() == TYPEID_PLAYER )
+			{
+				m_target->RemoveFlag(PLAYER_FIELD_BYTES2, 0x2000);
+			}
+		}
 
 		if( m_target->GetTypeId() == TYPEID_PLAYER )
 		{
-			m_target->RemoveFlag(PLAYER_FIELD_BYTES2, 0x2000);
-			/*WorldPacket data(12);
-			data.SetOpcode(SMSG_COOLDOWN_EVENT);
-			data << (uint32)GetSpellProto()->Id << m_target->GetGUID();
-			static_cast< Player* >( m_target )->GetSession()->SendPacket (&data);*/
 			packetSMSG_COOLDOWN_EVENT cd;
 			cd.guid = m_target->GetGUID();
 			cd.spellid = m_spellProto->Id;
