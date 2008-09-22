@@ -382,6 +382,7 @@ void LogonServer::Run(int argc, char ** argv)
 	ThreadPool.ExecuteTask(new LogonConsoleThread);
 
 	new SocketMgr;
+	new SocketGarbageCollector;
 	sSocketMgr.SpawnWorkerThreads();
 
 	ListenSocket<AuthSocket> * cl = new ListenSocket<AuthSocket>(host.c_str(), cport);
@@ -435,6 +436,7 @@ void LogonServer::Run(int argc, char ** argv)
 		if(!(loop_counter%10))
 		{
 			sInfoCore.TimeoutSockets();
+			sSocketGarbageCollector.Update();
 			CheckForDeadSockets();			  // Flood Protection
 			UNIXTIME = time(NULL);
 			g_localTime = *localtime(&UNIXTIME);
@@ -481,6 +483,7 @@ void LogonServer::Run(int argc, char ** argv)
 	delete PatchMgr::getSingletonPtr();
 	delete IPBanner::getSingletonPtr();
 	delete SocketMgr::getSingletonPtr();
+	delete SocketGarbageCollector::getSingletonPtr();
 	delete pfc;
 	delete cl;
 	delete sl;
