@@ -325,6 +325,10 @@ Unit::Unit()
 	m_damageSplitTarget = NULL;
 	m_extrastriketarget = 0;
 	m_extrastriketargetc = 0;
+	trigger_on_stun = 0;
+	trigger_on_stun_chance = 100;
+	trigger_on_stun_victim = 0;
+	trigger_on_stun_chance_victim = 100;
 	ModelHalfSize = 1.0f; //worst case unit size. (Should be overwritten)
 }
 

@@ -347,10 +347,6 @@ Player::Player( uint32 guid ) : m_mailBox(guid)
 		m_attack_speed[x]	= 1.0f;
 	}
 	ok_to_remove = false;
-	trigger_on_stun = 0;
-	trigger_on_stun_chance = 100;
-	trigger_on_stun_victim = 0;
-	trigger_on_stun_chance_victim = 100;
 	m_modphyscritdmgPCT = 0;
 	m_RootedCritChanceBonus = 0;
 
