@@ -128,6 +128,8 @@ CellHandler<Class>::~CellHandler()
 template <class Class>
 Class* CellHandler<Class>::Create(uint32 x, uint32 y)
 {
+	if( x >= _sizeX ||  y >= _sizeY )
+		return NULL;
 	if(!_cells[x])
 	{
 		_cells[x] = new Class*[_sizeY];
@@ -151,6 +153,8 @@ Class* CellHandler<Class>::CreateByCoords(float x, float y)
 template <class Class>
 void CellHandler<Class>::Remove(uint32 x, uint32 y)
 {
+	if( x >= _sizeX ||  y >= _sizeY )
+		return;
 	if(!_cells[x]) return;
 	ASSERT(_cells[x][y] != NULL);
 
