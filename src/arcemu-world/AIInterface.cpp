@@ -196,7 +196,7 @@ void AIInterface::HandleEvent(uint32 event, Unit* pUnit, uint32 misc1)
 		{
 		case EVENT_ENTERCOMBAT:
 			{
-				if( pUnit == NULL ) return;
+				if( pUnit == NULL || pUnit->isDead() || m_Unit->isDead() ) return;
 
 				/* send the message */
 				if( m_Unit->GetTypeId() == TYPEID_UNIT )
