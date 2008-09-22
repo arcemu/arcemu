@@ -163,7 +163,7 @@ void CellHandler<Class>::Remove(uint32 x, uint32 y)
 template <class Class>
 Class* CellHandler<Class>::GetCell(uint32 x, uint32 y)
 {
-	if(!_cells[x] || x >= _sizeX || y >= _sizeY ) return NULL;
+	if( x >= _sizeX || y >= _sizeY || !_cells[x] ) return NULL;
 	return _cells[x][y];
 }
 
