@@ -4290,12 +4290,16 @@ exit:
 	}
 	else if( GetProto()->NameHash == SPELL_HASH_EVISCERATE ) //Eviscerate
 	{
-		value += (uint32)( p_caster->GetAP() *  0.03f * p_caster->m_comboPoints  );
+		if (p_caster != NULL) {
+			value += (uint32)( p_caster->GetAP() *  0.03f * p_caster->m_comboPoints  );
+		}
 	}
 	else if( GetProto()->NameHash == SPELL_HASH_FEROCIOUS_BITE )
 	{
-		value += (uint32)( ( p_caster->GetAP() * 0.1526f ) + ( p_caster->GetUInt32Value( UNIT_FIELD_POWER4 ) * GetProto()->dmg_multiplier[i] ) );
-		p_caster->SetUInt32Value( UNIT_FIELD_POWER4, 0 );
+		if (p_caster != NULL) {
+			value += (uint32)( ( p_caster->GetAP() * 0.1526f ) + ( p_caster->GetUInt32Value( UNIT_FIELD_POWER4 ) * GetProto()->dmg_multiplier[i] ) );
+			p_caster->SetUInt32Value( UNIT_FIELD_POWER4, 0 );
+		}
 	}
 	// HACK FIX
 	else if( GetProto()->NameHash == SPELL_HASH_VICTORY_RUSH )
@@ -4362,8 +4366,10 @@ exit:
 	}
 	else if ( GetProto()->Id == 34501 && ( i == 0 || i == 1 ) ) //Hunter - Expose Weakness
 	{
-//		value = ( u_caster->GetUInt32Value( UNIT_FIELD_STAT1 ) * 25 / 100 );
-		value = u_caster->GetUInt32Value( UNIT_FIELD_STAT1 ) >> 2;
+		if (u_caster != NULL) {
+//			value = ( u_caster->GetUInt32Value( UNIT_FIELD_STAT1 ) * 25 / 100 );
+			value = u_caster->GetUInt32Value( UNIT_FIELD_STAT1 ) >> 2;
+		}
 	}
 /*	else if ( GetProto()->NameHash == SPELL_HASH_HUNTER_S_MARK && target && target->HasAurasWithNameHash( SPELL_HASH_HUNTER_S_MARK ) ) //Hunter - Hunter's Mark
 	{
