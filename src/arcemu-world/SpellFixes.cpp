@@ -9988,6 +9988,8 @@ void ApplyNormalFixes()
             sp->BGR_one_buff_on_target |= SPELL_TYPE_CURSE;
 			sp->in_front_status = SPELL_INFRONT_STATUS_REQUIRE_SKIPCHECK;
 		}
+        else if( strstr( sp->Name, "Corruption"))
+            sp->BGR_one_buff_on_target |= SPELL_TYPE_CORRUPTION;
         else if( strstr( sp->Name, "Aspect"))
             sp->BGR_one_buff_on_target |= SPELL_TYPE_ASPECT;
         else if( strstr( sp->Name, "Sting") || strstr( sp->Name, "sting"))
