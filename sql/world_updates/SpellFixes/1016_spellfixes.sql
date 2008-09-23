@@ -137,3 +137,7 @@ INSERT INTO spellfixes(spellId, groupRelation0) VALUES(16089, 0x4D3300407) ON DU
 INSERT INTO spellfixes(spellId, groupRelation0) VALUES(39805, 0x3) ON DUPLICATE KEY UPDATE groupRelation0=VALUES(groupRelation0);
 INSERT INTO spellfixes(spellId, groupRelation1) VALUES(39805, 0x3) ON DUPLICATE KEY UPDATE groupRelation1=VALUES(groupRelation1);
 
+-- [Priest] Searing Light
+INSERT INTO spellfixes(spellId, groupRelation1) VALUES(14909, 0x100080) ON DUPLICATE KEY UPDATE groupRelation1=VALUES(groupRelation1);
+INSERT INTO spellfixes(spellId, groupRelation1) VALUES(15017, 0x100080) ON DUPLICATE KEY UPDATE groupRelation1=VALUES(groupRelation1);
+
