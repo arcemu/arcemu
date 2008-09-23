@@ -1411,6 +1411,11 @@ void Spell::cast(bool check)
 				p_caster->setAttackTimer( 0, true );
 				p_caster->setAttackTimer( 0, false );
 			}
+			else if( m_spellInfo->NameHash == SPELL_HASH_VICTORY_RUSH )
+			{
+				p_caster->RemoveFlag(UNIT_FIELD_AURASTATE,AURASTATE_FLAG_LASTKILLWITHHONOR);
+			}
+
 			if( p_caster->IsStealth() && !(GetProto()->AttributesEx & ATTRIBUTESEX_NOT_BREAK_STEALTH)
 				 && GetProto()->Id != 1 ) //check spells that get trigger spell 1 after spell loading
 			{

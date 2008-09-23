@@ -15650,4 +15650,12 @@ void ApplyNormalFixes()
 			sp = dbcSpell.LookupEntryForced( 26029 );
 			if( sp != NULL )
 				sp->cone_width = 15.0f; // 15 degree cone
+
+			// Drain Power (Malacrass) // bugged - the charges fade even when refreshed with new ones. This makes them everlasting.
+			sp = dbcSpell.LookupEntryForced( 44131 );
+ 			if( sp != NULL )
+				sp->DurationIndex = 21;
+			sp = dbcSpell.LookupEntryForced( 44132 );
+			if( sp != NULL )
+				sp->DurationIndex = 21;
 }
