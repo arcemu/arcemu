@@ -137,8 +137,8 @@ public:
 	void write(WorldPacket & data);
 };
 
-#define CHECK_INWORLD_RETURN if(!_player->IsInWorld()) { return; }
-#define CHECK_GUID_EXISTS(guidx) if(_player->GetMapMgr()->GetUnit((guidx)) == NULL) { return; }
+#define CHECK_INWORLD_RETURN if(_player == NULL || !_player->IsInWorld()) { return; }
+#define CHECK_GUID_EXISTS(guidx) if(_player == NULL || _player->GetMapMgr() == NULL || _player->GetMapMgr()->GetUnit((guidx)) == NULL) { return; }
 #define CHECK_PACKET_SIZE(pckp, ssize) if(ssize && pckp.size() < ssize) { Disconnect(); return; }
 
 #define NOTIFICATION_MESSAGE_NO_PERMISSION "You do not have permission to perform that function."
