@@ -2515,6 +2515,9 @@ bool ChatHandler::HandleLookupFactionCommand(const char * args, WorldSession * m
 
 bool ChatHandler::HandleGORotate(const char * args, WorldSession * m_session)
 {
+	char Axis;
+	float deg;
+	if(sscanf(args, "%c %f", &Axis, &deg) < 1) return false;
 	GameObject *go = m_session->GetPlayer()->GetSelectedGo();
 	if( !go )
 	{
@@ -2522,25 +2525,43 @@ bool ChatHandler::HandleGORotate(const char * args, WorldSession * m_session)
 		return true;
 	}
 
-	float deg = (float)atof(args);
-	if(deg == 0.0f)
-		return false;
-
-	// Convert the argument to radians
-	float rad = deg * (float(M_PI) / 180.0f);
-
+	/* this is crap 
 	// let's try rotation_0
 	go->ModFloatValue(GAMEOBJECT_ROTATION, rad);
 	go->ModFloatValue(GAMEOBJECT_ROTATION_01, rad);
 	go->ModFloatValue(GAMEOBJECT_ROTATION_02, rad);
 	go->ModFloatValue(GAMEOBJECT_ROTATION_03, rad);
-	go->SaveToDB();
-
+	go->SaveToDB();*/
+	float rad = deg * (float(M_PI) / 180.0f);
 	// despawn and respawn
 	//go->Despawn(1000);
+
+	switch(tolower(Axis))
+	{
+	case 'x':
+		go->ModFloatValue(GAMEOBJECT_ROTATION, rad);
+		break;
+	case 'y':
+		go->ModFloatValue(GAMEOBJECT_ROTATION_01, rad);
+		break;
+	case 'o':
+		if(m_session->GetPlayer()){
+			float ori = m_session->GetPlayer()->GetOrientation();
+			go->SetFloatValue(GAMEOBJECT_ROTATION_02, sinf(ori / 2));
+			go->SetFloatValue(GAMEOBJECT_ROTATION_03, cosf(ori / 2));}
+		break;
+	default:
+		RedSystemMessage(m_session, "Invalid Axis, Please use x, y, or o.");
+		return true;
+	}
+
+	uint32 NewGuid = m_session->GetPlayer()->GetMapMgr()->GenerateGameobjectGuid();
 	go->RemoveFromWorld(true);
-	go->SetNewGuid(m_session->GetPlayer()->GetMapMgr()->GenerateGameobjectGuid());
+	go->SetNewGuid(NewGuid);
+	go->SaveToDB();
 	go->PushToWorld(m_session->GetPlayer()->GetMapMgr());
+	//lets reselect the object that can be really annoying...
+	m_session->GetPlayer()->m_GM_SelectedGO = NewGuid;
 	return true;
 }
 
@@ -2560,9 +2581,11 @@ bool ChatHandler::HandleGOMove(const char * args, WorldSession * m_session)
 	go->SetFloatValue(GAMEOBJECT_POS_Y, m_session->GetPlayer()->GetPositionY());
 	go->SetFloatValue(GAMEOBJECT_POS_Z, m_session->GetPlayer()->GetPositionZ());
 	go->SetFloatValue(GAMEOBJECT_FACING, m_session->GetPlayer()->GetOrientation());
-	go->SetNewGuid(m_session->GetPlayer()->GetMapMgr()->GenerateGameobjectGuid());
+	uint32 NewGuid = m_session->GetPlayer()->GetMapMgr()->GenerateGameobjectGuid();
+	go->SetNewGuid(NewGuid);
 	go->SaveToDB();
 	go->PushToWorld(m_session->GetPlayer()->GetMapMgr());
+	m_session->GetPlayer()->m_GM_SelectedGO = NewGuid;
 	return true;
 }
 
@@ -2625,7 +2648,9 @@ bool ChatHandler::HandleNpcUnPossessCommand(const char * args, WorldSession * m_
 
 bool ChatHandler::HandleRehashCommand(const char * args, WorldSession * m_session)
 {
-	/* rehashes */
+	/* 
+	rehashes
+	*/
 	char msg[250];
 	snprintf(msg, 250, "%s is rehashing config file.", m_session->GetPlayer()->GetName());
 	sWorld.SendWorldWideScreenText(msg, 0);

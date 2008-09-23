@@ -921,7 +921,7 @@ bool ChatHandler::HandleGOInfo(const char *args, WorldSession *m_session)
 	}
 	SystemMessage(m_session, "%s Type:%s%u -- %s",MSG_COLOR_GREEN,MSG_COLOR_LIGHTBLUE,GObj->GetUInt32Value(GAMEOBJECT_TYPE_ID),gotypetxt);
 
-	SystemMessage(m_session, "%s Distance:%s%u",MSG_COLOR_GREEN,MSG_COLOR_LIGHTBLUE,GObj->CalcDistance((Object*)m_session->GetPlayer()));
+	SystemMessage(m_session, "%s Distance:%s%f",MSG_COLOR_GREEN,MSG_COLOR_LIGHTBLUE,GObj->CalcDistance((Object*)m_session->GetPlayer()));
 
 	GOInfo = GameObjectNameStorage.LookupEntry(GObj->GetEntry());
 	if( !GOInfo )
@@ -933,6 +933,10 @@ bool ChatHandler::HandleGOInfo(const char *args, WorldSession *m_session)
 	if( GOInfo->Name )
 		SystemMessage(m_session, "%s Name:%s%s",MSG_COLOR_GREEN,MSG_COLOR_LIGHTBLUE,GOInfo->Name);
 	SystemMessage(m_session, "%s Size:%s%u",MSG_COLOR_GREEN,MSG_COLOR_LIGHTBLUE,GObj->GetFloatValue(OBJECT_FIELD_SCALE_X));
+	SystemMessage(m_session, "%s Rotation X:%s%f",MSG_COLOR_GREEN,MSG_COLOR_LIGHTBLUE,GObj->GetFloatValue(GAMEOBJECT_ROTATION));
+	SystemMessage(m_session, "%s Rotation Y:%s%f",MSG_COLOR_GREEN,MSG_COLOR_LIGHTBLUE,GObj->GetFloatValue(GAMEOBJECT_ROTATION_01));
+	SystemMessage(m_session, "%s Rotation O1:%s%f",MSG_COLOR_GREEN,MSG_COLOR_LIGHTBLUE,GObj->GetFloatValue(GAMEOBJECT_ROTATION_02));
+	SystemMessage(m_session, "%s Rotation O2:%s%f",MSG_COLOR_GREEN,MSG_COLOR_LIGHTBLUE,GObj->GetFloatValue(GAMEOBJECT_ROTATION_03));
 
 	return true;
 }
@@ -999,6 +1003,13 @@ bool ChatHandler::HandleGOScale(const char* args, WorldSession* m_session)
 	go->SetFloatValue(OBJECT_FIELD_SCALE_X, scale);
 	BlueSystemMessage(m_session, "Set scale to %.3f", scale);
 	sGMLog.writefromsession(m_session,"set scale on gameobject %s to %.3f, entry %u",GameObjectNameStorage.LookupEntry(go->GetEntry())->Name,scale,go->GetEntry());
+	uint32 NewGuid = m_session->GetPlayer()->GetMapMgr()->GenerateGameobjectGuid();
+	go->RemoveFromWorld(true);
+	go->SetNewGuid(NewGuid);
+	go->SaveToDB();
+	go->PushToWorld(m_session->GetPlayer()->GetMapMgr());
+	//lets reselect the object that can be really annoying...
+	m_session->GetPlayer()->m_GM_SelectedGO = NewGuid;
 	return true;
 }
 
