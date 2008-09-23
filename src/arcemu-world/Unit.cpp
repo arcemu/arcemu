@@ -2744,20 +2744,6 @@ uint32 Unit::GetSpellDidHitResult( Unit* pVictim, uint32 weapon_damage_type, Spe
 		dodge=0.0f;
 		parry=0.0f;
 	}
-	else if(this->IsPlayer() && !(static_cast< Player* >( this )->IsInFeralForm()))
-	{
-		it = static_cast< Player* >( this )->GetItemInterface()->GetInventoryItem( EQUIPMENT_SLOT_OFFHAND );
-		if( it != NULL && it->GetProto()->InventoryType == INVTYPE_WEAPON && !ability )//dualwield to-hit penalty
-		{
-			hitmodifier -= 19.0f;
-		}
-		else
-		{
-			it = static_cast< Player* >( this )->GetItemInterface()->GetInventoryItem( EQUIPMENT_SLOT_MAINHAND );
-			if( it != NULL && it->GetProto()->InventoryType == INVTYPE_2HWEAPON )//2 handed weapon to-hit penalty
-				hitmodifier -= 4.0f;
-		}
-	}
 
 	//--------------------------------by skill difference---------------------------------------
 	float vsk = (float)self_skill - (float)victim_skill;
@@ -3084,17 +3070,11 @@ else
 	}
 	else
 	{
-		if(this->IsPlayer() && !(static_cast< Player* >( this )->IsInFeralForm()))
+		if(this->IsPlayer())
 		{
 			it = static_cast< Player* >( this )->GetItemInterface()->GetInventoryItem( EQUIPMENT_SLOT_OFFHAND );
 			if( it != NULL && it->GetProto()->InventoryType == INVTYPE_WEAPON && !ability )//dualwield to-hit penalty
 				hitmodifier -= 19.0f;
-			else
-			{
-				it = static_cast< Player* >( this )->GetItemInterface()->GetInventoryItem( EQUIPMENT_SLOT_MAINHAND );
-				if( it != NULL && it->GetProto()->InventoryType == INVTYPE_2HWEAPON )//2 handed weapon to-hit penalty
-					hitmodifier -= 4.0f;
-			}
 		}
 	}
 
