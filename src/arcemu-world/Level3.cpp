@@ -2350,6 +2350,58 @@ bool ChatHandler::HandleLookupItemCommand(const char * args, WorldSession * m_se
 	return true;
 }
 
+bool ChatHandler::HandleLookupObjectCommand(const char * args, WorldSession * m_session)
+{
+	if(!*args) return false;
+
+	string x = string(args);
+	arcemu_TOLOWER(x);
+
+	StorageContainerIterator<GameObjectInfo> * itr = GameObjectNameStorage.MakeIterator();
+
+	GreenSystemMessage(m_session, "Starting search of object `%s`...", x.c_str());
+	uint32 t = getMSTime();
+	GameObjectInfo * i;
+	uint32 count = 0;
+	string y;
+	string recout;
+	while(!itr->AtEnd())
+	{
+		i = itr->Get();
+		y = string(i->Name);
+		arcemu_TOLOWER(y);
+		if(FindXinYString(x,y))
+		{
+			//string objectID=MyConvertIntToString(i->ID);
+			string Name;
+			std::stringstream strm;
+			strm<<i->ID;
+			//string ObjectID = i.c_str();
+			const char*objectName=i->Name;
+			recout="|cfffff000Object ";
+			recout+=strm.str();
+			recout+="|cffFFFFFF: ";
+			recout+=objectName;
+			recout = recout + Name;
+			SendMultilineMessage(m_session,recout.c_str());
+			++count;
+			if(count==50 || count > 50)
+			{
+				RedSystemMessage(m_session,"More than 50 results returned. aborting.");
+				break;
+			}
+		}
+		if(!itr->Inc()) break;
+	}
+	itr->Destruct();
+	if (count==0)
+	{
+		recout="|cff00ccffNo matches found.";
+		SendMultilineMessage(m_session,recout.c_str());
+	}
+	BlueSystemMessage(m_session,"Search completed in %u ms.",getMSTime()-t);
+	return true;
+}
 bool ChatHandler::HandleLookupCreatureCommand(const char * args, WorldSession * m_session)
 {
 	if(!*args) return false;
