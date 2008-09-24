@@ -2768,10 +2768,6 @@ void Aura::EventPeriodicHeal( uint32 amount )
 		{
 			for(uint32 a = 0; a < 6; a++)
 				bonus += float2int32( static_cast< Player* >( c )->SpellHealDoneByAttribute[a][m_spellProto->School] * static_cast< Player* >( c )->GetUInt32Value( UNIT_FIELD_STAT0 + a) );
-
-			//Druid Tree of Life form. it should work not like this, but it's better then nothing.
-			if( static_cast< Player* >( c )->IsInFeralForm() && static_cast< Player* >( c )->GetShapeShift() == FORM_TREE)
-				bonus += float2int32( 0.25f * static_cast< Player* >( c )->GetUInt32Value( UNIT_FIELD_STAT4 ) );
 		}
 		//Spell Coefficient
 		if( m_spellProto->OTspell_coef_override >= 0 ) //In case we have forced coefficients
@@ -4145,10 +4141,28 @@ void Aura::SpellAuraModShapeshift(bool apply)
 			static_cast< Player* >( m_target )->UpdateAttackSpeed();
 
 		} break;
-	case FORM_TREE:{
-		modelId  = 864;
-		freeMovements=true;
-		spellId = 5420;//3122;
+	case FORM_TREE:
+		{
+			modelId  = 864;
+			freeMovements=true;
+			spellId = 5420;//3122;
+			if(apply) //Tree of Life Healing Bonus AreaAura
+	  		{
+	  			SpellEntry* spellInfo = dbcSpell.LookupEntry( 34123 );
+				Spell *sp = SpellPool.PooledNew();
+
+				if (spellInfo && sp)
+				{
+	  				sp->Init( m_target, spellInfo, true, NULL );
+  					SpellCastTargets tgt;
+	  				tgt.m_unitTarget = m_target->GetGUID();
+	  				sp->prepare( &tgt );
+				}
+	  		}
+	  		else
+	  		{
+	  			m_target->RemoveAura( 34123 );
+	  		}
 		} break;
 	case FORM_TRAVEL:
 		{//druid

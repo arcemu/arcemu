@@ -4300,6 +4300,14 @@ exit:
 			p_caster->SetUInt32Value( UNIT_FIELD_POWER4, 0 );
 		}
 	}
+	else if( GetProto()->Id == 34123) //Druid - Tree of Life
+	{
+		if( i==0 && p_caster != NULL )
+		{
+			//Increases healing received by 25% of the Tree of Life's total spirit.
+			value = float2int32( 0.25f * p_caster->GetUInt32Value( UNIT_FIELD_STAT4 ) );
+		}
+	}
 	// HACK FIX
 	else if( GetProto()->NameHash == SPELL_HASH_VICTORY_RUSH )
 	{//causing ${$AP*$m1/100} damage
