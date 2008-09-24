@@ -187,6 +187,8 @@ Unit::Unit()
 	SM_PRezist_dispell = 0;
 	SM_FCharges = 0;
 	SM_PCharges = 0;
+	SM_FThreat = 0;
+	SM_PThreat = 0;
 
 	m_pacified = 0;
 	m_interruptRegen = 0;
@@ -510,6 +512,16 @@ Unit::~Unit()
 	if(SM_PCharges != NULL ) {
 		delete [] SM_PCharges;
 		SM_PCharges = NULL;
+	}
+
+	if(SM_FThreat != NULL ) {
+		delete [] SM_FThreat;
+		SM_FThreat = NULL;
+	}
+
+	if(SM_PThreat != NULL ) {
+		delete [] SM_PThreat;
+		SM_PThreat = NULL;
 	}
 
 	delete m_aiInterface;
@@ -6816,6 +6828,18 @@ void Unit::InheritSMMods(Unit *inherit_from)
 		if(SM_PCharges==0)
 			SM_PCharges = new int32[SPELL_GROUPS];
 		memcpy(SM_PCharges,inherit_from->SM_PCharges,sizeof(int)*SPELL_GROUPS);
+	}
+	if(inherit_from->SM_FThreat)
+	{
+		if(SM_FThreat==0)
+			SM_FThreat = new int32[SPELL_GROUPS];
+		memcpy(SM_FThreat,inherit_from->SM_FThreat,sizeof(int)*SPELL_GROUPS);
+	}
+	if(inherit_from->SM_PThreat)
+	{
+		if(SM_PThreat==0)
+			SM_PThreat = new int32[SPELL_GROUPS];
+		memcpy(SM_PThreat,inherit_from->SM_PThreat,sizeof(int)*SPELL_GROUPS);
 	}
 }
 

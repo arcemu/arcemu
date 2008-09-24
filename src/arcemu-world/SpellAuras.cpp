@@ -6444,8 +6444,8 @@ void Aura::SpellAuraAddPctMod( bool apply )
 {
 	int32 val = apply ? mod->m_amount : -mod->m_amount;
 	uint64 AffectedGroups = (uint64)GetSpellProto()->EffectSpellGroupRelation[mod->i] + ((uint64)GetSpellProto()->EffectSpellGroupRelation_high[mod->i] << 32);
-	//printf("!!! the AffectedGroups %u ,the smt type %u,\n",AffectedGroups,mod->m_miscValue);
 
+//	sLog.outString("%s AffectedGroups %I64x ,the smt type %u, val=%d",__FUNCTION__,AffectedGroups,mod->m_miscValue, val);
 	switch( mod->m_miscValue )//let's generate warnings for unknown types of modifiers
 	{
 	case SMT_CRITICAL:
@@ -6531,9 +6531,10 @@ void Aura::SpellAuraAddPctMod( bool apply )
 	case SMT_CHARGES:
 		SendModifierLog(&m_target->SM_PCharges, val, AffectedGroups,mod->m_miscValue);
 		break;
-	//TODO:
 	case SMT_THREAT_REDUCED:
+		SendModifierLog(&m_target->SM_PThreat, val, AffectedGroups, mod->m_miscValue, true);
 		break;
+	//TODO:
 	/*
 	case SMT_TRIGGER:
 	case SMT_TIME:
@@ -7886,8 +7887,10 @@ void Aura::SpellAuraAddFlatModifier(bool apply)
 	case SMT_CHARGES:
 		SendModifierLog(&m_target->SM_FCharges, val, AffectedGroups,mod->m_miscValue);
 		break;
-/*	case SMT_THREAT_REDUCED:
-	case SMT_TRIGGER:
+	case SMT_THREAT_REDUCED:
+		SendModifierLog(&m_target->SM_FThreat, val, AffectedGroups,mod->m_miscValue);
+		break;
+/*	case SMT_TRIGGER:
 	case SMT_TIME:*/
 		break;
 	case SMT_RESIST_DISPEL:

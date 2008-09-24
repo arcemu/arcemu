@@ -4033,6 +4033,12 @@ uint32 AIInterface::_CalcThreat(uint32 damage, SpellEntry * sp, Unit* Attacker)
 	else
 		mod += damage;
 
+	if( sp != NULL && sp->SpellGroupType && Attacker)
+	{
+		SM_FIValue(Attacker->SM_FThreat,&mod,sp->SpellGroupType);
+		SM_PIValue(Attacker->SM_PThreat,&mod,sp->SpellGroupType);
+	}
+
 	if (Attacker->getClass() == ROGUE)
 		mod = int32(mod * 0.71); // Rogues generate 0.71x threat per damage.
 

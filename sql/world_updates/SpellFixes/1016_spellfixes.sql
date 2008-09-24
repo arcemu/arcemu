@@ -141,3 +141,14 @@ INSERT INTO spellfixes(spellId, groupRelation1) VALUES(39805, 0x3) ON DUPLICATE 
 INSERT INTO spellfixes(spellId, groupRelation1) VALUES(14909, 0x100080) ON DUPLICATE KEY UPDATE groupRelation1=VALUES(groupRelation1);
 INSERT INTO spellfixes(spellId, groupRelation1) VALUES(15017, 0x100080) ON DUPLICATE KEY UPDATE groupRelation1=VALUES(groupRelation1);
 
+-- [Druid] Subtlety
+INSERT INTO spellfixes(spellId, groupRelation0) VALUES(17118, 0x1005D000E193F7) ON DUPLICATE KEY UPDATE groupRelation0=VALUES(groupRelation0);
+INSERT INTO spellfixes(spellId, groupRelation1) VALUES(17118, 0x4103000340750) ON DUPLICATE KEY UPDATE groupRelation1=VALUES(groupRelation1);
+INSERT INTO spellfixes(spellId, groupRelation0) VALUES(17119, 0x1005D000E193F7) ON DUPLICATE KEY UPDATE groupRelation0=VALUES(groupRelation0);
+INSERT INTO spellfixes(spellId, groupRelation1) VALUES(17119, 0x4103000340750) ON DUPLICATE KEY UPDATE groupRelation1=VALUES(groupRelation1);
+INSERT INTO spellfixes(spellId, groupRelation0) VALUES(17110, 0x1005D000E193F7) ON DUPLICATE KEY UPDATE groupRelation0=VALUES(groupRelation0);
+INSERT INTO spellfixes(spellId, groupRelation1) VALUES(17120, 0x4103000340750) ON DUPLICATE KEY UPDATE groupRelation1=VALUES(groupRelation1);
+INSERT INTO spellfixes(spellId, groupRelation0) VALUES(17121, 0x1005D000E193F7) ON DUPLICATE KEY UPDATE groupRelation0=VALUES(groupRelation0);
+INSERT INTO spellfixes(spellId, groupRelation1) VALUES(17121, 0x4103000340750) ON DUPLICATE KEY UPDATE groupRelation1=VALUES(groupRelation1);
+INSERT INTO spellfixes(spellId, groupRelation0) VALUES(17122, 0x1005D000E193F7) ON DUPLICATE KEY UPDATE groupRelation0=VALUES(groupRelation0);
+INSERT INTO spellfixes(spellId, groupRelation1) VALUES(17122, 0x4103000340750) ON DUPLICATE KEY UPDATE groupRelation1=VALUES(groupRelation1);

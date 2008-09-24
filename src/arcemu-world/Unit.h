@@ -976,6 +976,8 @@ public:
 	int32 * SM_PRezist_dispell;
 	int32 * SM_FCharges;
 	int32 * SM_PCharges;
+	int32 * SM_FThreat;
+	int32 * SM_PThreat;
 	void InheritSMMods(Unit *inherit_from);
 
 	//Events
