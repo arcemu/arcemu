@@ -152,3 +152,19 @@ INSERT INTO spellfixes(spellId, groupRelation0) VALUES(17121, 0x1005D000E193F7) 
 INSERT INTO spellfixes(spellId, groupRelation1) VALUES(17121, 0x4103000340750) ON DUPLICATE KEY UPDATE groupRelation1=VALUES(groupRelation1);
 INSERT INTO spellfixes(spellId, groupRelation0) VALUES(17122, 0x1005D000E193F7) ON DUPLICATE KEY UPDATE groupRelation0=VALUES(groupRelation0);
 INSERT INTO spellfixes(spellId, groupRelation1) VALUES(17122, 0x4103000340750) ON DUPLICATE KEY UPDATE groupRelation1=VALUES(groupRelation1);
+
+-- [Mage] Molten Armor
+INSERT INTO spellfixes(spellId, procFlags) VALUES(30482, 0x2A28) ON DUPLICATE KEY UPDATE procFlags=VALUES(procFlags);
+INSERT INTO spellfixes(spellId, procFlags) VALUES(34913, 0x2A28) ON DUPLICATE KEY UPDATE procFlags=VALUES(procFlags);
+
+-- [Shaman] Lightning Shield
+INSERT INTO spellfixes(spellId, procFlags) VALUES(324, 0xA2A28) ON DUPLICATE KEY UPDATE procFlags=VALUES(procFlags);
+INSERT INTO spellfixes(spellId, procFlags) VALUES(325, 0xA2A28) ON DUPLICATE KEY UPDATE procFlags=VALUES(procFlags);
+INSERT INTO spellfixes(spellId, procFlags) VALUES(905, 0xA2A28) ON DUPLICATE KEY UPDATE procFlags=VALUES(procFlags);
+INSERT INTO spellfixes(spellId, procFlags) VALUES(945, 0xA2A28) ON DUPLICATE KEY UPDATE procFlags=VALUES(procFlags);
+INSERT INTO spellfixes(spellId, procFlags) VALUES(8134, 0xA2A28) ON DUPLICATE KEY UPDATE procFlags=VALUES(procFlags);
+INSERT INTO spellfixes(spellId, procFlags) VALUES(10431, 0xA2A28) ON DUPLICATE KEY UPDATE procFlags=VALUES(procFlags);
+INSERT INTO spellfixes(spellId, procFlags) VALUES(10432, 0xA2A28) ON DUPLICATE KEY UPDATE procFlags=VALUES(procFlags);
+INSERT INTO spellfixes(spellId, procFlags) VALUES(25469, 0xA2A28) ON DUPLICATE KEY UPDATE procFlags=VALUES(procFlags);
+INSERT INTO spellfixes(spellId, procFlags) VALUES(25472, 0xA2A28) ON DUPLICATE KEY UPDATE procFlags=VALUES(procFlags);
+INSERT INTO spellfixes(spellId, procFlags) VALUES(26372, 0xA2A28) ON DUPLICATE KEY UPDATE procFlags=VALUES(procFlags);

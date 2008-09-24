@@ -386,6 +386,10 @@ bool World::SetInitialWorldSettings()
 	FillSpellReplacementsTable();
 	sLog.outString("");*/
 
+	Apply112SpellFixes();
+	ApplyExtraDataFixes();
+	ApplyNormalFixes();
+
 #define MAKE_TASK(sp, ptr) tl.AddTask(new Task(new CallbackP0<sp>(sp::getSingletonPtr(), &sp::ptr)))
 	// Fill the task list with jobs to do.
 	TaskList tl;
@@ -473,10 +477,6 @@ bool World::SetInitialWorldSettings()
 	Log.Notice("World", "Creature size: %u bytes", sizeof(Creature) + sizeof(AIInterface));
 	Log.Notice("World", "Player size: %u bytes", sizeof(Player) + sizeof(ItemInterface) + 50000 + 30000 + 1000 + sizeof(AIInterface));
 	Log.Notice("World", "GameObject size: %u bytes", sizeof(GameObject));
-
-	Apply112SpellFixes();
-	ApplyExtraDataFixes();
-	ApplyNormalFixes();
 
 // ------------------------------------------------------------------------------------------------
 
