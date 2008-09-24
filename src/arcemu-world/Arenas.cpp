@@ -457,7 +457,7 @@ void Arena::Finish()
 			uint32 j = i ? 0 : 1; // opposing side
 			bool outcome;
 
-			if (m_teams[i] == NULL) continue;
+			if (m_teams[i] == NULL || m_teams[j] == NULL) continue;
 
 			outcome = (i == m_winningteam);
 			if (outcome) {
