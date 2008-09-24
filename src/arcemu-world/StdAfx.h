@@ -96,7 +96,6 @@
 #include "AlteracValley.h"
 #include "ArathiBasin.h"
 #include "EyeOfTheStorm.h"
-#include "Arenas.h"
 #include "CellHandler.h"
 #include "Chat.h"
 #include "Corpse.h"
@@ -151,6 +150,7 @@
 #include "Channel.h"
 #include "ChannelMgr.h"
 #include "ArenaTeam.h"
+#include "Arenas.h"
 
 #include "LogonCommClient.h"
 #include "LogonCommHandler.h"

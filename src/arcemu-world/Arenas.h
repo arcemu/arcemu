@@ -23,7 +23,7 @@ class Arena : public CBattleground
 {
 	set<GameObject*> m_gates;
 	GameObject * m_buffs[2];
-	set<ArenaTeam*> doneteams;
+	ArenaTeam * m_teams[2];
 	bool m_started;
 	uint32 m_arenateamtype;
 	uint32 m_playersCount[2];

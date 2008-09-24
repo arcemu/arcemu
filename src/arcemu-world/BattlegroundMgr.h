@@ -230,6 +230,9 @@ public:
 
 	/* Add player to bg */
 	void AddPlayerToBg(CBattleground * bg, deque<uint32> *playerVec, uint32 i, uint32 j);
+
+	/* Add a group to an arena */
+	void AddGroupToArena(CBattleground * bg, Group * group, int nteam);
 };
 
 class CBattleground : public EventableObject

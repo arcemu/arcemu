@@ -29,6 +29,7 @@ Arena::Arena(MapMgr * mgr, uint32 id, uint32 lgroup, uint32 t, uint32 players_pe
 	m_playerCountPerTeam = players_per_side;
 	m_buffs[0] = m_buffs[1] = NULL;
 	m_playersCount[0] = m_playersCount[1] = 0;
+	m_teams[0] = m_teams[1] = NULL;
 	switch(t)
 	{
 	case BATTLEGROUND_ARENA_5V5:
@@ -333,8 +334,10 @@ void Arena::HookOnShadowSight()
 
 void Arena::OnStart()
 {
+	int i;
+
 	/* remove arena readyness buff */
-	for(uint32 i = 0; i < 2; ++i) {
+	for(i = 0; i < 2; ++i) {
 		for(set<Player*>::iterator itr = m_players[i].begin(); itr != m_players[i].end(); ++itr) {
 			Player *plr = *itr;
 			plr->RemoveAura(ARENA_PREPARATION);
@@ -344,24 +347,23 @@ void Arena::OnStart()
 			/* update arena team stats */
 			if(rated_match && plr->m_arenaTeams[m_arenateamtype] != NULL)
 			{
-				ArenaTeam * t = plr->m_arenaTeams[m_arenateamtype];
-				ArenaTeamMember * tp = t->GetMember(plr->m_playerInfo);
-				if(doneteams.find(t) == doneteams.end())
-				{
-					t->m_stat_gamesplayedseason++;
-					t->m_stat_gamesplayedweek++;
-					doneteams.insert(t);
-				}
-
+				m_teams[i] = plr->m_arenaTeams[m_arenateamtype];
+				ArenaTeamMember * tp = m_teams[i]->GetMember(plr->m_playerInfo);
 				if(tp != NULL)
 				{
 					tp->Played_ThisWeek++;
 					tp->Played_ThisSeason++;
 				}
-
-				t->SaveToDB();
 			}
 		}
+	}
+
+	for (i=0; i<2; i++) {
+		if (m_teams[i] == NULL) continue;
+
+		m_teams[i]->m_stat_gamesplayedseason++;
+		m_teams[i]->m_stat_gamesplayedweek++;
+		m_teams[i]->SaveToDB();
 	}
 
 	/* open gates */
@@ -450,76 +452,45 @@ void Arena::Finish()
 	/* update arena team stats */
 	if(rated_match)
 	{
-		uint32 averageRating[2] = {0,0};
 		m_deltaRating[0] = m_deltaRating[1] = 0;
-		doneteams.clear();
-		for(uint32 i = 0; i < 2; ++i) {
-			uint32 teamCount = 0;
-			for(set<uint32>::iterator itr = m_players2[i].begin(); itr != m_players2[i].end(); ++itr)
-			{
-				Player * plr = objmgr.GetPlayer(*itr);
-				if(plr && plr->m_arenaTeams[m_arenateamtype] != NULL)
-				{
-					ArenaTeam * t = plr->m_arenaTeams[m_arenateamtype];
-					if(doneteams.find(t) == doneteams.end())
-					{
-						averageRating[i] += t->m_stat_rating;
-						teamCount++;
-						doneteams.insert(t);
-					}
-				}
-			}
-			if(teamCount)
-				averageRating[i] /= teamCount;
-		}
-		doneteams.clear();
 		for (uint32 i = 0; i < 2; ++i) {
 			uint32 j = i ? 0 : 1; // opposing side
 			bool outcome;
 
+			if (m_teams[i] == NULL) continue;
+
 			outcome = (i == m_winningteam);
+			if (outcome) {
+				m_teams[i]->m_stat_gameswonseason++;
+				m_teams[i]->m_stat_gameswonweek++;
+			}
 
-			for(set<uint32>::iterator itr = m_players2[i].begin(); itr != m_players2[i].end(); ++itr)
-			{
-				Player * plr = objmgr.GetPlayer(*itr);
-				if(plr && plr->m_arenaTeams[m_arenateamtype] != NULL)
-				{
-					ArenaTeam * t = plr->m_arenaTeams[m_arenateamtype];
-					ArenaTeamMember * tp = t->GetMember(plr->m_playerInfo);
-					if(doneteams.find(t) == doneteams.end())
-					{
-						if (outcome)
-						{
-							t->m_stat_gameswonseason++;
-							t->m_stat_gameswonweek++;
-						}
+			m_deltaRating[i] = CalcDeltaRating(m_teams[i]->m_stat_rating, m_teams[j]->m_stat_rating, outcome);
+			m_teams[i]->m_stat_rating += m_deltaRating[i];
+			if (m_teams[i]->m_stat_rating < 0) m_teams[i]->m_stat_rating = 0;
 
-						m_deltaRating[j] = CalcDeltaRating(t->m_stat_rating, averageRating[j], outcome);
-						t->m_stat_rating += m_deltaRating[j];
-						if (t->m_stat_rating < 0) t->m_stat_rating = 0;
+			for(set<uint32>::iterator itr = m_players2[i].begin(); itr != m_players2[i].end(); ++itr) {
+				PlayerInfo * info = objmgr.GetPlayerInfo(*itr);
+				if (info) {
+					ArenaTeamMember * tp = m_teams[i]->GetMember(info);
 
-						objmgr.UpdateArenaTeamRankings();
-
-						doneteams.insert(t);
-					}
-
-					if(tp != NULL)
-					{
-						tp->PersonalRating += CalcDeltaRating(tp->PersonalRating, averageRating[j], outcome);
+					if(tp != NULL) {
+						tp->PersonalRating += CalcDeltaRating(tp->PersonalRating, m_teams[j]->m_stat_rating, outcome);
 						if (tp->PersonalRating < 0) tp->PersonalRating = 0;
 
-						if(outcome)
-						{
+						if(outcome) {
 							tp->Won_ThisWeek++;
 							tp->Won_ThisSeason++;
 						}
 					}
-
-					t->SaveToDB();
 				}
 			}
+
+			m_teams[i]->SaveToDB();
 		}
 	}
+
+	objmgr.UpdateArenaTeamRankings();
 
 	m_nextPvPUpdateTime = 0;
 	UpdatePvPData();

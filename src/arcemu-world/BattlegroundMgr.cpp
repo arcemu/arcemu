@@ -309,18 +309,27 @@ void CBattlegroundManager::EventQueueUpdate()
 
 uint32 CBattlegroundManager::GetArenaGroupQInfo(Group * group, int type, uint32 *avgRating)
 {
-	ArenaTeam *team = NULL;
+	ArenaTeam *team;
 	ArenaTeamMember *atm;
+	Player *plr;
 	uint32 count=0;
 	uint32 rating=0;
+
+	if (group == NULL || group->GetLeader() == NULL) return 0;
+
+	plr = group->GetLeader()->m_loggedInPlayer;
+	if (plr == NULL) return 0;
+
+	team = plr->m_arenaTeams[type-BATTLEGROUND_ARENA_2V2];
+	if (team == NULL) return 0;
+
 	GroupMembersSet::iterator itx;
 	for(itx = group->GetSubGroup(0)->GetGroupMembersBegin(); itx != group->GetSubGroup(0)->GetGroupMembersEnd(); ++itx)
 	{
-		Player *plr = (*itx)->m_loggedInPlayer;
+		plr = (*itx)->m_loggedInPlayer;
 		if(plr)
 		{
-			team = plr->m_arenaTeams[type-BATTLEGROUND_ARENA_2V2];
-			if (team)
+			if (team == plr->m_arenaTeams[type-BATTLEGROUND_ARENA_2V2])
 			{
 				atm = team->GetMemberByGuid(plr->GetLowGUID());
 				if (atm)
@@ -337,6 +346,34 @@ uint32 CBattlegroundManager::GetArenaGroupQInfo(Group * group, int type, uint32 
 	return team ? team->m_id : 0;
 }
 
+void CBattlegroundManager::AddGroupToArena(CBattleground * bg, Group * group, int nteam)
+{
+	ArenaTeam *team;
+	Player *plr;
+
+	if (group == NULL || group->GetLeader() == NULL) return;
+
+	plr = group->GetLeader()->m_loggedInPlayer;
+	if (plr == NULL) return;
+
+	team = plr->m_arenaTeams[bg->GetType()-BATTLEGROUND_ARENA_2V2];
+	if (team == NULL) return;
+
+	GroupMembersSet::iterator itx;
+	for(itx = group->GetSubGroup(0)->GetGroupMembersBegin(); itx != group->GetSubGroup(0)->GetGroupMembersEnd(); ++itx)
+	{
+		plr = (*itx)->m_loggedInPlayer;
+		if(plr && team == plr->m_arenaTeams[bg->GetType()-BATTLEGROUND_ARENA_2V2])
+		{
+			if( bg->HasFreeSlots(nteam,bg->GetType()) )
+			{
+				bg->AddPlayer(plr, nteam);
+				plr->SetTeam(nteam);
+			}
+		}
+	}
+}
+
 int CBattlegroundManager::CreateArenaType(int type, Group * group1, Group * group2)
 {
 	Arena * ar = ((Arena*)CreateInstance(type, LEVEL_GROUP_70));
@@ -349,36 +386,8 @@ int CBattlegroundManager::CreateArenaType(int type, Group * group1, Group * grou
 	}
 	ar->rated_match=true;
 
-	GroupMembersSet::iterator itx;
-	if (group1)
-	{
-		for(itx = group1->GetSubGroup(0)->GetGroupMembersBegin(); itx != group1->GetSubGroup(0)->GetGroupMembersEnd(); ++itx)
-		{
-			if((*itx)->m_loggedInPlayer)
-			{
-				if( ar->HasFreeSlots(0,ar->GetType()) )
-				{
-					ar->AddPlayer((*itx)->m_loggedInPlayer, 0);
-					(*itx)->m_loggedInPlayer->SetTeam(0);
-				}
-			}
-		}
-	}
-
-	if (group2)
-	{
-		for(itx = group2->GetSubGroup(0)->GetGroupMembersBegin(); itx != group2->GetSubGroup(0)->GetGroupMembersEnd(); ++itx)
-		{
-			if((*itx)->m_loggedInPlayer)
-			{
-				if( ar->HasFreeSlots(1,ar->GetType()) )
-				{
-					ar->AddPlayer((*itx)->m_loggedInPlayer, 1);
-					(*itx)->m_loggedInPlayer->SetTeam(1);
-				}
-			}
-		}
-	}
+	AddGroupToArena(ar, group1, 0);
+	AddGroupToArena(ar, group2, 1);
 
 	return 0;
 }
@@ -492,7 +501,7 @@ void CBattlegroundManager::EventQueueUpdate(bool forceStart)
 			// try to join existing instances
 			for(iitr = m_instances[i].begin(); iitr != m_instances[i].end(); ++iitr)
 			{
-				if( iitr->second->HasEnded() )
+				if( iitr->second->HasEnded() || iitr->second->GetLevelGroup() != j )
 					continue;
 
 				if(IS_ARENA(i))
@@ -522,8 +531,17 @@ void CBattlegroundManager::EventQueueUpdate(bool forceStart)
 					int size = (int)min(tempPlayerVec[0].size(),tempPlayerVec[1].size());
 					for(int counter = 0; (counter < size) && (bg->IsFull() == false); counter++)
 					{
-						AddPlayerToBg(bg, &tempPlayerVec[0], i, j);
-						AddPlayerToBg(bg, &tempPlayerVec[1], i, j);
+						AddPlayerToBgTeam(bg, &tempPlayerVec[0], i, j, 0);
+						AddPlayerToBgTeam(bg, &tempPlayerVec[1], i, j, 1);
+					}
+
+					while (tempPlayerVec[0].size() > 0 && bg->HasFreeSlots(0, bg->GetType()))
+					{
+						AddPlayerToBgTeam(bg, &tempPlayerVec[0], i, j, 0);
+					}
+					while (tempPlayerVec[1].size() > 0 && bg->HasFreeSlots(1, bg->GetType()))
+					{
+						AddPlayerToBgTeam(bg, &tempPlayerVec[1], i, j, 1);
 					}
 				}
 			}
