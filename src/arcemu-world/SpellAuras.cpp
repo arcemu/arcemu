@@ -3268,7 +3268,8 @@ void Aura::SpellAuraModStealth(bool apply)
 					{
 						for( int i = 0; i < 3; i++ )
 						{
-							if( m_target->m_auras[x]->GetSpellProto()->EffectApplyAuraName[i] == SPELL_AURA_MOD_DECREASE_SPEED || m_target->m_auras[x]->GetSpellProto()->EffectApplyAuraName[i] == SPELL_AURA_MOD_ROOT )
+							uint32 AuraEntry = m_target->m_auras[x]->GetSpellProto()->EffectApplyAuraName[i];
+							if( AuraEntry == SPELL_AURA_MOD_DECREASE_SPEED || AuraEntry == SPELL_AURA_MOD_ROOT || AuraEntry == SPELL_AURA_MOD_STALKED)
 							{
 								m_target->m_auras[x]->Remove();
 								break;
@@ -3285,10 +3286,9 @@ void Aura::SpellAuraModStealth(bool apply)
 			SpellSet::iterator end = p_caster->mSpells.end();
 			for(; itr != end; ++itr)
 			{
-				if((*itr) == 1787 || (*itr) == 1786 || (*itr) == 1785 || (*itr) == 1784)
+				if(((*itr) == 1787 || (*itr) == 1786 || (*itr) == 1785 || (*itr) == 1784) && stealth_id < (*itr))
 				{
 					stealth_id = *itr;
-					break;
 				}
 			}
 			if(stealth_id)
@@ -3298,11 +3298,9 @@ void Aura::SpellAuraModStealth(bool apply)
 				p_caster->RemoveAura(p_caster->m_MountSpellId);
 		}
 	}
-	else
+	else if(m_spellProto->NameHash != SPELL_HASH_VANISH)
 	{
-		if( m_spellProto->NameHash != SPELL_HASH_VANISH)
-			m_target->SetStealth(0);
-
+		m_target->SetStealth(0);
 		m_target->m_stealthLevel -= mod->m_amount;
 		if( m_spellProto->NameHash == SPELL_HASH_STEALTH)
 			m_target->RemoveFlag(UNIT_FIELD_BYTES_2,0x1E000000);
