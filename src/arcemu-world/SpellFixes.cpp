@@ -14897,12 +14897,20 @@ void ApplyNormalFixes()
 		// druid - Nature's Grace
 		sp = dbcSpell.LookupEntryForced( 16880 );
 		if( sp != NULL )
-			sp->procFlags = PROC_ON_SPELL_CRIT_HIT;
+		{
+            sp->procFlags = PROC_ON_SPELL_CRIT_HIT | static_cast<uint32>(PROC_TARGET_SELF);
+            sp->procChance = 100;
+            sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
+            sp->EffectTriggerSpell[0] = 16886;
+            sp->Effect[0] = SPELL_EFFECT_APPLY_AURA;
+		}
 
 		sp = dbcSpell.LookupEntryForced( 16886 );
 		if( sp != NULL )
 		{
-			sp->procCharges = 1;
+			sp->procFlags = PROC_ON_CAST_SPELL;
+            sp->procChance = 100;
+			sp->procCharges = 2; // i know.. hacky.. but first charge gets lost when it gets procced
 		}
 
 		// Druid: Omen of Clarity

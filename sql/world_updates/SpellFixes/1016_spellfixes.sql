@@ -168,3 +168,6 @@ INSERT INTO spellfixes(spellId, procFlags) VALUES(10432, 0xA2A28) ON DUPLICATE K
 INSERT INTO spellfixes(spellId, procFlags) VALUES(25469, 0xA2A28) ON DUPLICATE KEY UPDATE procFlags=VALUES(procFlags);
 INSERT INTO spellfixes(spellId, procFlags) VALUES(25472, 0xA2A28) ON DUPLICATE KEY UPDATE procFlags=VALUES(procFlags);
 INSERT INTO spellfixes(spellId, procFlags) VALUES(26372, 0xA2A28) ON DUPLICATE KEY UPDATE procFlags=VALUES(procFlags);
+
+-- [Druid] Nature's Grace
+INSERT INTO spellfixes(spellId, groupRelation0) VALUES(16886, 0x1000265) ON DUPLICATE KEY UPDATE groupRelation0=VALUES(groupRelation0);

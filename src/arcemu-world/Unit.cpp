@@ -2241,6 +2241,12 @@ void Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, uint
 						if (!CastingSpell || CastingSpell->NameHash != SPELL_HASH_REPLENISH_MANA)
 							continue; 
 					}break;
+				case 16886: // druid - Nature's Grace
+					{
+						// Remove aura if it exists so it gets reapplied
+						if (HasAura(16886))
+							RemoveAura(16886);
+					}break;
 				/*case 38395:
 					{
 						if( CastingSpell == NULL )
