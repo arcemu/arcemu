@@ -171,3 +171,9 @@ INSERT INTO spellfixes(spellId, procFlags) VALUES(26372, 0xA2A28) ON DUPLICATE K
 
 -- [Druid] Nature's Grace
 INSERT INTO spellfixes(spellId, groupRelation0) VALUES(16886, 0x1000265) ON DUPLICATE KEY UPDATE groupRelation0=VALUES(groupRelation0);
+
+-- [Priest] Focused Power
+INSERT INTO spellfixes(spellId, groupRelation0) VALUES(33186, 0x8000000000) ON DUPLICATE KEY UPDATE groupRelation0=VALUES(groupRelation0);
+INSERT INTO spellfixes(spellId, groupRelation1) VALUES(33186, 0x8000002080) ON DUPLICATE KEY UPDATE groupRelation1=VALUES(groupRelation1);
+INSERT INTO spellfixes(spellId, groupRelation0) VALUES(33190, 0x8000000000) ON DUPLICATE KEY UPDATE groupRelation0=VALUES(groupRelation0);
+INSERT INTO spellfixes(spellId, groupRelation1) VALUES(33190, 0x8000002080) ON DUPLICATE KEY UPDATE groupRelation1=VALUES(groupRelation1);
