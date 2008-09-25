@@ -190,3 +190,9 @@ INSERT INTO spellfixes(spellId, groupRelation1) VALUES(18274, 0x11130008A48B) ON
 INSERT INTO spellfixes(spellId, groupRelation0) VALUES(18275, 0x11130008A48B) ON DUPLICATE KEY UPDATE groupRelation0=VALUES(groupRelation0);
 INSERT INTO spellfixes(spellId, groupRelation1) VALUES(18275, 0x11130008A48B) ON DUPLICATE KEY UPDATE groupRelation1=VALUES(groupRelation1);
 
+-- [Rogue] Opportunity
+INSERT INTO spellfixes(spellId, groupRelation0) VALUES(14057, 0x600000304) ON DUPLICATE KEY UPDATE groupRelation0=VALUES(groupRelation0);
+INSERT INTO spellfixes(spellId, groupRelation0) VALUES(14072, 0x600000304) ON DUPLICATE KEY UPDATE groupRelation0=VALUES(groupRelation0);
+INSERT INTO spellfixes(spellId, groupRelation0) VALUES(14073, 0x600000304) ON DUPLICATE KEY UPDATE groupRelation0=VALUES(groupRelation0);
+INSERT INTO spellfixes(spellId, groupRelation0) VALUES(14074, 0x600000304) ON DUPLICATE KEY UPDATE groupRelation0=VALUES(groupRelation0);
+INSERT INTO spellfixes(spellId, groupRelation0) VALUES(14075, 0x600000304) ON DUPLICATE KEY UPDATE groupRelation0=VALUES(groupRelation0);
