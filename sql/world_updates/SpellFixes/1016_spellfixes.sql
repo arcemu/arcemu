@@ -177,3 +177,16 @@ INSERT INTO spellfixes(spellId, groupRelation0) VALUES(33186, 0x8000000000) ON D
 INSERT INTO spellfixes(spellId, groupRelation1) VALUES(33186, 0x8000002080) ON DUPLICATE KEY UPDATE groupRelation1=VALUES(groupRelation1);
 INSERT INTO spellfixes(spellId, groupRelation0) VALUES(33190, 0x8000000000) ON DUPLICATE KEY UPDATE groupRelation0=VALUES(groupRelation0);
 INSERT INTO spellfixes(spellId, groupRelation1) VALUES(33190, 0x8000002080) ON DUPLICATE KEY UPDATE groupRelation1=VALUES(groupRelation1);
+
+-- [Warlock] Shadow Mastery
+INSERT INTO spellfixes(spellId, groupRelation0) VALUES(18271, 0x11130008A48B) ON DUPLICATE KEY UPDATE groupRelation0=VALUES(groupRelation0);
+INSERT INTO spellfixes(spellId, groupRelation1) VALUES(18271, 0x11130008A48B) ON DUPLICATE KEY UPDATE groupRelation1=VALUES(groupRelation1);
+INSERT INTO spellfixes(spellId, groupRelation0) VALUES(18272, 0x11130008A48B) ON DUPLICATE KEY UPDATE groupRelation0=VALUES(groupRelation0);
+INSERT INTO spellfixes(spellId, groupRelation1) VALUES(18272, 0x11130008A48B) ON DUPLICATE KEY UPDATE groupRelation1=VALUES(groupRelation1);
+INSERT INTO spellfixes(spellId, groupRelation0) VALUES(18273, 0x11130008A48B) ON DUPLICATE KEY UPDATE groupRelation0=VALUES(groupRelation0);
+INSERT INTO spellfixes(spellId, groupRelation1) VALUES(18273, 0x11130008A48B) ON DUPLICATE KEY UPDATE groupRelation1=VALUES(groupRelation1);
+INSERT INTO spellfixes(spellId, groupRelation0) VALUES(18274, 0x11130008A48B) ON DUPLICATE KEY UPDATE groupRelation0=VALUES(groupRelation0);
+INSERT INTO spellfixes(spellId, groupRelation1) VALUES(18274, 0x11130008A48B) ON DUPLICATE KEY UPDATE groupRelation1=VALUES(groupRelation1);
+INSERT INTO spellfixes(spellId, groupRelation0) VALUES(18275, 0x11130008A48B) ON DUPLICATE KEY UPDATE groupRelation0=VALUES(groupRelation0);
+INSERT INTO spellfixes(spellId, groupRelation1) VALUES(18275, 0x11130008A48B) ON DUPLICATE KEY UPDATE groupRelation1=VALUES(groupRelation1);
+
