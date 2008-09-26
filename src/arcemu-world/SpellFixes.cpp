@@ -14449,21 +14449,6 @@ void ApplyNormalFixes()
 			sp->Effect[0] = SPELL_EFFECT_APPLY_AURA;
 			sp->Effect[1] = 0; //hacks, we are handling this in another way
 		}
-		//warlock - Improved Healthstone
-		sp = dbcSpell.LookupEntryForced( 18692 );
-		if( sp != NULL )
-		{
-			sp->EffectApplyAuraName[0] = SPELL_AURA_ADD_PCT_MODIFIER;
-			sp->EffectMiscValue[0] = SMT_SPELL_VALUE;
-			sp->EffectImplicitTargetA[0] = EFF_TARGET_SELF;
-		}
-		sp = dbcSpell.LookupEntryForced( 18693 );
-		if( sp != NULL )
-		{
-			sp->EffectApplyAuraName[0] = SPELL_AURA_ADD_PCT_MODIFIER;
-			sp->EffectMiscValue[0] = SMT_SPELL_VALUE;
-			sp->EffectImplicitTargetA[0] = EFF_TARGET_SELF;
-		}
 
 		//warlock - Improved Drain Soul
 		sp = dbcSpell.LookupEntryForced( 18213 );
