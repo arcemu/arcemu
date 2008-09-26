@@ -436,9 +436,10 @@ void Spell::SpellEffectInstantKill(uint32 i)
 			}break;
 		}
 		//now caster gains this buff
-		if (spellid1 && spellid1 != 0)
+		if (spellid1)
 		{
-			u_caster->CastSpell(u_caster, dbcSpell.LookupEntry(spellid1), true);
+			SpellEntry *sp = dbcSpell.LookupEntry(spellid1);
+			if (sp) u_caster->CastSpell(u_caster, sp, true);
 		}
 	}
 
