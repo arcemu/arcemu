@@ -189,10 +189,18 @@ INSERT INTO spellfixes(spellId, groupRelation0) VALUES(18274, 0x11130008A48B) ON
 INSERT INTO spellfixes(spellId, groupRelation1) VALUES(18274, 0x11130008A48B) ON DUPLICATE KEY UPDATE groupRelation1=VALUES(groupRelation1);
 INSERT INTO spellfixes(spellId, groupRelation0) VALUES(18275, 0x11130008A48B) ON DUPLICATE KEY UPDATE groupRelation0=VALUES(groupRelation0);
 INSERT INTO spellfixes(spellId, groupRelation1) VALUES(18275, 0x11130008A48B) ON DUPLICATE KEY UPDATE groupRelation1=VALUES(groupRelation1);
-
+
 -- [Rogue] Opportunity
 INSERT INTO spellfixes(spellId, groupRelation0) VALUES(14057, 0x600000304) ON DUPLICATE KEY UPDATE groupRelation0=VALUES(groupRelation0);
 INSERT INTO spellfixes(spellId, groupRelation0) VALUES(14072, 0x600000304) ON DUPLICATE KEY UPDATE groupRelation0=VALUES(groupRelation0);
 INSERT INTO spellfixes(spellId, groupRelation0) VALUES(14073, 0x600000304) ON DUPLICATE KEY UPDATE groupRelation0=VALUES(groupRelation0);
 INSERT INTO spellfixes(spellId, groupRelation0) VALUES(14074, 0x600000304) ON DUPLICATE KEY UPDATE groupRelation0=VALUES(groupRelation0);
 INSERT INTO spellfixes(spellId, groupRelation0) VALUES(14075, 0x600000304) ON DUPLICATE KEY UPDATE groupRelation0=VALUES(groupRelation0);
+
+-- [Druid] Empowered Rejuvenation
+INSERT INTO spellfixes(spellId, groupRelation0) VALUES(33886, 0x10000000D0) ON DUPLICATE KEY UPDATE groupRelation0=VALUES(groupRelation0);
+INSERT INTO spellfixes(spellId, groupRelation0) VALUES(33887, 0x10000000D0) ON DUPLICATE KEY UPDATE groupRelation0=VALUES(groupRelation0);
+INSERT INTO spellfixes(spellId, groupRelation0) VALUES(33888, 0x10000000D0) ON DUPLICATE KEY UPDATE groupRelation0=VALUES(groupRelation0);
+INSERT INTO spellfixes(spellId, groupRelation0) VALUES(33889, 0x10000000D0) ON DUPLICATE KEY UPDATE groupRelation0=VALUES(groupRelation0);
+INSERT INTO spellfixes(spellId, groupRelation0) VALUES(33890, 0x10000000D0) ON DUPLICATE KEY UPDATE groupRelation0=VALUES(groupRelation0);
+
