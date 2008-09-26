@@ -877,6 +877,8 @@ public:
 	ARCEMU_INLINE void SetOnMeleeSpell(uint32 spell ) { m_meleespell = spell; }
 	ARCEMU_INLINE uint32 GetOnMeleeSpell() { return m_meleespell; }
 
+	uint32 DoDamageSplitTarget(uint32 res, uint32 school_type, bool melee_dmg);
+
 	// Spell Crit
 	float spellcritperc;
 

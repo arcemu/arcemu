@@ -3512,36 +3512,7 @@ else
 	// Paladin: Blessing of Sacrifice, and Warlock: Soul Link
 	if( pVictim->m_damageSplitTarget )
 	{
-		Unit * splittarget;
-		int32 splitdamage, tmpsplit;
-		DamageSplitTarget * ds = pVictim->m_damageSplitTarget;
-
-		splittarget = pVictim->GetMapMgr() ? pVictim->GetMapMgr()->GetUnit( ds->m_target ) : NULL;
-		if( splittarget && dmg.full_damage > 0 )
-		{
-			// calculate damage
-			tmpsplit = ds->m_flatDamageSplit;
-			if( tmpsplit > dmg.full_damage )
-				tmpsplit = dmg.full_damage; // prevent < 0 damage
-			splitdamage = tmpsplit;
-			dmg.full_damage -= tmpsplit;
-			tmpsplit = (int32)(ds->m_pctDamageSplit * dmg.full_damage);
-			if( tmpsplit > dmg.full_damage )
-				tmpsplit = dmg.full_damage;
-			splitdamage += tmpsplit;
-			dmg.full_damage -= tmpsplit;
-			if( splitdamage )
-			{
-				dealdamage sdmg;
-
-				pVictim->DealDamage( splittarget , splitdamage , 0 , 0 , 0 , false );
-				// Send damage log
-				sdmg.full_damage = splitdamage;
-				sdmg.resisted_damage = 0;
-				sdmg.school_type = dmg.school_type;
-				SendAttackerStateUpdate(this, splittarget, &sdmg, splitdamage, 0, 0, 0, ATTACK);
-			}
-		}
+		dmg.full_damage = pVictim->DoDamageSplitTarget(dmg.full_damage, dmg.school_type, true);
 		realdamage = dmg.full_damage;
 	}
 
@@ -7154,4 +7125,44 @@ void Unit::AddExtraStrikeTarget(SpellEntry *spell_info, uint32 charges)
 	es->deleted = false;
 	m_extraStrikeTargets.push_back(es);
 	m_extrastriketargetc++;
+}
+
+uint32 Unit::DoDamageSplitTarget(uint32 res, uint32 school_type, bool melee_dmg)
+{
+	Unit * splittarget;
+	uint32 splitdamage, tmpsplit;
+	DamageSplitTarget * ds = m_damageSplitTarget;
+		
+	splittarget = (GetMapMgr() != NULL) ? GetMapMgr()->GetUnit( ds->m_target ) : NULL;
+	if( splittarget != NULL && res > 0 ) {
+		// calculate damage
+		tmpsplit = ds->m_flatDamageSplit;
+		if( tmpsplit > res)
+			tmpsplit = res; // prevent < 0 damage
+		splitdamage = tmpsplit;
+		res -= tmpsplit;
+		tmpsplit = float2int32( ds->m_pctDamageSplit * res );
+		if( tmpsplit > res )
+			tmpsplit = res;
+		splitdamage += tmpsplit;
+		res -= tmpsplit;
+
+		if( splitdamage ) {
+			splittarget->DealDamage(splittarget, splitdamage, 0, 0, 0);
+
+			// Send damage log
+			if (melee_dmg) {
+				dealdamage sdmg;
+
+				sdmg.full_damage = splitdamage;
+				sdmg.resisted_damage = 0;
+				sdmg.school_type = school_type;
+				SendAttackerStateUpdate(this, splittarget, &sdmg, splitdamage, 0, 0, 0, ATTACK);
+			} else {
+				SendSpellNonMeleeDamageLog(this, splittarget, ds->m_spellId, splitdamage, school_type, 0, 0, true, 0, 0, true);
+			}
+		}
+	}
+
+	return res;
 }

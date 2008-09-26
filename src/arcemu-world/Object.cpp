@@ -2782,32 +2782,7 @@ void Object::SpellNonMeleeDamageLog(Unit *pVictim, uint32 spellID, uint32 damage
 	// Paladin: Blessing of Sacrifice, and Warlock: Soul Link
 	if( pVictim->m_damageSplitTarget)
 	{
-		Unit * splittarget;
-		uint32 splitdamage, tmpsplit;
-		DamageSplitTarget * ds = pVictim->m_damageSplitTarget;
-		
-		splittarget = (pVictim->GetMapMgr() != NULL) ? pVictim->GetMapMgr()->GetUnit( ds->m_target ) : NULL;
-		if( splittarget != NULL && res > 0 )
-		{
-			// calculate damage
-			tmpsplit = ds->m_flatDamageSplit;
-			if( (int)tmpsplit > float2int32( res ))
-				tmpsplit = float2int32( res ); // prevent < 0 damage
-			splitdamage = tmpsplit;
-			res -= (float)tmpsplit;
-			tmpsplit = float2int32( ds->m_pctDamageSplit * res );
-			if( (int)tmpsplit > float2int32( res ) )
-				tmpsplit = float2int32( res );
-			splitdamage += tmpsplit;
-			res -= (float)tmpsplit;
-
-			if( splitdamage )
-			{
-				pVictim->DealDamage( splittarget , splitdamage , 0 , 0 , 0 , false );
-				// Send damage log
-				pVictim->SendSpellNonMeleeDamageLog( pVictim , splittarget , ds->m_spellId , splitdamage , SCHOOL_HOLY/*ds->damage_type*/, 0 , 0 , true , 0 , 0 , true );
-			}
-		}
+		res = (float)pVictim->DoDamageSplitTarget((uint32)res, school, false);
 	}
 	
 //==========================================================================================

@@ -1611,6 +1611,11 @@ void Aura::EventPeriodicDamage(uint32 amount)
 		mtarget->m_procCounter = 0;
 	}
 
+	if( m_target->m_damageSplitTarget)
+	{
+		res = (float)m_target->DoDamageSplitTarget((uint32)res, GetSpellProto()->School, false);
+	}
+
 	if(c)
 		c->DealDamage(m_target, float2int32(res),  2, 0, GetSpellId ());
 	else
@@ -2856,12 +2861,11 @@ void Aura::EventPeriodicHeal( uint32 amount )
 
 	if((curHealth + add) >= maxHealth)
 	{
-		m_target->SetUInt32Value( UNIT_FIELD_HEALTH, maxHealth );
 		add = maxHealth - curHealth;
 	}
-	else
-		m_target->ModUnsigned32Value(UNIT_FIELD_HEALTH, add);
 
+	if (add > 0)
+		m_target->ModUnsigned32Value(UNIT_FIELD_HEALTH, add);
 
 	m_target->RemoveAurasByHeal();
 
@@ -2874,6 +2878,17 @@ void Aura::EventPeriodicHeal( uint32 amount )
 	Unit* u_caster = this->GetUnitCaster();
 	if( u_caster != NULL )
 	{
+		if (GetSpellProto()->NameHash == SPELL_HASH_HEALTH_FUNNEL && add > 0) 
+		{
+			dealdamage sdmg;
+
+			sdmg.full_damage = add;
+			sdmg.resisted_damage = 0;
+			sdmg.school_type = 0;
+			u_caster->DealDamage(u_caster, add, 0, 0, 0);
+			u_caster->SendAttackerStateUpdate(u_caster, u_caster, &sdmg, add, 0, 0, 0, ATTACK);
+		}
+
 		std::vector<Unit*> target_threat;
 		int count = 0;
 		for(std::set<Object*>::iterator itr = u_caster->GetInRangeSetBegin(); itr != u_caster->GetInRangeSetEnd(); ++itr)
@@ -6180,6 +6195,11 @@ void Aura::EventPeriodicDamagePercent(uint32 amount)
 	uint32 damage = float2int32(amount/100.0f*m_target->GetUInt32Value(UNIT_FIELD_MAXHEALTH));
 
 	Unit * c = GetUnitCaster();
+
+	if( m_target->m_damageSplitTarget)
+	{
+		damage = m_target->DoDamageSplitTarget(damage, GetSpellProto()->School, false);
+	}
 
 	if(c)
 		c->SpellNonMeleeDamageLog(m_target, GetSpellProto()->Id, damage, pSpellId==0, true);
