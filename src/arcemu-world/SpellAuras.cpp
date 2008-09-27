@@ -4182,18 +4182,6 @@ void Aura::SpellAuraModShapeshift(bool apply)
 			freeMovements = true;
 			spellId = 5419;
 			modelId = 918;
-
-			if( apply )
-			{
-				if( m_target->IsPlayer() )
-					static_cast< Player* >( m_target )->m_MountSpellId = m_spellProto->Id;
-			}
-			else
-			{
-				if( m_target->IsPlayer() )
-					static_cast< Player* >( m_target )->m_MountSpellId = 0;
-			}
-
 		} break;
 	case FORM_AQUA:
 		{//druid aqua
@@ -4251,16 +4239,6 @@ void Aura::SpellAuraModShapeshift(bool apply)
 	case FORM_GHOSTWOLF:
 		{
 			modelId = 4613;
-			if( apply )
-			{
-				if( m_target->IsPlayer() )
-					static_cast< Player* >( m_target )->m_MountSpellId = m_spellProto->Id;
-			}
-			else
-			{
-				if( m_target->IsPlayer() )
-					static_cast< Player* >( m_target )->m_MountSpellId = 0;
-			}
 		} break;
 	case FORM_BATTLESTANCE:
 		{
