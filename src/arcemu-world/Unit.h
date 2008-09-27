@@ -1081,7 +1081,7 @@ public:
 	int32 CreatureAttackPowerMod[12];
 	int32 CreatureRangedAttackPowerMod[12];
 
-	float PctRegenModifier;//1.0 by default
+	int32 PctRegenModifier;
 	float PctPowerRegenModifier[4];
 	ARCEMU_INLINE uint32 GetPowerType(){ return (GetUInt32Value(UNIT_FIELD_BYTES_0)>> 24);}
 	void RemoveSoloAura(uint32 type);

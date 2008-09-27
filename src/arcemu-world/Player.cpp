@@ -6707,7 +6707,11 @@ void Player::RegenerateHealth( bool inCombat )
 	if(cur >= mh)
 		return;
 
-	float amt = (m_uint32Values[UNIT_FIELD_STAT4]*HPRegen->val+HPRegenBase->val*100)*(1+PctRegenModifier);
+	float amt = (m_uint32Values[UNIT_FIELD_STAT4]*HPRegen->val+HPRegenBase->val*100);
+
+	if (PctRegenModifier)
+		amt+= (amt * PctRegenModifier) / 100;
+
 	amt *= sWorld.getRate(RATE_HEALTH);//Apply shit from conf file
 	//Near values from official
 	// wowwiki: Health Regeneration is increased by 33% while sitting.
@@ -6728,7 +6732,7 @@ void Player::RegenerateHealth( bool inCombat )
 			SetUInt32Value(UNIT_FIELD_HEALTH,(cur>=mh) ? mh : cur);
 		}
 		else
-			DealDamage(this, float2int32(amt), 0, 0, 0);
+			DealDamage(this, float2int32(-amt), 0, 0, 0);
 	}
 }
 

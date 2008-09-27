@@ -834,15 +834,11 @@ void Creature::RegenerateHealth()
 	
 	//though creatures have their stats we use some wierd formula for amt
 	float amt = 0.0f;
-	float lvl = float(getLevel());
+	uint32 lvl = getLevel();
 
-	if(PctRegenModifier == 0.0f)
-		amt = lvl*2.0f;
-
-	else if(PctRegenModifier > 0)
-		amt = (lvl*2.0f)*(1.0f+PctRegenModifier);
-	else
-		amt = (lvl*2.0f)*(-1.0f+PctRegenModifier);
+	amt = lvl*2.0f;
+	if (PctRegenModifier)
+		amt+= (amt * PctRegenModifier) / 100;
 
 	if (GetCreatureInfo() && GetCreatureInfo()->Rank == 3)
 		amt *= 10000.0f;

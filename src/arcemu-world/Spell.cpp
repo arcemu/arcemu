@@ -4410,18 +4410,11 @@ exit:
 
 	if( u_caster != NULL )
 	{
-		int32 spell_flat_modifers=0;
-		int32 spell_pct_modifers=0;
-		int32 spell_pct_modifers2=0;//separated from the other for debugging purpuses
+		SM_FIValue(u_caster->SM_FSPELL_VALUE,&value,GetProto()->SpellGroupType);
+		SM_PIValue(u_caster->SM_PSPELL_VALUE,&value,GetProto()->SpellGroupType);
 
-		SM_FIValue(u_caster->SM_FSPELL_VALUE,&spell_flat_modifers,GetProto()->SpellGroupType);
-		SM_FIValue(u_caster->SM_PSPELL_VALUE,&spell_pct_modifers,GetProto()->SpellGroupType);
-
-		SM_FIValue(u_caster->SM_FEffectBonus,&spell_flat_modifers,GetProto()->SpellGroupType);
-		SM_FIValue(u_caster->SM_PEffectBonus,&spell_pct_modifers,GetProto()->SpellGroupType);
-
-		value = value + value*(spell_pct_modifers+spell_pct_modifers2)/100 + spell_flat_modifers;
-
+		SM_FIValue(u_caster->SM_FEffectBonus,&value,GetProto()->SpellGroupType);
+		SM_PIValue(u_caster->SM_PEffectBonus,&value,GetProto()->SpellGroupType);
 	}
 	else if( i_caster != NULL && target)
 	{
@@ -4429,20 +4422,11 @@ exit:
 		Unit *item_creator = target->GetMapMgr()->GetUnit( i_caster->GetUInt64Value( ITEM_FIELD_CREATOR ) );
 		if( item_creator != NULL )
 		{
-			int32 spell_flat_modifers=0;
-			int32 spell_pct_modifers=0;
-			int32 spell_pct_modifers2=0;//separated from the other for debugging purpuses
+			SM_FIValue(item_creator->SM_FSPELL_VALUE,&value,GetProto()->SpellGroupType);
+			SM_PIValue(item_creator->SM_PSPELL_VALUE,&value,GetProto()->SpellGroupType);
 
-			SM_FIValue(item_creator->SM_FSPELL_VALUE,&spell_flat_modifers,GetProto()->SpellGroupType);
-			SM_FIValue(item_creator->SM_PSPELL_VALUE,&spell_pct_modifers,GetProto()->SpellGroupType);
-
-			SM_FIValue(item_creator->SM_FEffectBonus,&spell_flat_modifers,GetProto()->SpellGroupType);
-			SM_FIValue(item_creator->SM_PEffectBonus,&spell_pct_modifers,GetProto()->SpellGroupType);
-#ifdef COLLECTION_OF_UNTESTED_STUFF_AND_TESTERS
-			if(spell_flat_modifers!=0 || spell_pct_modifers!=0 || spell_pct_modifers2!=0)
-				printf("!!!!ITEMCASTER ! : spell value mod flat %d , spell value mod pct %d, spell value mod pct2 %d , spell dmg %d, spell group %u\n",spell_flat_modifers,spell_pct_modifers,spell_pct_modifers2,value,GetProto()->SpellGroupType);
-#endif
-			value = value + value*(spell_pct_modifers+spell_pct_modifers2)/100 + spell_flat_modifers;
+			SM_FIValue(item_creator->SM_FEffectBonus,&value,GetProto()->SpellGroupType);
+			SM_PIValue(item_creator->SM_PEffectBonus,&value,GetProto()->SpellGroupType);
 		}
 	}
 

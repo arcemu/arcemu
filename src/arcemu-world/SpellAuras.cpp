@@ -6126,9 +6126,9 @@ void Aura::SpellAuraModDamagePercTaken(bool apply)
 void Aura::SpellAuraModRegenPercent(bool apply)
 {
 	if(apply)
-		m_target->PctRegenModifier += ((float)(mod->m_amount))/100.0f;
+		m_target->PctRegenModifier += mod->m_amount;
 	else
-		m_target->PctRegenModifier -= ((float)(mod->m_amount))/100.0f;
+		m_target->PctRegenModifier -= mod->m_amount;
 }
 
 void Aura::SpellAuraPeriodicDamagePercent(bool apply)
