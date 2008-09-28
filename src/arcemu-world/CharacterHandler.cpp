@@ -605,8 +605,17 @@ void WorldSession::FullLogin(Player * plr)
 	SetPlayer(plr); 
 	m_MoverWoWGuid.Init(plr->GetGUID());
 
-	/* Trying to log to an instance that doesn't exists anymore? */
 	MapMgr *mgr = sInstanceMgr.GetInstance(static_cast< Object* >( plr ));  
+	if (mgr->m_battleground)
+	{
+		/* Don't allow player to login into a bg that has ended or is full */
+		if (mgr->m_battleground->HasEnded() == true ||
+			mgr->m_battleground->HasFreeSlots(plr->GetTeamInitial(), mgr->m_battleground->GetType() == false)) {
+				mgr = NULL;
+		}
+	}
+
+	/* Trying to log to an instance that doesn't exists anymore? */
 	if (!mgr)
 	{
 		if(!IS_INSTANCE(plr->m_bgEntryPointMap))
