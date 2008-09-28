@@ -1,0 +1,36 @@
+/* 
+* Copyright (C) 2007 GMScripts <http://projects.emupedia.com/svn/gmscripts>
+*
+* This program is free software; you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation; either version 2 of the License, or
+* (at your option) any later version.
+*
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License
+* along with this program; if not, write to the Free Software
+* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+*/
+
+// Report to Goldshire
+global OntoGoldshireComplete = function(qst_giver, plr)
+{
+   qst_giver.SendChatMessage("You are dismissed, " + plr.GetName() + ".");
+   qst_giver.Emote(2);	// EMOTE_ONESHOT_BOW
+};
+.RegisterQuestEvent(54, 2, OntoGoldshireComplete);		// Report to Goldshire
+
+// Maybell Complete
+global MaybellComplete = function(qst_giver, plr)
+{
+   qst_giver.SendChatMessage("Here goes nothing...");
+   qst_giver.Emote(18);	// EMOTE_ONESHOT_CRY
+
+   // Despawn after 5 seconds (time for the message), and respawn after 30 secs.
+   qst_giver.Despawn(5000, 20000);
+};
+.RegisterQuestEvent(114, 1, MaybellComplete);			// The Escape

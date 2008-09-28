@@ -1,0 +1,65 @@
+/* 
+* Copyright (C) 2007 GMScripts <http://projects.emupedia.com/svn/gmscripts>
+*
+* This program is free software; you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation; either version 2 of the License, or
+* (at your option) any later version.
+*
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License
+* along with this program; if not, write to the Free Software
+* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+*/
+
+// Rite of Vision
+global RiteOfVision_OnQuestAccept = function(QuestGiver, plr)
+{
+	plr.SpawnMonster(2983, -2238.994873, -408.009552, -9.424423);
+};	
+.RegisterQuestEvent(772, 2, RiteOfVision_OnQuestAccept);
+
+// The Plains Vision
+global ThePlainsVision_OnSpawn = function(plr)
+{
+	.SetCombatCapable(0);
+	.CreateCustomWaypointMap();
+	.CreateWaypoint(-2240.521729, -407.114532, -9.424648, 5.753043, 0, 256, 0);
+	.CreateWaypoint(-2225.764404, -419.251404, -9.360950, 5.575544, 0, 256, 0);
+	.CreateWaypoint(-2200.883789, -440.999634, -5.606637, 5.599899, 0, 256, 0);
+	.CreateWaypoint(-2143.712646, -468.068665, -9.401191, 0.797177, 0, 256, 0);
+	.CreateWaypoint(-2100.811279, -420.980194, -5.322747, 0.918914, 0, 256, 0);
+	.CreateWaypoint(-2079.469482, -392.465576, -10.262321, 0.930689, 0, 256, 0);
+	.CreateWaypoint(-2043.699707, -343.802155, -6.971242, 0.934694, 0, 256, 0);
+	.CreateWaypoint(-2001.858521, -242.533966, -10.763200, 0.952265, 0, 256, 0);
+	.CreateWaypoint(-1924.751343, -119.969292, -11.770116, 0.754775, 0, 256, 0);
+	.CreateWaypoint(-1794.804565, -7.919222, -9.326016, 0.711578, 0, 256, 0);
+	.CreateWaypoint(-1755.206421, 72.430847, 1.121445, 1.103484, 0, 256, 0);
+	.CreateWaypoint(-1734.550049, 116.842003, -4.337420, 3.350100, 0, 256, 0);
+	.CreateWaypoint(-1720.041870, 125.933235, -2.325089, 0.903206, 0, 256, 0);
+	.CreateWaypoint(-1704.406860, 183.596405, 12.065074, 0.691148, 0, 256, 0);
+	.CreateWaypoint(-1674.317261, 201.597565, 11.235887, 0.475164, 0, 256, 0);
+	.CreateWaypoint(-1624.068726, 223.555389, 2.074259, 0.416259, 0, 256, 0);
+	.CreateWaypoint(-1572.863403, 234.714813, 2.305119, 0.781471, 0, 256, 0);
+	.CreateWaypoint(-1542.866943, 277.896759, 20.543165, 1.256637, 0, 256, 0);
+	.CreateWaypoint(-1541.813232, 316.415649, 49.910889, 1.248783, 0, 256, 0);
+	.CreateWaypoint(-1526.979126, 329.664001, 61.835552, 1.182024, 0, 256, 0);
+	.CreateWaypoint(-1524.173584, 335.237610, 63.325703, 1.173092, 0, 256, 0);
+	.CreateWaypoint(-1513.968506, 355.759338, 63.064487, 1.119193, 0, 256, 0);
+	.SetMovementType(11);
+};
+.RegisterUnitEvent(2983, 6, ThePlainsVision_OnSpawn);
+
+global ThePlainsVision_OnWaypoints = function(waypoint_id)
+{
+  if(waypoint_id == 2 ) { .SendChatMessage("You follow me."); }
+  if(waypoint_id == 22) { 
+	.Despawn(3, 0);
+	.DestroyCustomWaypointMap();
+  }
+};
+.RegisterUnitEvent(2983, 8, ThePlainsVision_OnWaypoints); 

@@ -1,0 +1,55 @@
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ArcScriptInstanceScripts", "projects\InstanceScripts2008.vcproj", "{EE39B48B-C598-4AAF-9EF0-199402933EE5}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ArcScriptSpellHandlers", "projects\SpellsHandlers2008.vcproj", "{21CCA237-B55E-4882-B3E3-4A0321315CB3}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ArcScriptGossipScripts", "projects\GossipScripts2008.vcproj", "{9F200BBC-57C3-4F0C-8BB5-F9053E4BB4B3}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ServerStatusPlugin", "projects\ServerStatusPlugin2008.vcproj", "{FF551ECC-D127-4997-8C5B-85D2CE3E7A53}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ArcScriptQuestScripts", "projects\Quest2008.vcproj", "{1A080CA7-D19A-4129-972C-89E816E6DEC0}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ArcScriptMiscScripts", "projects\Misc2008.vcproj", "{495CDEBE-E216-485B-B2F1-2FC0BD9DAE7D}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LUAScripting", "projects\LUAScripting2008.vcproj", "{AEFCEECF-6839-4F1B-9317-70BF3EE09247}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{EE39B48B-C598-4AAF-9EF0-199402933EE5}.Debug|Win32.ActiveCfg = Debug|Win32
+		{EE39B48B-C598-4AAF-9EF0-199402933EE5}.Debug|Win32.Build.0 = Debug|Win32
+		{EE39B48B-C598-4AAF-9EF0-199402933EE5}.Release|Win32.ActiveCfg = Release|Win32
+		{EE39B48B-C598-4AAF-9EF0-199402933EE5}.Release|Win32.Build.0 = Release|Win32
+		{21CCA237-B55E-4882-B3E3-4A0321315CB3}.Debug|Win32.ActiveCfg = Debug|Win32
+		{21CCA237-B55E-4882-B3E3-4A0321315CB3}.Debug|Win32.Build.0 = Debug|Win32
+		{21CCA237-B55E-4882-B3E3-4A0321315CB3}.Release|Win32.ActiveCfg = Release|Win32
+		{21CCA237-B55E-4882-B3E3-4A0321315CB3}.Release|Win32.Build.0 = Release|Win32
+		{9F200BBC-57C3-4F0C-8BB5-F9053E4BB4B3}.Debug|Win32.ActiveCfg = Debug|Win32
+		{9F200BBC-57C3-4F0C-8BB5-F9053E4BB4B3}.Debug|Win32.Build.0 = Debug|Win32
+		{9F200BBC-57C3-4F0C-8BB5-F9053E4BB4B3}.Release|Win32.ActiveCfg = Release|Win32
+		{9F200BBC-57C3-4F0C-8BB5-F9053E4BB4B3}.Release|Win32.Build.0 = Release|Win32
+		{FF551ECC-D127-4997-8C5B-85D2CE3E7A53}.Debug|Win32.ActiveCfg = Debug|Win32
+		{FF551ECC-D127-4997-8C5B-85D2CE3E7A53}.Debug|Win32.Build.0 = Debug|Win32
+		{FF551ECC-D127-4997-8C5B-85D2CE3E7A53}.Release|Win32.ActiveCfg = Release|Win32
+		{FF551ECC-D127-4997-8C5B-85D2CE3E7A53}.Release|Win32.Build.0 = Release|Win32
+		{1A080CA7-D19A-4129-972C-89E816E6DEC0}.Debug|Win32.ActiveCfg = Debug|Win32
+		{1A080CA7-D19A-4129-972C-89E816E6DEC0}.Debug|Win32.Build.0 = Debug|Win32
+		{1A080CA7-D19A-4129-972C-89E816E6DEC0}.Release|Win32.ActiveCfg = Release|Win32
+		{1A080CA7-D19A-4129-972C-89E816E6DEC0}.Release|Win32.Build.0 = Release|Win32
+		{495CDEBE-E216-485B-B2F1-2FC0BD9DAE7D}.Debug|Win32.ActiveCfg = Debug|Win32
+		{495CDEBE-E216-485B-B2F1-2FC0BD9DAE7D}.Debug|Win32.Build.0 = Debug|Win32
+		{495CDEBE-E216-485B-B2F1-2FC0BD9DAE7D}.Release|Win32.ActiveCfg = Release|Win32
+		{495CDEBE-E216-485B-B2F1-2FC0BD9DAE7D}.Release|Win32.Build.0 = Release|Win32
+		{AEFCEECF-6839-4F1B-9317-70BF3EE09247}.Debug|Win32.ActiveCfg = Debug|Win32
+		{AEFCEECF-6839-4F1B-9317-70BF3EE09247}.Debug|Win32.Build.0 = Debug|Win32
+		{AEFCEECF-6839-4F1B-9317-70BF3EE09247}.Release|Win32.ActiveCfg = Release|Win32
+		{AEFCEECF-6839-4F1B-9317-70BF3EE09247}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
