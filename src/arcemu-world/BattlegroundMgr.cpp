@@ -1043,6 +1043,7 @@ void CBattleground::PortPlayer(Player * plr, bool skip_teleport /* = false*/)
 		return;
 	}
 
+	plr->FullHPMP();
 	plr->SetTeam(plr->m_bgTeam);
 	if ( plr->m_isGmInvisible == false )
 	{
