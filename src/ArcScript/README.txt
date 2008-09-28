@@ -25,19 +25,17 @@ these files to compile.
 
 2) Create a directory called ArcScripts inside your Ascent/src folder. 
 
-3) Check out this folder (http://mmoforge.org/svn/ArcScript/trunk) into the 
-newly created ArcScriptScripts folder.
 
 Windows:
-4) Now open up one of the Visual Studio solutions and set the build configuration
+3) Now open up one of the Visual Studio solutions and set the build configuration
 to Release. Then compile. All the scripts should compile properly.
 
 Linux:
-4) Open ascent\src\makefile.am and replace "scripts" with "ArcScriptScripts", like this:
+3) Open ascent\src\makefile.am and replace "scripts" with "ArcScriptScripts", like this:
 SUBDIRS = ascent-shared ascent-logonserver ascent-world ascent-voicechat ascent-realmserver ArcScriptScripts
 Then compile.
 
-5) Apply sql\ArcScriptplusplus_full.sql to your world database.
+4) Apply sql\ArcScript_full.sql to your world database.
 
 (Note: C++ "scripts" can *NOT* be hot swapped, meaning you must restart the server
 to use them).
