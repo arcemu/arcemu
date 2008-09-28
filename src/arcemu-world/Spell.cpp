@@ -3104,82 +3104,15 @@ uint8 Spell::CanCast(bool tolerate)
 			}
 		}
 
-		// check if spell is allowed while we have a battleground flag
-		/*Shady: 
-		1. We have 3 AuraInterruptFlags for Warsong Flags (AURA_INTERRUPT_ON_INVINCIBLE,AURA_INTERRUPT_ON_LEAVE_AREA,AURA_INTERRUPT_ON_MOUNTAURA_INTERRUPT_ON_MOUNT)
-		So we should implement all this 3 interruptions, instead of hackfixes.
-		2. As we can see AURA_INTERRUPT_ON_STEALTH doesn't included in DBC so if it blizzlike (flag drops if we r trying to stealth)
-		just add AURA_INTERRUPT_ON_STEALTH flag to WSG\EotS flag auras and check its implementation.
-		3. DropFlag() already called in RemoveAura()
-		4. DUDES, Think about how it should works, before commiting anything!
-		Result: commented.
-		if(p_caster->m_bgHasFlag)
+		// Arathi Basin opening spell, remove stealth, invisibility, etc. 
+		// hacky but haven't found a better way that works
+		if (p_caster->m_bg && GetProto()->Id == 21651)
 		{
-			switch(GetProto()->Id)
-			{
-				// stealth & bubble & ice block
-				case 498:
-				case 642:
-				case 1020:
-				case 1022:
- 				case 1784:
- 				case 1785:
- 				case 1786:
- 				case 1787:
- 				case 5215:
-				case 5573:
-				case 5599:
- 				case 6783:
- 				case 9913:
- 				case 1856:
- 				case 1857:
-				case 10278:
-				case 20580:
- 				case 26889:
-				case 45438:
- 				{
-					p_caster->RemoveAura( 23333 + (p_caster->GetTeam() * 2) );
-
-					if( p_caster->m_bg->GetType() == BATTLEGROUND_WARSUNG_GULCH )
-    					((WarsongGulch*)p_caster->m_bg)->DropFlag(p_caster);
-					//else if( p_caster->m_bg->GetType() == BATTLEGROUND_EYE_OF_THE_STORM )
-					//	((EyeOfTheStorm*)p_caster->m_bg)->DropFlag(p_caster);
-				}
-			}
-		}
-		*/
-
-		// Arathi's Flags take by stealthed --> Remove stealth
-		//Shady: we have ATTRIBUTESEX_NOT_BREAK_STEALTH for this purposes. All spells without this flag break stealth.
-		/*if(p_caster->m_bg && p_caster->IsStealth())
-		{
-			switch(GetProto()->Id)
-			{
-				// opening spell: arathi basin flags
-				case 21651:
-				{
-					p_caster->RemoveAura(p_caster->m_stealth);
-					p_caster->m_stealth = 0;
-				}
-			}
-		}*/
-
-		// check if BG Flags can take while bubbled
-		//Shady: is i blizzlike? not sure so i don't comment it, for now but TODO: find out the truth.
-		if(p_caster->HasAurasWithNameHash( SPELL_HASH_DIVINE_SHIELD ) || p_caster->HasAurasWithNameHash( SPELL_HASH_DIVINE_PROTECTION ))
-		{
-			switch(GetProto()->Id)
-			{
-				// opening spell: warsong/silverwing flag & arathi basin flags & EotS flag
-				case 21651:
-				case 23333:
-				case 23335:
-				case 34976:
-				{
-					return SPELL_FAILED_SPELL_UNAVAILABLE;
-					break;
-				}
-			}
+			p_caster->RemoveStealth();
+			p_caster->RemoveInvisibility();
+			p_caster->RemoveAllAuraByNameHash(SPELL_HASH_ICE_BLOCK);
+			p_caster->RemoveAllAuraByNameHash(SPELL_HASH_DIVINE_SHIELD);
+			p_caster->RemoveAllAuraByNameHash(SPELL_HASH_BLESSING_OF_PROTECTION);
 		}
 
 		//Check if spell allowed while out of stealth
