@@ -1604,10 +1604,11 @@ void Aura::EventPeriodicDamage(uint32 amount)
 	{
 		uint32 aproc = PROC_ON_ANY_HOSTILE_ACTION;
 		uint32 vproc = PROC_ON_ANY_HOSTILE_ACTION | PROC_ON_ANY_DAMAGE_VICTIM;
-		c->HandleProc(aproc, mtarget, sp, float2int32(res));
-		c->m_procCounter = 0;
+		int32 dmg =  float2int32(res);
 
-		mtarget->HandleProc(vproc,c,sp, float2int32(res));
+		c->HandleProc(aproc, mtarget, sp, dmg);
+		c->m_procCounter = 0;
+		mtarget->HandleProc(vproc, c, sp, dmg);
 		mtarget->m_procCounter = 0;
 	}
 
@@ -4475,13 +4476,15 @@ void Aura::SpellAuraModSchoolImmunity(bool apply)
 	{
 		//fixme me may be negative
 		Unit * c = GetUnitCaster();
-			if(c)
-			{
-				if(isAttackable(c,m_target))
-					SetNegative();
-				else SetPositive();
-			}else
-				SetPositive();
+		if(c)
+		{
+			if(isAttackable(c,m_target))
+				SetNegative();
+			else SetPositive();
+		}else
+			SetPositive();
+
+		sLog.outDebug("%s: value=%x", __FUNCTION__, mod->m_miscValue);
 		for(uint32 i = 0; i < 7; i++)
 		{
 			if(mod->m_miscValue & (1<<i))
@@ -6455,7 +6458,7 @@ void Aura::SpellAuraAddPctMod( bool apply )
 	int32 val = apply ? mod->m_amount : -mod->m_amount;
 	uint64 AffectedGroups = (uint64)GetSpellProto()->EffectSpellGroupRelation[mod->i] + ((uint64)GetSpellProto()->EffectSpellGroupRelation_high[mod->i] << 32);
 
-//	sLog.outString("%s AffectedGroups %I64x ,the smt type %u, val=%d",__FUNCTION__,AffectedGroups,mod->m_miscValue, val);
+//	sLog.outDebug("%s: AffectedGroups %I64x ,the smt type %u, val=%d",__FUNCTION__,AffectedGroups,mod->m_miscValue, val);
 	switch( mod->m_miscValue )//let's generate warnings for unknown types of modifiers
 	{
 	case SMT_CRITICAL:

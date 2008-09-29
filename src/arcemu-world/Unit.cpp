@@ -847,8 +847,9 @@ void Unit::GiveGroupXP(Unit *pVictim, Player *PlayerInGroup)
 	}*/
 }
 
-void Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, uint32 dmg, uint32 abs )
+uint32 Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, uint32 dmg, uint32 abs )
 {
+	uint32 resisted_dmg = 0;
 	++m_procCounter;
 	bool can_delete = !bProcInUse; //if this is a nested proc then we should have this set to TRUE by the father proc
 	bProcInUse = true; //locking the proc list
@@ -859,7 +860,7 @@ void Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, uint
 		/* something has proceed over 10 times in a loop :/ dump the spellids to the crashlog, as the crashdump will most likely be useless. */
 		// BURLEX FIX ME!
 		//OutputCrashLogLine("HandleProc %u SpellId %u (%s) %u", flag, spellId, sSpellStore.LookupString(sSpellStore.LookupEntry(spellId)->Name), m_procCounter);
-		return;
+		return 0;
 	}
 
 #if 0
@@ -1523,7 +1524,7 @@ void Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, uint
 						//find aura on self and get it's value
 						Aura *pa = this->FindAura( origId );
 						if( !pa || !this->GetMapMgr() )
-							return; //omg we have this proc on us and on second check we don't ? Return instead of continue since this seems to be a corupted object
+							return 0; //omg we have this proc on us and on second check we don't ? Return instead of continue since this seems to be a corupted object
 
 						//check if we jumped proctimes
 						if( pa->GetModAmount( 0 ) == 1 )
@@ -2007,11 +2008,11 @@ void Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, uint
 				case 31828:
 					{
 						//we should test is damage is from enviroment or not :S
-						ModUnsigned32Value(UNIT_FIELD_HEALTH,dmg/2);
+						resisted_dmg = dmg/2;
 						continue; //there is no visual for this ?
 					}break;
-					//paladin - sanctified judgement
-					case 31930:
+				//paladin - sanctified judgement
+				case 31930:
 					{
 						//!! not working since we use post even hook and seal disapears before event
 						if( CastingSpell == NULL )
@@ -2399,6 +2400,8 @@ void Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, uint
 	m_chargeSpellsInUse=false;
 	if(can_delete) //are we the upper level of nested procs ? If yes then we can remove the lock
 		bProcInUse = false;
+
+	return resisted_dmg;
 }
 
 //damage shield is a triggered spell by owner to atacker
@@ -3541,6 +3544,8 @@ else
 	}
 	if( !disable_proc && weapon_damage_type != OFFHAND )
 	{
+		uint32 resisted_dmg;
+
 		//damage shield must come before handleproc to not loose 1 charge : speel gets removed before last charge
 		if( realdamage > 0 || vproc & PROC_ON_BLOCK_VICTIM )
 		{
@@ -3551,8 +3556,14 @@ else
 		this->HandleProc(aproc,pVictim, ability,realdamage,abs); //maybe using dmg.resisted_damage is better sometimes but then if using godmode dmg is resisted instead of absorbed....bad
 		m_procCounter = 0;
 
-		pVictim->HandleProc(vproc,this, ability,realdamage,abs);
+		resisted_dmg = pVictim->HandleProc(vproc,this, ability,realdamage,abs);
 		pVictim->m_procCounter = 0;
+
+		if (resisted_dmg) {
+			dmg.resisted_damage+= resisted_dmg;
+			dmg.full_damage-= resisted_dmg;
+			realdamage-= resisted_dmg;
+		}
 	}
 //--------------------------spells triggering-----------------------------------------------
 	if(realdamage > 0 && ability == 0)
