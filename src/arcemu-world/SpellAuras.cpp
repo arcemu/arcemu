@@ -2457,7 +2457,7 @@ void Aura::SpellAuraDummy(bool apply)
 	case 41425: // Hypothermia(iceblock:D)
 		{
 			SetNegative();
-		}
+		}break;
 	case 31223:
 	case 31222:
 	case 31221:		// Rogue : Master of Subtlety
@@ -2477,6 +2477,17 @@ void Aura::SpellAuraDummy(bool apply)
 				pTarget->m_outStealthDamageBonusPct -= mod->m_amount;
 				pTarget->m_outStealthDamageBonusPeriod = 6;			// 6 seconds
 				pTarget->m_outStealthDamageBonusTimer = 0;			// reset it
+			}
+		}break;
+	case 17804: // Warlock: Soul Siphon
+	case 17805:
+		{
+			Unit *caster = GetUnitCaster();
+			if(caster) {
+				if( apply )
+					caster->m_soulSiphon.amt+= mod->m_amount;
+				else
+					caster->m_soulSiphon.amt-= mod->m_amount;
 			}
 		}break;
 	}
@@ -4818,6 +4829,54 @@ void Aura::EventPeriodicLeech(uint32 amount)
 		amount += bonus;
 
 		uint32 Amount = (uint32)min( amount, m_target->GetUInt32Value( UNIT_FIELD_HEALTH ) );
+
+		// Apply bonus from [Warlock] Soul Siphon
+		if (m_caster->m_soulSiphon.amt) {
+			// Use std:map to prevent counting duplicate auras (stacked ones, from the same unit)
+			std::map<uint64, std::set<uint32> *> auras;
+			std::map<uint64, std::set<uint32> *>::iterator itx, itx2;
+			uint32 bonus;
+			int32 pct;
+			int32 count=0;
+
+			auras.clear();
+			for(uint32 x=MAX_POSITIVE_AURAS;x<MAX_AURAS;x++) {
+				if(m_target->m_auras[x]) {
+					Aura *aura = m_target->m_auras[x];
+					if (aura->GetSpellProto()->SpellFamilyName == 5 &&
+						aura->GetSpellProto()->SpellGroupType & 0x31A80088602) {
+						itx = auras.find(aura->GetCasterGUID());
+						if (itx == auras.end()) {
+							std::set<uint32> *ids = new std::set<uint32>;
+							
+							auras.insert(make_pair(aura->GetCasterGUID(),ids));
+							itx = auras.find(aura->GetCasterGUID());
+						}
+
+						std::set<uint32> *ids = itx->second;
+						if (ids->find(aura->GetSpellId()) == ids->end()) {
+							ids->insert(aura->GetSpellId());
+						}
+		            }
+				}
+			}
+
+			if (auras.size()) {
+				itx = auras.begin();
+				while (itx != auras.end()) {
+					itx2 = itx++;
+					count+= itx2->second->size();
+					delete itx2->second;
+				}
+			}
+
+			pct = count * m_caster->m_soulSiphon.amt;
+			if (pct > m_caster->m_soulSiphon.max)
+				pct = m_caster->m_soulSiphon.max;
+			bonus = (Amount * pct) / 100;
+			Amount+= bonus;
+		}
+
 		uint32 newHealth = m_caster->GetUInt32Value(UNIT_FIELD_HEALTH) + Amount ;
 
 		uint32 mh = m_caster->GetUInt32Value(UNIT_FIELD_MAXHEALTH);
@@ -6848,6 +6907,16 @@ void Aura::SpellAuraOverrideClassScripts(bool apply)
 			{
 				//this shoul actually add a new functionality to the spell and not override it. There is a lot to decode and to be done here
 			}break;*/
+		case 4992: // Warlock: Soul Siphon
+		case 4993:
+			{
+				if(m_target) {
+					if( apply )
+						m_target->m_soulSiphon.max+= mod->m_amount;
+					else
+						m_target->m_soulSiphon.max-= mod->m_amount;
+				}
+			}break;
 	default:
 		sLog.outError("Unknown override report to devs: %u", mod->m_miscValue);
 	};

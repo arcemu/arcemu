@@ -331,6 +331,8 @@ Unit::Unit()
 	trigger_on_stun_chance = 100;
 	trigger_on_stun_victim = 0;
 	trigger_on_stun_chance_victim = 100;
+	m_soulSiphon.amt = 0;
+	m_soulSiphon.max = 0;
 	ModelHalfSize = 1.0f; //worst case unit size. (Should be overwritten)
 }
 

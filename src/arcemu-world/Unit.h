@@ -1242,7 +1242,12 @@ public:
 	//solo target auras
 	uint32 polySpell;
 	uint32 m_special_state; //flags for special states (stunned,rooted etc)
-	
+
+	struct {
+		int32 amt;
+		int32 max;
+	} m_soulSiphon;
+
 //	uint32 fearSpell;
 	uint32 m_cTimer;
 	void EventUpdateFlag();
