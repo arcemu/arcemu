@@ -10758,12 +10758,6 @@ void ApplyNormalFixes()
 				sp->EffectApplyAuraName[2] == 7 )
 				sp->MechanicsType = MECHANIC_FLEEING;
 		
-			//Set Snare spells mech
-			if( sp->EffectApplyAuraName[0] == SPELL_AURA_MOD_DECREASE_SPEED || 
-				sp->EffectApplyAuraName[1] == SPELL_AURA_MOD_DECREASE_SPEED ||
-				sp->EffectApplyAuraName[2] == SPELL_AURA_MOD_DECREASE_SPEED )
-				sp->MechanicsType = MECHANIC_ENSNARED;
-
 			//Set Interrupted spells mech
 			if( sp->Effect[0] == SPELL_EFFECT_INTERRUPT_CAST || 
 				sp->Effect[1] == SPELL_EFFECT_INTERRUPT_CAST ||
