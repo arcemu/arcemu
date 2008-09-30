@@ -4843,19 +4843,23 @@ void Aura::EventPeriodicLeech(uint32 amount)
 			for(uint32 x=MAX_POSITIVE_AURAS;x<MAX_AURAS;x++) {
 				if(m_target->m_auras[x]) {
 					Aura *aura = m_target->m_auras[x];
-					if (aura->GetSpellProto()->SpellFamilyName == 5 &&
-						aura->GetSpellProto()->SpellGroupType & 0x31A80088602) {
-						itx = auras.find(aura->GetCasterGUID());
-						if (itx == auras.end()) {
-							std::set<uint32> *ids = new std::set<uint32>;
-							
-							auras.insert(make_pair(aura->GetCasterGUID(),ids));
-							itx = auras.find(aura->GetCasterGUID());
-						}
+					if (aura->GetSpellProto()->SpellFamilyName == 5) {
+						skilllinespell *sk;
 
-						std::set<uint32> *ids = itx->second;
-						if (ids->find(aura->GetSpellId()) == ids->end()) {
-							ids->insert(aura->GetSpellId());
+						sk = objmgr.GetSpellSkill(aura->GetSpellId());
+						if(sk && sk->skilline == SKILL_AFFLICTION) {
+							itx = auras.find(aura->GetCasterGUID());
+							if (itx == auras.end()) {
+								std::set<uint32> *ids = new std::set<uint32>;
+
+								auras.insert(make_pair(aura->GetCasterGUID(),ids));
+								itx = auras.find(aura->GetCasterGUID());
+							}
+
+							std::set<uint32> *ids = itx->second;
+							if (ids->find(aura->GetSpellId()) == ids->end()) {
+								ids->insert(aura->GetSpellId());
+							}
 						}
 		            }
 				}
@@ -7896,8 +7900,8 @@ void Aura::SpellAuraAddFlatModifier(bool apply)
 {
 	int32 val = apply?mod->m_amount:-mod->m_amount;
 	uint64 AffectedGroups = (uint64)GetSpellProto()->EffectSpellGroupRelation[mod->i] + ((uint64)GetSpellProto()->EffectSpellGroupRelation_high[mod->i] << 32);
-//printf("!!! the AffectedGroups %u ,the smt type %u,\n",AffectedGroups,mod->m_miscValue);
 
+//	sLog.outDebug("%s: AffectedGroups %I64x smt type %u\n", __FUNCTION__, AffectedGroups, mod->m_miscValue);
 	switch (mod->m_miscValue)//let's generate warnings for unknown types of modifiers
 	{
 	case SMT_CRITICAL:

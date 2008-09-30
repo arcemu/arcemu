@@ -5160,7 +5160,7 @@ void Spell::SpellEffectSummonTotem(uint32 i) // Summon Totem
 
 void Spell::SpellEffectSelfResurrect(uint32 i)
 {
-	if(!p_caster)   
+	if(!p_caster || !unitTarget)
 		return;
 	if(playerTarget->isAlive())
 		return;
@@ -5182,8 +5182,14 @@ void Spell::SpellEffectSelfResurrect(uint32 i)
 		}break;
 	case 21169: //Reincarnation. Ressurect with 20% health and mana
 		{
-			health = uint32(unitTarget->GetUInt32Value(UNIT_FIELD_MAXHEALTH)*0.20);
-			mana = uint32(unitTarget->GetUInt32Value(UNIT_FIELD_MAXPOWER1)*0.20);
+			int32 amt = 20;
+			if( GetProto()->SpellGroupType)
+			{
+				SM_FIValue(unitTarget->SM_FSPELL_VALUE,&amt,GetProto()->SpellGroupType);
+				SM_PIValue(unitTarget->SM_PSPELL_VALUE,&amt,GetProto()->SpellGroupType);
+			}
+			health = uint32((unitTarget->GetUInt32Value(UNIT_FIELD_MAXHEALTH)*amt)/100);
+			mana = uint32((unitTarget->GetUInt32Value(UNIT_FIELD_MAXPOWER1)*amt)/100);
 		}
 		break;
 	default:
