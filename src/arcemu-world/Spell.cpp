@@ -1690,6 +1690,10 @@ void Spell::AddTime(uint32 type)
 		}
 		if(m_spellState==SPELL_STATE_PREPARING)
 		{
+			// no pushback for some spells
+			if ((GetProto()->InterruptFlags & CAST_INTERRUPT_PUSHBACK) == 0)
+				return;
+
 			int32 delay = m_castTime/4;
 			m_timer+=delay;
 			if(m_timer>m_castTime)

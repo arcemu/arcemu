@@ -325,7 +325,7 @@ enum CastInterruptFlags
 {
     CAST_INTERRUPT_NULL            = 0x0,
     CAST_INTERRUPT_ON_SILENCE      = 0x1,
-    CAST_INTERRUPT_ON_SLEEP        = 0x2, // could be wrong
+    CAST_INTERRUPT_PUSHBACK        = 0x2, // seems to be whether or not the spell is pushed back on dmg
     CAST_INTERRUPT_ON_STUNNED      = 0x4, // could be wrong
     CAST_INTERRUPT_ON_MOVEMENT     = 0x8,
     CAST_INTERRUPT_ON_DAMAGE_TAKEN = 0x10
