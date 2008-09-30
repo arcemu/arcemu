@@ -204,3 +204,7 @@ INSERT INTO spellfixes(spellId, groupRelation0) VALUES(33888, 0x10000000D0) ON D
 INSERT INTO spellfixes(spellId, groupRelation0) VALUES(33889, 0x10000000D0) ON DUPLICATE KEY UPDATE groupRelation0=VALUES(groupRelation0);
 INSERT INTO spellfixes(spellId, groupRelation0) VALUES(33890, 0x10000000D0) ON DUPLICATE KEY UPDATE groupRelation0=VALUES(groupRelation0);
 
+-- [Warlock] Demonic Resilience
+INSERT INTO spellfixes(spellId, groupRelation1) VALUES(30319, 0x400000000000) ON DUPLICATE KEY UPDATE groupRelation1=VALUES(groupRelation1);
+INSERT INTO spellfixes(spellId, groupRelation1) VALUES(30320, 0x400000000000) ON DUPLICATE KEY UPDATE groupRelation1=VALUES(groupRelation1);
+INSERT INTO spellfixes(spellId, groupRelation1) VALUES(30321, 0x400000000000) ON DUPLICATE KEY UPDATE groupRelation1=VALUES(groupRelation1);
