@@ -105,6 +105,8 @@ void Arena::OnAddPlayer(Player * plr)
 	/* Set FFA PvP Flag */
 	if(!plr->HasFlag(PLAYER_FLAGS, PLAYER_FLAG_FREE_FOR_ALL_PVP))
 		plr->SetFlag(PLAYER_FLAGS, PLAYER_FLAG_FREE_FOR_ALL_PVP);
+
+	m_playersAlive.insert(plr->GetLowGUID());
 }
 
 void Arena::OnRemovePlayer(Player * plr)
@@ -334,7 +336,6 @@ void Arena::OnStart()
 			Player *plr = *itr;
 			plr->RemoveAura(ARENA_PREPARATION);
 			m_players2[i].insert(plr->GetLowGUID());
-			m_playersAlive.insert(plr->GetLowGUID());
 
 			/* update arena team stats */
 			if(rated_match && plr->m_arenaTeams[m_arenateamtype] != NULL)
