@@ -159,12 +159,18 @@ fi
 
 AC_ARG_ENABLE(optimize,
      AC_HELP_STRING([--enable-optimize],[enable code optimization]),
-     [ if test "x$enable_optimize" = "xyes" ; then
-           CFLAGS="$CFLAGS -O2 -fomit-frame-pointer -pipe"
-           CXXFLAGS="$CXXFLAGS -O2 -fomit-frame-pointer -pipe"
-       fi
-     ],
+	 [enable_optimize=$enableval],
+	 [enable_optimize=no]
 )
+
+if test "x$enable_optimize" = "xyes" ; then
+	CFLAGS="$CFLAGS -O2 -pipe"
+	CXXFLAGS="$CXXFLAGS -O2 -pipe"
+	if test "x$enable_debug" != "xyes" ; then
+		CFLAGS="$CFLAGS -fomit-frame-pointer"
+		CXXFLAGS="$CXXFLAGS -fomit-frame-pointer"
+	fi
+fi
 
 AC_ARG_ENABLE(profiling,
      AC_HELP_STRING([--enable-profiling],[build for profiling using gprof.]),

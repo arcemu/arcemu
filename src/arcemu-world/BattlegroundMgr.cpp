@@ -1183,6 +1183,7 @@ CBattleground * CBattlegroundManager::CreateInstance(uint32 Type, uint32 LevelGr
 		case BATTLEGROUND_WARSUNG_GULCH: n = 0; break;
 		case BATTLEGROUND_ARATHI_BASIN: n = 1; break;
 		case BATTLEGROUND_EYE_OF_THE_STORM: n = 2; break;
+		default: n = 0; break;
 	}
 	if (((tm.tm_yday / 7) % 3) == n)
 	{
