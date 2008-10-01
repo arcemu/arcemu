@@ -2968,10 +2968,10 @@ void AIInterface::_UpdateMovement(uint32 p_time)
 								target_land_z = z;
 						}
 					}
-				}
 
-				if ( z > m_Unit->GetMapMgr()->GetWaterHeight( m_nextPosX, m_nextPosY ) && target_land_z != 0.0f )
-					z = target_land_z;
+					if ( z > m_Unit->GetMapMgr()->GetWaterHeight( m_nextPosX, m_nextPosY ) && target_land_z != 0.0f )
+						z = target_land_z;
+				}
 #endif
 
 				m_Unit->SetPosition(x, y, z, m_Unit->GetOrientation());
