@@ -3126,7 +3126,7 @@ uint8 Spell::CanCast(bool tolerate)
 		}
 
 		// item spell checks
-		if(i_caster)
+		if(i_caster && i_caster->GetProto()) //Let's just make sure there's something here, so we don't crash ;)
 		{
 			if( i_caster->GetProto()->ZoneNameID && i_caster->GetProto()->ZoneNameID != i_caster->GetZoneId() )
 				return SPELL_FAILED_NOT_HERE;
@@ -3381,6 +3381,7 @@ uint8 Spell::CanCast(bool tolerate)
 		if( u_caster && m_caster->GetMapMgr() && m_targets.m_unitTarget )
 		{
 			Unit * utarget;
+
 			utarget = m_caster->GetMapMgr()->GetUnit( m_targets.m_unitTarget );
 			if( utarget && utarget->IsPlayer() && static_cast< Player* >( utarget )->m_isMoving )
 				{

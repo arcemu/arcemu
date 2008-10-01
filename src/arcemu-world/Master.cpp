@@ -101,6 +101,39 @@ struct Addr
         static const char* default_realm_config_file = CONFDIR "/arcemu-realms.conf";
 #endif
 
+const char banner[] = ""
+"                                                \n"
+"                     ``````                     \n"
+"    ArcEmu!        `/o/::-:/-                   \n" 
+"                   oho/-.-:yN-                  \n" 
+"                    os+/-.:::                   \n" 
+"                    :ysyoo+:`                   \n" 
+"	                 `ohdys/.                    \n" 
+"                     oyho/-`   ``               \n" 
+"                    `shyo+:./ssmdsyo:`          \n" 
+"                    .shss+:yNMMNNMNmms.         \n" 
+"                    :ysss+:mNMMMMNNmmds.        \n" 
+"                `-//sssoo/:NMNMMMNMNNdy-        \n" 
+"    -`/`       `omhyyhyyyshNMMNNNMMMNmy:        \n" 
+"    :/::-`     `sdmdmmNMNMMMMMMNMNNNNms-        \n" 
+"     /+++/-.....shdmmNMMNMMMMMMMMMNNNd+         \n"
+"     ./+oshyhhhddmhdmNMMMMMMMMMMMMNNds.         \n" 
+"       `:/:.`````.:+ymmNMMNMMMNMMNNd/           \n" 
+"                     -+shmNNMMMNmhy/            \n" 
+"                          `..-ods:.             \n"
+"                               o:.`             \n"
+"                               :-.              \n"
+"                              `/-...            \n" 
+"    Introducing the emu!     --``-/:`           \n" 
+"                          .:/+:-.-::.           \n" 
+"                          `.-///:-.`            \n"
+" Website: http://www.ArcEmu.org	     		 \n"
+" Forums: http://www.ArcEmu.org/forums/          \n"
+" Credits: http://www.ArcEmu.org/credits         \n"
+" SVN: http://arcemu.info/svn/                   \n"
+" Have fun!                                      \n"
+"\n";
+
 bool bServerShutdown = false;
 bool StartConsoleListener();
 void CloseConsoleListener();
@@ -176,6 +209,7 @@ bool Master::Run(int argc, char ** argv)
 #ifdef REPACK
 	printf("\nRepack: %s | Author: %s | %s\n", REPACK, REPACK_AUTHOR, REPACK_WEBSITE);
 #endif
+	Log.Color(TBLUE);
 	printf("\nCopyright (C) 2008 ArcEmu. http://www.arcemu.org/\n");
 	printf("This program is free software: you can redistribute it and/or modify\n");
 	printf("it under the terms of the GNU Affero General Public License as published by\n");
