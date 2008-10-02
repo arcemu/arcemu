@@ -2295,7 +2295,7 @@ void Aura::SpellAuraDummy(bool apply)
 		{
 			Unit *caster = GetUnitCaster();
 			if(caster && caster->IsPlayer())
-				static_cast< Player* >(caster)->SetTriggerStunOrImmobilize(12494,mod->m_amount, false);
+				static_cast< Player* >(caster)->SetTriggerChill(12494,mod->m_amount, false);
 		}break;
 	//mage Magic Absorption
 	case 29441:
@@ -3754,6 +3754,15 @@ void Aura::SpellAuraModRoot(bool apply)
 		if(m_target->m_rooted == 1)
 			m_target->Root();
 
+		//warrior talent - second wind triggers on stun and immobilize. This is not used as proc to be triggered always !
+		Unit *caster = GetUnitCaster();
+		if( caster && m_target )
+			static_cast<Unit*>(caster)->EventStunOrImmobilize( m_target );
+		if( m_target && caster )
+			static_cast<Unit*>(m_target)->EventStunOrImmobilize( caster, true );
+		if (m_target->isCasting())
+			m_target->CancelSpell(NULL); //cancel spells.
+
 		/* -Supalosa- TODO: Mobs will attack nearest enemy in range on aggro list when rooted. */
 	}
 	else if( (m_flags & (1 << mod->i)) == 0 ) //add these checks to mods where imunity can cancel only 1 mod and not whole spell
@@ -4003,9 +4012,9 @@ void Aura::SpellAuraModDecreaseSpeed(bool apply)
 			//yes we are freezing the bastard, so can we proc anything on this ?
 			Unit *caster = GetUnitCaster();
 			if( caster && caster->IsPlayer() && m_target )
-				static_cast<Unit*>(caster)->EventStunOrImmobilize( m_target );
+				static_cast<Unit*>(caster)->EventChill( m_target );
 			if( m_target && m_target->IsPlayer() && caster )
-				static_cast<Unit*>(m_target)->EventStunOrImmobilize( caster, true );
+				static_cast<Unit*>(m_target)->EventChill( caster, true );
 		}
 		m_target->speedReductionMap.insert(make_pair(m_spellProto->Id, mod->m_amount));
 		//m_target->m_slowdown=this;
@@ -4040,9 +4049,9 @@ void Aura::UpdateAuraModDecreaseSpeed()
 		//yes we are freezing the bastard, so can we proc anything on this ?
 		Unit *caster = GetUnitCaster();
 		if( caster && caster->IsPlayer() && m_target )
-			static_cast<Unit*>(caster)->EventStunOrImmobilize( m_target );
+			static_cast<Unit*>(caster)->EventChill( m_target );
 		if( m_target && m_target->IsPlayer() && caster )
-			static_cast<Unit*>(m_target)->EventStunOrImmobilize( caster, true );
+			static_cast<Unit*>(m_target)->EventChill( caster, true );
 	}
 }
 
@@ -5502,7 +5511,7 @@ void Aura::SpellAuraSchoolAbsorb(bool apply)
 		{
 			//This will fix talents that affects damage absorved.
 			int flat = 0;
-			SM_FIValue( plr->SM_FSPELL_VALUE, &flat, GetSpellProto()->SpellGroupType );
+			SM_FIValue( plr->SM_FMiscEffect, &flat, GetSpellProto()->SpellGroupType );
 			val += float2int32( float( val * flat ) / 100.0f );
 
 			//For spells Affected by Bonus Healing we use Dspell_coef_override.
@@ -6028,8 +6037,8 @@ void Aura::EventPeriodicEnergizeVariable( uint32 amount, uint32 type )
 		case SPELL_HASH_ASPECT_OF_THE_VIPER:
 			float regen, manaPct;
 			// http://www.wowwiki.com/Aspect_of_the_Viper
-			// MP5Viper = Intellect × 22/35 × ( 0.9 - Manacurrent / Manamax ) + Intellect × 0.11 -- by wowwiki
-			// MP5Viper = Intellect × ( 0.55 - 22/35 × ( Manacurrent / Manamax - 0.2 ) -- by emsy... 55 is stored in DBC, maybe blizz changes it in future
+			// MP5Viper = Intellect  22/35  ( 0.9 - Manacurrent / Manamax ) + Intellect  0.11 -- by wowwiki
+			// MP5Viper = Intellect  ( 0.55 - 22/35  ( Manacurrent / Manamax - 0.2 ) -- by emsy... 55 is stored in DBC, maybe blizz changes it in future
 			// We're including also the Effect[1]:Dummy (35% of player's level) from the AotV in this
 			//   it's missing some values in dbc plus it saves one event this way
 							
@@ -6573,8 +6582,8 @@ void Aura::SpellAuraAddPctMod( bool apply )
 		SendModifierLog( &m_target->SM_PDamageBonus, val, AffectedGroups, mod->m_miscValue, true );
 		break;
 
-	case SMT_SPELL_VALUE:
-		SendModifierLog( &m_target->SM_PSPELL_VALUE, val, AffectedGroups, mod->m_miscValue, true );
+	case SMT_MISC_EFFECT:
+		SendModifierLog( &m_target->SM_PMiscEffect, val, AffectedGroups, mod->m_miscValue, true );
 		break;
 
 	case SMT_PENALTY:
@@ -7945,10 +7954,10 @@ void Aura::SpellAuraAddFlatModifier(bool apply)
 		SendModifierLog(&m_target->SM_FEffectBonus,val,AffectedGroups,mod->m_miscValue,true);
 		break;
 
-	case SMT_SPELL_VALUE:
+	case SMT_MISC_EFFECT:
 		if(GetSpellProto()->spellIconID==457) AffectedGroups=1;
 		if(GetSpellProto()->spellIconID==86) AffectedGroups=256;
-		SendModifierLog(&m_target->SM_FSPELL_VALUE,val,AffectedGroups,mod->m_miscValue);
+		SendModifierLog(&m_target->SM_FMiscEffect,val,AffectedGroups,mod->m_miscValue);
 		break;
 
 	case SMT_HITCHANCE:

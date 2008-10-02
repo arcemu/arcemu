@@ -58,8 +58,14 @@ const static CreateBattlegroundFunc BGCFuncs[BATTLEGROUND_NUM_TYPES] = {
 
 CBattlegroundManager::CBattlegroundManager() : EventableObject()
 {
+	int i;
+
 	m_maxBattlegroundId = 0;
 	sEventMgr.AddEvent(this, &CBattlegroundManager::EventQueueUpdate, EVENT_BATTLEGROUND_QUEUE_UPDATE, 15000, 0,0);
+
+	for (i=0; i<BATTLEGROUND_NUM_TYPES; i++) {
+		m_instances[i].clear();
+	}
 }
 
 CBattlegroundManager::~CBattlegroundManager()

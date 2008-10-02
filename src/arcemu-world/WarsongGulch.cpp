@@ -27,11 +27,21 @@ static int extraWinHonorTable[8]		= {  0,  5,  8, 14, 23, 38, 40, 40 };
 
 WarsongGulch::WarsongGulch(MapMgr * mgr, uint32 id, uint32 lgroup, uint32 t) : CBattleground(mgr, id, lgroup, t)
 {
+	int i;
+
+	for (i=0; i<2; i++) {
+		m_players[i].clear();
+		m_pendPlayers[i].clear();
+	}
+	m_worldStates.clear();
+	m_pvpData.clear();
+	m_resurrectMap.clear();
+
 	m_flagHolders[0] = m_flagHolders[1] = 0;
 	m_lgroup = lgroup;
 	
 	/* create the buffs */
-	for(int i = 0; i < 6; ++i)
+	for(i = 0; i < 6; ++i)
 		SpawnBuff(i);
 
 	/* take note: these are swapped around for performance bonus */
@@ -56,7 +66,7 @@ WarsongGulch::WarsongGulch(MapMgr * mgr, uint32 id, uint32 lgroup, uint32 t) : C
 	if(!m_dropFlags[0]->CreateFromProto(179786, 489, 0, 0, 0, 0))
 		Log.Warning("WarsongGulch", "Could not create dropped flag 0");
 
-	for(int i = 0; i < 2; ++i)
+	for(i = 0; i < 2; ++i)
 	{
 		m_dropFlags[i]->SetUInt32Value(GAMEOBJECT_DYN_FLAGS, 1);
 		m_dropFlags[i]->SetFloatValue(OBJECT_FIELD_SCALE_X, 2.5f);

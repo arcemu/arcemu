@@ -154,6 +154,11 @@ Object::Object() : m_position(0,0,0,0), m_spawnLocation(0,0,0,0)
 
 	m_faction = dbcFactionTemplate.LookupRow( 0 );
 	m_factionDBC = dbcFaction.LookupRow( 0 );
+
+	m_objectsInRange.clear();
+	m_inRangePlayers.clear();
+	m_oppFactsInRange.clear();
+	m_sameFactsInRange.clear();
 }
 
 Object::~Object( )

@@ -9364,7 +9364,7 @@ void Apply112SpellFixes()
 	// Spell 11175 Group Relation (Permafrost Rank 1)
 	sp = dbcSpell.LookupEntryForced(11175);
 	if(sp != NULL) {
-		sp->EffectMiscValue[1] = SMT_SPELL_VALUE;
+		sp->EffectMiscValue[1] = SMT_MISC_EFFECT;
 	}
 
 	// Spell 11687 Proc Chance (Life Tap Rank 4)
@@ -9400,13 +9400,13 @@ void Apply112SpellFixes()
 	// Spell 12569 Group Relation (Permafrost Rank 2)
 	sp = dbcSpell.LookupEntryForced(12569);
 	if(sp != NULL) {
-		sp->EffectMiscValue[1] = SMT_SPELL_VALUE;
+		sp->EffectMiscValue[1] = SMT_MISC_EFFECT;
 	}
 
 	// Spell 12571 Group Relation (Permafrost Rank 3)
 	sp = dbcSpell.LookupEntryForced(12571);
 	if(sp != NULL) {
-		sp->EffectMiscValue[1] = SMT_SPELL_VALUE;
+		sp->EffectMiscValue[1] = SMT_MISC_EFFECT;
 	}
 
 	// Spell 23689 Proc Chance (Darkmoon Card: Heroism)
@@ -12201,12 +12201,12 @@ void ApplyNormalFixes()
 		sp = dbcSpell.LookupEntryForced( 31869 );
 		if( sp != NULL )
 		{
-			sp->EffectMiscValue[0] = SMT_SPELL_VALUE;
+			sp->EffectMiscValue[0] = SMT_MISC_EFFECT;
 		}
 		sp = dbcSpell.LookupEntryForced( 31870 );
 		if( sp != NULL )
 		{
-			sp->EffectMiscValue[0] = SMT_SPELL_VALUE;
+			sp->EffectMiscValue[0] = SMT_MISC_EFFECT;
 		}
 		//Paladin - Improved Lay on Hands
 		sp = dbcSpell.LookupEntryForced( 20234 );
@@ -12489,12 +12489,12 @@ void ApplyNormalFixes()
 		sp = dbcSpell.LookupEntryForced( 19559 );
 		if( sp != NULL )
 		{
-			sp->EffectMiscValue[0] = SMT_SPELL_VALUE;
+			sp->EffectMiscValue[0] = SMT_MISC_EFFECT;
 		}
 		sp = dbcSpell.LookupEntryForced( 19560 );
 		if( sp != NULL )
 		{
-			sp->EffectMiscValue[0] = SMT_SPELL_VALUE;
+			sp->EffectMiscValue[0] = SMT_MISC_EFFECT;
 		}
 		sp = dbcSpell.LookupEntryForced( 5131 );
 		if( sp != NULL )
@@ -12577,27 +12577,27 @@ void ApplyNormalFixes()
 		sp = dbcSpell.LookupEntryForced( 13975 ); 
 		if( sp != NULL )
 		{
-			sp->EffectMiscValue[0] = SMT_SPELL_VALUE;
+			sp->EffectMiscValue[0] = SMT_MISC_EFFECT;
 		}
 		sp = dbcSpell.LookupEntryForced( 14062 ); 
 		if( sp != NULL )
 		{
-			sp->EffectMiscValue[0] = SMT_SPELL_VALUE;
+			sp->EffectMiscValue[0] = SMT_MISC_EFFECT;
 		}
 		sp = dbcSpell.LookupEntryForced( 14063 ); 
 		if( sp != NULL )
 		{
-			sp->EffectMiscValue[0] = SMT_SPELL_VALUE;
+			sp->EffectMiscValue[0] = SMT_MISC_EFFECT;
 		}
 		sp = dbcSpell.LookupEntryForced( 14064 ); 
 		if( sp != NULL )
 		{
-			sp->EffectMiscValue[0] = SMT_SPELL_VALUE;
+			sp->EffectMiscValue[0] = SMT_MISC_EFFECT;
 		}
 		sp = dbcSpell.LookupEntryForced( 14065 ); 
 		if( sp != NULL )
 		{
-			sp->EffectMiscValue[0] = SMT_SPELL_VALUE;
+			sp->EffectMiscValue[0] = SMT_MISC_EFFECT;
 		}
 
 		//rogue - Vanish : Second Trigger Spell
@@ -12638,7 +12638,7 @@ void ApplyNormalFixes()
 		sp = dbcSpell.LookupEntryForced( 36563 ); 
 		if( sp != NULL )
 		{
-			sp->EffectMiscValue[2] = SMT_SPELL_VALUE;
+			sp->EffectMiscValue[2] = SMT_MISC_EFFECT;
 //			sp->EffectTriggerSpell[1] = 36554;
 //			sp->EffectTriggerSpell[2] = 44373;
 //			sp->procFlags = PROC_ON_CAST_SPELL;	
@@ -13049,31 +13049,31 @@ void ApplyNormalFixes()
 		if( sp != NULL )
 		{
 			sp->EffectApplyAuraName[0] = SPELL_AURA_ADD_PCT_MODIFIER;
-			sp->EffectMiscValue[0] = SMT_SPELL_VALUE;
+			sp->EffectMiscValue[0] = SMT_MISC_EFFECT;
 		}
 		sp = dbcSpell.LookupEntryForced( 14525 );
 		if( sp != NULL )
 		{
 			sp->EffectApplyAuraName[0] = SPELL_AURA_ADD_PCT_MODIFIER;
-			sp->EffectMiscValue[0] = SMT_SPELL_VALUE;
+			sp->EffectMiscValue[0] = SMT_MISC_EFFECT;
 		}
 		sp = dbcSpell.LookupEntryForced( 14526 );
 		if( sp != NULL )
 		{
 			sp->EffectApplyAuraName[0] = SPELL_AURA_ADD_PCT_MODIFIER;
-			sp->EffectMiscValue[0] = SMT_SPELL_VALUE;
+			sp->EffectMiscValue[0] = SMT_MISC_EFFECT;
 		}
 		sp = dbcSpell.LookupEntryForced( 14527 );
 		if( sp != NULL )
 		{
 			sp->EffectApplyAuraName[0] = SPELL_AURA_ADD_PCT_MODIFIER;
-			sp->EffectMiscValue[0] = SMT_SPELL_VALUE;
+			sp->EffectMiscValue[0] = SMT_MISC_EFFECT;
 		}
 		sp = dbcSpell.LookupEntryForced( 14528 );
 		if( sp != NULL )
 		{
 			sp->EffectApplyAuraName[0] = SPELL_AURA_ADD_PCT_MODIFIER;
-			sp->EffectMiscValue[0] = SMT_SPELL_VALUE;
+			sp->EffectMiscValue[0] = SMT_MISC_EFFECT;
 		}
 
 	#ifdef NEW_PROCFLAGS
@@ -13331,15 +13331,15 @@ void ApplyNormalFixes()
 		if( sp != NULL ){
 			sp->EffectApplyAuraName[0]=SPELL_AURA_ADD_PCT_MODIFIER;
 			sp->EffectApplyAuraName[1]=SPELL_AURA_ADD_PCT_MODIFIER;
-			sp->EffectMiscValue[0] = SMT_SPELL_VALUE;
-			sp->EffectMiscValue[1] = SMT_SPELL_VALUE;
+			sp->EffectMiscValue[0] = SMT_MISC_EFFECT;
+			sp->EffectMiscValue[1] = SMT_MISC_EFFECT;
 		}
 		sp = dbcSpell.LookupEntryForced( 29192 ); 
 		if( sp != NULL ){
 			sp->EffectApplyAuraName[0]=SPELL_AURA_ADD_PCT_MODIFIER;
 			sp->EffectApplyAuraName[1]=SPELL_AURA_ADD_PCT_MODIFIER;
-			sp->EffectMiscValue[0] = SMT_SPELL_VALUE;
-			sp->EffectMiscValue[1] = SMT_SPELL_VALUE;
+			sp->EffectMiscValue[0] = SMT_MISC_EFFECT;
+			sp->EffectMiscValue[1] = SMT_MISC_EFFECT;
 		}
 
 		// Shaman - Improved Fire Totems
@@ -13596,13 +13596,13 @@ void ApplyNormalFixes()
 		if( sp != NULL )
 		{
 			sp->EffectApplyAuraName[0] = SPELL_AURA_ADD_PCT_MODIFIER;
-			sp->EffectMiscValue[0] = SMT_SPELL_VALUE;
+			sp->EffectMiscValue[0] = SMT_MISC_EFFECT;
 		}
 		sp = dbcSpell.LookupEntryForced( 6085 );
 		if( sp != NULL )
 		{
 			sp->EffectApplyAuraName[0] = SPELL_AURA_ADD_PCT_MODIFIER;
-			sp->EffectMiscValue[0] = SMT_SPELL_VALUE;
+			sp->EffectMiscValue[0] = SMT_MISC_EFFECT;
 		}
 		//Mage - Spell Power
 		sp = dbcSpell.LookupEntryForced( 35578 );

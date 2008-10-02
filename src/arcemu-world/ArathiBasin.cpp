@@ -433,7 +433,15 @@ void ArathiBasin::OnStart()
 
 ArathiBasin::ArathiBasin(MapMgr * mgr, uint32 id, uint32 lgroup, uint32 t) : CBattleground(mgr,id,lgroup,t)
 {
-	uint32 i;
+	int i;
+
+	for (i=0; i<2; i++) {
+		m_players[i].clear();
+		m_pendPlayers[i].clear();
+	}
+	m_worldStates.clear();
+	m_pvpData.clear();
+	m_resurrectMap.clear();
 
 	for(i = 0; i < AB_NUM_CONTROL_POINTS; ++i)
 	{

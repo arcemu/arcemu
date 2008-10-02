@@ -25,6 +25,16 @@
 
 Arena::Arena(MapMgr * mgr, uint32 id, uint32 lgroup, uint32 t, uint32 players_per_side) : CBattleground(mgr, id, lgroup, t)
 {
+	int i;
+
+	for (i=0; i<2; i++) {
+		m_players[i].clear();
+		m_pendPlayers[i].clear();
+	}
+	m_worldStates.clear();
+	m_pvpData.clear();
+	m_resurrectMap.clear();
+
 	m_started = false;
 	m_playerCountPerTeam = players_per_side;
 	m_buffs[0] = m_buffs[1] = NULL;

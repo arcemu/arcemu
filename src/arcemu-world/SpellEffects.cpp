@@ -5185,8 +5185,8 @@ void Spell::SpellEffectSelfResurrect(uint32 i)
 			int32 amt = 20;
 			if( GetProto()->SpellGroupType)
 			{
-				SM_FIValue(unitTarget->SM_FSPELL_VALUE,&amt,GetProto()->SpellGroupType);
-				SM_PIValue(unitTarget->SM_PSPELL_VALUE,&amt,GetProto()->SpellGroupType);
+				SM_FIValue(unitTarget->SM_FMiscEffect,&amt,GetProto()->SpellGroupType);
+				SM_PIValue(unitTarget->SM_PMiscEffect,&amt,GetProto()->SpellGroupType);
 			}
 			health = uint32((unitTarget->GetUInt32Value(UNIT_FIELD_MAXHEALTH)*amt)/100);
 			mana = uint32((unitTarget->GetUInt32Value(UNIT_FIELD_MAXPOWER1)*amt)/100);
@@ -5640,6 +5640,12 @@ void Spell::SpellEffectSummonDeadPet(uint32 i)
 	Pet *pPet = p_caster->GetSummon();
 	if(pPet)
 	{
+		if( GetProto()->SpellGroupType)
+		{
+			SM_FIValue(p_caster->SM_FMiscEffect,&damage,GetProto()->SpellGroupType);
+			SM_PIValue(p_caster->SM_PMiscEffect,&damage,GetProto()->SpellGroupType);
+		}
+
 		pPet->SetUInt32Value( UNIT_DYNAMIC_FLAGS, 0 );
 		pPet->SetUInt32Value( UNIT_FIELD_HEALTH, ( uint32 )( ( pPet->GetUInt32Value(UNIT_FIELD_MAXHEALTH) * damage ) / 100 ));
 		pPet->setDeathState( ALIVE );

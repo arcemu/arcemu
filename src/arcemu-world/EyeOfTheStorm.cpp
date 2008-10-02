@@ -110,7 +110,16 @@ const uint32 m_iconsStates[EOTS_TOWER_COUNT][3] = {
 
 EyeOfTheStorm::EyeOfTheStorm(MapMgr * mgr, uint32 id, uint32 lgroup, uint32 t) : CBattleground(mgr,id,lgroup,t)
 {
-	uint32 i;
+	int i;
+
+	for (i=0; i<2; i++) {
+		m_players[i].clear();
+		m_pendPlayers[i].clear();
+	}
+	m_worldStates.clear();
+	m_pvpData.clear();
+	m_resurrectMap.clear();
+
 	m_playerCountPerTeam=15;
 	for(i = 0; i < EOTS_TOWER_COUNT; ++i)
 	{

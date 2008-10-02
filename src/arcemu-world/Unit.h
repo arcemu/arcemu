@@ -959,8 +959,8 @@ public:
 	int32 * SM_PEffectBonus;//pct
 	int32 * SM_FDamageBonus;//flat
 	int32 * SM_PDamageBonus;//pct
-	int32 * SM_PSPELL_VALUE;//pct
-	int32 * SM_FSPELL_VALUE;//flat
+	int32 * SM_PMiscEffect;//pct
+	int32 * SM_FMiscEffect;//flat
 	int32 * SM_FHitchance;//flat
 	int32 * SM_PAPBonus;//pct
 	int32 * SM_PCost;
@@ -996,9 +996,9 @@ public:
     /* Stun Immobilize                                                      */
     /************************************************************************/
 	uint32	    trigger_on_stun;        //bah, warrior talent but this will not get triggered on triggered spells if used on proc so i'm forced to used a special variable
-	uint32	    trigger_on_stun_chance; //also using this for mage "Frostbite" talent
-	uint32	    trigger_on_stun_victim;        //bah, warrior talent but this will not get triggered on triggered spells if used on proc so i'm forced to used a special variable
-	uint32	    trigger_on_stun_chance_victim; //also using this for mage "Frostbite" talent
+	uint32	    trigger_on_stun_chance;
+	uint32	    trigger_on_stun_victim;
+	uint32	    trigger_on_stun_chance_victim;
 
 	void SetTriggerStunOrImmobilize(uint32 newtrigger,uint32 new_chance,bool is_victim=false)
     {
@@ -1014,6 +1014,29 @@ public:
 		}
     }
     void EventStunOrImmobilize(Unit *proc_target,bool is_victim=false);
+
+    /************************************************************************/
+    /* Chill                                                                */
+    /************************************************************************/
+	uint32	    trigger_on_chill;         //mage "Frostbite" talent chill
+	uint32	    trigger_on_chill_chance;
+	uint32	    trigger_on_chill_victim;
+	uint32	    trigger_on_chill_chance_victim;
+
+	void SetTriggerChill(uint32 newtrigger,uint32 new_chance,bool is_victim=false)
+    {
+		if( is_victim == false )
+		{
+			trigger_on_chill = newtrigger;
+			trigger_on_chill_chance = new_chance;
+		}
+		else
+		{
+			trigger_on_chill_victim = newtrigger;
+			trigger_on_chill_chance_victim = new_chance;
+		}
+    }
+    void EventChill(Unit *proc_target,bool is_victim=false);
 
 	void SetStandState (uint8 standstate);
 

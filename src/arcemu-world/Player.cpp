@@ -5570,6 +5570,8 @@ void Player::SendLoot(uint64 guid,uint8 loot_type)
             Quest * pQuest = QuestStorage.LookupEntry(itemProto->QuestId);
             if(pQuest)
             {
+				uint32 finishedCount = 0;
+
                 //check if its a questline.
                 for(uint32 i = 0; i < pQuest->count_requiredquests; i++)
                 {
@@ -5577,13 +5579,24 @@ void Player::SendLoot(uint64 guid,uint8 loot_type)
                     {
                         if(!HasFinishedQuest(pQuest->required_quests[i]) || GetQuestLogForEntry(pQuest->required_quests[i]))
                         {
-                            HasRequiredQuests = false;
-                            break;
-                        }
+							if (!(pQuest->quest_flags & QUEST_FLAG_ONLY_ONE_REQUIRED)) {
+								HasRequiredQuests = false;
+								break;
+							}
+						}
+						else
+						{
+							finishedCount++;
+						}
                     }
                 }
-                if(!HasRequiredQuests)
-                    continue;
+
+				if (pQuest->quest_flags & QUEST_FLAG_ONLY_ONE_REQUIRED) {
+					if (finishedCount == 0) continue;
+				} else {
+	                if(!HasRequiredQuests)
+    	                continue;
+				}
             }
         } 
 
@@ -11130,7 +11143,7 @@ void Player::VampiricSpell(uint32 dmg, Unit* pTarget)
 	if( m_vampiricEmbrace > 0 && pTarget->m_hasVampiricEmbrace > 0 && pTarget->HasAurasOfNameHashWithCaster(SPELL_HASH_VAMPIRIC_EMBRACE, this) )
 	{
 		perc = 15;
-		SM_FIValue(SM_FSPELL_VALUE, &perc, 4);
+		SM_FIValue(SM_FMiscEffect, &perc, 4);
 
 		bonus = float2int32(fdmg * (float(perc)/100.0f));
 		if( bonus > 0 )
@@ -11152,7 +11165,6 @@ void Player::VampiricSpell(uint32 dmg, Unit* pTarget)
 	if( m_vampiricTouch > 0 && pTarget->m_hasVampiricTouch > 0 && pTarget->HasAurasOfNameHashWithCaster(SPELL_HASH_VAMPIRIC_TOUCH, this) )
 	{
 		perc = 5;
-		//SM_FIValue(SM_FSPELL_VALUE, &perc, 4);
 
 		bonus = float2int32(fdmg * (float(perc)/100.0f));
 		if( bonus > 0 )

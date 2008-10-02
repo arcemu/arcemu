@@ -109,6 +109,8 @@ static float AttackToRageConversionTable[PLAYER_LEVEL_CAP + 1]=
 
 Unit::Unit()
 {
+	int i;
+
 	m_attackTimer = 0;
 	m_attackTimer_1 = 0;
 	m_dualWield = false;
@@ -136,19 +138,19 @@ Unit::Unit()
 	
 	//DK:modifiers
 	PctRegenModifier = 0;
-	for( uint32 x = 0; x < 4; x++ )
+	for( i = 0; i < 4; i++ )
 	{
-		PctPowerRegenModifier[x] = 1;
+		PctPowerRegenModifier[i] = 1;
 	}
 	m_speedModifier = 0;
 	m_slowdown = 0;
 	m_mountedspeedModifier=0;
 	m_maxSpeed = 0;
-	for(uint32 x=0;x<31;x++)
+	for(i=0;i<31;i++)
 	{
-		MechanicsDispels[x]=0;
-		MechanicsResistancesPCT[x]=0;
-		ModDamageTakenByMechPCT[x]=0;
+		MechanicsDispels[i]=0;
+		MechanicsResistancesPCT[i]=0;
+		ModDamageTakenByMechPCT[i]=0;
 	}
 
 	//SM
@@ -166,8 +168,8 @@ Unit::Unit()
 	SM_PEffectBonus=0;
 	SM_FDamageBonus=0;
 	SM_PDamageBonus=0;
-	SM_PSPELL_VALUE=0;
-	SM_FSPELL_VALUE=0;
+	SM_PMiscEffect=0;
+	SM_FMiscEffect=0;
 	SM_FHitchance=0;
 	SM_PRange=0;//pct
 	SM_PRadius=0;
@@ -213,11 +215,11 @@ Unit::Unit()
 	summonPet = NULL;
 
 	m_useAI = false;
-	for(uint32 x=0;x<10;x++)
+	for(i=0;i<10;i++)
 	{
-		dispels[x]=0;
-		CreatureAttackPowerMod[x] = 0;
-		CreatureRangedAttackPowerMod[x] = 0;
+		dispels[i]=0;
+		CreatureAttackPowerMod[i] = 0;
+		CreatureRangedAttackPowerMod[i] = 0;
 	}
 	//REMIND:Update these if you make any changes
 	CreatureAttackPowerMod[UNIT_TYPE_MISC] = 0;
@@ -229,7 +231,7 @@ Unit::Unit()
 	m_invisible = false;
 	m_invisFlag = INVIS_FLAG_NORMAL;
 
-	for(int i = 0; i < INVIS_FLAG_TOTAL; i++)
+	for(i = 0; i < INVIS_FLAG_TOTAL; i++)
 	{
 		m_invisDetect[i] = 0;
 	}
@@ -239,8 +241,8 @@ Unit::Unit()
 	m_stealth = 0;
 	m_can_stealth = true;
 
-	for(uint32 x=0;x<5;x++)
-		BaseStats[x]=0;
+	for(i=0;i<5;i++)
+		BaseStats[i]=0;
 
 	m_H_regenTimer = 2000;
 	m_P_regenTimer = 2000;
@@ -262,30 +264,30 @@ Unit::Unit()
 	BaseRangedDamage[1]=0;
 
 	m_CombatUpdateTimer = 0;
-	for(uint32 x=0;x<7;x++)
+	for(i=0;i<7;i++)
 	{
-		SchoolImmunityList[x] = 0;
-		BaseResistance[x] = 0;
-		HealDoneMod[x] = 0;
-		HealDonePctMod[x] = 0;
-		HealTakenMod[x] = 0;
-		HealTakenPctMod[x] = 0;
-		DamageTakenMod[x] = 0;
-		DamageDoneModPCT[x]= 0;
-		SchoolCastPrevent[x]=0;
-		DamageTakenPctMod[x] = 0;
-		SpellCritChanceSchool[x] = 0;
-		PowerCostMod[x] = 0;
-		PowerCostPctMod[x] = 0; // armor penetration & spell penetration
-		AttackerCritChanceMod[x]=0;
-		CritMeleeDamageTakenPctMod[x]=0;
-		CritRangedDamageTakenPctMod[x]=0;
-		m_generatedThreatModifyer[x] = 0;
+		SchoolImmunityList[i] = 0;
+		BaseResistance[i] = 0;
+		HealDoneMod[i] = 0;
+		HealDonePctMod[i] = 0;
+		HealTakenMod[i] = 0;
+		HealTakenPctMod[i] = 0;
+		DamageTakenMod[i] = 0;
+		DamageDoneModPCT[i]= 0;
+		SchoolCastPrevent[i]=0;
+		DamageTakenPctMod[i] = 0;
+		SpellCritChanceSchool[i] = 0;
+		PowerCostMod[i] = 0;
+		PowerCostPctMod[i] = 0; // armor penetration & spell penetration
+		AttackerCritChanceMod[i]=0;
+		CritMeleeDamageTakenPctMod[i]=0;
+		CritRangedDamageTakenPctMod[i]=0;
+		m_generatedThreatModifyer[i] = 0;
 	}
 	DamageTakenPctModOnHP35 = 1;
 	RangedDamageTaken = 0;
 
-	for(int i = 0; i < 5; i++)
+	for(i = 0; i < 5; i++)
 	{
 		m_detectRangeGUID[i] = 0;
 		m_detectRangeMOD[i] = 0;
@@ -331,9 +333,24 @@ Unit::Unit()
 	trigger_on_stun_chance = 100;
 	trigger_on_stun_victim = 0;
 	trigger_on_stun_chance_victim = 100;
+	trigger_on_chill = 0;
+	trigger_on_chill_chance = 100;
+	trigger_on_chill_victim = 0;
+	trigger_on_chill_chance_victim = 100;
 	m_soulSiphon.amt = 0;
 	m_soulSiphon.max = 0;
 	ModelHalfSize = 1.0f; //worst case unit size. (Should be overwritten)
+
+	m_damageShields.clear();
+	m_reflectSpellSchool.clear();
+	m_procSpells.clear();
+	m_chargeSpells.clear();
+	m_chargeSpellRemoveQueue.clear();
+	tmpAura.clear();
+	m_extraStrikeTargets.clear();
+	for (i=0; i<7; i++) {
+		Absorbs[i].clear();
+	}
 }
 
 Unit::~Unit()
@@ -411,14 +428,14 @@ Unit::~Unit()
 		SM_PDamageBonus = NULL;
 	}
 
-	if(SM_PSPELL_VALUE != NULL ) {
-		delete [] SM_PSPELL_VALUE;
-		SM_PSPELL_VALUE = NULL;
+	if(SM_PMiscEffect != NULL ) {
+		delete [] SM_PMiscEffect;
+		SM_PMiscEffect = NULL;
 	}
 
-	if(SM_FSPELL_VALUE != NULL ) {
-		delete [] SM_FSPELL_VALUE;
-		SM_FSPELL_VALUE = NULL;
+	if(SM_FMiscEffect != NULL ) {
+		delete [] SM_FMiscEffect;
+		SM_FMiscEffect = NULL;
 	}
 
 	if(SM_FHitchance != NULL ) {
@@ -6699,17 +6716,17 @@ void Unit::InheritSMMods(Unit *inherit_from)
 			SM_PDamageBonus = new int32[SPELL_GROUPS];
 		memcpy(SM_PDamageBonus,inherit_from->SM_PDamageBonus,sizeof(int)*SPELL_GROUPS);
 	}
-	if(inherit_from->SM_PSPELL_VALUE)
+	if(inherit_from->SM_PMiscEffect)
 	{
-		if(SM_PSPELL_VALUE==0)
-			SM_PSPELL_VALUE = new int32[SPELL_GROUPS];
-		memcpy(SM_PSPELL_VALUE,inherit_from->SM_PSPELL_VALUE,sizeof(int)*SPELL_GROUPS);
+		if(SM_PMiscEffect==0)
+			SM_PMiscEffect = new int32[SPELL_GROUPS];
+		memcpy(SM_PMiscEffect,inherit_from->SM_PMiscEffect,sizeof(int)*SPELL_GROUPS);
 	}
-	if(inherit_from->SM_FSPELL_VALUE)
+	if(inherit_from->SM_FMiscEffect)
 	{
-		if(SM_FSPELL_VALUE==0)
-			SM_FSPELL_VALUE = new int32[SPELL_GROUPS];
-		memcpy(SM_FSPELL_VALUE,inherit_from->SM_FSPELL_VALUE,sizeof(int)*SPELL_GROUPS);
+		if(SM_FMiscEffect==0)
+			SM_FMiscEffect = new int32[SPELL_GROUPS];
+		memcpy(SM_FMiscEffect,inherit_from->SM_FMiscEffect,sizeof(int)*SPELL_GROUPS);
 	}
 	if(inherit_from->SM_FHitchance)
 	{
@@ -7084,6 +7101,48 @@ void Unit::EventStunOrImmobilize(Unit *proc_target, bool is_victim)
 			return;
 
 		SpellEntry *spellInfo = dbcSpell.LookupEntry(t_trigger_on_stun);
+
+		if(!spellInfo)
+			return;
+
+		Spell *spell = SpellPool.PooledNew();
+		spell->Init(this, spellInfo ,true, NULL);
+		SpellCastTargets targets;
+
+		if ( spellInfo->procFlags & PROC_TARGET_SELF )
+			targets.m_unitTarget = GetGUID();
+		else if ( proc_target ) 
+			targets.m_unitTarget = proc_target->GetGUID();
+		else 
+			targets.m_unitTarget = GetGUID();
+		spell->prepare(&targets);
+	}
+}
+
+// Proc on chill effects (such as frostbolt slow effect)
+void Unit::EventChill(Unit *proc_target, bool is_victim)
+{
+	if ( this == proc_target )
+		return; //how and why would we chill ourselfs
+
+	int32 t_trigger_on_chill,t_trigger_on_chill_chance;
+	if( is_victim == false )
+	{
+		t_trigger_on_chill = trigger_on_chill;
+		t_trigger_on_chill_chance = trigger_on_chill_chance;
+	}
+	else
+	{
+		t_trigger_on_chill = trigger_on_chill_victim;
+		t_trigger_on_chill_chance = trigger_on_chill_chance_victim;
+	}
+
+	if( t_trigger_on_chill )
+	{
+		if( t_trigger_on_chill_chance < 100 && !Rand( t_trigger_on_chill_chance ) )
+			return;
+
+		SpellEntry *spellInfo = dbcSpell.LookupEntry(t_trigger_on_chill);
 
 		if(!spellInfo)
 			return;

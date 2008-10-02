@@ -409,7 +409,11 @@ void WorldSession::HandleMessagechatOpcode( WorldPacket & recv_data )
 			else if(player->HasFlag(PLAYER_FLAGS, 0x04))
 			{
 				// Has AFK flag, autorespond.
-				data = sChatHandler.FillMessageData(CHAT_MSG_DND, LANG_UNIVERSAL, player->m_afk_reason.c_str(),player->GetGUID(), _player->bGMTagOn ? 4 : 0);
+				if (player->GetTeamInitial() == _player->GetTeamInitial()) {
+					data = sChatHandler.FillMessageData(CHAT_MSG_DND, LANG_UNIVERSAL, player->m_afk_reason.c_str(),player->GetGUID(), _player->bGMTagOn ? 4 : 0);
+				} else {
+					data = sChatHandler.FillMessageData(CHAT_MSG_DND, LANG_UNIVERSAL, "",player->GetGUID(), _player->bGMTagOn ? 4 : 0);
+				}
 				SendPacket(data);
 				delete data;
 			}

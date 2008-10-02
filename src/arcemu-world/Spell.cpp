@@ -4348,8 +4348,8 @@ exit:
 
 	if( u_caster != NULL )
 	{
-		SM_FIValue(u_caster->SM_FSPELL_VALUE,&value,GetProto()->SpellGroupType);
-		SM_PIValue(u_caster->SM_PSPELL_VALUE,&value,GetProto()->SpellGroupType);
+		SM_FIValue(u_caster->SM_FMiscEffect,&value,GetProto()->SpellGroupType);
+		SM_PIValue(u_caster->SM_PMiscEffect,&value,GetProto()->SpellGroupType);
 
 		SM_FIValue(u_caster->SM_FEffectBonus,&value,GetProto()->SpellGroupType);
 		SM_PIValue(u_caster->SM_PEffectBonus,&value,GetProto()->SpellGroupType);
@@ -4360,8 +4360,8 @@ exit:
 		Unit *item_creator = target->GetMapMgr()->GetUnit( i_caster->GetUInt64Value( ITEM_FIELD_CREATOR ) );
 		if( item_creator != NULL )
 		{
-			SM_FIValue(item_creator->SM_FSPELL_VALUE,&value,GetProto()->SpellGroupType);
-			SM_PIValue(item_creator->SM_PSPELL_VALUE,&value,GetProto()->SpellGroupType);
+			SM_FIValue(item_creator->SM_FMiscEffect,&value,GetProto()->SpellGroupType);
+			SM_PIValue(item_creator->SM_PMiscEffect,&value,GetProto()->SpellGroupType);
 
 			SM_FIValue(item_creator->SM_FEffectBonus,&value,GetProto()->SpellGroupType);
 			SM_PIValue(item_creator->SM_PEffectBonus,&value,GetProto()->SpellGroupType);
