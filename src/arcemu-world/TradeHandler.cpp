@@ -266,17 +266,60 @@ void WorldSession::HandleSetTradeItem(WorldPacket & recv_data)
 
 	if( pTarget == NULL || pItem == 0 || TradeSlot > 6 || ( TradeSlot < 6 && pItem->IsSoulbound() ) )
  		return;
-	if( pItem->IsContainer() )
+
+/*	if( pItem->IsContainer() )
 	{
 		if(_player->GetItemInterface()->IsBagSlot(SourceSlot))
-		return;
-	}
+		return;*/
+		
+  // Cebernic: bag trading?
+	//printf("This slot %u\n",TradeSlot);
+	uint32 TradeStatus = TRADE_STATUS_STATE_CHANGED;
+	Player * plr = _player->GetTradeTarget();
+	if(!plr) return;
 
-	if( pItem->IsContainer() && ((Container*)pItem)->HasItems() )
+#ifdef USING_BIG_ENDIAN
+	swap32(&TradeStatus);
+	OutPacket(SMSG_TRADE_STATUS, 4, &TradeStatus);
+	plr->m_session->OutPacket(SMSG_TRADE_STATUS, 4, &TradeStatus);
+	swap32(&TradeStatus);
+#else
+	OutPacket(SMSG_TRADE_STATUS, 4, &TradeStatus);
+	plr->m_session->OutPacket(SMSG_TRADE_STATUS, 4, &TradeStatus);
+#endif
+
+	plr->mTradeStatus = TradeStatus;
+	_player->mTradeStatus = TradeStatus;
+
+
+	if( pItem->IsContainer() )
 	{
-		_player->GetItemInterface()->BuildInventoryChangeError(	pItem, NULL, INV_ERR_CANT_TRADE_EQUIP_BAGS);
-		return;
-	}
+		if( ((Container*)pItem)->HasItems() )
+		{
+			_player->GetItemInterface()->BuildInventoryChangeError(pItem,0, INV_ERR_CAN_ONLY_DO_WITH_EMPTY_BAGS);
+
+			//--trade cancel
+#ifdef USING_BIG_ENDIAN
+			 	  uint32 TradeStatus = swap32(uint32(TRADE_STATUS_CANCELLED));
+#else
+			    uint32 TradeStatus = TRADE_STATUS_CANCELLED;
+#endif
+			
+			    OutPacket(SMSG_TRADE_STATUS, 4, &TradeStatus);
+			
+					Player * plr = _player->GetTradeTarget();
+			    if(plr)
+			    {
+				    if(plr->m_session && plr->m_session->GetSocket())
+						plr->m_session->OutPacket(SMSG_TRADE_STATUS, 4, &TradeStatus);
+				    plr->mTradeTarget = 0;
+			    }
+			    OutPacket(SMSG_TRADE_STATUS, 4, &TradeStatus);
+					_player->mTradeTarget = 0;
+			return;
+		}
+	}			
+		
 
 	if(TradeSlot < 6 && pItem->IsSoulbound())
 	{
@@ -311,6 +354,24 @@ void WorldSession::HandleSetTradeGold(WorldPacket & recv_data)
 {
 	if(_player->mTradeTarget == 0)
 		return;
+  // cebernic: TradeGold sameway.
+	uint32 TradeStatus = TRADE_STATUS_STATE_CHANGED;
+	Player * plr = _player->GetTradeTarget();
+	if(!plr) return;
+
+#ifdef USING_BIG_ENDIAN
+	swap32(&TradeStatus);
+	OutPacket(SMSG_TRADE_STATUS, 4, &TradeStatus);
+	plr->m_session->OutPacket(SMSG_TRADE_STATUS, 4, &TradeStatus);
+	swap32(&TradeStatus);
+#else
+	OutPacket(SMSG_TRADE_STATUS, 4, &TradeStatus);
+	plr->m_session->OutPacket(SMSG_TRADE_STATUS, 4, &TradeStatus);
+#endif
+
+	plr->mTradeStatus = TradeStatus;
+	_player->mTradeStatus = TradeStatus;
+
 
 	uint32 Gold;
 	recv_data >> Gold;
@@ -332,11 +393,31 @@ void WorldSession::HandleClearTradeItem(WorldPacket & recv_data)
 	if(TradeSlot > 6)
 		return;
 
+  // clean status
+	Player * plr = _player->GetTradeTarget();
+	if ( !plr ) return;
+
+	uint32 TradeStatus = TRADE_STATUS_STATE_CHANGED;
+
+#ifdef USING_BIG_ENDIAN
+	swap32(&TradeStatus);
+	OutPacket(SMSG_TRADE_STATUS, 4, &TradeStatus);
+	plr->m_session->OutPacket(SMSG_TRADE_STATUS, 4, &TradeStatus);
+	swap32(&TradeStatus);
+#else
+	OutPacket(SMSG_TRADE_STATUS, 4, &TradeStatus);
+	plr->m_session->OutPacket(SMSG_TRADE_STATUS, 4, &TradeStatus);
+#endif
+
+	plr->mTradeStatus = TradeStatus;
+	_player->mTradeStatus = TradeStatus;
+
+
 	_player->mTradeItems[TradeSlot] = 0;
 	_player->SendTradeUpdate();
 }
 
-void WorldSession::HandleAcceptTrade(WorldPacket & recv_data)
+void WorldSession::HandleAcceptTrade(WorldPacket & recv_data) 
 {
 	Player * plr = _player->GetTradeTarget();
 	if(_player->mTradeTarget == 0 || !plr)
@@ -362,15 +443,53 @@ void WorldSession::HandleAcceptTrade(WorldPacket & recv_data)
 		uint32 TargetItemCount = 0;
 		Player * pTarget = plr;
 
-		// Calculate Item Count
+/*		// Calculate Item Count
 		for(uint32 Index = 0; Index < 7; ++Index)
 		{
 			if(_player->mTradeItems[Index] != 0)	++ItemCount;
 			if(pTarget->mTradeItems[Index] != 0)	++TargetItemCount;
+		}*/
+		
+
+		// Calculate Count
+		for(uint32 Index = 0; Index < 6; ++Index) // cebernic: checking for 6items ,untradable item check via others func.
+		{
+			Item * pItem;
+
+			// safely trade checking
+			pItem = _player->mTradeItems[Index];
+			if( pItem )
+			{
+				if( ( pItem->IsContainer() && ((Container*)pItem)->HasItems() )   || ( pItem->GetProto() && pItem->GetProto()->Bonding==ITEM_BIND_ON_PICKUP) )
+				{
+					ItemCount = 0;
+					TargetItemCount = 0;
+					break;
+				}
+				else ++ItemCount;
+			}					
+			
+			pItem = pTarget->mTradeItems[Index];
+			if( pItem )
+			{
+				if( ( pItem->IsContainer() && ((Container*)pItem)->HasItems() )   || ( pItem->GetProto() && pItem->GetProto()->Bonding==ITEM_BIND_ON_PICKUP) )
+				{
+					ItemCount = 0;
+					TargetItemCount = 0;
+					break;
+				}
+				else ++TargetItemCount;
+			}					
+
+			//if(_player->mTradeItems[Index] != 0)	++ItemCount;
+			//if(pTarget->mTradeItems[Index] != 0)	++TargetItemCount;
 		}
 
+		
+
 		if( (_player->m_ItemInterface->CalculateFreeSlots(NULL) + ItemCount) < TargetItemCount ||
-			(pTarget->m_ItemInterface->CalculateFreeSlots(NULL) + TargetItemCount) < ItemCount )
+			(pTarget->m_ItemInterface->CalculateFreeSlots(NULL) + TargetItemCount) < ItemCount ||
+			(ItemCount==0 && TargetItemCount==0 && !pTarget->mTradeGold && !_player->mTradeGold) )	// ceberwow added it
 		{
 			// Not enough slots on one end.
 			TradeStatus = TRADE_STATUS_CANCELLED;
@@ -421,15 +540,15 @@ void WorldSession::HandleAcceptTrade(WorldPacket & recv_data)
 			for(uint32 Index = 0; Index < 6; ++Index)
 			{
 				pItem = _player->mTradeItems[Index];
-				if(pItem != 0)
+				if(pItem != 0 && pTarget)
 				{
-					pItem->SetOwner(pTarget);
+					pItem->SetOwner(pTarget); // crash fixed.
 					if( !pTarget->m_ItemInterface->AddItemToFreeSlot(pItem) )
 						pItem->DeleteMe();
 				}
 
 				pItem = pTarget->mTradeItems[Index];
-				if(pItem != 0)
+				if(pItem != 0 && _player)
 				{
 					pItem->SetOwner(_player);
 					if( !_player->m_ItemInterface->AddItemToFreeSlot(pItem) )
@@ -475,8 +594,8 @@ void WorldSession::HandleAcceptTrade(WorldPacket & recv_data)
 			plr->mTradeTarget = 0;
 			_player->mTradeTarget = 0;
 
+			// Save for eachother
 			plr->SaveToDB(false);
 			_player->SaveToDB(false);
-		}
 	}
 }
