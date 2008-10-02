@@ -95,7 +95,7 @@ void WorldSession::HandleUseItemOpcode(WorldPacket& recvPacket)
 			return;
 		}
 		if(p_User->GetStandState()!=1)
-		p_User->SetStandState(STANDSTATE_SIT);
+			p_User->SetStandState(STANDSTATE_SIT);
 		// loop through the auras and removing existing eating spells
 	}
 	

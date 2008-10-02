@@ -2231,7 +2231,7 @@ void Player::SaveToDB(bool bNewCharacter /* =false */)
 	<< m_FirstLogin			 << ", "
 	<< rename_pending
 	<< "," << m_arenaPoints << ","
-		<< (uint32)m_StableSlotCount << ",";
+	<< (uint32)m_StableSlotCount << ",";
 	
 	// instances
 	if( in_arena )
@@ -6144,7 +6144,7 @@ void Player::SendInitialLogonPackets()
 
 
     /* Some minor documentation about the time field
-    // MOVE THIS DOCUMENATION TO THE WIKI
+    // MOVE THIS DOCUMENTATION TO THE WIKI
     
     minute's = 0x0000003F                  00000000000000000000000000111111
     hour's   = 0x000007C0                  00000000000000000000011111000000
@@ -6167,7 +6167,7 @@ void Player::SendInitialLogonPackets()
     uint32 CurrentMonth = 9-1;		//	Month - 1 (0 is actual 1) same as above. TODO: replace it with the proper code
     uint32 CurrentYear = 7;			//	2000 + this number results in a correct value for this crap. TODO: replace this with the propper code
 
-   #define MINUTE_BITMASK      0x0000003F
+	#define MINUTE_BITMASK      0x0000003F
     #define HOUR_BITMASK        0x000007C0
     #define WEEKDAY_BITMASK     0x00003800
     #define DAY_BITMASK         0x000FC000
@@ -9369,7 +9369,7 @@ void Player::Possess(Unit * pTarget)
 	if(pTarget->m_temp_summon)
 		return;
 	
-	if( pTarget->m_isPet && static_cast< Pet* >( pTarget ) != m_Summon )
+	if( !( pTarget->m_isPet && static_cast< Pet* >( pTarget ) == m_Summon ) )
 	{
 		list<uint32> avail_spells;
 		for(list<AI_Spell*>::iterator itr = pTarget->GetAIInterface()->m_spells.begin(); itr != pTarget->GetAIInterface()->m_spells.end(); ++itr)
@@ -11232,9 +11232,9 @@ void Player::SetKnownTitle( RankTitles title, bool set )
 	if( title >= PVPTITLE_INVISIBLE_NAME ) // to avoid client crash
 		return;
 	
-	WorldPacket *data = new WorldPacket( SMSG_TITLE_EARNED, 8 );
-	*data << uint32( title ) << uint32( set ? 1 : 0 );
-	m_session->SendPacket( data );		
+	WorldPacket data( SMSG_TITLE_EARNED, 8 );
+	data << uint32( title ) << uint32( set ? 1 : 0 );
+	m_session->SendPacket( &data );
 }
 
 void Player::FullHPMP()

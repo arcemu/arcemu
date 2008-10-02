@@ -2568,9 +2568,6 @@ void Spell::SpellEffectPersistentAA(uint32 i) // Persistent Area Aura
 
 void Spell::SpellEffectSummon(uint32 i) // Summon
 {
-	if(!u_caster || !u_caster->IsInWorld())
-		return;
-
 	switch(m_spellInfo->EffectMiscValueB[i])
 	{
 		case 63:
@@ -3515,6 +3512,9 @@ void Spell::SpellEffectSummonWild(uint32 i)  // Summon Wild
 {
 	//these are some cretures that have your faction and do not respawn
 	//number of creatures is actualy dmg (the usual formula), sometimes =3 sometimes =1
+	if( !u_caster || !u_caster->IsInWorld() )
+		return;
+	
 	uint32 cr_entry=GetProto()->EffectMiscValue[i];
 	CreatureProto * proto = CreatureProtoStorage.LookupEntry(cr_entry);
 	CreatureInfo * info = CreatureNameStorage.LookupEntry(cr_entry);
