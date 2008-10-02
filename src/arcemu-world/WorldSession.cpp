@@ -23,7 +23,7 @@
 
 #include "StdAfx.h"
 
-#define WORLDSOCKET_TIMEOUT		 80
+#define WORLDSOCKET_TIMEOUT		 120
 #define PLAYER_LOGOUT_DELAY (20*1000)		/* 20 seconds should be more than enough to gank ya. */
 
 OpcodeHandler WorldPacketHandlers[NUM_MSG_TYPES];
@@ -1063,12 +1063,12 @@ void WorldSession::Handle38C(WorldPacket & recv_data)
 }
 
 // cebernic:WorldStringLoader for each session
-const char* WorldSession::LoadWorldString(uint32 id)
+const char* WorldSession::LocalizedWorldSrv(uint32 id)
 {
-	char szError[512];
+	char szError[64];
 	WorldStringTable * wst = WorldStringTableStorage.LookupEntry(id);
 	if(!wst){
-		memset(szError,0,512);
+		memset(szError,0,64);
 		sprintf(szError,"ID:%u is a bad WorldString TEXT!",id);
 		return &szError[0];
 	}
@@ -1078,4 +1078,21 @@ const char* WorldSession::LoadWorldString(uint32 id)
 		return lpi->Text;
 	else
 		return wst->text;
+}
+
+const char* WorldSession::LocalizedMapName(uint32 id)
+{
+	char szError[64];
+	MapInfo * mi = WorldMapInfoStorage.LookupEntry(id);
+	if(!mi){
+		memset(szError,0,64);
+		sprintf(szError,"ID:%u still have no map title yet!",id);
+		return &szError[0];
+	}
+
+	LocalizedWorldMapInfo * lpi = (language>0) ? sLocalizationMgr.GetLocalizedWorldMapInfo(id,language):NULL;
+	if(lpi)
+		return lpi->Text;
+	else
+		return mi->name;
 }

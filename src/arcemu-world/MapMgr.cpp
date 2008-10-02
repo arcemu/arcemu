@@ -597,6 +597,8 @@ void MapMgr::RemoveObject(Object *obj, bool free_guid)
 void MapMgr::ChangeObjectLocation( Object *obj )
 {
 	// Items and containers are of no interest for us
+	if ( !obj ) return; // crashfix
+
 	if( obj->GetTypeId() == TYPEID_ITEM || obj->GetTypeId() == TYPEID_CONTAINER || obj->GetMapMgr() != this )
 	{
 		return;

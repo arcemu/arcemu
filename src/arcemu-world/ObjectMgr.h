@@ -108,6 +108,13 @@ struct WorldStringTable
 	char * text;
 };
 
+struct WorldBroadCast
+{
+	uint32 id;
+	char * text;
+	uint32 percent;
+};
+
 #pragma pack(pop)
 
 struct SpellReplacement

@@ -97,9 +97,18 @@ void WorldSession::HandleUseItemOpcode(WorldPacket& recvPacket)
 		if(p_User->GetStandState()!=1)
 			p_User->SetStandState(STANDSTATE_SIT);
 		// loop through the auras and removing existing eating spells
+	}else
+	{ // cebernic: why not stand up
+		if (!p_User->CombatStatus.IsInCombat() && !p_User->IsMounted())
+		{
+			if( p_User->GetStandState() )//not standing-> standup
+			{
+				p_User->SetStandState( STANDSTATE_STAND );//probably mobs also must standup
+			}
+		}
 	}
-	
-	// ceberwow remove stealth on using item
+
+	// cebernic: remove stealth on using item
 	if (!(spellInfo->AuraInterruptFlags & ATTRIBUTESEX_NOT_BREAK_STEALTH))
 	{
 		if( p_User->IsStealth() )

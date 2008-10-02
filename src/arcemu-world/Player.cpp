@@ -8635,7 +8635,7 @@ void Player::OnWorldPortAck()
 		{
 			std::string welcome_msg;
 			welcome_msg = "Welcome to ";
-			welcome_msg += pMapinfo->name;
+			welcome_msg += string(GetSession()->LocalizedMapName(pMapinfo->mapid));
 			welcome_msg += ". ";
 			if(pMapinfo->type != INSTANCE_NONRAID && !(pMapinfo->type == INSTANCE_MULTIMODE && iInstanceType >= MODE_HEROIC) && m_mapMgr->pInstance)
 			{
