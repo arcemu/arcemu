@@ -6316,8 +6316,19 @@ void Spell::SpellEffectAddHonor(uint32 i)
 {
 	if( playerTarget == NULL )
 		return;
+	uint32 val = GetProto()->EffectBasePoints[i];
 
-	HonorHandler::AddHonorPointsToPlayer( playerTarget, GetProto()->EffectImplicitTargetA[i] );
+	if( GetProto()->AttributesExB & FLAGS3_UNK4 )val /= 10;
+
+	val += 1;
+
+	HonorHandler::AddHonorPointsToPlayer( playerTarget, val );
+
+	WorldPacket data(SMSG_PVP_CREDIT, 16);
+	data << val;
+	data << uint64(0);
+	data << uint32(5);
+	playerTarget->GetSession()->SendPacket(&data);
 }
 
 void Spell::SpellEffectSpawn(uint32 i)
