@@ -207,7 +207,7 @@ void WorldSession::HandleUnacceptTrade(WorldPacket & recv_data)
 {
 	if(!_player->IsInWorld()) return;
 	Player * plr = _player->GetTradeTarget();
-	_player->ResetTradeVariables();
+	//_player->ResetTradeVariables();
 
 	if(_player->mTradeTarget == 0 || plr == 0)
 		return;
@@ -221,9 +221,31 @@ void WorldSession::HandleUnacceptTrade(WorldPacket & recv_data)
 	OutPacket(SMSG_TRADE_STATUS, 4, &TradeStatus);
 	plr->m_session->OutPacket(SMSG_TRADE_STATUS, 4, &TradeStatus);
 
-	plr->mTradeTarget = 0;
+
+
+	TradeStatus = TRADE_STATUS_STATE_CHANGED;
+
+#ifdef USING_BIG_ENDIAN
+	swap32(&TradeStatus);
+	OutPacket(SMSG_TRADE_STATUS, 4, &TradeStatus);
+	plr->m_session->OutPacket(SMSG_TRADE_STATUS, 4, &TradeStatus);
+	swap32(&TradeStatus);
+#else
+	OutPacket(SMSG_TRADE_STATUS, 4, &TradeStatus);
+	plr->m_session->OutPacket(SMSG_TRADE_STATUS, 4, &TradeStatus);
+#endif
+
+	plr->mTradeStatus = TradeStatus;
+	_player->mTradeStatus = TradeStatus;
+
+  //cebernic,why target & self erased? we are not cancelled !
+  //this merged from p2wow's svn.
+	//plr->mTradeTarget = 0;
+	//_player->mTradeTarget = 0;
+
+/*	plr->mTradeTarget = 0;
 	_player->mTradeTarget = 0;
-	plr->ResetTradeVariables();
+	plr->ResetTradeVariables(); */
 }
 
 void WorldSession::HandleSetTradeItem(WorldPacket & recv_data)
@@ -231,6 +253,8 @@ void WorldSession::HandleSetTradeItem(WorldPacket & recv_data)
 	if(_player->mTradeTarget == 0)
 		return;
 
+	if(!_player->IsInWorld()) return;
+	  
 	CHECK_PACKET_SIZE(recv_data, 3);
 
 	uint8 TradeSlot = recv_data.contents()[0];
@@ -428,6 +452,9 @@ void WorldSession::HandleAcceptTrade(WorldPacket & recv_data)
 
 			// Close Window
 			TradeStatus = TRADE_STATUS_COMPLETE;
+			
+		}
+					
 #ifdef USING_BIG_ENDIAN
             swap32(&TradeStatus);
 			OutPacket(SMSG_TRADE_STATUS, 4, &TradeStatus);
