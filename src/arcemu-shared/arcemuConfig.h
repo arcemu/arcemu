@@ -35,16 +35,6 @@
 #endif
 //#define CLUSTERING 1
 
-/** Enable/disable 3D geometry calculations
- * Warning: This may be resource heavy.
- * As of last update, it was nowhere near complete. Only enable for dev use.
- * Default: Disabled
- */
-#ifdef ENABLE_COLLISION
-# define COLLISION 1
-#endif
-//#define COLLISION 1
-
 #ifndef ENABLE_IMPROVED_TICKETSYSTEM
 #define GM_TICKET_MY_MASTER_COMPATIBLE
 #endif

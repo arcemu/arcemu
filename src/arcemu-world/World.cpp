@@ -456,9 +456,9 @@ bool World::SetInitialWorldSettings()
 	Log.Notice("World", "Database loaded in %ums.", getMSTime() - start_time);
 	sLog.outString("");
 
-#ifdef COLLISION
-	CollideInterface.Init();
-#endif
+	if (Collision) {
+		CollideInterface.Init();
+	}
 
 	// calling this puts all maps into our task list.
 	sInstanceMgr.Load(&tl);
@@ -1201,6 +1201,7 @@ void World::Rehash(bool load)
 	sLog.SetFileLoggingLevel(Config.MainConfig.GetIntDefault("LogLevel", "File", -1));
 	Log.log_level = Config.MainConfig.GetIntDefault("LogLevel", "Screen", 1);
 	gm_skip_attunement = Config.MainConfig.GetBoolDefault("Server", "SkipAttunementsForGM", true);
+	Collision = Config.MainConfig.GetBoolDefault("Server", "Collision", 0);
 #ifndef CLUSTERING
 	SocketRecvBufSize = Config.MainConfig.GetIntDefault("WorldSocket", "RecvBufSize", WORLDSOCKET_RECVBUF_SIZE);
 	SocketSendBufSize = Config.MainConfig.GetIntDefault("WorldSocket", "SendBufSize", WORLDSOCKET_SENDBUF_SIZE);

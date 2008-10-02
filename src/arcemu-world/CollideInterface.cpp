@@ -19,8 +19,6 @@
 
 #include "StdAfx.h"
 
-#ifdef COLLISION
-
 #define MAX_MAP 600
 
 CCollideInterface CollideInterface;
@@ -225,4 +223,3 @@ void CCollideInterface::DeInit()
 }
 
 #endif		// COLLISION_DEBUG
-#endif		// COLLISION

@@ -1573,10 +1573,10 @@ void Creature::AISpellUpdate()
 		if (m_silenced || IsStunned() || IsFeared())
 			s->cancel();
 
-#ifdef COLLISION
-		if (s->GetUnitTarget() != NULL && !CollideInterface.CheckLOS(GetMapId(), GetPositionX(), GetPositionY(), GetPositionZ(), s->GetUnitTarget()->GetPositionX(), s->GetUnitTarget()->GetPositionY(), s->GetUnitTarget()->GetPositionZ()))
-			s->cancel();
-#endif
+		if (sWorld.Collision) {
+			if (s->GetUnitTarget() != NULL && !CollideInterface.CheckLOS(GetMapId(), GetPositionX(), GetPositionY(), GetPositionZ(), s->GetUnitTarget()->GetPositionX(), s->GetUnitTarget()->GetPositionY(), s->GetUnitTarget()->GetPositionZ()))
+				s->cancel();
+		}
 	}
 	else //guess we can cast a spell now
 	{
@@ -1767,16 +1767,18 @@ void Creature::SetGuardWaypoints()
 		wp->waittime = 800;  /* these guards are antsy :P */
 		wp->x = GetSpawnX()+ran*sin(ang);
 		wp->y = GetSpawnY()+ran*cos(ang);
-#ifdef COLLISION
-		wp->z = CollideInterface.GetHeight(m_mapId, wp->x, wp->y, m_spawnLocation.z + 2.0f);
-		if( wp->z == NO_WMO_HEIGHT )
-			wp->z = m_mapMgr->GetLandHeight(wp->x, wp->y);
 
-		if( fabs( wp->z - m_spawnLocation.z ) > 10.0f )
-			wp->z = m_spawnLocation.z;
-#else
-		wp->z = GetMapMgr()->GetLandHeight(wp->x, wp->y);
-#endif		// COLLISION
+		if (sWorld.Collision) {
+			wp->z = CollideInterface.GetHeight(m_mapId, wp->x, wp->y, m_spawnLocation.z + 2.0f);
+			if( wp->z == NO_WMO_HEIGHT )
+				wp->z = m_mapMgr->GetLandHeight(wp->x, wp->y);
+
+			if( fabs( wp->z - m_spawnLocation.z ) > 10.0f )
+				wp->z = m_spawnLocation.z;
+		} else {
+			wp->z = GetMapMgr()->GetLandHeight(wp->x, wp->y);
+		}
+
 		wp->o = 0;
 		wp->backwardemoteid = 0;
 		wp->backwardemoteoneshot = 0;

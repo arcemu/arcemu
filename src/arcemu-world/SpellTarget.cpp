@@ -388,17 +388,6 @@ void Spell::SpellTargetSingleTargetEnemy(uint32 i, uint32 j)
 				pTarget = MagnetTarget; // Redirected
 			}
 		}
-
-#ifdef COLLISION
-		// this distance check may have to be removed in the future.
-		//Shady: wtf is that? it causes a bug when caster and target too close to each other.
-		/*if( p_caster->GetDistance2dSq( pTarget ) < 4.0f && CollideInterface.CheckLOS( p_caster->GetMapId(), p_caster->GetPositionNC(), pTarget->GetPositionNC() ) )
-		{
-			cancastresult = SPELL_FAILED_LINE_OF_SIGHT;
-			return;
-		}*/
-
-#endif
 	}
 
 	uint8 did_hit_result = DidHit(i,pTarget);

@@ -1486,10 +1486,12 @@ bool Object::IsWithinLOS( LocationVector location )
 {
     LocationVector location2;
     location2 = GetPosition();
-#ifdef COLLISION
-	return CollideInterface.CheckLOS(GetMapId(), location2.x, location2.y, location2.z+2.0f, location.x, location.y, location.z+2.0f);
-#endif
-	return true;
+
+	if (sWorld.Collision) {
+		return CollideInterface.CheckLOS(GetMapId(), location2.x, location2.y, location2.z+2.0f, location.x, location.y, location.z+2.0f);
+	} else {
+		return true;
+	}
 }
 
 

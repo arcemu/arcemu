@@ -1993,10 +1993,8 @@ public:
 
 	map<uint32, uint32> m_forcedReactions;
 
-#ifdef COLLISION
 	uint32 m_flyhackCheckTimer;
 	void _FlyhackCheck();
-#endif
 
 	bool m_passOnLoot;
 	uint32 m_tradeSequence;

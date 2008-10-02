@@ -403,9 +403,7 @@ Player::Player( uint32 guid ) : m_mailBox(guid)
 	m_outStealthDamageBonusPct = m_outStealthDamageBonusPeriod = m_outStealthDamageBonusTimer = 0;
 	m_vampiricEmbrace = m_vampiricTouch = 0;
 	LastSeal = 0;
-#ifdef COLLISION
 	m_flyhackCheckTimer = 0;
-#endif
 }
 
 void Player::OnLogin()
@@ -899,31 +897,29 @@ void Player::Update( uint32 p_time )
 			m_pvpTimer -= p_time;
 	}
 
-#ifdef COLLISION
-	if(m_MountSpellId != 0)
-	{
-		if( mstime >= m_mountCheckTimer )
+	if (sWorld.Collision) {
+		if(m_MountSpellId != 0)
 		{
-			if( CollideInterface.IsIndoor( m_mapId, m_position ) )
+			if( mstime >= m_mountCheckTimer )
 			{
-				RemoveAura( m_MountSpellId );
-				m_MountSpellId = 0;
-			}
-			else
-			{
-				m_mountCheckTimer = mstime + COLLISION_MOUNT_CHECK_INTERVAL;
+				if( CollideInterface.IsIndoor( m_mapId, m_position ) )
+				{
+					RemoveAura( m_MountSpellId );
+					m_MountSpellId = 0;
+				}
+				else
+				{
+					m_mountCheckTimer = mstime + COLLISION_MOUNT_CHECK_INTERVAL;
+				}
 			}
 		}
-	}
-#endif
 
-#ifdef COLLISION
-	if( mstime >= m_flyhackCheckTimer )
-	{
-		_FlyhackCheck();
-		m_flyhackCheckTimer = mstime + 10000; 
+		if( mstime >= m_flyhackCheckTimer )
+		{
+			_FlyhackCheck();
+			m_flyhackCheckTimer = mstime + 10000; 
+		}
 	}
-#endif
 }
 
 void Player::EventDismount(uint32 money, float x, float y, float z)
@@ -1304,13 +1300,13 @@ void Player::_EventExploration()
 	{
 		if(m_isResting)
 		{
-#ifdef COLLISION
-			const LocationVector & loc = GetPosition();
-			if(!CollideInterface.IsIndoor(GetMapId(), loc.x, loc.y, loc.z + 2.0f))
+			if (sWorld.Collision) {
+				const LocationVector & loc = GetPosition();
+				if(!CollideInterface.IsIndoor(GetMapId(), loc.x, loc.y, loc.z + 2.0f))
+					ApplyPlayerRestState(false);
+			} else {
 				ApplyPlayerRestState(false);
-#else
-			ApplyPlayerRestState(false);
-#endif
+			}
 		}
 	}
 
@@ -5791,10 +5787,10 @@ int32 Player::CanShootRangedWeapon( uint32 spellid, Unit* target, bool autoshot 
 		return SPELL_FAILED_TARGETS_DEAD;
 
 	// Check if in line of sight (need collision detection).
-#ifdef COLLISION
-	if (GetMapId() == target->GetMapId() && !CollideInterface.CheckLOS(GetMapId(),GetPositionNC(),target->GetPositionNC()))
-		return SPELL_FAILED_LINE_OF_SIGHT;
-#endif
+	if (sWorld.Collision) {
+		if (GetMapId() == target->GetMapId() && !CollideInterface.CheckLOS(GetMapId(),GetPositionNC(),target->GetPositionNC()))
+			return SPELL_FAILED_LINE_OF_SIGHT;
+	}
 
 	// Check if we aren't casting another spell allready
 	if( GetCurrentSpell() )
@@ -8029,11 +8025,11 @@ bool Player::SafeTeleport(uint32 MapID, uint32 InstanceID, const LocationVector 
 		instance = true;
 	}
 
-#ifndef COLLISION
-	// if we are mounted remove it
-	if( m_MountSpellId )
-		RemoveAura( m_MountSpellId );
-#endif
+	if (sWorld.Collision == 0) {
+		// if we are mounted remove it
+		if( m_MountSpellId )
+			RemoveAura( m_MountSpellId );
+	}
 
 	// make sure player does not drown when teleporting from under water
 	if (m_UnderwaterState & UNDERWATERSTATE_UNDERWATER)
@@ -10738,7 +10734,6 @@ void Player::_LoadPlayerCooldowns(QueryResult * result)
 	} while ( result->NextRow( ) );
 }
 
-#ifdef COLLISION
 void Player::_FlyhackCheck()
 {
 	if(!sWorld.antihack_flight || m_TransporterGUID != 0 || GetTaxiState() || (sWorld.no_antihack_on_gm && GetSession()->HasGMPermissions()))
@@ -10773,7 +10768,6 @@ void Player::_FlyhackCheck()
 		}
 	}
 }
-#endif
 
 /************************************************************************/
 /* SOCIAL                                                               */

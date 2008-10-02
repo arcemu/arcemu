@@ -2676,52 +2676,52 @@ void Spell::SpellEffectLeap(uint32 i) // Leap
 	// remove movement impeding auras
 	u_caster->RemoveAurasByInterruptFlag(AURA_INTERRUPT_ON_ANY_DAMAGE_TAKEN);
 
-#ifndef COLLISION
-	if(!p_caster) return;
+	if (sWorld.Collision) {
+		float ori = m_caster->GetOrientation();				
+		float posX = m_caster->GetPositionX()+(radius*(cosf(ori)));
+		float posY = m_caster->GetPositionY()+(radius*(sinf(ori)));
+		float z = CollideInterface.GetHeight(m_caster->GetMapId(), posX, posY, m_caster->GetPositionZ() + 2.0f);
+		if(z == NO_WMO_HEIGHT)		// not found height, or on adt
+			z = m_caster->GetMapMgr()->GetLandHeight(posX,posY);
 
-	WorldPacket data(SMSG_MOVE_KNOCK_BACK, 50);
-	data << p_caster->GetNewGUID();
-	data << getMSTime();
-	data << cosf(p_caster->GetOrientation()) << sinf(p_caster->GetOrientation());
-	data << radius;
-	data << float(-10.0f);
-	p_caster->GetSession()->SendPacket(&data);
-	//m_caster->SendMessageToSet(&data, true);
-#else
-	float ori = m_caster->GetOrientation();				
-	float posX = m_caster->GetPositionX()+(radius*(cosf(ori)));
-	float posY = m_caster->GetPositionY()+(radius*(sinf(ori)));
-	float z = CollideInterface.GetHeight(m_caster->GetMapId(), posX, posY, m_caster->GetPositionZ() + 2.0f);
-	if(z == NO_WMO_HEIGHT)		// not found height, or on adt
-		z = m_caster->GetMapMgr()->GetLandHeight(posX,posY);
+		if( fabs( z - m_caster->GetPositionZ() ) >= 10.0f )
+			return;
 
-	if( fabs( z - m_caster->GetPositionZ() ) >= 10.0f )
-		return;
+		LocationVector dest(posX, posY, z + 2.0f, ori);
+		LocationVector destest(posX, posY, dest.z, ori);
+		LocationVector src(m_caster->GetPositionX(), m_caster->GetPositionY(), m_caster->GetPositionZ() + 2.0f);
 
-	LocationVector dest(posX, posY, z + 2.0f, ori);
-	LocationVector destest(posX, posY, dest.z, ori);
-	LocationVector src(m_caster->GetPositionX(), m_caster->GetPositionY(), m_caster->GetPositionZ() + 2.0f);
+		if(CollideInterface.GetFirstPoint(m_caster->GetMapId(), src, destest, dest, -1.5f))
+		{
+			// hit an object new point is in dest.
+			// is this necessary?
+			dest.z = CollideInterface.GetHeight(m_caster->GetMapId(), dest.x, dest.y, dest.z + 2.0f);
+		}
+		else
+			dest.z = z;
 
-	if(CollideInterface.GetFirstPoint(m_caster->GetMapId(), src, destest, dest, -1.5f))
-	{
-		// hit an object new point is in dest.
-		// is this necessary?
-		dest.z = CollideInterface.GetHeight(m_caster->GetMapId(), dest.x, dest.y, dest.z + 2.0f);
+		dest.o = u_caster->GetOrientation();
+		if(p_caster)
+		{
+			p_caster->blinked = true;
+			p_caster->SafeTeleport( p_caster->GetMapId(), p_caster->GetInstanceID(), dest );
+		}
+		else
+		{
+			u_caster->SetPosition(dest, true);
+		}
+	} else {
+		if(!p_caster) return;
+
+		WorldPacket data(SMSG_MOVE_KNOCK_BACK, 50);
+		data << p_caster->GetNewGUID();
+		data << getMSTime();
+		data << cosf(p_caster->GetOrientation()) << sinf(p_caster->GetOrientation());
+		data << radius;
+		data << float(-10.0f);
+		p_caster->GetSession()->SendPacket(&data);
+		//m_caster->SendMessageToSet(&data, true);
 	}
-	else
-		dest.z = z;
-
-	dest.o = u_caster->GetOrientation();
-	if(p_caster)
-	{
-		p_caster->blinked = true;
-		p_caster->SafeTeleport( p_caster->GetMapId(), p_caster->GetInstanceID(), dest );
-	}
-	else
-	{
-		u_caster->SetPosition(dest, true);
-	}
-#endif
 }
 
 void Spell::SpellEffectEnergize(uint32 i) // Energize

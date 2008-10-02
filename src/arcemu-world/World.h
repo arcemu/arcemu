@@ -393,6 +393,7 @@ public:
 	uint32 ArenaQueueDiff;
 	bool SendStatsOnJoin;
 	SessionSet gmList;
+	bool Collision;
 
 	void ShutdownClasses();
 	void DeleteObject(Object * obj);

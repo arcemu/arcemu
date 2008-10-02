@@ -169,9 +169,7 @@
 	#include "ClusterInterface.h"
 #endif
 
-#ifdef COLLISION
 #include "CollideInterface.h"
-#endif
 
 #include "Master.h"
 #include "BaseConsole.h"
