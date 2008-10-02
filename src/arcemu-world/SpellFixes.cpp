@@ -13113,10 +13113,10 @@ void ApplyNormalFixes()
 		//priest - surge of light
 		sp = dbcSpell.LookupEntryForced( 33150 );
 		if( sp != NULL )
-			sp->procFlags = uint32(PROC_ON_SPELL_CRIT_HIT_VICTIM | static_cast<uint32>(PROC_TARGET_SELF));
+			sp->procFlags = uint32(PROC_ON_SPELL_CRIT_HIT | static_cast<uint32>(PROC_TARGET_SELF));
 		sp = dbcSpell.LookupEntryForced( 33154 );
 		if( sp != NULL )
-			sp->procFlags = uint32(PROC_ON_SPELL_CRIT_HIT_VICTIM | static_cast<uint32>(PROC_TARGET_SELF));
+			sp->procFlags = uint32(PROC_ON_SPELL_CRIT_HIT | static_cast<uint32>(PROC_TARGET_SELF));
 		sp = dbcSpell.LookupEntryForced( 33151 );
 		if( sp != NULL )
 		{
