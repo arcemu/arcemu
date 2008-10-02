@@ -87,6 +87,13 @@ void LocalizationMgr::Shutdown()
 		{
 			SAFE_FREE_PTR(itr->second.Text);
 		}
+
+		// (p2wow) world server common message going to be localized.
+		for(HM_NAMESPACE::hash_map<uint32, LocalizedWorldStringTable>::iterator itr = m_WorldStrings[i].begin(); itr != m_WorldStrings[i].end(); ++itr)
+		{
+			SAFE_FREE_PTR(itr->second.Text);
+		}
+
 	}
 
 	deletedPointers.clear();
@@ -96,6 +103,7 @@ void LocalizationMgr::Shutdown()
 	delete [] m_Items;
 	delete [] m_NpcTexts;
 	delete [] m_Quests;
+	delete [] m_WorldStrings;
 	m_languages.clear();
 	Log.Notice("LocalizationMgr", "Pointer cleanup completed in %.4f seconds.", float(float(getMSTime()-t) / 1000.0f));
 #undef SAFE_FREE_PTR
@@ -151,6 +159,7 @@ void LocalizationMgr::Reload(bool first)
 	GetDistinctLanguages(languages, "quests_localized");
 	GetDistinctLanguages(languages, "npc_text_localized");
 	GetDistinctLanguages(languages, "itempages_localized");
+	GetDistinctLanguages(languages, "worldstring_tables_localized");
 
 	/************************************************************************/
 	/* Read Language Bindings From Config                                   */
@@ -217,6 +226,7 @@ void LocalizationMgr::Reload(bool first)
 	m_NpcTexts = new HM_NAMESPACE::hash_map<uint32, LocalizedNpcText>[langid];
 	m_Items = new HM_NAMESPACE::hash_map<uint32, LocalizedItem>[langid];
 	m_ItemPages = new HM_NAMESPACE::hash_map<uint32, LocalizedItemPage>[langid];
+	m_WorldStrings = new HM_NAMESPACE::hash_map<uint32, LocalizedWorldStringTable>[langid];
 
 	/************************************************************************/
 	/* Creature Names                                                       */
@@ -422,6 +432,36 @@ void LocalizationMgr::Reload(bool first)
 	}
 
 	/************************************************************************/
+	/* World Common Message                                                 */
+	/************************************************************************/
+	{
+		LocalizedWorldStringTable nt;
+		string str;
+		uint32 entry;
+		Field * f;
+		uint32 lid;
+
+		result = WorldDatabase.Query("SELECT * FROM worldstring_tables_localized");
+		if(result)
+		{
+			do 
+			{
+				f = result->Fetch();
+				str = string(f[1].GetString());
+				entry = f[0].GetUInt32();
+
+				lid = GetLanguageId(str);
+				if(lid == 0)
+					continue;
+
+				nt.Text = strdup(f[2].GetString());
+				m_WorldStrings[lid].insert(make_pair(entry, nt));
+			} while(result->NextRow());
+			delete result;
+		}
+	}
+
+	/************************************************************************/
 	/* Apply all the language bindings.                                     */
 	/************************************************************************/
 	for(map<string,string>::iterator itr = bound_languages.begin(); itr != bound_languages.end(); ++itr)
@@ -441,6 +481,7 @@ void LocalizationMgr::Reload(bool first)
 		CopyHashMap<LocalizedItemPage>(&m_ItemPages[source_language_id], &m_ItemPages[dest_language_id]);
 		CopyHashMap<LocalizedQuest>(&m_Quests[source_language_id], &m_Quests[dest_language_id]);
 		CopyHashMap<LocalizedNpcText>(&m_NpcTexts[source_language_id], &m_NpcTexts[dest_language_id]);
+		CopyHashMap<LocalizedWorldStringTable>(&m_WorldStrings[source_language_id], &m_WorldStrings[dest_language_id]);
 	}
 }
 
@@ -455,4 +496,5 @@ MAKE_LOOKUP_FUNCTION(LocalizedQuest, m_Quests, GetLocalizedQuest);
 MAKE_LOOKUP_FUNCTION(LocalizedItem, m_Items, GetLocalizedItem);
 MAKE_LOOKUP_FUNCTION(LocalizedNpcText, m_NpcTexts, GetLocalizedNpcText);
 MAKE_LOOKUP_FUNCTION(LocalizedItemPage, m_ItemPages, GetLocalizedItemPage);
+MAKE_LOOKUP_FUNCTION(LocalizedWorldStringTable, m_WorldStrings, GetLocalizedWorldStringTable);
 

@@ -101,6 +101,13 @@ struct ItemPage
 	char * text;
 	uint32 next_page;
 };
+
+struct WorldStringTable
+{
+	uint32 id;
+	char * text;
+};
+
 #pragma pack(pop)
 
 struct SpellReplacement

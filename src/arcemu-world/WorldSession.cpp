@@ -1062,4 +1062,20 @@ void WorldSession::Handle38C(WorldPacket & recv_data)
 	SendPacket(&data);
 }
 
+// cebernic:WorldStringLoader for each session
+const char* WorldSession::LoadWorldString(uint32 id)
+{
+	char szError[512];
+	WorldStringTable * wst = WorldStringTableStorage.LookupEntry(id);
+	if(!wst){
+		memset(szError,0,512);
+		sprintf(szError,"ID:%u is a bad WorldString TEXT!",id);
+		return &szError[0];
+	}
 
+	LocalizedWorldStringTable * lpi = (language>0) ? sLocalizationMgr.GetLocalizedWorldStringTable(id,language):NULL;
+	if(lpi)
+		return lpi->Text;
+	else
+		return wst->text;
+}

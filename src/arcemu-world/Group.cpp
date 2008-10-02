@@ -397,9 +397,11 @@ void SubGroup::Disband()
 			{
 				if( (*itr)->m_loggedInPlayer->GetSession() != NULL )
 				{
-					(*itr)->m_loggedInPlayer->GetSession()->SendPacket(&data);
 					data2.put(5, uint32((*itr)->m_loggedInPlayer->iInstanceType));
 					(*itr)->m_loggedInPlayer->GetSession()->SendPacket(&data2);
+					(*itr)->m_loggedInPlayer->GetSession()->SendPacket(&data);
+          (*itr)->m_Group->SendNullUpdate( (*itr)->m_loggedInPlayer ); // cebernic: panel refresh.
+					
 				}
 			}
 

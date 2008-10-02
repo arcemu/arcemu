@@ -37,6 +37,7 @@ const char * gFishingFormat								= "uuu";
 const char * gWorldMapInfoFormat						= "uuuuufffusuuuuuuufu";
 const char * gZoneGuardsFormat							= "uuu";
 const char * gUnitModelSizeFormat						= "uf";
+const char * gWorldStringTableFormat        = "us"; //p2wow added by cebernic [for worldserver common message storage]
 
 /** SQLStorage symbols
  */
@@ -54,6 +55,7 @@ SERVER_DECL SQLStorage<FishingZoneEntry, HashMapStorageContainer<FishingZoneEntr
 SERVER_DECL SQLStorage<MapInfo, ArrayStorageContainer<MapInfo> >							WorldMapInfoStorage;
 SERVER_DECL SQLStorage<ZoneGuardEntry, HashMapStorageContainer<ZoneGuardEntry> >			ZoneGuardStorage;
 SERVER_DECL SQLStorage<UnitModelSizeEntry, HashMapStorageContainer<UnitModelSizeEntry> >	UnitModelSizeStorage;
+SERVER_DECL SQLStorage<WorldStringTable, HashMapStorageContainer<WorldStringTable> >	WorldStringTableStorage;
 
 SERVER_DECL set<string> ExtraMapCreatureTables;
 SERVER_DECL set<string> ExtraMapGameObjectTables;
@@ -491,6 +493,7 @@ void Storage_FillTaskList(TaskList & tl)
 	make_task(WorldMapInfoStorage, MapInfo, ArrayStorageContainer, "worldmap_info", gWorldMapInfoFormat);
 	make_task(ZoneGuardStorage, ZoneGuardEntry, HashMapStorageContainer, "zoneguards", gZoneGuardsFormat);
 	make_task(UnitModelSizeStorage, UnitModelSizeEntry, HashMapStorageContainer, "unit_display_sizes", gUnitModelSizeFormat);
+	make_task(WorldStringTableStorage, WorldStringTable, HashMapStorageContainer, "worldstring_tables", gWorldStringTableFormat);
 }
 
 void Storage_Cleanup()
@@ -524,6 +527,7 @@ void Storage_Cleanup()
 	WorldMapInfoStorage.Cleanup();
 	ZoneGuardStorage.Cleanup();
 	UnitModelSizeStorage.Cleanup();
+	WorldStringTableStorage.Cleanup();
 }
 
 vector<pair<string,string> > additionalTables;
@@ -552,6 +556,8 @@ bool LoadAdditionalTable(const char * TableName, const char * SecondName)
 		AreaTriggerStorage.LoadAdditionalData(SecondName, gAreaTriggerFormat);
 	else if(!stricmp(TableName, "itempages"))			// Item Pages
 		ItemPrototypeStorage.LoadAdditionalData(SecondName, gItemPageFormat);
+	else if(!stricmp(TableName, "worldstring_tables"))			// WorldString
+		WorldStringTableStorage.LoadAdditionalData(SecondName, gItemPageFormat);
 	else if(!stricmp(TableName, "quests"))				// Quests
 		QuestStorage.LoadAdditionalData(SecondName, gQuestFormat);
 	else if(!stricmp(TableName, "npc_text"))			// NPC Text Storage
@@ -589,6 +595,8 @@ bool Storage_ReloadTable(const char * TableName)
 		AreaTriggerStorage.Reload();
 	else if(!stricmp(TableName, "itempages"))			// Item Pages
 		ItemPageStorage.Reload();
+	else if(!stricmp(TableName, "worldstring_tables"))			// wst
+		WorldStringTableStorage.Reload();
 	else if(!stricmp(TableName, "quests"))				// Quests
 		QuestStorage.Reload();
 	else if(!stricmp(TableName, "npc_text"))			// NPC Text Storage
@@ -653,8 +661,4 @@ void Storage_LoadAdditionalTables()
 		}
 	}
 }
-
-
-
-
 
