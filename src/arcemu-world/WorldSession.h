@@ -272,8 +272,8 @@ public:
 	ARCEMU_INLINE uint32 GetLatency() { return _latency; }
 	ARCEMU_INLINE string GetAccountName() { return _accountName; }
 	ARCEMU_INLINE const char * GetAccountNameS() { return _accountName.c_str(); }
-	ARCEMU_INLINE const char * LocalizedWorldSrv(uint32 id);
-	ARCEMU_INLINE const char * LocalizedMapName(uint32 id);
+	const char * LocalizedWorldSrv(uint32 id);
+	const char * LocalizedMapName(uint32 id);
 
 	ARCEMU_INLINE uint32 GetClientBuild() { return client_build; }
 	ARCEMU_INLINE void SetClientBuild(uint32 build) { client_build = build; }
