@@ -2105,8 +2105,8 @@ void AIInterface::_CalcDestinationAndMove(Unit *target, float dist)
 
 		//avoid eating bandwidth with useless movement packets when target did not move since last position
 		//this will work since it turned into a common mith that when you pull mob you should not move :D
-		if( abs(m_last_target_x - m_nextPosX) < DISTANCE_TO_SMALL_TO_WALK
-			&& abs(m_last_target_y - m_nextPosY) < DISTANCE_TO_SMALL_TO_WALK && m_creatureState == MOVING)
+		if( abs(m_last_target_x - ResX) < DISTANCE_TO_SMALL_TO_WALK
+			&& abs(m_last_target_y - ResY) < DISTANCE_TO_SMALL_TO_WALK && m_creatureState == MOVING)
 			return;
 		m_last_target_x = ResX;
 		m_last_target_y = ResY;
