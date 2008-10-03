@@ -881,33 +881,28 @@ void AIInterface::_UpdateTargets()
 		for(itr = m_aiTargets.begin(); itr != m_aiTargets.end();)
 		{
 			it2 = itr++;
-			/*
-#ifdef HACKY_CRASH_FIXES
-			if( !TargetUpdateCheck( it2->first) )
-				m_aiTargets.erase( it2 );
-#else
-			if( it2->first->event_GetCurrentInstanceId() != m_Unit->event_GetCurrentInstanceId() ||
-				!it2->first->isAlive() || m_Unit->GetDistanceSq(it2->first) >= 6400.0f )
-			{
-				m_aiTargets.erase( it2 );
-			}
-#endif
-			*/
+
 			Unit *ai_t = m_Unit->GetMapMgr()->GetUnit( it2->first );
-			bool instance = false;
-			if (m_Unit->GetMapMgr() && m_Unit->GetMapMgr()->GetMapInfo())
-			{
-				switch (m_Unit->GetMapMgr()->GetMapInfo()->type)
+			if (ai_t == NULL) {
+				m_aiTargets.erase( it2 );
+			} else {
+				bool instance = false;
+				if (m_Unit->GetMapMgr() && m_Unit->GetMapMgr()->GetMapInfo())
 				{
-				case INSTANCE_RAID:
-				case INSTANCE_NONRAID:
-				case INSTANCE_MULTIMODE:
-					instance = true;
-					break;
+					switch (m_Unit->GetMapMgr()->GetMapInfo()->type)
+					{
+					case INSTANCE_RAID:
+					case INSTANCE_NONRAID:
+					case INSTANCE_MULTIMODE:
+						instance = true;
+						break;
+					}
+				}
+
+				if( ai_t->event_GetCurrentInstanceId() != m_Unit->event_GetCurrentInstanceId() || !ai_t->isAlive() || (!instance && m_Unit->GetDistanceSq(ai_t) >= 6400.0f)) {
+					m_aiTargets.erase( it2 );
 				}
 			}
-			if( !ai_t || ai_t->event_GetCurrentInstanceId() != m_Unit->event_GetCurrentInstanceId() || !ai_t->isAlive() || (!instance && m_Unit->GetDistanceSq(ai_t) >= 6400.0f))
-				m_aiTargets.erase( it2 );
 		}
 
 		LockAITargets(false);
