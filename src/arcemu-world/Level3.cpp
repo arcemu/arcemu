@@ -1,5 +1,6 @@
 
 /*
+ * Copyright (C) 2005-2007 Ascent Team <http://www.ascentemu.com/>
  * ArcEmu MMORPG Server
  * Copyright (C) 2008 <http://www.ArcEmu.org/>
  *
