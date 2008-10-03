@@ -1180,7 +1180,10 @@ void AIInterface::_UpdateCombat(uint32 p_time)
 							m_Unit->setAttackTimer(0, false);
 #ifdef ENABLE_CREATURE_DAZE
 							//we require to know if strike was succesfull. If there was no dmg then target cannot be dazed by it
-							uint32 health_before_strike=GetNextTarget()->GetUInt32Value(UNIT_FIELD_HEALTH);
+							Unit *t_unit = GetNextTarget();
+							if( !t_unit )
+								return; //omg lol, in seconds we lost target. This might be possible due to the Eventrelocated
+							uint32 health_before_strike = t_unit->GetUInt32Value(UNIT_FIELD_HEALTH);
 #endif
 							m_Unit->Strike( GetNextTarget(), ( agent == AGENT_MELEE ? MELEE : RANGED ), NULL, 0, 0, 0, false, false );
 #ifdef ENABLE_CREATURE_DAZE
