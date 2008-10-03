@@ -4245,7 +4245,7 @@ exit:
 		if( i==0 && p_caster != NULL )
 		{
 			//Increases healing received by 25% of the Tree of Life's total spirit.
-			value = float2int32( 0.25f * p_caster->GetUInt32Value( UNIT_FIELD_STAT4 ) );
+			value = p_caster->GetUInt32Value( UNIT_FIELD_STAT4 ) >> 2;
 		}
 	}
 	// HACK FIX

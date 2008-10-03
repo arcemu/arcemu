@@ -140,8 +140,8 @@ WorldPacket* MapMgr::BuildInitialWorldState()
 {
 	WorldPacket * data = new WorldPacket(SMSG_INIT_WORLD_STATES, 99);
 	*data << GetMapId();
-	*data << (uint32)0; // unk
-	*data << (uint32)0; // unk
+	*data << (uint32)0; // zone id?
+	*data << (uint32)0; // area id?
 	*data << (uint16)_worldStateSet.size();
 	std::map<uint32,uint32>::iterator itr = _worldStateSet.begin();
 	for(; itr != _worldStateSet.end(); itr++)

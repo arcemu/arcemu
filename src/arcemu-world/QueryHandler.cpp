@@ -38,7 +38,7 @@ void WorldSession::HandleNameQueryOpcode( WorldPacket & recv_data )
 	WorldPacket data(SMSG_NAME_QUERY_RESPONSE, strlen(pn->name) + 35);
 	data << pn->guid << uint32(0);	//highguid
 	data << pn->name;
-	data << uint8(0);	   // this probably is "different realm" or something flag.
+	data << uint8(0);	   // this is a string showed besides players name (eg. in combat log), a custom title ?
 	data << pn->race << pn->gender << pn->cl;
 	data << uint8(0);			// 2.4.0, why do i get the feeling blizz is adding custom classes or custom titles? (same thing in who list)
 	SendPacket( &data );

@@ -404,16 +404,10 @@ void QuestMgr::BuildQuestDetails(WorldPacket *data, Quest* qst, Object* qst_give
 
 	*data << uint32(0);
 	*data << uint32(0);
-	*data << uint32(0);
-	*data << uint32(4);
-	*data << uint32(1);
-	*data << uint32(0);
-	*data << uint32(1);
-	*data << uint32(0);
-	*data << uint32(0);
-	*data << uint32(0);
-	*data << uint32(0);
-	*data << uint32(0);
+	*data << uint32(0);						// reward pvp title id
+	*data << uint32(1);						// emote count
+	*data << uint32( EMOTE_ONESHOT_TALK );	// emote1 type
+	*data << uint32(0);						// emote1 delay
 }
 
 void QuestMgr::BuildRequestItems(WorldPacket *data, Quest* qst, Object* qst_giver, uint32 status, uint32 language)
