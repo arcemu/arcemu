@@ -911,7 +911,9 @@ Player * ChatHandler::getSelectedChar(WorldSession *m_session, bool showerror)
 {
 	uint64 guid;
 	Player *chr;
-	
+
+	if (m_session == NULL || m_session->GetPlayer() == NULL) return NULL;
+
 	guid = m_session->GetPlayer()->GetSelection();
 	
 	if (guid == 0)
@@ -937,6 +939,8 @@ Creature * ChatHandler::getSelectedCreature(WorldSession *m_session, bool shower
 {
 	uint64 guid;
 	Creature *creature = NULL;
+
+	if (m_session == NULL || m_session->GetPlayer() == NULL) return NULL;
 
 	guid = m_session->GetPlayer()->GetSelection();
 	if(GET_TYPE_FROM_GUID(guid) == HIGHGUID_TYPE_PET)
@@ -1029,7 +1033,7 @@ void ChatHandler::BlueSystemMessage(WorldSession *m_session, const char *message
 
 void ChatHandler::RedSystemMessageToPlr(Player* plr, const char *message, ...)
 {
-	if( !message || !plr->GetSession() ) return;
+	if( !message || !plr || !plr->GetSession() ) return;
 	va_list ap;
 	va_start(ap, message);
 	char msg1[1024];
@@ -1039,7 +1043,7 @@ void ChatHandler::RedSystemMessageToPlr(Player* plr, const char *message, ...)
 
 void ChatHandler::GreenSystemMessageToPlr(Player* plr, const char *message, ...)
 {
-	if( !message || !plr->GetSession() ) return;
+	if( !message || !plr || !plr->GetSession() ) return;
 	va_list ap;
 	va_start(ap, message);
 	char msg1[1024];
@@ -1049,7 +1053,7 @@ void ChatHandler::GreenSystemMessageToPlr(Player* plr, const char *message, ...)
 
 void ChatHandler::BlueSystemMessageToPlr(Player* plr, const char *message, ...)
 {
-	if( !message || !plr->GetSession() ) return;
+	if( !message || !plr || !plr->GetSession() ) return;
 	va_list ap;
 	va_start(ap, message);
 	char msg1[1024];
@@ -1059,7 +1063,7 @@ void ChatHandler::BlueSystemMessageToPlr(Player* plr, const char *message, ...)
 
 void ChatHandler::SystemMessageToPlr(Player *plr, const char* message, ...)
 {
-	if( !message || !plr->GetSession() ) return;
+	if( !message || !plr || !plr->GetSession() ) return;
 	va_list ap;
 	va_start(ap, message);
 	char msg1[1024];
@@ -1069,10 +1073,12 @@ void ChatHandler::SystemMessageToPlr(Player *plr, const char* message, ...)
 
 bool ChatHandler::CmdSetValueField(WorldSession *m_session, uint32 field, uint32 fieldmax, const char *fieldname, const char *args)
 {
-	if(!args) return false;
-	char* pvalue = strtok((char*)args, " ");
+	char* pvalue;
 	uint32 mv, av;
 
+	if(!args || !m_session) return false;
+
+	pvalue = strtok((char*)args, " ");
 	if (!pvalue)
 		return false;
 	else
@@ -1185,9 +1191,12 @@ bool ChatHandler::CmdSetValueField(WorldSession *m_session, uint32 field, uint32
 
 bool ChatHandler::CmdSetFloatField(WorldSession *m_session, uint32 field, uint32 fieldmax, const char *fieldname, const char *args)
 {
-	char* pvalue = strtok((char*)args, " ");
+	char* pvalue;
 	float mv, av;
 
+	if(!args || !m_session) return false;
+
+	pvalue = strtok((char*)args, " ");
 	if (!pvalue)
 		return false;
 	else
@@ -1267,6 +1276,8 @@ bool ChatHandler::CmdSetFloatField(WorldSession *m_session, uint32 field, uint32
 
 bool ChatHandler::HandleGetPosCommand(const char* args, WorldSession *m_session)
 {
+	if(!args || !m_session) return false;
+
 	/*if(m_session->GetPlayer()->GetSelection() == 0) return false;
 	Creature *creature = objmgr.GetCreature(m_session->GetPlayer()->GetSelection());
 
