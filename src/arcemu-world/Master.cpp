@@ -101,39 +101,6 @@ struct Addr
         static const char* default_realm_config_file = CONFDIR "/arcemu-realms.conf";
 #endif
 
-const char banner[] = ""
-"                                                \n"
-"                     ``````                     \n"
-"    ArcEmu!        `/o/::-:/-                   \n" 
-"                   oho/-.-:yN-                  \n" 
-"                    os+/-.:::                   \n" 
-"                    :ysyoo+:`                   \n" 
-"	                 `ohdys/.                    \n" 
-"                     oyho/-`   ``               \n" 
-"                    `shyo+:./ssmdsyo:`          \n" 
-"                    .shss+:yNMMNNMNmms.         \n" 
-"                    :ysss+:mNMMMMNNmmds.        \n" 
-"                `-//sssoo/:NMNMMMNMNNdy-        \n" 
-"    -`/`       `omhyyhyyyshNMMNNNMMMNmy:        \n" 
-"    :/::-`     `sdmdmmNMNMMMMMMNMNNNNms-        \n" 
-"     /+++/-.....shdmmNMMNMMMMMMMMMNNNd+         \n"
-"     ./+oshyhhhddmhdmNMMMMMMMMMMMMNNds.         \n" 
-"       `:/:.`````.:+ymmNMMNMMMNMMNNd/           \n" 
-"                     -+shmNNMMMNmhy/            \n" 
-"                          `..-ods:.             \n"
-"                               o:.`             \n"
-"                               :-.              \n"
-"                              `/-...            \n" 
-"    Introducing the emu!     --``-/:`           \n" 
-"                          .:/+:-.-::.           \n" 
-"                          `.-///:-.`            \n"
-" Website: http://www.ArcEmu.org	     		 \n"
-" Forums: http://www.ArcEmu.org/forums/          \n"
-" Credits: http://www.ArcEmu.org/credits         \n"
-" SVN: http://arcemu.info/svn/                   \n"
-" Have fun!                                      \n"
-"\n";
-
 bool bServerShutdown = false;
 bool StartConsoleListener();
 void CloseConsoleListener();
@@ -219,6 +186,36 @@ bool Master::Run(int argc, char ** argv)
 	printf("but WITHOUT ANY WARRANTY; without even the implied warranty of\n");
 	printf("MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n");
 	printf("GNU Affero General Public License for more details.\n");
+	printf("                                                \n");
+	printf("                     ``````                     \n");
+	printf("    ArcEmu!        `/o/::-:/-                   \n"); 
+	printf("                   oho/-.-:yN-                  \n"); 
+	printf("                    os+/-.:::                   \n"); 
+	printf("                    :ysyoo+:`                   \n"); 
+	printf("					`ohdys/.                    \n"); 
+	printf("                     oyho/-`   ``               \n"); 
+	printf("                   `shyo+:./ssmdsyo:`           \n"); 
+	printf("                    .shss+:yNMMNNMNmms.         \n"); 
+	printf("                    :ysss+:mNMMMMNNmmds.        \n"); 
+	printf("                `-//sssoo/:NMNMMMNMNNdy-        \n"); 
+	printf("    -`/`       `omhyyhyyyshNMMNNNMMMNmy:        \n"); 
+	printf("    :/::-`     `sdmdmmNMNMMMMMMNMNNNNms-        \n"); 
+	printf("     /+++/-.....shdmmNMMNMMMMMMMMMNNNd+         \n");
+	printf("     ./+oshyhhhddmhdmNMMMMMMMMMMMMNNds.         \n"); 
+	printf("       `:/:.`````.:+ymmNMMNMMMNMMNNd/           \n"); 
+	printf("                     -+shmNNMMMNmhy/            \n"); 
+	printf("                          `..-ods:.             \n");
+	printf("                               o:.`             \n");
+	printf("                               :-.              \n");
+	printf("                              `/-...            \n"); 
+	printf("    Introducing the emu!     --``-/:`           \n"); 
+	printf("                           .:/+:-.-::.          \n"); 
+	printf("                          `.-///:-.`            \n");
+	printf(" Website: http://www.ArcEmu.org	     			\n");
+	printf(" Forums: http://www.ArcEmu.org/forums/          \n");
+	printf(" Credits: http://www.ArcEmu.org/credits         \n");
+	printf(" SVN: http://arcemu.info/svn/                   \n");
+	printf(" Have fun!                                      \n");
 	Log.Line();
 #ifdef REPACK
 	Log.Color(TRED);
