@@ -672,3 +672,56 @@ void Storage_LoadAdditionalTables()
 	}
 }
 
+void ObjectMgr::StoreBroadCastGroupKey() 
+// cebernic: plz feedback
+{
+	vector<string> keyGroup;
+	QueryResult * result = WorldDatabase.Query( "SELECT DISTINCT percent FROM `worldbroadcast` ORDER BY percent DESC" );
+	// result->GetRowCount();
+	if ( result != NULL )
+	{
+		do
+		{
+			Field *f = result->Fetch();
+			keyGroup.push_back( string(f[0].GetString()) );
+		}
+		while( result->NextRow() );
+	}
+	
+	if ( keyGroup.empty() ) {
+		delete result;
+		Log.Notice("ObjectMgr", "These values from field `percent` in worldbroadcast table was empty!");
+		return;
+	}
+
+	for(vector<string>::iterator itr = keyGroup.begin(); itr != keyGroup.end(); ++itr)
+	{
+		string curKey = (*itr);
+		char szSQL[512];
+		memset(szSQL,0,sizeof(szSQL));
+		sprintf(szSQL,"SELECT entry,percent FROM `worldbroadcast` WHERE percent='%s' ",curKey.c_str());
+		result = WorldDatabase.Query( szSQL );
+		if ( result != NULL )
+		{
+			do
+			{
+				Field *f = result->Fetch();
+				m_BCEntryStorage.insert(pair<uint32,uint32>( uint32(atoi(curKey.c_str())), f[0].GetUInt32()  ));
+			}
+			while( result->NextRow() );
+		}
+	}
+	delete result;
+	// cebernic for test
+	/*for (;;)
+	{
+		uint32 n= CalcCurrentBCEntry();
+		if ( n==0 ) {
+			printf("table empty!\n");
+			continue;
+		}
+		printf("current : %u\n",n);
+		Sleep(1000);
+	}*/
+
+}

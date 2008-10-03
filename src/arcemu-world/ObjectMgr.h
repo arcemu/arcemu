@@ -412,6 +412,7 @@ public:
 	typedef std::map<uint32, set<SpellEntry*> >                         PetDefaultSpellMap;
 	typedef std::map<uint32, uint32>                                    PetSpellCooldownMap;
 	typedef std::map<uint32, SpellEntry*>                               TotemSpellMap;
+	typedef std::multimap <uint32,uint32>                               BCEntryStorage;
 
     // object holders
 	GmTicketList         GM_TicketList;
@@ -587,6 +588,9 @@ public:
 	void LoadExtraItemStuff();
 	void LoadExtraCreatureProtoStuff();
 	void LoadProfessionDiscoveries();
+
+	void StoreBroadCastGroupKey();
+
 	void CreateGossipMenuForPlayer(GossipMenu** Location, uint64 Guid, uint32 TextID, Player* Plr); 
 
 	LevelInfo * GetLevelInfo(uint32 Race, uint32 Class, uint32 Level);
@@ -664,7 +668,27 @@ public:
 
 	std::set<ProfessionDiscovery*> ProfessionDiscoveryTable;
 
+	// cebernic: This is an perfect Broadcast system,multi-lang supported also.
+	ARCEMU_INLINE uint32 GetBCGroupCountByKey(uint32 Key) { return (uint32)m_BCEntryStorage.count(Key); }
+	ARCEMU_INLINE uint32 CalcCurrentBCEntry() 
+	// func sync at MAKE_TASK(ObjectMgr, StoreBroadCastGroupKey)[world.cpp]
+	{
+		if ( m_BCEntryStorage.empty() ) return 0;
+		vector<uint32> Entries;
+		BCEntryStorage::iterator it = m_BCEntryStorage.upper_bound( RandomUInt(98)+1 );
+		while( it!=m_BCEntryStorage.end() )
+		{
+			Entries.push_back(it->second);
+			++it;
+		}
+		if ( Entries.empty() ) return 0;
+		uint32 n = (Entries.size()>1 ? RandomUInt(  Entries.size()-1  ) : 0);
+		return Entries[n];
+	}
+
+
 protected:
+	BCEntryStorage m_BCEntryStorage; // broadcast system.
 	RWLock playernamelock;
 	uint32 m_mailid;
 	uint64 m_ticketid;

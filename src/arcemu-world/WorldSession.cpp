@@ -1063,7 +1063,16 @@ void WorldSession::Handle38C(WorldPacket & recv_data)
 	SendPacket(&data);
 }
 
-// cebernic:WorldStringLoader for each session
+/*
+	2008/10/04
+	MultiLanguages on each player session.
+	LocalizedWorldSrv translating core message from sql.
+	LocalizedMapName translating MAP Title from sql.
+	LocalizedBroadCast translating new broadcast system from sql.
+	Full merged from p2wow 's branch (p2branch).
+	cebernic@gmail.com
+*/
+
 const char* WorldSession::LocalizedWorldSrv(uint32 id)
 {
 	char szError[64];
@@ -1096,4 +1105,21 @@ const char* WorldSession::LocalizedMapName(uint32 id)
 		return lpi->Text;
 	else
 		return mi->name;
+}
+
+const char* WorldSession::LocalizedBroadCast(uint32 id)
+{
+	char szError[64];
+	WorldBroadCast * wb = WorldBroadCastStorage.LookupEntry(id);
+	if(!wb){
+		memset(szError,0,64);
+		sprintf(szError,"ID:%u is a invaild WorldBroadCast message!",id);
+		return &szError[0];
+	}
+
+	LocalizedWorldBroadCast * lpi = (language>0) ? sLocalizationMgr.GetLocalizedWorldBroadCast(id,language):NULL;
+	if(lpi)
+		return lpi->Text;
+	else
+		return wb->text;
 }
