@@ -62,6 +62,26 @@ MapMgr::MapMgr(Map *map, uint32 mapId, uint32 instanceid) : CellHandler<MapCell>
 	pInstance = NULL;
 	thread_kill_only = false;
 	thread_running = false;
+
+	m_forcedcells.clear();
+	m_PlayerStorage.clear();
+	m_PetStorage.clear();
+	m_DynamicObjectStorage.clear();
+
+	_combatProgress.clear();
+	_mapWideStaticObjects.clear();
+	_worldStateSet.clear();
+	_updates.clear();
+	_processQueue.clear();
+	Sessions.clear();
+
+	activeGameObjects.clear();
+	activeCreatures.clear();
+	m_corpses.clear();
+	_sqlids_creatures.clear();
+	_sqlids_gameobjects.clear();
+	_reusable_guids_gameobject.clear();
+	_reusable_guids_creature.clear();
 }
 
 

@@ -547,12 +547,15 @@ void AIInterface::HandleEvent(uint32 event, Unit* pUnit, uint32 misc1)
 			{
 				InstanceBossInfoMap *bossInfoMap = objmgr.m_InstanceBossInfoMap[m_Unit->GetMapMgr()->GetMapId()];
 				Creature *pCreature = static_cast< Creature* >( m_Unit );
+				bool found = false;
+
 				if(IS_PERSISTENT_INSTANCE(pInstance) && bossInfoMap != NULL && pCreature->GetProto())
 				{
 					uint32 npcGuid = pCreature->GetProto()->Id;
 					InstanceBossInfoMap::const_iterator bossInfo = bossInfoMap->find(npcGuid);
 					if(bossInfo != bossInfoMap->end())
 					{
+						found = true;
 						m_Unit->GetMapMgr()->pInstance->m_killedNpcs.insert( npcGuid );
 						m_Unit->GetMapMgr()->pInstance->SaveToDB();
 						for(InstanceBossTrashList::iterator trash = bossInfo->second->trash.begin(); trash != bossInfo->second->trash.end(); ++trash)
@@ -572,8 +575,8 @@ void AIInterface::HandleEvent(uint32 event, Unit* pUnit, uint32 misc1)
 						}
 					}
 				}
-				else
-				{
+
+				if (found == false) {
 					// No instance boss information ... so fallback ...
 					uint32 npcGuid = pCreature->GetSQL_id();
 					m_Unit->GetMapMgr()->pInstance->m_killedNpcs.insert( npcGuid );
