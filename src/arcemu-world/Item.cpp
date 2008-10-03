@@ -43,6 +43,8 @@ Item::Item()//this is called when constructing as container
 	m_inQueue = false;
 	m_extensions = NULL;
 	m_loadedFromDB = false;
+
+	Enchantments.clear();
 }
 
 //called instead of parametrized constructor
