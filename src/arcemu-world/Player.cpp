@@ -3589,7 +3589,7 @@ void Player::RemoveFromWorld()
 // TODO: perhaps item should just have a list of mods, that will simplify code
 void Player::_ApplyItemMods(Item* item, int8 slot, bool apply, bool justdrokedown /* = false */, bool skip_stat_apply /* = false  */)
 {
-	if (slot >= INVENTORY_SLOT_BAG_END)
+	if (slot >= EQUIPMENT_SLOT_END)
 		return;
 
 	ASSERT( item );
@@ -6893,7 +6893,7 @@ void Player::RemoveItemsFromWorld()
 		{
 			if(pItem->IsInWorld())
 			{
-				if(i < INVENTORY_SLOT_BAG_END)	  // only equipment slots get mods.
+				if(i < EQUIPMENT_SLOT_END)	  // only equipment slots get mods.
 				{
 					_ApplyItemMods(pItem, i, false, false, true);
 				}
