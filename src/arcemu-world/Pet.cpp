@@ -373,16 +373,21 @@ void Pet::SendSpellsToOwner()
 	if( m_Owner == NULL )
 		return;
 
-	int packetsize = (m_uint32Values[OBJECT_FIELD_ENTRY] != WATER_ELEMENTAL) ? ((int)mSpells.size() * 4 + 20) : 64;
-	WorldPacket * data = new WorldPacket(SMSG_PET_SPELLS, packetsize);
+	int packetsize = ( m_uint32Values[ OBJECT_FIELD_ENTRY ] != WATER_ELEMENTAL) ? ( (int) mSpells.size() * 4 + 20 ) : 64;
+	WorldPacket * data = new WorldPacket( SMSG_PET_SPELLS, packetsize );
 	*data << GetGUID();
 	*data << uint32(0x00000000);//unk1
-	*data << uint32(0x00000101);//unk2
-
+	
+	uint32 state_flags = 0;
+	if( GetAIInterface() != NULL && GetAIInterface()->getUnitToFollow() != NULL )
+		 state_flags = 0x100;		// 0x0 = stay, 0x100 = follow, 0x200 = attack
+	state_flags |= GetPetState();	// 0x0 = passive, 0x1 = defensive, 0x2 = agressive
+	*data << state_flags;			
+																			
 	// Send the actionbar
 	for(uint32 i = 0; i < 10; ++i)
 	{
-		if(ActionBar[i] & 0x4000000)		// Command
+		if(ActionBar[i] & 0x4000000)		// Commands
 			*data << uint32(ActionBar[i]);
 		else
 		{
@@ -455,6 +460,8 @@ void Pet::InitializeSpells()
 
 AI_Spell * Pet::CreateAISpell(SpellEntry * info)
 {
+	ASSERT( info != NULL ); 
+
 	// Create an AI_Spell
 	map<uint32,AI_Spell*>::iterator itr = m_AISpellStore.find(info->Id);
 	if(itr != m_AISpellStore.end())
@@ -1688,7 +1695,8 @@ uint32 Pet::CanLearnSpell( SpellEntry * sp )
 	}
 	/** - available training points
 			- higher spell ranks take TPs incrementally, so we need this calculation */
-	if( SpellTP( sp->Id ) - SpellTP( GetHighestRankSpell( sp->Id ) ) >  TP )
+	uint16 spellTP = SpellTP( sp->Id );
+	if( spellTP > 0 && ( spellTP - SpellTP( GetHighestRankSpell( sp->Id ) ) >  TP ) )
 		return SPELL_FAILED_TRAINING_POINTS;
 	
 	return 0;
@@ -1888,6 +1896,9 @@ void Pet::HandleAutoCastEvent( AutoCastEvents Type )
 	{
 		it2 = itr++;
 		sp = *it2;
+
+		if( sp->spell == NULL )
+			continue;
 
 		if( sp->spelltargetType == TTYPE_OWNER )
 		{
