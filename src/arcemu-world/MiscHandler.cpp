@@ -739,7 +739,7 @@ void WorldSession::HandleWhoOpcode( WorldPacket & recv_data )
 void WorldSession::HandleLogoutRequestOpcode( WorldPacket & recv_data )
 {
 	Player *pPlayer = GetPlayer();
-	WorldPacket data(SMSG_LOGOUT_RESPONSE, 9);
+	WorldPacket data( SMSG_LOGOUT_RESPONSE, 5 );
 
 	sLog.outDebug( "WORLD: Recvd CMSG_LOGOUT_REQUEST Message" );
 
@@ -754,20 +754,10 @@ void WorldSession::HandleLogoutRequestOpcode( WorldPacket & recv_data )
 			return;
 		}
 
-		if(pPlayer->CombatStatus.IsInCombat())
+		if( pPlayer->CombatStatus.IsInCombat() ||	//can't quit still in combat
+			pPlayer->DuelingWith != NULL )			//can't quit still dueling or attacking
 		{
-			//can't quit still in combat
-			data << uint32(0x1); //Filler
-			data << uint8(0); //Logout accepted
-			SendPacket( &data );
-			return;
-		}
-
-		if(pPlayer->DuelingWith != NULL)
-		{
-			//can't quit still dueling or attacking
-			data << uint32(0x1); //Filler
-			data << uint8(0); //Logout accepted
+        	data << uint32(1) << uint8(0);
 			SendPacket( &data );
 			return;
 		}
