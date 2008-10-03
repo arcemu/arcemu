@@ -26,7 +26,6 @@ AC_PROG_LIBTOOL
 AH_TEMPLATE([USE_EPOLL], Define if you want to use the epoll socket engine module.)
 AH_TEMPLATE([USE_KQUEUE], Define if you want to use the kqueue socket engine module.)
 AH_TEMPLATE([HAVE_DARWIN], Define if you have MacOSX Darwin, to include the correct headers for kevent)
-AH_TEMPLATE([ENABLE_COLLISION], Define if you want to enable collision calculation, warning. this can cause. a heavy load)
 AH_TEMPLATE([ENABLE_IMPROVED_TICKETSYSTEM], Define if you want to enable the improved ticket system. Warning: Not My_Master compatible!)
 AH_TEMPLATE([USING_BIG_ENDIAN], Define this if you are on a big-endian system.)
 AH_TEMPLATE([USING_LITTLE_ENDIAN], Define this if you are on a non-big-endian system.)
@@ -121,14 +120,6 @@ else
 	LIB_EXPORT="-Wl,--export-dynamic"
 	AC_SUBST(LIB_EXPORT)
 fi
-
-AC_ARG_ENABLE(collision,
-     AC_HELP_STRING([--enable-collision],enable collision calculation. warning this can cause a high load),
-     [ if test "x$enable_collision" = "xyes" ; then
-   	AC_DEFINE(ENABLE_COLLISION)
-       fi
-     ],
-)
 
 AC_ARG_ENABLE(ticketsystemex,
      AC_HELP_STRING([--enable-ticketsystemex],enable improved ticket system. warning not my_master compatible),
@@ -307,14 +298,6 @@ echo " Networking:"
 echo "   ${NETWORKING}"
 echo
 echo " Features: " 
-
-
-echo -n "    collision: "
-if test "x$enable_collision" = "xyes" ; then
-  echo "enabled"
-else
-  echo "disabled"
-fi
 
 
 echo -n "    improved ticket system: "
