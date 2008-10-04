@@ -2675,6 +2675,11 @@ void Spell::SpellEffectLeap(uint32 i) // Leap
 	u_caster->RemoveAurasByInterruptFlag(AURA_INTERRUPT_ON_ANY_DAMAGE_TAKEN);
 
 	if (sWorld.Collision) {
+		// Let's not allow players to blink trew gates.
+		// Until we fix the real problem this will work.
+		if(p_caster && p_caster->m_bg && !p_caster->m_bg->HasStarted())
+			return;
+
 		float ori = m_caster->GetOrientation();				
 		float posX = m_caster->GetPositionX()+(radius*(cosf(ori)));
 		float posY = m_caster->GetPositionY()+(radius*(sinf(ori)));
@@ -2692,8 +2697,6 @@ void Spell::SpellEffectLeap(uint32 i) // Leap
 		if(CollideInterface.GetFirstPoint(m_caster->GetMapId(), src, destest, dest, -1.5f))
 		{
 			// hit an object new point is in dest.
-			// is this necessary?
-			dest.z = CollideInterface.GetHeight(m_caster->GetMapId(), dest.x, dest.y, dest.z + 2.0f);
 		}
 		else
 			dest.z = z;

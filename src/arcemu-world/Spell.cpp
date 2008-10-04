@@ -3233,6 +3233,14 @@ uint8 Spell::CanCast(bool tolerate)
 			if( !p_caster->HasFlag( UNIT_FIELD_AURASTATE, GetProto()->CasterAuraState ) )
 				return SPELL_FAILED_CASTER_AURASTATE;
 		}
+
+		// Let's not allow players to blink trew gates.
+		// Until we fix the real problem this will work.
+		if( p_caster->m_bg && !p_caster->m_bg->HasStarted() )
+		{
+			if( GetProto()->NameHash == SPELL_HASH_BLINK )
+				return SPELL_FAILED_SPELL_UNAVAILABLE;
+		}
 	}
 
 	// Targetted Item Checks
@@ -3427,22 +3435,17 @@ uint8 Spell::CanCast(bool tolerate)
 
 		if(target)
 		{
-			// Partha: +2.52yds to max range, this matches the range the client is calculating.
-			// see extra/supalosa_range_research.txt for more info
+			// UNIT_FIELD_BOUNDINGRADIUS + 1.5f; seems to match the client range
 
 			if( tolerate ) // add an extra 33% to range on final check (squared = 1.78x)
 			{
-//				float localrange=maxRange + 2.52f;
-//				float localrange=maxRange + target->GetFloatValue(UNIT_FIELD_BOUNDINGRADIUS);
-				float localrange=maxRange + target->GetModelHalfSize();
+				float localrange=maxRange + target->GetFloatValue(UNIT_FIELD_BOUNDINGRADIUS) + 1.5f;
 				if( !IsInrange( m_caster->GetPositionX(), m_caster->GetPositionY(), m_caster->GetPositionZ(), target, ( localrange * localrange * 1.78f ) ) )
 					return SPELL_FAILED_OUT_OF_RANGE;
 			}
 			else
 			{
-//				float localrange=maxRange + 2.52f;
-//				float localrange=maxRange + target->GetFloatValue(UNIT_FIELD_BOUNDINGRADIUS);
-				float localrange=maxRange + target->GetModelHalfSize();
+				float localrange=maxRange + target->GetFloatValue(UNIT_FIELD_BOUNDINGRADIUS) + 1.5f;
 				if( !IsInrange( m_caster->GetPositionX(), m_caster->GetPositionY(), m_caster->GetPositionZ(), target, ( localrange * localrange ) ) )
 					return SPELL_FAILED_OUT_OF_RANGE;
 			}

@@ -317,6 +317,8 @@ public:
 
 	/* Has it ended? */
 	ARCEMU_INLINE bool HasEnded() { return m_ended; }
+	/* Has it started? */
+	ARCEMU_INLINE bool HasStarted() { return m_started; }
 
 	/* Send our current world states to a player . */
 	void SendWorldStates(Player * plr);
