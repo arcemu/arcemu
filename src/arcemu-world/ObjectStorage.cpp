@@ -675,6 +675,13 @@ void Storage_LoadAdditionalTables()
 void ObjectMgr::StoreBroadCastGroupKey() 
 // cebernic: plz feedback
 {
+	// init
+	if ( !sWorld.BCSystemEnable ) {
+		Log.Notice("ObjectMgr","BCSystem Disabled.");
+		return;
+	}
+	// ----------------
+
 	vector<string> keyGroup;
 	QueryResult * result = WorldDatabase.Query( "SELECT DISTINCT percent FROM `worldbroadcast` ORDER BY percent DESC" );
 	// result->GetRowCount();
@@ -690,9 +697,12 @@ void ObjectMgr::StoreBroadCastGroupKey()
 	
 	if ( keyGroup.empty() ) {
 		delete result;
-		Log.Notice("ObjectMgr", "These values from field `percent` in worldbroadcast table was empty!");
+		Log.Notice("ObjectMgr", "BCSystem error! worldbroadcast empty? fill it first!");
+		sWorld.BCSystemEnable = false;
 		return;
 	}
+	else
+	Log.Notice("ObjectMgr","BCSystem Enabled with %u KeyGroups.",keyGroup.size());
 
 	for(vector<string>::iterator itr = keyGroup.begin(); itr != keyGroup.end(); ++itr)
 	{
@@ -712,16 +722,4 @@ void ObjectMgr::StoreBroadCastGroupKey()
 		}
 	}
 	delete result;
-	// cebernic for test
-	/*for (;;)
-	{
-		uint32 n= CalcCurrentBCEntry();
-		if ( n==0 ) {
-			printf("table empty!\n");
-			continue;
-		}
-		printf("current : %u\n",n);
-		Sleep(1000);
-	}*/
-
 }

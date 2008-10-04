@@ -670,6 +670,14 @@
 			>
 		</File>
 		<File
+			RelativePath="..\..\src\arcemu-world\CommonScheduleThread.cpp"
+			>
+		</File>
+		<File
+			RelativePath="..\..\src\arcemu-world\CommonScheduleThread.h"
+			>
+		</File>
+		<File
 			RelativePath="..\..\src\arcemu-world\debugcmds.cpp"
 			>
 		</File>

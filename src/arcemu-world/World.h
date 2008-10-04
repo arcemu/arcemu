@@ -300,6 +300,7 @@ public:
 	void SendFactionMessage(WorldPacket *packet, uint8 teamId);
 	void SendGamemasterMessage(WorldPacket *packet, WorldSession *self = 0);
 	void SendGMWorldText(const char* text, WorldSession *self = 0);
+	void SendBroadCastToAllSessions(uint32 id);
 
 	ARCEMU_INLINE void SetStartTime(uint32 val) { m_StartTime = val; }
 	ARCEMU_INLINE uint32 GetUptime(void) { return (uint32)UNIXTIME - m_StartTime; }
@@ -424,6 +425,12 @@ public:
 	bool antiMasterLootNinja;
 	bool gamemaster_listOnlyActiveGMs;
 	bool gamemaster_hidePermissions;
+
+	// broadcast system config
+	bool BCSystemEnable;
+	int BCInterval;
+	int BCTriggerPercentCap;
+	int BCOrderMode;
 
 	bool realmAllowTBCcharacters;
 	

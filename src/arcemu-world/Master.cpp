@@ -45,7 +45,10 @@ SERVER_DECL Database* Database_World;
 SessionLogWriter* GMCommand_Log;
 SessionLogWriter* Anticheat_Log;
 SessionLogWriter* Player_Log;
+
+// threads
 extern DayWatcherThread * dw;
+extern CommonScheduleThread * cs;
 
 void Master::_OnSignal(int s)
 {

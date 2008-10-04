@@ -23,6 +23,9 @@
  */
 
 #include "StdAfx.h"
+
+#define THREAD_LOOP_INTERVAL 120 // seconds
+
 #ifdef WIN32
 static HANDLE m_abortEvent = INVALID_HANDLE_VALUE;
 #else
@@ -175,10 +178,10 @@ bool DayWatcherThread::run()
 
 #ifdef WIN32
 		if (m_abortEvent)
-			WaitForSingleObject(m_abortEvent, 120000);
+			WaitForSingleObject(m_abortEvent, THREAD_LOOP_INTERVAL*1000);
 #else
 		gettimeofday(&now, NULL);
-		tv.tv_sec = now.tv_sec + 120;
+		tv.tv_sec = now.tv_sec + THREAD_LOOP_INTERVAL;
 		tv.tv_nsec = now.tv_usec * 1000;
 		pthread_mutex_lock(&abortmutex);
 		pthread_cond_timedwait(&abortcond, &abortmutex, &tv);

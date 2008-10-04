@@ -35,7 +35,7 @@ class DayWatcherThread : public CThread
 	bool m_busy;
 	bool m_dirty;
 
-	static const time_t timeout = 120;		/* check every 2 minutes */
+	//static const time_t timeout = 120;		/* check every 2 minutes */
 	time_t currenttime;
 	tm local_currenttime;
 	time_t last_arena_time;

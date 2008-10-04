@@ -670,12 +670,17 @@ public:
 
 	// cebernic: This is an perfect Broadcast system,multi-lang supported also.
 	ARCEMU_INLINE uint32 GetBCGroupCountByKey(uint32 Key) { return (uint32)m_BCEntryStorage.count(Key); }
-	ARCEMU_INLINE uint32 CalcCurrentBCEntry() 
+	ARCEMU_INLINE bool IsBCEntryStorageEmpty() { return m_BCEntryStorage.empty(); }
+	ARCEMU_INLINE BCEntryStorage::iterator GetBCTotalItemBegin() { return m_BCEntryStorage.begin(); }
+	ARCEMU_INLINE BCEntryStorage::iterator GetBCTotalItemEnd() { return m_BCEntryStorage.end(); }
+	ARCEMU_INLINE int CalcCurrentBCEntry() 
 	// func sync at MAKE_TASK(ObjectMgr, StoreBroadCastGroupKey)[world.cpp]
 	{
-		if ( m_BCEntryStorage.empty() ) return 0;
+		if ( m_BCEntryStorage.empty() ) return -1;
+	  uint32 RandomCap = (uint32)sWorld.BCTriggerPercentCap;
+		
 		vector<uint32> Entries;
-		BCEntryStorage::iterator it = m_BCEntryStorage.upper_bound( RandomUInt(98)+1 );
+		BCEntryStorage::iterator it = m_BCEntryStorage.upper_bound( RandomUInt(RandomCap)+1 );
 		while( it!=m_BCEntryStorage.end() )
 		{
 			Entries.push_back(it->second);

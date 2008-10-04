@@ -22,6 +22,7 @@
 initialiseSingleton( World );
 
 DayWatcherThread* dw = NULL;
+CommonScheduleThread* cs = NULL;
 
 float World::m_movementCompressThreshold;
 float World::m_movementCompressThresholdCreatures;
@@ -436,6 +437,7 @@ bool World::SetInitialWorldSettings()
 	MAKE_TASK(QuestMgr, LoadExtraQuestStuff);
 	MAKE_TASK(ObjectMgr, LoadArenaTeams);
 	MAKE_TASK(ObjectMgr, LoadProfessionDiscoveries);
+	MAKE_TASK(ObjectMgr, StoreBroadCastGroupKey);
 
 #undef MAKE_TASK
 
@@ -512,6 +514,11 @@ bool World::SetInitialWorldSettings()
 
 	dw = new DayWatcherThread();
 	ThreadPool.ExecuteTask( dw );
+	
+	// commonschedule sys
+	cs = new CommonScheduleThread();
+	ThreadPool.ExecuteTask( cs );
+	
 
 	ThreadPool.ExecuteTask( new CharacterLoaderThread() );
 
@@ -1317,6 +1324,20 @@ void World::Rehash(bool load)
 	announce_msgcolor = Config.OptionalConfig.GetIntDefault("Color", "AnnMsgColor", 10);
 	AnnounceColorChooser(announce_tagcolor, announce_gmtagcolor, announce_namecolor, announce_msgcolor);
 
+	// broadcast system
+	BCTriggerPercentCap = Config.OptionalConfig.GetIntDefault("CommonSchedule", "BroadCastTriggerPercentCap", 100);
+	BCInterval = Config.OptionalConfig.GetIntDefault("CommonSchedule", "BroadCastInterval", 1);
+	BCSystemEnable = Config.OptionalConfig.GetBoolDefault("CommonSchedule", "AutoBroadCast", false);
+	BCOrderMode = Config.OptionalConfig.GetIntDefault("CommonSchedule", "BroadCastOrderMode",0);
+
+	if ( BCInterval < 10 ) BCInterval = 10;
+	else if ( BCInterval > 1440 ) BCInterval = 1440;
+	if ( BCTriggerPercentCap >= 99 ) BCTriggerPercentCap = 98;
+	else if ( BCTriggerPercentCap <= 1 ) BCTriggerPercentCap = 0;
+	if ( BCOrderMode < 0 ) BCOrderMode = 0;
+	else if ( BCOrderMode >1 ) BCOrderMode = 1;
+
+
 	if(!flood_lines || !flood_seconds)
 		flood_lines = flood_seconds = 0;
 
@@ -2017,4 +2038,32 @@ string World::GetUptimeString()
 
 	snprintf(str, 300, "%u days, %u hours, %u minutes, %u seconds.", tmv->tm_yday, tmv->tm_hour, tmv->tm_min, tmv->tm_sec);
 	return string(str);
+}
+
+void World::SendBroadCastToAllSessions(uint32 id)
+{
+	m_sessionlock.AcquireReadLock();
+	SessionMap::iterator itr;
+	for (itr = m_sessions.begin(); itr != m_sessions.end(); itr++)
+	{
+		if (itr->second->GetPlayer() &&
+			itr->second->GetPlayer()->IsInWorld() )
+		{
+			const char *text = itr->second->LocalizedBroadCast(id);
+			uint32 textLen = (uint32)strlen((char*)text) + 1;
+			WorldPacket data(textLen + 40);
+			data.Initialize(SMSG_MESSAGECHAT);
+			data << uint8(CHAT_MSG_SYSTEM);
+			data << uint32(LANG_UNIVERSAL);
+	
+			data << (uint64)0; // Who cares about guid when there's no nickname displayed heh ?
+			data << (uint32)0;
+			data << (uint64)0;
+			data << textLen;
+			data << text;
+			data << uint8(0);
+			itr->second->SendPacket(&data);
+		}
+	}
+	m_sessionlock.ReleaseReadLock();
 }
