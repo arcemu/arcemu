@@ -269,6 +269,8 @@ void Pet::CreateAsSummon(uint32 entry, CreatureInfo *ci, Creature* created_from_
 
 Pet::Pet(uint64 guid) : Creature(guid)
 {
+	int i;
+
 	m_PetXP = 0;
 	Summon = false;
 	memset(ActionBar, 0, sizeof(uint32)*10);
@@ -293,15 +295,17 @@ Pet::Pet(uint64 guid) : Creature(guid)
 	LoyaltyXP = 0;
 	reset_time = 0;
 	reset_cost = 0;
+
+	for(i=0;i<AUTOCAST_EVENT_COUNT;i++)
+		m_autoCastSpells[i].clear();
+	m_AISpellStore.clear();
+	mSpells.clear();
 }
 
 Pet::~Pet()
 {
 	for(std::map<uint32, AI_Spell*>::iterator itr = m_AISpellStore.begin(); itr != m_AISpellStore.end(); ++itr)
 		delete itr->second;
-
-	for(int i=0;i<AUTOCAST_EVENT_COUNT;i++)
-		m_autoCastSpells[i].clear();
 
 	if(IsInWorld())
 		this->Remove(false, true, true);
@@ -1918,6 +1922,9 @@ void Pet::HandleAutoCastEvent( AutoCastEvents Type )
 
 void Pet::SetAutoCast(AI_Spell * sp, bool on)
 {
+	ASSERT(sp != NULL);
+	ASSERT(sp->spell != NULL);
+
 	if(sp->autocast_type > 0)
 	{
 		if(!on)
