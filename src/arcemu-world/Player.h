@@ -656,7 +656,7 @@ enum SPELL_INDEX2
 #define PLAYER_RATING_MODIFIER_MELEE_CRIT						PLAYER_FIELD_COMBAT_RATING_08
 #define PLAYER_RATING_MODIFIER_RANGED_CRIT						PLAYER_FIELD_COMBAT_RATING_09
 #define PLAYER_RATING_MODIFIER_SPELL_CRIT						PLAYER_FIELD_COMBAT_RATING_10
-#define PLAYER_RATING_MODIFIER_MELEE_HIT_AVOIDANCE				PLAYER_FIELD_COMBAT_RATING_11 // GUESSED
+#define PLAYER_RATING_MODIFIER_EXPERTISE2						PLAYER_FIELD_COMBAT_RATING_11 // Not 100% sure but the numbers line up
 #define PLAYER_RATING_MODIFIER_RANGED_HIT_AVOIDANCE				PLAYER_FIELD_COMBAT_RATING_12 // GUESSED
 #define PLAYER_RATING_MODIFIER_SPELL_HIT_AVOIDANCE				PLAYER_FIELD_COMBAT_RATING_13 // GUESSED
 #define PLAYER_RATING_MODIFIER_MELEE_CRIT_RESILIENCE			PLAYER_FIELD_COMBAT_RATING_14
@@ -1223,20 +1223,18 @@ public:
 	float SpellHasteRatingBonus;
 	void ModAttackSpeed( int32 mod, ModType type );
 	void UpdateAttackSpeed();
+	float GetDefenseChance(uint32 opLevel);
+	float GetDodgeChance();
+	float GetBlockChance();
+	float GetParryChance();
 	void UpdateChances();
 	void UpdateStats();
 	void UpdateHit(int32 hit);
    
 	bool canCast(SpellEntry *m_spellInfo);
-	ARCEMU_INLINE float GetBlockFromSpell() { return m_blockfromspell; }
 	ARCEMU_INLINE float GetSpellCritFromSpell() { return m_spellcritfromspell; }
 	ARCEMU_INLINE float GetHitFromSpell() { return m_hitfromspell; }
-	ARCEMU_INLINE float GetParryFromSpell() { return m_parryfromspell; }
-	ARCEMU_INLINE float GetDodgeFromSpell() { return m_dodgefromspell; }
-	void SetBlockFromSpell(float value) { m_blockfromspell = value; }
 	void SetSpellCritFromSpell(float value) { m_spellcritfromspell = value; }
-	void SetParryFromSpell(float value) { m_parryfromspell = value; }
-	void SetDodgeFromSpell(float value) { m_dodgefromspell = value; }
 	void SetHitFromSpell(float value) { m_hitfromspell = value; }
 	ARCEMU_INLINE uint32 GetHealthFromSpell() { return m_healthfromspell; }
 	ARCEMU_INLINE uint32 GetManaFromSpell() { return m_manafromspell; }
@@ -1894,12 +1892,9 @@ protected:
 	uint8 m_restState;
 	uint32 m_restAmount;
 	//combat mods
-	float m_blockfromspell;
 	float m_blockfromspellPCT;
 	float m_critfromspell;
 	float m_spellcritfromspell;
-	float m_dodgefromspell;
-	float m_parryfromspell;
 	float m_hitfromspell;
 	//stats mods
 	uint32 m_healthfromspell;

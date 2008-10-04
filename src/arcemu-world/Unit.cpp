@@ -342,6 +342,10 @@ Unit::Unit()
 	m_soulSiphon.max = 0;
 	ModelHalfSize = 1.0f; //worst case unit size. (Should be overwritten)
 
+	m_blockfromspell		= 0;
+	m_dodgefromspell		= 0;
+	m_parryfromspell		= 0;
+
 	m_damageShields.clear();
 	m_reflectSpellSchool.clear();
 	m_procSpells.clear();
@@ -2864,12 +2868,16 @@ void Unit::Strike( Unit* pVictim, uint32 weapon_damage_type, SpellEntry* ability
 //==========================================================================================
 	if(!pVictim->isAlive() || !isAlive()  || IsStunned() || IsPacified() || IsFeared())
 		return;
+
 	if(!isInFront(pVictim))
+	{
 		if(IsPlayer())
 		{
 			static_cast< Player* >( this )->GetSession()->OutPacket(SMSG_ATTACKSWING_BADFACING);
 			return;
 		}
+	}
+
 //==========================================================================================
 //==============================Variables Initialization====================================
 //==========================================================================================
@@ -2913,39 +2921,80 @@ void Unit::Strike( Unit* pVictim, uint32 weapon_damage_type, SpellEntry* ability
 		else
 			dmg.school_type = SCHOOL_NORMAL;
 	}
+
 //==========================================================================================
 //==============================Victim Skill Base Calculation===============================
 //==========================================================================================
 	if(pVictim->IsPlayer())
 	{
-		vskill = static_cast< Player* >( pVictim )->_GetSkillLineCurrent( SKILL_DEFENSE );
-		if( weapon_damage_type != RANGED && !backAttack )
+		Player* plr = static_cast< Player* >( pVictim );
+		vskill = plr->_GetSkillLineCurrent( SKILL_DEFENSE );
+
+		if( !backAttack )
 		{
-//--------------------------------block chance----------------------------------------------
-				block = pVictim->GetFloatValue(PLAYER_BLOCK_PERCENTAGE); //shield check already done in Update chances
-//--------------------------------dodge chance----------------------------------------------
-			if(pVictim->m_stunned<=0) 
+			// not an attack from behind so we may dodge/parry/block
+
+			uint32 pClass = plr->getClass();
+			uint32 pLevel = (getLevel() > PLAYER_LEVEL_CAP) ? PLAYER_LEVEL_CAP : getLevel();
+
+			if ( weapon_damage_type != RANGED )
 			{
-				dodge = pVictim->GetFloatValue( PLAYER_DODGE_PERCENTAGE );
+				// cannot dodge/parry ranged attacks
+
+				if(pVictim->m_stunned<=0)
+				{
+					// can dodge as long as we're not stunned
+					dodge = plr->GetDodgeChance();
+				}
+
+				if(pVictim->can_parry && !disarmed)
+				{
+					// can parry as long as we're not disarmed
+					parry = plr->GetParryChance();
+				}
 			}
-//--------------------------------parry chance----------------------------------------------
-			if(pVictim->can_parry && !disarmed)
+			// can block ranged attacks
+
+			// Is an offhand equipped and is it a shield?
+			Item* it = plr->GetItemInterface()->GetInventoryItem( EQUIPMENT_SLOT_OFFHAND );
+			if( it != NULL && it->GetProto()->InventoryType == INVTYPE_SHIELD )
 			{
-				parry = pVictim->GetFloatValue( PLAYER_PARRY_PERCENTAGE );
+				block = plr->GetBlockChance();
 			}
 		}
-		victim_skill = float2int32( vskill + static_cast< Player* >( pVictim )->CalcRating( 1 ) );
+		victim_skill = float2int32( vskill + floorf( plr->CalcRating( PLAYER_RATING_MODIFIER_DEFENCE ) ) );
 	}
 //--------------------------------mob defensive chances-------------------------------------
 	else
 	{
-		if( weapon_damage_type != RANGED && !backAttack )
-			dodge = pVictim->GetUInt32Value( UNIT_FIELD_STAT1 ) / 14.5f; // what is this value? (Agility)
+		// not a player, must be a creature
+		Creature* c = static_cast< Creature* >( pVictim );
+
+		// mobs can dodge attacks from behind
+		if ( weapon_damage_type != RANGED && pVictim->m_stunned <= 0 )
+		{
+			dodge = pVictim->GetUInt32Value( UNIT_FIELD_AGILITY ) / 14.5f;
+			dodge += pVictim->GetDodgeFromSpell();
+		}
+
+		if ( !backAttack )
+		{
+			// can parry attacks from the front
+			// TODO different bosses have different parry rates (db patch?)
+			if ( !disarmed ) // TODO this is wrong
+			{
+				parry = c->GetBaseParry();
+				parry += pVictim->GetParryFromSpell();
+			}
+
+			// TODO add shield check/block chance here
+			// how do we check what the creature has equipped?
+		}
+
 		victim_skill = pVictim->getLevel() * 5;
-		if( pVictim->m_objectTypeId == TYPEID_UNIT ) 
+		if ( pVictim->m_objectTypeId == TYPEID_UNIT ) 
 		{ 
-			Creature* c = static_cast< Creature* >( pVictim );
-			if( c != NULL && c->GetCreatureInfo()&&c->GetCreatureInfo()->Rank == ELITE_WORLDBOSS )
+			if ( c != NULL && c->GetCreatureInfo() && c->GetCreatureInfo()->Rank == ELITE_WORLDBOSS )
 			{
 				victim_skill = std::max( victim_skill, ( (int32)getLevel() + 3 ) * 5 ); //used max to avoid situation when lowlvl hits boss.
 			}
@@ -3021,32 +3070,27 @@ void Unit::Strike( Unit* pVictim, uint32 weapon_damage_type, SpellEntry* ability
 //==========================================================================================
 //==============================Special Chances Base Calculation============================
 //==========================================================================================
-//<THE SHIT> to avoid Linux bug. 
-float diffVcapped = (float)self_skill;
-if(int32(pVictim->getLevel()*5)>victim_skill)
-	diffVcapped -=(float)victim_skill;
-else
-	diffVcapped -=(float)(pVictim->getLevel()*5);
-
-float diffAcapped = (float)victim_skill;
-if(int32(this->getLevel()*5)>self_skill)
-	diffAcapped -=(float)self_skill;
-else
-	diffAcapped -=(float)(this->getLevel()*5);
-//<SHIT END>
 
 //--------------------------------crushing blow chance--------------------------------------
-	if(pVictim->IsPlayer()&&!this->IsPlayer()&&!ability && !dmg.school_type)
+	//http://www.wowwiki.com/Crushing_blow
+	if (pVictim->IsPlayer() && !this->IsPlayer() && !ability && !dmg.school_type)
 	{
-		if(diffVcapped>=15.0f)
-			crush = -15.0f+2.0f*diffVcapped; 
+		int32 baseDefense = static_cast<Player*>(pVictim)->_GetSkillLineCurrent(SKILL_DEFENSE, false);
+		int32 skillDiff = self_skill - baseDefense;
+		if ( skillDiff >= 15)
+			crush = -15.0f + 2.0f * skillDiff; 
 		else 
 			crush = 0.0f;
 	}
 //--------------------------------glancing blow chance--------------------------------------
-	if(this->IsPlayer()&&!pVictim->IsPlayer()&&!ability)
+	//http://www.wowwiki.com/Glancing_blow
+	// did my own quick research here, seems base glancing against equal level mob is about 5%
+	// and goes up 5% each level. Need to check this further.
+	float diffAcapped = victim_skill - std::min((float)self_skill, getLevel() * 5.0f);
+
+	if (this->IsPlayer() && !pVictim->IsPlayer() && !ability)
 	{
-		glanc = 10.0f + diffAcapped;
+		glanc = 5.0f + diffAcapped;
 		if(glanc<0)
 			glanc = 0.0f;
 	}
@@ -3070,7 +3114,7 @@ else
 	crit += (float)(pVictim->AttackerCritChanceMod[0]);
 //--------------------------------by skill difference---------------------------------------
 
-	float vsk = (float)self_skill - (float)victim_skill;
+	float vsk = (float)(self_skill - victim_skill);
 	dodge = std::max( 0.0f, dodge - vsk * 0.04f );
 	if( parry )
 		parry = std::max( 0.0f, parry - vsk * 0.04f );
@@ -3079,15 +3123,24 @@ else
 
 	crit += pVictim->IsPlayer() ? vsk * 0.04f : min( vsk * 0.2f, 0.0f ); 
 
-	if(vsk>0)
-			hitchance = 95.0f+vsk*0.02f;
+	// http://www.wowwiki.com/Miss
+	float misschance;
+	float ask = -vsk;
+	if (pVictim->IsPlayer())
+	{
+		if (ask > 0)
+			misschance = ask * 0.04f;
+		else
+			misschance = ask * 0.02f;
+	}
 	else
 	{
-		if(pVictim->IsPlayer())
-			hitchance = 95.0f+vsk*0.04f;
+		if (ask <= 10)
+			misschance = ask * 0.1f;
 		else
-			hitchance = 100.0f+vsk*0.6f; //not wowwiki but more balanced
+			misschance = 2 + (ask - 10) * 0.4f;
 	}
+	hitchance = 100.0f - misschance; // base miss chances are worked out further down
 
 	if(ability && ability->SpellGroupType)
 	{
@@ -3105,10 +3158,11 @@ else
 	if(crit<0) crit=0.0f;
 	if (this->IsPlayer())
 	{
-		hitmodifier += (weapon_damage_type == RANGED) ? static_cast< Player* >(this)->CalcRating( PLAYER_RATING_MODIFIER_RANGED_HIT ) : static_cast< Player* >(this)->CalcRating( PLAYER_RATING_MODIFIER_MELEE_HIT );
-		dodge -=static_cast< Player* >(this)->CalcRating( PLAYER_RATING_MODIFIER_EXPERTISE );
+		Player* plr = static_cast< Player* >(this);
+		hitmodifier += (weapon_damage_type == RANGED) ? plr->CalcRating( PLAYER_RATING_MODIFIER_RANGED_HIT ) : plr->CalcRating( PLAYER_RATING_MODIFIER_MELEE_HIT );
+		dodge -= plr->CalcRating( PLAYER_RATING_MODIFIER_EXPERTISE2 ); // EXPERTISE will give you expertise skill, EXPERTISE2 gives you the % bonus from the rating
 		if(dodge<0) dodge=0.0f;
-		parry -=static_cast< Player* >(this)->CalcRating( PLAYER_RATING_MODIFIER_EXPERTISE );
+		parry -= plr->CalcRating( PLAYER_RATING_MODIFIER_EXPERTISE2 );
 		if(parry<0) parry=0.0f;
 	}
 	
@@ -3120,17 +3174,28 @@ else
 		parry=0.0f;
 		glanc=0.0f;
 	}
-	else
+
+	if ( this->IsPlayer() )
 	{
-		if(this->IsPlayer())
+		it = static_cast< Player* >( this )->GetItemInterface()->GetInventoryItem( EQUIPMENT_SLOT_OFFHAND );
+		if ( !ability && it != NULL
+		 && (it->GetProto()->InventoryType == INVTYPE_WEAPON || it->GetProto()->InventoryType == INVTYPE_WEAPONOFFHAND))
 		{
-			it = static_cast< Player* >( this )->GetItemInterface()->GetInventoryItem( EQUIPMENT_SLOT_OFFHAND );
-			if( it != NULL && it->GetProto()->InventoryType == INVTYPE_WEAPON && !ability )//dualwield to-hit penalty
-				hitmodifier -= 19.0f;
+			// offhand weapon can either be a 1 hander weapon or an offhander weapon
+			hitmodifier -= 24.0f; //dualwield miss chance
+		}
+		else
+		{
+			hitmodifier -= 5.0f; // base miss chance
 		}
 	}
+	else
+	{
+		// mobs base hit chance
+		hitmodifier -= 5.0f;
+	}
 
-	hitchance+= hitmodifier;
+	hitchance += hitmodifier;
 
 	//Hackfix for Surprise Attacks
 	if(  this->IsPlayer() && ability && static_cast< Player* >( this )->m_finishingmovesdodge && ability->c_is_flags & SPELL_FLAG_IS_FINISHING_MOVE)
@@ -3183,6 +3248,16 @@ else
 	chances[4]=chances[3]+block;
 	chances[5]=chances[4]+crit;
 	chances[6]=chances[5]+crush;
+
+	//printf("%s:-\n", IsPlayer() ? "Player" : "Mob");
+	//printf(" miss: %.2f\n", chances[0]);
+	//printf("dodge: %.2f\n", dodge);
+	//printf("parry: %.2f\n", parry);
+	//printf("glanc: %.2f\n", glanc);
+	//printf("block: %.2f\n", block);
+	//printf(" crit: %.2f\n", crit);
+	//printf("crush: %.2f\n", crush);
+
 //--------------------------------roll------------------------------------------------------
 	float Roll = RandomFloat(100.0f);
 	uint32 r = 0;
@@ -3522,7 +3597,7 @@ else
 			{
 				realdamage = 0;
 				vstate = IMMUNE;
-				hit_status |= HITSTATUS_ABSORBED;
+				hit_status |= HITSTATUS_BLOCK;//ABSORBED;
 			}
 		}
 		break;
@@ -3920,7 +3995,6 @@ else
 		m_extrastriketarget = 0;
 	}
 }	
-
 
 void Unit::smsg_AttackStop(Unit* pVictim)
 {

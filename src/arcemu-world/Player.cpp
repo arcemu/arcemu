@@ -79,11 +79,8 @@ Player::Player( uint32 guid ) : m_mailBox(guid)
 
 	// Attack related variables
 	m_blockfromspellPCT		= 0;
-	m_blockfromspell		= 0;
 	m_critfromspell			= 0;
 	m_spellcritfromspell	= 0;
-	m_dodgefromspell		= 0;
-	m_parryfromspell		= 0;
 	m_hitfromspell			= 0;
 
 	m_healthfromspell		= 0;
@@ -4685,6 +4682,76 @@ void Player::UpdateHit(int32 hit)
 	SetHitFromSpell(in);*/
 }
 
+float Player::GetDefenseChance(uint32 opLevel)
+{
+	float chance;
+
+	chance = float( _GetSkillLineCurrent( SKILL_DEFENSE, true ) - ( opLevel * 5.0f ) );
+	chance += CalcRating( PLAYER_RATING_MODIFIER_DEFENCE );
+	chance = floorf( chance ) * 0.04f; // defense skill is treated as an integer on retail
+
+	return chance;
+}
+
+#define BASE_BLOCK_CHANCE 5.0f
+#define BASE_PARRY_CHANCE 5.0f
+
+// Gets dodge chances before defense skill is applied
+float Player::GetDodgeChance()
+{
+	uint32 pClass = (uint32)getClass();
+	float chance;
+	
+	// base dodge chance
+	chance = baseDodge[pClass];
+
+	// dodge from agility
+	chance += float( GetUInt32Value( UNIT_FIELD_STAT1 ) / dodgeRatio[getLevel()-1][pClass] );
+
+	// dodge from dodge rating
+	chance += CalcRating( PLAYER_RATING_MODIFIER_DODGE );
+
+	// dodge from spells
+	chance += GetDodgeFromSpell();
+
+	return max( chance, 0.0f ); // make sure we dont have a negative chance
+}
+
+// Gets block chances before defense skill is applied
+// Assumes the caller will check for shields
+float Player::GetBlockChance()
+{
+	float chance;
+
+	// base block chance
+	chance = BASE_BLOCK_CHANCE;
+	
+	// block rating
+	chance += CalcRating( PLAYER_RATING_MODIFIER_BLOCK );
+	
+	// block chance from spells
+	chance += GetBlockFromSpell();
+
+	return max( chance, 0.0f ); // make sure we dont have a negative chance
+}
+
+// Get parry chances before defense skill is applied
+float Player::GetParryChance()
+{
+	float chance;
+
+	// base parry chance
+	chance = BASE_PARRY_CHANCE;
+	
+	// parry rating
+	chance += CalcRating( PLAYER_RATING_MODIFIER_PARRY );
+
+	// parry chance from spells
+	chance += GetParryFromSpell();
+
+	return max( chance, 0.0f ); // make sure we dont have a negative chance
+}
+
 void Player::UpdateChances()
 {
 	uint32 pClass = (uint32)getClass();
@@ -4693,38 +4760,33 @@ void Player::UpdateChances()
 	float tmp = 0;
 	float defence_contribution = 0;
 
-	// defence contribution estimate
-	defence_contribution = ( float( _GetSkillLineCurrent( SKILL_DEFENSE, true ) ) - ( float( pLevel ) * 5.0f ) ) * 0.04f;
-	defence_contribution += CalcRating( PLAYER_RATING_MODIFIER_DEFENCE ) * 0.04f;
+	// avoidance from defense skill
+	defence_contribution = GetDefenseChance( pLevel );
 
 	// dodge
-//	tmp = baseDodge[pClass] + float( GetUInt32Value( UNIT_FIELD_STAT1 ) / dodgeRatio[69][pClass] );
-	tmp = baseDodge[pClass] + float( GetUInt32Value( UNIT_FIELD_STAT1 ) / dodgeRatio[pLevel-1][pClass] );
-	tmp += CalcRating( PLAYER_RATING_MODIFIER_DODGE ) + this->GetDodgeFromSpell();
+	tmp = GetDodgeChance();
 	tmp += defence_contribution;
-	if( tmp < 0.0f )tmp = 0.0f;
-
-	SetFloatValue( PLAYER_DODGE_PERCENTAGE, min( tmp, 95.0f ) );
+	tmp = min( tmp, 95.0f );
+	SetFloatValue( PLAYER_DODGE_PERCENTAGE, tmp );
 
 	// block
 	Item* it = this->GetItemInterface()->GetInventoryItem( EQUIPMENT_SLOT_OFFHAND );
 	if( it != NULL && it->GetProto()->InventoryType == INVTYPE_SHIELD )
 	{
-		tmp = 5.0f + CalcRating( PLAYER_RATING_MODIFIER_BLOCK ) + GetBlockFromSpell();
+		tmp = GetBlockChance();
 		tmp += defence_contribution;
-		if( tmp < 0.0f )tmp = 0.0f;
+		tmp = min( tmp, 95.0f );
 	}
 	else
 		tmp = 0.0f;
-	
-	SetFloatValue( PLAYER_BLOCK_PERCENTAGE, min( tmp, 95.0f ) );
+
+	SetFloatValue( PLAYER_BLOCK_PERCENTAGE, tmp );
 
 	//parry
-	tmp = 5.0f + CalcRating( PLAYER_RATING_MODIFIER_PARRY ) + GetParryFromSpell();
+	tmp = GetParryChance();
 	tmp += defence_contribution;
-	if( tmp < 0.0f )tmp = 0.0f;
-
-	SetFloatValue( PLAYER_PARRY_PERCENTAGE, std::max( 0.0f, std::min( tmp, 95.0f ) ) ); //let us not use negative parry. Some spells decrease it
+	tmp = min( tmp, 95.0f );
+	SetFloatValue( PLAYER_PARRY_PERCENTAGE, tmp );
 
 	//critical
 	gtFloat* baseCrit = dbcMeleeCritBase.LookupEntry(pClass-1);
@@ -5001,6 +5063,16 @@ void Player::UpdateStats()
 	{
 		SetUInt32Value( PLAYER_SHIELD_BLOCK, 0 );
 	}
+
+	// Expertise
+	// Expertise is somewhat tricky. Expertise on items is expertise "rating" where as "expertise"
+	// on the character sheet is the rating modified by a factor. The bonus % this value gives is
+	// actually the "rating" modified by another factor.
+	// eg. 100 expertise rating from items
+	// 100 / 3.92 = 25 expertise
+	// 100 / 15.77 = 6.3% reduced dodge/parry chances
+	SetUInt32Value( PLAYER_EXPERTISE, CalcRating( PLAYER_RATING_MODIFIER_EXPERTISE ) ); // value displayed in char sheet
+	//SetUInt32Value( PLAYER_RATING_MODIFIER_EXPERTISE2, GetUInt32Value( PLAYER_RATING_MODIFIER_EXPERTISE ) );
 
 	UpdateChances();
 	CalcDamage();
@@ -8781,15 +8853,16 @@ void Player::ModifyBonuses( uint32 type, int32 val, bool apply )
 			}break;
 		case HIT_AVOIDANCE_RATING:// this is guessed based on layout of other fields
 			{
-				ModUnsigned32Value( PLAYER_RATING_MODIFIER_MELEE_HIT_AVOIDANCE, val );//melee
-				ModUnsigned32Value( PLAYER_RATING_MODIFIER_RANGED_HIT_AVOIDANCE, val );//ranged
-				ModUnsigned32Value( PLAYER_RATING_MODIFIER_SPELL_HIT_AVOIDANCE, val );//spell
+				//ModUnsigned32Value( PLAYER_RATING_MODIFIER_MELEE_HIT_AVOIDANCE, val );//melee
+				//ModUnsigned32Value( PLAYER_RATING_MODIFIER_RANGED_HIT_AVOIDANCE, val );//ranged
+				//ModUnsigned32Value( PLAYER_RATING_MODIFIER_SPELL_HIT_AVOIDANCE, val );//spell
 			}break;
 		case EXPERTISE_RATING:
 		case EXPERTISE_RATING_2:
 			{
 				ModUnsigned32Value( PLAYER_RATING_MODIFIER_EXPERTISE, val );
-				ModUnsigned32Value( PLAYER_EXPERTISE, val );
+				ModUnsigned32Value( PLAYER_RATING_MODIFIER_EXPERTISE2, val );
+				//ModUnsigned32Value( PLAYER_EXPERTISE, val );
 			}break;
 		case RESILIENCE_RATING:
 			{

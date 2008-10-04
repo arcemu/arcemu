@@ -569,6 +569,8 @@ public:
 	uint32 m_respawnTimeOverride;
 	LocationVector * m_transportPosition;
 	uint32 m_transportGuid;
+
+	float GetBaseParry();
 protected:
 	CreatureAIScript *_myScriptClass;
 	bool m_limbostate;

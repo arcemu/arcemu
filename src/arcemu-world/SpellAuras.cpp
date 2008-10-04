@@ -4707,7 +4707,7 @@ void Aura::SpellAuraTrackResources(bool apply)
 
 void Aura::SpellAuraModParryPerc(bool apply)
 {
-	if (m_target->GetTypeId() == TYPEID_PLAYER)
+	//if (m_target->GetTypeId() == TYPEID_PLAYER)
 	{
 		int32 amt;
 		if(apply)
@@ -4722,14 +4722,17 @@ void Aura::SpellAuraModParryPerc(bool apply)
 		else
 			amt = -mod->m_amount;
 
-		static_cast< Player* >( m_target )->SetParryFromSpell(static_cast< Player* >( m_target )->GetParryFromSpell() + amt );
-		static_cast< Player* >( m_target )->UpdateChances();
+		m_target->SetParryFromSpell(m_target->GetParryFromSpell() + amt );
+		if ((m_target->GetTypeId() == TYPEID_PLAYER))
+		{
+			static_cast< Player* >( m_target )->UpdateChances();
+		}
 	}
 }
 
 void Aura::SpellAuraModDodgePerc(bool apply)
 {
-	if (m_target->GetTypeId() == TYPEID_PLAYER)
+	//if (m_target->GetTypeId() == TYPEID_PLAYER)
 	{
 		int32 amt = mod->m_amount;
 //		SM_FIValue(m_target->SM_FSPELL_VALUE, &amt, GetSpellProto()->SpellGroupType);
@@ -4742,14 +4745,18 @@ void Aura::SpellAuraModDodgePerc(bool apply)
 		}
 		else
 			amt = -amt;
-		static_cast< Player* >( m_target )->SetDodgeFromSpell(static_cast< Player* >( m_target )->GetDodgeFromSpell() + amt );
-		static_cast< Player* >( m_target )->UpdateChances();
+
+		m_target->SetDodgeFromSpell(m_target->GetDodgeFromSpell() + amt );
+		if (m_target->GetTypeId() == TYPEID_PLAYER)
+		{
+			static_cast< Player* >( m_target )->UpdateChances();
+		}
 	}
 }
 
 void Aura::SpellAuraModBlockPerc(bool apply)
 {
-	if (m_target->GetTypeId() == TYPEID_PLAYER)
+	//if (m_target->GetTypeId() == TYPEID_PLAYER)
 	{
 		int32 amt;
 		if(apply)
@@ -4763,8 +4770,11 @@ void Aura::SpellAuraModBlockPerc(bool apply)
 		else
 			amt = -mod->m_amount;
 
-		static_cast< Player* >( m_target )->SetBlockFromSpell(static_cast< Player* >( m_target )->GetBlockFromSpell() + amt);
-		static_cast< Player* >( m_target )->UpdateStats();
+		m_target->SetBlockFromSpell(m_target->GetBlockFromSpell() + amt);
+		if (m_target->GetTypeId() == TYPEID_PLAYER)
+		{
+			static_cast< Player* >( m_target )->UpdateStats();
+		}
 	}
 }
 

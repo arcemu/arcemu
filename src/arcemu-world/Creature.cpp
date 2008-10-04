@@ -1795,3 +1795,12 @@ uint32 Creature::GetNpcTextId()
 {
 	return objmgr.GetGossipTextForNpc(this->GetEntry());
 }
+
+float Creature::GetBaseParry()
+{
+	// TODO what are the parry rates for mobs?
+	// FACT: bosses have varying parry rates (used to tune the difficulty of boss fights)
+
+	// for now return a base of 5%, later get from dbase?
+	return 5.0f;
+}

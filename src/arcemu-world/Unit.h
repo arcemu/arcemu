@@ -1292,6 +1292,14 @@ public:
 
 	void RemoveFieldSummon();
 
+	ARCEMU_INLINE float GetBlockFromSpell() { return m_blockfromspell; }
+	ARCEMU_INLINE float GetParryFromSpell() { return m_parryfromspell; }
+	ARCEMU_INLINE float GetDodgeFromSpell() { return m_dodgefromspell; }
+	void SetBlockFromSpell(float value) { m_blockfromspell = value; }
+	void SetParryFromSpell(float value) { m_parryfromspell = value; }
+	void SetDodgeFromSpell(float value) { m_dodgefromspell = value; }
+
+
 protected:
 	Unit ();
 
@@ -1341,6 +1349,10 @@ protected:
 	bool m_extraAttackCounter;
 
 	float ModelHalfSize; // used to calculate if something is in range of this unit
+
+	float m_blockfromspell;
+	float m_dodgefromspell;
+	float m_parryfromspell;
 
 };
 
