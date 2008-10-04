@@ -218,3 +218,8 @@ INSERT INTO spellfixes(spellId, groupRelation1) VALUES(16209, 0x200) ON DUPLICAT
 -- [Hunter] Improved Revive Pet
 INSERT INTO spellfixes(spellId, groupRelation2) VALUES(24443, 0x1000000) ON DUPLICATE KEY UPDATE groupRelation2=VALUES(groupRelation2);
 INSERT INTO spellfixes(spellId, groupRelation2) VALUES(19575, 0x1000000) ON DUPLICATE KEY UPDATE groupRelation2=VALUES(groupRelation2);
+
+-- [Rogue] Aggression
+INSERT INTO spellfixes(spellId, groupRelation0) VALUES(18427, 0x20006) ON DUPLICATE KEY UPDATE groupRelation0=VALUES(groupRelation0);
+INSERT INTO spellfixes(spellId, groupRelation0) VALUES(18428, 0x20006) ON DUPLICATE KEY UPDATE groupRelation0=VALUES(groupRelation0);
+INSERT INTO spellfixes(spellId, groupRelation0) VALUES(18429, 0x20006) ON DUPLICATE KEY UPDATE groupRelation0=VALUES(groupRelation0);
