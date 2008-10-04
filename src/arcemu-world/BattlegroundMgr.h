@@ -66,7 +66,6 @@ const static uint32 BGMaximumPlayers[BATTLEGROUND_NUM_TYPES] = {
 };
 
 const static uint32 BGMinimumPlayers[BATTLEGROUND_NUM_TYPES] = {
-#ifndef ONLY_ONE_PERSON_REQUIRED_TO_JOIN_DEBUG
 	0,							// 0
 	0,							// AV
 	5,							// WSG
@@ -75,16 +74,6 @@ const static uint32 BGMinimumPlayers[BATTLEGROUND_NUM_TYPES] = {
 	6,							// 3v3
 	10,							// 5v5
 	5,							// EotS
-#else
-	0,							// 0
-	0,							// AV
-	1,							// WSG
-	1,							// AB
-	1,							// 2v2
-	1,							// 3v3
-	1,							// 5v5
-	1,							// Netherstorm
-#endif
 };
 
 

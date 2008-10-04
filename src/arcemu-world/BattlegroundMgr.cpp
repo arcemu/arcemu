@@ -728,8 +728,9 @@ void CBattlegroundManager::RemovePlayerFromQueues(Player * plr)
 
 	ASSERT(plr->m_bgQueueType < BATTLEGROUND_NUM_TYPES);
 	uint32 lgroup = GetLevelGrouping(plr->getLevel());
-	list<uint32>::iterator itr = m_queuedPlayers[plr->m_bgQueueType][lgroup].begin();
+	list<uint32>::iterator itr;
 
+	itr = m_queuedPlayers[plr->m_bgQueueType][lgroup].begin();
 	while(itr != m_queuedPlayers[plr->m_bgQueueType][lgroup].end())
 	{
 		if((*itr) == plr->GetLowGUID())
@@ -902,32 +903,17 @@ void CBattleground::BuildPvPUpdateDataPacket(WorldPacket * data)
 		else
 		{
 			/* Grab some arena teams */
-			ArenaTeam * teams[2] = {NULL,NULL};
-			for(uint32 i = 0; i < 2; ++i)
-			{
-				for(set<Player*>::iterator itr = m_players[i].begin(); itr != m_players[i].end(); ++itr)
-				{
-					teams[i] = (*itr)->m_arenaTeams[ ((Arena*)this)->GetArenaTeamType() ];
-					if(teams[i])
-						break;
-				}
-			}
+			ArenaTeam **teams = ((Arena*)this)->GetTeams();
 
-			if(teams[0])
-			{
+			if(teams[0]) {
 				*data << uint32(0) << uint32(3000+m_deltaRating[0]) << uint8(0);
-			}
-			else
-			{
+			} else {
 				*data << uint32(0) << uint32(0) << uint8(0);
 			}
 
-			if(teams[1])
-			{
+			if(teams[1]) {
 				*data << uint32(0) << uint32(3000+m_deltaRating[1]) << uint8(0);
-			}
-			else
-			{
+			} else {
 				*data << uint32(0) << uint32(0) << uint8(0);
 			}
 		}
@@ -1464,17 +1450,10 @@ void CBattleground::RemovePlayer(Player * plr, bool logout)
 void CBattleground::SendPVPData(Player * plr)
 {
 	m_mainLock.Acquire();
-	/*if(m_type >= BATTLEGROUND_ARENA_2V2 && m_type <= BATTLEGROUND_ARENA_5V5)
-	{
-	m_mainLock.Release();
-	return;
-	}
-	else
-	{*/
+
 	WorldPacket data(10*(m_players[0].size()+m_players[1].size())+50);
 	BuildPvPUpdateDataPacket(&data);
 	plr->GetSession()->SendPacket(&data);
-	/*}*/
 
 	m_mainLock.Release();
 }

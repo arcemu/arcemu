@@ -112,6 +112,10 @@ AIInterface::AIInterface()
 	timed_emotes = NULL;
 	timed_emote_expire = 0xFFFFFFFF;
 	m_MovementState = MOVEMENTSTATE_STOP;
+
+	m_aiTargets.clear();
+	m_assistTargets.clear();
+
 #ifdef HACKY_SERVER_CLIENT_POS_SYNC
 	moved_for_attack = false;
 #endif
@@ -1934,8 +1938,8 @@ bool AIInterface::FindFriends(float dist)
 				for(it = m_aiTargets.begin(); it != m_aiTargets.end(); ++it)
 				{
 					Unit *ai_t = m_Unit->GetMapMgr()->GetUnit( it->first );
-					if( ai_t )
-						static_cast< Unit* >( *itr )->GetAIInterface()->AttackReaction( ai_t, 1, 0 );
+					if( ai_t && pUnit->GetAIInterface() )
+						pUnit->GetAIInterface()->AttackReaction( ai_t, 1, 0 );
 				}
 
 				LockAITargets(false);
