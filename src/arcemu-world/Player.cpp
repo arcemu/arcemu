@@ -5071,7 +5071,7 @@ void Player::UpdateStats()
 	// eg. 100 expertise rating from items
 	// 100 / 3.92 = 25 expertise
 	// 100 / 15.77 = 6.3% reduced dodge/parry chances
-	SetUInt32Value( PLAYER_EXPERTISE, CalcRating( PLAYER_RATING_MODIFIER_EXPERTISE ) ); // value displayed in char sheet
+	SetUInt32Value( PLAYER_EXPERTISE, (uint32) CalcRating( PLAYER_RATING_MODIFIER_EXPERTISE ) ); // value displayed in char sheet
 	//SetUInt32Value( PLAYER_RATING_MODIFIER_EXPERTISE2, GetUInt32Value( PLAYER_RATING_MODIFIER_EXPERTISE ) );
 
 	UpdateChances();
@@ -7566,10 +7566,10 @@ void Player::ZoneUpdate(uint32 ZoneId)
 void Player::SendTradeUpdate()
 {
 	Player * pTarget = GetTradeTarget();
-	if(!pTarget)
+	if( !pTarget )
 		return;
 
-	WorldPacket data(SMSG_TRADE_STATUS_EXTENDED, 500);
+	WorldPacket data( SMSG_TRADE_STATUS_EXTENDED, 532 );
 	/*data << uint8(1);
 	data << uint32(2) << uint32(2);
 	data << mTradeGold << uint32(0);*/
@@ -7578,40 +7578,46 @@ void Player::SendTradeUpdate()
 	data << m_tradeSequence;
 	data << m_tradeSequence++;
 	data << mTradeGold << uint32(0);
-		
+	
+	uint8 count = 0;
 	// Items
-	for(uint32 Index = 0; Index < 7; ++Index)
+	for( uint32 Index = 0; Index < 7; ++Index )
 	{
-		Item * pItem = mTradeItems[Index];
+		Item * pItem = mTradeItems[ Index ];
 		if(pItem != 0)
 		{
+			count++;
 			ItemPrototype * pProto = pItem->GetProto();
-			ASSERT(pProto != 0);
+			ASSERT( pProto != 0 );
 
-			data << uint8(Index);
+			data << uint8( Index );
 
 			data << pProto->ItemId;
 			data << pProto->DisplayInfoID;
-			data << pItem->GetUInt32Value(ITEM_FIELD_STACK_COUNT);  // Amount		   OK
+			data << pItem->GetUInt32Value( ITEM_FIELD_STACK_COUNT );	// Amount		   OK
 			
 			// Enchantment stuff
-			data << uint32(0);									  // unknown
-			data << pItem->GetUInt64Value(ITEM_FIELD_GIFTCREATOR);  // gift creator	 OK
-			data << pItem->GetUInt32Value(ITEM_FIELD_ENCHANTMENT);  // Item Enchantment OK
-			data << uint32(0);									  // unknown
-			data << uint32(0);									  // unknown
-			data << uint32(0);									  // unknown
-			data << pItem->GetUInt64Value(ITEM_FIELD_CREATOR);	  // item creator	 OK
-			data << pItem->GetUInt32Value(ITEM_FIELD_STACK_COUNT);  // Spell Charges	OK
+			data << uint32(0);											// unknown
+			data << pItem->GetUInt64Value( ITEM_FIELD_GIFTCREATOR );	// gift creator	 OK
+			data << pItem->GetUInt32Value( ITEM_FIELD_ENCHANTMENT );	// Item Enchantment OK
+			for( uint8 i = 2; i < 5; i++ )								// Gem enchantments
+			{
+				if( pItem->GetEnchantment(i) != NULL && pItem->GetEnchantment(i)->Enchantment != NULL )
+					data << pItem->GetEnchantment(i)->Enchantment->Id;
+				else 
+					data << uint32( 0 );
+			}
+			data << pItem->GetUInt64Value( ITEM_FIELD_CREATOR );		// item creator	 OK
+			data << pItem->GetUInt32Value( ITEM_FIELD_SPELL_CHARGES );	// Spell Charges	OK
 
-			data << uint32(0);									  // seems like time stamp or something like that
-			data << pItem->GetUInt32Value(ITEM_FIELD_RANDOM_PROPERTIES_ID);
-			data << pProto->LockId;								 // lock ID		  OK
-			data << pItem->GetUInt32Value(ITEM_FIELD_MAXDURABILITY);
-			data << pItem->GetUInt32Value(ITEM_FIELD_DURABILITY);
+			data << uint32(0);											// seems like time stamp or something like that
+			data << pItem->GetUInt32Value( ITEM_FIELD_RANDOM_PROPERTIES_ID );
+			data << pProto->LockId;										// lock ID		  OK
+			data << pItem->GetUInt32Value( ITEM_FIELD_MAXDURABILITY );
+			data << pItem->GetUInt32Value( ITEM_FIELD_DURABILITY );
 		}
 	}
-
+	data.resize( 21 + count * 73 );
 	pTarget->GetSession()->SendPacket(&data);
 }
 
