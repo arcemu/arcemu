@@ -11,6 +11,8 @@ arcemu_world_SOURCES = \
     VoiceChatHandler.h \
     DayWatcherThread.cpp \
     DayWatcherThread.h \
+    CommonScheduleThread.cpp \
+    CommonScheduleThread.h \
     ArenaTeam.cpp \
     ArenaTeam.h \
     DatabaseCleaner.cpp \
