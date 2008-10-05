@@ -4921,54 +4921,73 @@ void Player::UpdateStats()
 	switch (cl)
 	{
 	case DRUID:
-		AP = str * 2 - 20;
-
-		// lev * 2 and lev * 3 bonus to attack power is already added elsewhere (in Cat Form and Bear From aura i think)
-		/* if( GetShapeShift() == FORM_CAT )
-			AP += agi + lev * 2;
-
-		if( GetShapeShift() == FORM_BEAR || GetShapeShift() == FORM_DIREBEAR )
-			AP += lev * 3; */
-		if (GetShapeShift() == FORM_CAT)
-			AP += agi; 
-
+        //(Strength x 2) - 20           
+        AP = str * 2 - 20;
+        //Agility - 10
+        RAP = agi - 10;
+    
+        if( GetShapeShift() == FORM_MOONKIN )
+        {
+            //(Strength x 2) + (Character Level x 1.5) - 20
+            AP += float2int32( static_cast<float>(lev) * 1.5f );
+        }
+        if( GetShapeShift() == FORM_CAT )
+		{
+            //(Strength x 2) + Agility + (Character Level x 2) - 20
+            AP += agi + (lev *2);
+        }
+        if( GetShapeShift() == FORM_BEAR || GetShapeShift() == FORM_DIREBEAR )
+        {
+            //(Strength x 2) + (Character Level x 3) - 20
+            AP += (lev *3);
+		}
 		break;
+
 
 	case ROGUE:
-		//AP = lev * 2 + str + agi - 20;
-		//RAP = lev + agi * 2 - 20;
-		//AP = str + agi - 20;
-		AP = lev * 2 + str + agi - 20;
+		//Strength + Agility + (Character Level x 2) - 20
+		AP = str + agi + (lev *2) - 20;
+		//Character Level + Agility - 10
 		RAP = lev + agi - 10;
+
 		break;
+
 
 	case HUNTER:
-		//AP = lev* 2 + str + agi - 20;
-		//RAP = (lev + agi)*2 - 20;
-		AP = lev * 2 + str + agi - 20;
-		RAP = lev * 2 + agi - 10;
+		//Strength + Agility + (Character Level x 2) - 20
+		 AP = str + agi + (lev *2) - 20;
+		//(Character Level x 2) + Agility - 10
+		RAP = (lev *2) + agi - 10;
+
 		break;
 
-	case SHAMAN:
-		AP = (lev+str)*2 - 20;
-		break;
+	case SHAMAN:   
+		//(Strength x 2) + (Character Level x 2) - 20
+		AP = (str *2) + (lev *2) -20;
+		//Agility - 10
+		RAP = agi - 10;
 		
-	case PALADIN:
-		//AP = lev * 3 + str * 2 - 20;
-		//AP = str * 2 - 20;
-		AP = lev * 3 + str * 2 - 20;
 		break;
+
+	case PALADIN:
+		//(Strength x 2) + (Character Level x 3) - 20
+		AP = (str *2) + (lev *3) - 20;
+		//Agility - 10
+		RAP = agi - 10;
+	
+		break;
+
 
 	case WARRIOR:
-		//AP = lev * 3 + str * 2 - 20;
-		//RAP = (lev+agi)*2 - 20;
-		//AP = str * 2 - 20;
-		AP = lev * 3 + str * 2 - 20;
+		//(Strength x 2) + (Character Level x 3) - 20
+		AP = (str *2) + (lev *3) - 20;
+		//Character Level + Agility - 10
 		RAP = lev + agi - 10;
+		
 		break;
 
-	default://mage,priest,warlock
-		AP = str - 10;
+	default:    //mage,priest,warlock
+		AP = agi - 10;
 	}
 
 	/* modifiers */
