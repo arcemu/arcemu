@@ -1541,6 +1541,16 @@ uint32 Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, ui
 					// Winter's Chill shouldn't proc on self
 					if (victim == this) continue;
 					break;
+				//item - Thunderfury
+				case 21992:
+					if (victim == this) 
+						continue;
+				break;
+				//warrior - Intimidating Shout
+				case 5246:
+					if (victim == this) 
+						continue;
+				break;
 				//priest - prayer of mending	
 				case 41637: //the heal spell
 					{
