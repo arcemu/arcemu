@@ -2046,15 +2046,15 @@ int8 ItemInterface::CanAffordItem(ItemPrototype * item,uint32 amount, Creature *
 			if(ex->item[i])
 			{
 				if(m_pOwner->GetItemInterface()->GetItemCount(ex->item[i], false) < (ex->count[i]*amount))
-					return CAN_AFFORD_ITEM_ERROR_NOT_ENOUGH_MONEY;
+					return INV_ERR_ITEM_NOT_FOUND;
 			}
 		}
 
 		if(m_pOwner->GetUInt32Value(PLAYER_FIELD_HONOR_CURRENCY) < (ex->honor*amount))
-			return CAN_AFFORD_ITEM_ERROR_NOT_ENOUGH_MONEY;
+			return INV_ERR_NOT_ENOUGH_HONOR_POINTS;
 		if(m_pOwner->GetUInt32Value(PLAYER_FIELD_ARENA_CURRENCY ) < (ex->arena*amount))
-			return CAN_AFFORD_ITEM_ERROR_NOT_ENOUGH_MONEY;
-		if(m_pOwner->GetMaxPersonalRating() < ex->personalrating)
+			return INV_ERR_NOT_ENOUGH_ARENA_POINTS;
+ 		if(m_pOwner->GetMaxPersonalRating() < ex->personalrating)
 			return CAN_AFFORD_ITEM_ERROR_NOT_REQUIRED_RANK;
 	}
 
