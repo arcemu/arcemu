@@ -155,6 +155,7 @@ void MapCell::RemoveObjects()
 
 		delete obj;
 	}
+	_objects.clear();
 
 	_playerCount = 0;
 	_loaded = false;

@@ -117,10 +117,10 @@ MapMgr::~MapMgr()
 			(*itr)->RemoveFromWorld(false);
 		delete (*itr);
 	}
+	_mapWideStaticObjects.clear();
 
-
-	free(m_GOStorage);
-	free(m_CreatureStorage);
+	free(m_GOStorage); m_GOStorage = NULL;
+	free(m_CreatureStorage); m_CreatureStorage = NULL;
 
 	Corpse * pCorpse;
 	for(set<Corpse*>::iterator itr = m_corpses.begin(); itr != m_corpses.end();)
@@ -133,6 +133,7 @@ MapMgr::~MapMgr()
 
 		delete pCorpse;
 	}
+	m_corpses.clear();
 
 	Log.Notice("MapMgr", "Instance %u shut down. (%s)" , m_instanceID, GetBaseMap()->GetName());
 }
