@@ -4766,7 +4766,7 @@ void Player::UpdateChances()
 	// dodge
 	tmp = GetDodgeChance();
 	tmp += defence_contribution;
-	tmp = min( tmp, 95.0f );
+	tmp = min( max( tmp, 0.0f ), 95.0f );
 	SetFloatValue( PLAYER_DODGE_PERCENTAGE, tmp );
 
 	// block
@@ -4775,17 +4775,24 @@ void Player::UpdateChances()
 	{
 		tmp = GetBlockChance();
 		tmp += defence_contribution;
-		tmp = min( tmp, 95.0f );
+		tmp = min( max( tmp, 0.0f ), 95.0f );
 	}
 	else
 		tmp = 0.0f;
 
 	SetFloatValue( PLAYER_BLOCK_PERCENTAGE, tmp );
 
-	//parry
-	tmp = GetParryChance();
-	tmp += defence_contribution;
-	tmp = min( tmp, 95.0f );
+	// parry (can only parry with something in main hand)
+	it = this->GetItemInterface()->GetInventoryItem( EQUIPMENT_SLOT_MAINHAND );
+	if( it != NULL )
+	{
+		tmp = GetParryChance();
+		tmp += defence_contribution;
+		tmp = min( max( tmp, 0.0f ), 95.0f );
+	}
+	else
+		tmp = 0.0f;
+
 	SetFloatValue( PLAYER_PARRY_PERCENTAGE, tmp );
 
 	//critical
@@ -5071,7 +5078,7 @@ void Player::UpdateStats()
 	// eg. 100 expertise rating from items
 	// 100 / 3.92 = 25 expertise
 	// 100 / 15.77 = 6.3% reduced dodge/parry chances
-	SetUInt32Value( PLAYER_EXPERTISE, (uint32) CalcRating( PLAYER_RATING_MODIFIER_EXPERTISE ) ); // value displayed in char sheet
+	SetUInt32Value( PLAYER_EXPERTISE, float2int32( CalcRating( PLAYER_RATING_MODIFIER_EXPERTISE ) ) ); // value displayed in char sheet
 	//SetUInt32Value( PLAYER_RATING_MODIFIER_EXPERTISE2, GetUInt32Value( PLAYER_RATING_MODIFIER_EXPERTISE ) );
 
 	UpdateChances();
