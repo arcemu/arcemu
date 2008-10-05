@@ -59,9 +59,6 @@ bool isHostile(Object* objA, Object* objB)// B is hostile for A?
 		return false;
 	bool hostile = false;
 
-//	if(objB->m_faction == NULL || objA->m_faction == NULL)
-//		return true;
-
 	if(objA == objB)
 		return false;   // can't attack self.. this causes problems with buffs if we dont have it :p
 
@@ -73,6 +70,10 @@ bool isHostile(Object* objA, Object* objB)// B is hostile for A?
 
 	int ret = isBgEnemy(objA, objB);
 	if (ret != -1) return ret == 1;
+
+	// no combat if we cant get factions (else would crash, should probably put in an assert)
+	if(objB->m_faction == NULL || objA->m_faction == NULL)
+		return false;
 
 	uint32 faction = objB->m_faction->Mask;
 	uint32 host = objA->m_faction->HostileMask;
@@ -349,7 +350,7 @@ bool isAttackable(Object* objA, Object* objB, bool CheckStealth)// A can attack 
 	}
 	else if(objB->IsPlayer() || objB->IsPet())
 	{
-		if(objA->m_factionDBC->RepListId == -1 && objA->m_faction->HostileMask == 0 && objA->m_faction->FriendlyMask == 0)
+		if(objA->m_factionDBC->RepListId == -1 && objA->m_faction && objA->m_faction->HostileMask == 0 && objA->m_faction->FriendlyMask == 0)
 		{
 			attackable = true;
 		}
