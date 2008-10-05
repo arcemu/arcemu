@@ -566,8 +566,6 @@ void Pet::LoadFromDB(Player* owner, PlayerPet * pi)
 	SetUInt32Value( UNIT_FIELD_ATTACK_POWER, 0 );
 	SetUInt32Value( UNIT_FIELD_ATTACK_POWER_MODS, 0 );
 	SetUInt32Value( UNIT_FIELD_BASEATTACKTIME, 2000 );
-	
-	InitializeMe(false);
 
 	if( m_Owner )
 	{
@@ -583,6 +581,8 @@ void Pet::LoadFromDB(Player* owner, PlayerPet * pi)
 		else
 			ApplyPetLevelAbilities();
 	}
+
+	InitializeMe(false);
 	
 	//if pet was dead on logout then it should be dead now too
 	if( HasFlag( UNIT_FIELD_FLAGS, UNIT_FLAG_DEAD ) )
