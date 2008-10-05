@@ -1156,6 +1156,16 @@ uint8 Spell::prepare( SpellCastTargets * targets )
 
 	m_spellState = SPELL_STATE_PREPARING;
 
+	if( p_caster && p_caster->IsStealth() && !(m_spellInfo->AttributesEx & ATTRIBUTESEX_NOT_BREAK_STEALTH) )
+	{
+		if (!(m_spellInfo->Attributes & ATTRIBUTES_PASSIVE) && 
+			!( pSpellId && dbcSpell.LookupEntry(pSpellId)->Attributes & ATTRIBUTES_PASSIVE ) ) //Stealth must remain while procing talents.
+		{
+			p_caster->RemoveAura(p_caster->m_stealth);
+			p_caster->m_stealth = 0;
+		}
+	}
+
 	if( m_triggeredSpell )
 		cancastresult = SPELL_CANCAST_OK;
 	else
