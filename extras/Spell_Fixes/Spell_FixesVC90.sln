@@ -1,6 +1,6 @@
 Microsoft Visual Studio Solution File, Format Version 10.00
 # Visual Studio 2008
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Spell_Fixes", "Spell_Fixes.vcproj", "{58392FFC-CD7B-4A41-A102-C5D4C9744275}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Spell_FixesVC90", "Spell_FixesVC90.vcproj", "{58392FFC-CD7B-4A41-A102-C5D4C9744275}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
