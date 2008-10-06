@@ -3133,13 +3133,15 @@ void Spell::SpellEffectSendEvent(uint32 i) //Send Event
 	case 23333:
 	case 23335:
 		{
-			/* set the flag holder */
-			p_caster->m_bgHasFlag = true;
+			if (p_caster && p_caster->m_bg) {
+				/* set the flag holder */
+				p_caster->m_bgHasFlag = true;
 
-			if( p_caster->GetTeam() == 1 )
-				p_caster->m_bg->SendChatMessage( CHAT_MSG_BG_EVENT_HORDE, p_caster->GetGUID(), "The Alliance flag was picked up by %s!", p_caster->GetName() );
-			else
-				p_caster->m_bg->SendChatMessage( CHAT_MSG_BG_EVENT_ALLIANCE, p_caster->GetGUID(), "The Horde flag was picked up by %s!", p_caster->GetName() );
+				if( p_caster->GetTeam() == 1 )
+					p_caster->m_bg->SendChatMessage( CHAT_MSG_BG_EVENT_HORDE, p_caster->GetGUID(), "The Alliance flag was picked up by %s!", p_caster->GetName() );
+				else
+					p_caster->m_bg->SendChatMessage( CHAT_MSG_BG_EVENT_ALLIANCE, p_caster->GetGUID(), "The Horde flag was picked up by %s!", p_caster->GetName() );
+			}
 		}break;
 
 	// Place Loot

@@ -123,16 +123,13 @@ void Spell::Virtual_Constructor()
 
 void Spell::Init(Object* Caster, SpellEntry *info, bool triggered, Aura* aur)
 {
+	int i;
+
 	ASSERT( Caster != NULL && info != NULL );
 
-	UniqueTargets.clear();
-	ModeratedTargets.clear();
 	chaindamage = 0;
 	bDurSet = 0;
 	damage = 0;
-	m_targetUnits[0].clear();
-	m_targetUnits[1].clear();
-	m_targetUnits[2].clear();
 	m_spellInfo_override = 0;
 	bRadSet[0] = 0;
 	bRadSet[1] = 0;
@@ -216,7 +213,6 @@ void Spell::Init(Object* Caster, SpellEntry *info, bool triggered, Aura* aur)
 
 	m_requiresCP = false;
 	unitTarget = NULL;
-	ModeratedTargets.clear();
 	itemTarget = NULL;
 	gameObjTarget = NULL;
 	playerTarget = NULL;
@@ -231,6 +227,12 @@ void Spell::Init(Object* Caster, SpellEntry *info, bool triggered, Aura* aur)
 	extra_cast_number = 0;
 	m_reflectedParent = NULL;
 	m_isCasting = false;
+
+	UniqueTargets.clear();
+	ModeratedTargets.clear();
+	for (i=0; i<3; i++) {
+		m_targetUnits[i].clear();
+	}
 }
 
 Spell::~Spell()

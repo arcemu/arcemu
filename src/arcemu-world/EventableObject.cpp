@@ -60,6 +60,8 @@ EventableObject::EventableObject()
 
 	m_holder = 0;
 	m_event_Instanceid = -1;
+
+	m_events.clear();
 }
 
 void EventableObject::event_AddEvent(TimedEvent * ptr)
