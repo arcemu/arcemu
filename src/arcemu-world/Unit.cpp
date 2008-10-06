@@ -1933,7 +1933,7 @@ uint32 Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, ui
 				//priest - Reflective Shield 
 				case 33619:
 					{
-						if (!abs_dmg)
+						if (  !abs )
 							continue;
 
 						//requires Power Word: Shield active
