@@ -24,6 +24,8 @@ UpdateMask Player::m_visibleUpdateMask;
 
 Player::Player( uint32 guid ) : m_mailBox(guid)
 {
+	int i,j;
+
 	m_objectTypeId = TYPEID_PLAYER;
 	m_valuesCount = PLAYER_END;
 	m_uint32Values = _fields;
@@ -99,13 +101,13 @@ Player::Player( uint32 guid ) : m_mailBox(guid)
 	
 	Lfgcomment = "";
 	
-	for(int i=0;i<3;i++)
+	for(i=0;i<3;i++)
 	{
 		LfgType[i]=0;
 		LfgDungeonId[i]=0;
 	}
 	
-	for(int32 i=0;i<28;i++){
+	for(i=0;i<28;i++){
 		MechanicDurationPctMod[i]=0;
 	}
 
@@ -139,8 +141,8 @@ Player::Player( uint32 guid ) : m_mailBox(guid)
 	//PvPTimeoutEnabled	   = false;
 
 	//Tutorials
-	for ( int aX = 0 ; aX < 8 ; aX++ )
-		m_Tutorials[ aX ] = 0x00;
+	for (i = 0 ; i < 8 ; i++ )
+		m_Tutorials[ i ] = 0x00;
 
 	m_lootGuid			  = 0;
 	m_banned				= false;
@@ -221,40 +223,40 @@ Player::Player( uint32 guid ) : m_mailBox(guid)
 	timed_quest_slot		= 0;
 	m_GM_SelectedGO			= 0;
 
-	for(uint32 x = 0;x < 7; x++)
+	for(i = 0;i < 7; i++)
 	{
-		FlatResistanceModifierPos[x] = 0;
-		FlatResistanceModifierNeg[x] = 0;
-		BaseResistanceModPctPos[x] = 0;
-		BaseResistanceModPctNeg[x] = 0; 
-		ResistanceModPctPos[x] = 0;
-		ResistanceModPctNeg[x] = 0;
-		SpellDelayResist[x] = 0;
-		m_casted_amount[x] = 0;
+		FlatResistanceModifierPos[i] = 0;
+		FlatResistanceModifierNeg[i] = 0;
+		BaseResistanceModPctPos[i] = 0;
+		BaseResistanceModPctNeg[i] = 0; 
+		ResistanceModPctPos[i] = 0;
+		ResistanceModPctNeg[i] = 0;
+		SpellDelayResist[i] = 0;
+		m_casted_amount[i] = 0;
 	} 
 		
-	for(uint32 a = 0; a < 6; a++)
-		for(uint32 x = 0; x < 7; x++)
+	for(i = 0; i < 6; i++)
+		for(j = 0; j < 7; j++)
 		{	
-			SpellHealDoneByAttribute[a][x] = 0;
+			SpellHealDoneByAttribute[i][j] = 0;
 		}
 
-	for(uint32 x = 0; x < 5; x++)
+	for(i = 0; i < 5; i++)
 	{
-		FlatStatModPos[x] = 0;
-		FlatStatModNeg[x] = 0;
-		StatModPctPos[x] = 0;
-		StatModPctNeg[x] = 0;
-		TotalStatModPctPos[x] = 0;
-		TotalStatModPctNeg[x] = 0;
+		FlatStatModPos[i] = 0;
+		FlatStatModNeg[i] = 0;
+		StatModPctPos[i] = 0;
+		StatModPctNeg[i] = 0;
+		TotalStatModPctPos[i] = 0;
+		TotalStatModPctNeg[i] = 0;
 	}
 
 
-	for(uint32 x = 0; x < 12; x++)
+	for(i = 0; i < 12; i++)
 	{
-		IncreaseDamageByType[x] = 0;
-		IncreaseDamageByTypePCT[x] = 0;
-		IncreaseCricticalByTypePCT[x] = 0;
+		IncreaseDamageByType[i] = 0;
+		IncreaseDamageByTypePCT[i] = 0;
+		IncreaseCricticalByTypePCT[i] = 0;
 	}
 
 	PctIgnoreRegenModifier  = 0.0f;
@@ -279,7 +281,7 @@ Player::Player( uint32 guid ) : m_mailBox(guid)
 	mOutOfRangeIdCount	  = 0;
 
 	bProcessPending		 = false;
-	for(int i = 0; i < 25; ++i)
+	for(i = 0; i < 25; ++i)
 		m_questlog[i] = NULL;
 
 	m_ItemInterface		 = new ItemInterface(this);
@@ -319,9 +321,9 @@ Player::Player( uint32 guid ) : m_mailBox(guid)
 	tutorialsDirty = true;
 	m_TeleportState = 1;
 	m_beingPushed = false;
-	for(int i = 0; i < NUM_CHARTER_TYPES; ++i)
+	for(i = 0; i < NUM_CHARTER_TYPES; ++i)
 		m_charters[i]=NULL;
-	for(int i = 0; i < NUM_ARENA_TEAM_TYPES; ++i)
+	for(i = 0; i < NUM_ARENA_TEAM_TYPES; ++i)
 		m_arenaTeams[i]=NULL;
 
 	flying_aura = 0;
@@ -339,10 +341,10 @@ Player::Player( uint32 guid ) : m_mailBox(guid)
 	UpdateLastSpeeds();
 
 	m_resist_critical[0]=m_resist_critical[1]=0;
-	for( uint32 x = 0; x < 3; x++ )
+	for(i = 0; i < 3; i++ )
 	{
-		m_resist_hit[x]		= 0.0f;
-		m_attack_speed[x]	= 1.0f;
+		m_resist_hit[i]		= 0.0f;
+		m_attack_speed[i]	= 1.0f;
 	}
 	ok_to_remove = false;
 	m_modphyscritdmgPCT = 0;
@@ -402,6 +404,48 @@ Player::Player( uint32 guid ) : m_mailBox(guid)
 	m_vampiricEmbrace = m_vampiricTouch = 0;
 	LastSeal = 0;
 	m_flyhackCheckTimer = 0;
+
+	m_skills.clear();
+	m_wratings.clear();
+	m_taxiPaths.clear();
+	m_QuestGOInProgress.clear();
+	m_removequests.clear();
+	m_finishedQuests.clear();
+	m_finishedDailies.clear();
+	quest_spells.clear();
+	quest_mobs.clear();
+
+    m_onStrikeSpells.clear();
+    m_onStrikeSpellDmg.clear();
+    mSpellOverrideMap.clear();
+    mSpells.clear();
+    mDeletedSpells.clear();
+	mShapeShiftSpells.clear();
+	m_Pets.clear();
+	m_itemsets.clear();
+	m_reputation.clear();
+	m_channels.clear();
+	m_visibleObjects.clear();
+	m_forcedReactions.clear();
+	m_friends.clear();
+	m_ignores.clear();
+	m_hasFriendList.clear();
+
+	loginauras.clear();
+	OnMeleeAuras.clear();
+	damagedone.clear();
+	tocritchance.clear();
+	m_visibleFarsightObjects.clear();
+	SummonSpells.clear();
+	PetSpells.clear();
+	delayedPackets.clear();
+	gmTargets.clear();
+	visiblityChangableSet.clear();
+	_splineMap.clear();
+
+	for (i=0; i<NUM_COOLDOWN_TYPES; i++) {
+		m_cooldownMap[i].clear();
+	}
 }
 
 void Player::OnLogin()
@@ -462,29 +506,37 @@ Player::~Player ( )
 		if(m_questlog[i] != NULL)
 		{
 			delete m_questlog[i];
+			m_questlog[i] = NULL;
 		}
 	}
 
 	for(SplineMap::iterator itr = _splineMap.begin(); itr != _splineMap.end(); ++itr)
 		delete itr->second;
+	_splineMap.clear();
 
-	if(m_ItemInterface)
+	if(m_ItemInterface) {
 		delete m_ItemInterface;
+		m_ItemInterface = NULL;
+	}
 
 	for(ReputationMap::iterator itr = m_reputation.begin(); itr != m_reputation.end(); ++itr)
 		delete itr->second;
+	m_reputation.clear();
+
 	m_objectTypeId = TYPEID_UNUSED;
 
 	if(m_playerInfo)
 		m_playerInfo->m_loggedInPlayer=NULL;
 
 	delete SDetector;
+	SDetector = NULL;
 
 	while( delayedPackets.size() )
 	{
 		WorldPacket * pck = delayedPackets.next();
 		delete pck;
 	}
+	delayedPackets.clear();
 }
 
 ARCEMU_INLINE uint32 GetSpellForLanguage(uint32 SkillID)
@@ -3143,6 +3195,11 @@ void Player::LoadFromDBProc(QueryResultVector & results)
 	}
 
 	// END SOCIAL
+
+	// Check skills that player shouldn't have
+	if (_HasSkillLine(SKILL_DUAL_WIELD) && !HasSpell(674)) {
+		_RemoveSkillLine(SKILL_DUAL_WIELD);
+	}
 
 	m_session->FullLogin(this);
 	m_session->m_loggingInPlayer=NULL;

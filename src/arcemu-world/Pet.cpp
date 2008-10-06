@@ -1583,14 +1583,15 @@ void Pet::ApplyStatsForLevel()
 		ApplyPetLevelAbilities();
 
 	// Apply common stuff
-	float pet_level = float(m_uint32Values[UNIT_FIELD_LEVEL]);
-
 	// Apply scale for this family.
-	float level_diff = float(myFamily->maxlevel - myFamily->minlevel);
-	float scale_diff = float(myFamily->maxsize - myFamily->minsize);
-	float factor = scale_diff / level_diff;
-	float scale = factor * pet_level + myFamily->minsize;
-	SetFloatValue(OBJECT_FIELD_SCALE_X, scale);
+	if (myFamily) {
+		float pet_level = float(m_uint32Values[UNIT_FIELD_LEVEL]);
+		float level_diff = float(myFamily->maxlevel - myFamily->minlevel);
+		float scale_diff = float(myFamily->maxsize - myFamily->minsize);
+		float factor = scale_diff / level_diff;
+		float scale = factor * pet_level + myFamily->minsize;
+		SetFloatValue(OBJECT_FIELD_SCALE_X, scale);
+	}
 
 	// Apply health fields.
 	SetUInt32Value(UNIT_FIELD_HEALTH, m_uint32Values[UNIT_FIELD_MAXHEALTH]);

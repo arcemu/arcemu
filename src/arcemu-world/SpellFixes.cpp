@@ -12351,7 +12351,7 @@ void ApplyNormalFixes()
 			sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
 			sp->EffectImplicitTargetA[0] = EFF_TARGET_PET;
 			sp->EffectTriggerSpell[0] = 34456;
-			sp->procFlags = PROC_ON_SPELL_CRIT_HIT | static_cast<uint32>(PROC_TARGET_SELF); //maybe target master ?
+			sp->procFlags = PROC_ON_CRIT_ATTACK | PROC_ON_SPELL_CRIT_HIT | static_cast<uint32>(PROC_TARGET_SELF); //maybe target master ?
 			sp->Effect[1] = 0; //remove this
 		}
 		sp = dbcSpell.LookupEntryForced( 34459 );
@@ -12361,7 +12361,7 @@ void ApplyNormalFixes()
 			sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
 			sp->EffectImplicitTargetA[0] = EFF_TARGET_PET;
 			sp->EffectTriggerSpell[0] = 34456;
-			sp->procFlags = PROC_ON_SPELL_CRIT_HIT | static_cast<uint32>(PROC_TARGET_SELF); 
+			sp->procFlags = PROC_ON_CRIT_ATTACK | PROC_ON_SPELL_CRIT_HIT | static_cast<uint32>(PROC_TARGET_SELF); 
 			sp->Effect[1] = 0; //remove this
 		}
 		sp = dbcSpell.LookupEntryForced( 34460 );
@@ -12371,7 +12371,7 @@ void ApplyNormalFixes()
 			sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
 			sp->EffectImplicitTargetA[0] = EFF_TARGET_PET;
 			sp->EffectTriggerSpell[0] = 34456;
-			sp->procFlags = PROC_ON_SPELL_CRIT_HIT | static_cast<uint32>(PROC_TARGET_SELF);
+			sp->procFlags = PROC_ON_CRIT_ATTACK | PROC_ON_SPELL_CRIT_HIT | static_cast<uint32>(PROC_TARGET_SELF);
 			sp->Effect[1] = 0; //remove this
 		}
 

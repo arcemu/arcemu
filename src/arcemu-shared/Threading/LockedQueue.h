@@ -77,6 +77,13 @@ public:
 		mutex.Release();
 	}
 
+	ARCEMU_INLINE void clear()
+	{
+		mutex.Acquire();
+		queue.clear();
+		mutex.Release();
+	}
+
 protected:
 	std::deque<TYPE> queue;
 	Mutex mutex;
