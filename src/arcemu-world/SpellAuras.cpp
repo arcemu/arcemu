@@ -1508,6 +1508,7 @@ void Aura::EventPeriodicDamage(uint32 amount)
 	if(m_target->SchoolImmunityList[GetSpellProto()->School])
 		return;
 	float res = float(amount);
+	uint32 abs_dmg = 0;
 	int bonus = 0;
 	uint32 school = GetSpellProto()->School;
 	Unit * c = GetUnitCaster();
@@ -1557,7 +1558,7 @@ void Aura::EventPeriodicDamage(uint32 amount)
 		}
 
 		uint32 ress=(uint32)res;
-		uint32 abs_dmg = m_target->AbsorbDamage(school, &ress);
+		abs_dmg = m_target->AbsorbDamage(school, &ress);
 		uint32 ms_abs_dmg= m_target->ManaShieldAbsorb(ress);
 		if (ms_abs_dmg)
 		{
