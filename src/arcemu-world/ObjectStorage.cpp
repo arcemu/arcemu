@@ -192,12 +192,12 @@ void ObjectMgr::LoadExtraCreatureProtoStuff()
 				sp->spell = spe;
 				sp->spellType = fields[6].GetUInt32();
 
-				int32  targettype = fields[7].GetUInt32();
-				if( targettype == 0 )
+				int32  targettype = fields[7].GetInt32();
+				if( targettype == -1 )
 					sp->spelltargetType = GetAiTargetType( spe );
 				else sp->spelltargetType = targettype;
 
-				sp->cooldown = fields[8].GetUInt32();
+				sp->cooldown = fields[8].GetInt32();
 				sp->floatMisc1 = fields[9].GetFloat();
 				sp->autocast_type=(uint32)-1;
 				sp->cooldowntime=getMSTime();
@@ -224,7 +224,7 @@ void ObjectMgr::LoadExtraCreatureProtoStuff()
 					sp->maxrange = GetMaxRange(dbcSpellRange.LookupEntry(sp->spell->rangeIndex));
 
 					//omg the poor darling has no clue about making ai_agents
-					if(sp->cooldown == 0)
+					if(sp->cooldown == (uint32)-1)
 					{
 						//now this will not be exact cooldown but maybe a bigger one to not make him spam spells to often
 						int cooldown;
