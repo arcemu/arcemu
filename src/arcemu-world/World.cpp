@@ -267,7 +267,6 @@ bool BasicTaskExecutor::run()
 }
 
 void Apply112SpellFixes();
-void ApplyExtraDataFixes();
 void ApplyNormalFixes();
 
 bool World::SetInitialWorldSettings()
@@ -389,7 +388,6 @@ bool World::SetInitialWorldSettings()
 	sLog.outString("");*/
 
 	Apply112SpellFixes();
-	ApplyExtraDataFixes();
 	ApplyNormalFixes();
 
 #define MAKE_TASK(sp, ptr) tl.AddTask(new Task(new CallbackP0<sp>(sp::getSingletonPtr(), &sp::ptr)))

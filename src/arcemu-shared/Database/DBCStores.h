@@ -370,7 +370,6 @@ struct SpellEntry
     uint32 RankNumber;                      //!!! CUSTOM, this protects players from having >1 rank of a spell
     uint32 NameHash;                        //!!! CUSTOM, related to custom spells, summon spell quest related spells
 	uint32 talent_tree;						//!!! CUSTOM,
-	uint32 in_front_status;					//!!! CUSTOM,
     uint32 EffectSpellGroupRelation_high[3];     //!!! this is not contained in client dbc but server must have it
 	uint32 ThreatForSpell;
 	float ThreatForSpellCoef;
