@@ -597,6 +597,10 @@ bool Master::Run(int argc, char ** argv)
 	dw->terminate();
 	dw = NULL;
 
+	Log.Notice( "CommonScheduleThread", "Exiting..." );
+	cs->terminate();
+	cs = NULL;
+
 #ifndef CLUSTERING
 	ls->Close();
 #endif
