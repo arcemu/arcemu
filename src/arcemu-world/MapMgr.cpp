@@ -851,7 +851,6 @@ void MapMgr::ChangeObjectLocation( Object *obj )
 	uint32 startY = cellY > 0 ? cellY - 1 : 0;
 	uint32 posX, posY;
 	MapCell *cell;
-	MapCell::ObjectSet::iterator iter;
 
 	for (posX = startX; posX <= endX; ++posX )
 	{
@@ -859,7 +858,7 @@ void MapMgr::ChangeObjectLocation( Object *obj )
 		{
 			cell = GetCell(posX, posY);
 			if (cell)
-			UpdateInRangeSet(obj, plObj, cell, &buf);
+				UpdateInRangeSet(obj, plObj, cell, &buf);
 		}
 	}
 
