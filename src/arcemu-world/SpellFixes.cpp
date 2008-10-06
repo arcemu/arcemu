@@ -4567,34 +4567,6 @@ void ApplyNormalFixes()
 
 	// Insert warlock spell fixes here
 		
-		//Unstable Affliction
-		sp = dbcSpell.LookupEntryForced( 30108 );
-		if (sp != NULL)
-		{
-			sp->Effect[1] = SPELL_EFFECT_APPLY_AURA;
-			sp->EffectApplyAuraName[1] = SPELL_AURA_PROC_TRIGGER_SPELL;
-			sp->EffectTriggerSpell[1] = 31117;
-			sp->procChance = 100;
-			sp->procFlags = PROC_ON_PRE_DISPELL_AURA_VICTIM | static_cast<uint32>(PROC_TARGET_SELF);
-		}
-		sp = dbcSpell.LookupEntryForced( 30404 );
-		if (sp != NULL)
-		{
-			sp->Effect[1] = SPELL_EFFECT_APPLY_AURA;
-			sp->EffectApplyAuraName[1] = SPELL_AURA_PROC_TRIGGER_SPELL;
-			sp->EffectTriggerSpell[1] = 31117;
-			sp->procChance = 100;
-			sp->procFlags = PROC_ON_PRE_DISPELL_AURA_VICTIM | static_cast<uint32>(PROC_TARGET_SELF);
-		}
-		sp = dbcSpell.LookupEntryForced( 30405 );
-		if (sp != NULL)
-		{
-			sp->Effect[1] = SPELL_EFFECT_APPLY_AURA;
-			sp->EffectApplyAuraName[1] = SPELL_AURA_PROC_TRIGGER_SPELL;
-			sp->EffectTriggerSpell[1] = 31117;
-			sp->procChance = 100;
-			sp->procFlags = PROC_ON_PRE_DISPELL_AURA_VICTIM | static_cast<uint32>(PROC_TARGET_SELF);
-		}
 		sp = dbcSpell.LookupEntryForced( 31117 );
 		if (sp != NULL)
 			sp->c_is_flags |= SPELL_FLAG_IS_FORCEDDEBUFF;

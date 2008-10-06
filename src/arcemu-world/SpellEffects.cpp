@@ -3435,20 +3435,19 @@ void Spell::SpellEffectDispel(uint32 i) // Dispel
 	
 	WorldPacket data(SMSG_SPELLDISPELLOG, 16);
 
+	bool finish = false;
+
 	for(uint32 x=start;x<end;x++)
 	if(unitTarget->m_auras[x])
 	{
+		bool auraRemoved = false;
 		aur = unitTarget->m_auras[x];
 		//Nothing can dispel resurrection sickness;
 		if(!aur->IsPassive() && !(aur->GetSpellProto()->Attributes & ATTRIBUTES_IGNORE_INVULNERABILITY))
 		{
-			uint32 UARank = 0;
 			if(GetProto()->DispelType == DISPEL_ALL)
 			{
 				unitTarget->HandleProc( PROC_ON_PRE_DISPELL_AURA_VICTIM , u_caster , GetProto(), aur->GetSpellId() );
-				
-				if( aur->m_spellProto && aur->m_spellProto->NameHash == SPELL_HASH_UNSTABLE_AFFLICTION )
-					UARank = aur->m_spellProto->RankNumber;
 
 				data.clear();
 				data << m_caster->GetNewGUID();
@@ -3457,15 +3456,14 @@ void Spell::SpellEffectDispel(uint32 i) // Dispel
 				data << aur->GetSpellId();
 				m_caster->SendMessageToSet(&data,true);
 				unitTarget->RemoveAura(aur);
+				auraRemoved = true;
+
 				if(!--damage)
-					return;
+					finish = true;
 			}
 			else if(aur->GetSpellProto()->DispelType == GetProto()->EffectMiscValue[i])
 			{
 				unitTarget->HandleProc( PROC_ON_PRE_DISPELL_AURA_VICTIM , u_caster , GetProto(), aur->GetSpellId() );
-
-				if( aur->m_spellProto && aur->m_spellProto->NameHash == SPELL_HASH_UNSTABLE_AFFLICTION )
-					UARank = aur->m_spellProto->RankNumber;
 
 				data.clear();
 				data << m_caster->GetNewGUID();
@@ -3474,27 +3472,41 @@ void Spell::SpellEffectDispel(uint32 i) // Dispel
 				data << aur->GetSpellId();
 				m_caster->SendMessageToSet(&data,true);
 				unitTarget->RemoveAllAuras(aur->GetSpellProto()->Id,aur->GetCasterGUID());
+				auraRemoved = true;
+
 				if(!--damage)
-					return;
+					finish = true;
 			}	
-			if( UARank != 0 )
+			
+			if (auraRemoved)
 			{
-				uint32 dmg = 0;
-				switch ( UARank ) // BRRR, FUCKING BLIZZ
+				if( aur->GetSpellProto()->NameHash == SPELL_HASH_UNSTABLE_AFFLICTION )
 				{
-					case 1:
-						dmg = 990;
-						break;
-					case 2:
-						dmg = 1260;
-						break;
-					case 3:
-						dmg = 1575;
-						break;
+					SpellEntry *spellInfo = dbcSpell.LookupEntry(31117);
+					if ( spellInfo != NULL )
+					{
+						Spell *spell = SpellPool.PooledNew();
+						spell->Init(u_caster, spellInfo ,true, NULL);
+						spell->forced_basepoints[0] = (aur->GetSpellProto()->EffectBasePoints[0]+1)*9; //damage effect
+						spell->ProcedOnSpell = GetProto();
+						spell->pSpellId = aur->GetSpellId();
+						SpellCastTargets targets;
+						targets.m_unitTarget = u_caster->GetGUID();
+						spell->prepare(&targets);
+					}
 				}
-				u_caster->SpellNonMeleeDamageLog(u_caster,31117,dmg,true,true);
+				else if ( aur->GetSpellProto()->NameHash == SPELL_HASH_LIFEBLOOM )
+				{
+					Spell* spell=SpellPool.PooledNew();
+					spell->Init(aur->GetCaster(), aur->GetSpellProto(), true, NULL);
+					spell->SetUnitTarget( unitTarget );
+					spell->Heal( aur->mod->m_amount );
+				}
 			}
+
 		}
+		if (finish)
+			return;
 	}   
 }
 
