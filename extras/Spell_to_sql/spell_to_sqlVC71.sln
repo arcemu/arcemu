@@ -1,0 +1,22 @@
+Microsoft Visual Studio Solution File, Format Version 8.00
+# Visual Studio 2003
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "spell_to_sqlVC71", "spell_to_sqlVC71.vcproj", "{58392FFC-CD7B-4A41-A102-C5D4C9744275}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfiguration) = preSolution
+		Debug = Debug
+		Release = Release
+	EndGlobalSection
+	GlobalSection(ProjectConfiguration) = postSolution
+		{58392FFC-CD7B-4A41-A102-C5D4C9744275}.Debug.ActiveCfg = Debug|Win32
+		{58392FFC-CD7B-4A41-A102-C5D4C9744275}.Debug.Build.0 = Debug|Win32
+		{58392FFC-CD7B-4A41-A102-C5D4C9744275}.Release.ActiveCfg = Release|Win32
+		{58392FFC-CD7B-4A41-A102-C5D4C9744275}.Release.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+	EndGlobalSection
+	GlobalSection(ExtensibilityAddIns) = postSolution
+	EndGlobalSection
+EndGlobal
