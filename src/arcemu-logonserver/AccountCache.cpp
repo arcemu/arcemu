@@ -476,10 +476,10 @@ void InformationCore::SendRealms(AuthSocket * Socket)
 //		data << uint8(itr->second->Icon);
 //		data << uint8(0);				   // Locked Flag
 //		data << uint8(itr->second->Colour);		
-		data << itr->second->Icon;
+		data << uint8(itr->second->Icon);
 		//data << itr->second->Lock;  for use in later patch
 		data << uint8(0);		// delete when using data << itr->second->Lock;
-		data << itr->second->Colour;		
+		data << uint8(itr->second->Colour);
 
 		// This part is the same for all.
 		data << itr->second->Name;

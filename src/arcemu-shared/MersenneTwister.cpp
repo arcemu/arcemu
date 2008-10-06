@@ -1,5 +1,6 @@
 /*
  * ArcEmu MMORPG Server
+ * Copyright (C) 2005-2007 Ascent Team <http://www.ascentemu.com/> 
  * Copyright (C) 2008 <http://www.ArcEmu.org/>
  *
  * This program is free software: you can redistribute it and/or modify
@@ -59,7 +60,9 @@ double RandomDouble()
 {
 	double ret;
 	uint32 c;
-	for(;;)
+  counter = 0; // added  cebernic: 10/06/2008 why not init ?
+  // might be overflow couple days?
+  for(;;)
 	{
 		c=counter%NUMBER_OF_GENERATORS;
 		if(m_locks[c]->AttemptAcquire())
@@ -77,7 +80,8 @@ uint32 RandomUInt(uint32 n)
 {
 	uint32 ret;
 	uint32 c;
-	for(;;)
+  counter = 0;
+  for(;;)
 	{
 		c=counter%NUMBER_OF_GENERATORS;
 		if(m_locks[c]->AttemptAcquire())
@@ -110,6 +114,7 @@ uint32 RandomUInt()
 {
 	uint32 ret;
 	uint32 c;
+  counter = 0;
 	for(;;)
 	{
 		c=counter%NUMBER_OF_GENERATORS;
