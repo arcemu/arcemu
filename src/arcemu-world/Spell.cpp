@@ -1440,6 +1440,67 @@ void Spell::cast(bool check)
 					p_caster->m_stealth = 0;
 				}
 			}
+
+			// special case battleground additional actions
+			if(p_caster->m_bg)
+			{
+				// warsong gulch & eye of the storm flag pickup check
+				// also includes check for trying to cast stealth/etc while you have the flag
+				switch(GetProto()->Id)
+				{
+					case 21651:
+						// Arathi Basin opening spell, remove stealth, invisibility, etc. 
+						p_caster->RemoveStealth();
+						p_caster->RemoveInvisibility();
+						p_caster->RemoveAllAuraByNameHash(SPELL_HASH_DIVINE_SHIELD);
+						p_caster->RemoveAllAuraByNameHash(SPELL_HASH_DIVINE_PROTECTION);
+						p_caster->RemoveAllAuraByNameHash(SPELL_HASH_BLESSING_OF_PROTECTION);
+						break;
+					case 23333:
+					case 23335:
+					case 34976:
+						// if we're picking up the flag remove the buffs
+						p_caster->RemoveStealth();
+						p_caster->RemoveInvisibility();
+						p_caster->RemoveAllAuraByNameHash(SPELL_HASH_DIVINE_SHIELD);
+						p_caster->RemoveAllAuraByNameHash(SPELL_HASH_DIVINE_PROTECTION);
+						p_caster->RemoveAllAuraByNameHash(SPELL_HASH_BLESSING_OF_PROTECTION);
+						break;
+					// cases for stealth - etc
+					// we can cast the spell, but we drop the flag (if we have it)
+					case 1784:	// stealth
+					case 1785:
+					case 1786:
+					case 1787:
+					case 5215:	// prowl
+					case 6783:
+					case 9913:
+					case 498:	// divine protection
+					case 5573:
+					case 642:	// divine shield
+					case 1020:
+					case 1022:	// blessing of protection
+					case 5599:
+					case 10278:
+					case 1856:	// vanish
+					case 1857:
+					case 26889:
+					case 45438:	// ice block
+					case 20580:	// shadowmeld
+					case 66:	// invisibility
+						if(p_caster->m_bg->GetType() == BATTLEGROUND_WARSUNG_GULCH)
+						{
+							if(p_caster->GetTeam() == 0)
+								p_caster->RemoveAura(23333);	// ally player drop horde flag if they have it
+							else
+								p_caster->RemoveAura(23335); 	// horde player drop ally flag if they have it
+						}
+						if(p_caster->m_bg->GetType() == BATTLEGROUND_EYE_OF_THE_STORM)
+
+							p_caster->RemoveAura(34976);	// drop the flag
+						break;	
+				}
+			}
 		}
 
 		/*SpellExtraInfo* sp = objmgr.GetSpellExtraData(GetProto()->Id);
@@ -3122,17 +3183,6 @@ uint8 Spell::CanCast(bool tolerate)
 			}
 		}
 
-		// Arathi Basin opening spell, remove stealth, invisibility, etc. 
-		// hacky but haven't found a better way that works
-		if (p_caster->m_bg && GetProto()->Id == 21651)
-		{
-			p_caster->RemoveStealth();
-			p_caster->RemoveInvisibility();
-			p_caster->RemoveAllAuraByNameHash(SPELL_HASH_ICE_BLOCK);
-			p_caster->RemoveAllAuraByNameHash(SPELL_HASH_DIVINE_SHIELD);
-			p_caster->RemoveAllAuraByNameHash(SPELL_HASH_BLESSING_OF_PROTECTION);
-		}
-
 		//Check if spell allowed while out of stealth
 		if(m_spellInfo->Attributes & ATTRIBUTES_REQ_STEALTH && !p_caster->IsStealth()) //Stealth check
 		{
@@ -4071,6 +4121,7 @@ uint8 Spell::CanCast(bool tolerate)
 		}
 	}
 
+	
 	// no problems found, so we must be ok
 	return SPELL_CANCAST_OK;
 }

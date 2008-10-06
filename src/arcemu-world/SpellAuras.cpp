@@ -4440,6 +4440,7 @@ void Aura::SpellAuraModEffectImmunity(bool apply)
 	if( m_spellProto->Id == 24937 )
 		SetPositive();
 
+	// Battleground flags - no idea why they're SpellAuraModEffectImmunity but there you go...
 	if( m_spellProto->Id == 23333 || m_spellProto->Id == 23335 || m_spellProto->Id == 34976 )
 	{
 		if( !apply )

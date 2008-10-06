@@ -687,7 +687,7 @@ public:
 			++it;
 		}
 		if ( Entries.empty() ) return 0;
-		uint32 n = (Entries.size()>1 ? RandomUInt(  Entries.size()-1  ) : 0);
+		uint32 n = (Entries.size()>1 ? RandomUInt(  ((uint32)Entries.size())-1  ) : 0);
 		return Entries[n];
 	}
 
