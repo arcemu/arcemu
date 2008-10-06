@@ -2762,6 +2762,9 @@ void Object::SpellNonMeleeDamageLog(Unit *pVictim, uint32 spellID, uint32 damage
 		abs_dmg += ms_abs_dmg;
 	}
 
+	if(abs_dmg)
+		vproc |= PROC_ON_ABSORB;
+
 	if(ress < 0) ress = 0;
 
 	res=(float)ress;
@@ -2805,9 +2808,9 @@ void Object::SpellNonMeleeDamageLog(Unit *pVictim, uint32 spellID, uint32 damage
 	{
 		int32 dmg = float2int32(res);
 
-		pVictim->HandleProc( vproc, static_cast< Unit* >( this ), spellInfo, dmg);
+		pVictim->HandleProc( vproc, static_cast< Unit* >( this ), spellInfo, dmg, abs_dmg);
 		pVictim->m_procCounter = 0;
-		static_cast< Unit* >( this )->HandleProc( aproc, pVictim, spellInfo, dmg);
+		static_cast< Unit* >( this )->HandleProc( aproc, pVictim, spellInfo, dmg, abs_dmg);
 		static_cast< Unit* >( this )->m_procCounter = 0;
 	}
 	if( this->IsPlayer() )

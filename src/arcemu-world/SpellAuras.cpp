@@ -1607,9 +1607,12 @@ void Aura::EventPeriodicDamage(uint32 amount)
 		uint32 vproc = PROC_ON_ANY_HOSTILE_ACTION | PROC_ON_ANY_DAMAGE_VICTIM;
 		int32 dmg =  float2int32(res);
 
-		c->HandleProc(aproc, mtarget, sp, dmg);
+		if(abs_dmg)
+			vproc |= PROC_ON_ABSORB;
+
+		c->HandleProc(aproc, mtarget, sp, dmg, abs_dmg);
 		c->m_procCounter = 0;
-		mtarget->HandleProc(vproc, c, sp, dmg);
+		mtarget->HandleProc(vproc, c, sp, dmg, abs_dmg);
 		mtarget->m_procCounter = 0;
 	}
 
