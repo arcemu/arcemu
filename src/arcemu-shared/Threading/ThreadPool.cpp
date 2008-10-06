@@ -35,7 +35,7 @@
 
 #endif
 
-#define THREAD_RESERVE 5
+#define THREAD_RESERVE 10
 SERVER_DECL CThreadPool ThreadPool;
 
 CThreadPool::CThreadPool()

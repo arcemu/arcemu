@@ -80,7 +80,7 @@ public:
 	ARCEMU_INLINE void clear()
 	{
 		mutex.Acquire();
-		queue.clear();
+		queue.resize(0);
 		mutex.Release();
 	}
 

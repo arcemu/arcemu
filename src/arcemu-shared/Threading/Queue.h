@@ -49,7 +49,7 @@ public:
 		cond.BeginSynchronized();
 		if(last)//have some items
 		{
-			last->pNext=p;
+			last->pNext=(h*)p;
 			last=p;
 			size++;
 		}
