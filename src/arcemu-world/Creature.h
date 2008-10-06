@@ -511,6 +511,8 @@ public:
 	ARCEMU_INLINE uint32 GetTotemSlot() { return totemSlot; }
 	ARCEMU_INLINE void SetTotemSlot(uint32 slot) { totemSlot = slot; }
 
+	virtual Group *GetGroup();
+
 	ARCEMU_INLINE bool IsPickPocketed() { return m_PickPocketed; }
 	ARCEMU_INLINE void SetPickPocketed(bool val = true) { m_PickPocketed = val; }
 

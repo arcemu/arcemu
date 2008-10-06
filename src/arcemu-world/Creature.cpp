@@ -1804,3 +1804,25 @@ float Creature::GetBaseParry()
 	// for now return a base of 5%, later get from dbase?
 	return 5.0f;
 }
+
+Group *Creature::GetGroup() 
+{ 
+	if ( IsPet() )
+		static_cast<Pet *>(this)->GetGroup();
+	else if( IsTotem() && totemOwner) 
+		return totemOwner->GetGroup();
+	else if( GetUInt64Value( UNIT_FIELD_CREATEDBY ) && GetMapMgr() )
+	{
+		Unit *tu = GetMapMgr()->GetUnit( GetUInt64Value( UNIT_FIELD_CREATEDBY ) );
+		if( tu )
+		{
+			if( tu->IsPlayer() )
+				static_cast<Player *>(tu)->GetGroup();
+			else if( tu->IsCreature() )
+				static_cast<Creature *>(tu)->GetGroup();
+		}
+		else return NULL;
+	}
+	return NULL;
+} 
+

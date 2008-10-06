@@ -222,6 +222,8 @@ public:
 	void SetAutoCast(AI_Spell * sp, bool on);
 	float GetHappinessDmgMod() { return 0.25f * GetHappinessState() + 0.5f; };
 
+	virtual Group *GetGroup();
+
 protected:
 	bool bHasLoyalty;
 	Player *m_Owner;

@@ -891,6 +891,7 @@ public:
 	void WipeTargetList();
 	ARCEMU_INLINE void setAItoUse(bool value){m_useAI = value;}
 
+	virtual Group *GetGroup();
 
 	int32 GetThreatModifyer() { return m_threatModifyer; }
 	void ModThreatModifyer(int32 mod) { m_threatModifyer += mod; }

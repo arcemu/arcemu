@@ -7326,3 +7326,12 @@ uint32 Unit::DoDamageSplitTarget(uint32 res, uint32 school_type, bool melee_dmg)
 
 	return res;
 }
+
+Group *Unit::GetGroup()
+{
+	if( IsPlayer() )
+		return static_cast<Player *>(this)->GetGroup();
+	else if( IsCreature() )
+		return static_cast<Creature *>(this)->GetGroup();
+	return NULL;
+}

@@ -22,6 +22,7 @@
 #define _OBJECT_H
 
 class Unit;
+class Group;
 
 enum HIGHGUID_TYPE
 {
@@ -538,6 +539,7 @@ public:
 	void PlaySoundToSet(uint32 sound_entry);
 	bool IsInBg();
 	uint32 GetTeam();
+	ARCEMU_INLINE virtual Group *GetGroup() { return NULL; } //objects directly cannot be in a group
 
 protected:
 	Object (  );
