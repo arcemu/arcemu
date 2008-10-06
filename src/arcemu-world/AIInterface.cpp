@@ -115,6 +115,7 @@ AIInterface::AIInterface()
 
 	m_aiTargets.clear();
 	m_assistTargets.clear();
+	m_spells.clear();
 
 #ifdef HACKY_SERVER_CLIENT_POS_SYNC
 	moved_for_attack = false;

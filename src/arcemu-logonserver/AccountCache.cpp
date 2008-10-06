@@ -333,8 +333,6 @@ InformationCore::~InformationCore()
 {
 	for( map<uint32, Realm*>::iterator itr = m_realms.begin(); itr != m_realms.end(); ++itr )
 		delete itr->second;
-
-	m_realms.clear();
 }
 
 bool IPBanner::Remove(const char * ip)
@@ -435,7 +433,7 @@ void InformationCore::RemoveRealm(uint32 realm_id)
 	map<uint32, Realm*>::iterator itr = m_realms.find(realm_id);
 	if(itr != m_realms.end())
 	{
-		//sLog.outString("Removing realm `%s` (%u) due to socket close.", itr->second->Name.c_str(), realm_id);
+		Log.Notice("InfoCore","Removing realm id:(%u) due to socket close.",realm_id);
 		delete itr->second;
 		m_realms.erase(itr);
 	}
@@ -477,28 +475,27 @@ void InformationCore::SendRealms(AuthSocket * Socket)
 //		data << uint8(0);				   // Locked Flag
 //		data << uint8(itr->second->Colour);		
 		data << uint8(itr->second->Icon);
-		//data << itr->second->Lock;  for use in later patch
-		data << uint8(0);		// delete when using data << itr->second->Lock;
+		data << uint8(itr->second->Lock);		// delete when using data << itr->second->Lock;
 		data << uint8(itr->second->Colour);
 
 		// This part is the same for all.
 		data << itr->second->Name;
 		data << itr->second->Address;
 //		data << uint32(0x3fa1cac1);
-		data << itr->second->Population;
+		data << float(itr->second->Population);
 
 		/* Get our character count */
 		it = itr->second->CharacterMap.find(Socket->GetAccountID());
 		data << uint8( (it == itr->second->CharacterMap.end()) ? 0 : it->second );
 //		data << uint8(1);   // time zone
 //		data << uint8(6);
-		data << itr->second->TimeZone;
-		data << uint8(6);    //Realm ID
+		data << uint8( itr->second->TimeZone );
+		data << uint8( GetRealmIdByName( itr->second->Name ) );    //Realm ID
 	}
-	realmLock.Release();
-
 	data << uint8(0x17);
 	data << uint8(0);
+
+	realmLock.Release();
 
 	// Re-calculate size.
 #ifdef USING_BIG_ENDIAN
@@ -529,7 +526,7 @@ void InformationCore::TimeoutSockets()
 		it2 = itr;
 		++itr;
 
-		if(s->last_ping < t && ((t - s->last_ping) > 240))
+		if(s->last_ping < t && ((t - s->last_ping) > 300))
 		{
 			// ping timeout
 			printf("Closing socket due to ping timeout.\n");

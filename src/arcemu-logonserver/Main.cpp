@@ -511,7 +511,7 @@ void LogonServer::CheckForDeadSockets()
 		++itr;
 
 		diff = t - s->GetLastRecv();
-		if(diff > 240)		   // More than 4mins -> kill the socket.
+		if(diff > 300)		   // More than 5mins
 		{
 			_authSockets.erase(it2);
 			s->removedFromSet = true;

@@ -341,6 +341,7 @@ void LogonCommServerSocket::HandleMappingReply(WorldPacket & recvData)
 	uLongf rsize = real_size;
 
 	ByteBuffer buf(real_size);
+	buf.clear();
 	buf.resize(real_size);
 
 	if(uncompress((uint8*)buf.contents(), &rsize, recvData.contents() + 4, (u_long)recvData.size() - 4) != Z_OK)

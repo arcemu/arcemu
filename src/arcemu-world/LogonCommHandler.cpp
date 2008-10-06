@@ -32,7 +32,14 @@ LogonCommHandler::LogonCommHandler()
 	Sha1Hash hash;
 	hash.UpdateData(logon_pass);
 	hash.Finalize();
+
+	memset(sql_passhash,0,20);
 	memcpy(sql_passhash, hash.GetDigest(), 20);
+
+	// cleanup
+	servers.clear();
+	realms.clear();
+
 }
 
 LogonCommHandler::~LogonCommHandler()
@@ -53,20 +60,19 @@ LogonCommClientSocket * LogonCommHandler::ConnectToLogon(string Address, uint32 
 void LogonCommHandler::RequestAddition(LogonCommClientSocket * Socket)
 {
 	set<Realm*>::iterator itr = realms.begin();
-	WorldPacket data(RCMSG_REGISTER_REALM, 100);
+
 	for(; itr != realms.end(); ++itr)
 	{
-		data.clear();
+		WorldPacket data(RCMSG_REGISTER_REALM, 100);
 
 		// Add realm to the packet
 		Realm * realm = *itr;
 		data << realm->Name;
 		data << realm->Address;
-//		data << realm->Colour;
-		data << realm->Icon;
-		data << realm->TimeZone;
-		data << realm->Population;
-		data << realm->Lock;
+		data << uint8(realm->Icon);
+		data << uint8(realm->TimeZone);
+		data << float(realm->Population);
+		data << uint8(realm->Lock);
 		Socket->SendPacket(&data,false);
 	}
 }
@@ -107,9 +113,9 @@ public:
 		{
 			sLogonCommHandler.UpdateSockets();
 #ifdef WIN32
-			WaitForSingleObject( hEvent, 3000 );
+			WaitForSingleObject( hEvent, 5000 );
 #else
-			Sleep( 3000 );
+			Sleep( 5000 );
 #endif
 		}
 
@@ -159,7 +165,6 @@ const string* LogonCommHandler::GetForcedPermissions(string& username)
 
 void LogonCommHandler::Connect(LogonServer * server)
 {
-	Log.Notice("LogonCommClient", "Connecting to logonserver on `%s:%u`...", server->Address.c_str(), server->Port );
 	server->RetryTime = (uint32)UNIXTIME + 10;
 	server->Registered = false;
 	LogonCommClientSocket * conn = ConnectToLogon(server->Address, server->Port);
@@ -192,8 +197,9 @@ void LogonCommHandler::Connect(LogonServer * server)
 		conn->Disconnect();
 		return;
 	}
-	else
-		Log.Notice("LogonCommClient","Authentication succeeded.");
+
+	Log.Notice("LogonCommClient","Authentication OK.");
+  Log.Notice("LogonCommClient", "Logonserver was connected on [%s:%u].", server->Address.c_str(), server->Port );
 
 	// Send the initial ping
 	conn->SendPing();
@@ -379,9 +385,9 @@ void LogonCommHandler::LoadRealmConfiguration()
 			Realm * realm = new Realm;
 			realm->Name = Config.RealmConfig.GetStringVA("Name", "SomeRealm", "Realm%u", i);
 			realm->Address = Config.RealmConfig.GetStringVA("Address", "127.0.0.1:8129", "Realm%u", i);
-//			realm->Colour = Config.RealmConfig.GetIntVA("Colour", 1, "Realm%u", i);
 			realm->TimeZone = Config.RealmConfig.GetIntVA("TimeZone", 1, "Realm%u", i);
 			realm->Population = Config.RealmConfig.GetFloatVA("Population", 0, "Realm%u", i);
+			realm->Lock = Config.RealmConfig.GetIntVA("Lock", 0, "Realm%u", i);			
 			string rt = Config.RealmConfig.GetStringVA("Icon", "Normal", "Realm%u", i);
 			uint32 type;
 

@@ -209,6 +209,7 @@ public:
 	{ 
 		realmhigh = 0;
 		usepings  = !Config.MainConfig.GetBoolDefault("LogonServer", "DisablePings", false);
+		m_realms.clear();
 	}
 
 	// Packets
