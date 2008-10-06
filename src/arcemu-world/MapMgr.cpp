@@ -90,7 +90,10 @@ MapMgr::~MapMgr()
 {
 	_shutdown=true;
 	sEventMgr.RemoveEvents(this);
-	delete ScriptInterface;
+	if (ScriptInterface != NULL) {
+		delete ScriptInterface;
+		ScriptInterface = NULL;
+	}
 	
 	// Remove objects
 	if(_cells)
@@ -119,8 +122,14 @@ MapMgr::~MapMgr()
 	}
 	_mapWideStaticObjects.clear();
 
-	free(m_GOStorage); m_GOStorage = NULL;
-	free(m_CreatureStorage); m_CreatureStorage = NULL;
+	if (m_GOStorage != NULL) {
+		free(m_GOStorage);
+		m_GOStorage = NULL;
+	}
+	if (m_CreatureStorage != NULL) {
+		free(m_CreatureStorage);
+		m_CreatureStorage = NULL;
+	}
 
 	Corpse * pCorpse;
 	for(set<Corpse*>::iterator itr = m_corpses.begin(); itr != m_corpses.end();)
