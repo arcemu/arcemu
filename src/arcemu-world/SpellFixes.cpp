@@ -15648,4 +15648,13 @@ void ApplyNormalFixes()
 			sp = dbcSpell.LookupEntryForced( 44132 );
 			if( sp != NULL )
 				sp->DurationIndex = 21;
+
+			// Zul'jin spell, proc from Creeping Paralysis
+			sp = dbcSpell.LookupEntryForced( 43437 );
+ 			if( sp != NULL )
+			{
+				sp->EffectImplicitTargetA[0] = 0;
+				sp->EffectImplicitTargetA[1] = 0;
+			}
+
 }

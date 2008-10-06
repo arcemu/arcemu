@@ -3644,14 +3644,6 @@ void Aura::EventPeriodicTriggerSpell(SpellEntry* spellInfo)
 		return;
 	}
 
-	if(pTarget != m_caster && !isAttackable(m_caster, pTarget))
-	{
-		SendInterrupted(SPELL_FAILED_BAD_TARGETS, m_caster);
-		SendChannelUpdate(0, m_caster);
-		this->Remove();
-		return;
-	}
-
 	if(spellInfo->spellIconID == 225 ) // this is arcane missles to avoid casting on self
 		if(m_casterGuid == pTarget->GetGUID())
 			return;
@@ -3665,7 +3657,7 @@ void Aura::EventPeriodicTriggerSpell(SpellEntry* spellInfo)
 		SM_PFValue( m_caster->SM_PRange, &maxRange, spellInfo->SpellGroupType );
 	}
 
-	if( m_caster->IsStunned() || m_caster->IsFeared() || m_caster->GetDistance2dSq( pTarget ) > ( maxRange*maxRange ) )
+	if( m_caster->IsStunned() || m_caster->IsFeared() || ( maxRange != 0 && m_caster->GetDistance2dSq( pTarget ) > ( maxRange*maxRange )) )
 	{
 		// no longer valid
 		SendInterrupted(SPELL_FAILED_INTERRUPTED, m_caster);
