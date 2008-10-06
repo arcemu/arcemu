@@ -3705,50 +3705,50 @@ void ApplyNormalFixes()
 		if(sp != NULL)
 		{
 			sp->EffectTriggerSpell[0] = 27813;
-			sp->procFlags = PROC_ON_CRIT_HIT_VICTIM;
+			sp->procFlags = PROC_ON_CRIT_HIT_VICTIM | PROC_ON_RANGED_CRIT_ATTACK_VICTIM;
 		}
 		sp = dbcSpell.LookupEntryForced(27815);
 		if(sp != NULL)
 		{
 			sp->EffectTriggerSpell[0] = 27817;
-			sp->procFlags = PROC_ON_CRIT_HIT_VICTIM;
+			sp->procFlags = PROC_ON_CRIT_HIT_VICTIM | PROC_ON_RANGED_CRIT_ATTACK_VICTIM;
 		}
 		sp = dbcSpell.LookupEntryForced(27816);
 		if(sp != NULL)
 		{
 			sp->EffectTriggerSpell[0] = 27818;
-			sp->procFlags = PROC_ON_CRIT_HIT_VICTIM;
+			sp->procFlags = PROC_ON_CRIT_HIT_VICTIM | PROC_ON_RANGED_CRIT_ATTACK_VICTIM;
 		}
 		//priest- Blessed Resilience
 		sp = dbcSpell.LookupEntryForced( 33142 );
 		if( sp != NULL )
 		{
-			sp->procFlags = PROC_ON_CRIT_HIT_VICTIM;
+			sp->procFlags = PROC_ON_CRIT_HIT_VICTIM | PROC_ON_SPELL_CRIT_HIT_VICTIM | PROC_ON_RANGED_CRIT_ATTACK_VICTIM;
 			sp->procChance = 20;
 		}
 		sp = dbcSpell.LookupEntryForced( 33145 );
 		if( sp != NULL )
 		{
-			sp->procFlags = PROC_ON_CRIT_HIT_VICTIM;
+			sp->procFlags = PROC_ON_CRIT_HIT_VICTIM | PROC_ON_SPELL_CRIT_HIT_VICTIM | PROC_ON_RANGED_CRIT_ATTACK_VICTIM;
 			sp->procChance = 40;
 		}
 		sp = dbcSpell.LookupEntryForced( 33146 );
 		if( sp != NULL )
 		{
-			sp->procFlags = PROC_ON_CRIT_HIT_VICTIM;
+			sp->procFlags = PROC_ON_CRIT_HIT_VICTIM | PROC_ON_SPELL_CRIT_HIT_VICTIM | PROC_ON_RANGED_CRIT_ATTACK_VICTIM;
 			sp->procChance = 60;
 		}
 
 		//priest- Focused Will
 		sp = dbcSpell.LookupEntryForced( 45234 );
 		if( sp != NULL )
-			sp->procFlags = PROC_ON_CRIT_HIT_VICTIM;
+			sp->procFlags = PROC_ON_CRIT_HIT_VICTIM | PROC_ON_SPELL_CRIT_HIT_VICTIM | PROC_ON_RANGED_CRIT_ATTACK_VICTIM;
 		sp = dbcSpell.LookupEntryForced( 45243 );
 		if( sp != NULL )
-			sp->procFlags = PROC_ON_CRIT_HIT_VICTIM;
+			sp->procFlags = PROC_ON_CRIT_HIT_VICTIM | PROC_ON_SPELL_CRIT_HIT_VICTIM | PROC_ON_RANGED_CRIT_ATTACK_VICTIM;
 		sp = dbcSpell.LookupEntryForced( 45244 );
 		if( sp != NULL )
-			sp->procFlags = PROC_ON_CRIT_HIT_VICTIM;
+			sp->procFlags = PROC_ON_CRIT_HIT_VICTIM | PROC_ON_SPELL_CRIT_HIT_VICTIM | PROC_ON_RANGED_CRIT_ATTACK_VICTIM;
 
 		//Priest: Shadowguard
 		sp = dbcSpell.LookupEntryForced( 18137 );
@@ -5324,13 +5324,13 @@ void ApplyNormalFixes()
 		//Druid: Natural Perfection
 		sp = dbcSpell.LookupEntryForced( 33881 );
 		if ( sp != NULL )
-			sp->procFlags = PROC_ON_CRIT_HIT_VICTIM;
+			sp->procFlags = PROC_ON_CRIT_HIT_VICTIM | PROC_ON_SPELL_CRIT_HIT_VICTIM | PROC_ON_RANGED_CRIT_ATTACK_VICTIM;
 		sp = dbcSpell.LookupEntryForced( 33882 );
 		if ( sp != NULL )
-			sp->procFlags = PROC_ON_CRIT_HIT_VICTIM;
+			sp->procFlags = PROC_ON_CRIT_HIT_VICTIM | PROC_ON_SPELL_CRIT_HIT_VICTIM | PROC_ON_RANGED_CRIT_ATTACK_VICTIM;
 		sp = dbcSpell.LookupEntryForced( 33883 );
 		if ( sp != NULL )
-			sp->procFlags = PROC_ON_CRIT_HIT_VICTIM;
+			sp->procFlags = PROC_ON_CRIT_HIT_VICTIM | PROC_ON_SPELL_CRIT_HIT_VICTIM | PROC_ON_RANGED_CRIT_ATTACK_VICTIM;
 
 		//Druid: Frenzied Regeneration
 		sp = dbcSpell.LookupEntryForced( 22842 );
