@@ -342,9 +342,15 @@ void WorldSession::HandleCancelAuraOpcode( WorldPacket& recvPacket )
 	if( _player->m_currentSpell && _player->m_currentSpell->GetProto()->Id == spellId )
 		_player->m_currentSpell->cancel();
 	else
-		_player->RemoveAura( spellId );
+	{
+		SpellEntry *info = dbcSpell.LookupEntryForced( spellId );
 
-	sLog.outDebug("removing aura %u",spellId);
+		if(info != NULL && !(info->Attributes & static_cast<uint32>(ATTRIBUTES_UNK33)))
+		{
+			_player->RemoveAura( spellId );
+			sLog.outDebug("removing aura %u",spellId);
+		}
+	}
 }
 
 void WorldSession::HandleCancelChannellingOpcode( WorldPacket& recvPacket)
