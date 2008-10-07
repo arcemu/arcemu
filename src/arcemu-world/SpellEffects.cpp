@@ -2680,28 +2680,79 @@ void Spell::SpellEffectLeap(uint32 i) // Leap
 		if(p_caster && p_caster->m_bg && !p_caster->m_bg->HasStarted())
 			return;
 
-		float ori = m_caster->GetOrientation();				
-		float posX = m_caster->GetPositionX()+(radius*(cosf(ori)));
-		float posY = m_caster->GetPositionY()+(radius*(sinf(ori)));
-		float z = CollideInterface.GetHeight(m_caster->GetMapId(), posX, posY, m_caster->GetPositionZ() + 2.0f);
-		if(z == NO_WMO_HEIGHT)		// not found height, or on adt
-			z = m_caster->GetMapMgr()->GetLandHeight(posX,posY);
+		float newposX, newposY, newposZ;
+		// init first variables
+		float ori = m_caster->GetOrientation();
+		float posX = m_caster->GetPositionX();
+		float posY = m_caster->GetPositionY();
+		float posZ = m_caster->GetPositionZ();
+		// find maximum distance to leap
+		uint8 steps = 10;
+		float radius_steps = radius / steps;
+		for ( uint8 i = 1; i < steps; ++i )
+		{
+			newposX = m_caster->GetPositionX() + ( float(i) * radius_steps * cosf( ori ) );
+			newposY = m_caster->GetPositionY() + ( float(i) * radius_steps * sinf( ori ) );
+			newposZ = CollideInterface.GetHeight(m_caster->GetMapId(), newposX, newposY, posZ + 2.0f);
+			if( newposZ == NO_WMO_HEIGHT )
+				newposZ = m_caster->GetMapMgr()->GetLandHeight( newposX, newposY );
 
-		if( fabs( z - m_caster->GetPositionZ() ) >= 10.0f )
-			return;
+			// check if new z is not in water
+			if( ( m_caster->GetMapMgr()->GetWaterType( posX, posY ) & 1 ) == 1
+				&& newposZ < m_caster->GetMapMgr()->GetWaterHeight( posX, posY ) )
+			{
+				if ( newposZ < posZ )
+					newposZ = posZ;
+			}
 
-		LocationVector dest(posX, posY, z + 2.0f, ori);
+			// simple math, check if angle of current step is not bigger than 45', then break loop
+			if( fabs( ( newposZ - posZ ) / radius_steps ) > 1.0f )
+				break;
+
+			posX = newposX;
+			posY = newposY;
+			posZ = newposZ;
+		}
+
+		LocationVector dest(posX, posY, posZ + 2.0f, ori);
 		LocationVector destest(posX, posY, dest.z, ori);
 		LocationVector src(m_caster->GetPositionX(), m_caster->GetPositionY(), m_caster->GetPositionZ() + 2.0f);
 
-		if(CollideInterface.GetFirstPoint(m_caster->GetMapId(), src, destest, dest, -1.5f))
+		// check if there are any obstacle not detected by steps, if there was any
+		if( i > 1 && CollideInterface.GetFirstPoint( m_caster->GetMapId(), src, destest, dest, -1.5f ) )
 		{
 			// hit an object new point is in dest.
+			// is this necessary?
+			// step back
+			posX = dest.x - ( 2 * cosf( ori ) );
+			posY = dest.y - ( 2 * sinf( ori ) );
+			posZ = CollideInterface.GetHeight(m_caster->GetMapId(), posX, posY, dest.z + 2.0f);
+			if( posZ == NO_WMO_HEIGHT )
+				posZ = m_caster->GetMapMgr()->GetLandHeight( posX, posY );
 		}
-		else
-			dest.z = z;
 
+		// check if terrain near destination is higher (could be also in water but there should be safe for fall)
+		if( ( m_caster->GetMapMgr()->GetWaterType( posX, posY ) & 1 ) == 0 ) // land
+		{
+			for ( i = 0; i < 4; ++i )
+			{
+				// check each edge of character
+				newposX = posX + ( 2 * cosf( ori + i * M_PI/2 ) );
+				newposY = posY + ( 2 * sinf( ori + i * M_PI/2 ) );
+				newposZ = CollideInterface.GetHeight(m_caster->GetMapId(), newposX, newposY, posZ + 2.0f);
+				if( newposZ == NO_WMO_HEIGHT )
+					newposZ = m_caster->GetMapMgr()->GetLandHeight( newposX, newposY );
+				if( posZ < newposZ )
+					posZ = newposZ;
+			}
+		}
+
+		dest.x = posX;
+		dest.y = posY;
+		dest.z = posZ;
 		dest.o = u_caster->GetOrientation();
+
+
 		if(p_caster)
 		{
 			p_caster->blinked = true;
