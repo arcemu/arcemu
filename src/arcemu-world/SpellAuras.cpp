@@ -2963,12 +2963,10 @@ void Aura::SpellAuraModAttackSpeed( bool apply )
 		{
 
 			static_cast< Player* >( m_target )->ModAttackSpeed( mod->m_amount, MOD_MELEE );
-			static_cast< Player* >( m_target )->ModAttackSpeed( mod->m_amount, MOD_RANGED );
 		}
 		else
 		{
 			static_cast< Player* >( m_target )->ModAttackSpeed( -mod->m_amount, MOD_MELEE );
-			static_cast< Player* >( m_target )->ModAttackSpeed( -mod->m_amount, MOD_RANGED );
 		}
 		static_cast< Player* >( m_target )->UpdateStats();
 	}
@@ -2978,16 +2976,13 @@ void Aura::SpellAuraModAttackSpeed( bool apply )
 		{
 			mod->fixed_amount[0] = m_target->GetModPUInt32Value(UNIT_FIELD_BASEATTACKTIME,mod->m_amount);
 			mod->fixed_amount[1] = m_target->GetModPUInt32Value(UNIT_FIELD_BASEATTACKTIME_01,mod->m_amount);
-			mod->fixed_amount[2] = m_target->GetModPUInt32Value(UNIT_FIELD_RANGEDATTACKTIME,mod->m_amount);
 			m_target->ModUnsigned32Value(UNIT_FIELD_BASEATTACKTIME, -mod->fixed_amount[0]);
 			m_target->ModUnsigned32Value(UNIT_FIELD_BASEATTACKTIME_01, -mod->fixed_amount[1]);
-			m_target->ModUnsigned32Value(UNIT_FIELD_RANGEDATTACKTIME, -mod->fixed_amount[2]);
 		}
 		else
 		{
 			m_target->ModUnsigned32Value(UNIT_FIELD_BASEATTACKTIME, mod->fixed_amount[0]);
 			m_target->ModUnsigned32Value(UNIT_FIELD_BASEATTACKTIME_01, mod->fixed_amount[1]);
-			m_target->ModUnsigned32Value(UNIT_FIELD_RANGEDATTACKTIME, mod->fixed_amount[2]);
 		}
 	}
 
