@@ -3958,8 +3958,9 @@ void ApplyNormalFixes()
 		 **********************************************************/
 		sp = dbcSpell.LookupEntryForced( 17364 );
 		if( sp != NULL && sp->Id == 17364 )
-			sp->Effect[0]=0 ;
-//			sp->procFlags=PROC_ON_SPELL_HIT_VICTIM ;
+		{
+			sp->procFlags=PROC_ON_SPELL_HIT_VICTIM ;
+		}
 
 		/**********************************************************
 		 *	Bloodlust

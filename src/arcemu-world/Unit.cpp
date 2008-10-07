@@ -2312,6 +2312,8 @@ uint32 Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, ui
 			}
 		}
 
+		if(spellId==17364 || spellId==32175 || spellId==32176) //Stormstrike
+			continue;
 		if(spellId==22858 && isInBack(victim)) //retatliation needs target to be not in front. Can be casted by creatures too
 			continue;
 
