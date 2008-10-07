@@ -5420,12 +5420,6 @@ void Aura::SpellAuraModCastingSpeed(bool apply)
 	else
 		current += float(mod->m_amount / 100.0f);
 	m_target->SetFloatValue(UNIT_MOD_CAST_SPEED, current );
-
-	// spell haste/slow is limited to 100% fast or 100% slow.
-	if( m_target->GetFloatValue( UNIT_MOD_CAST_SPEED ) >= 2.0f )
-		m_target->SetFloatValue( UNIT_MOD_CAST_SPEED , 2.0f );
-	else if( m_target->GetFloatValue( UNIT_MOD_CAST_SPEED ) <= 0.5f )
-		m_target->SetFloatValue( UNIT_MOD_CAST_SPEED , 0.5f );
 }
 
 void Aura::SpellAuraFeignDeath(bool apply)
