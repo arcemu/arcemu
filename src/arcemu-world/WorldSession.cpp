@@ -997,22 +997,12 @@ void WorldSession::SendChatPacket(WorldPacket * data, uint32 langpos, int32 lang
 
 void WorldSession::SendItemPushResult(Item * pItem, bool Created, bool Received, bool SendToSet, bool NewItem, uint8 DestBagSlot, uint32 DestSlot, uint32 AddCount)
 {
-	/*WorldPacket data(SMSG_ITEM_PUSH_RESULT, 60);
-	data << _player->GetGUID();
-	data << uint32(Received);
-	data << uint32(Created);
-	data << uint32(1);
-	data << uint8(DestBagSlot);
-	data << uint32(NewItem ? DestSlot : 0xFFFFFFFF);
-	data << pItem->GetEntry();
-	data << pItem->GetItemRandomSuffixFactor();
-	data << pItem->GetUInt32Value(ITEM_FIELD_RANDOM_PROPERTIES_ID);
-	data << AddCount;
-	data << pItem->GetUInt32Value(ITEM_FIELD_STACK_COUNT);*/
-
 	packetSMSG_ITEM_PUSH_RESULT data;
 	data.guid = _player->GetGUID();
-	data.received = Received;
+	data.received = uint32(0); 
+	// cebernic: 2.4.3 temp 0 forced.
+	// guys from party will always see the looter what item he has been taken.
+	// I will check more on packets back around.
 	data.created = Created;
 	data.unk1 = 1;
 	data.destbagslot = DestBagSlot;
@@ -1025,15 +1015,6 @@ void WorldSession::SendItemPushResult(Item * pItem, bool Created, bool Received,
 
 	if(SendToSet)
 	{
-		/*if(Created)
-			_player->SendMessageToSet(&data, true);
-		else
-		{*/
-			/*if(_player->GetGroup())
-				_player->GetGroup()->SendPacketToAll(&data);
-			else
-				SendPacket(&data);*/
-		/*}*/
 
 		if( _player->GetGroup() )
 			_player->GetGroup()->OutPacketToAll( SMSG_ITEM_PUSH_RESULT, sizeof( packetSMSG_ITEM_PUSH_RESULT ), &data );
@@ -1042,7 +1023,6 @@ void WorldSession::SendItemPushResult(Item * pItem, bool Created, bool Received,
 	}
 	else
 	{
-		//SendPacket(&data);
 		OutPacket( SMSG_ITEM_PUSH_RESULT, sizeof( packetSMSG_ITEM_PUSH_RESULT ), &data );
 	}
 }

@@ -123,7 +123,7 @@ void Spell::Virtual_Constructor()
 
 void Spell::Init(Object* Caster, SpellEntry *info, bool triggered, Aura* aur)
 {
-	int i;
+	//int i;
 
 	ASSERT( Caster != NULL && info != NULL );
 
@@ -230,13 +230,23 @@ void Spell::Init(Object* Caster, SpellEntry *info, bool triggered, Aura* aur)
 
 	UniqueTargets.clear();
 	ModeratedTargets.clear();
-	for (i=0; i<3; i++) {
-		m_targetUnits[i].clear();
-	}
+	m_targetUnits[0].clear();
+	m_targetUnits[1].clear();
+	m_targetUnits[2].clear();
 }
 
 Spell::~Spell()
 {
+	// cebernic: for memfree
+	for(uint32 x=0;x<3;x++)
+	{
+		if (m_targetUnits[x].size()>0)
+		{
+			TargetsList *TL;
+			TL = &m_targetUnits[x];
+			delete TL;
+		}
+	}
 }
 
 void Spell::Virtual_Destructor()

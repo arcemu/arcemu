@@ -1080,6 +1080,11 @@ public:
 			free(m_entries);
 		if( m_stringData != NULL )
 			free(m_stringData);
+		// points done
+		m_heapBlock = NULL;
+		m_entries = NULL;
+		m_firstEntry = NULL;
+		m_stringData = NULL;
 	}
 
 	bool Load(const char * filename, const char * format, bool load_indexed, bool load_strings)
