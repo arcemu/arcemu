@@ -819,6 +819,48 @@ void InstanceMgr::ResetSavedInstances(Player * plr)
 		}
 	}
 	m_mapLock.Release();	
+/*	plr->m_playerInfo->savedInstanceIdsLock.Acquire();
+	for(int difficulty=0; difficulty<NUM_INSTANCE_MODES; difficulty++)
+	{
+		PlayerInstanceMap::iterator itr,itr2=plr->m_playerInfo->savedInstanceIds[difficulty].begin();
+		for(; itr2 != plr->m_playerInfo->savedInstanceIds[difficulty].end();)
+		{
+			itr = itr2;
+			itr2++;
+			in = sInstanceMgr.GetInstanceByIds((*itr).first, (*itr).second);
+			if( !in )
+				continue;
+			if(((group && group->GetID() == in->m_creatorGroup) || plr->GetLowGUID() == in->m_creatorGuid))
+			{
+				if(in->m_mapMgr && in->m_mapMgr->HasPlayers())
+				{
+					pData = new WorldPacket(SMSG_RESET_INSTANCE_FAILED, 8);
+					*pData << uint32(INSTANCE_RESET_ERROR_PLAYERS_INSIDE);
+					*pData << uint32(in->m_mapId);
+					plr->GetSession()->SendPacket(pData);
+					delete pData;
+					continue;
+				}
+
+				if(group)
+				{
+					group->m_instanceIds[in->m_mapId][in->m_difficulty] = 0;
+				}
+
+				// <mapid> has been reset.
+				pData = new WorldPacket(SMSG_RESET_INSTANCE, 4);
+				*pData << uint32(in->m_mapId);
+				plr->GetSession()->SendPacket(pData);
+				delete pData;
+
+				//remove instance from player
+				plr->SetPersistentInstanceId(in->m_mapId, difficulty, 0); 
+				// destroy the instance
+				_DeleteInstance(in, true);
+			}
+		}
+	}
+	plr->m_playerInfo->savedInstanceIdsLock.Release();*/
 }
 
 void InstanceMgr::OnGroupDestruction(Group * pGroup)
