@@ -223,3 +223,6 @@ INSERT INTO spellfixes(spellId, groupRelation2) VALUES(19575, 0x1000000) ON DUPL
 INSERT INTO spellfixes(spellId, groupRelation0) VALUES(18427, 0x20006) ON DUPLICATE KEY UPDATE groupRelation0=VALUES(groupRelation0);
 INSERT INTO spellfixes(spellId, groupRelation0) VALUES(18428, 0x20006) ON DUPLICATE KEY UPDATE groupRelation0=VALUES(groupRelation0);
 INSERT INTO spellfixes(spellId, groupRelation0) VALUES(18429, 0x20006) ON DUPLICATE KEY UPDATE groupRelation0=VALUES(groupRelation0);
+
+-- [Rogue] Cold Blood
+INSERT INTO spellfixes(spellId, groupRelation0) VALUES(14177, 0xC6012031E) ON DUPLICATE KEY UPDATE groupRelation0=VALUES(groupRelation0);

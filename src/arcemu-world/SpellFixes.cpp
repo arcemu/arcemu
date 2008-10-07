@@ -236,7 +236,7 @@ void Apply112SpellFixes()
 	// Spell 14177 Group Relation\Interrupt Flag (Cold Blood )
 	sp = dbcSpell.LookupEntryForced(14177);
 	if(sp != NULL) {
-		sp->AuraInterruptFlags |= AURA_INTERRUPT_ON_HOSTILE_SPELL_INFLICTED;
+		sp->AuraInterruptFlags |= AURA_INTERRUPT_ON_CAST_SPELL;
 	}
 
 	// Spell 15494 Proc Chance (Fury of Forgewright )
