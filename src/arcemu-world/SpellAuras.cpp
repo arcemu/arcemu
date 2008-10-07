@@ -1690,6 +1690,25 @@ void Aura::SpellAuraDummy(bool apply)
 	{
 		m_target->RemoveAllMovementImpairing();
 	}break;
+	//Cheat Death
+	case 45182: 
+	{
+		if(apply){
+			SetPositive();
+			// calc and saving the absorb pct value
+			mod->m_miscValue = (int32)(8 * static_cast< Player* >( m_target )->CalcRating(PLAYER_RATING_MODIFIER_MELEE_CRIT_RESILIENCE));
+			if( mod->m_miscValue > 90 )
+				mod->m_miscValue = 90;			
+		}
+
+		// apply or remove the pct!!
+		for(uint32 x=0;x<7;x++){
+			if(apply)
+				m_target->DamageTakenPctMod[x]-=(float)(mod->m_miscValue) / 100.0f;				
+			else
+				m_target->DamageTakenPctMod[x]+=(float)(mod->m_miscValue) / 100.0f;				
+		}	
+	}break;
 	//Requires No Ammo
 	case 46699:
 		{
