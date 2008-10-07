@@ -239,7 +239,7 @@ void Channel::SetOwner(Player * oldpl, Player * plr)
 {
 	Guard mGuard(m_lock);
 	Player * pOwner = NULL;
-	uint32 oldflags, oldflags2 = 0;
+	uint32 oldflags = 0, oldflags2 = 0;
 	WorldPacket data(SMSG_CHANNEL_NOTIFY, 100);
 	if(oldpl != NULL)
 	{

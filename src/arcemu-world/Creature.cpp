@@ -211,7 +211,7 @@ void Creature::OnRespawn(MapMgr * m)
 		for(std::set<uint32>::iterator killedNpc = pInstance->m_killedNpcs.begin(); killedNpc != pInstance->m_killedNpcs.end(); ++killedNpc)
 		{
 			// Is killed boss?
-			if((*killedNpc) == this->creature_info->Id)
+			if(creature_info && (*killedNpc) == creature_info->Id)
 			{
 				skip = true;
 				break;
@@ -1122,7 +1122,7 @@ bool Creature::Load(CreatureSpawn *spawn, uint32 mode, MapInfo *info)
 	//if(spawn->displayid != creature_info->Male_DisplayID)
 	//	setGender(1);   // Female
 	
-	uint32 model;
+	uint32 model = 0;
 	uint32 gender = creature_info->GenerateModelId(&model);
 	setGender(gender);
 
@@ -1335,7 +1335,7 @@ void Creature::Load(CreatureProto * proto_, float x, float y, float z)
 	SetUInt32Value(UNIT_FIELD_MAXPOWER1,proto->Mana);
 	SetUInt32Value(UNIT_FIELD_BASE_MANA,proto->Mana);
 
-	uint32 model;
+	uint32 model = 0;
 	uint32 gender = creature_info->GenerateModelId(&model);
 	setGender(gender);
 
