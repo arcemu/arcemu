@@ -254,7 +254,11 @@ uint32 InstanceMgr::PreTeleport(uint32 mapid, Player * plr, uint32 instanceid)
 			{
 				if((inf->type == INSTANCE_MULTIMODE && pGroup->m_difficulty >= MODE_HEROIC) || inf->type == INSTANCE_RAID)
 				{
-					if(plr->GetPersistentInstanceId(mapid, pGroup->m_difficulty) == 0)
+					//Zack : NO, we do not want to join any other instance but the one our group created.
+					if(pGroup->m_instanceIds[mapid][pGroup->m_difficulty] != 0)
+						in = sInstanceMgr.GetInstanceByIds(mapid, pGroup->m_instanceIds[mapid][pGroup->m_difficulty]);
+					//the old secsy code
+/*					if(plr->GetPersistentInstanceId(mapid, pGroup->m_difficulty) == 0)
 					{
 						if(pGroup->m_instanceIds[mapid][pGroup->m_difficulty] != 0)
 						{
@@ -279,7 +283,7 @@ uint32 InstanceMgr::PreTeleport(uint32 mapid, Player * plr, uint32 instanceid)
 					if(in == NULL && plr->GetPersistentInstanceId(mapid, pGroup->m_difficulty) != 0)
 					{
 						in = sInstanceMgr.GetInstanceByIds(mapid, plr->GetPersistentInstanceId(mapid, pGroup->m_difficulty));
-					}
+					}*/
 				}
 				else
 				{
@@ -289,8 +293,9 @@ uint32 InstanceMgr::PreTeleport(uint32 mapid, Player * plr, uint32 instanceid)
 					}
 				}
 			}
-
-			if(in == NULL)
+			//Zack : well no again, we still do not want to join personal instances. We want to join group instance :)
+			else
+			//if(in == NULL)
 			{
 				// search the instance and see if we have one here.
 				for(itr = instancemap->begin(); itr != instancemap->end();)
@@ -432,9 +437,21 @@ MapMgr * InstanceMgr::GetInstance(Object* obj)
 			return m_singleMaps[obj->GetMapId()];
 
 		m_mapLock.Acquire();
-		instancemap = m_instances[obj->GetMapId()];
+		uint32 mapid = obj->GetMapId();
+		instancemap = m_instances[mapid];
 		if(instancemap != NULL)
 		{
+			//Zack: see if group has an instance and join that instead of my instance
+			Group *pGroup = plr->GetGroup();
+			if( pGroup != NULL && pGroup->m_instanceIds[mapid][pGroup->m_difficulty] != 0 )
+			{
+				Instance *ti = sInstanceMgr.GetInstanceByIds(mapid, pGroup->m_instanceIds[mapid][pGroup->m_difficulty]);
+				if( ti && ti->m_mapMgr )
+				{
+					m_mapLock.Release();
+					return ti->m_mapMgr;
+				}
+			}
 			// check our saved instance id. see if its valid, and if we can join before trying to find one.
 			itr = instancemap->find(obj->GetInstanceID());
 			if(itr != instancemap->end())
@@ -801,7 +818,7 @@ void InstanceMgr::ResetSavedInstances(Player * plr)
 			}
 		}
 	}
-    m_mapLock.Release();	
+	m_mapLock.Release();	
 }
 
 void InstanceMgr::OnGroupDestruction(Group * pGroup)
