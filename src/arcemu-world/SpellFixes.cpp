@@ -1573,6 +1573,12 @@ void ApplyNormalFixes()
 			sp->c_is_flags |= SPELL_FLAG_IS_REQUIRECOOLDOWNUPDATE;
 		}
 
+		if( namehash == SPELL_HASH_SHRED || namehash == SPELL_HASH_BACKSTAB || namehash == SPELL_HASH_AMBUSH || namehash == SPELL_HASH_GARROTE || namehash == SPELL_HASH_MUTILATE || namehash == SPELL_HASH_RAVAGE )
+		{
+			// FIXME: needs different flag check
+			sp->FacingCasterFlags = SPELL_INFRONT_STATUS_REQUIRE_INBACK;
+		}
+
 //junk code to get me has :P 
 //if(sp->Id==11267 || sp->Id==11289 || sp->Id==6409)
 //	printf("!!!!!!! name %s , id %u , hash %u \n",sp->Name,sp->Id, namehash);
