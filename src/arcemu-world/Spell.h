@@ -454,6 +454,7 @@ enum AttributesEx
 	ATTRIBUTESEX_UNK30                        = 0x10000000,
 	ATTRIBUTESEX_UNK31                        = 0x20000000,
 	ATTRIBUTESEX_UNK32                        = 0x40000000, // Overpower
+	ATTRIBUTESEX_UNK33                        = 0x80000000,
 };
 
 enum Flags3
@@ -490,20 +491,141 @@ enum Flags3
 	FLAGS3_UNK30              = 0x10000000, // some secondairy spell triggers, especialy for lightning shield alike spells
 	FLAGS3_UNK31              = 0x20000000,
 	FLAGS3_UNK32              = 0x40000000,
+	FLAGS3_UNK33              = 0x80000000,
 };
 
 enum Flags4
 {
+	FLAGS4_NULL							= 0x0,
+	FLAGS4_UNK2							= 0x1,
+	FLAGS4_UNK3							= 0x2,
+	FLAGS4_UNK4							= 0x4,
+	FLAGS4_UNK5							= 0x8,
+	FLAGS4_UNK6							= 0x10,
+	FLAGS4_UNK7							= 0x20,
+	FLAGS4_UNK8							= 0x40,
+	FLAGS4_UNK9							= 0x80,
+	FLAGS4_UNK10						= 0x100,
+	FLAGS4_UNK11						= 0x200,
+	FLAGS4_UNK12						= 0x400,
 	FLAGS4_BG_ONLY                      = 0x800,
+	FLAGS4_UNK14						= 0x1000,
+	FLAGS4_UNK15						= 0x2000,
+	FLAGS4_UNK16						= 0x4000,
 	FLAGS4_PLAYER_RANGED_SPELLS         = 0x8000,
+	FLAGS4_UNK18						= 0x10000,
+	FLAGS4_UNK19						= 0x20000,
+	FLAGS4_UNK20						= 0x40000,
+	FLAGS4_UNK21						= 0x80000,
 	CAN_PERSIST_AND_CASTED_WHILE_DEAD   = 0x100000,
-	FLAGS4_PLAYER_RANGED_WAND           = 0x400000
+	FLAGS4_UNK23						= 0x200000,
+	FLAGS4_PLAYER_RANGED_WAND           = 0x400000,
+	FLAGS4_UNK25						= 0x800000,
+	FLAGS4_UNK26						= 0x1000000,
+	FLAGS4_UNK27						= 0x2000000,
+	FLAGS4_UNK28						= 0x4000000,
+	FLAGS4_UNK29						= 0x8000000,
+	FLAGS4_UNK30						= 0x10000000,
+	FLAGS4_UNK31						= 0x20000000,
+	FLAGS4_UNK32						= 0x40000000,
+	FLAGS4_UNK33						= 0x80000000,
 };
 
 enum Flags5
 {
+	FLAGS5_NULL							= 0x0,
+	FLAGS5_UNK2							= 0x1,
 	FLAGS5_PROCCHANCE_COMBOBASED        = 0x2,
+	FLAGS5_UNK4							= 0x4,
+	FLAGS5_UNK5							= 0x8,
+	FLAGS5_UNK6							= 0x10,
+	FLAGS5_UNK7							= 0x20,
+	FLAGS5_UNK8							= 0x40,
+	FLAGS5_UNK9							= 0x80,
+	FLAGS5_UNK10						= 0x100,
+	FLAGS5_UNK11						= 0x200,
+	FLAGS5_UNK12						= 0x400,
+	FLAGS5_UNK13						= 0x800,
+	FLAGS5_UNK14						= 0x1000,
+	FLAGS5_UNK15						= 0x2000,
+	FLAGS5_UNK16						= 0x4000,
+	FLAGS5_UNK17						= 0x8000,
+	FLAGS5_UNK18						= 0x10000,
+	FLAGS5_UNK19						= 0x20000,
+	FLAGS5_UNK20						= 0x40000,
+	FLAGS5_UNK21						= 0x80000,
+	FLAGS5_UNK22						= 0x100000,
+	FLAGS5_UNK23						= 0x200000,
+	FLAGS5_UNK24						= 0x400000,
+	FLAGS5_UNK25						= 0x800000,
+	FLAGS5_UNK26						= 0x1000000,
+	FLAGS5_UNK27						= 0x2000000,
 	FLAGS5_ONLY_IN_OUTLANDS             = 0x4000000,
+	FLAGS5_UNK29						= 0x8000000,
+	FLAGS5_UNK30						= 0x10000000,
+	FLAGS5_UNK31						= 0x20000000,
+	FLAGS5_UNK32						= 0x40000000,
+	FLAGS5_UNK33						= 0x80000000,
+};
+
+enum Flags6 
+{
+	FLAGS6_NULL							= 0x0,
+	FLAGS6_UNK2							= 0x1,
+	FLAGS6_UNK3							= 0x2,
+	FLAGS6_UNK4							= 0x4,
+	FLAGS6_UNK5							= 0x8,
+	FLAGS6_UNK6							= 0x10,
+	FLAGS6_UNK7							= 0x20,
+	FLAGS6_UNK8							= 0x40,
+	FLAGS6_UNK9							= 0x80,
+	FLAGS6_UNK10						= 0x100,
+	FLAGS6_UNK11						= 0x200,
+	FLAGS6_UNK12						= 0x400,
+	FLAGS6_UNK13						= 0x800,
+	FLAGS6_UNK14						= 0x1000,
+	FLAGS6_UNK15						= 0x2000,
+	FLAGS6_UNK16						= 0x4000,
+	FLAGS6_UNK17						= 0x8000,
+	FLAGS6_UNK18						= 0x10000,
+	FLAGS6_UNK19						= 0x20000,
+	FLAGS6_UNK20						= 0x40000,
+	FLAGS6_UNK21						= 0x80000,
+	FLAGS6_UNK22						= 0x100000,
+	FLAGS6_UNK23						= 0x200000,
+	FLAGS6_UNK24						= 0x400000,
+	FLAGS6_UNK25						= 0x800000,
+	FLAGS6_UNK26						= 0x1000000,
+	FLAGS6_UNK27						= 0x2000000,
+	FLAGS6_UNK28						= 0x4000000,
+	FLAGS6_UNK29						= 0x8000000,
+	FLAGS6_UNK30						= 0x10000000,
+	FLAGS6_UNK31						= 0x20000000,
+	FLAGS6_UNK32						= 0x40000000,
+	FLAGS6_UNK33						= 0x80000000,
+};
+
+enum Flags7
+{
+	FLAGS7_NULL							= 0x0,
+	FLAGS7_UNK2							= 0x1,
+	FLAGS7_UNUSED1						= 0x2, // unused 2.4.3
+	FLAGS7_UNK4							= 0x4,
+	FLAGS7_UNK5							= 0x8,
+	FLAGS7_UNUSED2						= 0x10, // unused 2.4.3
+	FLAGS7_UNK7							= 0x20,
+	FLAGS7_UNK8							= 0x40,
+	FLAGS7_UNK9							= 0x80,
+	FLAGS7_UNK10						= 0x100,
+	FLAGS7_UNUSED3						= 0x200, // unused 2.4.3
+	FLAGS7_UNK12						= 0x400,
+	FLAGS7_UNK13						= 0x800,
+	FLAGS7_UNUSED4						= 0x1000, // unused 2.4.3
+	FLAGS7_UNK15						= 0x2000,
+	FLAGS7_UNUSED5						= 0x4000, // unused 2.4.3
+	FLAGS7_UNUSED6						= 0x8000, // unused 2.4.3
+	FLAGS7_UNUSED7						= 0x10000, // unused 2.4.3 - 20-33 also unused 2.4.3
+	FLAGS7_UNK19						= 0x20000,
 };
 
 enum SpellCastFlags
