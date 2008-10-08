@@ -99,6 +99,10 @@ void MapCell::RemoveObjects()
 	uint32 count = 0;
 	//uint32 ltime = getMSTime();
 
+	//Zack : we are delaying cell removal so transports can see objects far away. We are waiting for the event to remove us
+	if( _unloadpending == true )
+		return;
+
 	/* delete objects in pending respawn state */
 	for(itr = _respawnObjects.begin(); itr != _respawnObjects.end(); ++itr)
 	{
@@ -131,7 +135,8 @@ void MapCell::RemoveObjects()
 
 		itr++;
 
-		if(!obj || _unloadpending)
+		//zack : we actually never set this to null. Useless check for lucky memory corruption hit.
+		if(!obj)
 			continue;
 
 		if( obj->Active )
@@ -151,6 +156,10 @@ void MapCell::RemoveObjects()
 
 void MapCell::LoadObjects(CellSpawns * sp)
 {
+	//we still have mobs loaded on cell. There is no point of loading them again
+	if( _loaded == true )
+		return; 
+
 	_loaded = true;
 	Instance * pInstance = _mapmgr->pInstance;
 	InstanceBossInfoMap *bossInfoMap = objmgr.m_InstanceBossInfoMap[_mapmgr->GetMapId()];
@@ -271,8 +280,11 @@ void MapCell::Unload()
 	//Log.Debug("MapCell", "Unloading cell %u %u", _x, _y);
 	ASSERT(_unloadpending);
 	if(_active)
+	{
+		_unloadpending=false;
 		return;
+	}
 
-	RemoveObjects();
 	_unloadpending=false;
+	RemoveObjects();
 }
