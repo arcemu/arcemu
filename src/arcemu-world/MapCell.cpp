@@ -131,22 +131,8 @@ void MapCell::RemoveObjects()
 
 		itr++;
 
-		if(!obj)
+		if(!obj || _unloadpending)
 			continue;
-
-		if( _unloadpending )
-		{
-			if(obj->GetTypeFromGUID() == HIGHGUID_TYPE_TRANSPORTER)
-				continue;
-
-			if(obj->GetTypeId()==TYPEID_CORPSE && obj->GetUInt32Value(CORPSE_FIELD_OWNER) != 0)
-				continue;
-
-			if(!obj->m_loadedFromDB)
-				continue;
-		}
-
-
 
 		if( obj->Active )
 			obj->Deactivate( _mapmgr );
