@@ -4124,7 +4124,11 @@ void Unit::AddAura(Aura *aur)
 		return;
 	}
 
-    if( !aur->IsPassive() )
+	uint32 AlreadyApplied = 0, VisibleAuraCount = 0, CheckLimit, StartCheck, AuraExtensionCheck;
+	if( !aur->IsPassive() 
+		// Nasty check for Blood Fury debuff (spell system based on namehashes is bs anyways)
+		&& aur->GetSpellProto()->always_apply == false 
+		)
 	{
 		//uint32 aurName = aur->GetSpellProto()->Name;
 		//uint32 aurRank = aur->GetSpellProto()->Rank;
@@ -4158,72 +4162,84 @@ void Unit::AddAura(Aura *aur)
 		bool deleteAur = false;
 
 		//check if we already have this aura by this caster -> update duration
-		// Nasty check for Blood Fury debuff (spell system based on namehashes is bs anyways)
-		if( !info->always_apply )
+		if( aur->IsPositive() )
 		{
-			uint32 f = 0;
-			for( uint32 x = 0; x < MAX_AURAS; x++ )
+			StartCheck = 0;
+			CheckLimit = MAX_POSITIVE_AURAS;
+			AuraExtensionCheck = CheckLimit - StartCheck;
+		}
+		else
+		{
+			StartCheck = MAX_POSITIVE_AURAS;
+			CheckLimit = MAX_AURAS;
+			AuraExtensionCheck = CheckLimit - StartCheck;
+		}
+		for( uint32 x = StartCheck; x < CheckLimit; x++ )
+		{
+			if( m_auras[x] )
 			{
-				if( m_auras[x] )
+				if(	m_auras[x]->GetSpellProto()->Id != aur->GetSpellId() && 
+					( aur->pSpellId != m_auras[x]->GetSpellProto()->Id ) //if this is a proc spell then it should not remove it's mother : test with combustion later
+					)
 				{
-					if(	m_auras[x]->GetSpellProto()->Id != aur->GetSpellId() && 
-						( aur->pSpellId != m_auras[x]->GetSpellProto()->Id ) //if this is a proc spell then it should not remove it's mother : test with combustion later
-						)
+					// Check for auras by specific type.
+					// Check for auras with the same name and a different rank.
+					
+					if(info->BGR_one_buff_on_target > 0 && m_auras[x]->GetSpellProto()->BGR_one_buff_on_target & info->BGR_one_buff_on_target && maxStack == 0)
+						deleteAur = HasAurasOfBuffType(info->BGR_one_buff_on_target, aur->m_casterGuid,0);
+					else
 					{
-						// Check for auras by specific type.
-						// Check for auras with the same name and a different rank.
-						
-						if(info->BGR_one_buff_on_target > 0 && m_auras[x]->GetSpellProto()->BGR_one_buff_on_target & info->BGR_one_buff_on_target && maxStack == 0)
-							deleteAur = HasAurasOfBuffType(info->BGR_one_buff_on_target, aur->m_casterGuid,0);
-						else
-						{
-							acr = AuraCheck(info->NameHash, info->RankNumber, m_auras[x],aur->GetCaster());
-							if(acr.Error == AURA_CHECK_RESULT_HIGHER_BUFF_PRESENT)
-								deleteAur = true;
-							else if(acr.Error == AURA_CHECK_RESULT_LOWER_BUFF_PRESENT)
-							{
-								// remove the lower aura
-								m_auras[x]->Remove();
-
-								// no more checks on bad ptr
-								continue;
-							}
-						}					   
-					}
-					else if( m_auras[x]->GetSpellId() == aur->GetSpellId() ) // not the best formula to test this I know, but it works until we find a solution
-					{
-						if( !aur->IsPositive() && m_auras[x]->m_casterGuid != aur->m_casterGuid )
-							continue;
-						f++;
-						//if(maxStack > 1)
-						{
-							//update duration,the same aura (update the whole stack whenever we cast a new one)
-							m_auras[x]->SetDuration(aur->GetDuration());
-							sEventMgr.ModifyEventTimeLeft(m_auras[x], EVENT_AURA_REMOVE, aur->GetDuration());
-							if(maxStack <= 1)
-							{
-								if(this->IsPlayer())
-								{
-									data.Initialize(SMSG_UPDATE_AURA_DURATION);
-									data << (uint8)m_auras[x]->m_visualSlot <<(uint32) aur->GetDuration();
-									((Player*)this)->GetSession()->SendPacket(&data);
-								}
-								
-								data.Initialize(SMSG_SET_AURA_SINGLE);
-								data << GetNewGUID() << m_auras[x]->m_visualSlot << uint32(m_auras[x]->GetSpellProto()->Id) << uint32(aur->GetDuration()) << uint32(aur->GetDuration());
-								SendMessageToSet(&data,false);
-							}
-						}
-						if(maxStack <= f)
-						{
-							if (f == 1)
-							{
-								m_auras[x]->UpdateModifiers();
-							}
+						acr = AuraCheck(info->NameHash, info->RankNumber, m_auras[x],aur->GetCaster());
+						if(acr.Error == AURA_CHECK_RESULT_HIGHER_BUFF_PRESENT)
 							deleteAur = true;
-							break;
+						else if(acr.Error == AURA_CHECK_RESULT_LOWER_BUFF_PRESENT)
+						{
+							// remove the lower aura
+							m_auras[x]->Remove();
+
+							// no more checks on bad ptr
+							continue;
 						}
+					}					   
+				}
+				else if( m_auras[x]->GetSpellId() == aur->GetSpellId() ) // not the best formula to test this I know, but it works until we find a solution
+				{
+					if( !aur->IsPositive() && m_auras[x]->m_casterGuid != aur->m_casterGuid )
+						continue;
+					AlreadyApplied++;
+					if(AlreadyApplied == 1)
+					{
+						//update duration,the same aura (update the whole stack whenever we cast a new one)
+						m_auras[x]->SetDuration(aur->GetDuration());
+						sEventMgr.ModifyEventTimeLeft(m_auras[x], EVENT_AURA_REMOVE, aur->GetDuration());
+						if(this->IsPlayer())
+						{
+							data.Initialize(SMSG_UPDATE_AURA_DURATION);
+							data << (uint8)m_auras[x]->m_visualSlot <<(uint32) aur->GetDuration();
+							((Player*)this)->GetSession()->SendPacket(&data);
+						}
+						
+						data.Initialize(SMSG_SET_AURA_SINGLE);
+						data << GetNewGUID() << m_auras[x]->m_visualSlot << uint32(m_auras[x]->GetSpellProto()->Id) << uint32(aur->GetDuration()) << uint32(aur->GetDuration());
+						SendMessageToSet(&data,false);
 					}
+					if(maxStack <= AlreadyApplied)
+					{
+						if (AlreadyApplied == 1)
+							m_auras[x]->UpdateModifiers();
+						deleteAur = true;
+						break;
+					}
+				}
+
+				//Zack: we need to check if we are using passive auraspace for visible aura extension
+				VisibleAuraCount++;
+				if( VisibleAuraCount == AuraExtensionCheck )
+				{
+					CheckLimit = MAX_AURAS + MAX_PASSIVE_AURAS; //Zack: we store auras in invisible range if visible one is full so we need to also check on these
+					//!!!!!!!!!!we are changing index of loop this should be last thing we do in loop !
+					x = MAX_AURAS;
+					continue; //just safety in case you forgot and add code using X 
 				}
 			}
 		}
@@ -4248,7 +4264,6 @@ void Unit::AddAura(Aura *aur)
 		}
 	}
 	////////////////////////////////////////////////////////
-
 	if( aur->m_auraSlot != 0xffff )
 		m_auras[ aur->m_auraSlot ] = NULL;
 
@@ -4266,7 +4281,10 @@ void Unit::AddAura(Aura *aur)
 
 	if( !aur->IsPassive() )
 	{	
-		aur->AddAuraVisual();
+		//Zack: we register only first instance as visual aura and rest as invisible ones. They should all expire at the same time
+		//Zack2: well actually it's not worth doing this since it consumes more time then the gain is :P
+//		if( AlreadyApplied == 0 )
+			aur->AddAuraVisual();
 		if( aur->m_auraSlot == 0xffff )
 		{
 			//add to invisible slot
