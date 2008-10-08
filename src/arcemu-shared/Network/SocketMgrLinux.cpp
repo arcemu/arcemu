@@ -109,6 +109,10 @@ void SocketMgr::SpawnWorkerThreads()
         ThreadPool.ExecuteTask(new SocketWorkerThread());
 }
 
+void SocketMgr::ShowStatus()
+{
+}
+
 bool SocketWorkerThread::run()
 {
     int fd_count;

@@ -211,6 +211,7 @@ protected:
 	bool HandleAcctCommand(const char* args, WorldSession *m_session);
 	bool HandleStartCommand(const char* args, WorldSession *m_session);
 	bool HandleInfoCommand(const char* args, WorldSession *m_session);
+	bool HandleNetworkStatusCommand(const char* args, WorldSession *m_session);
 	bool HandleDismountCommand(const char* args, WorldSession *m_session);
 	bool HandleSaveCommand(const char* args, WorldSession *m_session);
 	bool HandleGMListCommand(const char* args, WorldSession *m_session);

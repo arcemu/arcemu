@@ -26,6 +26,7 @@ bool HandleBanAccountCommand(BaseConsole * pConsole, int argc, const char * argv
 bool HandleCancelCommand(BaseConsole * pConsole, int argc, const char * argv[]);
 bool HandleCreateAccountCommand(BaseConsole * pConsole, int argc, const char * argv[]);
 bool HandleInfoCommand(BaseConsole * pConsole, int argc, const char * argv[]);
+bool HandleNetworkStatusCommand(BaseConsole * pConsole, int argc, const char * argv[]);
 bool HandleGMsCommand(BaseConsole * pConsole, int argc, const char * argv[]);
 bool HandleKickCommand(BaseConsole * pConsole, int argc, const char * argv[]);
 bool HandleMOTDCommand(BaseConsole * pConsole, int argc, const char * argv[]);

@@ -288,6 +288,11 @@ bool ChatHandler::HandleInfoCommand(const char* args, WorldSession *m_session)
 	return true;
 }
 
+bool ChatHandler::HandleNetworkStatusCommand(const char* args, WorldSession *m_session)
+{
+	sSocketMgr.ShowStatus();
+	return true;
+}
 
 bool ChatHandler::HandleNYICommand(const char* args, WorldSession *m_session)
 {

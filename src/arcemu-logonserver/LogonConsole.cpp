@@ -130,6 +130,7 @@ void LogonConsole::ProcessCmd(char *cmd)
 		{"?", &LogonConsole::TranslateHelp}, {"help", &LogonConsole::TranslateHelp},
 		{ "reload", &LogonConsole::ReloadAccts},
 		{ "rehash", &LogonConsole::TranslateRehash},
+		{ "netstatus", &LogonConsole::NetworkStatus},
 		{"shutdown", &LogonConsole::TranslateQuit}, {"exit", &LogonConsole::TranslateQuit}, 
 	};
 
@@ -150,8 +151,13 @@ void LogonConsole::ProcessCmd(char *cmd)
 
 void LogonConsole::ReloadAccts(char *str)
 {
-AccountMgr::getSingleton().ReloadAccounts(false);
-IPBanner::getSingleton().Reload();
+	AccountMgr::getSingleton().ReloadAccounts(false);
+	IPBanner::getSingleton().Reload();
+}
+
+void LogonConsole::NetworkStatus(char *str)
+{
+	sSocketMgr.ShowStatus();
 }
 
 // quit | exit
@@ -182,6 +188,7 @@ void LogonConsole::ProcessHelp(char *command)
 		sLog.outString("Console:--------help--------");
 		sLog.outString("   help, ?: print this text");
 		sLog.outString("   reload: reloads accounts");
+		sLog.outString("   netstatus: shows network status");
 		sLog.outString("   shutdown, exit: close program");
 	}
 }

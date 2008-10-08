@@ -33,6 +33,9 @@ namespace SocketOps
 	// Set internal buffer size to socket.
 	bool SetSendBufferSize(SOCKET fd, uint32 size);
 
+	// Set timeout, in seconds
+	bool SetTimeout(SOCKET fd, uint32 timeout);
+
 	// Closes socket completely.
 	void CloseSocket(SOCKET fd);
 

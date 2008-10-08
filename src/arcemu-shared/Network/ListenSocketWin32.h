@@ -23,6 +23,7 @@ public:
 		m_socket = WSASocket(AF_INET, SOCK_STREAM, 0, NULL, 0, WSA_FLAG_OVERLAPPED);
 		SocketOps::ReuseAddr(m_socket);
 		SocketOps::Blocking(m_socket);
+		SocketOps::SetTimeout(m_socket, 60);
 
 		m_address.sin_family = AF_INET;
 		m_address.sin_port = ntohs((u_short)Port);

@@ -59,6 +59,16 @@ namespace SocketOps
         return (setsockopt(fd, SOL_SOCKET, SO_RCVBUF, (const char*)&size, sizeof(size)) == 0);
     }
 
+	// Set internal timeout.
+	bool SetTimeout(SOCKET fd, uint32 timeout)
+	{
+		struct timeval to;
+		to.tv_sec = timeout;
+		to.tv_usec = 0;
+		if (setsockopt(fd, SOL_SOCKET, SO_SNDTIMEO, (const char*)&to, (socklen_t)sizeof(to)) != 0) return false;
+		return (setsockopt(fd, SOL_SOCKET, SO_RCVTIMEO, (const char*)&to, (socklen_t)sizeof(to)) == 0);
+	}
+
     // Closes a socket fully.
     void CloseSocket(SOCKET fd)
     {

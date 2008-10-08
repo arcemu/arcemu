@@ -2737,8 +2737,8 @@ void Spell::SpellEffectLeap(uint32 i) // Leap
 			for ( i = 0; i < 4; ++i )
 			{
 				// check each edge of character
-				newposX = posX + ( 2 * cosf( ori + i * M_PI/2 ) );
-				newposY = posY + ( 2 * sinf( ori + i * M_PI/2 ) );
+				newposX = posX + ( 2 * cosf((float)( ori + i * M_PI/2 )) );
+				newposY = posY + ( 2 * sinf((float)( ori + i * M_PI/2 )) );
 				newposZ = CollideInterface.GetHeight(m_caster->GetMapId(), newposX, newposY, posZ + 2.0f);
 				if( newposZ == NO_WMO_HEIGHT )
 					newposZ = m_caster->GetMapMgr()->GetLandHeight( newposX, newposY );

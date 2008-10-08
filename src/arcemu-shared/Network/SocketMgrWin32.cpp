@@ -138,4 +138,13 @@ void SocketMgr::ShutdownThreads()
 	}
 }
 
+void SocketMgr::ShowStatus()
+{
+	socketLock.Acquire();
+
+	sLog.outString("_sockets.size(): %d", _sockets.size());
+
+	socketLock.Release();
+}
+
 #endif

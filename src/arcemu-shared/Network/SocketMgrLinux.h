@@ -84,6 +84,9 @@ public:
 
     /// spawns worker threads
     void SpawnWorkerThreads();
+
+    /// show status
+    void ShowStatus();
 };
 
 class SocketWorkerThread : public ThreadBase

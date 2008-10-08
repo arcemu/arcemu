@@ -361,6 +361,7 @@ void HandleConsoleInput(BaseConsole * pConsole, const char * szInput)
 		{ &HandleCancelCommand, "cancel", "none", "Cancels a pending shutdown." },
 		{ &HandleCreateAccountCommand, "createaccount", "<name> <pass> <email> <flags>", "Creates an account." },
 		{ &HandleInfoCommand, "info", "none", "Gives server runtime information." },
+		{ &HandleNetworkStatusCommand, "netstatus", "none", "Shows network status." },
 		{ &HandleGMsCommand, "gms", "none", "Shows online GMs." },
 		{ &HandleKickCommand, "kick", "<plrname> <reason>", "Kicks player x for reason y." },
 		{ &HandleMOTDCommand, "getmotd", "none", "View the current MOTD" },

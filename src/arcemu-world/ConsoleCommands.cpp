@@ -59,6 +59,12 @@ bool HandleInfoCommand(BaseConsole * pConsole, int argc, const char * argv[])
 	return true;
 }
 
+bool HandleNetworkStatusCommand(BaseConsole * pConsole, int argc, const char * argv[])
+{
+	sSocketMgr.ShowStatus();
+	return true;
+}
+
 bool HandleGMsCommand(BaseConsole * pConsole, int argc, const char * argv[])
 {
 	WorldPacket data;
