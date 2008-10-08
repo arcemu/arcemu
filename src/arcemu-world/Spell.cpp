@@ -237,7 +237,8 @@ void Spell::Init(Object* Caster, SpellEntry *info, bool triggered, Aura* aur)
 
 Spell::~Spell()
 {
-	
+	for(uint32 x=0;x<3;x++)
+		 m_targetUnits[x].clear();
 }
 
 void Spell::Virtual_Destructor()
