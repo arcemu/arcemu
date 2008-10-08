@@ -237,16 +237,7 @@ void Spell::Init(Object* Caster, SpellEntry *info, bool triggered, Aura* aur)
 
 Spell::~Spell()
 {
-	// cebernic: for memfree
-	for(uint32 x=0;x<3;x++)
-	{
-		if (m_targetUnits[x].size()>0)
-		{
-			TargetsList *TL;
-			TL = &m_targetUnits[x];
-			delete TL;
-		}
-	}
+	
 }
 
 void Spell::Virtual_Destructor()
