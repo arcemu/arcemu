@@ -4863,6 +4863,18 @@ void Spell::SpellEffectScriptEffect(uint32 i) // Script Effect
 				sp->prepare( &tgt1 );
 			}
 		}break;
+		case 5784:
+		case 23161: // Warlock: ( Felsteed / Dreadsteed ) summon visual
+			{
+				if(p_caster == NULL)return;
+
+				Spell *sp = SpellPool.PooledNew();
+				sp->Init( p_caster, dbcSpell.LookupEntry( 31725 ), true, NULL );
+				sp->bRadSet[0] = true;
+				sp->Rad[0] = (10.0f * p_caster->GetFloatValue(OBJECT_FIELD_SCALE_X));
+				SpellCastTargets tgt( p_caster->GetGUID() );
+				sp->prepare( &tgt );
+			}break;
 	}
 }
 
