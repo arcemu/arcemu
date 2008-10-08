@@ -471,6 +471,7 @@ protected:
 	void HandleCancelChannellingOpcode(WorldPacket& recvPacket);
 	void HandleCancelAutoRepeatSpellOpcode(WorldPacket& recv_data);
 	void HandleAddDynamicTargetOpcode(WorldPacket & recvPacket);
+	void HandleCancelTotem(WorldPacket & recv_data);
 
 	/// Skill opcodes (SkillHandler.spp)
 	//void HandleSkillLevelUpOpcode(WorldPacket& recvPacket);

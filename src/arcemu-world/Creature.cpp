@@ -953,8 +953,12 @@ void Creature::UpdateItemAmount(uint32 itemid)
 
 void Creature::TotemExpire()
 {
+	Player *pOwner = NULL;
 	if( totemOwner != NULL )
 	{
+		pOwner = totemOwner;
+		if(GetUInt32Value(UNIT_CREATED_BY_SPELL) == 6495) // sentry totem
+			pOwner->RemoveAura(6495);
 		totemOwner->m_TotemSlots[totemSlot] = 0;
 	}
 	
@@ -963,6 +967,8 @@ void Creature::TotemExpire()
 
 	if( IsInWorld() )
 		RemoveFromWorld(false, true);
+	if(pOwner != NULL)
+		DestroyForPlayer(pOwner); //make sure the client knows it's gone...
 
 	SafeDelete();
 }

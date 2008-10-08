@@ -5010,31 +5010,29 @@ void Spell::SpellEffectSummonTotem(uint32 i) // Summon Totem
 {
 	if(!p_caster) 
 		return;
-
+	uint32 slot = 10;
 	float x = p_caster->GetPositionX();
 	float y = p_caster->GetPositionY();
-	uint32 slot = m_spellInfo->EffectImplicitTargetA[i] - EFF_TARGET_TOTEM_EARTH;
-	if(slot < 0 || slot > 3)
-	{
-		sLog.outDebug("Totem slot is : %u and max shoud be 3, i = %u , target = %u \n",slot,i,m_spellInfo->EffectImplicitTargetA[i]);
-		return; // Just 4 totems
-	}
 
 	switch(m_spellInfo->EffectMiscValueB[i])
 	{
-	case 63: 
+	case 63: //Fire
+		slot = 2;
 		x -= 1.5f;
 		y -= 1.5f;
 		break;
-	case 81: 
+	case 81: //Earth
+		slot = 3;
 		x -= 1.5f;
 		y += 1.5f;
 		break;
-	case 82:  
+	case 82: //Water
+		slot = 1;
 		x += 1.5f;
 		y -= 1.5f;
 		break;
-	case 83: 
+	case 83: //Air
+		slot = 0;
 		x += 1.5f;
 		y += 1.5f;
 		break;
@@ -5042,8 +5040,11 @@ void Spell::SpellEffectSummonTotem(uint32 i) // Summon Totem
 		break;
 	}
 
-	if(p_caster->m_TotemSlots[slot] != 0)
-		p_caster->m_TotemSlots[slot]->TotemExpire();
+	if(slot > 3)
+	{
+		sLog.outDebug("Totem slot is : %u and max shoud be 3, i = %u , target = %u \n",slot,i,m_spellInfo->EffectImplicitTargetA[i]);
+		return; // Just 4 totems
+	}
 
 	uint32 entry = GetProto()->EffectMiscValue[i];
 
@@ -5054,15 +5055,18 @@ void Spell::SpellEffectSummonTotem(uint32 i) // Summon Totem
 		return;
 	}
 
-	// Obtain the spell we will be casting.
-	SpellEntry * TotemSpell = ObjectMgr::getSingleton().GetTotemSpell(GetProto()->Id);
-	if(TotemSpell == 0) 
-	{
-		sLog.outDebug("Totem %u does not have any spells to cast, exiting\n",entry);
-		return;
-	}
-
 	Creature * pTotem = p_caster->GetMapMgr()->CreateCreature(entry);
+
+	// send the packet for the totem timer
+	WorldPacket data(SMSG_TOTEM_CREATED, 17);
+	data << uint8(slot);
+	data << uint64(pTotem->GetGUID());
+	data << uint32(GetDuration());
+	data << uint32(GetProto()->Id);
+	p_caster->GetSession()->SendPacket(&data);
+
+	if(p_caster->m_TotemSlots[slot] != 0)
+		p_caster->m_TotemSlots[slot]->TotemExpire();
 
 	p_caster->m_TotemSlots[slot] = pTotem;
 	pTotem->SetTotemOwner(p_caster);
@@ -5131,97 +5135,114 @@ void Spell::SpellEffectSummonTotem(uint32 i) // Summon Totem
 	pTotem->m_faction = p_caster->m_faction;
 	pTotem->m_factionDBC = p_caster->m_factionDBC;
 
-	//added by Zack : Some shaman talents are casted on player but it should be inherited or something by totems
-	pTotem->InheritSMMods(p_caster);
-
-	// Totems get spell damage and healing bonus from the Shaman
-	for(int school=0;school<7;school++){
-		pTotem->ModDamageDone[school] = (int32)(p_caster->GetUInt32Value( PLAYER_FIELD_MOD_DAMAGE_DONE_POS + school ) - (int32)p_caster->GetUInt32Value( PLAYER_FIELD_MOD_DAMAGE_DONE_NEG + school ));
-		pTotem->HealDoneMod[school] = p_caster->HealDoneMod[school];
-	}
-	// Set up AI, depending on our spells.
-	uint32 j;
-	for( j = 0; j < 3; ++j )
+	if(ci->Id != 3968) //Exclude the sentry totem, it does not cast
 	{
-		if( TotemSpell->Effect[j] == SPELL_EFFECT_APPLY_AREA_AURA || TotemSpell->Effect[j] == SPELL_EFFECT_PERSISTENT_AREA_AURA || TotemSpell->EffectApplyAuraName[j] == SPELL_AURA_PERIODIC_TRIGGER_SPELL )
+		// Obtain the spell we will be casting.
+		SpellEntry * TotemSpell = ObjectMgr::getSingleton().GetTotemSpell(GetProto()->Id);
+
+		if(TotemSpell == 0)
 		{
-			break;
+			sLog.outDebug("Totem %u does not have any spells to cast, exiting\n",entry);
+			return;
 		}
-	}
-	// Setup complete. Add us to the world.
-	pTotem->PushToWorld(m_caster->GetMapMgr());
 
-	if(j != 3)
-	{
-		// We're an area aura. Simple. Disable AI and cast the spell.
-		pTotem->DisableAI();
-		pTotem->GetAIInterface()->totemspell = GetProto();
+		//added by Zack : Some shaman talents are casted on player but it should be inherited or something by totems
+		pTotem->InheritSMMods(p_caster);
 
-		Spell * pSpell = SpellPool.PooledNew();
-		pSpell->Init(pTotem, TotemSpell, true, 0);
+		// Totems get spell damage and healing bonus from the Shaman
+		for(int school=0;school<7;school++){
+			pTotem->ModDamageDone[school] = (int32)(p_caster->GetUInt32Value( PLAYER_FIELD_MOD_DAMAGE_DONE_POS + school ) - (int32)p_caster->GetUInt32Value( PLAYER_FIELD_MOD_DAMAGE_DONE_NEG + school ));
+			pTotem->HealDoneMod[school] = p_caster->HealDoneMod[school];
+		}
+		// Set up AI, depending on our spells.
+		uint32 j;
+		for( j = 0; j < 3; ++j )
+		{
+			if( TotemSpell->Effect[j] == SPELL_EFFECT_APPLY_AREA_AURA || TotemSpell->Effect[j] == SPELL_EFFECT_PERSISTENT_AREA_AURA || TotemSpell->EffectApplyAuraName[j] == SPELL_AURA_PERIODIC_TRIGGER_SPELL )
+			{
+				break;
+			}
+		}
+		// Setup complete. Add us to the world.
+		pTotem->PushToWorld(m_caster->GetMapMgr());
 
-		SpellCastTargets targets;
-		targets.m_destX = pTotem->GetPositionX();
-		targets.m_destY = pTotem->GetPositionY();
-		targets.m_destZ = pTotem->GetPositionZ();
-		targets.m_targetMask = TARGET_FLAG_DEST_LOCATION;
+		if(j != 3)
+		{
+			// We're an area aura. Simple. Disable AI and cast the spell.
+			pTotem->DisableAI();
+			pTotem->GetAIInterface()->totemspell = GetProto();
 
-		pSpell->prepare(&targets);
+			Spell * pSpell = SpellPool.PooledNew();
+			pSpell->Init(pTotem, TotemSpell, true, 0);
+
+			SpellCastTargets targets;
+			targets.m_destX = pTotem->GetPositionX();
+			targets.m_destY = pTotem->GetPositionY();
+			targets.m_destZ = pTotem->GetPositionZ();
+			targets.m_targetMask = TARGET_FLAG_DEST_LOCATION;
+
+			pSpell->prepare(&targets);
+		}
+		else
+		{
+			// We're a casting totem. Switch AI on, and tell it to cast this spell.
+			pTotem->EnableAI();
+			pTotem->GetAIInterface()->Init(pTotem, AITYPE_TOTEM, MOVEMENTTYPE_NONE, p_caster);
+			pTotem->GetAIInterface()->totemspell = TotemSpell;
+			int32 totemspelltimer = 3000, totemspelltime = 3000;	// need a proper resource for this.
+
+			switch(TotemSpell->Id)
+			{
+			case 8167: //Poison Cleansing Totem
+			case 8172: //Disease Cleansing Totem
+			{
+				if(TotemSpell->Id == 8167)
+					TotemSpell = dbcSpell.LookupEntry( 8168 );	// Better to use this spell
+				else
+					TotemSpell = dbcSpell.LookupEntry( 8171 );
+				pTotem->GetAIInterface()->totemspell = TotemSpell;
+				totemspelltime =  5000;
+				totemspelltimer = 0; //First tick done immediately
+				break;
+			}
+			case 8146: //Tremor Totem
+			{
+				totemspelltime = 3000;
+				totemspelltimer = 0; //First tick done immediately
+				break;
+			}
+			case 8349: //Fire Nova Totem 1
+			case 8502: //Fire Nova Totem 2
+			case 8503: //Fire Nova Totem 3
+			case 11306: //Fire Nova Totem 4
+			case 11307: //Fire Nova Totem 5
+			case 25535: //Fire Nova Totem 6
+			case 25537: //Fire Nova Totem 7
+			{
+				totemspelltimer =  4000;
+				// Improved Fire Totems
+				SM_FIValue(p_caster->SM_FDur, &totemspelltimer, TotemSpell->SpellGroupType);
+				totemspelltime = totemspelltimer;
+				break;
+			}
+			default:break;
+			}
+
+			pTotem->GetAIInterface()->m_totemspelltimer = totemspelltimer;
+			pTotem->GetAIInterface()->m_totemspelltime = totemspelltime;
+		}
+
+		//in case these are our elemental totems then we should set them up
+		if(GetProto()->Id==2062)
+			pTotem->GetAIInterface()->Event_Summon_EE_totem(GetDuration());
+		else if(GetProto()->Id==2894)
+			pTotem->GetAIInterface()->Event_Summon_FE_totem(GetDuration());
 	}
 	else
 	{
-		// We're a casting totem. Switch AI on, and tell it to cast this spell.
-		pTotem->EnableAI();
-		pTotem->GetAIInterface()->Init(pTotem, AITYPE_TOTEM, MOVEMENTTYPE_NONE, p_caster);
-		pTotem->GetAIInterface()->totemspell = TotemSpell;
-		int32 totemspelltimer = 3000, totemspelltime = 3000;	// need a proper resource for this.
-
-		switch(TotemSpell->Id)
-		{
-		case 8167: //Poison Cleansing Totem
-		case 8172: //Disease Cleansing Totem
-		{
-			if(TotemSpell->Id == 8167)
-				TotemSpell = dbcSpell.LookupEntry( 8168 );	// Better to use this spell
-			else
-				TotemSpell = dbcSpell.LookupEntry( 8171 );
-			pTotem->GetAIInterface()->totemspell = TotemSpell;
-			totemspelltime =  5000;
-			totemspelltimer = 0; //First tick done immediately
-			break;
-		}
-		case 8146: //Tremor Totem
-		{
-			totemspelltime = 3000;
-			totemspelltimer = 0; //First tick done immediately
-			break;
-		}
-		case 8349: //Fire Nova Totem 1
-		case 8502: //Fire Nova Totem 2
-		case 8503: //Fire Nova Totem 3
-		case 11306: //Fire Nova Totem 4
-		case 11307: //Fire Nova Totem 5
-		case 25535: //Fire Nova Totem 6
-		case 25537: //Fire Nova Totem 7
-		{
-			totemspelltimer =  4000;
-			// Improved Fire Totems
-			SM_FIValue(p_caster->SM_FDur, &totemspelltimer, TotemSpell->SpellGroupType);
-			totemspelltime = totemspelltimer;
-			break;
-		}
-		default:break;
-		}
-
-		pTotem->GetAIInterface()->m_totemspelltimer = totemspelltimer;
-		pTotem->GetAIInterface()->m_totemspelltime = totemspelltime;
+		pTotem->PushToWorld(m_caster->GetMapMgr()); //Push the sentry totem...
+		//p_caster->SetUInt64Value(PLAYER_FARSIGHT, pTotem->GetGUID()); //works but farsight bugs it
 	}
-
-	//in case these are our elemental totems then we should set them up
-	if(GetProto()->Id==2062)
-		pTotem->GetAIInterface()->Event_Summon_EE_totem(GetDuration());
-	else if(GetProto()->Id==2894)
-		pTotem->GetAIInterface()->Event_Summon_FE_totem(GetDuration());
 
 	// Set up the deletion event. The totem needs to expire after a certain time, or upon its death.
 	sEventMgr.AddEvent(pTotem, &Creature::TotemExpire, EVENT_TOTEM_EXPIRE, GetDuration(), 1,0);
