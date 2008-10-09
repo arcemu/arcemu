@@ -73,121 +73,119 @@ void WorldSession::HandleUseItemOpcode(WorldPacket& recvPacket)
 			if(itemProto->Spells[x].Id)
 			{
 				spellId = itemProto->Spells[x].Id;
-				break;
+
+				// check for spell id
+				SpellEntry *spellInfo = dbcSpell.LookupEntryForced( spellId );
+
+				if ( !spellInfo || !sHookInterface.OnCastSpell( _player, spellInfo ) )
+				{
+					sLog.outError("WORLD: unknown spell id %i\n", spellId);
+					return;
+				}
+
+				if (spellInfo->AuraInterruptFlags & AURA_INTERRUPT_ON_STAND_UP)
+				{
+					if (p_User->CombatStatus.IsInCombat() || p_User->IsMounted())
+					{
+						_player->GetItemInterface()->BuildInventoryChangeError(tmpItem,NULL,INV_ERR_CANT_DO_IN_COMBAT);
+						return;
+					}
+					if(p_User->GetStandState()!=1)
+						p_User->SetStandState(STANDSTATE_SIT);
+					// loop through the auras and removing existing eating spells
+				}else
+				{ // cebernic: why not stand up
+					if (!p_User->CombatStatus.IsInCombat() && !p_User->IsMounted())
+					{
+						if( p_User->GetStandState() )//not standing-> standup
+						{
+							p_User->SetStandState( STANDSTATE_STAND );//probably mobs also must standup
+						}
+					}
+				}
+
+				// cebernic: remove stealth on using item
+				if (!(spellInfo->AuraInterruptFlags & ATTRIBUTESEX_NOT_BREAK_STEALTH))
+				{
+					if( p_User->IsStealth() )
+						p_User->RemoveAllAuraType( SPELL_AURA_MOD_STEALTH );
+				}
+
+				if(itemProto->RequiredLevel)
+				{
+					if(_player->getLevel() < itemProto->RequiredLevel)
+					{
+						_player->GetItemInterface()->BuildInventoryChangeError(tmpItem,NULL,INV_ERR_ITEM_RANK_NOT_ENOUGH);
+						return;
+					}
+				}
+
+				if(itemProto->RequiredSkill)
+				{
+					if(!_player->_HasSkillLine(itemProto->RequiredSkill))
+					{
+						_player->GetItemInterface()->BuildInventoryChangeError(tmpItem,NULL,INV_ERR_ITEM_RANK_NOT_ENOUGH);
+						return;
+					}
+
+					if(itemProto->RequiredSkillRank)
+					{
+						if(_player->_GetSkillLineCurrent(itemProto->RequiredSkill, false) < itemProto->RequiredSkillRank)
+						{
+							_player->GetItemInterface()->BuildInventoryChangeError(tmpItem,NULL,INV_ERR_ITEM_RANK_NOT_ENOUGH);
+							return;
+						}
+					}
+				}
+				
+				if( itemProto->AllowableClass && !(_player->getClassMask() & itemProto->AllowableClass) || itemProto->AllowableRace && !(_player->getRaceMask() & itemProto->AllowableRace) )
+				{
+					_player->GetItemInterface()->BuildInventoryChangeError(tmpItem,NULL,INV_ERR_YOU_CAN_NEVER_USE_THAT_ITEM);
+					return;
+				}		
+
+				if( !_player->Cooldown_CanCast( itemProto, x ) )
+				{
+					_player->SendCastResult(spellInfo->Id, SPELL_FAILED_NOT_READY, cn, 0);
+					return;
+				}
+
+				if(_player->m_currentSpell)
+				{
+					_player->SendCastResult(spellInfo->Id, SPELL_FAILED_SPELL_IN_PROGRESS, cn, 0);
+					return;
+				}
+
+				if( itemProto->ForcedPetId >= 0 )
+				{
+					if( itemProto->ForcedPetId == 0 )
+					{
+						if( _player->GetGUID() != targets.m_unitTarget )
+						{
+							_player->SendCastResult(spellInfo->Id, SPELL_FAILED_BAD_TARGETS, cn, 0);
+							return;
+						}
+					}
+					else
+					{
+						if( !_player->GetSummon() || _player->GetSummon()->GetEntry() != (uint32)itemProto->ForcedPetId )
+						{
+							_player->SendCastResult(spellInfo->Id, SPELL_FAILED_SPELL_IN_PROGRESS, cn, 0);
+							return;
+						}
+					}
+				}
+
+				Spell *spell = SpellPool.PooledNew();
+				spell->Init(_player, spellInfo, false, NULL);
+				uint8 result;
+				spell->extra_cast_number=cn;
+				spell->i_caster = tmpItem;
+				//GetPlayer()->setCurrentSpell(spell);
+				result = spell->prepare(&targets);
 			}
 		}
 	}
-	if(!spellId)
-		return;
-	// check for spell id
-	SpellEntry *spellInfo = dbcSpell.LookupEntryForced( spellId );
-
-	if ( !spellInfo || !sHookInterface.OnCastSpell( _player, spellInfo ) )
-	{
-		sLog.outError("WORLD: unknown spell id %i\n", spellId);
-		return;
-	}
-
-	if (spellInfo->AuraInterruptFlags & AURA_INTERRUPT_ON_STAND_UP)
-	{
-		if (p_User->CombatStatus.IsInCombat() || p_User->IsMounted())
-		{
-			_player->GetItemInterface()->BuildInventoryChangeError(tmpItem,NULL,INV_ERR_CANT_DO_IN_COMBAT);
-			return;
-		}
-		if(p_User->GetStandState()!=1)
-			p_User->SetStandState(STANDSTATE_SIT);
-		// loop through the auras and removing existing eating spells
-	}else
-	{ // cebernic: why not stand up
-		if (!p_User->CombatStatus.IsInCombat() && !p_User->IsMounted())
-		{
-			if( p_User->GetStandState() )//not standing-> standup
-			{
-				p_User->SetStandState( STANDSTATE_STAND );//probably mobs also must standup
-			}
-		}
-	}
-
-	// cebernic: remove stealth on using item
-	if (!(spellInfo->AuraInterruptFlags & ATTRIBUTESEX_NOT_BREAK_STEALTH))
-	{
-		if( p_User->IsStealth() )
-			p_User->RemoveAllAuraType( SPELL_AURA_MOD_STEALTH );
-	}
-
-	if(itemProto->RequiredLevel)
-	{
-		if(_player->getLevel() < itemProto->RequiredLevel)
-		{
-			_player->GetItemInterface()->BuildInventoryChangeError(tmpItem,NULL,INV_ERR_ITEM_RANK_NOT_ENOUGH);
-			return;
-		}
-	}
-
-	if(itemProto->RequiredSkill)
-	{
-		if(!_player->_HasSkillLine(itemProto->RequiredSkill))
-		{
-			_player->GetItemInterface()->BuildInventoryChangeError(tmpItem,NULL,INV_ERR_ITEM_RANK_NOT_ENOUGH);
-			return;
-		}
-
-		if(itemProto->RequiredSkillRank)
-		{
-			if(_player->_GetSkillLineCurrent(itemProto->RequiredSkill, false) < itemProto->RequiredSkillRank)
-			{
-				_player->GetItemInterface()->BuildInventoryChangeError(tmpItem,NULL,INV_ERR_ITEM_RANK_NOT_ENOUGH);
-				return;
-			}
-		}
-	}
-	
-	if( itemProto->AllowableClass && !(_player->getClassMask() & itemProto->AllowableClass) || itemProto->AllowableRace && !(_player->getRaceMask() & itemProto->AllowableRace) )
-	{
-		_player->GetItemInterface()->BuildInventoryChangeError(tmpItem,NULL,INV_ERR_YOU_CAN_NEVER_USE_THAT_ITEM);
-		return;
-	}		
-
-	if( !_player->Cooldown_CanCast( itemProto, x ) )
-	{
-		_player->SendCastResult(spellInfo->Id, SPELL_FAILED_NOT_READY, cn, 0);
-		return;
-	}
-
-	if(_player->m_currentSpell)
-	{
-		_player->SendCastResult(spellInfo->Id, SPELL_FAILED_SPELL_IN_PROGRESS, cn, 0);
-		return;
-	}
-
-	if( itemProto->ForcedPetId >= 0 )
-	{
-		if( itemProto->ForcedPetId == 0 )
-		{
-			if( _player->GetGUID() != targets.m_unitTarget )
-			{
-				_player->SendCastResult(spellInfo->Id, SPELL_FAILED_BAD_TARGETS, cn, 0);
-				return;
-			}
-		}
-		else
-		{
-			if( !_player->GetSummon() || _player->GetSummon()->GetEntry() != (uint32)itemProto->ForcedPetId )
-			{
-				_player->SendCastResult(spellInfo->Id, SPELL_FAILED_SPELL_IN_PROGRESS, cn, 0);
-				return;
-			}
-		}
-	}
-
-	Spell *spell = SpellPool.PooledNew();
-	spell->Init(_player, spellInfo, false, NULL);
-	uint8 result;
-	spell->extra_cast_number=cn;
-	spell->i_caster = tmpItem;
-	//GetPlayer()->setCurrentSpell(spell);
-	result = spell->prepare(&targets);
 
 	//if( result == SPELL_CANCAST_OK ) // incorrect - should be on Completed Cast
 	//	_player->Cooldown_AddItem( itemProto, x );
