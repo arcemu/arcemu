@@ -1387,6 +1387,12 @@ void WorldSession::HandleGuildBankDepositItem(WorldPacket & recv_data)
 				/* reduce his count by one */
 				pMember->OnItemWithdraw(dest_bank);
 			}
+			int8 error;
+			if( error=_player->GetItemInterface()->CanEquipItemInSlot2(source_bagslot, source_slot, pDestItem) )
+			{
+				_player->GetItemInterface()->BuildInventoryChangeError(NULL , pDestItem, error);
+				return;
+			}
 		}
 
 		pSourceItem = _player->GetItemInterface()->GetInventoryItem(source_bagslot, source_slot);
