@@ -14,8 +14,3 @@ CREATE TABLE IF NOT EXISTS `worldbroadcast` (
 --
 -- Dumping data for table `worldbroadcast`
 --
-
-INSERT INTO `worldbroadcast` (`entry`, `text`, `percent`) VALUES
-(1, 'You are using Arcemu!', 60),
-(2, 'BCSystem Enabled', 100);
-
