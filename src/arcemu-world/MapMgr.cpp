@@ -542,6 +542,16 @@ void MapMgr::RemoveObject(Object *obj, bool free_guid)
 	{
 		ASSERT(obj->GetMapCell());
 	
+		// Zack : !!!! this is fucked up. Somehow object cell gets to be an invalid pointer ? 
+		// This is put here to catch if really indeed pointer is corrupted as debugger suggests or map is in some deinit state( happens on static maps too ! )
+		// from X number of debugs it seems that creature is a valid object and even the map he is on is valid but the cell he is on is invalid. This was frecvent on map 530 in my db
+		// note1 : that not all reported cases are actually bugs. There are cases when i can't understand how mob is on other cell he should be :D. Just reading code comments
+		// note2 : might lead to unwanted other crash or even chain problems :P
+		if( this->GetCellByCoords(obj->GetPositionX(), obj->GetPositionY()) != obj->GetMapCell() )
+		{
+			sLog.outError("We try to remove mob from map and he might have invalid mapcell pointer %p instead %p. We are forcing a relocate.", obj->GetMapCell(),this->GetCellByCoords(obj->GetPositionX(), obj->GetPositionY()));
+			obj->SetMapCell(this->GetCellByCoords(obj->GetPositionX(), obj->GetPositionY()));
+		}
 		// Remove object from cell
 		obj->GetMapCell()->RemoveObject(obj);
 	
