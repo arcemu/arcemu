@@ -1,0 +1,63 @@
+
+
+Small doc about procFlags / spells attributes
+=============================================
+
+
+
+procFlags: They are not flags it seems, but magic numbers
+
+
+0x1 on combat
+0x2 After killing an opponent that yields experience or honor
+0x4 on attack
+
+0x100000 any damage
+
+
+0x28 ON_MELEE_HIT_VICTIM 
+
+0x2A8 ON_MELEE_HIT_VICTIM | ON_RANGED_HIT_VICTIM
+
+0x10000 ON_cAST_SPELL
+
+0x11154 & attr=0x1d0 ON_CRIT 
+0x11154 & attr=0x50010 ON_ATTACK
+
+0x15550 ON_SPELL_LAND your next spell
+
+0x15550 & attrexd&0x40 your next spell, and remove after aura
+0x15550 & attrex&0x20 increases the critical strike chance of your next offensive ability
+
+0x222A8 ON_HIT_VICTIM spell, melee or ranged attack
+
+0x222A8 & attr&0x1d0 & !(attrexd&80000) ON_CRIT_VICTIM
+
+0x200000 ON_TRAP_TRIGGER
+
+0x211154 ON_ATTACK (used by Misdirection)
+
+0xA22A8 ON_HEALTH_DROP
+
+0x14 and attrexc&0x4000000 after dealing a melee critical strike
+
+0x2a8 and attr&0x50000 and attrexc&2 on block
+
+// SpellFixes.cpp ApplyNormalFixes iteration:
+
+		//create table spell(entry int4 unsigned primary key, name varchar(255) not null, description text not null, attr int4 unsigned not null, attrex int4 unsigned not null, attrexb int4 unsigned not null, attrexc int4 unsigned not null, attrexd int4 unsigned not null, attrexe int4 unsigned not null, flags int4 unsigned not null, intr int4 unsigned not null, auintr int4 unsigned not null, hasproc int1 unsigned not null);
+		char query[4096];
+		char name[4096];
+		char desc[4096];
+		strcpy(name,sp->Name);
+		strcpy(desc,sp->Description);
+		for (int z=0;z<strlen(name);z++) if (name[z] == '\'') name[z]=' ';
+		for (int z=0;z<strlen(desc);z++) if (desc[z] == '\'') desc[z]=' ';
+		sprintf(query, "insert into spell(entry, name, description, attr, attrex, attrexb, attrexc, attrexd, attrexe, flags, intr, auintr, hasproc) values(%u, '%s', '%s', %u, %u, %u, %u, %u, %u, %u, %u, %u, %u);", sp->Id, name, desc, sp->Attributes, sp->AttributesEx, sp->AttributesExB, sp->AttributesExC, sp->AttributesExD, sp->AttributesExE, sp->procFlags, sp->InterruptFlags, sp->AuraInterruptFlags, sp->EffectApplyAuraName[0]==42 ||sp->EffectApplyAuraName[1]==42 ||sp->EffectApplyAuraName[2]==42);
+		FILE *f = fopen("spell.sql", "a");
+		fprintf(f, "%s\n", query);
+		fclose(f);
+
+
+
+  Marcelo

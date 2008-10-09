@@ -1539,7 +1539,8 @@ uint32 Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, ui
 				//mage - Winter's Chill
 				case 12579:
 					// Winter's Chill shouldn't proc on self
-					if (victim == this) continue;
+					if (victim == this || CastingSpell->School != SCHOOL_FROST)
+						continue;
 					break;
 				//item - Thunderfury
 				case 21992:
