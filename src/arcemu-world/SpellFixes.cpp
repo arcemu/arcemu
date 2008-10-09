@@ -3927,6 +3927,13 @@ void ApplyNormalFixes()
 	//////////////////////////////////////////
 
 	// Insert shaman spell fixes here
+		/**********************************************************
+		 *	Elemental Mastery
+		 **********************************************************/
+		sp = dbcSpell.LookupEntryForced(16166);
+		if(sp != NULL) {
+			sp->AuraInterruptFlags = AURA_INTERRUPT_ON_AFTER_CAST_SPELL;
+		}
 
 		/**********************************************************
 		 *	Shamanistic Rage

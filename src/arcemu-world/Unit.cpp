@@ -5836,6 +5836,12 @@ void Unit::RemoveAurasByInterruptFlagButSkip(uint32 flag, uint32 skip)
 							if( spi && spi->NameHash != SPELL_HASH_SHADOW_BOLT )
 								continue;
 						}break;
+					case 16166: // [Shaman] Elemental Mastery
+						{
+						    SpellEntry *spi = dbcSpell.LookupEntry( skip );
+							if (spi && !(spi->School==SCHOOL_FIRE||spi->School==SCHOOL_FROST||spi->School==SCHOOL_NATURE))
+								continue;
+						}break;
 				}
 			}
 			a->Remove();

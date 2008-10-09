@@ -358,6 +358,8 @@ enum AuraInterruptFlags
     AURA_INTERRUPT_ON_INVINCIBLE              = 0x100000,
     AURA_INTERRUPT_ON_STEALTH                 = 0x200000,
     AURA_INTERRUPT_ON_UNK8                    = 0x400000,
+
+    AURA_INTERRUPT_ON_AFTER_CAST_SPELL        = 0x80000000,
 };
 
 enum ChannelInterruptFlags

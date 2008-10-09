@@ -1718,6 +1718,9 @@ void Spell::cast(bool check)
 
 			finish();
 		}
+
+		if( u_caster != NULL )
+			u_caster->RemoveAurasByInterruptFlagButSkip(AURA_INTERRUPT_ON_CAST_SPELL, GetProto()->Id);
 	}
 	else
 	{
