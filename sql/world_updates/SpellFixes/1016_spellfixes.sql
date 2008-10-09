@@ -226,3 +226,6 @@ INSERT INTO spellfixes(spellId, groupRelation0) VALUES(18429, 0x20006) ON DUPLIC
 
 -- [Rogue] Cold Blood
 INSERT INTO spellfixes(spellId, groupRelation0) VALUES(14177, 0xC6012031E) ON DUPLICATE KEY UPDATE groupRelation0=VALUES(groupRelation0);
+
+-- Reduced Stormstrike Cost
+INSERT INTO spellfixes(spellId, groupRelation0) VALUES(37762, 0x1000000000) ON DUPLICATE KEY UPDATE groupRelation0=VALUES(groupRelation0);
