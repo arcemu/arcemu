@@ -775,7 +775,9 @@ void Aura::Remove()
 		}
 	}
 
-	m_target->m_auras[ m_auraSlot ] = NULL;
+	//maybe we are removing it without even assigning it. Example when we are refreshing an aura
+	if( m_auraSlot != 0xFFFF )
+		m_target->m_auras[ m_auraSlot ] = NULL;
 
 	// reset diminishing return timer if needed
 	::UnapplyDiminishingReturnTimer( m_target, m_spellProto );
