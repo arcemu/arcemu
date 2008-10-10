@@ -2859,9 +2859,16 @@ void Aura::EventPeriodicHeal( uint32 amount )
 		amp = static_cast< EventableObject* >( this )->event_GetEventPeriod( EVENT_AURA_PERIODIC_HEAL );
 //	if(m_spellProto->NameHash != SPELL_HASH_HEALING_STREAM)// Healing Stream is not a HOT
 	{  
-		if( GetDuration() && GetDuration()!=-1)
+		int32 dur = GetDuration();
+		//example : Citrine Pendant of Golden Healing is in AA aura that does not have duration. In this case he woul dhave full healbonus benefit
+		if( (dur==0 || dur==-1) && GetSpellProto()->DurationIndex)
 		{
-			int ticks = ( amp > 0 ) ? GetDuration() / amp : 0;
+			SpellDuration *sd=dbcSpellDuration.LookupEntry(GetSpellProto()->DurationIndex);
+			dur = ::GetDuration( sd );
+		}
+		if( dur && dur!=-1)
+		{
+			int ticks = ( amp > 0 ) ? dur / amp : 0;
 			bonus = ( ticks > 0 ) ? bonus / ticks : 0;
 		}
 		//removed by Zack : Why is this directly setting bonus to 0 ? It's not logical
