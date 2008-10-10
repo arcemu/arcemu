@@ -1871,7 +1871,10 @@ protected:
 	std::map<uint32, PlayerPet*> m_Pets;
 	
     uint32      m_invitersGuid; // It is guild inviters guid ,0 when its not used
-    
+
+#ifdef TRACK_IMMUNITY_BUG
+	uint32		m_immunityTime;
+#endif
 
     // bind
 	float m_bind_pos_x;
