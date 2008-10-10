@@ -2535,19 +2535,16 @@ void ApplyNormalFixes()
 		sp = dbcSpell.LookupEntryForced( 31828 );
 		if( sp != NULL )
 		{
-			sp->procFlags = PROC_ON_ANY_DAMAGE_VICTIM;
 			sp->EffectTriggerSpell[0] = 31828;
 		}
 		sp = dbcSpell.LookupEntryForced( 31829 );
 		if( sp != NULL )
 		{
-			sp->procFlags = PROC_ON_ANY_DAMAGE_VICTIM;
 			sp->EffectTriggerSpell[0] = 31828;
 		}
 		sp = dbcSpell.LookupEntryForced( 31830 );
 		if( sp != NULL )
 		{
-			sp->procFlags = PROC_ON_ANY_DAMAGE_VICTIM;
 			sp->EffectTriggerSpell[0] = 31828;
 		}
 
@@ -2585,14 +2582,12 @@ void ApplyNormalFixes()
 		sp = dbcSpell.LookupEntryForced( 31892 );
 		if( sp != NULL )
 		{
-			sp->procFlags = PROC_ON_MELEE_ATTACK;
 			sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
 			sp->EffectTriggerSpell[0] = 31893;
 		}
 		sp = dbcSpell.LookupEntryForced( 38008 );
 		if( sp != NULL )
 		{
-			sp->procFlags = PROC_ON_MELEE_ATTACK;
 			sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
 			sp->EffectTriggerSpell[0] = 31893;
 		}

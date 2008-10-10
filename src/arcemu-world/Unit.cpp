@@ -1981,7 +1981,8 @@ uint32 Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, ui
 				case 31893:
 					{
 						//we loose health depending on father of trigger spell when trigering this effect
-						int32 healthtoloose = ospinfo->EffectBasePoints[1] * GetUInt32Value( UNIT_FIELD_BASE_HEALTH ) / 100;
+						uint32 totaldmg = dmg + (dmg * 35) / 100;
+						int32 healthtoloose = (ospinfo->EffectBasePoints[1] * totaldmg) / 100;
 						if( healthtoloose > (int32)GetUInt32Value( UNIT_FIELD_HEALTH ) )
 							SetUInt32Value( UNIT_FIELD_HEALTH, 1 );
 						else
