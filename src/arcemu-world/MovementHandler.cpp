@@ -416,7 +416,7 @@ void WorldSession::HandleMovementOpcodes( WorldPacket & recv_data )
 	{
 		_player->blinked = false;
 		_player->m_fallDisabledUntil = UNIXTIME + 5;
-		_player->SpeedCheatDelay( 1000 ); //some say they managed to trigger system with knockback. Maybe they moved in air ?
+		_player->SpeedCheatDelay( 2000 ); //some say they managed to trigger system with knockback. Maybe they moved in air ?
 	}
 	else
 	{
@@ -442,7 +442,7 @@ void WorldSession::HandleMovementOpcodes( WorldPacket & recv_data )
 
 			//checks that player has fallen more than 12 units, otherwise no damage will be dealt
 			//falltime check is also needed here, otherwise sudden changes in Z axis position, such as using !recall, may result in death			
-			if( _player->isAlive() && !_player->GodModeCheat && falldistance > 12 && ( UNIXTIME >= _player->m_fallDisabledUntil ) && movement_info.FallTime > 2000 )
+			if( _player->isAlive() && !_player->GodModeCheat && falldistance > 12 && ( UNIXTIME >= _player->m_fallDisabledUntil ) && movement_info.FallTime > 1000 )
 			{
 				// 1.7% damage for each unit fallen on Z axis over 13
 				uint32 health_loss = float2int32( float( _player->GetUInt32Value( UNIT_FIELD_MAXHEALTH ) * ( ( falldistance - 12 ) * 0.017 ) ) );

@@ -203,6 +203,7 @@ public:
 
 	// Terrain Functions
 	ARCEMU_INLINE float  GetLandHeight(float x, float y) { return GetBaseMap()->GetLandHeight(x, y); }
+	ARCEMU_INLINE bool   IsUnderground(float x, float y,float z) { return GetBaseMap()->GetLandHeight(x, y) > (z+0.5f); }
 	ARCEMU_INLINE float  GetWaterHeight(float x, float y) { return GetBaseMap()->GetWaterHeight(x, y); }
 	ARCEMU_INLINE uint8  GetWaterType(float x, float y) { return GetBaseMap()->GetWaterType(x, y); }
 	ARCEMU_INLINE uint8  GetWalkableState(float x, float y) { return GetBaseMap()->GetWalkableState(x, y); }
@@ -268,6 +269,8 @@ public:
 			Sleep(100);
 		}
 	}
+
+	float GetFirstZWithCPZ(float x,float y ,float z);
 
 //#ifdef FORCED_SERVER_KEEPALIVE
 	void	KillThreadWithCleanup();

@@ -2670,97 +2670,112 @@ void Spell::SpellEffectSummon(uint32 i) // Summon
 void Spell::SpellEffectLeap(uint32 i) // Leap
 {
 	float radius = GetRadius(i);
-
 	// remove movement impeding auras
 	u_caster->RemoveAurasByInterruptFlag(AURA_INTERRUPT_ON_ANY_DAMAGE_TAKEN);
+	// cebernic: 2008-10-11
+	// thanks for the guys who gave the suggestions to my private forum(p2wow.com)
+	// Blink works perfectly atm.Features:no traversed / never outspace falling:D / calc right everwhere even multi floors or underground / much blizzlike.
+	// a couple hours i wasted,so it full tested.
 
 	if (sWorld.Collision) {
-		// Let's not allow players to blink trew gates.
-		// Until we fix the real problem this will work.
-		if(p_caster && p_caster->m_bg && !p_caster->m_bg->HasStarted())
+		if(p_caster && p_caster->m_bg && !p_caster->m_bg->HasStarted()) // tempfix
 			return;
+
+		int _UNDERGROUND   = 0x2;
+		int _COLLIDED      = 0x4;
+		int _LAND_BREAK    = 0x8;
+		int _POS_BREAK     = 0x10;
+		int _BLOCK_BREAK   = 0x20;
+
+		int flag=0;
 
 		float newposX, newposY, newposZ;
 		// init first variables
 		float ori = m_caster->GetOrientation();
 		float posX = m_caster->GetPositionX();
 		float posY = m_caster->GetPositionY();
-		float posZ = m_caster->GetPositionZ();
-		// find maximum distance to leap
-		uint8 steps = 10;
+		float posZ = m_caster->GetPositionZ(); 
+		if ( m_caster->GetMapMgr()->IsUnderground(posX,posY,posZ) )// make sure not eq.
+			flag |= _UNDERGROUND;
+
+		LocationVector src(posX,posY,posZ);
+		LocationVector finaldest(posX,posY,posZ);
+
+
+		uint8 steps = 20; // heigher percision,but more performance waste,radius =20.0f may each 1y will be checked.
 		float radius_steps = radius / steps;
-		for ( uint8 i = 1; i < steps; ++i )
-		{
-			newposX = m_caster->GetPositionX() + ( float(i) * radius_steps * cosf( ori ) );
-			newposY = m_caster->GetPositionY() + ( float(i) * radius_steps * sinf( ori ) );
-			newposZ = CollideInterface.GetHeight(m_caster->GetMapId(), newposX, newposY, posZ + 2.0f);
-			if( newposZ == NO_WMO_HEIGHT )
-				newposZ = m_caster->GetMapMgr()->GetLandHeight( newposX, newposY );
+		uint8 i =0;
 
-			// check if new z is not in water
-			if( ( m_caster->GetMapMgr()->GetWaterType( posX, posY ) & 1 ) == 1
-				&& newposZ < m_caster->GetMapMgr()->GetWaterHeight( posX, posY ) )
-			{
-				if ( newposZ < posZ )
-					newposZ = posZ;
+		float _SharpCounter = 0.0f;
+		for ( i = 1; i < steps; i++ )
+		{
+			newposX = posX + ( float(i) * radius_steps * cosf( ori ) );
+			newposY = posY + ( float(i) * radius_steps * sinf( ori ) );
+			newposZ =  m_caster->GetMapMgr()->GetFirstZWithCPZ(newposX,newposY,posZ);
+
+			if ( newposZ != NO_WMO_HEIGHT ) flag |= _COLLIDED;
+			if (flag & _COLLIDED){
+				if ( newposZ == NO_WMO_HEIGHT ) { // been round 2
+					flag |= _LAND_BREAK;
+					break;
+				}
+			}else {
+				newposZ = m_caster->GetMapMgr()->GetLandHeight(newposX,newposY);
+			}
+			
+			if ( fabs( ( newposZ - finaldest.z ) / radius_steps ) > 1.0f ) {flag |= _POS_BREAK;break;} // too heigh
+
+
+			LocationVector dest(newposX,newposY,newposZ);
+			dest.o = ori;
+			if ( i>1 && CollideInterface.GetFirstPoint( m_caster->GetMapId(),src, dest,dest, -1.5f ) ) {flag |= _BLOCK_BREAK;break;} // blocked then break;
+
+			if ( newposZ > finaldest.z ){
+				_SharpCounter = _SharpCounter+(newposZ - finaldest.z); // this value reserved for more extends.
 			}
 
-			// simple math, check if angle of current step is not bigger than 45', then break loop
-			if( fabs( ( newposZ - posZ ) / radius_steps ) > 1.0f )
-				break;
+			//printf("x:%f y:%f z:%f counter%d sharp%f\n",newposX,newposY,newposZ,i,_SharpCounter );
 
-			posX = newposX;
-			posY = newposY;
-			posZ = newposZ;
+			finaldest.x = newposX;
+			finaldest.y = newposY;
+			finaldest.z = newposZ;
 		}
 
-		LocationVector dest(posX, posY, posZ + 2.0f, ori);
-		LocationVector destest(posX, posY, dest.z, ori);
-		LocationVector src(m_caster->GetPositionX(), m_caster->GetPositionY(), m_caster->GetPositionZ() + 2.0f);
 
-		// check if there are any obstacle not detected by steps, if there was any
-		if( i > 1 && CollideInterface.GetFirstPoint( m_caster->GetMapId(), src, destest, dest, -1.5f ) )
+		/*if ( flag & _UNDERGROUND ) printf("_UNDERGROUND 1\n");
+		if ( flag & _COLLIDED ) printf("_COLLIDED 1\n");
+		if ( flag & _LAND_BREAK ) printf("_LAND_BREAK 1\n");
+		if ( flag & _POS_BREAK ) printf("_POS_BREAK 1\n");
+		if ( flag & _BLOCK_BREAK ) printf("_BLOCK_BREAK 1\n");*/
+
+
+		if ( i <3 ) return; //wallhack?
+
+		if ( !(flag & _UNDERGROUND) )
 		{
-			// hit an object new point is in dest.
-			// is this necessary?
-			// step back
-			posX = dest.x - ( 2 * cosf( ori ) );
-			posY = dest.y - ( 2 * sinf( ori ) );
-			posZ = CollideInterface.GetHeight(m_caster->GetMapId(), posX, posY, dest.z + 2.0f);
-			if( posZ == NO_WMO_HEIGHT )
-				posZ = m_caster->GetMapMgr()->GetLandHeight( posX, posY );
+			newposZ = m_caster->GetMapMgr()->GetLandHeight( finaldest.x,finaldest.y );
+			if ( newposZ > finaldest.z ) finaldest.z = newposZ;
 		}
 
-		// check if terrain near destination is higher (could be also in water but there should be safe for fall)
-		if( ( m_caster->GetMapMgr()->GetWaterType( posX, posY ) & 1 ) == 0 ) // land
-		{
-			for ( i = 0; i < 4; ++i )
-			{
-				// check each edge of character
-				newposX = posX + ( 2 * cosf((float)( ori + i * M_PI/2 )) );
-				newposY = posY + ( 2 * sinf((float)( ori + i * M_PI/2 )) );
-				newposZ = CollideInterface.GetHeight(m_caster->GetMapId(), newposX, newposY, posZ + 2.0f);
-				if( newposZ == NO_WMO_HEIGHT )
-					newposZ = m_caster->GetMapMgr()->GetLandHeight( newposX, newposY );
-				if( posZ < newposZ )
-					posZ = newposZ;
-			}
+		if ( !(flag&_COLLIDED) && (flag&_POS_BREAK) ) { 
+			// just test again ,landheight wasn't strictly, collision system better;p
+			// so it makes you on falling.
+			newposX = posX + ( ((float(i) * radius_steps)+0.5f) * cosf( m_caster->GetOrientation() ) );
+			newposY = posY + ( ((float(i) * radius_steps)+0.5f) * sinf( m_caster->GetOrientation() ) );
+			newposZ = m_caster->GetMapMgr()->GetLandHeight(newposX,newposY);
+			if ( newposZ > finaldest.z ) finaldest.z = finaldest.z+4.0f; // taking big Z
 		}
 
-		dest.x = posX;
-		dest.y = posY;
-		dest.z = posZ;
-		dest.o = u_caster->GetOrientation();
-
+		finaldest.o = m_caster->GetOrientation();
 
 		if(p_caster)
 		{
 			p_caster->blinked = true;
-			p_caster->SafeTeleport( p_caster->GetMapId(), p_caster->GetInstanceID(), dest );
+			p_caster->SafeTeleport( p_caster->GetMapId(), p_caster->GetInstanceID(), finaldest );
 		}
 		else
 		{
-			u_caster->SetPosition(dest, true);
+			u_caster->SetPosition(finaldest, true);
 		}
 	} else {
 		if(!p_caster) return;
@@ -2772,7 +2787,6 @@ void Spell::SpellEffectLeap(uint32 i) // Leap
 		data << radius;
 		data << float(-10.0f);
 		p_caster->GetSession()->SendPacket(&data);
-		//m_caster->SendMessageToSet(&data, true);
 	}
 }
 
@@ -4863,18 +4877,6 @@ void Spell::SpellEffectScriptEffect(uint32 i) // Script Effect
 				sp->prepare( &tgt1 );
 			}
 		}break;
-		case 5784:
-		case 23161: // Warlock: ( Felsteed / Dreadsteed ) summon visual
-			{
-				if(p_caster == NULL)return;
-
-				Spell *sp = SpellPool.PooledNew();
-				sp->Init( p_caster, dbcSpell.LookupEntry( 31725 ), true, NULL );
-				sp->bRadSet[0] = true;
-				sp->Rad[0] = (10.0f * p_caster->GetFloatValue(OBJECT_FIELD_SCALE_X));
-				SpellCastTargets tgt( p_caster->GetGUID() );
-				sp->prepare( &tgt );
-			}break;
 	}
 }
 

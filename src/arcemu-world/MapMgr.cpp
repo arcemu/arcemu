@@ -25,6 +25,10 @@
 #include "StdAfx.h"
 #define MAP_MGR_UPDATE_PERIOD 100
 #define MAPMGR_INACTIVE_MOVE_TIME 30
+
+#define Z_SEARCH_RANGE 2
+
+
 extern bool bServerShutdown;
 
 MapMgr::MapMgr(Map *map, uint32 mapId, uint32 instanceid) : CellHandler<MapCell>(map), _mapId(mapId), eventHolder(instanceid)
@@ -2094,4 +2098,17 @@ void MapMgr::RemoveForcedCell(MapCell* c)
 {
 	m_forcedcells.erase( c );
 	UpdateCellActivity( c->GetPositionX(), c->GetPositionY(), 1 );
+}
+
+float MapMgr::GetFirstZWithCPZ(float x,float y ,float z)
+{
+	if (!sWorld.Collision) return NO_WMO_HEIGHT;
+	float posZ;
+	for (int i=Z_SEARCH_RANGE;i>= (Z_SEARCH_RANGE-Z_SEARCH_RANGE*2);i--)
+	{
+		//if ( i==0 && !IsUnderground(x,y,z) ) return GetBaseMap()->GetLandHeight(x, y);
+		posZ = CollideInterface.GetHeight(GetMapId(), x, y,z+(float)i);
+		if ( posZ!=NO_WMO_HEIGHT ) break;
+	}
+	return posZ;
 }

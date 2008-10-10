@@ -8238,6 +8238,7 @@ bool Player::SafeTeleport(uint32 MapID, uint32 InstanceID, const LocationVector 
 	}
 
 	_Relocate(MapID, vec, true, instance, InstanceID);
+	SpeedCheatReset();
 	ForceZoneUpdate();
 	return true;
 #endif
