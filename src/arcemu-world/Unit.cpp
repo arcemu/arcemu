@@ -4208,7 +4208,7 @@ void Unit::AddAura(Aura *aur)
 				{
 					if( !aur->IsPositive() //sais who ?
 						&& m_auras[x]->m_casterGuid != aur->m_casterGuid //it's a lie !
-						 (m_auras[x]->GetSpellProto()->c_is_flags & SPELL_FLAG_IS_MAXSTACK_FOR_DEBUFF) == 0 //the truth is revealed
+						&& ( m_auras[x]->GetSpellProto()->c_is_flags & SPELL_FLAG_IS_MAXSTACK_FOR_DEBUFF) == 0 //the truth is revealed
 						)
 						continue;
 					AlreadyApplied++;

@@ -1374,7 +1374,14 @@ void WorldSession::HandleGuildBankDepositItem(WorldPacket & recv_data)
 				SystemMessage("You don't have permission to do that.");
 				return;
 			}
-
+/*
+			Zack : well this was made in an attempt to avoid WPE hack to equip anything to any slot. Seems like i failed :(
+			int8 error;
+			if( error=_player->GetItemInterface()->CanEquipItemInSlot2(source_bagslot, source_slot, pDestItem) )
+			{
+				_player->GetItemInterface()->BuildInventoryChangeError(NULL , pDestItem, error);
+				return;
+			}*/
 			if(pMember->pRank->iTabPermissions[dest_bank].iStacksPerDay > 0)
 			{
 				if(pMember->CalculateAllowedItemWithdraws(dest_bank) == 0)
@@ -1386,12 +1393,6 @@ void WorldSession::HandleGuildBankDepositItem(WorldPacket & recv_data)
 
 				/* reduce his count by one */
 				pMember->OnItemWithdraw(dest_bank);
-			}
-			int8 error;
-			if( error=_player->GetItemInterface()->CanEquipItemInSlot2(source_bagslot, source_slot, pDestItem) )
-			{
-				_player->GetItemInterface()->BuildInventoryChangeError(NULL , pDestItem, error);
-				return;
 			}
 		}
 
