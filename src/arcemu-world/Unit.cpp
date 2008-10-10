@@ -4206,7 +4206,10 @@ void Unit::AddAura(Aura *aur)
 				}
 				else if( m_auras[x]->GetSpellId() == aur->GetSpellId() ) // not the best formula to test this I know, but it works until we find a solution
 				{
-					if( !aur->IsPositive() && m_auras[x]->m_casterGuid != aur->m_casterGuid )
+					if( !aur->IsPositive() //sais who ?
+						&& m_auras[x]->m_casterGuid != aur->m_casterGuid //it's a lie !
+						 (m_auras[x]->GetSpellProto()->c_is_flags & SPELL_FLAG_IS_MAXSTACK_FOR_DEBUFF) == 0 //the truth is revealed
+						)
 						continue;
 					AlreadyApplied++;
 					if(AlreadyApplied == 1)
@@ -5648,8 +5651,11 @@ void Unit::RemoveAurasByBuffType(uint32 buff_type, const uint64 &guid, uint32 sk
 
 	for(uint32 x=0;x<MAX_AURAS;x++)
 	{
-		if(m_auras[x] && m_auras[x]->GetSpellProto()->BGR_one_buff_on_target & buff_type && m_auras[x]->GetSpellId()!=skip)
-			if(!sguid || (sguid && m_auras[x]->m_casterGuid == sguid))
+		if(	m_auras[x] //have aura
+			&& (m_auras[x]->GetSpellProto()->BGR_one_buff_on_target & buff_type) //aura is in same group
+			&& m_auras[x]->GetSpellId() != skip //make sure to not do self removes in case aura will stack
+			&& (!sguid || (sguid && m_auras[x]->m_casterGuid == sguid)) //we eighter remove everything or just buffs from us
+			)
 				m_auras[x]->Remove();
 	}
 }

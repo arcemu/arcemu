@@ -814,6 +814,8 @@ void ApplyNormalFixes()
 		if( IsTargetingStealthed( sp ) )
 			sp->c_is_flags |= SPELL_FLAG_IS_TARGETINGSTEALTHED;
 		
+		if( sp->NameHash == SPELL_HASH_HEMORRHAGE )
+			sp->c_is_flags |= SPELL_FLAG_IS_MAXSTACK_FOR_DEBUFF;
 
 		//stupid spell ranking problem
 		if(sp->spellLevel==0)

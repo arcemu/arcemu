@@ -972,6 +972,7 @@ enum SpellIsFlags
 	SPELL_FLAG_IS_FORCEDDEBUFF			= 0x00001000, // forced to be a debuff
 	SPELL_FLAG_IS_FORCEDBUFF			= 0x00002000, // forced to be a buff
 	SPELL_FLAG_IS_INHERITING_LEVEL		= 0x00004000, // summons to inherit caster level or not
+	SPELL_FLAG_IS_MAXSTACK_FOR_DEBUFF	= 0x00008000, // summons to inherit caster level or not
 };
 
 enum SpellCoefficientsFlags
