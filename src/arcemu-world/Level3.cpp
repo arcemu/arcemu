@@ -3131,11 +3131,26 @@ bool ChatHandler::HandleCollisionGetHeight(const char * args, WorldSession * m_s
 {
 	if (sWorld.Collision) {
 		Player * plr = m_session->GetPlayer();
-		float z = CollideInterface.GetHeight(plr->GetMapId(), plr->GetPositionX(), plr->GetPositionY(), plr->GetPositionZ() + 2.0f);
-		float z2 = CollideInterface.GetHeight(plr->GetMapId(), plr->GetPositionX(), plr->GetPositionY(), plr->GetPositionZ() + 5.0f);
-		float z3 = CollideInterface.GetHeight(plr->GetMapId(), plr->GetPositionX(), plr->GetPositionY(), plr->GetPositionZ());
+		float radius = 5.0f;
+		
+		float posX = plr->GetPositionX();
+		float posY = plr->GetPositionY();
+		float posZ = plr->GetPositionZ();
+		float ori  = plr->GetOrientation();
 
-		SystemMessage(m_session, "Results were: %f %f %f", z, z2, z3);
+		LocationVector src(posX,posY,posZ);
+
+		LocationVector dest(posX+(radius*(cosf(ori))),posY+(radius*(sinf(ori))),posZ);
+		//LocationVector destest(posX+(radius*(cosf(ori))),posY+(radius*(sinf(ori))),posZ);
+		
+		
+		float z = CollideInterface.GetHeight(plr->GetMapId(), posX, posY, posZ + 2.0f);
+		float z2 = CollideInterface.GetHeight(plr->GetMapId(), posX, posY, posZ + 5.0f);
+		float z3 = CollideInterface.GetHeight(plr->GetMapId(), posX, posY, posZ);
+		float z4 = plr->GetMapMgr()->GetLandHeight(plr->GetPositionX(),plr->GetPositionY());
+		bool fp = CollideInterface.GetFirstPoint( plr->GetMapId(), src, dest, dest, -1.5f );
+
+		SystemMessage(m_session, "Results were: %f(offset2.0f) | %f(offset5.0f) | %f(org) | landheight:%f | target radius5 FP:%d", z, z2, z3,z4,fp);
 		return true;
 	} else {
 		SystemMessage(m_session, "Collision is not enabled.");

@@ -1,5 +1,9 @@
 -- --------------------------------------------------------
-
+-- cebernic: If you don't want see this
+-- Just watch the arcemu-optional.conf
+-- you can disable it via `AutoBroadCast = 0`
+-- or insert some message what you needed.
+--
 --
 -- Table structure for table `worldbroadcast`
 --
