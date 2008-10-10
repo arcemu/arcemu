@@ -404,6 +404,9 @@ Player::Player( uint32 guid ) : m_mailBox(guid)
 	m_vampiricEmbrace = m_vampiricTouch = 0;
 	LastSeal = 0;
 	m_flyhackCheckTimer = 0;
+#ifdef TRACK_IMMUNITY_BUG
+	m_immunityTime = 0;
+#endif
 
 	m_skills.clear();
 	m_wratings.clear();
@@ -970,6 +973,28 @@ void Player::Update( uint32 p_time )
 			m_flyhackCheckTimer = mstime + 10000; 
 		}
 	}
+
+#ifdef TRACK_IMMUNITY_BUG
+	bool immune = false;
+	for(uint32 i = 0; i < 7; i++)
+		if (SchoolImmunityList[i]) immune = true;
+
+	if (immune) {
+		if (m_immunityTime == 0) {
+			m_immunityTime = mstime;
+		}
+
+		if ((mstime - m_immunityTime) > 15000) {
+			sLog.outString("plr guid=%d has been immune for > 15sec: %u %u %u %u %u %u %u, resetting states", GetLowGUID(),
+				SchoolImmunityList[0], SchoolImmunityList[1], SchoolImmunityList[2], SchoolImmunityList[3],
+				SchoolImmunityList[4], SchoolImmunityList[5], SchoolImmunityList[6]);
+			for(uint32 i = 0; i < 7; i++)
+				if (SchoolImmunityList[i]) SchoolImmunityList[i] = 0;
+		}
+	} else {
+		m_immunityTime = 0;
+	}
+#endif
 }
 
 void Player::EventDismount(uint32 money, float x, float y, float z)

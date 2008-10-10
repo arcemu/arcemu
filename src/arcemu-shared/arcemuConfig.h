@@ -90,5 +90,11 @@
  */
 #define OPTIMIZE_SERVER_FOR_MYSQL 1
 
+
+/**
+ * Enable to track immunity bug
+ */
+//#define TRACK_IMMUNITY_BUG 1
+
 #endif		// __arcemuCONFIG_H
 
