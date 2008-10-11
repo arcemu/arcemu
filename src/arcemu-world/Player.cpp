@@ -4883,26 +4883,28 @@ void Player::UpdateChances()
 
 	tmp = 100*(baseCrit->val + GetUInt32Value( UNIT_FIELD_STAT1 ) * CritPerAgi->val);
 
-	//std::list<WeaponModifier>::iterator i = tocritchance.begin();
-	map< uint32, WeaponModifier >::iterator itr = tocritchance.begin();
-
-	Item* tItemMelee = GetItemInterface()->GetInventoryItem( EQUIPMENT_SLOT_MAINHAND );
-	Item* tItemRanged = GetItemInterface()->GetInventoryItem( EQUIPMENT_SLOT_RANGED );
-
 	float melee_bonus = 0;
 	float ranged_bonus = 0;
 
-	//-1 = any weapon
-
-	for(; itr != tocritchance.end(); ++itr )
+	if ( tocritchance.size() > 0 ) // crashfix by cebernic
 	{
-		if( itr->second.wclass == ( uint32 )-1 || ( tItemMelee != NULL && ( 1 << tItemMelee->GetProto()->SubClass & itr->second.subclass ) ) )
+		map< uint32, WeaponModifier >::iterator itr = tocritchance.begin();
+
+		Item* tItemMelee = GetItemInterface()->GetInventoryItem( EQUIPMENT_SLOT_MAINHAND );
+		Item* tItemRanged = GetItemInterface()->GetInventoryItem( EQUIPMENT_SLOT_RANGED );
+
+		//-1 = any weapon
+
+		for(; itr != tocritchance.end(); ++itr )
 		{
-			melee_bonus += itr->second.value;
-		}
-		if( itr->second.wclass == ( uint32 )-1 || ( tItemRanged != NULL && ( 1 << tItemRanged->GetProto()->SubClass & itr->second.subclass ) ) )
-		{
-			ranged_bonus += itr->second.value;
+			if( itr->second.wclass == ( uint32 )-1 || ( tItemMelee != NULL && ( 1 << tItemMelee->GetProto()->SubClass & itr->second.subclass ) ) )
+			{
+				melee_bonus += itr->second.value;
+			}
+			if( itr->second.wclass == ( uint32 )-1 || ( tItemRanged != NULL && ( 1 << tItemRanged->GetProto()->SubClass & itr->second.subclass ) ) )
+			{
+				ranged_bonus += itr->second.value;
+			}
 		}
 	}
 
