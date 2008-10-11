@@ -1,7 +1,7 @@
 /****************************************************************************
  *
  * SpellHandler Plugin
- * Copyright (c) 2007 Team Arcemu
+ * Copyright (c) 2007 Team arcemu
  *
  * This work is licensed under the Creative Commons Attribution-NonCommercial-ShareAlike 3.0
  * License. To view a copy of this license, visit
@@ -88,7 +88,7 @@ bool Charge(uint32 i, Spell* pSpell)
 
 bool Execute(uint32 i, Spell* pSpell)
 {
-    uint32 uSpellId = pSpell->GetProto()->Id;
+    //uint32 uSpellId = pSpell->GetProto()->Id;
     uint32 base_dmg = pSpell->damage;
     /*
     Attempt to finish off a wounded foe, causing 125 damage and converting each extra point
@@ -112,8 +112,10 @@ bool Execute(uint32 i, Spell* pSpell)
     add_damage *= pSpell->u_caster->GetUInt32Value(UNIT_FIELD_POWER2) / 10;   // rage is *10 always
     
     // send spell damage log
-    pSpell->u_caster->SpellNonMeleeDamageLog(target, 20647, base_dmg + add_damage, false);
-    // zero rage
+	//pSpell->u_caster->SpellNonMeleeDamageLog(target, 20647, base_dmg + add_damage, false);
+	SpellEntry *sp_for_the_logs = dbcSpell.LookupEntry(20647);
+	pSpell->u_caster->Strike( target, MELEE, sp_for_the_logs, 0, 0, base_dmg + add_damage, true, true );
+	// zero rage
     pSpell->u_caster->SetUInt32Value(UNIT_FIELD_POWER2, 0);
     return true;
 }

@@ -1,7 +1,9 @@
 /*
- * ArcScript Scripts for Arcemu MMORPG Server
- * Copyright (C) 2005-2007 Arcemu Team <http://www.Arcemuemu.com/>
- * Copyright (C) 2007-2008 ArcScript Team 
+ * WEmu Scripts for WEmu MMORPG Server
+ * Copyright (C) 2008 WEmu Team
+ * Based on Moon++ Scripts for arcemu MMORPG Server
+ * Copyright (C) 2005-2007 arcemu Team
+ * Copyright (C) 2007-2008 Moon++ Team
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,106 +24,106 @@
 
 bool SymbolOfLife(uint32 i, Spell* pSpell) // Alliance ress. quests
 {
-  if(!pSpell->u_caster->IsPlayer())
-    return true;
+	if(!pSpell->u_caster->IsPlayer())
+		return true;
 
-  Player *plr = (Player*)pSpell->u_caster;
-  Creature *target = plr->GetMapMgr()->GetCreature((uint32)plr->GetSelection());
-  
-  if(target == NULL)
-    return true;
+	Player *plr = (Player*)pSpell->u_caster;
+	Creature *target = plr->GetMapMgr()->GetCreature((uint32)plr->GetSelection());
 
-  const uint32 targets[] = {17542, 6177, 6172}; 
-  const uint32 quests[] =  {9600,  1783, 1786};
-  bool questOk = false;
-  bool targetOk = false;
+	if(target == NULL)
+		return true;
 
-  for(int i = 0; i<3; i++)
-  {
-    if(target->GetEntry() == targets[i])
-    {
-      targetOk = true;
-      
-      break;
-    }
-  }
-  
-  if(!targetOk)
-    return true;
-  
-  QuestLogEntry *qle;
-  
-  for(int i = 0; i<3; i++)
-  {
-    if(plr->GetQuestLogForEntry(quests[i]) != NULL)
-    {
-      qle = plr->GetQuestLogForEntry(quests[i]);
-      questOk = true;
-      
-      break;
-    }
-  }
-  
-  if(!questOk)
-    return true;
+	const uint32 targets[] = {17542, 6177, 6172};
+	const uint32 quests[] =  {9600,  1783, 1786};
+	bool questOk = false;
+	bool targetOk = false;
 
-  target->SetStandState(0);
-  target->setDeathState(ALIVE);
+	for(int i = 0; i<3; i++)
+	{
+		if(target->GetEntry() == targets[i])
+		{
+		targetOk = true;
 
-  target->Despawn(10*1000, 1*60*1000);
+		break;
+		}
+	}
 
-  qle->SetMobCount(0, 1);
-  qle->SendUpdateAddKill(0);
-  qle->UpdatePlayerFields();
-  
-  return true;
+	if(!targetOk)
+		return true;
+
+	QuestLogEntry *qle;
+
+	for(int i = 0; i<3; i++)
+	{
+		if(plr->GetQuestLogForEntry(quests[i]) != NULL)
+		{
+		qle = plr->GetQuestLogForEntry(quests[i]);
+		questOk = true;
+
+		break;
+		}
+	}
+
+	if(!questOk)
+		return true;
+
+	target->SetStandState(0);
+	target->setDeathState(ALIVE);
+
+	target->Despawn(10*1000, 1*60*1000);
+
+	qle->SetMobCount(0, 1);
+	qle->SendUpdateAddKill(0);
+	qle->UpdatePlayerFields();
+
+	return true;
 }
 
 bool FilledShimmeringVessel(uint32 i, Spell* pSpell) // Blood Elf ress. quest
 {
-  if(!pSpell->u_caster->IsPlayer())
-    return true;
+	if(!pSpell->u_caster->IsPlayer())
+		return true;
 
-  Player *plr = (Player*)pSpell->u_caster;
-  
-  Creature *target = plr->GetMapMgr()->GetCreature((uint32)plr->GetSelection());
-  if(target == NULL)
-    return true;
+	Player *plr = (Player*)pSpell->u_caster;
 
-  if(target->GetEntry() != 17768)
-    return true;
+	Creature *target = plr->GetMapMgr()->GetCreature((uint32)plr->GetSelection());
+	if(target == NULL)
+		return true;
 
-  QuestLogEntry *qle = plr->GetQuestLogForEntry(9685);
-  if(qle == NULL)
-    return true;
+	if(target->GetEntry() != 17768)
+		return true;
 
-  target->SetStandState(0);
-  target->setDeathState(ALIVE);
+	QuestLogEntry *qle = plr->GetQuestLogForEntry(9685);
+	if(qle == NULL)
+		return true;
 
-  target->Despawn(30*1000, 1*60*1000);
+	target->SetUInt32Value(UNIT_FIELD_BYTES_1,0);
+	target->SetUInt32Value(UNIT_DYNAMIC_FLAGS, 0);
 
-  qle->SetMobCount(0, 1);
-  qle->SendUpdateAddKill(0);
-  qle->UpdatePlayerFields();
+	target->Despawn(10*1000, 1*60*1000);
 
-  return true;
+	target->SendChatMessage(CHAT_MSG_MONSTER_SAY, LANG_UNIVERSAL, "Thank you, dear Paladin, you just saved my life.");
+
+	qle->SetMobCount(0, 1);
+	qle->SendUpdateAddKill(0);
+	qle->UpdatePlayerFields();
+
+	return true;
 }
 
 class PaladinDeadNPC : public CreatureAIScript
 {
 public:
-  ADD_CREATURE_FACTORY_FUNCTION(PaladinDeadNPC);
-  PaladinDeadNPC(Creature* pCreature) : CreatureAIScript(pCreature) {}
+	ADD_CREATURE_FACTORY_FUNCTION(PaladinDeadNPC);
+	PaladinDeadNPC(Creature* pCreature) : CreatureAIScript(pCreature) {}
 
-  void OnLoad()
-  {
-    _unit->SetStandState(7);
-    _unit->setDeathState(CORPSE);
-    _unit->GetAIInterface()->m_canMove = false;
-  }
+	void OnLoad()
+	{
+		_unit->GetAIInterface()->m_canMove = false;
+		_unit->SetUInt32Value(UNIT_FIELD_BYTES_1,7);
+		_unit->SetUInt32Value(UNIT_DYNAMIC_FLAGS, 32);
+	}
 };
-
-/*--------------------------------------------------------------------------------------------------------*/
 
 class GildedBrazier : public GameObjectAIScript
 {
@@ -129,7 +131,7 @@ public:
 	GildedBrazier(GameObject* goinstance) : GameObjectAIScript(goinstance) {}
 	static GameObjectAIScript *Create(GameObject * GO) { return new GildedBrazier(GO); }
 
-	void OnActivate(Player * pPlayer)	
+	void OnActivate(Player * pPlayer)
 	{
 		if(pPlayer->GetQuestLogForEntry(9678))
 		{
@@ -137,7 +139,7 @@ public:
 			float SSY = pPlayer->GetPositionY();
 			float SSZ = pPlayer->GetPositionZ();
 			float SSO = pPlayer->GetOrientation();
-			
+
 			GameObject* Brazier = pPlayer->GetMapMgr()->GetInterface()->GetGameObjectNearestCoords( SSX, SSY, SSZ, 181956);
 			if (Brazier)
 			{
@@ -156,18 +158,18 @@ class stillbladeQAI : public CreatureAIScript
 {
 public:
 	ADD_CREATURE_FACTORY_FUNCTION(stillbladeQAI);
-    	stillbladeQAI(Creature* pCreature) : CreatureAIScript(pCreature)  
-    	{
-    	
+		stillbladeQAI(Creature* pCreature) : CreatureAIScript(pCreature)
+		{
+
 	}
-	
-	void OnDied(Unit *mKiller) 
+
+	void OnDied(Unit *mKiller)
 	{
 		float SSX = mKiller->GetPositionX();
 		float SSY = mKiller->GetPositionY();
 		float SSZ = mKiller->GetPositionZ();
 		float SSO = mKiller->GetOrientation();
-			
+
 		GameObject* Brazier = mKiller->GetMapMgr()->GetInterface()->GetGameObjectNearestCoords( SSX, SSY, SSZ, 181956);
 		if (Brazier)
 		{
@@ -176,15 +178,14 @@ public:
 	}
 };
 
-
 void SetupPaladin(ScriptMgr * mgr)
 {
-  mgr->register_dummy_spell(8593, &SymbolOfLife);
-  mgr->register_dummy_spell(31225, &FilledShimmeringVessel);
-  mgr->register_creature_script(17768, &PaladinDeadNPC::Create);
-  mgr->register_creature_script(17542, &PaladinDeadNPC::Create);
-  mgr->register_creature_script(6177, &PaladinDeadNPC::Create);
-  mgr->register_creature_script(6172, &PaladinDeadNPC::Create);
-  mgr->register_gameobject_script(181956, &GildedBrazier::Create);
-  mgr->register_creature_script(17716, &stillbladeQAI::Create);
+	mgr->register_dummy_spell(8593, &SymbolOfLife);
+	mgr->register_dummy_spell(31225, &FilledShimmeringVessel);
+	mgr->register_creature_script(17768, &PaladinDeadNPC::Create);
+	mgr->register_creature_script(17542, &PaladinDeadNPC::Create);
+	mgr->register_creature_script(6177, &PaladinDeadNPC::Create);
+	mgr->register_creature_script(6172, &PaladinDeadNPC::Create);
+	mgr->register_gameobject_script(181956, &GildedBrazier::Create);
+	mgr->register_creature_script(17716, &stillbladeQAI::Create);
 }

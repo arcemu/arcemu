@@ -1,6 +1,6 @@
 /*
- * 
- * 
+ * WEmu MMORPG Server
+ * Copyright (C) 2008 WEmu Team
  *
  */
 

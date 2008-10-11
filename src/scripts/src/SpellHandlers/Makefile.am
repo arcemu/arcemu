@@ -3,6 +3,15 @@ INCLUDES += -I$(srcdir)/../../../arcemu-world -I$(srcdir)/../../../../dep/src
 
 AM_CXXFLAGS = -DSCRIPTLIB
 
-lib_LTLIBRARIES = libMoonSpellHandlers.la
+lib_LTLIBRARIES = libSpellHandlers.la
 
-libMoonSpellHandlers_la_SOURCES = HunterSpells.cpp ItemSpells_1.cpp MageSpells.cpp PaladinSpells.cpp RogueSpells.cpp Setup.cpp ShamanSpells.cpp WarlockSpells.cpp WarriorSpells.cpp
+libSpellHandlers_la_SOURCES = HunterSpells.cpp \
+	ItemSpells_1.cpp \
+	MageSpells.cpp \
+	PaladinSpells.cpp \
+	RogueSpells.cpp \
+	Setup.cpp \
+	ShamanSpells.cpp \
+	WarlockSpells.cpp \
+	WarriorSpells.cpp \
+	QIspells.cpp

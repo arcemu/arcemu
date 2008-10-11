@@ -1,22 +1,3 @@
-/*
- * ArcScript Scripts for Ascent MMORPG Server
- * Copyright (C) 2005-2007 Ascent Team <http://www.ascentemu.com/>
- * Copyright (C) 2007-2008 ArcScript Team 
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
-
 #include "StdAfx.h"
 #include "Setup.h"
 
@@ -56,7 +37,7 @@ public:
 		if(pObject->GetTypeId()!=TYPEID_UNIT)
 			return;
 
-        plr->GetSession()->SendBattlegroundList(((Creature*)pObject), 2);  // WSG = 2
+        plr->GetSession()->SendBattlegroundList(((Creature*)pObject), 2);
     }
 
     void Destroy()
@@ -101,7 +82,7 @@ public:
 		if(pObject->GetTypeId()!=TYPEID_UNIT)
 			return;
 
-		plr->GetSession()->SendBattlegroundList(((Creature*)pObject), 3);  // AB = 3
+		plr->GetSession()->SendBattlegroundList(((Creature*)pObject), 3);
     }
 
     void Destroy()
@@ -146,7 +127,7 @@ public:
 		if(pObject->GetTypeId()!=TYPEID_UNIT)
 			return;
 
-		plr->GetSession()->SendBattlegroundList(((Creature*)pObject), 1);  // AV = 1
+		plr->GetSession()->SendBattlegroundList(((Creature*)pObject), 1);
     }
 
     void Destroy()
@@ -158,46 +139,42 @@ public:
 class SCRIPT_DECL EyeOfTheStormBattlemaster : public GossipScript
 {
 public:
-    void GossipHello(Object* pObject, Player * plr, bool AutoSend)
-    {
-        GossipMenu *Menu;
-        uint32 Team = plr->GetTeam();
-        if(Team > 1) Team = 1;
-        
-        // Check if the player can be entered into the bg or not.
-        if(plr->getLevel() < 70)
-        {
-            uint32 FactMessages[2] = { 7599, 7688 };
+	void GossipHello(Object* pObject, Player * plr, bool AutoSend)
+	{
+		GossipMenu *Menu;
+		uint32 Team = plr->GetTeam();
+		if(Team > 1) Team = 1;
 
-            // Send "you cannot enter" message.
-            objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), FactMessages[Team], plr);
-        }
-        else
-        {
-            uint32 FactMessages[2] = { 7689, 7705 }; // need to find the second one
+		if(plr->getLevel() < 61)
+		{
+			uint32 FactMessages[2] = { 7658,7658 };
 
-            // Send "you cannot enter" message.
-            objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), FactMessages[Team], plr);
-            Menu->AddItem( 0, "I would like to enter the battleground.", 1);
-        }
-        
-        if(AutoSend)
-            Menu->SendTo(plr);
-    }
+			objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), FactMessages[Team], plr);
+			}
+			else
+			{
+				uint32 FactMessages[2] = { 7658,7659 };
 
-    void GossipSelectOption(Object* pObject, Player * plr, uint32 Id, uint32 IntId, const char * Code)
-    {
-        // Send battleground list.
-		if(pObject->GetTypeId()!=TYPEID_UNIT)
-			return;
+				objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), FactMessages[Team], plr);
+				Menu->AddItem( 0, "I would like to enter the battleground", 1);
+			}
 
-        plr->GetSession()->SendBattlegroundList(((Creature*)pObject), 7);  // EOTS = 7
-    }
+			if (AutoSend)
+				Menu->SendTo(plr);
+		}
 
-    void Destroy()
-    {
-        delete this;
-    }
+		void GossipSelectOption(Object* pObject, Player * plr, uint32 Id, uint32 IntId, const char * Code)
+		{
+			if(pObject->GetTypeId()!=TYPEID_UNIT)
+				return;
+
+			plr->GetSession()->SendBattlegroundList(((Creature*)pObject), 7);
+			}
+
+			void Destroy()
+			{
+				delete this;
+		}
 };
 
 void SetupBattlemaster(ScriptMgr * mgr)
@@ -249,20 +226,21 @@ void SetupBattlemaster(ScriptMgr * mgr)
     mgr->register_gossip_script(15106, av); // Frostwolf Emissary
     mgr->register_gossip_script(15103, av); // Stormpike Emissary
     mgr->register_gossip_script(14942, av); // Kartra Bloodsnarl
-	mgr->register_gossip_script(20388, eots); // Althallen Brightblade
-	mgr->register_gossip_script(20385, eots); // Andrissa Heartspear
-	mgr->register_gossip_script(20390, eots); // Duyash the Cruel
 	mgr->register_gossip_script(20383, eots); // Enlae
-	mgr->register_gossip_script(22013, eots); // Eye of the Storm Emissary
-	mgr->register_gossip_script(22015, eots); // Eye of the Storm Envoy
-	mgr->register_gossip_script(20362, eots); // Iravar
-	mgr->register_gossip_script(20381, eots); // Jovil
 	mgr->register_gossip_script(20374, eots); // Kandaar
-	mgr->register_gossip_script(20386, eots); // Lyrlia Blackshield
+	mgr->register_gossip_script(20381, eots); // Jovil
 	mgr->register_gossip_script(20382, eots); // Mitia
+	mgr->register_gossip_script(20362, eots); // Iravar
+	mgr->register_gossip_script(20385, eots); // Andrissa Heartspear
+	mgr->register_gossip_script(20388, eots); // Althallen Brightblade
+	mgr->register_gossip_script(20386, eots); // Lyrlia Blacksheild
+	mgr->register_gossip_script(20390, eots); // Duyash the Cruel
 	mgr->register_gossip_script(20384, eots); // Yula the Fair
 
-   //cleanup:
-   //removed Sandfury Soul Eater(hes a npc in Zul'Farrak and has noting to do whit the battleground masters) 
-   //added Warsong Emissary, Stormpike Emissary , League of Arathor Emissary
+	/* 
+		= Klar =
+	- Fixed AV BG list
+	- Added Eye of the Storm
+	
+	*/
 }

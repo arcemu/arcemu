@@ -1,7 +1,7 @@
 /****************************************************************************
  *
  * SpellHandler Plugin
- * Copyright (c) 2007 Team Arcemu
+ * Copyright (c) 2007 Team arcemu
  *
  * This work is licensed under the Creative Commons Attribution-NonCommercial-ShareAlike 3.0
  * License. To view a copy of this license, visit
@@ -35,7 +35,7 @@ extern "C" SCRIPT_DECL void _exp_script_register(ScriptMgr* mgr)
     SetupMageSpells(mgr);
     SetupPaladinSpells(mgr);
     SetupRogueSpells(mgr);
-	SetupQIspells.cpp(mgr);
+	SetupQuestItems(mgr);
 }
 
 #ifdef WIN32

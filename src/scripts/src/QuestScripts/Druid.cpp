@@ -1,7 +1,11 @@
 /*
- * ArcScript Scripts for Arcemu MMORPG Server
- * Copyright (C) 2005-2007 Arcemu Team <http://www.Arcemuemu.com/>
- * Copyright (C) 2007-2008 ArcScript Team 
+ * ArcEmu Scripts for ArcEmu MMORPG Server
+ * Copyright (C) 2008 ArcEmu Team
+ * Based on WEmu Scripts for WEmu MMORPG Server
+ * Copyright (C) 2008 WEmu Team
+ * Based on Moon++ Scripts for Ascent MMORPG Server
+ * Copyright (C) 2005-2008 Ascent Team
+ * Copyright (C) 2007-2008 Moon++ Team
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,14 +23,9 @@
 
 #include "StdAfx.h"
 #include "Setup.h"
-#include "EAS/EasyFunctions.h"
+#include "../EAS/EasyFunctions.h"
 
-
-
-/*--------------------------------------------------------------------------------------------------------*/
-// Body And Heart (Alliance)
-
-bool CenarionArcScriptdust(uint32 i, Spell* pSpell) 
+bool CenarionMoondust(uint32 i, Spell* pSpell) // Body And Heart (Alliance)
 {
   const float pos[] = {6348.540039f, 128.124176f, 22.024008f, 4.172032f}; // x, y, z, o
   Player *p_caster = pSpell->p_caster;
@@ -34,10 +33,10 @@ bool CenarionArcScriptdust(uint32 i, Spell* pSpell)
   Creature *lunaclaw = p_caster->GetMapMgr()->GetInterface()->GetCreatureNearestCoords(pos[0], pos[1], pos[2], 12138);
   if(lunaclaw != NULL)
   {
-    if(!lunaclaw->isAlive())
-      lunaclaw->Delete();
-    else
-      return true;
+	if(!lunaclaw->isAlive())
+	  lunaclaw->Delete();
+	else
+	  return true;
   }
 
   lunaclaw = sEAS.SpawnCreature(p_caster, 12138, pos[0], pos[1], pos[2], pos[3], 0);
@@ -48,12 +47,7 @@ bool CenarionArcScriptdust(uint32 i, Spell* pSpell)
   return true;
 }
 
-
-
-/*--------------------------------------------------------------------------------------------------------*/
-// Body And Heart (Horde)
-
-bool CenarionLunardust(uint32 i, Spell* pSpell) 
+bool CenarionLunardust(uint32 i, Spell* pSpell) // Body And Heart (Horde)
 {
   const float pos[] = {-2449.117920f, -1627.319824f, 91.801430f, 0}; // x, y, z, o
   Player *p_caster = pSpell->p_caster;
@@ -61,10 +55,10 @@ bool CenarionLunardust(uint32 i, Spell* pSpell)
   Creature *lunaclaw = p_caster->GetMapMgr()->GetInterface()->GetCreatureNearestCoords(pos[0], pos[1], pos[2], 12138);
   if(lunaclaw != NULL)
   {
-    if(!lunaclaw->isAlive())
-      lunaclaw->Delete();
-    else
-      return true;
+	if(!lunaclaw->isAlive())
+	  lunaclaw->Delete();
+	else
+	  return true;
   }
 
   lunaclaw = sEAS.SpawnCreature(p_caster, 12138, pos[0], pos[1], pos[2], pos[3], 0);
@@ -84,51 +78,48 @@ public:
 
   void OnDied(Unit *mKiller)
   {
-    if(!mKiller->IsPlayer())
-      return;
+	if(!mKiller->IsPlayer())
+	  return;
 
-    Player *plr = static_cast<Player*>(mKiller);
-    const uint32 quests[] = {6001, 6002};
-    QuestLogEntry *qle;
-    bool questOk = false;
+	Player *plr = static_cast<Player*>(mKiller);
+	const uint32 quests[] = {6001, 6002};
+	QuestLogEntry *qle;
+	bool questOk = false;
 
-    for(int i = 0; i<2; i++)
-    {
-      if(plr->GetQuestLogForEntry(quests[i]) != NULL)
-      {
-        questOk = true;
-        qle = plr->GetQuestLogForEntry(quests[i]);
+	for(int i = 0; i<2; i++)
+	{
+	  if(plr->GetQuestLogForEntry(quests[i]) != NULL)
+	  {
+		questOk = true;
+		qle = plr->GetQuestLogForEntry(quests[i]);
 
-        break;
-      }
-    }
+		break;
+	  }
+	}
 
-    if(!questOk)
-      return;
+	if(!questOk)
+	  return;
 
-    sEAS.SpawnCreature(plr, 12144, _unit->GetPositionX(), _unit->GetPositionY(), _unit->GetPositionZ(), 0, 1*60*1000);
+			if(plr == NULL || plr->GetMapMgr() == NULL || plr->GetMapMgr()->GetInterface() == NULL)
+				return;
+	sEAS.SpawnCreature(plr, 12144, _unit->GetPositionX(), _unit->GetPositionY(), _unit->GetPositionZ(), 0, 1*60*1000);
 
-    qle->SendQuestComplete();
-    qle->UpdatePlayerFields();
+	qle->SendQuestComplete();
+	qle->UpdatePlayerFields();
   }
 };
 
-class ArcScriptgladeQuest : public QuestScript
+class MoongladeQuest : public QuestScript
 {	
 public:
   void OnQuestStart(Player * mTarget, QuestLogEntry * qLogEntry)
   {
-    if(!mTarget->HasSpell(19027))
-      mTarget->CastSpell(mTarget, 19027, true);
+	if(!mTarget->HasSpell(19027))
+	  mTarget->CastSpell(mTarget, dbcSpell.LookupEntry(19027), true);
   }
 };
 
-
-
-/*--------------------------------------------------------------------------------------------------------*/
-// Curing the Sick
-
-bool CurativeAnimalSalve(uint32 i, Spell* pSpell) 
+bool CurativeAnimalSalve(uint32 i, Spell* pSpell) // Curing the Sick
 {
 	Player *caster = pSpell->p_caster;
 	if(caster == NULL)
@@ -169,41 +160,13 @@ bool CurativeAnimalSalve(uint32 i, Spell* pSpell)
 	return true;
 }
 
-
-
-/*--------------------------------------------------------------------------------------------------------*/
-// Vanquish the Raven God
-
-bool SwiftForm(uint32 i, Spell* pSpell)
-{	
-  	Player *p_caster = pSpell->p_caster;
-  	if(!p_caster)
-	  	return true;
-	 	
-	if(p_caster->GetMapMgr()->iInstanceMode != MODE_HEROIC)
-	{	
-		p_caster->BroadcastMessage("Heroic Mode required!");
-		return true;
-	}
-
-	GameObject* obj = 0;
-	obj = sEAS.SpawnGameobject(p_caster, 300154, -86.6862, 287.625, 26.4832, 0, 1);
-	sEAS.GameobjectDelete(obj, 20*60*1000);
-
-  	Creature *boss = sEAS.SpawnCreature(p_caster, 23035, -87.3546, 288.006, 26.4832, 0, 0);
-
-  	return true;
-}
-
-
 void SetupDruid(ScriptMgr * mgr)
 {
-  QuestScript *ArcScriptglade = (QuestScript*) new ArcScriptgladeQuest();
-  mgr->register_quest_script(5921, ArcScriptglade);
-  mgr->register_quest_script(5922, ArcScriptglade);
+  QuestScript *Moonglade = (QuestScript*) new MoongladeQuest();
+  mgr->register_quest_script(5921, Moonglade);
+  mgr->register_quest_script(5922, Moonglade);
   mgr->register_creature_script(12138, &Lunaclaw::Create);
   mgr->register_dummy_spell(19138, &CenarionLunardust);
-  mgr->register_dummy_spell(18974, &CenarionArcScriptdust);
+  mgr->register_dummy_spell(18974, &CenarionMoondust);
   mgr->register_dummy_spell(19512, &CurativeAnimalSalve);
-  mgr->register_dummy_spell(40098, &SwiftForm);
 }
