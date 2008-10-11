@@ -1,7 +1,7 @@
 /****************************************************************************
  *
  * SpellHandler Plugin
- * Copyright (c) 2007 Team arcemu
+ * Copyright (c) 2007 Team Arcemu
  *
  * This work is licensed under the Creative Commons Attribution-NonCommercial-ShareAlike 3.0
  * License. To view a copy of this license, visit

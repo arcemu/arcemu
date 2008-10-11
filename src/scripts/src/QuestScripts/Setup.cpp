@@ -1,9 +1,7 @@
 /*
- * WEmu Scripts for WEmu MMORPG Server
- * Copyright (C) 2008 WEmu Team
- * Based on Moon++ Scripts for arcemu MMORPG Server
- * Copyright (C) 2005-2007 arcemu Team
- * Copyright (C) 2007-2008 Moon++ Team
+ * ArcScript Scripts for Arcemu MMORPG Server
+ * Copyright (C) 2005-2007 Arcemu Team <http://www.Arcemuemu.com/>
+ * Copyright (C) 2007-2008 ArcScript Team 
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,56 +29,28 @@ extern "C" SCRIPT_DECL uint32 _exp_get_script_type()
 
 extern "C" SCRIPT_DECL void _exp_script_register(ScriptMgr* mgr)
 {
-//	###		Classes Quests	###
 	SetupDruid(mgr);
 	SetupPaladin(mgr);
-	SetupMage(mgr);
-	SetupWarrior(mgr);
-//	### 	Professions Quests	###
-	SetupFirstAid(mgr);
-//	###		Zones Quests	###
-	SetupArathiHighlands(mgr);
-	SetupAzshara(mgr);
-	SetupAzuremystIsle(mgr);
-	SetupBarrens(mgr);
-	SetupBladeEdgeMountains(mgr);
-	SetupBlastedLands(mgr);
-	SetupBloodmystIsle(mgr);
-	SetupDesolace(mgr);
-	SetupDustwallowMarsh(mgr);
-	SetupEasternPlaguelands(mgr);
-	SetupGhostlands(mgr);
+	SetupShadowArcScript(mgr);
 	SetupHellfirePeninsula(mgr);
-	SetupHillsbradFoothills(mgr);
-	SetupLochModan(mgr);
-	SetupMulgore(mgr);
-	SetupNagrand(mgr);
-	SetupNetherstorm(mgr);
-	SetupRedrigeMountains(mgr);
-	SetupShadowmoon(mgr);
-	SetupSilvermoonCity(mgr);
-	SetupSilverpineForest(mgr);
-	SetupStormwind(mgr);
-	SetupStranglethornVale(mgr);
-	SetupTanaris(mgr);
+	SetupBladeEdgeMountains(mgr);
 	SetupTerrokarForest(mgr);
-	SetupThousandNeedles(mgr);
-	SetupTirisfalGlades(mgr);
-	SetupUndercity(mgr);
-	SetupUngoro(mgr);
-	SetupWestfall(mgr);
+	SetupNagrand(mgr);
+	SetupSilverpineForest(mgr);
 	SetupZangarmarsh(mgr);
-//	###		Misc		###
-	SetupQuestGossip(mgr);
-	SetupQuestHooks(mgr);
-	SetupUnsorted(mgr);
+	SetupUndercity(mgr);
+	SetupAzuremystIsle(mgr);
+	SetupUnGoro(mgr);
+	SetupMage(mgr);
+	SetupBarrens(mgr);
+	SetupIsleOfQuelDanas(mgr);
 }
 
 #ifdef WIN32
 
 BOOL APIENTRY DllMain( HANDLE hModule, DWORD  ul_reason_for_call, LPVOID lpReserved )
 {
-	return TRUE;
+    return TRUE;
 }
 
 #endif

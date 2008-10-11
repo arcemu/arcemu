@@ -1,9 +1,7 @@
 /*
- * WEmu Scripts for WEmu MMORPG Server
- * Copyright (C) 2008 WEmu Team
- * Based on Moon++ Scripts for arcemu MMORPG Server
- * Copyright (C) 2005-2007 arcemu Team
- * Copyright (C) 2007-2008 Moon++ Team
+ * ArcScript Scripts for Arcemu MMORPG Server
+ * Copyright (C) 2005-2007 Arcemu Team <http://www.Arcemuemu.com/>
+ * Copyright (C) 2007-2008 ArcScript Team 
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,7 +19,7 @@
 
 #include "StdAfx.h"
 #include "Setup.h"
-#include "../EAS/EasyFunctions.h"
+#include "EAS/EasyFunctions.h"
 
 class FragmentedMagic : public CreatureAIScript
 {
@@ -31,81 +29,81 @@ public:
   ADD_CREATURE_FACTORY_FUNCTION(FragmentedMagic);
   FragmentedMagic(Creature* pCreature) : CreatureAIScript(pCreature) 
   {
-	RegisterAIUpdateEvent(5000);
-	current_aura = 0;
+    RegisterAIUpdateEvent(5000);
+    current_aura = 0;
   }
 
   void SetWander(Creature *m_target, Player *p_caster)
   {
-	m_target->m_special_state |= UNIT_STATE_CONFUSE;
-	m_target->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_CONFUSED);
+    m_target->m_special_state |= UNIT_STATE_CONFUSE;
+    m_target->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_CONFUSED);
 
-	m_target->setAItoUse(true);
-	m_target->GetAIInterface()->HandleEvent(EVENT_WANDER, p_caster, 0);
+    m_target->setAItoUse(true);
+    m_target->GetAIInterface()->HandleEvent(EVENT_WANDER, p_caster, 0);
   }
 
   void AIUpdate()
   {
-	bool auraOk = false;
-	const uint32 auras[] = {118, 12824, 12825, 12826}; // Polymorph rank 1,2,3,4
-	
-	for(int i = 0; i<4; i++)
-	{   
-	  if(_unit->HasAura(auras[i]))
-	  {
-		current_aura = auras[i];
-		auraOk = true;
-		
-		break;
-	  }
-	}
-	
-	if(!auraOk)
-	  return;
+    bool auraOk = false;
+    const uint32 auras[] = {118, 12824, 12825, 12826}; // Polymorph rank 1,2,3,4
+    
+    for(int i = 0; i<4; i++)
+    {   
+      if(_unit->HasAura(auras[i]))
+      {
+        current_aura = auras[i];
+        auraOk = true;
+        
+        break;
+      }
+    }
+    
+    if(!auraOk)
+      return;
 
-	bool casterOk = false;
-	Player *p_caster;
+    bool casterOk = false;
+    Player *p_caster;
 
-	for(int i = 0; i<MAX_AURAS+MAX_PASSIVE_AURAS; i++)
-	{
-	  if(_unit->m_auras[i] == NULL)
-		continue;
+    for(int i = 0; i<MAX_AURAS+MAX_PASSIVE_AURAS; i++)
+    {
+      if(_unit->m_auras[i] == NULL)
+        continue;
 
-	  if(_unit->m_auras[i]->GetSpellId() == current_aura)
-	  {
-		if(!_unit->m_auras[i]->GetCaster()->IsPlayer())
-		  break;
+      if(_unit->m_auras[i]->GetSpellId() == current_aura)
+      {
+        if(!_unit->m_auras[i]->GetCaster()->IsPlayer())
+          break;
 
-		p_caster = (Player*)_unit->m_auras[i]->GetCaster();
+        p_caster = (Player*)_unit->m_auras[i]->GetCaster();
 
-		if(p_caster == NULL)
-		  break;
+        if(p_caster == NULL)
+          break;
 
-		casterOk = true;
+        casterOk = true;
 
-		break;
-	  }
-	}
+        break;
+      }
+    }
 
-	if(!casterOk)
-	  return;
+    if(!casterOk)
+      return;
 
-	QuestLogEntry *qle = p_caster->GetQuestLogForEntry(9364);
-	if(qle == NULL)
-	  return;
+    QuestLogEntry *qle = p_caster->GetQuestLogForEntry(9364);
+    if(qle == NULL)
+      return;
 
-	_unit->Despawn(0, 1*60*1000);
+    _unit->Despawn(0, 1*60*1000);
 
-	uint8 num = RandomUInt(5);
-	for(int i=0; i<num; i++)
-	{
-	  Creature *cr = sEAS.SpawnCreature(p_caster, 16479, _unit->GetPositionX(), _unit->GetPositionY(), _unit->GetPositionZ(), 0, 1*60*1000);
-	  SetWander(cr, p_caster);
-	}
+    uint8 num = RandomUInt(5);
+    for(int i=0; i<num; i++)
+    {
+      Creature *cr = sEAS.SpawnCreature(p_caster, 16479, _unit->GetPositionX(), _unit->GetPositionY(), _unit->GetPositionZ(), 0, 1*60*1000);
+      SetWander(cr, p_caster);
+    }
   }
 };
 
-void SetupMage(ScriptMgr * mgr)
+void SetupMage(ScriptMgr *mgr)
 {
   mgr->register_creature_script(6193, &FragmentedMagic::Create);
   mgr->register_creature_script(6194, &FragmentedMagic::Create);

@@ -1,1491 +1,28 @@
+/*
+ * ArcScript Scripts for Arcemu MMORPG Server
+ * Copyright (C) 2005-2007 Arcemu Team <http://www.Arcemuemu.com/>
+ * Copyright (C) 2007-2008 ArcScript Team 
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 #include "StdAfx.h"
 #include "Setup.h"
 
 /************************************************************************/
 /* Raid_MoltenCore.cpp Script											*/
 /************************************************************************/
-
-#define CN_FIREWALKER 11666
-
-#define MELT_ARMOR 19631 // reduces armor by 1000
-#define INCITE_FLAME 19635 // reduces fire resistance
-// Firewalker AI
-class FirewalkerAI : public CreatureAIScript
-{
-public:
-    ADD_CREATURE_FACTORY_FUNCTION(FirewalkerAI);
-
-    FirewalkerAI(Creature* pCreature) : CreatureAIScript(pCreature)
-    {
-		m_meltarmor = m_inciteflame = true;
-
-        infomeltarmor = dbcSpell.LookupEntry(MELT_ARMOR);
-		infoinciteflame = dbcSpell.LookupEntry(INCITE_FLAME);
-    }
-    
-    void OnCombatStart(Unit* mTarget)
-    {
-        RegisterAIUpdateEvent(_unit->GetUInt32Value(UNIT_FIELD_BASEATTACKTIME));
-    }
-
-    void OnCombatStop(Unit *mTarget)
-    {
-        _unit->GetAIInterface()->setCurrentAgent(AGENT_NULL);
-        _unit->GetAIInterface()->SetAIState(STATE_IDLE);
-        RemoveAIUpdateEvent();
-    }
-
-    void OnDied(Unit * mKiller)
-    {
-       RemoveAIUpdateEvent();
-    }
-
-    void AIUpdate()
-    {
-		uint32 val = RandomUInt(1000);
-        SpellCast(val);
-    }
-
-    void SpellCast(uint32 val)
-    {
-        if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->GetNextTarget())//_unit->getAttackTarget())
-        {
-            if(m_meltarmor)
-            {
-                _unit->CastSpell(_unit->GetAIInterface()->GetNextTarget(), infomeltarmor, false);
-                m_meltarmor = false;
-                return;
-            }
-            
-            if(m_inciteflame)
-            {
-                _unit->CastSpell(_unit->GetAIInterface()->GetNextTarget(), infoinciteflame, false);
-                m_inciteflame = false;
-                return;
-            }           
-
-            if(val >= 100 && val <= 160)
-            {
-                _unit->setAttackTimer(1000, false);
-                m_meltarmor = true;
-            }
-            if(val > 160 && val <= 240)
-            {
-                _unit->setAttackTimer(1000, false);
-                m_inciteflame = true;
-            }
-        }
-    }
-
-protected:
-
-    bool m_meltarmor;
-    bool m_inciteflame;
-    SpellEntry *infomeltarmor, *infoinciteflame;
-};
-
-
-#define CN_FLAMEGUARD 11667
-
-#define FLAMETHROWER 25027
-#define FIRE_SHIELD 19627
-#define FLAMES 19628
-// Flameguard AI
-class FlameguardAI : public CreatureAIScript
-{
-public:
-    ADD_CREATURE_FACTORY_FUNCTION(FlameguardAI);
-
-    FlameguardAI(Creature* pCreature) : CreatureAIScript(pCreature)
-    {
-		m_flamethrower = m_fireshield = m_flames =true;
-
-        infoflamethrower = dbcSpell.LookupEntry(FLAMETHROWER);
-		infofireshield = dbcSpell.LookupEntry(FIRE_SHIELD);
-		infoflames = dbcSpell.LookupEntry(FLAMES);
-    }
-    
-    void OnCombatStart(Unit* mTarget)
-    {
-		RegisterAIUpdateEvent(_unit->GetUInt32Value(UNIT_FIELD_BASEATTACKTIME));
-    }
-
-    void OnCombatStop(Unit *mTarget)
-    {
-        _unit->GetAIInterface()->setCurrentAgent(AGENT_NULL);
-        _unit->GetAIInterface()->SetAIState(STATE_IDLE);
-       RemoveAIUpdateEvent();
-    }
-
-    void OnDied(Unit * mKiller)
-    {
-       RemoveAIUpdateEvent();
-    }
-
-    void AIUpdate()
-    {
-        if(_unit->GetHealthPct() <= 10 && m_flames)
-        {
-			// cast divine
-			_unit->CastSpell(_unit, infoflames, false);
-            m_flames = false;
-		}
-		
-	    uint32 val = RandomUInt(1000);
-        SpellCast(val);
-    }
-
-    void SpellCast(uint32 val)
-    {
-        if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->GetNextTarget())//_unit->getAttackTarget())
-        {
-            if(m_flamethrower)
-            {
-                _unit->CastSpell(_unit->GetAIInterface()->GetNextTarget(), infoflamethrower, false);
-                m_flamethrower = false;
-                return;
-            }
-            
-            if(m_fireshield)
-            {
-                _unit->CastSpell(_unit, infofireshield, false);
-                m_fireshield = false;
-                return;
-            }           
-
-            if(val >= 100 && val <= 160)
-            {
-                _unit->setAttackTimer(1000, false);
-                m_flamethrower = true;
-            }
-            if(val > 160 && val <= 240)
-            {
-                _unit->setAttackTimer(1000, false);
-                m_fireshield = true;
-            }
-        }
-    }
-
-protected:
-
-    bool m_flamethrower,m_fireshield,m_flames;
-    SpellEntry *infoflamethrower, *infofireshield, *infoflames;
-};
-
-#define CN_LAVAELEMENTAL 12076
-
-#define STRIKE 31754
-#define PYROCLAST_BARRAGE 19641
-// Lava Elemental AI
-class LavaelementalAI : public CreatureAIScript
-{
-public:
-    ADD_CREATURE_FACTORY_FUNCTION(LavaelementalAI);
-
-    LavaelementalAI(Creature* pCreature) : CreatureAIScript(pCreature)
-    {
-		m_strike = m_pyroclast = true;
-
-        infostrike = dbcSpell.LookupEntry(STRIKE);
-		infopyroclast = dbcSpell.LookupEntry(PYROCLAST_BARRAGE);
-    }
-    
-    void OnCombatStart(Unit* mTarget)
-    {
-		RegisterAIUpdateEvent(_unit->GetUInt32Value(UNIT_FIELD_BASEATTACKTIME));
-    }
-
-    void OnCombatStop(Unit *mTarget)
-    {
-        _unit->GetAIInterface()->setCurrentAgent(AGENT_NULL);
-        _unit->GetAIInterface()->SetAIState(STATE_IDLE);
-       RemoveAIUpdateEvent();
-    }
-
-    void OnDied(Unit * mKiller)
-    {
-       RemoveAIUpdateEvent();
-    }
-
-    void AIUpdate()
-    {	
-	    uint32 val = RandomUInt(1000);
-        SpellCast(val);
-    }
-
-    void SpellCast(uint32 val)
-    {
-        if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->GetNextTarget())//_unit->getAttackTarget())
-        {
-            if(m_strike)
-            {
-                _unit->CastSpell(_unit->GetAIInterface()->GetNextTarget(), infostrike, false);
-                m_strike = false;
-                return;
-            }
-            
-            if(m_pyroclast)
-            {
-                _unit->CastSpell(_unit->GetAIInterface()->GetNextTarget(), infopyroclast, false);
-                m_pyroclast = false;
-                return;
-            }           
-
-            if(val >= 100 && val <= 160)
-            {
-                _unit->setAttackTimer(1000, false);
-                m_strike = true;
-            }
-            if(val > 160 && val <= 240)
-            {
-                _unit->setAttackTimer(1000, false);
-                m_pyroclast = true;
-            }
-        }
-    }
-
-protected:
-
-    bool m_strike,m_pyroclast;
-    SpellEntry *infostrike, *infopyroclast;
-};
-
-
-#define CN_LAVAREAVER 12100
-
-#define CLEAVE 31345
-// Lave Reaver AI
-class LavaReaverAI : public CreatureAIScript
-{
-public:
-    ADD_CREATURE_FACTORY_FUNCTION(LavaReaverAI);
-
-    LavaReaverAI(Creature* pCreature) : CreatureAIScript(pCreature)
-    {
-		m_cleave =true;
-
-        infocleave = dbcSpell.LookupEntry(CLEAVE);
-    }
-    
-    void OnCombatStart(Unit* mTarget)
-    {
-		RegisterAIUpdateEvent(_unit->GetUInt32Value(UNIT_FIELD_BASEATTACKTIME));
-    }
-
-    void OnCombatStop(Unit *mTarget)
-    {
-        _unit->GetAIInterface()->setCurrentAgent(AGENT_NULL);
-        _unit->GetAIInterface()->SetAIState(STATE_IDLE);
-       RemoveAIUpdateEvent();
-    }
-
-    void OnDied(Unit * mKiller)
-    {
-       RemoveAIUpdateEvent();
-    }
-
-    void AIUpdate()
-    {
-	
-	    uint32 val = RandomUInt(1000);
-        SpellCast(val);
-    }
-
-    void SpellCast(uint32 val)
-    {
-        if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->GetNextTarget())//_unit->getAttackTarget())
-        {
-            if(m_cleave)
-            {
-                _unit->CastSpell(_unit->GetAIInterface()->GetNextTarget(), infocleave, false);
-                m_cleave = false;
-                return;
-            }          
-
-            if(val >= 100 && val <= 300)
-            {
-                _unit->setAttackTimer(1000, false);
-                m_cleave = true;
-            }
-        }
-    }
-
-protected:
-
-    bool m_cleave;
-    SpellEntry *infocleave;
-};
-
-
-#define CN_FLAMEIMP 11669
-
-#define FIRENOVA 25537
-// Flame Imp AI
-class FlameImpAI : public CreatureAIScript
-{
-public:
-    ADD_CREATURE_FACTORY_FUNCTION(FlameImpAI);
-    FlameImpAI(Creature* pCreature) : CreatureAIScript(pCreature)
-    {
-		m_firenova =true;
-
-        infofirenova = dbcSpell.LookupEntry(FIRENOVA);
-    }
-    
-    void OnCombatStart(Unit* mTarget)
-    {
-		RegisterAIUpdateEvent(_unit->GetUInt32Value(UNIT_FIELD_BASEATTACKTIME));
-    }
-
-    void OnCombatStop(Unit *mTarget)
-    {
-        _unit->GetAIInterface()->setCurrentAgent(AGENT_NULL);
-        _unit->GetAIInterface()->SetAIState(STATE_IDLE);
-       RemoveAIUpdateEvent();
-    }
-
-    void OnDied(Unit * mKiller)
-    {
-       RemoveAIUpdateEvent();
-    }
-
-    void AIUpdate()
-    {
-	
-	    uint32 val = RandomUInt(1000);
-        SpellCast(val);
-    }
-
-    void SpellCast(uint32 val)
-    {
-        if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->GetNextTarget())//_unit->getAttackTarget())
-        {
-            if(m_firenova)
-            {
-                _unit->CastSpell(_unit->GetAIInterface()->GetNextTarget(), infofirenova, true);
-                m_firenova = false;
-                return;
-            }          
-
-            if(val >= 100 && val <= 350)
-            {
-                _unit->setAttackTimer(3000, false);
-                m_firenova = true;
-            }
-        }
-    }
-
-protected:
-
-    bool m_firenova;
-    SpellEntry *infofirenova;
-};
-
-
-#define CN_LAVASURGER 12101
-
-#define SURGE 25787
-// Lava Surger AI
-class LavaSurgerAI : public CreatureAIScript
-{
-public:
-    ADD_CREATURE_FACTORY_FUNCTION(LavaSurgerAI);
-    LavaSurgerAI(Creature* pCreature) : CreatureAIScript(pCreature)
-    {
-		m_surge =true;
-
-        infosurge = dbcSpell.LookupEntry(SURGE);
-    }
-    
-    void OnCombatStart(Unit* mTarget)
-    {
-		RegisterAIUpdateEvent(_unit->GetUInt32Value(UNIT_FIELD_BASEATTACKTIME));
-    }
-
-    void OnCombatStop(Unit *mTarget)
-    {
-        _unit->GetAIInterface()->setCurrentAgent(AGENT_NULL);
-        _unit->GetAIInterface()->SetAIState(STATE_IDLE);
-       RemoveAIUpdateEvent();
-    }
-
-    void OnDied(Unit * mKiller)
-    {
-       RemoveAIUpdateEvent();
-    }
-
-    void AIUpdate()
-    {
-	
-	    uint32 val = RandomUInt(1000);
-        SpellCast(val);
-    }
-
-    void SpellCast(uint32 val)
-    {
-        if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->GetNextTarget())//_unit->getAttackTarget())
-        {
-            if(m_surge)
-            {
-                _unit->CastSpell(_unit->GetAIInterface()->GetNextTarget(), infosurge, false);
-                m_surge = false;
-                return;
-            }          
-
-            if(val >= 100 && val <= 225)
-            {
-                _unit->setAttackTimer(1000, false);
-                m_surge = true;
-            }
-        }
-    }
-
-protected:
-
-    bool m_surge;
-    SpellEntry *infosurge;
-};
-
-
-#define CN_FIRELORD 11668 
-
-#define SUMMON_LAVA_SPAWN 19392 // TODO: this spell needs to be done on core
-#define SOUL_BURN 19393
-// FireLord AI
-class FireLordAI : public CreatureAIScript
-{
-public:
-    ADD_CREATURE_FACTORY_FUNCTION(FireLordAI);
-    FireLordAI(Creature* pCreature) : CreatureAIScript(pCreature)
-    {
-		m_lavaspawn = m_soulburn = true;
-
-        infolavaspawn = dbcSpell.LookupEntry(SUMMON_LAVA_SPAWN);
-		infosoulburn = dbcSpell.LookupEntry(SOUL_BURN);
-    }
-    
-    void OnCombatStart(Unit* mTarget)
-    {
-		RegisterAIUpdateEvent(_unit->GetUInt32Value(UNIT_FIELD_BASEATTACKTIME));
-    }
-
-    void OnCombatStop(Unit *mTarget)
-    {
-        _unit->GetAIInterface()->setCurrentAgent(AGENT_NULL);
-        _unit->GetAIInterface()->SetAIState(STATE_IDLE);
-       RemoveAIUpdateEvent();
-    }
-
-    void OnDied(Unit * mKiller)
-    {
-       RemoveAIUpdateEvent();
-    }
-
-    void AIUpdate()
-    {	
-	    uint32 val = RandomUInt(1000);
-        SpellCast(val);
-    }
-
-    void SpellCast(uint32 val)
-    {
-        if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->GetNextTarget())//_unit->getAttackTarget())
-        {
-            if(m_lavaspawn)
-            {
-                _unit->CastSpell(_unit, infolavaspawn, false);
-                m_lavaspawn = false;
-                return;
-            }
-            
-            if(m_soulburn)
-            {
-                _unit->CastSpell(_unit->GetAIInterface()->GetNextTarget(), infosoulburn, false);
-                m_soulburn = false;
-                return;
-            }           
-
-            if(val >= 100 && val <= 160)
-            {
-                _unit->setAttackTimer(1000, false);
-                m_lavaspawn = true;
-            }
-            if(val > 160 && val <= 240)
-            {
-                _unit->setAttackTimer(1000, false);
-                m_soulburn = true;
-            }
-        }
-    }
-
-protected:
-
-    bool m_lavaspawn,m_soulburn;
-    SpellEntry *infolavaspawn, *infosoulburn;
-};
-
-
-#define CN_MOLTENDESTROYER 11659
-
-#define KNOCKDOWN 5164 
-
-// Molten Destroyer AI
-class MoltenDestroyerAI : public CreatureAIScript
-{
-public:
-    ADD_CREATURE_FACTORY_FUNCTION(MoltenDestroyerAI);
-    MoltenDestroyerAI(Creature* pCreature) : CreatureAIScript(pCreature)
-    {
-		m_knockdown = true;
-
-        infoknockdown = dbcSpell.LookupEntry(KNOCKDOWN);
-    }
-    
-    void OnCombatStart(Unit* mTarget)
-    {
-		RegisterAIUpdateEvent(_unit->GetUInt32Value(UNIT_FIELD_BASEATTACKTIME));
-    }
-
-    void OnCombatStop(Unit *mTarget)
-    {
-        _unit->GetAIInterface()->setCurrentAgent(AGENT_NULL);
-        _unit->GetAIInterface()->SetAIState(STATE_IDLE);
-       RemoveAIUpdateEvent();
-    }
-
-    void OnDied(Unit * mKiller)
-    {
-       RemoveAIUpdateEvent();
-    }
-
-    void AIUpdate()
-    {	
-	    uint32 val = RandomUInt(1000);
-        SpellCast(val);
-    }
-
-    void SpellCast(uint32 val)
-    {
-        if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->GetNextTarget())//_unit->getAttackTarget())
-        {           
-            if(m_knockdown)
-            {
-                _unit->CastSpell(_unit->GetAIInterface()->GetNextTarget(), infoknockdown, false);
-                m_knockdown = false;
-                return;
-            }           
-
-            if(val >= 100 && val <= 225)
-            {
-                _unit->setAttackTimer(1000, false);
-                m_knockdown = true;
-            }
-        }
-    }
-
-protected:
-
-    bool m_knockdown;
-    SpellEntry *infoknockdown;
-};
-
-
-#define CN_MOLTENGIANT 11658
-
-#define STOMP 31900
-#define KNOCKBACK 30056
-
-// Molten Giant AI
-class MoltenGiantAI : public CreatureAIScript
-{
-public:
-    ADD_CREATURE_FACTORY_FUNCTION(MoltenGiantAI);
-    MoltenGiantAI(Creature* pCreature) : CreatureAIScript(pCreature)
-    {
-		m_stomp = m_knockback = true;
-
-        infostomp = dbcSpell.LookupEntry(STOMP);
-		infoknockback = dbcSpell.LookupEntry(KNOCKBACK);
-    }
-    
-    void OnCombatStart(Unit* mTarget)
-    {
-		RegisterAIUpdateEvent(_unit->GetUInt32Value(UNIT_FIELD_BASEATTACKTIME));
-    }
-
-    void OnCombatStop(Unit *mTarget)
-    {
-        _unit->GetAIInterface()->setCurrentAgent(AGENT_NULL);
-        _unit->GetAIInterface()->SetAIState(STATE_IDLE);
-       RemoveAIUpdateEvent();
-    }
-
-    void OnDied(Unit * mKiller)
-    {
-       RemoveAIUpdateEvent();
-    }
-
-    void AIUpdate()
-    {	
-	    uint32 val = RandomUInt(1000);
-        SpellCast(val);
-    }
-
-    void SpellCast(uint32 val)
-    {
-        if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->GetNextTarget())//_unit->getAttackTarget())
-        {
-            if(m_stomp)
-            {
-                _unit->CastSpell(_unit->GetAIInterface()->GetNextTarget(), infostomp, false);
-                m_stomp = false;
-                return;
-            }
-            
-            if(m_knockback)
-            {
-                _unit->CastSpell(_unit->GetAIInterface()->GetNextTarget(), infoknockback, false);
-                m_knockback = false;
-                return;
-            }           
-
-            if(val >= 100 && val <= 200)
-            {
-                _unit->setAttackTimer(1000, false);
-                m_stomp = true;
-            }
-            if(val > 200 && val <= 275)
-            {
-                _unit->setAttackTimer(1000, false);
-                m_knockback = true;
-            }
-        }
-    }
-
-protected:
-
-    bool m_stomp,m_knockback;
-    SpellEntry *infostomp, *infoknockback;
-};
-
-// ------ TIME TO DO THE BOSS'S :D --------
-
-#define CN_LUCIFRON 12118
-
-#define IMPEDING_DOOM 19702
-#define LUCIFRON_CURSE 19703
-#define SHADOW_SHOCK 20603
-
-// Lucifron AI
-class LucifronAI : public CreatureAIScript
-{
-public:
-    ADD_CREATURE_FACTORY_FUNCTION(LucifronAI);
-    LucifronAI(Creature* pCreature) : CreatureAIScript(pCreature)
-    {
-		m_impedingdoom = m_lucifroncurse = m_shadowshock = true;
-
-        infoimpedingdoom = dbcSpell.LookupEntry(IMPEDING_DOOM);
-		infolucifroncurse = dbcSpell.LookupEntry(LUCIFRON_CURSE);
-		infoshadowshock =  dbcSpell.LookupEntry(SHADOW_SHOCK);
-    }
-    
-    void OnCombatStart(Unit* mTarget)
-    {
-		RegisterAIUpdateEvent(_unit->GetUInt32Value(UNIT_FIELD_BASEATTACKTIME));
-    }
-
-    void OnCombatStop(Unit *mTarget)
-    {
-        _unit->GetAIInterface()->setCurrentAgent(AGENT_NULL);
-        _unit->GetAIInterface()->SetAIState(STATE_IDLE);
-       RemoveAIUpdateEvent();
-    }
-
-    void OnDied(Unit * mKiller)
-    {
-       RemoveAIUpdateEvent();
-    }
-
-    void AIUpdate()
-    {	
-	    uint32 val = RandomUInt(1000);
-        SpellCast(val);
-    }
-
-    void SpellCast(uint32 val)
-    {
-        if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->GetNextTarget())//_unit->getAttackTarget())
-        {
-            if(m_impedingdoom)
-            {
-                _unit->CastSpell(_unit, infoimpedingdoom, false);
-                m_impedingdoom = false;
-                return;
-            }
-            
-            if(m_lucifroncurse)
-            {
-                _unit->CastSpell(_unit, infolucifroncurse, false);
-                m_lucifroncurse = false;
-                return;
-            }
-
-			if(m_shadowshock)
-            {
-                _unit->CastSpell(_unit, infoshadowshock, false);
-                m_shadowshock = false;
-                return;
-            }  
-
-            if(val >= 100 && val <= 180)
-            {
-                _unit->setAttackTimer(1000, false);
-                m_impedingdoom = true;
-            }
-            if(val > 180 && val <= 260)
-            {
-                _unit->setAttackTimer(1000, false);
-                m_lucifroncurse = true;
-            }
-			if(val > 260 && val <= 340)
-            {
-                _unit->setAttackTimer(1000, false);
-                m_shadowshock = true;
-            }
-        }
-    }
-
-protected:
-
-    bool m_impedingdoom,m_lucifroncurse,m_shadowshock;
-    SpellEntry *infoimpedingdoom, *infolucifroncurse,*infoshadowshock;
-};
-
-#define CN_MAGMADAR 11982
-
-#define MAGMASPIT 19450
-#define LAVABREATH 19272
-#define PANIC 19408
-#define LAVABOMB 19411 // TODO: spell to be dummy scripted
-// Magmadar AI
-class MagmadarAI : public CreatureAIScript
-{
-public:
-    ADD_CREATURE_FACTORY_FUNCTION(MagmadarAI);
-    MagmadarAI(Creature* pCreature) : CreatureAIScript(pCreature)
-    {
-		m_magmaspit = m_lavabreath = m_panic = true;
-
-        infomagmaspit = dbcSpell.LookupEntry(MAGMASPIT);
-		infolavabreath = dbcSpell.LookupEntry(LAVABREATH);
-		infopanic =  dbcSpell.LookupEntry(PANIC);
-    }
-    
-    void OnCombatStart(Unit* mTarget)
-    {
-		RegisterAIUpdateEvent(_unit->GetUInt32Value(UNIT_FIELD_BASEATTACKTIME));
-    }
-
-    void OnCombatStop(Unit *mTarget)
-    {
-        _unit->GetAIInterface()->setCurrentAgent(AGENT_NULL);
-        _unit->GetAIInterface()->SetAIState(STATE_IDLE);
-       RemoveAIUpdateEvent();
-    }
-
-    void OnDied(Unit * mKiller)
-    {
-       RemoveAIUpdateEvent();
-    }
-
-    void AIUpdate()
-    {	
-	    uint32 val = RandomUInt(1000);
-        SpellCast(val);
-    }
-
-    void SpellCast(uint32 val)
-    {
-        if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->GetNextTarget())//_unit->getAttackTarget())
-        {
-            if(m_magmaspit)
-            {
-                _unit->CastSpell(_unit->GetAIInterface()->GetNextTarget(), infomagmaspit, false);
-                m_magmaspit = false;
-                return;
-            }
-            
-            if(m_lavabreath)
-            {
-                _unit->CastSpell(_unit, infolavabreath, false);
-                m_lavabreath = false;
-                return;
-            }
-
-			if(m_panic)
-            {
-                _unit->CastSpell(_unit, infopanic, false);
-                m_panic = false;
-                return;
-            }  
-
-            if(val >= 100 && val <= 180)
-            {
-                _unit->setAttackTimer(1000, false);
-                m_magmaspit = true;
-            }
-            if(val > 180 && val <= 260)
-            {
-                _unit->setAttackTimer(1000, false);
-                m_lavabreath = true;
-            }
-			if(val > 260 && val <= 340)
-            {
-                _unit->setAttackTimer(1000, false);
-                m_panic = true;
-            }
-        }
-    }
-
-protected:
-
-    bool m_magmaspit,m_lavabreath,m_panic;
-    SpellEntry *infomagmaspit, *infolavabreath,*infopanic;
-};
-
-
-#define CN_GEHENNAS 12259
-
-#define SHADOW_BOLT 29317
-#define GEHENNAS_CURSE 19716
-#define RAIN_OF_FIRE 19717
-
-// Gehennas AI
-class GehennasAI : public CreatureAIScript
-{
-public:
-    ADD_CREATURE_FACTORY_FUNCTION(GehennasAI);
-    GehennasAI(Creature* pCreature) : CreatureAIScript(pCreature)
-    {
-		m_shadowbolt = m_gehennascurse = m_rainoffire = true;
-
-        infoshadowbolt = dbcSpell.LookupEntry(SHADOW_BOLT);
-		infogehennascurse = dbcSpell.LookupEntry(GEHENNAS_CURSE);
-		inforainoffire =  dbcSpell.LookupEntry(RAIN_OF_FIRE);
-    }
-    
-    void OnCombatStart(Unit* mTarget)
-    {
-		RegisterAIUpdateEvent(_unit->GetUInt32Value(UNIT_FIELD_BASEATTACKTIME));
-    }
-
-    void OnCombatStop(Unit *mTarget)
-    {
-        _unit->GetAIInterface()->setCurrentAgent(AGENT_NULL);
-        _unit->GetAIInterface()->SetAIState(STATE_IDLE);
-       RemoveAIUpdateEvent();
-    }
-
-    void OnDied(Unit * mKiller)
-    {
-       RemoveAIUpdateEvent();
-    }
-
-    void AIUpdate()
-    {	
-	    uint32 val = RandomUInt(1000);
-        SpellCast(val);
-    }
-
-    void SpellCast(uint32 val)
-    {
-        if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->GetNextTarget())//_unit->getAttackTarget())
-        {
-			Unit *target = _unit->GetAIInterface()->GetNextTarget();
-            if(m_shadowbolt)
-            {
-                _unit->CastSpell(target, infoshadowbolt, true);
-                m_shadowbolt = false;
-                return;
-            }
-            
-            if(m_gehennascurse)
-            {
-                _unit->CastSpell(_unit, infogehennascurse, false);
-                m_gehennascurse = false;
-                return;
-            }
-
-			if(m_rainoffire)
-            {
-                _unit->CastSpellAoF(target->GetPositionX(),target->GetPositionY(),target->GetPositionZ(), inforainoffire, false);
-                m_rainoffire = false;
-                return;
-            }  
-
-            if(val >= 100 && val <= 180)
-            {
-                _unit->setAttackTimer(3000, false);
-                m_shadowbolt = true;
-            }
-            if(val > 180 && val <= 260)
-            {
-                _unit->setAttackTimer(1000, false);
-                m_gehennascurse = true;
-            }
-			if(val > 260 && val <= 300)
-            {
-                _unit->setAttackTimer(1000, false);
-                m_rainoffire = true;
-            }
-        }
-    }
-
-protected:
-
-    bool m_shadowbolt,m_gehennascurse,m_rainoffire;
-    SpellEntry *infoshadowbolt, *infogehennascurse,*inforainoffire;
-};
-
-
-#define CN_FLAMEWAKER 11661
-
-#define SUNDERARMOR 25051
-#define FISTOFRAGNAROS 20277
-#define FSTRIKE 11998
-
-// Flamewaker AI
-class FlamewakerAI : public CreatureAIScript
-{
-public:
-    ADD_CREATURE_FACTORY_FUNCTION(FlamewakerAI);
-    FlamewakerAI(Creature* pCreature) : CreatureAIScript(pCreature)
-    {
-		m_sunderarmor = m_fistofragnaros = m_strike = true;
-
-        infosunderarmor = dbcSpell.LookupEntry(SUNDERARMOR);
-		infofistofragnaros = dbcSpell.LookupEntry(FISTOFRAGNAROS);
-		infostrike =  dbcSpell.LookupEntry(FSTRIKE);
-    }
-    
-    void OnCombatStart(Unit* mTarget)
-    {
-		RegisterAIUpdateEvent(_unit->GetUInt32Value(UNIT_FIELD_BASEATTACKTIME));
-    }
-
-    void OnCombatStop(Unit *mTarget)
-    {
-        _unit->GetAIInterface()->setCurrentAgent(AGENT_NULL);
-        _unit->GetAIInterface()->SetAIState(STATE_IDLE);
-       RemoveAIUpdateEvent();
-    }
-
-    void OnDied(Unit * mKiller)
-    {
-       RemoveAIUpdateEvent();
-    }
-
-    void AIUpdate()
-    {	
-	    uint32 val = RandomUInt(1000);
-        SpellCast(val);
-    }
-
-    void SpellCast(uint32 val)
-    {
-        if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->GetNextTarget())//_unit->getAttackTarget())
-        {
-			Unit *target = _unit->GetAIInterface()->GetNextTarget();
-            if(m_sunderarmor)
-            {
-                _unit->CastSpell(target, infosunderarmor, false);
-                m_sunderarmor = false;
-                return;
-            }
-            
-            if(m_fistofragnaros)
-            {
-                _unit->CastSpell(_unit, infofistofragnaros, false);
-                m_fistofragnaros = false;
-                return;
-            }
-
-			if(m_strike)
-            {
-                _unit->CastSpell(target, infostrike, false);
-                m_strike = false;
-                return;
-            }  
-
-            if(val >= 100 && val <= 180)
-            {
-                _unit->setAttackTimer(1000, false);
-                m_sunderarmor = true;
-            }
-            if(val > 180 && val <= 260)
-            {
-                _unit->setAttackTimer(1000, false);
-                m_fistofragnaros = true;
-            }
-			if(val > 260 && val <= 400)
-            {
-                _unit->setAttackTimer(1000, false);
-                m_strike = true;
-            }
-        }
-    }
-
-protected:
-
-    bool m_sunderarmor,m_fistofragnaros,m_strike;
-    SpellEntry *infosunderarmor, *infofistofragnaros,*infostrike;
-};
-
-
-#define CN_GARR 12057
-
-#define ANTIMAGIC_PULSE 19492 // various targets
-#define MAGMA_SHACKES 19496 // various targets
-
-// Garr AI
-class GarrAI : public CreatureAIScript
-{
-public:
-    ADD_CREATURE_FACTORY_FUNCTION(GarrAI);
-    GarrAI(Creature* pCreature) : CreatureAIScript(pCreature)
-    {
-		m_antimagic = m_magmashackes = true;
-
-        infoantimagic = dbcSpell.LookupEntry(ANTIMAGIC_PULSE);
-		infomagmashackes = dbcSpell.LookupEntry(MAGMA_SHACKES);
-    }
-    
-    void OnCombatStart(Unit* mTarget)
-    {
-		RegisterAIUpdateEvent(_unit->GetUInt32Value(UNIT_FIELD_BASEATTACKTIME));
-    }
-
-    void OnCombatStop(Unit *mTarget)
-    {
-        _unit->GetAIInterface()->setCurrentAgent(AGENT_NULL);
-        _unit->GetAIInterface()->SetAIState(STATE_IDLE);
-       RemoveAIUpdateEvent();
-    }
-
-    void OnDied(Unit * mKiller)
-    {
-       RemoveAIUpdateEvent();
-    }
-
-    void AIUpdate()
-    {	
-	    uint32 val = RandomUInt(1000);
-        SpellCast(val);
-    }
-
-    void SpellCast(uint32 val)
-    {
-        if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->GetNextTarget())//_unit->getAttackTarget())
-        {
-			//Unit *target = _unit->GetAIInterface()->GetNextTarget();
-            if(m_antimagic)
-            {
-                _unit->CastSpell(_unit, infoantimagic, false);
-                m_antimagic = false;
-                return;
-            }
-            
-            if(m_magmashackes)
-            {
-                _unit->CastSpell(_unit, infomagmashackes, false);
-                m_magmashackes = false;
-                return;
-            }
-
-            if(val >= 100 && val <= 200)
-            {
-                _unit->setAttackTimer(1000, false);
-                m_antimagic = true;
-            }
-            if(val > 200 && val <= 300)
-            {
-                _unit->setAttackTimer(1000, false);
-                m_magmashackes = true;
-            }
-        }
-    }
-
-protected:
-
-    bool m_antimagic,m_magmashackes;
-    SpellEntry *infoantimagic, *infomagmashackes;
-};
-
-
-#define CN_FIRESWORN 12099
-
-#define IMMOLATE 20294 // 1 target
-#define ERUPTION 20527 // check
-
-// FireSworn AI
-class FireSwornAI : public CreatureAIScript
-{
-public:
-    ADD_CREATURE_FACTORY_FUNCTION(FireSwornAI);
-    FireSwornAI(Creature* pCreature) : CreatureAIScript(pCreature)
-    {
-		m_immolate = m_eruption = true;
-
-        infoimmolate = dbcSpell.LookupEntry(IMMOLATE);
-		infoeruption = dbcSpell.LookupEntry(ERUPTION);
-    }
-    
-    void OnCombatStart(Unit* mTarget)
-    {
-		RegisterAIUpdateEvent(_unit->GetUInt32Value(UNIT_FIELD_BASEATTACKTIME));
-    }
-
-    void OnCombatStop(Unit *mTarget)
-    {
-        _unit->GetAIInterface()->setCurrentAgent(AGENT_NULL);
-        _unit->GetAIInterface()->SetAIState(STATE_IDLE);
-       RemoveAIUpdateEvent();
-    }
-
-    void OnDied(Unit * mKiller)
-    {
-       RemoveAIUpdateEvent();
-    }
-
-    void AIUpdate()
-    {	
-	    uint32 val = RandomUInt(1000);
-        SpellCast(val);
-    }
-
-    void SpellCast(uint32 val)
-    {
-        if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->GetNextTarget())//_unit->getAttackTarget())
-        {
-			//Unit *target = _unit->GetAIInterface()->GetNextTarget();
-            if(m_immolate)
-            {
-                _unit->CastSpell(_unit, infoimmolate, false);
-                m_immolate = false;
-                return;
-            }
-            
-            if(m_eruption)
-            {
-                //_unit->CastSpell(_unit, infoeruption, false);
-                m_eruption = false;
-                return;
-            }
-
-            if(val >= 100 && val <= 200)
-            {
-                _unit->setAttackTimer(1000, false);
-                m_immolate = true;
-            }
-            if(val > 200 && val <= 300)
-            {
-                _unit->setAttackTimer(1000, false);
-                m_eruption = true;
-            }
-        }
-    }
-
-protected:
-
-    bool m_immolate,m_eruption;
-    SpellEntry *infoimmolate, *infoeruption;
-};
-
-
-#define CN_BARON_GEDDON 12056
-
-#define INFERNO 35268 // various targets
-#define IGNITE_MANA 19659 // various targets
-#define LIVING_BOMB 20475 // 1 target
-
-// BaronGeddon AI
-class BaronGeddonAI : public CreatureAIScript
-{
-public:
-    ADD_CREATURE_FACTORY_FUNCTION(BaronGeddonAI);
-    BaronGeddonAI(Creature* pCreature) : CreatureAIScript(pCreature)
-    {
-		m_inferno = m_ignitemana = m_livingbomb = true;
-
-        infoinferno = dbcSpell.LookupEntry(INFERNO);
-		infoignitemana = dbcSpell.LookupEntry(IGNITE_MANA);
-		infolivingbomb = dbcSpell.LookupEntry(LIVING_BOMB);
-    }
-    
-    void OnCombatStart(Unit* mTarget)
-    {
-		RegisterAIUpdateEvent(_unit->GetUInt32Value(UNIT_FIELD_BASEATTACKTIME));
-    }
-
-    void OnCombatStop(Unit *mTarget)
-    {
-        _unit->GetAIInterface()->setCurrentAgent(AGENT_NULL);
-        _unit->GetAIInterface()->SetAIState(STATE_IDLE);
-       RemoveAIUpdateEvent();
-    }
-
-    void OnDied(Unit * mKiller)
-    {
-       RemoveAIUpdateEvent();
-    }
-
-    void AIUpdate()
-    {	
-	    uint32 val = RandomUInt(1000);
-        SpellCast(val);
-    }
-
-    void SpellCast(uint32 val)
-    {
-        if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->GetNextTarget())//_unit->getAttackTarget())
-        {
-			Unit *target = _unit->GetAIInterface()->GetNextTarget();
-            if(m_inferno)
-            {
-                _unit->CastSpell(_unit, infoinferno, false);
-                m_inferno = false;
-                return;
-            }
-            
-            if(m_ignitemana)
-            {
-                _unit->CastSpell(_unit, infoignitemana, false);
-                m_ignitemana = false;
-                return;
-            }
-			if(m_livingbomb)
-            {
-                _unit->CastSpell(target, infolivingbomb, true);
-                m_livingbomb = false;
-                return;
-            }
-
-            if(val >= 100 && val <= 180)
-            {
-                _unit->setAttackTimer(9000, false);
-                m_inferno = true;
-            }
-            if(val > 180 && val <= 260)
-            {
-                _unit->setAttackTimer(1000, false);
-                m_ignitemana = true;
-            }
-			if(val > 260 && val <= 340)
-            {
-                _unit->setAttackTimer(1000, false);
-                m_livingbomb = true;
-            }
-        }
-    }
-
-protected:
-
-    bool m_inferno,m_ignitemana,m_livingbomb;
-    SpellEntry *infoinferno, *infoignitemana, *infolivingbomb;
-};
-
-#define CN_SHAZZRAH 12264
-
-#define ARCANE_EXPLOSION 19712 // various targets
-#define SHAZZRAH_CURSE 19713 // various targets
-#define DEADEN_MAGIC 19714 // self
-#define COUNTERSPELL 19715 // various targets
-#define BLINK 29883 // TODO: choose a target to blink, is dummy, "bad boy, bad boy what you gona do, what you gona do when i come for you!" :D
-
-// Shazzrah AI
-class ShazzrahAI : public CreatureAIScript
-{
-public:
-    ADD_CREATURE_FACTORY_FUNCTION(ShazzrahAI);
-    ShazzrahAI(Creature* pCreature) : CreatureAIScript(pCreature)
-    {
-		m_arcaneexplosion = m_shazzrahcurse = m_deadenmagic = m_counterspell = m_blink = true;
-
-        info_arcaneexplosion = dbcSpell.LookupEntry(ARCANE_EXPLOSION);
-		info_shazzrahcurse = dbcSpell.LookupEntry(SHAZZRAH_CURSE);
-		info_deadenmagic = dbcSpell.LookupEntry(DEADEN_MAGIC);
-		info_counterspell = dbcSpell.LookupEntry(COUNTERSPELL);
-		info_blink = dbcSpell.LookupEntry(BLINK);
-    }
-    
-    void OnCombatStart(Unit* mTarget)
-    {
-		RegisterAIUpdateEvent(_unit->GetUInt32Value(UNIT_FIELD_BASEATTACKTIME));
-    }
-
-    void OnCombatStop(Unit *mTarget)
-    {
-        _unit->GetAIInterface()->setCurrentAgent(AGENT_NULL);
-        _unit->GetAIInterface()->SetAIState(STATE_IDLE);
-       RemoveAIUpdateEvent();
-    }
-
-    void OnDied(Unit * mKiller)
-    {
-       RemoveAIUpdateEvent();
-    }
-
-    void AIUpdate()
-    {	
-	    uint32 val = RandomUInt(1000);
-        SpellCast(val);
-    }
-
-    void SpellCast(uint32 val)
-    {
-        if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->GetNextTarget())//_unit->getAttackTarget())
-        {
-			//Unit *target = _unit->GetAIInterface()->GetNextTarget();
-            if(m_arcaneexplosion)
-            {
-                _unit->CastSpell(_unit, info_arcaneexplosion, false);
-                m_arcaneexplosion = false;
-                return;
-            }
-            
-            if(m_shazzrahcurse)
-            {
-                _unit->CastSpell(_unit, info_shazzrahcurse, false);
-                m_shazzrahcurse = false;
-                return;
-            }
-            
-            if(m_deadenmagic)
-            {
-                _unit->CastSpell(_unit, info_deadenmagic, false);
-                m_deadenmagic = false;
-                return;
-            }
-            
-            if(m_counterspell)
-            {
-                _unit->CastSpell(_unit, info_counterspell, false);
-                m_counterspell = false;
-                return;
-            }
-            
-            if(m_blink)
-            {
-                _unit->CastSpell(_unit, info_blink, false);
-                m_blink = false;
-                return;
-            }
-            
-
-            if(val >= 100 && val <= 160)
-            {
-                _unit->setAttackTimer(1000, false);
-                m_arcaneexplosion = true;
-            }
-            if(val > 160 && val <= 240)
-            {
-                _unit->setAttackTimer(1000, false);
-                m_shazzrahcurse = true;
-            }
-            if(val > 240 && val <= 300)
-            {
-                _unit->setAttackTimer(1000, false);
-                m_deadenmagic = true;
-            }
-            if(val > 300 && val <= 360)
-            {
-                _unit->setAttackTimer(1000, false);
-                m_counterspell = true;
-            }
-            if(val > 320 && val <= 380)
-            {
-                _unit->setAttackTimer(1000, false);
-                m_blink = true;
-            }
-        }
-    }
-
-protected:
-
-    bool m_arcaneexplosion,m_shazzrahcurse,m_deadenmagic,m_counterspell,m_blink;
-    SpellEntry *info_arcaneexplosion, *info_shazzrahcurse,*info_deadenmagic,*info_counterspell,*info_blink;
-};
-
-
-
-#define CN_GOLEMAGG 11988
-
-#define GOLEMAGG_TRUST 20556 // self
-#define MAGMA_SPLASH 13880 // 1 target
-
-// Golemagg AI
-class GolemaggAI : public CreatureAIScript
-{
-public:
-    ADD_CREATURE_FACTORY_FUNCTION(GolemaggAI);
-    GolemaggAI(Creature* pCreature) : CreatureAIScript(pCreature)
-    {
-		m_golemaggtrust = m_magmasplash = true;
-
-        info_golemaggtrust = dbcSpell.LookupEntry(GOLEMAGG_TRUST);
-		info_magmasplash = dbcSpell.LookupEntry(MAGMA_SPLASH);
-    }
-    
-    void OnCombatStart(Unit* mTarget)
-    {
-		RegisterAIUpdateEvent(_unit->GetUInt32Value(UNIT_FIELD_BASEATTACKTIME));
-		_unit->CastSpell(_unit, info_golemaggtrust, false);
-    }
-
-    void OnCombatStop(Unit *mTarget)
-    {
-        _unit->GetAIInterface()->setCurrentAgent(AGENT_NULL);
-        _unit->GetAIInterface()->SetAIState(STATE_IDLE);
-       RemoveAIUpdateEvent();
-    }
-
-    void OnDied(Unit * mKiller)
-    {
-       RemoveAIUpdateEvent();
-    }
-
-    void AIUpdate()
-    {	
-	    uint32 val = RandomUInt(1000);
-        SpellCast(val);
-    }
-
-    void SpellCast(uint32 val)
-    {
-        if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->GetNextTarget())//_unit->getAttackTarget())
-        {
-			Unit *target = _unit->GetAIInterface()->GetNextTarget();
-           
-            if(m_magmasplash)
-            {
-                _unit->CastSpell(target, info_magmasplash, false);
-                m_magmasplash = false;
-                return;
-            }
-            if(val >= 180 && val <= 260)
-            {
-                _unit->setAttackTimer(1000, false);
-                m_magmasplash = true;
-            }
-        }
-    }
-
-protected:
-
-    bool m_golemaggtrust,m_magmasplash;
-    SpellEntry *info_golemaggtrust, *info_magmasplash;
-};
 
 #define CN_CORERAGER 11672
 
@@ -1496,7 +33,7 @@ protected:
 class CoreRagerAI : public CreatureAIScript
 {
 public:
-    ADD_CREATURE_FACTORY_FUNCTION(GolemaggAI);
+    ADD_CREATURE_FACTORY_FUNCTION(CoreRagerAI);
     CoreRagerAI(Creature* pCreature) : CreatureAIScript(pCreature)
     {
 		m_mangle = true;
@@ -1692,6 +229,7 @@ public:
 		info_hammer = dbcSpell.LookupEntry(HAMMER_OF_RAGNAROS);
 		info_meltweapon = dbcSpell.LookupEntry(MELT_WEAPON);
 		info_summonsons = dbcSpell.LookupEntry(SUMMON_SONS_OF_FLAMES);
+		_unit->Root();
     }
     
     void OnCombatStart(Unit* mTarget)
@@ -1794,27 +332,481 @@ protected:
     SpellEntry *info_elementalfire, *info_wrath, *info_hammer, *info_meltweapon,*info_summonsons;
 };
 
-void SetupMoltenCore(ScriptMgr * mgr)
+#include "Base.h"
+
+/*
+TODO:
+ - Fix spells for all mob/boss (spell id, % chance, cooldowns, range, etc.)
+ - Lava Spawn doesn't split
+ - Core Hound packs aren't in pack, so they don't rez each other
+*/
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//Molten Giant AI Script
+#define CN_MOLTENGIANT			11658
+#define MOLTENGIANT_STOMP		31900	//to verify
+#define MOLTENGIANT_KNOCKBACK	30056	//to verify
+
+class MoltenGiantAI : public ArcScriptCreatureAI
 {
-    mgr->register_creature_script(CN_FIREWALKER, &FirewalkerAI::Create);
-    mgr->register_creature_script(CN_FLAMEGUARD, &FlameguardAI::Create);
-    mgr->register_creature_script(CN_LAVAREAVER, &LavaReaverAI::Create);
-    mgr->register_creature_script(CN_LAVAELEMENTAL, &LavaelementalAI::Create);
-    mgr->register_creature_script(CN_FLAMEIMP, &FlameImpAI::Create);
-    mgr->register_creature_script(CN_LAVASURGER, &LavaSurgerAI::Create);
-    mgr->register_creature_script(CN_FIRELORD, &FireLordAI::Create);
-    mgr->register_creature_script(CN_MOLTENDESTROYER, &MoltenDestroyerAI::Create);
-    mgr->register_creature_script(CN_MOLTENGIANT, &MoltenGiantAI::Create);
-    mgr->register_creature_script(CN_LUCIFRON, &LucifronAI::Create);
-    mgr->register_creature_script(CN_MAGMADAR, &MagmadarAI::Create);
-    mgr->register_creature_script(CN_GEHENNAS, &GehennasAI::Create);
-    mgr->register_creature_script(CN_FLAMEWAKER, &FlamewakerAI::Create);
-    mgr->register_creature_script(CN_GARR, &GarrAI::Create);
-    mgr->register_creature_script(CN_FIRESWORN, &FireSwornAI::Create);
-    mgr->register_creature_script(CN_BARON_GEDDON, &BaronGeddonAI::Create);
-    mgr->register_creature_script(CN_SHAZZRAH, &ShazzrahAI::Create);
-    mgr->register_creature_script(CN_GOLEMAGG, &GolemaggAI::Create);
-    mgr->register_creature_script(CN_CORERAGER, &CoreRagerAI::Create);
-    mgr->register_creature_script(CN_SULFURON_HARBRINGER, &SulfuronAI::Create);
-    mgr->register_creature_script(CN_RAGNAROS, &RagnarosAI::Create);
+    ArcScript_FACTORY_FUNCTION(MoltenGiantAI, ArcScriptCreatureAI);
+    MoltenGiantAI(Creature* pCreature) : ArcScriptCreatureAI(pCreature)
+    {
+		AddSpell(MOLTENGIANT_STOMP, Target_Current, 10, 0, 5);
+		AddSpell(MOLTENGIANT_KNOCKBACK, Target_Self, 10, 0, 5);
+    }
+};
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//Molten Destroyer AI Script
+#define CN_MOLTENDESTROYER				11659
+#define MOLTENDESTROYER_MASSIVE_TREMOR	19129	//to verify
+//#define MOLTENDESTROYER_SMASH_ATTACK	?
+#define MOLTENDESTROYER_KNOCKDOWN		13360	//wrong, fixme!
+
+class MoltenDestroyerAI : public ArcScriptCreatureAI
+{
+    ArcScript_FACTORY_FUNCTION(MoltenDestroyerAI, ArcScriptCreatureAI);
+    MoltenDestroyerAI(Creature* pCreature) : ArcScriptCreatureAI(pCreature)
+    {
+		AddSpell(MOLTENDESTROYER_MASSIVE_TREMOR, Target_Self, 12.5f, 0, 0);
+//		AddSpell(MOLTENDESTROYER_SMASH_ATTACK, Target_Self, 10, 0, 0);
+		AddSpell(MOLTENDESTROYER_KNOCKDOWN, Target_Current, 12.5f, 0, 0);
+    }
+};
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//Firelord AI Script
+#define CN_FIRELORD					11668
+#define FIRELORD_SUMMON_LAVA_SPAWN	19392
+#define FIRELORD_SOUL_BURN			19393
+
+class FirelordAI : public ArcScriptCreatureAI
+{
+    ArcScript_FACTORY_FUNCTION(FirelordAI, ArcScriptCreatureAI);
+    FirelordAI(Creature* pCreature) : ArcScriptCreatureAI(pCreature)
+    {
+		AddSpell(FIRELORD_SUMMON_LAVA_SPAWN, Target_Self, 20, 0, 10);
+		AddSpell(FIRELORD_SOUL_BURN, Target_RandomPlayer, 20, 0, 5);
+    }
+};
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//Lava Annihilator AI Script
+#define CN_LAVAANNIHILATOR 11665
+
+class LavaAnnihilatorAI : public ArcScriptCreatureAI
+{
+    ArcScript_FACTORY_FUNCTION(LavaAnnihilatorAI, ArcScriptCreatureAI);
+    LavaAnnihilatorAI(Creature* pCreature) : ArcScriptCreatureAI(pCreature)
+    {
+		AddSpellFunc(&SpellFunc_ClearHateList, Target_Self, 20, 0, 0);
+    }
+};
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//Ancient Core Hound AI Script
+#define CN_ANCIENTCOREHOUND					11673
+#define ANCIENTCOREHOUND_LAVA_BREATH		19272
+#define ANCIENTCOREHOUND_VICIOUS_BITE		19319
+#define ANCIENTCOREHOUND_GROUND_STOMP		19364
+#define ANCIENTCOREHOUND_ANCIENT_DREAD		19365
+#define ANCIENTCOREHOUND_ANCIENT_DESPAIR	19369
+#define ANCIENTCOREHOUND_CAUTERIZING_FLAMES	19366
+#define ANCIENTCOREHOUND_WITHERING_HEAT		19367
+#define ANCIENTCOREHOUND_ANCIENT_HYSTERIA	19372
+
+class AncientCoreHoundAI : public ArcScriptCreatureAI
+{
+    ArcScript_FACTORY_FUNCTION(AncientCoreHoundAI, ArcScriptCreatureAI);
+    AncientCoreHoundAI(Creature* pCreature) : ArcScriptCreatureAI(pCreature)
+    {
+		AddSpell(ANCIENTCOREHOUND_LAVA_BREATH, Target_Self, 20, 0, 3);
+		AddSpell(ANCIENTCOREHOUND_VICIOUS_BITE, Target_Self, 20, 0, 0);
+
+		//Each Ancient Core Hound have only one of the following spell
+		switch( RandomUInt(5) )
+		{
+			case 0: AddSpell(ANCIENTCOREHOUND_GROUND_STOMP, Target_Self, 20, 0, 15); break;
+			case 1: AddSpell(ANCIENTCOREHOUND_ANCIENT_DREAD, Target_Self, 20, 0, 15); break;
+			case 2: AddSpell(ANCIENTCOREHOUND_ANCIENT_DESPAIR, Target_Self, 20, 0, 15); break;
+			case 3: AddSpell(ANCIENTCOREHOUND_CAUTERIZING_FLAMES, Target_Self, 20, 0, 15); break;
+			case 4: AddSpell(ANCIENTCOREHOUND_WITHERING_HEAT, Target_Self, 20, 0, 15); break;
+			case 5: AddSpell(ANCIENTCOREHOUND_ANCIENT_HYSTERIA, Target_Self, 20, 0, 15); break;
+		}
+    }
+};
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//Lava Surger AI Script
+#define CN_LAVASURGER		12101
+#define LAVASURGER_SURGE	25787
+
+class LavaSurgerAI : public ArcScriptCreatureAI
+{
+    ArcScript_FACTORY_FUNCTION(LavaSurgerAI, ArcScriptCreatureAI);
+    LavaSurgerAI(Creature* pCreature) : ArcScriptCreatureAI(pCreature)
+    {
+		AddSpell(LAVASURGER_SURGE, Target_RandomUnit, 20, 0, 5, 0, 40);
+    }
+};
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//Flame Imp AI Script
+#define CN_FLAMEIMP			11669
+#define FLAMEIMP_FIRE_NOVA	23462	//wrong, fixme!
+
+class FlameImpAI : public ArcScriptCreatureAI
+{
+    ArcScript_FACTORY_FUNCTION(FlameImpAI, ArcScriptCreatureAI);
+    FlameImpAI(Creature* pCreature) : ArcScriptCreatureAI(pCreature)
+    {
+		AddSpell(FLAMEIMP_FIRE_NOVA, Target_Current, 25, 0, 0);
+    }
+};
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//Core Hound AI Script
+#define CN_COREHOUND			11671
+#define COREHOUND_SERRATED_BITE	19771
+
+class CoreHoundAI : public ArcScriptCreatureAI
+{
+    ArcScript_FACTORY_FUNCTION(CoreHoundAI, ArcScriptCreatureAI);
+    CoreHoundAI(Creature* pCreature) : ArcScriptCreatureAI(pCreature)
+    {
+		AddSpell(COREHOUND_SERRATED_BITE, Target_RandomPlayer, 10, 0, 0, 0, 10);
+    }
+};
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//Lava Reaver AI Script
+#define CN_LAVAREAVER		12100
+#define LAVAREAVER_CLEAVE	20691
+
+class LavaReaverAI : public ArcScriptCreatureAI
+{
+    ArcScript_FACTORY_FUNCTION(LavaReaverAI, ArcScriptCreatureAI);
+    LavaReaverAI(Creature* pCreature) : ArcScriptCreatureAI(pCreature)
+    {
+		AddSpell(LAVAREAVER_CLEAVE, Target_Current, 20, 0, 0, 0, 15);
+    }
+};
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//Lava Elemental AI Script
+#define CN_LAVAELEMENTAL				12076
+#define LAVAELEMENTAL_PYROCLAST_BARRAGE	19641
+
+class LavaElementalAI : public ArcScriptCreatureAI
+{
+    ArcScript_FACTORY_FUNCTION(LavaElementalAI, ArcScriptCreatureAI);
+    LavaElementalAI(Creature* pCreature) : ArcScriptCreatureAI(pCreature)
+    {
+		AddSpell(LAVAELEMENTAL_PYROCLAST_BARRAGE, Target_Self, 10, 0, 10);
+    }
+};
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//Flameguard AI Script
+#define CN_FLAMEGUARD			11667
+#define FLAMEGUARD_FIRE_SHIELD	19627
+#define FLAMEGUARD_FLAMES		19628
+
+class FlameguardAI : public ArcScriptCreatureAI
+{
+    ArcScript_FACTORY_FUNCTION(FlameguardAI, ArcScriptCreatureAI);
+    FlameguardAI(Creature* pCreature) : ArcScriptCreatureAI(pCreature)
+    {
+		AddSpell(FLAMEGUARD_FIRE_SHIELD, Target_Self, 100, 0, 0);
+		mFlames = AddSpell(FLAMEGUARD_FLAMES, Target_Self, 0, 0, 0);
+    }
+
+	void OnDied(Unit* pKiller)
+	{
+		CastSpellNowNoScheduling(mFlames);
+		ParentClass::OnDied(pKiller);
+	}
+
+	SpellDesc* mFlames;
+};
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//Firewalker AI Script
+#define CN_FIREWALKER				11666
+#define FIREWALKER_MELT_ARMOR		19631
+#define FIREWALKER_INCITE_FLAMES	19635
+//Fire Blossom?
+
+class FirewalkerAI : public ArcScriptCreatureAI
+{
+    ArcScript_FACTORY_FUNCTION(FirewalkerAI, ArcScriptCreatureAI);
+    FirewalkerAI(Creature* pCreature) : ArcScriptCreatureAI(pCreature)
+    {
+		AddSpell(FIREWALKER_MELT_ARMOR, Target_Self, 10, 0, 0);
+		AddSpell(FIREWALKER_INCITE_FLAMES, Target_Self, 10, 0, 0);
+    }
+};
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//Lucifron AI Script
+#define CN_LUCIFRON					12118
+#define LUCIFRON_IMPEDING_DOOM		19702
+#define LUCIFRON_LUCIFRONS_CURSE	19703
+#define LUCIFRON_SHADOW_SHOCK		20603
+
+class LucifronAI : public ArcScriptBossAI
+{
+    ArcScript_FACTORY_FUNCTION(LucifronAI, ArcScriptBossAI);
+	LucifronAI(Creature* pCreature) : ArcScriptBossAI(pCreature)
+	{
+		AddSpell(LUCIFRON_IMPEDING_DOOM, Target_Self, 8, 0, 0);
+		AddSpell(LUCIFRON_LUCIFRONS_CURSE, Target_Self, 8, 0, 0);
+		AddSpell(LUCIFRON_SHADOW_SHOCK, Target_Self, 8, 0, 0);
+	}
+};
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//Flamewaker Protector AI Script
+#define CN_FLAMEWAKERPROTECTOR				12119
+#define FLAMEWAKERPROTECTOR_CLEAVE			20691
+#define FLAMEWAKERPROTECTOR_DOMINATE_MIND	20740	//to verify
+
+class FlamewakerProtectorAI : public ArcScriptCreatureAI
+{
+    ArcScript_FACTORY_FUNCTION(FlamewakerProtectorAI, ArcScriptCreatureAI);
+	FlamewakerProtectorAI(Creature* pCreature) : ArcScriptCreatureAI(pCreature)
+	{
+		AddSpell(FLAMEWAKERPROTECTOR_CLEAVE, Target_Current, 8, 0, 0, 0, 15);
+		AddSpell(FLAMEWAKERPROTECTOR_DOMINATE_MIND, Target_RandomPlayer, 4, 0, 0, 0, 20);
+	}
+};
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//Magmadar AI Script
+#define CN_MAGMADAR				11982
+#define MAGMADAR_MAGMA_SPIT		19450	//aura doesnt work
+#define MAGMADAR_LAVA_BREATH	19272	//to verify
+#define MAGMADAR_PANIC			19408
+#define MAGMADAR_LAVA_BOMB		19411	//need dummy spell
+
+class MagmadarAI : public ArcScriptBossAI
+{
+    ArcScript_FACTORY_FUNCTION(MagmadarAI, ArcScriptBossAI);
+	MagmadarAI(Creature* pCreature) : ArcScriptBossAI(pCreature)
+	{
+		AddSpell(MAGMADAR_MAGMA_SPIT, Target_Self, 8, 0, 0);
+		AddSpell(MAGMADAR_LAVA_BREATH, Target_Self, 8, 0, 0);
+		AddSpell(MAGMADAR_PANIC, Target_Self, 8, 0, 0);
+		AddSpell(MAGMADAR_LAVA_BOMB, Target_RandomPlayer, 8, 0, 0, 0, 100);
+	}
+};
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//Gehennas AI Script
+#define CN_GEHENNAS				12259
+#define GEHENNAS_SHADOW_BOLT	29317	//to verify
+#define GEHENNAS_GEHENNAS_CURSE	19716
+#define GEHENNAS_RAIN_OF_FIRE	19717
+
+class GehennasAI : public ArcScriptBossAI
+{
+    ArcScript_FACTORY_FUNCTION(GehennasAI, ArcScriptBossAI);
+	GehennasAI(Creature* pCreature) : ArcScriptBossAI(pCreature)
+	{
+		AddSpell(GEHENNAS_SHADOW_BOLT, Target_RandomPlayer, 8, 0, 0, 0, 45);
+		AddSpell(GEHENNAS_GEHENNAS_CURSE, Target_Self, 8, 0, 0);
+		AddSpell(GEHENNAS_RAIN_OF_FIRE, Target_RandomDestination, 4, 0, 0, 0, 40);
+	}
+};
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//Flamewaker AI Script
+#define CN_FLAMEWAKER				11661
+#define FLAMEWAKER_SUNDER_ARMOR		25051
+#define FLAMEWAKER_FIST_OF_RAGNAROS	20277
+#define FLAMEWAKER_STRIKE			11998
+
+class FlamewakerAI : public ArcScriptCreatureAI
+{
+    ArcScript_FACTORY_FUNCTION(FlamewakerAI, ArcScriptCreatureAI);
+	FlamewakerAI(Creature* pCreature) : ArcScriptCreatureAI(pCreature)
+	{
+		AddSpell(FLAMEWAKER_SUNDER_ARMOR, Target_Current, 8, 0, 0);
+		AddSpell(FLAMEWAKER_FIST_OF_RAGNAROS, Target_Self, 8, 0, 0);
+		AddSpell(FLAMEWAKER_STRIKE, Target_Current, 14, 0, 0);
+	}
+};
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//Garr AI Script
+#define CN_GARR					12057
+#define GARR_ANTIMAGIC_PULSE	19492
+#define GARR_MAGMA_SHACKES		19496
+
+class GarrAI : public ArcScriptBossAI
+{
+    ArcScript_FACTORY_FUNCTION(GarrAI, ArcScriptBossAI);
+	GarrAI(Creature* pCreature) : ArcScriptBossAI(pCreature)
+	{
+		AddSpell(GARR_ANTIMAGIC_PULSE, Target_Self, 10, 0, 0);
+		AddSpell(GARR_MAGMA_SHACKES, Target_Self, 10, 0, 0);
+	}
+};
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//Firesworn AI Script
+#define CN_FIRESWORN					12099
+#define FIRESWORN_IMMOLATE				20294
+#define FIRESWORN_ERUPTION				19497
+#define FIRESWORN_SEPARATION_ANXIETY	23492
+
+class FireswornAI : public ArcScriptCreatureAI
+{
+    ArcScript_FACTORY_FUNCTION(FireswornAI, ArcScriptCreatureAI);
+	FireswornAI(Creature* pCreature) : ArcScriptCreatureAI(pCreature)
+	{
+		mGarr = NULL;
+
+		//Spells
+		AddSpell(FIRESWORN_IMMOLATE, Target_Current, 10, 0, 0, 0, 40);
+		mEruption = AddSpell(FIRESWORN_ERUPTION, Target_Self, 0, 0, 0);
+		mSeparationAnxiety = AddSpell(FIRESWORN_SEPARATION_ANXIETY, Target_Self, 0, 5, 5);
+	}
+
+	void OnCombatStart(Unit* pTarget)
+	{
+		mGarr = (ArcScriptBossAI*)GetNearestCreature(CN_GARR);
+		ParentClass::OnCombatStart(pTarget);
+	}
+
+	void OnDied(Unit* pKiller)
+	{
+		CastSpellNowNoScheduling(mEruption);
+		ParentClass::OnDied(pKiller);
+	}
+
+	void AIUpdate()
+	{
+		if( mGarr && mGarr->IsAlive() && GetRange(mGarr) > 100 )
+		{
+			CastSpell(mSeparationAnxiety);
+		}
+		ParentClass::AIUpdate();
+	}
+
+	SpellDesc*			mEruption;
+	SpellDesc*			mSeparationAnxiety;
+	ArcScriptBossAI*	mGarr;
+};
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//Baron Geddon AI Script
+#define CN_BARONGEDDON			12056
+#define BARONGEDDON_INFERNO		19698	//35268
+#define BARONGEDDON_IGNITE_MANA	19659
+#define BARONGEDDON_LIVING_BOMB	20475
+
+class BaronGeddonAI : public ArcScriptBossAI
+{
+    ArcScript_FACTORY_FUNCTION(BaronGeddonAI, ArcScriptBossAI);
+	BaronGeddonAI(Creature* pCreature) : ArcScriptBossAI(pCreature)
+	{
+		AddSpell(BARONGEDDON_INFERNO, Target_Self, 8, 0, 0);
+		AddSpell(BARONGEDDON_IGNITE_MANA, Target_Self, 8, 0, 0);
+		AddSpell(BARONGEDDON_LIVING_BOMB, Target_RandomPlayer, 8, 0, 0, 0, 45);
+	}
+};
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//Shazzrah AI Script
+#define CN_SHAZZRAH					12264
+#define SHAZZRAH_ARCANE_EXPLOSION	19712
+#define SHAZZRAH_SHAZZRAHS_CURSE	19713
+#define SHAZZRAH_MAGIC_GROUNDING	19714
+#define SHAZZRAH_COUNTERSPELL		19715
+#define SHAZZRAH_BLINK				29883	//dummy spell, need to be coded in core
+
+void SpellFunc_ShazzrahBlinkArcaneExplosions(SpellDesc* pThis, ArcScriptCreatureAI* pCreatureAI, Unit* pTarget, TargetType pType);
+
+class ShazzrahAI : public ArcScriptBossAI
+{
+    ArcScript_FACTORY_FUNCTION(ShazzrahAI, ArcScriptBossAI);
+	ShazzrahAI(Creature* pCreature) : ArcScriptBossAI(pCreature)
+	{
+		AddSpell(SHAZZRAH_SHAZZRAHS_CURSE, Target_Self, 8, 0, 0);
+		AddSpell(SHAZZRAH_MAGIC_GROUNDING, Target_Self, 6, 0, 0);
+		AddSpell(SHAZZRAH_COUNTERSPELL, Target_Self, 6, 0, 0);
+
+		mBlink = AddSpell(SHAZZRAH_BLINK, Target_RandomPlayer, 0, 0, 0);
+		mArcaneExplosion = AddSpell(SHAZZRAH_ARCANE_EXPLOSION, Target_Self, 0, 0, 0);
+		AddSpellFunc(&SpellFunc_ShazzrahBlinkArcaneExplosions, Target_Self, 8, -1, 15);
+	}
+
+	SpellDesc* mBlink;
+	SpellDesc* mArcaneExplosion;
+};
+
+void SpellFunc_ShazzrahBlinkArcaneExplosions(SpellDesc* pThis, ArcScriptCreatureAI* pCreatureAI, Unit* pTarget, TargetType pType)
+{
+	ShazzrahAI* Shazzrah = ( pCreatureAI ) ? (ShazzrahAI*)pCreatureAI : NULL;
+	if( Shazzrah )
+	{
+		//Teleport blink, then cast 4 arcane explosions
+		Shazzrah->CastSpell(Shazzrah->mBlink);
+		for( int Iter = 0; Iter < 4; Iter++ ) Shazzrah->CastSpell(Shazzrah->mArcaneExplosion);
+	}
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//Golemagg AI Script
+#define CN_GOLEMAGG					11988
+#define GOLEMAGG_GOLEMAGGS_TRUST	20553
+#define GOLEMAGG_MAGMA_SPLASH		13880
+#define GOLEMAGG_PYROBLAST			20228
+#define GOLEMAGG_EARTHQUAKE			19798
+
+class GolemaggAI : public ArcScriptBossAI
+{
+    ArcScript_FACTORY_FUNCTION(GolemaggAI, ArcScriptBossAI);
+	GolemaggAI(Creature* pCreature) : ArcScriptBossAI(pCreature)
+	{
+		AddSpell(GOLEMAGG_GOLEMAGGS_TRUST, Target_Self, 8, 0, 0);
+		AddSpell(GOLEMAGG_MAGMA_SPLASH, Target_Self, 8, 0, 0);
+		AddSpell(GOLEMAGG_PYROBLAST, Target_RandomPlayer, 8, 0, 0, 0, 40);
+		AddSpell(GOLEMAGG_EARTHQUAKE, Target_Self, 8, 0, 0);
+	}
+};
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//Register
+void SetupMoltenCore(ScriptMgr* pScriptMgr)
+{
+    pScriptMgr->register_creature_script(CN_MOLTENGIANT, &MoltenGiantAI::Create);
+    pScriptMgr->register_creature_script(CN_MOLTENDESTROYER, &MoltenDestroyerAI::Create);
+    pScriptMgr->register_creature_script(CN_FIRELORD, &FirelordAI::Create);
+	pScriptMgr->register_creature_script(CN_LAVAANNIHILATOR, &LavaAnnihilatorAI::Create);
+	pScriptMgr->register_creature_script(CN_ANCIENTCOREHOUND, &AncientCoreHoundAI::Create);
+    pScriptMgr->register_creature_script(CN_LAVASURGER, &LavaSurgerAI::Create);
+    pScriptMgr->register_creature_script(CN_FLAMEIMP, &FlameImpAI::Create);
+    pScriptMgr->register_creature_script(CN_COREHOUND, &CoreHoundAI::Create);
+    pScriptMgr->register_creature_script(CN_LAVAREAVER, &LavaReaverAI::Create);
+    pScriptMgr->register_creature_script(CN_LAVAELEMENTAL, &LavaElementalAI::Create);
+    pScriptMgr->register_creature_script(CN_FLAMEGUARD, &FlameguardAI::Create);
+    pScriptMgr->register_creature_script(CN_FIREWALKER, &FirewalkerAI::Create);
+    pScriptMgr->register_creature_script(CN_LUCIFRON, &LucifronAI::Create);
+	pScriptMgr->register_creature_script(CN_FLAMEWAKERPROTECTOR, &FlamewakerProtectorAI::Create);
+    pScriptMgr->register_creature_script(CN_MAGMADAR, &MagmadarAI::Create);
+    pScriptMgr->register_creature_script(CN_GEHENNAS, &GehennasAI::Create);
+    pScriptMgr->register_creature_script(CN_FLAMEWAKER, &FlamewakerAI::Create);
+    pScriptMgr->register_creature_script(CN_GARR, &GarrAI::Create);
+    pScriptMgr->register_creature_script(CN_FIRESWORN, &FireswornAI::Create);
+    pScriptMgr->register_creature_script(CN_BARONGEDDON, &BaronGeddonAI::Create);
+    pScriptMgr->register_creature_script(CN_SHAZZRAH, &ShazzrahAI::Create);
+
+    pScriptMgr->register_creature_script(CN_GOLEMAGG, &GolemaggAI::Create);
+    pScriptMgr->register_creature_script(CN_CORERAGER, &CoreRagerAI::Create);
+
+    pScriptMgr->register_creature_script(CN_SULFURON_HARBRINGER, &SulfuronAI::Create);
+    pScriptMgr->register_creature_script(CN_RAGNAROS, &RagnarosAI::Create);
 }

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="windows-1250"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="9.00"
-	Name="InstanceScripts"
+	Version="9,00"
+	Name="ArcScriptsInstanceScripts"
 	ProjectGUID="{EE39B48B-C598-4AAF-9EF0-199402933EE5}"
 	RootNamespace="InstanceScripts"
 	Keyword="Win32Proj"
@@ -102,89 +102,6 @@
 			/>
 		</Configuration>
 		<Configuration
-			Name="Debug|x64"
-			OutputDirectory="..\..\..\bin\debug_x64\script_bin"
-			IntermediateDirectory="2008_int_debug_instancescripts_x64"
-			ConfigurationType="2"
-			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
-			CharacterSet="2"
-			>
-			<Tool
-				Name="VCPreBuildEventTool"
-			/>
-			<Tool
-				Name="VCCustomBuildTool"
-			/>
-			<Tool
-				Name="VCXMLDataGeneratorTool"
-			/>
-			<Tool
-				Name="VCWebServiceProxyGeneratorTool"
-			/>
-			<Tool
-				Name="VCMIDLTool"
-				TargetEnvironment="3"
-			/>
-			<Tool
-				Name="VCCLCompilerTool"
-				Optimization="0"
-				InlineFunctionExpansion="2"
-				AdditionalIncludeDirectories="..\..\arcemu-shared;..\..\arcemu-world;..\..\..\dep\include;..\..\..\dep\src"
-				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;SCRIPTLIB;X64;_CRT_SECURE_NO_WARNINGS;_CRT_NONSTDC_NO_WARNINGS"
-				MinimalRebuild="true"
-				BasicRuntimeChecks="3"
-				RuntimeLibrary="1"
-				UsePrecompiledHeader="0"
-				WarningLevel="3"
-				Detect64BitPortabilityProblems="false"
-				DebugInformationFormat="3"
-			/>
-			<Tool
-				Name="VCManagedResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCPreLinkEventTool"
-			/>
-			<Tool
-				Name="VCLinkerTool"
-				AdditionalDependencies="arcemu-world.lib"
-				OutputFile="../../../bin/debug_x64/script_bin/InstanceScripts.dll"
-				LinkIncremental="2"
-				AdditionalLibraryDirectories="..\..\..\bin\debug_x64"
-				GenerateDebugInformation="true"
-				ProgramDatabaseFile="../../../bin/debug_x64/script_bin/InstanceScripts.pdb"
-				SubSystem="2"
-				RandomizedBaseAddress="1"
-				DataExecutionPrevention="0"
-				ImportLibrary="$(OutDir)/InstanceScripts.lib"
-				TargetMachine="17"
-			/>
-			<Tool
-				Name="VCALinkTool"
-			/>
-			<Tool
-				Name="VCManifestTool"
-			/>
-			<Tool
-				Name="VCXDCMakeTool"
-			/>
-			<Tool
-				Name="VCBscMakeTool"
-			/>
-			<Tool
-				Name="VCFxCopTool"
-			/>
-			<Tool
-				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCPostBuildEventTool"
-			/>
-		</Configuration>
-		<Configuration
 			Name="Release|Win32"
 			OutputDirectory="..\..\..\bin\debug\script_bin"
 			IntermediateDirectory="2008_int_release_instancescripts"
@@ -250,6 +167,89 @@
 				DataExecutionPrevention="0"
 				ImportLibrary="$(OutDir)/InstanceScripts.lib"
 				TargetMachine="1"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCManifestTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+			/>
+		</Configuration>
+		<Configuration
+			Name="Debug|x64"
+			OutputDirectory="..\..\..\bin\debug_x64\script_bin"
+			IntermediateDirectory="2008_int_debug_instancescripts_x64"
+			ConfigurationType="2"
+			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
+			CharacterSet="2"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+				TargetEnvironment="3"
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="0"
+				InlineFunctionExpansion="2"
+				AdditionalIncludeDirectories="..\..\arcemu-shared;..\..\arcemu-world;..\..\..\dep\include;..\..\..\dep\src"
+				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;SCRIPTLIB;X64;_CRT_SECURE_NO_WARNINGS;_CRT_NONSTDC_NO_WARNINGS"
+				MinimalRebuild="true"
+				BasicRuntimeChecks="3"
+				RuntimeLibrary="1"
+				UsePrecompiledHeader="0"
+				WarningLevel="3"
+				Detect64BitPortabilityProblems="false"
+				DebugInformationFormat="3"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalDependencies="arcemu-world.lib"
+				OutputFile="../../../bin/debug_x64/script_bin/InstanceScripts.dll"
+				LinkIncremental="2"
+				AdditionalLibraryDirectories="..\..\..\bin\debug_x64"
+				GenerateDebugInformation="true"
+				ProgramDatabaseFile="../../../bin/debug_x64/script_bin/InstanceScripts.pdb"
+				SubSystem="2"
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
+				ImportLibrary="$(OutDir)/InstanceScripts.lib"
+				TargetMachine="17"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -364,6 +364,14 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
+				RelativePath="..\src\InstanceScripts\Base.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\src\InstanceScripts\Base.h"
+				>
+			</File>
+			<File
 				RelativePath="..\src\InstanceScripts\Setup.cpp"
 				>
 			</File>
@@ -378,11 +386,155 @@
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
+				RelativePath="..\src\InstanceScripts\Event_DarkPortal.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\src\InstanceScripts\GenericAI.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\src\InstanceScripts\Instance_Arcatraz.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\src\InstanceScripts\Instance_AuchenaiCrypts.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\src\InstanceScripts\Instance_BlackMorass.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\src\InstanceScripts\Instance_BlackrockDepths.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\src\InstanceScripts\Instance_BlackrockSpire.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\src\InstanceScripts\Instance_BloodFurnace.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\src\InstanceScripts\Instance_Botanica.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\src\InstanceScripts\Instance_Deadmines.cpp"
 				>
 			</File>
 			<File
+				RelativePath="..\src\InstanceScripts\Instance_DireMaul.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\src\InstanceScripts\Instance_HellfireRamparts.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\src\InstanceScripts\Instance_MagistersTerrace.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\src\InstanceScripts\Instance_ManaTombs.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\src\InstanceScripts\Instance_Mauradon.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\src\InstanceScripts\Instance_OldHillsbradFoothills.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\src\InstanceScripts\Instance_RagefireChasm.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\src\InstanceScripts\Instance_RazorfenDowns.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\src\InstanceScripts\Instance_ScarletMonastery.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\src\InstanceScripts\Instance_Scholomance.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\src\InstanceScripts\Instance_SethekkHalls.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\src\InstanceScripts\Instance_ShadowfangKeep.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\src\InstanceScripts\Instance_ShadowLabyrinth.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\src\InstanceScripts\Instance_TheMechanar.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\src\InstanceScripts\Instance_TheShatteredHalls.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\src\InstanceScripts\Instance_TheSlavePens.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\src\InstanceScripts\Instance_TheSteamvault.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\src\InstanceScripts\Instance_TheStockade.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\src\InstanceScripts\Instance_TheUnderbog.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\src\InstanceScripts\Instance_Uldaman.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\src\InstanceScripts\Instance_WailingCaverns.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\src\InstanceScripts\Instance_ZulFarrak.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\src\InstanceScripts\Raid_BlackTemple.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\src\InstanceScripts\Raid_BlackwingLair.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\src\InstanceScripts\Raid_CoT_BattleOfMountHyjal.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\src\InstanceScripts\Raid_GruulsLair.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\src\InstanceScripts\Raid_Karazhan.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\src\InstanceScripts\Raid_Magtheridons_Lair.cpp"
 				>
 			</File>
 			<File
@@ -398,7 +550,31 @@
 				>
 			</File>
 			<File
+				RelativePath="..\src\InstanceScripts\Raid_SerpentshrineCavern.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\src\InstanceScripts\Raid_SunwellPlateau.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\src\InstanceScripts\Raid_TheEye.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\src\InstanceScripts\Raid_WorldBosses.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\src\InstanceScripts\Raid_ZulAman.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\src\InstanceScripts\Raid_ZulGurub.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\src\InstanceScripts\ShadeOfAkama.cpp"
 				>
 			</File>
 		</Filter>

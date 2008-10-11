@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="9.00"
-	Name="LUAScripting"
+	Version="9,00"
+	Name="ArcScriptLUAScripting"
 	ProjectGUID="{AEFCEECF-6839-4F1B-9317-70BF3EE09247}"
 	RootNamespace="LUAScripting2008"
 	Keyword="Win32Proj"
@@ -358,7 +358,15 @@
 				>
 			</File>
 			<File
+				RelativePath="..\src\LUAScripting\lua\lua.c"
+				>
+			</File>
+			<File
 				RelativePath="..\src\LUAScripting\lua\lua.h"
+				>
+			</File>
+			<File
+				RelativePath="..\src\LUAScripting\lua\luac.c"
 				>
 			</File>
 			<File
@@ -399,11 +407,11 @@
 			</File>
 		</Filter>
 		<File
-			RelativePath="..\src\luascripting\LUAEngine.cpp"
+			RelativePath="..\src\LUAScripting\LUAEngine.cpp"
 			>
 		</File>
 		<File
-			RelativePath="..\src\luascripting\LUAEngine.h"
+			RelativePath="..\src\LUAScripting\LUAEngine.h"
 			>
 		</File>
 		<File

@@ -1,6 +1,7 @@
 /*
- * WEmu Scripts for WEmu MMORPG Server
- * Copyright (C) 2008 WEmu Team
+ * ArcScript Scripts for Arcemu MMORPG Server
+ * Copyright (C) 2005-2007 Arcemu Team <http://www.Arcemuemu.com/>
+ * Copyright (C) 2007-2008 ArcScript Team 
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,12 +19,8 @@
 
 #include "StdAfx.h"
 #include "Setup.h"
-#include "../EAS/EasyFunctions.h"
+#include "EAS/EasyFunctions.h"
 
-#define SendQuickMenu(textid) objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), textid, plr); \
-	Menu->SendTo(plr);
-
-// Fel Orc Scavengers Quest
 /*--------------------------------------------------------------------------------------------------------*/
 // Fel Orc Scavengers
 
@@ -359,7 +356,198 @@ bool ZethGorMustBurnHorde(uint32 i, Spell* pSpell)
 }
 
 /*--------------------------------------------------------------------------------------------------------*/
+// Laying Waste to the Unwanted
+
+bool LayingWasteToTheUnwantedAllianz(uint32 i, Spell* pSpell)
+{
+	Player *caster = pSpell->p_caster;
+	if(caster == NULL)
+		return true;
+	
+	GameObject *eastern = caster->GetMapMgr()->GetInterface()->GetGameObjectNearestCoords(-155, 2517, 43, 300152);
+	GameObject *ceastern = caster->GetMapMgr()->GetInterface()->GetGameObjectNearestCoords(-152, 2661, 44, 300152);
+	GameObject *cwestern = caster->GetMapMgr()->GetInterface()->GetGameObjectNearestCoords(-174, 2772, 32, 300152);
+	GameObject *western = caster->GetMapMgr()->GetInterface()->GetGameObjectNearestCoords(-166, 2818, 29, 300152);
+
+	if(caster->GetQuestLogForEntry(10078))
+	{
+		// Eastern Thrower
+		if (eastern)
+		{
+			if(caster->CalcDistance(caster, eastern) < 30)
+            {
+				QuestLogEntry *qle = caster->GetQuestLogForEntry(10078);
+	
+	      			qle->SetMobCount(0, qle->GetMobCount(0)+1);
+				qle->SendUpdateAddKill(0);
+				qle->UpdatePlayerFields();
+	
+				GameObject* obj = 0;
+	
+				obj = sEAS.SpawnGameobject(caster, 183816, -157.916, 2517.71, 58.5508, 0, 4);
+	     			sEAS.GameobjectDelete(obj, 1*60*1000);
+			}
+
+			return true;
+		}
+
+		// Central Eastern Thrower
+		if (ceastern)
+		{
+			if(caster->CalcDistance(caster, ceastern) < 30)
+			{
+				QuestLogEntry *qle = caster->GetQuestLogForEntry(10078);
+	
+	      			qle->SetMobCount(1, qle->GetMobCount(1)+1);
+				qle->SendUpdateAddKill(1);
+				qle->UpdatePlayerFields();
+	
+				GameObject* obj = 0;
+	
+				obj = sEAS.SpawnGameobject(caster, 183816, -152.527, 2661.99, 60.8123, 0, 4);
+	     			sEAS.GameobjectDelete(obj, 1*60*1000);
+			}
+
+			return true;
+		}
+
+		// Central Western Thrower
+		if (cwestern)
+		{
+			if(caster->CalcDistance(caster, cwestern) < 30)
+			{
+				QuestLogEntry *qle = caster->GetQuestLogForEntry(10078);
+	
+	      			qle->SetMobCount(2, qle->GetMobCount(2)+1);
+				qle->SendUpdateAddKill(2);
+				qle->UpdatePlayerFields();
+	
+				GameObject* obj = 0;
+	
+				obj = sEAS.SpawnGameobject(caster, 183816, -177.916, 2773.75, 48.636, 0, 4);
+	     			sEAS.GameobjectDelete(obj, 1*60*1000);
+			}
+
+			return true;
+		}
+
+		// Western Thrower
+		if (western)
+		{
+			if(caster->CalcDistance(caster, western) < 30)
+			{
+				QuestLogEntry *qle = caster->GetQuestLogForEntry(10078);
+	
+	      			qle->SetMobCount(3, qle->GetMobCount(3)+1);
+				qle->SendUpdateAddKill(3);
+				qle->UpdatePlayerFields();
+	
+				GameObject* obj = 0;
+	
+				obj = sEAS.SpawnGameobject(caster, 183816, -166, 2818, 29, 0, 4);
+	     			sEAS.GameobjectDelete(obj, 1*60*1000);
+			}
+
+			return true;
+		}
+	}
+	else
+	{
+		caster->BroadcastMessage("Missing required quest : Laying Waste to the Unwanted");
+	}
+
+	return true;
+}
+
+
+/*--------------------------------------------------------------------------------------------------------*/
+// Burn It Up... For the Horde!
+
+bool BurnItUp(uint32 i, Spell* pSpell)
+{
+	Player *pPlayer = (Player*)pSpell->u_caster;
+	if(!pPlayer)
+		return true;
+
+	if(!pSpell->u_caster->IsPlayer())
+		return true;
+
+	QuestLogEntry *qle = pPlayer->GetQuestLogForEntry(10087);
+	if(qle == NULL)
+		return true;
+
+	GameObject *east = pPlayer->GetMapMgr()->GetInterface()->GetGameObjectNearestCoords(-300, 2407, 50, 183122);
+	GameObject *west = pPlayer->GetMapMgr()->GetInterface()->GetGameObjectNearestCoords(-350, 2708, 35, 185122);
+
+
+	if(east)
+	{
+		if(pPlayer->CalcDistance(pPlayer, east) < 30)
+		if(qle->GetMobCount(0) < qle->GetQuest()->required_mobcount[0])
+		{
+			qle->SetMobCount(0, qle->GetMobCount(0)+1);
+			qle->SendUpdateAddKill(0);
+			qle->UpdatePlayerFields();
+			
+			GameObject* obj = 0;
+
+			obj = sEAS.SpawnGameobject(pPlayer, 183816, -300, 2407, 50, 0, 4);
+     			sEAS.GameobjectDelete(obj, 1*60*1000);
+
+			return true;
+		}
+	}
+
+	if(west)
+	{
+		if(pPlayer->CalcDistance(pPlayer, west) < 30)
+		if(qle->GetMobCount(1) < qle->GetQuest()->required_mobcount[1])
+		{
+			qle->SetMobCount(1, qle->GetMobCount(1)+1);
+			qle->SendUpdateAddKill(1);
+			qle->UpdatePlayerFields();
+			
+			GameObject* obj = 0;
+
+			obj = sEAS.SpawnGameobject(pPlayer, 183816, -350, 2708, 35, 0, 4);
+     			sEAS.GameobjectDelete(obj, 1*60*1000);
+
+			return true;
+		}
+	}
+	return true;
+}
+
+
+
+/*--------------------------------------------------------------------------------------------------------*/
+// Cleansing the Waters
+
+bool CleansingtheWater(uint32 i, Spell* pSpell) 
+{
+  Player *pPlayer = (Player*)pSpell->u_caster;
+  if(!pPlayer)
+	  return true;
+  if(!pSpell->u_caster->IsPlayer())
+    return true;
+
+  QuestLogEntry *qle = pPlayer->GetQuestLogForEntry(9427);
+  if(qle == NULL)
+    return true;
+
+  Creature *agg = sEAS.SpawnCreature(pPlayer, 17000, 428.15, 3461.73, 63.40, 0, 0);
+  agg->Despawn(6*60*1000, 0);
+  return true;
+}
+
+
+
+/*--------------------------------------------------------------------------------------------------------*/
 // The Dreghood Elders
+
+#define SendQuickMenu(textid) objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), textid, pPlayer); \
+    Menu->SendTo(pPlayer);
+
 
 class SCRIPT_DECL Prisoner1 : public GossipScript
 {
@@ -583,8 +771,219 @@ public:
 };
 
 
-/*--------------------------------------------------------------------------------------------------------*/
 
+/*--------------------------------------------------------------------------------------------------------*/
+// The Seer's Relic
+
+bool TheSeersRelic(uint32 i, Spell* pSpell)
+{
+  if(!pSpell->u_caster->IsPlayer())
+    return true;
+
+  Player *plr = (Player*)pSpell->u_caster;
+  
+  Creature *target = plr->GetMapMgr()->GetCreature((uint32)plr->GetSelection());
+  if(target == NULL)
+    return true;
+
+  if(target->GetEntry() != 16852)
+    return true;
+
+  QuestLogEntry *qle = plr->GetQuestLogForEntry(9545);
+  if(qle == NULL)
+    return true;
+
+  target->SetStandState(0);
+  target->setDeathState(ALIVE);
+
+  target->Despawn(30*1000, 1*60*1000);
+
+  qle->SetMobCount(0, 1);
+  qle->SendUpdateAddKill(0);
+  qle->UpdatePlayerFields();
+
+  return true;
+}
+
+
+/*--------------------------------------------------------------------------------------------------------*/
+// Disrupt Their Reinforcements
+
+
+bool DisruptTheirReinforcements(uint32 i, Spell* pSpell)
+{
+	Player *pPlayer = (Player*)pSpell->u_caster;
+	if(!pPlayer)
+		return true;
+
+	if(!pSpell->u_caster->IsPlayer())
+		return true;
+	
+	//Alliace
+	GameObject *grimh = pPlayer->GetMapMgr()->GetInterface()->GetGameObjectNearestCoords(-419, 1847, 80, 184414);
+	GameObject *kaalez = pPlayer->GetMapMgr()->GetInterface()->GetGameObjectNearestCoords(-548, 1782, 58, 184415);
+	//Horde
+	GameObject *xilus = pPlayer->GetMapMgr()->GetInterface()->GetGameObjectNearestCoords(-85, 1880, 74, 184290);	
+	GameObject *kruul = pPlayer->GetMapMgr()->GetInterface()->GetGameObjectNearestCoords(147, 1717, 38, 184289);
+
+
+	QuestLogEntry *qleA = pPlayer->GetQuestLogForEntry(10144);
+	QuestLogEntry *qleH = pPlayer->GetQuestLogForEntry(10208);
+
+	if(qleA)
+	{
+		if(grimh)
+		{
+			if(pPlayer->CalcDistance(pPlayer, grimh) < 10)
+			{
+				if(qleA->GetMobCount(0) < qleA->GetQuest()->required_mobcount[0])
+				{
+					qleA->SetMobCount(0, qleA->GetMobCount(0)+1);
+					qleA->SendUpdateAddKill(0);
+					qleA->UpdatePlayerFields();
+
+					return true;
+				}
+			}
+			else
+			{
+				pPlayer->BroadcastMessage("Go to the Port of the Dark Legion!");
+			}
+		}
+
+		if(kaalez)
+		{
+			if(pPlayer->CalcDistance(pPlayer, kaalez) < 10)
+			{
+				if(qleA->GetMobCount(1) < qleA->GetQuest()->required_mobcount[1])
+				{
+					qleA->SetMobCount(1, qleA->GetMobCount(1)+1);
+					qleA->SendUpdateAddKill(1);
+					qleA->UpdatePlayerFields();
+		
+					return true;
+				}
+			}
+			else
+			{
+				pPlayer->BroadcastMessage("Go to the Port of the Dark Legion!");
+			}
+		}
+		else
+		{
+			pPlayer->BroadcastMessage("Go to the Port of the Dark Legion!");
+		}
+	}
+
+	if(qleH)
+	{
+		if(xilus)
+		{
+			if(pPlayer->CalcDistance(pPlayer, xilus) < 10)
+			{
+				if(qleH->GetMobCount(0) < qleH->GetQuest()->required_mobcount[0])
+				{
+					qleH->SetMobCount(0, qleH->GetMobCount(0)+1);
+					qleH->SendUpdateAddKill(0);
+					qleH->UpdatePlayerFields();
+
+					return true;
+				}
+			}
+			else
+			{
+				pPlayer->BroadcastMessage("Go to the Port of the Dark Legion!");
+			}
+		}
+
+		if(kruul)
+		{
+			if(pPlayer->CalcDistance(pPlayer, kruul) < 10)
+			{
+				if(qleH->GetMobCount(1) < qleH->GetQuest()->required_mobcount[1])
+				{
+					qleH->SetMobCount(1, qleH->GetMobCount(1)+1);
+					qleH->SendUpdateAddKill(1);
+					qleH->UpdatePlayerFields();
+		
+					return true;
+				}
+			}
+			else
+			{
+				pPlayer->BroadcastMessage("Go to the Port of the Dark Legion!");
+			}
+		}
+		else
+		{
+			pPlayer->BroadcastMessage("Go to the Port of the Dark Legion!");
+		}
+	}
+	
+	else
+	{
+		pPlayer->BroadcastMessage("Missing required quest : Disrupt Their Reinforcements");
+	}
+}
+
+
+/*--------------------------------------------------------------------------------------------------------*/
+//Arzeth's Demise
+
+bool FuryoftheDreghoodElders(uint32 i, Spell* pSpell)
+{
+	
+	Player *caster = pSpell->p_caster;
+	if(caster == NULL)
+		return true;
+
+	if(!pSpell->GetUnitTarget()->IsCreature())
+		return true;
+		
+	Creature* target = static_cast<Creature*>(pSpell->GetUnitTarget());
+	uint32 entry = target->GetEntry();
+
+	if(entry == 19354)
+	{
+		caster->BroadcastMessage("blaah");
+
+		target->Despawn(0, 3*60*1000);
+		sEAS.SpawnCreature(caster, 20680, target->GetPositionX(), target->GetPositionY(), target->GetPositionZ(), target->GetOrientation(), 5*60*1000);
+		
+		return true;
+	}
+	return true;
+}
+
+
+
+/*--------------------------------------------------------------------------------------------------------*/
+// A Spirit Guide
+
+bool ASpiritGuide(uint32 i, Spell* pSpell)
+{
+  	Player *pPlayer = (Player*)pSpell->u_caster;
+  	if(!pPlayer)
+	  	return true;
+
+  	if(!pSpell->u_caster->IsPlayer())
+    		return true;
+
+  	QuestLogEntry *qle = pPlayer->GetQuestLogForEntry(9410);
+  	if(qle == NULL)
+    		return true;
+  
+  	Creature *spiritwolf = sEAS.SpawnCreature(pPlayer, 17077, pPlayer->GetPositionX(), pPlayer->GetPositionY(), pPlayer->GetPositionZ(), pPlayer->GetOrientation(), 0);
+  	spiritwolf->Despawn(10*1000, 0);
+
+  	pPlayer->CastSpell(pPlayer, 29938, false);
+  	
+  	return true;
+}
+
+
+
+/*--------------------------------------------------------------------------------------------------------*/
 
 class HellfireDeadNPC : public CreatureAIScript
 {
@@ -600,160 +999,10 @@ public:
   }
 };
 
-
-class SCRIPT_DECL WingCommanderBrack : public GossipScript
-{
-public:
-	void GossipHello(Object* pObject, Player * Plr, bool AutoSend)
-	{
-		GossipMenu *Menu;
-		objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 1, Plr);
-		if(Plr->GetQuestLogForEntry(10129))
-		{
-			Menu->AddItem( 0, "Put me on a wyvern", 1);
-		}
-		if(Plr->GetQuestLogForEntry(10242))
-		{
-			Menu->AddItem( 0, "Flight to Spinebreaker Post", 2);
-		}
-		if(Plr->GetQuestLogForEntry(10162))
-		{
-			Menu->AddItem( 0, "I'm ready to mission", 3);
-		}
-		Menu->SendTo(Plr);
-	}
-
-	void GossipSelectOption(Object * pObject, Player* Plr, uint32 Id, uint32 IntId, const char * Code)
-	{
-		Creature* creat = static_cast<Creature*>(pObject);
-		switch(IntId)
-		{
-		case 1:
-			creat->CastSpell(Plr, dbcSpell.LookupEntry(33659), true);
-			break;
-		case 2:
-			creat->CastSpell(Plr, dbcSpell.LookupEntry(34578), true);
-			break;
-		case 3:
-			creat->CastSpell(Plr, dbcSpell.LookupEntry(33825), true);
-			break;
-		}
-	}
-};
-
-class SCRIPT_DECL ForwardCommanderKingston : public GossipScript
-{
-public:
-	void GossipHello(Object* pObject, Player * Plr, bool AutoSend)
-	{
-		GossipMenu *Menu;
-		objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 1, Plr);
-		if(Plr->GetQuestLogForEntry(10146))
-		{
-			Menu->AddItem( 0, "Put me on a gryphon", 1);
-		}
-		if(Plr->GetQuestLogForEntry(10340))
-		{
-			Menu->AddItem( 0, "Flight to Shatter Point", 2);
-		}
-		Menu->SendTo(Plr);
-	}
-
-	void GossipSelectOption(Object * pObject, Player* Plr, uint32 Id, uint32 IntId, const char * Code)
-	{
-		Creature* creat = static_cast<Creature*>(pObject);
-		switch(IntId)
-		{
-		case 1:
-			creat->CastSpell(Plr, dbcSpell.LookupEntry(33768), true);
-			break;
-		case 2:
-			creat->CastSpell(Plr, dbcSpell.LookupEntry(35069), true);
-			break;
-		}
-	}
-};
-
-class SCRIPT_DECL GryphoneerWindbellow : public GossipScript
-{
-public:
-	void GossipHello(Object* pObject, Player * Plr, bool AutoSend)
-	{
-		GossipMenu *Menu;
-		objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 1, Plr);
-		if(Plr->GetQuestLogForEntry(10163))
-		{
-			Menu->AddItem( 0, "I'm ready to mission.", 1);
-		}
-		Menu->SendTo(Plr);
-	}
-
-	void GossipSelectOption(Object * pObject, Player* Plr, uint32 Id, uint32 IntId, const char * Code)
-	{
-		Creature* creat = static_cast<Creature*>(pObject);
-		switch(IntId)
-		{
-		case 1:
-			creat->CastSpell(Plr, dbcSpell.LookupEntry(33899), true);
-			break;
-		}
-	}
-};
-
-class SCRIPT_DECL VlaggaFreyfeather : public GossipScript
-{
-public:
-	void GossipHello(Object* pObject, Player * Plr, bool AutoSend)
-	{
-		GossipMenu *Menu;
-		objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 1, Plr);
-		if(Plr->GetQuestLogForEntry(10289))
-		{
-			Menu->AddItem( 0, "I'm ready to fly to Thrallmar", 1);
-		}
-		Menu->SendTo(Plr);
-	}
-
-	void GossipSelectOption(Object * pObject, Player* Plr, uint32 Id, uint32 IntId, const char * Code)
-	{
-		Creature* creat = static_cast<Creature*>(pObject);
-		switch(IntId)
-		{
-		case 1:
-			creat->CastSpell(Plr, dbcSpell.LookupEntry(34924), true);
-			break;
-		}
-	}
-};
-
-class SCRIPT_DECL AmishWildhammer : public GossipScript
-{
-public:
-	void GossipHello(Object* pObject, Player * Plr, bool AutoSend)
-	{
-		GossipMenu *Menu;
-		objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 1, Plr);
-		if(Plr->GetQuestLogForEntry(10140))
-		{
-			Menu->AddItem( 0, "I'm ready to fly to Honor Hold", 1);
-		}
-		Menu->SendTo(Plr);
-	}
-
-	void GossipSelectOption(Object * pObject, Player* Plr, uint32 Id, uint32 IntId, const char * Code)
-	{
-		Creature* creat = static_cast<Creature*>(pObject);
-		switch(IntId)
-		{
-		case 1:
-			creat->CastSpell(Plr, dbcSpell.LookupEntry(34907), true);
-			break;
-		}
-	}
-};
-
 void SetupHellfirePeninsula(ScriptMgr * mgr)
 {
+	/*-------------------------------------------------------------------*/
+	// Finished
 	mgr->register_creature_script(16772, &FelOrcScavengersQAI::Create);
 	mgr->register_creature_script(19701, &FelOrcScavengersQAI::Create);
 	mgr->register_creature_script(16876, &FelOrcScavengersQAI::Create);
@@ -770,10 +1019,14 @@ void SetupHellfirePeninsula(ScriptMgr * mgr)
 	mgr->register_creature_script(19415, &BurdenOfSoulsQAI::Create);
 	mgr->register_dummy_spell(34665, &TestingTheAntidote);
 	mgr->register_creature_script(16992, &Dreadtusk::Create);
-
-	// Fertig
+	
 	mgr->register_gameobject_script(184661, &ZethGorMustBurnAllianz::Create);
 	mgr->register_dummy_spell(35724, &ZethGorMustBurnHorde);
+	mgr->register_dummy_spell(32979, &LayingWasteToTheUnwantedAllianz);
+	mgr->register_dummy_spell(33067, &BurnItUp);
+	mgr->register_dummy_spell(29297, &CleansingtheWater);
+	mgr->register_dummy_spell(30489, &TheSeersRelic);
+	mgr->register_dummy_spell(34387, &DisruptTheirReinforcements);
 	
 	GossipScript * Prisoner1Gossip = (GossipScript*) new Prisoner1();
 	mgr->register_gossip_script(20677, Prisoner1Gossip);
@@ -782,7 +1035,13 @@ void SetupHellfirePeninsula(ScriptMgr * mgr)
 	GossipScript * Prisoner3Gossip = (GossipScript*) new Prisoner3();
 	mgr->register_gossip_script(20679, Prisoner3Gossip);
 	
-
+	/*-------------------------------------------------------------------*/
+	// TODO
+	//mgr->register_dummy_spell(35460, &FuryoftheDreghoodElders);
+	//mgr->register_dummy_spell(29731, &ASpiritGuide);
+	
+	
+	/*-------------------------------------------------------------------*/
 	// NPC States
 	mgr->register_creature_script(20677, &PrisonersDreghoodElders::Create);
 	mgr->register_creature_script(20678, &PrisonersDreghoodElders::Create);
@@ -790,10 +1049,4 @@ void SetupHellfirePeninsula(ScriptMgr * mgr)
 	mgr->register_creature_script(17405, &HellfireDeadNPC::Create);
 	mgr->register_creature_script(16852, &HellfireDeadNPC::Create);
 	mgr->register_creature_script(20158, &HellfireDeadNPC::Create);
-
-	mgr->register_gossip_script(19401, CREATE_GOSSIPSCRIPT(WingCommanderBrack));
-	mgr->register_gossip_script(19409, CREATE_GOSSIPSCRIPT(ForwardCommanderKingston));
-	mgr->register_gossip_script(20235, CREATE_GOSSIPSCRIPT(GryphoneerWindbellow));
-	mgr->register_gossip_script(18930, CREATE_GOSSIPSCRIPT(VlaggaFreyfeather));
-	mgr->register_gossip_script(18931, CREATE_GOSSIPSCRIPT(AmishWildhammer));
 }

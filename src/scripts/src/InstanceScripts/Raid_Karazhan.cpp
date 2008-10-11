@@ -1,3 +1,22 @@
+/*
+* ArcScript Scripts for Arcemu MMORPG Server
+* Copyright (C) 2005-2007 Arcemu Team <http://www.Arcemuemu.com/>
+* Copyright (C) 2007-2008 ArcScript Team 
+*
+* This program is free software: you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation, either version 3 of the License, or
+* any later version.
+*
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License
+* along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
 #include "StdAfx.h"
 #include "Setup.h"
 #include "Base.h"
@@ -6,6 +25,15 @@
 /* Raid_Karazhan.cpp Script												*/
 /************************************************************************/
 
+struct Coords
+{
+	float x;
+	float y;
+	float z;
+	float o;
+};
+
+// Partially by Plexor (I used a spell before, but changed to his method)
 class SCRIPT_DECL Berthold : public GossipScript
 {
 public:
@@ -13,7 +41,7 @@ public:
 	{
 		GossipMenu *Menu;
 		objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 4037, Plr);
-		
+
 		Menu->AddItem( 0, "What is this place?", 1 );
 		Menu->AddItem( 0, "Where is Medivh?", 2 );
 		Menu->AddItem( 0, "How do you navigate the tower?", 3 );
@@ -31,13 +59,13 @@ public:
 	{
 		switch (IntId)
 		{
-			case 0:
-				GossipHello(pObject, Plr, true);
-				break;
+		case 0:
+			GossipHello(pObject, Plr, true);
+			break;
 
-			case 4:
-				Plr->SafeTeleport(Plr->GetMapId(), Plr->GetInstanceID(), -11165.123f, -1911.13f, 232.009f, 2.3255f);
-				break;
+		case 4:
+			Plr->SafeTeleport(Plr->GetMapId(), Plr->GetInstanceID(), -11165.123f, -1911.13f, 232.009f, 2.3255f);
+			break;
 		}
 	}
 
@@ -47,12 +75,6 @@ public:
 	}
 };
 
-/*****************************/
-/*							 */
-/*		   Boss AIs			 */
-/*							 */
-/*****************************/
-
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //Attumen the Huntsman (and Midnight)
 #define CN_MIDNIGHT					16151
@@ -61,10 +83,10 @@ public:
 #define ATTUMEN_BERSERKER_CHARGE	22886
 #define ATTUMEN_INTANGIBLE_PRESENCE	29833
 
-class AttumenTheHuntsmanAI : public MoonScriptBossAI
+class AttumenTheHuntsmanAI : public ArcScriptBossAI
 {
-	MOONSCRIPT_FACTORY_FUNCTION(AttumenTheHuntsmanAI, MoonScriptBossAI);
-	AttumenTheHuntsmanAI(Creature* pCreature) : MoonScriptBossAI(pCreature)
+	ArcScript_FACTORY_FUNCTION(AttumenTheHuntsmanAI, ArcScriptBossAI);
+	AttumenTheHuntsmanAI(Creature* pCreature) : ArcScriptBossAI(pCreature)
 	{
 		mMidnight = NULL;
 
@@ -90,7 +112,7 @@ class AttumenTheHuntsmanAI : public MoonScriptBossAI
 
 	void OnCombatStart(Unit* pTarget)
 	{
-		mMidnight = (MoonScriptBossAI*)GetNearestCreature(CN_MIDNIGHT);
+		mMidnight = (ArcScriptBossAI*)GetNearestCreature(CN_MIDNIGHT);
 		ParentClass::OnCombatStart(pTarget);
 	}
 
@@ -118,13 +140,13 @@ class AttumenTheHuntsmanAI : public MoonScriptBossAI
 		ParentClass::AIUpdate();
 	}
 
-	MoonScriptBossAI* mMidnight;
+	ArcScriptBossAI* mMidnight;
 };
 
-class MidnightAI : public MoonScriptBossAI
+class MidnightAI : public ArcScriptBossAI
 {
-	MOONSCRIPT_FACTORY_FUNCTION(MidnightAI, MoonScriptBossAI);
-	MidnightAI(Creature* pCreature) : MoonScriptBossAI(pCreature)
+	ArcScript_FACTORY_FUNCTION(MidnightAI, ArcScriptBossAI);
+	MidnightAI(Creature* pCreature) : ArcScriptBossAI(pCreature)
 	{
 		mAttumen = NULL;
 	}
@@ -159,7 +181,7 @@ class MidnightAI : public MoonScriptBossAI
 			if( !mAttumen && GetHealthPercent() <= 95 && !IsCasting() )
 			{
 				Emote("Midnight calls for her master!", Text_Emote);
-				mAttumen = (MoonScriptBossAI*)SpawnCreature(CN_ATTUMEN);
+				mAttumen = (ArcScriptBossAI*)SpawnCreature(CN_ATTUMEN);
 			}
 			else if( mAttumen && mAttumen->IsAlive() && GetHealthPercent() <= 25 && !IsCasting() )
 			{
@@ -192,28 +214,28 @@ class MidnightAI : public MoonScriptBossAI
 		ParentClass::AIUpdate();
 	}
 
-	MoonScriptBossAI* mAttumen;
+	ArcScriptBossAI* mAttumen;
 };
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //Moroes
-#define CN_MOROES 15687
-#define MOROES_GOUGE	28456	//29425
-#define MOROES_VANISH	29448	//24699
-#define MOROES_BLIND	34654	//34694
-#define MOROES_ENRAGE	37023	//23537
+#define CN_MOROES		15687
+#define MOROES_GOUGE	28456
+#define MOROES_VANISH	29448
+#define MOROES_BLIND	34654
+#define MOROES_ENRAGE	37023
 #define MOROES_GARROTE	37066
 
-class MoroesAI : public MoonScriptBossAI
+class MoroesAI : public ArcScriptBossAI
 {
-	MOONSCRIPT_FACTORY_FUNCTION(MoroesAI, MoonScriptBossAI);
-	MoroesAI(Creature* pCreature) : MoonScriptBossAI(pCreature)
+	ArcScript_FACTORY_FUNCTION(MoroesAI, ArcScriptBossAI);
+	MoroesAI(Creature* pCreature) : ArcScriptBossAI(pCreature)
 	{
 		//Initialize timers
 		mVanishTimer = mGarroteTimer = INVALIDATE_TIMER;
 
 		//Phase 1 spells
-		AddPhaseSpell(1, AddSpell(MOROES_GOUGE, Target_Current, 15, 0, 10, 0, 5));
+		AddPhaseSpell(1, AddSpell(MOROES_GOUGE, Target_Current, 20, 0, 10, 0, 5));
 		AddPhaseSpell(1, AddSpell(MOROES_BLIND, Target_ClosestPlayerNotCurrent, 20, 0, 10, 0, 10, true));
 		mVanish = AddSpell(MOROES_VANISH, Target_Self, 0, 12, 0);
 		mVanish->AddEmote("Now, where was I? Oh yes...", Text_Yell, 9215);
@@ -279,230 +301,41 @@ class MoroesAI : public MoonScriptBossAI
 };
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//Maiden of Virtue
+#define CN_MAIDENOFVIRTUE			16457
+#define MAIDENOFVIRTUE_REPENTANCE	29511
+#define MAIDENOFVIRTUE_HOLY_GROUND	29512
+#define MAIDENOFVIRTUE_HOLY_FIRE	29522
+#define MAIDENOFVIRTUE_HOLY_WRATH	32445
 
-// Maiden of Virtue AI
-#define CN_MAIDEN 16457
-
-#define REPENTANCE 29511
-#define HOLY_FIRE 29522
-#define HOLY_WRATH 28883
-#define HOLY_GROUND 29512
-
-class MAIDENOFVIRTUEAI : public CreatureAIScript
+class MaidenOfVirtueAI : public ArcScriptBossAI
 {
-public:
-	ADD_CREATURE_FACTORY_FUNCTION(MAIDENOFVIRTUEAI);
-	bool m_spellcheck[3];
-	SP_AI_Spell spells[3];
-
-	MAIDENOFVIRTUEAI(Creature* pCreature) : CreatureAIScript(pCreature)
+	ArcScript_FACTORY_FUNCTION(MaidenOfVirtueAI, ArcScriptBossAI);
+	MaidenOfVirtueAI(Creature* pCreature) : ArcScriptBossAI(pCreature)
 	{
-		nrspells = 2;
-		for(int i=0;i<nrspells;i++)
-		{
-			m_spellcheck[i] = false;
-		}
+		//Spells
+		AddSpell(MAIDENOFVIRTUE_HOLY_GROUND, Target_Self, 100, 0, 3);
+		AddSpell(MAIDENOFVIRTUE_HOLY_FIRE, Target_RandomPlayer, 25, 1, 15, 0, 50);
+		AddSpell(MAIDENOFVIRTUE_HOLY_WRATH, Target_RandomPlayer, 25, 0, 20, 0, 100);
+		mRepentance = AddSpell(MAIDENOFVIRTUE_REPENTANCE, Target_Self, 25, 0.6f, 30);
+		mRepentance->AddEmote("Cast out your corrupt thoughts.", Text_Yell, 9313);
+		mRepentance->AddEmote("Your impurity must be cleansed.", Text_Yell, 9208);
 
-		// spell buggy: should be VARIOUS but this targets the maiden?!
-		spells[0].info = dbcSpell.LookupEntry(HOLY_FIRE);
-		spells[0].targettype = TARGET_RANDOM_SINGLE;
-		spells[0].instant = true;
-		spells[0].cooldown = 15;
-		spells[0].perctrigger = 0.0f;
-		spells[0].attackstoptimer = 1000;
-
-		// emsy: removed, 100yrd range and infinite jumps
-		/*	spells[1].info = dbcSpell.LookupEntry(HOLY_WRATH);
-		spells[1].targettype = TARGET_VARIOUS;
-		spells[1].instant = true;
-		spells[1].cooldown = 20;
-		spells[1].perctrigger = 0.0f;
-		spells[1].attackstoptimer = 1000; */
-
-		// temporary fix for broken spell: cast holy ground every 2 secs since its triggered only once
-		spells[1].info = dbcSpell.LookupEntry(HOLY_GROUND);
-		spells[1].targettype = TARGET_SELF;
-		spells[1].instant = true;
-		spells[1].cooldown = 3;
-		spells[1].perctrigger = 0.0f;
-		spells[1].attackstoptimer = 1000;
-
-		infoRepentance = dbcSpell.LookupEntry(REPENTANCE);
+		//Emotes
+		AddEmote(Event_OnCombatStart, "Your behavior will not be tolerated.", Text_Yell, 9204);
+		AddEmote(Event_OnTargetDied, "Ah ah ah...", Text_Yell, 9207);
+		AddEmote(Event_OnTargetDied, "This is for the best.", Text_Yell, 9312);
+		AddEmote(Event_OnTargetDied, "Impure thoughts lead to profane actions.", Text_Yell, 9311);
+		AddEmote(Event_OnDied, "Death comes. Will your conscience be clear?", Text_Yell, 9206);
 	}
 
-	void OnCombatStart(Unit* mTarget)
+	void OnCombatStart(Unit* pTarget)
 	{
-		CastTime();
-		m_time_repentance = 25 + RandomUInt(100)%10;
-		_unit->PlaySoundToSet(9204);
-		_unit->SendChatMessage(CHAT_MSG_MONSTER_YELL, LANG_UNIVERSAL, "Your behavior will not be tolerated!");
-		RegisterAIUpdateEvent(1000);
+		mRepentance->TriggerCooldown();	//No repentance at the beginning of the fight
+		ParentClass::OnCombatStart(pTarget);
 	}
 
-	void OnCombatStop(Unit *mTarget)
-	{
-		CastTime();
-		_unit->GetAIInterface()->setCurrentAgent(AGENT_NULL);
-		_unit->GetAIInterface()->SetAIState(STATE_IDLE);
-		RemoveAIUpdateEvent();
-	}
-
-	void OnDied(Unit * mKiller)
-	{
-		CastTime();
-		_unit->PlaySoundToSet(9206);
-		_unit->SendChatMessage(CHAT_MSG_MONSTER_YELL, LANG_UNIVERSAL, "Death comes. Will your conscience be clear?");
-		RemoveAIUpdateEvent();
-	}
-
-	void OnTargetDied(Unit* mTarget)
-	{
-		uint32 sound, val = (uint32) RandomUInt(100)%3;
-		char *text;
-		switch(val)
-		{
-		case 0:
-			sound = 9207;
-			text = "Anh ah ah...";
-			break;
-		case 1:
-			sound = 9311;
-			text = "This is for the best.";
-			break;
-		case 2:
-			sound = 9312;
-			text = "Impure thoughts lead to profane actions.";
-			break;
-		}
-		_unit->PlaySoundToSet(sound);
-		_unit->SendChatMessage(CHAT_MSG_MONSTER_YELL, LANG_UNIVERSAL, text);
-	}
-
-	void AIUpdate()
-	{
-		if(!RepentanceTrigger()) {
-			float val = (float)RandomFloat(100.0f);
-			SpellCast(val);
-		}
-	}
-
-	void CastTime()
-	{
-		for(int i=0;i<nrspells;i++)
-			spells[i].casttime = spells[i].cooldown;
-	}
-
-	void SpellCast(float val)
-	{
-		if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->GetNextTarget())
-		{
-			float comulativeperc = 0;
-			Unit *target = NULL;
-			for(int i=0;i<nrspells;i++)
-			{
-				spells[i].casttime--;
-
-				if (m_spellcheck[i])
-				{
-					spells[i].casttime = spells[i].cooldown;
-					target = _unit->GetAIInterface()->GetNextTarget();
-					switch(spells[i].targettype)
-					{
-					case TARGET_SELF:
-					case TARGET_VARIOUS:
-						_unit->CastSpell(_unit, spells[i].info, spells[i].instant); break;
-					case TARGET_ATTACKING:
-						_unit->CastSpell(target, spells[i].info, spells[i].instant); break;
-					case TARGET_DESTINATION:
-						_unit->CastSpellAoF(target->GetPositionX(),target->GetPositionY(),target->GetPositionZ(), spells[i].info, spells[i].instant); break;
-					case TARGET_RANDOM_SINGLE:
-						target = RandomTarget(true, true, spells[i].info->base_range_or_radius_sqr);
-						if (target)
-						{
-							_unit->GetAIInterface()->SetNextTarget(target);
-							_unit->CastSpell(target, spells[i].info, spells[i].instant);
-						}
-						break;
-					}
-
-					if (spells[i].speech != "")
-					{
-						_unit->SendChatMessage(CHAT_MSG_MONSTER_YELL, LANG_UNIVERSAL, spells[i].speech.c_str());
-						_unit->PlaySoundToSet(spells[i].soundid); 
-					}
-
-					m_spellcheck[i] = false;
-					return;
-				}
-
-				if ((val > comulativeperc && val <= (comulativeperc + spells[i].perctrigger)) || !spells[i].casttime)
-				{
-					_unit->setAttackTimer(spells[i].attackstoptimer, false);
-					m_spellcheck[i] = true;
-				}
-				comulativeperc += spells[i].perctrigger;
-			}
-		}
-	}
-
-	Unit *RandomTarget(bool tank,bool onlyplayer, float dist)
-	{
-		if (_unit->GetAIInterface()->getAITargetsCount() == 0)
-			return NULL;
-
-		std::vector<Unit*> targetTable;
-		TargetMap *targets = _unit->GetAIInterface()->GetAITargets();
-		TargetMap::iterator itr;
-		for (itr = targets->begin(); itr != targets->end(); itr++)
-		{
-			Unit *temp = _unit->GetMapMgr()->GetUnit(itr->first);
-			if (_unit->GetDistance2dSq(temp) <= dist)
-			{
-				if (((!tank && temp != _unit->GetAIInterface()->GetNextTarget()) || tank) && (!onlyplayer || (onlyplayer && temp->GetTypeId() == TYPEID_PLAYER)))
-				{
-					targetTable.push_back(temp);
-				}
-			}
-		}
-		if (targetTable.empty())
-			return NULL;
-
-		uint32 randt = RandomUInt(100)%targetTable.size();
-		Unit * randomtarget = targetTable[randt];
-		return randomtarget;
-	}
-
-	bool RepentanceTrigger()
-	{
-		if(!m_time_repentance) {
-			uint32 sound, val = (uint32) RandomUInt(100)%2;
-			char *text;
-			switch(val)
-			{
-			case 0:
-				sound = 9208;
-				text = "Your impurity must be cleansed.";
-				break;
-			case 1:
-				sound = 9313;
-				text = "Cast out your corrupt thoughts";
-				break;
-			}
-			_unit->PlaySoundToSet(sound);
-			_unit->SendChatMessage(CHAT_MSG_MONSTER_YELL, LANG_UNIVERSAL, text);
-			_unit->CastSpell(_unit, infoRepentance, true);
-			m_time_repentance = 25 + RandomUInt(100)%5;
-			return true;
-		}
-		else
-			m_time_repentance--;
-		return  false;
-	}
-
-protected:
-	int nrspells;
-	uint32 m_time_repentance;
-	SpellEntry *infoRepentance;
+	SpellDesc* mRepentance;
 };
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -543,8 +376,8 @@ public:
 		spells[1].attackstoptimer = 1000;
 
 		spells[2].info = dbcSpell.LookupEntry(REDRIDINGHOOD_DEBUFF);
-		spells[2].targettype = TARGET_ATTACKING;
-		spells[2].perctrigger = 85.0f;
+		spells[2].targettype = TARGET_RANDOM_SINGLE;
+		spells[2].perctrigger = 50.0f;
 		spells[2].instant = true;
 		spells[2].cooldown = 45;
 		spells[2].attackstoptimer = 1000;
@@ -568,11 +401,11 @@ public:
 
 		ThreatAdd = false;
 		m_threattimer = 20;
-		
+
 		_unit->PlaySoundToSet(9276);
-		_unit->SendChatMessage(CHAT_MSG_MONSTER_YELL, LANG_UNIVERSAL, "The better to own you with!");
+		_unit->SendChatMessage(CHAT_MSG_MONSTER_YELL, LANG_UNIVERSAL, "All the better to own you with!");
 		RegisterAIUpdateEvent(1000);
-		
+
 	}
 
 	void OnCombatStop(Unit *mTarget)
@@ -630,7 +463,7 @@ public:
 			for(int i=0;i<nrspells;i++)
 			{
 				if(!spells[i].perctrigger) continue;
-		
+
 				if (m_spellcheck[i])
 				{
 					target = _unit->GetAIInterface()->GetNextTarget();
@@ -650,21 +483,23 @@ public:
 							for(set<Player*>::iterator itr = _unit->GetInRangePlayerSetBegin(); 
 								itr != _unit->GetInRangePlayerSetEnd(); ++itr)
 							{
-								Player *RandomTarget = static_cast< Player* >(*itr);
+								Player *RandomTarget = NULL;
+								RandomTarget = static_cast< Player* >(*itr);
 								if(RandomTarget && RandomTarget->isAlive())
 									TargetTable.push_back(RandomTarget);
+								RandomTarget = NULL;
 							}
-							
-							if (TargetTable.empty())
+
+							if (!TargetTable.size())
 								return;
-							
+
 							size_t RandTarget = rand()%TargetTable.size();
 
 							RTarget = TargetTable[RandTarget];
 
 							if (!RTarget)
 								return;
-							
+
 							_unit->CastSpell(RTarget, spells[2].info, spells[2].instant);
 							_unit->GetAIInterface()->taunt(RTarget, true);
 							ThreatAdd = true;
@@ -703,6 +538,169 @@ protected:
 };
 
 
+#define TERRIFYING_HOWL 30752
+#define MORPH_LITTLE_RED_RIDING_HOOD 30768
+#define DEBUFF_LITTLE_RED_RIDING_HOOD 30756
+
+class THEBIGBADWOLFAI : public CreatureAIScript
+{
+public:
+	ADD_CREATURE_FACTORY_FUNCTION(THEBIGBADWOLFAI);
+	bool m_spellcheck[3];
+	SP_AI_Spell spells[3];
+
+	THEBIGBADWOLFAI(Creature* pCreature) : CreatureAIScript(pCreature)
+	{
+		//SpellEntry *infoImmunity;
+		nrspells = 3;
+		for(int i=0;i<nrspells;i++)
+		{
+			m_spellcheck[i] = false;
+		}
+
+		spells[0].info = dbcSpell.LookupEntry(TERRIFYING_HOWL);
+		spells[0].targettype = TARGET_VARIOUS;
+		spells[0].instant = true;
+		spells[0].cooldown = 10;
+		spells[0].perctrigger = 0.0f;
+		spells[0].attackstoptimer = 1000;
+
+		spells[1].info = dbcSpell.LookupEntry(MORPH_LITTLE_RED_RIDING_HOOD);
+		spells[1].targettype = TARGET_ATTACKING;
+		spells[1].instant = true;
+		spells[1].cooldown = 30;
+		spells[1].perctrigger = 0.0f;
+		spells[1].attackstoptimer = 1000;
+
+		spells[2].info = dbcSpell.LookupEntry(DEBUFF_LITTLE_RED_RIDING_HOOD);
+		spells[2].targettype = TARGET_ATTACKING;
+		spells[2].instant = true;
+		spells[2].cooldown = 30;
+		spells[2].perctrigger = 0.0f;
+		spells[2].attackstoptimer = 1000;
+		spells[2].soundid = 9278;
+		spells[2].speech = "Run away little girl, run away!";
+	}
+
+	void OnCombatStart(Unit* mTarget)
+	{
+		CastTime();
+		_unit->PlaySoundToSet(9276);
+		_unit->SendChatMessage(CHAT_MSG_MONSTER_YELL, LANG_UNIVERSAL, "The better to own you with!");
+		RegisterAIUpdateEvent(1000);
+	}
+
+	void OnCombatStop(Unit *mTarget)
+	{
+		GameObject* DoorLeft = _unit->GetMapMgr()->GetInterface()->GetGameObjectNearestCoords(-10917.1445f, -1774.05f, 90.478f, 184279);
+		GameObject* DoorRight = _unit->GetMapMgr()->GetInterface()->GetGameObjectNearestCoords(-10872.195f, -1779.42f, 90.45f, 184278);
+		GameObject* Curtain = _unit->GetMapMgr()->GetInterface()->GetGameObjectNearestCoords(-10894.17f, -1774.218f, 90.477f, 183932);
+
+		if(DoorLeft)
+			DoorLeft->SetUInt32Value(GAMEOBJECT_STATE, 1);
+
+		if(DoorRight)
+			DoorRight->SetUInt32Value(GAMEOBJECT_STATE, 0);
+
+		if(Curtain)
+			Curtain->SetUInt32Value(GAMEOBJECT_STATE, 1);
+
+		CastTime();
+		_unit->GetAIInterface()->setCurrentAgent(AGENT_NULL);
+		_unit->GetAIInterface()->SetAIState(STATE_IDLE);
+		RemoveAIUpdateEvent();
+	}
+
+	void OnDied(Unit * mKiller)
+	{
+		GameObject* DoorLeft = _unit->GetMapMgr()->GetInterface()->GetGameObjectNearestCoords(-10917.1445f, -1774.05f, 90.478f, 184279);
+		GameObject* DoorRight = _unit->GetMapMgr()->GetInterface()->GetGameObjectNearestCoords(-10872.195f, -1779.42f, 90.45f, 184278);
+		GameObject* Curtain = _unit->GetMapMgr()->GetInterface()->GetGameObjectNearestCoords(-10894.17f, -1774.218f, 90.477f, 183932);
+
+		if(DoorLeft)
+			DoorLeft->SetUInt32Value(GAMEOBJECT_STATE, 0);
+
+		if(DoorRight)
+			DoorRight->SetUInt32Value(GAMEOBJECT_STATE, 0);
+
+		// Make sure the curtain stays up
+		if(Curtain)
+			Curtain->SetUInt32Value(GAMEOBJECT_STATE, 0);
+
+		CastTime();
+		_unit->PlaySoundToSet(9275);
+		_unit->SendChatMessage(CHAT_MSG_MONSTER_YELL, LANG_UNIVERSAL, "AArrhhh.");
+		RemoveAIUpdateEvent();
+	}
+
+	void OnTargetDied(Unit* mTarget)
+	{
+		_unit->PlaySoundToSet(9277);
+		_unit->SendChatMessage(CHAT_MSG_MONSTER_YELL, LANG_UNIVERSAL, "Mmmm... delicious.");
+	}
+
+	void AIUpdate()
+	{
+		float val = (float)RandomFloat(100.0f);
+		SpellCast(val);
+	}
+
+	void CastTime()
+	{
+		for(int i=0;i<nrspells;i++)
+			spells[i].casttime = spells[i].cooldown;
+	}
+
+	void SpellCast(float val)
+	{
+		if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->GetNextTarget())
+		{
+			float comulativeperc = 0;
+			Unit *target = NULL;
+			for(int i=0;i<nrspells;i++)
+			{
+				spells[i].casttime--;
+
+				if (m_spellcheck[i])
+				{
+					spells[i].casttime = spells[i].cooldown;
+					target = _unit->GetAIInterface()->GetNextTarget();
+					switch(spells[i].targettype)
+					{
+					case TARGET_SELF:
+					case TARGET_VARIOUS:
+						_unit->CastSpell(_unit, spells[i].info, spells[i].instant); break;
+					case TARGET_ATTACKING:
+						_unit->CastSpell(target, spells[i].info, spells[i].instant); break;
+					case TARGET_DESTINATION:
+						_unit->CastSpellAoF(target->GetPositionX(),target->GetPositionY(),target->GetPositionZ(), spells[i].info, spells[i].instant); break;
+					}
+
+					if (spells[i].speech != "")
+					{
+						_unit->SendChatMessage(CHAT_MSG_MONSTER_YELL, LANG_UNIVERSAL, spells[i].speech.c_str());
+						_unit->PlaySoundToSet(spells[i].soundid); 
+					}
+
+					m_spellcheck[i] = false;
+					return;
+				}
+
+				if ((val > comulativeperc && val <= (comulativeperc + spells[i].perctrigger)) || !spells[i].casttime)
+				{
+					_unit->setAttackTimer(spells[i].attackstoptimer, false);
+					m_spellcheck[i] = true;
+				}
+				comulativeperc += spells[i].perctrigger;
+			}
+		}
+	}
+
+protected:
+	int nrspells;
+};
+
+
 uint32 WayStartBBW[1000000];
 
 #define SendQuickMenu(textid) objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), textid, Plr); \
@@ -722,10 +720,10 @@ public:
 		else
 		{	
 			//Finally, everything is in place. Are you ready for your big stage debut?
- 			objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 8970, Plr);
+			objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 8970, Plr);
 			Menu->AddItem( 0, "I'm not an actor.", 1 );
- 			if(AutoSend)
- 				Menu->SendTo(Plr);
+			if(AutoSend)
+				Menu->SendTo(Plr);
 
 		}
 	}
@@ -734,31 +732,31 @@ public:
 	{
 		switch (IntId)
 		{
-			case 0:
-				GossipHello(pObject, Plr, true);
-				break;
+		case 0:
+			GossipHello(pObject, Plr, true);
+			break;
 
-			case 1:
-				{
-					//Don't worry, you'll be fine. You look like a natural!
-					GossipMenu * Menu;
-					objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 8971, Plr);
-					Menu->AddItem( 0, "Ok, I'll give it a try, then.", 2 );
-					Menu->SendTo(Plr);
-				}break;
-			case 2:
-				{
-					Creature *pCreature = static_cast< Creature* >(pObject);
-					pCreature->SendChatMessage(CHAT_MSG_MONSTER_SAY, LANG_UNIVERSAL, "Splendid. I'm going to get the audience ready. Break a leg!");
-					pCreature->CastSpell(pObject->GetGUID(), 32616, false);
-					pCreature->GetAIInterface()->StopMovement(0);
-					pCreature->GetAIInterface()->SetAIState(STATE_SCRIPTMOVE);
-					pCreature->GetAIInterface()->setMoveType(11);
-					pCreature->GetAIInterface()->setWaypointToMove(0);
-					pCreature->SetUInt32Value(UNIT_NPC_FLAGS, 0);
-					pCreature->PlaySoundToSet(9357);
-					WayStartBBW[pCreature->GetInstanceID()] = 2;
-				}break;
+		case 1:
+			{
+				//Don't worry, you'll be fine. You look like a natural!
+				GossipMenu * Menu;
+				objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 8971, Plr);
+				Menu->AddItem( 0, "Ok, I'll give it a try, then.", 2 );
+				Menu->SendTo(Plr);
+			}break;
+		case 2:
+			{
+				Creature *pCreature = static_cast< Creature* >(pObject);
+				pCreature->SendChatMessage(CHAT_MSG_MONSTER_SAY, LANG_UNIVERSAL, "Splendid. I'm going to get the audience ready. Break a leg!");
+				pCreature->CastSpell(pObject->GetGUID(), 32616, false);
+				pCreature->GetAIInterface()->StopMovement(0);
+				pCreature->GetAIInterface()->SetAIState(STATE_SCRIPTMOVE);
+				pCreature->GetAIInterface()->setMoveType(11);
+				pCreature->GetAIInterface()->setWaypointToMove(0);
+				pCreature->SetUInt32Value(UNIT_NPC_FLAGS, 0);
+				pCreature->PlaySoundToSet(9357);
+				WayStartBBW[pCreature->GetInstanceID()] = 2;
+			}break;
 		}
 	}
 
@@ -775,7 +773,7 @@ public:
 	{
 		GossipMenu *Menu;
 		objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 7245, Plr);
-		
+
 		Menu->AddItem( 0, "What phat lewts you have Grandmother!", 1);
 
 		if(AutoSend)
@@ -786,11 +784,11 @@ public:
 	{
 		switch (IntId)
 		{
-			case 0:
-				GossipHello(pObject, Plr, true);
-				break;
+		case 0:
+			GossipHello(pObject, Plr, true);
+			break;
 
-			case 1:
+		case 1:
 			{
 				static_cast< Creature* >(pObject)->Despawn(100, 0);
 				Creature *pop = pObject->GetMapMgr()->GetInterface()->SpawnCreature(17521, pObject->GetPositionX(), pObject->GetPositionY(), 
@@ -808,7 +806,7 @@ public:
 };
 
 /*	Alot of the code for this script was taken from M4ksiu and his Black Temple script, 
-	who I'd like to thank for his contributions to the scripting scene.	*/
+who I'd like to thank for his contributions to the scripting scene.	*/
 static Coords Barnes[] = 
 {
 	{ },
@@ -856,46 +854,46 @@ public:
 	{
 		switch (iWaypointId)
 		{
+		case 0:
+			_unit->GetAIInterface()->setWaypointToMove(1);
+			WayStartBBW[_unit->GetInstanceID()] = 3;
+			break;
+		case 1:
+			break;
+		case 2:
+			cleanStage();
+			WayStartBBW[_unit->GetInstanceID()] = 4;
+			_unit->GetMapMgr()->GetInterface()->SpawnCreature(19525, Barnes[2].x, Barnes[2].y, Barnes[2].z, Barnes[2].o, true, false, 0, 0)->Despawn(43000, 0);
+			_unit->SetFacing(4.5f);
+			switch(eventRand)
+			{
 			case 0:
-				_unit->GetAIInterface()->setWaypointToMove(1);
-				WayStartBBW[_unit->GetInstanceID()] = 3;
+				BarnesSpeakRed();
 				break;
 			case 1:
+				BarnesSpeakRJ();
 				break;
 			case 2:
-				cleanStage();
-				WayStartBBW[_unit->GetInstanceID()] = 4;
-				_unit->GetMapMgr()->GetInterface()->SpawnCreature(19525, Barnes[2].mX, Barnes[2].mY, Barnes[2].mZ, Barnes[2].mO, true, false, 0, 0)->Despawn(43000, 0);
-				_unit->SetFacing(4.5f);
-				switch(eventRand)
-				{
-				case 0:
-					BarnesSpeakRed();
-					break;
-				case 1:
-					BarnesSpeakRJ();
-					break;
-				case 2:
-					BarnesSpeakWOZ();
-					break;
-				}
+				BarnesSpeakWOZ();
 				break;
-			case 3:
-				switch(eventRand)
-				{
-				case 0:
-					EventRed();
-					break;
-				case 1:
-					EventRJ();
-					break;
-				case 2:
-					EventWOZ();
-					break;
-				}
-				_unit->SetUInt32Value(UNIT_FIELD_FLAGS, 1);
-				WayStartBBW[_unit->GetInstanceID()] = 5;
+			}
+			break;
+		case 3:
+			switch(eventRand)
+			{
+			case 0:
+				EventRed();
 				break;
+			case 1:
+				EventRJ();
+				break;
+			case 2:
+				EventWOZ();
+				break;
+			}
+			_unit->SetUInt32Value(UNIT_FIELD_FLAGS, 1);
+			WayStartBBW[_unit->GetInstanceID()] = 5;
+			break;
 		}
 	}
 
@@ -913,7 +911,7 @@ public:
 
 		if(Curtain)
 			Curtain->SetUInt32Value(GAMEOBJECT_STATE, 1);
-				
+
 		Creature* Julianne	= _unit->GetMapMgr()->GetInterface()->GetCreatureNearestCoords(-10883.0f, -1751.81f, 90.4765f, 17534);
 		Creature* Romulo	= _unit->GetMapMgr()->GetInterface()->GetCreatureNearestCoords(-10883.0f, -1751.81f, 90.4765f, 17533);
 		Creature* BigBadWolf= _unit->GetMapMgr()->GetInterface()->GetCreatureNearestCoords(-10883.0f, -1751.81f, 90.4765f, 17521);
@@ -934,12 +932,12 @@ public:
 			Julianne->SafeDelete();
 		if(Romulo)
 			Romulo->SafeDelete();
-			
+
 		if(BigBadWolf)
 			BigBadWolf->SafeDelete();
 		if(Grandma)
 			Grandma->SafeDelete();
-			
+
 		if(Dorothee)
 			Dorothee->SafeDelete();
 		if(Strawman)
@@ -1091,7 +1089,7 @@ public:
 		GameObject* Tree2 = _unit->GetMapMgr()->GetInterface()->SpawnGameObject(183492, -10906.7f, -1750.01f, 90.4765f, -1.69297f, false, 0, 0);
 		GameObject* Tree3 = _unit->GetMapMgr()->GetInterface()->SpawnGameObject(183492, -10909.5f, -1761.79f, 90.4773f, -1.65806f, false, 0, 0);
 		GameObject* BackDrop = _unit->GetMapMgr()->GetInterface()->SpawnGameObject(183491, -10890.9f, -1744.06f, 90.4765f, -1.67552f, false, 0, 0);
-		
+
 		if(DoorLeft)
 			DoorLeft->SetUInt32Value(GAMEOBJECT_STATE, 1);
 
@@ -1106,7 +1104,7 @@ public:
 		{
 			House->SetFloatValue(GAMEOBJECT_ROTATION_02, 0.760406f);
 			House->SetFloatValue(GAMEOBJECT_ROTATION_03, -0.649448f);
-			House->SetFloatValue(OBJECT_FIELD_SCALE_X, 1.5f);
+			House->SetFloatValue(OBJECT_FIELD_SCALE_X, 1.0f);
 		}
 
 		// Front Right - Tree
@@ -1146,10 +1144,10 @@ public:
 	{
 		WayPoint * wp = _unit->CreateWaypointStruct();
 		wp->id = id;
-		wp->x = Barnes[id].mX;
-		wp->y = Barnes[id].mY;
-		wp->z = Barnes[id].mZ;
-		wp->o = Barnes[id].mO;
+		wp->x = Barnes[id].x;
+		wp->y = Barnes[id].y;
+		wp->z = Barnes[id].z;
+		wp->o = Barnes[id].o;
 		wp->waittime = waittime;
 		wp->flags = flags;
 		wp->forwardemoteoneshot = 0;
@@ -1217,7 +1215,7 @@ public:
 		spells[1].instant = true;
 		spells[1].cooldown = 720;
 		spells[1].attackstoptimer = 1000;
-		
+
 		spells[2].info = dbcSpell.LookupEntry(EVOCATION);
 		spells[2].instant = false;
 		spells[2].cooldown = 0;
@@ -1302,7 +1300,7 @@ public:
 			else
 				Trigger();
 		}
-		else if(_unit->GetManaPct() > 91)
+		else if(_unit->GetManaPct() > 94)
 		{
 			_unit->Unroot();
 			evocation = false;
@@ -1482,7 +1480,7 @@ public:
 			for(int i=0;i<nrspells;i++)
 			{
 				if(!spells[i].perctrigger) continue;
-		
+
 				if (m_spellcheck[i])
 				{
 					target = _unit->GetAIInterface()->GetNextTarget();
@@ -1620,7 +1618,7 @@ public:
 		info_magnetic_pull = dbcSpell.LookupEntry(MAGNETIC_PULL);
 		info_aexplosion = dbcSpell.LookupEntry(AEXPLOSION);
 		info_blizzard = dbcSpell.LookupEntry(BLIZZARD);
- 		info_summon_elemental_1 = dbcSpell.LookupEntry(SUMMON_ELEMENTAL_1);
+		info_summon_elemental_1 = dbcSpell.LookupEntry(SUMMON_ELEMENTAL_1);
 		info_summon_elemental_2 = dbcSpell.LookupEntry(SUMMON_ELEMENTAL_2);
 		info_summon_elemental_3 = dbcSpell.LookupEntry(SUMMON_ELEMENTAL_3);
 		info_mass_polymorph = dbcSpell.LookupEntry(MASS_POLYMORPH);
@@ -1640,9 +1638,9 @@ public:
 				if(*itr)
 				{
 					if((*itr)->GetItemInterface()->GetItemCount(22589) > 0 ||
-					(*itr)->GetItemInterface()->GetItemCount(22630) > 0 || 
-					(*itr)->GetItemInterface()->GetItemCount(22631) > 0 || 
-					(*itr)->GetItemInterface()->GetItemCount(22632) > 0)
+						(*itr)->GetItemInterface()->GetItemCount(22630) > 0 || 
+						(*itr)->GetItemInterface()->GetItemCount(22631) > 0 || 
+						(*itr)->GetItemInterface()->GetItemCount(22632) > 0)
 					{
 						HasAtiesh = true;
 						break;
@@ -1793,23 +1791,19 @@ public:
 					_unit->WipeHateList();
 					_unit->PlaySoundToSet(9248);
 					_unit->SendChatMessage(CHAT_MSG_MONSTER_YELL, LANG_UNIVERSAL, "Surely you would not deny an old man a replenishing drink? No, no I thought not.");
-					m_time_pyroblast = 8;
+					m_time_pyroblast = 10;
 					_unit->CastSpell(_unit, info_mass_polymorph, true);
 					_unit->setAttackTimer(2000, false);
 				}
 				else if(_unit->GetStandState() != 1)
 				{
-					drinking = true;
 					_unit->setAttackTimer(3000, false);
 					_unit->CastSpell(_unit, info_conjure, false);
 					_unit->SetStandState(1);
 					_unit->setEmoteState(EMOTE_ONESHOT_EAT);
 				}
 				else
-				{
 					_unit->CastSpell(_unit, info_drink, true);
-					drinking = true;
-				}
 			}
 			else
 				SpellTrigger();
@@ -1819,7 +1813,6 @@ public:
 			m_time_pyroblast--;
 			if(!m_time_pyroblast)
 			{
-				_unit->SetUInt32Value(UNIT_FIELD_POWER1, _unit->GetUInt32Value(UNIT_FIELD_MAXPOWER1));
 				_unit->SetStandState(0);
 				_unit->setEmoteState(0);
 				_unit->CastSpell(_unit, info_pyroblast, false);
@@ -1883,7 +1876,7 @@ public:
 		FlameWreathTarget[0] = 0;
 		FlameWreathTarget[1] = 0;
 		FlameWreathTarget[2] = 0;
-		
+
 		std::vector<Player*> Targets;
 		std::set<Player*>::iterator hostileItr = _unit->GetInRangePlayerSetBegin();
 		for(; hostileItr != _unit->GetInRangePlayerSetEnd(); ++hostileItr) 
@@ -1909,7 +1902,7 @@ public:
 				_unit->CastSpell((*itr), FLAME_WREATH, true);
 			}
 		}
-		
+
 	}
 
 	void Blizzard()
@@ -2006,7 +1999,7 @@ public:
 			for(int i=0;i<nrspells;i++)
 			{
 				spells[i].casttime--;
-		
+
 				if (m_spellcheck[i])
 				{
 					spells[i].casttime = spells[i].cooldown;
@@ -2062,7 +2055,7 @@ public:
 					TargetTable.push_back(RandomTarget);
 			}
 
-			if (TargetTable.empty())
+			if (!TargetTable.size())
 				return;
 
 			size_t RandTarget = rand()%TargetTable.size();
@@ -2264,14 +2257,14 @@ public:
 		spells[1].cooldown = 600;
 		spells[1].perctrigger = 0.0f;
 		spells[1].attackstoptimer = 1000;
-/*
+		/*
 		spells[2].info = dbcSpell.LookupEntry(S_DEMONCHAINS);
 		spells[2].targettype = TARGET_VARIOUS;
 		spells[2].instant = true;
 		spells[2].cooldown = 45;
 		spells[2].perctrigger = 0.0f;
 		spells[2].attackstoptimer = 1000;
-*/
+		*/
 	}
 
 	void OnCombatStart(Unit* mTarget)
@@ -2281,9 +2274,9 @@ public:
 			spells[i].casttime = spells[i].cooldown;
 
 		DemonChain = t + 45;
-		ImpTimer = t + 5;
+		ImpTimer = t + 10;
 		ReSummon = false;
-		
+
 		_unit->PlaySoundToSet(9260);
 		_unit->SendChatMessage(CHAT_MSG_MONSTER_YELL, LANG_UNIVERSAL, "Ah, you're just in time. The rituals are about to begin.");
 		RegisterAIUpdateEvent(1000);
@@ -2323,14 +2316,14 @@ public:
 		char *text = 0;
 		switch(RandomUInt(1))
 		{
-			case 0:
-				sound = 9264;
-				text = "Your blood will anoint my circle.";
-				break;
-			case 1:
-				sound = 9329;
-				text = "The great one will be pleased.";
-				break;
+		case 0:
+			sound = 9264;
+			text = "Your blood will anoint my circle.";
+			break;
+		case 1:
+			sound = 9329;
+			text = "The great one will be pleased.";
+			break;
 		}
 		_unit->PlaySoundToSet(sound);
 		_unit->SendChatMessage(CHAT_MSG_MONSTER_YELL, LANG_UNIVERSAL, text);
@@ -2342,13 +2335,13 @@ public:
 		SpellCast(val);
 
 		uint32 t = (uint32)time(NULL);
-		if(t > ImpTimer)
-		{
-			spawnSummoningPortals();
-			ImpTimer = -1;
-		}
 		if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->GetNextTarget())
 		{
+			if(t > ImpTimer)
+			{
+				spawnSummoningPortals();
+				ImpTimer = -1;
+			}
 			if(t > DemonChain)
 			{
 				DemonChain = t + 45;
@@ -2382,7 +2375,7 @@ public:
 			_unit->PlaySoundToSet(9331);
 			break;
 		}
-		
+
 		_unit->GetMapMgr()->GetInterface()->SpawnCreature(CN_FPORTAL, -11249.51f, -1702.182f, 179.237f, 0, false, false, 0, 0);
 		_unit->GetMapMgr()->GetInterface()->SpawnCreature(CN_FPORTAL, -11239.534f, -1715.338f, 179.237f, 0, false, false, 0, 0);
 	}
@@ -2391,15 +2384,15 @@ public:
 	{
 		switch(rand()%2)
 		{
-			case 0:
-				_unit->SendChatMessage(CHAT_MSG_MONSTER_YELL, LANG_UNIVERSAL, "Please, accept this humble offering, oh great one.");
-				_unit->PlaySoundToSet(9263);
-				break;
+		case 0:
+			_unit->SendChatMessage(CHAT_MSG_MONSTER_YELL, LANG_UNIVERSAL, "Please, accept this humble offering, oh great one.");
+			_unit->PlaySoundToSet(9263);
+			break;
 
-			case 1:
-				_unit->SendChatMessage(CHAT_MSG_MONSTER_YELL, LANG_UNIVERSAL, "Let the sacrifice serve his testament to my fealty.");
-				_unit->PlaySoundToSet(9330);
-				break;
+		case 1:
+			_unit->SendChatMessage(CHAT_MSG_MONSTER_YELL, LANG_UNIVERSAL, "Let the sacrifice serve his testament to my fealty.");
+			_unit->PlaySoundToSet(9330);
+			break;
 		}
 
 		std::vector<Player *> TargetTable;
@@ -2407,17 +2400,20 @@ public:
 		std::advance(itr, 1);
 		for(; itr != _unit->GetInRangePlayerSetEnd(); ++itr) 
 		{
-			if((*itr) && (*itr)->isAlive() && isHostile(_unit, (*itr)) && (*itr)->GetInstanceID() == _unit->GetInstanceID())
+			if(isHostile(_unit, (*itr)) && (*itr)->GetInstanceID() == _unit->GetInstanceID())
 			{
-				Player* RandomTarget = static_cast< Player* >(*itr);
-				if (RandomTarget) TargetTable.push_back(RandomTarget);
+				Player* RandomTarget = NULL;
+				RandomTarget = static_cast< Player* >(*itr);
+				if (RandomTarget && RandomTarget->isAlive() && isHostile(_unit, RandomTarget))
+					TargetTable.push_back(RandomTarget);
+				RandomTarget = NULL;
 			}
 		}
-		if (TargetTable.empty())
+		if (!TargetTable.size())
 			return;
 
 		size_t RandTarget = rand()%TargetTable.size();
-		Player* RTarget = TargetTable[RandTarget];
+		Unit * RTarget = TargetTable[RandTarget];
 
 		if (!RTarget) return;
 
@@ -2425,9 +2421,9 @@ public:
 
 		TargetTable.clear();
 
-		float dcX = RTarget->GetPositionX(); //-11234.7f;
-		float dcY = RTarget->GetPositionY();//-1698.73f;
-		float dcZ = RTarget->GetPositionZ();//179.24f;
+		float dcX = -11234.7f;
+		float dcY = -1698.73f;
+		float dcZ = 179.24f;
 		_unit->GetMapMgr()->GetInterface()->SpawnCreature(CN_DEMONCHAINS, dcX, dcY, dcZ, 0, true, false, 0, 0);
 	}
 
@@ -2504,7 +2500,7 @@ public:
 		spells[0].attackstoptimer = 1000;
 
 		spells[1].info = dbcSpell.LookupEntry(BROKEN_PACT);
-		spells[1].targettype = TARGET_VARIOUS;
+		spells[1].targettype = TARGET_ATTACKING;
 		spells[1].instant = true;
 	}
 
@@ -2528,9 +2524,7 @@ public:
 
 		Unit *Illhoof = _unit->GetMapMgr()->GetInterface()->GetCreatureNearestCoords(_unit->GetPositionX(), _unit->GetPositionY(), _unit->GetPositionZ(), 15688);
 		if(Illhoof != NULL && Illhoof->isAlive())
-		{
 			Illhoof->CastSpell(Illhoof, spells[1].info, spells[1].instant);
-		}
 	}
 
 	void AIUpdate()
@@ -2597,13 +2591,13 @@ public:
 				{
 					Unit* RandomTarget = NULL;
 					RandomTarget = static_cast< Unit* >(*itr);
-					
+
 					if (RandomTarget && RandomTarget->isAlive() && _unit->GetAIInterface()->getThreatByPtr(RandomTarget) > 0)
 						TargetTable.push_back(RandomTarget);
 				}
 			}
 
-			if (TargetTable.empty())
+			if (!TargetTable.size())
 				return;
 
 			size_t RandTarget = rand()%TargetTable.size();
@@ -2688,7 +2682,7 @@ public:
 		RemoveAIUpdateEvent();
 		_unit->SafeDelete();
 	}
-		
+
 	void AIUpdate()
 	{
 		_unit->GetAIInterface()->setCurrentAgent(AGENT_NULL);
@@ -2773,7 +2767,7 @@ public:
 
 			if(pUnit->m_invisible)
 				continue;
-			
+
 			if(!pUnit->isAlive() || _unit == pUnit)
 				continue;
 
@@ -2815,11 +2809,10 @@ public:
 
 	void OnDied(Unit * mKiller)
 	{
-		for(set<Player*>::iterator itr = _unit->GetInRangePlayerSetBegin(); itr != _unit->GetInRangePlayerSetEnd(); ++itr) 
-		{ //this is faster than checking if aura exists first
-			if ((*itr) && (*itr)->isAlive())
-				(*itr)->RemoveAura(SACRIFICE);
-		}
+		Unit *uIllhoof = _unit->GetMapMgr()->GetInterface()->GetCreatureNearestCoords(_unit->GetPositionX(), _unit->GetPositionY(), 
+			_unit->GetPositionZ(), CN_ILLHOOF);
+		if(uIllhoof != NULL && uIllhoof->isAlive())
+			uIllhoof->RemoveAura(SACRIFICE);
 
 		_unit->Despawn(10000, 0);
 	}
@@ -2845,7 +2838,7 @@ public:
 	{
 		_unit->GetMapMgr()->GetInterface()->SpawnCreature(CN_FIENDISH_IMP, _unit->GetPositionX(), _unit->GetPositionY(), 
 			_unit->GetPositionZ(), 0, true, false, 0, 0);
-		
+
 	}
 };
 
@@ -2896,16 +2889,16 @@ public:
 		}
 
 		spells[0].info = dbcSpell.LookupEntry(SW_PAIN);
-		spells[0].targettype = TARGET_RANDOM_SINGLE;
+		spells[0].targettype = TARGET_ATTACKING;
 		spells[0].instant = true;
 		spells[0].cooldown = 15;	
 		spells[0].perctrigger = 50.0f;
 		spells[0].attackstoptimer = 1000;
-		
+
 		spells[1].info = dbcSpell.LookupEntry(ENFEEBLE);
 		spells[1].targettype = TARGET_VARIOUS;
 		spells[1].instant = true;
-		spells[1].cooldown = 35;
+		spells[1].cooldown = 25;
 		spells[1].perctrigger = 0.0f;
 		spells[1].attackstoptimer = 1000;
 
@@ -2915,7 +2908,7 @@ public:
 		spells[2].cooldown = 43;
 		spells[2].perctrigger = 0.0f;
 		spells[2].attackstoptimer = 1000;
-		
+
 		spells[3].info = dbcSpell.LookupEntry(SUNDER_ARMOR);
 		spells[3].targettype = TARGET_ATTACKING;
 		spells[3].instant = true;
@@ -2930,7 +2923,7 @@ public:
 		spells[4].perctrigger = 0.0f;
 		spells[4].attackstoptimer = 1000;
 		spells[4].mindist2cast = 0.0f;
-		
+
 		spells[5].info = dbcSpell.LookupEntry(SHADOWNOVA);
 		spells[5].targettype = TARGET_VARIOUS;
 		spells[5].instant = false;
@@ -2974,7 +2967,7 @@ public:
 		spells[0].casttime = t + spells[0].cooldown;
 		spells[1].casttime = t + spells[1].cooldown;
 		spells[2].casttime = t + spells[2].cooldown;
-		
+
 		m_spawn_infernal = 0;
 		m_infernal = false;
 
@@ -3004,7 +2997,7 @@ public:
 		_unit->SetUInt32Value(UNIT_VIRTUAL_ITEM_SLOT_DISPLAY_01, 0);
 		_unit->SetUInt32Value(UNIT_VIRTUAL_ITEM_INFO_02, 0);
 		_unit->SetUInt32Value(UNIT_VIRTUAL_ITEM_INFO_03, 0);
-		
+
 		CreatureProto * cp = CreatureProtoStorage.LookupEntry(CN_MALCHEZAAR);
 		if(!cp)
 			return;
@@ -3015,13 +3008,12 @@ public:
 		for(int i = 0; i < 5; ++i)
 			Enfeeble_Targets[i] = 0;
 
-		if ( InfernalDummy != NULL )
-			InfernalDummy->Despawn(10000, 0);
+		InfernalDummy->Despawn(10000, 0);
 
 		// Open door
 		if(MDoor != NULL)
 			MDoor->SetUInt32Value(GAMEOBJECT_STATE, 0);
-		
+
 		Creature *MAxes = NULL;
 		MAxes = _unit->GetMapMgr()->GetInterface()->GetCreatureNearestCoords(_unit->GetPositionX(), _unit->GetPositionY(), _unit->GetPositionZ(), CN_AXES);
 		if(MAxes != NULL)
@@ -3136,10 +3128,10 @@ public:
 			spells[0].casttime = -1;
 			spells[3].casttime = t + spells[3].cooldown;
 			spells[3].perctrigger = 50.0f;
-			
+
 			_unit->PlaySoundToSet(9220);
 			_unit->SendChatMessage(CHAT_MSG_MONSTER_YELL, LANG_UNIVERSAL, "Time is the fire in which you'll burn!");
-			
+
 			_unit->CastSpell(_unit, spells[6].info, spells[6].instant);
 			_unit->CastSpell(_unit, spells[7].info, spells[6].instant);
 
@@ -3180,18 +3172,18 @@ public:
 
 			spells[1].casttime = -1;
 			spells[1].perctrigger = 0.0f;
-			
+
 			spells[4].casttime = t + spells[4].cooldown;
 			spells[4].perctrigger = 50.0f;
 
 			_unit->CastSpell(_unit, spells[8].info, spells[8].instant);
-			
+
 			_unit->RemoveAura(THRASH_AURA);
 			_unit->RemoveAura(WIELD_AXES);
-			
+
 			_unit->PlaySoundToSet(9321);
 			_unit->SendChatMessage(CHAT_MSG_MONSTER_YELL, LANG_UNIVERSAL, "How can you hope to withstand against such overwhelming power?");
-			
+
 			// Main hand weapon
 			_unit->SetUInt32Value(UNIT_VIRTUAL_ITEM_SLOT_DISPLAY, 0);
 			_unit->SetUInt32Value(UNIT_VIRTUAL_ITEM_INFO, 0);
@@ -3244,30 +3236,33 @@ public:
 	void Enfeebler()
 	{
 		std::vector<Player*> Targets;
-		Unit* mainTank = _unit->GetAIInterface()->GetMostHated();
-		if ( mainTank == NULL )
-			return;
-
-		for( std::set<Player*>::iterator Itr = _unit->GetInRangePlayerSetBegin(); Itr != _unit->GetInRangePlayerSetEnd(); ++Itr)
+		std::set<Player*>::iterator Itr = _unit->GetInRangePlayerSetBegin();
+		std::advance(Itr, 1);
+		for( ; Itr != _unit->GetInRangePlayerSetEnd(); ++Itr)
 		{
-			if((*Itr) && (*Itr) != mainTank && (*Itr)->isAlive() && isHostile(_unit, (*Itr)) && (*Itr)->GetInstanceID() == _unit->GetInstanceID())
-				Targets.push_back((*Itr));
+			if(isHostile(_unit, (*Itr)) && (*Itr)->GetInstanceID() == _unit->GetInstanceID())
+			{
+				Player *RandomTarget = NULL;
+				RandomTarget = static_cast< Player* >(*Itr);
+
+				if(RandomTarget->isAlive() && isHostile(_unit, RandomTarget))
+					Targets.push_back(RandomTarget);
+			}
 		}
 
 		while(Targets.size() > 5)
 			Targets.erase(Targets.begin()+rand()%Targets.size());
 
-		uint32 i = 0;
-		for(std::vector<Player*>::iterator _Itr = Targets.begin(); _Itr != Targets.end(); _Itr++)
+		int i = 0;
+		for(std::vector<Player*>::iterator E_Itr = Targets.begin(); E_Itr != Targets.end(); ++E_Itr)
 		{
-			if(*_Itr)
+			if(*E_Itr && (*E_Itr)->GetGUID() != _unit->GetAIInterface()->GetMostHated()->GetGUID())
 			{
-				Enfeeble_Targets[i] = (*_Itr)->GetGUID();
-				Enfeeble_Health[i] = (*_Itr)->GetUInt32Value(UNIT_FIELD_HEALTH);
+				Enfeeble_Targets[i] = (*E_Itr)->GetGUID();
+				Enfeeble_Health[i] = (*E_Itr)->GetUInt32Value(UNIT_FIELD_HEALTH);
 
-				_unit->CastSpell((*_Itr), spells[1].info, spells[1].instant);
-				(*_Itr)->SetUInt32Value(UNIT_FIELD_HEALTH, 1);
-				++i;
+				_unit->CastSpell((*E_Itr), spells[1].info, spells[1].instant);
+				(*E_Itr)->SetUInt32Value(UNIT_FIELD_HEALTH, 1);
 			}
 		}
 	}
@@ -3276,9 +3271,9 @@ public:
 	{
 		for(int i = 0; i < 5; ++i)
 		{
-			Unit *Target = _unit->GetMapMgr()->GetUnit(Enfeeble_Targets[i]);
-			if(Target && Target->isAlive())
-				Target->SetUInt32Value(UNIT_FIELD_HEALTH, Enfeeble_Health[i]);
+			Unit *ETarget = _unit->GetMapMgr()->GetUnit(Enfeeble_Targets[i]);
+			if(ETarget && ETarget->isAlive())
+				ETarget->SetUInt64Value(UNIT_FIELD_HEALTH, Enfeeble_Health[i]);
 			Enfeeble_Targets[i] = 0;
 			Enfeeble_Health[i] = 0;
 		}
@@ -3293,23 +3288,23 @@ public:
 			for(int i=0;i<nrspells;i++)
 			{
 				if(!spells[i].perctrigger) continue;
-				
+
 				if(m_spellcheck[i])
 				{
 					target = _unit->GetAIInterface()->GetNextTarget();
 					switch(spells[i].targettype)
 					{
-						case TARGET_SELF:
-						case TARGET_VARIOUS:
-							_unit->CastSpell(_unit, spells[i].info, spells[i].instant); break;
-						case TARGET_ATTACKING:
-							_unit->CastSpell(target, spells[i].info, spells[i].instant);
-						case TARGET_DESTINATION:
-							_unit->CastSpellAoF(target->GetPositionX(),target->GetPositionY(),target->GetPositionZ(), spells[i].info, spells[i].instant); break;
-						case TARGET_RANDOM_FRIEND:
-						case TARGET_RANDOM_SINGLE:
-						case TARGET_RANDOM_DESTINATION:
-							CastSpellOnRandomTarget(i, spells[i].mindist2cast, spells[i].maxdist2cast, spells[i].minhp2cast, spells[i].maxhp2cast); break;
+					case TARGET_SELF:
+					case TARGET_VARIOUS:
+						_unit->CastSpell(_unit, spells[i].info, spells[i].instant); break;
+					case TARGET_ATTACKING:
+						_unit->CastSpell(target, spells[i].info, spells[i].instant);
+					case TARGET_DESTINATION:
+						_unit->CastSpellAoF(target->GetPositionX(),target->GetPositionY(),target->GetPositionZ(), spells[i].info, spells[i].instant); break;
+					case TARGET_RANDOM_FRIEND:
+					case TARGET_RANDOM_SINGLE:
+					case TARGET_RANDOM_DESTINATION:
+						CastSpellOnRandomTarget(i, spells[i].mindist2cast, spells[i].maxdist2cast, spells[i].minhp2cast, spells[i].maxhp2cast); break;
 					}
 					m_spellcheck[i] = false;
 					return;
@@ -3344,7 +3339,7 @@ public:
 					TargetTable.push_back(RandomTarget);
 			}
 
-			if (TargetTable.empty())
+			if (!TargetTable.size())
 				return;
 
 			size_t RandTarget = rand()%TargetTable.size();
@@ -3375,7 +3370,7 @@ protected:
 	uint32 m_enfeebleoff;
 	uint32 m_spawn_infernal;
 	uint64 Enfeeble_Targets[5];
-	uint32 Enfeeble_Health[5];
+	uint64 Enfeeble_Health[5];
 	Creature *InfernalDummy;
 	GameObject *MDoor;
 };
@@ -3394,9 +3389,9 @@ public:
 		_unit->GetAIInterface()->disable_melee = true;
 		_unit->GetAIInterface()->m_canMove = false;
 		_unit->m_noRespawn = true;
-		_unit->Despawn(120000, 0);
+		_unit->Despawn(175000, 0);
 		RegisterAIUpdateEvent(6000);
-		
+
 		spells[0].info = dbcSpell.LookupEntry(HELLFIRE);
 		spells[0].instant = false;
 		spells[0].cooldown = 6;
@@ -3410,7 +3405,7 @@ public:
 		uint32 t = (uint32)time(NULL);
 		if(t > spells[0].casttime)
 		{
-			_unit->CastSpell(_unit, spells[0].info, spells[0].instant);
+			_unit->CastSpell(_unit, spells[0].casttime, spells[0].instant);
 			spells[0].casttime = t + spells[0].cooldown;
 		}
 	}
@@ -3427,7 +3422,7 @@ public:
 	ADD_CREATURE_FACTORY_FUNCTION(InfernalDummyAI);
 	InfernalDummyAI(Creature* pCreature) : CreatureAIScript(pCreature)
 	{
-//		_unit->GetAIInterface()->addWayPoint(CreateWaypoint(1, 0, 768));
+		_unit->GetAIInterface()->addWayPoint(CreateWaypoint(1, 0, 768));
 	}
 
 	inline WayPoint* CreateWaypoint(int id, uint32 waittime, uint32 flags)
@@ -3464,7 +3459,7 @@ public:
 	MAxesAI(Creature* pCreature) : CreatureAIScript(pCreature)
 	{
 		_unit->SetUInt32Value(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_ATTACKABLE_2);
-		
+
 		spells[0].info = dbcSpell.LookupEntry(DEMONIC_FRENZY);
 		spells[0].targettype = TARGET_SELF;
 		spells[0].instant = true;
@@ -3490,7 +3485,7 @@ public:
 			}
 		}
 
-		if (TargetTable.empty())
+		if (!TargetTable.size())
 			return;
 
 		size_t RandTarget = rand()%TargetTable.size();
@@ -3502,7 +3497,7 @@ public:
 
 		_unit->GetAIInterface()->taunt(RTarget, true);
 	}
-	
+
 	void OnCombatStop(Unit *mTarget)
 	{
 		_unit->GetAIInterface()->setCurrentAgent(AGENT_NULL);
@@ -3555,8 +3550,8 @@ public:
 		spells[0].info = dbcSpell.LookupEntry(NETHERBREATH);
 		spells[0].targettype = TARGET_ATTACKING;
 		spells[0].instant = false;
-		spells[0].cooldown = RandomUInt(5)+35;
-		spells[0].perctrigger = 40.0f;
+		spells[0].cooldown = RandomUInt(5)+30;
+		spells[0].perctrigger = 50.0f;
 		spells[0].attackstoptimer = 1000;
 
 		spells[1].info = dbcSpell.LookupEntry(N_BERSERK);
@@ -3565,7 +3560,7 @@ public:
 		spells[1].cooldown = 540;
 		spells[1].perctrigger = 0.0f;
 		spells[1].attackstoptimer = 1000;
-		
+
 		spells[2].info = dbcSpell.LookupEntry(NETHERBURN);
 		spells[2].targettype = TARGET_SELF;
 		spells[2].instant = true;
@@ -3620,13 +3615,14 @@ public:
 			std::vector<Unit *> TargetTable;
 			for(set<Player*>::iterator itr = _unit->GetInRangePlayerSetBegin(); itr != _unit->GetInRangePlayerSetEnd(); ++itr) 
 			{ 
-				Unit* RandomTarget = static_cast< Unit* >(*itr);
+				Unit* RandomTarget = NULL;
+				RandomTarget = static_cast< Unit* >(*itr);
 
-				if (RandomTarget && RandomTarget->isAlive())
+				if (RandomTarget && RandomTarget->isAlive() && isHostile(_unit, (*itr)))
 					TargetTable.push_back(RandomTarget);
 			}
 
-			if (TargetTable.empty())
+			if (!TargetTable.size())
 				return;
 
 			size_t RandTarget = rand()%TargetTable.size();
@@ -3655,19 +3651,19 @@ public:
 			for(int i=0;i<nrspells;i++)
 			{
 				if(!spells[i].perctrigger) continue;
-				
+
 				if(m_spellcheck[i])
 				{
 					target = _unit->GetAIInterface()->GetNextTarget();
 					switch(spells[i].targettype)
 					{
-						case TARGET_SELF:
-						case TARGET_VARIOUS:
-							_unit->CastSpell(_unit, spells[i].info, spells[i].instant); break;
-						case TARGET_ATTACKING:
-							_unit->CastSpell(target, spells[i].info, spells[i].instant); break;
-						case TARGET_DESTINATION:
-							_unit->CastSpellAoF(target->GetPositionX(),target->GetPositionY(),target->GetPositionZ(), spells[i].info, spells[i].instant); break;
+					case TARGET_SELF:
+					case TARGET_VARIOUS:
+						_unit->CastSpell(_unit, spells[i].info, spells[i].instant); break;
+					case TARGET_ATTACKING:
+						_unit->CastSpell(target, spells[i].info, spells[i].instant); break;
+					case TARGET_DESTINATION:
+						_unit->CastSpellAoF(target->GetPositionX(),target->GetPositionY(),target->GetPositionZ(), spells[i].info, spells[i].instant); break;
 					}
 					m_spellcheck[i] = false;
 					return;
@@ -3733,8 +3729,8 @@ public:
 //------------------------------------
 
 /* ToDo:
- - Rain of Bones on one random player/pet
- - Summons five Restless Skeletons.
+- Rain of Bones on one random player/pet
+- Summons five Restless Skeletons.
 */
 
 #define CN_NIGHTBANE 17225
@@ -3778,8 +3774,7 @@ public:
 
 	NightbaneAI(Creature* pCreature) : CreatureAIScript(pCreature)
 	{
-		//nrspells = 5;
-		nrspells = 4;
+		nrspells = 5;
 		for(int i=0;i<nrspells;i++)
 		{
 			m_spellcheck[i] = false;
@@ -3813,20 +3808,19 @@ public:
 		spells[3].cooldown = 60;
 		spells[3].perctrigger = 0.0f;
 		spells[3].attackstoptimer = 1000;
-/*
+
 		spells[4].info = dbcSpell.LookupEntry(SMOLDERING_BREATH);
 		spells[4].targettype = TARGET_ATTACKING;
 		spells[4].instant = false;
 		spells[4].cooldown = 20;
 		spells[4].perctrigger = 0.0f;
 		spells[4].attackstoptimer = 1000;
-*/
+
 		_unit->GetAIInterface()->setMoveType(MOVEMENTTYPE_DONTMOVEWP);
-		
+
 		for (int i = 1; i < 5; i++)
 		{
-			//_unit->GetAIInterface()->addWayPoint(CreateWaypoint(i, 0, FLY));
-			_unit->GetAIInterface()->addWayPoint(CreateWaypoint(i, 0, RUN));
+			_unit->GetAIInterface()->addWayPoint(CreateWaypoint(i, 0, FLY));
 		}
 	}
 
@@ -3836,8 +3830,8 @@ public:
 		m_phase = 0;
 		m_currentWP = 4;
 		mTailSweepTimer = 25;
-		 _unit->PlaySoundToSet(9456);
-		 _unit->SendChatMessage(CHAT_MSG_MONSTER_YELL, LANG_UNIVERSAL, "An ancient being awakens in the distance...");
+		//not sure about this: _unit->PlaySoundToSet(9456);
+		//TODO emote: "An ancient being awakens in the distance..."
 		RegisterAIUpdateEvent(1000);
 	}
 
@@ -3926,6 +3920,8 @@ public:
 		if(m_FlyPhaseTimer > 15)
 			return;
 
+		Unit *target = NULL;
+
 		//first cast
 		if(m_FlyPhaseTimer == 15)
 		{
@@ -3939,24 +3935,25 @@ public:
 		//Shoots powerful Smoking Blast every second for approximately 15 seconds.
 		if (_unit->GetAIInterface()->GetNextTarget() != NULL)
 		{
-			Unit *target = _unit->GetAIInterface()->GetNextTarget();
+			target = _unit->GetAIInterface()->GetNextTarget();
 			_unit->CastSpell(target, dbcSpell.LookupEntry(SMOKING_BLAST), true);
 		}
 
+		target = NULL;
 		//fireball barrage check
-		/* this is silly
-		for(set<Player*>::iterator itr = _unit->GetInRangePlayerSetBegin(); itr != _unit->GetInRangePlayerSetEnd(); ++itr) 
+		for(set<Object*>::iterator itr = _unit->GetInRangeSetBegin(); itr != _unit->GetInRangeSetEnd(); ++itr) 
 		{
-			if ((*itr) && (*itr)->isAlive() && (*itr)->GetInstanceID() == _unit->GetInstanceID())
+			if ((*itr)->GetTypeId() == TYPEID_PLAYER && (*itr)->GetInstanceID() == _unit->GetInstanceID())
 			{
+				target = static_cast< Unit* >(*itr);
+
 				if(_unit->GetDistance2dSq(target) > 2025) //45 yards
 				{
 					_unit->CastSpellAoF(target->GetPositionX(),target->GetPositionY(),target->GetPositionZ(), dbcSpell.LookupEntry(FIREBALL_BARRAGE), true);
-					break;
+					break; //stop
 				}
 			}
 		}
-		*/
 	}
 
 	void GroundPhase()
@@ -3966,8 +3963,8 @@ public:
 
 		//Switch if needed
 		if((m_phase == 0 && _unit->GetHealthPct() <= 75) 
-		|| (m_phase == 2 && _unit->GetHealthPct() <= 50) 
-		|| (m_phase == 4 && _unit->GetHealthPct() <= 25))
+			|| (m_phase == 2 && _unit->GetHealthPct() <= 50) 
+			|| (m_phase == 4 && _unit->GetHealthPct() <= 25))
 		{
 			if(_unit->GetCurrentSpell() != NULL)
 				_unit->GetCurrentSpell()->cancel();
@@ -4010,10 +4007,10 @@ public:
 	{
 		WayPoint * wp = _unit->CreateWaypointStruct();
 		wp->id = id;
-		wp->x = coords[id].mX;
-		wp->y = coords[id].mY;
-		wp->z = coords[id].mZ;
-		wp->o = coords[id].mO;
+		wp->x = coords[id].x;
+		wp->y = coords[id].y;
+		wp->z = coords[id].z;
+		wp->o = coords[id].o;
 		wp->waittime = waittime;
 		wp->flags = flags;
 		wp->forwardemoteoneshot = 0;
@@ -4064,22 +4061,22 @@ public:
 			for(int i=0;i<nrspells;i++)
 			{
 				spells[i].casttime--;
-				
+
 				if (m_spellcheck[i])
 				{
 					spells[i].casttime = spells[i].cooldown;
 					target = _unit->GetAIInterface()->GetNextTarget();
 					switch(spells[i].targettype)
 					{
-						case TARGET_SELF:
-						case TARGET_VARIOUS:
+					case TARGET_SELF:
+					case TARGET_VARIOUS:
 						_unit->CastSpell(_unit, spells[i].info, spells[i].instant); break;
-						case TARGET_ATTACKING:
+					case TARGET_ATTACKING:
 						_unit->CastSpell(target, spells[i].info, spells[i].instant); break;
-						case TARGET_DESTINATION:
+					case TARGET_DESTINATION:
 						_unit->CastSpellAoF(target->GetPositionX(),target->GetPositionY(),target->GetPositionZ(), spells[i].info, spells[i].instant); break;
-						case TARGET_RANDOM_SINGLE:
-							CastSpellOnRandomTarget(i, 0, 0); break;
+					case TARGET_RANDOM_SINGLE:
+						CastSpellOnRandomTarget(i, 0, 0); break;
 					}
 
 					m_spellcheck[i] = false;
@@ -4101,8 +4098,9 @@ public:
 		if (!maxdist2cast) maxdist2cast = 100.0f;
 
 		if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->GetNextTarget())
-        {
-			std::vector<Unit*> TargetTable;
+		{
+			std::vector<Unit*> TargetTable;		/* From M4ksiu - Big THX to Capt who helped me with std stuff to make it simple and fully working <3 */
+			/* If anyone wants to use this function, then leave this note!										 */
 			for(set<Object*>::iterator itr = _unit->GetInRangeSetBegin(); itr != _unit->GetInRangeSetEnd(); ++itr) 
 			{
 				if (((*itr)->GetTypeId()== TYPEID_UNIT || (*itr)->GetTypeId() == TYPEID_PLAYER) && (*itr)->GetInstanceID() == _unit->GetInstanceID())
@@ -4117,7 +4115,7 @@ public:
 				} 
 			}
 
-			if (TargetTable.empty())
+			if (!TargetTable.size())
 				return;
 
 			Unit * RTarget = *(TargetTable.begin()+rand()%TargetTable.size());
@@ -4172,7 +4170,7 @@ public:
 	bool m_spellcheck[2];
 	SP_AI_Spell spells[2];
 	uint32 summontito;
-	
+
 
 	DorotheeAI(Creature* pCreature) : CreatureAIScript(pCreature)
 	{
@@ -4223,12 +4221,12 @@ public:
 		Creature* Roar		= _unit->GetMapMgr()->GetInterface()->GetCreatureNearestCoords(-10891.115f, -1756.4898f, 90.476f, 17546);//Roar
 		Creature* Tinman	= _unit->GetMapMgr()->GetInterface()->GetCreatureNearestCoords(-10884.501f, -1757.3249f, 90.476f, 17547); //Tinman
 
-		if((Dorothee == NULL || Dorothee->isDead()) && (Strawman == NULL || Strawman->isDead()) && (Roar == NULL || Roar->isDead()) && (Tinman == NULL || Tinman->isDead()))
+		if ((Dorothee == NULL || Dorothee->isDead()) && (Strawman == NULL || Strawman->isDead()) && (Roar == NULL || Roar->isDead()) && (Tinman == NULL || Tinman->isDead()))
 		{
 			_unit->GetMapMgr()->GetInterface()->SpawnCreature(18168, -10884.501f, -1757.3249f, 90.476f, 0.0f, false, true, 0, 0);
 		}
 		//END
-		
+
 		_unit->PlaySoundToSet(SOUND_DEATH_DOROTHEE);
 		_unit->SendChatMessage(CHAT_MSG_MONSTER_YELL, LANG_UNIVERSAL, TEXT_DEATH_DOROTHEE);
 		CastTime();
@@ -4238,7 +4236,7 @@ public:
 	void OnTargetDied(Unit * mTarget)
 	{
 	}
-    void SpawnTito()	// Lacking in collision checks!
+	void SpawnTito()	// Lacking in collision checks!
 	{
 		float xchange  = (float)RandomFloat(15.0f);
 		float distance = 15.0f;
@@ -4276,7 +4274,7 @@ public:
 			titoDeadSpeech = true;
 			return;
 		}
-        summontito++;
+		summontito++;
 	}
 
 	void CastTime()
@@ -4291,7 +4289,7 @@ public:
 		if (!maxhp2cast) maxhp2cast = 100;
 
 		if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->GetNextTarget())
-        {
+		{
 			std::vector<Unit*> TargetTable;		
 			for(set<Object*>::iterator itr = _unit->GetInRangeSetBegin(); itr != _unit->GetInRangeSetEnd(); ++itr) 
 			{ 
@@ -4313,7 +4311,7 @@ public:
 			if (_unit->GetHealthPct() >= minhp2cast && _unit->GetHealthPct() <= maxhp2cast && spells[i].targettype == TARGET_RANDOM_FRIEND)
 				TargetTable.push_back(_unit);
 
-			if (TargetTable.empty())
+			if (!TargetTable.size())
 				return;
 
 			size_t RandTarget = rand()%TargetTable.size();
@@ -4326,7 +4324,7 @@ public:
 			TargetTable.clear();
 		}
 	}
-	
+
 	void SpellCast(float val)
 	{
 		if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->GetNextTarget())
@@ -4350,7 +4348,7 @@ public:
 						_unit->CastSpell(target, spells[i].info, spells[i].instant); break;
 					case TARGET_DESTINATION:
 						_unit->CastSpellAoF(target->GetPositionX(),target->GetPositionY(),target->GetPositionZ(), spells[i].info, spells[i].instant); break;
-                    case TARGET_RANDOM_FRIEND:
+					case TARGET_RANDOM_FRIEND:
 					case TARGET_RANDOM_SINGLE:
 					case TARGET_RANDOM_DESTINATION:
 						CastSpellOnRandomTarget(i, spells[i].mindist2cast, spells[i].maxdist2cast, spells[i].minhp2cast, spells[i].maxhp2cast); break;
@@ -4395,7 +4393,7 @@ public:
 	ADD_CREATURE_FACTORY_FUNCTION(TitoAI);
 	bool m_spellcheck[1];
 	SP_AI_Spell spells[1];
-	
+
 
 	TitoAI(Creature* pCreature) : CreatureAIScript(pCreature)
 	{
@@ -4532,14 +4530,14 @@ public:
 		spells[0].instant = true;
 		spells[0].perctrigger = 0.0f;
 		spells[0].attackstoptimer = 1000;
-	
+
 		spells[1].info = dbcSpell.LookupEntry(SP_BRAIN_BASH);
 		spells[1].targettype = TARGET_RANDOM_SINGLE;
 		spells[1].instant = true;
 		spells[1].cooldown = 8; //not sure about this
 		spells[1].perctrigger = 0.0f;
 		spells[1].attackstoptimer = 1000;
- 
+
 	}
 
 	void OnCombatStart(Unit* mTarget)
@@ -4568,13 +4566,13 @@ public:
 		Creature* Strawman	= _unit->GetMapMgr()->GetInterface()->GetCreatureNearestCoords(-10904.088f, -1754.8988f, 90.476f, 17543);	//Strawman
 		Creature* Roar		= _unit->GetMapMgr()->GetInterface()->GetCreatureNearestCoords(-10891.115f, -1756.4898f, 90.476f, 17546);	//Roar
 		Creature* Tinman	= _unit->GetMapMgr()->GetInterface()->GetCreatureNearestCoords(-10884.501f, -1757.3249f, 90.476f, 17547);	//Tinman
-		
+
 		if ((Dorothee == NULL || Dorothee->isDead()) && (Strawman == NULL || Strawman->isDead()) && (Roar == NULL || Roar->isDead()) && (Tinman == NULL || Tinman->isDead()))
 		{
 			_unit->GetMapMgr()->GetInterface()->SpawnCreature(18168, -10884.501f, -1757.3249f, 90.476f, 0.0f, false, true, 0, 0);
 		}
 		//END
-		
+
 		_unit->PlaySoundToSet(SOUND_DEATH_STRAWMAN);
 		_unit->SendChatMessage(CHAT_MSG_MONSTER_YELL, LANG_UNIVERSAL, TEXT_DEATH_STRAWMAN);
 		CastTime();
@@ -4683,7 +4681,7 @@ public:
 		spells[0].instant = true;
 		spells[0].perctrigger = 0.0f;
 		spells[0].attackstoptimer = 1000;
-	
+
 		/*spells[1].info = dbcSpell.LookupEntry(RUST);
 		spells[1].targettype = TARGET_SELF;
 		spells[1].instant = true;
@@ -4719,13 +4717,13 @@ public:
 		Creature* Strawman	= _unit->GetMapMgr()->GetInterface()->GetCreatureNearestCoords(-10904.088f, -1754.8988f, 90.476f, 17543);	//Strawman
 		Creature* Roar		= _unit->GetMapMgr()->GetInterface()->GetCreatureNearestCoords(-10891.115f, -1756.4898f, 90.476f, 17546);	//Roar
 		Creature* Tinman	= _unit->GetMapMgr()->GetInterface()->GetCreatureNearestCoords(-10884.501f, -1757.3249f, 90.476f, 17547);	//Tinman
-		
+
 		if ((Dorothee == NULL || Dorothee->isDead()) && (Strawman == NULL || Strawman->isDead()) && (Roar == NULL || Roar->isDead()) && (Tinman == NULL || Tinman->isDead()))
 		{
 			_unit->GetMapMgr()->GetInterface()->SpawnCreature(18168, -10884.501f, -1757.3249f, 90.476f, 0.0f, false, true, 0, 0);
 		}
 		//END
-		
+
 		_unit->PlaySoundToSet(SOUND_DEATH_TINHEAD);
 		_unit->SendChatMessage(CHAT_MSG_MONSTER_YELL, LANG_UNIVERSAL, TEXT_DEATH_TINHEAD);
 		CastTime();
@@ -4834,13 +4832,13 @@ public:
 		Creature* Strawman	= _unit->GetMapMgr()->GetInterface()->GetCreatureNearestCoords(-10904.088f, -1754.8988f, 90.476f, 17543); //Strawman
 		Creature* Roar		= _unit->GetMapMgr()->GetInterface()->GetCreatureNearestCoords(-10891.115f, -1756.4898f, 90.476f, 17546);//Roar
 		Creature* Tinman	= _unit->GetMapMgr()->GetInterface()->GetCreatureNearestCoords(-10884.501f, -1757.3249f, 90.476f, 17547); //Tinman
-		
-		if(Dorothee && Dorothee->isDead() && Strawman && Strawman->isDead() && Roar && Roar->isDead() && Tinman && Tinman->isDead())
+
+		if((Dorothee == NULL || Dorothee->isDead()) && (Strawman == NULL || Strawman->isDead()) && (Roar == NULL || Roar->isDead()) && (Tinman == NULL || Tinman->isDead()))
 		{
 			_unit->GetMapMgr()->GetInterface()->SpawnCreature(18168, -10884.501f, -1757.3249f, 90.476f, 0.0f, false, true, 0, 0);
 		}
 		//END
-		
+
 		_unit->PlaySoundToSet(SOUND_DEATH_ROAR);
 		_unit->SendChatMessage(CHAT_MSG_MONSTER_YELL, LANG_UNIVERSAL, TEXT_DEATH_ROAR);
 	}
@@ -5053,12 +5051,12 @@ protected:
 };
 
 /*
- *
- *
- *
- *
- *
- */
+*
+*
+*
+*
+*
+*/
 
 
 //Romulo & Julianne
@@ -5103,28 +5101,28 @@ public:
 		spells[0].targettype = TARGET_ATTACKING;
 		spells[0].instant = false;
 		spells[0].cooldown = 12;
-		spells[0].perctrigger = 10.0f;
+		spells[0].perctrigger = 20.0f;
 		spells[0].attackstoptimer = 1000;
 
 		spells[1].info = dbcSpell.LookupEntry(SP_DEADLY_SWATHE);
 		spells[1].targettype = TARGET_ATTACKING;
 		spells[1].instant = false;
 		spells[1].cooldown = 0;
-		spells[1].perctrigger = 10.0f;
+		spells[1].perctrigger = 20.0f;
 		spells[1].attackstoptimer = 1000;
 
 		spells[2].info = dbcSpell.LookupEntry(SP_POISONED_THRUST);
 		spells[2].targettype = TARGET_ATTACKING;
 		spells[2].instant = false;
 		spells[2].cooldown = 0;
-		spells[2].perctrigger = 10.0f;
+		spells[2].perctrigger = 20.0f;
 		spells[2].attackstoptimer = 1000;
 
 		spells[3].info = dbcSpell.LookupEntry(SP_DARING);
 		spells[3].targettype = TARGET_SELF;
 		spells[3].instant = false;
-		spells[3].cooldown = 25;
-		spells[3].perctrigger = 10.0f;
+		spells[3].cooldown = 0;
+		spells[3].perctrigger = 20.0f;
 		spells[3].attackstoptimer = 1000;
 	}
 
@@ -5154,7 +5152,7 @@ public:
 			if(Curtain)
 				Curtain->SetUInt32Value(GAMEOBJECT_STATE, 1);
 		}
-		
+
 		CastTime();
 		_unit->GetAIInterface()->setCurrentAgent(AGENT_NULL);
 		_unit->GetAIInterface()->SetAIState(STATE_IDLE);
@@ -5292,28 +5290,28 @@ public:
 		spells[0].info = dbcSpell.LookupEntry(SP_ETERNAL_AFFECTION);
 		spells[0].targettype = TARGET_SELF;
 		spells[0].instant = false;
-		spells[0].cooldown = 35;
+		spells[0].cooldown = 12;
 		spells[0].perctrigger = 5.0f;
 		spells[0].attackstoptimer = 1000;
 
 		spells[1].info = dbcSpell.LookupEntry(SP_POWERFUL_ATTRACTION);
 		spells[1].targettype = TARGET_ATTACKING;
 		spells[1].instant = false;
-		spells[1].cooldown = 15;
+		spells[1].cooldown = 0;
 		spells[1].perctrigger = 5.0f;
 		spells[1].attackstoptimer = 1000;
 
 		spells[2].info = dbcSpell.LookupEntry(SP_BINDING_PASSION);
 		spells[2].targettype = TARGET_ATTACKING;
 		spells[2].instant = false;
-		spells[2].cooldown = 15;
+		spells[2].cooldown = 0;
 		spells[2].perctrigger = 5.0f;
 		spells[2].attackstoptimer = 1000;
 
 		spells[3].info = dbcSpell.LookupEntry(SP_DEVOTION);
 		spells[3].targettype = TARGET_SELF;
 		spells[3].instant = false;
-		spells[3].cooldown = 30;
+		spells[3].cooldown = 0;
 		spells[3].perctrigger = 5.0f;
 		spells[3].attackstoptimer = 1000;
 	}
@@ -5344,7 +5342,7 @@ public:
 			if(Curtain)
 				Curtain->SetUInt32Value(GAMEOBJECT_STATE, 1);
 		}
-		
+
 		CastTime();
 		_unit->GetAIInterface()->setCurrentAgent(AGENT_NULL);
 		_unit->GetAIInterface()->SetAIState(STATE_IDLE);
@@ -5436,16 +5434,297 @@ protected:
 	int nrspells;
 };
 
+
+
+//Spells Used by booth
+#define Chess_Event_Spell_Move					//Not sure Right now, The spell needs to be scripted
+#define Chess_Event_Spell_SelectEnemy		30520 //Dont Know, but Sohuld Work
+#define Chess_Event_Spell_ChangeFacing		30284 //Need Scripting
+#define Chess_Event_Spell_ControlPiece		30019 //After Casting the spell the player should be teleported to the stairs
+#define Chess_Event_Spell_MoveMarker		32261 //A Pillat of Light showing that you have moved
+//Echo Of Medivh
+#define Chess_Event_Medivh					16816
+
+#pragma warning(disable:4305)
+#pragma warning(disable:4700)
+#pragma warning(disable:4101)
+
+//Horde Pieces and Spells
+#define Chess_Event_HKing					21752
+//#define Chess_Event_HKing_Ability1		37476
+//#define Chess_Event_Hking_Ability2		37472
+
+#define Chess_Event_HQueen					21750
+//#define Chess_Event_HQueen_Ability1		37463
+//#define Chess_Event_HQueen_Ability2		37469
+
+#define Chess_Event_HBishop					21747
+//#define Chess_Event_HBishop_Ability1		37456
+//#define Chess_Event_HBishop_Ability2		37461
+
+#define Chess_Event_HKnight					21748
+//#define Chess_Event_HKnight_Ability1		37454
+//#define Chess_Event_HKnight_Ability2		37502
+
+#define Chess_Event_HRook					21726
+//#define Chess_Event_HRook_Ability1		37428
+//#define Chess_Event_HRook_Ability2		37434
+
+#define Chess_Event_HPawn					17469
+
+#define Chess_Event_HPawn_Ability1			37413
+
+#define Chess_Event_HPawn_Ability2			37416
+
+
+//Alliance Pieces And Spells
+#define Chess_Event_AKing					21684
+//#define Chess_Event_AKing_Ability1		37474
+//#define Chess_Event_Aking_Ability2		37471
+
+#define Chess_Event_AQueen					21683
+//#define Chess_Event_AQueen_Ability1		37462
+//#define Chess_Event_AQueen_Ability2		37465
+
+#define Chess_Event_ABishop					21682
+//#define Chess_Event_ABishop_Ability1		37455
+//#define Chess_Event_ABishop_Ability2		37459
+
+#define Chess_Event_AKnight					21664
+//#define Chess_Event_AKnight_Ability1		37453
+//#define Chess_Event_AKnight_Ability2		37498
+
+#define Chess_Event_ARook					21160
+//#define Chess_Event_ARook_Ability1		37427
+//#define Chess_Event_ARook_Ability2		37432
+
+#define Chess_Event_APawn					17211
+//#define Chess_Event_APawn_Ability1		37406
+//#define Chess_Event_APawn_Ability2		37414
+class ChessAI : public ArcScriptCreatureAI
+{
+public: ArcScript_FACTORY_FUNCTION(ChessAI, ArcScriptCreatureAI);
+		ChessAI(Creature* pCreature) : ArcScriptCreatureAI(pCreature)
+		{
+		}
+};
+class SCRIPT_DECL ChessMedvihGossip : public GossipScript
+{
+public:
+	void Destroy()
+	{
+		delete this;
+	}
+	void GossipHello(Object* pObject, Player * Plr, bool AutoSend)
+	{
+		GossipMenu *Menu;
+		objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 1, Plr);
+		Menu->AddItem(0, "Let The Game Begin", 1);
+
+		if(AutoSend)
+			Menu->SendTo(Plr);
+	}
+
+
+	void GossipSelectOption(Object* pObject, Player* Plr, uint32 Id, uint32 IntId, const char * Code)
+	{
+		GossipMenu * Menu;
+		switch(IntId)
+		{
+		case 1:  
+			{
+				ChessAI* Chess;
+				//Not Ready Yet
+				//Spawn The Horde Side
+				//Spawn The Horde King
+				Chess->SpawnCreature(21752, -11063.6, -1866.47, 220.667, 3.84835, false);
+				//Spawn The Horde Queen
+				Chess->SpawnCreature(21750, -11067, -1861.86, 220.667, 3.72268, false);
+				//Spawn The 2 Horde Bishops
+				Chess->SpawnCreature(21747, -11060.3, -1870.81, 220.667, 3.76195, false);
+				Chess->SpawnCreature(21747, -11070.8, -1857.7, 220.667, 3.81692, false);
+				//Spawn The 2 Horde Knights
+				Chess->SpawnCreature(21748, -11056.7, -1875.07, 220.667, 3.7698, false);
+				Chess->SpawnCreature(21748, -11074, -1853.28, 220.667, 3.84199, false);
+				//Spawn The 2 Horde Rooks
+				Chess->SpawnCreature(21726, -11077.5, -1848.75, 220.667, 3.80665, false);
+				Chess->SpawnCreature(21726, -11053.4, -1879.64, 220.667, 3.89304, false);
+				//Spawn The 8 Horde Pawns
+				Chess->SpawnCreature(17469, -11075, -1861.13, 220.667, 3.80908, false);
+				Chess->SpawnCreature(17469, -11078.5, -1856.93, 220.667, 3.80908, false);
+				Chess->SpawnCreature(17469, -11057.4, -1883.03, 220.667, 3.813, false);
+				Chess->SpawnCreature(17469, -11067.8, -1869.89, 220.667, 3.80908, false);
+				Chess->SpawnCreature(17469, -11064.3, -1874.3, 220.667, 3.80908, false);
+				Chess->SpawnCreature(17469, -11061, -1878.56, 220.667, 3.80908, false);
+				Chess->SpawnCreature(17469, -11071.5, -1865.54, 220.667, 3.80908, false);
+				Chess->SpawnCreature(17469, -11082.1, -1852.43, 220.667, 3.80908, false);
+				//Spawn The Alliance Side
+				//Spawn The Alliance King
+				Chess->SpawnCreature(21684, -11094.1, -1890.57, 220.667, 0.62578, false);
+				//Spawn The Alliance Queen
+				Chess->SpawnCreature(21683, -11097.6, -1886.43, 220.667, 0.723955, false);
+				//Spawn The 2 Alliance Bishops
+				Chess->SpawnCreature(21682, -11101, -1881.83, 220.667, 0.598288, false);
+				Chess->SpawnCreature(21682, -11090.5, -1895.02, 220.667, 0.665045, false);
+				//Spawn The 2 Alliance Knights
+				Chess->SpawnCreature(21664, -11087.2, -1899.56, 220.667, 0.624056, false);
+				Chess->SpawnCreature(21664, -11104.4, -1877.7, 220.667, 0.59264, false);
+				//Spawn The 2 Alliance Rooks
+				Chess->SpawnCreature(21160, -11108.1, -1872.91, 220.667, 0.679031, false);
+				Chess->SpawnCreature(21160, -11083.7, -1903.94, 220.667, 0.671177, false);
+				//Spawn The 8 Alliance Pawns
+				Chess->SpawnCreature(17211, -11093.4, -1882.59, 220.668, 0.671956,false);
+				Chess->SpawnCreature(17211, -11086.2, -1891.53, 220.667, 0.617928,false);
+				Chess->SpawnCreature(17211, -11089.7, -1887.03, 220.667, 0.617927,false);
+				Chess->SpawnCreature(17211, -11096.8, -1878.21, 220.668, 0.593409,false);
+				Chess->SpawnCreature(17211, -11100.2, -1873.96, 220.668, 0.597337,false);
+				Chess->SpawnCreature(17211, -11103.7, -1869.63, 220.667, 0.661124,false);
+				Chess->SpawnCreature(17211, -11079.4, -1900.17, 220.667, 0.649344,false);
+				Chess->SpawnCreature(17211, -11082.9, -1895.75, 220.667, 0.759299,false);
+				GossipEnd(pObject,Plr);
+				break;
+			}
+		}
+	}
+};
+class ChessHordeAI : public ArcScriptCreatureAI
+{
+public:
+	ArcScript_FACTORY_FUNCTION(ChessHordeAI, ArcScriptCreatureAI);
+
+	ChessHordeAI(Creature* pCreature) : ArcScriptCreatureAI(pCreature)
+	{
+	}
+	void OnDied(Unit *pKiller)
+	{
+		_unit->Despawn(2,0);
+	}
+};
+class ChessAllianceAI : public ArcScriptCreatureAI
+{
+public:
+	ArcScript_FACTORY_FUNCTION(ChessAllianceAI, ArcScriptCreatureAI);
+
+	ChessAllianceAI(Creature* pCreature) : ArcScriptCreatureAI(pCreature)
+	{
+	}
+	void OnDied(Unit *pKiller)
+	{	
+		_unit->Despawn(2,0);
+	}
+};
+class ChessPieceAI : public ArcScriptCreatureAI
+{
+public:
+	ArcScript_FACTORY_FUNCTION(ChessPieceAI, ArcScriptCreatureAI);
+
+	ChessPieceAI(Creature* pCreature) : ArcScriptCreatureAI(pCreature)
+	{
+	}
+	//void AIUpdate()
+	//{
+	//	Player * Plr;
+	//	if(_unit->HasAura(30019) || !Plr->HasAura(30019))
+	//	{
+	//		_unit->RemoveAura(30019);
+	//	}
+	//}
+	void OnDied(Unit *pKiller)
+	{
+		_unit->Despawn(2,0);
+	}
+};
+class SCRIPT_DECL ChessPieceGossip : public GossipScript
+{
+public:
+	void Destroy()
+	{
+		delete this;
+	}
+	void GossipHello(Object* pObject, Player * Plr, bool AutoSend)
+	{
+		GossipMenu *Menu;
+		objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 1, Plr);
+
+		Menu->AddItem(0, "I want To Play As You", 1);
+
+		if(AutoSend)
+			Menu->SendTo(Plr);
+	}
+
+
+	void GossipSelectOption(Object* pObject, Player* Plr, uint32 Id, uint32 IntId, const char * Code)
+	{
+		GossipMenu * Menu;
+		switch(IntId)
+		{
+		case 1:  
+			{
+				Plr->CastSpell(Plr->GetSelection(),30019,true);
+				Pet * Piece;
+				break;
+			}
+		}
+	}
+};
+bool ChessControl(uint32 i, Spell * pSpell)
+{
+	pSpell->u_caster->CastSpell(pSpell->m_targets.m_unitTarget, dbcSpell.LookupEntry(Chess_Event_Spell_ControlPiece), true);
+
+	return true;
+}
 void SetupKarazhan(ScriptMgr* pScriptMgr)
 {
+	//ChessEvent Spells
+
+	pScriptMgr->register_dummy_spell(Chess_Event_Spell_ControlPiece, &ChessControl);
+	
 	GossipScript * KBerthold = (GossipScript*) new Berthold();
+	GossipScript * ChessGossip = (GossipScript*) new ChessMedvihGossip();
+	GossipScript * ChessPieceSay = (GossipScript*) new ChessPieceGossip();
 	pScriptMgr->register_gossip_script(16153, KBerthold);
+	pScriptMgr->register_gossip_script(16816, ChessGossip);
+	//Alliance Gossip For Choosing the Piece
+	pScriptMgr->register_gossip_script(17211, ChessPieceSay);
+	pScriptMgr->register_gossip_script(21160, ChessPieceSay);
+	pScriptMgr->register_gossip_script(21664, ChessPieceSay);
+	pScriptMgr->register_gossip_script(21682, ChessPieceSay);
+	pScriptMgr->register_gossip_script(21683, ChessPieceSay);
+	pScriptMgr->register_gossip_script(21684, ChessPieceSay);
+	//Horde Gossip For Choosing the Piece
+	pScriptMgr->register_gossip_script(17469, ChessPieceSay);
+	pScriptMgr->register_gossip_script(21726, ChessPieceSay);
+	pScriptMgr->register_gossip_script(21748, ChessPieceSay);
+	pScriptMgr->register_gossip_script(21747, ChessPieceSay);
+	pScriptMgr->register_gossip_script(21750, ChessPieceSay);
+	pScriptMgr->register_gossip_script(21752, ChessPieceSay);
 
-	pScriptMgr->register_creature_script(CN_MIDNIGHT, &MidnightAI::Create);
+	pScriptMgr->register_creature_script(Chess_Event_HKing, &ChessHordeAI::Create);
+	pScriptMgr->register_creature_script(Chess_Event_AKing, &ChessAllianceAI::Create);
+	pScriptMgr->register_creature_script(Chess_Event_Medivh, &ChessAI::Create);
+
+
+	pScriptMgr->register_creature_script(Chess_Event_HPawn, &ChessPieceAI::Create);
+	pScriptMgr->register_creature_script(Chess_Event_APawn, &ChessPieceAI::Create);
+
+	pScriptMgr->register_creature_script(Chess_Event_HRook, &ChessPieceAI::Create);
+	pScriptMgr->register_creature_script(Chess_Event_ARook, &ChessPieceAI::Create);
+
+	pScriptMgr->register_creature_script(Chess_Event_HBishop, &ChessPieceAI::Create);
+	pScriptMgr->register_creature_script(Chess_Event_ABishop, &ChessPieceAI::Create);
+
+	pScriptMgr->register_creature_script(Chess_Event_HKnight, &ChessPieceAI::Create);
+	pScriptMgr->register_creature_script(Chess_Event_AKnight, &ChessPieceAI::Create);
+
+	pScriptMgr->register_creature_script(Chess_Event_HQueen, &ChessPieceAI::Create);
+	pScriptMgr->register_creature_script(Chess_Event_AQueen, &ChessPieceAI::Create);
+
 	pScriptMgr->register_creature_script(CN_ATTUMEN, &AttumenTheHuntsmanAI::Create);
+	pScriptMgr->register_creature_script(CN_MIDNIGHT, &MidnightAI::Create);
 	pScriptMgr->register_creature_script(CN_MOROES, &MoroesAI::Create);
-	pScriptMgr->register_creature_script(CN_MAIDEN, &MAIDENOFVIRTUEAI::Create);
+	pScriptMgr->register_creature_script(CN_MAIDENOFVIRTUE, &MaidenOfVirtueAI::Create);
 
+	// Opera event related
 	pScriptMgr->register_creature_script(CN_BIGBADWOLF, &BigBadWolfAI::Create);
 	pScriptMgr->register_creature_script(CN_ROMULO, &RomuloAI::Create);
 	pScriptMgr->register_creature_script(CN_JULIANNE, &JulianneAI::Create);
@@ -5456,6 +5735,7 @@ void SetupKarazhan(ScriptMgr* pScriptMgr)
 	pScriptMgr->register_gossip_script(17603, KGrandMother);
 	pScriptMgr->register_creature_script(16812, &BarnesAI::Create);
 
+	//WoOz here... commented yet to be implemented - kamyn
 	pScriptMgr->register_creature_script(CN_DOROTHEE, &DorotheeAI::Create);
 	pScriptMgr->register_creature_script(CN_STRAWMAN, &StrawmanAI::Create);
 	pScriptMgr->register_creature_script(CN_TINHEAD, &TinheadAI::Create);
@@ -5466,7 +5746,7 @@ void SetupKarazhan(ScriptMgr* pScriptMgr)
 
 	pScriptMgr->register_creature_script(CN_CURATOR, &CuratorAI::Create);
 	pScriptMgr->register_creature_script(CN_ASTRALFLARE, &AstralFlareAI::Create);
-	
+
 	pScriptMgr->register_creature_script(CN_ILLHOOF, &IllhoofAI::Create);
 	pScriptMgr->register_creature_script(CN_KILREK, &KilrekAI::Create);
 	pScriptMgr->register_creature_script(CN_FIENDISH_IMP, &FiendishImpAI::Create);
