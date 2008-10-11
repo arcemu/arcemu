@@ -337,11 +337,11 @@ void WorldSession::HandleLootOpcode( WorldPacket & recv_data )
 
 	uint64 guid;
 	recv_data >> guid;
-
+  if ( !guid ) return;
 	if(_player->isCasting())
 		_player->InterruptSpell();
 		
-	_player->RemoveStealth(); // ceberwow:RemoveStealth when looting. Blizzlike
+	_player->RemoveStealth(); // cebernic:RemoveStealth on looting. Blizzlike
 
 	if(_player->InGroup() && !_player->m_bg)
 	{
@@ -1247,6 +1247,9 @@ void WorldSession::HandleGameObjectUse(WorldPacket & recv_data)
 	Player *plyr = GetPlayer();
 
 	CALL_GO_SCRIPT_EVENT(obj, OnActivate)(_player);
+	
+  _player->RemoveStealth(); // cebernic:RemoveStealth due to GO was using. Blizzlike
+	
 
 	uint32 type = obj->GetUInt32Value(GAMEOBJECT_TYPE_ID);
 	switch (type)
@@ -1263,7 +1266,7 @@ void WorldSession::HandleGameObjectUse(WorldPacket & recv_data)
 			plyr->SafeTeleport( plyr->GetMapId(), plyr->GetInstanceID(), obj->GetPositionX(), obj->GetPositionY(), obj->GetPositionZ(), obj->GetOrientation() );
 			plyr->SetStandState(STANDSTATE_SIT_MEDIUM_CHAIR);
 			plyr->m_lastRunSpeed = 0; //counteract mount-bug; reset speed to zero to force update SetPlayerSpeed in next line.
-			//plyr->SetPlayerSpeed(RUN,plyr->m_base_runSpeed); <--ceberwow : Oh No,this could be wrong. If I have some mods existed,this just on baserunspeed as a fixed value?
+			//plyr->SetPlayerSpeed(RUN,plyr->m_base_runSpeed); <--cebernic : Oh No,this could be wrong. If I have some mods existed,this just on baserunspeed as a fixed value?
 			plyr->UpdateSpeed();
 		}break;
 	case GAMEOBJECT_TYPE_CHEST://cast da spell
@@ -1281,15 +1284,14 @@ void WorldSession::HandleGameObjectUse(WorldPacket & recv_data)
 		}break;
 	case GAMEOBJECT_TYPE_DOOR:
 		{
-			// door
-			if((obj->GetUInt32Value(GAMEOBJECT_STATE) == 1) && (obj->GetUInt32Value(GAMEOBJECT_FLAGS) == 33))
+			// cebernic modified this state =0 org =1
+			if((obj->GetUInt32Value(GAMEOBJECT_STATE) == 0) ) //&& (obj->GetUInt32Value(GAMEOBJECT_FLAGS) == 33) )
 				obj->EventCloseDoor();
 			else
 			{
-				obj->SetUInt32Value(GAMEOBJECT_FLAGS, 33);
-				obj->SetUInt32Value(GAMEOBJECT_STATE, 0);
-				if(obj->GetMapMgr()->GetMapInfo()->type==INSTANCE_NULL)//dont close doors for instances
-					sEventMgr.AddEvent(obj,&GameObject::EventCloseDoor,EVENT_GAMEOBJECT_DOOR_CLOSE,20000,1,0);
+				obj->SetUInt32Value(GAMEOBJECT_FLAGS, obj->GetUInt32Value( GAMEOBJECT_FLAGS ) | 1); // lock door
+        obj->SetUInt32Value(GAMEOBJECT_STATE, 0);
+				sEventMgr.AddEvent(obj,&GameObject::EventCloseDoor,EVENT_GAMEOBJECT_DOOR_CLOSE,20000,1,0);
 			}
 		}break;
 	case GAMEOBJECT_TYPE_FLAGSTAND:
@@ -1824,7 +1826,7 @@ void WorldSession::HandleLootMasterGiveOpcode(WorldPacket& recv_data)
 	SlotResult slotresult;
 
 	Creature *pCreature = NULL;
-	GameObject *pGameObject = NULL; //ceberwow added it
+	GameObject *pGameObject = NULL; //cebernic added it
 	Object *pObj= NULL;
 	Loot *pLoot = NULL;
 	/* struct:
@@ -1864,7 +1866,7 @@ void WorldSession::HandleLootMasterGiveOpcode(WorldPacket& recv_data)
 		pLoot=&pCreature->loot;	
 	}
 	else
-	if(GET_TYPE_FROM_GUID(GetPlayer()->GetLootGUID()) == HIGHGUID_TYPE_GAMEOBJECT) // ceberwow added it support gomastergive
+	if(GET_TYPE_FROM_GUID(GetPlayer()->GetLootGUID()) == HIGHGUID_TYPE_GAMEOBJECT) // cebernic added it support gomastergive
 	{
 		pGameObject = _player->GetMapMgr()->GetGameObject(GET_LOWGUID_PART(creatureguid));
 		if (!pGameObject)return;

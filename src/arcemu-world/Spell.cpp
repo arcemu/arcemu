@@ -237,8 +237,7 @@ void Spell::Init(Object* Caster, SpellEntry *info, bool triggered, Aura* aur)
 
 Spell::~Spell()
 {
-	for(uint32 x=0;x<3;x++)
-		 m_targetUnits[x].clear();
+	// cebernic: vector clear doesn't need anymore,it have own release func.
 }
 
 void Spell::Virtual_Destructor()
@@ -252,6 +251,12 @@ void Spell::Virtual_Destructor()
 
 	if (m_spellInfo_override !=NULL)
 		delete[] m_spellInfo_override;
+
+	// resize the capactiy
+	for(uint32 x=0;x<3;x++)
+	{
+		vector<uint64>(m_targetUnits[x]).swap(m_targetUnits[x]);
+	}
 
 //	sEventMgr.RemoveEvents( this ); //do even spells have events ?
 }

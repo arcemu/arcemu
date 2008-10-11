@@ -320,25 +320,26 @@ void GameObject::SaveToDB()
 
 void GameObject::SaveToFile(std::stringstream & name)
 {
-/*	std::stringstream ss;
-	if (!m_sqlid)
-		m_sqlid = objmgr.GenerateLowGuid(HIGHGUID_GAMEOBJECT);
 
-	 ss.rdbuf()->str("");
-	 ss << "INSERT INTO gameobjects VALUES ( "
-		<< m_sqlid << ", "
-		<< m_position.x << ", "
-		<< m_position.y << ", "
-		<< m_position.z << ", "
-		<< m_position.o << ", "
-		<< GetZoneId() << ", "
-		<< GetMapId() << ", '";
+	std::stringstream ss;
 
-	for( uint32 index = 0; index < m_valuesCount; index ++ )
-		ss << GetUInt32Value(index) << " ";
-
-	ss << "', ";
-	ss << GetEntry() << ", 0, 0)"; 
+	ss << "REPLACE INTO gameobject_spawns VALUES("
+		<< ((m_spawn == NULL) ? 0 : m_spawn->id) << ","
+		<< GetEntry() << ","
+		<< GetMapId() << ","
+		<< GetPositionX() << ","
+		<< GetPositionY() << ","
+		<< GetPositionZ() << ","
+		<< GetOrientation() << ","
+		<< GetFloatValue(GAMEOBJECT_ROTATION) << ","
+		<< GetFloatValue(GAMEOBJECT_ROTATION_01) << ","
+		<< GetFloatValue(GAMEOBJECT_ROTATION_02) << ","
+		<< GetFloatValue(GAMEOBJECT_ROTATION_03) << ","
+		<< GetUInt32Value(GAMEOBJECT_STATE) << ","
+		<< GetUInt32Value(GAMEOBJECT_FLAGS) << ","
+		<< GetUInt32Value(GAMEOBJECT_FACTION) << ","
+		<< GetFloatValue(OBJECT_FIELD_SCALE_X) << ","
+		<< "0)";
 
 	FILE * OutFile;
 
@@ -346,7 +347,7 @@ void GameObject::SaveToFile(std::stringstream & name)
 	if (!OutFile) return;
 	fwrite(ss.str().c_str(),1,ss.str().size(),OutFile);
 	fclose(OutFile);
-*/
+
 }
 
 void GameObject::InitAI()
@@ -498,8 +499,10 @@ void GameObject::DeleteFromDB()
 
 void GameObject::EventCloseDoor()
 {
-//	SetUInt32Value(GAMEOBJECT_STATE, 1);
-	SetUInt32Value(GAMEOBJECT_FLAGS, 0);
+// gameobject_flags +1 closedoor animate restore the pointer flag.
+// by cebernic
+	SetUInt32Value(GAMEOBJECT_STATE, 1);
+  SetUInt32Value(GAMEOBJECT_FLAGS, GetUInt32Value( GAMEOBJECT_FLAGS ) & ~1);
 }
 
 void GameObject::UseFishingNode(Player *player)

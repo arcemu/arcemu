@@ -1669,6 +1669,7 @@ bool Object::HasInArc( float degrees, Object* target )
 
 bool Object::isInRange(Object* target, float range)
 {
+  if ( !this->IsInWorld() || !target ) return false;
 	float dist = CalcDistance( target );
 	return( dist <= range );
 }

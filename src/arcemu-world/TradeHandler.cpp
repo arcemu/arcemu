@@ -490,7 +490,7 @@ void WorldSession::HandleAcceptTrade(WorldPacket & recv_data)
 
 		if( (_player->m_ItemInterface->CalculateFreeSlots(NULL) + ItemCount) < TargetItemCount ||
 			(pTarget->m_ItemInterface->CalculateFreeSlots(NULL) + TargetItemCount) < ItemCount ||
-			(ItemCount==0 && TargetItemCount==0 && !pTarget->mTradeGold && !_player->mTradeGold) )	// ceberwow added it
+			(ItemCount==0 && TargetItemCount==0 && !pTarget->mTradeGold && !_player->mTradeGold) )	// cebernic added it
 		{
 			// Not enough slots on one end.
 			TradeStatus = TRADE_STATUS_CANCELLED;
