@@ -47,7 +47,7 @@ WorldSocket::WorldSocket(SOCKET fd) : Socket(fd, sWorld.SocketSendBufSize, sWorl
 	mSize = mOpcode = mRemaining = 0;
 	_latency = 0;
 	mSession = NULL;
-	mSeed = rand() % 0xFFFFFFF0 + 10;
+	mSeed = RandomUInt();
 	pAuthenticationPacket = NULL;
 	mQueued = false;
 	mRequestID = 0;
