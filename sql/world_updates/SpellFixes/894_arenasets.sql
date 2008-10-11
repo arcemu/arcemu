@@ -1,5 +1,5 @@
 INSERT INTO spellfixes(spellId, groupRelation0) VALUES(22738, 0x40000000) ON DUPLICATE KEY UPDATE groupRelation0=VALUES(groupRelation0);
-INSERT INTO spellfixes(spellId, groupRelation0) VALUES(23302, 0x400) ON DUPLICATE KEY UPDATE groupRelation0=VALUES(groupRelation0);
+INSERT INTO spellfixes(spellId, groupRelation0) VALUES(23302, 0x800) ON DUPLICATE KEY UPDATE groupRelation0=VALUES(groupRelation0);
 INSERT INTO spellfixes(spellId, groupRelation0, groupRelation1) VALUES(23047, 0x40000000000, 0x40000000000) ON DUPLICATE KEY UPDATE groupRelation0=VALUES(groupRelation0),groupRelation1=VALUES(groupRelation1);
 INSERT INTO spellfixes(spellId, groupRelation0) VALUES(33018, 0x1000000000) ON DUPLICATE KEY UPDATE groupRelation0=VALUES(groupRelation0);
 INSERT INTO spellfixes(spellId, groupRelation0) VALUES(33333, 0x20000000) ON DUPLICATE KEY UPDATE groupRelation0=VALUES(groupRelation0);
