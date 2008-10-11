@@ -475,7 +475,8 @@ void Spell::SpellEffectInstantKill(uint32 i)
 	}
 	//instant kill effects don't have a log
 	//m_caster->SpellNonMeleeDamageLog(unitTarget, GetProto()->Id, unitTarget->GetUInt32Value(UNIT_FIELD_HEALTH), true);
-	m_caster->DealDamage(unitTarget, unitTarget->GetUInt32Value(UNIT_FIELD_HEALTH), 0, 0, 0);
+	// cebernic: the value of instant kill must be higher than normal health,cuz anti health regenerated.
+	m_caster->DealDamage(unitTarget, unitTarget->GetUInt32Value(UNIT_FIELD_HEALTH)*2, 0, 0, 0);
 }
 
 void Spell::SpellEffectSchoolDMG(uint32 i) // dmg school
@@ -3141,8 +3142,10 @@ void Spell::SpellEffectOpenLockItem(uint32 i)
 		}
 	}
 
-	if( gameObjTarget->GetUInt32Value( GAMEOBJECT_TYPE_ID ) == GAMEOBJECT_TYPE_DOOR)
-		gameObjTarget->SetUInt32Value(GAMEOBJECT_FLAGS, 33);
+	// cebernic: atm doors works fine.
+	if( gameObjTarget->GetUInt32Value( GAMEOBJECT_TYPE_ID ) == GAMEOBJECT_TYPE_DOOR
+		|| gameObjTarget->GetUInt32Value( GAMEOBJECT_TYPE_ID ) == GAMEOBJECT_TYPE_GOOBER )
+		gameObjTarget->SetUInt32Value(GAMEOBJECT_FLAGS, gameObjTarget->GetUInt32Value( GAMEOBJECT_FLAGS ) | 1);
 
 	if(gameObjTarget->GetMapMgr()->GetMapInfo()->type==INSTANCE_NULL)//dont close doors for instances
 		sEventMgr.AddEvent(gameObjTarget,&GameObject::EventCloseDoor, EVENT_GAMEOBJECT_DOOR_CLOSE,10000,1,0);

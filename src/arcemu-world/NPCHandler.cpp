@@ -274,6 +274,8 @@ void WorldSession::HandleTrainerBuySpellOpcode(WorldPacket& recvPacket)
 		else
 			_player->removeSpell(pSpell->DeleteSpell,true,false,0);
 	}
+
+	_player->_UpdateSkillFields();
 }
 
 uint8 WorldSession::TrainerGetSpellStatus(TrainerSpell* pSpell)
