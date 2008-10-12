@@ -3992,7 +3992,7 @@ void Player::_ApplyItemMods(Item* item, int8 slot, bool apply, bool justdrokedow
 	
 	if( !apply ) // force remove auras added by using this item
 	{
-		for(uint32 k = 0; k < MAX_POSITIVE_AURAS; ++k)
+		for(uint32 k = MAX_POSITIVE_AURAS_EXTEDED_START; k < MAX_POSITIVE_AURAS_EXTEDED_END; ++k)
 		{
 			Aura* m_aura = this->m_auras[k];
 			if( m_aura != NULL && m_aura->m_castedItemId && m_aura->m_castedItemId == proto->ItemId )
@@ -7898,7 +7898,7 @@ void Player::EndDuel(uint8 WinCondition)
 	sEventMgr.RemoveEvents( this, EVENT_PLAYER_DUEL_COUNTDOWN );
 	sEventMgr.RemoveEvents( this, EVENT_PLAYER_DUEL_BOUNDARY_CHECK );
 
-	for( uint32 x = 0; x < MAX_AURAS; ++x )
+	for( uint32 x = MAX_POSITIVE_AURAS_EXTEDED_START; x < MAX_POSITIVE_AURAS_EXTEDED_END; ++x )
 	{
 		if( m_auras[x] == NULL )
 			continue;
@@ -7917,7 +7917,7 @@ void Player::EndDuel(uint8 WinCondition)
 	// spells waiting to hit
 	sEventMgr.RemoveEvents(this, EVENT_SPELL_DAMAGE_HIT);
 
-	for( uint32 x = 0; x < MAX_AURAS; ++x )
+	for( uint32 x = MAX_POSITIVE_AURAS_EXTEDED_START; x < MAX_POSITIVE_AURAS_EXTEDED_END; ++x )
 	{
 		if( DuelingWith->m_auras[x] == NULL )
 			continue;
@@ -9018,7 +9018,7 @@ bool Player::CanSignCharter(Charter * charter, Player * requester)
 void Player::SaveAuras(stringstream &ss)
 {
 	uint32 charges = 0, prevX = 0;
-	for ( uint32 x = 0; x < MAX_AURAS; x++ )
+	for ( uint32 x = MAX_POSITIVE_AURAS_EXTEDED_START; x < MAX_POSITIVE_AURAS_EXTEDED_END; x++ )
 	{
 		if ( m_auras[x] != NULL && m_auras[x]->GetTimeLeft() > 3000 )
 		{
@@ -9071,7 +9071,7 @@ void Player::SetShapeShift(uint8 ss)
 	SetByte( UNIT_FIELD_BYTES_2, 3, ss );
 
 	//remove auras that we should not have
-	for( uint32 x = 0; x < MAX_AURAS + MAX_PASSIVE_AURAS; x++ )
+	for( uint32 x = MAX_TOTAL_AURAS_START; x < MAX_TOTAL_AURAS_END; x++ )
 	{
 		if( m_auras[x] != NULL )
 		{
@@ -10497,7 +10497,7 @@ void Player::EventSummonPet( Pet *new_pet )
 		}
 	}
 	//there are talents that stop working after you gain pet
-	for(uint32 x=0;x<MAX_AURAS+MAX_PASSIVE_AURAS;x++)
+	for(uint32 x=MAX_TOTAL_AURAS_START;x<MAX_TOTAL_AURAS_END;x++)
 		if(m_auras[x] && m_auras[x]->GetSpellProto()->c_is_flags & SPELL_FLAG_IS_EXPIREING_ON_PET)
 			m_auras[x]->Remove();
 	//pet should inherit some of the talents from caster
@@ -10508,7 +10508,7 @@ void Player::EventSummonPet( Pet *new_pet )
 //!! note function might get called multiple times :P
 void Player::EventDismissPet()
 {
-	for(uint32 x=0;x<MAX_AURAS+MAX_PASSIVE_AURAS;x++)
+	for(uint32 x=MAX_TOTAL_AURAS_START;x<MAX_TOTAL_AURAS_END;x++)
 		if(m_auras[x] && m_auras[x]->GetSpellProto()->c_is_flags & SPELL_FLAG_IS_EXPIREING_WITH_PET)
 			m_auras[x]->Remove();
 }
@@ -11330,7 +11330,7 @@ void Player::VampiricSpell(uint32 dmg, Unit* pTarget)
 	if( ( !m_vampiricEmbrace && !m_vampiricTouch ) || getClass() != PRIEST )
 		return;
 
-	if( m_vampiricEmbrace > 0 && pTarget->m_hasVampiricEmbrace > 0 && pTarget->HasAurasOfNameHashWithCaster(SPELL_HASH_VAMPIRIC_EMBRACE, this) )
+	if( m_vampiricEmbrace > 0 && pTarget->m_hasVampiricEmbrace > 0 && pTarget->HasVisialPosAurasOfNameHashWithCaster(SPELL_HASH_VAMPIRIC_EMBRACE, this) )
 	{
 		perc = 15;
 		SM_FIValue(SM_FMiscEffect, &perc, 4);
@@ -11352,7 +11352,7 @@ void Player::VampiricSpell(uint32 dmg, Unit* pTarget)
 		}
 	}
 
-	if( m_vampiricTouch > 0 && pTarget->m_hasVampiricTouch > 0 && pTarget->HasAurasOfNameHashWithCaster(SPELL_HASH_VAMPIRIC_TOUCH, this) )
+	if( m_vampiricTouch > 0 && pTarget->m_hasVampiricTouch > 0 && pTarget->HasVisialPosAurasOfNameHashWithCaster(SPELL_HASH_VAMPIRIC_TOUCH, this) )
 	{
 		perc = 5;
 

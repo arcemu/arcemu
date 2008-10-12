@@ -909,29 +909,37 @@ void Aura::UpdateModifiers( )
 
 void Aura::AddAuraVisual()
 {
-	uint8 slot, i;
+	uint8 slot, i, recycleslot=0;
 	slot = 0xFF;
 
 	if (IsPositive())
 	{
-		for (i = 0; i < MAX_POSITIVE_AURAS; i++)
+		for (i = MAX_POSITIVE_VISUAL_AURAS_START; i < MAX_POSITIVE_VISUAL_AURAS_END; i++)
 		{
 			//if (m_target->GetUInt32Value((uint16)(UNIT_FIELD_AURA + i)) == 0)
-			if(m_target->m_auras[i] == 0)
+			if( m_target->m_auras[i] == 0
+				|| m_target->m_auras[i]->GetSpellId() == GetSpellId() //store Aura in same visual slot
+				)
 			{
 				slot = i;
+				if( m_target->m_auras[i] && m_target->m_auras[i]->GetSpellId() == GetSpellId() )
+					recycleslot = 1;
 				break;
 			}
 		}
 	}
 	else
 	{
-		for (i = MAX_POSITIVE_AURAS; i < MAX_AURAS; i++)
+		for (i = MAX_NEGATIVE_VISUAL_AURAS_START; i < MAX_NEGATIVE_VISUAL_AURAS_END; i++)
 		{
 			//if (m_target->GetUInt32Value((uint16)(UNIT_FIELD_AURA + i)) == 0)
-			if(m_target->m_auras[i] == 0)
+			if( m_target->m_auras[i] == 0
+				|| m_target->m_auras[i]->GetSpellId() == GetSpellId() //store Aura in same visual slot
+				)
 			{
 				slot = i;
+				if( m_target->m_auras[i] && m_target->m_auras[i]->GetSpellId() == GetSpellId() )
+					recycleslot = 1;
 				break;
 			}
 		}
@@ -943,6 +951,9 @@ void Aura::AddAuraVisual()
 	}
 	m_visualSlot = m_target->AddAuraVisual(m_spellProto->Id, 1, IsPositive());
 
+	//we should have already updated duration in unit::Addaura
+	if( recycleslot == 1 )
+		return;
 	/*m_target->SetUInt32Value(UNIT_FIELD_AURA + slot, m_spellProto->Id);
 
 	uint8 flagslot = slot >> 3;
@@ -980,7 +991,7 @@ void Aura::AddAuraVisual()
 
 	//uint8 appslot = slot >> 1;
 
-	if( m_target->IsPlayer())
+	if( m_target->IsPlayer() )
 	{
 		/*WorldPacket data(SMSG_UPDATE_AURA_DURATION, 5);
 		data << m_visualSlot << (uint32)m_duration;
@@ -2418,7 +2429,7 @@ void Aura::SpellAuraDummy(bool apply)
 
 			// Remove other Lifeblooms - but do NOT handle unapply again
 			bool expired = true;
-			for(uint32 x=0;x<MAX_AURAS;x++)
+			for(uint32 x=MAX_POSITIVE_AURAS_EXTEDED_START;x<MAX_POSITIVE_AURAS_EXTEDED_END;x++)
 			{
 				if(m_target->m_auras[x])
 				{
@@ -3311,7 +3322,7 @@ void Aura::SpellAuraModStealth(bool apply)
 		// hack fix for vanish stuff
 		if( m_spellProto->NameHash == SPELL_HASH_VANISH && m_target->GetTypeId() == TYPEID_PLAYER )	 // Vanish
 		{
-			for( uint32 x = MAX_POSITIVE_AURAS; x < MAX_AURAS; x++ )
+			for( uint32 x = MAX_POSITIVE_AURAS_EXTEDED_START; x < MAX_POSITIVE_AURAS_EXTEDED_END; x++ )
 			{
 				if( m_target->m_auras[x] != NULL )
 				{
@@ -4417,7 +4428,7 @@ void Aura::SpellAuraModShapeshift(bool apply)
 		// remove the caster from imparing movements
 		if( freeMovements )
 		{
-			for( uint32 x = MAX_POSITIVE_AURAS; x < MAX_AURAS; x++ )
+			for( uint32 x = MAX_POSITIVE_AURAS_EXTEDED_START; x < MAX_POSITIVE_AURAS_EXTEDED_END; x++ )
 			{
 				if( m_target->m_auras[x] != NULL )
 				{
@@ -4498,7 +4509,7 @@ void Aura::SpellAuraModSchoolImmunity(bool apply)
 			return;
 
 		Aura * pAura;
-		for(uint32 i = MAX_POSITIVE_AURAS; i < MAX_AURAS; ++i)
+		for(uint32 i = MAX_POSITIVE_AURAS_EXTEDED_START; i < MAX_POSITIVE_AURAS_EXTEDED_END; ++i)
 		{
 			pAura = m_target->m_auras[i];
 			if( pAura != this && pAura != NULL && !pAura->IsPassive() && !pAura->IsPositive() && !(pAura->GetSpellProto()->Attributes & ATTRIBUTES_IGNORE_INVULNERABILITY) )
@@ -4560,7 +4571,7 @@ void Aura::SpellAuraModDispelImmunity(bool apply)
 
 	if(apply)
 	{
-		for(uint32 x=0;x<MAX_AURAS;x++)
+		for(uint32 x=MAX_POSITIVE_AURAS_EXTEDED_START;x<MAX_POSITIVE_AURAS_EXTEDED_END;x++)
 		{
             // HACK FIX FOR: 41425 and 25771
 			if(m_target->m_auras[x] && m_target->m_auras[x]->GetSpellId() != 41425 && m_target->m_auras[x]->GetSpellId() != 25771)
@@ -4880,16 +4891,21 @@ void Aura::EventPeriodicLeech(uint32 amount)
 			int32 count=0;
 
 			auras.clear();
-			for(uint32 x=MAX_POSITIVE_AURAS;x<MAX_AURAS;x++) {
-				if(m_target->m_auras[x]) {
+			for(uint32 x=MAX_NEGATIVE_AURAS_EXTEDED_START;x<MAX_NEGATIVE_AURAS_EXTEDED_END;x++)
+			{
+				if(m_target->m_auras[x])
+				{
 					Aura *aura = m_target->m_auras[x];
-					if (aura->GetSpellProto()->SpellFamilyName == 5) {
+					if (aura->GetSpellProto()->SpellFamilyName == 5)
+					{
 						skilllinespell *sk;
 
 						sk = objmgr.GetSpellSkill(aura->GetSpellId());
-						if(sk && sk->skilline == SKILL_AFFLICTION) {
+						if(sk && sk->skilline == SKILL_AFFLICTION) 
+						{
 							itx = auras.find(aura->GetCasterGUID());
-							if (itx == auras.end()) {
+							if (itx == auras.end())
+							{
 								std::set<uint32> *ids = new std::set<uint32>;
 
 								auras.insert(make_pair(aura->GetCasterGUID(),ids));
@@ -4897,7 +4913,8 @@ void Aura::EventPeriodicLeech(uint32 amount)
 							}
 
 							std::set<uint32> *ids = itx->second;
-							if (ids->find(aura->GetSpellId()) == ids->end()) {
+							if (ids->find(aura->GetSpellId()) == ids->end())
+							{
 								ids->insert(aura->GetSpellId());
 							}
 						}
@@ -4905,11 +4922,13 @@ void Aura::EventPeriodicLeech(uint32 amount)
 				}
 			}
 
-			if (auras.size()) {
+			if (auras.size())
+			{
 				itx = auras.begin();
-				while (itx != auras.end()) {
+				while (itx != auras.end())
+				{
 					itx2 = itx++;
-					count+= itx2->second->size();
+					count+= (int32)itx2->second->size();
 					delete itx2->second;
 				}
 			}
@@ -5756,7 +5775,7 @@ void Aura::SpellAuraMechanicImmunity(bool apply)
 			if(m_spellProto->Id==42292)
 			{
 				// insignia of the A/H
-				for(uint32 x= MAX_POSITIVE_AURAS; x < MAX_AURAS; ++x)
+				for(uint32 x= MAX_NEGATIVE_AURAS_EXTEDED_START; x < MAX_NEGATIVE_AURAS_EXTEDED_END; ++x)
 				{
 					if(m_target->m_auras[x])
 					{

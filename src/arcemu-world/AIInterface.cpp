@@ -1210,7 +1210,7 @@ void AIInterface::_UpdateCombat(uint32 p_time)
 							{
 								float our_facing=m_Unit->calcRadAngle(m_Unit->GetPositionX(),m_Unit->GetPositionY(),GetNextTarget()->GetPositionX(),GetNextTarget()->GetPositionY());
 								float his_facing=GetNextTarget()->GetOrientation();
-								if(fabs(our_facing-his_facing)<CREATURE_DAZE_TRIGGER_ANGLE && !GetNextTarget()->HasNegativeAura(CREATURE_SPELL_TO_DAZE))
+								if(fabs(our_facing-his_facing)<CREATURE_DAZE_TRIGGER_ANGLE && !GetNextTarget()->HasAura(CREATURE_SPELL_TO_DAZE))
 								{
 									SpellEntry *info = dbcSpell.LookupEntry(CREATURE_SPELL_TO_DAZE);
 									Spell *sp = SpellPool.PooledNew();

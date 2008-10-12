@@ -514,7 +514,7 @@ void Group::RemovePlayer(PlayerInfo * info)
 		}
 
 		//Remove some party auras.
-		for (uint32 i=0;i<MAX_POSITIVE_AURAS;i++)
+		for (uint32 i=MAX_POSITIVE_AURAS_EXTEDED_START;i<MAX_POSITIVE_AURAS_EXTEDED_END;i++)
 		{
 			if (pPlayer->m_auras[i] && 
 				pPlayer->m_auras[i]->m_areaAura && 

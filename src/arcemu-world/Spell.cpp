@@ -3913,7 +3913,7 @@ uint8 Spell::CanCast(bool tolerate)
 			if( IsStealthSpell() || IsInvisibilitySpell() )
 			{
 				//if we have Faerie Fire, we cannot stealth or turn invisible
-				if( u_caster->HasNegativeAuraWithNameHash( SPELL_HASH_FAERIE_FIRE ) || u_caster->HasNegativeAuraWithNameHash( SPELL_HASH_FAERIE_FIRE__FERAL_ ) )
+				if( u_caster->FindAuraByNameHash( SPELL_HASH_FAERIE_FIRE ) || u_caster->FindAuraByNameHash( SPELL_HASH_FAERIE_FIRE__FERAL_ ) )
 					return SPELL_FAILED_SPELL_UNAVAILABLE;
 			}
 
@@ -5043,7 +5043,7 @@ void UnapplyDiminishingReturnTimer(Unit * Target, SpellEntry * spell)
 	causing corruption on the diminishAura counter and locking the entire diminishing group.
 	So it's better to check the active auras one by one*/
 	Target->m_diminishAuraCount[Grp] = 0;
-	for( uint32 x = MAX_POSITIVE_AURAS; x < MAX_AURAS; x++ )
+	for( uint32 x = MAX_NEGATIVE_AURAS_EXTEDED_START; x < MAX_NEGATIVE_AURAS_EXTEDED_END; x++ )
 	{
 		if( Target->m_auras[x] )
 		{	

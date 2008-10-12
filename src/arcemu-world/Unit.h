@@ -24,10 +24,22 @@
 class AIInterface;
 class DynamicObject;
 
-#define MAX_AURAS 56 // 40 buff slots, 16 debuff slots.
-#define MAX_POSITIVE_AURAS 40 // ?
+//these refer to visibility ranges. We need to store each stack of the aura and not just visible count.
+#define MAX_POSITIVE_VISUAL_AURAS_START 0 // 
+#define MAX_POSITIVE_VISUAL_AURAS_END 40 // 
+#define MAX_NEGATIVE_VISUAL_AURAS_START MAX_POSITIVE_VISUAL_AURAS_END // 40 buff slots, 16 debuff slots.
+#define MAX_NEGATIVE_VISUAL_AURAS_END MAX_POSITIVE_VISUAL_AURAS_END+16 // 40 buff slots, 16 debuff slots.
 //you hardly get to this but since i was testing i got to it :) : 20 items * 11 (enchants) + 61 talents
-#define MAX_PASSIVE_AURAS 281   // grep: i mananged to break this.. :p seems we need more
+#define MAX_PASSIVE_AURAS_START 0   // these are reserved for talents. No need to check them for removes ?
+#define MAX_PASSIVE_AURAS_END 80   // these are reserved for talents. No need to check them for removes ?
+#define MAX_POSITIVE_AURAS_EXTEDED_START 80   //these are not talents.These are stacks from visible auras
+#define MAX_POSITIVE_AURAS_EXTEDED_END 180   //these are not talents.These are stacks from visible auras
+#define MAX_NEGATIVE_AURAS_EXTEDED_START 180   //these are not talents.These are stacks from visible auras
+#define MAX_NEGATIVE_AURAS_EXTEDED_END 280   //these are not talents.These are stacks from visible auras
+#define MAX_REMOVABLE_AURAS_START (MAX_POSITIVE_AURAS_EXTEDED_START) //do we need to handle talents at all ?
+#define MAX_REMOVABLE_AURAS_END (MAX_NEGATIVE_AURAS_EXTEDED_END) //do we need to handle talents at all ?
+#define MAX_TOTAL_AURAS_START (MAX_PASSIVE_AURAS_START)
+#define MAX_TOTAL_AURAS_END (MAX_REMOVABLE_AURAS_END)
 
 bool SERVER_DECL Rand(float);
 
@@ -793,10 +805,11 @@ public:
 	uint8 m_invisFlag;
 	int32 m_invisDetect[INVIS_FLAG_TOTAL];
 
-	bool HasAura(uint32 spellid);
+	bool HasAura(uint32 spellid); //this checks passive auras too
 	bool HasAuraVisual(uint32 visualid);//not spell id!!!
-	bool HasActiveAura(uint32 spelllid);
-	bool HasActiveAura(uint32 spelllid, uint64 guid);
+	bool HasActiveAura(uint32 spelllid); //this does not check passive auras
+	bool HasActiveAura(uint32 spelllid, uint64 guid);//this does not check passive auras
+	bool HasVisialPosAurasOfNameHashWithCaster(uint32 namehash, Unit * caster);
 	
 	void GiveGroupXP(Unit *pVictim, Player *PlayerInGroup);
 
@@ -816,8 +829,6 @@ public:
 	bool RemoveAura(uint32 spellId);
 	bool RemoveAura(uint32 spellId,uint64 guid);
 	bool RemoveAuraByNameHash(uint32 namehash);//required to remove weaker instances of a spell
-	bool RemoveAuraPosByNameHash(uint32 namehash);//required to remove weaker instances of a spell
-	bool RemoveAuraNegByNameHash(uint32 namehash);//required to remove weaker instances of a spell
 	bool RemoveAuras(uint32 * SpellIds);
 	bool RemoveAurasByHeal();
 
@@ -831,17 +842,14 @@ public:
 	bool RemoveAllAuras(uint32 spellId,uint64 guid); //remove stacked auras but only if they come from the same caster. Shaman purge If GUID = 0 then removes all auras with this spellid
     void RemoveAllAuraType(uint32 auratype);//ex:to remove morph spells
     void RemoveAllAuraFromSelfType2(uint32 auratype, uint32 butskip_hash);//ex:to remove morph spells
-	bool RemoveAllAuraByNameHash(uint32 namehash);//required to remove weaker instances of a spell
-	uint32 RemoveAllPosAuraByNameHash(uint32 namehash);//required to remove weaker instances of a spell
-	uint32 RemoveAllNegAuraByNameHash(uint32 namehash);//required to remove weaker instances of a spell
+	uint32 RemoveAllAuraByNameHash(uint32 namehash);//required to remove weaker instances of a spell
 	bool RemoveAllAurasByMechanic( uint32 MechanicType , uint32 MaxDispel , bool HostileOnly ); // Removes all (de)buffs on unit of a specific mechanic type.
 	void RemoveAllMovementImpairing();
 
 	void RemoveNegativeAuras();
-	void RemoveAllAreaAuras();
 	// Temporary remove all auras
 	   // Find auras
-	Aura *FindAuraPosByNameHash(uint32 namehash);
+	Aura *FindAuraByNameHash(uint32 namehash);
 	Aura* FindAura(uint32 spellId);
 	Aura* FindAura(uint32 spellId, uint64 guid);
 	bool SetAurDuration(uint32 spellId,Unit* caster,uint32 duration);
@@ -1185,7 +1193,7 @@ public:
 	uint32 m_stealth;
 	bool m_can_stealth;
 
-	Aura* m_auras[MAX_AURAS+MAX_PASSIVE_AURAS];   
+	Aura* m_auras[MAX_TOTAL_AURAS_END];   
 
 	int32 m_modlanguage;
 	
@@ -1227,9 +1235,9 @@ public:
 	void RemoveAurasByBuffType(uint32 buff_type, const uint64 &guid,uint32 skip);
 	bool HasAurasOfBuffType(uint32 buff_type, const uint64 &guid,uint32 skip);
 	int	 HasAurasWithNameHash(uint32 name_hash);
-	bool HasNegativeAuraWithNameHash(uint32 name_hash); //just to reduce search range in some cases
-	bool HasNegativeAura(uint32 spell_id); //just to reduce search range in some cases
-	uint32 CountNegativeAura(uint32 spell_id); //just to reduce search range in some cases
+//	bool HasNegativeAuraWithNameHash(uint32 name_hash); //just to reduce search range in some cases
+//	bool HasNegativeAura(uint32 spell_id); //just to reduce search range in some cases
+//	uint32 CountNegativeAura(uint32 spell_id); //just to reduce search range in some cases
 	bool IsPoisoned();
 
 	AuraCheckResponse AuraCheck(uint32 name_hash, uint32 rank, Object *caster=NULL);
@@ -1255,7 +1263,7 @@ public:
 
 	//! returns: aura stack count
 	uint32 ModAuraStackCount(uint32 slot, int32 count);
-	uint8 m_auraStackCount[MAX_AURAS];
+	uint8 m_auraStackCount[MAX_NEGATIVE_VISUAL_AURAS_END];
 
 	void RemoveAurasOfSchool(uint32 School, bool Positive, bool Immune);
 	SpellEntry * pLastSpell;
@@ -1284,7 +1292,6 @@ public:
 //	bool m_spellsbusy;
 	void DispelAll(bool positive);
 
-	bool HasAurasOfNameHashWithCaster(uint32 namehash, Unit * caster);
 	int8 m_hasVampiricTouch;
 	int8 m_hasVampiricEmbrace;
 

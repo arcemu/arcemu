@@ -297,13 +297,13 @@ Unit::Unit()
 	trackStealth = false;
 
 	m_threatModifyer = 0;
-	memset(m_auras, 0, (MAX_AURAS+MAX_PASSIVE_AURAS)*sizeof(Aura*));
+	memset(m_auras, 0, (MAX_TOTAL_AURAS_END)*sizeof(Aura*));
 	
 	// diminishing return stuff
 	memset(m_diminishAuraCount, 0, 14);
 	memset(m_diminishCount, 0, 14*2);
 	memset(m_diminishTimer, 0, 14*2);
-	memset(m_auraStackCount, 0, MAX_AURAS);
+	memset(m_auraStackCount, 0, MAX_NEGATIVE_VISUAL_AURAS_END);
 	m_diminishActive = false;
 	dynObj = 0;
 	pLastSpell = 0;
@@ -3739,7 +3739,7 @@ void Unit::Strike( Unit* pVictim, uint32 weapon_damage_type, SpellEntry* ability
 		// TODO: find the opcode to refresh the aura or just remove it and re add it
 		// rather than fuck with duration
 		// DONE: Remove + readded it :P
-		for( uint32 x = MAX_POSITIVE_AURAS; x <= MAX_AURAS; x++ )
+		for( uint32 x = MAX_NEGATIVE_AURAS_EXTEDED_START; x <= MAX_NEGATIVE_AURAS_EXTEDED_END; x++ )
 		{
 			if( pVictim->m_auras[x] != NULL && pVictim->m_auras[x]->GetUnitCaster() != NULL && pVictim->m_auras[x]->GetUnitCaster()->GetGUID() == GetGUID() && pVictim->m_auras[x]->GetSpellProto()->BGR_one_buff_from_caster_on_1target == SPELL_TYPE_INDEX_JUDGEMENT )
 			{
@@ -4114,6 +4114,7 @@ void Unit::AddAura(Aura *aur)
 			// Can't use flying auras in non-outlands.
 			if( aur->GetSpellProto()->EffectApplyAuraName[i] == 208 || aur->GetSpellProto()->EffectApplyAuraName[i] == 207 )
 			{
+				sEventMgr.RemoveEvents(aur);
 				AuraPool.PooledDelete( aur );
 				return;
 			}
@@ -4126,7 +4127,8 @@ void Unit::AddAura(Aura *aur)
 		return;
 	}
 
-	uint32 AlreadyApplied = 0, VisibleAuraCount = 0, CheckLimit, StartCheck, AuraExtensionCheck;
+	uint32 AlreadyApplied = 0, CheckLimit, StartCheck;
+	uint16 AuraSlot = 0xFFFF;
 	if( !aur->IsPassive() 
 		// Nasty check for Blood Fury debuff (spell system based on namehashes is bs anyways)
 		&& aur->GetSpellProto()->always_apply == false 
@@ -4166,15 +4168,13 @@ void Unit::AddAura(Aura *aur)
 		//check if we already have this aura by this caster -> update duration
 		if( aur->IsPositive() )
 		{
-			StartCheck = 0;
-			CheckLimit = MAX_POSITIVE_AURAS;
-			AuraExtensionCheck = CheckLimit - StartCheck;
+			StartCheck = MAX_PASSIVE_AURAS_START; //also check talents to make sure they will not stack. Maybe not required ?
+			CheckLimit = MAX_POSITIVE_AURAS_EXTEDED_END;
 		}
 		else
 		{
-			StartCheck = MAX_POSITIVE_AURAS;
-			CheckLimit = MAX_AURAS;
-			AuraExtensionCheck = CheckLimit - StartCheck;
+			StartCheck = MAX_NEGATIVE_AURAS_EXTEDED_START;
+			CheckLimit = MAX_NEGATIVE_AURAS_EXTEDED_END;
 		}
 		for( uint32 x = StartCheck; x < CheckLimit; x++ )
 		{
@@ -4236,17 +4236,9 @@ void Unit::AddAura(Aura *aur)
 						break;
 					}
 				}
-
-				//Zack: we need to check if we are using passive auraspace for visible aura extension
-				VisibleAuraCount++;
-				if( VisibleAuraCount == AuraExtensionCheck )
-				{
-					CheckLimit = MAX_AURAS + MAX_PASSIVE_AURAS; //Zack: we store auras in invisible range if visible one is full so we need to also check on these
-					//!!!!!!!!!!we are changing index of loop this should be last thing we do in loop !
-					x = MAX_AURAS;
-					continue; //just safety in case you forgot and add code using X 
-				}
 			}
+			else if( AuraSlot == 0xFFFF )
+				AuraSlot = x;
 		}
 
 		if(deleteAur)
@@ -4256,7 +4248,16 @@ void Unit::AddAura(Aura *aur)
 			return;
 		}
 	}
-			
+	
+	//check if we can store this aura in some empty slot
+	if( AuraSlot == 0xFFFF )
+	{
+		sLog.outError("Aura error in active aura. ");
+		sEventMgr.RemoveEvents(aur);
+		AuraPool.PooledDelete( aur );
+		return;
+	}
+
 	////////////////////////////////////////////////////////
 	if(aur->GetSpellProto()->SpellGroupType && m_objectTypeId == TYPEID_PLAYER)
 	{
@@ -4269,16 +4270,16 @@ void Unit::AddAura(Aura *aur)
 		}
 	}
 	////////////////////////////////////////////////////////
+	// Zack : No idea how a new aura can already have a slot. Leaving it for compatibility
 	if( aur->m_auraSlot != 0xffff )
 		m_auras[ aur->m_auraSlot ] = NULL;
 
-	aur->m_auraSlot = 0xffff;
-	aur->ApplyModifiers(true);
+	aur->m_auraSlot = AuraSlot;
+
 	//Zack : if all mods were resisted it means we did not apply anything and we do not need to delete this spell eighter
 	if( aur->TargetWasImuneToMods() )
 	{
-		//notify client that we are imune to this spell
-		aur->ApplyModifiers( false );	//this should have no effect
+		//TODO : notify client that we are imune to this spell
 		sEventMgr.RemoveEvents(aur);
 		AuraPool.PooledDelete( aur );
 		return;
@@ -4286,60 +4287,33 @@ void Unit::AddAura(Aura *aur)
 
 	if( !aur->IsPassive() )
 	{	
-		//Zack: we register only first instance as visual aura and rest as invisible ones. They should all expire at the same time
-		//Zack2: well actually it's not worth doing this since it consumes more time then the gain is :P
-//		if( AlreadyApplied == 0 )
-			aur->AddAuraVisual();
-		if( aur->m_auraSlot == 0xffff )
-		{
-			//add to invisible slot
-			for( uint16 x = MAX_AURAS; x < MAX_AURAS + MAX_PASSIVE_AURAS; x++ )
-			{
-				if( !m_auras[x] )
-				{
-					aur->m_auraSlot = x;
-					m_auras[x] = aur;
-					break;
-				}
-			}
-			if( aur->m_auraSlot == 0xffff )
-			{
-				sLog.outError("Aura error in active aura. ");
-				// for next loop.. lets kill the fucker
-				aur->Remove();
-				return;
-			} 
-
-			// add visual
-			AddAuraVisual(aur->GetSpellId(), 1, aur->IsPositive());
-		}
-		else
-		{
-			m_auras[ aur->m_auraSlot ] = aur;
-		}
+		aur->AddAuraVisual();
+		m_auras[ aur->m_auraSlot ] = aur;
+		aur->ApplyModifiers(true);
 	}
 	else
 	{
         if((aur->m_spellProto->AttributesEx & 1024))
-        {
             aur->AddAuraVisual();
-        }
-		for(uint32 x=MAX_AURAS;x<MAX_AURAS+MAX_PASSIVE_AURAS;x++)
-		{
+
+		//we did search for a slot but we want another one :P
+		aur->m_auraSlot = 0xFFFF;
+		for(uint32 x=MAX_PASSIVE_AURAS_START;x<MAX_PASSIVE_AURAS_END;x++)
 			if(!m_auras[x])
 			{
 				aur->m_auraSlot = x;
 				m_auras[x] = aur;
 				break;
 			}
-		}
 		if( aur->m_auraSlot == 0xFFFF )
 		{
 			sLog.outError("Aura error in passive aura. removing. SpellId: %u", aur->GetSpellProto()->Id);
 			// for next loop.. lets kill the fucker
-			aur->Remove();
+			sEventMgr.RemoveEvents(aur);
+			AuraPool.PooledDelete( aur );
 			return;
 		}
+		aur->ApplyModifiers(true);
 	}
 
 	// We add 500ms here to allow for the last tick in DoT spells. This is a dirty hack, but at least it doesn't crash like my other method.
@@ -4350,13 +4324,16 @@ void Unit::AddAura(Aura *aur)
 			EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT | EVENT_FLAG_DELETES_OBJECT);
 	}
 
+	//have to hate these relocate events. They run in a separate thread :P
 	aur->RelocateEvents();
 
 	// Reaction from enemy AI
 	if(!aur->IsPositive() && aur->IsCombatStateAffecting())	  // Creature
 	{
 		Unit * pCaster = aur->GetUnitCaster();
-		if(pCaster && isAlive())
+		if( pCaster && isAlive() 
+			&& this->isAlive() //seems so logical i wonder why i put it here
+			)
 		{
 			pCaster->CombatStatus.OnDamageDealt(this);
 
@@ -4396,7 +4373,7 @@ bool Unit::RemoveAura(Aura *aur)
 
 bool Unit::RemoveAura(uint32 spellId)
 {//this can be speed up, if we know passive \pos neg
-	for(uint32 x=0;x<MAX_AURAS+MAX_PASSIVE_AURAS;x++)
+	for(uint32 x=MAX_TOTAL_AURAS_START;x<MAX_TOTAL_AURAS_END;x++)
 	{
 		if(m_auras[x])
 		{
@@ -4415,9 +4392,9 @@ bool Unit::RemoveAuras(uint32 * SpellIds)
 	if(!SpellIds || *SpellIds == 0)
 		return false;
 
-	uint32 x=0,y;
+	uint32 x,y;
 	bool res = false;
-	for(;x<MAX_AURAS+MAX_PASSIVE_AURAS;x++)
+	for(x=MAX_TOTAL_AURAS_START;x<MAX_TOTAL_AURAS_END;x++)
 	{
 		if(m_auras[x])
 		{
@@ -4437,7 +4414,7 @@ bool Unit::RemoveAuras(uint32 * SpellIds)
 bool Unit::RemoveAurasByHeal()
 {
 	bool res = false;
-	for( uint32 x = 0; x < MAX_AURAS + MAX_PASSIVE_AURAS; x++ )
+	for( uint32 x = MAX_TOTAL_AURAS_START; x < MAX_TOTAL_AURAS_END; x++ )
 	{
 		if ( m_auras[x] )
 		{
@@ -4481,7 +4458,7 @@ bool Unit::RemoveAurasByHeal()
 
 bool Unit::RemoveAura(uint32 spellId, uint64 guid)
 {   
-	for(uint32 x=0;x<MAX_AURAS+MAX_PASSIVE_AURAS;x++)
+	for(uint32 x=MAX_TOTAL_AURAS_START;x<MAX_TOTAL_AURAS_END;x++)
 	{
 		if(m_auras[x])
 		{
@@ -4497,39 +4474,7 @@ bool Unit::RemoveAura(uint32 spellId, uint64 guid)
 
 bool Unit::RemoveAuraByNameHash(uint32 namehash)
 {
-	for(uint32 x=0;x<MAX_AURAS;x++)
-	{
-		if(m_auras[x])
-		{
-			if(m_auras[x]->GetSpellProto()->NameHash==namehash)
-			{
-				m_auras[x]->Remove();
-				return true;
-			}
-		}
-	}
-	return false;
-}
-
-bool Unit::RemoveAuraPosByNameHash(uint32 namehash)
-{
-	for(uint32 x=0;x<MAX_POSITIVE_AURAS;x++)
-	{
-		if(m_auras[x])
-		{
-			if(m_auras[x]->GetSpellProto()->NameHash==namehash)
-			{
-				m_auras[x]->Remove();
-				return true;
-			}
-		}
-	}
-	return false;
-}
-
-bool Unit::RemoveAuraNegByNameHash(uint32 namehash)
-{
-	for(uint32 x=MAX_POSITIVE_AURAS;x<MAX_AURAS;x++)
+	for(uint32 x=MAX_TOTAL_AURAS_START;x<MAX_TOTAL_AURAS_END;x++)
 	{
 		if(m_auras[x])
 		{
@@ -4546,7 +4491,7 @@ bool Unit::RemoveAuraNegByNameHash(uint32 namehash)
 bool Unit::RemoveAllAuras(uint32 spellId, uint64 guid)
 {   
 	bool res = false;
-	for(uint32 x=0;x<MAX_AURAS+MAX_PASSIVE_AURAS;x++)
+	for(uint32 x=MAX_TOTAL_AURAS_START;x<MAX_TOTAL_AURAS_END;x++)
 	{
 		if(m_auras[x])
 		{
@@ -4563,44 +4508,10 @@ bool Unit::RemoveAllAuras(uint32 spellId, uint64 guid)
 	return res;
 }
 
-bool Unit::RemoveAllAuraByNameHash(uint32 namehash)
-{
-	bool res = false;
-	for(uint32 x=0;x<MAX_AURAS;x++)
-	{
-		if(m_auras[x])
-		{
-			if(m_auras[x]->GetSpellProto()->NameHash==namehash)
-			{
-				m_auras[x]->Remove();
-				res=true;
-			}
-		}
-	}
-	return res;
-}
-
-uint32 Unit::RemoveAllPosAuraByNameHash(uint32 namehash)
+uint32 Unit::RemoveAllAuraByNameHash(uint32 namehash)
 {
 	uint32 res = 0;
-	for(uint32 x=0;x<MAX_POSITIVE_AURAS;x++)
-	{
-		if(m_auras[x])
-		{
-			if(m_auras[x]->GetSpellProto()->NameHash==namehash)
-			{
-				m_auras[x]->Remove();
-				res++;
-			}
-		}
-	}
-	return res;
-}
-
-uint32 Unit::RemoveAllNegAuraByNameHash(uint32 namehash)
-{
-	uint32 res = 0;
-	for(uint32 x=MAX_POSITIVE_AURAS;x<MAX_AURAS;x++)
+	for(uint32 x=MAX_TOTAL_AURAS_START;x<MAX_TOTAL_AURAS_END;x++)
 	{
 		if(m_auras[x])
 		{
@@ -4616,51 +4527,42 @@ uint32 Unit::RemoveAllNegAuraByNameHash(uint32 namehash)
 
 void Unit::RemoveNegativeAuras()
 {
-	for(uint32 x=MAX_POSITIVE_AURAS;x<MAX_AURAS;x++)
+	for(uint32 x=MAX_NEGATIVE_AURAS_EXTEDED_START;x<MAX_REMOVABLE_AURAS_END;x++)
 	{
 		if(m_auras[x])
 		{
             if(m_auras[x]->GetSpellProto()->AttributesExC & CAN_PERSIST_AND_CASTED_WHILE_DEAD)
                 continue;
             else
-            {
 			    m_auras[x]->Remove();
-            }
 		}
 	}
 }
 
 void Unit::RemoveAllAuras()
 {
-	for(uint32 x=0;x<MAX_AURAS+MAX_PASSIVE_AURAS;x++)
-	{
+	for(uint32 x=MAX_TOTAL_AURAS_START;x<MAX_TOTAL_AURAS_END;x++)
 		if(m_auras[x])
-		{
 			m_auras[x]->Remove();
-		}
-	}
 }
 
 //ex:to remove morph spells
 void Unit::RemoveAllAuraType(uint32 auratype)
 {
-    for(uint32 x=0;x<MAX_AURAS;x++)
-    {
+    for(uint32 x=MAX_TOTAL_AURAS_START;x<MAX_TOTAL_AURAS_END;x++)
 		if(m_auras[x])
 		{
 			SpellEntry *proto=m_auras[x]->GetSpellProto();
 			if(proto->EffectApplyAuraName[0]==auratype || proto->EffectApplyAuraName[1]==auratype || proto->EffectApplyAuraName[2]==auratype)
 				RemoveAura(m_auras[x]->GetSpellId());//remove all morph auras containig to this spell (like wolf motph also gives speed)
 		}
-    }
 }
 
 
 //ex:to remove morph spells
 void Unit::RemoveAllAuraFromSelfType2(uint32 auratype, uint32 butskip_hash)
 {
-    for(uint32 x=0;x<MAX_AURAS;x++)
-    {
+    for(uint32 x=MAX_TOTAL_AURAS_START;x<MAX_TOTAL_AURAS_END;x++)
 		if(m_auras[x])
 		{
 			SpellEntry *proto=m_auras[x]->GetSpellProto();
@@ -4670,7 +4572,6 @@ void Unit::RemoveAllAuraFromSelfType2(uint32 auratype, uint32 butskip_hash)
 				)
 				RemoveAura(m_auras[x]->GetSpellId());//remove all morph auras containig to this spell (like wolf motph also gives speed)
 		}
-    }
 }
 
 bool Unit::SetAurDuration(uint32 spellId,Unit* caster,uint32 duration)
@@ -4723,48 +4624,29 @@ bool Unit::SetAurDuration(uint32 spellId,uint32 duration)
 }
 
 
-Aura* Unit::FindAuraPosByNameHash(uint32 namehash)
+Aura* Unit::FindAuraByNameHash(uint32 namehash)
 {
-	for(uint32 x=0;x<MAX_POSITIVE_AURAS;x++)
-	{
-		if(m_auras[x])
-		{
-			if(m_auras[x]->GetSpellProto()->NameHash==namehash)
-			{
+	for(uint32 x=MAX_TOTAL_AURAS_START;x<MAX_TOTAL_AURAS_END;x++)
+		if( m_auras[x] && m_auras[x]->GetSpellProto()->NameHash==namehash )
 				return m_auras[x];
-			}
-		}
-	}
 	return NULL;
 }
 
 Aura* Unit::FindAura(uint32 spellId)
 {
-	for(uint32 x=0;x<MAX_AURAS+MAX_PASSIVE_AURAS;x++)
-	{
+	for(uint32 x=MAX_TOTAL_AURAS_START;x<MAX_TOTAL_AURAS_END;x++)
 		if(m_auras[x])
-		{
 			if(m_auras[x]->GetSpellId()==spellId)
-			{
 				return m_auras[x];
-			}
-		}
-	}
 	return NULL;
 }
 
 Aura* Unit::FindAura(uint32 spellId, uint64 guid)
 {
-	for(uint32 x=0;x<MAX_AURAS+MAX_PASSIVE_AURAS;x++)
-	{
+	for(uint32 x=MAX_TOTAL_AURAS_START;x<MAX_TOTAL_AURAS_END;x++)
 		if(m_auras[x])
-		{
 			if(m_auras[x]->GetSpellId() == spellId && m_auras[x]->m_casterGuid == guid)
-			{
 				return m_auras[x];
-			}
-		}
-	}
 	return NULL;
 }
 
@@ -5401,7 +5283,7 @@ void Unit::SetStandState(uint8 standstate)
 void Unit::RemoveAurasByInterruptFlag(uint32 flag)
 {
 	Aura * a;
-	for(uint32 x=0;x<MAX_AURAS;x++)
+	for(uint32 x=MAX_TOTAL_AURAS_START;x<MAX_TOTAL_AURAS_END;x++)
 	{
 		a = m_auras[x];
 		if(a == NULL)
@@ -5418,18 +5300,16 @@ void Unit::RemoveAurasByInterruptFlag(uint32 flag)
 
 bool Unit::HasAuraVisual(uint32 visualid)
 {
-	for(uint32 x=0;x<MAX_AURAS+MAX_PASSIVE_AURAS;x++)
-	if(m_auras[x] && m_auras[x]->GetSpellProto()->SpellVisual==visualid)
-	{
-		return true;
-	}
-
+	//passive auras do not have visual (at least when code was written)
+	for(uint32 x=MAX_REMOVABLE_AURAS_START;x<MAX_REMOVABLE_AURAS_END;x++)
+		if(m_auras[x] && m_auras[x]->GetSpellProto()->SpellVisual==visualid)
+			return true;
 	return false;
 }
 
 bool Unit::HasAura(uint32 spellid)
 {
-	for(uint32 x=0;x<MAX_AURAS+MAX_PASSIVE_AURAS;x++)
+	for(uint32 x=MAX_TOTAL_AURAS_START;x<MAX_TOTAL_AURAS_END;x++)
 		if(m_auras[x] && m_auras[x]->GetSpellId()== spellid)
 		{
 			return true;
@@ -5441,18 +5321,14 @@ bool Unit::HasAura(uint32 spellid)
 
 void Unit::DropAurasOnDeath()
 {
-	for(uint32 x=0;x<MAX_AURAS + MAX_PASSIVE_AURAS;x++)
-    {
+	for(uint32 x=MAX_TOTAL_AURAS_START;x<MAX_TOTAL_AURAS_END;x++)
         if(m_auras[x])
         {
             if(m_auras[x] && m_auras[x]->GetSpellProto()->AttributesExC & CAN_PERSIST_AND_CASTED_WHILE_DEAD)
                 continue;
             else
-	        {
 		        m_auras[x]->Remove();
-	        }
         }
-    }
 }
 
 void Unit::UpdateSpeed()
@@ -5502,22 +5378,27 @@ void Unit::UpdateSpeed()
 
 bool Unit::HasActiveAura(uint32 spellid)
 {
-	for(uint32 x=0;x<MAX_AURAS;x++)
-	if(m_auras[x] && m_auras[x]->GetSpellId()==spellid)
-	{
-		return true;
-	}
+	for(uint32 x=MAX_REMOVABLE_AURAS_START;x<MAX_REMOVABLE_AURAS_END;x++)
+		if(m_auras[x] && m_auras[x]->GetSpellId()==spellid)
+			return true;
 
 	return false;
 }
 
 bool Unit::HasActiveAura(uint32 spellid,uint64 guid)
 {
-	for(uint32 x=0;x<MAX_AURAS;x++)
-	if(m_auras[x] && m_auras[x]->GetSpellId()==spellid && m_auras[x]->m_casterGuid==guid)
-	{
-		return true;
-	}
+	for(uint32 x=MAX_REMOVABLE_AURAS_START;x<MAX_REMOVABLE_AURAS_END;x++)
+		if(m_auras[x] && m_auras[x]->GetSpellId()==spellid && m_auras[x]->m_casterGuid==guid)
+			return true;
+
+	return false;
+}
+
+bool Unit::HasVisialPosAurasOfNameHashWithCaster(uint32 namehash, Unit * caster)
+{
+	for(uint32 i = MAX_POSITIVE_AURAS_EXTEDED_START; i < MAX_POSITIVE_AURAS_EXTEDED_END; ++i)
+		if( m_auras[i] && m_auras[i]->GetSpellProto()->NameHash == namehash && m_auras[i]->GetCasterGUID() == caster->GetGUID() )
+			return true;
 
 	return false;
 }
@@ -5649,7 +5530,7 @@ void Unit::RemoveAurasByBuffType(uint32 buff_type, const uint64 &guid, uint32 sk
 {
 	uint64 sguid = buff_type >= SPELL_TYPE_BLESSING ? guid : 0;
 
-	for(uint32 x=0;x<MAX_AURAS;x++)
+	for(uint32 x=MAX_TOTAL_AURAS_START;x<MAX_TOTAL_AURAS_END;x++)
 	{
 		if(	m_auras[x] //have aura
 			&& (m_auras[x]->GetSpellProto()->BGR_one_buff_on_target & buff_type) //aura is in same group
@@ -5662,7 +5543,7 @@ void Unit::RemoveAurasByBuffType(uint32 buff_type, const uint64 &guid, uint32 sk
 
 void Unit::RemoveAurasByBuffIndexType(uint32 buff_index_type, const uint64 &guid)
 {
-	for(uint32 x=0;x<MAX_AURAS;x++)
+	for(uint32 x=MAX_TOTAL_AURAS_START;x<MAX_TOTAL_AURAS_END;x++)
 	{
 		if(m_auras[x] && m_auras[x]->GetSpellProto()->BGR_one_buff_from_caster_on_1target == buff_index_type)
 			if(!guid || (guid && m_auras[x]->m_casterGuid == guid))
@@ -5674,7 +5555,7 @@ bool Unit::HasAurasOfBuffType(uint32 buff_type, const uint64 &guid,uint32 skip)
 {
 	uint64 sguid = (buff_type == SPELL_TYPE_BLESSING || buff_type == SPELL_TYPE_WARRIOR_SHOUT) ? guid : 0;
 
-	for(uint32 x=0;x<MAX_AURAS;x++)
+	for(uint32 x=MAX_TOTAL_AURAS_START;x<MAX_TOTAL_AURAS_END;x++)
 	{
 		if(m_auras[x] && m_auras[x]->GetSpellProto()->BGR_one_buff_on_target & buff_type && m_auras[x]->GetSpellId()!=skip)
 			if(!sguid || (m_auras[x]->m_casterGuid == sguid))
@@ -5693,7 +5574,7 @@ AuraCheckResponse Unit::AuraCheck(uint32 name_hash, uint32 rank, Object *caster)
 	resp.Misc  = 0;
 
 	// look for spells with same namehash
-	for(uint32 x=0;x<MAX_AURAS;x++)
+	for(uint32 x=MAX_TOTAL_AURAS_START;x<MAX_TOTAL_AURAS_END;x++)
 	{
 //		if(m_auras[x] && m_auras[x]->GetSpellProto()->NameHash == name_hash && m_auras[x]->GetCaster()==caster)
 		if(m_auras[x] && m_auras[x]->GetSpellProto()->NameHash == name_hash)
@@ -5744,7 +5625,8 @@ AuraCheckResponse Unit::AuraCheck(uint32 name_hash, uint32 rank, Aura* aur, Obje
 
 void Unit::OnPushToWorld()
 {
-	for(uint32 x = 0; x < MAX_AURAS+MAX_PASSIVE_AURAS; ++x)
+	//Zack : we already relocated events on aura add ?
+	for(uint32 x = MAX_TOTAL_AURAS_START; x < MAX_TOTAL_AURAS_END; ++x)
 	{
 		if(m_auras[x] != 0)
 			m_auras[x]->RelocateEvents();
@@ -5779,9 +5661,8 @@ void Unit::RemoveFromWorld(bool free_guid)
 
 	Object::RemoveFromWorld(free_guid);
 
-
-	for(uint32 x = 0; x < MAX_AURAS+MAX_PASSIVE_AURAS; ++x)
-	{
+	//zack: should relocate new events to new eventmanager and not to -1
+	for(uint32 x = MAX_TOTAL_AURAS_START; x < MAX_TOTAL_AURAS_END; ++x)
 		if(m_auras[x] != 0)
 		{
 			if( m_auras[x]->m_deleted )
@@ -5789,17 +5670,15 @@ void Unit::RemoveFromWorld(bool free_guid)
 				m_auras[x] = NULL;
 				continue;
 			}
-
 			m_auras[x]->RelocateEvents();
 		}
-	}
 	m_aiInterface->WipeReferences();
 }
 
 void Unit::RemoveAurasByInterruptFlagButSkip(uint32 flag, uint32 skip)
 {
 	Aura * a;
-	for(uint32 x=0;x<MAX_AURAS;x++)
+	for(uint32 x=MAX_TOTAL_AURAS_START;x<MAX_TOTAL_AURAS_END;x++)
 	{
 		a = m_auras[x];
 		if(a == 0)
@@ -5859,7 +5738,7 @@ void Unit::RemoveAurasByInterruptFlagButSkip(uint32 flag, uint32 skip)
 
 int Unit::HasAurasWithNameHash(uint32 name_hash)
 {
-	for(uint32 x = 0; x < MAX_AURAS; ++x)
+	for(uint32 x = MAX_TOTAL_AURAS_START; x < MAX_TOTAL_AURAS_END; ++x)
 	{
 		if(m_auras[x] && m_auras[x]->GetSpellProto()->NameHash == name_hash)
 			return m_auras[x]->m_spellProto->Id;
@@ -5867,10 +5746,10 @@ int Unit::HasAurasWithNameHash(uint32 name_hash)
 
 	return 0;
 }
-
+/*
 bool Unit::HasNegativeAuraWithNameHash(uint32 name_hash)
 {
-	for(uint32 x = MAX_POSITIVE_AURAS; x < MAX_AURAS; ++x)
+	for(uint32 x = MAX_POSITIVE_AURAS; x < MAX_AURAS + MAX_PASSIVE_AURAS; ++x)
 	{
 		if(m_auras[x] && m_auras[x]->GetSpellProto()->NameHash == name_hash)
 			return true;
@@ -5881,7 +5760,7 @@ bool Unit::HasNegativeAuraWithNameHash(uint32 name_hash)
 
 bool Unit::HasNegativeAura(uint32 spell_id)
 {
-	for(uint32 x = MAX_POSITIVE_AURAS; x < MAX_AURAS; ++x)
+	for(uint32 x = MAX_POSITIVE_AURAS; x < MAX_AURAS + MAX_PASSIVE_AURAS; ++x)
 	{
 		if(m_auras[x] && m_auras[x]->GetSpellProto()->Id == spell_id)
 			return true;
@@ -5893,22 +5772,20 @@ bool Unit::HasNegativeAura(uint32 spell_id)
 uint32 Unit::CountNegativeAura(uint32 spell_id)
 {
 	uint32 ret=0;
-	for(uint32 x = MAX_POSITIVE_AURAS; x < MAX_AURAS; ++x)
+	for(uint32 x = MAX_POSITIVE_AURAS; x < MAX_AURAS + MAX_PASSIVE_AURAS; ++x)
 	{
 		if(m_auras[x] && m_auras[x]->GetSpellProto()->Id == spell_id)
 			ret++;
 	}
 
 	return ret;
-}
+}*/
 
 bool Unit::IsPoisoned()
 {
-	for(uint32 x = 0; x < MAX_AURAS+MAX_PASSIVE_AURAS; ++x)
-	{
+	for(uint32 x = MAX_NEGATIVE_AURAS_EXTEDED_START; x < MAX_NEGATIVE_AURAS_EXTEDED_END; ++x)
 		if(m_auras[x] && m_auras[x]->GetSpellProto()->c_is_flags & SPELL_FLAG_IS_POISON)
 			return true;
-	}
 
 	return false;
 }
@@ -5916,8 +5793,8 @@ bool Unit::IsPoisoned()
 uint32 Unit::AddAuraVisual(uint32 spellid, uint32 count, bool positive)
 {
 	int32 free = -1;
-	uint32 start = positive ? 0 : MAX_POSITIVE_AURAS;
-	uint32 end_  = positive ? MAX_POSITIVE_AURAS : MAX_AURAS;
+	uint32 start = positive ? MAX_POSITIVE_VISUAL_AURAS_START : MAX_POSITIVE_VISUAL_AURAS_END;
+	uint32 end_  = positive ? MAX_NEGATIVE_VISUAL_AURAS_START : MAX_NEGATIVE_VISUAL_AURAS_END;
 
 	for(uint32 x = start; x < end_; ++x)
 	{
@@ -5975,7 +5852,7 @@ void Unit::SetAuraSlotLevel(uint32 slot, bool positive)
 
 void Unit::RemoveAuraVisual(uint32 spellid, uint32 count)
 {
-	for(uint8 x = 0; x < MAX_AURAS; ++x)
+	for(uint8 x = MAX_POSITIVE_VISUAL_AURAS_START; x < MAX_NEGATIVE_VISUAL_AURAS_END; ++x)
 	{
 		if(m_uint32Values[UNIT_FIELD_AURA+x] == spellid)
 		{
@@ -5994,7 +5871,8 @@ void Unit::RemoveAuraVisual(uint32 spellid, uint32 count)
 				SetUInt32Value(UNIT_FIELD_AURAFLAGS + flagslot,value);
 				SetUInt32Value(UNIT_FIELD_AURA + x, 0);
 				SetAuraSlotLevel(x, false);
-			}			
+			}	
+			break; //we have only 1 instance of visible aura
 		}
 	}
 }
@@ -6027,11 +5905,13 @@ uint32 Unit::ModAuraStackCount(uint32 slot, int32 count)
 
 void Unit::RemoveAurasOfSchool(uint32 School, bool Positive, bool Immune)
 {
-	for(uint32 x = 0; x < MAX_AURAS; ++x)
-	{
-		if(m_auras[x]  && m_auras[x]->GetSpellProto()->School == School && (!m_auras[x]->IsPositive() || Positive) && (!Immune && m_auras[x]->GetSpellProto()->Attributes & ATTRIBUTES_IGNORE_INVULNERABILITY))
+	for(uint32 x = MAX_TOTAL_AURAS_START; x < MAX_TOTAL_AURAS_END; ++x)
+		if( m_auras[x]  
+			&& m_auras[x]->GetSpellProto()->School == School 
+			&& (!m_auras[x]->IsPositive() || Positive) 
+			&& (!Immune && m_auras[x]->GetSpellProto()->Attributes & ATTRIBUTES_IGNORE_INVULNERABILITY)
+			)
 			m_auras[x]->Remove();
-	}
 }
 
 void Unit::EnableFlight()
@@ -6086,7 +5966,7 @@ void Unit::DisableFlight()
 
 bool Unit::IsDazed()
 {
-	for(uint32 x = 0; x < MAX_AURAS; ++x)
+	for(uint32 x = MAX_TOTAL_AURAS_START; x < MAX_TOTAL_AURAS_END; ++x)
 	{
 		if(m_auras[x])
 		{
@@ -6529,14 +6409,10 @@ void CombatStatusHandler::ClearPrimaryAttackTarget()
 bool CombatStatusHandler::IsAttacking(Unit * pTarget)
 {
 	// check the target for any of our DoT's.
-	for(uint32 i = MAX_POSITIVE_AURAS; i < MAX_AURAS; ++i)
-	{
+	for(uint32 i = MAX_NEGATIVE_AURAS_EXTEDED_START; i < MAX_NEGATIVE_AURAS_EXTEDED_END; ++i)
 		if(pTarget->m_auras[i] != NULL)
-		{
 			if(m_Unit->GetGUID() == pTarget->m_auras[i]->m_casterGuid && pTarget->m_auras[i]->IsCombatStateAffecting())
 				return true;
-		}
-	}
 
 	// place any additional checks here
 	return false;
@@ -7085,7 +6961,7 @@ void Unit::EventStrikeWithAbility(uint64 guid, SpellEntry * sp, uint32 damage)
 
 void Unit::DispelAll(bool positive)
 {
-	for(uint32 i = 0; i < MAX_AURAS; ++i)
+	for(uint32 i = MAX_TOTAL_AURAS_START; i < MAX_TOTAL_AURAS_END; ++i)
 	{
 		if(m_auras[i]!=NULL)
 			if((m_auras[i]->IsPositive()&&positive)||!m_auras[i]->IsPositive())
@@ -7108,10 +6984,10 @@ bool Unit::RemoveAllAurasByMechanic( uint32 MechanicType , uint32 MaxDispel = -1
 {
 	//sLog.outString( "Unit::MechanicImmunityMassDispel called, mechanic: %u" , MechanicType );
 	uint32 DispelCount = 0;
-	for(uint32 x = ( HostileOnly ? MAX_POSITIVE_AURAS : 0 ) ; x < MAX_AURAS ; x++ ) // If HostileOnly = 1, then we use aura slots 40-56 (hostile). Otherwise, we use 0-56 (all)
+	for(uint32 x = ( HostileOnly ? MAX_NEGATIVE_AURAS_EXTEDED_START : MAX_POSITIVE_AURAS_EXTEDED_START ) ; x < MAX_REMOVABLE_AURAS_END ; x++ ) // If HostileOnly = 1, then we use aura slots 40-56 (hostile). Otherwise, we use 0-56 (all)
 		{
 			if( DispelCount >= MaxDispel && MaxDispel > 0 )
-			return true;
+				return true;
 
 			if( m_auras[x] )
 			{
@@ -7141,7 +7017,7 @@ bool Unit::RemoveAllAurasByMechanic( uint32 MechanicType , uint32 MaxDispel = -1
 
 void Unit::RemoveAllMovementImpairing()
 {
-	for( uint32 x = MAX_POSITIVE_AURAS; x < MAX_AURAS; x++ )
+	for( uint32 x = MAX_NEGATIVE_AURAS_EXTEDED_START; x < MAX_REMOVABLE_AURAS_END; x++ )
 	{
 		if( m_auras[x] != NULL )
 		{
@@ -7200,15 +7076,6 @@ void Unit::ReplaceAIInterface(AIInterface *new_interface)
 void Unit::EventUpdateFlag()  
 {  
 	CombatStatus.UpdateFlag(); 
-}
-
-bool Unit::HasAurasOfNameHashWithCaster(uint32 namehash, Unit * caster)
-{
-	for(uint32 i = MAX_POSITIVE_AURAS; i < MAX_AURAS; ++i)
-		if( m_auras[i] && m_auras[i]->GetSpellProto()->NameHash == namehash && m_auras[i]->GetCasterGUID() == caster->GetGUID() )
-			return true;
-
-	return false;
 }
 
 void Unit::EventModelChange()
