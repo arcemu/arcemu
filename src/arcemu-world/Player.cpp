@@ -4254,7 +4254,9 @@ void Player::RepopRequestedPlayer()
 	}
 	else
 	{
-		RepopAtGraveyard( GetPositionX(), GetPositionY(), GetPositionZ(), GetMapId() );
+		//RepopAtGraveyard( GetPositionX(), GetPositionY(), GetPositionZ(), GetMapId() );
+		//cebernic: Mapinfo NULL? let's search from bindposition.
+		RepopAtGraveyard( GetBindPositionX(),GetBindPositionY(),GetBindPositionZ(),GetBindMapId( ) );
 	}
 	
 	if( corpse )
@@ -4318,6 +4320,13 @@ void Player::ResurrectPlayer()
 	}
 	m_resurrecter = 0;
 	SetMovement(MOVE_LAND_WALK, 1);
+
+	// reinit
+	m_lastRunSpeed = 0;
+	m_lastRunBackSpeed = 0;
+	m_lastSwimSpeed = 0;
+	m_lastRunBackSpeed = 0;
+	m_lastFlySpeed = 0;
 
 	//Zack : shit on grill. So auras should be removed on player death instead of making this :P
 	//wee can afford this bullshit atm since auras are lost uppon death -> no immunities
@@ -6214,21 +6223,16 @@ bool Player::removeSpell(uint32 SpellID, bool MoveToDeleted, bool SupercededSpel
 	}
 	else
 	{
-		return false;
+   iter = mDeletedSpells.find(SpellID);
+    if(iter != mDeletedSpells.end())
+    {
+			mDeletedSpells.erase(iter);
+	  }
+    else
+    {
+	    return false;
+    }
 	}
-
-/*	//added by Zack. As code got complicated people started to neglect when to add spell to "deletedspell" list or not
-	//"deletedspell" has the purpuse to not send spells to trainer that were already teached once
-	//when we reset talents or professions we wish to clear "deletedspell" list too
-	SpellEntry *e = dbcSpell.LookupEntry(SpellID);
-	if( !HasSpellwithNameHash( e->NameHash ) )
-		for(iter= mDeletedSpells.begin();iter != mDeletedSpells.end();)
-		{
-			it = iter++;
-			SpellEntry *e1 = dbcSpell.LookupEntry( *it );
-			if(e1->NameHash == e->NameHash)
-				mDeletedSpells.erase(it);
-		}*/
 
 	if(MoveToDeleted)
 		mDeletedSpells.insert(SpellID);
@@ -6382,6 +6386,10 @@ void Player::SendInitialLogonPackets()
 	data << (float)0.0166666669777748f;  // Normal Game Speed
 	GetSession()->SendPacket( &data );
 
+	// cebernic for speedhack bug
+	m_lastRunSpeed = 0;
+	UpdateSpeed();
+
 	sLog.outDetail("WORLD: Sent initial logon packets for %s.", GetName());
 }
 
@@ -6409,6 +6417,9 @@ void Player::Reset_Spells()
 			addSpell(*sp);
 		}
 	}
+
+	// cebernic ResetAll ? don't forget DeletedSpells
+  mDeletedSpells.clear();
 }
 
 void Player::Reset_Talents()
@@ -9739,6 +9750,9 @@ void Player::_AddSkillLine(uint32 SkillLine, uint32 Curr_sk, uint32 Max_sk)
 	// hackfix for poisons
 	if(SkillLine==SKILL_POISONS && !HasSpell(2842))
 		addSpell(2842);
+
+	// Displaying bug fix
+	_UpdateSkillFields();
 }
 
 void Player::_UpdateSkillFields()
@@ -10769,7 +10783,7 @@ bool Player::Cooldown_CanCast(SpellEntry * pSpell)
 			m_cooldownMap[COOLDOWN_TYPE_SPELL].erase( itr );
 	}
 
-	if( pSpell->StartRecoveryTime && m_globalCooldown )			/* gcd doesn't affect spells without a cooldown it seems */
+	if( pSpell->StartRecoveryTime && m_globalCooldown && !this->CooldownCheat /* cebernic:GCD also cheat :D */ )			/* gcd doesn't affect spells without a cooldown it seems */
 	{
 		if( mstime < m_globalCooldown )
 			return false;
