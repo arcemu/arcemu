@@ -248,8 +248,8 @@ void WorldSession::HandleTrainerBuySpellOpcode(WorldPacket& recvPacket)
 				if( val > 375 )
 					val = 375;
 
-				if( _player->_GetSkillLineMax(skill) >= val )
-					return;
+				if( _player->_GetSkillLineMax(skill) > val ) // cebernic: eq
+					continue;
 
 				if( skill == SKILL_RIDING )
 					_player->_AddSkillLine( skill, val, val );

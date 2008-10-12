@@ -818,6 +818,7 @@ public:
 	ARCEMU_INLINE bool isDead() { return  m_deathState !=ALIVE; };
 	virtual void setDeathState(DeathState s) {
 		m_deathState = s;
+		if ( m_deathState==JUST_DIED ) DropAurasOnDeath();
 	};
 	DeathState getDeathState() { return m_deathState; }
 	void OnDamageTaken();

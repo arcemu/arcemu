@@ -1160,9 +1160,6 @@ uint8 Spell::prepare( SpellCastTargets * targets )
 	//   m_castTime -= 100;	  // session update time
 
 
-	if( !m_triggeredSpell && p_caster != NULL && p_caster->CooldownCheat )
-		p_caster->ClearCooldownForSpell( GetProto()->Id );
-
 	m_spellState = SPELL_STATE_PREPARING;
 
 	if( m_triggeredSpell )
@@ -1250,6 +1247,8 @@ uint8 Spell::prepare( SpellCastTargets * targets )
 
 void Spell::cancel()
 {
+	if ( GetProto() == NULL ) return; //low chance
+
 	if (m_spellState == SPELL_STATE_FINISHED)
 		return;
 
@@ -1972,6 +1971,16 @@ void Spell::finish()
 		}
 		i_caster->GetOwner()->Cooldown_AddItem( i_caster->GetProto() , x );
 	}
+
+
+  // cebernic added it
+  // moved this from ::prepare() 
+  // With preparing got ClearCooldownForspell, it makes too early for player client.
+	// Now .cheat cooldown works perfectly.
+	if( !m_triggeredSpell && p_caster != NULL && p_caster->CooldownCheat )
+		p_caster->ClearCooldownForSpell( GetProto()->Id );
+
+
 	/*
 	We set current spell only if this spell has cast time or is channeling spell
 	otherwise it's instant spell and we delete it right after completion
@@ -2950,6 +2959,11 @@ bool Spell::IsSeal()
 
 uint8 Spell::CanCast(bool tolerate)
 {
+  // cebernic,can get this.
+  if ( !GetProto() ) return SPELL_FAILED_SPELL_UNAVAILABLE;
+  // how this happended ? cebernic
+  if ( GetProto()->School < NORMAL_DAMAGE || GetProto()->School > ARCANE_DAMAGE ) return SPELL_FAILED_SPELL_UNAVAILABLE;
+
 	uint32 i;
 	if(objmgr.IsSpellDisabled(GetProto()->Id))
 		return SPELL_FAILED_SPELL_UNAVAILABLE;

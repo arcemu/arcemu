@@ -6912,6 +6912,9 @@ void Player::RegenerateHealth( bool inCombat )
 
 	uint32 cur = GetUInt32Value(UNIT_FIELD_HEALTH);
 	uint32 mh = GetUInt32Value(UNIT_FIELD_MAXHEALTH);
+
+	if ( cur==0 ) return; // cebernic: bugfix diying but regenerated?
+
 	if(cur >= mh)
 		return;
 
