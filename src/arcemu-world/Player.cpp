@@ -1611,6 +1611,11 @@ void Player::GiveXP(uint32 xp, const uint64 &guid, bool allowbonus)
 			BaseStats[i] = lvlinfo->Stat[i];
 			CalcStat(i);
 		}
+
+		// Small chance you die and levelup at the same time, and you enter a weird state.
+		if(isDead())
+			ResurrectPlayer();
+
 		//set full hp and mana
 		SetUInt32Value(UNIT_FIELD_HEALTH,GetUInt32Value(UNIT_FIELD_MAXHEALTH));
 		SetUInt32Value(UNIT_FIELD_POWER1,GetUInt32Value(UNIT_FIELD_MAXPOWER1));
