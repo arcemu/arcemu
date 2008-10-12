@@ -1391,7 +1391,8 @@ void CBattleground::RemovePlayer(Player * plr, bool logout)
 
 	memset(&plr->m_bgScore, 0, sizeof(BGScore));
 	OnRemovePlayer(plr);
-	plr->m_bg = 0;
+	plr->m_bg = NULL;
+	plr->FullHPMP();
 
 	/* are we in the group? */
 	if(plr->GetGroup() == m_groups[plr->m_bgTeam])
