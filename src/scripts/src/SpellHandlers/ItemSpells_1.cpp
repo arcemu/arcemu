@@ -912,6 +912,24 @@ bool SpellClothSummon(uint32 i, Spell *pSpell)
 	return true;
 }
 
+bool GoblinWeatherMachine(uint32 i, Spell* pSpell)
+{
+	if(!pSpell->p_caster) return true;
+ 
+	uint32 Weather = 46736 + RandomUInt(4);
+	
+	pSpell->p_caster->CastSpell(pSpell->p_caster, dbcSpell.LookupEntry(Weather), true);
+	return true;
+}
+
+bool SummonBlackQirajiBT(uint32 i, Spell * pSpell)
+{
+	if(pSpell->p_caster)
+		pSpell->p_caster->CastSpell(pSpell->p_caster, dbcSpell.LookupEntry(26655), true);
+
+	return true;
+}
+ 
 void SetupItemSpells_1(ScriptMgr * mgr)
 {
 	mgr->register_dummy_spell( 4130, &BanishExile);             // Essence of the Exile Quest
@@ -957,4 +975,6 @@ void SetupItemSpells_1(ScriptMgr * mgr)
 	mgr->register_dummy_spell(37877, &Blessing_of_Faith);
 	mgr->register_dummy_spell(39105, &NetherWraithBeacon);      // Spellfire Tailor Quest
 	mgr->register_dummy_spell(39446, &DarkmoonCard_Madness);
+	mgr->register_dummy_spell(46203, &GoblinWeatherMachine);	// Goblin Weather Machine - Prototype 01-B
+	mgr->register_dummy_spell(26656, &SummonBlackQirajiBT);		// Summon Black Qiraji Battle Tank
 }
