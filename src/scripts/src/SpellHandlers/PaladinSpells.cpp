@@ -1,7 +1,7 @@
 /****************************************************************************
  *
  * SpellHandler Plugin
- * Copyright (c) 2007 Team arcemu
+ * Copyright (c) 2007 Team Arcemu
  *
  * This work is licensed under the Creative Commons Attribution-NonCommercial-ShareAlike 3.0
  * License. To view a copy of this license, visit
@@ -92,10 +92,10 @@ bool SealOfRighteousness(uint32 i, Aura* pAura, bool apply)
 				value = basePoints + rand()  %randomPoints;
 
 		//this may be dangerous but let it be
-		/*if(GetProto()->SpellGroupType)
+		/*if(entry->SpellGroupType)
 		{
-				SM_FIValue(u_caster->SM_FDummy,&value,GetProto()->SpellGroupType);
-				SM_PIValue(u_caster->SM_PDummy,&value,GetProto()->SpellGroupType);
+				SM_FIValue(u_caster->SM_FDummy,&value,entry->SpellGroupType);
+				SM_PIValue(u_caster->SM_PDummy,&value,entry)->SpellGroupType);
 		}*/
 
 		// add spell damage!

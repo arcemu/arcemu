@@ -1,47 +1,26 @@
-INCLUDES += -I$(srcdir) -I$(srcdir)/../../../../dep/include -I$(srcdir)/../../../arcemu-shared
-INCLUDES += -I$(srcdir)/../../../arcemu-world -I$(srcdir)/../../../../dep/src
+INCLUDES = -I$(top_srcdir)/src/arcemu-logonserver \
+   -I$(top_srcdir)/src/arcemu-realmserver -I$(top_srcdir)/src/arcemu-shared -I$(top_srcdir)/src/arcemu-voicechat \
+   -I$(top_srcdir)/src/arcemu-world -I$(srcdir) -I$(srcdir)/../../../../dep/include \
+   -I$(srcdir)/../../../../dep/src -I$(srcdir)/../../../../src
 
 AM_CXXFLAGS = -DSCRIPTLIB
 
-lib_LTLIBRARIES = libQuestScripts.la
+lib_LTLIBRARIES = libMoonQuestScripts.la
 
-libQuestScripts_la_SOURCES = Druid.cpp \
-	Paladin.cpp \
-	Mage.cpp \
-	Shadowmoon.cpp \
-	Hellfire_Peninsula.cpp \
-	Silverpine_Forest.cpp \
-	Nagrand.cpp \
-	BladeEdge_Mountains.cpp \
-	Terrokar_Forest.cpp \
-	Zangarmarsh.cpp \
-	Undercity.cpp \
-	Azshara.cpp \
-	Azuremyst_Isle.cpp \
-	QuestGossip.cpp \
-	Unsorted.cpp \
-	QuestHooks.cpp \
-	Ungoro.cpp \
-	Dustwallow_Marsh.cpp \
-	Warrior.cpp \
-	Barrens.cpp \
-	Mulgore.cpp \
-	Westfall.cpp \
-	TirisfalGlades.cpp \
-	HillsbradFoothills.cpp \
-	ThousandNeedles.cpp \
-	RedridgeMountains.cpp \
-	LochModan.cpp \
-	Desolace.cpp \
-	ArathiHighlands.cpp \
-	Ghostlands.cpp \
-	EasternPlaguelands.cpp \
-	BlastedLands.cpp \
-	BloodmystIsle.cpp \
-	Tanaris.cpp \
-	StranglethornVale.cpp \
-	SilvermoonCity.cpp \
-	FirstAid.cpp \
-	Stormwind.cpp \
-	Netherstorm.cpp \
-	Setup.cpp
+libMoonQuestScripts_la_SOURCES = Setup.cpp \
+Druid.cpp \
+Paladin.cpp \
+Mage.cpp \
+Shadowmoon.cpp \
+Hellfire_Peninsula.cpp \
+Silverpine_Forest.cpp \
+Nagrand.cpp \
+BladeEdge_Mountains.cpp \
+Terrokar_Forest.cpp \
+Zangarmarsh.cpp \
+Undercity.cpp \
+Azuremyst_Isle.cpp \
+The_Barrens.cpp \
+Eastern_Plaguelands.cpp \
+UnGoro.cpp \
+Isle_of_QuelDanas.cpp

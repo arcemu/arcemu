@@ -1,5 +1,5 @@
 /*
- * arcemu MMORPG Server
+ * Arcemu MMORPG Server
  * LUA Interface
  * Copyright (C) 2007 Burlex <burlex@gmail.com>
  *
@@ -47,9 +47,13 @@ GossipMenu * Menu;
  */
 enum QuestEvents
 {
-	QUEST_EVENT_ON_COMPLETE		= 1,
-	QUEST_EVENT_ON_ACCEPT		= 2,
-	//QUEST_EVENT_CAN_ACCEPT		= 3, 
+	QUEST_EVENT_ON_ACCEPT = 1,
+	QUEST_EVENT_ON_COMPLETE = 2,
+	QUEST_EVENT_ON_CANCEL = 3,
+	QUEST_EVENT_GAMEOBJECT_ACTIVATE = 4,
+	QUEST_EVENT_ON_CREATURE_KILL  = 5,
+	QUEST_EVENT_ON_EXPLORE_AREA = 6,
+	QUEST_EVENT_ON_PLAYER_ITEMPICKUP = 7,
 	QUEST_EVENT_COUNT,
 };
 
@@ -59,14 +63,26 @@ enum CreatureEvents
 {
 	CREATURE_EVENT_ON_ENTER_COMBAT		= 1,
 	CREATURE_EVENT_ON_LEAVE_COMBAT		= 2,
-	CREATURE_EVENT_ON_KILLED_TARGET		= 3,
-	CREATURE_EVENT_ON_DIED				= 4,
-	CREATURE_EVENT_AI_TICK				= 5,
-	CREATURE_EVENT_ON_SPAWN				= 6,
-	CREATURE_EVENT_ON_GOSSIP_TALK		= 7,
-	CREATURE_EVENT_ON_REACH_WP			= 8,
-	CREATURE_EVENT_ON_LEAVE_LIMBO		= 9,
-	CREATURE_EVENT_PLAYER_ENTERS_RANGE	= 10,
+	CREATURE_EVENT_ON_TARGET_DIED		= 3,
+	CREATURE_EVENT_ON_DIED		= 4,
+	CREATURE_EVENT_ON_TARGET_PARRIED		= 5,
+	CREATURE_EVENT_ON_TARGET_DODGED		= 6,
+	CREATURE_EVENT_ON_TARGET_BLOCKED		= 7,
+	CREATURE_EVENT_ON_TARGET_CRIT_HIT		= 8,
+	CREATURE_EVENT_ON_PARRY		= 9,
+	CREATURE_EVENT_ON_DODGED		= 10,
+	CREATURE_EVENT_ON_BLOCKED		= 11,
+	CREATURE_EVENT_ON_CRIT_HIT		= 12,
+	CREATURE_EVENT_ON_HIT		= 13,
+	CREATURE_EVENT_ON_ASSIST_TARGET_DIED		= 14,
+	CREATURE_EVENT_ON_FEAR		= 15,
+	CREATURE_EVENT_ON_FLEE		= 16,
+	CREATURE_EVENT_ON_CALL_FOR_HELP		= 17,
+	CREATURE_EVENT_ON_LOAD		= 18,
+	CREATURE_EVENT_ON_REACH_WP		= 19,
+	CREATURE_EVENT_ON_LOOT_TAKEN		= 20,
+	CREATURE_EVENT_ON_AIUPDATE		= 21,
+	CREATURE_EVENT_ON_EMOTE		= 22,
 	CREATURE_EVENT_COUNT,
 };
 
@@ -74,13 +90,15 @@ enum CreatureEvents
  */
 enum GameObjectEvents
 {
-	GAMEOBJECT_EVENT_ON_SPAWN			= 1,
-	GAMEOBJECT_EVENT_ON_USE				= 2,
+	GAMEOBJECT_EVENT_ON_CREATE			= 1,
+	GAMEOBJECT_EVENT_ON_SPAWN			= 2,
+	GAMEOBJECT_EVENT_ON_LOOT_TAKEN		= 3,
+	GAMEOBJECT_EVENT_ON_USE				= 4,
+	GAMEOBJECT_EVENT_AIUPDATE			= 5,
+	GAMEOBJECT_EVENT_ON_DESPAWN			= 6,
 	GAMEOBJECT_EVENT_COUNT,
 };
 
-/** Gossip Events
-*/
 enum GossipEvents
 {
 	GOSSIP_EVENT_ON_TALK			= 1,
@@ -98,8 +116,10 @@ enum RandomFlags
 	RANDOM_WITH_MANA     = 4,
 	RANDOM_WITH_RAGE     = 5,
 	RANDOM_WITH_ENERGY   = 6,
-	RANDOM_NOT_MAINTANK  = 7
+	RANDOM_NOT_MAINTANK  = 7,
+	RANDOM_COUNT,
 };
+
 class LuaEngine
 {
 private:
@@ -114,12 +134,13 @@ public:
 	void Shutdown();
 	void Restart();
 	void RegisterCoreFunctions();
+
 	ARCEMU_INLINE Mutex& GetLock() { return m_Lock; }
 
-	void OnUnitEvent(Unit * pUnit, const char * FunctionName, uint32 EventType, Unit * pMiscUnit, uint32 Misc);
-	void OnQuestEvent(Player * QuestOwner, const char * FunctionName, uint32 QuestID, uint32 EventType, Object * QuestStarter);
-	void OnGameObjectEvent(GameObject * pGameObject, const char * FunctionName, uint32 EventType, Unit * pMiscUnit);
-	void OnGossipEvent(Object * pObject, const char * FunctionName, uint32 EventType, Player * mPlayer, uint32 Id, uint32 IntId, const char *Code);
+	void OnUnitEvent(Unit * pUnit, const char * FunctionName, uint32 EventType, Unit * pMiscUnit, uint32 Misc, int32 Misc2, float Misc3, bool Yes, ItemPrototype * Misc4);
+	void OnQuestEvent(Player * QuestOwner, const char * FunctionName, uint32 QuestID, uint32 EventType, Object * QuestStarter,uint32 Misc, uint32 Misc2);
+	void OnGameObjectEvent(GameObject * pGameObject, const char * FunctionName, uint32 EventType, Unit * pMiscUnit, uint32 Misc, ItemPrototype* Misc2);
+    void OnGossipEvent(Object * pObject, const char * FunctionName, uint32 EventType, Player * mPlayer, uint32 Id, uint32 IntId, const char * Code);
 	void CallFunction(Unit * pUnit, const char * FuncName);
 };
 
@@ -139,6 +160,7 @@ private:
 	typedef HM_NAMESPACE::hash_map<uint32, LuaUnitGossipBinding> GossipUnitScriptsBindingMap;
 	typedef HM_NAMESPACE::hash_map<uint32, LuaItemGossipBinding> GossipItemScriptsBindingMap;
 	typedef HM_NAMESPACE::hash_map<uint32, LuaGOGossipBinding> GossipGOScriptsBindingMap;
+
 	UnitBindingMap m_unitBinding;
 	QuestBindingMap m_questBinding;
 	GameObjectBindingMap m_gameobjectBinding;
@@ -175,12 +197,12 @@ public:
 		GameObjectBindingMap::iterator itr =m_gameobjectBinding.find(Id);
 		return (itr == m_gameobjectBinding.end()) ? NULL : &itr->second;
 	}
-    // Gossip Stuff
-    LuaUnitGossipBinding * GetLuaUnitGossipBinding(uint32 Id)
-	{
+
+	  LuaUnitGossipBinding * GetLuaUnitGossipBinding(uint32 Id)
+ 	{
 		GossipUnitScriptsBindingMap::iterator itr = m_unit_gossipBinding.find(Id);
 		return (itr == m_unit_gossipBinding.end()) ? NULL : &itr->second;
-	}
+ 	}
 
     LuaItemGossipBinding * GetLuaItemGossipBinding(uint32 Id)
 	{
@@ -196,6 +218,7 @@ public:
 };
 
 #endif
+
 
 
 

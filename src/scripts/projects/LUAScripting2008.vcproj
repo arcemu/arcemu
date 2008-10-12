@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="9.00"
-	Name="LUAScripting"
+	Version="9,00"
+	Name="ArcScriptLUAScripting"
 	ProjectGUID="{AEFCEECF-6839-4F1B-9317-70BF3EE09247}"
 	RootNamespace="LUAScripting2008"
 	Keyword="Win32Proj"
@@ -128,7 +128,7 @@
 				RuntimeLibrary="0"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
-				Detect64BitPortabilityProblems="false"
+				Detect64BitPortabilityProblems="true"
 				DebugInformationFormat="3"
 			/>
 			<Tool

@@ -1,12 +1,27 @@
+/*
+ * ArcScript Scripts for Arcemu MMORPG Server
+ * Copyright (C) 2005-2007 Arcemu Team <http://www.Arcemuemu.com/>
+ * Copyright (C) 2007-2008 ArcScript Team 
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 #include "StdAfx.h"
 #include "Setup.h"
 
-#ifdef WIN32
-#pragma warning(disable:4305)		// warning C4305: 'argument' : truncation from 'double' to 'float'
-#endif
-
 /************************************************************************/
-/* Raid_OnyxiasLair.cpp Script by DK                                    */
+/* Raid_OnyxiasLair.cpp Script by DK			                        */
 /************************************************************************/
 
 /* 
@@ -50,24 +65,24 @@ struct Coords
 static Coords coords[] =
 {
     { 0, 0, 0, 0 },
-    { -75.945, -219.245, -83.375, 0.004947 },
-    { -72.945, -219.245, -80.779, 0.004947 },
-    { 42.621, -217.195, -66.056, 3.014011 },
-    { 12.270, -254.694, -67.997, 2.395585 },
-    { -79.020, -252.374, -68.965, 0.885179 },
-    { -80.257, -174.240, -69.293, 5.695741 },
-    { 27.875, -178.547, -66.041, 3.908957 },
-    { -4.868, -217.171, -86.710, 3.141590 }
+    { -75.945f, -219.245f, -83.375f, 0.004947f },
+    { -72.945f, -219.245f, -80.779f, 0.004947f },
+    { 42.621f, -217.195f, -66.056f, 3.014011f },
+    { 12.270f, -254.694f, -67.997f, 2.395585f },
+    { -79.020f, -252.374f, -68.965f, 0.885179f },
+    { -80.257f, -174.240f, -69.293f, 5.695741f },
+    { 27.875f, -178.547f, -66.041f, 3.908957f },
+    { -4.868f, -217.171f, -86.710f, 3.141590f }
 };
 
 static Coords whelpCoords[] =
 {
-    { -30.812, -166.395, -89.000, 5.160 },
-    { -30.233, -264.158, -89.896, 1.129 },
-    { -35.813, -169.427, -90.000, 5.384 },
-    { -36.104, -260.961, -90.600, 1.111 },
-    { -34.643, -164.080, -90.000, 5.364 },
-    { -35.377, -267.320, -91.000, 1.111 }
+    { -30.812f, -166.395f, -89.000f, 5.160f },
+    { -30.233f, -264.158f, -89.896f, 1.129f },
+    { -35.813f, -169.427f, -90.000f, 5.384f },
+    { -36.104f, -260.961f, -90.600f, 1.111f },
+    { -34.643f, -164.080f, -90.000f, 5.364f },
+    { -35.377f, -267.320f, -91.000f, 1.111f }
 };
 
 class OnyxiaAI : public CreatureAIScript
@@ -83,7 +98,6 @@ public:
         m_whelpCooldown = 7;
         m_aoeFearCooldown = 30;
         m_fCastCount = 5;
-		m_breathCooldown=0;
         _unit->GetAIInterface()->setMoveType(4);
         _unit->GetAIInterface()->addWayPoint(CreateWaypoint(1, 2000, RUN));
         _unit->GetAIInterface()->addWayPoint(CreateWaypoint(2, 0, FLY));
@@ -129,7 +143,6 @@ public:
         m_kAway = false;
         m_wBuffet = false;
         m_Cleave = false;
-		_unit->GetAIInterface()->skip_reset_hp=true;
     }
 
     void OnCombatStop(Unit *mTarget)
@@ -348,7 +361,7 @@ public:
                     true, false, _unit->GetUInt32Value(UNIT_FIELD_FACTIONTEMPLATE), 50);
                 if(cre)
                 {
-                    cre->GetAIInterface()->MoveTo(14.161, -177.874, -85.649, 0.23);
+                    cre->GetAIInterface()->MoveTo(14.161f, -177.874f, -85.649f, 0.23f);
                     cre->GetAIInterface()->setOutOfCombatRange(100000);
                 }
                 cre = _unit->GetMapMgr()->GetInterface()->SpawnCreature(CN_ONYXIAN_WHELP, 
@@ -357,7 +370,7 @@ public:
                     true, false, _unit->GetUInt32Value(UNIT_FIELD_FACTIONTEMPLATE), 50);
                 if(cre)
                 {
-                    cre->GetAIInterface()->MoveTo(27.133, -232.030, -84.188, 0.44);
+                    cre->GetAIInterface()->MoveTo(27.133f, -232.030f, -84.188f, 0.44f);
                     cre->GetAIInterface()->setOutOfCombatRange(100000);
                 }
             }
@@ -388,7 +401,7 @@ public:
                     true, false, _unit->GetUInt32Value(UNIT_FIELD_FACTIONTEMPLATE), 50);
                 if(cre)
                 {
-                    cre->GetAIInterface()->MoveTo(14.161, -177.874, -85.649, 0.23);
+                    cre->GetAIInterface()->MoveTo(14.161f, -177.874f, -85.649f, 0.23f);
                     cre->GetAIInterface()->setOutOfCombatRange(100000);
                 }
                 cre = _unit->GetMapMgr()->GetInterface()->SpawnCreature(CN_ONYXIAN_WHELP, 
@@ -397,7 +410,7 @@ public:
                     true, false, _unit->GetUInt32Value(UNIT_FIELD_FACTIONTEMPLATE), 50);
                 if(cre)
                 {
-                    cre->GetAIInterface()->MoveTo(27.133, -232.030, -84.188, 0.44);
+                    cre->GetAIInterface()->MoveTo(27.133f, -232.030f, -84.188f, 0.44f);
                     cre->GetAIInterface()->setOutOfCombatRange(100000);
                 }
             }
@@ -455,13 +468,7 @@ public:
         {
             if(m_fBreath)
             {
-				uint32 t = (uint32)time(NULL);
-				if(t>m_breathCooldown)
-				{
-					_unit->CastSpell(_unit, infoFBreath, false);
-					m_breathCooldown = t+30;
-				}
-
+                _unit->CastSpell(_unit, infoFBreath, false);
                 m_fBreath = false;
                 return;
             }
@@ -527,7 +534,6 @@ protected:
     uint32 m_aoeFearCooldown;
     uint32 m_fCastCount;
     uint32 m_currentWP;
-	uint32 m_breathCooldown;
     SpellEntry *infoFear, *infoWBuffet, *infoCleave, *infoFBreath, *infoKAway, *infoSFireball, *infoDeepBreath;
 };
 

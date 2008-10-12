@@ -1,5 +1,5 @@
 Microsoft Visual Studio Solution File, Format Version 10.00
-# Visual Studio 2008
+# Visual C++ Express 2008
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "InstanceScripts", "projects\InstanceScripts2008.vcproj", "{EE39B48B-C598-4AAF-9EF0-199402933EE5}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SpellHandlers", "projects\SpellsHandlers2008.vcproj", "{58B5F00B-81D6-4A14-8142-D7B882BAD8DE}"
@@ -11,6 +11,8 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LUAScripting", "projects\LUAScripting2008.vcproj", "{AEFCEECF-6839-4F1B-9317-70BF3EE09247}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "QuestScripts", "projects\Quest2008.vcproj", "{1A080CA7-D19A-4129-972C-89E816E6DEC0}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ArcScriptMiscScripts", "projects\Misc2008.vcproj", "{495CDEBE-E216-485B-B2F1-2FC0BD9DAE7D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -63,6 +65,12 @@ Global
 		{1A080CA7-D19A-4129-972C-89E816E6DEC0}.Debug|x64.ActiveCfg = Debug|Win32
 		{1A080CA7-D19A-4129-972C-89E816E6DEC0}.Release|Win32.ActiveCfg = Release|Win32
 		{1A080CA7-D19A-4129-972C-89E816E6DEC0}.Release|x64.ActiveCfg = Release|Win32
+		{495CDEBE-E216-485B-B2F1-2FC0BD9DAE7D}.Debug|Win32.ActiveCfg = Debug|Win32
+		{495CDEBE-E216-485B-B2F1-2FC0BD9DAE7D}.Debug|Win32.Build.0 = Debug|Win32
+		{495CDEBE-E216-485B-B2F1-2FC0BD9DAE7D}.Debug|x64.ActiveCfg = Debug|Win32
+		{495CDEBE-E216-485B-B2F1-2FC0BD9DAE7D}.Release|Win32.ActiveCfg = Release|Win32
+		{495CDEBE-E216-485B-B2F1-2FC0BD9DAE7D}.Release|Win32.Build.0 = Release|Win32
+		{495CDEBE-E216-485B-B2F1-2FC0BD9DAE7D}.Release|x64.ActiveCfg = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
