@@ -3739,7 +3739,7 @@ void Unit::Strike( Unit* pVictim, uint32 weapon_damage_type, SpellEntry* ability
 		// TODO: find the opcode to refresh the aura or just remove it and re add it
 		// rather than fuck with duration
 		// DONE: Remove + readded it :P
-		for( uint32 x = MAX_NEGATIVE_AURAS_EXTEDED_START; x <= MAX_NEGATIVE_AURAS_EXTEDED_END; x++ )
+		for( uint32 x = MAX_NEGATIVE_AURAS_EXTEDED_START; x < MAX_NEGATIVE_AURAS_EXTEDED_END; x++ )
 		{
 			if( pVictim->m_auras[x] != NULL && pVictim->m_auras[x]->GetUnitCaster() != NULL && pVictim->m_auras[x]->GetUnitCaster()->GetGUID() == GetGUID() && pVictim->m_auras[x]->GetSpellProto()->BGR_one_buff_from_caster_on_1target == SPELL_TYPE_INDEX_JUDGEMENT )
 			{
