@@ -46,6 +46,9 @@ CircularBuffer::~CircularBuffer()
  */
 bool CircularBuffer::Read(void * destination, size_t bytes)
 {
+	if (m_buffer == NULL)
+		return false;
+
 	// copy as much out of region a
 	size_t cnt = bytes;
 	size_t aRead = 0, bRead = 0;
@@ -113,6 +116,9 @@ void CircularBuffer::AllocateB()
  */
 bool CircularBuffer::Write(const void * data, size_t bytes)
 {
+	if (m_buffer == NULL)
+		return false;
+
 	// If buffer B exists, write to it.
 	if( m_regionBPointer != NULL )
 	{
