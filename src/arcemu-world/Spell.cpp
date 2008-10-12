@@ -1,4 +1,4 @@
-/*
+﻿/*
  * ArcEmu MMORPG Server
  * Copyright (C) 2005-2007 Ascent Team <http://www.ascentemu.com/>
  * Copyright (C) 2008 <http://www.ArcEmu.org/>
@@ -237,7 +237,8 @@ void Spell::Init(Object* Caster, SpellEntry *info, bool triggered, Aura* aur)
 
 Spell::~Spell()
 {
-	// cebernic: vector clear doesn't need anymore,it have own release func.
+		for(uint32 x=0;x<3;x++)
+			m_targetUnits[x].clear();
 }
 
 void Spell::Virtual_Destructor()
@@ -252,11 +253,12 @@ void Spell::Virtual_Destructor()
 	if (m_spellInfo_override !=NULL)
 		delete[] m_spellInfo_override;
 
-	// resize the capactiy
-	for(uint32 x=0;x<3;x++)
+	// Commented out by: 0x0f7afc68. causing crashes!
+	// resize the capacity
+	/*for(uint32 x=0;x<3;x++)
 	{
 		vector<uint64>(m_targetUnits[x]).swap(m_targetUnits[x]);
-	}
+	}*/
 
 //	sEventMgr.RemoveEvents( this ); //do even spells have events ?
 }
