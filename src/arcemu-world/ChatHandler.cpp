@@ -86,7 +86,7 @@ void WorldSession::HandleMessagechatOpcode( WorldPacket & recv_data )
 		return;
 	}
 
-	if(lang != -1 && !GetPermissionCount() && sWorld.flood_lines)
+	if(lang != -1 && !GetPermissionCount() && sWorld.flood_lines != 0)
 	{
 		/* flood detection, wheeee! */
 		if(UNIXTIME >= floodTime)
@@ -104,8 +104,10 @@ void WorldSession::HandleMessagechatOpcode( WorldPacket & recv_data )
 		}
 	}
 
+	/* Not needed?
 	std::stringstream irctext;
-	irctext.rdbuf()->str("");
+	irctext.rdbuf()->str("");*/
+
 	std::string msg;
 	msg.reserve(256);
 
