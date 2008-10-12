@@ -3322,6 +3322,33 @@ void Aura::SpellAuraModStealth(bool apply)
 		// hack fix for vanish stuff
 		if( m_spellProto->NameHash == SPELL_HASH_VANISH && m_target->GetTypeId() == TYPEID_PLAYER )	 // Vanish
 		{
+
+			// cebernic: for perfectly VANISH :D p2wowguyz enjoyit;p
+			m_target->AquireInrangeLock();
+      // Remove me from all objects which is 'targeting' on him
+      for (Object::InRangeSet::iterator iter = m_target->GetInRangeSetBegin();iter != m_target->GetInRangeSetEnd(); ++iter)
+      {
+	      if( (*iter) )
+	      {
+	        if( (*iter)->GetTypeId() == TYPEID_PLAYER )
+	        {
+		        if( static_cast< Player* >( *iter )->IsVisible( m_target ) && static_cast< Player* >( *iter )->m_TransporterGUID != m_target->GetGUID() )
+			        static_cast< Player* >( *iter )->PushOutOfRange(m_target->GetNewGUID());
+              if ( static_cast<Player* >( *iter )->m_currentSpell ) static_cast<Player* >( *iter )->m_currentSpell->cancel();
+            }
+            else
+		        if( (*iter)->GetTypeId() == TYPEID_UNIT )
+		        {
+              if ( static_cast<Creature* >( *iter )->m_currentSpell ) static_cast<Creature* >( *iter )->m_currentSpell->cancel();
+            }
+		        (*iter)->RemoveInRangeObject(m_target);
+		      }
+      }
+			m_target->ReleaseInrangeLock();
+      // Clear object's in-range set
+      m_target->ClearInRangeSet();
+
+
 			for( uint32 x = MAX_POSITIVE_AURAS_EXTEDED_START; x < MAX_POSITIVE_AURAS_EXTEDED_END; x++ )
 			{
 				if( m_target->m_auras[x] != NULL )
