@@ -5441,7 +5441,7 @@ bool Unit::HasAura(uint32 spellid)
 
 void Unit::DropAurasOnDeath()
 {
-	for(uint32 x=0;x<MAX_AURAS;x++)
+	for(uint32 x=0;x<MAX_AURAS + MAX_PASSIVE_AURAS;x++)
     {
         if(m_auras[x])
         {
