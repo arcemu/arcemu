@@ -22,8 +22,8 @@
 #include "log.h"
 #include "network_handlers.h"
 #include "configfile.h"
-#include "ascent_packet.h"
-#include "ascent_opcodes.h"
+#include "arcemu_packet.h"
+#include "arcemu_opcodes.h"
 #include "voice_channel.h"
 #include "voice_channelmgr.h"
 
