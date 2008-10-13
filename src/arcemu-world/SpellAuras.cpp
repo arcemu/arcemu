@@ -733,7 +733,7 @@ void Aura::Remove()
 
 	sEventMgr.RemoveEvents( this );
 
-	if( !IsPassive() || IsPassive() && m_spellProto->AttributesEx & 1024 )
+	if( !IsPassive() || m_spellProto->AttributesEx & 1024 )
 		RemoveAuraVisual();
 
 	ApplyModifiers( false );
@@ -909,51 +909,6 @@ void Aura::UpdateModifiers( )
 
 void Aura::AddAuraVisual()
 {
-	uint8 slot, i, recycleslot=0;
-	slot = 0xFF;
-
-	if (IsPositive())
-	{
-		for (i = MAX_POSITIVE_VISUAL_AURAS_START; i < MAX_POSITIVE_VISUAL_AURAS_END; i++)
-		{
-			//if (m_target->GetUInt32Value((uint16)(UNIT_FIELD_AURA + i)) == 0)
-			if( m_target->m_auras[i] == 0
-				|| m_target->m_auras[i]->GetSpellId() == GetSpellId() //store Aura in same visual slot
-				)
-			{
-				slot = i;
-				if( m_target->m_auras[i] && m_target->m_auras[i]->GetSpellId() == GetSpellId() )
-					recycleslot = 1;
-				break;
-			}
-		}
-	}
-	else
-	{
-		for (i = MAX_NEGATIVE_VISUAL_AURAS_START; i < MAX_NEGATIVE_VISUAL_AURAS_END; i++)
-		{
-			//if (m_target->GetUInt32Value((uint16)(UNIT_FIELD_AURA + i)) == 0)
-			if( m_target->m_auras[i] == 0
-				|| m_target->m_auras[i]->GetSpellId() == GetSpellId() //store Aura in same visual slot
-				)
-			{
-				slot = i;
-				if( m_target->m_auras[i] && m_target->m_auras[i]->GetSpellId() == GetSpellId() )
-					recycleslot = 1;
-				break;
-			}
-		}
-	}
-
-	if (slot == 0xFF)
-	{
-		return;
-	}
-	m_visualSlot = m_target->AddAuraVisual(m_spellProto->Id, 1, IsPositive());
-
-	//we should have already updated duration in unit::Addaura
-	if( recycleslot == 1 )
-		return;
 	/*m_target->SetUInt32Value(UNIT_FIELD_AURA + slot, m_spellProto->Id);
 
 	uint8 flagslot = slot >> 3;
@@ -991,6 +946,12 @@ void Aura::AddAuraVisual()
 
 	//uint8 appslot = slot >> 1;
 
+	uint32 skip_client_update; //stacking auras are updated in unit::addaura
+	m_visualSlot = m_target->AddAuraVisual(m_spellProto->Id, 1, IsPositive(),skip_client_update);
+
+	if( skip_client_update || m_visualSlot==0xFFFF )
+		return;
+
 	if( m_target->IsPlayer() )
 	{
 		/*WorldPacket data(SMSG_UPDATE_AURA_DURATION, 5);
@@ -1007,7 +968,6 @@ void Aura::AddAuraVisual()
 	data << m_target->GetNewGUID() << m_visualSlot << uint32(m_spellProto->Id) << uint32(m_duration) << uint32(m_duration);
 	m_target->SendMessageToSet(&data,false);
 
-	m_auraSlot = slot;
 }
 
 void Aura::RemoveAuraVisual()

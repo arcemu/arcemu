@@ -4127,137 +4127,151 @@ void Unit::AddAura(Aura *aur)
 		return;
 	}
 
-	uint32 AlreadyApplied = 0, CheckLimit, StartCheck;
 	uint16 AuraSlot = 0xFFFF;
-	if( !aur->IsPassive() 
-		// Nasty check for Blood Fury debuff (spell system based on namehashes is bs anyways)
-		&& aur->GetSpellProto()->always_apply == false 
-		)
+	//all this code block is to try to find a valid slot for our new aura.
+	if( !aur->IsPassive() )
 	{
-		//uint32 aurName = aur->GetSpellProto()->Name;
-		//uint32 aurRank = aur->GetSpellProto()->Rank;
-		uint32 maxStack = aur->GetSpellProto()->maxstack;
-		if( aur->GetSpellProto()->procCharges > 0 )
-		{
-			int charges = aur->GetSpellProto()->procCharges;
-			if( aur->GetSpellProto()->SpellGroupType && aur->GetUnitCaster() != NULL )
-			{
-				SM_FIValue( aur->GetUnitCaster()->SM_FCharges, &charges, aur->GetSpellProto()->SpellGroupType );
-				SM_PIValue( aur->GetUnitCaster()->SM_PCharges, &charges, aur->GetSpellProto()->SpellGroupType );
-#ifdef COLLECTION_OF_UNTESTED_STUFF_AND_TESTERS
-				float spell_flat_modifers=0;
-				float spell_pct_modifers=0;
-				SM_FIValue(aur->GetUnitCaster()->SM_FCharges,&spell_flat_modifers,aur->GetSpellProto()->SpellGroupType);
-				SM_FIValue(aur->GetUnitCaster()->SM_PCharges,&spell_pct_modifers,aur->GetSpellProto()->SpellGroupType);
-				if(spell_flat_modifers!=0 || spell_pct_modifers!=0)
-					printf("!!!!!spell charge bonus mod flat %f , spell range bonus pct %f , spell range %f, spell group %u\n",spell_flat_modifers,spell_pct_modifers,maxRange,m_spellInfo->SpellGroupType);
-#endif
-			}
-			maxStack=charges;
-		}
-		if( IsPlayer() && static_cast< Player* >( this )->AuraStackCheat )
-			maxStack = 999;
-
-		SpellEntry * info = aur->GetSpellProto();
-		//uint32 flag3 = aur->GetSpellProto()->Flags3;
-
-		AuraCheckResponse acr;
-		WorldPacket data( 21 );
-		bool deleteAur = false;
-
-		//check if we already have this aura by this caster -> update duration
+		uint32 AlreadyApplied = 0, CheckLimit, StartCheck;
 		if( aur->IsPositive() )
 		{
-			//talents and stuff
-			if( aur->IsPassive() )
-			{
-				StartCheck = MAX_PASSIVE_AURAS_START; 
-				CheckLimit = MAX_PASSIVE_AURAS_END;
-			}
-			else
-			{
-				StartCheck = MAX_POSITIVE_AURAS_EXTEDED_START; //also check talents to make sure they will not stack. Maybe not required ?
-				CheckLimit = MAX_POSITIVE_AURAS_EXTEDED_END;
-			}
+			StartCheck = MAX_POSITIVE_AURAS_EXTEDED_START; //also check talents to make sure they will not stack. Maybe not required ?
+			CheckLimit = MAX_POSITIVE_AURAS_EXTEDED_END;
 		}
 		else
 		{
 			StartCheck = MAX_NEGATIVE_AURAS_EXTEDED_START;
 			CheckLimit = MAX_NEGATIVE_AURAS_EXTEDED_END;
 		}
-		for( uint32 x = StartCheck; x < CheckLimit; x++ )
+		// Nasty check for Blood Fury debuff (spell system based on namehashes is bs anyways)
+		if( aur->GetSpellProto()->always_apply == false )
 		{
-			if( m_auras[x] )
+			//uint32 aurName = aur->GetSpellProto()->Name;
+			//uint32 aurRank = aur->GetSpellProto()->Rank;
+			uint32 maxStack = aur->GetSpellProto()->maxstack;
+			if( aur->GetSpellProto()->procCharges > 0 )
 			{
-				if(	m_auras[x]->GetSpellProto()->Id != aur->GetSpellId() && 
-					( aur->pSpellId != m_auras[x]->GetSpellProto()->Id ) //if this is a proc spell then it should not remove it's mother : test with combustion later
-					)
+				int charges = aur->GetSpellProto()->procCharges;
+				if( aur->GetSpellProto()->SpellGroupType && aur->GetUnitCaster() != NULL )
 				{
-					// Check for auras by specific type.
-					// Check for auras with the same name and a different rank.
-					
-					if(info->BGR_one_buff_on_target > 0 && m_auras[x]->GetSpellProto()->BGR_one_buff_on_target & info->BGR_one_buff_on_target && maxStack == 0)
-						deleteAur = HasAurasOfBuffType(info->BGR_one_buff_on_target, aur->m_casterGuid,0);
-					else
-					{
-						acr = AuraCheck(info->NameHash, info->RankNumber, m_auras[x],aur->GetCaster());
-						if(acr.Error == AURA_CHECK_RESULT_HIGHER_BUFF_PRESENT)
-							deleteAur = true;
-						else if(acr.Error == AURA_CHECK_RESULT_LOWER_BUFF_PRESENT)
-						{
-							// remove the lower aura
-							m_auras[x]->Remove();
-
-							// no more checks on bad ptr
-							continue;
-						}
-					}					   
+					SM_FIValue( aur->GetUnitCaster()->SM_FCharges, &charges, aur->GetSpellProto()->SpellGroupType );
+					SM_PIValue( aur->GetUnitCaster()->SM_PCharges, &charges, aur->GetSpellProto()->SpellGroupType );
+	#ifdef COLLECTION_OF_UNTESTED_STUFF_AND_TESTERS
+					float spell_flat_modifers=0;
+					float spell_pct_modifers=0;
+					SM_FIValue(aur->GetUnitCaster()->SM_FCharges,&spell_flat_modifers,aur->GetSpellProto()->SpellGroupType);
+					SM_FIValue(aur->GetUnitCaster()->SM_PCharges,&spell_pct_modifers,aur->GetSpellProto()->SpellGroupType);
+					if(spell_flat_modifers!=0 || spell_pct_modifers!=0)
+						printf("!!!!!spell charge bonus mod flat %f , spell range bonus pct %f , spell range %f, spell group %u\n",spell_flat_modifers,spell_pct_modifers,maxRange,m_spellInfo->SpellGroupType);
+	#endif
 				}
-				else if( m_auras[x]->GetSpellId() == aur->GetSpellId() ) // not the best formula to test this I know, but it works until we find a solution
-				{
-					if( !aur->IsPositive() //sais who ?
-						&& m_auras[x]->m_casterGuid != aur->m_casterGuid //it's a lie !
-						&& ( m_auras[x]->GetSpellProto()->c_is_flags & SPELL_FLAG_IS_MAXSTACK_FOR_DEBUFF) == 0 //the truth is revealed
-						)
-						continue;
-					AlreadyApplied++;
-					if(AlreadyApplied == 1)
-					{
-						//update duration,the same aura (update the whole stack whenever we cast a new one)
-						m_auras[x]->SetDuration(aur->GetDuration());
-						sEventMgr.ModifyEventTimeLeft(m_auras[x], EVENT_AURA_REMOVE, aur->GetDuration());
-						if(this->IsPlayer())
-						{
-							data.Initialize(SMSG_UPDATE_AURA_DURATION);
-							data << (uint8)m_auras[x]->m_visualSlot <<(uint32) aur->GetDuration();
-							((Player*)this)->GetSession()->SendPacket(&data);
-						}
-						
-						data.Initialize(SMSG_SET_AURA_SINGLE);
-						data << GetNewGUID() << m_auras[x]->m_visualSlot << uint32(m_auras[x]->GetSpellProto()->Id) << uint32(aur->GetDuration()) << uint32(aur->GetDuration());
-						SendMessageToSet(&data,false);
-					}
-					if(maxStack <= AlreadyApplied)
-					{
-						if (AlreadyApplied == 1)
-							m_auras[x]->UpdateModifiers();
-						deleteAur = true;
-						break;
-					}
-				}
+				maxStack=charges;
 			}
-			else if( AuraSlot == 0xFFFF )
-				AuraSlot = x;
-		}
+			if( IsPlayer() && static_cast< Player* >( this )->AuraStackCheat )
+				maxStack = 999;
 
-		if(deleteAur)
+			SpellEntry * info = aur->GetSpellProto();
+			//uint32 flag3 = aur->GetSpellProto()->Flags3;
+
+			AuraCheckResponse acr;
+			WorldPacket data( 21 );
+			bool deleteAur = false;
+
+			//check if we already have this aura by this caster -> update duration
+			for( uint32 x = StartCheck; x < CheckLimit; x++ )
+			{
+				if( m_auras[x] )
+				{
+					if(	m_auras[x]->GetSpellProto()->Id != aur->GetSpellId() && 
+						( aur->pSpellId != m_auras[x]->GetSpellProto()->Id ) //if this is a proc spell then it should not remove it's mother : test with combustion later
+						)
+					{
+						// Check for auras by specific type.
+						// Check for auras with the same name and a different rank.
+						if(info->BGR_one_buff_on_target > 0 && m_auras[x]->GetSpellProto()->BGR_one_buff_on_target & info->BGR_one_buff_on_target && maxStack == 0)
+							deleteAur = HasAurasOfBuffType(info->BGR_one_buff_on_target, aur->m_casterGuid,0);
+						else
+						{
+							acr = AuraCheck(info->NameHash, info->RankNumber, m_auras[x],aur->GetCaster());
+							if(acr.Error == AURA_CHECK_RESULT_HIGHER_BUFF_PRESENT)
+								deleteAur = true;
+							else if(acr.Error == AURA_CHECK_RESULT_LOWER_BUFF_PRESENT)
+							{
+								// remove the lower aura
+								m_auras[x]->Remove();
+
+								// no more checks on bad ptr
+								continue;
+							}
+						}					   
+					}
+					else if( m_auras[x]->GetSpellId() == aur->GetSpellId() ) // not the best formula to test this I know, but it works until we find a solution
+					{
+						if( !aur->IsPositive() //sais who ?
+							&& m_auras[x]->m_casterGuid != aur->m_casterGuid //it's a lie !
+							&& ( m_auras[x]->GetSpellProto()->c_is_flags & SPELL_FLAG_IS_MAXSTACK_FOR_DEBUFF) == 0 //the truth is revealed
+							)
+							continue;
+						AlreadyApplied++;
+						if(AlreadyApplied == 1)
+						{
+							//update duration,the same aura (update the whole stack whenever we cast a new one)
+							m_auras[x]->SetDuration(aur->GetDuration());
+							sEventMgr.ModifyEventTimeLeft(m_auras[x], EVENT_AURA_REMOVE, aur->GetDuration());
+							if(this->IsPlayer())
+							{
+								data.Initialize(SMSG_UPDATE_AURA_DURATION);
+								data << (uint8)m_auras[x]->m_visualSlot <<(uint32) aur->GetDuration();
+								((Player*)this)->GetSession()->SendPacket(&data);
+							}
+							
+							data.Initialize(SMSG_SET_AURA_SINGLE);
+							data << GetNewGUID() << m_auras[x]->m_visualSlot << uint32(m_auras[x]->GetSpellProto()->Id) << uint32(aur->GetDuration()) << uint32(aur->GetDuration());
+							SendMessageToSet(&data,false);
+						}
+						if(maxStack <= AlreadyApplied)
+						{
+							if (AlreadyApplied == 1)
+								m_auras[x]->UpdateModifiers();
+							deleteAur = true;
+							break;
+						}
+					}
+				}
+				else if( AuraSlot == 0xFFFF )
+					AuraSlot = x;
+			}
+
+			if(deleteAur)
+			{
+				sEventMgr.RemoveEvents(aur);
+				AuraPool.PooledDelete( aur );
+				return;
+			}
+		}
+		else
 		{
-			sEventMgr.RemoveEvents(aur);
-			AuraPool.PooledDelete( aur );
-			return;
+			//these auras stack to infinit and with anything. Don't ask me why there is no better solution for them :P
+			for( uint32 x = StartCheck; x < CheckLimit; x++ )
+				if( !m_auras[x] )
+				{
+					AuraSlot = x;
+					break;
+				}
 		}
 	}
-	
+	else
+	{
+		//talents just get applied always. Maybe we should check stack for these aswell ?
+		for(uint32 x=MAX_PASSIVE_AURAS_START;x<MAX_PASSIVE_AURAS_END;x++)
+			if( !m_auras[x])
+			{
+				AuraSlot = x;
+				break;
+			}
+//			else if( m_auras[x]->GetID()==aur->GetID() ) printf("OMG stacking talents ?\n");
+	}
+
+
 	//check if we can store this aura in some empty slot
 	if( AuraSlot == 0xFFFF )
 	{
@@ -4278,13 +4292,6 @@ void Unit::AddAura(Aura *aur)
 			UpdateSpeed();
 		}
 	}
-	////////////////////////////////////////////////////////
-	// Zack : No idea how a new aura can already have a slot. Leaving it for compatibility
-	if( aur->m_auraSlot != 0xffff )
-		m_auras[ aur->m_auraSlot ] = NULL;
-
-	aur->m_auraSlot = AuraSlot;
-
 	//Zack : if all mods were resisted it means we did not apply anything and we do not need to delete this spell eighter
 	if( aur->TargetWasImuneToMods() )
 	{
@@ -4294,36 +4301,17 @@ void Unit::AddAura(Aura *aur)
 		return;
 	}
 
-	if( !aur->IsPassive() )
-	{	
-		aur->AddAuraVisual();
-		m_auras[ aur->m_auraSlot ] = aur;
-		aur->ApplyModifiers(true);
-	}
-	else
-	{
-        if((aur->m_spellProto->AttributesEx & 1024))
-            aur->AddAuraVisual();
+	// Zack : No idea how a new aura can already have a slot. Leaving it for compatibility
+	if( aur->m_auraSlot != 0xffff )
+		m_auras[ aur->m_auraSlot ] = NULL;
 
-		//we did search for a slot but we want another one :P
-		aur->m_auraSlot = 0xFFFF;
-		for(uint32 x=MAX_PASSIVE_AURAS_START;x<MAX_PASSIVE_AURAS_END;x++)
-			if(!m_auras[x])
-			{
-				aur->m_auraSlot = x;
-				m_auras[x] = aur;
-				break;
-			}
-		if( aur->m_auraSlot == 0xFFFF )
-		{
-			sLog.outError("Aura error in passive aura. removing. SpellId: %u", aur->GetSpellProto()->Id);
-			// for next loop.. lets kill the fucker
-			sEventMgr.RemoveEvents(aur);
-			AuraPool.PooledDelete( aur );
-			return;
-		}
-		aur->ApplyModifiers(true);
-	}
+	aur->m_auraSlot = AuraSlot;
+
+	if( !aur->IsPassive() || (aur->m_spellProto->AttributesEx & 1024) )
+		aur->AddAuraVisual();
+
+	m_auras[ AuraSlot ] = aur;
+	aur->ApplyModifiers(true);
 
 	// We add 500ms here to allow for the last tick in DoT spells. This is a dirty hack, but at least it doesn't crash like my other method.
 	// - Burlex
@@ -4383,16 +4371,12 @@ bool Unit::RemoveAura(Aura *aur)
 bool Unit::RemoveAura(uint32 spellId)
 {//this can be speed up, if we know passive \pos neg
 	for(uint32 x=MAX_TOTAL_AURAS_START;x<MAX_TOTAL_AURAS_END;x++)
-	{
-		if(m_auras[x])
+		if(m_auras[x] && m_auras[x]->GetSpellId()==spellId )
 		{
-			if(m_auras[x]->GetSpellId()==spellId)
-			{
-				m_auras[x]->Remove();
-				return true;
-			}
+			m_auras[x]->Remove();
+//			sLog.outDebug("removing aura %u from slot %u",spellId,x);
+			return true;
 		}
-	}
 	return false;
 }
 
@@ -5799,7 +5783,7 @@ bool Unit::IsPoisoned()
 	return false;
 }
 
-uint32 Unit::AddAuraVisual(uint32 spellid, uint32 count, bool positive)
+uint32 Unit::AddAuraVisual(uint32 spellid, uint32 count, bool positive, uint32 &skip_client_update)
 {
 	int32 free = -1;
 	uint32 start = positive ? MAX_POSITIVE_VISUAL_AURAS_START : MAX_POSITIVE_VISUAL_AURAS_END;
@@ -5814,22 +5798,19 @@ uint32 Unit::AddAuraVisual(uint32 spellid, uint32 count, bool positive)
 		{
 			// Increase count of this aura.
 			ModAuraStackCount(x, count);
+			skip_client_update = 1; //stacking aura duration is already made in AddAura code
 			return free;
 		}
 	}
 
-	if(free == -1) return 0xFF;
+	skip_client_update = 0; 
+
+	if(free == -1) 
+		return 0xFF;
 
 	uint8 flagslot = static_cast<uint8>((free / 4));
 	uint32 value = GetUInt32Value((uint16)(UNIT_FIELD_AURAFLAGS + flagslot));
 
-	/*uint8 aurapos = (free & 7) << 2;
-	uint32 setflag = AFLAG_SET;
-	if(positive)
-		setflag = 0xD;
-
-	uint32 value1 = (uint32)setflag << aurapos;
-	value |= value1;*/
 	uint8 aurapos = (free%4)*8;
 	value &= ~(0xFF<<aurapos);
 	if(positive)
