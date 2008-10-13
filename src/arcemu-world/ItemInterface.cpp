@@ -163,6 +163,7 @@ Item *ItemInterface::SafeAddItem(uint32 ItemId, int8 ContainerSlot, int8 slot)
 			return NULL;
 		}
 	}
+	return NULL;
 }
 
 //-------------------------------------------------------------------//
@@ -1468,6 +1469,19 @@ int8 ItemInterface::FindFreeBackPackSlot()
 
 	return ITEM_NO_SLOT_AVAILABLE; //no slots available
 }
+
+uint8 ItemInterface::FindFreeBackPackSlotMax()
+{
+	//search for backpack slots
+	uint8 slotfree = 0;
+	for(int8 i = INVENTORY_SLOT_ITEM_START; i < INVENTORY_SLOT_ITEM_END; i++)
+	{
+		Item *item = GetInventoryItem(i);
+		if(!item) slotfree++;
+	}
+	return slotfree;
+}
+
 
 //-------------------------------------------------------------------//
 //Description: converts bank bags slot ids into player bank byte slots(0-5)

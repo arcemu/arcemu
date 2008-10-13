@@ -1339,6 +1339,9 @@ void World::Rehash(bool load)
 	if(!flood_lines || !flood_seconds)
 		flood_lines = flood_seconds = 0;
 
+
+	m_CustomCharterGiver = (uint32)Config.OptionalConfig.GetIntDefault("Optional", "CustomCharterGiver",0);
+
 	map_unload_time=Config.MainConfig.GetIntDefault("Server", "MapUnloadTime", 0);
 
 	antihack_teleport = Config.MainConfig.GetBoolDefault("AntiHack", "Teleport", true);

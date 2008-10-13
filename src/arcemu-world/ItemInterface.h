@@ -103,6 +103,7 @@ public:
 	SlotResult FindFreeBankSlot(ItemPrototype *proto);
 	SlotResult FindAmmoBag();
 	int8 FindFreeBackPackSlot();
+	uint8 FindFreeBackPackSlotMax();
 	int8 FindFreeKeyringSlot();
 	int8 FindSpecialBag(Item *item);
 

@@ -1,4 +1,4 @@
-﻿/*
+/*
  * ArcEmu MMORPG Server
  * Copyright (C) 2005-2007 Ascent Team <http://www.ascentemu.com/>
  * Copyright (C) 2008 <http://www.ArcEmu.org/>
@@ -252,15 +252,6 @@ void Spell::Virtual_Destructor()
 
 	if (m_spellInfo_override !=NULL)
 		delete[] m_spellInfo_override;
-
-	// Commented out by: 0x0f7afc68. causing crashes!
-	// resize the capacity
-	/*for(uint32 x=0;x<3;x++)
-	{
-		vector<uint64>(m_targetUnits[x]).swap(m_targetUnits[x]);
-	}*/
-
-//	sEventMgr.RemoveEvents( this ); //do even spells have events ?
 }
 
 //i might forget conditions here. Feel free to add them
@@ -4414,8 +4405,7 @@ exit:
 			ScriptOverrideList::iterator itrSO;
 			for(itrSO = itr->second->begin(); itrSO != itr->second->end(); ++itrSO)
 			{
-				//DK:FIXME->yeni bir map olu�tur
-                // Capt: WHAT THE FUCK DOES THIS MEAN....
+        // Capt: WHAT THE FUCK DOES THIS MEAN....
 				// Supa: WHAT THE FUCK DOES THIS MEAN?
 				value += RandomUInt((*itrSO)->damage);
 			}

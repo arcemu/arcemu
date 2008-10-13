@@ -43,14 +43,16 @@ void WorldSession::HandleUseItemOpcode(WorldPacket& recvPacket)
 	if(!itemProto)
 		return;
 
+  if ( tmpItem->IsSoulbound() ){ // SouldBind item will be used after SouldBind()
+    if(sScriptMgr.CallScriptedItem(tmpItem,_player))
+		  return;
+  }
+
 	if(_player->getDeathState()==CORPSE)
 		return;
 
 	if(itemProto->Bonding == ITEM_BIND_ON_USE)
 		tmpItem->SoulBind();
-
-	if(sScriptMgr.CallScriptedItem(tmpItem,_player))
-		return;
 
 	if(itemProto->QuestId)
 	{
@@ -187,8 +189,6 @@ void WorldSession::HandleUseItemOpcode(WorldPacket& recvPacket)
 		}
 	}
 
-	//if( result == SPELL_CANCAST_OK ) // incorrect - should be on Completed Cast
-	//	_player->Cooldown_AddItem( itemProto, x );
 }
 
 void WorldSession::HandleCastSpellOpcode(WorldPacket& recvPacket)

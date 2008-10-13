@@ -132,6 +132,7 @@ void Arena::OnRemovePlayer(Player * plr)
 	plr->RemoveAura(plr->GetTeamInitial() ? 35775-plr->m_bgTeam : 32725-plr->m_bgTeam);
 	if(plr->HasFlag(PLAYER_FLAGS, PLAYER_FLAG_FREE_FOR_ALL_PVP))
 		plr->RemoveFlag(PLAYER_FLAGS, PLAYER_FLAG_FREE_FOR_ALL_PVP);
+	
 }
 
 void Arena::HookOnPlayerKill(Player * plr, Unit * pVictim)

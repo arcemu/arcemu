@@ -530,6 +530,7 @@ public:
 	uint32 m_genLevelCap;
 	bool m_limitedNames;
 	bool m_useAccountData;
+	uint32 m_CustomCharterGiver;
 
 	char * m_banTable;
 

@@ -156,7 +156,21 @@ void WorldSession::HandleQuestGiverQueryQuestOpcode( WorldPacket & recv_data )
 	else if(guidtype==HIGHGUID_TYPE_ITEM)
 	{
 		Item *quest_giver = GetPlayer()->GetItemInterface()->GetItemByGUID(guid);
-		if(quest_giver)
+//------cebernic: added it for script engine
+    if ( !quest_giver ) return;
+    ItemPrototype *itemProto = quest_giver->GetProto();
+	  if(!itemProto)
+		  return;
+
+    if ( itemProto->Bonding != ITEM_BIND_ON_USE || quest_giver->IsSoulbound() ){ // SoulBind item will be used after SoulBind()
+      if(sScriptMgr.CallScriptedItem(quest_giver,GetPlayer()))
+		    return;
+    }
+
+    if(itemProto->Bonding == ITEM_BIND_ON_USE)
+		  quest_giver->SoulBind();
+//---------------------------------------------
+    if(quest_giver)
 			qst_giver = (Object*)quest_giver;
 		else
 			return;
