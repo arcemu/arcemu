@@ -1,4 +1,4 @@
-   /******************************************************************
+--[[   /******************************************************************
    *	 _____              ___                           _         *
    *	(  _  )            (  _`\               _        ( )_       *
    *	| (_) | _ __   ___ | (_(_)   ___  _ __ (_) _ _   | ,_)      *
@@ -29,7 +29,7 @@ function SunbladeBloodKnight_OnCombat(Unit, Event)
 Unit:RegisterEvent("SunbladeBloodKnight_HolyLight", 6300, 40)
 end
 
-[[-- I dont't know how often he does this just set it to 6, 3 sec--]]
+--[[I dont't know how often he does this just set it to 6, 3 sec--]]
 function SunbladeBloodKnight_HolyLight(Unit, Event)
 Unit:FullCastSpell(27136)
 end
