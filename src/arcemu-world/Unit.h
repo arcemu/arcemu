@@ -31,11 +31,11 @@ class DynamicObject;
 #define MAX_NEGATIVE_VISUAL_AURAS_END MAX_POSITIVE_VISUAL_AURAS_END+16 // 40 buff slots, 16 debuff slots.
 //you hardly get to this but since i was testing i got to it :) : 20 items * 11 (enchants) + 61 talents
 #define MAX_PASSIVE_AURAS_START 0   // these are reserved for talents. No need to check them for removes ?
-#define MAX_PASSIVE_AURAS_END 80   // these are reserved for talents. No need to check them for removes ?
-#define MAX_POSITIVE_AURAS_EXTEDED_START 80   //these are not talents.These are stacks from visible auras
-#define MAX_POSITIVE_AURAS_EXTEDED_END 180   //these are not talents.These are stacks from visible auras
-#define MAX_NEGATIVE_AURAS_EXTEDED_START 180   //these are not talents.These are stacks from visible auras
-#define MAX_NEGATIVE_AURAS_EXTEDED_END 280   //these are not talents.These are stacks from visible auras
+#define MAX_PASSIVE_AURAS_END (MAX_PASSIVE_AURAS_START + 140)   // these are reserved for talents. No need to check them for removes ?
+#define MAX_POSITIVE_AURAS_EXTEDED_START MAX_PASSIVE_AURAS_END   //these are not talents.These are stacks from visible auras
+#define MAX_POSITIVE_AURAS_EXTEDED_END (MAX_POSITIVE_AURAS_EXTEDED_START + 100)   //these are not talents.These are stacks from visible auras
+#define MAX_NEGATIVE_AURAS_EXTEDED_START MAX_POSITIVE_AURAS_EXTEDED_END   //these are not talents.These are stacks from visible auras
+#define MAX_NEGATIVE_AURAS_EXTEDED_END (MAX_NEGATIVE_AURAS_EXTEDED_START + 100)   //these are not talents.These are stacks from visible auras
 #define MAX_REMOVABLE_AURAS_START (MAX_POSITIVE_AURAS_EXTEDED_START) //do we need to handle talents at all ?
 #define MAX_REMOVABLE_AURAS_END (MAX_NEGATIVE_AURAS_EXTEDED_END) //do we need to handle talents at all ?
 #define MAX_TOTAL_AURAS_START (MAX_PASSIVE_AURAS_START)
