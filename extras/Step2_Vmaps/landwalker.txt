@@ -1,0 +1,10 @@
+this is a a diploma for a noob project :D
+
+Instead of makeing a proper project we simulate the walking of a player to enhance a basic Vmap to include a minimal corection using objects spawned on it.
+The difference of using this instead of Collision system is that. It will require less resources and chances to crash while it does support a basic heightmap for things that need it.
+
+- run in executables somewhat in this order in client folder :
+	- ad.exe -> extracts into "maps"
+	- vmapextract_v2.exe -> extracts into "vmaps"
+	- vmap_assembler.exe -> 
+	- landwalker.exe -> extracts into "maps_out"
