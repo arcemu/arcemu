@@ -1,7 +1,7 @@
 /*
- * ArcScript Scripts for Ascent MMORPG Server
- * Copyright (C) 2005-2007 Ascent Team <http://www.ascentemu.com/>
- * Copyright (C) 2007-2008 ArcScript Team 
+ * ArcScript Scripts for Arcemu MMORPG Server
+ * Copyright (C) 2008 Arcemu Team <http://www.arcemu.org/>
+ * Copyright (C) 2007-2008 Moon++ Team 
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by

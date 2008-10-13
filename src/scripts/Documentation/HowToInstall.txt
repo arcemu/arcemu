@@ -1,5 +1,5 @@
 
-   /******************************************************************
+   ******************************************************************
    *	 _____              ___                           _         *
    *	(  _  )            (  _`\               _        ( )_       *
    *	| (_) | _ __   ___ | (_(_)   ___  _ __ (_) _ _   | ,_)      *
@@ -12,24 +12,15 @@
    *	               OpenSource Scripting Team                    *
    *	                <http://www.arcemu.org>                     *
    *	                                                            *
-   ******************************************************************/
+   ******************************************************************
 
-function ArcScript_Yor_Fire_Cone(Unit, event, miscunit, misc)
-	print "Yor Fire Cone"
-	Unit:FullCastSpellOnTarget(19630,Unit:GetClosestPlayer())
-	Unit:SendChatMessage(11, 0, "Fire...Fire...Fire...")
-end
+How to install ArcScripts?
+Windows:
 
-function ArcScript_Yor_Earthquake(Unit, event, miscunit, misc)
-	print "Yor Earthquake"
-	Unit:FullCastSpellOnTarget(33919,Unit:GetClosestPlayer())
-	Unit:SendChatMessage(11, 0, "Earthquake...")
-end
+1: Compile ArcEmu (ULTIMATE REV) with C++ (2008 or last)
+2: Compile your ArcScripts with C++ (2008 or last)
+3: Copy all .LUA files in the LUA Scripting foulder to your script_bin foulder.
+4: Import to your world database the ArcScripts_Full.sql
+5: Set up your server and HAVE FUN!
 
-function ArcScript_Yor(unit, event, miscunit, misc)
-	print "Yor"
-	unit:RegisterEvent("Yor_Fire_Cone",10000,0)
-	unit:RegisterEvent("Yor_Earthquake",13000,0)
-end
-
-RegisterUnitEvent(22930,1,"ArcScript_Yor")
+Regards. ArcScript Team.

@@ -1,22 +1,21 @@
 /*
-** $Id: ltable.c,v 2.32 2006/01/18 11:49:02 roberto Exp $
-** Lua tables (hash)
-** See Copyright Notice in lua.h
-*/
-
-
-/*
-** Implementation of tables (aka arrays, objects, or hash tables).
-** Tables keep its elements in two parts: an array part and a hash part.
-** Non-negative integer keys are all candidates to be kept in the array
-** part. The actual size of the array is the largest `n' such that at
-** least half the slots between 0 and n are in use.
-** Hash uses a mix of chained scatter table with Brent's variation.
-** A main invariant of these tables is that, if an element is not
-** in its main position (i.e. the `original' position that its hash gives
-** to it), then the colliding element is in its own main position.
-** Hence even when the load factor reaches 100%, performance remains good.
-*/
+ * ArcScript Scripts for Arcemu MMORPG Server
+ * Copyright (C) 2008 Arcemu Team
+ * Copyright (C) 2007 Moon++ <http://www.moonplusplus.com/>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 
 #include <math.h>
 #include <string.h>

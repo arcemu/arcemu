@@ -1,6 +1,7 @@
 /*
- * Moon++ Scripts for Ascent MMORPG Server
- * Copyright (C) 2007-2008 Moon++ Team <http://www.moonplusplus.info/>
+ * ArcScript SCcripts for Arcemu MMORPG Server
+ * Copyright (C) 2008 Arcemu Team
+ * Copyright (C) 2007 Moon++ <http://www.moonplusplus.info/>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
