@@ -6032,7 +6032,7 @@ void Spell::SpellEffectDummyMelee( uint32 i ) // Normalized Weapon damage +
 	}
 	else if( GetProto()->NameHash == SPELL_HASH_CRUSADER_STRIKE ) // Crusader Strike - refreshes *all* judgements, not just your own
 	{
-		for( int x = MAX_NEGATIVE_AURAS_EXTEDED_START ; x <= MAX_NEGATIVE_AURAS_EXTEDED_END ; x ++ ) // there are only debuff judgements anyway :P
+		for( int x = MAX_NEGATIVE_AURAS_EXTEDED_START ; x < MAX_NEGATIVE_AURAS_EXTEDED_END ; x ++ ) // there are only debuff judgements anyway :P
 		{
 			if( unitTarget->m_auras[x] && unitTarget->m_auras[x]->GetSpellProto()->BGR_one_buff_from_caster_on_1target == SPELL_TYPE_INDEX_JUDGEMENT )
 			{
