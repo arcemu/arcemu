@@ -236,12 +236,12 @@ bool ChatHandler::HandleGetInstanceInfoCommand(const char* args, WorldSession *m
 	{
 		ss << "Status: " << MSG_COLOR_LIGHTRED << "Idle|r";
 		if(instance->m_mapMgr->InactiveMoveTime && instance->m_mapMgr->GetMapInfo()->type != INSTANCE_NULL)
-			ss << " (" << MSG_COLOR_CYAN << "Shutdown in " << MSG_COLOR_LIGHTRED << ( (instance->m_mapMgr->InactiveMoveTime - UNIXTIME) / 60 ) << MSG_COLOR_CYAN << " minutes|r)";
+			ss << " (" << MSG_COLOR_CYAN << "Shutdown in " << MSG_COLOR_LIGHTRED << ( ((long)instance->m_mapMgr->InactiveMoveTime - UNIXTIME) / 60 ) << MSG_COLOR_CYAN << " minutes|r)";
 		ss << "\n";
 	}
 	else
 	{
-		ss << "Status: " << MSG_COLOR_GREEN << "In use|r (" << MSG_COLOR_GREEN << instance->m_mapMgr->GetPlayerCount() << MSG_COLOR_CYAN << " players inside|r)\n";
+		ss << "Status: " << MSG_COLOR_GREEN << "In use|r (" << MSG_COLOR_GREEN << (uint32)instance->m_mapMgr->GetPlayerCount() << MSG_COLOR_CYAN << " players inside|r)\n";
 		//ss << "Playerlist:\n";
 		//int cnt = 0;
 		////TODO: Implement lock...
