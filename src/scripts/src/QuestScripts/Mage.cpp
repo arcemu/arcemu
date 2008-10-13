@@ -64,7 +64,7 @@ public:
     bool casterOk = false;
     Player *p_caster;
 
-    for(int i = 0; i<MAX_AURAS+MAX_PASSIVE_AURAS; i++)
+    for(int i = MAX_TOTAL_AURAS_START; i<MAX_TOTAL_AURAS_END; i++)
     {
       if(_unit->m_auras[i] == NULL)
         continue;
