@@ -6057,4 +6057,8 @@ void ApplyNormalFixes()
 				sp->EffectImplicitTargetA[1] = 0;
 			}
 
+	// Recently Dropped Flag
+	sp = dbcSpell.LookupEntryForced( 42792 );
+	if (sp != NULL)
+		sp->c_is_flags |= SPELL_FLAG_IS_FORCEDDEBUFF;
 }

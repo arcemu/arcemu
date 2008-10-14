@@ -339,6 +339,11 @@ void EyeOfTheStorm::HookFlagDrop(Player * plr, GameObject * obj)
 	if( !m_dropFlag->IsInWorld() )
 		return;
 
+	map<uint32,uint32>::iterator itr = plr->m_forcedReactions.find(1059);
+	if (itr != plr->m_forcedReactions.end()) {
+		return;
+	}
+
 	m_dropFlag->RemoveFromWorld(false);
 	plr->CastSpell( plr->GetGUID(), EOTS_NETHERWING_FLAG_SPELL, true );
 
@@ -352,7 +357,6 @@ void EyeOfTheStorm::HookFlagDrop(Player * plr, GameObject * obj)
 
 void EyeOfTheStorm::HookFlagStand(Player * plr, GameObject * obj)
 {
-
 }
 
 bool EyeOfTheStorm::HookSlowLockOpen(GameObject * pGo, Player * pPlayer, Spell * pSpell)
@@ -408,6 +412,8 @@ void EyeOfTheStorm::DropFlag(Player * plr)
 {
 	if( m_flagHolder != plr->GetLowGUID() )
 		return;
+
+	plr->CastSpell(plr, 42792, true);
 
 	m_dropFlag->SetPosition( plr->GetPosition() );
 	m_dropFlag->PushToWorld( m_mapMgr );
