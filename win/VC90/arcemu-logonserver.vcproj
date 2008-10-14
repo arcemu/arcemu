@@ -525,7 +525,11 @@
 			RelativePath="..\..\src\arcemu-logonserver\Main.h"
 			>
 		</File>
-	</Files>
+	      <File
+			RelativePath="..\..\src\arcemu-logonserver\resources.rc"
+			>
+		</File>
+      </Files>
 	<Globals>
 	</Globals>
 </VisualStudioProject>

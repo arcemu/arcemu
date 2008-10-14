@@ -1285,7 +1285,11 @@
 			RelativePath="..\..\src\arcemu-world\WorldSocket.h"
 			>
 		</File>
-	</Files>
+	      <File
+			RelativePath="..\..\src\arcemu-world\resources.rc"
+			>
+		</File>
+	     </Files>
 	<Globals>
 	</Globals>
 </VisualStudioProject>
