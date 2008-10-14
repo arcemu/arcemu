@@ -385,6 +385,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\src\GossipScripts\Gossip_Guard.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\src\GossipScripts\Gossip_Innkeepers.cpp"
 				>
 			</File>
@@ -409,11 +413,7 @@
 				>
 			</File>
 			<File
-				RelativePath="..\src\GossipScripts\GuardGossip.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\src\GossipScripts\TrainerGossip.cpp"
+				RelativePath="..\src\GossipScripts\Gossip_Trainer.cpp"
 				>
 			</File>
 		</Filter>

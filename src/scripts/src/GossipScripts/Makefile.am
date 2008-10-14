@@ -17,5 +17,4 @@ Gossip_Shattrath.cpp \
 Gossip_Tanaris.cpp \
 Gossip_Stormwind.cpp\
 Gossip_Moonglade.cpp\
-Gossip_DarkmoonFaire.cpp\
 Setup.cpp
