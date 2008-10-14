@@ -3487,7 +3487,7 @@ void Spell::SpellEffectDispel(uint32 i) // Dispel
 
 	Aura *aur;
 	uint32 start,end;
-	if(isAttackable(u_caster,unitTarget))
+	if(isAttackable(u_caster,unitTarget) || GetProto()->EffectMiscValue[i] == DISPEL_STEALTH ) // IsAttackable returns false for stealthed
 	{
 		start=MAX_POSITIVE_AURAS_EXTEDED_START;
 		end=MAX_POSITIVE_AURAS_EXTEDED_END;
