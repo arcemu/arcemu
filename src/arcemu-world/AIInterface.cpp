@@ -3119,6 +3119,14 @@ void AIInterface::_UpdateMovement(uint32 p_time)
 			float Fx;
 			float Fy;
 			float Fz;
+
+			if( sWorld.DisableFearMovement )
+			{
+				if( m_Unit->GetMapId() == 529|| m_Unit->GetMapId() == 566 || m_Unit->GetMapId() == 489 || m_Unit->GetMapId() == 572 || m_Unit->GetMapId() == 562 || m_Unit->GetMapId() == 559 )
+				{
+					return;	
+				}
+			}
 			// Calculate new angle to target.
 			float Fo = m_Unit->calcRadAngle(UnitToFear->GetPositionX(), UnitToFear->GetPositionY(), m_Unit->GetPositionX(), m_Unit->GetPositionY());
 			double fAngleAdd = RandomDouble(((M_PI/2) * 2)) - (M_PI/2);

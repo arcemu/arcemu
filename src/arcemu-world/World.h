@@ -396,6 +396,7 @@ public:
 	bool SendStatsOnJoin;
 	SessionSet gmList;
 	bool Collision;
+	bool DisableFearMovement;
 
 	void ShutdownClasses();
 	void DeleteObject(Object * obj);
