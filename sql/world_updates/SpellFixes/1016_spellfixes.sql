@@ -229,3 +229,10 @@ INSERT INTO spellfixes(spellId, groupRelation0) VALUES(14177, 0xC6012031E) ON DU
 
 -- Reduced Stormstrike Cost
 INSERT INTO spellfixes(spellId, groupRelation0) VALUES(37762, 0x1000000000) ON DUPLICATE KEY UPDATE groupRelation0=VALUES(groupRelation0);
+
+-- [Warlock] Unholy Power
+INSERT INTO spellfixes(spellId, groupRelation0) VALUES(18769, 0x8000000000001000) ON DUPLICATE KEY UPDATE groupRelation0=VALUES(groupRelation0);
+INSERT INTO spellfixes(spellId, groupRelation0) VALUES(18770, 0x8000000000001000) ON DUPLICATE KEY UPDATE groupRelation0=VALUES(groupRelation0);
+INSERT INTO spellfixes(spellId, groupRelation0) VALUES(18771, 0x8000000000001000) ON DUPLICATE KEY UPDATE groupRelation0=VALUES(groupRelation0);
+INSERT INTO spellfixes(spellId, groupRelation0) VALUES(18772, 0x8000000000001000) ON DUPLICATE KEY UPDATE groupRelation0=VALUES(groupRelation0);
+INSERT INTO spellfixes(spellId, groupRelation0) VALUES(18773, 0x8000000000001000) ON DUPLICATE KEY UPDATE groupRelation0=VALUES(groupRelation0);

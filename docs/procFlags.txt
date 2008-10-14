@@ -6,6 +6,7 @@ Small doc about procFlags / spells attributes
 
 
 procFlags: They are not flags it seems, but magic numbers
+=========
 
 
 0x1 on combat
@@ -17,8 +18,11 @@ procFlags: They are not flags it seems, but magic numbers
 
 0x28 ON_MELEE_HIT_VICTIM 
 
+0x140 RANGED
+
 0x2A8 ON_MELEE_HIT_VICTIM | ON_RANGED_HIT_VICTIM
 
+0x4000 ON_CAST_SPELL
 0x10000 ON_cAST_SPELL
 
 0x11154 & attr=0x1d0 ON_CRIT 
@@ -43,9 +47,25 @@ procFlags: They are not flags it seems, but magic numbers
 
 0x2a8 and attr&0x50000 and attrexc&2 on block
 
+
+
+groupRelations:
+==============
+
+
+This is the affected spells/abilities/misc effects, based of SpellGroupType from spell.dbc.
+Higher 8 bits are unused (0xff00000000000000), this can be used for some talents such as
+unholy power (http://www.wowhead.com/?spell=18773) which affects melee attacks as uses the 
+SMT_MISC_EFFECT modifier, custom flags as follows:
+
+0x8000000000000000 = MELEE_ATTACK
+0x4000000000000000 = MELEE_CRIT_ATTACK
+
+
+
 // SpellFixes.cpp ApplyNormalFixes iteration:
 
-		//create table spell(entry int4 unsigned primary key, name varchar(255) not null, description text not null, attr int4 unsigned not null, attrex int4 unsigned not null, attrexb int4 unsigned not null, attrexc int4 unsigned not null, attrexd int4 unsigned not null, attrexe int4 unsigned not null, flags int4 unsigned not null, intr int4 unsigned not null, auintr int4 unsigned not null, hasproc int1 unsigned not null);
+		//create table spell(entry int4 unsigned primary key, name varchar(255) not null, description text not null, attr int4 unsigned not null, attrex int4 unsigned not null, attrexb int4 unsigned not null, attrexc int4 unsigned not null, attrexd int4 unsigned not null, attrexe int4 unsigned not null, flags int4 unsigned not null, intr int4 unsigned not null, auintr int4 unsigned not null, relation int8 unsigned not null, hasproc int1 unsigned not null);
 		char query[4096];
 		char name[4096];
 		char desc[4096];
@@ -53,7 +73,7 @@ procFlags: They are not flags it seems, but magic numbers
 		strcpy(desc,sp->Description);
 		for (int z=0;z<strlen(name);z++) if (name[z] == '\'') name[z]=' ';
 		for (int z=0;z<strlen(desc);z++) if (desc[z] == '\'') desc[z]=' ';
-		sprintf(query, "insert into spell(entry, name, description, attr, attrex, attrexb, attrexc, attrexd, attrexe, flags, intr, auintr, hasproc) values(%u, '%s', '%s', %u, %u, %u, %u, %u, %u, %u, %u, %u, %u);", sp->Id, name, desc, sp->Attributes, sp->AttributesEx, sp->AttributesExB, sp->AttributesExC, sp->AttributesExD, sp->AttributesExE, sp->procFlags, sp->InterruptFlags, sp->AuraInterruptFlags, sp->EffectApplyAuraName[0]==42 ||sp->EffectApplyAuraName[1]==42 ||sp->EffectApplyAuraName[2]==42);
+		sprintf(query, "insert into spell(entry, name, description, attr, attrex, attrexb, attrexc, attrexd, attrexe, flags, intr, auintr, relation, hasproc) values(%u, '%s', '%s', %u, %u, %u, %u, %u, %u, %u, %u, %u, 0x%I64x, %u);", sp->Id, name, desc, sp->Attributes, sp->AttributesEx, sp->AttributesExB, sp->AttributesExC, sp->AttributesExD, sp->AttributesExE, sp->procFlags, sp->InterruptFlags, sp->AuraInterruptFlags, sp->SpellGroupType, sp->EffectApplyAuraName[0]==42 ||sp->EffectApplyAuraName[1]==42 ||sp->EffectApplyAuraName[2]==42);
 		FILE *f = fopen("spell.sql", "a");
 		fprintf(f, "%s\n", query);
 		fclose(f);
