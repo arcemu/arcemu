@@ -1,0 +1,14 @@
+configure
+config.log
+depcomp
+config.guess
+config.h
+config.sub
+config.status
+stamp-h1
+config.h.in
+libtool
+autom4te.cache
+missing
+aclocal.m4
+install-sh
