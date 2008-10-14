@@ -5783,6 +5783,13 @@ bool Unit::IsPoisoned()
 	return false;
 }
 
+// wrapper for AddAuraVisual where we don't care about the skip_client_update out param
+uint32 Unit::AddAuraVisual(uint32 spellid, uint32 count, bool positive)
+{
+	uint32 outint = 0;
+	return AddAuraVisual(spellid, count, positive, outint);
+}
+
 uint32 Unit::AddAuraVisual(uint32 spellid, uint32 count, bool positive, uint32 &skip_client_update)
 {
 	int32 free = -1;
