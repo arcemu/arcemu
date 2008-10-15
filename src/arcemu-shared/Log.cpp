@@ -80,34 +80,40 @@ void oLog::outTime()
 
 void oLog::outString( const char * str, ... )
 {
+	va_list ap;
+	char buf[32768];
+
 	if(m_fileLogLevel < 0 && m_screenLogLevel < 0)
 		return;
 
-	va_list ap;
 	va_start(ap, str);
+	vsnprintf(buf, 32768, str, ap);
+	va_end(ap);
 	
 	if(m_screenLogLevel >= 0)
 	{
-		vprintf(str, ap);
+		printf(str);
 		putc('\n', stdout);
 	}
 	if(m_fileLogLevel >= 0 && m_file)
 	{
 		outTime();
-		vfprintf(m_file, str, ap);
+		fprintf(m_file, str);
 		putc('\n', m_file);
 	}
-
-	va_end(ap);
 }
 
 void oLog::outError( const char * err, ... )
 {
+	va_list ap;
+	char buf[32768];
+
 	if(m_fileLogLevel < 1 && m_screenLogLevel < 1)
 		return;
 
-	va_list ap;
 	va_start(ap, err);
+	vsnprintf(buf, 32768, err, ap);
+	va_end(ap);
 
 	if(m_screenLogLevel >= 1)
 	{
@@ -116,7 +122,7 @@ void oLog::outError( const char * err, ... )
 #else
 		puts(colorstrings[TRED]);
 #endif
-		vfprintf(stderr, err, ap);
+		fprintf(stderr, err);
 		putc('\n', stderr);
 #ifdef WIN32
 		SetConsoleTextAttribute(stderr_handle, FOREGROUND_RED | FOREGROUND_BLUE | FOREGROUND_GREEN);
@@ -127,79 +133,83 @@ void oLog::outError( const char * err, ... )
 	if(m_fileLogLevel >= 1 && m_file)
 	{
 		outTime();
-		vfprintf(m_file, err, ap);
+		fprintf(m_file, err);
 		putc('\n', m_file);
 	}
-
-	va_end(ap);
 }
 
 void oLog::outBasic( const char * str, ... )
 {
+	va_list ap;
+	char buf[32768];
+
 	if(m_fileLogLevel < 1 && m_screenLogLevel < 1)
 		return;
 
-	va_list ap;
 	va_start(ap, str);
+	vsnprintf(buf, 32768, str, ap);
+	va_end(ap);
 
 	if(m_screenLogLevel >= 1)
 	{
-		vprintf(str, ap);
+		printf(str);
 		putc('\n', stdout);
 	}
 	if(m_fileLogLevel >= 1 && m_file)
 	{
-		vfprintf(m_file, str, ap);
+		fprintf(m_file, str);
 		putc('\n', m_file);
 	}
-
-	va_end(ap);
 }
 
 void oLog::outDetail( const char * str, ... )
 {
+	va_list ap;
+	char buf[32768];
+
 	if(m_fileLogLevel < 2 && m_screenLogLevel < 2)
 		return;
 
-	va_list ap;
 	va_start(ap, str);
+	vsnprintf(buf, 32768, str, ap);
+	va_end(ap);
 
 	if(m_screenLogLevel >= 2)
 	{
-		vprintf(str, ap);
+		printf(str);
 		putc('\n', stdout);
 	}
 	if(m_fileLogLevel >= 2 && m_file)
 	{
 		outTime();
-		vfprintf(m_file, str, ap);
+		fprintf(m_file, str);
 		putc('\n', m_file);
 	}
-
-	va_end(ap);
 }
 
 void oLog::outDebug( const char * str, ... )
 {
+	va_list ap;
+	char buf[32768];
+
 	if(m_fileLogLevel < 3 && m_screenLogLevel < 3)
 		return;
 
-	va_list ap;
 	va_start(ap, str);
+	vsnprintf(buf, 32768, str, ap);
+	va_end(ap);
 
 	if(m_screenLogLevel >= 3)
 	{
-		vprintf(str, ap);
+		printf(str);
 		putc('\n', stdout);
 	}
 	if(m_fileLogLevel >= 3 && m_file)
 	{
 		outTime();
-		vfprintf(m_file, str, ap);
+		fprintf(m_file, str);
 		putc('\n', m_file);
 	}
-
-	va_end(ap);
 }
 
 void oLog::outMenu( const char * str, ... )
