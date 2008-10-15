@@ -72,7 +72,7 @@ extern "C" SCRIPT_DECL void _exp_script_register(ScriptMgr* mgr)	// Comment any 
 	SetupZulGurub(mgr);
 	SetupSerpentshrineCavern(mgr);
 	SetupMagtheridonsLair(mgr);
-	//SetupSunwellPlateau(mgr);
+	SetupSunwellPlateau(mgr);
 	//SetupWorldBosses(mgr); 
 	SetupZulAman(mgr);
 	//Events

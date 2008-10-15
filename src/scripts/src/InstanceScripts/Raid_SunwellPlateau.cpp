@@ -392,7 +392,7 @@ class KilJaedenAI : public ArcScriptBossAI
     ArcScript_FACTORY_FUNCTION(KilJaedenAI, ArcScriptBossAI);
 	KilJaedenAI(Creature* pCreature) : ArcScriptBossAI(pCreature)
 	{
-		//TODO
+		
 	}
 };
 

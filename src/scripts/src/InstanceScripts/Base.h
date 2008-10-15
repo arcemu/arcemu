@@ -236,6 +236,7 @@ public:
 
 	//Reimplemented Events
 	virtual void			OnCombatStart(Unit* pTarget);
+	virtual void            OnLoad();
 	virtual void			OnCombatStop(Unit* pTarget);
 	virtual void			OnTargetDied(Unit* pTarget);
 	virtual void			OnDied(Unit* pKiller);

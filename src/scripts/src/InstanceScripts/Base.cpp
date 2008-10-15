@@ -588,7 +588,12 @@ void ArcScriptCreatureAI::OnCombatStart(Unit* pTarget)
 {
 	RandomEmote(mOnCombatStartEmotes);
 	SetBehavior(Behavior_Melee);
-    RegisterAIUpdateEvent(mAIUpdateFrequency);
+	RegisterAIUpdateEvent(mAIUpdateFrequency);
+}
+
+void ArcScriptCreatureAI::OnLoad()
+{
+	RegisterAIUpdateEvent(mAIUpdateFrequency);
 }
 
 void ArcScriptCreatureAI::OnCombatStop(Unit* pTarget)

@@ -1,5 +1,5 @@
---[[
-   /******************************************************************
+ --[[
+   ******************************************************************
    *	 _____              ___                           _         *
    *	(  _  )            (  _`\               _        ( )_       *
    *	| (_) | _ __   ___ | (_(_)   ___  _ __ (_) _ _   | ,_)      *
@@ -12,24 +12,51 @@
    *	               OpenSource Scripting Team                    *
    *	                <http://www.arcemu.org>                     *
    *	                                                            *
-   ******************************************************************/]]
+   ******************************************************************
+  
+   This software is provided as free and open source by the
+staff of The ArcScript Project, in accordance with 
+the GPL license. This means we provide the software we have 
+created freely and it has been thoroughly tested to work for 
+the developers, but NO GUARANTEE is made it will work for you 
+as well. Please give credit where credit is due, if modifying,
+redistributing and/or using this software. Thank you.
 
-function ArcScript_Yor_Fire_Cone(Unit, event, miscunit, misc)
-	print "Yor Fire Cone"
-	Unit:FullCastSpellOnTarget(19630,Unit:GetClosestPlayer())
-	Unit:SendChatMessage(11, 0, "Fire...Fire...Fire...")
+Staff of ArcScript Project, Feb 2008
+~~End of License Agreement
+
+#############################################################
+
+-- ]]
+--Scripted: recon
+function Yor_Fire(pUnit, Event)
+	print "Yor Double Breath"
+	pUnit:FullCastSpellOnTarget(38361,Unit:GetClosestPlayer(0))
 end
 
-function ArcScript_Yor_Earthquake(Unit, event, miscunit, misc)
-	print "Yor Earthquake"
-	Unit:FullCastSpellOnTarget(33919,Unit:GetClosestPlayer())
-	Unit:SendChatMessage(11, 0, "Earthquake...")
+function Yor_stomp(pUnit, Event)
+	print "Yor stomp"
+	pUnit:CastSpell(36405)
 end
 
-function ArcScript_Yor(unit, event, miscunit, misc)
+function Yor_OnCombat(pUnit, Event)
 	print "Yor"
-	unit:RegisterEvent("Yor_Fire_Cone",10000,0)
-	unit:RegisterEvent("Yor_Earthquake",13000,0)
+	pUnit:RegisterEvent("Yor_Fire",10000,0)
+	pUnit:RegisterEvent("Yor_stomp",13000,0)
 end
 
-RegisterUnitEvent(22930,1,"ArcScript_Yor")
+
+function Yor_OnLeaveCombat(pUnit, Event)
+	pUnit:RemoveEvents()	
+end
+
+function Yor_Died(pUnit, Event)
+	--pUnit:PlaySoundToSet()	
+	pUnit:RemoveEvents()
+end
+
+
+RegisterUnitEvent(22930, 1, "Yor_OnCombat")
+RegisterUnitEvent(22930, 2, "Yor_OnLeaveCombat")
+RegisterUnitEvent(22930, 3, "Yor_OnKilledTarget")
+RegisterUnitEvent(22930, 4, "Yor_OnDied")

@@ -1,4 +1,5 @@
---[[   /******************************************************************
+ --[[
+   ******************************************************************
    *	 _____              ___                           _         *
    *	(  _  )            (  _`\               _        ( )_       *
    *	| (_) | _ __   ___ | (_(_)   ___  _ __ (_) _ _   | ,_)      *
@@ -11,9 +12,9 @@
    *	               OpenSource Scripting Team                    *
    *	                <http://www.arcemu.org>                     *
    *	                                                            *
-   ******************************************************************/
-
-This software is provided as free and open source by the
+   ******************************************************************
+  
+   This software is provided as free and open source by the
 staff of The ArcScript Project, in accordance with 
 the GPL license. This means we provide the software we have 
 created freely and it has been thoroughly tested to work for 
@@ -25,6 +26,7 @@ Staff of ArcScript Project, Feb 2008
 ~~End of License Agreement
 
 #############################################################
+
 Special thanks: Janni, Recon, Nandi.
 -- ]]
 RegisterUnitEvent(17008, 18, "guldan")
