@@ -227,11 +227,8 @@ void MapCell::LoadObjects(CellSpawns * sp)
 			if(respawnTimeOverride > 0)
 				c->m_respawnTimeOverride = respawnTimeOverride;
 
-            if(c->Load(*i, _mapmgr->iInstanceMode, _mapmgr->GetMapInfo()))
+			if( c->Load(*i, _mapmgr->iInstanceMode, _mapmgr->GetMapInfo()) && c->CanAddToWorld() )
 			{
-				if(!c->CanAddToWorld())
-					delete c;
-
 				c->PushToWorld(_mapmgr);
 			}
 			else
