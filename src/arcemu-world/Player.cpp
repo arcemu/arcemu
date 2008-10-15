@@ -4203,9 +4203,17 @@ void Player::BuildPlayerRepop()
 
 void Player::RepopRequestedPlayer()
 {
+	// cebernic: don't do this.
+  if ( m_bg )
+  {
+    if ( !m_bg->HasStarted() ) return;
+  }
+
 	if( myCorpse != NULL )
 	{
-		GetSession()->SendNotification( NOTIFICATION_MESSAGE_NO_PERMISSION );
+//		GetSession()->SendNotification( NOTIFICATION_MESSAGE_NO_PERMISSION );
+		ResurrectPlayer();
+		RepopAtGraveyard( GetPositionX(), GetPositionY(), GetPositionZ(), GetMapId() );
 		return;
 	}
 
@@ -9652,7 +9660,7 @@ void Player::UnPossess()
 
 	/* send "switch mover" packet */
 	WorldPacket data(SMSG_CLIENT_CONTROL_UPDATE, 10);
-	data << GetNewGUID() << uint8(1);
+	data << pTarget->GetNewGUID() << uint8(0);
 	m_session->SendPacket(&data);
 
 	if(pTarget->m_temp_summon)
