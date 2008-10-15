@@ -112,7 +112,7 @@ typedef std::map<uint32, EnchantmentInstance> EnchantmentMap;
 #define APPLY true
 #define REMOVE false
 
-#define RANDOM_SUFFIX_MAGIC_CALCULATION( __suffix, __scale ) int32( float( ( float( ( __suffix ) ) * float( ( __scale ) ) ) ) / 13340.0f );
+#define RANDOM_SUFFIX_MAGIC_CALCULATION( __suffix, __scale ) int32( float( ( float( ( __suffix ) ) * float( ( __scale ) ) ) ) / 10000.0f );
 
 class SERVER_DECL Item : public Object
 {
