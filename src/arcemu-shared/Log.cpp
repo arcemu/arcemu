@@ -92,13 +92,13 @@ void oLog::outString( const char * str, ... )
 	
 	if(m_screenLogLevel >= 0)
 	{
-		printf(str);
+		printf(buf);
 		putc('\n', stdout);
 	}
 	if(m_fileLogLevel >= 0 && m_file)
 	{
 		outTime();
-		fprintf(m_file, str);
+		fprintf(m_file, buf);
 		putc('\n', m_file);
 	}
 }
@@ -122,7 +122,7 @@ void oLog::outError( const char * err, ... )
 #else
 		puts(colorstrings[TRED]);
 #endif
-		fprintf(stderr, err);
+		fprintf(stderr, buf);
 		putc('\n', stderr);
 #ifdef WIN32
 		SetConsoleTextAttribute(stderr_handle, FOREGROUND_RED | FOREGROUND_BLUE | FOREGROUND_GREEN);
@@ -133,7 +133,7 @@ void oLog::outError( const char * err, ... )
 	if(m_fileLogLevel >= 1 && m_file)
 	{
 		outTime();
-		fprintf(m_file, err);
+		fprintf(m_file, buf);
 		putc('\n', m_file);
 	}
 }
@@ -152,12 +152,12 @@ void oLog::outBasic( const char * str, ... )
 
 	if(m_screenLogLevel >= 1)
 	{
-		printf(str);
+		printf(buf);
 		putc('\n', stdout);
 	}
 	if(m_fileLogLevel >= 1 && m_file)
 	{
-		fprintf(m_file, str);
+		fprintf(m_file, buf);
 		putc('\n', m_file);
 	}
 }
@@ -176,13 +176,13 @@ void oLog::outDetail( const char * str, ... )
 
 	if(m_screenLogLevel >= 2)
 	{
-		printf(str);
+		printf(buf);
 		putc('\n', stdout);
 	}
 	if(m_fileLogLevel >= 2 && m_file)
 	{
 		outTime();
-		fprintf(m_file, str);
+		fprintf(m_file, buf);
 		putc('\n', m_file);
 	}
 }
@@ -201,13 +201,13 @@ void oLog::outDebug( const char * str, ... )
 
 	if(m_screenLogLevel >= 3)
 	{
-		printf(str);
+		printf(buf);
 		putc('\n', stdout);
 	}
 	if(m_fileLogLevel >= 3 && m_file)
 	{
 		outTime();
-		fprintf(m_file, str);
+		fprintf(m_file, buf);
 		putc('\n', m_file);
 	}
 }
