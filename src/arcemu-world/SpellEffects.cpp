@@ -4163,7 +4163,13 @@ void Spell::SpellEffectThreat(uint32 i) // Threat
 	if( !unitTarget || !unitTarget->isAlive() || !unitTarget->IsCreature() )
 		return;
 
-	bool chck = unitTarget->GetAIInterface()->modThreatByPtr(u_caster,GetProto()->EffectBasePoints[i]);
+	int32 amount = GetProto()->EffectBasePoints[i];
+	if (GetProto()->SpellGroupType) {
+		SM_FIValue(u_caster->SM_FMiscEffect,&amount,GetProto()->SpellGroupType);
+		SM_PIValue(u_caster->SM_PMiscEffect,&amount,GetProto()->SpellGroupType);
+	}
+
+	bool chck = unitTarget->GetAIInterface()->modThreatByPtr(u_caster, amount);
 	if(chck == false)
 		unitTarget->GetAIInterface()->AttackReaction(u_caster,1,0);	
 }

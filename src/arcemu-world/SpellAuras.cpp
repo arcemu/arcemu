@@ -2749,18 +2749,28 @@ void Aura::SpellAuraPeriodicHeal( bool apply )
 	if( apply )
 	{
 		SetPositive();
-		sEventMgr.AddEvent( this, &Aura::EventPeriodicHeal,(uint32)mod->m_amount, EVENT_AURA_PERIODIC_HEAL, GetSpellProto()->EffectAmplitude[mod->i], 0, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT );
 
-		if( GetSpellProto()->NameHash == SPELL_HASH_REJUVENATION || GetSpellProto()->NameHash == SPELL_HASH_REGROWTH )
-		{
-			m_target->SetFlag(UNIT_FIELD_AURASTATE,AURASTATE_FLAG_REJUVENATE);
-			if(!sEventMgr.HasEvent( m_target, EVENT_REJUVENATION_FLAG_EXPIRE ) )
+		int32 val = mod->m_amount;
+		Unit *c = GetUnitCaster();
+		if (c && GetSpellProto()->SpellGroupType) {
+			SM_FIValue(c->SM_FMiscEffect,&val,GetSpellProto()->SpellGroupType);
+			SM_PIValue(c->SM_PMiscEffect,&val,GetSpellProto()->SpellGroupType);
+		}
+
+		if (val > 0) {
+			sEventMgr.AddEvent( this, &Aura::EventPeriodicHeal,(uint32)val, EVENT_AURA_PERIODIC_HEAL, GetSpellProto()->EffectAmplitude[mod->i], 0, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT );
+
+			if( GetSpellProto()->NameHash == SPELL_HASH_REJUVENATION || GetSpellProto()->NameHash == SPELL_HASH_REGROWTH )
 			{
-				sEventMgr.AddEvent( m_target, &Unit::EventAurastateExpire, (uint32)AURASTATE_FLAG_REJUVENATE, EVENT_REJUVENATION_FLAG_EXPIRE, GetDuration(), 1, 0 );
-			}
-			else
-			{
-				sEventMgr.ModifyEventTimeLeft( m_target,EVENT_REJUVENATION_FLAG_EXPIRE, GetDuration(), 0 );
+				m_target->SetFlag(UNIT_FIELD_AURASTATE,AURASTATE_FLAG_REJUVENATE);
+				if(!sEventMgr.HasEvent( m_target, EVENT_REJUVENATION_FLAG_EXPIRE ) )
+				{
+					sEventMgr.AddEvent( m_target, &Unit::EventAurastateExpire, (uint32)AURASTATE_FLAG_REJUVENATE, EVENT_REJUVENATION_FLAG_EXPIRE, GetDuration(), 1, 0 );
+				}
+				else
+				{
+					sEventMgr.ModifyEventTimeLeft( m_target,EVENT_REJUVENATION_FLAG_EXPIRE, GetDuration(), 0 );
+				}
 			}
 		}
 	}
@@ -4982,23 +4992,30 @@ void Aura::EventPeriodicLeech(uint32 amount)
 
 void Aura::SpellAuraModHitChance(bool apply)
 {
-	if (m_target->IsUnit())
+	if (!m_target->IsUnit()) return;
+
+	int32 val = mod->m_amount;
+
+	Unit *c = GetUnitCaster();
+	if (c && GetSpellProto()->SpellGroupType) {
+		SM_FIValue(c->SM_FMiscEffect,&val,GetSpellProto()->SpellGroupType);
+		SM_PIValue(c->SM_PMiscEffect,&val,GetSpellProto()->SpellGroupType);
+	}
+
+	if (apply)
 	{
-		if (apply)
-		{
-			static_cast< Unit* >( m_target )->SetHitFromMeleeSpell( static_cast< Unit* >( m_target )->GetHitFromMeleeSpell() + mod->m_amount);
-			if(mod->m_amount<0)
-				SetNegative();
-			else
-				SetPositive();
-		}
+		static_cast< Unit* >( m_target )->SetHitFromMeleeSpell( static_cast< Unit* >( m_target )->GetHitFromMeleeSpell() + val);
+		if(val<0)
+			SetNegative();
 		else
+			SetPositive();
+	}
+	else
+	{
+		static_cast< Unit* >( m_target )->SetHitFromMeleeSpell( static_cast< Unit* >( m_target )->GetHitFromMeleeSpell() - val);
+		if( static_cast< Unit* >( m_target )->GetHitFromMeleeSpell() < 0 )
 		{
-			static_cast< Unit* >( m_target )->SetHitFromMeleeSpell( static_cast< Unit* >( m_target )->GetHitFromMeleeSpell() - mod->m_amount);
-			if( static_cast< Unit* >( m_target )->GetHitFromMeleeSpell() < 0 )
-			{
-				static_cast< Unit* >( m_target )->SetHitFromMeleeSpell( 0 );
-			}
+			static_cast< Unit* >( m_target )->SetHitFromMeleeSpell( 0 );
 		}
 	}
 }
@@ -5537,6 +5554,12 @@ void Aura::SpellAuraSchoolAbsorb(bool apply)
 		SetPositive();
 
 		int32 val = mod->m_amount;
+		Unit *c = GetUnitCaster();
+		if (c && GetSpellProto()->SpellGroupType) {
+			SM_FIValue(c->SM_FMiscEffect,&val,GetSpellProto()->SpellGroupType);
+			SM_PIValue(c->SM_PMiscEffect,&val,GetSpellProto()->SpellGroupType);
+		}
+
 		Player * plr = static_cast< Player* >( GetUnitCaster() );
 		if( plr )
 		{
