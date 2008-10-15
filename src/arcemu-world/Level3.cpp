@@ -2154,6 +2154,28 @@ bool ChatHandler::HandleCreatureSpawnCommand(const char *args, WorldSession *m_s
 	return true;
 }
 
+bool ChatHandler::HandleCreatureRespawnCommand(const char *args, WorldSession *m_session)
+{
+	Creature * cCorpse = getSelectedCreature( m_session, false );
+	
+	if( cCorpse != NULL && cCorpse->IsCreature() && cCorpse->getDeathState() == CORPSE && cCorpse->GetSQL_id() != 0 )
+	{
+		sEventMgr.RemoveEvents( cCorpse, EVENT_CREATURE_RESPAWN );
+
+		BlueSystemMessage( m_session, "Respawning a Creature: `%s` with entry: %u on map: %u sqlid: %u", cCorpse->GetCreatureInfo()->Name,
+			cCorpse->GetEntry(), cCorpse->GetMapMgr()->GetMapId(), cCorpse->GetSQL_id() );
+		
+		sGMLog.writefromsession(m_session, "Respawned a Creature: `%s` with entry: %u on map: %u sqlid: %u", cCorpse->GetCreatureInfo()->Name,
+			cCorpse->GetEntry(), cCorpse->GetMapMgr()->GetMapId(), cCorpse->GetSQL_id() );
+		
+		cCorpse->Despawn( 0, 1000 );
+		return true;
+	}
+
+	RedSystemMessage( m_session, "You must select a creature's corpse with a valid CreatureSpawn point." );
+	return false;
+}
+
 bool ChatHandler::HandleRemoveItemCommand(const char * args, WorldSession * m_session)
 {
 	uint32 item_id;

@@ -300,7 +300,6 @@ protected:
 	bool HandleInvisibleCommand(const char *args, WorldSession *m_session);
 	bool HandleKillCommand(const char *args, WorldSession *m_session);
 	bool HandleKillByPlrCommand( const char *args , WorldSession *m_session );
-	bool HandleCreatureSpawnCommand(const char *args, WorldSession *m_session);
 	bool HandleGOSelect(const char *args, WorldSession *m_session);
 	bool HandleGODelete(const char *args, WorldSession *m_session);
 	bool HandleGOSpawn(const char *args, WorldSession *m_session);
@@ -371,6 +370,8 @@ protected:
     bool HandleGetSkillLevelCommand(const char* args, WorldSession * m_session);
     bool HandleGetSkillsInfoCommand(const char *args, WorldSession *m_session);
     bool HandlePlayerInfo(const char* args, WorldSession * m_session);
+	bool HandleCreatureSpawnCommand(const char *args, WorldSession *m_session);
+	bool HandleCreatureRespawnCommand(const char *args, WorldSession *m_session);
     
 	//Ban
 	bool HandleBanCharacterCommand(const char* args, WorldSession *m_session);
