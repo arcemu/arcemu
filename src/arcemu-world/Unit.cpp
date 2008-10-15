@@ -5318,7 +5318,7 @@ bool Unit::HasAura(uint32 spellid)
 
 void Unit::DropAurasOnDeath()
 {
-	for(uint32 x=MAX_TOTAL_AURAS_START;x<MAX_TOTAL_AURAS_END;x++)
+	for(uint32 x=MAX_REMOVABLE_AURAS_START;x<MAX_REMOVABLE_AURAS_END;x++)
         if(m_auras[x])
         {
             if(m_auras[x] && m_auras[x]->GetSpellProto()->AttributesExC & CAN_PERSIST_AND_CASTED_WHILE_DEAD)
