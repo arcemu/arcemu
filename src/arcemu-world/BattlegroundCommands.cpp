@@ -48,7 +48,7 @@ bool ChatHandler::HandleStartBGCommand(const char *args, WorldSession *m_session
 		SystemMessage(m_session,"You're not in a battleground!");
 		return true;
 	}
-	m_session->GetPlayer()->m_bg->SendChatMessage( CHAT_MSG_BG_EVENT_NEUTRAL, 0, "The battle for %s has begun!", m_session->GetPlayer()->m_bg->GetName() );
+	m_session->GetPlayer()->m_bg->SendChatMessage( CHAT_MSG_BG_EVENT_NEUTRAL, 0, m_session->LocalizedWorldSrv(49), m_session->LocalizedWorldSrv(m_session->GetPlayer()->m_bg->GetNameID()) );
 	sEventMgr.RemoveEvents(m_session->GetPlayer()->m_bg, EVENT_BATTLEGROUND_COUNTDOWN);
 	m_session->GetPlayer()->m_bg->Start();
 	return true;

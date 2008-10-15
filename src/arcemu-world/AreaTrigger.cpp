@@ -44,18 +44,18 @@ enum AreaTriggerFailures
 	AREA_TRIGGER_FAILURE_NO_CHECK		= 10,
 };
 
-const char * AreaTriggerFailureMessages[] = {
-	"-",
-	"This instance is unavailable",
-	"You must have The Burning Crusade Expansion to access this content.",
-	"Heroic mode unavailable for this instance.",
-	"You must be in a raid group to pass through here.",
-	"You do not have the required attunement to pass through here.", //TODO: Replace attunment with real itemname
-	"You do not have the required attunement to pass through here.", //TODO: Replace attunment with real itemname
-	"You must be at least level %u to pass through here.",
-	"You must be in a party to pass through here.",
-	"You do not have the required attunement to pass through here.", //TODO: Replace attunment with real itemname
-	"You must be level 70 to enter heroic mode.",
+uint32 AreaTriggerFailureMessages[] = {
+	34,
+	26,
+	27,
+	28,
+	29,
+	30, //TODO: Replace attunment with real itemname
+	30, //TODO: Replace attunment with real itemname
+	31,
+	32,
+	30, //TODO: Replace attunment with real itemname
+	33,
 };
 
 uint32 CheckTriggerPrerequsites(AreaTrigger * pAreaTrigger, WorldSession * pSession, Player * pPlayer, MapInfo * pMapInfo)
@@ -146,7 +146,7 @@ void WorldSession::_HandleAreaTriggerOpcode(uint32 id)
 				uint32 reason = CheckTriggerPrerequsites(pAreaTrigger, this, _player, WorldMapInfoStorage.LookupEntry(pAreaTrigger->Mapid));
 				if(reason != AREA_TRIGGER_FAILURE_OK)
 				{
-					const char * pReason = AreaTriggerFailureMessages[reason];
+					const char * pReason = GetPlayer()->GetSession()->LocalizedWorldSrv(AreaTriggerFailureMessages[reason]);
 					char msg[200];
 					WorldPacket data(SMSG_AREA_TRIGGER_MESSAGE, 50);
 					data << uint32(0);
@@ -162,9 +162,9 @@ void WorldSession::_HandleAreaTriggerOpcode(uint32 id)
 							MapInfo * pMi = WorldMapInfoStorage.LookupEntry(pAreaTrigger->Mapid);
 							ItemPrototype * pItem = ItemPrototypeStorage.LookupEntry(pMi->required_item);
 							if(pItem)
-								snprintf(msg,200,"You must have the item, `%s` to pass through here.",pItem->Name1);
+								snprintf(msg,200,GetPlayer()->GetSession()->LocalizedWorldSrv(35),pItem->Name1);
 							else
-								snprintf(msg,200,"You must have the item, UNKNOWN to pass through here.");
+								snprintf(msg,200,GetPlayer()->GetSession()->LocalizedWorldSrv(36));
 
 							data << msg;
 						}break;
@@ -173,9 +173,9 @@ void WorldSession::_HandleAreaTriggerOpcode(uint32 id)
 							MapInfo * pMi = WorldMapInfoStorage.LookupEntry(pAreaTrigger->Mapid);
 							Quest * pQuest = QuestStorage.LookupEntry(pMi->required_quest);
 							if(pQuest)
-								snprintf(msg,200,"You must have finished the quest, `%s` to pass through here.",pQuest->title);
+								snprintf(msg,200,GetPlayer()->GetSession()->LocalizedWorldSrv(35),pQuest->title);
 							else
-								snprintf(msg,200,"You must have finished the quest, UNKNOWN to pass through here.");
+								snprintf(msg,200,GetPlayer()->GetSession()->LocalizedWorldSrv(36));
 
 							data << msg;
 						}break;

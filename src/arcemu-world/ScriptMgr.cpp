@@ -520,7 +520,7 @@ void GossipScript::GossipHello(Object* pObject, Player* Plr, bool AutoSend)
 	uint32 flags = pCreature->GetUInt32Value(UNIT_NPC_FLAGS);
 
 	if(flags & UNIT_NPC_FLAG_VENDOR)
-		Menu->AddItem(1, "I would like to browse your goods", 1);
+		Menu->AddItem(1, Plr->GetSession()->LocalizedWorldSrv(1), 1);
 	
 	if((flags & UNIT_NPC_FLAG_TRAINER || flags & UNIT_NPC_FLAG_TRAINER_PROF || flags & UNIT_NPC_FLAG_TRAINER_CLASS) && pTrainer != 0)
 	{
@@ -535,40 +535,40 @@ void GossipScript::GossipHello(Object* pObject, Player* Plr, bool AutoSend)
 			Menu->SetTextID(pTrainer->Cannot_Train_GossipTextId);
         if(pTrainer->TrainerType != TRAINER_TYPE_PET)
 		{
-			string msg = "I seek ";
+			string msg = string(Plr->GetSession()->LocalizedWorldSrv(2));
 			if(pTrainer->RequiredClass)
 			{
 				switch(Plr->getClass())
 				{
 				case MAGE:
-					msg += "mage";
+					msg += string(Plr->GetSession()->LocalizedWorldSrv(3));
 					break;
 				case SHAMAN:
-					msg += "shaman";
+					msg += string(Plr->GetSession()->LocalizedWorldSrv(4));
 					break;
 				case WARRIOR:
-					msg += "warrior";
+					msg += string(Plr->GetSession()->LocalizedWorldSrv(5));
 					break;
 				case PALADIN:
-					msg += "paladin";
+					msg += string(Plr->GetSession()->LocalizedWorldSrv(6));
 					break;
 				case WARLOCK:
-					msg += "warlock";
+					msg += string(Plr->GetSession()->LocalizedWorldSrv(7));
 					break;
 				case HUNTER:
-					msg += "hunter";
+					msg += string(Plr->GetSession()->LocalizedWorldSrv(8));
 					break;
 				case ROGUE:
-					msg += "rogue";
+					msg += string(Plr->GetSession()->LocalizedWorldSrv(9));
 					break;
 				case DRUID:
-					msg += "druid";
+					msg += string(Plr->GetSession()->LocalizedWorldSrv(10));
 					break;
 				case PRIEST:
-					msg += "priest";
+					msg += string(Plr->GetSession()->LocalizedWorldSrv(11));
 					break;
 				}
-				msg += " training, ";
+				msg += " "+string(Plr->GetSession()->LocalizedWorldSrv(12))+", ";
 				msg += name;
 				msg += ".";
 
@@ -577,7 +577,7 @@ void GossipScript::GossipHello(Object* pObject, Player* Plr, bool AutoSend)
 			}
 			else
 			{
-				msg += "training, ";
+				msg += string(Plr->GetSession()->LocalizedWorldSrv(12))+", ";
 				msg += name;
 				msg += ".";
 
@@ -587,33 +587,33 @@ void GossipScript::GossipHello(Object* pObject, Player* Plr, bool AutoSend)
 		else
 		{
 			
-			Menu->AddItem(3, "Train me in the ways of the beast.", 2);
+			Menu->AddItem(3, Plr->GetSession()->LocalizedWorldSrv(13), 2);
 		}
 	}
 
 	if(flags & UNIT_NPC_FLAG_TAXIVENDOR)
-		Menu->AddItem(2, "Give me a ride.", 3);
+		Menu->AddItem(2, Plr->GetSession()->LocalizedWorldSrv(14), 3);
 
 	if(flags & UNIT_NPC_FLAG_AUCTIONEER)
-		Menu->AddItem(0, "I would like to make a bid.", 4);
+		Menu->AddItem(0, Plr->GetSession()->LocalizedWorldSrv(15), 4);
 
 	if(flags & UNIT_NPC_FLAG_INNKEEPER)
-		Menu->AddItem(5, "Make this inn your home.", 5);
+		Menu->AddItem(5, Plr->GetSession()->LocalizedWorldSrv(16), 5);
 
 	if(flags & UNIT_NPC_FLAG_BANKER)
-		Menu->AddItem(0, "I would like to check my deposit box.", 6);
+		Menu->AddItem(0, Plr->GetSession()->LocalizedWorldSrv(17), 6);
 
 	if(flags & UNIT_NPC_FLAG_SPIRITHEALER)
-		Menu->AddItem(0, "Bring me back to life.", 7);
+		Menu->AddItem(0, Plr->GetSession()->LocalizedWorldSrv(18), 7);
 
 	if(flags & UNIT_NPC_FLAG_ARENACHARTER)
-		Menu->AddItem(0, "How do I create a guild/arena team?", 8);
+		Menu->AddItem(0, Plr->GetSession()->LocalizedWorldSrv(19), 8);
 
 	if(flags & UNIT_NPC_FLAG_TABARDCHANGER)
-		Menu->AddItem(0, "I want to create a guild crest.", 9);
+		Menu->AddItem(0, Plr->GetSession()->LocalizedWorldSrv(20), 9);
 
 	if(flags & UNIT_NPC_FLAG_BATTLEFIELDPERSON)
-		Menu->AddItem(0, "I would like to go to the battleground.", 10);
+		Menu->AddItem(0, Plr->GetSession()->LocalizedWorldSrv(21), 10);
 
 	if( pTrainer &&
 		pTrainer->RequiredClass &&					  // class trainer
@@ -622,7 +622,7 @@ void GossipScript::GossipHello(Object* pObject, Player* Plr, bool AutoSend)
 		pTrainer->TrainerType != TRAINER_TYPE_PET &&  // Pet Trainers do not respec hunter talents
 		Plr->getLevel() > 10 )						  // player level
 	{
-		Menu->AddItem(0, "I would like to reset my talents.", 11);
+		Menu->AddItem(0, Plr->GetSession()->LocalizedWorldSrv(22), 11);
 	}
 	
 	if( pTrainer &&
@@ -630,7 +630,7 @@ void GossipScript::GossipHello(Object* pObject, Player* Plr, bool AutoSend)
 		Plr->getClass() == HUNTER &&					// hunter class
 		Plr->GetSummon() != NULL )						// have pet
 	{
-		Menu->AddItem(0, "I wish to untrain my pet.", 13);
+		Menu->AddItem(0, Plr->GetSession()->LocalizedWorldSrv(23), 13);
 	}
 
 	if(AutoSend)
@@ -690,7 +690,7 @@ void GossipScript::GossipSelectOption(Object* pObject, Player* Plr, uint32 Id, u
 		{
 			GossipMenu *Menu;
 			objmgr.CreateGossipMenuForPlayer(&Menu, pCreature->GetGUID(), 5674, Plr);
-			Menu->AddItem(0, "I understand, continue.", 12);
+			Menu->AddItem(0, Plr->GetSession()->LocalizedWorldSrv(24), 12);
 			Menu->SendTo(Plr);
 		}break;
 	case 12:
@@ -704,7 +704,7 @@ void GossipScript::GossipSelectOption(Object* pObject, Player* Plr, uint32 Id, u
 		{
 			GossipMenu *Menu;
 			objmgr.CreateGossipMenuForPlayer(&Menu, pCreature->GetGUID(), 7722, Plr);
-			Menu->AddItem(0, "Yes, please do.", 14);
+			Menu->AddItem(0, Plr->GetSession()->LocalizedWorldSrv(25), 14);
 			Menu->SendTo(Plr);
 		}break;
 	case 14:

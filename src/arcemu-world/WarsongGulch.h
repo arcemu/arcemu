@@ -52,7 +52,7 @@ public:
 
 	static CBattleground * Create(MapMgr * m, uint32 i, uint32 l, uint32 t) { return new WarsongGulch(m, i, l, t); }
 
-	const char * GetName() { return "Warsong Gulch"; }
+	uint32 GetNameID() { return 39; }
 	void OnStart();
 
 	void SetIsWeekend(bool isweekend);

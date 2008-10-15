@@ -22,7 +22,7 @@
 
 initialiseSingleton( ObjectMgr );
 
-const char * NormalTalkMessage = "What can I teach you, $N?";
+const char * NormalTalkMessage = "DMSG";
 
 ObjectMgr::ObjectMgr()
 {

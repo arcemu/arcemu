@@ -48,7 +48,7 @@ public:
 	LocationVector GetStartingCoords(uint32 Team);
 	static CBattleground * Create(MapMgr * m, uint32 i, uint32 l, uint32 t) { return new EyeOfTheStorm(m, i, l, t); }
 
-	const char * GetName() { return "Eye of the Storm"; }
+	uint32 GetNameID() { return 44; }
 	void OnStart();
 
 	void UpdateCPs();

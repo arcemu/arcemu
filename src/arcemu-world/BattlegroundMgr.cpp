@@ -138,7 +138,7 @@ void CBattlegroundManager::HandleBattlegroundJoin(WorldSession * m_session, Worl
 
 		if(itr == m_instances[bgtype].end())
 		{
-			sChatHandler.SystemMessage(m_session, "You have tried to join an invalid instance id.");
+			sChatHandler.SystemMessage(m_session, m_session->LocalizedWorldSrv(51));
 			m_instanceLock.Release();
 			return;
 		}
@@ -183,26 +183,26 @@ void ErasePlayerFromList(uint32 guid, list<uint32>* l)
 	}
 }
 
-const char *GetBattlegroundCaption(BattleGroundTypes bgType)
+uint8 GetBattlegroundCaption(BattleGroundTypes bgType)
 {
 	switch(bgType)
 	{
 	case BATTLEGROUND_ALTERAC_VALLEY:
-		return "Alterac Valley";
+		return 38;
 	case BATTLEGROUND_WARSUNG_GULCH:
-		return "Warsong Gulch";
+		return 39;
 	case BATTLEGROUND_ARATHI_BASIN:
-		return "Arathi Basin";
+		return 40;
 	case BATTLEGROUND_ARENA_2V2:
-		return "Arena 2v2";
+		return 41;
 	case BATTLEGROUND_ARENA_3V3:
-		return "Arena 3v3";
+		return 42;
 	case BATTLEGROUND_ARENA_5V5:
-		return "Arena 5v5";
+		return 43;
 	case BATTLEGROUND_EYE_OF_THE_STORM:
-		return "Eye of the Storm";
+		return 44;
 	default:
-		return "Unknown Battleground";
+		return 45;
 	}
 }
 
@@ -227,7 +227,7 @@ void CBattlegroundManager::HandleGetBattlegroundQueueCommand(WorldSession * m_se
 
 			foundSomething = true;
 
-			ss << GetBattlegroundCaption((BattleGroundTypes)i);
+			ss << m_session->LocalizedWorldSrv(GetBattlegroundCaption((BattleGroundTypes)i));
 
 			switch(j)
 			{
@@ -294,7 +294,7 @@ void CBattlegroundManager::HandleGetBattlegroundQueueCommand(WorldSession * m_se
 			{
 				foundSomething = true;
 
-				ss << GetBattlegroundCaption((BattleGroundTypes)i) << " (rated): ";
+				ss << m_session->LocalizedWorldSrv(GetBattlegroundCaption((BattleGroundTypes)i)) << " (rated): ";
 				ss << (uint32)m_queuedGroups[i].size() << " groups queued";
 
 				m_session->SystemMessage( ss.str().c_str() );
@@ -481,7 +481,7 @@ void CBattlegroundManager::EventQueueUpdate(bool forceStart)
 					if(iitr == m_instances[i].end())
 					{
 						// queue no longer valid
-						plr->GetSession()->SystemMessage("Your queue on battleground instance id %u is no longer valid. Reason: Instance Deleted.", plr->m_bgQueueInstanceId);
+						plr->GetSession()->SystemMessage(plr->GetSession()->LocalizedWorldSrv(52), plr->m_bgQueueInstanceId);
 						plr->m_bgIsQueued = false;
 						plr->m_bgQueueType = 0;
 						plr->m_bgQueueInstanceId = 0;
@@ -1022,7 +1022,7 @@ void CBattleground::PortPlayer(Player * plr, bool skip_teleport /* = false*/)
 	m_mainLock.Acquire();
 	if(m_ended)
 	{
-		sChatHandler.SystemMessage(plr->GetSession(), "You cannot join this battleground as it has already ended.");
+		sChatHandler.SystemMessage(plr->GetSession(), plr->GetSession()->LocalizedWorldSrv(53) );
 		BattlegroundManager.SendBattlefieldStatus(plr, 0, 0, 0, 0, 0,0);
 		plr->m_pendingBattleground = 0;
 		m_mainLock.Release();
@@ -1232,7 +1232,7 @@ void CBattlegroundManager::DeleteBattleground(CBattleground * bg)
 
 		if(plr && plr->m_bgQueueInstanceId == bg->GetId())
 		{
-			sChatHandler.SystemMessageToPlr(plr, "Your queue on battleground instance %u is no longer valid, the instance no longer exists.", bg->GetId());
+			sChatHandler.SystemMessageToPlr(plr, plr->GetSession()->LocalizedWorldSrv(54), bg->GetId());
 			SendBattlefieldStatus(plr, 0, 0, 0, 0, 0,0);
 			plr->m_bgIsQueued = false;
 			m_queuedPlayers[i][j].erase(it2);
@@ -1474,24 +1474,66 @@ void CBattleground::EventCountdown()
 	if(m_countdownStage == 1)
 	{
 		m_countdownStage = 2;
-		SendChatMessage( CHAT_MSG_BG_EVENT_NEUTRAL, 0, "One minute until the battle for %s begins!", GetName() );
+
+		m_mainLock.Acquire();
+		for(int i = 0; i < 2; ++i)
+		{
+			 for(set<Player*>::iterator itr = m_players[i].begin(); itr != m_players[i].end(); ++itr)
+				 if( (*itr) && (*itr)->GetSession() ){
+						(*itr)->GetSession()->SystemMessage((*itr)->GetSession()->LocalizedWorldSrv(46),(*itr)->GetSession()->LocalizedWorldSrv(GetNameID()));
+					}
+		}
+		m_mainLock.Release();
+
+		// SendChatMessage( CHAT_MSG_BG_EVENT_NEUTRAL, 0, "One minute until the battle for %s begins!", GetName() );
 	}
 	else if(m_countdownStage == 2)
 	{
 		m_countdownStage = 3;
-		SendChatMessage( CHAT_MSG_BG_EVENT_NEUTRAL, 0, "Thirty seconds until the battle for %s begins!", GetName() );
+
+		m_mainLock.Acquire();
+		for(int i = 0; i < 2; ++i)
+		{
+			 for(set<Player*>::iterator itr = m_players[i].begin(); itr != m_players[i].end(); ++itr)
+				 if( (*itr) && (*itr)->GetSession() ){
+						(*itr)->GetSession()->SystemMessage((*itr)->GetSession()->LocalizedWorldSrv(47),(*itr)->GetSession()->LocalizedWorldSrv(GetNameID()));
+					}
+		}
+		m_mainLock.Release();
+
+		//SendChatMessage( CHAT_MSG_BG_EVENT_NEUTRAL, 0, "Thirty seconds until the battle for %s begins!", GetName() );
 	}
 	else if(m_countdownStage == 3)
 		if(m_countdownStage==1)
 		{
 			m_countdownStage = 4;
-			SendChatMessage( CHAT_MSG_BG_EVENT_NEUTRAL, 0, "Fifteen seconds until the battle for %s begins!", GetName() );
+
+			m_mainLock.Acquire();
+			for(int i = 0; i < 2; ++i)
+			{
+				 for(set<Player*>::iterator itr = m_players[i].begin(); itr != m_players[i].end(); ++itr)
+					 if( (*itr) && (*itr)->GetSession() ){
+							(*itr)->GetSession()->SystemMessage((*itr)->GetSession()->LocalizedWorldSrv(48),(*itr)->GetSession()->LocalizedWorldSrv(GetNameID()));
+						}
+			}
+			m_mainLock.Release();
+
+			//SendChatMessage( CHAT_MSG_BG_EVENT_NEUTRAL, 0, "Fifteen seconds until the battle for %s begins!", GetName() );
 			sEventMgr.ModifyEventTime(this, EVENT_BATTLEGROUND_COUNTDOWN, 15000);
 			sEventMgr.ModifyEventTimeLeft(this, EVENT_BATTLEGROUND_COUNTDOWN, 15000);
 		}
 		else
 		{
-			SendChatMessage( CHAT_MSG_BG_EVENT_NEUTRAL, 0, "The battle for %s has begun!", GetName() );
+			m_mainLock.Acquire();
+			for(int i = 0; i < 2; ++i)
+			{
+				 for(set<Player*>::iterator itr = m_players[i].begin(); itr != m_players[i].end(); ++itr)
+					 if( (*itr) && (*itr)->GetSession() ){
+							(*itr)->GetSession()->SystemMessage((*itr)->GetSession()->LocalizedWorldSrv(49),(*itr)->GetSession()->LocalizedWorldSrv(GetNameID()));
+						}
+			}
+			m_mainLock.Release();
+			//SendChatMessage( CHAT_MSG_BG_EVENT_NEUTRAL, 0, "The battle for %s has begun!", GetName() );
 			sEventMgr.RemoveEvents(this, EVENT_BATTLEGROUND_COUNTDOWN);
 			Start();
 		}
@@ -1706,12 +1748,12 @@ void CBattlegroundManager::HandleArenaJoin(WorldSession * m_session, uint32 Batt
 	{
 		if(pGroup->GetSubGroupCount() != 1)
 		{
-			m_session->SystemMessage("Sorry, raid groups joining battlegrounds are currently unsupported.");
+			m_session->SystemMessage(m_session->LocalizedWorldSrv(55) );
 			return;
 		}
 		if(pGroup->GetLeader() != m_session->GetPlayer()->m_playerInfo)
 		{
-			m_session->SystemMessage("You must be the party leader to add a group to an arena.");
+			m_session->SystemMessage(m_session->LocalizedWorldSrv(56) );
 			return;
 		}
 
@@ -1751,7 +1793,7 @@ void CBattlegroundManager::HandleArenaJoin(WorldSession * m_session, uint32 Batt
 
 			if(pGroup->GetLeader()->m_loggedInPlayer && pGroup->GetLeader()->m_loggedInPlayer->m_arenaTeams[type] == NULL)
 			{
-				m_session->SystemMessage("You must be in a team to join rated arena.");
+				m_session->SystemMessage( m_session->LocalizedWorldSrv(57));
 				return;
 			}
 
@@ -1760,14 +1802,14 @@ void CBattlegroundManager::HandleArenaJoin(WorldSession * m_session, uint32 Batt
 			{
 				if(maxplayers==0)
 				{
-					m_session->SystemMessage("You have too many players in your party to join this type of arena.");
+					m_session->SystemMessage(m_session->LocalizedWorldSrv(58));
 					pGroup->Unlock();
 					return;
 				}
 
 				if((*itx)->lastLevel < PLAYER_LEVEL_CAP_70)
 				{
-					m_session->SystemMessage("Sorry, some of your party members are not level 70.");
+					m_session->SystemMessage(m_session->LocalizedWorldSrv(59));
 					pGroup->Unlock();
 					return;
 				}
@@ -1776,13 +1818,13 @@ void CBattlegroundManager::HandleArenaJoin(WorldSession * m_session, uint32 Batt
 				{
 					if((*itx)->m_loggedInPlayer->m_bg || (*itx)->m_loggedInPlayer->m_bg || (*itx)->m_loggedInPlayer->m_bgIsQueued)
 					{
-						m_session->SystemMessage("One or more of your party members are already queued or inside a battleground.");
+						m_session->SystemMessage(m_session->LocalizedWorldSrv(60));
 						pGroup->Unlock();
 						return;
 					};
 					if((*itx)->m_loggedInPlayer->m_arenaTeams[type] != pGroup->GetLeader()->m_loggedInPlayer->m_arenaTeams[type])
 					{
-						m_session->SystemMessage("One or more of your party members are not members of your team.");
+						m_session->SystemMessage(m_session->LocalizedWorldSrv(61));
 						pGroup->Unlock();
 						return;
 					}

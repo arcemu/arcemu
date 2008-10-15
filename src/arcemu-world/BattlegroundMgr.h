@@ -68,8 +68,8 @@ const static uint32 BGMaximumPlayers[BATTLEGROUND_NUM_TYPES] = {
 const static uint32 BGMinimumPlayers[BATTLEGROUND_NUM_TYPES] = {
 	0,							// 0
 	0,							// AV
-	5,							// WSG
-	5,							// AB
+	1,							// WSG cebernic:1 temptest
+	1,							// AB  cebernic:1 temptest
 	4,							// 2v2
 	6,							// 3v3
 	10,							// 5v5
@@ -397,7 +397,7 @@ public:
 	int32 event_GetInstanceID();
 	void EventCreate();
 
-	virtual const char * GetName() = 0;
+	virtual uint32 GetNameID() { return 34;}
 	void EventCountdown();
 
 	virtual void Start();

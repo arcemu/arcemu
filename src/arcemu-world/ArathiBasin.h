@@ -91,7 +91,7 @@ public:
 
 	static CBattleground * Create(MapMgr * m, uint32 i, uint32 l, uint32 t) { return new ArathiBasin(m, i, l, t); }
 
-	const char * GetName() { return "Arathi Basin"; }
+	uint32 GetNameID() { return 40; }
 	void OnStart();
 
 	void EventUpdateResources(uint32 Team);

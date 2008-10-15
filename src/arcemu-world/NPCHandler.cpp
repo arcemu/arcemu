@@ -173,8 +173,10 @@ void WorldSession::SendTrainerList(Creature* pCreature)
 #else
 	*(uint32*)&data.contents()[12] = Count;
 #endif
-	
-	data << pTrainer->UIMessage;
+	if ( stricmp(pTrainer->UIMessage,"DMSG")==0 )
+		data << _player->GetSession()->LocalizedWorldSrv(37);
+	else
+		data << pTrainer->UIMessage;
 	SendPacket(&data);
 }
 
