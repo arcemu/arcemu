@@ -2133,6 +2133,7 @@ bool ChatHandler::HandleCreatureSpawnCommand(const char *args, WorldSession *m_s
 	Creature * p = m_session->GetPlayer()->GetMapMgr()->CreateCreature(entry);
 	ASSERT(p);
 	p->Load(sp, (uint32)NULL, NULL);
+	p->m_loadedFromDB = true;
 	p->PushToWorld(m_session->GetPlayer()->GetMapMgr());
 	
 	uint32 x = m_session->GetPlayer()->GetMapMgr()->GetPosX(m_session->GetPlayer()->GetPositionX());
@@ -2142,6 +2143,8 @@ bool ChatHandler::HandleCreatureSpawnCommand(const char *args, WorldSession *m_s
 	m_session->GetPlayer()->GetMapMgr()->GetBaseMap()->GetSpawnsListAndCreate(
 		x,
 		y)->CreatureSpawns.push_back(sp);
+
+	m_session->GetPlayer()->GetMapMgr()->GetCell(x, y)->SetLoaded();
 
 	BlueSystemMessage(m_session, "Spawned a creature `%s` with entry %u at %f %f %f on map %u", info->Name, 
 		entry, sp->x, sp->y, sp->z, m_session->GetPlayer()->GetMapId());

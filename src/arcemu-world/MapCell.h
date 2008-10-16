@@ -57,6 +57,7 @@ public:
 
 	ARCEMU_INLINE bool IsActive() { return _active; }
 	ARCEMU_INLINE bool IsLoaded() { return _loaded; }
+	ARCEMU_INLINE void SetLoaded( bool Loaded = true ) { _loaded = Loaded; }
 
 	//Object Loading Managing
 	void LoadObjects(CellSpawns * sp);
