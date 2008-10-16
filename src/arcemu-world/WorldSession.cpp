@@ -47,6 +47,21 @@ _logoutTime(0), permissions(NULL), permissioncount(0), _loggingOut(false), insta
 	_side = -1;
 	movement_info.FallTime = 0;
 
+	// Speedhack stuff.
+	SpeedHackTimeStart = UNIXTIME;
+	SpeedHackTimeEnd = UNIXTIME;
+	x_start = 0.0f;
+	y_start = 0.0f;
+	//z_start = 0.0f;
+	x_end = 0.0f;
+	y_end = 0.0f;
+	//z_end = 0.0f;
+	s_hackcount = 0;
+	received = true;
+	received_strafe = true;
+	dist_moved = 0;
+	s_hack_time = 0;
+
 	for(uint32 x=0;x<8;x++)
 		sAccountData[x].data=NULL;	
 }
