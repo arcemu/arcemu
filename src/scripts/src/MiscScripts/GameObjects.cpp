@@ -484,6 +484,36 @@ public:
 
 /*--------------------------------------------------------------------------------------------------------*/
 
+#define REPAIR_BOT_REQUIRED_SKILL_LINE 202
+#define REPAIR_BOT_REQUIRED_SKILL 300
+class LearnFieldRepairBot : public GameObjectAIScript
+{
+public:
+	LearnFieldRepairBot(GameObject* goinstance) : GameObjectAIScript(goinstance) {}
+	static GameObjectAIScript *Create(GameObject * GO) { return new LearnFieldRepairBot(GO); }
+
+	void OnActivate(Player * pPlayer)
+	{
+		if(!pPlayer)
+			return;
+		
+		_gameobject->SetUInt32Value(GAMEOBJECT_TYPE_ID, 5);
+		
+		if(!pPlayer->_HasSkillLine(REPAIR_BOT_REQUIRED_SKILL_LINE))
+		{
+			return;
+		}
+
+		if(pPlayer->_GetSkillLineCurrent(REPAIR_BOT_REQUIRED_SKILL_LINE, false) < REPAIR_BOT_REQUIRED_SKILL)
+		{
+			return;
+		}
+		_gameobject->SetUInt32Value(GAMEOBJECT_TYPE_ID, 22);
+	}
+};
+
+/*--------------------------------------------------------------------------------------------------------*/
+
 void SetupGoHandlers(ScriptMgr * mgr)
 {
 	mgr->register_gameobject_script(179879, &OrbOfCommand::Create);
@@ -508,4 +538,5 @@ void SetupGoHandlers(ScriptMgr * mgr)
 	mgr->register_gameobject_script(181699, &Telathion_the_Impure_Object::Create);
 	mgr->register_gameobject_script(104593, &UlagTheCleaver::Create);
 	mgr->register_gameobject_script(1571, &DustySpellbooks::Create);
+	mgr->register_gameobject_script(179552, &LearnFieldRepairBot::Create);
 }
