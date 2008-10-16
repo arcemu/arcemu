@@ -1533,6 +1533,10 @@ void ApplyNormalFixes()
 			if( sp->NameHash == SPELL_HASH_SEAL_OF_RIGHTEOUSNESS )
 				sp->spell_can_crit = false;
 
+			// Forbearance - Is forced debuff
+			if( sp->NameHash == SPELL_HASH_FORBEARANCE )
+				sp->c_is_flags |= SPELL_FLAG_IS_FORCEDDEBUFF;
+
 
 		//////////////////////////////////////////
 		// HUNTER								//
@@ -1590,6 +1594,10 @@ void ApplyNormalFixes()
 			// Mind Flay,reduces target's movement speed by 50%
 			if ( sp->NameHash == SPELL_HASH_MIND_FLAY )
 				sp->EffectApplyAuraName[1] = SPELL_AURA_MOD_DECREASE_SPEED;
+
+			// Weakened Soul - Is forced debuff
+			if( sp->NameHash == SPELL_HASH_WEAKENED_SOUL )
+				sp->c_is_flags |= SPELL_FLAG_IS_FORCEDDEBUFF;
 
 		//////////////////////////////////////////
 		// SHAMAN								//
