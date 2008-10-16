@@ -22,5 +22,5 @@ Undercity.cpp \
 Azuremyst_Isle.cpp \
 The_Barrens.cpp \
 Eastern_Plaguelands.cpp \
-UnGoro.cpp \
+Ungoro.cpp \
 Isle_of_QuelDanas.cpp
