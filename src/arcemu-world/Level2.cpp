@@ -749,30 +749,30 @@ bool ChatHandler::HandleGODelete(const char *args, WorldSession *m_session)
 		return true;
 	}
 
-	if(GObj->m_spawn != 0 && GObj->m_spawn->entry == GObj->GetEntry())
+	if( GObj->m_spawn != 0 && GObj->m_spawn->entry == GObj->GetEntry() )
 	{
-		uint32 cellx=float2int32(((_maxX-GObj->m_spawn->x)/_cellSize));
-		uint32 celly=float2int32(((_maxY-GObj->m_spawn->y)/_cellSize));
+		uint32 cellx = uint32(((_maxX-GObj->m_spawn->x)/_cellSize));
+		uint32 celly = uint32(((_maxY-GObj->m_spawn->y)/_cellSize));
 
-		if(cellx < _sizeX && celly < _sizeY)
+		if( cellx < _sizeX && celly < _sizeY )
 		{
-			//m_session->GetPlayer()->GetMapMgr()->GetBaseMap()->GetSpawnsListAndCreate(cellx,celly)->GOSpawns.erase(GObj->m_spawn);
-			CellSpawns * c = GObj->GetMapMgr()->GetBaseMap()->GetSpawnsListAndCreate(cellx, celly);
-			for(GOSpawnList::iterator itr = c->GOSpawns.begin(); itr != c->GOSpawns.end(); ++itr)
-				if((*itr) == GObj->m_spawn)
-				{
-					c->GOSpawns.erase(itr);
-					break;
-				}
+			CellSpawns * sp = GObj->GetMapMgr()->GetBaseMap()->GetSpawnsList( cellx, celly );
+			if( sp != NULL )
+			{
+				for( GOSpawnList::iterator itr = sp->GOSpawns.begin(); itr != sp->GOSpawns.end(); ++itr )
+					if( (*itr) == GObj->m_spawn )
+					{
+						sp->GOSpawns.erase( itr );
+						break;
+					}
+			}
 			GObj->DeleteFromDB();
 			delete GObj->m_spawn;
 		}
 	}
-	GObj->Despawn(0);
+	GObj->Despawn(0); // We do not need to delete the object because GameObject::Despawn with no time => ExpireAndDelete() => _Expire() => delete GObj;
 
 	sGMLog.writefromsession( m_session, "deleted gameobject %s, entry %u", GameObjectNameStorage.LookupEntry(GObj->GetEntry())->Name, GObj->GetEntry() );
-
-	delete GObj;
 
 	m_session->GetPlayer()->m_GM_SelectedGO = 0;
 
@@ -865,12 +865,16 @@ bool ChatHandler::HandleGOSpawn(const char *args, WorldSession *m_session)
 	m_session->GetPlayer()->GetMapMgr()->GetBaseMap()->GetSpawnsListAndCreate(cx,cy)->GOSpawns.push_back(gs);
 	go->m_spawn = gs;
 
-	//go->AddToWorld();
+	MapCell * mCell = m_session->GetPlayer()->GetMapMgr()->GetCell( cx, cy );
+
+	if( mCell != NULL )
+		mCell->SetLoaded();
 
 	if(Save == true)
 	{
 		// If we're saving, create template and add index
 		go->SaveToDB();
+		go->m_loadedFromDB = true;
 	}
 	sGMLog.writefromsession( m_session, "spawned gameobject %s, entry %u at %u %f %f %f%s", GameObjectNameStorage.LookupEntry(gs->entry)->Name, gs->entry, m_session->GetPlayer()->GetMapId(), gs->x, gs->y, gs->z, Save ? ", saved in DB" : "" );
 	return true;
