@@ -329,116 +329,6 @@ void WorldSession::HandleMovementOpcodes( WorldPacket & recv_data )
 		}
 	} 
 
-
-	/************************************************************************/
-	/* Anti-Speed Hack Checks                                               */
-	/************************************************************************/
-/*
-	// Todo:
-	// Need to implement a check to test if the player used a portal type spell.
-	// Need to implement checks if player has certain speed boosting auras, so we don't wrongly trigger.
-	// Need to test more to see if it wrongly triggers.
-
-	if( sWorld.antihack_speed && !_player->GetTaxiState() && _player->m_TransporterGUID == 0 )
-	{
-		// We need to test differently between strafing and normal moving, otherwise you can exploit it by strafing and moving at the same time.
-		// Maybe this could be done in a better way.
-		if( received && ( recv_data.GetOpcode() == MSG_MOVE_START_FORWARD || recv_data.GetOpcode() == MSG_MOVE_START_BACKWARD) )
-		{
-			// Record the data from when we START moving.
-			SpeedHackTimeStart = getMSTime();
-			x_start = fabs( _player->GetPositionX() );
-			y_start = fabs( _player->GetPositionY() );
-
-			received = false; // We did not yet get the movement stopped packet.
-		}
-		else if( received_strafe && ( recv_data.GetOpcode() == MSG_MOVE_START_STRAFE_LEFT || recv_data.GetOpcode() == MSG_MOVE_START_STRAFE_RIGHT ) )
-		{
-			// Record the data from when we START moving.
-			SpeedHackTimeStart = getMSTime();
-			x_start = fabs( _player->GetPositionX() );
-			y_start = fabs( _player->GetPositionY() );
-
-			received_strafe = false; // We did not yet get the movement stopped packet.
-		}
-
-		if( recv_data.GetOpcode() == MSG_MOVE_STOP )
-		{
-			// Record the data from when we STOP moving.
-			SpeedHackTimeEnd = getMSTime();
-			x_end = fabs( movement_info.x ); 
-			y_end = fabs( movement_info.y );
-
-			// Time it took for the player to move.
-			s_hack_time = (SpeedHackTimeEnd - SpeedHackTimeStart);
-
-			received = true; // We received the movement stop packet.
-		}	
-		else if( recv_data.GetOpcode() == MSG_MOVE_STOP_STRAFE )
-		{
-			// Record the data from when we STOP moving.
-			SpeedHackTimeEnd = getMSTime();
-			x_end = fabs( movement_info.x ); 
-			y_end = fabs( movement_info.y );
-
-			// Time it took for the player to move.
-			s_hack_time = (SpeedHackTimeEnd - SpeedHackTimeStart);
-
-			received_strafe = true; // We received the movement stop packet.
-		}
-		if( ( received || received_strafe ) && s_hack_time != 0 ) // Check to make sure that we received MSG_MOVE_STOP otherwise, nothing to calculate off of. If time is 0, not enough data to be able to calculate off of;p
-		{
-			// Distance formula! Calculate how far he went
-			dist_moved = sqrt( pow((x_end-x_start),2) + pow((y_end-y_start),2)  ); 
-
-		if( dist_moved > 5 ) // This is important, ignore short distances they'll give bad values;p
-		{
-			if( _player->IsMounted() ) // If the player is mounted we need to adjust the checks.
-			{
-				if( _player->m_runSpeed == 11.2 && _player->m_flySpeed == 7 ) // 60% land mount.
-				{
-					if( dist_moved/s_hack_time > .021 ) // Tested and working fine.
-						s_hackcount += 1;
-				}
-				if( _player->m_runSpeed == 14 && _player->m_flySpeed == 7 ) // 100% land mount.
-				{
-					if( dist_moved/s_hack_time > .023 ) // Tested and working fine.
-						s_hackcount += 1;
-				}	
-				if( _player->m_flySpeed == 26.6 ) // 280% flying mount.
-				{
-					if( dist_moved/s_hack_time > .035 ) // Tested and working fine.
-						s_hackcount += 1;
-				}
-				if( _player->m_flySpeed == 28.700001 ) // 310% flying mount.
-				{
-					if( dist_moved/s_hack_time > .04 )  // Tested and working fine.
-						s_hackcount += 1;
-				}
-			}
-			// Portal check should go over here.
-
-			else if( dist_moved/s_hack_time > 0.014 ) // Normal movement.
-			{
-				s_hackcount +=1;
-			}
-				if( s_hackcount >= 3 ) // Three chances! You're outta here!
-				{
-					_player->BroadcastMessage( "Speedhack detected. In case the server is wrong then make a report how to reproduce this case. You will be logged out in 5 seconds." );
-					_player->BroadcastMessage( "Please report this data to the developers: \n Dist_moved: %f | Time: %u | Diff: %f.", dist_moved, s_hack_time, dist_moved/s_hack_time  );
-					sEventMgr.AddEvent( _player, &Player::_Kick, EVENT_PLAYER_KICK, 5000, 1, 0 );
-					s_hackcount = 0; // Reset the counter.
-					dist_moved = 0;
-					received = true;
-					received_strafe = true;
-					s_hack_time = 0;
-				}
-		}
-		
-	}
-	}
-*/
-
 	//update the detector
 	if( sWorld.antihack_speed && !_player->GetTaxiState() && _player->m_TransporterGUID == 0 )
 	{
@@ -638,7 +528,13 @@ void WorldSession::HandleMovementOpcodes( WorldPacket & recv_data )
 		Transporter* trans = _player->m_CurrentTransporter;
 		if(trans) sChatHandler.SystemMessageToPlr(_player, "Client t pos: %f %f\nServer t pos: %f %f   Diff: %f %f", x,y, trans->GetPositionX(), trans->GetPositionY(), trans->CalcDistance(x,y,z), trans->CalcDistance(movement_info.x, movement_info.y, movement_info.z));*/
 	}
+
+	/************************************************************************/
+	/* Anti-Speed Hack Checks                                               */
+	/************************************************************************/
+
 	
+
 	/************************************************************************/
 	/* Breathing System                                                     */
 	/************************************************************************/

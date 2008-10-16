@@ -721,21 +721,6 @@ private:
 	uint32 client_build;
 	uint32 instanceId;
 	uint8 _updatecount;
-
-	// Speedhack stuff.
-	time_t SpeedHackTimeStart;
-	time_t SpeedHackTimeEnd;
-	float x_start;
-	float y_start;
-	//float z_start;
-	float x_end;
-	float y_end;
-	//float z_end;
-	uint32 s_hackcount;
-	bool received;
-	bool received_strafe;
-	float dist_moved;
-	uint32 s_hack_time;
 public:
 	ARCEMU_INLINE MovementInfo* GetMovementInfo() { return &movement_info; }
 	static void InitPacketHandlerTable();
