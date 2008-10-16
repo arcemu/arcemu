@@ -4165,26 +4165,24 @@ void Player::SendDungeonDifficulty()
 
 void Player::BuildPlayerRepop()
 {
+	// cleanup first
+	uint32 AuraIds[] = {20584,9036,8326,0};
+	RemoveAuras(AuraIds); // cebernic: removeaura just remove once(bug?).
+
 	SetUInt32Value( UNIT_FIELD_HEALTH, 1 );
 
-	//8326 --for all races but ne,  9036 20584--ne
 	SpellCastTargets tgt;
 	tgt.m_unitTarget=this->GetGUID();
    
 	if(getRace()==RACE_NIGHTELF)
 	{
-		SpellEntry *inf=dbcSpell.LookupEntry(20584);
+		SpellEntry *inf=dbcSpell.LookupEntry(9036); // cebernic:20584 triggered.
 		Spell*sp=SpellPool.PooledNew();
-		sp->Init(this,inf,true,NULL);
-		sp->prepare(&tgt);
-		inf=dbcSpell.LookupEntry(9036);
-		sp=SpellPool.PooledNew();
 		sp->Init(this,inf,true,NULL);
 		sp->prepare(&tgt);
 	}
 	else
 	{
-	
 		SpellEntry *inf=dbcSpell.LookupEntry(8326);
 		Spell*sp=SpellPool.PooledNew();
 		sp->Init(this,inf,true,NULL);
@@ -4206,16 +4204,21 @@ void Player::RepopRequestedPlayer()
 	// cebernic: don't do this.
   if ( m_bg )
   {
-    if ( !m_bg->HasStarted() ) return;
+    if ( !m_bg->HasStarted() ) 
+		{
+			ResurrectPlayer();
+			return;
+		}
   }
 
 	if( myCorpse != NULL )
-	{
-//		GetSession()->SendNotification( NOTIFICATION_MESSAGE_NO_PERMISSION );
-		ResurrectPlayer();
+		myCorpse->ResetDeathClock();
+
+	/*if( myCorpse != NULL )
+	{ // low chance to do this
 		RepopAtGraveyard( GetPositionX(), GetPositionY(), GetPositionZ(), GetMapId() );
 		return;
-	}
+	}*/
 
 	if( m_CurrentTransporter != NULL )
 	{
@@ -4282,9 +4285,6 @@ void Player::RepopRequestedPlayer()
 		GetSession()->SendPacket( &data2 );
 	}
 
-	if( myCorpse != NULL )
-		myCorpse->ResetDeathClock();
-	
 	switch( pMapinfo->mapid )
 	{
 		case 550: //The Eye
@@ -4308,13 +4308,10 @@ void Player::ResurrectPlayer()
 	m_resurrectHealth = m_resurrectMana = 0;
 
 	SpawnCorpseBones();
-	
-	if(getRace()==RACE_NIGHTELF)
-	{
-		RemoveAura(20584);
-		RemoveAura(9036);
-	}else
-		RemoveAura(8326);
+
+	RemoveNegativeAuras();
+	uint32 AuraIds[] = {20584,9036,8326,0};
+	RemoveAuras(AuraIds); // cebernic: removeaura just remove once(bug?).
 
 	RemoveFlag(PLAYER_FLAGS, 0x10);
 	setDeathState(ALIVE);
@@ -4356,17 +4353,18 @@ void Player::KillPlayer()
 	m_session->OutPacket(SMSG_CANCEL_AUTO_REPEAT);
 
 	SetMovement(MOVE_ROOT, 0);
-
 	StopMirrorTimer(0);
 	StopMirrorTimer(1);
 	StopMirrorTimer(2);
 
 	SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_PLAYER_CONTROLLED); //player death animation, also can be used with DYNAMIC_FLAGS <- huh???
 	SetUInt32Value( UNIT_DYNAMIC_FLAGS, 0x00 );
+
 	if(this->getClass() == WARRIOR) //rage resets on death
 		SetUInt32Value(UNIT_FIELD_POWER2, 0);
 
 	sHookInterface.OnDeath(this);
+
 }
 
 void Player::CreateCorpse()
@@ -8153,6 +8151,9 @@ bool Player::SafeTeleport(uint32 MapID, uint32 InstanceID, float X, float Y, flo
 
 bool Player::SafeTeleport(uint32 MapID, uint32 InstanceID, const LocationVector & vec)
 {
+	SpeedCheatReset();
+	SpeedCheatDelay(10000);
+
 	if ( GetTaxiState() )
 	{
 		sEventMgr.RemoveEvents( this, EVENT_PLAYER_TELEPORT );
@@ -8727,8 +8728,8 @@ void Player::CompleteLoading()
 
 		Aura * aura = AuraPool.PooledNew();
 		aura->Init(sp,(*i).dur,this,this);
-		if ( !(*i).positive ) // do we need this? - vojta
-			aura->SetNegative();
+		//if ( !(*i).positive ) // do we need this? - vojta
+		//	aura->SetNegative();
 
 		for ( uint32 x = 0; x < 3; x++ )
 		{
@@ -8787,10 +8788,10 @@ void Player::CompleteLoading()
 			setDeathState(CORPSE);
 		}
 	}
-	else if(getDeathState() == JUST_DIED && !HasActiveAura(8326))
+	else if(getDeathState() == JUST_DIED && !HasActiveAura(8326) && !HasActiveAura(9036) )
 	{
 		//RepopRequestedPlayer();
-		sEventMgr.AddEvent(this, &Player::RepopRequestedPlayer, EVENT_PLAYER_CHECKFORCHEATS, 1000, 1,EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
+		sEventMgr.AddEvent(this, &Player::RepopRequestedPlayer, EVENT_PLAYER_CHECKFORCHEATS, 2000, 1,EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
 	}
 
 	if(iActivePet)
@@ -9040,7 +9041,9 @@ bool Player::CanSignCharter(Charter * charter, Player * requester)
 void Player::SaveAuras(stringstream &ss)
 {
 	uint32 charges = 0, prevX = 0;
-	for ( uint32 x = MAX_POSITIVE_AURAS_EXTEDED_START; x < MAX_POSITIVE_AURAS_EXTEDED_END; x++ )
+	//for ( uint32 x = MAX_POSITIVE_AURAS_EXTEDED_START; x < MAX_POSITIVE_AURAS_EXTEDED_END; x++ )
+	//cebernic: save all auras why only just positive?
+	for ( uint32 x = MAX_TOTAL_AURAS_START; x < MAX_TOTAL_AURAS_END; x++ )
 	{
 		if ( m_auras[x] != NULL && m_auras[x]->GetTimeLeft() > 3000 )
 		{

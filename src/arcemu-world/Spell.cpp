@@ -2812,6 +2812,9 @@ void Spell::HandleAddAura(uint64 guid)
 		spellid = 36032;
 	else if( GetProto()->Id == 20572 || GetProto()->Id == 33702 || GetProto()->Id == 33697) // Cast spell Blood Fury
 		spellid = 23230;
+	else if( GetProto()->Id == 9036) // cebernic: Cast Wisp Spirit
+		spellid = 20584;
+
 
 	if(spellid && p_caster)
 	{

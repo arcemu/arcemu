@@ -4379,7 +4379,7 @@ bool Unit::RemoveAura(uint32 spellId)
 		{
 			m_auras[x]->Remove();
 //			sLog.outDebug("removing aura %u from slot %u",spellId,x);
-			return true;
+			return true; // cebernic: who did this? Removeaura just once?....
 		}
 	return false;
 }
@@ -4395,9 +4395,9 @@ bool Unit::RemoveAuras(uint32 * SpellIds)
 	{
 		if(m_auras[x])
 		{
-			for(y=0;SpellIds[y] != 0;++y)
+			for(y=0;SpellIds[y] != 0;y++)
 			{
-				if(m_auras[x]->GetSpellId()==SpellIds[y])
+				if( m_auras[x] && m_auras[x]->GetSpellId()==SpellIds[y] )
 				{
 					m_auras[x]->Remove();
 					res = true;
@@ -4583,7 +4583,7 @@ bool Unit::SetAurDuration(uint32 spellId,Unit* caster,uint32 duration)
 	{
 		WorldPacket data(5);
 		data.SetOpcode(SMSG_UPDATE_AURA_DURATION);
-		data << (uint8)(aur)->GetAuraSlot() << duration;
+		data << (uint8)(aur)->m_visualSlot << duration; // cebernic: GetAuraSlot replaced due to Zack's patch...*sigh*..
 		static_cast< Player* >( this )->GetSession()->SendPacket( &data );
 	}
 
@@ -4609,7 +4609,7 @@ bool Unit::SetAurDuration(uint32 spellId,uint32 duration)
 	{
 		WorldPacket data(5);
 		data.SetOpcode(SMSG_UPDATE_AURA_DURATION);
-		data << (uint8)(aur)->GetAuraSlot() << duration;
+		data << (uint8)(aur)->m_visualSlot << duration;
 		static_cast< Player* >( this )->GetSession()->SendPacket( &data );
 	}
 	WorldPacket data(SMSG_SET_AURA_SINGLE,21);
@@ -5375,7 +5375,7 @@ void Unit::UpdateSpeed()
 
 bool Unit::HasActiveAura(uint32 spellid)
 {
-	for(uint32 x=MAX_REMOVABLE_AURAS_START;x<MAX_REMOVABLE_AURAS_END;x++)
+	for(uint32 x=MAX_TOTAL_AURAS_START;x<MAX_TOTAL_AURAS_END;x++)
 		if(m_auras[x] && m_auras[x]->GetSpellId()==spellid)
 			return true;
 
@@ -5384,7 +5384,7 @@ bool Unit::HasActiveAura(uint32 spellid)
 
 bool Unit::HasActiveAura(uint32 spellid,uint64 guid)
 {
-	for(uint32 x=MAX_REMOVABLE_AURAS_START;x<MAX_REMOVABLE_AURAS_END;x++)
+	for(uint32 x=MAX_TOTAL_AURAS_START;x<MAX_TOTAL_AURAS_END;x++)
 		if(m_auras[x] && m_auras[x]->GetSpellId()==spellid && m_auras[x]->m_casterGuid==guid)
 			return true;
 

@@ -703,6 +703,34 @@ void ApplyNormalFixes()
 		else
 			sp->talent_tree = talentSpellIterator->second;
 
+		//resurrection sickness
+		sp = dbcSpell.LookupEntryForced( 15007 );
+		if( sp != NULL )
+		{
+			sp->c_is_flags |= SPELL_FLAG_IS_FORCEDDEBUFF;
+		}
+		// ghost ,NIGHTELF ghost & sprit
+		sp = dbcSpell.LookupEntryForced( 20584 );
+		if( sp != NULL )
+		{
+			sp->c_is_flags |= SPELL_FLAG_IS_FORCEDDEBUFF;
+		}
+		sp = dbcSpell.LookupEntryForced( 9036 );
+		if( sp != NULL )
+		{
+			sp->c_is_flags |= SPELL_FLAG_IS_FORCEDDEBUFF;
+		}
+		sp = dbcSpell.LookupEntryForced( 9036 );
+		if( sp != NULL )
+		{
+			sp->c_is_flags |= SPELL_FLAG_IS_FORCEDDEBUFF;
+		}
+		sp = dbcSpell.LookupEntryForced( 8326 );
+		if( sp != NULL )
+		{
+			sp->c_is_flags |= SPELL_FLAG_IS_FORCEDDEBUFF;
+		}
+
 		// parse rank text
 		if( !sscanf( sp->Rank, "Rank %d", (unsigned int*)&rank) )
 			rank = 0;
