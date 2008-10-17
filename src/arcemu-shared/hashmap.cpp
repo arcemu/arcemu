@@ -221,20 +221,31 @@ int hashmap_get_one(map_t in, any_t *arg, int remove){
 }
 
 /*
- * Get a random element from the hashmap
+ * Get element at position index from the hashmap
  */
-int hashmap_get_index(map_t in, any_t *arg, int index){
+int hashmap_get_index(map_t in, int index, int *key, any_t *arg) {
 	hashmap_map* m;
+	int i,j;
 
 	/* Cast the hashmap */
 	m = (hashmap_map *) in;
 
-	/* Index hight that length? */
+	/* Index higher that length? */
 	if (index > hashmap_length(m))
 		return MAP_MISSING;
 
-	*arg = (any_t) (m->data[index].data);
-	return MAP_OK;
+	for(i = 0, j = 0; i< m->table_size; i++)
+		if(m->data[i].in_use != 0) {
+			if (j == index) {
+				*key = m->data[i].key;
+				if (arg) {
+					*arg = (any_t) (m->data[i].data);
+				}
+				return MAP_OK;
+			}
+			j++;
+		}
+	return MAP_MISSING;
 }
 
 /*
@@ -242,7 +253,7 @@ int hashmap_get_index(map_t in, any_t *arg, int index){
  * additional any_t argument is passed to the function as its first
  * argument and the hashmap element is the second.
  */
-int hashmap_iterate(map_t in, PFany f, any_t item) {
+int hashmap_iterate(map_t in, PFany f) {
 	int i;
 
 	/* Cast the hashmap */
@@ -255,8 +266,7 @@ int hashmap_iterate(map_t in, PFany f, any_t item) {
 	/* Linear probing */
 	for(i = 0; i< m->table_size; i++)
 		if(m->data[i].in_use != 0) {
-			any_t data = (any_t) (m->data[i].data);
-			int status = f(item, data);
+			int status = f(m->data[i].key, m->data[i].data);
 			if (status != MAP_OK) {
 				return status;
 			}

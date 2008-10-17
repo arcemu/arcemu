@@ -27,7 +27,7 @@ class Arena : public CBattleground
 	ArenaTeam * m_teams[2];
 	uint32 m_arenateamtype;
 	uint32 m_playersCount[2];
-	set<uint32> m_players2[2];
+	map_t m_players2[2];
 	map_t m_playersAlive;
 public:
 	bool rated_match;

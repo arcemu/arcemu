@@ -16,10 +16,10 @@
 typedef void *any_t;
 
 /*
- * PFany is a pointer to a function that can take two any_t arguments
+ * PFany is a pointer to a function that takes int key and any_t data arguments
  * and return an integer. Returns status code..
  */
-typedef int (*PFany)(any_t, any_t);
+typedef int (*PFany)(int, any_t);
 
 /*
  * map_t is a pointer to an internally maintained data structure.
@@ -63,8 +63,10 @@ extern int hashmap_remove(map_t in, int key);
  */
 extern int hashmap_get_one(map_t in, any_t *arg, int remove);
 
-
-extern int hashmap_get_index(map_t in, any_t *arg, int index);
+/*
+ * Get element at position index from the hashmap
+ */
+extern int hashmap_get_index(map_t in, int index, int *key, any_t *arg);
 
 /*
  * Free the hashmap
