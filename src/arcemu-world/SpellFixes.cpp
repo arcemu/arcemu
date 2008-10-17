@@ -703,7 +703,7 @@ void ApplyNormalFixes()
 		else
 			sp->talent_tree = talentSpellIterator->second;
 
-		//resurrection sickness
+		/*//resurrection sickness                //Disabled : it cause one or more problem on aura stacking :(
 		sp = dbcSpell.LookupEntryForced( 15007 );
 		if( sp != NULL )
 		{
@@ -734,7 +734,7 @@ void ApplyNormalFixes()
 		if( sp != NULL )
 		{
 			sp->c_is_flags |= SPELL_FLAG_IS_FORCEDDEBUFF;
-		}
+		}*/
 		// parse rank text
 		if( !sscanf( sp->Rank, "Rank %d", (unsigned int*)&rank) )
 			rank = 0;
