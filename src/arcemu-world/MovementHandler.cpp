@@ -320,7 +320,7 @@ void WorldSession::HandleMovementOpcodes( WorldPacket & recv_data )
 	/************************************************************************/
 	/* Anti-Fly Hack Checks                                                 */
 	/************************************************************************/
-	if( sWorld.antihack_flight && ( recv_data.GetOpcode() == CMSG_MOVE_FLY_START_AND_END || recv_data.GetOpcode() == CMSG_FLY_PITCH_DOWN_AFTER_UP ) && _player->flying_aura == 0 )	
+	if( sWorld.antihack_flight && ( recv_data.GetOpcode() == CMSG_MOVE_FLY_START_AND_END || recv_data.GetOpcode() == CMSG_FLY_PITCH_DOWN_AFTER_UP ) && !( movement_info.flags & MOVEFLAG_SWIMMING ) && _player->flying_aura == 0 )	
 	{
 		if( sWorld.no_antihack_on_gm && _player->GetSession()->HasGMPermissions() )
 		{
