@@ -256,6 +256,7 @@ public:
 	Unit	*GetSecondHated();
 	bool	modThreatByGUID(uint64 guid, int32 mod);
 	bool	modThreatByPtr(Unit* obj, int32 mod);
+	void    RemoveThreatByGUID(uint64 guid);
 	void	RemoveThreatByPtr(Unit* obj);
 	ARCEMU_INLINE AssistTargetSet GetAssistTargets() { return m_assistTargets; }
 	ARCEMU_INLINE void LockAITargets(bool lock) 

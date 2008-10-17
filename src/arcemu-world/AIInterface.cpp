@@ -3780,6 +3780,19 @@ bool AIInterface::modThreatByPtr(Unit* obj, int32 mod)
 	return true;
 }
 
+void AIInterface::RemoveThreatByGUID(uint64 guid)
+{
+	if (!m_aiTargets.size())
+		return;
+
+	if(  m_Unit->GetMapMgr() == NULL )
+		return; 
+
+	Unit *obj = m_Unit->GetMapMgr()->GetUnit(guid);
+	if(obj)
+		RemoveThreatByPtr(obj);
+}
+
 void AIInterface::RemoveThreatByPtr(Unit* obj)
 {
 	if(!obj)
