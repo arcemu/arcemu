@@ -71,6 +71,7 @@
 #include "../arcemu-shared/Threading/RWLock.h"
 #include "../arcemu-shared/Threading/Condition.h"
 #include "../arcemu-shared/arcemu_getopt.h"
+#include "../arcemu-shared/hashmap.h"
 
 #include "UpdateFields.h"
 #include "UpdateMask.h"

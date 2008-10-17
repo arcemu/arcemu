@@ -35,6 +35,7 @@ Arena::Arena(MapMgr * mgr, uint32 id, uint32 lgroup, uint32 t, uint32 players_pe
 	m_worldStates.clear();
 	m_pvpData.clear();
 	m_resurrectMap.clear();
+	m_playersAlive = hashmap_new();
 
 	m_started = false;
 	m_playerCountPerTeam = players_per_side;
@@ -69,6 +70,11 @@ Arena::~Arena()
 		// buffs may not be spawned, so delete them if they're not
 		if(m_buffs[i] && m_buffs[i]->IsInWorld()==false)
 			delete m_buffs[i];
+	}
+
+	if (m_playersAlive) {
+		hashmap_free(m_playersAlive);
+		m_playersAlive = NULL;
 	}
 }
 
@@ -117,7 +123,7 @@ void Arena::OnAddPlayer(Player * plr)
 	if(!plr->HasFlag(PLAYER_FLAGS, PLAYER_FLAG_FREE_FOR_ALL_PVP))
 		plr->SetFlag(PLAYER_FLAGS, PLAYER_FLAG_FREE_FOR_ALL_PVP);
 
-	m_playersAlive.insert(plr->GetLowGUID());
+	hashmap_put(m_playersAlive, plr->GetLowGUID(), (any_t)1);
 }
 
 void Arena::OnRemovePlayer(Player * plr)
@@ -154,11 +160,10 @@ void Arena::HookOnPlayerDeath(Player * plr)
 
 	if( plr->m_isGmInvisible == true ) return;
 
-	if (m_playersAlive.find(plr->GetLowGUID()) != m_playersAlive.end())
-	{
+	if (hashmap_get(m_playersAlive, plr->GetLowGUID(), NULL) == MAP_OK) {
 		m_playersCount[plr->GetTeam()]--;
 		UpdatePlayerCounts();
-		m_playersAlive.erase(plr->GetLowGUID());
+		hashmap_remove(m_playersAlive, plr->GetLowGUID());
 	}
 }
 
