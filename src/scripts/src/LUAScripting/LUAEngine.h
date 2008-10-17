@@ -132,7 +132,9 @@ public:
 	~LuaEngine();
 
 	void LoadScripts();
-  void ScriptLoadFromDir(char* Dirname);
+#ifdef WIN32
+	void ScriptLoadFromDir(char* Dirname);
+#endif
 	void Shutdown();
 	void Restart();
 	void RegisterCoreFunctions();

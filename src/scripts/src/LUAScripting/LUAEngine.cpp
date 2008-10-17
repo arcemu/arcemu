@@ -596,6 +596,7 @@ LuaEngine::~LuaEngine()
   luaBytecodeFiles.clear();
   lua_close(L);
 }
+#ifdef WIN32
 void LuaEngine::ScriptLoadFromDir(char* Dirname)
 {
   //for test
@@ -645,6 +646,7 @@ void LuaEngine::ScriptLoadFromDir(char* Dirname)
     }
   FindClose(hFile);
 }
+#endif
 
 void LuaEngine::LoadScripts()
 {
