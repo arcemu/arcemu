@@ -141,54 +141,56 @@ void WorldSession::_HandleAreaTriggerOpcode(uint32 id)
 	{
 	case ATTYPE_INSTANCE:
 		{
-			if(GetPlayer()->GetPlayerStatus() != TRANSFER_PENDING) //only ports if player is out of pendings
+			if ( sWorld.instance_CheckTriggerPrerequsites )
 			{
-				uint32 reason = CheckTriggerPrerequsites(pAreaTrigger, this, _player, WorldMapInfoStorage.LookupEntry(pAreaTrigger->Mapid));
-				if(reason != AREA_TRIGGER_FAILURE_OK)
+				if(GetPlayer()->GetPlayerStatus() != TRANSFER_PENDING) //only ports if player is out of pendings
 				{
-					const char * pReason = GetPlayer()->GetSession()->LocalizedWorldSrv(AreaTriggerFailureMessages[reason]);
-					char msg[200];
-					WorldPacket data(SMSG_AREA_TRIGGER_MESSAGE, 50);
-					data << uint32(0);
-                    
-					switch (reason)
+					uint32 reason = CheckTriggerPrerequsites(pAreaTrigger, this, _player, WorldMapInfoStorage.LookupEntry(pAreaTrigger->Mapid));
+					if(reason != AREA_TRIGGER_FAILURE_OK)
 					{
-					case AREA_TRIGGER_FAILURE_LEVEL:
-						snprintf(msg,200,pReason,pAreaTrigger->required_level);
-						data << msg;
-						break;
-					case AREA_TRIGGER_FAILURE_NO_ATTUNE_I:
+						const char * pReason = GetPlayer()->GetSession()->LocalizedWorldSrv(AreaTriggerFailureMessages[reason]);
+						char msg[200];
+						WorldPacket data(SMSG_AREA_TRIGGER_MESSAGE, 50);
+						data << uint32(0);
+	                    
+						switch (reason)
 						{
-							MapInfo * pMi = WorldMapInfoStorage.LookupEntry(pAreaTrigger->Mapid);
-							ItemPrototype * pItem = ItemPrototypeStorage.LookupEntry(pMi->required_item);
-							if(pItem)
-								snprintf(msg,200,GetPlayer()->GetSession()->LocalizedWorldSrv(35),pItem->Name1);
-							else
-								snprintf(msg,200,GetPlayer()->GetSession()->LocalizedWorldSrv(36));
-
+						case AREA_TRIGGER_FAILURE_LEVEL:
+							snprintf(msg,200,pReason,pAreaTrigger->required_level);
 							data << msg;
-						}break;
-					case AREA_TRIGGER_FAILURE_NO_ATTUNE_Q:
-						{
-							MapInfo * pMi = WorldMapInfoStorage.LookupEntry(pAreaTrigger->Mapid);
-							Quest * pQuest = QuestStorage.LookupEntry(pMi->required_quest);
-							if(pQuest)
-								snprintf(msg,200,GetPlayer()->GetSession()->LocalizedWorldSrv(35),pQuest->title);
-							else
-								snprintf(msg,200,GetPlayer()->GetSession()->LocalizedWorldSrv(36));
+							break;
+						case AREA_TRIGGER_FAILURE_NO_ATTUNE_I:
+							{
+								MapInfo * pMi = WorldMapInfoStorage.LookupEntry(pAreaTrigger->Mapid);
+								ItemPrototype * pItem = ItemPrototypeStorage.LookupEntry(pMi->required_item);
+								if(pItem)
+									snprintf(msg,200,GetPlayer()->GetSession()->LocalizedWorldSrv(35),pItem->Name1);
+								else
+									snprintf(msg,200,GetPlayer()->GetSession()->LocalizedWorldSrv(36));
 
-							data << msg;
-						}break;
-					default:
-						data << pReason;
-						break;
+								data << msg;
+							}break;
+						case AREA_TRIGGER_FAILURE_NO_ATTUNE_Q:
+							{
+								MapInfo * pMi = WorldMapInfoStorage.LookupEntry(pAreaTrigger->Mapid);
+								Quest * pQuest = QuestStorage.LookupEntry(pMi->required_quest);
+								if(pQuest)
+									snprintf(msg,200,GetPlayer()->GetSession()->LocalizedWorldSrv(35),pQuest->title);
+								else
+									snprintf(msg,200,GetPlayer()->GetSession()->LocalizedWorldSrv(36));
+
+								data << msg;
+							}break;
+						default:
+							data << pReason;
+							break;
+						}
+
+						data << uint8(0);
+						SendPacket(&data);
+						return;
 					}
-
-					data << uint8(0);
-					SendPacket(&data);
-					return;
 				}
-
 				GetPlayer()->SaveEntryPoint(pAreaTrigger->Mapid);
 				GetPlayer()->SafeTeleport(pAreaTrigger->Mapid, 0, LocationVector(pAreaTrigger->x, pAreaTrigger->y, pAreaTrigger->z, pAreaTrigger->o));
 			}

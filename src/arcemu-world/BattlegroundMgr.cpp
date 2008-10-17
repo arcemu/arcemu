@@ -56,11 +56,10 @@ const static CreateBattlegroundFunc BGCFuncs[BATTLEGROUND_NUM_TYPES] = {
 #endif
 };
 
-
 CBattlegroundManager::CBattlegroundManager() : EventableObject()
 {
 	int i;
-
+	LoadBGSetFromConfig(); // config
 	m_maxBattlegroundId = 0;
 	sEventMgr.AddEvent(this, &CBattlegroundManager::EventQueueUpdate, EVENT_BATTLEGROUND_QUEUE_UPDATE, 15000, 0,0);
 
@@ -72,6 +71,32 @@ CBattlegroundManager::CBattlegroundManager() : EventableObject()
 CBattlegroundManager::~CBattlegroundManager()
 {
 
+}
+void CBattlegroundManager::LoadBGSetFromConfig()
+{
+	// cebernic: for external controlled
+	BGMaximumPlayers[0] = 0;
+	BGMaximumPlayers[1] = sWorld.m_bgSet_AV_MAX;
+	BGMaximumPlayers[2] = sWorld.m_bgSet_WS_MAX;
+	BGMaximumPlayers[3] = sWorld.m_bgSet_AB_MAX;
+	BGMaximumPlayers[4] = 4;
+	BGMaximumPlayers[5] = 6;
+	BGMaximumPlayers[6] = 10;
+	BGMaximumPlayers[7] = sWorld.m_bgSet_EOS_MAX;
+
+	BGMinimumPlayers[0] = 0;
+	BGMinimumPlayers[1] = sWorld.m_bgSet_AV_MIN;
+	BGMinimumPlayers[2] = sWorld.m_bgSet_WS_MIN;
+	BGMinimumPlayers[3] = sWorld.m_bgSet_AB_MIN;
+	BGMinimumPlayers[4] = 4;
+	BGMinimumPlayers[5] = 6;
+	BGMinimumPlayers[6] = 10;
+	BGMinimumPlayers[7] = sWorld.m_bgSet_EOS_MIN;
+	Log.Notice("BattlegroundManager","Min/Max - AV(%d/%d) AB(%d/%d) WS(%d/%d) EOTS(%d/%d).",
+		sWorld.m_bgSet_AV_MIN,sWorld.m_bgSet_AV_MAX,
+		sWorld.m_bgSet_AB_MIN,sWorld.m_bgSet_AB_MAX,
+		sWorld.m_bgSet_WS_MIN,sWorld.m_bgSet_WS_MAX,
+		sWorld.m_bgSet_EOS_MIN,sWorld.m_bgSet_EOS_MAX);
 }
 
 void CBattlegroundManager::HandleBattlegroundListPacket(WorldSession * m_session, uint32 BattlegroundType)

@@ -53,29 +53,8 @@ struct BGScore
 	uint32 Misc2;
 };
 
-//Shady: mb use dbc?
-const static uint32 BGMaximumPlayers[BATTLEGROUND_NUM_TYPES] = {
-    0,                            // 0
-    40,                            // AV
-    10,                            // WSG
-    15,                            // AB
-    4,                            // 2v2
-    6,                            // 3v3
-    10,                            // 5v5
-    15,                            // EOTS
-};
-
-const static uint32 BGMinimumPlayers[BATTLEGROUND_NUM_TYPES] = {
-	0,							// 0
-	0,							// AV
-	1,							// WSG cebernic:1 temptest
-	1,							// AB  cebernic:1 temptest
-	4,							// 2v2
-	6,							// 3v3
-	10,							// 5v5
-	1,							// EotS
-};
-
+static uint32 BGMaximumPlayers[BATTLEGROUND_NUM_TYPES] = {0,0,0,0,0,0,0,0,};
+static uint32 BGMinimumPlayers[BATTLEGROUND_NUM_TYPES] = {0,0,0,0,0,0,0,0,};
 
 #define SOUND_BATTLEGROUND_BEGIN			0xD6F
 #define SOUND_HORDE_SCORES					8213
@@ -154,6 +133,7 @@ static inline uint32 GetLevelGrouping(uint32 level)
 #define MAXIMUM_BATTLEGROUNDS_PER_LEVEL_GROUP 50
 #define LEVEL_GROUP_70 7
 
+
 class CBattlegroundManager : public Singleton<CBattlegroundManager>, public EventableObject
 {
 	/* Battleground Instance Map */
@@ -175,6 +155,9 @@ class CBattlegroundManager : public Singleton<CBattlegroundManager>, public Even
 public:
 	CBattlegroundManager();
 	~CBattlegroundManager();
+
+	/* Get the Config */
+	void LoadBGSetFromConfig();
 
 	/* Packet Handlers */
 	void HandleBattlegroundListPacket(WorldSession * m_session, uint32 BattlegroundType);

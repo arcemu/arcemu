@@ -461,6 +461,18 @@ public:
 	bool instance_TakeGroupLeaderID;
 	bool instance_SlidingExpiration;
 	int instance_DailyHeroicInstanceResetHour;
+	bool instance_CheckTriggerPrerequsites;
+
+	// battleground set
+	uint32 m_bgSet_AV_MIN;
+	uint32 m_bgSet_AV_MAX;
+	uint32 m_bgSet_AB_MIN;
+	uint32 m_bgSet_AB_MAX;
+	uint32 m_bgSet_WS_MIN;
+	uint32 m_bgSet_WS_MAX;
+	uint32 m_bgSet_EOS_MIN;
+	uint32 m_bgSet_EOS_MAX;
+
 
 	int GMTTimeZone;
 

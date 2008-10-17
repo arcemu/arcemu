@@ -312,7 +312,9 @@ string ConvertTimeStampToDataTime(uint32 timestamp)
 	return szResult;
 }
 
+#ifdef WIN32
 static char _StringConversionStorage[2048];
+#endif
 
 // win32 only
 // cebernic added it

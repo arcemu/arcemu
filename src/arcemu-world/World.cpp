@@ -1363,6 +1363,22 @@ void World::Rehash(bool load)
 	instance_TakeGroupLeaderID = Config.MainConfig.GetBoolDefault("InstanceHandling", "TakeGroupLeaderID", true);
 	instance_SlidingExpiration = Config.MainConfig.GetBoolDefault("InstanceHandling", "SlidingExpiration", false);
 	instance_DailyHeroicInstanceResetHour = Config.MainConfig.GetIntDefault("InstanceHandling", "DailyHeroicInstanceResetHour", 5);
+	// cebernic: wanna no attunment xD?
+	instance_CheckTriggerPrerequsites = Config.MainConfig.GetBoolDefault("InstanceHandling", "CheckTriggerPrerequsites", true);
+
+	m_bgSet_AV_MIN = Config.MainConfig.GetIntDefault("Battleground", "AV_MIN", 10);
+	m_bgSet_AV_MAX = Config.MainConfig.GetIntDefault("Battleground", "AV_MAX", 40);
+
+	m_bgSet_WS_MIN = Config.MainConfig.GetIntDefault("Battleground", "WS_MIN", 2);
+	m_bgSet_WS_MAX = Config.MainConfig.GetIntDefault("Battleground", "WS_MAX", 10);
+
+	m_bgSet_AB_MIN = Config.MainConfig.GetIntDefault("Battleground", "AB_MIN", 4);
+	m_bgSet_AB_MAX = Config.MainConfig.GetIntDefault("Battleground", "AB_MAX", 15);
+
+	m_bgSet_EOS_MIN = Config.MainConfig.GetIntDefault("Battleground", "EOS_MIN", 4);
+	m_bgSet_EOS_MAX = Config.MainConfig.GetIntDefault("Battleground", "EOS_MAX", 15);
+	
+
 
 	if(instance_DailyHeroicInstanceResetHour < 0)
 		instance_DailyHeroicInstanceResetHour = 0;
