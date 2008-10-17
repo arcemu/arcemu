@@ -1343,6 +1343,10 @@ void World::Rehash(bool load)
 
 	m_CustomCharterGiver = (uint32)Config.OptionalConfig.GetIntDefault("Optional", "CustomCharterGiver",0);
 
+	//script engine
+	m_LuaEngine = Config.MainConfig.GetBoolDefault("ScriptBackends", "LUA", false);
+	m_ASEngine = Config.MainConfig.GetBoolDefault("ScriptBackends", "AS", false);
+
 	map_unload_time=Config.MainConfig.GetIntDefault("Server", "MapUnloadTime", 0);
 
 	antihack_teleport = Config.MainConfig.GetBoolDefault("AntiHack", "Teleport", true);

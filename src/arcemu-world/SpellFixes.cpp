@@ -730,7 +730,11 @@ void ApplyNormalFixes()
 		{
 			sp->c_is_flags |= SPELL_FLAG_IS_FORCEDDEBUFF;
 		}
-
+		sp = dbcSpell.LookupEntryForced( 26013 ); //bg
+		if( sp != NULL )
+		{
+			sp->c_is_flags |= SPELL_FLAG_IS_FORCEDDEBUFF;
+		}
 		// parse rank text
 		if( !sscanf( sp->Rank, "Rank %d", (unsigned int*)&rank) )
 			rank = 0;

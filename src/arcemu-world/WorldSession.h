@@ -734,4 +734,5 @@ public:
 
 typedef std::set<WorldSession*> SessionSet;
 
+
 #endif

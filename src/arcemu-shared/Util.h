@@ -31,6 +31,10 @@ std::vector<std::string> StrSplit(const std::string &src, const std::string &sep
 void SetThreadName(const char* format, ...);
 time_t convTimePeriod ( uint32 dLength, char dType);
 
+extern SERVER_DECL const char* _StringToUTF8(const char*pASCIIBuf);
+extern SERVER_DECL const char* _StringToANSI(const char*pUtf8Buf);
+extern SERVER_DECL bool _IsStringUTF8(const char *str);
+
 #ifdef WIN32
 
 	typedef struct tagTHREADNAME_INFO

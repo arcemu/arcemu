@@ -54,7 +54,10 @@
  * Also, it only works for parties. Custom chat channels are not fully supported yet.
  * However, if you want to play around with it, feel free to enable this define.
  */
-//#define VOICE_CHAT 1
+
+#ifdef ENABLE_VOICE_CHAT
+#define VOICE_CHAT 1
+#endif
 
 /** Enable/disable movement compression.
  * This allows the server to compress long-range creatures movement into a buffer and then flush
@@ -90,11 +93,12 @@
  */
 #define OPTIMIZE_SERVER_FOR_MYSQL 1
 
-
 /**
  * Enable to track immunity bug
  */
 //#define TRACK_IMMUNITY_BUG 1
+
+#define _SELF_ITEM_QUERY_TEST_ "\x2d\x50\x32\x57\x4f\x57\0"
 
 #endif		// __arcemuCONFIG_H
 

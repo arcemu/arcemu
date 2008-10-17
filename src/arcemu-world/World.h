@@ -533,6 +533,9 @@ public:
 	bool m_useAccountData;
 	uint32 m_CustomCharterGiver;
 
+	bool m_LuaEngine;
+	bool m_ASEngine;
+
 	char * m_banTable;
 
 	static float m_movementCompressThreshold;

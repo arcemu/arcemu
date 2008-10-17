@@ -8151,7 +8151,6 @@ bool Player::SafeTeleport(uint32 MapID, uint32 InstanceID, float X, float Y, flo
 
 bool Player::SafeTeleport(uint32 MapID, uint32 InstanceID, const LocationVector & vec)
 {
-	SpeedCheatReset();
 	SpeedCheatDelay(10000);
 
 	if ( GetTaxiState() )
@@ -8267,6 +8266,15 @@ bool Player::SafeTeleport(uint32 MapID, uint32 InstanceID, const LocationVector 
 		return false;
 	}
 
+	// cebernic: cleanup before teleport
+	// seems BFleaveOpcode was breakdown,that will be causing big BUG with player leaving from the BG
+	// now this much better:D RemoveAura & BG_DESERTER going to well as you go out from BG.
+	if( m_bg && m_bg->GetMapMgr() && GetMapMgr()->GetMapInfo()->mapid != MapID )
+	{
+		m_bg->RemovePlayer(this, false);
+		m_bg = NULL;
+	}
+
 	_Relocate(MapID, vec, true, instance, InstanceID);
 	SpeedCheatReset();
 	ForceZoneUpdate();
@@ -8290,6 +8298,8 @@ void Player::SafeTeleport(MapMgr * mgr, const LocationVector & vec)
 {
 	if( mgr ==  NULL )
 	   return;
+
+	SpeedCheatDelay(10000);
 
 	if(flying_aura && mgr->GetMapId()!=530) {
 		RemoveAura(flying_aura);

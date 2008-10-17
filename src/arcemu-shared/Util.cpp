@@ -311,3 +311,83 @@ string ConvertTimeStampToDataTime(uint32 timestamp)
 
 	return szResult;
 }
+
+static char _StringConversionStorage[2048];
+
+// win32 only
+// cebernic added it
+// for multilanguage supports
+// --------------------------------------------------------------------------------------------------
+SERVER_DECL const char* _StringToUTF8(const char*   pASCIIBuf)
+{ 
+#ifdef WIN32
+	DWORD     UniCodeLen=MultiByteToWideChar(CP_ACP,   0,   pASCIIBuf,   -1,   0,   0); 
+  std::vector <wchar_t>   vWCH(UniCodeLen); 
+  MultiByteToWideChar(CP_ACP,   0,   pASCIIBuf,   -1,   &vWCH[0],   UniCodeLen); 
+  DWORD   dwUtf8Len=WideCharToMultiByte(CP_UTF8,   0,   &vWCH[0],   UniCodeLen   ,   NULL,   NULL,   NULL,   NULL   ); 
+	ASSERT( dwUtf8Len+1 < 2048 );
+	memset(_StringConversionStorage,0,(sizeof(char)*dwUtf8Len)+1);
+  WideCharToMultiByte(CP_UTF8,   0,   &vWCH[0],   UniCodeLen   ,   _StringConversionStorage,   dwUtf8Len,   NULL,   NULL   ); 
+	return &_StringConversionStorage[0];
+#else
+	return &pASCIIBuf[0];
+#endif
+} 
+SERVER_DECL const char* _StringToANSI(const char*   pUtf8Buf)
+{ 
+#ifdef WIN32
+	DWORD   UniCodeLen=MultiByteToWideChar(CP_UTF8,   0,   pUtf8Buf,   -1,   NULL,0   ); 
+  std::vector <wchar_t>   vWCH(UniCodeLen); 
+  MultiByteToWideChar(CP_UTF8,   0,   pUtf8Buf,   -1,   &vWCH[0]   ,   UniCodeLen   ); 
+  DWORD   dwASCIILen=WideCharToMultiByte(CP_ACP,   0,   &vWCH[0],   UniCodeLen   ,   NULL   ,NULL   ,   NULL,   NULL   ); 
+	ASSERT( dwASCIILen+1 < 2048 );
+	memset(_StringConversionStorage,0,(sizeof(char)*dwASCIILen)+1);
+  WideCharToMultiByte(CP_ACP,   0,   &vWCH[0],   UniCodeLen   ,   _StringConversionStorage,   dwASCIILen,   NULL,   NULL   ); 
+	return &_StringConversionStorage[0];
+#else
+	return &pUtf8Buf[0];
+#endif
+} 
+
+SERVER_DECL bool _IsStringUTF8(const char *str)
+{
+    int   i;
+    BYTE cOctets;  // octets to go in this UTF-8 encoded character
+    BYTE chr;
+    BOOL  bAllAscii= TRUE;
+    long iLen = (long)strlen(str);
+ 
+    cOctets= 0;
+    for( i=0; i <iLen; i++ ) {
+ 
+     chr = (BYTE)str[i];
+ 
+     if( (chr & 0x80) != 0 ) bAllAscii= FALSE;
+ 
+     if( cOctets == 0 ) {
+        if( chr>= 0x80 )  {
+            do  {
+                chr <<= 1;
+                cOctets++;
+            }
+            while( (chr & 0x80) != 0 );
+            
+            cOctets--;                        
+            if( cOctets == 0 ) return FALSE;  
+        }
+     }
+     else  {
+        if( (chr & 0xC0) != 0x80 ) 
+            return FALSE;
+ 
+        cOctets--;                       
+     }
+    }
+    if( cOctets> 0 ) 
+     return FALSE;
+    if( bAllAscii ) 
+     return FALSE;
+    return TRUE;
+
+ } 
+

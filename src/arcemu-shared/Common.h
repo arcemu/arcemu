@@ -286,6 +286,18 @@ using stdext::hash_set;
 // hacky stuff for vc++
 #define snprintf _snprintf
 #define vsnprintf _vsnprintf
+//#define strlen lstrlen
+
+#ifdef WIN32
+typedef char TCHAR;
+#define __T(x) x
+#endif
+
+// cebernic added it
+#define __utf8(x) _StringToUTF8(x)
+#define __ansi(x) _StringToANSI(x)
+#define __isutf8(x) _IsStringUTF8(x)
+
 
 #elif COMPILER == COMPILER_INTEL
 #define HM_NAMESPACE std

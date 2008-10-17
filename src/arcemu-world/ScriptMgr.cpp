@@ -151,7 +151,7 @@ void ScriptMgr::LoadScripts()
 			if( itr->Type & SCRIPT_TYPE_SCRIPT_ENGINE_LUA )
 			{
 				// lua :O
-				if( Config.MainConfig.GetBoolDefault("ScriptBackends", "LUA", false) )
+				if( sWorld.m_LuaEngine )
 				{
 					Log.Notice("Server","Initializing LUA script engine...");
 					itr->InitializeCall(this);
@@ -164,7 +164,7 @@ void ScriptMgr::LoadScripts()
 			}
 			else if( itr->Type & SCRIPT_TYPE_SCRIPT_ENGINE_AS )
 			{
-				if( Config.MainConfig.GetBoolDefault("ScriptBackends", "AS", false) )
+				if( sWorld.m_ASEngine )
 				{
 					Log.Notice("Server","Initializing AngelScript script engine...");
 					itr->InitializeCall(this);
@@ -267,7 +267,7 @@ char *ext;
 			if( itr->Type & SCRIPT_TYPE_SCRIPT_ENGINE_LUA )
 			{
 				// lua :O
-				if( Config.MainConfig.GetBoolDefault("ScriptBackends", "LUA", false) )
+				if( sWorld.m_LuaEngine )
 				{
 					sLog.outString("   Initializing LUA script engine...");
 					itr->InitializeCall(this);
@@ -280,7 +280,7 @@ char *ext;
 			}
 			else if( itr->Type & SCRIPT_TYPE_SCRIPT_ENGINE_AS )
 			{
-				if( Config.MainConfig.GetBoolDefault("ScriptBackends", "AS", false) )
+				if( sWorld.m_ASEngine )
 				{
 					sLog.outString("   Initializing AngelScript script engine...");
 					itr->InitializeCall(this);

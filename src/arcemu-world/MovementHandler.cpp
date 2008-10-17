@@ -76,7 +76,7 @@ void WorldSession::HandleMoveWorldportAckOpcode( WorldPacket & recv_data )
 		return;
 	}
 	sLog.outDebug( "WORLD: got MSG_MOVE_WORLDPORT_ACK." );
-	
+
 	if(_player->m_CurrentTransporter && _player->GetMapId() != _player->m_CurrentTransporter->GetMapId())
 	{
 		/* wow, our pc must really suck. */
@@ -463,7 +463,7 @@ void WorldSession::HandleMovementOpcodes( WorldPacket & recv_data )
 			if( _player->isAlive() && !_player->GodModeCheat && falldistance > 12 && ( UNIXTIME >= _player->m_fallDisabledUntil ) && movement_info.FallTime > 1000 )
 			{
 				// 1.7% damage for each unit fallen on Z axis over 13
-				uint32 health_loss = float2int32( float( _player->GetUInt32Value( UNIT_FIELD_MAXHEALTH ) * ( ( falldistance - 12 ) * 0.017 ) ) );
+				uint32 health_loss = float2int32( float( _player->GetUInt32Value( UNIT_FIELD_MAXHEALTH ) * ( ( falldistance ) * 0.017 ) ) );
 													
 				if( health_loss >= _player->GetUInt32Value( UNIT_FIELD_HEALTH ) )
 					health_loss = _player->GetUInt32Value( UNIT_FIELD_HEALTH );

@@ -73,7 +73,7 @@ const static uint32 BGMinimumPlayers[BATTLEGROUND_NUM_TYPES] = {
 	4,							// 2v2
 	6,							// 3v3
 	10,							// 5v5
-	5,							// EotS
+	1,							// EotS
 };
 
 
