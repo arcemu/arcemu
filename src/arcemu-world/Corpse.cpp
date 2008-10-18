@@ -33,7 +33,8 @@ Corpse::Corpse(uint32 high, uint32 low)
 	m_wowGuid.Init(GetGUID());
 
 	SetFloatValue( OBJECT_FIELD_SCALE_X, 1 );//always 1
-	  
+
+	m_time = (time_t)0;
 
 	m_state = CORPSE_STATE_BODY;
 	_loadedfromdb = false;

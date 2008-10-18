@@ -4201,24 +4201,16 @@ void Player::BuildPlayerRepop()
 
 void Player::RepopRequestedPlayer()
 {
-	// cebernic: don't do this.
-  if ( m_bg )
-  {
-    if ( !m_bg->HasStarted() ) 
-		{
-			ResurrectPlayer();
-			return;
-		}
-  }
+	sEventMgr.RemoveEvents(this, EVENT_PLAYER_CHECKFORCHEATS); // cebernic:-> Remove this first
+	sEventMgr.RemoveEvents( this, EVENT_PLAYER_FORECED_RESURECT ); //in case somebody resurrected us before this event happened
 
-	if( myCorpse != NULL )
+	if( myCorpse != NULL ) {
+		// cebernic: wOOo dead+dead = undead ? :D just resurrect player
 		myCorpse->ResetDeathClock();
-
-	/*if( myCorpse != NULL )
-	{ // low chance to do this
-		RepopAtGraveyard( GetPositionX(), GetPositionY(), GetPositionZ(), GetMapId() );
+		ResurrectPlayer();
 		return;
-	}*/
+	}
+
 
 	if( m_CurrentTransporter != NULL )
 	{
@@ -4232,8 +4224,6 @@ void Player::RepopRequestedPlayer()
 	}
 
 	MapInfo * pMapinfo;
-
-	sEventMgr.RemoveEvents( this, EVENT_PLAYER_FORECED_RESURECT ); //in case somebody resurrected us before this event happened
 
 	// Set death state to corpse, that way players will lose visibility
 	setDeathState( CORPSE );
@@ -4249,30 +4239,38 @@ void Player::RepopRequestedPlayer()
 	if( corpse )
 		CreateCorpse();
 	
-	BuildPlayerRepop();
 
-	pMapinfo = WorldMapInfoStorage.LookupEntry( GetMapId() );
-	if( pMapinfo != NULL )
-	{
-		if( pMapinfo->type == INSTANCE_NULL || pMapinfo->type == INSTANCE_PVP )
+	BuildPlayerRepop();
+	
+
+	// cebernic: don't do this.
+  if ( !m_bg || ( m_bg && m_bg->HasStarted() ) )
+  {
+		pMapinfo = WorldMapInfoStorage.LookupEntry( GetMapId() );
+		if( pMapinfo != NULL )
 		{
-			RepopAtGraveyard( GetPositionX(), GetPositionY(), GetPositionZ(), GetMapId() );
+			if( pMapinfo->type == INSTANCE_NULL || pMapinfo->type == INSTANCE_PVP )
+			{
+				RepopAtGraveyard( GetPositionX(), GetPositionY(), GetPositionZ(), GetMapId() );
+			}
+			else
+			{
+				RepopAtGraveyard( pMapinfo->repopx, pMapinfo->repopy, pMapinfo->repopz, pMapinfo->repopmapid );
+			}
 		}
 		else
 		{
-			RepopAtGraveyard( pMapinfo->repopx, pMapinfo->repopy, pMapinfo->repopz, pMapinfo->repopmapid );
+			//RepopAtGraveyard( GetPositionX(), GetPositionY(), GetPositionZ(), GetMapId() );
+			//cebernic: Mapinfo NULL? let's search from bindposition.
+			RepopAtGraveyard( GetBindPositionX(),GetBindPositionY(),GetBindPositionZ(),GetBindMapId( ) );
 		}
 	}
-	else
-	{
-		//RepopAtGraveyard( GetPositionX(), GetPositionY(), GetPositionZ(), GetMapId() );
-		//cebernic: Mapinfo NULL? let's search from bindposition.
-		RepopAtGraveyard( GetBindPositionX(),GetBindPositionY(),GetBindPositionZ(),GetBindMapId( ) );
-	}
-	
+
 	if( corpse )
 	{
 		SpawnCorpseBody();
+
+		if ( myCorpse!=NULL ) myCorpse->ResetDeathClock();
 
 		/* Send Spirit Healer Location */
 		WorldPacket data( SMSG_SPIRIT_HEALER_POS, 16 );
@@ -4284,6 +4282,7 @@ void Player::RepopRequestedPlayer()
 		data2 << (uint32)( CORPSE_RECLAIM_TIME_MS );
 		GetSession()->SendPacket( &data2 );
 	}
+
 
 	switch( pMapinfo->mapid )
 	{
@@ -8798,14 +8797,23 @@ void Player::CompleteLoading()
 			setDeathState(CORPSE);
 		}
 	}
-	else if(getDeathState() == JUST_DIED && !HasAura(8326) && !HasAura(9036) )
+
+	if( isDead() )
 	{
+		if ( myCorpse!=NULL ) { 
+			// cebernic: tempfix. This send a counter for player with just logging in.
+			// TODO: counter will be follow with death time.
+			myCorpse->ResetDeathClock();
+			WorldPacket SendCounter( SMSG_CORPSE_RECLAIM_DELAY, 4 );
+			SendCounter << (uint32)( CORPSE_RECLAIM_TIME_MS );
+			GetSession()->SendPacket( &SendCounter );
+		}
 		//RepopRequestedPlayer();
-		sEventMgr.AddEvent(this, &Player::RepopRequestedPlayer, EVENT_PLAYER_CHECKFORCHEATS, 2000, 1,EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
+		//sEventMgr.AddEvent(this, &Player::RepopRequestedPlayer, EVENT_PLAYER_CHECKFORCHEATS, 2000, 1,EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
 	}
 
 	if(iActivePet)
-		SpawnPet(iActivePet);	   // only spawn if >0
+		SpawnPet(iActivePet);	   // cebernic in OA: only spawn if >0
 
 
 	// useless logon spell

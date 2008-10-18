@@ -909,18 +909,13 @@ void WorldSession::HandleBugOpcode( WorldPacket & recv_data )
 
 void WorldSession::HandleCorpseReclaimOpcode(WorldPacket &recv_data)
 {
-	if(_player->isAlive())
-		return;
-
 	sLog.outDetail("WORLD: Received CMSG_RECLAIM_CORPSE");
 
 	uint64 guid;
 	recv_data >> guid;
-
+	if ( !guid ) return;
 	Corpse* pCorpse = objmgr.GetCorpse( (uint32)guid );
-
-	if( pCorpse == NULL )
-		return;
+	if( pCorpse == NULL )	return;
 
 	// Check that we're reviving from a corpse, and that corpse is associated with us.
 	if( pCorpse->GetUInt32Value( CORPSE_FIELD_OWNER ) != _player->GetLowGUID() && pCorpse->GetUInt32Value( CORPSE_FIELD_FLAGS ) == 5 )
@@ -941,7 +936,8 @@ void WorldSession::HandleCorpseReclaimOpcode(WorldPacket &recv_data)
 	}
 
 	// Check death clock before resurrect they must wait for release to complete
-	if( pCorpse->GetDeathClock() + CORPSE_RECLAIM_TIME > time( NULL ) )
+	// cebernic: changes for better logic
+	if( time(NULL) < pCorpse->GetDeathClock() + CORPSE_RECLAIM_TIME )
 	{
 		WorldPacket data( SMSG_RESURRECT_FAILED, 4 );
 		data << uint32(1);
