@@ -1214,17 +1214,17 @@ public:
     void write ( WorldPacket & data);
 
     SpellCastTargets() : m_targetMask(0), m_targetMaskExtended(0), m_unitTarget(0), m_itemTarget(0), m_srcX(0), m_srcY(0), m_srcZ(0),
-        m_destX(0), m_destY(0), m_destZ(0), m_strTarget("") {}
+        m_destX(0), m_destY(0), m_destZ(0), m_strTarget(NULL) {}
 
     SpellCastTargets(uint16 TargetMask, uint64 unitTarget, uint64 itemTarget, float srcX, float srcY,
         float srcZ, float destX, float destY, float destZ) : m_targetMask(TargetMask), m_targetMaskExtended(0), m_unitTarget(unitTarget),
-        m_itemTarget(itemTarget), m_srcX(srcX), m_srcY(srcY), m_srcZ(srcZ), m_destX(destX), m_destY(destY), m_destZ(destZ), m_strTarget("") {}
+        m_itemTarget(itemTarget), m_srcX(srcX), m_srcY(srcY), m_srcZ(srcZ), m_destX(destX), m_destY(destY), m_destZ(destZ), m_strTarget(NULL) {}
 
     SpellCastTargets(uint64 unitTarget) : m_targetMask(0x2), m_targetMaskExtended(0), m_unitTarget(unitTarget), m_itemTarget(0),
-        m_srcX(0), m_srcY(0), m_srcZ(0), m_destX(0), m_destY(0), m_destZ(0), m_strTarget("") {}
+        m_srcX(0), m_srcY(0), m_srcZ(0), m_destX(0), m_destY(0), m_destZ(0), m_strTarget(NULL) {}
 
     SpellCastTargets(WorldPacket & data, uint64 caster) : m_targetMask(0), m_targetMaskExtended(0), m_unitTarget(0), m_itemTarget(0), m_srcX(0), m_srcY(0), m_srcZ(0),
-        m_destX(0), m_destY(0), m_destZ(0), m_strTarget("")
+        m_destX(0), m_destY(0), m_destZ(0), m_strTarget(NULL)
     {
         read(data, caster);
     }
@@ -1242,7 +1242,7 @@ public:
         m_destY = target.m_destY;
         m_destZ = target.m_destZ;
 
-        m_strTarget = target.m_strTarget;
+		m_strTarget = target.m_strTarget ? strdup(target.m_strTarget) : NULL;
 
         m_targetMask = target.m_targetMask;
 	m_targetMaskExtended = target.m_targetMaskExtended;
@@ -1256,7 +1256,7 @@ public:
     uint64 m_itemTarget;
     float m_srcX, m_srcY, m_srcZ;
     float m_destX, m_destY, m_destZ;
-    std::string m_strTarget;
+    char* m_strTarget;
 
 };
 
