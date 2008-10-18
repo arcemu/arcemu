@@ -1037,7 +1037,7 @@ void Aura::EventUpdateAA(float r)
 	// Add the aura to the caster, if he's in range of course.
 	if(plr->GetDistanceSq(u_caster) < r)
 	{
-		if(!plr->HasActiveAura(m_spellProto->Id))
+		if(!plr->HasAura(m_spellProto->Id))
 		{
 			Aura * aura = NULL;
 			for(i = 0; i < m_modcount; ++i)
@@ -1073,7 +1073,7 @@ void Aura::EventUpdateAA(float r)
 		 )
 	{
 		Unit *summon = plr->GetSummon();
-		if( summon && summon->isAlive() && summon->GetDistanceSq(u_caster) <= r && !summon->HasActiveAura( m_spellProto->Id ))
+		if( summon && summon->isAlive() && summon->GetDistanceSq(u_caster) <= r && !summon->HasAura( m_spellProto->Id ))
 		{
 			Aura * aura = AuraPool.PooledNew();
 			aura->Init(m_spellProto, -1, u_caster, summon );
@@ -1097,7 +1097,7 @@ void Aura::EventUpdateAA(float r)
 			if((*itr) && (*itr)->m_loggedInPlayer && (*itr)->m_loggedInPlayer != plr && (*itr)->m_loggedInPlayer->GetDistanceSq(u_caster) <= r)
 			{
 				// Add the aura if they don't have it.
-				if(!(*itr)->m_loggedInPlayer->HasActiveAura(m_spellProto->Id) &&
+				if(!(*itr)->m_loggedInPlayer->HasAura(m_spellProto->Id) &&
 					(*itr)->m_loggedInPlayer->GetInstanceID() == plr->GetInstanceID() && (*itr)->m_loggedInPlayer->isAlive())
 				{
 					Aura * aura = NULL;

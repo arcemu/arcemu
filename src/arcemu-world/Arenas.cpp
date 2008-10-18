@@ -491,8 +491,7 @@ void Arena::Finish()
 
 			for (int x=0; x<hashmap_length(m_players2[i]); x++) {
 				uint32 key;
-
-				if (MAP_OK == hashmap_get_index(m_players2[i], x, (int*)&key, NULL)) {
+				if (MAP_OK == hashmap_get_index(m_players2[i], x, (int*)&key, (any_t*) NULL)) {
 					PlayerInfo * info = objmgr.GetPlayerInfo(key);
 					if (info) {
 						ArenaTeamMember * tp = m_teams[i]->GetMember(info);

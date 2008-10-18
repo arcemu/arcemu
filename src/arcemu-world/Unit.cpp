@@ -3945,7 +3945,7 @@ void Unit::Strike( Unit* pVictim, uint32 weapon_damage_type, SpellEntry* ability
 		val = 2.5f * dmg.full_damage / c;
 
 		// Berserker Rage Effect + 35% rage when taking damage by Aziel
-		if ( pVictim->HasActiveAura(18499) )
+		if ( pVictim->HasAura(18499) )
 			val *= 1.35f;
 
 		val *= 10;
@@ -4368,18 +4368,30 @@ void Unit::AddAura(Aura *aur)
 
 bool Unit::RemoveAura(Aura *aur)
 {
+	if ( aur==NULL ) return false;
 	aur->Remove();
 	return true;
 }
 
-bool Unit::RemoveAura(uint32 spellId)
-{//this can be speed up, if we know passive \pos neg
+bool Unit::RemoveAura(uint32 spellId) // cebernic: totally removes
+{
+	bool res = false;
 	for(uint32 x=MAX_TOTAL_AURAS_START;x<MAX_TOTAL_AURAS_END;x++)
 		if(m_auras[x] && m_auras[x]->GetSpellId()==spellId )
 		{
 			m_auras[x]->Remove();
-//			sLog.outDebug("removing aura %u from slot %u",spellId,x);
-			return true; // cebernic: who did this? Removeaura just once?....
+			res = true;
+		}
+	return res;
+}
+
+bool Unit::RemoveAuraFirst(uint32 spellId) // cebernic: just remove and return true
+{
+	for(uint32 x=MAX_TOTAL_AURAS_START;x<MAX_TOTAL_AURAS_END;x++)
+		if(m_auras[x] && m_auras[x]->GetSpellId()==spellId )
+		{
+			m_auras[x]->Remove();
+			return true;
 		}
 	return false;
 }
@@ -4454,6 +4466,23 @@ bool Unit::RemoveAurasByHeal()
 }
 
 bool Unit::RemoveAura(uint32 spellId, uint64 guid)
+{   
+	bool res = false;
+	for(uint32 x=MAX_TOTAL_AURAS_START;x<MAX_TOTAL_AURAS_END;x++)
+	{
+		if(m_auras[x])
+		{
+			if(m_auras[x]->GetSpellId()==spellId && m_auras[x]->m_casterGuid == guid)
+			{
+				m_auras[x]->Remove();
+				res = true;
+			}
+		}
+	}
+	return res;
+}
+
+bool Unit::RemoveAuraFirst(uint32 spellId, uint64 guid)
 {   
 	for(uint32 x=MAX_TOTAL_AURAS_START;x<MAX_TOTAL_AURAS_END;x++)
 	{
@@ -5373,18 +5402,18 @@ void Unit::UpdateSpeed()
 	}
 }
 
-bool Unit::HasActiveAura(uint32 spellid)
+bool Unit::HasBuff(uint32 spellid) // cebernic:it does not check passive auras & must be visible auras
 {
-	for(uint32 x=MAX_TOTAL_AURAS_START;x<MAX_TOTAL_AURAS_END;x++)
+	for(uint32 x=MAX_POSITIVE_AURAS_EXTEDED_START;x<MAX_POSITIVE_AURAS_EXTEDED_END;x++)
 		if(m_auras[x] && m_auras[x]->GetSpellId()==spellid)
 			return true;
 
 	return false;
 }
 
-bool Unit::HasActiveAura(uint32 spellid,uint64 guid)
+bool Unit::HasBuff(uint32 spellid,uint64 guid)
 {
-	for(uint32 x=MAX_TOTAL_AURAS_START;x<MAX_TOTAL_AURAS_END;x++)
+	for(uint32 x=MAX_POSITIVE_AURAS_EXTEDED_START;x<MAX_POSITIVE_AURAS_EXTEDED_END;x++)
 		if(m_auras[x] && m_auras[x]->GetSpellId()==spellid && m_auras[x]->m_casterGuid==guid)
 			return true;
 
@@ -6084,7 +6113,7 @@ void Unit::RemoveSoloAura(uint32 type)
 		case 1:// Polymorph
 		{
 			if(!polySpell) return;
-			if(HasActiveAura(polySpell))
+			if(HasAura(polySpell))
 				RemoveAura(polySpell);
 		}break;
 /*		case 2:// Sap

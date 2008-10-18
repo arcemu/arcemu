@@ -807,8 +807,8 @@ public:
 
 	bool HasAura(uint32 spellid); //this checks passive auras too
 	bool HasAuraVisual(uint32 visualid);//not spell id!!!
-	bool HasActiveAura(uint32 spelllid); //this does not check passive auras
-	bool HasActiveAura(uint32 spelllid, uint64 guid);//this does not check passive auras
+	bool HasBuff(uint32 spelllid); //this does not check passive auras & it was visible auras
+	bool HasBuff(uint32 spelllid, uint64 guid);//this does not check passive auras & it was visible auras
 	bool HasVisialPosAurasOfNameHashWithCaster(uint32 namehash, Unit * caster);
 	
 	void GiveGroupXP(Unit *pVictim, Player *PlayerInGroup);
@@ -829,6 +829,8 @@ public:
 	bool RemoveAura(Aura *aur);
 	bool RemoveAura(uint32 spellId);
 	bool RemoveAura(uint32 spellId,uint64 guid);
+	bool RemoveAuraFirst(uint32 spellId);
+	bool RemoveAuraFirst(uint32 spellId,uint64 guid);
 	bool RemoveAuraByNameHash(uint32 namehash);//required to remove weaker instances of a spell
 	bool RemoveAuras(uint32 * SpellIds);
 	bool RemoveAurasByHeal();

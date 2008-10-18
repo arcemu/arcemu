@@ -8798,7 +8798,7 @@ void Player::CompleteLoading()
 			setDeathState(CORPSE);
 		}
 	}
-	else if(getDeathState() == JUST_DIED && !HasActiveAura(8326) && !HasActiveAura(9036) )
+	else if(getDeathState() == JUST_DIED && !HasAura(8326) && !HasAura(9036) )
 	{
 		//RepopRequestedPlayer();
 		sEventMgr.AddEvent(this, &Player::RepopRequestedPlayer, EVENT_PLAYER_CHECKFORCHEATS, 2000, 1,EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
