@@ -880,6 +880,15 @@ void Aura::ApplyModifiers( bool apply )
 			sLog.outDebug( "WORLD: target=%u, Spell Aura id=%u (%s), SpellId=%u, i=%u, apply=%s, duration=%u, miscValue=%d, damage=%d",
 				m_target->GetLowGUID(),mod->m_type, SpellAuraNames[mod->m_type], m_spellProto->Id, mod->i, apply ? "true" : "false",GetDuration(),mod->m_miscValue,mod->m_amount);
 			(*this.*SpellAuraHandler[mod->m_type])(apply);
+			
+#ifdef GM_Z_DEBUG_DIRECTLY
+		  if( m_target->IsPlayer() && m_target->IsInWorld() && x==0) {
+  		  if ( static_cast< Player* >( m_target )->GetSession() && static_cast< Player* >( m_target )->GetSession()->CanUseCommand('z')  ) 
+				sChatHandler.BlueSystemMessage( static_cast< Player* >( m_target )->GetSession(), "[%sSystem%s] |rAura::ApplyModifiers: %s Target = %u, Spell Aura id = %u, SpellId = %u, modi=%u, apply = [%d], duration = %u, damage = %d, GiverGUID: %u.", MSG_COLOR_WHITE, MSG_COLOR_LIGHTBLUE, MSG_COLOR_SUBWHITE, 
+				m_target->GetLowGUID(),mod->m_type, m_spellProto->Id, mod->i, apply ,GetDuration(),mod->m_amount,m_casterGuid );
+  		}
+#endif
+			
 		}
 		else
 			sLog.outError("Unknown Aura id %d", (uint32)mod->m_type);
@@ -3610,6 +3619,19 @@ void Aura::SpellAuraPeriodicTriggerSpell(bool apply)
 		Unit *m_caster = GetUnitCaster();
 		if(!m_caster)
 			return;
+
+		if ( GetSpellProto()->Id == 23493 || GetSpellProto()->Id == 24379 ) 
+			// Cebernic: Restoration on battleground fixes(from p2wow's merged)
+			// it wasn't prefectly,just for tempfix
+		{
+			SetPositive();
+			sEventMgr.AddEvent(this, &Aura::EventPeriodicHealPct,10.0f,
+			EVENT_AURA_PERIODIC_HEALPERC,	GetSpellProto()->EffectAmplitude[mod->i],0,EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
+	
+			sEventMgr.AddEvent(this, &Aura::EventPeriodicManaPct,10.0f,
+			EVENT_AURA_PERIOCIC_MANA,	GetSpellProto()->EffectAmplitude[mod->i],0,EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
+			return;
+		}
 
 		if(m_caster->GetUInt64Value(UNIT_FIELD_CHANNEL_OBJECT))
 		{

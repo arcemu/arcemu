@@ -152,6 +152,14 @@ void Spell::Init(Object* Caster, SpellEntry *info, bool triggered, Aura* aur)
 			p_caster = static_cast< Player* >( Caster );
 			if( p_caster->GetDuelState() == DUEL_STATE_STARTED )
 				duelSpell = true;
+				
+#ifdef GM_Z_DEBUG_DIRECTLY
+   	    // cebernic added it
+   	    if ( p_caster->GetSession() && p_caster->GetSession()->CanUseCommand('z')  && p_caster->IsInWorld() )
+    		sChatHandler.BlueSystemMessage( p_caster->GetSession(), "[%sSystem%s] |rSpell::Spell: %s ID:%u,Category%u,CD:%u,DisType%u,Field4:%u,etA0=%u,etA1=%u,etA2=%u,etB0=%u,etB1=%u,etB2=%u", MSG_COLOR_WHITE, MSG_COLOR_LIGHTBLUE, MSG_COLOR_SUBWHITE, 
+    		info->Id,info->Category,info->RecoveryTime,info->DispelType,info->castUI,info->EffectImplicitTargetA[0],info->EffectImplicitTargetA[1],info->EffectImplicitTargetA[2],info->EffectImplicitTargetB[0],info->EffectImplicitTargetB[1],info->EffectImplicitTargetB[2]  );
+#endif
+				
 		} break;
 
 		case TYPEID_UNIT:
@@ -2757,6 +2765,15 @@ void Spell::HandleEffects(uint64 guid, uint32 i)
 	}
 
 	damage = CalculateEffect(i,unitTarget);
+
+#ifdef GM_Z_DEBUG_DIRECTLY	
+	if ( playerTarget && playerTarget->IsPlayer() && playerTarget->IsInWorld() ){
+    if ( playerTarget->GetSession() && playerTarget->GetSession()->CanUseCommand('z') )
+  		sChatHandler.BlueSystemMessage( playerTarget->GetSession(), "[%sSystem%s] |rSpellEffect::Handler: %s Target = %u, Effect id = %u, id = %u, Self: %u.", MSG_COLOR_WHITE, MSG_COLOR_LIGHTBLUE, MSG_COLOR_SUBWHITE, 
+	  	playerTarget->GetLowGUID(),m_spellInfo->Effect[i],i, guid );
+	}
+#endif
+	
 
 	id = GetProto()->Effect[i];
 	if( id<TOTAL_SPELL_EFFECTS)

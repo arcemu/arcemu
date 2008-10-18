@@ -1902,6 +1902,15 @@ void Spell::SpellEffectApplyAura(uint32 i)  // Apply Aura
 		}
 	}
 	
+#ifdef GM_Z_DEBUG_DIRECTLY
+	else {
+	  if( unitTarget->IsPlayer() && unitTarget->IsInWorld() && static_cast< Player* >( unitTarget )->GetSession() && static_cast< Player* >( unitTarget )->GetSession()->CanUseCommand('z')  ) {
+  		sChatHandler.BlueSystemMessage( static_cast< Player* >( unitTarget  )->GetSession(), "[%sSystem%s] |rSpell::SpellEffectApplyAura: %s EffectApplyAuraName [%u] .", MSG_COLOR_WHITE, MSG_COLOR_LIGHTBLUE, MSG_COLOR_SUBWHITE, 
+    i );
+    }
+	}
+#endif
+	
 	// avoid map corruption.
 	if(unitTarget->GetInstanceID()!=m_caster->GetInstanceID())
 		return;

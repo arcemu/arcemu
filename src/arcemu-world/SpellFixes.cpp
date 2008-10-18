@@ -6044,62 +6044,78 @@ void ApplyNormalFixes()
 
 		// Insert boss spell fixes here
 		
-			// Dark Glare
-			sp = dbcSpell.LookupEntryForced( 26029 );
-			if( sp != NULL )
-				sp->cone_width = 15.0f; // 15 degree cone
+		// Dark Glare
+		sp = dbcSpell.LookupEntryForced( 26029 );
+		if( sp != NULL )
+			sp->cone_width = 15.0f; // 15 degree cone
 
-			// Drain Power (Malacrass) // bugged - the charges fade even when refreshed with new ones. This makes them everlasting.
-			sp = dbcSpell.LookupEntryForced( 44131 );
- 			if( sp != NULL )
-				sp->DurationIndex = 21;
-			sp = dbcSpell.LookupEntryForced( 44132 );
-			if( sp != NULL )
-				sp->DurationIndex = 21;
+		// Drain Power (Malacrass) // bugged - the charges fade even when refreshed with new ones. This makes them everlasting.
+		sp = dbcSpell.LookupEntryForced( 44131 );
+ 		if( sp != NULL )
+			sp->DurationIndex = 21;
+		sp = dbcSpell.LookupEntryForced( 44132 );
+		if( sp != NULL )
+			sp->DurationIndex = 21;
 
-			// Zul'jin spell, proc from Creeping Paralysis
-			sp = dbcSpell.LookupEntryForced( 43437 );
- 			if( sp != NULL )
-			{
-				sp->EffectImplicitTargetA[0] = 0;
-				sp->EffectImplicitTargetA[1] = 0;
-			}
+		// Zul'jin spell, proc from Creeping Paralysis
+		sp = dbcSpell.LookupEntryForced( 43437 );
+ 		if( sp != NULL )
+		{
+			sp->EffectImplicitTargetA[0] = 0;
+			sp->EffectImplicitTargetA[1] = 0;
+		}
 
-	// Recently Dropped Flag
-	sp = dbcSpell.LookupEntryForced( 42792 );
-	if (sp != NULL)
-		sp->c_is_flags |= SPELL_FLAG_IS_FORCEDDEBUFF;
+		// Recently Dropped Flag
+		sp = dbcSpell.LookupEntryForced( 42792 );
+		if (sp != NULL)
+			sp->c_is_flags |= SPELL_FLAG_IS_FORCEDDEBUFF;
 		
+		/*
+		cebernic 's fixes
+		*/
+		//resurrection sickness
+		sp = dbcSpell.LookupEntryForced( 15007 );
+		if( sp != NULL )
+		{
+			sp->c_is_flags |= SPELL_FLAG_IS_FORCEDDEBUFF;
+		}
+		// ghost ,NIGHTELF ghost & sprit
+		sp = dbcSpell.LookupEntryForced( 20584 );
+		if( sp != NULL )
+		{
+			sp->c_is_flags |= SPELL_FLAG_IS_FORCEDDEBUFF;
+		}
+	
+		sp = dbcSpell.LookupEntryForced( 9036 );
+		if( sp != NULL )
+		{
+			sp->c_is_flags |= SPELL_FLAG_IS_FORCEDDEBUFF;
+		}
+	
+		sp = dbcSpell.LookupEntryForced( 8326 );
+		if( sp != NULL )
+		{
+			sp->c_is_flags |= SPELL_FLAG_IS_FORCEDDEBUFF;
+		}
+	
+		sp = dbcSpell.LookupEntryForced( 26013 ); //bg deserter
+		if( sp != NULL )
+		{
+			sp->c_is_flags |= SPELL_FLAG_IS_FORCEDDEBUFF;
+		}
 		
-	//resurrection sickness
-	sp = dbcSpell.LookupEntryForced( 15007 );
-	if( sp != NULL )
-	{
-		sp->c_is_flags |= SPELL_FLAG_IS_FORCEDDEBUFF;
-	}
-	// ghost ,NIGHTELF ghost & sprit
-	sp = dbcSpell.LookupEntryForced( 20584 );
-	if( sp != NULL )
-	{
-		sp->c_is_flags |= SPELL_FLAG_IS_FORCEDDEBUFF;
-	}
+		sp = dbcSpell.LookupEntryForced( 24379 ); //bg Restoration
+		if( sp != NULL )
+		{
+			sp->EffectTriggerSpell[0] = 23493;
+			sp->c_is_flags = SPELL_FLAG_IS_FORCEDBUFF;
+		}
 
-	sp = dbcSpell.LookupEntryForced( 9036 );
-	if( sp != NULL )
-	{
-		sp->c_is_flags |= SPELL_FLAG_IS_FORCEDDEBUFF;
-	}
-
-	sp = dbcSpell.LookupEntryForced( 8326 );
-	if( sp != NULL )
-	{
-		sp->c_is_flags |= SPELL_FLAG_IS_FORCEDDEBUFF;
-	}
-
-	sp = dbcSpell.LookupEntryForced( 26013 ); //bg
-	if( sp != NULL )
-	{
-		sp->c_is_flags |= SPELL_FLAG_IS_FORCEDDEBUFF;
-	}
+		sp = dbcSpell.LookupEntryForced( 23493 ); //bg Restoration
+		if( sp != NULL )
+		{
+			sp->EffectTriggerSpell[0] = 24379;
+			sp->c_is_flags = SPELL_FLAG_IS_FORCEDBUFF;
+		}
 		
 }
