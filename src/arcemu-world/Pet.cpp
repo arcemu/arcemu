@@ -1904,8 +1904,10 @@ void Pet::HandleAutoCastEvent( AutoCastEvents Type )
 		it2 = itr++;
 		sp = *it2;
 
-		if( sp->spell == NULL )
+		if( sp->spell == NULL || sp->autocast_type != Type ) {
+			sLog.outError("Found corrupted spell at m_autoCastSpells, skipping");
 			continue;
+		}
 
 		if( sp->spelltargetType == TTYPE_OWNER )
 		{
