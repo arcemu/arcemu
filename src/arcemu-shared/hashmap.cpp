@@ -306,7 +306,7 @@ map_t hashmap64_new() {
 /*
  * Hashing function for a 64bit value
  */
-unsigned int hashmap64_hash_int(hashmap_map64 * m, int64 key){
+unsigned int hashmap64_hash_int(hashmap_map64 * m, uint64 key){
 	key = (~key) + (key << 18);
 	key = key ^ (key >> 31);
 	key = key * 21;
@@ -314,7 +314,7 @@ unsigned int hashmap64_hash_int(hashmap_map64 * m, int64 key){
 	key = key + (key << 6);
 	key = key ^ (key >> 22);
 
-	return (int)key % m->table_size;
+	return key % m->table_size;
 }
 
 /*
