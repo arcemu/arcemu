@@ -26,7 +26,7 @@
 extern pSpellEffect SpellEffectsHandler[TOTAL_SPELL_EFFECTS];
 extern pSpellTarget SpellTargetHandler[EFF_TARGET_LIST_LENGTH_MARKER];
 
-extern char* SpellEffectNames[TOTAL_SPELL_EFFECTS];
+extern const char* SpellEffectNames[TOTAL_SPELL_EFFECTS];
 
 enum SpellTargetSpecification
 {

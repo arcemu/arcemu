@@ -299,7 +299,7 @@ map_t hashmap64_new() {
 	return m;
 	err:
 		if (m)
-			hashmap_free(m);
+			hashmap64_free(m);
 		return NULL;
 }
 
@@ -373,7 +373,7 @@ int hashmap64_rehash(map_t in){
 
 	/* Rehash the elements */
 	for(i = 0; i < old_size; i++){
-		int status = hashmap_put(m, curr[i].key, curr[i].data);
+		int status = hashmap64_put(m, curr[i].key, curr[i].data);
 		if (status != MAP_OK)
 			return status;
 	}
@@ -394,12 +394,12 @@ int hashmap64_put(map_t in, int64 key, any_t value){
 	m = (hashmap_map64 *) in;
 
 	/* Find a place to put our value */
-	index = hashmap_hash(in, key);
+	index = hashmap64_hash(in, key);
 	while(index == MAP_FULL){
-		if (hashmap_rehash(in) == MAP_OMEM) {
+		if (hashmap64_rehash(in) == MAP_OMEM) {
 			return MAP_OMEM;
 		}
-		index = hashmap_hash(in, key);
+		index = hashmap64_hash(in, key);
 	}
 
 	/* Set the data */
@@ -457,7 +457,7 @@ int hashmap64_get_index(map_t in, int index, int64 *key, any_t *arg) {
 	m = (hashmap_map64 *) in;
 
 	/* Index higher that length? */
-	if (index > hashmap_length(m))
+	if (index > hashmap64_length(m))
 		return MAP_MISSING;
 
 	for(i = 0, j = 0; i< m->table_size; i++)
