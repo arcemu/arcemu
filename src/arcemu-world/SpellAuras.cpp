@@ -275,7 +275,7 @@ pSpellAura SpellAuraHandler[TOTAL_SPELL_AURAS]={
 		&Aura::SpellAuraNULL,//251
 };
 
-char* SpellAuraNames[TOTAL_SPELL_AURAS] = {
+const char* SpellAuraNames[TOTAL_SPELL_AURAS] = {
     "NONE",												//   0 None
     "BIND_SIGHT",										//   1 Bind Sight
     "MOD_POSSESS",										//   2 Mod Possess

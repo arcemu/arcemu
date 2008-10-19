@@ -303,7 +303,7 @@ void Creature::generateLoot()
 
 				// Master Loot Stuff - Let the rest of the raid know what dropped..
 				//TODO: Shouldn't we move this array to a global position? Or maybe it allready exists^^ (VirtualAngel) --- I can see (dead) talking pigs...^^
-				char* itemColours[7] = { "9d9d9d", "ffffff", "1eff00", "0070dd", "a335ee", "ff8000", "e6cc80" };
+				const char* itemColours[7] = { "9d9d9d", "ffffff", "1eff00", "0070dd", "a335ee", "ff8000", "e6cc80" };
 				char buffer[256];
 				sprintf(buffer, "\174cff%s\174Hitem:%u:0:0:0:0:0:0:0\174h[%s]\174h\174r", itemColours[itr->item.itemproto->Quality], itr->item.itemproto->ItemId, itr->item.itemproto->Name1);
 				this->SendChatMessage(CHAT_MSG_MONSTER_SAY, LANG_UNIVERSAL, buffer);

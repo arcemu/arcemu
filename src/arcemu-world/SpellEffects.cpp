@@ -177,7 +177,7 @@ pSpellEffect SpellEffectsHandler[TOTAL_SPELL_EFFECTS]={
 		&Spell::SpellEffectNULL, // SPELL_EFFECT_TAME_CREATURE - 153 // http://thottbot.com/s46686 , http://thottbot.com/s46716 , http://thottbot.com/s46717, http://thottbot.com/s46718 ...  // spelleffect summon pet ??
 };
 
-char* SpellEffectNames[TOTAL_SPELL_EFFECTS] = {
+const char* SpellEffectNames[TOTAL_SPELL_EFFECTS] = {
 	"NULL",
 	"INSTANT_KILL",              //    1
 	"SCHOOL_DAMAGE",             //    2

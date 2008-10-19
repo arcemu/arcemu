@@ -238,7 +238,7 @@ void Spell::Init(Object* Caster, SpellEntry *info, bool triggered, Aura* aur)
 	m_reflectedParent = NULL;
 	m_isCasting = false;
 
-	UniqueTargets.clear();
+	UniqueTargets = hashmap64_new();
 	ModeratedTargets.clear();
 	m_targetUnits[0].clear();
 	m_targetUnits[1].clear();
@@ -249,6 +249,11 @@ Spell::~Spell()
 {
 		for(uint32 x=0;x<3;x++)
 			m_targetUnits[x].clear();
+
+	if (UniqueTargets) {
+		hashmap64_free(UniqueTargets);
+		UniqueTargets = NULL;
+	}
 }
 
 void Spell::Virtual_Destructor()
@@ -1324,6 +1329,8 @@ void Spell::AddStartCooldown()
 
 void Spell::cast(bool check)
 {
+	int j;
+
 	if( duelSpell && (
 		( p_caster != NULL && p_caster->GetDuelState() != DUEL_STATE_STARTED ) ||
 		( u_caster != NULL && u_caster->IsPet() && static_cast< Pet* >( u_caster )->GetPetOwner() && static_cast< Pet* >( u_caster )->GetPetOwner()->GetDuelState() != DUEL_STATE_STARTED ) ) )
@@ -1605,17 +1612,18 @@ void Spell::cast(bool check)
 
 			if(!IsReflected() && GetCanReflect() && m_caster->IsInWorld())
 			{
-				for(i= UniqueTargets.begin();i != UniqueTargets.end();i++)
-				{
-					Unit *Target = m_caster->GetMapMgr()->GetUnit(*i);
-					if(Target)
-					{
-					   SetReflected(Reflect(Target));
-					}
+				for(j=0; j<hashmap64_length(UniqueTargets); j++) {
+					uint64 guid;
+					if (hashmap64_get_index(UniqueTargets, j, (int64*)&guid, NULL) == MAP_OK) {
+						Unit *Target = m_caster->GetMapMgr()->GetUnit(guid);
+						if(Target) {
+						   SetReflected(Reflect(Target));
+						}
 
-					// if the spell is reflected
-					if(IsReflected())
-						break;
+						// if the spell is reflected
+						if(IsReflected())
+							break;
+					}
 				}
 			}
 			else
@@ -1667,29 +1675,33 @@ void Spell::cast(bool check)
 				{
 					hadEffect = true; // spell has had an effect (for item removal & possibly other things)
 
-					for(i= UniqueTargets.begin();i != UniqueTargets.end();i++)
-					{
-						HandleAddAura((*i));
+					for(j=0; j<hashmap64_length(UniqueTargets); j++) {
+						uint64 guid;
+						if (hashmap64_get_index(UniqueTargets, j, (int64*)&guid, NULL) == MAP_OK) {
+							HandleAddAura(guid);
+						}
 					}
 				}
 				// spells that proc on spell cast, some talents
 				if(p_caster && p_caster->IsInWorld())
 				{
-					for(i= UniqueTargets.begin();i != UniqueTargets.end();i++)
-					{
-						Unit * Target = p_caster->GetMapMgr()->GetUnit((*i));
+					for(j=0; j<hashmap64_length(UniqueTargets); j++) {
+						uint64 guid;
+						if (hashmap64_get_index(UniqueTargets, j, (int64*)&guid, NULL) == MAP_OK) {
+							Unit * Target = p_caster->GetMapMgr()->GetUnit(guid);
 
-						if(!Target)
-							continue; //we already made this check, so why make it again ?
+							if(!Target)
+								continue; //we already made this check, so why make it again ?
 
-						if(!m_triggeredSpell || GetProto()->NameHash == SPELL_HASH_DEEP_WOUND )//Deep Wounds may trigger Blood Frenzy
-						{
-							p_caster->HandleProc(PROC_ON_CAST_SPECIFIC_SPELL | PROC_ON_CAST_SPELL,Target, GetProto());
-							Target->HandleProc(PROC_ON_SPELL_LAND_VICTIM,u_caster,GetProto());
-							p_caster->m_procCounter = 0; //this is required for to be able to count the depth of procs (though i have no idea where/why we use proc on proc)
+							if(!m_triggeredSpell || GetProto()->NameHash == SPELL_HASH_DEEP_WOUND )//Deep Wounds may trigger Blood Frenzy
+							{
+								p_caster->HandleProc(PROC_ON_CAST_SPECIFIC_SPELL | PROC_ON_CAST_SPELL,Target, GetProto());
+								Target->HandleProc(PROC_ON_SPELL_LAND_VICTIM,u_caster,GetProto());
+								p_caster->m_procCounter = 0; //this is required for to be able to count the depth of procs (though i have no idea where/why we use proc on proc)
+							}
+
+							Target->RemoveFlag(UNIT_FIELD_AURASTATE,GetProto()->TargetAuraState);
 						}
-
-						Target->RemoveFlag(UNIT_FIELD_AURASTATE,GetProto()->TargetAuraState);
 					}
 				}
 			}
@@ -2173,7 +2185,9 @@ enum SpellGoFlags
 void Spell::SendSpellGo()
 {
 	// Fill UniqueTargets
-	TargetsList::iterator i, j;
+	TargetsList::iterator i;
+	int j;
+
 	for( uint32 x = 0; x < 3; x++ )
 	{
 		if( GetProto()->Effect[x] )
@@ -2181,20 +2195,22 @@ void Spell::SendSpellGo()
 			bool add = true;
 			for( i = m_targetUnits[x].begin(); i != m_targetUnits[x].end(); i++ )
 			{
+				if (*i == 0) continue;
+
 				add = true;
-				for( j = UniqueTargets.begin(); j != UniqueTargets.end(); j++ )
-				{
-					if( (*j) == (*i) )
-					{
-						add = false;
-						break;
+				for (j=0; j<hashmap64_length(UniqueTargets); j++) {
+					uint64 guid;
+					if (hashmap64_get_index(UniqueTargets, j, (int64*)&guid, NULL) == MAP_OK) {
+						if (guid == (*i)) {
+							add = false;
+							break;
+						}
 					}
 				}
-				if( add && (*i) != 0 )
-					UniqueTargets.push_back( (*i) );
-				//TargetsList::iterator itr = std::unique(m_targetUnits[x].begin(), m_targetUnits[x].end());
-				//UniqueTargets.insert(UniqueTargets.begin(),));
-				//UniqueTargets.insert(UniqueTargets.begin(), itr);
+
+				if (add) {
+					hashmap64_put(UniqueTargets, *i, NULL);
+				}
 			}
 		}
 	}
@@ -2234,7 +2250,7 @@ void Spell::SendSpellGo()
 	data << GetProto()->Id;
 	data << flags;
 	data << getMSTime();
-	data << (uint8)(UniqueTargets.size()); //number of hits
+	data << (uint8)(hashmap64_length(UniqueTargets)); //number of hits
 
 	writeSpellGoTargets( &data );
 
@@ -2285,11 +2301,14 @@ void Spell::SendSpellGo()
 
 void Spell::writeSpellGoTargets( WorldPacket * data )
 {
-	TargetsList::iterator i;
-	for ( i = UniqueTargets.begin(); i != UniqueTargets.end(); i++ )
-	{
-		SendCastSuccess(*i);
-		*data << (*i);
+	int i;
+
+	for (i=0; i<hashmap64_length(UniqueTargets); i++) {
+		uint64 guid;
+		if (hashmap64_get_index(UniqueTargets, i, (int64*)&guid, NULL) == MAP_OK) {
+			SendCastSuccess(guid);
+			*data << (guid);
+		}
 	}
 }
 
