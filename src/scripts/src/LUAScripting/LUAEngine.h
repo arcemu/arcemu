@@ -124,12 +124,17 @@ class LuaEngine
 private:
 	lua_State * L;
 	Mutex m_Lock;
+  set<string> luaFiles;
+  set<string> luaBytecodeFiles;
 
 public:
 	LuaEngine();
 	~LuaEngine();
 
 	void LoadScripts();
+#ifdef WIN32
+	void ScriptLoadFromDir(char* Dirname);
+#endif
 	void Shutdown();
 	void Restart();
 	void RegisterCoreFunctions();
