@@ -9059,9 +9059,8 @@ bool Player::CanSignCharter(Charter * charter, Player * requester)
 void Player::SaveAuras(stringstream &ss)
 {
 	uint32 charges = 0, prevX = 0;
-	for ( uint32 x = MAX_POSITIVE_AURAS_EXTEDED_START; x < MAX_POSITIVE_AURAS_EXTEDED_END; x++ ) //Alice : Is better for me... and no problems on bonuses
 	//cebernic: save all auras why only just positive?
-	//for ( uint32 x = MAX_TOTAL_AURAS_START; x < MAX_TOTAL_AURAS_END; x++ ) //Alice : disabled for problems on bonus BH/BD/AP
+	for ( uint32 x = MAX_POSITIVE_AURAS_EXTEDED_START; x < MAX_NEGATIVE_AURAS_EXTEDED_END; x++ )
 	{
 		if ( m_auras[x] != NULL && m_auras[x]->GetTimeLeft() > 3000 )
 		{
