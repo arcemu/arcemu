@@ -56,13 +56,13 @@ function highlordbolvarf_OnLeaveCombat(pUnit, Event)
 end
 
 
-function highlordbolvarf_Died(Unit, event, player)
-Unit:RemoveEvents()
+function highlordbolvarf_OnDied(pUnit, event, player)
+pUnit:RemoveEvents()
 end
 
-RegisterUnitEvent(1748, 1, "highlordbolvarf_OnCombat")
-RegisterUnitEvent(1748, 2, "highlordbolvarf_OnLeaveCombat")
-RegisterUnitEvent(1748, 4, "highlordbolvarf_OnDied")
+RegisterpUnitEvent(1748, 1, "highlordbolvarf_OnCombat")
+RegisterpUnitEvent(1748, 2, "highlordbolvarf_OnLeaveCombat")
+RegisterpUnitEvent(1748, 4, "highlordbolvarf_OnDied")
 
 --Archbishop Benedictus--
 function arcbishbened_OnCombat(pUnit, Event)
@@ -115,13 +115,13 @@ function arcbishbened_OnLeaveCombat(pUnit, Event)
 end
 
 
-function arcbishbened_Died(Unit, event, player)
-Unit:RemoveEvents()
+function arcbishbened_OnDied(pUnit, event, player)
+pUnit:RemoveEvents()
 end
 
-RegisterUnitEvent(1284, 1, "arcbishbened_OnCombat")
-RegisterUnitEvent(1284, 2, "arcbishbened_OnLeaveCombat")
-RegisterUnitEvent(1284, 4, "arcbishbened_OnDied")
+RegisterpUnitEvent(1284, 1, "arcbishbened_OnCombat")
+RegisterpUnitEvent(1284, 2, "arcbishbened_OnLeaveCombat")
+RegisterpUnitEvent(1284, 4, "arcbishbened_OnDied")
 
 --Gelbin Mekkatorque--
 --little bugy--
@@ -162,14 +162,14 @@ function gelbin_OnLeaveCombat(pUnit, Event)
 	pUnit:RemoveEvents()	
 end
 
-function gelbin_Died(Unit, event, player)
-Unit:RemoveEvents()
+function gelbin_OnDied(pUnit, event, player)
+pUnit:RemoveEvents()
 end
 
-RegisterUnitEvent(7937, 1, "gelbin_OnCombat")
-RegisterUnitEvent(7937, 2, "gelbin_OnLeaveCombat")
-RegisterUnitEvent(7937, 3, "gelbin_OnKilledTarget")
-RegisterUnitEvent(7937, 4, "gelbin_OnDied")
+RegisterpUnitEvent(7937, 1, "gelbin_OnCombat")
+RegisterpUnitEvent(7937, 2, "gelbin_OnLeaveCombat")
+RegisterpUnitEvent(7937, 3, "gelbin_OnKilledTarget")
+RegisterpUnitEvent(7937, 4, "gelbin_OnDied")
 
 --Magni Bronzebeard--
 
@@ -179,7 +179,7 @@ function magni_OnCombat(pUnit, Event)
 	pUnit:RegisterEvent("knock",7500, 0)
 	pUnit:RegisterEvent("thunderclapp",20000, 0)
 	pUnit:RegisterEvent("summoniron",25000, 0)
-	if Unit:GetHealthPct() < 10 then
+	if pUnit:GetHealthPct() < 10 then
 	pUnit:SetHealth(17000)
 	end
 end
@@ -213,13 +213,13 @@ function magni_OnLeaveCombat(pUnit, Event)
 	pUnit:RemoveEvents()	
 end
 
-function magni_Died(Unit, event, player)
-Unit:RemoveEvents()
+function magni_OnDied(pUnit, event, player)
+pUnit:RemoveEvents()
 end
 
-RegisterUnitEvent(2784, 1, "magni_OnCombat")
-RegisterUnitEvent(2784, 2, "magni_OnLeaveCombat")
-RegisterUnitEvent(2784, 4, "magni_OnDied")
+RegisterpUnitEvent(2784, 1, "magni_OnCombat")
+RegisterpUnitEvent(2784, 2, "magni_OnLeaveCombat")
+RegisterpUnitEvent(2784, 4, "magni_OnDied")
 
 --Tyrande Whisperwind --
 
@@ -239,13 +239,13 @@ function tyrande_OnLeaveCombat(pUnit, Event)
 end
 
 
-function tyrande_Died(Unit, event, player)
-Unit:RemoveEvents()
+function tyrande_OnOnDied(pUnit, event, player)
+pUnit:RemoveEvents()
 end
 
-RegisterUnitEvent(7999, 1, "tyrande_OnCombat")
-RegisterUnitEvent(7999, 2, "tyrande_OnLeaveCombat")
-RegisterUnitEvent(7999, 4, "tyrande_OnDied")
+RegisterpUnitEvent(7999, 1, "tyrande_OnCombat")
+RegisterpUnitEvent(7999, 2, "tyrande_OnLeaveCombat")
+RegisterpUnitEvent(7999, 4, "tyrande_OnDied")
 
 --Prophet Velen--
 
@@ -276,10 +276,10 @@ function velen_OnLeaveCombat(pUnit, Event)
 end
 
 
-function velen_Died(Unit, event, player)
-Unit:RemoveEvents()
+function velen_OnOnDied(pUnit, event, player)
+pUnit:RemoveEvents()
 end
 
-RegisterUnitEvent(17468, 1, "velen_OnCombat")
-RegisterUnitEvent(17468, 2, "velen_OnLeaveCombat")
-RegisterUnitEvent(17468, 4, "velen_OnDied")
+RegisterpUnitEvent(17468, 1, "velen_OnCombat")
+RegisterpUnitEvent(17468, 2, "velen_OnLeaveCombat")
+RegisterpUnitEvent(17468, 4, "velen_OnDied")

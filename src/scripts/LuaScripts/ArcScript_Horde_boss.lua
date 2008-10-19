@@ -61,13 +61,13 @@ function thrall_OnLeaveCombat(pUnit, Event)
 end
 
 
-function thrall_Died(Unit, event, player)
-Unit:RemoveEvents()
+function thrall_OnDied(pUnit, event, player)
+pUnit:RemoveEvents()
 end
 
-RegisterUnitEvent(4949, 1, "thrall_OnCombat")
-RegisterUnitEvent(4949, 2, "thrall_OnLeaveCombat")
-RegisterUnitEvent(4949, 4, "thrall_OnDied")
+RegisterpUnitEvent(4949, 1, "thrall_OnCombat")
+RegisterpUnitEvent(4949, 2, "thrall_OnLeaveCombat")
+RegisterpUnitEvent(4949, 4, "thrall_OnDied")
 
 
 -- Vol'jin  ai_script--
@@ -80,13 +80,13 @@ function vojin_OnLeaveCombat(pUnit, Event)
 	pUnit:RemoveEvents()	
 end
 
-function vojin_Died(Unit, event, player)
-Unit:RemoveEvents()
+function vojin_OnDied(pUnit, event, player)
+pUnit:RemoveEvents()
 end
 
-RegisterUnitEvent(10540, 1, "vojin_OnCombat")
-RegisterUnitEvent(10540, 2, "vojin_OnLeaveCombat")
-RegisterUnitEvent(10540, 4, "vojin_OnDied")
+RegisterpUnitEvent(10540, 1, "vojin_OnCombat")
+RegisterpUnitEvent(10540, 2, "vojin_OnLeaveCombat")
+RegisterpUnitEvent(10540, 4, "vojin_OnDied")
 
 -- Lady Sylvanas Windrunner  ai_script--
 
@@ -123,13 +123,13 @@ function ladyswindr_OnLeaveCombat(pUnit, Event)
 	pUnit:RemoveEvents()	
 end
 
-function ladyswindr_Died(Unit, event, player)
-Unit:RemoveEvents()
+function ladyswindr_OnDied(pUnit, event, player)
+pUnit:RemoveEvents()
 end
 
-RegisterUnitEvent(10181, 1, "ladyswindr_OnCombat")
-RegisterUnitEvent(10181, 2, "ladyswindr_OnLeaveCombat")
-RegisterUnitEvent(10181, 4, "ladyswindr_OnDied")
+RegisterpUnitEvent(10181, 1, "ladyswindr_OnCombat")
+RegisterpUnitEvent(10181, 2, "ladyswindr_OnLeaveCombat")
+RegisterpUnitEvent(10181, 4, "ladyswindr_OnDied")
 
 --Varimathras--
 function Varimathras_OnCombat(pUnit, Event)
@@ -154,13 +154,13 @@ function Varimathras_OnLeaveCombat(pUnit, Event)
 	pUnit:RemoveEvents()	
 end
 
-function Varimathras_Died(Unit, event, player)
-Unit:RemoveEvents()
+function Varimathras_OnDied(pUnit, event, player)
+pUnit:RemoveEvents()
 end
 
-RegisterUnitEvent(2425, 1, "Varimathras_OnCombat")
-RegisterUnitEvent(2425, 2, "Varimathras_OnLeaveCombat")
-RegisterUnitEvent(2425, 4, "Varimathras_OnDied")
+RegisterpUnitEvent(2425, 1, "Varimathras_OnCombat")
+RegisterpUnitEvent(2425, 2, "Varimathras_OnLeaveCombat")
+RegisterpUnitEvent(2425, 4, "Varimathras_OnDied")
 
 
 --Cairne Bloodhoof --
@@ -210,13 +210,13 @@ function cairblood_OnLeaveCombat(pUnit, Event)
 end
 
 
-function cairblood_Died(Unit, event, player)
-Unit:RemoveEvents()
+function cairblood_OnDied(pUnit, event, player)
+pUnit:RemoveEvents()
 end
 
-RegisterUnitEvent(3057, 1, "cairblood_OnCombat")
-RegisterUnitEvent(3057, 2, "cairblood_OnLeaveCombat")
-RegisterUnitEvent(3057, 4, "cairblood_OnDied")
+RegisterpUnitEvent(3057, 1, "cairblood_OnCombat")
+RegisterpUnitEvent(3057, 2, "cairblood_OnLeaveCombat")
+RegisterpUnitEvent(3057, 4, "cairblood_OnDied")
 
 --Lor'themar Theron--
 
@@ -254,10 +254,10 @@ function lorthemar_OnLeaveCombat(pUnit, Event)
 end
 
 
-function lorthemar_Died(Unit, event, player)
-Unit:RemoveEvents()
+function lorthemar_OnDied(pUnit, event, player)
+pUnit:RemoveEvents()
 end
 
-RegisterUnitEvent(16802, 1, "lorthemar_OnCombat")
-RegisterUnitEvent(16802, 2, "lorthemar_OnLeaveCombat")
-RegisterUnitEvent(16802, 4, "lorthemar_OnDied")
+RegisterpUnitEvent(16802, 1, "lorthemar_OnCombat")
+RegisterpUnitEvent(16802, 2, "lorthemar_OnLeaveCombat")
+RegisterpUnitEvent(16802, 4, "lorthemar_OnDied")

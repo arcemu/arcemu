@@ -55,15 +55,14 @@ function Tavarok_OnCombat(pUnit, Event)
 end
 
 function Tavarok_OnKilledTarget (pUnit, Event)
-	--pUnit:PlaySoundToSet()
+	
 end
 
 function Tavarok_OnLeaveCombat(pUnit, Event)
 	pUnit:RemoveEvents()	
 end
 
-function Tavarok_Died(pUnit, Event)
-	--pUnit:PlaySoundToSet()	
+function Tavarok_OnDied(pUnit, Event)
 	pUnit:RemoveEvents()
 end
 

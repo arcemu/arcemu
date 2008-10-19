@@ -51,13 +51,13 @@ function speak(pUnit, Event)
 	end	
 end
 
-function Pandemonius_Void_Blast(Unit, event, miscunit, misc)
+function Pandemonius_Void_Blast(pUnit, event, miscpUnit, misc)
 	print "Pandemonius Void Blast"
-	Unit:FullCastSpellOnTarget(32325,Unit:GetClosestPlayer(0))
+	pUnit:FullCastSpellOnTarget(32325,pUnit:GetClosestPlayer(0))
 
 end
 
-function Pandemonius_Dark_Shell(Unit, event, miscunit, misc)
+function Pandemonius_Dark_Shell(pUnit, event, miscpUnit, misc)
 	print "Pandemonius Dark Shell"
 	pUnit:CastSpell(32358)
 end
@@ -79,13 +79,13 @@ function Pandemonius_OnLeaveCombat(pUnit, Event)
 end
 
 
-function Pandemonius_Died(Unit, event, player)
+function Pandemonius_OnDied(pUnit, event, player)
 pUnit:PlaySoundToSet(10566)
 pUnit:SendChatMessage(11, 0, "To the void... once... more.")
-Unit:RemoveEvents()
+pUnit:RemoveEvents()
 end
 
-RegisterUnitEvent(18341, 1, "Pandemonius_OnCombat")
-RegisterUnitEvent(18341, 2, "Pandemonius_OnLeaveCombat")
-RegisterUnitEvent(18341, 3, "Pandemonius_OnKilledTarget")
-RegisterUnitEvent(18341, 4, "Pandemonius_OnDied")
+RegisterpUnitEvent(18341, 1, "Pandemonius_OnCombat")
+RegisterpUnitEvent(18341, 2, "Pandemonius_OnLeaveCombat")
+RegisterpUnitEvent(18341, 3, "Pandemonius_OnKilledTarget")
+RegisterpUnitEvent(18341, 4, "Pandemonius_OnDied")

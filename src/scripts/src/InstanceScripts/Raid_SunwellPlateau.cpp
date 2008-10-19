@@ -1,7 +1,7 @@
 /*
  * ArcScript Scripts for Arcemu MMORPG Server
- * Copyright (C) 2008 Arcemu Team
- * Copyright (C) 2007 Moon++ <http://www.moonplusplus.com/>
+ * Copyright (C) 2005-2007 Arcemu Team 
+ * Copyright (C) 2007 Moon++ Team <http://www.moonplusplus.com/>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -384,16 +384,223 @@ class EntropiusAI : public ArcScriptBossAI
 };
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+#define CN_VOLATILE_FELFIRE_FIEND 25603
+#define CN_HAND_OF_THE_DECEIVER 25588
+#define FELFIRE_FISSION 45779
+#define SHADOW_BOLT_VOLLEY 45770
+#define SHADOW_INFUSION 45772
+#define ANVEENA_PRISON 46367
+#define FELFIRE_PORTAL 46875
+
+class HandOfTheDeceiverAI : public ArcScriptBossAI
+{
+    ArcScript_FACTORY_FUNCTION(HandOfTheDeceiverAI, ArcScriptBossAI);
+	HandOfTheDeceiverAI(Creature* pCreature) : ArcScriptBossAI(pCreature)
+	{
+		AddSpell(FELFIRE_PORTAL, Target_RandomPlayer, 40, 0, 10, 0, 30);
+		AddSpell(SHADOW_BOLT_VOLLEY, Target_Current, 60, 0, 8, 0, 30);
+	}
+
+	void OnCombatStart(Unit* mTarget)
+    {
+		ParentClass::OnCombatStart(mTarget);
+    }
+
+	void OnLoad()
+	{
+		ParentClass::OnLoad();
+	}
+
+	void AIUpdate()
+	{
+		if(GetHealthPercent()<=25)
+		{
+			ApplyAura(SHADOW_INFUSION);
+		}
+		ParentClass::AIUpdate();
+	}
+
+	void OnDied(Unit * mKiller)
+	{
+		Despawn(10000,0);
+		ParentClass::OnDied(mKiller);
+	}
+	
+};
+
+#define CN_SHIELD_ORB 25502
+#define SHIELD_ORB_SHADOWBOLT 45680
+
 //Kil'Jeaden
 #define CN_KILJAEDEN 25315
 
+//phose 2
+#define SOUL_FLAY 45442
+#define LEGION_LIGHTNING 45664
+#define FIRE_BLOOM 45641
+//phose 3
+#define SINISTER_REFLECTION 45892
+#define SHADOW_SPIKE 45885
+#define FLAME_DART_EXPLOSION 45746
+#define DARKNESS_OF_A_THOUSAND_SOULS 45657
+//phose 4
+#define CN_ARMAGEDDON 25735
+//phose 5
+#define SACRIFICE_OF_ANVEENA 46474
+
 class KilJaedenAI : public ArcScriptBossAI
 {
-    ArcScript_FACTORY_FUNCTION(KilJaedenAI, ArcScriptBossAI);
+	ArcScript_FACTORY_FUNCTION(KilJaedenAI, ArcScriptBossAI);
 	KilJaedenAI(Creature* pCreature) : ArcScriptBossAI(pCreature)
 	{
-		
+		AddPhaseSpell(1, AddSpell(LEGION_LIGHTNING, Target_RandomPlayer, 10, 2.0f, 3, 0, 35));
+		AddPhaseSpell(1, AddSpell(SOUL_FLAY, Target_RandomPlayer, 10, 2.5f, 3, 0, 35));
+		AddPhaseSpell(1, AddSpell(FIRE_BLOOM, Target_RandomPlayer, 10, 1.3f, 15, 0, 35));
+
 	}
+
+	void OnLoad()
+	{
+		HandOfTheDeceiver1 = _unit->GetMapMgr()->GetInterface()->SpawnCreature(CN_HAND_OF_THE_DECEIVER, 1678.00f, 610.00f, 28.00f, 0.00f, true, false, 0, 0);
+		HandOfTheDeceiver2 = _unit->GetMapMgr()->GetInterface()->SpawnCreature(CN_HAND_OF_THE_DECEIVER, 1712.00f, 604.00f, 28.00f, 0.00f, true, false, 0, 0);
+		HandOfTheDeceiver3 = _unit->GetMapMgr()->GetInterface()->SpawnCreature(CN_HAND_OF_THE_DECEIVER, 1684.00f, 651.00f, 28.00f, 0.00f, true, false, 0, 0);
+		HandOfTheDeceiver4 = _unit->GetMapMgr()->GetInterface()->SpawnCreature(CN_HAND_OF_THE_DECEIVER, 1720.00f, 642.00f, 28.00f, 0.00f, true, false, 0, 0);	
+		_unit->SetUInt64Value(UNIT_FIELD_FLAGS, ( false ) ? 0 : UNIT_FLAG_NOT_ATTACKABLE_9);
+		_unit->GetAIInterface()->SetAllowedToEnterCombat(false);
+		SetCanMove(false);
+		ShShadowbolt = dbcSpell.LookupEntry(SHIELD_ORB_SHADOWBOLT);
+		Darkness_explosion = dbcSpell.LookupEntry(29973);
+		Darkness = dbcSpell.LookupEntry(DARKNESS_OF_A_THOUSAND_SOULS);
+		ApplyAura(46367);
+		ApplyAura(46410);
+		StopMovement();
+		ParentClass::OnLoad();
+	}
+
+	void OnCombatStart(Unit* mTarget)
+	{
+		SetAllowMelee(false);
+		SetCanMove(false);
+		dtimmer = 1;
+		ParentClass::OnCombatStart(mTarget);
+	}
+
+	void OnDied(Unit * mKiller)
+	{
+		ParentClass::OnDied(mKiller);
+	}
+
+	void AIUpdate()
+	{
+		if ((HandOfTheDeceiver1 && HandOfTheDeceiver2 && HandOfTheDeceiver3 && HandOfTheDeceiver4) && (HandOfTheDeceiver1->isDead() || HandOfTheDeceiver2->isDead() || HandOfTheDeceiver3->isDead() || HandOfTheDeceiver4->isDead()) && (GetPhase() != 1))
+		{
+			RemoveAura(46410);
+		}
+
+		if ((HandOfTheDeceiver1 && HandOfTheDeceiver2 && HandOfTheDeceiver3 && HandOfTheDeceiver4) && (HandOfTheDeceiver1->isDead() && HandOfTheDeceiver2->isDead() && HandOfTheDeceiver3->isDead() && HandOfTheDeceiver4->isDead()) && (GetPhase() != 1) && (GetPhase() != 2))
+		{
+			SetPhase(1);
+			_unit->SetUInt64Value(UNIT_FIELD_FLAGS, ( true ) ? 0 : UNIT_FLAG_NOT_ATTACKABLE_9);
+			_unit->GetAIInterface()->SetAllowedToEnterCombat(true);
+			RemoveAura(46367);
+			ShieldOrb1 = _unit->GetMapMgr()->GetInterface()->SpawnGameObject(CN_SHIELD_ORB, 1678.00f, 610.00f, 28.00f, 0.00f, false, 0, 0);
+		}
+
+		if (ShieldOrb1)
+		{
+			//ShieldOrb1->CastSpell(ShShadowbolt);
+		}
+		if (ShieldOrb2)
+		{
+			//ShieldOrb2->CastSpell(ShShadowbolt);
+		}
+		if (ShieldOrb3)
+		{
+			//ShieldOrb3->CastSpell(ShShadowbolt);
+		}
+		if (ShieldOrb4)
+		{
+			//ShieldOrb4->CastSpell(ShShadowbolt);
+		}
+
+		switch (dtimmer)
+		{
+		case 100:
+			{
+				dtimmer++;
+				if (GetHealthPercent()<=85)
+				{
+					SetPhase(2);
+					SetAllowMelee(false);
+					SetCanMove(false);
+					_unit->SendChatMessage(CHAT_MSG_MONSTER_YELL, LANG_UNIVERSAL, "Kil'jaeden begins to channel dark energy");
+				}
+			}break;
+		case 120:
+			{
+				dtimmer++;
+				if (GetPhase() == 2)
+					CastSpellOnTarget(_unit, Target_RandomPlayer, Darkness_explosion, true);
+					//CastSpellOnTarget(_unit, Target_RandomPlayer, Darkness, true); //this is the correct, but the dragon doesn't work.
+				SetAllowMelee(false);
+				SetCanMove(false);
+			}break;
+		case 128:
+			{
+				SetPhase(1);
+				SetAllowMelee(false);
+				SetCanMove(false);
+				dtimmer = 1;
+			}break;
+		default:
+			{
+				SetCanMove(false);
+				SetAllowMelee(false);
+				dtimmer++;
+			}break;
+		}
+
+		switch(GetPhase())
+		{
+		case 1:
+			{
+				if(GetHealthPercent()<=85)
+				{
+					AddPhaseSpell(1, AddSpell(SINISTER_REFLECTION, Target_RandomPlayer, 10, 1.5f, 4, 0, 35));
+					AddPhaseSpell(1, AddSpell(SHADOW_SPIKE, Target_RandomDestination, 10, 2.0f, 6, 0, 35));
+					AddPhaseSpell(1, AddSpell(FLAME_DART_EXPLOSION, Target_RandomPlayer, 10, 1.3f, 4, 0, 35));
+					ShieldOrb1 = _unit->GetMapMgr()->GetInterface()->SpawnGameObject(CN_SHIELD_ORB, 1678.00f, 610.00f, 28.00f, -1.72788f, false, 0, 0);
+				}
+
+				if(GetHealthPercent()<=55)
+				{
+					ShieldOrb1 = _unit->GetMapMgr()->GetInterface()->SpawnGameObject(CN_SHIELD_ORB, 1684.00f, 651.00f, 28.00f, 0.00f, false, 0, 0);
+				}
+
+				if(GetHealthPercent()<=25)
+				{
+					//armageddon
+					ShieldOrb1 = _unit->GetMapMgr()->GetInterface()->SpawnGameObject(CN_SHIELD_ORB, 1720.00f, 642.00f, 28.00f, 0.00f, false, 0, 0);
+					AddPhaseSpell(1, AddSpell(SACRIFICE_OF_ANVEENA, Target_RandomPlayer, 50, 0.5f, 10, 0, 35));
+				}
+			}break;
+		}
+		ParentClass::AIUpdate();
+	}
+
+protected:
+	Unit *HandOfTheDeceiver1;
+	Unit *HandOfTheDeceiver2;
+	Unit *HandOfTheDeceiver3;
+	Unit *HandOfTheDeceiver4;
+	GameObject* ShieldOrb1;
+	GameObject* ShieldOrb2;
+	GameObject* ShieldOrb3;
+	GameObject* ShieldOrb4;
+	SpellEntry *Darkness_explosion;
+	SpellEntry *Darkness;
+	SpellEntry *ShShadowbolt;
+	int dtimmer;
 };
 
 void SetupSunwellPlateau(ScriptMgr* pScriptMgr)
@@ -412,4 +619,5 @@ void SetupSunwellPlateau(ScriptMgr* pScriptMgr)
 	pScriptMgr->register_creature_script(CN_VOID_SENTINEL, &VoidSentinelAI::Create);
 	pScriptMgr->register_creature_script(CN_ENTROPIUS, &EntropiusAI::Create);
 	pScriptMgr->register_creature_script(CN_KILJAEDEN, &KilJaedenAI::Create);
+	pScriptMgr->register_creature_script(CN_HAND_OF_THE_DECEIVER, &HandOfTheDeceiverAI::Create);
 }

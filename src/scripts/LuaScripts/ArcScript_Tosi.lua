@@ -41,6 +41,6 @@ function tosi(Unit, event, player)
 Unit:RegisterEvent("tosi_Say",69000, 0)
 end
 
-function kira_Say(Unit, event, player)
+function tosi_Say(Unit, event, player)
 Unit:SendChatMessage(12, 0, "You are mine now children. You will grow up to be a strong of the horde!")
 end

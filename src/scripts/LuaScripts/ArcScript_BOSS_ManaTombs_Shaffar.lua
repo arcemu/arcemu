@@ -104,7 +104,7 @@ function Shaffar_OnLeaveCombat(pUnit, Event)
 	pUnit:RemoveEvents()	
 end
 
-function Shaffar_Died(pUnit, Event)
+function Shaffar_OnDied(pUnit, Event)
 	pUnit:PlaySoundToSet(10546)
 	pUnit:SendChatMessage(12, 0,"I must bid you... farewell.")
 	pUnit:RemoveEvents()

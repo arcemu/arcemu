@@ -50,13 +50,11 @@ function Yor_OnLeaveCombat(pUnit, Event)
 	pUnit:RemoveEvents()	
 end
 
-function Yor_Died(pUnit, Event)
-	--pUnit:PlaySoundToSet()	
+function Yor_OnDied(pUnit, Event)
 	pUnit:RemoveEvents()
 end
 
 
 RegisterUnitEvent(22930, 1, "Yor_OnCombat")
 RegisterUnitEvent(22930, 2, "Yor_OnLeaveCombat")
-RegisterUnitEvent(22930, 3, "Yor_OnKilledTarget")
-RegisterUnitEvent(22930, 4, "Yor_OnDied")
+RegisterUnitEvent(22930, 3, "Yor_OnDied")
