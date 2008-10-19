@@ -434,18 +434,18 @@ class HandOfTheDeceiverAI : public ArcScriptBossAI
 //Kil'Jeaden
 #define CN_KILJAEDEN 25315
 
-//phose 2
+//phase 2
 #define SOUL_FLAY 45442
 #define LEGION_LIGHTNING 45664
 #define FIRE_BLOOM 45641
-//phose 3
+//phase 3
 #define SINISTER_REFLECTION 45892
 #define SHADOW_SPIKE 45885
 #define FLAME_DART_EXPLOSION 45746
 #define DARKNESS_OF_A_THOUSAND_SOULS 45657
-//phose 4
+//phase 4
 #define CN_ARMAGEDDON 25735
-//phose 5
+//phase 5
 #define SACRIFICE_OF_ANVEENA 46474
 
 class KilJaedenAI : public ArcScriptBossAI
