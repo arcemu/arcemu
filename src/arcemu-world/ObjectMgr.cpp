@@ -208,6 +208,11 @@ ObjectMgr::~ObjectMgr()
 			this->m_InstanceBossInfoMap[i] = NULL;
 		}
 	}
+
+	Log.Notice("ObjectMgr", "Deleting Arena Teams...");
+	for(HM_NAMESPACE::hash_map<uint32, ArenaTeam*>::iterator itr = m_arenaTeams.begin(); itr != m_arenaTeams.end(); ++itr) {
+		itr->second->Destroy();
+	}
 }
 
 //
