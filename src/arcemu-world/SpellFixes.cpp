@@ -445,7 +445,6 @@ void ApplyNormalFixes()
 		// Read every SpellEntry row
 		SpellEntry * sp = dbcSpell.LookupRow(x);
 
-		uint32 result = 0;
 		uint32 rank = 0;
 		uint32 namehash = 0;
 
@@ -4241,6 +4240,19 @@ void ApplyNormalFixes()
 		if ( sp != NULL )
 			sp->EffectImplicitTargetA[0] = EFF_TARGET_DYNAMIC_OBJECT;
 
+		// improved counter spell
+		sp = dbcSpell.LookupEntryForced( 11255 );
+		if( sp != NULL )
+		{
+			sp->procFlags = PROC_ON_CAST_SPECIFIC_SPELL;
+		}
+
+		sp = dbcSpell.LookupEntryForced( 12598 );
+		if( sp != NULL )
+		{
+			sp->procFlags = PROC_ON_CAST_SPECIFIC_SPELL;
+		}
+
 	//////////////////////////////////////////
 	// WARLOCK								//
 	//////////////////////////////////////////
@@ -6117,5 +6129,4 @@ void ApplyNormalFixes()
 			sp->EffectTriggerSpell[0] = 24379;
 			sp->c_is_flags = SPELL_FLAG_IS_FORCEDBUFF;
 		}
-		
 }
