@@ -4570,8 +4570,10 @@ void Aura::SpellAuraModSchoolImmunity(bool apply)
 	{
 		for(int i = 0; i < 7; i++)
 		{
-			if(mod->m_miscValue & (1<<i))
+			if (mod->m_miscValue & (1<<i) &&
+				m_target->SchoolImmunityList[i] > 0) {
 				m_target->SchoolImmunityList[i]--;
+			}
 		}
 	}
 }
