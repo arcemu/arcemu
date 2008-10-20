@@ -125,7 +125,7 @@ void Spell::Virtual_Constructor()
 
 void Spell::Init(Object* Caster, SpellEntry *info, bool triggered, Aura* aur)
 {
-	//int i;
+	int i;
 
 	ASSERT( Caster != NULL && info != NULL );
 
@@ -240,9 +240,9 @@ void Spell::Init(Object* Caster, SpellEntry *info, bool triggered, Aura* aur)
 
 	UniqueTargets = hashmap64_new();
 	ModeratedTargets.clear();
-	m_targetUnits[0].clear();
-	m_targetUnits[1].clear();
-	m_targetUnits[2].clear();
+	for (i=0; i<3; i++) {
+		m_targetUnits[i] = hashmap64_new();
+	}
 }
 
 Spell::~Spell()
@@ -251,6 +251,8 @@ Spell::~Spell()
 
 void Spell::Virtual_Destructor()
 {
+	int i;
+
 	if( u_caster != NULL && u_caster->GetCurrentSpell() == this )
 		u_caster->SetCurrentSpell(NULL);
 
@@ -266,6 +268,13 @@ void Spell::Virtual_Destructor()
 	if (UniqueTargets) {
 		hashmap64_free(UniqueTargets);
 		UniqueTargets = NULL;
+	}
+
+	for (i=0; i<3; i++) {
+		if (m_targetUnits[i]) {
+			hashmap64_free(m_targetUnits[i]);
+			m_targetUnits[i] = NULL;
+		}
 	}
 }
 
@@ -295,7 +304,7 @@ void Spell::FillSpecifiedTargetsInArea( float srcx, float srcy, float srcz, uint
 // for the moment we do invisible targets
 void Spell::FillSpecifiedTargetsInArea(uint32 i,float srcx,float srcy,float srcz, float range, uint32 specification)
 {
-	TargetsList *tmpMap=&m_targetUnits[i];
+	map_t tmpMap=m_targetUnits[i];
 	//IsStealth()
 	float r = range * range;
 	uint8 did_hit_result;
@@ -343,7 +352,7 @@ void Spell::FillSpecifiedTargetsInArea(uint32 i,float srcx,float srcy,float srcz
 			}
 			if( GetProto()->MaxTargets )
 			{
-				if( GetProto()->MaxTargets >= tmpMap->size())
+				if( GetProto()->MaxTargets >= (uint32)hashmap64_length(tmpMap))
 				{
 					m_caster->ReleaseInrangeLock();
 					return;
@@ -366,7 +375,7 @@ void Spell::FillAllTargetsInArea(float srcx,float srcy,float srcz,uint32 ind)
 /// We fill all the targets in the area, including the stealth ed one's
 void Spell::FillAllTargetsInArea(uint32 i,float srcx,float srcy,float srcz, float range)
 {
-	TargetsList *tmpMap=&m_targetUnits[i];
+	map_t tmpMap=m_targetUnits[i];
 	float r = range*range;
 	uint8 did_hit_result;
 	std::set<Object*>::iterator itr,itr2;
@@ -411,7 +420,7 @@ void Spell::FillAllTargetsInArea(uint32 i,float srcx,float srcy,float srcz, floa
 					SafeAddTarget(tmpMap, (*itr)->GetGUID());
 			}
 			if( GetProto()->MaxTargets )
-				if( GetProto()->MaxTargets == tmpMap->size() )
+				if( GetProto()->MaxTargets == (uint32)hashmap64_length(tmpMap) )
 				{
 					m_caster->ReleaseInrangeLock();
 					return;
@@ -424,7 +433,7 @@ void Spell::FillAllTargetsInArea(uint32 i,float srcx,float srcy,float srcz, floa
 // We fill all the targets in the area, including the stealth ed one's
 void Spell::FillAllFriendlyInArea( uint32 i, float srcx, float srcy, float srcz, float range )
 {
-	TargetsList *tmpMap=&m_targetUnits[i];
+	map_t tmpMap=m_targetUnits[i];
 	float r = range * range;
 	uint8 did_hit_result;
 	std::set<Object*>::iterator itr,itr2;
@@ -470,7 +479,7 @@ void Spell::FillAllFriendlyInArea( uint32 i, float srcx, float srcy, float srcz,
 					SafeAddTarget(tmpMap, (*itr)->GetGUID());
 			}
 			if( GetProto()->MaxTargets )
-				if( GetProto()->MaxTargets == tmpMap->size() )
+				if( GetProto()->MaxTargets == (uint32)hashmap64_length(tmpMap) )
 				{
 					m_caster->ReleaseInrangeLock();
 					return;
@@ -1650,12 +1659,12 @@ void Spell::cast(bool check)
                         {
 							HandleEffects(m_caster->GetGUID(),x);
                         }
-						else if (m_targetUnits[x].size()>0)
+						else if (hashmap64_length(m_targetUnits[x])>0)
 						{
-							for(i= m_targetUnits[x].begin();i != m_targetUnits[x].end();)
-                            {
-								i2 = i++;
-								HandleEffects((*i2),x);
+							for(int j=0; j<hashmap64_length(m_targetUnits[x]); j++) {
+								uint64 tguid;
+								if (hashmap64_get_index(m_targetUnits[x], j, (int64*)&tguid, NULL) != MAP_OK) continue;
+								HandleEffects(tguid,x);
                             }
 						}
 
@@ -2185,31 +2194,32 @@ enum SpellGoFlags
 void Spell::SendSpellGo()
 {
 	// Fill UniqueTargets
-	TargetsList::iterator i;
-	int j;
+	int i, j;
 
 	for( uint32 x = 0; x < 3; x++ )
 	{
 		if( GetProto()->Effect[x] )
 		{
 			bool add = true;
-			for( i = m_targetUnits[x].begin(); i != m_targetUnits[x].end(); i++ )
-			{
-				if (*i == 0) continue;
+			for (i=0; i<hashmap64_length(m_targetUnits[x]); i++) {
+				uint64 tguid;
+				if (hashmap64_get_index(m_targetUnits[x], i, (int64*)&tguid, NULL) != MAP_OK) continue;
+
+				if (tguid == 0) continue;
 
 				add = true;
 				for (j=0; j<hashmap64_length(UniqueTargets); j++) {
 					uint64 guid;
-					if (hashmap64_get_index(UniqueTargets, j, (int64*)&guid, NULL) == MAP_OK) {
-						if (guid == (*i)) {
-							add = false;
-							break;
-						}
+					if (hashmap64_get_index(UniqueTargets, j, (int64*)&guid, NULL) != MAP_OK) continue;
+
+					if (guid == tguid) {
+						add = false;
+						break;
 					}
 				}
 
 				if (add) {
-					hashmap64_put(UniqueTargets, *i, NULL);
+					hashmap64_put(UniqueTargets, tguid, NULL);
 				}
 			}
 		}
@@ -4915,16 +4925,22 @@ void Spell::DetermineSkillUp(uint32 skillid)
 		p_caster->_AdvanceSkillLine(skillid, float2int32( 1.0f * sWorld.getRate(RATE_SKILLRATE)));
 }
 
-void Spell::SafeAddTarget(TargetsList* tgt,uint64 guid)
+void Spell::SafeAddTarget(map_t tgt,uint64 guid)
 {
+	int i;
+
 	if(guid == 0)
 		return;
 
-	for(TargetsList::iterator i=tgt->begin();i!=tgt->end();i++)
-		if((*i)==guid)
-			return;
+	for (i=0; i<hashmap64_length(tgt); i++) {
+		uint64 tguid;
+		if (hashmap64_get_index(tgt, i, (int64*)&tguid, NULL) != MAP_OK) continue;
 
-	tgt->push_back(guid);
+		if(tguid==guid)
+			return;
+	}
+
+	hashmap64_put(tgt, guid, NULL);
 }
 
 void Spell::SafeAddMissedTarget(uint64 guid)
