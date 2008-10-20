@@ -938,6 +938,16 @@ uint32 Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, ui
 		uint32 origId = itr2->origId;
 		SpellEntry* ospinfo = dbcSpell.LookupEntry( origId );//no need to check if exists or not since we were not able to register this trigger if it would not exist :P
 
+		if( itr2->procFlags & PROC_ON_CAST_SPECIFIC_SPELL || itr2->procFlags & PROC_ON_CAST_SPELL) {
+			if( CastingSpell == NULL )
+				continue;
+
+			if (itr2->groupRelation) {
+				if (!(itr2->groupRelation & CastingSpell->SpellGroupType))
+					continue;
+			}
+		}
+
 		//this requires some specific spell check,not yet implemented
 		//this sucks and should be rewrote
 		if( itr2->procFlags & PROC_ON_CAST_SPECIFIC_SPELL )
@@ -945,27 +955,21 @@ uint32 Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, ui
 			if( CastingSpell == NULL )
 				continue;
 
-			//we prefer SpellGroupType if available (it's more accurate)
-			if (itr2->groupRelation) {
-				if (!(itr2->groupRelation & CastingSpell->SpellGroupType))
+			//this is wrong, dummy is too common to be based on this, we should use spellgroup or something
+			if( spe->spellIconID != CastingSpell->spellIconID )
+			{
+				if( !ospinfo->School )
 					continue;
-			} else {
-				//this is wrong, dummy is too common to be based on this, we should use spellgroup or something
-				if( spe->spellIconID != CastingSpell->spellIconID )
-				{
-					if( !ospinfo->School )
-						continue;
-					if( ospinfo->School != CastingSpell->School )
-						continue;
-					if( CastingSpell->EffectImplicitTargetA[0] == 1 || 
-						CastingSpell->EffectImplicitTargetA[1] == 1 || 
-						CastingSpell->EffectImplicitTargetA[2] == 1) //Prevents school based procs affecting caster when self buffing
-						continue;
-				}
-				else
-					if( spe->spellIconID == 1 )
-						continue;
+				if( ospinfo->School != CastingSpell->School )
+					continue;
+				if( CastingSpell->EffectImplicitTargetA[0] == 1 || 
+					CastingSpell->EffectImplicitTargetA[1] == 1 || 
+					CastingSpell->EffectImplicitTargetA[2] == 1) //Prevents school based procs affecting caster when self buffing
+					continue;
 			}
+			else
+				if( spe->spellIconID == 1 )
+					continue;
 		}
 
 #if 0

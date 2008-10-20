@@ -1967,23 +1967,7 @@ void ApplyNormalFixes()
 	//////////////////////////////////////////
 
 	// Insert warrior spell fixes here
-		// Improved Revenge
-		sp = dbcSpell.LookupEntryForced( 12797 );
-		if( sp != NULL )
-		{
-			sp->procFlags = PROC_ON_CAST_SPECIFIC_SPELL;
-		}
-		sp = dbcSpell.LookupEntryForced( 12799 );
-		if( sp != NULL )
-		{
-			sp->procFlags = PROC_ON_CAST_SPECIFIC_SPELL;
-		}
-		sp = dbcSpell.LookupEntryForced( 12800 );
-		if( sp != NULL )
-		{
-			sp->procFlags = PROC_ON_CAST_SPECIFIC_SPELL;
-		}
-		
+
 		//Warrior - Enrage Procflags
 		sp = dbcSpell.LookupEntryForced( 12317 );
 		if(sp != NULL)
@@ -4255,19 +4239,6 @@ void ApplyNormalFixes()
 		sp = dbcSpell.LookupEntryForced( 43985 );
 		if ( sp != NULL )
 			sp->EffectImplicitTargetA[0] = EFF_TARGET_DYNAMIC_OBJECT;
-
-		// improved counter spell
-		sp = dbcSpell.LookupEntryForced( 11255 );
-		if( sp != NULL )
-		{
-			sp->procFlags = PROC_ON_CAST_SPECIFIC_SPELL;
-		}
-
-		sp = dbcSpell.LookupEntryForced( 12598 );
-		if( sp != NULL )
-		{
-			sp->procFlags = PROC_ON_CAST_SPECIFIC_SPELL;
-		}
 
 	//////////////////////////////////////////
 	// WARLOCK								//
