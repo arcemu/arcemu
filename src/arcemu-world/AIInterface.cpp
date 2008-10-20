@@ -976,14 +976,6 @@ void AIInterface::_UpdateCombat(uint32 p_time)
 		SetNextTarget( GetMostHated() );
 
 	uint16 agent = m_aiCurrentAgent;
-	bool elite;
-
-	if(m_Unit->GetTypeId() == TYPEID_UNIT &&
-		static_cast<Creature*>(m_Unit)->GetCreatureInfo() && static_cast<Creature*>(m_Unit)->GetCreatureInfo()->Rank != ELITE_NORMAL) {
-		elite = true;
-	} else {
-		elite = false;
-	}
 
 	// If creature is very far from spawn point return to spawnpoint
 	// If at instance dont return -- this is wrong ... instance creatures always returns to spawnpoint, dunno how do you got this ideia. 
@@ -992,7 +984,6 @@ void AIInterface::_UpdateCombat(uint32 p_time)
 		&& m_AIState != STATE_EVADE
 		&& m_AIState != STATE_SCRIPTMOVE
 		&& !m_is_in_instance
-		&& !elite
 		&& (m_outOfCombatRange && m_Unit->GetDistanceSq(m_returnX,m_returnY,m_returnZ) > m_outOfCombatRange) )
 	{
 		HandleEvent( EVENT_LEAVECOMBAT, m_Unit, 0 );
