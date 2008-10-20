@@ -300,12 +300,46 @@ public:
 	void SendFactionMessage(WorldPacket *packet, uint8 teamId);
 	void SendGamemasterMessage(WorldPacket *packet, WorldSession *self = 0);
 	void SendGMWorldText(const char* text, WorldSession *self = 0);
-	void SendBroadCastToAllSessions(uint32 id);
+	void SendBCMessageByID(uint32 id);
+	void SendLocalizedWorldText(bool wide,const char * format, ...);
 
 	ARCEMU_INLINE void SetStartTime(uint32 val) { m_StartTime = val; }
 	ARCEMU_INLINE uint32 GetUptime(void) { return (uint32)UNIXTIME - m_StartTime; }
 	ARCEMU_INLINE uint32 GetStartTime(void) { return m_StartTime; }
 	std::string GetUptimeString();
+	// cebernic: textfilter,no fast,but works:D ...
+	ARCEMU_INLINE std::string SessionLocalizedTextFilter(WorldSession* _session,const char*text)
+	{
+			std::string opstr=string(text);
+			std::string::iterator t= opstr.begin();
+			std::string temp;
+			int found = 0;
+			std::string num;
+			while ( t!=opstr.end() )
+			{
+				if ( (char)(*t)=='{' && strlen(  (char*) &(*t) )>1  ){ // find and no end :D
+					found++;
+					++t;
+					continue;
+				}
+				if ( found==1 ) {
+					if ( (char)(*t)=='}' ) found++;
+					else num.push_back(*t);
+				}
+				if ( found ) // get the flag and doing my work and skip pushback.
+				{
+					if ( found==2 ) 
+					{
+						temp += _session->LocalizedWorldSrv((uint32) atoi((char*)num.c_str()) );
+						found=0;
+						num.clear();
+					}
+				}
+				else temp.push_back(*t);
+				++t;
+			}
+		return temp;
+	}
 
 	// update the world server every frame
 	void Update(time_t diff);
@@ -544,6 +578,7 @@ public:
 	bool m_limitedNames;
 	bool m_useAccountData;
 	uint32 m_CustomCharterGiver;
+	bool m_AdditionalFun;
 
 	bool m_LuaEngine;
 	bool m_ASEngine;

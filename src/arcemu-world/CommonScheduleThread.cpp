@@ -134,14 +134,14 @@ void CommonScheduleThread::BroadCastExec()
 			}
 
 			if ( entry == 0 ) return; // no anymessagez hitted.
-			else sWorld.SendBroadCastToAllSessions(entry);
+			else sWorld.SendBCMessageByID(entry);
 				//printf("random entry: %u\n",entry);
 		}break;
 		case 1:
 		{
 			// re-assign
 			if ( itOrderMSGEntry ==  objmgr.GetBCTotalItemEnd() ) itOrderMSGEntry = objmgr.GetBCTotalItemBegin();
-				sWorld.SendBroadCastToAllSessions((uint32)itOrderMSGEntry->second);
+				sWorld.SendBCMessageByID((uint32)itOrderMSGEntry->second);
 			//printf("serial entry: %u\n",(uint32)itOrderMSGEntry->second);
 			itOrderMSGEntry++;
 		}break;

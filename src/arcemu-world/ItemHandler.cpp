@@ -1422,6 +1422,7 @@ void WorldSession::SendInventoryList(Creature* unit)
 	if(!unit->HasItems())
 	{
 		sChatHandler.BlueSystemMessageToPlr(_player, "No sell template found. Report this to devs: %d (%s)", unit->GetEntry(), unit->GetCreatureInfo()->Name);
+		GetPlayer()->Gossip_Complete(); // cebernic: don't getta hang for the NPC
 		return;
 	}
 
@@ -1431,7 +1432,7 @@ void WorldSession::SendInventoryList(Creature* unit)
 	data << unit->GetGUID();
 	data << uint8( 0 ); // placeholder for item count
 
-	ItemPrototype * curItem;
+	ItemPrototype * curItem = NULL;
 	uint32 counter = 0;
 
 	for(std::vector<CreatureItem>::iterator itr = unit->GetSellItemBegin(); itr != unit->GetSellItemEnd(); ++itr)
@@ -1440,7 +1441,7 @@ void WorldSession::SendInventoryList(Creature* unit)
 		{
 			if((curItem = ItemPrototypeStorage.LookupEntry(itr->itemid)) != 0)
 			{
-				if(curItem->AllowableClass && !(_player->getClassMask() & curItem->AllowableClass) && !_player->GetSession()->HasGMPermissions()) // GM looking up for everything.
+				if(curItem->AllowableClass && !(_player->getClassMask() & curItem->AllowableClass) && !_player->GetSession()->HasGMPermissions()) // cebernic: GM looking up for everything.
 					continue;
 				if(curItem->AllowableRace && !(_player->getRaceMask() & curItem->AllowableRace) && !_player->GetSession()->HasGMPermissions())
 					continue;
@@ -1460,6 +1461,7 @@ void WorldSession::SendInventoryList(Creature* unit)
 					data << uint32(0);
 
 				++counter;
+				if ( counter>=MAX_CREATURE_INV_ITEMS ) break; // cebernic: in 2.4.3, client can't take more than 15 pages,it making crash for us:(
 			}
 		}
 	}

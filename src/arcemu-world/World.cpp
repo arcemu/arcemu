@@ -1340,8 +1340,8 @@ void World::Rehash(bool load)
 	if(!flood_lines || !flood_seconds)
 		flood_lines = flood_seconds = 0;
 
-
 	m_CustomCharterGiver = (uint32)Config.OptionalConfig.GetIntDefault("Optional", "CustomCharterGiver",0);
+	m_AdditionalFun = (uint32)Config.OptionalConfig.GetBoolDefault("Optional", "AdditionalFun",false);
 
 	//script engine
 	m_LuaEngine = Config.MainConfig.GetBoolDefault("ScriptBackends", "LUA", false);
@@ -2062,7 +2062,7 @@ string World::GetUptimeString()
 	return string(str);
 }
 
-void World::SendBroadCastToAllSessions(uint32 id)
+void World::SendBCMessageByID(uint32 id)
 {
 	m_sessionlock.AcquireReadLock();
 	SessionMap::iterator itr;
@@ -2084,6 +2084,56 @@ void World::SendBroadCastToAllSessions(uint32 id)
 			data << textLen;
 			data << text;
 			data << uint8(0);
+			itr->second->SendPacket(&data);
+		}
+	}
+	m_sessionlock.ReleaseReadLock();
+}
+
+// cebernic:2008-10-19
+// Format as SendLocalizedWorldText("forcing english & {5}{12} %s","test");
+// 5,12 are ids from worldstring_table
+void World::SendLocalizedWorldText(bool wide,const char * format, ...) // May not optimized,just for works.
+{
+	m_sessionlock.AcquireReadLock();
+	SessionMap::iterator itr;
+	for (itr = m_sessions.begin(); itr != m_sessions.end(); itr++)
+	{
+		if (itr->second->GetPlayer() &&
+			itr->second->GetPlayer()->IsInWorld() )
+		{
+			string temp = SessionLocalizedTextFilter(itr->second,format);
+			// parsing
+			format = (char*)temp.c_str();
+			char buffer[1024];
+			va_list ap;
+			va_start(ap,format);
+			vsnprintf(buffer,1024,format,ap);
+			va_end(ap);
+			// again,we need parse args
+			temp = SessionLocalizedTextFilter(itr->second,buffer);
+			memset(buffer,0,temp.length()+1);
+			memcpy(buffer,temp.c_str(),temp.length()+1); // full done
+
+			uint32 textLen = (uint32)strlen(buffer) + 1;
+			WorldPacket data(textLen + 40);
+
+			if ( wide ){
+				data.Initialize(SMSG_AREA_TRIGGER_MESSAGE);
+				data << (uint32)0 << (char*)buffer << (uint8)0x00;
+			}
+			else {
+				data.Initialize(SMSG_MESSAGECHAT);
+				data << uint8(CHAT_MSG_SYSTEM);
+				data << uint32(LANG_UNIVERSAL);
+		
+				data << (uint64)0; // Who cares about guid when there's no nickname displayed heh ?
+				data << (uint32)0;
+				data << (uint64)0;
+				data << textLen;
+				data << buffer;
+				data << uint8(0);
+			}
 			itr->second->SendPacket(&data);
 		}
 	}

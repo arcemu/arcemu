@@ -24,7 +24,7 @@
 class CreatureTemplate;
 class GossipScript;
 
-#define MAX_CREATURE_ITEMS 128
+#define MAX_CREATURE_INV_ITEMS 150
 #define MAX_CREATURE_LOOT 8
 #define MAX_PET_SPELL 4
 #define VENDOR_ITEMS_UPDATE_TIME 3600000

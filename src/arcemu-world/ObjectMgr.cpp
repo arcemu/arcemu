@@ -213,6 +213,10 @@ ObjectMgr::~ObjectMgr()
 	for(HM_NAMESPACE::hash_map<uint32, ArenaTeam*>::iterator itr = m_arenaTeams.begin(); itr != m_arenaTeams.end(); ++itr) {
 		delete itr->second;
 	}
+	
+	Log.Notice("ObjectMgr", "Cleanup BroadCastStorages...");
+	m_BCEntryStorage.clear();
+
 }
 
 //
