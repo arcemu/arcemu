@@ -2278,7 +2278,7 @@ void WorldSession::HandleSetAutoLootPassOpcode(WorldPacket & recv_data)
 	recv_data >> on;
 
 	if( _player->IsInWorld() )
-		_player->BroadcastMessage("Auto loot passing is now %s.", on ? "on" : "off");
+		_player->BroadcastMessage(_player->GetSession()->LocalizedWorldSrv(67), on ? _player->GetSession()->LocalizedWorldSrv(68) : _player->GetSession()->LocalizedWorldSrv(69));
 
 	_player->m_passOnLoot = (on!=0) ? true : false;
 }

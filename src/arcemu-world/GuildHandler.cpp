@@ -539,26 +539,26 @@ void WorldSession::HandleCharterBuy(WorldPacket & recv_data)
 
 		if(_player->m_arenaTeams[arena_type] || _player->m_charters[arena_index])
 		{
-			SendNotification("You are already in an arena team.");
+			SendNotification(_player->GetSession()->LocalizedWorldSrv(71));
 			return;
 		}
 
 		ArenaTeam * t = objmgr.GetArenaTeamByName(name, arena_type);
 		if(t != NULL)
 		{
-			sChatHandler.SystemMessage(this,"That name is already in use.");
+			sChatHandler.SystemMessage(this,_player->GetSession()->LocalizedWorldSrv(72));
 			return;
 		}
 
 		if(objmgr.GetCharterByName(name, (CharterTypes)arena_index))
 		{
-			sChatHandler.SystemMessage(this,"That name is already in use.");
+			sChatHandler.SystemMessage(this,_player->GetSession()->LocalizedWorldSrv(72));
 			return;
 		}
 
 		if(_player->m_charters[arena_type])
 		{
-			SendNotification("You already have an arena charter.");
+			SendNotification(_player->GetSession()->LocalizedWorldSrv(73));
 			return;
 		}
 
@@ -618,13 +618,13 @@ void WorldSession::HandleCharterBuy(WorldPacket & recv_data)
 		Charter * c = objmgr.GetCharterByName(name, CHARTER_TYPE_GUILD);
 		if(g != 0 || c != 0)
 		{
-			SendNotification("A guild with that name already exists.");
+			SendNotification(_player->GetSession()->LocalizedWorldSrv(74));
 			return;
 		}
 
 		if(_player->m_charters[CHARTER_TYPE_GUILD])
 		{
-			SendNotification("You already have a guild charter.");
+			SendNotification(_player->GetSession()->LocalizedWorldSrv(75));
 			return;
 		}
 
@@ -817,19 +817,19 @@ void WorldSession::HandleCharterOffer( WorldPacket & recv_data )
 
 	if( !pCharter )
 	{
-		SendNotification("Item not found.");
+		SendNotification(_player->GetSession()->LocalizedWorldSrv(76));
 		return;
 	}
 
 	if(pTarget == 0 || pTarget->GetTeam() != _player->GetTeam() || pTarget == _player && !sWorld.interfaction_guild)
 	{
-		SendNotification("Target is of the wrong faction.");
+		SendNotification(_player->GetSession()->LocalizedWorldSrv(77));
 		return;
 	}
 
 	if(!pTarget->CanSignCharter(pCharter, _player))
 	{
-		SendNotification("Target player cannot sign your charter for one or more reasons.");
+		SendNotification(_player->GetSession()->LocalizedWorldSrv(78));
 		return;
 	}
 
@@ -849,7 +849,7 @@ void WorldSession::HandleCharterSign( WorldPacket & recv_data )
 	{
 		if(c->Signatures[i] == _player->GetGUID())
 		{
-			SendNotification("You have already signed that charter.");
+			SendNotification(_player->GetSession()->LocalizedWorldSrv(79));
 			return;
 		}
 	}
@@ -888,7 +888,7 @@ void WorldSession::HandleCharterTurnInCharter(WorldPacket & recv_data)
 			return;
 		if(gc->SignatureCount < 9 && Config.MainConfig.GetBoolDefault("Server", "RequireAllSignatures", false))
 		{
-			SendNotification("You don't have the required amount of signatures to turn in this petition.");
+			SendNotification(_player->GetSession()->LocalizedWorldSrv(80));
 			return;
 		}
 
@@ -941,7 +941,7 @@ void WorldSession::HandleCharterTurnInCharter(WorldPacket & recv_data)
 
 		if(pCharter->SignatureCount < pCharter->GetNumberOfSlotsByType() && Config.MainConfig.GetBoolDefault("Server", "RequireAllSignatures", false))
 		{
-			sChatHandler.SystemMessage(this, "You don't have the required amount of signatures to turn in this petition.");
+			sChatHandler.SystemMessage(this, _player->GetSession()->LocalizedWorldSrv(80));
 			return;
 		}
 

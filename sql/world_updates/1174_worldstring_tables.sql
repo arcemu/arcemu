@@ -9,7 +9,7 @@ CREATE TABLE IF NOT EXISTS `worldstring_tables` (
   `entry` int(11) NOT NULL AUTO_INCREMENT,
   `text` varchar(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
   PRIMARY KEY (`entry`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=62 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=81 ;
 
 --
 -- Dumping data for table `worldstring_tables`
@@ -76,4 +76,23 @@ INSERT INTO `worldstring_tables` (`entry`, `text`) VALUES
 (58, 'You have too many players in your party to join this type of arena.'),
 (59, 'Sorry, some of your party members are not level 70.'),
 (60, 'One or more of your party members are already queued or inside a battleground.'),
-(61, 'One or more of your party members are not members of your team.');
+(61, 'One or more of your party members are not members of your team.'),
+(62, 'Welcome to'),
+(63, 'Horde'),
+(64, 'Alliance'),
+(65, '[ |cff00ccffAttention|r ] Welcome! A new challenger (|cff00ff00{%d}|r - |cffff0000%s|r) has arrived and joined into |cffff0000%s|r,their force has already been increased.'),
+(66, 'This instance is scheduled to reset on'),
+(67, 'Auto loot passing is now %s'),
+(68, 'On'),
+(69, 'Off'),
+(70, 'Hey there, $N. How can I help you?'),
+(71, 'You are already in an arena team.'),
+(72, 'That name is already in use.'),
+(73, 'You already have an arena charter.'),
+(74, 'A guild with that name already exists.'),
+(75, 'You already have a guild charter.'),
+(76, 'Item not found.'),
+(77, 'Target is of the wrong faction.'),
+(78, 'Target player cannot sign your charter for one or more reasons.'),
+(79, 'You have already signed that charter.'),
+(80, 'You don''t have the required amount of signatures to turn in this petition.');
