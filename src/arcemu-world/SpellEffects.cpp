@@ -877,6 +877,7 @@ void Spell::SpellEffectDummy(uint32 i) // Dummy(Scripted events)
 			ILotP.deleted = false;
 			ILotP.caster = u_caster->GetGUID();
 			ILotP.LastTrigger = 0;
+			ILotP.groupRelation = 0;
 			u_caster->m_procSpells.push_back(ILotP);
 		}break;
 	/*************************

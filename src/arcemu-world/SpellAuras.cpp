@@ -2015,6 +2015,7 @@ void Aura::SpellAuraDummy(bool apply)
 			pts.procCharges = charges;
 			pts.LastTrigger = 0;
 			pts.deleted = false;
+			pts.groupRelation = 0;
 			m_target->m_procSpells.push_front(pts);
 			}
 			else
@@ -4607,6 +4608,7 @@ void Aura::SpellAuraProcTriggerSpell(bool apply)
 		ProcTriggerSpell pts;
 		pts.origId = GetSpellProto()->Id;
 		pts.caster = m_casterGuid;
+		pts.groupRelation = (uint64)GetSpellProto()->EffectSpellGroupRelation[mod->i] + ((uint64)GetSpellProto()->EffectSpellGroupRelation_high[mod->i] << 32);
 		if(GetSpellProto()->EffectTriggerSpell[mod->i])
 			pts.spellId=GetSpellProto()->EffectTriggerSpell[mod->i];
 		else
@@ -6849,6 +6851,7 @@ void Aura::SpellAuraAddTargetTrigger(bool apply)
 		pts.procCharges = charges;
 		pts.i = mod->i;
 		pts.LastTrigger = 0;
+		pts.groupRelation = 0;
 
 		if(GetSpellProto()->EffectTriggerSpell[mod->i])
 			pts.spellId=GetSpellProto()->EffectTriggerSpell[mod->i];

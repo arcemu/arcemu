@@ -1967,6 +1967,22 @@ void ApplyNormalFixes()
 	//////////////////////////////////////////
 
 	// Insert warrior spell fixes here
+		// Improved Revenge
+		sp = dbcSpell.LookupEntryForced( 12797 );
+		if( sp != NULL )
+		{
+			sp->procFlags = PROC_ON_CAST_SPECIFIC_SPELL;
+		}
+		sp = dbcSpell.LookupEntryForced( 12799 );
+		if( sp != NULL )
+		{
+			sp->procFlags = PROC_ON_CAST_SPECIFIC_SPELL;
+		}
+		sp = dbcSpell.LookupEntryForced( 12800 );
+		if( sp != NULL )
+		{
+			sp->procFlags = PROC_ON_CAST_SPECIFIC_SPELL;
+		}
 		
 		//Warrior - Enrage Procflags
 		sp = dbcSpell.LookupEntryForced( 12317 );

@@ -793,6 +793,9 @@ void Item::ApplyEnchantmentBonus( uint32 Slot, bool Apply )
 						Log.Debug( "Enchant", "Setting procChance to %u%%.", TS.procChance );
 						TS.deleted = false;
 						TS.spellId = Entry->spell[c];
+						TS.groupRelation = 0;
+						TS.ProcType = 0;
+						TS.LastTrigger = 0;
 						m_owner->m_procSpells.push_back( TS );
 					}
 					else

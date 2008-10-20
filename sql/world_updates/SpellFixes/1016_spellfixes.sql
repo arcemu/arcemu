@@ -242,3 +242,8 @@ INSERT INTO spellfixes(spellId, groupRelation0) VALUES(18705, 0x2000000) ON DUPL
 INSERT INTO spellfixes(spellId, groupRelation0) VALUES(18706, 0x2000000) ON DUPLICATE KEY UPDATE groupRelation0=VALUES(groupRelation0);
 INSERT INTO spellfixes(spellId, groupRelation0) VALUES(18707, 0x2000000) ON DUPLICATE KEY UPDATE groupRelation0=VALUES(groupRelation0);
 
+-- [Warrior] Improved Revenge
+INSERT INTO spellfixes(spellId, groupRelation0) VALUES(12797, 0x400) ON DUPLICATE KEY UPDATE groupRelation0=VALUES(groupRelation0);
+INSERT INTO spellfixes(spellId, groupRelation0) VALUES(12799, 0x400) ON DUPLICATE KEY UPDATE groupRelation0=VALUES(groupRelation0);
+INSERT INTO spellfixes(spellId, groupRelation0) VALUES(12800, 0x400) ON DUPLICATE KEY UPDATE groupRelation0=VALUES(groupRelation0);
+

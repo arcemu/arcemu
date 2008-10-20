@@ -944,22 +944,28 @@ uint32 Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, ui
 		{
 			if( CastingSpell == NULL )
 				continue;
-			
-			//this is wrong, dummy is too common to be based on this, we should use spellgroup or something
-			if( spe->spellIconID != CastingSpell->spellIconID )
-			{
-				if( !ospinfo->School )
+
+			//we prefer SpellGroupType if available (it's more accurate)
+			if (itr2->groupRelation) {
+				if (!(itr2->groupRelation & CastingSpell->SpellGroupType))
 					continue;
-				if( ospinfo->School != CastingSpell->School )
-					continue;
-				if( CastingSpell->EffectImplicitTargetA[0] == 1 || 
-					CastingSpell->EffectImplicitTargetA[1] == 1 || 
-					CastingSpell->EffectImplicitTargetA[2] == 1) //Prevents school based procs affecting caster when self buffing
-					continue;
+			} else {
+				//this is wrong, dummy is too common to be based on this, we should use spellgroup or something
+				if( spe->spellIconID != CastingSpell->spellIconID )
+				{
+					if( !ospinfo->School )
+						continue;
+					if( ospinfo->School != CastingSpell->School )
+						continue;
+					if( CastingSpell->EffectImplicitTargetA[0] == 1 || 
+						CastingSpell->EffectImplicitTargetA[1] == 1 || 
+						CastingSpell->EffectImplicitTargetA[2] == 1) //Prevents school based procs affecting caster when self buffing
+						continue;
+				}
+				else
+					if( spe->spellIconID == 1 )
+						continue;
 			}
-			else
-				if( spe->spellIconID == 1 )
-					continue;
 		}
 
 #if 0

@@ -3952,6 +3952,7 @@ void Player::_ApplyItemMods(Item* item, int8 slot, bool apply, bool justdrokedow
 				ts.caster = this->GetGUID();
 				ts.procFlags = PROC_ON_MELEE_ATTACK;
 				ts.deleted = false;
+				ts.groupRelation = 0;
 				m_procSpells.push_front( ts );			
 			}
 		}
