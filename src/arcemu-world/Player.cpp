@@ -4224,7 +4224,7 @@ void Player::RepopRequestedPlayer()
 		return;
 	}
 
-	MapInfo * pMapinfo;
+	MapInfo * pMapinfo = NULL;
 
 	// Set death state to corpse, that way players will lose visibility
 	setDeathState( CORPSE );
@@ -4284,17 +4284,17 @@ void Player::RepopRequestedPlayer()
 		GetSession()->SendPacket( &data2 );
 	}
 
-
-	switch( pMapinfo->mapid )
-	{
-		case 550: //The Eye
-		case 552: //The Arcatraz
-		case 553: //The Botanica
-		case 554: //The Mechanar
-			ResurrectPlayer();
-			break;
+	if (pMapinfo) {
+		switch( pMapinfo->mapid )
+		{
+			case 550: //The Eye
+			case 552: //The Arcatraz
+			case 553: //The Botanica
+			case 554: //The Mechanar
+				ResurrectPlayer();
+				break;
+		}
 	}
-
 }
 
 void Player::ResurrectPlayer()
@@ -6662,7 +6662,7 @@ void Player::EventTaxiInterpolate()
 void Player::TaxiStart(TaxiPath *path, uint32 modelid, uint32 start_node)
 {
 	int32 mapchangeid = -1;
-	float mapchangex,mapchangey,mapchangez = 0.0f;
+	float mapchangex = 0.0f,mapchangey = 0.0f,mapchangez = 0.0f;
 	uint32 cn = m_taxiMapChangeNode;
 
 	m_taxiMapChangeNode = 0;
