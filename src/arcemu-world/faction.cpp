@@ -59,8 +59,8 @@ bool isHostile(Object* objA, Object* objB)// B is hostile for A?
 		return false;
 	bool hostile = false;
 
-//	if(objB->m_faction == NULL || objA->m_faction == NULL)
-//		return true;
+  if ( !objA->IsInWorld() || !objB->IsInWorld() )  // pending or ...?
+    return false;
 
 	if(objA == objB)
 		return false;   // can't attack self.. this causes problems with buffs if we dont have it :p
