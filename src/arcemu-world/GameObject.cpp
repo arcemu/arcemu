@@ -62,8 +62,10 @@ GameObject::GameObject(uint64 guid)
 GameObject::~GameObject()
 {
 	sEventMgr.RemoveEvents(this);
-	if(m_ritualmembers)
-	delete[] m_ritualmembers;
+	if(m_ritualmembers) {
+		delete[] m_ritualmembers;
+		m_ritualmembers = NULL;
+	}
 
 	uint32 guid = GetUInt32Value(OBJECT_FIELD_CREATED_BY);
 	if(guid)
