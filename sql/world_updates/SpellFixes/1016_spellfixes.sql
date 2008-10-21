@@ -258,3 +258,6 @@ INSERT INTO spellfixes(spellId, groupRelation0) VALUES(19415, 0x200) ON DUPLICAT
 INSERT INTO spellfixes(spellId, groupRelation0) VALUES(11255, 0x4000) ON DUPLICATE KEY UPDATE groupRelation0=VALUES(groupRelation0);
 INSERT INTO spellfixes(spellId, groupRelation0) VALUES(12598, 0x4000) ON DUPLICATE KEY UPDATE groupRelation0=VALUES(groupRelation0);
 
+-- [Warrior] Improved Shield Bash
+INSERT INTO spellfixes(spellId, groupRelation0) VALUES(12311, 0x800) ON DUPLICATE KEY UPDATE groupRelation0=VALUES(groupRelation0);
+INSERT INTO spellfixes(spellId, groupRelation0) VALUES(12958, 0x800) ON DUPLICATE KEY UPDATE groupRelation0=VALUES(groupRelation0);
