@@ -1,0 +1,13 @@
+Index: AreaTrigger.cpp
+===================================================================
+--- AreaTrigger.cpp	(revision 1430)
++++ AreaTrigger.cpp	(working copy)
+@@ -204,7 +204,7 @@
+ 	case ATTYPE_INN:
+ 		{
+ 			// Inn
+-			if (!GetPlayer()->m_isResting) GetPlayer()->ApplyPlayerRestState(false);
++			if (!GetPlayer()->m_isResting) GetPlayer()->ApplyPlayerRestState(true);
+ 		}break;
+ 	case ATTYPE_TELEPORT:
+ 		{

@@ -1,0 +1,19 @@
+Index: DuelHandler.cpp
+===================================================================
+--- DuelHandler.cpp	(revision 1430)
++++ DuelHandler.cpp	(working copy)
+@@ -18,7 +18,7 @@
+  *
+  */
+ 
+-#include "StdAfx.h"
++/* #include "StdAfx.h"
+ 
+ void WorldSession::HandleDuelAccepted(WorldPacket & recv_data)
+ {
+@@ -90,4 +90,4 @@
+ 	_player->DuelingWith->DuelingWith = NULL;
+ 	_player->DuelingWith = NULL;
+ 
+-}
++}*/
