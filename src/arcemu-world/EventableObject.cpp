@@ -293,6 +293,7 @@ bool EventableObject::event_HasEvent(uint32 EventType)
 
 EventableObjectHolder::EventableObjectHolder(int32 instance_id) : mInstanceId(instance_id)
 {
+	m_insertPool.clear();
 	sEventMgr.AddEventHolder(this, instance_id);
 }
 

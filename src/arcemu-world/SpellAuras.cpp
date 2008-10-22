@@ -3811,8 +3811,6 @@ void Aura::SpellAuraModRoot(bool apply)
 			static_cast<Unit*>(caster)->EventStunOrImmobilize( m_target );
 		if( m_target && caster )
 			static_cast<Unit*>(m_target)->EventStunOrImmobilize( caster, true );
-		if (m_target->isCasting())
-			m_target->CancelSpell(NULL); //cancel spells.
 
 		/* -Supalosa- TODO: Mobs will attack nearest enemy in range on aggro list when rooted. */
 	}
