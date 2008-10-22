@@ -6127,4 +6127,8 @@ void ApplyNormalFixes()
 			sp->EffectImplicitTargetA[0] = EFF_TARGET_NONE;
 		}
 
+		//Dazed
+		sp = dbcSpell.LookupEntryForced( 15571 );
+		if( sp != NULL )
+			sp->c_is_flags |= SPELL_FLAG_IS_FORCEDDEBUFF;
 }
