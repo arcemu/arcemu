@@ -1017,7 +1017,7 @@ void AIInterface::_UpdateCombat(uint32 p_time)
 	}
 #endif
 
-	if (sWorld.Collision) {
+	/*if (sWorld.Collision) {
 		float target_land_z=0.0f;
 		if ( m_Unit->GetMapMgr() != NULL && GetNextTarget() != NULL )
 		{
@@ -1044,7 +1044,7 @@ void AIInterface::_UpdateCombat(uint32 p_time)
 				}
 			}
 		}
-	}
+	}*/
 
 	if ( GetNextTarget() != NULL && GetNextTarget()->GetTypeId() == TYPEID_UNIT && m_AIState == STATE_EVADE)
 		HandleEvent( EVENT_LEAVECOMBAT, m_Unit, 0);

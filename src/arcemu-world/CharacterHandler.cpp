@@ -801,11 +801,10 @@ void WorldSession::FullLogin(Player * plr)
 #endif
 		OutPacket(SMSG_TRIGGER_CINEMATIC, 4, &racecinematic);
 
-		if ( sWorld.m_AdditionalFun ) //cebernic: tells people who 's newbie :D
-		{
-			const int classtext[] ={0,5,6,8,9,11,0,4,3,7,0,10};
-			sWorld.SendLocalizedWorldText(true,"{65}",classtext[ (uint32)plr->getClass() ] , plr->GetName() , (plr->GetTeam() ? "{63}":"{64}") );
-		}
+#ifdef _TEST_EXTENDED_FEATURES_
+	const int classtext[] ={0,5,6,8,9,11,0,4,3,7,0,10};
+	sWorld.SendLocalizedWorldText(true,"{65}",classtext[ (uint32)plr->getClass() ] , plr->GetName() , (plr->GetTeam() ? "{63}":"{64}") );
+#endif
 
 	}
 

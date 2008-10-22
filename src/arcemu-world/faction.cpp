@@ -430,9 +430,8 @@ bool isCombatSupport(Object* objA, Object* objB)// B combat supports A?
 	if(objB->GetTypeId() == TYPEID_CORPSE)
 		return false;
 
-//	if(objB->m_faction == 0 || objA->m_faction == 0)
-//		return false;
-
+  if ( objA->GetTypeId()!=TYPEID_UNIT || objB->GetTypeId()!=TYPEID_UNIT ) return false; // cebernic: lowchance crashfix.
+  	
 	if( objA->IsPet() || objB->IsPet() ) // fixes an issue where horde pets would chain aggro horde guards and vice versa for alliance.
 		return false;
 
@@ -459,6 +458,12 @@ bool isCombatSupport(Object* objA, Object* objB)// B combat supports A?
 			break;
 		}
 	}
+
+#ifdef _TEST_EXTENDED_FEATURES_
+  if ( !combatSupport && objA->GetUInt32Value(UNIT_FIELD_FACTIONTEMPLATE) == objB->GetUInt32Value(UNIT_FIELD_FACTIONTEMPLATE) && ((Creature*)objA)->GetCreatureInfo()->Rank >= 1 )
+		combatSupport = true;
+#endif
+
 	return combatSupport;
 }
 

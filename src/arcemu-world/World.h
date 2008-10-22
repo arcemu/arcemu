@@ -317,7 +317,7 @@ public:
 			std::string num;
 			while ( t!=opstr.end() )
 			{
-				if ( (char)(*t)=='{' && strlen(  (char*) &(*t) )>1  ){ // find and no end :D
+				if ( (char)(*t)=='{' && strlen(  (char*) (*t) )>1  ){ // find and not end :D
 					found++;
 					++t;
 					continue;
@@ -328,6 +328,7 @@ public:
 				}
 				if ( found ) // get the flag and doing my work and skip pushback.
 				{
+					t= opstr.begin();
 					if ( found==2 ) 
 					{
 						temp += _session->LocalizedWorldSrv((uint32) atoi((char*)num.c_str()) );
