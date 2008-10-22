@@ -1,6 +1,6 @@
 /*
  * ArcScript Scripts for Arcemu MMORPG Server
- * Copyright (C) 2008 Arcemu Team 
+ * Copyright (C) 2005-2007 Arcemu Team 
  * Copyright (C) 2007 Moon++ Team <http://www.moonplusplus.com/>
  *
  * This program is free software: you can redistribute it and/or modify
@@ -329,7 +329,8 @@ class GrandWarlockAlythessAI : public ArcScriptBossAI
 #define CN_SHADOWSWORD_BERSERKER	25798
 #define CN_SHADOWSWORD_FURY_MAGE	25799
 #define CN_VOID_SENTINEL			25772
-#define MURU_NEGATIVE_ENERGY		46008	//patch 2.4.2: this spell shouldn't cause casting pushback (to be fixed in core)
+#define CN_ENTROPIUS				25840
+#define MURU_NEGATIVE_ENERGY		46285
 #define MURU_DARKNESS				45996
 #define MURU_SUMMON_BERSERKER		46037
 #define MURU_SUMMON_FURY_MAGE		46038
@@ -337,49 +338,270 @@ class GrandWarlockAlythessAI : public ArcScriptBossAI
 
 class MuruAI : public ArcScriptBossAI
 {
-    ArcScript_FACTORY_FUNCTION(MuruAI, ArcScriptBossAI);
+	ArcScript_FACTORY_FUNCTION(MuruAI, ArcScriptBossAI);
 	MuruAI(Creature* pCreature) : ArcScriptBossAI(pCreature)
 	{
-		AddSpell(MURU_NEGATIVE_ENERGY, Target_Self, 25, 0, 0);
-		AddSpell(MURU_DARKNESS, Target_Self, 20, 0, 45);
+		AddSpell(MURU_NEGATIVE_ENERGY, Target_SecondMostHated, 25, 0, 1, 0, 40);
+		AddSpell(MURU_DARKNESS, Target_Current, 25, 0, 10, 0, 10);
 
-		//AddSpell(MURU_SUMMON_BERSERKER, Target_, 15, 3.5, 25, 0, 50);  Most of Databases don't the SQL for this yet. Also I am not sure what function are for summoning Spells :).
-		//AddSpell(MURU_SUMMON_FURY_MAGE, Target_, 30, 2.5, 0, 0, 50);
-		//AddSpell(MURU_SUMMON_VOID_SENTINEL, Target_, 20, 0, 0, 0, 50);
+		/*AddEmote(Event_OnTargetDied, "Fire, consume!", Text_Yell);
+		AddEmote(Event_OnDied, "I... fade.", Text_Yell);*/
 	}
+
+	void OnCombatStart(Unit* mTarget)
+	{
+		SetAllowMelee(false);
+		SetCanMove(false);
+		//doors
+		ParentClass::OnCombatStart(mTarget);
+	}
+
+	void OnLoad()
+	{
+		spawnplace = 1;
+		summoningst = false;
+		timmer = 0;
+		SetAllowMelee(false);
+		SetCanMove(false);
+		ParentClass::OnLoad();
+	}
+
+	void AIUpdate()
+	{
+		SetAllowMelee(false);
+		SetCanMove(false);
+		timmer++;
+		if (summoningst == true && (timmer == 20 || timmer == 60 || timmer == 100))
+		{
+			SpawnCreature(CN_SHADOWSWORD_BERSERKER, 1871, 650, 71, 0, false);
+			SpawnCreature(CN_SHADOWSWORD_FURY_MAGE, 1871, 650, 71, 0, false);
+			SpawnCreature(CN_SHADOWSWORD_FURY_MAGE, 1748, 700, 71, 0, false);
+			SpawnCreature(CN_SHADOWSWORD_BERSERKER, 1748, 700, 71, 0, false);
+		}
+
+		if (timmer == 120)
+		{
+			timmer = 0;
+			summoningst = true;
+			switch (spawnplace)
+			{
+			case 1:
+				{
+				SpawnCreature(CN_VOID_SENTINEL, 1800, 652, 71, 0, false);
+				++spawnplace;
+				}break;
+			case 2:
+				{
+				SpawnCreature(CN_VOID_SENTINEL, 1798, 605, 71, 0, false);
+				++spawnplace;
+				}break;
+			case 3:
+				{
+				SpawnCreature(CN_VOID_SENTINEL, 1826, 650, 71, 0, false);
+				++spawnplace;
+				}break;
+			case 4:
+				{
+				SpawnCreature(CN_VOID_SENTINEL, 1783, 625, 71, 0, false);
+				++spawnplace;
+				}break;
+			case 5:
+				{
+				SpawnCreature(CN_VOID_SENTINEL, 1816, 595, 71, 0, false);
+				++spawnplace;
+				}break;
+			case 6:
+				{
+				SpawnCreature(CN_VOID_SENTINEL, 1844, 641, 71, 0, false);
+				spawnplace = 1;
+				}break;
+			}
+		}
+
+		if (GetHealthPercent() <= 35)
+		{
+			SpawnCreature(CN_ENTROPIUS, true);
+			Despawn(100,0);
+		}
+
+		ParentClass::AIUpdate();
+	}
+
+	void OnDied(Unit * mKiller)
+	{
+		ParentClass::OnDied(mKiller);
+	}
+protected:
+	int timmer, spawnplace;
+	bool summoningst;
 };
+
+#define BERSERK_FLURRY 46160
 
 class ShadowswordBerserkerAI : public ArcScriptCreatureAI
 {
-    ArcScript_FACTORY_FUNCTION(ShadowswordBerserkerAI, ArcScriptCreatureAI);
-	ShadowswordBerserkerAI(Creature* pCreature) : ArcScriptCreatureAI(pCreature){}
+	ArcScript_FACTORY_FUNCTION(ShadowswordBerserkerAI, ArcScriptCreatureAI);
+	ShadowswordBerserkerAI(Creature* pCreature) : ArcScriptCreatureAI(pCreature)
+	{
+		AddSpell(BERSERK_FLURRY, Target_Current, 30, 0, 30);
+	}
+
+	void OnCombatStart(Unit* mTarget)
+	{
+		ParentClass::OnCombatStart(mTarget);
+	}
+
+	void OnLoad()
+	{
+		_unit->GetAIInterface()->m_moveRun = true;
+		Creature *Muruu = _unit->GetMapMgr()->GetInterface()->GetCreatureNearestCoords(1815, 625, 69, CN_MURU);
+		if (Muruu)
+		{
+			MoveTo(Muruu);
+		}
+		ParentClass::OnLoad();
+	}
+
+	void AIUpdate()
+	{
+		ParentClass::AIUpdate();
+	}
+
+	void OnDied(Unit * mKiller)
+	{
+		Despawn(100,0);
+		ParentClass::OnDied(mKiller);
+	}
+
+protected:
+	Creature *Muruu;
+
 };
+
+#define FEL_FIREBALL 46101
+#define SPELL_FURY 46102
 
 class ShadowswordFuryMageAI : public ArcScriptCreatureAI
 {
-    ArcScript_FACTORY_FUNCTION(ShadowswordFuryMageAI, ArcScriptCreatureAI);
-	ShadowswordFuryMageAI(Creature* pCreature) : ArcScriptCreatureAI(pCreature){}
+	ArcScript_FACTORY_FUNCTION(ShadowswordFuryMageAI, ArcScriptCreatureAI);
+	ShadowswordFuryMageAI(Creature* pCreature) : ArcScriptCreatureAI(pCreature)
+	{
+		AddSpell(FEL_FIREBALL, Target_RandomPlayer, 100, 2, 2, 4, 40); 
+		AddSpell(SPELL_FURY, Target_Self, 30, 0, 50); 
+	}
+
+	void OnCombatStart(Unit* mTarget)
+	{
+		ParentClass::OnCombatStart(mTarget);
+	}
+
+	void OnLoad()
+	{
+		_unit->GetAIInterface()->m_moveRun = true;
+		Creature *Muruu = _unit->GetMapMgr()->GetInterface()->GetCreatureNearestCoords(1815, 625, 69, CN_MURU);
+		if (Muruu)
+		{
+			MoveTo(Muruu);
+		}
+		ParentClass::OnLoad();
+	}
+
+	void AIUpdate()
+	{
+		ParentClass::AIUpdate();
+	}
+
+	void OnDied(Unit * mKiller)
+	{
+		Despawn(100,0);
+		ParentClass::OnDied(mKiller);
+	}
+
+protected:
+	Creature *Muruu;
 };
+
+#define SHADOW_PULSE 46087
+#define WOID_BLAST 46161
 
 class VoidSentinelAI : public ArcScriptCreatureAI
 {
-    ArcScript_FACTORY_FUNCTION(VoidSentinelAI, ArcScriptCreatureAI);
-	VoidSentinelAI(Creature* pCreature) : ArcScriptCreatureAI(pCreature){}
+	ArcScript_FACTORY_FUNCTION(VoidSentinelAI, ArcScriptCreatureAI);
+	VoidSentinelAI(Creature* pCreature) : ArcScriptCreatureAI(pCreature)
+	{
+		AddSpell(SHADOW_PULSE, Target_Current, 50, 0, 3);
+		AddSpell(WOID_BLAST, Target_Current, 20, 1.50f, 15);
+	}
+
+	void OnCombatStart(Unit* mTarget)
+	{
+		ParentClass::OnCombatStart(mTarget);
+	}
+
+	void OnLoad()
+	{
+		_unit->GetAIInterface()->m_moveRun = true;
+		Creature *Muruu = _unit->GetMapMgr()->GetInterface()->GetCreatureNearestCoords(1815, 625, 69, CN_MURU);
+		if (Muruu)
+		{
+			MoveTo(Muruu);
+		}
+		ParentClass::OnLoad();
+	}
+
+	void AIUpdate()
+	{
+		ParentClass::AIUpdate();
+	}
+
+	void OnDied(Unit * mKiller)
+	{
+		Despawn(100,0);
+		ParentClass::OnDied(mKiller);
+	}
+
+protected:
+	Creature *Muruu;
 };
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //Entropius
-#define CN_ENTROPIUS				25840
 #define ENTROPIUS_NEGATIVE_ENERGY	46289 //SpellID taken from Wowhead
+#define ENTROPIUS_NEGATIVE_ENERGY1	46008
+#define ENTROPIUS_NEGATIVE_ENERGY2	46285
 #define ENTROPIUS_BLACK_HOLE		46282 //SpellID taken from Wowhead
 
 class EntropiusAI : public ArcScriptBossAI
 {
-    ArcScript_FACTORY_FUNCTION(EntropiusAI, ArcScriptBossAI);
+	ArcScript_FACTORY_FUNCTION(EntropiusAI, ArcScriptBossAI);
 	EntropiusAI(Creature* pCreature) : ArcScriptBossAI(pCreature)
 	{
-		//AddSpell(ENTROPIUS_NEGATIVE_ENERGY, Target_Self, 15, 0, 0, 0, 0); //Needs Testing
-		//AddSpell(ENTROPIUS_BLACK_HOLE, Target_Self, 10, 0, 0, 0, 0); //Needs Testing
+		AddSpell(ENTROPIUS_NEGATIVE_ENERGY1, Target_RandomDestination, 15, 0, 1, 0, 40);
+		AddSpell(ENTROPIUS_BLACK_HOLE, Target_RandomDestination, 10, 0, 10, 0, 40);
+
+		/*AddEmote(Event_OnTargetDied, "Fire, consume!", Text_Yell);
+		AddEmote(Event_OnDied, "I... fade.", Text_Yell);*/
+	}
+
+	void OnCombatStart(Unit* mTarget)
+	{
+		ParentClass::OnCombatStart(mTarget);
+	}
+
+	void OnLoad()
+	{
+		ParentClass::OnLoad();
+	}
+
+	void AIUpdate()
+	{
+		ParentClass::AIUpdate();
+	}
+
+	void OnDied(Unit * mKiller)
+	{
+		//doors
+		ParentClass::OnDied(mKiller);
 	}
 };
 
@@ -394,7 +616,7 @@ class EntropiusAI : public ArcScriptBossAI
 
 class HandOfTheDeceiverAI : public ArcScriptBossAI
 {
-    ArcScript_FACTORY_FUNCTION(HandOfTheDeceiverAI, ArcScriptBossAI);
+	ArcScript_FACTORY_FUNCTION(HandOfTheDeceiverAI, ArcScriptBossAI);
 	HandOfTheDeceiverAI(Creature* pCreature) : ArcScriptBossAI(pCreature)
 	{
 		AddSpell(FELFIRE_PORTAL, Target_RandomPlayer, 40, 0, 10, 0, 30);
@@ -402,9 +624,9 @@ class HandOfTheDeceiverAI : public ArcScriptBossAI
 	}
 
 	void OnCombatStart(Unit* mTarget)
-    {
+	{
 		ParentClass::OnCombatStart(mTarget);
-    }
+	}
 
 	void OnLoad()
 	{
@@ -422,7 +644,7 @@ class HandOfTheDeceiverAI : public ArcScriptBossAI
 
 	void OnDied(Unit * mKiller)
 	{
-		Despawn(10000,0);
+		Despawn(100,0);
 		ParentClass::OnDied(mKiller);
 	}
 	
@@ -434,18 +656,18 @@ class HandOfTheDeceiverAI : public ArcScriptBossAI
 //Kil'Jeaden
 #define CN_KILJAEDEN 25315
 
-//phase 2
+//phose 2
 #define SOUL_FLAY 45442
 #define LEGION_LIGHTNING 45664
 #define FIRE_BLOOM 45641
-//phase 3
+//phose 3
 #define SINISTER_REFLECTION 45892
 #define SHADOW_SPIKE 45885
 #define FLAME_DART_EXPLOSION 45746
 #define DARKNESS_OF_A_THOUSAND_SOULS 45657
-//phase 4
+//phose 4
 #define CN_ARMAGEDDON 25735
-//phase 5
+//phose 5
 #define SACRIFICE_OF_ANVEENA 46474
 
 class KilJaedenAI : public ArcScriptBossAI
@@ -457,6 +679,8 @@ class KilJaedenAI : public ArcScriptBossAI
 		AddPhaseSpell(1, AddSpell(SOUL_FLAY, Target_RandomPlayer, 10, 2.5f, 3, 0, 35));
 		AddPhaseSpell(1, AddSpell(FIRE_BLOOM, Target_RandomPlayer, 10, 1.3f, 15, 0, 35));
 
+		/*AddEmote(Event_OnTargetDied, "Fire, consume!", Text_Yell);
+		AddEmote(Event_OnDied, "I... fade.", Text_Yell);*/
 	}
 
 	void OnLoad()
