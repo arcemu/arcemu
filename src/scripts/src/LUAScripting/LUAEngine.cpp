@@ -2496,7 +2496,7 @@ int luaUnit_GetRandomPlayer(lua_State * L, Unit * ptr)
 		{
 			uint32 count = 0;
 			Unit* mt = ptr->GetAIInterface()->GetMostHated();
-			if (!mt->IsPlayer())
+			if (!mt || !mt->IsPlayer())
 				return 0;
 
 			for(set<Player*>::iterator itr = ptr->GetInRangePlayerSetBegin(); itr != ptr->GetInRangePlayerSetEnd(); ++itr)
