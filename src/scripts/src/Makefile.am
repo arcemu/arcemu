@@ -1,1 +1,0 @@
-SUBDIRS = GossipScripts ExtraScripts InstanceScripts ServerStatusPlugin SpellHandlers LUAScripting QuestScripts
