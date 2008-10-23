@@ -1,0 +1,26 @@
+
+   ******************************************************************
+   *	 _____              ___                           _         *
+   *	(  _  )            (  _`\               _        ( )_       *
+   *	| (_) | _ __   ___ | (_(_)   ___  _ __ (_) _ _   | ,_)      *
+   *	|  _  |( '__)/'___)`\__ \  /'___)( '__)| |( '_`\ | |        *
+   *	| | | || |  ( (___ ( )_) |( (___ | |   | || (_) )| |_       *
+   *	(_) (_)(_)  `\____)`\____)`\____)(_)   (_)| ,__/'`\__)      *
+   *	                                          | |               *
+   *	                                          (_)               *
+   *	                                                            *
+   *	               OpenSource Scripting Team                    *
+   *	                <http://www.arcemu.org>                     *
+   *	                                                            *
+   ******************************************************************
+
+How to install ArcScripts?
+Windows:
+
+1: Compile ArcEmu (ULTIMATE REV) with C++ (2008 or last)
+2: Compile your ArcScripts with C++ (2008 or last)
+3: Copy all .LUA files in the LUA Scripting foulder to your script_bin foulder.
+4: Import to your world database the ArcScripts_Full.sql
+5: Set up your server and HAVE FUN!
+
+Regards. ArcScript Team.
