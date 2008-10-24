@@ -545,7 +545,7 @@ class FirewalkerAI : public ArcScriptCreatureAI
     {
 		AddSpell(FIREWALKER_MELT_ARMOR, Target_Self, 10, 0, 0);
 		AddSpell(FIREWALKER_INCITE_FLAMES, Target_Self, 10, 0, 0);
-		AddSpell(FIREWALKER_FLAME_BLOSSOM, Target_Self, 10, 0, 0);
+//		AddSpell(FIREWALKER_FLAME_BLOSSOM, Target_Self, 10, 0, 0);
     }
 };
 
@@ -804,7 +804,6 @@ void SetupMoltenCore(ScriptMgr* pScriptMgr)
     pScriptMgr->register_creature_script(CN_FIRESWORN, &FireswornAI::Create);
     pScriptMgr->register_creature_script(CN_BARONGEDDON, &BaronGeddonAI::Create);
     pScriptMgr->register_creature_script(CN_SHAZZRAH, &ShazzrahAI::Create);
-
     pScriptMgr->register_creature_script(CN_GOLEMAGG, &GolemaggAI::Create);
     pScriptMgr->register_creature_script(CN_CORERAGER, &CoreRagerAI::Create);
 
