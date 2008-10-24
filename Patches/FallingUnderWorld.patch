@@ -1,0 +1,32 @@
+Index: Object.cpp
+===================================================================
+--- Object.cpp	(revision 919)
++++ Object.cpp	(working copy)
+@@ -887,10 +887,23 @@
+ 
+ 	if (!allowPorting && newZ < -500)
+ 	{
+-		m_position.z = 500;
+-		sLog.outError( "setPosition: fell through map; height ported" );
+-
+-		result = false;
++		//m_position.z = 500;
++		//sLog.outError( "setPosition: fell through map; height ported" );
++		float land_height = m_mapMgr->GetLandHeight(newX,newY) + 2.0f;
++		if( land_height < -500.0f)
++		{
++			sLog.outError( "setPosition: fell through map. No action taken." );
++			result = false;
++		}
++		else
++		{
++			newZ = land_height;
++			sLog.outError( "setPosition: Player fell through map. Teleporting playing to LandHeight");
++			if(static_cast< Player* >(this)->IsPlayer())
++			{
++				static_cast< Player* >( this )->SafeTeleport(this->GetMapId(), this->GetInstanceID(), newX,newY,newZ,newOrientation);
++			}
++		}
+ 	}
+ 
+ 	if (IsInWorld() && updateMap)

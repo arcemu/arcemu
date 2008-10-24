@@ -1,0 +1,138 @@
+Index: Object.cpp
+===================================================================
+--- Object.cpp	(revision 939)
++++ Object.cpp	(working copy)
+@@ -887,10 +887,23 @@
+ 
+ 	if (!allowPorting && newZ < -500)
+ 	{
+-		m_position.z = 500;
+-		sLog.outError( "setPosition: fell through map; height ported" );
+-
+-		result = false;
++		//m_position.z = 500;
++		//sLog.outError( "setPosition: fell through map; height ported" );
++		float land_height = m_mapMgr->GetLandHeight(newX,newY) + 2.0f;
++		if( land_height < -500.0f)
++		{
++			sLog.outError( "setPosition: fell through map. No action taken." );
++			result = false;
++		}
++		else
++		{
++			newZ = land_height;
++			sLog.outError( "setPosition: Player fell through map. Teleporting playing to LandHeight");
++			if(static_cast< Player* >(this)->IsPlayer())
++			{
++				static_cast< Player* >( this )->SafeTeleport(this->GetMapId(), this->GetInstanceID(), newX,newY,newZ,newOrientation);
++			}
++		}
+ 	}
+ 
+ 	if (IsInWorld() && updateMap)
+Index: SpellEffects.cpp
+===================================================================
+--- SpellEffects.cpp	(revision 939)
++++ SpellEffects.cpp	(working copy)
+@@ -2617,29 +2617,83 @@
+ 	p_caster->GetSession()->SendPacket(&data);
+ 	//m_caster->SendMessageToSet(&data, true);
+ #else
+-	float ori = m_caster->GetOrientation();				
+-	float posX = m_caster->GetPositionX()+(radius*(cosf(ori)));
+-	float posY = m_caster->GetPositionY()+(radius*(sinf(ori)));
+-	float z = CollideInterface.GetHeight(m_caster->GetMapId(), posX, posY, m_caster->GetPositionZ() + 2.0f);
+-	if(z == NO_WMO_HEIGHT)		// not found height, or on adt
+-		z = m_caster->GetMapMgr()->GetLandHeight(posX,posY);
++	float backupammount = 2.0f;
++	i = 0;
++	bool canteleport = false;
++	bool laststepback = false;
++	LocationVector dest(m_caster->GetPositionX(), m_caster->GetPositionY(), m_caster->GetPositionZ());
++	LocationVector src(dest.x, dest.y, dest.z);
++	float Bradius = 0.0f;
++	while(Bradius < 20.0f || canteleport == false)
++	{
++		float Bradius = backupammount * ++i;
++		if(Bradius > 20.0f)
++			break;
++		float ori = m_caster->GetOrientation();				
++		float posX = m_caster->GetPositionX()+(Bradius*(cosf(ori)));
++		float posY = m_caster->GetPositionY()+(Bradius*(sinf(ori)));
++		int8 waterType = m_caster->GetMapMgr()->GetWaterType(posX, posY);
++		float LandZ = m_caster->GetMapMgr()->GetLandHeight(posX, posY);
++		float z = CollideInterface.GetHeight(m_caster->GetMapId(), posX, posY, src.z + 2.0f);
++		bool indoor = CollideInterface.IsIndoor(m_caster->GetMapId(), posX, posY, src.z + 2.0f);
+ 
+-	if( fabs( z - m_caster->GetPositionZ() ) >= 10.0f )
+-		return;
++		if(z == NO_WMO_HEIGHT)
++			z = CollideInterface.GetHeight(m_caster->GetMapId(), posX, posY, src.z + 6.0f);
++			
++		if(waterType != 0)
++		{
++			float waterHeight = m_caster->GetMapMgr()->GetWaterHeight(posX, posY);
++			z = m_caster->GetPositionZ();
++			if(waterHeight < z)
++				z = waterHeight;
++		}
+ 
+-	LocationVector dest(posX, posY, z + 2.0f, ori);
+-	LocationVector destest(posX, posY, dest.z, ori);
+-	LocationVector src(m_caster->GetPositionX(), m_caster->GetPositionY(), m_caster->GetPositionZ() + 2.0f);
++		if(!indoor)
++		{
++			if(z < LandZ)		// not found height, or on adt
++				z = LandZ;
++		}
++		else
++			Log.Debug("Blink", "Wmo: %f", z);
+ 
+-	if(CollideInterface.GetFirstPoint(m_caster->GetMapId(), src, destest, dest, -1.5f))
+-	{
+-		// hit an object new point is in dest.
+-		// is this necessary?
+-		dest.z = CollideInterface.GetHeight(m_caster->GetMapId(), dest.x, dest.y, dest.z + 2.0f);
++		if(z == NO_WMO_HEIGHT)
++			return;
++
++		src.ChangeCoords(dest.x, dest.y, dest.z);
++		dest.ChangeCoords(posX, posY, z, ori);
++		LocationVector destest(posX, posY, dest.z, ori);
++
++		/*if(CollideInterface.GetFirstPoint(m_caster->GetMapId(), src, destest, dest, -1.5f))
++		{
++			// hit an object new point is in dest.
++			// is this necessary?
++			dest.z = CollideInterface.GetHeight(m_caster->GetMapId(), dest.x, dest.y, dest.z + 2.0f);
++		}
++		else*/
++			dest.z = z;
++
++		/*if( fabs( z - m_caster->GetPositionZ() ) >= 10.0f ){
++			Log.Debug("Server", "Blink: Blocked because of height: %f", z - m_caster->GetPositionZ());
++			dest.ChangeCoords(src.x, src.y, src.z);
++			continue;}*/
++		//CalcDistance doesnt get the right distance. For every 10 yards its off by 1 10 = 11 20 = 22 30 = 33 ect. >.>...
++		float angle = sinf((dest.z - src.z)/(m_caster->CalcDistance(src.x,src.y,src.z,dest.x,dest.y,dest.z))) * 100;
++		Log.Debug("Blink", "Angle: %f, sx:%f, sy:%f, sz:%f, dx:%f, dy:%f, dz:%f", angle, src.x, src.y, src.z, dest.x, dest.y, dest.z);
++		if( fabs( angle) > 70){
++			Log.Debug("Blink", "Blocked because of angle: %f", angle);
++			dest.ChangeCoords(src.x, src.y, src.z + 2.0f);
++			break;}
++		//lets make sure we stop teleporting threw shit.
++		if(!CollideInterface.CheckLOS(m_caster->GetMapId(), src.x, src.y, src.z + 4.0f, dest.x, dest.y, dest.z + 2.0f)){
++			Log.Debug("Blink", "Blocked because of LOS");
++			dest.ChangeCoords(src.x, src.y, src.z);
++			break;}
++
+ 	}
+-	else
+-		dest.z = z;
+ 
++	if(dest.x == 0 && dest.y == 0 && dest.z == 0)
++		return;
++
+ 	dest.o = u_caster->GetOrientation();
+ 	if(p_caster)
+ 	{
