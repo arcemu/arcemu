@@ -56,11 +56,7 @@ extern "C" SCRIPT_DECL void _exp_script_register(ScriptMgr* mgr)
 		sLog.outColor(TGREEN,"\n	WeddingNPC Enabled");
 		SetupWeddingNPC(mgr);
 	}
-	{
 
-	SetupCustom_Teleporters(mgr);
-
-	}
 	sLog.outColor(TNORMAL, "\n");
 }
 

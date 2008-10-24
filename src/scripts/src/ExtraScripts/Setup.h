@@ -25,6 +25,5 @@ void SetupL70etc(ScriptMgr * mgr);
 void SetupPortals(ScriptMgr * mgr);
 void SetupPvPToken(ScriptMgr * mgr);
 void SetupWeddingNPC(ScriptMgr * mgr);
-void SetupCustom_Teleporters(ScriptMgr * mgr);
 
 #endif

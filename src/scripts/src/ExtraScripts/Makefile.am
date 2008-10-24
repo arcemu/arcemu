@@ -10,4 +10,3 @@ libExtraScripts_la_SOURCES = L70etc.cpp \
 	Portals.cpp \
 	PvPToken.cpp \
 	Setup.cpp
-	CustomTeleportes.cpp
