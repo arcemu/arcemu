@@ -46,7 +46,7 @@ end
 
 function ScriptShaffar_Frost_Nova(pUnit, Event)
 	print "Shaffar Frost Nova"
-	pUnit:FullCastSpellOnTarget(39035,Unit:GetClosestPlayer(0))
+	pUnit:FullCastSpellOnTarget(39035,Unit:GetMainTank())
 end
 
 function ScriptShaffar_sapwn(pUnit, Event)
@@ -58,12 +58,12 @@ end
 
 function ScriptShaffar_FrostBolt(pUnit, Event)
 	print "Shaffar FrostBolt"
-	pUnit:FullCastSpellOnTarget(40429,Unit:GetClosestPlayer(0))
+	pUnit:FullCastSpellOnTarget(40429,Unit:GetMainTank())
 end
 
 function ScriptShaffar_Fireball(pUnit, Event)
 	print "Shaffar Fireball"
-	pUnit:FullCastSpellOnTarget(20420,Unit:GetClosestPlayer(0))
+	pUnit:FullCastSpellOnTarget(20420,Unit:GetMainTank())
 end
 
 function ScriptShaffar_say(pUnit, Event)

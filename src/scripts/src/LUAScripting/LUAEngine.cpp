@@ -592,65 +592,34 @@ LuaEngine::LuaEngine()
 
 LuaEngine::~LuaEngine()
 {
-  luaFiles.clear();
-  luaBytecodeFiles.clear();
-  lua_close(L);
+	lua_close(L);
 }
-#ifdef WIN32
-void LuaEngine::ScriptLoadFromDir(char* Dirname)
-{
-    HANDLE hFile;
-    WIN32_FIND_DATA FindData;
-    memset(&FindData,0,sizeof(FindData));
-
-    char SearchName[MAX_PATH];
-        
-    strcpy(SearchName,Dirname);
-    strcat(SearchName,"\\*.*");
-
-    hFile = FindFirstFile(SearchName,&FindData);
-    FindNextFile(hFile, &FindData);
-    
-    while( FindNextFile(hFile, &FindData) )
-    {
-        if( FindData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY )
-        {
-            strcpy(SearchName,Dirname);
-            strcat(SearchName,"\\");
-            strcat(SearchName,FindData.cFileName);
-            ScriptLoadFromDir(SearchName);
-        }
-        else
-        {
-					string fname = Dirname;
-					fname += "\\";
-					fname += FindData.cFileName;
-					
-			  	int len = strlen(fname.c_str());
-				  int i=0;
-				  char ext[MAX_PATH];
-				  
-				  while(len > 0)
-				  {  
-				   ext[i++] = fname[--len];
-				   if(fname[len] == '.')
-		  	   break;
-	  		  }
-	  		  ext[i++] = '\0';
-	  		  //if ( !_stricmp(ext,"aul.") ) luaFiles.insert(fname);
-	  		  if ( !_stricmp(ext,"aul.") ) luaFiles.insert(fname);
-	  		  if ( !_stricmp(ext,"cul.") ) luaBytecodeFiles.insert(fname);
-        }
-    }
-  FindClose(hFile);
-}
-#endif
 
 void LuaEngine::LoadScripts()
 {
+	set<string> luaFiles;
+	set<string> luaBytecodeFiles;
+
 #ifdef WIN32
-// cebernic: Subdir loader system
-  ScriptLoadFromDir("scripts");
+	WIN32_FIND_DATA fd;
+	HANDLE h;
+
+	h = FindFirstFile("scripts\\*.*", &fd);
+	if(h == INVALID_HANDLE_VALUE)
+		return;
+
+	do 
+	{
+		char * fn = strrchr(fd.cFileName, '\\');
+		if(!fn)
+			fn=fd.cFileName;
+        char * ext = strrchr(fd.cFileName, '.');
+		if(!stricmp(ext, ".lua"))
+			luaFiles.insert(string(fn));
+		else if(!stricmp(ext, ".luc"))
+			luaBytecodeFiles.insert(string(fn));
+	} while(FindNextFile(h, &fd));
+	FindClose(h);
 #else
 	struct dirent ** list;
 	int filecount = scandir("./scripts", &list, 0, 0);
@@ -695,7 +664,7 @@ void LuaEngine::LoadScripts()
 	for(set<string>::iterator itr = luaFiles.begin(); itr != luaFiles.end(); ++itr)
 	{
 #ifdef WIN32
-			snprintf(filename, 200, "%s", itr->c_str());
+			snprintf(filename, 200, "scripts\\%s", itr->c_str());
 #else
 			snprintf(filename, 200, "scripts/%s", itr->c_str());
 #endif
@@ -2496,7 +2465,7 @@ int luaUnit_GetRandomPlayer(lua_State * L, Unit * ptr)
 		{
 			uint32 count = 0;
 			Unit* mt = ptr->GetAIInterface()->GetMostHated();
-			if (!mt || !mt->IsPlayer())
+			if (!mt->IsPlayer())
 				return 0;
 
 			for(set<Player*>::iterator itr = ptr->GetInRangePlayerSetBegin(); itr != ptr->GetInRangePlayerSetEnd(); ++itr)
@@ -4789,7 +4758,7 @@ int luaGameObject_GetGUID(lua_State * L, GameObject* ptr)
 {
 	CHECK_TYPEID(TYPEID_GAMEOBJECT);
 
-	lua_pushinteger(L,(lua_Integer)ptr->GetGUID());
+	lua_pushinteger(L,ptr->GetGUID());
 	return 1;
 }
 

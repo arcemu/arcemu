@@ -38,7 +38,7 @@ end
 
 function cleavee(pUnit, Event)
 	print "highlordbolvarf_cleave"
-	pUnit:CastSpellOnTarget(20684,pUnit:GetClosestPlayer(0))
+	pUnit:CastSpellOnTarget(20684,pUnit:GetMainTank())
 end
 
 function justice(pUnit, Event)
@@ -91,7 +91,7 @@ end
 
 function smite(pUnit, Event)
 	print "arcbishbened_smite"
-	pUnit:CastSpellOnTarget(25364,pUnit:GetClosestPlayer(0))
+	pUnit:CastSpellOnTarget(25364,pUnit:GetMainTank())
 end
 
 function holynova(pUnit, Event)
@@ -139,7 +139,7 @@ end
 
 function ShrinkRay(pUnit, Event)
 	print "gelbin_ShrinkRay"
-	pUnit:CastSpellOnTarget(22742,pUnit:GetClosestPlayer(0))
+	pUnit:CastSpellOnTarget(22742,pUnit:GetMainTank())
 end
 
 function bomb(pUnit, Event)
@@ -149,7 +149,7 @@ end
 
 function dargongun(pUnit, Event)
 	print "gelbin_dragongun"
-	pUnit:CastSpellOnTarget(22739,pUnit:GetClosestPlayer(0))
+	pUnit:CastSpellOnTarget(22739,pUnit:GetMainTank())
 
 end
 
@@ -191,7 +191,7 @@ end
 
 function knock(pUnit, Event)
 	print "magni_knock"
-	pUnit:CastSpellOnTarget(20686,pUnit:GetClosestPlayer(0))
+	pUnit:CastSpellOnTarget(20686,pUnit:GetMainTank())
 end
 
 function summoniron(pUnit, Event)

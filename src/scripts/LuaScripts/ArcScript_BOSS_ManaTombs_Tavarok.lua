@@ -44,7 +44,7 @@ end
 --  Heroic spell --
 function Tavarok_smash(pUnit, Event)
 	print "Tavarok_smash"
-	pUnit:CastSpellOnTarget(38761,pUnit:GetClosestPlayer(0))
+	pUnit:CastSpellOnTarget(38761,pUnit:GetMainTank())
 end
 
 function Tavarok_OnCombat(pUnit, Event)

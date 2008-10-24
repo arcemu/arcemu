@@ -454,7 +454,7 @@ class LavaSurgerAI : public ArcScriptCreatureAI
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //Flame Imp AI Script
 #define CN_FLAMEIMP			11669
-#define FLAMEIMP_FIRE_NOVA	23462	//wrong, fixme!
+#define FLAMEIMP_FIRE_NOVA	20602	
 
 class FlameImpAI : public ArcScriptCreatureAI
 {
@@ -536,7 +536,7 @@ class FlameguardAI : public ArcScriptCreatureAI
 #define CN_FIREWALKER				11666
 #define FIREWALKER_MELT_ARMOR		19631
 #define FIREWALKER_INCITE_FLAMES	19635
-//Fire Blossom?
+#define FIREWALKER_FIRE_BLOSSOM		19636
 
 class FirewalkerAI : public ArcScriptCreatureAI
 {
@@ -545,6 +545,7 @@ class FirewalkerAI : public ArcScriptCreatureAI
     {
 		AddSpell(FIREWALKER_MELT_ARMOR, Target_Self, 10, 0, 0);
 		AddSpell(FIREWALKER_INCITE_FLAMES, Target_Self, 10, 0, 0);
+		AddSpell(FIREWALKER_FLAME_BLOSSOM, Target_Self, 10, 0, 0);
     }
 };
 

@@ -5,4 +5,4 @@ AM_CXXFLAGS = -DSCRIPTLIB
 
 lib_LTLIBRARIES = libMoonSpellHandlers.la
 
-libMoonSpellHandlers_la_SOURCES = HunterSpells.cpp ItemSpells_1.cpp MageSpells.cpp PaladinSpells.cpp RogueSpells.cpp Setup.cpp ShamanSpells.cpp WarlockSpells.cpp WarriorSpells.cpp
+libMoonSpellHandlers_la_SOURCES = HunterSpells.cpp ItemSpells_1.cpp MageSpells.cpp PaladinSpells.cpp RogueSpells.cpp Setup.cpp ShamanSpells.cpp WarlockSpells.cpp WarriorSpells.cpp MiscSpells.cpp

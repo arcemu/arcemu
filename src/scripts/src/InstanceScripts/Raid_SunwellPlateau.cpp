@@ -162,6 +162,8 @@ class SathrovarrTheCorruptorAI : public ArcScriptBossAI
 #define BRUTALLUS_BURN			45141
 #define BRUTALLUS_STOMP			45185
 #define BRUTALLUS_BERSERK		26662
+#define FIRE_WALL				43113
+#define CN_FELMYST				25038
 
 class BrutallusAI : public ArcScriptBossAI
 {
@@ -185,11 +187,34 @@ class BrutallusAI : public ArcScriptBossAI
 		AddEmote(Event_OnTaunt, "Another day, another glorious battle!", Text_Yell);
 		AddEmote(Event_OnTaunt, "I live for this!", Text_Yell);
 	}
+
+	void OnLoad()
+	{
+		//_unit->CastSpellAoF(x, y, z, dbcSpell.LookupEntry(FIRE_WALL), true);
+		ParentClass::OnLoad();
+	}
+
+	void OnCombatStart(Unit* pTarget)
+	{
+		
+		ParentClass::OnCombatStart(pTarget);
+	}
+
+	void OnDied(Unit* pKiller)
+	{
+		//SpawnCreature(CN_FELMYST, 1871, 650, 71, 0, false); //spawns
+		ParentClass::OnDied(pKiller);
+	}
+
+	void AIUpdate()
+	{
+		
+		ParentClass::AIUpdate();
+	}
 };
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //Felmyst
-#define CN_FELMYST					25038
 #define FELMYST_CLEAVE				19983
 #define FELMYST_CORROSION			45866
 #define FELMYST_DEMONIC_VAPOR		45402
@@ -228,10 +253,28 @@ class FelmystAI : public ArcScriptBossAI
 		AddEmote(Event_OnTaunt, "I am stronger than ever before!", Text_Yell);
 	}
 
+	void OnLoad()
+	{
+		//Create waypoints and move
+		ParentClass::OnLoad();
+	}
+
 	void OnCombatStart(Unit* pTarget)
 	{
 		ApplyAura(FELMYST_NOXIOUS_FUME);
 		ParentClass::OnCombatStart(pTarget);
+	}
+
+	void OnDied(Unit* pKiller)
+	{
+		//remove firewall
+		ParentClass::OnDied(pKiller);
+	}
+
+	void AIUpdate()
+	{
+		
+		ParentClass::AIUpdate();
 	}
 };
 
@@ -606,39 +649,49 @@ class EntropiusAI : public ArcScriptBossAI
 };
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-#define CN_VOLATILE_FELFIRE_FIEND 25603
 #define CN_HAND_OF_THE_DECEIVER 25588
-#define FELFIRE_FISSION 45779
-#define SHADOW_BOLT_VOLLEY 45770
-#define SHADOW_INFUSION 45772
 #define ANVEENA_PRISON 46367
-#define FELFIRE_PORTAL 46875
+
+#define CN_VOLATILE_FELFIRE_FIEND 25603
+/* Hand of the Deceiver's spells and cosmetics */ 
+#define SPELL_SHADOW_BOLT_VOLLEY 45770 // ~30 yard range Shadow Bolt Volley for ~2k(?) damage
+#define SPELL_SHADOW_INFUSION 45772 // They gain this at 20% - Immunity to Stun/Silence and makes them look angry!
+#define SPELL_FELFIRE_PORTAL 46875 // Creates a portal that spawns Felfire Fiends (LIVE FOR THE SWARM!1 FOR THE OVERMIND!)
+#define SPELL_SHADOW_CHANNELING 46757 // Channeling animation out of combat
+#define SPELL_SACRIFICE_OF_ANVEENA 46474 // This is cast on Kil'Jaeden when Anveena sacrifices herself into the Sunwell
 
 class HandOfTheDeceiverAI : public ArcScriptBossAI
 {
 	ArcScript_FACTORY_FUNCTION(HandOfTheDeceiverAI, ArcScriptBossAI);
 	HandOfTheDeceiverAI(Creature* pCreature) : ArcScriptBossAI(pCreature)
 	{
-		AddSpell(FELFIRE_PORTAL, Target_RandomPlayer, 40, 0, 10, 0, 30);
-		AddSpell(SHADOW_BOLT_VOLLEY, Target_Current, 60, 0, 8, 0, 30);
-	}
-
-	void OnCombatStart(Unit* mTarget)
-	{
-		ParentClass::OnCombatStart(mTarget);
+		AddSpell(SPELL_FELFIRE_PORTAL, Target_RandomPlayer, 40, 0, 10, 0, 30);
+		AddSpell(SPELL_SHADOW_BOLT_VOLLEY, Target_Current, 60, 0, 3, 0, 30);
 	}
 
 	void OnLoad()
 	{
+		infusion = false;
 		ParentClass::OnLoad();
 	}
 
 	void AIUpdate()
 	{
-		if(GetHealthPercent()<=25)
+		if (!IsInCombat())
+			CastSpellOnTarget(_unit, Target_Self, dbcSpell.LookupEntry(SPELL_SHADOW_CHANNELING), false);
+		
+		if (timmer == 6 && IsInCombat())
 		{
-			ApplyAura(SHADOW_INFUSION);
+			SpawnCreature(CN_VOLATILE_FELFIRE_FIEND, _unit->GetPositionX()+1, _unit->GetPositionY()+1, _unit->GetPositionZ(), 0, true);
+			timmer = 0;
 		}
+
+		if(GetHealthPercent()<=25 && infusion == false)
+		{
+			ApplyAura(SPELL_SHADOW_INFUSION);
+			infusion = true;
+		}
+		timmer++;
 		ParentClass::AIUpdate();
 	}
 
@@ -647,185 +700,655 @@ class HandOfTheDeceiverAI : public ArcScriptBossAI
 		Despawn(100,0);
 		ParentClass::OnDied(mKiller);
 	}
-	
+
+protected:
+	bool infusion;
+	int timmer;
+};
+
+/* Volatile Felfire Fiend's spells */
+#define SPELL_FELFIRE_FISSION 45779 // Felfire Fiends explode when they die or get close to target.
+
+class VolatileFelfireFiendAI : public ArcScriptBossAI
+{
+	ArcScript_FACTORY_FUNCTION(VolatileFelfireFiendAI, ArcScriptBossAI);
+	VolatileFelfireFiendAI(Creature* pCreature) : ArcScriptBossAI(pCreature)
+	{
+	}
+
+	void OnLoad()
+	{
+		BoomTarget = GetBestPlayerTarget(TargetFilter_NotCurrent);
+		MoveTo(BoomTarget);
+	}
+
+	void AIUpdate()
+	{
+		if ( _unit->CalcDistance(BoomTarget) < 5 && IsInCombat())
+			_unit->CastSpell(_unit, dbcSpell.LookupEntry(SPELL_FELFIRE_FISSION), true);
+		ParentClass::AIUpdate();
+	}
+
+	void OnDied(Unit * mKiller)
+	{
+		_unit->CastSpell(_unit, dbcSpell.LookupEntry(SPELL_FELFIRE_FISSION), true);
+		Despawn(100,0);
+		ParentClass::OnDied(mKiller);
+	}
+
+protected:
+	Unit *BoomTarget;
+};
+
+#define CREATURE_KALECGOS 25319 // Helps the raid throughout the fight
+
+class BlueDragonAI : public ArcScriptBossAI
+{
+	ArcScript_FACTORY_FUNCTION(BlueDragonAI, ArcScriptBossAI);
+	BlueDragonAI(Creature* pCreature) : ArcScriptBossAI(pCreature){}
+
+	void OnLoad()
+	{
+		_unit->SetFloatValue(OBJECT_FIELD_SCALE_X, 0.20f);
+		_unit->SetUInt64Value(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_ATTACKABLE_9);
+		_unit->GetAIInterface()->SetAllowedToEnterCombat(false);
+		ParentClass::OnLoad();
+	}
+
+	void AIUpdate()
+	{
+		ParentClass::AIUpdate();
+	}
+
+	void OnDied(Unit * mKiller)
+	{
+		Despawn(100,0);
+		ParentClass::OnDied(mKiller);
+	}
+protected:
+	int timmer;
+};
+
+#define CREATURE_SINISTER_REFLECTION 25708
+#define SR_CURSE 46190
+#define SR_SHOCK 47071
+#define SR_FIREBALL 47074
+#define SR_HAMMER 37369
+#define SR_HEMORRAGE 45897
+#define SR_HOLY_SHOCK 38921
+#define SR_SMITE 47077
+#define SR_CLIP 47168
+#define SR_MOONFIRE 47072
+#define SR_MULTI_SHOT 48098
+#define SR_SHADOWBOLT 47076
+#define SR_SHOT 16496
+#define SR_WHIRLWIND 17207
+#define SR_RENEW 47079
+
+class SinisterReflectionAI : public ArcScriptBossAI
+{
+	ArcScript_FACTORY_FUNCTION(SinisterReflectionAI, ArcScriptBossAI);
+	SinisterReflectionAI(Creature* pCreature) : ArcScriptBossAI(pCreature){}
+
+	void OnLoad()
+	{
+		_unit->SetUInt32Value(UNIT_FIELD_FACTIONTEMPLATE, 1771);
+		_unit->SetFloatValue(OBJECT_FIELD_SCALE_X, 2.0f);
+		switch (RandomUInt(9))
+		{
+			case 0:
+			case WARRIOR:
+				{
+					AddSpell(SR_SHOT, Target_RandomPlayer, 60, 1, 4, 0, 30);
+					AddSpell(SR_WHIRLWIND, Target_Current, 60, 1, 4, 0, 5);
+				}break;
+			case PALADIN:
+				{
+					AddSpell(SR_HAMMER, Target_Current, 60, 1, 10, 0, 5);
+					AddSpell(SR_HOLY_SHOCK, Target_RandomPlayer, 60, 1, 4, 0, 20);
+				}break;
+			case HUNTER:
+				{
+					AddSpell(SR_CLIP, Target_Current, 60, 1, 10, 0, 5);
+					AddSpell(SR_SHOT, Target_RandomPlayer, 60, 1, 4, 0, 35);
+				}break;
+			case ROGUE:
+				{
+					AddSpell(SR_HEMORRAGE, Target_Current, 60, 1, 4, 0, 5);
+					AddSpell(SR_SHOT, Target_RandomPlayer, 60, 1, 4, 0, 30);
+				}break;
+			case PRIEST:
+				{
+					AddSpell(SR_SMITE, Target_RandomPlayer, 60, 1, 4, 0, 30);
+					AddSpell(SR_RENEW, Target_ClosestFriendly, 60, 1, 8, 0, 30);
+				}break;
+			case SHAMAN:
+				{
+					AddSpell(SR_SHOCK, Target_RandomPlayer, 60, 1, 4, 0, 30);
+				}break;
+			case MAGE:
+				{
+					AddSpell(SR_FIREBALL, Target_RandomPlayer, 60, 2, 2, 0, 30);
+				}break;
+			case WARLOCK:
+				{
+					AddSpell(SR_SHADOWBOLT, Target_RandomPlayer, 60, 2, 3, 0, 30);
+					AddSpell(SR_CURSE, Target_RandomPlayer, 60, 1, 8, 0, 30);
+				}break;
+			case 6:
+				{
+					AddSpell(SR_MOONFIRE, Target_RandomPlayer, 60, 1, 3, 0, 30);
+				}break;
+		}
+		ParentClass::OnLoad();
+	}
+
+	void OnCombatStart(Unit* mTarget)
+	{
+		ParentClass::OnCombatStart(mTarget);
+	}
+
+	void AIUpdate()
+	{
+		ParentClass::AIUpdate();
+	}
+
+	void OnDied(Unit * mKiller)
+	{
+		Despawn(100,0);
+		ParentClass::OnDied(mKiller);
+	}
+
+protected:
+	Unit *Jatekos;
 };
 
 #define CN_SHIELD_ORB 25502
 #define SHIELD_ORB_SHADOWBOLT 45680
 
-//Kil'Jeaden
-#define CN_KILJAEDEN 25315
+class ShieldOrbAI : public ArcScriptBossAI
+{
+	ArcScript_FACTORY_FUNCTION(ShieldOrbAI, ArcScriptBossAI);
+	ShieldOrbAI(Creature* pCreature) : ArcScriptBossAI(pCreature)
+	{}
 
-//phose 2
-#define SOUL_FLAY 45442
-#define LEGION_LIGHTNING 45664
-#define FIRE_BLOOM 45641
-//phose 3
-#define SINISTER_REFLECTION 45892
-#define SHADOW_SPIKE 45885
-#define FLAME_DART_EXPLOSION 45746
-#define DARKNESS_OF_A_THOUSAND_SOULS 45657
-//phose 4
-#define CN_ARMAGEDDON 25735
-//phose 5
-#define SACRIFICE_OF_ANVEENA 46474
+	void OnCombatStart(Unit* mTarget)
+	{
+		SetCanMove(false);
+		ParentClass::OnCombatStart(mTarget);
+	}
+
+	void OnLoad()
+	{
+		_unit->SetUInt32Value(UNIT_FIELD_FACTIONTEMPLATE, 1771);
+		SetFlyMode(true);
+		SetCanMove(false);
+		ParentClass::OnLoad();
+	}
+
+	void OnDied(Unit * mKiller)
+	{
+		Despawn(100,0);
+		ParentClass::OnDied(mKiller);
+	}
+
+	void AIUpdate()
+	{
+		_unit->Root();
+		_unit->CastSpell(Target_RandomPlayer, dbcSpell.LookupEntry(SHIELD_ORB_SHADOWBOLT), true);
+		ParentClass::AIUpdate();
+	}
+	
+};
+
+#define CREATURE_KILJAEDEN 25315 // Give it to 'em KJ!
+#define CREATURE_ANVEENA 26046 // Embodiment of the Sunwell
+#define SPELL_ANVEENA_PRISON 46367 // She hovers locked within a bubble
+
+class AnvennaAI : public ArcScriptBossAI
+{
+	ArcScript_FACTORY_FUNCTION(AnvennaAI, ArcScriptBossAI);
+	AnvennaAI(Creature* pCreature) : ArcScriptBossAI(pCreature)
+	{}
+
+	void OnLoad()
+	{
+		_unit->SetUInt64Value(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_ATTACKABLE_9);
+		_unit->GetAIInterface()->SetAllowedToEnterCombat(false);
+		SetFlyMode(true);
+		_unit->CastSpell(_unit, SPELL_ANVEENA_PRISON, true);
+		KilJaedan = GetNearestCreature(CREATURE_KILJAEDEN);
+		ParentClass::OnLoad();
+	}
+
+	void AIUpdate()
+	{
+		if (KilJaedan->GetHealthPercent() <= 25)
+		{
+			//die
+			Despawn(100,0);
+		}
+		ParentClass::AIUpdate();
+	}
+	void OnDied(Unit * mKiller)
+	{
+		Despawn(100,0);
+		ParentClass::OnDied(mKiller);
+	}
+	ArcScriptCreatureAI* KilJaedan;
+};
+
+#define CREATURE_ARMAGEDDON_TARGET 25735 // This mob casts meteor on itself.. I think
+#define SPELL_ARMAGEDDON 45909 // Meteor spell
+#define SPELL_ARMAGEDDON_VISUAL 45911 // Does the hellfire visual to indicate where the meteor missle lands
+
+class ArmageddonAI : public ArcScriptBossAI
+{
+	ArcScript_FACTORY_FUNCTION(ArmageddonAI, ArcScriptBossAI);
+	ArmageddonAI(Creature* pCreature) : ArcScriptBossAI(pCreature)
+	{}
+
+	void OnLoad()
+	{
+		_unit->SetUInt64Value(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_ATTACKABLE_9);
+		_unit->GetAIInterface()->SetAllowedToEnterCombat(false);
+		_unit->CastSpell(_unit, SPELL_ARMAGEDDON, false);
+		_unit->CastSpell(_unit, SPELL_ARMAGEDDON_VISUAL, false);
+		ParentClass::OnLoad();
+	}
+
+	void AIUpdate()
+	{
+		ParentClass::AIUpdate();
+	}
+	void OnDied(Unit * mKiller)
+	{
+		Despawn(100,0);
+		ParentClass::OnDied(mKiller);
+	}
+	ArcScriptCreatureAI* KilJaedan;
+};
+
+ 
+/* Kil'Jaeden's spells and cosmetics */ 
+#define SPELL_TRANS 23188 // Morph. Surprisingly, this seems to be the right spell.. (Where is it used?)
+#define SPELL_REBIRTH 44200 // Emerge from the Sunwell
+#define SPELL_SOUL_FLAY_DAMAGE 45442 // 9k Shadow damage over 3 seconds. Spammed throughout all the fight.
+#define SPELL_SOUL_FLAY_MOVEMENT 47106 // -50% Movement component of the above. Players cast it on selves unless this spell is fixed.
+#define SPELL_LEGION_LIGHTNING 45664 // Chain Lightning, 4 targets, ~3k Shadow damage, 1.5k mana burn
+#define SPELL_FIRE_BLOOM 45641 // Places a debuff on 5 raid members, which causes them to deal 2k Fire damage to nearby allies and selves. MIGHT NOT WORK
+#define SPELL_SINISTER_REFLECTION 45891 // Summon shadow copies of 5 raid members that fight against KJ's enemies
+#define SPELL_COPY_WEAPON 41055 // }
+#define SPELL_COPY_WEAPON2 41054 // }
+#define SPELL_COPY_OFFHAND 45206 // }- Spells used in Sinister Reflection creation
+#define SPELL_COPY_OFFHAND_WEAPON 45205 // }
+#define SPELL_SHADOW_SPIKE 45885 // Bombard random raid members with Shadow Spikes (Very similar to Void Reaver orbs)
+#define SPELL_FLAME_DART 45740 // Bombards the raid with flames every 3(?) seconds
+#define SPELL_DARKNESS_OF_A_THOUSAND_SOULS 45657 // Begins a 8-second channeling, after which he will deal 50'000 damage to the raid
+ 
+/* Anveena's spells and cosmetics (Or, generally, everything that has "Anveena" in name) */ 
+#define SPELL_ANVEENA_ENERGY_DRAIN 46410 // Sunwell energy glow animation (Control mob uses this)
+ 
+/*** Other Spells (used by players, etc) ***/
+#define SPELL_VENGEANCE_OF_THE_BLUE_FLIGHT 45839 // Possess the blue dragon from the orb to help the raid.
+#define SPELL_ENTROPIUS_BODY 46819 // Visual for Entropius at the Epilogue
+ 
+/*** Creatures used in the encounter ***/
+#define CREATURE_HAND_OF_THE_DECEIVER 25588 // Adds found before KJ emerges
+#define CREATURE_FELFIRE_PORTAL 25603 // Portal spawned be Hand of the Deceivers
+#define CREATURE_VOLATILE_FELFIRE_FIEND 25598 // Fiends spawned by the above portal
+#define CREATURE_SHIELD_ORB 25502 // Shield orbs circle the room raining shadow bolts on raid
+#define CREATURE_THE_CORE_OF_ENTROPIUS 26262 // Used in the ending cinematic?
+#define CREATURE_POWER_OF_THE_BLUE_DRAGONFLIGHT 25319 // NPC that players possess when using the Orb of the Blue Dragonflight
+ 
+/*** GameObjects ***/
+#define GAMEOBJECT_ORB_OF_THE_BLUE_DRAGONFLIGHT 188415
+ 
+/*** Speech and sounds***/
+// These are used throughout Sunwell and Magisters(?). Players can hear this while running through the instances.
+#define SAY_KJ_OFFCOMBAT1 "All my plans have led to this!"
+#define SOUND_KJ_OFFCOMBAT1 12495
+#define SAY_KJ_OFFCOMBAT2 "Stay on task! Do not waste time!"
+#define SOUND_KJ_OFFCOMBAT2 12496
+#define SAY_KJ_OFFCOMBAT3 "I have waited long enough!"
+#define SOUND_KJ_OFFCOMBAT3 12497
+#define SAY_KJ_OFFCOMBAT4 "Fail me and suffer for eternity!"
+#define SOUND_KJ_OFFCOMBAT4 12498
+#define SAY_KJ_OFFCOMBAT5 "Drain the girl! Drain her power until there is nothing but a vacant shell!"
+#define SOUND_KJ_OFFCOMBAT5 12499
+ 
+// Encounter speech and sounds
+#define SAY_KJ_EMERGE "The expendible have perished... So be it! Now I shall succeed where Sargeras could not! I will bleed this wretched world and secure my place as the true master of the Burning Legion. The end has come! Let the unraveling of this world commence!" 
+#define SOUND_KJ_EMERGE 12500
+#define SAY_KJ_SLAY1 "Another step towards destruction!"
+#define SOUND_KJ_SLAY1 12501
+#define SAY_KJ_SLAY2 "Anak-ky'ri!" // TODO: WTB Eredun dictionary
+#define SOUND_KJ_SLAY2 12502
+#define SAY_KJ_REFLECTION1 "Who can you trust?"
+#define SOUND_KJ_REFLECTION1 12503
+#define SAY_KJ_REFLECTION2 "The enemy is upon you!"
+#define SOUND_KJ_REFLECTION2 12504
+#define SAY_KJ_DARKNESS1 "Chaos!"
+#define SOUND_KJ_DARKNESS1 12505
+#define SAY_KJ_DARKNESS2 "Destruction!"
+#define SOUND_KJ_DARKNESS2 12506
+#define SAY_KJ_DARKNESS3 "Oblivion!"
+#define SOUND_KJ_DARKNESS3 12507
+#define SAY_KJ_PHASE3 "I will not be denied! This world shall fall!"
+#define SOUND_KJ_PHASE3 12508
+#define SAY_KJ_PHASE4 "Do not harbor false hope. You cannot win!"
+#define SOUND_KJ_PHASE4 12509
+#define SAY_KJ_PHASE5 "Aggghh! The powers of the Sunwell... turned... against me! What have you done? WHAT HAVE YOU DONE?"
+#define SOUND_KJ_PHASE5 12510
+ 
+/*** Kalecgos - Anveena speech at the beginning of Phase 5; Anveena's sacrifice ***/
+#define SAY_KALECGOS_AWAKEN "Anveena, you must awaken, this world needs you!"
+#define SOUND_KALECGOS_AWAKEN 12445
+#define SAY_ANVEENA_IMPRISONED "I serve only the Master now."
+#define SOUND_ANVEENA_IMPRISONED 12511
+#define SAY_KALECGOS_LETGO "You must let go! You must become what you were always meant to be! The time is now, Anveena!"
+#define SOUND_KALECGOS_LETGO 12446
+#define SAY_ANVEENA_LOST "But I'm... lost... I cannot find my way back!"
+#define SOUND_ANVEENA_LOST 12512
+#define SAY_KALECGOS_FOCUS "Anveena, I love you! Focus on my voice, come back for me now! Only you can cleanse the Sunwell!"
+#define SOUND_KALECGOS_FOCUS 12447
+#define SAY_ANVEENA_KALEC "Kalec... Kalec?"
+#define SOUND_ANVEENA_KALEC 12513
+#define SAY_KALECGOS_FATE "Yes, Anveena! Let fate embrace you now!"
+#define SOUND_KALECGOS_FATE 12448 
+#define SAY_ANVEENA_GOODBYE "The nightmare is over, the spell is broken! Goodbye, Kalec, my love!"
+#define SOUND_ANVEENA_GOODBYE 12514
+#define SAY_KALECGOS_GOODBYE "Goodbye, Anveena, my love. Few will remember your name, yet this day you change the course of destiny. What was once corrupt is now pure. Heroes, do not let her sacrifice be in vain."
+#define SOUND_KALECGOS_GOODBYE 12450
+#define SAY_KALECGOS_ENCOURAGE "Strike now, heroes, while he is weakened! Vanquish the Deceiver!"
+#define SOUND_KALECGOS_ENCOURAGE 12449
+
+
+void SinisterReflect();
+void ArmageddonSpawn();
+void BlueShild();
+void phaseTester();
 
 class KilJaedenAI : public ArcScriptBossAI
 {
 	ArcScript_FACTORY_FUNCTION(KilJaedenAI, ArcScriptBossAI);
 	KilJaedenAI(Creature* pCreature) : ArcScriptBossAI(pCreature)
 	{
-		AddPhaseSpell(1, AddSpell(LEGION_LIGHTNING, Target_RandomPlayer, 10, 2.0f, 3, 0, 35));
-		AddPhaseSpell(1, AddSpell(SOUL_FLAY, Target_RandomPlayer, 10, 2.5f, 3, 0, 35));
-		AddPhaseSpell(1, AddSpell(FIRE_BLOOM, Target_RandomPlayer, 10, 1.3f, 15, 0, 35));
-
-		/*AddEmote(Event_OnTargetDied, "Fire, consume!", Text_Yell);
-		AddEmote(Event_OnDied, "I... fade.", Text_Yell);*/
+		AddPhaseSpell(1, AddSpell(SPELL_LEGION_LIGHTNING, Target_RandomPlayer, 20, 2, 3, 0, 50));
+		AddPhaseSpell(1, AddSpell(SPELL_SOUL_FLAY_DAMAGE, Target_RandomPlayer, 20, 2.5, 3, 0, 50));
+		AddPhaseSpell(1, AddSpell(SPELL_FIRE_BLOOM, Target_RandomPlayer, 20, 1, 15, 0, 20));
 	}
 
 	void OnLoad()
 	{
+		_unit->SendChatMessage(CHAT_MSG_MONSTER_YELL, LANG_UNIVERSAL, SAY_KJ_OFFCOMBAT1);
+		_unit->PlaySoundToSet(SOUND_KJ_OFFCOMBAT1);
 		HandOfTheDeceiver1 = _unit->GetMapMgr()->GetInterface()->SpawnCreature(CN_HAND_OF_THE_DECEIVER, 1678.00f, 610.00f, 28.00f, 0.00f, true, false, 0, 0);
 		HandOfTheDeceiver2 = _unit->GetMapMgr()->GetInterface()->SpawnCreature(CN_HAND_OF_THE_DECEIVER, 1712.00f, 604.00f, 28.00f, 0.00f, true, false, 0, 0);
 		HandOfTheDeceiver3 = _unit->GetMapMgr()->GetInterface()->SpawnCreature(CN_HAND_OF_THE_DECEIVER, 1684.00f, 651.00f, 28.00f, 0.00f, true, false, 0, 0);
-		HandOfTheDeceiver4 = _unit->GetMapMgr()->GetInterface()->SpawnCreature(CN_HAND_OF_THE_DECEIVER, 1720.00f, 642.00f, 28.00f, 0.00f, true, false, 0, 0);	
+		SpawnCreature(CREATURE_ANVEENA, 1698, 629, 62, 0, true);
 		_unit->SetUInt64Value(UNIT_FIELD_FLAGS, ( false ) ? 0 : UNIT_FLAG_NOT_ATTACKABLE_9);
 		_unit->GetAIInterface()->SetAllowedToEnterCombat(false);
-		SetCanMove(false);
-		ShShadowbolt = dbcSpell.LookupEntry(SHIELD_ORB_SHADOWBOLT);
-		Darkness_explosion = dbcSpell.LookupEntry(29973);
-		Darkness = dbcSpell.LookupEntry(DARKNESS_OF_A_THOUSAND_SOULS);
-		ApplyAura(46367);
-		ApplyAura(46410);
-		StopMovement();
+		_unit->m_invisible = true;
+		ApplyAura(42866);
+		Darkness = dbcSpell.LookupEntry(SPELL_DARKNESS_OF_A_THOUSAND_SOULS);
+		starter = 0;
 		ParentClass::OnLoad();
-	}
-
-	void OnCombatStart(Unit* mTarget)
-	{
-		SetAllowMelee(false);
-		SetCanMove(false);
-		dtimmer = 1;
-		ParentClass::OnCombatStart(mTarget);
 	}
 
 	void OnDied(Unit * mKiller)
 	{
+		_unit->SendChatMessage(CHAT_MSG_MONSTER_YELL, LANG_UNIVERSAL, "Nooooooooooooo!");
 		ParentClass::OnDied(mKiller);
 	}
 
 	void AIUpdate()
 	{
-		if ((HandOfTheDeceiver1 && HandOfTheDeceiver2 && HandOfTheDeceiver3 && HandOfTheDeceiver4) && (HandOfTheDeceiver1->isDead() || HandOfTheDeceiver2->isDead() || HandOfTheDeceiver3->isDead() || HandOfTheDeceiver4->isDead()) && (GetPhase() != 1))
-		{
-			RemoveAura(46410);
-		}
+		_unit->Root();
+		GetAllowMelee();
+		SetBehavior(Behavior_Spell);
 
-		if ((HandOfTheDeceiver1 && HandOfTheDeceiver2 && HandOfTheDeceiver3 && HandOfTheDeceiver4) && (HandOfTheDeceiver1->isDead() && HandOfTheDeceiver2->isDead() && HandOfTheDeceiver3->isDead() && HandOfTheDeceiver4->isDead()) && (GetPhase() != 1) && (GetPhase() != 2))
-		{
-			SetPhase(1);
-			_unit->SetUInt64Value(UNIT_FIELD_FLAGS, ( true ) ? 0 : UNIT_FLAG_NOT_ATTACKABLE_9);
-			_unit->GetAIInterface()->SetAllowedToEnterCombat(true);
-			RemoveAura(46367);
-			ShieldOrb1 = _unit->GetMapMgr()->GetInterface()->SpawnGameObject(CN_SHIELD_ORB, 1678.00f, 610.00f, 28.00f, 0.00f, false, 0, 0);
-		}
+		phaseTester();
 
-		if (ShieldOrb1)
+		switch (starter)
 		{
-			//ShieldOrb1->CastSpell(ShShadowbolt);
-		}
-		if (ShieldOrb2)
-		{
-			//ShieldOrb2->CastSpell(ShShadowbolt);
-		}
-		if (ShieldOrb3)
-		{
-			//ShieldOrb3->CastSpell(ShShadowbolt);
-		}
-		if (ShieldOrb4)
-		{
-			//ShieldOrb4->CastSpell(ShShadowbolt);
-		}
-
-		switch (dtimmer)
-		{
-		case 100:
+		case 3:
 			{
-				dtimmer++;
-				if (GetHealthPercent()<=85)
-				{
-					SetPhase(2);
-					SetAllowMelee(false);
-					SetCanMove(false);
-					_unit->SendChatMessage(CHAT_MSG_MONSTER_YELL, LANG_UNIVERSAL, "Kil'jaeden begins to channel dark energy");
-				}
+				_unit->CastSpell(_unit, dbcSpell.LookupEntry(35177), true);
 			}break;
-		case 120:
-			{
-				dtimmer++;
-				if (GetPhase() == 2)
-					CastSpellOnTarget(_unit, Target_RandomPlayer, Darkness_explosion, true);
-					//CastSpellOnTarget(_unit, Target_RandomPlayer, Darkness, true); //this is the correct, but the dragon doesn't work.
-				SetAllowMelee(false);
-				SetCanMove(false);
-			}break;
-		case 128:
+		case 16:
 			{
 				SetPhase(1);
-				SetAllowMelee(false);
-				SetCanMove(false);
-				dtimmer = 1;
+				_unit->SetUInt64Value(UNIT_FIELD_FLAGS, ( true ) ? 0 : UNIT_FLAG_NOT_ATTACKABLE_9);
+				_unit->GetAIInterface()->SetAllowedToEnterCombat(true);
+				ShieldOrb1 = _unit->GetMapMgr()->GetInterface()->SpawnCreature(CN_SHIELD_ORB, 1678.00f, 610.00f, 48.00f, 0.00f, true, true, 0, 0);
+				//BlueDragon = _unit->GetMapMgr()->GetInterface()->SpawnCreature(CREATURE_POWER_OF_THE_BLUE_DRAGONFLIGHT, 1720.00f, 642.00f, 28.00f, 0.00f, true, true, 0, 0);
+				phase = 2;
+				starter++;
 			}break;
-		default:
+		}
+
+		if (starter > 0 && starter < 16)
+			starter++;
+
+		if (phase == 4)
+		{
+			switch (dtimmer)
 			{
-				SetCanMove(false);
-				SetAllowMelee(false);
-				dtimmer++;
-			}break;
+				case 2:
+					{
+						ArmageddonSpawn();
+						dtimmer++;
+					}break;
+				case 10:
+					{
+						_unit->SendChatMessage(CHAT_MSG_MONSTER_YELL,LANG_UNIVERSAL,"Who can you trust?");
+						_unit->PlaySoundToSet(12503);
+						SinisterReflect();
+						dtimmer++;
+					}break;
+				case 104:
+				{
+					SetPhase(2);
+					ClearHateList();
+					SetAllowMelee(true);
+					_unit->Root();
+					_unit->SetUInt64Value(UNIT_FIELD_FLAGS, ( false ) ? 0 : UNIT_FLAG_NOT_ATTACKABLE_9);
+					_unit->SendChatMessage(CHAT_MSG_MONSTER_YELL, LANG_UNIVERSAL, SAY_KJ_DARKNESS1);
+					_unit->PlaySoundToSet(SOUND_KJ_DARKNESS1);
+					_unit->SetUInt32Value(UNIT_NPC_EMOTESTATE, 407);
+					dtimmer++;
+					}break;
+				case 112:
+				{
+					SetAllowMelee(true);
+					BlueShild();
+					dtimmer++;
+				}break;
+				case 120:
+				{
+					CastSpellOnTarget(_unit, Target_RandomPlayer, Darkness, true);
+					_unit->Root();
+					SetAllowMelee(true);
+					dtimmer++;
+					}break;
+				case 122:
+				{
+					SetPhase(1);
+					_unit->SetUInt32Value(UNIT_NPC_EMOTESTATE, 0);
+					_unit->SetUInt64Value(UNIT_FIELD_FLAGS, ( true ) ? 0 : UNIT_FLAG_NOT_ATTACKABLE_9);
+					ClearHateList();
+					dtimmer = 0;
+					}break;
+				default:
+				{
+					_unit->Root();
+					dtimmer++;
+				}break;
+			}
+		}
+
+		if (phase == 5)
+		{
+			switch (dtimmer)
+			{
+				case 10:
+				{
+					SinisterReflect();
+					dtimmer++;
+				}break;
+				case 54:
+				{
+					SetPhase(2);
+					ClearHateList();
+					SetAllowMelee(true);
+					_unit->Root();
+					_unit->SetUInt64Value(UNIT_FIELD_FLAGS, ( false ) ? 0 : UNIT_FLAG_NOT_ATTACKABLE_9);
+					_unit->SendChatMessage(CHAT_MSG_MONSTER_YELL, LANG_UNIVERSAL, SAY_KJ_DARKNESS2);
+					_unit->PlaySoundToSet(SOUND_KJ_DARKNESS2);
+					_unit->SetUInt32Value(UNIT_NPC_EMOTESTATE, 407);
+					dtimmer++;
+					}break;
+				case 62:
+				{
+					BlueShild();
+					SetAllowMelee(true);
+					dtimmer++;
+				}break;
+				case 70:
+				{
+					CastSpellOnTarget(_unit, Target_RandomPlayer, Darkness, true);
+					SetAllowMelee(true);
+					_unit->Root();
+					dtimmer++;
+					}break;
+				case 72:
+				{
+					SetPhase(1);
+					_unit->SetUInt32Value(UNIT_NPC_EMOTESTATE, 0);
+					_unit->SetUInt64Value(UNIT_FIELD_FLAGS, ( true ) ? 0 : UNIT_FLAG_NOT_ATTACKABLE_9);
+					ClearHateList();
+					dtimmer = 0;
+					}break;
+				default:
+				{
+					SetAllowMelee(true);
+					_unit->Root();
+					dtimmer++;
+				}break;
+			}
+		}
+		ParentClass::AIUpdate();
+	}
+
+	void phaseTester()
+	{
+
+		_unit->Root();
+		GetAllowMelee();
+		SetBehavior(Behavior_Spell);
+
+		if ((HandOfTheDeceiver1 && HandOfTheDeceiver2 && HandOfTheDeceiver3) && (HandOfTheDeceiver1->isDead() && HandOfTheDeceiver2->isDead() && HandOfTheDeceiver3->isDead()) && (GetPhase() != 1) && (GetPhase() != 2) && (starter == 0))
+		{
+			_unit->SendChatMessage(CHAT_MSG_MONSTER_YELL, LANG_UNIVERSAL, SAY_KJ_EMERGE);
+			_unit->PlaySoundToSet(SOUND_KJ_EMERGE);
+			RemoveAura(42866);
+			_unit->m_invisible = false;
+			starter = 1;
 		}
 
 		switch(GetPhase())
 		{
 		case 1:
 			{
-				if(GetHealthPercent()<=85)
+				if(GetHealthPercent()<=85 && phase == 2)
 				{
-					AddPhaseSpell(1, AddSpell(SINISTER_REFLECTION, Target_RandomPlayer, 10, 1.5f, 4, 0, 35));
-					AddPhaseSpell(1, AddSpell(SHADOW_SPIKE, Target_RandomDestination, 10, 2.0f, 6, 0, 35));
-					AddPhaseSpell(1, AddSpell(FLAME_DART_EXPLOSION, Target_RandomPlayer, 10, 1.3f, 4, 0, 35));
-					ShieldOrb1 = _unit->GetMapMgr()->GetInterface()->SpawnGameObject(CN_SHIELD_ORB, 1678.00f, 610.00f, 28.00f, -1.72788f, false, 0, 0);
+					_unit->SendChatMessage(CHAT_MSG_MONSTER_YELL, LANG_UNIVERSAL, SAY_KJ_PHASE3);
+					_unit->PlaySoundToSet(SOUND_KJ_PHASE3);
+					AddPhaseSpell(1, AddSpell(SPELL_SINISTER_REFLECTION, Target_RandomPlayer, 10, 1.5f, 4, 0, 35));
+					AddPhaseSpell(1, AddSpell(SPELL_SHADOW_SPIKE, Target_RandomDestination, 10, 2.0f, 6, 0, 35));
+					AddPhaseSpell(1, AddSpell(SPELL_FLAME_DART, Target_RandomPlayer, 10, 1.3f, 4, 0, 35));
+					ShieldOrb2 = _unit->GetMapMgr()->GetInterface()->SpawnCreature(CN_SHIELD_ORB, 1712.00f, 604.00f, 48.00f, 0.00f, true, true, 0, 0);
+					phase++;
 				}
 
-				if(GetHealthPercent()<=55)
+				if(GetHealthPercent()<=55 && phase == 3)
 				{
-					ShieldOrb1 = _unit->GetMapMgr()->GetInterface()->SpawnGameObject(CN_SHIELD_ORB, 1684.00f, 651.00f, 28.00f, 0.00f, false, 0, 0);
+					_unit->SendChatMessage(CHAT_MSG_MONSTER_YELL, LANG_UNIVERSAL, SAY_KJ_PHASE4);
+					_unit->PlaySoundToSet(SOUND_KJ_PHASE4);
+					ShieldOrb3 = _unit->GetMapMgr()->GetInterface()->SpawnCreature(CN_SHIELD_ORB, 1684.00f, 651.00f, 48.00f, 0.00f, true, true, 0, 0);
+					dtimmer = 0;
+					phase++;
 				}
 
-				if(GetHealthPercent()<=25)
+				if(GetHealthPercent()<=25 && phase == 4 && (dtimmer > 54 || dtimmer == 0))
 				{
-					//armageddon
-					ShieldOrb1 = _unit->GetMapMgr()->GetInterface()->SpawnGameObject(CN_SHIELD_ORB, 1720.00f, 642.00f, 28.00f, 0.00f, false, 0, 0);
-					AddPhaseSpell(1, AddSpell(SACRIFICE_OF_ANVEENA, Target_RandomPlayer, 50, 0.5f, 10, 0, 35));
+					_unit->SendChatMessage(CHAT_MSG_MONSTER_YELL, LANG_UNIVERSAL, SAY_KJ_PHASE5);
+					_unit->PlaySoundToSet(SOUND_KJ_PHASE5);
+					ShieldOrb4 = _unit->GetMapMgr()->GetInterface()->SpawnCreature(CN_SHIELD_ORB, 1720.00f, 642.00f, 48.00f, 0.00f, true, true, 0, 0);
+					CastSpellOnTarget(_unit, Target_Self, dbcSpell.LookupEntry(SPELL_SACRIFICE_OF_ANVEENA), true);
+					dtimmer = 0;
+					phase++;
 				}
 			}break;
 		}
-		ParentClass::AIUpdate();
+	}
+
+	void BlueShild()
+	{
+		for (set<Player*>::iterator itr = _unit->GetInRangePlayerSetBegin(); itr != _unit->GetInRangePlayerSetEnd(); ++itr) 
+			{
+				Player *pPlayer = static_cast<Player*>(*itr);
+				if (pPlayer->isAlive() && _unit->CalcDistance(pPlayer) <= 16.0f)
+					pPlayer->CastSpell(pPlayer, dbcSpell.LookupEntry(38916), true);
+			}
+
+		_unit->Root();
+		GetAllowMelee();
+		SetBehavior(Behavior_Spell);
+	}
+
+	void SinisterReflect()
+	{
+		_unit->Root();
+		SetBehavior(Behavior_Spell);
+
+		SpawnCreature(CREATURE_SINISTER_REFLECTION, 1729.00f, 634.00f, 28.00f, 0.00f, true);
+		SpawnCreature(CREATURE_SINISTER_REFLECTION, 1701.00f, 658.00f, 28.00f, 0.00f, true);
+		SpawnCreature(CREATURE_SINISTER_REFLECTION, 1637.00f, 647.00f, 28.00f, 0.00f, true);
+		SpawnCreature(CREATURE_SINISTER_REFLECTION, 1672.00f, 612.00f, 28.00f, 0.00f, true);
+		SpawnCreature(CREATURE_SINISTER_REFLECTION, 1702.00f, 597.00f, 28.00f, 0.00f, true);
+	}
+
+	void ArmageddonSpawn()
+	{
+		int val = RandomUInt(4);
+		switch (val)
+		{
+		case 1:
+			SpawnCreature(CREATURE_ARMAGEDDON_TARGET, 1678.00f, 610.00f, 28.00f, 0.00f, true);
+		case 2:
+			SpawnCreature(CREATURE_ARMAGEDDON_TARGET, 1678.00f, 610.00f, 28.00f, 0.00f, true);
+		case 3:
+			SpawnCreature(CREATURE_ARMAGEDDON_TARGET, 1678.00f, 610.00f, 28.00f, 0.00f, true);
+		case 4:
+			SpawnCreature(CREATURE_ARMAGEDDON_TARGET, 1678.00f, 610.00f, 28.00f, 0.00f, true);
+		}
 	}
 
 protected:
 	Unit *HandOfTheDeceiver1;
 	Unit *HandOfTheDeceiver2;
 	Unit *HandOfTheDeceiver3;
-	Unit *HandOfTheDeceiver4;
-	GameObject* ShieldOrb1;
-	GameObject* ShieldOrb2;
-	GameObject* ShieldOrb3;
-	GameObject* ShieldOrb4;
-	SpellEntry *Darkness_explosion;
+	Unit *ShieldOrb1;
+	Unit *ShieldOrb2;
+	Unit *ShieldOrb3;
+	Unit *ShieldOrb4;
+	Unit *BlueDragon;
 	SpellEntry *Darkness;
-	SpellEntry *ShShadowbolt;
-	int dtimmer;
+	int dtimmer, phase, starter;
 };
+
 
 void SetupSunwellPlateau(ScriptMgr* pScriptMgr)
 {
@@ -842,6 +1365,13 @@ void SetupSunwellPlateau(ScriptMgr* pScriptMgr)
 	pScriptMgr->register_creature_script(CN_SHADOWSWORD_FURY_MAGE, &ShadowswordFuryMageAI::Create);
 	pScriptMgr->register_creature_script(CN_VOID_SENTINEL, &VoidSentinelAI::Create);
 	pScriptMgr->register_creature_script(CN_ENTROPIUS, &EntropiusAI::Create);
-	pScriptMgr->register_creature_script(CN_KILJAEDEN, &KilJaedenAI::Create);
 	pScriptMgr->register_creature_script(CN_HAND_OF_THE_DECEIVER, &HandOfTheDeceiverAI::Create);
+	pScriptMgr->register_creature_script(CN_VOLATILE_FELFIRE_FIEND, &VolatileFelfireFiendAI::Create);
+	pScriptMgr->register_creature_script(CREATURE_KALECGOS, &BlueDragonAI::Create);
+	pScriptMgr->register_creature_script(CREATURE_SHIELD_ORB, &ShieldOrbAI::Create);
+	pScriptMgr->register_creature_script(CREATURE_SINISTER_REFLECTION, &SinisterReflectionAI::Create);
+	pScriptMgr->register_creature_script(CREATURE_ANVEENA, &AnvennaAI::Create);
+	pScriptMgr->register_creature_script(CREATURE_ARMAGEDDON_TARGET, &ArmageddonAI::Create);
+	pScriptMgr->register_creature_script(CREATURE_KILJAEDEN, &KilJaedenAI::Create);
+	
 }

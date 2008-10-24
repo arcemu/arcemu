@@ -38,12 +38,12 @@ end
 
 function chain(pUnit, Event)
 	print "Thrall_chainlight"
-	pUnit:FullCastSpellOnTarget(16033,pUnit:GetClosestPlayer(0))
+	pUnit:FullCastSpellOnTarget(16033,pUnit:GetMainTank())
 end
 
 function shock(pUnit, Event)
 	print "Thrall_shock"
-	pUnit:FullCastSpellOnTarget(16034,pUnit:GetClosestPlayer(0))
+	pUnit:FullCastSpellOnTarget(16034,pUnit:GetMainTank())
 end
 
 function summonka(pUnit, Event)
@@ -100,7 +100,7 @@ end
 
 function shoot(pUnit, Event)
 	print "ladyswindr_shoot"
-	pUnit:CastSpellOnTarget(20463,pUnit:GetClosestPlayer(0))
+	pUnit:CastSpellOnTarget(20463,pUnit:GetMainTank())
 end
 
 
@@ -111,7 +111,7 @@ end
 
 function multishot(pUnit, Event)
 	print "ladyswindr_multishot"
-	pUnit:CastSpellOnTarget(20735,pUnit:GetClosestPlayer(0))
+	pUnit:CastSpellOnTarget(20735,pUnit:GetMainTank())
 end
 
 function summonn(pUnit, Event)
@@ -142,12 +142,12 @@ end
 
 function drainlife(pUnit, Event)
 	print "Varimathras_drainlife"
-	pUnit:CastSpellOnTarget(20743,pUnit:GetClosestPlayer(0))
+	pUnit:CastSpellOnTarget(20743,pUnit:GetMainTank())
 end
 
 function shadoww(pUnit, Event)
 	print "Varimathras_shadow"
-	pUnit:CastSpellOnTarget(20741,pUnit:GetClosestPlayer(0))
+	pUnit:CastSpellOnTarget(20741,pUnit:GetMainTank())
 end
 
 function Varimathras_OnLeaveCombat(pUnit, Event)
@@ -182,12 +182,12 @@ end
 
 function cleave(pUnit, Event)
 	print "cairblood_cleave"
-	pUnit:CastSpellOnTarget(16044,pUnit:GetClosestPlayer(0))
+	pUnit:CastSpellOnTarget(16044,pUnit:GetMainTank())
 end
 
 function mortalStrike(pUnit, Event)
 	print "cairblood_MortalStrike"
-	pUnit:CastSpellOnTarget(16856,pUnit:GetClosestPlayer(0))
+	pUnit:CastSpellOnTarget(16856,pUnit:GetMainTank())
 end
 
 function thunderclap(pUnit, Event)
@@ -230,7 +230,7 @@ end
 
 function cleavee(pUnit, Event)
 	print "lorthemar_cleave"
-	pUnit:CastSpellOnTarget(16044,pUnit:GetClosestPlayer(0))
+	pUnit:CastSpellOnTarget(16044,pUnit:GetMainTank())
 end
 
 function mannaburn(pUnit, Event)
@@ -240,7 +240,7 @@ end
 
 function shock(pUnit, Event)
 	print "lorthemar_shock"
-	pUnit:FullCastSpellOnTarget(16034,pUnit:GetClosestPlayer(0))
+	pUnit:FullCastSpellOnTarget(16034,pUnit:GetMainTank())
 end
 
 function charm(pUnit, Event)

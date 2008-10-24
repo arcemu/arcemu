@@ -53,7 +53,7 @@ end
 
 function Pandemonius_Void_Blast(pUnit, event, miscpUnit, misc)
 	print "Pandemonius Void Blast"
-	pUnit:FullCastSpellOnTarget(32325,pUnit:GetClosestPlayer(0))
+	pUnit:FullCastSpellOnTarget(32325,pUnit:GetMainTank())
 
 end
 
