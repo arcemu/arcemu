@@ -30,7 +30,7 @@
  *																	NO INFOS
  */
 
-/* 6. Additional fights (I saw some on youtube movies - like SilverArcScript
+/* 6. Additional fights (I saw some on youtube movies - like Silvermoon
  *    magisters fighting with infernals and so, but I don't have infos
  *	  about those.
  */
@@ -68,7 +68,7 @@
 #define ORGRIMMAR_SHAMAN			18972	// +
 #define DARKSPEAR_AXE_THROWER		18970	// +
 #define UNDERCITY_MAGE				18971	// +
-#define SILVERArcScript_MAGISTER			19006	// + no spells
+#define Silvermoon_MAGISTER			19006	// + no spells
 #define	THUNDER_BLUFF_HUNTER		00000	// --- Thunder Bluff Hunters spawned by Melgromm Highmountain - can't find those
 
 // Alliance Side

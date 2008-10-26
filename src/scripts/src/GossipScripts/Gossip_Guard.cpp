@@ -1153,7 +1153,7 @@ public:
     }
 };
 
-class SCRIPT_DECL SilverArcScriptGuard : public GossipScript
+class SCRIPT_DECL SilvermoonGuard : public GossipScript
 {
 public:
 	void Destroy()
@@ -1211,39 +1211,39 @@ public:
 
 		case 3:     // Bat Handler
             SendQuickMenu(9316);
-            Plr->Gossip_SendPOI(9378.45, -7163.94, 6, 6, 0, "SilverArcScript City, Flight Master");
+            Plr->Gossip_SendPOI(9378.45, -7163.94, 6, 6, 0, "Silvermoon City, Flight Master");
             break;
 
         case 4:     // Guild Master
             SendQuickMenu(9324);
-            Plr->Gossip_SendPOI(9480.75, -7345.587, 6, 6, 0, "SilverArcScript City, Guild Master");
+            Plr->Gossip_SendPOI(9480.75, -7345.587, 6, 6, 0, "Silvermoon City, Guild Master");
             break;
 
         case 5:     // The Inn
 			objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 9325, Plr);
-            Menu->AddItem(0, "The SilverArcScript City Inn."  , 17);
+            Menu->AddItem(0, "The Silvermoon City Inn."  , 17);
             Menu->AddItem(0, "The Wayfarer's Rest tavern."    , 18);
             Menu->SendTo(Plr);
             break;
 
         case 6:     // Mailbox
             SendQuickMenu(9316);
-            Plr->Gossip_SendPOI(9743.078, -7466.4, 6, 6, 0, "SilverArcScript City, Mailbox");
+            Plr->Gossip_SendPOI(9743.078, -7466.4, 6, 6, 0, "Silvermoon City, Mailbox");
             break;
 
         case 7:     // Stable Master
             SendQuickMenu(9316);
-            Plr->Gossip_SendPOI(9904.95, -7404.31, 6, 6, 0, "SilverArcScript City, Stable Master");
+            Plr->Gossip_SendPOI(9904.95, -7404.31, 6, 6, 0, "Silvermoon City, Stable Master");
             break;
 
         case 8:     // Weapon Master
             SendQuickMenu(9316);
-            Plr->Gossip_SendPOI(9841.17, -7505.13, 6, 6, 0, "SilverArcScript City, Weapon Master");
+            Plr->Gossip_SendPOI(9841.17, -7505.13, 6, 6, 0, "Silvermoon City, Weapon Master");
             break;
 
 	    case 9:     // Battlemasters
 			SendQuickMenu(9316);
-            Plr->Gossip_SendPOI(9850.74, -7563.84, 6, 6, 0, "SilverArcScript City, Battlemasters");
+            Plr->Gossip_SendPOI(9850.74, -7563.84, 6, 6, 0, "Silvermoon City, Battlemasters");
             break;
 
         case 10:    // Class Trainers
@@ -1280,161 +1280,161 @@ public:
 
 		case 12: //Mana Loom
             {
-                Plr->Gossip_SendPOI(9751.013, -7074.85, 6, 6, 0, "SilverArcScript City, Mana Loom");
+                Plr->Gossip_SendPOI(9751.013, -7074.85, 6, 6, 0, "Silvermoon City, Mana Loom");
                 SendQuickMenu(9316);
             }break;
 
         case 13: //To the west - Auction House no. 1
             {
-                Plr->Gossip_SendPOI(9649.429, -7134.027, 6, 6, 0, "SilverArcScript City, Auction House");
+                Plr->Gossip_SendPOI(9649.429, -7134.027, 6, 6, 0, "Silvermoon City, Auction House");
                 SendQuickMenu(9316);
             }break;
 
         case 14: //To the east - Auction House no. 2
             {
-                Plr->Gossip_SendPOI(9682.864, -7515.786, 6, 6, 0, "SilverArcScript City, Auction House");
+                Plr->Gossip_SendPOI(9682.864, -7515.786, 6, 6, 0, "Silvermoon City, Auction House");
                 SendQuickMenu(9316);
             }break;
 
         case 15:     // The bank - The west.
             SendQuickMenu(9324);
-            Plr->Gossip_SendPOI(9522.104, -7208.878, 6, 6, 0, "SilverArcScript City, Bank");
+            Plr->Gossip_SendPOI(9522.104, -7208.878, 6, 6, 0, "Silvermoon City, Bank");
             break;
 
         case 16:     // The bank - The east.
             SendQuickMenu(9324);
-            Plr->Gossip_SendPOI(9791.07, -7488.041, 6, 6, 0, "SilverArcScript City, Bank");
+            Plr->Gossip_SendPOI(9791.07, -7488.041, 6, 6, 0, "Silvermoon City, Bank");
             break;
 
-        case 17: //The SilverArcScript City Inn
+        case 17: //The Silvermoon City Inn
             {
-                Plr->Gossip_SendPOI(9677.113, -7367.575, 6, 6, 0, "SilverArcScript City, Inn");
+                Plr->Gossip_SendPOI(9677.113, -7367.575, 6, 6, 0, "Silvermoon City, Inn");
                 SendQuickMenu(9316);
             }break;
 
         case 18: //The Wayfarer's Rest tavern
             {
-                Plr->Gossip_SendPOI(9562.813, -7218.63, 6, 6, 0, "SilverArcScript City, Inn");
+                Plr->Gossip_SendPOI(9562.813, -7218.63, 6, 6, 0, "Silvermoon City, Inn");
                 SendQuickMenu(9316);
             }break;
 
         case 19: //Druid
             {
-                Plr->Gossip_SendPOI(9700.55, -7262.57, 6, 6, 0, "SilverArcScript City, Druid Trainer");
+                Plr->Gossip_SendPOI(9700.55, -7262.57, 6, 6, 0, "Silvermoon City, Druid Trainer");
                 SendQuickMenu(9316);
             }break;
 
         case 20: //Hunter
             {
-                Plr->Gossip_SendPOI(9930.568, -7412.115, 6, 6, 0, "SilverArcScript City, Hunter Trainer");
+                Plr->Gossip_SendPOI(9930.568, -7412.115, 6, 6, 0, "Silvermoon City, Hunter Trainer");
                 SendQuickMenu(9316);
             }break;
 
         case 21: //Mage
             {
-                Plr->Gossip_SendPOI(9996.914, -7104.803, 6, 6, 0, "SilverArcScript City, Mage Trainer");
+                Plr->Gossip_SendPOI(9996.914, -7104.803, 6, 6, 0, "Silvermoon City, Mage Trainer");
                 SendQuickMenu(9316);
             }break;
 
         case 22: //Paladin
             {
-                Plr->Gossip_SendPOI(9850.22, -7516.93, 6, 6, 0, "SilverArcScript City, Paladin Trainer");
+                Plr->Gossip_SendPOI(9850.22, -7516.93, 6, 6, 0, "Silvermoon City, Paladin Trainer");
                 SendQuickMenu(9316);
             }break;
 
         case 23: //Priest
             {
-                Plr->Gossip_SendPOI(9935.37, -7131.14, 6, 6, 0, "SilverArcScript City, Priest Trainer");
+                Plr->Gossip_SendPOI(9935.37, -7131.14, 6, 6, 0, "Silvermoon City, Priest Trainer");
                 SendQuickMenu(9316);
             }break;
 
         case 24: //Rogue
             {
-                Plr->Gossip_SendPOI(9739.88, -7374.33, 6, 6, 0, "SilverArcScript City, Rogue Trainer");
+                Plr->Gossip_SendPOI(9739.88, -7374.33, 6, 6, 0, "Silvermoon City, Rogue Trainer");
                 SendQuickMenu(9316);
             }break;
 
         case 25: //Warlock
             {
-                Plr->Gossip_SendPOI(9803.052, -7316.967, 6, 6, 0, "SilverArcScript City, Warlock Trainer");
+                Plr->Gossip_SendPOI(9803.052, -7316.967, 6, 6, 0, "Silvermoon City, Warlock Trainer");
                 SendQuickMenu(9316);
             }break;
 
         case 26: //Alchemy
             {
-                Plr->Gossip_SendPOI(10000.9, -7216.63, 6, 6, 0, "SilverArcScript City, Alchemy");
+                Plr->Gossip_SendPOI(10000.9, -7216.63, 6, 6, 0, "Silvermoon City, Alchemy");
                 SendQuickMenu(9316);
             }break;
 
         case 27: //Blacksmithing
             {
-                Plr->Gossip_SendPOI(9841.43, -7361.53, 6, 6, 0, "SilverArcScript City, Blacksmithing");
+                Plr->Gossip_SendPOI(9841.43, -7361.53, 6, 6, 0, "Silvermoon City, Blacksmithing");
                 SendQuickMenu(9340);
             }break;
 
         case 28: //Cooking
             {
-                Plr->Gossip_SendPOI(9577.26, -7243.6, 6, 6, 0, "SilverArcScript City, Cooking");
+                Plr->Gossip_SendPOI(9577.26, -7243.6, 6, 6, 0, "Silvermoon City, Cooking");
                 SendQuickMenu(9316);
             }break;
 
         case 29: //Enchanting
             {
-                Plr->Gossip_SendPOI(9962.57, -7246.18, 6, 6, 0, "SilverArcScript City, Enchanting");
+                Plr->Gossip_SendPOI(9962.57, -7246.18, 6, 6, 0, "Silvermoon City, Enchanting");
                 SendQuickMenu(9341);
             }break;
 
         case 30: //Engineering
             {
-                Plr->Gossip_SendPOI(9808.85, -7287.31, 6, 6, 0, "SilverArcScript City, Engineering");
+                Plr->Gossip_SendPOI(9808.85, -7287.31, 6, 6, 0, "Silvermoon City, Engineering");
                 SendQuickMenu(9316);
             }break;
 
         case 31: //First Aid
             {
-                Plr->Gossip_SendPOI(9588.61, -7337.526, 6, 6, 0, "SilverArcScript City, First Aid");
+                Plr->Gossip_SendPOI(9588.61, -7337.526, 6, 6, 0, "Silvermoon City, First Aid");
                 SendQuickMenu(9316);
             }break;
 
         case 32: //Fishing
             {
-                Plr->Gossip_SendPOI(9601.97, -7332.34, 6, 6, 0, "SilverArcScript City, Fishing");
+                Plr->Gossip_SendPOI(9601.97, -7332.34, 6, 6, 0, "Silvermoon City, Fishing");
                 SendQuickMenu(9316);
             }break;
 
         case 33: //Herbalism
             {
-                Plr->Gossip_SendPOI(9996.96, -7208.39, 6, 6, 0, "SilverArcScript City, Herbalism");
+                Plr->Gossip_SendPOI(9996.96, -7208.39, 6, 6, 0, "Silvermoon City, Herbalism");
                 SendQuickMenu(9316);
             }break;
 
         case 34: //Jewelcrafting
             {
-                Plr->Gossip_SendPOI(9552.8, -7502.12, 6, 6, 0, "SilverArcScript City, Jewelcrafting");
+                Plr->Gossip_SendPOI(9552.8, -7502.12, 6, 6, 0, "Silvermoon City, Jewelcrafting");
                 SendQuickMenu(9346);
             }break;
 
         case 35: //Leatherworking
             {
-                Plr->Gossip_SendPOI(9502.486, -7425.51, 6, 6, 0, "SilverArcScript City, Leatherworking");
+                Plr->Gossip_SendPOI(9502.486, -7425.51, 6, 6, 0, "Silvermoon City, Leatherworking");
                 SendQuickMenu(9347);
             }break;
 
         case 36: //Mining
             {
-                Plr->Gossip_SendPOI(9813.73, -7360.19, 6, 6, 0, "SilverArcScript City, Mining");
+                Plr->Gossip_SendPOI(9813.73, -7360.19, 6, 6, 0, "Silvermoon City, Mining");
                 SendQuickMenu(9348);
             }break;
 
         case 37: //Skinning
             {
-                Plr->Gossip_SendPOI(9513.37, -7429.4, 6, 6, 0, "SilverArcScript City, Skinning");
+                Plr->Gossip_SendPOI(9513.37, -7429.4, 6, 6, 0, "Silvermoon City, Skinning");
                 SendQuickMenu(9316);
             }break;
 
 		case 38: //Tailoring
             {
-                Plr->Gossip_SendPOI(9727.56, -7086.65, 6, 6, 0, "SilverArcScript City, Tailoring");
+                Plr->Gossip_SendPOI(9727.56, -7086.65, 6, 6, 0, "Silvermoon City, Tailoring");
                 SendQuickMenu(9350);
             }break;
         }
@@ -3222,7 +3222,7 @@ public:
 
         case 1:     //Bat Handler
             SendQuickMenu(2593);
-			Plr->Gossip_SendPOI(9376.4, -7164.92, 6, 6, 0, "SilverArcScript City, Flight Master");
+			Plr->Gossip_SendPOI(9376.4, -7164.92, 6, 6, 0, "Silvermoon City, Flight Master");
             break;
 
         case 2:     //Guild Master
@@ -3935,7 +3935,7 @@ void SetupGuardGossip(ScriptMgr * mgr)
 	GossipScript * falcon = (GossipScript*) new FalconwingGuard();
 	GossipScript * azure = (AzureWatchGuard*) new AzureWatchGuard();
 	GossipScript * under = (GossipScript*) new UndercityGuard();
-	GossipScript * silver = (SilverArcScriptGuard*) new SilverArcScriptGuard();
+	GossipScript * silver = (SilvermoonGuard*) new SilvermoonGuard();
 	GossipScript * exodar = (ExodarGuard*) new ExodarGuard();
 	GossipScript * ogri = (OrgrimmarGuard*) new OrgrimmarGuard();
 	GossipScript * thun = (ThunderbluffGuard*) new ThunderbluffGuard();
@@ -3948,7 +3948,7 @@ void SetupGuardGossip(ScriptMgr * mgr)
     mgr->register_gossip_script(4262,  darn);        // Darnassus Sentinel
     mgr->register_gossip_script(5624,  under);		// Undercity Guardian
     mgr->register_gossip_script(3571,  dol);			// Teldrassil Sentinel
-	mgr->register_gossip_script(16222, silver);	    // SilverArcScript City Guardian
+	mgr->register_gossip_script(16222, silver);	    // Silvermoon City Guardian
 	mgr->register_gossip_script(16733, exodar);	        // Exodar Peacekeeper
 	mgr->register_gossip_script(20674, exodar);	        // Shield of Velen
 	mgr->register_gossip_script(3296, ogri);	        // Orgrimmar Grunt
@@ -3975,7 +3975,7 @@ void SetupGuardGossip(ScriptMgr * mgr)
 	mgr->register_gossip_script(1742, brill);				// Deathguard Bartholomew
 	mgr->register_gossip_script(5595, irf);			// Ironforge Guard
 	mgr->register_gossip_script(727,  khar);			// Ironforge Mountaineer
-	mgr->register_gossip_script(16221,falcon);		// SilverArcScript Guardian
+	mgr->register_gossip_script(16221,falcon);		// Silvermoon Guardian
 	mgr->register_gossip_script(18038,azure);		// Azuremyst Peacekeeper
 	mgr->register_gossip_script(19687,shattr);         // Shattrath City Guard -by AeThIs
     mgr->register_gossip_script(18568,shattr);      // Shattrath City Guard Aruspice -by AeThIs
