@@ -1914,22 +1914,18 @@ void MapMgr::UnloadCell(uint32 x,uint32 y)
 
 void MapMgr::EventRespawnCreature(Creature * c, MapCell * p)
 {
-	ObjectSet::iterator itr = p->_respawnObjects.find( ((Object*)c) );
-	if(itr != p->_respawnObjects.end())
-	{
+	if (hashmap64_get(p->_respawnObjects, c->GetGUID(), NULL) == MAP_OK) {
 		c->m_respawnCell=NULL;
-		p->_respawnObjects.erase(itr);
+		hashmap64_remove(p->_respawnObjects, c->GetGUID());
 		c->OnRespawn(this);
 	}
 }
 
 void MapMgr::EventRespawnGameObject(GameObject * o, MapCell * c)
 {
-	ObjectSet::iterator itr = c->_respawnObjects.find( ((Object*)o) );
-	if(itr != c->_respawnObjects.end())
-	{
+	if (hashmap64_get(c->_respawnObjects, o->GetGUID(), NULL) == MAP_OK) {
 		o->m_respawnCell=NULL;
-		c->_respawnObjects.erase(itr);
+		hashmap64_remove(c->_respawnObjects, o->GetGUID());
 		o->Spawn(this);
 	}
 }

@@ -123,7 +123,7 @@ Creature::~Creature()
 		delete m_custom_waypoint_map;
 	}
 	if(m_respawnCell!=NULL)
-		m_respawnCell->_respawnObjects.erase(this);
+		hashmap64_remove(m_respawnCell->_respawnObjects, GetGUID());
 }
 
 void Creature::Update( uint32 p_time )
@@ -1709,7 +1709,7 @@ void Creature::Despawn(uint32 delay, uint32 respawntime)
 			pCell = m_mapCell;
 	
 		ASSERT(pCell);
-		pCell->_respawnObjects.insert(((Object*)this));
+		hashmap64_put(pCell->_respawnObjects, GetGUID(), NULL);
 		sEventMgr.RemoveEvents(this);
 		sEventMgr.AddEvent(m_mapMgr, &MapMgr::EventRespawnCreature, this, pCell, EVENT_CREATURE_RESPAWN, respawntime, 1, 0);
 		Unit::RemoveFromWorld(false);

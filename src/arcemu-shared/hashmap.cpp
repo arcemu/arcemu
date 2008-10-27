@@ -477,7 +477,7 @@ int hashmap64_get_index(map_t in, int index, int64 *key, any_t *arg) {
 /*
  * Remove an element with that key from the map
  */
-int hashmap64_remove(map_t in, int key){
+int hashmap64_remove(map_t in, int64 key){
 	int i;
 	int curr;
 	hashmap_map64* m;
