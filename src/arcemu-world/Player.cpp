@@ -3953,6 +3953,9 @@ void Player::_ApplyItemMods(Item* item, int8 slot, bool apply, bool justdrokedow
 				ts.procFlags = PROC_ON_MELEE_ATTACK;
 				ts.deleted = false;
 				ts.groupRelation = 0;
+				ts.ProcType = 0;
+				ts.LastTrigger = 0;
+				ts.procCharges = 0;
 				m_procSpells.push_front( ts );			
 			}
 		}
