@@ -5981,6 +5981,11 @@ int32 Player::CanShootRangedWeapon( uint32 spellid, Unit* target, bool autoshot 
 	if( iprot && getLevel()< iprot->RequiredLevel)
 		return SPELL_FAILED_LOWLEVEL;
 
+	// Check ammo type
+	ItemPrototype * iprot1 = ItemPrototypeStorage.LookupEntry(itm->GetEntry());
+	if( iprot && iprot1 && iprot->SubClass != iprot1->AmmoType )
+		return SPELL_FAILED_NEED_AMMO;
+
 	// Player has clicked off target. Fail spell.
 	if( m_curSelection != m_AutoShotTarget )
 		return SPELL_FAILED_INTERRUPTED;
