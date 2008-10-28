@@ -48,6 +48,7 @@ public:
 	void UpdateAccountCount(uint32 account_id, uint8 add);
 	void HandleDisconnectAccount(WorldPacket & recvData);
 	void HandleConsoleAuthResult(WorldPacket & recvData);
+	void HandlePopulationRequest(WorldPacket & recvData);
 
 	void OnDisconnect();
 	void CompressAndSend(ByteBuffer & uncompressed);

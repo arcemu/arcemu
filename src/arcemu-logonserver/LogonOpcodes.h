@@ -57,8 +57,12 @@ enum RealmListOpcodes
 	// DB modifying
 	RCMSG_MODIFY_DATABASE						= 17,
 
+	// Realm population
+	RSMSG_REALM_POP_REQ							= 18,
+	RCMSG_REALM_POP_RES							= 19,
+
 	// count
-	RMSG_COUNT									= 18,
+	RMSG_COUNT									= 20,
 };
 
 #endif
