@@ -417,7 +417,7 @@ void Pet::SendSpellsToOwner()
 
 void Pet::SendNullSpellsToOwner()
 {
-	if( m_Owner == NULL )
+	if( m_Owner == NULL || m_Owner->GetSession() == NULL)
 		return;
 
 	WorldPacket data(8);
@@ -428,7 +428,7 @@ void Pet::SendNullSpellsToOwner()
 
 void Pet::SendCastFailed( uint32 spellid, uint8 fail )
 {
-	if( m_Owner == NULL )
+	if( m_Owner == NULL || m_Owner->GetSession() == NULL)
 		return;
 
 	WorldPacket data( SMSG_PET_CAST_FAILED, (4+1) );
