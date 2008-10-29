@@ -179,6 +179,8 @@ void Item::LoadFromDB(Field* fields, Player* plr, bool light )
 {
 	uint32 itemid = fields[2].GetUInt32();
 	uint32 random_prop, random_suffix;
+	uint32 count;
+
 	m_itemProto = ItemPrototypeStorage.LookupEntry( itemid );
 
 	ASSERT( m_itemProto );
@@ -195,7 +197,10 @@ void Item::LoadFromDB(Field* fields, Player* plr, bool light )
 	m_uint32Values[ITEM_FIELD_GIFTCREATOR] = fields[4].GetUInt32();
 	m_uint32Values[ITEM_FIELD_CREATOR] = fields[5].GetUInt32();
 
-	SetUInt32Value( ITEM_FIELD_STACK_COUNT,  fields[6].GetUInt32());
+	count = fields[6].GetUInt32();
+	if (count > m_itemProto->MaxCount)
+		count = m_itemProto->MaxCount;
+	SetUInt32Value( ITEM_FIELD_STACK_COUNT, count);
 
 	// Again another for that did not indent to make it do anything for more than 
 	// one iteration x == 0 was the only one executed

@@ -340,7 +340,7 @@ struct ProcTriggerSpell
 	//    SpellEntry *spinfo;
 	uint32 LastTrigger;
 	uint32 ProcType; //0=triggerspell/1=triggerclassspell
-	uint32 groupRelation;
+	uint64 groupRelation;
 	bool deleted;
 };
 #else
