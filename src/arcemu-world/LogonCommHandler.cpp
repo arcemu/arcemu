@@ -541,10 +541,8 @@ void LogonCommHandler::IPBan_Remove(const char * ip)
 
 void LogonCommHandler::RefreshRealmPop()
 {
-	uint32 chrCount =
-		Database_Character->QueryNA("SELECT COUNT(guid) FROM characters WHERE online = 1;")->Fetch()[0].GetInt32();
 	// Get realm player limit, it's better that we get the player limit once and save it! <-done	
 	// Calc pop: 0 >= low, 1 >= med, 2 >= hig, 3 >= full
-	server_population = float((chrCount * 3) / pLimit);
+	server_population = float(((sWorld.AlliancePlayers + sWorld.HordePlayers) * 3) / pLimit);
 }
 #endif
