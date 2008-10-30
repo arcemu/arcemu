@@ -4383,25 +4383,13 @@ bool Unit::RemoveAura(Aura *aur)
 	return true;
 }
 
-bool Unit::RemoveAura(uint32 spellId) // cebernic: totally removes
-{
-	bool res = false;
+bool Unit::RemoveAura(uint32 spellId)
+{//this can be speed up, if we know passive \pos neg
 	for(uint32 x=MAX_TOTAL_AURAS_START;x<MAX_TOTAL_AURAS_END;x++)
 		if(m_auras[x] && m_auras[x]->GetSpellId()==spellId )
 		{
 			m_auras[x]->Remove();
-			res = true;
-		}
-	return res;
-}
-
-bool Unit::RemoveAuraFirst(uint32 spellId) // cebernic: just remove and return true
-{
-	for(uint32 x=MAX_TOTAL_AURAS_START;x<MAX_TOTAL_AURAS_END;x++)
-		if(m_auras[x] && m_auras[x]->GetSpellId()==spellId )
-		{
-			m_auras[x]->Remove();
-			return true;
+			return true;  // sky: yes, only one, see bug charges/auras queues
 		}
 	return false;
 }
@@ -4476,23 +4464,6 @@ bool Unit::RemoveAurasByHeal()
 }
 
 bool Unit::RemoveAura(uint32 spellId, uint64 guid)
-{   
-	bool res = false;
-	for(uint32 x=MAX_TOTAL_AURAS_START;x<MAX_TOTAL_AURAS_END;x++)
-	{
-		if(m_auras[x])
-		{
-			if(m_auras[x]->GetSpellId()==spellId && m_auras[x]->m_casterGuid == guid)
-			{
-				m_auras[x]->Remove();
-				res = true;
-			}
-		}
-	}
-	return res;
-}
-
-bool Unit::RemoveAuraFirst(uint32 spellId, uint64 guid)
 {   
 	for(uint32 x=MAX_TOTAL_AURAS_START;x<MAX_TOTAL_AURAS_END;x++)
 	{
