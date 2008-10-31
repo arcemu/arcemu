@@ -506,6 +506,7 @@ void QuestMgr::BuildQuestComplete(Player*plr, Quest* qst)
 
 void QuestMgr::BuildQuestList(WorldPacket *data, Object* qst_giver, Player *plr, uint32 language)
 {
+	if ( !plr || !plr->GetSession() ) return;
 	uint32 status;
 	list<QuestRelation *>::iterator it;
 	list<QuestRelation *>::iterator st;
@@ -515,7 +516,7 @@ void QuestMgr::BuildQuestList(WorldPacket *data, Object* qst_giver, Player *plr,
 	data->Initialize( SMSG_QUESTGIVER_QUEST_LIST );
 
 	*data << qst_giver->GetGUID();
-	*data << "How can I help you?"; //Hello line 
+	*data << plr->GetSession()->LocalizedWorldSrv(70);//"How can I help you?"; //Hello line 
 	*data << uint32(1);//Emote Delay
 	*data << uint32(1);//Emote
 
