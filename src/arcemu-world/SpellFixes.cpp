@@ -1921,8 +1921,10 @@ void ApplyNormalFixes()
 	for(i = 0; thrown_spells[i] != 0; ++i)
 	{
 		sp = dbcSpell.LookupEntryForced( thrown_spells[i] );
-		if( sp != NULL && sp->RecoveryTime==0 && sp->StartRecoveryTime == 0 )
-			sp->RecoveryTime = 1600;
+		if( sp != NULL && sp->RecoveryTime==0 && sp->StartRecoveryTime == 0 ){
+			if ( sp->Id == SPELL_RANGED_GENERAL ) sp->RecoveryTime = 500; // cebernic: hunter general with 0.5s
+			else sp->RecoveryTime = 1500; // 1.5cd
+		}
 	}
 
 	/**********************************************************
@@ -2982,6 +2984,7 @@ void ApplyNormalFixes()
 		if( sp != NULL )
 		{
 			sp->EffectImplicitTargetA[0] = EFF_TARGET_SINGLE_ENEMY;
+			sp->EffectImplicitTargetA[1] = EFF_TARGET_SINGLE_ENEMY;
 		}
 
 		//rogue - Find Weakness.
@@ -4121,6 +4124,22 @@ void ApplyNormalFixes()
 			sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
 			sp->EffectTriggerSpell[0] = 12486;
 			sp->procFlags = PROC_ON_CAST_SPELL;
+		}
+
+		// cebernic: not for self?
+		// impact
+		sp = dbcSpell.LookupEntryForced( 12355 );
+		if( sp != NULL )
+		{
+		  // passive rank: 11103, 12357, 12358 ,12359,12360 :D
+			sp->procFlags = PROC_ON_ANY_DAMAGE_VICTIM | PROC_ON_SPELL_CRIT_HIT ;
+			sp->EffectImplicitTargetA[0] = EFF_TARGET_ALL_ENEMIES_AROUND_CASTER;
+			sp->EffectImplicitTargetB[0] = EFF_TARGET_ALL_ENEMIES_AROUND_CASTER;
+			sp->EffectImplicitTargetA[1] = EFF_TARGET_ALL_ENEMIES_AROUND_CASTER;
+			sp->EffectImplicitTargetB[1] = EFF_TARGET_ALL_ENEMIES_AROUND_CASTER;
+			sp->EffectImplicitTargetA[2] = EFF_TARGET_ALL_ENEMIES_AROUND_CASTER;
+			sp->EffectImplicitTargetB[2] = EFF_TARGET_ALL_ENEMIES_AROUND_CASTER;
+			sp->c_is_flags |= SPELL_FLAG_IS_FORCEDDEBUFF;
 		}
 
 		//Invisibility
@@ -6131,4 +6150,10 @@ void ApplyNormalFixes()
 		sp = dbcSpell.LookupEntryForced( 15571 );
 		if( sp != NULL )
 			sp->c_is_flags |= SPELL_FLAG_IS_FORCEDDEBUFF;
+
+		//Bandage
+		sp = dbcSpell.LookupEntryForced( 11196 );
+		if( sp != NULL )
+			sp->c_is_flags = SPELL_FLAG_IS_FORCEDDEBUFF;
+
 }

@@ -90,6 +90,20 @@ bool isHostile(Object* objA, Object* objB)// B is hostile for A?
 		hostile = true;
 	}*/
 
+	// anway,this place won't fight
+	AreaTable *atA = NULL;
+	AreaTable *atB = NULL;
+
+	if( objA->IsPlayer() )
+		atA = dbcArea.LookupEntry( static_cast< Player* >( objA )->GetAreaID() );
+
+	if( objB->IsPlayer() )
+		atB = dbcArea.LookupEntry( static_cast< Player* >( objB )->GetAreaID() );
+
+	if( ( atA && atA->AreaFlags & 0x800) || (atB && atB->AreaFlags & 0x800) ) // cebernic: fix older logic error
+		return false;
+
+		
 	// check friend/enemy list
 	for(uint32 i = 0; i < 4; i++)
 	{
@@ -169,13 +183,11 @@ bool isHostile(Object* objA, Object* objB)// B is hostile for A?
 /// Including the spell class and the player class.
 bool isAttackable(Object* objA, Object* objB, bool CheckStealth)// A can attack B?
 {
-	if(!objA || !objB 
-//		|| objB->m_factionDBC == NULL || objA->m_factionDBC == NULL
-		)
+	if(!objA || !objB )
 		return false;
 
-//	if(objB->m_faction == NULL || objA->m_faction == NULL )
-//		return true;
+  if ( !objA->IsInWorld() || !objB->IsInWorld() )  // pending or ...?
+    return false;
 
 	if(objA == objB)
 		return false;   // can't attack self.. this causes problems with buffs if we don't have it :p
@@ -369,29 +381,46 @@ bool isAttackable(Object* objA, Object* objB, bool CheckStealth)// A can attack 
 
 	// do not let people attack each other in sanctuary
 	// Dueling is already catered for
-	AreaTable *atA;
-	AreaTable *atB;
-	if( objA->IsPet() && static_cast< Pet* >( objA )->GetPetOwner() )
-		atA = dbcArea.LookupEntry( static_cast< Pet* >( objA )->GetPetOwner()->GetAreaID() );
-	else if( objA->IsPlayer() )
-		atA = dbcArea.LookupEntry( static_cast< Player* >( objA )->GetAreaID() );
-	else
-		atA = NULL;
+	AreaTable *atA = NULL;
+	AreaTable *atB = NULL;
 
-	if( objB->IsPet() && static_cast< Pet* >( objB )->GetPetOwner() )
-		atB = dbcArea.LookupEntry( static_cast< Pet* >( objB )->GetPetOwner()->GetAreaID() );
-	else if( objB->IsPlayer() )
+  // cebernic: don't forget totem
+
+	if ( objA->IsCreature() )
+	{
+		if( static_cast<Creature *>(objA)->IsTotem() && static_cast< Creature* >( objA )->GetTotemOwner() )
+			atA = dbcArea.LookupEntry( static_cast< Creature* >( objA )->GetTotemOwner()->GetAreaID() );
+		else
+		if( objA->IsPet() && static_cast< Pet* >( objA )->GetPetOwner() )
+			atA = dbcArea.LookupEntry( static_cast< Pet* >( objA )->GetPetOwner()->GetAreaID() );
+	}
+	
+	if ( objB->IsCreature() )
+	{
+		if( static_cast<Creature *>(objB)->IsTotem() && static_cast< Creature* >( objB )->GetTotemOwner() )
+			atB = dbcArea.LookupEntry( static_cast< Creature* >( objB )->GetTotemOwner()->GetAreaID() );
+		else
+		if( objB->IsPet() && static_cast< Pet* >( objB )->GetPetOwner() )
+			atB = dbcArea.LookupEntry( static_cast< Pet* >( objB )->GetPetOwner()->GetAreaID() );
+/*		if ( atB==NULL ) {
+			Unit *_creator = objB->GetMapMgr()->GetUnit( objB->GetUInt64Value( UNIT_FIELD_CREATEDBY ) );
+			if( _creator!=NULL && _creator->IsCreature() && _creator->GetMapMgr() ){
+//				printf("%s\n",__ansi(static_cast< Creature* >( _creator )->GetCreatureInfo()->Name ));
+				atB = dbcArea.LookupEntry( _creator->GetMapMgr()->GetAreaID(_creator->GetPositionX(),_creator->GetPositionY())  );	
+			}*/
+//		}
+	}			
+		
+	if( objA->IsPlayer() )
+		atA = dbcArea.LookupEntry( static_cast< Player* >( objA )->GetAreaID() );
+
+	if( objB->IsPlayer() )
 		atB = dbcArea.LookupEntry( static_cast< Player* >( objB )->GetAreaID() );
-	else
-		atB = NULL;
 
 	// We have the area codes
 	// We know they aren't dueling
-	if (atA && atB)
-	{
-		if(atA->AreaFlags & 0x800 || atB->AreaFlags & 0x800)
-			return false;
-	}
+	if( ( atA && atA->AreaFlags & 0x800) || (atB && atB->AreaFlags & 0x800) ) // cebernic: fix older logic error
+		return false;
 
 	if(objA->m_faction == objB->m_faction)  // same faction can't kill each other unless in ffa pvp/duel
 		return false;
@@ -462,7 +491,11 @@ bool isCombatSupport(Object* objA, Object* objB)// B combat supports A?
 #ifdef _TEST_EXTENDED_FEATURES_
   if ( !combatSupport && objA->GetUInt32Value(UNIT_FIELD_FACTIONTEMPLATE) == objB->GetUInt32Value(UNIT_FIELD_FACTIONTEMPLATE) && ((Creature*)objA)->GetCreatureInfo()->Rank >= 1 )
 		combatSupport = true;
+
+	if ( objB->GetUInt32Value(UNIT_FIELD_FACTIONTEMPLATE)==1080 || objA->GetUInt32Value(UNIT_FIELD_FACTIONTEMPLATE)==1080 )
+		combatSupport = false;
 #endif
+
 
 	return combatSupport;
 }
