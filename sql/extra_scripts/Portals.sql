@@ -135,7 +135,7 @@ INSERT INTO `gameobject_spawns` (`Entry`,`map`,`position_x`,`position_y`,`positi
 INSERT INTO `gameobject_spawns` (`Entry`,`map`,`position_x`,`position_y`,`position_z`,`Facing`,`Scale`) Values (20000015,1,8551.734375,1023.275146,5.642698,2.354622,1);
 
 -- Portal 17 (Stormwind to Ironforge)
-INSERT INTO `gameobject_spawns` (`Entry`,`map`,`position_x`,`position_y`,`position_z`,`Facing`,`Scale`) Values (20000016,369,14.795420,2490.307861,4.292574,6.253338,1);
+INSERT INTO `gameobject_spawns` (`Entry`,`map`,`position_x`,`position_y`,`position_z`,`Facing`,`Scale`) Values (20000016,369,14.795420,2490.307861,-4.292574,6.253338,1);
 
 -- Portal 18 (Ironforge to Stormwind)
 INSERT INTO `gameobject_spawns` (`Entry`,`map`,`position_x`,`position_y`,`position_z`,`Facing`,`Scale`) Values (20000017,369,14.673943,8.185436,-4.489475,0.031412,1);
