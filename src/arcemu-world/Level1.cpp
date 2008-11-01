@@ -111,12 +111,12 @@ bool ChatHandler::HandleGMOnCommand(const char* args, WorldSession *m_session)
 	GreenSystemMessage(m_session, "GM Flag Set.");*/
 	GreenSystemMessage(m_session, "Setting GM Flag on yourself...");
 	if(m_session->GetPlayer()->bGMTagOn)
-		RedSystemMessage(m_session, "GM Flag is already set on. Use !gmoff to disable it.");
+		RedSystemMessage(m_session, "GM Flag is already set on. Use !gm off to disable it.");
 	else
 	{
 		m_session->GetPlayer()->bGMTagOn = true;
 		m_session->GetPlayer()->SetFlag(PLAYER_FLAGS, PLAYER_FLAG_GM);	// <GM>
-		BlueSystemMessage(m_session, "GM Flag Set. It will appear above your name and in chat messages until you use !gmoff.");
+		BlueSystemMessage(m_session, "GM Flag Set. It will appear above your name and in chat messages until you use !gm off.");
 	}
 
 	return true;
@@ -131,7 +131,7 @@ bool ChatHandler::HandleGMOffCommand(const char* args, WorldSession *m_session)
 	//GreenSystemMessage(m_session, "GM Flag Unset.");
 	GreenSystemMessage(m_session, "Unsetting GM Flag on yourself...");
 	if(!m_session->GetPlayer()->bGMTagOn)
-		RedSystemMessage(m_session, "GM Flag not set. Use !gmon to enable it.");
+		RedSystemMessage(m_session, "GM Flag not set. Use !gm on to enable it.");
 	else
 	{
 		m_session->GetPlayer()->bGMTagOn = false;
