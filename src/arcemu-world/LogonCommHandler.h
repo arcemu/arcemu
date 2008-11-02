@@ -72,8 +72,6 @@ class LogonCommHandler : public Singleton<LogonCommHandler>
 	Mutex pendingLock;
 	bool pings;
 	uint32 _realmType;
-	uint32 pLimit;
-	float server_population;
 
 public:
 	uint8 sql_passhash[20];
@@ -93,7 +91,6 @@ public:
 	void ConnectAll();
 	//void LogonDatabaseSQLExecute(const char* str, ...);
 	//void LogonDatabaseReloadAccounts();
-	void RefreshRealmPop();
 
 	void Account_SetBanned(const char * account, uint32 banned, const char *reason);
 	void Account_SetGM(const char * account, const char * flags);
@@ -106,7 +103,6 @@ public:
 
 	ARCEMU_INLINE uint32 GetRealmType() { return _realmType; }
 	void SetRealmType(uint32 type) { _realmType = type; }
-	float GetServerPopulation(){ return server_population; }
 
 	/////////////////////////////
 	// Worldsocket stuff

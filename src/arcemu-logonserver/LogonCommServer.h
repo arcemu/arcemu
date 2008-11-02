@@ -52,9 +52,6 @@ public:
 	void HandleUpdateMapping(WorldPacket & recvData);
 	void HandleTestConsoleLogin(WorldPacket & recvData);
 	void HandleDatabaseModify(WorldPacket& recvData);
-	void HandlePopulationRespond(WorldPacket & recvData);
-
-	void RefreshRealmsPop();
 
 	uint32 last_ping;
 	bool removed;

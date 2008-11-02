@@ -451,27 +451,6 @@ void InformationCore::UpdateRealmStatus(uint32 realm_id, uint8 Color)
 	realmLock.Release();
 }
 
-void InformationCore::UpdateRealmPop(uint32 realm_id, float pop)
-{
-	realmLock.Acquire();
-	map<uint32, Realm*>::iterator itr = m_realms.find(realm_id);
-	if(itr != m_realms.end())
-	{
-		uint8 temp;
-		if( pop >= 3 )
-			temp =  0x81; // Full
-		else if ( pop >= 2 )
-			temp = 0x01; // Red
-		else if ( pop >= 0.5 )
-			temp = 0x00; // Green
-		else
-			temp = 0x20; // recommended
-
-		itr->second->Population = (pop > 0) ? (pop >= 1) ? (pop >= 2) ? 2.0f : 1.0f : 0.0f : 0.0f;
-		itr->second->Colour = temp;
-	}
-	realmLock.Release();
-}
 void InformationCore::SendRealms(AuthSocket * Socket)
 {
 	realmLock.Acquire();
@@ -527,13 +506,6 @@ void InformationCore::SendRealms(AuthSocket * Socket)
 
 	// Send to the socket.
 	Socket->Send((const uint8*)data.contents(), uint32(data.size()));
-
-	if( m_serverSockets.empty() )
-		return;
-	// this is kinda bad, it's like Arp Arp Arp
-	set<LogonCommServerSocket*>::iterator itr1;
-	for(itr1 = m_serverSockets.begin(); itr1 != m_serverSockets.end(); ++itr1)
-		(*itr1)->RefreshRealmsPop();
 }
 
 void InformationCore::TimeoutSockets()

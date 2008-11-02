@@ -151,8 +151,6 @@ void LogonCommServerSocket::HandlePacket(WorldPacket & recvData)
 		&LogonCommServerSocket::HandleTestConsoleLogin,		// RCMSG_TEST_CONSOLE_LOGIN
 		NULL,												// RSMSG_CONSOLE_LOGIN_RESULT
 		&LogonCommServerSocket::HandleDatabaseModify,		// RCMSG_MODIFY_DATABASE
-		NULL,												// RSMSG_REALM_POP_REQ
-		&LogonCommServerSocket::HandlePopulationRespond,	// RCMSG_REALM_POP_RES
 	};
 
 	if(recvData.GetOpcode() >= RMSG_COUNT || Handlers[recvData.GetOpcode()] == 0)
@@ -531,28 +529,5 @@ void LogonCommServerSocket::HandleDatabaseModify(WorldPacket& recvData)
 
 		}break;
 
-	}
-}
-
-void LogonCommServerSocket::HandlePopulationRespond(WorldPacket & recvData)
-{
-	float population;
-	uint32 realmId;
-	recvData >> realmId >> population;
-	sInfoCore.UpdateRealmPop(realmId, population);
-}
-
-void LogonCommServerSocket::RefreshRealmsPop()
-{
-	if(server_ids.empty())
-		return;
-
-	WorldPacket data(RSMSG_REALM_POP_REQ, 4);
-	set<uint32>::iterator itr = server_ids.begin();
-	for( ; itr != server_ids.end() ; itr++ )
-	{
-		data.clear();
-		data << (*itr);
-		SendPacket(&data);
 	}
 }

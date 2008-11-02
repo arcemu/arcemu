@@ -117,9 +117,6 @@ void LogonCommClientSocket::HandlePacket(WorldPacket & recvData)
 		&LogonCommClientSocket::HandleDisconnectAccount,	// RSMSG_DISCONNECT_ACCOUNT
 		NULL,												// RCMSG_TEST_CONSOLE_LOGIN
 		&LogonCommClientSocket::HandleConsoleAuthResult,	// RSMSG_CONSOLE_LOGIN_RESULT
-		NULL,												// RCMSG_MODIFY_DATABASE
-		&LogonCommClientSocket::HandlePopulationRequest,	// RSMSG_REALM_POP_REQ
-		NULL,												// RCMSG_REALM_POP_RES
 	};
 
 	if(recvData.GetOpcode() >= RMSG_COUNT || Handlers[recvData.GetOpcode()] == 0)
@@ -417,17 +414,6 @@ void LogonCommClientSocket::HandleConsoleAuthResult(WorldPacket & recvData)
 	recvData >> requestid >> result;
 
 	ConsoleAuthCallback(requestid, result);
-}
-void LogonCommClientSocket::HandlePopulationRequest(WorldPacket & recvData)
-{
-	uint32 realmId;
-	// Grab the realm id
-	recvData >> realmId;
-	
-	// Send the result
-	WorldPacket data(RCMSG_REALM_POP_RES, 16);
-	data << realmId << LogonCommHandler::getSingleton().GetServerPopulation();
-	SendPacket(&data, false);
 }
 
 #else

@@ -36,14 +36,10 @@ LogonCommHandler::LogonCommHandler()
 	memset(sql_passhash,0,20);
 	memcpy(sql_passhash, hash.GetDigest(), 20);
 
-	// player limit
-	pLimit = Config.MainConfig.GetIntDefault("Server", "PlayerLimit", 500);
-	if ( pLimit == 0 ) pLimit = 1;
-	server_population = 0;
-
 	// cleanup
 	servers.clear();
 	realms.clear();
+
 }
 
 LogonCommHandler::~LogonCommHandler()
@@ -353,7 +349,6 @@ uint32 LogonCommHandler::ClientConnected(string AccountName, WorldSocket * Socke
 	pending_logons[request_id] = Socket;
 	pendingLock.Release();
 
-	RefreshRealmPop();
 	return request_id;
 }
 
@@ -539,10 +534,4 @@ void LogonCommHandler::IPBan_Remove(const char * ip)
 	itr->second->SendPacket(&data, false);
 }
 
-void LogonCommHandler::RefreshRealmPop()
-{
-	// Get realm player limit, it's better that we get the player limit once and save it! <-done	
-	// Calc pop: 0 >= low, 1 >= med, 2 >= hig, 3 >= full
-	server_population = float(((sWorld.AlliancePlayers + sWorld.HordePlayers) * 3) / pLimit);
-}
 #endif
