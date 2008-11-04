@@ -1974,7 +1974,7 @@ void SpellFunc_Solarian_Reappear(SpellDesc* pThis, ArcScriptCreatureAI* pCreatur
 
 class HighAstromancerSolarianAI : public ArcScriptBossAI
 {
-    ArcScript_FACTORY_FUNCTION(HighAstromancerSolarianAI, ArcScriptBossAI);
+    ARCSCRIPT_FACTORY_FUNCTION(HighAstromancerSolarianAI, ArcScriptBossAI);
 	HighAstromancerSolarianAI(Creature* pCreature) : ArcScriptBossAI(pCreature)
 	{
 		//Initialize timers
@@ -2106,7 +2106,7 @@ void SpellFunc_Solarian_Reappear(SpellDesc* pThis, ArcScriptCreatureAI* pCreatur
 
 class SolariumAgentAI : public ArcScriptCreatureAI
 {
-    ArcScript_FACTORY_FUNCTION(SolariumAgentAI, ArcScriptCreatureAI);
+    ARCSCRIPT_FACTORY_FUNCTION(SolariumAgentAI, ArcScriptCreatureAI);
     SolariumAgentAI(Creature* pCreature) : ArcScriptCreatureAI(pCreature)
     {
 		SetDespawnWhenInactive(true);	//despawn creature if it gets out of combat or dead
@@ -2116,7 +2116,7 @@ class SolariumAgentAI : public ArcScriptCreatureAI
 
 class SolariumPriestAI : public ArcScriptCreatureAI
 {
-	ArcScript_FACTORY_FUNCTION(SolariumPriestAI, ArcScriptCreatureAI);
+	ARCSCRIPT_FACTORY_FUNCTION(SolariumPriestAI, ArcScriptCreatureAI);
 	SolariumPriestAI(Creature* pCreature) : ArcScriptCreatureAI(pCreature)
 	{
 		AddSpell(SOLARIUMPRIEST_GREATER_HEAL, Target_WoundedFriendly, 20, 2, 0, 0, 40);
@@ -2128,7 +2128,7 @@ class SolariumPriestAI : public ArcScriptCreatureAI
 
 class SolariumSpotLight : public ArcScriptCreatureAI
 {
-	ArcScript_FACTORY_FUNCTION(SolariumSpotLight, ArcScriptCreatureAI);
+	ARCSCRIPT_FACTORY_FUNCTION(SolariumSpotLight, ArcScriptCreatureAI);
 	SolariumSpotLight(Creature* pCreature) : ArcScriptCreatureAI(pCreature){ SetCanEnterCombat(false); }
 };
 

@@ -45,7 +45,7 @@
 
 class SunbladeProtectorAI : public ArcScriptCreatureAI
 {
-	ArcScript_FACTORY_FUNCTION(SunbladeProtectorAI, ArcScriptCreatureAI);
+	ARCSCRIPT_FACTORY_FUNCTION(SunbladeProtectorAI, ArcScriptCreatureAI);
 	SunbladeProtectorAI(Creature* pCreature) : ArcScriptCreatureAI(pCreature)
 	{
 		AddSpell(SUNBLADE_PROTECTOR_FEL_LIGHTNING, Target_RandomPlayer, 100, 0, 15, 0, 60);
@@ -62,7 +62,7 @@ class SunbladeProtectorAI : public ArcScriptCreatureAI
 
 class ShadowswordAssassinAI : public ArcScriptCreatureAI
 {
-	ArcScript_FACTORY_FUNCTION(ShadowswordAssassinAI, ArcScriptCreatureAI);
+	ARCSCRIPT_FACTORY_FUNCTION(ShadowswordAssassinAI, ArcScriptCreatureAI);
 	ShadowswordAssassinAI(Creature* pCreature) : ArcScriptCreatureAI(pCreature)
 	{
 		AddSpell(SHADOWSWORD_ASSASSIN_ASSASSINS_MARK, Target_RandomPlayer, 100, 0, 15, 0, 100);
@@ -80,7 +80,7 @@ class ShadowswordAssassinAI : public ArcScriptCreatureAI
 
 class ShadowswordCommanderAI : public ArcScriptCreatureAI
 {
-	ArcScript_FACTORY_FUNCTION(ShadowswordCommanderAI, ArcScriptCreatureAI);
+	ARCSCRIPT_FACTORY_FUNCTION(ShadowswordCommanderAI, ArcScriptCreatureAI);
 	ShadowswordCommanderAI(Creature* pCreature) : ArcScriptCreatureAI(pCreature)
 	{
 		AddSpell(SHADOWSWORD_COMMANDER_SHIELD_SLAM, Target_Current, 10, 0, 10);
@@ -99,7 +99,7 @@ void SpellFunc_Kalecgos_WildMagic(SpellDesc* pThis, ArcScriptCreatureAI* pCreatu
 
 class KalecgosAI : public ArcScriptBossAI
 {
-    ArcScript_FACTORY_FUNCTION(KalecgosAI, ArcScriptBossAI);
+    ARCSCRIPT_FACTORY_FUNCTION(KalecgosAI, ArcScriptBossAI);
 	KalecgosAI(Creature* pCreature) : ArcScriptBossAI(pCreature)
 	{
 		AddSpell(KALECGOS_FROST_BREATH, Target_Current, 10, 1, 12, 0, 30);
@@ -140,7 +140,7 @@ void SpellFunc_Kalecgos_WildMagic(SpellDesc* pThis, ArcScriptCreatureAI* pCreatu
 
 class SathrovarrTheCorruptorAI : public ArcScriptBossAI
 {
-    ArcScript_FACTORY_FUNCTION(SathrovarrTheCorruptorAI, ArcScriptBossAI);
+    ARCSCRIPT_FACTORY_FUNCTION(SathrovarrTheCorruptorAI, ArcScriptBossAI);
 	SathrovarrTheCorruptorAI(Creature* pCreature) : ArcScriptBossAI(pCreature)
 	{
 		AddSpell(SATHROVARR_THE_CORRUPTOR_CURSE_OF_BOUNDLESS_AGONY, Target_RandomPlayer, 20, 0, 12, 0, 40); 
@@ -167,7 +167,7 @@ class SathrovarrTheCorruptorAI : public ArcScriptBossAI
 
 class BrutallusAI : public ArcScriptBossAI
 {
-    ArcScript_FACTORY_FUNCTION(BrutallusAI, ArcScriptBossAI);
+    ARCSCRIPT_FACTORY_FUNCTION(BrutallusAI, ArcScriptBossAI);
 	BrutallusAI(Creature* pCreature) : ArcScriptBossAI(pCreature)
 	{
 		AddSpell(BRUTALLUS_METEOR_SLASH, Target_Self, 100, 1, 12);
@@ -226,7 +226,7 @@ class BrutallusAI : public ArcScriptBossAI
 
 class FelmystAI : public ArcScriptBossAI
 {
-    ArcScript_FACTORY_FUNCTION(FelmystAI, ArcScriptBossAI);
+    ARCSCRIPT_FACTORY_FUNCTION(FelmystAI, ArcScriptBossAI);
 	FelmystAI(Creature* pCreature) : ArcScriptBossAI(pCreature)
 	{
 		//Phase 1 spells
@@ -290,7 +290,7 @@ class FelmystAI : public ArcScriptBossAI
 
 class LadySacrolashAI : public ArcScriptBossAI
 {
-    ArcScript_FACTORY_FUNCTION(LadySacrolashAI, ArcScriptBossAI);
+    ARCSCRIPT_FACTORY_FUNCTION(LadySacrolashAI, ArcScriptBossAI);
 	LadySacrolashAI(Creature* pCreature) : ArcScriptBossAI(pCreature)
 	{
 		AddSpell(LADY_SACROLASH_DARK_TOUCHED, Target_RandomPlayerApplyAura, 50, 0, 10, 0, 50);
@@ -333,7 +333,7 @@ class LadySacrolashAI : public ArcScriptBossAI
 
 class GrandWarlockAlythessAI : public ArcScriptBossAI
 {
-    ArcScript_FACTORY_FUNCTION(GrandWarlockAlythessAI, ArcScriptBossAI);
+    ARCSCRIPT_FACTORY_FUNCTION(GrandWarlockAlythessAI, ArcScriptBossAI);
 	GrandWarlockAlythessAI(Creature* pCreature) : ArcScriptBossAI(pCreature)
 	{
 		AddSpell(GRAND_WARLOCK_ALYTHESS_PYROGENICS, Target_Self, 100, 0, 10, 0, 50);
@@ -381,7 +381,7 @@ class GrandWarlockAlythessAI : public ArcScriptBossAI
 
 class MuruAI : public ArcScriptBossAI
 {
-	ArcScript_FACTORY_FUNCTION(MuruAI, ArcScriptBossAI);
+	ARCSCRIPT_FACTORY_FUNCTION(MuruAI, ArcScriptBossAI);
 	MuruAI(Creature* pCreature) : ArcScriptBossAI(pCreature)
 	{
 		AddSpell(MURU_NEGATIVE_ENERGY, Target_SecondMostHated, 25, 0, 1, 0, 40);
@@ -483,7 +483,7 @@ protected:
 
 class ShadowswordBerserkerAI : public ArcScriptCreatureAI
 {
-	ArcScript_FACTORY_FUNCTION(ShadowswordBerserkerAI, ArcScriptCreatureAI);
+	ARCSCRIPT_FACTORY_FUNCTION(ShadowswordBerserkerAI, ArcScriptCreatureAI);
 	ShadowswordBerserkerAI(Creature* pCreature) : ArcScriptCreatureAI(pCreature)
 	{
 		AddSpell(BERSERK_FLURRY, Target_Current, 30, 0, 30);
@@ -526,7 +526,7 @@ protected:
 
 class ShadowswordFuryMageAI : public ArcScriptCreatureAI
 {
-	ArcScript_FACTORY_FUNCTION(ShadowswordFuryMageAI, ArcScriptCreatureAI);
+	ARCSCRIPT_FACTORY_FUNCTION(ShadowswordFuryMageAI, ArcScriptCreatureAI);
 	ShadowswordFuryMageAI(Creature* pCreature) : ArcScriptCreatureAI(pCreature)
 	{
 		AddSpell(FEL_FIREBALL, Target_RandomPlayer, 100, 2, 2, 4, 40); 
@@ -569,7 +569,7 @@ protected:
 
 class VoidSentinelAI : public ArcScriptCreatureAI
 {
-	ArcScript_FACTORY_FUNCTION(VoidSentinelAI, ArcScriptCreatureAI);
+	ARCSCRIPT_FACTORY_FUNCTION(VoidSentinelAI, ArcScriptCreatureAI);
 	VoidSentinelAI(Creature* pCreature) : ArcScriptCreatureAI(pCreature)
 	{
 		AddSpell(SHADOW_PULSE, Target_Current, 50, 0, 3);
@@ -616,7 +616,7 @@ protected:
 
 class EntropiusAI : public ArcScriptBossAI
 {
-	ArcScript_FACTORY_FUNCTION(EntropiusAI, ArcScriptBossAI);
+	ARCSCRIPT_FACTORY_FUNCTION(EntropiusAI, ArcScriptBossAI);
 	EntropiusAI(Creature* pCreature) : ArcScriptBossAI(pCreature)
 	{
 		AddSpell(ENTROPIUS_NEGATIVE_ENERGY1, Target_RandomDestination, 15, 0, 1, 0, 40);
@@ -662,7 +662,7 @@ class EntropiusAI : public ArcScriptBossAI
 
 class HandOfTheDeceiverAI : public ArcScriptBossAI
 {
-	ArcScript_FACTORY_FUNCTION(HandOfTheDeceiverAI, ArcScriptBossAI);
+	ARCSCRIPT_FACTORY_FUNCTION(HandOfTheDeceiverAI, ArcScriptBossAI);
 	HandOfTheDeceiverAI(Creature* pCreature) : ArcScriptBossAI(pCreature)
 	{
 		AddSpell(SPELL_FELFIRE_PORTAL, Target_RandomPlayer, 40, 0, 10, 0, 30);
@@ -711,7 +711,7 @@ protected:
 
 class VolatileFelfireFiendAI : public ArcScriptBossAI
 {
-	ArcScript_FACTORY_FUNCTION(VolatileFelfireFiendAI, ArcScriptBossAI);
+	ARCSCRIPT_FACTORY_FUNCTION(VolatileFelfireFiendAI, ArcScriptBossAI);
 	VolatileFelfireFiendAI(Creature* pCreature) : ArcScriptBossAI(pCreature)
 	{
 	}
@@ -744,7 +744,7 @@ protected:
 
 class BlueDragonAI : public ArcScriptBossAI
 {
-	ArcScript_FACTORY_FUNCTION(BlueDragonAI, ArcScriptBossAI);
+	ARCSCRIPT_FACTORY_FUNCTION(BlueDragonAI, ArcScriptBossAI);
 	BlueDragonAI(Creature* pCreature) : ArcScriptBossAI(pCreature){}
 
 	void OnLoad()
@@ -787,7 +787,7 @@ protected:
 
 class SinisterReflectionAI : public ArcScriptBossAI
 {
-	ArcScript_FACTORY_FUNCTION(SinisterReflectionAI, ArcScriptBossAI);
+	ARCSCRIPT_FACTORY_FUNCTION(SinisterReflectionAI, ArcScriptBossAI);
 	SinisterReflectionAI(Creature* pCreature) : ArcScriptBossAI(pCreature){}
 
 	void OnLoad()
@@ -868,7 +868,7 @@ protected:
 
 class ShieldOrbAI : public ArcScriptBossAI
 {
-	ArcScript_FACTORY_FUNCTION(ShieldOrbAI, ArcScriptBossAI);
+	ARCSCRIPT_FACTORY_FUNCTION(ShieldOrbAI, ArcScriptBossAI);
 	ShieldOrbAI(Creature* pCreature) : ArcScriptBossAI(pCreature)
 	{}
 
@@ -907,7 +907,7 @@ class ShieldOrbAI : public ArcScriptBossAI
 
 class AnvennaAI : public ArcScriptBossAI
 {
-	ArcScript_FACTORY_FUNCTION(AnvennaAI, ArcScriptBossAI);
+	ARCSCRIPT_FACTORY_FUNCTION(AnvennaAI, ArcScriptBossAI);
 	AnvennaAI(Creature* pCreature) : ArcScriptBossAI(pCreature)
 	{}
 
@@ -944,7 +944,7 @@ class AnvennaAI : public ArcScriptBossAI
 
 class ArmageddonAI : public ArcScriptBossAI
 {
-	ArcScript_FACTORY_FUNCTION(ArmageddonAI, ArcScriptBossAI);
+	ARCSCRIPT_FACTORY_FUNCTION(ArmageddonAI, ArcScriptBossAI);
 	ArmageddonAI(Creature* pCreature) : ArcScriptBossAI(pCreature)
 	{}
 
@@ -1071,7 +1071,7 @@ void phaseTester();
 
 class KilJaedenAI : public ArcScriptBossAI
 {
-	ArcScript_FACTORY_FUNCTION(KilJaedenAI, ArcScriptBossAI);
+	ARCSCRIPT_FACTORY_FUNCTION(KilJaedenAI, ArcScriptBossAI);
 	KilJaedenAI(Creature* pCreature) : ArcScriptBossAI(pCreature)
 	{
 		AddPhaseSpell(1, AddSpell(SPELL_LEGION_LIGHTNING, Target_RandomPlayer, 20, 2, 3, 0, 50));

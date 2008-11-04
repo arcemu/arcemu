@@ -31,7 +31,7 @@
 #define DEFAULT_UPDATE_FREQUENCY	1000	//milliseconds
 #define DEFAULT_DESPAWN_TIMER		2000	//milliseconds
 
-#define ArcScript_FACTORY_FUNCTION(ClassName, ParentClassName)\
+#define ARCSCRIPT_FACTORY_FUNCTION(ClassName, ParentClassName)\
 public:\
 	ADD_CREATURE_FACTORY_FUNCTION(ClassName);\
 	typedef ParentClassName ParentClass;

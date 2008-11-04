@@ -19,6 +19,7 @@
 
 #include "StdAfx.h"
 #include "Setup.h"
+#include "Base.h"
 
 /************************************************************************/
 /* Raid_MoltenCore.cpp Script											*/
@@ -26,168 +27,124 @@
 
 #define CN_CORERAGER 11672
 
-#define MANGLE 19820 // 1 target
-// put full HP if less 50% and golemagg is still alive
-
-// Golemagg AI
-class CoreRagerAI : public CreatureAIScript
+class CoreRagerAI : public ArcScriptCreatureAI
 {
-public:
-    ADD_CREATURE_FACTORY_FUNCTION(CoreRagerAI);
-    CoreRagerAI(Creature* pCreature) : CreatureAIScript(pCreature)
+    ARCSCRIPT_FACTORY_FUNCTION(CoreRagerAI, ArcScriptCreatureAI);
+    CoreRagerAI(Creature* pCreature) : ArcScriptCreatureAI(pCreature)
     {
-		m_mangle = true;
-
-        info_mangle = dbcSpell.LookupEntry(MANGLE);
-    }
-    
-    void OnCombatStart(Unit* mTarget)
-    {
-		RegisterAIUpdateEvent(_unit->GetUInt32Value(UNIT_FIELD_BASEATTACKTIME));
+		// Mangle <http://www.wowhead.com/?spell=19820>
+		AddSpell(19820, Target_Current, 20, 0, 20);
     }
 
-    void OnCombatStop(Unit *mTarget)
-    {
-        _unit->GetAIInterface()->setCurrentAgent(AGENT_NULL);
-        _unit->GetAIInterface()->SetAIState(STATE_IDLE);
-       RemoveAIUpdateEvent();
-    }
+	void OnCombatStart(Unit *pTarget)
+	{
+		Golemagg = GetUnit()->GetMapMgr()->GetInterface()->GetCreatureNearestCoords(793.248f, -998.265f, -206.762f, 11988);
+		ParentClass::OnCombatStart(pTarget);
+	}
 
-    void OnDied(Unit * mKiller)
-    {
-       RemoveAIUpdateEvent();
-    }
+	void AIUpdate()
+	{
+		// If Health is less than 50% and Golemagg is still alive then they regain full health
+		if(GetHealthPercent() <= 50 && Golemagg && Golemagg->isAlive())
+		{
+			Regenerate();
+			Emote("Core Rager refuses to die while its master is in trouble.", Text_Emote);
+		}
+		ParentClass::AIUpdate();
+	}
 
-    void AIUpdate()
-    {	
-	    uint32 val = RandomUInt(1000);
-        SpellCast(val);
-    }
-
-    void SpellCast(uint32 val)
-    {
-        if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->GetNextTarget())//_unit->getAttackTarget())
-        {
-			//Unit *target = _unit->GetAIInterface()->GetNextTarget();
-            if(m_mangle)
-            {
-                _unit->CastSpell(_unit, info_mangle, false);
-                m_mangle = false;
-                return;
-            }
-
-            if(val >= 100 && val <= 220)
-            {
-                _unit->setAttackTimer(9000, false);
-                m_mangle = true;
-            }
-        }
-    }
-
-protected:
-
-    bool m_mangle;
-    SpellEntry *info_mangle;
+	Creature* Golemagg;
 };
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//Golemagg AI Script
+#define CN_GOLEMAGG					11988	
+
+class GolemaggAI : public ArcScriptBossAI
+{
+    ARCSCRIPT_FACTORY_FUNCTION(GolemaggAI, ArcScriptBossAI);
+	GolemaggAI(Creature* pCreature) : ArcScriptBossAI(pCreature)
+	{
+		// Golemagg's Trust <http://www.wowhead.com/?spell=20553>
+		GolemaggTrust = AddSpell(20553, Target_Self, 8, 0, 3);
+
+		// Magma Splash <http://www.wowhead.com/?spell=13880>
+		AddSpell(13880, Target_Self, 8, 0, 0);
+
+		// Pyroblast <http://www.wowhead.com/?spell=20228>
+		AddSpell(20228, Target_RandomPlayer, 8, 0, 0, 0, 40);
+
+		// Earthquake <http://www.wowhead.com/?spell=19798>
+		AddPhaseSpell(2, AddSpell(19798, Target_Self, 8, 0, 0));
+	}
+
+	void OnCombatStart(Unit *pTarget)
+	{
+		CoreRager1 = GetUnit()->GetMapMgr()->GetInterface()->GetCreatureNearestCoords(783.448f, -1017.07f, -205.389f, 11672);
+		CoreRager2 = GetUnit()->GetMapMgr()->GetInterface()->GetCreatureNearestCoords(785.579f, -974.27f, -207.111f, 11672);
+		ParentClass::OnCombatStart(pTarget);
+	}
+
+	void AIUpdate()
+	{
+		// 40 yrds
+		if((CoreRager1 && CoreRager1->isAlive() && GetRangeToUnit(CoreRager1) < 40) || (CoreRager2 && CoreRager2->isAlive() && GetRangeToUnit(CoreRager2) < 40))
+			GolemaggTrust->mEnabled = true;
+		else
+			GolemaggTrust->mEnabled = false;
+
+		if(GetPhase() == 1 && GetHealthPercent() <= 10)
+			SetPhase(2);
+
+		ParentClass::AIUpdate();
+	}
+
+	Unit* CoreRager1;
+	Unit* CoreRager2;
+	SpellDesc* GolemaggTrust;
+};
+
 
 #define CN_SULFURON_HARBRINGER 12098
 
-#define DEMORALIZING_SHOUT 19778
-#define INSPIRE 19779
-#define FLAME_SPEAR 19781
-// needs a aoe knockback 19780?
-
 // Sulfuron Harbringer AI
-class SulfuronAI : public CreatureAIScript
+class SulfuronAI : public ArcScriptBossAI
 {
-public:
-    ADD_CREATURE_FACTORY_FUNCTION(SulfuronAI);
-    SulfuronAI(Creature* pCreature) : CreatureAIScript(pCreature)
+    ARCSCRIPT_FACTORY_FUNCTION(SulfuronAI, ArcScriptBossAI);
+    SulfuronAI(Creature* pCreature) : ArcScriptBossAI(pCreature)
     {
-		m_demoralizingshout = m_inspire = m_flamespear = true;
+		// Demoralizing Shout
+		AddSpell(19778, Target_Self, 15, 0, 30);
 
-        info_demoralizingshout = dbcSpell.LookupEntry(DEMORALIZING_SHOUT);
-		info_inspire = dbcSpell.LookupEntry(INSPIRE);
-		info_flamespear = dbcSpell.LookupEntry(FLAME_SPEAR);
+		// Hand of Ragnaros
+		AddSpell(19780, Target_Self, 8, 0, 0);
+
+		// Inspire
+		AddSpell(19779, Target_Self, 8, 0, 10);
+
+		// Flame Spear
+		AddSpell(19781, Target_Current, 8, 0, 0);
     }
-    
-    void OnCombatStart(Unit* mTarget)
-    {
-		RegisterAIUpdateEvent(_unit->GetUInt32Value(UNIT_FIELD_BASEATTACKTIME));
-    }
-
-    void OnCombatStop(Unit *mTarget)
-    {
-        _unit->GetAIInterface()->setCurrentAgent(AGENT_NULL);
-        _unit->GetAIInterface()->SetAIState(STATE_IDLE);
-       RemoveAIUpdateEvent();
-    }
-
-    void OnDied(Unit * mKiller)
-    {
-       RemoveAIUpdateEvent();
-    }
-
-    void AIUpdate()
-    {	
-	    uint32 val = RandomUInt(1000);
-        SpellCast(val);
-    }
-
-    void SpellCast(uint32 val)
-    {
-        if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->GetNextTarget())//_unit->getAttackTarget())
-        {
-			//Unit *target = _unit->GetAIInterface()->GetNextTarget();
-                      
-            if(m_demoralizingshout)
-            {
-                _unit->CastSpell(_unit, info_demoralizingshout, false);
-                m_demoralizingshout = false;
-                return;
-            }
-            
-            if(m_inspire)
-            {
-                _unit->CastSpell(_unit, info_inspire, false);
-                m_inspire = false;
-                return;
-            }
-            
-            if(m_flamespear)
-            {
-                _unit->CastSpell(_unit, info_flamespear, false);
-                m_flamespear = false;
-                return;
-            }
-            
-            if(val >= 100 && val <= 180)
-            {
-                _unit->setAttackTimer(1000, false);
-                m_inspire = true;
-            }
-            
-            if(val > 180 && val <= 260)
-            {
-                _unit->setAttackTimer(1000, false);
-                m_demoralizingshout = true;
-            }
-            
-            if(val > 260 && val <= 320)
-            {
-                _unit->setAttackTimer(1000, false);
-                m_flamespear = true;
-            }
-        }
-    }
-
-protected:
-
-    bool m_demoralizingshout,m_inspire,m_flamespear;
-    SpellEntry *info_demoralizingshout, *info_inspire, *info_flamespear;
 };
+#define FlamewakerPriest 11662
+class FlamewakerPriestAI : public ArcScriptCreatureAI
+{
+	ARCSCRIPT_FACTORY_FUNCTION(FlamewakerPriestAI, ArcScriptCreatureAI);
+    FlamewakerPriestAI(Creature* pCreature) : ArcScriptCreatureAI(pCreature)
+	{
+		// Dark Mending
+		AddSpell(19775, Target_WoundedFriendly, 8, 2, 0);
 
+		// Dark Strike
+		AddSpell(19777, Target_Self, 12, 0, 0);
 
+		// Immolate
+		AddSpell(20294, Target_RandomPlayer, 15, 0, 20);
+
+		// Shadow Word: Pain
+		AddSpell(19776, Target_RandomPlayer, 15, 0, 15);
+	}
+};
 
 // Woot DOING RAGNAROS Tha BosS
 
@@ -332,8 +289,6 @@ protected:
     SpellEntry *info_elementalfire, *info_wrath, *info_hammer, *info_meltweapon,*info_summonsons;
 };
 
-#include "Base.h"
-
 /*
 TODO:
  - Fix spells for all mob/boss (spell id, % chance, cooldowns, range, etc.)
@@ -344,33 +299,31 @@ TODO:
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //Molten Giant AI Script
 #define CN_MOLTENGIANT			11658
-#define MOLTENGIANT_STOMP		31900	//to verify
-#define MOLTENGIANT_KNOCKBACK	30056	//to verify
+#define MOLTENGIANT_SMASH		18944
+#define MOLTENGIANT_KNOCKBACK	18945
 
 class MoltenGiantAI : public ArcScriptCreatureAI
 {
-    ArcScript_FACTORY_FUNCTION(MoltenGiantAI, ArcScriptCreatureAI);
+    ARCSCRIPT_FACTORY_FUNCTION(MoltenGiantAI, ArcScriptCreatureAI);
     MoltenGiantAI(Creature* pCreature) : ArcScriptCreatureAI(pCreature)
     {
-		AddSpell(MOLTENGIANT_STOMP, Target_Current, 10, 0, 5);
-		AddSpell(MOLTENGIANT_KNOCKBACK, Target_Self, 10, 0, 5);
+		AddSpell(MOLTENGIANT_SMASH, Target_Self, 10, 0, 5);
+		AddSpell(MOLTENGIANT_KNOCKBACK, Target_Current, 10, 0, 5, 0, 10);
     }
 };
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //Molten Destroyer AI Script
 #define CN_MOLTENDESTROYER				11659
-#define MOLTENDESTROYER_MASSIVE_TREMOR	19129	//to verify
-//#define MOLTENDESTROYER_SMASH_ATTACK	?
-#define MOLTENDESTROYER_KNOCKDOWN		13360	//wrong, fixme!
+#define MOLTENDESTROYER_MASSIVE_TREMOR	19129
+#define MOLTENDESTROYER_KNOCKDOWN		20276
 
 class MoltenDestroyerAI : public ArcScriptCreatureAI
 {
-    ArcScript_FACTORY_FUNCTION(MoltenDestroyerAI, ArcScriptCreatureAI);
+    ARCSCRIPT_FACTORY_FUNCTION(MoltenDestroyerAI, ArcScriptCreatureAI);
     MoltenDestroyerAI(Creature* pCreature) : ArcScriptCreatureAI(pCreature)
     {
 		AddSpell(MOLTENDESTROYER_MASSIVE_TREMOR, Target_Self, 12.5f, 0, 0);
-//		AddSpell(MOLTENDESTROYER_SMASH_ATTACK, Target_Self, 10, 0, 0);
 		AddSpell(MOLTENDESTROYER_KNOCKDOWN, Target_Current, 12.5f, 0, 0);
     }
 };
@@ -383,7 +336,7 @@ class MoltenDestroyerAI : public ArcScriptCreatureAI
 
 class FirelordAI : public ArcScriptCreatureAI
 {
-    ArcScript_FACTORY_FUNCTION(FirelordAI, ArcScriptCreatureAI);
+    ARCSCRIPT_FACTORY_FUNCTION(FirelordAI, ArcScriptCreatureAI);
     FirelordAI(Creature* pCreature) : ArcScriptCreatureAI(pCreature)
     {
 		AddSpell(FIRELORD_SUMMON_LAVA_SPAWN, Target_Self, 20, 0, 10);
@@ -397,7 +350,7 @@ class FirelordAI : public ArcScriptCreatureAI
 
 class LavaAnnihilatorAI : public ArcScriptCreatureAI
 {
-    ArcScript_FACTORY_FUNCTION(LavaAnnihilatorAI, ArcScriptCreatureAI);
+    ARCSCRIPT_FACTORY_FUNCTION(LavaAnnihilatorAI, ArcScriptCreatureAI);
     LavaAnnihilatorAI(Creature* pCreature) : ArcScriptCreatureAI(pCreature)
     {
 		AddSpellFunc(&SpellFunc_ClearHateList, Target_Self, 20, 0, 0);
@@ -418,7 +371,7 @@ class LavaAnnihilatorAI : public ArcScriptCreatureAI
 
 class AncientCoreHoundAI : public ArcScriptCreatureAI
 {
-    ArcScript_FACTORY_FUNCTION(AncientCoreHoundAI, ArcScriptCreatureAI);
+    ARCSCRIPT_FACTORY_FUNCTION(AncientCoreHoundAI, ArcScriptCreatureAI);
     AncientCoreHoundAI(Creature* pCreature) : ArcScriptCreatureAI(pCreature)
     {
 		AddSpell(ANCIENTCOREHOUND_LAVA_BREATH, Target_Self, 20, 0, 3);
@@ -444,7 +397,7 @@ class AncientCoreHoundAI : public ArcScriptCreatureAI
 
 class LavaSurgerAI : public ArcScriptCreatureAI
 {
-    ArcScript_FACTORY_FUNCTION(LavaSurgerAI, ArcScriptCreatureAI);
+    ARCSCRIPT_FACTORY_FUNCTION(LavaSurgerAI, ArcScriptCreatureAI);
     LavaSurgerAI(Creature* pCreature) : ArcScriptCreatureAI(pCreature)
     {
 		AddSpell(LAVASURGER_SURGE, Target_RandomUnit, 20, 0, 5, 0, 40);
@@ -458,7 +411,7 @@ class LavaSurgerAI : public ArcScriptCreatureAI
 
 class FlameImpAI : public ArcScriptCreatureAI
 {
-    ArcScript_FACTORY_FUNCTION(FlameImpAI, ArcScriptCreatureAI);
+    ARCSCRIPT_FACTORY_FUNCTION(FlameImpAI, ArcScriptCreatureAI);
     FlameImpAI(Creature* pCreature) : ArcScriptCreatureAI(pCreature)
     {
 		AddSpell(FLAMEIMP_FIRE_NOVA, Target_Current, 25, 0, 0);
@@ -472,7 +425,7 @@ class FlameImpAI : public ArcScriptCreatureAI
 
 class CoreHoundAI : public ArcScriptCreatureAI
 {
-    ArcScript_FACTORY_FUNCTION(CoreHoundAI, ArcScriptCreatureAI);
+    ARCSCRIPT_FACTORY_FUNCTION(CoreHoundAI, ArcScriptCreatureAI);
     CoreHoundAI(Creature* pCreature) : ArcScriptCreatureAI(pCreature)
     {
 		AddSpell(COREHOUND_SERRATED_BITE, Target_RandomPlayer, 10, 0, 0, 0, 10);
@@ -486,7 +439,7 @@ class CoreHoundAI : public ArcScriptCreatureAI
 
 class LavaReaverAI : public ArcScriptCreatureAI
 {
-    ArcScript_FACTORY_FUNCTION(LavaReaverAI, ArcScriptCreatureAI);
+    ARCSCRIPT_FACTORY_FUNCTION(LavaReaverAI, ArcScriptCreatureAI);
     LavaReaverAI(Creature* pCreature) : ArcScriptCreatureAI(pCreature)
     {
 		AddSpell(LAVAREAVER_CLEAVE, Target_Current, 20, 0, 0, 0, 15);
@@ -500,7 +453,7 @@ class LavaReaverAI : public ArcScriptCreatureAI
 
 class LavaElementalAI : public ArcScriptCreatureAI
 {
-    ArcScript_FACTORY_FUNCTION(LavaElementalAI, ArcScriptCreatureAI);
+    ARCSCRIPT_FACTORY_FUNCTION(LavaElementalAI, ArcScriptCreatureAI);
     LavaElementalAI(Creature* pCreature) : ArcScriptCreatureAI(pCreature)
     {
 		AddSpell(LAVAELEMENTAL_PYROCLAST_BARRAGE, Target_Self, 10, 0, 10);
@@ -515,7 +468,7 @@ class LavaElementalAI : public ArcScriptCreatureAI
 
 class FlameguardAI : public ArcScriptCreatureAI
 {
-    ArcScript_FACTORY_FUNCTION(FlameguardAI, ArcScriptCreatureAI);
+    ARCSCRIPT_FACTORY_FUNCTION(FlameguardAI, ArcScriptCreatureAI);
     FlameguardAI(Creature* pCreature) : ArcScriptCreatureAI(pCreature)
     {
 		AddSpell(FLAMEGUARD_FIRE_SHIELD, Target_Self, 100, 0, 0);
@@ -540,7 +493,7 @@ class FlameguardAI : public ArcScriptCreatureAI
 
 class FirewalkerAI : public ArcScriptCreatureAI
 {
-    ArcScript_FACTORY_FUNCTION(FirewalkerAI, ArcScriptCreatureAI);
+    ARCSCRIPT_FACTORY_FUNCTION(FirewalkerAI, ArcScriptCreatureAI);
     FirewalkerAI(Creature* pCreature) : ArcScriptCreatureAI(pCreature)
     {
 		AddSpell(FIREWALKER_MELT_ARMOR, Target_Self, 10, 0, 0);
@@ -558,7 +511,7 @@ class FirewalkerAI : public ArcScriptCreatureAI
 
 class LucifronAI : public ArcScriptBossAI
 {
-    ArcScript_FACTORY_FUNCTION(LucifronAI, ArcScriptBossAI);
+    ARCSCRIPT_FACTORY_FUNCTION(LucifronAI, ArcScriptBossAI);
 	LucifronAI(Creature* pCreature) : ArcScriptBossAI(pCreature)
 	{
 		AddSpell(LUCIFRON_IMPEDING_DOOM, Target_Self, 8, 0, 0);
@@ -575,7 +528,7 @@ class LucifronAI : public ArcScriptBossAI
 
 class FlamewakerProtectorAI : public ArcScriptCreatureAI
 {
-    ArcScript_FACTORY_FUNCTION(FlamewakerProtectorAI, ArcScriptCreatureAI);
+    ARCSCRIPT_FACTORY_FUNCTION(FlamewakerProtectorAI, ArcScriptCreatureAI);
 	FlamewakerProtectorAI(Creature* pCreature) : ArcScriptCreatureAI(pCreature)
 	{
 		AddSpell(FLAMEWAKERPROTECTOR_CLEAVE, Target_Current, 8, 0, 0, 0, 15);
@@ -593,7 +546,7 @@ class FlamewakerProtectorAI : public ArcScriptCreatureAI
 
 class MagmadarAI : public ArcScriptBossAI
 {
-    ArcScript_FACTORY_FUNCTION(MagmadarAI, ArcScriptBossAI);
+    ARCSCRIPT_FACTORY_FUNCTION(MagmadarAI, ArcScriptBossAI);
 	MagmadarAI(Creature* pCreature) : ArcScriptBossAI(pCreature)
 	{
 		AddSpell(MAGMADAR_MAGMA_SPIT, Target_Self, 8, 0, 0);
@@ -612,7 +565,7 @@ class MagmadarAI : public ArcScriptBossAI
 
 class GehennasAI : public ArcScriptBossAI
 {
-    ArcScript_FACTORY_FUNCTION(GehennasAI, ArcScriptBossAI);
+    ARCSCRIPT_FACTORY_FUNCTION(GehennasAI, ArcScriptBossAI);
 	GehennasAI(Creature* pCreature) : ArcScriptBossAI(pCreature)
 	{
 		AddSpell(GEHENNAS_SHADOW_BOLT, Target_RandomPlayer, 8, 0, 0, 0, 45);
@@ -630,7 +583,7 @@ class GehennasAI : public ArcScriptBossAI
 
 class FlamewakerAI : public ArcScriptCreatureAI
 {
-    ArcScript_FACTORY_FUNCTION(FlamewakerAI, ArcScriptCreatureAI);
+    ARCSCRIPT_FACTORY_FUNCTION(FlamewakerAI, ArcScriptCreatureAI);
 	FlamewakerAI(Creature* pCreature) : ArcScriptCreatureAI(pCreature)
 	{
 		AddSpell(FLAMEWAKER_SUNDER_ARMOR, Target_Current, 8, 0, 0);
@@ -647,7 +600,7 @@ class FlamewakerAI : public ArcScriptCreatureAI
 
 class GarrAI : public ArcScriptBossAI
 {
-    ArcScript_FACTORY_FUNCTION(GarrAI, ArcScriptBossAI);
+    ARCSCRIPT_FACTORY_FUNCTION(GarrAI, ArcScriptBossAI);
 	GarrAI(Creature* pCreature) : ArcScriptBossAI(pCreature)
 	{
 		AddSpell(GARR_ANTIMAGIC_PULSE, Target_Self, 10, 0, 0);
@@ -664,7 +617,7 @@ class GarrAI : public ArcScriptBossAI
 
 class FireswornAI : public ArcScriptCreatureAI
 {
-    ArcScript_FACTORY_FUNCTION(FireswornAI, ArcScriptCreatureAI);
+    ARCSCRIPT_FACTORY_FUNCTION(FireswornAI, ArcScriptCreatureAI);
 	FireswornAI(Creature* pCreature) : ArcScriptCreatureAI(pCreature)
 	{
 		mGarr = NULL;
@@ -710,7 +663,7 @@ class FireswornAI : public ArcScriptCreatureAI
 
 class BaronGeddonAI : public ArcScriptBossAI
 {
-    ArcScript_FACTORY_FUNCTION(BaronGeddonAI, ArcScriptBossAI);
+    ARCSCRIPT_FACTORY_FUNCTION(BaronGeddonAI, ArcScriptBossAI);
 	BaronGeddonAI(Creature* pCreature) : ArcScriptBossAI(pCreature)
 	{
 		AddSpell(BARONGEDDON_INFERNO, Target_Self, 8, 0, 0);
@@ -732,7 +685,7 @@ void SpellFunc_ShazzrahBlinkArcaneExplosions(SpellDesc* pThis, ArcScriptCreature
 
 class ShazzrahAI : public ArcScriptBossAI
 {
-    ArcScript_FACTORY_FUNCTION(ShazzrahAI, ArcScriptBossAI);
+    ARCSCRIPT_FACTORY_FUNCTION(ShazzrahAI, ArcScriptBossAI);
 	ShazzrahAI(Creature* pCreature) : ArcScriptBossAI(pCreature)
 	{
 		AddSpell(SHAZZRAH_SHAZZRAHS_CURSE, Target_Self, 8, 0, 0);
@@ -759,25 +712,6 @@ void SpellFunc_ShazzrahBlinkArcaneExplosions(SpellDesc* pThis, ArcScriptCreature
 	}
 }
 
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//Golemagg AI Script
-#define CN_GOLEMAGG					11988
-#define GOLEMAGG_GOLEMAGGS_TRUST	20553
-#define GOLEMAGG_MAGMA_SPLASH		13880
-#define GOLEMAGG_PYROBLAST			20228
-#define GOLEMAGG_EARTHQUAKE			19798
-
-class GolemaggAI : public ArcScriptBossAI
-{
-    ArcScript_FACTORY_FUNCTION(GolemaggAI, ArcScriptBossAI);
-	GolemaggAI(Creature* pCreature) : ArcScriptBossAI(pCreature)
-	{
-		AddSpell(GOLEMAGG_GOLEMAGGS_TRUST, Target_Self, 8, 0, 0);
-		AddSpell(GOLEMAGG_MAGMA_SPLASH, Target_Self, 8, 0, 0);
-		AddSpell(GOLEMAGG_PYROBLAST, Target_RandomPlayer, 8, 0, 0, 0, 40);
-		AddSpell(GOLEMAGG_EARTHQUAKE, Target_Self, 8, 0, 0);
-	}
-};
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //Register

@@ -924,6 +924,7 @@ bool DisruptTheirReinforcements(uint32 i, Spell* pSpell)
 	{
 		pPlayer->BroadcastMessage("Missing required quest : Disrupt Their Reinforcements");
 	}
+	return true;
 }
 
 

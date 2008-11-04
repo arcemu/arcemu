@@ -36,12 +36,12 @@ For PriestessDelrissa's Friends:) the others were scripted in lua.
 
 class Kagani_NightstrikeAI : public ArcScriptBossAI
 {
-    ArcScript_FACTORY_FUNCTION(Kagani_NightstrikeAI, ArcScriptBossAI);
+    ARCSCRIPT_FACTORY_FUNCTION(Kagani_NightstrikeAI, ArcScriptBossAI);
 	Kagani_NightstrikeAI(Creature* pCreature) : ArcScriptBossAI(pCreature)
 	{
 		//TODO: Add the other spells
 		AddSpell(KAGANI_NIGHTSTRIKE_Eviscerate, Target_RandomPlayer, 80, 0, 7, 0, 30);
-		AddSpell(KAGANI_NIGHTSTRIKE_KidneyShot, Target_Current, 80, 0, 20, 0, 0, 30);
+		AddSpell(KAGANI_NIGHTSTRIKE_KidneyShot, Target_Current, 80, 0, 20, 0, 30);
 		//AddSpell(KAGANI_NIGHTSTRIKE_Gouge, Target_Current, 80, 0, 0, 0, 0, 30); //Missing Functions
 		//AddSpell(KAGANI_NIGHTSTRIKE_Kick, Target_Current, 80, 0, 0, 0, 0, 30); //Missing Functions
 
@@ -57,7 +57,7 @@ class Kagani_NightstrikeAI : public ArcScriptBossAI
 
 class Ellrys_DuskhallowAI : public ArcScriptBossAI
 {
-	ArcScript_FACTORY_FUNCTION(Ellrys_DuskhallowAI, ArcScriptBossAI);
+	ARCSCRIPT_FACTORY_FUNCTION(Ellrys_DuskhallowAI, ArcScriptBossAI);
 	Ellrys_DuskhallowAI(Creature* pCreature) : ArcScriptBossAI(pCreature)
 	{
 		AddSpell(EllrysDuskhallow_Immolate,Target_Current, 75, 2, 15, 0, 30);
@@ -75,7 +75,7 @@ class Ellrys_DuskhallowAI : public ArcScriptBossAI
 
 class Eramas_BrightblazeAI : public ArcScriptBossAI
 {
-	ArcScript_FACTORY_FUNCTION(Eramas_BrightblazeAI, ArcScriptBossAI);
+	ARCSCRIPT_FACTORY_FUNCTION(Eramas_BrightblazeAI, ArcScriptBossAI);
 	Eramas_BrightblazeAI(Creature* pCreature) : ArcScriptBossAI(pCreature)
 	{
 	AddSpell(ERAMAS_BRIGHTBLAZE_KNOCKDOWN, Target_Current, 25, 0, 5, 0, 5);
@@ -94,7 +94,7 @@ class Eramas_BrightblazeAI : public ArcScriptBossAI
 
 class Priestess_DelrissaAI : public ArcScriptBossAI
 {
-	ArcScript_FACTORY_FUNCTION(Priestess_DelrissaAI, ArcScriptBossAI);
+	ARCSCRIPT_FACTORY_FUNCTION(Priestess_DelrissaAI, ArcScriptBossAI);
 	Priestess_DelrissaAI(Creature* pCreature) : ArcScriptBossAI(pCreature)
 	{
 		AddSpell(PRIESTESS_DELRISSA_DISPEL_MAGIC, Target_RandomFriendly, 35, 0, 5, 0, 30);
@@ -115,7 +115,7 @@ class Priestess_DelrissaAI : public ArcScriptBossAI
 
 class YazzaiAI : public ArcScriptBossAI
 {
-	ArcScript_FACTORY_FUNCTION(YazzaiAI, ArcScriptBossAI);
+	ARCSCRIPT_FACTORY_FUNCTION(YazzaiAI, ArcScriptBossAI);
 	YazzaiAI(Creature* pCreature) : ArcScriptBossAI(pCreature)
 	{
 		AddSpell(YAZZAI_POLYMORPH, Target_RandomPlayer, 30, 1.5, 16, 0, 30);
@@ -139,7 +139,7 @@ class YazzaiAI : public ArcScriptBossAI
 
 class Warlord_SalarisAI : public ArcScriptBossAI
 {
-	ArcScript_FACTORY_FUNCTION(Warlord_SalarisAI, ArcScriptBossAI);
+	ARCSCRIPT_FACTORY_FUNCTION(Warlord_SalarisAI, ArcScriptBossAI);
 	Warlord_SalarisAI(Creature* pCreature) : ArcScriptBossAI(pCreature)
 	{
 		//AddSpell(uint32 pSpellId, TargetType pTargetType, float pChance, float pCastTime, int32 pCooldown, float pMinRange, float pMaxRange
@@ -164,7 +164,7 @@ class Warlord_SalarisAI : public ArcScriptBossAI
 
 class GaraxxasAI : public ArcScriptBossAI
 {
-	ArcScript_FACTORY_FUNCTION(GaraxxasAI, ArcScriptBossAI);
+	ARCSCRIPT_FACTORY_FUNCTION(GaraxxasAI, ArcScriptBossAI);
 	GaraxxasAI(Creature* pCreature) : ArcScriptBossAI(pCreature)
 	{
 		AddSpell(GARAXXAS_AIMED_SHOT, Target_RandomPlayer, 90, 3, 6, 5, 35);
@@ -184,7 +184,7 @@ class GaraxxasAI : public ArcScriptBossAI
 
 class ApokoAI : public ArcScriptCreatureAI
 {
-	ArcScript_FACTORY_FUNCTION(ApokoAI, ArcScriptCreatureAI);
+	ARCSCRIPT_FACTORY_FUNCTION(ApokoAI, ArcScriptCreatureAI);
 	ApokoAI(Creature* pCreature) : ArcScriptCreatureAI(pCreature)
 	{
 		AddSpell(APOKO_FROST_SHOCK, Target_RandomPlayer, 40, 0, 8, 0, 20);
@@ -201,7 +201,7 @@ class ApokoAI : public ArcScriptCreatureAI
 
 class ZelfanAI : public ArcScriptCreatureAI
 {
-	ArcScript_FACTORY_FUNCTION(ZelfanAI, ArcScriptCreatureAI);
+	ARCSCRIPT_FACTORY_FUNCTION(ZelfanAI, ArcScriptCreatureAI);
 	ZelfanAI(Creature* pCreature) : ArcScriptCreatureAI(pCreature)
 	{
       AddSpell(ZELFAN_GOBLIN_DRAGON_GUN, Target_Current, 90, 0, 15, 0, 5);
@@ -221,7 +221,7 @@ class ZelfanAI : public ArcScriptCreatureAI
 
 class KaelThasMTAI : public ArcScriptBossAI
 {
-	ArcScript_FACTORY_FUNCTION(KaelThasMTAI, ArcScriptBossAI);
+	ARCSCRIPT_FACTORY_FUNCTION(KaelThasMTAI, ArcScriptBossAI);
 	KaelThasMTAI(Creature* pCreature) : ArcScriptBossAI(pCreature)
 	{
 		//AddPhaseSpell(1, AddSpell(FELMYST_CLEAVE, Target_Current, 6, 0, 10, 0, 5));

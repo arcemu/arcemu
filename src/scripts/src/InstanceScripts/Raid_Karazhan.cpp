@@ -85,7 +85,7 @@ public:
 
 class AttumenTheHuntsmanAI : public ArcScriptBossAI
 {
-	ArcScript_FACTORY_FUNCTION(AttumenTheHuntsmanAI, ArcScriptBossAI);
+	ARCSCRIPT_FACTORY_FUNCTION(AttumenTheHuntsmanAI, ArcScriptBossAI);
 	AttumenTheHuntsmanAI(Creature* pCreature) : ArcScriptBossAI(pCreature)
 	{
 		mMidnight = NULL;
@@ -145,7 +145,7 @@ class AttumenTheHuntsmanAI : public ArcScriptBossAI
 
 class MidnightAI : public ArcScriptBossAI
 {
-	ArcScript_FACTORY_FUNCTION(MidnightAI, ArcScriptBossAI);
+	ARCSCRIPT_FACTORY_FUNCTION(MidnightAI, ArcScriptBossAI);
 	MidnightAI(Creature* pCreature) : ArcScriptBossAI(pCreature)
 	{
 		mAttumen = NULL;
@@ -228,7 +228,7 @@ class MidnightAI : public ArcScriptBossAI
 
 class MoroesAI : public ArcScriptBossAI
 {
-	ArcScript_FACTORY_FUNCTION(MoroesAI, ArcScriptBossAI);
+	ARCSCRIPT_FACTORY_FUNCTION(MoroesAI, ArcScriptBossAI);
 	MoroesAI(Creature* pCreature) : ArcScriptBossAI(pCreature)
 	{
 		//Initialize timers
@@ -310,7 +310,7 @@ class MoroesAI : public ArcScriptBossAI
 
 class MaidenOfVirtueAI : public ArcScriptBossAI
 {
-	ArcScript_FACTORY_FUNCTION(MaidenOfVirtueAI, ArcScriptBossAI);
+	ARCSCRIPT_FACTORY_FUNCTION(MaidenOfVirtueAI, ArcScriptBossAI);
 	MaidenOfVirtueAI(Creature* pCreature) : ArcScriptBossAI(pCreature)
 	{
 		//Spells
@@ -5503,7 +5503,7 @@ protected:
 //#define Chess_Event_APawn_Ability2		37414
 class ChessAI : public ArcScriptCreatureAI
 {
-public: ArcScript_FACTORY_FUNCTION(ChessAI, ArcScriptCreatureAI);
+public: ARCSCRIPT_FACTORY_FUNCTION(ChessAI, ArcScriptCreatureAI);
 		ChessAI(Creature* pCreature) : ArcScriptCreatureAI(pCreature)
 		{
 		}
@@ -5590,7 +5590,7 @@ public:
 class ChessHordeAI : public ArcScriptCreatureAI
 {
 public:
-	ArcScript_FACTORY_FUNCTION(ChessHordeAI, ArcScriptCreatureAI);
+	ARCSCRIPT_FACTORY_FUNCTION(ChessHordeAI, ArcScriptCreatureAI);
 
 	ChessHordeAI(Creature* pCreature) : ArcScriptCreatureAI(pCreature)
 	{
@@ -5603,7 +5603,7 @@ public:
 class ChessAllianceAI : public ArcScriptCreatureAI
 {
 public:
-	ArcScript_FACTORY_FUNCTION(ChessAllianceAI, ArcScriptCreatureAI);
+	ARCSCRIPT_FACTORY_FUNCTION(ChessAllianceAI, ArcScriptCreatureAI);
 
 	ChessAllianceAI(Creature* pCreature) : ArcScriptCreatureAI(pCreature)
 	{
@@ -5616,7 +5616,7 @@ public:
 class ChessPieceAI : public ArcScriptCreatureAI
 {
 public:
-	ArcScript_FACTORY_FUNCTION(ChessPieceAI, ArcScriptCreatureAI);
+	ARCSCRIPT_FACTORY_FUNCTION(ChessPieceAI, ArcScriptCreatureAI);
 
 	ChessPieceAI(Creature* pCreature) : ArcScriptCreatureAI(pCreature)
 	{

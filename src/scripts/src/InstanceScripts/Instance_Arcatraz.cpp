@@ -34,7 +34,7 @@
 
 class ArcatrazDefenderAI : public ArcScriptCreatureAI
 {
-    ArcScript_FACTORY_FUNCTION(ArcatrazDefenderAI, ArcScriptCreatureAI);
+    ARCSCRIPT_FACTORY_FUNCTION(ArcatrazDefenderAI, ArcScriptCreatureAI);
 	ArcatrazDefenderAI(Creature* pCreature) : ArcScriptCreatureAI(pCreature)
 	{
 		AddSpell(ARCATRAZ_DEFENDER_PROTEAN_SUBDUAL, Target_Current, 5, 0, 0, 0, 5);
@@ -52,7 +52,7 @@ class ArcatrazDefenderAI : public ArcScriptCreatureAI
 
 class ArcatrazSentinelAI : public ArcScriptCreatureAI
 {
-    ArcScript_FACTORY_FUNCTION(ArcatrazSentinelAI, ArcScriptCreatureAI);
+    ARCSCRIPT_FACTORY_FUNCTION(ArcatrazSentinelAI, ArcScriptCreatureAI);
 	ArcatrazSentinelAI(Creature* pCreature) : ArcScriptCreatureAI(pCreature)
 	{
 		AddSpell(ARCATRAZ_SENTINEL_ENERGY_DISCHARGE, Target_Self, 8, 0, 0);
@@ -264,7 +264,7 @@ protected:
 
 class BlackwingDrakonaarAI : public ArcScriptCreatureAI
 {
-    ArcScript_FACTORY_FUNCTION(BlackwingDrakonaarAI, ArcScriptCreatureAI);
+    ARCSCRIPT_FACTORY_FUNCTION(BlackwingDrakonaarAI, ArcScriptCreatureAI);
 	BlackwingDrakonaarAI(Creature* pCreature) : ArcScriptCreatureAI(pCreature)
 	{
 		AddSpell(BLACKWING_DRAKONAAR_BROOD_POWER_BLACK, Target_Self, 7, 0, 0);
@@ -281,7 +281,7 @@ class BlackwingDrakonaarAI : public ArcScriptCreatureAI
 
 class BlackwingTricksterAI : public ArcScriptCreatureAI
 {
-    ArcScript_FACTORY_FUNCTION(BlackwingTricksterAI, ArcScriptCreatureAI);
+    ARCSCRIPT_FACTORY_FUNCTION(BlackwingTricksterAI, ArcScriptCreatureAI);
 	BlackwingTricksterAI(Creature* pCreature) : ArcScriptCreatureAI(pCreature)
 	{
 		AddSpell(BLACKWING_TRICKSTER_FIREBOLT, Target_Current, 10, 1000, 0, 0, 40, true);
@@ -298,7 +298,7 @@ class BlackwingTricksterAI : public ArcScriptCreatureAI
 
 class DeathWatcherAI : public ArcScriptCreatureAI
 {
-    ArcScript_FACTORY_FUNCTION(DeathWatcherAI, ArcScriptCreatureAI);
+    ARCSCRIPT_FACTORY_FUNCTION(DeathWatcherAI, ArcScriptCreatureAI);
 	DeathWatcherAI(Creature* pCreature) : ArcScriptCreatureAI(pCreature)
 	{
 		AddSpell(DEATH_WATCHER_TENTACLE_CLEAVE, Target_Current, 10, 0, 0, 0, 8, true);
@@ -334,7 +334,7 @@ class DeathWatcherAI : public ArcScriptCreatureAI
 											// I presume this is just corpse which should cast spell when player is close or attk it
 class DefenderCorpseAI : public ArcScriptCreatureAI
 {
-    ArcScript_FACTORY_FUNCTION(DefenderCorpseAI, ArcScriptCreatureAI);
+    ARCSCRIPT_FACTORY_FUNCTION(DefenderCorpseAI, ArcScriptCreatureAI);
 	DefenderCorpseAI(Creature* pCreature) : ArcScriptCreatureAI(pCreature)
 	{
 		mCorpseBurst = AddSpell(DEFENDER_CORPSE_CORPSE_BURST, Target_Self, 0, 0, 0);
@@ -366,7 +366,7 @@ class DefenderCorpseAI : public ArcScriptCreatureAI
 
 class ProteanSpawnAI : public ArcScriptCreatureAI
 {
-    ArcScript_FACTORY_FUNCTION(ProteanSpawnAI, ArcScriptCreatureAI);
+    ARCSCRIPT_FACTORY_FUNCTION(ProteanSpawnAI, ArcScriptCreatureAI);
 	ProteanSpawnAI(Creature* pCreature) : ArcScriptCreatureAI(pCreature)
 	{
 		AddSpell(PROTEAN_SPAWN_ACIDIC_BITE, Target_Current, 8, 0, 0, 0, 8, true);
@@ -534,7 +534,7 @@ protected:
 
 class EredarDeathbringerAI : public ArcScriptCreatureAI
 {
-    ArcScript_FACTORY_FUNCTION(EredarDeathbringerAI, ArcScriptCreatureAI);
+    ARCSCRIPT_FACTORY_FUNCTION(EredarDeathbringerAI, ArcScriptCreatureAI);
 	EredarDeathbringerAI(Creature* pCreature) : ArcScriptCreatureAI(pCreature)
 	{
 		AddSpell(EREDAR_DEATHBRINGER_DIMINISH_SOUL, Target_Current, 7, 0, 0, 0, 8, true);		// Correct target type?
@@ -680,7 +680,7 @@ protected:
 
 class EthereumLifeBinderAI : public ArcScriptCreatureAI
 {
-    ArcScript_FACTORY_FUNCTION(EthereumLifeBinderAI, ArcScriptCreatureAI);
+    ARCSCRIPT_FACTORY_FUNCTION(EthereumLifeBinderAI, ArcScriptCreatureAI);
 	EthereumLifeBinderAI(Creature* pCreature) : ArcScriptCreatureAI(pCreature)
 	{
 		AddSpell(ETHEREUM_LIFE_BINDER_BIND, Target_Self, 8, 1500, 0);
@@ -697,7 +697,7 @@ class EthereumLifeBinderAI : public ArcScriptCreatureAI
 
 class EthereumSlayerAI : public ArcScriptCreatureAI
 {
-    ArcScript_FACTORY_FUNCTION(EthereumSlayerAI, ArcScriptCreatureAI);
+    ARCSCRIPT_FACTORY_FUNCTION(EthereumSlayerAI, ArcScriptCreatureAI);
 	EthereumSlayerAI(Creature* pCreature) : ArcScriptCreatureAI(pCreature)
 	{
 		AddSpell(ETHEREUM_SLAYER_IMPARING_POISON, Target_Current, 7, 0, 0, 0, 40, true);
@@ -716,7 +716,7 @@ class EthereumSlayerAI : public ArcScriptCreatureAI
 
 class EthereumWaveCasterAI : public ArcScriptCreatureAI
 {
-    ArcScript_FACTORY_FUNCTION(EthereumWaveCasterAI, ArcScriptCreatureAI);
+    ARCSCRIPT_FACTORY_FUNCTION(EthereumWaveCasterAI, ArcScriptCreatureAI);
 	EthereumWaveCasterAI(Creature* pCreature) : ArcScriptCreatureAI(pCreature)
 	{
 		AddSpell(ETHEREUM_WAVE_CASTER_POLYMORPH, Target_RandomPlayer, 7, 1500, 0, 0, 30, true);
@@ -733,7 +733,7 @@ class EthereumWaveCasterAI : public ArcScriptCreatureAI
 
 class GargantuanAbyssalAI : public ArcScriptCreatureAI
 {
-    ArcScript_FACTORY_FUNCTION(GargantuanAbyssalAI, ArcScriptCreatureAI);
+    ARCSCRIPT_FACTORY_FUNCTION(GargantuanAbyssalAI, ArcScriptCreatureAI);
 	GargantuanAbyssalAI(Creature* pCreature) : ArcScriptCreatureAI(pCreature)
 	{
 		AddSpell(GARGANTUAN_ABYSSAL_FIRE_SHIELD, Target_Self, 7, 0, 0);
@@ -751,7 +751,7 @@ class GargantuanAbyssalAI : public ArcScriptCreatureAI
 
 class GreaterFireElementalAI : public ArcScriptCreatureAI
 {
-    ArcScript_FACTORY_FUNCTION(GreaterFireElementalAI, ArcScriptCreatureAI);
+    ARCSCRIPT_FACTORY_FUNCTION(GreaterFireElementalAI, ArcScriptCreatureAI);
 	GreaterFireElementalAI(Creature* pCreature) : ArcScriptCreatureAI(pCreature)
 	{
 		AddSpell(GREATER_FIRE_ELEMENTAL_FIRE_NOVA, Target_Self, 9, 2000, 0);
@@ -1411,7 +1411,7 @@ protected:
 
 class NegatonWarpMasterAI : public ArcScriptCreatureAI
 {
-    ArcScript_FACTORY_FUNCTION(NegatonWarpMasterAI, ArcScriptCreatureAI);
+    ARCSCRIPT_FACTORY_FUNCTION(NegatonWarpMasterAI, ArcScriptCreatureAI);
 	NegatonWarpMasterAI(Creature* pCreature) : ArcScriptCreatureAI(pCreature)
 	{
 		AddSpell(NEGATON_WARP_MASTER_SUMMON_NEGATION_FIELD, Target_Self, 10, 20000, 0);
@@ -1425,7 +1425,7 @@ class NegatonWarpMasterAI : public ArcScriptCreatureAI
 
 class NegatonFieldAI : public ArcScriptCreatureAI
 {
-    ArcScript_FACTORY_FUNCTION(NegatonFieldAI, ArcScriptCreatureAI);
+    ARCSCRIPT_FACTORY_FUNCTION(NegatonFieldAI, ArcScriptCreatureAI);
 	NegatonFieldAI(Creature* pCreature) : ArcScriptCreatureAI(pCreature)
 	{
 		ApplyAura(NEGATION_FIELD);
@@ -1442,7 +1442,7 @@ class NegatonFieldAI : public ArcScriptCreatureAI
 
 class PhaseHunterAI : public ArcScriptCreatureAI
 {
-    ArcScript_FACTORY_FUNCTION(PhaseHunterAI, ArcScriptCreatureAI);
+    ARCSCRIPT_FACTORY_FUNCTION(PhaseHunterAI, ArcScriptCreatureAI);
 	PhaseHunterAI(Creature* pCreature) : ArcScriptCreatureAI(pCreature)
 	{
 		AddSpell(PHASE_HUNTER_WARP, Target_Self, 5, 0, 0);
@@ -1472,7 +1472,7 @@ class PhaseHunterAI : public ArcScriptCreatureAI
 
 class ProteanHorrorAI : public ArcScriptCreatureAI
 {
-    ArcScript_FACTORY_FUNCTION(ProteanHorrorAI, ArcScriptCreatureAI);
+    ARCSCRIPT_FACTORY_FUNCTION(ProteanHorrorAI, ArcScriptCreatureAI);
 	ProteanHorrorAI(Creature* pCreature) : ArcScriptCreatureAI(pCreature)
 	{
 		AddSpell(PROTEAN_HORROR_TOOTHY_BITE, Target_Current, 10, 0, 0, 0, 8, true);
@@ -1488,7 +1488,7 @@ class ProteanHorrorAI : public ArcScriptCreatureAI
 
 class ProteanNightmareAI : public ArcScriptCreatureAI
 {
-    ArcScript_FACTORY_FUNCTION(ProteanNightmareAI, ArcScriptCreatureAI);
+    ARCSCRIPT_FACTORY_FUNCTION(ProteanNightmareAI, ArcScriptCreatureAI);
 	ProteanNightmareAI(Creature* pCreature) : ArcScriptCreatureAI(pCreature)
 	{
 		AddSpell(PROTEAN_NIGHTMARE_INCUBATION, Target_Current, 6, 0, 0, 0, 8, true);
