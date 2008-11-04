@@ -164,7 +164,7 @@ class FlamewakerPriestAI : public ArcScriptCreatureAI
 #define ELEMENTAL_FIRE 20563 // 1 target
 #define MAGMA_BLAST 20565 // various targets on not attacked. -> sound -> 8048 ?
 #define WRATH_OF_RAGNAROS 20566  // Fly bitches fly! quote -> "Taste the Flames of Sulfuron!" -> sound 8047
-#define HAMMER_OF_RAGNAROS 19780 // quote -> "By fire be purged!" -> sound 8046
+#define HAND_OF_RAGNAROS 19780 // quote -> "By fire be purged!" -> sound 8046
 #define MELT_WEAPON 21387 // 1 target
 #define SUMMON_SONS_OF_FLAMES 21108 // TODO: DUMMY :P summon the sons of flames. entry = 12143 -> sound 8049,8050
 
@@ -173,120 +173,76 @@ class FlamewakerPriestAI : public ArcScriptCreatureAI
 //Ragnaros Emerge -> 20568
 
 // Ragnaros AI
-class RagnarosAI : public CreatureAIScript
+class RagnarosAI : public ArcScriptBossAI
 {
-public:
-    ADD_CREATURE_FACTORY_FUNCTION(RagnarosAI);
-    RagnarosAI(Creature* pCreature) : CreatureAIScript(pCreature)
-    {
-		m_elementalfire = m_wrath = m_hammer = m_meltweapon = m_summonsons = true;
+    ARCSCRIPT_FACTORY_FUNCTION(RagnarosAI, ArcScriptBossAI);
+    RagnarosAI(Creature* pCreature) : ArcScriptBossAI(pCreature)
+	{
+		AddPhaseSpell(2, AddSpell(ELEMENTAL_FIRE, Target_Current, 25, 0, 30));
+		AddPhaseSpell(2, AddSpell(HAND_OF_RAGNAROS, Target_RandomPlayerNotCurrent, 35, 0, 30, 0, 0, false, "By fire be purged!", Text_Yell, 8046));
+		AddPhaseSpell(2, AddSpell(WRATH_OF_RAGNAROS, Target_RandomPlayerNotCurrent, 25, 0, 25, 0, 0, false, "Taste the flames of Sulfuron!", Text_Yell, 8047));
+		AddPhaseSpell(2, AddSpell(MELT_WEAPON, Target_Self, 1, 0, 25));
 
-        info_elementalfire = dbcSpell.LookupEntry(ELEMENTAL_FIRE);
-		info_wrath = dbcSpell.LookupEntry(WRATH_OF_RAGNAROS);
-		info_hammer = dbcSpell.LookupEntry(HAMMER_OF_RAGNAROS);
-		info_meltweapon = dbcSpell.LookupEntry(MELT_WEAPON);
-		info_summonsons = dbcSpell.LookupEntry(SUMMON_SONS_OF_FLAMES);
-		_unit->Root();
-    }
-    
-    void OnCombatStart(Unit* mTarget)
-    {
-		RegisterAIUpdateEvent(_unit->GetUInt32Value(UNIT_FIELD_BASEATTACKTIME));
-		_unit->GetAIInterface()->skip_reset_hp=true;
-    }
+		// Magma Blast - Added 10second cooldown to make sure that we give the tank a chance to run back to him on knockback
+		AddPhaseSpell(2, AddSpell(20565, Target_Current, 100, 0, 10, 50, 250, true, 0, Text_Yell, 8048)); // Unknown Text
 
-    void OnCombatStop(Unit *mTarget)
-    {
-        _unit->GetAIInterface()->setCurrentAgent(AGENT_NULL);
-        _unit->GetAIInterface()->SetAIState(STATE_IDLE);
-       RemoveAIUpdateEvent();
-    }
-    
-    void OnTargetDied(Unit* mTarget)
-    {
-        _unit->SendChatMessage(CHAT_MSG_MONSTER_YELL, LANG_UNIVERSAL, "DIE, INSECT!");
-        _unit->PlaySoundToSet(8051);
-    }
+		SetCanEnterCombat(false);
+		SetAllowMelee(false);
+		SetAllowRanged(false);
+		SetAllowSpell(false);
+		SetAllowTargeting(false);
+		SetCanMove(false);
 
-    void OnDied(Unit * mKiller)
-    {
-       RemoveAIUpdateEvent();
+		// Unselectable
+		_unit->SetUInt64Value(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_ATTACKABLE_9);
+		_unit->SetUInt32Value(UNIT_FIELD_BYTES_2, 1);
+		_unit->GetAIInterface()->skip_reset_hp = true;
+
+		allowcombat = AddTimer(42000); // 42 Second countdown before hes attackable - Due to the speech event with major domo
+
+		// Find Major Domo
+		Creature *domo = _unit->GetMapMgr()->GetInterface()->GetCreatureNearestCoords(828.548096f, -813.801331f, -228.907822f, 12018);
+		if(domo && domo->isAlive()) // If Domo is alive then we do the speech
+		{
+			// Text 1
+			sEventMgr.AddEvent(static_cast< Unit* >(_unit), &Unit::SendChatMessage, (uint8)CHAT_MSG_MONSTER_YELL, (uint32)LANG_UNIVERSAL, 
+			"TOO SOON! YOU HAVE AWAKENED ME TOO SOON, EXECUTUS!!! WHAT IS THE MEANING OF THIS INTRUSTION???", 
+			EVENT_UNIT_CHAT_MSG, 4000, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
+			sEventMgr.AddEvent(static_cast< Object*>(_unit), &Object::PlaySoundToSet, (uint32)8043, EVENT_UNK, 4000, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
+
+			// Text 2
+			sEventMgr.AddEvent(static_cast< Unit* >(domo), &Unit::SendChatMessage, (uint8)CHAT_MSG_MONSTER_YELL, (uint32)LANG_UNIVERSAL, 
+			"These mortal infidels, my lord! They have invaded your sanctum and seek to steal your secrets!", 
+			EVENT_UNIT_CHAT_MSG, 17000, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
+			sEventMgr.AddEvent(static_cast< Object*>(domo), &Object::PlaySoundToSet, (uint32)8041, EVENT_UNK, 17000, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
+
+			// Text 3
+			sEventMgr.AddEvent(static_cast< Unit* >(_unit), &Unit::SendChatMessage, (uint8)CHAT_MSG_MONSTER_YELL, (uint32)LANG_UNIVERSAL, 
+			"FOOL! YOU ALLOWED THESE INSECTS TO RUN RAMPANT THROUGH THE HALLOWED CORE? AND NOW YOU LEAD THEM TO MY VERY LAIR? YOU HAVE FAILED ME, EXECUTUS! JUSTICE SHALL BE MET, INDEED!", 
+			EVENT_UNIT_CHAT_MSG, 26000, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
+			sEventMgr.AddEvent(static_cast< Object*>(_unit), &Object::PlaySoundToSet, (uint32)8044, EVENT_UNK, 26000, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
+		}
+
+		AddEmote(Event_OnTargetDied, "DIE, INSECT!", Text_Yell, 8051);
     }
 
     void AIUpdate()
-    {	
-	    uint32 val = RandomUInt(1000);
-        SpellCast(val);
-    }
-
-    void SpellCast(uint32 val)
     {
-        if(_unit->GetCurrentSpell() == NULL && _unit->GetAIInterface()->GetNextTarget())//_unit->getAttackTarget())
-        {
-			Unit *target = _unit->GetAIInterface()->GetNextTarget();
-			                      
-            if(m_elementalfire)
-            {
-                _unit->CastSpell(target, info_elementalfire, false);
-                m_elementalfire = false;
-                return;
-            }
-            
-            if(m_wrath)
-            {
-                _unit->SendChatMessage(CHAT_MSG_MONSTER_YELL, LANG_UNIVERSAL, "Taste the Flames of Sulfuron!");
-		        _unit->PlaySoundToSet(8047);
-                _unit->CastSpell(_unit, info_wrath, false);
-                m_wrath = false;
-                return;
-            }
-            
-            if(m_hammer)
-            {
-                _unit->SendChatMessage(CHAT_MSG_MONSTER_YELL, LANG_UNIVERSAL, "By fire be purged!");
-		        _unit->PlaySoundToSet(8046);
-                _unit->CastSpell(_unit, info_hammer, false);
-                m_hammer = false;
-                return;
-            }
-            
-            if(m_meltweapon)
-            {
-                _unit->CastSpell(target, info_meltweapon, false);
-                m_meltweapon = false;
-                return;
-            }
-            
-            if(val >= 100 && val <= 160)
-            {
-                _unit->setAttackTimer(1000, false);
-                m_elementalfire = true;
-            }
-            
-            if(val > 160 && val <= 220)
-            {
-                _unit->setAttackTimer(1000, false);
-                m_wrath = true;
-            }
-            
-            if(val > 220 && val <= 280)
-            {
-                _unit->setAttackTimer(1000, false);
-                m_hammer = true;
-            }
-            if(val > 340 && val <= 400)
-            {
-                _unit->setAttackTimer(1000, false);
-                m_meltweapon = true;
-            }
-            
-        }
+		if(IsTimerFinished(allowcombat) && GetPhase() == 1) // Set him attackable and make sure that we dont loop this
+		{
+			Emote("NOW FOR YOU, INSECTS! BOLDLY, YOU SOUGHT THE POWER OF RAGNAROS. NOW YOU SHALL SEE IT FIRSTHAND!", Text_Yell, 8045);
+			SetCanEnterCombat(true);
+			SetAllowMelee(true);
+			SetAllowRanged(true);
+			SetAllowSpell(true);
+			SetAllowTargeting(true);
+
+			_unit->SetUInt64Value(UNIT_FIELD_FLAGS, 0); 
+			SetPhase(2);
+		}
     }
 
-protected:
-
-    bool m_elementalfire,m_wrath,m_hammer,m_meltweapon,m_summonsons;
-    SpellEntry *info_elementalfire, *info_wrath, *info_hammer, *info_meltweapon,*info_summonsons;
+	uint32 allowcombat;
 };
 
 /*
