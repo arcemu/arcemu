@@ -261,7 +261,6 @@ bool ChatHandler::HandleLearnCommand(const char* args, WorldSession *m_session)
 	}
 
 	uint32 spell = atol((char*)args);
-	sGMLog.writefromsession(m_session, "taught %s spell %u", plr->GetName(), spell);
 
 	SpellEntry * sp = dbcSpell.LookupEntry(spell);
 	if(!sp)
@@ -286,7 +285,9 @@ bool ChatHandler::HandleLearnCommand(const char* args, WorldSession *m_session)
 	}
 
 	plr->addSpell(spell);
-	BlueSystemMessageToPlr(plr, "%s taught you Spell %d", m_session->GetPlayer()->GetName(), spell);
+	sGMLog.writefromsession(m_session, "taught %s spell %u", plr->GetName(), spell);
+	BlueSystemMessageToPlr(plr, "%s taught you Spell %u", m_session->GetPlayer()->GetName(), spell);
+	GreenSystemMessage(m_session, "Taught %s Spell %u", plr->GetName(), spell);
 
 	return true;
 }
@@ -1414,11 +1415,14 @@ bool ChatHandler::HandlePetSpawnAIBot(const char* args, WorldSession *m_session)
 
 bool ChatHandler::HandleAddPetSpellCommand(const char* args, WorldSession* m_session)
 {
-	Player * plr = m_session->GetPlayer();
+	Player * plr = getSelectedChar(m_session, false);
+	if(!plr)
+		return false;
+
 	Pet * pPet = plr->GetSummon();
 	if(pPet == 0)
 	{
-		RedSystemMessage(m_session, "You have no pet.");
+		RedSystemMessage(m_session, "%s has no pet.", plr->GetName());
 		return true;
 	}
 
@@ -1431,17 +1435,20 @@ bool ChatHandler::HandleAddPetSpellCommand(const char* args, WorldSession* m_ses
 	}
 
 	pPet->AddSpell(spell, true);
-	GreenSystemMessage(m_session, "Added spell %u to your pet.", SpellId);
+	GreenSystemMessage(m_session, "Added spell %u to %s's pet.", SpellId, plr->GetName());
 	return true;
 }
 
 bool ChatHandler::HandleRemovePetSpellCommand(const char* args, WorldSession* m_session)
 {
-	Player * plr = m_session->GetPlayer();
+	Player * plr = getSelectedChar(m_session, false);
+	if(!plr)
+		return false;
+
 	Pet * pPet = plr->GetSummon();
 	if(pPet == 0)
 	{
-		RedSystemMessage(m_session, "You have no pet.");
+		RedSystemMessage(m_session, "%s has no pet.", plr->GetName());
 		return true;
 	}
 
@@ -1454,7 +1461,7 @@ bool ChatHandler::HandleRemovePetSpellCommand(const char* args, WorldSession* m_
 	}
 
 	pPet->RemoveSpell(SpellId);
-	GreenSystemMessage(m_session, "Added spell %u to your pet.", SpellId);
+	GreenSystemMessage(m_session, "Added spell %u to %s's pet.", SpellId, plr->GetName());
 	return true;
 }
 

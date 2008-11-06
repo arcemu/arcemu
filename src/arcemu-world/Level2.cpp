@@ -99,6 +99,12 @@ bool ChatHandler::CreateGuildCommand(const char* args, WorldSession *m_session)
 	Player * ptarget = getSelectedChar(m_session);
 	if(!ptarget) return false;
 
+	if(ptarget->IsInGuild())
+	{
+		RedSystemMessage(m_session, "%s is already in a guild.", ptarget->GetName());
+		return true;
+	}
+
 	if(strlen((char*)args)>75)
 	{
 		// send message to user
@@ -114,14 +120,22 @@ bool ChatHandler::CreateGuildCommand(const char* args, WorldSession *m_session)
 			return true;
 		}
 	}
+	Guild * pGuild = NULL;
+	pGuild = objmgr.GetGuildByGuildName(string(args));
+
+	if(pGuild)
+	{
+		RedSystemMessage(m_session, "Guild name is already taken.");
+		return true;
+	}
 
 	Charter tempCharter(0, ptarget->GetLowGUID(), CHARTER_TYPE_GUILD);
 	tempCharter.SignatureCount=0;
 	tempCharter.GuildName = string(args);
 
-	Guild * pGuild = Guild::Create();
+	pGuild = Guild::Create();
 	pGuild->CreateFromCharter(&tempCharter, ptarget->GetSession());
-	SystemMessage(m_session, "Guild created");
+	GreenSystemMessage(m_session, "Guild created");
 	return true;
 }
 
@@ -135,7 +149,7 @@ bool ChatHandler::HandleDeleteCommand(const char* args, WorldSession *m_session)
 {
 
 	uint64 guid = m_session->GetPlayer()->GetSelection();
-	if (guid == 0)
+	if(guid == 0)
 	{
 		SystemMessage(m_session, "No selection.");
 		return true;
@@ -147,14 +161,13 @@ bool ChatHandler::HandleDeleteCommand(const char* args, WorldSession *m_session)
 		SystemMessage(m_session, "You should select a creature.");
 		return true;
 	}
-	if ( unit->IsPet() )
+	if(unit->IsPet())
 	{
 		SystemMessage(m_session, "You can't delete a pet." );
 		return true;
 	}
+
 	sGMLog.writefromsession(m_session, "used npc delete, sqlid %u, creature %s, pos %f %f %f", unit->GetSQL_id(), unit->GetCreatureInfo() ? unit->GetCreatureInfo()->Name : "wtfbbqhax", unit->GetPositionX(), unit->GetPositionY(), unit->GetPositionZ());
-	if( unit->m_spawn == NULL )
-		return false;
 	BlueSystemMessage(m_session, "Deleted creature ID %u", unit->spawnid);
 
 	if(unit->IsInWorld())
@@ -192,11 +205,9 @@ bool ChatHandler::HandleDeMorphCommand(const char* args, WorldSession *m_session
 {
 	Player * target	= getSelectedChar(m_session);
 	if(!target)
-		target	= m_session->GetPlayer();
+		target = m_session->GetPlayer();
 
-	sLog.outError("Demorphed %s", target->GetName());
 	target->DeMorph();
-
 	return true;
 }
 
@@ -207,7 +218,7 @@ bool ChatHandler::HandleItemCommand(const char* args, WorldSession *m_session)
 		return false;
 
 	uint64 guid = m_session->GetPlayer()->GetSelection();
-	if (guid == 0)
+	if(guid == 0)
 	{
 		SystemMessage(m_session, "No selection.");
 		return true;
@@ -964,11 +975,13 @@ bool ChatHandler::HandleGOEnable(const char *args, WorldSession *m_session)
 	{
 		// Deactivate
 		GObj->SetUInt32Value(GAMEOBJECT_DYN_FLAGS, 0);
+		BlueSystemMessage(m_session, "Gameobject deactivated.");
 	} else {
 		// /Activate
 		GObj->SetUInt32Value(GAMEOBJECT_DYN_FLAGS, 1);
+		BlueSystemMessage(m_session, "Gameobject activated.");
 	}
-	BlueSystemMessage(m_session, "Gameobject activate/deactivated.");
+	
 	sGMLog.writefromsession( m_session, "activated/deactivated gameobject %s, entry %u", GameObjectNameStorage.LookupEntry( GObj->GetEntry() )->Name, GObj->GetEntry() );
 	return true;
 }
@@ -986,12 +999,14 @@ bool ChatHandler::HandleGOActivate(const char* args, WorldSession *m_session)
 		// Close/Deactivate
 		GObj->SetUInt32Value(GAMEOBJECT_STATE, 0);
 		GObj->SetUInt32Value(GAMEOBJECT_FLAGS, (GObj->GetUInt32Value(GAMEOBJECT_FLAGS)-1));
+		BlueSystemMessage(m_session, "Gameobject closed.");
 	} else {
 		// Open/Activate
 		GObj->SetUInt32Value(GAMEOBJECT_STATE, 1);
 		GObj->SetUInt32Value(GAMEOBJECT_FLAGS, (GObj->GetUInt32Value(GAMEOBJECT_FLAGS)+1));
+		BlueSystemMessage(m_session, "Gameobject opened.");
 	}
-	BlueSystemMessage(m_session, "Gameobject opened/closed.");
+	
 	sGMLog.writefromsession( m_session, "opened/closed gameobject %s, entry %u", GameObjectNameStorage.LookupEntry( GObj->GetEntry() )->Name, GObj->GetEntry() );
 	return true;
 }

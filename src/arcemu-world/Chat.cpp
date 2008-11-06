@@ -511,7 +511,7 @@ void CommandTableStorage::Init()
 		{ "reloadtable",   'm', &ChatHandler::HandleDBReloadCommand,        "Reloads some of the database tables",                      NULL, 0, 0, 0 },
 		{ "shutdown",      'z', &ChatHandler::HandleShutdownCommand,        "Initiates server shutdown in <x> seconds (5 by default).", NULL, 0, 0, 0 },
 		{ "restart",       'z', &ChatHandler::HandleShutdownRestartCommand, "Initiates server restart in <x> seconds (5 by default).",  NULL, 0, 0, 0 },
-		{ "save",          's', &ChatHandler::HandleSaveCommand,            "Save's your character",                                    NULL, 0, 0, 0 },
+		{ "save",          's', &ChatHandler::HandleSaveCommand,            "Save's target character",                                    NULL, 0, 0, 0 },
 		{ "saveall",       's', &ChatHandler::HandleSaveAllCommand,         "Save's all playing characters",                            NULL, 0, 0, 0 },
 		{ "info",          '0', &ChatHandler::HandleInfoCommand,            "Server info",                                              NULL, 0, 0, 0 },
 		{ "netstatus",     '0', &ChatHandler::HandleNetworkStatusCommand,   "Shows network status.", NULL, 0, 0, 0 },

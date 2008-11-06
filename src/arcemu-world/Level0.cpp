@@ -247,7 +247,7 @@ bool ChatHandler::HandleStartCommand(const char* args, WorldSession *m_session)
 
 	GreenSystemMessage(m_session, "Telporting %s to %s starting location.", m_plyr->GetName(), race.c_str());
 
-	m_session->GetPlayer()->SafeTeleport(info->mapId, 0, LocationVector(info->positionX, info->positionY, info->positionZ));
+	m_plyr->SafeTeleport(info->mapId, 0, LocationVector(info->positionX, info->positionY, info->positionZ));
 	return true;
 }
 
@@ -340,17 +340,19 @@ bool ChatHandler::HandleDismountCommand(const char* args, WorldSession *m_sessio
 
 bool ChatHandler::HandleSaveCommand(const char* args, WorldSession *m_session)
 {
-	WorldPacket data;
-	if(m_session->GetPlayer()->m_nextSave < 300000 || m_session->CanUseCommand('s')) //5min out of 10 left so 5 min since last save
+	Player *p_target = getSelectedChar(m_session, false);
+	if(!p_target || !p_target->IsPlayer())
+		return false;
+
+	if(p_target && p_target->m_nextSave < 300000 ) //5min out of 10 left so 5 min since last save
 	{
-		m_session->GetPlayer()->SaveToDB(false);
-		GreenSystemMessage(m_session, "Player saved to DB");
+		p_target->SaveToDB(false);
+		GreenSystemMessage(m_session, "Player %s saved to DB", p_target->GetName());
 	}
 	else
 	{
 		RedSystemMessage(m_session, "You can only save once every 5 minutes.");
 	}
-	m_session->SendPacket( &data );
 	return true;
 }
 
@@ -401,14 +403,14 @@ bool ChatHandler::HandleRangeCheckCommand( const char *args , WorldSession *m_se
 	m_session->SystemMessage( "=== RANGE CHECK ===" );
 	if (guid == 0)
 	{
-		m_session->SystemMessage("No selection imo.");
+		m_session->SystemMessage("No selection.");
 		return true;
 	}
 
 	Unit *unit = m_session->GetPlayer()->GetMapMgr()->GetUnit( guid );
 	if(!unit)
 	{
-		m_session->SystemMessage("Invalid selection imo.");
+		m_session->SystemMessage("Invalid selection.");
 		return true;
 	}
 	float DistSq = unit->GetDistanceSq( static_cast<Object*>(m_session->GetPlayer()) );

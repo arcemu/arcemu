@@ -535,7 +535,10 @@ bool Master::Run(int argc, char ** argv)
 					// broadcast packet.
 					WorldPacket data( 20 );
 					data.SetOpcode( SMSG_SERVER_MESSAGE );
-					data << uint32( SERVER_MSG_SHUTDOWN_TIME );
+					if(m_restartEvent)
+						data << uint32( SERVER_MSG_RESTART_TIME );
+					else
+						data << uint32( SERVER_MSG_SHUTDOWN_TIME );
 					
 					if( time > 0 )
 					{

@@ -62,8 +62,10 @@ bool ChatHandler::HandleAnnounceCommand(const char* args, WorldSession *m_sessio
 bool ChatHandler::HandleGMAnnounceCommand(const char* args, WorldSession *m_session)
 {
 	if(!*args)
-	{printf("HandleGMAnnounceCommand !args = failed\n");
-	return false;}
+	{
+		printf("HandleGMAnnounceCommand !args = failed\n");
+		return false;
+	}
 
 	char GMAnnounce[1024];
 	snprintf(GMAnnounce, 1024, MSG_COLOR_RED"[Team]"MSG_COLOR_GREEN" |Hplayer:%s|h[%s]|h:"MSG_COLOR_YELLOW" %s", m_session->GetPlayer()->GetName(), m_session->GetPlayer()->GetName(), args);
@@ -571,7 +573,7 @@ bool ChatHandler::HandleGetSkillLevelCommand(const char *args, WorldSession *m_s
 	uint32 bonus = plr->_GetSkillLineCurrent(skill,true) - nobonus;
     uint32 max = plr->_GetSkillLineMax(skill);
 
-    BlueSystemMessage(m_session, "Player's %s skill has level: %u maxlevel: %u. (+ %u bonus)", SkillName,max,nobonus, bonus);
+    BlueSystemMessage(m_session, "Player's %s skill has level: %u maxlevel: %u. (+ %u bonus)", SkillName, nobonus, max, bonus);
 	return true;
 }
 
@@ -601,7 +603,7 @@ bool ChatHandler::HandleGetSkillsInfoCommand(const char *args, WorldSession *m_s
             bonus = plr->_GetSkillLineCurrent(SkillId,true) - nobonus;
             max = plr->_GetSkillLineMax(SkillId);
 
-            BlueSystemMessage(m_session, "  %s: Value: %u, MaxValue: %u. (+ %d bonus)", SkillName, nobonus,max, bonus);
+            BlueSystemMessage(m_session, "  %s: Value: %u, MaxValue: %u. (+ %d bonus)", SkillName, nobonus, max, bonus);
         }
     }
 
@@ -746,6 +748,7 @@ bool ChatHandler::HandleUnlearnCommand(const char* args, WorldSession * m_sessio
 	if(plr->HasSpell(SpellId))
 	{
 		GreenSystemMessageToPlr(plr, "Removed spell %u.", SpellId);
+		GreenSystemMessage(m_session, "Removed spell %u from %s.", SpellId, plr->GetName());
 		plr->removeSpell(SpellId, false, false, 0);
 	}
 	else
