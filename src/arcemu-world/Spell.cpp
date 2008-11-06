@@ -26,7 +26,7 @@
 extern pSpellEffect SpellEffectsHandler[TOTAL_SPELL_EFFECTS];
 extern pSpellTarget SpellTargetHandler[EFF_TARGET_LIST_LENGTH_MARKER];
 
-extern const char* SpellEffectNames[TOTAL_SPELL_EFFECTS];
+extern char* SpellEffectNames[TOTAL_SPELL_EFFECTS];
 
 enum SpellTargetSpecification
 {
@@ -125,7 +125,7 @@ void Spell::Virtual_Constructor()
 
 void Spell::Init(Object* Caster, SpellEntry *info, bool triggered, Aura* aur)
 {
-	int i;
+	//int i;
 
 	ASSERT( Caster != NULL && info != NULL );
 
@@ -238,21 +238,21 @@ void Spell::Init(Object* Caster, SpellEntry *info, bool triggered, Aura* aur)
 	m_reflectedParent = NULL;
 	m_isCasting = false;
 
-	UniqueTargets = hashmap64_new();
+	UniqueTargets.clear();
 	ModeratedTargets.clear();
-	for (i=0; i<3; i++) {
-		m_targetUnits[i] = hashmap64_new();
-	}
+	m_targetUnits[0].clear();
+	m_targetUnits[1].clear();
+	m_targetUnits[2].clear();
 }
 
 Spell::~Spell()
 {
+		for(uint32 x=0;x<3;x++)
+			m_targetUnits[x].clear();
 }
 
 void Spell::Virtual_Destructor()
 {
-	int i;
-
 	if( u_caster != NULL && u_caster->GetCurrentSpell() == this )
 		u_caster->SetCurrentSpell(NULL);
 
@@ -260,22 +260,8 @@ void Spell::Virtual_Destructor()
 		if( hadEffect || ( cancastresult == SPELL_CANCAST_OK && !GetSpellFailed() ) )
 			RemoveItems();
 
-	if (m_spellInfo_override) {
+	if (m_spellInfo_override !=NULL)
 		delete[] m_spellInfo_override;
-		m_spellInfo_override = NULL;
-	}
-
-	if (UniqueTargets) {
-		hashmap64_free(UniqueTargets);
-		UniqueTargets = NULL;
-	}
-
-	for (i=0; i<3; i++) {
-		if (m_targetUnits[i]) {
-			hashmap64_free(m_targetUnits[i]);
-			m_targetUnits[i] = NULL;
-		}
-	}
 }
 
 //i might forget conditions here. Feel free to add them
@@ -304,7 +290,7 @@ void Spell::FillSpecifiedTargetsInArea( float srcx, float srcy, float srcz, uint
 // for the moment we do invisible targets
 void Spell::FillSpecifiedTargetsInArea(uint32 i,float srcx,float srcy,float srcz, float range, uint32 specification)
 {
-	map_t tmpMap=m_targetUnits[i];
+	TargetsList *tmpMap=&m_targetUnits[i];
 	//IsStealth()
 	float r = range * range;
 	uint8 did_hit_result;
@@ -352,7 +338,7 @@ void Spell::FillSpecifiedTargetsInArea(uint32 i,float srcx,float srcy,float srcz
 			}
 			if( GetProto()->MaxTargets )
 			{
-				if( GetProto()->MaxTargets >= (uint32)hashmap64_length(tmpMap))
+				if( GetProto()->MaxTargets >= tmpMap->size())
 				{
 					m_caster->ReleaseInrangeLock();
 					return;
@@ -375,7 +361,7 @@ void Spell::FillAllTargetsInArea(float srcx,float srcy,float srcz,uint32 ind)
 /// We fill all the targets in the area, including the stealth ed one's
 void Spell::FillAllTargetsInArea(uint32 i,float srcx,float srcy,float srcz, float range)
 {
-	map_t tmpMap=m_targetUnits[i];
+	TargetsList *tmpMap=&m_targetUnits[i];
 	float r = range*range;
 	uint8 did_hit_result;
 	std::set<Object*>::iterator itr,itr2;
@@ -420,7 +406,7 @@ void Spell::FillAllTargetsInArea(uint32 i,float srcx,float srcy,float srcz, floa
 					SafeAddTarget(tmpMap, (*itr)->GetGUID());
 			}
 			if( GetProto()->MaxTargets )
-				if( GetProto()->MaxTargets == (uint32)hashmap64_length(tmpMap) )
+				if( GetProto()->MaxTargets == tmpMap->size() )
 				{
 					m_caster->ReleaseInrangeLock();
 					return;
@@ -433,7 +419,7 @@ void Spell::FillAllTargetsInArea(uint32 i,float srcx,float srcy,float srcz, floa
 // We fill all the targets in the area, including the stealth ed one's
 void Spell::FillAllFriendlyInArea( uint32 i, float srcx, float srcy, float srcz, float range )
 {
-	map_t tmpMap=m_targetUnits[i];
+	TargetsList *tmpMap=&m_targetUnits[i];
 	float r = range * range;
 	uint8 did_hit_result;
 	std::set<Object*>::iterator itr,itr2;
@@ -479,7 +465,7 @@ void Spell::FillAllFriendlyInArea( uint32 i, float srcx, float srcy, float srcz,
 					SafeAddTarget(tmpMap, (*itr)->GetGUID());
 			}
 			if( GetProto()->MaxTargets )
-				if( GetProto()->MaxTargets == (uint32)hashmap64_length(tmpMap) )
+				if( GetProto()->MaxTargets == tmpMap->size() )
 				{
 					m_caster->ReleaseInrangeLock();
 					return;
@@ -1338,8 +1324,6 @@ void Spell::AddStartCooldown()
 
 void Spell::cast(bool check)
 {
-	int j;
-
 	if( duelSpell && (
 		( p_caster != NULL && p_caster->GetDuelState() != DUEL_STATE_STARTED ) ||
 		( u_caster != NULL && u_caster->IsPet() && static_cast< Pet* >( u_caster )->GetPetOwner() && static_cast< Pet* >( u_caster )->GetPetOwner()->GetDuelState() != DUEL_STATE_STARTED ) ) )
@@ -1621,18 +1605,17 @@ void Spell::cast(bool check)
 
 			if(!IsReflected() && GetCanReflect() && m_caster->IsInWorld())
 			{
-				for(j=0; j<hashmap64_length(UniqueTargets); j++) {
-					uint64 guid;
-					if (hashmap64_get_index(UniqueTargets, j, (int64*)&guid, NULL) == MAP_OK) {
-						Unit *Target = m_caster->GetMapMgr()->GetUnit(guid);
-						if(Target) {
-						   SetReflected(Reflect(Target));
-						}
-
-						// if the spell is reflected
-						if(IsReflected())
-							break;
+				for(i= UniqueTargets.begin();i != UniqueTargets.end();i++)
+				{
+					Unit *Target = m_caster->GetMapMgr()->GetUnit(*i);
+					if(Target)
+					{
+					   SetReflected(Reflect(Target));
 					}
+
+					// if the spell is reflected
+					if(IsReflected())
+						break;
 				}
 			}
 			else
@@ -1659,12 +1642,12 @@ void Spell::cast(bool check)
                         {
 							HandleEffects(m_caster->GetGUID(),x);
                         }
-						else if (hashmap64_length(m_targetUnits[x])>0)
+						else if (m_targetUnits[x].size()>0)
 						{
-							for(int j=0; j<hashmap64_length(m_targetUnits[x]); j++) {
-								uint64 tguid;
-								if (hashmap64_get_index(m_targetUnits[x], j, (int64*)&tguid, NULL) != MAP_OK) continue;
-								HandleEffects(tguid,x);
+							for(i= m_targetUnits[x].begin();i != m_targetUnits[x].end();)
+                            {
+								i2 = i++;
+								HandleEffects((*i2),x);
                             }
 						}
 
@@ -1684,33 +1667,29 @@ void Spell::cast(bool check)
 				{
 					hadEffect = true; // spell has had an effect (for item removal & possibly other things)
 
-					for(j=0; j<hashmap64_length(UniqueTargets); j++) {
-						uint64 guid;
-						if (hashmap64_get_index(UniqueTargets, j, (int64*)&guid, NULL) == MAP_OK) {
-							HandleAddAura(guid);
-						}
+					for(i= UniqueTargets.begin();i != UniqueTargets.end();i++)
+					{
+						HandleAddAura((*i));
 					}
 				}
 				// spells that proc on spell cast, some talents
 				if(p_caster && p_caster->IsInWorld())
 				{
-					for(j=0; j<hashmap64_length(UniqueTargets); j++) {
-						uint64 guid;
-						if (hashmap64_get_index(UniqueTargets, j, (int64*)&guid, NULL) == MAP_OK) {
-							Unit * Target = p_caster->GetMapMgr()->GetUnit(guid);
+					for(i= UniqueTargets.begin();i != UniqueTargets.end();i++)
+					{
+						Unit * Target = p_caster->GetMapMgr()->GetUnit((*i));
 
-							if(!Target)
-								continue; //we already made this check, so why make it again ?
+						if(!Target)
+							continue; //we already made this check, so why make it again ?
 
-							if(!m_triggeredSpell || GetProto()->NameHash == SPELL_HASH_DEEP_WOUND )//Deep Wounds may trigger Blood Frenzy
-							{
-								p_caster->HandleProc(PROC_ON_CAST_SPECIFIC_SPELL | PROC_ON_CAST_SPELL,Target, GetProto());
-								Target->HandleProc(PROC_ON_SPELL_LAND_VICTIM,u_caster,GetProto());
-								p_caster->m_procCounter = 0; //this is required for to be able to count the depth of procs (though i have no idea where/why we use proc on proc)
-							}
-
-							Target->RemoveFlag(UNIT_FIELD_AURASTATE,GetProto()->TargetAuraState);
+						if(!m_triggeredSpell || GetProto()->NameHash == SPELL_HASH_DEEP_WOUND )//Deep Wounds may trigger Blood Frenzy
+						{
+							p_caster->HandleProc(PROC_ON_CAST_SPECIFIC_SPELL | PROC_ON_CAST_SPELL,Target, GetProto());
+							Target->HandleProc(PROC_ON_SPELL_LAND_VICTIM,u_caster,GetProto());
+							p_caster->m_procCounter = 0; //this is required for to be able to count the depth of procs (though i have no idea where/why we use proc on proc)
 						}
+
+						Target->RemoveFlag(UNIT_FIELD_AURASTATE,GetProto()->TargetAuraState);
 					}
 				}
 			}
@@ -2194,33 +2173,28 @@ enum SpellGoFlags
 void Spell::SendSpellGo()
 {
 	// Fill UniqueTargets
-	int i, j;
-
+	TargetsList::iterator i, j;
 	for( uint32 x = 0; x < 3; x++ )
 	{
 		if( GetProto()->Effect[x] )
 		{
 			bool add = true;
-			for (i=0; i<hashmap64_length(m_targetUnits[x]); i++) {
-				uint64 tguid;
-				if (hashmap64_get_index(m_targetUnits[x], i, (int64*)&tguid, NULL) != MAP_OK) continue;
-
-				if (tguid == 0) continue;
-
+			for( i = m_targetUnits[x].begin(); i != m_targetUnits[x].end(); i++ )
+			{
 				add = true;
-				for (j=0; j<hashmap64_length(UniqueTargets); j++) {
-					uint64 guid;
-					if (hashmap64_get_index(UniqueTargets, j, (int64*)&guid, NULL) != MAP_OK) continue;
-
-					if (guid == tguid) {
+				for( j = UniqueTargets.begin(); j != UniqueTargets.end(); j++ )
+				{
+					if( (*j) == (*i) )
+					{
 						add = false;
 						break;
 					}
 				}
-
-				if (add) {
-					hashmap64_put(UniqueTargets, tguid, NULL);
-				}
+				if( add && (*i) != 0 )
+					UniqueTargets.push_back( (*i) );
+				//TargetsList::iterator itr = std::unique(m_targetUnits[x].begin(), m_targetUnits[x].end());
+				//UniqueTargets.insert(UniqueTargets.begin(),));
+				//UniqueTargets.insert(UniqueTargets.begin(), itr);
 			}
 		}
 	}
@@ -2260,7 +2234,7 @@ void Spell::SendSpellGo()
 	data << GetProto()->Id;
 	data << flags;
 	data << getMSTime();
-	data << (uint8)(hashmap64_length(UniqueTargets)); //number of hits
+	data << (uint8)(UniqueTargets.size()); //number of hits
 
 	writeSpellGoTargets( &data );
 
@@ -2311,14 +2285,11 @@ void Spell::SendSpellGo()
 
 void Spell::writeSpellGoTargets( WorldPacket * data )
 {
-	int i;
-
-	for (i=0; i<hashmap64_length(UniqueTargets); i++) {
-		uint64 guid;
-		if (hashmap64_get_index(UniqueTargets, i, (int64*)&guid, NULL) == MAP_OK) {
-			SendCastSuccess(guid);
-			*data << (guid);
-		}
+	TargetsList::iterator i;
+	for ( i = UniqueTargets.begin(); i != UniqueTargets.end(); i++ )
+	{
+		SendCastSuccess(*i);
+		*data << (*i);
 	}
 }
 
@@ -4925,22 +4896,16 @@ void Spell::DetermineSkillUp(uint32 skillid)
 		p_caster->_AdvanceSkillLine(skillid, float2int32( 1.0f * sWorld.getRate(RATE_SKILLRATE)));
 }
 
-void Spell::SafeAddTarget(map_t tgt,uint64 guid)
+void Spell::SafeAddTarget(TargetsList* tgt,uint64 guid)
 {
-	int i;
-
 	if(guid == 0)
 		return;
 
-	for (i=0; i<hashmap64_length(tgt); i++) {
-		uint64 tguid;
-		if (hashmap64_get_index(tgt, i, (int64*)&tguid, NULL) != MAP_OK) continue;
-
-		if(tguid==guid)
+	for(TargetsList::iterator i=tgt->begin();i!=tgt->end();i++)
+		if((*i)==guid)
 			return;
-	}
 
-	hashmap64_put(tgt, guid, NULL);
+	tgt->push_back(guid);
 }
 
 void Spell::SafeAddMissedTarget(uint64 guid)

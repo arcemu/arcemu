@@ -275,7 +275,7 @@ pSpellAura SpellAuraHandler[TOTAL_SPELL_AURAS]={
 		&Aura::SpellAuraNULL,//251
 };
 
-const char* SpellAuraNames[TOTAL_SPELL_AURAS] = {
+char* SpellAuraNames[TOTAL_SPELL_AURAS] = {
     "NONE",												//   0 None
     "BIND_SIGHT",										//   1 Bind Sight
     "MOD_POSSESS",										//   2 Mod Possess
@@ -4904,12 +4904,14 @@ void Aura::EventPeriodicLeech(uint32 amount)
 
 		// Apply bonus from [Warlock] Soul Siphon
 		if (m_caster->m_soulSiphon.amt) {
-			// Use hashmap to prevent counting duplicate auras (stacked ones, from the same unit)
-			map_t auras = NULL;
+			// Use std:map to prevent counting duplicate auras (stacked ones, from the same unit)
+			std::map<uint64, std::set<uint32> *> auras;
+			std::map<uint64, std::set<uint32> *>::iterator itx, itx2;
 			uint32 bonus;
 			int32 pct;
 			int32 count=0;
 
+			auras.clear();
 			for(uint32 x=MAX_NEGATIVE_AURAS_EXTEDED_START;x<MAX_NEGATIVE_AURAS_EXTEDED_END;x++)
 			{
 				if(m_target->m_auras[x])
@@ -4920,46 +4922,36 @@ void Aura::EventPeriodicLeech(uint32 amount)
 						skilllinespell *sk;
 
 						sk = objmgr.GetSpellSkill(aura->GetSpellId());
-						if(sk && sk->skilline == SKILL_AFFLICTION) {
-							map_t ids = NULL;
-							int found = 0;
+						if(sk && sk->skilline == SKILL_AFFLICTION) 
+						{
+							itx = auras.find(aura->GetCasterGUID());
+							if (itx == auras.end())
+							{
+								std::set<uint32> *ids = new std::set<uint32>;
 
-							if (auras == NULL) {
-								// No skill yet, create the hashmaps
-								auras = hashmap64_new();
-								ids = hashmap_new();
-								hashmap64_put(auras, aura->GetCasterGUID(), (any_t)ids);
-							} else {
-								if (hashmap64_get(auras, aura->GetCasterGUID(), &ids) != MAP_OK) {
-									ids = hashmap_new();
-									hashmap64_put(auras, aura->GetCasterGUID(), (any_t)ids);
-								} else {
-									if (hashmap_get(ids, aura->GetSpellId(), NULL) == MAP_OK) {
-										found = 1;
-									}
-								}
+								auras.insert(make_pair(aura->GetCasterGUID(),ids));
+								itx = auras.find(aura->GetCasterGUID());
 							}
 
-							if (found == 0) {
-								hashmap_put(ids, aura->GetSpellId(), NULL);
+							std::set<uint32> *ids = itx->second;
+							if (ids->find(aura->GetSpellId()) == ids->end())
+							{
+								ids->insert(aura->GetSpellId());
 							}
 						}
 		            }
 				}
 			}
 
-			if (auras) {
-				for (int i=0; i<hashmap64_length(auras); i++) {
-					uint64 guid;
-					map_t ids;
-
-					if (hashmap64_get_index(auras, i, (int64*)&guid, &ids) == MAP_OK) {
-						count+= hashmap_length(ids);
-						hashmap_free(ids);
-					}
+			if (auras.size())
+			{
+				itx = auras.begin();
+				while (itx != auras.end())
+				{
+					itx2 = itx++;
+					count+= (int32)itx2->second->size();
+					delete itx2->second;
 				}
-
-				hashmap64_free(auras);
 			}
 
 			pct = count * m_caster->m_soulSiphon.amt;

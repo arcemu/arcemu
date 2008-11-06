@@ -1486,6 +1486,7 @@ struct SpellTargetMod
 };
 
 
+typedef std::vector<uint64> TargetsList;
 typedef std::vector<SpellTargetMod> SpellTargetsList;
 
 typedef void(Spell::*pSpellEffect)(uint32 i);
@@ -1775,7 +1776,7 @@ public:
 	// It should NOT be used for weapon_damage_type which needs: 0 = MELEE, 1 = OFFHAND, 2 = RANGED
 	ARCEMU_INLINE uint32 GetType() { return ( GetProto()->Spell_Dmg_Type == SPELL_DMG_TYPE_NONE ? SPELL_DMG_TYPE_MAGIC : GetProto()->Spell_Dmg_Type ); }
 
-	map_t UniqueTargets;
+    std::vector<uint64> UniqueTargets;
     SpellTargetsList    ModeratedTargets;
 
     ARCEMU_INLINE Item* GetItemTarget() { return itemTarget; }
@@ -1986,15 +1987,11 @@ protected:
 	bool m_isCasting;
     //void _DamageRangeUpdate();
 
-	ARCEMU_INLINE bool HasTarget(const uint64& guid, map_t* tmpMap)
+	ARCEMU_INLINE bool HasTarget(const uint64& guid, TargetsList* tmpMap)
 	{
-		for (int i=0; i<hashmap64_length(tmpMap); i++) {
-			uint64 tguid;
-			if (hashmap64_get_index(tmpMap, i, (int64*)&tguid, NULL) == MAP_OK) {
-				if (tguid == guid)
-					return true;
-			}
-		}
+		for(TargetsList::iterator itr = tmpMap->begin(); itr != tmpMap->end(); ++itr)
+			if((*itr)==guid)
+				return true;
 
 		for(SpellTargetsList::iterator itr = ModeratedTargets.begin(); itr != ModeratedTargets.end(); ++itr)
 			if((*itr).TargetGuid==guid)
@@ -2004,8 +2001,8 @@ protected:
 	}
 
 private:
-	map_t m_targetUnits[3];
-    void SafeAddTarget(map_t tgt,uint64 guid);
+    TargetsList m_targetUnits[3];
+    void SafeAddTarget(TargetsList* tgt,uint64 guid);
     
     void SafeAddMissedTarget(uint64 guid);
     void SafeAddModeratedTarget(uint64 guid, uint16 type);

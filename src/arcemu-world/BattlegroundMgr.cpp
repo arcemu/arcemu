@@ -37,10 +37,6 @@ const static uint32 BGMapIds[BATTLEGROUND_NUM_TYPES] = {
 	566,   // EOTS
 };
 
-uint32 BGMaximumPlayers[BATTLEGROUND_NUM_TYPES] = {0,0,0,0,0,0,0,0};
-uint32 BGMinimumPlayers[BATTLEGROUND_NUM_TYPES] = {0,0,0,0,0,0,0,0};
-
-
 const static CreateBattlegroundFunc BGCFuncs[BATTLEGROUND_NUM_TYPES] = {
 	NULL,                  // 0
 	NULL,                  // AV

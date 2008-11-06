@@ -354,15 +354,15 @@ SERVER_DECL const char* _StringToANSI(const char*   pUtf8Buf)
 SERVER_DECL bool _IsStringUTF8(const char *str)
 {
     int   i;
-    unsigned char cOctets;  // octets to go in this UTF-8 encoded character
-    unsigned char chr;
-    bool  bAllAscii= TRUE;
+    BYTE cOctets;  // octets to go in this UTF-8 encoded character
+    BYTE chr;
+    BOOL  bAllAscii= TRUE;
     long iLen = (long)strlen(str);
  
     cOctets= 0;
     for( i=0; i <iLen; i++ ) {
  
-     chr = (unsigned char)str[i];
+     chr = (BYTE)str[i];
  
      if( (chr & 0x80) != 0 ) bAllAscii= FALSE;
  

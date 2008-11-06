@@ -103,7 +103,7 @@ bool ChatHandler::CreateGuildCommand(const char* args, WorldSession *m_session)
 	{
 		// send message to user
 		char buf[256];
-		snprintf((char*)buf,256,"The name was too long by %u", (uint32)strlen((char*)args)-75);
+		snprintf((char*)buf,256,"The name was too long by %ui", strlen((char*)args)-75);
 		SystemMessage(m_session, buf);
 		return true;
 	}
