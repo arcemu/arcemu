@@ -607,7 +607,7 @@ void Group::SendPacketToAllButOne(WorldPacket *packet, Player *pSkipTarget)
 	{
 		for(itr = m_SubGroups[i]->GetGroupMembersBegin(); itr != m_SubGroups[i]->GetGroupMembersEnd(); ++itr)
 		{
-			if((*itr)->m_loggedInPlayer != NULL && (*itr)->m_loggedInPlayer != pSkipTarget)
+			if((*itr)->m_loggedInPlayer != NULL && (*itr)->m_loggedInPlayer != pSkipTarget && (*itr)->m_loggedInPlayer->GetSession())
 				(*itr)->m_loggedInPlayer->GetSession()->SendPacket(packet);
 		}
 	}

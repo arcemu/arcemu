@@ -31,6 +31,8 @@
 
 #define GO_GUID_RECYCLE_INTERVAL	2048	//client will cache GO positions. Using same guid for same client will make GO appear at wrong possition so we try to avoid assigning same guid
 
+#define ZONE_MASK_ALL -1
+
 class MapCell;
 class Map;
 class Object;
@@ -243,6 +245,7 @@ public:
 	void EventRespawnGameObject(GameObject * o, MapCell * c);
 	void SendMessageToCellPlayers(Object * obj, WorldPacket * packet, uint32 cell_radius = 2);
 	void SendChatMessageToCellPlayers(Object * obj, WorldPacket * packet, uint32 cell_radius, uint32 langpos, int32 lang, WorldSession * originator);
+	void SendPvPCaptureMessage(int32 ZoneMask, uint32 ZoneId, const char * Message, ...);
 
 	Instance * pInstance;
 	void BeginInstanceExpireCountdown();

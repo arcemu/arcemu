@@ -33,14 +33,14 @@ void WorldSession::HandleSetVisibleRankOpcode( WorldPacket& recv_data )
 
 void HonorHandler::AddHonorPointsToPlayer(Player *pPlayer, uint32 uAmount)
 {
+	pPlayer->HandleProc(PROC_ON_GAIN_EXPIERIENCE, pPlayer, NULL);
+	pPlayer->m_procCounter = 0;
+
 	if( pPlayer->GetMapId() == 559 || pPlayer->GetMapId() == 562 || pPlayer->GetMapId() == 572)
 		return;
 	pPlayer->m_honorPoints += uAmount;
 	pPlayer->m_honorToday += uAmount;
 	if (pPlayer->m_honorPoints > 75000) pPlayer->m_honorPoints = 75000;
-	
-	pPlayer->HandleProc(PROC_ON_GAIN_EXPIERIENCE, pPlayer, NULL);
-	pPlayer->m_procCounter = 0;
 
 	RecalculateHonorFields(pPlayer);
 }
@@ -66,7 +66,7 @@ int32 HonorHandler::CalculateHonorPointsForKill( Player *pPlayer, Unit* pVictim 
 	//if( pVictim->HasActiveAura( PLAYER_HONORLESS_TARGET_SPELL ) )
 	//	return 0;
 
-	if ( pVictim->GetTypeId() == TYPEID_PLAYER && static_cast< Player* >(pVictim)->m_honorless )
+	if ( pVictim->GetTypeId() == TYPEID_PLAYER && (static_cast< Player* >(pVictim)->m_honorless || static_cast< Player* >(pVictim)->HasAura(15007)) )
 		return 0;
 
 	uint32 k_level = pPlayer->GetUInt32Value( UNIT_FIELD_LEVEL );

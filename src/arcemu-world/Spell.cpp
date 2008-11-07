@@ -1082,7 +1082,36 @@ void Spell::GenerateTargets(SpellCastTargets *store_buff)
 					//shit again
 				}break;
 				case EFF_TARGET_ALL_FRIENDLY_IN_AREA:{
+					if ( u_caster != NULL && u_caster->IsCreature() )
+					{
+						for( std::set<Object*>::iterator itr = u_caster->GetInRangeSetBegin(); itr != u_caster->GetInRangeSetEnd(); itr++ )
+						{
+							if ( (*itr) != NULL && ((*itr)->GetTypeId() == TYPEID_UNIT || (*itr)->GetTypeId() == TYPEID_PLAYER) && (*itr)->IsInWorld() && ((Unit*)*itr)->isAlive() && IsInrange(u_caster, (*itr), r) && isFriendly(u_caster, (*itr)))
+							{
 
+								//few additional checks
+								if(((Unit*)*itr)->HasAura(m_spellInfo->Id))
+									continue;
+
+								//check if an aura is being applied, and check if it already exists
+								bool applies_aura=false;
+								for (int i=0; i<3; i++)
+								{
+									if (m_spellInfo->Effect[i] == SPELL_EFFECT_APPLY_AURA || m_spellInfo->Effect[i] == SPELL_EFFECT_APPLY_AREA_AURA)
+									{
+										applies_aura=true;
+										break;
+									}
+								}
+
+								if (applies_aura && ((Unit*)*itr)->HasAura(m_spellInfo->Id))
+									continue;
+
+
+								store_buff->m_unitTarget = (*itr)->GetGUID();
+							}
+						}
+					}
 				}break;
 
 			}//end switch

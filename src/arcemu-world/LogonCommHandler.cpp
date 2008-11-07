@@ -165,6 +165,9 @@ const string* LogonCommHandler::GetForcedPermissions(string& username)
 
 void LogonCommHandler::Connect(LogonServer * server)
 {
+	if(sMaster.m_ShutdownEvent == true && sMaster.m_ShutdownTimer <= 120000) // 2minutes
+		return;
+
 	server->RetryTime = (uint32)UNIXTIME + 10;
 	server->Registered = false;
 	LogonCommClientSocket * conn = ConnectToLogon(server->Address, server->Port);

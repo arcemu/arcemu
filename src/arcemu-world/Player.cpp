@@ -9721,7 +9721,7 @@ void Player::RemoveFromBattlegroundQueue()
 		return;
 
 	m_pendingBattleground->RemovePendingPlayer(this);
-	sChatHandler.SystemMessage(m_session, "You were removed from the queue for the battleground for not joining after 2 minutes.");
+	sChatHandler.SystemMessage(m_session, "You were removed from the queue for the battleground for not joining after 1 minute 20 seconds.");
 	m_pendingBattleground = 0;
 }
 

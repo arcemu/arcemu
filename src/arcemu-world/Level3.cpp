@@ -1525,6 +1525,21 @@ bool ChatHandler::HandleShutdownRestartCommand(const char* args, WorldSession* m
 	return true;
 }
 
+bool ChatHandler::HandleCancelShutdownCommand(const char* args, WorldSession* m_session)
+{
+	if(sMaster.m_ShutdownEvent == false)
+		return false;
+	char msg[500];
+	snprintf(msg, 500, "%sServer %s cancelled by %s.", MSG_COLOR_LIGHTBLUE, (sMaster.m_restartEvent ? "Restart" : "Shutdown"), m_session->GetPlayer()->GetName());
+	sWorld.SendWorldText(msg);
+
+	sMaster.m_ShutdownTimer = 5000;
+	sMaster.m_ShutdownEvent = false;
+	sMaster.m_restartEvent = false;
+	return true;
+
+}
+
 bool ChatHandler::HandleAllowWhispersCommand(const char* args, WorldSession* m_session)
 {
 	if(args == 0 || strlen(args) < 2) return false;

@@ -25,13 +25,403 @@
 /* Raid_MoltenCore.cpp Script											*/
 /************************************************************************/
 
-#define CN_CORERAGER 11672
+/*
+	BOSS ONE (Lucifron & Flamewaker Protectors)
+*/
 
+//Flamewaker Protector AI Script
+#define CN_FLAMEWAKERPROTECTOR				12119
+#define FLAMEWAKERPROTECTOR_CLEAVE			20605
+#define FLAMEWAKERPROTECTOR_DOMINATE_MIND	20604
+
+class FlamewakerProtectorAI : public ArcScriptCreatureAI
+{
+    ARCSCRIPT_FACTORY_FUNCTION(FlamewakerProtectorAI, ArcScriptCreatureAI);
+	FlamewakerProtectorAI(Creature* pCreature) : ArcScriptCreatureAI(pCreature)
+	{
+		Lucifron = NULL;
+
+		AddSpell(FLAMEWAKERPROTECTOR_CLEAVE, Target_Current, 8, 0, 0, 0, 15);
+		DominateMind = AddSpell(FLAMEWAKERPROTECTOR_DOMINATE_MIND, Target_RandomPlayer, 4, 0, 0, 0, 20);
+	}
+
+	void OnCombatStart(Unit *pTarget)
+	{
+		Lucifron = _unit->GetMapMgr()->GetInterface()->GetCreatureNearestCoords(1053.15f, -990.755f, -182.662f, 12118);
+		ParentClass::OnCombatStart(pTarget);
+	}
+
+	void AIUpdate()
+	{
+		/*
+			NOTE: It is believed that if you pull the Flamewakers from Line-of-Sight of Lucifron, there will be no mind-control.
+			Blizzard designed the battle area with this in mind,
+				*hint: notice the small dug cave in the room.*
+		*/
+		if(Lucifron && GetRangeToUnit((Unit*)Lucifron) < 500)
+			DominateMind->mEnabled = true;
+		else
+			DominateMind->mEnabled = false;
+
+		ParentClass::AIUpdate();
+	}
+
+	Creature * Lucifron;
+	SpellDesc* DominateMind;
+};
+
+//Lucifron AI Script
+#define CN_LUCIFRON					12118
+#define LUCIFRON_IMPEDING_DOOM		19702
+#define LUCIFRON_LUCIFRONS_CURSE	19703
+#define LUCIFRON_SHADOW_SHOCK		20603
+
+class LucifronAI : public ArcScriptBossAI
+{
+    ARCSCRIPT_FACTORY_FUNCTION(LucifronAI, ArcScriptBossAI);
+	LucifronAI(Creature* pCreature) : ArcScriptBossAI(pCreature)
+	{
+		AddSpell(LUCIFRON_IMPEDING_DOOM, Target_Self, 15, 0, 0);
+		// Every 15 Seconds
+		AddSpell(LUCIFRON_LUCIFRONS_CURSE, Target_Self, 12, 0, 15);
+		AddSpell(LUCIFRON_SHADOW_SHOCK, Target_Self, 8, 0, 0);
+	}
+};
+
+/*
+	BOSS 2 (Magmadar & Ancient Core Hounds & Core Hounds)
+*/
+
+bool IsMagmadarDead[10000000];
+//Ancient Core Hound AI Script
+#define CN_ANCIENTCOREHOUND					11673
+#define ANCIENTCOREHOUND_LAVA_BREATH		19272
+#define ANCIENTCOREHOUND_VICIOUS_BITE		19319
+#define ANCIENTCOREHOUND_GROUND_STOMP		19364
+#define ANCIENTCOREHOUND_ANCIENT_DREAD		19365
+#define ANCIENTCOREHOUND_ANCIENT_DESPAIR	19369
+#define ANCIENTCOREHOUND_CAUTERIZING_FLAMES	19366
+#define ANCIENTCOREHOUND_WITHERING_HEAT		19367
+#define ANCIENTCOREHOUND_ANCIENT_HYSTERIA	19372
+
+class AncientCoreHoundAI : public ArcScriptCreatureAI
+{
+    ARCSCRIPT_FACTORY_FUNCTION(AncientCoreHoundAI, ArcScriptCreatureAI);
+    AncientCoreHoundAI(Creature* pCreature) : ArcScriptCreatureAI(pCreature)
+    {
+		if(IsMagmadarDead[_unit->GetInstanceID()] == true)
+		{
+			Despawn(0, 0);
+			return;
+		}
+		AddSpell(ANCIENTCOREHOUND_LAVA_BREATH, Target_Self, 20, 0, 3);
+		AddSpell(ANCIENTCOREHOUND_VICIOUS_BITE, Target_Self, 20, 0, 0);
+
+		//Each Ancient Core Hound have only one of the following spell
+		switch( RandomUInt(5) )
+		{
+			case 0: AddSpell(ANCIENTCOREHOUND_GROUND_STOMP, Target_Self, 20, 0, 15); break;
+			case 1: AddSpell(ANCIENTCOREHOUND_ANCIENT_DREAD, Target_Self, 20, 0, 15); break;
+			case 2: AddSpell(ANCIENTCOREHOUND_ANCIENT_DESPAIR, Target_Self, 20, 0, 15); break;
+			case 3: AddSpell(ANCIENTCOREHOUND_CAUTERIZING_FLAMES, Target_Self, 20, 0, 15); break;
+			case 4: AddSpell(ANCIENTCOREHOUND_WITHERING_HEAT, Target_Self, 20, 0, 15); break;
+			case 5: AddSpell(ANCIENTCOREHOUND_ANCIENT_HYSTERIA, Target_Self, 20, 0, 15); break;
+		}
+    }
+};
+
+//Core Hound AI Script
+#define CN_COREHOUND			11671
+#define COREHOUND_SERRATED_BITE	19771
+
+class CoreHoundAI : public ArcScriptCreatureAI
+{
+    ARCSCRIPT_FACTORY_FUNCTION(CoreHoundAI, ArcScriptCreatureAI);
+    CoreHoundAI(Creature* pCreature) : ArcScriptCreatureAI(pCreature)
+    {
+		if(IsMagmadarDead[_unit->GetInstanceID()] == true)
+		{
+			Despawn(0, 0);
+			return;
+		}
+		AddSpell(COREHOUND_SERRATED_BITE, Target_RandomPlayer, 10, 0, 0, 0, 10);
+    }
+};
+
+//Magmadar AI Script
+#define CN_MAGMADAR				11982
+#define MAGMADAR_MAGMA_SPIT		19450	//aura doesnt work
+#define MAGMADAR_LAVA_BREATH	19272	//to verify
+#define MAGMADAR_PANIC			19408
+#define MAGMADAR_LAVA_BOMB		19411	//need dummy spell
+
+class MagmadarAI : public ArcScriptBossAI
+{
+    ARCSCRIPT_FACTORY_FUNCTION(MagmadarAI, ArcScriptBossAI);
+	MagmadarAI(Creature* pCreature) : ArcScriptBossAI(pCreature)
+	{
+		AddSpell(MAGMADAR_MAGMA_SPIT, Target_Self, 8, 0, 0);
+		AddSpell(MAGMADAR_LAVA_BREATH, Target_Self, 8, 0, 0);
+		AddSpell(MAGMADAR_PANIC, Target_Self, 8, 0, 0);
+		AddSpell(MAGMADAR_LAVA_BOMB, Target_RandomPlayer, 8, 0, 0, 0, 100);
+		// Enrage
+		AddSpell(19451, Target_Self, 10, 0, 8);
+	}
+
+	void OnDied(Unit *mKiller)
+	{
+		IsMagmadarDead[_unit->GetInstanceID()] = true;
+		ParentClass::OnDied(mKiller);
+	}
+};
+
+
+/*
+	BOSS 3 (Gehennas & Flamewakers)
+*/
+
+//Flamewaker AI Script
+#define CN_FLAMEWAKER				11661
+#define FLAMEWAKER_SUNDER_ARMOR		15502
+#define FLAMEWAKER_FIST_OF_RAGNAROS	20277
+#define FLAMEWAKER_STRIKE			19730
+
+class FlamewakerAI : public ArcScriptCreatureAI
+{
+    ARCSCRIPT_FACTORY_FUNCTION(FlamewakerAI, ArcScriptCreatureAI);
+	FlamewakerAI(Creature* pCreature) : ArcScriptCreatureAI(pCreature)
+	{
+		AddSpell(FLAMEWAKER_SUNDER_ARMOR, Target_Current, 8, 0, 0);
+		AddSpell(FLAMEWAKER_FIST_OF_RAGNAROS, Target_Self, 8, 0, 0);
+		AddSpell(FLAMEWAKER_STRIKE, Target_Current, 14, 0, 0);
+	}
+};
+
+//Gehennas AI Script
+#define CN_GEHENNAS				12259
+#define GEHENNAS_SHADOW_BOLT	19729
+#define GEHENNAS_GEHENNAS_CURSE	19716
+#define GEHENNAS_RAIN_OF_FIRE	19717
+
+class GehennasAI : public ArcScriptBossAI
+{
+    ARCSCRIPT_FACTORY_FUNCTION(GehennasAI, ArcScriptBossAI);
+	GehennasAI(Creature* pCreature) : ArcScriptBossAI(pCreature)
+	{
+		AddSpell(GEHENNAS_SHADOW_BOLT, Target_RandomPlayer, 8, 0, 0, 0, 40);
+		AddSpell(GEHENNAS_GEHENNAS_CURSE, Target_Self, 8, 0, 0);
+		AddSpell(GEHENNAS_RAIN_OF_FIRE, Target_RandomDestination, 4, 6, 0, 0, 40);
+	}
+};
+
+/*
+	BOSS 4 (Garr & Firesworns)
+*/
+
+//Firesworn AI Script
+#define CN_FIRESWORN					12099
+#define FIRESWORN_IMMOLATE				20294
+#define FIRESWORN_ERUPTION				19497
+#define FIRESWORN_SEPARATION_ANXIETY	23492
+
+class FireswornAI : public ArcScriptCreatureAI
+{
+    ARCSCRIPT_FACTORY_FUNCTION(FireswornAI, ArcScriptCreatureAI);
+	FireswornAI(Creature* pCreature) : ArcScriptCreatureAI(pCreature)
+	{
+		mGarr = NULL;
+
+		//Spells
+		AddSpell(FIRESWORN_IMMOLATE, Target_Current, 10, 0, 0, 0, 40);
+		mEruption = AddSpell(FIRESWORN_ERUPTION, Target_Self, 0, 0, 0);
+		mSeparationAnxiety = AddSpell(FIRESWORN_SEPARATION_ANXIETY, Target_Self, 0, 5, 5);
+	}
+
+	void OnCombatStart(Unit* pTarget)
+	{
+		mGarr = (ArcScriptBossAI*)GetNearestCreature(12057);
+		ParentClass::OnCombatStart(pTarget);
+	}
+
+	void OnDied(Unit* pKiller)
+	{
+		CastSpellNowNoScheduling(mEruption);
+		ParentClass::OnDied(pKiller);
+	}
+
+	void AIUpdate()
+	{
+		if( mGarr && mGarr->IsAlive() && GetRange(mGarr) > 100 )
+		{
+			CastSpell(mSeparationAnxiety);
+		}
+		ParentClass::AIUpdate();
+	}
+
+	SpellDesc*			mEruption;
+	SpellDesc*			mSeparationAnxiety;
+	ArcScriptBossAI*	mGarr;
+};
+
+//Garr AI Script
+#define CN_GARR					12057
+#define GARR_ANTIMAGIC_PULSE	19492
+#define GARR_MAGMA_SHACKES		19496
+
+class GarrAI : public ArcScriptBossAI
+{
+    ARCSCRIPT_FACTORY_FUNCTION(GarrAI, ArcScriptBossAI);
+	GarrAI(Creature* pCreature) : ArcScriptBossAI(pCreature)
+	{
+		AddSpell(GARR_ANTIMAGIC_PULSE, Target_Self, 10, 0, 0);
+		AddSpell(GARR_MAGMA_SHACKES, Target_Self, 10, 0, 0);
+	}
+};
+
+/*
+	BOSS 5 (Baron)
+*/
+
+//Baron Geddon AI Script
+#define CN_BARONGEDDON			12056
+#define BARONGEDDON_INFERNO		19695	//35268
+#define BARONGEDDON_IGNITE_MANA	19659
+#define BARONGEDDON_LIVING_BOMB	20475
+
+class BaronGeddonAI : public ArcScriptBossAI
+{
+    ARCSCRIPT_FACTORY_FUNCTION(BaronGeddonAI, ArcScriptBossAI);
+	BaronGeddonAI(Creature* pCreature) : ArcScriptBossAI(pCreature)
+	{
+		AddSpell(BARONGEDDON_INFERNO, Target_Self, 8, 0, 0);
+		AddSpell(BARONGEDDON_IGNITE_MANA, Target_Self, 8, 0, 0);
+		AddSpell(BARONGEDDON_LIVING_BOMB, Target_RandomPlayer, 8, 0, 0, 0, 45);
+
+		Explode = AddSpell(20479, Target_Self, 0, 0, 0);
+		Explode->mEnabled = false;
+	}
+
+	void AIUpdate()
+	{
+		if(GetHealthPercent() <= 2) // 5 seconds to kill Baron or he explodes
+		{
+			Emote("Baron Geddon performs one last service for Ragnaros.", Text_Emote, 0);
+			ExplodeTimer = AddTimer(5000);
+			Explode->mEnabled = true;
+		}
+		if(Explode->mEnabled == true && IsTimerFinished(ExplodeTimer))
+			CastSpellNowNoScheduling(Explode);
+		ParentClass::AIUpdate();
+	}
+
+	uint32 ExplodeTimer;
+	SpellDesc* Explode;
+};
+
+/*
+	BOSS 6 (Shazzrah)
+*/
+
+//Shazzrah AI Script
+#define CN_SHAZZRAH					12264
+#define SHAZZRAH_ARCANE_EXPLOSION	19712
+#define SHAZZRAH_SHAZZRAHS_CURSE	19713
+#define SHAZZRAH_MAGIC_GROUNDING	19714
+#define SHAZZRAH_COUNTERSPELL		19715
+#define SHAZZRAH_BLINK				29883	//dummy spell, need to be coded in core
+
+void SpellFunc_ShazzrahBlinkArcaneExplosions(SpellDesc* pThis, ArcScriptCreatureAI* pCreatureAI, Unit* pTarget, TargetType pType);
+
+class ShazzrahAI : public ArcScriptBossAI
+{
+    ARCSCRIPT_FACTORY_FUNCTION(ShazzrahAI, ArcScriptBossAI);
+	ShazzrahAI(Creature* pCreature) : ArcScriptBossAI(pCreature)
+	{
+		AddSpell(SHAZZRAH_SHAZZRAHS_CURSE, Target_Self, 8, 0, 0);
+		AddSpell(SHAZZRAH_MAGIC_GROUNDING, Target_Self, 6, 0, 0);
+		AddSpell(SHAZZRAH_COUNTERSPELL, Target_Self, 6, 0, 0);
+
+		mBlink = AddSpell(SHAZZRAH_BLINK, Target_RandomPlayer, 0, 0, 0);
+		mArcaneExplosion = AddSpell(SHAZZRAH_ARCANE_EXPLOSION, Target_Self, 0, 0, 0);
+		AddSpellFunc(&SpellFunc_ShazzrahBlinkArcaneExplosions, Target_Self, 100, -1, 45); // every 45seconds
+	}
+
+	SpellDesc* mBlink;
+	SpellDesc* mArcaneExplosion;
+};
+
+void SpellFunc_ShazzrahBlinkArcaneExplosions(SpellDesc* pThis, ArcScriptCreatureAI* pCreatureAI, Unit* pTarget, TargetType pType)
+{
+	ShazzrahAI* Shazzrah = ( pCreatureAI ) ? (ShazzrahAI*)pCreatureAI : NULL;
+	if( Shazzrah )
+	{
+		Shazzrah->ClearHateList();
+		//Teleport blink, then cast 4 arcane explosions
+		Shazzrah->CastSpell(Shazzrah->mBlink);
+		for( int Iter = 0; Iter < 4; Iter++ ) 
+			Shazzrah->CastSpell(Shazzrah->mArcaneExplosion);
+	}
+}
+
+/*
+	BOSS 7 (Sulfuron & Guards)
+*/
+
+#define FlamewakerPriest 11662
+class FlamewakerPriestAI : public ArcScriptCreatureAI
+{
+	ARCSCRIPT_FACTORY_FUNCTION(FlamewakerPriestAI, ArcScriptCreatureAI);
+    FlamewakerPriestAI(Creature* pCreature) : ArcScriptCreatureAI(pCreature)
+	{
+		// Dark Mending
+		AddSpell(19775, Target_WoundedFriendly, 8, 2, 0);
+
+		// Dark Strike
+		AddSpell(19777, Target_Self, 12, 0, 0);
+
+		// Immolate
+		AddSpell(20294, Target_RandomPlayer, 15, 0, 20);
+
+		// Shadow Word: Pain
+		AddSpell(19776, Target_RandomPlayer, 15, 0, 15);
+	}
+};
+
+
+#define CN_SULFURON_HARBRINGER 12098
+// Sulfuron Harbringer AI
+class SulfuronAI : public ArcScriptBossAI
+{
+    ARCSCRIPT_FACTORY_FUNCTION(SulfuronAI, ArcScriptBossAI);
+    SulfuronAI(Creature* pCreature) : ArcScriptBossAI(pCreature)
+    {
+		// Demoralizing Shout
+		AddSpell(19778, Target_Self, 15, 0, 30);
+
+		// Hand of Ragnaros
+		AddSpell(19780, Target_Self, 8, 0, 0);
+
+		// Inspire
+		AddSpell(19779, Target_Self, 8, 0, 10);
+
+		// Flame Spear
+		AddSpell(19781, Target_Current, 8, 0, 0);
+    }
+};
+
+
+/*
+	BOSS 8 (Golemagg & Core Rager)
+*/
+
+#define CN_CORERAGER 11672
 class CoreRagerAI : public ArcScriptCreatureAI
 {
     ARCSCRIPT_FACTORY_FUNCTION(CoreRagerAI, ArcScriptCreatureAI);
     CoreRagerAI(Creature* pCreature) : ArcScriptCreatureAI(pCreature)
     {
+		Golemagg = NULL;
+
 		// Mangle <http://www.wowhead.com/?spell=19820>
 		AddSpell(19820, Target_Current, 20, 0, 20);
     }
@@ -56,15 +446,14 @@ class CoreRagerAI : public ArcScriptCreatureAI
 	Creature* Golemagg;
 };
 
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //Golemagg AI Script
-#define CN_GOLEMAGG					11988	
-
+#define CN_GOLEMAGG					11988
 class GolemaggAI : public ArcScriptBossAI
 {
     ARCSCRIPT_FACTORY_FUNCTION(GolemaggAI, ArcScriptBossAI);
 	GolemaggAI(Creature* pCreature) : ArcScriptBossAI(pCreature)
 	{
+		CoreRager1 = CoreRager2 = NULL;
 		// Golemagg's Trust <http://www.wowhead.com/?spell=20553>
 		GolemaggTrust = AddSpell(20553, Target_Self, 8, 0, 3);
 
@@ -102,48 +491,6 @@ class GolemaggAI : public ArcScriptBossAI
 	Unit* CoreRager1;
 	Unit* CoreRager2;
 	SpellDesc* GolemaggTrust;
-};
-
-
-#define CN_SULFURON_HARBRINGER 12098
-
-// Sulfuron Harbringer AI
-class SulfuronAI : public ArcScriptBossAI
-{
-    ARCSCRIPT_FACTORY_FUNCTION(SulfuronAI, ArcScriptBossAI);
-    SulfuronAI(Creature* pCreature) : ArcScriptBossAI(pCreature)
-    {
-		// Demoralizing Shout
-		AddSpell(19778, Target_Self, 15, 0, 30);
-
-		// Hand of Ragnaros
-		AddSpell(19780, Target_Self, 8, 0, 0);
-
-		// Inspire
-		AddSpell(19779, Target_Self, 8, 0, 10);
-
-		// Flame Spear
-		AddSpell(19781, Target_Current, 8, 0, 0);
-    }
-};
-#define FlamewakerPriest 11662
-class FlamewakerPriestAI : public ArcScriptCreatureAI
-{
-	ARCSCRIPT_FACTORY_FUNCTION(FlamewakerPriestAI, ArcScriptCreatureAI);
-    FlamewakerPriestAI(Creature* pCreature) : ArcScriptCreatureAI(pCreature)
-	{
-		// Dark Mending
-		AddSpell(19775, Target_WoundedFriendly, 8, 2, 0);
-
-		// Dark Strike
-		AddSpell(19777, Target_Self, 12, 0, 0);
-
-		// Immolate
-		AddSpell(20294, Target_RandomPlayer, 15, 0, 20);
-
-		// Shadow Word: Pain
-		AddSpell(19776, Target_RandomPlayer, 15, 0, 15);
-	}
 };
 
 // Woot DOING RAGNAROS Tha BosS
@@ -313,38 +660,6 @@ class LavaAnnihilatorAI : public ArcScriptCreatureAI
     }
 };
 
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//Ancient Core Hound AI Script
-#define CN_ANCIENTCOREHOUND					11673
-#define ANCIENTCOREHOUND_LAVA_BREATH		19272
-#define ANCIENTCOREHOUND_VICIOUS_BITE		19319
-#define ANCIENTCOREHOUND_GROUND_STOMP		19364
-#define ANCIENTCOREHOUND_ANCIENT_DREAD		19365
-#define ANCIENTCOREHOUND_ANCIENT_DESPAIR	19369
-#define ANCIENTCOREHOUND_CAUTERIZING_FLAMES	19366
-#define ANCIENTCOREHOUND_WITHERING_HEAT		19367
-#define ANCIENTCOREHOUND_ANCIENT_HYSTERIA	19372
-
-class AncientCoreHoundAI : public ArcScriptCreatureAI
-{
-    ARCSCRIPT_FACTORY_FUNCTION(AncientCoreHoundAI, ArcScriptCreatureAI);
-    AncientCoreHoundAI(Creature* pCreature) : ArcScriptCreatureAI(pCreature)
-    {
-		AddSpell(ANCIENTCOREHOUND_LAVA_BREATH, Target_Self, 20, 0, 3);
-		AddSpell(ANCIENTCOREHOUND_VICIOUS_BITE, Target_Self, 20, 0, 0);
-
-		//Each Ancient Core Hound have only one of the following spell
-		switch( RandomUInt(5) )
-		{
-			case 0: AddSpell(ANCIENTCOREHOUND_GROUND_STOMP, Target_Self, 20, 0, 15); break;
-			case 1: AddSpell(ANCIENTCOREHOUND_ANCIENT_DREAD, Target_Self, 20, 0, 15); break;
-			case 2: AddSpell(ANCIENTCOREHOUND_ANCIENT_DESPAIR, Target_Self, 20, 0, 15); break;
-			case 3: AddSpell(ANCIENTCOREHOUND_CAUTERIZING_FLAMES, Target_Self, 20, 0, 15); break;
-			case 4: AddSpell(ANCIENTCOREHOUND_WITHERING_HEAT, Target_Self, 20, 0, 15); break;
-			case 5: AddSpell(ANCIENTCOREHOUND_ANCIENT_HYSTERIA, Target_Self, 20, 0, 15); break;
-		}
-    }
-};
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //Lava Surger AI Script
@@ -374,19 +689,6 @@ class FlameImpAI : public ArcScriptCreatureAI
     }
 };
 
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//Core Hound AI Script
-#define CN_COREHOUND			11671
-#define COREHOUND_SERRATED_BITE	19771
-
-class CoreHoundAI : public ArcScriptCreatureAI
-{
-    ARCSCRIPT_FACTORY_FUNCTION(CoreHoundAI, ArcScriptCreatureAI);
-    CoreHoundAI(Creature* pCreature) : ArcScriptCreatureAI(pCreature)
-    {
-		AddSpell(COREHOUND_SERRATED_BITE, Target_RandomPlayer, 10, 0, 0, 0, 10);
-    }
-};
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //Lava Reaver AI Script
@@ -458,219 +760,7 @@ class FirewalkerAI : public ArcScriptCreatureAI
     }
 };
 
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//Lucifron AI Script
-#define CN_LUCIFRON					12118
-#define LUCIFRON_IMPEDING_DOOM		19702
-#define LUCIFRON_LUCIFRONS_CURSE	19703
-#define LUCIFRON_SHADOW_SHOCK		20603
 
-class LucifronAI : public ArcScriptBossAI
-{
-    ARCSCRIPT_FACTORY_FUNCTION(LucifronAI, ArcScriptBossAI);
-	LucifronAI(Creature* pCreature) : ArcScriptBossAI(pCreature)
-	{
-		AddSpell(LUCIFRON_IMPEDING_DOOM, Target_Self, 8, 0, 0);
-		AddSpell(LUCIFRON_LUCIFRONS_CURSE, Target_Self, 8, 0, 0);
-		AddSpell(LUCIFRON_SHADOW_SHOCK, Target_Self, 8, 0, 0);
-	}
-};
-
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//Flamewaker Protector AI Script
-#define CN_FLAMEWAKERPROTECTOR				12119
-#define FLAMEWAKERPROTECTOR_CLEAVE			20691
-#define FLAMEWAKERPROTECTOR_DOMINATE_MIND	20740	//to verify
-
-class FlamewakerProtectorAI : public ArcScriptCreatureAI
-{
-    ARCSCRIPT_FACTORY_FUNCTION(FlamewakerProtectorAI, ArcScriptCreatureAI);
-	FlamewakerProtectorAI(Creature* pCreature) : ArcScriptCreatureAI(pCreature)
-	{
-		AddSpell(FLAMEWAKERPROTECTOR_CLEAVE, Target_Current, 8, 0, 0, 0, 15);
-		AddSpell(FLAMEWAKERPROTECTOR_DOMINATE_MIND, Target_RandomPlayer, 4, 0, 0, 0, 20);
-	}
-};
-
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//Magmadar AI Script
-#define CN_MAGMADAR				11982
-#define MAGMADAR_MAGMA_SPIT		19450	//aura doesnt work
-#define MAGMADAR_LAVA_BREATH	19272	//to verify
-#define MAGMADAR_PANIC			19408
-#define MAGMADAR_LAVA_BOMB		19411	//need dummy spell
-
-class MagmadarAI : public ArcScriptBossAI
-{
-    ARCSCRIPT_FACTORY_FUNCTION(MagmadarAI, ArcScriptBossAI);
-	MagmadarAI(Creature* pCreature) : ArcScriptBossAI(pCreature)
-	{
-		AddSpell(MAGMADAR_MAGMA_SPIT, Target_Self, 8, 0, 0);
-		AddSpell(MAGMADAR_LAVA_BREATH, Target_Self, 8, 0, 0);
-		AddSpell(MAGMADAR_PANIC, Target_Self, 8, 0, 0);
-		AddSpell(MAGMADAR_LAVA_BOMB, Target_RandomPlayer, 8, 0, 0, 0, 100);
-	}
-};
-
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//Gehennas AI Script
-#define CN_GEHENNAS				12259
-#define GEHENNAS_SHADOW_BOLT	29317	//to verify
-#define GEHENNAS_GEHENNAS_CURSE	19716
-#define GEHENNAS_RAIN_OF_FIRE	19717
-
-class GehennasAI : public ArcScriptBossAI
-{
-    ARCSCRIPT_FACTORY_FUNCTION(GehennasAI, ArcScriptBossAI);
-	GehennasAI(Creature* pCreature) : ArcScriptBossAI(pCreature)
-	{
-		AddSpell(GEHENNAS_SHADOW_BOLT, Target_RandomPlayer, 8, 0, 0, 0, 45);
-		AddSpell(GEHENNAS_GEHENNAS_CURSE, Target_Self, 8, 0, 0);
-		AddSpell(GEHENNAS_RAIN_OF_FIRE, Target_RandomDestination, 4, 0, 0, 0, 40);
-	}
-};
-
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//Flamewaker AI Script
-#define CN_FLAMEWAKER				11661
-#define FLAMEWAKER_SUNDER_ARMOR		25051
-#define FLAMEWAKER_FIST_OF_RAGNAROS	20277
-#define FLAMEWAKER_STRIKE			11998
-
-class FlamewakerAI : public ArcScriptCreatureAI
-{
-    ARCSCRIPT_FACTORY_FUNCTION(FlamewakerAI, ArcScriptCreatureAI);
-	FlamewakerAI(Creature* pCreature) : ArcScriptCreatureAI(pCreature)
-	{
-		AddSpell(FLAMEWAKER_SUNDER_ARMOR, Target_Current, 8, 0, 0);
-		AddSpell(FLAMEWAKER_FIST_OF_RAGNAROS, Target_Self, 8, 0, 0);
-		AddSpell(FLAMEWAKER_STRIKE, Target_Current, 14, 0, 0);
-	}
-};
-
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//Garr AI Script
-#define CN_GARR					12057
-#define GARR_ANTIMAGIC_PULSE	19492
-#define GARR_MAGMA_SHACKES		19496
-
-class GarrAI : public ArcScriptBossAI
-{
-    ARCSCRIPT_FACTORY_FUNCTION(GarrAI, ArcScriptBossAI);
-	GarrAI(Creature* pCreature) : ArcScriptBossAI(pCreature)
-	{
-		AddSpell(GARR_ANTIMAGIC_PULSE, Target_Self, 10, 0, 0);
-		AddSpell(GARR_MAGMA_SHACKES, Target_Self, 10, 0, 0);
-	}
-};
-
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//Firesworn AI Script
-#define CN_FIRESWORN					12099
-#define FIRESWORN_IMMOLATE				20294
-#define FIRESWORN_ERUPTION				19497
-#define FIRESWORN_SEPARATION_ANXIETY	23492
-
-class FireswornAI : public ArcScriptCreatureAI
-{
-    ARCSCRIPT_FACTORY_FUNCTION(FireswornAI, ArcScriptCreatureAI);
-	FireswornAI(Creature* pCreature) : ArcScriptCreatureAI(pCreature)
-	{
-		mGarr = NULL;
-
-		//Spells
-		AddSpell(FIRESWORN_IMMOLATE, Target_Current, 10, 0, 0, 0, 40);
-		mEruption = AddSpell(FIRESWORN_ERUPTION, Target_Self, 0, 0, 0);
-		mSeparationAnxiety = AddSpell(FIRESWORN_SEPARATION_ANXIETY, Target_Self, 0, 5, 5);
-	}
-
-	void OnCombatStart(Unit* pTarget)
-	{
-		mGarr = (ArcScriptBossAI*)GetNearestCreature(CN_GARR);
-		ParentClass::OnCombatStart(pTarget);
-	}
-
-	void OnDied(Unit* pKiller)
-	{
-		CastSpellNowNoScheduling(mEruption);
-		ParentClass::OnDied(pKiller);
-	}
-
-	void AIUpdate()
-	{
-		if( mGarr && mGarr->IsAlive() && GetRange(mGarr) > 100 )
-		{
-			CastSpell(mSeparationAnxiety);
-		}
-		ParentClass::AIUpdate();
-	}
-
-	SpellDesc*			mEruption;
-	SpellDesc*			mSeparationAnxiety;
-	ArcScriptBossAI*	mGarr;
-};
-
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//Baron Geddon AI Script
-#define CN_BARONGEDDON			12056
-#define BARONGEDDON_INFERNO		19698	//35268
-#define BARONGEDDON_IGNITE_MANA	19659
-#define BARONGEDDON_LIVING_BOMB	20475
-
-class BaronGeddonAI : public ArcScriptBossAI
-{
-    ARCSCRIPT_FACTORY_FUNCTION(BaronGeddonAI, ArcScriptBossAI);
-	BaronGeddonAI(Creature* pCreature) : ArcScriptBossAI(pCreature)
-	{
-		AddSpell(BARONGEDDON_INFERNO, Target_Self, 8, 0, 0);
-		AddSpell(BARONGEDDON_IGNITE_MANA, Target_Self, 8, 0, 0);
-		AddSpell(BARONGEDDON_LIVING_BOMB, Target_RandomPlayer, 8, 0, 0, 0, 45);
-	}
-};
-
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//Shazzrah AI Script
-#define CN_SHAZZRAH					12264
-#define SHAZZRAH_ARCANE_EXPLOSION	19712
-#define SHAZZRAH_SHAZZRAHS_CURSE	19713
-#define SHAZZRAH_MAGIC_GROUNDING	19714
-#define SHAZZRAH_COUNTERSPELL		19715
-#define SHAZZRAH_BLINK				29883	//dummy spell, need to be coded in core
-
-void SpellFunc_ShazzrahBlinkArcaneExplosions(SpellDesc* pThis, ArcScriptCreatureAI* pCreatureAI, Unit* pTarget, TargetType pType);
-
-class ShazzrahAI : public ArcScriptBossAI
-{
-    ARCSCRIPT_FACTORY_FUNCTION(ShazzrahAI, ArcScriptBossAI);
-	ShazzrahAI(Creature* pCreature) : ArcScriptBossAI(pCreature)
-	{
-		AddSpell(SHAZZRAH_SHAZZRAHS_CURSE, Target_Self, 8, 0, 0);
-		AddSpell(SHAZZRAH_MAGIC_GROUNDING, Target_Self, 6, 0, 0);
-		AddSpell(SHAZZRAH_COUNTERSPELL, Target_Self, 6, 0, 0);
-
-		mBlink = AddSpell(SHAZZRAH_BLINK, Target_RandomPlayer, 0, 0, 0);
-		mArcaneExplosion = AddSpell(SHAZZRAH_ARCANE_EXPLOSION, Target_Self, 0, 0, 0);
-		AddSpellFunc(&SpellFunc_ShazzrahBlinkArcaneExplosions, Target_Self, 8, -1, 15);
-	}
-
-	SpellDesc* mBlink;
-	SpellDesc* mArcaneExplosion;
-};
-
-void SpellFunc_ShazzrahBlinkArcaneExplosions(SpellDesc* pThis, ArcScriptCreatureAI* pCreatureAI, Unit* pTarget, TargetType pType)
-{
-	ShazzrahAI* Shazzrah = ( pCreatureAI ) ? (ShazzrahAI*)pCreatureAI : NULL;
-	if( Shazzrah )
-	{
-		//Teleport blink, then cast 4 arcane explosions
-		Shazzrah->CastSpell(Shazzrah->mBlink);
-		for( int Iter = 0; Iter < 4; Iter++ ) Shazzrah->CastSpell(Shazzrah->mArcaneExplosion);
-	}
-}
-
-
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//Register
 void SetupMoltenCore(ScriptMgr* pScriptMgr)
 {
     pScriptMgr->register_creature_script(CN_MOLTENGIANT, &MoltenGiantAI::Create);

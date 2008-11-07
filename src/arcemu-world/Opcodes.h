@@ -2031,6 +2031,7 @@ enum Opcodes {
 	SMSG_TARGET_CAST_RESULT							= 934,	//(0x03A6)
 	MSG_MOVE_FLY_DOWN_UNK							= 935,  //(0x03A7)
 	// 938
+	MSG_RAID_READY_CHECK_CONFIRM					= 942,	//(0x03AE)
 	CMSG_ENABLE_MICROPHONE							= 943,	//(0x03AF)
 	SMSG_DISABLE_MICROPHONE							= 944,  //(0x03B0) // manual added its a result for CMSG_ENABLE_MICROPHONE
 	//949

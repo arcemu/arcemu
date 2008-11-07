@@ -2112,3 +2112,30 @@ float MapMgr::GetFirstZWithCPZ(float x,float y ,float z)
 	}
 	return posZ;
 }
+
+void MapMgr::SendPvPCaptureMessage(int32 ZoneMask, uint32 ZoneId, const char * Message, ...)
+{
+	va_list ap;
+	va_start(ap, Message);
+
+	WorldPacket data(SMSG_PVP_CAPTURE_STATE_MSG, 208);
+	char msgbuf[200];
+	vsnprintf(msgbuf, 200, Message, ap);
+	va_end(ap);
+
+	data << ZoneId;
+	data << uint32(strlen(msgbuf)+1);
+	data << msgbuf;
+
+	PlayerStorageMap::iterator itr = m_PlayerStorage.begin();
+	for(; itr !=  m_PlayerStorage.end();)
+	{
+		Player *plr = itr->second;
+		++itr;
+
+		if( ( ZoneMask != ZONE_MASK_ALL && plr->GetZoneId() != (uint32)ZoneMask) )
+			continue;
+
+		plr->GetSession()->SendPacket(&data);
+	}
+}

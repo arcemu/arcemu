@@ -6061,7 +6061,33 @@ void ApplyNormalFixes()
 		//////////////////////////////////////////
 
 		// Insert boss spell fixes here
-		
+
+		// Major Domo - Magic Reflection
+		sp = dbcSpell.LookupEntryForced(20619);
+		if(sp != NULL)
+		{
+			for(int i=0; i<3; i++)
+			{
+				if(sp->EffectImplicitTargetA[i] > 0)
+					sp->EffectImplicitTargetA[i] = EFF_TARGET_ALL_FRIENDLY_IN_AREA;
+				if(sp->EffectImplicitTargetB[i] > 0)
+					sp->EffectImplicitTargetB[i] = EFF_TARGET_ALL_FRIENDLY_IN_AREA;
+			}
+		}
+
+		// Major Domo - Damage Shield
+		sp = dbcSpell.LookupEntryForced(21075);
+		if(sp != NULL)
+		{
+			for(int i=0; i<3; i++)
+			{
+				if(sp->EffectImplicitTargetA[i] > 0)
+					sp->EffectImplicitTargetA[i] = EFF_TARGET_ALL_FRIENDLY_IN_AREA;
+				if(sp->EffectImplicitTargetB[i] > 0)
+					sp->EffectImplicitTargetB[i] = EFF_TARGET_ALL_FRIENDLY_IN_AREA;
+			}
+		}
+
 		// Dark Glare
 		sp = dbcSpell.LookupEntryForced( 26029 );
 		if( sp != NULL )

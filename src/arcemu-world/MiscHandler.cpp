@@ -748,7 +748,7 @@ void WorldSession::HandleLogoutRequestOpcode( WorldPacket & recv_data )
 	{
 		sHookInterface.OnLogoutRequest(pPlayer);
 
-		if(HasGMPermissions())
+		if(GetPermissionCount() > 0)
 		{
 			//Logout on NEXT sessionupdate to preserve processing of dead packets (all pending ones should be processed)
 			SetLogoutTimer(1);

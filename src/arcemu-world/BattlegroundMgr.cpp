@@ -1006,10 +1006,10 @@ void CBattleground::AddPlayer(Player * plr, uint32 team)
 	m_pendPlayers[team].insert(plr->GetLowGUID());
 
 	/* Send a packet telling them that they can enter */
-	BattlegroundManager.SendBattlefieldStatus(plr, 2, m_type, m_id, 120000, m_mapMgr->GetMapId(),Rated());      // You will be removed from the queue in 2 minutes.
+	BattlegroundManager.SendBattlefieldStatus(plr, 2, m_type, m_id, 80000, m_mapMgr->GetMapId(),Rated());      // You will be removed from the queue in 2 minutes.
 
-	/* Add an event to remove them in 2 minutes time. */
-	sEventMgr.AddEvent(plr, &Player::RemoveFromBattlegroundQueue, EVENT_BATTLEGROUND_QUEUE_UPDATE, 120000, 1,0);
+	/* Add an event to remove them in 1 minute 20 seconds time. */
+	sEventMgr.AddEvent(plr, &Player::RemoveFromBattlegroundQueue, EVENT_BATTLEGROUND_QUEUE_UPDATE, 80000, 1,0);
 	plr->m_pendingBattleground = this;
 
 	m_mainLock.Release();
