@@ -167,7 +167,7 @@ void HonorHandler::OnPlayerKilledUnit( Player *pPlayer, Unit* pVictim )
 					{
 						// Send PVP credit
 						WorldPacket data(SMSG_PVP_CREDIT, 12);
-						uint32 pvppoints = pts;
+						uint32 pvppoints = pts * 10;
 						data << pvppoints << pVictim->GetGUID() << uint32(static_cast< Player* >(pVictim)->GetPVPRank());
 						(*vtr)->GetSession()->SendPacket(&data);
 					}
@@ -233,7 +233,7 @@ void HonorHandler::OnPlayerKilledUnit( Player *pPlayer, Unit* pVictim )
 					sHookInterface.OnHonorableKill(pAffectedPlayer, (Player*)pVictim);
 
 					WorldPacket data(SMSG_PVP_CREDIT, 12);
-					uint32 pvppoints = contributorpts; // Why *10?
+					uint32 pvppoints = contributorpts * 10; // Why *10?
 					data << pvppoints << pVictim->GetGUID() << uint32(static_cast< Player* >(pVictim)->GetPVPRank());
 					pAffectedPlayer->GetSession()->SendPacket(&data);
 				}
