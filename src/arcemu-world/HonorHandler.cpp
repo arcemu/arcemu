@@ -167,7 +167,7 @@ void HonorHandler::OnPlayerKilledUnit( Player *pPlayer, Unit* pVictim )
 					{
 						// Send PVP credit
 						WorldPacket data(SMSG_PVP_CREDIT, 12);
-						uint32 pvppoints = pts * 10;
+						uint32 pvppoints = pts;
 						data << pvppoints << pVictim->GetGUID() << uint32(static_cast< Player* >(pVictim)->GetPVPRank());
 						(*vtr)->GetSession()->SendPacket(&data);
 					}
@@ -233,7 +233,7 @@ void HonorHandler::OnPlayerKilledUnit( Player *pPlayer, Unit* pVictim )
 					sHookInterface.OnHonorableKill(pAffectedPlayer, (Player*)pVictim);
 
 					WorldPacket data(SMSG_PVP_CREDIT, 12);
-					uint32 pvppoints = contributorpts * 10; // Why *10?
+					uint32 pvppoints = contributorpts; // Why *10?
 					data << pvppoints << pVictim->GetGUID() << uint32(static_cast< Player* >(pVictim)->GetPVPRank());
 					pAffectedPlayer->GetSession()->SendPacket(&data);
 				}
@@ -244,9 +244,17 @@ void HonorHandler::OnPlayerKilledUnit( Player *pPlayer, Unit* pVictim )
 					SpellEntry * pvp_token_spell = dbcSpell.LookupEntry(pAffectedPlayer->GetTeam()? 33004 : 33005);
 					pAffectedPlayer->CastSpell(pAffectedPlayer, pvp_token_spell, true);
 				}
-				// If we are in Hellfire Peninsula
+				// If we are in Hellfire Peninsula <http://www.wowwiki.com/Hellfire_Peninsula#World_PvP_-_Hellfire_Fortifications>
 				if(pAffectedPlayer->GetZoneId() == 3483)
 				{
+					// Hellfire Horde Controlled Towers
+					if(pAffectedPlayer->GetMapMgr()->GetWorldState(2478) != 3 && pAffectedPlayer->GetTeam() == 1)
+						return;
+
+					// Hellfire Alliance Controlled Towers
+					if(pAffectedPlayer->GetMapMgr()->GetWorldState(2476) != 3 && pAffectedPlayer->GetTeam() == 0)
+						return;
+
 					// Add Mark of Thrallmar/Honor Hold
 					SpellEntry * pvp_token_spell = dbcSpell.LookupEntry(pAffectedPlayer->GetTeam()? 32158 : 32155);
 					pAffectedPlayer->CastSpell(pAffectedPlayer, pvp_token_spell, true);

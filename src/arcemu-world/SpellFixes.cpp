@@ -5589,7 +5589,10 @@ void ApplyNormalFixes()
 		// Memento of Tyrande
 		sp = dbcSpell.LookupEntryForced( 37655 );
 		if( sp != NULL )
+		{
 			sp->procFlags = PROC_ON_CAST_SPELL;
+			sp->procChance = 10;
+		}
 
 		// Ashtongue Talisman of Insight
 		sp = dbcSpell.LookupEntryForced( 40482 );
@@ -5940,6 +5943,14 @@ void ApplyNormalFixes()
 		{
 			sp->procFlags = PROC_ON_CAST_SPELL;
 			sp->procChance = 100;
+		}
+		
+		//Item Set: Shadowcraft Armor & Darkmantle Armor
+		sp = dbcSpell.LookupEntryForced( 27787 );
+		if( sp != NULL)
+		{
+			sp->procFlags = PROC_ON_MELEE_ATTACK_VICTIM;
+			sp->procChance = 7;
 		}
 
 		//all Drums 

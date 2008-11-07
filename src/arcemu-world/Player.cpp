@@ -4212,6 +4212,7 @@ void Player::RepopRequestedPlayer()
 		// cebernic: wOOo dead+dead = undead ? :D just resurrect player
 		myCorpse->ResetDeathClock();
 		ResurrectPlayer();
+		RepopAtGraveyard( GetPositionX(), GetPositionY(), GetPositionZ(), GetMapId() );
 		return;
 	}
 

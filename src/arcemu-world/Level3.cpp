@@ -2900,9 +2900,19 @@ bool ChatHandler::HandleAIAgentDebugSkip(const char * args, WorldSession * m_ses
 bool ChatHandler::HandleRenameGuildCommand(const char* args, WorldSession *m_session)
 {
 	Player * plr = getSelectedChar(m_session);
-	if(!plr || !plr->GetGuildId() || !args || !strlen(args)) return false;
+	if(!plr || !plr->GetGuildId() || !plr->GetGuild() || !args || !strlen(args))
+		return false;
 
+	Guild * pGuild = objmgr.GetGuildByGuildName(string(args));
 
+	if(pGuild)
+	{
+		RedSystemMessage(m_session, "Guild name %s is already taken.", args);
+		return false;
+	}
+
+	GreenSystemMessage(m_session, "Changed guild name of %s to %s. This will take effect next restart.", plr->GetGuild()->GetGuildName(), args);
+	CharacterDatabase.Execute("UPDATE guilds SET `guildName` = \"%s\" WHERE `guildId` = '%u'", CharacterDatabase.EscapeString(string(args)).c_str(), plr->GetGuild()->GetGuildId());
 	return true;
 }
 
@@ -2910,7 +2920,15 @@ bool ChatHandler::HandleRenameGuildCommand(const char* args, WorldSession *m_ses
 bool ChatHandler::HandleGuildRemovePlayerCommand(const char* args, WorldSession *m_session)
 {
 	Player * plr = getSelectedChar(m_session);
-	if(!plr || !plr->GetGuildId()) return false;
+	if(!plr || !plr->GetGuildId() || !plr->GetGuild() || plr->GetGuild()->GetGuildLeader() == plr->GetLowGUID())
+		return false;
+
+	GreenSystemMessage(m_session, "Kicked %s from Guild: %s", plr->GetName(), plr->GetGuild()->GetGuildName());
+
+	if(plr->GetLowGUID() != m_session->GetPlayer()->GetLowGUID())
+		sGMLog.writefromsession(m_session, "Kicked %s from Guild %s", plr->GetName(), plr->GetGuild()->GetGuildName());
+
+	plr->GetGuild()->RemoveGuildMember(plr->m_playerInfo, plr->GetSession());
 	return true;
 }
 
@@ -2918,7 +2936,12 @@ bool ChatHandler::HandleGuildRemovePlayerCommand(const char* args, WorldSession 
 bool ChatHandler::HandleGuildDisbandCommand(const char* args, WorldSession *m_session)
 {
 	Player * plr = getSelectedChar(m_session);
-	if(!plr || !plr->GetGuildId() || !args || !strlen(args)) return false;
+	if(!plr || !plr->GetGuildId() || !plr->GetGuild()) 
+		return false;
+
+	GreenSystemMessage(m_session, "Disbanded Guild: %s", plr->GetGuild()->GetGuildName());
+	sGMLog.writefromsession(m_session, "Disbaned Guild %s", plr->GetGuild()->GetGuildName());
+	plr->GetGuild()->Disband();
 	return true;
 }
 
@@ -2926,7 +2949,19 @@ bool ChatHandler::HandleGuildDisbandCommand(const char* args, WorldSession *m_se
 bool ChatHandler::HandleGuildMembersCommand(const char* args, WorldSession *m_session)
 {
 	Player * plr = getSelectedChar(m_session);
-	if(!plr || !plr->GetGuildId()) return false;
+	if(!plr || !plr->GetGuildId() || !plr->GetGuild())
+		return false;
+	GreenSystemMessage(m_session, "Now showing guild members for %s", plr->GetGuild()->GetGuildName());
+	plr->GetGuild()->Lock();
+	for(GuildMemberMap::iterator itr = plr->GetGuild()->GetGuildMembersBegin(); itr != plr->GetGuild()->GetGuildMembersEnd(); ++itr)
+	{
+		GuildMember *member = itr->second;
+		if(!member || !member->pPlayer)
+			continue;
+	
+		BlueSystemMessage(m_session, "%s (Rank: %s)", member->pPlayer->name, member->pRank->szRankName);
+	}
+	plr->GetGuild()->Unlock();
 	return true;
 }
 
