@@ -779,7 +779,7 @@ void Spell::SpellTargetDummyTarget(uint32 i, uint32 j)
 			return;
 
 		Object::InRangeSet::iterator itr,itr2;
-		p_caster->AquireInrangeLock(); //make sure to release lock before exit function !
+		m_caster->AquireInrangeLock(); //make sure to release lock before exit function !
 		for(itr2 = p_caster->GetInRangeSetBegin(); itr2 != p_caster->GetInRangeSetEnd(); )
 		{
 			itr=itr2;
@@ -796,7 +796,7 @@ void Spell::SpellTargetDummyTarget(uint32 i, uint32 j)
 				}
 			}
 		}
-		p_caster->ReleaseInrangeLock();
+		m_caster->ReleaseInrangeLock();
 	}
 	SafeAddTarget(tmpMap,m_caster->GetGUID());
 }
@@ -900,7 +900,7 @@ void Spell::SpellTargetChainTargeting(uint32 i, uint32 j)
 	else
 	{
 		std::set<Object*>::iterator itr;
-		firstTarget->AquireInrangeLock(); //make sure to release lock before exit function !
+		m_caster->AquireInrangeLock(); //make sure to release lock before exit function !
 		for( itr = firstTarget->GetInRangeSetBegin(); itr != firstTarget->GetInRangeSetEnd(); itr++ )
 		{
 			if( !(*itr)->IsUnit() || !((Unit*)(*itr))->isAlive())
@@ -928,7 +928,7 @@ void Spell::SpellTargetChainTargeting(uint32 i, uint32 j)
 				}
 			}
 		}
-		firstTarget->ReleaseInrangeLock();
+		m_caster->ReleaseInrangeLock();
 	}
 }
 

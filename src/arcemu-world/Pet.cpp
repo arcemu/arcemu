@@ -1841,7 +1841,7 @@ AI_Spell * Pet::HandleAutoCastEvent()
 		if((*itr)->autocast_type == AUTOCAST_EVENT_ATTACK)
 		{
 			// spells still spammed, I think the cooldowntime is being set incorrectly somewhere else
-			if( chance && (*itr)->spell && getMSTime() >= (*itr)->cooldowntime && //cebernic:crashfix
+			if( chance && getMSTime() >= (*itr)->cooldowntime &&
 				GetUInt32Value( UNIT_FIELD_POWER1 + (*itr)->spell->powerType ) >= (*itr)->spell->manaCost )
 			{
 				return *itr;
