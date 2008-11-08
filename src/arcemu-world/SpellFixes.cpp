@@ -5559,7 +5559,18 @@ void ApplyNormalFixes()
 		//Spell Focus Trigger (Mystical Skyfire Diamond)
 		sp = dbcSpell.LookupEntryForced( 32837 );
 		if( sp != NULL )
+		{
 			sp->procChance = 15;
+			sp->proc_interval = 45000;
+		}
+		
+		// Skyfire Swiftness (Thundering Skyfire Diamond)
+		sp = dbcSpell.LookupEntryForced( 39958 );
+		if( sp != NULL )
+		{
+			sp->procChance = 15;
+			sp->proc_interval = 45000;
+		}
 
 		// Band of the Eternal Sage
 		sp = dbcSpell.LookupEntryForced( 35083 );
