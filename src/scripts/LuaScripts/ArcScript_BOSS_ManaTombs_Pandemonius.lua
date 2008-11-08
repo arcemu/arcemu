@@ -85,7 +85,7 @@ pUnit:SendChatMessage(11, 0, "To the void... once... more.")
 pUnit:RemoveEvents()
 end
 
-RegisterpUnitEvent(18341, 1, "Pandemonius_OnCombat")
-RegisterpUnitEvent(18341, 2, "Pandemonius_OnLeaveCombat")
-RegisterpUnitEvent(18341, 3, "Pandemonius_OnKilledTarget")
-RegisterpUnitEvent(18341, 4, "Pandemonius_OnDied")
+RegisterUnitEvent(18341, 1, "Pandemonius_OnCombat")
+RegisterUnitEvent(18341, 2, "Pandemonius_OnLeaveCombat")
+RegisterUnitEvent(18341, 3, "Pandemonius_OnKilledTarget")
+RegisterUnitEvent(18341, 4, "Pandemonius_OnDied")
