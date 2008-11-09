@@ -248,12 +248,13 @@ void HonorHandler::OnPlayerKilledUnit( Player *pPlayer, Unit* pVictim )
 				if(pAffectedPlayer->GetZoneId() == 3483)
 				{
 					// Hellfire Horde Controlled Towers
-					if(pAffectedPlayer->GetMapMgr()->GetWorldState(2478) != 3 && pAffectedPlayer->GetTeam() == 1)
+					// Commented out until someone works on the hellfire world pvp :)
+					/*if(pAffectedPlayer->GetMapMgr()->GetWorldState(2478) != 3 && pAffectedPlayer->GetTeam() == 1)
 						return;
 
 					// Hellfire Alliance Controlled Towers
 					if(pAffectedPlayer->GetMapMgr()->GetWorldState(2476) != 3 && pAffectedPlayer->GetTeam() == 0)
-						return;
+						return;*/
 
 					// Add Mark of Thrallmar/Honor Hold
 					SpellEntry * pvp_token_spell = dbcSpell.LookupEntry(pAffectedPlayer->GetTeam()? 32158 : 32155);
