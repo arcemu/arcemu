@@ -133,7 +133,7 @@ bool MailMessage::AddMessageDataToPacket(WorldPacket& data)
 	data << uint32(0);
 	data << subject;
 	pos = data.wpos();
-	data << uint8(0);		// item count
+	data << uint8(items.empty() ? 0 : items.size());		// item count
 
 	if( !items.empty( ) )
 	{
