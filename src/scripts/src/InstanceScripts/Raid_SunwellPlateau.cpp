@@ -187,30 +187,6 @@ class BrutallusAI : public ArcScriptBossAI
 		AddEmote(Event_OnTaunt, "Another day, another glorious battle!", Text_Yell);
 		AddEmote(Event_OnTaunt, "I live for this!", Text_Yell);
 	}
-
-	void OnLoad()
-	{
-		//_unit->CastSpellAoF(x, y, z, dbcSpell.LookupEntry(FIRE_WALL), true);
-		ParentClass::OnLoad();
-	}
-
-	void OnCombatStart(Unit* pTarget)
-	{
-		
-		ParentClass::OnCombatStart(pTarget);
-	}
-
-	void OnDied(Unit* pKiller)
-	{
-		//SpawnCreature(CN_FELMYST, 1871, 650, 71, 0, false); //spawns
-		ParentClass::OnDied(pKiller);
-	}
-
-	void AIUpdate()
-	{
-		
-		ParentClass::AIUpdate();
-	}
 };
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -253,28 +229,10 @@ class FelmystAI : public ArcScriptBossAI
 		AddEmote(Event_OnTaunt, "I am stronger than ever before!", Text_Yell);
 	}
 
-	void OnLoad()
-	{
-		//Create waypoints and move
-		ParentClass::OnLoad();
-	}
-
 	void OnCombatStart(Unit* pTarget)
 	{
 		ApplyAura(FELMYST_NOXIOUS_FUME);
 		ParentClass::OnCombatStart(pTarget);
-	}
-
-	void OnDied(Unit* pKiller)
-	{
-		//remove firewall
-		ParentClass::OnDied(pKiller);
-	}
-
-	void AIUpdate()
-	{
-		
-		ParentClass::AIUpdate();
 	}
 };
 
@@ -306,7 +264,7 @@ class LadySacrolashAI : public ArcScriptBossAI
 
 	void OnCombatStart(Unit* pTarget)
 	{
-		mGrandWarlockAlythess = GetNearestCreature(CN_GRAND_WARLOCK_ALYTHESS);
+		mGrandWarlockAlythess = GetNearestBoss(CN_GRAND_WARLOCK_ALYTHESS);
 		ParentClass::OnCombatStart(pTarget);
 	}
 
@@ -319,7 +277,7 @@ class LadySacrolashAI : public ArcScriptBossAI
 		ParentClass::OnDied(pKiller);
 	}
 
-	ArcScriptCreatureAI* mGrandWarlockAlythess;
+	ArcScriptBossAI* mGrandWarlockAlythess;
 };
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -350,7 +308,7 @@ class GrandWarlockAlythessAI : public ArcScriptBossAI
 
 	void OnCombatStart(Unit* pTarget)
 	{
-		mLadySacrolash = GetNearestCreature(CN_LADY_SACROLASH);
+		mLadySacrolash = GetNearestBoss(CN_LADY_SACROLASH);
 		ParentClass::OnCombatStart(pTarget);
 	}
 
@@ -363,7 +321,7 @@ class GrandWarlockAlythessAI : public ArcScriptBossAI
 		ParentClass::OnDied(pKiller);
 	}
 
-	ArcScriptCreatureAI* mLadySacrolash;
+	ArcScriptBossAI* mLadySacrolash;
 };
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
