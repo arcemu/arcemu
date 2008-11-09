@@ -652,6 +652,15 @@ void WorldSession::HandleTakeMoney(WorldPacket & recv_data )
 		return;
 	}
 
+	if(sWorld.GoldCapEnabled)
+	{
+		if((_player->GetUInt32Value(PLAYER_FIELD_COINAGE) + message->money) > sWorld.GoldLimit)
+		{
+			_player->GetItemInterface()->BuildInventoryChangeError(NULL, NULL, INV_ERR_TOO_MUCH_GOLD);
+			return;
+		}
+	}
+
 	// add the money to the player
 	_player->ModUnsigned32Value(PLAYER_FIELD_COINAGE, message->money);
 

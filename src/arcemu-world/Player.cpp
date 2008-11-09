@@ -754,6 +754,8 @@ bool Player::Create(WorldPacket& data )
 	SetUInt32Value(PLAYER_CHARACTER_POINTS2,2);
 	SetFloatValue(UNIT_MOD_CAST_SPEED, 1.0f);
 	SetUInt32Value(PLAYER_FIELD_MAX_LEVEL, sWorld.m_levelCap);
+
+	SetUInt32Value(PLAYER_FIELD_COINAGE, sWorld.GoldStartAmount);
 	
   
 	for(uint32 x=0;x<7;x++)

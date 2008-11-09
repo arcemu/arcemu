@@ -700,6 +700,14 @@ bool ChatHandler::HandleModifyGoldCommand(const char* args, WorldSession *m_sess
 		}
 	}
 
+	if(sWorld.GoldCapEnabled)
+    {
+        if((chr->GetUInt32Value(PLAYER_FIELD_COINAGE) + newgold) > sWorld.GoldLimit)
+        {
+			RedSystemMessage(m_session, "Maximum amount of gold is %u and %s already has %u", (sWorld.GoldLimit/10000), chr->GetName(), (chr->GetUInt32Value(PLAYER_FIELD_COINAGE)/10000));
+            return true;
+        }
+    }
 	chr->SetUInt32Value( PLAYER_FIELD_COINAGE, newgold );
 	
 	return true;

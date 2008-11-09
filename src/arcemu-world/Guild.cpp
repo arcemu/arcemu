@@ -1392,6 +1392,15 @@ void Guild::WithdrawMoney(WorldSession * pClient, uint32 uAmount)
 	if(m_bankBalance < uAmount)
 		return;
 
+	if(sWorld.GoldCapEnabled)
+	{
+		if((pClient->GetPlayer()->GetUInt32Value(PLAYER_FIELD_COINAGE) + uAmount) > sWorld.GoldLimit)
+		{
+			pClient->GetPlayer()->GetItemInterface()->BuildInventoryChangeError(NULL, NULL, INV_ERR_TOO_MUCH_GOLD);
+			return;
+		}
+	}
+
 	// update his bank state
 	pMember->OnMoneyWithdraw(uAmount);
 
