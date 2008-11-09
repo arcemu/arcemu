@@ -9,4 +9,5 @@ libExtraScripts_la_SOURCES = L70etc.cpp \
 	Insta70.cpp \
 	Portals.cpp \
 	PvPToken.cpp \
+	WeddingNpc.cpp \
 	Setup.cpp
