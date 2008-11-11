@@ -234,10 +234,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\src\QuestScripts\ShadowArcScript.cpp"
-				>
-			</File>
-			<File
 				RelativePath="..\src\QuestScripts\Silverpine_Forest.cpp"
 				>
 			</File>
