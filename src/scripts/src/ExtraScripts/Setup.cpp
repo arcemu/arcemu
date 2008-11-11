@@ -51,11 +51,11 @@ extern "C" SCRIPT_DECL void _exp_script_register(ScriptMgr* mgr)
 		SetupPvPToken(mgr);
 	}
 
-	if(Config.OptionalConfig.GetBoolDefault("Extra", "WeddingNPC", false))
-	{
-		sLog.outColor(TGREEN,"\n	WeddingNPC Enabled");
-		SetupWeddingNPC(mgr);
-	}
+	//if(Config.OptionalConfig.GetBoolDefault("Extra", "WeddingNPC", false))
+	//{
+	//	sLog.outColor(TGREEN,"\n	WeddingNPC Enabled");
+	//	SetupWeddingNPC(mgr);
+	//}
 
 	sLog.outColor(TNORMAL, "\n");
 }
