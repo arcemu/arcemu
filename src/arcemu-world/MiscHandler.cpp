@@ -285,14 +285,7 @@ void WorldSession::HandleLootMoneyOpcode( WorldPacket & recv_data )
 	{
 		if(money)
 		{
-			if(sWorld.GoldCapEnabled && (GetPlayer()->GetUInt32Value(PLAYER_FIELD_COINAGE) + money) > sWorld.GoldLimit)
-			{
-				GetPlayer()->GetItemInterface()->BuildInventoryChangeError(NULL, NULL, INV_ERR_TOO_MUCH_GOLD);
-			}
-			else
-			{
-				GetPlayer()->ModUnsigned32Value( PLAYER_FIELD_COINAGE , money);
-			}
+			GetPlayer()->ModUnsigned32Value( PLAYER_FIELD_COINAGE , money);
 			sHookInterface.OnLoot(_player, pt, money, 0);
 		}
 	}
@@ -330,15 +323,8 @@ void WorldSession::HandleLootMoneyOpcode( WorldPacket & recv_data )
 
 			for(vector<Player*>::iterator itr = targets.begin(); itr != targets.end(); ++itr)
 			{
-				if(sWorld.GoldCapEnabled && ((*itr)->GetUInt32Value(PLAYER_FIELD_COINAGE) + share) > sWorld.GoldLimit)
-				{
-					(*itr)->GetItemInterface()->BuildInventoryChangeError(NULL, NULL, INV_ERR_TOO_MUCH_GOLD);
-				}
-				else
-				{
-					(*itr)->ModUnsigned32Value(PLAYER_FIELD_COINAGE, share);
-					(*itr)->GetSession()->SendPacket(&pkt);
-				}
+				(*itr)->ModUnsigned32Value(PLAYER_FIELD_COINAGE, share);
+				(*itr)->GetSession()->SendPacket(&pkt);
 			}
 		}
 	}   
@@ -454,7 +440,7 @@ void WorldSession::HandleLootReleaseOpcode( WorldPacket & recv_data )
 		if( pGO == NULL )
 			return;
 
-		switch( pGO->GetUInt32Value( GAMEOBJECT_TYPE_ID ) )
+		switch( pGO->GetByte( GAMEOBJECT_BYTES_1, 1 ) )
 		{
 		case GAMEOBJECT_TYPE_FISHINGNODE:
 			{
@@ -490,7 +476,7 @@ void WorldSession::HandleLootReleaseOpcode( WorldPacket & recv_data )
 								//we still have loot inside.
 									if( pGO->HasLoot() )
 									{
-										pGO->SetUInt32Value( GAMEOBJECT_STATE, 1 );
+										pGO->SetByte( GAMEOBJECT_BYTES_1, 0, 1 );
 										// TODO : redo this temporary fix, because for some reason hasloot is true even when we loot everything
 										// my guess is we need to set up some even that rechecks the GO in 10 seconds or something
 										//pGO->Despawn( 600000 + ( RandomUInt( 300000 ) ) );
@@ -514,7 +500,7 @@ void WorldSession::HandleLootReleaseOpcode( WorldPacket & recv_data )
 								{
 									if(pGO->HasLoot())
 									{
-										pGO->SetUInt32Value(GAMEOBJECT_STATE, 1);
+										pGO->SetByte(GAMEOBJECT_BYTES_1, 0, 1);
 										return;
 									}
 									pGO->Despawn(sQuestMgr.GetGameObjectLootQuest(pGO->GetEntry()) ? 180000 + ( RandomUInt( 180000 ) ) : (IS_INSTANCE(pGO->GetMapId()) ? 0 : 900000 + ( RandomUInt( 600000 ) ) ) );
@@ -525,7 +511,7 @@ void WorldSession::HandleLootReleaseOpcode( WorldPacket & recv_data )
 							{
 								if(pGO->HasLoot())
 								{
-									pGO->SetUInt32Value(GAMEOBJECT_STATE, 1);
+									pGO->SetByte(GAMEOBJECT_BYTES_1, 0, 1);
 									return;
 								}
 
@@ -539,7 +525,7 @@ void WorldSession::HandleLootReleaseOpcode( WorldPacket & recv_data )
 				{
 					if( pGO->HasLoot() )
 					{
-						pGO->SetUInt32Value(GAMEOBJECT_STATE, 1);
+						pGO->SetByte(GAMEOBJECT_BYTES_1, 0, 1);
 						return;
 					}
 
@@ -791,7 +777,7 @@ void WorldSession::HandleLogoutRequestOpcode( WorldPacket & recv_data )
 
 		//stop player from moving
 		pPlayer->SetMovement(MOVE_ROOT,1);
-
+		LoggingOut = true;
 		// Set the "player locked" flag, to prevent movement
 		pPlayer->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_LOCK_PLAYER);
 
@@ -824,6 +810,9 @@ void WorldSession::HandleLogoutCancelOpcode( WorldPacket & recv_data )
 	Player *pPlayer = GetPlayer();
 	if(!pPlayer)
 		return;
+	if (!LoggingOut)
+		return;
+	LoggingOut = false;
 
 	//Cancel logout Timer
 	SetLogoutTimer(0);
@@ -1239,6 +1228,62 @@ void WorldSession::HandleAmmoSetOpcode(WorldPacket & recv_data)
 }
 
 #define OPEN_CHEST 11437 
+
+void WorldSession::HandleBarberShopResult(WorldPacket & recv_data)
+{
+	sLog.outDebug("WORLD: CMSG_ALTER_APPEARANCE ");
+	if( !_player->IsInWorld() ) 
+		return;
+	if( _player->GetUInt32Value( PLAYER_FIELD_COINAGE ) < 25000 )
+		return; //not enough money
+    uint32 hair, haircolor, facialhairorpiercing;
+    recv_data >> hair >> haircolor >> facialhairorpiercing;
+	uint32 oldhair = _player->GetByte( PLAYER_BYTES, 2 );
+	uint32 oldhaircolor = _player->GetByte( PLAYER_BYTES, 3 );
+	uint32 oldfacial = _player->GetByte( PLAYER_BYTES, 0 );
+	uint32 newhair,newhaircolor,newfacial;
+	int32 cost = 0;
+	BarberShopStyleEntry *bbse;
+
+	bbse = dbcBarberShopStyleStore.LookupEntry( hair );
+	if( !bbse )		return;
+	newhair = bbse->hair_id;
+
+	newhaircolor = haircolor;
+
+	bbse = dbcBarberShopStyleStore.LookupEntry( facialhairorpiercing );
+	if( !bbse )		return;
+	newfacial = bbse->hair_id;
+
+    if( newhair != oldhair )
+		cost+=24800;
+    if( newhair == oldhair && newhaircolor != oldhaircolor )
+		cost+=12400;
+	if( newfacial != oldfacial )
+		cost+=18600;
+
+	if(_player->GetUInt32Value( PLAYER_FIELD_COINAGE ) < (uint32)cost)
+    {
+        WorldPacket data( SMSG_BARBER_SHOP_RESULT, 4);
+        data << uint32(1);                                  // no money
+        SendPacket(&data);
+        return;
+    }
+    else
+    {
+        WorldPacket data(SMSG_BARBER_SHOP_RESULT, 4);
+        data << uint32(0);                                  // ok
+        SendPacket(&data);
+    }
+
+	_player->SetByte( PLAYER_BYTES, 2, newhair);
+	_player->SetByte( PLAYER_BYTES, 3, newhaircolor);
+	_player->SetByte( PLAYER_BYTES, 0, newfacial);
+	_player->ModUnsigned32Value( PLAYER_FIELD_COINAGE, -cost );
+
+    _player->SetStandState(0);                              // stand up
+}
+
 void WorldSession::HandleGameObjectUse(WorldPacket & recv_data)
 {
 	if(!_player->IsInWorld()) return;
@@ -1261,7 +1306,7 @@ void WorldSession::HandleGameObjectUse(WorldPacket & recv_data)
   _player->RemoveStealth(); // cebernic:RemoveStealth due to GO was using. Blizzlike
 	
 
-	uint32 type = obj->GetUInt32Value(GAMEOBJECT_TYPE_ID);
+	uint32 type = obj->GetByte(GAMEOBJECT_BYTES_1, 1);
 	switch (type)
 	{
 	case GAMEOBJECT_TYPE_CHAIR:
@@ -1279,6 +1324,20 @@ void WorldSession::HandleGameObjectUse(WorldPacket & recv_data)
 			//plyr->SetPlayerSpeed(RUN,plyr->m_base_runSpeed); <--cebernic : Oh No,this could be wrong. If I have some mods existed,this just on baserunspeed as a fixed value?
 			plyr->UpdateSpeed();
 		}break;
+			case GAMEOBJECT_TYPE_BARBER_CHAIR:
+		{
+			plyr->SafeTeleport( plyr->GetMapId(), plyr->GetInstanceID(), obj->GetPositionX(), obj->GetPositionY(), obj->GetPositionZ(), obj->GetOrientation() );
+			plyr->m_lastRunSpeed = 0; //counteract mount-bug; reset speed to zero to force update SetPlayerSpeed in next line.
+			plyr->UpdateSpeed();
+			//send barber shop menu to player
+			WorldPacket data(SMSG_ENABLE_BARBER_SHOP, 0);
+			SendPacket(&data);		
+			plyr->SetStandState( STANDSTATE_SIT_HIGH_CHAIR );
+			//Zack : no idea if this phaseshift is even required
+//			WorldPacket data2(SMSG_SET_PHASE_SHIFT, 4);
+//			data2 << uint32(0x00000200);
+//			plyr->SendMessageToSet(&data2, true);		
+		}break;
 	case GAMEOBJECT_TYPE_CHEST://cast da spell
 		{
 			spellInfo = dbcSpell.LookupEntry( OPEN_CHEST );
@@ -1295,12 +1354,12 @@ void WorldSession::HandleGameObjectUse(WorldPacket & recv_data)
 	case GAMEOBJECT_TYPE_DOOR:
 		{
 			// cebernic modified this state =0 org =1
-			if((obj->GetUInt32Value(GAMEOBJECT_STATE) == 0) ) //&& (obj->GetUInt32Value(GAMEOBJECT_FLAGS) == 33) )
+			if((obj->GetByte(GAMEOBJECT_BYTES_1, 0) == 0) ) //&& (obj->GetUInt32Value(GAMEOBJECT_FLAGS) == 33) )
 				obj->EventCloseDoor();
 			else
 			{
 				obj->SetUInt32Value(GAMEOBJECT_FLAGS, obj->GetUInt32Value( GAMEOBJECT_FLAGS ) | 1); // lock door
-        obj->SetUInt32Value(GAMEOBJECT_STATE, 0);
+        obj->SetByte(GAMEOBJECT_BYTES_1, 0, 0);
 				sEventMgr.AddEvent(obj,&GameObject::EventCloseDoor,EVENT_GAMEOBJECT_DOOR_CLOSE,20000,1,0);
 			}
 		}break;
@@ -1595,7 +1654,7 @@ void WorldSession::HandleInspectOpcode( WorldPacket & recv_data )
 	if(_player->m_comboPoints)
 		_player->UpdateComboPoints();
 
-	WorldPacket data( SMSG_INSPECT_TALENTS, 4 + talent_points );
+	WorldPacket data( SMSG_INSPECT_TALENT, 4 + talent_points );
 
 	m_Packed_GUID.appendPackGUID( player->GetGUID());
 	uint32 guid_size;
@@ -1715,7 +1774,7 @@ void WorldSession::HandleAcknowledgementOpcodes( WorldPacket & recv_data )
 		_player->m_waterwalk = _player->m_setwaterwalk;
 		break;
 
-	case CMSG_MOVE_SET_FLY_ACK:
+	case CMSG_MOVE_SET_CAN_FLY_ACK:
 		_player->FlyCheat = _player->m_setflycheat;
 		break;
 	}
@@ -1880,7 +1939,7 @@ void WorldSession::HandleLootMasterGiveOpcode(WorldPacket& recv_data)
 	{
 		pGameObject = _player->GetMapMgr()->GetGameObject(GET_LOWGUID_PART(creatureguid));
 		if (!pGameObject)return;
-		pGameObject->SetUInt32Value(GAMEOBJECT_STATE,0);
+		pGameObject->SetByte(GAMEOBJECT_BYTES_1, 0,0);
 		pLoot=&pGameObject->loot;
 	}
 
@@ -2295,4 +2354,21 @@ void WorldSession::HandleSetAutoLootPassOpcode(WorldPacket & recv_data)
 		_player->BroadcastMessage(_player->GetSession()->LocalizedWorldSrv(67), on ? _player->GetSession()->LocalizedWorldSrv(68) : _player->GetSession()->LocalizedWorldSrv(69));
 
 	_player->m_passOnLoot = (on!=0) ? true : false;
+}
+
+void WorldSession::HandleRemoveGlyph(WorldPacket & recv_data)
+{
+	uint32 glyphNum;
+	recv_data >> glyphNum;
+	if(glyphNum < 0 || glyphNum > 5)
+		return; // Glyph doesn't exist
+	// Get info
+	uint32 glyphId = _player->GetUInt32Value(PLAYER_FIELD_GLYPHS_1 + glyphNum);
+	if(glyphId == 0)
+		return;
+	GlyphPropertyEntry *glyph = dbcGlyphProperty.LookupEntry(glyphId);
+	if(!glyph)
+		return;
+	_player->SetUInt32Value(PLAYER_FIELD_GLYPHS_1 + glyphNum, 0);
+	_player->RemoveAllAuras(glyph->SpellID, 0);
 }

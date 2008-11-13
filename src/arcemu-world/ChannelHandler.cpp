@@ -295,7 +295,7 @@ void WorldSession::HandleChannelRosterQuery(WorldPacket & recvPacket)
 void WorldSession::HandleChannelNumMembersQuery(WorldPacket & recvPacket)
 {
 	string channel_name;
-	WorldPacket data(SMSG_CHANNEL_NUM_MEMBERS_QUERY_RESPONSE, recvPacket.size() + 4);
+	WorldPacket data(SMSG_CHANNEL_MEMBER_COUNT, recvPacket.size() + 4);
 	Channel *chn;
 	recvPacket >> channel_name;
 	chn = channelmgr.GetChannel(channel_name.c_str(), _player);

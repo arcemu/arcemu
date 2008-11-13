@@ -1,0 +1,17 @@
+#############
+#Discipline:
+#############
+Mass Dispel = #132
+
+#############
+#Holy:
+#############
+Player of Mending - Must have 5 charges,not 1 and must jump to next player in party/raid.
+
+#############
+#Shadow:
+#############
+Dispersion - Dont work at all. Only partially visual effect,players must change their displayID when spell used.
+Veiled Shadows - Dont reduces cooldown on Fade and Shadowfiend spells.
+Mind Flay - Dont deals damage. Sometimes client crashes without any error report. Seems it combat log error.
+Improved Shadowform - Dont work,Fade not removing movement impairing effects,also dont reducing pushback time.

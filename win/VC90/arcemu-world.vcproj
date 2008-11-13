@@ -44,10 +44,10 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalOptions="/Zm250 /MP"
+				AdditionalOptions="/Zm250 /MDd"
 				Optimization="0"
 				InlineFunctionExpansion="2"
-				AdditionalIncludeDirectories="..\..\src\arcemu-shared"
+				AdditionalIncludeDirectories="&quot;..\..\src\arcemu-shared&quot;;&quot;..\..\src\arcemu-world\Collision\vmap&quot;;&quot;..\..\src\arcemu-world\Collision\g3dlite&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_LIB;_CRT_SECURE_NO_WARNINGS;_CRT_NONSTDC_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE"
 				MinimalRebuild="false"
 				BasicRuntimeChecks="3"
@@ -79,8 +79,103 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="ws2_32.lib libmysql.lib libeay32.lib dbghelp.lib zlib.lib pcre.lib"
+				AdditionalOptions="/LTCG"
+				AdditionalDependencies="msvcrtd.lib ws2_32.lib libmysql.lib libeay32.lib dbghelp.lib zlib.lib pcre.lib"
+				LinkIncremental="1"
 				AdditionalLibraryDirectories="..\..\extras\collision\collision_dll\Debug"
+				IgnoreAllDefaultLibraries="false"
+				IgnoreDefaultLibraryNames="msvcrt.lib"
+				GenerateDebugInformation="true"
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCManifestTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+				CommandLine=""
+			/>
+		</Configuration>
+		<Configuration
+			Name="Debug|x64"
+			OutputDirectory=".\..\..\bin\Debug_x64"
+			IntermediateDirectory=".\arcemu-world___Win32_Debug_x64"
+			ConfigurationType="1"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="false"
+			CharacterSet="2"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+				TargetEnvironment="3"
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				AdditionalOptions="/Zm250"
+				Optimization="0"
+				InlineFunctionExpansion="2"
+				AdditionalIncludeDirectories="..\..\src\arcemu-shared"
+				PreprocessorDefinitions="WIN32,_DEBUG,_LIB;_CRT_SECURE_NO_WARNINGS;_CRT_NONSTDC_NO_WARNINGS;X64"
+				MinimalRebuild="true"
+				BasicRuntimeChecks="3"
+				RuntimeLibrary="1"
+				EnableFunctionLevelLinking="false"
+				RuntimeTypeInfo="false"
+				UsePrecompiledHeader="2"
+				PrecompiledHeaderFile="$(IntDir)/game.pch"
+				AssemblerListingLocation="$(IntDir)/"
+				ObjectFile="$(IntDir)/"
+				ProgramDataBaseFileName="$(IntDir)/"
+				BrowseInformation="0"
+				WarningLevel="3"
+				SuppressStartupBanner="true"
+				Detect64BitPortabilityProblems="false"
+				DebugInformationFormat="3"
+				CompileAs="0"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="_DEBUG"
+				Culture="1033"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalDependencies="ws2_32.lib libmysql.lib libeay32.lib dbghelp.lib zlib.lib pcre.lib"
+				AdditionalLibraryDirectories="..\..\extras\collision\collision_dll\x64\Debug"
 				GenerateDebugInformation="true"
 				RandomizedBaseAddress="1"
 				DataExecutionPrevention="0"
@@ -176,98 +271,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="ws2_32.lib libmysql.lib libeay32.lib dbghelp.lib zlib.lib pcre.lib"
-				AdditionalLibraryDirectories="..\..\extras\collision\collision_dll\Release"
-				GenerateDebugInformation="true"
-				RandomizedBaseAddress="1"
-				DataExecutionPrevention="0"
-			/>
-			<Tool
-				Name="VCALinkTool"
-			/>
-			<Tool
-				Name="VCManifestTool"
-			/>
-			<Tool
-				Name="VCXDCMakeTool"
-			/>
-			<Tool
-				Name="VCBscMakeTool"
-			/>
-			<Tool
-				Name="VCFxCopTool"
-			/>
-			<Tool
-				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCPostBuildEventTool"
-				CommandLine=""
-			/>
-		</Configuration>
-		<Configuration
-			Name="Debug|x64"
-			OutputDirectory=".\..\..\bin\Debug_x64"
-			IntermediateDirectory=".\arcemu-world___Win32_Debug_x64"
-			ConfigurationType="1"
-			UseOfMFC="0"
-			ATLMinimizesCRunTimeLibraryUsage="false"
-			CharacterSet="2"
-			>
-			<Tool
-				Name="VCPreBuildEventTool"
-			/>
-			<Tool
-				Name="VCCustomBuildTool"
-			/>
-			<Tool
-				Name="VCXMLDataGeneratorTool"
-			/>
-			<Tool
-				Name="VCWebServiceProxyGeneratorTool"
-			/>
-			<Tool
-				Name="VCMIDLTool"
-				TargetEnvironment="3"
-			/>
-			<Tool
-				Name="VCCLCompilerTool"
-				AdditionalOptions="/Zm250"
-				Optimization="0"
-				InlineFunctionExpansion="2"
-				AdditionalIncludeDirectories="..\..\src\arcemu-shared"
-				PreprocessorDefinitions="WIN32,_DEBUG,_LIB;_CRT_SECURE_NO_WARNINGS;_CRT_NONSTDC_NO_WARNINGS;X64"
-				MinimalRebuild="true"
-				BasicRuntimeChecks="3"
-				RuntimeLibrary="1"
-				EnableFunctionLevelLinking="false"
-				RuntimeTypeInfo="false"
-				UsePrecompiledHeader="2"
-				PrecompiledHeaderFile="$(IntDir)/game.pch"
-				AssemblerListingLocation="$(IntDir)/"
-				ObjectFile="$(IntDir)/"
-				ProgramDataBaseFileName="$(IntDir)/"
-				BrowseInformation="0"
-				WarningLevel="3"
-				SuppressStartupBanner="true"
-				Detect64BitPortabilityProblems="false"
-				DebugInformationFormat="3"
-				CompileAs="0"
-			/>
-			<Tool
-				Name="VCManagedResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCResourceCompilerTool"
-				PreprocessorDefinitions="_DEBUG"
-				Culture="1033"
-			/>
-			<Tool
-				Name="VCPreLinkEventTool"
-			/>
-			<Tool
-				Name="VCLinkerTool"
-				AdditionalDependencies="ws2_32.lib libmysql.lib libeay32.lib dbghelp.lib zlib.lib pcre.lib"
-				AdditionalLibraryDirectories="..\..\extras\collision\collision_dll\x64\Debug"
+				AdditionalLibraryDirectories="..\..\src"
 				GenerateDebugInformation="true"
 				RandomizedBaseAddress="1"
 				DataExecutionPrevention="0"
@@ -408,7 +412,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release|Win32"
+					Name="Debug|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -416,7 +420,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Debug|x64"
+					Name="Release|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -476,7 +480,7 @@
 		<Filter
 			Name="BufferPools"
 			>
-				<File
+			<File
 				RelativePath="..\..\src\arcemu-world\BufferPools\BufferPools.cpp"
 				>
 			</File>
@@ -485,6 +489,14 @@
 				>
 			</File>
 		</Filter>
+		<File
+			RelativePath="..\..\src\arcemu-world\AchievementMgr.cpp"
+			>
+		</File>
+		<File
+			RelativePath="..\..\src\arcemu-world\AchievementMgr.h"
+			>
+		</File>
 		<File
 			RelativePath="..\..\src\arcemu-world\AddonMgr.cpp"
 			>
@@ -630,6 +642,14 @@
 			>
 		</File>
 		<File
+			RelativePath="..\..\src\arcemu-world\CommonScheduleThread.cpp"
+			>
+		</File>
+		<File
+			RelativePath="..\..\src\arcemu-world\CommonScheduleThread.h"
+			>
+		</File>
+		<File
 			RelativePath="..\..\src\arcemu-world\Container.cpp"
 			>
 		</File>
@@ -670,21 +690,13 @@
 			>
 		</File>
 		<File
-			RelativePath="..\..\src\arcemu-world\CommonScheduleThread.cpp"
-			>
-		</File>
-		<File
-			RelativePath="..\..\src\arcemu-world\CommonScheduleThread.h"
-			>
-		</File>
-		<File
 			RelativePath="..\..\src\arcemu-world\debugcmds.cpp"
 			>
 		</File>
-    <File
-      RelativePath="..\..\src\arcemu-world\Definitions.h"
-      >
-    </File>
+		<File
+			RelativePath="..\..\src\arcemu-world\Definitions.h"
+			>
+		</File>
 		<File
 			RelativePath="..\..\src\arcemu-world\DuelHandler.cpp"
 			>
@@ -740,8 +752,8 @@
 		<File
 			RelativePath="..\..\src\arcemu-world\GMTicket.cpp"
 			>
-    </File>
-    <File
+		</File>
+		<File
 			RelativePath="..\..\src\arcemu-world\GMTicketCommands.cpp"
 			>
 		</File>
@@ -777,9 +789,9 @@
 			RelativePath="..\..\src\arcemu-world\HonorHandler.h"
 			>
 		</File>
-    <File
-      RelativePath="..\..\src\arcemu-world\InstanceCommands.cpp"
-    >
+		<File
+			RelativePath="..\..\src\arcemu-world\InstanceCommands.cpp"
+			>
 		</File>
 		<File
 			RelativePath="..\..\src\arcemu-world\Item.cpp"
@@ -1026,6 +1038,10 @@
 			>
 		</File>
 		<File
+			RelativePath="..\..\src\arcemu-world\resources.rc"
+			>
+		</File>
+		<File
 			RelativePath="..\..\src\arcemu-world\ScriptMgr.cpp"
 			>
 		</File>
@@ -1113,7 +1129,7 @@
 				/>
 			</FileConfiguration>
 			<FileConfiguration
-				Name="Release|Win32"
+				Name="Debug|x64"
 				>
 				<Tool
 					Name="VCCLCompilerTool"
@@ -1121,7 +1137,7 @@
 				/>
 			</FileConfiguration>
 			<FileConfiguration
-				Name="Debug|x64"
+				Name="Release|Win32"
 				>
 				<Tool
 					Name="VCCLCompilerTool"
@@ -1285,11 +1301,7 @@
 			RelativePath="..\..\src\arcemu-world\WorldSocket.h"
 			>
 		</File>
-	      <File
-			RelativePath="..\..\src\arcemu-world\resources.rc"
-			>
-		</File>
-	     </Files>
+	</Files>
 	<Globals>
 	</Globals>
 </VisualStudioProject>

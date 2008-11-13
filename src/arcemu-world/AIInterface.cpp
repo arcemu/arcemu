@@ -75,7 +75,7 @@ AIInterface::AIInterface()
 	m_runSpeed = 0.0f;
 	m_flySpeed = 0.0f;
 	UnitToFear = NULL;
-	m_outOfCombatRange = 10000;
+	m_outOfCombatRange = 2500; // Where did u get this value?
 
 	tauntedBy = NULL;
 	isTaunted = false;
@@ -1017,7 +1017,7 @@ void AIInterface::_UpdateCombat(uint32 p_time)
 	}
 #endif
 
-	/*if (sWorld.Collision) {
+	if (sWorld.Collision) {
 		float target_land_z=0.0f;
 		if ( m_Unit->GetMapMgr() != NULL && GetNextTarget() != NULL )
 		{
@@ -1044,7 +1044,7 @@ void AIInterface::_UpdateCombat(uint32 p_time)
 				}
 			}
 		}
-	}*/
+	}
 
 	if ( GetNextTarget() != NULL && GetNextTarget()->GetTypeId() == TYPEID_UNIT && m_AIState == STATE_EVADE)
 		HandleEvent( EVENT_LEAVECOMBAT, m_Unit, 0);
@@ -2698,14 +2698,13 @@ bool AIInterface::showWayPoints(Player* pPlayer, bool Backwards)
 			}
 			pWayPoint->SetUInt32Value(UNIT_FIELD_LEVEL, wp->id);
 			pWayPoint->SetUInt32Value(UNIT_NPC_FLAGS, 0);
-			pWayPoint->SetUInt32Value(UNIT_FIELD_AURA+32, 8326); //invisable & deathworld look
 			pWayPoint->SetUInt32Value(UNIT_FIELD_FACTIONTEMPLATE , pPlayer->GetUInt32Value(UNIT_FIELD_FACTIONTEMPLATE));
 			pWayPoint->SetUInt32Value(UNIT_FIELD_HEALTH, 1);
 			pWayPoint->SetUInt32Value(UNIT_FIELD_MAXHEALTH, 1);
 			pWayPoint->SetUInt32Value(UNIT_FIELD_STAT0, wp->flags);
 
 			//Create on client
-			ByteBuffer buf(2500);
+			ByteBuffer buf(3000);
 			uint32 count = pWayPoint->BuildCreateUpdateBlockForPlayer(&buf, pPlayer);
 			pPlayer->PushCreationData(&buf, count);
 

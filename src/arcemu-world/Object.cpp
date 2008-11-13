@@ -242,7 +242,7 @@ uint32 Object::BuildCreateUpdateBlockForPlayer(ByteBuffer *data, Player *target)
 	// gameobject stuff
 	if(m_objectTypeId == TYPEID_GAMEOBJECT)
 	{
-		switch(m_uint32Values[GAMEOBJECT_TYPE_ID])
+		switch(m_uint32Values[GAMEOBJECT_BYTES_1])
 		{
 			case GAMEOBJECT_TYPE_MO_TRANSPORT:  
 				{
@@ -477,7 +477,7 @@ void Object::_BuildMovementUpdate(ByteBuffer * data, uint8 flags, uint32 flags2,
 
 		*data << (uint32)flags2;
 
-		*data << (uint8)0;
+		*data << (uint16)0;
 
 		*data << getMSTime(); // this appears to be time in ms but can be any thing
 
@@ -517,7 +517,7 @@ void Object::_BuildMovementUpdate(ByteBuffer * data, uint8 flags, uint32 flags2,
 			{
 				*data << pThis->m_TransporterGUID;
 				*data << pThis->m_TransporterX << pThis->m_TransporterY << pThis->m_TransporterZ << pThis->m_TransporterO;
-				*data << pThis->m_TransporterTime;
+				*data << pThis->m_TransporterUnk << uint8(0);
 			}
 			else if(uThis != NULL && uThis->m_transportPosition != NULL)
 			{
@@ -553,6 +553,7 @@ void Object::_BuildMovementUpdate(ByteBuffer * data, uint8 flags, uint32 flags2,
 		*data << m_flySpeed;		// fly speed
 		*data << m_backFlySpeed;	// back fly speed
 		*data << m_turnRate;	  // turn rate
+		*data << float(7);
 	}
 
 	if(splinebuf)
@@ -565,7 +566,7 @@ void Object::_BuildMovementUpdate(ByteBuffer * data, uint8 flags, uint32 flags2,
 	{
 		*data << GetUInt32Value(OBJECT_FIELD_GUID);
 		if(flags & 0x10)
-			*data << GetUInt32Value(OBJECT_FIELD_GUID_01);
+			*data << GetUInt32Value(OBJECT_FIELD_GUID + 4);
 	}
 	else if(flags & 0x10)
 		*data << GetUInt32Value(OBJECT_FIELD_GUID);
@@ -581,6 +582,11 @@ void Object::_BuildMovementUpdate(ByteBuffer * data, uint8 flags, uint32 flags2,
 		}
 		else
             *data << getMSTime();
+	}
+	
+	if (flags & 0x80)
+	{
+		*data << float(0) << uint32(0);
 	}
 }
 
@@ -705,10 +711,10 @@ void Object::_BuildValuesUpdate(ByteBuffer * data, UpdateMask *updateMask, Playe
 
 	if(activate_quest_object)
 	{
-		oldflags = m_uint32Values[GAMEOBJECT_DYN_FLAGS];
-		if(!updateMask->GetBit(GAMEOBJECT_DYN_FLAGS))
-			updateMask->SetBit(GAMEOBJECT_DYN_FLAGS);
-		m_uint32Values[GAMEOBJECT_DYN_FLAGS] = 1 | 8; // 8 to show sparkling
+		oldflags = m_uint32Values[GAMEOBJECT_DYNAMIC];
+		if(!updateMask->GetBit(GAMEOBJECT_DYNAMIC))
+			updateMask->SetBit(GAMEOBJECT_DYNAMIC);
+		m_uint32Values[GAMEOBJECT_DYNAMIC] = 1;
 		reset = true;
 	}
 
@@ -734,74 +740,7 @@ void Object::_BuildValuesUpdate(ByteBuffer * data, UpdateMask *updateMask, Playe
 	{
 		if( updateMask->GetBit( index ) )
 		{
-			switch(index)
-			{
-			case UNIT_FIELD_MAXHEALTH:
-				{
-					if(m_valuesCount < UNIT_END)
-						*data << m_uint32Values[index];
-					else
-					{
-						switch(m_objectTypeId)
-						{
-						case TYPEID_PLAYER:
-							*data << m_uint32Values[index];
-						break;
-
-						case TYPEID_UNIT:
-							{
-								if(IsPet())
-								{
-									*data << m_uint32Values[index];
-									break;
-								}
-								else
-								{
-									*data << (uint32)100;	
-								}
-							}
-						}
-					}
-				}
-				break;
-			case UNIT_FIELD_HEALTH:
-				{
-					if(m_valuesCount < UNIT_END)
-						*data << m_uint32Values[index];
-					else
-					{
-						switch(m_objectTypeId)
-						{
-						case TYPEID_PLAYER:
-							*data << m_uint32Values[index];
-						break;
-
-						case TYPEID_UNIT:
-							{
-								if(IsPet())
-								{
-									*data << m_uint32Values[index];
-									break;
-								}
-								else
-								{
-									uint32 pct = uint32(float( float(m_uint32Values[index]) / float(m_uint32Values[UNIT_FIELD_MAXHEALTH]) * 100.0f));
-
-									/* fix case where health value got rounded down and the client sees health as dead */
-									if(!pct && m_uint32Values[UNIT_FIELD_HEALTH] != 0)
-										++pct;
-									*data << pct;	
-								}
-							}
-						}
-					}
-				}
-				break;
-
-			default:
-				*data << m_uint32Values[ index ];
-				break;
-			}
+			*data << m_uint32Values[ index ];
 		}
 	}
 
@@ -813,7 +752,7 @@ void Object::_BuildValuesUpdate(ByteBuffer * data, UpdateMask *updateMask, Playe
 			m_uint32Values[UNIT_DYNAMIC_FLAGS] = oldflags;
 			break;
 		case TYPEID_GAMEOBJECT:
-			m_uint32Values[GAMEOBJECT_DYN_FLAGS] = oldflags;
+			m_uint32Values[GAMEOBJECT_DYNAMIC] = oldflags;
 			break;
 		}
 	}
@@ -828,7 +767,6 @@ void Object::BuildHeartBeatMsg(WorldPacket *data) const
 
 	*data << uint32(0); // flags
 	*data << uint32(0); // mysterious value #1
-
 	*data << m_position;
 	*data << m_position.o;
 }
@@ -845,7 +783,7 @@ WorldPacket * Object::BuildTeleportAckMsg(const LocationVector & v)
 	//First 4 bytes = no idea what it is
 	*data << uint32(2); // flags
 	*data << uint32(0); // mysterious value #1
-	*data << uint8(0);
+	*data << uint16(0);
 
 	*data << float(0);
 	*data << v;
@@ -1198,6 +1136,15 @@ void Object::SetUInt32Value( const uint32 index, const uint32 value )
 			break;
 		}
 #endif
+
+		switch (index)
+		{
+			case UNIT_FIELD_POWER1:
+			case UNIT_FIELD_POWER2:
+			case UNIT_FIELD_POWER4:
+				static_cast< Player* >( this )->SendPowerUpdate();
+				break;
+		}
 	}
 }
 /*
@@ -1266,6 +1213,15 @@ void Object::ModUnsigned32Value(uint32 index, int32 mod)
 			break;
 		}
 #endif
+
+		switch (index)
+		{
+			case UNIT_FIELD_POWER1:
+			case UNIT_FIELD_POWER2:
+			case UNIT_FIELD_POWER4:
+				static_cast< Player* >( this )->SendPowerUpdate();
+				break;
+		}
 	}
 }
 
@@ -2903,6 +2859,7 @@ void Object::SendSpellNonMeleeDamageLog( Object* Caster, Object* Target, uint32 
 	data << Caster->GetNewGUID();
 	data << SpellID;                    // SpellID / AbilityID
 	data << Damage;                     // All Damage
+	data << uint32(0);					// Why is this added?
 	data << uint8(g_spellSchoolConversionTable[School]);                     // School
 	data << AbsorbedDamage;             // Absorbed Damage
 	data << ResistedDamage;             // Resisted Damage
@@ -2924,24 +2881,38 @@ void Object::SendAttackerStateUpdate( Object* Caster, Object* Target, dealdamage
 	//0x4--dualwield,0x10 miss,0x20 absorbed,0x80 crit,0x4000 -glancing,0x8000-crushing
 	//only for melee!
 
-	data << (uint32)HitStatus;   
+	if (!(HitStatus & (HITSTATUS_MISS))) {
+//		HitStatus|= 0x00800000;
+	}
+
+	data << (uint32)HitStatus;
 	data << Caster->GetNewGUID();
 	data << Target->GetNewGUID();
 		
-	data << (uint32)Damage;				// Realdamage;
+	data << (uint32)Damage;				// Realdamage
+	data << (uint32)0;					// Overkill
 	data << (uint8)1;					// Damage type counter / swing type
 
 	data << (uint32)g_spellSchoolConversionTable[Dmg->school_type];				  // Damage school
 	data << (float)Dmg->full_damage;	// Damage float
 	data << (uint32)Dmg->full_damage;	// Damage amount
-	data << (uint32)Abs;				// Damage absorbed
-	data << (uint32)Dmg->resisted_damage;	// Damage resisted
+	if (HitStatus & HITSTATUS_ABSORBED) {
+		data << (uint32)Abs;				// Damage absorbed
+	}
+	if (HitStatus & HITSTATUS_RESIST) {
+		data << (uint32)Dmg->resisted_damage;	// Damage resisted
+	}
+	if (HitStatus & HITSTATUS_BLOCK) {
+		data << (uint32)BlockedDamage;		// Damage amount blocked
+	}
 
-	data << (uint32)VState;				// new victim state
+	data << (uint8)1;					// unknown
 	data << (uint32)0x03e8;				// can be 0,1000 or -1
-	data << (uint32)0;					// unknown
-	data << (uint32)BlockedDamage;		// Damage amount blocked
-	//data << (uint32) 0;
+	if (HitStatus & 0x00800000) {
+		data << (uint32)0;				// unknown
+	}
+	data << (uint32)0;					// HitNumber?
+//	data << (uint32)VState;				// new victim state
 
 	SendMessageToSet(&data, Caster->IsPlayer());
 }
@@ -2978,7 +2949,7 @@ bool Object::CanActivate()
 
 	case TYPEID_GAMEOBJECT:
 		{
-			if(static_cast<GameObject*>(this)->HasAI() && GetUInt32Value(GAMEOBJECT_TYPE_ID) != GAMEOBJECT_TYPE_TRAP)
+			if(static_cast<GameObject*>(this)->HasAI() && GetByte(GAMEOBJECT_BYTES_1, 1) != GAMEOBJECT_TYPE_TRAP)
 				return true;
 		}break;
 	}

@@ -416,6 +416,10 @@
 				RelativePath="..\src\GossipScripts\Gossip_Trainer.cpp"
 				>
 			</File>
+			<File
+				RelativePath="..\src\GossipScripts\Gossip_Wotlk.cpp"
+				>
+			</File>
 		</Filter>
 	</Files>
 	<Globals>

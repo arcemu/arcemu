@@ -222,7 +222,8 @@ void WorldSocket::OnConnect()
 void WorldSocket::_HandleAuthSession(WorldPacket* recvPacket)
 {
 	std::string account;
-	uint32 unk2;
+	uint32 unk2, unk3;
+	
 	_latency = getMSTime() - _latency;
 
 	try
@@ -230,6 +231,7 @@ void WorldSocket::_HandleAuthSession(WorldPacket* recvPacket)
 		*recvPacket >> mClientBuild;
 		*recvPacket >> unk2;
 		*recvPacket >> account;
+		*recvPacket >> unk3;
 		*recvPacket >> mClientSeed;
 	}
 	catch(ByteBuffer::error &)
@@ -437,9 +439,11 @@ void WorldSocket::Authenticate()
 
 	if(!pSession) return;
 	pSession->deleteMutex.Acquire();
-	
-	if(pSession->HasFlag(ACCOUNT_FLAG_XPACK_01) && sWorld.realmAllowTBCcharacters)
+
+	if(pSession->HasFlag(ACCOUNT_FLAG_XPACK_01))
 		OutPacket(SMSG_AUTH_RESPONSE, 11, "\x0C\x30\x78\x00\x00\x00\x00\x00\x00\x00\x01");
+	else if(pSession->HasFlag(ACCOUNT_FLAG_XPACK_02))
+		OutPacket(SMSG_AUTH_RESPONSE, 11, "\x0C\x30\x78\x00\x00\x00\x00\x00\x00\x00\x02");
 	else
 		OutPacket(SMSG_AUTH_RESPONSE, 11, "\x0C\x30\x78\x00\x00\x00\x00\x00\x00\x00\x00");
 

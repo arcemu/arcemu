@@ -27,7 +27,7 @@
 #include <mmsystem.h>
 #pragma comment(lib, "winmm.lib")
 #define DELTA_EPOCH_IN_USEC  11644473600000000ULL
-
+//#define ENABLE_CLASSICS_DETECTION
 uint32 TimeStamp()
 {
 	//return timeGetTime();
@@ -261,7 +261,15 @@ void WorldSession::HandleMovementOpcodes( WorldPacket & recv_data )
 		if (t_go->GetEntry() == GO_FISHING_BOBBER)
 			((GameObject*)t_go)->EndFishing(GetPlayer(),true);
 	}
-
+	
+	uint32 aurtoremove = 0;
+	if(_player->HasAura(2096))
+		aurtoremove = 2096;
+	if(_player->HasAura(10909))
+		aurtoremove = 10909;
+	if(aurtoremove)
+		_player->RemoveAura(aurtoremove);
+	
 	/************************************************************************/
 	/* Clear standing state to stand.				                        */
 	/************************************************************************/
@@ -318,9 +326,9 @@ void WorldSession::HandleMovementOpcodes( WorldPacket & recv_data )
 	
 
 	/************************************************************************/
-	/* Anti-Fly Hack Checks                                                 */
+	/* Anti-Fly Hack Checks       - Alice : Disabled for now                                           */
 	/************************************************************************/
-	if( sWorld.antihack_flight && ( recv_data.GetOpcode() == CMSG_MOVE_FLY_START_AND_END || recv_data.GetOpcode() == CMSG_FLY_PITCH_DOWN_AFTER_UP ) && !( movement_info.flags & MOVEFLAG_SWIMMING || movement_info.flags & MOVEFLAG_FALLING || movement_info.flags & MOVEFLAG_FALLING_FAR || movement_info.flags & MOVEFLAG_FREE_FALLING ) && _player->flying_aura == 0 )	
+	/*if( sWorld.antihack_flight && ( recv_data.GetOpcode() == CMSG_MOVE_FLY_START_AND_END || recv_data.GetOpcode() == CMSG_FLY_PITCH_DOWN_AFTER_UP ) && !( movement_info.flags & MOVEFLAG_SWIMMING || movement_info.flags & MOVEFLAG_FALLING || movement_info.flags & MOVEFLAG_FALLING_FAR || movement_info.flags & MOVEFLAG_FREE_FALLING ) && _player->flying_aura == 0 )	
 	{
 		if( sWorld.no_antihack_on_gm && _player->GetSession()->HasGMPermissions() )
 		{
@@ -331,7 +339,7 @@ void WorldSession::HandleMovementOpcodes( WorldPacket & recv_data )
 			_player->BroadcastMessage( "Flyhack detected. In case the server is wrong then make a report how to reproduce this case. You will be logged out in 5 seconds." );
 			sEventMgr.AddEvent( _player, &Player::_Kick, EVENT_PLAYER_KICK, 5000, 1, 0 );
 		}
-	} 
+	} */
 
 
 	//update the detector
@@ -425,7 +433,54 @@ void WorldSession::HandleMovementOpcodes( WorldPacket & recv_data )
 #endif
 		}
 	}
+	if( !(movement_info.flags & MOVEFLAG_SWIMMING || movement_info.flags & MOVEFLAG_FALLING) && _player->GetShapeShift()==FORM_AQUA )
+		_player->RemoveAura(1066);
+	if( (movement_info.flags & MOVEFLAG_SWIMMING) && _player->IsMounted() )
+		_player->RemoveAura(_player->m_MountSpellId);
+	/************************************************************************/
+	/* Hack Detection by Classic	                                        */
+	/************************************************************************/
+#ifdef ENABLE_CLASSICS_DETECTION
+	if( !movement_info.transGuid && recv_data.GetOpcode() != MSG_MOVE_JUMP && !_player->FlyCheat && !_player->flying_aura && !(movement_info.flags & MOVEFLAG_SWIMMING || movement_info.flags & MOVEFLAG_FALLING) && movement_info.z > _player->GetPositionZ() && movement_info.x == _player->GetPositionX() && movement_info.y == _player->GetPositionY() )
+	{
+		WorldPacket data (SMSG_MOVE_UNSET_CAN_FLY, 13);
+		data << _player->GetNewGUID();
+		data << uint32(5);
+		SendPacket(&data);
+	}
 
+	if( (movement_info.flags & MOVEFLAG_AIR_SWIMMING) && !(movement_info.flags & MOVEFLAG_SWIMMING) && !(_player->flying_aura || _player->FlyCheat))
+	{
+		WorldPacket data (SMSG_MOVE_UNSET_CAN_FLY, 13);
+		data << _player->GetNewGUID();
+		data << uint32(5);
+		SendPacket(&data);
+	}
+
+	if( movement_info.z > -0.001 && movement_info.z < 0.001 && !(movement_info.flags & MOVEFLAG_FALLING_FAR) && (_player->GetPositionZ() > 3.0 || _player->GetPositionZ() < -3.0)/*3 meter tolerance to prevent false triggers*/)
+	{
+		sCheatLog.writefromsession(this, "Detected using teleport to plane");
+		Disconnect();
+		return;
+	}
+	if( recv_data.GetOpcode() == MSG_MOVE_JUMP && _player->jumping == true && !GetPermissionCount())
+	{
+		sCheatLog.writefromsession(this, "Detected jump hacking");
+		Disconnect();
+		return;
+	}
+
+	if( !GetPermissionCount() && recv_data.GetOpcode() == MSG_MOVE_START_FORWARD &&  movement_info.flags == MOVEFLAG_TAXI && !_player->GetTaxiState() )
+	{
+		sCheatLog.writefromsession(this, "Detected taxi-flag/speed hacking (Maelstrom Hack Program)");
+		Disconnect();
+		return;
+	}
+	if( recv_data.GetOpcode() == MSG_MOVE_FALL_LAND || movement_info.flags & MOVEFLAG_SWIMMING)
+		_player->jumping = false;
+	if( !_player->jumping && (recv_data.GetOpcode() == MSG_MOVE_JUMP || movement_info.flags & MOVEFLAG_FALLING))
+		_player->jumping = true;
+#endif
 	/************************************************************************/
 	/* Falling damage checks                                                */
 	/************************************************************************/
@@ -513,7 +568,7 @@ void WorldSession::HandleMovementOpcodes( WorldPacket & recv_data )
 
 				/* set variables */
 				_player->m_TransporterGUID = movement_info.transGuid;
-				_player->m_TransporterTime = movement_info.transTime;
+				_player->m_TransporterUnk = movement_info.transUnk;
 				_player->m_TransporterX = movement_info.transX;
 				_player->m_TransporterY = movement_info.transY;
 				_player->m_TransporterZ = movement_info.transZ;
@@ -521,7 +576,7 @@ void WorldSession::HandleMovementOpcodes( WorldPacket & recv_data )
 			else
 			{
 				/* no changes */
-				_player->m_TransporterTime = movement_info.transTime;
+				_player->m_TransporterUnk = movement_info.transUnk;
 				_player->m_TransporterX = movement_info.transX;
 				_player->m_TransporterY = movement_info.transY;
 				_player->m_TransporterZ = movement_info.transZ;
@@ -567,6 +622,22 @@ void WorldSession::HandleMovementOpcodes( WorldPacket & recv_data )
 			{
 				_player->SetUInt32Value(UNIT_FIELD_HEALTH, 0);
 				_player->KillPlayer();
+				MapInfo *pMapinfo = WorldMapInfoStorage.LookupEntry( _player->GetMapId() );
+				if( pMapinfo != NULL )
+				{
+					if( pMapinfo->type == INSTANCE_NULL || pMapinfo->type == INSTANCE_PVP )
+					{
+						_player->RepopAtGraveyard( _player->GetPositionX(), _player->GetPositionY(), _player->GetPositionZ(), _player->GetMapId() );
+					}
+					else
+					{
+						_player->RepopAtGraveyard( pMapinfo->repopx, pMapinfo->repopy, pMapinfo->repopz, pMapinfo->repopmapid );
+					}
+				}
+				else
+				{
+					_player->RepopAtGraveyard( _player->GetPositionX(), _player->GetPositionY(), _player->GetPositionZ(), _player->GetMapId() );
+				}//Teleport player to graveyard. Stops players from QQing..
 			}
 		}
 		else
@@ -696,11 +767,11 @@ void MovementInfo::init(WorldPacket & data)
 
 	if (flags & MOVEFLAG_TAXI)
 	{
-		data >> transGuid >> transX >> transY >> transZ >> transO >> transTime;
+		data >> transGuid >> transX >> transY >> transZ >> transO >> transUnk >> transUnk_2;
 	}
-	if (flags & MOVEFLAG_SWIMMING)
+	if (flags & (MOVEFLAG_SWIMMING | MOVEFLAG_AIR_SWIMMING) || unk_230 & 0x20)
 	{
-		data >> unk6;
+		data >> pitch;
 	}
 	if (flags & MOVEFLAG_FALLING || flags & MOVEFLAG_REDIRECTED)
 	{
@@ -729,11 +800,11 @@ void MovementInfo::write(WorldPacket & data)
 
 	if (flags & MOVEFLAG_TAXI)
 	{
-		data << transGuid << transX << transY << transZ << transO << transTime;
+		data << transGuid << transX << transY << transZ << transO << transUnk << transUnk_2;
 	}
 	if (flags & MOVEFLAG_SWIMMING)
 	{
-		data << unk6;
+		data << pitch;
 	}
 	if (flags & MOVEFLAG_FALLING)
 	{

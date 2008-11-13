@@ -100,6 +100,7 @@ enum WorldMapInfoFlag
 	WMI_INSTANCE_WELCOME   = 0x2,
 	WMI_INSTANCE_MULTIMODE = 0x4,
 	WMI_INSTANCE_XPACK_01  = 0x8, //The Burning Crusade expansion
+	WMI_INSTANCE_XPACK_02  = 0x24, //Wrath of the Lich King expansion
 };
 
 enum AccountFlags
@@ -108,6 +109,7 @@ enum AccountFlags
 	ACCOUNT_FLAG_NO_AUTOJOIN = 0x2,
 	//ACCOUNT_FLAG_XTEND_INFO  = 0x4,
 	ACCOUNT_FLAG_XPACK_01	= 0x8,
+	ACCOUNT_FLAG_XPACK_02	= 0x24,
 };
 
 #pragma pack(push,1)
@@ -317,7 +319,7 @@ public:
 			std::string num;
 			while ( t!=opstr.end() )
 			{
-				if ( (char)(*t)=='{' && strlen(  (char*) (*t) )>1  ){ // find and not end :D
+				if ( (char)(*t)=='{' && strlen(  (char*) &(*t) )>1  ){ // find and no end :D
 					found++;
 					++t;
 					continue;
@@ -328,7 +330,6 @@ public:
 				}
 				if ( found ) // get the flag and doing my work and skip pushback.
 				{
-					t= opstr.begin();
 					if ( found==2 ) 
 					{
 						temp += _session->LocalizedWorldSrv((uint32) atoi((char*)num.c_str()) );
@@ -424,6 +425,10 @@ public:
 	uint32 SocketSendBufSize;
 	uint32 SocketRecvBufSize;
 
+	int32 StartingLevel;
+	uint32 ExtraTalents;
+	uint32 MaxProfs;
+	
 	uint32 HordePlayers;
 	uint32 AlliancePlayers;
 	uint32 PeakSessionCount;
@@ -486,7 +491,6 @@ public:
 	string ann_msgcolor;
 	void AnnounceColorChooser(int tagcolor, int gmtagcolor, int namecolor, int msgcolor);
 
-	int start_level;
 	bool antihack_teleport;
 	bool antihack_speed;
 	bool antihack_flight;
@@ -507,6 +511,8 @@ public:
 	uint32 m_bgSet_WS_MAX;
 	uint32 m_bgSet_EOS_MIN;
 	uint32 m_bgSet_EOS_MAX;
+	uint32 m_bgSet_SOTA_MIN;
+	uint32 m_bgSet_SOTA_MAX;
 
 
 	int GMTTimeZone;
@@ -580,11 +586,6 @@ public:
 	bool m_useAccountData;
 	uint32 m_CustomCharterGiver;
 	bool m_AdditionalFun;
-
-	// Gold Cap
-	bool GoldCapEnabled;
-	uint32 GoldLimit;
-	uint32 GoldStartAmount;
 
 	bool m_LuaEngine;
 	bool m_ASEngine;

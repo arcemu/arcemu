@@ -26,7 +26,7 @@ Staff of ArcScript Project, Feb 2008
 ~~End of License Agreement
 
 #############################################################
-Special thanks: Janni, Recon, Nandi, Maven.
+Special thanks: Janni, Recon, Nandi.
 -- ]]
 RegisterUnitEvent(1402, 18, "mcnabb")
 RegisterUnitEvent(1402, 4, "mcnabb_Died")
@@ -36,11 +36,11 @@ Unit:RemoveEvents()
 end
 
 function mcnabb(Unit, event, player)
-Unit:RegisterEvent("mcnabb_Say",65000, 0)
+Unit:RegisterEvent("mcnabb_Say",40000, 0)
 end
 
 function mcnabb_Say(Unit, event, player)
-local chance = math.random(1,5)
+local chance = math.random(1,3)
 if(chance == 1) then
 Unit:SendChatMessage(12, 0, "It's all their fault, stupid Alliance army. Just had to build their towers right behind my farm." )
 end
@@ -49,11 +49,5 @@ Unit:SendChatMessage(12, 0, "I will gladly pay you Tuesday for a hamburger today
 end
 if(chance == 3) then
 Unit:SendChatMessage(12, 0, "Spare some change for a poor blind man? ...What do you mean I'm not blind? ...I'M NOT BLIND! I CAN SEE! It's a miracle!")
-end
-if(chance == 4) then
-Unit:SendChatMessage(12, 0, "Shine yer armor fer a copper.")
-end
-if(chance == 5) then
-Unit:SendChatMessage(12, 0, "It's all their fault, stupid orcs. Had to burn my farm to the ground.")
 end
 end

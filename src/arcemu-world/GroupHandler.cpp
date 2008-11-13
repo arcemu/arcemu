@@ -366,7 +366,7 @@ void WorldSession::HandleSetPlayerIconOpcode(WorldPacket& recv_data)
 	if(icon == 0xFF)
 	{
 		// client request
-		WorldPacket data(MSG_GROUP_SET_PLAYER_ICON, 73);
+		WorldPacket data(MSG_RAID_TARGET_UPDATE, 73);
 		data << uint8(1);
 		for(uint8 i = 0; i < 8; ++i)
 			data << i << pGroup->m_targetIcons[i];
@@ -380,7 +380,7 @@ void WorldSession::HandleSetPlayerIconOpcode(WorldPacket& recv_data)
 			return;			// whhopes,buffer overflow :p
 
 		// setting icon
-		WorldPacket data(MSG_GROUP_SET_PLAYER_ICON, 10);
+		WorldPacket data(MSG_RAID_TARGET_UPDATE, 10);
 		data << uint8(0) << icon << guid;
 		pGroup->SendPacketToAll(&data);
 

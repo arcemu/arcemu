@@ -41,7 +41,7 @@ void WorldSession::HandleNameQueryOpcode( WorldPacket & recv_data )
 	data << pn->name;
 	data << uint8(0);	   // this is a string showed besides players name (eg. in combat log), a custom title ?
 	data << pn->race << pn->gender << pn->cl;
-	data << uint8(0);			// 2.4.0, why do i get the feeling blizz is adding custom classes or custom titles? (same thing in who list)
+//	data << uint8(0);			// 2.4.0, why do i get the feeling blizz is adding custom classes or custom titles? (same thing in who list)
 	SendPacket( &data );
 }
 
@@ -63,7 +63,7 @@ void WorldSession::HandleQueryTimeOpcode( WorldPacket & recv_data )
 void WorldSession::HandleCreatureQueryOpcode( WorldPacket & recv_data )
 {
 	CHECK_PACKET_SIZE(recv_data, 12);
-	WorldPacket data(SMSG_CREATURE_QUERY_RESPONSE, 150);
+	WorldPacket data(SMSG_CREATURE_QUERY_RESPONSE, 146);
 	uint32 entry;
 	uint64 guid;
 	CreatureInfo *ci;
@@ -112,7 +112,9 @@ void WorldSession::HandleCreatureQueryOpcode( WorldPacket & recv_data )
 		data << ci->Type;
 		data << ci->Family;
 		data << ci->Rank;
+		/* removed in 3.0.x
 		data << ci->Unknown1;
+		*/
 		data << ci->SpellDataID;
 		data << ci->Male_DisplayID;
 		data << ci->Female_DisplayID;
@@ -295,7 +297,7 @@ void WorldSession::HandleInrangeQuestgiverQuery(WorldPacket & recv_data)
 {
 	CHECK_INWORLD_RETURN;
 
-	WorldPacket data(SMSG_INRANGE_QUESTGIVER_STATUS_QUERY_RESPONSE, 1000);
+	WorldPacket data(SMSG_QUESTGIVER_STATUS_MULTIPLE, 1000);
 	Object::InRangeSet::iterator itr;
 	Creature * pCreature;
 	uint32 count = 0;
@@ -322,4 +324,11 @@ void WorldSession::HandleInrangeQuestgiverQuery(WorldPacket & recv_data)
 
 	*(uint32*)(data.contents()) = count;
 	SendPacket(&data);
+}
+
+void WorldSession::HandleAchievmentQueryOpcode( WorldPacket & recv_data )
+{
+	sLog.outDebug("WORLD: CMSG_QUERY_INSPECT_ACHIEVEMENTS -> not handled yet ");
+	//probably we will get a guid to who to send the list to
+//	CHECK_PACKET_SIZE(recv_data, 27);
 }

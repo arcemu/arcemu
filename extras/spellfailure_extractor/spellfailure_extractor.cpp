@@ -6,6 +6,7 @@
 #include <cstdlib>
 
 #define SEARCH_TEXT "SPELL_FAILED_AFFECTING_COMBAT"
+#define SEARCH_TEXT2 "PETTAME_INVALIDCREATURE"
 #define FIRST_FAILURE 0
 
 bool reverse_pointer_back_to_string(char ** ptr, char * str)
@@ -109,23 +110,41 @@ int main(int argc, char* argv[])
 	char * p = (buffer + offset);
 	char * name = p;
 	int index = FIRST_FAILURE;
-	size_t no_spaces;
-	size_t j;
+	size_t endoffset = find_string_in_buffer("SPELL_FAILED_UNKNOWN", strlen("SPELL_FAILED_UNKNOWN"), buffer, len);
+	char *endp=(buffer + endoffset);
 	do
 	{
 		name = p;
-		no_spaces = 60 - strlen(name);
-		fprintf(out, "\t%s", name);
-		for(j=0;j<no_spaces;++j)
-			fprintf(out, " ");
-
-		fprintf(out," = %d,\n", index);
+		fprintf(out, "\t%-60s = %d,\n", name,index);
 		p--;
+		if(p<endp)
+			break;
 		index++;
 		reverse_pointer_back_to_string(&p, "SPELL_FAILED");
-	}while(strcmp(name, "SPELL_FAILED_UNKNOWN"));
+	}while( 1 );
 
-	fprintf(out, "};\n\n#endif\n\n");
+	fprintf(out, "};\n");
+
+	fprintf(out, "enum PetTameFailure\n{\n");
+	offset = find_string_in_buffer(SEARCH_TEXT2, strlen(SEARCH_TEXT2), buffer, len);
+	endoffset = find_string_in_buffer("PETTAME_UNKNOWNERROR", strlen("PETTAME_UNKNOWNERROR"), buffer, len);
+	endp=(buffer + endoffset);
+	p = (buffer + offset);
+	name = p;
+	index = 1;
+	do
+	{
+		name = p;
+		fprintf(out, "\t%-60s = %d,\n", name,index);
+		p--;
+		if(p<endp)
+			break;
+		index++;
+		reverse_pointer_back_to_string(&p, "PETTAME");
+	}while( 1 );
+	fprintf(out, "};\n");
+
+	fprintf(out, "\n#endif\n\n");
 	fclose(out);
 	fclose(in);
 	free(buffer);

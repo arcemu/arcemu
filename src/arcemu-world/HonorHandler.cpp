@@ -27,7 +27,7 @@ void WorldSession::HandleSetVisibleRankOpcode( WorldPacket& recv_data )
 	recv_data >> ChosenRank; 
 	if( ChosenRank == 0xFFFFFFFF )
 		_player->SetUInt32Value( PLAYER_CHOSEN_TITLE, 0 );
-	else if( _player->HasKnownTitle( static_cast< RankTitles >( ChosenRank ) ) )
+	else if( _player->HasTitle( static_cast< RankTitles >( ChosenRank ) ) )
 		_player->SetUInt32Value( PLAYER_CHOSEN_TITLE, ChosenRank );
 }
 
@@ -35,7 +35,7 @@ void HonorHandler::AddHonorPointsToPlayer(Player *pPlayer, uint32 uAmount)
 {
 	pPlayer->HandleProc(PROC_ON_GAIN_EXPIERIENCE, pPlayer, NULL);
 	pPlayer->m_procCounter = 0;
-
+	
 	if( pPlayer->GetMapId() == 559 || pPlayer->GetMapId() == 562 || pPlayer->GetMapId() == 572)
 		return;
 	pPlayer->m_honorPoints += uAmount;
@@ -248,13 +248,13 @@ void HonorHandler::OnPlayerKilledUnit( Player *pPlayer, Unit* pVictim )
 				if(pAffectedPlayer->GetZoneId() == 3483)
 				{
 					// Hellfire Horde Controlled Towers
-					// Commented out until someone works on the hellfire world pvp :)
 					/*if(pAffectedPlayer->GetMapMgr()->GetWorldState(2478) != 3 && pAffectedPlayer->GetTeam() == 1)
 						return;
 
 					// Hellfire Alliance Controlled Towers
 					if(pAffectedPlayer->GetMapMgr()->GetWorldState(2476) != 3 && pAffectedPlayer->GetTeam() == 0)
-						return;*/
+						return;
+					*/
 
 					// Add Mark of Thrallmar/Honor Hold
 					SpellEntry * pvp_token_spell = dbcSpell.LookupEntry(pAffectedPlayer->GetTeam()? 32158 : 32155);

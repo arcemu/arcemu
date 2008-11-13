@@ -79,6 +79,11 @@ extern "C" SCRIPT_DECL void _exp_script_register(ScriptMgr* mgr)	// Comment any 
 	SetupEventDarkPortal(mgr);
 	//Other
 	//SetupGenericAI(mgr);
+
+	// WOTLK
+	SetupDrakTharonKeepBosses(mgr);
+	SetupAhnkahetTheOldKingdom(mgr);
+	SetupTheCullingofStratholme(mgr);
 }
 
 #ifdef WIN32

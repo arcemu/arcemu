@@ -164,9 +164,9 @@ bool ChatHandler::HandleGPSCommand(const char* args, WorldSession *m_session)
 	AreaTable * at = dbcArea.LookupEntry(obj->GetMapMgr()->GetAreaID(obj->GetPositionX(), obj->GetPositionY()));
 	if(!at) return true;
 
-	char buf[256];
-	snprintf((char*)buf, 256, "|cff00ff00Current Position: |cffffffffMap: |cff00ff00%d |cffffffffZone: |cff00ff00%u |cffffffffX: |cff00ff00%f |cffffffffY: |cff00ff00%f |cffffffffZ: |cff00ff00%f |cffffffffOrientation: |cff00ff00%f|r",
-		(unsigned int)obj->GetMapId(), at->ZoneId?at->ZoneId:at->AreaId, obj->GetPositionX(), obj->GetPositionY(), obj->GetPositionZ(), obj->GetOrientation());
+	char buf[328];
+	snprintf((char*)buf, 328, "|cff00ff00Current Position: |cffffffffMap: |cff00ff00%d |cffffffffZone: |cff00ff00%u |cffffffffArea: |cff00ff00%u  |cffffffffX: |cff00ff00%f |cffffffffY: |cff00ff00%f |cffffffffZ: |cff00ff00%f |cffffffffOrientation: |cff00ff00%f |cffffffffArea Name: |cff00ff00%s |r",
+		(unsigned int)obj->GetMapId(), at->ZoneId,at->AreaId, obj->GetPositionX(), obj->GetPositionY(), obj->GetPositionZ(), obj->GetOrientation(),at->name);
 	
 	
 	SystemMessage(m_session, buf);
@@ -700,14 +700,6 @@ bool ChatHandler::HandleModifyGoldCommand(const char* args, WorldSession *m_sess
 		}
 	}
 
-	if(sWorld.GoldCapEnabled)
-    {
-        if((chr->GetUInt32Value(PLAYER_FIELD_COINAGE) + newgold) > sWorld.GoldLimit)
-        {
-			RedSystemMessage(m_session, "Maximum amount of gold is %u and %s already has %u", (sWorld.GoldLimit/10000), chr->GetName(), (chr->GetUInt32Value(PLAYER_FIELD_COINAGE)/10000));
-            return true;
-        }
-    }
 	chr->SetUInt32Value( PLAYER_FIELD_COINAGE, newgold );
 	
 	return true;

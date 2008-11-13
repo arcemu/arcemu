@@ -38,12 +38,12 @@ end
 
 function chain(pUnit, Event)
 	print "Thrall_chainlight"
-	pUnit:FullCastSpellOnTarget(16033,pUnit:GetMainTank())
+	pUnit:FullCastSpellOnTarget(16033,pUnit:GetClosestPlayer(0))
 end
 
 function shock(pUnit, Event)
 	print "Thrall_shock"
-	pUnit:FullCastSpellOnTarget(16034,pUnit:GetMainTank())
+	pUnit:FullCastSpellOnTarget(16034,pUnit:GetClosestPlayer(0))
 end
 
 function summonka(pUnit, Event)
@@ -65,9 +65,9 @@ function thrall_OnDied(pUnit, event, player)
 pUnit:RemoveEvents()
 end
 
-RegisterUnitEvent(4949, 1, "thrall_OnCombat")
-RegisterUnitEvent(4949, 2, "thrall_OnLeaveCombat")
-RegisterUnitEvent(4949, 4, "thrall_OnDied")
+RegisterpUnitEvent(4949, 1, "thrall_OnCombat")
+RegisterpUnitEvent(4949, 2, "thrall_OnLeaveCombat")
+RegisterpUnitEvent(4949, 4, "thrall_OnDied")
 
 
 -- Vol'jin  ai_script--
@@ -84,9 +84,9 @@ function vojin_OnDied(pUnit, event, player)
 pUnit:RemoveEvents()
 end
 
-RegisterUnitEvent(10540, 1, "vojin_OnCombat")
-RegisterUnitEvent(10540, 2, "vojin_OnLeaveCombat")
-RegisterUnitEvent(10540, 4, "vojin_OnDied")
+RegisterpUnitEvent(10540, 1, "vojin_OnCombat")
+RegisterpUnitEvent(10540, 2, "vojin_OnLeaveCombat")
+RegisterpUnitEvent(10540, 4, "vojin_OnDied")
 
 -- Lady Sylvanas Windrunner  ai_script--
 
@@ -100,7 +100,7 @@ end
 
 function shoot(pUnit, Event)
 	print "ladyswindr_shoot"
-	pUnit:CastSpellOnTarget(20463,pUnit:GetMainTank())
+	pUnit:CastSpellOnTarget(20463,pUnit:GetClosestPlayer(0))
 end
 
 
@@ -111,7 +111,7 @@ end
 
 function multishot(pUnit, Event)
 	print "ladyswindr_multishot"
-	pUnit:CastSpellOnTarget(20735,pUnit:GetMainTank())
+	pUnit:CastSpellOnTarget(20735,pUnit:GetClosestPlayer(0))
 end
 
 function summonn(pUnit, Event)
@@ -127,9 +127,9 @@ function ladyswindr_OnDied(pUnit, event, player)
 pUnit:RemoveEvents()
 end
 
-RegisterUnitEvent(10181, 1, "ladyswindr_OnCombat")
-RegisterUnitEvent(10181, 2, "ladyswindr_OnLeaveCombat")
-RegisterUnitEvent(10181, 4, "ladyswindr_OnDied")
+RegisterpUnitEvent(10181, 1, "ladyswindr_OnCombat")
+RegisterpUnitEvent(10181, 2, "ladyswindr_OnLeaveCombat")
+RegisterpUnitEvent(10181, 4, "ladyswindr_OnDied")
 
 --Varimathras--
 function Varimathras_OnCombat(pUnit, Event)
@@ -142,12 +142,12 @@ end
 
 function drainlife(pUnit, Event)
 	print "Varimathras_drainlife"
-	pUnit:CastSpellOnTarget(20743,pUnit:GetMainTank())
+	pUnit:CastSpellOnTarget(20743,pUnit:GetClosestPlayer(0))
 end
 
 function shadoww(pUnit, Event)
 	print "Varimathras_shadow"
-	pUnit:CastSpellOnTarget(20741,pUnit:GetMainTank())
+	pUnit:CastSpellOnTarget(20741,pUnit:GetClosestPlayer(0))
 end
 
 function Varimathras_OnLeaveCombat(pUnit, Event)
@@ -158,9 +158,9 @@ function Varimathras_OnDied(pUnit, event, player)
 pUnit:RemoveEvents()
 end
 
-RegisterUnitEvent(2425, 1, "Varimathras_OnCombat")
-RegisterUnitEvent(2425, 2, "Varimathras_OnLeaveCombat")
-RegisterUnitEvent(2425, 4, "Varimathras_OnDied")
+RegisterpUnitEvent(2425, 1, "Varimathras_OnCombat")
+RegisterpUnitEvent(2425, 2, "Varimathras_OnLeaveCombat")
+RegisterpUnitEvent(2425, 4, "Varimathras_OnDied")
 
 
 --Cairne Bloodhoof --
@@ -182,12 +182,12 @@ end
 
 function cleave(pUnit, Event)
 	print "cairblood_cleave"
-	pUnit:CastSpellOnTarget(16044,pUnit:GetMainTank())
+	pUnit:CastSpellOnTarget(16044,pUnit:GetClosestPlayer(0))
 end
 
 function mortalStrike(pUnit, Event)
 	print "cairblood_MortalStrike"
-	pUnit:CastSpellOnTarget(16856,pUnit:GetMainTank())
+	pUnit:CastSpellOnTarget(16856,pUnit:GetClosestPlayer(0))
 end
 
 function thunderclap(pUnit, Event)
@@ -214,9 +214,9 @@ function cairblood_OnDied(pUnit, event, player)
 pUnit:RemoveEvents()
 end
 
-RegisterUnitEvent(3057, 1, "cairblood_OnCombat")
-RegisterUnitEvent(3057, 2, "cairblood_OnLeaveCombat")
-RegisterUnitEvent(3057, 4, "cairblood_OnDied")
+RegisterpUnitEvent(3057, 1, "cairblood_OnCombat")
+RegisterpUnitEvent(3057, 2, "cairblood_OnLeaveCombat")
+RegisterpUnitEvent(3057, 4, "cairblood_OnDied")
 
 --Lor'themar Theron--
 
@@ -230,7 +230,7 @@ end
 
 function cleavee(pUnit, Event)
 	print "lorthemar_cleave"
-	pUnit:CastSpellOnTarget(16044,pUnit:GetMainTank())
+	pUnit:CastSpellOnTarget(16044,pUnit:GetClosestPlayer(0))
 end
 
 function mannaburn(pUnit, Event)
@@ -240,7 +240,7 @@ end
 
 function shock(pUnit, Event)
 	print "lorthemar_shock"
-	pUnit:FullCastSpellOnTarget(16034,pUnit:GetMainTank())
+	pUnit:FullCastSpellOnTarget(16034,pUnit:GetClosestPlayer(0))
 end
 
 function charm(pUnit, Event)
@@ -258,6 +258,6 @@ function lorthemar_OnDied(pUnit, event, player)
 pUnit:RemoveEvents()
 end
 
-RegisterUnitEvent(16802, 1, "lorthemar_OnCombat")
-RegisterUnitEvent(16802, 2, "lorthemar_OnLeaveCombat")
-RegisterUnitEvent(16802, 4, "lorthemar_OnDied")
+RegisterpUnitEvent(16802, 1, "lorthemar_OnCombat")
+RegisterpUnitEvent(16802, 2, "lorthemar_OnLeaveCombat")
+RegisterpUnitEvent(16802, 4, "lorthemar_OnDied")

@@ -26,6 +26,7 @@ void WorldSession::HandleQuestgiverStatusQueryOpcode( WorldPacket & recv_data )
 	sLog.outDebug( "WORLD: Received CMSG_QUESTGIVER_STATUS_QUERY." );
 	if(!_player) return;
     if(!_player->IsInWorld()) return;
+	if(!_player->IsInBg()) return; //Added in 3.0.2, quests can be shared anywhere besides a BG
 
 	uint64 guid;
 	WorldPacket data(SMSG_QUESTGIVER_STATUS, 12);

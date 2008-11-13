@@ -30,7 +30,7 @@ bool Transporter::CreateAsTransporter(uint32 EntryID, const char* Name, int32 Ti
 	
 	// Override these flags to avoid mistakes in proto
 	SetUInt32Value(GAMEOBJECT_FLAGS,40);
-	SetUInt32Value(GAMEOBJECT_ANIMPROGRESS, 100);
+	SetByte(GAMEOBJECT_BYTES_1, 3, 100);
 	
 	
 	// Set period

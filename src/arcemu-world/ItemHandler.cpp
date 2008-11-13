@@ -736,7 +736,6 @@ void WorldSession::HandleItemQuerySingleOpcode( WorldPacket & recv_data )
 		return;
 	} 
 
-	//WorldPacket * data = new WorldPacket(SMSG_ITEM_QUERY_SINGLE_RESPONSE, 600 + itemProto->Name1.length() + itemProto->Description.length() );
 	size_t namelens;
 	
 	LocalizedItem * li = (language>0) ? sLocalizationMgr.GetLocalizedItem(itemid, language) : NULL;
@@ -758,7 +757,7 @@ void WorldSession::HandleItemQuerySingleOpcode( WorldPacket & recv_data )
 	/*data << itemProto->Name2;
 	data << itemProto->Name3;
 	data << itemProto->Name4;*/
-	data << uint8(0) << uint8(0) << uint8(0); // name 2,3,4
+	data << uint8(0) << uint8(0) << uint8(0);		// name 2,3,4
 	data << itemProto->DisplayInfoID;
 	data << itemProto->Quality;
 	data << itemProto->Flags;
@@ -779,11 +778,18 @@ void WorldSession::HandleItemQuerySingleOpcode( WorldPacket & recv_data )
 	data << itemProto->Unique;
 	data << itemProto->MaxCount;
 	data << itemProto->ContainerSlots;
+	data << uint32(10);								// 3.0.2 count of stats
 	for(i = 0; i < 10; i++)
 	{
 		data << itemProto->Stats[i].Type;
 		data << itemProto->Stats[i].Value;
 	}
+	/*
+	data << uint32(0);
+	data << uint32(0);
+	*/
+	data << itemProto->ScalingStatsEntry;
+	data << itemProto->ScalingStatsFlag;
 	for(i = 0; i < 5; i++)
 	{
 		data << itemProto->Damage[i].Min;
@@ -808,20 +814,7 @@ void WorldSession::HandleItemQuerySingleOpcode( WorldPacket & recv_data )
 		data << itemProto->Spells[i].Category;
 		data << itemProto->Spells[i].CategoryCooldown;
 	}
-#ifdef _SELF_ITEM_QUERY_TEST_ // just test something correctly...
-	char *LearnSpellDesc = NULL;
-	if ( itemProto->Spells[1].Trigger == 6)
-	{
-		SpellEntry *LearnSpell = dbcSpell.LookupEntryForced( itemProto->Spells[1].Id );
-		if ( LearnSpell ) LearnSpellDesc = LearnSpell->Name;
-	}
-#endif
 	data << itemProto->Bonding;
-#ifdef _SELF_ITEM_QUERY_TEST_
-	if ( LearnSpellDesc )
-    data << string(string(LearnSpellDesc) + string(_SELF_ITEM_QUERY_TEST_)).c_str();
-  else //-
-#endif
 	if(li)
 		data << li->Description;
 	else
@@ -849,23 +842,14 @@ void WorldSession::HandleItemQuerySingleOpcode( WorldPacket & recv_data )
 	data << itemProto->Sockets[1].Unk ;
 	data << itemProto->Sockets[2].SocketColor ;
 	data << itemProto->Sockets[2].Unk ;
-	/*
-	data << itemProto->SocketColor1;
-	data << itemProto->Unk201_3;
-	data << itemProto->SocketColor2;
-	data << itemProto->Unk201_5;
-	data << itemProto->SocketColor3;
-	data << itemProto->Unk201_7;*/
 	data << itemProto->SocketBonus;
 	data << itemProto->GemProperties;
 	data << itemProto->DisenchantReqSkill;
 	data << itemProto->ArmorDamageModifier;
-	//WPAssert(data.size() == 453 + itemProto->Name1.length() + itemProto->Description.length());
-	data << uint32(0);					// added in 2.4.2 duration(seconds) 0 = permanent
+	data << uint32(0);								// 2.4.2 Item duration in seconds
+	data << itemProto->ItemLimitCategory;
 	SendPacket( &data );
-	
-	/*if(SendThrottledPacket(data, true))
-		delete data;*/
+
 }
 
 void WorldSession::HandleBuyBackOpcode( WorldPacket & recv_data )
@@ -1028,15 +1012,6 @@ void WorldSession::HandleSellItemOpcode( WorldPacket & recv_data )
 	if(quantity > stackcount) quantity = stackcount; //make sure we don't over do it
 	
 	uint32 price = GetSellPriceForItem(it, quantity);
-
-	if(sWorld.GoldCapEnabled)
-	{
-		if((_player->GetUInt32Value(PLAYER_FIELD_COINAGE) + price) > sWorld.GoldLimit)
-		{
-			_player->GetItemInterface()->BuildInventoryChangeError(NULL, NULL, INV_ERR_TOO_MUCH_GOLD);
-			return;
-		}
-	}
 
 	_player->ModUnsigned32Value(PLAYER_FIELD_COINAGE,price);
  
@@ -1935,7 +1910,9 @@ void WorldSession::HandleInsertGemOpcode(WorldPacket &recvPacket)
 
 			if(!gp->EnchantmentID)//this is ok in few cases
 				continue;
-				  
+			//Meta gems only go in meta sockets.
+			if (TargetItem->GetProto()->Sockets[i].SocketColor != GEM_META_SOCKET && gp->SocketMask == GEM_META_SOCKET)
+				continue;
 			if(EI)//replace gem
 				TargetItem->RemoveEnchantment(2+i);//remove previous
 			else//add gem

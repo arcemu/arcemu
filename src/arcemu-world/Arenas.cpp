@@ -35,6 +35,9 @@ Arena::Arena(MapMgr * mgr, uint32 id, uint32 lgroup, uint32 t, uint32 players_pe
 	m_worldStates.clear();
 	m_pvpData.clear();
 	m_resurrectMap.clear();
+	m_players2[0] = hashmap_new();
+	m_players2[1] = hashmap_new();
+	m_playersAlive = hashmap_new();
 
 	m_started = false;
 	m_playerCountPerTeam = players_per_side;
@@ -64,11 +67,25 @@ Arena::Arena(MapMgr * mgr, uint32 id, uint32 lgroup, uint32 t, uint32 players_pe
 
 Arena::~Arena()
 {
-	for(uint32 i = 0; i < 2; ++i)
+	int i;
+
+	for(i = 0; i < 2; ++i)
 	{
 		// buffs may not be spawned, so delete them if they're not
 		if(m_buffs[i] && m_buffs[i]->IsInWorld()==false)
 			delete m_buffs[i];
+	}
+
+	if (m_playersAlive) {
+		hashmap_free(m_playersAlive);
+		m_playersAlive = NULL;
+	}
+
+	for (i=0; i<2; i++) {
+		if (m_players2[i]) {
+			hashmap_free(m_players2[i]);
+			m_players2[i] = NULL;
+		}
 	}
 }
 
@@ -117,7 +134,7 @@ void Arena::OnAddPlayer(Player * plr)
 	if(!plr->HasFlag(PLAYER_FLAGS, PLAYER_FLAG_FREE_FOR_ALL_PVP))
 		plr->SetFlag(PLAYER_FLAGS, PLAYER_FLAG_FREE_FOR_ALL_PVP);
 
-	m_playersAlive.insert(plr->GetLowGUID());
+	hashmap_put(m_playersAlive, plr->GetLowGUID(), (any_t)1);
 }
 
 void Arena::OnRemovePlayer(Player * plr)
@@ -137,6 +154,13 @@ void Arena::OnRemovePlayer(Player * plr)
 
 void Arena::HookOnPlayerKill(Player * plr, Unit * pVictim)
 {
+#ifdef ANTI_CHEAT
+	if (!m_started)
+	{
+		plr->KillPlayer(); //cheater.
+		return;
+	}
+#endif
 	if ( pVictim->IsPlayer() )
 	{
 		plr->m_bgScore.KillingBlows++;
@@ -154,11 +178,10 @@ void Arena::HookOnPlayerDeath(Player * plr)
 
 	if( plr->m_isGmInvisible == true ) return;
 
-	if (m_playersAlive.find(plr->GetLowGUID()) != m_playersAlive.end())
-	{
+	if (hashmap_get(m_playersAlive, plr->GetLowGUID(), NULL) == MAP_OK) {
 		m_playersCount[plr->GetTeam()]--;
 		UpdatePlayerCounts();
-		m_playersAlive.erase(plr->GetLowGUID());
+		hashmap_remove(m_playersAlive, plr->GetLowGUID());
 	}
 }
 
@@ -170,15 +193,15 @@ void Arena::OnCreate()
 		/* ruins of lordaeron */
 	case 572: {
 		obj = SpawnGameObject(185917, 572, 1278.647705f, 1730.556641f, 31.605574f, 1.684245f, 32, 1375, 1.0f);
-		obj->SetUInt32Value(GAMEOBJECT_STATE, 1);
-		obj->SetFloatValue(GAMEOBJECT_ROTATION_02, 0.746058f);
-		obj->SetFloatValue(GAMEOBJECT_ROTATION_03, 0.665881f);
+		obj->SetByte(GAMEOBJECT_BYTES_1, 0, 1);
+		obj->SetFloatValue(GAMEOBJECT_PARENTROTATION_02, 0.746058f);
+		obj->SetFloatValue(GAMEOBJECT_PARENTROTATION_03, 0.665881f);
 		m_gates.insert(obj);
 
 		obj = SpawnGameObject(185918, 572, 1293.560791f, 1601.937988f, 31.605574f, -1.457349f, 32, 1375, 1.0f);
-		obj->SetUInt32Value(GAMEOBJECT_STATE, 1);
-		obj->SetFloatValue(GAMEOBJECT_ROTATION_02, -0.665881f);
-		obj->SetFloatValue(GAMEOBJECT_ROTATION_03, 0.746058f);
+		obj->SetByte(GAMEOBJECT_BYTES_1, 0, 1);
+		obj->SetFloatValue(GAMEOBJECT_PARENTROTATION_02, -0.665881f);
+		obj->SetFloatValue(GAMEOBJECT_PARENTROTATION_03, 0.746058f);
 		m_gates.insert(obj);
 
 			  }break;
@@ -186,54 +209,54 @@ void Arena::OnCreate()
 		/* blades edge arena */
 	case 562: {
 		obj = SpawnGameObject(183972, 562, 6177.707520f, 227.348145f, 3.604374f, -2.260201f, 32, 1375, 1.0f);
-		obj->SetUInt32Value(GAMEOBJECT_STATE, 1);
-		obj->SetFloatValue(GAMEOBJECT_ROTATION_02, 0.90445f);
-		obj->SetFloatValue(GAMEOBJECT_ROTATION_03, -0.426569f);
+		obj->SetByte(GAMEOBJECT_BYTES_1, 0, 1);
+		obj->SetFloatValue(GAMEOBJECT_PARENTROTATION_02, 0.90445f);
+		obj->SetFloatValue(GAMEOBJECT_PARENTROTATION_03, -0.426569f);
 		obj->PushToWorld(m_mapMgr);
 
 		obj = SpawnGameObject(183973, 562, 6189.546387f, 241.709854f, 3.101481f, 0.881392f, 32, 1375, 1.0f);
-		obj->SetUInt32Value(GAMEOBJECT_STATE, 1);
-		obj->SetFloatValue(GAMEOBJECT_ROTATION_02, 0.426569f);
-		obj->SetFloatValue(GAMEOBJECT_ROTATION_03, 0.904455f);
+		obj->SetByte(GAMEOBJECT_BYTES_1, 0, 1);
+		obj->SetFloatValue(GAMEOBJECT_PARENTROTATION_02, 0.426569f);
+		obj->SetFloatValue(GAMEOBJECT_PARENTROTATION_03, 0.904455f);
 		m_gates.insert(obj);
 
 		obj = SpawnGameObject(183970, 562, 6299.115723f, 296.549438f, 3.308032f, 0.881392f, 32, 1375, 1.0f);
-		obj->SetUInt32Value(GAMEOBJECT_STATE, 1);
-		obj->SetFloatValue(GAMEOBJECT_ROTATION_02, 0.426569f);
-		obj->SetFloatValue(GAMEOBJECT_ROTATION_03, 0.904455f);
+		obj->SetByte(GAMEOBJECT_BYTES_1, 0, 1);
+		obj->SetFloatValue(GAMEOBJECT_PARENTROTATION_02, 0.426569f);
+		obj->SetFloatValue(GAMEOBJECT_PARENTROTATION_03, 0.904455f);
 		obj->PushToWorld(m_mapMgr);
 
 		obj = SpawnGameObject(183971, 562, 6287.276855f, 282.187714f, 3.810925f, -2.260201f, 32, 1375, 1.0f);
-		obj->SetUInt32Value(GAMEOBJECT_STATE, 1);
-		obj->SetFloatValue(GAMEOBJECT_ROTATION_02, 0.904455f);
-		obj->SetFloatValue(GAMEOBJECT_ROTATION_03, -0.426569f);
+		obj->SetByte(GAMEOBJECT_BYTES_1, 0, 1);
+		obj->SetFloatValue(GAMEOBJECT_PARENTROTATION_02, 0.904455f);
+		obj->SetFloatValue(GAMEOBJECT_PARENTROTATION_03, -0.426569f);
 		m_gates.insert(obj);
 			  }break;
 
 		/* nagrand arena */
 	case 559: {
 		obj = SpawnGameObject(183979, 559, 4090.064453f, 2858.437744f, 10.236313f, 0.492805f, 32, 1375, 1.0f);
-		obj->SetUInt32Value(GAMEOBJECT_STATE, 1);
-		obj->SetFloatValue(GAMEOBJECT_ROTATION_02, 0.243916f);
-		obj->SetFloatValue(GAMEOBJECT_ROTATION_03, 0.969796f);
+		obj->SetByte(GAMEOBJECT_BYTES_1, 0, 1);
+		obj->SetFloatValue(GAMEOBJECT_PARENTROTATION_02, 0.243916f);
+		obj->SetFloatValue(GAMEOBJECT_PARENTROTATION_03, 0.969796f);
 		obj->PushToWorld(m_mapMgr);
 
 		obj = SpawnGameObject(183980, 559, 4081.178955f, 2874.970459f, 12.391714f, 0.492805f, 32, 1375, 1.0f);
-		obj->SetUInt32Value(GAMEOBJECT_STATE, 1);
-		obj->SetFloatValue(GAMEOBJECT_ROTATION_02, 0.243916f);
-		obj->SetFloatValue(GAMEOBJECT_ROTATION_03, 0.969796f);
+		obj->SetByte(GAMEOBJECT_BYTES_1, 0, 1);
+		obj->SetFloatValue(GAMEOBJECT_PARENTROTATION_02, 0.243916f);
+		obj->SetFloatValue(GAMEOBJECT_PARENTROTATION_03, 0.969796f);
 		m_gates.insert(obj);
 
 		obj = SpawnGameObject(183977, 559, 4023.709473f, 2981.776611f, 10.701169f, -2.648788f, 32, 1375, 1.0f);
-		obj->SetUInt32Value(GAMEOBJECT_STATE, 1);
-		obj->SetFloatValue(GAMEOBJECT_ROTATION_02, 0.969796f);
-		obj->SetFloatValue(GAMEOBJECT_ROTATION_03, -0.243916f);
+		obj->SetByte(GAMEOBJECT_BYTES_1, 0, 1);
+		obj->SetFloatValue(GAMEOBJECT_PARENTROTATION_02, 0.969796f);
+		obj->SetFloatValue(GAMEOBJECT_PARENTROTATION_03, -0.243916f);
 		obj->PushToWorld(m_mapMgr);
 
 		obj = SpawnGameObject(183978, 559, 4031.854248f, 2966.833496f, 12.646200f, -2.648788f, 32, 1375, 1.0f);
-		obj->SetUInt32Value(GAMEOBJECT_STATE, 1);
-		obj->SetFloatValue(GAMEOBJECT_ROTATION_02, 0.969796f);
-		obj->SetFloatValue(GAMEOBJECT_ROTATION_03, -0.243916f);
+		obj->SetByte(GAMEOBJECT_BYTES_1, 0, 1);
+		obj->SetFloatValue(GAMEOBJECT_PARENTROTATION_02, 0.969796f);
+		obj->SetFloatValue(GAMEOBJECT_PARENTROTATION_03, -0.243916f);
 		m_gates.insert(obj);
 
 			  }break;
@@ -278,57 +301,57 @@ void Arena::HookOnShadowSight()
 		/* ruins of lordaeron */
 	case 572:
 		m_buffs[0] = SpawnGameObject(184664, 572, 1328.729268f, 1632.738403f, 34.838585f, 2.611449f, 32, 1375, 1.0f);
-		m_buffs[0]->SetUInt32Value(GAMEOBJECT_STATE, 1);
-		m_buffs[0]->SetFloatValue(GAMEOBJECT_ROTATION_02, 0.904455f);
-		m_buffs[0]->SetFloatValue(GAMEOBJECT_ROTATION_03, -0.426569f);
-		m_buffs[0]->SetUInt32Value(GAMEOBJECT_TYPE_ID, 6);
-		m_buffs[0]->SetUInt32Value(GAMEOBJECT_ANIMPROGRESS, 100);
+		m_buffs[0]->SetByte(GAMEOBJECT_BYTES_1, 0, 1);
+		m_buffs[0]->SetFloatValue(GAMEOBJECT_PARENTROTATION_02, 0.904455f);
+		m_buffs[0]->SetFloatValue(GAMEOBJECT_PARENTROTATION_03, -0.426569f);
+		m_buffs[0]->SetByte(GAMEOBJECT_BYTES_1, 1, 6);
+		m_buffs[0]->SetByte(GAMEOBJECT_BYTES_1, 3, 100);
 		m_buffs[0]->PushToWorld(m_mapMgr);
 
 		m_buffs[1] = SpawnGameObject(184664, 572, 1243.306763f, 1699.334351f, 34.837566f, 5.713773f, 32, 1375, 1.0f);
-		m_buffs[1]->SetUInt32Value(GAMEOBJECT_STATE, 1);
-		m_buffs[1]->SetFloatValue(GAMEOBJECT_ROTATION_02, 0.90445f);
-		m_buffs[1]->SetFloatValue(GAMEOBJECT_ROTATION_03, -0.426569f);
-		m_buffs[1]->SetUInt32Value(GAMEOBJECT_TYPE_ID, 6);
-		m_buffs[1]->SetUInt32Value(GAMEOBJECT_ANIMPROGRESS, 100);
+		m_buffs[1]->SetByte(GAMEOBJECT_BYTES_1, 0, 1);
+		m_buffs[1]->SetFloatValue(GAMEOBJECT_PARENTROTATION_02, 0.90445f);
+		m_buffs[1]->SetFloatValue(GAMEOBJECT_PARENTROTATION_03, -0.426569f);
+		m_buffs[1]->SetByte(GAMEOBJECT_BYTES_1, 1, 6);
+		m_buffs[1]->SetByte(GAMEOBJECT_BYTES_1, 3, 100);
 		m_buffs[1]->PushToWorld(m_mapMgr);
 		break;
 
 		/* blades edge arena */
 	case 562:
 		m_buffs[0] = SpawnGameObject(184664, 562, 6249.276855f, 275.187714f, 11.201481f, -2.260201f, 32, 1375, 1.0f);
-		m_buffs[0]->SetUInt32Value(GAMEOBJECT_STATE, 1);
-		m_buffs[0]->SetFloatValue(GAMEOBJECT_ROTATION_02, 0.904455f);
-		m_buffs[0]->SetFloatValue(GAMEOBJECT_ROTATION_03, -0.426569f);
-		m_buffs[0]->SetUInt32Value(GAMEOBJECT_TYPE_ID, 6);
-		m_buffs[0]->SetUInt32Value(GAMEOBJECT_ANIMPROGRESS, 100);
+		m_buffs[0]->SetByte(GAMEOBJECT_BYTES_1, 0, 1);
+		m_buffs[0]->SetFloatValue(GAMEOBJECT_PARENTROTATION_02, 0.904455f);
+		m_buffs[0]->SetFloatValue(GAMEOBJECT_PARENTROTATION_03, -0.426569f);
+		m_buffs[0]->SetByte(GAMEOBJECT_BYTES_1, 1, 6);
+		m_buffs[0]->SetByte(GAMEOBJECT_BYTES_1, 3, 100);
 		m_buffs[0]->PushToWorld(m_mapMgr);
 
 		m_buffs[1] = SpawnGameObject(184664, 562, 6228.546387f, 249.709854f, 11.201481f, 0.881392f, 32, 1375, 1.0f);
-		m_buffs[1]->SetUInt32Value(GAMEOBJECT_STATE, 1);
-		m_buffs[1]->SetFloatValue(GAMEOBJECT_ROTATION_02, 0.90445f);
-		m_buffs[1]->SetFloatValue(GAMEOBJECT_ROTATION_03, -0.426569f);
-		m_buffs[1]->SetUInt32Value(GAMEOBJECT_TYPE_ID, 6);
-		m_buffs[1]->SetUInt32Value(GAMEOBJECT_ANIMPROGRESS, 100);
+		m_buffs[1]->SetByte(GAMEOBJECT_BYTES_1, 0, 1);
+		m_buffs[1]->SetFloatValue(GAMEOBJECT_PARENTROTATION_02, 0.90445f);
+		m_buffs[1]->SetFloatValue(GAMEOBJECT_PARENTROTATION_03, -0.426569f);
+		m_buffs[1]->SetByte(GAMEOBJECT_BYTES_1, 1, 6);
+		m_buffs[1]->SetByte(GAMEOBJECT_BYTES_1, 3, 100);
 		m_buffs[1]->PushToWorld(m_mapMgr);
 		break;
 
 		/* nagrand arena */
 	case 559:
 		m_buffs[0] = SpawnGameObject(184664, 559, 4011.113232f, 2896.879980f, 12.523950f, 0.486944f, 32, 1375, 1.0f);
-		m_buffs[0]->SetUInt32Value(GAMEOBJECT_STATE, 1);
-		m_buffs[0]->SetFloatValue(GAMEOBJECT_ROTATION_02, 0.904455f);
-		m_buffs[0]->SetFloatValue(GAMEOBJECT_ROTATION_03, -0.426569f);
-		m_buffs[0]->SetUInt32Value(GAMEOBJECT_TYPE_ID, 6);
-		m_buffs[0]->SetUInt32Value(GAMEOBJECT_ANIMPROGRESS, 100);
+		m_buffs[0]->SetByte(GAMEOBJECT_BYTES_1, 0, 1);
+		m_buffs[0]->SetFloatValue(GAMEOBJECT_PARENTROTATION_02, 0.904455f);
+		m_buffs[0]->SetFloatValue(GAMEOBJECT_PARENTROTATION_03, -0.426569f);
+		m_buffs[0]->SetByte(GAMEOBJECT_BYTES_1, 1, 6);
+		m_buffs[0]->SetByte(GAMEOBJECT_BYTES_1, 3, 100);
 		m_buffs[0]->PushToWorld(m_mapMgr);
 
 		m_buffs[1] = SpawnGameObject(184664, 559, 4102.111426f, 2945.843262f, 12.662578f, 3.628544f, 32, 1375, 1.0f);
-		m_buffs[1]->SetUInt32Value(GAMEOBJECT_STATE, 1);
-		m_buffs[1]->SetFloatValue(GAMEOBJECT_ROTATION_02, 0.90445f);
-		m_buffs[1]->SetFloatValue(GAMEOBJECT_ROTATION_03, -0.426569f);
-		m_buffs[1]->SetUInt32Value(GAMEOBJECT_TYPE_ID, 6);
-		m_buffs[1]->SetUInt32Value(GAMEOBJECT_ANIMPROGRESS, 100);
+		m_buffs[1]->SetByte(GAMEOBJECT_BYTES_1, 0, 1);
+		m_buffs[1]->SetFloatValue(GAMEOBJECT_PARENTROTATION_02, 0.90445f);
+		m_buffs[1]->SetFloatValue(GAMEOBJECT_PARENTROTATION_03, -0.426569f);
+		m_buffs[1]->SetByte(GAMEOBJECT_BYTES_1, 1, 6);
+		m_buffs[1]->SetByte(GAMEOBJECT_BYTES_1, 3, 100);
 		m_buffs[1]->PushToWorld(m_mapMgr);
 		break;
 	}
@@ -343,7 +366,7 @@ void Arena::OnStart()
 		for(set<Player*>::iterator itr = m_players[i].begin(); itr != m_players[i].end(); ++itr) {
 			Player *plr = *itr;
 			plr->RemoveAura(ARENA_PREPARATION);
-			m_players2[i].insert(plr->GetLowGUID());
+			hashmap_put(m_players2[i], plr->GetLowGUID(), (any_t)1);
 
 			/* update arena team stats */
 			if(rated_match && plr->m_arenaTeams[m_arenateamtype] != NULL)
@@ -371,7 +394,7 @@ void Arena::OnStart()
 	for(set<GameObject*>::iterator itr = m_gates.begin(); itr != m_gates.end(); ++itr)
 	{
 		(*itr)->SetUInt32Value(GAMEOBJECT_FLAGS, 64);
-		(*itr)->SetUInt32Value(GAMEOBJECT_STATE, 0);
+		(*itr)->SetByte(GAMEOBJECT_BYTES_1, 0, 0);
 	}
 
 	m_started = true;
@@ -473,18 +496,21 @@ void Arena::Finish()
 			m_teams[i]->m_stat_rating += m_deltaRating[i];
 			if (m_teams[i]->m_stat_rating < 0) m_teams[i]->m_stat_rating = 0;
 
-			for(set<uint32>::iterator itr = m_players2[i].begin(); itr != m_players2[i].end(); ++itr) {
-				PlayerInfo * info = objmgr.GetPlayerInfo(*itr);
-				if (info) {
-					ArenaTeamMember * tp = m_teams[i]->GetMember(info);
+			for (int x=0; x<hashmap_length(m_players2[i]); x++) {
+				uint32 key;
+				if (MAP_OK == hashmap_get_index(m_players2[i], x, (int*)&key, (any_t*) NULL)) {
+					PlayerInfo * info = objmgr.GetPlayerInfo(key);
+					if (info) {
+						ArenaTeamMember * tp = m_teams[i]->GetMember(info);
 
-					if(tp != NULL) {
-						tp->PersonalRating += CalcDeltaRating(tp->PersonalRating, m_teams[j]->m_stat_rating, outcome);
-						if (tp->PersonalRating < 0) tp->PersonalRating = 0;
+						if(tp != NULL) {
+							tp->PersonalRating += CalcDeltaRating(tp->PersonalRating, m_teams[j]->m_stat_rating, outcome);
+							if (tp->PersonalRating < 0) tp->PersonalRating = 0;
 
-						if(outcome) {
-							tp->Won_ThisWeek++;
-							tp->Won_ThisSeason++;
+							if(outcome) {
+								tp->Won_ThisWeek++;
+								tp->Won_ThisSeason++;
+							}
 						}
 					}
 				}

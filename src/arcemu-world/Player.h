@@ -21,6 +21,7 @@
 #ifndef _PLAYER_H
 #define _PLAYER_H
 struct BGScore;
+class AchievementMgr;
 class Channel;
 class Creature;
 class Battleground;
@@ -48,6 +49,9 @@ class SpeedDetector;
 #define PLAYER_LEVEL_CAP_70 70
 #define PLAYER_LEVEL_CAP	70
 
+#define ACHIEVEMENT_SEND_DELAY 1000 //we have this delay of sending auras to other players so client will have time to create object first
+#define LOGIN_CIENT_SEND_DELAY 1000 //we have this delay of sending auras to other players so client will have time to create object first
+
 //====================================================================
 //  Inventory
 //  Holds the display id and item type id for objects in
@@ -61,6 +65,7 @@ enum Classes
 	HUNTER = 3,
 	ROGUE = 4,
 	PRIEST = 5,
+	DEATHKNIGHT = 6,
 	SHAMAN = 7,
 	MAGE = 8,
 	WARLOCK = 9,
@@ -212,6 +217,7 @@ enum PlayerFlags
     PLAYER_FLAG_NOCLOAK				= 0x800,
     PLAYER_FLAG_NEED_REST_3_HOURS	= 0x1000,
     PLAYER_FLAG_NEED_REST_5_HOURS	= 0x2000,
+	PLAYER_FLAG_PVP					= 0x40000,
 };
 
 enum CharterTypes
@@ -549,6 +555,7 @@ struct classScriptOverride
 	uint32 damage;
 	bool percent;
 };
+class AchievementMgr;
 class Spell;
 class Item;
 class Container;
@@ -667,8 +674,8 @@ enum SPELL_INDEX2
 #define PLAYER_RATING_MODIFIER_SPELL_HASTE						PLAYER_FIELD_COMBAT_RATING_19
 #define PLAYER_RATING_MODIFIER_MELEE_MAIN_HAND_SKILL			PLAYER_FIELD_COMBAT_RATING_20
 #define PLAYER_RATING_MODIFIER_MELEE_OFF_HAND_SKILL				PLAYER_FIELD_COMBAT_RATING_21
-// #define UNKNOWN												PLAYER_FIELD_COMBAT_RATING_22
-#define PLAYER_RATING_MODIFIER_EXPERTISE						PLAYER_FIELD_COMBAT_RATING_23
+#define PLAYER_RATING_MODIFIER_EXPERTISE						PLAYER_FIELD_COMBAT_RATING_22
+// #define UNKNOWN												PLAYER_FIELD_COMBAT_RATING_23 //3.0.2
 
 class ArenaTeam;
 struct PlayerCooldown
@@ -1001,12 +1008,8 @@ public:
 	}
 	uint32 GetMaxPersonalRating();
 	
-	ARCEMU_INLINE bool HasKnownTitle( RankTitles title )
-	{
-		return ( GetUInt64Value( PLAYER_FIELD_KNOWN_TITLES ) & uint64(1) << uint8( title ) ) != 0;
-	}
-
-	void SetKnownTitle( RankTitles title, bool set );
+	bool HasTitle(uint32 TitleCount);
+//	void SetKnownTitles( RankTitles title, bool set );
     /************************************************************************/
     /* Groups                                                               */
     /************************************************************************/
@@ -1345,12 +1348,13 @@ public:
 	float m_TransporterY;
 	float m_TransporterZ;
 	float m_TransporterO;
-	float m_TransporterTime;
+	float m_TransporterUnk;
 	// Misc
 	void EventCannibalize(uint32 amount);
 	void EventReduceDrunk(bool full);
 	bool m_AllowAreaTriggerPort;
 	void EventAllowTiggerPort(bool enable);
+	void UpdatePowerAmm();
 
 	uint32 m_modblockabsorbvalue;
 	uint32 m_modblockvaluefromspells;
@@ -1527,6 +1531,7 @@ public:
 	bool PowerCheat;
 	bool FlyCheat;
 	void ZoneUpdate(uint32 ZoneId);
+	void UpdateChannels(uint16 AreaID);
 	ARCEMU_INLINE uint32 GetAreaID() { return m_AreaID; }
 	void SetAreaID(uint32 area) { m_AreaID = area; }
 	
@@ -1550,6 +1555,8 @@ public:
 	void SetPersistentInstanceId(Instance *pInstance);
 	//Use this method carefully.. 
 	void SetPersistentInstanceId(uint32 mapId, uint32 difficulty, uint32 instanceId);
+
+	void SendAchievmentStatus(uint32 criteriaid, uint32 new_value, uint32 at_stamp);
 
 public:
 	
@@ -1626,19 +1633,25 @@ public:
 	uint32 m_pvpTimer;
 	
 	//! Is PVP flagged?
-	ARCEMU_INLINE bool IsPvPFlagged() { return HasFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_PVP); }
+	ARCEMU_INLINE bool IsPvPFlagged()
+	{
+		return (((uint8*)&m_uint32Values[UNIT_FIELD_BYTES_2])[1] & U_FIELD_BYTES_FLAG_PVP) != 0;
+	}
+
 	ARCEMU_INLINE void SetPvPFlag()
 	{
-		// reset the timer as well..
 		StopPvPTimer();
-		SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_PVP);
+		SetUInt32Value(UNIT_FIELD_BYTES_2, (U_FIELD_BYTES_FLAG_PVP << 8));
+		SetFlag(PLAYER_FLAGS, PLAYER_FLAG_PVP);
 	}
-	//! Removal
+
 	ARCEMU_INLINE void RemovePvPFlag()
 	{
 		StopPvPTimer();
-		RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_PVP);
+		m_uint32Values[UNIT_FIELD_BYTES_2] &= ~uint32(uint32(U_FIELD_BYTES_FLAG_PVP) << 8);
+		RemoveFlag(PLAYER_FLAGS, PLAYER_FLAG_PVP);
 	}
+
 	//! Do this on /pvp off
 	ARCEMU_INLINE void ResetPvPTimer();
 	//! Stop the timer for pvp off
@@ -2005,9 +2018,48 @@ public:
 	uint32 m_outStealthDamageBonusPeriod;
 	uint32 m_outStealthDamageBonusTimer;
 
+	void LoadFieldsFromString(const char * string, uint32 firstField, uint32 fieldsNum);
+	void UpdateGlyphs();
+	void SendPowerUpdate();
+	
 	int16 m_vampiricEmbrace;
 	int16 m_vampiricTouch;
 	void VampiricSpell(uint32 dmg, Unit* pTarget);
+
+    /************************************************************************/
+    /* Player Archievements						                            */
+    /************************************************************************/
+/*public:
+	//this may change in time, We will call it each time a new monitored position is reached
+	//it is up to this function to decide if we actually made an archievement in that type or not
+	void Event_Achiement_Received(uint32 achievementtype,uint32 pentry,uint32 pvalue); //entry is not always used
+	void SendAchievmentStatus( uint32 criteriaid, uint32 new_value, uint32 at_stamp=0 );
+	void SendAchievmentEarned( uint32 archiId, uint32 at_stamp=0 );
+	void SendAllAchievementEarned();
+	void SendAllAchievementStatus();
+	void SendAllAchievementData(); //used on login
+public:
+	struct AchievementVal
+	{
+		AchievementVal(){ cur_value = completed_at_stamp = 0; }
+		uint32 cur_value;
+		uint32 completed_at_stamp;
+	};
+	//id and the status
+	std::map<uint32,AchievementVal*> m_achievements;
+//	uint32 m_achievement_points; // for quick check in case it is used as currency*/
+
+    ARCEMU_INLINE AchievementMgr& GetAchievementMgr() { return m_achievementMgr; }
+	AchievementMgr m_achievementMgr;
+    /************************************************************************/
+    /* Player Archievements - end				                            */
+    /************************************************************************/
+
+    /************************************************************************/
+    /* Player Vehicles							                            */
+    /************************************************************************/
+public:
+	Unit *controlled_vehicle;
 };
 
 class SkillIterator

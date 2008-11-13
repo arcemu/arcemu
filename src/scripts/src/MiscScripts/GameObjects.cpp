@@ -456,7 +456,7 @@ public:
 		pCreature->GetAIInterface()->SetNextTarget(pPlayer);
 		pCreature->GetAIInterface()->AttackReaction(pPlayer, 1);
 		pDoor->SetUInt32Value(GAMEOBJECT_FLAGS, 33);
-		pDoor->SetUInt32Value(GAMEOBJECT_STATE, 0);
+		//pDoor->SetUInt32Value(GAMEOBJECT_STATE, 0);
 	}
 };
 
@@ -497,7 +497,7 @@ public:
 		if(!pPlayer)
 			return;
 		
-		_gameobject->SetUInt32Value(GAMEOBJECT_TYPE_ID, 5);
+//_gameobject->SetUInt32Value(GAMEOBJECT_TYPE_ID, 5); // N33D F1X
 		
 		if(!pPlayer->_HasSkillLine(REPAIR_BOT_REQUIRED_SKILL_LINE))
 		{
@@ -508,7 +508,7 @@ public:
 		{
 			return;
 		}
-		_gameobject->SetUInt32Value(GAMEOBJECT_TYPE_ID, 22);
+//_gameobject->SetUInt32Value(GAMEOBJECT_TYPE_ID, 22); // N33D F1X
 	}
 };
 

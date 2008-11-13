@@ -28,10 +28,11 @@ GameObject::GameObject(uint64 guid)
 	m_updateMask.SetCount(GAMEOBJECT_END);
 	SetUInt32Value( OBJECT_FIELD_TYPE,TYPE_GAMEOBJECT|TYPE_OBJECT);
 	SetUInt64Value( OBJECT_FIELD_GUID,guid);
-	SetUInt32Value(GAMEOBJECT_ANIMPROGRESS, 100);
+	SetByte(GAMEOBJECT_BYTES_1, 3, 100);
 	m_wowGuid.Init(GetGUID());
  
 	SetFloatValue( OBJECT_FIELD_SCALE_X, 1);//info->Size  );
+	SetByte(GAMEOBJECT_BYTES_1, 3, 100);
 
 	counter=0;//not needed at all but to prevent errors that var was not inited, can be removed in release
 
@@ -79,7 +80,7 @@ GameObject::~GameObject()
 	}
 
 	if(m_respawnCell!=NULL)
-		m_respawnCell->_respawnObjects.erase(this);
+		hashmap64_remove(m_respawnCell->_respawnObjects, GetGUID());
 
 	if (m_summonedGo && m_summoner)
 		for(int i = 0; i < 4; i++)
@@ -110,18 +111,18 @@ bool GameObject::CreateFromProto(uint32 entry,uint32 mapid, float x, float y, fl
 	SetFloatValue( GAMEOBJECT_FACING, ang );
 	 
 	//SetUInt32Value( GAMEOBJECT_TIMESTAMP, (uint32)UNIXTIME);
- //   SetUInt32Value( GAMEOBJECT_ARTKIT, 0 );		   //these must be from wdb somewhere i guess
-   // SetUInt32Value( GAMEOBJECT_ANIMPROGRESS, 0 );
-	SetUInt32Value( GAMEOBJECT_STATE, 1 );
+//    SetUInt32Value( GAMEOBJECT_ARTKIT, 0 );		   //these must be from wdb somewhere i guess
+   SetByte( GAMEOBJECT_BYTES_1, 3, 0 );
+	SetByte( GAMEOBJECT_BYTES_1, 0, 1 );
 	SetUInt32Value( GAMEOBJECT_DISPLAYID, pInfo->DisplayID );
-	SetUInt32Value( GAMEOBJECT_TYPE_ID, pInfo->Type );
+	SetByte( GAMEOBJECT_BYTES_1, 1, pInfo->Type );
    
 	InitAI();
 
 	 return true;
 	/*
 	original_flags = m_uint32Values[GAMEOBJECT_FLAGS];
-	original_state = m_uint32Values[GAMEOBJECT_STATE];
+	original_state = m_uint32Values[GAMEOBJECT_BYTES_1, 0];
 	*/
 }
 /*
@@ -143,8 +144,8 @@ void GameObject::Create( uint32 guidlow, uint32 guidhigh,uint32 displayid, uint8
 	SetUInt32Value( OBJECT_FIELD_ENTRY, entryid );
 	SetFloatValue( OBJECT_FIELD_SCALE_X, scale );
 	SetUInt32Value( GAMEOBJECT_DISPLAYID, displayid );
-	SetUInt32Value( GAMEOBJECT_STATE, state  );
-	SetUInt32Value( GAMEOBJECT_TYPE_ID, typeId  );
+	SetByte( GAMEOBJECT_BYTES_1, 0, state  );
+	SetByte( GAMEOBJECT_BYTES_1, 1, typeId  );
 	SetUInt32Value( GAMEOBJECT_FLAGS, flags );
 }*/
 
@@ -167,7 +168,7 @@ void GameObject::Update(uint32 p_time)
 	if(m_deleted)
 		return;
 
-	if(spell && (GetUInt32Value(GAMEOBJECT_STATE) == 1))
+	if(spell && (GetByte(GAMEOBJECT_BYTES_1, 0) == 1))
 	{
 		if(checkrate > 1)
 		{
@@ -249,7 +250,7 @@ void GameObject::Despawn(uint32 time)
 	//This is for go get deleted while looting
 	if(m_spawn)
 	{
-		SetUInt32Value(GAMEOBJECT_STATE, m_spawn->state);
+		SetByte(GAMEOBJECT_BYTES_1, 0, m_spawn->state);
 		SetUInt32Value(GAMEOBJECT_FLAGS, m_spawn->flags);
 	}
 
@@ -260,7 +261,7 @@ void GameObject::Despawn(uint32 time)
 		/* Get our originiating mapcell */
 		MapCell * pCell = m_mapCell;
 		ASSERT(pCell);
-		pCell->_respawnObjects.insert( ((Object*)this) );
+		hashmap64_put(pCell->_respawnObjects, GetGUID(), NULL);
 		sEventMgr.RemoveEvents(this);
 		sEventMgr.AddEvent(m_mapMgr, &MapMgr::EventRespawnGameObject, this, pCell, EVENT_GAMEOBJECT_ITEM_SPAWN, time, 1, 0);
 		Object::RemoveFromWorld(false);
@@ -284,11 +285,11 @@ void GameObject::SaveToDB()
 		<< GetPositionY() << ","
 		<< GetPositionZ() << ","
 		<< GetOrientation() << ","
-		<< GetFloatValue(GAMEOBJECT_ROTATION) << ","
-		<< GetFloatValue(GAMEOBJECT_ROTATION_01) << ","
-		<< GetFloatValue(GAMEOBJECT_ROTATION_02) << ","
-		<< GetFloatValue(GAMEOBJECT_ROTATION_03) << ","
-		<< GetUInt32Value(GAMEOBJECT_STATE) << ","
+		<< GetUInt64Value(GAMEOBJECT_ROTATION) << ","
+		<< GetFloatValue(GAMEOBJECT_PARENTROTATION) << ","
+		<< GetFloatValue(GAMEOBJECT_PARENTROTATION_02) << ","
+		<< GetFloatValue(GAMEOBJECT_PARENTROTATION_03) << ","
+		<< GetByte(GAMEOBJECT_BYTES_1, 0) << ","
 		<< GetUInt32Value(GAMEOBJECT_FLAGS) << ","
 		<< GetUInt32Value(GAMEOBJECT_FACTION) << ","
 		<< GetFloatValue(OBJECT_FIELD_SCALE_X) << ","
@@ -334,11 +335,11 @@ void GameObject::SaveToFile(std::stringstream & name)
 		<< GetPositionY() << ","
 		<< GetPositionZ() << ","
 		<< GetOrientation() << ","
-		<< GetFloatValue(GAMEOBJECT_ROTATION) << ","
-		<< GetFloatValue(GAMEOBJECT_ROTATION_01) << ","
-		<< GetFloatValue(GAMEOBJECT_ROTATION_02) << ","
-		<< GetFloatValue(GAMEOBJECT_ROTATION_03) << ","
-		<< GetUInt32Value(GAMEOBJECT_STATE) << ","
+		<< GetUInt64Value(GAMEOBJECT_ROTATION) << ","
+		<< GetFloatValue(GAMEOBJECT_PARENTROTATION) << ","
+		<< GetFloatValue(GAMEOBJECT_PARENTROTATION_02) << ","
+		<< GetFloatValue(GAMEOBJECT_PARENTROTATION_03) << ","
+		<< GetByte(GAMEOBJECT_BYTES_1, 0) << ","
 		<< GetUInt32Value(GAMEOBJECT_FLAGS) << ","
 		<< GetUInt32Value(GAMEOBJECT_FACTION) << ","
 		<< GetFloatValue(OBJECT_FIELD_SCALE_X) << ","
@@ -373,7 +374,7 @@ void GameObject::InitAI()
 		if(pInfo->ID != 177964 && pInfo->ID != 153556)
 		{
 			//Deactivate
-			//SetUInt32Value(GAMEOBJECT_DYN_FLAGS, 0);
+			//SetUInt32Value(GAMEOBJECT_DYNAMIC, 0);
 		}
 	}
 
@@ -470,12 +471,12 @@ bool GameObject::Load(GOSpawn *spawn)
 
 	m_spawn = spawn;
 	SetFloatValue(GAMEOBJECT_ROTATION,spawn->o);
-	SetFloatValue(GAMEOBJECT_ROTATION_01 ,spawn->o1);
-	SetFloatValue(GAMEOBJECT_ROTATION_02 ,spawn->o2);
-	SetFloatValue(GAMEOBJECT_ROTATION_03 ,spawn->o3);
+	SetFloatValue(GAMEOBJECT_PARENTROTATION ,spawn->o1);
+	SetFloatValue(GAMEOBJECT_PARENTROTATION_02 ,spawn->o2);
+	SetFloatValue(GAMEOBJECT_PARENTROTATION_03 ,spawn->o3);
 	SetUInt32Value(GAMEOBJECT_FLAGS,spawn->flags);
 //	SetUInt32Value(GAMEOBJECT_LEVEL,spawn->level);
-	SetUInt32Value(GAMEOBJECT_STATE,spawn->state);	
+	SetByte(GAMEOBJECT_BYTES_1, 0,spawn->state);	
 	if(spawn->faction)
 	{
 		SetUInt32Value(GAMEOBJECT_FACTION,spawn->faction);
@@ -504,7 +505,7 @@ void GameObject::EventCloseDoor()
 {
 // gameobject_flags +1 closedoor animate restore the pointer flag.
 // by cebernic
-	SetUInt32Value(GAMEOBJECT_STATE, 1);
+	SetByte(GAMEOBJECT_BYTES_1, 0, 1);
   SetUInt32Value(GAMEOBJECT_FLAGS, GetUInt32Value( GAMEOBJECT_FLAGS ) & ~1);
 }
 
@@ -540,7 +541,7 @@ void GameObject::UseFishingNode(Player *player)
 	this->AquireInrangeLock(); //make sure to release lock before exit function !
 	for ( InRangeSet::iterator it = GetInRangeSetBegin(); it != GetInRangeSetEnd(); ++it )
 	{
-		if ( (*it) == NULL || (*it)->GetTypeId() != TYPEID_GAMEOBJECT || (*it)->GetUInt32Value(GAMEOBJECT_TYPE_ID) != GAMEOBJECT_TYPE_FISHINGHOLE)
+		if ( (*it) == NULL || (*it)->GetTypeId() != TYPEID_GAMEOBJECT || (*it)->GetByte(GAMEOBJECT_BYTES_1, 1) != GAMEOBJECT_TYPE_FISHINGHOLE)
 			continue;
 		school = static_cast<GameObject *>( *it );
 		if ( !isInRange( school, (float)school->GetInfo()->sound1 ) )
@@ -609,7 +610,7 @@ void GameObject::FishHooked(Player * player)
 	data << GetGUID();
 	data << (uint32)(0); // value < 4
 	player->GetSession()->SendPacket(&data);
-	//SetUInt32Value(GAMEOBJECT_STATE, 0);
+	//SetByte(GAMEOBJECT_BYTES_1, 0, 0);
 	//BuildFieldUpdatePacket(player, GAMEOBJECT_FLAGS, 32);
 	SetUInt32Value(GAMEOBJECT_FLAGS, 32);
  }
@@ -701,7 +702,7 @@ void GameObject::ExpireAndDelete()
 
 void GameObject::Deactivate()
 {
-	SetUInt32Value(GAMEOBJECT_DYN_FLAGS, 0);
+	SetUInt32Value(GAMEOBJECT_DYNAMIC, 0);
 }
 
 void GameObject::CallScriptUpdate()

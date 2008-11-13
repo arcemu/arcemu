@@ -223,7 +223,7 @@ public:
 			GameObject * pDoor = _unit->GetMapMgr()->GetInterface()->GetGameObjectNearestCoords(-129.034f, 2166.16f, 129.187f, 18972);
 			if(pDoor == 0)
 			return;
-			pDoor->SetUInt32Value(GAMEOBJECT_STATE, 0);
+			pDoor->SetByte(GAMEOBJECT_BYTES_1, 0, 0);
 		//}
 	}
 protected:
@@ -347,7 +347,7 @@ public:
 		GameObject * pDoor = _unit->GetMapMgr()->GetInterface()->GetGameObjectNearestCoords(-118.11f, 2161.86f, 155.678f, 18971);
 		if(pDoor == 0)
 		return;
-		pDoor->SetUInt32Value(GAMEOBJECT_STATE, 0);
+		pDoor->SetByte(GAMEOBJECT_BYTES_1, 0, 0);
     }
 protected:
 };

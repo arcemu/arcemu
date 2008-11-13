@@ -133,7 +133,7 @@ bool MailMessage::AddMessageDataToPacket(WorldPacket& data)
 	data << uint32(0);
 	data << subject;
 	pos = data.wpos();
-	data << uint8(items.empty() ? 0 : items.size());		// item count
+	data << uint8(items.size());		// item count
 
 	if( !items.empty( ) )
 	{
@@ -149,9 +149,9 @@ bool MailMessage::AddMessageDataToPacket(WorldPacket& data)
 
 			for( j = 0; j < 6; ++j )
 			{
-				data << pItem->GetUInt32Value( ITEM_FIELD_ENCHANTMENT + ( j * 3 ) );
-				data << pItem->GetUInt32Value( ITEM_FIELD_ENCHANTMENT_01 + ( j * 3 ) );
-				data << pItem->GetUInt32Value( ITEM_FIELD_ENCHANTMENT_02 + ( j * 3 ) );
+				data << pItem->GetUInt32Value( ITEM_FIELD_ENCHANTMENT_1_1 + ( j * 3 ) );
+				data << pItem->GetUInt32Value( ITEM_FIELD_ENCHANTMENT_2_1 + ( j * 3 ) );
+				data << pItem->GetUInt32Value( ITEM_FIELD_ENCHANTMENT_3_1 + ( j * 3 ) );
 			}
 
 			data << pItem->GetUInt32Value( ITEM_FIELD_RANDOM_PROPERTIES_ID );
@@ -650,15 +650,6 @@ void WorldSession::HandleTakeMoney(WorldPacket & recv_data )
 		SendPacket(&data);
 
 		return;
-	}
-
-	if(sWorld.GoldCapEnabled)
-	{
-		if((_player->GetUInt32Value(PLAYER_FIELD_COINAGE) + message->money) > sWorld.GoldLimit)
-		{
-			_player->GetItemInterface()->BuildInventoryChangeError(NULL, NULL, INV_ERR_TOO_MUCH_GOLD);
-			return;
-		}
 	}
 
 	// add the money to the player

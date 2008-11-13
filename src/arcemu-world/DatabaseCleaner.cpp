@@ -23,10 +23,6 @@ initialiseSingleton(DatabaseCleaner);
 
 void DatabaseCleaner::Run()
 {
-	Log.Error("DatabaseCleaner", "The method is unavailable.");
-	return;
-
-	/*
 	Log.Notice("DatabaseCleaner", "Stage 1 of 3: Cleaning characters...");
 	CleanCharacters();
 
@@ -35,7 +31,6 @@ void DatabaseCleaner::Run()
 
 	Log.Notice("DatabaseCleaner", "Stage 3 of 3: Optimizing databases...");
 	Optimize();
-	*/
 }
 
 void DatabaseCleaner::CleanWorld()
@@ -50,9 +45,6 @@ void DatabaseCleaner::Optimize()
 
 void DatabaseCleaner::CleanCharacters()
 {
-	//TODO: Review this code... currently it would wipe almost the whole character database.. :D
-
-	/*
 	set<uint32> chr_guids;
 	set<uint32> chr_guilds;
 	set<uint32> chr_charters;
@@ -119,7 +111,7 @@ void DatabaseCleaner::CleanCharacters()
 		{
 			Corpse * pCorpse = new Corpse(0, result->Fetch()[0].GetUInt32());
 			pCorpse->LoadValues(result->Fetch()[8].GetString());
-			pCorpse->SetUInt32Value(OBJECT_FIELD_GUID_01, 0);
+			pCorpse->SetUInt32Value(OBJECT_FIELD_GUID, 0);
 			if(pCorpse->GetUInt32Value(CORPSE_FIELD_DISPLAY_ID) == 0 ||
 				pCorpse->GetUInt32Value(CORPSE_FIELD_OWNER) == 0 ||
 				chr_guids.find(pCorpse->GetUInt32Value(CORPSE_FIELD_OWNER)) == chr_guids.end())
@@ -337,9 +329,20 @@ void DatabaseCleaner::CleanCharacters()
 	Log.Notice("DatabaseCleaner", "Deleted %u petspells.", tokill_ps.size());
 	Log.Line();
 	Log.Notice("DatabaseCleaner", "Cleaning gm_tickets...");
-	CharacterDatabase.WaitExecute("DELETE FROM gm_tickets WHERE playerGuid NOT IN (SELECT guid FROM characters)");
-	//TODO: Print out count of removed gm_tickets
-	Log.Notice("DatabaseCleaner", "Deleted dead gm tickets.");
+	set<uint32> tokill_gm;
+	result = CharacterDatabase.Query("SELECT guid FROM gm_tickets");
+	if(result)
+	{
+		do 
+		{
+			if(chr_guids.find( result->Fetch()[0].GetUInt32() ) == chr_guids.end())
+				tokill_gm.insert(result->Fetch()[0].GetUInt32());
+		} while(result->NextRow());
+		delete result;
+	}
+	for(set<uint32>::iterator itr = tokill_gm.begin(); itr != tokill_gm.end(); ++itr)
+		CharacterDatabase.WaitExecute("DELETE FROM gm_tickets WHERE guid = %u", *itr);
+	Log.Notice("DatabaseCleaner", "Deleted %u gm tickets.", tokill_gm.size());
 	Log.Line();
 	Log.Notice("DatabaseCleaner", "Cleaning charters...");
 	vector<uint32> tokill_charters;
@@ -380,5 +383,4 @@ void DatabaseCleaner::CleanCharacters()
 	Log.Notice("DatabaseCleaner", "Deleted %u auctions.", tokill_auct.size());
 	Log.Notice("DatabaseCleaner", "Ending...");
 	Log.Line();
-	*/
 }

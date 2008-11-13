@@ -95,7 +95,7 @@ pSpellEffect SpellEffectsHandler[TOTAL_SPELL_EFFECTS]={
 		&Spell::SpellEffectPickpocket,				//SPELL_EFFECT_PICKPOCKET - 71
 		&Spell::SpellEffectAddFarsight,				//SPELL_EFFECT_ADD_FARSIGHT - 72
 		&Spell::SpellEffectSummonPossessed,			//SPELL_EFFECT_SUMMON_POSSESSED - 73
-		&Spell::SpellEffectCreateSummonTotem,		//SPELL_EFFECT_SUMMON_TOTEM - 74
+		&Spell::SpellEffectUseGlyph,				//SPELL_EFFECT_USE_GLYPH - 74
 		&Spell::SpellEffectHealMechanical,			//SPELL_EFFECT_HEAL_MECHANICAL - 75
 		&Spell::SpellEffectSummonObjectWild,		//SPELL_EFFECT_SUMMON_OBJECT_WILD - 76
 		&Spell::SpellEffectScriptEffect,			//SPELL_EFFECT_SCRIPT_EFFECT - 77
@@ -165,19 +165,25 @@ pSpellEffect SpellEffectsHandler[TOTAL_SPELL_EFFECTS]={
 		&Spell::SpellEffectNULL,					// unknown - 141 // triggers spell, magic one,  (Mother spell) http://www.thottbot.com/s41065
 		&Spell::SpellEffectTriggerSpellWithValue,	//SPELL_EFFECT_TRIGGER_SPELL_WITH_VALUE - 142 // triggers some kind of "Put spell on target" thing... (dono for sure) http://www.thottbot.com/s40872 and http://www.thottbot.com/s33076
 		&Spell::SpellEffectNULL,					// unknown - 143 // Master -> deamon effecting spell, http://www.thottbot.com/s25228 and http://www.thottbot.com/s35696
-		&Spell::SpellEffectNULL, // unknown - 144 // no spells
-		&Spell::SpellEffectNULL, // unknown - 145 // http://thottbot.com/s46230
-		&Spell::SpellEffectNULL, // unknown - 146 // no spells
-		&Spell::SpellEffectNULL, // SPELL_EFFECT_QUEST_FAIL - 147 // http://thottbot.com/s46070
-		&Spell::SpellEffectNULL, // unknown - 148 // no spells
-		&Spell::SpellEffectNULL, // unknown - 149 // http://thottbot.com/s23685 , http://thottbot.com/s44732 and http://thottbot.com/s45105
-		&Spell::SpellEffectNULL, // unknown - 150 // no spells
-		&Spell::SpellEffectSummonTarget, // SPELL_EFFECT_SUMMON_TARGET - 151 // trigger ritual of summoning
-		&Spell::SpellEffectNULL, // unknown - 152 // http://thottbot.com/s45927
-		&Spell::SpellEffectNULL, // SPELL_EFFECT_TAME_CREATURE - 153 // http://thottbot.com/s46686 , http://thottbot.com/s46716 , http://thottbot.com/s46717, http://thottbot.com/s46718 ...  // spelleffect summon pet ??
+		&Spell::SpellEffectNULL,// unknown - 144
+		&Spell::SpellEffectNULL,// unknown - 145
+		&Spell::SpellEffectNULL,// unknown - 146
+		&Spell::SpellEffectNULL,// Quest Fail - 147
+		&Spell::SpellEffectNULL,// unknown - 148
+		&Spell::SpellEffectNULL,// unknown - 149
+		&Spell::SpellEffectNULL,// unknown - 150
+		&Spell::SpellEffectNULL,// Summon Target - 151
+		&Spell::SpellEffectNULL,// Summon Refer-a-Friend - 152
+		&Spell::SpellEffectNULL,// Tame Creature - 153
+		&Spell::SpellEffectNULL,// unknown - 154
+		&Spell::SpellEffectNULL,// unknown - 155
+		&Spell::SpellEffectNULL,// unknown - 156
+		&Spell::SpellEffectNULL,// unknown - 157
+		&Spell::SpellEffectNULL,// unknown - 158
+		&Spell::SpellEffectNULL,// unknown - 159
 };
 
-char* SpellEffectNames[TOTAL_SPELL_EFFECTS] = {
+const char* SpellEffectNames[TOTAL_SPELL_EFFECTS] = {
 	"NULL",
 	"INSTANT_KILL",              //    1
 	"SCHOOL_DAMAGE",             //    2
@@ -877,7 +883,9 @@ void Spell::SpellEffectDummy(uint32 i) // Dummy(Scripted events)
 			ILotP.deleted = false;
 			ILotP.caster = u_caster->GetGUID();
 			ILotP.LastTrigger = 0;
-			ILotP.groupRelation = 0;
+			ILotP.groupRelation[0] = 0;
+			ILotP.groupRelation[1] = 0;
+			ILotP.groupRelation[2] = 0;
 			u_caster->m_procSpells.push_back(ILotP);
 		}break;
 	/*************************
@@ -2234,11 +2242,11 @@ void Spell::SpellEffectCreateItem(uint32 i) // Create item
 	for(int j=0; j<3; j++) // now create the Items
 	{
 		ItemPrototype *m_itemProto;
-		m_itemProto = ItemPrototypeStorage.LookupEntry( GetProto()->EffectSpellGroupRelation[j] );
+		m_itemProto = ItemPrototypeStorage.LookupEntry( GetProto()->EffectItemType[j] );
 		if (!m_itemProto)
 			continue;
 
-		if(GetProto()->EffectSpellGroupRelation[j] == 0)
+		if(GetProto()->EffectItemType[j] == 0)
 			continue;
 
 		uint32 item_count = damage;
@@ -2271,8 +2279,8 @@ void Spell::SpellEffectCreateItem(uint32 i) // Create item
 			return;
 		}
 
-		slot = 0;
-		add = p_caster->GetItemInterface()->FindItemLessMax(GetProto()->EffectSpellGroupRelation[j],1, false);
+			slot = 0;
+		add = p_caster->GetItemInterface()->FindItemLessMax(GetProto()->EffectItemType[j],1, false);
 		if (!add)
 		{
 			slotresult = p_caster->GetItemInterface()->FindFreeInventorySlot(m_itemProto);
@@ -2282,7 +2290,7 @@ void Spell::SpellEffectCreateItem(uint32 i) // Create item
 				  return;
 			}
 			
-			newItem =objmgr.CreateItem(GetProto()->EffectSpellGroupRelation[i],p_caster);
+			newItem =objmgr.CreateItem(GetProto()->EffectItemType[i],p_caster);
 			newItem->SetUInt64Value(ITEM_FIELD_CREATOR,m_caster->GetGUID());
 			newItem->SetUInt32Value(ITEM_FIELD_STACK_COUNT, item_count);
 
@@ -2301,9 +2309,6 @@ void Spell::SpellEffectCreateItem(uint32 i) // Create item
 
 			if(p_caster->GetItemInterface()->SafeAddItem(newItem,slotresult.ContainerSlot, slotresult.Slot))
 			{
-				/*WorldPacket data(45);
-				p_caster->GetSession()->BuildItemPushResult(&data, p_caster->GetGUID(), 1, item_count, GetProto()->EffectSpellGroupRelation[i] ,0,0xFF,1,0xFFFFFFFF);
-				p_caster->SendMessageToSet(&data, true);*/
 				p_caster->GetSession()->SendItemPushResult(newItem,true,false,true,true,slotresult.ContainerSlot,slotresult.Slot,item_count);
 			} else {
 				newItem->DeleteMe();
@@ -2324,7 +2329,7 @@ void Spell::SpellEffectCreateItem(uint32 i) // Create item
 					item_count = item_count_filled;
 				else
 				{
-					newItem =objmgr.CreateItem(GetProto()->EffectSpellGroupRelation[i],p_caster);
+					newItem =objmgr.CreateItem(GetProto()->EffectItemType[i],p_caster);
 					newItem->SetUInt64Value(ITEM_FIELD_CREATOR,m_caster->GetGUID());
 					newItem->SetUInt32Value(ITEM_FIELD_STACK_COUNT, item_count - item_count_filled);
 					if(!p_caster->GetItemInterface()->SafeAddItem(newItem,slotresult.ContainerSlot, slotresult.Slot))
@@ -2343,9 +2348,6 @@ void Spell::SpellEffectCreateItem(uint32 i) // Create item
 				p_caster->GetSession()->SendItemPushResult(add, true,false,true,false,p_caster->GetItemInterface()->GetBagSlotByGuid(add->GetGUID()),0xFFFFFFFF,item_count);
 			}
 
-			/*WorldPacket data(45);
-			p_caster->GetSession()->BuildItemPushResult(&data, p_caster->GetGUID(), 1, item_count, GetProto()->EffectSpellGroupRelation[i] ,0,0xFF,1,0xFFFFFFFF);
-			p_caster->SendMessageToSet(&data, true);*/
 		}
 		if ( skill != NULL )
 		{
@@ -2968,7 +2970,7 @@ void Spell::SpellEffectOpenLock(uint32 i) // Open Lock
 			else if(gameObjTarget)
 			{
 				GameObjectInfo *info = GameObjectNameStorage.LookupEntry(gameObjTarget->GetEntry());
-				if(!info || gameObjTarget->GetUInt32Value(GAMEOBJECT_STATE) == 0) return;
+				if(!info || gameObjTarget->GetByte(GAMEOBJECT_BYTES_1, 0) == 0) return;
 				Lock *lock = dbcLock.LookupEntry( info->SpellFocus );
 				if(lock == 0)
 					return;
@@ -2979,7 +2981,7 @@ void Spell::SpellEffectOpenLock(uint32 i) // Open Lock
 					{
 						v = lock->minlockskill[i];
 						gameObjTarget->SetUInt32Value(GAMEOBJECT_FLAGS, 0);
-						gameObjTarget->SetUInt32Value(GAMEOBJECT_STATE, 1);
+						gameObjTarget->SetByte(GAMEOBJECT_BYTES_1, 0, 1);
 						//Add Fill GO loot here
 						if(gameObjTarget->loot.items.size() == 0)
 						{
@@ -3097,7 +3099,7 @@ void Spell::SpellEffectOpenLock(uint32 i) // Open Lock
 		{
 			if(!gameObjTarget ) return;
 
-			if( gameObjTarget->GetUInt32Value( GAMEOBJECT_TYPE_ID ) == GAMEOBJECT_TYPE_GOOBER)
+			if( gameObjTarget->GetByte( GAMEOBJECT_BYTES_1, 1 ) == GAMEOBJECT_TYPE_GOOBER)
 					CALL_GO_SCRIPT_EVENT(gameObjTarget, OnActivate)(static_cast<Player*>(p_caster));
 			
 			if(sQuestMgr.OnActivateQuestGiver(gameObjTarget, p_caster))
@@ -3117,7 +3119,7 @@ void Spell::SpellEffectOpenLock(uint32 i) // Open Lock
 		}
 		break;
 	};
-	if( gameObjTarget != NULL && gameObjTarget->GetUInt32Value( GAMEOBJECT_TYPE_ID ) == GAMEOBJECT_TYPE_CHEST)
+	if( gameObjTarget != NULL && gameObjTarget->GetByte( GAMEOBJECT_BYTES_1, 1 ) == GAMEOBJECT_TYPE_CHEST)
 		static_cast< Player* >( m_caster )->SendLoot( gameObjTarget->GetGUID(), loottype );
 }
 
@@ -3134,7 +3136,7 @@ void Spell::SpellEffectOpenLockItem(uint32 i)
 		static_cast<Player*>(caster)->UpdateNearbyGameObjects();
 
 	CALL_GO_SCRIPT_EVENT(gameObjTarget, OnActivate)(static_cast<Player*>(caster));
-	gameObjTarget->SetUInt32Value(GAMEOBJECT_STATE, 0);	
+	gameObjTarget->SetByte(GAMEOBJECT_BYTES_1, 0, 0);	
 
 	if( gameObjTarget->GetEntry() == 183146)
 	{
@@ -3142,7 +3144,7 @@ void Spell::SpellEffectOpenLockItem(uint32 i)
 		return;
 	}
 
-	if( gameObjTarget->GetUInt32Value( GAMEOBJECT_TYPE_ID ) == GAMEOBJECT_TYPE_CHEST)
+	if( gameObjTarget->GetByte( GAMEOBJECT_BYTES_1, 1 ) == GAMEOBJECT_TYPE_CHEST)
 	{
 		lootmgr.FillGOLoot(&gameObjTarget->loot,gameObjTarget->GetEntry(), gameObjTarget->GetMapMgr() ? (gameObjTarget->GetMapMgr()->iInstanceMode ? true : false) : false);
 		if(gameObjTarget->loot.items.size() > 0)
@@ -3152,8 +3154,8 @@ void Spell::SpellEffectOpenLockItem(uint32 i)
 	}
 
 	// cebernic: atm doors works fine.
-	if( gameObjTarget->GetUInt32Value( GAMEOBJECT_TYPE_ID ) == GAMEOBJECT_TYPE_DOOR
-		|| gameObjTarget->GetUInt32Value( GAMEOBJECT_TYPE_ID ) == GAMEOBJECT_TYPE_GOOBER )
+	if( gameObjTarget->GetByte( GAMEOBJECT_BYTES_1, 1 ) == GAMEOBJECT_TYPE_DOOR
+		|| gameObjTarget->GetByte( GAMEOBJECT_BYTES_1, 1 ) == GAMEOBJECT_TYPE_GOOBER )
 		gameObjTarget->SetUInt32Value(GAMEOBJECT_FLAGS, gameObjTarget->GetUInt32Value( GAMEOBJECT_FLAGS ) | 1);
 
 	if(gameObjTarget->GetMapMgr()->GetMapInfo()->type==INSTANCE_NULL)//dont close doors for instances
@@ -3484,9 +3486,9 @@ void Spell::SpellEffectLearnPetSpell(uint32 i)
 		pPet->AddSpell( dbcSpell.LookupEntry( GetProto()->EffectTriggerSpell[i] ), true );
 
 		// Send Packet
-		WorldPacket data(SMSG_SET_AURA_SINGLE, 22);
+/*		WorldPacket data(SMSG_SET_EXTRA_AURA_INFO_OBSOLETE, 22);
 		data << pPet->GetGUID() << uint8(0) << uint32(GetProto()->EffectTriggerSpell[i]) << uint32(-1) << uint32(0);
-		p_caster->GetSession()->SendPacket(&data);
+		p_caster->GetSession()->SendPacket(&data);*/
 	}
 }
 
@@ -3905,7 +3907,7 @@ void Spell::SpellEffectSummonObject(uint32 i)
 
 		go->CreateFromProto( GO_FISHING_BOBBER, mapid, posx, posy, posz, orient );
 		go->SetUInt32Value( GAMEOBJECT_FLAGS, 0 );
-		go->SetUInt32Value( GAMEOBJECT_STATE, 0 );
+		go->SetByte( GAMEOBJECT_BYTES_1, 0, 0 );
 		go->SetUInt64Value( OBJECT_FIELD_CREATED_BY, m_caster->GetGUID() );
 		u_caster->SetUInt64Value( UNIT_FIELD_CHANNEL_OBJECT, go->GetGUID() );
 			 
@@ -3943,16 +3945,16 @@ void Spell::SpellEffectSummonObject(uint32 i)
 		
 		go->SetInstanceID(m_caster->GetInstanceID());
 		go->CreateFromProto(entry,mapid,posx,posy,pz,orient);
-		go->SetUInt32Value(GAMEOBJECT_STATE, 1);
+		go->SetByte(GAMEOBJECT_BYTES_1, 0, 1);
 		go->SetUInt64Value(OBJECT_FIELD_CREATED_BY,m_caster->GetGUID());
 		go->PushToWorld(m_caster->GetMapMgr());
 		sEventMgr.AddEvent(go, &GameObject::ExpireAndDelete, EVENT_GAMEOBJECT_EXPIRE, GetDuration(), 1,0);
 		if ( entry == 17032 ) // this is a portal
 		{
 			// enable it for party only
-			go->SetUInt32Value( GAMEOBJECT_STATE, 0 );
+			go->SetByte( GAMEOBJECT_BYTES_1, 0, 0 );
 			//disable by default
-			WorldPacket * pkt = go->BuildFieldUpdatePacket( GAMEOBJECT_STATE, 1 );
+			WorldPacket *pkt = go->BuildFieldUpdatePacket(GAMEOBJECT_BYTES_1, 1 << 24);
 			SubGroup * pGroup = p_caster->GetGroup() ? p_caster->GetGroup()->GetSubGroup(p_caster->GetSubGroup()) : NULL;
 
 			if ( pGroup != NULL )
@@ -4371,7 +4373,7 @@ void Spell::SpellEffectSummonPossessed(uint32 i) // eye of kilrog
 	pCaster->m_noInterrupt = 1;
 	pCaster->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_LOCK_PLAYER);
 
-	WorldPacket data(SMSG_DEATH_NOTIFY_OBSOLETE);
+	WorldPacket data(SMSG_CLIENT_CONTROL_UPDATE);
 	data << m_target->GetNewGUID() << uint8(1);
 	pCaster->GetSession()->SendPacket(&data);
 	*/
@@ -4415,6 +4417,39 @@ void Spell::SpellEffectSummonPossessed(uint32 i) // eye of kilrog
 	}*/
 }
 
+void Spell::SpellEffectUseGlyph(uint32 i)
+{
+	if(!p_caster)
+		return;
+	uint32 glyphId = m_spellInfo->EffectMiscValue[i];
+	// Get info
+	GlyphPropertyEntry *glyph = dbcGlyphProperty.LookupEntry(glyphId);
+	if(!glyph)
+		return;
+	uint32 type = glyph->Type;
+	if(type == 0) type = 4; // We are using 4 slot value instead of 0 for Major glyphs. Otherwise they can't be removed from client
+	// try to find place for it
+	int32 place = -1;
+	uint32 glyphX = 0;
+	for(uint32 x=0; x<6; ++x)
+	{
+		glyphX = p_caster->GetUInt32Value(PLAYER_FIELD_GLYPHS_1 + x);
+		if(glyphX == glyphId)
+		{
+			place = -1; // player already has this glyph
+			break;
+		}
+		if(glyphX == 0 &&	// This place is free
+			p_caster->GetUInt32Value(PLAYER_FIELD_GLYPH_SLOTS_1 + x) == type &&	// Glyph type matches
+			(p_caster->GetUInt32Value(PLAYER_GLYPHS_ENABLED) & (1 << x))) // This place is enabled
+				place = x; // Found it
+	}
+	if(place == -1) // can't apply
+		return;
+	p_caster->SetUInt32Value(PLAYER_FIELD_GLYPHS_1 + place, glyphId);
+	p_caster->CastSpell(p_caster, glyph->SpellID, true);	// Apply the glyph effect
+}
+
 void Spell::SpellEffectCreateSummonTotem(uint32 i)
 {
 	//Atalai Skeleton Totem
@@ -4450,7 +4485,7 @@ void Spell::SpellEffectSummonObjectWild(uint32 i)
 	GoSummon->SetInstanceID(m_caster->GetInstanceID());
 	GoSummon->SetUInt32Value(GAMEOBJECT_LEVEL, u_caster->getLevel());
 	GoSummon->SetUInt64Value(OBJECT_FIELD_CREATED_BY, m_caster->GetGUID());
-	GoSummon->SetUInt32Value(GAMEOBJECT_STATE, 0);
+	GoSummon->SetByte(GAMEOBJECT_BYTES_1, 0, 0);
 	GoSummon->PushToWorld(u_caster->GetMapMgr());
 	GoSummon->SetSummoned(u_caster);
 	
@@ -5033,7 +5068,7 @@ void Spell::SpellEffectActivateObject(uint32 i) // Activate Object
 	if(!gameObjTarget)
 		return;
 
-	gameObjTarget->SetUInt32Value(GAMEOBJECT_DYN_FLAGS, 1);
+	gameObjTarget->SetUInt32Value(GAMEOBJECT_DYNAMIC, 1);
 
 	sEventMgr.AddEvent(gameObjTarget, &GameObject::Deactivate, EVENT_GAMEOBJECT_DEACTIVATE, GetDuration(), 1);*/
 }
@@ -5154,7 +5189,7 @@ void Spell::SpellEffectSummonTotem(uint32 i) // Summon Totem
 	pTotem->SetUInt32Value(UNIT_FIELD_BYTES_0, (1 << 8) | (2 << 16) | (1 << 24));
 	pTotem->SetUInt32Value(UNIT_FIELD_FLAGS, UNIT_FLAG_PLAYER_CONTROLLED | UNIT_FLAG_SELF_RES);
 	pTotem->SetUInt32Value(UNIT_FIELD_BASEATTACKTIME, 2000);
-	pTotem->SetUInt32Value(UNIT_FIELD_BASEATTACKTIME_01, 2000);
+	pTotem->SetUInt32Value(UNIT_FIELD_RANGEDATTACKTIME, 2000);
 	pTotem->SetFloatValue(UNIT_FIELD_BOUNDINGRADIUS, 1.0f);
 	pTotem->SetFloatValue(UNIT_FIELD_COMBATREACH, 1.0f);
 	pTotem->SetUInt32Value(UNIT_FIELD_DISPLAYID, displayID);
@@ -5714,7 +5749,7 @@ void Spell::SpellEffectSummonObjectSlot(uint32 i)
 	GoSummon->SetUInt64Value(OBJECT_FIELD_CREATED_BY, m_caster->GetGUID()); 
 	GoSummon->SetInstanceID(m_caster->GetInstanceID());
 
-	if(GoSummon->GetUInt32Value(GAMEOBJECT_TYPE_ID) == GAMEOBJECT_TYPE_TRAP)
+	if(GoSummon->GetByte(GAMEOBJECT_BYTES_1, 1) == GAMEOBJECT_TYPE_TRAP)
 	{
 		GoSummon->invisible = true;
 		GoSummon->invisibilityFlag = INVIS_FLAG_TRAP;
@@ -6335,7 +6370,7 @@ void Spell::SpellEffectTranformItem(uint32 i)
 
 	if(!i_caster)
 		return;
-	uint32 itemid=GetProto()->EffectSpellGroupRelation[i];
+	uint32 itemid=GetProto()->EffectItemType[i];
 	if(!itemid)
 		return;
 
@@ -6411,10 +6446,12 @@ void Spell::SpellEffectEnchantHeldItem( uint32 i )
 	uint32 Duration = 1800; // Needs to be found in dbc.. I guess?
 	switch( GetProto()->NameHash )
 	{
+		/* Windfury Totem removed in 3.0.2
 		case SPELL_HASH_WINDFURY_TOTEM_EFFECT: // Windfury Totem Effect
 		{   
 			Duration = 10;
 		}
+		*/
 		case SPELL_HASH_FLAMETONGUE_TOTEM_EFFECT: // Flametongue Totem Effect
 		{   
 			Duration = 10;
@@ -6425,8 +6462,10 @@ void Spell::SpellEffectEnchantHeldItem( uint32 i )
 	if( Enchantment == NULL )
 		return;
 
+	/* Windfury Totem removed in 3.0.2
 	if (m_spellInfo->NameHash == SPELL_HASH_WINDFURY_TOTEM_EFFECT && item->HasEnchantmentOnSlot( 1 ) && item->GetEnchantment( 1 )->Enchantment != Enchantment) //dirty fix for Windfury totem not overwriting existing enchantments
 		return;
+	*/
 
 	item->RemoveEnchantment( 1 );
 	item->AddEnchantment( Enchantment, Duration, false, true, false, 1 );
@@ -6473,6 +6512,19 @@ void Spell::SpellEffectApplyAura128(uint32 i)
 {
 	if(GetProto()->EffectApplyAuraName[i] != 0)
 		SpellEffectApplyAura(i);
+}
+
+void Spell::SpellEffectRestoreManaPct(uint32 i)
+{
+	if(!unitTarget || !unitTarget->isAlive())
+		return;
+
+	uint32 curMana = (uint32)unitTarget->GetUInt32Value(UNIT_FIELD_POWER1);
+	uint32 maxMana = (uint32)unitTarget->GetUInt32Value(UNIT_FIELD_MAXPOWER1);
+	uint32 modMana = damage * maxMana / 100;	
+
+	unitTarget->SetPower(0, modMana + curMana);
+	SendHealManaSpellOnPlayer(u_caster, unitTarget, modMana, 0);
 }
 
 void Spell::SpellEffectTriggerSpellWithValue(uint32 i)

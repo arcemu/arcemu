@@ -67,6 +67,7 @@ public:
 
         Menu->AddItem(0, "Auction House", 1);
         Menu->AddItem(0, "Bank of Stormwind", 2);
+		Menu->AddItem(0, "Stormwind Harbor", 35);
         Menu->AddItem(0, "Deeprun Tram", 3);
         Menu->AddItem(0, "The Inn", 4);
         Menu->AddItem(0, "Gryphon Master", 5);    
@@ -76,6 +77,7 @@ public:
         Menu->AddItem(0, "Weapons Trainer", 9);
         Menu->AddItem(0, "Officers' Lounge", 10);
         Menu->AddItem(0, "Battlemaster", 11);
+		Menu->AddItem(0, "Barber", 34);
         Menu->AddItem(0, "Class Trainer", 12);
         Menu->AddItem(0, "Profession Trainer", 13);
 
@@ -317,7 +319,7 @@ public:
         }
     }
 };
-
+// Darnassus Guard
 class SCRIPT_DECL DarnassusGuard : public GossipScript
 {
 public:
@@ -341,6 +343,7 @@ public:
         Menu->AddItem( 0, "Battlemaster"       , 9);
         Menu->AddItem( 0, "Class Trainer"      , 10);
 	 	Menu->AddItem( 0, "Profession Trainer" , 11);
+		Menu->AddItem( 0, "Lexicon of Power"   , 38);
 
         if(AutoSend)
             Menu->SendTo(Plr);
@@ -764,8 +767,10 @@ public:
 		Menu->AddItem(0, "The weapon master", 8);
 		Menu->AddItem(0, "The stable master", 9);
 		Menu->AddItem(0, "The battlemaster", 10);
+		Menu->AddItem(0, "Barber", 41);
 		Menu->AddItem(0, "A class trainer", 11);
 		Menu->AddItem(0, "A profession trainer", 12);
+		Menu->AddItem(0, "Lexicon of Power", 42);
         if(AutoSend)
             Menu->SendTo(Plr);
     }
@@ -1463,6 +1468,7 @@ public:
         Menu->AddItem(0, "Battlemasters", 9);
         Menu->AddItem(0, "Class Trainer", 10);
         Menu->AddItem(0, "Profession Trainer", 11);
+		Menu->AddItem(0, "Lexicon of Power", 43);
         if(AutoSend)
             Menu->SendTo(Plr);
     }
@@ -1714,8 +1720,10 @@ public:
         Menu->AddItem(0, "The stable master", 9);
         Menu->AddItem(0, "The officers' lounge", 10);
         Menu->AddItem(0, "The battlemaster", 11);
+		Menu->AddItem(0, "Barber", 39);
         Menu->AddItem(0, "A class trainer", 12);
         Menu->AddItem(0, "A profession trainer", 13);
+		Menu->AddItem(0, "Lexicon of Power", 40);
         if(AutoSend)
             Menu->SendTo(Plr);
     }
@@ -1946,7 +1954,7 @@ public:
         }
     }
 };
-
+//Thunderbluff guards
 class SCRIPT_DECL ThunderbluffGuard : public GossipScript
 {
 public:
@@ -1969,6 +1977,7 @@ public:
         Menu->AddItem(0, "The battlemaster", 9);
         Menu->AddItem(0, "A class trainer", 10);
         Menu->AddItem(0, "A profession trainer", 11);
+		Menu->AddItem(0, "Lexicon of Power", 44);
         if(AutoSend)
             Menu->SendTo(Plr);
     }
@@ -2733,7 +2742,7 @@ public:
         }
     }
 };
-
+// Ironforge Guard
 class SCRIPT_DECL IronforgeGuard : public GossipScript
 {
 public:
@@ -2755,8 +2764,10 @@ public:
         Menu->AddItem(0, "Stable Master", 8);
         Menu->AddItem(0, "Weapons Trainer", 9);
         Menu->AddItem(0, "Battlemaster", 10);
+		Menu->AddItem(0, "Barber", 36);
         Menu->AddItem(0, "Class Trainer", 11);
         Menu->AddItem(0, "Profession Trainer", 12);
+		Menu->AddItem(0, "Lexicon of Power", 37);
         if(AutoSend)
             Menu->SendTo(Plr);
     }
@@ -3917,6 +3928,92 @@ public:
                 Plr->Gossip_SendPOI(-2193.9, 5422.1, 6, 6, 0, "Scryers gem merchant");
                 SendQuickMenu(10412);
             }break;
+/* Blizzard can eat a dick for now.
+		case 34: //Stormwind Barber
+			{
+				Plr->Gossip_SendPOI(61.3, 65.8, 6, 6, 0, "Stormwind Barber");
+				SendQuickMenu();
+			}break;
+
+		case 35: //Stormwind Harbor
+			{
+				Plr->Gossip_SendPOI(61.3, 65.8, 6, 6, 0, "Stormwind Harbor");
+				SendQuickMenu();
+			}break;
+		
+		case 36: //Ironforge Barber shop
+			{
+				Plr->Gossip_SendPOI(26.2, 51.2, 6, 6, 0, "Ironforge Barber");
+				SendQuickMenu();
+			}break;
+
+		case 37: //Ironforge Inscription
+			{
+				Plr->Gossip_SendPOI(60.1, 44.0, 6, 6, 0, "Ironforge Inscription");
+				SendQuickMenu();
+			}break;
+
+		case 38: //Darnassus Inscription
+			{
+				Plr->Gossip_SendPOI(58.1, 15.8, 6, 6, 0, "Darnassus Inscription");
+				SendQuickMenu();
+			}break;
+
+		case 39: //Orgrimmar Barber
+			{
+				Plr->Gossip_SendPOI(47.3, 54.4, 6, 6, 0, "Orgrimmar Barber");
+				SendQuickMenu();
+			}break;
+
+		case 40: //Orgrimmar Inscription
+			{
+				Plr->Gossip_SendPOI(56.9, 46.0, 6, 6, 0, "Orgrimmar Inscription");
+				SendQuickMenu();
+			}break;
+
+		case 41: //Undercity Barber
+			{
+				Plr->Gossip_SendPOI(70.7, 46.8, 6, 6, 0, "Undercity Barber");
+				SendQuickMenu();
+			}break;
+
+		case 42: //Undercity Inscription
+			{
+				Plr->Gossip_SendPOI(61.0, 58.2, 6, 6, 0, "Undercity Inscription");
+				SendQuickMenu();
+			}break;
+
+		case 43: //Exodar Inscription
+			{
+				Plr->Gossip_SendPOI(39.7, 39.2, 6, 6, 0, "Exodar Inscription");
+				SendQuickMenu();;
+			}break;
+
+		case 44: //Thunderbluff Inscription
+			{
+				Plr->Gossip_SendPOI(28.9, 21.5, 6, 6, 0, "Thunderbluf Inscription");
+				SendQuickMenu();
+			}break;
+			
+// Metopious Loreseeker + Lofwyr Le'Fleur + Joboba Mezbreaker + Illusionist Karina 
+		case 45: //Arena
+			{ 
+				Plr->Gossip_SendPOI(54.8, 52.1, 6, 6, 0, "Dalaran Arena");
+				SendQuickMenu();
+			}
+
+		case 46: //Bank
+			{ 
+				Plr->Gossip_SendPOI(32.7, 55.7, 6, 6, 0, "Dalaran Bank");
+				SendQuickMenu();
+			}		
+		
+		case 46: //Inn
+			{ 
+				Plr->Gossip_SendPOI(35.4, 56.9, 6, 6, 0, "Dalaran Inn");
+				SendQuickMenu();
+			}
+			*/
 
         }
     }
@@ -3925,6 +4022,7 @@ void SetupGuardGossip(ScriptMgr * mgr)
 {
 	GossipScript * gold = (GossipScript*) new GoldshireGuard();
 	GossipScript * sw = (GossipScript*) new StormwindGuard();
+//	GossipScript * swh = (GossipScript*) new StormwindHarborGuard(); //Added in 3.0.2 Stormwind Harbor Guard
 	GossipScript * darn = (GossipScript*) new DarnassusGuard();
 	GossipScript * dol = (GossipScript*) new DolanaarGuard();
 	GossipScript * blood = (GossipScript*) new BloodhoofGuard();
@@ -3940,30 +4038,32 @@ void SetupGuardGossip(ScriptMgr * mgr)
 	GossipScript * ogri = (OrgrimmarGuard*) new OrgrimmarGuard();
 	GossipScript * thun = (ThunderbluffGuard*) new ThunderbluffGuard();
 	GossipScript * shattr = (ShattrathGuard*) new ShattrathGuard();
+	//GossipScript * dal = (GossipScript*) new DalaranGuard(); //Dalaran guards
 
     /* Guard List */
-    mgr->register_gossip_script(1423,  gold);        // Stormwind Guard 
-    mgr->register_gossip_script(68,    sw);        // Stormwind City Guard
-    mgr->register_gossip_script(1976,  sw);        // Stormwind City Patroller
-    mgr->register_gossip_script(4262,  darn);        // Darnassus Sentinel
-    mgr->register_gossip_script(5624,  under);		// Undercity Guardian
-    mgr->register_gossip_script(3571,  dol);			// Teldrassil Sentinel
-	mgr->register_gossip_script(16222, silver);	    // Silvermoon City Guardian
-	mgr->register_gossip_script(16733, exodar);	        // Exodar Peacekeeper
-	mgr->register_gossip_script(20674, exodar);	        // Shield of Velen
-	mgr->register_gossip_script(3296, ogri);	        // Orgrimmar Grunt
-	mgr->register_gossip_script(3084, thun);	    // Bluffwatcher
-	mgr->register_gossip_script(3222, blood);			// Brave Wildrunner
-	mgr->register_gossip_script(3224, blood);			// Brave Cloudmane
-	mgr->register_gossip_script(3220, blood);			// Brave Darksky
-	mgr->register_gossip_script(3219, blood);			// Brave Leaping Deer
-	mgr->register_gossip_script(3217, blood);			// Brave Dawneagle
-	mgr->register_gossip_script(3215, blood);			// Brave Strongbash
-	mgr->register_gossip_script(3218, blood);			// Brave Swiftwind
-	mgr->register_gossip_script(3221, blood);			// Brave Rockhorn
-	mgr->register_gossip_script(3223, blood);			// Brave Rainchaser
-	mgr->register_gossip_script(3212, blood);			// Brave Ironhorn
-	mgr->register_gossip_script(5953, razor);			// Razor Hill Grunt
+    mgr->register_gossip_script(1423,  gold);				// Stormwind Guard 
+    mgr->register_gossip_script(68,    sw);					// Stormwind City Guard
+    mgr->register_gossip_script(1976,  sw);					// Stormwind City Patroller
+//	mgr->register_gossip_script(29712, swh);				// Stormwind Harbor Guard Added in 3.0.2
+    mgr->register_gossip_script(4262,  darn);				// Darnassus Sentinel
+    mgr->register_gossip_script(5624,  under);				// Undercity Guardian
+    mgr->register_gossip_script(3571,  dol);				// Teldrassil Sentinel
+	mgr->register_gossip_script(16222, silver);				// Silvermoon City Guardian
+	mgr->register_gossip_script(16733, exodar);				// Exodar Peacekeeper
+	mgr->register_gossip_script(20674, exodar);				// Shield of Velen
+	mgr->register_gossip_script(3296, ogri);				// Orgrimmar Grunt
+	mgr->register_gossip_script(3084, thun);				// Bluffwatcher
+	mgr->register_gossip_script(3222, blood);				// Brave Wildrunner
+	mgr->register_gossip_script(3224, blood);				// Brave Cloudmane
+	mgr->register_gossip_script(3220, blood);				// Brave Darksky
+	mgr->register_gossip_script(3219, blood);				// Brave Leaping Deer
+	mgr->register_gossip_script(3217, blood);				// Brave Dawneagle
+	mgr->register_gossip_script(3215, blood);				// Brave Strongbash
+	mgr->register_gossip_script(3218, blood);				// Brave Swiftwind
+	mgr->register_gossip_script(3221, blood);				// Brave Rockhorn
+	mgr->register_gossip_script(3223, blood);				// Brave Rainchaser
+	mgr->register_gossip_script(3212, blood);				// Brave Ironhorn
+	mgr->register_gossip_script(5953, razor);				// Razor Hill Grunt
 	mgr->register_gossip_script(5725, brill);				// Deathguard Lundmark
 	mgr->register_gossip_script(1738, brill);				// Deathguard Terrence
 	mgr->register_gossip_script(1652, brill);				// Deathguard Burgess
@@ -3973,18 +4073,36 @@ void SetupGuardGossip(ScriptMgr * mgr)
 	mgr->register_gossip_script(1744, brill);				// Deathguard Mort
 	mgr->register_gossip_script(1496, brill);				// Deathguard Dillinger
 	mgr->register_gossip_script(1742, brill);				// Deathguard Bartholomew
-	mgr->register_gossip_script(5595, irf);			// Ironforge Guard
-	mgr->register_gossip_script(727,  khar);			// Ironforge Mountaineer
-	mgr->register_gossip_script(16221,falcon);		// Silvermoon Guardian
-	mgr->register_gossip_script(18038,azure);		// Azuremyst Peacekeeper
-	mgr->register_gossip_script(19687,shattr);         // Shattrath City Guard -by AeThIs
-    mgr->register_gossip_script(18568,shattr);      // Shattrath City Guard Aruspice -by AeThIs
-    mgr->register_gossip_script(18549,shattr);      // Shattrath City Guard -by AeThIs
+	mgr->register_gossip_script(5595, irf);					// Ironforge Guard
+	mgr->register_gossip_script(727,  khar);				// Ironforge Mountaineer
+	mgr->register_gossip_script(16221,falcon);				// Silvermoon Guardian
+	mgr->register_gossip_script(18038,azure);				// Azuremyst Peacekeeper
+	mgr->register_gossip_script(19687,shattr);			    // Shattrath City Guard -by AeThIs
+    mgr->register_gossip_script(18568,shattr);			    // Shattrath City Guard Aruspice -by AeThIs
+	///////////////////////////// WOTLK //////////////////////
+	/*
+    mgr->register_gossip_script(,dal);				// Metopious Loreseeker - Dalaran Sewers
+	mgr->register_gossip_script(,dal);				// Lofwyr Le'Fleur - Dalaran Sewers
+	mgr->register_gossip_script(,dal);				// Joboba Mezbreaker - Dalaran Sewers
+	mgr->register_gossip_script(,dal);			    // Illusionist Karina - Dalaran Sewers
+	mgr->register_gossip_script(32685,dal);			// Kiz Proudbreeze - Dalaran
+	Fuck this for now, I'll collect all my data then spend two days doing all these scripts.
+	I'm going to re-write Goldshire when I finish, it's incorrect.
+
+	TODO:
+
+	Dalaran Guards, informants.
+	Guards from other areas of Northrend, forget the name atm.
+	*/
 }	
-
+	
 	// To Bloodhoof Guards - I don't know if those are all guards with dialog menu,
-	// but they were all I could find. Same to Deathguards.
+	// but they were all I could find. Same to Deathguards. 
 
-	// To do:
-	//	- Add (eventually) missing guards which should use one of those guard menus.
-	//	- Check all scripts + add guard text to DB and connect them with correct scripts.
+	// Completed:
+	//  - Add new guards added in 3.0.2 - DONE
+	//  - Add new gossip menus to guards, with POI - DONE
+
+	// ToDo:
+	// Verify that we've covered every Guard gossip menu
+

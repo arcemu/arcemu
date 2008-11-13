@@ -105,7 +105,7 @@ Creature::Creature(uint64 guid)
 	BaseAttackType = SCHOOL_NORMAL;
 	m_lootMethod = -1;
 	m_healthfromspell = 0;
-	m_speedFromHaste = 0;
+//	m_speedFromHaste = 0;
 }
 
 
@@ -123,7 +123,7 @@ Creature::~Creature()
 		delete m_custom_waypoint_map;
 	}
 	if(m_respawnCell!=NULL)
-		m_respawnCell->_respawnObjects.erase(this);
+		hashmap64_remove(m_respawnCell->_respawnObjects, GetGUID());
 }
 
 void Creature::Update( uint32 p_time )
@@ -303,7 +303,7 @@ void Creature::generateLoot()
 
 				// Master Loot Stuff - Let the rest of the raid know what dropped..
 				//TODO: Shouldn't we move this array to a global position? Or maybe it allready exists^^ (VirtualAngel) --- I can see (dead) talking pigs...^^
-				char* itemColours[7] = { "9d9d9d", "ffffff", "1eff00", "0070dd", "a335ee", "ff8000", "e6cc80" };
+				const char* itemColours[7] = { "9d9d9d", "ffffff", "1eff00", "0070dd", "a335ee", "ff8000", "e6cc80" };
 				char buffer[256];
 				sprintf(buffer, "\174cff%s\174Hitem:%u:0:0:0:0:0:0:0\174h[%s]\174h\174r", itemColours[itr->item.itemproto->Quality], itr->item.itemproto->ItemId, itr->item.itemproto->Name1);
 				this->SendChatMessage(CHAT_MSG_MONSTER_SAY, LANG_UNIVERSAL, buffer);
@@ -1153,15 +1153,9 @@ bool Creature::Load(CreatureSpawn *spawn, uint32 mode, MapInfo *info)
 	SetFloatValue(UNIT_FIELD_MINRANGEDDAMAGE,proto->RangedMinDamage);
 	SetFloatValue(UNIT_FIELD_MAXRANGEDDAMAGE,proto->RangedMaxDamage);
 
-	SetUInt32Value(UNIT_VIRTUAL_ITEM_SLOT_DISPLAY, proto->Item1SlotDisplay);
-	SetUInt32Value(UNIT_VIRTUAL_ITEM_SLOT_DISPLAY_01, proto->Item2SlotDisplay);
-	SetUInt32Value(UNIT_VIRTUAL_ITEM_SLOT_DISPLAY_02, proto->Item3SlotDisplay);
-	SetUInt32Value(UNIT_VIRTUAL_ITEM_INFO, proto->Item1Info1);
-	SetUInt32Value(UNIT_VIRTUAL_ITEM_INFO_01, proto->Item1Info2);
-	SetUInt32Value(UNIT_VIRTUAL_ITEM_INFO_02, proto->Item2Info1);
-	SetUInt32Value(UNIT_VIRTUAL_ITEM_INFO_03, proto->Item2Info2);
-	SetUInt32Value(UNIT_VIRTUAL_ITEM_INFO_04, proto->Item3Info1);
-	SetUInt32Value(UNIT_VIRTUAL_ITEM_INFO_05, proto->Item3Info2);
+	SetUInt32Value(UNIT_VIRTUAL_ITEM_SLOT_ID, proto->Item1Info2);
+	SetUInt32Value(UNIT_VIRTUAL_ITEM_SLOT_ID_1, proto->Item2Info2);
+	SetUInt32Value(UNIT_VIRTUAL_ITEM_SLOT_ID_2, proto->Item3Info2);
 
 	SetUInt32Value(UNIT_FIELD_FACTIONTEMPLATE, spawn->factionid);
 	SetUInt32Value(UNIT_FIELD_FLAGS, spawn->flags);
@@ -1360,19 +1354,9 @@ void Creature::Load(CreatureProto * proto_, float x, float y, float z)
 	SetFloatValue(UNIT_FIELD_MINDAMAGE, proto->MinDamage);
 	SetFloatValue(UNIT_FIELD_MAXDAMAGE, proto->MaxDamage);
 
-	SetUInt32Value(UNIT_FIELD_RANGEDATTACKTIME,proto->RangedAttackTime);
-	SetFloatValue(UNIT_FIELD_MINRANGEDDAMAGE,proto->RangedMinDamage);
-	SetFloatValue(UNIT_FIELD_MAXRANGEDDAMAGE,proto->RangedMaxDamage);
-
-	SetUInt32Value(UNIT_VIRTUAL_ITEM_SLOT_DISPLAY, proto->Item1SlotDisplay);
-	SetUInt32Value(UNIT_VIRTUAL_ITEM_SLOT_DISPLAY_01, proto->Item2SlotDisplay);
-	SetUInt32Value(UNIT_VIRTUAL_ITEM_SLOT_DISPLAY_02, proto->Item3SlotDisplay);
-	SetUInt32Value(UNIT_VIRTUAL_ITEM_INFO, proto->Item1Info1);
-	SetUInt32Value(UNIT_VIRTUAL_ITEM_INFO_01, proto->Item1Info2);
-	SetUInt32Value(UNIT_VIRTUAL_ITEM_INFO_02, proto->Item2Info1);
-	SetUInt32Value(UNIT_VIRTUAL_ITEM_INFO_03, proto->Item2Info2);
-	SetUInt32Value(UNIT_VIRTUAL_ITEM_INFO_04, proto->Item3Info1);
-	SetUInt32Value(UNIT_VIRTUAL_ITEM_INFO_05, proto->Item3Info2);
+	SetUInt32Value(UNIT_VIRTUAL_ITEM_SLOT_ID, proto->Item1SlotDisplay);
+	SetUInt32Value(UNIT_VIRTUAL_ITEM_SLOT_ID_1, proto->Item2SlotDisplay);
+	SetUInt32Value(UNIT_VIRTUAL_ITEM_SLOT_ID_2, proto->Item3SlotDisplay);
 
 	SetUInt32Value(UNIT_FIELD_FACTIONTEMPLATE, proto->Faction);
 	SetFloatValue(UNIT_FIELD_BOUNDINGRADIUS, proto->BoundingRadius);
@@ -1709,7 +1693,7 @@ void Creature::Despawn(uint32 delay, uint32 respawntime)
 			pCell = m_mapCell;
 	
 		ASSERT(pCell);
-		pCell->_respawnObjects.insert(((Object*)this));
+		hashmap64_put(pCell->_respawnObjects, GetGUID(), NULL);
 		sEventMgr.RemoveEvents(this);
 		sEventMgr.AddEvent(m_mapMgr, &MapMgr::EventRespawnCreature, this, pCell, EVENT_CREATURE_RESPAWN, respawntime, 1, 0);
 		Unit::RemoveFromWorld(false);

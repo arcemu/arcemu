@@ -53,7 +53,7 @@ end
 
 function Pandemonius_Void_Blast(pUnit, event, miscpUnit, misc)
 	print "Pandemonius Void Blast"
-	pUnit:FullCastSpellOnTarget(32325,pUnit:GetMainTank())
+	pUnit:FullCastSpellOnTarget(32325,pUnit:GetClosestPlayer(0))
 
 end
 
@@ -85,7 +85,7 @@ pUnit:SendChatMessage(11, 0, "To the void... once... more.")
 pUnit:RemoveEvents()
 end
 
-RegisterUnitEvent(18341, 1, "Pandemonius_OnCombat")
-RegisterUnitEvent(18341, 2, "Pandemonius_OnLeaveCombat")
-RegisterUnitEvent(18341, 3, "Pandemonius_OnKilledTarget")
-RegisterUnitEvent(18341, 4, "Pandemonius_OnDied")
+RegisterpUnitEvent(18341, 1, "Pandemonius_OnCombat")
+RegisterpUnitEvent(18341, 2, "Pandemonius_OnLeaveCombat")
+RegisterpUnitEvent(18341, 3, "Pandemonius_OnKilledTarget")
+RegisterpUnitEvent(18341, 4, "Pandemonius_OnDied")

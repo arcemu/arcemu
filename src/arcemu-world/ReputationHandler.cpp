@@ -443,12 +443,14 @@ void Player::OnModStanding( FactionDBC * dbc, FactionReputation * rep )
 
 	if ( Visible( rep->flag ) && IsInWorld() )
 	{
-		WorldPacket data( SMSG_SET_FACTION_STANDING, 12 );
-		data << uint32( 0 ) << uint32( rep->flag ) << dbc->RepListId << rep->CalcStanding();
+		WorldPacket data( SMSG_SET_FACTION_STANDING, 17 );
+		data << uint32( 0 ) ;
+		data << uint8( 1 ) ; //count 
+		data << uint32( rep->flag ) << dbc->RepListId << rep->CalcStanding();
 		m_session->SendPacket( &data );
 	}
 
-	// PVP title as a reward for exalted reputations
+	/*// PVP title as a reward for exalted reputations
 	switch( dbc->RepListId )
 	{
 		case FACTION_STORMPIKE_GUARDS:
@@ -460,10 +462,10 @@ void Player::OnModStanding( FactionDBC * dbc, FactionReputation * rep )
 				GetStandingRank( 890 ) == STANDING_EXALTED &&
 				GetStandingRank( 509 ) == STANDING_EXALTED )
 			{
-				SetKnownTitle( PVPTITLE_JUSTICAR , true );
+				SetKnownTitle( PVP_TITLE_JUSTICAR , true );
 			}
 			else
-				SetKnownTitle( PVPTITLE_JUSTICAR , false );
+				SetKnownTitle( PVP_TITLE_JUSTICAR , false );
 		} break;
 		case FACTION_THE_DEFILERS:
 		case FACTION_FROSTWOLF_CLAN:
@@ -474,10 +476,10 @@ void Player::OnModStanding( FactionDBC * dbc, FactionReputation * rep )
 				GetStandingRank( 729 ) == STANDING_EXALTED &&
 				GetStandingRank( 889 ) == STANDING_EXALTED )
 			{
-				SetKnownTitle( PVPTITLE_CONQUEROR , true );
+				SetKnownTitle( PVP_TITLE_CONQUEROR , true );
 			}
 			else
-				SetKnownTitle( PVPTITLE_CONQUEROR , false );
+				SetKnownTitle( PVP_TITLE_CONQUEROR , false );
 		} break;
-	}
+	}*/
 }

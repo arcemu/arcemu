@@ -31,7 +31,7 @@ Staff of ArcScript Project, Feb 2008
 --Scripted: recon
 function Yor_Fire(pUnit, Event)
 	print "Yor Double Breath"
-	pUnit:FullCastSpellOnTarget(38361,Unit:GetMainTank())
+	pUnit:FullCastSpellOnTarget(38361,Unit:GetClosestPlayer(0))
 end
 
 function Yor_stomp(pUnit, Event)

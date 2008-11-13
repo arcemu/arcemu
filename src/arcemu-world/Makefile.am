@@ -3,6 +3,8 @@ INCLUDES += -I$(srcdir)/../arcemu-shared
 bin_PROGRAMS = arcemu-world
 
 arcemu_world_SOURCES = \
+    AchievementMgr.cpp \
+    AchievementMgr.h \
     CollideInterface.cpp \
     CollideInterface.h \
     VoiceChatClientSocket.cpp \
@@ -202,6 +204,6 @@ arcemu_world_SOURCES = \
 arcemu_world_LDADD = -lshared -lz -lpcre -lcollision
 
 arcemu_world_LDFLAGS = -L$(srcdir)/../arcemu-shared \
-               -L$(srcdir)/../../extras/collision/collision_dll \
+               -L$(srcdir)/../collision \
                -L/usr/lib \
                @LIB_EXPORT@

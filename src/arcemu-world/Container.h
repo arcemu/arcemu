@@ -35,7 +35,7 @@ public:
 	bool AddItemToFreeSlot(Item *pItem, uint32 * r_slot);
 	Item *GetItem(int8 slot)
 	{
-		if((uint8)slot < GetProto()->ContainerSlots)
+		if(slot >= 0 && (uint8)slot < GetProto()->ContainerSlots)
 			return m_Slot[slot];
 		else
 			return 0;

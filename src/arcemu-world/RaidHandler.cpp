@@ -147,7 +147,7 @@ void WorldSession::HandleReadyCheckOpcode(WorldPacket& recv_data)
 	{
 		if(pGroup->GetLeader() == _player->m_playerInfo)
 		{
-			WorldPacket data(CMSG_RAID_READYCHECK, 8);
+			WorldPacket data(MSG_RAID_READY_CHECK, 8);
 			data << GetPlayer()->GetGUID();
 			/* send packet to group */
 			pGroup->SendPacketToAll(&data);

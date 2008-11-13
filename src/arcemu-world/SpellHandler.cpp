@@ -28,11 +28,12 @@ void WorldSession::HandleUseItemOpcode(WorldPacket& recvPacket)
 	Player* p_User = GetPlayer();
 	sLog.outDetail("WORLD: got use Item packet, data length = %i",recvPacket.size());
 	int8 tmp1,slot,tmp3;
+	uint8 unk; //Alice : added in 3.0.2
 	uint64 item_guid;
 	uint8 cn;
 	uint32 spellId = 0;
 
-	recvPacket >> tmp1 >> slot >> tmp3 >> cn >> item_guid;
+	recvPacket >> tmp1 >> slot >> tmp3 >> cn >> item_guid >> unk;
 	Item* tmpItem = NULL;
 	tmpItem = p_User->GetItemInterface()->GetInventoryItem(tmp1,slot);
 	if (!tmpItem)
@@ -191,6 +192,39 @@ void WorldSession::HandleUseItemOpcode(WorldPacket& recvPacket)
 
 }
 
+void WorldSession::HandleSpellClick(WorldPacket& recvPacket)
+{
+	sLog.outDetail("WORLD: got CMSG_SPELLCLICK packet, data length = %i",recvPacket.size());
+
+	if(!_player->IsInWorld()) 
+		return;
+	if(_player->getDeathState()==CORPSE)
+		return;
+
+	uint64 target_guid; // this will store the guid of the object we are going to use it's spell. There must be a dbc that indicates what spells a unit has
+
+	recvPacket >> target_guid;
+
+	//we have only 1 example atm for entry : 28605
+	Unit *target_unit = _player->GetMapMgr()->GetUnit( target_guid );
+
+	if( !target_unit )
+		return;
+
+	uint32 cast_spell_id = 0;
+	if( target_unit->GetUInt32Value( OBJECT_FIELD_ENTRY ) == 28605 )
+		cast_spell_id = 52263; // steel horse
+
+	if( cast_spell_id == 0 )
+		return; // no idea how to handle this mount
+
+	SpellEntry *spellInfo = dbcSpell.LookupEntryForced( cast_spell_id );
+ 	Spell *spell = SpellPool.PooledNew();
+ 	spell->Init(_player, spellInfo, false, NULL);
+	SpellCastTargets targets( target_guid );
+	spell->prepare(&targets);
+}
+
 void WorldSession::HandleCastSpellOpcode(WorldPacket& recvPacket)
 {
 	if(!_player->IsInWorld()) return;
@@ -198,9 +232,9 @@ void WorldSession::HandleCastSpellOpcode(WorldPacket& recvPacket)
 		return;
 
 	uint32 spellId;
-	uint8 cn;
+	uint8 cn, unk; //Alice : Added to 3.0.2
 
-	recvPacket >> spellId >> cn;
+	recvPacket >> cn >> spellId  >> unk;
 	// check for spell id
 	SpellEntry *spellInfo = dbcSpell.LookupEntryForced(spellId );
 
@@ -373,7 +407,7 @@ void WorldSession::HandleCancelAutoRepeatSpellOpcode(WorldPacket& recv_data)
 	GetPlayer()->m_onAutoShot = false;
 }
 
-void WorldSession::HandleAddDynamicTargetOpcode(WorldPacket & recvPacket)
+void WorldSession::HandlePetCastSpell(WorldPacket & recvPacket)
 {
 	uint64 guid;
 	uint32 spellid;

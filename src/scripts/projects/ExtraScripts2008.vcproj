@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="9.00"
+	Version="9,00"
 	Name="ExtraScripts"
 	ProjectGUID="{9F200BBC-57C3-4F0C-8BB5-F9053E4BB4B3}"
 	Keyword="Win32Proj"
@@ -215,10 +215,6 @@
 			</File>
 			<File
 				RelativePath="..\src\ExtraScripts\PvPToken.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\src\ExtraScripts\WeddingNpc.cpp"
 				>
 			</File>
 		</Filter>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="windows-1250"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="9,00"
+	Version="9.00"
 	Name="ArcScriptInstanceScripts"
 	ProjectGUID="{EE39B48B-C598-4AAF-9EF0-199402933EE5}"
 	RootNamespace="InstanceScripts"
@@ -571,6 +571,22 @@
 			</File>
 			<File
 				RelativePath="..\src\InstanceScripts\Raid_ZulGurub.cpp"
+				>
+			</File>
+		</Filter>
+		<Filter
+			Name="WOTLK"
+			>
+			<File
+				RelativePath="..\src\InstanceScripts\WOTLK\Ahn&apos;kahet The Old Kingdom.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\src\InstanceScripts\WOTLK\Drak&apos;Tharon Keep -- Bosses.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\src\InstanceScripts\WOTLK\The Culling of Stratholme.cpp"
 				>
 			</File>
 		</Filter>

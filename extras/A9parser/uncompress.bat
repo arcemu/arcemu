@@ -1,0 +1,1 @@
+.\step3\step8.exe > .\step3\cmd_out.txt

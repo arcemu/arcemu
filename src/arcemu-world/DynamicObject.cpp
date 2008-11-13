@@ -136,7 +136,7 @@ void DynamicObject::UpdateTargets()
 
 			target = static_cast< Unit* >( *itr2 );
 
-			if( !isAttackable( p_caster, target, !(m_spellProto->c_is_flags & SPELL_FLAG_IS_TARGETINGSTEALTHED) ) )
+			if( !isAttackable( u_caster, target, !(m_spellProto->c_is_flags & SPELL_FLAG_IS_TARGETINGSTEALTHED) ) )
 				continue;
 
 			// skip units already hit, their range will be tested later

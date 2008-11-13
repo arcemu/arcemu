@@ -1059,7 +1059,7 @@ void Guild::OfficerChat(const char * szMessage, WorldSession * pClient, uint32 i
 
 void Guild::SendGuildLog(WorldSession * pClient)
 {
-	WorldPacket data(MSG_GUILD_LOG, 18*m_log.size()+1);
+	WorldPacket data(MSG_GUILD_EVENT_LOG_QUERY, 18*m_log.size()+1);
 	GuildLogList::iterator itr;
 	uint32 count = 0;
 
@@ -1392,15 +1392,6 @@ void Guild::WithdrawMoney(WorldSession * pClient, uint32 uAmount)
 	if(m_bankBalance < uAmount)
 		return;
 
-	if(sWorld.GoldCapEnabled)
-	{
-		if((pClient->GetPlayer()->GetUInt32Value(PLAYER_FIELD_COINAGE) + uAmount) > sWorld.GoldLimit)
-		{
-			pClient->GetPlayer()->GetItemInterface()->BuildInventoryChangeError(NULL, NULL, INV_ERR_TOO_MUCH_GOLD);
-			return;
-		}
-	}
-
 	// update his bank state
 	pMember->OnMoneyWithdraw(uAmount);
 
@@ -1432,7 +1423,7 @@ void Guild::SendGuildBankLog(WorldSession * pClient, uint8 iSlot)
 	if(iSlot == 6)
 	{
 		// sending the money log
-		WorldPacket data(MSG_GUILD_BANK_LOG, (17*m_moneyLog.size()) + 2);
+		WorldPacket data(MSG_GUILD_BANK_LOG_QUERY, (17*m_moneyLog.size()) + 2);
 		uint32 lt = (uint32)UNIXTIME;
 		data << uint8(0x06);
 		data << uint8((m_moneyLog.size() < 25) ? m_moneyLog.size() : 25);
@@ -1467,7 +1458,7 @@ void Guild::SendGuildBankLog(WorldSession * pClient, uint8 iSlot)
 			return;
 		}
 
-		WorldPacket data(MSG_GUILD_BANK_LOG, (17*m_moneyLog.size()) + 2);
+		WorldPacket data(MSG_GUILD_BANK_LOG_QUERY, (17*m_moneyLog.size()) + 2);
 		uint32 lt = (uint32)UNIXTIME;
 		data << uint8(iSlot);
 		data << uint8((pTab->lLog.size() < 25) ? pTab->lLog.size() : 25);

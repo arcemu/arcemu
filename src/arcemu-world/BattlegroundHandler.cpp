@@ -292,7 +292,7 @@ void WorldSession::HandleInspectArenaStatsOpcode( WorldPacket & recv_data )
             ArenaTeam* team = objmgr.GetArenaTeamById( id );
             if( team != NULL )
 			{
-				WorldPacket data( MSG_INSPECT_ARENA_STATS, 8 + 1 + 4 * 5 );
+				WorldPacket data( MSG_INSPECT_ARENA_TEAMS, 8 + 1 + 4 * 5 );
 				data << player->GetGUID();
 				data << team->m_type;
 				data << team->m_id;

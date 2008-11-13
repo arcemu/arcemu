@@ -49,6 +49,10 @@
 	paladin - protection - 383
 	paladin - retribution - 381
 
+	death knight - blood - 398
+	death knight - frost - 399
+	death knight - unholy - 400
+	
 	priest - dicipline - 201
 	priest - holy - 202
 	priest - shadow - 203
@@ -69,7 +73,7 @@ static const uint32 TalentTreesPerClass[DRUID+1][3] =  {
 	{ 361, 363, 362 },	// HUNTER
 	{ 182, 181, 183 },	// ROGUE
 	{ 201, 202, 203 },	// PRIEST
-	{ 0, 0, 0 },		// NONE
+	{ 398, 399, 400 },	// DEATH KNIGHT
 	{ 261, 263, 262 },	// SHAMAN
 	{ 81, 41, 61 },		// MAGE
 	{ 302, 303, 301 },	// WARLOCK
@@ -92,17 +96,6 @@ void WorldSession::HandleLearnTalentOpcode( WorldPacket & recv_data )
 	if (requested_rank > 4)
 		return;
 
-/*	unsigned int numRows = sTalentStore.GetNumRows();
-	TalentEntry *talentInfo=NULL ;
-	for (unsigned int i = 0; i < numRows; i++)		  // Loop through all talents.
-	{
-		TalentEntry *t= sTalentStore.LookupEntry( i );
-		if(t->TalentID==talent_id)
-		{
-			talentInfo=t;
-			break;
-		}
-	}*/
 	TalentEntry * talentInfo = dbcTalent.LookupEntryForced(talent_id);
 	if(!talentInfo)return;
   
@@ -112,30 +105,24 @@ void WorldSession::HandleLearnTalentOpcode( WorldPacket & recv_data )
 	if (talentInfo->DependsOn > 0)
 	{
 		TalentEntry *depTalentInfo = NULL;
-		/*for (unsigned int i = 0; i < numRows; i++)		  // Loop through all talents.
-		{
-			TalentEntry *t= sTalentStore.LookupEntry( i );
-			if(t->TalentID==talentInfo->DependsOn)
-			{
-				depTalentInfo=t;
-				break;
-			}
-		}*/
 		depTalentInfo = dbcTalent.LookupEntryForced(talentInfo->DependsOn);
-		bool hasEnoughRank = false;
-		for (int i = talentInfo->DependsOnRank; i < 5; i++)
+		if(depTalentInfo)
 		{
-			if (depTalentInfo->RankID[i] != 0)
+			bool hasEnoughRank = false;
+			for (int i = talentInfo->DependsOnRank; i < 5; i++)
 			{
-				if (player->HasSpell(depTalentInfo->RankID[i]))
+				if (depTalentInfo->RankID[i] != 0)
 				{
-					hasEnoughRank = true;
-					break;
+					if (player->HasSpell(depTalentInfo->RankID[i]))
+					{
+						hasEnoughRank = true;
+						break;
+					}
 				}
 			}
+			if (!hasEnoughRank)
+				return;
 		}
-		if (!hasEnoughRank)
-			return;
 	}
 
 	// Find out how many points we have in this field

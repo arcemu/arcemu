@@ -161,6 +161,12 @@ void WorldSession::CharacterEnumProc(QueryResult * result)
 				_side = sides[race];
 			}
 
+						
+		if( !has_level_55_char && fields[1].GetUInt8() >= 55 )
+			{
+				has_level_55_char = true;
+			}
+
 			/* build character enum, w0000t :p */
 			data << guid;						// guid
 			data << fields[7].GetString();		// name
@@ -189,6 +195,8 @@ void WorldSession::CharacterEnumProc(QueryResult * result)
 				else
 					data << uint32(1);		// alive
 			}
+			
+					data << uint32(0); //Added in 3.0.2
 			
 			data << fields[14].GetUInt8();		// Rest State
 
@@ -384,6 +392,19 @@ void WorldSession::HandleCharCreateOpcode( WorldPacket & recv_data )
 			return;
 		}
 	}
+
+	if( Config.OptionalConfig.GetBoolDefault( "ClassOptions" , "DeathKnightPreReq" , false ) && !has_level_55_char 
+		&& ( class_ == DEATHKNIGHT ) )
+	{	
+		pNewChar->ok_to_remove = true;
+		delete pNewChar;
+		WorldPacket data(1);
+		data.SetOpcode(SMSG_CHAR_CREATE);
+		data << (uint8)56 + 1; // This errorcode is not the actual one. Need to find a real error code.
+		SendPacket( &data );
+		return;
+	}
+
 	pNewChar->UnSetBanned();
 	pNewChar->addSpell(22027);	  // Remove Insignia
 
@@ -428,27 +449,36 @@ void WorldSession::HandleCharCreateOpcode( WorldPacket & recv_data )
 void WorldSession::HandleCharDeleteOpcode( WorldPacket & recv_data )
 {
 	CHECK_PACKET_SIZE(recv_data, 8);
-	uint8 fail = CHAR_DELETE_SUCCESS;
+	uint8 fail = 0x3E;
 
 	uint64 guid;
 	recv_data >> guid;
 
-	if( objmgr.GetPlayer( (uint32)guid) != NULL )
+	if(objmgr.GetPlayer((uint32)guid) != NULL)
 	{
-		fail = CHAR_DELETE_FAILED;
-	} else {
+		// "Char deletion failed"
+		fail = 0x3F;
+	}
+	else
+	{
+		fail = DeleteCharacter((uint32)guid);
+		OutPacket(SMSG_CHAR_DELETE, 1, &fail);
+	}
+}
 
-		PlayerInfo * inf = objmgr.GetPlayerInfo((uint32)guid);
-		if( inf != NULL && inf->m_loggedInPlayer == NULL )
-		{
+uint8 WorldSession::DeleteCharacter(uint32 guid)
+{
+	PlayerInfo * inf = objmgr.GetPlayerInfo(guid);
+	if( inf != NULL && inf->m_loggedInPlayer == NULL )
+	{
 			QueryResult * result = CharacterDatabase.Query("SELECT name FROM characters WHERE guid = %u AND acct = %u", (uint32)guid, _accountId);
 			if(!result)
-				return;
+				return 0x3F;
 
 			if(inf->guild)
 			{
 				if(inf->guild->GetGuildLeader()==inf->guid)
-					inf->guild->Disband();
+					return 0x41;
 				else
 					inf->guild->RemoveGuildMember(inf,NULL);
 			}
@@ -467,7 +497,9 @@ void WorldSession::HandleCharDeleteOpcode( WorldPacket & recv_data )
 			for(int i = 0; i < NUM_ARENA_TEAM_TYPES; ++i)
 			{
 				ArenaTeam * t = objmgr.GetArenaTeamByGuid((uint32)guid, i);
-				if(t != NULL)
+				if(t != NULL && t->m_leader == guid)
+					return 0x42;
+				if(t !=NULL)
 					t->RemoveMember(inf);
 			}
 			
@@ -483,7 +515,7 @@ void WorldSession::HandleCharDeleteOpcode( WorldPacket & recv_data )
 				CharacterDatabase.Execute("DELETE FROM corpses WHERE guid = %u", c->GetLowGUID());
 
 			CharacterDatabase.Execute("DELETE FROM playeritems WHERE ownerguid=%u",(uint32)guid);
-			CharacterDatabase.Execute("DELETE FROM gm_tickets WHERE playerGuid = %u", (uint32)guid);
+			CharacterDatabase.Execute("DELETE FROM gm_tickets WHERE guid = %u", (uint32)guid);
 			CharacterDatabase.Execute("DELETE FROM playerpets WHERE ownerguid = %u", (uint32)guid);
 			CharacterDatabase.Execute("DELETE FROM playerpetspells WHERE ownerguid = %u", (uint32)guid);
 			CharacterDatabase.Execute("DELETE FROM tutorials WHERE playerId = %u", (uint32)guid);
@@ -492,16 +524,17 @@ void WorldSession::HandleCharDeleteOpcode( WorldPacket & recv_data )
 			CharacterDatabase.Execute("DELETE FROM mailbox WHERE player_guid = %u", (uint32)guid);
 			CharacterDatabase.Execute("DELETE FROM social_friends WHERE character_guid = %u OR friend_guid = %u", (uint32)guid, (uint32)guid);
 			CharacterDatabase.Execute("DELETE FROM social_ignores WHERE character_guid = %u OR ignore_guid = %u", (uint32)guid, (uint32)guid);
+			CharacterDatabase.Execute("DELETE FROM character_achievement WHERE guid = '%u'",(uint32)guid);
+			CharacterDatabase.Execute("DELETE FROM character_achievement_progress WHERE guid = '%u'",(uint32)guid);
 
 			/* remove player info */
 			objmgr.DeletePlayerInfo((uint32)guid);
-		}
-		else
-			fail = CHAR_DELETE_FAILED;
-    _side = -1; // ceberwow added it
+			return 0x3E;
 	}
+	else
+		return 0x3F;
 
-	OutPacket(SMSG_CHAR_DELETE, 1, &fail);
+	return 0x3F;
 }
 
 void WorldSession::HandleCharRenameOpcode(WorldPacket & recv_data)
@@ -662,17 +695,17 @@ void WorldSession::FullLogin(Player * plr)
 
 
 #ifndef USING_BIG_ENDIAN
-	StackWorldPacket<20> datab(SMSG_VOICE_SYSTEM_STATUS);
+	StackWorldPacket<20> datab(SMSG_FEATURE_SYSTEM_STATUS);
 #else
-	WorldPacket datab(SMSG_VOICE_SYSTEM_STATUS, 20);
+	WorldPacket datab(SMSG_FEATURE_SYSTEM_STATUS, 20);
 #endif
 
 #ifdef VOICE_CHAT
-	datab.Initialize(SMSG_VOICE_SYSTEM_STATUS);
+	datab.Initialize(SMSG_FEATURE_SYSTEM_STATUS);
 	datab << uint8(2) << uint8(sVoiceChatHandler.CanUseVoiceChat() ? 1 : 0);
 	SendPacket(&datab);
 #else
-	datab.Initialize(SMSG_VOICE_SYSTEM_STATUS);
+	datab.Initialize(SMSG_FEATURE_SYSTEM_STATUS);
 	datab << uint8(2) << uint8(0);
 #endif
 
@@ -715,9 +748,9 @@ void WorldSession::FullLogin(Player * plr)
 
 	// account data == UI config
 #ifndef USING_BIG_ENDIAN
-	StackWorldPacket<128> data(SMSG_ACCOUNT_DATA_MD5);
+	StackWorldPacket<128> data(SMSG_ACCOUNT_DATA_TIMES);
 #else
-	WorldPacket data(SMSG_ACCOUNT_DATA_MD5, 128);
+	WorldPacket data(SMSG_ACCOUNT_DATA_TIMES, 128);
 #endif
 
 	MD5Hash md5hash;
@@ -801,10 +834,11 @@ void WorldSession::FullLogin(Player * plr)
 #endif
 		OutPacket(SMSG_TRIGGER_CINEMATIC, 4, &racecinematic);
 
-#ifdef _TEST_EXTENDED_FEATURES_
-	const int classtext[] ={0,5,6,8,9,11,0,4,3,7,0,10};
-	sWorld.SendLocalizedWorldText(true,"{65}",classtext[ (uint32)plr->getClass() ] , plr->GetName() , (plr->GetTeam() ? "{63}":"{64}") );
-#endif
+		if ( sWorld.m_AdditionalFun ) //cebernic: tells people who 's newbie :D
+		{
+			const int classtext[] ={0,5,6,8,9,11,0,4,3,7,0,10};
+			sWorld.SendLocalizedWorldText(true,"{65}",classtext[ (uint32)plr->getClass() ] , plr->GetName() , (plr->GetTeam() ? "{63}":"{64}") );
+		}
 
 	}
 
@@ -861,10 +895,10 @@ void WorldSession::FullLogin(Player * plr)
 
 	// Send revision (if enabled)
 #ifdef WIN32
-	_player->BroadcastMessage("Powered by: %sArcEmu %s r%u/%s-Win-%s %s(Please report ALL bugs to www.ArcEmu.org/forums/)", MSG_COLOR_WHITE, BUILD_TAG,
+	_player->BroadcastMessage("Powered by: %sArcEmu %s r%u/%s-Win-%s %s(3.0.2 BETA EDITION!)", MSG_COLOR_WHITE, BUILD_TAG,
 		BUILD_REVISION, CONFIG, ARCH, MSG_COLOR_LIGHTBLUE);		
 #else
-	_player->BroadcastMessage("Powered by: %sArcEmu %s r%u/%s-%s %s(Please report ALL bugs to www.ArcEmu.org/forums/)", MSG_COLOR_WHITE, BUILD_TAG,
+	_player->BroadcastMessage("Powered by: %sArcEmu %s r%u/%s-%s %s(3.0.2 BETA EDITION!)", MSG_COLOR_WHITE, BUILD_TAG,
 		BUILD_REVISION, PLATFORM_TEXT, ARCH, MSG_COLOR_LIGHTBLUE);
 #endif
 

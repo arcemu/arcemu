@@ -3884,7 +3884,7 @@ public:
 		Waterfall = _unit->GetMapMgr()->GetInterface()->GetGameObjectNearestCoords(3536.852783f, -5159.951172f, 143.636139f, FROSTWYRM_WATERFALL_DOOR);
 		if (Waterfall != NULL)
 		{
-			Waterfall->SetUInt32Value(GAMEOBJECT_STATE, 1);
+			Waterfall->SetByte(GAMEOBJECT_BYTES_1, 0, 1);
 		}
 
 		RegisterAIUpdateEvent(_unit->GetUInt32Value(UNIT_FIELD_BASEATTACKTIME));
@@ -3917,7 +3917,7 @@ public:
 		Waterfall = _unit->GetMapMgr()->GetInterface()->GetGameObjectNearestCoords(3536.852783f, -5159.951172f, 143.636139f, FROSTWYRM_WATERFALL_DOOR);
 		if (Waterfall != NULL)
 		{
-			Waterfall->SetUInt32Value(GAMEOBJECT_STATE, 0);
+			Waterfall->SetByte(GAMEOBJECT_BYTES_1, 0, 0);
 		}
 
 		_unit->GetAIInterface()->setMoveType(MOVEMENTTYPE_DONTMOVEWP);
@@ -4616,7 +4616,7 @@ public:
 		GameObject* KelGate  = _unit->GetMapMgr()->GetInterface()->GetGameObjectNearestCoords(3635.44f, -5090.33f, 143.205f, 181228);
 					
 		if (KelGate)
-			KelGate->SetUInt32Value(GAMEOBJECT_STATE, 1);
+			KelGate->SetByte(GAMEOBJECT_BYTES_1, 0, 1);
 
 		_unit->SetUInt64Value(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
 		_unit->GetAIInterface()->disable_melee = true;
@@ -4638,13 +4638,13 @@ public:
     {
 		GameObject* KelGate  = _unit->GetMapMgr()->GetInterface()->GetGameObjectNearestCoords(3635.44f, -5090.33f, 143.205f, 181228);
 		if (KelGate != NULL)
-			KelGate->SetUInt32Value(GAMEOBJECT_STATE, 0);
+			KelGate->SetByte(GAMEOBJECT_BYTES_1, 0, 0);
 
 		for (int i = 0; i < 4; i++)
 		{
 			GameObject* WindowGate  = _unit->GetMapMgr()->GetInterface()->GetGameObjectNearestCoords(Guardians[i].x, Guardians[i].y, Guardians[i].z, 200002);		
 			if (WindowGate != NULL)
-				WindowGate->SetUInt32Value(GAMEOBJECT_STATE, 1);
+				WindowGate->SetByte(GAMEOBJECT_BYTES_1, 0, 1);
 		}
 
 		_unit->SetUInt64Value(UNIT_FIELD_CHANNEL_OBJECT, 0);
@@ -4693,13 +4693,13 @@ public:
     {
 		GameObject* KelGate  = _unit->GetMapMgr()->GetInterface()->GetGameObjectNearestCoords(3635.44f, -5090.33f, 143.205f, 181228);	
 		if (KelGate != NULL)
-			KelGate->SetUInt32Value(GAMEOBJECT_STATE, 0);
+			KelGate->SetByte(GAMEOBJECT_BYTES_1, 0, 0);
 
 		for (int i = 0; i < 4; i++)
 		{
 			GameObject* WindowGate  = _unit->GetMapMgr()->GetInterface()->GetGameObjectNearestCoords(Guardians[i].x, Guardians[i].y, Guardians[i].z, 200002);
 			if (WindowGate != NULL)
-				WindowGate->SetUInt32Value(GAMEOBJECT_STATE, 1);
+				WindowGate->SetByte(GAMEOBJECT_BYTES_1, 0, 1);
 		}
 
 		_unit->SendChatMessage(CHAT_MSG_MONSTER_YELL, LANG_UNIVERSAL, "Do not rejoice... your victory is a hollow one... for I shall return with powers beyond your imagining!");
@@ -4918,7 +4918,7 @@ public:
 				{
 					GameObject* WindowGate  = _unit->GetMapMgr()->GetInterface()->GetGameObjectNearestCoords(Guardians[i].x, Guardians[i].y, Guardians[i].z, 200002);
 					if (WindowGate)
-						WindowGate->SetUInt32Value(GAMEOBJECT_STATE, 0);
+						WindowGate->SetByte(GAMEOBJECT_BYTES_1, 0, 0);
 				}
 			}
 

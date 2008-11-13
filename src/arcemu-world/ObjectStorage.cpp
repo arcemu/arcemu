@@ -22,7 +22,7 @@
 
 /** Table formats converted to strings
  */
-const char * gItemPrototypeFormat						= "uuuussssuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuffuffuffuffuffuuuuuuuuuufuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuusuuuuuuuuuuuuuuuuuuuuuuuuuu";
+const char * gItemPrototypeFormat						= "uuuussssuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuffuffuffuffuffuuuuuuuuuufuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuusuuuuuuuuuuuuuuuuuuuuuuuuuuu";
 const char * gCreatureNameFormat						= "usssuuuuuuuuuuffcc";
 const char * gGameObjectNameFormat						= "uuusuuuuuuuuuuuuuuuuuuuuuuuu";
 const char * gCreatureProtoFormat						= "uuuuuuufuuuffuffuuuuuuuuuuuuuuuuuuffsuuuufffuuuuuuu";
@@ -509,6 +509,11 @@ void Storage_Cleanup()
 		while(!itr->AtEnd())
 		{
 			p = itr->Get();
+			if (p->aura_string)
+			{
+				free(p->aura_string);
+				p->aura_string = NULL;
+			}
 			for(list<AI_Spell*>::iterator it = p->spells.begin(); it != p->spells.end(); ++it)
 				delete (*it);
 			p->spells.clear();

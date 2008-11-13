@@ -11,6 +11,7 @@ find . -type f "(" \
    -name "*.acs" -o -name "*.cfg" -o -name "*.txt" -o -name "*.vs" -o \
    -name "*.mak" -o -name "*.mgw" -o \
    -name "makefile.*" -o -name "makefile" -o -name "Makefile" \
+   -name "Makefile.in" -o -name "Makefile.am" \
    ")" \
    -exec sh -c "echo {};
                 mv {} _tmpfile;

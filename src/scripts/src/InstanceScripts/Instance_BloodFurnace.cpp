@@ -2383,12 +2383,12 @@ public:
 		GameObject *pDoor = NULL;
 		pDoor = _unit->GetMapMgr()->GetInterface()->GetGameObjectNearestCoords(263.873871f, -128.438812f, -25.098160f, 181823);
 		if(pDoor)
-			pDoor->SetUInt32Value(GAMEOBJECT_STATE, 0);
+			pDoor->SetByte(GAMEOBJECT_BYTES_1, 0, 0);
 
 		GameObject *pDoor2 = NULL;
 		pDoor2 = _unit->GetMapMgr()->GetInterface()->GetGameObjectNearestCoords(-2.067811f, -111.613785f, -41.340549f, 181766);
 		if(pDoor2)
-			pDoor2->SetUInt32Value(GAMEOBJECT_STATE, 0);
+			pDoor2->SetByte(GAMEOBJECT_BYTES_1, 0, 0);
     }
 
     void AIUpdate()
@@ -2556,7 +2556,7 @@ public:
 		GameObject *pDoor = NULL;
 		pDoor = _unit->GetMapMgr()->GetInterface()->GetGameObjectNearestCoords(456.157349f, 34.248005f, 9.559463f, 181819);
 		if(pDoor)
-			pDoor->SetUInt32Value(GAMEOBJECT_STATE, 0);
+			pDoor->SetByte(GAMEOBJECT_BYTES_1, 0, 0);
 
 		ArcScriptCreatureAI::OnDied(pKiller);
 	}
@@ -2594,7 +2594,7 @@ public:
 		GameObject *pDoor = NULL;
 		pDoor = _unit->GetMapMgr()->GetInterface()->GetGameObjectNearestCoords(327.155487f, 149.753418f, 9.559869f, 181812);
 		if(pDoor)
-			pDoor->SetUInt32Value(GAMEOBJECT_STATE, 0);
+			pDoor->SetByte(GAMEOBJECT_BYTES_1, 0, 0);
 
 		ArcScriptCreatureAI::OnDied(pKiller);
 	}

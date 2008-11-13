@@ -180,9 +180,9 @@ void WorldSession::HandleLfgInviteAccept(WorldPacket & recvPacket)
 	if(_player->m_lfgMatch == NULL && _player->m_lfgInviterGuid == 0)
 	{
 		if(_player->m_lfgMatch == NULL)
-			OutPacket(SMSG_LFG_MATCHMAKING_AUTOJOIN_FAILED_NO_PLAYER);		// Matched Player(s) have gone offline.
+			OutPacket(SMSG_LFG_AUTOJOIN_FAILED_NO_PLAYER);		// Matched Player(s) have gone offline.
 		else
-			OutPacket(SMSG_LFG_MATCHMAKING_AUTOJOIN_FAILED);				// Group no longer available.
+			OutPacket(SMSG_LFG_AUTOJOIN_FAILED);				// Group no longer available.
 
 		return;
 	}
@@ -214,13 +214,13 @@ void WorldSession::HandleLfgInviteAccept(WorldPacket & recvPacket)
 		Player * pPlayer = objmgr.GetPlayer(_player->m_lfgInviterGuid);
 		if( pPlayer == NULL )
 		{
-			OutPacket(SMSG_LFG_MATCHMAKING_AUTOJOIN_FAILED_NO_PLAYER);			// Matched Player(s) have gone offline.
+			OutPacket(SMSG_LFG_AUTOJOIN_FAILED_NO_PLAYER);			// Matched Player(s) have gone offline.
 			return;
 		}
 
 		if( pPlayer->GetGroup() == NULL || pPlayer->GetGroup()->IsFull() || pPlayer->GetGroup()->GetLeader() != pPlayer->m_playerInfo )
 		{
-			OutPacket(SMSG_LFG_MATCHMAKING_AUTOJOIN_FAILED);
+			OutPacket(SMSG_LFG_AUTOJOIN_FAILED);
 			return;
 		}
 

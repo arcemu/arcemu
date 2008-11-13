@@ -333,12 +333,6 @@ ArcScriptCreatureAI* ArcScriptCreatureAI::GetNearestCreature(uint32 pCreatureId)
 	return ( NearestCreature ) ? static_cast<ArcScriptCreatureAI*>(NearestCreature->GetScript()) : NULL;
 }
 
-ArcScriptBossAI* ArcScriptCreatureAI::GetNearestBoss(uint32 pCreatureId)
-{
-	Creature* NearestCreature = _unit->GetMapMgr()->GetInterface()->GetCreatureNearestCoords(_unit->GetPositionX(), _unit->GetPositionY(), _unit->GetPositionZ(), pCreatureId);
-	return ( NearestCreature ) ? static_cast<ArcScriptBossAI*>(NearestCreature->GetScript()) : NULL;
-}
-
 ArcScriptCreatureAI* ArcScriptCreatureAI::SpawnCreature(uint32 pCreatureId, bool pForceSameFaction)
 {
 	return SpawnCreature(pCreatureId, _unit->GetPositionX(), _unit->GetPositionY(), _unit->GetPositionZ(), _unit->GetOrientation(), pForceSameFaction);

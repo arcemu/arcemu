@@ -170,7 +170,7 @@ void Pet::CreateAsSummon(uint32 entry, CreatureInfo *ci, Creature* created_from_
 		SetUInt32Value(UNIT_FIELD_BYTES_0, 2048 | (0 << 24));
 		SetUInt32Value(UNIT_FIELD_FLAGS, UNIT_FLAG_PLAYER_CONTROLLED);
 		SetUInt32Value(UNIT_FIELD_BASEATTACKTIME, 2000);
-		SetUInt32Value(UNIT_FIELD_BASEATTACKTIME_01, 2000);
+		SetUInt32Value(UNIT_FIELD_RANGEDATTACKTIME, 2000);
 		SetFloatValue(UNIT_FIELD_BOUNDINGRADIUS, 0.5f);
 		SetFloatValue(UNIT_FIELD_COMBATREACH, 0.75f);
 		SetUInt32Value(UNIT_FIELD_BYTES_2, (0x01 | (0x28 << 8) | (0x2 << 24)));
@@ -203,7 +203,7 @@ void Pet::CreateAsSummon(uint32 entry, CreatureInfo *ci, Creature* created_from_
 	} else {
 		SetUInt32Value(UNIT_FIELD_BYTES_0, 2048 | (0 << 24));
 		SetUInt32Value(UNIT_FIELD_BASEATTACKTIME, 2000);
-		SetUInt32Value(UNIT_FIELD_BASEATTACKTIME_01, 2000); // Supalosa: 2.00 normalised attack speed
+		SetUInt32Value(UNIT_FIELD_RANGEDATTACKTIME, 2000); // Supalosa: 2.00 normalised attack speed
 		SetFloatValue(UNIT_FIELD_BOUNDINGRADIUS, created_from_creature->GetFloatValue(UNIT_FIELD_BOUNDINGRADIUS));
 		SetFloatValue(UNIT_FIELD_COMBATREACH, created_from_creature->GetFloatValue(UNIT_FIELD_COMBATREACH));
 
@@ -214,7 +214,6 @@ void Pet::CreateAsSummon(uint32 entry, CreatureInfo *ci, Creature* created_from_
 		SetUInt32Value(UNIT_FIELD_PETEXPERIENCE, 0);
 		SetUInt32Value(UNIT_FIELD_PETNEXTLEVELEXP, GetNextLevelXP(getLevel()));
 		SetUInt32Value(UNIT_FIELD_BYTES_1, 0 | (REBELIOUS << 8));//loyalty level
-		SetUInt32Value(UNIT_TRAINING_POINTS, 0);				//training points
 
 		// Focus
 		SetUInt32Value(UNIT_FIELD_POWER3, 100);
@@ -317,6 +316,7 @@ void Pet::Update(uint32 time)
 	
 	if( bHasLoyalty && !bExpires && isAlive() )
 	{
+		ApplyPetLevelAbilities();
 		//Happiness
 		if( m_HappinessTimer == 0 )
 		{	
@@ -595,10 +595,6 @@ void Pet::LoadFromDB(Player* owner, PlayerPet * pi)
 
 void Pet::OnPushToWorld()
 {
-	// Nuke auras
-	for(uint32 x = UNIT_FIELD_AURA_01; x <= UNIT_FIELD_AURA_55; x++)
-		SetUInt32Value(x, 0);
-
 	//before we initialize pet spells so we can apply spell mods on them 
 	if( m_Owner )
 		m_Owner->EventSummonPet( this );
@@ -632,9 +628,7 @@ void Pet::InitializeMe(bool first)
 
 	if(GetEntry() == 17252) //felguard
 	{
-		SetUInt32Value( UNIT_VIRTUAL_ITEM_SLOT_DISPLAY, 23904 );
-		SetUInt32Value( UNIT_VIRTUAL_ITEM_INFO, 33489154 );
-		SetUInt32Value( UNIT_VIRTUAL_ITEM_INFO_01, 273 );
+		SetUInt32Value( UNIT_VIRTUAL_ITEM_SLOT_ID, 23904 );
 	}
 
 	// Load our spells
@@ -700,10 +694,7 @@ void Pet::UpdatePetInfo(bool bSetToOffline)
 	std::stringstream ss;
 	for( uint32 index = 0; index < UNIT_END; index ++ )
 	{
-		if(index >= UNIT_FIELD_AURA_01 && index <= UNIT_FIELD_AURA_55)
-			ss << "0 ";
-		else
-			ss << GetUInt32Value(index) << " ";
+		ss << GetUInt32Value(index) << " ";
 	}
 	pi->fields = ss.str();
 	pi->name = GetName();
@@ -1716,7 +1707,6 @@ void Pet::UpdateTP()
 	if(!m_Owner || Summon) return;
 	int16 pts = static_cast<int16>(getLevel()*(GetLoyaltyLevel()-1)-GetUsedTP());
 	TP = pts;
-	SetUInt32Value(UNIT_TRAINING_POINTS, pts < 0?(-pts & 0xffff):(pts<<16));//uff, works, but has anybody better idea?
 }
 HappinessState Pet::GetHappinessState() 
 {

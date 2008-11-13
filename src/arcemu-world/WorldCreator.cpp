@@ -751,7 +751,7 @@ void Instance::LoadFromDB(Field * fields)
 
 void InstanceMgr::ResetSavedInstances(Player * plr)
 {
-	WorldPacket *pData;
+	WorldPacket data(SMSG_INSTANCE_RESET, 4);
 	Instance * in;
 	InstanceMap::iterator itr;
 	InstanceMap * instancemap;
@@ -761,7 +761,6 @@ void InstanceMgr::ResetSavedInstances(Player * plr)
 		return;
 
 	m_mapLock.Acquire();
-	Group *group = plr->GetGroup();
 	for(i = 0; i < NUM_MAPS; ++i)
 	{
 		if(m_instances[i] != NULL)
@@ -772,28 +771,17 @@ void InstanceMgr::ResetSavedInstances(Player * plr)
 				in = itr->second;
 				++itr;
 
-				if(IS_RESETABLE_INSTANCE(in) && ((group && group->GetID() == in->m_creatorGroup) || plr->GetLowGUID() == in->m_creatorGuid))
+				if( ( in->m_mapInfo->type == INSTANCE_NONRAID && (plr->GetGroup() && plr->GetGroup()->GetID() == in->m_creatorGroup) ) || ( in->m_mapInfo->type == INSTANCE_NONRAID && plr->GetLowGUID() == in->m_creatorGuid ) )
 				{
 					if(in->m_mapMgr && in->m_mapMgr->HasPlayers())
 					{
-						pData = new WorldPacket(SMSG_RESET_INSTANCE_FAILED, 8);
-						*pData << uint32(INSTANCE_RESET_ERROR_PLAYERS_INSIDE);
-						*pData << uint32(in->m_mapId);
-						plr->GetSession()->SendPacket(pData);
-						delete pData;
+						plr->GetSession()->SystemMessage("Failed to reset instance %u (%s), due to players still inside.", in->m_instanceId, in->m_mapMgr->GetMapInfo()->name);
 						continue;
 					}
 
-					if(group)
-					{
-						group->m_instanceIds[in->m_mapId][in->m_difficulty] = 0;
-					}
-
 					// <mapid> has been reset.
-					pData = new WorldPacket(SMSG_RESET_INSTANCE, 4);
-					*pData << uint32(in->m_mapId);
-					plr->GetSession()->SendPacket(pData);
-					delete pData;
+					data << uint32(in->m_mapId);
+					plr->GetSession()->SendPacket(&data);
 
 					// destroy the instance
 					_DeleteInstance(in, true);
@@ -802,48 +790,6 @@ void InstanceMgr::ResetSavedInstances(Player * plr)
 		}
 	}
     m_mapLock.Release();	
-/*	plr->m_playerInfo->savedInstanceIdsLock.Acquire();
-	for(int difficulty=0; difficulty<NUM_INSTANCE_MODES; difficulty++)
-	{
-		PlayerInstanceMap::iterator itr,itr2=plr->m_playerInfo->savedInstanceIds[difficulty].begin();
-		for(; itr2 != plr->m_playerInfo->savedInstanceIds[difficulty].end();)
-		{
-			itr = itr2;
-			itr2++;
-			in = sInstanceMgr.GetInstanceByIds((*itr).first, (*itr).second);
-			if( !in )
-				continue;
-			if(((group && group->GetID() == in->m_creatorGroup) || plr->GetLowGUID() == in->m_creatorGuid))
-			{
-				if(in->m_mapMgr && in->m_mapMgr->HasPlayers())
-				{
-					pData = new WorldPacket(SMSG_RESET_INSTANCE_FAILED, 8);
-					*pData << uint32(INSTANCE_RESET_ERROR_PLAYERS_INSIDE);
-					*pData << uint32(in->m_mapId);
-					plr->GetSession()->SendPacket(pData);
-					delete pData;
-					continue;
-				}
-
-				if(group)
-				{
-					group->m_instanceIds[in->m_mapId][in->m_difficulty] = 0;
-				}
-
-				// <mapid> has been reset.
-				pData = new WorldPacket(SMSG_RESET_INSTANCE, 4);
-				*pData << uint32(in->m_mapId);
-				plr->GetSession()->SendPacket(pData);
-				delete pData;
-
-				//remove instance from player
-				plr->SetPersistentInstanceId(in->m_mapId, difficulty, 0); 
-				// destroy the instance
-				_DeleteInstance(in, true);
-			}
-		}
-	}
-	plr->m_playerInfo->savedInstanceIdsLock.Release();*/
 }
 
 void InstanceMgr::OnGroupDestruction(Group * pGroup)
@@ -1000,15 +946,15 @@ void InstanceMgr::BuildSavedInstancesForPlayer(Player * plr)
 					in = itr->second;
 					++itr;
 
-					if( PlayerOwnsInstance(in, plr) && !IS_PERSISTENT_INSTANCE(in) )
+					if( PlayerOwnsInstance(in, plr) && in->m_mapInfo->type == INSTANCE_NONRAID )
 					{
 						m_mapLock.Release();
 
-						data.SetOpcode(SMSG_INSTANCE_SAVE);
+						data.SetOpcode(SMSG_UPDATE_LAST_INSTANCE);
 						data << uint32(in->m_mapId);
 						plr->GetSession()->SendPacket(&data);
 
-						data.Initialize(SMSG_INSTANCE_RESET_ACTIVATE);
+						data.Initialize(SMSG_UPDATE_INSTANCE_OWNERSHIP);
 						data << uint32(0x01);
 						plr->GetSession()->SendPacket(&data);
 					
@@ -1020,7 +966,7 @@ void InstanceMgr::BuildSavedInstancesForPlayer(Player * plr)
 		m_mapLock.Release();
 	}
 
-	data.SetOpcode(SMSG_INSTANCE_RESET_ACTIVATE);
+	data.SetOpcode(SMSG_UPDATE_INSTANCE_OWNERSHIP);
 	data << uint32(0x00);
 	plr->GetSession()->SendPacket(&data);
 }

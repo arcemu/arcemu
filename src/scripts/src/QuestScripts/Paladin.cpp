@@ -141,7 +141,7 @@ public:
 			GameObject* Brazier = pPlayer->GetMapMgr()->GetInterface()->GetGameObjectNearestCoords( SSX, SSY, SSZ, 181956);
 			if (Brazier)
 			{
-				Brazier->SetUInt32Value(GAMEOBJECT_STATE, 0);
+				Brazier->SetUInt32Value( GAMEOBJECT_BYTES_1, 0);
 				pPlayer->GetMapMgr()->GetInterface()->SpawnCreature(17716, SSX, SSY, SSZ, SSO, true, false, 0, 0)->Despawn(600000, 0);
 			}
 		}
@@ -171,7 +171,7 @@ public:
 		GameObject* Brazier = mKiller->GetMapMgr()->GetInterface()->GetGameObjectNearestCoords( SSX, SSY, SSZ, 181956);
 		if (Brazier)
 		{
-			Brazier->SetUInt32Value(GAMEOBJECT_STATE, 1);
+			Brazier->SetUInt32Value( GAMEOBJECT_BYTES_1, 1);
 		}
 	}
 };

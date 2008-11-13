@@ -47,7 +47,7 @@ public:
             return;
 
         // Open the door
-        pDoor->SetUInt32Value(GAMEOBJECT_STATE, 0);
+        pDoor->SetByte(GAMEOBJECT_BYTES_1, 0, 0);
     }
 
     void OnCombatStop(Unit *mTarget)
@@ -215,7 +215,7 @@ public:
             return;
 
         // Open the door
-        pDoor->SetUInt32Value(GAMEOBJECT_STATE, 0);
+        pDoor->SetByte(GAMEOBJECT_BYTES_1, 0, 0);
     }
 
     void Destroy()
@@ -251,7 +251,7 @@ public:
             return;
 
         // Open the door
-        pDoor->SetUInt32Value(GAMEOBJECT_STATE, 0);
+        pDoor->SetByte(GAMEOBJECT_BYTES_1, 0, 0);
     }
 
     void OnCombatStart(Unit* mTarget)

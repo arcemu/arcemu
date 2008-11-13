@@ -121,18 +121,20 @@ class MovementInfo
 {
 public:
 	uint32 time;
-	float unk6;//pitch
-	//on slip 8 is zero, on jump some other number
-	//9,10 changes if you are not on foot
-	uint32 unk8, unk9, unk10, unk11, unk12, unk13;
+	float pitch;// -1.55=looking down, 0=looking forward, +1.55=looking up
+	uint32 unk8;//on slip 8 is zero, on jump some other number
+	uint32 unk9, unk10;//9,10 changes if you are not on foot
+	uint32 unk11, unk12;
+	uint8 unk13;
 	uint32 unklast;//something related to collision
-	uint8 unk_230;
+	uint16 unk_230;
 
 	float x, y, z, orientation;
 	uint32 flags;
 	uint32 FallTime;
 	uint64 transGuid;
-	float transX, transY, transZ, transO, transTime;
+	float transX, transY, transZ, transO, transUnk;
+	uint8 transUnk_2;
 
 	void init(WorldPacket & data);
 	void write(WorldPacket & data);
@@ -295,6 +297,7 @@ protected:
 	/// Login screen opcodes (PlayerHandler.cpp):
 	void HandleCharEnumOpcode(WorldPacket& recvPacket);
 	void HandleCharDeleteOpcode(WorldPacket& recvPacket);
+	uint8 DeleteCharacter(uint32 guid);
 	void HandleCharCreateOpcode(WorldPacket& recvPacket);
 	void HandlePlayerLoginOpcode(WorldPacket& recvPacket);
 
@@ -332,6 +335,7 @@ protected:
 	void HandleTogglePVPOpcode(WorldPacket& recvPacket);
 	void HandleAmmoSetOpcode(WorldPacket& recvPacket);
 	void HandleGameObjectUse(WorldPacket& recvPacket);
+	void HandleBarberShopResult(WorldPacket& recvPacket);
 	//void HandleJoinChannelOpcode(WorldPacket& recvPacket);
 	//void HandleLeaveChannelOpcode(WorldPacket& recvPacket);
 	void HandlePlayedTimeOpcode(WorldPacket & recv_data);
@@ -354,6 +358,7 @@ protected:
 	void HandleGameObjectQueryOpcode(WorldPacket& recvPacket);
 	void HandleItemNameQueryOpcode( WorldPacket & recv_data );
 	void HandlePageTextQueryOpcode( WorldPacket & recv_data );
+	void HandleAchievmentQueryOpcode( WorldPacket & recv_data );
 
 	/// Opcodes implemented in MovementHandler.cpp
 	void HandleMoveWorldportAckOpcode( WorldPacket& recvPacket );
@@ -466,11 +471,12 @@ protected:
 	/// Spell opcodes (SpellHandler.cpp)
 	void HandleUseItemOpcode(WorldPacket& recvPacket);
 	void HandleCastSpellOpcode(WorldPacket& recvPacket);
+	void HandleSpellClick(WorldPacket& recvPacket);
 	void HandleCancelCastOpcode(WorldPacket& recvPacket);
 	void HandleCancelAuraOpcode(WorldPacket& recvPacket);
 	void HandleCancelChannellingOpcode(WorldPacket& recvPacket);
 	void HandleCancelAutoRepeatSpellOpcode(WorldPacket& recv_data);
-	void HandleAddDynamicTargetOpcode(WorldPacket & recvPacket);
+	void HandlePetCastSpell(WorldPacket & recvPacket);
 	void HandleCancelTotem(WorldPacket & recv_data);
 
 	/// Skill opcodes (SkillHandler.spp)
@@ -672,6 +678,8 @@ protected:
 	void Handle38C(WorldPacket & recv_data);
 	void HandleInrangeQuestgiverQuery(WorldPacket & recv_data);
 
+	void HandleRemoveGlyph(WorldPacket & recv_data);
+
 	void HandleSetFactionInactiveOpcode( WorldPacket & recv_data );
 
 public:
@@ -704,6 +712,8 @@ private:
 	uint32 _accountId;
 	uint32 _accountFlags;
 	string _accountName;
+	bool has_level_55_char; // death knights
+	//uint16 _TEMP_ERR_CREATE_CODE; // increments
 	int8 _side;
 
 	WoWGuid m_MoverWoWGuid;
@@ -716,7 +726,8 @@ private:
 	char *permissions;
 	int permissioncount;
 
-	bool _loggingOut;
+	bool _loggingOut; //Player is being removed from the game.
+	bool LoggingOut; //Player requesting to be logged out
 	uint32 _latency;
 	uint32 client_build;
 	uint32 instanceId;

@@ -72,6 +72,11 @@ void SetupEventDarkPortal(ScriptMgr * mgr);
 //other
 //void SetupGenericAI(ScriptMgr * mgr);
 
+// WOTLK
+void SetupDrakTharonKeepBosses(ScriptMgr * mgr);
+void SetupAhnkahetTheOldKingdom(ScriptMgr * mgr);
+void SetupTheCullingofStratholme(ScriptMgr * mgr);
+
 struct SP_AI_Spell{
 	SpellEntry *info;		// spell info
 	char targettype;		// 0-self , 1-attaking target, ....

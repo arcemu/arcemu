@@ -672,7 +672,7 @@ void MapMgr::ChangeObjectLocation( Object *obj )
 			fRange = 0.0f;		\
 		else if((curObj->GetGUIDHigh() == HIGHGUID_TRANSPORTER || obj->GetGUIDHigh() == HIGHGUID_TRANSPORTER)) \
 			fRange = 0.0f;		\
-		else if((curObj->GetGUIDHigh() == HIGHGUID_GAMEOBJECT && curObj->GetUInt32Value(GAMEOBJECT_TYPE_ID) == GAMEOBJECT_TYPE_TRANSPORT || obj->GetGUIDHigh() == HIGHGUID_GAMEOBJECT && obj->GetUInt32Value(GAMEOBJECT_TYPE_ID) == GAMEOBJECT_TYPE_TRANSPORT)) \
+		else if((curObj->GetGUIDHigh() == HIGHGUID_GAMEOBJECT && curObj->GetByte(GAMEOBJECT_BYTES_1, 1) == GAMEOBJECT_TYPE_TRANSPORT || obj->GetGUIDHigh() == HIGHGUID_GAMEOBJECT && obj->GetByte(GAMEOBJECT_BYTES_1, 1) == GAMEOBJECT_TYPE_TRANSPORT)) \
 			fRange = 0.0f;		\
 		else \
 			fRange = m_UpdateDistance;	\
@@ -997,7 +997,7 @@ void MapMgr::UpdateInRangeSet( Object *obj, Player *plObj, MapCell* cell, ByteBu
 			fRange = 0.0f; \
 		else if((curObj->GetGUIDHigh() == HIGHGUID_TRANSPORTER ||obj->GetGUIDHigh() == HIGHGUID_TRANSPORTER)) \
 			fRange = 0.0f; \
-		else if((curObj->GetGUIDHigh() == HIGHGUID_GAMEOBJECT && curObj->GetUInt32Value(GAMEOBJECT_TYPE_ID) == GAMEOBJECT_TYPE_TRANSPORT || obj->GetGUIDHigh() == HIGHGUID_GAMEOBJECT && obj->GetUInt32Value(GAMEOBJECT_TYPE_ID) == GAMEOBJECT_TYPE_TRANSPORT)) \
+		else if((curObj->GetGUIDHigh() == HIGHGUID_GAMEOBJECT && curObj->GetByte(GAMEOBJECT_BYTES_1, 1) == GAMEOBJECT_TYPE_TRANSPORT || obj->GetGUIDHigh() == HIGHGUID_GAMEOBJECT && obj->GetByte(GAMEOBJECT_BYTES_1, 1) == GAMEOBJECT_TYPE_TRANSPORT)) \
 			fRange = 0.0f; \
 		else \
 			fRange = m_UpdateDistance; \
@@ -1914,22 +1914,18 @@ void MapMgr::UnloadCell(uint32 x,uint32 y)
 
 void MapMgr::EventRespawnCreature(Creature * c, MapCell * p)
 {
-	ObjectSet::iterator itr = p->_respawnObjects.find( ((Object*)c) );
-	if(itr != p->_respawnObjects.end())
-	{
+	if (hashmap64_get(p->_respawnObjects, c->GetGUID(), NULL) == MAP_OK) {
 		c->m_respawnCell=NULL;
-		p->_respawnObjects.erase(itr);
+		hashmap64_remove(p->_respawnObjects, c->GetGUID());
 		c->OnRespawn(this);
 	}
 }
 
 void MapMgr::EventRespawnGameObject(GameObject * o, MapCell * c)
 {
-	ObjectSet::iterator itr = c->_respawnObjects.find( ((Object*)o) );
-	if(itr != c->_respawnObjects.end())
-	{
+	if (hashmap64_get(c->_respawnObjects, o->GetGUID(), NULL) == MAP_OK) {
 		o->m_respawnCell=NULL;
-		c->_respawnObjects.erase(itr);
+		hashmap64_remove(c->_respawnObjects, o->GetGUID());
 		o->Spawn(this);
 	}
 }
@@ -2020,15 +2016,15 @@ void MapMgr::HookOnAreaTrigger(Player * plr, uint32 id)
 	case 4591:
 		//Only opens when the first one steps in, if 669 if you find a way, put it in :P (else was used to increase the time the door stays opened when another one steps on it)
 		GameObject *door = GetInterface()->GetGameObjectNearestCoords(803.827f, 6869.38f, -38.5434f, 184212);
-		if (door && (door->GetUInt32Value(GAMEOBJECT_STATE) == 1))
+		if (door && (door->GetByte(GAMEOBJECT_BYTES_1, 0) == 1))
 		{
-			door->SetUInt32Value(GAMEOBJECT_STATE, 0);
-			//sEventMgr.AddEvent(door, &GameObject::SetUInt32Value, GAMEOBJECT_STATE, 1, EVENT_SCRIPT_UPDATE_EVENT, 10000, 1, 0);
+			door->SetByte(GAMEOBJECT_BYTES_1, 0, 0);
+			//sEventMgr.AddEvent(door, &GameObject::SetUInt32Value, GAMEOBJECT_BYTES_1, 0, 1, EVENT_SCRIPT_UPDATE_EVENT, 10000, 1, 0);
 		}
 		//else
 		//{
 			//sEventMgr.RemoveEvents(door);
-			//sEventMgr.AddEvent(door, &GameObject::SetUInt32Value,GAMEOBJECT_STATE, 0, EVENT_SCRIPT_UPDATE_EVENT, 10000, 1, 0);
+			//sEventMgr.AddEvent(door, &GameObject::SetUInt32Value,GAMEOBJECT_BYTES_1, 0, 0, EVENT_SCRIPT_UPDATE_EVENT, 10000, 1, 0);
 		//}
 		break;
 	}
@@ -2118,7 +2114,7 @@ void MapMgr::SendPvPCaptureMessage(int32 ZoneMask, uint32 ZoneId, const char * M
 	va_list ap;
 	va_start(ap, Message);
 
-	WorldPacket data(SMSG_PVP_CAPTURE_STATE_MSG, 208);
+	WorldPacket data(SMSG_DEFENSE_MESSAGE, 208);
 	char msgbuf[200];
 	vsnprintf(msgbuf, 200, Message, ap);
 	va_end(ap);

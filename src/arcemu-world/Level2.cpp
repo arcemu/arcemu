@@ -109,7 +109,7 @@ bool ChatHandler::CreateGuildCommand(const char* args, WorldSession *m_session)
 	{
 		// send message to user
 		char buf[256];
-		snprintf((char*)buf,256,"The name was too long by %ui", strlen((char*)args)-75);
+		snprintf((char*)buf,256,"The name was too long by %u", (uint32)strlen((char*)args)-75);
 		SystemMessage(m_session, buf);
 		return true;
 	}
@@ -120,6 +120,7 @@ bool ChatHandler::CreateGuildCommand(const char* args, WorldSession *m_session)
 			return true;
 		}
 	}
+
 	Guild * pGuild = NULL;
 	pGuild = objmgr.GetGuildByGuildName(string(args));
 
@@ -166,7 +167,6 @@ bool ChatHandler::HandleDeleteCommand(const char* args, WorldSession *m_session)
 		SystemMessage(m_session, "You can't delete a pet." );
 		return true;
 	}
-
 	sGMLog.writefromsession(m_session, "used npc delete, sqlid %u, creature %s, pos %f %f %f", unit->GetSQL_id(), unit->GetCreatureInfo() ? unit->GetCreatureInfo()->Name : "wtfbbqhax", unit->GetPositionX(), unit->GetPositionY(), unit->GetPositionZ());
 	BlueSystemMessage(m_session, "Deleted creature ID %u", unit->spawnid);
 
@@ -208,6 +208,7 @@ bool ChatHandler::HandleDeMorphCommand(const char* args, WorldSession *m_session
 		target = m_session->GetPlayer();
 
 	target->DeMorph();
+
 	return true;
 }
 
@@ -848,11 +849,11 @@ bool ChatHandler::HandleGOSpawn(const char *args, WorldSession *m_session)
 	go->CreateFromProto(EntryID,mapid,x,y,z,o);
 
 	/* fuck blizz coordinate system */
-	go->SetFloatValue(GAMEOBJECT_ROTATION_02, sinf(o / 2));
-	go->SetFloatValue(GAMEOBJECT_ROTATION_03, cosf(o / 2));
+	go->SetFloatValue(GAMEOBJECT_PARENTROTATION_02, sinf(o / 2));
+	go->SetFloatValue(GAMEOBJECT_PARENTROTATION_03, cosf(o / 2));
 	go->PushToWorld(m_session->GetPlayer()->GetMapMgr());
 
-	// Create sapwn instance
+	// Create spawn instance
 	GOSpawn * gs = new GOSpawn;
 	gs->entry = go->GetEntry();
 	gs->facing = go->GetOrientation();
@@ -860,14 +861,14 @@ bool ChatHandler::HandleGOSpawn(const char *args, WorldSession *m_session)
 	gs->flags = go->GetUInt32Value(GAMEOBJECT_FLAGS);
 	gs->id = objmgr.GenerateGameObjectSpawnID();
 	gs->o = go->GetFloatValue(GAMEOBJECT_ROTATION);
-	gs->o1 = go->GetFloatValue(GAMEOBJECT_ROTATION_01);
-	gs->o2 = go->GetFloatValue(GAMEOBJECT_ROTATION_02);
-	gs->o3 = go->GetFloatValue(GAMEOBJECT_ROTATION_03);
+	gs->o1 = go->GetFloatValue(GAMEOBJECT_PARENTROTATION);
+	gs->o2 = go->GetFloatValue(GAMEOBJECT_PARENTROTATION_02);
+	gs->o3 = go->GetFloatValue(GAMEOBJECT_PARENTROTATION_03);
 	gs->scale = go->GetFloatValue(OBJECT_FIELD_SCALE_X);
 	gs->x = go->GetPositionX();
 	gs->y = go->GetPositionY();
 	gs->z = go->GetPositionZ();
-	gs->state = go->GetUInt32Value(GAMEOBJECT_STATE);
+	gs->state = go->GetByte(GAMEOBJECT_BYTES_1, 0);
 	//gs->stateNpcLink = 0;
 
 	uint32 cx = m_session->GetPlayer()->GetMapMgr()->GetPosX(m_session->GetPlayer()->GetPositionX());
@@ -904,13 +905,13 @@ bool ChatHandler::HandleGOInfo(const char *args, WorldSession *m_session)
 	SystemMessage(m_session, "%s Informations:",MSG_COLOR_SUBWHITE);
 	SystemMessage(m_session, "%s Entry:%s%u",MSG_COLOR_GREEN,MSG_COLOR_LIGHTBLUE,GObj->GetEntry());
 	SystemMessage(m_session, "%s Model:%s%u",MSG_COLOR_GREEN,MSG_COLOR_LIGHTBLUE,GObj->GetUInt32Value(GAMEOBJECT_DISPLAYID));
-	SystemMessage(m_session, "%s State:%s%u",MSG_COLOR_GREEN,MSG_COLOR_LIGHTBLUE,GObj->GetUInt32Value(GAMEOBJECT_STATE));
+	SystemMessage(m_session, "%s State:%s%u",MSG_COLOR_GREEN,MSG_COLOR_LIGHTBLUE,GObj->GetByte(GAMEOBJECT_BYTES_1, 0));
 	SystemMessage(m_session, "%s flags:%s%u",MSG_COLOR_GREEN,MSG_COLOR_LIGHTBLUE,GObj->GetUInt32Value(GAMEOBJECT_FLAGS));
-	SystemMessage(m_session, "%s dynflags:%s%u",MSG_COLOR_GREEN,MSG_COLOR_LIGHTBLUE,GObj->GetUInt32Value(GAMEOBJECT_DYN_FLAGS));
+	SystemMessage(m_session, "%s dynflags:%s%u",MSG_COLOR_GREEN,MSG_COLOR_LIGHTBLUE,GObj->GetUInt32Value(GAMEOBJECT_DYNAMIC));
 	SystemMessage(m_session, "%s faction:%s%u",MSG_COLOR_GREEN,MSG_COLOR_LIGHTBLUE,GObj->GetUInt32Value(GAMEOBJECT_FACTION));
 
 	char gotypetxt[50];
-	switch( GObj->GetUInt32Value(GAMEOBJECT_TYPE_ID) )
+	switch( GObj->GetByte(GAMEOBJECT_BYTES_1, 1) )
 	{
 	case GAMEOBJECT_TYPE_DOOR:			strcpy(gotypetxt,"Door");	break;
 	case GAMEOBJECT_TYPE_BUTTON:		strcpy(gotypetxt,"Button");	break;
@@ -941,7 +942,7 @@ bool ChatHandler::HandleGOInfo(const char *args, WorldSession *m_session)
 	case GAMEOBJECT_TYPE_FLAGDROP:		strcpy(gotypetxt,"Flag Drop");	break;
 	default:							strcpy(gotypetxt,"Unknown.");	break;
 	}
-	SystemMessage(m_session, "%s Type:%s%u -- %s",MSG_COLOR_GREEN,MSG_COLOR_LIGHTBLUE,GObj->GetUInt32Value(GAMEOBJECT_TYPE_ID),gotypetxt);
+	SystemMessage(m_session, "%s Type:%s%u -- %s",MSG_COLOR_GREEN,MSG_COLOR_LIGHTBLUE,GObj->GetByte(GAMEOBJECT_BYTES_1, 1),gotypetxt);
 
 	SystemMessage(m_session, "%s Distance:%s%f",MSG_COLOR_GREEN,MSG_COLOR_LIGHTBLUE,GObj->CalcDistance((Object*)m_session->GetPlayer()));
 
@@ -955,10 +956,10 @@ bool ChatHandler::HandleGOInfo(const char *args, WorldSession *m_session)
 	if( GOInfo->Name )
 		SystemMessage(m_session, "%s Name:%s%s",MSG_COLOR_GREEN,MSG_COLOR_LIGHTBLUE,GOInfo->Name);
 	SystemMessage(m_session, "%s Size:%s%u",MSG_COLOR_GREEN,MSG_COLOR_LIGHTBLUE,GObj->GetFloatValue(OBJECT_FIELD_SCALE_X));
-	SystemMessage(m_session, "%s Rotation X:%s%f",MSG_COLOR_GREEN,MSG_COLOR_LIGHTBLUE,GObj->GetFloatValue(GAMEOBJECT_ROTATION));
+//To lazy to update. lol.	SystemMessage(m_session, "%s Rotation X:%s%f",MSG_COLOR_GREEN,MSG_COLOR_LIGHTBLUE,GObj->GetFloatValue(GAMEOBJECT_ROTATION));
 	SystemMessage(m_session, "%s Rotation Y:%s%f",MSG_COLOR_GREEN,MSG_COLOR_LIGHTBLUE,GObj->GetFloatValue(GAMEOBJECT_ROTATION_01));
-	SystemMessage(m_session, "%s Rotation O1:%s%f",MSG_COLOR_GREEN,MSG_COLOR_LIGHTBLUE,GObj->GetFloatValue(GAMEOBJECT_ROTATION_02));
-	SystemMessage(m_session, "%s Rotation O2:%s%f",MSG_COLOR_GREEN,MSG_COLOR_LIGHTBLUE,GObj->GetFloatValue(GAMEOBJECT_ROTATION_03));
+	SystemMessage(m_session, "%s Rotation O1:%s%f",MSG_COLOR_GREEN,MSG_COLOR_LIGHTBLUE,GObj->GetFloatValue(GAMEOBJECT_PARENTROTATION_02));
+	SystemMessage(m_session, "%s Rotation O2:%s%f",MSG_COLOR_GREEN,MSG_COLOR_LIGHTBLUE,GObj->GetFloatValue(GAMEOBJECT_PARENTROTATION_03));
 
 	return true;
 }
@@ -971,17 +972,16 @@ bool ChatHandler::HandleGOEnable(const char *args, WorldSession *m_session)
 		RedSystemMessage(m_session, "No selected GameObject...");
 		return true;
 	}
-	if(GObj->GetUInt32Value(GAMEOBJECT_DYN_FLAGS) == 1)
+	if(GObj->GetUInt32Value(GAMEOBJECT_DYNAMIC) == 1)
 	{
 		// Deactivate
-		GObj->SetUInt32Value(GAMEOBJECT_DYN_FLAGS, 0);
+		GObj->SetUInt32Value(GAMEOBJECT_DYNAMIC, 0);
 		BlueSystemMessage(m_session, "Gameobject deactivated.");
 	} else {
 		// /Activate
-		GObj->SetUInt32Value(GAMEOBJECT_DYN_FLAGS, 1);
+		GObj->SetUInt32Value(GAMEOBJECT_DYNAMIC, 1);
 		BlueSystemMessage(m_session, "Gameobject activated.");
 	}
-	
 	sGMLog.writefromsession( m_session, "activated/deactivated gameobject %s, entry %u", GameObjectNameStorage.LookupEntry( GObj->GetEntry() )->Name, GObj->GetEntry() );
 	return true;
 }
@@ -994,19 +994,18 @@ bool ChatHandler::HandleGOActivate(const char* args, WorldSession *m_session)
 		RedSystemMessage(m_session, "No selected GameObject...");
 		return true;
 	}
-	if(GObj->GetUInt32Value(GAMEOBJECT_STATE) == 1)
+	if(GObj->GetByte(GAMEOBJECT_BYTES_1, 0) == 1)
 	{
 		// Close/Deactivate
-		GObj->SetUInt32Value(GAMEOBJECT_STATE, 0);
+		GObj->SetByte(GAMEOBJECT_BYTES_1, 0, 0);
 		GObj->SetUInt32Value(GAMEOBJECT_FLAGS, (GObj->GetUInt32Value(GAMEOBJECT_FLAGS)-1));
 		BlueSystemMessage(m_session, "Gameobject closed.");
 	} else {
 		// Open/Activate
-		GObj->SetUInt32Value(GAMEOBJECT_STATE, 1);
+		GObj->SetByte(GAMEOBJECT_BYTES_1, 0, 1);
 		GObj->SetUInt32Value(GAMEOBJECT_FLAGS, (GObj->GetUInt32Value(GAMEOBJECT_FLAGS)+1));
 		BlueSystemMessage(m_session, "Gameobject opened.");
 	}
-	
 	sGMLog.writefromsession( m_session, "opened/closed gameobject %s, entry %u", GameObjectNameStorage.LookupEntry( GObj->GetEntry() )->Name, GObj->GetEntry() );
 	return true;
 }
@@ -1226,7 +1225,7 @@ bool ChatHandler::HandleGOAnimProgress(const char * args, WorldSession * m_sessi
 		return false;
 
 	uint32 ap = atol(args);
-	GObj->SetUInt32Value(GAMEOBJECT_ANIMPROGRESS, ap);
+	GObj->SetByte( GAMEOBJECT_BYTES_1, 3, ap);
 	BlueSystemMessage(m_session, "Set ANIMPROGRESS to %u", ap);
 	return true;
 }

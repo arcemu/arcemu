@@ -15,6 +15,7 @@ Gossip_Trainer.cpp \
 Gossip_Mulgore.cpp \
 Gossip_Shattrath.cpp \
 Gossip_Tanaris.cpp \
-Gossip_Stormwind.cpp\
-Gossip_Moonglade.cpp\
+Gossip_Stormwind.cpp \
+Gossip_Moonglade.cpp \
+Gossip_Wotlk.cpp \
 Setup.cpp

@@ -77,7 +77,9 @@ enum ChatMsg
 	CHAT_MSG_FILTERED								= 43,
 	CHAT_MSG_BATTLEGROUND							= 44,
 	CHAT_MSG_BATTLEGROUND_LEADER					= 45,
-	CHAT_MSG_RESTRICTED								= 46,	
+	CHAT_MSG_RESTRICTED								= 46,
+	CHAT_MSG_ACHIEVEMENT							= 47,
+    CHAT_MSG_GUILD_ACHIEVEMENT						= 48,
 };
 
 enum Languages
@@ -311,7 +313,7 @@ protected:
 	bool HandleAddAIAgentCommand(const char* args, WorldSession *m_session);
 	bool HandleListAIAgentCommand(const char* args, WorldSession *m_session);
 	bool HandleRepairItemsCommand(const char *args, WorldSession *m_session);
-	bool HandleSetTitle(const char *args, WorldSession *m_session);
+//	bool HandleSetTitle(const char *args, WorldSession *m_session);
 
 	// Level 3 commands
 	bool HandleMassSummonCommand(const char* args, WorldSession *m_session);

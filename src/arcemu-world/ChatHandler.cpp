@@ -593,7 +593,7 @@ void WorldSession::HandleReportSpamOpcode(WorldPacket & recvPacket)
 	CHECK_PACKET_SIZE(recvPacket, 29);
 
     // the 0 in the out packet is unknown
-    GetPlayer()->GetSession()->OutPacket(SMSG_REPORT_SPAM_RESPONSE, 1, 0 );
+    GetPlayer()->GetSession()->OutPacket(SMSG_COMMENTATOR_GET_PLAYER_INFO, 1, 0 );
 
 	/* This whole thing is guess-work */
 	uint8 unk1;

@@ -226,6 +226,7 @@ public:
 	int32		  GetRealmIdByName(string Name);
 	void		  RemoveRealm(uint32 realm_id);
 	void		  UpdateRealmStatus(uint32 realm_id, uint8 Color);
+	void		  UpdateRealmPop(uint32 realm_id, float pop);
 
 	ARCEMU_INLINE void   AddServerSocket(LogonCommServerSocket * sock) { serverSocketLock.Acquire(); m_serverSockets.insert( sock ); serverSocketLock.Release(); }
 	ARCEMU_INLINE void   RemoveServerSocket(LogonCommServerSocket * sock) { serverSocketLock.Acquire(); m_serverSockets.erase( sock ); serverSocketLock.Release(); }

@@ -525,7 +525,7 @@ void EyeOfTheStorm::OnCreate()
 		}
 
 		m_bubbles[i]->SetFloatValue(OBJECT_FIELD_SCALE_X,0.1f);
-		m_bubbles[i]->SetUInt32Value(GAMEOBJECT_STATE,1);
+		m_bubbles[i]->SetByte(GAMEOBJECT_BYTES_1, 0,1);
 		m_bubbles[i]->SetUInt32Value(GAMEOBJECT_FLAGS,32);
 		m_bubbles[i]->SetUInt32Value(GAMEOBJECT_FACTION,114);
 
@@ -540,15 +540,15 @@ void EyeOfTheStorm::OnCreate()
 	/* Flag */
 	m_standFlag = m_mapMgr->CreateGameObject(184141);
 	m_standFlag->CreateFromProto( 184141, m_mapMgr->GetMapId(), 2174.782227f, 1569.054688f, 1160.361938f, -1.448624f );
-	m_standFlag->SetFloatValue( GAMEOBJECT_ROTATION_02, 0.662620f );
-	m_standFlag->SetFloatValue( GAMEOBJECT_ROTATION_03, -0.748956f );
+	m_standFlag->SetFloatValue( GAMEOBJECT_PARENTROTATION_02, 0.662620f );
+	m_standFlag->SetFloatValue( GAMEOBJECT_PARENTROTATION_03, -0.748956f );
 	m_standFlag->SetFloatValue( OBJECT_FIELD_SCALE_X, 2.5f );
 	m_standFlag->PushToWorld( m_mapMgr );
 
 	m_dropFlag = m_mapMgr->CreateGameObject(184142);
 	m_dropFlag->CreateFromProto( 184142, m_mapMgr->GetMapId(), 2174.782227f, 1569.054688f, 1160.361938f, -1.448624f );
-	m_dropFlag->SetFloatValue( GAMEOBJECT_ROTATION_02, 0.885448f );
-	m_dropFlag->SetFloatValue( GAMEOBJECT_ROTATION_03, -0.464739f );
+	m_dropFlag->SetFloatValue( GAMEOBJECT_PARENTROTATION_02, 0.885448f );
+	m_dropFlag->SetFloatValue( GAMEOBJECT_PARENTROTATION_03, -0.464739f );
 	m_dropFlag->SetFloatValue( OBJECT_FIELD_SCALE_X, 2.5f );
 }
 
@@ -879,11 +879,11 @@ void EyeOfTheStorm::SpawnBuff(uint32 x)
 	{
 		EOTSm_buffs[x] = SpawnGameObject(chosen_buffid, m_mapMgr->GetMapId(), EOTSBuffCoordinates[x][0], EOTSBuffCoordinates[x][1], EOTSBuffCoordinates[x][2], EOTSBuffCoordinates[x][3], 0, 114, 1);
 
-		EOTSm_buffs[x]->SetFloatValue(GAMEOBJECT_ROTATION_02, EOTSBuffRotations[x][0]);
-		EOTSm_buffs[x]->SetFloatValue(GAMEOBJECT_ROTATION_03, EOTSBuffRotations[x][1]);
-		EOTSm_buffs[x]->SetUInt32Value(GAMEOBJECT_STATE, 1);
-		EOTSm_buffs[x]->SetUInt32Value(GAMEOBJECT_TYPE_ID, 6);
-		EOTSm_buffs[x]->SetUInt32Value(GAMEOBJECT_ANIMPROGRESS, 100);
+		EOTSm_buffs[x]->SetFloatValue(GAMEOBJECT_PARENTROTATION_02, EOTSBuffRotations[x][0]);
+		EOTSm_buffs[x]->SetFloatValue(GAMEOBJECT_PARENTROTATION_03, EOTSBuffRotations[x][1]);
+		EOTSm_buffs[x]->SetByte(GAMEOBJECT_BYTES_1, 0, 1);
+		EOTSm_buffs[x]->SetByte(GAMEOBJECT_BYTES_1, 1, 6);
+		EOTSm_buffs[x]->SetByte(GAMEOBJECT_BYTES_1, 3, 100);
 		EOTSm_buffs[x]->PushToWorld(m_mapMgr);
 	}
 	else

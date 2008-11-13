@@ -336,7 +336,7 @@ void QuestMgr::BuildOfferReward(WorldPacket *data, Quest* qst, Object* qst_giver
 
 	*data << GenerateRewardMoney( plr, qst );
 	*data << qst->reward_spell;
-	*data << uint32(0);
+	*data << uint32(8);
 	*data << uint32(0);
 	*data << uint32(0);
 	*data << uint32(0);
@@ -351,6 +351,7 @@ void QuestMgr::BuildQuestDetails(WorldPacket *data, Quest* qst, Object* qst_give
 	data->SetOpcode( SMSG_QUESTGIVER_QUEST_DETAILS );
 
 	*data <<  qst_giver->GetGUID();
+	*data <<  (uint32)(0) << (uint32)(0); //new in 3.0.2
 	*data <<  qst->id;
 	if(lq)
 	{
@@ -367,6 +368,7 @@ void QuestMgr::BuildQuestDetails(WorldPacket *data, Quest* qst, Object* qst_give
 
 	*data <<  uint32(1);
 	*data << uint32(0);		 // "Suggested players"
+	*data <<  uint8(0);		//3.0.2 no idea. Maybe some text ?
 
 	*data << qst->count_reward_choiceitem;
 	ItemPrototype *ip;
@@ -406,9 +408,14 @@ void QuestMgr::BuildQuestDetails(WorldPacket *data, Quest* qst, Object* qst_give
 	*data << uint32(0);
 	*data << uint32(0);
 	*data << uint32(0);						// reward pvp title id
+	*data << uint32(0);						// 3.0.2
 	*data << uint32(1);						// emote count
 	*data << uint32( EMOTE_ONESHOT_TALK );	// emote1 type
 	*data << uint32(0);						// emote1 delay
+	*data << uint32(0);						// 3.0.2
+	*data << uint32(0);						// 3.0.2
+	*data << uint32(0);						// 3.0.2
+	*data << uint32(0);						// 3.0.2
 }
 
 void QuestMgr::BuildRequestItems(WorldPacket *data, Quest* qst, Object* qst_giver, uint32 status, uint32 language)
@@ -482,16 +489,11 @@ void QuestMgr::BuildQuestComplete(Player*plr, Quest* qst)
   
 	WorldPacket data( SMSG_QUESTGIVER_QUEST_COMPLETE,72 );
 
-	data <<  qst->id;
-	data <<  uint32(3);
-	//if(qst->reward_xp > 0)
-	  //  data <<  uint32(qst->reward_xp);
-	//else
-	   // data <<  uint32(GenerateQuestXP(NULL,qst)); //xp
+	data << qst->id;
 	data << xp;
-	data <<  uint32( GenerateRewardMoney( plr, qst ) );
+	data << uint32( GenerateRewardMoney( plr, qst ) );
 	data << uint32(0);
-	data <<  uint32(qst->count_reward_item); //Reward item count
+	data << uint32(qst->count_reward_item); //Reward item count
 
 	for(uint32 i = 0; i < 4; ++i)
 	{
@@ -939,11 +941,6 @@ void QuestMgr::OnQuestFinished(Player* plr, Quest* qst, Object *qst_giver, uint3
 	if ( qst->reward_money < 0 && plr->GetUInt32Value( PLAYER_FIELD_COINAGE ) < uint32(-qst->reward_money) )
 		return;
 
-	if(sWorld.GoldCapEnabled && (plr->GetUInt32Value(PLAYER_FIELD_COINAGE) + qst->reward_money) > sWorld.GoldLimit)
-	{
-		plr->GetItemInterface()->BuildInventoryChangeError(NULL, NULL, INV_ERR_TOO_MUCH_GOLD);
-		return;
-	}
 	QuestLogEntry *qle = NULL;
 	qle = plr->GetQuestLogForEntry(qst->id);
 	if(!qle)

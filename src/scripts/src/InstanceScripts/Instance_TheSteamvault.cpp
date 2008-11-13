@@ -2494,7 +2494,7 @@ public:
 		GameObject *Gate = NULL;
 		Gate = _unit->GetMapMgr()->GetInterface()->GetGameObjectNearestCoords(-95.774361f, -439.608612f, 3.382976f, 183049);
 		if (Gate)
-			Gate->SetUInt32Value(GAMEOBJECT_STATE, 1);
+			Gate->SetByte(GAMEOBJECT_BYTES_1, 0, 1);
 
 		int RandomSpeach = rand()%3;
 		switch (RandomSpeach)
@@ -2540,7 +2540,7 @@ public:
 		GameObject *Gate = NULL;
 		Gate = _unit->GetMapMgr()->GetInterface()->GetGameObjectNearestCoords(-95.774361f, -439.608612f, 3.382976f, 183049);
 		if (Gate)
-			Gate->SetUInt32Value(GAMEOBJECT_STATE, 0);
+			Gate->SetByte(GAMEOBJECT_BYTES_1, 0, 0);
 
 		_unit->GetAIInterface()->SetAllowedToEnterCombat(true);
 		_unit->GetAIInterface()->m_canMove = true;

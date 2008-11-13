@@ -198,7 +198,6 @@ public:
 	float					GetRangeToUnit(Unit* pUnit);
 	GameObject*				GetNearestGameObject(uint32 pGameObjectId=0);
 	ArcScriptCreatureAI*	GetNearestCreature(uint32 pCreatureId=0);
-	ArcScriptBossAI*		GetNearestBoss(uint32 pCreatureId=0);
 	ArcScriptCreatureAI*	SpawnCreature(uint32 pCreatureId, bool pForceSameFaction=false);
 	ArcScriptCreatureAI*	SpawnCreature(uint32 pCreatureId, float pX, float pY, float pZ, float pO=0, bool pForceSameFaction=false);
 	void					Despawn(uint32 pDelay=0, uint32 pRespawnTime=0);

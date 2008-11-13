@@ -409,7 +409,7 @@ void VoiceChatHandler::Update()
 
 void WorldSession::HandleEnableMicrophoneOpcode(WorldPacket & recv_data)
 {
-
+return;
 }
 
 void WorldSession::HandleChannelVoiceQueryOpcode(WorldPacket & recv_data)

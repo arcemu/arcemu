@@ -4094,9 +4094,9 @@ public:
 
 		GameObject *GObj = NULL;
 		GObj = _unit->GetMapMgr()->GetInterface()->GetGameObjectNearestCoords(743.057f, 4.63443f, 137.796f, 184069);
-		if(GObj && GObj->GetUInt32Value(GAMEOBJECT_STATE) == 0)
+		if(GObj && GObj->GetByte(GAMEOBJECT_BYTES_1, 0) == 0)
 		{
-			GObj->SetUInt32Value(GAMEOBJECT_STATE, 1);
+			GObj->SetByte(GAMEOBJECT_BYTES_1, 0, 1);
 		}
 
 		RemoveAIUpdateEvent();
@@ -4159,9 +4159,9 @@ public:
 	{
 		GameObject *GObj = NULL;
 		GObj = _unit->GetMapMgr()->GetInterface()->GetGameObjectNearestCoords(743.057f, 4.63443f, 137.796f, 184069);
-		if(GObj && GObj->GetUInt32Value(GAMEOBJECT_STATE) == 0)
+		if(GObj && GObj->GetByte(GAMEOBJECT_BYTES_1, 0) == 0)
 		{
-			GObj->SetUInt32Value(GAMEOBJECT_STATE, 1);
+			GObj->SetByte(GAMEOBJECT_BYTES_1, 0, 1);
 		}
 		
 		Creature* Darkener = _unit->GetMapMgr()->GetInterface()->GetCreatureNearestCoords(786.28f, 20.2825f, 48.7285f, 20064);
@@ -4484,9 +4484,9 @@ public:
 						}
 						break;
 					case 15:
-						if(GObj && GObj->GetUInt32Value(GAMEOBJECT_STATE) == 1)
+						if(GObj && GObj->GetByte(GAMEOBJECT_BYTES_1, 0) == 1)
 						{
-							GObj->SetUInt32Value(GAMEOBJECT_STATE, 0);
+							GObj->SetByte(GAMEOBJECT_BYTES_1, 0, 0);
 						}
 						break;
 					case 16:

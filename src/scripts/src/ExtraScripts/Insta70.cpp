@@ -150,7 +150,7 @@ void PlayerFirstEnter(Player * pPlayer)
 	Set it to 70:
 	<Optional    StartingLevel = "70"
 */
-	//pPlayer->SetUInt32Value(PLAYER_FIELD_COINAGE,200000000); // Set gold
+	pPlayer->SetUInt32Value(PLAYER_FIELD_COINAGE,200000000); // Set gold
 	learnAll( pPlayer );
 
 /*

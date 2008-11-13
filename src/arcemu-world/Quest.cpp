@@ -69,6 +69,8 @@ WorldPacket* WorldSession::BuildQuestQueryResponse(Quest *qst)
 	*data << uint32(qst->srcitem);				  // Item given at the start of a quest (srcitem)
 	*data << uint32(qst->quest_flags);			  // Quest Flags
 	*data << uint32(0);								// 2.4.0 unk
+	*data << uint32(0);								// 3.0.2
+	*data << uint32(0);								// 3.0.2
 
 	// (loop 4 times)
 	for(uint32 i = 0; i < 4; ++i)
@@ -112,6 +114,8 @@ WorldPacket* WorldSession::BuildQuestQueryResponse(Quest *qst)
 
 		*data << qst->required_item[i];			 // Collect item [i]
 		*data << qst->required_itemcount[i];		// Collect item count [i]
+
+		*data << (uint32)(0);		//unk 3.0.2
 	}
 
 	if(lci)

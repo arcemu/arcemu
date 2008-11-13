@@ -32,12 +32,18 @@ void Player::SendWorldStateUpdate(uint32 WorldState, uint32 Value)
 void Player::Gossip_SendPOI(float X, float Y, uint32 Icon, uint32 Flags, uint32 Data, const char* Name)
 {
 	size_t namelen = strlen(Name);
+   
 	WorldPacket data(SMSG_GOSSIP_POI, 11 + namelen);
-	data << Flags << X << Y << Icon << Data;
+	data << Flags;
+	data << X;
+	data << Y;
+	data << Icon;
+	data << Data;
+
 	if( Name == NULL || namelen == 0 )
 		data << uint8(0);
 	else
-		data.append((const uint8*)Name, namelen + 1);		// already null-terminated in memory so this is fine, saves the extra strlen()
+		data.append((const uint8*)Name, namelen + 1);
 
 	GetSession()->SendPacket(&data);
 }
@@ -98,6 +104,15 @@ void Player::SendEnvironmentalDamageLog(const uint64 & guid, uint8 type, uint32 
 }
 
 
+void Player::SendPowerUpdate()
+{
+	WorldPacket data(SMSG_POWER_UPDATE, 14);
+	FastGUIDPack(data, GetGUID());
+	data << (uint8)GetPowerType();
+	data << GetUInt32Value(UNIT_FIELD_POWER1 + GetPowerType());
+	SendMessageToSet(&data, true);
+}
+
 void Player::SendCastResult(uint32 SpellId, uint8 ErrorMessage, uint8 MultiCast, uint32 Extra)
 {
 	if( Extra )
@@ -107,7 +122,7 @@ void Player::SendCastResult(uint32 SpellId, uint8 ErrorMessage, uint8 MultiCast,
 		pe.ErrorMessage = ErrorMessage;
 		pe.MultiCast = MultiCast;
 		pe.Extra = Extra;
-		m_session->OutPacket( SMSG_CAST_RESULT, sizeof( packetSMSG_CASTRESULT_EXTRA ), &pe );
+		m_session->OutPacket( SMSG_CAST_FAILED, sizeof( packetSMSG_CASTRESULT_EXTRA ), &pe );
 	}
 	else
 	{
@@ -115,7 +130,7 @@ void Player::SendCastResult(uint32 SpellId, uint8 ErrorMessage, uint8 MultiCast,
 		pe.SpellId = SpellId;
 		pe.ErrorMessage = ErrorMessage;
 		pe.MultiCast = MultiCast;
-		m_session->OutPacket( SMSG_CAST_RESULT, sizeof( packetSMSG_CASTRESULT ), &pe );
+		m_session->OutPacket( SMSG_CAST_FAILED, sizeof( packetSMSG_CASTRESULT ), &pe );
 	}
 }
 

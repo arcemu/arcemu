@@ -316,7 +316,11 @@ void WorldLog::Disable()
 
 WorldLog::~WorldLog()
 {
-
+if (m_file)
+	{
+		fclose(m_file);
+		m_file = NULL;
+	}
 }
 
 void oLog::outColor(uint32 colorcode, const char * str, ...)

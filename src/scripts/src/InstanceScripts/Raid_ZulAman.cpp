@@ -973,7 +973,7 @@ public:
         if(pDoor == 0)
             return;
 
-       pDoor->SetUInt32Value(GAMEOBJECT_STATE, 0); // Open the door
+       pDoor->SetByte(GAMEOBJECT_BYTES_1, 0, 0); // Open the door
     }
 
     void AIUpdate()
@@ -1966,16 +1966,16 @@ class DARKHEARTAI : public CreatureAIScript
 {
 public:
     ADD_CREATURE_FACTORY_FUNCTION(DARKHEARTAI);
-	SP_AI_Spell spells[1];
-	bool m_spellcheck[1];
+	SP_AI_Spell spells[2];
+	bool m_spellcheck[2];
 
     DARKHEARTAI(Creature* pCreature) : CreatureAIScript(pCreature)
     {
-		nrspells = 1;
-		for(int i=0;i<nrspells;i++)
-		{
-			m_spellcheck[i] = false;
-		}
+			nrspells = 2;
+			for(int i=0;i<nrspells;i++)
+			{
+				m_spellcheck[i] = false;
+			}
 		
         spells[0].info = dbcSpell.LookupEntry(DH_CLEAVE);
 		spells[0].targettype = TARGET_ATTACKING;

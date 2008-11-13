@@ -135,7 +135,7 @@ protected:
 // Gronn PriestAI
 #define CN_GRONN_PRIEST			21350
 
-#define PSYCHICSCREAM			22884       //33130 - death coil
+#define PSYCHICSCREAM			34322       //33130 - death coil
 #define RENEW					36679
 #define HEAL_GRONN_PRIEST		36678		// Corrected and Enabled.
 
@@ -592,7 +592,7 @@ public:
 
     KroshFirehandAI(Creature* pCreature) : CreatureAIScript(pCreature)
     {
-		SpellShieldCooldown=30;
+		FireWardCooldown=30;
 		nrspells = 3;
 		for(int i=0;i<nrspells;i++)
 		{
@@ -603,7 +603,7 @@ public:
 		spells[0].info = dbcSpell.LookupEntry(GREAT_FIREBALL);
 		spells[0].targettype = TARGET_ATTACKING;
 		spells[0].instant = false;
-		spells[0].perctrigger = 85.0f;
+		spells[0].perctrigger = 20.0f;
 		spells[0].attackstoptimer = 1000;
 
 		spells[1].info = dbcSpell.LookupEntry(BALST_WAVE);
@@ -625,7 +625,7 @@ public:
 
     void OnCombatStop(Unit *mTarget)
     {
-		SpellShieldCooldown=30;
+		FireWardCooldown=30;
         _unit->GetAIInterface()->setCurrentAgent(AGENT_NULL);
         _unit->GetAIInterface()->SetAIState(STATE_IDLE);
         RemoveAIUpdateEvent();
@@ -633,17 +633,17 @@ public:
 
 	void OnDied(Unit * mKiller)
     {
-		SpellShieldCooldown=30;
+		FireWardCooldown=30;
        RemoveAIUpdateEvent();
     }
 
 	void AIUpdate()
     {
-		SpellShieldCooldown--;
-		if(!SpellShieldCooldown)//_unit->getAttackTarget())
+		FireWardCooldown--;
+		if(!FireWardCooldown)//_unit->getAttackTarget())
         {
 			_unit->CastSpell(_unit, spells[2].info, spells[2].instant);
-			SpellShieldCooldown=30;
+			FireWardCooldown=30;
 		}
 	/*
 		if(_unit->GetDistanceSq(target)<20) // bad idea, as long as I can see that
@@ -695,7 +695,7 @@ public:
 protected:
 
 	Unit *target;
-	uint32 SpellShieldCooldown;
+	uint32 FireWardCooldown;
 	int nrspells;
 };
 
@@ -776,7 +776,7 @@ public:
 		}
 
         // Open the door
-        pDoor->SetUInt32Value(GAMEOBJECT_STATE, 0);
+        pDoor->SetByte(GAMEOBJECT_BYTES_1, 0, 0);
     }
 
 	void OnTargetDied(Unit* mTarget)
@@ -956,7 +956,7 @@ public:
 		//close the gate
 		GameObject *Gate = _unit->GetMapMgr()->GetInterface()->GetGameObjectNearestCoords(166.897f, 368.226f, 16.9209f, 184662);
 		if (Gate)
-			Gate->SetUInt32Value(GAMEOBJECT_STATE, 1);
+			Gate->SetByte(GAMEOBJECT_BYTES_1, 0, 1);
     }
 
 	void OnTargetDied(Unit* mTarget)
@@ -995,7 +995,7 @@ public:
 		//open the gate
 		GameObject *Gate = _unit->GetMapMgr()->GetInterface()->GetGameObjectNearestCoords(166.897f, 368.226f, 16.9209f, 184662);
 		if (Gate)
-			Gate->SetUInt32Value(GAMEOBJECT_STATE, 0);
+			Gate->SetByte(GAMEOBJECT_BYTES_1, 0, 0);
     }
 
     void OnDied(Unit * mKiller)
@@ -1011,7 +1011,7 @@ public:
 		//open the gate
 		GameObject *Gate = _unit->GetMapMgr()->GetInterface()->GetGameObjectNearestCoords(166.897f, 368.226f, 16.9209f, 184662);
 		if (Gate)
-			Gate->SetUInt32Value(GAMEOBJECT_STATE, 0);
+			Gate->SetByte(GAMEOBJECT_BYTES_1, 0, 0);
     }
 
     void AIUpdate()

@@ -267,7 +267,7 @@ enum MOD_TYPES
     SPELL_AURA_249 = 249,
     SPELL_AURA_MOD_INCREASE_HEALTH_2 = 250,
     SPELL_AURA_MOD_ENEMY_DODGE = 251,
-    TOTAL_SPELL_AURAS = 252
+    TOTAL_SPELL_AURAS = 284,
 };
 enum AuraTickFlags
 {
@@ -340,7 +340,7 @@ struct ProcTriggerSpell
 	//    SpellEntry *spinfo;
 	uint32 LastTrigger;
 	uint32 ProcType; //0=triggerspell/1=triggerclassspell
-	uint64 groupRelation;
+	uint32 groupRelation[3];
 	bool deleted;
 };
 #else
@@ -404,8 +404,6 @@ public:
 	Aura* StrongerThat(Aura *aur);
 	void ApplyModifiers(bool apply);
 	void UpdateModifiers();
-	void AddAuraVisual();
-	void RemoveAuraVisual();
 	void EventUpdateAA(float r);
 	void RemoveAA();
 		
@@ -616,13 +614,14 @@ public:
 	void SpellAuraModSpellDamageByAP(bool apply);
 	void SpellAuraMeleeHaste(bool apply);
 	void SpellAuraReduceEffectDuration(bool apply);
+	void HandleAuraControlVehicle(bool apply);
 	void EventPeriodicDrink(uint32 amount);
 	void SpellAuraAddHealth(bool apply);
 	void SpellAuraRemoveReagentCost(bool apply);
 
 	void UpdateAuraModDecreaseSpeed();
 
-	void SendModifierLog(int32 ** m,int32 v,uint64 mask,uint8 type,bool pct = false);
+	void SendModifierLog(int32 ** m,int32 v,uint32* mask,uint8 type,bool pct = false);
 	void SendDummyModifierLog(std::map<SpellEntry*,uint32> * m,SpellEntry * spellInfo,uint32 i,bool apply,bool pct = false);
 
 	// Events

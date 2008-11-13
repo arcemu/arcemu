@@ -476,6 +476,20 @@ PlayerInfo* ObjectMgr::GetPlayerInfoByName(const char * name)
 	return rv;
 }
 
+void ObjectMgr::LoadCompletedAchievements()
+{
+	QueryResult *result = WorldDatabase.Query("SELECT achievement FROM character_achievement GROUP BY achievement");
+
+	if(!result)
+	return;
+ do
+	{
+		Field *fields = result->Fetch();
+		allCompletedAchievements.insert(fields[0].GetUInt32());
+	} while(result->NextRow());
+ delete result;
+}
+
 void ObjectMgr::LoadPlayerCreateInfo()
 {
 	QueryResult *result = WorldDatabase.Query( "SELECT * FROM playercreateinfo" );
@@ -1437,8 +1451,8 @@ void ObjectMgr::LoadSpellFixes()
 					if( sf_procFlags )
 						sp->procFlags = sf_procFlags;
 
-					if( sf_SpellGroupType )
-						sp->SpellGroupType = sf_SpellGroupType;
+//					if( sf_SpellGroupType )
+//						sp->SpellGroupType = sf_SpellGroupType;
 
 					if( sf_procChance )
 						sp->procChance = sf_procChance;
@@ -1446,7 +1460,7 @@ void ObjectMgr::LoadSpellFixes()
 					if ( sf_procCharges )
 						sp->procCharges = sf_procCharges;
 
-					if ( sf_groupRelation0)
+/*					if ( sf_groupRelation0)
 					{
 						sp->EffectSpellGroupRelation[0] = (uint32)sf_groupRelation0;
 						sp->EffectSpellGroupRelation_high[0] = (uint32)(sf_groupRelation0>>32);
@@ -1460,7 +1474,7 @@ void ObjectMgr::LoadSpellFixes()
 					{
 						sp->EffectSpellGroupRelation[2] = (uint32)sf_groupRelation2;
 						sp->EffectSpellGroupRelation_high[2] = (uint32)(sf_groupRelation2>>32);
-					}
+					}*/
 				}
 			}
 		}while(result->NextRow());
@@ -1542,8 +1556,8 @@ void ObjectMgr::LoadSpellEffectsOverride()
 					if( seo_ApplyAuraName )
 						sp->EffectApplyAuraName[seo_EffectId] = seo_ApplyAuraName;
 
-					if( seo_SpellGroupRelation )
-						sp->EffectSpellGroupRelation[seo_EffectId] = seo_SpellGroupRelation;
+//					if( seo_SpellGroupRelation )
+//						sp->EffectSpellGroupRelation[seo_EffectId] = seo_SpellGroupRelation;
 
 					if( seo_MiscValue )
 						sp->EffectMiscValue[seo_EffectId] = seo_MiscValue;
@@ -1674,6 +1688,23 @@ void ObjectMgr::LoadCorpses(MapMgr * mgr)
 
 		delete result;
 	}
+}
+
+AchievementCriteriaEntryList const& ObjectMgr::GetAchievementCriteriaByType(AchievementCriteriaTypes type)
+{
+    return m_AchievementCriteriasByType[type];
+}
+
+void ObjectMgr::LoadAchievementCriteriaList()
+{
+    for (uint32 entryId = 0; entryId<dbcAchievementCriteriaStore.GetNumRows(); entryId++)
+    {
+        AchievementCriteriaEntry const* criteria = dbcAchievementCriteriaStore.LookupEntry(entryId);
+        if(!criteria)
+            continue;
+
+        m_AchievementCriteriasByType[criteria->requiredType].push_back(criteria);
+    }
 }
 
 std::list<ItemPrototype*>* ObjectMgr::GetListForItemSet(uint32 setid)

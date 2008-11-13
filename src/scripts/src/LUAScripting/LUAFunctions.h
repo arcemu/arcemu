@@ -227,7 +227,7 @@ int luaUnit_ModThreat(lua_State * L, Unit * ptr);
 int luaUnit_AddAssistTargets(lua_State * L, Unit * ptr);
 int luaUnit_RemoveAurasByMechanic(lua_State * L, Unit * ptr);
 int luaUnit_RemoveAurasType(lua_State * L, Unit * ptr);
-int luaUnit_AddAuraVisual(lua_State * L, Unit * ptr);
+//int luaUnit_AddAuraVisual(lua_State * L, Unit * ptr);
 
 
 /////////////////////

@@ -290,7 +290,7 @@ bool ChatHandler::HandleInfoCommand(const char* args, WorldSession *m_session)
 
 bool ChatHandler::HandleNetworkStatusCommand(const char* args, WorldSession *m_session)
 {
-	sSocketMgr.ShowStatus();
+	//sSocketMgr.ShowStatus();
 	return true;
 }
 
@@ -401,7 +401,7 @@ bool ChatHandler::HandleRangeCheckCommand( const char *args , WorldSession *m_se
 	WorldPacket data;
 	uint64 guid = m_session->GetPlayer()->GetSelection();
 	m_session->SystemMessage( "=== RANGE CHECK ===" );
-	if (guid == 0)
+	if(guid == 0)
 	{
 		m_session->SystemMessage("No selection.");
 		return true;

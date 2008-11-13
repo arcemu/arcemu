@@ -37,7 +37,6 @@ void CreateDummySpell(uint32 id)
 	sp->EffectImplicitTargetA[0]=25;
 	sp->NameHash=crc32((const unsigned char*)name, (unsigned int)strlen(name));
 	sp->dmg_multiplier[0]=1.0f;
-	sp->StanceBarOrder=-1;
 	dbcSpell.SetRow(id,sp);
 	sWorld.dummyspells.push_back(sp);
 }
@@ -236,7 +235,7 @@ void Apply112SpellFixes()
 	// Spell 14177 Group Relation\Interrupt Flag (Cold Blood )
 	sp = dbcSpell.LookupEntryForced(14177);
 	if(sp != NULL) {
-		sp->AuraInterruptFlags = AURA_INTERRUPT_ON_AFTER_CAST_SPELL;
+		sp->AuraInterruptFlags |= AURA_INTERRUPT_ON_CAST_SPELL;
 	}
 
 	// Spell 15494 Proc Chance (Fury of Forgewright )
@@ -425,9 +424,11 @@ void ApplyNormalFixes()
 	Apply112SpellFixes();
 
 	uint32 cnt = dbcSpell.GetNumRows();
+	uint32 effect;
+	uint32 result;
 	uint32 All_Seal_Groups_Combined=0;
 	// Relation Groups
-
+	
 	map<uint32, uint32> talentSpells;
 	map<uint32,uint32>::iterator talentSpellIterator;
 	unsigned int i,j;
@@ -437,8 +438,8 @@ void ApplyNormalFixes()
 		for(j = 0; j < 5; ++j)
 			if(tal->RankID[j] != 0)
 				talentSpells.insert(make_pair(tal->RankID[j], tal->TalentTree));
-	}
 
+	}
 
 	for(uint32 x=0; x < cnt; x++)
 	{
@@ -746,7 +747,6 @@ void ApplyNormalFixes()
         if( strstr( sp->Name, "Seal"))
 		{
             sp->BGR_one_buff_on_target |= SPELL_TYPE_SEAL;
-			All_Seal_Groups_Combined |= sp->SpellGroupType;
 		}
         else if( strstr( sp->Name, "Blessing"))
             sp->BGR_one_buff_on_target |= SPELL_TYPE_BLESSING;
@@ -955,58 +955,291 @@ void ApplyNormalFixes()
 		// set extra properties
 		sp->RankNumber = rank;
 
-		if (sp->procFlags == 0x200000) {
-			sp->procFlags = PROC_ON_TRAP_TRIGGER;
-		} else
-		if (sp->procFlags == 0x28) {
-			sp->procFlags = PROC_ON_MELEE_ATTACK_VICTIM;
-		} else
-		if (sp->procFlags == 0x2A8 && sp->Attributes&0x50000 && sp->AttributesExC&0x2) {
-			sp->procFlags = PROC_ON_BLOCK_VICTIM;
-		} else
-		if (sp->procFlags == 0x2A8) {
-			sp->procFlags = PROC_ON_MELEE_ATTACK_VICTIM | PROC_ON_RANGED_ATTACK_VICTIM;
-		} else
-		if (sp->procFlags == 0x10000) {
-			sp->procFlags = PROC_ON_CAST_SPELL;
-		} else
-		if (sp->procFlags == 0x15550 && (sp->AttributesExD&0x40 || sp->AttributesEx&0x20)) {
-			sp->AuraInterruptFlags = AURA_INTERRUPT_ON_AFTER_CAST_SPELL;
-		} else
-		if (sp->procFlags == 0x15550) {
-			sp->procFlags = PROC_ON_CAST_SPELL;
-		} else
-		if (sp->procFlags == 0x222A8 && sp->Attributes == 0x1D0 && !(sp->AttributesExD&0x80000)) {
-			sp->procFlags = PROC_ON_CRIT_HIT_VICTIM | PROC_ON_RANGED_CRIT_ATTACK_VICTIM | PROC_ON_SPELL_CRIT_HIT_VICTIM;
-		} else 
-		if (sp->procFlags == 0x222A8) {
-			sp->procFlags = PROC_ON_SPELL_HIT_VICTIM | PROC_ON_RANGED_ATTACK_VICTIM | PROC_ON_MELEE_ATTACK_VICTIM;
-		} else
-		if (sp->procFlags == 0xA22A8) {
-			// ON_HEALTH_DROP
-		} else
-		if (sp->procFlags == 0x14 && sp->AttributesExC&0x4000000) {
-			sp->procFlags = PROC_ON_CRIT_ATTACK;
-		} else 
-		if (sp->procFlags == 0x14) {
-			sp->procFlags = PROC_ON_MELEE_ATTACK;
-		} else
-		if (sp->procFlags == 0x1) {
-		} else
-		if (sp->procFlags == 0x2) {
-		} else
-		if (sp->procFlags == 0x100000) {
-		} else
-		if (sp->procFlags == 0x11154 && sp->Attributes == 0x1D0) {
-			sp->procFlags = PROC_ON_CRIT_ATTACK | PROC_ON_RANGED_CRIT_ATTACK | PROC_ON_SPELL_CRIT_HIT;
-		} else
-		if (sp->procFlags == 0x11154 && sp->Attributes == 0x50010) {
-			sp->procFlags = PROC_ON_MELEE_ATTACK;
-		} else
-		if (sp->procFlags != 0) {
-//			sLog.outString("unhandled procFlag = 0x%x, spellid=%d", sp->procFlags, sp->Id);
-//			sp->procFlags = 0;
-		}
+		uint32 pr=sp->procFlags;
+		for(uint32 y=0;y < 3; y++)
+		{
+			// get the effect number from the spell
+			effect = sp->Effect[y];
+
+			//spell group
+
+			if(effect==SPELL_EFFECT_APPLY_AURA)
+			{
+				uint32 aura = sp->EffectApplyAuraName[y];
+				if( aura == SPELL_AURA_PROC_TRIGGER_SPELL ||
+					aura == SPELL_AURA_PROC_TRIGGER_DAMAGE
+					)//search for spellid in description
+				{
+					const char *p=sp->Description;
+					while((p=strstr(p,"$")) != 0)
+					{
+						p++;
+						//got $  -> check if spell
+						if(*p>='0' && *p <='9')
+						{//woot this is spell id
+						
+							result=atoi(p);
+						}					
+					}
+					pr=0;
+
+					uint32 len = (uint32)strlen(sp->Description);
+					for(i = 0; i < len; ++i)
+						sp->Description[i] = tolower(sp->Description[i]);
+					//dirty code for procs, if any1 got any better idea-> u are welcome
+					//139944 --- some magic number, it will trigger on all hits etc
+						//for seems to be smth like custom check
+					if( strstr( sp->Description,"your ranged criticals"))
+						pr|=PROC_ON_RANGED_CRIT_ATTACK;
+					if( strstr( sp->Description,"chance on hit"))
+						pr|=PROC_ON_MELEE_ATTACK;
+					if( strstr( sp->Description,"takes damage"))
+						pr|=PROC_ON_ANY_DAMAGE_VICTIM;
+					if( strstr( sp->Description,"attackers when hit"))
+						pr|=PROC_ON_MELEE_ATTACK_VICTIM;
+					if( strstr( sp->Description,"character strikes an enemy"))
+						pr|=PROC_ON_MELEE_ATTACK;
+					if( strstr( sp->Description,"strike you with a melee attack"))
+						pr|=PROC_ON_MELEE_ATTACK_VICTIM;
+					if( strstr( sp->Description,"target casts a spell"))
+						pr|=PROC_ON_CAST_SPELL;
+                    if( strstr( sp->Description,"your harmful spells land"))
+                        pr|=PROC_ON_CAST_SPELL;
+                    if( strstr( sp->Description,"on spell critical hit"))
+                        pr|=PROC_ON_SPELL_CRIT_HIT;
+                    if( strstr( sp->Description,"spell critical strikes"))
+                        pr|=PROC_ON_SPELL_CRIT_HIT;
+                    if( strstr( sp->Description,"being able to resurrect"))
+                        pr|=PROC_ON_DIE;
+					if( strstr( sp->Description,"any damage caused"))
+						pr|=PROC_ON_ANY_DAMAGE_VICTIM;
+					if( strstr( sp->Description,"the next melee attack against the caster"))
+						pr|=PROC_ON_MELEE_ATTACK_VICTIM;
+					if( strstr( sp->Description,"when successfully hit"))
+						pr|=PROC_ON_MELEE_ATTACK ;
+					if( strstr( sp->Description,"an enemy on hit"))
+						pr|=PROC_ON_MELEE_ATTACK;
+					if( strstr( sp->Description,"when it hits"))
+						pr|=PROC_ON_MELEE_ATTACK;
+					if( strstr( sp->Description,"when successfully hit"))
+						pr|=PROC_ON_MELEE_ATTACK;
+					if( strstr( sp->Description,"on a successful hit"))
+						pr|=PROC_ON_MELEE_ATTACK;
+					if( strstr( sp->Description,"damage to attacker on hit"))
+						pr|=PROC_ON_MELEE_ATTACK_VICTIM;
+					if( strstr( sp->Description,"on a hit"))
+						pr|=PROC_ON_MELEE_ATTACK;
+					if( strstr( sp->Description,"strikes you with a melee attack"))
+						pr|=PROC_ON_MELEE_ATTACK_VICTIM;
+					if( strstr( sp->Description,"when caster takes damage"))
+						pr|=PROC_ON_ANY_DAMAGE_VICTIM;
+					if( strstr( sp->Description,"when the caster is using melee attacks"))
+						pr|=PROC_ON_MELEE_ATTACK;
+					if( strstr( sp->Description,"when struck in combat") || strstr(sp->Description,"When struck in combat"))
+						pr|=PROC_ON_MELEE_ATTACK_VICTIM;
+					if( strstr( sp->Description,"successful melee attack"))
+						pr|=PROC_ON_MELEE_ATTACK;
+					if( strstr( sp->Description,"chance per attack"))
+						pr|=PROC_ON_MELEE_ATTACK;
+					if( strstr( sp->Description,"chance per hit"))
+						pr|=PROC_ON_MELEE_ATTACK;
+					if( strstr( sp->Description,"that strikes a party member"))
+						pr|=PROC_ON_MELEE_ATTACK_VICTIM;
+					if( strstr( sp->Description,"when hit by a melee attack"))
+						pr|=PROC_ON_MELEE_ATTACK_VICTIM;
+					if( strstr( sp->Description,"landing a melee critical strike"))
+						pr|=PROC_ON_CRIT_ATTACK;
+					if( strstr( sp->Description,"your critical strikes"))
+						pr|=PROC_ON_CRIT_ATTACK;
+					if( strstr( sp->Description,"whenever you deal ranged damage"))
+						pr|=PROC_ON_RANGED_ATTACK;
+					if( strstr( sp->Description,"you deal melee damage"))
+						pr|=PROC_ON_MELEE_ATTACK;
+					if( strstr( sp->Description,"your melee attacks"))
+						pr|=PROC_ON_MELEE_ATTACK;
+					if( strstr( sp->Description,"damage with your Sword"))
+						pr|=PROC_ON_MELEE_ATTACK;
+					if( strstr( sp->Description,"when struck in melee combat"))
+						pr|=PROC_ON_MELEE_ATTACK_VICTIM;
+					if( strstr( sp->Description,"any successful spell cast against the priest"))
+						pr|=PROC_ON_SPELL_HIT_VICTIM;
+					if( strstr( sp->Description,"the next melee attack on the caster"))
+						pr|=PROC_ON_MELEE_ATTACK_VICTIM;
+					if( strstr( sp->Description,"striking melee or ranged attackers"))
+						pr|=PROC_ON_MELEE_ATTACK_VICTIM|PROC_ON_RANGED_ATTACK_VICTIM;
+					if( strstr( sp->Description,"when damaging an enemy in melee"))
+						pr|=PROC_ON_MELEE_ATTACK;
+					if( strstr( sp->Description,"victim of a critical strike"))
+						pr|=PROC_ON_CRIT_HIT_VICTIM;
+					if( strstr( sp->Description,"on successful melee or ranged attack"))
+						pr|=PROC_ON_MELEE_ATTACK|PROC_ON_RANGED_ATTACK;
+					if( strstr( sp->Description,"enemy that strikes you in melee"))
+						pr|=PROC_ON_MELEE_ATTACK_VICTIM;
+					if( strstr( sp->Description,"after getting a critical strike"))
+						pr|=PROC_ON_CRIT_ATTACK;
+					if( strstr( sp->Description,"whenever damage is dealt to you"))
+						pr|=PROC_ON_ANY_DAMAGE_VICTIM;
+					if( strstr( sp->Description,"when ranged or melee damage is dealt"))
+						pr|=PROC_ON_MELEE_ATTACK|PROC_ON_RANGED_ATTACK;
+					if( strstr( sp->Description,"damaging melee attacks"))
+						pr|=PROC_ON_MELEE_ATTACK;
+					if( strstr( sp->Description,"on melee or ranged attack"))
+						pr|=PROC_ON_MELEE_ATTACK|PROC_ON_RANGED_ATTACK;
+					if( strstr( sp->Description,"on a melee swing"))
+						pr|=PROC_ON_MELEE_ATTACK;
+					if( strstr( sp->Description,"Chance on melee"))
+						pr|=PROC_ON_MELEE_ATTACK;
+					if( strstr( sp->Description,"spell criticals against you"))
+						pr|=PROC_ON_SPELL_CRIT_HIT_VICTIM;
+					if( strstr( sp->Description,"after being struck by a melee or ranged critical hit"))
+						pr|=PROC_ON_CRIT_HIT_VICTIM;
+					if( strstr( sp->Description,"on a critical hit"))
+					if( strstr( sp->Description,"critical hit"))
+						pr|=PROC_ON_CRIT_ATTACK;
+					if( strstr( sp->Description,"strikes the caster"))
+						pr|=PROC_ON_MELEE_ATTACK_VICTIM;
+					if( strstr( sp->Description,"a spell, melee or ranged attack hits the caster"))
+						pr|=PROC_ON_ANY_DAMAGE_VICTIM;
+					if( strstr( sp->Description,"after dealing a critical strike"))
+						pr|=PROC_ON_CRIT_ATTACK;
+					if( strstr( sp->Description,"each melee or ranged damage hit against the priest"))
+						pr|=PROC_ON_MELEE_ATTACK_VICTIM|PROC_ON_RANGED_ATTACK_VICTIM;				
+					if( strstr( sp->Description, "a chance to deal additional"))
+						pr|=PROC_ON_MELEE_ATTACK;
+					if( strstr( sp->Description, "chance to get an extra attack"))
+						pr|=PROC_ON_MELEE_ATTACK;
+					if( strstr( sp->Description, "melee attacks has"))
+						pr|=PROC_ON_MELEE_ATTACK;
+					if( strstr( sp->Description, "any damage spell hits a target"))
+						pr|=PROC_ON_CAST_SPELL;
+					if( strstr( sp->Description, "giving each melee attack a chance"))
+						pr|=PROC_ON_MELEE_ATTACK;
+					if( strstr( sp->Description, "damage when hit"))
+						pr|=PROC_ON_ANY_DAMAGE_VICTIM; //myabe melee damage ?
+					if( strstr( sp->Description, "gives your"))
+					{
+						if( strstr( sp->Description, "melee"))
+							pr|=PROC_ON_MELEE_ATTACK;
+						else if( strstr( sp->Description,"sinister strike, backstab, gouge and shiv"))
+							pr|=PROC_ON_CAST_SPELL;
+						else if( strstr( sp->Description,"chance to daze the target"))
+							pr|=PROC_ON_CAST_SPELL;
+						else if( strstr( sp->Description,"finishing moves"))
+							pr|=PROC_ON_CAST_SPELL;
+						else pr|=PROC_ON_CAST_SPECIFIC_SPELL;
+					}
+					if( strstr( sp->Description, "chance to add an additional combo") && strstr(sp->Description, "critical") )
+						pr|=PROC_ON_CRIT_ATTACK;
+					else if( strstr( sp->Description, "chance to add an additional combo"))
+						pr|=PROC_ON_CAST_SPELL;
+					if( strstr( sp->Description, "victim of a melee or ranged critical strike"))
+						pr|=PROC_ON_CRIT_HIT_VICTIM;
+					if( strstr( sp->Description, "getting a critical effect from"))
+						pr|=PROC_ON_SPELL_CRIT_HIT_VICTIM;
+					if( strstr( sp->Description, "damaging attack is taken"))
+						pr|=PROC_ON_ANY_DAMAGE_VICTIM;
+					if( strstr( sp->Description, "struck by a Stun or Immobilize"))
+						pr|=PROC_ON_SPELL_HIT_VICTIM;
+					if( strstr( sp->Description, "melee critical strike"))
+						pr|=PROC_ON_CRIT_ATTACK;
+					if( strstr( sp->Name, "Bloodthirst"))
+						pr|=PROC_ON_MELEE_ATTACK | static_cast<uint32>(PROC_TARGET_SELF);
+					if( strstr( sp->Description, "experience or honor"))
+						pr|=PROC_ON_GAIN_EXPIERIENCE;
+					if( strstr( sp->Description,"your next offensive ability"))
+						pr|=PROC_ON_CAST_SPELL;
+					if( strstr( sp->Description,"hit by a melee or ranged attack"))
+						pr|=PROC_ON_MELEE_ATTACK_VICTIM | PROC_ON_RANGED_ATTACK_VICTIM;
+					if( strstr( sp->Description,"enemy strikes the caster"))
+						pr|=PROC_ON_MELEE_ATTACK_VICTIM;
+					if( strstr( sp->Description,"melee and ranged attacks against you"))
+						pr|=PROC_ON_MELEE_ATTACK_VICTIM | PROC_ON_RANGED_ATTACK_VICTIM;
+					if( strstr( sp->Description,"when a block occurs"))
+						pr|=PROC_ON_BLOCK_VICTIM;
+					if( strstr( sp->Description,"dealing a critical strike from a weapon swing, spell, or ability"))
+						pr|=PROC_ON_CRIT_ATTACK|PROC_ON_SPELL_CRIT_HIT;
+					if( strstr( sp->Description,"dealing a critical strike from a weapon swing, spell, or ability"))
+						pr|=PROC_ON_CRIT_ATTACK|PROC_ON_SPELL_CRIT_HIT;
+					if( strstr( sp->Description,"shadow bolt critical strikes increase shadow damage"))
+						pr|=PROC_ON_SPELL_CRIT_HIT;
+					if( strstr( sp->Description,"next offensive ability"))
+						pr|=PROC_ON_CAST_SPELL;
+					if( strstr( sp->Description,"after being hit with a shadow or fire spell"))
+						pr|=PROC_ON_SPELL_LAND_VICTIM;
+					if( strstr( sp->Description,"giving each melee attack"))
+						pr|=PROC_ON_MELEE_ATTACK;
+					if( strstr( sp->Description,"each strike has"))
+						pr|=PROC_ON_MELEE_ATTACK;		
+					if( strstr( sp->Description,"your Fire damage spell hits"))
+						pr|=PROC_ON_CAST_SPELL;		//this happens only on hit ;)
+					if( strstr( sp->Description,"corruption, curse of agony, siphon life and seed of corruption spells also cause"))
+						pr|=PROC_ON_CAST_SPELL;
+					if( strstr( sp->Description,"pain, mind flay and vampiric touch spells also cause"))
+						pr|=PROC_ON_CAST_SPELL;
+					if( strstr( sp->Description,"shadow damage spells have"))
+						pr|=PROC_ON_CAST_SPELL;
+					if( strstr( sp->Description,"on successful spellcast"))
+						pr|=PROC_ON_CAST_SPELL;
+					if( strstr( sp->Description,"your spell criticals have"))
+						pr|=PROC_ON_SPELL_CRIT_HIT | PROC_ON_SPELL_CRIT_HIT_VICTIM;
+					if( strstr( sp->Description,"after dodging their attack"))
+					{
+						pr|=PROC_ON_DODGE_VICTIM;
+						if( strstr( sp->Description,"add a combo point"))
+							pr|=PROC_TARGET_SELF;
+					}
+					if( strstr( sp->Description,"fully resisting"))
+						pr|=PROC_ON_RESIST_VICTIM;
+					if( strstr( sp->Description,"Your Shadow Word: Pain, Mind Flay and Vampiric Touch spells also cause the target"))
+						pr|=PROC_ON_CAST_SPELL;
+					if( strstr( sp->Description,"chance on spell hit"))
+						pr|=PROC_ON_CAST_SPELL;
+					if( strstr( sp->Description,"your melee and ranged attacks"))
+						pr|=PROC_ON_MELEE_ATTACK|PROC_ON_RANGED_ATTACK;
+					//////////////////////////////////////////////////
+					//proc dmg flags
+					//////////////////////////////////////////////////
+					if( strstr( sp->Description,"each attack blocked"))
+						pr|=PROC_ON_BLOCK_VICTIM;
+					if( strstr( sp->Description,"into flame, causing an additional"))
+						pr|=PROC_ON_MELEE_ATTACK;
+					if( strstr( sp->Description,"victim of a critical melee strike"))
+						pr|=PROC_ON_CRIT_HIT_VICTIM;
+					if( strstr( sp->Description,"damage to melee attackers"))
+						pr|=PROC_ON_MELEE_ATTACK;
+					if( strstr( sp->Description,"target blocks a melee attack"))
+						pr|=PROC_ON_BLOCK_VICTIM;
+					if( strstr( sp->Description,"ranged and melee attacks to deal"))
+						pr|=PROC_ON_MELEE_ATTACK_VICTIM | PROC_ON_RANGED_ATTACK_VICTIM;
+					if( strstr( sp->Description,"damage on hit"))
+						pr|=PROC_ON_ANY_DAMAGE_VICTIM;
+					if( strstr( sp->Description,"chance on hit"))
+						pr|=PROC_ON_MELEE_ATTACK;
+					if( strstr( sp->Description,"after being hit by any damaging attack"))
+						pr|=PROC_ON_ANY_DAMAGE_VICTIM;
+					if( strstr( sp->Description,"striking melee or ranged attackers"))
+						pr|=PROC_ON_MELEE_ATTACK_VICTIM | PROC_ON_RANGED_ATTACK_VICTIM;
+					if( strstr( sp->Description,"damage to attackers when hit"))
+						pr|=PROC_ON_MELEE_ATTACK_VICTIM;
+					if( strstr( sp->Description,"striking melee attackers"))
+						pr|=PROC_ON_MELEE_ATTACK_VICTIM;
+					if( strstr( sp->Description,"whenever the caster takes damage"))
+						pr|=PROC_ON_ANY_DAMAGE_VICTIM;
+					if( strstr( sp->Description,"damage on every attack"))
+						pr|=PROC_ON_MELEE_ATTACK | PROC_ON_RANGED_ATTACK;
+					if( strstr( sp->Description,"chance to reflect Fire spells"))
+						pr|=PROC_ON_SPELL_HIT_VICTIM;
+					if( strstr( sp->Description,"hunter takes on the aspects of a hawk"))
+						pr|=PROC_TARGET_SELF | PROC_ON_RANGED_ATTACK;
+					if( strstr( sp->Description,"successful auto shot attacks"))
+						pr|=PROC_ON_AUTO_SHOT_HIT;
+					if( strstr( sp->Description,"after getting a critical effect from your"))
+						pr=PROC_ON_SPELL_CRIT_HIT;
+				}//end "if procspellaura"
+			}//end "if aura"
+		}//end "for each effect"
+		sp->procFlags = pr;
+
 
 
 		if( strstr( sp->Description, "Must remain seated"))
@@ -1134,27 +1367,22 @@ void ApplyNormalFixes()
 		//don't change to namehash since we are searching only a protion of the name
  		else if( strstr( sp->Name, "Crippling Poison"))
 		{
-			sp->SpellGroupType |= 16384; //some of them do have the flags but i's hard to write down those some from 130 spells
 			sp->c_is_flags |= SPELL_FLAG_IS_POISON;
 		}
 		else if( strstr( sp->Name, "Mind-numbing Poison"))
 		{
-			sp->SpellGroupType |= 32768; //some of them do have the flags but i's hard to write down those some from 130 spells
 			sp->c_is_flags |= SPELL_FLAG_IS_POISON;
 		}
 		else if( strstr( sp->Name, "Instant Poison"))
 		{
-			sp->SpellGroupType |= 8192; //some of them do have the flags but i's hard to write down those some from 130 spells
 			sp->c_is_flags |= SPELL_FLAG_IS_POISON;
 		}
 		else if( strstr( sp->Name, "Deadly Poison"))
 		{
-			sp->SpellGroupType |= 65536; //some of them do have the flags but i's hard to write down those some from 130 spells
 			sp->c_is_flags |= SPELL_FLAG_IS_POISON;
 		}
 		else if( strstr( sp->Name, "Wound Poison"))
 		{
-			sp->SpellGroupType |= 268435456; //some of them do have the flags but i's hard to write down those some from 130 spells
 			sp->c_is_flags |= SPELL_FLAG_IS_POISON;
 		}
 		else if( strstr( sp->Name, "Scorpid Poison") )
@@ -1163,21 +1391,6 @@ void ApplyNormalFixes()
 			sp->c_is_flags |= SPELL_FLAG_IS_POISON;
 		}
 
-		//warlock - shadow bolt
-		if( sp->NameHash == SPELL_HASH_SHADOW_BOLT )
-			sp->SpellGroupType |= 1; //some of them do have the flags but i's hard to write down those some from 130 spells
-
-/*		else if( strstr( sp->Name, "Anesthetic Poison"))
-			sp->SpellGroupType |= 0; //not yet known ? 
-		else if( strstr( sp->Name, "Blinding Powder"))
-			sp->SpellGroupType |= 0; //not yet known ?
-		else 
-		if( sp->NameHash == SPELL_HASH_ILLUMINATION )
-			sp->EffectTriggerSpell[0] = 20272;*/  // broken trigger spell, do not use
-		//sp->dummy=result;
-/*		//if there is a proc spell and has 0 as charges then it's probably going to triger infinite times. Better not save these
-		if(sp->procCharges==0)
-			sp->procCharges=-1;*/
 		if( sp->NameHash == SPELL_HASH_ILLUMINATION )
 			sp->procFlags |= PROC_TARGET_SELF;
 
@@ -1229,12 +1442,8 @@ void ApplyNormalFixes()
 			sp->procChance = 30;
 
 		//shaman - shock, has no spellgroup.very dangerous move !
-		if( sp->NameHash == SPELL_HASH_SHOCK )
-			sp->SpellGroupType = 4;
 
 		//mage - fireball. Only some of the spell has the flags 
-		if( sp->NameHash == SPELL_HASH_FIREBALL )
-			sp->SpellGroupType |= 1;
 
 		if( sp->NameHash == SPELL_HASH_DIVINE_SHIELD || sp->NameHash == SPELL_HASH_DIVINE_PROTECTION || sp->NameHash == SPELL_HASH_BLESSING_OF_PROTECTION )
 			sp->MechanicsType = MECHANIC_INVULNARABLE;
@@ -1507,7 +1716,207 @@ void ApplyNormalFixes()
 			// Forbearance - Is forced debuff
 			if( sp->NameHash == SPELL_HASH_FORBEARANCE )
 				sp->c_is_flags |= SPELL_FLAG_IS_FORCEDDEBUFF;
+		
+		/**********************************************************
+		 *	Paladin - Devotion Auras
+		 **********************************************************/
+		
+		//Rank 1
+		sp = dbcSpell.LookupEntryForced( 465 ); 
+		if( sp != NULL )
+		{
+            sp->Effect[0] = SPELL_EFFECT_APPLY_AREA_AURA;
+		}
+		//Rank 2
+		sp = dbcSpell.LookupEntryForced( 10290 ); 
+		if( sp != NULL )
+		{
+            sp->Effect[0] = SPELL_EFFECT_APPLY_AREA_AURA;
+		}		
+		//Rank 3
+		sp = dbcSpell.LookupEntryForced( 643 ); 
+		if( sp != NULL )
+		{
+            sp->Effect[0] = SPELL_EFFECT_APPLY_AREA_AURA;
+		}
+		//Rank 4
+		sp = dbcSpell.LookupEntryForced( 10291 ); 
+		if( sp != NULL )
+		{
+            sp->Effect[0] = SPELL_EFFECT_APPLY_AREA_AURA;
+		}
+		//Rank 5
+		sp = dbcSpell.LookupEntryForced( 1032 ); 
+		if( sp != NULL )
+		{
+            sp->Effect[0] = SPELL_EFFECT_APPLY_AREA_AURA;
+		}
+		//Rank 6
+		sp = dbcSpell.LookupEntryForced( 10292 ); 
+		if( sp != NULL )
+		{
+            sp->Effect[0] = SPELL_EFFECT_APPLY_AREA_AURA;
+		}
+		//Rank 7
+		sp = dbcSpell.LookupEntryForced( 10293 ); 
+		if( sp != NULL )
+		{
+            sp->Effect[0] = SPELL_EFFECT_APPLY_AREA_AURA;
+		}
+		//Rank 8
+		sp = dbcSpell.LookupEntryForced( 27149 ); 
+		if( sp != NULL )
+		{
+            sp->Effect[0] = SPELL_EFFECT_APPLY_AREA_AURA;
+		}
 
+		/**********************************************************
+		 *	Paladin - Fire Auras
+		 **********************************************************/
+		
+		//Rank 1
+		sp = dbcSpell.LookupEntryForced( 19891 ); 
+		if( sp != NULL )
+		{
+            sp->Effect[0] = SPELL_EFFECT_APPLY_AREA_AURA;
+		}
+		//Rank 2
+		sp = dbcSpell.LookupEntryForced( 19899 ); 
+		if( sp != NULL )
+		{
+            sp->Effect[0] = SPELL_EFFECT_APPLY_AREA_AURA;
+		}		
+		//Rank 3
+		sp = dbcSpell.LookupEntryForced( 19900 ); 
+		if( sp != NULL )
+		{
+            sp->Effect[0] = SPELL_EFFECT_APPLY_AREA_AURA;
+		}
+		//Rank 4
+		sp = dbcSpell.LookupEntryForced( 27153 ); 
+		if( sp != NULL )
+		{
+            sp->Effect[0] = SPELL_EFFECT_APPLY_AREA_AURA;
+		}
+		
+		/**********************************************************
+		 *	Paladin - Frost Auras
+		 **********************************************************/
+		
+		//Rank 1
+		sp = dbcSpell.LookupEntryForced( 19888 ); 
+		if( sp != NULL )
+		{
+            sp->Effect[0] = SPELL_EFFECT_APPLY_AREA_AURA;
+		}
+		//Rank 2
+		sp = dbcSpell.LookupEntryForced( 19897 ); 
+		if( sp != NULL )
+		{
+            sp->Effect[0] = SPELL_EFFECT_APPLY_AREA_AURA;
+		}		
+		//Rank 3
+		sp = dbcSpell.LookupEntryForced( 19898 ); 
+		if( sp != NULL )
+		{
+            sp->Effect[0] = SPELL_EFFECT_APPLY_AREA_AURA;
+		}
+		//Rank 4
+		sp = dbcSpell.LookupEntryForced( 27152 ); 
+		if( sp != NULL )
+		{
+            sp->Effect[0] = SPELL_EFFECT_APPLY_AREA_AURA;
+		}
+		
+		/**********************************************************
+		 *	Paladin - Shadow Auras
+		 **********************************************************/
+		
+		//Rank 1
+		sp = dbcSpell.LookupEntryForced( 19876 ); 
+		if( sp != NULL )
+		{
+            sp->Effect[0] = SPELL_EFFECT_APPLY_AREA_AURA;
+		}
+		//Rank 2
+		sp = dbcSpell.LookupEntryForced( 19895 ); 
+		if( sp != NULL )
+		{
+            sp->Effect[0] = SPELL_EFFECT_APPLY_AREA_AURA;
+		}		
+		//Rank 3
+		sp = dbcSpell.LookupEntryForced( 19896 ); 
+		if( sp != NULL )
+		{
+            sp->Effect[0] = SPELL_EFFECT_APPLY_AREA_AURA;
+		}
+		//Rank 4
+		sp = dbcSpell.LookupEntryForced( 27151 ); 
+		if( sp != NULL )
+		{
+            sp->Effect[0] = SPELL_EFFECT_APPLY_AREA_AURA;
+		}
+		
+		/**********************************************************
+		 *	Paladin - Retribution Auras
+		 **********************************************************/
+		
+		//Rank 1
+		sp = dbcSpell.LookupEntryForced( 7294 ); 
+		if( sp != NULL )
+		{
+            sp->Effect[0] = SPELL_EFFECT_APPLY_AREA_AURA;
+		}
+		//Rank 2
+		sp = dbcSpell.LookupEntryForced( 10298 ); 
+		if( sp != NULL )
+		{
+            sp->Effect[0] = SPELL_EFFECT_APPLY_AREA_AURA;
+		}		
+		//Rank 3
+		sp = dbcSpell.LookupEntryForced( 10299 ); 
+		if( sp != NULL )
+		{
+            sp->Effect[0] = SPELL_EFFECT_APPLY_AREA_AURA;
+		}
+		//Rank 4
+		sp = dbcSpell.LookupEntryForced( 10300 ); 
+		if( sp != NULL )
+		{
+            sp->Effect[0] = SPELL_EFFECT_APPLY_AREA_AURA;
+		}
+		//Rank 5
+		sp = dbcSpell.LookupEntryForced( 10301 ); 
+		if( sp != NULL )
+		{
+            sp->Effect[0] = SPELL_EFFECT_APPLY_AREA_AURA;
+		}
+		//Rank 6
+		sp = dbcSpell.LookupEntryForced( 27150 ); 
+		if( sp != NULL )
+		{
+            sp->Effect[0] = SPELL_EFFECT_APPLY_AREA_AURA;
+		}
+		
+		/**********************************************************
+		 *	Paladin - Concentration Aura
+		 **********************************************************/
+		
+		sp = dbcSpell.LookupEntryForced( 19746 ); 
+		if( sp != NULL )
+		{
+            sp->Effect[0] = SPELL_EFFECT_APPLY_AREA_AURA;
+		}
+		
+		/**********************************************************
+		 *	Paladin - Crusader Aura
+		 **********************************************************/
+		
+		sp = dbcSpell.LookupEntryForced( 32223 ); 
+		if( sp != NULL )
+		{
+            sp->Effect[0] = SPELL_EFFECT_APPLY_AREA_AURA;
+		}
 
 		//////////////////////////////////////////
 		// HUNTER								//
@@ -1603,6 +2012,160 @@ void ApplyNormalFixes()
 				sp->proc_interval = 5000;
 				sp->EffectTriggerSpell[0] = 31616;
 			}
+
+		//////////////////////////////////////////
+		// SHAMAN STRENGHT TOTEM				//
+		//////////////////////////////////////////
+		sp = dbcSpell.LookupEntryForced( 8076 ); 
+		if( sp != NULL )
+		{
+            sp->Effect[0] = SPELL_EFFECT_APPLY_AREA_AURA;
+		}
+		sp = dbcSpell.LookupEntryForced( 8162 ); 
+		if( sp != NULL )
+		{
+        sp->Effect[0] = SPELL_EFFECT_APPLY_AREA_AURA;
+		}
+		sp = dbcSpell.LookupEntryForced( 8163 ); 
+		if( sp != NULL )
+		{
+            sp->Effect[0] = SPELL_EFFECT_APPLY_AREA_AURA;
+		}
+		sp = dbcSpell.LookupEntryForced( 10441 ); 
+		if( sp != NULL )
+		{
+            sp->Effect[0] = SPELL_EFFECT_APPLY_AREA_AURA;
+		}
+		sp = dbcSpell.LookupEntryForced( 25362 ); 
+		if( sp != NULL )
+		{
+            sp->Effect[0] = SPELL_EFFECT_APPLY_AREA_AURA;
+		}
+		sp = dbcSpell.LookupEntryForced( 25527 ); 
+		if( sp != NULL )
+		{
+            sp->Effect[0] = SPELL_EFFECT_APPLY_AREA_AURA;
+		}
+		//////////////////////////////////////////
+		// SHAMAN STONESKIN TOTEM				//
+		//////////////////////////////////////////
+		sp = dbcSpell.LookupEntryForced( 8072 ); 
+		if( sp != NULL )
+		{
+            sp->Effect[0] = SPELL_EFFECT_APPLY_AREA_AURA;
+		}
+		sp = dbcSpell.LookupEntryForced( 8156 ); 
+		if( sp != NULL )
+		{
+        sp->Effect[0] = SPELL_EFFECT_APPLY_AREA_AURA;
+		}
+		sp = dbcSpell.LookupEntryForced( 8157 ); 
+		if( sp != NULL )
+		{
+            sp->Effect[0] = SPELL_EFFECT_APPLY_AREA_AURA;
+		}
+		sp = dbcSpell.LookupEntryForced( 10403 ); 
+		if( sp != NULL )
+		{
+            sp->Effect[0] = SPELL_EFFECT_APPLY_AREA_AURA;
+		}
+		sp = dbcSpell.LookupEntryForced( 10404 ); 
+		if( sp != NULL )
+		{
+            sp->Effect[0] = SPELL_EFFECT_APPLY_AREA_AURA;
+		}
+		sp = dbcSpell.LookupEntryForced( 10405 ); 
+		if( sp != NULL )
+		{
+            sp->Effect[0] = SPELL_EFFECT_APPLY_AREA_AURA;
+		}
+		sp = dbcSpell.LookupEntryForced( 25506 ); 
+		if( sp != NULL )
+		{
+            sp->Effect[0] = SPELL_EFFECT_APPLY_AREA_AURA;
+		}
+		sp = dbcSpell.LookupEntryForced( 25507 ); 
+		if( sp != NULL )
+		{
+            sp->Effect[0] = SPELL_EFFECT_APPLY_AREA_AURA;
+		}
+		//////////////////////////////////////////
+		// SHAMAN FIRE RESIST TOTEM				//
+		//////////////////////////////////////////
+		sp = dbcSpell.LookupEntryForced( 8185 ); 
+		if( sp != NULL )
+		{
+            sp->Effect[0] = SPELL_EFFECT_APPLY_AREA_AURA;
+		}
+		sp = dbcSpell.LookupEntryForced( 10534 ); 
+		if( sp != NULL )
+		{
+        sp->Effect[0] = SPELL_EFFECT_APPLY_AREA_AURA;
+		}
+		sp = dbcSpell.LookupEntryForced( 10535 ); 
+		if( sp != NULL )
+		{
+            sp->Effect[0] = SPELL_EFFECT_APPLY_AREA_AURA;
+		}
+		sp = dbcSpell.LookupEntryForced( 25562 ); 
+		if( sp != NULL )
+		{
+            sp->Effect[0] = SPELL_EFFECT_APPLY_AREA_AURA;
+		}
+		//////////////////////////////////////////
+		// SHAMAN FROST RESIST TOTEM			//
+		//////////////////////////////////////////
+		sp = dbcSpell.LookupEntryForced( 8182 ); 
+		if( sp != NULL )
+		{
+            sp->Effect[0] = SPELL_EFFECT_APPLY_AREA_AURA;
+		}
+		sp = dbcSpell.LookupEntryForced( 10476 ); 
+		if( sp != NULL )
+		{
+        sp->Effect[0] = SPELL_EFFECT_APPLY_AREA_AURA;
+		}
+		sp = dbcSpell.LookupEntryForced( 10477 ); 
+		if( sp != NULL )
+		{
+            sp->Effect[0] = SPELL_EFFECT_APPLY_AREA_AURA;
+		}
+		sp = dbcSpell.LookupEntryForced( 25559 ); 
+		if( sp != NULL )
+		{
+            sp->Effect[0] = SPELL_EFFECT_APPLY_AREA_AURA;
+		}
+		//////////////////////////////////////////
+		// SHAMAN NATURE RESIST TOTEM			//
+		//////////////////////////////////////////
+		sp = dbcSpell.LookupEntryForced( 10596 ); 
+		if( sp != NULL )
+		{
+            sp->Effect[0] = SPELL_EFFECT_APPLY_AREA_AURA;
+		}
+		sp = dbcSpell.LookupEntryForced( 10598 ); 
+		if( sp != NULL )
+		{
+        sp->Effect[0] = SPELL_EFFECT_APPLY_AREA_AURA;
+		}
+		sp = dbcSpell.LookupEntryForced( 10599 ); 
+		if( sp != NULL )
+		{
+            sp->Effect[0] = SPELL_EFFECT_APPLY_AREA_AURA;
+		}
+		sp = dbcSpell.LookupEntryForced( 25573 ); 
+		if( sp != NULL )
+		{
+            sp->Effect[0] = SPELL_EFFECT_APPLY_AREA_AURA;
+		}
+		//////////////////////////////////////////
+		// SHAMAN WRATH OF AIR TOTEM			//
+		//////////////////////////////////////////
+		sp = dbcSpell.LookupEntryForced( 2895 ); 
+		if( sp != NULL )
+		{
+            sp->Effect[0] = SPELL_EFFECT_APPLY_AREA_AURA;
+		}
 		//////////////////////////////////////////
 		// MAGE								//
 		//////////////////////////////////////////
@@ -1873,13 +2436,6 @@ void ApplyNormalFixes()
 		sp->EffectMiscValue[0] = 2998;
 
 	/**********************************************************
-	 *	Wand Shoot
-	 **********************************************************/
-	sp = dbcSpell.LookupEntryForced( 5019 );
-	if( sp != NULL )
-		sp->SpellGroupType = 134217728;
-
-	/**********************************************************
 	 * Berserking - TROLL'S RACIAL SPELL
 	 **********************************************************/
 	sp = dbcSpell.LookupEntryForced( 20554 );
@@ -2019,19 +2575,19 @@ void ApplyNormalFixes()
 		if(sp != NULL)
 		{
 			sp->EffectTriggerSpell[0] = 12721;
-			sp->procFlags = PROC_ON_CRIT_ATTACK | PROC_ON_RANGED_CRIT_ATTACK | PROC_ON_SPELL_CRIT_HIT;
+			sp->procFlags = PROC_ON_CRIT_ATTACK | PROC_ON_SPELL_CRIT_HIT;
 		}
 		sp = dbcSpell.LookupEntryForced( 12849 );
 		if(sp != NULL)
 		{
 			sp->EffectTriggerSpell[0] = 12721;
-			sp->procFlags = PROC_ON_CRIT_ATTACK | PROC_ON_RANGED_CRIT_ATTACK | PROC_ON_SPELL_CRIT_HIT;
+			sp->procFlags = PROC_ON_CRIT_ATTACK | PROC_ON_SPELL_CRIT_HIT;
 		}
 		sp = dbcSpell.LookupEntryForced( 12867 );
 		if(sp != NULL)
 		{
 			sp->EffectTriggerSpell[0] = 12721;
-			sp->procFlags = PROC_ON_CRIT_ATTACK | PROC_ON_RANGED_CRIT_ATTACK | PROC_ON_SPELL_CRIT_HIT;
+			sp->procFlags = PROC_ON_CRIT_ATTACK | PROC_ON_SPELL_CRIT_HIT;
 		}
 
 		//Warrior - Charge Rank 1
@@ -2174,18 +2730,6 @@ void ApplyNormalFixes()
 			sp->procFlags = PROC_ON_MELEE_ATTACK | static_cast<uint32>(PROC_TARGET_SELF);
 			sp->EffectTriggerSpell[0] = sp->EffectTriggerSpell[1];
 		}
-	#ifdef NEW_PROCFLAGS
-		//warrior - deep wounds
-		sp = dbcSpell.LookupEntry( 12162);
-		if ( sp!=NULL )
-			sp->SpellGroupType = 32;
-		sp = dbcSpell.LookupEntry( 12850);
-		if ( sp!=NULL )
-			sp->SpellGroupType = 32;
-		sp = dbcSpell.LookupEntry( 12868);
-		if ( sp!=NULL )
-			sp->SpellGroupType = 32;
-	#endif
 
 		//warrior - second wind should trigger on self
 		sp = dbcSpell.LookupEntryForced( 29841 );
@@ -2627,6 +3171,8 @@ void ApplyNormalFixes()
 		if( sp != NULL )
 			sp->procChance = 20;
 
+		/*		
+		// I believe we can assume since Sanctity Aura was removed in 3.0.2 so was the improved version.
 		// paladin - Improved Sanctity Aura
 		sp = dbcSpell.LookupEntryForced( 31869 );
 		if( sp != NULL )
@@ -2638,6 +3184,7 @@ void ApplyNormalFixes()
 		{
 			sp->EffectMiscValue[0] = SMT_MISC_EFFECT;
 		}
+		*/ 
 		//Paladin - Improved Lay on Hands
 		sp = dbcSpell.LookupEntryForced( 20234 );
 		if( sp != NULL )
@@ -2926,12 +3473,6 @@ void ApplyNormalFixes()
 		{
 			sp->EffectMiscValue[0] = SMT_MISC_EFFECT;
 		}
-		sp = dbcSpell.LookupEntryForced( 5131 );
-		if( sp != NULL )
-			sp->SpellGroupType = 2097152;
-		sp = dbcSpell.LookupEntryForced( 13160 );
-		if( sp != NULL )
-			sp->SpellGroupType = 2097152;
 
 		//Hunter : Rapid Killing - might need to add honor trigger too here. I'm guessing you receive Xp too so i'm avoiding double proc
 		sp = dbcSpell.LookupEntryForced( 34948 );
@@ -2944,11 +3485,6 @@ void ApplyNormalFixes()
 		{
 			sp->procFlags = PROC_ON_GAIN_EXPIERIENCE | static_cast<uint32>(PROC_TARGET_SELF);
 		}
-
-		//we need to adress this somehow : shot
-		sp = dbcSpell.LookupEntryForced( 3018 );
-		if( sp != NULL )
-			sp->SpellGroupType = 4;
 
 		//Hunter : Entrapment
 		sp = dbcSpell.LookupEntryForced( 19184 );
@@ -4258,7 +4794,7 @@ void ApplyNormalFixes()
 		sp = dbcSpell.LookupEntryForced( 43985 );
 		if ( sp != NULL )
 			sp->EffectImplicitTargetA[0] = EFF_TARGET_DYNAMIC_OBJECT;
-
+	
 	//////////////////////////////////////////
 	// WARLOCK								//
 	//////////////////////////////////////////
@@ -5559,18 +6095,7 @@ void ApplyNormalFixes()
 		//Spell Focus Trigger (Mystical Skyfire Diamond)
 		sp = dbcSpell.LookupEntryForced( 32837 );
 		if( sp != NULL )
-		{
 			sp->procChance = 15;
-			sp->proc_interval = 45000;
-		}
-		
-		// Skyfire Swiftness (Thundering Skyfire Diamond)
-		sp = dbcSpell.LookupEntryForced( 39958 );
-		if( sp != NULL )
-		{
-			sp->procChance = 15;
-			sp->proc_interval = 45000;
-		}
 
 		// Band of the Eternal Sage
 		sp = dbcSpell.LookupEntryForced( 35083 );
@@ -5955,7 +6480,7 @@ void ApplyNormalFixes()
 			sp->procFlags = PROC_ON_CAST_SPELL;
 			sp->procChance = 100;
 		}
-		
+
 		//Item Set: Shadowcraft Armor & Darkmantle Armor
 		sp = dbcSpell.LookupEntryForced( 27787 );
 		if( sp != NULL)
@@ -6083,7 +6608,7 @@ void ApplyNormalFixes()
 		//////////////////////////////////////////
 
 		// Insert boss spell fixes here
-
+		
 		// Major Domo - Magic Reflection
 		sp = dbcSpell.LookupEntryForced(20619);
 		if(sp != NULL)
@@ -6194,10 +6719,6 @@ void ApplyNormalFixes()
 			sp->EffectImplicitTargetA[0] = EFF_TARGET_NONE;
 		}
 
-		//Dazed
-		sp = dbcSpell.LookupEntryForced( 15571 );
-		if( sp != NULL )
-			sp->c_is_flags |= SPELL_FLAG_IS_FORCEDDEBUFF;
 
 		//Bandage
 		sp = dbcSpell.LookupEntryForced( 11196 );

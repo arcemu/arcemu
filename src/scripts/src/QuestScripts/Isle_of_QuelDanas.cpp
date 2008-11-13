@@ -44,7 +44,7 @@ public:
 			GameObject* Orb = pPlayer->GetMapMgr()->GetInterface()->GetGameObjectNearestCoords( SSX, SSY, SSZ, 187578);
 			if (Orb)
 			{
-				Orb->SetUInt32Value(GAMEOBJECT_STATE, 0);
+				Orb->SetUInt32Value( GAMEOBJECT_BYTES_1, 0);
   				qle->SetMobCount(0, 1);
   				qle->SendUpdateAddKill(0);
   				qle->UpdatePlayerFields();

@@ -844,7 +844,7 @@ public:
 
 				case 48:			// Door has been broken and channel stoped
 				{
-					Gate->SetUInt32Value(GAMEOBJECT_STATE, 0);
+					Gate->SetByte(GAMEOBJECT_BYTES_1, 0, 0);
 
 					if (DoorTrigger)
 					{
@@ -1012,10 +1012,10 @@ public:
 					GameObject* LeftGate  = _unit->GetMapMgr()->GetInterface()->GetGameObjectNearestCoords(744.829f, 369.276f, 354.324f, 200001);
 					
 					if (RightGate)
-						RightGate->SetUInt32Value(GAMEOBJECT_STATE, 1);
+						RightGate->SetByte(GAMEOBJECT_BYTES_1, 0, 1);
 
 					if (LeftGate)
-						LeftGate->SetUInt32Value(GAMEOBJECT_STATE, 1);
+						LeftGate->SetByte(GAMEOBJECT_BYTES_1, 0, 1);
 					
 					_unit->GetAIInterface()->SetAllowedToEnterCombat(true);
 					_unit->GetAIInterface()->setCurrentAgent(AGENT_NULL);
@@ -1512,10 +1512,10 @@ public:
 					GameObject* LeftGate  = _unit->GetMapMgr()->GetInterface()->GetGameObjectNearestCoords(744.829f, 369.276f, 354.324f, 200001);
 					
 					if (RightGate)
-						RightGate->SetUInt32Value(GAMEOBJECT_STATE, 0);
+						RightGate->SetByte(GAMEOBJECT_BYTES_1, 0, 0);
 
 					if (LeftGate)
-						LeftGate->SetUInt32Value(GAMEOBJECT_STATE, 0);
+						LeftGate->SetByte(GAMEOBJECT_BYTES_1, 0, 0);
 
 					Illidan->SetUInt32Value(UNIT_NPC_EMOTESTATE, 0);
 					Illidan->SetUInt32Value(UNIT_FIELD_HEALTH,0);

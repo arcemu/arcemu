@@ -38,21 +38,21 @@ This script covers Onyxia's mind
 //0 = walk, 256 = run, 768 = fly 
 
 //Phase 1,3 Spells
-#define FLAME_BREATH			18435 //self
-#define KNOCK_AWAY				19633 //Reduce thread script effect main target
-#define WING_BUFFET				18500 // self
-#define CLEAVE					19983 //target
-#define TAIL_SWEEP				15847
+#define FLAME_BREATH 23461 //self
+#define KNOCK_AWAY 10101 //Reduce thread script effect main target
+#define WING_BUFFET 18500 // self
+#define CLEAVE 30495//15579,16044,19642,29832 //target
+#define TAIL_SWEEP 15847
 
 //Phase 2 Spells
-#define SCRIPTABLE_FIREBALL		18392
+#define SCRIPTABLE_FIREBALL 30691//Not sure find true one
 //Script it
-#define ENTANGLING_FLAMES		20019
+#define ENTANGLING_FLAMES 20019
 //Onyxia's Breath (Deep Breath)
-#define DEEP_BREATH				17086
+#define DEEP_BREATH 17086
 
 //Phase 3 Spells
-#define AOE_FEAR				18431 //With Activate Object
+#define AOE_FEAR 18431//With Activate Object
 
 struct Coords
 {

@@ -425,10 +425,10 @@ public:
 		GameObject* DoorRightO = _unit->GetMapMgr()->GetInterface()->GetGameObjectNearestCoords(-10872.195f, -1779.42f, 90.45f, 184278);
 
 		if(DoorLeftO)
-			DoorLeftO->SetUInt32Value(GAMEOBJECT_STATE, 0);
+			DoorLeftO->SetByte(GAMEOBJECT_BYTES_1, 0, 0);
 
 		if(DoorRightO)
-			DoorRightO->SetUInt32Value(GAMEOBJECT_STATE, 0);
+			DoorRightO->SetByte(GAMEOBJECT_BYTES_1, 0, 0);
 	}
 
 	void OnTargetDied(Unit* mTarget)
@@ -597,13 +597,13 @@ GameObject* DoorRight = _unit->GetMapMgr()->GetInterface()->GetGameObjectNearest
 GameObject* Curtain = _unit->GetMapMgr()->GetInterface()->GetGameObjectNearestCoords(-10894.17f, -1774.218f, 90.477f, 183932);
 
 if(DoorLeft)
-DoorLeft->SetUInt32Value(GAMEOBJECT_STATE, 1);
+DoorLeft->SetByte(GAMEOBJECT_BYTES_1, 0, 1);
 
 if(DoorRight)
-DoorRight->SetUInt32Value(GAMEOBJECT_STATE, 0);
+DoorRight->SetByte(GAMEOBJECT_BYTES_1, 0, 0);
 
 if(Curtain)
-Curtain->SetUInt32Value(GAMEOBJECT_STATE, 1);
+Curtain->SetByte(GAMEOBJECT_BYTES_1, 0, 1);
 
 CastTime();
 _unit->GetAIInterface()->setCurrentAgent(AGENT_NULL);
@@ -618,14 +618,14 @@ GameObject* DoorRight = _unit->GetMapMgr()->GetInterface()->GetGameObjectNearest
 GameObject* Curtain = _unit->GetMapMgr()->GetInterface()->GetGameObjectNearestCoords(-10894.17f, -1774.218f, 90.477f, 183932);
 
 if(DoorLeft)
-DoorLeft->SetUInt32Value(GAMEOBJECT_STATE, 0);
+DoorLeft->SetByte(GAMEOBJECT_BYTES_1, 0, 0);
 
 if(DoorRight)
-DoorRight->SetUInt32Value(GAMEOBJECT_STATE, 0);
+DoorRight->SetByte(GAMEOBJECT_BYTES_1, 0, 0);
 
 // Make sure the curtain stays up
 if(Curtain)
-Curtain->SetUInt32Value(GAMEOBJECT_STATE, 0);
+Curtain->SetByte(GAMEOBJECT_BYTES_1, 0, 0);
 
 CastTime();
 _unit->PlaySoundToSet(9275);
@@ -904,13 +904,13 @@ public:
 		GameObject* Curtain = _unit->GetMapMgr()->GetInterface()->GetGameObjectNearestCoords(-10894.17f, -1774.218f, 90.477f, 183932);
 
 		if(DoorLeft)
-			DoorLeft->SetUInt32Value(GAMEOBJECT_STATE, 1);
+			DoorLeft->SetByte(GAMEOBJECT_BYTES_1, 0, 1);
 
 		if(DoorRight)
-			DoorRight->SetUInt32Value(GAMEOBJECT_STATE, 0);
+			DoorRight->SetByte(GAMEOBJECT_BYTES_1, 0, 0);
 
 		if(Curtain)
-			Curtain->SetUInt32Value(GAMEOBJECT_STATE, 1);
+			Curtain->SetByte(GAMEOBJECT_BYTES_1, 0, 1);
 
 		Creature* Julianne	= _unit->GetMapMgr()->GetInterface()->GetCreatureNearestCoords(-10883.0f, -1751.81f, 90.4765f, 17534);
 		Creature* Romulo	= _unit->GetMapMgr()->GetInterface()->GetCreatureNearestCoords(-10883.0f, -1751.81f, 90.4765f, 17533);
@@ -990,13 +990,13 @@ public:
 		GameObject* Curtain = _unit->GetMapMgr()->GetInterface()->GetGameObjectNearestCoords(-10894.17f, -1774.218f, 90.477f, 183932);
 
 		if(DoorLeft)
-			DoorLeft->SetUInt32Value(GAMEOBJECT_STATE, 1);
+			DoorLeft->SetByte(GAMEOBJECT_BYTES_1, 0, 1);
 
 		if(DoorRight)
-			DoorRight->SetUInt32Value(GAMEOBJECT_STATE, 1);
+			DoorRight->SetByte(GAMEOBJECT_BYTES_1, 0, 1);
 
 		if(Curtain)
-			Curtain->SetUInt32Value(GAMEOBJECT_STATE, 0);
+			Curtain->SetByte(GAMEOBJECT_BYTES_1, 0, 0);
 
 		_unit->SetUInt32Value(UNIT_FIELD_DISPLAYID, 16616);
 
@@ -1043,13 +1043,13 @@ public:
 		GameObject* Curtain = _unit->GetMapMgr()->GetInterface()->GetGameObjectNearestCoords(-10894.17f, -1774.218f, 90.477f, 183932);
 
 		if(DoorLeft)
-			DoorLeft->SetUInt32Value(GAMEOBJECT_STATE, 1);
+			DoorLeft->SetByte(GAMEOBJECT_BYTES_1, 0, 1);
 
 		if(DoorRight)
-			DoorRight->SetUInt32Value(GAMEOBJECT_STATE, 1);
+			DoorRight->SetByte(GAMEOBJECT_BYTES_1, 0, 1);
 
 		if(Curtain)
-			Curtain->SetUInt32Value(GAMEOBJECT_STATE, 0);
+			Curtain->SetByte(GAMEOBJECT_BYTES_1, 0, 0);
 
 		_unit->SetUInt32Value(UNIT_FIELD_DISPLAYID, 16616);
 		_unit->GetMapMgr()->GetInterface()->SpawnCreature(17534, -10891.582f, -1755.5177f, 90.476f, 4.61f, false, true, 0, 0); //Spawn Julianne
@@ -1091,48 +1091,48 @@ public:
 		GameObject* BackDrop = _unit->GetMapMgr()->GetInterface()->SpawnGameObject(183491, -10890.9f, -1744.06f, 90.4765f, -1.67552f, false, 0, 0);
 
 		if(DoorLeft)
-			DoorLeft->SetUInt32Value(GAMEOBJECT_STATE, 1);
+			DoorLeft->SetByte(GAMEOBJECT_BYTES_1, 0, 1);
 
 		if(DoorRight)
-			DoorRight->SetUInt32Value(GAMEOBJECT_STATE, 1);
+			DoorRight->SetByte(GAMEOBJECT_BYTES_1, 0, 1);
 
 		if(Curtain)
-			Curtain->SetUInt32Value(GAMEOBJECT_STATE, 0);
+			Curtain->SetByte(GAMEOBJECT_BYTES_1, 0, 0);
 
 		// Back Right - House
 		if(House)
 		{
-			House->SetFloatValue(GAMEOBJECT_ROTATION_02, 0.760406f);
-			House->SetFloatValue(GAMEOBJECT_ROTATION_03, -0.649448f);
+			House->SetFloatValue(GAMEOBJECT_PARENTROTATION_02, 0.760406f);
+			House->SetFloatValue(GAMEOBJECT_PARENTROTATION_03, -0.649448f);
 			House->SetFloatValue(OBJECT_FIELD_SCALE_X, 1.0f);
 		}
 
 		// Front Right - Tree
 		if(Tree)
 		{
-			Tree->SetFloatValue(GAMEOBJECT_ROTATION_02, 0.748956f);
-			Tree->SetFloatValue(GAMEOBJECT_ROTATION_03, -0.66262f);
+			Tree->SetFloatValue(GAMEOBJECT_PARENTROTATION_02, 0.748956f);
+			Tree->SetFloatValue(GAMEOBJECT_PARENTROTATION_03, -0.66262f);
 		}
 
 		// Back Left - Tree 2
 		if(Tree2)
 		{
-			Tree2->SetFloatValue(GAMEOBJECT_ROTATION_02, 0.648956f);
-			Tree2->SetFloatValue(GAMEOBJECT_ROTATION_03, -0.66262f);
+			Tree2->SetFloatValue(GAMEOBJECT_PARENTROTATION_02, 0.648956f);
+			Tree2->SetFloatValue(GAMEOBJECT_PARENTROTATION_03, -0.66262f);
 		}
 
 		// Front Left - Tree 3
 		if(Tree3)
 		{
-			Tree3->SetFloatValue(GAMEOBJECT_ROTATION_02, 0.737277f);
-			Tree3->SetFloatValue(GAMEOBJECT_ROTATION_03, -0.67559f);
+			Tree3->SetFloatValue(GAMEOBJECT_PARENTROTATION_02, 0.737277f);
+			Tree3->SetFloatValue(GAMEOBJECT_PARENTROTATION_03, -0.67559f);
 		}
 
 		// Back - Back Drop
 		if(BackDrop)
 		{
-			BackDrop->SetFloatValue(GAMEOBJECT_ROTATION_02, 0.743145f);
-			BackDrop->SetFloatValue(GAMEOBJECT_ROTATION_03, -0.669131f);
+			BackDrop->SetFloatValue(GAMEOBJECT_PARENTROTATION_02, 0.743145f);
+			BackDrop->SetFloatValue(GAMEOBJECT_PARENTROTATION_03, -0.669131f);
 		}
 
 		_unit->SetUInt32Value(UNIT_FIELD_DISPLAYID, 16616);
@@ -1692,7 +1692,7 @@ public:
 		SDoor = _unit->GetMapMgr()->GetInterface()->GetGameObjectNearestCoords(-11190.012f, -1881.016f, 231.95f, 184517);
 		if(SDoor)
 		{
-			SDoor->SetUInt32Value(GAMEOBJECT_STATE, 1);
+			SDoor->SetByte(GAMEOBJECT_BYTES_1, 0, 1);
 			SDoor->SetUInt32Value(GAMEOBJECT_FLAGS, 33);
 		}
 	}
@@ -2977,7 +2977,7 @@ public:
 
 		if(MDoor != NULL)
 		{
-			MDoor->SetUInt32Value(GAMEOBJECT_STATE, 1);
+			MDoor->SetByte(GAMEOBJECT_BYTES_1, 0, 1);
 			MDoor->SetUInt32Value(GAMEOBJECT_FLAGS, 33);
 		}
 	}
@@ -3012,7 +3012,7 @@ public:
 
 		// Open door
 		if(MDoor != NULL)
-			MDoor->SetUInt32Value(GAMEOBJECT_STATE, 0);
+			MDoor->SetByte(GAMEOBJECT_BYTES_1, 0, 0);
 
 		Creature *MAxes = NULL;
 		MAxes = _unit->GetMapMgr()->GetInterface()->GetCreatureNearestCoords(_unit->GetPositionX(), _unit->GetPositionY(), _unit->GetPositionZ(), CN_AXES);
@@ -3037,7 +3037,7 @@ public:
 
 		// Open door
 		if(MDoor)
-			MDoor->SetUInt32Value(GAMEOBJECT_STATE, 0);
+			MDoor->SetByte(GAMEOBJECT_BYTES_1, 0, 0);
 	}
 
 	void OnTargetDied(Unit * mTarget)
@@ -3581,7 +3581,7 @@ public:
 
 		if(NDoor)
 		{
-			NDoor->SetUInt32Value(GAMEOBJECT_STATE, 1);
+			NDoor->SetByte(GAMEOBJECT_BYTES_1, 0, 1);
 			NDoor->SetUInt32Value(GAMEOBJECT_FLAGS, 33);
 		}
 	}
@@ -3595,7 +3595,7 @@ public:
 		RemoveAIUpdateEvent();
 
 		if(NDoor)
-			NDoor->SetUInt32Value(GAMEOBJECT_STATE, 0);
+			NDoor->SetByte(GAMEOBJECT_BYTES_1, 0, 0);
 	}
 
 	void OnDied(Unit * mKiller)
@@ -3603,7 +3603,7 @@ public:
 		RemoveAIUpdateEvent();
 
 		if(NDoor)
-			NDoor->SetUInt32Value(GAMEOBJECT_STATE, 0);
+			NDoor->SetByte(GAMEOBJECT_BYTES_1, 0, 0);
 	}
 
 	void AIUpdate()
@@ -4905,13 +4905,13 @@ public:
 			GameObject* Curtain = _unit->GetMapMgr()->GetInterface()->GetGameObjectNearestCoords(-10894.17f, -1774.218f, 90.477f, 183932);
 
 			if(DoorLeft)
-				DoorLeft->SetUInt32Value(GAMEOBJECT_STATE, 1);
+				DoorLeft->SetByte(GAMEOBJECT_BYTES_1, 0, 1);
 
 			if(DoorRight)
-				DoorRight->SetUInt32Value(GAMEOBJECT_STATE, 0);
+				DoorRight->SetByte(GAMEOBJECT_BYTES_1, 0, 0);
 
 			if(Curtain)
-				Curtain->SetUInt32Value(GAMEOBJECT_STATE, 1);
+				Curtain->SetByte(GAMEOBJECT_BYTES_1, 0, 1);
 		}
 
 		CastTime();
@@ -4929,14 +4929,14 @@ public:
 		GameObject* Curtain = _unit->GetMapMgr()->GetInterface()->GetGameObjectNearestCoords(-10894.17f, -1774.218f, 90.477f, 183932);
 
 		if(DoorLeft)
-			DoorLeft->SetUInt32Value(GAMEOBJECT_STATE, 0);
+			DoorLeft->SetByte(GAMEOBJECT_BYTES_1, 0, 0);
 
 		if(DoorRight)
-			DoorRight->SetUInt32Value(GAMEOBJECT_STATE, 0);
+			DoorRight->SetByte(GAMEOBJECT_BYTES_1, 0, 0);
 
 		// Make sure the curtain stays up
 		if(Curtain)
-			Curtain->SetUInt32Value(GAMEOBJECT_STATE, 0);
+			Curtain->SetByte(GAMEOBJECT_BYTES_1, 0, 0);
 
 		_unit->PlaySoundToSet(SOUND_DEATH_CRONE);
 		_unit->SendChatMessage(CHAT_MSG_MONSTER_YELL, LANG_UNIVERSAL, TEXT_DEATH_CRONE);
@@ -5144,13 +5144,13 @@ public:
 			GameObject* Curtain = _unit->GetMapMgr()->GetInterface()->GetGameObjectNearestCoords(-10894.17f, -1774.218f, 90.477f, 183932);
 
 			if(DoorLeft)
-				DoorLeft->SetUInt32Value(GAMEOBJECT_STATE, 1);
+				DoorLeft->SetByte(GAMEOBJECT_BYTES_1, 0, 1);
 
 			if(DoorRight)
-				DoorRight->SetUInt32Value(GAMEOBJECT_STATE, 0);
+				DoorRight->SetByte(GAMEOBJECT_BYTES_1, 0, 0);
 
 			if(Curtain)
-				Curtain->SetUInt32Value(GAMEOBJECT_STATE, 1);
+				Curtain->SetByte(GAMEOBJECT_BYTES_1, 0, 1);
 		}
 
 		CastTime();
@@ -5168,14 +5168,14 @@ public:
 		GameObject* Curtain = _unit->GetMapMgr()->GetInterface()->GetGameObjectNearestCoords(-10894.17f, -1774.218f, 90.477f, 183932);
 
 		if(DoorLeft)
-			DoorLeft->SetUInt32Value(GAMEOBJECT_STATE, 0);
+			DoorLeft->SetByte(GAMEOBJECT_BYTES_1, 0, 0);
 
 		if(DoorRight)
-			DoorRight->SetUInt32Value(GAMEOBJECT_STATE, 0);
+			DoorRight->SetByte(GAMEOBJECT_BYTES_1, 0, 0);
 
 		// Make sure the curtain stays up
 		if(Curtain)
-			Curtain->SetUInt32Value(GAMEOBJECT_STATE, 0);
+			Curtain->SetByte(GAMEOBJECT_BYTES_1, 0, 0);
 
 		_unit->PlaySoundToSet(SOUND_DEATH_ROMULO);
 		_unit->SendChatMessage(CHAT_MSG_MONSTER_YELL, LANG_UNIVERSAL, TEXT_DEATH_ROMULO);
@@ -5334,13 +5334,13 @@ public:
 			GameObject* Curtain = _unit->GetMapMgr()->GetInterface()->GetGameObjectNearestCoords(-10894.17f, -1774.218f, 90.477f, 183932);
 
 			if(DoorLeft)
-				DoorLeft->SetUInt32Value(GAMEOBJECT_STATE, 1);
+				DoorLeft->SetByte(GAMEOBJECT_BYTES_1, 0, 1);
 
 			if(DoorRight)
-				DoorRight->SetUInt32Value(GAMEOBJECT_STATE, 0);
+				DoorRight->SetByte(GAMEOBJECT_BYTES_1, 0, 0);
 
 			if(Curtain)
-				Curtain->SetUInt32Value(GAMEOBJECT_STATE, 1);
+				Curtain->SetByte(GAMEOBJECT_BYTES_1, 0, 1);
 		}
 
 		CastTime();

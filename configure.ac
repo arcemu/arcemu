@@ -268,9 +268,9 @@ AC_CONFIG_FILES([
    src/scripts/src/SpellHandlers/Makefile
    src/scripts/src/LUAScripting/Makefile
    src/scripts/src/QuestScripts/Makefile
-   extras/Makefile
-   extras/collision/Makefile
-   extras/collision/collision_dll/Makefile
+   src/collision_tools/Makefile
+   src/collision_tools/collision_dll/Makefile
+   src/collision/Makefile
 ])
 
 AC_OUTPUT

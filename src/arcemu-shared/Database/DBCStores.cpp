@@ -21,12 +21,18 @@
 #include "DataStore.h"
 #include "NGLog.h"
 
+SERVER_DECL DBCStorage<AchievementEntry> dbcAchievementStore;
+SERVER_DECL DBCStorage<AchievementCriteriaEntry> dbcAchievementCriteriaStore;
+SERVER_DECL DBCStorage<CharTitlesEntry> dbcCharTitlesEntry;
+SERVER_DECL DBCStorage<BarberShopStyleEntry> dbcBarberShopStyleStore;
 SERVER_DECL DBCStorage<GemPropertyEntry> dbcGemProperty;
+SERVER_DECL DBCStorage<GlyphPropertyEntry> dbcGlyphProperty;
 SERVER_DECL DBCStorage<ItemSetEntry> dbcItemSet;
 SERVER_DECL DBCStorage<Lock> dbcLock;
 SERVER_DECL DBCStorage<SpellEntry> dbcSpell;
 SERVER_DECL DBCStorage<SpellDuration> dbcSpellDuration;
 SERVER_DECL DBCStorage<SpellRange> dbcSpellRange;
+SERVER_DECL DBCStorage<SpellRuneCostEntry> dbcSpellRuneCostEntry;
 SERVER_DECL DBCStorage<emoteentry> dbcEmoteEntry;
 SERVER_DECL DBCStorage<SpellRadius> dbcSpellRadius;
 SERVER_DECL DBCStorage<SpellCastTime> dbcSpellCastTime;
@@ -56,6 +62,8 @@ SERVER_DECL DBCStorage<DurabilityQualityEntry> dbcDurabilityQuality;
 SERVER_DECL DBCStorage<DurabilityCostsEntry> dbcDurabilityCosts;
 SERVER_DECL DBCStorage<BankSlotPrice> dbcBankSlotPrices;
 SERVER_DECL DBCStorage<BankSlotPrice> dbcStableSlotPrices;
+SERVER_DECL DBCStorage<BarberShopStyleEntry> dbcBarberShopStyle;
+SERVER_DECL DBCStorage<gtFloat> dbcBarberShopPrices;
 SERVER_DECL DBCStorage<gtFloat> dbcMeleeCrit;
 SERVER_DECL DBCStorage<gtFloat> dbcMeleeCritBase;
 SERVER_DECL DBCStorage<gtFloat> dbcSpellCrit;
@@ -65,25 +73,137 @@ SERVER_DECL DBCStorage<gtFloat> dbcManaRegenBase;
 SERVER_DECL DBCStorage<gtFloat> dbcHPRegen;
 SERVER_DECL DBCStorage<gtFloat> dbcHPRegenBase;
 SERVER_DECL DBCStorage<AreaTriggerEntry> dbcAreaTrigger;
-//SERVER_DECL DBCStorage<CharTitlesEntry> dbcCharTitle;
 
+const char* AchievementStoreFormat="niixxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxiixxixxxxxxxxxxxxxxxxxxx";
+const char* AchievementCriteriaStoreFormat="niiiiiiiixxxxxxxxxxxxxxxxxiixix";
+const char* CharTitlesEntryfmt = "uxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxu";
+const char* BarberShopStyleEntryFormat="nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxi";
 const char* ItemSetFormat = "usxxxxxxxxxxxxxxxuuuuuuuuuxxxxxxxxxuuuuuuuuuuuuuuuuuu";
 const char* LockFormat = "uuuuuuxxxuuuuuxxxuuuuuxxxxxxxxxxx";
 const char* EmoteEntryFormat = "uxuuuuxuxuxxxxxxxxx";
-const char* skilllinespellFormat = "uuuxxxxxuuuuxxu";
-const char* EnchantEntrYFormat = "uuuuuuuuuuuuusxxxxxxxxxxxxxxxxuuuu";
+const char* skilllinespellFormat = "uuuxxxxxuuuuxx";
+const char* EnchantEntrYFormat = "uuuuuuuuuuuuusxxxxxxxxxxxxxxxxuuuuxxx";
 const char* GemPropertyEntryFormat = "uuuuu";
-const char* skilllineentrYFormat = "uuusxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx";
-const char* spellentryFormat = "uuuuuuuuuuuuuuuuuuuuuuuuuuuuuuiuuuuuuuuuufuuuuuuuuuuuuuuuuuuuuiuuuuuuuuuuuffffffiiiiiiuuuuuuuuuuuuuuufffuuuuuuuuuuuuuuufffuuuuusxxxxxxxxxxxxxxxxsxxxxxxxxxxxxxxxxsxxxxxxxxxxxxxxxxsxxxxxxxxxxxxxxxxuuuuuuuuuuifffuuuuuuu";
-const char* itemextendedcostFormat = "uuuuuuuuuuuuuu";
-const char* talententryFormat = "uuuuuuuuuxxxxuxxuxxxx";
-const char* talenttabentryFormat = "uxxxxxxxxxxxxxxxxxxxuux";
+const char* GlyphPropertyEntryFormat = "uuuu";
+const char* skilllineentrYFormat = "uuusxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx";
+//								1        10        20        30
+const char* spellentryFormat = 
+	"u" // Id
+	"u" // Category
+	"u" // DispelType
+	"u" // MechanicsType
+	"u" // Attributes
+	"u" // AttributesEx
+	"u" // AttributesExB
+	"u" // AttributesExC
+	"u" // AttributesExD
+	"u" // AttributesExE
+	"u" // AttributesExF
+	"u" // RequiredShapeShift
+	"u" // ShapeshiftExclude
+	"u" // Targets
+	"u" // TargetCreatureType
+	"u" // RequiresSpellFocus
+	"u" // FacingCasterFlags
+	"u" // CasterAuraState
+	"u" // TargetAuraState
+	"u" // ExcludeCasterAuraState
+	"u" // ExcludeTargetAuraState
+	"u" // casterAuraSpell
+	"u" // targetAuraSpell
+	"u" // ExcludeCasterAuraState
+	"u" // ExcludeTargetAuraState
+	"u" // CastingTimeIndex
+	"u" // RecoveryTime
+	"u" // CategoryRecoveryTime
+	"u" // InterruptFlags
+	"u" // AuraInterruptFlags
+	"u" // ChannelInterruptFlags
+	"u" // procFlags
+	"u" // procChance
+	"u" // procCharges
+	"u" // maxLevel
+	"u" // baseLevel
+	"u" // spellLevel
+	"u" // DurationIndex
+	"u" // powerType
+	"u" // manaCost
+	"u" // manaCostPerlevel
+	"u" // manaPerSecond
+	"u" // manaPerSecondPerLevel
+	"u" // rangeIndex
+	"f" // speed
+	"u" // modalNextSpell
+	"u" // maxstack
+	"uu" // Totem[2]
+	"uuuuuuuu" // Reagent[8]
+	"uuuuuuuu" // ReagentCount[8]
+	"u" // EquippedItemClass
+	"u" // EquippedItemSubClass
+	"u" // RequiredItemFlags
+	"uuu" // Effect[3]
+	"uuu" // EffectDieSides[3]
+	"uuu" // EffectBaseDice[3]
+	"uuu" // EffectDicePerLevel[3]
+	"uuu" // EffectRealPointsPerLevel[3]
+	"uuu" // EffectBasePoints[3]
+	"uuu" // EffectMechanic[3]
+	"uuu" // EffectImplicitTargetA[3]
+	"uuu" // EffectImplicitTargetB[3]
+	"uuu" // EffectRadiusIndex[3]
+	"uuu" // EffectApplyAuraName[3]
+	"uuu" // EffectAmplitude[3]
+	"uuu" // Effectunknown[3]
+	"uuu" // EffectChainTarget[3]
+	"uuu" // EffectSpellGroupRelation[3]
+	"uuu" // EffectMiscValue[3]
+	"uuu" // EffectMiscValueB[3]
+	"uuu" // EffectTriggerSpell[3]
+	"uuu" // EffectPointsPerComboPoint[3]
+	"uuu" // EffectUnk0[3]
+	"uuu" // EffectUnk1[3]
+	"uuu" // EffectUnk2[3]
+	"u" // SpellVisual
+	"u" // field114
+	"u" // spellIconID
+	"u" // activeIconID
+	"u" // spellPriority
+	"sxxxxxxxxxxxxxxxx" // Name
+	"sxxxxxxxxxxxxxxxx" // Rank
+	"sxxxxxxxxxxxxxxxx" // Description
+	"sxxxxxxxxxxxxxxxx" // BuffDescription
+	"u" // ManaCostPercentage
+	"u" // unkflags
+	"u" // StartRecoveryTime
+	"u" // StartRecoveryCategory
+	"u" // MaxTargetLevel
+	"u" // SpellFamilyName
+	"uu" // SpellGroupType
+	"u" // MaxTargets
+	"u" // Spell_Dmg_Type
+	"u" // PreventionType
+	"u" // StanceBarOrder
+	"uuu" // dmg_multiplier[3]
+	"u" // MinFactionID
+	"u" // MinReputation
+	"u" // RequiredAuraVision
+	"u" // TotemCategory[2]
+	"u" // RequiresAreaId
+	"u" // School
+	"xxx"
+;
+
+
+const char* itemextendedcostFormat = "uuuuuuuuuuuuuux";
+const char* talententryFormat = "uuuuuuuuuxxxxuxxuxxxxxx";
+const char* talenttabentryFormat = "uxxxxxxxxxxxxxxxxxxxuuxx";
 const char* spellcasttimeFormat = "uuxx";
 const char* spellradiusFormat = "ufxf";
-const char* spellrangeFormat = "uffxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx";
+const char* spellrangeFormat = "uffffxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx";
+const char* SpellRuneCostFormat="uuuuu";
 const char* spelldurationFormat = "uuuu";
 const char* randompropsFormat = "uxuuuxxxxxxxxxxxxxxxxxxx";
-const char* areatableFormat = "uuuuuxxxuxusxxxxxxxxxxxxxxxxuxxxxxx";
+const char* areatableFormat = "uuuuuxxxuxusxxxxxxxxxxxxxxxxuxxxxxxx";
 const char* factiontemplatedbcFormat = "uuuuuuuuuuuuuu";
 const char* auctionhousedbcFormat = "uuuuxxxxxxxxxxxxxxxxx";
 const char* factiondbcFormat = "uiuuuuuuuuiiiiuuuuusxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx";
@@ -92,17 +212,40 @@ const char* dbctaxipathFormat = "uuuu";
 const char* dbctaxipathnodeFormat = "uuuufffuuxx";
 const char* creaturespelldataFormat = "uuuuuuuuu";
 const char* charraceFormat = "uxxxxxxxuxxxxusxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx";
-const char* charclassFormat = "uxuxsxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx";
-const char* creaturefamilyFormat = "ufufuuuusxxxxxxxxxxxxxxxxx";
-const char* mapentryFormat = "usuxsxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx";
-const char* itemrandomsuffixformat = "uxxxxxxxxxxxxxxxxxxuuuuuu";
+const char* charclassFormat = "uxuxsxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx";
+const char* creaturefamilyFormat = "ufufuuuusxxxxxxxxxxxxxxxxxxx";
+const char* mapentryFormat =
+	"u"					// 0 id
+	"s"					// 1 name_internal
+	"u"					// 2 map_type
+	"u"					// 3 is_pvp_zone
+	"sxxxxxxxxxxxxxxxx"	// 4-20 real_name
+	"u"					// 21 linked_zone
+	"xxxxxxxxxxxxxxxxx" // 22-38 hordeIntro
+	"xxxxxxxxxxxxxxxxx" // 39-55 allianceIntro
+	"u"					// 56 multimap_id
+	"x"					// 57 unk_float (all 1 but arathi 1.25)
+	"xxxxxxxxxxxxxxxxx"	// 58-74 normalReqText
+	"xxxxxxxxxxxxxxxxx"	// 75-91 heroicReqText
+	"xxxxxxxxxxxxxxxxx"	// 92-108 emptyText
+	"u"					// 109 parent_map
+	"u"					// 110 start_x
+	"u"					// 111 start_y
+	"u"					// 112 resetTimeRaid
+	"u"					// 113 resetTimeHeroic
+	"x"					// 114 unk
+	"x"					// 115 unk
+	"u"					// 116 addon
+	"x";				// 117 unk
+
+const char* itemrandomsuffixformat = "uxxxxxxxxxxxxxxxxxxuuuuuuxxxx";
 const char* chatchannelformat = "uuxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx";
-const char * durabilityqualityFormat = "uf";
-const char * durabilitycostsFormat = "uuuuuuuuuuuuuuuuuuuuuuuuuuuuuu";
+const char* durabilityqualityFormat = "uf";
+const char* durabilitycostsFormat = "uuuuuuuuuuuuuuuuuuuuuuuuuuuuuu";
 const char* bankslotpriceformat = "uu";
+const char* barbershopstyleFormat="nusxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxuuu";
 const char* gtfloatformat = "f";
 const char* areatriggerformat = "uuffffffff";
-//const char* chartitleFormat = "uxsxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxu";
 
 template<class T>
 bool loader_stub(const char * filename, const char * format, bool ind, T& l, bool loadstrs)
@@ -115,12 +258,17 @@ bool loader_stub(const char * filename, const char * format, bool ind, T& l, boo
 
 bool LoadDBCs()
 {
+	LOAD_DBC("DBC/Achievement_Criteria.dbc", AchievementCriteriaStoreFormat, true, dbcAchievementCriteriaStore, true);
+	LOAD_DBC("DBC/Achievement.dbc", AchievementStoreFormat, true, dbcAchievementStore, true);
+	LOAD_DBC("DBC/CharTitles.dbc", CharTitlesEntryfmt, true, dbcCharTitlesEntry, false);
+	LOAD_DBC("DBC/BarberShopStyle.dbc", BarberShopStyleEntryFormat, true, dbcBarberShopStyleStore, true);
 	LOAD_DBC("DBC/ItemSet.dbc", ItemSetFormat, true, dbcItemSet, true);
 	LOAD_DBC("DBC/Lock.dbc", LockFormat, true, dbcLock, false);
 	LOAD_DBC("DBC/EmotesText.dbc", EmoteEntryFormat, true, dbcEmoteEntry, false);
 	LOAD_DBC("DBC/SkillLineAbility.dbc", skilllinespellFormat, false, dbcSkillLineSpell, false);
 	LOAD_DBC("DBC/SpellItemEnchantment.dbc", EnchantEntrYFormat, true, dbcEnchant, true);
 	LOAD_DBC("DBC/GemProperties.dbc", GemPropertyEntryFormat, true, dbcGemProperty, false);
+	LOAD_DBC("DBC/GlyphProperties.dbc", GlyphPropertyEntryFormat, true, dbcGlyphProperty, false);
 	LOAD_DBC("DBC/SkillLine.dbc", skilllineentrYFormat, true, dbcSkillLine, true);
 	LOAD_DBC("DBC/Spell.dbc", spellentryFormat, true, dbcSpell, true);
 	LOAD_DBC("DBC/ItemExtendedCost.dbc", itemextendedcostFormat, true, dbcItemExtendedCost, false);
@@ -129,6 +277,7 @@ bool LoadDBCs()
 	LOAD_DBC("DBC/SpellCastTimes.dbc", spellcasttimeFormat, true, dbcSpellCastTime, false);
 	LOAD_DBC("DBC/SpellRadius.dbc", spellradiusFormat, true, dbcSpellRadius, false);
 	LOAD_DBC("DBC/SpellRange.dbc", spellrangeFormat, true, dbcSpellRange, false);
+	LOAD_DBC("DBC/SpellRuneCost.dbc", SpellRuneCostFormat, true, dbcSpellRuneCostEntry, false);
 	LOAD_DBC("DBC/SpellDuration.dbc", spelldurationFormat, true, dbcSpellDuration, false);
 	LOAD_DBC("DBC/ItemRandomProperties.dbc", randompropsFormat, true, dbcRandomProps, false);
 	LOAD_DBC("DBC/AreaTable.dbc", areatableFormat, true, dbcArea, true);
@@ -159,8 +308,5 @@ bool LoadDBCs()
 	LOAD_DBC("DBC/gtRegenHPPerSpt.dbc", gtfloatformat, false, dbcHPRegenBase, false); //it's not a mistake.
 	LOAD_DBC("DBC/gtOCTRegenHP.dbc", gtfloatformat, false, dbcHPRegen, false); //it's not a mistake.
 	LOAD_DBC("DBC/AreaTrigger.dbc", areatriggerformat, true, dbcAreaTrigger, true);
-//	LOAD_DBC("DBC/CharTitles.dbc", chartitleFormat, true, dbcCharTitle, true);
 	return true;
 }
-
-

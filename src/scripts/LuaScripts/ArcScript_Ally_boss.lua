@@ -37,19 +37,13 @@ function highlordbolvarf_OnCombat(pUnit, Event)
 end
 
 function cleavee(pUnit, Event)
-local plr = pUnit:GetMainTank()
-if (plr ~= nil) then
 	print "highlordbolvarf_cleave"
-	pUnit:CastSpellOnTarget(20684,plr)
-end
+	pUnit:CastSpellOnTarget(20684,pUnit:GetClosestPlayer(0))
 end
 
 function justice(pUnit, Event)
-local plr = pUnit:GetClosestPlayer(4)
-if (plr ~= nil) then
 	print "highlordbolvarf_justice"
-	pUnit:CastSpellOnTarget(20683,plr)
-end
+	pUnit:CastSpellOnTarget(20683,pUnit:GetClosestPlayer(4))
 end
 
 function shield(pUnit, Event)
@@ -66,9 +60,9 @@ function highlordbolvarf_OnDied(pUnit, event, player)
 pUnit:RemoveEvents()
 end
 
-RegisterUnitEvent(1748, 1, "highlordbolvarf_OnCombat")
-RegisterUnitEvent(1748, 2, "highlordbolvarf_OnLeaveCombat")
-RegisterUnitEvent(1748, 4, "highlordbolvarf_OnDied")
+RegisterpUnitEvent(1748, 1, "highlordbolvarf_OnCombat")
+RegisterpUnitEvent(1748, 2, "highlordbolvarf_OnLeaveCombat")
+RegisterpUnitEvent(1748, 4, "highlordbolvarf_OnDied")
 
 --Archbishop Benedictus--
 function arcbishbened_OnCombat(pUnit, Event)
@@ -96,11 +90,8 @@ function bubi(pUnit, Event)
 end
 
 function smite(pUnit, Event)
-local plr = pUnit:GetMainTank()
-if (plr ~= nil) then
 	print "arcbishbened_smite"
-	pUnit:CastSpellOnTarget(25364,plr)
-end
+	pUnit:CastSpellOnTarget(25364,pUnit:GetClosestPlayer(0))
 end
 
 function holynova(pUnit, Event)
@@ -128,9 +119,9 @@ function arcbishbened_OnDied(pUnit, event, player)
 pUnit:RemoveEvents()
 end
 
-RegisterUnitEvent(1284, 1, "arcbishbened_OnCombat")
-RegisterUnitEvent(1284, 2, "arcbishbened_OnLeaveCombat")
-RegisterUnitEvent(1284, 4, "arcbishbened_OnDied")
+RegisterpUnitEvent(1284, 1, "arcbishbened_OnCombat")
+RegisterpUnitEvent(1284, 2, "arcbishbened_OnLeaveCombat")
+RegisterpUnitEvent(1284, 4, "arcbishbened_OnDied")
 
 --Gelbin Mekkatorque--
 --little bugy--
@@ -147,11 +138,8 @@ function hali(pUnit, Event)
 end
 
 function ShrinkRay(pUnit, Event)
-local plr = pUnit:GetMainTank()
-if (plr ~= nil) then
 	print "gelbin_ShrinkRay"
-	pUnit:CastSpellOnTarget(22742,plr)
-end
+	pUnit:CastSpellOnTarget(22742,pUnit:GetClosestPlayer(0))
 end
 
 function bomb(pUnit, Event)
@@ -160,12 +148,9 @@ function bomb(pUnit, Event)
 end
 
 function dargongun(pUnit, Event)
-local plr = pUnit:GetMainTank()
-if (plr ~= nil) then
 	print "gelbin_dragongun"
-	pUnit:CastSpellOnTarget(22739,plr)
+	pUnit:CastSpellOnTarget(22739,pUnit:GetClosestPlayer(0))
 
-end
 end
 
 function gelbin_OnKilledTarget (pUnit, Event)
@@ -181,10 +166,10 @@ function gelbin_OnDied(pUnit, event, player)
 pUnit:RemoveEvents()
 end
 
-RegisterUnitEvent(7937, 1, "gelbin_OnCombat")
-RegisterUnitEvent(7937, 2, "gelbin_OnLeaveCombat")
-RegisterUnitEvent(7937, 3, "gelbin_OnKilledTarget")
-RegisterUnitEvent(7937, 4, "gelbin_OnDied")
+RegisterpUnitEvent(7937, 1, "gelbin_OnCombat")
+RegisterpUnitEvent(7937, 2, "gelbin_OnLeaveCombat")
+RegisterpUnitEvent(7937, 3, "gelbin_OnKilledTarget")
+RegisterpUnitEvent(7937, 4, "gelbin_OnDied")
 
 --Magni Bronzebeard--
 
@@ -205,11 +190,8 @@ function thunderclapp(pUnit, Event)
 end
 
 function knock(pUnit, Event)
-local plr = pUnit:GetMainTank()
-if (plr ~= nil) then
 	print "magni_knock"
-	pUnit:CastSpellOnTarget(20686,plr)
-end
+	pUnit:CastSpellOnTarget(20686,pUnit:GetClosestPlayer(0))
 end
 
 function summoniron(pUnit, Event)
@@ -235,9 +217,9 @@ function magni_OnDied(pUnit, event, player)
 pUnit:RemoveEvents()
 end
 
-RegisterUnitEvent(2784, 1, "magni_OnCombat")
-RegisterUnitEvent(2784, 2, "magni_OnLeaveCombat")
-RegisterUnitEvent(2784, 4, "magni_OnDied")
+RegisterpUnitEvent(2784, 1, "magni_OnCombat")
+RegisterpUnitEvent(2784, 2, "magni_OnLeaveCombat")
+RegisterpUnitEvent(2784, 4, "magni_OnDied")
 
 --Tyrande Whisperwind --
 
@@ -247,12 +229,10 @@ function tyrande_OnCombat(pUnit, Event)
 end
 
 function starfall(pUnit, Event)
-local plr = pUnit:GetRandomPlayer(0)
-if (plr ~= nil) then
 	print "tyrande_starfall"
-	pUnit:CastSpellOnTarget(20687,plr)
+	pUnit:CastSpellOnTarget(20687,pUnit:GetrandomPlayer(0))
 end
-end
+
 
 function tyrande_OnLeaveCombat(pUnit, Event)
 	pUnit:RemoveEvents()	
@@ -263,9 +243,9 @@ function tyrande_OnOnDied(pUnit, event, player)
 pUnit:RemoveEvents()
 end
 
-RegisterUnitEvent(7999, 1, "tyrande_OnCombat")
-RegisterUnitEvent(7999, 2, "tyrande_OnLeaveCombat")
-RegisterUnitEvent(7999, 4, "tyrande_OnDied")
+RegisterpUnitEvent(7999, 1, "tyrande_OnCombat")
+RegisterpUnitEvent(7999, 2, "tyrande_OnLeaveCombat")
+RegisterpUnitEvent(7999, 4, "tyrande_OnDied")
 
 --Prophet Velen--
 
@@ -276,11 +256,8 @@ function velen_OnCombat(pUnit, Event)
 end
 
 function prsmite(pUnit, Event)
-local plr = pUnit:GetRandomPlayer(0)
-if (plr ~= nil) then
 	print "velen_smite"
-	pUnit:CastSpellOnTarget(36176,plr)
-end
+	pUnit:CastSpellOnTarget(36176,pUnit:GetrandomPlayer(0))
 end
 
 function summonguard(pUnit, Event)
@@ -303,6 +280,6 @@ function velen_OnOnDied(pUnit, event, player)
 pUnit:RemoveEvents()
 end
 
-RegisterUnitEvent(17468, 1, "velen_OnCombat")
-RegisterUnitEvent(17468, 2, "velen_OnLeaveCombat")
-RegisterUnitEvent(17468, 4, "velen_OnDied")
+RegisterpUnitEvent(17468, 1, "velen_OnCombat")
+RegisterpUnitEvent(17468, 2, "velen_OnLeaveCombat")
+RegisterpUnitEvent(17468, 4, "velen_OnDied")

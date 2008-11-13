@@ -33,13 +33,13 @@ extern "C" SCRIPT_DECL void _exp_script_register(ScriptMgr* mgr)
 		sLog.outColor(TGREEN,"\n	Instant70 Enabled");
 		SetupInstant70(mgr);
 	}
-
+/*
 	if(Config.MainConfig.GetBoolDefault("Extra", "L70etc", false))
 	{
 		sLog.outColor(TGREEN,"\n	L70etc Enabled");
 		SetupL70etc(mgr);
 	}
-
+*/
 	if(Config.OptionalConfig.GetBoolDefault("Extra", "Portals", false))
 	{
 		sLog.outColor(TGREEN,"\n	Portals Enabled");
@@ -50,13 +50,13 @@ extern "C" SCRIPT_DECL void _exp_script_register(ScriptMgr* mgr)
 		sLog.outColor(TGREEN,"\n	PvP Tokens Enabled");
 		SetupPvPToken(mgr);
 	}
-
-	//if(Config.OptionalConfig.GetBoolDefault("Extra", "WeddingNPC", false))
-	//{
-	//	sLog.outColor(TGREEN,"\n	WeddingNPC Enabled");
-	//	SetupWeddingNPC(mgr);
-	//}
-
+/*
+	if(Config.OptionalConfig.GetBoolDefault("Extra", "WeddingNPC", false))
+	{
+		sLog.outColor(TGREEN,"\n	WeddingNPC Enabled");
+		SetupWeddingNPC(mgr);
+	}
+*/
 	sLog.outColor(TNORMAL, "\n");
 }
 

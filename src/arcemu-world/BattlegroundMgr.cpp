@@ -37,6 +37,10 @@ const static uint32 BGMapIds[BATTLEGROUND_NUM_TYPES] = {
 	566,   // EOTS
 };
 
+uint32 BGMaximumPlayers[BATTLEGROUND_NUM_TYPES] = {0,0,0,0,0,0,0,0};
+uint32 BGMinimumPlayers[BATTLEGROUND_NUM_TYPES] = {0,0,0,0,0,0,0,0};
+
+
 const static CreateBattlegroundFunc BGCFuncs[BATTLEGROUND_NUM_TYPES] = {
 	NULL,                  // 0
 	NULL,                  // AV
@@ -83,6 +87,7 @@ void CBattlegroundManager::LoadBGSetFromConfig()
 	BGMaximumPlayers[5] = 6;
 	BGMaximumPlayers[6] = 10;
 	BGMaximumPlayers[7] = sWorld.m_bgSet_EOS_MAX;
+	BGMaximumPlayers[8] = sWorld.m_bgSet_SOTA_MAX;
 
 	BGMinimumPlayers[0] = 0;
 	BGMinimumPlayers[1] = sWorld.m_bgSet_AV_MIN;
@@ -92,11 +97,13 @@ void CBattlegroundManager::LoadBGSetFromConfig()
 	BGMinimumPlayers[5] = 6;
 	BGMinimumPlayers[6] = 10;
 	BGMinimumPlayers[7] = sWorld.m_bgSet_EOS_MIN;
-	Log.Notice("BattlegroundManager","Min/Max - AV(%d/%d) AB(%d/%d) WS(%d/%d) EOTS(%d/%d).",
+	BGMinimumPlayers[8] = sWorld.m_bgSet_SOTA_MIN;
+	Log.Notice("BattlegroundManager","Min/Max - AV(%d/%d) AB(%d/%d) WS(%d/%d) EOTS(%d/%d) SOTA(%d/%d).",
 		sWorld.m_bgSet_AV_MIN,sWorld.m_bgSet_AV_MAX,
 		sWorld.m_bgSet_AB_MIN,sWorld.m_bgSet_AB_MAX,
 		sWorld.m_bgSet_WS_MIN,sWorld.m_bgSet_WS_MAX,
-		sWorld.m_bgSet_EOS_MIN,sWorld.m_bgSet_EOS_MAX);
+		sWorld.m_bgSet_EOS_MIN,sWorld.m_bgSet_EOS_MAX,
+		sWorld.m_bgSet_SOTA_MIN,sWorld.m_bgSet_SOTA_MAX);
 }
 
 void CBattlegroundManager::HandleBattlegroundListPacket(WorldSession * m_session, uint32 BattlegroundType)
@@ -276,6 +283,9 @@ void CBattlegroundManager::HandleGetBattlegroundQueueCommand(WorldSession * m_se
 				break;
 			case 6:
 				ss << " (<70)";
+				break;
+			case 7:
+				ss << " (<80)";
 				break;
 			}
 
@@ -773,6 +783,14 @@ void CBattlegroundManager::RemovePlayerFromQueues(Player * plr)
 	plr->m_pendingBattleground=0;
 	SendBattlefieldStatus(plr,0,0,0,0,0,0);
 	m_queueLock.Release();
+	
+	Group* group;
+	group = plr->GetGroup();
+	if (group) //if da niggas in a group, boot dis bitch ass' group outa da q
+	{
+		Log.Debug("BattlegroundManager", "Player %u removed whilst in a group. Removing players group %u from queue", plr->GetLowGUID(), group->GetID());
+		RemoveGroupFromQueues(group);
+	}
 }
 
 void CBattlegroundManager::RemoveGroupFromQueues(Group * grp)
@@ -1658,19 +1676,12 @@ Creature * CBattleground::SpawnSpiritGuide(float x, float y, float z, float o, u
 	pCreature->_setFaction();
 	pCreature->SetUInt32Value(UNIT_FIELD_BYTES_0, 0 | (2 << 8) | (1 << 16));
 
-	pCreature->SetUInt32Value(UNIT_VIRTUAL_ITEM_SLOT_DISPLAY, 22802);
-	pCreature->SetUInt32Value(UNIT_VIRTUAL_ITEM_INFO, 2 | (0xA << 8) | (2 << 16) | (0x11 << 24));
-	pCreature->SetUInt32Value(UNIT_VIRTUAL_ITEM_INFO_01, 2);
+	pCreature->SetUInt32Value(UNIT_VIRTUAL_ITEM_SLOT_ID, 22802);
 
 	pCreature->SetUInt32Value(UNIT_FIELD_FLAGS, UNIT_FLAG_PLUS_MOB | UNIT_FLAG_NOT_ATTACKABLE_9 | UNIT_FLAG_UNKNOWN_10 | UNIT_FLAG_PVP); // 4928
 
-	pCreature->SetUInt32Value(UNIT_FIELD_AURA, 22011);
-	pCreature->SetUInt32Value(UNIT_FIELD_AURAFLAGS, 9);
-	pCreature->SetUInt32Value(UNIT_FIELD_AURALEVELS, 0x3C);
-	pCreature->SetUInt32Value(UNIT_FIELD_AURAAPPLICATIONS, 0xFF);
-
 	pCreature->SetUInt32Value(UNIT_FIELD_BASEATTACKTIME, 2000);
-	pCreature->SetUInt32Value(UNIT_FIELD_BASEATTACKTIME_01, 2000);
+	pCreature->SetUInt32Value(UNIT_FIELD_RANGEDATTACKTIME, 2000);
 	pCreature->SetFloatValue(UNIT_FIELD_BOUNDINGRADIUS, 0.208f);
 	pCreature->SetFloatValue(UNIT_FIELD_COMBATREACH, 1.5f);
 
@@ -1680,7 +1691,7 @@ Creature * CBattleground::SpawnSpiritGuide(float x, float y, float z, float o, u
 	pCreature->SetUInt32Value(UNIT_CHANNEL_SPELL, 22011);
 	pCreature->SetFloatValue(UNIT_MOD_CAST_SPEED, 1.0f);
 
-	pCreature->SetUInt32Value(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_SPIRITGUIDE);
+	pCreature->SetUInt32Value(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_SPIRITHEALER);
 	pCreature->SetUInt32Value(UNIT_FIELD_BYTES_2, 1 | (0x10 << 8));
 
 	pCreature->DisableAI();

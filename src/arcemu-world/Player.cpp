@@ -21,8 +21,16 @@
 #include "StdAfx.h"
 UpdateMask Player::m_visibleUpdateMask;
 #define COLLISION_MOUNT_CHECK_INTERVAL 1000
+#define CANNON 24933 //39692, 34154
+#define MORTAR 25003 //33861 -- Triggers Explosion, 39695 --- Summons Mortar
+#define NITROUS 27746 //Needs Scripting
+#define FLAMETHROWER 39693 //25027
+#define MACHINEGUN 25026
+#define DROPMINE 25024
+#define SHIELD 27759
+static uint32 TonkSpecials[4] = {FLAMETHROWER,MACHINEGUN,DROPMINE,SHIELD};
 
-Player::Player( uint32 guid ) : m_mailBox(guid)
+Player::Player( uint32 guid ) : m_mailBox(guid), m_achievementMgr(this)
 {
 	int i,j;
 
@@ -208,7 +216,7 @@ Player::Player( uint32 guid ) : m_mailBox(guid)
 	m_TransporterY			= 0.0f;
 	m_TransporterZ			= 0.0f;
 	m_TransporterO			= 0.0f;
-	m_TransporterTime		= 0.0f;
+	m_TransporterUnk		= 0.0f;
 	m_lockTransportVariables= false;
 
 	// Autoshot variables
@@ -404,6 +412,7 @@ Player::Player( uint32 guid ) : m_mailBox(guid)
 	m_vampiricEmbrace = m_vampiricTouch = 0;
 	LastSeal = 0;
 	m_flyhackCheckTimer = 0;
+	controlled_vehicle = NULL;
 #ifdef TRACK_IMMUNITY_BUG
 	m_immunityTime = 0;
 #endif
@@ -449,6 +458,7 @@ Player::Player( uint32 guid ) : m_mailBox(guid)
 	for (i=0; i<NUM_COOLDOWN_TYPES; i++) {
 		m_cooldownMap[i].clear();
 	}
+//	m_achievement_points = 0;
 }
 
 void Player::OnLogin()
@@ -539,7 +549,10 @@ Player::~Player ( )
 		WorldPacket * pck = delayedPackets.next();
 		delete pck;
 	}
-	delayedPackets.clear();
+
+	/*std::map<uint32,AchievementVal*>::iterator itr;
+	for(itr=m_achievements.begin();itr!=m_achievements.end();itr++)
+		delete itr->second;*/
 }
 
 ARCEMU_INLINE uint32 GetSpellForLanguage(uint32 SkillID)
@@ -708,17 +721,22 @@ bool Player::Create(WorldPacket& data )
 	SetUInt32Value(UNIT_FIELD_BASE_HEALTH, info->health);
 	SetUInt32Value(UNIT_FIELD_BASE_MANA, info->mana );
 	SetUInt32Value(UNIT_FIELD_FACTIONTEMPLATE, info->factiontemplate );
-	SetUInt32Value(UNIT_FIELD_LEVEL, sWorld.start_level);
-	//ApplyLevelInfo(Info, sWorld.start_level);
-
-/*	if(sWorld.start_level >= 10 && sWorld.start_level <= PLAYER_LEVEL_CAP)
-		{int startingTalents;
-		startingTalents = sWorld.start_level - 9;
-		SetUInt32Value(PLAYER_CHARACTER_POINTS1,startingTalents);}*/
-
+	if(class_ != DEATHKNIGHT || sWorld.StartingLevel > 55)
+		SetUInt32Value(UNIT_FIELD_LEVEL, sWorld.StartingLevel );
+	else
+	{
+		SetUInt32Value(UNIT_FIELD_LEVEL, 55 );
+		SetUInt32Value(PLAYER_NEXT_LEVEL_XP, 148200);
+	}
+	UpdateGlyphs();
+	SetUInt32Value(PLAYER_CHARACTER_POINTS1, 0 ); // It gets overwritten later
+	SetUInt32Value(PLAYER_CHARACTER_POINTS2, sWorld.MaxProfs );
+	
 	SetUInt32Value(UNIT_FIELD_BYTES_0, ( ( race ) | ( class_ << 8 ) | ( gender << 16 ) | ( powertype << 24 ) ) );
 	//UNIT_FIELD_BYTES_1	(standstate) | (unk1) | (unk2) | (attackstate)
-	SetUInt32Value(UNIT_FIELD_BYTES_2, (0x28 << 8) );
+	SetUInt32Value(UNIT_FIELD_BYTES_2, (U_FIELD_BYTES_FLAG_PVP << 8));
+	SetUInt32Value(UNIT_FIELD_FLAGS, UNIT_FLAG_PLAYER_CONTROLLED );
+	//SetUInt32Value(UNIT_FIELD_BYTES_2, (0x28 << 8) );
 	if(class_ == WARRIOR)
 		SetShapeShift(FORM_BATTLESTANCE);
 
@@ -754,8 +772,6 @@ bool Player::Create(WorldPacket& data )
 	SetUInt32Value(PLAYER_CHARACTER_POINTS2,2);
 	SetFloatValue(UNIT_MOD_CAST_SPEED, 1.0f);
 	SetUInt32Value(PLAYER_FIELD_MAX_LEVEL, sWorld.m_levelCap);
-
-	SetUInt32Value(PLAYER_FIELD_COINAGE, sWorld.GoldStartAmount);
 	
   
 	for(uint32 x=0;x<7;x++)
@@ -1421,28 +1437,13 @@ void Player::BuildEnumData( WorldPacket * p_data )
 {
 	*p_data << GetGUID();
 	*p_data << m_name;
-	//uint32 bytes = GetUInt32Value(UNIT_FIELD_BYTES_0);
-//#ifdef USING_BIG_ENDIAN
-	//SetUInt32Value(UNIT_FIELD_BYTES_0, swap32(UNIT_FIELD_BYTES_0));
-//#endif
 
 	*p_data << GetByte(UNIT_FIELD_BYTES_0,0);//uint8(bytes & 0xff); // race
 	*p_data << GetByte(UNIT_FIELD_BYTES_0,1);//uint8((bytes >> 8) & 0xff); // class
 	*p_data << GetByte(UNIT_FIELD_BYTES_0,2);//uint8((bytes >> 16) & 0xff); // gender
 
-//#ifdef USING_BIG_ENDIAN
-	//SetUInt32Value(UNIT_FIELD_BYTES_0, swap32(UNIT_FIELD_BYTES_0));
-//#endif
-
 	*p_data << GetUInt32Value(PLAYER_BYTES);
-	/*
-	bytes = GetUInt32Value(PLAYER_BYTES);
-	*p_data << uint8(bytes & 0xff); //skin
-	*p_data << uint8((bytes >> 8) & 0xff); //face
-	*p_data << uint8((bytes >> 16) & 0xff); //hairstyle
-	*p_data << uint8((bytes >> 24) & 0xff); //haircolor
-*/
-	///bytes = GetUInt32Value(PLAYER_BYTES_2);
+
 #ifdef USING_BIG_ENDIAN
 	*p_data << GetByte(PLAYER_BYTES_2,3);//uint8(bytes & 0xff); //facialhair
 #else
@@ -1600,6 +1601,7 @@ void Player::GiveXP(uint32 xp, const uint64 &guid, bool allowbonus)
 		_UpdateMaxSkillCounts();
 		UpdateStats();
 		//UpdateChances();
+		UpdateGlyphs();
 		
 		// Set next level conditions
 		SetUInt32Value(PLAYER_NEXT_LEVEL_XP, lvlinfo->XPToNextLevel);
@@ -1629,6 +1631,7 @@ void Player::GiveXP(uint32 xp, const uint64 &guid, bool allowbonus)
 				m_Summon->ApplyStatsForLevel();
 			}
 		}
+		//Event_Achiement_Received(ACHIEVEMENT_CRITERIA_TYPE_REACH_LEVEL,0,level);
 	}
 
 	// Set the update bit
@@ -1636,6 +1639,8 @@ void Player::GiveXP(uint32 xp, const uint64 &guid, bool allowbonus)
 	
 	HandleProc(PROC_ON_GAIN_EXPIERIENCE, this, NULL);
 	m_procCounter = 0;
+
+	GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_REACH_LEVEL);
 }
 
 void Player::smsg_InitialSpells()
@@ -2080,6 +2085,8 @@ void Player::InitVisibleUpdateBits()
 	Player::m_visibleUpdateMask.SetBit(UNIT_FIELD_POWER3);
 	Player::m_visibleUpdateMask.SetBit(UNIT_FIELD_POWER4);
 	Player::m_visibleUpdateMask.SetBit(UNIT_FIELD_POWER5);
+	Player::m_visibleUpdateMask.SetBit(UNIT_FIELD_POWER6);
+	Player::m_visibleUpdateMask.SetBit(UNIT_FIELD_POWER7);
 
 	Player::m_visibleUpdateMask.SetBit(UNIT_FIELD_MAXHEALTH);
 	Player::m_visibleUpdateMask.SetBit(UNIT_FIELD_MAXPOWER1);
@@ -2087,14 +2094,15 @@ void Player::InitVisibleUpdateBits()
 	Player::m_visibleUpdateMask.SetBit(UNIT_FIELD_MAXPOWER3);
 	Player::m_visibleUpdateMask.SetBit(UNIT_FIELD_MAXPOWER4);
 	Player::m_visibleUpdateMask.SetBit(UNIT_FIELD_MAXPOWER5);
+	Player::m_visibleUpdateMask.SetBit(UNIT_FIELD_MAXPOWER6);
+	Player::m_visibleUpdateMask.SetBit(UNIT_FIELD_MAXPOWER7);
 
 	Player::m_visibleUpdateMask.SetBit(UNIT_FIELD_LEVEL);
 	Player::m_visibleUpdateMask.SetBit(UNIT_FIELD_FACTIONTEMPLATE);
 	Player::m_visibleUpdateMask.SetBit(UNIT_FIELD_BYTES_0);
 	Player::m_visibleUpdateMask.SetBit(UNIT_FIELD_FLAGS);
 	Player::m_visibleUpdateMask.SetBit(UNIT_FIELD_FLAGS_2);
-	for(uint32 i = UNIT_FIELD_AURA; i <= UNIT_FIELD_AURASTATE; i ++)
-		Player::m_visibleUpdateMask.SetBit(i);
+
 	Player::m_visibleUpdateMask.SetBit(UNIT_FIELD_BASEATTACKTIME);
 	Player::m_visibleUpdateMask.SetBit(UNIT_FIELD_BASEATTACKTIME+1);
 	Player::m_visibleUpdateMask.SetBit(UNIT_FIELD_BOUNDINGRADIUS);
@@ -2110,7 +2118,6 @@ void Player::InitVisibleUpdateBits()
 	Player::m_visibleUpdateMask.SetBit(UNIT_FIELD_CHANNEL_OBJECT+1);
 	Player::m_visibleUpdateMask.SetBit(UNIT_CHANNEL_SPELL);
 	Player::m_visibleUpdateMask.SetBit(UNIT_DYNAMIC_FLAGS);
-	Player::m_visibleUpdateMask.SetBit(UNIT_NPC_EMOTESTATE);
 
 	Player::m_visibleUpdateMask.SetBit(PLAYER_FLAGS);
 	Player::m_visibleUpdateMask.SetBit(PLAYER_BYTES);
@@ -2122,22 +2129,18 @@ void Player::InitVisibleUpdateBits()
 	Player::m_visibleUpdateMask.SetBit(PLAYER_DUEL_ARBITER+1);
 	Player::m_visibleUpdateMask.SetBit(PLAYER_GUILDID);
 	Player::m_visibleUpdateMask.SetBit(PLAYER_GUILDRANK);
-	Player::m_visibleUpdateMask.SetBit(PLAYER_CHOSEN_TITLE);
 	Player::m_visibleUpdateMask.SetBit(UNIT_FIELD_BYTES_2);
+
+	for(uint16 i = PLAYER_QUEST_LOG_1_1; i < PLAYER_QUEST_LOG_25_2; i+=4)
+       Player::m_visibleUpdateMask.SetBit(i);
 
 	for(uint16 i = 0; i < EQUIPMENT_SLOT_END; i++)
 	{
-		Player::m_visibleUpdateMask.SetBit((uint16)(PLAYER_VISIBLE_ITEM_1_0 + (i*16))); // visual items for other players
-		Player::m_visibleUpdateMask.SetBit((uint16)(PLAYER_VISIBLE_ITEM_1_0+1 + (i*16))); // visual items for other players
+		Player::m_visibleUpdateMask.SetBit((uint16)(PLAYER_VISIBLE_ITEM_1_0 + (i*18))); // visual items for other players
+		Player::m_visibleUpdateMask.SetBit((uint16)(PLAYER_VISIBLE_ITEM_1_0+1 + (i*18))); // visual items for other players
 	}
 
-	/* fuck i hate const - burlex */
-	/*if(target && target->GetGroup() == const_cast<Player*>(this)->GetGroup() && const_cast<Player*>(this)->GetSubGroup() == target->GetSubGroup())
-	{
-	// quest fields are the same for party members
-	for(uint32 i = PLAYER_QUEST_LOG_1_01; i < PLAYER_QUEST_LOG_25_2; ++i)
-	Player::m_visibleUpdateMask.SetBit(i);
-	}*/
+	Player::m_visibleUpdateMask.SetBit(PLAYER_CHOSEN_TITLE);
 }
 
 
@@ -2403,7 +2406,16 @@ void Player::SaveToDB(bool bNewCharacter /* =false */)
 	ss << m_killsToday << ", " << m_killsYesterday << ", " << m_killsLifetime << ", ";
 	ss << m_honorToday << ", " << m_honorYesterday << ", ";
 	ss << m_honorPoints << ", ";
-    ss << iInstanceType << ")";
+    ss << iInstanceType << ", ";
+
+	// dump glyphs
+	ss << "'";
+
+	for(uint32 i = 0; i < 8; ++i)
+		ss << m_uint32Values[PLAYER_FIELD_GLYPHS_1 + i] << ",";
+
+	ss << "')";
+	
 	
 	if(bNewCharacter)
 		CharacterDatabase.WaitExecuteNA(ss.str().c_str());
@@ -2440,6 +2452,8 @@ void Player::SaveToDB(bool bNewCharacter /* =false */)
 
 	if(buf)
 		CharacterDatabase.AddQueryBuffer(buf);
+
+		m_achievementMgr.SaveToDB();
 }
 
 void Player::_SaveQuestLogEntry(QueryBuffer * buf)
@@ -2536,6 +2550,10 @@ bool Player::LoadFromDB(uint32 guid)
 	m_uint32Values[OBJECT_FIELD_GUID] = guid;
 	CharacterDatabase.QueueAsyncQuery(q);
 	return true;
+
+   	//CharacterDatabase.Query("SELECT achievement, date FROM character_achievement WHERE guid = '%u'", GetUInt32Value(OBJECT_FIELD_GUID))
+	m_achievementMgr.LoadFromDB(CharacterDatabase.Query("SELECT achievement, date FROM character_achievement WHERE guid = '%u'", GetUInt32Value(OBJECT_FIELD_GUID)),CharacterDatabase.Query("SELECT criteria, counter, date FROM character_achievement_progress WHERE guid = '%u'", GetUInt32Value(OBJECT_FIELD_GUID)));
+	m_achievementMgr.CheckAllAchievementCriteria();
 }
 
 void Player::LoadFromDBProc(QueryResultVector & results)
@@ -2559,7 +2577,7 @@ void Player::LoadFromDBProc(QueryResultVector & results)
 		return;
 	}
 
-	if (result->GetFieldCount () != 80)
+	if (result->GetFieldCount () != 81)
 	{
 		Log.Error ("Player::LoadFromDB",
 				"Expected 80 fields from the database, "
@@ -2650,22 +2668,12 @@ void Player::LoadFromDBProc(QueryResultVector & results)
 	m_uint32Values[PLAYER_XP] = get_next_field.GetUInt32();
 	
 	// Process exploration data.
-	uint32 Counter = 0;
-	char * end;
-	char * start = (char*)get_next_field.GetString();//buff;
-	while(Counter <64) 
-	{
-		end = strchr(start,',');
-		if(!end)break;
-		*end=0;
-		SetUInt32Value(PLAYER_EXPLORED_ZONES_1 + Counter, atol(start));
-		start = end +1;
-		Counter++;
-	}
+	LoadFieldsFromString(get_next_field.GetString(), PLAYER_EXPLORED_ZONES_1, 64);
 
 	// Process skill data.
-	Counter = 0;
-	start = (char*)get_next_field.GetString();//buff;
+	uint32 Counter = 0;
+	char * start = (char*)get_next_field.GetString();//buff;
+	char * end;
 	
 	// new format
 	const ItemProf * prof;
@@ -3149,12 +3157,62 @@ void Player::LoadFromDBProc(QueryResultVector & results)
 	RolloverHonor();
     iInstanceType = get_next_field.GetUInt32();
 
+	//load achievement status             /*Alice*/  - Must be rewrited.... crash
+/*	m_achievement_points = get_next_field.GetUInt32();
+	start = (char*)get_next_field.GetString();//buff;
+	while(start) 
+	{
+		AchievementVal *newachi = new AchievementVal;
+		uint32 achiid;
+
+		end = strchr(start,',');
+		if(!end)break;
+		*end=0;
+		achiid = atol(start);
+		start = end +1;
+
+		end = strchr(start,',');
+		if(!end)break;
+		*end=0;
+		newachi->completed_at_stamp = atol(start);
+		start = end +1;
+
+		end = strchr(start,',');
+		if(!end)break;
+		*end=0;
+		newachi->cur_value = atol(start);
+		start = end +1;
+
+		m_achievements[ achiid ] = newachi;
+	};*/
+	//end loading achievements
+
+	// Load Glyphs and apply their auras
+	LoadFieldsFromString(get_next_field.GetString(), PLAYER_FIELD_GLYPHS_1, 8);
+	GlyphPropertyEntry *glyph;
+	for(uint32 i=0; i < 8; i++)
+	{
+		uint32 glyphId = GetUInt32Value(PLAYER_FIELD_GLYPHS_1 + i);
+		if(glyphId == 0)
+			continue;
+		// Get info
+		glyph = dbcGlyphProperty.LookupEntry(glyphId);
+		if(!glyph || !glyph->SpellID)
+			continue;
+		LoginAura la;
+		la.id = glyph->SpellID;
+		la.dur = -1;
+		loginauras.push_back(la);
+	}
+
 	HonorHandler::RecalculateHonorFields(this);
 	
 	for(uint32 x=0;x<5;x++)
 		BaseStats[x]=GetUInt32Value(UNIT_FIELD_STAT0+x);
   
 	_setFaction();
+	
+	UpdateGlyphs();
    
 	//class fixes
 	switch(getClass())
@@ -3495,10 +3553,14 @@ void Player::AddToWorld(MapMgr * pMapMgr)
 void Player::OnPrePushToWorld()
 {
 	SendInitialLogonPackets();
+	m_achievementMgr.SendAllAchievementData(this);
 }
 
 void Player::OnPushToWorld()
 {
+	// Process create packet
+	ProcessPendingUpdates();
+	
 	if(m_TeleportState == 2)   // Worldport Ack
 		OnWorldPortAck();
 
@@ -3508,7 +3570,7 @@ void Player::OnPushToWorld()
 	m_lockTransportVariables = false;
 
 	// delay the unlock movement packet
-	WorldPacket * data = new WorldPacket(SMSG_MOVE_UNLOCK_MOVEMENT, 4);
+	WorldPacket * data = new WorldPacket(SMSG_TIME_SYNC_REQ, 4);
 	*data << uint32(0);
 	delayedPackets.add(data);
 	sWorld.mInWorldPlayerCount++;
@@ -3524,8 +3586,8 @@ void Player::OnPushToWorld()
 	if(m_FirstLogin)
 	{
 		sHookInterface.OnFirstEnterWorld(this);
-		LevelInfo * Info = objmgr.GetLevelInfo(getRace(), getClass(), sWorld.start_level);
-		ApplyLevelInfo(Info, sWorld.start_level);
+		LevelInfo * Info = objmgr.GetLevelInfo(getRace(), getClass(), sWorld.StartingLevel);
+		ApplyLevelInfo(Info, sWorld.StartingLevel);
 		m_FirstLogin = false;
 	}
 
@@ -3543,8 +3605,6 @@ void Player::OnPushToWorld()
 			lastNode = m_taxiMapChangeNode;
 		}
 
-		// Create HAS to be sent before this!
-		ProcessPendingUpdates();
 		TaxiStart(GetTaxiPath(), 
 			GetUInt32Value(UNIT_FIELD_MOUNTDISPLAYID),
 			lastNode);
@@ -3954,7 +4014,9 @@ void Player::_ApplyItemMods(Item* item, int8 slot, bool apply, bool justdrokedow
 				ts.caster = this->GetGUID();
 				ts.procFlags = PROC_ON_MELEE_ATTACK;
 				ts.deleted = false;
-				ts.groupRelation = 0;
+				ts.groupRelation[0] = 0;
+				ts.groupRelation[1] = 0;
+				ts.groupRelation[2] = 0;
 				ts.ProcType = 0;
 				ts.LastTrigger = 0;
 				ts.procCharges = 0;
@@ -4148,7 +4210,7 @@ void Player::SetPlayerSpeed(uint8 SpeedType, float value)
 			if(value == m_lastFlySpeed)
 				return;
 
-			data.SetOpcode(SMSG_FORCE_MOVE_SET_FLY_SPEED);
+			data.SetOpcode(SMSG_FORCE_FLIGHT_SPEED_CHANGE);
 			m_flySpeed = value;
 			m_lastFlySpeed = value;
 		}break;
@@ -4160,9 +4222,7 @@ void Player::SetPlayerSpeed(uint8 SpeedType, float value)
 
 void Player::SendDungeonDifficulty()
 {
-	// Why CMSG_DUNGEON_DIFFICULTY ? CMSG == Client Message...
-	//TODO: Should rename it to MSG_DUNGEON_DIFFICULTY
-    WorldPacket data(CMSG_DUNGEON_DIFFICULTY, 12);
+    WorldPacket data(MSG_SET_DUNGEON_DIFFICULTY, 12);
 	data << (uint32)iInstanceType;
     data << (uint32)0x1;
     data << (uint32)InGroup();
@@ -4280,7 +4340,7 @@ void Player::RepopRequestedPlayer()
 		if ( myCorpse!=NULL ) myCorpse->ResetDeathClock();
 
 		/* Send Spirit Healer Location */
-		WorldPacket data( SMSG_SPIRIT_HEALER_POS, 16 );
+		WorldPacket data( SMSG_DEATH_RELEASE_LOC, 16 );
 		data << m_mapId << m_position;
 		m_session->SendPacket( &data );
 
@@ -4309,7 +4369,7 @@ void Player::ResurrectPlayer()
 	if( m_resurrectHealth )
 		SetUInt32Value( UNIT_FIELD_HEALTH, (uint32)min( m_resurrectHealth, m_uint32Values[UNIT_FIELD_MAXHEALTH] ) );
 	if( m_resurrectMana )
-		SetUInt32Value( UNIT_FIELD_POWER1, (uint32)min( m_resurrectMana, m_uint32Values[UNIT_FIELD_MAXPOWER1] ) );
+		SetPower(0, m_resurrectMana);
 
 	m_resurrectHealth = m_resurrectMana = 0;
 
@@ -4367,7 +4427,7 @@ void Player::KillPlayer()
 	SetUInt32Value( UNIT_DYNAMIC_FLAGS, 0x00 );
 
 	if(this->getClass() == WARRIOR) //rage resets on death
-		SetUInt32Value(UNIT_FIELD_POWER2, 0);
+		SetPower(POWER_TYPE_RAGE, 0);
 
 	sHookInterface.OnDeath(this);
 
@@ -4998,7 +5058,7 @@ void Player::UpdateAttackSpeed()
 	if( weap != NULL && weap->GetProto()->Class == ITEM_CLASS_WEAPON )
 	{
 		speed = weap->GetProto()->Delay;
-		SetUInt32Value( UNIT_FIELD_BASEATTACKTIME_01,
+		SetUInt32Value( UNIT_FIELD_RANGEDATTACKTIME,
 			( uint32 )( (float) speed / ( m_attack_speed[ MOD_MELEE ] * ( 1.0f + CalcRating( PLAYER_RATING_MODIFIER_MELEE_HASTE ) / 100.0f ) ) ) );
 	}
 	
@@ -5161,17 +5221,15 @@ void Player::UpdateStats()
 		SetUInt32Value(UNIT_FIELD_MAXPOWER1, res);
 
 		if((int32)GetUInt32Value(UNIT_FIELD_POWER1)>res)
-			SetUInt32Value(UNIT_FIELD_POWER1,res);
+			SetPower(0, res);
 
 		//Manaregen
-		const static float BaseRegen[70] = {0.034965f, 0.034191f, 0.033465f, 0.032526f, 0.031661f, 0.031076f, 0.030523f, 0.029994f, 0.029307f, 0.028661f, 0.027584f, 0.026215f, 0.025381f, 0.024300f, 0.023345f, 0.022748f, 0.021958f, 0.021386f, 0.020790f, 0.020121f, 0.019733f, 0.019155f, 0.018819f, 0.018316f, 0.017936f, 0.017576f, 0.017201f, 0.016919f, 0.016581f, 0.016233f, 0.015994f, 0.015707f, 0.015464f, 0.015204f, 0.014956f, 0.014744f, 0.014495f, 0.014302f, 0.014094f, 0.013895f, 0.013724f, 0.013522f, 0.013363f, 0.013175f, 0.012996f, 0.012853f, 0.012687f, 0.012539f, 0.012384f, 0.012233f, 0.012113f, 0.011973f, 0.011859f, 0.011714f, 0.011575f, 0.011473f, 0.011342f, 0.011245f, 0.011110f, 0.010999f, 0.010700f, 0.010522f, 0.010290f, 0.010119f, 0.009968f, 0.009808f, 0.009651f, 0.009553f, 0.009445f, 0.009327f};
+		const static float ClassMultiplier[12] = {0.0f,0.0f,0.2f,0.2f,0.0f,0.25f,0.0f,0.2f,0.25f,0.2f,0.0f,0.225f};
+		const static float ClassFlatMod[12] = {0.0f,0.0f,15.0f,15.0f,0.0f,12.5f,0.0f,15.0f,12.5f,15.0f,0.0f,15.0f};
 		uint32 Spirit = GetUInt32Value( UNIT_FIELD_STAT4 );
-		uint32 Intellect = GetUInt32Value( UNIT_FIELD_STAT3 );
-		uint32 level = getLevel();
-		if(level > 70) level = 70;
-		float amt = ( 0.001f + sqrt((float)Intellect) * Spirit * BaseRegen[level-1] )*PctPowerRegenModifier[POWER_TYPE_MANA];
-		SetFloatValue(PLAYER_FIELD_MOD_MANA_REGEN,amt+m_ModInterrMRegen/5.0f);
-		SetFloatValue(PLAYER_FIELD_MOD_MANA_REGEN_INTERRUPT,amt*m_ModInterrMRegenPCT/100.0f+m_ModInterrMRegen/5.0f);
+		float amt = (Spirit*ClassMultiplier[cl]+ClassFlatMod[cl])*PctPowerRegenModifier[POWER_TYPE_MANA]*0.5f;
+		SetFloatValue(UNIT_FIELD_POWER_REGEN_FLAT_MODIFIER,amt+m_ModInterrMRegen/5.0f);
+		SetFloatValue(UNIT_FIELD_POWER_REGEN_INTERRUPTED_FLAT_MODIFIER,amt*m_ModInterrMRegenPCT/100.0f+m_ModInterrMRegen/5.0f);
 	}
 
 	// Spell haste rating
@@ -5482,9 +5540,40 @@ void Player::AddInRangeObject(Object* pObj)
 		//add an event to send move update have to send guid as pointer was causing a crash :(
 		//sEventMgr.AddEvent( static_cast< Creature* >( pObj )->GetAIInterface(), &AIInterface::SendCurrentMove, this->GetGUID(), EVENT_UNIT_SENDMOVE, 200, 1);
 		static_cast< Creature* >( pObj )->GetAIInterface()->SendCurrentMove(this);
-	}
-}
 
+/*
+	//unit based objects, send aura data
+	if (pObj->IsUnit())
+	{
+		Unit* pUnit=static_cast<Unit*>(pObj);
+		
+		if (GetSession() != NULL)
+		{
+			for (uint32 i=0; i<MAX_TOTAL_AURAS_START; ++i)
+			{
+				if (pUnit->m_auras[i] != NULL)
+				{
+					uint8 flags = pUnit->m_auras[i]->IsPositive()? 0x1F : 0x09;
+					if (pUnit->m_auras[i]->GetDuration() > 0)
+						flags |= 0x20;
+					WorldPacket data(SMSG_AURA_UPDATE, 28);
+					FastGUIDPack(data, pUnit->GetGUID());
+					data << pUnit->m_auras[i]->m_visualSlot; //flags unknown
+					data << pUnit->m_auras[i]->m_spellProto->Id;
+					data << pUnit->m_auras[i]->m_spellProto->maxstack;
+					data << flags; //flags2 unknown
+					if (flags & 0x20)
+					{
+						data << pUnit->m_auras[i]->GetDuration();
+						data << pUnit->m_auras[i]->GetTimeLeft();
+					}
+					GetSession()->SendPacket(&data);
+				}
+			}
+		}
+	}*/
+}
+}
 void Player::OnRemoveInRangeObject(Object* pObj)
 {
 	//if (/*!CanSee(pObj) && */IsVisible(pObj))
@@ -5678,7 +5767,7 @@ void Player::SendLoot(uint64 guid,uint8 loot_type)
 	{
 		GameObject* pGO = GetMapMgr()->GetGameObject(GET_LOWGUID_PART(guid));
 		if(!pGO)return;
-		pGO->SetUInt32Value(GAMEOBJECT_STATE,0);
+		pGO->SetByte(GAMEOBJECT_BYTES_1, 0,0);
 		pLoot=&pGO->loot;
 		m_currentLoot = pGO->GetGUID();
 	}
@@ -6060,7 +6149,10 @@ int32 Player::CanShootRangedWeapon( uint32 spellid, Unit* target, bool autoshot 
 	if( spellid != SPELL_RANGED_WAND )//no min limit for wands
 		if( minrange > dist )
 			fail = SPELL_FAILED_TOO_CLOSE;
-	
+#ifdef COLLISION
+	if (GetMapId() == target->GetMapId() && !CollideInterface.CheckLOS(GetMapId(),GetPositionNC(),target->GetPositionNC()))
+		fail = SPELL_FAILED_LINE_OF_SIGHT ;
+#endif
 	if( dist > maxr )
 	{
 		//	sLog.outString( "Auto shot failed: out of range (Maxr: %f, Dist: %f)" , maxr , dist );
@@ -6088,7 +6180,7 @@ int32 Player::CanShootRangedWeapon( uint32 spellid, Unit* target, bool autoshot 
 		cr.SpellId = autoshot ? 75 : spellid;
 		cr.ErrorMessage = fail;
 		cr.MultiCast = 0;
-		m_session->OutPacket( SMSG_CAST_RESULT, sizeof(packetSMSG_CASTRESULT), &cr );
+		m_session->OutPacket( SMSG_CAST_FAILED, sizeof(packetSMSG_CASTRESULT), &cr );
 		if( fail != SPELL_FAILED_OUT_OF_RANGE )
 		{
 			uint32 spellid2 = autoshot ? 75 : spellid;
@@ -6288,12 +6380,12 @@ bool Player::removeDeletedSpell( uint32 SpellID )
 
 void Player::EventActivateGameObject(GameObject* obj)
 {
-	obj->BuildFieldUpdatePacket(this, GAMEOBJECT_DYN_FLAGS, 1);
+	obj->BuildFieldUpdatePacket(this, GAMEOBJECT_DYNAMIC, 1);
 }
 
 void Player::EventDeActivateGameObject(GameObject* obj)
 {
-	obj->BuildFieldUpdatePacket(this, GAMEOBJECT_DYN_FLAGS, 0);
+	obj->BuildFieldUpdatePacket(this, GAMEOBJECT_DYNAMIC, 0);
 }
 
 void Player::EventTimedQuestExpire(Quest *qst, QuestLogEntry *qle, uint32 log_slot)
@@ -6315,7 +6407,7 @@ void Player::AreaExploredOrEventHappens( uint32 questId )
 void Player::SendInitialLogonPackets()
 {
 	// Initial Packets... they seem to be re-sent on port.
-	m_session->OutPacket(SMSG_SET_REST_START, 4, &m_timeLogoff);
+	m_session->OutPacket(SMSG_SET_REST_START_OBSOLETE, 4, &m_timeLogoff);
 
     StackWorldPacket<32> data(SMSG_BINDPOINTUPDATE);
     data << m_bind_pos_x;
@@ -6371,11 +6463,16 @@ void Player::SendInitialLogonPackets()
 
     // TODO: Add stuff to handle these variable's
 
-	uint32 DayOfTheWeek = static_cast<uint32>(-1);		//	(0b111 = (any) day, 0 = Monday ect)
-    uint32 DayOfTheMonth = 20-1;	//	Day - 1 (0 is actual 1) its now the 20e here. TODO: replace this one with the proper date
-    uint32 CurrentMonth = 9-1;		//	Month - 1 (0 is actual 1) same as above. TODO: replace it with the proper code
-    uint32 CurrentYear = 7;			//	2000 + this number results in a correct value for this crap. TODO: replace this with the propper code
-
+	time_t basetime = UNIXTIME;
+	uint32 DayOfTheWeek;
+	if(localtime(&basetime)->tm_wday == 0)
+		DayOfTheWeek = 6;					
+	else
+		   DayOfTheWeek = localtime(&basetime)->tm_wday - 1;		
+	uint32 DayOfTheMonth = localtime(&basetime)->tm_mday - 1;	
+	uint32 CurrentMonth = localtime(&basetime)->tm_mon;			
+	uint32 CurrentYear = localtime(&basetime)->tm_year - 100;	
+ 
 	#define MINUTE_BITMASK      0x0000003F
     #define HOUR_BITMASK        0x000007C0
     #define WEEKDAY_BITMASK     0x00003800
@@ -6460,6 +6557,8 @@ void Player::Reset_Talents()
 					{
 						if (getClass() != SHAMAN)
 							continue; //only shamans should lose it when they reset talents - opti
+						if( _HasSkillLine( SKILL_DUAL_WIELD ) )
+							_RemoveSkillLine( SKILL_DUAL_WIELD );
 					}
 					for(int k=0;k<3;k++)
 						if(spellInfo->Effect[k] == SPELL_EFFECT_LEARN_SPELL)
@@ -6494,17 +6593,13 @@ void Player::Reset_Talents()
 void Player::Reset_ToLevel1()
 {
 	RemoveAllAuras();
-	// clear aura fields
-	for(int i=UNIT_FIELD_AURA;i<UNIT_FIELD_AURASTATE;++i)
-	{
-		SetUInt32Value(i, 0);
-	}
+
 	SetUInt32Value(UNIT_FIELD_LEVEL, 1);
 	PlayerCreateInfo *info = objmgr.GetPlayerCreateInfo(getRace(), getClass());
 	ASSERT(info);
 
 	SetUInt32Value(UNIT_FIELD_HEALTH, info->health);
-	SetUInt32Value(UNIT_FIELD_POWER1, info->mana );
+	SetPower(0, info->mana );
 	SetUInt32Value(UNIT_FIELD_POWER2, 0 ); // this gets devided by 10
 	SetUInt32Value(UNIT_FIELD_POWER3, info->focus );
 	SetUInt32Value(UNIT_FIELD_POWER4, info->energy );
@@ -6623,7 +6718,7 @@ void Player::UpdateNearbyGameObjects()
 				}
 			}
 			bool bPassed = !deactivate;
-			if((*itr)->GetUInt32Value(GAMEOBJECT_TYPE_ID) == GAMEOBJECT_TYPE_QUESTGIVER)
+			if((*itr)->GetByte(GAMEOBJECT_BYTES_1, 1) == GAMEOBJECT_TYPE_QUESTGIVER)
 			{
 				if(((GameObject*)(*itr))->m_quests)
 				{
@@ -6882,8 +6977,10 @@ void Player::CalcStat( uint32 type )
 	int32 pos = (int32)((int32)BaseStats[type] * (int32)StatModPctPos[type] ) / 100 + (int32)FlatStatModPos[type];
 	int32 neg = (int32)((int32)BaseStats[type] * (int32)StatModPctNeg[type] ) / 100 + (int32)FlatStatModNeg[type];
 	res = pos + (int32)BaseStats[type] - neg;
-	pos += ( res * (int32)static_cast< Player* >( this )->TotalStatModPctPos[type] ) / 100;
-	neg += ( res * (int32)static_cast< Player* >( this )->TotalStatModPctNeg[type] ) / 100;
+	if( res <= 0 )
+		res = 1;
+	pos += ( res * (int32) static_cast< Player* >( this )->TotalStatModPctPos[type] ) / 100;
+	neg += ( res * (int32) static_cast< Player* >( this )->TotalStatModPctNeg[type] ) / 100;
 	res = pos + BaseStats[type] - neg;
 	if( res <= 0 )
 		res = 1;
@@ -6906,7 +7003,7 @@ void Player::RegenerateMana(bool is_interrupted)
 	uint32 cur = GetUInt32Value(UNIT_FIELD_POWER1);
 	uint32 mm = GetUInt32Value(UNIT_FIELD_MAXPOWER1);
 	if(cur >= mm)return;
-	float amt = (is_interrupted) ? GetFloatValue(PLAYER_FIELD_MOD_MANA_REGEN_INTERRUPT) : GetFloatValue(PLAYER_FIELD_MOD_MANA_REGEN);
+	float amt = (is_interrupted) ? GetFloatValue(UNIT_FIELD_POWER_REGEN_INTERRUPTED_FLAT_MODIFIER) : GetFloatValue(UNIT_FIELD_POWER_REGEN_FLAT_MODIFIER);
 	amt *= 2; //floats are Mana Regen Per Sec. Regen Applied every 2 secs so real value =X*2 . Shady
 	//Apply shit from conf file
 	amt *= sWorld.getRate(RATE_POWER1);
@@ -6919,7 +7016,7 @@ void Player::RegenerateMana(bool is_interrupted)
 	}
 	else
 		cur += float2int32(amt);	
-	SetUInt32Value(UNIT_FIELD_POWER1,(cur >= mm) ? mm : cur);
+	SetPower(0, cur);
 }
 
 void Player::RegenerateHealth( bool inCombat )
@@ -7373,7 +7470,7 @@ void Player::ProcessPendingUpdates()
         #else
 	        *(uint32*)&update_buffer[c] = ((mOutOfRangeIds.size() > 0) ? (mCreationCount + 1) : mCreationCount);	c += 4;
         #endif
-	        update_buffer[c] = 1;																			   ++c;
+	        //update_buffer[c] = 1;																			   ++c;
 
             // append any out of range updates
 	    if(mOutOfRangeIdCount)
@@ -7414,7 +7511,7 @@ void Player::ProcessPendingUpdates()
 		#else
 			*(uint32*)&update_buffer[c] = ((mOutOfRangeIds.size() > 0) ? (mUpdateCount + 1) : mUpdateCount);	c += 4;
 		#endif
-		update_buffer[c] = 1;																			   ++c;
+		//update_buffer[c] = 1;																			   ++c;
 		memcpy(&update_buffer[c], bUpdateBuffer.contents(), bUpdateBuffer.size());  c += bUpdateBuffer.size();
 
 		// clear our update buffer
@@ -7694,7 +7791,7 @@ void Player::ZoneUpdate(uint32 ZoneId)
 #ifdef OPTIMIZED_PLAYER_SAVING
 	save_Zone();
 #endif
-
+	UpdateChannels(ZoneId);
 	/*std::map<uint32, AreaTable*>::iterator iter = sWorld.mZoneIDToTable.find(ZoneId);
 	if(iter == sWorld.mZoneIDToTable.end())
 		return;
@@ -7707,8 +7804,76 @@ void Player::ZoneUpdate(uint32 ZoneId)
 	}
 
 	sLog.outDetail("ZONE_UPDATE: Player %s entered zone %s", GetName(), sAreaStore.LookupString((int)p->name));*/
-}
 
+}
+void Player::UpdateChannels(uint16 AreaID)
+{
+	set<Channel *>::iterator i;
+	Channel * c;
+	string channelname, AreaName;
+	
+
+	if(GetMapId()==450)
+		AreaID = 2917;
+	if(GetMapId()==449)
+		AreaID = 2918;
+	
+	AreaTable * at2 = dbcArea.LookupEntry(GetZoneId());
+	
+	//Check for instances?
+	if(!AreaID || AreaID == 0xFFFF)
+	{
+		MapInfo *pMapinfo = WorldMapInfoStorage.LookupEntry(GetMapId());
+		if(GetMapId() != 1 && GetMapId() != 0 && GetMapId() != 530)
+			AreaName = pMapinfo->name;
+		else
+			return;//How'd we get here?
+	}
+	else
+	{
+		AreaName = at2->name;
+		if(AreaName.length() < 2)
+		{
+			MapInfo *pMapinfo = WorldMapInfoStorage.LookupEntry(GetMapId());
+			AreaName = pMapinfo->name;
+		}
+	}
+	m_TeleportState = 1;
+	for(i = m_channels.begin(); i != m_channels.end();)
+	{
+		c = *i;
+		i++;
+
+		if(!c->m_general || c->m_name == "LookingForGroup")//Not an updatable channel.
+			continue;
+
+		if( strstr(c->m_name.c_str(), "General") )
+			channelname = "General";
+		else if( strstr(c->m_name.c_str(), "Trade") )
+			channelname = "Trade";
+		else if( strstr(c->m_name.c_str(), "LocalDefense") )
+			channelname = "LocalDefense";
+		else if( strstr(c->m_name.c_str(), "GuildRecruitment") )
+			channelname = "GuildRecruitment";
+		else
+			continue;//Those 4 are the only ones we want updated.
+		channelname += " - ";
+		if( (strstr(c->m_name.c_str(), "Trade") || strstr(c->m_name.c_str(), "GuildRecruitment")) && ( at2->AreaFlags &AREA_CITY || at2->AreaFlags &AREA_CITY_AREA ))
+		{
+			channelname += "City";
+		}
+		else
+			channelname += AreaName;
+		
+		Channel * chn = channelmgr.GetCreateChannel(channelname.c_str(), this, c->m_id);
+		if( !chn->HasMember(this) )
+		{
+			c->Part(this);
+			chn->AttemptJoin(this, NULL);
+		}
+	}
+	m_TeleportState = 0;
+}
 void Player::SendTradeUpdate()
 {
 	Player * pTarget = GetTradeTarget();
@@ -7745,7 +7910,7 @@ void Player::SendTradeUpdate()
 			// Enchantment stuff
 			data << uint32(0);											// unknown
 			data << pItem->GetUInt64Value( ITEM_FIELD_GIFTCREATOR );	// gift creator	 OK
-			data << pItem->GetUInt32Value( ITEM_FIELD_ENCHANTMENT );	// Item Enchantment OK
+			data << pItem->GetUInt32Value( ITEM_FIELD_ENCHANTMENT_1_1 );	// Item Enchantment OK
 			for( uint8 i = 2; i < 5; i++ )								// Gem enchantments
 			{
 				if( pItem->GetEnchantment(i) != NULL && pItem->GetEnchantment(i)->Enchantment != NULL )
@@ -8033,7 +8198,7 @@ void Player::EventTeleportTaxi(uint32 mapid, float x, float y, float z)
 {
 	if(mapid == 530 && !m_session->HasFlag(ACCOUNT_FLAG_XPACK_01))
 	{
-		WorldPacket msg(SMSG_BROADCAST_MSG, 50);
+		WorldPacket msg(CMSG_SERVER_BROADCAST, 50);
 		msg << uint32(3) << "You must have The Burning Crusade Expansion to access this content." << uint8(0);
 		m_session->SendPacket(&msg);
 		RepopAtGraveyard(GetPositionX(), GetPositionY(), GetPositionZ(), GetMapId());
@@ -8063,7 +8228,7 @@ void Player::ApplyLevelInfo(LevelInfo* Info, uint32 Level)
 	// Set health / mana
 	SetUInt32Value(UNIT_FIELD_HEALTH, Info->HP);
 	SetUInt32Value(UNIT_FIELD_MAXHEALTH, Info->HP);
-	SetUInt32Value(UNIT_FIELD_POWER1, Info->Mana);
+	SetPower(0, Info->Mana);
 	SetUInt32Value(UNIT_FIELD_MAXPOWER1, Info->Mana);
 
 	// Calculate talentpoints
@@ -8080,6 +8245,7 @@ void Player::ApplyLevelInfo(LevelInfo* Info, uint32 Level)
 	_UpdateMaxSkillCounts();
 	UpdateStats();
 	//UpdateChances();	
+	UpdateGlyphs();
 	m_playerInfo->lastLevel = Level;
 
 	sLog.outDetail("Player %s set parameters to level %u", GetName(), Level);
@@ -8271,7 +8437,7 @@ bool Player::SafeTeleport(uint32 MapID, uint32 InstanceID, const LocationVector 
 	// Lookup map info
 	if(mi && mi->flags & WMI_INSTANCE_XPACK_01 && !m_session->HasFlag(ACCOUNT_FLAG_XPACK_01))
 	{
-		WorldPacket msg(SMSG_BROADCAST_MSG, 50);
+		WorldPacket msg(CMSG_SERVER_BROADCAST, 50);
 		msg << uint32(3) << "You must have The Burning Crusade Expansion to access this content." << uint8(0);
 		m_session->SendPacket(&msg);
 		return false;
@@ -8485,11 +8651,7 @@ void Player::BuildFlagUpdateForNonGroupSet(uint32 index, uint32 flag)
         if(curObj->IsPlayer())
         {
             Group* pGroup = static_cast< Player* >( curObj )->GetGroup();
-            if( pGroup != NULL && pGroup == GetGroup())
-            {
-				//TODO: huh? if this is unneeded change the if to the inverse and don't waste jmp space
-            }
-            else
+            if( !pGroup && pGroup != GetGroup())
             {
                 BuildFieldUpdatePacket( static_cast< Player* >( curObj ), index, flag );
             }
@@ -8528,8 +8690,10 @@ void Player::PvPToggle()
 		    StopPvPTimer();
 
 		    SetFlag(PLAYER_FLAGS, PLAYER_FLAG_PVP_TOGGLE);
+			RemoveFlag(PLAYER_FLAGS, PLAYER_FLAG_PVP);
 
-            if(!IsPvPFlagged()) SetPvPFlag();
+            if(!IsPvPFlagged()) 
+				SetPvPFlag();
 	    }
 	    else
 	    {
@@ -8553,11 +8717,13 @@ void Player::PvPToggle()
 			        ResetPvPTimer();
                 }
 			    RemoveFlag(PLAYER_FLAGS, PLAYER_FLAG_PVP_TOGGLE);
+				SetFlag(PLAYER_FLAGS, PLAYER_FLAG_PVP);
 		    }
 		    else
 		    {
 			    // Move into PvP state.
 			    SetFlag(PLAYER_FLAGS, PLAYER_FLAG_PVP_TOGGLE);
+				RemoveFlag(PLAYER_FLAGS, PLAYER_FLAG_PVP);
 
 			    StopPvPTimer();
 			    SetPvPFlag();
@@ -8587,8 +8753,10 @@ void Player::PvPToggle()
 		        StopPvPTimer();
 
 		        SetFlag(PLAYER_FLAGS, PLAYER_FLAG_PVP_TOGGLE);
+				RemoveFlag(PLAYER_FLAGS, PLAYER_FLAG_PVP);
 
-                if(!IsPvPFlagged()) SetPvPFlag();
+                if(!IsPvPFlagged()) 
+					SetPvPFlag();
 	        }
 	        else
 	        {
@@ -8598,11 +8766,13 @@ void Player::PvPToggle()
 			        ResetPvPTimer();
 
 			        RemoveFlag(PLAYER_FLAGS, PLAYER_FLAG_PVP_TOGGLE);
+					SetFlag(PLAYER_FLAGS, PLAYER_FLAG_PVP);
 		        }
 		        else
 		        {
 			        // Move into PvP state.
 			        SetFlag(PLAYER_FLAGS, PLAYER_FLAG_PVP_TOGGLE);
+					RemoveFlag(PLAYER_FLAGS, PLAYER_FLAG_PVP);
 
 			        StopPvPTimer();
 			        SetPvPFlag();
@@ -8622,8 +8792,10 @@ void Player::PvPToggle()
 		                StopPvPTimer();
 
 		                SetFlag(PLAYER_FLAGS, PLAYER_FLAG_PVP_TOGGLE);
-
-                        if(!IsPvPFlagged()) SetPvPFlag();
+						RemoveFlag(PLAYER_FLAGS, PLAYER_FLAG_PVP);
+                        
+						if(!IsPvPFlagged()) 
+							SetPvPFlag();
 	                }
 	                else
 	                {
@@ -8633,11 +8805,14 @@ void Player::PvPToggle()
 			                ResetPvPTimer();
 
 			                RemoveFlag(PLAYER_FLAGS, PLAYER_FLAG_PVP_TOGGLE);
+							SetFlag(PLAYER_FLAGS, PLAYER_FLAG_PVP);
+
 		                }
 		                else
 		                {
 			                // Move into PvP state.
 			                SetFlag(PLAYER_FLAGS, PLAYER_FLAG_PVP_TOGGLE);
+							RemoveFlag(PLAYER_FLAGS, PLAYER_FLAG_PVP);
 
 			                StopPvPTimer();
 			                SetPvPFlag();
@@ -8648,10 +8823,14 @@ void Player::PvPToggle()
             }
 
             if(!HasFlag(PLAYER_FLAGS, PLAYER_FLAG_PVP_TOGGLE))
+			{
 		        SetFlag(PLAYER_FLAGS, PLAYER_FLAG_PVP_TOGGLE);
+				RemoveFlag(PLAYER_FLAGS, PLAYER_FLAG_PVP);
+			}
             else
             {
 			    RemoveFlag(PLAYER_FLAGS, PLAYER_FLAG_PVP_TOGGLE);
+				SetFlag(PLAYER_FLAGS, PLAYER_FLAG_PVP);
             }
         }
     }
@@ -8858,6 +9037,8 @@ void Player::CompleteLoading()
 
 	sInstanceMgr.BuildSavedInstancesForPlayer(this);
 	CombatStatus.UpdateFlag();
+	//sEventMgr.AddEvent(this,&Player::SendAllAchievementData,EVENT_SEND_ACHIEVEMNTS_TO_PLAYER,ACHIEVEMENT_SEND_DELAY,1,0);
+	sEventMgr.AddEvent(static_cast< Unit* >(this),&Unit::UpdatePowerAmm,EVENT_SEND_PACKET_TO_PLAYER_AFTER_LOGIN,LOGIN_CIENT_SEND_DELAY,1,0);
 }
 
 void Player::OnWorldPortAck()
@@ -9471,7 +9652,7 @@ void Player::UpdateComboPoints()
 	else
 		buffer[0] = buffer[1] = 0;
 
-	m_session->OutPacket(SMSG_SET_COMBO_POINTS, c, buffer);
+	m_session->OutPacket(SMSG_UPDATE_COMBO_POINTS, c, buffer);
 }
 
 void Player::SendAreaTriggerMessage(const char * message, ...)
@@ -9622,11 +9803,23 @@ void Player::Possess(Unit * pTarget)
 	if( !( pTarget->m_isPet && static_cast< Pet* >( pTarget ) == m_Summon ) )
 	{
 		list<uint32> avail_spells;
+	//Steam Tonks
+	if(pTarget->GetUInt32Value(OBJECT_FIELD_ENTRY) == 15328)
+	{
+		uint32 rand_spellid = TonkSpecials[RandomUInt(3)];
+		avail_spells.push_back(CANNON);
+		avail_spells.push_back(MORTAR);
+		avail_spells.push_back(rand_spellid);
+		avail_spells.push_back(NITROUS);
+	}
+	else
+	{
 		for(list<AI_Spell*>::iterator itr = pTarget->GetAIInterface()->m_spells.begin(); itr != pTarget->GetAIInterface()->m_spells.end(); ++itr)
 		{
 			if((*itr)->agent == AGENT_SPELL)
 				avail_spells.push_back((*itr)->spell->Id);
 		}
+	}
 		list<uint32>::iterator itr = avail_spells.begin();
 
 		WorldPacket data(SMSG_PET_SPELLS, pTarget->GetAIInterface()->m_spells.size() * 4 + 20);
@@ -9661,7 +9854,7 @@ void Player::Possess(Unit * pTarget)
 
 void Player::UnPossess()
 {
-	if( !m_CurrentCharm )
+	if( m_Summon || !m_CurrentCharm)
 		return;
 
 	Unit * pTarget = GetMapMgr()->GetUnit( m_CurrentCharm ); 
@@ -11320,7 +11513,7 @@ void Player::Social_TellFriendsOffline()
 
 void Player::Social_SendFriendList(uint32 flag)
 {
-	WorldPacket data(SMSG_FRIEND_LIST, 500);
+	WorldPacket data(SMSG_CONTACT_LIST, 500);
 	map<uint32,char*>::iterator itr;
 	set<uint32>::iterator itr2;
 	Player * plr;
@@ -11390,7 +11583,9 @@ void Player::VampiricSpell(uint32 dmg, Unit* pTarget)
 	if( m_vampiricEmbrace > 0 && pTarget->m_hasVampiricEmbrace > 0 && pTarget->HasVisialPosAurasOfNameHashWithCaster(SPELL_HASH_VAMPIRIC_EMBRACE, this) )
 	{
 		perc = 15;
-		SM_FIValue(SM_FMiscEffect, &perc, 4);
+		uint32 spellgroup[3] = {4, 0, 0};
+		SM_FIValue(SM_FMiscEffect, &perc, spellgroup);
+
 
 		bonus = float2int32(fdmg * (float(perc)/100.0f));
 		if( bonus > 0 )
@@ -11471,23 +11666,12 @@ uint32 Player::GetMaxPersonalRating()
 	return maxrating;
 }
 
-void Player::SetKnownTitle( RankTitles title, bool set )
-{	
-	if( !( HasKnownTitle( title ) ^ set ) )
-		return;
-
-	uint64 current = GetUInt64Value( PLAYER_FIELD_KNOWN_TITLES );
-	if( set )
-		SetUInt64Value( PLAYER_FIELD_KNOWN_TITLES, current | uint64(1) << uint8( title ) );
-	else
-		SetUInt64Value( PLAYER_FIELD_KNOWN_TITLES, current & ~uint64(1) << uint8( title ) );
-	
-	if( title >= PVPTITLE_INVISIBLE_NAME ) // to avoid client crash
-		return;
-	
-	WorldPacket data( SMSG_TITLE_EARNED, 8 );
-	data << uint32( title ) << uint32( set ? 1 : 0 );
-	m_session->SendPacket( &data );
+bool Player::HasTitle(uint32 TitleCount)
+{
+	uint64 TitleMask = 1 << TitleCount;
+	if (TitleMask & GetUInt64Value(PLAYER_FIELD_KNOWN_TITLES))
+		return true;
+	return false;
 }
 
 void Player::FullHPMP()
@@ -11495,6 +11679,231 @@ void Player::FullHPMP()
 	if(isDead())
 		ResurrectPlayer();
     SetUInt32Value(UNIT_FIELD_HEALTH, GetUInt32Value(UNIT_FIELD_MAXHEALTH));
-    SetUInt32Value(UNIT_FIELD_POWER1, GetUInt32Value(UNIT_FIELD_MAXPOWER1));
+	SetPower(POWER_TYPE_MANA, GetUInt32Value(UNIT_FIELD_MAXPOWER1));
     SetUInt32Value(UNIT_FIELD_POWER4, GetUInt32Value(UNIT_FIELD_MAXPOWER4));
+}
+
+
+//really need to work on the speed of this. This will be called on a lot of events
+/*void Player::Event_Achiement_Received(uint32 achievementtype,uint32 pentry,uint32 pvalue)
+{
+    for (uint32 i=0; i<dbcAchievementCriteriaStore.GetNumRows(); i++)
+    {
+		AchievementCriteriaEntry *criteria = dbcAchievementCriteriaStore.LookupRow(i);
+		uint32 achientry = criteria->ID;
+		//check if we need to even know about this criteria
+		if( !criteria || criteria->requiredType != achievementtype )
+			continue;
+
+		//we will send only this if it is required for this type
+		if( pentry && criteria->requiredAchievementRelatedEntry != pentry )
+			continue;
+
+		//check if this achievement is even for us
+		AchievementEntry *achi = dbcAchievementStore.LookupEntry( criteria->referredAchievement );
+
+		if( !achi 
+//			|| !( achi->factionFlag == -1 || (isAlliance(this) && achi->factionFlag == 1) || (!isAlliance(this) && achi->factionFlag == 0 ) ) || 
+//			|| achi->flags & ACHIEVEMENT_FLAG_COUNTER
+//			|| ((criteria->groupFlag & ACHIEVEMENT_CRITERIA_GROUP_NOT_IN_GROUP) && GetGroup() )
+			)
+			continue;
+
+		if( !m_achievements[ achientry ] )
+			m_achievements[ achientry ] = new AchievementVal;
+
+		//check if we can finish = get archievement points on this 
+//		if( pvalue < criteria->requiredAchievementRelatedCount )
+//			SendAchievmentStatus( achientry );
+//		else 
+			if( pvalue >= criteria->requiredAchievementRelatedCount 
+				&& 
+				m_achievements[ achientry ]->cur_value < criteria->requiredAchievementRelatedCount
+				)
+			{
+//				m_achievement_points += achi->points;
+				m_achievements[ achientry ]->completed_at_stamp = (uint32)UNIXTIME;
+				SendAchievmentEarned( criteria->referredAchievement );
+			}
+			
+		//if we got here then we could update our status
+		m_achievements[ achientry ]->cur_value = pvalue;
+    }
+
+}
+
+void Player::SendAchievmentEarned( uint32 archiId, uint32 at_stamp )
+{
+    WorldPacket data( SMSG_ACHIEVEMENT_EARNED, 30);
+	data << GetNewGUID();      
+    data << uint32( archiId );
+	if( at_stamp )
+		data << uint32( at_stamp ); //seems to be something that increases in time. Also seems to a large enough value for time
+	else data << uint32( UNIXTIME );
+	data << uint32(0);
+	GetSession()->SendPacket(&data);
+}*/
+
+
+//wtf does this do ? How can i check the effect of this anyway ? Made this before SMSG_ACHIEVEMENT_EARNED :P
+void Player::SendAchievmentStatus( uint32 criteriaid, uint32 new_value, uint32 at_stamp )
+{
+	/*
+	noob warlock
+	E2 14 00 00 - some index ? does not seem to be criteria id though
+	01 - is this related to the indexes ? Seems to be 1 all the time
+	2B - some index ?
+	0F 82 43 97 01 - packed guid
+	00 00 00 00 
+	B4 82 94 08 
+	00 00 00 00 
+	00 00 00 00
+
+	E2 14 00 00 01 2B 0F 82 43 97 01 00 00 00 00 B4 82 94 08 00 00 00 00 00 00 00 00
+	E2 14 00 00 01 53 0F 82 43 97 01 00 00 00 00 B4 82 94 08 00 00 00 00 00 00 00 00
+	E3 14 00 00 01 BB 0F 82 43 97 01 00 00 00 00 B4 82 94 08 00 00 00 00 00 00 00 00
+	E4 14 00 00 01 15 0F 82 43 97 01 00 00 00 00 B4 82 94 08 00 00 00 00 00 00 00 00
+	E5 14 00 00 01 15 0F 82 43 97 01 00 00 00 00 B4 82 94 08 00 00 00 00 00 00 00 00
+	E8 14 00 00 01 18 0F 82 43 97 01 00 00 00 00 B4 82 94 08 00 00 00 00 00 00 00 00
+	E6 14 00 00 01 16 0F 82 43 97 01 00 00 00 00 B4 82 94 08 00 00 00 00 00 00 00 00
+	E7 14 00 00 01 18 0F 82 43 97 01 00 00 00 00 B4 82 94 08 00 00 00 00 00 00 00 00
+	EA 14 00 00 01 2A 0F 82 43 97 01 00 00 00 00 B4 82 94 08 00 00 00 00 00 00 00 00
+	EA 14 00 00 01 52 0F 82 43 97 01 00 00 00 00 B4 82 94 08 00 00 00 00 00 00 00 00
+	EA 14 00 00 01 55 0F 82 43 97 01 00 00 00 00 B4 82 94 08 00 00 00 00 00 00 00 00
+	EA 14 00 00 01 57 0F 82 43 97 01 00 00 00 00 B4 82 94 08 00 00 00 00 00 00 00 00
+	EA 14 00 00 01 5E 0F 82 43 97 01 00 00 00 00 B4 82 94 08 00 00 00 00 00 00 00 00
+	EA 14 00 00 01 62 0F 82 43 97 01 00 00 00 00 B4 82 94 08 00 00 00 00 00 00 00 00
+	*/
+    /*WorldPacket data( SMSG_CRITERIA_UPDATE, 30);
+    data << uint32(criteriaid);
+	data << uint8(1);
+	data << uint8(1); //this is some ID or something maybe merge with previous value ? Maybe it is value for criteria ?
+	data << GetNewGUID();      
+	data << uint32(0);
+	if( at_stamp )
+		data << uint32( at_stamp / 8.50194274f ); //seems to be something that increases in time. Also seems to a large enough value for time
+	else
+		data << uint32( UNIXTIME / 8.50194274f ); //seems to be something that increases in time. Also seems to a large enough value for time
+	data << uint32(0); //duration
+	data << uint32(0); //duration left
+	GetSession()->SendPacket(&data);*/
+}
+//send completed criterias to client
+/*void Player::SendAllAchievementStatus()
+{
+	std::map<uint32,AchievementVal*>::iterator itr;
+	for(itr=m_achievements.begin();itr!=m_achievements.end();itr++)
+	{
+//		uint32 critentry = itr->first;
+//		AchievementCriteriaEntry *criteria = dbcAchievementCriteriaStore.LookupEntry( critentry );
+//		if( !critentry ) continue; //wtf ?
+//		if( criteria->requiredAchievementRelatedCount > itr->second )
+		SendAchievmentStatus( itr->first, itr->second->cur_value, itr->second->completed_at_stamp );
+	}
+}
+
+void Player::SendAllAchievementEarned()
+{
+	std::map<uint32,AchievementVal*>::iterator itr;
+	for(itr=m_achievements.begin();itr!=m_achievements.end();itr++)
+	{
+		uint32 critentry = itr->first;
+		AchievementCriteriaEntry *criteria = dbcAchievementCriteriaStore.LookupEntry( critentry );
+		if( !criteria ) 
+			continue; //wtf ?
+		if( criteria->requiredAchievementRelatedCount <= itr->second->cur_value )
+			SendAchievmentEarned( criteria->referredAchievement );
+	}
+}*/
+
+//this packet might get huge in time. Might reach over 1.2 MByte !
+/*void Player::SendAllAchievementData()
+{
+	//we are cheating with these. Something is enabling client side the achievemnts menu
+	WorldPacket data(SMSG_ALL_ACHIEVEMENT_DATA, 500);
+	uint32 found_finished=0;
+
+	//generate block of finished acheivemnts
+	std::map<uint32,AchievementVal*>::iterator itr;
+	for(itr=m_achievements.begin();itr!=m_achievements.end();itr++)
+	{
+		uint32 critentry = itr->first;
+		AchievementCriteriaEntry *criteria = dbcAchievementCriteriaStore.LookupEntry( critentry );
+		if( !criteria ) 
+			continue; //wtf ?
+		if( criteria->requiredAchievementRelatedCount <= itr->second->cur_value )
+		{
+			found_finished++;
+			data << uint32( criteria->referredAchievement );
+			data << uint32( itr->second->completed_at_stamp / 8.50194274f); // -sometimes it is durations
+		}
+	}
+	data << uint32( 0xFFFFFFFF ); //maybe a terminator like a null terminated string ?
+*/
+	//now the block for those : SMSG_CRITERIA_UPDATE
+/*
+			//sometimes this is duration left
+			data << uint32( criteria->ID );
+			data << uint8( 1 );
+			data << uint8( itr->second->cur_value ); //probably not since it does not fit into this size. Also seems to change from time to time
+			data << GetNewGUID();
+			data << uint32( 0 ); //no idea. was always 0
+			data << uint32( UNIXTIME ); //seems to be something that increases in time. Also seems to a large enough value for time
+			data << uint32(0); //duration
+			data << uint32(0); //duration left
+*/
+/*	if( found_finished )
+		GetSession()->SendPacket(&data);		
+}*/
+
+void Player::UpdatePowerAmm()
+{
+	WorldPacket data(SMSG_POWER_UPDATE, 5);
+	FastGUIDPack(data, GetGUID());
+	data << uint8( GetPowerType() );
+	data << GetUInt32Value( UNIT_FIELD_POWER1 + GetPowerType() );
+	SendMessageToSet(&data, true);
+}
+// Initialize Glyphs or update them after level change
+void Player::UpdateGlyphs()
+{
+	// Set 1 for minor, 2 for major
+	SetUInt32Value(PLAYER_FIELD_GLYPH_SLOTS_1, 4);
+	SetUInt32Value(PLAYER_FIELD_GLYPH_SLOTS_01, 1);
+	SetUInt32Value(PLAYER_FIELD_GLYPH_SLOTS_02, 1);
+	SetUInt32Value(PLAYER_FIELD_GLYPH_SLOTS_03, 4);
+	SetUInt32Value(PLAYER_FIELD_GLYPH_SLOTS_04, 1);
+	SetUInt32Value(PLAYER_FIELD_GLYPH_SLOTS_05, 4);
+	// Enable number of glyphs depending on level
+	uint32 level = getLevel();
+	uint32 glyph_mask = 0; 
+	if(level == 80)
+		glyph_mask = 6;
+	else if(level >= 70)
+		glyph_mask = 5;
+	else if(level >= 50)
+		glyph_mask = 4;
+	else if(level >= 30)
+		glyph_mask = 3;
+	else if(level >= 15)
+		glyph_mask = 2;
+	SetUInt32Value(PLAYER_GLYPHS_ENABLED, (1 << glyph_mask) -1 );
+}
+
+// Fills fields from firstField to firstField+fieldsNum-1 with integers from the string
+void Player::LoadFieldsFromString(const char * string, uint32 firstField, uint32 fieldsNum)
+{
+	if(string == NULL)
+		return;
+	char * end;
+	char * start = (char *) string;
+	for(uint32 Counter = 0; Counter < fieldsNum; Counter++) 
+	{
+		end = strchr(start,',');
+		if(!end)
+			break;
+		*end = 0;
+		SetUInt32Value(firstField + Counter, atol(start));
+		start = end + 1;
+	}
 }

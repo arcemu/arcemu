@@ -342,6 +342,7 @@ typedef std::map<uint32, std::list<SpellEntry*>* >                  OverrideIdMa
 typedef HM_NAMESPACE::hash_map<uint32, Player*>                     PlayerStorageMap;
 typedef std::list<GM_Ticket*>                                       GmTicketList;
 typedef std::map<uint32, InstanceBossInfo*>                         InstanceBossInfoMap;
+typedef std::list<const AchievementCriteriaEntry*>					AchievementCriteriaEntryList;
 
 #ifndef WIN32
 #define arcemu_USE_MAP_PLAYER_INDEX
@@ -549,7 +550,8 @@ public:
 
 
 	// Serialization
-
+	
+	void LoadCompletedAchievements();
 	void LoadQuests();
 	void LoadPlayersInfo();
 	void LoadPlayerCreateInfo();
@@ -692,6 +694,10 @@ public:
 	}
 
 
+	void LoadAchievementCriteriaList();
+	AchievementCriteriaEntryList const& GetAchievementCriteriaByType(AchievementCriteriaTypes type);
+	std::set<uint32> allCompletedAchievements;
+
 protected:
 	BCEntryStorage m_BCEntryStorage; // broadcast system.
 	RWLock playernamelock;
@@ -761,6 +767,8 @@ protected:
 	LevelInfoMap mLevelInfo;
 	PetDefaultSpellMap mDefaultPetSpells;
 	PetSpellCooldownMap mPetSpellCooldowns;
+	
+	AchievementCriteriaEntryList m_AchievementCriteriasByType[ACHIEVEMENT_CRITERIA_TYPE_TOTAL];
 };
 
 

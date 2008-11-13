@@ -1,0 +1,44 @@
+SMSG_AURA_UPDATE (0x496)
+================
+
+flags:
+0x80, packet includes caster guid
+
+
+
+rawdata: 0FCD2A6C0200A80000003B010040771B003F771B00
+
+0F			guidflags
+CD2A6C02	guid
+00			visual slot?
+A8000000	id (frost armor)
+3B			flags
+0100		extraflags?
+40771B00	duration
+3F771B00	timeleft
+
+
+rawdata: 0FCD2A6C0201AE0100003B05005046000050460000
+
+0F
+CD2A6C02
+01
+AE010000 id (drink :D)
+3B
+0500
+50460000
+50460000
+
+rawdata: DBE597EB0F30F10085000000A201000F0A2B6C02A00F0000A00F0000
+
+DB
+E597EB0F30F1
+00
+85000000 id (fireball)
+A2
+0100
+0F
+0A2B6C02 caster guid
+A00F0000
+A00F0000
+

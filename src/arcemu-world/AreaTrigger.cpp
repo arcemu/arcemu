@@ -143,8 +143,9 @@ void WorldSession::_HandleAreaTriggerOpcode(uint32 id)
 	{
 	case ATTYPE_INSTANCE:
 		{
-			if(GetPlayer()->GetPlayerStatus() == TRANSFER_PENDING)  //only ports if player is out of pendings
-				return;
+			//only ports if player is out of pendings
+			if(GetPlayer()->GetPlayerStatus() == TRANSFER_PENDING)
+				break;
 			if( sWorld.instance_CheckTriggerPrerequsites )
 			{
 				uint32 reason = CheckTriggerPrerequsites(pAreaTrigger, this, _player, WorldMapInfoStorage.LookupEntry(pAreaTrigger->Mapid));
@@ -158,7 +159,7 @@ void WorldSession::_HandleAreaTriggerOpcode(uint32 id)
 					switch (reason)
 					{
 					case AREA_TRIGGER_FAILURE_LEVEL:
-						snprintf(msg, 200, pReason, pAreaTrigger->required_level);
+						snprintf(msg,200,pReason,pAreaTrigger->required_level);
 						data << msg;
 						break;
 					case AREA_TRIGGER_FAILURE_NO_ATTUNE_I:
@@ -166,9 +167,9 @@ void WorldSession::_HandleAreaTriggerOpcode(uint32 id)
 							MapInfo * pMi = WorldMapInfoStorage.LookupEntry(pAreaTrigger->Mapid);
 							ItemPrototype * pItem = ItemPrototypeStorage.LookupEntry(pMi->required_item);
 							if(pItem)
-								snprintf(msg, 200, GetPlayer()->GetSession()->LocalizedWorldSrv(35), pItem->Name1);
+								snprintf(msg,200,GetPlayer()->GetSession()->LocalizedWorldSrv(35),pItem->Name1);
 							else
-								snprintf(msg, 200, GetPlayer()->GetSession()->LocalizedWorldSrv(36));
+								snprintf(msg,200,GetPlayer()->GetSession()->LocalizedWorldSrv(36));
 
 							data << msg;
 						}break;
@@ -177,9 +178,9 @@ void WorldSession::_HandleAreaTriggerOpcode(uint32 id)
 							MapInfo * pMi = WorldMapInfoStorage.LookupEntry(pAreaTrigger->Mapid);
 							Quest * pQuest = QuestStorage.LookupEntry(pMi->required_quest);
 							if(pQuest)
-								snprintf(msg, 200, GetPlayer()->GetSession()->LocalizedWorldSrv(35), pQuest->title);
+								snprintf(msg,200,GetPlayer()->GetSession()->LocalizedWorldSrv(35),pQuest->title);
 							else
-								snprintf(msg, 200, GetPlayer()->GetSession()->LocalizedWorldSrv(36));
+								snprintf(msg,200,GetPlayer()->GetSession()->LocalizedWorldSrv(36));
 
 							data << msg;
 						}break;

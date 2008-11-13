@@ -133,46 +133,76 @@ enum SPELL_MODIFIER_TYPE
 };
 
 
-static void SM_FFValue( int32* m, float* v, uint64 group )
+static void SM_FFValue( int32* m, float* v, uint32* group )
 {
     if( m == 0 )
 		return;
 
-    for( uint32 x = 0; x < SPELL_GROUPS; x++ )
-        if( ( (uint64)1 << x) & group )
-            (*v) += m[x];
-}
-
-static void SM_FIValue( int32* m, int32* v, uint64 group )
-{
-    if( m == 0 )
-		return;
-
-    for( uint32 x = 0; x < SPELL_GROUPS; x++ )
-        if( ( (uint64)1 << x ) & group )
+    uint32 intbit = 0, groupnum = 0;
+	for(uint32 bit = 0; bit < SPELL_GROUPS; ++bit, ++intbit)
+	{
+		if(intbit == 32)
 		{
-            (*v) += m[x];
+			++groupnum;
+			intbit = 0;
 		}
+		if( ( 1 << intbit ) & group[groupnum] )
+			(*v) += m[bit];
+	}
 }
 
-static void SM_PIValue( int32* m, int32* v, uint64 group )
+static void SM_FIValue( int32* m, int32* v, uint32* group )
 {
     if( m == 0 )
 		return;
 
-    for( uint32 x = 0; x < SPELL_GROUPS; x++ )
-        if( ( (uint64)1 << x ) & group )
-            (*v) += ( (*v) * m[x] ) / 100;
+	uint32 intbit = 0, groupnum = 0;
+	for(uint32 bit = 0; bit < SPELL_GROUPS; ++bit, ++intbit)
+	{
+		if(intbit == 32)
+		{
+			++groupnum;
+			intbit = 0;
+		}
+		if( ( 1 << intbit ) & group[groupnum] )
+			(*v) += m[bit];
+	}
 }
 
-static void SM_PFValue( int32* m, float* v, uint64 group )
+static void SM_PIValue( int32* m, int32* v, uint32* group )
+{
+    if( m == 0 )
+		return;
+
+	uint32 intbit = 0, groupnum = 0;
+	for(uint32 bit = 0; bit < SPELL_GROUPS; ++bit, ++intbit)
+	{
+		if(intbit == 32)
+		{
+			++groupnum;
+			intbit = 0;
+		}
+		if( ( 1 << intbit ) & group[groupnum] )
+			(*v) += ( (*v) * m[bit] ) / 100;
+	}
+}
+
+static void SM_PFValue( int32* m, float* v, uint32* group )
 {
     if( m == 0 )
 		return;
     
-    for( uint32 x = 0; x < SPELL_GROUPS; x++ )
-        if( ( (uint64)1 << x ) & group )
-            (*v) += ( (*v) * m[x] ) / 100.0f;
+	uint32 intbit = 0, groupnum = 0;
+	for(uint32 bit = 0; bit < SPELL_GROUPS; ++bit, ++intbit)
+	{
+		if(intbit == 32)
+		{
+			++groupnum;
+			intbit = 0;
+		}
+		if( ( 1 << intbit ) & group[groupnum] )
+			(*v) += ( (*v) * m[bit] ) / 100.0f;
+	}
 }
 
 enum SPELL_INFRONT_STATUS
@@ -431,8 +461,8 @@ enum AttributesEx
 	ATTRIBUTESEX_UNK5                         = 0x8, // 4
 	ATTRIBUTESEX_UNK6                         = 0x10, // 5, stealth effects but Rockbiter wtf 0_0
 	ATTRIBUTESEX_NOT_BREAK_STEALTH            = 0x20, // 6
-	ATTRIBUTESEX_UNK8			  = 0x40, // 7 [POSSIBLY: dynamite, grenades from engineering etc..]
-	ATTRIBUTESEX_UNK9                         = 0x80,
+	ATTRIBUTESEX_UNK8						  = 0x40, // 7 [POSSIBLY: dynamite, grenades from engineering etc..]
+	ATTRIBUTESEX_UNK9						  = 0x80,
 	ATTRIBUTESEX_UNK10                        = 0x100,
 	ATTRIBUTESEX_UNK11                        = 0x200,
 	ATTRIBUTESEX_UNK12                        = 0x400,
@@ -817,7 +847,7 @@ enum SpellEffects
 	SPELL_EFFECT_PICKPOCKET,                //    71
 	SPELL_EFFECT_ADD_FARSIGHT,              //    72
 	SPELL_EFFECT_SUMMON_POSSESSED,          //    73
-	SPELL_EFFECT_SUMMON_TOTEM,              //    74
+    SPELL_EFFECT_USE_GLYPH,	                //    74
 	SPELL_EFFECT_HEAL_MECHANICAL,           //    75
 	SPELL_EFFECT_SUMMON_OBJECT_WILD,        //    76
 	SPELL_EFFECT_SCRIPT_EFFECT,             //    77
@@ -873,7 +903,7 @@ enum SpellEffects
 	SPELL_EFFECT_PROSPECTING,               //    127
 	SPELL_EFFECT_UNKNOWN7,                  //    128
 	SPELL_EFFECT_UNKNOWN8,                  //    129
-	SPELL_EFFECT_UNKNOWN9,                  //    129
+//	SPELL_EFFECT_UNKNOWN9,                  //    129
 	SPELL_EFFECT_UNKNOWN10,                 //    130
 	SPELL_EFFECT_UNKNOWN11,                 //    131
 	SPELL_EFFECT_UNKNOWN12,                 //    132
@@ -891,14 +921,22 @@ enum SpellEffects
 	SPELL_EFFECT_UNKNOWN23,                 //    144
 	SPELL_EFFECT_UNKNOWN24,                 //    145
 	SPELL_EFFECT_UNKNOWN25,                 //    146
-	SPELL_EFFECT_QUEST_FAIL,                //    147
-	SPELL_EFFECT_UNKNOWN26,                 //    148
-	SPELL_EFFECT_UNKNOWN27,                 //    149
+	SPELL_EFFECT_UNKNOWN26,                 //    147
+	SPELL_EFFECT_UNKNOWN27,                 //    148
+	SPELL_EFFECT_QUEST_FAIL,                //    149
 	SPELL_EFFECT_UNKNOWN28,                 //    150
-	SPELL_EFFECT_SUMMON_TARGET,             //    151
-	SPELL_EFFECT_UNKNOWN29,                 //    152
-	SPELL_EFFECT_TAME_CREATURE,             //    153
-	TOTAL_SPELL_EFFECTS,                    //    154
+	SPELL_EFFECT_UNKNOWN29,                 //    151
+	SPELL_EFFECT_UNKNOWN30,                 //    152
+	SPELL_EFFECT_SUMMON_TARGET,             //    153
+	SPELL_EFFECT_SUMMON_REFER_A_FRIEND,     //    154
+	SPELL_EFFECT_TAME_CREATURE,             //    155
+	SPELL_EFFECT_UNKNOWN34,                 //    156
+	SPELL_EFFECT_UNKNOWN35,                 //    157
+	SPELL_EFFECT_UNKNOWN36,                 //    158
+	SPELL_EFFECT_UNKNOWN37,                 //    159
+	SPELL_EFFECT_UNKNOWN38,                 //    160
+	SPELL_EFFECT_UNKNOWN39,                 //    161
+    TOTAL_SPELL_EFFECTS,                    //    162
 };
 
 // target type flags
@@ -1486,7 +1524,6 @@ struct SpellTargetMod
 };
 
 
-typedef std::vector<uint64> TargetsList;
 typedef std::vector<SpellTargetMod> SpellTargetsList;
 
 typedef void(Spell::*pSpellEffect)(uint32 i);
@@ -1601,6 +1638,7 @@ public:
     void SendChannelStart(uint32 duration);
     void SendResurrectRequest(Player* target);
     void SendHealSpellOnPlayer(Object* caster, Object* target, uint32 dmg,bool critical);
+	void SendHealManaSpellOnPlayer(Object * caster, Object * target, uint32 dmg, uint32 powertype);
 	void SendTameFailure( uint8 failure );
     
 
@@ -1619,6 +1657,7 @@ public:
     void SpellEffectInstantKill(uint32 i);
     void SpellEffectSchoolDMG(uint32 i);
     void SpellEffectDummy(uint32 i);
+	void SpellEffectRestoreManaPct(uint32 i);
     void SpellEffectTeleportUnits(uint32 i);
     void SpellEffectApplyAura(uint32 i);
     void SpellEffectPowerDrain(uint32 i);
@@ -1663,6 +1702,7 @@ public:
     void SpellEffectPickpocket(uint32 i);
     void SpellEffectAddFarsight(uint32 i);
     void SpellEffectSummonPossessed(uint32 i);
+	void SpellEffectUseGlyph(uint32 i);
     void SpellEffectCreateSummonTotem(uint32 i);
     void SpellEffectHealMechanical(uint32 i);
     void SpellEffectSummonObjectWild(uint32 i);
@@ -1776,7 +1816,7 @@ public:
 	// It should NOT be used for weapon_damage_type which needs: 0 = MELEE, 1 = OFFHAND, 2 = RANGED
 	ARCEMU_INLINE uint32 GetType() { return ( GetProto()->Spell_Dmg_Type == SPELL_DMG_TYPE_NONE ? SPELL_DMG_TYPE_MAGIC : GetProto()->Spell_Dmg_Type ); }
 
-    std::vector<uint64> UniqueTargets;
+	map_t UniqueTargets;
     SpellTargetsList    ModeratedTargets;
 
     ARCEMU_INLINE Item* GetItemTarget() { return itemTarget; }
@@ -1987,11 +2027,15 @@ protected:
 	bool m_isCasting;
     //void _DamageRangeUpdate();
 
-	ARCEMU_INLINE bool HasTarget(const uint64& guid, TargetsList* tmpMap)
+	ARCEMU_INLINE bool HasTarget(const uint64& guid, map_t* tmpMap)
 	{
-		for(TargetsList::iterator itr = tmpMap->begin(); itr != tmpMap->end(); ++itr)
-			if((*itr)==guid)
-				return true;
+		for (int i=0; i<hashmap64_length(tmpMap); i++) {
+			uint64 tguid;
+			if (hashmap64_get_index(tmpMap, i, (int64*)&tguid, NULL) == MAP_OK) {
+				if (tguid == guid)
+					return true;
+			}
+		}
 
 		for(SpellTargetsList::iterator itr = ModeratedTargets.begin(); itr != ModeratedTargets.end(); ++itr)
 			if((*itr).TargetGuid==guid)
@@ -2001,8 +2045,8 @@ protected:
 	}
 
 private:
-    TargetsList m_targetUnits[3];
-    void SafeAddTarget(TargetsList* tgt,uint64 guid);
+	map_t m_targetUnits[3];
+    void SafeAddTarget(map_t tgt,uint64 guid);
     
     void SafeAddMissedTarget(uint64 guid);
     void SafeAddModeratedTarget(uint64 guid, uint16 type);

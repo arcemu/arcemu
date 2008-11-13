@@ -104,69 +104,106 @@ void SetupInnkeepers(ScriptMgr * mgr)
     mgr->register_gossip_script(6740, gs);      //Innkeeper Allison
     mgr->register_gossip_script(2352, gs);      //Innkeeper Anderson
     mgr->register_gossip_script(6739, gs);      //Innkeeper Bates
-    mgr->register_gossip_script(18905, gs);      //Innkeeper Bazil Olof'tazun
+    mgr->register_gossip_script(18905, gs);		//Innkeeper Bazil Olof'tazun
     mgr->register_gossip_script(1247, gs);      //Innkeeper Belm
-    mgr->register_gossip_script(19296, gs);      //Innkeeper Biribi
+    mgr->register_gossip_script(19296, gs);		//Innkeeper Biribi
     mgr->register_gossip_script(3934, gs);      //Innkeeper Boorand Plainswind
     mgr->register_gossip_script(6727, gs);      //Innkeeper Brianna
     mgr->register_gossip_script(7714, gs);      //Innkeeper Byula
-    mgr->register_gossip_script(18907, gs);      //Innkeeper Coryth Stoktron
-    mgr->register_gossip_script(19319, gs);      //Innkeeper Darg Bloodclaw
-    mgr->register_gossip_script(15433, gs);      //Innkeeper Delaniel
-    mgr->register_gossip_script(16458, gs);      //Innkeeper Faralia
-    mgr->register_gossip_script(295, gs);      //Innkeeper Farley
+    mgr->register_gossip_script(18907, gs);		//Innkeeper Coryth Stoktron
+    mgr->register_gossip_script(19319, gs);		//Innkeeper Darg Bloodclaw
+    mgr->register_gossip_script(15433, gs);		//Innkeeper Delaniel
+    mgr->register_gossip_script(16458, gs);		//Innkeeper Faralia
+    mgr->register_gossip_script(295, gs);		//Innkeeper Farley
     mgr->register_gossip_script(5111, gs);      //Innkeeper Firebrew
     mgr->register_gossip_script(7733, gs);      //Innkeeper Fizzgrimble
     mgr->register_gossip_script(7737, gs);      //Innkeeper Greul
-    mgr->register_gossip_script(18957, gs);      //Innkeeper Grilka
+    mgr->register_gossip_script(18957, gs);		//Innkeeper Grilka
     mgr->register_gossip_script(6928, gs);      //Innkeeper Grosk
     mgr->register_gossip_script(6929, gs);      //Innkeeper Gryshka
-    mgr->register_gossip_script(19232, gs);      //Innkeeper Haelthol
+    mgr->register_gossip_script(19232, gs);		//Innkeeper Haelthol
     mgr->register_gossip_script(6734, gs);      //Innkeeper Hearthstove
     mgr->register_gossip_script(8931, gs);      //Innkeeper Heather
     mgr->register_gossip_script(1464, gs);      //Innkeeper Helbrek
     mgr->register_gossip_script(6272, gs);      //Innkeeper Janene
     mgr->register_gossip_script(7731, gs);      //Innkeeper Jayka
-    mgr->register_gossip_script(17630, gs);      //Innkeeper Jovia
-    mgr->register_gossip_script(16542, gs);      //Innkeeper Kalarin
+    mgr->register_gossip_script(17630, gs);		//Innkeeper Jovia
+    mgr->register_gossip_script(16542, gs);		//Innkeeper Kalarin
     mgr->register_gossip_script(6930, gs);      //Innkeeper Karakul
     mgr->register_gossip_script(6747, gs);      //Innkeeper Kauth
-    mgr->register_gossip_script(12196, gs);      //Innkeeper Kaylisk
+    mgr->register_gossip_script(12196, gs);		//Innkeeper Kaylisk
     mgr->register_gossip_script(6736, gs);      //Innkeeper Keldamyr
-    mgr->register_gossip_script(18908, gs);      //Innkeeper Kerp
+    mgr->register_gossip_script(18908, gs);		//Innkeeper Kerp
     mgr->register_gossip_script(6738, gs);      //Innkeeper Kimlya
-    mgr->register_gossip_script(11103, gs);      //Innkeeper Lyshaerya
+    mgr->register_gossip_script(11103, gs);		//Innkeeper Lyshaerya
     mgr->register_gossip_script(6741, gs);      //Innkeeper Norman
     mgr->register_gossip_script(6746, gs);      //Innkeeper Pala
-    mgr->register_gossip_script(19571, gs);      //Innkeeper Remi Dodoso
+    mgr->register_gossip_script(19571, gs);		//Innkeeper Remi Dodoso
     mgr->register_gossip_script(5688, gs);      //Innkeeper Renee
     mgr->register_gossip_script(6735, gs);      //Innkeeper Saelienne
-    mgr->register_gossip_script(19495, gs);      //Innkeeper Shaunessy
+    mgr->register_gossip_script(19495, gs);		//Innkeeper Shaunessy
     mgr->register_gossip_script(6737, gs);      //Innkeeper Shaussiy
     mgr->register_gossip_script(2388, gs);      //Innkeeper Shay
     mgr->register_gossip_script(9356, gs);      //Innkeeper Shul'kar
     mgr->register_gossip_script(7736, gs);      //Innkeeper Shyria
-    mgr->register_gossip_script(11106, gs);      //Innkeeper Sikewa
+    mgr->register_gossip_script(11106, gs);		//Innkeeper Sikewa
     mgr->register_gossip_script(6807, gs);      //Innkeeper Skindle
     mgr->register_gossip_script(5814, gs);      //Innkeeper Thulbek
     mgr->register_gossip_script(7744, gs);      //Innkeeper Thulfram
-    mgr->register_gossip_script(6790, gs);      //Innkeeper Trelayne
-    mgr->register_gossip_script(16618, gs);      //Innkeeper Velandra
-    mgr->register_gossip_script(11118, gs);      //Innkeeper Vizzie
-    mgr->register_gossip_script(6791, gs);      //Innkeeper Wiley
-    mgr->register_gossip_script(16256, gs);      //Jessica Chambers
-    mgr->register_gossip_script(14731, gs);      //Lard
-    mgr->register_gossip_script(15397, gs);      //Marniel Amberlight
-    mgr->register_gossip_script(18913, gs);      //Matron Tikkit
-    mgr->register_gossip_script(21088, gs);      //Matron Varah
-    mgr->register_gossip_script(6778, gs);      //Melika Isenstrider
-    mgr->register_gossip_script(18245, gs);      //Merajit
-    mgr->register_gossip_script(19046, gs);      //Minalei
-    mgr->register_gossip_script(21744, gs);      //Roldemar
-    mgr->register_gossip_script(16826, gs);      //Sid Limbardi
+    mgr->register_gossip_script(6790, gs);		//Innkeeper Trelayne
+    mgr->register_gossip_script(16618, gs);		//Innkeeper Velandra
+    mgr->register_gossip_script(11118, gs);		//Innkeeper Vizzie
+    mgr->register_gossip_script(6791, gs);		//Innkeeper Wiley
+    mgr->register_gossip_script(16256, gs);		//Jessica Chambers
+    mgr->register_gossip_script(14731, gs);		//Lard
+    mgr->register_gossip_script(15397, gs);		//Marniel Amberlight
+    mgr->register_gossip_script(18913, gs);		//Matron Tikkit
+    mgr->register_gossip_script(21088, gs);		//Matron Varah
+    mgr->register_gossip_script(6778, gs);		//Melika Isenstrider
+    mgr->register_gossip_script(18245, gs);		//Merajit
+    mgr->register_gossip_script(19046, gs);		//Minalei
+    mgr->register_gossip_script(21744, gs);		//Roldemar
+    mgr->register_gossip_script(16826, gs);		//Sid Limbardi
     mgr->register_gossip_script(6806, gs);      //Tannok Frosthammer
+	// Wotlk Innkeepers
+	mgr->register_gossip_script(31557, gs);		//Uda the Beast - Dalaran
+	mgr->register_gossip_script(26596, gs);		//"Charlie" Northtop - Borean Tundra
+	mgr->register_gossip_script(26680, gs);		//Aiyan Coldwind - Grizzly Hills
+	mgr->register_gossip_script(32411, gs);		//Afsaneh Asrar <Assistant Innkeeper> - Dalaran?
+	mgr->register_gossip_script(32418, gs);		//Abohba <Assistant Innkeeper> - Dalaran, seems like he only binds you, no info/food drink hrmm.
+	mgr->register_gossip_script(26985, gs);		//Barracks Master Harga - DragonBlight
+	mgr->register_gossip_script(27125, gs);		//Barracks Master Rhekku - Grizzly Hills
+	mgr->register_gossip_script(24149, gs);		//Basil Osgood - Howjling Fjord
+	mgr->register_gossip_script(24033, gs);		//Bori Wintertotem - Howjling Fjord
+	mgr->register_gossip_script(28686, gs);		//Caliel Brightwillow - Dalaran
+	mgr->register_gossip_script(27148, gs);		//Caregiver Iqniq - Howling Fjord
+	mgr->register_gossip_script(27174, gs);		//Caregiver Mumik - Dragonblight
+	mgr->register_gossip_script(27187, gs);		//Caregiver Poallu - Borean Tundra
+	mgr->register_gossip_script(24057, gs);		//Christina Daniels - Howling Fjord
+	mgr->register_gossip_script(29926, gs);		//Gunda Boldhammer - The Storm Peaks
+	mgr->register_gossip_script(27042, gs);		//Illusia Lune - Dragonblight
+	mgr->register_gossip_script(23937, gs);		//Innkeeper Celeste Goodhutch - Howling Fjord
+	mgr->register_gossip_script(23731, gs);		//Innkeeper Hazel Lagras - Howling Fjord
+	mgr->register_gossip_script(27066, gs);		//Jennifer Bell - Grizzly Hills
+	mgr->register_gossip_script(25245, gs);		//James Deacon - Borean Tundra
+	mgr->register_gossip_script(30005, gs);		//Lodge-Matron Embla - The Storm Peaks
+	mgr->register_gossip_script(29963, gs);		//Magorn - The Storm Peaks
+	mgr->register_gossip_script(28791, gs);		//Marissa Everwatch - Zul Drak
+	mgr->register_gossip_script(27027, gs);		//Mrs. Winterby - Dragonblight
+	mgr->register_gossip_script(27052, gs);		//Naohain - Dragonblight
+	mgr->register_gossip_script(26709, gs);		//Pahu Frosthoof - Borean Tundra
+	mgr->register_gossip_script(29583, gs);		//Pan'ya - Zul'Drak
+	mgr->register_gossip_script(28038, gs);		//Purser Boulian - Holazar Basin
+	mgr->register_gossip_script(26375, gs);		//Quartermaster McCarty - Grizzly Hills
+	mgr->register_gossip_script(29904, gs);		//Smilin' Slirk Brassknob - The Storm Peaks
+	mgr->register_gossip_script(24342, gs);		//Timothy Holland - Howling Fjord
+	mgr->register_gossip_script(29971, gs);		//Wabada Whiteflower - Storm Peaks
+	mgr->register_gossip_script(25278, gs);		//Williamson - Borean Tundra
+	//mgr->register_gossip_script(npc_id, gs);
 
-    //cleanup:
+	// Added Wotlk Innkeepers, all of them :D lol.
+	//
+    //Old Cleanup:
     //added 36 new Innkeeper's ,81 working innkeeper's now :P
     //removed Innkeeper Monica(she dos not have gossip option she is from Old Hillsbrad Foothills)
 }

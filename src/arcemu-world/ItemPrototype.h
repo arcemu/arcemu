@@ -548,6 +548,8 @@ struct ItemPrototype
 	uint32 MaxCount;
 	uint32 ContainerSlots;
 	ItemStat Stats[10];
+	uint32 ScalingStatsEntry;
+	uint32 ScalingStatsFlag;
 	ItemDamage Damage[5];
 	uint32 Armor;
 	uint32 HolyRes;
@@ -583,6 +585,7 @@ struct ItemPrototype
 	uint32 GemProperties;
 	int32 DisenchantReqSkill;
 	uint32 ArmorDamageModifier;
+	uint32 ItemLimitCategory;
 
 	string lowercase_name;	// used in auctions
 	uint32 FoodType;		//pet food type
@@ -598,3 +601,4 @@ typedef struct {
 #pragma pack(pop)
 
 #endif
+

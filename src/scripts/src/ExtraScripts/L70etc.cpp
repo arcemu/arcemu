@@ -767,10 +767,9 @@ public:
 protected:
 	uint32 timer;
 };
-*/
+
 void SetupL70etc(ScriptMgr * mgr)
 {
-/*
 	mgr->register_creature_script(SAMURO, &SamAI::Create);
 	mgr->register_creature_script(BERGRISST, &BerAI::Create);
 	mgr->register_creature_script(MAIKYL, &MaiAI::Create);
@@ -782,5 +781,5 @@ void SetupL70etc(ScriptMgr * mgr)
 	mgr->register_creature_script(UNDEAD2, &Undead2AI::Create);
 	mgr->register_creature_script(UNDEAD3, &Undead3AI::Create);
 	mgr->register_creature_script(TRIGGER, &TriggerAI::Create);
-*/
 }
+*/

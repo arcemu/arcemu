@@ -22,7 +22,7 @@
 #define WOWSERVER_DEFINITION_H
 
 
-#define NUM_MAPS 600
+#define NUM_MAPS 700
 
 
 // Sorry...need this enumeration in Player.*
@@ -33,9 +33,6 @@ enum INSTANCE_MODE
     MODE_EPIC   = 2,
 	NUM_INSTANCE_MODES = 3
 };
-
-
-
 
 
 #endif

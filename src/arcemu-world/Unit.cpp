@@ -304,6 +304,8 @@ Unit::Unit()
 	memset(m_diminishCount, 0, 14*2);
 	memset(m_diminishTimer, 0, 14*2);
 	memset(m_auraStackCount, 0, MAX_NEGATIVE_VISUAL_AURAS_END);
+	memset(m_auravisuals, 0, MAX_NEGATIVE_VISUAL_AURAS_END*sizeof(uint32));
+
 	m_diminishActive = false;
 	dynObj = 0;
 	pLastSpell = 0;
@@ -938,7 +940,7 @@ uint32 Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, ui
 		uint32 origId = itr2->origId;
 		SpellEntry* ospinfo = dbcSpell.LookupEntry( origId );//no need to check if exists or not since we were not able to register this trigger if it would not exist :P
 
-		if( itr2->procFlags & PROC_ON_CAST_SPECIFIC_SPELL || itr2->procFlags & PROC_ON_CAST_SPELL) {
+/*		if( itr2->procFlags & PROC_ON_CAST_SPECIFIC_SPELL || itr2->procFlags & PROC_ON_CAST_SPELL) {
 			if( CastingSpell == NULL )
 				continue;
 
@@ -946,7 +948,7 @@ uint32 Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, ui
 				if (!(itr2->groupRelation & CastingSpell->SpellGroupType))
 					continue;
 			}
-		}
+		}*/
 
 		//this requires some specific spell check,not yet implemented
 		//this sucks and should be rewrote
@@ -3409,8 +3411,8 @@ void Unit::Strike( Unit* pVictim, uint32 weapon_damage_type, SpellEntry* ability
 					printf("!!!!!spell dmg bonus mod flat %d , spell dmg bonus pct %d , spell dmg bonus %d, spell group %u\n",spell_flat_modifers,spell_pct_modifers,dmg.full_damage,ability->SpellGroupType);
 #endif
 			} else {
-				SM_FIValue(((Unit*)this)->SM_FMiscEffect,&dmg.full_damage,(uint64)1<<63);
-				SM_PIValue(((Unit*)this)->SM_PMiscEffect,&dmg.full_damage,(uint64)1<<63);
+//				SM_FIValue(((Unit*)this)->SM_FMiscEffect,&dmg.full_damage,(uint64)1<<63);
+//				SM_PIValue(((Unit*)this)->SM_PMiscEffect,&dmg.full_damage,(uint64)1<<63);
 			}
 
 			dmg.full_damage += pVictim->DamageTakenMod[dmg.school_type];
@@ -4119,6 +4121,37 @@ void Unit::smsg_AttackStart(Unit* pVictim)
     }
 }
 
+uint8 Unit::FindVisualSlot(uint32 SpellId,bool IsPos)
+{
+	uint32 from,to;
+	uint8 visualslot = 0xFF;
+	if( IsPos )
+	{
+		from = 0;
+		to = MAX_POSITIVE_VISUAL_AURAS_END;
+	}
+	else
+	{
+		from = MAX_NEGATIVE_VISUAL_AURAS_START;
+		to = MAX_NEGATIVE_VISUAL_AURAS_END;
+	}
+	//check for already visual same aura
+	for(uint32 i=from;i<to;i++)
+		if( m_auravisuals[i] == SpellId )
+		{
+			visualslot = i;
+			break;
+		}
+	if( visualslot == 0xFF )
+		for(uint32 i=from;i<to;i++)
+			if( m_auravisuals[i] == 0 )
+			{
+				visualslot = i;
+				break;
+			}
+	return visualslot;
+}
+
 void Unit::AddAura(Aura *aur)
 {
 	if( m_mapId != 530 )
@@ -4231,16 +4264,9 @@ void Unit::AddAura(Aura *aur)
 							//update duration,the same aura (update the whole stack whenever we cast a new one)
 							m_auras[x]->SetDuration(aur->GetDuration());
 							sEventMgr.ModifyEventTimeLeft(m_auras[x], EVENT_AURA_REMOVE, aur->GetDuration());
-							if(this->IsPlayer())
-							{
-								data.Initialize(SMSG_UPDATE_AURA_DURATION);
-								data << (uint8)m_auras[x]->m_visualSlot <<(uint32) aur->GetDuration();
-								((Player*)this)->GetSession()->SendPacket(&data);
-							}
-							
-							data.Initialize(SMSG_SET_AURA_SINGLE);
-							data << GetNewGUID() << m_auras[x]->m_visualSlot << uint32(m_auras[x]->GetSpellProto()->Id) << uint32(aur->GetDuration()) << uint32(aur->GetDuration());
-							SendMessageToSet(&data,false);
+
+							if(maxStack <= 1 && this->IsPlayer() )
+								ModVisualAuraStackCount(m_auras[x], 0);
 						}
 						if(maxStack <= AlreadyApplied)
 						{
@@ -4315,14 +4341,18 @@ void Unit::AddAura(Aura *aur)
 		return;
 	}
 
+	uint8 visualslot=0xFF;
+	//search for a visual slot
+	if( !aur->IsPassive() || (aur->m_spellProto->AttributesEx & 1024))
+		visualslot = FindVisualSlot( aur->GetSpellId(), aur->IsPositive() );
+	aur->m_visualSlot = visualslot;
+	ModVisualAuraStackCount(aur, 1);
+
 	// Zack : No idea how a new aura can already have a slot. Leaving it for compatibility
 	if( aur->m_auraSlot != 0xffff )
 		m_auras[ aur->m_auraSlot ] = NULL;
 
 	aur->m_auraSlot = AuraSlot;
-
-	if( !aur->IsPassive() || (aur->m_spellProto->AttributesEx & 1024) )
-		aur->AddAuraVisual();
 
 	m_auras[ AuraSlot ] = aur;
 	aur->ApplyModifiers(true);
@@ -4390,6 +4420,17 @@ bool Unit::RemoveAura(uint32 spellId)
 		{
 			m_auras[x]->Remove();
 			return true;  // sky: yes, only one, see bug charges/auras queues
+		}
+	return false;
+}
+
+bool Unit::RemoveAuraFirst(uint32 spellId) // cebernic: just remove and return true
+{
+	for(uint32 x=MAX_TOTAL_AURAS_START;x<MAX_TOTAL_AURAS_END;x++)
+		if(m_auras[x] && m_auras[x]->GetSpellId()==spellId )
+		{
+			m_auras[x]->Remove();
+			return true;
 		}
 	return false;
 }
@@ -4464,6 +4505,22 @@ bool Unit::RemoveAurasByHeal()
 }
 
 bool Unit::RemoveAura(uint32 spellId, uint64 guid)
+{   
+	for(uint32 x=MAX_TOTAL_AURAS_START;x<MAX_TOTAL_AURAS_END;x++)
+	{
+		if(m_auras[x])
+		{
+			if(m_auras[x]->GetSpellId()==spellId && m_auras[x]->m_casterGuid == guid)
+			{
+				m_auras[x]->Remove();
+				return true;
+			}
+		}
+	}
+	return false;
+}
+
+bool Unit::RemoveAuraFirst(uint32 spellId, uint64 guid)
 {   
 	for(uint32 x=MAX_TOTAL_AURAS_START;x<MAX_TOTAL_AURAS_END;x++)
 	{
@@ -4583,23 +4640,24 @@ void Unit::RemoveAllAuraFromSelfType2(uint32 auratype, uint32 butskip_hash)
 
 bool Unit::SetAurDuration(uint32 spellId,Unit* caster,uint32 duration)
 {
+	sLog.outString("setAurDuration2");
 	Aura*aur=FindAura(spellId,caster->GetGUID());
 	if(!aur)
 		return false;
 	aur->SetDuration(duration);
 	sEventMgr.ModifyEventTimeLeft(aur, EVENT_AURA_REMOVE, duration);
 			
-	if(this->IsPlayer())
+/*	if(this->IsPlayer())
 	{
 		WorldPacket data(5);
-		data.SetOpcode(SMSG_UPDATE_AURA_DURATION);
+		data.SetOpcode(SMSG_UPDATE_AURA_DURATION_OBSOLETE);
 		data << (uint8)(aur)->m_visualSlot << duration; // cebernic: GetAuraSlot replaced due to Zack's patch...*sigh*..
 		static_cast< Player* >( this )->GetSession()->SendPacket( &data );
 	}
 
-	WorldPacket data(SMSG_SET_AURA_SINGLE,21);
+	WorldPacket data(SMSG_SET_EXTRA_AURA_INFO_OBSOLETE,21);
 	data << GetNewGUID() << aur->m_visualSlot << uint32(spellId) << uint32(duration) << uint32(duration);
-	SendMessageToSet(&data,false);
+	SendMessageToSet(&data,false);*/
 			
 	return true;
 }
@@ -4612,19 +4670,20 @@ bool Unit::SetAurDuration(uint32 spellId,uint32 duration)
 		return false;
 	
 
+	sLog.outString("setAurDuration2");
 	aur->SetDuration(duration);
 	sEventMgr.ModifyEventTimeLeft(aur, EVENT_AURA_REMOVE, duration);
 		
-	if(this->IsPlayer())
+/*	if(this->IsPlayer())
 	{
 		WorldPacket data(5);
-		data.SetOpcode(SMSG_UPDATE_AURA_DURATION);
+		data.SetOpcode(SMSG_UPDATE_AURA_DURATION_OBSOLETE);
 		data << (uint8)(aur)->m_visualSlot << duration;
 		static_cast< Player* >( this )->GetSession()->SendPacket( &data );
 	}
-	WorldPacket data(SMSG_SET_AURA_SINGLE,21);
+	WorldPacket data(SMSG_SET_EXTRA_AURA_INFO_OBSOLETE,21);
 	data << GetNewGUID() << aur->m_visualSlot << uint32(spellId) << uint32(duration) << uint32(duration);
-	SendMessageToSet(&data,false);
+	SendMessageToSet(&data,false);*/
 
 
 	return true;
@@ -5071,7 +5130,7 @@ void Unit::CalcDamage()
 	
 		float ap_bonus = float(GetAP())/14000.0f;
 
-		float bonus = ap_bonus * ( GetUInt32Value(UNIT_FIELD_BASEATTACKTIME) + static_cast< Creature* >( this )->m_speedFromHaste );
+		float bonus = ap_bonus*GetUInt32Value(UNIT_FIELD_BASEATTACKTIME);
 	
 		delta = float(((Creature*)this)->ModDamageDone[0]);
 		mult = float(((Creature*)this)->ModDamageDonePct[0]);
@@ -5284,7 +5343,7 @@ void Unit::SetStandState(uint8 standstate)
 		RemoveAurasByInterruptFlag(AURA_INTERRUPT_ON_STAND_UP);
 
 	if( m_objectTypeId == TYPEID_PLAYER )
-		static_cast< Player* >( this )->GetSession()->OutPacket( SMSG_STANDSTATE_CHANGE_ACK, 1, &standstate );
+		static_cast< Player* >( this )->GetSession()->OutPacket( SMSG_STANDSTATE_UPDATE, 1, &standstate );
 }
 
 void Unit::RemoveAurasByInterruptFlag(uint32 flag)
@@ -5797,123 +5856,55 @@ bool Unit::IsPoisoned()
 	return false;
 }
 
-// wrapper for AddAuraVisual where we don't care about the skip_client_update out param
-uint32 Unit::AddAuraVisual(uint32 spellid, uint32 count, bool positive)
+uint32 Unit::ModVisualAuraStackCount(Aura *aur, int32 count)
 {
-	uint32 outint = 0;
-	return AddAuraVisual(spellid, count, positive, outint);
-}
+	if( !aur )
+		return 0;
 
-uint32 Unit::AddAuraVisual(uint32 spellid, uint32 count, bool positive, uint32 &skip_client_update)
-{
-	int32 free = -1;
-	uint32 start = positive ? MAX_POSITIVE_VISUAL_AURAS_START : MAX_POSITIVE_VISUAL_AURAS_END;
-	uint32 end_  = positive ? MAX_NEGATIVE_VISUAL_AURAS_START : MAX_NEGATIVE_VISUAL_AURAS_END;
+	uint8 slot = aur->m_visualSlot;
+	if( slot >= MAX_NEGATIVE_VISUAL_AURAS_END)
+		return 0;
 
-	for(uint32 x = start; x < end_; ++x)
+	if(count < 0 && m_auraStackCount[slot] <= -count )
 	{
-		if(free == -1 && m_uint32Values[UNIT_FIELD_AURA+x] == 0)
-			free = x;
-
-		if(m_uint32Values[UNIT_FIELD_AURA+x] == spellid)
+		m_auraStackCount[slot] = 0;
+		m_auravisuals[slot] = 0;
+		WorldPacket data(SMSG_AURA_UPDATE, 20);
+		FastGUIDPack(data, GetGUID());
+		data << uint8(slot);
+		data << uint32(0);
+		SendMessageToSet(&data, true);
+ 	}
+ 	else {
+ 		m_auraStackCount[slot] += count;
+		m_auravisuals[slot] = aur->GetSpellId();
+		uint16 flags;
+		if( aur->IsPositive() )
 		{
-			// Increase count of this aura.
-			ModAuraStackCount(x, count);
-			skip_client_update = 1; //stacking aura duration is already made in AddAura code
-			return free;
+//			flags = 0x0000;
+			flags = 0x1D39;
+//			if( stack != 0 )
+//				flags = 0x1D3B;
 		}
+		else
+//			flags = 0x8000;
+			flags = 0x1DA1;
+		WorldPacket data(SMSG_AURA_UPDATE, 20);
+		FastGUIDPack(data, GetGUID());
+		data << uint8(slot);
+		data << uint32(aur->GetSpellId());
+		data << uint16(flags);
+		data << uint8(m_auraStackCount[slot]);
+		if( flags & 0x0000 || !aur->IsPositive() )
+//			FastGUIDPack(data, aur->m_casterGuid);
+			data << uint8(0);
+		data << uint32(aur->GetDuration()) << uint32(aur->GetTimeLeft());
+		SendMessageToSet(&data, true);
 	}
 
-	skip_client_update = 0; 
-
-	if(free == -1) 
-		return 0xFF;
-
-	uint8 flagslot = static_cast<uint8>((free / 4));
-	uint32 value = GetUInt32Value((uint16)(UNIT_FIELD_AURAFLAGS + flagslot));
-
-	uint8 aurapos = (free%4)*8;
-	value &= ~(0xFF<<aurapos);
-	if(positive)
-		value |= (0x1F<<aurapos);
-	else
-		value |= (0x09<<aurapos);
-
-	SetUInt32Value((uint16)(UNIT_FIELD_AURAFLAGS + flagslot), value);
-	SetUInt32Value(UNIT_FIELD_AURA + free, spellid);
-	ModAuraStackCount(free, 1);
-	SetAuraSlotLevel(free, positive);
-	
-	return free;
+ 	return m_auraStackCount[slot];
 }
-
-void Unit::SetAuraSlotLevel(uint32 slot, bool positive)
-{
-	uint32 index = slot / 4;
-	uint32 val = m_uint32Values[UNIT_FIELD_AURALEVELS + index];
-	uint32 bit = (slot % 4) * 8;
-	val &= ~(0xFF << bit);
-	if(positive)
-		val |= (0x46 << bit);
-	else
-		val |= (0x19 << bit);
-	
-	SetUInt32Value(UNIT_FIELD_AURALEVELS + index, val);
-}
-
-void Unit::RemoveAuraVisual(uint32 spellid, uint32 count)
-{
-	for(uint8 x = MAX_POSITIVE_VISUAL_AURAS_START; x < MAX_NEGATIVE_VISUAL_AURAS_END; ++x)
-	{
-		if(m_uint32Values[UNIT_FIELD_AURA+x] == spellid)
-		{
-			// Decrease count of this aura.
-			int test = ModAuraStackCount(x, -(int32)count);
-			if(test == 0)
-			{
-				// Aura has been removed completely.
-				uint8 flagslot = (x/4);
-				uint32 value = GetUInt32Value((uint16)(UNIT_FIELD_AURAFLAGS + flagslot));
-				/*uint8 aurapos = (x & 7) << 2;
-				uint32 value1 = ~( (uint32)0xF << aurapos );
-				value &= value1;*/
-				uint8 aurapos = (x%4)*8;
-				value &= ~(0xFF<<aurapos);
-				SetUInt32Value(UNIT_FIELD_AURAFLAGS + flagslot,value);
-				SetUInt32Value(UNIT_FIELD_AURA + x, 0);
-				SetAuraSlotLevel(x, false);
-			}	
-			break; //we have only 1 instance of visible aura
-		}
-	}
-}
-
-uint32 Unit::ModAuraStackCount(uint32 slot, int32 count)
-{
-	uint32 index = (slot >> 2);
-	uint32 byte  = (slot % 4);
-	uint32 val   = m_uint32Values[UNIT_FIELD_AURAAPPLICATIONS+index];
-
-	// shouldn't happen
-	uint32 ac;
-
-	if(count < 0 && m_auraStackCount[slot] < abs(count))
-	{
-		m_auraStackCount[slot] = ac = 0;
-	}
-	else
-	{
-		m_auraStackCount[slot] += count;
-		ac = (m_auraStackCount[slot] > 0) ? m_auraStackCount[slot] - 1 : 0;
-	}
-
-	val &= ~(0xFF << byte * 8);
-	val |= (ac << byte * 8);
-
-	SetUInt32Value(UNIT_FIELD_AURAAPPLICATIONS+index, val);
-	return m_auraStackCount[slot];
-}
-
+	 
 void Unit::RemoveAurasOfSchool(uint32 School, bool Positive, bool Immune)
 {
 	for(uint32 x = MAX_TOTAL_AURAS_START; x < MAX_TOTAL_AURAS_END; ++x)
@@ -5929,7 +5920,7 @@ void Unit::EnableFlight()
 {
 	if(m_objectTypeId != TYPEID_PLAYER || ((Player*)this)->m_changingMaps)
 	{
-		WorldPacket data(SMSG_MOVE_SET_FLY, 13);
+		WorldPacket data(SMSG_MOVE_SET_CAN_FLY, 13);
 		data << GetNewGUID();
 		data << uint32(2);
 		SendMessageToSet(&data, true);
@@ -5941,7 +5932,7 @@ void Unit::EnableFlight()
 	}
 	else
 	{
-		WorldPacket * data = new WorldPacket(SMSG_MOVE_SET_FLY, 13);
+		WorldPacket * data = new WorldPacket(SMSG_MOVE_SET_CAN_FLY, 13);
 		*data << GetNewGUID();
 		*data << uint32(2);
 		SendMessageToSet(data, false);
@@ -5955,7 +5946,7 @@ void Unit::DisableFlight()
 {
 	if(m_objectTypeId != TYPEID_PLAYER || ((Player*)this)->m_changingMaps)
 	{
-		WorldPacket data(SMSG_MOVE_SET_UNFLY, 13);
+		WorldPacket data(SMSG_MOVE_UNSET_CAN_FLY, 13);
 		data << GetNewGUID();
 		data << uint32(5);
 		SendMessageToSet(&data, true);
@@ -5965,7 +5956,7 @@ void Unit::DisableFlight()
 	}
 	else
 	{
-		WorldPacket * data = new WorldPacket( SMSG_MOVE_SET_UNFLY, 13 );
+		WorldPacket * data = new WorldPacket( SMSG_MOVE_UNSET_CAN_FLY, 13 );
 		*data << GetNewGUID();
 		*data << uint32(5);
 		SendMessageToSet(data, false);
@@ -5995,7 +5986,7 @@ bool Unit::IsDazed()
 
 void Unit::UpdateVisibility()
 {
-	ByteBuffer buf(2500);
+	ByteBuffer buf(3000);
 	InRangeSet::iterator itr, it3;
 	uint32 count;
 	bool can_see;
@@ -6644,7 +6635,7 @@ void Unit::Heal(Unit *target, uint32 SpellId, uint32 amount)
 		else 
 			target->SetUInt32Value(UNIT_FIELD_HEALTH, ch);
 
-		WorldPacket data(SMSG_HEALSPELL_ON_PLAYER,25);
+		WorldPacket data(SMSG_SPELLHEALLOG,25);
 		data << target->GetNewGUID();
 		data << this->GetNewGUID();
 		data << uint32(SpellId);  
@@ -7058,11 +7049,11 @@ void Unit::RemoveAllMovementImpairing()
 void Unit::setAttackTimer(int32 time, bool offhand)
 {
 	if(!time)
-		time = offhand ? m_uint32Values[UNIT_FIELD_BASEATTACKTIME_01] : m_uint32Values[UNIT_FIELD_BASEATTACKTIME];
+		time = offhand ? m_uint32Values[UNIT_FIELD_RANGEDATTACKTIME] : m_uint32Values[UNIT_FIELD_BASEATTACKTIME];
 
 	time = std::max(1000,float2int32(float(time)*GetFloatValue(UNIT_MOD_CAST_SPEED)));
 	if(time>300000)		// just in case.. shouldn't happen though
-		time=offhand ? m_uint32Values[UNIT_FIELD_BASEATTACKTIME_01] : m_uint32Values[UNIT_FIELD_BASEATTACKTIME];
+		time=offhand ? m_uint32Values[UNIT_FIELD_RANGEDATTACKTIME] : m_uint32Values[UNIT_FIELD_BASEATTACKTIME];
 
 	if(offhand)
 		m_attackTimer_1 = getMSTime() + time;
@@ -7286,11 +7277,23 @@ uint32 Unit::DoDamageSplitTarget(uint32 res, uint32 school_type, bool melee_dmg)
 	return res;
 }
 
-Group *Unit::GetGroup()
+void Unit::SetPower(uint32 type, uint32 value)
 {
-	if( IsPlayer() )
-		return static_cast<Player *>(this)->GetGroup();
-	else if( IsCreature() )
-		return static_cast<Creature *>(this)->GetGroup();
-	return NULL;
+	uint32 maxpower = GetUInt32Value(UNIT_FIELD_MAXPOWER1 + type);
+	if(value < 0)
+		value = 0;
+	else if(value > (int32)maxpower)
+		value = maxpower;
+	SetUInt32Value(UNIT_FIELD_POWER1 + type, value);
+}
+
+void Unit::UpdatePowerAmm()
+{
+	if( !IsPlayer() )
+		return;
+	WorldPacket data(SMSG_POWER_UPDATE, 5);
+	FastGUIDPack(data, GetGUID());
+	data << uint8( GetPowerType() );
+	data << GetUInt32Value( UNIT_FIELD_POWER1 + GetPowerType() );
+	SendMessageToSet(&data, true);
 }

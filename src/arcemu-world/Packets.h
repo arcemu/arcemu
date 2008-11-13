@@ -100,17 +100,17 @@ struct packetSMSG_LOG_XP_GAIN
 
 struct packetSMSG_CASTRESULT_EXTRA
 {
+	uint8   MultiCast;
 	uint32	SpellId;
 	uint8	ErrorMessage;
-	uint8   MultiCast;
 	uint32	Extra;
 };
 
 struct packetSMSG_CASTRESULT
 {
+	uint8   MultiCast;
 	uint32	SpellId;
 	uint8	ErrorMessage;
-	uint8   MultiCast;
 };
 
 struct packetSMSG_BINDPOINT_UPDATE
@@ -133,6 +133,14 @@ struct packetSMSG_ENVIRONMENTAL_DAMAGE
 	uint64	Guid;
 	uint8	Type;
 	uint32	Damage;
+};
+
+struct packetSMSG_POWER_UPDATE
+{
+	//WoWGuid	Guid;
+	uint64	Guid;
+	uint8	Type;
+	uint32	newValue;
 };
 
 struct packetSMSG_LOGIN_VERIFY_WORLD

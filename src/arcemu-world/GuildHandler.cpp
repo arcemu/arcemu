@@ -592,7 +592,7 @@ void WorldSession::HandleCharterBuy(WorldPacket & recv_data)
 
 			i->SetUInt32Value(ITEM_FIELD_STACK_COUNT, 1);
 			i->SetUInt32Value(ITEM_FIELD_FLAGS, 1);
-			i->SetUInt32Value(ITEM_FIELD_ENCHANTMENT, c->GetID());
+			i->SetUInt32Value(ITEM_FIELD_ENCHANTMENT_1_1, c->GetID());
 			i->SetUInt32Value(ITEM_FIELD_PROPERTY_SEED, 57813883);
 			if( !_player->GetItemInterface()->AddItemToFreeSlot(i) )
 			{
@@ -659,7 +659,7 @@ void WorldSession::HandleCharterBuy(WorldPacket & recv_data)
 
 			i->SetUInt32Value(ITEM_FIELD_STACK_COUNT, 1);
 			i->SetUInt32Value(ITEM_FIELD_FLAGS, 1);
-			i->SetUInt32Value(ITEM_FIELD_ENCHANTMENT, c->GetID());
+			i->SetUInt32Value(ITEM_FIELD_ENCHANTMENT_1_1, c->GetID());
 			i->SetUInt32Value(ITEM_FIELD_PROPERTY_SEED, 57813883);
 			if( !_player->GetItemInterface()->AddItemToFreeSlot(i) )
 			{
@@ -1057,7 +1057,7 @@ void WorldSession::HandleGuildBankGetAvailableAmount(WorldPacket & recv_data)
 	uint32 avail = _player->m_playerInfo->guildMember->CalculateAvailableAmount();
 
 	/* pls gm mi hero poor give 1 gold coin pl0x */
-	WorldPacket data(MSG_GUILD_BANK_GET_AVAILABLE_AMOUNT, 4);
+	WorldPacket data(MSG_GUILD_BANK_MONEY_WITHDRAWN, 4);
 	data << uint32(money>avail ? avail : money);
 	SendPacket(&data);
 }
@@ -1556,7 +1556,7 @@ void Guild::SendGuildBankInfo(WorldSession * pClient)
 	if(pMember==NULL)
 		return;
 
-	WorldPacket data(SMSG_GUILD_BANK_VIEW_RESPONSE, 500);
+	WorldPacket data(SMSG_GUILD_BANK_LIST, 500);
 	data << uint64(m_bankBalance);
 	data << uint8(0);
 	data << uint32(0);
@@ -1591,7 +1591,7 @@ void Guild::SendGuildBank(WorldSession * pClient, GuildBankTab * pTab, int8 upda
 {
 	size_t pos;
 	uint32 count=0;
-	WorldPacket data(SMSG_GUILD_BANK_VIEW_RESPONSE, 1100);
+	WorldPacket data(SMSG_GUILD_BANK_LIST, 1100);
 	GuildMember * pMember = pClient->GetPlayer()->m_playerInfo->guildMember;
 
 	if(pMember==NULL || !pMember->pRank->CanPerformBankCommand(GR_RIGHT_GUILD_BANK_VIEW_TAB, pTab->iTabId))
@@ -1675,7 +1675,7 @@ void Guild::SendGuildBank(WorldSession * pClient, GuildBankTab * pTab, int8 upda
 
 void WorldSession::HandleGuildGetFullPermissions(WorldPacket & recv_data)
 {
-	WorldPacket data(MSG_GUILD_GET_FULL_PERMISSIONS, 61);
+	WorldPacket data(MSG_GUILD_PERMISSIONS, 61);
 	GuildRank * pRank = _player->GetGuildRankS();
 	uint32 i;
 

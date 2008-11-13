@@ -182,11 +182,11 @@ void ArathiBasin::SpawnBuff(uint32 x)
 		m_buffs[x] = SpawnGameObject(chosen_buffid, m_mapMgr->GetMapId(), BuffCoordinates[x][0], BuffCoordinates[x][1], BuffCoordinates[x][2],
 			BuffCoordinates[x][3], 0, 114, 1);
 
-		m_buffs[x]->SetFloatValue(GAMEOBJECT_ROTATION_02, BuffRotations[x][0]);
-		m_buffs[x]->SetFloatValue(GAMEOBJECT_ROTATION_03, BuffRotations[x][1]);
-		m_buffs[x]->SetUInt32Value(GAMEOBJECT_STATE, 1);
-		m_buffs[x]->SetUInt32Value(GAMEOBJECT_TYPE_ID, 6);
-		m_buffs[x]->SetUInt32Value(GAMEOBJECT_ANIMPROGRESS, 100);
+		m_buffs[x]->SetFloatValue(GAMEOBJECT_PARENTROTATION_02, BuffRotations[x][0]);
+		m_buffs[x]->SetFloatValue(GAMEOBJECT_PARENTROTATION_03, BuffRotations[x][1]);
+		m_buffs[x]->SetByte(GAMEOBJECT_BYTES_1, 0, 1);
+		m_buffs[x]->SetByte(GAMEOBJECT_BYTES_1, 1, 6);
+		m_buffs[x]->SetByte(GAMEOBJECT_BYTES_1, 3, 100);
 		m_buffs[x]->PushToWorld(m_mapMgr);
 	}
 	else
@@ -220,12 +220,12 @@ void ArathiBasin::SpawnControlPoint(uint32 Id, uint32 Type)
 		m_controlPoints[Id] = SpawnGameObject(gi->ID, m_mapMgr->GetMapId(), ControlPointCoordinates[Id][0], ControlPointCoordinates[Id][1],
 			ControlPointCoordinates[Id][2], ControlPointCoordinates[Id][3], 0, 35, 1.0f);
 
-		m_controlPoints[Id]->SetFloatValue(GAMEOBJECT_ROTATION_02, ControlPointRotations[Id][0]);
-		m_controlPoints[Id]->SetFloatValue(GAMEOBJECT_ROTATION_03, ControlPointRotations[Id][1]);
-		m_controlPoints[Id]->SetUInt32Value(GAMEOBJECT_STATE, 1);
-		m_controlPoints[Id]->SetUInt32Value(GAMEOBJECT_TYPE_ID, gi->Type);
-		m_controlPoints[Id]->SetUInt32Value(GAMEOBJECT_ANIMPROGRESS, 100);
-		m_controlPoints[Id]->SetUInt32Value(GAMEOBJECT_DYN_FLAGS, 1);
+		m_controlPoints[Id]->SetFloatValue(GAMEOBJECT_PARENTROTATION_02, ControlPointRotations[Id][0]);
+		m_controlPoints[Id]->SetFloatValue(GAMEOBJECT_PARENTROTATION_03, ControlPointRotations[Id][1]);
+		m_controlPoints[Id]->SetByte(GAMEOBJECT_BYTES_1, 0, 1);
+		m_controlPoints[Id]->SetByte(GAMEOBJECT_BYTES_1, 1, gi->Type);
+		m_controlPoints[Id]->SetByte(GAMEOBJECT_BYTES_1, 3, 100);
+		m_controlPoints[Id]->SetUInt32Value(GAMEOBJECT_DYNAMIC, 1);
 		m_controlPoints[Id]->SetUInt32Value(GAMEOBJECT_DISPLAYID, gi->DisplayID);
 
 		switch(Type)
@@ -257,7 +257,7 @@ void ArathiBasin::SpawnControlPoint(uint32 Id, uint32 Type)
 		m_controlPoints[Id]->SetNewGuid(m_mapMgr->GenerateGameobjectGuid());
 		m_controlPoints[Id]->SetUInt32Value(OBJECT_FIELD_ENTRY, gi->ID);
 		m_controlPoints[Id]->SetUInt32Value(GAMEOBJECT_DISPLAYID, gi->DisplayID);
-		m_controlPoints[Id]->SetUInt32Value(GAMEOBJECT_TYPE_ID, gi->Type);
+		m_controlPoints[Id]->SetByte(GAMEOBJECT_BYTES_1, 1, gi->Type);
 
 		switch(Type)
 		{
@@ -294,11 +294,11 @@ void ArathiBasin::SpawnControlPoint(uint32 Id, uint32 Type)
 		m_controlPointAuras[Id] = SpawnGameObject(gi_aura->ID, m_mapMgr->GetMapId(), ControlPointCoordinates[Id][0], ControlPointCoordinates[Id][1],
 			ControlPointCoordinates[Id][2], ControlPointCoordinates[Id][3], 0, 35, 1.0f);
 
-		m_controlPointAuras[Id]->SetFloatValue(GAMEOBJECT_ROTATION_02, ControlPointRotations[Id][0]);
-		m_controlPointAuras[Id]->SetFloatValue(GAMEOBJECT_ROTATION_03, ControlPointRotations[Id][1]);
-		m_controlPointAuras[Id]->SetUInt32Value(GAMEOBJECT_STATE, 1);
-		m_controlPointAuras[Id]->SetUInt32Value(GAMEOBJECT_TYPE_ID, 6);
-		m_controlPointAuras[Id]->SetUInt32Value(GAMEOBJECT_ANIMPROGRESS, 100);
+		m_controlPointAuras[Id]->SetFloatValue(GAMEOBJECT_PARENTROTATION_02, ControlPointRotations[Id][0]);
+		m_controlPointAuras[Id]->SetFloatValue(GAMEOBJECT_PARENTROTATION_03, ControlPointRotations[Id][1]);
+		m_controlPointAuras[Id]->SetByte(GAMEOBJECT_BYTES_1, 0, 1);
+		m_controlPointAuras[Id]->SetByte(GAMEOBJECT_BYTES_1, 1, 6);
+		m_controlPointAuras[Id]->SetByte(GAMEOBJECT_BYTES_1, 3, 100);
 		m_controlPointAuras[Id]->bannerauraslot = Id;
 		m_controlPointAuras[Id]->PushToWorld(m_mapMgr);
 	}
@@ -321,18 +321,18 @@ void ArathiBasin::OnCreate()
 	// Alliance Gate
 	GameObject *gate = SpawnGameObject(180255, 529, 1284.597290f, 1281.166626f, -15.977916f, 0.706859f, 32, 114, 1.5799990f);
 	gate->SetFloatValue(GAMEOBJECT_ROTATION,0.0129570f);
-	gate->SetFloatValue(GAMEOBJECT_ROTATION_01,-0.0602880f);
-	gate->SetFloatValue(GAMEOBJECT_ROTATION_02,0.3449600f);
-	gate->SetFloatValue(GAMEOBJECT_ROTATION_03,0.9365900f);
+	gate->SetFloatValue(GAMEOBJECT_PARENTROTATION,-0.0602880f);
+	gate->SetFloatValue(GAMEOBJECT_PARENTROTATION_02,0.3449600f);
+	gate->SetFloatValue(GAMEOBJECT_PARENTROTATION_03,0.9365900f);
 	gate->PushToWorld(m_mapMgr);
 	m_gates.push_back(gate);
 
 	// horde gate
 	gate = SpawnGameObject(180256, 529, 708.0902710f, 708.4479370f, -17.3898964f, -2.3910990f, 32, 114, 1.5699990f);
 	gate->SetFloatValue(GAMEOBJECT_ROTATION,0.0502910f);
-	gate->SetFloatValue(GAMEOBJECT_ROTATION_01,0.0151270f);
-	gate->SetFloatValue(GAMEOBJECT_ROTATION_02,0.9292169f);
-	gate->SetFloatValue(GAMEOBJECT_ROTATION_03,-0.3657840f);
+	gate->SetFloatValue(GAMEOBJECT_PARENTROTATION,0.0151270f);
+	gate->SetFloatValue(GAMEOBJECT_PARENTROTATION_02,0.9292169f);
+	gate->SetFloatValue(GAMEOBJECT_PARENTROTATION_03,-0.3657840f);
 	gate->PushToWorld(m_mapMgr);
 	m_gates.push_back(gate);
 
@@ -423,7 +423,7 @@ void ArathiBasin::OnStart()
 	for(list<GameObject*>::iterator itr = m_gates.begin(); itr != m_gates.end(); ++itr)
 	{
 		(*itr)->SetUInt32Value(GAMEOBJECT_FLAGS, 64);
-		(*itr)->SetUInt32Value(GAMEOBJECT_STATE, 0);
+		(*itr)->SetByte(GAMEOBJECT_BYTES_1, 0, 0);
 	}
 
 	/* correct? - burlex */

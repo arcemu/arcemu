@@ -205,7 +205,7 @@ void Channel::Part(Player * plr)
 		SetOwner(NULL, NULL);
 	}
 
-	if(plr->GetSession() && plr->GetSession()->IsLoggingOut())
+	if(plr->GetSession() && (plr->GetSession()->IsLoggingOut() || plr->m_TeleportState == 1 ))
 	{
 
 	}

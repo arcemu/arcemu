@@ -71,7 +71,7 @@ World::World()
 #endif
 	m_levelCap=PLAYER_LEVEL_CAP;
 	m_genLevelCap=PLAYER_LEVEL_CAP;
-	start_level=1;
+	StartingLevel=1;
 	m_limitedNames=false;
 	m_banTable = NULL;
 }
@@ -484,6 +484,10 @@ bool World::SetInitialWorldSettings()
 	Log.Notice("World","Starting Transport System...");
 	objmgr.LoadTransporters();
 
+	//Start the Achievement system :D
+	Log.Notice("World","Starting Achievement System..");
+	objmgr.LoadAchievementCriteriaList();
+	
 	// start mail system
 	MailSystem::getSingleton().StartMailSystem();
 
@@ -1307,8 +1311,8 @@ void World::Rehash(bool load)
 	crossover_chars = Config.OptionalConfig.GetBoolDefault("Interfaction", "CrossOverCharacters", false);
 	gamemaster_listOnlyActiveGMs = Config.OptionalConfig.GetBoolDefault("GameMaster", "ListOnlyActiveGMs", false);
 	gamemaster_hidePermissions = Config.OptionalConfig.GetBoolDefault("GameMaster", "HidePermissions", false);
-	start_level = Config.OptionalConfig.GetIntDefault("Optional", "StartingLevel", 1);
-	if(start_level > PLAYER_LEVEL_CAP) {start_level = PLAYER_LEVEL_CAP;}
+	StartingLevel = Config.OptionalConfig.GetIntDefault("Optional", "StartingLevel", 1);
+	if(StartingLevel > PLAYER_LEVEL_CAP) {StartingLevel = PLAYER_LEVEL_CAP;}
 	antiMasterLootNinja = Config.OptionalConfig.GetBoolDefault("Optional", "AntiMasterLootNinja", false);
 	realmAllowTBCcharacters = Config.OptionalConfig.GetBoolDefault("Optional", "AllowTBC", true);
 
@@ -1342,15 +1346,6 @@ void World::Rehash(bool load)
 
 	m_CustomCharterGiver = (uint32)Config.OptionalConfig.GetIntDefault("Optional", "CustomCharterGiver",0);
 	m_AdditionalFun = (uint32)Config.OptionalConfig.GetBoolDefault("Optional", "AdditionalFun",false);
-
-	// Max Gold Settings
-	GoldCapEnabled = Config.OptionalConfig.GetBoolDefault("GoldSettings", "EnableGoldCap", false);
-	GoldLimit = Config.OptionalConfig.GetIntDefault("GoldSettings", "MaximumGold", 214000);
-	if(GoldLimit)
-		GoldLimit *= 10000; // Convert into gsc (gold, silver, copper)
-	GoldStartAmount = Config.OptionalConfig.GetIntDefault("GoldSettings", "StartingGold", 0);
-	if(GoldStartAmount)
-		GoldStartAmount *= 10000;
 
 	//script engine
 	m_LuaEngine = Config.MainConfig.GetBoolDefault("ScriptBackends", "LUA", false);
@@ -1386,6 +1381,9 @@ void World::Rehash(bool load)
 
 	m_bgSet_EOS_MIN = Config.MainConfig.GetIntDefault("Battleground", "EOS_MIN", 4);
 	m_bgSet_EOS_MAX = Config.MainConfig.GetIntDefault("Battleground", "EOS_MAX", 15);
+
+	m_bgSet_EOS_MIN = Config.MainConfig.GetIntDefault("Battleground", "SOTA_MIN", 10);
+	m_bgSet_EOS_MAX = Config.MainConfig.GetIntDefault("Battleground", "SOTA_MAX", 15);
 	
 
 

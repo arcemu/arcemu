@@ -45,7 +45,7 @@ bool SERVER_DECL Rand(float);
 
 #define UF_TARGET_DIED  1
 #define UF_ATTACKING	2 // this unit is attacking it's selection
-#define SPELL_GROUPS	64//This is actually on 64 bits !
+#define SPELL_GROUPS	96//This is actually on 64 bits !
 
 #define UNIT_TYPE_HUMANOID_BIT (1 << (HUMANOID-1)) //should get computed by precompiler ;)
 
@@ -503,7 +503,9 @@ enum UnitFieldBytes1
 
 enum UnitFieldBytes2
 {
-	U_FIELD_BYTES_HIDE_POS_AURAS = 0x01,
+	U_FIELD_BYTES_FLAG_PVP     = 0x01,
+	U_FIELD_BYTES_FLAG_FFA_PVP = 0x04,
+	U_FIELD_BYTES_FLAG_AURAS   = 0x10,
 };
 
 enum UnitFieldFlags // UNIT_FIELD_FLAGS #46 - these are client flags
@@ -590,10 +592,10 @@ enum HitStatus
 	HITSTATUS_MISS          = 0x10,
 	HITSTATUS_ABSORBED      = 0x20,
 	HITSTATUS_RESIST        = 0x40,
-	HITSTATUS_CRICTICAL     = 0x80,
+	HITSTATUS_CRICTICAL     = 0x200,
 	HITSTATUS_BLOCK         = 0x800,
-	HITSTATUS_GLANCING      = 0x4000,
 	HITSTATUS_CRUSHINGBLOW  = 0x8000,
+	HITSTATUS_GLANCING      = 0x10000,
 	HITSTATUS_NOACTION      = 0x10000,
 	HITSTATUS_SWINGNOHITSOUND = 0x80000 // as in miss?
 };
@@ -829,6 +831,8 @@ public:
 	bool RemoveAura(Aura *aur);
 	bool RemoveAura(uint32 spellId);
 	bool RemoveAura(uint32 spellId,uint64 guid);
+	bool RemoveAuraFirst(uint32 spellId);
+	bool RemoveAuraFirst(uint32 spellId,uint64 guid);
 	bool RemoveAuraByNameHash(uint32 namehash);//required to remove weaker instances of a spell
 	bool RemoveAuras(uint32 * SpellIds);
 	bool RemoveAurasByHeal();
@@ -900,7 +904,7 @@ public:
 	void WipeTargetList();
 	ARCEMU_INLINE void setAItoUse(bool value){m_useAI = value;}
 
-	virtual Group *GetGroup();
+//	virtual Group *GetGroup();
 
 	int32 GetThreatModifyer() { return m_threatModifyer; }
 	void ModThreatModifyer(int32 mod) { m_threatModifyer += mod; }
@@ -1118,6 +1122,7 @@ public:
 	int32 PctRegenModifier;
 	float PctPowerRegenModifier[4];
 	ARCEMU_INLINE uint32 GetPowerType(){ return (GetUInt32Value(UNIT_FIELD_BYTES_0)>> 24);}
+	void UpdatePowerAmm();
 	void RemoveSoloAura(uint32 type);
 
 	void RemoveAurasByInterruptFlag(uint32 flag);
@@ -1255,17 +1260,16 @@ public:
 	}
 
 	DynamicObject * dynObj;
-
-	uint32 AddAuraVisual(uint32 spellid, uint32 count, bool positive);
-	uint32 AddAuraVisual(uint32 spellid, uint32 count, bool positive, uint32 &skip_client_update);
-	void SetAuraSlotLevel(uint32 slot, bool positive);
-
-	void RemoveAuraVisual(uint32 spellid, uint32 count);
+	
+	void RemoveAuraVisual(uint32 spellid, uint8 slot);
 	bool HasVisibleAura(uint32 spellid);
 
 	//! returns: aura stack count
-	uint32 ModAuraStackCount(uint32 slot, int32 count);
 	uint8 m_auraStackCount[MAX_NEGATIVE_VISUAL_AURAS_END];
+
+	uint32 ModVisualAuraStackCount(Aura *aur, int32 count);
+	uint8 FindVisualSlot(uint32 SpellId,bool IsPos);
+	uint32 m_auravisuals[MAX_NEGATIVE_VISUAL_AURAS_END];
 
 	void RemoveAurasOfSchool(uint32 School, bool Positive, bool Immune);
 	SpellEntry * pLastSpell;
@@ -1293,6 +1297,8 @@ public:
 	void EventStrikeWithAbility(uint64 guid, SpellEntry * sp, uint32 damage);
 //	bool m_spellsbusy;
 	void DispelAll(bool positive);
+
+	void SetPower(uint32 type, uint32 value);
 
 	int8 m_hasVampiricTouch;
 	int8 m_hasVampiricEmbrace;
