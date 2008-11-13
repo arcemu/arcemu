@@ -2028,8 +2028,15 @@ bool ChatHandler::HandlePlayerInfo(const char* args, WorldSession * m_session)
 	BlueSystemMessage(m_session, "%s is connecting from account '%s'[%u] with permissions '%s'",
 		(plr->getGender()?"She":"He"), sess->GetAccountName().c_str(), sess->GetAccountId(), sess->GetPermissions());
 
+	char *client;
+	if(sess->HasFlag(ACCOUNT_FLAG_XPACK_01))
+		client = "WoW Burning Crusade";
+	else if (sess->HasFlag(ACCOUNT_FLAG_XPACK_02))
+		client = "Wrath of the Lich King";
+	else
+		client = "WoW";
 	BlueSystemMessage(m_session, "%s uses %s (build %u)", (plr->getGender()?"She":"He"),
-		(sess->HasFlag(ACCOUNT_FLAG_XPACK_01)?"WoW Burning Crusade":"WoW"), sess->GetClientBuild());
+		client, sess->GetClientBuild());
 
 	BlueSystemMessage(m_session, "%s IP is '%s', and has a latency of %ums", (plr->getGender()?"Her":"His"),
 		sess->GetSocket()->GetRemoteIP().c_str(), sess->GetLatency());

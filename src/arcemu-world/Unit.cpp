@@ -4332,6 +4332,21 @@ void Unit::AddAura(Aura *aur)
 			UpdateSpeed();
 		}
 	}
+	
+		Unit* target = aur->GetTarget();
+	if (target != NULL)
+	{
+		//send the aura log
+		WorldPacket data(SMSG_AURACASTLOG, 28);
+
+		data << aur->m_casterGuid;
+		data << aur->GetTarget()->GetGUID();
+		data << aur->m_spellProto->Id;
+		data << uint64(0);
+
+		target->SendMessageToSet(&data, true);
+	}
+
 	//Zack : if all mods were resisted it means we did not apply anything and we do not need to delete this spell eighter
 	if( aur->TargetWasImuneToMods() )
 	{

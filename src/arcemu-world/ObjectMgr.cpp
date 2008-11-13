@@ -1995,7 +1995,7 @@ void ObjectMgr::GenerateLevelUpInfo()
 	for(uint32 Class = WARRIOR; Class <= DRUID; ++Class)
 	{
 		// These are empty.
-		if(Class == 10 || Class == 6)
+		if(Class == 10)
 			continue;
 
 		// Search for a playercreateinfo.
@@ -2135,6 +2135,12 @@ void ObjectMgr::GenerateLevelUpInfo()
 //					else if(Level>60)TotalManaGain+=Level+35;
 					else if(Level>60)TotalManaGain+=Level+207;
 					else TotalManaGain+=54;
+					break;
+				case DEATHKNIGHT: // Based on 55-56 more testing will be done.
+					if(Level < 60)TotalHealthGain+=92;
+					/*else if(Level <60) TotalHealthGain+=??;
+					else if(Level <70) TotalHealthGain+=??;*/
+					else TotalHealthGain+=92;
 					break;
 				}
 
