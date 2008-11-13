@@ -11185,6 +11185,8 @@ void Player::_FlyhackCheck()
 	if(!sWorld.antihack_flight || m_TransporterGUID != 0 || GetTaxiState() || (sWorld.no_antihack_on_gm && GetSession()->HasGMPermissions()))
 		return;
 
+	if (!GetSession())
+		return;
 	MovementInfo * mi = GetSession()->GetMovementInfo();
 	if(!mi) return; //wtf?
 
@@ -11208,9 +11210,12 @@ void Player::_FlyhackCheck()
 		if(t_height != p_height && (uint32)diff > sWorld.flyhack_threshold)
 		{
 			// Fly hax!
-			EventTeleport(GetMapId(), GetPositionX(), GetPositionY(), t_height + 2.0f); // relog fix.
+			//EventTeleport(GetMapId(), GetPositionX(), GetPositionY(), t_height + 2.0f); // relog fix.
 			sCheatLog.writefromsession(GetSession(), "Caught fly hacking on map %u hovering %u over the terrain.", GetMapId(), diff);
-			GetSession()->Disconnect();
+			//GetSession()->Disconnect();
+			WorldPacket data (SMSG_MOVE_UNSET_CAN_FLY, 13);
+			data << GetNewGUID() << uint32(5);
+			GetSession()->SendPacket(&data);
 		}
 	}
 }
