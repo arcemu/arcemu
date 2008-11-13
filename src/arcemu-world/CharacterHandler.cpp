@@ -895,10 +895,10 @@ void WorldSession::FullLogin(Player * plr)
 
 	// Send revision (if enabled)
 #ifdef WIN32
-	_player->BroadcastMessage("Powered by: %sArcEmu %s r%u/%s-Win-%s %s(3.0.2 BETA EDITION!)", MSG_COLOR_WHITE, BUILD_TAG,
+	_player->BroadcastMessage("Powered by: %sArcEmu %s r%u/%s-Win-%s %s(Please report ALL bugs to ArcEmu.org/forums/)", MSG_COLOR_WHITE, BUILD_TAG,
 		BUILD_REVISION, CONFIG, ARCH, MSG_COLOR_LIGHTBLUE);		
 #else
-	_player->BroadcastMessage("Powered by: %sArcEmu %s r%u/%s-%s %s(3.0.2 BETA EDITION!)", MSG_COLOR_WHITE, BUILD_TAG,
+	_player->BroadcastMessage("Powered by: %sArcEmu %s r%u/%s-%s %s(Please report ALL bugs to ArcEmu.org/forums/)", MSG_COLOR_WHITE, BUILD_TAG,
 		BUILD_REVISION, PLATFORM_TEXT, ARCH, MSG_COLOR_LIGHTBLUE);
 #endif
 
