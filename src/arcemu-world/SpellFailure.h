@@ -208,7 +208,8 @@ enum PetTameFailure
 	PETTAME_TOOHIGHLEVEL			= 9,
 	PETTAME_DEAD					= 10,
 	PETTAME_NOTDEAD					= 11,
-	PETTAME_UNKNOWNERROR			= 12,
+	PETTAME_CANTCONTROLEXOTIC		= 12, // Used if you do not have the beast mastery talent for hunters and try to tame an exotic pet
+	PETTAME_UNKNOWNERROR			= 13,
 };
 #endif
 
