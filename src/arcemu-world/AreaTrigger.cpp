@@ -42,6 +42,7 @@ enum AreaTriggerFailures
 	AREA_TRIGGER_FAILURE_NO_KEY         = 9,
 	AREA_TRIGGER_FAILURE_LEVEL_HEROIC	= 9,
 	AREA_TRIGGER_FAILURE_NO_CHECK		= 10,
+	AREA_TRIGGER_FAILURE_NO_WOTLK		= 11,
 };
 
 uint32 AreaTriggerFailureMessages[] = {
@@ -56,6 +57,7 @@ uint32 AreaTriggerFailureMessages[] = {
 	32,
 	30, //TODO: Replace attunment with real itemname
 	33,
+	81,
 };
 
 uint32 CheckTriggerPrerequsites(AreaTrigger * pAreaTrigger, WorldSession * pSession, Player * pPlayer, MapInfo * pMapInfo)
@@ -63,11 +65,11 @@ uint32 CheckTriggerPrerequsites(AreaTrigger * pAreaTrigger, WorldSession * pSess
 	if(!pMapInfo || !pMapInfo->HasFlag(WMI_INSTANCE_ENABLED))
 		return AREA_TRIGGER_FAILURE_UNAVAILABLE;
 
-	if(!pSession->HasFlag(ACCOUNT_FLAG_XPACK_01) && pMapInfo->HasFlag(WMI_INSTANCE_XPACK_01))
-		return AREA_TRIGGER_FAILURE_NO_BC;
-
-	if(!pSession->HasFlag(ACCOUNT_FLAG_XPACK_02) && pMapInfo->HasFlag(WMI_INSTANCE_XPACK_02))
-		return AREA_TRIGGER_FAILURE_NO_BC;
+	if(pMapInfo->HasFlag(WMI_INSTANCE_XPACK_01) && !pSession->HasFlag(ACCOUNT_FLAG_XPACK_01) && !pSession->HasFlag(ACCOUNT_FLAG_XPACK_02))
+        return AREA_TRIGGER_FAILURE_NO_BC;
+	
+	if(pMapInfo->HasFlag(WMI_INSTANCE_XPACK_02) && !pSession->HasFlag(ACCOUNT_FLAG_XPACK_02))
+        return AREA_TRIGGER_FAILURE_NO_WOTLK;
 	
 	// These can be overridden by cheats/GM
 	if(pPlayer->TriggerpassCheat)
