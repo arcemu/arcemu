@@ -1,7 +1,7 @@
 ## Process this file with autoconf to produce a configure script.
 
 AC_INIT([ArcEmu],
-        [0.5],
+        [1.5],
         [www.arcemu.org],
         [arcemu])
 
