@@ -386,7 +386,11 @@ void Spell::FillAllTargetsInArea(uint32 i,float srcx,float srcy,float srcz, floa
 		itr2++; //maybe scripts can change list. Should use lock instead of this to prevent multiple changes. This protects to 1 deletion only
 		if( !( (*itr)->IsUnit() ) || ! static_cast< Unit* >( *itr )->isAlive() || ( static_cast< Creature* >( *itr )->IsTotem() && !static_cast< Unit* >( *itr )->IsPlayer() ) )
 			continue;
-
+		if( u_caster && u_caster->IsPlayer() && (*itr)->IsPlayer() && static_cast< Player* >(u_caster)->GetGroup() && static_cast< Player* >( *itr )->GetGroup() && static_cast< Player* >( *itr )->GetGroup() == static_cast< Player* >(u_caster)->GetGroup() )//Don't attack party members!!
+		{
+			if( !static_cast< Player* >(u_caster)->DuelingWith || static_cast< Player* >(u_caster)->DuelingWith != static_cast< Player* >( *itr ) )//Dueling. AoE's should still hit the target party member if you're dueling with him
+				continue;
+		}
 		if( GetProto()->TargetCreatureType )
 		{
 			if( (*itr)->GetTypeId()!= TYPEID_UNIT )
@@ -3150,7 +3154,8 @@ uint8 Spell::CanCast(bool tolerate)
 		if ( p_caster->m_bg && ( p_caster->m_bg->GetType() >= BATTLEGROUND_ARENA_2V2 && p_caster->m_bg->GetType() <= BATTLEGROUND_ARENA_5V5 ) &&
 			( GetProto()->RecoveryTime > 900000 || GetProto()->CategoryRecoveryTime > 900000 ) )
 			return SPELL_FAILED_SPELL_UNAVAILABLE;
-
+		if ( p_caster->m_bg && !p_caster->m_bg->HasStarted() && (m_spellInfo->Id == 1953 || m_spellInfo->Id == 36554))//Dont allow blink or shadowstep  if in a BG and the BG hasnt started.
+			return SPELL_FAILED_SPELL_UNAVAILABLE;
 		//if ( !p_caster->HasSpell(GetProto()->Id) && i_caster == NULL && !tolerate )
 		//	return SPELL_FAILED_SPELL_UNAVAILABLE;
 

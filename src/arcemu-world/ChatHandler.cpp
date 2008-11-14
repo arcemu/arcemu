@@ -413,9 +413,9 @@ void WorldSession::HandleMessagechatOpcode( WorldPacket & recv_data )
 			{
 				// Has AFK flag, autorespond.
 				if (player->GetTeamInitial() == _player->GetTeamInitial()) {
-					data = sChatHandler.FillMessageData(CHAT_MSG_DND, LANG_UNIVERSAL, player->m_afk_reason.c_str(),player->GetGUID(), _player->bGMTagOn ? 4 : 0);
+					data = sChatHandler.FillMessageData(CHAT_MSG_DND, LANG_UNIVERSAL, player->m_afk_reason.c_str(),player->GetGUID(), player->bGMTagOn ? 4 : 0);
 				} else {
-					data = sChatHandler.FillMessageData(CHAT_MSG_DND, LANG_UNIVERSAL, "",player->GetGUID(), _player->bGMTagOn ? 4 : 0);
+					data = sChatHandler.FillMessageData(CHAT_MSG_DND, LANG_UNIVERSAL, "",player->GetGUID(), player->bGMTagOn ? 4 : 0);
 				}
 				SendPacket(data);
 				delete data;
@@ -522,7 +522,26 @@ void WorldSession::HandleTextEmoteOpcode( WorldPacket & recv_data )
 	recv_data >> text_emote;
 	recv_data >> unk;
 	recv_data >> guid;
+	if( m_muted && m_muted >= (uint32)UNIXTIME )
+	{
+		SystemMessage("Your voice is currently muted by a moderator.");
+		return;
+	}
 
+	if(!GetPermissionCount() && sWorld.flood_lines)
+	{
+		/* flood detection, wheeee! */
+		if(UNIXTIME >= floodTime)
+		{
+			floodLines = 0;
+			floodTime = UNIXTIME + sWorld.flood_seconds;
+		}
+
+		if((++floodLines) > sWorld.flood_lines)
+		{
+			return;
+		}
+	}
 	Unit * pUnit = _player->GetMapMgr()->GetUnit(guid);
 	if(pUnit)
 	{

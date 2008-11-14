@@ -598,7 +598,8 @@ void CommandTableStorage::Init()
 	{
 		{ "ip",        'm', &ChatHandler::HandleIPBanCommand,         "Adds an address to the IP ban table: <address> [duration]\nDuration must be a number optionally followed by a character representing the calendar subdivision to use (h>hours, d>days, w>weeks, m>months, y>years, default minutes)\nLack of duration results in a permanent ban.", NULL, 0, 0, 0 },
 		{ "character", 'b', &ChatHandler::HandleBanCharacterCommand,  "Bans character x with or without reason",                                                                                                                                                                                                                                           NULL, 0, 0, 0 },
-		{ "account",   'a', &ChatHandler::HandleAccountBannedCommand, "Ban account. .account ban name timeperiod",                                                                                                                                                                                                                                         NULL, 0, 0, 0 },
+		{ "account",   'a', &ChatHandler::HandleAccountBannedCommand, "Ban account. .account ban name timeperiod",																																																										   NULL, 0, 0, 0 },
+		{ "all",	   'a', &ChatHandler::HandleBanAllCommand,		  "Bans account, ip, and character. Syntax: .ban all <char> <duration> <Reason>",																																																	   NULL, 0, 0, 0 },
 		{ NULL,        '0', NULL,                                     "",                                                                                                                                                                                                                                                                                  NULL, 0, 0, 0 }
 	};
 	dupe_command_table(banCommandTable, _banCommandTable);

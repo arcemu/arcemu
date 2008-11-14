@@ -152,11 +152,10 @@ void CBattlegroundManager::HandleBattlegroundJoin(WorldSession * m_session, Worl
 
 	pck >> guid >> bgtype >> instance;
 
-	if ( ! guid )
-		return; //crash fix. /script JoinBattlefield(0,1); ;s
 
 	if(bgtype >= BATTLEGROUND_NUM_TYPES || !bgtype)
 	{
+		sCheatLog.writefromsession(m_session,"tried to crash the server by joining battleground that does not exist (0)");
 		m_session->Disconnect();
 		return;      // cheater!
 	}
@@ -1549,39 +1548,38 @@ void CBattleground::EventCountdown()
 		//SendChatMessage( CHAT_MSG_BG_EVENT_NEUTRAL, 0, "Thirty seconds until the battle for %s begins!", GetName() );
 	}
 	else if(m_countdownStage == 3)
-		if(m_countdownStage==1)
-		{
-			m_countdownStage = 4;
+	{
+		m_countdownStage = 4;
 
-			m_mainLock.Acquire();
-			for(int i = 0; i < 2; ++i)
-			{
-				 for(set<Player*>::iterator itr = m_players[i].begin(); itr != m_players[i].end(); ++itr)
-					 if( (*itr) && (*itr)->GetSession() ){
-							(*itr)->GetSession()->SystemMessage((*itr)->GetSession()->LocalizedWorldSrv(48),(*itr)->GetSession()->LocalizedWorldSrv(GetNameID()));
-						}
-			}
-			m_mainLock.Release();
-
-			//SendChatMessage( CHAT_MSG_BG_EVENT_NEUTRAL, 0, "Fifteen seconds until the battle for %s begins!", GetName() );
-			sEventMgr.ModifyEventTime(this, EVENT_BATTLEGROUND_COUNTDOWN, 15000);
-			sEventMgr.ModifyEventTimeLeft(this, EVENT_BATTLEGROUND_COUNTDOWN, 15000);
-		}
-		else
+		m_mainLock.Acquire();
+		for(int i = 0; i < 2; ++i)
 		{
-			m_mainLock.Acquire();
-			for(int i = 0; i < 2; ++i)
-			{
-				 for(set<Player*>::iterator itr = m_players[i].begin(); itr != m_players[i].end(); ++itr)
-					 if( (*itr) && (*itr)->GetSession() ){
-							(*itr)->GetSession()->SystemMessage((*itr)->GetSession()->LocalizedWorldSrv(49),(*itr)->GetSession()->LocalizedWorldSrv(GetNameID()));
-						}
-			}
-			m_mainLock.Release();
-			//SendChatMessage( CHAT_MSG_BG_EVENT_NEUTRAL, 0, "The battle for %s has begun!", GetName() );
-			sEventMgr.RemoveEvents(this, EVENT_BATTLEGROUND_COUNTDOWN);
-			Start();
+			 for(set<Player*>::iterator itr = m_players[i].begin(); itr != m_players[i].end(); ++itr)
+				 if( (*itr) && (*itr)->GetSession() ){
+						(*itr)->GetSession()->SystemMessage((*itr)->GetSession()->LocalizedWorldSrv(48),(*itr)->GetSession()->LocalizedWorldSrv(GetNameID()));
+					}
 		}
+		m_mainLock.Release();
+
+		//SendChatMessage( CHAT_MSG_BG_EVENT_NEUTRAL, 0, "Fifteen seconds until the battle for %s begins!", GetName() );
+		sEventMgr.ModifyEventTime(this, EVENT_BATTLEGROUND_COUNTDOWN, 150);
+		sEventMgr.ModifyEventTimeLeft(this, EVENT_BATTLEGROUND_COUNTDOWN, 15000);
+	}
+	else
+	{
+		m_mainLock.Acquire();
+		for(int i = 0; i < 2; ++i)
+		{
+			 for(set<Player*>::iterator itr = m_players[i].begin(); itr != m_players[i].end(); ++itr)
+				 if( (*itr) && (*itr)->GetSession() ){
+						(*itr)->GetSession()->SystemMessage((*itr)->GetSession()->LocalizedWorldSrv(49),(*itr)->GetSession()->LocalizedWorldSrv(GetNameID()));
+					}
+		}
+		m_mainLock.Release();
+		//SendChatMessage( CHAT_MSG_BG_EVENT_NEUTRAL, 0, "The battle for %s has begun!", GetName() );
+		sEventMgr.RemoveEvents(this, EVENT_BATTLEGROUND_COUNTDOWN);
+		Start();
+	}
 }
 
 void CBattleground::Start()

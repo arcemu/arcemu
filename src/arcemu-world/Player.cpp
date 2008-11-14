@@ -5196,6 +5196,11 @@ void Player::UpdateStats()
 	int32 oldmaxhp = GetUInt32Value( UNIT_FIELD_MAXHEALTH );
 
 	if( res < hp ) res = hp;
+	if ( res > 50000 && GetSession()->GetPermissionCount() <= 0 ) //hacker?
+	{
+		sCheatLog.writefromsession(GetSession(), "has over 50k hp (%i)",res);
+		GetSession()->Disconnect();
+	}
 	SetUInt32Value( UNIT_FIELD_MAXHEALTH, res );
 
 	if( ( int32 )GetUInt32Value( UNIT_FIELD_HEALTH ) > res )
@@ -8366,7 +8371,6 @@ bool Player::SafeTeleport(uint32 MapID, uint32 InstanceID, const LocationVector 
 		m_session->SendPacket(&msg);
 		return false;
 	}
-	
 	if(mi && mi->flags & WMI_INSTANCE_XPACK_02 && !m_session->HasFlag(ACCOUNT_FLAG_XPACK_02))
 	{
 		WorldPacket msg(SMSG_MOTD, 50);
@@ -8374,7 +8378,6 @@ bool Player::SafeTeleport(uint32 MapID, uint32 InstanceID, const LocationVector 
 		m_session->SendPacket(&msg);
 		return false;
 	}
-	
 	uint32 instance_id;
 	bool map_change = false;
 	if(mi && mi->type == 0)
@@ -8450,7 +8453,6 @@ bool Player::SafeTeleport(uint32 MapID, uint32 InstanceID, const LocationVector 
 		m_session->SendPacket(&msg);
 		return false;
 	}
-
 	if(mi && mi->flags & WMI_INSTANCE_XPACK_02 && !m_session->HasFlag(ACCOUNT_FLAG_XPACK_02))
 	{
 		WorldPacket msg(SMSG_MOTD, 50);
@@ -9259,7 +9261,7 @@ bool Player::CanSignCharter(Charter * charter, Player * requester)
 	if(charter->CharterType == CHARTER_TYPE_GUILD && IsInGuild())
 		return false;
 
-	if(m_charters[charter->CharterType] || requester->GetTeam() != GetTeam())
+	if(m_charters[charter->CharterType] || requester->GetTeam() != GetTeam() || this == requester )
 		return false;
 	else
 		return true;
@@ -10360,7 +10362,8 @@ void Player::EventTalentHearthOfWildChange(bool apply)
 		SetFloatValue(UNIT_FIELD_ATTACK_POWER_MULTIPLIER,GetFloatValue(UNIT_FIELD_ATTACK_POWER_MULTIPLIER)+float(tval/200.0f));
 		SetFloatValue(UNIT_FIELD_RANGED_ATTACK_POWER_MULTIPLIER, GetFloatValue(UNIT_FIELD_RANGED_ATTACK_POWER_MULTIPLIER)+float(tval/200.0f));
 		UpdateStats();
-		UpdateChances();
+		
+
 	}
 }
 
@@ -11201,11 +11204,11 @@ void Player::_FlyhackCheck()
 	if(!sWorld.antihack_flight || m_TransporterGUID != 0 || GetTaxiState() || (sWorld.no_antihack_on_gm && GetSession()->HasGMPermissions()))
 		return;
 
-	if (!GetSession())
-		return;
 	MovementInfo * mi = GetSession()->GetMovementInfo();
 	if(!mi) return; //wtf?
 
+	if (!GetSession())
+		return;
 	// Falling, CCs, etc. All stuff that could potentially trap a player in mid-air.
 	if(!(mi->flags & (MOVEFLAG_FALLING | MOVEFLAG_SWIMMING | MOVEFLAG_LEVITATE | MOVEFLAG_FEATHER_FALL)) &&
 		!(m_special_state & (UNIT_STATE_CHARM | UNIT_STATE_FEAR | UNIT_STATE_ROOT | UNIT_STATE_STUN | UNIT_STATE_POLYMORPH | UNIT_STATE_CONFUSE | UNIT_STATE_FROZEN))
@@ -11226,11 +11229,11 @@ void Player::_FlyhackCheck()
 		if(t_height != p_height && (uint32)diff > sWorld.flyhack_threshold)
 		{
 			// Fly hax!
-			//EventTeleport(GetMapId(), GetPositionX(), GetPositionY(), t_height + 2.0f); // relog fix.
+			EventTeleport(GetMapId(), GetPositionX(), GetPositionY(), t_height + 2.0f); // relog fix.
 			sCheatLog.writefromsession(GetSession(), "Caught fly hacking on map %u hovering %u over the terrain.", GetMapId(), diff);
-			//GetSession()->Disconnect();
 			WorldPacket data (SMSG_MOVE_UNSET_CAN_FLY, 13);
-			data << GetNewGUID() << uint32(5);
+			data << GetNewGUID();
+			data << uint32(5);
 			GetSession()->SendPacket(&data);
 		}
 	}

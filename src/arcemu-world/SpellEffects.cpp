@@ -5590,6 +5590,7 @@ void Spell::SpellEffectKnockBack(uint32 i)
 	data << -value2;
 	playerTarget->GetSession()->SendPacket(&data);
 	playerTarget->blinked = true;
+	playerTarget->SpeedCheatDelay(10000);
 }
 
 void Spell::SpellEffectDisenchant( uint32 i )

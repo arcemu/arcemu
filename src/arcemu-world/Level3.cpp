@@ -420,7 +420,85 @@ bool ChatHandler::HandleBanCharacterCommand(const char* args, WorldSession *m_se
 	}
 	return true;
 }
+bool ChatHandler::HandleBanAllCommand(const char* args, WorldSession *m_session)
+{
+	if (!*args)
+		return false;
 
+	//our vars
+
+	Player *pBanned;
+	string pAcc;
+	string pIP;
+	string pArgs = args;
+	char * pCharacter = (char*)args;
+	char * pBanDuration = strchr(pCharacter, ' ');
+	PlayerInfo * pInfo = NULL;
+	if(pBanDuration == NULL)
+	{
+		RedSystemMessage(m_session,"You must enter in a duration of the ban!");
+		return true;
+	}
+
+	char * pReason = strchr(pBanDuration+1, ' ');
+	if(pReason == NULL)
+	{
+		RedSystemMessage(m_session,"You must enter in a reason for the ban!");
+		return true;
+	}
+
+	// zero them out to create sepearate strings.
+	*pBanDuration = 0;
+	++pBanDuration;
+	*pReason = 0;
+	++pReason;
+	int32 BanTime = GetTimePeriodFromString(pBanDuration);
+	pBanned = objmgr.GetPlayer(pCharacter,false);
+	if (!pBanned || !pBanned->IsInWorld())
+	{
+		RedSystemMessage(m_session,"Player \"%s\" is not online or does not exists!",pCharacter);
+		return true;
+	}
+	if (pBanned == m_session->GetPlayer())
+	{
+		RedSystemMessage(m_session,"You cannot ban yourself!");
+		return true;
+	}
+	if (pBanned->GetSession() == NULL)
+	{
+		RedSystemMessage(m_session,"Player does not have a session!");
+		return true;
+	}
+	if (pBanned->GetSession()->GetSocket() == NULL)
+	{
+		RedSystemMessage(m_session,"Player does not have a socket!");
+		return true;
+	}
+	pAcc = pBanned->GetSession()->GetAccountName();
+	pIP = pBanned->GetSession()->GetSocket()->GetRemoteIP();
+	//This check is there incase a gm trys to ban someone on their LAN etc.
+	if (pIP == m_session->GetSocket()->GetRemoteIP())
+	{
+		RedSystemMessage(m_session,"That player has the same IP as you - ban failed");
+		return true;
+	}
+
+	//Checks complete. time to fire it up?
+	/*char Msg[512];
+	snprintf(Msg,510,"%s[BAN] %sPlayer%s %s%s has been banned by%s %s %s- this is an account and ip ban. Reason:%s %s",MSG_COLOR_RED,
+		MSG_COLOR_WHITE,MSG_COLOR_CYAN,pCharacter,MSG_COLOR_WHITE,MSG_COLOR_GREEN,m_session->GetPlayer()->GetName()
+		,MSG_COLOR_WHITE,MSG_COLOR_RED,pReason);
+	sWorld.SendWorldText(Msg,NULL);*/
+	HandleBanCharacterCommand(pArgs.c_str(),m_session);
+	char pIPCmd[256];
+	snprintf(pIPCmd,254,"%s %s %s",pIP.c_str(),pBanDuration,pReason);
+	HandleIPBanCommand(pIPCmd,m_session);
+	char pAccCmd[256];
+	snprintf(pAccCmd,254,"%s %s %s",pAcc.c_str(),pBanDuration,pReason);
+	HandleAccountBannedCommand((const char*)pAccCmd,m_session);
+	//GreenSystemMessage(m_session,"Successfully banned player %s with ip %s and account %s",pCharacter,pIP.c_str(),pAcc.c_str());
+	return true;
+}
 bool ChatHandler::HandleUnBanCharacterCommand(const char* args, WorldSession *m_session)
 {
 	if(!*args)
@@ -1635,6 +1713,8 @@ bool ChatHandler::HandleMassSummonCommand(const char* args, WorldSession* m_sess
 	Player * summoner = m_session->GetPlayer();
 	Player * plr;
 	uint32 c=0;
+	char Buffer[170];
+	snprintf(Buffer,170,"%s%s Has requested a mass summon of all players. Do not feel obliged to accept the summon, as it is most likely for an event or a test of sorts",MSG_COLOR_GOLD,m_session->GetPlayer()->GetName());
 	for (itr = objmgr._players.begin(); itr != objmgr._players.end(); itr++)
 	{
 		plr = itr->second;
@@ -2027,7 +2107,6 @@ bool ChatHandler::HandlePlayerInfo(const char* args, WorldSession * m_session)
 
 	BlueSystemMessage(m_session, "%s is connecting from account '%s'[%u] with permissions '%s'",
 		(plr->getGender()?"She":"He"), sess->GetAccountName().c_str(), sess->GetAccountId(), sess->GetPermissions());
-
 	char *client;
 	if(sess->HasFlag(ACCOUNT_FLAG_XPACK_01))
 		client = "WoW Burning Crusade";
@@ -2036,7 +2115,7 @@ bool ChatHandler::HandlePlayerInfo(const char* args, WorldSession * m_session)
 	else
 		client = "WoW";
 	BlueSystemMessage(m_session, "%s uses %s (build %u)", (plr->getGender()?"She":"He"),
-		client, sess->GetClientBuild());
+		(sess->HasFlag(ACCOUNT_FLAG_XPACK_01)?"WoW Burning Crusade":"WoW"), sess->GetClientBuild());
 
 	BlueSystemMessage(m_session, "%s IP is '%s', and has a latency of %ums", (plr->getGender()?"Her":"His"),
 		sess->GetSocket()->GetRemoteIP().c_str(), sess->GetLatency());

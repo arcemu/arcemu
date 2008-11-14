@@ -377,6 +377,7 @@ protected:
     
 	//Ban
 	bool HandleBanCharacterCommand(const char* args, WorldSession *m_session);
+	bool HandleBanAllCommand(const char* args, WorldSession *m_session);
 	bool HandleUnBanCharacterCommand(const char* args, WorldSession *m_session);
 
 	//BG

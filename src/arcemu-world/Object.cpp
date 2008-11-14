@@ -917,7 +917,7 @@ void Object::SendMessageToSet(WorldPacket *data, bool bToSelf,bool myteam_only)
 			for(; itr != it_end; ++itr)
 			{
 				ASSERT((*itr)->GetSession());
-				if((*itr)->GetTeam()==myteam)
+				if((*itr)->GetTeam()==myteam && !(*itr)->Social_IsIgnoring( GetLowGUID() ))
 					(*itr)->GetSession()->SendPacket(data);
 			}
 		}
@@ -938,7 +938,8 @@ void Object::SendMessageToSet(WorldPacket *data, bool bToSelf,bool myteam_only)
 			for(; itr != it_end; ++itr)
 			{
 				ASSERT((*itr)->GetSession());
-				(*itr)->GetSession()->SendPacket(data);
+				if( !(m_objectTypeId == TYPEID_PLAYER && (*itr)->Social_IsIgnoring( GetLowGUID() )) )
+					(*itr)->GetSession()->SendPacket(data);
 			}
 		}
 	}
@@ -1745,7 +1746,27 @@ void Object::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
 		return;
 	if( pVictim->IsSpiritHealer() )
 		return;
+	if( damage > 10000 && this != pVictim && this->IsPlayer() && !static_cast< Player* >(this)->GetSession()->HasPermissions())
+	{
+		if( spellId )
+		{
+			SpellEntry *spellInfo = dbcSpell.LookupEntryForced(spellId );
+			sCheatLog.writefromsession(static_cast< Player* >(this)->GetSession(),"Dealt %u damage with spell %u ( %s )", damage, spellId, (spellInfo != NULL) ? spellInfo->Name : "ERROR (NULL SPELL)");
+		}
+		else
+			sCheatLog.writefromsession(static_cast< Player* >(this)->GetSession(),"Dealt %u damage with Auto Attack", damage);
 
+		if( damage > 500000 )
+			static_cast< Player* >(this)->GetSession()->Disconnect();
+
+		if( ( spellId && static_cast< Player* >(this)->HasSpell(spellId) && damage > 19500 ) || (static_cast< Player* >(this)->getClass() == WARRIOR && damage > 17000) )
+		{
+			damage = 0;
+		}
+
+		if( !spellId && static_cast<Player*>(this)->getClass() != WARRIOR)
+			damage = 0;
+	}
 	if( this->IsUnit() && pVictim->IsUnit() && pVictim != this )
 	{
 		// Set our attack target to the victim.
