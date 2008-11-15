@@ -232,6 +232,8 @@ struct PetSpellCooldown
 	int32 cooldown;
 };
 
+static int Exotic[7] = { 38, 39, 41, 42, 43, 45, 46 };
+
 class CreatureAIScript;
 class GossipScript;
 class AuctionHouse;
@@ -503,6 +505,14 @@ public:
 
 	CreatureFamilyEntry * myFamily;
 	ARCEMU_INLINE bool IsTotem() { return totemOwner != 0 && totemSlot != -1; }
+
+	bool IsExotic()
+	{
+		for(uint32 i = 0; i < 8; ++i)
+			if(GetCreatureInfo()->Family == Exotic[i] && GetCreatureInfo()->Type == BEAST)
+				return true;
+		return false;
+	}
 	void TotemExpire();
 	void FormationLinkUp(uint32 SqlId);
 	void ChannelLinkUpGO(uint32 SqlId);
