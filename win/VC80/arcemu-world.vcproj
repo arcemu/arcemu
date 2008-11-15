@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="8.00"
+	Version="8,00"
 	Name="arcemu-world"
 	ProjectGUID="{1DC6C4DA-A028-41F3-877D-D5400C594F88}"
 	RootNamespace="game"
@@ -268,7 +268,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="ws2_32.lib libmysql.lib libeay32.lib dbghelp.lib zlib.lib pcre.lib"
-				AdditionalLibraryDirectories="..\..\extras\collision\collision_dll\Release"
+				AdditionalLibraryDirectories="../../src\collision\Release"
 				GenerateDebugInformation="true"
 			/>
 			<Tool
@@ -476,10 +476,10 @@
 				</File>
 			</Filter>
 		</Filter>
-			<Filter
-				Name="BufferPools"
-				>
-				<File
+		<Filter
+			Name="BufferPools"
+			>
+			<File
 				RelativePath="..\..\src\arcemu-world\BufferPools\BufferPools.cpp"
 				>
 			</File>
@@ -488,7 +488,14 @@
 				>
 			</File>
 		</Filter>
-
+		<File
+			RelativePath="..\..\src\arcemu-world\AchievementMgr.cpp"
+			>
+		</File>
+		<File
+			RelativePath="..\..\src\arcemu-world\AchievementMgr.h"
+			>
+		</File>
 		<File
 			RelativePath="..\..\src\arcemu-world\AddonMgr.cpp"
 			>
@@ -634,6 +641,14 @@
 			>
 		</File>
 		<File
+			RelativePath="..\..\src\arcemu-world\CommonScheduleThread.cpp"
+			>
+		</File>
+		<File
+			RelativePath="..\..\src\arcemu-world\CommonScheduleThread.h"
+			>
+		</File>
+		<File
 			RelativePath="..\..\src\arcemu-world\Container.cpp"
 			>
 		</File>
@@ -674,18 +689,10 @@
 			>
 		</File>
 		<File
-			RelativePath="..\..\src\arcemu-world\CommonScheduleThread.cpp"
-			>
-		</File>
-		<File
-			RelativePath="..\..\src\arcemu-world\CommonScheduleThread.h"
-			>
-		</File>
-		<File
 			RelativePath="..\..\src\arcemu-world\debugcmds.cpp"
 			>
 		</File>
-    <File
+		<File
 			RelativePath="..\..\src\arcemu-world\Definitions.h"
 			>
 		</File>
@@ -744,8 +751,8 @@
 		<File
 			RelativePath="..\..\src\arcemu-world\GMTicket.cpp"
 			>
-    </File>
-    <File
+		</File>
+		<File
 			RelativePath="..\..\src\arcemu-world\GMTicketCommands.cpp"
 			>
 		</File>
@@ -781,9 +788,9 @@
 			RelativePath="..\..\src\arcemu-world\HonorHandler.h"
 			>
 		</File>
-    <File
-      RelativePath="..\..\src\arcemu-world\InstanceCommands.cpp"
-      >
+		<File
+			RelativePath="..\..\src\arcemu-world\InstanceCommands.cpp"
+			>
 		</File>
 		<File
 			RelativePath="..\..\src\arcemu-world\Item.cpp"
@@ -1086,15 +1093,15 @@
 			>
 		</File>
 		<File
+			RelativePath="..\..\src\arcemu-world\SpellFixes.cpp"
+			>
+		</File>
+		<File
 			RelativePath="..\..\src\arcemu-world\SpellHandler.cpp"
 			>
 		</File>
 		<File
 			RelativePath="..\..\src\arcemu-world\SpellTarget.cpp"
-			>
-		</File>
-		<File
-			RelativePath="..\..\src\arcemu-world\SpellFixes.cpp"
 			>
 		</File>
 		<File

@@ -3726,7 +3726,7 @@ uint8 Spell::CanCast(bool tolerate)
 						result = PETTAME_ANOTHERSUMMONACTIVE;
 					else if( p_caster->GetPetCount() >= 3 )
 						result = PETTAME_TOOMANY;
-					else if( p_caster->HasSpell(53270) && tame->IsExotic())
+					else if( !p_caster->HasSpell(53270) && tame->IsExotic())
 						result = PETTAME_CANTCONTROLEXOTIC;
 					else
 					{
