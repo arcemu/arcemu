@@ -1995,8 +1995,13 @@ void ObjectMgr::GenerateLevelUpInfo()
 	for(uint32 Class = WARRIOR; Class <= DRUID; ++Class)
 	{
 		// These are empty.
-		if(Class == 10)
-			continue;
+		if(sWorld.DeathknightCreationForThoseWhoReallyDoNotWantToWait)
+			if(Class == 10)
+				continue;
+		else
+			if(Class == 10 || Class == 6)
+				continue;
+
 
 		// Search for a playercreateinfo.
 		for(uint32 Race = RACE_HUMAN; Race <= RACE_DRAENEI; ++Race )

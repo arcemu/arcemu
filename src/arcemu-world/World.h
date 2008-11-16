@@ -474,6 +474,7 @@ public:
 	int BCOrderMode;
 
 	bool realmAllowTBCcharacters;
+	bool DeathknightCreationForThoseWhoReallyDoNotWantToWait;
 	
 	std::string announce_tag;
 	bool GMAdminTag;

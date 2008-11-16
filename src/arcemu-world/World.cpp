@@ -74,6 +74,7 @@ World::World()
 	StartingLevel=1;
 	m_limitedNames=false;
 	m_banTable = NULL;
+	DeathknightCreationForThoseWhoReallyDoNotWantToWait = false;
 }
 
 void CleanupRandomNumberGenerators();
@@ -1315,6 +1316,7 @@ void World::Rehash(bool load)
 	if(StartingLevel > PLAYER_LEVEL_CAP) {StartingLevel = PLAYER_LEVEL_CAP;}
 	antiMasterLootNinja = Config.OptionalConfig.GetBoolDefault("Optional", "AntiMasterLootNinja", false);
 	realmAllowTBCcharacters = Config.OptionalConfig.GetBoolDefault("Optional", "AllowTBC", true);
+	DeathknightCreationForThoseWhoReallyDoNotWantToWait = Config.OptionalConfig.GetBoolDefault("ClassOptions", "EnableTemp", false);
 
 	announce_tag = Config.MainConfig.GetStringDefault("Announce", "Tag", "Staff");
 	GMAdminTag = Config.MainConfig.GetBoolDefault("Announce", "GMAdminTag", false);
