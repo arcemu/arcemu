@@ -754,23 +754,15 @@ public:
 	void SwitchToHumanForm()
 	{
 		_unit->SetUInt32Value(UNIT_FIELD_DISPLAYID, 20514);
-		_unit->SetUInt32Value(UNIT_VIRTUAL_ITEM_SLOT_DISPLAY, _unit->GetProto()->Item1SlotDisplay);
-		_unit->SetUInt32Value(UNIT_VIRTUAL_ITEM_SLOT_DISPLAY_01, _unit->GetProto()->Item2SlotDisplay);
-		_unit->SetUInt32Value(UNIT_VIRTUAL_ITEM_INFO, _unit->GetProto()->Item1Info1);
-		_unit->SetUInt32Value(UNIT_VIRTUAL_ITEM_INFO_01, _unit->GetProto()->Item1Info2);
-		_unit->SetUInt32Value(UNIT_VIRTUAL_ITEM_INFO_02, _unit->GetProto()->Item2Info1);
-		_unit->SetUInt32Value(UNIT_VIRTUAL_ITEM_INFO_03, _unit->GetProto()->Item2Info2);
-	}
+		_unit->SetUInt32Value(UNIT_VIRTUAL_ITEM_SLOT_ID, _unit->GetProto()->Item1SlotDisplay);
+		_unit->SetUInt32Value(UNIT_VIRTUAL_ITEM_SLOT_ID_1, _unit->GetProto()->Item2SlotDisplay);
+		}
 
 	void SwitchToDemonForm()
 	{
 		_unit->SetUInt32Value(UNIT_FIELD_DISPLAYID, 20125);
-		_unit->SetUInt32Value(UNIT_VIRTUAL_ITEM_SLOT_DISPLAY, 0);
-		_unit->SetUInt32Value(UNIT_VIRTUAL_ITEM_SLOT_DISPLAY_01, 0);
-		_unit->SetUInt32Value(UNIT_VIRTUAL_ITEM_INFO, 0);
-		_unit->SetUInt32Value(UNIT_VIRTUAL_ITEM_INFO_01, 0);
-		_unit->SetUInt32Value(UNIT_VIRTUAL_ITEM_INFO_02, 0);
-		_unit->SetUInt32Value(UNIT_VIRTUAL_ITEM_INFO_03, 0);
+		_unit->SetUInt32Value(UNIT_VIRTUAL_ITEM_SLOT_ID, 0);
+		_unit->SetUInt32Value(UNIT_VIRTUAL_ITEM_SLOT_ID_1, 0);
 	}
 
 	void AIUpdate()

@@ -2989,14 +2989,11 @@ public:
 		RemoveAIUpdateEvent();
 
 		// Reset weapon
-		_unit->SetUInt32Value(UNIT_VIRTUAL_ITEM_SLOT_DISPLAY, 0);
-		_unit->SetUInt32Value(UNIT_VIRTUAL_ITEM_INFO, 0);
-		_unit->SetUInt32Value(UNIT_VIRTUAL_ITEM_INFO_01, 0);
-
+		_unit->SetUInt32Value(UNIT_VIRTUAL_ITEM_SLOT_ID, 0);
+		
 		// Off hand weapon
-		_unit->SetUInt32Value(UNIT_VIRTUAL_ITEM_SLOT_DISPLAY_01, 0);
-		_unit->SetUInt32Value(UNIT_VIRTUAL_ITEM_INFO_02, 0);
-		_unit->SetUInt32Value(UNIT_VIRTUAL_ITEM_INFO_03, 0);
+		_unit->SetUInt32Value(UNIT_VIRTUAL_ITEM_SLOT_ID_1, 0);
+		
 
 		CreatureProto * cp = CreatureProtoStorage.LookupEntry(CN_MALCHEZAAR);
 		if(!cp)
@@ -3136,15 +3133,11 @@ public:
 			_unit->CastSpell(_unit, spells[7].info, spells[6].instant);
 
 			// Main hand weapon
-			_unit->SetUInt32Value(UNIT_VIRTUAL_ITEM_SLOT_DISPLAY, AXE_ITEM_MODEL);
-			_unit->SetUInt32Value(UNIT_VIRTUAL_ITEM_INFO, AXE_ITEM_INFO);
-			_unit->SetUInt32Value(UNIT_VIRTUAL_ITEM_INFO_01, AXE_ITEM_SLOT);
-
+			_unit->SetUInt32Value(UNIT_VIRTUAL_ITEM_SLOT_ID, AXE_ITEM_MODEL);
+			
 			// Off hand weapon
-			_unit->SetUInt32Value(UNIT_VIRTUAL_ITEM_SLOT_DISPLAY_01, AXE_ITEM_MODEL);
-			_unit->SetUInt32Value(UNIT_VIRTUAL_ITEM_INFO_02, AXE_ITEM_INFO);
-			_unit->SetUInt32Value(UNIT_VIRTUAL_ITEM_INFO_03, AXE_ITEM_SLOT);
-
+			_unit->SetUInt32Value(UNIT_VIRTUAL_ITEM_SLOT_ID_1, AXE_ITEM_MODEL);
+			
 			CreatureProto * cp = CreatureProtoStorage.LookupEntry(CN_MALCHEZAAR);
 			if(!cp)
 				return;
@@ -3185,14 +3178,11 @@ public:
 			_unit->SendChatMessage(CHAT_MSG_MONSTER_YELL, LANG_UNIVERSAL, "How can you hope to withstand against such overwhelming power?");
 
 			// Main hand weapon
-			_unit->SetUInt32Value(UNIT_VIRTUAL_ITEM_SLOT_DISPLAY, 0);
-			_unit->SetUInt32Value(UNIT_VIRTUAL_ITEM_INFO, 0);
-			_unit->SetUInt32Value(UNIT_VIRTUAL_ITEM_INFO_01, 0);
-
+			_unit->SetUInt32Value(UNIT_VIRTUAL_ITEM_SLOT_ID, 0);
+			
 			// Off hand weapon
-			_unit->SetUInt32Value(UNIT_VIRTUAL_ITEM_SLOT_DISPLAY_01, 0);
-			_unit->SetUInt32Value(UNIT_VIRTUAL_ITEM_INFO_02, 0);
-			_unit->SetUInt32Value(UNIT_VIRTUAL_ITEM_INFO_03, 0);
+			_unit->SetUInt32Value(UNIT_VIRTUAL_ITEM_SLOT_ID_1, 0);
+			
 
 			CreatureProto * cp = CreatureProtoStorage.LookupEntry(CN_MALCHEZAAR);
 			if(!cp)
