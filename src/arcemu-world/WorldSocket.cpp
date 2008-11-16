@@ -440,10 +440,10 @@ void WorldSocket::Authenticate()
 	if(!pSession) return;
 	pSession->deleteMutex.Acquire();
 
-	if(pSession->HasFlag(ACCOUNT_FLAG_XPACK_01))
-		OutPacket(SMSG_AUTH_RESPONSE, 11, "\x0C\x30\x78\x00\x00\x00\x00\x00\x00\x00\x01");
-	else if(pSession->HasFlag(ACCOUNT_FLAG_XPACK_02))
+	if(pSession->HasFlag(ACCOUNT_FLAG_XPACK_02))
 		OutPacket(SMSG_AUTH_RESPONSE, 11, "\x0C\x30\x78\x00\x00\x00\x00\x00\x00\x00\x02");
+	else if(pSession->HasFlag(ACCOUNT_FLAG_XPACK_01))
+		OutPacket(SMSG_AUTH_RESPONSE, 11, "\x0C\x30\x78\x00\x00\x00\x00\x00\x00\x00\x01");
 	else
 		OutPacket(SMSG_AUTH_RESPONSE, 11, "\x0C\x30\x78\x00\x00\x00\x00\x00\x00\x00\x00");
 
