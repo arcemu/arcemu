@@ -232,7 +232,7 @@ struct PetSpellCooldown
 	int32 cooldown;
 };
 
-static int Exotic[7] = { 38, 39, 41, 42, 43, 45, 46 };
+static uint32 Exotic[7] = { 38, 39, 41, 42, 43, 45, 46 };
 
 class CreatureAIScript;
 class GossipScript;
