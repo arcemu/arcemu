@@ -490,7 +490,7 @@ void QuestMgr::BuildQuestComplete(Player*plr, Quest* qst)
 		plr->GiveXP(xp, 0, false);
 	}
 
-	if(currtalentpoints <= playerlevel-9+rewardtalents)
+	if(currtalentpoints <= playerlevel-9-rewardtalents)
 		plr->GiveTalent(rewardtalents);
 
 	WorldPacket data( SMSG_QUESTGIVER_QUEST_COMPLETE,72 );

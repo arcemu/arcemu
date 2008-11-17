@@ -41,7 +41,7 @@ WorldPacket* WorldSession::BuildQuestQueryResponse(Quest *qst)
 		*data << uint32(qst->zone_id);			  // Positive if pointing to a zone.
 
 	*data << uint32(qst->type);					 // Info ID / Type
-	*data << uint32(0);								// suggested players
+	*data << qst->suggestedplayers;								// suggested players
 	*data << uint32(qst->required_rep_faction);	 // Faction ID
 	*data << uint32(qst->required_rep_value);	   // Faction Amount
 	*data << uint32(0);							 // Unknown (always 0)
@@ -65,12 +65,12 @@ WorldPacket* WorldSession::BuildQuestQueryResponse(Quest *qst)
 	*data << uint32(qst->reward_money<0 ? -qst->reward_money : 0);		   // Required Money
 	*data << uint32(qst->effect_on_player);		 // Spell casted on player upon completion
 	*data << uint32(qst->reward_spell);			 // Spell added to spellbook upon completion
-	*data << uint32(0);								// 2.3.0 - bonus honor
+	*data << qst->bonushonor;								// 2.3.0 - bonus honor
 	*data << uint32(qst->srcitem);				  // Item given at the start of a quest (srcitem)
 	*data << uint32(qst->quest_flags);			  // Quest Flags
-	*data << uint32(0);								// 2.4.0 unk
-	*data << uint32(0);								// 3.0.2
-	*data << uint32(0);								// 3.0.2
+	*data << qst->rewardtitleid;								// 2.4.0 unk
+	*data << uint32(0);								// playerkillcount
+	*data << qst->rewardtalents;
 
 	// (loop 4 times)
 	for(uint32 i = 0; i < 4; ++i)
