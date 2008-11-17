@@ -635,6 +635,7 @@ void WorldSession::HandlePlayerLoginOpcode( WorldPacket & recv_data )
 
 void WorldSession::FullLogin(Player * plr)
 {
+	uint8 class_ = plr->getClass();
 	Log.Debug("WorldSession", "Fully loading player %u", plr->GetLowGUID());
 	SetPlayer(plr); 
 	m_MoverWoWGuid.Init(plr->GetGUID());
@@ -826,9 +827,15 @@ void WorldSession::FullLogin(Player * plr)
 	else
 		sWorld.AlliancePlayers++;
 
-	if(plr->m_FirstLogin && !HasGMPermissions())
+	if(plr->m_FirstLogin)
 	{
-		uint32 racecinematic = plr->myRace->cinematic_id;
+		uint32 racecinematic = 0;
+
+		if(class_ != DEATHKNIGHT)
+			racecinematic = plr->myRace->cinematic_id;
+		else 
+			racecinematic = 165;    /* I didn't find this in the dbcs, only in the packets, so we either need to hardcode it like this or read it from db*/
+
 #ifdef USING_BIG_ENDIAN
 		swap32(&racecinematic);
 #endif

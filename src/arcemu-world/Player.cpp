@@ -1502,6 +1502,12 @@ void Player::BuildEnumData( WorldPacket * p_data )
 	 *p_data << (uint8)0;
 }
 
+/*  Gives numtps talent points to the player  */
+void Player::GiveTalent(uint32 numtps){
+    uint32 currtps = GetUInt32Value(PLAYER_CHARACTER_POINTS1);
+	SetUInt32Value(PLAYER_CHARACTER_POINTS1,currtps+numtps);
+	}
+
 ///  This function sends the message displaying the purple XP gain for the char
 ///  It assumes you will send out an UpdateObject packet at a later time.
 void Player::GiveXP(uint32 xp, const uint64 &guid, bool allowbonus)
@@ -3558,6 +3564,9 @@ void Player::OnPrePushToWorld()
 
 void Player::OnPushToWorld()
 {
+	uint8 class_ = getClass();
+	uint8 startlevel = 1;
+
 	// Process create packet
 	ProcessPendingUpdates();
 	
@@ -3585,9 +3594,13 @@ void Player::OnPushToWorld()
    
 	if(m_FirstLogin)
 	{
+		if(class_ == DEATHKNIGHT)
+			startlevel = max(55,sWorld.StartingLevel);
+		else startlevel = sWorld.StartingLevel;
+
 		sHookInterface.OnFirstEnterWorld(this);
-		LevelInfo * Info = objmgr.GetLevelInfo(getRace(), getClass(), sWorld.StartingLevel);
-		ApplyLevelInfo(Info, sWorld.StartingLevel);
+		LevelInfo * Info = objmgr.GetLevelInfo(getRace(), getClass(), startlevel);
+		ApplyLevelInfo(Info, startlevel);
 		m_FirstLogin = false;
 	}
 
@@ -8216,6 +8229,7 @@ void Player::EventTeleportTaxi(uint32 mapid, float x, float y, float z)
 void Player::ApplyLevelInfo(LevelInfo* Info, uint32 Level)
 {
 	ASSERT(Info != NULL);
+	uint8 class_ = getClass();
 
 	// Apply level
 	SetUInt32Value(UNIT_FIELD_LEVEL, Level);
@@ -8238,8 +8252,16 @@ void Player::ApplyLevelInfo(LevelInfo* Info, uint32 Level)
 
 	// Calculate talentpoints
 	uint32 TalentPoints = 0;
-	if(Level >= 10)
-		TalentPoints = Level - 9;
+	
+	/* if(Level >= 10)
+	    TalentPoints = Level - 9;
+	*/
+	/* lvl55 Deathknights don't have talentpoints - may have to come up with some wittier solution, but it's fine for now */
+	if(class_ == DEATHKNIGHT && Level == 55)
+	  TalentPoints = 0;
+	  else 
+	    if(Level >= 10)
+	       TalentPoints = Level - 9; 
 
 	SetUInt32Value(PLAYER_CHARACTER_POINTS1, TalentPoints);
 

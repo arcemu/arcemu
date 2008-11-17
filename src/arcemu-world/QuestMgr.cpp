@@ -335,12 +335,12 @@ void QuestMgr::BuildOfferReward(WorldPacket *data, Quest* qst, Object* qst_giver
 	
 
 	*data << GenerateRewardMoney( plr, qst );
+	*data << qst->bonushonor;
+	*data << uint32(0);
 	*data << qst->reward_spell;
-	*data << uint32(8);
-	*data << uint32(0);
-	*data << uint32(0);
-	*data << uint32(0);
-	*data << uint32(0);
+	*data << qst->effect_on_player;
+	*data << qst->rewardtitleid;
+	*data << qst->rewardtalents;
 }
 
 void QuestMgr::BuildQuestDetails(WorldPacket *data, Quest* qst, Object* qst_giver, uint32 menutype, uint32 language, Player * plr)
@@ -367,7 +367,7 @@ void QuestMgr::BuildQuestDetails(WorldPacket *data, Quest* qst, Object* qst_give
 	}
 
 	*data <<  uint32(1);
-	*data << uint32(0);		 // "Suggested players"
+	*data << qst->suggestedplayers;		 // "Suggested players"
 	*data <<  uint8(0);		//3.0.2 no idea. Maybe some text ?
 
 	*data << qst->count_reward_choiceitem;
@@ -402,20 +402,20 @@ void QuestMgr::BuildQuestDetails(WorldPacket *data, Quest* qst, Object* qst_give
 			*data << uint32(0);
 	}
 
-	*data << GenerateRewardMoney( plr, qst );
-	*data << qst->reward_spell;
-
-	*data << uint32(0);
-	*data << uint32(0);
-	*data << uint32(0);						// reward pvp title id
-	*data << uint32(0);						// 3.0.2
-	*data << uint32(1);						// emote count
-	*data << uint32( EMOTE_ONESHOT_TALK );	// emote1 type
-	*data << uint32(0);						// emote1 delay
-	*data << uint32(0);						// 3.0.2
-	*data << uint32(0);						// 3.0.2
-	*data << uint32(0);						// 3.0.2
-	*data << uint32(0);						// 3.0.2
+	*data << GenerateRewardMoney( plr, qst );//14
+	*data << qst->bonushonor; // Bonus Honor
+	*data << qst->reward_spell; // this is the spell the quest finisher teaches you, or the icon of the spell if effect_on_player is not 0
+	*data << qst->effect_on_player; // this is the spell the quest finisher casts on you as a reward
+	*data << qst->rewardtitleid; //10 reward title
+	*data << qst->rewardtalents; // reward talents
+	*data << uint32(0);						// 3.0.2         8
+	*data << uint32(1);						// emote count   7
+	*data << uint32( EMOTE_ONESHOT_TALK );	// emote1 type   6
+	*data << uint32(0);						// emote1 delay  5
+	*data << uint32(0);						// 3.0.2  4
+	*data << uint32(0);						// 3.0.2  3
+	*data << uint32(0);						// 3.0.2  2
+	*data << uint32(0);						// 3.0.2  1
 }
 
 void QuestMgr::BuildRequestItems(WorldPacket *data, Quest* qst, Object* qst_giver, uint32 status, uint32 language)
@@ -477,7 +477,10 @@ void QuestMgr::BuildRequestItems(WorldPacket *data, Quest* qst, Object* qst_give
 void QuestMgr::BuildQuestComplete(Player*plr, Quest* qst)
 {
 	uint32 xp ;
-	if(plr->getLevel() >= plr->GetUInt32Value(PLAYER_FIELD_MAX_LEVEL))
+	uint32 currtalentpoints = plr->GetUInt32Value(PLAYER_CHARACTER_POINTS1);
+	uint32 rewardtalents = qst->rewardtalents;
+	uint32 playerlevel = plr->getLevel();
+	if(playerlevel >= plr->GetUInt32Value(PLAYER_FIELD_MAX_LEVEL))
 	{
 		//plr->ModUnsigned32Value(PLAYER_FIELD_COINAGE, qst->reward_xp_as_money);
 		xp = 0;
@@ -486,7 +489,10 @@ void QuestMgr::BuildQuestComplete(Player*plr, Quest* qst)
 		xp = float2int32(GenerateQuestXP(plr,qst) * sWorld.getRate(RATE_QUESTXP));
 		plr->GiveXP(xp, 0, false);
 	}
-  
+
+	if(currtalentpoints <= playerlevel-9+rewardtalents)
+		plr->GiveTalent(rewardtalents);
+
 	WorldPacket data( SMSG_QUESTGIVER_QUEST_COMPLETE,72 );
 
 	data << qst->id;
@@ -1490,7 +1496,7 @@ bool QuestMgr::OnActivateQuestGiver(Object *qst_giver, Player *plr)
 		return false;
 
 	uint32 questCount = sQuestMgr.ActiveQuestsCount(qst_giver, plr);
-	WorldPacket data(1000);	
+	WorldPacket data(1004);	
 
 	if (questCount == 0) 
 	{

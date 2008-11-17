@@ -1159,6 +1159,7 @@ public:
 	void DestroyForPlayer( Player *target ) const;
 	void SetTalentHearthOfWildPCT(int value){hearth_of_wild_pct=value;}
 	void EventTalentHearthOfWildChange(bool apply);
+	void GiveTalent(uint32 numtalents);
 	
 	std::list<LoginAura> loginauras;
 
