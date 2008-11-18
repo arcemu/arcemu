@@ -1349,6 +1349,15 @@ void World::Rehash(bool load)
 	m_CustomCharterGiver = (uint32)Config.OptionalConfig.GetIntDefault("Optional", "CustomCharterGiver",0);
 	m_AdditionalFun = (uint32)Config.OptionalConfig.GetBoolDefault("Optional", "AdditionalFun",false);
 
+	// Max Gold Settings
+	GoldCapEnabled = Config.OptionalConfig.GetBoolDefault("GoldSettings", "EnableGoldCap", false);
+	GoldLimit = Config.OptionalConfig.GetIntDefault("GoldSettings", "MaximumGold", 214000);
+	if(GoldLimit)
+		GoldLimit *= 10000; // Convert into gsc (gold, silver, copper)
+	GoldStartAmount = Config.OptionalConfig.GetIntDefault("GoldSettings", "StartingGold", 0);
+	if(GoldStartAmount)
+		GoldStartAmount *= 10000;
+
 	//script engine
 	m_LuaEngine = Config.MainConfig.GetBoolDefault("ScriptBackends", "LUA", false);
 	m_ASEngine = Config.MainConfig.GetBoolDefault("ScriptBackends", "AS", false);

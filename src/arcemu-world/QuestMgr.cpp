@@ -947,6 +947,13 @@ void QuestMgr::OnQuestFinished(Player* plr, Quest* qst, Object *qst_giver, uint3
 	if ( qst->reward_money < 0 && plr->GetUInt32Value( PLAYER_FIELD_COINAGE ) < uint32(-qst->reward_money) )
 		return;
 
+	// Check they dont have more than the max gold
+	if(sWorld.GoldCapEnabled && (plr->GetUInt32Value(PLAYER_FIELD_COINAGE) + qst->reward_money) > sWorld.GoldLimit)
+	{
+		plr->GetItemInterface()->BuildInventoryChangeError(NULL, NULL, INV_ERR_TOO_MUCH_GOLD);
+		return;
+	}
+
 	QuestLogEntry *qle = NULL;
 	qle = plr->GetQuestLogForEntry(qst->id);
 	if(!qle)

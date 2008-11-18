@@ -588,6 +588,11 @@ public:
 	uint32 m_CustomCharterGiver;
 	bool m_AdditionalFun;
 
+	// Gold Cap
+	bool GoldCapEnabled;
+	uint32 GoldLimit;
+	uint32 GoldStartAmount;
+
 	bool m_LuaEngine;
 	bool m_ASEngine;
 

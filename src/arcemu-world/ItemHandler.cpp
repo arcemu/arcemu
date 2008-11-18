@@ -1013,6 +1013,16 @@ void WorldSession::HandleSellItemOpcode( WorldPacket & recv_data )
 	
 	uint32 price = GetSellPriceForItem(it, quantity);
 
+	// Check they dont have more than the max gold
+	if(sWorld.GoldCapEnabled)
+	{
+		if((_player->GetUInt32Value(PLAYER_FIELD_COINAGE) + price) > sWorld.GoldLimit)
+		{
+			_player->GetItemInterface()->BuildInventoryChangeError(NULL, NULL, INV_ERR_TOO_MUCH_GOLD);
+			return;
+		}
+	}
+
 	_player->ModUnsigned32Value(PLAYER_FIELD_COINAGE,price);
  
 	if(quantity < stackcount)

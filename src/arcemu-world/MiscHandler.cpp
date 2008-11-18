@@ -285,7 +285,15 @@ void WorldSession::HandleLootMoneyOpcode( WorldPacket & recv_data )
 	{
 		if(money)
 		{
-			GetPlayer()->ModUnsigned32Value( PLAYER_FIELD_COINAGE , money);
+			// Check they dont have more than the max gold
+			if(sWorld.GoldCapEnabled && (GetPlayer()->GetUInt32Value(PLAYER_FIELD_COINAGE) + money) > sWorld.GoldLimit)
+			{
+				GetPlayer()->GetItemInterface()->BuildInventoryChangeError(NULL, NULL, INV_ERR_TOO_MUCH_GOLD);
+			}
+			else
+			{
+				GetPlayer()->ModUnsigned32Value( PLAYER_FIELD_COINAGE , money);
+			}
 			sHookInterface.OnLoot(_player, pt, money, 0);
 		}
 	}
@@ -323,8 +331,16 @@ void WorldSession::HandleLootMoneyOpcode( WorldPacket & recv_data )
 
 			for(vector<Player*>::iterator itr = targets.begin(); itr != targets.end(); ++itr)
 			{
-				(*itr)->ModUnsigned32Value(PLAYER_FIELD_COINAGE, share);
-				(*itr)->GetSession()->SendPacket(&pkt);
+				// Check they dont have more than the max gold
+				if(sWorld.GoldCapEnabled && ((*itr)->GetUInt32Value(PLAYER_FIELD_COINAGE) + share) > sWorld.GoldLimit)
+				{
+					(*itr)->GetItemInterface()->BuildInventoryChangeError(NULL, NULL, INV_ERR_TOO_MUCH_GOLD);
+				}
+				else
+				{
+					(*itr)->ModUnsigned32Value(PLAYER_FIELD_COINAGE, share);
+					(*itr)->GetSession()->SendPacket(&pkt);
+				}
 			}
 		}
 	}   
