@@ -383,7 +383,7 @@ Item *ItemInterface::SafeRemoveAndRetreiveItemFromSlot(int8 ContainerSlot, int8 
 			{
 				m_pOwner->ApplyItemMods( pItem, slot, false );
 				int VisibleBase = PLAYER_VISIBLE_ITEM_1_0 + (slot * 18);
-				for (int i = VisibleBase; i < VisibleBase + 12; ++i)
+				for (int i = VisibleBase; i < VisibleBase + 19; ++i)
 				{
 					m_pOwner->SetUInt32Value(i, 0);
 				}
@@ -546,7 +546,7 @@ bool ItemInterface::SafeFullRemoveItemFromSlot(int8 ContainerSlot, int8 slot)
 			{
 				m_pOwner->ApplyItemMods(pItem, slot, false );
 				int VisibleBase = PLAYER_VISIBLE_ITEM_1_0 + (slot * 18);
-				for (int i = VisibleBase; i < VisibleBase + 12; ++i)
+				for (int i = VisibleBase; i < VisibleBase + 19; ++i)
 				{
 					m_pOwner->SetUInt32Value(i, 0);
 				}
