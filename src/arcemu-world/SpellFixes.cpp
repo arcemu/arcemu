@@ -6949,4 +6949,51 @@ void ApplyNormalFixes()
 		sp = dbcSpell.LookupEntryForced( 49916 );
 		if( sp != NULL )
 			sp->powerType = 0;
+
+		/**********************************************************
+		 *	Obliterate Ranks 1, 2, 3, 4, 5
+		 **********************************************************/
+		sp = dbcSpell.LookupEntryForced( 49020 );
+		if( sp != NULL )
+			sp->powerType = 0;
+
+		sp = dbcSpell.LookupEntryForced( 51423 );
+		if( sp != NULL )
+			sp->powerType = 0;
+
+		sp = dbcSpell.LookupEntryForced( 51424 );
+		if( sp != NULL )
+			sp->powerType = 0;
+
+		sp = dbcSpell.LookupEntryForced( 51425 );
+		if( sp != NULL )
+			sp->powerType = 0;
+
+		/**********************************************************
+		 *	Heart Strike 1, 2, 3, 4, 5, 6
+		 **********************************************************/
+		sp = dbcSpell.LookupEntryForced( 55050 );
+		if( sp != NULL )
+			sp->powerType = 0;
+
+		sp = dbcSpell.LookupEntryForced( 55258 );
+		if( sp != NULL )
+			sp->powerType = 0;
+
+		sp = dbcSpell.LookupEntryForced( 55259 );
+		if( sp != NULL )
+			sp->powerType = 0;
+
+		sp = dbcSpell.LookupEntryForced( 55260 );
+		if( sp != NULL )
+			sp->powerType = 0;
+
+		sp = dbcSpell.LookupEntryForced( 55261 );
+		if( sp != NULL )
+			sp->powerType = 0;
+
+		sp = dbcSpell.LookupEntryForced( 55262 );
+		if( sp != NULL )
+			sp->powerType = 0;
+
 }
