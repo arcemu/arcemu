@@ -270,7 +270,7 @@ bool AchievementMgr::IsCompletedCriteria(AchievementCriteriaEntry const* achieve
                     achievement->ID == 464 && GetPlayer()->getClass() != PRIEST ||
                     achievement->ID == 463 && GetPlayer()->getClass() != WARLOCK ||
                     achievement->ID == 462 && GetPlayer()->getClass() != HUNTER ||
-                    //achievement->ID == 461 && GetPlayer()->getClass() != DEATH_KNIGHT ||
+                    achievement->ID == 461 && GetPlayer()->getClass() != DEATHKNIGHT ||
                     achievement->ID == 460 && GetPlayer()->getClass() != MAGE ||
                     achievement->ID == 459 && GetPlayer()->getClass() != WARRIOR ||
                     achievement->ID == 458 && GetPlayer()->getClass() != ROGUE ||

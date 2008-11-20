@@ -6769,4 +6769,47 @@ void ApplyNormalFixes()
 		if( sp != NULL )
 		    sp->EffectApplyAuraName[0] = SPELL_AURA_MOD_INCREASE_SPEED_ALWAYS;
 			sp->Effect[0] = SPELL_EFFECT_APPLY_AURA;
+
+		/**********************************************************
+		 *	Unholy Presence - Death Knight "passive aura is needed?"
+		 **********************************************************/
+		sp = dbcSpell.LookupEntryForced( 48265 );
+		if( sp != NULL )
+			sp->powerType = 1;
+			sp->Effect[0] = SPELL_EFFECT_APPLY_AURA;
+
+		/**********************************************************
+		 *	Acherus Deathcharger - Death Knight "Incomplete"
+		 **********************************************************/
+		sp = dbcSpell.LookupEntryForced( 48778 );
+		if( sp != NULL )
+			sp->powerType = 1;
+		
+		/**********************************************************
+		 *	Blood Strike Ranks 1, 2, 3, 4, 5, 6 - Death Knight
+		 **********************************************************/
+		sp = dbcSpell.LookupEntryForced( 52374 );
+		if( sp != NULL )
+			sp->powerType = 0;
+
+		sp = dbcSpell.LookupEntryForced( 49926 );
+		if( sp != NULL )
+			sp->powerType = 0;
+
+		sp = dbcSpell.LookupEntryForced( 49927 );
+		if( sp != NULL )
+			sp->powerType = 0;
+
+		sp = dbcSpell.LookupEntryForced( 49928 );
+		if( sp != NULL )
+			sp->powerType = 0;
+
+		sp = dbcSpell.LookupEntryForced( 49929 );
+		if( sp != NULL )
+			sp->powerType = 0;
+
+		sp = dbcSpell.LookupEntryForced( 49930 );
+		if( sp != NULL )
+			sp->powerType = 0;
+		
 }
