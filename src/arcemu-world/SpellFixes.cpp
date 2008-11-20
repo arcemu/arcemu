@@ -6821,5 +6821,6 @@ void ApplyNormalFixes()
 		if( sp != NULL )
 			sp->powerType = 1;
 			sp->Effect[0] = SPELL_EFFECT_ATTACK_ME;
+			
 }
 
