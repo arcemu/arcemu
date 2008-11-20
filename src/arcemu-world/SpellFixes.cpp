@@ -6888,4 +6888,65 @@ void ApplyNormalFixes()
 		sp = dbcSpell.LookupEntryForced( 49924 );
 		if( sp != NULL )
 			sp->powerType = 1;
+
+		/**********************************************************
+		 *	Pestilence Ranks 1, 2, 3, 4, 5
+		 **********************************************************/
+		sp = dbcSpell.LookupEntryForced( 50842 );
+		if( sp != NULL )
+			sp->powerType = 0;
+
+		sp = dbcSpell.LookupEntryForced( 51426 );
+		if( sp != NULL )
+			sp->powerType = 0;
+
+		sp = dbcSpell.LookupEntryForced( 51427 );
+		if( sp != NULL )
+			sp->powerType = 0;
+
+		sp = dbcSpell.LookupEntryForced( 51428 );
+		if( sp != NULL )
+			sp->powerType = 0;
+
+		sp = dbcSpell.LookupEntryForced( 51429 );
+		if( sp != NULL )
+			sp->powerType = 0;
+		
+		/**********************************************************
+		 *	Chains of Ice - "Is correct?"
+		 **********************************************************/
+		sp = dbcSpell.LookupEntryForced( 45524 );
+		if( sp != NULL )
+			sp->powerType = 2;
+			
+		/**********************************************************
+		 *	Death Grip
+		 **********************************************************/
+		sp = dbcSpell.LookupEntryForced( 49576 );
+		if( sp != NULL )
+			sp->powerType = 1;
+			sp->Effect[0] = SPELL_EFFECT_ATTACK_ME;
+
+		/**********************************************************
+		 *	Strangulate Ranks 1, 2, 3, 4, 5
+		 **********************************************************/
+		sp = dbcSpell.LookupEntryForced( 47476 );
+		if( sp != NULL )
+			sp->powerType = 0;
+
+		sp = dbcSpell.LookupEntryForced( 49913 );
+		if( sp != NULL )
+			sp->powerType = 0;
+
+		sp = dbcSpell.LookupEntryForced( 49914 );
+		if( sp != NULL )
+			sp->powerType = 0;
+
+		sp = dbcSpell.LookupEntryForced( 49915 );
+		if( sp != NULL )
+			sp->powerType = 0;
+
+		sp = dbcSpell.LookupEntryForced( 49916 );
+		if( sp != NULL )
+			sp->powerType = 0;
 }
