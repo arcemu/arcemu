@@ -2687,6 +2687,11 @@ bool Spell::TakePower()
 		case POWER_TYPE_ENERGY:{
 			powerField = UNIT_FIELD_POWER4;
 							  }break;
+		case POWER_TYPE_RUNES:{
+			powerField = UNIT_FIELD_POWER5; //Blood
+			powerField = UNIT_FIELD_POWER6; //Frost
+			powerField = UNIT_FIELD_POWER7; //Unholy
+							  }break;
 		default:{
 			sLog.outDebug("unknown power type");
 			// we should'nt be here to return
