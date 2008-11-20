@@ -2080,6 +2080,7 @@ void Player::InitVisibleUpdateBits()
 	Player::m_visibleUpdateMask.SetCount(PLAYER_END);
 	Player::m_visibleUpdateMask.SetBit(OBJECT_FIELD_GUID);
 	Player::m_visibleUpdateMask.SetBit(OBJECT_FIELD_TYPE);
+	Player::m_visibleUpdateMask.SetBit(OBJECT_FIELD_ENTRY);	
 	Player::m_visibleUpdateMask.SetBit(OBJECT_FIELD_SCALE_X);
 
 	Player::m_visibleUpdateMask.SetBit(UNIT_FIELD_SUMMON);
@@ -2106,6 +2107,10 @@ void Player::InitVisibleUpdateBits()
 	Player::m_visibleUpdateMask.SetBit(UNIT_FIELD_MAXPOWER6);
 	Player::m_visibleUpdateMask.SetBit(UNIT_FIELD_MAXPOWER7);
 
+	Player::m_visibleUpdateMask.SetBit(UNIT_VIRTUAL_ITEM_SLOT_ID);
+	Player::m_visibleUpdateMask.SetBit(UNIT_VIRTUAL_ITEM_SLOT_ID + 1);
+	Player::m_visibleUpdateMask.SetBit(UNIT_VIRTUAL_ITEM_SLOT_ID + 2);
+	
 	Player::m_visibleUpdateMask.SetBit(UNIT_FIELD_LEVEL);
 	Player::m_visibleUpdateMask.SetBit(UNIT_FIELD_FACTIONTEMPLATE);
 	Player::m_visibleUpdateMask.SetBit(UNIT_FIELD_BYTES_0);
@@ -2127,6 +2132,7 @@ void Player::InitVisibleUpdateBits()
 	Player::m_visibleUpdateMask.SetBit(UNIT_FIELD_CHANNEL_OBJECT+1);
 	Player::m_visibleUpdateMask.SetBit(UNIT_CHANNEL_SPELL);
 	Player::m_visibleUpdateMask.SetBit(UNIT_DYNAMIC_FLAGS);
+	Player::m_visibleUpdateMask.SetBit(UNIT_FIELD_HOVERHEIGHT);
 
 	Player::m_visibleUpdateMask.SetBit(PLAYER_FLAGS);
 	Player::m_visibleUpdateMask.SetBit(PLAYER_BYTES);
@@ -2138,16 +2144,28 @@ void Player::InitVisibleUpdateBits()
 	Player::m_visibleUpdateMask.SetBit(PLAYER_DUEL_ARBITER+1);
 	Player::m_visibleUpdateMask.SetBit(PLAYER_GUILDID);
 	Player::m_visibleUpdateMask.SetBit(PLAYER_GUILDRANK);
+	Player::m_visibleUpdateMask.SetBit(UNIT_FIELD_BASE_MANA);
 	Player::m_visibleUpdateMask.SetBit(UNIT_FIELD_BYTES_2);
 
-	for(uint16 i = PLAYER_QUEST_LOG_1_1; i < PLAYER_QUEST_LOG_25_2; i+=4)
-       Player::m_visibleUpdateMask.SetBit(i);
-
-	for(uint16 i = 0; i < EQUIPMENT_SLOT_END; i++)
+	// Players visible items are not inventory stuff
+    for(uint16 i = 0; i < EQUIPMENT_SLOT_END; ++i)
 	{
-		Player::m_visibleUpdateMask.SetBit((uint16)(PLAYER_VISIBLE_ITEM_1_0 + (i*18))); // visual items for other players
-		Player::m_visibleUpdateMask.SetBit((uint16)(PLAYER_VISIBLE_ITEM_1_0+1 + (i*18))); // visual items for other players
-	}
+		uint32 offset = i * 18;
+
+		Player::m_visibleUpdateMask.SetBit(PLAYER_VISIBLE_ITEM_1_CREATOR + 0 + offset);
+		Player::m_visibleUpdateMask.SetBit(PLAYER_VISIBLE_ITEM_1_CREATOR + 1 + offset);
+		Player::m_visibleUpdateMask.SetBit(PLAYER_VISIBLE_ITEM_1_0 + 0 + offset);
+		
+		// enchants
+		for(uint8 j = 0; j < 12; ++j)
+		{
+			Player::m_visibleUpdateMask.SetBit(PLAYER_VISIBLE_ITEM_1_0 + 1 + j + offset);
+		}
+		
+		Player::m_visibleUpdateMask.SetBit(PLAYER_VISIBLE_ITEM_1_PROPERTIES + offset);
+		Player::m_visibleUpdateMask.SetBit(PLAYER_VISIBLE_ITEM_1_SEED + offset);
+		Player::m_visibleUpdateMask.SetBit(PLAYER_VISIBLE_ITEM_1_PAD + offset);
+     }
 
 	Player::m_visibleUpdateMask.SetBit(PLAYER_CHOSEN_TITLE);
 }
@@ -7375,6 +7393,14 @@ void Player::ResetAllCooldowns()
 			ClearCooldownsOnLine(78, guid);
 			ClearCooldownsOnLine(613, guid);
 		} break;
+		
+		case DEATHKNIGHT:
+		{
+			ClearCooldownsOnLine(770, guid); 
+			ClearCooldownsOnLine(771, guid); 
+			ClearCooldownsOnLine(772, guid); 
+		} break;
+		
 		case SHAMAN:
 		{
 			ClearCooldownsOnLine(373, guid);

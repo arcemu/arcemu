@@ -1555,7 +1555,7 @@ void WorldSession::HandleGameObjectUse(WorldPacket & recv_data)
 
 			if(goinfo->Unknown1)
 			{
-				uint32 cinematicid = goinfo->Unknown1;
+				uint32 cinematicid = goinfo->sound1;
 				plyr->GetSession()->OutPacket(SMSG_TRIGGER_CINEMATIC, 4, &cinematicid);
 			}
 		}break;

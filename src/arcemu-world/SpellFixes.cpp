@@ -878,7 +878,15 @@ void ApplyNormalFixes()
 			sp->BGR_one_buff_from_caster_on_self = SPELL_TYPE2_PALADIN_AURA;
 			break;
 		}
-
+		
+		switch(namehash)
+		{
+		case SPELL_HASH_BLOOD_PRESENCE:		
+		case SPELL_HASH_FROST_PRESENCE:		
+		case SPELL_HASH_UNHOLY_PRESENCE:		
+			sp->BGR_one_buff_from_caster_on_self = SPELL_TYPE3_DEATH_KNIGHT_AURA;
+			break;
+		}
 		//grouping rule
 		switch(namehash)
 		{
@@ -6732,61 +6740,96 @@ void ApplyNormalFixes()
 		// Insert Death Knight spells here ---- Made by Alice 
 		
 		/**********************************************************
-		 *	Death and Decay Ranks 1, 2, 3, 4 - Death Knight
+		 *	Death and Decay - Ranks 1, 2, 3, 4
 		 **********************************************************/
 		sp = dbcSpell.LookupEntryForced( 43265 ); 
 		if( sp != NULL )
 			sp->powerType = 1; 
-			
+			sp->EffectApplyAuraName[0] = SPELL_AURA_PERIODIC_DAMAGE;		
+			sp->Effect[0] = SPELL_EFFECT_PERSISTENT_AREA_AURA;
+		
 		sp = dbcSpell.LookupEntryForced( 49936 ); 
 		if( sp != NULL )
 			sp->powerType = 1; 
-			
+			sp->EffectApplyAuraName[0] = SPELL_AURA_PERIODIC_DAMAGE;		
+			sp->Effect[0] = SPELL_EFFECT_PERSISTENT_AREA_AURA;
+		
 		sp = dbcSpell.LookupEntryForced( 49937 ); 
 		if( sp != NULL )
 			sp->powerType = 1; 
+			sp->EffectApplyAuraName[0] = SPELL_AURA_PERIODIC_DAMAGE;		
+			sp->Effect[0] = SPELL_EFFECT_PERSISTENT_AREA_AURA;
 			
 		sp = dbcSpell.LookupEntryForced( 49938 ); 
 		if( sp != NULL )
-			sp->powerType = 1; 
+			sp->powerType = 1;
+			sp->EffectApplyAuraName[0] = SPELL_AURA_PERIODIC_DAMAGE;		
+			sp->Effect[0] = SPELL_EFFECT_PERSISTENT_AREA_AURA;
 
 		/**********************************************************
-		 *	Anti Magic Zone - Death Knight
+		 *	Anti Magic Zone
 		 **********************************************************/
 		sp = dbcSpell.LookupEntryForced( 51052 ); 
 		if( sp != NULL )
 			sp->powerType = 1; 
 		
 		/**********************************************************
-		 *	Unholy Aura Ranks 1 & 2 - Death Knight 
+		 *	Unholy Aura - Ranks 1 & 2 
 		 **********************************************************/
 		sp = dbcSpell.LookupEntryForced( 50391 );
 		if( sp != NULL )
 		    sp->EffectApplyAuraName[0] = SPELL_AURA_MOD_INCREASE_SPEED_ALWAYS;
-			sp->Effect[0] = SPELL_EFFECT_APPLY_AURA;
+			sp->Effect[0] = SPELL_EFFECT_APPLY_AREA_AURA;
+			sp->EffectApplyAuraName[1] = SPELL_AURA_PROC_TRIGGER_SPELL;
+			sp->EffectTriggerSpell[1] = 50392;
+			sp->Effect[1] = SPELL_EFFECT_APPLY_AREA_AURA;
+			sp->EffectImplicitTargetA[1] = EFF_TARGET_SELF;
 		
 		sp = dbcSpell.LookupEntryForced( 50392 ); 
 		if( sp != NULL )
 		    sp->EffectApplyAuraName[0] = SPELL_AURA_MOD_INCREASE_SPEED_ALWAYS;
+			sp->Effect[0] = SPELL_EFFECT_APPLY_AREA_AURA;
+			sp->EffectApplyAuraName[1] = SPELL_AURA_PROC_TRIGGER_SPELL;
+			sp->EffectTriggerSpell[1] = 50392;
+			sp->Effect[1] = SPELL_EFFECT_APPLY_AREA_AURA;
+			sp->EffectImplicitTargetA[1] = EFF_TARGET_SELF;
+		
+		/**********************************************************
+		 *	Blood Presence - "passive visual aura is needed?"
+		 **********************************************************/
+		sp = dbcSpell.LookupEntryForced( 48266 );
+		if( sp != NULL )
+			sp->powerType = 0;
 			sp->Effect[0] = SPELL_EFFECT_APPLY_AURA;
+			sp->BGR_one_buff_from_caster_on_self = SPELL_TYPE3_DEATH_KNIGHT_AURA;
+		
+		/**********************************************************
+		 *	Frost Presence - "passive visual aura is needed?"
+		 **********************************************************/
+		sp = dbcSpell.LookupEntryForced( 48263 );
+		if( sp != NULL )
+			sp->powerType = 2;
+			sp->Effect[0] = SPELL_EFFECT_APPLY_AURA;
+			sp->BGR_one_buff_from_caster_on_self = SPELL_TYPE3_DEATH_KNIGHT_AURA;
 
 		/**********************************************************
-		 *	Unholy Presence - Death Knight "passive aura is needed?"
+		 *	Unholy Presence - "passive visual aura is needed?"
 		 **********************************************************/
 		sp = dbcSpell.LookupEntryForced( 48265 );
 		if( sp != NULL )
 			sp->powerType = 1;
 			sp->Effect[0] = SPELL_EFFECT_APPLY_AURA;
+			sp->BGR_one_buff_from_caster_on_self = SPELL_TYPE3_DEATH_KNIGHT_AURA;
 
 		/**********************************************************
-		 *	Acherus Deathcharger - Death Knight "Incomplete"
+		 *	Acherus Deathcharger - "Incomplete"
 		 **********************************************************/
 		sp = dbcSpell.LookupEntryForced( 48778 );
 		if( sp != NULL )
 			sp->powerType = 1;
 		
 		/**********************************************************
-		 *	Blood Strike Ranks 1, 2, 3, 4, 5, 6
+		 *	Blood Strike - Ranks 1, 2, 3, 4, 5, 6
 		 **********************************************************/
 		sp = dbcSpell.LookupEntryForced( 52374 );
 		if( sp != NULL )
@@ -6813,7 +6856,7 @@ void ApplyNormalFixes()
 			sp->powerType = 0;
 
 		/**********************************************************
-		 *	Icy Touch Ranks 1, 2, 3, 4, 5
+		 *	Icy Touch - Ranks 1, 2, 3, 4, 5
 		 **********************************************************/
 		sp = dbcSpell.LookupEntryForced( 52372 );
 		if( sp != NULL )
@@ -6836,7 +6879,7 @@ void ApplyNormalFixes()
 			sp->powerType = 2;
 
 		/**********************************************************
-		 *	Plague Strike Ranks 1, 2, 3, 4, 5, 6
+		 *	Plague Strike - Ranks 1, 2, 3, 4, 5, 6
 		 **********************************************************/
 		sp = dbcSpell.LookupEntryForced( 52373 );
 		if( sp != NULL )
@@ -6863,7 +6906,7 @@ void ApplyNormalFixes()
 			sp->powerType = 1;
 
 		/**********************************************************
-		 *	Death Strike Ranks 1, 2, 3, 4, 5, 6
+		 *	Death Strike - Ranks 1, 2, 3, 4, 5, 6
 		 **********************************************************/
 		sp = dbcSpell.LookupEntryForced( 49998 );
 		if( sp != NULL )
@@ -6890,7 +6933,7 @@ void ApplyNormalFixes()
 			sp->powerType = 1;
 
 		/**********************************************************
-		 *	Pestilence Ranks 1, 2, 3, 4, 5
+		 *	Pestilence - Ranks 1, 2, 3, 4, 5
 		 **********************************************************/
 		sp = dbcSpell.LookupEntryForced( 50842 );
 		if( sp != NULL )
@@ -6928,7 +6971,7 @@ void ApplyNormalFixes()
 			sp->Effect[0] = SPELL_EFFECT_ATTACK_ME;
 
 		/**********************************************************
-		 *	Strangulate Ranks 1, 2, 3, 4, 5
+		 *	Strangulate - Ranks 1, 2, 3, 4, 5
 		 **********************************************************/
 		sp = dbcSpell.LookupEntryForced( 47476 );
 		if( sp != NULL )
@@ -6951,7 +6994,7 @@ void ApplyNormalFixes()
 			sp->powerType = 0;
 
 		/**********************************************************
-		 *	Obliterate Ranks 1, 2, 3, 4, 5
+		 *	Obliterate - Ranks 1, 2, 3, 4, 5
 		 **********************************************************/
 		sp = dbcSpell.LookupEntryForced( 49020 );
 		if( sp != NULL )
@@ -6970,7 +7013,7 @@ void ApplyNormalFixes()
 			sp->powerType = 0;
 
 		/**********************************************************
-		 *	Heart Strike 1, 2, 3, 4, 5, 6
+		 *	Heart Strike - Ranks 1, 2, 3, 4, 5, 6
 		 **********************************************************/
 		sp = dbcSpell.LookupEntryForced( 55050 );
 		if( sp != NULL )
@@ -6997,7 +7040,7 @@ void ApplyNormalFixes()
 			sp->powerType = 0;
 
 		/**********************************************************
-		 *	Corpse Explosion Ranks 1, 2, 3, 4, 5
+		 *	Corpse Explosion - Ranks 1, 2, 3, 4, 5
 		 **********************************************************/
 		sp = dbcSpell.LookupEntryForced( 49158 );
 		if( sp != NULL )
@@ -7020,7 +7063,7 @@ void ApplyNormalFixes()
 			sp->powerType = 1;
 
 		/**********************************************************
-		 *	Scourge Strike Ranks 1, 2, 3, 4
+		 *	Scourge Strike - Ranks 1, 2, 3, 4
 		 **********************************************************/
 		sp = dbcSpell.LookupEntryForced( 55090 );
 		if( sp != NULL )
@@ -7039,7 +7082,7 @@ void ApplyNormalFixes()
 			sp->powerType = 1;
 
 		/**********************************************************
-		 *	Frost Strike Ranks 1, 2, 3, 4, 5, 6
+		 *	Frost Strike - Ranks 1, 2, 3, 4, 5, 6
 		 **********************************************************/
 		sp = dbcSpell.LookupEntryForced( 49143 );
 		if( sp != NULL )
@@ -7066,7 +7109,7 @@ void ApplyNormalFixes()
 			sp->powerType = 1;
 
 		/**********************************************************
-		 *	Howling Blast Ranks 1, 2, 3, 4, 5
+		 *	Howling Blast - Ranks 1, 2, 3, 4, 5
 		 **********************************************************/
 		sp = dbcSpell.LookupEntryForced( 49184 );
 		if( sp != NULL )
@@ -7089,7 +7132,7 @@ void ApplyNormalFixes()
 			sp->powerType = 2;
 
 		/**********************************************************
-		 *	Death Coil (DK) Ranks 1, 2, 3, 4, 5
+		 *	Death Coil (Death Knight) - Ranks 1, 2, 3, 4, 5
 		 **********************************************************/
 		sp = dbcSpell.LookupEntryForced( 52375 );
 		if( sp != NULL )
@@ -7108,6 +7151,13 @@ void ApplyNormalFixes()
 			sp->powerType = 1;
 
 		sp = dbcSpell.LookupEntryForced( 49895 );
+		if( sp != NULL )
+			sp->powerType = 1;
+
+		/**********************************************************
+		 *	Army of the Dead
+		 **********************************************************/
+		sp = dbcSpell.LookupEntryForced( 42650 ); 
 		if( sp != NULL )
 			sp->powerType = 1;
 

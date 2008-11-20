@@ -1190,27 +1190,28 @@ void Spell::SpellEffectDummy(uint32 i) // Dummy(Scripted events)
 	case 11688:
 	case 11689:
 	case 27222:
-		{//converts base+1 points of health into mana
+	case 57946:
+		{//converts base+1+spirit*x points of health into mana
 		if(!p_caster || !playerTarget)
 			return;
 
-		uint32 damage = ( ( ( GetProto()->EffectBasePoints[i] + 1 ) * ( 100 + playerTarget->m_lifetapbonus ) ) / 100 ) + ( ( playerTarget->GetDamageDoneMod( GetProto()->School ) * 80 ) / 100 );
-		if( damage >= playerTarget->GetUInt32Value( UNIT_FIELD_HEALTH ) )
+		uint32 mod;	// spirit bonus coefficient multiplied by 2
+		if(m_spellInfo->Id == 1454) mod = 2;
+		else if(m_spellInfo->Id == 1455) mod = 3;
+		else if(m_spellInfo->Id == 1456) mod = 4;
+		else if(m_spellInfo->Id == 11687) mod = 5;
+		else mod = 6;
+
+		uint32 damage = m_spellInfo->EffectBasePoints[i] + 1 + mod * playerTarget->GetUInt32Value(UNIT_FIELD_STAT4) / 2;
+		if (damage >= playerTarget->GetUInt32Value(UNIT_FIELD_HEALTH))
 			return;
-		p_caster->DealDamage( playerTarget, damage, 0, 0, spellId );
-		p_caster->Energize( playerTarget, spellId, damage, POWER_TYPE_MANA );
-		}break;
-	case 974:
-	case 32593:
-	case 32594:
-		{
-			if(!pSpellId) return;
-			SpellEntry *spellInfo = dbcSpell.LookupEntry(pSpellId);
-			if(!spellInfo) return;
-			uint32 heal32 = CalculateEffect(i,u_caster);
-			unitTarget=u_caster; // Should heal caster :p
-			if(heal32)
-				Heal(heal32);
+		p_caster->DealDamage(playerTarget,damage,0,0,spellId);
+		damage = damage * (100 + playerTarget->m_lifetapbonus) / 100;	// Apply improved life tap
+		if(playerTarget->GetUInt32Value(UNIT_FIELD_POWER1)+damage > playerTarget->GetUInt32Value(UNIT_FIELD_MAXPOWER1))
+			playerTarget->SetUInt32Value(UNIT_FIELD_POWER1,playerTarget->GetUInt32Value(UNIT_FIELD_MAXPOWER1));
+		else
+			playerTarget->SetUInt32Value(UNIT_FIELD_POWER1,playerTarget->GetUInt32Value(UNIT_FIELD_POWER1)+damage);
+		SendHealManaSpellOnPlayer(p_caster, playerTarget, damage, POWER_TYPE_MANA);
 		}break;
 	case 28730: //Arcane Torrent (Mana)
 		{
@@ -6525,7 +6526,7 @@ void Spell::SpellEffectRestoreManaPct(uint32 i)
 	uint32 modMana = damage * maxMana / 100;	
 
 	unitTarget->SetPower(0, modMana + curMana);
-	SendHealManaSpellOnPlayer(u_caster, unitTarget, modMana, 0);
+	SendHealManaSpellOnPlayer(u_caster, unitTarget, modMana, POWER_TYPE_MANA);
 }
 
 void Spell::SpellEffectTriggerSpellWithValue(uint32 i)

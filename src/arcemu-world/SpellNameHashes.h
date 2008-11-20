@@ -16467,5 +16467,9 @@
 #define SPELL_HASH_ROCKET_BOT_ATTACK                                                    0x04B6F70C
 #define SPELL_HASH_VOLLEY_VISUAL_PULSE                                                  0x38D95390
 #define SPELL_HASH_VOLLEY_VISUAL                                                        0x554DA092
+//Death Knight Auras
+#define SPELL_HASH_BLOOD_PRESENCE	48266
+#define SPELL_HASH_FROST_PRESENCE	48263
+#define SPELL_HASH_UNHOLY_PRESENCE  48265
 
 #endif		// _SPELLHASHES_H
