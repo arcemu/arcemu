@@ -2836,7 +2836,7 @@ int luaUnit_TeleportUnit(lua_State * L, Unit * ptr)
 	float posX = (float)luaL_checknumber(L, 2);
 	float posY = (float)luaL_checknumber(L, 3);
 	float posZ = (float)luaL_checknumber(L, 4);
-	if(!mapId || !posX || !posY || !posZ)
+	if(!posX || !posY || !posZ)
 		return 0;
 	LocationVector vec(posX,posY,posZ);
 	static_cast<Player*>( ptr ) ->SafeTeleport(mapId,0,vec);
