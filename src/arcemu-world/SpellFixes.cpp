@@ -6786,7 +6786,7 @@ void ApplyNormalFixes()
 			sp->powerType = 1;
 		
 		/**********************************************************
-		 *	Blood Strike Ranks 1, 2, 3, 4, 5, 6 - Death Knight
+		 *	Blood Strike Ranks 1, 2, 3, 4, 5, 6
 		 **********************************************************/
 		sp = dbcSpell.LookupEntryForced( 52374 );
 		if( sp != NULL )
@@ -6811,5 +6811,27 @@ void ApplyNormalFixes()
 		sp = dbcSpell.LookupEntryForced( 49930 );
 		if( sp != NULL )
 			sp->powerType = 0;
-		
+
+		/**********************************************************
+		 *	Icy Touch Ranks 1, 2, 3, 4, 5, 6
+		 **********************************************************/
+		sp = dbcSpell.LookupEntryForced( 52372 );
+		if( sp != NULL )
+			sp->powerType = 2;
+
+		sp = dbcSpell.LookupEntryForced( 49896 );
+		if( sp != NULL )
+			sp->powerType = 2;
+
+		sp = dbcSpell.LookupEntryForced( 49903 );
+		if( sp != NULL )
+			sp->powerType = 2;
+
+		sp = dbcSpell.LookupEntryForced( 49904 );
+		if( sp != NULL )
+			sp->powerType = 2;
+
+		sp = dbcSpell.LookupEntryForced( 49909 );
+		if( sp != NULL )
+			sp->powerType = 2;		
 }
