@@ -6729,7 +6729,7 @@ void ApplyNormalFixes()
 		// DEATH KNIGHT							//
 		//////////////////////////////////////////
 
-		// Insert Death Knight spells here
+		// Insert Death Knight spells here ---- Made by Alice 
 		
 		/**********************************************************
 		 *	Death and Decay Ranks 1, 2, 3, 4 - Death Knight
@@ -6995,5 +6995,120 @@ void ApplyNormalFixes()
 		sp = dbcSpell.LookupEntryForced( 55262 );
 		if( sp != NULL )
 			sp->powerType = 0;
+
+		/**********************************************************
+		 *	Corpse Explosion Ranks 1, 2, 3, 4, 5
+		 **********************************************************/
+		sp = dbcSpell.LookupEntryForced( 49158 );
+		if( sp != NULL )
+			sp->powerType = 1;
+
+		sp = dbcSpell.LookupEntryForced( 51325 );
+		if( sp != NULL )
+			sp->powerType = 1;
+ 	
+		sp = dbcSpell.LookupEntryForced( 51326 );
+		if( sp != NULL )
+			sp->powerType = 1;
+
+		sp = dbcSpell.LookupEntryForced( 51327 );
+		if( sp != NULL )
+			sp->powerType = 1;
+				
+		sp = dbcSpell.LookupEntryForced( 51328 );
+		if( sp != NULL )
+			sp->powerType = 1;
+
+		/**********************************************************
+		 *	Scourge Strike Ranks 1, 2, 3, 4
+		 **********************************************************/
+		sp = dbcSpell.LookupEntryForced( 55090 );
+		if( sp != NULL )
+			sp->powerType = 1;
+
+		sp = dbcSpell.LookupEntryForced( 55265 );
+		if( sp != NULL )
+			sp->powerType = 1;
+
+		sp = dbcSpell.LookupEntryForced( 55270 );
+		if( sp != NULL )
+			sp->powerType = 1;
+
+		sp = dbcSpell.LookupEntryForced( 55271 );
+		if( sp != NULL )
+			sp->powerType = 1;
+
+		/**********************************************************
+		 *	Frost Strike Ranks 1, 2, 3, 4, 5, 6
+		 **********************************************************/
+		sp = dbcSpell.LookupEntryForced( 49143 );
+		if( sp != NULL )
+			sp->powerType = 1;
+
+		sp = dbcSpell.LookupEntryForced( 51416 );
+		if( sp != NULL )
+			sp->powerType = 1;
+
+		sp = dbcSpell.LookupEntryForced( 51417 );
+		if( sp != NULL )
+			sp->powerType = 1;
+
+		sp = dbcSpell.LookupEntryForced( 51418 );
+		if( sp != NULL )
+			sp->powerType = 1;
+
+		sp = dbcSpell.LookupEntryForced( 51419 );
+		if( sp != NULL )
+			sp->powerType = 1;
+
+		sp = dbcSpell.LookupEntryForced( 55268 );
+		if( sp != NULL )
+			sp->powerType = 1;
+
+		/**********************************************************
+		 *	Howling Blast Ranks 1, 2, 3, 4, 5
+		 **********************************************************/
+		sp = dbcSpell.LookupEntryForced( 49184 );
+		if( sp != NULL )
+			sp->powerType = 2;
+
+		sp = dbcSpell.LookupEntryForced( 51408 );
+		if( sp != NULL )
+			sp->powerType = 2;
+
+		sp = dbcSpell.LookupEntryForced( 51409 );
+		if( sp != NULL )
+			sp->powerType = 2;
+
+		sp = dbcSpell.LookupEntryForced( 51410 );
+		if( sp != NULL )
+			sp->powerType = 2;
+
+		sp = dbcSpell.LookupEntryForced( 51411 );
+		if( sp != NULL )
+			sp->powerType = 2;
+
+		/**********************************************************
+		 *	Death Coil (DK) Ranks 1, 2, 3, 4, 5
+		 **********************************************************/
+		sp = dbcSpell.LookupEntryForced( 52375 );
+		if( sp != NULL )
+			sp->powerType = 1;
+
+		sp = dbcSpell.LookupEntryForced( 49892 );
+		if( sp != NULL )
+			sp->powerType = 1;
+
+		sp = dbcSpell.LookupEntryForced( 49893 );
+		if( sp != NULL )
+			sp->powerType = 1;
+
+		sp = dbcSpell.LookupEntryForced( 49894 );
+		if( sp != NULL )
+			sp->powerType = 1;
+
+		sp = dbcSpell.LookupEntryForced( 49895 );
+		if( sp != NULL )
+			sp->powerType = 1;
 
 }

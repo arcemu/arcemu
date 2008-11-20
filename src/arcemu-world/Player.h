@@ -46,8 +46,8 @@ class SpeedDetector;
 #define PLAYER_ACTION_BUTTON_COUNT 132
 #define PLAYER_ACTION_BUTTON_SIZE PLAYER_ACTION_BUTTON_COUNT * sizeof(ActionButton)
 
-#define PLAYER_LEVEL_CAP_70 70
-#define PLAYER_LEVEL_CAP	70
+#define PLAYER_LEVEL_CAP_70 80
+#define PLAYER_LEVEL_CAP	80
 
 #define ACHIEVEMENT_SEND_DELAY 1000 //we have this delay of sending auras to other players so client will have time to create object first
 #define LOGIN_CIENT_SEND_DELAY 1000 //we have this delay of sending auras to other players so client will have time to create object first
