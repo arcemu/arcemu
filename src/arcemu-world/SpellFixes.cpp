@@ -6725,4 +6725,48 @@ void ApplyNormalFixes()
 		if( sp != NULL )
 			sp->c_is_flags = SPELL_FLAG_IS_FORCEDDEBUFF;
 
+		//////////////////////////////////////////
+		// DEATH KNIGHT							//
+		//////////////////////////////////////////
+
+		// Insert Death Knight spells here
+		
+		/**********************************************************
+		 *	Death and Decay Ranks 1, 2, 3, 4 - Death Knight
+		 **********************************************************/
+		sp = dbcSpell.LookupEntryForced( 43265 ); 
+		if( sp != NULL )
+			sp->powerType = 1; 
+			
+		sp = dbcSpell.LookupEntryForced( 49936 ); 
+		if( sp != NULL )
+			sp->powerType = 1; 
+			
+		sp = dbcSpell.LookupEntryForced( 49937 ); 
+		if( sp != NULL )
+			sp->powerType = 1; 
+			
+		sp = dbcSpell.LookupEntryForced( 49938 ); 
+		if( sp != NULL )
+			sp->powerType = 1; 
+
+		/**********************************************************
+		 *	Anti Magic Zone - Death Knight
+		 **********************************************************/
+		sp = dbcSpell.LookupEntryForced( 51052 ); 
+		if( sp != NULL )
+			sp->powerType = 1; 
+		
+		/**********************************************************
+		 *	Unholy Aura Ranks 1 & 2 - Death Knight 
+		 **********************************************************/
+		sp = dbcSpell.LookupEntryForced( 50391 );
+		if( sp != NULL )
+		    sp->EffectApplyAuraName[0] = SPELL_AURA_MOD_INCREASE_SPEED_ALWAYS;
+			sp->Effect[0] = SPELL_EFFECT_APPLY_AURA;
+		
+		sp = dbcSpell.LookupEntryForced( 50392 ); 
+		if( sp != NULL )
+		    sp->EffectApplyAuraName[0] = SPELL_AURA_MOD_INCREASE_SPEED_ALWAYS;
+			sp->Effect[0] = SPELL_EFFECT_APPLY_AURA;
 }
