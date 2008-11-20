@@ -109,6 +109,8 @@ bool GameObject::CreateFromProto(uint32 entry,uint32 mapid, float x, float y, fl
 	SetFloatValue( GAMEOBJECT_POS_Y, y );
 	SetFloatValue( GAMEOBJECT_POS_Z, z );
 	SetFloatValue( GAMEOBJECT_FACING, ang );
+
+	SetRotation(ang);
 	 
 	//SetUInt32Value( GAMEOBJECT_TIMESTAMP, (uint32)UNIXTIME);
 //    SetUInt32Value( GAMEOBJECT_ARTKIT, 0 );		   //these must be from wdb somewhere i guess
@@ -470,10 +472,7 @@ bool GameObject::Load(GOSpawn *spawn)
 		return false;
 
 	m_spawn = spawn;
-	SetFloatValue(GAMEOBJECT_ROTATION,spawn->o);
-	SetFloatValue(GAMEOBJECT_PARENTROTATION ,spawn->o1);
-	SetFloatValue(GAMEOBJECT_PARENTROTATION_02 ,spawn->o2);
-	SetFloatValue(GAMEOBJECT_PARENTROTATION_03 ,spawn->o3);
+	SetRotation(spawn->o);
 	SetUInt32Value(GAMEOBJECT_FLAGS,spawn->flags);
 //	SetUInt32Value(GAMEOBJECT_LEVEL,spawn->level);
 	SetByte(GAMEOBJECT_BYTES_1, 0,spawn->state);	
@@ -772,5 +771,18 @@ uint32 GameObject::GetGOReqSkill()
 	return 0;
 }
 
+void GameObject::SetRotation(float rad)
+{
+	if (rad > (float)M_PI)
+		rad -= 2*(float)M_PI;
+	else if (rad < -(float)M_PI)
+		rad += 2*(float)M_PI;
+	float sin = sinf(rad/2.f);
 
+	if(sin >= 0)	
+		rad = 1.f + 0.125f * sin;
+	else
+		rad = 1.25f + 0.125f * sin;
+	SetFloatValue(GAMEOBJECT_ROTATION, rad);
+}
 

@@ -679,6 +679,7 @@ protected:
 	void HandleInrangeQuestgiverQuery(WorldPacket & recv_data);
 
 	void HandleRemoveGlyph(WorldPacket & recv_data);
+	void HandleAlterAppearance(WorldPacket & recv_data);
 
 	void HandleSetFactionInactiveOpcode( WorldPacket & recv_data );
 

@@ -846,12 +846,7 @@ bool ChatHandler::HandleGOSpawn(const char *args, WorldSession *m_session)
 
 	go->SetInstanceID(chr->GetInstanceID());
 	go->CreateFromProto(EntryID,mapid,x,y,z,o);
-
-	/* fuck blizz coordinate system */
-	go->SetFloatValue(GAMEOBJECT_PARENTROTATION_02, sinf(o / 2));
-	go->SetFloatValue(GAMEOBJECT_PARENTROTATION_03, cosf(o / 2));
 	go->PushToWorld(m_session->GetPlayer()->GetMapMgr());
-
 	// Create spawn instance
 	GOSpawn * gs = new GOSpawn;
 	gs->entry = go->GetEntry();

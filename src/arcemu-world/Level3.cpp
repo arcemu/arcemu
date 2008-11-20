@@ -2732,16 +2732,7 @@ bool ChatHandler::HandleGORotate(const char * args, WorldSession * m_session)
 		return true;
 	}
 
-	/* this is crap 
-	// let's try rotation_0
-	go->ModFloatValue(GAMEOBJECT_ROTATION, rad);
-	go->ModFloatValue(GAMEOBJECT_ROTATION_01, rad);
-	go->ModFloatValue(GAMEOBJECT_ROTATION_02, rad);
-	go->ModFloatValue(GAMEOBJECT_ROTATION_03, rad);
-	go->SaveToDB();*/
 	float rad = deg * (float(M_PI) / 180.0f);
-	// despawn and respawn
-	//go->Despawn(1000);
 
 	switch(tolower(Axis))
 	{

@@ -189,6 +189,7 @@ public:
 	//void LoadFromDB(GameObjectTemplate *t);
 	void DeleteFromDB();
 	void EventCloseDoor();
+	void SetRotation(float rad);
 
 	//Fishing stuff
 	void UseFishingNode(Player *player);

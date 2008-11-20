@@ -319,20 +319,14 @@ void ArathiBasin::SpawnControlPoint(uint32 Id, uint32 Type)
 void ArathiBasin::OnCreate()
 {
 	// Alliance Gate
-	GameObject *gate = SpawnGameObject(180255, 529, 1284.597290f, 1281.166626f, -15.977916f, 0.706859f, 32, 114, 1.5799990f);
-	gate->SetFloatValue(GAMEOBJECT_ROTATION,0.0129570f);
-	gate->SetFloatValue(GAMEOBJECT_PARENTROTATION,-0.0602880f);
-	gate->SetFloatValue(GAMEOBJECT_PARENTROTATION_02,0.3449600f);
-	gate->SetFloatValue(GAMEOBJECT_PARENTROTATION_03,0.9365900f);
+	GameObject *gate = SpawnGameObject(180255, 529, 1284.597290f, 1281.166626f, -15.977916f, 0.76f, 32, 114, 1.5799990f);
+	gate->SetByte(GAMEOBJECT_BYTES_1, 3, 100);
 	gate->PushToWorld(m_mapMgr);
 	m_gates.push_back(gate);
 
 	// horde gate
-	gate = SpawnGameObject(180256, 529, 708.0902710f, 708.4479370f, -17.3898964f, -2.3910990f, 32, 114, 1.5699990f);
-	gate->SetFloatValue(GAMEOBJECT_ROTATION,0.0502910f);
-	gate->SetFloatValue(GAMEOBJECT_PARENTROTATION,0.0151270f);
-	gate->SetFloatValue(GAMEOBJECT_PARENTROTATION_02,0.9292169f);
-	gate->SetFloatValue(GAMEOBJECT_PARENTROTATION_03,-0.3657840f);
+	gate = SpawnGameObject(180256, 529, 708.0902710f, 708.4479370f, -17.3898964f, 3.92f, 32, 114, 1.5699990f);
+	gate->SetByte(GAMEOBJECT_BYTES_1, 3, 100);
 	gate->PushToWorld(m_mapMgr);
 	m_gates.push_back(gate);
 
