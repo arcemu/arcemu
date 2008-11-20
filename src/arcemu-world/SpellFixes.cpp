@@ -6813,7 +6813,7 @@ void ApplyNormalFixes()
 			sp->powerType = 0;
 
 		/**********************************************************
-		 *	Icy Touch Ranks 1, 2, 3, 4, 5, 6
+		 *	Icy Touch Ranks 1, 2, 3, 4, 5
 		 **********************************************************/
 		sp = dbcSpell.LookupEntryForced( 52372 );
 		if( sp != NULL )
@@ -6833,5 +6833,59 @@ void ApplyNormalFixes()
 
 		sp = dbcSpell.LookupEntryForced( 49909 );
 		if( sp != NULL )
-			sp->powerType = 2;		
+			sp->powerType = 2;
+
+		/**********************************************************
+		 *	Plague Strike Ranks 1, 2, 3, 4, 5, 6
+		 **********************************************************/
+		sp = dbcSpell.LookupEntryForced( 52373 );
+		if( sp != NULL )
+			sp->powerType = 1;
+
+		sp = dbcSpell.LookupEntryForced( 49917 );
+		if( sp != NULL )
+			sp->powerType = 1;
+
+		sp = dbcSpell.LookupEntryForced( 49918 );
+		if( sp != NULL )
+			sp->powerType = 1;
+
+		sp = dbcSpell.LookupEntryForced( 49919 );
+		if( sp != NULL )
+			sp->powerType = 1;
+
+		sp = dbcSpell.LookupEntryForced( 49920 );
+		if( sp != NULL )
+			sp->powerType = 1;
+		
+		sp = dbcSpell.LookupEntryForced( 49921 );
+		if( sp != NULL )
+			sp->powerType = 1;
+
+		/**********************************************************
+		 *	Death Strike Ranks 1, 2, 3, 4, 5, 6
+		 **********************************************************/
+		sp = dbcSpell.LookupEntryForced( 49998 );
+		if( sp != NULL )
+			sp->powerType = 1;
+
+		sp = dbcSpell.LookupEntryForced( 49999 );
+		if( sp != NULL )
+			sp->powerType = 1;
+
+		sp = dbcSpell.LookupEntryForced( 45463 );
+		if( sp != NULL )
+			sp->powerType = 1;
+
+		sp = dbcSpell.LookupEntryForced( 49919 );
+		if( sp != NULL )
+			sp->powerType = 1;
+
+		sp = dbcSpell.LookupEntryForced( 49923 );
+		if( sp != NULL )
+			sp->powerType = 1;
+		
+		sp = dbcSpell.LookupEntryForced( 49924 );
+		if( sp != NULL )
+			sp->powerType = 1;
 }
