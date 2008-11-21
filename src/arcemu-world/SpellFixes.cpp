@@ -6614,6 +6614,10 @@ void ApplyNormalFixes()
 		if( sp != NULL )
 			sp->procChance = 50;
 
+		sp = dbcSpell.LookupEntryForced( 46784 );		// Shadowsong Panther trinket
+		if( sp != NULL )
+			sp->AttributesEx |= ATTRIBUTESEX_NOT_BREAK_STEALTH;
+
 		// Band of the Eternal Champion: reduced proc rate
 		sp = dbcSpell.LookupEntryForced( 35080 );
 		if( sp != NULL )
