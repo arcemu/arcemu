@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="9,00"
+	Version="9.00"
 	Name="ArcScriptMiscScripts"
 	ProjectGUID="{495CDEBE-E216-485B-B2F1-2FC0BD9DAE7D}"
 	RootNamespace="ArcScriptMiscScripts"

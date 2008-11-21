@@ -151,7 +151,21 @@ bool HolidayCheer(uint32 i, Spell * pSpell)
 	}
 	return true;
 }
-
+// -----------------------------------------------------------------------------
+bool PiccolooftheFlamingFire(uint32 i, Spell * pSpell)
+{
+	if(!pSpell->m_caster) return true;
+	static_cast<Player*>(pSpell->m_caster)->Emote(EMOTE_ONESHOT_DANCE);
+	for (PlayerSet::iterator itr = pSpell->m_caster->GetInRangePlayerSetBegin(); itr != pSpell->m_caster->GetInRangePlayerSetEnd(); ++itr)	
+	{
+		if (*itr)
+		{
+			if ((*itr)->GetTeam() == static_cast<Player*>(pSpell->m_caster)->GetTeam())
+				(*itr)->Emote(EMOTE_ONESHOT_DANCE);
+		}
+	}
+	return true;
+}
 // -----------------------------------------------------------------------------
 
 bool NetOMatic(uint32 i, Spell * pSpell)
@@ -499,6 +513,8 @@ void SetupItemSpells_1(ScriptMgr * mgr)
 	mgr->register_dummy_spell(32001, &MinionsOfGurok);			// Minions of gurok
 	mgr->register_dummy_spell(29200, &PurifyBoarMeat);			// Purify Boar meat spell
 	mgr->register_dummy_spell(35036, &WarpRiftGenerator);       // Summon a Warp Rift in Void Ridge
+	mgr->register_dummy_spell(17512, &PiccolooftheFlamingFire); //Piccolo of the flaming fire.
+	mgr->register_dummy_spell(18400, &PiccolooftheFlamingFire); //Piccolo of the flaming fire.
 
 // REGISTER NEW DUMMY SPELLS ABOVE THIS LINE
 // *****************************************************************************
