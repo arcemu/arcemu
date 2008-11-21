@@ -2098,9 +2098,11 @@ void Spell::SpellEffectHeal(uint32 i) // Heal
 				uint32 val = mPlayer->GetUInt32Value(UNIT_FIELD_POWER2);
 				if (val>100)
 					val = 100;
+				uint32 HpPerPoint = float2int32((mPlayer->GetUInt32Value( UNIT_FIELD_MAXHEALTH ) * 0.003f)); //0.3% of hp per point of rage
+				uint32 heal = HpPerPoint * (val/10); //1 point of rage = 0.3% of max hp
 				mPlayer->SetUInt32Value(UNIT_FIELD_POWER2,mPlayer->GetUInt32Value(UNIT_FIELD_POWER2)-val);
 				if (val)
-					mPlayer->Heal(mPlayer,22845,uint32(val*2.5f));
+					mPlayer->Heal(mPlayer,22845,heal);
 			}break;
 		case 18562: //druid - swiftmend
 			{

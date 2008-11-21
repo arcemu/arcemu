@@ -1593,6 +1593,7 @@ void ApplyNormalFixes()
 			sp->NameHash == SPELL_HASH_FLASH_OF_LIGHT)
 			sp->spell_coef_flags |= SPELL_FLAG_IS_DD_OR_DH_SPELL;
 
+
 		//Additional Effect (not healing or damaging)
 		for( uint8 i = 0 ; i < 3 ; i++ )
 		{
