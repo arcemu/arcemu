@@ -5622,7 +5622,11 @@ void ApplyNormalFixes()
 		}
 
 		//Druid: Improved Leader of the Pack
-		sp = dbcSpell.LookupEntryForced( 34299 );
+		sp = dbcSpell.LookupEntryForced( 34297 );
+		if( sp != NULL )
+			sp->proc_interval = 6000;//6 secs
+		//Druid: Improved Leader of the Pack Rank 2
+		sp = dbcSpell.LookupEntryForced( 34300 );
 		if( sp != NULL )
 			sp->proc_interval = 6000;//6 secs
 
