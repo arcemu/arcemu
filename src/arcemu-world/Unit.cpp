@@ -246,7 +246,8 @@ Unit::Unit()
 		BaseStats[i]=0;
 
 	m_H_regenTimer = 2000;
-	m_P_regenTimer = 2000;
+	m_P_regenTimer = 100;
+	m_P_regenTick = 0;
 
 	//	if(GetTypeId() == TYPEID_PLAYER) //only player for now
 	//		CalculateActualArmor();
@@ -2545,13 +2546,20 @@ void Unit::RegeneratePower(bool isinterrupted)
 {
     // This is only 2000 IF the power is not rage
 	if (isinterrupted)
-		m_interruptedRegenTime =2000;
+		m_interruptedRegenTime =100;
 	else
-		m_P_regenTimer = 2000;//set next regen time 
+		m_P_regenTimer = 100;//set next regen time 
+	++m_P_regenTick;
+
 
 	if(!isAlive())
 		return;
-
+	//druids regen every tick, which is every 100ms, at one energy, as of 3.0.2 
+	//I don't know how mana has changed exactly, but it has, will research it - optical
+	if (IsPlayer() && GetPowerType() == POWER_TYPE_ENERGY)
+		static_cast< Player* >( this )->RegenerateEnergy();
+	if (m_P_regenTick != 20)
+		return;
 	// player regen
 	if(this->IsPlayer())
 	{
@@ -2560,9 +2568,6 @@ void Unit::RegeneratePower(bool isinterrupted)
 		{
 		case POWER_TYPE_MANA:
 			static_cast< Player* >( this )->RegenerateMana(isinterrupted);
-			break;
-		case POWER_TYPE_ENERGY:
-			static_cast< Player* >( this )->RegenerateEnergy();
 			break;
 
 		case POWER_TYPE_RAGE:

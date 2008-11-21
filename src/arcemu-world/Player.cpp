@@ -7118,7 +7118,7 @@ void Player::RegenerateEnergy()
 	uint32 mh = GetUInt32Value(UNIT_FIELD_MAXPOWER4);
 	if(cur >= mh)
 		return;
-	float amt = 20.0f * PctPowerRegenModifier[POWER_TYPE_ENERGY];
+	float amt = 1.0f * PctPowerRegenModifier[POWER_TYPE_ENERGY];
 
 	cur += float2int32(amt);
 	SetUInt32Value(UNIT_FIELD_POWER4,(cur>=mh) ? mh : cur);
