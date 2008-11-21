@@ -6618,6 +6618,9 @@ void ApplyNormalFixes()
 		if( sp != NULL )
 			sp->AttributesEx |= ATTRIBUTESEX_NOT_BREAK_STEALTH;
 
+		sp = dbcSpell.LookupEntryForced(36488); //Infernal Protection - cosmic infuser
+		if( sp != NULL )
+			sp->EffectImplicitTargetA[0] = EFF_TARGET_SINGLE_FRIEND;
 		// Band of the Eternal Champion: reduced proc rate
 		sp = dbcSpell.LookupEntryForced( 35080 );
 		if( sp != NULL )
