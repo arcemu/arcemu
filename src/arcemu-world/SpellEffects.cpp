@@ -5420,18 +5420,15 @@ void Spell::SpellEffectCharge(uint32 i)
 
 	float x, y, z;
 	float dx,dy;
-
 	//if(unitTarget->GetTypeId() == TYPEID_UNIT)
 	//	if(unitTarget->GetAIInterface())
 	//		unitTarget->GetAIInterface()->StopMovement(5000);
 	if(unitTarget->GetPositionX() == 0.0f || unitTarget->GetPositionY() == 0.0f)
 		return;
-	
 	dx=unitTarget->GetPositionX()-m_caster->GetPositionX();
 	dy=unitTarget->GetPositionY()-m_caster->GetPositionY();
 	if(dx == 0.0f || dy == 0.0f)
 		return;
-
 	float d = sqrt(dx*dx+dy*dy)-unitTarget->GetFloatValue(UNIT_FIELD_BOUNDINGRADIUS)-m_caster->GetFloatValue(UNIT_FIELD_BOUNDINGRADIUS);
 	float alpha = atanf(dy/dx);
 	if(dx<0)

@@ -5530,6 +5530,16 @@ void ApplyNormalFixes()
 			sp->AuraInterruptFlags = AURA_INTERRUPT_ON_UNUSED2;
 			sp->is_melee_spell = true;
 		}
+		sp = dbcSpell.LookupEntryForced(49376); //feral charge cat
+		if( sp != NULL )
+		{
+			sp->Effect[1] = SPELL_EFFECT_CHARGE; //hackfix (mean't to use trigger missile which isn't implemented)
+			sp->EffectImplicitTargetA[1] = EFF_TARGET_SINGLE_ENEMY;
+			sp->Effect[2] = NULL;
+		}
+		sp = dbcSpell.LookupEntryForced(20719); //feline grace
+		if( sp != NULL )
+			sp->Effect[0] = NULL;
 
 		//Druid: Feral Swiftness
 		sp = dbcSpell.LookupEntryForced( 17002 );
