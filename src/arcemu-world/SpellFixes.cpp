@@ -2838,11 +2838,6 @@ void ApplyNormalFixes()
 			sp->EffectImplicitTargetA[1] = EFF_TARGET_NONE;
 		}
 
-		// Spell 22570 (Maim Rank 1)
-		sp = dbcSpell.LookupEntryForced(22570);
-		if( sp != NULL )
-			sp->AuraInterruptFlags |= AURA_INTERRUPT_ON_ANY_DAMAGE_TAKEN;
-
 		//////////////////////////////////////////
 		// PALADIN								//
 		//////////////////////////////////////////
