@@ -3442,6 +3442,8 @@ void Unit::Strike( Unit* pVictim, uint32 weapon_damage_type, SpellEntry* ability
 
 			if( ability != NULL && ability->NameHash == SPELL_HASH_SHRED )
 				dmg.full_damage += float2int32( dmg.full_damage *  pVictim->ModDamageTakenByMechPCT[MECHANIC_BLEEDING] );
+			if( ability != NULL && ability->NameHash == SPELL_HASH_MAUL)
+				dmg.full_damage += float2int32( dmg.full_damage *  pVictim->ModDamageTakenByMechPCT[MECHANIC_BLEEDING] );
 
 			//pet happiness state dmg modifier
 			if( IsPet() && !static_cast<Pet*>(this)->IsSummon() )
