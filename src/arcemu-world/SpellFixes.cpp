@@ -5516,6 +5516,21 @@ void ApplyNormalFixes()
 
 	// Insert druid spell fixes here
 
+		// Spell 22570 (Maim Rank 1)
+		sp = dbcSpell.LookupEntryForced(22570);
+		if( sp != NULL )
+		{
+			sp->AuraInterruptFlags = AURA_INTERRUPT_ON_UNUSED2;
+			sp->is_melee_spell = true;
+		}
+		// Spell 22570 (Maim Rank 2)
+		sp = dbcSpell.LookupEntryForced(49802);
+		if( sp != NULL )
+		{
+			sp->AuraInterruptFlags = AURA_INTERRUPT_ON_UNUSED2;
+			sp->is_melee_spell = true;
+		}
+
 		//Druid: Feral Swiftness
 		sp = dbcSpell.LookupEntryForced( 17002 );
 		if ( sp != NULL )
