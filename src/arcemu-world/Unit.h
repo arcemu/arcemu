@@ -1322,8 +1322,8 @@ protected:
 	uint32 m_meleespell;
 	void _UpdateSpells(uint32 time);
 
-	uint32 m_H_regenTimer;
-	uint32 m_P_regenTimer;
+	uint16 m_H_regenTimer;
+	uint16 m_P_regenTimer;
 	uint8 m_P_regenTick;
 	uint32 m_interruptedRegenTime; //PowerInterruptedegenTimer.
 	uint32 m_state;		 // flags for keeping track of some states

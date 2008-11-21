@@ -11909,7 +11909,7 @@
 #define SPELL_HASH_PREDATORY_INSTINCTS                                                  0xA67D712D
 #define SPELL_HASH_SINGE                                                                0x6CB0830F
 #define SPELL_HASH_NURTURING_INSTINCT                                                   0x24CB0FB5
-#define SPELL_HASH_MANGLE__CAT_                                                         0xA938E257
+#define SPELL_HASH_MANGLE__CAT_                                                         0x51ED6C19
 #define SPELL_HASH_MOONFIRE_MANA_REDUCTION                                              0x6447266B
 #define SPELL_HASH_MANGLE__BEAR_                                                        0x46B43F3A
 #define SPELL_HASH_EMPOWERED_TOUCH                                                      0x0DE0E09A
