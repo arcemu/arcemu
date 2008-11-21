@@ -45,7 +45,7 @@ void AchievementMgr::SaveToDB()
     {
         //CharacterDatabase.Query("DELETE FROM character_achievement WHERE guid = %u", GetPlayer()->GetUInt32Value(OBJECT_FIELD_GUID)); 
         std::ostringstream ss;
-        ss << "INSERT INTO character_achievement (guid, achievement, date) VALUES ";
+        ss << "REPLACE INTO character_achievement (guid, achievement, date) VALUES ";
         for(CompletedAchievementMap::iterator iter = m_completedAchievements.begin(); iter!=m_completedAchievements.end(); iter++)
         {
             if(iter != m_completedAchievements.begin())
@@ -60,7 +60,7 @@ void AchievementMgr::SaveToDB()
         //CharacterDatabase.Query("DELETE FROM character_achievement_progress WHERE guid = %u", GetPlayer()->GetUInt32Value(OBJECT_FIELD_GUID));
  
         std::ostringstream ss;
-        ss << "INSERT INTO character_achievement_progress (guid, criteria, counter, date) VALUES ";
+        ss << "REPLACE INTO character_achievement_progress (guid, criteria, counter, date) VALUES ";
         for(CriteriaProgressMap::iterator iter = m_criteriaProgress.begin(); iter!=m_criteriaProgress.end(); ++iter)
         {
             if(iter != m_criteriaProgress.begin())
