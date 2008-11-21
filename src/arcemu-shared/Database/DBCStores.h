@@ -1673,6 +1673,7 @@ extern SERVER_DECL DBCStorage<CreatureFamilyEntry> dbcCreatureFamily;
 extern SERVER_DECL DBCStorage<CharClassEntry> dbcCharClass;
 extern SERVER_DECL DBCStorage<CharRaceEntry> dbcCharRace;
 extern SERVER_DECL DBCStorage<MapEntry> dbcMap;
+extern SERVER_DECL DBCStorage<SpellRuneCostEntry> dbcSpellRuneCostEntry;
 extern SERVER_DECL DBCStorage<ItemExtendedCostEntry> dbcItemExtendedCost;
 extern SERVER_DECL DBCStorage<ItemRandomSuffixEntry> dbcItemRandomSuffix;
 extern SERVER_DECL DBCStorage<CombatRatingDBC> dbcCombatRating;

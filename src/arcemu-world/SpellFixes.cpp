@@ -6798,30 +6798,32 @@ void ApplyNormalFixes()
 			sp->EffectImplicitTargetA[1] = EFF_TARGET_SELF;
 		
 		/**********************************************************
-		 *	Blood Presence - "passive visual aura is needed?"
+		 *	Blood Presence
 		 **********************************************************/
 		sp = dbcSpell.LookupEntryForced( 48266 );
 		if( sp != NULL )
-			sp->powerType = 0;
-			sp->Effect[0] = SPELL_EFFECT_APPLY_AURA;
-			sp->BGR_one_buff_from_caster_on_self = SPELL_TYPE3_DEATH_KNIGHT_AURA;
-		
-		/**********************************************************
-		 *	Frost Presence - "passive visual aura is needed?"
-		 **********************************************************/
-		sp = dbcSpell.LookupEntryForced( 48263 );
-		if( sp != NULL )
-			sp->powerType = 2;
-			sp->Effect[0] = SPELL_EFFECT_APPLY_AURA;
+			sp->EffectApplyAuraName[1] = SPELL_AURA_MOD_INCREASE_HEALTH_PERCENT;
+			sp->EffectBasePoints[1] = 14;
 			sp->BGR_one_buff_from_caster_on_self = SPELL_TYPE3_DEATH_KNIGHT_AURA;
 
 		/**********************************************************
-		 *	Unholy Presence - "passive visual aura is needed?"
+		 *	Frost Presence
+		 **********************************************************/
+		sp = dbcSpell.LookupEntryForced( 48263 );
+		if( sp != NULL )
+			sp->EffectApplyAuraName[0] = SPELL_AURA_MOD_BASE_RESISTANCE_PCT;
+			sp->EffectApplyAuraName[1] = SPELL_AURA_MOD_INCREASE_HEALTH_PERCENT;
+			sp->EffectBasePoints[1] = 9;
+			sp->EffectApplyAuraName[2] = SPELL_AURA_MOD_DAMAGE_TAKEN;
+			sp->BGR_one_buff_from_caster_on_self = SPELL_TYPE3_DEATH_KNIGHT_AURA;
+
+		/**********************************************************
+		 *	Unholy Presence
 		 **********************************************************/
 		sp = dbcSpell.LookupEntryForced( 48265 );
 		if( sp != NULL )
-			sp->powerType = 1;
-			sp->Effect[0] = SPELL_EFFECT_APPLY_AURA;
+		    sp->EffectApplyAuraName[1] = SPELL_AURA_MOD_HASTE;
+			sp->EffectApplyAuraName[0] = SPELL_AURA_MOD_INCREASE_SPEED;
 			sp->BGR_one_buff_from_caster_on_self = SPELL_TYPE3_DEATH_KNIGHT_AURA;
 				
 		/**********************************************************
@@ -6832,5 +6834,27 @@ void ApplyNormalFixes()
 			sp->powerType = 1;
 			sp->Effect[0] = SPELL_EFFECT_ATTACK_ME;
 			
+		/**********************************************************
+		 *	Death Coil (Death Knight) - Ranks 1, 2, 3, 4, 5
+		 **********************************************************/
+		sp = dbcSpell.LookupEntryForced( 52375 );
+		if( sp != NULL )
+			sp->powerType = 0;
+
+		sp = dbcSpell.LookupEntryForced( 49892 );
+		if( sp != NULL )
+			sp->powerType = 0;
+
+		sp = dbcSpell.LookupEntryForced( 49893 );
+		if( sp != NULL )
+			sp->powerType = 0;
+
+		sp = dbcSpell.LookupEntryForced( 49894 );
+		if( sp != NULL )
+			sp->powerType = 0;
+
+		sp = dbcSpell.LookupEntryForced( 49895 );
+		if( sp != NULL )
+			sp->powerType = 0;
 }
 
