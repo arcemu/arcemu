@@ -1923,6 +1923,8 @@ bool AIInterface::FindFriends(float dist)
 		{
 			continue;
 		}
+		if (!isHostile((Object*)pUnit,(Object*)m_Unit))
+			continue;
 
 		if( isCombatSupport( m_Unit, pUnit ) && ( pUnit->GetAIInterface()->getAIState() == STATE_IDLE || pUnit->GetAIInterface()->getAIState() == STATE_SCRIPTIDLE ) )//Not sure
 		{
