@@ -5899,7 +5899,7 @@ void ApplyNormalFixes()
 		sp = dbcSpell.LookupEntryForced( 16864 );
 		if( sp != NULL )
 		{
-			sp->procChance=100; //procchance dynamic. 3ppm
+			sp->procChance=6; //procchance dynamic. 3ppm
 			sp->procFlags = PROC_ON_MELEE_ATTACK | PROC_ON_CRIT_ATTACK;
 		}
 		uint32 mm = (1<<(FORM_BEAR-1))|(1<<(FORM_DIREBEAR-1))|(1<<(FORM_MOONKIN-1))|(1<<(FORM_CAT-1));
