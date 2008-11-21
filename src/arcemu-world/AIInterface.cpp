@@ -1923,8 +1923,6 @@ bool AIInterface::FindFriends(float dist)
 		{
 			continue;
 		}
-		if (!isHostile((Object*)pUnit,(Object*)m_Unit))
-			continue;
 
 		if( isCombatSupport( m_Unit, pUnit ) && ( pUnit->GetAIInterface()->getAIState() == STATE_IDLE || pUnit->GetAIInterface()->getAIState() == STATE_SCRIPTIDLE ) )//Not sure
 		{
@@ -1941,7 +1939,7 @@ bool AIInterface::FindFriends(float dist)
 				for(it = m_aiTargets.begin(); it != m_aiTargets.end(); ++it)
 				{
 					Unit *ai_t = m_Unit->GetMapMgr()->GetUnit( it->first );
-					if( ai_t && pUnit->GetAIInterface() )
+					if( ai_t && pUnit->GetAIInterface() && isHostile((Object*)ai_t,(Object*)pUnit) )
 						pUnit->GetAIInterface()->AttackReaction( ai_t, 1, 0 );
 				}
 
