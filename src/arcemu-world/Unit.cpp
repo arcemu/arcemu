@@ -2560,6 +2560,7 @@ void Unit::RegeneratePower(bool isinterrupted)
 		static_cast< Player* >( this )->RegenerateEnergy();
 	if (m_P_regenTick != 20)
 		return;
+	m_P_regenTick = 0; // set back to 0, cycle every 20 seconds
 	// player regen
 	if(this->IsPlayer())
 	{
