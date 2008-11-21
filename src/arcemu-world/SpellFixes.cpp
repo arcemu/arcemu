@@ -5684,6 +5684,7 @@ void ApplyNormalFixes()
 			sp->Effect[0] = 6; 
 			sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
 			sp->EffectTriggerSpell[0] = 339; 
+			sp->procChance = 100;
 			sp->Effect[1] = 0; 
 			sp->procFlags = PROC_ON_MELEE_ATTACK_VICTIM | PROC_REMOVEONUSE;
 			sp->AuraInterruptFlags = 0; //we remove it on proc or timeout
@@ -5697,6 +5698,7 @@ void ApplyNormalFixes()
 			sp->Effect[1] = 0; 
 			sp->procFlags = PROC_ON_MELEE_ATTACK_VICTIM | PROC_REMOVEONUSE;
 			sp->AuraInterruptFlags = 0; //we remove it on proc or timeout
+			sp->procChance = 100;		
 		}
 		sp = dbcSpell.LookupEntryForced( 16811 );
 		if( sp != NULL )
@@ -5707,6 +5709,7 @@ void ApplyNormalFixes()
 			sp->Effect[1] = 0; 
 			sp->procFlags = PROC_ON_MELEE_ATTACK_VICTIM | PROC_REMOVEONUSE;
 			sp->AuraInterruptFlags = 0; //we remove it on proc or timeout
+			sp->procChance = 100;
 		}
 		sp = dbcSpell.LookupEntryForced( 16812 );
 		if( sp != NULL )
@@ -5717,6 +5720,7 @@ void ApplyNormalFixes()
 			sp->Effect[1] = 0; 
 			sp->procFlags = PROC_ON_MELEE_ATTACK_VICTIM | PROC_REMOVEONUSE;
 			sp->AuraInterruptFlags = 0; //we remove it on proc or timeout
+			sp->procChance = 100;
 		}
 		sp = dbcSpell.LookupEntryForced( 16813 );
 		if( sp != NULL )
@@ -5727,6 +5731,7 @@ void ApplyNormalFixes()
 			sp->Effect[1] = 0; 
 			sp->procFlags = PROC_ON_MELEE_ATTACK_VICTIM | PROC_REMOVEONUSE;
 			sp->AuraInterruptFlags = 0; //we remove it on proc or timeout
+			sp->procChance = 100;
 		}
 		sp = dbcSpell.LookupEntryForced( 17329 );
 		if( sp != NULL )
@@ -5737,6 +5742,7 @@ void ApplyNormalFixes()
 			sp->Effect[1] = 0; 
 			sp->procFlags = PROC_ON_MELEE_ATTACK_VICTIM | PROC_REMOVEONUSE;
 			sp->AuraInterruptFlags = 0; //we remove it on proc or timeout
+			sp->procChance = 100;
 		}
 		sp = dbcSpell.LookupEntryForced( 27009 );
 		if( sp != NULL )
@@ -5747,6 +5753,7 @@ void ApplyNormalFixes()
 			sp->Effect[1] = 0; 
 			sp->procFlags = PROC_ON_MELEE_ATTACK_VICTIM | PROC_REMOVEONUSE;
 			sp->AuraInterruptFlags = 0; //we remove it on proc or timeout
+			sp->procChance = 100;
 		}
 		//pounce
 		sp = dbcSpell.LookupEntryForced( 9007 );
