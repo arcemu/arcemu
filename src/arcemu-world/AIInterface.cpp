@@ -302,7 +302,7 @@ void AIInterface::HandleEvent(uint32 event, Unit* pUnit, uint32 misc1)
 
 				//reset ProcCount
 				//ResetProcCounts();
-				m_moveRun = true;
+				m_moveSprint = true;
 				LockAITargets(true);
 				m_aiTargets.clear();
 				LockAITargets(false);
