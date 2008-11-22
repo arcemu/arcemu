@@ -1993,10 +1993,10 @@ protected:
 
     /// Spell state's
     bool    m_usesMana;
-    bool    m_Spell_Failed;        //for 5sr
+    bool    m_Spell_Failed;			//for 5sr
     bool    m_IsReflected;
     bool    m_Delayed;
-    
+    uint8	m_DelayStep;			//3.0.2 - spells can only be delayed twice.
     
     // Spell possibility's
     bool m_CanRelect;

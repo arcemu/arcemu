@@ -1827,13 +1827,15 @@ void Spell::AddTime(uint32 type)
 			if(Rand(p_caster->SpellDelayResist[type]))
 				return;
 		}
+		if (m_DelayStep == 2)
+			return; //spells can only be delayed twice as of 3.0.2
 		if(m_spellState==SPELL_STATE_PREPARING)
 		{
 			// no pushback for some spells
 			if ((GetProto()->InterruptFlags & CAST_INTERRUPT_PUSHBACK) == 0)
 				return;
-
-			int32 delay = m_castTime/4;
+			int32 delay = 500; //0.5 second pushback
+			++m_DelayStep;
 			m_timer+=delay;
 			if(m_timer>m_castTime)
 			{
@@ -1863,7 +1865,8 @@ void Spell::AddTime(uint32 type)
 		}
 		else if( GetProto()->ChannelInterruptFlags != 48140)
 		{
-			int32 delay = GetDuration()/3;
+			int32 delay = 500; //0.5 second push back
+			++m_DelayStep;
 			m_timer-=delay;
 			if(m_timer<0)
 				m_timer=0;
