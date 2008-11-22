@@ -6864,26 +6864,12 @@ void ApplyNormalFixes()
 			sp->Effect[0] = SPELL_EFFECT_ATTACK_ME;
 			
 		/**********************************************************
-		 *	Death Coil (Death Knight) - Ranks 1, 2, 3, 4, 5
+		 *	Acherus Deatcharger
 		 **********************************************************/
-		sp = dbcSpell.LookupEntryForced( 52375 );
+		sp = dbcSpell.LookupEntryForced( 48778 );
 		if( sp != NULL )
-			sp->powerType = 0;
-
-		sp = dbcSpell.LookupEntryForced( 49892 );
-		if( sp != NULL )
-			sp->powerType = 0;
-
-		sp = dbcSpell.LookupEntryForced( 49893 );
-		if( sp != NULL )
-			sp->powerType = 0;
-
-		sp = dbcSpell.LookupEntryForced( 49894 );
-		if( sp != NULL )
-			sp->powerType = 0;
-
-		sp = dbcSpell.LookupEntryForced( 49895 );
-		if( sp != NULL )
-			sp->powerType = 0;
+			sp->EffectApplyAuraName[0] = SPELL_AURA_MOUNTED;
+			sp->EffectApplyAuraName[1] = SPELL_AURA_MOD_INCREASE_MOUNTED_SPEED;
+			sp->EffectBasePoints[1] = 99;
 }
 
