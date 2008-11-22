@@ -22,10 +22,10 @@ bool Model::open()
         printf("Error loading model %s\n", filename.c_str());
         return false;
     }
-	static uint32 modelid = header.nameOfs;
+	
 	memcpy(&header, f.getBuffer(), sizeof(ModelHeader));
 
-	if(header.nBoundingTriangles > 0 && (modelid != 3452816845)) {
+	if(header.nBoundingTriangles > 0) {
 
         animated = isAnimated(f);
 #if 0
