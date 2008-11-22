@@ -141,6 +141,7 @@ void Spell::Init(Object* Caster, SpellEntry *info, bool triggered, Aura* aur)
 	m_spellInfo_override = NULL;
 	m_caster = Caster;
 	duelSpell = false;
+	m_DelayStep = 0;
 
 	switch( Caster->GetTypeId() )
 	{
@@ -1865,7 +1866,7 @@ void Spell::AddTime(uint32 type)
 		}
 		else if( GetProto()->ChannelInterruptFlags != 48140)
 		{
-			int32 delay = 500; //0.5 second push back
+			int32 delay = GetDuration()/4; //0.5 second push back
 			++m_DelayStep;
 			m_timer-=delay;
 			if(m_timer<0)
