@@ -6871,5 +6871,14 @@ void ApplyNormalFixes()
 			sp->EffectApplyAuraName[0] = SPELL_AURA_MOUNTED;
 			sp->EffectApplyAuraName[1] = SPELL_AURA_MOD_INCREASE_MOUNTED_SPEED;
 			sp->EffectBasePoints[1] = 99;
+
+		/**********************************************************
+		 *	Path of Frost
+		 **********************************************************/
+		sp = dbcSpell.LookupEntryForced( 3714 );
+		if( sp != NULL )
+			sp->EffectApplyAuraName[0] = SPELL_AURA_WATER_WALK;
+			sp->Effect[0] = SPELL_EFFECT_APPLY_AURA;
+
 }
 
