@@ -502,7 +502,8 @@ void WorldSession::HandleMovementOpcodes( WorldPacket & recv_data )
 
 			// calculate distance fallen
 			uint32 falldistance = float2int32( _player->z_axisposition - movement_info.z );
-
+			if( _player->z_axisposition <= movement_info.z)
+				falldistance = 1;
 			/*if player is a rogue or druid(in cat form), then apply -17 modifier to fall distance.
 			these checks need improving, low level rogue/druid should not receive this benefit*/
 			if( ( _player->getClass() == ROGUE ) || ( _player->GetShapeShift() == FORM_CAT ) )
@@ -518,7 +519,7 @@ void WorldSession::HandleMovementOpcodes( WorldPacket & recv_data )
 			if( _player->isAlive() && !_player->GodModeCheat && falldistance > 12 && ( UNIXTIME >= _player->m_fallDisabledUntil ) && movement_info.FallTime > 1000 )
 			{
 				// 1.7% damage for each unit fallen on Z axis over 13
-				uint32 health_loss = float2int32( float( _player->GetUInt32Value( UNIT_FIELD_MAXHEALTH ) * ( ( falldistance ) * 0.017 ) ) );
+				uint32 health_loss = float2int32( float( _player->GetUInt32Value( UNIT_FIELD_MAXHEALTH ) * ( ( falldistance - 12 ) * 0.017 ) ) );
 													
 				if( health_loss >= _player->GetUInt32Value( UNIT_FIELD_HEALTH ) )
 					health_loss = _player->GetUInt32Value( UNIT_FIELD_HEALTH );
