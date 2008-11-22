@@ -20,18 +20,6 @@
 #include "StdAfx.h"
 #include "Setup.h"
 
-//Crimson Hammersmith
-class CrimsonHammersmith : public CreatureAIScript
-{
-public:
-  ADD_CREATURE_FACTORY_FUNCTION(CrimsonHammersmith);
-  CrimsonHammersmith(Creature* pCreature) : CreatureAIScript(pCreature) {}
-
-  void OnCombatStart(Unit* mTarget)
-  {
-    _unit->SendChatMessage(CHAT_MSG_MONSTER_YELL, LANG_UNIVERSAL, "Who Dares Disturb Me");
-  }
-};
 
 //Corrupt Minor Manifestation Water Dead
 class Corrupt_Minor_Manifestation_Water_Dead : public CreatureAIScript
@@ -70,10 +58,6 @@ public:
       _unit->SetStandState(0);
   }
 
-  void Destroy()
-  {
-    delete (SavannahProwler*)this;
-  }
 
   static CreatureAIScript *Create(Creature * c) { return new SavannahProwler(c); }
 };
@@ -93,7 +77,6 @@ public:
 
 void SetupMiscCreatures(ScriptMgr *mgr)
 {
-	mgr->register_creature_script(11120, &CrimsonHammersmith::Create);
 	mgr->register_creature_script(5894, &Corrupt_Minor_Manifestation_Water_Dead::Create);
 	mgr->register_creature_script(3425, &SavannahProwler::Create);
 	mgr->register_creature_script(10556, &PeonSleepingAI::Create);

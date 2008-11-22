@@ -600,7 +600,10 @@ bool Creature::CanAddToWorld()
 void Creature::RemoveFromWorld(bool addrespawnevent, bool free_guid)
 {
 	if (GetScript() != NULL )
+	{
 		GetScript()->Destroy();
+		_myScriptClass = NULL;
+	}
 
 	RemoveAllAuras();
 	

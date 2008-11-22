@@ -216,7 +216,7 @@ public:
 	void ModifyAIUpdateEvent(uint32 newfrequency);
 	void RemoveAIUpdateEvent();
 
-	virtual void Destroy() {}
+	virtual void Destroy() { delete this; }
 	Creature* GetUnit() { return _unit; }
 
 protected:
@@ -235,7 +235,7 @@ public:
 	virtual void OnLootTaken(Player * pLooter, ItemPrototype *pItemInfo) {}
 	virtual void OnActivate(Player * pPlayer) {}
 	virtual void AIUpdate() {}
-	virtual void Destroy() {}
+	virtual void Destroy() { delete this; }
 
 	void RegisterAIUpdateEvent(uint32 frequency);
 	void ModifyAIUpdateEvent(uint32 newfrequency);
