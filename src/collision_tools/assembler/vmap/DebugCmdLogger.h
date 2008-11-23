@@ -1,5 +1,6 @@
-/* 
+/*
  * Copyright (C) 2005,2006,2007 MaNGOS <http://www.mangosproject.org/>
+ * Copyright (C) 2008 Arcemu Team <http://www.arcemu.org/>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,8 +22,6 @@
 
 #include <G3D/Vector3.h>
 #include <G3D/Array.h>
-
-using namespace G3D;
 
 /**
 Class is used for debugging. We log activities into a file.
@@ -58,29 +57,29 @@ namespace VMAP
             Command() { iType = STOP; }
 
             inline int getType() { return iType; }
-            inline Vector3 getVector(int pos) { return(Vector3(floats[pos*3+0], floats[pos*3+1], floats[pos*3+2])); }
+            inline G3D::Vector3 getVector(int pos) { return(G3D::Vector3(floats[pos*3+0], floats[pos*3+1], floats[pos*3+2])); }
             inline int getInt(int pos) { return(ints[pos]); }
             inline char* getBuffer() { return(buffer); }
 
             void fillStopCmd() { iType = STOP; }
             void fillStartCmd() { iType = START; }
-            void fillLoadTileCmd(int x, int y, uint32 pMapId) { iType = LOAD_TILE; ints[0] = x; ints[1] = y; ints[2] = pMapId; }
+            void fillLoadTileCmd(int x, int y, G3D::uint32 pMapId) { iType = LOAD_TILE; ints[0] = x; ints[1] = y; ints[2] = pMapId; }
             //void fillLoadTileCmd(int x,int y) { iType = LOAD_TILE; ints[0] = x; ints[1] = y; }
-            void fillUnloadTileCmd(uint32 pMapId) { iType = UNLOAD_INSTANCE; ints[0] = pMapId; }
+            void fillUnloadTileCmd(G3D::uint32 pMapId) { iType = UNLOAD_INSTANCE; ints[0] = pMapId; }
             void fillUnloadTileCmd(unsigned int pMapId, int x,int y) { iType = UNLOAD_TILE; ints[0] = x; ints[1] = y; ints[0]=pMapId; }
-            void fillSetPosCmd(Vector3 pPos) { iType = SET_POS; floats[0] = pPos.x; floats[1]=pPos.y; floats[2]=pPos.z; }
-            void fillTestVisCmd(int pMapId, Vector3 pPos1, Vector3 pPos2, bool result)
+            void fillSetPosCmd(G3D::Vector3 pPos) { iType = SET_POS; floats[0] = pPos.x; floats[1]=pPos.y; floats[2]=pPos.z; }
+            void fillTestVisCmd(int pMapId, G3D::Vector3 pPos1, G3D::Vector3 pPos2, bool result)
             {
                 iType = TEST_VIS; floats[0] = pPos1.x; floats[1]=pPos1.y; floats[2]=pPos1.z;
                 floats[3] = pPos2.x; floats[4]=pPos2.y; floats[5]=pPos2.z;
                 ints[0] = result; ints[1] = pMapId;
             }
-            void fillTestHeightCmd(int pMapId, Vector3 pPos, float result)
+            void fillTestHeightCmd(int pMapId, G3D::Vector3 pPos, float result)
             {
                 iType = TEST_HEIGHT; floats[0] = pPos.x; floats[1]=pPos.y; floats[2]=pPos.z;
                 floats[3] = result; ints[0] = pMapId;
             }
-            void fillTestObjectHitCmd(int pMapId, Vector3 pPos1, Vector3 pPos2, Vector3 pResultPos, bool result)
+            void fillTestObjectHitCmd(int pMapId, G3D::Vector3 pPos1, G3D::Vector3 pPos2, G3D::Vector3 pResultPos, bool result)
             {
                 iType = TEST_OBJECT_HIT; floats[0] = pPos1.x; floats[1]=pPos1.y; floats[2]=pPos1.z;
                 floats[3] = pPos2.x; floats[4]=pPos2.y; floats[5]=pPos2.z;
@@ -98,7 +97,7 @@ namespace VMAP
         private:
             std::string iFileName;
             long iLastPos;
-            Array<Array<Command> > iCommandArray;
+            G3D::Array<G3D::Array<Command> > iCommandArray;
             bool resetfile;
             bool iWritingEnabled;
         public:
@@ -107,11 +106,11 @@ namespace VMAP
             void setResetFile() { resetfile = true; }
             void enableWriting(bool pValue) { iWritingEnabled = pValue; }
             void setFileName(const std::string& pName) { iFileName = pName; }
-            bool getNewCommands(Array<Command>& commandArray);
-            const Array<Array<Command> >& getFullCommandArray() { return iCommandArray; }
+            bool getNewCommands(G3D::Array<Command>& commandArray);
+            const G3D::Array<G3D::Array<Command> >& getFullCommandArray() { return iCommandArray; }
 
             bool appendCmd(const Command& pCommand);
-            bool appendCmds(const Array<Command>& pCmdArray);
+            bool appendCmds(const G3D::Array<Command>& pCmdArray);
     };
 
 }

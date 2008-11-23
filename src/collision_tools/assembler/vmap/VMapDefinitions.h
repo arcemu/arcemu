@@ -1,5 +1,6 @@
-/* 
+/*
  * Copyright (C) 2005,2006,2007 MaNGOS <http://www.mangosproject.org/>
+ * Copyright (C) 2008 Arcemu Team <http://www.arcemu.org/>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,16 +19,18 @@
 
 #ifndef _VMAPDEFINITIONS_H
 #define _VMAPDEFINITIONS_H
+#include <cstring>
 
 namespace VMAP
 {
     //=====================================
-    #define MAX_CAN_FALL_DISTANCE 10.0
+    #define MAX_CAN_FALL_DISTANCE 10.0f
+    const char VMAP_MAGIC[] = "VMAP_2.0";
 
     class VMapDefinitions
     {
         public:
-            static const double getMaxCanFallDistance() { return(MAX_CAN_FALL_DISTANCE); }
+            static float getMaxCanFallDistance() { return MAX_CAN_FALL_DISTANCE; }
     };
 
     //======================================

@@ -1,5 +1,6 @@
-/* 
+/*
  * Copyright (C) 2005,2006,2007 MaNGOS <http://www.mangosproject.org/>
+ * Copyright (C) 2008 Arcemu Team <http://www.arcemu.org/>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,10 +19,16 @@
 
 #include "DebugCmdLogger.h"
 
+using namespace G3D;
+
 namespace VMAP
 {
 
-    bool CommandFileRW::appendCmd(const Command& pCommand)
+    bool CommandFileRW::appendCmd(const Command&
+#ifdef _DEBUG
+        pCommand
+#endif
+        )
     {
         #ifdef _DEBUG
         bool result = false;
@@ -47,7 +54,11 @@ namespace VMAP
 
     //=========================================================
 
-    bool CommandFileRW::appendCmds(const Array<Command>& pCmdArray)
+    bool CommandFileRW::appendCmds(const Array<Command>&
+#ifdef _DEBUG
+        pCmdArray
+#endif
+        )
     {
         #ifdef _DEBUG
         bool result = false;
