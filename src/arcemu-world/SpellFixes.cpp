@@ -2188,7 +2188,27 @@ void ApplyNormalFixes()
 		// WARLOCK								//
 		//////////////////////////////////////////
 
-		// Insert warlock spell fixes here
+	//Warlock Chaos bolt 
+	sp = dbcSpell.LookupEntryForced( 50796 );
+	if( sp != NULL )
+		sp->AttributesEx |= ATTRIBUTES_IGNORE_INVULNERABILITY;
+		sp->School = 2;
+		
+	sp = dbcSpell.LookupEntryForced( 59170 );
+	if( sp != NULL )
+		sp->AttributesEx |= ATTRIBUTES_IGNORE_INVULNERABILITY;
+		sp->School = 2;		
+				
+	sp = dbcSpell.LookupEntryForced( 59171 );
+	if( sp != NULL )
+		sp->AttributesEx |= ATTRIBUTES_IGNORE_INVULNERABILITY;
+		sp->School = 2;
+		
+	sp = dbcSpell.LookupEntryForced( 59172 );
+	if( sp != NULL )
+		sp->AttributesEx |= ATTRIBUTES_IGNORE_INVULNERABILITY;	
+		sp->School = 2;
+	// End Warlock chaos bolt
 
 		//////////////////////////////////////////
 		// DRUID								//
@@ -3784,6 +3804,11 @@ void ApplyNormalFixes()
 		if( sp != NULL )
 			sp->EffectSpellGroupRelation[0] = 8389120 | 256 | 1024;
 	#endif
+
+		//rogue - Killing Spree Stealth fix
+	sp = dbcSpell.LookupEntryForced( 51690 );
+	if( sp != NULL )
+		sp->AttributesEx |= ATTRIBUTESEX_NOT_BREAK_STEALTH;
 
 	//////////////////////////////////////////
 	// PRIEST								//
