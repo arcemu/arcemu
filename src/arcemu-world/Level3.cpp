@@ -2117,12 +2117,17 @@ bool ChatHandler::HandlePlayerInfo(const char* args, WorldSession * m_session)
 		(plr->getGender()?"She":"He"), sess->GetAccountName().c_str(), sess->GetAccountId(), sess->GetPermissions());
 
 	char *client;
-	if(sess->HasFlag(ACCOUNT_FLAG_XPACK_01))
-		client = "WoW Burning Crusade";
-	else if (sess->HasFlag(ACCOUNT_FLAG_XPACK_02))
-		client = "Wrath of the Lich King";
-	else
-		client = "WoW";
+
+	// Clean code says you need to work from highest combined bit to lowest. Second, you need to check if both flags exists.
+        if(sess->HasFlag(ACCOUNT_FLAG_XPACK_02) && sess->HasFlag(ACCOUNT_FLAG_XPACK_01))
+	    client = "TBC and WotLK";
+        else if(sess->HasFlag(ACCOUNT_FLAG_XPACK_02))
+	    client = "Wrath of the Lich King";
+        else if(sess->HasFlag(ACCOUNT_FLAG_XPACK_01))
+	    client = "WoW Burning Crusade";
+        else
+	    client = "WoW";
+
 	BlueSystemMessage(m_session, "%s uses %s (build %u)", (plr->getGender()?"She":"He"),
 		client, sess->GetClientBuild());
 
