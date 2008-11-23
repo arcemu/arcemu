@@ -121,8 +121,8 @@ public:
 
 } // namespace
 
-inline unsigned int hashCode(const G3D::Sphere& sphere) {
-    return (unsigned int)(hashCode(sphere.center) + (sphere.radius * 13));
+inline size_t hashCode(const G3D::Sphere& sphere) {
+    return (size_t)(hashCode(sphere.center) + (sphere.radius * 13));
 }
 
 #endif

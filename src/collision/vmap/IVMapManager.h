@@ -1,6 +1,6 @@
-/*
+/* 
  * Copyright (C) 2005,2006,2007 MaNGOS <http://www.mangosproject.org/>
- * Copyright (C) 2008 Arcemu Team <http://www.arcemu.org/>
+ * Copyright (C) 2007-2008 Ascent Team <http://www.ascentemu.com/>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,7 +21,7 @@
 #define _IVMAPMANAGER_H
 
 #include<string>
-
+class LocationVector;
 //===========================================================
 
 /**
@@ -38,62 +38,48 @@ namespace VMAP
         VMAP_LOAD_RESULT_IGNORED,
     };
 
-    #define VMAP_INVALID_HEIGHT       -100000.0f            // for check
-    #define VMAP_INVALID_HEIGHT_VALUE -200000.0f            // real assigned value in unknown height case
+    #define VMAP_INVALID_HEIGHT -100000.0f
 
     //===========================================================
     class IVMapManager
     {
-        private:
-            bool iEnableLineOfSightCalc;
-            bool iEnableHeightCalc;
-
         public:
-            IVMapManager() : iEnableLineOfSightCalc(true), iEnableHeightCalc(true) {}
+            IVMapManager() {}
 
             virtual ~IVMapManager(void) {}
 
             virtual int loadMap(const char* pBasePath, unsigned int pMapId, int x, int y) = 0;
 
-            virtual bool existsMap(const char* pBasePath, unsigned int pMapId, int x, int y) = 0;
-
             virtual void unloadMap(unsigned int pMapId, int x, int y) = 0;
             virtual void unloadMap(unsigned int pMapId) = 0;
 
+			// LOS
             virtual bool isInLineOfSight(unsigned int pMapId, float x1, float y1, float z1, float x2, float y2, float z2) = 0;
+			virtual bool isInLineOfSight(unsigned int pMapId, LocationVector & v1, LocationVector & v2) = 0;
+
+			// Height
             virtual float getHeight(unsigned int pMapId, float x, float y, float z) = 0;
+			virtual float getHeight(unsigned int mapid, LocationVector & vec) = 0;
+
+			// Indoors
+			virtual bool isInDoors(unsigned int mapid, float x, float y, float z) = 0;
+			virtual bool isInDoors(unsigned int mapid, LocationVector & vec) = 0;
+
+			// Outdoors
+			virtual bool isOutDoors(unsigned int mapid, float x, float y, float z) = 0;
+			virtual bool isOutDoors(unsigned int mapid, LocationVector & vec) = 0;
+
             /**
             test if we hit an object. return true if we hit one. rx,ry,rz will hold the hit position or the dest position, if no intersection was found
             return a position, that is pReduceDist closer to the origin
             */
+
+			// Closest Point
             virtual bool getObjectHitPos(unsigned int pMapId, float x1, float y1, float z1, float x2, float y2, float z2, float& rx, float &ry, float& rz, float pModifyDist) = 0;
-            /**
-            send debug commands
-            */
-            virtual bool processCommand(char *pCommand)= 0;
+			virtual bool getObjectHitPos(unsigned int pMapId, LocationVector & v1, LocationVector & v2, LocationVector & vout, float pModifyDist) = 0;
 
-            /**
-            Enable/disable LOS calculation
-            It is enabled by default. If it is enabled in mid game the maps have to loaded manualy
-            */
-            void setEnableLineOfSightCalc(bool pVal) { iEnableLineOfSightCalc = pVal; }
-            /**
-            Enable/disable model height calculation
-            It is enabled by default. If it is enabled in mid game the maps have to loaded manualy
-            */
-            void setEnableHeightCalc(bool pVal) { iEnableHeightCalc = pVal; }
-
-            bool isLineOfSightCalcEnabled() const { return(iEnableLineOfSightCalc); }
-            bool isHeightCalcEnabled() const { return(iEnableHeightCalc); }
-            bool isMapLoadingEnabled() const { return(iEnableLineOfSightCalc || iEnableHeightCalc  ); }
 
             virtual std::string getDirFileName(unsigned int pMapId, int x, int y) const =0;
-            /**
-            Block maps from being used.
-            parameter: String of map ids. Delimiter = ","
-            e.g.: "0,1,530"
-            */
-            virtual void preventMapsFromBeingUsed(const char* pMapIdString) =0;
     };
 
 }

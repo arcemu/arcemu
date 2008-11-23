@@ -1,6 +1,6 @@
-/*
+/* 
  * Copyright (C) 2005,2006,2007 MaNGOS <http://www.mangosproject.org/>
- * Copyright (C) 2008 Arcemu Team <http://www.arcemu.org/>
+ * Copyright (C) 2007-2008 Ascent Team <http://www.ascentemu.com/>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,6 +23,8 @@
 #include <G3D/Table.h>
 #include <G3D/Array.h>
 
+using namespace G3D;
+
 /**
 This Class is a helper Class to convert the raw vector data into BSP-Trees.
 We read the directory file of the raw data output and build logical groups.
@@ -41,8 +43,8 @@ namespace VMAP
     class NameCollection
     {
         public:
-            G3D::Array<std::string> iMainFiles;
-            G3D::Array<std::string> iSingeFiles;
+            Array<std::string> iMainFiles;
+            Array<std::string> iSingeFiles;
 
             void appendToMain(std::string pStr) { iMainFiles.append(pStr); }
             void appendToSingle(std::string pStr) { iSingeFiles.append(pStr); }
@@ -58,7 +60,7 @@ namespace VMAP
             int xPos;
             int yPos;
             unsigned int iMapId;
-            G3D::Array<std::string> iFilenames;
+            Array<std::string> iFilenames;
 
         public:
             CMappingEntry() { };
@@ -71,7 +73,7 @@ namespace VMAP
 
             void addFilename(char *pName);
             const std::string getKeyString() const;
-            inline const G3D::Array<std::string>& getFilenames() const { return(iFilenames); }
+            inline const Array<std::string>& getFilenames() const { return(iFilenames); }
 
             static const std::string getKeyString(unsigned int pMapId, int pXPos, int pYPos)
             {
@@ -87,10 +89,10 @@ namespace VMAP
     class CoordModelMapping
     {
         private:
-            G3D::Table<std::string, CMappingEntry *> iMapObjectFiles;
-            G3D::Table<std::string, std::string> iProcesseSingleFiles;
-            G3D::Array<unsigned int> iMapIds;
-            G3D::Array<unsigned int> iWorldAreaGroups;
+            Table<std::string, CMappingEntry *> iMapObjectFiles;
+            Table<std::string, std::string> iProcesseSingleFiles;
+            Array<unsigned int> iMapIds;
+            Array<unsigned int> iWorldAreaGroups;
             bool (*iFilterMethod)(char *pName);
 
             inline void addCMappingEntry(CMappingEntry* pCMappingEntry)
@@ -126,9 +128,9 @@ namespace VMAP
                 return(mapId);
             }
 
-            const G3D::Array<unsigned int>& getMaps() const { return iMapIds; }
-            bool isAlreadyProcessedSingleFile(std::string pName) const { return iProcesseSingleFiles.containsKey(pName); }
-            void addAlreadyProcessedSingleFile(std::string pName) { iProcesseSingleFiles.set(pName,pName); }
+            const Array<unsigned int>& getMaps() const { return iMapIds; }
+            inline bool isAlreadyProcessedSingleFile(std::string pName) { return(iProcesseSingleFiles.containsKey(pName)); }
+            inline void addAlreadyProcessedSingleFile(std::string pName) { iProcesseSingleFiles.set(pName,pName); }
 
             inline void addWorldAreaMap(unsigned int pMapId)
             {
@@ -137,7 +139,7 @@ namespace VMAP
                     iWorldAreaGroups.append(pMapId);
                 }
             }
-            bool isWorldAreaMap(unsigned int pMapId) const { return(iWorldAreaGroups.contains(pMapId)); }
+            inline bool isWorldAreaMap(unsigned int pMapId) { return(iWorldAreaGroups.contains(pMapId)); }
             void setModelNameFilterMethod(bool (*pFilterMethod)(char *pName)) { iFilterMethod = pFilterMethod; }
 
     };

@@ -1,6 +1,6 @@
-/*
+/* 
  * Copyright (C) 2005,2006,2007 MaNGOS <http://www.mangosproject.org/>
- * Copyright (C) 2008 Arcemu Team <http://www.arcemu.org/>
+ * Copyright (C) 2007-2008 Ascent Team <http://www.ascentemu.com/>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,38 +18,71 @@
  */
 
 #include "VMapManager.h"
-#include "VMapDefinitions.h"
 
-using namespace G3D;
+#if defined(WIN32)
+#define snprintf _snprintf
+#endif
+
+#define MAX_MAPS 600
 
 namespace VMAP
 {
+	inline bool IsTileMap(unsigned int mapid)
+	{
+		switch( mapid )
+		{
+		case 509:
+		case 469:
+		case 189:
+		case 30:
+		case 37:
+		case 33:
+		case 533:
+		case 209:
+		case 309:
+		case 560:
+		case 534:
+		case 532:
+		case 543:
+		case 568:
+		case 564:
+		case 0:
+		case 1:
+		case 530:
+			return true;
+			break;
+
+		default:
+			return false;
+			break;
+		}
+	}
+
+	static MapTree * m_maps[MAX_MAPS];
 
     //=========================================================
 
     VMapManager::VMapManager()
     {
-#ifdef _VMAP_LOG_DEBUG
-        iCommandLogger.setFileName("vmapcmd.log");
-        iCommandLogger.setResetFile();
-#endif
+		memset( m_maps, 0, sizeof(MapTree*) * MAX_MAPS );
     }
 
     //=========================================================
 
     VMapManager::~VMapManager(void)
     {
-        Array<unsigned int > keyArray = iInstanceMapTrees.getKeys();
-        for(int i=0;i<keyArray.size(); ++i)
-        {
-            delete iInstanceMapTrees.get(keyArray[i]);
-            iInstanceMapTrees.remove(keyArray[i]);
-        }
+		for(unsigned int i = 0; i < MAX_MAPS; ++i)
+		{
+			if( m_maps[i] != NULL )
+				delete m_maps[i];
+
+			m_maps[i] = NULL;
+		}
     }
 
     //=========================================================
 
-    Vector3 VMapManager::convertPositionToInternalRep(float x, float y, float z) const
+    inline Vector3 VMapManager::convertPositionToInternalRep(float x, float y, float z) const
     {
         float pos[3];
         pos[0] = y;
@@ -65,7 +98,7 @@ namespace VMAP
 
     //=========================================================
 
-    Vector3 VMapManager::convertPositionToMangosRep(float x, float y, float z) const
+    inline Vector3 VMapManager::convertPositionToMangosRep(float x, float y, float z) const
     {
         float pos[3];
         pos[0] = z;
@@ -79,12 +112,73 @@ namespace VMAP
         return(Vector3(pos));
     }
     //=========================================================
+	//=========================================================
+
+	inline Vector3 VMapManager::convertPositionToInternalRep(LocationVector & vec) const
+	{
+		float pos[3];
+		pos[0] = vec.y;
+		pos[1] = vec.z;
+		pos[2] = vec.x;
+		double full = 64.0*533.33333333;
+		double mid = full/2.0;
+		pos[0] = full- (pos[0] + mid);
+		pos[2] = full- (pos[2] + mid);
+
+		return(Vector3(pos));
+	}
+
+	inline Vector3 VMapManager::convertPositionToInternalRepMod(LocationVector & vec) const
+	{
+		float pos[3];
+		pos[0] = vec.y;
+		pos[1] = vec.z + 2.0f;
+		pos[2] = vec.x;
+		double full = 64.0*533.33333333;
+		double mid = full/2.0;
+		pos[0] = full- (pos[0] + mid);
+		pos[2] = full- (pos[2] + mid);
+
+		return(Vector3(pos));
+	}
+
+
+	//=========================================================
+
+	inline Vector3 VMapManager::convertPositionToMangosRep(LocationVector & vec) const
+	{
+		float pos[3];
+		pos[0] = vec.y;
+		pos[1] = vec.z;
+		pos[2] = vec.x;
+		double full = 64.0*533.33333333;
+		double mid = full/2.0;
+		pos[0] = -((mid+pos[0])-full);
+		pos[1] = -((mid+pos[1])-full);
+
+		return(Vector3(pos));
+	}
+
+	inline LocationVector VMapManager::convertPositionToMangosRep(Vector3 & src) const
+	{
+		float pos[3];
+		pos[0] = src.z;
+		pos[1] = src.x;
+		pos[2] = src.y;
+		double full = 64.0*533.33333333;
+		double mid = full/2.0;
+		pos[0] = -((mid+pos[0])-full);
+		pos[1] = -((mid+pos[1])-full);
+
+		return LocationVector(pos[0], pos[1], pos[2]);
+	}
+	//=========================================================
 
     std::string VMapManager::getDirFileName(unsigned int pMapId, int x, int y) const
     {
         char name[FILENAMEBUFFER_SIZE];
 
-        sprintf(name, "%03u_%d_%d%s",pMapId, x, y, DIR_FILENAME_EXTENSION);
+        snprintf(name, FILENAMEBUFFER_SIZE, "%03u_%d_%d%s",pMapId, x, y, DIR_FILENAME_EXTENSION);
         return(std::string(name));
     }
 
@@ -93,7 +187,7 @@ namespace VMAP
     {
         char name[FILENAMEBUFFER_SIZE];
 
-        sprintf(name, "%03d%s",pMapId, DIR_FILENAME_EXTENSION);
+        snprintf(name, FILENAMEBUFFER_SIZE, "%03d%s",pMapId, DIR_FILENAME_EXTENSION);
         return(std::string(name));
     }
     //=========================================================
@@ -144,249 +238,78 @@ namespace VMAP
     }
 
     //=========================================================
-    // result false, if no more id are found
-
-    bool getNextMapId(const std::string& pString, unsigned int& pStartPos, unsigned int& pId)
-    {
-        bool result = false;
-        unsigned int i;
-        for(i=pStartPos;i<pString.size(); ++i)
-        {
-            if(pString[i] == ',')
-            {
-                break;
-            }
-        }
-        if(i>pStartPos)
-        {
-            std::string idString = pString.substr(pStartPos, i-pStartPos);
-            pStartPos = i+1;
-            chompAndTrim(idString);
-            pId = atoi(idString.c_str());
-            result = true;
-        }
-        return(result);
-    }
-
-    //=========================================================
-    /**
-    Block maps from being used.
-    parameter: String of map ids. Delimiter = ","
-    e.g.: "0,1,590"
-    */
-
-    void VMapManager::preventMapsFromBeingUsed(const char* pMapIdString)
-    {
-        if(pMapIdString != NULL)
-        {
-            unsigned int pos =0;
-            unsigned int id;
-            std::string confString(pMapIdString);
-            chompAndTrim(confString);
-            while(getNextMapId(confString, pos, id))
-            {
-                iIgnoreMapIds.set(id, true);
-            }
-        }
-    }
-
-    //=========================================================
 
     int VMapManager::loadMap(const char* pBasePath, unsigned int pMapId, int x, int y)
     {
-        int result = VMAP_LOAD_RESULT_IGNORED;
-        if(isMapLoadingEnabled() && !iIgnoreMapIds.containsKey(pMapId))
-        {
-            bool loaded = _loadMap(pBasePath, pMapId, x, y, false);
-            if(!loaded)
-            {
-                // if we can't load the map it might be splitted into tiles. Try that one and store the result
-                loaded = _loadMap(pBasePath, pMapId, x, y, true);
-                if(loaded)
-                {
-                    iMapsSplitIntoTiles.set(pMapId, true);
-                }
-            }
-            if(loaded)
-            {
-                result = VMAP_LOAD_RESULT_OK;
-                // just for debugging
-#ifdef _VMAP_LOG_DEBUG
-                Command c = Command();
-                c.fillLoadTileCmd(x, y, pMapId);
-                iCommandLogger.appendCmd(c);
-#endif
-            }
-            else
-            {
-                result = VMAP_LOAD_RESULT_ERROR;
-            }
-        }
-        return result;
+		bool result = false;
+		std::string dirFileName;
+		if( pMapId >= MAX_MAPS )
+			return false;
+
+		if( IsTileMap( pMapId ) )
+			dirFileName = getDirFileName( pMapId, x, y );
+		else
+			dirFileName = getDirFileName( pMapId );
+
+		MapTree* instanceTree = m_maps[pMapId];
+		if( instanceTree == NULL )
+		{
+			instanceTree = new MapTree( pBasePath );
+			m_maps[pMapId] = instanceTree;
+		}
+
+		unsigned int mapTileIdent = MAP_TILE_IDENT(x,y);
+		result = instanceTree->loadMap(dirFileName, mapTileIdent);
+		if(!result)                                         // remove on fail
+		{
+			if(instanceTree->size() == 0)
+			{
+				m_maps[pMapId] = NULL;
+				delete instanceTree;
+			}
+		}
+		return(result);
     }
 
-    //=========================================================
-    // load one tile (internal use only)
-
-    bool VMapManager::_loadMap(const char* pBasePath, unsigned int pMapId, int x, int y, bool pForceTileLoad)
-    {
-        bool result = false;
-        std::string dirFileName;
-        if(pForceTileLoad || iMapsSplitIntoTiles.containsKey(pMapId))
-        {
-            dirFileName = getDirFileName(pMapId,x,y);
-        }
-        else
-        {
-            dirFileName = getDirFileName(pMapId);
-        }
-        MapTree* instanceTree;
-        if(!iInstanceMapTrees.containsKey(pMapId))
-        {
-            instanceTree = new MapTree(pBasePath);
-            iInstanceMapTrees.set(pMapId, instanceTree);
-        }
-        else
-            instanceTree = iInstanceMapTrees.get(pMapId);
-
-        unsigned int mapTileIdent = MAP_TILE_IDENT(x,y);
-        result = instanceTree->loadMap(dirFileName, mapTileIdent);
-        if(!result)                                         // remove on fail
-        {
-            if(instanceTree->size() == 0)
-            {
-                iInstanceMapTrees.remove(pMapId);
-                delete instanceTree;
-            }
-        }
-        return(result);
-    }
-
-    //=========================================================
-
-    bool VMapManager::_existsMap(const std::string& pBasePath, unsigned int pMapId, int x, int y, bool pForceTileLoad)
-    {
-        bool result = false;
-        std::string dirFileName;
-        if(pForceTileLoad || iMapsSplitIntoTiles.containsKey(pMapId))
-        {
-            dirFileName = getDirFileName(pMapId,x,y);
-        }
-        else
-        {
-            dirFileName = getDirFileName(pMapId);
-        }
-        size_t len = pBasePath.length() + dirFileName.length();
-        char *filenameBuffer = new char[len+1];
-        sprintf(filenameBuffer, "%s%s", pBasePath.c_str(), dirFileName.c_str());
-        FILE* df = fopen(filenameBuffer, "rb");
-        if(df)
-        {
-            char lineBuffer[FILENAMEBUFFER_SIZE];
-            if (fgets(lineBuffer, FILENAMEBUFFER_SIZE-1, df) != 0)
-            {
-                std::string name = std::string(lineBuffer);
-                chomp(name);
-                if(name.length() >1)
-                {
-                    sprintf(filenameBuffer, "%s%s", pBasePath.c_str(), name.c_str());
-                    FILE* df2 = fopen(filenameBuffer, "rb");
-                    if(df2)
-                    {
-                        char magic[8];
-                        fread(magic,1,8,df2);
-                        if(!strncmp(VMAP_MAGIC,magic,8))
-                            result = true;
-                        fclose(df2);
-                    }
-                }
-            }
-            fclose(df);
-        }
-        delete[] filenameBuffer;
-        return result;
-    }
-
-    //=========================================================
-
-    bool VMapManager::existsMap(const char* pBasePath, unsigned int pMapId, int x, int y)
-    {
-        std::string basePath = std::string(pBasePath);
-        if(basePath.length() > 0 && (basePath[basePath.length()-1] != '/' || basePath[basePath.length()-1] != '\\'))
-        {
-            basePath.append("/");
-        }
-        bool found = _existsMap(basePath, pMapId, x, y, false);
-        if(!found)
-        {
-            // if we can't load the map it might be splitted into tiles. Try that one and store the result
-            found = _existsMap(basePath, pMapId, x, y, true);
-            if(found)
-            {
-                iMapsSplitIntoTiles.set(pMapId, true);
-            }
-        }
-        return found;
-    }
 
     //=========================================================
 
     void VMapManager::unloadMap(unsigned int pMapId, int x, int y)
     {
-        _unloadMap(pMapId, x, y);
+		if( m_maps[pMapId] != NULL )
+		{
+			MapTree * instanceTree = m_maps[pMapId];
+			std::string dirFileName;
 
-#ifdef _VMAP_LOG_DEBUG
-        Command c = Command();
-        c.fillUnloadTileCmd(pMapId, x,y);
-        iCommandLogger.appendCmd(c);
-#endif
-    }
+			if( IsTileMap( pMapId ) )
+				dirFileName = getDirFileName( pMapId, x, y );
+			else
+				dirFileName = getDirFileName( pMapId );
 
-    //=========================================================
-
-    void VMapManager::_unloadMap(unsigned int  pMapId, int x, int y)
-    {
-        if(iInstanceMapTrees.containsKey(pMapId))
-        {
-            MapTree* instanceTree = iInstanceMapTrees.get(pMapId);
-            std::string dirFileName;
-            if(iMapsSplitIntoTiles.containsKey(pMapId))
-            {
-                dirFileName = getDirFileName(pMapId,x,y);
-            }
-            else
-            {
-                dirFileName = getDirFileName(pMapId);
-            }
-            unsigned int mapTileIdent = MAP_TILE_IDENT(x,y);
-            instanceTree->unloadMap(dirFileName, mapTileIdent);
-            if(instanceTree->size() == 0)
-            {
-                iInstanceMapTrees.remove(pMapId);
-                delete instanceTree;
-            }
-        }
+			unsigned int mapTileIdent = MAP_TILE_IDENT(x,y);
+			instanceTree->unloadMap(dirFileName, mapTileIdent);
+			if(instanceTree->size() == 0)
+			{
+				m_maps[ pMapId ] = NULL;
+				delete instanceTree;
+			}
+		}
     }
 
     //=========================================================
 
     void VMapManager::unloadMap(unsigned int pMapId)
     {
-        if(iInstanceMapTrees.containsKey(pMapId))
+		if( m_maps[pMapId] != NULL )
         {
-            MapTree* instanceTree = iInstanceMapTrees.get(pMapId);
+            MapTree* instanceTree = m_maps[ pMapId ];
             std::string dirFileName = getDirFileName(pMapId);
-            instanceTree->unloadMap(dirFileName, 0, true);
+            instanceTree->unloadMap(dirFileName, 0);
             if(instanceTree->size() == 0)
             {
-                iInstanceMapTrees.remove(pMapId);
+				m_maps[pMapId]=NULL;
                 delete instanceTree;
             }
-#ifdef _VMAP_LOG_DEBUG
-            Command c = Command();
-            c.fillUnloadTileCmd(pMapId);
-            iCommandLogger.appendCmd(c);
-#endif
         }
     }
     //==========================================================
@@ -394,24 +317,84 @@ namespace VMAP
     bool VMapManager::isInLineOfSight(unsigned int pMapId, float x1, float y1, float z1, float x2, float y2, float z2)
     {
         bool result = true;
-        if(isLineOfSightCalcEnabled() && iInstanceMapTrees.containsKey(pMapId))
+		if( m_maps[pMapId] != NULL )
         {
             Vector3 pos1 = convertPositionToInternalRep(x1,y1,z1);
             Vector3 pos2 = convertPositionToInternalRep(x2,y2,z2);
             if(pos1 != pos2)
             {
-                MapTree* mapTree = iInstanceMapTrees.get(pMapId);
+                MapTree* mapTree = m_maps[pMapId];
                 result = mapTree->isInLineOfSight(pos1, pos2);
-#ifdef _VMAP_LOG_DEBUG
-                Command c = Command();
-                                                            // save the orig vectors
-                c.fillTestVisCmd(pMapId,Vector3(x1,y1,z1),Vector3(x2,y2,z2),result);
-                iCommandLogger.appendCmd(c);
-#endif
             }
         }
         return(result);
     }
+
+	bool VMapManager::isInLineOfSight(unsigned int pMapId, LocationVector & v1, LocationVector & v2)
+	{
+		bool result = true;
+		if( m_maps[pMapId] != NULL )
+		{
+			Vector3 pos1 = convertPositionToInternalRepMod(v1);
+			Vector3 pos2 = convertPositionToInternalRepMod(v2);
+			if(pos1 != pos2)
+			{
+				MapTree* mapTree = m_maps[pMapId];
+				result = mapTree->isInLineOfSight(pos1, pos2);
+			}
+		}
+		return(result);
+	}
+
+	bool VMapManager::isInDoors(unsigned int mapid, float x, float y, float z)
+	{
+		bool result = false;
+		if( m_maps[mapid] != NULL )
+		{
+			Vector3 pos = convertPositionToInternalRep(x,y,z);
+			MapTree* mapTree = m_maps[mapid];
+			result = mapTree->isInDoors(pos);
+		}
+		return(result);
+	}
+
+	bool VMapManager::isInDoors(unsigned int mapid, LocationVector & vec)
+	{
+		bool result = false;
+		if( m_maps[mapid] != NULL )
+		{
+			Vector3 pos = convertPositionToInternalRepMod(vec);
+			MapTree* mapTree = m_maps[mapid];
+			result = mapTree->isInDoors(pos);
+		}
+		return(result);
+	}
+
+	bool VMapManager::isOutDoors(unsigned int mapid, float x, float y, float z)
+	{
+		bool result = false;
+		if( m_maps[mapid] != NULL )
+		{
+			Vector3 pos = convertPositionToInternalRep(x,y,z);
+			MapTree* mapTree = m_maps[mapid];
+			result = mapTree->isOutDoors(pos);
+		}
+		return(result);
+	}
+
+	bool VMapManager::isOutDoors(unsigned int mapid, LocationVector & vec)
+	{
+		bool result = false;
+		if( m_maps[mapid] != NULL )
+		{
+			Vector3 pos = convertPositionToInternalRepMod(vec);
+			MapTree* mapTree = m_maps[mapid];
+			result = mapTree->isOutDoors(pos);
+		}
+		return(result);
+	}
+
+
     //=========================================================
     /**
     get the hit position and return true if we hit something
@@ -423,28 +406,36 @@ namespace VMAP
         rx=x2;
         ry=y2;
         rz=z2;
-        if(isLineOfSightCalcEnabled())
-        {
-            if(iInstanceMapTrees.containsKey(pMapId))
-            {
+		if( m_maps[pMapId] != NULL )
+		{
                 Vector3 pos1 = convertPositionToInternalRep(x1,y1,z1);
                 Vector3 pos2 = convertPositionToInternalRep(x2,y2,z2);
                 Vector3 resultPos;
-                MapTree* mapTree = iInstanceMapTrees.get(pMapId);
+                MapTree* mapTree = m_maps[pMapId];
                 result = mapTree->getObjectHitPos(pos1, pos2, resultPos, pModifyDist);
                 resultPos = convertPositionToMangosRep(resultPos.x,resultPos.y,resultPos.z);
                 rx = resultPos.x;
                 ry = resultPos.y;
                 rz = resultPos.z;
-#ifdef _VMAP_LOG_DEBUG
-                Command c = Command();
-                c.fillTestObjectHitCmd(pMapId, pos1, pos2, resultPos, result);
-                iCommandLogger.appendCmd(c);
-#endif
-            }
         }
         return result;
     }
+
+	bool VMapManager::getObjectHitPos(unsigned int pMapId, LocationVector & v1, LocationVector & v2, LocationVector & vout, float pModifyDist)
+	{
+		bool result = false;
+		vout = v2;
+		if( m_maps[pMapId] != NULL )
+		{
+			Vector3 pos1 = convertPositionToInternalRepMod(v1);
+			Vector3 pos2 = convertPositionToInternalRepMod(v2);
+			Vector3 resultPos;
+			MapTree* mapTree = m_maps[pMapId];
+			result = mapTree->getObjectHitPos(pos1, pos2, resultPos, pModifyDist);
+			vout = convertPositionToMangosRep(resultPos);
+		}
+		return result;
+	}
 
     //=========================================================
     /**
@@ -454,63 +445,33 @@ namespace VMAP
     //int gGetHeightCounter = 0;
     float VMapManager::getHeight(unsigned int pMapId, float x, float y, float z)
     {
-        float height = VMAP_INVALID_HEIGHT_VALUE;           //no height
-        if(isHeightCalcEnabled() && iInstanceMapTrees.containsKey(pMapId))
-        {
+        float height = VMAP_INVALID_HEIGHT;                 //no height
+		if( m_maps[pMapId] != NULL )
+		{
             Vector3 pos = convertPositionToInternalRep(x,y,z);
-            MapTree* mapTree = iInstanceMapTrees.get(pMapId);
-            height = mapTree->getHeight(pos);
+            height = m_maps[pMapId]->getHeight(pos);
             if(!(height < inf()))
             {
-                height = VMAP_INVALID_HEIGHT_VALUE;         //no height
+				return VMAP_INVALID_HEIGHT;
             }
-#ifdef _VMAP_LOG_DEBUG
-            Command c = Command();
-            c.fillTestHeightCmd(pMapId,Vector3(x,y,z),height);
-            iCommandLogger.appendCmd(c);
-#endif
         }
         return(height);
     }
+	float VMapManager::getHeight(unsigned int mapid, LocationVector & vec)
+	{
+		float height = VMAP_INVALID_HEIGHT;                 //no height
+		if( m_maps[mapid] != NULL )
+		{
+			Vector3 pos = convertPositionToInternalRepMod(vec);
+			height = m_maps[mapid]->getHeight(pos);
+			if(!(height < inf()))
+			{
+				return VMAP_INVALID_HEIGHT;
+			}
+		}
+		return(height);
+	}
 
-    //=========================================================
-    /**
-    used for debugging
-    */
-    bool VMapManager::processCommand(char *pCommand)
-    {
-        bool result = false;
-        std::string cmd = std::string(pCommand);
-        if(cmd == "startlog")
-        {
-#ifdef _VMAP_LOG_DEBUG
-
-            iCommandLogger.enableWriting(true);
-#endif
-            result = true;
-        }
-        else if(cmd == "stoplog")
-        {
-#ifdef _VMAP_LOG_DEBUG
-            iCommandLogger.appendCmd(Command());            // Write stop command
-            iCommandLogger.enableWriting(false);
-#endif
-            result = true;
-        }
-        else if(cmd.find_first_of("pos ") == 0)
-        {
-            float x,y,z;
-            sscanf(pCommand, "pos %f,%f,%f",&x,&y,&z);
-#ifdef _VMAP_LOG_DEBUG
-            Command c = Command();
-            c.fillSetPosCmd(convertPositionToInternalRep(x,y,z));
-            iCommandLogger.appendCmd(c);
-            iCommandLogger.enableWriting(false);
-#endif
-            result = true;
-        }
-        return result;
-    }
 
     //=========================================================
     //=========================================================
@@ -551,6 +512,7 @@ namespace VMAP
     #endif
     #endif
 
+    typedef AABSPTree<ModelContainer*>::RayIntersectionIterator IT;
     //=========================================================
     /**
     return dist to hit or inf() if no hit
@@ -558,22 +520,41 @@ namespace VMAP
 
     float MapTree::getIntersectionTime(const Ray& pRay, float pMaxDist, bool pStopAtFirstHit)
     {
-        float firstDistance = inf();
-        IntersectionCallBack<ModelContainer> intersectionCallBack;
-        float t = pMaxDist;
-        iTree->intersectRay(pRay, intersectionCallBack, t, pStopAtFirstHit, false);
-#ifdef _DEBUG_VMAPS
+        double  firstDistance = inf();
+
+        const IT end = iTree->endRayIntersection();
+        IT obj = iTree->beginRayIntersection(pRay, pMaxDist);
+
+        for ( ;obj != end; ++obj)                           // (preincrement is *much* faster than postincrement!)
         {
-            if(t < pMaxDist)
+            /*
+            Call your accurate intersection test here.  It is guaranteed
+            that the ray hits the bounding box of obj.  (*obj) has type T,
+            so you can call methods directly using the "->" operator.
+            */
+            ModelContainer *model = (ModelContainer *) (*obj);
+
+            float t = model->getIntersectionTime(pRay, pStopAtFirstHit, pMaxDist);
+
+            // just for visual debugging with an external debug class
+            #ifdef _DEBUG_VMAPS
+            if(gCount3 == gCount1)
             {
-                myfound = true;
-                p4 = pRay.origin + pRay.direction*t;
+                AABox testBox;
+                testBox = model->getAABoxBounds();
+                gBoxArray.append(testBox);
             }
-        }
-#endif
-        if(t > 0 && t < inf() && pMaxDist > t)
-        {
-            firstDistance = t;
+            ++gCount3;
+            #endif
+            if(t > 0 && t < inf())
+            {
+                obj.markBreakNode();
+                if(firstDistance > t && pMaxDist >= t)
+                {
+                    firstDistance = t;
+                    if(pStopAtFirstHit) break;
+                }
+            }
         }
         return firstDistance;
     }
@@ -585,8 +566,7 @@ namespace VMAP
         float maxDist = abs((pos2 - pos1).magnitude());
                                                             // direction with length of 1
         Ray ray = Ray::fromOriginAndDirection(pos1, (pos2 - pos1)/maxDist);
-        float resultDist = getIntersectionTime(ray, maxDist, true);
-        if(resultDist < maxDist)
+        if(getIntersectionTime(ray, maxDist, true) < inf())
         {
             result = false;
         }
@@ -605,7 +585,7 @@ namespace VMAP
         Vector3 dir = (pPos2 - pPos1)/maxDist;              // direction with length of 1
         Ray ray = Ray::fromOriginAndDirection(pPos1, dir);
         float dist = getIntersectionTime(ray, maxDist, false);
-        if(dist < maxDist)
+        if(dist < inf())
         {
             pResultHitPos = pPos1 + dir * dist;
             if(pModifyDist < 0)
@@ -640,8 +620,7 @@ namespace VMAP
         float height = inf();
         Vector3 dir = Vector3(0,-1,0);
         Ray ray = Ray::fromOriginAndDirection(pPos, dir);   // direction with length of 1
-        float maxDist = VMapDefinitions::getMaxCanFallDistance();
-        float dist = getIntersectionTime(ray, maxDist, false);
+        float dist = getIntersectionTime(ray, MAX_CAN_FALL_DISTANCE, false);
         if(dist < inf())
         {
             height = (pPos + dir * dist).y;
@@ -649,13 +628,160 @@ namespace VMAP
         return(height);
     }
 
-    //=========================================================
+	//=========================================================
+	bool MapTree::isInDoors(const Vector3& pos)
+	{
+		Vector3 dir = Vector3(0,-1,0);
+		Ray ray = Ray::fromOriginAndDirection(pos, dir);   // direction with length of 1
+		unsigned int flags;
 
-    bool MapTree::PrepareTree()
-    {
-        iTree->balance();
-        return true;
-    }
+		AABSPTree<ModelContainer*>::RayIntersectionIterator MITR;
+		AABSPTree<ModelContainer*>::RayIntersectionIterator MITREND;
+		RayIntersectionIterator<TreeNode, SubModel> SMITR;
+		RayIntersectionIterator<TreeNode, SubModel> SMITREND;
+		ModelContainer * mc;
+		SubModel * sm;
+
+		MITR = iTree->beginRayIntersection( ray, MAX_CAN_FALL_DISTANCE );
+		MITREND = iTree->endRayIntersection();
+
+		for(; MITR != MITREND; ++MITR)
+		{
+			mc = ((ModelContainer*)*MITR);
+			
+			Ray relativeRay = Ray::fromOriginAndDirection(ray.origin - mc->getBasePosition(), ray.direction);
+			SMITR = mc->beginRayIntersection( relativeRay, MAX_CAN_FALL_DISTANCE );
+			SMITREND = mc->endRayIntersection();
+
+			for( ; SMITR != SMITREND; ++SMITR )
+			{
+				sm = ((SubModel*)&(*SMITR));
+#if 0
+				if( sm->getIndoorFlag() != 0 )
+				{
+					unsigned int i = sm->getIndoorFlag();
+					printf("=========================================================\n");
+					printf("Model indoor flags: %u\n", sm->getIndoorFlag());
+					unsigned int z, b;
+					for(z = 1, b = 1; b < 32;)
+					{
+						if(i & z)
+							printf("   Bit %u (0x%.8X or %u) is set!\n", b, z, z);
+
+						z <<= 1;
+						b+=1;
+					}
+					printf("=========================================================\n");
+				}
+#else
+				flags = sm->getIndoorFlag();
+				if( flags != 0 )
+				{
+					/* From WoWdev:
+					 Flag 	 Meaning
+					0x1 	Always set
+					0x4 	Has vertex colors (MOCV chunk)
+					0x8 	Outdoor
+					0x200 	Has lights (MOLR chunk)
+					0x800 	Has doodads (MODR chunk)
+					0x1000 	Has water (MLIQ chunk)
+					0x2000 	Indoor
+					0x40000 	Show skybox
+
+					**********************
+
+					0x8000 seems to be set in the areas in citys (while it has the indoor flag, its not
+					an indoor area
+
+					*/
+
+					if( flags & 0x2000 && !(flags & 0x8000) )
+						return true;
+				}
+#endif
+			}
+		}
+
+		return false;
+	}
+
+	bool MapTree::isOutDoors(const Vector3& pos)
+	{
+		Vector3 dir = Vector3(0,-1,0);
+		Ray ray = Ray::fromOriginAndDirection(pos, dir);   // direction with length of 1
+		unsigned int flags;
+
+		AABSPTree<ModelContainer*>::RayIntersectionIterator MITR;
+		AABSPTree<ModelContainer*>::RayIntersectionIterator MITREND;
+		RayIntersectionIterator<TreeNode, SubModel> SMITR;
+		RayIntersectionIterator<TreeNode, SubModel> SMITREND;
+		ModelContainer * mc;
+		SubModel * sm;
+
+		MITR = iTree->beginRayIntersection( ray, MAX_CAN_FALL_DISTANCE );
+		MITREND = iTree->endRayIntersection();
+
+		for(; MITR != MITREND; ++MITR)
+		{
+			mc = ((ModelContainer*)*MITR);
+			
+			Ray relativeRay = Ray::fromOriginAndDirection(ray.origin - mc->getBasePosition(), ray.direction);
+			SMITR = mc->beginRayIntersection( relativeRay, MAX_CAN_FALL_DISTANCE );
+			SMITREND = mc->endRayIntersection();
+
+			for( ; SMITR != SMITREND; ++SMITR )
+			{
+				sm = ((SubModel*)&(*SMITR));
+#if 0
+				if( sm->getIndoorFlag() != 0 )
+				{
+					unsigned int i = sm->getIndoorFlag();
+					printf("=========================================================\n");
+					printf("Model indoor flags: %u\n", sm->getIndoorFlag());
+					unsigned int z, b;
+					for(z = 1, b = 1; b < 32;)
+					{
+						if(i & z)
+							printf("   Bit %u (0x%.8X or %u) is set!\n", b, z, z);
+
+						z <<= 1;
+						b+=1;
+					}
+					printf("=========================================================\n");
+				}
+#else
+				flags = sm->getIndoorFlag();
+				if( flags != 0 )
+				{
+					/* From WoWdev:
+					 Flag 	 Meaning
+					0x1 	Always set
+					0x4 	Has vertex colors (MOCV chunk)
+					0x8 	Outdoor
+					0x200 	Has lights (MOLR chunk)
+					0x800 	Has doodads (MODR chunk)
+					0x1000 	Has water (MLIQ chunk)
+					0x2000 	Indoor
+					0x40000 	Show skybox
+
+					**********************
+
+					0x8000 seems to be set in the areas in citys (while it has the indoor flag, its not
+					an indoor area
+
+					*/
+
+					if( !(flags & 0x8) )
+						return false;
+				}
+#endif
+			}
+		}
+
+		return true;
+	}
+
+    //=========================================================
 
     bool MapTree::loadMap(const std::string& pDirFileName, unsigned int pMapTileIdent)
     {
@@ -689,9 +815,11 @@ namespace VMAP
                             result = mc->readFile(fname.c_str());
                             if(result)
                             {
-                                addModelContainer(name, mc);
+                                addModelConatiner(name, mc);
                                 newModelLoaded = true;
                             }
+							else
+								delete mc;
                         }
                         else
                         {
@@ -733,12 +861,12 @@ namespace VMAP
 
     //=========================================================
 
-    void MapTree::unloadMap(const std::string& dirFileName, unsigned int pMapTileIdent, bool pForce)
+    void MapTree::unloadMap(const std::string& dirFileName, unsigned int pMapTileIdent)
     {
-        if(hasDirFile(dirFileName) && (pForce || containsLoadedMapTile(pMapTileIdent)))
+        if(hasDirFile(dirFileName) && containsLoadedMapTile(pMapTileIdent))
         {
-            if(containsLoadedMapTile(pMapTileIdent))
-                removeLoadedMapTile(pMapTileIdent);
+			if(containsLoadedMapTile(pMapTileIdent))
+			   removeLoadedMapTile(pMapTileIdent);
             FilesInDir& filesInDir = getDirFiles(dirFileName);
             filesInDir.decRefCount();
             if(filesInDir.getRefCount() <= 0)
@@ -770,7 +898,7 @@ namespace VMAP
     //=========================================================
     //=========================================================
 
-    void MapTree::addModelContainer(const std::string& pName, ManagedModelContainer *pMc)
+    void MapTree::addModelConatiner(const std::string& pName, ManagedModelContainer *pMc)
     {
         iLoadedModelContainer.set(pName, pMc);
         iTree->insert(pMc);

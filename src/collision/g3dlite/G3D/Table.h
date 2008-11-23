@@ -4,9 +4,11 @@
   Templated hash table class.
 
   @maintainer Morgan McGuire, matrix@graphics3d.com
+  @cite Bug fix by Darius Jazayeri, jazayeri@MIT.EDU
+
   @created 2001-04-22
-  @edited  2006-10-14
-  Copyright 2000-2006, Morgan McGuire.
+  @edited  2005-09-12
+  Copyright 2000-2005, Morgan McGuire.
   All rights reserved.
  */
 
@@ -19,8 +21,9 @@
 #include "G3D/System.h"
 #include "G3D/g3dmath.h"
 #include "G3D/Crypto.h"
-#include <cstddef>
+#include <assert.h>
 #include <string>
+#include <locale>
 
 #ifdef G3D_WIN32
 #   pragma warning (push)
@@ -28,51 +31,70 @@
 #   pragma warning (disable : 4786)
 #endif
 
-
-template<typename Key>
-struct GHashCode{};
-
-template <>
-struct GHashCode<int>
-{
-    size_t operator()(int key) const { return static_cast<size_t>(key); }
+namespace G3D {
+class Hashable {
+public:
+    virtual size_t hashCode() const = 0;
+    
+    /**
+     An empty virtual destructor for virtual methods.
+    */
+    virtual ~Hashable() {}
 };
+}
 
-template <>
-struct GHashCode<G3D::uint32>
-{
-    size_t operator()(G3D::uint32 key) const { return static_cast<size_t>(key); }
-};
+/**
+ Int hashing function for use with Table.
+ */
+inline size_t hashCode(const int a) {
+	return static_cast<size_t>(a);
+}
 
-template <>
-struct GHashCode<G3D::uint64>
-{
-    size_t operator()(G3D::uint64 key) const { return static_cast<size_t>(key); }
-};
+inline size_t hashCode(const G3D::uint32 a) {
+	return static_cast<size_t>(a);
+}
 
-template <>
-struct GHashCode<void*>
-{
-    size_t operator()(const void* key) const { return reinterpret_cast<size_t>(key); }
-};
+inline size_t hashCode(const G3D::uint64 a) {
+	return static_cast<size_t>(a);
+}
 
-template<class T>
-struct GHashCode<T*>
-{
-    size_t operator()(const T* key) const { return reinterpret_cast<size_t>(key); }
-};
+inline size_t hashCode(const void* a) {
+	// Avoid 64-bit pointer cast problems by turning
+	// the pointer itself into an array of integers.
+	//int* intPtr = (int*)(((unsigned char*)&a) + (sizeof(void*) - sizeof(int)));
+	//return *intPtr;
 
-template <>
-struct GHashCode<const std::string>
-{
-    size_t operator()(const std::string& key) const { return static_cast<size_t>(G3D::Crypto::crc32(key.c_str(), key.size())); }
-};
+	// sucks - burlex :P
+	// use a 64bit hash code instead !
+	// void* and size_t should be equal types (4byte on x86, 8byte on x64)
+	return reinterpret_cast<size_t>(a);
+}
 
-template <>
-struct GHashCode<std::string>
-{
-    size_t operator()(const std::string& key) const { return static_cast<size_t>(G3D::Crypto::crc32(key.c_str(), key.size())); }
-};
+/**
+ Default class pointer hash.
+ */
+inline size_t hashCode(const G3D::Hashable* a) {
+    return a->hashCode();
+}
+
+/**
+ Default class hash.
+ */
+inline size_t hashCode(const G3D::Hashable& a) {
+    return a.hashCode();
+}
+
+/**
+ String hashing function for use with Table.
+ */
+inline size_t hashCode(const std::string& a) {
+    //static const std::collate<char>& col = std::use_facet< std::collate<char> > (std::locale::empty( ));
+    //return col.hash(a.c_str(), a.c_str() + a.size());
+
+	// burlex - this shouldn't be done with only 4 bytes, collisions are possible
+	// although i don't think we use std::strings much in this class
+    return static_cast<size_t>(G3D::Crypto::crc32(a.c_str(), a.size()));
+}
 
 namespace G3D {
 
@@ -81,24 +103,19 @@ namespace G3D {
  An unordered data structure mapping keys to values.
 
  Key must be a pointer, an int, a std::string, a class with a hashCode() method,
- or provide overloads for: 
+ or provide overloads for the following <B>two</B> functions: 
 
   <PRE>
-    template<> struct GHashCode<class Key> {
-        size_t operator()(Key key) const { return reinterpret_cast<size_t>( ... ); }
-    };
-
+   size_t hashCode(const Key&);
    bool operator==(const Key&, const Key&);
   </PRE>
 
- G3D pre-defines GHashCode functions for common types (like <CODE>int</CODE> and <CODE>std::string</CODE>).
+ G3D pre-defines hash functions for common types (like <CODE>int</CODE> and <CODE>std::string</CODE>).
  If you use a Table with a different type you must write those functions yourself.  For example,
  an enum would use:
 
   <PRE>
-    template<> struct GHashCode<MyEnum> {
-        size_t operator()(MyEnum key) const { return reinterpret_cast<size_t>( key ); }
-    };
+  size_t hashCode(const MyEnum& x) { return (unsigned int)x; };
   </PRE>
 
   And rely on the default enum operator==.
@@ -108,7 +125,7 @@ namespace G3D {
   1.0 your hash function is badly designed and maps too many inputs to
   the same output.
  */
-template<class Key, class Value, class HashFunc = GHashCode<Key> > 
+template<class Key, class Value> 
 class Table {
 public:
 
@@ -127,9 +144,9 @@ private:
      */
     class Node {
     public:
-        size_t      hashCode;
-        Entry       entry;
-        Node*       next;
+        size_t            hashCode;
+        Entry             entry;
+        Node*             next;
 
         
         /** Provide pooled allocation for speed. */
@@ -157,7 +174,6 @@ private:
         }
     };
 
-    HashFunc m_HashFunc;
 
     /**
      Number of elements in the table.
@@ -320,16 +336,16 @@ public:
         /**
          Bucket index.
          */
-        size_t              index;
+        size_t             index;
 
         /**
          Linked list node.
          */
-        Node*               node;
-        Table<Key, Value>*  table;
-        size_t              numBuckets;
-        Node**              bucket;
-        bool                isDone;
+        Node*              node;
+        Table<Key, Value>* table;
+        size_t             numBuckets;
+        Node**             bucket;
+        bool               isDone;
 
         /**
          Creates the end iterator.
@@ -452,7 +468,7 @@ public:
     /**
      Returns the number of keys.
      */
-    size_t size() const {
+    inline size_t size() const {
         return _size;
     }
 
@@ -463,7 +479,7 @@ public:
      key into a table is O(1), but may cause a potentially slow rehashing.
      */
     void set(const Key& key, const Value& value) {
-        size_t code = m_HashFunc(key);
+        size_t code = ::hashCode(key);
         size_t b = code % numBuckets;
         
         // Go to the bucket
@@ -516,7 +532,7 @@ public:
     */
    void remove(const Key& key) {
       
-      size_t code = m_HashFunc(key);
+      size_t code = ::hashCode(key);
       size_t b = code % numBuckets;
 
       // Go to the bucket
@@ -556,22 +572,22 @@ public:
     */
    Value& get(const Key& key) const {
 
-        size_t  code = m_HashFunc(key);
-        size_t b = code % numBuckets;
+      size_t code = ::hashCode(key);
+      size_t b = code % numBuckets;
 
-        Node* node = bucket[b];
+      Node* node = bucket[b];
 
-        while (node != NULL) {
-            if ((node->hashCode == code) && (node->entry.key == key)) {
-                return node->entry.value;
-            }
-            node = node->next;
-        }
+      while (node != NULL) {
+         if ((node->hashCode == code) && (node->entry.key == key)) {
+            return node->entry.value;
+         }
+         node = node->next;
+      }
 
-        debugAssertM(false, "Key not found");
-        // The next line is here just to make
-        // a compiler warning go away.
-        return node->entry.value;
+      debugAssertM(false, "Key not found");
+      // The next line is here just to make
+      // a compiler warning go away.
+      return node->entry.value;
    }
 
    /**
@@ -579,7 +595,7 @@ public:
     If the key is not present, returns false.
     */
    bool get(const Key& key, Value& val) const {
-      size_t code = m_HashFunc(key);
+	  size_t code = ::hashCode(key);
       size_t b = code % numBuckets;
 
       Node* node = bucket[b];
@@ -601,7 +617,7 @@ public:
     Returns true if key is in the table.
     */
    bool containsKey(const Key& key) const {
-       size_t code = m_HashFunc(key);
+       size_t code = ::hashCode(key);
        size_t b = code % numBuckets;
 
        Node* node = bucket[b];
@@ -656,7 +672,7 @@ public:
     <PRE>
         Array<Key> keys = table.getKeys();
         Set<Value> value;
-        for (int k = 0; k < keys.length(); k++) {
+        for (size_t k = 0; k < keys.length(); k++) {
            value.insert(keys[k]);
         }
         value.getMembers().deleteAll();
@@ -676,7 +692,7 @@ public:
     of dangling pointers.
     */
    void deleteValues() {
-       for (int i = 0; i < numBuckets; i++) {
+       for (size_t i = 0; i < numBuckets; i++) {
            Node* node = bucket[i];
            while (node != NULL) {
                delete node->entry.value;
@@ -688,8 +704,7 @@ public:
 
 } // namespace
 
+#endif
 #ifdef G3D_WIN32
 #   pragma warning (pop)
-#endif
-
 #endif

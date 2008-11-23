@@ -58,7 +58,7 @@ public:
     Vector2& operator= (const Vector2& rkVector);
     bool operator== (const Vector2& rkVector) const;
     bool operator!= (const Vector2& rkVector) const;
-    unsigned int hashCode() const;
+    size_t hashCode() const;
     bool fuzzyEq(const Vector2& other) const;
     bool fuzzyNe(const Vector2& other) const;
     /** Returns true if this vector has finite length */
@@ -208,7 +208,7 @@ inline Vector2 operator*(int s, const Vector2& v) {
 }
 
 
-inline unsigned int hashCode(const G3D::Vector2& v) {
+inline size_t hashCode(const G3D::Vector2& v) {
      return v.hashCode();
 }
 
@@ -432,7 +432,7 @@ inline G3D::Vector2 operator*(int s, const G3D::Vector2& v) {
 }
 
 
-inline unsigned int hashCode(const G3D::Vector2& v);
+inline size_t hashCode(const G3D::Vector2& v);
 
 
 #endif

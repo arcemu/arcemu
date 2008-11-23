@@ -1,6 +1,6 @@
-/*
+/* 
  * Copyright (C) 2005,2006,2007 MaNGOS <http://www.mangosproject.org/>
- * Copyright (C) 2008 Arcemu Team <http://www.arcemu.org/>
+ * Copyright (C) 2007-2008 Ascent Team <http://www.ascentemu.com/>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,6 +22,7 @@
 
 #include <G3D/Vector3.h>
 
+using namespace G3D;
 namespace VMAP
 {
     /**
@@ -57,9 +58,9 @@ namespace VMAP
             {
                 float fv;
                 if(sv >= maxvalue)
-                    fv=G3D::inf();
+                    fv=inf();
                 else if(sv <= minvalue)
-                    fv=-G3D::inf();
+                    fv=-inf();
                 else
                     fv = ((float)sv) / fixpointdiv;
                 return fv;
@@ -70,7 +71,7 @@ namespace VMAP
             inline float getFZ() const { return(short2Float(iZ)); }
         public:
             inline ShortVector() {}
-            inline ShortVector(const G3D::Vector3& pVector)
+            inline ShortVector(const Vector3& pVector)
             {
                 iX = float2Short(pVector.x);
                 iY = float2Short(pVector.y);
@@ -100,7 +101,7 @@ namespace VMAP
             inline float getY() const { return(iY);        }
             inline float getZ() const { return(iZ);        }
 
-            inline G3D::Vector3 getVector3() const  { return(G3D::Vector3(getFX(), getFY(), getFZ())); }
+            inline Vector3 getVector3() const  { return(Vector3(getFX(), getFY(), getFZ())); }
 
             inline ShortVector min(const ShortVector pShortVector)
             {

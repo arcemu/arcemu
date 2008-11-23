@@ -51,9 +51,10 @@
 
 namespace G3D {
 
-#if defined(_MSC_VER)
-    
-#if !defined(_WIN64)
+#ifdef _MSC_VER
+
+//#include <intrin.h>
+#include <xmmintrin.h>
 
 /**
    Win32 implementation of the C99 fast rounding routines.
@@ -68,8 +69,14 @@ namespace G3D {
    provided "as is" without express or implied warranty.
 */
 
+#if _MSC_VER >= 1400
+#pragma float_control(push)
+#pragma float_control(precise, on)
+#endif
+
 __inline long int lrint (double flt) {
-    int intgr;
+#ifndef X64
+	int intgr;
 
     _asm {
         fld flt
@@ -77,33 +84,50 @@ __inline long int lrint (double flt) {
     };
 
     return intgr;
-}
-
-__inline long int lrintf(float flt) {
-    int intgr;
-
-    _asm {
-        fld flt
-        fistp intgr
-    };
-
-    return intgr;
-}
 
 #else
 
-    __inline long int lrint (double flt) {
-        return (long int)floor(flt+0.5f);
-    }
-
-    __inline long int lrintf(float flt) {
-        return (long int)floorf(flt+0.5f);
-    }
-
-
+	union { int asInt[2]; double asDouble; } n;
+	n.asDouble = flt + 6755399441055744.0;
+#if USING_BIG_ENDIAN
+	return n.asInt [1];
+#else
+	return n.asInt [0];
 #endif
 
 #endif
+
+}
+
+__inline long int lrintf(float flt) {
+#ifndef X64
+    int intgr;
+
+	_asm {
+        fld flt
+        fistp intgr
+    };
+
+    return intgr;
+#else
+
+	union { int asInt[2]; double asDouble; } n;
+	n.asDouble = flt + 6755399441055744.0;
+#if USING_BIG_ENDIAN
+	return n.asInt [1];
+#else
+	return n.asInt [0];
+#endif
+
+#endif
+}
+
+#if _MSC_VER >= 1400
+#pragma float_control(pop)
+#endif
+
+#endif
+
 
 
 const double fuzzyEpsilon = 0.00001;
@@ -401,13 +425,20 @@ inline float rsq(float x) {
  */
 inline float SSErsq(float x) {
 
-    #if defined(SSE) && defined(G3D_WIN32) && !defined(_WIN64)
-        __asm {
+    #if defined(SSE) && defined(G3D_WIN32)
+	#ifdef X64
+		__m128 a, b;
+		a = _mm_set_ps1(x);
+		b = _mm_rsqrt_ss(a);
+		return b.m128_f32[0];
+	#else
+	    __asm {
            movss xmm0, x
            rsqrtss xmm0, xmm0
            movss x, xmm0
         }
         return x;
+	#endif
     #else
         return 1.0f / sqrt(x);
     #endif
