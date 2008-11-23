@@ -17,11 +17,11 @@
 
 namespace G3D {
 
-size_t Vector4::hashCode() const {
-    size_t xhash = (*(size_t*)(void*)(&x));
-    size_t yhash = (*(size_t*)(void*)(&y));
-    size_t zhash = (*(size_t*)(void*)(&z));
-    size_t whash = (*(int*)(void*)(&w));
+unsigned int Vector4::hashCode() const {
+    unsigned int xhash = (*(int*)(void*)(&x));
+    unsigned int yhash = (*(int*)(void*)(&y));
+    unsigned int zhash = (*(int*)(void*)(&z));
+    unsigned int whash = (*(int*)(void*)(&w));
 
     return xhash + (yhash * 37) + (zhash * 101) + (whash * 241);
 }

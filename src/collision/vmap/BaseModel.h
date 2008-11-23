@@ -1,6 +1,6 @@
-/* 
+/*
  * Copyright (C) 2005,2006,2007 MaNGOS <http://www.mangosproject.org/>
- * Copyright (C) 2007-2008 Ascent Team <http://www.ascentemu.com/>
+ * Copyright (C) 2008 Arcemu Team <http://www.arcemu.org/>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -46,7 +46,7 @@ namespace VMAP
             TreeNode *iTreeNodes;
             unsigned int iNTriangles;
             unsigned int iNNodes;
-            Vector3 iBasePosition;
+            G3D::Vector3 iBasePosition;
         public:
             BaseModel() { iNTriangles = 0; iNNodes = 0; iTriangles = 0; iTreeNodes = 0;};
             BaseModel(unsigned int pNNodes  , TreeNode* pTreeNode, unsigned int  pNTriangles, TriangleBox* pTriangleBox)
@@ -61,7 +61,7 @@ namespace VMAP
             void free();
             void init(unsigned int pNNodes, unsigned int  pNTriangles);
 
-            void getMember(Array<TriangleBox>& pMembers);
+            void getMember(G3D::Array<TriangleBox>& pMembers);
 
             inline const TriangleBox& getTriangle(int pPos) const { return(iTriangles[pPos]); }
             inline       TriangleBox& getTriangle(int pPos)       { return(iTriangles[pPos]); }
@@ -71,11 +71,11 @@ namespace VMAP
             inline const TreeNode& getTreeNode(int pPos) const { return(getTreeNodes()[pPos]); }
             inline       TreeNode& getTreeNode(int pPos)       { return(getTreeNodes()[pPos]); }
 
-            inline const void setTreeNode(const TreeNode& pTreeNode, int pPos) { getTreeNodes()[pPos] = pTreeNode; }
+            inline void setTreeNode(const TreeNode& pTreeNode, int pPos) { getTreeNodes()[pPos] = pTreeNode; }
 
-            inline const void setBasePosition(const Vector3& pBasePosition) { iBasePosition = pBasePosition; }
+            inline void setBasePosition(const G3D::Vector3& pBasePosition) { iBasePosition = pBasePosition; }
 
-            inline const Vector3& getBasePosition() const { return(iBasePosition); }
+            inline const G3D::Vector3& getBasePosition() const { return(iBasePosition); }
 
             inline unsigned int getNNodes() const { return(iNNodes); }
             inline unsigned int getNTriangles() const { return(iNTriangles); }
@@ -91,6 +91,9 @@ namespace VMAP
             inline TreeNode* getTreeNodes() const{ return(iTreeNodes); }
 
             inline size_t getMemUsage() { return(iNTriangles * sizeof(TriangleBox) + iNNodes * sizeof(TreeNode) + sizeof(BaseModel)); }
+
+            void intersect(const G3D::AABox& pBox, const G3D::Ray& pRay, float& pMaxDist, G3D::Vector3& pOutLocation, G3D::Vector3& pOutNormal) const;
+            bool intersect(const G3D::AABox& pBox, const G3D::Ray& pRay, float& pMaxDist) const;
     };
 
 }

@@ -1,6 +1,6 @@
-/* 
+/*
  * Copyright (C) 2005,2006,2007 MaNGOS <http://www.mangosproject.org/>
- * Copyright (C) 2007-2008 Ascent Team <http://www.ascentemu.com/>
+ * Copyright (C) 2008 Arcemu Team <http://www.arcemu.org/>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,11 +24,14 @@
 #include "CoordModelMapping.h"
 #include "ModelContainer.h"
 
+#include <limits.h>
 #include <string.h>
 
 #ifdef _ASSEMBLER_DEBUG
 FILE *g_df = NULL;
 #endif
+
+using namespace G3D;
 
 namespace VMAP
 {
@@ -71,12 +74,12 @@ namespace VMAP
         addWorldAreaMapId(0);                               //Azeroth
         addWorldAreaMapId(1);                               //Kalimdor
         addWorldAreaMapId(530);                             //Expansion01
+        addWorldAreaMapId(571);                             //Expansion02
     }
     //=================================================================
 
     std::string getModNameFromModPosName(const std::string& pModPosName)
     {
-
         size_t spos = pModPosName.find_first_of('#');
         std::string modelFileName = pModPosName.substr(0,spos);
         return(modelFileName);
@@ -90,7 +93,7 @@ namespace VMAP
 
         if(!iUniqueNameIds.containsKey(pName))
         {
-            iCurrentUniqueNameId++;
+            ++iCurrentUniqueNameId;
             iUniqueNameIds.set(pName, iCurrentUniqueNameId);
         }
         result = iUniqueNameIds.get(pName);
@@ -138,7 +141,6 @@ namespace VMAP
     //=================================================================
     bool TileAssembler::convertWorld()
     {
-
         #ifdef _ASSEMBLER_DEBUG
         #   ifdef _DEBUG
         ::g_df = fopen("../TileAssembler_debug.txt", "wb");
@@ -185,7 +187,7 @@ namespace VMAP
                                     char buffer[100];
                                     if(iCoordModelMapping->isWorldAreaMap(mapId) && x<65 && y<65)
                                     {
-                                        sprintf(buffer, "%03u_%d_%d",mapId,x,y);
+                                        sprintf(buffer, "%03u_%d_%d",mapId,y,x); // Let's flip x and y here
                                         dirname = std::string(buffer);
                                     }
                                     else
@@ -227,7 +229,7 @@ namespace VMAP
                             char fullnamedestnamebuffer[500];
                             if(nameCollection.iMainFiles.size() >0)
                             {
-                                sprintf(destnamebuffer,"%03u_%i_%i.vmap",pMapId, pXPos, pYPos);
+                                sprintf(destnamebuffer,"%03u_%i_%i.vmap",pMapId, pYPos, pXPos); // flip it here too
                                 std::string checkDoubleStr = std::string(dirfilename);
                                 checkDoubleStr.append("##");
                                 checkDoubleStr.append(std::string(destnamebuffer));
@@ -396,12 +398,12 @@ namespace VMAP
                             fclose(rf);
                             return(false);
                         }
-                        unsigned int groups;
+                        G3D::uint32 groups;
                         char blockId[5];
                         blockId[4] = 0;
                         int blocksize;
 
-                        if(fread(&groups, sizeof(unsigned int), 1, rf) != 1) { fclose(rf); return(false); }
+                        if(fread(&groups, sizeof(G3D::uint32), 1, rf) != 1) { fclose(rf); return(false); }
 
                         for(int g=0;g<(int)groups;g++)
                         {
@@ -411,19 +413,19 @@ namespace VMAP
 
                             AABSPTree<Triangle> *gtree = new AABSPTree<Triangle>();
 
-                            unsigned int flags;
-                            if(fread(&flags, sizeof(unsigned int), 1, rf) != 1) { fclose(rf); return(false); }
+                            G3D::uint32 flags;
+                            if(fread(&flags, sizeof(G3D::uint32), 1, rf) != 1) { fclose(rf); return(false); }
 
-                            unsigned int branches;
+                            G3D::uint32 branches;
                             if(fread(&blockId, 4, 1, rf) != 1) { fclose(rf); return(false); }
                             if(strcmp(blockId, "GRP ") != 0) { fclose(rf); return(false); }
                             if(fread(&blocksize, sizeof(int), 1, rf) != 1) { fclose(rf); return(false); }
-                            if(fread(&branches, sizeof(unsigned int), 1, rf) != 1) { fclose(rf); return(false); }
+                            if(fread(&branches, sizeof(G3D::uint32), 1, rf) != 1) { fclose(rf); return(false); }
                             for(int b=0;b<(int)branches; b++)
                             {
-                                unsigned int indexes;
+                                G3D::uint32 indexes;
                                 // indexes for each branch (not used jet)
-                                if(fread(&indexes, sizeof(unsigned int), 1, rf) != 1) { fclose(rf); return(false); }
+                                if(fread(&indexes, sizeof(G3D::uint32), 1, rf) != 1) { fclose(rf); return(false); }
                             }
 
                             // ---- indexes
@@ -431,7 +433,7 @@ namespace VMAP
                             if(strcmp(blockId, "INDX") != 0) { fclose(rf); return(false); }
                             if(fread(&blocksize, sizeof(int), 1, rf) != 1) { fclose(rf); return(false); }
                             unsigned int nindexes;
-                            if(fread(&nindexes, sizeof(unsigned int), 1, rf) != 1) { fclose(rf); return(false); }
+                            if(fread(&nindexes, sizeof(G3D::uint32), 1, rf) != 1) { fclose(rf); return(false); }
                             if(nindexes >0)
                             {
                                 unsigned short *indexarray = new unsigned short[nindexes*sizeof(unsigned short)];
@@ -490,7 +492,7 @@ namespace VMAP
                             {
                                 Triangle t = Triangle(tempVertexArray[tempIndexArray[i+2]], tempVertexArray[tempIndexArray[i+1]], tempVertexArray[tempIndexArray[i+0]] );
                                 i+=3;
-                                trianglecount++;
+                                ++trianglecount;
                                 if(g>= startgroup && g <= endgroup)
                                 {
                                     gtree->insert(t);

@@ -1,6 +1,6 @@
-/* 
+/*
  * Copyright (C) 2005,2006,2007 MaNGOS <http://www.mangosproject.org/>
- * Copyright (C) 2007-2008 Ascent Team <http://www.ascentemu.com/>
+ * Copyright (C) 2008 Arcemu Team <http://www.arcemu.org/>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,6 +22,8 @@
 
 #include <G3D/Vector3.h>
 #include <G3D/AABox.h>
+#include <G3D/Triangle.h>
+#include <G3D/Ray.h>
 
 #include "ShortVector.h"
 
@@ -43,8 +45,8 @@ namespace VMAP
             inline const ShortVector& getHi() const { return(iV2); }
             inline void setLo(const ShortVector& pV){ iV1 = pV; }
             inline void setHi(const ShortVector& pV){ iV2 = pV; }
-            inline void setLo(const Vector3& pV){ iV1 = ShortVector(pV); }
-            inline void setHi(const Vector3& pV){ iV2 = ShortVector(pV); }
+            inline void setLo(const G3D::Vector3& pV){ iV1 = ShortVector(pV); }
+            inline void setHi(const G3D::Vector3& pV){ iV2 = ShortVector(pV); }
 
             inline bool operator==(const ShortBox& b) const
             {
@@ -58,8 +60,17 @@ namespace VMAP
     };
 
     //=====================================================================
+#ifdef _DEBUG_VMAPS
+#ifndef gBoxArray
+    extern G3D::Vector3 p1,p2,p3,p4,p5,p6,p7;
+    extern G3D::Array<G3D::AABox>gBoxArray;
+    extern G3D::Array<G3D::Triangle>gTriArray;
+    extern int gCount1, gCount2, gCount3, gCount4;
+    extern bool myfound;
+#endif
+#endif
 
-    static const Vector3 dummyZeroPosition = Vector3(0,0,0);
+    static const G3D::Vector3 dummyZeroPosition = G3D::Vector3(0,0,0);
 
     class TriangleBox
     {
@@ -96,9 +107,9 @@ namespace VMAP
                 box.setHi(hi);
                 return(box);
             }
-            inline const Vector3& getBasePosition() { return(dummyZeroPosition); }
+            inline const G3D::Vector3& getBasePosition() { return(dummyZeroPosition); }
 
-            inline const AABox getAABoxBounds() const { ShortBox box = getBounds(); return(AABox(box.getLo().getVector3(), box.getHi().getVector3())); }
+            inline const G3D::AABox getAABoxBounds() const { ShortBox box = getBounds(); return(G3D::AABox(box.getLo().getVector3(), box.getHi().getVector3())); }
 
             inline bool operator==(const TriangleBox& t) const
             {
@@ -108,6 +119,29 @@ namespace VMAP
             inline bool operator!=(const TriangleBox& t) const
             {
                 return !((_vertex[0] == t._vertex[0]) && (_vertex[1] == t._vertex[1]) &&(_vertex[2] == t._vertex[2]));
+            }
+
+            inline void intersect(const G3D::Ray& pRay, float& pMaxDist, bool /*pStopAtFirstHitDummy*/, G3D::Vector3& /*pOutLocationDummy*/, G3D::Vector3& /*pOutNormalDummy*/) const
+            {
+                static const double epsilon = 0.00001;
+                G3D::Triangle testT(vertex(0).getVector3(),vertex(1).getVector3(),vertex(2).getVector3());
+                float t = pRay.intersectionTime(testT);
+                if ((t < pMaxDist) || t < (pMaxDist + epsilon))
+                    pMaxDist = t;
+                else
+                {
+                    testT = G3D::Triangle(vertex(2).getVector3(),vertex(1).getVector3(),vertex(0).getVector3());
+
+#ifdef _DEBUG_VMAPS
+                    {
+                        G3D::Triangle myt(testT.vertex(0)+p6, testT.vertex(1)+p6,testT.vertex(2)+p6);
+                        gTriArray.push_back(myt);
+                    }
+#endif
+                    t = pRay.intersectionTime(testT);
+                    if ((t < pMaxDist) || t < (pMaxDist + epsilon))
+                        pMaxDist = t;
+                }
             }
     };
 

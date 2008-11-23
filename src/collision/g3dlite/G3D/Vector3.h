@@ -114,7 +114,7 @@ public:
     Vector3& operator= (const Vector3& rkVector);
     bool operator== (const Vector3& rkVector) const;
     bool operator!= (const Vector3& rkVector) const;
-    size_t hashCode() const;
+    unsigned int hashCode() const;
     bool fuzzyEq(const Vector3& other) const;
     bool fuzzyNe(const Vector3& other) const;
 
@@ -497,7 +497,7 @@ std::ostream& operator<<(std::ostream& os, const Vector3&);
 
 }
 
-size_t hashCode(const G3D::Vector3& v);
+unsigned int hashCode(const G3D::Vector3& v);
 
 #include "Vector3.inl"
 

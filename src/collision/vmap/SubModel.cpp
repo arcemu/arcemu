@@ -1,6 +1,6 @@
-/* 
+/*
  * Copyright (C) 2005,2006,2007 MaNGOS <http://www.mangosproject.org/>
- * Copyright (C) 2007-2008 Ascent Team <http://www.ascentemu.com/>
+ * Copyright (C) 2008 Arcemu Team <http://www.arcemu.org/>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,6 +23,8 @@
 extern FILE *::g_df;
 #endif
 
+using namespace G3D;
+
 namespace VMAP
 {
 
@@ -30,24 +32,9 @@ namespace VMAP
     /**
     Functions to use ModelContainer with a AABSPTree
     */
-    size_t hashCode(const SubModel& pSm)
+    unsigned int hashCode(const SubModel& pSm)
     {
         return pSm.getNTriangles();
-    }
-
-    bool operator==(const SubModel& pSm1, const SubModel& pSm2)
-    {
-        bool result = false;
-
-        if(pSm1.getNNodes() == pSm2.getNNodes() &&
-            pSm1.getNTriangles() == pSm2.getNTriangles() &&
-            pSm1.getBasePosition() == pSm2.getBasePosition() &&
-            pSm1.getNodesPos() == pSm2.getNodesPos() &&
-            pSm1.getTrianglesPos() == pSm2.getTrianglesPos())
-        {
-            result = true;
-        }
-        return result;
     }
 
     void getBounds(const SubModel& pSm, G3D::AABox& pAABox)
@@ -71,7 +58,6 @@ namespace VMAP
     {
         iTrianglesPos = pTrianglesPos;
         iNodesPos = pNodesPos;
-		iIsIndoor = 0;
         iHasInternalMemAlloc = false;
     }
 
@@ -87,37 +73,51 @@ namespace VMAP
 
     //==========================================================
 
-	enum BIN_POSITIONS
-	{
-		BP_iNTriangles=0,
-		BP_iNNodes=4,
-		BP_iBasePosition=8,
-		BP_iNodesPos=20,
-		BP_iTrianglesPos=24,
-		BP_iHasInternalMemAlloc=28,
-		BP_iIsIndoor=29,
-		BP_iBox=33,
-	};
-	/**
-	This is ugly, but due to compatibility and 64 bit support we have to do that ... sorry
-	*/
-	void SubModel::initFromBinBlock(void *pBinBlock)
-	{
-		iNTriangles =  *((unsigned int *)(((char *) pBinBlock) + BP_iNTriangles));
-		iNNodes =  *((unsigned int *) (((char *) pBinBlock) + BP_iNNodes));
-		iBasePosition =  *((Vector3 *) (((char *) pBinBlock) + BP_iBasePosition));
-		iNodesPos =  *((unsigned int *) (((char *) pBinBlock) + BP_iNodesPos));
-		iTrianglesPos =  *((unsigned int *) (((char *) pBinBlock) + BP_iTrianglesPos));
-		iHasInternalMemAlloc = *((bool *) (((char *) pBinBlock) + BP_iHasInternalMemAlloc));
-		iIsIndoor = *((unsigned int*) (((char *) pBinBlock) + BP_iIsIndoor));
-		iBox =  *((ShortBox *) (((char *) pBinBlock) + BP_iBox));
-	}
+    bool SubModel::operator==(const SubModel& pSm2) const
+    {
+        bool result = false;
+
+        if(getNNodes() == pSm2.getNNodes() &&
+            getNTriangles() == pSm2.getNTriangles() &&
+            getBasePosition() == pSm2.getBasePosition() &&
+            getNodesPos() == pSm2.getNodesPos() &&
+            getTrianglesPos() == pSm2.getTrianglesPos())
+        {
+            result = true;
+        }
+        return result;
+    }
+    //==========================================================
+
+    enum BIN_POSITIONS
+    {
+        BP_iNTriangles=8,
+        BP_iNNodes=12,
+        BP_iBasePosition=16,
+        BP_iNodesPos=28,
+        BP_iTrianglesPos=32,
+        BP_iHasInternalMemAlloc=36,
+        BP_iBox=38,
+    };
+    /**
+    This is ugly, but due to compatibility and 64 bit support we have to do that ... sorry
+    */
+    void SubModel::initFromBinBlock(void *pBinBlock)
+    {
+        iNTriangles =  *((unsigned int *)(((char *) pBinBlock) + BP_iNTriangles));
+        iNNodes =  *((unsigned int *) (((char *) pBinBlock) + BP_iNNodes));
+        iBasePosition =  *((Vector3 *) (((char *) pBinBlock) + BP_iBasePosition));
+        iNodesPos =  *((unsigned int *) (((char *) pBinBlock) + BP_iNodesPos));
+        iTrianglesPos =  *((unsigned int *) (((char *) pBinBlock) + BP_iTrianglesPos));
+        iHasInternalMemAlloc = *((bool *) (((char *) pBinBlock) + BP_iHasInternalMemAlloc));
+        iBox =  *((ShortBox *) (((char *) pBinBlock) + BP_iBox));
+    }
 
     //==========================================================
 
     void SubModel::countNodesAndTriangles(AABSPTree<Triangle>::Node& pNode, int &pNNodes, int &pNTriabgles)
     {
-        pNNodes++;
+        ++pNNodes;
         pNTriabgles += pNode.valueArray.size();
 
         #ifdef _ASSEMBLER_DEBUG
@@ -149,8 +149,8 @@ namespace VMAP
 
         for(int i=0;i<pNode.valueArray.size(); i++)
         {
-            AABSPTree<Triangle>::Handle h= pNode.valueArray[i];
-            Triangle t = h.value;
+            G3D::_AABSPTree::Handle<Triangle>* h= pNode.valueArray[i];
+            Triangle t = h->value;
             TriangleBox triangleBox = TriangleBox(t.vertex(0),t.vertex(1), t.vertex(2));
             lo = lo.min(triangleBox.getBounds().getLo().getVector3());
             hi = hi.max(triangleBox.getBounds().getHi().getVector3());
@@ -191,7 +191,6 @@ namespace VMAP
         iTrianglesPos = 0;                                  // this is the global array
         iNodesPos = 0;                                      // this is the global array
         iHasInternalMemAlloc = true;
-		iIsIndoor = 0;
         int treeNodePos, trianglePos;
         treeNodePos = trianglePos = 0;
 
@@ -203,135 +202,48 @@ namespace VMAP
     }
 
     //==========================================================
-
-    RayIntersectionIterator<TreeNode, TriangleBox> SubModel::beginRayIntersection(const Ray& ray, double pMaxTime, bool skipAABoxTests) const
-    {
-        NodeValueAccess<TreeNode, TriangleBox> vna = NodeValueAccess<TreeNode, TriangleBox>(getTreeNodes(), getTriangles());
-        return RayIntersectionIterator<TreeNode, TriangleBox>(vna, ray, &getTreeNode(0), pMaxTime, skipAABoxTests);
-    }
-
-    RayIntersectionIterator<TreeNode, TriangleBox> SubModel::endRayIntersection() const
-    {
-        return RayIntersectionIterator<TreeNode, TriangleBox>();
-    }
-
-    //==========================================================================
-
-    typedef RayIntersectionIterator<TreeNode, TriangleBox> IT;
-
-    inline RealTime testIntersectionWithTriangle(const IT& pIterater,const Triangle& pTriangle, const Ray& pRay)
-    {
-        static const double epsilon = 0.00001;
-
-        RealTime t = pRay.intersectionTime(pTriangle);
-        /*
-        Often methods like "distanceUntilIntersection" can be made more
-        efficient by providing them with the time at which to start and
-        to give up looking for an intersection; that is,
-        obj.minDistance and iMin(firstDistance, obj.maxDistance).
-        */
-        if ((t >= inf()) ||
-            (t > pIterater.maxDistance + epsilon) ||
-            (t < pIterater.minDistance - epsilon))
-        {
-            t = inf();
-        }
-        return(t);
-    }
-    //==========================================================
-    #ifdef _DEBUG_VMAPS
-    #ifndef gBoxArray
+#ifdef _DEBUG_VMAPS
+#ifndef gBoxArray
     extern Vector3 p1,p2,p3,p4,p5,p6,p7;
     extern Array<AABox>gBoxArray;
+    extern Array<G3D::Triangle>gTriArray;
     extern int gCount1, gCount2, gCount3, gCount4;
     extern bool myfound;
-    #endif
-    #endif
+#endif
+#endif
 
-    RealTime SubModel::getIntersectionTime(const Ray& pRay, bool pExitAtFirst, float pMaxDist) const
+    //==========================================================
+    void SubModel::intersect(const G3D::Ray& pRay, float& pMaxDist, bool pStopAtFirstHit, G3D::Vector3& /*pOutLocation*/, G3D::Vector3& /*pOutNormal*/) const
     {
-        TriangleBox const *firstObject;
-        double  firstDistance = inf();
-
-        #ifdef _DEBUG_VMAPS
-        int debugCount =0;
-        #endif
-        Ray relativeRay = Ray::fromOriginAndDirection(pRay.origin - getBasePosition(), pRay.direction);
-
-        const IT end = endRayIntersection();
-        IT obj = beginRayIntersection(relativeRay,pMaxDist,false);
-
-        Triangle testT;
-        for ( ;obj != end; ++obj)                           // (preincrement is *much* faster than postincrement!)
-        {
-            /*
-            Call your accurate intersection test here.  It is guaranteed
-            that the ray hits the bounding box of obj.  (*obj) has type T,
-            so you can call methods directly using the "->" operator.
-            */
-            const TriangleBox *tri = &(*obj);
-
-            testT = Triangle(tri->vertex(0).getVector3(),tri->vertex(1).getVector3(),tri->vertex(2).getVector3());
-            double t = testIntersectionWithTriangle(obj,testT, relativeRay);
-            #ifdef _DEBUG_VMAPS
-            if(debugCount == 5)
-            {
-                firstObject = tri;
-                firstDistance = 1;
-            }
-            ++debugCount;
-            #endif
-            if(t != inf())
-            {
-                /*
-                Tell the iterator that we've found at least one
-                intersection.  It will finish looking at all
-                objects in this node and then terminate.
-                */
-                obj.markBreakNode();
-                if(firstDistance > t && pMaxDist >= t)
-                {
-                    firstDistance = t;
-                    firstObject   = tri;
-                    if(pExitAtFirst) break;
-                }
-            }
-            else
-            {
-                // This might the wrong side of the triangle... Turn it and test again
-                testT = Triangle(tri->vertex(2).getVector3(),tri->vertex(1).getVector3(),tri->vertex(0).getVector3());
-                t = testIntersectionWithTriangle(obj, testT,relativeRay);
-                if(t != inf())
-                {
-                    obj.markBreakNode();
-                    if(firstDistance > t && pMaxDist >= t)
-                    {
-                        firstDistance = t;
-                        firstObject   = tri;
-                        if(pExitAtFirst) break;
-                    }
-                }
-            }
-        }
-        #ifdef _DEBUG_VMAPS
-        if(firstDistance < inf())
-        {
-            myfound = true;
-            p1 = firstObject->vertex(0).getVector3()+ getBasePosition();
-            p2 = firstObject->vertex(1).getVector3()+ getBasePosition();
-            p3 = firstObject->vertex(2).getVector3()+ getBasePosition();
-            p4 = relativeRay.origin + getBasePosition();
-            p5 =  relativeRay.intersection(testT.plane()) + getBasePosition();
-            float dist1 = (p5-p4).magnitude();
-            double dist2 = relativeRay.intersectionTime(testT);
-            float dist3 = relativeRay.direction.magnitude();
-            double dist4 = relativeRay.intersectionTime(testT);
-        }
-        #endif
-
-        return(firstDistance);
+            NodeValueAccess<TreeNode, TriangleBox> vna = NodeValueAccess<TreeNode, TriangleBox>(getTreeNodes(), getTriangles());
+            IntersectionCallBack<TriangleBox> intersectCallback;
+            Ray relativeRay = Ray::fromOriginAndDirection(pRay.origin - getBasePosition(), pRay.direction);
+#ifdef _DEBUG_VMAPS
+            //p6=getBasePosition();
+            //gBoxArray.push_back(getAABoxBounds());
+#endif
+            getTreeNode(0).intersectRay(relativeRay, intersectCallback, pMaxDist, vna, pStopAtFirstHit, false);
     }
 
+    //==========================================================
+
+    bool SubModel::intersect(const G3D::Ray& pRay, float& pMaxDist) const
+    {
+        return BaseModel::intersect(getAABoxBounds(), pRay, pMaxDist);
+    }
+
+    //==========================================================
+
+    template<typename RayCallback>
+    void SubModel::intersectRay(const Ray& pRay, RayCallback& pIntersectCallback, float& pMaxDist, bool pStopAtFirstHit, bool intersectCallbackIsFast)
+    {
+        if(intersect(pRay, pMaxDist))
+        {
+            NodeValueAccess<TreeNode, TriangleBox> vna = NodeValueAccess<TreeNode, TriangleBox>(getTreeNodes(), getTriangles());
+            IntersectionCallBack<TriangleBox> intersectCallback;
+             getTreeNode(0).intersectRay(pRay, intersectCallback, pMaxDist, vna, pStopAtFirstHit, false);
+        }
+    }
     //==========================================================
 
 }

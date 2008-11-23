@@ -9,7 +9,7 @@
 
 //----------------------------------------------------------------------------
 
-inline size_t hashCode(const G3D::Vector4& v) {
+inline unsigned int hashCode(const G3D::Vector4& v) {
      return v.hashCode();
 }
 

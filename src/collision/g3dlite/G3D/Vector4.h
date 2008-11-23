@@ -89,7 +89,7 @@ public:
         w = _w;
     }
 
-    size_t hashCode() const;
+    unsigned int hashCode() const;
     bool fuzzyEq(const Vector4& other) const;
     bool fuzzyNe(const Vector4& other) const;
 
@@ -517,7 +517,7 @@ inline G3D::Vector4 operator* (float s, const G3D::Vector4& v) {
     return v * s;
 }
 
-size_t hashCode(const G3D::Vector4& v);
+unsigned int hashCode(const G3D::Vector4& v);
 
 #include "Vector4.inl"
 

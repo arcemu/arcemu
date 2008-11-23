@@ -1,6 +1,6 @@
-/* 
+/*
  * Copyright (C) 2005,2006,2007 MaNGOS <http://www.mangosproject.org/>
- * Copyright (C) 2007-2008 Ascent Team <http://www.ascentemu.com/>
+ * Copyright (C) 2008 Arcemu Team <http://www.arcemu.org/>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,6 +23,9 @@
 #include <string.h>
 
 #include "ModelContainer.h"
+#include "VMapDefinitions.h"
+
+using namespace G3D;
 
 namespace VMAP
 {
@@ -34,48 +37,6 @@ namespace VMAP
     {
         return (pMc.getBasePosition() * pMc.getNTriangles()).hashCode();
     }
-
-    bool operator==(const ModelContainer& pMc1, const ModelContainer& pMc2)
-    {
-        bool result = false;
-        if(pMc1.getNSubModel() == pMc2.getNSubModel() && pMc1.getAABoxBounds() == pMc2.getAABoxBounds())
-        {
-            if(pMc1.getNNodes() == pMc2.getNNodes() && pMc1.getNTriangles() == pMc2.getNTriangles() && pMc1.getBasePosition() == pMc2.getBasePosition())
-            {
-                result = true;
-                for(unsigned int i=0; i<pMc2.getNSubModel(); ++i)
-                {
-                    SubModel sm1 = pMc2.getSubModel(i);
-                    SubModel sm2 = pMc1.getSubModel(i);
-                    result = (sm1 == sm2);
-                    if(!result) break;
-                }
-                if(result)
-                {
-                    for(unsigned int i=0; i<pMc2.getNTriangles(); ++i)
-                    {
-                        TriangleBox t1=pMc2.getTriangle(i);
-                        TriangleBox t2=pMc1.getTriangle(i);
-                        result = (t1 == t2);
-                        if(!result) break;
-                    }
-                }
-                if(result)
-                {
-                    for(unsigned int i=0; i<pMc2.getNNodes(); ++i)
-                    {
-                        TreeNode tn1=pMc2.getTreeNode(i);
-                        TreeNode tn2=pMc1.getTreeNode(i);
-                        result = (tn1 == tn2);
-                        if(!result) break;
-                    }
-                }
-            }
-        }
-
-        return(result);
-    }
-
     //==========================================================
 
     ModelContainer::ModelContainer(unsigned int pNTriangles, unsigned int pNNodes, unsigned int pNSubModel) :
@@ -89,16 +50,25 @@ namespace VMAP
 
     //==========================================================
 
+    bool ModelContainer::operator==(const ModelContainer& pMc2) const
+    {
+        if (this->iNSubModel == 0 && pMc2.iNSubModel == 0 && this->iSubModel == 0 && pMc2.iSubModel == 0)
+            return true;
+        return this == &pMc2;
+    }
+
+    //==========================================================
+
     void ModelContainer::countSubModelsAndNodesAndTriangles(AABSPTree<SubModel *>::Node& pNode, int& nSubModels, int& nNodes, int& nTriangles)
     {
         // For this node we will need a TreeNode as well as for the internal nodes
-        nNodes++;
+        ++nNodes;
 
         nSubModels += pNode.valueArray.size();
         for(int i=0;i<pNode.valueArray.size(); i++)
         {
-            AABSPTree<SubModel *>::Handle h= pNode.valueArray[i];
-            SubModel *m = h.value;
+        G3D::_AABSPTree::Handle<SubModel*>* h= pNode.valueArray[i];
+            SubModel *m = h->value;
             // add the internal nodes as well
             nNodes += m->getNNodes();
             nTriangles += m->getNTriangles();
@@ -128,8 +98,8 @@ namespace VMAP
 
         for(int i=0;i<pNode.valueArray.size(); i++)
         {
-            AABSPTree<SubModel *>::Handle h= pNode.valueArray[i];
-            SubModel *m = h.value;
+            G3D::_AABSPTree::Handle<SubModel*>* h= pNode.valueArray[i];
+            SubModel *m = h->value;
 
             memcpy(&getTreeNodes()[pTreeNodePos], &m->getTreeNode(0), sizeof(TreeNode) * m->getNNodes());
             memcpy(&getTriangles()[pTrianglePos], &m->getTriangle(0), sizeof(TriangleBox) * m->getNTriangles());
@@ -215,89 +185,6 @@ namespace VMAP
     }
     //==========================================================
 
-    RayIntersectionIterator<TreeNode, SubModel> ModelContainer::beginRayIntersection(const Ray& ray, double pMaxTime, bool skipAABoxTests) const
-    {
-        NodeValueAccess<TreeNode, SubModel> vna = NodeValueAccess<TreeNode, SubModel>(getTreeNodes(), iSubModel);
-        return RayIntersectionIterator<TreeNode, SubModel>(vna, ray, &getTreeNode(0), pMaxTime, skipAABoxTests);
-    }
-    //==========================================================
-
-    RayIntersectionIterator<TreeNode, SubModel> ModelContainer::endRayIntersection() const
-    {
-        return RayIntersectionIterator<TreeNode, SubModel>();
-    }
-
-    //==========================================================================
-    //==========================================================
-
-    #ifdef _DEBUG_VMAPS
-    #ifndef gBoxArray
-    extern Vector3 p1,p2,p3,p4,p5,p6,p7;
-    extern Array<AABox>gBoxArray;
-    extern int gCount1, gCount2, gCount3, gCount4;
-    extern bool myfound;
-    #endif
-    #endif
-
-    typedef RayIntersectionIterator<TreeNode, SubModel> IT;
-
-    RealTime ModelContainer::getIntersectionTime(const Ray& pRay, bool pExitAtFirst, float pMaxDist) const
-    {
-        #ifdef _DEBUG_VMAPS
-        for(unsigned int i=0; i<getNSubModel(); i++)
-        {
-            SubModel model = getSubModel(i);
-            bool insiteOk;
-            Vector3 mynormal;
-            Vector3 location;
-            bool hitval = MyCollisionDetection::collisionLocationForMovingPointFixedAABox(
-                pRay.origin, pRay.direction,
-                model.getAABoxBounds(),
-                location,insiteOk, mynormal);
-            if(hitval)
-            {
-                float len2 = (location - pRay.origin).squaredLength();
-                int a = 0;                                  // just to be able to set a breakpoint
-            }
-        }
-        TreeNode tn = getTreeNode(0);
-        for(int i=0; i<tn.getNValues(); i++)
-        {
-            SubModel mysm = getSubModel(tn.getStartPosition() + i);
-            AABox testbox = mysm.getAABoxBounds();
-            gBoxArray.append(AABox(testbox.low(), testbox.high()));
-        }
-        #endif
-
-        double  firstDistance = inf();
-        Ray relativeRay = Ray::fromOriginAndDirection(pRay.origin - getBasePosition(), pRay.direction);
-        const IT end = endRayIntersection();
-        IT obj = beginRayIntersection(pRay, pMaxDist);
-        for ( ;obj != end; ++obj)                           // (preincrement is *much* faster than postincrement!)
-        {
-            /*
-            Call your accurate intersection test here.  It is guaranteed
-            that the ray hits the bounding box of obj.  (*obj) has type T,
-            so you can call methods directly using the "->" operator.
-            */
-            SubModel const *model =  &(*obj);
-
-            RealTime t = model->getIntersectionTime(pRay, pExitAtFirst, pMaxDist);
-            if(t > 0 && t < inf())
-            {
-                obj.markBreakNode();
-                if(firstDistance > t && pMaxDist >= t)
-                {
-                    firstDistance = t;
-                    if(pExitAtFirst) { break; }
-                }
-            }
-        }
-        return(firstDistance);
-    }
-
-    //==========================================================
-
     bool ModelContainer::writeFile(const char *filename)
     {
         bool result = false;
@@ -307,6 +194,7 @@ namespace VMAP
         FILE *wf =fopen(filename,"wb");
         if(wf)
         {
+            fwrite(VMAP_MAGIC,1,8,wf);
             result = true;
             if(result && fwrite("CTREE01",8,1,wf) != 1) result = false;
             if(result && fwrite(&flags,sizeof(unsigned int),1,wf) != 1) result = false;
@@ -367,6 +255,9 @@ namespace VMAP
             free();
 
             result = true;
+            char magic[8];                          // Ignore the added magic header
+            fread(magic,1,8,rf);
+            if(strncmp(VMAP_MAGIC,magic,8)) result = false;
             if(result && fread(ident,8,1,rf) != 1) result = false;
             if(result && fread(&flags,sizeof(unsigned int),1,rf) != 1) result = false;
             //POS
@@ -393,7 +284,7 @@ namespace VMAP
             if(result) setTreeNodeArray(new TreeNode[getNNodes()]);
             if(result && fread(getTreeNodes(),sizeof(TreeNode),getNNodes(),rf) != getNNodes()) result = false;
 
-            //---- TriengleBoxes
+            //---- TriangleBoxes
             if(result && fread(chunk,4,1,rf) != 1) result = false;
             if(result && fread(&size,4,1,rf) != 1) result = false;
 
@@ -413,7 +304,7 @@ namespace VMAP
             {
                 for(unsigned int i=0;i<iNSubModel && result; ++i)
                 {
-                    unsigned char readBuffer[45];           // this is the size of SubModel on 32 bit systems
+                    unsigned char readBuffer[52];           // this is the size of SubModel on 32 bit systems
                     if(fread(readBuffer,sizeof(readBuffer),1,rf) != 1) result = false;
                     iSubModel[i].initFromBinBlock(readBuffer);
                     iSubModel[i].setTriangleArray(getTriangles());
@@ -427,14 +318,48 @@ namespace VMAP
 
     //=================================================================
 
-    //=================================================================
-
     size_t ModelContainer::getMemUsage()
     {
                                                             // BaseModel is included in ModelContainer
         return(iNSubModel * sizeof(SubModel) + BaseModel::getMemUsage() + sizeof(ModelContainer) - sizeof(BaseModel));
     }
 
+    //=================================================================
+#ifdef _DEBUG_VMAPS
+#ifndef gBoxArray
+    extern Vector3 p1,p2,p3,p4,p5,p6,p7;
+    extern Array<AABox>gBoxArray;
+    extern int gCount1, gCount2, gCount3, gCount4;
+    extern bool myfound;
+#endif
+#endif
+
+    void ModelContainer::intersect(const G3D::Ray& pRay, float& pMaxDist, bool pStopAtFirstHit, G3D::Vector3& /*pOutLocation*/, G3D::Vector3& /*pOutNormal*/) const
+    {
+        IntersectionCallBack<SubModel> intersectCallback;
+        NodeValueAccess<TreeNode, SubModel> vna = NodeValueAccess<TreeNode, SubModel>(getTreeNodes(), iSubModel);
+        Ray relativeRay = Ray::fromOriginAndDirection(pRay.origin - getBasePosition(), pRay.direction);
+        iTreeNodes[0].intersectRay(pRay, intersectCallback, pMaxDist, vna, pStopAtFirstHit, false);
+    }
+
+    //==========================================================
+
+    bool ModelContainer::intersect(const G3D::Ray& pRay, float& pMaxDist) const
+    {
+        return BaseModel::intersect(getAABoxBounds(), pRay, pMaxDist);
+    }
+
+    //=================================================================
+
+    template<typename RayCallback>
+    void ModelContainer::intersectRay(const G3D::Ray& pRay, RayCallback& intersectCallback, float& pMaxDist, bool pStopAtFirstHit, bool intersectCallbackIsFast)
+    {
+        if(intersect(pRay, pMaxDist))
+        {
+            NodeValueAccess<TreeNode, SubModel> vna = NodeValueAccess<TreeNode, SubModel>(getTreeNodes(), iSubModel);
+            iTreeNodes[0].intersectRay(pRay, intersectCallback, distance, vna, pStopAtFirstHit, true);
+        }
+    }
     //=================================================================
     void getBounds(const ModelContainer& pMc, G3D::AABox& pAABox)
     {
@@ -448,5 +373,4 @@ namespace VMAP
         pAABox = pMc->getAABoxBounds();
     }
     //=================================================================
-
 }                                                           // VMAP

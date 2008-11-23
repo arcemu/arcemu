@@ -1,6 +1,6 @@
-/* 
+/*
  * Copyright (C) 2005,2006,2007 MaNGOS <http://www.mangosproject.org/>
- * Copyright (C) 2007-2008 Ascent Team <http://www.ascentemu.com/>
+ * Copyright (C) 2008 Arcemu Team <http://www.arcemu.org/>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,7 +29,7 @@
 
 #include "ShortBox.h"
 #include "TreeNode.h"
-#include "RayIntersectionIterator.h"
+#include "VMapTools.h"
 #include "SubModel.h"
 #include "BaseModel.h"
 
@@ -51,54 +51,52 @@ namespace VMAP
         private:
             unsigned int iNSubModel;
             SubModel *iSubModel;
-            //Vector3 iDirection;
-            AABox iBox;
+            G3D::AABox iBox;
+
+            // not allowed copy
+            explicit ModelContainer (const ModelContainer&);
+            ModelContainer& operator=(const ModelContainer&);
 
         public:
-            ModelContainer() : BaseModel()
-			{
-				iNSubModel = 0;
-				iSubModel = NULL;
-				iTreeNodes = NULL;
-				iTriangles = NULL;
-				iNTriangles = 0;
-				iNNodes = 0;
-			}
+            ModelContainer() : BaseModel() { iNSubModel =0; iSubModel = 0; };
 
             // for the mainnode
             ModelContainer(unsigned int pNTriangles, unsigned int pNNodes, unsigned int pNSubModel);
 
-            ModelContainer(AABSPTree<SubModel *> *pTree);
+            ModelContainer(G3D::AABSPTree<SubModel *> *pTree);
 
             ~ModelContainer(void);
 
-            RayIntersectionIterator<TreeNode, SubModel> beginRayIntersection(const Ray& ray, double pMaxTime, bool skipAABoxTests = false) const;
-
-            RayIntersectionIterator<TreeNode, SubModel> endRayIntersection() const;
-
-            inline const void setSubModel(const SubModel& pSubModel, int pPos) { iSubModel[pPos] = pSubModel; }
+            inline void setSubModel(const SubModel& pSubModel, int pPos) { iSubModel[pPos] = pSubModel; }
 
             inline const SubModel& getSubModel(int pPos) const { return iSubModel[pPos]; }
 
             inline unsigned int getNSubModel() const { return(iNSubModel); }
 
-            RealTime getIntersectionTime(const Ray&, bool pExitAtFirst, float pMaxDist) const;
+            void countSubModelsAndNodesAndTriangles(G3D::AABSPTree<SubModel *>::Node& pNode, int& nSubModels, int& nNodes, int& nTriangles);
 
-            void countSubModelsAndNodesAndTriangles(AABSPTree<SubModel *>::Node& pNode, int& nSubModels, int& nNodes, int& nTriangles);
-
-            void fillContainer(const AABSPTree<SubModel *>::Node& pNode, int &pSubModelPos, int &pTreeNodePos, int &pTrianglePos, Vector3& pLo, Vector3& pHi, Vector3& pFinalLo, Vector3& pFinalHi);
+            void fillContainer(const G3D::AABSPTree<SubModel *>::Node& pNode, int &pSubModelPos, int &pTreeNodePos, int &pTrianglePos, G3D::Vector3& pLo, G3D::Vector3& pHi, G3D::Vector3& pFinalLo, G3D::Vector3& pFinalHi);
 
             bool readRawFile(const char *name);
 
-            inline const AABox& getAABoxBounds() const { return(iBox); }
+            inline const G3D::AABox& getAABoxBounds() const { return(iBox); }
 
-            inline void setBounds(const Vector3& lo, const Vector3& hi) { iBox.set(lo,hi); }
+            inline void setBounds(const G3D::Vector3& lo, const G3D::Vector3& hi) { iBox.set(lo,hi); }
 
             bool writeFile(const char *filename);
 
             bool readFile(const char *filename);
 
             size_t getMemUsage();
+            size_t hashCode() { return (getBasePosition() * getNTriangles()).hashCode(); }
+
+            void intersect(const G3D::Ray& pRay, float& pMaxDist, bool pStopAtFirstHit, G3D::Vector3& pOutLocation, G3D::Vector3& pOutNormal) const;
+            bool intersect(const G3D::Ray& pRay, float& pMaxDist) const;
+
+            template<typename RayCallback>
+            void intersectRay(const G3D::Ray& ray, RayCallback& intersectCallback, float& distance, bool pStopAtFirstHit, bool intersectCallbackIsFast = false);
+
+            bool operator==(const ModelContainer& pMc2) const;
     };
 
     //=====================================================
@@ -106,9 +104,7 @@ namespace VMAP
     //=====================================================
 
     size_t hashCode(const ModelContainer& pMc);
-    bool operator==(const ModelContainer& pMc1, const ModelContainer& pMc2);
     void getBounds(const ModelContainer& pMc, G3D::AABox& pAABox);
     void getBounds(const ModelContainer* pMc, G3D::AABox& pAABox);
-
 }
 #endif

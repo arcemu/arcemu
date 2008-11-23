@@ -1,6 +1,6 @@
-/* 
+/*
  * Copyright (C) 2005,2006,2007 MaNGOS <http://www.mangosproject.org/>
- * Copyright (C) 2007-2008 Ascent Team <http://www.ascentemu.com/>
+ * Copyright (C) 2008 Arcemu Team <http://www.arcemu.org/>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,6 +18,9 @@
  */
 
 #include "BaseModel.h"
+#include "VMapTools.h"
+
+using namespace G3D;
 
 namespace VMAP
 {
@@ -43,8 +46,8 @@ namespace VMAP
     {
         iNNodes = pNNodes;
         iNTriangles = pNTriangles;
-        iTriangles = NULL;
-        iTreeNodes = NULL;
+        iTriangles = 0;
+        iTreeNodes = 0;
         if(iNNodes >0) iTreeNodes = new TreeNode[iNNodes];
         if(iNTriangles >0) iTriangles = new TriangleBox[iNTriangles];
     }
@@ -55,6 +58,39 @@ namespace VMAP
     {
         if(getTriangles() != 0) delete [] getTriangles(); setNTriangles(0);
         if(getTreeNodes() != 0) delete [] getTreeNodes(); setNNodes(0);
+    }
+
+    //==========================================================
+
+    void BaseModel::intersect(const G3D::AABox& pBox, const G3D::Ray& pRay, float& pMaxDist, G3D::Vector3& pOutLocation, G3D::Vector3& /*pOutNormal*/) const
+    {
+        bool isInside = false;
+
+        float d = MyCollisionDetection::collisionLocationForMovingPointFixedAABox(
+            pRay.origin, pRay.direction,
+            pBox,
+            pOutLocation, isInside);
+        if (!isInside && ((d > 0) && (d < pMaxDist)))
+        {
+            pMaxDist = d;
+        }
+    }
+
+    //==========================================================
+
+    bool BaseModel::intersect(const G3D::AABox& pBox, const G3D::Ray& pRay, float& pMaxDist) const
+    {
+        // See if the ray will ever hit this node or its children
+        Vector3 location;
+        bool alreadyInsideBounds = false;
+        bool rayWillHitBounds =
+            MyCollisionDetection::collisionLocationForMovingPointFixedAABox(
+            pRay.origin, pRay.direction, pBox, location, alreadyInsideBounds);
+
+        bool canHitThisNode = (alreadyInsideBounds ||
+            (rayWillHitBounds && ((location - pRay.origin).squaredLength() < (pMaxDist * pMaxDist))));
+
+        return canHitThisNode;
     }
 
 }                                                           // VMAP

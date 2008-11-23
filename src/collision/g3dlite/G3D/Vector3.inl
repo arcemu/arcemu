@@ -24,7 +24,7 @@
 #   include <xmmintrin.h>
 #endif
 
-inline size_t hashCode(const G3D::Vector3& v) {
+inline unsigned int hashCode(const G3D::Vector3& v) {
      return v.hashCode();
 }
 
