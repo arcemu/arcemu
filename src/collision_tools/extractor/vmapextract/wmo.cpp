@@ -146,7 +146,6 @@ bool WMOGroup::open()
 	size_t size;
 	char fourcc[5];
 	bbcorn1[3] = 0;
-
 	bbcorn2[3] = 0;	
 	while (!f.isEof  ())
 	{
@@ -169,28 +168,6 @@ bool WMOGroup::open()
 			f.read(&flag, 4);
 			f.read(&flag1, 4);
 			f.read(&Xid, 4);
-
-			if(Xid & 0x4)
-				printf("   Has vertex colors\n");
-
-			if(Xid & 0x8)
-				printf("   Outdoor\n");
-
-			if(Xid & 0x200)
-				printf("   Has Lights\n");
-			
-			if(Xid & 0x800)
-				printf("   Has doodads\n");
-
-			if(Xid & 0x1000)
-				printf("   Has water\n");
-
-			if(Xid & 0x2000)
-				printf("   Indoor\n");
-
-			if(Xid & 0x40000)
-				printf("   Show skybox\n");
-
 			f.read(bbcorn1, 12);
 			f.read(bbcorn2, 12);
 			f.read(&Xid2, 4);
@@ -265,13 +242,6 @@ bool WMOGroup::open()
 int WMOGroup::ConvertToVMAPGroupWmo(FILE *output, bool pPreciseVectorData)
 {
 	if(pPreciseVectorData) {
-		/*uint8 isindoor = 0;
-		if(Xid & 0x2000 && !(Xid & 0x8))
-			isindoor = 1;*/
-
-		//-------GRP -------------------------------------
-		//fwrite(&isindoor, 1, 1, output);
-		fwrite(&Xid, 4, 1, output);
 		fwrite(&liquflags,sizeof(uint32),1,output); 
 		char GRP[] = "GRP ";
 		fwrite(GRP,1,4,output);
@@ -319,13 +289,7 @@ int WMOGroup::ConvertToVMAPGroupWmo(FILE *output, bool pPreciseVectorData)
 		return nTriangles;
 	} 	else {
 		//printf("Convert GroupWmo...\n");
-		/*uint8 isindoor = 0;
-		if(Xid & 0x2000 && !(Xid & 0x8))
-			isindoor = 1;
-
 		//-------GRP -------------------------------------
-		fwrite(&isindoor, 1, 1, output);*/
-		fwrite(&Xid, 4, 1, output);
 		fwrite(&liquflags,sizeof(uint32),1,output); 
 		char GRP[] = "GRP ";
 		fwrite(GRP,1,4,output);

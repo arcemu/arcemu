@@ -421,13 +421,13 @@ bool fillArchiveNameVector(std::vector<std::string>& pArchiveNames) {
 
     // open expansion and common files
     printf("Opening data files from data directory.\n");
-    sprintf(path, "%sexpansion.mpq", input_path);
-    pArchiveNames.push_back(path);
-    sprintf(path, "%scommon.mpq", input_path);
+    sprintf(path, "%slichking.mpq", input_path);
     pArchiveNames.push_back(path);
     sprintf(path, "%scommon-2.mpq", input_path);
     pArchiveNames.push_back(path);
-    sprintf(path, "%slichking.mpq", input_path);
+    sprintf(path, "%sexpansion.mpq", input_path);
+    pArchiveNames.push_back(path);
+    sprintf(path, "%scommon.mpq", input_path);
     pArchiveNames.push_back(path);
     printf("\n");
 
@@ -436,11 +436,11 @@ bool fillArchiveNameVector(std::vector<std::string>& pArchiveNames) {
     for (std::vector<std::string>::iterator i = locales.begin(); i != locales.end(); i++)
     {
         printf("Locale: %s\n", i->c_str());
+        sprintf(path, "%s%s\\lichking-locale-%s.mpq", input_path, i->c_str(), i->c_str());
+        pArchiveNames.push_back(path);
         sprintf(path, "%s%s\\expansion-locale-%s.mpq", input_path, i->c_str(), i->c_str());
         pArchiveNames.push_back(path);
         sprintf(path, "%s%s\\locale-%s.mpq", input_path, i->c_str(), i->c_str());
-        pArchiveNames.push_back(path);
-        sprintf(path, "%s%s\\lichking-locale-%s.mpq", input_path, i->c_str(), i->c_str());
         pArchiveNames.push_back(path);
         printf("\n");
     }

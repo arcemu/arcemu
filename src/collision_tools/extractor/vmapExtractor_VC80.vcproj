@@ -1,7 +1,7 @@
-<?xml version="1.0" encoding="windows-1251"?>
+<?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="8.00"
+	Version="8,00"
 	Name="vmapExtractor"
 	ProjectGUID="{87335BBF-5DA8-4FEC-A51E-1FB948F2FFE9}"
 	>
@@ -42,13 +42,15 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				AdditionalOptions="/wd 4996"
 				Optimization="0"
 				AdditionalIncludeDirectories=".\stormlib"
 				PreprocessorDefinitions="_DEBUG;_CONSOLE;WIN32"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="1"
+				EnableEnhancedInstructionSet="1"
 				UsePrecompiledHeader="0"
-				PrecompiledHeaderFile=".\bin\Win32\DebugAS/StormLib.pch"
+				PrecompiledHeaderFile=""
 				AssemblerListingLocation=".\bin\Win32\DebugAS/"
 				ObjectFile=".\bin\Win32\DebugAS/"
 				ProgramDataBaseFileName=".\bin\Win32\DebugAS/"
@@ -133,6 +135,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				AdditionalOptions="/wd 4996"
 				Optimization="2"
 				InlineFunctionExpansion="1"
 				AdditionalIncludeDirectories=".\stormlib"
@@ -140,8 +143,9 @@
 				StringPooling="true"
 				RuntimeLibrary="0"
 				EnableFunctionLevelLinking="true"
+				EnableEnhancedInstructionSet="1"
 				UsePrecompiledHeader="0"
-				PrecompiledHeaderFile=".\bin\Win32\ReleaseAS/StormLib.pch"
+				PrecompiledHeaderFile=""
 				AssemblerListingLocation=".\bin\Win32\ReleaseAS/"
 				ObjectFile=".\bin\Win32\ReleaseAS/"
 				ProgramDataBaseFileName=".\bin\Win32\ReleaseAS/"

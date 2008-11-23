@@ -1,5 +1,5 @@
 Microsoft Visual Studio Solution File, Format Version 9.00
-# Visual Studio 2005
+# Visual C++ Express 2005
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "vmapExtractor", "vmapExtractor_VC80.vcproj", "{87335BBF-5DA8-4FEC-A51E-1FB948F2FFE9}"
 EndProject
 Global
