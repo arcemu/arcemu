@@ -149,9 +149,15 @@ void PlayerFirstEnter(Player * pPlayer)
 	<Optional    StartingLevel = "1"
 	Set it to 70:
 	<Optional    StartingLevel = "70"
+
+	Look at arcemu-optional.conf for starting gold:
+	<GoldSettings EnableGoldCap = "0"
+              StartingGold = "0"
+              MaximumGold = "214000">
 */
-	pPlayer->SetUInt32Value(PLAYER_FIELD_COINAGE,200000000); // Set gold
-	learnAll( pPlayer );
+
+// TODO: This is broken - spell lists need to be redone. Fornow, ensure they have enough gold to learn on start
+//	learnAll( pPlayer );
 
 /*
 	// Shaman Totems
@@ -183,12 +189,12 @@ void PlayerFirstCreate(Player * pPlayer)
 	// Explore all maps
 	for (uint8 i=0; i<64; i++)
 	{
-	pPlayer->SetFlag(PLAYER_EXPLORED_ZONES_1+i,0xFFFFFFFF);
+	    pPlayer->SetFlag(PLAYER_EXPLORED_ZONES_1+i,0xFFFFFFFF);
 	}
 
 	// Taximask
 	for (uint8 i=0; i<8; i++)
-	pPlayer->SetTaximask(i, 0xFFFFFFFF);
+	    pPlayer->SetTaximask(i, 0xFFFFFFFF);
 
 }
 
