@@ -531,6 +531,7 @@ void ObjectMgr::LoadPlayerCreateInfo()
 		pPlayerCreateInfo->attackpower = fields[20].GetUInt32();
 		pPlayerCreateInfo->mindmg = fields[21].GetFloat();
 		pPlayerCreateInfo->maxdmg = fields[22].GetFloat();
+		pPlayerCreateInfo->introid = fields[23].GetUInt32();
 
 		QueryResult *sk_sql = WorldDatabase.Query(
 			"SELECT * FROM playercreateinfo_skills WHERE indexid=%u",pPlayerCreateInfo->index);

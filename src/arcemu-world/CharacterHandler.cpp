@@ -882,17 +882,12 @@ void WorldSession::FullLogin(Player * plr)
 
 	if(plr->m_FirstLogin)
 	{
-		uint32 racecinematic = 0;
-
-		if(class_ != DEATHKNIGHT)
-			racecinematic = plr->myRace->cinematic_id;
-		else 
-			racecinematic = 165;    /* I didn't find this in the dbcs, only in the packets, so we either need to hardcode it like this or read it from db*/
+		uint32 introid = plr->info->introid;
 
 #ifdef USING_BIG_ENDIAN
-		swap32(&racecinematic);
+		swap32(&introid);
 #endif
-		OutPacket(SMSG_TRIGGER_CINEMATIC, 4, &racecinematic);
+		OutPacket(SMSG_TRIGGER_CINEMATIC, 4, &introid);
 
 		if ( sWorld.m_AdditionalFun ) //cebernic: tells people who 's newbie :D
 		{
