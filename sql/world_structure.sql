@@ -1576,35 +1576,33 @@ DROP TABLE IF EXISTS `playercreateinfo`;
 #
 # Table structure for table 'playercreateinfo'
 #
-
 CREATE TABLE `playercreateinfo` (
-  `Index` tinyint(3) unsigned NOT NULL auto_increment,
-  `race` tinyint(3) unsigned NOT NULL default '0',
-  `factiontemplate` int(10) unsigned NOT NULL default '0',
-  `class` tinyint(3) unsigned NOT NULL default '0',
-  `mapID` int(10) unsigned NOT NULL default '0',
-  `zoneID` int(10) unsigned NOT NULL default '0',
-  `positionX` float NOT NULL default '0',
-  `positionY` float NOT NULL default '0',
-  `positionZ` float NOT NULL default '0',
-  `displayID` smallint(5) unsigned NOT NULL default '0',
-  `BaseStrength` tinyint(3) unsigned NOT NULL default '0',
-  `BaseAgility` tinyint(3) unsigned NOT NULL default '0',
-  `BaseStamina` tinyint(3) unsigned NOT NULL default '0',
-  `BaseIntellect` tinyint(3) unsigned NOT NULL default '0',
-  `BaseSpirit` tinyint(3) unsigned NOT NULL default '0',
-  `BaseHealth` int(10) unsigned NOT NULL default '0',
-  `BaseMana` int(10) unsigned NOT NULL default '0',
-  `BaseRage` int(10) unsigned NOT NULL default '0',
-  `BaseFocus` int(10) unsigned NOT NULL default '0',
-  `BaseEnergy` int(10) unsigned NOT NULL default '0',
-  `attackpower` int(10) unsigned NOT NULL default '0',
-  `mindmg` float NOT NULL default '0',
-  `maxdmg` float NOT NULL default '0',
-  PRIMARY KEY  (`class`,`race`),
-  UNIQUE KEY `index` (`Index`)
-) ENGINE=MyISAM /*!40100 DEFAULT CHARSET=latin1 COMMENT='Player System'*/;
-
+  `Index` tinyint(3) unsigned NOT NULL AUTO_INCREMENT,
+  `race` tinyint(3) unsigned NOT NULL DEFAULT '0',
+  `factiontemplate` int(10) unsigned NOT NULL DEFAULT '0',
+  `class` tinyint(3) unsigned NOT NULL DEFAULT '0',
+  `mapID` int(10) unsigned NOT NULL DEFAULT '0',
+  `zoneID` int(10) unsigned NOT NULL DEFAULT '0',
+  `positionX` float NOT NULL DEFAULT '0',
+  `positionY` float NOT NULL DEFAULT '0',
+  `positionZ` float NOT NULL DEFAULT '0',
+  `displayID` smallint(5) unsigned NOT NULL DEFAULT '0',
+  `BaseStrength` tinyint(3) unsigned NOT NULL DEFAULT '0',
+  `BaseAgility` tinyint(3) unsigned NOT NULL DEFAULT '0',
+  `BaseStamina` tinyint(3) unsigned NOT NULL DEFAULT '0',
+  `BaseIntellect` tinyint(3) unsigned NOT NULL DEFAULT '0',
+  `BaseSpirit` tinyint(3) unsigned NOT NULL DEFAULT '0',
+  `BaseHealth` int(10) unsigned NOT NULL DEFAULT '0',
+  `BaseMana` int(10) unsigned NOT NULL DEFAULT '0',
+  `BaseRage` int(10) unsigned NOT NULL DEFAULT '0',
+  `BaseFocus` int(10) unsigned NOT NULL DEFAULT '0',
+  `BaseEnergy` int(10) unsigned NOT NULL DEFAULT '0',
+  `attackpower` int(10) unsigned NOT NULL DEFAULT '0',
+  `mindmg` float NOT NULL DEFAULT '0',
+  `maxdmg` float NOT NULL DEFAULT '0',
+  `introid` int(10) unsigned NOT NULL DEFAULT '0',
+  PRIMARY KEY (`Index`)
+) ENGINE=MyISAM AUTO_INCREMENT=56 DEFAULT CHARSET=latin1 COMMENT='Player System';
 
 
 #
