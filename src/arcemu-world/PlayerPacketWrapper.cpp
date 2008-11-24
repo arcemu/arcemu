@@ -56,11 +56,13 @@ void Player::SendLevelupInfo(uint32 level, uint32 Hp, uint32 Mana, uint32 Stat0,
     packet.Mana = Mana;
 
     // grep: these are probably the other powers :)
+	//
     packet.unk0 = 0;
     packet.unk1 = 0;
     packet.unk2 = 0;
     packet.unk3 = 0;
-
+	packet.unk4 = 0; //3.0.2 - probably related to deathknights
+	packet.unk5 = 0;
     // Append stat differences
     packet.Stat0 = Stat0;
     packet.Stat1 = Stat1;

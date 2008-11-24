@@ -74,6 +74,8 @@ struct packet_SMSG_LEVELUP_INFO
 	uint32	unk1;
 	uint32	unk2;
 	uint32	unk3;
+	uint32	unk4;
+	uint32	unk5;
 	uint32	Stat0;
 	uint32	Stat1;
 	uint32	Stat2;
