@@ -289,39 +289,43 @@ void WorldSession::HandleMovementOpcodes( WorldPacket & recv_data )
 	/* Update player movement state                                         */
 	/************************************************************************/
 	
-	switch( recv_data.GetOpcode() )
+	uint16 opcode = recv_data.GetOpcode();
+	switch( opcode )
 	{
-	case MSG_MOVE_START_FORWARD:
-	case MSG_MOVE_START_BACKWARD:
-		_player->moving = true;
-		break;
-	case MSG_MOVE_START_STRAFE_LEFT:
-	case MSG_MOVE_START_STRAFE_RIGHT:
-		_player->strafing = true;
-		break;
-	case MSG_MOVE_JUMP:
-		_player->jumping = true;
-		break;
-	case MSG_MOVE_STOP:
-		_player->moving = false;
-		break;
-	case MSG_MOVE_STOP_STRAFE:
-		_player->strafing = false;
-		break;
-	case MSG_MOVE_FALL_LAND:
-		_player->jumping = false;
-		break;
-	default:
-		moved = false;
-		break;
+		case MSG_MOVE_START_FORWARD:
+		case MSG_MOVE_START_BACKWARD:
+			_player->moving = true;
+			break;
+		case MSG_MOVE_START_STRAFE_LEFT:
+		case MSG_MOVE_START_STRAFE_RIGHT:
+			_player->strafing = true;
+			break;
+		case MSG_MOVE_JUMP:
+			_player->jumping = true;
+			break;
+		case MSG_MOVE_STOP:
+			_player->moving = false;
+			break;
+		case MSG_MOVE_STOP_STRAFE:
+			_player->strafing = false;
+			break;
+		case MSG_MOVE_FALL_LAND:
+			_player->jumping = false;
+			break;
+		default:
+			moved = false;
+			break;
 	}
-	
 	if( moved )
 	{
 		if( !_player->moving && !_player->strafing && !_player->jumping )
+		{
 			_player->m_isMoving = false;
+		}
 		else
+		{
 			_player->m_isMoving = true;
+		}
 	}
 	
 
@@ -411,7 +415,7 @@ void WorldSession::HandleMovementOpcodes( WorldPacket & recv_data )
 	{
 		move_time = (movement_info.time - (mstime - m_clientTimeDelay)) + MOVEMENT_PACKET_TIME_DELAY + mstime;
 		memcpy(&movement_packet[pos], recv_data.contents(), recv_data.size());
-		movement_packet[pos+5]=0;
+		movement_packet[pos+6]=0;
 
 		/************************************************************************/
 		/* Distribute to all inrange players.                                   */
@@ -419,9 +423,9 @@ void WorldSession::HandleMovementOpcodes( WorldPacket & recv_data )
 		for(set<Player*>::iterator itr = _player->m_inRangePlayers.begin(); itr != _player->m_inRangePlayers.end(); ++itr)
 		{
 #ifdef USING_BIG_ENDIAN
-			*(uint32*)&movement_packet[pos+5] = swap32(move_time + (*itr)->GetSession()->m_moveDelayTime);
+			*(uint32*)&movement_packet[pos+6] = swap32(move_time + (*itr)->GetSession()->m_moveDelayTime);
 #else
-			*(uint32*)&movement_packet[pos+5] = uint32(move_time + (*itr)->GetSession()->m_moveDelayTime);
+			*(uint32*)&movement_packet[pos+6] = uint32(move_time + (*itr)->GetSession()->m_moveDelayTime);
 #endif
 #if defined(ENABLE_COMPRESSED_MOVEMENT) && defined(ENABLE_COMPRESSED_MOVEMENT_FOR_PLAYERS)
 			if( _player->GetPositionNC().Distance2DSq((*itr)->GetPosition()) >= World::m_movementCompressThreshold )
@@ -774,7 +778,7 @@ void MovementInfo::init(WorldPacket & data)
 	{
 		data >> pitch;
 	}
-	if (flags & MOVEFLAG_FALLING || flags & MOVEFLAG_REDIRECTED)
+	if (flags & MOVEFLAG_FALLING || flags & MOVEFLAG_JUMPING)
 	{
 		data >> FallTime >> unk8 >> unk9 >> unk10;
 	}

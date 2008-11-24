@@ -1076,6 +1076,7 @@ void Group::HandleUpdateFieldChange(uint32 Index, Player * pPlayer)
 	case UNIT_FIELD_POWER2:
 	case UNIT_FIELD_POWER3:
 	case UNIT_FIELD_POWER4:
+	case UNIT_FIELD_POWER7:
 		Flags = GROUP_UPDATE_FLAG_POWER;
 		break;
 
@@ -1083,6 +1084,7 @@ void Group::HandleUpdateFieldChange(uint32 Index, Player * pPlayer)
 	case UNIT_FIELD_MAXPOWER2:
 	case UNIT_FIELD_MAXPOWER3:
 	case UNIT_FIELD_MAXPOWER4:
+	case UNIT_FIELD_MAXPOWER7:
 		Flags = GROUP_UPDATE_FLAG_MAXPOWER;
 		break;
 

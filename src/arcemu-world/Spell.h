@@ -229,6 +229,7 @@ enum SPELL_RUNE_TYPES
 	RUNE_UNHOLY		= 1,
 	RUNE_FROST		= 2,
 	RUNE_DEATH		= 3,
+	RUNE_RECHARGE	= 4
 };
 
 // value's for SendSpellLog
@@ -1536,6 +1537,7 @@ typedef void(Spell::*pSpellTarget)(uint32 i, uint32 j);
 #define POWER_TYPE_ENERGY 3
 #define POWER_TYPE_HAPPINESS 4
 #define POWER_TYPE_RUNES 5
+#define POWER_TYPE_RUNIC_POWER 6
 // we have power type 15 and 31 :S
 
 #define GO_FISHING_BOBBER 35591

@@ -56,7 +56,7 @@ enum MovementFlags
 	MOVEFLAG_TAXI						= 0x200,		
 	MOVEFLAG_NO_COLLISION				= 0x400,
 	MOVEFLAG_FLYING	    				= 0x800,		//verified
-	MOVEFLAG_REDIRECTED					= 0x1000,		//Unconfirmed
+	MOVEFLAG_JUMPING					= 0x1000,		//Unconfirmed
 	MOVEFLAG_FALLING					= 0x2000,       //verified
 	MOVEFLAG_FALLING_FAR				= 0x4000,		//verified
 	MOVEFLAG_FREE_FALLING				= 0x8000,		//half verified
@@ -69,7 +69,7 @@ enum MovementFlags
 	MOVEFLAG_TB_PENDING_BACKWARD		= 0x100000,		// (MOVEFLAG_PENDING_BACKWARD)
 	MOVEFLAG_SWIMMING          		    = 0x200000,		//  verified
 	MOVEFLAG_FLYING_PITCH_UP	        = 0x400000,		// (half confirmed)(MOVEFLAG_PENDING_STR_RGHT)
-	MOVEFLAG_TB_MOVED					= 0x800000,		// (half confirmed) gets called when landing (MOVEFLAG_MOVED)
+	MOVEFLAG_CAN_FLY					= 0x800000,		// (half confirmed) gets called when landing (MOVEFLAG_MOVED)
 
 	// Byte 4 (Script Based Flags. Never reset, only turned on or off.)
 	MOVEFLAG_AIR_SUSPENSION	   	 		= 0x1000000,	// confirmed allow body air suspension(good name? lol).
@@ -97,6 +97,19 @@ struct OpcodeHandler
 {
 	uint16 status;
 	void (WorldSession::*handler)(WorldPacket& recvPacket);
+};
+
+enum ObjectUpdateFlags
+{
+    UPDATEFLAG_NONE         = 0x00,
+    UPDATEFLAG_SELF         = 0x01,
+    UPDATEFLAG_TRANSPORT    = 0x02,
+    UPDATEFLAG_HAS_TARGET   = 0x04,
+    UPDATEFLAG_LOWGUID      = 0x08,
+    UPDATEFLAG_HIGHGUID     = 0x10,
+    UPDATEFLAG_LIVING       = 0x20,
+    UPDATEFLAG_HAS_POSITION = 0x40,
+    UPDATEFLAG_VEHICLE      = 0x80
 };
 
 enum SessionStatus

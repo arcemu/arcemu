@@ -6856,8 +6856,6 @@ void ApplyNormalFixes()
 		 **********************************************************/
 		sp = dbcSpell.LookupEntryForced( 48266 );
 		if( sp != NULL )
-			sp->EffectApplyAuraName[1] = SPELL_AURA_MOD_INCREASE_HEALTH_PERCENT;
-			sp->EffectBasePoints[1] = 14;
 			sp->BGR_one_buff_from_caster_on_self = SPELL_TYPE3_DEATH_KNIGHT_AURA;
 
 		/**********************************************************
@@ -6876,7 +6874,8 @@ void ApplyNormalFixes()
 		 **********************************************************/
 		sp = dbcSpell.LookupEntryForced( 48265 );
 		if( sp != NULL )
-		    sp->EffectApplyAuraName[1] = SPELL_AURA_MOD_HASTE;
+		    sp->EffectApplyAuraName[1] = SPELL_AURA_MOD_ATTACKSPEED;
+			sp->Effect[1] = SPELL_EFFECT_APPLY_AURA;
 			sp->EffectApplyAuraName[0] = SPELL_AURA_MOD_INCREASE_SPEED;
 			sp->BGR_one_buff_from_caster_on_self = SPELL_TYPE3_DEATH_KNIGHT_AURA;
 				

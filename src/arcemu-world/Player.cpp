@@ -28,6 +28,7 @@ UpdateMask Player::m_visibleUpdateMask;
 #define MACHINEGUN 25026
 #define DROPMINE 25024
 #define SHIELD 27759
+static const uint8 baseRunes[6] = {0,0,1,1,2,2};
 static uint32 TonkSpecials[4] = {FLAMETHROWER,MACHINEGUN,DROPMINE,SHIELD};
 
 Player::Player( uint32 guid ) : m_mailBox(guid), m_achievementMgr(this)
@@ -333,7 +334,11 @@ Player::Player( uint32 guid ) : m_mailBox(guid), m_achievementMgr(this)
 		m_charters[i]=NULL;
 	for(i = 0; i < NUM_ARENA_TEAM_TYPES; ++i)
 		m_arenaTeams[i]=NULL;
-
+	for(int i = 0; i < 6; ++i)
+	{
+		m_runes[i] = baseRunes[i];
+		m_runetimer[i] = 0;
+	}
 	flying_aura = 0;
 	resend_speed = false;
 	rename_pending = false;
@@ -714,12 +719,15 @@ bool Player::Create(WorldPacket& data )
 	//SetUInt32Value(UNIT_FIELD_POWER2, 0 ); // this gets devided by 10
 	SetUInt32Value(UNIT_FIELD_POWER3, info->focus );
 	SetUInt32Value(UNIT_FIELD_POWER4, info->energy );
+	SetUInt32Value(UNIT_FIELD_POWER6, 8);
    
 	SetUInt32Value(UNIT_FIELD_MAXHEALTH, info->health);
 	SetUInt32Value(UNIT_FIELD_MAXPOWER1, info->mana );
 	SetUInt32Value(UNIT_FIELD_MAXPOWER2, info->rage );
 	SetUInt32Value(UNIT_FIELD_MAXPOWER3, info->focus );
 	SetUInt32Value(UNIT_FIELD_MAXPOWER4, info->energy );
+	SetUInt32Value(UNIT_FIELD_MAXPOWER6, 8);
+	SetUInt32Value(UNIT_FIELD_MAXPOWER7, 1000 );
 	
 	//THIS IS NEEDED
 	SetUInt32Value(UNIT_FIELD_BASE_HEALTH, info->health);
@@ -2874,9 +2882,12 @@ void Player::LoadFromDBProc(QueryResultVector & results)
 	//SetUInt32Value(UNIT_FIELD_POWER2, 0);
 	SetUInt32Value(UNIT_FIELD_POWER3, info->focus);
 	SetUInt32Value(UNIT_FIELD_POWER4, info->energy );
+	SetUInt32Value(UNIT_FIELD_POWER6, 8);
 	SetUInt32Value(UNIT_FIELD_MAXPOWER2, info->rage );
 	SetUInt32Value(UNIT_FIELD_MAXPOWER3, info->focus );
 	SetUInt32Value(UNIT_FIELD_MAXPOWER4, info->energy );
+	SetUInt32Value(UNIT_FIELD_MAXPOWER6, 8);
+	SetUInt32Value(UNIT_FIELD_MAXPOWER7, 1000 );
 	if(getClass() == WARRIOR)
 		SetShapeShift(FORM_BATTLESTANCE);
 
@@ -4466,6 +4477,7 @@ void Player::KillPlayer()
 
 	if(this->getClass() == WARRIOR) //rage resets on death
 		SetPower(POWER_TYPE_RAGE, 0);
+		SetPower(POWER_TYPE_RUNIC_POWER, 0);
 
 	sHookInterface.OnDeath(this);
 
@@ -6643,7 +6655,8 @@ void Player::Reset_ToLevel1()
 
 	SetUInt32Value(UNIT_FIELD_HEALTH, info->health);
 	SetPower(0, info->mana );
-	SetUInt32Value(UNIT_FIELD_POWER2, 0 ); // this gets devided by 10
+	SetPower(POWER_TYPE_RAGE, 0);
+	SetPower(POWER_TYPE_RUNIC_POWER, 0);
 	SetUInt32Value(UNIT_FIELD_POWER3, info->focus );
 	SetUInt32Value(UNIT_FIELD_POWER4, info->energy );
 	SetUInt32Value(UNIT_FIELD_MAXHEALTH, info->health);
@@ -6653,6 +6666,7 @@ void Player::Reset_ToLevel1()
 	SetUInt32Value(UNIT_FIELD_MAXPOWER2, info->rage );
 	SetUInt32Value(UNIT_FIELD_MAXPOWER3, info->focus );
 	SetUInt32Value(UNIT_FIELD_MAXPOWER4, info->energy );
+	SetUInt32Value(UNIT_FIELD_MAXPOWER7, 1000 );
 	SetUInt32Value(UNIT_FIELD_STAT0, info->strength );
 	SetUInt32Value(UNIT_FIELD_STAT1, info->ability );
 	SetUInt32Value(UNIT_FIELD_STAT2, info->stamina );
@@ -7102,6 +7116,16 @@ void Player::RegenerateHealth( bool inCombat )
 		else
 			DealDamage(this, float2int32(-amt), 0, 0, 0);
 	}
+}
+
+void Player::TakeRunicPower(int32 decayValue)
+{
+	uint32 cur = GetUInt32Value(UNIT_FIELD_POWER7);
+    uint32 runicpower = ((int)cur <= decayValue) ? 0 : cur-decayValue;
+    if (runicpower > 1000 )
+	  runicpower = 1000;
+
+	SetPower(POWER_TYPE_RUNIC_POWER,runicpower);
 }
 
 void Player::LooseRage(int32 decayValue)
@@ -11819,6 +11843,45 @@ void Player::SendAchievmentEarned( uint32 archiId, uint32 at_stamp )
 
 
 //wtf does this do ? How can i check the effect of this anyway ? Made this before SMSG_ACHIEVEMENT_EARNED :P
+void Player::ConvertRune(uint8 index, uint8 value)
+{
+	ASSERT(index < 6);
+	m_runes[index] = value;
+	if(value >= 4)
+		return;
+
+	WorldPacket data(SMSG_CONVERT_RUNE, 2);
+	data << (uint8)index;
+	data << (uint8)value;
+	SendMessageToSet(&data, true);
+}
+
+uint32 Player::HasRunes(uint8 type, uint32 count)
+{
+	uint32 found = 0;
+	for(uint32 i=0; i<6 && count != found; ++i)
+	{
+		if(GetRune(i) == type)
+			found++;
+	}
+	return (count - found);
+}
+
+uint32 Player::TakeRunes(uint8 type, uint32 count)
+{
+	uint32 found = 0;
+	for(uint32 i=0; i<6 && count != found; ++i)
+	{
+		if(GetRune(i) == type)
+		{
+			ConvertRune(i, RUNE_RECHARGE);
+			sEventMgr.AddEvent( this, &Player::ConvertRune, (uint8)i, baseRunes[i], EVENT_PLAYER_RUNE_REGEN + i, 10000, 1, 0 );
+			found++;
+		}
+	}
+	return (count - found);
+}
+
 void Player::SendAchievmentStatus( uint32 criteriaid, uint32 new_value, uint32 at_stamp )
 {
 	/*

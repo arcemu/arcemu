@@ -428,20 +428,21 @@ void Object::_BuildMovementUpdate(ByteBuffer * data, uint8 flags, uint32 flags2,
 		uThis = static_cast<Creature*>(this);
 	}
 
-	if (flags & 0x20)
+	if (flags & UPDATEFLAG_LIVING)
 	{
 		if(pThis && pThis->m_TransporterGUID != 0)
-			flags2 |= 0x200;
+			flags2 |= MOVEFLAG_TAXI;
 		else if(uThis != NULL && uThis->m_transportGuid != 0 && uThis->m_transportPosition != NULL)
-			flags2 |= 0x200;
+			flags2 |= MOVEFLAG_TAXI;
 
 		if(splinebuf)
 		{
-			flags2 |= 0x08000001;	   //1=move forward
+			flags2 |= MOVEFLAG_IMMOBILIZED;	   //1=move forward
+			flags2 |= MOVEFLAG_MOVE_FORWARD;
 			if(uThis != NULL)
 			{
 				if(uThis->GetAIInterface()->m_moveRun == false)
-					flags2 |= 0x100;	//100=walk
+					flags2 |= MOVEFLAG_WALK;	//100=walk
 			}			
 		}
 
@@ -456,16 +457,16 @@ void Object::_BuildMovementUpdate(ByteBuffer * data, uint8 flags, uint32 flags2,
 			case 13116: // Alliance Spirit Guide
 			case 13117: // Horde Spirit Guide
 				{
-					flags2 |= 0x10000000;
+					flags2 |= MOVEFLAG_WATER_WALK;
 				}break;
 			}
 		
 			if(uThis->GetAIInterface()->IsFlying())
 //				flags2 |= 0x800; //in 2.3 this is some state that i was not able to decode yet
-				flags2 |= 0x400; //Zack : Teribus the Cursed had flag 400 instead of 800 and he is flying all the time 
+				flags2 |= MOVEFLAG_NO_COLLISION; //Zack : Teribus the Cursed had flag 400 instead of 800 and he is flying all the time 
 			if(uThis->GetProto() && uThis->GetProto()->extra_a9_flags)
 			{
-				if(!(flags2 & 0x0200))
+				if(!(flags2 & MOVEFLAG_TAXI))
 					flags2 |= uThis->GetProto()->extra_a9_flags;
 			}
 /*			if(GetGUIDHigh() == HIGHGUID_WAYPOINT)
@@ -496,9 +497,9 @@ void Object::_BuildMovementUpdate(ByteBuffer * data, uint8 flags, uint32 flags2,
 		//*data << uint8(0x1);
 	}
 
-	if (flags & 0x40)
+	if (flags & UPDATEFLAG_HAS_POSITION)
 	{
-		if(flags & 0x2)
+		if(flags & UPDATEFLAG_TRANSPORT)
 		{
 			*data << (float)m_position.x;
 			*data << (float)m_position.y;
@@ -511,7 +512,7 @@ void Object::_BuildMovementUpdate(ByteBuffer * data, uint8 flags, uint32 flags2,
 			*data << m_position.o;
 		}
 
-		if(flags & 0x20 && flags2 & 0x0200)
+		if(flags & UPDATEFLAG_LIVING && flags2 & MOVEFLAG_TAXI)
 		{
 			if(pThis)
 			{
@@ -530,12 +531,12 @@ void Object::_BuildMovementUpdate(ByteBuffer * data, uint8 flags, uint32 flags2,
 		}
 	}
 
-	if (flags & 0x20)
+	if (flags & UPDATEFLAG_LIVING)
 	{
 		*data << (uint32)0;
 	}
 
-	if (flags & 0x20 && flags2 & 0x2000)
+	if (flags & UPDATEFLAG_LIVING && flags2 & MOVEFLAG_FALLING)
 	{
 		*data << (float)0;
 		*data << (float)1.0;
@@ -543,7 +544,7 @@ void Object::_BuildMovementUpdate(ByteBuffer * data, uint8 flags, uint32 flags2,
 		*data << (float)0;
 	}
 
-	if (flags & 0x20)
+	if (flags & UPDATEFLAG_LIVING)
 	{
 		*data << m_walkSpeed;	 // walk speed
 		*data << m_runSpeed;	  // run speed
@@ -565,13 +566,13 @@ void Object::_BuildMovementUpdate(ByteBuffer * data, uint8 flags, uint32 flags2,
 	if(flags & 0x8)
 	{
 		*data << GetUInt32Value(OBJECT_FIELD_GUID);
-		if(flags & 0x10)
+		if(flags & UPDATEFLAG_LOWGUID)
 			*data << GetUInt32Value(OBJECT_FIELD_GUID + 4);
 	}
-	else if(flags & 0x10)
+	else if(flags & UPDATEFLAG_HIGHGUID)
 		*data << GetUInt32Value(OBJECT_FIELD_GUID);
 
-	if(flags & 0x2)
+	if(flags & UPDATEFLAG_TRANSPORT)
 	{
 		if(target)
 		{
@@ -584,7 +585,7 @@ void Object::_BuildMovementUpdate(ByteBuffer * data, uint8 flags, uint32 flags2,
             *data << getMSTime();
 	}
 	
-	if (flags & 0x80)
+	if (flags & UPDATEFLAG_VEHICLE)
 	{
 		*data << float(0) << uint32(0);
 	}
@@ -1143,6 +1144,7 @@ void Object::SetUInt32Value( const uint32 index, const uint32 value )
 			case UNIT_FIELD_POWER1:
 			case UNIT_FIELD_POWER2:
 			case UNIT_FIELD_POWER4:
+			case UNIT_FIELD_POWER7:
 				static_cast< Player* >( this )->SendPowerUpdate();
 				break;
 		}
@@ -1220,6 +1222,7 @@ void Object::ModUnsigned32Value(uint32 index, int32 mod)
 			case UNIT_FIELD_POWER1:
 			case UNIT_FIELD_POWER2:
 			case UNIT_FIELD_POWER4:
+			case UNIT_FIELD_POWER7:
 				static_cast< Player* >( this )->SendPowerUpdate();
 				break;
 		}

@@ -2589,6 +2589,12 @@ void Unit::RegeneratePower(bool isinterrupted)
 				}
 
 			}break;
+		
+		case POWER_TYPE_RUNIC_POWER:
+
+					{
+						static_cast< Player* >( this )->TakeRunicPower(10);
+					}
 		}
 		
 		/*

@@ -1440,6 +1440,7 @@ public:
 	void RegenerateHealth(bool inCombat);
 	void RegenerateEnergy();
 	void LooseRage(int32 value);
+	void TakeRunicPower(int32 value);
 	
     uint32 SoulStone;
 	uint32 SoulStoneReceiver;
@@ -1467,6 +1468,7 @@ public:
 	uint8 cannibalizeCount;
 	int32 rageFromDamageDealt;
 	int32 rageFromDamageTaken;
+	int32 runicpowerFromDamageTaken;
 	// GameObject commands
 	inline GameObject* GetSelectedGo()
 	{ 
@@ -2012,6 +2014,8 @@ public:
 	void Social_TellFriendsOnline();
 	void Social_TellFriendsOffline();
 
+	uint8 m_runes[6];
+
 	/************************************************************************/
 	/* end social                                                           */
 	/************************************************************************/
@@ -2024,6 +2028,16 @@ public:
 	void LoadFieldsFromString(const char * string, uint32 firstField, uint32 fieldsNum);
 	void UpdateGlyphs();
 	void SendPowerUpdate();
+
+	ARCEMU_INLINE uint8 GetRune(uint32 index)
+	{
+		ASSERT(index < 6);
+		return m_runes[index];
+	}
+	void ConvertRune(uint8 index, uint8 value);
+	uint32 TakeRunes(uint8 type, uint32 count);
+	uint32 HasRunes(uint8 type, uint32 count);
+	uint32 m_runetimer[6];
 	
 	int16 m_vampiricEmbrace;
 	int16 m_vampiricTouch;
