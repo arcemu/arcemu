@@ -189,31 +189,31 @@
 			Name="vmaplib"
 			>
 			<File
-				RelativePath=".\vmap\\AABSPTree.h"
+				RelativePath=".\vmap\AABSPTree.h"
 				>
 			</File>
 			<File
-				RelativePath=".\vmap\\BaseModel.cpp"
+				RelativePath=".\vmap\BaseModel.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\vmap\\BaseModel.h"
+				RelativePath=".\vmap\BaseModel.h"
 				>
 			</File>
 			<File
-				RelativePath=".\vmap\\CoordModelMapping.cpp"
+				RelativePath=".\vmap\CoordModelMapping.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\vmap\\CoordModelMapping.h"
+				RelativePath=".\vmap\CoordModelMapping.h"
 				>
 			</File>
 			<File
-				RelativePath=".\vmap\\DebugCmdLogger.cpp"
+				RelativePath=".\vmap\DebugCmdLogger.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\vmap\\DebugCmdLogger.h"
+				RelativePath=".\vmap\DebugCmdLogger.h"
 				>
 			</File>
 			<File
@@ -221,39 +221,39 @@
 				>
 			</File>
 			<File
-				RelativePath=".\vmap\\ManagedModelContainer.h"
+				RelativePath=".\vmap\ManagedModelContainer.h"
 				>
 			</File>
 			<File
-				RelativePath=".\vmap\\ModelContainer.cpp"
+				RelativePath=".\vmap\ModelContainer.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\vmap\\ModelContainer.h"
+				RelativePath=".\vmap\ModelContainer.h"
 				>
 			</File>
 			<File
-				RelativePath=".\vmap\\NodeValueAccess.h"
+				RelativePath=".\vmap\NodeValueAccess.h"
 				>
 			</File>
 			<File
-				RelativePath=".\vmap\\ShortBox.h"
+				RelativePath=".\vmap\ShortBox.h"
 				>
 			</File>
 			<File
-				RelativePath=".\vmap\\ShortVector.h"
+				RelativePath=".\vmap\ShortVector.h"
 				>
 			</File>
 			<File
-				RelativePath=".\vmap\\SubModel.cpp"
+				RelativePath=".\vmap\SubModel.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\vmap\\SubModel.h"
+				RelativePath=".\vmap\SubModel.h"
 				>
 			</File>
 			<File
-				RelativePath=".\vmap\\TileAssembler.cpp"
+				RelativePath=".\vmap\TileAssembler.cpp"
 				>
 			</File>
 			<File
@@ -261,15 +261,15 @@
 				>
 			</File>
 			<File
-				RelativePath=".\vmap\\TreeNode.cpp"
+				RelativePath=".\vmap\TreeNode.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\vmap\\TreeNode.h"
+				RelativePath=".\vmap\TreeNode.h"
 				>
 			</File>
 			<File
-				RelativePath=".\vmap\\VMapTools.h"
+				RelativePath=".\vmap\VMapTools.h"
 				>
 			</File>
 		</Filter>
