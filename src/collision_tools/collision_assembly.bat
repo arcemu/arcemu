@@ -2,6 +2,7 @@
 cls
 echo.
 echo                    Welcome to the ArcEmu vmaps extractor and assembler
+echo                          For support visit http://www.arcemu.org
 echo.
 echo You need 2GB of free space in disk, CTRL+C to stop process
 echo Hit Enter to start . . .
@@ -26,7 +27,8 @@ cls
 echo.
 echo.
 echo.
-echo Vmaps extracted check log.txt for errors, now it's time to assemble the vmaps press any key to continue . . .
+echo Vmaps extracted , now it's time to assemble the vmaps Please patent.
+echo Please push enter to start. Notice Do not close this window until process has ended.
 pause>nul
 md vmaps
 vmap_assembler.exe buildings vmaps splitConfig.txt
@@ -41,6 +43,6 @@ cls
 echo.
 echo.
 echo.
-echo Process done! copy vmaps folder to the ArcEmu server directory
+echo Gongrats process done! copy vmaps folder to the ArcEmu server directory
 echo Press any key to exit . . .
 pause>nul
