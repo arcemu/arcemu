@@ -33,11 +33,11 @@ LoginErrorCode VerifyName(const char * name, size_t nlen)
 	if( sWorld.m_limitedNames )
 	{
 		if( nlen == 0 )
-			return CHAR_NAME_NO_NAME;
+			return E_CHAR_NAME_NO_NAME;
 		else if( nlen < 2 )
-			return CHAR_NAME_TOO_SHORT;
+			return E_CHAR_NAME_TOO_SHORT;
 		else if( nlen > 12 )
-			return CHAR_NAME_TOO_LONG;
+			return E_CHAR_NAME_TOO_LONG;
 
 		for( i = 0; i < nlen; ++i )
 		{
@@ -47,7 +47,7 @@ LoginErrorCode VerifyName(const char * name, size_t nlen)
 				if( name[i] == *p )
 					goto cont;
 			}
-			return CHAR_NAME_INVALID_CHARACTER;
+			return E_CHAR_NAME_INVALID_CHARACTER;
 cont:
 			continue;
 		}
@@ -61,11 +61,11 @@ cont:
 				++p;
 
 			if(*p != 0)
-				return CHAR_NAME_INVALID_CHARACTER;
+				return E_CHAR_NAME_INVALID_CHARACTER;
 		}
 	}
 	
-	return CHAR_NAME_SUCCESS;
+	return E_CHAR_NAME_SUCCESS;
 }
 
 bool ChatHandler::HandleRenameAllCharacter(const char * args, WorldSession * m_session)
@@ -81,7 +81,7 @@ bool ChatHandler::HandleRenameAllCharacter(const char * args, WorldSession * m_s
 			const char * pName = result->Fetch()[1].GetString();
 			size_t szLen = strlen(pName);
 
-			if( VerifyName(pName, szLen) != CHAR_NAME_SUCCESS )
+			if( VerifyName(pName, szLen) != E_CHAR_NAME_SUCCESS )
 			{
 				printf("renaming character %s, %u\n", pName,uGuid);
                 Player * pPlayer = objmgr.GetPlayer(uGuid);
@@ -129,6 +129,7 @@ void WorldSession::CharacterEnumProc(QueryResult * result)
 	CreatureInfo *info = NULL;
 	uint8 num = 0;
 	uint8 race;
+	has_dk = false;
 	_side = -1; // side should be set on every enumeration for safety
 
 	// should be more than enough.. 200 bytes per char..
@@ -161,11 +162,9 @@ void WorldSession::CharacterEnumProc(QueryResult * result)
 				_side = sides[race];
 			}
 
-						
-		if( !has_level_55_char && fields[1].GetUInt8() >= 55 )
-			{
-				has_level_55_char = true;
-			}
+		//Death Knights stuff
+		has_level_55_char = has_level_55_char || ( fields[1].GetUInt8() >= 55 );
+		has_dk = has_dk || (Class == 6);
 
 			/* build character enum, w0000t :p */
 			data << guid;						// guid
@@ -323,29 +322,30 @@ void WorldSession::HandleCharCreateOpcode( WorldPacket & recv_data )
 	recv_data.rpos(0);
 
 	LoginErrorCode res = VerifyName( name.c_str(), name.length() );
-	if( res != CHAR_NAME_SUCCESS )
+	if( res != E_CHAR_NAME_SUCCESS )
 	{
 		OutPacket( SMSG_CHAR_CREATE, 1, &res );
 		return;
 	}
-	
-	res = g_characterNameFilter->Parse( name, false ) ? CHAR_NAME_PROFANE : CHAR_NAME_SUCCESS;
-	if( res != CHAR_NAME_SUCCESS )
+
+	res = g_characterNameFilter->Parse( name, false ) ? E_CHAR_NAME_PROFANE : E_CHAR_NAME_SUCCESS;
+	if( res != E_CHAR_NAME_SUCCESS )
 	{
 		OutPacket( SMSG_CHAR_CREATE, 1, &res );
 		return;
 	}
-	
-	res = objmgr.GetPlayerInfoByName(name.c_str()) == NULL ? CHAR_CREATE_SUCCESS : CHAR_CREATE_NAME_IN_USE;
-	if( res != CHAR_CREATE_SUCCESS )
+
+	res = objmgr.GetPlayerInfoByName(name.c_str()) == NULL ? E_CHAR_CREATE_SUCCESS : E_CHAR_CREATE_NAME_IN_USE;
+	if( res != E_CHAR_CREATE_SUCCESS )
 	{
 		OutPacket( SMSG_CHAR_CREATE, 1, &res );
 		return;
 	}
-	res = sHookInterface.OnNewCharacter( race, class_, this, name.c_str() ) ? CHAR_CREATE_SUCCESS : CHAR_CREATE_ERROR;
-	if( res != CHAR_CREATE_SUCCESS )
+
+	res = sHookInterface.OnNewCharacter( race, class_, this, name.c_str() ) ? E_CHAR_CREATE_SUCCESS : E_CHAR_CREATE_ERROR;
+	if( res != E_CHAR_CREATE_SUCCESS )
 	{
-		OutPacket( SMSG_CHAR_CREATE, 1, &res );
+		OutPacket( SMSG_CHAR_CREATE, 1, &res);
 		return;
 	}
 
@@ -355,13 +355,21 @@ void WorldSession::HandleCharCreateOpcode( WorldPacket & recv_data )
 		if(result->Fetch()[0].GetUInt32() > 0)
 		{
 			// That name is banned!
-			res = CHAR_NAME_PROFANE;
-			OutPacket( SMSG_CHAR_CREATE, 1, &res );
+			OutPacket( SMSG_CHAR_CREATE, 1, CHAR_NAME_PROFANE );
 			delete result;
 			return;
 		}
 		delete result;
 	}
+
+	// Check if player got Death Knight already on this realm.
+	if( Config.OptionalConfig.GetBoolDefault( "ClassOptions" , "DeathKnightLimit" , true ) && has_dk 
+		&& ( class_ == DEATHKNIGHT ) )
+	{
+		OutPacket(SMSG_CHAR_CREATE, 1, CHAR_CREATE_ERROR_HERO_CLASS_LIMIT);
+		return;
+	}
+
 	// loading characters
 	
 	//checking number of chars is useless since client will not allow to create more than 10 chars
@@ -374,8 +382,7 @@ void WorldSession::HandleCharCreateOpcode( WorldPacket & recv_data )
 		// failed.
 		pNewChar->ok_to_remove = true;
 		delete pNewChar;
-		res = CHAR_CREATE_FAILED;
-		OutPacket( SMSG_CHAR_CREATE, 1, &res );
+		OutPacket( SMSG_CHAR_CREATE, 1, CHAR_CREATE_FAILED );
 		return;
 	}
 
@@ -387,21 +394,25 @@ void WorldSession::HandleCharCreateOpcode( WorldPacket & recv_data )
 		{
 			pNewChar->ok_to_remove = true;
 			delete pNewChar;
-			res = CHAR_CREATE_PVP_TEAMS_VIOLATION;
-			OutPacket( SMSG_CHAR_CREATE, 1, &res);
+			OutPacket( SMSG_CHAR_CREATE, 1, CHAR_CREATE_PVP_TEAMS_VIOLATION);
 			return;
 		}
 	}
 
+	//Check if player has a level 55 or higher character on this realm and allow him to create DK.
+	//This check can be turned off in arcemu-optional.conf
 	if( Config.OptionalConfig.GetBoolDefault( "ClassOptions" , "DeathKnightPreReq" , false ) && !has_level_55_char 
-		&& ( class_ == DEATHKNIGHT ) )
+		&& ( class_ == DEATHKNIGHT ))
 	{	
 		pNewChar->ok_to_remove = true;
 		delete pNewChar;
+		/*
 		WorldPacket data(1);
 		data.SetOpcode(SMSG_CHAR_CREATE);
 		data << (uint8)56 + 1; // This errorcode is not the actual one. Need to find a real error code.
 		SendPacket( &data );
+		*/
+		OutPacket( SMSG_CHAR_CREATE, 1, CHAR_CREATE_ERROR_NEED_LVL_55_CHAR);
 		return;
 	}
 
@@ -440,8 +451,7 @@ void WorldSession::HandleCharCreateOpcode( WorldPacket & recv_data )
 	pNewChar->ok_to_remove = true;
 	delete  pNewChar;
 
-	res = CHAR_CREATE_SUCCESS;
-	OutPacket( SMSG_CHAR_CREATE, 1, &res );
+	OutPacket( SMSG_CHAR_CREATE, 1, CHAR_CREATE_SUCCESS );
 
 	sLogonCommHandler.UpdateAccountCount( GetAccountId(), 1 );
 }
@@ -560,7 +570,7 @@ void WorldSession::HandleCharRenameOpcode(WorldPacket & recv_data)
 	// Check name for rule violation.
 	
 	LoginErrorCode err = VerifyName( name.c_str(), name.length() );
-	if( err != CHAR_NAME_SUCCESS )
+	if( err != E_CHAR_NAME_SUCCESS )
 	{
 		data << uint8( err );
 		data << guid << name;
@@ -618,7 +628,7 @@ void WorldSession::HandlePlayerLoginOpcode( WorldPacket & recv_data )
 	if(objmgr.GetPlayer((uint32)playerGuid) != NULL || m_loggingInPlayer || _player)
 	{
 		// A character with that name already exists 0x3E
-		uint8 respons = CHAR_LOGIN_DUPLICATE_CHARACTER;
+		uint8 respons = E_CHAR_LOGIN_DUPLICATE_CHARACTER;
 		OutPacket( SMSG_CHARACTER_LOGIN_FAILED, 1, &respons );
 		return;
 	}
@@ -1011,7 +1021,7 @@ bool ChatHandler::HandleRenameCommand(const char * args, WorldSession * m_sessio
 	if(sscanf(args, "%s %s", name1, name2) != 2)
 		return false;
 
-	if( VerifyName( name2, strlen( name2 ) ) != CHAR_NAME_SUCCESS )
+	if( VerifyName( name2, strlen( name2 ) ) != E_CHAR_NAME_SUCCESS )
 	{
 		RedSystemMessage(m_session, "That name is invalid or contains invalid characters.");
 		return true;

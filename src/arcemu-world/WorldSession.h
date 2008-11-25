@@ -727,6 +727,7 @@ private:
 	uint32 _accountFlags;
 	string _accountName;
 	bool has_level_55_char; // death knights
+	bool has_dk;
 	//uint16 _TEMP_ERR_CREATE_CODE; // increments
 	int8 _side;
 
