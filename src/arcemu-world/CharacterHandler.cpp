@@ -612,7 +612,7 @@ void WorldSession::HandleCharRenameOpcode(WorldPacket & recv_data)
 	CharacterDatabase.WaitExecute("UPDATE characters SET name = '%s' WHERE guid = %u", name.c_str(), (uint32)guid);
 	CharacterDatabase.WaitExecute("UPDATE characters SET forced_rename_pending = 0 WHERE guid = %u", (uint32)guid);
 	
-	data << uint8( RESPONSE_SUCCESS ) << guid << name;
+	data << uint8( E_RESPONSE_SUCCESS ) << guid << name;
 	SendPacket( &data );
 }
 
