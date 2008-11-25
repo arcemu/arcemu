@@ -584,7 +584,7 @@ void WorldSession::HandleCharRenameOpcode(WorldPacket & recv_data)
 		if(result2->Fetch()[0].GetUInt32() > 0)
 		{
 			// That name is banned!
-			data << uint8( CHAR_NAME_PROFANE );
+			data << uint8( E_CHAR_NAME_PROFANE );
 			data << guid << name;
 			SendPacket(&data);
 		}
@@ -594,7 +594,7 @@ void WorldSession::HandleCharRenameOpcode(WorldPacket & recv_data)
 	// Check if name is in use.
 	if( objmgr.GetPlayerInfoByName( name.c_str() ) != NULL )
 	{
-		data << uint8( CHAR_CREATE_NAME_IN_USE );
+		data << uint8( E_CHAR_CREATE_NAME_IN_USE );
 		data << guid << name;
 		SendPacket(&data);
 		return;
