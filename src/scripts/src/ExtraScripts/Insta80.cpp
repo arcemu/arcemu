@@ -2,6 +2,8 @@
  * ArcScript Scripts for Arcemu MMORPG Server
  * Copyright (C) 2008 Arcemu Team
  * Copyright (C) 2007 Moon++ <http://www.moonplusplus.com/>
+ * Whaaaaa, where is WEmu copyrigts? >.<
+ * Copyright (C) 2008 WEmu Team
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -147,16 +149,17 @@ void PlayerFirstEnter(Player * pPlayer)
 /*
 	Look at arcemu-optional.conf for starting level:
 	<Optional    StartingLevel = "1"
-	Set it to 70:
-	<Optional    StartingLevel = "70"
+	Set it to 80:
+	<Optional    StartingLevel = "80"
 
 	Look at arcemu-optional.conf for starting gold:
 	<GoldSettings EnableGoldCap = "0"
               StartingGold = "0"
-              MaximumGold = "214000">
+              MaximumGold = "214748">
 */
 
-// TODO: This is broken - spell lists need to be redone. Fornow, ensure they have enough gold to learn on start
+// TODO: This is broken - spell lists need to be redone. Fornow, ensure they have enough gold to learn on start\
+// TODO: Rewrite ".character learn all" command ;)
 //	learnAll( pPlayer );
 
 /*
@@ -198,7 +201,7 @@ void PlayerFirstCreate(Player * pPlayer)
 
 }
 
-void SetupInstant70(ScriptMgr * mgr)
+void SetupInstant80(ScriptMgr * mgr)
 {
 	mgr->register_hook(SERVER_HOOK_EVENT_ON_FIRST_ENTER_WORLD, (void*)PlayerFirstEnter);
 	mgr->register_hook(SERVER_HOOK_EVENT_ON_CHARACTER_CREATE, (void*)PlayerFirstCreate);

@@ -28,10 +28,10 @@ extern "C" SCRIPT_DECL uint32 _exp_get_script_type()
 
 extern "C" SCRIPT_DECL void _exp_script_register(ScriptMgr* mgr)
 {
-	if(Config.OptionalConfig.GetBoolDefault("Extra", "Instant70", false))
+	if(Config.OptionalConfig.GetBoolDefault("Extra", "Instant80", false))
 	{
-		sLog.outColor(TGREEN,"\n	Instant70 Enabled");
-		SetupInstant70(mgr);
+		sLog.outColor(TGREEN,"\n	Instant80 Enabled");
+		SetupInstant80(mgr);
 	}
 /*
 	if(Config.MainConfig.GetBoolDefault("Extra", "L70etc", false))
