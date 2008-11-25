@@ -136,20 +136,19 @@
 	<td width="20px"></td>
 	<td valign="top">
 		<table border="0" cellspacing="1" cellpadding="3">
-		<tr class="head"><th colspan="4">Class Summary</th></tr>
+		<tr class="head"><th colspan="6">Class Summary</th></tr>
 		<tr>
-			<th width="120px">Warrior: </th><td width="50px"><xsl:value-of select="warrior"/></td>
-			<th width="120px">Paladin: </th><td width="50px"><xsl:value-of select="paladin"/></td>
+			<th width="70px">Warrior: </th><td width="50px"><xsl:value-of select="warrior"/></td>
+			<th width="70px">Paladin: </th><td width="50px"><xsl:value-of select="paladin"/></td>
+			<th width="70px">Hunter: </th><td width="50px"><xsl:value-of select="hunter"/></td>
 		</tr>
 		<tr>
-			<th>Hunter: </th><td><xsl:value-of select="hunter"/></td>
 			<th>Rogue: </th><td><xsl:value-of select="rogue"/></td>
-		</tr>
-		<tr>
 			<th>Priest: </th><td><xsl:value-of select="priest"/></td>
-			<th>Shaman: </th><td><xsl:value-of select="shaman"/></td>
+			<th>Death Knight: </th><td><xsl:value-of select="deathknight"/></td>
 		</tr>
 		<tr>
+			<th>Shaman: </th><td><xsl:value-of select="shaman"/></td>
 			<th>Mage: </th><td><xsl:value-of select="mage"/></td>
 			<th>Druid: </th><td><xsl:value-of select="druid"/></td>
 		</tr>
@@ -192,6 +191,8 @@
 <xsl:template match="rogue">
 </xsl:template>
 <xsl:template match="priest">
+</xsl:template>
+<xsl:template match="deathknight">
 </xsl:template>
 <xsl:template match="shaman">
 </xsl:template>
@@ -374,6 +375,7 @@
 					<xsl:when test="class = 4">Rogue</xsl:when>
 
 					<xsl:when test="class = 5">Priest</xsl:when>
+					<xsl:when test="class = 6">Death Knight</xsl:when>
 					<xsl:when test="class = 7">Shaman</xsl:when>
 					<xsl:when test="class = 8">Mage</xsl:when>
 					<xsl:when test="class = 9">Warlock</xsl:when>
@@ -443,6 +445,7 @@
                <xsl:when test="class = 3">Hunter</xsl:when>
                <xsl:when test="class = 4">Rogue</xsl:when>
                <xsl:when test="class = 5">Priest</xsl:when>
+			   <xsl:when test="class = 6">Death Knight</xsl:when>
                <xsl:when test="class = 7">Shaman</xsl:when>
                <xsl:when test="class = 8">Mage</xsl:when>
                <xsl:when test="class = 9">Warlock</xsl:when>

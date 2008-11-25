@@ -1,6 +1,6 @@
 /*
- * ArcScript Scripts for Arcemu MMORPG Server
- * Copyright (C) 2008 Arcemu Team
+ * ArcScript Scripts for ArcEmu MMORPG Server
+ * Copyright (C) 2008 ArcEmu Team <http://arcemu.org/>
  * Copyright (C) 2007 Moon++ <http://www.moonplusplus.com/>
  *
  * This program is free software: you can redistribute it and/or modify
@@ -410,7 +410,7 @@ void StatDumper::DumpStats()
 		"hunter",
 		"rogue",
 		"priest",
-		NULL,
+		"deathknight,
 		"shaman",
 		"mage",
 		"warlock",
