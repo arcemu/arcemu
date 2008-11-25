@@ -410,7 +410,7 @@ void StatDumper::DumpStats()
 		"hunter",
 		"rogue",
 		"priest",
-		"deathknight,
+		"deathknight",
 		"shaman",
 		"mage",
 		"warlock",
