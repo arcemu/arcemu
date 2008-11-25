@@ -2220,22 +2220,30 @@ void Spell::SendSpellStart()
 /************************************************************************/
 enum SpellGoFlags
 {
-	//0x01
+	//seems to make server send 1 less byte at the end. Byte seems to be 0 and not sent on triggered spells
+	//this is used only when server also sends power update to client
+	//maybe it is regen related ?
+	SPELL_GO_FLAGS_LOCK_PLAYER_CAST_ANIM	= 0x01,  //also do not send standstate update
 	//0x02
 	//0x04
-	//0x08
+	//0x08 //seems like all of these mean some spell anim state
 	//0x10
-	SPELL_GO_FLAGS_RANGED           = 0x20,
+	SPELL_GO_FLAGS_RANGED           = 0x20, //2 functions are called on 2 values
 	//0x40
 	//0x80
 	SPELL_GO_FLAGS_ITEM_CASTER      = 0x100,
-	//0x200
+	SPELL_GO_FLAGS_UNK200			= 0x200, 
 	SPELL_GO_FLAGS_EXTRA_MESSAGE    = 0x400, //TARGET MISSES AND OTHER MESSAGES LIKE "Resist"
-	//0x800
+	//0x800 - needs some additional info to be sent
 	//0x1000
-	//0x2000
+	SPELL_GO_FLAGS_UNK2000			= 0x2000, 
+	SPELL_GO_FLAGS_UNK1000			= 0x1000, //no idea
 	//0x4000
-	//0x8000
+	SPELL_GO_FLAGS_UNK8000			= 0x8000, //seems to make server send extra 2 bytes before SPELL_GO_FLAGS_UNK1 and after SPELL_GO_FLAGS_UNK20000
+	SPELL_GO_FLAGS_UNK20000			= 0x20000, //seems to make server send an uint32 after m_targets.write
+	SPELL_GO_FLAGS_UNK80000			= 0x80000, //2 functions called (same ones as for ranged but different)
+	SPELL_GO_FLAGS_UNK200000		= 0x200000, //seems to be some sort of extra guid like thing to be sent
+	SPELL_GO_FLAGS_UNK400000		= 0x400000, //seems to make server send an uint32 after m_targets.write
 };
 
 void Spell::SendSpellGo()
@@ -2282,18 +2290,17 @@ void Spell::SendSpellGo()
 	uint32 flags = 0;
 
 	if ( GetType() == SPELL_DMG_TYPE_RANGED )
-		flags |= 0x20; // 0x20 RANGED
+		flags |= SPELL_GO_FLAGS_RANGED; // 0x20 RANGED
 
 	if( i_caster != NULL )
 		flags |= SPELL_GO_FLAGS_ITEM_CASTER; // 0x100 ITEM CASTER
 
 	if( ModeratedTargets.size() > 0 )
-		flags |= 0x400; // 0x400 TARGET MISSES AND OTHER MESSAGES LIKE "Resist"
+		flags |= SPELL_GO_FLAGS_EXTRA_MESSAGE; // 0x400 TARGET MISSES AND OTHER MESSAGES LIKE "Resist"
 
 	// hacky..
 	if( GetProto()->Id == 8326 ) // death
 		flags = SPELL_GO_FLAGS_ITEM_CASTER | 0x0D;
-
 
 	if( i_caster != NULL && u_caster != NULL ) // this is needed for correct cooldown on items
 	{
@@ -2304,20 +2311,20 @@ void Spell::SendSpellGo()
 		data << m_caster->GetNewGUID() << m_caster->GetNewGUID();
 	}
 
-	data << extra_cast_number;
+	data << extra_cast_number; //3.0.2
 	data << GetProto()->Id;
 	data << flags;
 	data << getMSTime();
 	data << (uint8)(hashmap64_length(UniqueTargets)); //number of hits
-
 	writeSpellGoTargets( &data );
 
-//	data << (uint8)(ModeratedTargets.size()); //number if misses
-
-	if( flags & 0x400 )
+	if( flags & SPELL_GO_FLAGS_EXTRA_MESSAGE )
+	{
+		data << (uint8)(ModeratedTargets.size()); //number if misses
 		writeSpellMissedTargets( &data );
-	//else
-		//data << uint8( 0 );
+	}
+	else 
+		data << uint8( 0 ); //moderated target size is 0 since we did not set the flag
 
 	m_targets.write( data ); // this write is included the target flag
 
@@ -2348,6 +2355,19 @@ void Spell::SendSpellGo()
 		if( ip != NULL)
 			data << ip->DisplayInfoID << ip->InventoryType;
 	}
+
+	/*
+	//well no.this does not seem to be correct :(
+	if( ( flags & SPELL_GO_FLAGS_UNK8000 ) && u_caster )
+	{
+		data << uint16( u_caster->GetUInt32Value( UNIT_FIELD_POWER1 + u_caster->GetPowerType() ) );
+		if( flags & SPELL_GO_FLAGS_UNK8000 )
+			data << uint16( 0 );
+		if( !(flags & SPELL_GO_FLAGS_LOCK_PLAYER_CAST_ANIM) )
+			data << uint8( 0 ); //maybe a new standstate ?
+	}*/
+	if( m_targets.m_targetMask & 0x40 )
+		data << uint8( 0 ); //some spells require this ? not sure if it is last byte or before that
 
 	m_caster->SendMessageToSet( &data, true );
 
