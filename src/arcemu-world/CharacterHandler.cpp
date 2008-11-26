@@ -372,8 +372,21 @@ void WorldSession::HandleCharCreateOpcode( WorldPacket & recv_data )
 
 	// loading characters
 	
-	//checking number of chars is useless since client will not allow to create more than 10 chars
-	//as the 'create' button will not appear (unless we want to decrease maximum number of characters)
+	// Check the number of characters, so we can't make over 10.
+	// They're able to manage to create >10 sometimes, not exactly sure how ..
+
+	result = CharacterDatabase.Query( "SELECT COUNT(*) FROM characters WHERE acct = %u", GetAccountId() );
+	if( result )
+	{
+		if( result->Fetch()[0].GetUInt32() >= 10 )
+		{
+			// We can't make any more characters.
+			OutPacket( SMSG_CHAR_CREATE, 1, CHAR_CREATE_SERVER_LIMIT );
+			delete result;
+			return;
+		}
+		delete result;
+	}
 
 	Player * pNewChar = objmgr.CreatePlayer();
 	pNewChar->SetSession(this);
