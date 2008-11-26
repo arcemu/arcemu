@@ -1723,9 +1723,11 @@ void ApplyNormalFixes()
 				sp->spell_can_crit = false;
 
 			// Forbearance - Is forced debuff
-			if( sp->NameHash == SPELL_HASH_FORBEARANCE )
-				sp->c_is_flags |= SPELL_FLAG_IS_FORCEDDEBUFF;
-		
+		sp = dbcSpell.LookupEntryForced( 25771 ); 
+		if( sp != NULL )
+		{	
+			sp->c_is_flags |= SPELL_FLAG_IS_FORCEDDEBUFF;
+		}
 		/**********************************************************
 		 *	Paladin - Devotion Auras
 		 **********************************************************/
@@ -1980,14 +1982,65 @@ void ApplyNormalFixes()
 		//////////////////////////////////////////
 
 		// Insert priest spell fixes here
-			// Mind Flay,reduces target's movement speed by 50%
-			if ( sp->NameHash == SPELL_HASH_MIND_FLAY )
-				sp->EffectApplyAuraName[1] = SPELL_AURA_MOD_DECREASE_SPEED;
-
-			// Weakened Soul - Is forced debuff
-			if( sp->NameHash == SPELL_HASH_WEAKENED_SOUL )
-				sp->c_is_flags |= SPELL_FLAG_IS_FORCEDDEBUFF;
-
+		
+		// Mind Flay - Reduce movements by 50% and deal periodic damage to target.
+		
+		sp = dbcSpell.LookupEntryForced( 15407 ); 
+		if( sp != NULL )
+		{	
+			sp->EffectApplyAuraName[1] = SPELL_AURA_MOD_DECREASE_SPEED;
+			sp->EffectApplyAuraName[0] = SPELL_AURA_PERIODIC_DAMAGE;
+		}
+		
+		sp = dbcSpell.LookupEntryForced( 17311 ); 
+		if( sp != NULL )
+		{	
+			sp->EffectApplyAuraName[1] = SPELL_AURA_MOD_DECREASE_SPEED;
+			sp->EffectApplyAuraName[0] = SPELL_AURA_PERIODIC_DAMAGE;
+		}
+		sp = dbcSpell.LookupEntryForced( 17312 ); 
+		if( sp != NULL )
+		{	
+			sp->EffectApplyAuraName[1] = SPELL_AURA_MOD_DECREASE_SPEED;
+			sp->EffectApplyAuraName[0] = SPELL_AURA_PERIODIC_DAMAGE;
+		}
+		sp = dbcSpell.LookupEntryForced( 17313 ); 
+		if( sp != NULL )
+		{	
+			sp->EffectApplyAuraName[1] = SPELL_AURA_MOD_DECREASE_SPEED;
+			sp->EffectApplyAuraName[0] = SPELL_AURA_PERIODIC_DAMAGE;
+		}
+		sp = dbcSpell.LookupEntryForced( 17314 ); 
+		if( sp != NULL )
+		{	
+			sp->EffectApplyAuraName[1] = SPELL_AURA_MOD_DECREASE_SPEED;
+			sp->EffectApplyAuraName[0] = SPELL_AURA_PERIODIC_DAMAGE;
+		}
+		sp = dbcSpell.LookupEntryForced( 18807 ); 
+		if( sp != NULL )
+		{	
+			sp->EffectApplyAuraName[1] = SPELL_AURA_MOD_DECREASE_SPEED;
+			sp->EffectApplyAuraName[0] = SPELL_AURA_PERIODIC_DAMAGE;
+		}
+		sp = dbcSpell.LookupEntryForced( 25387 ); 
+		if( sp != NULL )
+		{	
+			sp->EffectApplyAuraName[1] = SPELL_AURA_MOD_DECREASE_SPEED;
+			sp->EffectApplyAuraName[0] = SPELL_AURA_PERIODIC_DAMAGE;
+		}
+		sp = dbcSpell.LookupEntryForced( 48155 ); 
+		if( sp != NULL )
+		{	
+			sp->EffectApplyAuraName[1] = SPELL_AURA_MOD_DECREASE_SPEED;
+			sp->EffectApplyAuraName[0] = SPELL_AURA_PERIODIC_DAMAGE;
+		}
+		
+		// Weakened Soul - Is forced debuff
+		sp = dbcSpell.LookupEntryForced( 6788 ); 
+		if( sp != NULL )
+		{
+			sp->c_is_flags = SPELL_FLAG_IS_FORCEDDEBUFF;
+		}
 		//////////////////////////////////////////
 		// SHAMAN								//
 		//////////////////////////////////////////
@@ -2173,7 +2226,13 @@ void ApplyNormalFixes()
 		sp = dbcSpell.LookupEntryForced( 2895 ); 
 		if( sp != NULL )
 		{
-            sp->Effect[0] = SPELL_EFFECT_APPLY_AREA_AURA;
+			sp->Effect[0] = SPELL_EFFECT_APPLY_AREA_AURA;
+			sp->EffectImplicitTargetA[0] = EFF_TARGET_SELF;
+			sp->EffectImplicitTargetA[1] = EFF_TARGET_SELF;
+			sp->EffectImplicitTargetA[2] = 0;
+			sp->EffectImplicitTargetB[0] = 0;
+			sp->EffectImplicitTargetB[1] = 0;
+			sp->EffectImplicitTargetB[2] = 0;
 		}
 		//////////////////////////////////////////
 		// MAGE								//
@@ -2181,8 +2240,9 @@ void ApplyNormalFixes()
 
 		// Insert mage spell fixes here
 		// Hypothermia: undispellable
-		if( sp->NameHash == SPELL_HASH_HYPOTHERMIA )
-			sp->c_is_flags |= SPELL_FLAG_IS_FORCEDDEBUFF;
+		sp = dbcSpell.LookupEntryForced( 41425 ); 
+		if( sp != NULL )
+			sp->c_is_flags = SPELL_FLAG_IS_FORCEDDEBUFF;
 
 		//////////////////////////////////////////
 		// WARLOCK								//
@@ -4527,18 +4587,6 @@ void ApplyNormalFixes()
 		sp = dbcSpell.LookupEntryForced( 16237 );
 		if( sp != NULL )
 			sp->rangeIndex = 4;
-
-		//wrath of air totem targets sorounding creatures instead of us
-		sp = dbcSpell.LookupEntryForced( 2895 );
-		if( sp != NULL )
-		{
-			sp->EffectImplicitTargetA[0] = EFF_TARGET_SELF;
-			sp->EffectImplicitTargetA[1] = EFF_TARGET_SELF;
-			sp->EffectImplicitTargetA[2] = 0;
-			sp->EffectImplicitTargetB[0] = 0;
-			sp->EffectImplicitTargetB[1] = 0;
-			sp->EffectImplicitTargetB[2] = 0;
-		}
 
 		sp = dbcSpell.LookupEntryForced( 20608 ); //Reincarnation
 		if( sp != NULL )
@@ -6904,5 +6952,11 @@ void ApplyNormalFixes()
 			sp->EffectApplyAuraName[0] = SPELL_AURA_WATER_WALK;
 			sp->Effect[0] = SPELL_EFFECT_APPLY_AURA;
 
-}
+		/**********************************************************
+		 *	Flask of chromatic resistance
+		 **********************************************************/
+		sp = dbcSpell.LookupEntryForced( 17629 );
+		if( sp != NULL )
+			sp->powerType = 3;
 
+}
