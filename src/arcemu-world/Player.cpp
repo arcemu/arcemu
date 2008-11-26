@@ -5108,7 +5108,7 @@ void Player::UpdateAttackSpeed()
 	if( weap != NULL && weap->GetProto()->Class == ITEM_CLASS_WEAPON )
 	{
 		speed = weap->GetProto()->Delay;
-		SetUInt32Value( UNIT_FIELD_RANGEDATTACKTIME,
+		SetUInt32Value( UNIT_FIELD_BASEATTACKTIME_01,
 			( uint32 )( (float) speed / ( m_attack_speed[ MOD_MELEE ] * ( 1.0f + CalcRating( PLAYER_RATING_MODIFIER_MELEE_HASTE ) / 100.0f ) ) ) );
 	}
 	
