@@ -4984,7 +4984,7 @@ void Player::UpdateChances()
 	// dodge
 	tmp = GetDodgeChance();
 	tmp += defence_contribution;
-	tmp = min( max( tmp, 0.0f ), 95.0f );
+//	tmp = min( max ( tmp, 95.0f ), 0.0f ); // is needed??
 	SetFloatValue( PLAYER_DODGE_PERCENTAGE, tmp );
 
 	// block
@@ -5261,7 +5261,7 @@ void Player::UpdateStats()
 		SetUInt32Value( UNIT_FIELD_HEALTH, res );
 	}
 
-	if( cl != WARRIOR && cl != ROGUE )
+	if( cl != WARRIOR && cl != ROGUE && cl != DEATHKNIGHT)
 	{
 		// MP
 		int32 mana = GetUInt32Value( UNIT_FIELD_BASE_MANA );
