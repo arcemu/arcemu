@@ -4984,7 +4984,7 @@ void Player::UpdateChances()
 	// dodge
 	tmp = GetDodgeChance();
 	tmp += defence_contribution;
-//	tmp = min( max ( tmp, 95.0f ), 0.0f ); // is needed??
+	tmp = min( max ( tmp, 0.0f ), 95.0f );
 	SetFloatValue( PLAYER_DODGE_PERCENTAGE, tmp );
 
 	// block
