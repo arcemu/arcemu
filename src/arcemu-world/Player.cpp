@@ -11677,7 +11677,7 @@ void Player::VampiricSpell(uint32 dmg, Unit* pTarget)
 	if( ( !m_vampiricEmbrace && !m_vampiricTouch ) || getClass() != PRIEST )
 		return;
 
-	if( m_vampiricEmbrace > 0 && pTarget->m_hasVampiricEmbrace > 0 && pTarget->HasVisialPosAurasOfNameHashWithCaster(SPELL_HASH_VAMPIRIC_EMBRACE, this) )
+	if( m_vampiricEmbrace > 0 && pTarget->m_hasVampiricEmbrace > 0 && pTarget->HasAurasWithNameHash(SPELL_HASH_VAMPIRIC_EMBRACE) )
 	{
 		perc = 15;
 		uint32 spellgroup[3] = {4, 0, 0};
@@ -11701,7 +11701,7 @@ void Player::VampiricSpell(uint32 dmg, Unit* pTarget)
 		}
 	}
 
-	if( m_vampiricTouch > 0 && pTarget->m_hasVampiricTouch > 0 && pTarget->HasVisialPosAurasOfNameHashWithCaster(SPELL_HASH_VAMPIRIC_TOUCH, this) )
+	if( m_vampiricTouch > 0 && pTarget->m_hasVampiricTouch > 0 && pTarget->HasAurasWithNameHash(SPELL_HASH_VAMPIRIC_TOUCH) )
 	{
 		perc = 5;
 
