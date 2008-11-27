@@ -1695,6 +1695,15 @@ void ApplyNormalFixes()
 			}		
 		}
 
+		/**********************************************************
+		 *	Flask of Chromatic Resistance
+		 **********************************************************/
+		sp = dbcSpell.LookupEntryForced( 17629 );
+		if( sp != NULL )
+		{
+			sp->powerType = 3;
+		}
+		
 		///	SPELLS CAN CRIT ///
 		sp->spell_can_crit = true; // - except in special cases noted in this section
 
@@ -1780,6 +1789,18 @@ void ApplyNormalFixes()
 		{
             sp->Effect[0] = SPELL_EFFECT_APPLY_AREA_AURA;
 		}
+		//Rank 9
+		sp = dbcSpell.LookupEntryForced( 48941 ); 
+		if( sp != NULL )
+		{
+            sp->Effect[0] = SPELL_EFFECT_APPLY_AREA_AURA;
+		}
+		//Rank 10
+		sp = dbcSpell.LookupEntryForced( 48942 ); 
+		if( sp != NULL )
+		{
+            sp->Effect[0] = SPELL_EFFECT_APPLY_AREA_AURA;
+		}
 
 		/**********************************************************
 		 *	Paladin - Fire Auras
@@ -1805,6 +1826,12 @@ void ApplyNormalFixes()
 		}
 		//Rank 4
 		sp = dbcSpell.LookupEntryForced( 27153 ); 
+		if( sp != NULL )
+		{
+            sp->Effect[0] = SPELL_EFFECT_APPLY_AREA_AURA;
+		}
+		//Rank 5
+		sp = dbcSpell.LookupEntryForced( 48947 ); 
 		if( sp != NULL )
 		{
             sp->Effect[0] = SPELL_EFFECT_APPLY_AREA_AURA;
@@ -1838,6 +1865,12 @@ void ApplyNormalFixes()
 		{
             sp->Effect[0] = SPELL_EFFECT_APPLY_AREA_AURA;
 		}
+		//Rank 5
+		sp = dbcSpell.LookupEntryForced( 48945 ); 
+		if( sp != NULL )
+		{
+            sp->Effect[0] = SPELL_EFFECT_APPLY_AREA_AURA;
+		}
 		
 		/**********************************************************
 		 *	Paladin - Shadow Auras
@@ -1863,6 +1896,12 @@ void ApplyNormalFixes()
 		}
 		//Rank 4
 		sp = dbcSpell.LookupEntryForced( 27151 ); 
+		if( sp != NULL )
+		{
+            sp->Effect[0] = SPELL_EFFECT_APPLY_AREA_AURA;
+		}
+		//Rank 5
+		sp = dbcSpell.LookupEntryForced( 48943 ); 
 		if( sp != NULL )
 		{
             sp->Effect[0] = SPELL_EFFECT_APPLY_AREA_AURA;
@@ -1904,6 +1943,12 @@ void ApplyNormalFixes()
 		}
 		//Rank 6
 		sp = dbcSpell.LookupEntryForced( 27150 ); 
+		if( sp != NULL )
+		{
+            sp->Effect[0] = SPELL_EFFECT_APPLY_AREA_AURA;
+		}
+		//Rank 7
+		sp = dbcSpell.LookupEntryForced( 54043 ); 
 		if( sp != NULL )
 		{
             sp->Effect[0] = SPELL_EFFECT_APPLY_AREA_AURA;
@@ -2032,6 +2077,24 @@ void ApplyNormalFixes()
 		if( sp != NULL )
 		{	
 			sp->EffectApplyAuraName[1] = SPELL_AURA_MOD_DECREASE_SPEED;
+			sp->EffectApplyAuraName[0] = SPELL_AURA_PERIODIC_DAMAGE;
+		}
+		
+		//Mind Sear - Effect rank 1
+
+		sp = dbcSpell.LookupEntryForced( 49821 ); 
+		if( sp != NULL )
+		{	
+			sp->EffectApplyAuraName[0] = SPELL_AURA_PERIODIC_DAMAGE;
+			sp->EffectImplicitTargetA[0] = EFF_TARGET_SINGLE_ENEMY;
+			sp->EffectImplicitTargetB[0] = EFF_TARGET_SINGLE_ENEMY;
+		}
+		
+		// Mind Sear - Effect rank 2
+		
+		sp = dbcSpell.LookupEntryForced( 53023 ); 
+		if( sp != NULL )
+		{	
 			sp->EffectApplyAuraName[0] = SPELL_AURA_PERIODIC_DAMAGE;
 		}
 		
@@ -6855,26 +6918,22 @@ void ApplyNormalFixes()
 		 *	Death and Decay - Ranks 1, 2, 3, 4
 		 **********************************************************/
 		sp = dbcSpell.LookupEntryForced( 43265 ); 
-		if( sp != NULL )
-			sp->powerType = 1; 
+		if( sp != NULL ) 
 			sp->EffectApplyAuraName[0] = SPELL_AURA_PERIODIC_DAMAGE;		
 			sp->Effect[0] = SPELL_EFFECT_PERSISTENT_AREA_AURA;
 		
 		sp = dbcSpell.LookupEntryForced( 49936 ); 
-		if( sp != NULL )
-			sp->powerType = 1; 
+		if( sp != NULL ) 
 			sp->EffectApplyAuraName[0] = SPELL_AURA_PERIODIC_DAMAGE;		
 			sp->Effect[0] = SPELL_EFFECT_PERSISTENT_AREA_AURA;
 		
 		sp = dbcSpell.LookupEntryForced( 49937 ); 
-		if( sp != NULL )
-			sp->powerType = 1; 
+		if( sp != NULL ) 
 			sp->EffectApplyAuraName[0] = SPELL_AURA_PERIODIC_DAMAGE;		
 			sp->Effect[0] = SPELL_EFFECT_PERSISTENT_AREA_AURA;
 			
 		sp = dbcSpell.LookupEntryForced( 49938 ); 
 		if( sp != NULL )
-			sp->powerType = 1;
 			sp->EffectApplyAuraName[0] = SPELL_AURA_PERIODIC_DAMAGE;		
 			sp->Effect[0] = SPELL_EFFECT_PERSISTENT_AREA_AURA;
 		
@@ -6951,12 +7010,5 @@ void ApplyNormalFixes()
 		if( sp != NULL )
 			sp->EffectApplyAuraName[0] = SPELL_AURA_WATER_WALK;
 			sp->Effect[0] = SPELL_EFFECT_APPLY_AURA;
-
-		/**********************************************************
-		 *	Flask of chromatic resistance
-		 **********************************************************/
-		sp = dbcSpell.LookupEntryForced( 17629 );
-		if( sp != NULL )
-			sp->powerType = 3;
 
 }
