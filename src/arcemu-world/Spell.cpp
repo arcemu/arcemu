@@ -1444,10 +1444,12 @@ void Spell::cast(bool check)
 		}
 
 		for(uint32 i=0;i<3;i++)
-        {
+		{
 			if( GetProto()->Effect[i] && GetProto()->Effect[i] != SPELL_EFFECT_PERSISTENT_AREA_AURA)
-				 FillTargetMap(i);
-        }
+				FillTargetMap(i);
+			if ( i > 3 )
+				return;
+		}
 
 		if(m_magnetTarget){ // Spell was redirected
 			// Grounding Totem gets destroyed after redirecting 1 spell
@@ -1641,8 +1643,6 @@ void Spell::cast(bool check)
 				}
 			}
 
-			std::vector<uint64>::iterator i, i2;
-
 			// this is here to avoid double search in the unique list
 			//bool canreflect = false, reflected = false;
 			for(int j=0;j<3;j++)
@@ -1669,7 +1669,7 @@ void Spell::cast(bool check)
 					if (hashmap64_get_index(UniqueTargets, j, (int64*)&guid, NULL) == MAP_OK) {
 						Unit *Target = m_caster->GetMapMgr()->GetUnit(guid);
 						if(Target) {
-						   SetReflected(Reflect(Target));
+							SetReflected(Reflect(Target));
 						}
 
 						// if the spell is reflected

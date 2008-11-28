@@ -4116,7 +4116,7 @@ void Spell::SpellEffectSummonPet(uint32 i) //summon - pet
 	//Succubus:lash of pain, soothing kiss, seduce , lesser invisibility
 	//felhunter:	 Devour Magic,Paranoia,Spell Lock,	Tainted Blood
  
-	if(!p_caster || p_caster->getClass() != WARLOCK)
+	if(!p_caster)
 		return;
 	
 	// remove old pet
@@ -4127,14 +4127,18 @@ void Spell::SpellEffectSummonPet(uint32 i) //summon - pet
 	CreatureInfo *ci = CreatureNameStorage.LookupEntry(GetProto()->EffectMiscValue[i]);
 	if(ci)
 	{
+		if(p_caster->getClass() == WARLOCK)
+		{
 		//if demonic sacrifice auras are still active, remove them
 		//uint32 spids[] = { 18789, 18790, 18791, 18792, 35701, 0 };
 		//p_caster->RemoveAuras(spids);
-		p_caster->RemoveAura(18789);
-		p_caster->RemoveAura(18790);
-		p_caster->RemoveAura(18791);
-		p_caster->RemoveAura(18792);
-		p_caster->RemoveAura(35701);
+			p_caster->RemoveAura(18789);
+			p_caster->RemoveAura(18790);
+			p_caster->RemoveAura(18791);
+			p_caster->RemoveAura(18792);
+			p_caster->RemoveAura(35701);
+		}
+
 
 		Pet *summon = objmgr.CreatePet();
 		summon->SetInstanceID(m_caster->GetInstanceID());
@@ -5301,6 +5305,12 @@ void Spell::SpellEffectSummonTotem(uint32 i) // Summon Totem
 			case 8146: //Tremor Totem
 			{
 				totemspelltime = 3000;
+				totemspelltimer = 0; //First tick done immediately
+				break;
+			}
+			case 8178: //Grounding Totem
+			case 3600: //Earthbind Totem
+			{
 				totemspelltimer = 0; //First tick done immediately
 				break;
 			}

@@ -20,7 +20,7 @@
 
 #include "StdAfx.h"
 UpdateMask Player::m_visibleUpdateMask;
-#define COLLISION_MOUNT_CHECK_INTERVAL 1000
+#define COLLISION_INDOOR_CHECK_INTERVAL 1000
 #define CANNON 24933 //39692, 34154
 #define MORTAR 25003 //33861 -- Triggers Explosion, 39695 --- Summons Mortar
 #define NITROUS 27746 //Needs Scripting
@@ -398,7 +398,7 @@ Player::Player( uint32 guid ) : m_mailBox(guid), m_achievementMgr(this)
 	m_fallDisabledUntil = 0;
 	m_lfgMatch = NULL;
 	m_lfgInviterGuid = 0;
-	m_mountCheckTimer = 0;
+	m_indoorCheckTimer = 0;
 	m_taxiMapChangeNode = 0;
 	this->OnLogin();
 
@@ -983,21 +983,28 @@ void Player::Update( uint32 p_time )
 			m_pvpTimer -= p_time;
 	}
 
-	if (sWorld.Collision) {
-		if(m_MountSpellId != 0)
+	if (sWorld.Collision) 
+	{
+		if( mstime >= m_indoorCheckTimer )
 		{
-			if( mstime >= m_mountCheckTimer )
-			{
-				if( CollideInterface.IsIndoor( m_mapId, m_position ) )
+			if( CollideInterface.IsIndoor( m_mapId, m_position ) )
+			{	
+				 // this is duplicated check, but some mount auras comes w/o this flag set, maybe due to spellfixes.cpp line:663
+				if ( m_MountSpellId )
 				{
 					RemoveAura( m_MountSpellId );
 					m_MountSpellId = 0;
 				}
-				else
+				for(uint32 x=MAX_POSITIVE_AURAS_EXTEDED_START;x<MAX_POSITIVE_AURAS_EXTEDED_END;x++)
 				{
-					m_mountCheckTimer = mstime + COLLISION_MOUNT_CHECK_INTERVAL;
+					if(m_auras[x] && m_auras[x]->GetSpellProto() && m_auras[x]->GetSpellProto()->Attributes & ATTRIBUTES_ONLY_OUTDOORS )
+						RemoveAura( m_auras[x] );
 				}
 			}
+		}
+		else
+		{
+			m_indoorCheckTimer = mstime + COLLISION_INDOOR_CHECK_INTERVAL;
 		}
 
 		if( mstime >= m_flyhackCheckTimer )

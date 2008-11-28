@@ -6594,6 +6594,7 @@ void Aura::SpellAuraAddPctMod( bool apply )
 		break;
 
 	case SMT_CAST_TIME:
+	case SMT_CAST_TIME_FLAT:
 		SendModifierLog( &m_target->SM_PCastTime, val, AffectedGroups, mod->m_miscValue, true );
 		break;
 

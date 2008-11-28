@@ -576,7 +576,19 @@ void Spell::SpellTargetInFrontOfCaster(uint32 i, uint32 j)
 void Spell::SpellTargetSingleFriend(uint32 i, uint32 j)
 {
 	map_t tmpMap=m_targetUnits[i];
-	SafeAddTarget(tmpMap,m_targets.m_unitTarget);
+	Unit *target = m_caster->GetMapMgr()->GetUnit((uint32)m_targets.m_unitTarget);
+	if( target != NULL && isAttackable(u_caster, target) )
+	{
+		uint8 did_hit_result = DidHit(i,target);
+		if(did_hit_result==SPELL_DID_HIT_SUCCESS)
+			SafeAddTarget(tmpMap, m_targets.m_unitTarget);
+		else
+			SafeAddModeratedTarget(m_targets.m_unitTarget, did_hit_result);
+	}
+	else
+	{
+		SafeAddTarget(tmpMap,m_targets.m_unitTarget);
+	}
 }
 
 /// Spell Target Handling for type 26: unit target/Item Target
@@ -654,11 +666,14 @@ void Spell::SpellTargetScriptedEffects(uint32 i, uint32 j)
 /// Spell Target Handling for type 32 / 73: related to summoned pet or creature
 void Spell::SpellTargetSummon(uint32 i, uint32 j)
 {// Minion Target
-	map_t tmpMap=m_targetUnits[i];
-	if(m_caster->GetUInt64Value(UNIT_FIELD_SUMMON) == 0)
-		SafeAddTarget(tmpMap,m_caster->GetGUID());
-	else
-		SafeAddTarget(tmpMap,m_caster->GetUInt64Value(UNIT_FIELD_SUMMON));
+	if ( m_spellInfo->Effect[i] == SPELL_EFFECT_SUMMON_PET || m_spellInfo->Effect[i] == SPELL_EFFECT_SUMMON_OBJECT)
+	{
+		map_t tmpMap=m_targetUnits[i];
+		if(m_caster->GetUInt64Value(UNIT_FIELD_SUMMON) == 0)
+			SafeAddTarget(tmpMap,u_caster->GetGUID());
+		else
+			SafeAddTarget(tmpMap,m_caster->GetUInt64Value(UNIT_FIELD_SUMMON));
+	}
 }
 
 /// Spell Target Handling for type 33: Party members of totem, inside given range

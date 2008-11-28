@@ -1966,7 +1966,7 @@ protected:
 	float       m_lastBackSwimSpeed;
 	float       m_lastFlySpeed;
 
-	uint32 m_mountCheckTimer;
+	uint32 m_indoorCheckTimer;
 	void RemovePendingPlayer();
 public:
 #ifdef ENABLE_COMPRESSED_MOVEMENT
