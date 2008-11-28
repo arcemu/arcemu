@@ -1001,9 +1001,6 @@ void Player::Update( uint32 p_time )
 						RemoveAura( m_auras[x] );
 				}
 			}
-		}
-		else
-		{
 			m_indoorCheckTimer = mstime + COLLISION_INDOOR_CHECK_INTERVAL;
 		}
 
