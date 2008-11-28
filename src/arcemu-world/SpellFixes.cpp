@@ -6919,96 +6919,118 @@ void ApplyNormalFixes()
 		 **********************************************************/
 		sp = dbcSpell.LookupEntryForced( 43265 ); 
 		if( sp != NULL ) 
+		{
 			sp->EffectApplyAuraName[0] = SPELL_AURA_PERIODIC_DAMAGE;		
 			sp->Effect[0] = SPELL_EFFECT_PERSISTENT_AREA_AURA;
+		}
 		
 		sp = dbcSpell.LookupEntryForced( 49936 ); 
 		if( sp != NULL ) 
+		{
 			sp->EffectApplyAuraName[0] = SPELL_AURA_PERIODIC_DAMAGE;		
 			sp->Effect[0] = SPELL_EFFECT_PERSISTENT_AREA_AURA;
+		}
 		
 		sp = dbcSpell.LookupEntryForced( 49937 ); 
 		if( sp != NULL ) 
+		{
 			sp->EffectApplyAuraName[0] = SPELL_AURA_PERIODIC_DAMAGE;		
 			sp->Effect[0] = SPELL_EFFECT_PERSISTENT_AREA_AURA;
-			
+		}	
+		
 		sp = dbcSpell.LookupEntryForced( 49938 ); 
 		if( sp != NULL )
+		{		
 			sp->EffectApplyAuraName[0] = SPELL_AURA_PERIODIC_DAMAGE;		
 			sp->Effect[0] = SPELL_EFFECT_PERSISTENT_AREA_AURA;
-		
+		}
 		/**********************************************************
 		 *	Unholy Aura - Ranks 1 & 2 
 		 **********************************************************/
 		sp = dbcSpell.LookupEntryForced( 50391 );
 		if( sp != NULL )
-		    sp->EffectApplyAuraName[0] = SPELL_AURA_MOD_INCREASE_SPEED_ALWAYS;
+		{
+			sp->EffectApplyAuraName[0] = SPELL_AURA_MOD_INCREASE_SPEED_ALWAYS;
 			sp->Effect[0] = SPELL_EFFECT_APPLY_AREA_AURA;
 			sp->EffectApplyAuraName[1] = SPELL_AURA_PROC_TRIGGER_SPELL;
 			sp->EffectTriggerSpell[1] = 50392;
 			sp->Effect[1] = SPELL_EFFECT_APPLY_AREA_AURA;
 			sp->EffectImplicitTargetA[1] = EFF_TARGET_SELF;
+		}
 		
 		sp = dbcSpell.LookupEntryForced( 50392 ); 
 		if( sp != NULL )
-		    sp->EffectApplyAuraName[0] = SPELL_AURA_MOD_INCREASE_SPEED_ALWAYS;
+		{		   
+			sp->EffectApplyAuraName[0] = SPELL_AURA_MOD_INCREASE_SPEED_ALWAYS;
 			sp->Effect[0] = SPELL_EFFECT_APPLY_AREA_AURA;
 			sp->EffectApplyAuraName[1] = SPELL_AURA_PROC_TRIGGER_SPELL;
 			sp->EffectTriggerSpell[1] = 50392;
 			sp->Effect[1] = SPELL_EFFECT_APPLY_AREA_AURA;
 			sp->EffectImplicitTargetA[1] = EFF_TARGET_SELF;
-		
+		}
+
 		/**********************************************************
 		 *	Blood Presence
 		 **********************************************************/
 		sp = dbcSpell.LookupEntryForced( 48266 );
 		if( sp != NULL )
+		{
 			sp->BGR_one_buff_from_caster_on_self = SPELL_TYPE3_DEATH_KNIGHT_AURA;
+		}
 
 		/**********************************************************
 		 *	Frost Presence
 		 **********************************************************/
 		sp = dbcSpell.LookupEntryForced( 48263 );
 		if( sp != NULL )
+		{
 			sp->EffectApplyAuraName[0] = SPELL_AURA_MOD_BASE_RESISTANCE_PCT;
 			sp->EffectApplyAuraName[1] = SPELL_AURA_MOD_INCREASE_HEALTH_PERCENT;
 			sp->EffectBasePoints[1] = 9;
 			sp->EffectApplyAuraName[2] = SPELL_AURA_MOD_DAMAGE_TAKEN;
 			sp->BGR_one_buff_from_caster_on_self = SPELL_TYPE3_DEATH_KNIGHT_AURA;
+		}
 
 		/**********************************************************
 		 *	Unholy Presence
 		 **********************************************************/
 		sp = dbcSpell.LookupEntryForced( 48265 );
 		if( sp != NULL )
+		{
 			sp->EffectApplyAuraName[0] = SPELL_AURA_MOD_HASTE;
 			sp->EffectBasePoints[0] = 14;
 			sp->EffectApplyAuraName[1] = SPELL_AURA_MOD_INCREASE_SPEED;
 			sp->EffectBasePoints[1] = 14;
 			sp->BGR_one_buff_from_caster_on_self = SPELL_TYPE3_DEATH_KNIGHT_AURA;
-				
+		}
+
 		/**********************************************************
 		 *	Death Grip
 		 **********************************************************/
 		sp = dbcSpell.LookupEntryForced( 49576 );
 		if( sp != NULL )
+		{
 			sp->Effect[0] = SPELL_EFFECT_ATTACK_ME;
+		}
 		
 		/**********************************************************
 		 *	Acherus Deatcharger
 		 **********************************************************/
 		sp = dbcSpell.LookupEntryForced( 48778 );
 		if( sp != NULL )
+		{
 			sp->EffectApplyAuraName[0] = SPELL_AURA_MOUNTED;
 			sp->EffectApplyAuraName[1] = SPELL_AURA_MOD_INCREASE_MOUNTED_SPEED;
 			sp->EffectBasePoints[1] = 99;
-
+		}
+		
 		/**********************************************************
 		 *	Path of Frost
 		 **********************************************************/
 		sp = dbcSpell.LookupEntryForced( 3714 );
 		if( sp != NULL )
+		{
 			sp->EffectApplyAuraName[0] = SPELL_AURA_WATER_WALK;
 			sp->Effect[0] = SPELL_EFFECT_APPLY_AURA;
-
+		}
 }
