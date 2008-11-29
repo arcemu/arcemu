@@ -1391,8 +1391,8 @@ void World::Rehash(bool load)
 	m_bgSet_EOS_MIN = Config.MainConfig.GetIntDefault("Battleground", "EOS_MIN", 4);
 	m_bgSet_EOS_MAX = Config.MainConfig.GetIntDefault("Battleground", "EOS_MAX", 15);
 
-	m_bgSet_EOS_MIN = Config.MainConfig.GetIntDefault("Battleground", "SOTA_MIN", 10);
-	m_bgSet_EOS_MAX = Config.MainConfig.GetIntDefault("Battleground", "SOTA_MAX", 15);
+	m_bgSet_SOTA_MIN = Config.MainConfig.GetIntDefault("Battleground", "SOTA_MIN", 10);
+	m_bgSet_SOTA_MAX = Config.MainConfig.GetIntDefault("Battleground", "SOTA_MAX", 15);
 	
 
 
