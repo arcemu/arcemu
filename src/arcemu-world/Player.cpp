@@ -5101,7 +5101,7 @@ void Player::UpdateAttackSpeed()
 	}
 	else if( !disarmed )//regular
 	{
-		weap = GetItemInterface()->GetInventoryItem( EQUIPMENT_SLOT_MAINHAND) ;
+		weap = GetItemInterface()->GetInventoryItem( EQUIPMENT_SLOT_MAINHAND ) ;
 		if( weap != NULL )
 			speed = weap->GetProto()->Delay;
 	}

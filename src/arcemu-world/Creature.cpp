@@ -105,7 +105,7 @@ Creature::Creature(uint64 guid)
 	BaseAttackType = SCHOOL_NORMAL;
 	m_lootMethod = -1;
 	m_healthfromspell = 0;
-//	m_speedFromHaste = 0;
+	m_speedFromHaste = 0;
 }
 
 

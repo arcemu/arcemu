@@ -170,7 +170,7 @@ void Pet::CreateAsSummon(uint32 entry, CreatureInfo *ci, Creature* created_from_
 		SetUInt32Value(UNIT_FIELD_BYTES_0, 2048 | (0 << 24));
 		SetUInt32Value(UNIT_FIELD_FLAGS, UNIT_FLAG_PLAYER_CONTROLLED);
 		SetUInt32Value(UNIT_FIELD_BASEATTACKTIME, 2000);
-		SetUInt32Value(UNIT_FIELD_RANGEDATTACKTIME, 2000);
+		SetUInt32Value(UNIT_FIELD_BASEATTACKTIME_01, 2000);
 		SetFloatValue(UNIT_FIELD_BOUNDINGRADIUS, 0.5f);
 		SetFloatValue(UNIT_FIELD_COMBATREACH, 0.75f);
 		SetUInt32Value(UNIT_FIELD_BYTES_2, (0x01 | (0x28 << 8) | (0x2 << 24)));
@@ -203,7 +203,7 @@ void Pet::CreateAsSummon(uint32 entry, CreatureInfo *ci, Creature* created_from_
 	} else {
 		SetUInt32Value(UNIT_FIELD_BYTES_0, 2048 | (0 << 24));
 		SetUInt32Value(UNIT_FIELD_BASEATTACKTIME, 2000);
-		SetUInt32Value(UNIT_FIELD_RANGEDATTACKTIME, 2000); // Supalosa: 2.00 normalised attack speed
+		SetUInt32Value(UNIT_FIELD_BASEATTACKTIME_01, 2000); // Supalosa: 2.00 normalised attack speed
 		SetFloatValue(UNIT_FIELD_BOUNDINGRADIUS, created_from_creature->GetFloatValue(UNIT_FIELD_BOUNDINGRADIUS));
 		SetFloatValue(UNIT_FIELD_COMBATREACH, created_from_creature->GetFloatValue(UNIT_FIELD_COMBATREACH));
 

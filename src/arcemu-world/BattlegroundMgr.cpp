@@ -1679,7 +1679,7 @@ Creature * CBattleground::SpawnSpiritGuide(float x, float y, float z, float o, u
 	pCreature->SetUInt32Value(UNIT_FIELD_FLAGS, UNIT_FLAG_PLUS_MOB | UNIT_FLAG_NOT_ATTACKABLE_9 | UNIT_FLAG_UNKNOWN_10 | UNIT_FLAG_PVP); // 4928
 
 	pCreature->SetUInt32Value(UNIT_FIELD_BASEATTACKTIME, 2000);
-	pCreature->SetUInt32Value(UNIT_FIELD_RANGEDATTACKTIME, 2000);
+	pCreature->SetUInt32Value(UNIT_FIELD_BASEATTACKTIME_01, 2000);
 	pCreature->SetFloatValue(UNIT_FIELD_BOUNDINGRADIUS, 0.208f);
 	pCreature->SetFloatValue(UNIT_FIELD_COMBATREACH, 1.5f);
 

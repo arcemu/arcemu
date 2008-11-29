@@ -367,6 +367,7 @@ public:
 
 	ARCEMU_INLINE bool isQuestGiver() { return HasFlag( UNIT_NPC_FLAGS, UNIT_NPC_FLAG_QUESTGIVER ); };
 
+	int32 m_speedFromHaste;
 	int32 FlatResistanceMod[7];
 	int32 BaseResistanceModPct[7];
 	int32 ResistanceModPct[7];

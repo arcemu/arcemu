@@ -5159,7 +5159,7 @@ void Unit::CalcDamage()
 	
 		float ap_bonus = float(GetAP())/14000.0f;
 
-		float bonus = ap_bonus*GetUInt32Value(UNIT_FIELD_BASEATTACKTIME);
+		float bonus = ap_bonus * ( GetUInt32Value(UNIT_FIELD_BASEATTACKTIME) + static_cast< Creature* >( this )->m_speedFromHaste );
 	
 		delta = float(((Creature*)this)->ModDamageDone[0]);
 		mult = float(((Creature*)this)->ModDamageDonePct[0]);
@@ -7078,7 +7078,7 @@ void Unit::RemoveAllMovementImpairing()
 void Unit::setAttackTimer(int32 time, bool offhand)
 {
 	if(!time)
-		time = offhand ? m_uint32Values[UNIT_FIELD_BASEATTACKTIME_01] : m_uint32Values[UNIT_FIELD_BASEATTACKTIME_01];
+		time = offhand ? m_uint32Values[UNIT_FIELD_BASEATTACKTIME_01] : m_uint32Values[UNIT_FIELD_BASEATTACKTIME];
 
 	time = std::max(1000,float2int32(float(time)*GetFloatValue(UNIT_MOD_CAST_SPEED)));
 	if(time>300000)		// just in case.. shouldn't happen though

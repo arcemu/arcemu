@@ -5219,7 +5219,7 @@ void Spell::SpellEffectSummonTotem(uint32 i) // Summon Totem
 	pTotem->SetUInt32Value(UNIT_FIELD_BYTES_0, (1 << 8) | (2 << 16) | (1 << 24));
 	pTotem->SetUInt32Value(UNIT_FIELD_FLAGS, UNIT_FLAG_PLAYER_CONTROLLED | UNIT_FLAG_SELF_RES);
 	pTotem->SetUInt32Value(UNIT_FIELD_BASEATTACKTIME, 2000);
-	pTotem->SetUInt32Value(UNIT_FIELD_RANGEDATTACKTIME, 2000);
+	pTotem->SetUInt32Value(UNIT_FIELD_BASEATTACKTIME_01, 2000);
 	pTotem->SetFloatValue(UNIT_FIELD_BOUNDINGRADIUS, 1.0f);
 	pTotem->SetFloatValue(UNIT_FIELD_COMBATREACH, 1.0f);
 	pTotem->SetUInt32Value(UNIT_FIELD_DISPLAYID, displayID);
