@@ -1966,12 +1966,12 @@ class DARKHEARTAI : public CreatureAIScript
 {
 public:
     ADD_CREATURE_FACTORY_FUNCTION(DARKHEARTAI);
-	SP_AI_Spell spells[2];
-	bool m_spellcheck[2];
+	SP_AI_Spell spells[1];
+	bool m_spellcheck[1];
 
     DARKHEARTAI(Creature* pCreature) : CreatureAIScript(pCreature)
     {
-			nrspells = 2;
+			nrspells = 1;
 			for(int i=0;i<nrspells;i++)
 			{
 				m_spellcheck[i] = false;
