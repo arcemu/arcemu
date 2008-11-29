@@ -51,6 +51,7 @@ Raid_ZulGurub.cpp \
 Raid_Magtheridons_Lair.cpp \
 Raid_WorldBosses.cpp \
 Raid_ZulAman.cpp \
+Raid_SunwellPlateau.cpp \
 Event_DarkPortal.cpp \
 Base.cpp \
 Setup.cpp
