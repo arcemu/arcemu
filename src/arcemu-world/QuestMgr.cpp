@@ -86,6 +86,24 @@ uint32 QuestMgr::PlayerMeetsReqs(Player* plr, Quest* qst, bool skiplevelcheck)
 	if (plr->HasFinishedQuest(qst->id) && !sQuestMgr.IsQuestRepeatable(qst) && !sQuestMgr.IsQuestDaily(qst))
 		return QMGR_QUEST_NOT_AVAILABLE;
 
+	// Check One of Quest Prequest
+	uint32 questsfailed = 0;
+	if( !qst->quest_list.empty() )
+	{
+		set<uint32>::iterator iter = qst->quest_list.begin();
+		for(; iter != qst->quest_list.end(); ++iter)
+		{
+			Quest * questcheck = QuestStorage.LookupEntry( (*iter) );
+			if( questcheck )
+			{
+				if( !plr->HasFinishedQuest( (*iter) ))
+				questsfailed++;
+			}
+		}
+		if( questsfailed == qst->quest_list.size() ) // If noone of listed quests is done, next part isnt available.
+			return QMGR_QUEST_NOT_AVAILABLE;
+	}
+
 	for(uint32 i = 0; i < 4; ++i)
 	{
 		if (qst->required_quests[i] > 0 && !plr->HasFinishedQuest(qst->required_quests[i]))
@@ -1715,6 +1733,19 @@ void QuestMgr::LoadExtraQuestStuff()
 		qst->required_mobtype[3] = 0;
 
 		qst->count_requiredquests = 0;
+
+		if(it->Get()->x_or_y_quest_string)
+		{
+			it->Get()->quest_list.clear();
+			string quests = string(it->Get()->x_or_y_quest_string);
+			vector<string> qsts = StrSplit(quests, " ");
+			for(vector<string>::iterator iter = qsts.begin(); iter != qsts.end(); ++iter)
+			{
+				uint32 id = atol((*iter).c_str());
+				if(id)
+					it->Get()->quest_list.insert( id );
+			}
+		}
 
 		for(int i = 0 ; i < 4; ++i)
 		{
