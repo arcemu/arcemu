@@ -6702,6 +6702,9 @@ void Unit::Energize( Unit* target, uint32 SpellId, uint32 amount, uint32 type )
 
 void Unit::InheritSMMods(Unit *inherit_from)
 {
+	if(inherit_from == NULL)
+		return;
+
 	if(inherit_from->SM_CriticalChance)
 	{
 		if(SM_CriticalChance==0)
