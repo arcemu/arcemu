@@ -1520,8 +1520,8 @@ void ApplyNormalFixes()
 			{
 				spz = dbcSpell.LookupEntry( sp->EffectTriggerSpell[i] );
 				if( spz &&
-					spz->Effect[i] == SPELL_EFFECT_SCHOOL_DAMAGE ||
-					spz->Effect[i] == SPELL_EFFECT_HEAL
+					( spz->Effect[i] == SPELL_EFFECT_SCHOOL_DAMAGE ||
+						spz->Effect[i] == SPELL_EFFECT_HEAL )
 					) 
 					spcheck = true;
 			}

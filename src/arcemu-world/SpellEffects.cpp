@@ -1269,7 +1269,7 @@ void Spell::SpellEffectDummy(uint32 i) // Dummy(Scripted events)
 					if(static_cast<Creature *>((*i))->getDeathState() == CORPSE)
 					{
 						CreatureInfo *cn = static_cast<Creature *>((*i))->GetCreatureInfo();
-							if(cn && cn->Type == HUMANOID || cn->Type == UNDEAD)
+							if(cn && ( cn->Type == HUMANOID || cn->Type == UNDEAD ) )
 							{
 								if(p_caster->GetDistance2dSq((*i)) < rad)
 								{
