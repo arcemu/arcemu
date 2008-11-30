@@ -4141,7 +4141,7 @@ void Aura::SpellAuraModShapeshift(bool apply)
 		return;
 
 	if( p_target->m_MountSpellId && p_target->m_MountSpellId != m_spellProto->Id )
-		if( !(mod->m_miscValue & FORM_BATTLESTANCE | FORM_DEFENSIVESTANCE | FORM_BERSERKERSTANCE ) )
+		if( !(mod->m_miscValue & ( FORM_BATTLESTANCE | FORM_DEFENSIVESTANCE | FORM_BERSERKERSTANCE ) ) )
 			m_target->RemoveAura( p_target->m_MountSpellId ); // these spells are not compatible
 
 	uint32 spellId = 0;
@@ -5846,7 +5846,7 @@ void Aura::SpellAuraMounted(bool apply)
 		m_target->SetUInt32Value( UNIT_FIELD_MOUNTDISPLAYID , displayId);
 		//m_target->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_MOUNTED_TAXI);
 
-		if( p_target->GetShapeShift() && !(p_target->GetShapeShift() & FORM_BATTLESTANCE | FORM_DEFENSIVESTANCE | FORM_BERSERKERSTANCE ) && p_target->m_ShapeShifted != m_spellProto->Id )
+		if( p_target->GetShapeShift() && !(p_target->GetShapeShift() & ( FORM_BATTLESTANCE | FORM_DEFENSIVESTANCE | FORM_BERSERKERSTANCE ) ) && p_target->m_ShapeShifted != m_spellProto->Id )
 			p_target->RemoveAura( p_target->m_ShapeShifted );
 
 /*
