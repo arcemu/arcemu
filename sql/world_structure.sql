@@ -1855,7 +1855,6 @@ CREATE TABLE `quests` (
   `ExploreTrigger2` int(10) unsigned NOT NULL default '0',
   `ExploreTrigger3` int(10) unsigned NOT NULL default '0',
   `ExploreTrigger4` int(10) unsigned NOT NULL default '0',
-  `RequiredOneOfQuest` longtext NOT NULL,
   `RequiredQuest1` int(10) unsigned NOT NULL default '0',
   `RequiredQuest2` int(10) unsigned NOT NULL default '0',
   `RequiredQuest3` int(10) unsigned NOT NULL default '0',
