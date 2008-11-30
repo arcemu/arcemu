@@ -112,6 +112,7 @@ struct CreatureProto
 	uint32 AttackType;
 	float MinDamage;
 	float MaxDamage;
+	uint32 CanRanged;
 	uint32 RangedAttackTime;
 	float RangedMinDamage;
 	float RangedMaxDamage;
