@@ -1596,8 +1596,8 @@ uint32 Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, ui
 						{
 							p_caster->GetGroup()->Lock();
 
-							//float range=GetMaxRange(dbcSpellRange.LookupEntry(ospinfo->rangeIndex));
-							//range*=range;
+							float range=GetMaxRange(dbcSpellRange.LookupEntry(ospinfo->rangeIndex));
+							range*=range;
 
 							for(itr = pGroup->GetGroupMembersBegin();itr != pGroup->GetGroupMembersEnd(); ++itr)
 							{
@@ -1611,7 +1611,7 @@ uint32 Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, ui
 									continue;
 								}
 
-								if( IsInrange(p_caster,(*itr)->m_loggedInPlayer, 400.0f) )
+								if( IsInrange(p_caster,(*itr)->m_loggedInPlayer, range) )
 								{
 
 									if( !First_whatever )
@@ -2546,14 +2546,14 @@ void Unit::RegeneratePower(bool isinterrupted)
 {
     // This is only 2000 IF the power is not rage
 	if (isinterrupted)
-		m_interruptedRegenTime =100;
+		m_interruptedRegenTime = 100;
 	else
 		m_P_regenTimer = 100;//set next regen time 
 	++m_P_regenTick;
 
-
 	if(!isAlive())
 		return;
+	
 	//druids regen every tick, which is every 100ms, at one energy, as of 3.0.2 
 	//I don't know how mana has changed exactly, but it has, will research it - optical
 	if (IsPlayer() && GetPowerType() == POWER_TYPE_ENERGY)
@@ -2561,6 +2561,7 @@ void Unit::RegeneratePower(bool isinterrupted)
 	if (m_P_regenTick != 20)
 		return;
 	m_P_regenTick = 0; // set back to 0, cycle every 20 seconds
+	
 	// player regen
 	if(this->IsPlayer())
 	{
@@ -2591,10 +2592,13 @@ void Unit::RegeneratePower(bool isinterrupted)
 			}break;
 		
 		case POWER_TYPE_RUNIC_POWER:
-
-					{
-						static_cast< Player* >( this )->TakeRunicPower(10);
-					}
+			{
+				if(!CombatStatus.IsInCombat())
+				{	
+					uint32 cur = GetUInt32Value(UNIT_FIELD_POWER7);
+					SetPower(POWER_TYPE_RUNIC_POWER, cur - 20);
+				}
+			}break;
 		}
 		
 		/*
@@ -7309,7 +7313,7 @@ uint32 Unit::DoDamageSplitTarget(uint32 res, uint32 school_type, bool melee_dmg)
 	return res;
 }
 
-void Unit::SetPower(uint32 type, uint32 value)
+void Unit::SetPower(uint32 type, int32 value)
 {
 	uint32 maxpower = GetUInt32Value(UNIT_FIELD_MAXPOWER1 + type);
 	if(value < 0)

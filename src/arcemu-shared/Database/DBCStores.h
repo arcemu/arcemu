@@ -746,7 +746,7 @@ struct SpellEntry
 	uint32 TotemCategory[2];				//226-227
 	uint32 RequiresAreaId;					//228 
 	uint32 School;							//229
-	uint32 RuneCostID;						//230 from 3.0.1
+	uint32 runeCostID;						//230 from 3.0.1
 //	uint32 SpellMissileID;					//231 from 3.0.1
 
 	/// CUSTOM: these fields are used for the modifications made in the world.cpp
@@ -1674,7 +1674,7 @@ extern SERVER_DECL DBCStorage<CreatureFamilyEntry> dbcCreatureFamily;
 extern SERVER_DECL DBCStorage<CharClassEntry> dbcCharClass;
 extern SERVER_DECL DBCStorage<CharRaceEntry> dbcCharRace;
 extern SERVER_DECL DBCStorage<MapEntry> dbcMap;
-extern SERVER_DECL DBCStorage<SpellRuneCostEntry> dbcSpellRuneCostEntry;
+extern SERVER_DECL DBCStorage<SpellRuneCostEntry> dbcSpellRuneCost;
 extern SERVER_DECL DBCStorage<ItemExtendedCostEntry> dbcItemExtendedCost;
 extern SERVER_DECL DBCStorage<ItemRandomSuffixEntry> dbcItemRandomSuffix;
 extern SERVER_DECL DBCStorage<CombatRatingDBC> dbcCombatRating;

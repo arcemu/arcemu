@@ -3038,6 +3038,50 @@ void Object::SetByte(uint32 index, uint32 index1,uint8 value)
 
 }
 
+void Object::SetByteFlag( uint16 index, uint8 offset, uint8 newFlag )
+{
+    ASSERT( index < m_valuesCount );
+	ASSERT( offset <= 4 );
+ 
+    if(!(uint8(m_uint32Values[ index ] >> (offset * 8)) & newFlag))
+    {
+        m_uint32Values[ index ] |= uint32(uint32(newFlag) << (offset * 8));
+ 
+        if(IsInWorld())
+        {
+			m_updateMask.SetBit( index );
+
+            if(!m_objectUpdated)
+            {
+                m_mapMgr->ObjectUpdated(this);
+                m_objectUpdated = true;
+            }
+        }
+    }
+}
+ 
+void Object::RemoveByteFlag( uint16 index, uint8 offset, uint8 oldFlag )
+{
+	ASSERT( index < m_valuesCount );
+	ASSERT( offset <= 4 );
+ 
+    if(uint8(m_uint32Values[ index ] >> (offset * 8)) & oldFlag)
+    {
+        m_uint32Values[ index ] &= ~uint32(uint32(oldFlag) << (offset * 8));
+ 
+        if(IsInWorld())
+        {
+			m_updateMask.SetBit( index );
+
+            if(!m_objectUpdated)
+            {
+                m_mapMgr->ObjectUpdated(this);
+                m_objectUpdated = true;
+            }
+        }
+    }
+}
+
 void Object::SetZoneId(uint32 newZone)
 {
 	m_zoneId = newZone;

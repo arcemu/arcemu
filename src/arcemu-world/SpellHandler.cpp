@@ -215,8 +215,8 @@ void WorldSession::HandleSpellClick(WorldPacket& recvPacket)
 	if( target_unit->GetUInt32Value( OBJECT_FIELD_ENTRY ) == 28605 )
 		cast_spell_id = 52263; // steel horse
 
-	if( cast_spell_id == 0 )
-		return; // no idea how to handle this mount
+	if( target_unit->GetUInt32Value( OBJECT_FIELD_ENTRY ) == 29929 )
+		cast_spell_id = 55531; // Mechano-Hog
 
 	SpellEntry *spellInfo = dbcSpell.LookupEntryForced( cast_spell_id );
  	Spell *spell = SpellPool.PooledNew();

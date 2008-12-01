@@ -1298,7 +1298,7 @@ public:
 //	bool m_spellsbusy;
 	void DispelAll(bool positive);
 
-	void SetPower(uint32 type, uint32 value);
+	void SetPower(uint32 type, int32 value);
 
 	int8 m_hasVampiricTouch;
 	int8 m_hasVampiricEmbrace;

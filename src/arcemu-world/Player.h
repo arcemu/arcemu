@@ -465,6 +465,7 @@ enum FactionRating
 	REVERED,
 	EXALTED
 };
+
 struct FactionReputation
 {
 	int32 standing;
@@ -1440,7 +1441,6 @@ public:
 	void RegenerateHealth(bool inCombat);
 	void RegenerateEnergy();
 	void LooseRage(int32 value);
-	void TakeRunicPower(int32 value);
 	
     uint32 SoulStone;
 	uint32 SoulStoneReceiver;
@@ -1640,23 +1640,42 @@ public:
 	//! Is PVP flagged?
 	ARCEMU_INLINE bool IsPvPFlagged()
 	{
-		return (((uint8*)&m_uint32Values[UNIT_FIELD_BYTES_2])[1] & U_FIELD_BYTES_FLAG_PVP) != 0;
+		return HasByteFlag(UNIT_FIELD_BYTES_2, 1, U_FIELD_BYTES_FLAG_PVP);
 	}
 
 	ARCEMU_INLINE void SetPvPFlag()
 	{
 		StopPvPTimer();
-		SetUInt32Value(UNIT_FIELD_BYTES_2, (U_FIELD_BYTES_FLAG_PVP << 8));
+		SetByteFlag(UNIT_FIELD_BYTES_2, 1, U_FIELD_BYTES_FLAG_PVP);
 		SetFlag(PLAYER_FLAGS, PLAYER_FLAG_PVP);
 	}
 
 	ARCEMU_INLINE void RemovePvPFlag()
 	{
 		StopPvPTimer();
-		m_uint32Values[UNIT_FIELD_BYTES_2] &= ~uint32(uint32(U_FIELD_BYTES_FLAG_PVP) << 8);
+		RemoveByteFlag(UNIT_FIELD_BYTES_2, 1, U_FIELD_BYTES_FLAG_PVP);
 		RemoveFlag(PLAYER_FLAGS, PLAYER_FLAG_PVP);
 	}
 
+	ARCEMU_INLINE bool IsFFAPvPFlagged()
+	{
+		return HasByteFlag(UNIT_FIELD_BYTES_2, 1, U_FIELD_BYTES_FLAG_FFA_PVP);
+	}
+
+	ARCEMU_INLINE void SetFFAPvPFlag()
+	{
+		StopPvPTimer();
+		SetByteFlag(UNIT_FIELD_BYTES_2, 1, U_FIELD_BYTES_FLAG_FFA_PVP);
+		SetFlag(PLAYER_FLAGS, PLAYER_FLAG_FREE_FOR_ALL_PVP);
+	}
+
+	ARCEMU_INLINE void RemoveFFAPvPFlag()
+	{
+		StopPvPTimer();
+		RemoveByteFlag(UNIT_FIELD_BYTES_2, 1, U_FIELD_BYTES_FLAG_FFA_PVP);
+		RemoveFlag(PLAYER_FLAGS, PLAYER_FLAG_FREE_FOR_ALL_PVP);
+	}
+	
 	//! Do this on /pvp off
 	ARCEMU_INLINE void ResetPvPTimer();
 	//! Stop the timer for pvp off
@@ -2039,11 +2058,13 @@ public:
 	uint32 HasRunes(uint8 type, uint32 count);
 	uint32 m_runetimer[6];
 	
+
+
 	int16 m_vampiricEmbrace;
 	int16 m_vampiricTouch;
 	void VampiricSpell(uint32 dmg, Unit* pTarget);
 
-    /************************************************************************/
+	/************************************************************************/
     /* Player Archievements						                            */
     /************************************************************************/
 /*public:

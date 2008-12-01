@@ -28,8 +28,8 @@ UpdateMask Player::m_visibleUpdateMask;
 #define MACHINEGUN 25026
 #define DROPMINE 25024
 #define SHIELD 27759
-static const uint8 baseRunes[6] = {0,0,1,1,2,2};
 static uint32 TonkSpecials[4] = {FLAMETHROWER,MACHINEGUN,DROPMINE,SHIELD};
+static const uint8 baseRunes[6] = {0,0,1,1,2,2};
 
 Player::Player( uint32 guid ) : m_mailBox(guid), m_achievementMgr(this)
 {
@@ -6660,7 +6660,7 @@ void Player::Reset_ToLevel1()
 	ASSERT(info);
 
 	SetUInt32Value(UNIT_FIELD_HEALTH, info->health);
-	SetPower(0, info->mana );
+	SetPower(POWER_TYPE_MANA, info->mana );
 	SetPower(POWER_TYPE_RAGE, 0);
 	SetPower(POWER_TYPE_RUNIC_POWER, 0);
 	SetUInt32Value(UNIT_FIELD_POWER3, info->focus );
@@ -7122,16 +7122,6 @@ void Player::RegenerateHealth( bool inCombat )
 		else
 			DealDamage(this, float2int32(-amt), 0, 0, 0);
 	}
-}
-
-void Player::TakeRunicPower(int32 decayValue)
-{
-	uint32 cur = GetUInt32Value(UNIT_FIELD_POWER7);
-    uint32 runicpower = ((int)cur <= decayValue) ? 0 : cur-decayValue;
-    if (runicpower > 1000 )
-	  runicpower = 1000;
-
-	SetPower(POWER_TYPE_RUNIC_POWER,runicpower);
 }
 
 void Player::LooseRage(int32 decayValue)
@@ -8343,6 +8333,7 @@ void Player::ApplyLevelInfo(LevelInfo* Info, uint32 Level)
 	uint8 class_ = getClass();
 
 	// Apply level
+	uint32 PreviousLevel = GetUInt32Value(UNIT_FIELD_LEVEL);
 	SetUInt32Value(UNIT_FIELD_LEVEL, Level);
 
 	// Set next level conditions
@@ -8374,7 +8365,7 @@ void Player::ApplyLevelInfo(LevelInfo* Info, uint32 Level)
 	    if(Level >= 10)
 	       TalentPoints = Level - 9; 
 
-	SetUInt32Value(PLAYER_CHARACTER_POINTS1, TalentPoints);
+	SetUInt32Value(PLAYER_CHARACTER_POINTS1, Level - PreviousLevel);
 
 	// Set base fields
 	SetUInt32Value(UNIT_FIELD_BASE_HEALTH, Info->HP);
@@ -9968,6 +9959,7 @@ void Player::Possess(Unit * pTarget)
 		data << pTarget->GetGUID();
 		data << uint32(0x00000000);//unk1
 		data << uint32(0x00000101);//unk2
+		data << uint32(0x00000100);//unk3
 
 		// First spell is attack.
 		data << uint32(PET_SPELL_ATTACK);

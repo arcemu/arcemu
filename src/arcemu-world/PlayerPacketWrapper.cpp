@@ -112,6 +112,7 @@ void Player::SendPowerUpdate()
 	FastGUIDPack(data, GetGUID());
 	data << (uint8)GetPowerType();
 	data << GetUInt32Value(UNIT_FIELD_POWER1 + GetPowerType());
+	CopyAndSendDelayedPacket(&data);
 	SendMessageToSet(&data, true);
 }
 

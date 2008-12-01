@@ -32,7 +32,7 @@ SERVER_DECL DBCStorage<Lock> dbcLock;
 SERVER_DECL DBCStorage<SpellEntry> dbcSpell;
 SERVER_DECL DBCStorage<SpellDuration> dbcSpellDuration;
 SERVER_DECL DBCStorage<SpellRange> dbcSpellRange;
-SERVER_DECL DBCStorage<SpellRuneCostEntry> dbcSpellRuneCostEntry;
+SERVER_DECL DBCStorage<SpellRuneCostEntry> dbcSpellRuneCost;
 SERVER_DECL DBCStorage<emoteentry> dbcEmoteEntry;
 SERVER_DECL DBCStorage<SpellRadius> dbcSpellRadius;
 SERVER_DECL DBCStorage<SpellCastTime> dbcSpellCastTime;
@@ -277,7 +277,7 @@ bool LoadDBCs()
 	LOAD_DBC("DBC/SpellCastTimes.dbc", spellcasttimeFormat, true, dbcSpellCastTime, false);
 	LOAD_DBC("DBC/SpellRadius.dbc", spellradiusFormat, true, dbcSpellRadius, false);
 	LOAD_DBC("DBC/SpellRange.dbc", spellrangeFormat, true, dbcSpellRange, false);
-	LOAD_DBC("DBC/SpellRuneCost.dbc", SpellRuneCostFormat, true, dbcSpellRuneCostEntry, false);
+	LOAD_DBC("DBC/SpellRuneCost.dbc", SpellRuneCostFormat, true, dbcSpellRuneCost, false);
 	LOAD_DBC("DBC/SpellDuration.dbc", spelldurationFormat, true, dbcSpellDuration, false);
 	LOAD_DBC("DBC/ItemRandomProperties.dbc", randompropsFormat, true, dbcRandomProps, false);
 	LOAD_DBC("DBC/AreaTable.dbc", areatableFormat, true, dbcArea, true);

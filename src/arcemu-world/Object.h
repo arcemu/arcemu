@@ -278,6 +278,14 @@ public:
 #endif
 	}
 	
+	void __fastcall SetByteFlag( uint16 index, uint8 offset, uint8 newFlag );
+    void __fastcall RemoveByteFlag( uint16 index, uint8 offset, uint8 newFlag );
+
+	ARCEMU_INLINE bool HasByteFlag(uint32 index, uint32 index1, uint8 flag)
+	{
+		return ((GetByte(index, index1) & flag) != 0);
+	}
+	
 	ARCEMU_INLINE void SetNewGuid(uint32 Guid)
 	{
 		SetUInt32Value(OBJECT_FIELD_GUID, Guid);

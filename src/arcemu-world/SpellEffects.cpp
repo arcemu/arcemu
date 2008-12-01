@@ -1698,29 +1698,29 @@ void Spell::SpellEffectDummy(uint32 i) // Dummy(Scripted events)
 
 			u_caster->CastSpell(unitTarget, 32835, false);
 		}break;
-/*	case 52375:
+	
+	/***Death Coil DK***/
+	
+	case 52375:
 	case 49892:
 	case 49893:
 	case 49894:
-	case 49895: //Death Coil
+	case 49895:
 		{
 			if(!u_caster)
 				return;
 			if(spellId == 52375)
-				damage = damage * 2 / 5;	// 40% for rank 1
+				damage = damage * 2 / 5;
 			if(isAttackable(u_caster, unitTarget, false))
 				u_caster->SpellNonMeleeDamageLog(unitTarget, spellId, damage, true);
 			else if(unitTarget->IsCreature())
 			{
-				CreatureInfo * ci = static_cast< Creature* >(unitTarget)->GetCreatureName();
+				CreatureInfo * ci = static_cast< Creature* >(unitTarget)->GetCreatureInfo();
 				if(ci && ci->Type == UNDEAD)
 					u_caster->Heal(unitTarget, spellId, float2int32(damage * 1.5f));
 			}
-			else if(unitTarget->IsPlayer())
-			{	// TODO: Check if player is considered undead (Lichborne)
-				//static_cast< Player* >(unitTarget)->
-			}
-		}break;	*/
+
+		}break;	
 	}										 
 }
 
