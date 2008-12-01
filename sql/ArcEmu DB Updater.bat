@@ -137,6 +137,8 @@ ECHO [Importing] 1707_creature_proto.sql
 mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% < world_updates\1707_creature_proto.sql
 ECHO [Importing] 1729_creature_proto.sql
 mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% < world_updates\1729_creature_proto.sql
+ECHO [Importing] 1735_quests.sql
+mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% < world_updates\1735_quests.sql
 ECHO [Importing] spellfixes.sql
 mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% < world_updates\spellfixes.sql
 ECHO [Importing] Finished
