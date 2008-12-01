@@ -158,7 +158,7 @@ pSpellEffect SpellEffectsHandler[TOTAL_SPELL_EFFECTS]={
 		&Spell::SpellEffectNULL,					// unknown - 134 // related to summoning objects and removing them, http://www.thottbot.com/s39161
 		&Spell::SpellEffectNULL,					// unknown - 135 // no spells
 		&Spell::SpellEffectNULL,					// unknown - 136 // http://www.thottbot.com/s41542 and http://www.thottbot.com/s39703
-		&Spell::SpellEffectNULL,					// unknown - 137 // http://www.thottbot.com/s41542
+		&Spell::SpellEffectRestoreManaPct,			// unknown - 137 // http://www.thottbot.com/s41542
 		&Spell::SpellEffectNULL,					// unknown - 138 // related to superjump or even "*jump" spells http://www.thottbot.com/?e=Unknown%20138
 		&Spell::SpellEffectNULL,					// unknown - 139 // no spells
 		&Spell::SpellEffectTriggerSpell,			// triggers a spell from target back to caster - used at Malacrass f.e.
@@ -4662,7 +4662,9 @@ void Spell::SpellEffectScriptEffect(uint32 i) // Script Effect
 	break;
 
 	// Judgement
-	case 20271:
+	case 20271: //Light
+	case 53407: //Justice
+	case 53408: //Wisdom
 		{
 			if(!unitTarget || !p_caster) return;
 
@@ -4674,8 +4676,25 @@ void Spell::SpellEffectScriptEffect(uint32 i) // Script Effect
 			tgt.m_targetMask=TARGET_FLAG_UNIT;
 			sp->judgement = true;
 			sp->prepare(&tgt);
+			
+			uint32 judge_extra = 0;
+			// This is for handling specific Judgement's debuff application spells
+			switch(GetProto()->Id)
+			{
+			case 20271:
+				judge_extra = 20185;
+				break;
+			case 53407:
+				judge_extra = 20184;
+				break;
+			case 53408:
+				judge_extra = 20186;
+				break;
+			}
+			p_caster->CastSpell(unitTarget, judge_extra, false);
 			p_caster->RemoveAura(p_caster->Seal);
 		}break;
+
 	//warlock - Master Demonologist
 	case 23784:
 		{

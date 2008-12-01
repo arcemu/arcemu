@@ -4806,6 +4806,9 @@ void Spell::Heal(int32 amount, bool ForceCrit)
 		if(GetProto()->NameHash == SPELL_HASH_SEAL_OF_LIGHT) //Seal of Light
 			healdoneaffectperc = 0.0f;
 
+		if(GetProto()->NameHash == SPELL_HASH_JUDGEMENT_OF_LIGHT) //Judgement of Light
+			healdoneaffectperc = 0.0f;
+
 		if(GetProto()->NameHash == SPELL_HASH_LESSER_HEROISM) //Lesser Heroism
 			healdoneaffectperc = 0.0f;
 

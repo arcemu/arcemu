@@ -712,6 +712,10 @@ void ApplyNormalFixes()
 		if( namehash == SPELL_HASH_SEAL_OF_LIGHT )			
 			sp->procChance = 45;	/* this will do */
 
+		// Seal of Wisdom
+		else if( namehash == SPELL_HASH_SEAL_OF_WISDOM )
+			sp->procChance = 45;
+
 		//seal of command
 		else if( namehash == SPELL_HASH_SEAL_OF_COMMAND )		
 			sp->Spell_Dmg_Type = SPELL_DMG_TYPE_MAGIC;
@@ -2992,10 +2996,92 @@ void ApplyNormalFixes()
 
 		// Insert paladin spell fixes here
 
+		// Seal of Command - trigger
+		sp = dbcSpell.LookupEntryForced( 20375 );
+		if( sp != NULL )
+		{
+			sp->procFlags = PROC_ON_MELEE_ATTACK;
+			sp->EffectTriggerSpell[0] = 20424;
+		}
 		// Seal of Command - Holy damage, but melee mechanics (crit damage, chance, etc)
 		sp = dbcSpell.LookupEntryForced( 20424 );
 		if( sp != NULL )
 			sp->is_melee_spell = true;
+
+		//Paladin - Seal of Vengeance
+		sp = dbcSpell.LookupEntryForced( 31801 );
+		if( sp != NULL )
+		{
+			sp->procFlags = PROC_ON_MELEE_ATTACK;
+			sp->EffectTriggerSpell[0] = 31803;
+			sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
+		}
+
+		// Paladin - Seal of Corruption
+		sp = dbcSpell.LookupEntryForced( 53736 );
+		if( sp != NULL )
+		{
+			sp->procFlags = PROC_ON_MELEE_ATTACK;
+			sp->EffectTriggerSpell[0] = 53742;
+			sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
+		}
+
+		//Paladin - seal of blood
+		sp = dbcSpell.LookupEntryForced( 31892 );
+		if( sp != NULL )
+		{
+			sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
+			sp->EffectTriggerSpell[0] = 31893;
+		}
+		sp = dbcSpell.LookupEntryForced( 38008 );
+		if( sp != NULL )
+		{
+			sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
+			sp->EffectTriggerSpell[0] = 31893;
+		}
+
+		// Paladin - Seal of Martyr 
+		sp = dbcSpell.LookupEntryForced( 53720 );
+		if( sp != NULL )
+		{	
+			sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
+			sp->EffectTriggerSpell[0] = 53719;	
+			sp->School = SCHOOL_HOLY;
+		}
+		sp = dbcSpell.LookupEntryForced( 53718 );
+		if( sp != NULL )
+		{
+			sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
+			sp->EffectTriggerSpell[0] = 53719;
+			sp->School = SCHOOL_HOLY;
+		}
+		sp = dbcSpell.LookupEntryForced( 53726 );
+		if( sp != NULL )
+		{
+			sp->School = SCHOOL_HOLY;
+			sp->Spell_Dmg_Type = SPELL_DMG_TYPE_MAGIC;
+		}
+		sp = dbcSpell.LookupEntryForced( 53719 );
+		if( sp != NULL )
+		{
+			sp->School = SCHOOL_HOLY;
+			sp->Spell_Dmg_Type = SPELL_DMG_TYPE_MAGIC;
+		}
+
+		// Divine Storm
+		sp = dbcSpell.LookupEntryForced( 53385 );
+		if( sp != NULL )
+			sp->EffectRadiusIndex[0] = 43; //16 yards
+
+		// Sacred Shield - bonus to flash is not working
+		sp = dbcSpell.LookupEntryForced( 53601 );
+		if( sp != NULL )
+		{	
+			sp->procFlags = PROC_ON_ANY_DAMAGE_VICTIM | static_cast<uint32>(PROC_TARGET_SELF);
+			sp->proc_interval = 6000;
+			sp->EffectTriggerSpell[0] = 58597;
+			sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
+		}
 
 		// paladin - Vindication
 		sp = dbcSpell.LookupEntryForced( 26021 );
@@ -3019,7 +3105,7 @@ void ApplyNormalFixes()
 
 		/**********************************************************
 		 *	Blessing of Light
-		 **********************************************************/
+		 **********************************************************
 		sp = dbcSpell.LookupEntryForced( 19977 );
 		if( sp != NULL )
 		{
@@ -3049,18 +3135,7 @@ void ApplyNormalFixes()
 		{
 			sp->EffectApplyAuraName[0] = SPELL_AURA_DUMMY;
 			sp->EffectApplyAuraName[1] = SPELL_AURA_DUMMY;
-		}
-
-		/**********************************************************
-		 * Seal of Vengeance
-		 **********************************************************/
-		sp = dbcSpell.LookupEntryForced( 31801 );
-		if( sp != NULL )
-		{
-			sp->procFlags = PROC_ON_MELEE_ATTACK;
-			sp->EffectTriggerSpell[0] = 31803;
-			sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
-		}
+		}*/
 
 		/**********************************************************
 		 * Reckoning
@@ -3093,7 +3168,7 @@ void ApplyNormalFixes()
 
 		/**********************************************************
 		 * Judgement of Wisdom
-		 **********************************************************/
+		 **********************************************************
 		sp = dbcSpell.LookupEntryForced( 20186 );
 		if( sp != NULL )
 		{
@@ -3134,7 +3209,7 @@ void ApplyNormalFixes()
 
 		/**********************************************************
 		 * Judgement of Light
-		 **********************************************************/
+		 **********************************************************
 		sp = dbcSpell.LookupEntryForced( 20185 );
 		if( sp != NULL )
 		{
@@ -3267,7 +3342,7 @@ void ApplyNormalFixes()
 		if( sp != NULL )
 			sp->procFlags = PROC_ON_CAST_SPELL;
 
-		//Paladin: Seal of Wisdom
+		/*Paladin: Seal of Wisdom
 		uint32 procchance = 0;
 		sp = dbcSpell.LookupEntryForced( 27116 );
 		if( sp != NULL )
@@ -3283,20 +3358,7 @@ void ApplyNormalFixes()
 			sp->procChance = procchance;
 		sp = dbcSpell.LookupEntryForced( 27166 );
 		if( sp != NULL )
-			sp->procChance = procchance;
-		//paladin - seal of blood
-		sp = dbcSpell.LookupEntryForced( 31892 );
-		if( sp != NULL )
-		{
-			sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
-			sp->EffectTriggerSpell[0] = 31893;
-		}
-		sp = dbcSpell.LookupEntryForced( 38008 );
-		if( sp != NULL )
-		{
-			sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
-			sp->EffectTriggerSpell[0] = 31893;
-		}
+			sp->procChance = procchance;*/
 
 		//paladin - Spiritual Attunement 
 		sp = dbcSpell.LookupEntryForced( 31785 );
@@ -3314,13 +3376,10 @@ void ApplyNormalFixes()
 			sp->EffectTriggerSpell[0] = 31786;
 		}
 
-		//Seal of Justice -lowered proc chance (experimental values !)
+		// Seal of Justice - Proc Chance
 		sp = dbcSpell.LookupEntryForced( 20164 );
 		if( sp != NULL )
-			sp->procChance = 20;
-		sp = dbcSpell.LookupEntryForced( 31895 );
-		if( sp != NULL )
-			sp->procChance = 20;
+			sp->procChance = 25;
 
 		/*		
 		// I believe we can assume since Sanctity Aura was removed in 3.0.2 so was the improved version.
