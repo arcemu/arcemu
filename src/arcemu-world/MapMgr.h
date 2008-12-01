@@ -249,7 +249,6 @@ public:
 
 	Instance * pInstance;
 	void BeginInstanceExpireCountdown();
-	void HookOnAreaTrigger(Player * plr, uint32 id);
 
 	ARCEMU_INLINE void SetWorldState(uint32 state, uint32 value);
 	ARCEMU_INLINE uint32 GetWorldState(uint32 state);

@@ -2009,27 +2009,6 @@ GameObject * MapMgr::GetSqlIdGameObject(uint32 sqlid)
 	return (itr == _sqlids_gameobjects.end()) ? NULL : itr->second;
 }
 
-void MapMgr::HookOnAreaTrigger(Player * plr, uint32 id)
-{
-	switch (id)
-	{
-	case 4591:
-		//Only opens when the first one steps in, if 669 if you find a way, put it in :P (else was used to increase the time the door stays opened when another one steps on it)
-		GameObject *door = GetInterface()->GetGameObjectNearestCoords(803.827f, 6869.38f, -38.5434f, 184212);
-		if (door && (door->GetByte(GAMEOBJECT_BYTES_1, 0) == 1))
-		{
-			door->SetByte(GAMEOBJECT_BYTES_1, 0, 0);
-			//sEventMgr.AddEvent(door, &GameObject::SetUInt32Value, GAMEOBJECT_BYTES_1, 0, 1, EVENT_SCRIPT_UPDATE_EVENT, 10000, 1, 0);
-		}
-		//else
-		//{
-			//sEventMgr.RemoveEvents(door);
-			//sEventMgr.AddEvent(door, &GameObject::SetUInt32Value,GAMEOBJECT_BYTES_1, 0, 0, EVENT_SCRIPT_UPDATE_EVENT, 10000, 1, 0);
-		//}
-		break;
-	}
-}
-
 Creature * MapMgr::CreateCreature(uint32 entry)
 {
 	uint64 newguid = (uint64)HIGHGUID_TYPE_UNIT << 32;
