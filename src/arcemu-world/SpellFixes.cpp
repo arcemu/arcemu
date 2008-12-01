@@ -37,6 +37,7 @@ void CreateDummySpell(uint32 id)
 	sp->EffectImplicitTargetA[0]=25;
 	sp->NameHash=crc32((const unsigned char*)name, (unsigned int)strlen(name));
 	sp->dmg_multiplier[0]=1.0f;
+	sp->StanceBarOrder=-1;
 	dbcSpell.SetRow(id,sp);
 	sWorld.dummyspells.push_back(sp);
 }
