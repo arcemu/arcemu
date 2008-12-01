@@ -11822,6 +11822,12 @@ void Player::FullHPMP()
     SetUInt32Value(UNIT_FIELD_POWER4, GetUInt32Value(UNIT_FIELD_MAXPOWER4));
 }
 
+void Player::PlaySound( uint32 sound_id )
+{	
+	WorldPacket data(SMSG_PLAY_SOUND, 4);
+	data << sound_id;
+	GetSession()->SendPacket( &data );
+}
 
 //really need to work on the speed of this. This will be called on a lot of events
 /*void Player::Event_Achiement_Received(uint32 achievementtype,uint32 pentry,uint32 pvalue)
