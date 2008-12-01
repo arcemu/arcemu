@@ -1298,6 +1298,7 @@ struct ChatChannelDBC
 {
 	uint32 id;
 	uint32 flags;
+	char * name_pattern[16];
 };
 
 struct DurabilityQualityEntry

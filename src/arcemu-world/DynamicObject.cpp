@@ -146,7 +146,7 @@ void DynamicObject::UpdateTargets()
 			if(GetDistanceSq(target) <= radius)
 			{
 				pAura = AuraPool.PooledNew();
-				pAura->Init(m_spellProto, m_aliveDuration, u_caster, target);
+				pAura->Init(m_spellProto, m_aliveDuration, u_caster, target, true);
 				for(uint32 i = 0; i < 3; ++i)
 				{
 					if(m_spellProto->Effect[i] == SPELL_EFFECT_PERSISTENT_AREA_AURA)

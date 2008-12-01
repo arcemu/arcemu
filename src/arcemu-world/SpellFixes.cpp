@@ -1730,6 +1730,9 @@ void ApplyNormalFixes()
 			// Seal of Righteousness - cannot crit
 			if( sp->NameHash == SPELL_HASH_SEAL_OF_RIGHTEOUSNESS )
 				sp->spell_can_crit = false;
+			/* Consecration - Increased Radius */
+			if (sp->NameHash == SPELL_HASH_CONSECRATION)
+				sp->EffectRadiusIndex[0] = 43;	// 16 yds
 
 			// Forbearance - Is forced debuff
 		sp = dbcSpell.LookupEntryForced( 25771 ); 

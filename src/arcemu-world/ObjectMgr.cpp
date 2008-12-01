@@ -211,7 +211,7 @@ ObjectMgr::~ObjectMgr()
 
 	Log.Notice("ObjectMgr", "Deleting Arena Teams...");
 	for(HM_NAMESPACE::hash_map<uint32, ArenaTeam*>::iterator itr = m_arenaTeams.begin(); itr != m_arenaTeams.end(); ++itr) {
-		delete itr->second;
+		itr->second->Destroy();
 	}
 	
 	Log.Notice("ObjectMgr", "Cleanup BroadCastStorages...");

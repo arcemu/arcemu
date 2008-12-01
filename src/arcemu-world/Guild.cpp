@@ -25,7 +25,7 @@ Guild::Guild()
 	m_commandLogging=true;
 	m_guildId=0;
 	m_guildLeader=0;
-	m_guildName=(char*)"Goose";
+	m_guildName=NULL;
 	m_guildInfo=NULL;
 	m_motd=NULL;
 	m_backgroundColor=0;
@@ -81,7 +81,12 @@ Guild::~Guild()
 	for(list<GuildBankEvent*>::iterator it2 = m_moneyLog.begin(); it2 != m_moneyLog.end(); ++it2)
 		delete (*it2);
 
-	free(m_guildName);
+	if(m_guildInfo)
+		free(m_guildInfo);
+	if(m_motd)
+		free(m_motd);
+	if(m_guildName)
+		free(m_guildName);
 }
 
 void Guild::SendGuildCommandResult(WorldSession * pClient, uint32 iCmd, const char * szMsg, uint32 iType)

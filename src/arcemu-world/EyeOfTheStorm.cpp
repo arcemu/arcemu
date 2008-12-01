@@ -140,13 +140,37 @@ EyeOfTheStorm::~EyeOfTheStorm()
 {
 	for(uint32 i = 0; i < EOTS_TOWER_COUNT; ++i)
 	{
+		if(m_CPStatusGO[i] != NULL)
+		{
+			if( !m_CPStatusGO[i]->IsInWorld() )
+				delete m_CPStatusGO[i];
+		}
+
+		if(m_CPBanner[i] != NULL)
+		{
+			if( !m_CPBanner[i]->IsInWorld() )
+				delete m_CPBanner[i];
+		}
+
 		if(EOTSm_buffs[i] != NULL)
 		{
 			EOTSm_buffs[i]->m_battleground = NULL;
 			if( !EOTSm_buffs[i]->IsInWorld() )
-			delete EOTSm_buffs[i];
+				delete EOTSm_buffs[i];
 		}
 	}
+
+	for(uint32 i = 0; i < 2; ++i )
+	{
+		if(m_bubbles[i] != NULL)
+		{
+			if( !m_bubbles[i]->IsInWorld() )
+				delete m_bubbles[i];
+		}
+	}
+
+	m_resurrectMap.clear();
+	m_worldStates.clear();
 }
 
 void EyeOfTheStorm::RepopPlayersOfTeam(int32 team, Creature * sh)

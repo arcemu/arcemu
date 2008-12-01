@@ -371,7 +371,7 @@ class SERVER_DECL Aura : public EventableObject
 	uint64 periodic_target;
 public:
     Aura( );
-	void Init( SpellEntry *proto, int32 duration,Object* caster, Unit *target, Item* i_caster = NULL );
+	void Init( SpellEntry *proto, int32 duration,Object* caster, Unit *target, bool temporary = false, Item* i_caster = NULL );
 	void Virtual_Constructor();		//when using object pool contructor is not good to be called again sometimes. Use this instead
 	~Aura();
 	void Virtual_Destructor();		//this makes sure we do not leave events on objects that are supposed to be deleted
@@ -762,6 +762,7 @@ protected:
 	void SendInterrupted(uint8 result, Object * m_caster);
 	void SendChannelUpdate(uint32 time, Object * m_caster);
 public:
+	bool m_temporary;	// Skip saving
 	bool m_deleted;
 	int16 m_interrupted;
 	bool m_ignoreunapply; // \\\"special\\\" case, for unapply

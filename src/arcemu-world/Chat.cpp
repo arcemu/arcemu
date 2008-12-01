@@ -212,6 +212,7 @@ void CommandTableStorage::Dealloc()
 	free( _banCommandTable );
 	free( _unbanCommandTable );
 	free( _instanceCommandTable );
+	free( _arenaCommandTable );
 	free( _commandTable );
 }
 

@@ -486,6 +486,18 @@ ArathiBasin::~ArathiBasin()
 				delete m_controlPointAuras[i];
 		}
 	}
+	for(list<GameObject*>::iterator itr = m_gates.begin(); itr != m_gates.end(); ++itr)
+	{
+		if((*itr) != NULL)
+		{
+			(*itr)->m_battleground = NULL;
+			if( !(*itr)->IsInWorld() )
+				delete (*itr);
+		}
+	}
+
+	m_resurrectMap.clear();
+	m_worldStates.clear();
 }
 
 void ArathiBasin::EventUpdateResources(uint32 Team)

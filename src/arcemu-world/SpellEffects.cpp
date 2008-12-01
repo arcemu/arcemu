@@ -1004,7 +1004,7 @@ void Spell::SpellEffectDummy(uint32 i) // Dummy(Scripted events)
 					if(p_caster->m_TotemSlots[0] && p_caster->m_TotemSlots[1] && p_caster->m_TotemSlots[2] && p_caster->m_TotemSlots[3])
 					{
 						Aura *aur = AuraPool.PooledNew();
-						aur->Init(dbcSpell.LookupEntry(38437), 5000, p_caster, p_caster);
+						aur->Init(dbcSpell.LookupEntry(38437), 5000, p_caster, p_caster, true);
 						for( uint32 i=0; i<3; i++ ) 
 							aur->AddMod( aur->GetSpellProto()->EffectApplyAuraName[i], aur->GetSpellProto()->EffectBasePoints[i]+1, aur->GetSpellProto()->EffectMiscValue[i], i );
 						p_caster->AddAura(aur);
@@ -1971,9 +1971,9 @@ void Spell::SpellEffectApplyAura(uint32 i)  // Apply Aura
 		}
 		pAura=AuraPool.PooledNew();
 		if(g_caster && g_caster->GetUInt32Value(OBJECT_FIELD_CREATED_BY) && g_caster->m_summoner)
-			 pAura->Init(GetProto(), Duration, g_caster->m_summoner, unitTarget, i_caster);
+			 pAura->Init(GetProto(), Duration, g_caster->m_summoner, unitTarget, m_triggeredSpell, i_caster);
 		else
-			pAura->Init(GetProto(), Duration, m_caster, unitTarget, i_caster);
+			pAura->Init(GetProto(), Duration, m_caster, unitTarget, m_triggeredSpell, i_caster);
 
 		pAura->pSpellId = pSpellId; //this is required for triggered spells
 		

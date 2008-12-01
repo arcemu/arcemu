@@ -908,8 +908,7 @@ void Object::SendMessageToSet(WorldPacket *data, bool bToSelf,bool myteam_only)
 		{
 			for(; itr != it_end; ++itr)
 			{
-				ASSERT((*itr)->GetSession());
-				if((*itr)->GetSession()->GetPermissionCount() > 0 && (*itr)->GetTeam()==myteam)
+				if((*itr) && (*itr)->GetSession() && (*itr)->GetSession()->GetPermissionCount() > 0 && (*itr)->GetTeam()==myteam)
 					(*itr)->GetSession()->SendPacket(data);
 			}
 		}
@@ -917,8 +916,7 @@ void Object::SendMessageToSet(WorldPacket *data, bool bToSelf,bool myteam_only)
 		{
 			for(; itr != it_end; ++itr)
 			{
-				ASSERT((*itr)->GetSession());
-				if((*itr)->GetTeam()==myteam && !(*itr)->Social_IsIgnoring( GetLowGUID() ))
+				if((*itr) && (*itr)->GetSession() && (*itr)->GetTeam()==myteam && !(*itr)->Social_IsIgnoring( GetLowGUID() ))
 					(*itr)->GetSession()->SendPacket(data);
 			}
 		}
@@ -929,8 +927,7 @@ void Object::SendMessageToSet(WorldPacket *data, bool bToSelf,bool myteam_only)
 		{
 			for(; itr != it_end; ++itr)
 			{
-				ASSERT((*itr)->GetSession());
-				if((*itr)->GetSession()->GetPermissionCount() > 0)
+				if((*itr) && (*itr)->GetSession() && (*itr)->GetSession()->GetPermissionCount() > 0)
 					(*itr)->GetSession()->SendPacket(data);
 			}
 		}
@@ -938,8 +935,7 @@ void Object::SendMessageToSet(WorldPacket *data, bool bToSelf,bool myteam_only)
 		{
 			for(; itr != it_end; ++itr)
 			{
-				ASSERT((*itr)->GetSession());
-				if( !(m_objectTypeId == TYPEID_PLAYER && (*itr)->Social_IsIgnoring( GetLowGUID() )) )
+				if((*itr) && (*itr)->GetSession() &&  !(m_objectTypeId == TYPEID_PLAYER && (*itr)->Social_IsIgnoring( GetLowGUID() )) )
 					(*itr)->GetSession()->SendPacket(data);
 			}
 		}

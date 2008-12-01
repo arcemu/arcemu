@@ -1596,8 +1596,8 @@ uint32 Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, ui
 						{
 							p_caster->GetGroup()->Lock();
 
-							float range=GetMaxRange(dbcSpellRange.LookupEntry(ospinfo->rangeIndex));
-							range*=range;
+							//float range=GetMaxRange(dbcSpellRange.LookupEntry(ospinfo->rangeIndex));
+							//range*=range;
 
 							for(itr = pGroup->GetGroupMembersBegin();itr != pGroup->GetGroupMembersEnd(); ++itr)
 							{
@@ -1611,7 +1611,7 @@ uint32 Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, ui
 									continue;
 								}
 
-								if( IsInrange(p_caster,(*itr)->m_loggedInPlayer, range) )
+								if( IsInrange(p_caster,(*itr)->m_loggedInPlayer, 400.0f) )
 								{
 
 									if( !First_whatever )

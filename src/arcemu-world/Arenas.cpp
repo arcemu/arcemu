@@ -127,7 +127,7 @@ void Arena::OnAddPlayer(Player * plr)
 
 	/* Add the green/gold team flag */
 	Aura * aura = AuraPool.PooledNew();
-	aura->Init(dbcSpell.LookupEntry((plr->GetTeamInitial()) ? 35775-plr->m_bgTeam : 32725-plr->m_bgTeam), -1, plr, plr);
+	aura->Init(dbcSpell.LookupEntry((plr->GetTeamInitial()) ? 35775-plr->m_bgTeam : 32725-plr->m_bgTeam), -1, plr, plr, true);
 	plr->AddAura(aura);
 	
 	/* Set FFA PvP Flag */

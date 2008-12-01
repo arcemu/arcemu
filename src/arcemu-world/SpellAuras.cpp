@@ -638,12 +638,13 @@ Aura::Aura()
 	m_bufferPoolId = OBJECT_WAS_ALLOCATED_STANDARD_WAY;
 }
 
-void Aura::Init( SpellEntry* proto, int32 duration, Object* caster, Unit* target, Item* i_caster )
+void Aura::Init( SpellEntry* proto, int32 duration, Object* caster, Unit* target, bool temporary, Item* i_caster)
 {
 	m_castInDuel = false;
 	m_spellProto = proto;
 	m_duration = duration;
 	m_positive = 0; //we suppose spell will have positive impact on target
+	m_temporary = temporary; // Aura saving related
 	m_deleted = false;
 	m_ignoreunapply = false;
 	m_casterGuid = caster->GetGUID();
@@ -1001,7 +1002,7 @@ void Aura::EventUpdateAA(float r)
 					if(!aura)
 					{
 						aura = AuraPool.PooledNew();
-						aura->Init(m_spellProto, -1, u_caster, plr);
+						aura->Init(m_spellProto, -1, u_caster, plr, true);
 						aura->m_areaAura = true;
 					}
 					aura->AddMod(m_modList[i].m_type, m_modList[i].m_amount,
@@ -1029,7 +1030,7 @@ void Aura::EventUpdateAA(float r)
 		if( summon && summon->isAlive() && summon->GetDistanceSq(u_caster) <= r && !summon->HasAura( m_spellProto->Id ))
 		{
 			Aura * aura = AuraPool.PooledNew();
-			aura->Init(m_spellProto, -1, u_caster, summon );
+			aura->Init(m_spellProto, -1, u_caster, summon, true );
 			aura->m_areaAura = true;
 			aura->AddMod( mod->m_type, mod->m_amount, mod->m_miscValue, mod->i);
 			summon->AddAura( aura );
@@ -1063,7 +1064,7 @@ void Aura::EventUpdateAA(float r)
 							if(!aura)
 							{
 								aura = AuraPool.PooledNew();
-								aura->Init(m_spellProto, -1, u_caster, (*itr)->m_loggedInPlayer);
+								aura->Init(m_spellProto, -1, u_caster, (*itr)->m_loggedInPlayer, true);
 								aura->m_areaAura = true;
 							}
 							aura->AddMod(m_modList[i].m_type, m_modList[i].m_amount,

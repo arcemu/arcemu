@@ -2159,6 +2159,8 @@ void WorldSession::HandleOpenItemOpcode(WorldPacket &recv_data)
 	if(pItem->GetUInt32Value(ITEM_FIELD_GIFTCREATOR) && pItem->wrapped_item_id)
 	{
 		ItemPrototype * it = ItemPrototypeStorage.LookupEntry(pItem->wrapped_item_id);
+		if (it == NULL)
+			return;
 
 		pItem->SetUInt32Value(ITEM_FIELD_GIFTCREATOR,0);
 		pItem->SetUInt32Value(OBJECT_FIELD_ENTRY,pItem->wrapped_item_id);

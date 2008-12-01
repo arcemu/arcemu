@@ -103,7 +103,7 @@ public:
 	~Channel();
 
 	void AttemptJoin(Player * plr, const char * password);
-	void Part(Player * plr);
+	void Part(Player * plr, bool send_packet = true);
 	void Kick(Player * plr, Player * die_player, bool ban);
 	void Invite(Player * plr, Player * new_player);
 	void Moderate(Player * plr);

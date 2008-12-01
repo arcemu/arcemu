@@ -86,6 +86,28 @@ WarsongGulch::~WarsongGulch()
 		if(m_buffs[i] && m_buffs[i]->IsInWorld()==false)
 			delete m_buffs[i];
 	}
+
+	for(uint32 i = 0; i < 2; ++i)
+	{
+		if(m_dropFlags[i] && m_dropFlags[i]->IsInWorld()==false)
+			delete m_dropFlags[i];
+
+		if(m_homeFlags[i] && m_homeFlags[i]->IsInWorld()==false)
+			delete m_homeFlags[i];
+	}
+
+	for(list<GameObject*>::iterator itr = m_gates.begin(); itr != m_gates.end(); ++itr)
+	{
+		if((*itr) != NULL)
+		{
+			(*itr)->m_battleground = NULL;
+			if( !(*itr)->IsInWorld() )
+				delete (*itr);
+		}
+	}
+
+	m_resurrectMap.clear();
+	m_worldStates.clear();
 }
 
 void WarsongGulch::HookOnAreaTrigger(Player * plr, uint32 id)

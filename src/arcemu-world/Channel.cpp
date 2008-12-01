@@ -170,7 +170,7 @@ void Channel::AttemptJoin(Player * plr, const char * password)
 #endif
 }
 
-void Channel::Part(Player * plr)
+void Channel::Part(Player * plr, bool send_packet )
 {
 	m_lock.Acquire();
 	WorldPacket data(SMSG_CHANNEL_NOTIFY, 100);
@@ -209,7 +209,7 @@ void Channel::Part(Player * plr)
 	{
 
 	}
-	else
+	else if( send_packet )
 	{
 		data << uint8(CHANNEL_NOTIFY_FLAG_YOULEFT) << m_name << m_id << uint32(0) << uint8(0);
 		plr->GetSession()->SendPacket(&data);

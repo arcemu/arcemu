@@ -7868,6 +7868,54 @@ void Player::ZoneUpdate(uint32 ZoneId)
 		}
 	}
 
+	if( !m_channels.empty() )
+	{
+		// change to zone name, not area name
+		at = dbcArea.LookupEntryForced( ZoneId );
+		for( std::set<Channel*>::iterator itr = m_channels.begin(),nextitr ; itr != m_channels.end() ; itr = nextitr)
+		{
+			nextitr = itr; ++nextitr;
+			Channel * chn;
+			chn = (*itr);
+			// Check if this is a custom channel (i.e. global)
+			if( !( (*itr)->m_flags & 0x10 ) )
+				continue;
+
+			if( chn->m_flags & 0x40 ) // LookingForGroup - constant among all zones
+				continue;
+
+			char updatedName[95];
+			ChatChannelDBC * pDBC;
+			pDBC = dbcChatChannels.LookupEntryForced( chn->m_id );
+			if( !pDBC )
+			{
+				Log.Error( "ChannelMgr" , "Invalid channel entry %u for %s" , chn->m_id , chn->m_name.c_str() );
+				return;
+			}
+			//for( int i = 0 ; i <= 15 ; i ++ )
+			//	Log.Notice( "asfssdf" , "%u %s" , i , pDBC->name_pattern[i] );
+			snprintf( updatedName , 95 , pDBC->name_pattern[0] , at->name );
+			Channel * newChannel = channelmgr.GetCreateChannel( updatedName , NULL , chn->m_id );
+			if( newChannel == NULL )
+			{
+				Log.Error( "ChannelMgr" , "Could not create channel %s!" , updatedName );
+				return; // whoops?
+			}
+			//Log.Notice( "ChannelMgr" , "LEAVING CHANNEL %s" , chn->m_name.c_str() );
+			//Log.Notice( "ChannelMgr" , "JOINING CHANNEL %s" , newChannel->m_name.c_str() );
+			if( chn != newChannel ) // perhaps there's no need
+			{
+				// join new channel
+				newChannel->AttemptJoin( this , "" );
+				// leave the old channel
+
+				chn->Part( this , false );
+				
+
+
+			}
+		}
+	}
 
 #ifdef OPTIMIZED_PLAYER_SAVING
 	save_Zone();
@@ -9024,7 +9072,7 @@ void Player::CompleteLoading()
 			continue; //do not load auras that only exist while pet exist. We should recast these when pet is created anyway
 
 		Aura * aura = AuraPool.PooledNew();
-		aura->Init(sp,(*i).dur,this,this);
+		aura->Init(sp,(*i).dur,this,this, false);
 		//if ( !(*i).positive ) // do we need this? - vojta
 		//	aura->SetNegative();
 
@@ -9042,7 +9090,7 @@ void Player::CompleteLoading()
 			for ( uint32 x = 0; x < (*i).charges - 1; x++ )
 			{
 				a = AuraPool.PooledNew();
-				a->Init( sp, (*i).dur, this, this );
+				a->Init( sp, (*i).dur, this, this, false );
 				this->AddAura( a );
 				a = NULL;
 			}
@@ -9355,27 +9403,24 @@ void Player::SaveAuras(stringstream &ss)
 		if ( m_auras[x] != NULL && m_auras[x]->GetTimeLeft() > 3000 )
 		{
 			Aura * aur = m_auras[x];
-			bool skip = false;
 			for ( uint32 i = 0; i < 3; ++i )
 			{
 				if(aur->m_spellProto->Effect[i] == SPELL_EFFECT_APPLY_AREA_AURA || aur->m_spellProto->Effect[i] == SPELL_EFFECT_ADD_FARSIGHT)
 				{
-					skip = true;
+					continue;
 					break;
 				}
 			}
 
 			if( aur->pSpellId )
-				skip = true; //these auras were gained due to some proc. We do not save these eighter to avoid exploits of not removing them
+				continue; //these auras were gained due to some proc. We do not save these eighter to avoid exploits of not removing them
 
 			if ( aur->m_spellProto->c_is_flags & SPELL_FLAG_IS_EXPIREING_WITH_PET )
-				skip = true;
+				continue;
 
 			//we are going to cast passive spells anyway on login so no need to save auras for them
 			if ( aur->IsPassive() && !( aur->GetSpellProto()->AttributesEx & 1024 ) )
-				skip = true;
-
-			if ( skip ) continue;
+				continue;
 
 			if ( charges > 0 && aur->GetSpellId() != m_auras[prevX]->GetSpellId() )
 			{
