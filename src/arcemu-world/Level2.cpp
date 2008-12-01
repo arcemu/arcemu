@@ -782,7 +782,7 @@ bool ChatHandler::HandleGODelete(const char *args, WorldSession *m_session)
 			delete GObj->m_spawn;
 		}
 	}
-	GObj->Despawn(0); // We do not need to delete the object because GameObject::Despawn with no time => ExpireAndDelete() => _Expire() => delete GObj;
+	GObj->Despawn(0, 0); // We do not need to delete the object because GameObject::Despawn with no time => ExpireAndDelete() => _Expire() => delete GObj;
 sGMLog.writefromsession(m_session,"deleted game object entry %u on map %u at X:%f Y:%f Z:%f Name %s", GObj->GetEntry(),GObj->GetMapId(),GObj->GetPositionX(),GObj->GetPositionY(),GObj->GetPositionZ(),GameObjectNameStorage.LookupEntry(GObj->GetEntry())->Name);
 
 	m_session->GetPlayer()->m_GM_SelectedGO = 0;

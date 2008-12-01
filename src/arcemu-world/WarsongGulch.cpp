@@ -147,12 +147,12 @@ void WarsongGulch::HookOnAreaTrigger(Player * plr, uint32 id)
 			s->prepare(&targets);
 
 			/* despawn the gameobject (not delete!) */
-			m_buffs[buffslot]->Despawn(BUFF_RESPAWN_TIME);
+			m_buffs[buffslot]->Despawn(0, BUFF_RESPAWN_TIME);
 		}
 		return;
 	}
 
-	if(((id == 3646 && plr->GetTeam() == 0) || (id == 3647 && plr->GetTeam() == 1)) && (plr->m_bgHasFlag && m_flagHolders[plr->GetTeam()] == plr->GetLowGUID()))
+	if(((id == 3646 && plr->GetTeam() == 0) || (id == 3647 && plr->GetTeam() == 1)) && m_flagHolders[plr->GetTeam()] == plr->GetLowGUID())
 	{
 		if(m_flagHolders[plr->GetTeam() ? 0 : 1] != 0 || m_dropFlags[plr->GetTeam() ? 0 : 1]->IsInWorld())
 		{
@@ -170,7 +170,6 @@ void WarsongGulch::HookOnAreaTrigger(Player * plr, uint32 id)
 
 		/* remove the bool from the player so the flag doesn't drop */
 		m_flagHolders[plr->GetTeam()] = 0;
-		plr->m_bgHasFlag = 0;
 
 		/* remove flag aura from player */
 		plr->RemoveAura(23333+(plr->GetTeam() * 2));
@@ -187,9 +186,12 @@ void WarsongGulch::HookOnAreaTrigger(Player * plr, uint32 id)
 
 		SetWorldState( plr->GetTeam() ? WSG_ALLIANCE_FLAG_CAPTURED : WSG_HORDE_FLAG_CAPTURED, 1 );
 
-		/* respawn the home flag */
-		if( !m_homeFlags[plr->GetTeam()]->IsInWorld() )
-			m_homeFlags[plr->GetTeam()]->PushToWorld(m_mapMgr);
+		// Remove the Other Flag
+		if (m_homeFlags[plr->GetTeam() ? 0 : 1]->IsInWorld())
+			m_homeFlags[plr->GetTeam() ? 0 : 1]->RemoveFromWorld(false);
+
+		// Add the Event to respawn the Flags
+		sEventMgr.AddEvent(this, &WarsongGulch::EventReturnFlags, EVENT_BATTLEGROUND_WSG_AUTO_RETURN_FLAG, 20000, 1, 0);
 
 		/* give each player on that team a bonus according to flagHonorTable */
 		for(set<Player*>::iterator itr = m_players[plr->GetTeam()].begin(); itr != m_players[plr->GetTeam()].end(); ++itr)
@@ -252,9 +254,19 @@ void WarsongGulch::HookOnAreaTrigger(Player * plr, uint32 id)
 	}
 }
 
-void WarsongGulch::DropFlag(Player * plr)
+void WarsongGulch::EventReturnFlags()
 {
-	if(!plr->m_bgHasFlag || m_dropFlags[plr->GetTeam()]->IsInWorld())
+	for (uint32 x = 0; x < 2; x++)
+	{
+		if (m_homeFlags[x] != NULL)
+			m_homeFlags[x]->PushToWorld(m_mapMgr);
+	}
+	SendChatMessage(CHAT_MSG_BG_EVENT_NEUTRAL, 0, "The flags are now placed at their bases.");
+}
+
+void WarsongGulch::HookOnFlagDrop(Player * plr)
+{
+	if(m_flagHolders[plr->GetTeam()] != plr->GetLowGUID() || m_dropFlags[plr->GetTeam()]->IsInWorld())
 		return;
 
 	/* drop the flag! */
@@ -264,11 +276,11 @@ void WarsongGulch::DropFlag(Player * plr)
 	m_dropFlags[plr->GetTeam()]->SetFloatValue(GAMEOBJECT_POS_Z, plr->GetPositionZ());
 	m_dropFlags[plr->GetTeam()]->SetFloatValue(GAMEOBJECT_FACING, plr->GetOrientation());
 	m_dropFlags[plr->GetTeam()]->PushToWorld(m_mapMgr);
-	m_flagHolders[plr->GetTeam()] = 0;
-	SetWorldState(plr->GetTeam() ? WSG_ALLIANCE_FLAG_CAPTURED : WSG_HORDE_FLAG_CAPTURED, 1);
-	plr->m_bgHasFlag = false;
 
-	plr->CastSpell(plr, 42792, true);
+	m_flagHolders[plr->GetTeam()] = 0;
+	plr->RemoveAura(23333 + (plr->GetTeam() * 2));
+
+	SetWorldState(plr->GetTeam() ? WSG_ALLIANCE_FLAG_CAPTURED : WSG_HORDE_FLAG_CAPTURED, 1);
 
 	sEventMgr.AddEvent( this, &WarsongGulch::ReturnFlag, plr->GetTeam(), EVENT_BATTLEGROUND_WSG_AUTO_RETURN_FLAG + plr->GetTeam(), 5000, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT );
 
@@ -288,7 +300,7 @@ void WarsongGulch::HookFlagDrop(Player * plr, GameObject * obj)
 			(obj->GetEntry() == 179786 && plr->GetTeam() == 1) )
 		{
 			uint32 x = plr->GetTeam() ? 0 : 1;
-			sEventMgr.RemoveEvents(this, EVENT_BATTLEGROUND_WSG_AUTO_RETURN_FLAG + plr->GetTeam());
+			sEventMgr.RemoveEvents(this, EVENT_BATTLEGROUND_WSG_AUTO_RETURN_FLAG + plr->GetTeam() ? 0 : 1);
 
 			if( m_dropFlags[x]->IsInWorld() )
 				m_dropFlags[x]->RemoveFromWorld(false);
@@ -324,7 +336,6 @@ void WarsongGulch::HookFlagDrop(Player * plr, GameObject * obj)
 		m_dropFlags[plr->GetTeam()]->RemoveFromWorld(false);
 
 	m_flagHolders[plr->GetTeam()] = plr->GetLowGUID();
-	plr->m_bgHasFlag = true;
 
 	/* This is *really* strange. Even though the A9 create sent to the client is exactly the same as the first one, if
 	 * you spawn and despawn it, then spawn it again it will not show. So we'll assign it a new guid, hopefully that
@@ -395,13 +406,10 @@ void WarsongGulch::HookFlagStand(Player * plr, GameObject * obj)
 	SetWorldState(plr->GetTeam() ? WSG_ALLIANCE_FLAG_CAPTURED : WSG_HORDE_FLAG_CAPTURED, 2);
 }
 
-void WarsongGulch::HookOnPlayerKill(Player * plr, Unit * pVictim)
+void WarsongGulch::HookOnPlayerKill(Player * plr, Player * pVictim)
 {
-	if(pVictim->IsPlayer())
-	{
-		plr->m_bgScore.KillingBlows++;
-		UpdatePvPData();
-	}
+	plr->m_bgScore.KillingBlows++;
+	UpdatePvPData();
 }
 
 void WarsongGulch::HookOnHK(Player * plr)
@@ -419,8 +427,8 @@ void WarsongGulch::OnAddPlayer(Player * plr)
 void WarsongGulch::OnRemovePlayer(Player * plr)
 {
 	/* drop the flag if we have it */
-	if(plr->m_bgHasFlag)
-		HookOnMount(plr);
+	if(m_flagHolders[plr->GetTeam()] == plr->GetLowGUID())
+		HookOnFlagDrop(plr);
 
 	plr->RemoveAura(BG_PREPARATION);
 }
@@ -438,8 +446,8 @@ void WarsongGulch::HookOnPlayerDeath(Player * plr)
 	plr->m_bgScore.Deaths++;
 
 	/* do we have the flag? */
-	if(plr->m_bgHasFlag)
-		plr->RemoveAura( 23333 + (plr->GetTeam() * 2) );
+	if(m_flagHolders[plr->GetTeam()] == plr->GetLowGUID())
+		HookOnFlagDrop(plr);
 
 	UpdatePvPData();
 }
@@ -447,8 +455,8 @@ void WarsongGulch::HookOnPlayerDeath(Player * plr)
 void WarsongGulch::HookOnMount(Player * plr)
 {
 	/* do we have the flag? */
-	if(plr->m_bgHasFlag)
-		plr->RemoveAura( 23333 + (plr->GetTeam() * 2) );
+	if(m_flagHolders[plr->GetTeam()] == plr->GetLowGUID())
+		HookOnFlagDrop(plr);
 }
 
 bool WarsongGulch::HookHandleRepop(Player * plr)
@@ -590,7 +598,7 @@ void WarsongGulch::OnStart()
 	{
 		(*itr)->SetUInt32Value(GAMEOBJECT_FLAGS, 64);
 		(*itr)->SetByte(GAMEOBJECT_BYTES_1, 0, 0);
-		(*itr)->Despawn(5000);
+		(*itr)->Despawn(5000, 0);
 	}
 
 	/* add the flags to the world */
@@ -609,6 +617,13 @@ void WarsongGulch::OnStart()
 }
 
 void WarsongGulch::HookOnShadowSight() 
+{
+}
+void WarsongGulch::HookGenerateLoot(Player *plr, Object * pOCorpse)
+{
+}
+
+void WarsongGulch::HookOnUnitKill(Player * plr, Unit * pVictim)
 {
 }
 

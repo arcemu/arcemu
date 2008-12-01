@@ -178,7 +178,7 @@ public:
 	virtual void Update(uint32 p_time);
 
 	void Spawn(MapMgr * m);
-	void Despawn(uint32 time);
+	void Despawn(uint32 delay, uint32 respawntime);
 	Loot loot;
 	//void _EnvironmentalDamageUpdate();
 	void UpdateTrapState();

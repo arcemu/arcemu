@@ -186,7 +186,6 @@ Player::Player( uint32 guid ) : m_mailBox(guid), m_achievementMgr(this)
 	m_bgIsQueued = false;
 	m_bg = 0;
 
-	m_bgHasFlag			 = false;
 	m_bgEntryPointInstance  = 0;
 
 	// gm stuff

@@ -51,6 +51,7 @@ struct BGScore
 	uint32 HealingDone;
 	uint32 Misc1;
 	uint32 Misc2;
+	uint32 MiscData[5];
 };
 
 extern uint32 BGMaximumPlayers[BATTLEGROUND_NUM_TYPES];
@@ -278,9 +279,10 @@ public:
 	/* Only used in CTF (as far as I know) */
 	virtual void HookFlagDrop(Player * plr, GameObject * obj) = 0;
 	virtual void HookFlagStand(Player * plr, GameObject * obj) = 0;
+	virtual void HookOnFlagDrop(Player *plr) = 0;
 
-	/* Used when a player kills a unit/player */
-	virtual void HookOnPlayerKill(Player * plr, Unit * pVictim) = 0;
+	/* Used when a player kills a player */
+	virtual void HookOnPlayerKill(Player * plr, Player * pVictim) = 0;
 	virtual void HookOnHK(Player * plr) = 0;
 
 	/* On Area Trigger */
@@ -288,6 +290,12 @@ public:
 
 	/* On Shadow Sight */
 	virtual void HookOnShadowSight() = 0;
+
+	/* On Loot Generating */
+	virtual void HookGenerateLoot(Player *plr, Object *pCorpse) = 0;
+
+	/* On Unit Killing */
+	virtual void HookOnUnitKill(Player * plr, Unit * pVictim) = 0;
 
 	/* Retreival Functions */
 	ARCEMU_INLINE uint32 GetId() { return m_id; }
@@ -371,6 +379,7 @@ public:
 	}
 
 	GameObject * SpawnGameObject(uint32 entry,uint32 MapId , float x, float y, float z, float o, uint32 flags, uint32 faction, float scale);
+	Creature * SpawnCreature(uint32 entry,float x, float y, float z, float o);
 	void UpdatePvPData();
 
 	ARCEMU_INLINE uint32 GetStartTime() { return m_startTime; }
@@ -406,6 +415,7 @@ public:
 	void OnPlayerPushed(Player* plr);
 
 	virtual void SetIsWeekend(bool isweekend) {}
+	void QueueAtNearestSpiritGuide(Player *plr, Creature *old);
 };
 
 #define BattlegroundManager CBattlegroundManager::getSingleton( )

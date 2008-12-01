@@ -39,9 +39,12 @@ public:
 	void OnRemovePlayer(Player * plr);
 	void OnCreate();
 	void HookOnPlayerDeath(Player * plr);
-	void HookOnPlayerKill(Player * plr, Unit * pVictim);
+	void HookOnPlayerKill(Player * plr, Player * pVictim);
+	void HookOnUnitKill(Player * plr, Unit * pVictim);
+	void HookOnFlagDrop(Player * plr);
 	void HookOnHK(Player * plr);
 	void HookOnShadowSight();
+	void HookGenerateLoot( Player * plr, Object * pCorpse );
 	void UpdatePlayerCounts();
 	LocationVector GetStartingCoords(uint32 Team);
 	uint32 GetNameID() { return 50; }

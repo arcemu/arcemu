@@ -4453,19 +4453,16 @@ void Aura::SpellAuraModEffectImmunity(bool apply)
 	if( m_spellProto->Id == 24937 )
 		SetPositive();
 
-	// Battleground flags - no idea why they're SpellAuraModEffectImmunity but there you go...
-	if( m_spellProto->Id == 23333 || m_spellProto->Id == 23335 || m_spellProto->Id == 34976 )
+	if (!apply)
 	{
-		if( !apply )
+		if( m_spellProto->Id == 23333 || m_spellProto->Id == 23335 || m_spellProto->Id == 34976 )
 		{
-            Player* plr = static_cast< Player* >( GetUnitCaster() );
-			if( plr == NULL || plr->GetTypeId() != TYPEID_PLAYER || plr->m_bg == NULL)
+			Player* plr = static_cast< Player* >( GetUnitCaster() );
+			if( plr == NULL || !plr->IsPlayer() || plr->m_bg == NULL)
 				return;
 
-			if( plr->m_bg->GetType() == BATTLEGROUND_WARSUNG_GULCH )
-				((WarsongGulch*)plr->m_bg)->DropFlag(plr);
-			else if( plr->m_bg->GetType() == BATTLEGROUND_EYE_OF_THE_STORM )
-				((EyeOfTheStorm*)plr->m_bg)->DropFlag(plr);
+			plr->m_bg->HookOnFlagDrop(plr);
+
 		}
 	}
 }

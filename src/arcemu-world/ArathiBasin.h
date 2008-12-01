@@ -64,6 +64,7 @@ protected:
 	uint32 m_capturedBases[2];
 	uint32 m_lastHonorGainResources[2];
 	int32 m_basesOwnedBy[AB_NUM_CONTROL_POINTS];
+	int32 m_basesLastOwnedBy[AB_NUM_CONTROL_POINTS];
 	int32 m_basesAssaultedBy[AB_NUM_CONTROL_POINTS];
 	Creature * m_spiritGuides[AB_NUM_CONTROL_POINTS];
 	bool m_nearingVictory[2];
@@ -82,12 +83,14 @@ public:
 	void OnAddPlayer(Player * plr);
 	void OnRemovePlayer(Player * plr);
 	void OnCreate();
-	void HookOnPlayerKill(Player * plr, Unit * pVictim);
+	void HookOnPlayerKill(Player * plr, Player * pVictim);
+	void HookOnUnitKill(Player * plr, Unit * pVictim);
 	void HookOnHK(Player * plr);
 	void HookOnShadowSight();
+	void HookGenerateLoot( Player * plr, Object * pCorpse );
 	void SpawnBuff(uint32 x);
 	LocationVector GetStartingCoords(uint32 Team);
-	void DropFlag(Player * plr);
+	void HookOnFlagDrop(Player * plr);
 
 	static CBattleground * Create(MapMgr * m, uint32 i, uint32 l, uint32 t) { return new ArathiBasin(m, i, l, t); }
 

@@ -42,13 +42,17 @@ public:
 	void OnAddPlayer(Player * plr);
 	void OnRemovePlayer(Player * plr);
 	void OnCreate();
-	void HookOnPlayerKill(Player * plr, Unit * pVictim);
+	void HookOnPlayerKill(Player * plr, Player * pVictim);
+	void HookOnUnitKill(Player * plr, Unit * pVictim);
 	void HookOnHK(Player * plr);
 	void HookOnShadowSight();
+	void HookGenerateLoot( Player * plr, Object * pCorpse );
 	void SpawnBuff(uint32 x);
 	LocationVector GetStartingCoords(uint32 Team);
-	void DropFlag(Player * plr);
+	void HookOnFlagDrop(Player * plr);
 	void ReturnFlag(uint32 team);
+
+	void EventReturnFlags();
 
 	static CBattleground * Create(MapMgr * m, uint32 i, uint32 l, uint32 t) { return new WarsongGulch(m, i, l, t); }
 

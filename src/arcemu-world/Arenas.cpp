@@ -87,6 +87,17 @@ Arena::~Arena()
 			m_players2[i] = NULL;
 		}
 	}
+
+	for(set<GameObject*>::iterator itr = m_gates.begin(); itr != m_gates.end(); ++itr)
+	{
+		if((*itr) != NULL)
+		{
+			(*itr)->m_battleground = NULL;
+			if( !(*itr)->IsInWorld() )
+				delete (*itr);
+		}
+	}
+
 }
 
 void Arena::OnAddPlayer(Player * plr)
@@ -150,9 +161,12 @@ void Arena::OnRemovePlayer(Player * plr)
 	if(plr->HasFlag(PLAYER_FLAGS, PLAYER_FLAG_FREE_FOR_ALL_PVP))
 		plr->RemoveFlag(PLAYER_FLAGS, PLAYER_FLAG_FREE_FOR_ALL_PVP);
 	
+	plr->m_bg = NULL;
+
+	plr->FullHPMP();
 }
 
-void Arena::HookOnPlayerKill(Player * plr, Unit * pVictim)
+void Arena::HookOnPlayerKill(Player * plr, Player * pVictim)
 {
 #ifdef ANTI_CHEAT
 	if (!m_started)
@@ -484,7 +498,8 @@ void Arena::Finish()
 			uint32 j = i ? 0 : 1; // opposing side
 			bool outcome;
 
-			if (m_teams[i] == NULL || m_teams[j] == NULL) continue;
+			if (m_teams[i] == NULL || m_teams[j] == NULL)
+				continue;
 
 			outcome = (i == m_winningteam);
 			if (outcome) {
@@ -672,7 +687,18 @@ void Arena::HookOnAreaTrigger(Player * plr, uint32 id)
 			s->prepare(&targets);
 
 			/* despawn the gameobject (not delete!) */
-			m_buffs[buffslot]->Despawn(BUFF_RESPAWN_TIME);
+			m_buffs[buffslot]->Despawn(0, BUFF_RESPAWN_TIME);
 		}
 	}
+}
+void Arena::HookGenerateLoot( Player * plr, Object * pCorpse )// Not Used
+{
+}
+
+void Arena::HookOnUnitKill(Player * plr, Unit * pVictim)
+{
+}
+
+void Arena::HookOnFlagDrop(Player *plr)
+{
 }

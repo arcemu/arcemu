@@ -3166,7 +3166,7 @@ void Spell::SpellEffectOpenLockItem(uint32 i)
 
 	if( gameObjTarget->GetEntry() == 183146)
 	{
-		gameObjTarget->Despawn(1);
+		gameObjTarget->Despawn(0, 1);
 		return;
 	}
 
@@ -3187,7 +3187,7 @@ void Spell::SpellEffectOpenLockItem(uint32 i)
 	if(gameObjTarget->GetMapMgr()->GetMapInfo()->type==INSTANCE_NULL)//dont close doors for instances
 		sEventMgr.AddEvent(gameObjTarget,&GameObject::EventCloseDoor, EVENT_GAMEOBJECT_DOOR_CLOSE,10000,1,0);
 	
-	sEventMgr.AddEvent(gameObjTarget, &GameObject::Despawn, (uint32)1, EVENT_GAMEOBJECT_ITEM_SPAWN, 6*60*1000, 1, 0);
+	sEventMgr.AddEvent(gameObjTarget, &GameObject::Despawn, (uint32)0, (uint32)1, EVENT_GAMEOBJECT_ITEM_SPAWN, 6*60*1000, 1, 0);
 }
 
 void Spell::SpellEffectProficiency(uint32 i)
@@ -3239,8 +3239,6 @@ void Spell::SpellEffectSendEvent(uint32 i) //Send Event
 	case 23335:
 		{
 			if (p_caster && p_caster->m_bg) {
-				/* set the flag holder */
-				p_caster->m_bgHasFlag = true;
 
 				if( p_caster->GetTeam() == 1 )
 					p_caster->m_bg->SendChatMessage( CHAT_MSG_BG_EVENT_HORDE, p_caster->GetGUID(), "The Alliance flag was picked up by %s!", p_caster->GetName() );

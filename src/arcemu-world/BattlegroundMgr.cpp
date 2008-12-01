@@ -1308,6 +1308,17 @@ GameObject * CBattleground::SpawnGameObject(uint32 entry,uint32 MapId , float x,
 	return go;
 }
 
+Creature *CBattleground::SpawnCreature(uint32 entry,float x, float y, float z, float o)
+{
+	CreatureProto *cp = CreatureProtoStorage.LookupEntry(entry);
+	CreatureInfo *ci = CreatureNameStorage.LookupEntry(entry);
+	Creature *c = m_mapMgr->CreateCreature(entry);
+	
+	c->Load(cp,x, y, z, o);
+	c->PushToWorld(m_mapMgr);
+	return c;
+}
+
 void CBattleground::SendChatMessage(uint32 Type, uint64 Guid, const char * Format, ...)
 {
 	char msg[500];
@@ -1927,4 +1938,36 @@ void CBattlegroundManager::HandleArenaJoin(WorldSession * m_session, uint32 Batt
 bool CBattleground::CanPlayerJoin(Player * plr, uint32 type)
 {
 	return HasFreeSlots(plr->m_bgTeam,type)&&(GetLevelGrouping(plr->getLevel())==GetLevelGroup())&&(!plr->HasAura(BG_DESERTER));
+}
+
+void CBattleground::QueueAtNearestSpiritGuide(Player *plr, Creature *old)
+{
+	float dd;
+	float dist = 999999.0f;
+	Creature *cl = NULL;
+	set<uint32> *closest = NULL;
+	m_lock.Acquire();
+	map<Creature*, set<uint32> >::iterator itr = m_resurrectMap.begin();
+	for(; itr != m_resurrectMap.end(); ++itr)
+	{
+		if( itr->first == old )
+			continue;
+
+		dd = plr->GetDistance2dSq(itr->first) < dist;
+		if( dd < dist )
+		{
+			cl = itr->first;
+			closest = &itr->second;
+			dist = dd;
+		}
+	}
+
+	if( closest != NULL )
+	{
+		closest->insert(plr->GetLowGUID());
+		plr->m_areaSpiritHealer_guid=cl->GetGUID();
+		plr->CastSpell(plr,2584,true);
+	}
+
+	m_lock.Release();
 }

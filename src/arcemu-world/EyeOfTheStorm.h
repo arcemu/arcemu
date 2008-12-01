@@ -41,9 +41,11 @@ public:
 	void OnAddPlayer(Player * plr);
 	void OnRemovePlayer(Player * plr);
 	void OnCreate();
-	void HookOnPlayerKill(Player * plr, Unit * pVictim);
+	void HookOnPlayerKill(Player * plr, Player * pVictim);
+	void HookOnUnitKill(Player * plr, Unit * pVictim);
 	void HookOnHK(Player * plr);
 	void HookOnShadowSight();
+	void HookGenerateLoot( Player * plr, Object * pCorpse );
 	void SpawnBuff(uint32 x);
 	LocationVector GetStartingCoords(uint32 Team);
 	static CBattleground * Create(MapMgr * m, uint32 i, uint32 l, uint32 t) { return new EyeOfTheStorm(m, i, l, t); }
@@ -61,7 +63,7 @@ public:
 	void RespawnCPFlag(uint32 i, uint32 id);		// 0 = Neutral, <0 = Leaning towards alliance, >0 Leaning towards horde
 
 	bool HookSlowLockOpen(GameObject * pGo, Player * pPlayer, Spell * pSpell);
-	void DropFlag(Player * plr);
+	void HookOnFlagDrop(Player * plr);
 	void EventResetFlag();
 	void RepopPlayersOfTeam(int32 team, Creature * sh);
 

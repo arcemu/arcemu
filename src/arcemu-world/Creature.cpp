@@ -1316,7 +1316,7 @@ bool Creature::Load(CreatureSpawn *spawn, uint32 mode, MapInfo *info)
 }
 
 
-void Creature::Load(CreatureProto * proto_, float x, float y, float z)
+void Creature::Load(CreatureProto * proto_, float x, float y, float z, float o)
 {
 	proto = proto_;
 
@@ -1373,8 +1373,8 @@ void Creature::Load(CreatureProto * proto_, float x, float y, float z)
 	original_emotestate = 0;
 	// set position
 
-	m_position.ChangeCoords( x, y, z, 0 );
-	m_spawnLocation.ChangeCoords(x, y, z, 0);
+	m_position.ChangeCoords( x, y, z, o );
+	m_spawnLocation.ChangeCoords(x, y, z, o);
 	m_faction = dbcFactionTemplate.LookupEntry(proto->Faction);
 
 	if(m_faction)

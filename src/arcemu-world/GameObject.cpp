@@ -242,8 +242,14 @@ void GameObject::Spawn(MapMgr * m)
 	CALL_GO_SCRIPT_EVENT(this, OnSpawn)();
 }
 
-void GameObject::Despawn(uint32 time)
+void GameObject::Despawn(uint32 delay, uint32 respawntime)
 {
+	if(delay)
+	{
+		sEventMgr.AddEvent(this, &GameObject::Despawn, (uint32)0, respawntime, EVENT_GAMEOBJECT_EXPIRE, delay, 1,0);
+		return;
+	}
+
 	if(!IsInWorld())
 		return;
 
@@ -258,14 +264,14 @@ void GameObject::Despawn(uint32 time)
 
 	CALL_GO_SCRIPT_EVENT(this, OnDespawn)();
 
-	if(time)
+	if(respawntime)
 	{
 		/* Get our originiating mapcell */
 		MapCell * pCell = m_mapCell;
 		ASSERT(pCell);
 		hashmap64_put(pCell->_respawnObjects, GetGUID(), NULL);
 		sEventMgr.RemoveEvents(this);
-		sEventMgr.AddEvent(m_mapMgr, &MapMgr::EventRespawnGameObject, this, pCell, EVENT_GAMEOBJECT_ITEM_SPAWN, time, 1, 0);
+		sEventMgr.AddEvent(m_mapMgr, &MapMgr::EventRespawnGameObject, this, pCell, EVENT_GAMEOBJECT_ITEM_SPAWN, respawntime, 1, 0);
 		Object::RemoveFromWorld(false);
 		m_respawnCell=pCell;
 	}
@@ -560,7 +566,7 @@ void GameObject::UseFishingNode(Player *player)
 		EndFishing( player, false );
 		school->CatchFish();
 		if ( !school->CanFish() )
-			sEventMgr.AddEvent( school, &GameObject::Despawn, ( 1800000 + RandomUInt( 3600000 ) ), EVENT_GAMEOBJECT_EXPIRE, 10000, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT ); // respawn in 30 - 90 minutes
+			sEventMgr.AddEvent( school, &GameObject::Despawn, (uint32)0, ( 1800000 + RandomUInt( 3600000 ) ), EVENT_GAMEOBJECT_EXPIRE, 10000, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT ); // respawn in 30 - 90 minutes
 	}
 	else if( Rand( ( ( player->_GetSkillLineCurrent( SKILL_FISHING, true ) - minskill ) * 100 ) / maxskill ) ) // Open loot on success, otherwise FISH_ESCAPED.
 	{

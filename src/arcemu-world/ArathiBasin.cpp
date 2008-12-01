@@ -292,7 +292,7 @@ void ArathiBasin::SpawnControlPoint(uint32 Id, uint32 Type)
 	if(m_controlPointAuras[Id] == NULL)
 	{
 		m_controlPointAuras[Id] = SpawnGameObject(gi_aura->ID, m_mapMgr->GetMapId(), ControlPointCoordinates[Id][0], ControlPointCoordinates[Id][1],
-			ControlPointCoordinates[Id][2], ControlPointCoordinates[Id][3], 0, 35, 1.0f);
+			ControlPointCoordinates[Id][2], ControlPointCoordinates[Id][3], 0, 35, 3.0f);
 
 		m_controlPointAuras[Id]->SetFloatValue(GAMEOBJECT_PARENTROTATION_02, ControlPointRotations[Id][0]);
 		m_controlPointAuras[Id]->SetFloatValue(GAMEOBJECT_PARENTROTATION_03, ControlPointRotations[Id][1]);
@@ -446,6 +446,7 @@ ArathiBasin::ArathiBasin(MapMgr * mgr, uint32 id, uint32 lgroup, uint32 t) : CBa
 		m_spiritGuides[i] = NULL;
 		m_basesAssaultedBy[i] = -1;
 		m_basesOwnedBy[i] = -1;
+		m_basesLastOwnedBy[i] = -1;
 	}
 
 	for(i = 0; i < 2; ++i)
@@ -476,16 +477,29 @@ ArathiBasin::~ArathiBasin()
 		{
 			m_controlPoints[i]->m_battleground = NULL;
 			if( !m_controlPoints[i]->IsInWorld() )
+			{
 				delete m_controlPoints[i];
+				m_controlPoints[i] = NULL;
+			}
 		}
 
-		if(m_controlPointAuras[i])
+		if(m_controlPointAuras[i] != NULL)
 		{
 			m_controlPointAuras[i]->m_battleground = NULL;
 			if( !m_controlPointAuras[i]->IsInWorld() )
+			{
 				delete m_controlPointAuras[i];
+				m_controlPointAuras[i] = NULL;
+			}
+		}
+
+		if(m_spiritGuides[i])
+		{
+			if( !m_spiritGuides[i]->IsInWorld() )
+				delete m_spiritGuides[i];
 		}
 	}
+
 	for(list<GameObject*>::iterator itr = m_gates.begin(); itr != m_gates.end(); ++itr)
 	{
 		if((*itr) != NULL)
@@ -597,13 +611,10 @@ void ArathiBasin::HookOnMount(Player * plr)
 	// nothing in this BG
 }
 
-void ArathiBasin::HookOnPlayerKill(Player * plr, Unit * pVictim)
+void ArathiBasin::HookOnPlayerKill(Player * plr, Player* pVictim)
 {
-	if(pVictim->IsPlayer())
-	{
-		plr->m_bgScore.KillingBlows++;
-		UpdatePvPData();
-	}
+	plr->m_bgScore.KillingBlows++;
+	UpdatePvPData();
 }
 
 void ArathiBasin::HookOnHK(Player * plr)
@@ -745,6 +756,7 @@ void ArathiBasin::CaptureControlPoint(uint32 Id, uint32 Team)
 
 	m_basesOwnedBy[Id] = Team;
 	m_basesAssaultedBy[Id]=-1;
+	m_basesLastOwnedBy[Id] = -1;
 
 	// remove the other spirit guide (if it exists) // burlex: shouldnt' happen
 	if(m_spiritGuides[Id] != NULL)
@@ -804,6 +816,8 @@ void ArathiBasin::AssaultControlPoint(Player * pPlayer, uint32 Id)
 	uint32 Team = pPlayer->m_bgTeam;
 	uint32 Owner;
 
+	pPlayer->m_bgScore.Misc1++;
+
 	if(m_basesOwnedBy[Id]==-1 && m_basesAssaultedBy[Id]==-1)
 	{
 		// omgwtfbbq our flag is a virgin?
@@ -816,6 +830,7 @@ void ArathiBasin::AssaultControlPoint(Player * pPlayer, uint32 Id)
 
 		// set it to uncontrolled for now
 		m_basesOwnedBy[Id] = -1;
+		m_basesLastOwnedBy[Id] = Owner;
 
 		// this control point just got taken over by someone! oh noes!
 		if( m_spiritGuides[Id] != NULL )
@@ -860,6 +875,12 @@ void ArathiBasin::AssaultControlPoint(Player * pPlayer, uint32 Id)
 
 		// make sure the event does not trigger
 		sEventMgr.RemoveEvents(this, EVENT_AB_CAPTURE_CP_1 + Id);
+		if (m_basesLastOwnedBy[Id] == (int32)Team)
+		{
+			m_basesAssaultedBy[Id] = (int32)Team;
+			CaptureControlPoint(Id, Team);
+			return;
+		}
 
 		// no need to remove the spawn, SpawnControlPoint will do this.
 	}
@@ -879,7 +900,7 @@ void ArathiBasin::AssaultControlPoint(Player * pPlayer, uint32 Id)
 	// update the client's map with the new assaulting field
 	SetWorldState(AssaultFields[Id][Team], 1);
 
-	// create the 60 second event.
+	// create the 60 second event
 	sEventMgr.AddEvent(this, &ArathiBasin::CaptureControlPoint, Id, Team, EVENT_AB_CAPTURE_CP_1 + Id, 60000, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
 }
 
@@ -892,6 +913,7 @@ bool ArathiBasin::HookSlowLockOpen(GameObject * pGo, Player * pPlayer, Spell * p
 		//if(pPlayer->GetStealthLevel() > 0 || pPlayer->HasAurasWithNameHash(SPELL_HASH_PROWL) || pPlayer->HasAurasWithNameHash(SPELL_HASH_SHADOWMELD))
 		if(pPlayer->IsStealth() || pPlayer->m_invisible)
 			return false;
+
 		AssaultControlPoint(pPlayer,pGo->bannerslot);
 		return true;
 	}
@@ -900,6 +922,17 @@ bool ArathiBasin::HookSlowLockOpen(GameObject * pGo, Player * pPlayer, Spell * p
 }
 
 void ArathiBasin::HookOnShadowSight() 
+{
+}
+void ArathiBasin::HookGenerateLoot(Player *plr, Object * pOCorpse)
+{
+}
+
+void ArathiBasin::HookOnUnitKill(Player * plr, Unit * pVictim)
+{
+}
+
+void ArathiBasin::HookOnFlagDrop(Player * plr)
 {
 }
 

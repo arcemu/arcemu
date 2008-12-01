@@ -138,6 +138,18 @@ EyeOfTheStorm::EyeOfTheStorm(MapMgr * mgr, uint32 id, uint32 lgroup, uint32 t) :
 
 EyeOfTheStorm::~EyeOfTheStorm()
 {
+	if(m_standFlag != NULL)
+	{
+		if( !m_standFlag->IsInWorld() )
+			delete m_standFlag;
+	}
+
+	if(m_dropFlag != NULL)
+	{
+		if( !m_dropFlag->IsInWorld() )
+			delete m_dropFlag;
+	}
+
 	for(uint32 i = 0; i < EOTS_TOWER_COUNT; ++i)
 	{
 		if(m_CPStatusGO[i] != NULL)
@@ -145,18 +157,21 @@ EyeOfTheStorm::~EyeOfTheStorm()
 			if( !m_CPStatusGO[i]->IsInWorld() )
 				delete m_CPStatusGO[i];
 		}
-
 		if(m_CPBanner[i] != NULL)
 		{
 			if( !m_CPBanner[i]->IsInWorld() )
 				delete m_CPBanner[i];
 		}
-
 		if(EOTSm_buffs[i] != NULL)
 		{
-			EOTSm_buffs[i]->m_battleground = NULL;
 			if( !EOTSm_buffs[i]->IsInWorld() )
 				delete EOTSm_buffs[i];
+		}
+
+		if(m_spiritGuides[i])
+		{
+			if( !m_spiritGuides[i]->IsInWorld() )
+				delete m_spiritGuides[i];
 		}
 	}
 
@@ -266,7 +281,7 @@ void EyeOfTheStorm::HookOnAreaTrigger(Player * plr, uint32 id)
 				SpellCastTargets targets(plr->GetGUID());
 				pSpell->prepare(&targets);
 			}
-			EOTSm_buffs[x]->Despawn(EOTS_BUFF_RESPAWN_TIME);
+			EOTSm_buffs[x]->Despawn(0, EOTS_BUFF_RESPAWN_TIME);
 		}
 	}
 
@@ -286,21 +301,6 @@ void EyeOfTheStorm::HookOnAreaTrigger(Player * plr, uint32 id)
 		return;
 	}
 #endif
-	uint32 spellid=0;
-	uint32 x = (uint32)tid;
-	if(EOTSm_buffs[x] && EOTSm_buffs[x]->IsInWorld())
-	{
-		spellid = EOTSm_buffs[x]->GetInfo()->sound3;
-		SpellEntry * sp = dbcSpell.LookupEntryForced(spellid);
-		if(sp)
-		{
-			Spell * pSpell = SpellPool.PooledNew();
-			pSpell->Init(plr, sp, true, NULL);
-			SpellCastTargets targets(plr->GetGUID());
-			pSpell->prepare(&targets);
-		}
-		EOTSm_buffs[x]->Despawn(EOTS_BUFF_RESPAWN_TIME);
-	}
 
 	uint32 team = plr->GetTeam();
 	if( plr->GetLowGUID() != m_flagHolder )
@@ -352,8 +352,8 @@ void EyeOfTheStorm::HookOnPlayerDeath(Player * plr)
 {
 	plr->m_bgScore.Deaths++;
 	
-	if(plr->m_bgHasFlag)// m_flagHolder == plr->GetLowGUID() maybe need this
-		plr->RemoveAura( EOTS_NETHERWING_FLAG_SPELL );
+	if(m_flagHolder == plr->GetLowGUID())
+		HookOnFlagDrop(plr);
 	
 	UpdatePvPData();
 }
@@ -381,6 +381,7 @@ void EyeOfTheStorm::HookFlagDrop(Player * plr, GameObject * obj)
 
 void EyeOfTheStorm::HookFlagStand(Player * plr, GameObject * obj)
 {
+
 }
 
 bool EyeOfTheStorm::HookSlowLockOpen(GameObject * pGo, Player * pPlayer, Spell * pSpell)
@@ -402,8 +403,7 @@ void EyeOfTheStorm::HookOnMount(Player * plr)
 {
 	if( m_flagHolder == plr->GetLowGUID() )
 	{
-		plr->RemoveAura( EOTS_NETHERWING_FLAG_SPELL );
-		//DropFlag( plr );
+		HookOnFlagDrop(plr);
 	}
 }
 
@@ -424,24 +424,25 @@ void EyeOfTheStorm::OnRemovePlayer(Player * plr)
 
 	if( m_flagHolder == plr->GetLowGUID() )
 	{
-		plr->RemoveAura( EOTS_NETHERWING_FLAG_SPELL );
-		//DropFlag( plr );
+		HookOnFlagDrop(plr);
 	}
 
 	if(!m_started)
 		plr->RemoveAura(BG_PREPARATION);
 }
 
-void EyeOfTheStorm::DropFlag(Player * plr)
+void EyeOfTheStorm::HookOnFlagDrop(Player * plr)
 {
 	if( m_flagHolder != plr->GetLowGUID() )
 		return;
 
-	plr->CastSpell(plr, 42792, true);
+	plr->RemoveAura( EOTS_NETHERWING_FLAG_SPELL );
 
 	m_dropFlag->SetPosition( plr->GetPosition() );
 	m_dropFlag->PushToWorld( m_mapMgr );
 	m_flagHolder = 0;
+
+	SendChatMessage( CHAT_MSG_BG_EVENT_ALLIANCE + plr->GetTeam(), plr->GetGUID(), "$N has dropped the flag!" );
 
 	sEventMgr.AddEvent( this, &EyeOfTheStorm::EventResetFlag, EVENT_EOTS_RESET_FLAG, 60000, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT );
 }
@@ -602,9 +603,10 @@ void EyeOfTheStorm::UpdateCPs()
 		playercounts[0] = playercounts[1] = 0;
 		go = m_CPStatusGO[i];
 		disp = &m_CPDisplay[i];
+
+		go->AquireInrangeLock();
 		itr = go->GetInRangePlayerSetBegin();
 		itrend = go->GetInRangePlayerSetEnd();
-
 		for( ; itr != itrend; ++itr )
 		{
 			plr = *itr;
@@ -619,6 +621,7 @@ void EyeOfTheStorm::UpdateCPs()
 				}
 			}
 		}
+		go->ReleaseInrangeLock();
 
 		/* score diff calculation */
 		//printf("EOTS: Playercounts = %u %u\n", playercounts[0], playercounts[1]);
@@ -847,6 +850,19 @@ bool EyeOfTheStorm::GivePoints(uint32 team, uint32 points)
 						SlotResult *lr = (*itr)->GetItemInterface()->LastSearchResult();
 						(*itr)->GetSession()->SendItemPushResult(item,false,true,false,true,lr->ContainerSlot,lr->Slot,3);
 					}
+					/*
+						QuestLogEntry *pQuest = (*itr)->GetQuestLogForEntry( 11337 );
+							if ( pQuest == NULL )	  
+							{
+								pQuest = (*itr)->GetQuestLogForEntry( 11341 );
+								if ( pQuest == NULL )
+								continue;
+							}
+		
+							pQuest->SetMobCount(0, 1); 
+							pQuest->SendUpdateAddKill(0);
+							pQuest->UpdatePlayerFields();
+							*/
 				}
 				else
 				{
@@ -877,13 +893,10 @@ bool EyeOfTheStorm::GivePoints(uint32 team, uint32 points)
 	return false;
 }
 
-void EyeOfTheStorm::HookOnPlayerKill(Player * plr, Unit * pVictim)
+void EyeOfTheStorm::HookOnPlayerKill(Player * plr, Player * pVictim)
 {
-	if ( pVictim->IsPlayer() )
-	{
-		plr->m_bgScore.KillingBlows++;
-		UpdatePvPData();
-	}
+	plr->m_bgScore.KillingBlows++;
+	UpdatePvPData();
 }
 
 void EyeOfTheStorm::HookOnHK(Player * plr)
@@ -962,6 +975,13 @@ void EyeOfTheStorm::OnStart()
 }
 
 void EyeOfTheStorm::HookOnShadowSight() 
+{
+}
+void EyeOfTheStorm::HookGenerateLoot(Player *plr, Object * pOCorpse)
+{
+}
+
+void EyeOfTheStorm::HookOnUnitKill(Player * plr, Unit * pVictim)
 {
 }
 

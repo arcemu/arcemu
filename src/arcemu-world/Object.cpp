@@ -2028,11 +2028,14 @@ void Object::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
 
 		if( plr != NULL)
 		{
-			if( plr->m_bg != 0 )
-				plr->m_bg->HookOnPlayerKill( plr, pVictim );
+			if( plr->m_bg != NULL )
+				plr->m_bg->HookOnUnitKill( plr, pVictim );
 
 			if( pVictim->IsPlayer() )
 			{
+				if( plr->m_bg != NULL )
+					plr->m_bg->HookOnPlayerKill( plr, static_cast< Player* >( pVictim ) );
+
 				sHookInterface.OnKillPlayer( plr, static_cast< Player* >( pVictim ) );
 				bool setAurastateFlag = false;
 				if(plr->getLevel() > pVictim->getLevel())
