@@ -118,14 +118,8 @@ struct CreatureProto
 	float RangedMaxDamage;
 	uint32 MountedDisplayID;
 	uint32 Item1SlotDisplay;
-	uint32 Item1Info1;
-	uint32 Item1Info2;
 	uint32 Item2SlotDisplay;
-	uint32 Item2Info1;
-	uint32 Item2Info2;
 	uint32 Item3SlotDisplay;
-	uint32 Item3Info1;
-	uint32 Item3Info2;
 	uint32 RespawnTime;
 	uint32 Resistances[7];
 	float CombatReach;

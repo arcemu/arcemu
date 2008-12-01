@@ -191,7 +191,7 @@ public:
 	float					GetScale();
 	void					SetDisplayId(uint32 pDisplayId);
 	void					SetDisplayWeapon(bool pMainHand, bool pOffHand);
-	void					SetDisplayWeaponIds(uint32 pItem1Id, uint32 pItem1Info, uint32 pItem1Slot, uint32 pItem2Id, uint32 pItem2Info, uint32 pItem2Slot);
+	void					SetDisplayWeaponIds(uint32 pItem1Id, uint32 pItem2Id);
 
 	//Environment
 	float					GetRange(ArcScriptCreatureAI* pCreature);

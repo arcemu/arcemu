@@ -295,11 +295,10 @@ void ArcScriptCreatureAI::SetDisplayId(uint32 pDisplayId)
 
 void ArcScriptCreatureAI::SetDisplayWeapon(bool pMainHand, bool pOffHand)
 {
-	SetDisplayWeaponIds(pMainHand ? _unit->GetProto()->Item1SlotDisplay : 0, pMainHand ? _unit->GetProto()->Item1Info1 : 0, pMainHand ? _unit->GetProto()->Item1Info2 : 0,
-		pOffHand ? _unit->GetProto()->Item2SlotDisplay : 0, pOffHand ? _unit->GetProto()->Item2Info1 : 0, pOffHand ? _unit->GetProto()->Item2Info2 : 0);
+	SetDisplayWeaponIds(pMainHand ? _unit->GetProto()->Item1SlotDisplay : 0, pOffHand ? _unit->GetProto()->Item2SlotDisplay : 0);
 }
 
-void ArcScriptCreatureAI::SetDisplayWeaponIds(uint32 pItem1Id, uint32 pItem1Info, uint32 pItem1Slot, uint32 pItem2Id, uint32 pItem2Info, uint32 pItem2Slot)
+void ArcScriptCreatureAI::SetDisplayWeaponIds(uint32 pItem1Id, uint32 pItem2Id)
 {
 	//Main Hand
 	_unit->SetUInt32Value(UNIT_VIRTUAL_ITEM_SLOT_ID, pItem1Id);
