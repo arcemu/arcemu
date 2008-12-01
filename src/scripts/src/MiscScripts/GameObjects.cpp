@@ -514,6 +514,20 @@ public:
 
 /*--------------------------------------------------------------------------------------------------------*/
 
+class DeathKnightDeathGate : public GameObjectAIScript
+{
+public:
+    DeathKnightDeathGate(GameObject* goinstance) : GameObjectAIScript(goinstance) {}
+    static GameObjectAIScript *Create(GameObject * GO) { return new DeathKnightDeathGate(GO); }
+
+    void OnActivate(Player * pPlayer)
+    {
+        pPlayer->SafeTeleport(609, 0, 2357.95f, -5662.73f, 426.028f, 0.56313f);
+    }
+};
+
+/*--------------------------------------------------------------------------------------------------------*/
+
 void SetupGoHandlers(ScriptMgr * mgr)
 {
 	mgr->register_gameobject_script(179879, &OrbOfCommand::Create);
@@ -539,4 +553,5 @@ void SetupGoHandlers(ScriptMgr * mgr)
 	mgr->register_gameobject_script(104593, &UlagTheCleaver::Create);
 	mgr->register_gameobject_script(1571, &DustySpellbooks::Create);
 	mgr->register_gameobject_script(179552, &LearnFieldRepairBot::Create);
+	mgr->register_gameobject_script(190942, &DeathKnightDeathGate::Create);
 }
