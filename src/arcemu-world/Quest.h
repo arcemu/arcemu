@@ -194,6 +194,7 @@ struct Quest
 	uint32 required_triggers[4];
 	char * x_or_y_quest_string;
 	uint32 required_quests[4];
+	char * remove_quests;
 	uint32 receive_items[4];
 	uint32 receive_itemcount[4];
 	int is_repeatable;
@@ -214,6 +215,7 @@ struct Quest
 	uint32 required_mobtype[4];
 	uint32 count_reward_item;
 	set<uint32> quest_list;
+	set<uint32> remove_quest_list;
 
 	QuestScript* pQuestScript;
 };

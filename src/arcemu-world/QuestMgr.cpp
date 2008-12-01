@@ -1256,6 +1256,14 @@ void QuestMgr::OnQuestFinished(Player* plr, Quest* qst, Object *qst_giver, uint3
 
 		//Add to finished quests
 		plr->AddToFinishedQuests(qst->id);
+
+		// Remove quests that are listed to be removed on quest complete.
+		set<uint32>::iterator iter = qst->remove_quest_list.begin();
+		for(; iter != qst->remove_quest_list.end(); ++iter)
+		{
+			if( !plr->HasFinishedQuest( (*iter ) ))
+				plr->AddToFinishedQuests( (*iter ) );
+		}
 	}
 }
 
@@ -1744,6 +1752,18 @@ void QuestMgr::LoadExtraQuestStuff()
 				uint32 id = atol((*iter).c_str());
 				if(id)
 					it->Get()->quest_list.insert( id );
+			}
+		}
+
+		if(it->Get()->remove_quests)
+		{
+			string quests = string(it->Get()->remove_quests);
+			vector<string> qsts = StrSplit(quests, " ");
+			for(vector<string>::iterator iter = qsts.begin(); iter != qsts.end(); ++iter)
+			{
+				uint32 id = atol((*iter).c_str());
+				if(id)
+					it->Get()->remove_quest_list.insert( id );
 			}
 		}
 
