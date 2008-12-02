@@ -551,7 +551,7 @@ void SetupGoHandlers(ScriptMgr * mgr)
 	mgr->register_gameobject_script(113791, &Corrupt_Minor_Manifestation_Water_Object::Create);
 	mgr->register_gameobject_script(181699, &Telathion_the_Impure_Object::Create);
 	mgr->register_gameobject_script(104593, &UlagTheCleaver::Create);
-	mgr->register_gameobject_script(1571, &DustySpellbooks::Create);
+	mgr->register_gameobject_script(1571,	&DustySpellbooks::Create);
 	mgr->register_gameobject_script(179552, &LearnFieldRepairBot::Create);
 	mgr->register_gameobject_script(190942, &DeathKnightDeathGate::Create);
 }

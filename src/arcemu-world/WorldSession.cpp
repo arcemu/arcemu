@@ -927,7 +927,7 @@ void WorldSession::InitPacketHandlerTable()
 
 	WorldPacketHandlers[CMSG_QUESTGIVER_STATUS_MULTIPLE_QUERY].handler = &WorldSession::HandleInrangeQuestgiverQuery;
 	WorldPacketHandlers[CMSG_REMOVE_GLYPH].handler = &WorldSession::HandleRemoveGlyph;
-	WorldPacketHandlers[CMSG_ALTER_APPEARANCE].handler = &WorldSession::HandleAlterAppearance;
+	WorldPacketHandlers[CMSG_ALTER_APPEARANCE].handler = &WorldSession::HandleBarberShopResult;
 }
 
 void SessionLogWriter::writefromsession(WorldSession* session, const char* format, ...)

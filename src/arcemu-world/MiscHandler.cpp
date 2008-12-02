@@ -1265,13 +1265,13 @@ void WorldSession::HandleBarberShopResult(WorldPacket & recv_data)
 
 	bbse = dbcBarberShopStyleStore.LookupEntry( hair );
 	if( !bbse )		return;
-	newhair = bbse->hair_id;
+	newhair = bbse->type;
 
 	newhaircolor = haircolor;
 
 	bbse = dbcBarberShopStyleStore.LookupEntry( facialhairorpiercing );
 	if( !bbse )		return;
-	newfacial = bbse->hair_id;
+	newfacial = bbse->type;
 
     if( newhair != oldhair )
 		cost+=24800;
