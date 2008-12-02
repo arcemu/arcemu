@@ -297,7 +297,7 @@ void GameObject::SaveToDB()
 		<< GetFloatValue(GAMEOBJECT_PARENTROTATION) << ","
 		<< GetFloatValue(GAMEOBJECT_PARENTROTATION_02) << ","
 		<< GetFloatValue(GAMEOBJECT_PARENTROTATION_03) << ","
-		<< GetByte(GAMEOBJECT_BYTES_1, 0) << ","
+		<< GetUInt32Value(GAMEOBJECT_BYTES_1) << ","
 		<< GetUInt32Value(GAMEOBJECT_FLAGS) << ","
 		<< GetUInt32Value(GAMEOBJECT_FACTION) << ","
 		<< GetFloatValue(OBJECT_FIELD_SCALE_X) << ","
