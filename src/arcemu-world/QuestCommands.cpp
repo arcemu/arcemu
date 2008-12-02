@@ -232,6 +232,9 @@ bool ChatHandler::HandleQuestStartCommand(const char * args, WorldSession * m_se
 						if(qst->receive_items[i])
 						{
 							Item *item = objmgr.CreateItem( qst->receive_items[i], plr);
+							if(item==NULL)
+								return false;
+
 							if(!plr->GetItemInterface()->AddItemToFreeSlot(item))
 								item->DeleteMe();
 						}

@@ -699,6 +699,9 @@ void WorldSession::SendInnkeeperBind(Creature* pCreature)
 		if(_player->GetItemInterface()->CalculateFreeSlots(NULL) > 0)
 		{
 			Item *item = objmgr.CreateItem( ITEM_ID_HEARTH_STONE, _player);
+			if(item==NULL)
+			return;
+
 			if( _player->GetItemInterface()->AddItemToFreeSlot(item) )
 			{
 				SlotResult * lr = _player->GetItemInterface()->LastSearchResult();

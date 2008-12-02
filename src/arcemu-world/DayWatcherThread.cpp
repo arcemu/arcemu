@@ -134,7 +134,7 @@ bool DayWatcherThread::has_timeout_expired(tm * now_time, tm * last_time, uint32
 		return ((now_time->tm_hour != last_time->tm_hour) || (now_time->tm_mday != last_time->tm_mday) || (now_time->tm_mon != last_time->tm_mon));
 
 	case DAILY:
-		return (now_time->tm_mday != last_time->tm_mday);
+		return (now_time->tm_mday != last_time->tm_mday && now_time->tm_hour == 4);
 	}
 	return false;
 }

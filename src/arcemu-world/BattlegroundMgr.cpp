@@ -1311,7 +1311,6 @@ GameObject * CBattleground::SpawnGameObject(uint32 entry,uint32 MapId , float x,
 Creature *CBattleground::SpawnCreature(uint32 entry,float x, float y, float z, float o)
 {
 	CreatureProto *cp = CreatureProtoStorage.LookupEntry(entry);
-	CreatureInfo *ci = CreatureNameStorage.LookupEntry(entry);
 	Creature *c = m_mapMgr->CreateCreature(entry);
 	
 	c->Load(cp,x, y, z, o);

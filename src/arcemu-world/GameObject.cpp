@@ -30,7 +30,7 @@ GameObject::GameObject(uint64 guid)
 	SetUInt64Value( OBJECT_FIELD_GUID,guid);
 	SetByte(GAMEOBJECT_BYTES_1, 3, 100);
 	m_wowGuid.Init(GetGUID());
- 
+
 	SetFloatValue( OBJECT_FIELD_SCALE_X, 1);//info->Size  );
 	SetByte(GAMEOBJECT_BYTES_1, 3, 100);
 

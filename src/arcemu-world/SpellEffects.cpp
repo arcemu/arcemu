@@ -1157,7 +1157,10 @@ void Spell::SpellEffectDummy(uint32 i) // Dummy(Scripted events)
 						p_caster->GetItemInterface()->BuildInventoryChangeError(NULL, NULL, INV_ERR_INVENTORY_FULL);
 						return;
 					}
-					Item * it=objmgr.CreateItem(item,p_caster);  
+					Item * it=objmgr.CreateItem(item,p_caster);
+					if (it==NULL)
+						return;
+
 					it->SetUInt32Value( ITEM_FIELD_STACK_COUNT, count);
 					p_caster->GetItemInterface()->SafeAddItem(it,slotresult.ContainerSlot, slotresult.Slot);
 					creature->Despawn(3500,creature->GetProto()->RespawnTime);
@@ -1798,7 +1801,7 @@ void Spell::SpellEffectApplyAura(uint32 i)  // Apply Aura
 	{
 		if (u_caster && (u_caster != unitTarget))
 		{
-			Creature * c = (Creature*)( unitTarget );
+			Creature * c = static_cast<Creature *>(unitTarget);
 			if (c)
 			{
 
@@ -1966,7 +1969,7 @@ void Spell::SpellEffectApplyAura(uint32 i)  // Apply Aura
 
 		if(!Duration)
 		{
-			//maybe add some resist messege to client here ?
+			SendCastResult(SPELL_FAILED_IMMUNE);
 			return;
 		}
 		pAura=AuraPool.PooledNew();
@@ -2255,8 +2258,10 @@ void Spell::SpellEffectBlock(uint32 i)
 
 void Spell::SpellEffectCreateItem(uint32 i) // Create item 
 {
-	if(!p_caster)
+	if(!unitTarget->IsPlayer())
 		return;
+
+	Player *p_target = static_cast<Player*>(unitTarget);
 
 	Item* newItem;
 	Item *add;
@@ -2277,18 +2282,111 @@ void Spell::SpellEffectCreateItem(uint32 i) // Create item
 
 		uint32 item_count = damage;
 
-		// tailoring specializations get +1 cloth bonus
-		switch(GetProto()->Id)
+		if (p_caster != NULL)
 		{
-		case 36686: //Shadowcloth
-			if(p_caster->HasSpell(26801)) item_count += 1;
-			break;
-		case 26751: // Primal Mooncloth
-			if(p_caster->HasSpell(26798)) item_count += 1;
-			break;
-		case 31373: //Spellcloth
-			if(p_caster->HasSpell(26797)) item_count += 1;
-			break;
+			// potions learned by discovery variables
+			uint32 cast_chance = 5;
+			uint32 learn_spell = 0;
+
+			// tailoring specializations get +1 cloth bonus
+			switch(GetProto()->Id)
+			{
+			case 36686: //Shadowcloth
+				if(p_caster->HasSpell(26801)) item_count += 1;
+				break;
+			case 26751: // Primal Mooncloth
+				if(p_caster->HasSpell(26798)) item_count += 1;
+				break;
+			case 31373: //Spellcloth
+				if(p_caster->HasSpell(26797)) item_count += 1;
+				break;
+			}
+
+			if (skill && skill->skilline == SKILL_ALCHEMY)
+			{
+				//Potion Master
+				if (strstr(m_itemProto->Name1, "Potion"))
+				{
+					if(p_caster->HasSpell(28675)) 
+						while (Rand(20) && item_count<5) item_count++;
+
+					// Super Rejuvenation Potion
+					cast_chance = 2;
+					learn_spell = 28586;
+				}
+				//Elixir Master
+				if (strstr(m_itemProto->Name1, "Elixir") || strstr(m_itemProto->Name1, "Flask"))
+				{
+					if(p_caster->HasSpell(28677)) 
+						while (Rand(20) && item_count<5) item_count++;
+
+					uint32 spList[] = {28590,28587,28588,28591,28589};
+					cast_chance = 2;
+					learn_spell = spList[RandomUInt(4)];
+				}
+				//Transmutation Master
+				if (m_spellInfo->Category == 310)
+				{
+					if (m_spellInfo->Id == 29688) //rate for primal might is lower than for anything else
+					{
+						if(p_caster->HasSpell(28672))
+							while (Rand(40) && item_count<5) item_count++;
+					}
+					else
+					{
+						if(p_caster->HasSpell(28672))
+							while (Rand(20) && item_count<5) item_count++;
+					}
+
+					uint32 spList[] = {28581,28585,28585,28584,28582,28580};
+					cast_chance = 5;
+					learn_spell = spList[RandomUInt(5)];
+				}
+			}
+
+			//random discovery by crafter item id
+			switch ( m_itemProto->ItemId )
+			{
+			case 22845: //Major Arcane Protection Potion
+				{
+					cast_chance = 20;
+					learn_spell = 41458;
+				}break;
+			case 22841: //Major Fire Protection Potion
+				{
+					cast_chance = 20;
+					learn_spell = 41500;
+				}break;
+			case 22842: //Major Frost Protection Potion
+				{
+					cast_chance = 20;
+					learn_spell = 41501;
+				}break;
+			case 22847: //Major Holy Protection Potion
+				{
+					// there is none
+				}break;
+			case 22844: //Major Nature Protection Potion
+				{
+					cast_chance = 20;
+					learn_spell = 41502;
+				}break;
+			case 22846: //Major Shadow Protection Potion
+				{
+					cast_chance = 20;
+					learn_spell = 41503;
+				}break;
+			}
+
+			if ( learn_spell && p_caster->getLevel() > 60 && !p_caster->HasSpell( learn_spell ) && Rand( cast_chance ) )
+			{
+				SpellEntry* _spellproto = dbcSpell.LookupEntry( learn_spell );
+				if( _spellproto != NULL )
+				{
+					p_caster->BroadcastMessage( "%sDISCOVERY! You discovered the %s !|r", MSG_COLOR_YELLOW, _spellproto->Name );
+					p_caster->addSpell( learn_spell );
+				}
+			}
 		}
 
 		// item count cannot be more than allowed in a single stack
@@ -2299,24 +2397,27 @@ void Spell::SpellEffectCreateItem(uint32 i) // Create item
 		if (m_itemProto->Unique && item_count > m_itemProto->Unique)
 			item_count = m_itemProto->Unique;
 
-		if(p_caster->GetItemInterface()->CanReceiveItem(m_itemProto, item_count)) //reversed since it sends >1 as invalid and 0 as valid
+		if(p_target->GetItemInterface()->CanReceiveItem(m_itemProto, item_count)) //reversed since it sends >1 as invalid and 0 as valid
 		{
 			SendCastResult(SPELL_FAILED_TOO_MANY_OF_ITEM);
 			return;
 		}
 
-			slot = 0;
-		add = p_caster->GetItemInterface()->FindItemLessMax(GetProto()->EffectItemType[j],1, false);
+		slot = 0;
+		add = p_target->GetItemInterface()->FindItemLessMax(GetProto()->EffectItemType[j],1, false);
 		if (!add)
 		{
-			slotresult = p_caster->GetItemInterface()->FindFreeInventorySlot(m_itemProto);
+			slotresult = p_target->GetItemInterface()->FindFreeInventorySlot(m_itemProto);
 			if(!slotresult.Result)
 			{
-				  SendCastResult(SPELL_FAILED_TOO_MANY_OF_ITEM);
-				  return;
+				SendCastResult(SPELL_FAILED_TOO_MANY_OF_ITEM);
+				return;
 			}
-			
-			newItem =objmgr.CreateItem(GetProto()->EffectItemType[i],p_caster);
+
+			newItem =objmgr.CreateItem(GetProto()->EffectItemType[i],p_target);
+			if (newItem==NULL)
+				return;
+
 			newItem->SetUInt64Value(ITEM_FIELD_CREATOR,m_caster->GetGUID());
 			newItem->SetUInt32Value(ITEM_FIELD_STACK_COUNT, item_count);
 
@@ -2333,14 +2434,17 @@ void Spell::SpellEffectCreateItem(uint32 i) // Create item
 				newItem->ApplyRandomProperties(false);
 			}
 
-			if(p_caster->GetItemInterface()->SafeAddItem(newItem,slotresult.ContainerSlot, slotresult.Slot))
+			if(p_target->GetItemInterface()->SafeAddItem(newItem,slotresult.ContainerSlot, slotresult.Slot))
 			{
-				p_caster->GetSession()->SendItemPushResult(newItem,true,false,true,true,slotresult.ContainerSlot,slotresult.Slot,item_count);
+				/*WorldPacket data(45);
+				p_caster->GetSession()->BuildItemPushResult(&data, p_caster->GetGUID(), 1, item_count, GetProto()->EffectSpellGroupRelation[i] ,0,0xFF,1,0xFFFFFFFF);
+				p_caster->SendMessageToSet(&data, true);*/
+				p_target->GetSession()->SendItemPushResult(newItem,true,false,true,true,slotresult.ContainerSlot,slotresult.Slot,item_count);
 			} else {
 				newItem->DeleteMe();
 			}
-		} 
-		else 
+		}
+		else
 		{
 			//scale item_count down if total stack will be more than 20
 			if(add->GetUInt32Value(ITEM_FIELD_STACK_COUNT) + item_count > 20)
@@ -2350,32 +2454,38 @@ void Spell::SpellEffectCreateItem(uint32 i) // Create item
 				add->SetCount(20);
 				add->m_isDirty = true;
 
-				slotresult = p_caster->GetItemInterface()->FindFreeInventorySlot(m_itemProto);
+				slotresult = p_target->GetItemInterface()->FindFreeInventorySlot(m_itemProto);
 				if(!slotresult.Result)
 					item_count = item_count_filled;
 				else
 				{
-					newItem =objmgr.CreateItem(GetProto()->EffectItemType[i],p_caster);
+					newItem =objmgr.CreateItem(GetProto()->EffectItemType[i], p_target);
+					if (newItem==NULL)
+						return;
+
 					newItem->SetUInt64Value(ITEM_FIELD_CREATOR,m_caster->GetGUID());
 					newItem->SetUInt32Value(ITEM_FIELD_STACK_COUNT, item_count - item_count_filled);
-					if(!p_caster->GetItemInterface()->SafeAddItem(newItem,slotresult.ContainerSlot, slotresult.Slot))
+					if(!p_target->GetItemInterface()->SafeAddItem(newItem,slotresult.ContainerSlot, slotresult.Slot))
 					{
 						newItem->DeleteMe();
 						item_count = item_count_filled;
 					}
 					else
-						p_caster->GetSession()->SendItemPushResult(newItem, true, false, true, true, slotresult.ContainerSlot, slotresult.Slot, item_count);
-                }
+						p_target->GetSession()->SendItemPushResult(newItem, true, false, true, true, slotresult.ContainerSlot, slotresult.Slot, item_count);
+				}
 			}
 			else
 			{
 				add->SetCount(add->GetUInt32Value(ITEM_FIELD_STACK_COUNT) + item_count);
 				add->m_isDirty = true;
-				p_caster->GetSession()->SendItemPushResult(add, true,false,true,false,p_caster->GetItemInterface()->GetBagSlotByGuid(add->GetGUID()),0xFFFFFFFF,item_count);
+				p_target->GetSession()->SendItemPushResult(add, true,false,true,false,p_target->GetItemInterface()->GetBagSlotByGuid(add->GetGUID()),0xFFFFFFFF,item_count);
 			}
 
+			/*WorldPacket data(45);
+			p_caster->GetSession()->BuildItemPushResult(&data, p_caster->GetGUID(), 1, item_count, GetProto()->EffectSpellGroupRelation[i] ,0,0xFF,1,0xFFFFFFFF);
+			p_caster->SendMessageToSet(&data, true);*/
 		}
-		if ( skill != NULL )
+		if (p_caster != NULL && skill != NULL )
 		{
 			// skill up
 			DetermineSkillUp( skill->skilline );
@@ -4044,7 +4154,7 @@ void Spell::SpellEffectEnchantItem(uint32 i) // Enchant Item Permanent
 void Spell::SpellEffectEnchantItemTemporary(uint32 i)  // Enchant Item Temporary
 {
 	if(!itemTarget || !p_caster) return;
-	uint32 Duration = damage > 1 ? damage : 1800;
+	uint32 Duration = damage > 1 ? damage : 3600;
 
 	// dont allow temporary enchants unless we're the owner of the item
 	if(itemTarget->GetOwner() != p_caster)
@@ -4287,8 +4397,8 @@ void Spell::SpellEffectInterruptCast(uint32 i) // Interrupt Cast
 	if(unitTarget->GetCurrentSpell())
 	{
 		school=unitTarget->GetCurrentSpell()->GetProto()->School;
+		unitTarget->GetCurrentSpell()->cancel();
 	}
-	unitTarget->InterruptSpell();
 	if(school)//prevent from casts in this school
 	{
 		int32 duration = GetDuration();
@@ -6441,6 +6551,9 @@ void Spell::SpellEffectTranformItem(uint32 i)
 	i_caster=NULL;
 
 	Item *it=objmgr.CreateItem(itemid,owner);
+	if (it==NULL)
+		return;
+
 	it->SetDurability(dur);
 	//additem
 	

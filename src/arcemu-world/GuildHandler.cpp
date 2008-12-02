@@ -587,6 +587,9 @@ void WorldSession::HandleCharterBuy(WorldPacket & recv_data)
 			// Create the item and charter
 			Item * i = objmgr.CreateItem(item_ids[arena_type], _player);
 			Charter * c = objmgr.CreateCharter(_player->GetLowGUID(), (CharterTypes)arena_index);
+			if ( i == NULL || c == NULL )
+				return;
+
 			c->GuildName = name;
 			c->ItemGuid = i->GetGUID();
 
@@ -653,6 +656,9 @@ void WorldSession::HandleCharterBuy(WorldPacket & recv_data)
 			// Create the item and charter
 			Item * i = objmgr.CreateItem(ITEM_ENTRY_GUILD_CHARTER, _player);
 			c = objmgr.CreateCharter(_player->GetLowGUID(), CHARTER_TYPE_GUILD);
+			if ( i == NULL || c == NULL )
+				return;
+
 			c->GuildName = name;
 			c->ItemGuid = i->GetGUID();
 
@@ -1416,6 +1422,9 @@ void WorldSession::HandleGuildBankDepositItem(WorldPacket & recv_data)
 			{
 				pSourceItem2 = pSourceItem;
 				pSourceItem = objmgr.CreateItem(pSourceItem2->GetEntry(), _player);
+				if (pSourceItem==NULL)
+					return;
+
 				pSourceItem->SetUInt32Value(ITEM_FIELD_STACK_COUNT, deposit_stack);
 				pSourceItem->SetUInt32Value(ITEM_FIELD_CREATOR, pSourceItem2->GetUInt32Value(ITEM_FIELD_CREATOR));
 				pSourceItem2->ModUnsigned32Value(ITEM_FIELD_STACK_COUNT, -(int32)deposit_stack);
@@ -1443,6 +1452,9 @@ void WorldSession::HandleGuildBankDepositItem(WorldPacket & recv_data)
 				pSourceItem2->SaveToDB(0,0,true, NULL);
 
 				pDestItem = objmgr.CreateItem(pSourceItem2->GetEntry(), _player);
+				if (pDestItem==NULL)
+					return;
+
 				pDestItem->SetUInt32Value(ITEM_FIELD_STACK_COUNT, deposit_stack);
 				pDestItem->SetUInt32Value(ITEM_FIELD_CREATOR, pSourceItem2->GetUInt32Value(ITEM_FIELD_CREATOR));
 			}

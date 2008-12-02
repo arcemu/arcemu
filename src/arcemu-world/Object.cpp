@@ -2140,17 +2140,16 @@ void Object::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
 				if(spl->GetProto()->ChannelInterruptFlags == 48140) spl->cancel();
 			}
 		}
-		
+
 
 		/* Stop players from casting */
 		std::set<Player*>::iterator itr;
 		for( itr = pVictim->GetInRangePlayerSetBegin() ; itr != pVictim->GetInRangePlayerSetEnd() ; itr ++ )
 		{
-			//if player has selection on us
-			if( (*itr)->GetSelection()==pVictim->GetGUID())							
+			if( (*itr)->GetCurrentSpell() != NULL)
 			{
-				if( (*itr)->isCasting() )
-					(*itr)->CancelSpell( NULL ); //cancel current casting spell
+				if ((*itr)->GetCurrentSpell()->m_targets.m_unitTarget == pVictim->GetGUID())
+					(*itr)->GetCurrentSpell()->cancel();
 			}
 		}
 		/* Stop victim from attacking */

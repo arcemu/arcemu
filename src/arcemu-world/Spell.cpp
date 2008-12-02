@@ -402,6 +402,11 @@ void Spell::FillAllTargetsInArea(uint32 i,float srcx,float srcy,float srcz, floa
 		}
 		if( IsInrange( srcx, srcy, srcz, (*itr), r ) )
 		{
+			if (sWorld.Collision) {
+				if (m_caster->GetMapId() == (*itr)->GetMapId() && !CollideInterface.CheckLOS(m_caster->GetMapId(),m_caster->GetPositionNC(),(*itr)->GetPositionNC()))
+					continue;
+			}
+
 			if( u_caster != NULL )
 			{
 				if( isAttackable( u_caster, static_cast< Unit* >( *itr ), !(GetProto()->c_is_flags & SPELL_FLAG_IS_TARGETINGSTEALTHED) ) )
@@ -461,6 +466,11 @@ void Spell::FillAllFriendlyInArea( uint32 i, float srcx, float srcy, float srcz,
 
 		if( IsInrange( srcx, srcy, srcz, (*itr), r ) )
 		{
+			if (sWorld.Collision) {
+				if (m_caster->GetMapId() == (*itr)->GetMapId() && !CollideInterface.CheckLOS(m_caster->GetMapId(),m_caster->GetPositionNC(),(*itr)->GetPositionNC()))
+					continue;
+			}
+
 			if( u_caster != NULL )
 			{
 				if( isFriendly( u_caster, static_cast< Unit* >( *itr ) ) )
@@ -4663,11 +4673,14 @@ void Spell::CreateItem(uint32 itemId)
 		slotresult = pUnit->GetItemInterface()->FindFreeInventorySlot(m_itemProto);
 		if(!slotresult.Result)
 		{
-			 SendCastResult(SPELL_FAILED_TOO_MANY_OF_ITEM);
-			 return;
+			SendCastResult(SPELL_FAILED_TOO_MANY_OF_ITEM);
+			return;
 		}
 
 		newItem = objmgr.CreateItem(itemId, pUnit);
+		if (newItem==NULL)
+			return;
+
 		AddItemResult result = pUnit->GetItemInterface()->SafeAddItem(newItem, slotresult.ContainerSlot, slotresult.Slot);
 		if(!result)
 		{

@@ -823,6 +823,8 @@ void LootRoll::Finalize()
 
 		sLog.outDebug("AutoLootItem MISC");
 		Item *item = objmgr.CreateItem( itemid, _player);
+		if (item==NULL)
+			return;
 
 		item->SetUInt32Value(ITEM_FIELD_STACK_COUNT,amt);
 		if(pLoot->items.at(_slotid).iRandomProperty!=NULL)

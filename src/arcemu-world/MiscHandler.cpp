@@ -133,6 +133,8 @@ void WorldSession::HandleAutostoreLootItemOpcode( WorldPacket & recv_data )
 	
 		sLog.outDebug("AutoLootItem MISC");
 		Item *item = objmgr.CreateItem( itemid, GetPlayer());
+		if(item==NULL)
+			return;
 
 		item->SetUInt32Value(ITEM_FIELD_STACK_COUNT,amt);
 		if(pLoot->items.at(lootSlot).iRandomProperty!=NULL)
@@ -2027,6 +2029,8 @@ void WorldSession::HandleLootMasterGiveOpcode(WorldPacket& recv_data)
 	}
 
 	Item *item = objmgr.CreateItem( itemid, player);
+	if(item==NULL)
+		return;
 	
 	item->SetUInt32Value(ITEM_FIELD_STACK_COUNT,amt);
 	if(pLoot->items.at(slotid).iRandomProperty!=NULL)

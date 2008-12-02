@@ -3260,31 +3260,22 @@ void Aura::SpellAuraModStealth(bool apply)
 		if( m_spellProto->NameHash == SPELL_HASH_VANISH && m_target->GetTypeId() == TYPEID_PLAYER )	 // Vanish
 		{
 
-			// cebernic: for perfectly VANISH :D p2wowguyz enjoyit;p
 			m_target->AquireInrangeLock();
-      // Remove me from all objects which is 'targeting' on him
-      for (Object::InRangeSet::iterator iter = m_target->GetInRangeSetBegin();iter != m_target->GetInRangeSetEnd(); ++iter)
-      {
-	      if( (*iter) )
-	      {
-	        if( (*iter)->GetTypeId() == TYPEID_PLAYER )
-	        {
-		        if( static_cast< Player* >( *iter )->IsVisible( m_target ) && static_cast< Player* >( *iter )->m_TransporterGUID != m_target->GetGUID() )
-			        static_cast< Player* >( *iter )->PushOutOfRange(m_target->GetNewGUID());
-              if ( static_cast<Player* >( *iter )->m_currentSpell ) static_cast<Player* >( *iter )->m_currentSpell->cancel();
-            }
-            else
-		        if( (*iter)->GetTypeId() == TYPEID_UNIT )
-		        {
-              if ( static_cast<Creature* >( *iter )->m_currentSpell ) static_cast<Creature* >( *iter )->m_currentSpell->cancel();
-            }
-		        (*iter)->RemoveInRangeObject(m_target);
-		      }
-      }
-			m_target->ReleaseInrangeLock();
-      // Clear object's in-range set
-      m_target->ClearInRangeSet();
+			for (Object::InRangeSet::iterator iter = m_target->GetInRangeSetBegin();iter != m_target->GetInRangeSetEnd(); ++iter)
+			{
+				if ((*iter) == NULL || (*iter)->IsUnit())
+					continue;
 
+				if (!static_cast<Unit*>(*iter)->isAlive())
+					continue;
+
+				if (static_cast<Unit*>(*iter)->GetCurrentSpell())
+					static_cast<Unit*>(*iter)->GetCurrentSpell()->cancel();
+
+				if(static_cast< Unit* >(*iter)->GetAIInterface() != NULL )
+					static_cast< Unit* >(*iter)->GetAIInterface()->RemoveThreatByPtr( m_target );
+			}
+			m_target->ReleaseInrangeLock();
 
 			for( uint32 x = MAX_POSITIVE_AURAS_EXTEDED_START; x < MAX_POSITIVE_AURAS_EXTEDED_END; x++ )
 			{
@@ -3328,28 +3319,27 @@ void Aura::SpellAuraModStealth(bool apply)
 				p_caster->RemoveAura(p_caster->m_MountSpellId);
 		}
 	}
-	else if(m_spellProto->NameHash != SPELL_HASH_VANISH)
+	else
 	{
-		m_target->SetStealth(0);
 		m_target->m_stealthLevel -= mod->m_amount;
-		if( m_spellProto->NameHash == SPELL_HASH_STEALTH)
+
+		if(m_spellProto->NameHash != SPELL_HASH_VANISH)
+		{
+			m_target->SetStealth(0);
 			m_target->RemoveFlag(UNIT_FIELD_BYTES_2,0x1E000000);
 
-		m_target->RemoveFlag(UNIT_FIELD_BYTES_1, 0x020000);
+			m_target->RemoveFlag(UNIT_FIELD_BYTES_1, 0x020000);
 
-		if( m_target->GetTypeId() == TYPEID_PLAYER )
-		{
-			m_target->RemoveFlag(PLAYER_FIELD_BYTES2, 0x2000);
-			/*WorldPacket data(12);
-			data.SetOpcode(SMSG_COOLDOWN_EVENT);
-			data << (uint32)GetSpellProto()->Id << m_target->GetGUID();
-			static_cast< Player* >( m_target )->GetSession()->SendPacket (&data);*/
-			packetSMSG_COOLDOWN_EVENT cd;
-			cd.guid = m_target->GetGUID();
-			cd.spellid = m_spellProto->Id;
-			static_cast<Player*>(m_target)->GetSession()->OutPacket( SMSG_COOLDOWN_EVENT, sizeof(packetSMSG_COOLDOWN_EVENT), &cd);
-			if( ((Player*)m_target)->m_outStealthDamageBonusPeriod && ((Player*)m_target)->m_outStealthDamageBonusPct )
-				((Player*)m_target)->m_outStealthDamageBonusTimer = (uint32)UNIXTIME + ((Player*)m_target)->m_outStealthDamageBonusPeriod;
+			if( m_target->GetTypeId() == TYPEID_PLAYER )
+			{
+				m_target->RemoveFlag(PLAYER_FIELD_BYTES2, 0x2000);
+				packetSMSG_COOLDOWN_EVENT cd;
+				cd.guid = m_target->GetGUID();
+				cd.spellid = m_spellProto->Id;
+				static_cast<Player*>(m_target)->GetSession()->OutPacket( SMSG_COOLDOWN_EVENT, sizeof(packetSMSG_COOLDOWN_EVENT), &cd);
+				if( ((Player*)m_target)->m_outStealthDamageBonusPeriod && ((Player*)m_target)->m_outStealthDamageBonusPct )
+					((Player*)m_target)->m_outStealthDamageBonusTimer = (uint32)UNIXTIME + ((Player*)m_target)->m_outStealthDamageBonusPeriod;
+			}
 		}
 	}
 
@@ -3791,13 +3781,8 @@ void Aura::SpellAuraModSilence(bool apply)
 		m_target->m_special_state |= UNIT_STATE_SILENCE;
 		m_target->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_SILENCED);
 
-		// remove the current spell (for channelers)
-		if(m_target->m_currentSpell && m_target->GetGUID() != m_casterGuid &&
-			m_target->m_currentSpell->getState() == SPELL_STATE_CASTING )
-		{
-			m_target->m_currentSpell->cancel();
-			m_target->m_currentSpell = 0;
-		}
+		if (m_target->GetCurrentSpell() != NULL)
+			m_target->GetCurrentSpell()->cancel();
 	}
 	else
 	{
@@ -5536,7 +5521,6 @@ void Aura::SpellAuraModStalked(bool apply)
 
 void Aura::SpellAuraSchoolAbsorb(bool apply)
 {
-	Absorb *ab;
 	if(apply)
 	{
 		SetPositive();
@@ -5564,7 +5548,7 @@ void Aura::SpellAuraSchoolAbsorb(bool apply)
 				val += float2int32( float( plr->GetDamageDoneMod( GetSpellProto()->School ) ) * GetSpellProto()->OTspell_coef_override );
 		}
 
-		ab = new Absorb;
+		Absorb *ab = new Absorb;
 		ab->amt = val;
 		ab->spellid = GetSpellId();
 		ab->caster = m_casterGuid;
@@ -5574,7 +5558,7 @@ void Aura::SpellAuraSchoolAbsorb(bool apply)
 	}
 	else
 	{
-		ab = NULL;
+		Absorb *ab = NULL;
 		for(uint32 x=0;x<7;x++)
 		{
 			if (mod->m_miscValue & (((uint32)1)<<x) )
@@ -5588,11 +5572,10 @@ void Aura::SpellAuraSchoolAbsorb(bool apply)
 						break;
 					}
 				}
-
-				/*if(ab)
-					delete ab;//should not be null, but just in case...*/
 			}
 		}
+		if(ab)
+			delete ab;
 	}
 }
 

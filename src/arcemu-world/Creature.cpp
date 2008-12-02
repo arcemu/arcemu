@@ -131,8 +131,7 @@ void Creature::Update( uint32 p_time )
 	Unit::Update( p_time );
 	if(IsTotem() && isDead())
 	{
-		RemoveFromWorld(false, true);
-		delete this;
+		SafeDelete();
 		return;
 	}
 
@@ -156,7 +155,7 @@ void Creature::SafeDelete()
 {
 	sEventMgr.RemoveEvents(this);
 	//sEventMgr.AddEvent(World::getSingletonPtr(), &World::DeleteObject, ((Object*)this), EVENT_CREATURE_SAFE_DELETE, 1000, 1);
-	sEventMgr.AddEvent(this, &Creature::DeleteMe, EVENT_CREATURE_SAFE_DELETE, 1000, 1,EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
+	sEventMgr.AddEvent(this, &Creature::DeleteMe, EVENT_CREATURE_SAFE_DELETE, 2000, 1,EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
 }
 
 void Creature::DeleteMe()

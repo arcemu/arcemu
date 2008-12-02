@@ -90,6 +90,9 @@ void WorldSession::HandleSplitOpcode(WorldPacket& recv_data)
 			i1->ModUnsigned32Value(ITEM_FIELD_STACK_COUNT,-c);
 
 			i2=objmgr.CreateItem(i1->GetEntry(),_player);
+			if (i2==NULL)
+				return;
+
 			i2->SetUInt32Value(ITEM_FIELD_STACK_COUNT,c);
 			i1->m_isDirty = true;
 			i2->m_isDirty = true;
@@ -1772,7 +1775,7 @@ void WorldSession::HandleAutoBankItemOpcode(WorldPacket &recvPacket)
 
 	Item *eitem=_player->GetItemInterface()->GetInventoryItem(SrcInvSlot,SrcSlot);
 
-	if(!eitem) 
+	if(!eitem)
 	{
 		_player->GetItemInterface()->BuildInventoryChangeError(eitem, NULL, INV_ERR_ITEM_NOT_FOUND);
 		return;
@@ -1787,11 +1790,14 @@ void WorldSession::HandleAutoBankItemOpcode(WorldPacket &recvPacket)
 	}
 	else
 	{
-        eitem = _player->GetItemInterface()->SafeRemoveAndRetreiveItemFromSlot(SrcInvSlot,SrcSlot, false);
+		eitem = _player->GetItemInterface()->SafeRemoveAndRetreiveItemFromSlot(SrcInvSlot,SrcSlot, false);
+		if (eitem==NULL)
+			return;
+
 		if(!_player->GetItemInterface()->SafeAddItem(eitem, slotresult.ContainerSlot, slotresult.Slot))
 		{
 			sLog.outDebug("[ERROR]AutoBankItem: Error while adding item to bank bag!\n");
-            if( !_player->GetItemInterface()->SafeAddItem(eitem, SrcInvSlot, SrcSlot) )
+			if( !_player->GetItemInterface()->SafeAddItem(eitem, SrcInvSlot, SrcSlot) )
 				eitem->DeleteMe();
 		}
 	}
@@ -1831,12 +1837,14 @@ void WorldSession::HandleAutoStoreBankItemOpcode(WorldPacket &recvPacket)
 	}
 	else
 	{
-        eitem = _player->GetItemInterface()->SafeRemoveAndRetreiveItemFromSlot(SrcInvSlot, SrcSlot, false);
+		eitem = _player->GetItemInterface()->SafeRemoveAndRetreiveItemFromSlot(SrcInvSlot, SrcSlot, false);
+		if (eitem==NULL)
+			return;
 		if (!_player->GetItemInterface()->AddItemToFreeSlot(eitem))
 		{
 			sLog.outDebug("[ERROR]AutoStoreBankItem: Error while adding item from one of the bank bags to the player bag!\n");
-           if( !_player->GetItemInterface()->SafeAddItem(eitem, SrcInvSlot, SrcSlot) )
-			   eitem->DeleteMe();
+			if( !_player->GetItemInterface()->SafeAddItem(eitem, SrcInvSlot, SrcSlot) )
+				eitem->DeleteMe();
 		}
 	}
 }

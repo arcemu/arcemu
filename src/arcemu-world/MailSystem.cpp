@@ -415,7 +415,7 @@ void WorldSession::HandleSendMail(WorldPacket & recv_data )
 		for( itr = items.begin(); itr != items.end(); ++itr )
 		{
 			pItem = *itr;
-			if( _player->GetItemInterface()->SafeRemoveAndRetreiveItemByGuid(pItem->GetGUID(), false) != pItem )
+			if( pItem==NULL || _player->GetItemInterface()->SafeRemoveAndRetreiveItemByGuid(pItem->GetGUID(), false) != pItem )
 				continue;		// should never be hit.
 
 			pItem->RemoveFromWorld();
@@ -753,6 +753,9 @@ void WorldSession::HandleMailCreateTextItem(WorldPacket & recv_data )
 	}
 
 	Item * pItem = objmgr.CreateItem(8383, _player);
+	if (pItem==NULL)
+		return;
+
 	pItem->SetUInt32Value(ITEM_FIELD_ITEM_TEXT_ID, message_id);
 	if( _player->GetItemInterface()->AddItemToFreeSlot(pItem) )
 	{

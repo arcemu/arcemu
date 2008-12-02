@@ -556,6 +556,11 @@ void Spell::SpellTargetInFrontOfCaster(uint32 i, uint32 j)
 		//is Creature in range
 		if(m_caster->isInRange((Unit*)(*itr),GetRadius(i)))
 		{
+			if (sWorld.Collision) {
+				if (m_caster->GetMapId() == (*itr)->GetMapId() && !CollideInterface.CheckLOS(m_caster->GetMapId(),m_caster->GetPositionNC(),(*itr)->GetPositionNC()))
+					continue;
+			}
+
 			if( m_spellInfo->cone_width ? m_caster->isInArc( (Unit*)(*itr) , m_spellInfo->cone_width ) : m_caster->isInFront((Unit*)(*itr)) ) // !!! is the target within our cone ?
 			{
 				if(isAttackable(u_caster, (Unit*)(*itr)))
