@@ -950,10 +950,10 @@ void Spell::SpellEffectDummy(uint32 i) // Dummy(Scripted events)
 			{
 				i2 = itr++;
 				// don't add objects that are not units and that are dead
-				if((*i2)->GetTypeId()!= TYPEID_UNIT || !((Unit*)(*i2))->isAlive())
+				if((*i2)->GetTypeId()!= TYPEID_UNIT || !static_cast<Unit*>( (*i2) )->isAlive())
 					continue;
 		        
-				Creature *cr=((Creature*)(*i2));
+				Creature *cr= static_cast<Creature*>((*i2));
 				if(cr->GetAIInterface()->GetNextTarget()==unitTarget)
 					targets[targets_got++]=cr;
 				if(targets_got==3)
@@ -1993,7 +1993,7 @@ void Spell::SpellEffectApplyAura(uint32 i)  // Apply Aura
 	case 38177: // Blackwhelp Net
 		{
 			p_caster->CastSpell(unitTarget, 38178, true);
-			((Creature*)unitTarget)->Despawn(1000, 360000);
+			static_cast<Creature*>(unitTarget)->Despawn(1000, 360000);
 		} break;
 	}
 
@@ -3046,9 +3046,9 @@ void Spell::SpellEffectTriggerMissile(uint32 i) // Trigger Missile
 
 	for(std::set<Object*>::iterator itr = m_caster->GetInRangeSetBegin(); itr != m_caster->GetInRangeSetEnd(); itr++ )
 	{
-		if(!((*itr)->IsUnit()) || !((Unit*)(*itr))->isAlive())
+		if(!((*itr)->IsUnit()) || !static_cast<Unit*>((*itr))->isAlive())
 			continue;
-		Unit *t=(Unit*)(*itr);
+		Unit *t= static_cast<Unit*>((*itr));
 	
 		float r;
 		float d=m_targets.m_destX-t->GetPositionX();
@@ -3060,7 +3060,7 @@ void Spell::SpellEffectTriggerMissile(uint32 i) // Trigger Missile
 		if(sqrt(r)> spellRadius)
 			continue;
 		
-		if(!isAttackable(m_caster, (Unit*)(*itr)))//Fixme only enemy targets?
+		if(!isAttackable(m_caster, static_cast<Unit*>(*itr)))//Fixme only enemy targets?
 			continue;
 
 		Spell*sp=SpellPool.PooledNew();
@@ -3285,7 +3285,7 @@ void Spell::SpellEffectOpenLockItem(uint32 i)
 		lootmgr.FillGOLoot(&gameObjTarget->loot,gameObjTarget->GetEntry(), gameObjTarget->GetMapMgr() ? (gameObjTarget->GetMapMgr()->iInstanceMode ? true : false) : false);
 		if(gameObjTarget->loot.items.size() > 0)
 		{
-			((Player*)caster)->SendLoot(gameObjTarget->GetGUID(),LOOT_CORPSE);
+			static_cast<Player*>(caster)->SendLoot(gameObjTarget->GetGUID(),LOOT_CORPSE);
 		}
 	}
 
@@ -4384,7 +4384,7 @@ void Spell::SpellEffectInterruptCast(uint32 i) // Interrupt Cast
 		if (u_caster && (u_caster != unitTarget))
 		{
 			unitTarget->GetAIInterface()->AttackReaction(u_caster, 1, m_spellInfo->Id);
-			Creature *c = (Creature*)( unitTarget );
+			Creature *c = static_cast<Creature*>( unitTarget );
 			if (c && c->GetProto() && c->GetProto()->modImmunities)
 			{
 				if (c->GetProto()->modImmunities & 32768)
@@ -4454,9 +4454,9 @@ void Spell::SpellEffectPickpocket(uint32 i) // pickpocket
 		return;
 	}
 			
-  lootmgr.FillPickpocketingLoot(&((Creature*)unitTarget)->loot,unitTarget->GetEntry());
+  lootmgr.FillPickpocketingLoot(&static_cast<Creature*>(unitTarget)->loot,unitTarget->GetEntry());
 
-	uint32 _rank = ((Creature*)unitTarget)->GetCreatureInfo() ? ((Creature*)unitTarget)->GetCreatureInfo()->Rank : 0;
+	uint32 _rank = static_cast<Creature*>(unitTarget)->GetCreatureInfo() ? static_cast<Creature*>(unitTarget)->GetCreatureInfo()->Rank : 0;
 	unitTarget->loot.gold = float2int32((_rank+1) * unitTarget->getLevel() * (RandomUInt(5) + 1) * sWorld.getRate(RATE_MONEY));
 
 	p_caster->SendLoot(unitTarget->GetGUID(), LOOT_PICKPOCKETING );
@@ -4599,7 +4599,7 @@ void Spell::SpellEffectHealMechanical(uint32 i)
 		return;
 	if(unitTarget->GetTypeId() != TYPEID_UNIT)
 		return;
-	if(((Creature*)unitTarget)->GetCreatureInfo()->Type != MECHANICAL)
+	if(static_cast<Creature*>(unitTarget)->GetCreatureInfo()->Type != MECHANICAL)
 		return;
 
 	Heal((int32)damage);
@@ -5546,7 +5546,7 @@ void Spell::SpellEffectSkinning(uint32 i)
 	if( ( sk >= lvl * 5 ) || ( ( sk + 100 ) >= lvl * 10 ) )
 	{
 		//Fill loot for Skinning
-		lootmgr.FillSkinningLoot(&((Creature*)unitTarget)->loot,unitTarget->GetEntry());
+		lootmgr.FillSkinningLoot(&static_cast<Creature*>(unitTarget)->loot,unitTarget->GetEntry());
 		static_cast< Player* >( m_caster )->SendLoot( unitTarget->GetGUID(), LOOT_SKINNING );
 		
 		//Not skinable again
@@ -5556,10 +5556,10 @@ void Spell::SpellEffectSkinning(uint32 i)
 		//pkt=unitTarget->BuildFieldUpdatePacket(UNIT_DYNAMIC_FLAGS,U_DYN_FLAG_LOOTABLE);
 		//static_cast< Player* >( m_caster )->GetSession()->SendPacket(pkt);
 		//delete pkt;
-		if (!((Creature*)unitTarget)->Skinned)
+		if (!static_cast<Creature*>(unitTarget)->Skinned)
 			DetermineSkillUp(SKILL_SKINNING,sk<lvl*5?sk/5:lvl);
 
-		((Creature*)unitTarget)->Skinned = true;
+		static_cast<Creature*>(unitTarget)->Skinned = true;
 	}
 	else
 	{
@@ -5828,7 +5828,7 @@ void Spell::SpellEffectFeedPet(uint32 i)  // Feed Pet
 
 	SpellEntry *spellInfo = dbcSpell.LookupEntry(GetProto()->EffectTriggerSpell[i]);
 	Spell *sp= SpellPool.PooledNew();
-	sp->Init((Object *)p_caster,spellInfo,true,NULL);
+	sp->Init(static_cast<Object*>(p_caster),spellInfo,true,NULL);
 	sp->forced_basepoints[0] = damage;
 	SpellCastTargets tgt;
 	tgt.m_unitTarget=pPet->GetGUID();
@@ -6044,7 +6044,7 @@ void Spell::SpellEffectSummonDemon(uint32 i)
 		SpellEntry *spellInfo = dbcSpell.LookupEntry(11726);
 		
 		Spell *sp=SpellPool.PooledNew();
-		sp->Init((Object *)pPet,spellInfo,true,NULL);
+		sp->Init(static_cast<Object*>(pPet),spellInfo,true,NULL);
 		SpellCastTargets tgt;
 		tgt.m_unitTarget=pPet->GetGUID();
 		sp->prepare(&tgt);
@@ -6078,11 +6078,11 @@ void Spell::SpellEffectResurrect(uint32 i) // Resurrect (Flat)
 					unitTarget->SetUInt32Value(UNIT_FIELD_POWER1, mana);
 					unitTarget->SetUInt32Value(UNIT_DYNAMIC_FLAGS, 0);
 					unitTarget->setDeathState(ALIVE);
-					((Creature*)unitTarget)->Tagged=false;
-					((Creature*)unitTarget)->TaggerGuid=false;
-					((Creature*)unitTarget)->loot.gold=0;
-					((Creature*)unitTarget)->loot.looters.clear();
-					((Creature*)unitTarget)->loot.items.clear();
+					static_cast<Creature*>(unitTarget)->Tagged=false;
+					static_cast<Creature*>(unitTarget)->TaggerGuid=false;
+					static_cast<Creature*>(unitTarget)->loot.gold=0;
+					static_cast<Creature*>(unitTarget)->loot.looters.clear();
+					static_cast<Creature*>(unitTarget)->loot.items.clear();
 				}
 			}
 
@@ -6497,11 +6497,11 @@ void Spell::SpellEffectResurrectNew(uint32 i)
 					unitTarget->SetUInt32Value(UNIT_FIELD_POWER1, mana);
 					unitTarget->SetUInt32Value(UNIT_DYNAMIC_FLAGS, 0);
 					unitTarget->setDeathState(ALIVE);
-					((Creature*)unitTarget)->Tagged=false;
-					((Creature*)unitTarget)->TaggerGuid=false;
-					((Creature*)unitTarget)->loot.gold=0;
-					((Creature*)unitTarget)->loot.looters.clear();
-					((Creature*)unitTarget)->loot.items.clear();
+					static_cast<Creature*>(unitTarget)->Tagged=false;
+					static_cast<Creature*>(unitTarget)->TaggerGuid=false;
+					static_cast<Creature*>(unitTarget)->loot.gold=0;
+					static_cast<Creature*>(unitTarget)->loot.looters.clear();
+					static_cast<Creature*>(unitTarget)->loot.items.clear();
 				}
 			}
 

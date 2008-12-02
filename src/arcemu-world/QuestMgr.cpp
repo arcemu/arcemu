@@ -186,11 +186,11 @@ uint32 QuestMgr::CalcStatus(Object* quest_giver, Player* plr)
 
 	if( quest_giver->GetTypeId() == TYPEID_GAMEOBJECT )
 	{
-        bValid = ((GameObject*)quest_giver)->HasQuests();
+        bValid = static_cast<GameObject*>(quest_giver)->HasQuests();
         if(bValid)
 		{
-			q_begin = ((GameObject*)quest_giver)->QuestsBegin();
-			q_end = ((GameObject*)quest_giver)->QuestsEnd();
+			q_begin = static_cast<GameObject*>(quest_giver)->QuestsBegin();
+			q_end = static_cast<GameObject*>(quest_giver)->QuestsEnd();
 		}
 	} 
 	else if( quest_giver->GetTypeId() == TYPEID_UNIT )
@@ -198,8 +198,8 @@ uint32 QuestMgr::CalcStatus(Object* quest_giver, Player* plr)
 		bValid = static_cast< Creature* >( quest_giver )->HasQuests();
 		if(bValid)
 		{
-			q_begin = ((Creature*)quest_giver)->QuestsBegin();
-			q_end = ((Creature*)quest_giver)->QuestsEnd();
+			q_begin = static_cast<Creature*>(quest_giver)->QuestsBegin();
+			q_end = static_cast<Creature*>(quest_giver)->QuestsEnd();
 		}
 	}
     else if( quest_giver->GetTypeId() == TYPEID_ITEM )
@@ -254,21 +254,21 @@ uint32 QuestMgr::ActiveQuestsCount(Object* quest_giver, Player* plr)
 
 	if(quest_giver->GetTypeId() == TYPEID_GAMEOBJECT)
 	{
-        bValid = ((GameObject*)quest_giver)->HasQuests();
+        bValid = static_cast<GameObject*>(quest_giver)->HasQuests();
 		if(bValid)
 		{
-			q_begin = ((GameObject*)quest_giver)->QuestsBegin();
-			q_end   = ((GameObject*)quest_giver)->QuestsEnd();
+			q_begin = static_cast<GameObject*>(quest_giver)->QuestsBegin();
+			q_end   = static_cast<GameObject*>(quest_giver)->QuestsEnd();
 			
 		}
 	} 
 	else if(quest_giver->GetTypeId() == TYPEID_UNIT)
 	{
-		bValid = ((Creature*)quest_giver)->HasQuests();
+		bValid = static_cast<Creature*>(quest_giver)->HasQuests();
 		if(bValid)
 		{
-			q_begin = ((Creature*)quest_giver)->QuestsBegin();
-			q_end   = ((Creature*)quest_giver)->QuestsEnd();
+			q_begin = static_cast<Creature*>(quest_giver)->QuestsBegin();
+			q_end   = static_cast<Creature*>(quest_giver)->QuestsEnd();
 		}
 	}
 
@@ -549,20 +549,20 @@ void QuestMgr::BuildQuestList(WorldPacket *data, Object* qst_giver, Player *plr,
 	bool bValid = false;
 	if(qst_giver->GetTypeId() == TYPEID_GAMEOBJECT)
 	{
-		bValid = ((GameObject*)qst_giver)->HasQuests();
+		bValid = static_cast<GameObject*>(qst_giver)->HasQuests();
 		if(bValid)
 		{
-			st = ((GameObject*)qst_giver)->QuestsBegin();
-			ed = ((GameObject*)qst_giver)->QuestsEnd();
+			st = static_cast<GameObject*>(qst_giver)->QuestsBegin();
+			ed = static_cast<GameObject*>(qst_giver)->QuestsEnd();
 		}
 	} 
 	else if(qst_giver->GetTypeId() == TYPEID_UNIT)
 	{
-		bValid = ((Creature*)qst_giver)->HasQuests();
+		bValid = static_cast<Creature*>(qst_giver)->HasQuests();
 		if(bValid)
 		{
-			st = ((Creature*)qst_giver)->QuestsBegin();
-			ed = ((Creature*)qst_giver)->QuestsEnd();
+			st = static_cast<Creature*>(qst_giver)->QuestsBegin();
+			ed = static_cast<Creature*>(qst_giver)->QuestsEnd();
 		}
 	}
 
@@ -933,8 +933,8 @@ void QuestMgr::GiveQuestRewardReputation(Player* plr, Quest* qst, Object *qst_gi
 
 			// Let's do this properly. Determine the faction of the creature, and give reputation to his faction.
 			if( qst_giver->GetTypeId() == TYPEID_UNIT )
-				if(((Creature*)qst_giver)->m_factionDBC != NULL )
-					fact = ((Creature*)qst_giver)->m_factionDBC->ID;
+				if( static_cast<Creature*>(qst_giver)->m_factionDBC != NULL )
+					fact = static_cast<Creature*>(qst_giver)->m_factionDBC->ID;
 			if( qst_giver->GetTypeId() == TYPEID_GAMEOBJECT )
 				fact = qst_giver->GetUInt32Value(GAMEOBJECT_FACTION );
 		}
@@ -998,7 +998,7 @@ void QuestMgr::OnQuestFinished(Player* plr, Quest* qst, Object *qst_giver, uint3
 	
 	if(qst_giver->GetTypeId() == TYPEID_UNIT)
 	{
-		if(!((Creature*)qst_giver)->HasQuest(qst->id, 2))
+		if(!static_cast<Creature*>(qst_giver)->HasQuest(qst->id, 2))
 		{
 			//sCheatLog.writefromsession(plr->GetSession(), "tried to finish quest from invalid npc.");
 			plr->GetSession()->Disconnect();
@@ -1537,7 +1537,7 @@ void QuestMgr::BuildQuestFailed(WorldPacket* data, uint32 questid)
 
 bool QuestMgr::OnActivateQuestGiver(Object *qst_giver, Player *plr)
 {
-	if(qst_giver->GetTypeId() == TYPEID_GAMEOBJECT && !((GameObject*)qst_giver)->HasQuests())
+	if(qst_giver->GetTypeId() == TYPEID_GAMEOBJECT && !static_cast<GameObject*>(qst_giver)->HasQuests())
 		return false;
 
 	uint32 questCount = sQuestMgr.ActiveQuestsCount(qst_giver, plr);
@@ -1558,20 +1558,20 @@ bool QuestMgr::OnActivateQuestGiver(Object *qst_giver, Player *plr)
 
 		if(qst_giver->GetTypeId() == TYPEID_GAMEOBJECT)
 		{
-            bValid = ((GameObject*)qst_giver)->HasQuests();
+            bValid = static_cast<GameObject*>(qst_giver)->HasQuests();
             if(bValid)
             {
-				q_begin = ((GameObject*)qst_giver)->QuestsBegin();
-				q_end   = ((GameObject*)qst_giver)->QuestsEnd();
+				q_begin = static_cast<GameObject*>(qst_giver)->QuestsBegin();
+				q_end   = static_cast<GameObject*>(qst_giver)->QuestsEnd();
 			}
 		} 
 		else if(qst_giver->GetTypeId() == TYPEID_UNIT)
 		{
-			bValid = ((Creature*)qst_giver)->HasQuests();
+			bValid = static_cast<Creature*>(qst_giver)->HasQuests();
 			if(bValid)
 			{
-				q_begin = ((Creature*)qst_giver)->QuestsBegin();
-				q_end   = ((Creature*)qst_giver)->QuestsEnd();
+				q_begin = static_cast<Creature*>(qst_giver)->QuestsBegin();
+				q_end   = static_cast<Creature*>(qst_giver)->QuestsEnd();
 			}
 		}
 
