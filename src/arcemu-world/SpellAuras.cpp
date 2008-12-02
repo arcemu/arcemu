@@ -3269,7 +3269,7 @@ void Aura::SpellAuraModStealth(bool apply)
 				if (!static_cast<Unit*>(*iter)->isAlive())
 					continue;
 
-				if (static_cast<Unit*>(*iter)->GetCurrentSpell())
+				if (static_cast<Unit*>(*iter)->GetCurrentSpell() && static_cast<Unit*>(*iter)->GetCurrentSpell()->GetUnitTarget() == m_target)
 					static_cast<Unit*>(*iter)->GetCurrentSpell()->cancel();
 
 				if(static_cast< Unit* >(*iter)->GetAIInterface() != NULL )
