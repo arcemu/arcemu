@@ -1258,7 +1258,7 @@ void WorldSession::HandleBarberShopResult(WorldPacket & recv_data)
     recv_data >> hair >> haircolor >> facialhairorpiercing;
 	uint32 oldhair = _player->GetByte( PLAYER_BYTES, 2 );
 	uint32 oldhaircolor = _player->GetByte( PLAYER_BYTES, 3 );
-	uint32 oldfacial = _player->GetByte( PLAYER_BYTES, 0 );
+	uint32 oldfacial = _player->GetByte( PLAYER_BYTES_2, 0 );
 	uint32 newhair,newhaircolor,newfacial;
 	int32 cost = 0;
 	BarberShopStyleEntry *bbse;
@@ -1296,7 +1296,7 @@ void WorldSession::HandleBarberShopResult(WorldPacket & recv_data)
 
 	_player->SetByte( PLAYER_BYTES, 2, newhair);
 	_player->SetByte( PLAYER_BYTES, 3, newhaircolor);
-	_player->SetByte( PLAYER_BYTES, 0, newfacial);
+	_player->SetByte( PLAYER_BYTES_2, 0, newfacial);
 	_player->ModUnsigned32Value( PLAYER_FIELD_COINAGE, -cost );
 
     _player->SetStandState(0);                              // stand up

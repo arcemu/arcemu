@@ -623,7 +623,7 @@ void WorldSession::InitPacketHandlerTable()
 	WorldPacketHandlers[CMSG_MESSAGECHAT].handler							   = &WorldSession::HandleMessagechatOpcode;
 	WorldPacketHandlers[CMSG_TEXT_EMOTE].handler								= &WorldSession::HandleTextEmoteOpcode;
 	WorldPacketHandlers[CMSG_INSPECT].handler									= &WorldSession::HandleInspectOpcode;
-	WorldPacketHandlers[CMSG_ALTER_APPEARANCE].handler						= &WorldSession::HandleBarberShopResult;
+	WorldPacketHandlers[SMSG_BARBER_SHOP_RESULT].handler						= &WorldSession::HandleBarberShopResult;
 	
 	// Channels
 	WorldPacketHandlers[CMSG_JOIN_CHANNEL].handler							  = &WorldSession::HandleChannelJoin;
