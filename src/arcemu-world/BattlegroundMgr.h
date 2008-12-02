@@ -54,8 +54,9 @@ struct BGScore
 	uint32 MiscData[5];
 };
 
-extern uint32 BGMaximumPlayers[BATTLEGROUND_NUM_TYPES];
-extern uint32 BGMinimumPlayers[BATTLEGROUND_NUM_TYPES];
+// TODO: BATTLEGROUND_NUM_TYPES needs to be looked at!
+extern uint32 BGMaximumPlayers[BATTLEGROUND_NUM_TYPES +1];
+extern uint32 BGMinimumPlayers[BATTLEGROUND_NUM_TYPES +1];
 
 #define SOUND_BATTLEGROUND_BEGIN			0xD6F
 #define SOUND_HORDE_SCORES					8213
