@@ -1167,25 +1167,28 @@ string GetItemLinkByProto(ItemPrototype * iProto, uint32 language = NULL)
 
 	switch(iProto->Quality)
 	{
-		case 0:
+		case 0: //Poor,gray
 			colour = "cff9d9d9d";
 		break;
-		case 1:
+		case 1: //Common,white
 			colour = "cffffffff";
 		break;
-		case 2:
+		case 2: //Uncommon,green
 			colour = "cff1eff00";
 		break;
-		case 3:
+		case 3: //Rare,blue
 			colour = "cff0070dd";
 		break;
-		case 4:
+		case 4: //Epic,purple
 			colour = "cffa335ee";
 		break;
-		case 5:
+		case 5: //Legendary,orange
 			colour = "cffff8000";
 		break;
-		case 6:
+		case 6: //Artifact,pale gold
+			colour = "c00fce080";
+		break;
+		case 7: //Heirloom,pale gold
 			colour = "c00fce080";
 		break;
 		default:
