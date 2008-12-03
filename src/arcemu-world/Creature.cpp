@@ -1140,8 +1140,14 @@ bool Creature::Load(CreatureSpawn *spawn, uint32 mode, MapInfo *info)
 	uint32 gender = creature_info->GenerateModelId(&model);
 	setGender(gender);
 
-	SetUInt32Value(UNIT_FIELD_DISPLAYID,model);
-	SetUInt32Value(UNIT_FIELD_NATIVEDISPLAYID,model);
+	if(spawn->displayid != 0){
+		SetUInt32Value(UNIT_FIELD_DISPLAYID,spawn->displayid);
+		SetUInt32Value(UNIT_FIELD_NATIVEDISPLAYID,spawn->displayid);
+	}else{
+		SetUInt32Value(UNIT_FIELD_DISPLAYID,model);
+		SetUInt32Value(UNIT_FIELD_NATIVEDISPLAYID,model);
+	}
+	
 	SetUInt32Value(UNIT_FIELD_MOUNTDISPLAYID,spawn->MountedDisplayID);
 	EventModelChange();
 
@@ -1352,8 +1358,16 @@ void Creature::Load(CreatureProto * proto_, float x, float y, float z, float o)
 	uint32 gender = creature_info->GenerateModelId(&model);
 	setGender(gender);
 
-	SetUInt32Value(UNIT_FIELD_DISPLAYID,model);
-	SetUInt32Value(UNIT_FIELD_NATIVEDISPLAYID,model);
+	if(m_spawn->displayid != 0){
+		SetUInt32Value(UNIT_FIELD_DISPLAYID,m_spawn->displayid);
+		SetUInt32Value(UNIT_FIELD_NATIVEDISPLAYID,m_spawn->displayid);
+	}else{
+		SetUInt32Value(UNIT_FIELD_DISPLAYID,model);
+		SetUInt32Value(UNIT_FIELD_NATIVEDISPLAYID,model);
+	}
+
+	SetUInt32Value(UNIT_FIELD_DISPLAYID,m_spawn->displayid);
+	SetUInt32Value(UNIT_FIELD_NATIVEDISPLAYID,m_spawn->displayid);
 	SetUInt32Value(UNIT_FIELD_MOUNTDISPLAYID,m_spawn->MountedDisplayID);
 	
 	EventModelChange();
