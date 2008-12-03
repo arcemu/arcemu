@@ -2225,6 +2225,8 @@ bool ChatHandler::HandleIPUnBanCommand(const char * args, WorldSession * m_sessi
 bool ChatHandler::HandleCreatureSpawnCommand(const char *args, WorldSession *m_session)
 {
 	uint32 entry = atol(args);
+	uint8 gender = 0; 
+
 	if(entry == 0)
 		return false;
 
@@ -2238,7 +2240,8 @@ bool ChatHandler::HandleCreatureSpawnCommand(const char *args, WorldSession *m_s
 
 	CreatureSpawn * sp = new CreatureSpawn;
 	//sp->displayid = info->DisplayID;
-	info->GenerateModelId(&sp->displayid);
+	gender = (uint8)info->GenerateModelId(&sp->displayid);
+ 	sp->entry = entry; 
 	sp->entry = entry;
 	sp->form = 0;
 	sp->id = objmgr.GenerateCreatureSpawnID();
@@ -2250,7 +2253,7 @@ bool ChatHandler::HandleCreatureSpawnCommand(const char *args, WorldSession *m_s
 	sp->emote_state = 0;
 	sp->flags = 0;
 	sp->factionid = proto->Faction;
-	sp->bytes0 = 0;
+	sp->bytes0 = sp->setbyte(0,2,gender);
 	sp->bytes1 = 0;
 	sp->bytes2 = 0;
 	//sp->respawnNpcLink = 0;

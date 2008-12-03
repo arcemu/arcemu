@@ -60,6 +60,19 @@ typedef struct
 	uint32 Item1SlotDisplay;
 	uint32 Item2SlotDisplay;
 	uint32 Item3SlotDisplay;
+
+	/* sets one of the bytes of an uint32 */
+	uint32 setbyte(uint32 buffer, uint8 index, uint32 byte){
+    
+	/* We don't want a segfault, now do we? */
+	if(index >= 4)
+	  return buffer;
+  
+	byte = byte << index*8;
+	buffer = buffer | byte;
+        
+	return buffer;
+	}
 }CreatureSpawn;
 
 typedef struct

@@ -414,7 +414,7 @@ void Creature::SaveToDB()
 	else
 		ss << "0,0,0,";
 
-	ss << uint32(GetStandState()) 
+	ss << uint32(GetStandState()) << ","
 		<< m_uint32Values[UNIT_FIELD_MOUNTDISPLAYID] << "," 
 		<< m_uint32Values[UNIT_VIRTUAL_ITEM_SLOT_ID] << ","
 		<< m_uint32Values[UNIT_VIRTUAL_ITEM_SLOT_ID_1] << ","
