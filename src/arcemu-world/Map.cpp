@@ -24,6 +24,9 @@
 
 #include "StdAfx.h"
 
+#define CREATURESPAWNSFIELDCOUNT 24
+#define GOSPAWNSFIELDCOUNT		 16
+
 Map::Map(uint32 mapid, MapInfo * inf)
 {
 	memset(spawns,0,sizeof(CellSpawns*) * _sizeX);
@@ -86,7 +89,7 @@ Map::~Map()
 bool first_table_warning = true;
 bool CheckResultLengthCreatures(QueryResult * res)
 {
-	if( res->GetFieldCount() != 20 )
+	if( res->GetFieldCount() != CREATURESPAWNSFIELDCOUNT  )
 	{
 		if( first_table_warning )
 		{
@@ -105,7 +108,7 @@ bool CheckResultLengthCreatures(QueryResult * res)
 bool first_table_warningg = true;
 bool CheckResultLengthGameObject(QueryResult * res)
 {
-	if( res->GetFieldCount() != 16 )
+	if( res->GetFieldCount() != GOSPAWNSFIELDCOUNT )
 	{
 		if( first_table_warningg )
 		{
@@ -184,6 +187,11 @@ void Map::LoadSpawns(bool reload)
 					cspawn->channel_target_go = fields[17].GetUInt32();
 					cspawn->channel_target_creature = fields[18].GetUInt32();
 					cspawn->stand_state = fields[19].GetUInt16();
+					cspawn->MountedDisplayID = fields[20].GetUInt32();
+					cspawn->Item1SlotDisplay = fields[21].GetUInt32();
+					cspawn->Item2SlotDisplay = fields[22].GetUInt32();
+					cspawn->Item3SlotDisplay = fields[23].GetUInt32();
+
 					spawns[cellx][celly]->CreatureSpawns.push_back(cspawn);
 					++CreatureSpawnCount;
 				}while(result->NextRow());
@@ -221,6 +229,10 @@ void Map::LoadSpawns(bool reload)
 				cspawn->channel_target_creature=0;
 				cspawn->channel_target_go=0;
 				cspawn->stand_state = fields[19].GetUInt16();
+				cspawn->MountedDisplayID = fields[20].GetUInt32();
+				cspawn->Item1SlotDisplay = fields[21].GetUInt32();
+				cspawn->Item2SlotDisplay = fields[22].GetUInt32();
+				cspawn->Item3SlotDisplay = fields[23].GetUInt32();
 				staticSpawns.CreatureSpawns.push_back(cspawn);
 				++CreatureSpawnCount;
 			}while(result->NextRow());

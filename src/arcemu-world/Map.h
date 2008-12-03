@@ -56,6 +56,10 @@ typedef struct
 	uint32 channel_target_go;
 	uint32 channel_target_creature;
 	uint16 stand_state;
+	uint32 MountedDisplayID;
+	uint32 Item1SlotDisplay;
+	uint32 Item2SlotDisplay;
+	uint32 Item3SlotDisplay;
 }CreatureSpawn;
 
 typedef struct

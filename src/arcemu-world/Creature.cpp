@@ -414,7 +414,12 @@ void Creature::SaveToDB()
 	else
 		ss << "0,0,0,";
 
-	ss << uint32(GetStandState()) << ")";
+	ss << uint32(GetStandState()) 
+		<< m_uint32Values[UNIT_FIELD_MOUNTDISPLAYID] << "," 
+		<< m_uint32Values[UNIT_VIRTUAL_ITEM_SLOT_ID] << ","
+		<< m_uint32Values[UNIT_VIRTUAL_ITEM_SLOT_ID_1] << ","
+		<< m_uint32Values[UNIT_VIRTUAL_ITEM_SLOT_ID_2] << ")";
+	
 	WorldDatabase.Execute(ss.str().c_str());
 }
 
@@ -1137,7 +1142,7 @@ bool Creature::Load(CreatureSpawn *spawn, uint32 mode, MapInfo *info)
 
 	SetUInt32Value(UNIT_FIELD_DISPLAYID,model);
 	SetUInt32Value(UNIT_FIELD_NATIVEDISPLAYID,model);
-	SetUInt32Value(UNIT_FIELD_MOUNTDISPLAYID,proto->MountedDisplayID);
+	SetUInt32Value(UNIT_FIELD_MOUNTDISPLAYID,spawn->MountedDisplayID);
 	EventModelChange();
 
     //SetUInt32Value(UNIT_FIELD_LEVEL, (mode ? proto->Level + (info ? info->lvl_mod_a : 0) : proto->Level));
@@ -1156,9 +1161,9 @@ bool Creature::Load(CreatureSpawn *spawn, uint32 mode, MapInfo *info)
 	SetFloatValue(UNIT_FIELD_MINRANGEDDAMAGE,proto->RangedMinDamage);
 	SetFloatValue(UNIT_FIELD_MAXRANGEDDAMAGE,proto->RangedMaxDamage);
 
-	SetUInt32Value(UNIT_VIRTUAL_ITEM_SLOT_ID, proto->Item1SlotDisplay);
-	SetUInt32Value(UNIT_VIRTUAL_ITEM_SLOT_ID_1, proto->Item2SlotDisplay);
-	SetUInt32Value(UNIT_VIRTUAL_ITEM_SLOT_ID_2, proto->Item3SlotDisplay);
+	SetUInt32Value(UNIT_VIRTUAL_ITEM_SLOT_ID, spawn->Item1SlotDisplay);
+	SetUInt32Value(UNIT_VIRTUAL_ITEM_SLOT_ID_1, spawn->Item2SlotDisplay);
+	SetUInt32Value(UNIT_VIRTUAL_ITEM_SLOT_ID_2, spawn->Item3SlotDisplay);
 
 	SetUInt32Value(UNIT_FIELD_FACTIONTEMPLATE, spawn->factionid);
 	SetUInt32Value(UNIT_FIELD_FLAGS, spawn->flags);
@@ -1349,7 +1354,8 @@ void Creature::Load(CreatureProto * proto_, float x, float y, float z, float o)
 
 	SetUInt32Value(UNIT_FIELD_DISPLAYID,model);
 	SetUInt32Value(UNIT_FIELD_NATIVEDISPLAYID,model);
-	SetUInt32Value(UNIT_FIELD_MOUNTDISPLAYID,proto->MountedDisplayID);
+	SetUInt32Value(UNIT_FIELD_MOUNTDISPLAYID,m_spawn->MountedDisplayID);
+	
 	EventModelChange();
 
 	//SetUInt32Value(UNIT_FIELD_LEVEL, (mode ? proto->Level + (info ? info->lvl_mod_a : 0) : proto->Level));
@@ -1362,9 +1368,9 @@ void Creature::Load(CreatureProto * proto_, float x, float y, float z, float o)
 	SetFloatValue(UNIT_FIELD_MINDAMAGE, proto->MinDamage);
 	SetFloatValue(UNIT_FIELD_MAXDAMAGE, proto->MaxDamage);
 
-	SetUInt32Value(UNIT_VIRTUAL_ITEM_SLOT_ID, proto->Item1SlotDisplay);
-	SetUInt32Value(UNIT_VIRTUAL_ITEM_SLOT_ID_1, proto->Item2SlotDisplay);
-	SetUInt32Value(UNIT_VIRTUAL_ITEM_SLOT_ID_2, proto->Item3SlotDisplay);
+	SetUInt32Value(UNIT_VIRTUAL_ITEM_SLOT_ID, m_spawn->Item1SlotDisplay);
+	SetUInt32Value(UNIT_VIRTUAL_ITEM_SLOT_ID_1, m_spawn->Item2SlotDisplay);
+	SetUInt32Value(UNIT_VIRTUAL_ITEM_SLOT_ID_2, m_spawn->Item3SlotDisplay);
 
 	SetUInt32Value(UNIT_FIELD_FACTIONTEMPLATE, proto->Faction);
 	SetFloatValue(UNIT_FIELD_BOUNDINGRADIUS, proto->BoundingRadius);
