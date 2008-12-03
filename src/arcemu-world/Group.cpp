@@ -900,6 +900,8 @@ void Group::UpdateOutOfRangePlayer(Player * pPlayer, uint32 Flags, bool Distribu
 	Flags |= GROUP_UPDATE_FLAG_PET_UNK_1;*/
 
 	data->Initialize(SMSG_PARTY_MEMBER_STATS);
+	if((Flags & GROUP_UPDATE_TYPE_FULL_REQUEST_REPLY) == GROUP_UPDATE_TYPE_FULL_REQUEST_REPLY)
+		*data << uint8(0);	
 	*data << pPlayer->GetNewGUID();
 	*data << Flags;
 
@@ -916,10 +918,10 @@ void Group::UpdateOutOfRangePlayer(Player * pPlayer, uint32 Flags, bool Distribu
 	}
 
 	if(Flags & GROUP_UPDATE_FLAG_HEALTH)
-		*data << uint16(pPlayer->GetUInt32Value(UNIT_FIELD_HEALTH));
+		*data << uint32(pPlayer->GetUInt32Value(UNIT_FIELD_HEALTH));
 
 	if(Flags & GROUP_UPDATE_FLAG_MAXHEALTH)
-		*data << uint16(pPlayer->GetUInt32Value(UNIT_FIELD_MAXHEALTH));
+		*data << uint32(pPlayer->GetUInt32Value(UNIT_FIELD_MAXHEALTH));
 
 	if(Flags & GROUP_UPDATE_FLAG_POWER_TYPE)
 		*data << uint8(pPlayer->GetPowerType());

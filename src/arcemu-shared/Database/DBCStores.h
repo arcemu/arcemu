@@ -746,7 +746,7 @@ struct SpellEntry
 	uint32 TotemCategory[2];				//226-227
 	uint32 RequiresAreaId;					//228 
 	uint32 School;							//229
-	uint32 runeCostID;						//230 from 3.0.1
+	uint32 RuneCostID;						//230 from 3.0.1
 //	uint32 SpellMissileID;					//231 from 3.0.1
 
 	/// CUSTOM: these fields are used for the modifications made in the world.cpp
@@ -888,7 +888,7 @@ m_requiredAuraVision
 m_requiredTotemCategoryID
 m_requiredAreaID
 m_schoolMask
-m_runeCostID
+m_RuneCostID
 m_spellMissileID
 */
 };

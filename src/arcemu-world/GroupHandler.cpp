@@ -63,12 +63,6 @@ void WorldSession::HandleGroupInviteOpcode( WorldPacket & recv_data )
 			return;
 		}
 	}
-
-	if ( player->InGroup() )
-	{
-		SendPartyCommandResult(_player, player->GetGroup()->GetGroupType(), membername, ERR_PARTY_ALREADY_IN_GROUP);
-		return;
-	}
 	
 	if(player->GetTeam()!=_player->GetTeam() && _player->GetSession()->GetPermissionCount() == 0 && !sWorld.interfaction_group)
 	{
@@ -87,9 +81,6 @@ void WorldSession::HandleGroupInviteOpcode( WorldPacket & recv_data )
 		SendPartyCommandResult(_player, 0, membername, ERR_PARTY_IS_IGNORING_YOU);
 		return;
 	}
-
-	// 16/08/06 - change to guid to prevent very unlikely event of a crash in deny, etc
-	_player->SetInviter(_player->GetLowGUID());//bugfix if player invtied 2 people-> he can be in 2 parties
 
 	data.SetOpcode(SMSG_GROUP_INVITE);
 	data << GetPlayer()->GetName();

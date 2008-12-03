@@ -294,7 +294,7 @@ struct CreateInfo_SkillStruct
 struct CreateInfo_ActionBarStruct
 {
 	uint32  button;
-	uint32  action;
+	uint16  action;
 	uint32  type;
 	uint32  misc;
 };

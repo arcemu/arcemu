@@ -382,6 +382,8 @@ void Pet::SendSpellsToOwner()
 	WorldPacket * data = new WorldPacket( SMSG_PET_SPELLS, packetsize );
 	*data << GetGUID();
 	*data << uint32(0x00000000);//unk1
+	*data << uint32(0x00000101);//unk2
+	*data << uint32(0x00000100);//unk3
 	
 	uint32 state_flags = 0;
 	if( GetAIInterface() != NULL && GetAIInterface()->getUnitToFollow() != NULL )
@@ -423,6 +425,7 @@ void Pet::SendNullSpellsToOwner()
 	WorldPacket data(8);
 	data.SetOpcode(SMSG_PET_SPELLS);
 	data << uint64(0);
+	data << uint32(0);
 	m_Owner->GetSession()->SendPacket(&data);
 }
 

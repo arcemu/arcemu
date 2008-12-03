@@ -2607,9 +2607,9 @@ bool Spell::HasPower()
 		} break;
 	case POWER_TYPE_RUNES:
 		{
-			if(GetProto()->runeCostID && p_caster)
+			if(GetProto()->RuneCostID && p_caster)
 			{
-				SpellRuneCostEntry * runecost = dbcSpellRuneCost.LookupEntry(GetProto()->runeCostID);
+				SpellRuneCostEntry * runecost = dbcSpellRuneCost.LookupEntry(GetProto()->RuneCostID);
 				uint32 credit = p_caster->HasRunes(RUNE_BLOOD, runecost->bloodRuneCost) +
 					p_caster->HasRunes(RUNE_FROST, runecost->frostRuneCost) +
 					p_caster->HasRunes(RUNE_UNHOLY, runecost->unholyRuneCost);
@@ -2740,9 +2740,9 @@ bool Spell::TakePower()
 							  }break;
 		case POWER_TYPE_RUNES:
 			{
-				if(GetProto()->runeCostID && p_caster)
+				if(GetProto()->RuneCostID && p_caster)
 				{
-					SpellRuneCostEntry * runecost = dbcSpellRuneCost.LookupEntry(GetProto()->runeCostID);
+					SpellRuneCostEntry * runecost = dbcSpellRuneCost.LookupEntry(GetProto()->RuneCostID);
 					uint32 credit = p_caster->TakeRunes(RUNE_BLOOD, runecost->bloodRuneCost) +
 						p_caster->TakeRunes(RUNE_FROST, runecost->frostRuneCost) +
 						p_caster->TakeRunes(RUNE_UNHOLY, runecost->unholyRuneCost);

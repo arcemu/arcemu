@@ -2604,7 +2604,9 @@ void Aura::SpellAuraModCharm(bool apply)
 		{
 			WorldPacket data(SMSG_PET_SPELLS, 500);
 			data << target->GetGUID();
-			data << uint32(0) << uint32(0x1000);
+			data << uint32(0);
+			data << uint32(0x1000);
+			data << uint32(0x100);
 			data << uint32(PET_SPELL_ATTACK);
 			data << uint32(PET_SPELL_FOLLOW);
 			data << uint32(PET_SPELL_STAY);

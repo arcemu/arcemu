@@ -10027,7 +10027,8 @@ void Player::UnPossess()
 	if( pTarget->m_isPet && static_cast< Pet* >( pTarget ) != m_Summon )
 	{
 		data.Initialize( SMSG_PET_SPELLS );
-		data << uint64( 0 );
+		data << uint64(0);
+		data << uint32(0);
 		m_session->SendPacket( &data );
 	}
 }
@@ -10069,8 +10070,8 @@ void Player::_AddSkillLine(uint32 SkillLine, uint32 Curr_sk, uint32 Max_sk)
 
 	// force to be within limits
 #if PLAYER_LEVEL_CAP==80
-	Curr_sk = ( Curr_sk > 400 ? 400 : ( Curr_sk <1 ? 1 : Curr_sk ) );
-	Max_sk = ( Max_sk > 400 ? 400 : Max_sk );
+	Curr_sk = ( Curr_sk > 450 ? 450 : ( Curr_sk <1 ? 1 : Curr_sk ) );
+	Max_sk = ( Max_sk > 450 ? 450 : Max_sk );
 #else
 	Curr_sk = ( Curr_sk > 375 ? 375 : ( Curr_sk <1 ? 1 : Curr_sk ) );
 	Max_sk = ( Max_sk > 375 ? 375 : Max_sk );
@@ -10225,8 +10226,8 @@ void Player::_UpdateMaxSkillCounts()
 		else if (itr->second.Skill->type == SKILL_TYPE_PROFESSION || itr->second.Skill->type == SKILL_TYPE_SECONDARY)
 		{
 			new_max = itr->second.MaximumValue;
-			if (new_max >= 350)
-				new_max = 375;
+			if (new_max >= 450)
+				new_max = 450;
 		}
 		else
 		{
@@ -10235,8 +10236,8 @@ void Player::_UpdateMaxSkillCounts()
 
 		// force to be within limits
 #if PLAYER_LEVEL_CAP==80
-		if (new_max > 400)
-			new_max = 400;
+		if (new_max > 450)
+			new_max = 450;
 #else
 		if (new_max > 375)
 			new_max = 375;
