@@ -43,6 +43,7 @@ CommonScheduleThread::~CommonScheduleThread()
 
 void CommonScheduleThread::terminate()
 {
+	BCTimerCount = 0;
 	m_running = false;
 #ifdef WIN32
 	SetEvent(m_abortEvent);
@@ -50,7 +51,6 @@ void CommonScheduleThread::terminate()
 	pthread_cond_signal(&abortcond);
 #endif
 
-	BCTimerCount = 0;
 }
 
 bool CommonScheduleThread::run()
