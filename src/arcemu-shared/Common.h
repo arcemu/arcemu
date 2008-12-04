@@ -263,7 +263,10 @@ enum MsTimeVariables
 #endif
 #endif
 
-#if COMPILER == COMPILER_GNU && __GNUC__ >= 3
+#ifdef HAVE_STDCXX_0X
+#include <unordered_map>
+#include <unordered_set>
+#elif COMPILER == COMPILER_GNU && __GNUC__ >= 3
 #include <ext/hash_map>
 #include <ext/hash_set>
 #else
@@ -303,6 +306,12 @@ typedef char TCHAR;
 #define HM_NAMESPACE std
 using std::hash_map;
 using std::hash_set;
+#elif defined(HAVE_STDCXX_0X)
+#define HM_NAMESPACE std
+#define hash_map unordered_map
+#define hash_set unordered_set
+using std::unordered_map;
+using std::unordered_set;
 #elif COMPILER == COMPILER_GNU && __GNUC__ >= 3
 #define HM_NAMESPACE __gnu_cxx
 using __gnu_cxx::hash_map;

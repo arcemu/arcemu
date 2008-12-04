@@ -9,7 +9,7 @@ AC_PREREQ(2.5)
 
 if test -d obj; then rm -rf obj; fi
 
-AM_CONFIG_HEADER( config.h )
+AC_CONFIG_HEADERS( config.h )
 INCLUDES="-I/usr/include -I/usr/local/include"
 AC_SUBST(INCLUDES)
 LDFLAGS="-L/usr/lib -L/usr/local/lib"
@@ -95,14 +95,24 @@ if test -z "$SVN"; then AC_MSG_ERROR(Subversion not found); fi
 # Checks for libraries.
 
 # Reset 
-CFLAGS="$INCLUDES -Wall -fno-strict-aliasing"
-CXXFLAGS="$INCLUDES -Wall -fno-strict-aliasing"
+CFLAGS="$CFLAGS $INCLUDES -Wall -fno-strict-aliasing"
+CXXFLAGS="$CXXFLAGS $INCLUDES -Wall -fno-strict-aliasing"
+
+# Check for c++0x functionnality (unordered_map)
+AC_CXX_COMPILE_STDCXX_0X
+if test "$ac_cv_cxx_compile_cxx0x_gxx" = yes; then
+	CXXFLAGS="$CXXFLAGS -std=gnu++0x"
+else 
+	if test "$ac_cv_cxx_compile_cxx0x_cxx" = yes; then
+		CXXFLAGS="$CXXFLAGS -std=c++0x"
+	fi
+fi
 
 # Check for pthread
 ACX_PTHREAD( [
 	LDFLAGS="$PTHREAD_LIBS $LDFLAGS"
-       	CXXFLAGS="$CFLAGS $PTHREAD_CFLAGS"
-       	CFLAGS="$CXXFLAGS $PTHREAD_CFLAGS"
+       	CXXFLAGS="$CXXFLAGS $PTHREAD_CFLAGS"
+       	CFLAGS="$CFLAGS $PTHREAD_CFLAGS"
        	CC="$PTHREAD_CC"
 ],AC_MSG_ERROR(pthread not found) )
 

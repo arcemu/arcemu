@@ -2651,7 +2651,7 @@ void AIInterface::deleteWayPoint(uint32 wpid)
 	}
 
 	m_waypoints->clear();
-	m_waypoints->push_back(NULL);		// waypoint 0
+	m_waypoints->push_back((WayPoint*)NULL);		// waypoint 0
 	for(WayPointMap::iterator itr = new_waypoints.begin(); itr != new_waypoints.end(); ++itr)
 	{
 		(*itr)->id = newpid++;
