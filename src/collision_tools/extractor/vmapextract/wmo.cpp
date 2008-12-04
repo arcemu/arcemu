@@ -1,7 +1,11 @@
 #define __STORMLIB_SELF__
+#include "StormLib.h"
+// stl classes don't like min and max macros ;) defined in StormLib.h
+#undef min
+#undef max
+#include <algorithm>
 
 #include "wmo.h"
-#include "Stormlib.h"
 #include "mpq.h"
 
 using namespace std;
@@ -382,58 +386,29 @@ int WMOGroup::ConvertToVMAPGroupWmo(FILE *output, bool pPreciseVectorData)
 		delete [] MOVI;
 
 		MoviExSort = new uint16[IndexExTr_size*3];
-		for(int y=0; y<IndexExTr_size*3; y++)
-		{
-			MoviExSort[y]=MoviEx[y];		
-		}
+		memcpy(MoviExSort, MoviEx, sizeof(uint16)*IndexExTr_size*3);
+		sort(&MoviExSort[0], &MoviExSort[IndexExTr_size*3]);
+		// Remove duplicates
+		uint16 *last = unique(&MoviExSort[0], &MoviExSort[IndexExTr_size*3]);
 
-		uint16 hold;
-		for (int pass = 1; pass < IndexExTr_size*3; pass++)
-		{
-			for (int i=0; i < IndexExTr_size*3-1; i++)
-			{
-				if (MoviExSort[i] > MoviExSort[i+1]) 
-				{
-					hold = MoviExSort[i];
-					MoviExSort[i] = MoviExSort[i+1];
-					MoviExSort[i+1] = hold;
-				}
-				//double = 65535	
-				else
-					if (MoviExSort[i] == MoviExSort[i+1])
-						MoviExSort[i+1] = 65535;	
-			}
-		}
-		// double delet
-		uint16 s = 0;
-		for (int i=0; i < IndexExTr_size*3; i++)
-		{
-			if (MoviExSort[i]!=65535)
-			{
-				MoviExSort[s] = MoviExSort[i];
-				s++;
-			}
-		}
+		// Number of unique elements
+		uint16 s = last-&MoviExSort[0];
+
 		MovtExSort = new uint16[s];
+		memcpy(MovtExSort, MoviExSort, s*sizeof(uint16)); 
+		uint16 *RevMoviExSort = new uint16[65536];
+		// Store the reverse index
 		for (int i=0; i < s; i++)
 		{
-			MovtExSort[i] = MoviExSort[i];
+			RevMoviExSort[MoviExSort[i]]=i;
 		}
 
 		for (int i=0; i < IndexExTr_size*3; i++)
 		{
-			uint16 b = MoviEx[i];
-			for (uint16 x = 0; x < s; x++)
-			{
-				if(MoviExSort[x] == b)
-				{
-
-					MoviEx[i] = x;
-					break;
-				}
-			}	
-
+			MoviEx[i] = RevMoviExSort[MoviEx[i]] ;
 		}
+		delete [] RevMoviExSort;
+
 		int INDX[] = {0x58444E49,IndexExTr_size*6+4,IndexExTr_size*3};
 		fwrite(INDX,4,3,output);
 		fwrite(MoviEx,2,IndexExTr_size*3,output);
