@@ -80,7 +80,7 @@ pUnit:RegisterEvent("Gore", timer1, 1)
 end
 
 function Gore(pUnit, event)
-local timer2=math.random(12500, 15500)
+local timer2=math.random(12500, 19500)
 pUnit:FullCastSpellOnTarget(32019, pUnit:GetMainTank())
 pUnit:RegisterEvent("Gore", timer2, 0)
 end
@@ -88,6 +88,9 @@ end
 RegisterUnitEvent (27408, 1, "Duskhowl_Prowler_EnterCombat")
 RegisterUnitEvent (27408, 4, "Death")
 RegisterUnitEvent (27408, 2, "Death")
+RegisterUnitEvent (26592, 1, "Duskhowl_Prowler_EnterCombat")
+RegisterUnitEvent (26592, 4, "Death")
+RegisterUnitEvent (26592, 2, "Death")
 
 ----------------------------------------------------------------
 
@@ -245,6 +248,41 @@ RegisterUnitEvent (26408, 2, "Death")
 
 ----------------------------------------------------------------
 
+function Frostpaw_Warrior_EnterCombat(pUnit, event)
+local timer1=math.random(5200, 13500)
+local timer3=math.random(5200, 13500)
+pUnit:RegisterEvent("Frostpaw_Rend", timer1, 1)
+pUnit:RegisterEvent("Demoralizing_Shout", timer3, 1)
+end
+
+function Frostpaw_Rend(pUnit, event)
+local timer2=math.random(10000, 22500)
+pUnit:FullCastSpellOnTarget(12054, pUnit:GetMainTank())
+pUnit:RegisterEvent("Frostpaw_Rend", timer2, 0)
+end
+
+function Demoralizing_Shout(pUnit, event)
+local timer4=math.random(30000, 45000)
+pUnit:CastSpell(13730)
+pUnit:RegisterEvent("Demoralizing_Shout", timer4, 0)
+end
+
+RegisterUnitEvent (26357, 1, "Frostpaw_Warrior_EnterCombat")
+RegisterUnitEvent (26357, 4, "Death")
+RegisterUnitEvent (26357, 2, "Death")
+
+----------------------------------------------------------------
+
+function Tallhorn_Stag_EnterCombat(pUnit, event)
+local timer1=math.random(3200, 13500)
+pUnit:RegisterEvent("Gore", timer1, 1)
+end
+
+RegisterUnitEvent (26363, 1, "Tallhorn_Stag_EnterCombat")
+RegisterUnitEvent (26363, 4, "Death")
+RegisterUnitEvent (26363, 2, "Death")
+
+
 
 --[[function First_Prophecy(pUnit, event)
 pUnit:MarkQuestObjectiveAsComplete (12058, 0)
@@ -252,15 +290,32 @@ pUnit:SendChatMessage(
 end
 
 function Second_Prophecy(pUnit, event)
-pUnit:MarkQuestObjectiveAsComplete (12058, 1)
+pUnit:MarkQuestObjectiveAsComplete (x, 1)
 end
 
 function Third_Prophecy(pUnit, event)
-pUnit:MarkQuestObjectiveAsComplete (12058, 2)
+pUnit:MarkQuestObjectiveAsComplete (x, 2)
 end
 
-RegisterGameObjectEvent (180516, 2, "ShrineOfDathRemar")
+RegisterGameObjectEvent (x, 2, "x")
 "'Greatest of the Maker's children, arise and claim your birthright.'"
 "'Shall return to the cradle of iron and stone.'"
-"'Return to Ulduar, nestled in the embrace of the storm.'"]]
+"'Return to Ulduar, nestled in the embrace of the storm.'"
+
+BRINGING DOWN THE IRON THANE
+"I´ll admit, dwarf, I was pleasantly surprised to see your plan succeed."
+"We can´t just let you return to your companions and we can´t take you with us..."
+"Wait a minute here! You promised to spare me if I helped you. I held up my end o' the bargain!"
+"Stay your blade, Chieftain. He may yet have value to us."
+"Remember the dwarven journal that was discovered? Well, this dwarf could be exactly what we need to track down Brann Bronzebeard and capture him."
+"By the light, Brann's alive? I'd never help you capture him!"
+"You will if you wish to keep your head attached to your shoulders."
+"He will live so long as he proves useful. I'd be careful if I was you, dwarf."
+MISSING JOURNAL PAGE?
+"This is an intriguing find, NAME, but I don´t know what to make of it."
+"The language is unfamiliar and for all we know, it´s just some soldier's journal."
+"Let me take a look at that."
+"Hmm..."
+"This journal is written in dwarven. I can´t read this scrawl, but I can make out one thing."
+"'Brann Bronzebeard.' The brother of Ironforge's king? You may have spoken too soon, Paluna."]]
 

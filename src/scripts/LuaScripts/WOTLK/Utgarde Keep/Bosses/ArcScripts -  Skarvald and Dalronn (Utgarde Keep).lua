@@ -202,3 +202,27 @@ end
 
 RegisterUnitEvent (27389, 2, "DalronnGhost_LeavingCombat")
 RegisterUnitEvent (27389, 1, "DalronnGhost_EnterCombat")
+
+--------------------------------------------------------------------------------
+-- Soul Linking, so that they both aggro when you aggro one of them.
+
+function Skarvald_OnSpawn(pUnit, event)
+Skarvald = pUnit
+pUnit:RegisterEvent("SSoulLink", 1500, 1)
+end
+
+function Dalronn_OnSpawn(pUnit, event)
+Dalronn = pUnit
+pUnit:RegisterEvent("DSoulLink", 1500, 1)
+end
+
+function SSoulLink(pUnit, event)
+pUnit:SetSoulLinkedWith(Dalronn)
+end
+
+function DSoulLink(pUnit, event)
+pUnit:SetSoulLinkedWith(Skarvald)
+end
+
+RegisterUnitEvent (24200, 18, "Skarvald_OnSpawn")
+RegisterUnitEvent (24201, 18, "Dalronn_OnSpawn")
