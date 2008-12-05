@@ -3265,7 +3265,7 @@ void Aura::SpellAuraModStealth(bool apply)
 			m_target->AquireInrangeLock();
 			for (Object::InRangeSet::iterator iter = m_target->GetInRangeSetBegin();iter != m_target->GetInRangeSetEnd(); ++iter)
 			{
-				if ((*iter) == NULL || (*iter)->IsUnit())
+				if ((*iter) == NULL || !(*iter)->IsUnit())
 					continue;
 
 				if (!static_cast<Unit*>(*iter)->isAlive())
