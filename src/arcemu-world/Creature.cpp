@@ -1358,17 +1358,9 @@ void Creature::Load(CreatureProto * proto_, float x, float y, float z, float o)
 	uint32 gender = creature_info->GenerateModelId(&model);
 	setGender(gender);
 
-	if(m_spawn->displayid != 0){
-		SetUInt32Value(UNIT_FIELD_DISPLAYID,m_spawn->displayid);
-		SetUInt32Value(UNIT_FIELD_NATIVEDISPLAYID,m_spawn->displayid);
-	}else{
-		SetUInt32Value(UNIT_FIELD_DISPLAYID,model);
-		SetUInt32Value(UNIT_FIELD_NATIVEDISPLAYID,model);
-	}
-
-	SetUInt32Value(UNIT_FIELD_DISPLAYID,m_spawn->displayid);
-	SetUInt32Value(UNIT_FIELD_NATIVEDISPLAYID,m_spawn->displayid);
-	SetUInt32Value(UNIT_FIELD_MOUNTDISPLAYID,m_spawn->MountedDisplayID);
+	SetUInt32Value(UNIT_FIELD_DISPLAYID,model);
+	SetUInt32Value(UNIT_FIELD_NATIVEDISPLAYID,model);
+	SetUInt32Value(UNIT_FIELD_MOUNTDISPLAYID,model);
 	
 	EventModelChange();
 
@@ -1382,9 +1374,11 @@ void Creature::Load(CreatureProto * proto_, float x, float y, float z, float o)
 	SetFloatValue(UNIT_FIELD_MINDAMAGE, proto->MinDamage);
 	SetFloatValue(UNIT_FIELD_MAXDAMAGE, proto->MaxDamage);
 
-	SetUInt32Value(UNIT_VIRTUAL_ITEM_SLOT_ID, m_spawn->Item1SlotDisplay);
-	SetUInt32Value(UNIT_VIRTUAL_ITEM_SLOT_ID_1, m_spawn->Item2SlotDisplay);
-	SetUInt32Value(UNIT_VIRTUAL_ITEM_SLOT_ID_2, m_spawn->Item3SlotDisplay);
+// m_spawn is invalid here - don't use it!
+// this is loading a CreatureProto, which doesn't have ItemSlotDisplays
+//	SetUInt32Value(UNIT_VIRTUAL_ITEM_SLOT_ID, m_spawn->Item1SlotDisplay);
+//	SetUInt32Value(UNIT_VIRTUAL_ITEM_SLOT_ID_1, m_spawn->Item2SlotDisplay);
+//	SetUInt32Value(UNIT_VIRTUAL_ITEM_SLOT_ID_2, m_spawn->Item3SlotDisplay);
 
 	SetUInt32Value(UNIT_FIELD_FACTIONTEMPLATE, proto->Faction);
 	SetFloatValue(UNIT_FIELD_BOUNDINGRADIUS, proto->BoundingRadius);
