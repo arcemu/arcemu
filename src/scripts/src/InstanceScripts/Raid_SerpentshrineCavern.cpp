@@ -754,8 +754,8 @@ public:
 	void SwitchToHumanForm()
 	{
 		_unit->SetUInt32Value(UNIT_FIELD_DISPLAYID, 20514);
-		_unit->SetUInt32Value(UNIT_VIRTUAL_ITEM_SLOT_ID, _unit->m_spawn->Item1SlotDisplay);
-		_unit->SetUInt32Value(UNIT_VIRTUAL_ITEM_SLOT_ID_1, _unit->m_spawn->Item2SlotDisplay);
+		_unit->SetUInt32Value(UNIT_VIRTUAL_ITEM_SLOT_ID, (_unit->m_spawn != NULL)? _unit->m_spawn->Item1SlotDisplay : 0);
+		_unit->SetUInt32Value(UNIT_VIRTUAL_ITEM_SLOT_ID_1, (_unit->m_spawn != NULL)?  _unit->m_spawn->Item2SlotDisplay : 0);
 		}
 
 	void SwitchToDemonForm()

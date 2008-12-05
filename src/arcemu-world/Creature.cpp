@@ -1139,16 +1139,10 @@ bool Creature::Load(CreatureSpawn *spawn, uint32 mode, MapInfo *info)
 	uint32 model = 0;
 	uint32 gender = creature_info->GenerateModelId(&model);
 	setGender(gender);
-
-	if(spawn->displayid != 0){
-		SetUInt32Value(UNIT_FIELD_DISPLAYID,spawn->displayid);
-		SetUInt32Value(UNIT_FIELD_NATIVEDISPLAYID,spawn->displayid);
-	}else{
-		SetUInt32Value(UNIT_FIELD_DISPLAYID,model);
-		SetUInt32Value(UNIT_FIELD_NATIVEDISPLAYID,model);
-	}
-	
+	SetUInt32Value(UNIT_FIELD_DISPLAYID,spawn->displayid);
+	SetUInt32Value(UNIT_FIELD_NATIVEDISPLAYID,spawn->displayid);
 	SetUInt32Value(UNIT_FIELD_MOUNTDISPLAYID,spawn->MountedDisplayID);
+
 	EventModelChange();
 
     //SetUInt32Value(UNIT_FIELD_LEVEL, (mode ? proto->Level + (info ? info->lvl_mod_a : 0) : proto->Level));
@@ -1360,7 +1354,7 @@ void Creature::Load(CreatureProto * proto_, float x, float y, float z, float o)
 
 	SetUInt32Value(UNIT_FIELD_DISPLAYID,model);
 	SetUInt32Value(UNIT_FIELD_NATIVEDISPLAYID,model);
-	SetUInt32Value(UNIT_FIELD_MOUNTDISPLAYID,model);
+	SetUInt32Value(UNIT_FIELD_MOUNTDISPLAYID,0);
 	
 	EventModelChange();
 

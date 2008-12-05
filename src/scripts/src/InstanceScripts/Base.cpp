@@ -295,7 +295,8 @@ void ArcScriptCreatureAI::SetDisplayId(uint32 pDisplayId)
 
 void ArcScriptCreatureAI::SetDisplayWeapon(bool pMainHand, bool pOffHand)
 {
-	SetDisplayWeaponIds(pMainHand ? _unit->m_spawn->Item1SlotDisplay : 0, pOffHand ? _unit->m_spawn->Item2SlotDisplay : 0);
+	if(_unit->m_spawn == NULL) return;
+	else SetDisplayWeaponIds(pMainHand ? _unit->m_spawn->Item1SlotDisplay : 0, pOffHand ? _unit->m_spawn->Item2SlotDisplay : 0);
 }
 
 void ArcScriptCreatureAI::SetDisplayWeaponIds(uint32 pItem1Id, uint32 pItem2Id)
