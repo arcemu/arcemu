@@ -1,0 +1,20 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mpqe_cpp", "mpqe_cpp.vcproj", "{01FA02A7-0E9A-40A2-9156-40B74056C2CB}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{01FA02A7-0E9A-40A2-9156-40B74056C2CB}.Debug|Win32.ActiveCfg = Debug|Win32
+		{01FA02A7-0E9A-40A2-9156-40B74056C2CB}.Debug|Win32.Build.0 = Debug|Win32
+		{01FA02A7-0E9A-40A2-9156-40B74056C2CB}.Release|Win32.ActiveCfg = Release|Win32
+		{01FA02A7-0E9A-40A2-9156-40B74056C2CB}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
