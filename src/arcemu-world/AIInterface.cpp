@@ -374,9 +374,10 @@ void AIInterface::HandleEvent(uint32 event, Unit* pUnit, uint32 misc1)
 				// Remount if mounted
 				if(m_Unit->GetTypeId() == TYPEID_UNIT)
 				{
-					if( static_cast< Creature* >( m_Unit )->GetProto() )
+					Creature *creature = static_cast< Creature* >( m_Unit );
+					if( creature->GetProto() && creature->m_spawn )
+						m_Unit->SetUInt32Value( UNIT_FIELD_MOUNTDISPLAYID, creature->m_spawn->MountedDisplayID );
 						//m_Unit->SetUInt32Value( UNIT_FIELD_MOUNTDISPLAYID, static_cast< Creature* >( m_Unit )->GetSpawnO->MountedDisplayID );
-						m_Unit->SetUInt32Value( UNIT_FIELD_MOUNTDISPLAYID, static_cast< Creature* >( m_Unit )->m_spawn->MountedDisplayID );
 				}
 				//Zack : not sure we need to send this. Did not see it in the dumps since mob died eventually but it seems logical to make this
 				m_Unit->smsg_AttackStop( pUnit );
