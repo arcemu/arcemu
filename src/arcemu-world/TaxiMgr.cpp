@@ -449,11 +449,11 @@ bool TaxiMgr::GetGlobalTaxiNodeMask( uint32 curloc, uint32 *Mask )
 
 	for (itr = m_taxiPaths.begin(); itr != m_taxiPaths.end(); itr++)
 	{
-		if( itr->second->from == curloc )
-		{
+		/*if( itr->second->from == curloc )
+		{*/
 			field = (uint8)((itr->second->to - 1) / 32);
 			Mask[field] |= 1 << ( (itr->second->to - 1 ) % 32 );
-		}
+		//}
 	}
 
 	return true;
