@@ -6525,7 +6525,7 @@ void ApplyNormalFixes()
 		// Band of the Eternal Champion
 		sp = dbcSpell.LookupEntryForced( 35080 );
 		if( sp != NULL ){
-			sp->procFlags  = PROC_ON_MELEE_ATTACK;
+			sp->procFlags  = PROC_ON_MELEE_ATTACK | PROC_ON_RANGED_ATTACK;
 			sp->proc_interval = 60000;
 		}
 		// Band of the Eternal Sage
