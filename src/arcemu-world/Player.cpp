@@ -5276,7 +5276,7 @@ void Player::UpdateStats()
 
 		res = mana + bonus + manadelta;
 		if( res < mana )res = mana;	
-		SetPower(0, res);
+		SetUInt32Value( UNIT_FIELD_MAXPOWER1, res );
 
 		if((int32)GetUInt32Value(UNIT_FIELD_POWER1)>res)
 			SetUInt32Value(UNIT_FIELD_POWER1,res);
