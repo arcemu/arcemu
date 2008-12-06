@@ -78,14 +78,14 @@ const char* AchievementStoreFormat="niixxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxiixxix
 const char* AchievementCriteriaStoreFormat="niiiiiiiixxxxxxxxxxxxxxxxxiixix";
 const char* CharTitlesEntryfmt = "uxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxu";
 const char* BarberShopStyleEntryFormat="nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxi";
-const char* ItemSetFormat = "usxxxxxxxxxxxxxxxuuuuuuuuuxxxxxxxxxuuuuuuuuuuuuuuuuuu";
+const char* ItemSetFormat = "ulxxxxxxxxxxxxxxxxuuuuuuuuxxxxxxxxxuuuuuuuuuuuuuuuuuu";
 const char* LockFormat = "uuuuuuxxxuuuuuxxxuuuuuxxxxxxxxxxx";
 const char* EmoteEntryFormat = "uxuuuuxuxuxxxxxxxxx";
 const char* skilllinespellFormat = "uuuxxxxxuuuuxx";
-const char* EnchantEntrYFormat = "uuuuuuuuuuuuusxxxxxxxxxxxxxxxxuuuuxxx";
+const char* EnchantEntrYFormat = "uuuuuuuuuuuuulxxxxxxxxxxxxxxxxuuuuxxx";
 const char* GemPropertyEntryFormat = "uuuuu";
 const char* GlyphPropertyEntryFormat = "uuuu";
-const char* skilllineentrYFormat = "uuusxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx";
+const char* skilllineentrYFormat = "uuulxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx";
 //								1        10        20        30
 const char* spellentryFormat = 
 	"u" // Id
@@ -168,10 +168,10 @@ const char* spellentryFormat =
 	"u" // spellIconID
 	"u" // activeIconID
 	"u" // spellPriority
-	"sxxxxxxxxxxxxxxxx" // Name
-	"sxxxxxxxxxxxxxxxx" // Rank
-	"sxxxxxxxxxxxxxxxx" // Description
-	"sxxxxxxxxxxxxxxxx" // BuffDescription
+	"lxxxxxxxxxxxxxxxx" // Name
+	"lxxxxxxxxxxxxxxxx" // Rank
+	"lxxxxxxxxxxxxxxxx" // Description
+	"lxxxxxxxxxxxxxxxx" // BuffDescription
 	"u" // ManaCostPercentage
 	"u" // unkflags
 	"u" // StartRecoveryTime
@@ -203,23 +203,23 @@ const char* spellrangeFormat = "uffffxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx";
 const char* SpellRuneCostFormat="uuuuu";
 const char* spelldurationFormat = "uuuu";
 const char* randompropsFormat = "uxuuuxxxxxxxxxxxxxxxxxxx";
-const char* areatableFormat = "uuuuuxxxuxusxxxxxxxxxxxxxxxxuxxxxxxx";
+const char* areatableFormat = "uuuuuxxxuxulxxxxxxxxxxxxxxxxuxxxxxxx";
 const char* factiontemplatedbcFormat = "uuuuuuuuuuuuuu";
 const char* auctionhousedbcFormat = "uuuuxxxxxxxxxxxxxxxxx";
-const char* factiondbcFormat = "uiuuuuuuuuiiiiuuuuusxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx";
+const char* factiondbcFormat = "uiuuuuuuuuiiiiuuuuulxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx";
 const char* dbctaxinodeFormat = "uufffxxxxxxxxxxxxxxxxxuu";
 const char* dbctaxipathFormat = "uuuu";
 const char* dbctaxipathnodeFormat = "uuuufffuuxx";
 const char* creaturespelldataFormat = "uuuuuuuuu";
-const char* charraceFormat = "uxxxxxxxuxxxxusxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx";
-const char* charclassFormat = "uxuxsxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx";
-const char* creaturefamilyFormat = "ufufuuuusxxxxxxxxxxxxxxxxxxx";
+const char* charraceFormat = "uxxxxxxxuxxxxulxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx";
+const char* charclassFormat = "uxuxlxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx";
+const char* creaturefamilyFormat = "ufufuuuulxxxxxxxxxxxxxxxxxxx";
 const char* mapentryFormat =
 	"u"					// 0 id
 	"s"					// 1 name_internal
 	"u"					// 2 map_type
 	"u"					// 3 is_pvp_zone
-	"sxxxxxxxxxxxxxxxx"	// 4-20 real_name
+	"lxxxxxxxxxxxxxxxx"	// 4-20 real_name
 	"u"					// 21 linked_zone
 	"xxxxxxxxxxxxxxxxx" // 22-38 hordeIntro
 	"xxxxxxxxxxxxxxxxx" // 39-55 allianceIntro
@@ -239,11 +239,11 @@ const char* mapentryFormat =
 	"x";				// 117 unk
 
 const char* itemrandomsuffixformat = "uxxxxxxxxxxxxxxxxxxuuuuuuxxxx";
-const char* chatchannelformat = "iixssssssssssssssssxxxxxxxxxxxxxxxxxx";
+const char* chatchannelformat = "iixssssssssssssssslxxxxxxxxxxxxxxxxxx";
 const char* durabilityqualityFormat = "uf";
 const char* durabilitycostsFormat = "uuuuuuuuuuuuuuuuuuuuuuuuuuuuuu";
 const char* bankslotpriceformat = "uu";
-const char* barbershopstyleFormat="nusxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxuuu";
+const char* barbershopstyleFormat="nulxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxuuu";
 const char* gtfloatformat = "f";
 const char* areatriggerformat = "uuffffffff";
 

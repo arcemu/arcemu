@@ -476,7 +476,7 @@ struct ItemSetEntry
     uint32 id;                  //1
     char* name;                //2
     //uint32 unused_shit[15];      //3 - 9
-    uint32 flag;                //10 constant
+    //uint32 localeflag;        //10 constant
     uint32 itemid[8];           //11 - 18
     //uint32 more_unused_shit[9]; //19 - 27
     uint32 SpellID[8];          //28 - 35
@@ -1506,11 +1506,21 @@ public:
 #ifdef USING_BIG_ENDIAN
 			swap32(&val);
 #endif
-			if(*t == 's')
+			if(( *t == 's' ) || ( *t=='l' ))
 			{
 				char ** new_ptr = (char**)dest_ptr;
 				static const char * null_str = "";
 				char * ptr;
+				// if t == 'lxxxxxxxxxxxxxxxx' use localized strings in case
+				// the english one is empty. *t ends at most on the locale flag
+				for(int count = (*t == 'l') ? 16 : 0 ;
+					val == 0 && count > 0 && *(t+1) == 'x'; t++, count--)
+				{
+					fread(&val, 4, 1, f);
+#ifdef USING_BIG_ENDIAN
+					swap32(&val);
+#endif
+				}
 				if( val < m_stringlength )
 					ptr = m_stringData + val;
 				else
