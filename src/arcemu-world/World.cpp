@@ -538,7 +538,8 @@ bool World::SetInitialWorldSettings()
     for( uint32 i = 0; i < dbcTalent.GetNumRows(); ++i )
     {
         TalentEntry const* talent_info = dbcTalent.LookupRow( i );
-		if( talent_info == NULL )
+		// Don't add invalid talents or Hunter Pet talents (trees 409, 410 and 411) to the inspect table
+		if( talent_info == NULL || talent_info->TalentTree == 409 || talent_info->TalentTree == 410 || talent_info->TalentTree == 411 )
 			continue;
 
 		TalentTabEntry const* tab_info = dbcTalentTab.LookupEntry( talent_info->TalentTree );
@@ -559,10 +560,12 @@ bool World::SetInitialWorldSettings()
 		InspectTalentTabSize[talent_info->TalentTree] += talent_max_rank;
 	}
 
-	for( uint32 i = 1; i < dbcTalentTab.GetNumRows(); ++i )
+	for( uint32 i = 0; i < dbcTalentTab.GetNumRows(); ++i )
 	{
 		TalentTabEntry const* tab_info = dbcTalentTab.LookupRow( i );
-		if( tab_info == NULL )
+
+		// Don't add invalid TalentTabs or Hunter Pet TalentTabs (ClassMask == 0) to the InspectTalentTabPages
+		if( tab_info == NULL || tab_info->ClassMask == 0 )
 			continue;
 
 		talent_pos = 0;

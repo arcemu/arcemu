@@ -930,25 +930,26 @@ struct TalentTabEntry
 {
     uint32	TalentTabID;
     //char*	Name;
-	//unit32  unk3
-	//unit32  unk4
-	//unit32  unk5
-	//unit32  unk6
-	//unit32  unk7
-	//unit32  unk8
-	//unit32  unk9
-	//unit32  unk10
-	//unit32  unk11
-	//unit32  unk12
-	//unit32  unk13
-	//unit32  unk14
-	//unit32  unk15
-	//unit32  unk16
-	//unit32  unk17
-	//unit32  unk18
-	//unit32  unk19
-	//unit32  unk20
+    //uint32	unk3;
+    //uint32	unk4;
+    //uint32	unk5;
+    //uint32	unk6;
+    //uint32	unk7;
+    //uint32	unk8;
+    //uint32	unk9;
+    //uint32	unk10;
+    //uint32	unk11;
+    //uint32	unk12;
+    //uint32	unk13;
+    //uint32	unk14;
+    //uint32	unk15;
+    //uint32	unk16;
+    //uint32	unk17;
+    //uint32	unk18;
+    //uint32	unk19;
+    //uint32	unk20;
     uint32	ClassMask;
+    //uint32	unk21;
     uint32	TabPage;
     //char*	InternalName;
 };
