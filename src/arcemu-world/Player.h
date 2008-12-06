@@ -1489,6 +1489,20 @@ public:
 	uint32 m_MountSpellId;
     
 	ARCEMU_INLINE bool IsMounted() {return (m_MountSpellId!=0 ? true : false); }
+
+	void SendMountResult(uint32 result)
+	{
+		WorldPacket data(SMSG_MOUNTRESULT, 4);
+		data << (uint32)result;
+		GetSession()->SendPacket(&data);
+	}
+
+	void SendDismountResult(uint32 result)
+	{
+		WorldPacket data(SMSG_DISMOUNTRESULT, 4);
+		data << (uint32)result;
+		GetSession()->SendPacket(&data);
+	}
 	
     bool bHasBindDialogOpen;
 	bool bGMTagOn;

@@ -211,5 +211,26 @@ enum PetTameFailure
 	PETTAME_CANTCONTROLEXOTIC		= 12, // Used if you do not have the beast mastery talent for hunters and try to tame an exotic pet
 	PETTAME_UNKNOWNERROR			= 13,
 };
+
+enum MOUNT_FAILURE
+{
+	ERR_MOUNT_NOTMOUNTABLE                                       = 0,
+	ERR_MOUNT_TOOFARAWAY                                         = 1,
+	ERR_MOUNT_ALREADYMOUNTED                                     = 2,
+	ERR_MOUNT_INVALIDMOUNTEE                                     = 3,
+	ERR_MOUNT_NOTYOURPET                                         = 4,
+	ERR_MOUNT_OTHER                                              = 5,
+	ERR_MOUNT_LOOTING                                            = 6,
+	ERR_MOUNT_RACECANTMOUNT                                      = 7,
+	ERR_MOUNT_SHAPESHIFTED                                       = 8,
+	ERR_MOUNT_FORCEDDISMOUNT                                     = 9
+};
+
+enum DISMOUNT_FAILURE
+{
+	ERR_DISMOUNT_NOPET											 = 0,
+	ERR_DISMOUNT_NOTMOUNTED                                      = 1,
+	ERR_DISMOUNT_NOTYOURPET                                      = 2
+};
 #endif
 
