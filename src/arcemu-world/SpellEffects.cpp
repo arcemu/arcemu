@@ -3472,7 +3472,7 @@ void Spell::SpellEffectLearnSpell(uint32 i) // Learn Spell
 		return;
 	}
 
-	if( GetProto()->Id == 483 )		// "Learning"
+	if( GetProto()->Id == 483 || GetProto()->Id == 55884 )        // "Learning"
 	{
 		if( !i_caster || !p_caster )
 			return;
