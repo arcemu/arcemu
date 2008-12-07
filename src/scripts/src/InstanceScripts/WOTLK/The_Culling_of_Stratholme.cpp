@@ -21,7 +21,7 @@
 #include "../Setup.h"
 #include "../Base.h"
 
-// Meathook \\ 
+// Meathook
 #define Meathook			26529
 #define ConstrictingChains	52696
 #define DiseaseExpulsion	52666
@@ -42,7 +42,7 @@ class MeathookAI : public ArcScriptBossAI
 	}
 };
 
-// Salramm the Fleshcrafter \\ 
+// Salramm the Fleshcrafter 
 #define SalrammtheFleshcrafter		26530
 #define ExplodeGhoul				52480
 #define ShadowBolt					15232
@@ -68,7 +68,7 @@ class SalrammtheFleshcrafterAI : public ArcScriptBossAI
 
 };
 
-// Chrono-Lord Epoch \\ 
+// Chrono-Lord Epoch 
 #define ChronoLordEpoch	26532
 #define CurseofExertion	52772
 #define TimeWarp		52766
@@ -91,7 +91,7 @@ class ChronoLordEpochAI : public ArcScriptBossAI
 
 };
 
-// Mal'Ganis \\ 
+// Mal'Ganis 
 #define MalGanis		26533
 #define CarrionSwarm	52720
 #define MindBlast		52722

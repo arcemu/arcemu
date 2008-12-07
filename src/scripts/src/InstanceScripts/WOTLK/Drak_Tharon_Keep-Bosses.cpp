@@ -24,10 +24,10 @@
 #include "../Base.h"
 
 
-//* Trollgore *\\ 
+// Trollgore
 #define TrollgoreEntry 26630
 
-//* Spells *\\ 
+// Spells
 #define Consume 49380 // http://wotlk.wowhead.com/?spell=49380
 #define CorpseExplode 49555 // http://wotlk.wowhead.com/?spell=49555
 #define Crush 49639 // http://wotlk.wowhead.com/?spell=49639
@@ -46,17 +46,17 @@ class TrollgoreAI : public ArcScriptBossAI
 };
 
 
-//* Novos the Summoner *\\ 
+// Novos the Summoner
 #define NovostheSummonerEntry 26631
 
-//* Spells *\\ 
+// Spells
 #define ArcaneBlast 49198 // http://wotlk.wowhead.com/?spell=49198
 #define ArcaneField 47346 // http://wotlk.wowhead.com/?spell=47346
 #define Blizzard 49034 // http://wotlk.wowhead.com/?spell=49034
 #define Frostbolt 49037 // http://wotlk.wowhead.com/?spell=49037
 #define WrathofMisery 50089 // http://wotlk.wowhead.com/?spell=50089
 
-//* Notes *\\ 
+// Notes
 
 //- Phase 1:
 //Casts Arcane Field, making him immune to damage and inflicting two further effects on anyone within 10 yards. Slows movement speed by 50% and inflicts 1665 to 1935 Arcane damage every second.
@@ -108,10 +108,10 @@ class NovostheSummonerAI : public ArcScriptBossAI
 };
 
 
-//* The Prophet Tharon'ja *\\ 
+// The Prophet Tharon'ja
 #define TheProphetTharonjaEntry 26632
 
-//* Spells *\\ 
+// Spells
 #define CurseofLife 49527 // http://wotlk.wowhead.com/?spell=49527
 #define DecayFlesh 49356 // http://wotlk.wowhead.com/?spell=49356
 #define EyeBeam 49544 // http://wotlk.wowhead.com/?spell=49544

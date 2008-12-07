@@ -21,14 +21,14 @@
 #include "../Setup.h"
 #include "../Base.h"
 
-// Prince Taldaram \\ 
-#define PrinceTaldaram		29308
+// Prince Taldaram
+#define PrinceTaldaram	29308
 
-// Spells \\ 
-#define Bloodthirst			55968
-#define ConjureFlameSphere  55931
+// Spells
+#define Bloodthirst	55968
+#define ConjureFlameSphere	55931
 #define EmbraceoftheVampyr	55959
-#define Vanish				55964
+#define Vanish			55964
 
 class PrinceTaldaramAI : public ArcScriptBossAI
 {
