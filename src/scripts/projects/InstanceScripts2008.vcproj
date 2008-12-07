@@ -578,15 +578,15 @@
 			Name="WOTLK"
 			>
 			<File
-				RelativePath="..\src\InstanceScripts\WOTLK\Ahn&apos;kahet The Old Kingdom.cpp"
+				RelativePath="..\src\InstanceScripts\WOTLK\Ahn_kahet_The_Old_Kingdom.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\src\InstanceScripts\WOTLK\Drak&apos;Tharon Keep -- Bosses.cpp"
+				RelativePath="..\src\InstanceScripts\WOTLK\Drak_Tharon_Keep-Bosses.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\src\InstanceScripts\WOTLK\The Culling of Stratholme.cpp"
+				RelativePath="..\src\InstanceScripts\WOTLK\The_Culling_of_Stratholme.cpp"
 				>
 			</File>
 		</Filter>

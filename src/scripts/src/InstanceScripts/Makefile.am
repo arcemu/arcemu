@@ -7,7 +7,10 @@ AM_CXXFLAGS = -DSCRIPTLIB
 
 lib_LTLIBRARIES = libMoonInstanceScripts.la
 
-libMoonInstanceScripts_la_SOURCES = Instance_Arcatraz.cpp \
+libMoonInstanceScripts_la_SOURCES = WOTLK/Ahn_kahet_The_Old_Kingdom.cpp \
+WOTLK/Drak_Tharon_Keep-Bosses.cpp \
+WOTLK/The_Culling_of_Stratholme.cpp \
+Instance_Arcatraz.cpp \
 Instance_AuchenaiCrypts.cpp \
 Instance_BlackMorass.cpp \
 Instance_BlackrockDepths.cpp \
@@ -53,8 +56,5 @@ Raid_WorldBosses.cpp \
 Raid_ZulAman.cpp \
 Raid_SunwellPlateau.cpp \
 Event_DarkPortal.cpp \
-WOTLK\Ahn'kahet The Old Kingdom.cpp \
-WOTLK\Drak'Tharon Keep -- Bosses.cpp \
-WOTLK\The Culling of Stratholme.cpp \
 Base.cpp \
 Setup.cpp
