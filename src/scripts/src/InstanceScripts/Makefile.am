@@ -53,5 +53,8 @@ Raid_WorldBosses.cpp \
 Raid_ZulAman.cpp \
 Raid_SunwellPlateau.cpp \
 Event_DarkPortal.cpp \
+WOTLK\Ahn'kahet The Old Kingdom.cpp \
+WOTLK\Drak'Tharon Keep -- Bosses.cpp \
+WOTLK\The Culling of Stratholme.cpp \
 Base.cpp \
 Setup.cpp

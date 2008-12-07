@@ -18,20 +18,20 @@
 ## wdb    - World Database
 ##########################################
 #MySQL Username and Password
-user=wow-dev
-pass=wow-dev
+user=changeme
+pass=changeme
 ## Logon Database
 logon=changeme
 ## Character Database
-chr=wow-dev-char
+chr=changeme
 ## World Database
-wdb=wow-dev-world
+wdb=changeme
 #############################################################################
 ##
 ##    A D V A N C E D   U S E R   C O N F I G U R A T I O N   A R E A
 ##
 #############################################################################
-server=lisa
+server=localhost
 port=3306
 #############################################################################
 ##
