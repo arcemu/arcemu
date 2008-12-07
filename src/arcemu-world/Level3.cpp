@@ -2044,7 +2044,7 @@ bool ChatHandler::HandlePlayerInfo(const char* args, WorldSession * m_session)
 
 //	char* infos = new char[128];
 	static const char* classes[12] =
-	{"None","Warrior", "Paladin", "Hunter", "Rogue", "Priest", "None", "Shaman", "Mage", "Warlock", "None", "Druid"};
+	{"None","Warrior", "Paladin", "Hunter", "Rogue", "Priest", "Death Knight", "Shaman", "Mage", "Warlock", "None", "Druid"};
 	static const char* races[12] =
 	{"None","Human","Orc","Dwarf","Night Elf","Undead","Tauren","Gnome","Troll","None","Blood Elf","Draenei"};
 
