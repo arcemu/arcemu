@@ -18,8 +18,8 @@
  */
 
 #include "StdAfx.h"
-#include "..\Setup.h"
-#include "..\Base.h"
+#include "../Setup.h"
+#include "../Base.h"
 
 // Meathook \\ 
 #define Meathook			26529

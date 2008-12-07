@@ -18,8 +18,8 @@
  */
 
 #include "StdAfx.h"
-#include "..\Setup.h"
-#include "..\Base.h"
+#include "../Setup.h"
+#include "../Base.h"
 
 // Prince Taldaram \\ 
 #define PrinceTaldaram		29308

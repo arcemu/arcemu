@@ -20,8 +20,8 @@
 	// Initial import of my scripts - Bapes
 
 #include "StdAfx.h"
-#include "..\Setup.h"
-#include "..\Base.h"
+#include "../Setup.h"
+#include "../Base.h"
 
 
 //* Trollgore *\\ 
