@@ -10121,6 +10121,13 @@ void Player::_AddSkillLine(uint32 SkillLine, uint32 Curr_sk, uint32 Max_sk)
 	if(SkillLine==SKILL_POISONS && !HasSpell(2842))
 		addSpell(2842);
 
+	//hackfix for runeforging
+	if(SkillLine==SKILL_RUNEFORGING && !HasSpell(53341) && !HasSpell(53343) )
+	{
+		addSpell( 53341 ); // Rune of Cinderglacier
+		addSpell( 53343 ); // Rune of Razorice
+	}
+
 	// Displaying bug fix
 	_UpdateSkillFields();
 }
