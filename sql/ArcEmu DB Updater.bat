@@ -139,6 +139,8 @@ ECHO [Importing] 1735_quests.sql
 mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% < world_updates\1735_quests.sql
 ECHO [Importing] 1746_spawns.sql
 mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% < world_updates\1746_spawns.sql
+ECHO [Importing] 1797_transport_data.sql
+mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% < world_updates\1797_transport_data.sql
 ECHO [Importing] spellfixes.sql
 mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% < world_updates\spellfixes.sql
 ECHO [Importing] Finished
@@ -262,8 +264,11 @@ ECHO [Importing] 1735_quests.sql
 mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% < world_updates\1735_quests.sql
 ECHO [Importing] 1746_spawns.sql
 mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% < world_updates\1746_spawns.sql
+ECHO [Importing] 1797_transport_data.sql
+mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% < world_updates\1797_transport_data.sql
 ECHO [Importing] spellfixes.sql
 mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% < world_updates\spellfixes.sql
+
 ECHO [Importing] World Updates Finished
 ECHO.
 ECHO.
