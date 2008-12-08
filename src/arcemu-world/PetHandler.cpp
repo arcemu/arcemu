@@ -328,25 +328,29 @@ void WorldSession::HandleStabledPetList(WorldPacket & recv_data)
 	SendPacket(&data);
 }
 
-void WorldSession::HandleBuyStableSlot(WorldPacket &recv_data)
+void WorldSession::HandleBuyStableSlot( WorldPacket &recv_data )
 {
-	if(!_player->IsInWorld() || _player->GetStableSlotCount() == 2) return;
-	uint8 scount = _player->GetStableSlotCount();
-	BankSlotPrice* bsp = dbcStableSlotPrices.LookupEntry(scount+1);
-	int32 cost = (bsp != NULL) ? bsp->Price : 99999999;
-	if(cost > (int32)_player->GetUInt32Value(PLAYER_FIELD_COINAGE))
+	if( !_player->IsInWorld() || _player->GetStableSlotCount() >= 4 ) 
 		return;
 
-	_player->ModUnsigned32Value(PLAYER_FIELD_COINAGE, -cost);
+	BankSlotPrice* bsp = dbcStableSlotPrices.LookupEntry( _player->GetStableSlotCount() + 1 );
+	int32 cost = ( bsp != NULL ) ? bsp->Price : 99999999;
 	
-	WorldPacket data(1);
-	data.SetOpcode(SMSG_STABLE_RESULT);
-	data << uint8(0x0A);
-	SendPacket(&data);
-	if(_player->GetStableSlotCount() > 2)
-		_player->m_StableSlotCount = 2;
-	else
-		_player->m_StableSlotCount++;
+	WorldPacket data( SMSG_STABLE_RESULT, 1 );
+	
+	if( cost > (int32)_player->GetUInt32Value( PLAYER_FIELD_COINAGE ) )
+	{
+		data << uint8(1); // not enough money
+		SendPacket( &data );
+ 		return;
+	}
+ 	_player->ModUnsigned32Value( PLAYER_FIELD_COINAGE, -cost );
+ 	
+	data << uint8( 0x0A );
+	SendPacket( &data );
+ 	
+	_player->m_StableSlotCount++;
+
 #ifdef OPTIMIZED_PLAYER_SAVING
 	_player->save_Misc();
 #endif
@@ -429,6 +433,7 @@ void WorldSession::HandlePetUnlearn(WorldPacket & recv_data)
 		data << uint64( _player->GetGUID() );
 		data << uint32( 0 );
 		data << uint8( 2 );		//not enough money
+		SendPacket( &data );
 		return;	
 	}
 	_player->ModUnsigned32Value( PLAYER_FIELD_COINAGE, -cost );
