@@ -3783,6 +3783,7 @@ void Player::RemoveFromWorld()
 		event_RemoveEvents( EVENT_PLAYER_TAXI_INTERPOLATE );
 
 	m_changingMaps = true;
+	m_playerInfo->lastOnline = UNIXTIME; // don't destroy conjured items yet
 }
 
 // TODO: perhaps item should just have a list of mods, that will simplify code
