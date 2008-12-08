@@ -498,7 +498,7 @@ struct Lock
 	/* Actually it is:
 	uint32 Id;
     uint32 locktype[8];
-    uint32 lockmisc[8];
+    uint32 lockindex[8];
     uint32 minlockskill[8];
     uint32 action[8];
 	*/
@@ -541,8 +541,7 @@ struct skilllinespell //SkillLineAbility.dbc
     uint32 acquireMethod;
     uint32 grey;
     uint32 green;
-    //uint32 unk10;
-    //uint32 unk11;
+    //uint32 abandonable;
     uint32 reqTP;
 };
 
@@ -599,42 +598,32 @@ struct skilllineentry //SkillLine.dbc
     uint32 type;
     uint32 skillCostsID;
     char* Name;
-    //int32 NameAlt1;
-    //uint32 NameAlt2;
-    //uint32 NameAlt3;
-    //uint32 NameAlt4;
-    //uint32 NameAlt5;
-    //uint32 NameAlt6;
-    //uint32 NameAlt7;
-    //uint32 NameAlt8;
-    //uint32 NameAlt9;
-    //uint32 NameAlt10;
-    //uint32 NameAlt11;
-    //uint32 NameAlt12;
-    //uint32 NameAlt13;
-    //uint32 NameAlt14;
-    //uint32 NameAlt15;
+    //int32 NameAlt[15];
     //uint32 NameFlags;
     //uint32 Description;
-    //uint32 DescriptionAlt1;
-    //uint32 DescriptionAlt2;
-    //uint32 DescriptionAlt3;
-    //uint32 DescriptionAlt4;
-    //uint32 DescriptionAlt5;
-    //uint32 DescriptionAlt6;
-    //uint32 DescriptionAlt7;
-    //uint32 DescriptionAlt8;
-    //uint32 DescriptionAlt9;
-    //uint32 DescriptionAlt10;
-    //uint32 DescriptionAlt11;
-    //uint32 DescriptionAlt12;
-    //uint32 DescriptionAlt13;
-    //uint32 DescriptionAlt14;
-    //uint32 DescriptionAlt15;
+    //uint32 DescriptionAlt[15];
     //uint32 DescriptionFlags;
-    //uint32 unk2;
-
+    //uint32 spellIconID;
 };
+
+/*struct SkillRaceClassInfoEntry
+{
+	m_ID;
+	m_skillID;
+	m_raceMask;
+	m_classMask;
+	m_flags;
+	m_minLevel;
+	m_skillTierID;
+	m_skillCostIndex;
+}
+
+struct SkillTiersEntry
+{
+	m_ID;
+	m_cost[16];
+	m_value[16];
+}*/
 
 // Struct for the entry in Spell.dbc
 struct SpellEntry
@@ -1068,8 +1057,8 @@ struct FactionTemplateDBC
 {
     uint32 ID;
     uint32 Faction;
-    uint32 FactionGroup;
     uint32 Mask;
+	uint32 FactionGroup;
     uint32 FriendlyMask;
     uint32 HostileMask;
     uint32 EnemyFactions[4];
@@ -1156,15 +1145,15 @@ struct DBCTaxiPathNode
 {
     uint32 id;
     uint32 path;
-    uint32 seq;
+    uint32 seq;			// nodeIndex
     uint32 mapid;
     float x;
     float y;
     float z;
-    uint32 unk1;
+    uint32 flags;
     uint32 waittime;
-    //uint32 unk2;
-    //uint32 unk3;
+    //uint32 arivalEventID;
+    //uint32 departureEventID;
 };
 
 struct CreatureSpellDataEntry
@@ -1321,12 +1310,66 @@ struct AreaTriggerEntry
     float     x;				// 2
     float     y;				// 3
     float     z;				// 4
-    float     o;				// 5
+    float     o;				// 5 radius?
     float     box_x;			// 6 extent x edge
     float     box_y;			// 7 extent y edge
     float     box_z;			// 8 extent z edge
     float     box_o;			// 9 extent rotation by about z axis
 };
+
+/*struct VehicleEntry
+{
+	m_ID;
+	m_flags;
+	m_turnSpeed;
+	m_pitchSpeed;
+	m_pitchMin;
+	m_pitchMax;
+	m_seatID[8];
+}
+
+struct VehicleSeatEntry
+{
+	m_ID;
+	m_flags;
+	m_attachmentID;
+	m_attachmentOffsetX;
+	m_attachmentOffsetY;
+	m_attachmentOffsetZ;
+	m_enterPreDelay;
+	m_enterSpeed;
+	m_enterGravity;
+	m_enterMinDuration;
+	m_enterMaxDuration;
+	m_enterMinArcHeight;
+	m_enterMaxArcHeight;
+	m_enterAnimStart;
+	m_enterAnimLoop;
+	m_rideAnimStart;
+	m_rideAnimLoop;
+	m_rideUpperAnimStart;
+	m_rideUpperAnimLoop;
+	m_exitPreDelay;
+	m_exitSpeed;
+	m_exitGravity;
+	m_exitMinDuration;
+	m_exitMaxDuration;
+	m_exitMinArcHeight;
+	m_exitMaxArcHeight;
+	m_exitAnimStart;
+	m_exitAnimLoop;
+	m_exitAnimEnd;
+}
+
+struct WeatherEntry
+{
+	m_ID;
+	m_ambienceID;
+	m_effectType;
+	m_effectColor[3];
+	m_effectTexture;
+}
+*/
 
 #pragma pack(pop)
 

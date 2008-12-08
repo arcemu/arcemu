@@ -65,7 +65,7 @@ bool FillPathVector(uint32 PathID, TransportPath & Path)
 			Path[i].x		   = pathnode->x;
 			Path[i].y		   = pathnode->y;
 			Path[i].z		   = pathnode->z;
-			Path[i].actionFlag  = pathnode->unk1;
+			Path[i].actionFlag  = pathnode->flags;
 			Path[i].delay	   = pathnode->waittime;
 			++i;
 		}
