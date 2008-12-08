@@ -43,7 +43,7 @@ bool Transporter::CreateAsTransporter(uint32 EntryID, const char* Name, int32 Ti
 	// Set position
 	SetMapId(m_WayPoints[0].mapid);
 	SetPosition(m_WayPoints[0].x, m_WayPoints[0].y, m_WayPoints[0].z, 0);
-
+	SetUInt32Value(GAMEOBJECT_LEVEL, m_period);
 	// Add to world
 	AddToWorld();
 
