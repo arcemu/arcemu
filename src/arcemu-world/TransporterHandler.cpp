@@ -407,6 +407,12 @@ void Transporter::TransportPassengers(uint32 mapid, uint32 oldmap, float x, floa
 				continue;
 			}
 
+			if(mapid == 571 && !plr->GetSession()->HasFlag(ACCOUNT_FLAG_XPACK_02))
+			{
+				plr->RepopAtGraveyard(plr->GetPositionX(), plr->GetPositionY(), plr->GetPositionZ(), plr->GetMapId());
+				continue;
+			}
+			
 			plr->GetSession()->SendPacket(&Pending);
 			plr->_Relocate(mapid, v, false, true, 0);
 

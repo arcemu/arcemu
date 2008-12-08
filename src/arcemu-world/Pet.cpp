@@ -385,11 +385,11 @@ void Pet::SendSpellsToOwner()
 	*data << uint32(0x00000101);//unk2
 	*data << uint32(0x00000100);//unk3
 	
-	uint32 state_flags = 0;
+/*	uint32 state_flags = 0;
 	if( GetAIInterface() != NULL && GetAIInterface()->getUnitToFollow() != NULL )
 		 state_flags = 0x100;		// 0x0 = stay, 0x100 = follow, 0x200 = attack
 	state_flags |= GetPetState();	// 0x0 = passive, 0x1 = defensive, 0x2 = agressive
-	*data << state_flags;			
+	*data << state_flags; */		
 																			
 	// Send the actionbar
 	for(uint32 i = 0; i < 10; ++i)
