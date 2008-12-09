@@ -1645,6 +1645,9 @@ public:
 	// Hack fix here!
 	void ForceZoneUpdate();
 
+	bool HasAreaExplored(AreaTable const*);
+	bool HasOverlayUncovered(uint32 overlayID);
+
 	/*****************
 	  PVP Stuff
 	******************/

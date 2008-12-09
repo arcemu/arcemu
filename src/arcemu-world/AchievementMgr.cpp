@@ -201,6 +201,10 @@ void AchievementMgr::UpdateAchievementCriteria(AchievementCriteriaTypes type, ui
 				if (achievementCriteria->loot_item.itemID == miscvalue1)
 					UpdateCriteriaProgress(achievementCriteria, 1);
 				break;
+			case ACHIEVEMENT_CRITERIA_TYPE_EXPLORE_AREA:
+				if (GetPlayer()->HasOverlayUncovered(achievementCriteria->explore_area.areaReference))
+					SetCriteriaProgress(achievementCriteria, 1);
+				break;
 			//End of Achievement List
             default:
                 return;
@@ -224,6 +228,10 @@ void AchievementMgr::UpdateAchievementCriteria(AchievementCriteriaTypes type)
 			//Start of Achievement List
 		case ACHIEVEMENT_CRITERIA_TYPE_REACH_LEVEL:
 			SetCriteriaProgress(achievementCriteria, GetPlayer()->getLevel());
+			break;
+		case ACHIEVEMENT_CRITERIA_TYPE_EXPLORE_AREA:
+			if (GetPlayer()->HasOverlayUncovered(achievementCriteria->explore_area.areaReference))
+				SetCriteriaProgress(achievementCriteria, 1);
 			break;
 			//End of Achievement List
 		}
@@ -290,6 +298,8 @@ bool AchievementMgr::IsCompletedCriteria(AchievementCriteriaEntry const* achieve
 		case ACHIEVEMENT_CRITERIA_TYPE_LOOT_ITEM:
 		case ACHIEVEMENT_CRITERIA_TYPE_OWN_ITEM:
 			return progress->counter >= achievementCriteria->loot_item.itemCount;
+		case ACHIEVEMENT_CRITERIA_TYPE_EXPLORE_AREA:
+			return progress->counter >= 1;
 		//End of Achievement List
 		case ACHIEVEMENT_CRITERIA_TYPE_COMPLETE_ACHIEVEMENT:
 			return m_completedAchievements.find(achievementCriteria->complete_achievement.linkedAchievement) != m_completedAchievements.end();
@@ -318,37 +328,37 @@ void AchievementMgr::CompletedCriteria(AchievementCriteriaEntry const* criteria)
 
 AchievementCompletionState AchievementMgr::GetAchievementCompletionState(AchievementEntry const* entry)
 {
-    if(m_completedAchievements.find(entry->ID)!=m_completedAchievements.end())
+	if(m_completedAchievements.find(entry->ID)!=m_completedAchievements.end())
 	{
-        return ACHIEVEMENT_COMPLETED_COMPLETED_STORED;
+		return ACHIEVEMENT_COMPLETED_COMPLETED_STORED;
 	}
 
-    bool foundOutstanding = false;
-    for ( uint32 entryId = 0; entryId<dbcAchievementCriteriaStore.GetNumRows(); entryId++ )
-    {
-         AchievementCriteriaEntry const* criteria = dbcAchievementCriteriaStore.LookupEntry(entryId);
-         if( criteria || criteria->referredAchievement!= entry->ID )
-		 {
-             continue;
-		 }
-
-         if( IsCompletedCriteria(criteria) && criteria->completionFlag & ACHIEVEMENT_CRITERIA_COMPLETE_FLAG_ALL )
-		 {
-             return ACHIEVEMENT_COMPLETED_COMPLETED_NOT_STORED;
-		 }
-
-         if( !IsCompletedCriteria(criteria) )
-		 {
-             foundOutstanding = true;
-		 }
-    }
-    if( foundOutstanding )
+	bool foundOutstanding = false;
+	for ( uint32 entryId = 0; entryId<dbcAchievementCriteriaStore.GetNumRows(); entryId++ )
 	{
-        return ACHIEVEMENT_COMPLETED_NONE;
+		AchievementCriteriaEntry const* criteria = dbcAchievementCriteriaStore.LookupEntry(entryId);
+		if( !criteria || criteria->referredAchievement!= entry->ID )
+		{
+			continue;
+		}
+
+		if( IsCompletedCriteria(criteria) && criteria->completionFlag & ACHIEVEMENT_CRITERIA_COMPLETE_FLAG_ALL )
+		{
+			return ACHIEVEMENT_COMPLETED_COMPLETED_NOT_STORED;
+		}
+
+		if( !IsCompletedCriteria(criteria) )
+		{
+			foundOutstanding = true;
+		}
 	}
-    else
+	if( foundOutstanding )
 	{
-        return ACHIEVEMENT_COMPLETED_COMPLETED_NOT_STORED;
+		return ACHIEVEMENT_COMPLETED_NONE;
+	}
+	else
+	{
+		return ACHIEVEMENT_COMPLETED_COMPLETED_NOT_STORED;
 	}
 }
 
@@ -407,17 +417,17 @@ void AchievementMgr::CompletedAchievement(AchievementEntry const* achievement)
 
 void AchievementMgr::SendAllAchievementData(Player* player)
 {
-    WorldPacket data( SMSG_ALL_ACHIEVEMENT_DATA,4*2+m_completedAchievements.size()*4*2+m_completedAchievements.size()*7*4 );
-    BuildAllDataPacket(&data);
-    player->GetSession()->SendPacket(&data);
+	WorldPacket data( SMSG_ALL_ACHIEVEMENT_DATA,4*3+m_completedAchievements.size()*4*2+m_criteriaProgress.size()*7*4 );
+	BuildAllDataPacket(&data);
+	player->GetSession()->SendPacket(&data);
 }
 
 void AchievementMgr::SendRespondInspectAchievements(Player* player)
 {
-    WorldPacket data( SMSG_ALL_ACHIEVEMENT_DATA,4+4*2+m_completedAchievements.size()*4*2+m_completedAchievements.size()*7*4 );
+	WorldPacket data( SMSG_ALL_ACHIEVEMENT_DATA,4+4*3+m_completedAchievements.size()*4*2+m_criteriaProgress.size()*7*4 );
 	data.append(GetPlayer()->GetGUID());
-    BuildAllDataPacket(&data);
-    player->GetSession()->SendPacket(&data);
+	BuildAllDataPacket(&data);
+	player->GetSession()->SendPacket(&data);
 }
 
 void AchievementMgr::BuildAllDataPacket(WorldPacket *data)

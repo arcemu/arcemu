@@ -1259,6 +1259,38 @@ void Player::EventAttackStop()
 	m_attacking = false;
 }
 
+bool Player::HasOverlayUncovered(uint32 overlayID)
+{
+	WorldMapOverlay const* overlay = dbcWorldMapOverlayStore.LookupEntry(overlayID);
+	if (overlay == 0)
+		return false;
+
+	if (overlay->areaID && HasAreaExplored(dbcArea.LookupEntry(overlay->areaID)))
+		return true;
+	if (overlay->areaID_2 && HasAreaExplored(dbcArea.LookupEntry(overlay->areaID_2)))
+		return true;
+	if (overlay->areaID_3 && HasAreaExplored(dbcArea.LookupEntry(overlay->areaID_3)))
+		return true;
+	if (overlay->areaID_4 && HasAreaExplored(dbcArea.LookupEntry(overlay->areaID_4)))
+		return true;
+
+	return false;
+}
+
+bool Player::HasAreaExplored(AreaTable const * at)
+{
+	if (at == 0)
+		return false;
+
+	int offset = at->explorationFlag / 32;
+	offset += PLAYER_EXPLORED_ZONES_1;
+
+	uint32 val = (uint32)(1 << (at->explorationFlag % 32));
+	uint32 currFields = GetUInt32Value(offset);
+
+	return (currFields & val) != 0;
+}
+
 void Player::_EventExploration()
 {
 	if (isDead())
@@ -1337,7 +1369,7 @@ void Player::_EventExploration()
 	{
 		strcpy(areaname, "UNKNOWN");
 	}
-    sChatHandler.BlueSystemMessageToPlr(this,areaname);*/
+	sChatHandler.BlueSystemMessageToPlr(this,areaname);*/
 
 	int offset = at->explorationFlag / 32;
 	offset += PLAYER_EXPLORED_ZONES_1;
@@ -1350,7 +1382,7 @@ void Player::_EventExploration()
 		m_AreaID = AreaId;
 		UpdatePvPArea();
 		if(GetGroup())
-            GetGroup()->UpdateOutOfRangePlayer(this, 128, true, NULL);
+			GetGroup()->UpdateOutOfRangePlayer(this, 128, true, NULL);
 	}
 
 	// Zone update, this really should update to a parent zone if one exists.
@@ -1371,7 +1403,7 @@ void Player::_EventExploration()
 
 	bool rest_on = false;
 	// Check for a restable area
-    if(at->AreaFlags & AREA_CITY_AREA || at->AreaFlags & AREA_CITY)
+	if(at->AreaFlags & AREA_CITY_AREA || at->AreaFlags & AREA_CITY)
 	{
 		// check faction
 		if((at->category == AREAC_ALLIANCE_TERRITORY && GetTeam() == 0) || (at->category == AREAC_HORDE_TERRITORY && GetTeam() == 1) )
@@ -1385,13 +1417,13 @@ void Player::_EventExploration()
 	}
 	else
 	{
-        //second AT check for subzones.
-        if(at->ZoneId)
-        {
-            AreaTable * at2 = dbcArea.LookupEntry(at->ZoneId);
-            if(at2 && (at2->AreaFlags & AREA_CITY_AREA || at2->AreaFlags & AREA_CITY ) )
-            {
-                if((at2->category == AREAC_ALLIANCE_TERRITORY && GetTeam() == 0) || (at2->category == AREAC_HORDE_TERRITORY && GetTeam() == 1) )
+		//second AT check for subzones.
+		if(at->ZoneId)
+		{
+			AreaTable * at2 = dbcArea.LookupEntry(at->ZoneId);
+			if(at2 && (at2->AreaFlags & AREA_CITY_AREA || at2->AreaFlags & AREA_CITY ) )
+			{
+				if((at2->category == AREAC_ALLIANCE_TERRITORY && GetTeam() == 0) || (at2->category == AREAC_HORDE_TERRITORY && GetTeam() == 1) )
 				{
 					rest_on = true;
 				}
@@ -1399,7 +1431,7 @@ void Player::_EventExploration()
 				{
 					rest_on = true;
 				}
-            }
+			}
 		}
 	}
 
@@ -1431,6 +1463,8 @@ void Player::_EventExploration()
 		WorldPacket data(SMSG_EXPLORATION_EXPERIENCE, 8);
 		data << at->AreaId << explore_xp;
 		m_session->SendPacket(&data);
+
+		GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_EXPLORE_AREA);
 
 		if(getLevel() < GetUInt32Value(PLAYER_FIELD_MAX_LEVEL) && explore_xp)
 			GiveXP(explore_xp, 0, false);
@@ -2594,8 +2628,6 @@ bool Player::LoadFromDB(uint32 guid)
 	return true;
 
    	//CharacterDatabase.Query("SELECT achievement, date FROM character_achievement WHERE guid = '%u'", GetUInt32Value(OBJECT_FIELD_GUID))
-	m_achievementMgr.LoadFromDB(CharacterDatabase.Query("SELECT achievement, date FROM character_achievement WHERE guid = '%u'", GetUInt32Value(OBJECT_FIELD_GUID)),CharacterDatabase.Query("SELECT criteria, counter, date FROM character_achievement_progress WHERE guid = '%u'", GetUInt32Value(OBJECT_FIELD_GUID)));
-	m_achievementMgr.CheckAllAchievementCriteria();
 }
 
 void Player::LoadFromDBProc(QueryResultVector & results)
@@ -3330,6 +3362,11 @@ void Player::LoadFromDBProc(QueryResultVector & results)
 	}
 
 	// END SOCIAL
+
+	// Load achievements - trying to do this asynchronously causes a crash :/
+	m_achievementMgr.LoadFromDB(CharacterDatabase.Query("SELECT achievement, date FROM character_achievement WHERE guid = '%u'", GetUInt32Value(OBJECT_FIELD_GUID)),CharacterDatabase.Query("SELECT criteria, counter, date FROM character_achievement_progress WHERE guid = '%u'", GetUInt32Value(OBJECT_FIELD_GUID)));
+	m_achievementMgr.CheckAllAchievementCriteria();
+	m_achievementMgr.SendAllAchievementData(this);
 
 	// Check skills that player shouldn't have
 	if (_HasSkillLine(SKILL_DUAL_WIELD) && !HasSpell(674)) {
