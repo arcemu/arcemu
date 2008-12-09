@@ -243,7 +243,7 @@ Player::Player( uint32 guid ) : m_mailBox(guid), m_achievementMgr(this)
 		m_casted_amount[i] = 0;
 	} 
 		
-	for(i = 0; i < 6; i++)
+	for(i = 0; i < 5; i++)
 		for(j = 0; j < 7; j++)
 		{	
 			SpellHealDoneByAttribute[i][j] = 0;
