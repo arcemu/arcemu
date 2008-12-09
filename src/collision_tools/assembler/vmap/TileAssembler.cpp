@@ -1,6 +1,6 @@
-/*
+/* 
  * Copyright (C) 2005,2006,2007 MaNGOS <http://www.mangosproject.org/>
- * Copyright (C) 2008 Arcemu Team <http://www.arcemu.org/>
+ * Copyright (C) 2008 Burlex <burlex@gmail.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,14 +24,11 @@
 #include "CoordModelMapping.h"
 #include "ModelContainer.h"
 
-#include <limits.h>
 #include <string.h>
 
 #ifdef _ASSEMBLER_DEBUG
 FILE *g_df = NULL;
 #endif
-
-using namespace G3D;
 
 namespace VMAP
 {
@@ -74,12 +71,13 @@ namespace VMAP
         addWorldAreaMapId(0);                               //Azeroth
         addWorldAreaMapId(1);                               //Kalimdor
         addWorldAreaMapId(530);                             //Expansion01
-        addWorldAreaMapId(571);                             //Expansion02
+        addWorldAreaMapId(571);                             //Northrend
     }
     //=================================================================
 
     std::string getModNameFromModPosName(const std::string& pModPosName)
     {
+
         size_t spos = pModPosName.find_first_of('#');
         std::string modelFileName = pModPosName.substr(0,spos);
         return(modelFileName);
@@ -93,7 +91,7 @@ namespace VMAP
 
         if(!iUniqueNameIds.containsKey(pName))
         {
-            ++iCurrentUniqueNameId;
+            iCurrentUniqueNameId++;
             iUniqueNameIds.set(pName, iCurrentUniqueNameId);
         }
         result = iUniqueNameIds.get(pName);
@@ -141,6 +139,7 @@ namespace VMAP
     //=================================================================
     bool TileAssembler::convertWorld()
     {
+
         #ifdef _ASSEMBLER_DEBUG
         #   ifdef _DEBUG
         ::g_df = fopen("../TileAssembler_debug.txt", "wb");
@@ -149,13 +148,14 @@ namespace VMAP
         #   endif
         #endif
 
+
         bool result = true;
         std::string fname = iSrcDir;
         fname.append("/");
         fname.append("dir");
         iCoordModelMapping->setModelNameFilterMethod(iFilterMethod);
-        iCoordModelMapping->readCoordinateMapping(fname);
-
+		printf("Reading coordinate mappings...\n");
+		iCoordModelMapping->readCoordinateMapping(fname);
         Array<unsigned int> mapIds = iCoordModelMapping->getMaps();
         if(mapIds.size() == 0)
         {
@@ -175,7 +175,8 @@ namespace VMAP
                         #else
                         // ignore DeeprunTram (369) it is too large for short vector and not important
                         // ignore test (13), Test (29) , development (451)
-                        if(mapId != 369 && mapId != 13 && mapId != 29 && mapId != 451)
+						printf("Converting map %u...\n", mapId);
+						if(mapId != 369 && mapId != 13 && mapId != 29 && mapId != 451)
                         {
                             for(int x=0; x<66 && result; ++x)
                             {
@@ -185,9 +186,10 @@ namespace VMAP
                                     Array<ModelContainer*> mc;
                                     std::string dirname;
                                     char buffer[100];
+									printf("Converting cell [%u][%u] on map %u...\n", x, y, mapId);
                                     if(iCoordModelMapping->isWorldAreaMap(mapId) && x<65 && y<65)
                                     {
-                                        sprintf(buffer, "%03u_%d_%d",mapId,y,x); // Let's flip x and y here
+                                        sprintf(buffer, "%03u_%d_%d",mapId,x,y);
                                         dirname = std::string(buffer);
                                     }
                                     else
@@ -229,7 +231,7 @@ namespace VMAP
                             char fullnamedestnamebuffer[500];
                             if(nameCollection.iMainFiles.size() >0)
                             {
-                                sprintf(destnamebuffer,"%03u_%i_%i.vmap",pMapId, pYPos, pXPos); // flip it here too
+                                sprintf(destnamebuffer,"%03u_%i_%i.vmap",pMapId, pXPos, pYPos);
                                 std::string checkDoubleStr = std::string(dirfilename);
                                 checkDoubleStr.append("##");
                                 checkDoubleStr.append(std::string(destnamebuffer));
@@ -398,12 +400,12 @@ namespace VMAP
                             fclose(rf);
                             return(false);
                         }
-                        G3D::uint32 groups;
+                        uint32 groups;
                         char blockId[5];
                         blockId[4] = 0;
                         int blocksize;
 
-                        if(fread(&groups, sizeof(G3D::uint32), 1, rf) != 1) { fclose(rf); return(false); }
+                        if(fread(&groups, sizeof(uint32), 1, rf) != 1) { fclose(rf); return(false); }
 
                         for(int g=0;g<(int)groups;g++)
                         {
@@ -413,19 +415,21 @@ namespace VMAP
 
                             AABSPTree<Triangle> *gtree = new AABSPTree<Triangle>();
 
-                            G3D::uint32 flags;
-                            if(fread(&flags, sizeof(G3D::uint32), 1, rf) != 1) { fclose(rf); return(false); }
+                            uint32 flags;
+							uint32 isindoor;
+							if(fread(&isindoor, sizeof(uint32), 1, rf) != 1) { fclose(rf); return(false); }
+							if(fread(&flags, sizeof(uint32), 1, rf) != 1) { fclose(rf); return(false); }
 
-                            G3D::uint32 branches;
+                            uint32 branches;
                             if(fread(&blockId, 4, 1, rf) != 1) { fclose(rf); return(false); }
                             if(strcmp(blockId, "GRP ") != 0) { fclose(rf); return(false); }
                             if(fread(&blocksize, sizeof(int), 1, rf) != 1) { fclose(rf); return(false); }
-                            if(fread(&branches, sizeof(G3D::uint32), 1, rf) != 1) { fclose(rf); return(false); }
+                            if(fread(&branches, sizeof(uint32), 1, rf) != 1) { fclose(rf); return(false); }
                             for(int b=0;b<(int)branches; b++)
                             {
-                                G3D::uint32 indexes;
+                                uint32 indexes;
                                 // indexes for each branch (not used jet)
-                                if(fread(&indexes, sizeof(G3D::uint32), 1, rf) != 1) { fclose(rf); return(false); }
+                                if(fread(&indexes, sizeof(uint32), 1, rf) != 1) { fclose(rf); return(false); }
                             }
 
                             // ---- indexes
@@ -433,7 +437,7 @@ namespace VMAP
                             if(strcmp(blockId, "INDX") != 0) { fclose(rf); return(false); }
                             if(fread(&blocksize, sizeof(int), 1, rf) != 1) { fclose(rf); return(false); }
                             unsigned int nindexes;
-                            if(fread(&nindexes, sizeof(G3D::uint32), 1, rf) != 1) { fclose(rf); return(false); }
+                            if(fread(&nindexes, sizeof(uint32), 1, rf) != 1) { fclose(rf); return(false); }
                             if(nindexes >0)
                             {
                                 unsigned short *indexarray = new unsigned short[nindexes*sizeof(unsigned short)];
@@ -492,7 +496,7 @@ namespace VMAP
                             {
                                 Triangle t = Triangle(tempVertexArray[tempIndexArray[i+2]], tempVertexArray[tempIndexArray[i+1]], tempVertexArray[tempIndexArray[i+0]] );
                                 i+=3;
-                                ++trianglecount;
+                                trianglecount++;
                                 if(g>= startgroup && g <= endgroup)
                                 {
                                     gtree->insert(t);
@@ -508,6 +512,7 @@ namespace VMAP
                             {
                                 gtree->balance();
                                 SubModel *sm = new SubModel(gtree);
+								sm->setIndoorFlag( isindoor );
                                 #ifdef _ASSEMBLER_DEBUG
                                 if(::g_df) fprintf(::g_df,"group trianglies: %d, Tris: %d, Nodes: %d, gtree.triangles: %d\n", g, sm->getNTriangles(), sm->getNNodes(), gtree->memberTable.size());
                                 if(sm->getNTriangles() !=  gtree->memberTable.size())
@@ -538,10 +543,13 @@ namespace VMAP
 
                     modelPosition.init();
 
+					//printf("Reading: %s\n", pModelFilename.c_str());
                     if(readRawFile(pModelFilename,  modelPosition, pMainTree))
                     {
                         result = true;
                     }
+					else
+						printf("readRawFile(%s) failed.\n", pModelFilename.c_str());
 
                     return result;
                 }

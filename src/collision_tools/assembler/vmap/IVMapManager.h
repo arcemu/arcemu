@@ -1,6 +1,5 @@
-/*
+/* 
  * Copyright (C) 2005,2006,2007 MaNGOS <http://www.mangosproject.org/>
- * Copyright (C) 2008 Arcemu Team <http://www.arcemu.org/>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -38,8 +37,7 @@ namespace VMAP
         VMAP_LOAD_RESULT_IGNORED,
     };
 
-    #define VMAP_INVALID_HEIGHT       -100000.0f            // for check
-    #define VMAP_INVALID_HEIGHT_VALUE -200000.0f            // real assigned value in unknown height case
+    #define VMAP_INVALID_HEIGHT -100000.0f
 
     //===========================================================
     class IVMapManager

@@ -1,4 +1,4 @@
-# Copyright (C) 2005-2008 MaNGOS <http://getmangos.com/>
+# Copyright (C) 2005,2006,2007 MaNGOS <http://www.mangosproject.org/>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -19,7 +19,7 @@
 ## Sub-directories to parse
 
 ## CPP flags for includes, defines, etc.
-AM_CPPFLAGS = $(MANGOS_INCLUDES) -I$(top_builddir)/src/shared -I$(srcdir) -I$(srcdir)/../../../dep/include -I$(srcdir)/../../framework -I$(srcdir)/../../shared -I$(srcdir)/../../../dep/include/g3dlite
+AM_CPPFLAGS = $(MYSQL_INCLUDES) $(POSTGRE_INCLUDES) -I$(top_builddir)/src/shared -I$(srcdir) -I$(srcdir)/../../../dep/include -I$(srcdir)/../../framework -I$(srcdir)/../../shared -I$(srcdir)/../../../dep/include/g3dlite
 
 ## Build MaNGOS shared library and its parts as convenience library.
 #  All libraries will be convenience libraries. Might be changed to shared
@@ -27,30 +27,30 @@ AM_CPPFLAGS = $(MANGOS_INCLUDES) -I$(top_builddir)/src/shared -I$(srcdir) -I$(sr
 noinst_LIBRARIES = libmangosvmaps.a
 
 libmangosvmaps_a_SOURCES = \
-    AABSPTree.h \
-    BaseModel.cpp \
-    BaseModel.h \
-    CoordModelMapping.cpp \
-    CoordModelMapping.h \
-    DebugCmdLogger.cpp \
-    DebugCmdLogger.h \
-    IVMapManager.h \
-    ManagedModelContainer.cpp \
-    ManagedModelContainer.h \
-    ModelContainer.cpp \
-    ModelContainer.h \
-    NodeValueAccess.h \
-    ShortBox.h \
-    ShortVector.h \
-    SubModel.cpp \
-    SubModel.h \
-    TileAssembler.cpp \
-    TileAssembler.h \
-    TreeNode.cpp \
-    TreeNode.h \
-    VMapDefinitions.h \
-    VMapFactory.cpp \
-    VMapFactory.h \
-    VMapManager.cpp \
-    VMapManager.h \
-    VMapTools.h
+	AABSPTree.h \
+	BaseModel.cpp \
+	BaseModel.h \
+	CoordModelMapping.cpp \
+	CoordModelMapping.h \
+	DebugCmdLogger.cpp \
+	DebugCmdLogger.h \
+	IVMapManager.h \
+	ManagedModelContainer.cpp \
+	ManagedModelContainer.h \
+	ModelContainer.cpp \
+	ModelContainer.h \
+	NodeValueAccess.h \
+	RayIntersectionIterator.h \
+	ShortBox.h \
+	ShortVector.h \
+	SubModel.cpp \
+	SubModel.h \
+	TileAssembler.cpp \
+	TileAssembler.h \
+	TreeNode.cpp \
+	TreeNode.h \
+	VMapDefinitions.h \
+	VMapFactory.cpp \
+	VMapFactory.h \
+	VMapManager.cpp \
+	VMapManager.h

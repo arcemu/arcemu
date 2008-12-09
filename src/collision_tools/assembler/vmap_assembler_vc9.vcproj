@@ -17,8 +17,8 @@
 	<Configurations>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory="..\assembler\Debug"
-			IntermediateDirectory="..\assembler\Debug\obj"
+			OutputDirectory="Debug"
+			IntermediateDirectory="Debug\obj"
 			ConfigurationType="1"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
 			CharacterSet="2"
@@ -46,7 +46,6 @@
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="1"
-				EnableEnhancedInstructionSet="1"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="true"
@@ -96,8 +95,8 @@
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
-			OutputDirectory="..\assembler\Release"
-			IntermediateDirectory="..\assembler\Release\obj"
+			OutputDirectory="Release"
+			IntermediateDirectory="Release\obj"
 			ConfigurationType="1"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
 			CharacterSet="2"
@@ -122,7 +121,6 @@
 				AdditionalIncludeDirectories=".\vmap;.\g3dlite"
 				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE"
 				RuntimeLibrary="0"
-				EnableEnhancedInstructionSet="1"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="true"
@@ -176,16 +174,6 @@
 	</References>
 	<Files>
 		<Filter
-			Name="Source Files"
-			Filter="cpp;c;cxx;def;odl;idl;hpj;bat;asm;asmx"
-			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
-			>
-			<File
-				RelativePath=".\vmap_assembler.cpp"
-				>
-			</File>
-		</Filter>
-		<Filter
 			Name="vmaplib"
 			>
 			<File
@@ -217,7 +205,15 @@
 				>
 			</File>
 			<File
-				RelativePath=".\vmap\\ManagedModelContainer.cpp"
+				RelativePath=".\vmap\IVMapManager.h"
+				>
+			</File>
+			<File
+				RelativePath=".\vmap\Makefile.am"
+				>
+			</File>
+			<File
+				RelativePath=".\vmap\ManagedModelContainer.cpp"
 				>
 			</File>
 			<File
@@ -234,6 +230,10 @@
 			</File>
 			<File
 				RelativePath=".\vmap\NodeValueAccess.h"
+				>
+			</File>
+			<File
+				RelativePath=".\vmap\RayIntersectionIterator.h"
 				>
 			</File>
 			<File
@@ -257,7 +257,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\vmap\\TileAssembler.h"
+				RelativePath=".\vmap\TileAssembler.h"
 				>
 			</File>
 			<File
@@ -269,7 +269,23 @@
 				>
 			</File>
 			<File
-				RelativePath=".\vmap\VMapTools.h"
+				RelativePath=".\vmap\VMapDefinitions.h"
+				>
+			</File>
+			<File
+				RelativePath=".\vmap\VMapFactory.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\vmap\VMapFactory.h"
+				>
+			</File>
+			<File
+				RelativePath=".\vmap\VMapManager.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\vmap\VMapManager.h"
 				>
 			</File>
 		</Filter>
@@ -281,15 +297,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\g3dlite\G3D\AABox.h"
+				RelativePath=".\g3dlite\G3d\AABox.h"
 				>
 			</File>
 			<File
-				RelativePath=".\g3dlite\G3D\AABSPTree.h"
-				>
-			</File>
-			<File
-				RelativePath=".\g3dlite\G3D\Array.h"
+				RelativePath=".\g3dlite\G3d\Array.h"
 				>
 			</File>
 			<File
@@ -297,15 +309,15 @@
 				>
 			</File>
 			<File
-				RelativePath=".\g3dlite\G3D\Box.h"
+				RelativePath=".\g3dlite\G3d\Box.h"
 				>
 			</File>
 			<File
-				RelativePath=".\g3dlite\G3D\CollisionDetection.h"
+				RelativePath=".\g3dlite\G3d\CollisionDetection.h"
 				>
 			</File>
 			<File
-				RelativePath=".\g3dlite\G3D\CoordinateFrame.h"
+				RelativePath=".\g3dlite\G3d\CoordinateFrame.h"
 				>
 			</File>
 			<File
@@ -313,11 +325,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\g3dlite\G3D\Crypto.h"
+				RelativePath=".\g3dlite\G3d\Crypto.h"
 				>
 			</File>
 			<File
-				RelativePath=".\g3dlite\G3D\debug.h"
+				RelativePath=".\g3dlite\G3d\debug.h"
 				>
 			</File>
 			<File
@@ -325,23 +337,31 @@
 				>
 			</File>
 			<File
-				RelativePath=".\g3dlite\G3D\format.h"
+				RelativePath=".\g3dlite\G3d\format.h"
 				>
 			</File>
 			<File
-				RelativePath=".\g3dlite\G3D\g3dmath.h"
+				RelativePath=".\g3dlite\G3d\g3dmath.h"
 				>
 			</File>
 			<File
-				RelativePath=".\g3dlite\G3D\g3dmath.inl"
+				RelativePath=".\g3dlite\G3d\g3dmath.inl"
 				>
 			</File>
 			<File
-				RelativePath=".\g3dlite\G3D\GCamera.h"
+				RelativePath=".\g3dlite\G3d\GCamera.h"
 				>
 			</File>
 			<File
-				RelativePath=".\g3dlite\G3D\Line.h"
+				RelativePath=".\g3dlite\license.html"
+				>
+			</File>
+			<File
+				RelativePath=".\g3dlite\G3d\Line.h"
+				>
+			</File>
+			<File
+				RelativePath=".\g3dlite\Makefile.am"
 				>
 			</File>
 			<File
@@ -349,7 +369,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\g3dlite\G3D\Matrix3.h"
+				RelativePath=".\g3dlite\G3d\Matrix3.h"
 				>
 			</File>
 			<File
@@ -357,35 +377,35 @@
 				>
 			</File>
 			<File
-				RelativePath=".\g3dlite\G3D\Plane.h"
+				RelativePath=".\g3dlite\G3d\Plane.h"
 				>
 			</File>
 			<File
-				RelativePath=".\g3dlite\G3D\platform.h"
+				RelativePath=".\g3dlite\G3d\platform.h"
 				>
 			</File>
 			<File
-				RelativePath=".\g3dlite\G3D\Quat.h"
+				RelativePath=".\g3dlite\G3d\Quat.h"
 				>
 			</File>
 			<File
-				RelativePath=".\g3dlite\G3D\Quat.inl"
+				RelativePath=".\g3dlite\G3d\Quat.inl"
 				>
 			</File>
 			<File
-				RelativePath=".\g3dlite\G3D\Ray.h"
+				RelativePath=".\g3dlite\G3d\Ray.h"
 				>
 			</File>
 			<File
-				RelativePath=".\g3dlite\G3D\RegistryUtil.h"
+				RelativePath=".\g3dlite\G3d\RegistryUtil.h"
 				>
 			</File>
 			<File
-				RelativePath=".\g3dlite\G3D\Sphere.h"
+				RelativePath=".\g3dlite\G3d\Sphere.h"
 				>
 			</File>
 			<File
-				RelativePath=".\g3dlite\G3D\stringutils.h"
+				RelativePath=".\g3dlite\G3d\stringutils.h"
 				>
 			</File>
 			<File
@@ -393,11 +413,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\g3dlite\G3D\System.h"
+				RelativePath=".\g3dlite\G3d\System.h"
 				>
 			</File>
 			<File
-				RelativePath=".\g3dlite\G3D\Table.h"
+				RelativePath=".\g3dlite\G3d\Table.h"
 				>
 			</File>
 			<File
@@ -405,19 +425,19 @@
 				>
 			</File>
 			<File
-				RelativePath=".\g3dlite\G3D\Triangle.h"
+				RelativePath=".\g3dlite\G3d\Triangle.h"
 				>
 			</File>
 			<File
-				RelativePath=".\g3dlite\G3D\Vector2.h"
+				RelativePath=".\g3dlite\G3d\Vector2.h"
 				>
 			</File>
 			<File
-				RelativePath=".\g3dlite\G3D\Vector2.inl"
+				RelativePath=".\g3dlite\G3d\Vector2.inl"
 				>
 			</File>
 			<File
-				RelativePath=".\g3dlite\G3D\Vector2int16.h"
+				RelativePath=".\g3dlite\G3d\Vector2int16.h"
 				>
 			</File>
 			<File
@@ -425,15 +445,15 @@
 				>
 			</File>
 			<File
-				RelativePath=".\g3dlite\G3D\Vector3.h"
+				RelativePath=".\g3dlite\G3d\Vector3.h"
 				>
 			</File>
 			<File
-				RelativePath=".\g3dlite\G3D\Vector3.inl"
+				RelativePath=".\g3dlite\G3d\Vector3.inl"
 				>
 			</File>
 			<File
-				RelativePath=".\g3dlite\G3D\Vector3int16.h"
+				RelativePath=".\g3dlite\G3d\Vector3int16.h"
 				>
 			</File>
 			<File
@@ -441,14 +461,18 @@
 				>
 			</File>
 			<File
-				RelativePath=".\g3dlite\G3D\Vector4.h"
+				RelativePath=".\g3dlite\G3d\Vector4.h"
 				>
 			</File>
 			<File
-				RelativePath=".\g3dlite\G3D\Vector4.inl"
+				RelativePath=".\g3dlite\G3d\Vector4.inl"
 				>
 			</File>
 		</Filter>
+		<File
+			RelativePath=".\vmap_assembler.cpp"
+			>
+		</File>
 	</Files>
 	<Globals>
 	</Globals>

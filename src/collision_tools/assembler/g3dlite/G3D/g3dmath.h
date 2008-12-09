@@ -51,9 +51,7 @@
 
 namespace G3D {
 
-#if defined(_MSC_VER)
-    
-#if !defined(_WIN64)
+#ifdef _MSC_VER
 
 /**
    Win32 implementation of the C99 fast rounding routines.
@@ -89,21 +87,8 @@ __inline long int lrintf(float flt) {
 
     return intgr;
 }
-
-#else
-
-    __inline long int lrint (double flt) {
-        return (long int)floor(flt+0.5f);
-    }
-
-    __inline long int lrintf(float flt) {
-        return (long int)floorf(flt+0.5f);
-    }
-
-
 #endif
 
-#endif
 
 
 const double fuzzyEpsilon = 0.00001;
@@ -401,7 +386,7 @@ inline float rsq(float x) {
  */
 inline float SSErsq(float x) {
 
-    #if defined(SSE) && defined(G3D_WIN32) && !defined(_WIN64)
+    #if defined(SSE) && defined(G3D_WIN32)
         __asm {
            movss xmm0, x
            rsqrtss xmm0, xmm0

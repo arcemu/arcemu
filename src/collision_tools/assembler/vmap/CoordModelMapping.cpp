@@ -1,6 +1,5 @@
-/*
+/* 
  * Copyright (C) 2005,2006,2007 MaNGOS <http://www.mangosproject.org/>
- * Copyright (C) 2008 Arcemu Team <http://www.arcemu.org/>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,8 +19,6 @@
 #include "CoordModelMapping.h"
 
 #include <string.h>
-
-using namespace G3D;
 
 namespace VMAP
 {

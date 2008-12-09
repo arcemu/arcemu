@@ -1,6 +1,5 @@
-/*
+/* 
  * Copyright (C) 2005,2006,2007 MaNGOS <http://www.mangosproject.org/>
- * Copyright (C) 2008 Arcemu Team <http://www.arcemu.org/>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,7 +25,7 @@
 #include "ShortVector.h"
 #include "ShortBox.h"
 #include "TreeNode.h"
-#include "VMapTools.h"
+#include "RayIntersectionIterator.h"
 #include "BaseModel.h"
 
 namespace VMAP
@@ -43,30 +42,37 @@ namespace VMAP
             unsigned int iNodesPos;
             unsigned int iTrianglesPos;
             bool iHasInternalMemAlloc;
+			unsigned int iIsIndoor;
             ShortBox iBox;
         #ifdef _DEBUG_VIEW
-            G3D::Array<TriangleBox *> iDrawBox;
+            Array<TriangleBox *> iDrawBox;
         #endif
         public:
             SubModel() : BaseModel(){ };
 
             SubModel(unsigned int pNTriangles, TriangleBox *pTriangles, unsigned int pTrianglesPos, unsigned int pNNodes, TreeNode *pTreeNodes, unsigned int pNodesPos);
-            SubModel(G3D::AABSPTree<G3D::Triangle> *pTree);
+            SubModel(AABSPTree<Triangle> *pTree);
             ~SubModel(void);
             //Gets a 50 byte binary block
             void initFromBinBlock(void *pBinBlock);
 
-            void fillRenderArray(G3D::Array<TriangleBox> &pArray, const TreeNode* pTreeNode);
+            RayIntersectionIterator<TreeNode, TriangleBox> beginRayIntersection(const Ray& ray, double pMaxTime, bool skipAABoxTests = false) const;
 
-            void countNodesAndTriangles(G3D::AABSPTree<G3D::Triangle>::Node& pNode, int &pNNodes, int &pNTriabgles);
+            RayIntersectionIterator<TreeNode, TriangleBox> endRayIntersection() const;
 
-            void fillContainer(const G3D::AABSPTree<G3D::Triangle>::Node& pNode, int &pTreeNodePos, int &pTrianglePos, G3D::Vector3& pLo, G3D::Vector3& pHi);
+            void fillRenderArray(Array<TriangleBox> &pArray, const TreeNode* pTreeNode);
+
+            RealTime getIntersectionTime(const Ray& pRay, bool pExitAtFirst, float pMaxDist) const;
+
+            void countNodesAndTriangles(AABSPTree<Triangle>::Node& pNode, int &pNNodes, int &pNTriabgles);
+
+            void fillContainer(const AABSPTree<Triangle>::Node& pNode, int &pTreeNodePos, int &pTrianglePos, Vector3& pLo, Vector3& pHi);
 
             inline const ShortBox& getReletiveBounds() const { return(iBox); }
 
             inline void setReletiveBounds(const ShortVector& lo, const ShortVector& hi) { iBox.setLo(lo); iBox.setHi(hi); }
 
-            inline const G3D::AABox getAABoxBounds() const { return(G3D::AABox(iBox.getLo().getVector3() + getBasePosition(), iBox.getHi().getVector3()+ getBasePosition())); }
+            inline const AABox getAABoxBounds() const { return(AABox(iBox.getLo().getVector3() + getBasePosition(), iBox.getHi().getVector3()+ getBasePosition())); }
 
             // get start pos bases on the global array
             inline TriangleBox const* getTriangles() const { return &BaseModel::getTriangle(iTrianglesPos); }
@@ -85,17 +91,13 @@ namespace VMAP
             inline unsigned int getNodesPos() const { return(iNodesPos); }
             inline unsigned int getTrianglesPos() const { return(iTrianglesPos); }
 
-            //unsigned int hashCode() { return (getBasePosition() * getNTriangles()).hashCode(); }
-
-            void intersect(const G3D::Ray& pRay, float& pMaxDist, bool pStopAtFirstHit, G3D::Vector3& pOutLocation, G3D::Vector3& pOutNormal) const;
-            bool intersect(const G3D::Ray& pRay, float& pMaxDist) const;
-            template<typename RayCallback>
-            void intersectRay(const G3D::Ray& ray, RayCallback& intersectCallback, float& distance, bool pStopAtFirstHit, bool intersectCallbackIsFast = false);
-            bool operator==(const SubModel& pSm2) const;
-            unsigned int hashCode() const { return BaseModel::getNTriangles(); }
+			inline void setIndoorFlag(unsigned int val) { iIsIndoor = val; }
+			inline const unsigned int getIndoorFlag() const { return iIsIndoor; }
+			bool WriteToFile(FILE * pFile);
     };
 
     unsigned int hashCode(const SubModel& pSm);
+    bool operator==(const SubModel& pSm1, const SubModel& pSm2);
     void getBounds(const SubModel& pSm, G3D::AABox& pAABox);
     void getBounds(const SubModel* pSm, G3D::AABox& pAABox);
     //====================================

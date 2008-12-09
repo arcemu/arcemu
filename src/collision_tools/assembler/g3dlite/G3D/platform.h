@@ -32,18 +32,18 @@
 
 #ifdef _MSC_VER 
     #define G3D_WIN32
-#elif defined(__MINGW32__)
+#elif __MINGW32__
     #define G3D_WIN32 
     #define G3D_MINGW32 
-#elif defined(__linux__)
+#elif __linux__ 
     #define G3D_LINUX
-#elif defined(__OpenBSD__)
+#elif __OpenBSD__
     #define G3D_LINUX
-#elif defined(__FreeBSD__)
+#elif __FreeBSD__ 
     #define G3D_LINUX
-#elif defined(__NetBSD__)
+#elif __NetBSD__
     #define G3D_LINUX
-#elif defined(__APPLE__)
+#elif __APPLE__ 
     #define G3D_OSX
 #else
     #error Unknown platform 

@@ -49,70 +49,26 @@ bool modelNameFilter(char *pName)
 }
 
 //=======================================================
-/**
-File contains map names that should be split into tiles
-A '#' at the beginning of a line defines a comment
-*/
-
-bool readConfigFile(char *pConffile, VMAP::TileAssembler* pTa)
-{
-    bool result = false;
-    char buffer[501];
-    FILE *cf = fopen(pConffile, "rb");
-    if(cf) {
-        while(fgets(buffer, 500, cf)) {
-            std::string name = std::string(buffer);
-            size_t pos = name.find_first_not_of(' ');
-            name = name.substr(pos);
-            chompAndTrim(name); // just to be sure
-            if(name[0] != '#' && name.size() >0) { // comment?
-                unsigned int mapId = atoi(name.c_str());
-                pTa->addWorldAreaMapId(mapId);
-            }
-        }
-        fclose(cf);
-        result = true;
-    }
-    return(result);
-}
-//=======================================================
 int main(int argc, char* argv[])
 {
-    if(argc == 3 || argc == 4)
-    {
-        bool ok = true;
-        char *src = argv[1];
-        char *dest = argv[2];
-        char *conffile = NULL;
-        if(argc >= 4) {
-            conffile = argv[3];
-        }
-        VMAP::TileAssembler* ta = new VMAP::TileAssembler(std::string(src), std::string(dest));
-        ta->setModelNameFilterMethod(modelNameFilter);
+    bool ok = true;
+    char *src = "buildings";
+	char *dest = "vmaps";
+    char *conffile = NULL;
+    VMAP::TileAssembler* ta = new VMAP::TileAssembler(std::string(src), std::string(dest));
+    ta->setModelNameFilterMethod(modelNameFilter);
 
-        /*
-        All the names in the list are considered to be world maps or huge instances.
-        These maps will be spilt into tiles in the vmap assemble process
-        */
-        if(conffile != NULL) {
-            ok = readConfigFile(conffile, ta);
-            if(!ok) {
-                printf("Can not open file config file: %s\n", conffile);
-            }
-        }
-        if(ok) { ok = ta->convertWorld(); }
-        if(ok) {
-            printf("Ok, all done\n");
-        } else {
-            printf("exit with errors\n");
-            return 1;
-        }
-        delete ta;
-    }
-    else
-    {
-        printf("\nusage: %s <raw data dir> <vmap dest dir> [config file name]\n", argv[0]);
+	static uint32 maps[999] = { 509, 469, 189, 30, 37, 33, 533, 209, 309, 560, 534, 532, 543, 568, 564, 0, 1, 530, 571 };
+	for(uint32 i = 0; maps[i] != 0; ++i)
+		ta->addWorldAreaMapId( maps[i] );
+
+    if(ok) { ok = ta->convertWorld(); }
+    if(ok) {
+        printf("Ok, all done\n");
+    } else {
+        printf("exit with errors\n");
         return 1;
     }
+    delete ta;
     return 0;
 }

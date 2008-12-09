@@ -86,7 +86,7 @@ public:
      the same vertices <I>in the same order</I>.
      That is, vertex[0] == vertex[0], etc.
      */
-    inline bool operator==(const Triangle& other) const {
+    inline bool operator==(const Triangle& other) {
         for (int i = 0; i < 3; ++i) {
             if (_vertex[i] != other._vertex[i]) {
                 return false;
