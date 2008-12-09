@@ -68,12 +68,14 @@ bool ADTFile::init(char *map_id)
 		return false;
 	}
 
-
-	while (!ADT.isEof  ())
+	size = 1; // initialize to a value greater than zero
+	while (!ADT.isEof() && (size>0))
 	{
 		char fourcc[5];
 		ADT.read(&fourcc,4);
 		ADT.read(&size, 4);
+		if(size==0)
+			continue;
 		flipcc(fourcc);
 		fourcc[4] = 0;
 
@@ -89,7 +91,7 @@ bool ADTFile::init(char *map_id)
 		else if (!strcmp(fourcc,"MMDX")) 
 		{
 			
-			if (size) 
+//			if (size) // already checked size above
 			{
 			    char *buf = new char[size];
 				ADT.read(buf, size);
