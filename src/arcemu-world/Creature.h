@@ -507,13 +507,16 @@ public:
 	CreatureFamilyEntry * myFamily;
 	ARCEMU_INLINE bool IsTotem() { return totemOwner != 0 && totemSlot != -1; }
 
-	bool IsExotic()
+	ARCEMU_INLINE bool IsExotic()
 	{
-		for(uint32 i = 0; i < 8; ++i)
+		for(uint32 i = 0; i < 7; ++i)
+      {
 			if(GetCreatureInfo()->Family == Exotic[i] && GetCreatureInfo()->Type == BEAST)
-				return true;
+         { return true; }
+      }
 		return false;
 	}
+
 	void TotemExpire();
 	void FormationLinkUp(uint32 SqlId);
 	void ChannelLinkUpGO(uint32 SqlId);
