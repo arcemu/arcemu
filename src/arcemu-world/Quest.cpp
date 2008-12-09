@@ -361,13 +361,12 @@ void QuestLogEntry::UpdatePlayerFields()
 
 	// next field is kills and shit like that
 	uint32 field1 = 0;
-	int i;
-	
+
 	// explored areas
 	if(m_quest->count_requiredtriggers)
 	{
 		uint32 count = 0;
-		for(i = 0; i < 4; ++i)
+		for(int i = 0; i < 4; ++i)
 		{
 			if(m_quest->required_triggers[i])
 			{
