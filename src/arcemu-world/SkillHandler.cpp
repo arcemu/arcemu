@@ -131,7 +131,7 @@ void WorldSession::HandleLearnTalentOpcode( WorldPacket & recv_data )
 	uint32 cl = _player->getClass();
 
    unsigned int k;
-	for(unsigned int k = 0; k < 3; ++k)
+	for(k = 0; k < 3; ++k)
    {
 		if(tTree == TalentTreesPerClass[cl][k])
       {
