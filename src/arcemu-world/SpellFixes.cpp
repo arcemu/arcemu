@@ -1699,15 +1699,6 @@ void ApplyNormalFixes()
 				sp->fixed_hotdotcoef *= 0.5f;
 			}		
 		}
-
-		/**********************************************************
-		 *	Flask of Chromatic Resistance
-		 **********************************************************/
-		sp = dbcSpell.LookupEntryForced( 17629 );
-		if( sp != NULL )
-		{
-			sp->powerType = 3;
-		}
 		
 		///	SPELLS CAN CRIT ///
 		sp->spell_can_crit = true; // - except in special cases noted in this section

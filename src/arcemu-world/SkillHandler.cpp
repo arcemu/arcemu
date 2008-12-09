@@ -133,7 +133,7 @@ void WorldSession::HandleLearnTalentOpcode( WorldPacket & recv_data )
    unsigned int k;
 	for(unsigned int k = 0; k < 3; ++k)
    {
-		if(tTree == TalentTreesPerClass[cl][i])
+		if(tTree == TalentTreesPerClass[cl][k])
       {
 			break;
       }
