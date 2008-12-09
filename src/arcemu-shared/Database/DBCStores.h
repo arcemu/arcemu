@@ -26,6 +26,16 @@
 
 #pragma pack(push,1)
 
+struct WorldMapOverlay
+{
+	uint32 ID;           // 0
+//	uint32 worldMapID;   // 1
+	uint32 areaID;       // 2 - index to AreaTable
+	uint32 areaID_2;     // 3 - index to AreaTable
+	uint32 areaID_3;     // 4 - index to AreaTable
+	uint32 areaID_4;     // 5 - index to AreaTable
+// any of the four above indexes is enough to uncover the fragment
+};
 
 struct AchievementEntry
 {
@@ -257,8 +267,7 @@ struct AchievementCriteriaEntry
         // ACHIEVEMENT_CRITERIA_TYPE_EXPLORE_AREA = 43
         struct
         {
-            // TODO: This rank is _NOT_ the index from AreaTable.dbc
-            uint32  areaReference;                          // 3
+            uint32  areaReference;                          // 3 - this is an index to WorldMapOverlay
         } explore_area;
 
         // ACHIEVEMENT_CRITERIA_TYPE_OWN_RANK= 44
@@ -1697,6 +1706,7 @@ public:
 #endif
 };
 
+extern SERVER_DECL DBCStorage<WorldMapOverlay> dbcWorldMapOverlayStore;
 extern SERVER_DECL DBCStorage<AchievementEntry> dbcAchievementStore;
 extern SERVER_DECL DBCStorage<AchievementCriteriaEntry> dbcAchievementCriteriaStore;
 extern SERVER_DECL DBCStorage<BarberShopStyleEntry> dbcBarberShopStyleStore;

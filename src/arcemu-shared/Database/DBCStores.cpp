@@ -21,6 +21,7 @@
 #include "DataStore.h"
 #include "NGLog.h"
 
+SERVER_DECL DBCStorage<WorldMapOverlay> dbcWorldMapOverlayStore;
 SERVER_DECL DBCStorage<AchievementEntry> dbcAchievementStore;
 SERVER_DECL DBCStorage<AchievementCriteriaEntry> dbcAchievementCriteriaStore;
 SERVER_DECL DBCStorage<CharTitlesEntry> dbcCharTitlesEntry;
@@ -74,6 +75,7 @@ SERVER_DECL DBCStorage<gtFloat> dbcHPRegen;
 SERVER_DECL DBCStorage<gtFloat> dbcHPRegenBase;
 SERVER_DECL DBCStorage<AreaTriggerEntry> dbcAreaTrigger;
 
+const char* WorldMapOverlayStoreFormat="nxiiiixxxxxxxxxxx";
 const char* AchievementStoreFormat="niixxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxiixxixxxxxxxxxxxxxxxxxxx";
 const char* AchievementCriteriaStoreFormat="niiiiiiiixxxxxxxxxxxxxxxxxiixix";
 const char* CharTitlesEntryfmt = "uxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxu";
@@ -258,6 +260,7 @@ bool loader_stub(const char * filename, const char * format, bool ind, T& l, boo
 
 bool LoadDBCs()
 {
+	LOAD_DBC("DBC/WorldMapOverlay.dbc", WorldMapOverlayStoreFormat, true, dbcWorldMapOverlayStore, true);
 	LOAD_DBC("DBC/Achievement_Criteria.dbc", AchievementCriteriaStoreFormat, true, dbcAchievementCriteriaStore, true);
 	LOAD_DBC("DBC/Achievement.dbc", AchievementStoreFormat, true, dbcAchievementStore, true);
 	LOAD_DBC("DBC/CharTitles.dbc", CharTitlesEntryfmt, true, dbcCharTitlesEntry, false);
