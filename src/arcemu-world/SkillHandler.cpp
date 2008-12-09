@@ -86,7 +86,6 @@ void WorldSession::HandleLearnTalentOpcode( WorldPacket & recv_data )
 	if(!_player->IsInWorld()) return;
  	 
 	uint32 talent_id, requested_rank, unk;
-	unsigned int i;
 	recv_data >> talent_id >> requested_rank >> unk;
 
 	uint32 CurTalentPoints =  GetPlayer()->GetUInt32Value(PLAYER_CHARACTER_POINTS1);
@@ -109,7 +108,7 @@ void WorldSession::HandleLearnTalentOpcode( WorldPacket & recv_data )
 		if(depTalentInfo)
 		{
 			bool hasEnoughRank = false;
-			for (int i = talentInfo->DependsOnRank; i < 5; i++)
+			for (int i = talentInfo->DependsOnRank; i < 5; ++i)
 			{
 				if (depTalentInfo->RankID[i] != 0)
 				{
@@ -131,20 +130,25 @@ void WorldSession::HandleLearnTalentOpcode( WorldPacket & recv_data )
 	uint32 tTree = talentInfo->TalentTree;
 	uint32 cl = _player->getClass();
 
-	for(i = 0; i < 3; ++i)
+   unsigned int k;
+	for(unsigned int k = 0; k < 3; ++k)
+   {
 		if(tTree == TalentTreesPerClass[cl][i])
+      {
 			break;
+      }
+   }
+   if (3 == k)
+   {
+      // cheater!
+      Disconnect();
+      return;
+   }
 
-	if(i == 3)
-	{
-		// cheater!
-		Disconnect();
-		return;
-	}
 
 	if (talentInfo->Row > 0)
 	{
-		for (i = 0; i < dbcTalent.GetNumRows(); i++)		  // Loop through all talents.
+		for (unsigned int i = 0; i < dbcTalent.GetNumRows(); ++i)		  // Loop through all talents.
 		{
 			// Someday, someone needs to revamp
 			TalentEntry *tmpTalent = dbcTalent.LookupRow(i);
@@ -190,7 +194,7 @@ void WorldSession::HandleLearnTalentOpcode( WorldPacket & recv_data )
 				return;
 			}
 		}
-		for (uint32 i=requested_rank; i<5; ++i)
+		for (unsigned int i = requested_rank; i < 5; ++i)
 			if (talentInfo->RankID[i] != 0 && GetPlayer()->HasSpell(talentInfo->RankID[i]))
 				return; // cheater
 
