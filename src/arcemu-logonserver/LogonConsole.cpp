@@ -190,7 +190,6 @@ void LogonConsole::ProcessHelp(char *command)
 		sLog.outString("	Reload: Reloads accounts.");
 		sLog.outString("	Netstatus: Shows network status.");
 		sLog.outString("	Shutdown, exit: Closes the logonserver.");
-		sLog.outString("
 	}
 }
 //------------------------------------------------------------------------------
