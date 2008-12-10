@@ -17,28 +17,40 @@ REM # chr    - Character Database
 REM # wdb    - World Database
 REM #########################################
 REM MySQL Username and Password
-set user=changeme
-set pass=changeme
+:dbinfo
+CLS
+echo Welcome to the ArcEmu DB Updater! Please enter your MySQL Info...
+echo.
+set /p server= MySQL Server Address (e.g. localhost):
+set /p port= MySQL Server Port (e.g. 3306):
+set /p user=   Database login:
+set /p pass=   Password:
 REM # Logon Database
-set logon=changeme
+set /p logon=  Logon Database (Accounts):
 REM # Character Database
-set chr=changeme
+set /p chr=	   Character Database:
 REM # World Database
-set wdb=changeme
-REM ############################################################################
-REM #
-REM #    A D V A N C E D   U S E R   C O N F I G U R A T I O N   A R E A
-REM #
-REM ############################################################################
-set server=localhost
-set port=3306
+set /p wdb=    World Database:
+ECHO.
+ECHO.
+ECHO.
+ECHO Is your MySQL information correct?
+ECHO.
+ECHO       (Y)es / (N)o
+ECHO.
+set /p imp=     ? :
+IF %imp%==y GOTO menu
+IF %imp%==Y GOTO menu
+IF %imp%==n GOTO dbinfo
+IF %imp%==N GOTO dbinfo
+IF %imp%==* GOTO error2
+goto error2
+
 REM ############################################################################
 REM #
 REM #     D O   N O T   M O D I F Y   B E Y O N D   T H I S   P O I N T
 REM #
 REM ############################################################################
-if %user% == changeme GOTO error2
-if %pass% == changeme GOTO error2
 :menu
 cls
 ECHO.
@@ -331,9 +343,7 @@ GOTO menu
 CLS
 ECHO.
 ECHO.
-ECHO [FAILURE] You did not change the proper directives in this file.
-ECHO [FAILURE] Please edit this script and fill in the proper MYSQL Information.
-ECHO [FAILURE] When the information is correct: Please Try Again.
+ECHO [ERROR] An error has occured, you will be directed back to the
+ECHO [ERROR] login screen.
 PAUSE    
-GOTO quit  
-:quit
+GOTO dbinfo
