@@ -127,11 +127,11 @@ void LogonConsole::ProcessCmd(char *cmd)
 	SCmd cmds[] =
 	{
 
-		{"?", &LogonConsole::TranslateHelp}, {"help", &LogonConsole::TranslateHelp},
-		{ "reload", &LogonConsole::ReloadAccts},
-		{ "rehash", &LogonConsole::TranslateRehash},
-		{ "netstatus", &LogonConsole::NetworkStatus},
-		{"shutdown", &LogonConsole::TranslateQuit}, {"exit", &LogonConsole::TranslateQuit}, 
+		{	"?", &LogonConsole::TranslateHelp}, {"help", &LogonConsole::TranslateHelp},
+		{	"reload", &LogonConsole::ReloadAccts},
+		{	"rehash", &LogonConsole::TranslateRehash},
+		{	"netstatus", &LogonConsole::NetworkStatus},
+		{	"shutdown", &LogonConsole::TranslateQuit}, {"exit", &LogonConsole::TranslateQuit}, 
 	};
 
 	char cmd2[80];
@@ -146,7 +146,7 @@ void LogonConsole::ProcessCmd(char *cmd)
 			return;
 		}
 
-		printf("Console:Unknown console command (use \"help\" for help).\n");
+		printf("Console: Unknown console command (use \"help\" for help).\n");
 }
 
 void LogonConsole::ReloadAccts(char *str)
@@ -186,10 +186,11 @@ void LogonConsole::ProcessHelp(char *command)
 	if (command == NULL)
 	{
 		sLog.outString("Console:--------help--------");
-		sLog.outString("   help, ?: print this text");
-		sLog.outString("   reload: reloads accounts");
-		sLog.outString("   netstatus: shows network status");
-		sLog.outString("   shutdown, exit: close program");
+		sLog.outString("	Help, ?: Prints this help text.");
+		sLog.outString("	Reload: Reloads accounts.");
+		sLog.outString("	Netstatus: Shows network status.");
+		sLog.outString("	Shutdown, exit: Closes the logonserver.");
+		sLog.outString("
 	}
 }
 //------------------------------------------------------------------------------

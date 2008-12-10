@@ -306,6 +306,47 @@ void LogonServer::Run(int argc, char ** argv)
 	}
 	
 	sLog.outString(BANNER, BUILD_TAG, BUILD_REVISION, CONFIG, PLATFORM_TEXT, ARCH);
+	Log.Color(TBLUE);
+	printf("\nCopyright (C) 2008 ArcEmu. http://www.arcemu.org/\n");
+	printf("This program is free software: you can redistribute it and/or modify\n");
+	printf("it under the terms of the GNU Affero General Public License as published by\n");
+	printf("the Free Software Foundation, either version 3 of the License, or\n");
+	printf("any later version.\n");
+	printf("This program is distributed in the hope that it will be useful,\n");
+	printf("but WITHOUT ANY WARRANTY; without even the implied warranty of\n");
+	printf("MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n");
+	printf("GNU Affero General Public License for more details.\n");
+	printf("                                                \n");
+	printf("                     ``````                     \n");
+	printf("    ArcEmu!        `/o/::-:/-                   \n"); 
+	printf("                   oho/-.-:yN-                  \n"); 
+	printf("                    os+/-.:::                   \n"); 
+	printf("                    :ysyoo+:`                   \n"); 
+	printf("					`ohdys/.                    \n"); 
+	printf("                     oyho/-`   ``               \n"); 
+	printf("                   `shyo+:./ssmdsyo:`           \n"); 
+	printf("                    .shss+:yNMMNNMNmms.         \n"); 
+	printf("                    :ysss+:mNMMMMNNmmds.        \n"); 
+	printf("                `-//sssoo/:NMNMMMNMNNdy-        \n"); 
+	printf("    -`/`       `omhyyhyyyshNMMNNNMMMNmy:        \n"); 
+	printf("    :/::-`     `sdmdmmNMNMMMMMMNMNNNNms-        \n"); 
+	printf("     /+++/-.....shdmmNMMNMMMMMMMMMNNNd+         \n");
+	printf("     ./+oshyhhhddmhdmNMMMMMMMMMMMMNNds.         \n"); 
+	printf("       `:/:.`````.:+ymmNMMNMMMNMMNNd/           \n"); 
+	printf("                     -+shmNNMMMNmhy/            \n"); 
+	printf("                          `..-ods:.             \n");
+	printf("                               o:.`             \n");
+	printf("                               :-.              \n");
+	printf("                              `/-...            \n"); 
+	printf("    Introducing the emu!     --``-/:`           \n"); 
+	printf("                           .:/+:-.-::.          \n"); 
+	printf("                          `.-///:-.`            \n");
+	printf(" Website: http://www.ArcEmu.org	     			\n");
+	printf(" Forums: http://www.ArcEmu.org/forums/          \n");
+	printf(" Credits: http://www.ArcEmu.org/credits         \n");
+	printf(" SVN: http://arcemu.info/svn/                   \n");
+	printf(" Have fun!                                      \n");
+	Log.Line();
 #ifdef REPACK
 	sLog.outString("Repack: %s | Author: %s | %s\n", REPACK, REPACK_AUTHOR, REPACK_WEBSITE);
 #endif

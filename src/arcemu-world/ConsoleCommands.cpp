@@ -191,8 +191,8 @@ bool HandleKickCommand(BaseConsole * pConsole, int argc, const char * argv[])
 		return true;
 	}
 	ConcatArgs(outstr, argc, 1, argv);
-	snprintf(pAnnounce, 1024, "%sConsole:|r %s was kicked from the server for: %s.", MSG_COLOR_LIGHTBLUE, pPlayer->GetName(), outstr.c_str());
-	pPlayer->BroadcastMessage("You were kicked by the console for: %s", outstr.c_str());
+	snprintf(pAnnounce, 1024, "%sConsole:|r %s was removed from the server. Reason: %s.", MSG_COLOR_LIGHTBLUE, pPlayer->GetName(), outstr.c_str());
+	pPlayer->BroadcastMessage("You are now being removed by the game by an administrator via the console. Reason: %s", outstr.c_str());
 	sWorld.SendWorldText(pAnnounce, NULL);
 	pPlayer->Kick(5000);
 	pConsole->Write("Kicked player %s.\r\n", pPlayer->GetName());
@@ -230,13 +230,13 @@ bool HandleShutDownCommand(BaseConsole * pConsole, int argc, const char * argv[]
 
     sMaster.m_ShutdownTimer = delay * 1000;
 	sMaster.m_ShutdownEvent = true;
-	pConsole->Write("Shutdown initiated.\r\n");
+	pConsole->Write("Shutdown has initiated.\r\n");
 	return true;
 }
 
 bool HandleCancelCommand(BaseConsole * pConsole, int argc, const char * argv[])
 {
-	pConsole->Write("Shutdown canceled.\r\n");
+	pConsole->Write("Shutdown has been canceled.\r\n");
 	sMaster.m_ShutdownTimer = 5000;
 	sMaster.m_ShutdownEvent = false;
 	return true;
@@ -308,7 +308,7 @@ bool HandleMOTDCommand(BaseConsole * pConsole, int argc, const char * argv[])
 {
 	if(argc < 2)
 	{
-		pConsole->Write( "The current motd is: '%s'.\r\n", sWorld.GetMotd() );
+		pConsole->Write( "The current message of the day is: '%s'.\r\n", sWorld.GetMotd() );
 	}else
 	{
 		char set_motd[1024];
@@ -317,7 +317,7 @@ bool HandleMOTDCommand(BaseConsole * pConsole, int argc, const char * argv[])
 		snprintf( set_motd, 1024, "%s", outstr.c_str() );
 
 		sWorld.SetMotd( set_motd );
-		pConsole->Write( "The motd has been set to: '%s'.\r\n", sWorld.GetMotd() );
+		pConsole->Write( "The message of the day has been set to: '%s'.\r\n", sWorld.GetMotd() );
 	}
 	return true;
 }
@@ -389,3 +389,11 @@ bool HandleNameHashCommand(BaseConsole * pConsole, int argc, const char * argv[]
 	sWorld.Rehash(true);
 	return true;
 }
+
+bool HandleClearConsoleCommand(BaseConsole * pConsole, int argc, const char * argv[])
+{
+    system("cls");
+	pConsole->Write("Out of the ashes, Chuck Norris appears! With a roundhouse kick, your console shall now be cleaned!");
+    return true;
+}
+

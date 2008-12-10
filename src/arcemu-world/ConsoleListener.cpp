@@ -378,6 +378,7 @@ void HandleConsoleInput(BaseConsole * pConsole, const char * szInput)
 		{ &HandleWhisperCommand, "whisper","<player> <message>", "Whispers a message to someone from the console." },
 		{ &HandleNameHashCommand, "getnamehash" , "<text>" , "Returns the crc32 hash of <text>" } ,
 		{ &HandleRevivePlayer, "reviveplr", "<name>", "Revives a Player" },
+		{ &HandleClearConsoleCommand, "clear" , "None", "Clears the console screen." } ,
 		{ NULL, NULL, NULL, NULL },
 	};
 
