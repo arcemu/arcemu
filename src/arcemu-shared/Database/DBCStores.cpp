@@ -76,7 +76,7 @@ SERVER_DECL DBCStorage<gtFloat> dbcHPRegenBase;
 SERVER_DECL DBCStorage<AreaTriggerEntry> dbcAreaTrigger;
 
 const char* WorldMapOverlayStoreFormat="nxiiiixxxxxxxxxxx";
-const char* AchievementStoreFormat="niixxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxiixxixxxxxxxxxxxxxxxxxxx";
+const char* AchievementStoreFormat="niixxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxiixixxxxxxxxxxxxxxxxxxxx";
 const char* AchievementCriteriaStoreFormat="niiiiiiiixxxxxxxxxxxxxxxxxiixix";
 const char* CharTitlesEntryfmt = "uxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxu";
 const char* BarberShopStyleEntryFormat="nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxi";

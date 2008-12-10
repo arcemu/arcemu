@@ -1698,14 +1698,14 @@ AchievementCriteriaEntryList const& ObjectMgr::GetAchievementCriteriaByType(Achi
 
 void ObjectMgr::LoadAchievementCriteriaList()
 {
-    for (uint32 entryId = 0; entryId<dbcAchievementCriteriaStore.GetNumRows(); entryId++)
-    {
-        AchievementCriteriaEntry const* criteria = dbcAchievementCriteriaStore.LookupEntry(entryId);
-        if(!criteria)
-            continue;
+	for (uint32 rowId = 0; rowId<dbcAchievementCriteriaStore.GetNumRows(); ++rowId)
+	{
+		AchievementCriteriaEntry const* criteria = dbcAchievementCriteriaStore.LookupRow(rowId);
+		if(!criteria)
+			continue;
 
-        m_AchievementCriteriasByType[criteria->requiredType].push_back(criteria);
-    }
+		m_AchievementCriteriasByType[criteria->requiredType].push_back(criteria);
+	}
 }
 
 std::list<ItemPrototype*>* ObjectMgr::GetListForItemSet(uint32 setid)

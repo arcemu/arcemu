@@ -1338,8 +1338,6 @@ bool ChatHandler::HandleModifyLevelCommand(const char* args, WorldSession* m_ses
 	}
 
 	plr->ApplyLevelInfo(Info, Level);
-	plr->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_REACH_LEVEL);
-	plr->Reset_Talents();
 	return true;
 }
 

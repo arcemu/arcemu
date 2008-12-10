@@ -8367,7 +8367,6 @@ void Player::EventTeleportTaxi(uint32 mapid, float x, float y, float z)
 void Player::ApplyLevelInfo(LevelInfo* Info, uint32 Level)
 {
 	ASSERT(Info != NULL);
-	uint8 class_ = getClass();
 
 	// Apply level
 	uint32 PreviousLevel = GetUInt32Value(UNIT_FIELD_LEVEL);
@@ -8390,19 +8389,36 @@ void Player::ApplyLevelInfo(LevelInfo* Info, uint32 Level)
 	SetUInt32Value(UNIT_FIELD_MAXPOWER1, Info->Mana);
 
 	// Calculate talentpoints
-	uint32 TalentPoints = 0;
-	
-	/* if(Level >= 10)
-	    TalentPoints = Level - 9;
-	*/
-	/* lvl55 Deathknights don't have talentpoints - may have to come up with some wittier solution, but it's fine for now */
-	if(class_ == DEATHKNIGHT && Level == 55)
-	  TalentPoints = 0;
-	  else 
-	    if(Level >= 10)
-	       TalentPoints = Level - 9; 
+	uint32 TalentPoints = GetUInt32Value(PLAYER_CHARACTER_POINTS1);
 
-	SetUInt32Value(PLAYER_CHARACTER_POINTS1, Level - PreviousLevel);
+	if (Level >= PreviousLevel) {
+		// Level is increased - talent points are only added, so no reset
+		if (PreviousLevel >= 10) {
+			// Every new level up will add a talent point
+			TalentPoints += Level - PreviousLevel;
+		} else if (Level >= 10) {
+			// Only add talent points for new levels above 9
+			TalentPoints += Level - 9;
+		}
+		SetUInt32Value(PLAYER_CHARACTER_POINTS1, TalentPoints);
+	} else {
+		uint32 removed = 0;
+		if (Level >= 10) {
+			// Every level decreased removes one talent point
+			removed = PreviousLevel - Level;
+		} else if (PreviousLevel >= 10) {
+			// Removing all talent points from levels
+			removed = PreviousLevel - 9;
+		}
+		if (TalentPoints < removed) {
+			// Too few free talent points; resetting talents
+			Reset_Talents();
+		} else {
+			// Remove calculated amount of free talent points
+			TalentPoints -= removed;
+			SetUInt32Value(PLAYER_CHARACTER_POINTS1, TalentPoints);
+		}
+	}
 
 	// Set base fields
 	SetUInt32Value(UNIT_FIELD_BASE_HEALTH, Info->HP);
@@ -8414,6 +8430,7 @@ void Player::ApplyLevelInfo(LevelInfo* Info, uint32 Level)
 	UpdateGlyphs();
 	m_playerInfo->lastLevel = Level;
 
+	GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_REACH_LEVEL);
 	sLog.outDetail("Player %s set parameters to level %u", GetName(), Level);
 }
 
