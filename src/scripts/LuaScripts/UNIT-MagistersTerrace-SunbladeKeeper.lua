@@ -34,7 +34,10 @@ Unit:RegisterEvent("SunbladeKeeper_ShadowBolt", 6000, 40)
 end
 
 function SunbladeKeeper_ShadowBolt(Unit, Event)
+local boltcheck = Unit:GetRandomPlayer(7)
+if (boltcheck ~= nil) then
 Unit:FullCastSpellOnTarget(15232, Unit:GetRandomPlayer(7))
+end
 end
 
 

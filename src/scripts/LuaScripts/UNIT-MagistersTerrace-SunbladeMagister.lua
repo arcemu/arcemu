@@ -35,15 +35,21 @@ Unit:RegisterEvent("SunbladeMagister_ArcaneNova", 3000, 40)
 end
 
 function SunbladeMagister_Frostbolt(Unit, Event)
+local frostCheck = Unit:GetReandomPlayer(1)
+if (frostCheck ~= nil) then
 Unit:FullCastSpellOnTarget(46035, Unit:GetRandomPlayer(1))
+end
 end
 
 function SunbladeMagister_ArcaneNova(Unit, Event)
 ArcaneFlip=math.random(1, 6)
+local arcaneCheck = Unit:GetRandomPlayer(7)
+if (arcaneCheck ~= nil) then
 if ArcaneFlip==1 then
 Unit:FullCastSpellOnTarget(46036, Unit:GetRandomPlayer(7))
 else
 ArcaneFlip=nil
+end
 end
 end
 

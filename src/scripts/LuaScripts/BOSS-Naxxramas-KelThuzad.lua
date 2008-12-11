@@ -96,7 +96,10 @@ function kt_OnDied(Unit)
 end
 
 function Frostbolt1(pUnit, event)
-	pUnit:FullCastSpellOnTarget(28478, pUnit:GetMainTank())
+	local boltCheck = pUnit:GetMainTank()
+	if (boltCheck ~= nil) then
+		pUnit:FullCastSpellOnTarget(28478, pUnit:GetMainTank())
+	end
 end
 
 function Frostbolt(pUnit, event)
@@ -140,12 +143,15 @@ end
 function FrostBlast(pUnit)
 	pUnit:PlaySoundToSet(8815)
 	pUnit:SendChatMessage(14,0,"I shall freeze the blood in your veins!")
-	pUnit:CastSpellOnTarget(27808, pUnit:GetRandomPlayer(0))
+	local blastCheck = pUnit:GetRandomPlayer(0)
+	if (blastCheck ~= nil) then
+		pUnit:CastSpellOnTarget(27808, pUnit:GetRandomPlayer(0))
+	end
 end
 
 function Phase3(Unit, Event)
 		if Unit:GetHealthPct() < 41 then
-			if phase3==0 then
+			if phase3 == 0 then
 				Unit:PlaySoundToSet(8816)
 				Unit:SendChatMessage(14,0, "Master! I require aid!")
 				Unit:SpawnCreature(16441, 3755.697510, -5080.873535, 142.369598, 3.500572, 14,0)

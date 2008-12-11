@@ -29,6 +29,7 @@ Staff of ArcScript Project, Feb 2008
 Made by: Recon
 -- ]]
 --Thrall--
+
 function thrall_OnCombat(pUnit, Event)
 	pUnit:PlaySoundToSet(5880)
 	pUnit:RegisterEvent("chain",12000, 0)
@@ -38,12 +39,18 @@ end
 
 function chain(pUnit, Event)
 	print "Thrall_chainlight"
+	local chainCheck = pUnit:GetClosestPlayer(0)
+	if (chainCheck ~= nil) then
 	pUnit:FullCastSpellOnTarget(16033,pUnit:GetClosestPlayer(0))
+end
 end
 
 function shock(pUnit, Event)
 	print "Thrall_shock"
-	pUnit:FullCastSpellOnTarget(16034,pUnit:GetClosestPlayer(0))
+	local shockCheck = pUnit:GetClosestPlayer(0)
+	if (shockCheck ~= nil) then
+		pUnit:FullCastSpellOnTarget(16034,pUnit:GetClosestPlayer(0))
+	end
 end
 
 function summonka(pUnit, Event)
@@ -100,7 +107,10 @@ end
 
 function shoot(pUnit, Event)
 	print "ladyswindr_shoot"
-	pUnit:CastSpellOnTarget(20463,pUnit:GetClosestPlayer(0))
+	local shootCheck = pUnit:GetClosestPlayer(0)
+	if (shootCheck ~= nil) then
+		pUnit:CastSpellOnTarget(20463,pUnit:GetClosestPlayer(0))
+	end
 end
 
 
@@ -111,7 +121,10 @@ end
 
 function multishot(pUnit, Event)
 	print "ladyswindr_multishot"
-	pUnit:CastSpellOnTarget(20735,pUnit:GetClosestPlayer(0))
+	local multiCheck = pUnit:GetClosestPlayer(0)
+	if (multiCheck ~= nil) then
+		pUnit:CastSpellOnTarget(20735,pUnit:GetClosestPlayer(0))
+	end
 end
 
 function summonn(pUnit, Event)
@@ -142,7 +155,10 @@ end
 
 function drainlife(pUnit, Event)
 	print "Varimathras_drainlife"
-	pUnit:CastSpellOnTarget(20743,pUnit:GetClosestPlayer(0))
+	local drainCheck = pUnit:GetClosestPlayer(0)
+	if (drainCheck ~= nil) then
+		pUnit:CastSpellOnTarget(20743,pUnit:GetClosestPlayer(0))
+	end
 end
 
 function shadoww(pUnit, Event)
@@ -182,12 +198,18 @@ end
 
 function cleave(pUnit, Event)
 	print "cairblood_cleave"
-	pUnit:CastSpellOnTarget(16044,pUnit:GetClosestPlayer(0))
+	local cleaveCheck = pUnit:GetClosestPlayer(0)
+	if (cleaveCheck ~= nil) then
+		pUnit:CastSpellOnTarget(16044,pUnit:GetClosestPlayer(0))
+	end
 end
 
 function mortalStrike(pUnit, Event)
 	print "cairblood_MortalStrike"
-	pUnit:CastSpellOnTarget(16856,pUnit:GetClosestPlayer(0))
+	local mortalCheck = pUnit:GetClosestPlayer(0)
+	if (mortalCheck ~= nil) then
+		pUnit:CastSpellOnTarget(16856,pUnit:GetClosestPlayer(0))
+	end
 end
 
 function thunderclap(pUnit, Event)
@@ -197,7 +219,10 @@ end
 
 function uppercut(pUnit, Event)
 	print "cairblood_Uppercut"
-	pUnit:CastSpellOnTarget(22916,pUnit:GetClosestPlayer(1))
+	local upperCheck = pUnit:GetClosestPlayer(0)
+	if (upperCheck ~= nil) then
+		pUnit:CastSpellOnTarget(22916,pUnit:GetClosestPlayer(1))
+	end
 end
 
 function warstomp(pUnit, Event)
@@ -230,21 +255,32 @@ end
 
 function cleavee(pUnit, Event)
 	print "lorthemar_cleave"
-	pUnit:CastSpellOnTarget(16044,pUnit:GetClosestPlayer(0))
+	local cleaveCheck = pUnit:GetClosestPlayer(0)
+	if (cleaveCheck ~= nil) then
+		pUnit:CastSpellOnTarget(16044,pUnit:GetClosestPlayer(0))
+	end
 end
 
 function mannaburn(pUnit, Event)
 	print "lorthemar_mannaburn"
-	pUnit:CastSpellOnTarget(33385,pUnit:GetClosestPlayer(4))
+	local burnCheck = pUnit:GetClosestPlayer(0)
+	if (burnCheck ~= nil) then
+		pUnit:CastSpellOnTarget(33385,pUnit:GetClosestPlayer(4))
+	end
 end
 
 function shock(pUnit, Event)
 	print "lorthemar_shock"
-	pUnit:FullCastSpellOnTarget(16034,pUnit:GetClosestPlayer(0))
+	local shockCheck = pUnit:GetClosestPlayer(0)
+	if (shockCheck ~= nil) then
+		pUnit:FullCastSpellOnTarget(16034,pUnit:GetClosestPlayer(0))
+	end
 end
 
 function charm(pUnit, Event)
 	print "lorthemar_charm"
+	local charmCheck = pUnit:GetRandomPlayer(1)
+	if (charmCheck ~= nil) then
 	pUnit:CastSpellOnTarget(33384,pUnit:GetRandomPlayer(1))
 end
 

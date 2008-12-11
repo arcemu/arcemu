@@ -38,16 +38,22 @@ Unit:RegisterEvent("SunbladeWarlock_Immolate", 3500, 0)
 end
 
 function SunbladeWarlock_Incinerate(Unit, Event)
+local incCheck = Unit:GetClosestPlayer()
+if (incCheck ~= nil) then
 Unit:FullCastSpellOnTarget(46043, Unit:GetClosestPlayer())
+end
 end
 
 
 function SunbladeWarlock_Immolate(Unit, Event)
 local Flip = math.random(1,3)
+local immCheck = Unit:GetMainTank()
+if (immCheck ~= nil) then
 if Flip == 1 then
 Unit:FullCastSpellOnTarget(46042, Unit:GetMainTank())
 else
 local Flip = nil
+end
 end
 end
 

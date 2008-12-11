@@ -35,10 +35,13 @@ end
 
 function SunbladeMageGuard_GlaiveThrow(Unit, Event)
 FlipGlaive = math.random(1, 2)
+local glaivecheck = Unit:GetRandomPlayer(7)
+if (glaivecheck ~= nil) then
 if FlipGlaive==1 then
 Unit:CastSpellOnTarget(44478, Unit:GetRandomPlayer(7))
 else
 Unit:CastSpellOnTarget(46028, Unit:GetRandomPlayer(7))
+end
 end
 end
 

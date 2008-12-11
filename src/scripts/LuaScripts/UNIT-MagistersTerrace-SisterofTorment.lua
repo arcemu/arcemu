@@ -36,14 +36,20 @@ end
 
 --Deadly Embrace
 function SunbladeSisterofTorment_DeadlyEmbrace(Unit, Event)
+local embraceCheck = Unit:GetRandomPlayer(1)
+if (embraceCheck ~= nil) then
 Unit:FullCastSpellOnTarget(44547, Unit:GetRandomPlayer(1))
+end
 end
 
 --44640 Lash of Pain
 function SunbladeSisterofTorment_LashofPain(Unit, Event)
 local Flip = math.random(1,2)
 if Flip == 1 then
+local lashCheck = Unit:GetClosestPlayer()
+if (lashCheck ~= nil) then
 Unit:CastSpellOnTarget(44640, Unit:GetClosestPlayer())
+end
 end
 end
 

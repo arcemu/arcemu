@@ -46,7 +46,11 @@ function AmbassadorInfernus_FireShieldIV(pUnit,Event)
 end
 
 function AmbassadorInfernus_SearingFlames(pUnit,Event)
-	pUnit:FullCastSpellOnTarget(9552,pUnit:GetClosestPlayer())
+	local searingCheck = pUnit:GetClosestPlayer()
+	if (searingCheck ~= nil) then
+	else
+		pUnit:FullCastSpellOnTarget(9552,pUnit:GetClosestPlayer())
+	end
 end
 
 function AmbassadorInfernus_OnLeaveCombat(pUnit,Event)
