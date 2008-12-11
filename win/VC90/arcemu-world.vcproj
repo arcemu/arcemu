@@ -44,7 +44,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalOptions="/MP"
+				AdditionalOptions="/MP /Zm256"
 				Optimization="0"
 				InlineFunctionExpansion="0"
 				AdditionalIncludeDirectories="&quot;..\..\src\arcemu-shared&quot;;&quot;..\..\src\arcemu-world\Collision\vmap&quot;;&quot;..\..\src\arcemu-world\Collision\g3dlite&quot;"
@@ -82,7 +82,6 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalOptions="/LTCG"
 				AdditionalDependencies="msvcrtd.lib ws2_32.lib libmysql.lib libeay32.lib dbghelp.lib zlib.lib pcre.lib"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="..\..\extras\collision\collision_dll\Debug"

@@ -44,7 +44,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalOptions="/MP"
+				AdditionalOptions="/MP /Zm256"
 				Optimization="0"
 				AdditionalIncludeDirectories="..\..\src\collision\g3dlite"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;COLLISION_EXPORTS"
