@@ -454,18 +454,35 @@ void Spell::SpellEffectInstantKill(uint32 i)
 	{
 	case SPELL_HASH_SACRIFICE:
 		{
-			if( !u_caster->IsPet() )
+			if(!u_caster->IsPet())
 				return;
 
-			static_cast<Pet*>(u_caster)->Dismiss( true );
+			//static_cast<Pet*>(u_caster)->Dismiss( true );
+
+			SpellEntry * se = dbcSpell.LookupEntry(5);
+			if(se == 0) return;
+			SpellCastTargets targets(u_caster->GetGUID());
+			Spell * sp = SpellPool.PooledNew();
+			sp->Init(static_cast<Pet*>(u_caster)->GetPetOwner(), se, true, 0);
+			sp->prepare(&targets);
+
 			return;
 		}break;
 	case SPELL_HASH_DEMONIC_SACRIFICE:
 		{
-			if( !p_caster->IsPlayer() )
+			if(!p_caster || !p_caster->IsPlayer() || !unitTarget || !unitTarget->IsPet())
 				return;
 
-			static_cast<Pet*>(unitTarget)->Dismiss( true );
+			//static_cast<Pet*>(unitTarget)->Dismiss( true );
+
+			SpellEntry * se = dbcSpell.LookupEntry(5);
+			if(se == 0) return;
+
+			SpellCastTargets targets(unitTarget->GetGUID());
+			Spell * sp = SpellPool.PooledNew();
+			sp->Init(p_caster, se, true, 0);
+			sp->prepare(&targets);
+			
 			return;
 		}break;
 
