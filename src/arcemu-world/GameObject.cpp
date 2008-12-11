@@ -113,13 +113,13 @@ bool GameObject::CreateFromProto(uint32 entry,uint32 mapid, float x, float y, fl
 	SetRotation(ang);
 	 
 	//SetUInt32Value( GAMEOBJECT_TIMESTAMP, (uint32)UNIXTIME);
-//    SetUInt32Value( GAMEOBJECT_ARTKIT, 0 );		   //these must be from wdb somewhere i guess
-   SetByte( GAMEOBJECT_BYTES_1, 3, 0 );
+	//SetUInt32Value( GAMEOBJECT_ARTKIT, 0 );		   //these must be from wdb somewhere i guess
+	SetByte( GAMEOBJECT_BYTES_1, 3, 0 );
 	SetByte( GAMEOBJECT_BYTES_1, 0, 1 );
 	SetUInt32Value( GAMEOBJECT_DISPLAYID, pInfo->DisplayID );
 	SetByte( GAMEOBJECT_BYTES_1, 1, pInfo->Type );
    
-	InitAI();
+	//InitAI(); //called in Load
 
 	 return true;
 	/*
@@ -476,7 +476,6 @@ bool GameObject::Load(GOSpawn *spawn)
 {
 	if(!CreateFromProto(spawn->entry,0,spawn->x,spawn->y,spawn->z,spawn->facing))
 		return false;
-
 	m_spawn = spawn;
 	//SetRotation(spawn->o);
 	SetUInt32Value(GAMEOBJECT_FLAGS,spawn->flags);
@@ -491,12 +490,11 @@ bool GameObject::Load(GOSpawn *spawn)
 	}
 	SetFloatValue(OBJECT_FIELD_SCALE_X,spawn->scale);
 	_LoadQuests();
+	InitAI();
 	CALL_GO_SCRIPT_EVENT(this, OnCreate)();
 	CALL_GO_SCRIPT_EVENT(this, OnSpawn)();
 
-	InitAI();
-
-	_LoadQuests();
+	//_LoadQuests(); //wtf are we smoking crack? Its called right above...
 	return true;
 }
 
@@ -791,4 +789,3 @@ void GameObject::SetRotation(float rad)
 		rad = 1.25f + 0.125f * sin;
 	SetFloatValue(GAMEOBJECT_ROTATION, rad);
 }
-
