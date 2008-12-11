@@ -41,10 +41,6 @@ enum PET_FOOD
 	PET_FOOD_RAW_FISH  // not used in pet diet
 };
 
-/* Loyalty and happiness */
-static const char LoyaltyTicks[3] = { -10, 5, 20 };//loyalty_ticks for unhappy, content, happy - PetPersonality.dbc
-static const uint32 HappinessTicks[6] = { 2783, 2088, 1670, 1392, 1193, 1044 };//loose_happiness ticks per loyalty lvl for 7.5s timer
-static const uint16 LoyLvlRange[7] = { 0, 150, 300, 450, 600, 900, 1200 };//loyalty level ranges (1200 is guessed)
 
 enum PET_ACTION
 {
@@ -82,15 +78,6 @@ enum HappinessState
 	UNHAPPY		=1,
 	CONTENT		=2,
 	HAPPY		=3
-};
-enum LoyaltyLevel
-{
-	REBELIOUS	=1,
-	UNRULY		=2,
-	SUBMISIVE	=3,
-	DEPENDABLE	=4,
-	FAITHFUL	=5,
-	BEST_FRIEND	=6
 };
 
 enum AutoCastEvents
@@ -210,10 +197,6 @@ public:
 	void __fastcall SetAutoCastSpell(AI_Spell * sp);
 	void Rename(string NewName);
 	ARCEMU_INLINE string& GetName() { return m_name; }
-	void AddPetSpellToOwner(uint32 spellId);
-	uint16 SpellTP(uint32 spellId);
-	uint16 GetUsedTP();
-	void UpdateTP();
 	uint32 CanLearnSpell( SpellEntry* sp );
 	
 	void HandleAutoCastEvent( AutoCastEvents Type );
@@ -225,7 +208,6 @@ public:
 	virtual Group *GetGroup();
 
 protected:
-	bool bHasLoyalty;
 	Player *m_Owner;
 	uint32 m_PetXP;
 	PetSpellMap mSpells;
@@ -238,30 +220,23 @@ protected:
 
 	uint32 m_PartySpellsUpdateTimer;
 	uint32 m_HappinessTimer;
-	uint32 m_LoyaltyTimer;
 	uint32 m_PetNumber;
 	uint32 m_Action;
 	uint32 m_State;
 	uint32 m_ExpireTime;
 	uint32 m_Diet;
 	uint64 m_OwnerGuid;
-	int16 TP;
-	int32 LoyaltyPts;
-	uint32 LoyaltyXP;
 	time_t reset_time;
 	uint32 reset_cost;
 	bool bExpires;
 	bool Summon;
 	string m_name;
-	uint8 GetLoyaltyLevel(){return ((GetUInt32Value(UNIT_FIELD_BYTES_1) >> 8) & 0xff);};
 	HappinessState GetHappinessState();
 	uint32 GetHighestRankSpell(uint32 spellId);
-	bool UpdateLoyalty(char pts);
 
 	list<AI_Spell*> m_autoCastSpells[AUTOCAST_EVENT_COUNT];
 };
 
-#define PET_LOYALTY_UPDATE_TIMER 120000
 #define PET_HAPPINESS_UPDATE_VALUE 333000
 #define PET_HAPPINESS_UPDATE_TIMER 7500
 

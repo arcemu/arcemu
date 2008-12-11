@@ -315,7 +315,6 @@ void WorldSession::HandleStabledPetList(WorldPacket & recv_data)
 		data << uint32(itr->second->entry); // entryid
 		data << uint32(itr->second->level); // level
 		data << itr->second->name;		  // name
-		data << uint32(itr->second->loyaltylvl);
 		if(itr->second->stablestate == STABLE_STATE_ACTIVE)
 			data << uint8(STABLE_STATE_ACTIVE);
 		else

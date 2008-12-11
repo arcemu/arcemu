@@ -1364,10 +1364,6 @@ void AIInterface::_UpdateCombat(uint32 p_time)
 
 					next_spell_time = (uint32)UNIXTIME + MOB_SPELLCAST_GLOBAL_COOLDOWN;
 
-					//add pet spell after use to pet owner
-					if( m_Unit->IsPet() )
-						static_cast< Pet* >( m_Unit )->AddPetSpellToOwner( spellInfo->Id );
-
 					m_nextSpell = NULL;
 				}
 				else // Target out of Range -> Run to it

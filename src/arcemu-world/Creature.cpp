@@ -757,7 +757,7 @@ void Creature::CalcStat(uint32 type)
 	{
 		Player* owner = static_cast< Pet* >( this )->GetPetOwner();
 		if( type == 2 && owner )
-			pos += int32( 0.30f * owner->GetUInt32Value( UNIT_FIELD_STAT2 ) );
+			pos += int32( 0.45f * owner->GetUInt32Value( UNIT_FIELD_STAT2 ) );
 		else if( type == 3 && owner && GetUInt32Value( UNIT_CREATED_BY_SPELL ) )
 			pos += int32( 0.30f * owner->GetUInt32Value( UNIT_FIELD_STAT3 ) );
 	}

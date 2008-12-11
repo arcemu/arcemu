@@ -515,13 +515,9 @@ struct PlayerPet
 	char stablestate;
 	uint32 number;
 	uint32 level;
-	uint32 loyaltyxp;
 	uint32 happinessupdate;
 	string actionbar;
 	bool summon;
-	uint32 loyaltypts;
-	uint32 loyaltyupdate;
-	char loyaltylvl;
 	time_t reset_time;
 	uint32 reset_cost;
 	uint32 spellid;

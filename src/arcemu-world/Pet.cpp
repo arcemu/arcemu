@@ -149,17 +149,17 @@ void Pet::CreateAsSummon(uint32 entry, CreatureInfo *ci, Creature* created_from_
 	SetUInt32Value(OBJECT_FIELD_ENTRY, entry);
 	SetFloatValue(UNIT_MOD_CAST_SPEED, 1.0f);	// better set this one
 
-	// Fields common to both lock summons and pets
-	if(type & 0x2 && created_from_creature != NULL)
-		SetUInt32Value(UNIT_FIELD_LEVEL, created_from_creature->getLevel());
-	else
-		SetUInt32Value(UNIT_FIELD_LEVEL,owner->GetUInt32Value(UNIT_FIELD_LEVEL));
+	// Hunter pet should be max 5 levels below owner
+	uint32 level = owner->GetUInt32Value( UNIT_FIELD_LEVEL );
+	if( type & 0x2 && created_from_creature != NULL ) 
+		level = created_from_creature->getLevel() < ( level - 5 ) ? level - 5 : created_from_creature->getLevel();
 
-	SetUInt32Value(UNIT_FIELD_DISPLAYID,  ci->Male_DisplayID);
-	SetUInt32Value(UNIT_FIELD_NATIVEDISPLAYID, ci->Male_DisplayID);
+	SetUInt32Value( UNIT_FIELD_LEVEL, level );
+	SetUInt32Value( UNIT_FIELD_DISPLAYID, ci->Male_DisplayID );
+	SetUInt32Value( UNIT_FIELD_NATIVEDISPLAYID, ci->Male_DisplayID );
 	EventModelChange();
-	SetUInt64Value(UNIT_FIELD_SUMMONEDBY, owner->GetGUID());
-	SetUInt64Value(UNIT_FIELD_CREATEDBY, owner->GetGUID());
+	SetUInt64Value( UNIT_FIELD_SUMMONEDBY, owner->GetGUID() );
+	SetUInt64Value( UNIT_FIELD_CREATEDBY, owner->GetGUID() );
 	
 	if(type & 0x1 && created_by_spell != NULL)
 		SetUInt64Value(UNIT_CREATED_BY_SPELL, created_by_spell->Id);
@@ -213,7 +213,6 @@ void Pet::CreateAsSummon(uint32 entry, CreatureInfo *ci, Creature* created_from_
 		SetUInt32Value(UNIT_FIELD_MAXPOWER5, 1000000);
 		SetUInt32Value(UNIT_FIELD_PETEXPERIENCE, 0);
 		SetUInt32Value(UNIT_FIELD_PETNEXTLEVELEXP, GetNextLevelXP(getLevel()));
-		SetUInt32Value(UNIT_FIELD_BYTES_1, 0 | (REBELIOUS << 8));//loyalty level
 
 		// Focus
 		SetUInt32Value(UNIT_FIELD_POWER3, 100);
@@ -278,20 +277,15 @@ Pet::Pet(uint64 guid) : Creature(guid)
 
 	m_PartySpellsUpdateTimer = 0;
 	m_HappinessTimer = PET_HAPPINESS_UPDATE_TIMER;
-	m_LoyaltyTimer = PET_LOYALTY_UPDATE_TIMER;
 	m_PetNumber = 0;
 
 	m_State = PET_STATE_DEFENSIVE;
 	m_Action = PET_ACTION_FOLLOW;
-	bHasLoyalty = false;
 	m_ExpireTime = 0;
 	bExpires = false;
 	m_Diet = 0;
 	m_Action = PET_ACTION_FOLLOW;
 	m_State = PET_STATE_DEFENSIVE;
-	TP = 0;
-	LoyaltyPts = LoyLvlRange[1];
-	LoyaltyXP = 0;
 	reset_time = 0;
 	reset_cost = 0;
 
@@ -314,15 +308,14 @@ void Pet::Update(uint32 time)
 {
 	Creature::Update(time); // passthrough
 	
-	if( bHasLoyalty && !bExpires && isAlive() )
+	if( !Summon && !bExpires && isAlive() )
 	{
 		ApplyPetLevelAbilities();
 		//Happiness
 		if( m_HappinessTimer == 0 )
 		{	
 			int32 val = GetUInt32Value( UNIT_FIELD_POWER5 );
-			//amount of burned happiness is loyalty_lvl depended
-			int32 burn = HappinessTicks[ GetLoyaltyLevel() - 1 ];
+			int32 burn = 1042; //Based on WoWiki pet looses 50 happiness over 6 min => 1042 every 7.5 s
 			if( CombatStatus.IsInCombat() )
 				burn = burn >> 1; //in combat reduce burn by half (guessed) 
 			if( ( val - burn ) < 0 )
@@ -338,20 +331,6 @@ void Pet::Update(uint32 time)
 				m_HappinessTimer = 0;
 			else
 				m_HappinessTimer -= time;
-		}
-		//Loyalty
-		if( m_LoyaltyTimer == 0 && GetHappinessState() != 0 )
-		{
-			m_LoyaltyTimer = PET_LOYALTY_UPDATE_TIMER;
-			if( !UpdateLoyalty(LoyaltyTicks[GetHappinessState()-1]) ) //loyalty tick is happiness state dependent
-				return;			
-		} 
-		else 
-		{
-			if(time > m_LoyaltyTimer)
-				m_LoyaltyTimer = 0;
-			else
-				m_LoyaltyTimer -= time;
 		}
 	}
 
@@ -525,10 +504,6 @@ void Pet::LoadFromDB(Player* owner, PlayerPet * pi)
 	SetIsPet(true);
 
 	m_HappinessTimer = mPi->happinessupdate;
-	m_LoyaltyTimer = mPi->loyaltyupdate;
-	LoyaltyPts = mPi->loyaltypts;
-	LoyaltyXP = mPi->loyaltyxp;
-
 	reset_time = mPi->reset_time;
 	reset_cost = mPi->reset_cost;
 
@@ -572,14 +547,20 @@ void Pet::LoadFromDB(Player* owner, PlayerPet * pi)
 
 	if( m_Owner )
 	{
-		if( getLevel() > m_Owner->getLevel() )
+		uint32 level = getLevel();
+		if( level < m_Owner->getLevel() - 5 )
+			level = m_Owner->getLevel() - 5;
+		else if( level > m_Owner->getLevel() )
+			level = m_Owner->getLevel();
+		
+		if( getLevel() != level )
 		{
-			SetUInt32Value(UNIT_FIELD_LEVEL, m_Owner->getLevel());
-			SetUInt32Value(UNIT_FIELD_PETEXPERIENCE, 0);
-			SetUInt32Value(UNIT_FIELD_PETNEXTLEVELEXP, GetNextLevelXP(m_Owner->getLevel()));
+			SetUInt32Value( UNIT_FIELD_LEVEL, level );
+			SetUInt32Value( UNIT_FIELD_PETEXPERIENCE, 0 );
+			SetUInt32Value( UNIT_FIELD_PETNEXTLEVELEXP, GetNextLevelXP( level ) );
 			ApplyStatsForLevel();
 		}
-		else if(m_uint32Values[UNIT_CREATED_BY_SPELL])
+		else if( m_uint32Values[ UNIT_CREATED_BY_SPELL ] )
 			ApplySummonLevelAbilities();
 		else
 			ApplyPetLevelAbilities();
@@ -621,7 +602,6 @@ void Pet::InitializeMe(bool first)
 	if( GetCreatureInfo() )
 		myFamily = dbcCreatureFamily.LookupEntry(GetCreatureInfo()->Family);
 	else myFamily = NULL;
-	bHasLoyalty = m_Owner->getClass() == HUNTER ? true : false;
 	SetPetDiet();
 	_setFaction();
 	m_State = 1;		// dont set agro on spawn
@@ -664,7 +644,6 @@ void Pet::InitializeMe(bool first)
 			} while(query->NextRow());
 		}
 		delete query;
-		UpdateTP();
 	}
 
 	InitializeSpells(); 
@@ -704,11 +683,7 @@ void Pet::UpdatePetInfo(bool bSetToOffline)
 	pi->number = m_PetNumber;
 	pi->xp = m_PetXP;
 	pi->level = GetUInt32Value(UNIT_FIELD_LEVEL);
-	pi->loyaltyxp = LoyaltyXP;
 	pi->happinessupdate = m_HappinessTimer;
-	pi->loyaltypts = LoyaltyPts;
-	pi->loyaltyupdate = m_LoyaltyTimer;
-	pi->loyaltylvl = GetLoyaltyLevel();
 
 	// save actionbar
 	ss.rdbuf()->str("");
@@ -810,12 +785,6 @@ void Pet::GiveXP( uint32 xp )
 	if( !m_Owner || Summon )
 		return;	
 
-	if( GetLoyaltyLevel() < BEST_FRIEND && LoyaltyXP < m_Owner->GetUInt32Value( PLAYER_NEXT_LEVEL_XP ) / 20 )
-	{
-		LoyaltyXP += xp;
-		UpdateLoyalty( 0 );
-	}
-	
 	if( getLevel() >= m_Owner->getLevel() )		//pet do not get xp if its level >= owners level
 		return;
 
@@ -823,22 +792,21 @@ void Pet::GiveXP( uint32 xp )
 	uint32 nxp = m_uint32Values[UNIT_FIELD_PETNEXTLEVELEXP];
 	bool changed = false;
 
-	while(xp >= nxp)
+	if( xp >= nxp )
 	{
 		ModUnsigned32Value(UNIT_FIELD_LEVEL, 1);
 		xp -= nxp;
 		nxp = GetNextLevelXP(m_uint32Values[UNIT_FIELD_LEVEL]);
-		changed = true;
+		ApplyStatsForLevel();
 	}
 
 	SetUInt32Value(UNIT_FIELD_PETEXPERIENCE, xp);
 	SetUInt32Value(UNIT_FIELD_PETNEXTLEVELEXP, nxp);
-	if(changed) ApplyStatsForLevel();
 }
 
 uint32 Pet::GetNextLevelXP(uint32 level)
 {
-	// Pets need only 1/6 of xp to level up compared to players
+	// Pets need only 10% of xp to level up compared to players
 	uint32 nextLvlXP = 0;
 	if( level > 0 && level <= MAX_PREDEFINED_NEXTLEVELXP )
 	{
@@ -848,7 +816,7 @@ uint32 Pet::GetNextLevelXP(uint32 level)
 	{
 		nextLvlXP = ((int)((((double)(((8 * level) + ((level - 30) * 5)) * ((level * 5) + 45)))/100)+0.5))*100;
 	}
-	double xp = double(nextLvlXP) / 6;
+	double xp = double(nextLvlXP) / 10;
 	return FL2UINT(xp);
 }
 
@@ -986,7 +954,6 @@ void Pet::AddSpell( SpellEntry * sp, bool learning )
 	}
 	if(IsInWorld())
 		SendSpellsToOwner();
-	UpdateTP();
 }
 
 void Pet::SetSpellState(SpellEntry* sp, uint16 State)
@@ -1104,7 +1071,6 @@ void Pet::RemoveSpell(SpellEntry * sp)
 		if( ActionBar[pos] == sp->Id )
 			ActionBar[pos] = 0;
 	}
-	UpdateTP();
 }
 
 void Pet::Rename(string NewName)
@@ -1515,36 +1481,12 @@ void Pet::ApplyPetLevelAbilities()
 	LoadPetAuras(-1);//These too
 
 	//Base attributes from http://petopia.brashendeavors.net/html/art...ttributes.shtml
-	static uint32 R_pet_base_armor[PLAYER_LEVEL_CAP] = { 15, 16, 41, 76, 120, 174, 239, 316, 406, 512, 538, 573, 608, 642, 677, 713, 748, 782, 817, 852, 888, 922, 957, 992, 1026, 1061, 1097, 1130, 1165, 1200, 1234, 1270, 1304, 1340, 1373, 1480, 1593, 1709, 1834, 1964, 2101, 2246, 2397, 2557, 2725, 2780, 2835, 2888, 2944, 2999, 3052, 3108, 3163, 3216, 3271, 3327, 3380, 3435, 3489, 3791, 4091, 4391, 4691, 4991, 5291, 5591, 5892, 6192, 6492, 6792, 
-#if PLAYER_LEVEL_CAP==80
-		7092,7392,7692,7992,8292,8592,8892,9192,9492,9792,
-#endif
-	};
-	static uint32 R_pet_base_str[PLAYER_LEVEL_CAP] = { 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 37, 38, 40, 42, 44, 45, 47, 49, 50, 52, 53, 55, 56, 58, 60, 61, 63, 64, 66, 67, 69, 70, 72, 74, 76, 78, 81, 86, 91, 97, 102, 104, 106, 108, 110, 113, 115, 117, 119, 122, 124, 127, 129, 131, 134, 136, 139, 141, 144, 146, 149, 151, 154, 156, 159, 162,
-#if PLAYER_LEVEL_CAP==80
-		165,168,171,174,177,181,184,187,190,193,
-#endif
-	};
-	static uint32 R_pet_base_agi[PLAYER_LEVEL_CAP] = { 15, 16, 16, 16, 17, 18, 18, 19, 20, 20, 20, 21, 23, 23, 24, 25, 26, 27, 28, 30, 30, 30, 32, 33, 34, 35, 36, 37, 38, 40, 40, 41, 43, 44, 45, 46, 47, 48, 49, 50, 52, 53, 54, 55, 57, 57, 59, 60, 61, 63, 64, 65, 67, 68, 70, 71, 72, 74, 75, 77, 82, 87, 92, 97, 102, 107, 112, 117, 122, 127, 
-#if PLAYER_LEVEL_CAP==80
-		131,136,141,146,151,156,161,166,171,176,
-#endif
-	};
-	static uint32 R_pet_base_sta[PLAYER_LEVEL_CAP] = { 22, 24, 25, 27, 28, 30, 32, 34, 36, 38, 40, 43, 45, 48, 51, 54, 57, 60, 63, 66, 70, 74, 79, 83, 88, 93, 98, 103, 109, 114, 119, 124, 129, 134, 140, 146, 152, 158, 164, 170, 177, 183, 190, 196, 203, 210, 217, 224, 232, 240, 247, 255, 263, 271, 279, 288, 296, 305, 314, 323, 332, 342, 351, 361, 370, 380, 391, 401, 412, 423, 
-#if PLAYER_LEVEL_CAP==80
-		434,445,456,467,478,489,501,512,523,534,
-#endif
-	};
-	static uint32 R_pet_base_int[PLAYER_LEVEL_CAP] = { 20, 20, 20, 20, 20, 21, 21, 21, 21, 21, 21, 21, 21, 22, 22, 22, 22, 22, 22, 22, 23, 23, 23, 23, 23, 23, 23, 24, 24, 24, 24, 24, 24, 25, 25, 25, 25, 25, 26, 26, 26, 26, 26, 26, 27, 27, 27, 27, 28, 28, 28, 28, 28, 29, 29, 29, 29, 30, 30, 30, 30, 30, 31, 31, 31, 32, 32, 32, 32, 33, 
-#if PLAYER_LEVEL_CAP==80
-		34,35,36,37,38,39,40,41,42,43,
-#endif
-	};
-	static uint32 R_pet_base_spi[PLAYER_LEVEL_CAP] = { 20, 20, 21, 21, 21, 21, 22, 22, 22, 23, 23, 24, 25, 26, 27, 28, 29, 29, 31, 32, 32, 34, 34, 36, 37, 37, 39, 39, 41, 42, 42, 44, 44, 46, 47, 48, 49, 49, 51, 52, 53, 54, 55, 56, 58, 58, 60, 60, 62, 63, 64, 65, 66, 68, 69, 70, 71, 72, 73, 75, 78, 80, 84, 86, 88, 91, 93, 95, 96, 99, 
-#if PLAYER_LEVEL_CAP==80
-		102,105,108,111,114,117,120,123,126,129,
-#endif
-	};
+	static uint32 R_pet_base_armor[PLAYER_LEVEL_CAP] = { 15, 16, 41, 76, 120, 174, 239, 316, 406, 512, 538, 573, 608, 642, 677, 713, 748, 782, 817, 852, 888, 922, 957, 992, 1026, 1061, 1097, 1130, 1165, 1200, 1234, 1270, 1304, 1340, 1373, 1480, 1593, 1709, 1834, 1964, 2101, 2246, 2397, 2557, 2725, 2780, 2835, 2888, 2944, 2999, 3052, 3108, 3163, 3216, 3271, 3327, 3380, 3435, 3489, 3791, 4091, 4391, 4691, 4991, 5291, 5591, 5892, 6192, 6492, 6792, 7092, 7392, 7692, 7992, 8292, 8592, 8892, 9192, 9492, 9792 };
+	static uint32 R_pet_base_str[PLAYER_LEVEL_CAP] = { 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 37, 38, 40, 42, 44, 45, 47, 49, 50, 52, 53, 55, 56, 58, 60, 61, 63, 64, 66, 67, 69, 70, 72, 74, 76, 78, 81, 86, 91, 97, 102, 104, 106, 108, 110, 113, 115, 117, 119, 122, 124, 127, 129, 131, 134, 136, 139, 141, 144, 146, 149, 151, 154, 156, 159, 162, 165, 168, 171, 174, 177, 181, 184, 187, 190, 193 };
+	static uint32 R_pet_base_agi[PLAYER_LEVEL_CAP] = { 15, 16, 16, 16, 17, 18, 18, 19, 20, 20, 20, 21, 23, 23, 24, 25, 26, 27, 28, 30, 30, 30, 32, 33, 34, 35, 36, 37, 38, 40, 40, 41, 43, 44, 45, 46, 47, 48, 49, 50, 52, 53, 54, 55, 57, 57, 59, 60, 61, 63, 64, 65, 67, 68, 70, 71, 72, 74, 75, 77, 82, 87, 92, 97, 102, 107, 112, 117, 122, 127, 131, 136, 141, 146, 151, 156, 161, 166, 171, 176 };
+	static uint32 R_pet_base_sta[PLAYER_LEVEL_CAP] = { 22, 24, 25, 27, 28, 30, 32, 34, 36, 38, 40, 43, 45, 48, 51, 54, 57, 60, 63, 66, 70, 74, 79, 83, 88, 93, 98, 103, 109, 114, 119, 124, 129, 134, 140, 146, 152, 158, 164, 170, 177, 183, 190, 196, 203, 210, 217, 224, 232, 240, 247, 255, 263, 271, 279, 288, 296, 305, 314, 323, 332, 342, 351, 361, 370, 380, 391, 401, 412, 423, 434, 445, 456, 467, 478, 489, 501, 512, 523, 534 };
+	static uint32 R_pet_base_int[PLAYER_LEVEL_CAP] = { 20, 20, 20, 20, 20, 21, 21, 21, 21, 21, 21, 21, 21, 22, 22, 22, 22, 22, 22, 22, 23, 23, 23, 23, 23, 23, 23, 24, 24, 24, 24, 24, 24, 25, 25, 25, 25, 25, 26, 26, 26, 26, 26, 26, 27, 27, 27, 27, 28, 28, 28, 28, 28, 29, 29, 29, 29, 30, 30, 30, 30, 30, 31, 31, 31, 32, 32, 32, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43 };
+	static uint32 R_pet_base_spi[PLAYER_LEVEL_CAP] = { 20, 20, 21, 21, 21, 21, 22, 22, 22, 23, 23, 24, 25, 26, 27, 28, 29, 29, 31, 32, 32, 34, 34, 36, 37, 37, 39, 39, 41, 42, 42, 44, 44, 46, 47, 48, 49, 49, 51, 52, 53, 54, 55, 56, 58, 58, 60, 60, 62, 63, 64, 65, 66, 68, 69, 70, 71, 72, 73, 75, 78, 80, 84, 86, 88, 91, 93, 95, 96, 99, 102, 105, 108, 111, 114, 117, 120, 123, 126, 129 };
 
 	BaseResistance[0] = R_pet_base_armor[ level - 1 ];
 	BaseStats[0] = R_pet_base_str[ level - 1 ];
@@ -1566,7 +1508,6 @@ void Pet::ApplyPetLevelAbilities()
 	for( uint32 x = 0; x < 5; ++x )
 		CalcStat( x );
 	
-	UpdateTP();
 	LoadPetAuras(-2);//Load all BM auras
 }
 
@@ -1642,30 +1583,6 @@ void Pet::UpdateAP()
 	SetUInt32Value( UNIT_FIELD_ATTACK_POWER, AP );
 }
 
-uint16 Pet::SpellTP(uint32 spellId)
-{
-	//returns required training points for spell
-	skilllinespell *sk = objmgr.GetSpellSkill(spellId);
-	if(sk)
-		return static_cast<uint16>(sk->reqTP);
-	return 0;
-}
-uint16 Pet::GetUsedTP()
-{
-	//goes through all pet spells and sums training points
-	int16 sumTP = 0;
-	if(mSpells.size() > 0)
-	{
-		PetSpellMap::iterator itr = mSpells.begin();
-		for(; itr != mSpells.end(); ++itr)
-		{
-			//higher spell ranks takes TP incrementally from lower rank, so lets sum the highest rank spells
-			if(itr->first->Id == GetHighestRankSpell(itr->first->Id))
-				sumTP += SpellTP(itr->first->Id);
-		}
-	}
-	return sumTP;
-}
 uint32 Pet::CanLearnSpell( SpellEntry * sp )
 {
 	// level requirement
@@ -1694,22 +1611,8 @@ uint32 Pet::CanLearnSpell( SpellEntry * sp )
 		if( cnt > 3 )
 			return SPELL_FAILED_TOO_MANY_SKILLS;
 	}
-	/** - available training points
-			- higher spell ranks take TPs incrementally, so we need this calculation */
-	uint16 spellTP = SpellTP( sp->Id );
-	if( spellTP > 0 && ( spellTP - SpellTP( GetHighestRankSpell( sp->Id ) ) >  TP ) )
-		return SPELL_FAILED_TRAINING_POINTS;
 	
 	return 0;
-}
-void Pet::UpdateTP()
-{
-	//update pets TP
-	//formula: TP = level*(loyaltyLvl - 1) - usedTP
-	//http://petopia.brashendeavors.net/html/articles/skills_main.shtml
-	if(!m_Owner || Summon) return;
-	int16 pts = static_cast<int16>(getLevel()*(GetLoyaltyLevel()-1)-GetUsedTP());
-	TP = pts;
 }
 HappinessState Pet::GetHappinessState() 
 {
@@ -1721,35 +1624,6 @@ HappinessState Pet::GetHappinessState()
 		return HAPPY;
 	else
 		return CONTENT;
-}
-void Pet::AddPetSpellToOwner(uint32 spellId)
-{
-	// Hunter can learn pets "wild" ability and teach it other pets
-
-	if( Summon || !m_Owner )
-		return;
-	//exit if owner hasn't Beast training ability (id 5149)
-	if( !m_Owner->HasSpell( 5149 ) || !Rand( 10 ) )
-		return;
-	//all wild abilities require training points (just for sure)
-	if( !SpellTP( spellId ) )
-		return;
-	
-	//find appropriate teaching spell...
-	uint32 TeachingSpellID = sWorld.GetTeachingSpell( spellId );
-	if( TeachingSpellID != 0 )
-	{
-		if( m_Owner->HasSpell( TeachingSpellID ) )
-			return;
-		else
-		{
-			//...and add it to pet owner to be able teach other pets
-			m_Owner->addSpell( TeachingSpellID );
-			return;
-		}
-	}
-	else
-		sLog.outDebug( "WORLD: Could not find teaching spell for spell %u", spellId );
 }
 uint32 Pet::GetHighestRankSpell(uint32 spellId)
 {	
@@ -1765,56 +1639,6 @@ uint32 Pet::GetHighestRankSpell(uint32 spellId)
 					 tmp = itr->first;
 	}
 	return tmp ? tmp->Id : 0;
-}
-bool Pet::UpdateLoyalty( char pts )
-{	
-	//updates loyalty_pts and loyalty lvl if needed
-	uint32 lvl;
-#ifdef WIN32
-	__try {
-		if( !m_Owner || Summon || m_Owner->GetMapMgr() != this->GetMapMgr() )
-			return true;
-
-		lvl = m_Owner->GetUInt32Value( PLAYER_NEXT_LEVEL_XP );
-	}
-	__except(EXCEPTION_EXECUTE_HANDLER)
-	{
-		m_Owner = NULL;
-		return true;
-	}
-#else
-	if( !m_Owner || Summon || m_Owner->GetMapMgr() != this->GetMapMgr() )
-		return true;
-
-	lvl = m_Owner->GetUInt32Value( PLAYER_NEXT_LEVEL_XP );
-#endif
-
-	uint8 curLvl = GetLoyaltyLevel();
-	uint8 newLvl = curLvl;
-
-	LoyaltyPts += pts;
-
-	if( LoyaltyPts > LoyLvlRange[BEST_FRIEND] )	//cap
-		LoyaltyPts = LoyLvlRange[BEST_FRIEND];
-
-	if( LoyaltyPts < 0 && pts != 0 )
-		newLvl--;
-	else if( curLvl < BEST_FRIEND && LoyaltyPts > LoyLvlRange[ curLvl ] && 	// requires some loyalty pts ...
-		LoyaltyXP >= lvl / 20 )	// ... and 5% of hunters nextlevel xp
-		newLvl++;
-	else return true;
-
-	if( newLvl < REBELIOUS )
-	{	
-		Dismiss(); // pet runs away
-		return false;
-	}
-	
-	SetUInt32Value( UNIT_FIELD_BYTES_1, 0 | ( newLvl << 8 ) );		//set new loy level
-	LoyaltyPts = newLvl > curLvl ? 0 : LoyLvlRange[ newLvl ];		//reset loy_pts
-	LoyaltyXP = 0;													//reset loy_xp
-	UpdateTP();
-	return true;
 }
 
 AI_Spell * Pet::HandleAutoCastEvent()
@@ -1912,8 +1736,6 @@ void Pet::HandleAutoCastEvent( AutoCastEvents Type )
 			//modified by Zack: Spell targetting will be generated in the castspell function now.You cannot force to target self all the time
 			CastSpell( static_cast< Unit* >( NULL ), sp->spell, false);
 		}
-		
-		AddPetSpellToOwner( sp->spell->Id );
 	}
 }
 
