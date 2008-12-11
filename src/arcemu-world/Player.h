@@ -1663,8 +1663,13 @@ public:
 
 	ARCEMU_INLINE void SetPvPFlag()
 	{
+
+		uint32 oldFlag = GetUInt32Value(UNIT_FIELD_BYTES_2);
+		uint32 newFlag = oldFlag & 0xffffe7ff | (U_FIELD_BYTES_FLAG_PVP << 8);
 		StopPvPTimer();
-		SetByteFlag(UNIT_FIELD_BYTES_2, 1, U_FIELD_BYTES_FLAG_PVP);
+		SetUInt32Value(UNIT_FIELD_BYTES_2, newFlag);
+//		RemoveByteFlag(UNIT_FIELD_BYTES_2, 1, 0x28);
+//		SetByteFlag(UNIT_FIELD_BYTES_2, 1, U_FIELD_BYTES_FLAG_PVP);
 		SetFlag(PLAYER_FLAGS, PLAYER_FLAG_PVP);
 	}
 
