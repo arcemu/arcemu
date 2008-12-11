@@ -313,6 +313,8 @@ ECHO [Importing] 1564_removed_spells.sql
 mysql -h %server% --user=%user% --password=%pass% --port=%port% %chr% < character_updates\1564_removed_spells.sql
 ECHO [Importing] 1653_achievements.sql
 mysql -h %server% --user=%user% --password=%pass% --port=%port% %chr% < character_updates\1653_achievements.sql
+ECHO [Importing] 1835_playerpets_loyalty.sql
+mysql -h %server% --user=%user% --password=%pass% --port=%port% %chr% < character_updates\1835_playerpets_loyalty.sql
 ECHO [Importing] Character Updates Finished
 ECHO.
 ECHO.
