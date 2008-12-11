@@ -1220,22 +1220,10 @@ struct CreatureFamilyEntry
     uint32 skilline;
     uint32 tameable;		//second skill line - 270 Generic
     uint32 petdietflags;
+	uint32 talenttree;		// -1 = none, 0 = ferocity(410), 1 = tenacity(409), 2 = cunning(411)
+	//uint32 unk;			// some index 0 - 63
     char* name;
-    //uint32 namealt1;
-    //uint32 namealt2;
-    //uint32 namealt3;
-    //uint32 namealt4;
-    //uint32 namealt5;
-    //uint32 namealt6;
-    //uint32 namealt7;
-    //uint32 namealt8;
-    //uint32 namealt9;
-    //uint32 namealt10;
-    //uint32 namealt11;
-    //uint32 namealt12;
-    //uint32 namealt13;
-    //uint32 namealt14;
-    //uint32 namealt15;
+    //uint32 namealt[15];
     //uint32 nameflags;
     //uint32 iconFile;
 };

@@ -215,7 +215,7 @@ const char* dbctaxipathnodeFormat = "uuuufffuuxx";
 const char* creaturespelldataFormat = "uuuuuuuuu";
 const char* charraceFormat = "uxxxxxxxuxxxxulxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx";
 const char* charclassFormat = "uxuxlxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx";
-const char* creaturefamilyFormat = "ufufuuuulxxxxxxxxxxxxxxxxxxx";
+const char* creaturefamilyFormat = "ufufuuuuuxlxxxxxxxxxxxxxxxxx";
 const char* mapentryFormat =
 	"u"					// 0 id
 	"s"					// 1 name_internal
