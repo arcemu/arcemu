@@ -478,7 +478,7 @@ bool GameObject::Load(GOSpawn *spawn)
 		return false;
 
 	m_spawn = spawn;
-	SetRotation(spawn->o);
+	//SetRotation(spawn->o);
 	SetUInt32Value(GAMEOBJECT_FLAGS,spawn->flags);
 //	SetUInt32Value(GAMEOBJECT_LEVEL,spawn->level);
 	SetByte(GAMEOBJECT_BYTES_1, 0,spawn->state);	
