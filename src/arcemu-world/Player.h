@@ -1663,13 +1663,10 @@ public:
 
 	ARCEMU_INLINE void SetPvPFlag()
 	{
-
-		uint32 oldFlag = GetUInt32Value(UNIT_FIELD_BYTES_2);
-		uint32 newFlag = oldFlag & 0xffffe7ff | (U_FIELD_BYTES_FLAG_PVP << 8);
 		StopPvPTimer();
-		SetUInt32Value(UNIT_FIELD_BYTES_2, newFlag);
+//		This is now done in Player::OnPushToWorld() to allow PvP-off characters to attack PvP-on characters without having to type /pvp
 //		RemoveByteFlag(UNIT_FIELD_BYTES_2, 1, 0x28);
-//		SetByteFlag(UNIT_FIELD_BYTES_2, 1, U_FIELD_BYTES_FLAG_PVP);
+		SetByteFlag(UNIT_FIELD_BYTES_2, 1, U_FIELD_BYTES_FLAG_PVP);
 		SetFlag(PLAYER_FLAGS, PLAYER_FLAG_PVP);
 	}
 

@@ -3662,6 +3662,7 @@ void Player::OnPushToWorld()
 
 	// Update PVP Situation
 	LoginPvPSetup();
+	RemoveByteFlag(UNIT_FIELD_BYTES_2, 1, 0x28);
 
 	if ( m_playerInfo->lastOnline + 900 < UNIXTIME ) // did we logged out for more than 15 minutes?
 		m_ItemInterface->RemoveAllConjured();
@@ -8725,108 +8726,115 @@ void Player::UpdatePvPArea()
 {
 	AreaTable * at = dbcArea.LookupEntry(m_AreaID);
 	if(at == 0)
-        return;
+		return;
 
 #ifdef PVP_REALM_MEANS_CONSTANT_PVP
 	//zack : This might be huge crap. I have no idea how it is on blizz but i think a pvp realm should alow me to gank anybody anywhere :(
 	if(sWorld.GetRealmType() == REALM_PVP)
-    {
+	{
 		SetPvPFlag();
 		return;
-    }
+	}
 #endif
 
 	// This is where all the magic happens :P
-    if((at->category == AREAC_ALLIANCE_TERRITORY && GetTeam() == 0) || (at->category == AREAC_HORDE_TERRITORY && GetTeam() == 1))
+	if((at->category == AREAC_ALLIANCE_TERRITORY && GetTeam() == 0) || (at->category == AREAC_HORDE_TERRITORY && GetTeam() == 1))
 	{
 		if(!HasFlag(PLAYER_FLAGS, PLAYER_FLAG_PVP_TOGGLE) && !m_pvpTimer)
 		{
 			// I'm flagged and I just walked into a zone of my type. Start the 5min counter.
 			ResetPvPTimer();
 		}
-        return;
+		return;
 	}
 	else
 	{
-        //Enemy city check
-        if(at->AreaFlags & AREA_CITY_AREA || at->AreaFlags & AREA_CITY)
-        {
-            if((at->category == AREAC_ALLIANCE_TERRITORY && GetTeam() == 1) || (at->category == AREAC_HORDE_TERRITORY && GetTeam() == 0))
-            {
-                if(!IsPvPFlagged()) SetPvPFlag();
-                    StopPvPTimer();
-                return;
-            }
-        }
+		//Enemy city check
+		if(at->AreaFlags & AREA_CITY_AREA || at->AreaFlags & AREA_CITY)
+		{
+			if((at->category == AREAC_ALLIANCE_TERRITORY && GetTeam() == 1) || (at->category == AREAC_HORDE_TERRITORY && GetTeam() == 0))
+			{
+				if(!IsPvPFlagged())
+					SetPvPFlag();
+				else
+					StopPvPTimer();
+				return;
+			}
+		}
 
-        //fix for zone areas.
-        if(at->ZoneId)
-        {
-            AreaTable * at2 = dbcArea.LookupEntry(at->ZoneId);
-            if(at2 && (at2->category == AREAC_ALLIANCE_TERRITORY && GetTeam() == 0 || at2->category == AREAC_HORDE_TERRITORY && GetTeam() == 1))
-            {
-                if(!HasFlag(PLAYER_FLAGS, PLAYER_FLAG_PVP_TOGGLE) && !m_pvpTimer)
-		        {
-			        // I'm flagged and I just walked into a zone of my type. Start the 5min counter.
-			        ResetPvPTimer();
-		        }
-                return;
-            }
-            //enemy territory check
-            if(at2 && ( at2->AreaFlags & AREA_CITY_AREA || at2->AreaFlags & AREA_CITY ) )
-            {
-                if(at2 && (at2->category == AREAC_ALLIANCE_TERRITORY && GetTeam() == 1 || at2->category == AREAC_HORDE_TERRITORY && GetTeam() == 0))
-                {
-                   if(!IsPvPFlagged()) SetPvPFlag();
-                       StopPvPTimer();
-                   return;
-                }
-            }
-        }
+		//fix for zone areas.
+		if(at->ZoneId)
+		{
+			AreaTable * at2 = dbcArea.LookupEntry(at->ZoneId);
+			if(at2 && (at2->category == AREAC_ALLIANCE_TERRITORY && GetTeam() == 0 || at2->category == AREAC_HORDE_TERRITORY && GetTeam() == 1))
+			{
+				if(!HasFlag(PLAYER_FLAGS, PLAYER_FLAG_PVP_TOGGLE) && !m_pvpTimer)
+				{
+					// I'm flagged and I just walked into a zone of my type. Start the 5min counter.
+					ResetPvPTimer();
+				}
+				return;
+			}
+			//enemy territory check
+			if(at2 && ( at2->AreaFlags & AREA_CITY_AREA || at2->AreaFlags & AREA_CITY ) )
+			{
+				if(at2 && (at2->category == AREAC_ALLIANCE_TERRITORY && GetTeam() == 1 || at2->category == AREAC_HORDE_TERRITORY && GetTeam() == 0))
+				{
+					if(!IsPvPFlagged())
+						SetPvPFlag();
+					else
+						StopPvPTimer();
+					return;
+				}
+			}
+		}
         
-		// I just walked into either an enemies town, or a contested zone.
-		// Force flag me if i'm not already.
-        if(at->category == AREAC_SANCTUARY || at->AreaFlags & AREA_SANCTUARY)
-        {
-            if(IsPvPFlagged()) RemovePvPFlag();
+		// I just walked into a sanctuary area
+		// Force remove flag me if i'm not already.
+		if(at->category == AREAC_SANCTUARY || at->AreaFlags & AREA_SANCTUARY)
+		{
+			if(IsPvPFlagged())
+				RemovePvPFlag();
+			else
+				StopPvPTimer();
+			RemoveFFAPvPFlag();
+		}
+		else
+		{
+			//contested territory
+			if(sWorld.GetRealmType() == REALM_PVP)
+			{
+				//automaticaly sets pvp flag on contested territorys.
+				if(!IsPvPFlagged())
+					SetPvPFlag();
+				else
+					StopPvPTimer();
+			}
 
-			RemoveFlag(PLAYER_FLAGS, PLAYER_FLAG_FREE_FOR_ALL_PVP);
+			if(sWorld.GetRealmType() == REALM_PVE)
+			{
+				if(HasFlag(PLAYER_FLAGS, PLAYER_FLAG_PVP_TOGGLE))
+				{
+					if(!IsPvPFlagged())
+						SetPvPFlag();
+				}
+				else if(!HasFlag(PLAYER_FLAGS, PLAYER_FLAG_PVP_TOGGLE) && IsPvPFlagged() && !m_pvpTimer)
+				{
+					ResetPvPTimer();
+				}
+			}
 
-            StopPvPTimer();
-        }
-        else
-        {
-            //contested territory
-            if(sWorld.GetRealmType() == REALM_PVP)
-            {
-                //automaticaly sets pvp flag on contested territorys.
-                if(!IsPvPFlagged()) SetPvPFlag();
-                StopPvPTimer();
-            }
-
-            if(sWorld.GetRealmType() == REALM_PVE)
-            {
-                if(HasFlag(PLAYER_FLAGS, PLAYER_FLAG_PVP_TOGGLE))
-                {
-                    if(!IsPvPFlagged()) SetPvPFlag();
-                }
-                else if(!HasFlag(PLAYER_FLAGS, PLAYER_FLAG_PVP_TOGGLE) && IsPvPFlagged() && !m_pvpTimer)
-                {
-                    ResetPvPTimer();
-                }
-            }
-
-            if(at->AreaFlags & AREA_PVP_ARENA)			/* ffa pvp arenas will come later */
-            {
-                if(!IsPvPFlagged()) SetPvPFlag();
-
-			    SetFlag(PLAYER_FLAGS, PLAYER_FLAG_FREE_FOR_ALL_PVP);
-            }
-            else
-            {
-			    RemoveFlag(PLAYER_FLAGS, PLAYER_FLAG_FREE_FOR_ALL_PVP);
-            }
-        }
+			if(at->AreaFlags & AREA_PVP_ARENA)			/* ffa pvp arenas will come later */
+			{
+				if(!IsPvPFlagged())
+					SetPvPFlag();
+				SetFFAPvPFlag();
+			}
+			else
+			{
+				RemoveFFAPvPFlag();
+			}
+		}
 	}
 }
 
