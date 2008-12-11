@@ -1938,9 +1938,9 @@ void Player::_LoadPet(QueryResult * result)
 		pet->actionbar = fields[9].GetString();
 		pet->happinessupdate = fields[10].GetUInt32();
 		pet->summon = (fields[11].GetUInt32()>0 ? true : false);
-		pet->reset_time = fields[14].GetUInt32();
-		pet->reset_cost = fields[15].GetUInt32();
-		pet->spellid = fields[16].GetUInt32();
+		pet->reset_time = fields[12].GetUInt32();
+		pet->reset_cost = fields[13].GetUInt32();
+		pet->spellid = fields[14].GetUInt32();
 
 		m_Pets[pet->number] = pet;
 		if(pet->active)
