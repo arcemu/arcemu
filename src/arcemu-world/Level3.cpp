@@ -345,7 +345,7 @@ bool ChatHandler::HandleExploreCheatCommand(const char* args, WorldSession *m_se
 	else 
 		return false;
 
-	for (uint8 i=0; i<64; i++)
+	for (uint8 i=0; i<PLAYER_EXPLORED_ZONES_LENGTH; ++i)
 	{
 		if (strcmp(args, "on") == 0)
 		{

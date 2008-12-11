@@ -2269,7 +2269,7 @@ void Player::SaveToDB(bool bNewCharacter /* =false */)
 	// dump exploration data
 	<< "'";
 
-	for(uint32 i = 0; i < 64; ++i)
+	for(uint32 i = 0; i < PLAYER_EXPLORED_ZONES_LENGTH; ++i)
 		ss << m_uint32Values[PLAYER_EXPLORED_ZONES_1 + i] << ",";
 
 	ss << "','";
@@ -2742,7 +2742,7 @@ void Player::LoadFromDBProc(QueryResultVector & results)
 	m_uint32Values[PLAYER_XP] = get_next_field.GetUInt32();
 	
 	// Process exploration data.
-	LoadFieldsFromString(get_next_field.GetString(), PLAYER_EXPLORED_ZONES_1, 64);
+	LoadFieldsFromString(get_next_field.GetString(), PLAYER_EXPLORED_ZONES_1, PLAYER_EXPLORED_ZONES_LENGTH);
 
 	// Process skill data.
 	uint32 Counter = 0;
@@ -10586,7 +10586,7 @@ void Player::save_ExploreData()
 {
 	char buffer[2048] = {0};
 	int p = 0;
-	for(uint32 i = 0; i < 64; ++i)
+	for(uint32 i = 0; i < PLAYER_EXPLORED_ZONES_LENGTH; ++i)
 	{
 		p += sprintf(&buffer[p], "%u,", m_uint32Values[PLAYER_EXPLORED_ZONES_1 + i]);
 	}

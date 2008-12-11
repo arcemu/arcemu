@@ -49,6 +49,8 @@ class SpeedDetector;
 #define PLAYER_LEVEL_CAP_70 80
 #define PLAYER_LEVEL_CAP	80
 
+#define PLAYER_EXPLORED_ZONES_LENGTH 128
+
 #define ACHIEVEMENT_SEND_DELAY 1000 //we have this delay of sending auras to other players so client will have time to create object first
 #define LOGIN_CIENT_SEND_DELAY 1000 //we have this delay of sending auras to other players so client will have time to create object first
 

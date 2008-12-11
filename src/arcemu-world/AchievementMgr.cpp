@@ -41,34 +41,53 @@ AchievementMgr::~AchievementMgr()
 } 
 void AchievementMgr::SaveToDB()
 {
-    if(!m_completedAchievements.empty())
-    {
-        //CharacterDatabase.Query("DELETE FROM character_achievement WHERE guid = %u", GetPlayer()->GetUInt32Value(OBJECT_FIELD_GUID)); 
-        std::ostringstream ss;
-        ss << "REPLACE INTO character_achievement (guid, achievement, date) VALUES ";
-        for(CompletedAchievementMap::iterator iter = m_completedAchievements.begin(); iter!=m_completedAchievements.end(); iter++)
-        {
-            if(iter != m_completedAchievements.begin())
-                ss << ", ";
-            ss << "("<<GetPlayer()->GetUInt32Value(OBJECT_FIELD_GUID) << ", " << iter->first << ", " << iter->second << ")";
-        }
-        CharacterDatabase.Query( ss.str().c_str() );
-    }
+	if(!m_completedAchievements.empty())
+	{
+		std::ostringstream ss;
+		ss << "REPLACE INTO character_achievement (guid, achievement, date) VALUES ";
+		bool first = true;
+		for(CompletedAchievementMap::iterator iter = m_completedAchievements.begin(); iter!=m_completedAchievements.end(); iter++)
+		{
+			if (ss.str().length() >= 16000)
+			{
+				// SQL query length is limited to 16384 characters
+				CharacterDatabase.Query( ss.str().c_str() );
+				ss.str("");
+				ss << "REPLACE INTO character_achievement (guid, achievement, date) VALUES ";
+				first = true;
+			}
+			if(!first)
+				ss << ", ";
+			else
+				first = false;
+			ss << "("<<GetPlayer()->GetUInt32Value(OBJECT_FIELD_GUID) << ", " << iter->first << ", " << iter->second << ")";
+		}
+		CharacterDatabase.Query( ss.str().c_str() );
+	}
  
-    if(!m_criteriaProgress.empty())
-    {
-        //CharacterDatabase.Query("DELETE FROM character_achievement_progress WHERE guid = %u", GetPlayer()->GetUInt32Value(OBJECT_FIELD_GUID));
- 
-        std::ostringstream ss;
-        ss << "REPLACE INTO character_achievement_progress (guid, criteria, counter, date) VALUES ";
-        for(CriteriaProgressMap::iterator iter = m_criteriaProgress.begin(); iter!=m_criteriaProgress.end(); ++iter)
-        {
-            if(iter != m_criteriaProgress.begin())
-                ss << ", ";
-            ss << "(" << GetPlayer()->GetUInt32Value(OBJECT_FIELD_GUID) << ", " << iter->first << ", " << iter->second->counter << ", " << iter->second->date << ")";
-        }
-        CharacterDatabase.Query( ss.str().c_str() );
-    }
+	if(!m_criteriaProgress.empty())
+	{
+		std::ostringstream ss;
+		ss << "REPLACE INTO character_achievement_progress (guid, criteria, counter, date) VALUES ";
+		bool first = true;
+		for(CriteriaProgressMap::iterator iter = m_criteriaProgress.begin(); iter!=m_criteriaProgress.end(); ++iter)
+		{
+			if (ss.str().length() >= 16000)
+			{
+				// SQL query length is limited to 16384 characters
+				CharacterDatabase.Query( ss.str().c_str() );
+				ss.str("");
+				ss << "REPLACE INTO character_achievement_progress (guid, criteria, counter, date) VALUES ";
+				first = true;
+			}
+			if(!first)
+				ss << ", ";
+			else
+				first = false;
+			ss << "(" << GetPlayer()->GetUInt32Value(OBJECT_FIELD_GUID) << ", " << iter->first << ", " << iter->second->counter << ", " << iter->second->date << ")";
+		}
+		CharacterDatabase.Query( ss.str().c_str() );
+	}
 } 
 
 void AchievementMgr::LoadFromDB(QueryResult *achievementResult, QueryResult *criteriaResult)
@@ -221,6 +240,14 @@ void AchievementMgr::UpdateAchievementCriteria(AchievementCriteriaTypes type)
 	{
 		AchievementCriteriaEntry const *achievementCriteria = (*i);
 
+		AchievementEntry const *achievement = dbcAchievementStore.LookupEntry(achievementCriteria->referredAchievement);
+		if(!achievement)
+			continue;
+
+		if(achievement->factionFlag == ACHIEVEMENT_FACTION_FLAG_HORDE && GetPlayer()->GetTeam() != 1 ||
+			achievement->factionFlag == ACHIEVEMENT_FACTION_FLAG_ALLIANCE && GetPlayer()->GetTeam() != 0 )
+			continue;
+
 		if(IsCompletedCriteria(achievementCriteria))
 			continue;
 		switch (type)
@@ -234,6 +261,10 @@ void AchievementMgr::UpdateAchievementCriteria(AchievementCriteriaTypes type)
 				SetCriteriaProgress(achievementCriteria, 1);
 			break;
 			//End of Achievement List
+		case ACHIEVEMENT_CRITERIA_TYPE_COMPLETE_ACHIEVEMENT:
+			if (m_completedAchievements.find(achievementCriteria->complete_achievement.linkedAchievement) != m_completedAchievements.end())
+				SetCriteriaProgress(achievementCriteria, 1);
+			break;
 		}
 		if(IsCompletedCriteria(achievementCriteria))
 			CompletedCriteria(achievementCriteria);
@@ -334,9 +365,9 @@ AchievementCompletionState AchievementMgr::GetAchievementCompletionState(Achieve
 	}
 
 	bool foundOutstanding = false;
-	for ( uint32 entryId = 0; entryId<dbcAchievementCriteriaStore.GetNumRows(); entryId++ )
+	for ( uint32 rowId = 0; rowId<dbcAchievementCriteriaStore.GetNumRows(); ++rowId )
 	{
-		AchievementCriteriaEntry const* criteria = dbcAchievementCriteriaStore.LookupEntry(entryId);
+		AchievementCriteriaEntry const* criteria = dbcAchievementCriteriaStore.LookupRow(rowId);
 		if( !criteria || criteria->referredAchievement!= entry->ID )
 		{
 			continue;
