@@ -368,9 +368,13 @@ void WorldSession::HandleSwapInvItemOpcode( WorldPacket & recv_data )
 	int8 error=0;
 
 	recv_data >> srcslot >> dstslot;
+	bool titansgrip = false;
 
 	if(!GetPlayer())
 		return;
+
+	if(GetPlayer()->HasSpell(46917))
+		titansgrip = true;
 
 	sLog.outDetail("ITEM: swap, src slot: %u dst slot: %u", (uint32)srcslot, (uint32)dstslot);
 
@@ -410,7 +414,7 @@ void WorldSession::HandleSwapInvItemOpcode( WorldPacket & recv_data )
 		return;
 	}
 	
-	if( ( error = _player->GetItemInterface()->CanEquipItemInSlot2( INVENTORY_SLOT_NOT_SET, dstslot, srcitem, skip_combat ) )  != 0)
+	if( ( error = _player->GetItemInterface()->CanEquipItemInSlot2( INVENTORY_SLOT_NOT_SET, dstslot, srcitem, skip_combat, false, titansgrip ) )  != 0)
 	{
 		if( dstslot < INVENTORY_KEYRING_END )
 		{
@@ -583,8 +587,13 @@ void WorldSession::HandleAutoEquipItemOpcode( WorldPacket & recv_data )
 	AddItemResult result;
 	int8 SrcInvSlot, SrcSlot, error=0;
 	
+	bool titansgrip = false;
+
 	if(!GetPlayer())
 		return;
+
+	if(GetPlayer()->HasSpell(46917))
+		titansgrip = true;
 
 	recv_data >> SrcInvSlot >> SrcSlot;
 
@@ -617,7 +626,7 @@ void WorldSession::HandleAutoEquipItemOpcode( WorldPacket & recv_data )
 			}
 		}
 
-		if((error = _player->GetItemInterface()->CanEquipItemInSlot2(INVENTORY_SLOT_NOT_SET, Slot, eitem, true, true)) != 0)
+		if((error = _player->GetItemInterface()->CanEquipItemInSlot2(INVENTORY_SLOT_NOT_SET, Slot, eitem, true, true, titansgrip)) != 0)
 		{
 			_player->GetItemInterface()->BuildInventoryChangeError(eitem,NULL, error);
 			return;
@@ -683,7 +692,7 @@ void WorldSession::HandleAutoEquipItemOpcode( WorldPacket & recv_data )
 
 	if( Slot <= INVENTORY_SLOT_BAG_END )
 	{
-		if((error = _player->GetItemInterface()->CanEquipItemInSlot2(INVENTORY_SLOT_NOT_SET, Slot, eitem, false, false)) != 0)
+		if((error = _player->GetItemInterface()->CanEquipItemInSlot2(INVENTORY_SLOT_NOT_SET, Slot, eitem, false, false, titansgrip)) != 0)
 		{
 			_player->GetItemInterface()->BuildInventoryChangeError(eitem,NULL, error);
 			return;

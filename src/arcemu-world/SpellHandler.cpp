@@ -214,6 +214,9 @@ void WorldSession::HandleSpellClick(WorldPacket& recvPacket)
 	uint32 cast_spell_id = 0;
 	if( target_unit->GetUInt32Value( OBJECT_FIELD_ENTRY ) == 28605 )
 		cast_spell_id = 52263; // steel horse
+	//32633
+	if( target_unit->GetUInt32Value( OBJECT_FIELD_ENTRY ) == 32633 )
+		cast_spell_id = 61425; // Treveler's Tundra Mammoth
 
 	if( target_unit->GetUInt32Value( OBJECT_FIELD_ENTRY ) == 29929 )
 		cast_spell_id = 55531; // Mechano-Hog

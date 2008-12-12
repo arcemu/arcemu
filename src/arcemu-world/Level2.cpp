@@ -950,11 +950,12 @@ bool ChatHandler::HandleGOInfo(const char *args, WorldSession *m_session)
 	if( GOInfo->Name )
 		SystemMessage(m_session, "%s Name:%s%s",MSG_COLOR_GREEN,MSG_COLOR_LIGHTBLUE,GOInfo->Name);
 	SystemMessage(m_session, "%s Size:%s%u",MSG_COLOR_GREEN,MSG_COLOR_LIGHTBLUE,GObj->GetFloatValue(OBJECT_FIELD_SCALE_X));
-//To lazy to update. lol.	SystemMessage(m_session, "%s Rotation X:%s%f",MSG_COLOR_GREEN,MSG_COLOR_LIGHTBLUE,GObj->GetFloatValue(GAMEOBJECT_ROTATION));
 	SystemMessage(m_session, "%s Facing:%s%f",MSG_COLOR_GREEN,MSG_COLOR_LIGHTBLUE,GObj->GetFloatValue(GAMEOBJECT_FACING));
-	SystemMessage(m_session, "%s Rotation Y:%s%f",MSG_COLOR_GREEN,MSG_COLOR_LIGHTBLUE,GObj->GetFloatValue(GAMEOBJECT_ROTATION));
-	SystemMessage(m_session, "%s Rotation O1:%s%f",MSG_COLOR_GREEN,MSG_COLOR_LIGHTBLUE,GObj->GetFloatValue(GAMEOBJECT_PARENTROTATION_02));
-	SystemMessage(m_session, "%s Rotation O2:%s%f",MSG_COLOR_GREEN,MSG_COLOR_LIGHTBLUE,GObj->GetFloatValue(GAMEOBJECT_PARENTROTATION_03));
+	SystemMessage(m_session, "%s Rotation:%s%f",MSG_COLOR_GREEN,MSG_COLOR_LIGHTBLUE,GObj->GetFloatValue(GAMEOBJECT_ROTATION));
+	SystemMessage(m_session, "%s Rotation01:%s%f",MSG_COLOR_GREEN,MSG_COLOR_LIGHTBLUE,GObj->GetFloatValue(GAMEOBJECT_ROTATION_01));
+	SystemMessage(m_session, "%s Parent Rotation O1:%s%f",MSG_COLOR_GREEN,MSG_COLOR_LIGHTBLUE,GObj->GetFloatValue(GAMEOBJECT_PARENTROTATION_01));
+	SystemMessage(m_session, "%s Parent Rotation O2:%s%f",MSG_COLOR_GREEN,MSG_COLOR_LIGHTBLUE,GObj->GetFloatValue(GAMEOBJECT_PARENTROTATION_02));
+	SystemMessage(m_session, "%s Parent Rotation O3:%s%f",MSG_COLOR_GREEN,MSG_COLOR_LIGHTBLUE,GObj->GetFloatValue(GAMEOBJECT_PARENTROTATION_03));
 
 	return true;
 }
