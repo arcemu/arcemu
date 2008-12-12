@@ -7955,7 +7955,7 @@ void Player::ZoneUpdate(uint32 ZoneId)
 	}
 
 	sLog.outDetail("ZONE_UPDATE: Player %s entered zone %s", GetName(), sAreaStore.LookupString((int)p->name));*/
-
+	UpdatePvPArea();
 }
 void Player::UpdateChannels(uint16 AreaID)
 {
