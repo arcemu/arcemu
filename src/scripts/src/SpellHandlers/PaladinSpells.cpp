@@ -156,6 +156,12 @@ bool HolyShock(uint32 i, Spell *pSpell)
 		case 33072:
 			newspell = 33073;
 			break;
+		case 48824:
+			newspell = 48822;
+			break;
+		case 48825:
+			newspell = 48823;
+			break;
 		}
 	}
 	else // if its friendly
@@ -176,6 +182,12 @@ bool HolyShock(uint32 i, Spell *pSpell)
 			break;
 		case 33072:
 			newspell = 33074;
+			break;
+		case 48824:
+			newspell = 48820;
+			break;
+		case 48825:
+			newspell = 48821;
 			break;
 		}
 	}
@@ -209,6 +221,8 @@ void SetupPaladinSpells(ScriptMgr * mgr)
 	mgr->register_dummy_spell(20930, &HolyShock);           // Holy Shock rank 3
 	mgr->register_dummy_spell(27174, &HolyShock);           // Holy Shock rank 4
 	mgr->register_dummy_spell(33072, &HolyShock);           // Holy Shock rank 5
+	mgr->register_dummy_spell(48824, &HolyShock);           // Holy Shock rank 6
+	mgr->register_dummy_spell(48825, &HolyShock);           // Holy Shock rank 7
 
 
 
