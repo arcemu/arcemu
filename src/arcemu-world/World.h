@@ -100,7 +100,7 @@ enum WorldMapInfoFlag
 	WMI_INSTANCE_WELCOME   = 0x2,
 	WMI_INSTANCE_MULTIMODE = 0x4,
 	WMI_INSTANCE_XPACK_01  = 0x8, //The Burning Crusade expansion
-	WMI_INSTANCE_XPACK_02  = 0x24, //Wrath of the Lich King expansion
+	WMI_INSTANCE_XPACK_02  = 0x10, //Wrath of the Lich King expansion
 };
 
 enum AccountFlags
@@ -109,7 +109,7 @@ enum AccountFlags
 	ACCOUNT_FLAG_NO_AUTOJOIN = 0x2,
 	//ACCOUNT_FLAG_XTEND_INFO  = 0x4,
 	ACCOUNT_FLAG_XPACK_01	= 0x8,
-	ACCOUNT_FLAG_XPACK_02	= 0x24,
+	ACCOUNT_FLAG_XPACK_02	= 0x10,
 };
 
 #pragma pack(push,1)
