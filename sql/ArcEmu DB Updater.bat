@@ -210,6 +210,8 @@ ECHO [Importing] 1066_add_banreasons.sql
 mysql -h %server% --user=%user% --password=%pass% --port=%port% %logon% < logon_updates\1066_add_banreasons.sql
 ECHO [Importing] correction_to_ipbans(allrevs).sql
 mysql -h %server% --user=%user% --password=%pass% --port=%port% %logon% < logon_updates\correction_to_ipbans(allrevs).sql
+ECHO [Importing] 1842_Account_Flags.sql
+mysql -h %server% --user=%user% --password=%pass% --port=%port% %logon% < logon_updates\1842_Account_Flags.sql
 ECHO [Importing] Finished
 ECHO  Update Success.
 ECHO.
