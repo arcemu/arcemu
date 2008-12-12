@@ -153,6 +153,8 @@ void SetupWarriorSpells(ScriptMgr * mgr)
     mgr->register_dummy_spell(20662, &Execute);    // Rank 5
     mgr->register_dummy_spell(25234, &Execute);    // Rank 6
     mgr->register_dummy_spell(25236, &Execute);    // Rank 7
+	mgr->register_dummy_spell(47470, &Execute);    // Rank 8
+	mgr->register_dummy_spell(47471, &Execute);    // Rank 9
 
     /**** Bloodrage ****/
     /* server debug when blood rages is cast */
