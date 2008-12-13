@@ -64,6 +64,16 @@ void WorldSession::HandleGroupInviteOpcode( WorldPacket & recv_data )
 		}
 	}
 	
+	if ( player->InGroup() )
+	{
+		SendPartyCommandResult(_player, player->GetGroup()->GetGroupType(), membername, ERR_PARTY_ALREADY_IN_GROUP);
+		data.SetOpcode(SMSG_GROUP_INVITE);
+		data << uint8(0);
+		data << GetPlayer()->GetName();
+		player->GetSession()->SendPacket(&data);
+		return;
+	}
+	
 	if(player->GetTeam()!=_player->GetTeam() && _player->GetSession()->GetPermissionCount() == 0 && !sWorld.interfaction_group)
 	{
 		SendPartyCommandResult(_player, 0, membername, ERR_PARTY_WRONG_FACTION);
@@ -81,8 +91,15 @@ void WorldSession::HandleGroupInviteOpcode( WorldPacket & recv_data )
 		SendPartyCommandResult(_player, 0, membername, ERR_PARTY_IS_IGNORING_YOU);
 		return;
 	}
-
+	
+	if( player->bGMTagOn && !_player->GetSession()->HasPermissions())
+	{
+		SendPartyCommandResult(_player, 0, membername, ERR_PARTY_CANNOT_FIND);
+		return;
+	}
+	
 	data.SetOpcode(SMSG_GROUP_INVITE);
+	data << uint8(1);
 	data << GetPlayer()->GetName();
 
 	player->GetSession()->SendPacket(&data);
@@ -188,7 +205,7 @@ void WorldSession::HandleGroupUninviteOpcode( WorldPacket & recv_data )
 
 	player = objmgr.GetPlayer(membername.c_str(), false);
 	info = objmgr.GetPlayerInfoByName(membername.c_str());
-	if ( info == NULL )
+	if ( player == NULL && info == NULL )
 	{
 		SendPartyCommandResult(_player, 0, membername, ERR_PARTY_CANNOT_FIND);
 		return;
