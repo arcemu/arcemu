@@ -286,6 +286,8 @@ ECHO [Importing] 1746_spawns.sql
 mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% < world_updates\1746_spawns.sql
 ECHO [Importing] 1797_transport_data.sql
 mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% < world_updates\1797_transport_data.sql
+ECHO [Importing] 1860_loot.sql
+mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% < world_updates\1860_loot.sql
 ECHO [Importing] spellfixes.sql
 mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% < world_updates\spellfixes.sql
 
