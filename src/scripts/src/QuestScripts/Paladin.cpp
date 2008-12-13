@@ -20,8 +20,11 @@
 #include "StdAfx.h"
 #include "Setup.h"
 
-bool SymbolOfLife(uint32 i, Spell* pSpell) // Alliance ress. quests
+bool SymbolOfLife(uint32 i, Spell* pSpell) // Alliance res. quests
 {
+   // What is i for note the loops below just overwrote it with an int
+   // starting at 0 so it doesnt do anything.
+
   if(!pSpell->u_caster->IsPlayer())
     return true;
 
@@ -36,9 +39,9 @@ bool SymbolOfLife(uint32 i, Spell* pSpell) // Alliance ress. quests
   bool questOk = false;
   bool targetOk = false;
 
-  for(int i = 0; i<3; i++)
+  for(int j = 0; j < 3; ++j)
   {
-    if(target->GetEntry() == targets[i])
+    if(target->GetEntry() == targets[j])
     {
       targetOk = true;
       
@@ -51,11 +54,11 @@ bool SymbolOfLife(uint32 i, Spell* pSpell) // Alliance ress. quests
   
   QuestLogEntry *qle;
   
-  for(int i = 0; i<3; i++)
+  for(int j = 0; j < 3; ++j)
   {
-    if(plr->GetQuestLogForEntry(quests[i]) != NULL)
+    if(plr->GetQuestLogForEntry(quests[j]) != NULL)
     {
-      qle = plr->GetQuestLogForEntry(quests[i]);
+      qle = plr->GetQuestLogForEntry(quests[j]);
       questOk = true;
       
       break;

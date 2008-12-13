@@ -86,7 +86,8 @@ public:
 						en->UpdatePlayerFields();
 					}
 
-					Creature *casta = ((Creature*)pObject);
+               // Look up line 58 already gets this
+					//Creature *casta = ((Creature*)pObject);
 					if(Plr->GetStandingRank(942) == 4)
 						casta->CastSpell(Plr, 31807, true);
 					else if(Plr->GetStandingRank(942) == 5)
