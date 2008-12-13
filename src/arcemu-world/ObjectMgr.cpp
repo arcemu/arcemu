@@ -1917,22 +1917,22 @@ void ObjectMgr::LoadTrainers()
 					ts.pCastSpell = dbcSpell.LookupEntryForced( CastSpellID );
 					if( ts.pCastSpell )
 					{
-						for(int k=0;k<3;k++)
+						for( int k = 0; k < 3; ++k )
 						{
-							if(ts.pCastSpell->Effect[k]==SPELL_EFFECT_LEARN_SPELL)
+							if( ts.pCastSpell->Effect[k] == SPELL_EFFECT_LEARN_SPELL )
 							{
 								ts.pCastRealSpell = dbcSpell.LookupEntryForced(ts.pCastSpell->EffectTriggerSpell[k]);
 								if( ts.pCastRealSpell == NULL )
 								{
 									Log.Warning("Trainers", "Trainer %u contains cast spell %u that is non-teaching\n", entry, CastSpellID);
-									abrt=true;
+									abrt = true;
 								}
 								break;
 							}
 						}
 					}
 
-					if(abrt)
+					if( abrt )
 						continue;
 				}
 

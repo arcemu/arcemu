@@ -795,21 +795,21 @@ void ApplyNormalFixes()
 //		else if(namehash==4129426293 || namehash==885131426 || namehash==626036062 || namehash==3551228837 || namehash==2784647472 || namehash==776142553 || namehash==3407058720 || namehash==202747424)
 //		else if( strstr( sp->Name, "Curse of "))
 //            type |= SPELL_TYPE_WARLOCK_CURSES;
-		else if( strstr( sp->Name, "Immolate") || strstr( sp->Name, "Conflagrate"))
+		else if( strstr( sp->Name, "Immolate") || strstr( sp->Name, "Conflagrate") )
 			sp->BGR_one_buff_on_target |= SPELL_TYPE_WARLOCK_IMMOLATE;
-		else if( strstr( sp->Name, "Amplify Magic") || strstr( sp->Name, "Dampen Magic"))
+		else if( strstr( sp->Name, "Amplify Magic") || strstr( sp->Name, "Dampen Magic") )
 			sp->BGR_one_buff_on_target |= SPELL_TYPE_MAGE_AMPL_DUMP;
-        else if( strstr( sp->Description, "Battle Elixir"))
+        else if( strstr( sp->Description, "Battle Elixir") )
             sp->BGR_one_buff_on_target |= SPELL_TYPE_ELIXIR_BATTLE;
-        else if( strstr( sp->Description, "Guardian Elixir"))
+        else if( strstr( sp->Description, "Guardian Elixir") )
             sp->BGR_one_buff_on_target |= SPELL_TYPE_ELIXIR_GUARDIAN;
-        else if( strstr( sp->Description, "Battle and Guardian elixir"))
+        else if( strstr( sp->Description, "Battle and Guardian elixir") )
             sp->BGR_one_buff_on_target |= SPELL_TYPE_ELIXIR_FLASK;
 		else if( namehash == SPELL_HASH_HUNTER_S_MARK )		// hunter's mark
 			sp->BGR_one_buff_on_target |= SPELL_TYPE_HUNTER_MARK;
         else if( namehash == SPELL_HASH_COMMANDING_SHOUT || namehash == SPELL_HASH_BATTLE_SHOUT )
             sp->BGR_one_buff_on_target |= SPELL_TYPE_WARRIOR_SHOUT;
-		else if( strstr( sp->Description, "Finishing move")==sp->Description)
+		else if( strstr( sp->Description, "Finishing move") == sp->Description )
 			sp->c_is_flags |= SPELL_FLAG_IS_FINISHING_MOVE;
 		if( IsDamagingSpell( sp ) )
 			sp->c_is_flags |= SPELL_FLAG_IS_DAMAGING;
@@ -822,29 +822,34 @@ void ApplyNormalFixes()
 			sp->c_is_flags |= SPELL_FLAG_IS_MAXSTACK_FOR_DEBUFF;
 
 		//stupid spell ranking problem
-		if(sp->spellLevel==0)
+		if( sp->spellLevel == 0 )
 		{
-			uint32 new_level=0;
-			if( strstr( sp->Name, "Apprentice "))
+			uint32 new_level = 0;
+
+			if( strstr( sp->Name, "Apprentice ") )
 				new_level = 1;
-			else if( strstr( sp->Name, "Journeyman "))
+			else if( strstr( sp->Name, "Journeyman ") )
 				new_level = 2;
-			else if( strstr( sp->Name, "Expert "))
+			else if( strstr( sp->Name, "Expert ") )
 				new_level = 3;
-			else if( strstr( sp->Name, "Artisan "))
+			else if( strstr( sp->Name, "Artisan ") )
 				new_level = 4;
-			else if( strstr( sp->Name, "Master "))
+			else if( strstr( sp->Name, "Master ") )
 				new_level = 5;
-			if(new_level!=0)
+         else if( strstr( sp->Name, "Grand Master ") )
+            new_level = 6;
+
+			if( new_level != 0 )
 			{
-				uint32 teachspell=0;
-				if(sp->Effect[0]==SPELL_EFFECT_LEARN_SPELL)
+				uint32 teachspell = 0;
+				if( sp->Effect[0] == SPELL_EFFECT_LEARN_SPELL )
 					teachspell = sp->EffectTriggerSpell[0];
-				else if(sp->Effect[1]==SPELL_EFFECT_LEARN_SPELL)
+				else if( sp->Effect[1] == SPELL_EFFECT_LEARN_SPELL )
 					teachspell = sp->EffectTriggerSpell[1];
-				else if(sp->Effect[2]==SPELL_EFFECT_LEARN_SPELL)
+				else if( sp->Effect[2] == SPELL_EFFECT_LEARN_SPELL )
 					teachspell = sp->EffectTriggerSpell[2];
-				if(teachspell)
+
+				if( teachspell )
 				{
 					SpellEntry *spellInfo;
 					spellInfo = dbcSpell.LookupEntryForced(teachspell);

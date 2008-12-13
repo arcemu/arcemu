@@ -52,7 +52,7 @@
 				MinimalRebuild="false"
 				ExceptionHandling="2"
 				BasicRuntimeChecks="3"
-				SmallerTypeCheck="true"
+				SmallerTypeCheck="false"
 				RuntimeLibrary="3"
 				EnableFunctionLevelLinking="true"
 				FloatingPointExceptions="true"
