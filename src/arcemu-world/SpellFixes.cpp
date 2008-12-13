@@ -2108,6 +2108,7 @@ void ApplyNormalFixes()
 		//////////////////////////////////////////
 
 		// Insert shaman spell fixes here
+			
 
 			// Lightning Shield - cannot crit
 			if( sp->NameHash == SPELL_HASH_LIGHTNING_SHIELD ) // not a mistake, the correct proc spell for lightning shield is also called lightning shield
@@ -6799,18 +6800,32 @@ void ApplyNormalFixes()
 		{
 			sp->InterruptFlags |= ~(CAST_INTERRUPT_ON_MOVEMENT);
 		}
-		
-		sp = dbcSpell.LookupEntryForced( 40475 );		// Black temple melee trinket
-		if( sp != NULL )
-			sp->procChance = 50;
+		/**************************************************************
+		* Trinket Fixes		Please keep nice and clean :)										  *
+		**************************************************************/
 
-		sp = dbcSpell.LookupEntryForced( 46784 );		// Shadowsong Panther trinket
+		// Citrine Pendant of Golden Healing
+		sp = dbcSpell.LookupEntryForced( 25608 );		//	http://www.wowhead.com/?item=20976
+		if( sp != NULL )
+		{	//Overrides any spell coefficient calculation - DBCStores.h
+			sp->Dspell_coef_override = 0;	//DD&DH
+			sp->OTspell_coef_override = 0;	//HOT&DOT
+		}
+		//Barricade of Eternity
+		sp = dbcSpell.LookupEntryForced( 40475 );		//	http://www.wowhead.com/?item=40475
+		if( sp != NULL )
+			sp->procChance = 50;	// Sets change to proc
+
+		//Figurine - Shadowsong Panther	
+		sp = dbcSpell.LookupEntryForced( 46784 );		//	http://www.wowhead.com/?item=35702
 		if( sp != NULL )
 			sp->AttributesEx |= ATTRIBUTESEX_NOT_BREAK_STEALTH;
 
-		sp = dbcSpell.LookupEntryForced(36488); //Infernal Protection - cosmic infuser
+		// Infernal Protection
+		sp = dbcSpell.LookupEntryForced(36488);			//	http://www.wowhead.com/?spell=36488
 		if( sp != NULL )
 			sp->EffectImplicitTargetA[0] = EFF_TARGET_SINGLE_FRIEND;
+
 		// Band of the Eternal Champion: reduced proc rate
 		sp = dbcSpell.LookupEntryForced( 35080 );
 		if( sp != NULL )
