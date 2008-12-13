@@ -21,16 +21,18 @@ REM MySQL Username and Password
 CLS
 echo Welcome to the ArcEmu DB Updater! Please enter your MySQL Info...
 echo.
-set /p server= MySQL Server Address (e.g. localhost):
-set /p port= MySQL Server Port (e.g. 3306):
-set /p user=   Database login:
-set /p pass=   Password:
+set /p server= MySQL Server Address (e.g. localhost): 
+set /p port= MySQL Server Port (e.g. 3306): 
+echo.
+set /p user=   MySQL Username: 
+set /p pass=   MySQL Password: 
 REM # Logon Database
-set /p logon=  Logon Database (Accounts):
+echo.
+set /p logon= Logon Database (Accounts): 
 REM # Character Database
-set /p chr=	   Character Database:
+set /p chr= Character Database: 
 REM # World Database
-set /p wdb=    World Database:
+set /p wdb= World Database: 
 ECHO.
 ECHO.
 ECHO.
