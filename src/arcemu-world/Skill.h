@@ -147,6 +147,7 @@
 #define SKILL_PET_RAVAGER               767
 #define SKILL_PET_SERPENT               768
 #define SKILL_INTERNAL                  769
+#define SKILL_INSCRIPTION				773
 #define SKILL_RUNEFORGING				776
 
 #define SKILL_TYPE_ATTRIBUTES           5

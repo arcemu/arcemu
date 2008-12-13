@@ -933,7 +933,7 @@ enum SpellEffects
 	SPELL_EFFECT_TAME_CREATURE,             //    155
 	SPELL_EFFECT_UNKNOWN34,                 //    156
 	SPELL_EFFECT_UNKNOWN35,                 //    157
-	SPELL_EFFECT_UNKNOWN36,                 //    158
+	SPELL_EFFECT_MILLING,                 //    158
 	SPELL_EFFECT_UNKNOWN37,                 //    159
 	SPELL_EFFECT_UNKNOWN38,                 //    160
 	SPELL_EFFECT_UNKNOWN39,                 //    161
@@ -1740,6 +1740,7 @@ public:
     void SpellEffectPlayerPull( uint32 i );
     void SpellEffectSpellSteal(uint32 i);
     void SpellEffectProspecting(uint32 i);
+	void SpellEffectMilling(uint32 i);
     void SpellEffectOpenLockItem(uint32 i);
     void SpellEffectSelfResurrect(uint32 i);
     void SpellEffectDisenchant(uint32 i);

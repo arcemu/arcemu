@@ -179,7 +179,7 @@ pSpellEffect SpellEffectsHandler[TOTAL_SPELL_EFFECTS]={
 		&Spell::SpellEffectNULL,// unknown - 155
 		&Spell::SpellEffectNULL,// unknown - 156
 		&Spell::SpellEffectNULL,// unknown - 157
-		&Spell::SpellEffectNULL,// unknown - 158
+		&Spell::SpellEffectMilling,// Milling - 158
 		&Spell::SpellEffectNULL,// unknown - 159
 };
 
@@ -337,8 +337,13 @@ const char* SpellEffectNames[TOTAL_SPELL_EFFECTS] = {
 	"UNKNOWN27",                 //    149
 	"UNKNOWN28",                 //    150
 	"SUMMON_TARGET",             //    151
-	"UNKNOWN29",                 //    152
+	"UNKNOWN30",                 //    152
 	"TAME_CREATURE",             //    153
+	"UNKNOWN32",                 //    154
+	"UNKNOWN33",                 //    155
+	"UNKNOWN34",                 //    156
+	"UNKNOWN35",                 //    157
+	"MILLING"	                 //    158
 };
 
 void Spell::SpellEffectNULL(uint32 i)
@@ -3998,6 +4003,13 @@ void Spell::SpellEffectSkillStep(uint32 i) // Skill Step
 		target->addSpell( 26925 );// Woven Copper Ring
 		target->addSpell( 32259 );// Rough Stone Statue
 		break;
+	case SKILL_INSCRIPTION:
+		target->addSpell( 48114 ); // scroll of intellect
+		target->addSpell( 45382 ); // scroll of stamina
+		target->addSpell( 48116 ); // scroll of spirit
+		target->addSpell( 52738 ); // Ivory Ink
+		target->addSpell( 51005 ); // Milling
+		break;
 	};
 }
 
@@ -6482,6 +6494,36 @@ void Spell::SpellEffectProspecting(uint32 i)
 	else // this should never happen either
 	{
 		Log.Debug("SpellEffect","Prospecting failed, item %d has no loot", uint32(itemTarget->GetEntry()));
+		SendCastResult(SPELL_FAILED_CANT_BE_PROSPECTED);
+	}
+}
+
+void Spell::SpellEffectMilling(uint32 i)
+{
+	if(!p_caster) return;
+
+	if(!itemTarget) // this should never happen
+	{
+		SendCastResult(SPELL_FAILED_CANT_BE_PROSPECTED);
+		return;
+	}
+
+	//Fill Prospecting loot
+	p_caster->SetLootGUID(itemTarget->GetGUID());
+	if( !itemTarget->loot )
+		{
+			itemTarget->loot = new Loot;
+			lootmgr.FillMillingLoot( itemTarget->loot , itemTarget->GetEntry());
+		}
+
+	if ( itemTarget->loot->items.size() > 0 )
+	{
+		Log.Debug("SpellEffect","Succesfully milled item %d", uint32(itemTarget->GetEntry()));
+		p_caster->SendLoot( itemTarget->GetGUID(), LOOT_MILLING );
+	} 
+	else // this should never happen either
+	{
+		Log.Debug("SpellEffect","Milling failed, item %d has no loot", uint32(itemTarget->GetEntry()));
 		SendCastResult(SPELL_FAILED_CANT_BE_PROSPECTED);
 	}
 }

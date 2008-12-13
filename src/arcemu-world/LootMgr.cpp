@@ -99,14 +99,15 @@ void LootMgr::LoadLoot()
 	//THIS MUST BE CALLED AFTER LOADING OF ITEMS
 	is_loading = true;
 	LoadLootProp();
-	LoadLootTables("creatureloot",&CreatureLoot);
-	LoadLootTables("objectloot",&GOLoot);
-	LoadLootTables("skinningloot",&SkinningLoot);
-	LoadLootTables("fishingloot",&FishingLoot);
-	LoadLootTables("itemloot", &ItemLoot);
-	LoadLootTables("prospectingloot", &ProspectingLoot);
-	LoadLootTables("disenchantingloot", &DisenchantingLoot);
-	LoadLootTables("pickpocketingloot", &PickpocketingLoot);
+	LoadLootTables("loot_creatures",&CreatureLoot);
+	LoadLootTables("loot_gameobjects",&GOLoot);
+	LoadLootTables("loot_skinning",&SkinningLoot);
+	LoadLootTables("loot_fishing",&FishingLoot);
+	LoadLootTables("loot_items", &ItemLoot);
+	LoadLootTables("loot_prospecting", &ProspectingLoot);
+	LoadLootTables("loot_milling", &MillingLoot);
+	LoadLootTables("loot_disenchanting", &DisenchantingLoot);
+	LoadLootTables("loot_pickpocketing", &PickpocketingLoot);
 	is_loading = false;
 }
 
@@ -230,6 +231,9 @@ LootMgr::~LootMgr()
 	delete [] iter->second.items;
 
   for(LootStore::iterator iter=ProspectingLoot.begin(); iter != ProspectingLoot.end(); ++iter)
+  	delete [] iter->second.items;
+
+  for(LootStore::iterator iter=MillingLoot.begin(); iter != MillingLoot.end(); ++iter)
   	delete [] iter->second.items;
 
   for(LootStore::iterator iter=DisenchantingLoot.begin(); iter != DisenchantingLoot.end(); ++iter)
@@ -602,6 +606,18 @@ void LootMgr::FillProspectingLoot( Loot *loot, uint32 loot_id )
 
 	LootStore::iterator tab = ProspectingLoot.find( loot_id );
 	if( ProspectingLoot.end() == tab )
+		return;
+	else
+		PushLoot( &tab->second, loot, false );
+}
+
+void LootMgr::FillMillingLoot( Loot *loot, uint32 loot_id )
+{
+	loot->items.clear();
+	loot->gold = 0;
+
+	LootStore::iterator tab = MillingLoot.find( loot_id );
+	if( MillingLoot.end() == tab )
 		return;
 	else
 		PushLoot( &tab->second, loot, false );

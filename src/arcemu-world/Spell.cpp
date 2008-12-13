@@ -3615,6 +3615,23 @@ uint8 Spell::CanCast(bool tolerate)
 
 				break;
 			}
+			// Milling Targeted Item Check
+			case SPELL_EFFECT_MILLING:
+			{
+				// check if the item can be prospected
+				if(!(proto->Flags & ITEM_FLAG_MILLABLE))
+					return SPELL_FAILED_CANT_BE_PROSPECTED;
+
+				// check if we have at least 5 of the item
+				if(p_caster->GetItemInterface()->GetItemCount(proto->ItemId) < 5)
+					return SPELL_FAILED_ITEM_GONE;
+
+				// check if we have high enough skill
+				if(p_caster->_GetSkillLineCurrent(SKILL_INSCRIPTION) < proto->RequiredSkillRank)
+					return SPELL_FAILED_LOW_CASTLEVEL;
+
+				break;
+			}
 		}
 	}
 
