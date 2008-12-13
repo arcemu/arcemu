@@ -19,15 +19,16 @@ REM #########################################
 REM MySQL Username and Password
 :dbinfo
 CLS
-echo Welcome to the ArcEmu DB Updater! Please enter your MySQL Info...
-echo.
+ECHO.
+ECHO Welcome to the ArcEmu DB Updater! Please enter your MySQL Info...
+ECHO.
 set /p server= MySQL Server Address (e.g. localhost): 
 set /p port= MySQL Server Port (e.g. 3306): 
-echo.
-set /p user=   MySQL Username: 
-set /p pass=   MySQL Password: 
+ECHO.
+set /p user= MySQL Username: 
+set /p pass= MySQL Password: 
 REM # Logon Database
-echo.
+ECHO.
 set /p logon= Logon Database (Accounts): 
 REM # Character Database
 set /p chr= Character Database: 
@@ -36,11 +37,10 @@ set /p wdb= World Database:
 ECHO.
 ECHO.
 ECHO.
-ECHO Is your MySQL information correct?
+set /p imp=Is your MySQL information correct [(Y)es / (N)o]? 
 ECHO.
 ECHO       (Y)es / (N)o
 ECHO.
-set /p imp=     ? :
 IF %imp%==y GOTO menu
 IF %imp%==Y GOTO menu
 IF %imp%==n GOTO dbinfo
@@ -57,7 +57,7 @@ REM ############################################################################
 cls
 ECHO.
 ECHO.
-Echo	 ##############################################################
+ECHO	 ##############################################################
 ECHO	 #    	   Base Script by NCDB http://www.nc-db.info          #
 ECHO	 # Modified by MrHooHa and Maven ArcEmu http://www.arcemu.org #
 ECHO	 ##############################################################
@@ -74,6 +74,8 @@ ECHO		  C = Install Character updates
 ECHO		  L = Install Logon updates
 ECHO		  A = Install All updates
 ECHO.
+ECHO		  D = Reconfirm MySQL Information
+ECHO.
 ECHO.
 ECHO		  x - Exit
 ECHO.
@@ -89,6 +91,8 @@ if %l%==A goto installall
 if %l%==a goto installall
 if %l%==x goto quit
 if %l%==X goto quit
+if %l%==D goto quit
+if %l%==d goto dbinfo
 goto error
 
 :world
