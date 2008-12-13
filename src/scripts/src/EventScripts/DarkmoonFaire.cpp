@@ -7,6 +7,7 @@ Author: Nexis
 
 #include "StdAfx.h"
 #include "Setup.h"
+#define DMF_ACTIVE 1
 
 // Setup Carnies
 #define BARK_SETUP_CARNIES_1    "Faire's a coming!"
@@ -354,17 +355,18 @@ public:
     }
 };
 
-// Gevas Grimegate
-#define BARK_GEVAS_GRIMEGATE_1    "Tickets! Redeem your Darkmoon Faire Prize Tickets here! Wondrous and exotic prizes are waiting for you!"
-#define BARK_GEVAS_GRIMEGATE_2    "Five tickets or two-hundred and fifty, it doesn't matter friend, everybody is a winner!"
-#define BARK_GEVAS_GRIMEGATE_3    "All it takes is five or more and you're on your way to the most wondrous prizes on all of Azeroth. Everybody is a winner!"
-#define BARK_GEVAS_GRIMEGATE_4    "Mysterious prizes await the adventurous. Step right up, step right up!"
+// Gelvas Grimegate
+#define BARK_GELVAS_GRIMEGATE_1    "Tickets! Redeem your Darkmoon Faire Prize Tickets here! Wondrous and exotic prizes are waiting for you!"
+#define BARK_GELVAS_GRIMEGATE_2    "Five tickets or two-hundred and fifty, it doesn't matter friend, everybody is a winner!"
+#define BARK_GELVAS_GRIMEGATE_3    "All it takes is five or more and you're on your way to the most wondrous prizes on all of Azeroth. Everybody is a winner!"
+#define BARK_GELVAS_GRIMEGATE_4    "Mysterious prizes await the adventurous. Step right up, step right up!"
+#define BARK_GELVAS_GRIMEGATE_5    "Prizes! Get your prizes right here! Get over here and turn in your Darkmoon Faire Prize Tickets for valuable prizes!"
 
-class GevasGrimegate_Bark : public CreatureAIScript
+class GelvasGrimegate_Bark : public CreatureAIScript
 {
 public:
-	ADD_CREATURE_FACTORY_FUNCTION(GevasGrimegate_Bark);
-	GevasGrimegate_Bark(Creature* pCreature) : CreatureAIScript(pCreature)
+	ADD_CREATURE_FACTORY_FUNCTION(GelvasGrimegate_Bark);
+	GelvasGrimegate_Bark(Creature* pCreature) : CreatureAIScript(pCreature)
     {
 		RegisterAIUpdateEvent(60000); 			// Start initial update after: 1mins
 	}
@@ -372,23 +374,27 @@ public:
 	void AIUpdate()
 	{
 		int randGossip;
-			randGossip=rand()%4;
+			randGossip=rand()%5;
 			switch (randGossip)
 			{
 			case 0:
-				_unit->SendChatMessage(CHAT_MSG_MONSTER_SAY, LANG_UNIVERSAL, BARK_GEVAS_GRIMEGATE_1 );
+				_unit->SendChatMessage(CHAT_MSG_MONSTER_SAY, LANG_UNIVERSAL, BARK_GELVAS_GRIMEGATE_1 );
 			break;
 
 			case 1:
-				_unit->SendChatMessage(CHAT_MSG_MONSTER_SAY, LANG_UNIVERSAL, BARK_GEVAS_GRIMEGATE_2 );
+				_unit->SendChatMessage(CHAT_MSG_MONSTER_SAY, LANG_UNIVERSAL, BARK_GELVAS_GRIMEGATE_2 );
 			break;
 
 			case 2:
-				_unit->SendChatMessage(CHAT_MSG_MONSTER_SAY, LANG_UNIVERSAL, BARK_GEVAS_GRIMEGATE_3 );
+				_unit->SendChatMessage(CHAT_MSG_MONSTER_SAY, LANG_UNIVERSAL, BARK_GELVAS_GRIMEGATE_3 );
 			break;
 
 			case 3:
-				_unit->SendChatMessage(CHAT_MSG_MONSTER_SAY, LANG_UNIVERSAL, BARK_GEVAS_GRIMEGATE_4 );
+				_unit->SendChatMessage(CHAT_MSG_MONSTER_SAY, LANG_UNIVERSAL, BARK_GELVAS_GRIMEGATE_4 );
+			break;
+			
+			case 4:
+				_unit->SendChatMessage(CHAT_MSG_MONSTER_SAY, LANG_UNIVERSAL, BARK_GELVAS_GRIMEGATE_5 );
 			break;
 			}
 			
@@ -1005,6 +1011,7 @@ public:
 #define BARK_SILAS_DARKMOON_4    "Welcome one and all to the Darkmoon Faire, the greatest event in the world! We have it all... delicious food, strong drink, exotic artifacts, fortunes read, amazing prizes and excitement without end! Don't forget to turn in your Darkmoon Faire Prize Tickets to Gelvas Grimegate! All it takes is five or more and you're on your way to the most wonderous prizes on all of Azeroth. Everybody is a winner!"
 #define BARK_SILAS_DARKMOON_5    "Everyone enjoying themselves so far? That's great! Welcome to the Darkmoon Faire, the greatest show in all of Azeroth! Make sure you speak with Yebb and his friends here while you're taking in Neblegear's Darkmoon Zoo Bizarre."
 #define BARK_SILAS_DARKMOON_6    "Greetings friends, and welcome to the greatest show on Azeroth!$B$BPlease, step right up and take in all we have to offer. Ride the rides and see the sights! Amaze at the wonders that the Darkmoon Faire has uncovered in this vast and mysterious world! We have spared no expense in bringing you excitement that children of all ages will delight in!"
+#define BARK_SILAS_DARKMOON_7    "Come one, come all! Welcome to the Darkmoon Faire! Do you crave adventure? Do you seek exotic and mysterious treasures? Then look no further! You, my friend, have come to the right place! Dive right in and take part in all that the Faire has to offer! We'll be at this location all week, so be sure to tell your friends and loved ones!"
 
 class SilasDarkmoon_Gossip : public GossipScript
 {
@@ -1054,7 +1061,7 @@ public:
 	void AIUpdate()
 	{
 		int randGossip;
-			randGossip=rand()%6;
+			randGossip=rand()%7;
 			switch (randGossip)
 			{
 			case 0:
@@ -1079,6 +1086,10 @@ public:
 			
 			case 5:
 				_unit->SendChatMessage(CHAT_MSG_MONSTER_SAY, LANG_UNIVERSAL, BARK_SILAS_DARKMOON_6 );
+			break;
+
+			case 6:
+				_unit->SendChatMessage(CHAT_MSG_MONSTER_SAY, LANG_UNIVERSAL, BARK_SILAS_DARKMOON_7 );
 			break;
 			}
 			
@@ -1186,8 +1197,11 @@ public:
 
 void SetupDarkmoonFaireGossip(ScriptMgr * mgr)
 {
+	#ifdef DMF_ACTIVE
 	GossipScript * ActiveCarniesGossip = (GossipScript*) new ActiveCarnies_Gossip;
-	//GossipScript * SetupCarniesGossip = (GossipScript*) new SetupCarnies_Gossip;
+	#else
+	GossipScript * SetupCarniesGossip = (GossipScript*) new SetupCarnies_Gossip;
+	#endif
 	GossipScript * BurthGossip = (GossipScript*) new Burth_Gossip;
 	GossipScript * FliksFrogGossip = (GossipScript*) new FliksFrog_Gossip;
 	GossipScript * MaximaBlastenheimerGossip = (GossipScript*) new MaximaBlastenheimer_Gossip;
@@ -1196,8 +1210,11 @@ void SetupDarkmoonFaireGossip(ScriptMgr * mgr)
 	GossipScript * SelinaDourmanGossip = (GossipScript*) new SelinaDourman_Gossip;
 	GossipScript * SilasDarkmoonGossip = (GossipScript*) new SilasDarkmoon_Gossip;
 	
+	#ifdef DMF_ACTIVE
 	mgr->register_gossip_script(14849, ActiveCarniesGossip); 						// Active Carine Gossip
-	//mgr->register_gossip_script(14849, SetupCarniesGossip); 						// Setup Carine Gossip
+	#else
+	mgr->register_gossip_script(14849, SetupCarniesGossip); 						// Setup Carine Gossip
+	#endif
 	mgr->register_gossip_script(14827, BurthGossip); 								// Burth Gossip
 	mgr->register_gossip_script(14866, FliksFrogGossip); 							// Flik's Frog Gossip
 	mgr->register_gossip_script(15303, MaximaBlastenheimerGossip); 					// Maxima Blastenheimer Gossip
@@ -1209,13 +1226,15 @@ void SetupDarkmoonFaireGossip(ScriptMgr * mgr)
 
 void SetupDarkmoonFaireBarker(ScriptMgr * mgr)
 {
+	#ifdef DMF_ACTIVE
 	mgr->register_creature_script(14849, &ActiveCarnies_Bark::Create); 				// Active Carines
-	//mgr->register_creature_script(14849, &SetupCarnies_Bark::Create); 				// Setup Carine
+	#else
+	mgr->register_creature_script(14849, &SetupCarnies_Bark::Create); 				// Setup Carine
+	#endif
 	mgr->register_creature_script(14860, &Flik_Bark::Create); 						// Flik
-	mgr->register_creature_script(14828, &GevasGrimegate_Bark::Create); 			// Gevas Grimegate
+	mgr->register_creature_script(14828, &GelvasGrimegate_Bark::Create); 			// Gelvas Grimegate
 	mgr->register_creature_script(14846, &Lhara_Bark::Create); 						// Lhara
 	mgr->register_creature_script(14871, &Morja_Bark::Create); 						// Morja
-	mgr->register_creature_script(500000, &MusicDoodad::Create); 					// Darkmoon Faire Music Doodad
 	mgr->register_creature_script(14847, &ProfessorThaddeusPaleo_Bark::Create); 	// Professor Thaddeus Paleo
 	mgr->register_creature_script(14822, &Sayge_Bark::Create); 						// Sayge
 	mgr->register_creature_script(14823, &SilasDarkmoon_Bark::Create); 				// Silas Darkmoon
