@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2005,2006,2007 MaNGOS <http://www.mangosproject.org/>
  * Copyright (C) 2008 Arcemu Team <http://www.arcemu.org/>
  *
@@ -417,11 +417,21 @@ namespace VMAP
 							AABSPTree<Triangle> *gtree = new AABSPTree<Triangle>();
 
 							uint32 flags;
-							uint32 isindoor;
+							uint32 isindoor = 0;
 							uint32 branches;
-							if(fread(&isindoor, sizeof(uint32), 1, rf) != 1) { fclose(rf); return(false); }
-							if(fread(&flags, sizeof(uint32), 1, rf) != 1) { fclose(rf); return(false); }
+							if(fread(&flags, sizeof(uint32), 1, rf) != 1)
+							{
+								fclose(rf);
+								return(false);
+							}
 
+							if(flags & 1) {
+								if(fread(&isindoor, sizeof(uint32), 1, rf) != 1)
+								{
+									fclose(rf);
+									return(false);
+								}
+							}
 
 							if(fread(&blockId, 4, 1, rf) != 1) { fclose(rf); return(false); }
 							if(strcmp(blockId, "GRP ") != 0) { fclose(rf); return(false); }
@@ -465,7 +475,7 @@ namespace VMAP
 								if(fread(vectorarray, sizeof(float)*3, nvectors, rf) != nvectors) { fclose(rf); return(false); }
 							}
 							// ----- liquit
-							if(flags & 1)
+							if(flags & 0x00001000)
 							{
 								// we have liquit -> not handled yet ... skip
 								if(fread(&blockId, 4, 1, rf) != 1) { fclose(rf); return(false); }
