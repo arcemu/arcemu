@@ -298,11 +298,13 @@ struct ModelRibbonEmitterDef {
 };
 
 struct SkinHeader {
-	uint32 Padding;
-	uint32 nIndices;
-	uint32 ofsIndices;
+	uint32 skinId;             // 0x4e494b53
 	uint32 nTriangles;
 	uint32 ofsTriangles;
+	uint32 nIndices;
+	uint32 ofsIndices;
+	uint32 nVertices;
+	uint32 ofsVertices;
 	uint32 nProperties;
 	uint32 ofsProperties;
 	uint32 nSubmeshes;
