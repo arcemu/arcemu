@@ -753,11 +753,30 @@ void WorldSession::FullLogin(Player * plr)
 
 	/* world preload */
 	packetSMSG_LOGIN_VERIFY_WORLD vwpck;
-	vwpck.MapId = plr->GetMapId();
-	vwpck.O = plr->GetOrientation();
-	vwpck.X = plr->GetPositionX();
-	vwpck.Y = plr->GetPositionY();
-	vwpck.Z = plr->GetPositionZ();
+	if (HasGMPermissions() && plr->m_FirstLogin && sWorld.gamemaster_startonGMIsland)
+	/* GMs should start on GM Island and be bound there - Confirmed by Euro WoW GM "We're bound to our startingl location" */
+	{
+		vwpck.MapId = 1;
+		vwpck.O = 0;
+		vwpck.X = 16222.6f;
+		vwpck.Y = 16265.9f;
+		vwpck.Z = 14.2085f;
+		plr->m_position.x = 16222.6f;
+		plr->m_position.y = 16265.9f;
+		plr->m_position.z = 14.2085f;
+		plr->m_position.o = 0;
+		plr->m_mapId = 1;
+		plr->SetBindPoint(plr->GetPositionX(), plr->GetPositionY(), plr->GetPositionZ(), plr->GetMapId(), plr->GetZoneId());
+	} 
+	else
+	{
+		vwpck.MapId = plr->GetMapId();
+		vwpck.O = plr->GetOrientation();
+		vwpck.X = plr->GetPositionX();
+		vwpck.Y = plr->GetPositionY();
+		vwpck.Z = plr->GetPositionZ();
+	}
+		
 	OutPacket( SMSG_LOGIN_VERIFY_WORLD, sizeof(packetSMSG_LOGIN_VERIFY_WORLD), &vwpck );
 
 	// send voicechat state - active/inactive
@@ -973,7 +992,7 @@ void WorldSession::FullLogin(Player * plr)
 
 	// Send revision (if enabled)
 #ifdef WIN32
-	_player->BroadcastMessage("Powered by: %sArcEmu %s r%u/%s-Win-%s %s(Please report ALL bugs to ArcEmu.org/forums/)", MSG_COLOR_WHITE, BUILD_TAG,
+	_player->BroadcastMessage("Powered by: %sArcEmu %s r%u/%s-Win-%s %s(Please report ALL bugs to http://ArcEmu.org/forums/)", MSG_COLOR_WHITE, BUILD_TAG,
 		BUILD_REVISION, CONFIG, ARCH, MSG_COLOR_LIGHTBLUE);		
 #else
 	_player->BroadcastMessage("Powered by: %sArcEmu %s r%u/%s-%s %s(Please report ALL bugs to ArcEmu.org/forums/)", MSG_COLOR_WHITE, BUILD_TAG,

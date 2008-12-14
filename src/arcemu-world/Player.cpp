@@ -4317,9 +4317,9 @@ void Player::SendDungeonDifficulty()
 
 void Player::BuildPlayerRepop()
 {
-	// cleanup first
+	// Cleanup first
 	uint32 AuraIds[] = {20584,9036,8326,0};
-	RemoveAuras(AuraIds); // cebernic: removeaura just remove once(bug?).
+	RemoveAuras(AuraIds); // Cebernic: Removeaura just remove once(bug?).
 
 	SetUInt32Value( UNIT_FIELD_HEALTH, 1 );
 
@@ -4328,7 +4328,7 @@ void Player::BuildPlayerRepop()
    
 	if(getRace()==RACE_NIGHTELF)
 	{
-		SpellEntry *inf=dbcSpell.LookupEntry(9036); // cebernic:20584 triggered.
+		SpellEntry *inf=dbcSpell.LookupEntry(9036); // Cebernic:20584 triggered.
 		Spell*sp=SpellPool.PooledNew();
 		sp->Init(this,inf,true,NULL);
 		sp->prepare(&tgt);
@@ -4357,7 +4357,7 @@ void Player::RepopRequestedPlayer()
 	sEventMgr.RemoveEvents( this, EVENT_PLAYER_FORECED_RESURECT ); //in case somebody resurrected us before this event happened
 
 	if( myCorpse != NULL ) {
-		// cebernic: wOOo dead+dead = undead ? :D just resurrect player
+		// Cebernic: wOOo dead+dead = undead ? :D just resurrect player
 		myCorpse->ResetDeathClock();
 		ResurrectPlayer();
 		RepopAtGraveyard( GetPositionX(), GetPositionY(), GetPositionZ(), GetMapId() );
@@ -4396,7 +4396,7 @@ void Player::RepopRequestedPlayer()
 	BuildPlayerRepop();
 	
 
-	// cebernic: don't do this.
+	// Cebernic: don't do this.
   if ( !m_bg || ( m_bg && m_bg->HasStarted() ) )
   {
 		pMapinfo = WorldMapInfoStorage.LookupEntry( GetMapId() );
@@ -4413,8 +4413,8 @@ void Player::RepopRequestedPlayer()
 		}
 		else
 		{
-			//RepopAtGraveyard( GetPositionX(), GetPositionY(), GetPositionZ(), GetMapId() );
-			//cebernic: Mapinfo NULL? let's search from bindposition.
+			// RepopAtGraveyard( GetPositionX(), GetPositionY(), GetPositionZ(), GetMapId() );
+			// Cebernic: Mapinfo NULL? let's search from bindposition.
 			RepopAtGraveyard( GetBindPositionX(),GetBindPositionY(),GetBindPositionZ(),GetBindMapId( ) );
 		}
 	}
@@ -4439,10 +4439,10 @@ void Player::RepopRequestedPlayer()
 	if (pMapinfo) {
 		switch( pMapinfo->mapid )
 		{
-			case 550: //The Eye
-			case 552: //The Arcatraz
-			case 553: //The Botanica
-			case 554: //The Mechanar
+			case 550: // The Eye
+			case 552: // The Arcatraz
+			case 553: // The Botanica
+			case 554: // The Mechanar
 				ResurrectPlayer();
 				break;
 		}
@@ -4451,7 +4451,7 @@ void Player::RepopRequestedPlayer()
 
 void Player::ResurrectPlayer()
 {
-	sEventMgr.RemoveEvents(this,EVENT_PLAYER_FORECED_RESURECT); //in case somebody resurected us before this event happened
+	sEventMgr.RemoveEvents(this,EVENT_PLAYER_FORECED_RESURECT); // In case somebody resurected us before this event happened
 	if( m_resurrectHealth )
 		SetUInt32Value( UNIT_FIELD_HEALTH, (uint32)min( m_resurrectHealth, m_uint32Values[UNIT_FIELD_MAXHEALTH] ) );
 	if( m_resurrectMana )
@@ -4463,13 +4463,13 @@ void Player::ResurrectPlayer()
 
 	RemoveNegativeAuras();
 	uint32 AuraIds[] = {20584,9036,8326,0};
-	RemoveAuras(AuraIds); // cebernic: removeaura just remove once(bug?).
+	RemoveAuras(AuraIds); // Cebernic: removeaura just remove once(bug?).
 
 	RemoveFlag(PLAYER_FLAGS, 0x10);
 	setDeathState(ALIVE);
 	UpdateVisibility();
 	if ( m_resurrecter && IsInWorld()
-		//don't pull players inside instances with this trick. Also fixes the part where you were able to double item bonuses
+		// Don't pull players inside instances with this trick. Also fixes the part where you were able to double item bonuses
 		&& m_resurrectInstanceID == GetInstanceID() 
 		)
 	{
@@ -4485,8 +4485,8 @@ void Player::ResurrectPlayer()
 	m_lastRunBackSpeed = 0;
 	m_lastFlySpeed = 0;
 
-	//Zack : shit on grill. So auras should be removed on player death instead of making this :P
-	//wee can afford this bullshit atm since auras are lost uppon death -> no immunities
+	// Zack : shit on grill. So auras should be removed on player death instead of making this :P
+	// We can afford this bullshit atm since auras are lost uppon death -> no immunities
 	for(uint32 i = 0; i < 7; i++)
 		SchoolImmunityList[i]=0;
 }
@@ -4509,10 +4509,10 @@ void Player::KillPlayer()
 	StopMirrorTimer(1);
 	StopMirrorTimer(2);
 
-	SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_PLAYER_CONTROLLED); //player death animation, also can be used with DYNAMIC_FLAGS <- huh???
+	SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_PLAYER_CONTROLLED); // Player death animation, also can be used with DYNAMIC_FLAGS <- huh???
 	SetUInt32Value( UNIT_DYNAMIC_FLAGS, 0x00 );
 
-	if(this->getClass() == WARRIOR) //rage resets on death
+	if(this->getClass() == WARRIOR) // Rage resets on death
 		SetPower(POWER_TYPE_RAGE, 0);
 		SetPower(POWER_TYPE_RUNIC_POWER, 0);
 
@@ -4528,8 +4528,8 @@ void Player::CreateCorpse()
 	objmgr.DelinkPlayerCorpses(this);
 	if(!this->bCorpseCreateable)
 	{
-		bCorpseCreateable = true;   // for next time
-		return; // no corpse allowed!
+		bCorpseCreateable = true;   // For next time
+		return; // No corpse allowed!
 	}
 
 	pCorpse = objmgr.CreateCorpse();
@@ -4559,7 +4559,7 @@ void Player::CreateCorpse()
 
 	if(m_bg)
 	{
-		// remove our lootable flags
+		// Remove our lootable flags
 		RemoveFlag(UNIT_DYNAMIC_FLAGS, U_DYN_FLAG_LOOTABLE);
 		RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_SKINNABLE);
 		
@@ -4572,11 +4572,11 @@ void Player::CreateCorpse()
 		}
 		else
 		{
-			// hope this works
+			// Hope this works
 			pCorpse->SetUInt32Value(CORPSE_FIELD_FLAGS, 60);
 		}
 
-		// now that our corpse is created, don't do it again
+		// Now that our corpse is created, don't do it again
 		bShouldHaveLootableOnCorpse = false;
 	}
 	else
@@ -4599,7 +4599,7 @@ void Player::CreateCorpse()
 			pCorpse->SetUInt32Value(CORPSE_FIELD_ITEM + i,_cfi);
 		}
 	}
-	//save corpse in db for future use
+	// Save corpse in db for future use
 	pCorpse->SaveToDB();
 }
 
@@ -4680,7 +4680,7 @@ void Player::DeathDurabilityLoss(double percent)
 void Player::RepopAtGraveyard(float ox, float oy, float oz, uint32 mapid)
 {   
 	bool first = true;
-	//float closestX = 0, closestY = 0, closestZ = 0, closestO = 0;
+	// float closestX = 0, closestY = 0, closestZ = 0, closestO = 0;
 	StorageContainerIterator<GraveyardTeleport> * itr;
 
 	LocationVector src(ox, oy, oz);
@@ -4699,7 +4699,7 @@ void Player::RepopAtGraveyard(float ox, float oy, float oz, uint32 mapid)
 		AreaTable * at = dbcArea.LookupEntry(areaid);
 		if(!at) return;
 
-		//uint32 mzone = ( at->ZoneId ? at->ZoneId : at->AreaId);
+		// uint32 mzone = ( at->ZoneId ? at->ZoneId : at->AreaId);
 
 		itr = GraveyardStorage.MakeIterator();
 		while(!itr->AtEnd())
@@ -4809,7 +4809,7 @@ void Player::setAction(uint8 button, uint16 action, uint8 type, uint8 misc)
 	mActions[button].Misc = misc;
 }
 
-//Groupcheck
+// Groupcheck
 bool Player::IsGroupMember(Player *plyr)
 {
 	if(m_playerInfo->m_Group != NULL)
@@ -4850,7 +4850,7 @@ bool Player::GetQuestRewardStatus(uint32 quest_id)
 	return HasFinishedQuest(quest_id);
 }
 
-//From Mangos Project
+// From Mangos Project
 void Player::_LoadTutorials(QueryResult * result)
 {	
 	if(result)
@@ -4957,19 +4957,19 @@ float Player::GetDodgeChance()
 	uint32 pClass = (uint32)getClass();
 	float chance;
 	
-	// base dodge chance
+	// Base dodge chance
 	chance = baseDodge[pClass];
 
-	// dodge from agility
+	// Dodge from agility
 	chance += float( GetUInt32Value( UNIT_FIELD_STAT1 ) / dodgeRatio[getLevel()-1][pClass] );
 
-	// dodge from dodge rating
+	// Dodge from dodge rating
 	chance += CalcRating( PLAYER_RATING_MODIFIER_DODGE );
 
-	// dodge from spells
+	// Dodge from spells
 	chance += GetDodgeFromSpell();
 
-	return max( chance, 0.0f ); // make sure we dont have a negative chance
+	return max( chance, 0.0f ); // Make sure we dont have a negative chance
 }
 
 // Gets block chances before defense skill is applied
@@ -4978,16 +4978,16 @@ float Player::GetBlockChance()
 {
 	float chance;
 
-	// base block chance
+	// Base block chance
 	chance = BASE_BLOCK_CHANCE;
 	
-	// block rating
+	// Block rating
 	chance += CalcRating( PLAYER_RATING_MODIFIER_BLOCK );
 	
-	// block chance from spells
+	// Block chance from spells
 	chance += GetBlockFromSpell();
 
-	return max( chance, 0.0f ); // make sure we dont have a negative chance
+	return max( chance, 0.0f ); // Make sure we dont have a negative chance
 }
 
 // Get parry chances before defense skill is applied
@@ -4995,16 +4995,16 @@ float Player::GetParryChance()
 {
 	float chance;
 
-	// base parry chance
+	// Base parry chance
 	chance = BASE_PARRY_CHANCE;
 	
-	// parry rating
+	// Parry rating
 	chance += CalcRating( PLAYER_RATING_MODIFIER_PARRY );
 
-	// parry chance from spells
+	// Parry chance from spells
 	chance += GetParryFromSpell();
 
-	return max( chance, 0.0f ); // make sure we dont have a negative chance
+	return max( chance, 0.0f ); // Make sure we dont have a negative chance
 }
 
 void Player::UpdateChances()
@@ -5015,16 +5015,16 @@ void Player::UpdateChances()
 	float tmp = 0;
 	float defence_contribution = 0;
 
-	// avoidance from defense skill
+	// Avoidance from defense skill
 	defence_contribution = GetDefenseChance( pLevel );
 
-	// dodge
+	// Dodge
 	tmp = GetDodgeChance();
 	tmp += defence_contribution;
 	tmp = min( max ( tmp, 0.0f ), 95.0f );
 	SetFloatValue( PLAYER_DODGE_PERCENTAGE, tmp );
 
-	// block
+	// Block
 	Item* it = this->GetItemInterface()->GetInventoryItem( EQUIPMENT_SLOT_OFFHAND );
 	if( it != NULL && it->GetProto()->InventoryType == INVTYPE_SHIELD )
 	{
@@ -5037,7 +5037,7 @@ void Player::UpdateChances()
 
 	SetFloatValue( PLAYER_BLOCK_PERCENTAGE, tmp );
 
-	// parry (can only parry with something in main hand)
+	// Parry (can only parry with something in main hand)
 	it = this->GetItemInterface()->GetInventoryItem( EQUIPMENT_SLOT_MAINHAND );
 	if( it != NULL )
 	{
@@ -5050,7 +5050,7 @@ void Player::UpdateChances()
 
 	SetFloatValue( PLAYER_PARRY_PERCENTAGE, tmp );
 
-	//critical
+	// Critical
 	gtFloat* baseCrit = dbcMeleeCritBase.LookupEntry(pClass-1);
 	gtFloat* CritPerAgi = dbcMeleeCrit.LookupEntry(pLevel - 1 + (pClass-1)*100);
 
@@ -5059,7 +5059,7 @@ void Player::UpdateChances()
 	float melee_bonus = 0;
 	float ranged_bonus = 0;
 
-	if ( tocritchance.size() > 0 ) // crashfix by cebernic
+	if ( tocritchance.size() > 0 ) // Crashfix by Cebernic
 	{
 		map< uint32, WeaponModifier >::iterator itr = tocritchance.begin();
 
@@ -5132,7 +5132,7 @@ void Player::UpdateAttackSpeed()
 	{
 		speed = 2500;
 	}
-	else if( !disarmed )//regular
+	else if( !disarmed )// Regular
 	{
 		weap = GetItemInterface()->GetInventoryItem( EQUIPMENT_SLOT_MAINHAND ) ;
 		if( weap != NULL )
@@ -5162,7 +5162,7 @@ void Player::UpdateStats()
 {   
 	UpdateAttackSpeed();
 
-	// formulas from wowwiki
+	// Formulas from wowwiki
 
 	int32 AP = 0;
 	int32 RAP = 0;
@@ -5276,7 +5276,7 @@ void Player::UpdateStats()
 
 	int32 stat_bonus = GetUInt32Value( UNIT_FIELD_POSSTAT2 ) - GetUInt32Value( UNIT_FIELD_NEGSTAT2 );
 	if ( stat_bonus < 0 )
-		stat_bonus = 0; //avoid of having negative health
+		stat_bonus = 0; // Avoid of having negative health
 	int32 bonus = stat_bonus * 10 + m_healthfromspell + m_healthfromitems;
 
 	int32 res = hp + bonus + hpdelta;
@@ -5305,7 +5305,7 @@ void Player::UpdateStats()
 
 		stat_bonus = GetUInt32Value( UNIT_FIELD_POSSTAT3 ) - GetUInt32Value( UNIT_FIELD_NEGSTAT3 );
 		if ( stat_bonus < 0 )
-			stat_bonus = 0; //avoid of having negative mana
+			stat_bonus = 0; // Avoid of having negative mana
 		bonus = stat_bonus * 15 + m_manafromspell + m_manafromitems ;
 
 		res = mana + bonus + manadelta;
@@ -5443,12 +5443,12 @@ void Player::ApplyPlayerRestState(bool apply)
 	{
 		m_restState = RESTSTATE_RESTED;
 		m_isResting = true;
-		SetFlag(PLAYER_FLAGS, PLAYER_FLAG_RESTING);	//put zzz icon
+		SetFlag(PLAYER_FLAGS, PLAYER_FLAG_RESTING);	//put zZz icon
 	}
 	else
 	{
 		m_isResting = false;
-		RemoveFlag(PLAYER_FLAGS,PLAYER_FLAG_RESTING);	//remove zzz icon
+		RemoveFlag(PLAYER_FLAGS,PLAYER_FLAG_RESTING);	//remove zZz icon
 	}
 	UpdateRestState();
 }

@@ -362,11 +362,12 @@ void LogonServer::Run(int argc, char ** argv)
 			printf("  Passed without errors.\n");
 		else
 			printf("  Encountered one or more errors.\n");
-		/* test for die variables */
+		/* Remved useless die directive */
+		/*
 		string die;
 		if(Config.MainConfig.GetString("die", "msg", &die) || Config.MainConfig.GetString("die2", "msg", &die))
 			printf("Die directive received: %s", die.c_str());
-
+		*/
 		return;
 	}
 	

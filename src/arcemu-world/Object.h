@@ -70,7 +70,7 @@ enum TYPEID {
 	TYPEID_CORPSE		= 7,
 	TYPEID_AIGROUP	   = 8,
 	TYPEID_AREATRIGGER   = 9,
-	TYPEID_UNUSED			= 10,//used to signal invalid reference (object dealocated but someone is still using it)
+	TYPEID_UNUSED			= 10,//Used to signal invalid reference (object dealocated but someone is still using it)
 };
 
 enum OBJECT_UPDATE_TYPE {
@@ -85,7 +85,7 @@ enum OBJECT_UPDATE_TYPE {
 	//  1 byte - Object Type (*)
 	//  Goto Position Update
 	//  Goto Update Block
-	UPDATETYPE_CREATE_YOURSELF = 3, // looks like 3 & 4 do the same thing
+	UPDATETYPE_CREATE_YOURSELF = 3, // Looks like 3 & 4 do the same thing
 	//  4 bytes - Count
 	//  Loop Count Times:
 	//  8 bytes - GUID
@@ -134,7 +134,7 @@ public:
 	virtual void OnPrePushToWorld() { }
 	virtual void RemoveFromWorld(bool free_guid);
 
-	// guid always comes first
+	// Guid always comes first
 #ifndef USING_BIG_ENDIAN
 	ARCEMU_INLINE const uint64& GetGUID() const { return *((uint64*)m_uint32Values); }
 #else
@@ -324,7 +324,7 @@ public:
 		return m_updateMask.GetBit(index);
 	}
 
-	//use it to check if a object is in range of another
+	//Use it to check if a object is in range of another
 	bool isInRange(Object* target, float range);
 
 
@@ -381,7 +381,7 @@ public:
 			return;
 
 		if( pObj == this )
-			printf("!!!!we are in range of self !\n");
+			printf("We are in range of self!!!\n");
 
 		//Zack: as far as i know list inserts do not corrupt iterators
 		m_objectsInRange.insert( pObj );
@@ -405,7 +405,7 @@ public:
 			return;
 
 		if( pObj == this )
-			printf("!!!!we are in range of self !\n");
+			printf("We are in range of self!!\n");
 		AquireInrangeLock();
 		OnRemoveInRangeObject( pObj );
 		m_objectsInRange.erase( pObj );

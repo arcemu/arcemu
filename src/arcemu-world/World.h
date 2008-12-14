@@ -466,6 +466,7 @@ public:
 	bool antiMasterLootNinja;
 	bool gamemaster_listOnlyActiveGMs;
 	bool gamemaster_hidePermissions;
+	bool gamemaster_startonGMIsland;
 
 	// broadcast system config
 	bool BCSystemEnable;

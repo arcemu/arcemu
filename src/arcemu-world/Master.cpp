@@ -196,7 +196,7 @@ bool Master::Run(int argc, char ** argv)
 	printf("                   oho/-.-:yN-                  \n"); 
 	printf("                    os+/-.:::                   \n"); 
 	printf("                    :ysyoo+:`                   \n"); 
-	printf("		    `ohdys/.                    \n"); 
+	printf("					`ohdys/.                    \n"); 
 	printf("                     oyho/-`   ``               \n"); 
 	printf("                   `shyo+:./ssmdsyo:`           \n"); 
 	printf("                    .shss+:yNMMNNMNmms.         \n"); 
@@ -255,10 +255,10 @@ bool Master::Run(int argc, char ** argv)
 		else
 			Log.Warning( "Config", "Encountered one or more errors.\n");
 
-		/* test for die variables */
-		string die;
+		/* Removed useless Die directive */
+		/*string die;
 		if( Config.MainConfig.GetString( "die", "msg", &die) || Config.MainConfig.GetString("die2", "msg", &die ) )
-			Log.Warning( "Config", "Die directive received: %s", die.c_str() );
+			Log.Warning( "Config", "Die directive received: %s", die.c_str() );*/
 
 		return true;
 	}
@@ -294,12 +294,15 @@ bool Master::Run(int argc, char ** argv)
 		return false;
 	}
 
+	/* Removed useless die directive */
+	/*
 	string die;
 	if( Config.MainConfig.GetString( "die", "msg", &die) || Config.MainConfig.GetString( "die2", "msg", &die ) )
 	{
 		Log.Warning( "Config", "Die directive received: %s", die.c_str() );
 		return false;
 	}	
+	*/
 
 	if(Config.RealmConfig.SetSource(realm_config_file))
 		Log.Success( "Config", ">> configs/arcemu-realms.conf" );

@@ -59,6 +59,7 @@ World::World()
 	crossover_chars = true;
 	gamemaster_listOnlyActiveGMs = false;
 	gamemaster_hidePermissions = false;
+	gamemaster_startonGMIsland = true;
 	GMAdminTag = true;
 	NameinAnnounce = false;
 	NameinWAnnounce = false;
@@ -1314,6 +1315,7 @@ void World::Rehash(bool load)
 	crossover_chars = Config.OptionalConfig.GetBoolDefault("Interfaction", "CrossOverCharacters", false);
 	gamemaster_listOnlyActiveGMs = Config.OptionalConfig.GetBoolDefault("GameMaster", "ListOnlyActiveGMs", false);
 	gamemaster_hidePermissions = Config.OptionalConfig.GetBoolDefault("GameMaster", "HidePermissions", false);
+	gamemaster_startonGMIsland = Config.MainConfig.GetBoolDefault("GameMaster", "StartOnGMIsland", true);
 	StartingLevel = Config.OptionalConfig.GetIntDefault("Optional", "StartingLevel", 1);
 	if(StartingLevel > PLAYER_LEVEL_CAP) {StartingLevel = PLAYER_LEVEL_CAP;}
 	antiMasterLootNinja = Config.OptionalConfig.GetBoolDefault("Optional", "AntiMasterLootNinja", false);
