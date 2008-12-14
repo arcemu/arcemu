@@ -196,7 +196,7 @@ bool Master::Run(int argc, char ** argv)
 	printf("                   oho/-.-:yN-                  \n"); 
 	printf("                    os+/-.:::                   \n"); 
 	printf("                    :ysyoo+:`                   \n"); 
-	printf("					`ohdys/.                    \n"); 
+	printf("		    `ohdys/.                    \n"); 
 	printf("                     oyho/-`   ``               \n"); 
 	printf("                   `shyo+:./ssmdsyo:`           \n"); 
 	printf("                    .shss+:yNMMNNMNmms.         \n"); 
