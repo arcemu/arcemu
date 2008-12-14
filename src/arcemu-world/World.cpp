@@ -1362,7 +1362,7 @@ void World::Rehash(bool load)
 		GoldStartAmount *= 10000;
 
 	//script engine
-	m_LuaEngine = Config.MainConfig.GetBoolDefault("ScriptBackends", "LUA", false);
+	m_LuaEngine = Config.MainConfig.GetBoolDefault("ScriptBackends", "LUA", true);
 	m_ASEngine = Config.MainConfig.GetBoolDefault("ScriptBackends", "AS", false);
 
 	map_unload_time=Config.MainConfig.GetIntDefault("Server", "MapUnloadTime", 0);
@@ -1371,7 +1371,7 @@ void World::Rehash(bool load)
 	antihack_speed = Config.MainConfig.GetBoolDefault("AntiHack", "Speed", true);
 	antihack_flight = Config.MainConfig.GetBoolDefault("AntiHack", "Flight", true);
 	flyhack_threshold = Config.MainConfig.GetIntDefault("AntiHack", "FlightThreshold", 8);
-	no_antihack_on_gm = Config.MainConfig.GetBoolDefault("AntiHack", "DisableOnGM", false);
+	no_antihack_on_gm = Config.MainConfig.GetBoolDefault("AntiHack", "DisableOnGM", true);
 	SpeedhackProtection = antihack_speed;
 	m_levelCap = Config.OptionalConfig.GetIntDefault("Optional", "LevelCap", PLAYER_LEVEL_CAP);
 	m_genLevelCap = Config.OptionalConfig.GetIntDefault("Optional", "GenLevelCap", PLAYER_LEVEL_CAP);
