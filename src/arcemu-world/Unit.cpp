@@ -4172,11 +4172,11 @@ uint8 Unit::FindVisualSlot(uint32 SpellId,bool IsPos)
 
 void Unit::AddAura(Aura *aur)
 {
-	if( m_mapId != 530 )
+	if(m_mapId!=530 && (m_mapId!=571 || (IsPlayer() && !((Player*)this)->HasSpellwithNameHash(SPELL_HASH_COLD_WEATHER_FLYING))))
+	// can't use flying auras in non-outlands or non-northrend (northrend requires cold weather flying)
 	{
 		for( uint32 i = 0; i < 3; ++i )
 		{
-			// Can't use flying auras in non-outlands.
 			if( aur->GetSpellProto()->EffectApplyAuraName[i] == 208 || aur->GetSpellProto()->EffectApplyAuraName[i] == 207 )
 			{
 				sEventMgr.RemoveEvents(aur);
