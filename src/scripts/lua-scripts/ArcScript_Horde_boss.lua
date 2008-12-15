@@ -283,6 +283,7 @@ function charm(pUnit, Event)
 	if (charmCheck ~= nil) then
 	pUnit:CastSpellOnTarget(33384,pUnit:GetRandomPlayer(1))
 end
+end
 
 
 function lorthemar_OnLeaveCombat(pUnit, Event)
