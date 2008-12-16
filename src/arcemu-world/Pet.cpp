@@ -1474,8 +1474,9 @@ void Pet::ApplyPetLevelAbilities()
 	uint32 level = getLevel();
 	if( level > PLAYER_LEVEL_CAP )
 		level = PLAYER_LEVEL_CAP;
-	else if (level < 0) level = 1;
-	static uint32 family_aura[36] = { 0, 17223, 17210, 17129, 17208, 7000, 17212, 17209, 17211, 17214, 0, 17217, 17220, 0, 0, 0, 0, 0, 0, 0, 17218, 17221, 0, 0, 17206, 17215, 17216, 17222, 0, 0, 34887, 35257, 35254, 35258, 35253, 35383 };
+	else if (level < 0)
+		level = 1;
+	static uint32 family_aura[46] = { 0, 17223, 17210, 17129, 17208, 7000, 17212, 17209, 17211, 17214, 0, 17217, 17220, 0, 0, 0, 0, 0, 0, 0, 17218, 17221, 0, 0, 17206, 17215, 17216, 17222, 0, 0, 34887, 35257, 35254, 35258, 35253, 35386, 50297, 54676, 0, 55192, 55729, 56634, 56635, 58598, 61199 };
 		
 	RemoveAura( family_aura[ pet_family ] );//If the pet gained a level, we need to remove the auras to re-calculate everything.
 	LoadPetAuras(-1);//These too
@@ -1500,7 +1501,7 @@ void Pet::ApplyPetLevelAbilities()
 	SetUInt32Value( UNIT_FIELD_MAXHEALTH, base_hp );
 
 	//Family Aura
-	if( pet_family > 35 )
+	if( pet_family > 45 )
 		sLog.outError( "PETSTAT: Creature family %i [%s] has missing data.", pet_family, myFamily->name );
 	else if( family_aura[ pet_family ] != 0 )
 		this->CastSpell( this, family_aura[ pet_family ], true );
@@ -1588,29 +1589,6 @@ uint32 Pet::CanLearnSpell( SpellEntry * sp )
 	// level requirement
 	if( getLevel() < sp->spellLevel )
 		return SPELL_FAILED_LEVEL_REQUIREMENT;
-
-	if( Summon )
-		return 0;
-	
-	/** Hunter pet specific checks:
-		- number of active spells, max 4 are allowed per pet */
-	if( mSpells.size() > 0 && !( sp->Attributes & ATTRIBUTES_PASSIVE ) )
-	{
-		uint8 cnt = 0;
-		PetSpellMap::iterator itr = mSpells.begin();
-		for( ; itr != mSpells.end(); ++itr )
-		{
-			if( itr->first->NameHash == sp->NameHash )
-			{
-				cnt = 0;			
-				break;
-			}
-			if( !( itr->first->Attributes & ATTRIBUTES_PASSIVE ) )
-				cnt++;
-		}
-		if( cnt > 3 )
-			return SPELL_FAILED_TOO_MANY_SKILLS;
-	}
 	
 	return 0;
 }
