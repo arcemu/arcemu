@@ -27,13 +27,14 @@ void WorldSession::HandleUseItemOpcode(WorldPacket& recvPacket)
 	
 	Player* p_User = GetPlayer();
 	sLog.outDetail("WORLD: got use Item packet, data length = %i",recvPacket.size());
-	int8 tmp1,slot,tmp3;
+	int8 tmp1,slot;
 	uint8 unk; //Alice : added in 3.0.2
 	uint64 item_guid;
 	uint8 cn;
 	uint32 spellId = 0;
+	uint32 glyphIndex;
 
-	recvPacket >> tmp1 >> slot >> tmp3 >> cn >> item_guid >> unk;
+	recvPacket >> tmp1 >> slot >> cn >> spellId >> item_guid >> glyphIndex >> unk;
 	Item* tmpItem = NULL;
 	tmpItem = p_User->GetItemInterface()->GetInventoryItem(tmp1,slot);
 	if (!tmpItem)
@@ -54,7 +55,10 @@ void WorldSession::HandleUseItemOpcode(WorldPacket& recvPacket)
 
 	if(itemProto->Bonding == ITEM_BIND_ON_USE)
 		tmpItem->SoulBind();
-
+	
+	if(sScriptMgr.CallScriptedItem(tmpItem,_player))
+		return;
+	
 	if(itemProto->QuestId)
 	{
 		// Item Starter
