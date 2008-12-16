@@ -11874,14 +11874,6 @@ uint32 Player::GetMaxPersonalRating()
 	return maxrating;
 }
 
-bool Player::HasTitle(uint32 TitleCount)
-{
-	uint64 TitleMask = 1 << TitleCount;
-	if (TitleMask & GetUInt64Value(PLAYER_FIELD_KNOWN_TITLES))
-		return true;
-	return false;
-}
-
 void Player::FullHPMP()
 {
 	if(isDead())
@@ -12160,3 +12152,20 @@ void Player::LoadFieldsFromString(const char * string, uint32 firstField, uint32
 		start = end + 1;
 	}
 }
+
+void Player::SetKnownTitle( RankTitles title, bool set )
+{	
+	if( !HasTitle( title ) ^ set )
+		return;
+
+	uint64 current = GetUInt64Value( PLAYER_FIELD_KNOWN_TITLES );
+	if( set )
+		SetUInt64Value( PLAYER_FIELD_KNOWN_TITLES, current | uint64(1) << title );
+	else
+		SetUInt64Value( PLAYER_FIELD_KNOWN_TITLES, current & ~uint64(1) << title );
+
+	WorldPacket data( SMSG_TITLE_EARNED, 8 );
+	data << uint32( title ) << uint32( set ? 1 : 0 );
+	m_session->SendPacket( &data );
+}
+

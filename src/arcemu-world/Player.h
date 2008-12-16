@@ -1010,8 +1010,11 @@ public:
 	}
 	uint32 GetMaxPersonalRating();
 	
-	bool HasTitle(uint32 TitleCount);
-//	void SetKnownTitles( RankTitles title, bool set );
+	ARCEMU_INLINE bool HasTitle( RankTitles title )
+	{
+		return ( GetUInt64Value( PLAYER_FIELD_KNOWN_TITLES ) & ( uint64(1) << title ) ) != 0;
+	}
+	void SetKnownTitle( RankTitles title, bool set );
     /************************************************************************/
     /* Groups                                                               */
     /************************************************************************/
