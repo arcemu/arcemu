@@ -3456,14 +3456,14 @@ bool ChatHandler::HandleAddTrainerSpellCommand( const char * args, WorldSession 
 	return true;
 }
 
-/*bool ChatHandler::HandleSetTitle( const char *args, WorldSession *m_session )
+bool ChatHandler::HandleSetTitle( const char *args, WorldSession *m_session )
 {
 	Player* plr = getSelectedChar( m_session, true );
 	if( plr == NULL )
 		return false;
 
 	int32 title = atol( args );
-	if( title > int32( PVP_TITLE_END ) || title < - int32( PVP_TITLE_END ) )
+	if( title > int32( PVPTITLE_END ) || title < - int32( PVPTITLE_END ) )
 	{
 		RedSystemMessage( m_session, "Argument %i is out of range!", title );
 		return false;
@@ -3478,4 +3478,5 @@ bool ChatHandler::HandleAddTrainerSpellCommand( const char * args, WorldSession 
 	plr->SetUInt32Value( PLAYER_CHOSEN_TITLE, 0 ); // better remove chosen one
 	SystemMessage( m_session, "Title has been %s.", title > 0 ? "set" : "reset" );
 	return true;
-}*/
+}
+
