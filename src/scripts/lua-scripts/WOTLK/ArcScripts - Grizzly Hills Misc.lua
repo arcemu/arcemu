@@ -23,7 +23,7 @@ pUnit:RemoveEvents()
 end
 
 --[[function Deciphering_the_Journal_Completed(pUnit, event)
-pUnit:SendChatMessage(13, 0, "Let us see what this journal reveals.")
+pUnit:SendChatMessage(12, 0, "Let us see what this journal reveals.")
 pUnit:SetNPCFlags(0)
 pUnit:RegisterEvent]]
 
@@ -64,8 +64,10 @@ end
 
 function Rune_Weaving(pUnit, event)
 local timer2=math.random(3500, 12500)
+if (pUnit:GetMainTank() ~= nil) then
 pUnit:FullCastSpellOnTarget(52713, pUnit:GetMainTank())
 pUnit:RegisterEvent("Rune_Weaving", timer2, 0)
+end
 end
 
 RegisterUnitEvent (26820, 1, "Iron_Rune_Weaver_EnterCombat")
@@ -81,8 +83,10 @@ end
 
 function Gore(pUnit, event)
 local timer2=math.random(12500, 19500)
+if (pUnit:GetMainTank() ~= nil) then
 pUnit:FullCastSpellOnTarget(32019, pUnit:GetMainTank())
 pUnit:RegisterEvent("Gore", timer2, 0)
+end
 end
 
 RegisterUnitEvent (27408, 1, "Duskhowl_Prowler_EnterCombat")
@@ -111,8 +115,10 @@ end
 
 function Rune_of_Destruction(pUnit, event)
 local timer2=math.random(12500, 15500)
+if (pUnit:GetMainTank() ~= nil) then
 pUnit:FullCastSpellOnTarget(52715, pUnit:GetMainTank())
 pUnit:RegisterEvent("Rune_of_Destruction", timer2, 0)
+end
 end
 
 RegisterUnitEvent (26920, 1, "Overseer_Durval_EnterCombat")
@@ -138,8 +144,10 @@ end
 
 function Thunderstorm(pUnit, event)
 local timer2=math.random(12500, 15500)
+if (pUnit:GetMainTank() ~= nil) then
 pUnit:FullCastSpellOnTarget(52717, pUnit:GetMainTank())
 pUnit:RegisterEvent("Thunderstorm", timer2, 0)
+end
 end
 
 RegisterUnitEvent (26922, 1, "Overseer_Lochli_EnterCombat")
@@ -166,8 +174,10 @@ end
 
 function Call_Lightning(pUnit, event)
 local timer2=math.random(12500, 15500)
+if (pUnit:GetMainTank() ~= nil) then
 pUnit:FullCastSpellOnTarget(32018, pUnit:GetMainTank())
 pUnit:RegisterEvent("Call_Lightning", timer2, 0)
+end
 end
 
 function Korgan_Heal(pUnit, event)
@@ -224,8 +234,10 @@ end
 
 function Smelt_Rune(pUnit, event)
 local timer2=math.random(12500, 15500)
+if (pUnit:GetMainTank() ~= nil) then
 pUnit:FullCastSpellOnTarget(52699, pUnit:GetMainTank())
 pUnit:RegisterEvent("Smelt_Rune", timer2, 0)
+end
 end
 
 RegisterUnitEvent (26408, 1, "Iron_Rune_Smith_EnterCombat")
@@ -257,8 +269,10 @@ end
 
 function Frostpaw_Rend(pUnit, event)
 local timer2=math.random(10000, 22500)
+if (pUnit:GetMainTank() ~= nil) then
 pUnit:FullCastSpellOnTarget(12054, pUnit:GetMainTank())
 pUnit:RegisterEvent("Frostpaw_Rend", timer2, 0)
+end
 end
 
 function Demoralizing_Shout(pUnit, event)
@@ -281,6 +295,47 @@ end
 RegisterUnitEvent (26363, 1, "Tallhorn_Stag_EnterCombat")
 RegisterUnitEvent (26363, 4, "Death")
 RegisterUnitEvent (26363, 2, "Death")
+
+----------------------------------------------------------------
+
+function Warlord_ZimBo_EnterCombat(pUnit, event)
+pUnit:SendChatMessage(12, 0, "For Drak'Tharon!")
+pUnit:RegisterEvent("ZimBo_Talk", 1500, 1)
+end
+
+function ZimBo_Talk(pUnit, event)
+local timer1=math.random(50, 7500)
+pUnit:SendChatMessage(12, 0, "Zim'Bo must live to slay our betrayer!")
+pUnit:CastSpell(52283)
+pUnit:RegisterEvent("ZimBo_Talk2", 1800, 1)
+pUnit:RegisterEvent("SkullCrack", timer1, 1)
+end
+
+function SkullCrack(pUnit, event)
+local timer2=math.random(3500, 8500)
+if (pUnit:GetMainTank() ~= nil) then
+pUnit:CastSpellOnTarget(3551, pUnit:GetMainTank())
+pUnit:RegisterEvent("SkullCrack", timer2, 1)
+end
+end
+
+function ZimBo_Talk2(pUnit, event)
+pUnit:SendChatMessage(12, 0, "Zim'Bo Cannot be stopped! Da keep must be liberated!")
+pUnit:RegisterEvent("ZimBo_Talk3", 2000, 1)
+end
+
+function ZimBo_Talk3(pUnit, event)
+pUnit:SendChatMessage(12, 0, "You be dyin' along with all dese scourge!")
+end
+
+function ZimboDeath(pUnit, event)
+pUnit:SendChatMessage(12, 0, "Betrayed by one of our own we were. Disgraced...")
+pUnit:RemoveEvents()
+end
+
+RegisterUnitEvent (26544, 1, "Warlord_ZimBo_EnterCombat")
+RegisterUnitEvent (26544, 4, "ZimboDeath")
+RegisterUnitEvent (26544, 2, "Death")
 
 
 
