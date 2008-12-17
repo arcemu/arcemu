@@ -614,6 +614,7 @@ protected:
 	void HandlePetUnlearn(WorldPacket & recv_data);
 	void HandlePetSpellAutocast(WorldPacket & recv_data);
 	void HandlePetCancelAura(WorldPacket & recv_data);
+	void HandlePetLearnTalent(WorldPacket & recv_data);
 
 	// Battleground
 	void HandleBattlefieldPortOpcode(WorldPacket &recv_data);

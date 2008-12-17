@@ -357,18 +357,18 @@ void Pet::SendSpellsToOwner()
 	if( m_Owner == NULL )
 		return;
 
-	int packetsize = ( m_uint32Values[ OBJECT_FIELD_ENTRY ] != WATER_ELEMENTAL) ? ( (int) mSpells.size() * 4 + 20 ) : 64;
+	uint16 packetsize = ( m_uint32Values[ OBJECT_FIELD_ENTRY ] != WATER_ELEMENTAL) ? ( mSpells.size() * 4 + 61 ) : 64;
 	WorldPacket * data = new WorldPacket( SMSG_PET_SPELLS, packetsize );
 	*data << GetGUID();
-	*data << uint32(0x00000000);//unk1
-	*data << uint32(0x00000101);//unk2
-	*data << uint32(0x00000100);//unk3
+	*data << uint32( myFamily != NULL ? myFamily->ID : 0 );	// pet family to determine talent tree
+	*data << uint32(0);					// unk
 	
-/*	uint32 state_flags = 0;
+	uint32 state_flags = 0;
 	if( GetAIInterface() != NULL && GetAIInterface()->getUnitToFollow() != NULL )
-		 state_flags = 0x100;		// 0x0 = stay, 0x100 = follow, 0x200 = attack
-	state_flags |= GetPetState();	// 0x0 = passive, 0x1 = defensive, 0x2 = agressive
-	*data << state_flags; */		
+		 state_flags = 0x100;			// 0x0 = stay, 0x100 = follow, 0x200 = attack
+	state_flags |= GetPetState();		// 0x0 = passive, 0x1 = defensive, 0x2 = agressive, 0xFF0000 = disabled pet bar (eg. pet stunned)
+	
+	*data << state_flags;		
 																			
 	// Send the actionbar
 	for(uint32 i = 0; i < 10; ++i)
@@ -392,7 +392,10 @@ void Pet::SendSpellsToOwner()
 		for(PetSpellMap::iterator itr = mSpells.begin(); itr != mSpells.end(); ++itr)
 			*data << uint16(itr->first->Id) << uint16(itr->second);
 	}
-	*data << uint64(0);
+	*data << uint8(0); 			// loop cycles
+	/*in loop:
+	*data << uint32(0x6010);	//spellid
+	*data << uint64(0);			// unk */
 	m_Owner->delayedPackets.add(data);
 }
 
@@ -404,7 +407,6 @@ void Pet::SendNullSpellsToOwner()
 	WorldPacket data(8);
 	data.SetOpcode(SMSG_PET_SPELLS);
 	data << uint64(0);
-	data << uint32(0);
 	m_Owner->GetSession()->SendPacket(&data);
 }
 

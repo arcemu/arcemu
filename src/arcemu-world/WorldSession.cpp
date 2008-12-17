@@ -849,6 +849,7 @@ void WorldSession::InitPacketHandlerTable()
 	WorldPacketHandlers[CMSG_PET_UNLEARN].handler								= &WorldSession::HandlePetUnlearn;
 	WorldPacketHandlers[CMSG_PET_SPELL_AUTOCAST].handler						= &WorldSession::HandlePetSpellAutocast;
 	WorldPacketHandlers[CMSG_PET_CANCEL_AURA].handler						= &WorldSession::HandlePetCancelAura;
+	WorldPacketHandlers[CMSG_PET_LEARN_TALENT].handler						= &WorldSession::HandlePetLearnTalent;
 	
 	// Battlegrounds
 	WorldPacketHandlers[CMSG_BATTLEFIELD_PORT].handler						  = &WorldSession::HandleBattlefieldPortOpcode;
