@@ -26,20 +26,20 @@
 initialiseSingleton(CBattlegroundManager);
 typedef CBattleground*(*CreateBattlegroundFunc)(MapMgr* mgr,uint32 iid,uint32 group, uint32 type);
 
-const static uint32 BGMapIds[BATTLEGROUND_NUM_TYPES] = {
-	0,      // 0
-	30,      // AV
-	489,   // WSG
-	529,   // AB
-	0,      // 2v2
-	0,      // 3v3
-	0,      // 5v5
-	566,   // EOTS
+const static uint32 BGMapIds[ BATTLEGROUND_NUM_TYPES ] = 
+{
+	0,		// 0
+	30,		// AV
+	489,	// WSG
+	529,	// AB
+	0,		// 2v2
+	0,		// 3v3
+	0,		// 5v5
+	566,	// EOTS
 };
 
-// TODO: BATTLEGROUND_NUM_TYPES needs to be looked at!
-uint32 BGMaximumPlayers[BATTLEGROUND_NUM_TYPES +1] = {0,0,0,0,0,0,0,0,0};
-uint32 BGMinimumPlayers[BATTLEGROUND_NUM_TYPES +1] = {0,0,0,0,0,0,0,0,0};
+uint32 BGMaximumPlayers[ BATTLEGROUND_NUM_TYPES ] = { 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+uint32 BGMinimumPlayers[ BATTLEGROUND_NUM_TYPES ] = { 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 
 
 const static CreateBattlegroundFunc BGCFuncs[BATTLEGROUND_NUM_TYPES] = {
@@ -59,6 +59,7 @@ const static CreateBattlegroundFunc BGCFuncs[BATTLEGROUND_NUM_TYPES] = {
 #else
 	NULL,                  // EotS
 #endif
+	NULL,                  // SOTA, needs to be updated when SOTA is in
 };
 
 CBattlegroundManager::CBattlegroundManager() : EventableObject()
