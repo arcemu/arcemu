@@ -226,6 +226,9 @@ void Pet::CreateAsSummon(uint32 entry, CreatureInfo *ci, Creature* created_from_
 
 		// create our spellz
 		SetDefaultSpells();
+
+		// set talent points
+		SetTPs( GetTPsForLevel( level ) ); 
 	}
 	
 	BaseDamage[0] = 0;
@@ -557,6 +560,9 @@ void Pet::LoadFromDB(Player* owner, PlayerPet * pi)
 		
 		if( getLevel() != level )
 		{
+			if( !Summon )
+				SetTPs( GetTPsForLevel( level) - GetSpentTPs() );
+
 			SetUInt32Value( UNIT_FIELD_LEVEL, level );
 			SetUInt32Value( UNIT_FIELD_PETEXPERIENCE, 0 );
 			SetUInt32Value( UNIT_FIELD_PETNEXTLEVELEXP, GetNextLevelXP( level ) );

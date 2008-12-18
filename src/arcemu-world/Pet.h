@@ -199,6 +199,12 @@ public:
 	ARCEMU_INLINE string& GetName() { return m_name; }
 	uint32 CanLearnSpell( SpellEntry* sp );
 	
+	// talents
+	ARCEMU_INLINE uint8 GetTPsForLevel( uint32 level ) { return ( level >= 20 ) ? ( level - 16 ) >> 2 : 0; }	// pet gain first talent point at lvl 20, then every 4 lvls another point
+	ARCEMU_INLINE void SetTPs( uint8 TP ) { SetByte( UNIT_FIELD_BYTES_1, 1, TP ); }								// sets talent points
+	ARCEMU_INLINE uint8 GetTPs() { return GetByte( UNIT_FIELD_BYTES_1, 1 ); }									// returns available talent points
+	ARCEMU_INLINE uint8 GetSpentTPs() { return GetTPsForLevel( getLevel() ) - GetTPs(); }						// returns amount of spent talent points
+	
 	void HandleAutoCastEvent( AutoCastEvents Type );
 	AI_Spell * HandleAutoCastEvent();
 	void SetPetSpellState(uint32 spell, uint16 state);

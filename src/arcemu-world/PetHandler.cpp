@@ -482,9 +482,10 @@ void WorldSession::HandlePetCancelAura( WorldPacket& recvPacket )
 	if( !pPet->RemoveAura( spellid ) )
 		sLog.outError("PET SYSTEM: Player "I64FMT" failed to cancel aura %u from pet", _player->GetGUID(), spellid );
 }
+
 void WorldSession::HandlePetLearnTalent( WorldPacket & recvPacket )
 {
-	/*if( !_player->IsInWorld() )
+	if( !_player->IsInWorld() )
 		return;
 
 	uint64 guid;
@@ -498,7 +499,8 @@ void WorldSession::HandlePetLearnTalent( WorldPacket & recvPacket )
 		return;
 	
 	// check talent points first
-	//TODO: Find the right field and implement check
+	if( pPet->GetTPs() < 1 )
+		return;
 
 	// find talent and spell
 	TalentEntry *te = dbcTalent.LookupEntry( talentid );
@@ -509,7 +511,8 @@ void WorldSession::HandlePetLearnTalent( WorldPacket & recvPacket )
 	if( sp != NULL )
 	{
 		pPet->AddSpell( sp, true );
+		pPet->SetTPs( pPet->GetTPs() - 1 );
 		OutPacket( SMSG_PET_LEARNED_SPELL, 4, &sp->Id );
-	}*/
+	}
 }
 
