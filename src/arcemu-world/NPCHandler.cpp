@@ -149,7 +149,7 @@ void WorldSession::SendTrainerList(Creature* pCreature)
 		pSpell = &(*itr);
 		Status = TrainerGetSpellStatus(pSpell);
 		if( pSpell->pCastRealSpell != NULL )
-			data << pSpell->pCastRealSpell->Id;
+			data << pSpell->pCastSpell->Id;
 		else if( pSpell->pLearnSpell )
 			data << pSpell->pLearnSpell->Id;
 		else
@@ -196,7 +196,7 @@ void WorldSession::HandleTrainerBuySpellOpcode(WorldPacket& recvPacket)
 	TrainerSpell * pSpell=NULL;
 	for(vector<TrainerSpell>::iterator itr = pTrainer->Spells.begin(); itr != pTrainer->Spells.end(); ++itr)
 	{
-		if( ( itr->pCastRealSpell && itr->pCastRealSpell->Id == TeachingSpellID ) ||
+		if( ( itr->pCastSpell && itr->pCastSpell->Id == TeachingSpellID ) ||
 			( itr->pLearnSpell && itr->pLearnSpell->Id == TeachingSpellID ) )
 		{
 			pSpell = &(*itr);
@@ -213,7 +213,7 @@ void WorldSession::HandleTrainerBuySpellOpcode(WorldPacket& recvPacket)
 	if( pSpell->pCastSpell)
 	{
 		// Cast teaching spell on player
-		pCreature->CastSpell(_player, pSpell->pCastSpell, true);
+		pCreature->CastTrainerSpell(_player, pSpell->pCastSpell, true);
 	}
 
 	if( pSpell->pLearnSpell )

@@ -5548,6 +5548,26 @@ uint8 Unit::CastSpell(Unit* Target, SpellEntry* Sp, bool triggered)
 	return newSpell->prepare(&targets);
 }
 
+uint8 Unit::CastTrainerSpell(Unit* Target, SpellEntry* Sp, bool triggered)
+{
+	if( Sp == NULL )
+		return SPELL_FAILED_UNKNOWN;
+
+	Spell *newSpell = SpellPool.PooledNew();
+	newSpell->Init(Target, Sp, triggered, 0);
+	SpellCastTargets targets(0);
+	if(Target)
+	{
+		targets.m_targetMask |= TARGET_FLAG_UNIT;
+		targets.m_unitTarget = Target->GetGUID();
+	}
+	else
+	{
+		newSpell->GenerateTargets(&targets);
+	}
+	return newSpell->prepare(&targets);
+}
+
 uint8 Unit::CastSpell(Unit* Target, uint32 SpellID, bool triggered)
 {
 	SpellEntry * ent = dbcSpell.LookupEntry(SpellID);
