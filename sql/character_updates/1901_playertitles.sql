@@ -1,0 +1,1 @@
+alter table characters modify `available_pvp_titles` varchar(40) NOT NULL;
