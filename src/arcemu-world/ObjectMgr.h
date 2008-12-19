@@ -161,6 +161,9 @@ struct Trainer
     uint32 RequiredSkill;
 	uint32 RequiredSkillLine;
 	uint32 RequiredClass;
+	uint32 RequiredRace;
+	uint32 RequiredRepFaction;
+	uint32 RequiredRepValue;
 	uint32 TrainerType;
 	uint32 Can_Train_Gossip_TextId;
 	uint32 Cannot_Train_GossipTextId;

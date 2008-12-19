@@ -1866,16 +1866,19 @@ void ObjectMgr::LoadTrainers()
 		tr->RequiredSkill = fields[1].GetUInt32();
 		tr->RequiredSkillLine = fields[2].GetUInt32();
 		tr->RequiredClass = fields[3].GetUInt32();
-		tr->TrainerType = fields[4].GetUInt32();
-		tr->Can_Train_Gossip_TextId = fields[6].GetUInt32();
-		tr->Cannot_Train_GossipTextId = fields[7].GetUInt32();
+		tr->RequiredRace  = fields[4].GetUInt32();
+		tr->RequiredRepFaction = fields[5].GetUInt32();
+		tr->RequiredRepValue   = fields[6].GetUInt32();
+		tr->TrainerType = fields[7].GetUInt32();
+		tr->Can_Train_Gossip_TextId = fields[9].GetUInt32();
+		tr->Cannot_Train_GossipTextId = fields[10].GetUInt32();
 		tr->UIMessage = (char*)NormalTalkMessage;
 		if(!tr->Can_Train_Gossip_TextId)
 			tr->Can_Train_Gossip_TextId=1;
 		if(!tr->Cannot_Train_GossipTextId)
 			tr->Cannot_Train_GossipTextId=1;
 
-		temp = fields[5].GetString();
+		temp = fields[8].GetString();
 		len=strlen(temp);
 		if(len)
 		{

@@ -1097,6 +1097,18 @@ WayPoint * Creature::CreateWaypointStruct()
 }
 //#define SAFE_FACTIONS
 
+uint8 get_byte(uint32 buffer, uint32 index){
+	uint32 mask = ~0;
+	if(index > sizeof(uint32)-1)
+		return 0;
+
+	buffer >> index*8;
+	mask   >> 3*8;
+	buffer = buffer & mask;
+
+	return (uint8)buffer;
+}
+
 bool Creature::Load(CreatureSpawn *spawn, uint32 mode, MapInfo *info)
 {
 	m_spawn = spawn;
@@ -1136,9 +1148,11 @@ bool Creature::Load(CreatureSpawn *spawn, uint32 mode, MapInfo *info)
 	//if(spawn->displayid != creature_info->Male_DisplayID)
 	//	setGender(1);   // Female
 	
-	uint32 model = 0;
-	uint32 gender = creature_info->GenerateModelId(&model);
-	setGender(gender);
+	// uint32 model = 0;
+	// uint32 gender = creature_info->GenerateModelId(&model);
+	// setGender(gender);
+	
+	SetByte(UNIT_FIELD_BYTES_0,2,get_byte(spawn->bytes0,2));
 	SetUInt32Value(UNIT_FIELD_DISPLAYID,spawn->displayid);
 	SetUInt32Value(UNIT_FIELD_NATIVEDISPLAYID,spawn->displayid);
 	SetUInt32Value(UNIT_FIELD_MOUNTDISPLAYID,spawn->MountedDisplayID);
