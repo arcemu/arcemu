@@ -2037,50 +2037,42 @@ void ApplyNormalFixes()
 		sp = dbcSpell.LookupEntryForced( 15407 ); 
 		if( sp != NULL )
 		{	
-			sp->EffectApplyAuraName[1] = SPELL_AURA_MOD_DECREASE_SPEED;
 			sp->EffectApplyAuraName[0] = SPELL_AURA_PERIODIC_DAMAGE;
 		}
 		
 		sp = dbcSpell.LookupEntryForced( 17311 ); 
 		if( sp != NULL )
 		{	
-			sp->EffectApplyAuraName[1] = SPELL_AURA_MOD_DECREASE_SPEED;
 			sp->EffectApplyAuraName[0] = SPELL_AURA_PERIODIC_DAMAGE;
 		}
 		sp = dbcSpell.LookupEntryForced( 17312 ); 
 		if( sp != NULL )
 		{	
-			sp->EffectApplyAuraName[1] = SPELL_AURA_MOD_DECREASE_SPEED;
 			sp->EffectApplyAuraName[0] = SPELL_AURA_PERIODIC_DAMAGE;
 		}
 		sp = dbcSpell.LookupEntryForced( 17313 ); 
 		if( sp != NULL )
 		{	
-			sp->EffectApplyAuraName[1] = SPELL_AURA_MOD_DECREASE_SPEED;
 			sp->EffectApplyAuraName[0] = SPELL_AURA_PERIODIC_DAMAGE;
 		}
 		sp = dbcSpell.LookupEntryForced( 17314 ); 
 		if( sp != NULL )
 		{	
-			sp->EffectApplyAuraName[1] = SPELL_AURA_MOD_DECREASE_SPEED;
 			sp->EffectApplyAuraName[0] = SPELL_AURA_PERIODIC_DAMAGE;
 		}
 		sp = dbcSpell.LookupEntryForced( 18807 ); 
 		if( sp != NULL )
 		{	
-			sp->EffectApplyAuraName[1] = SPELL_AURA_MOD_DECREASE_SPEED;
 			sp->EffectApplyAuraName[0] = SPELL_AURA_PERIODIC_DAMAGE;
 		}
 		sp = dbcSpell.LookupEntryForced( 25387 ); 
 		if( sp != NULL )
 		{	
-			sp->EffectApplyAuraName[1] = SPELL_AURA_MOD_DECREASE_SPEED;
 			sp->EffectApplyAuraName[0] = SPELL_AURA_PERIODIC_DAMAGE;
 		}
 		sp = dbcSpell.LookupEntryForced( 48155 ); 
 		if( sp != NULL )
 		{	
-			sp->EffectApplyAuraName[1] = SPELL_AURA_MOD_DECREASE_SPEED;
 			sp->EffectApplyAuraName[0] = SPELL_AURA_PERIODIC_DAMAGE;
 		}
 		
