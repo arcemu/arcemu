@@ -3454,7 +3454,16 @@ void ApplyNormalFixes()
 			sp->procFlags = PROC_ON_CAST_SPECIFIC_SPELL;
 			sp->ProcOnNameHash[0] = SPELL_HASH_WING_CLIP;
 		}
+		
+		//Trueshot Aura
 
+		sp = dbcSpell.LookupEntryForced( 19506 );
+		if( sp != NULL )
+		{
+			sp->Effect[0] = SPELL_EFFECT_APPLY_AREA_AURA;
+			sp->Effect[1] = SPELL_EFFECT_APPLY_AREA_AURA;
+		}
+		
 		// Hunter - Master Tactician
 		sp = dbcSpell.LookupEntryForced( 34506 );
 		if( sp != NULL )
