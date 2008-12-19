@@ -224,6 +224,9 @@ void WorldSession::HandleSpellClick(WorldPacket& recvPacket)
 
 	if( target_unit->GetUInt32Value( OBJECT_FIELD_ENTRY ) == 29929 )
 		cast_spell_id = 55531; // Mechano-Hog
+	
+	if( cast_spell_id == 0 )
+		return;
 
 	SpellEntry *spellInfo = dbcSpell.LookupEntryForced( cast_spell_id );
  	Spell *spell = SpellPool.PooledNew();
