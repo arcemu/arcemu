@@ -353,7 +353,7 @@ void Spell::SpellEffectNULL(uint32 i)
 
 void Spell::SpellEffectInstantKill(uint32 i)
 {
-	if(!unitTarget || !unitTarget->isAlive())
+	if( !unitTarget || !unitTarget->isAlive() )
 		return;
 
 	//Sacrifice: if spell caster has "void walker" pet, pet dies and spell caster gets a 
@@ -384,16 +384,19 @@ void Spell::SpellEffectInstantKill(uint32 i)
 	*/
 	uint32 spellId = GetProto()->Id;
 
-	switch(spellId)
+	switch( spellId )
 	{
 	case 3617://Goblin Bomb Suicide
 		{
-			if(m_caster->GetTypeId() != TYPEID_UNIT)
+			if( m_caster->GetTypeId() != TYPEID_UNIT )
 				break;
-			Unit *caster = m_caster->GetMapMgr()->GetPlayer(m_caster->GetUInt32Value(UNIT_FIELD_SUMMONEDBY));
-			caster->summonPet->RemoveFromWorld(false,true);
-			delete caster->summonPet;
-			caster->summonPet = NULL;
+			Unit *caster = m_caster->GetMapMgr()->GetPlayer( m_caster->GetUInt32Value( UNIT_FIELD_SUMMONEDBY ) );
+			if( caster )
+			{
+				caster->summonPet->RemoveFromWorld( false, true );
+				delete caster->summonPet;
+				caster->summonPet = NULL;
+			}
 		}break;
 	case 7814:
 	case 7815:
@@ -422,7 +425,7 @@ void Spell::SpellEffectInstantKill(uint32 i)
 		}break;
 	case 18788: //Demonic Sacrifice (508745)
 		uint32 spellid1 = 0;
-		switch(unitTarget->GetEntry())
+		switch( unitTarget->GetEntry() )
 		{
 			case 416: //Imp
 			{   
@@ -448,10 +451,11 @@ void Spell::SpellEffectInstantKill(uint32 i)
 			}break;
 		}
 		//now caster gains this buff
-		if (spellid1)
+		if( spellid1 )
 		{
-			SpellEntry *sp = dbcSpell.LookupEntry(spellid1);
-			if (sp) u_caster->CastSpell(u_caster, sp, true);
+			SpellEntry *sp = dbcSpell.LookupEntry( spellid1 );
+			if( sp && u_caster )
+				u_caster->CastSpell( u_caster, sp, true );
 		}
 	}
 
@@ -459,23 +463,25 @@ void Spell::SpellEffectInstantKill(uint32 i)
 	{
 	case SPELL_HASH_SACRIFICE:
 		{
-			if(!u_caster->IsPet())
+			if( !u_caster || !u_caster->IsPet() )
 				return;
 
 			//static_cast<Pet*>(u_caster)->Dismiss( true );
 
 			SpellEntry * se = dbcSpell.LookupEntry(5);
-			if(se == 0) return;
-			SpellCastTargets targets(u_caster->GetGUID());
+			if( se == 0 || static_cast< Pet* >( u_caster )->GetPetOwner() == NULL )
+				return;
+
+			SpellCastTargets targets( u_caster->GetGUID() );
 			Spell * sp = SpellPool.PooledNew();
-			sp->Init(static_cast<Pet*>(u_caster)->GetPetOwner(), se, true, 0);
-			sp->prepare(&targets);
+			sp->Init( static_cast< Pet* >( u_caster )->GetPetOwner(), se, true, 0 );
+			sp->prepare( &targets );
 
 			return;
 		}break;
 	case SPELL_HASH_DEMONIC_SACRIFICE:
 		{
-			if(!p_caster || !p_caster->IsPlayer() || !unitTarget || !unitTarget->IsPet())
+			if( !p_caster || !p_caster->IsPlayer() || !unitTarget || !unitTarget->IsPet() )
 				return;
 
 			//static_cast<Pet*>(unitTarget)->Dismiss( true );
@@ -483,11 +489,10 @@ void Spell::SpellEffectInstantKill(uint32 i)
 			SpellEntry * se = dbcSpell.LookupEntry(5);
 			if(se == 0) return;
 
-			SpellCastTargets targets(unitTarget->GetGUID());
+			SpellCastTargets targets( unitTarget->GetGUID() );
 			Spell * sp = SpellPool.PooledNew();
-			sp->Init(p_caster, se, true, 0);
-			sp->prepare(&targets);
-			
+			sp->Init( p_caster, se, true, 0 );
+			sp->prepare( &targets );
 			return;
 		}break;
 
@@ -504,7 +509,7 @@ void Spell::SpellEffectInstantKill(uint32 i)
 	//instant kill effects don't have a log
 	//m_caster->SpellNonMeleeDamageLog(unitTarget, GetProto()->Id, unitTarget->GetUInt32Value(UNIT_FIELD_HEALTH), true);
 	// cebernic: the value of instant kill must be higher than normal health,cuz anti health regenerated.
-	m_caster->DealDamage(unitTarget, unitTarget->GetUInt32Value(UNIT_FIELD_HEALTH)*2, 0, 0, 0);
+	m_caster->DealDamage( unitTarget, unitTarget->GetUInt32Value( UNIT_FIELD_HEALTH ) << 1, 0, 0, 0 );
 }
 
 void Spell::SpellEffectSchoolDMG(uint32 i) // dmg school
