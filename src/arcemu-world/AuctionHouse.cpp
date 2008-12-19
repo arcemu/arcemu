@@ -276,7 +276,10 @@ void Auction::AddToPacket(WorldPacket & data)
 	* The ingame "GAIN" is:
 	* (Modifier / 10000) * enchantmentvalue = EnchantmentGain;	
 	*/
-
+	
+	data << uint32(0);				  // Unknown
+	data << uint32(0);				  // Unknown
+	data << uint32(0);				  // Unknown
 	data << pItem->GetUInt32Value(ITEM_FIELD_STACK_COUNT); // Amount
 	data << uint32(0);				  // Unknown
 	data << uint32(0);				  // Unknown

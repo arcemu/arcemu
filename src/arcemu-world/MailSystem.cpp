@@ -164,6 +164,10 @@ bool MailMessage::AddMessageDataToPacket(WorldPacket& data)
 			data << uint32( pItem->GetChargesLeft() );
 			data << pItem->GetUInt32Value( ITEM_FIELD_MAXDURABILITY );
 			data << pItem->GetUInt32Value( ITEM_FIELD_DURABILITY );
+			data << uint32( 0 );
+			data << uint32( 0 );
+			data << uint32( 0 );
+			data << uint32( 0 );
 		}
 
 		data.put< uint8 >( pos, i );
@@ -291,35 +295,7 @@ void WorldSession::HandleSendMail(WorldPacket & recv_data )
 	recv_data >> msg.subject >> msg.body >> msg.stationary;
 	recv_data >> unk2 >> itemcount;
 
-	//he simply ads ' ' after each '%' to string so that vsnprintf function would not find tokens in string
-	char *t=(char*)msg.subject.c_str();
-	if( t[0] != 0 ) //if not an empty string
-	{
-		int ind=1;
-		//make sure we do not have any recognizable tokens here
-		while(t[ind]!=0 && ind<5000)
-		{
-			if(t[ind-1]=='%')
-				t[ind]=' ';//just remove chars that could be interpreted
-			ind++;
-		}
-	}
-	msg.subject = t;
-	t=(char*)msg.body.c_str();
-	if( t[0] != 0 ) //if not an empty string
-	{
-		int ind=1;
-		while(t[ind]!=0 && ind<5000)
-		{
-			if(t[ind-1]=='%')
-				t[ind]=' ';//just remove chars that could be interpreted
-			ind++;
-		}
-	}
-	msg.body = t;
-
-
-	if( itemcount > 12 )
+	if( itemcount > 12 || msg.body.find("%") != string::npos || msg.subject.find("%") != string::npos)
 	{
 		//SystemMessage("Sorry, Ascent does not support sending multiple items at this time. (don't want to lose your item do you) Remove some items, and try again.");
 		SendMailError(MAIL_ERR_INTERNAL_ERROR);
@@ -415,7 +391,7 @@ void WorldSession::HandleSendMail(WorldPacket & recv_data )
 		for( itr = items.begin(); itr != items.end(); ++itr )
 		{
 			pItem = *itr;
-			if( pItem==NULL || _player->GetItemInterface()->SafeRemoveAndRetreiveItemByGuid(pItem->GetGUID(), false) != pItem )
+			if( _player->GetItemInterface()->SafeRemoveAndRetreiveItemByGuid(pItem->GetGUID(), false) != pItem )
 				continue;		// should never be hit.
 
 			pItem->RemoveFromWorld();
@@ -476,19 +452,12 @@ void WorldSession::HandleMarkAsRead(WorldPacket & recv_data )
 	// mark the message as read
 	message->read_flag = 1;
 
-  // mail now has a minimum expiry time of 3 days and a maximum expiry time of 30 days
+	// mail now has a 3 day expiry time
 	if(!sMailSystem.MailOption(MAIL_FLAG_NO_EXPIRY))
-  {
-    if(message->expire_time > ((uint32)UNIXTIME + (TIME_DAY * MAIL_DEFAULT_EXPIRATION_TIME)))
-		  message->expire_time = (uint32)UNIXTIME + (TIME_DAY * MAIL_DEFAULT_EXPIRATION_TIME);
-    if(message->expire_time < ((uint32)UNIXTIME + (TIME_DAY * 3)))
-      message->expire_time = (uint32)UNIXTIME + (TIME_DAY * 3);
-  }
-	
-	// update it in sql
-	CharacterDatabase.WaitExecute("UPDATE mailbox SET read_flag = 1, expiry_time = %u WHERE message_id = %u", message->expire_time, message->message_id);
+		message->expire_time = (uint32)UNIXTIME + (TIME_DAY * 3);
 
-  //TODO: Send changes to player... (read-mark and expiry time changed..)
+	// update it in sql
+	CharacterDatabase.WaitExecute("UPDATE mailbox SET read_flag = 1, expiry_time = %u WHERE message_id = %u", message->message_id, message->expire_time);
 }
 
 void WorldSession::HandleMailDelete(WorldPacket & recv_data )
@@ -587,32 +556,37 @@ void WorldSession::HandleTakeItem(WorldPacket & recv_data )
 		return;
 	}
 
-	// find a free bag slot
+	//Find free slot
 	SlotResult result = _player->GetItemInterface()->FindFreeInventorySlot(item->GetProto());
 	if(result.Result == 0)
 	{
-		// no free slots left!
+		//End of slots
 		data << uint32(MAIL_ERR_BAG_FULL);
 		SendPacket(&data);
 
 		item->DeleteMe();
 		return;
 	}
-
-	// all is good
-	// delete the item (so when its resaved it'll have an association)
-	item->DeleteFromDB();
-
-	// add the item to their backpack
 	item->m_isDirty = true;
+	
+	if( !_player->GetItemInterface()->SafeAddItem(item, result.ContainerSlot, result.Slot) )
+	{
+		if( !_player->GetItemInterface()->AddItemToFreeSlot(item) )
+		{
+			//End of slots
+			data << uint32(MAIL_ERR_BAG_FULL);
+			SendPacket(&data);
+			item->DeleteMe();
+			return;
+		}
+	}
+	else
+	item->SaveToDB(result.ContainerSlot, result.Slot, true, NULL);
 
 	// send complete packet
 	data << uint32(MAIL_OK);
 	data << item->GetUInt32Value(OBJECT_FIELD_GUID);
 	data << item->GetUInt32Value(ITEM_FIELD_STACK_COUNT);
-
-	if( !_player->GetItemInterface()->AddItemToFreeSlot(item) )
-		item->DeleteMe();
 
 	message->items.erase( itr );
 
@@ -878,7 +852,7 @@ void MailSystem::SendAutomatedMessage(uint32 type, uint64 sender, uint64 receive
 
 	msg.stationary = stationary;
 	msg.delivery_time = (uint32)UNIXTIME;
-	msg.expire_time = (uint32)UNIXTIME + (TIME_DAY * MAIL_DEFAULT_EXPIRATION_TIME);
+	msg.expire_time = 0;
 	msg.read_flag = false;
 	msg.copy_made = false;
 	msg.deleted_flag = false;
