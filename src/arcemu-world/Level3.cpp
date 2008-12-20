@@ -3469,7 +3469,10 @@ bool ChatHandler::HandleSetTitle( const char *args, WorldSession *m_session )
 		return false;
 	}
 	if( title == 0 )
+	{
 		plr->SetUInt64Value( PLAYER_FIELD_KNOWN_TITLES, 0 );
+		plr->SetUInt64Value( PLAYER_FIELD_KNOWN_TITLES1, 0 );
+	}
 	else if( title > 0 )
 		plr->SetKnownTitle( static_cast< RankTitles >( title ), true );
 	else

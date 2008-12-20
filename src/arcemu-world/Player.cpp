@@ -2313,6 +2313,7 @@ void Player::SaveToDB(bool bNewCharacter /* =false */)
 	<< m_uint32Values[PLAYER_FIELD_WATCHED_FACTION_INDEX] << ","
 	<< m_uint32Values[PLAYER_CHOSEN_TITLE]<< ","
 	<< GetUInt64Value(PLAYER_FIELD_KNOWN_TITLES) << ","
+	<< GetUInt64Value(PLAYER_FIELD_KNOWN_TITLES1) << ","
 	<< m_uint32Values[PLAYER_FIELD_COINAGE] << ","
 	<< m_uint32Values[PLAYER_AMMO_ID] << ","
 	<< m_uint32Values[PLAYER_CHARACTER_POINTS2] << ",";
@@ -2645,10 +2646,10 @@ void Player::LoadFromDBProc(QueryResultVector & results)
 		return;
 	}
 
-	if (result->GetFieldCount () != 81)
+	if (result->GetFieldCount() != 82)
 	{
 		Log.Error ("Player::LoadFromDB",
-				"Expected 80 fields from the database, "
+				"Expected 82 fields from the database, "
 				"but received %u!",
 				(unsigned int) result->GetFieldCount ());
 		RemovePendingPlayer();
@@ -2867,6 +2868,7 @@ void Player::LoadFromDBProc(QueryResultVector & results)
 	m_uint32Values[ PLAYER_FIELD_WATCHED_FACTION_INDEX ]	= get_next_field.GetUInt32();
 	m_uint32Values[ PLAYER_CHOSEN_TITLE ]					= get_next_field.GetUInt32();
 	SetUInt64Value( PLAYER_FIELD_KNOWN_TITLES, get_next_field.GetUInt64() );
+	SetUInt64Value( PLAYER_FIELD_KNOWN_TITLES1, get_next_field.GetUInt64() );
 	m_uint32Values[ PLAYER_FIELD_COINAGE ]					= get_next_field.GetUInt32();
 	m_uint32Values[ PLAYER_AMMO_ID ]						= get_next_field.GetUInt32();
 	m_uint32Values[ PLAYER_CHARACTER_POINTS2 ]				= get_next_field.GetUInt32();
@@ -12158,11 +12160,11 @@ void Player::SetKnownTitle( RankTitles title, bool set )
 	if( !HasTitle( title ) ^ set )
 		return;
 
-	uint64 current = GetUInt64Value( PLAYER_FIELD_KNOWN_TITLES );
+	uint64 current = GetUInt64Value( PLAYER_FIELD_KNOWN_TITLES + ( ( title >> 6 ) << 1 ) );
 	if( set )
-		SetUInt64Value( PLAYER_FIELD_KNOWN_TITLES, current | uint64(1) << title );
+		SetUInt64Value( PLAYER_FIELD_KNOWN_TITLES + ( ( title >> 6 ) << 1 ), current | uint64(1) << ( title % 64) );
 	else
-		SetUInt64Value( PLAYER_FIELD_KNOWN_TITLES, current & ~uint64(1) << title );
+		SetUInt64Value( PLAYER_FIELD_KNOWN_TITLES + ( ( title >> 6 ) << 1 ), current & ~uint64(1) << ( title % 64) );
 
 	WorldPacket data( SMSG_TITLE_EARNED, 8 );
 	data << uint32( title ) << uint32( set ? 1 : 0 );
