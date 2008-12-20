@@ -2666,7 +2666,7 @@ void Player::LoadFromDBProc(QueryResultVector & results)
 		return;
 	}
 
-	uint32 banned = fields[32].GetUInt32();
+	uint32 banned = fields[33].GetUInt32();
 	if(banned && (banned < 100 || banned > (uint32)UNIXTIME))
 	{
 		RemovePendingPlayer();
