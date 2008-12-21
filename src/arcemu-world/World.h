@@ -394,15 +394,6 @@ public:
 	std::map<uint32, AreaTable*> mAreaIDToTable;
 	std::map<uint32, AreaTable*> mZoneIDToTable;
 
-	std::map<uint32,uint32> TeachingSpellMap;
-	uint32 GetTeachingSpell(uint32 NormalSpellId)
-	{
-		map<uint32,uint32>::iterator i = TeachingSpellMap.find(NormalSpellId);
-		if(i!=TeachingSpellMap.end())
-			return i->second;
-		return 0;
-	}
-
 	uint32 AddQueuedSocket(WorldSocket* Socket);
 	void RemoveQueuedSocket(WorldSocket* Socket);
 	uint32 GetQueuePos(WorldSocket* Socket);
