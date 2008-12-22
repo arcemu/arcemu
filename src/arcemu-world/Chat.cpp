@@ -254,7 +254,9 @@ void CommandTableStorage::Init()
 		{ "boundingraidius", 'm', NULL,                                   "Modifies the bounding radius of the selected target.",            NULL, UNIT_FIELD_BOUNDINGRADIUS,         0,                    2 },
 		{ "combatreach",     'm', NULL,                                   "Modifies the combat reach of the selected target.",               NULL, UNIT_FIELD_COMBATREACH,            0,                    2 },
 		{ "npcemotestate",   'm', NULL,                                   "Modifies the NPC emote state of the selected target.",            NULL, UNIT_NPC_EMOTESTATE,               0,                    1 },
-		{ "bytes",           'm', NULL,                                   "WARNING! Modifies the bytes entry of selected target.",           NULL, UNIT_FIELD_BYTES_0,                0,                    1 },
+		{ "bytes0",          'm', NULL,                                   "WARNING! Modifies the bytes0 entry of selected target.",          NULL, UNIT_FIELD_BYTES_0,                0,                    1 },
+		{ "bytes1",          'm', NULL,                                   "WARNING! Modifies the bytes1 entry of selected target.",          NULL, UNIT_FIELD_BYTES_1,                0,                    1 },
+		{ "bytes2",          'm', NULL,                                   "WARNING! Modifies the bytes2 entry of selected target.",          NULL, UNIT_FIELD_BYTES_2,                0,                    1 },
 		{ NULL,              '0', NULL,                                   "",                                                                NULL, 0,                                 0,                    0 }
 	};
 	dupe_command_table(modifyCommandTable, _modifyCommandTable);

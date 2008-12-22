@@ -847,10 +847,14 @@ void Pet::SetDefaultSpells()
 	}
 	else
 	{
-		uint32 Line;
+
+		uint32 Line = 0;
 		if( GetCreatureInfo() )
+		{
 			Line = GetCreatureInfo()->SpellDataID;
-		else Line = 0;
+			if( Line == 0 )
+				sLog.outError("DB Error: You miss spell data for creature id %u in your DB.", GetCreatureInfo()->Id );
+		}
 		if( Line )
 		{
 			CreatureSpellDataEntry * SpellData = dbcCreatureSpellData.LookupEntry( Line );
@@ -1438,46 +1442,6 @@ void Pet::ApplySummonLevelAbilities()
 
 void Pet::ApplyPetLevelAbilities()
 {
-	/*
-	----------[Pets]----------
-	Family			  pet_mod_sta		pet_mod_arm			pet_mod_dps			family_aura
-	(1)	 Wolf			 1.00				1.05				1.00				17223
-	(2)	 Cat			 0.98				1.00				1.10				17210
-	(3)	 Spider			 1.00				1.00				1.07				17129
-	(4)	 Bear			 1.08				1.05				0.91				17208
-	(5)	 Boar			 1.04				1.09				0.90				7000
-	(6)	 Crocolisk		 0.95				1.10				1.00				17212
-	(7)	 Carrion Bird	 1.00				1.05				1.00				17209
-	(8)	 Crab			 0.96				1.13				0.95				17211
-	(9)	 Gorilla		 1.04				1.00				1.02				17214
-	(10)
-	(11) Raptor			 0.95				1.03				1.10				17217
-	(12) Tallstrider	 1.05				1.00				1.00				17220
-	(13)
-	(14)
-	(15) Felhunter
-	(16) Voidwalker
-	(17) Succubus
-	(18)
-	(19) Doomguard
-	(20) Scorpid		 1.00				1.10				0.94				17218
-	(21) Turtle			 1.00				1.13				0.90				17221
-	(22)
-	(23) Imp
-	(24) Bat			 1.00				1.00				1.07				17206
-	(25) Hyena			 1.00				1.05				1.00				17215
-	(26) Owl			 1.00				1.00				1.07				17216
-	(27) Wind Serpent	 1.00				1.00				1.07				17222
-	(28) Remote Control
-	(29) Felguard
-	(30) Dragonhawk		 1.00				1.00				1.00				34887
-	(31) Ravager		 0.93				1.05				1.10				35257
-	(32) Warp Stalker	 1.00				1.05				0.94				35254
-	(33) Spore Bat		 1.00				1.00				1.00				35258
-	(34) Nether Ray		 1.10				0.90				1.03				35253
-	(35) Serpent		 1.00				1.00				1.00				35383
-	*/
-	
 	uint32 pet_family = GetCreatureInfo()->Family;
 	uint32 level = getLevel();
 	if( level > PLAYER_LEVEL_CAP )
