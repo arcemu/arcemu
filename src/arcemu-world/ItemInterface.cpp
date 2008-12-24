@@ -321,7 +321,7 @@ AddItemResult ItemInterface::m_AddItem(Item *item, int8 ContainerSlot, int8 slot
 			m_pOwner->SetUInt32Value( VisibleBase + 5, item->GetUInt32Value( ITEM_FIELD_ENCHANTMENT_1_1 + 12 ) );
 			m_pOwner->SetUInt32Value( VisibleBase + 6, item->GetUInt32Value( ITEM_FIELD_ENCHANTMENT_1_1 + 15 ) );
 			m_pOwner->SetUInt32Value( VisibleBase + 7, item->GetUInt32Value( ITEM_FIELD_ENCHANTMENT_1_1 + 18 ) );
-			m_pOwner->SetUInt32Value( VisibleBase + 8, item->GetUInt32Value( ITEM_FIELD_RANDOM_PROPERTIES_ID ) );
+			m_pOwner->SetUInt32Value( VisibleBase + 13, item->GetUInt32Value( ITEM_FIELD_RANDOM_PROPERTIES_ID ) );
 		}
 	}
 
@@ -383,7 +383,7 @@ Item *ItemInterface::SafeRemoveAndRetreiveItemFromSlot(int8 ContainerSlot, int8 
 			{
 				m_pOwner->ApplyItemMods( pItem, slot, false );
 				int VisibleBase = PLAYER_VISIBLE_ITEM_1_0 + (slot * 18);
-				for (int i = VisibleBase; i < VisibleBase + 19; ++i)
+				for (int i = VisibleBase; i < VisibleBase + 17; ++i)
 				{
 					m_pOwner->SetUInt32Value(i, 0);
 				}
@@ -546,7 +546,7 @@ bool ItemInterface::SafeFullRemoveItemFromSlot(int8 ContainerSlot, int8 slot)
 			{
 				m_pOwner->ApplyItemMods(pItem, slot, false );
 				int VisibleBase = PLAYER_VISIBLE_ITEM_1_0 + (slot * 18);
-				for (int i = VisibleBase; i < VisibleBase + 19; ++i)
+				for (int i = VisibleBase; i < VisibleBase + 17; ++i)
 				{
 					m_pOwner->SetUInt32Value(i, 0);
 				}
