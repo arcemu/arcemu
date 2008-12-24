@@ -1538,26 +1538,28 @@ void Spell::cast(bool check)
 						break;
 					// cases for stealth - etc
 					// we can cast the spell, but we drop the flag (if we have it)
-					case 1784:	// stealth
-					case 1785:
-					case 1786:
-					case 1787:
-					case 5215:	// prowl
-					case 6783:
-					case 9913:
-					case 498:	// divine protection
-					case 5573:
-					case 642:	// divine shield
-					case 1020:
-					case 1022:	// blessing of protection
-					case 5599:
-					case 10278:
-					case 1856:	// vanish
-					case 1857:
-					case 26889:
-					case 45438:	// ice block
-					case 20580:	// shadowmeld
-					case 66:	// invisibility
+                    case 1784:		// Stealth rank 1
+                    case 1785:		// Stealth rank 2
+                    case 1786:		// Stealth rank 3
+                    case 1787:		// Stealth rank 4
+                    case 5215:		// Prowl rank 1
+                    case 6783:		// Prowl rank 2
+					case 9913:		// Prowl rank 3
+					case 498:		// Divine protection
+					case 5573:		// Unknown spell
+					case 642:		// Divine shield
+					case 1020:		// Unknown spell
+					case 1022:		// Hand of Protection rank 1 (ex blessing of protection)
+					case 5599:		// Hand of Protection rank 2 (ex blessing of protection)
+                    case 10278:		// Hand of Protection rank 3 (ex blessing of protection)
+					case 1856:		// Vanish rank 1
+					case 1857:		// Vanish rank 2
+					case 26889:		// Vanish rank 3
+					case 45438:		// Ice block
+					case 20580:		// Unknown spell
+					case 58984:		// Shadowmeld
+					case 17624:		// Petrification-> http://www.wowhead.com/?spell=17624
+					case 66:		// Invisibility
 						if(p_caster->m_bg->GetType() == BATTLEGROUND_WARSUNG_GULCH)
 						{
 							if(p_caster->GetTeam() == 0)
