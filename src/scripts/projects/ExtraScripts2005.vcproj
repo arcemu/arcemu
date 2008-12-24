@@ -203,7 +203,7 @@
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
-				RelativePath="..\src\ExtraScripts\L70etc.cpp"
+				RelativePath="..\src\ExtraScripts\L80etc.cpp"
 				>
 			</File>
 			<File

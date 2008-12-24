@@ -34,7 +34,7 @@ extern "C" SCRIPT_DECL void _exp_script_register(ScriptMgr* mgr)
 		SetupInstant80(mgr);
 	}
 /*
-	if(Config.MainConfig.GetBoolDefault("Extra", "L70etc", false))
+	if(Config.MainConfig.GetBoolDefault("Extra", "L80etc", false))
 	{
 		sLog.outColor(TGREEN,"\n	L70etc Enabled");
 		SetupL70etc(mgr);

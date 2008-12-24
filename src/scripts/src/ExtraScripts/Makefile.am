@@ -5,7 +5,7 @@ AM_CXXFLAGS = -DSCRIPTLIB
 
 lib_LTLIBRARIES = libExtraScripts.la
 
-libExtraScripts_la_SOURCES = L70etc.cpp \
+libExtraScripts_la_SOURCES = L80etc.cpp \
 	Insta80.cpp \
 	Portals.cpp \
 	PvPToken.cpp \

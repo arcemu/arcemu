@@ -21,7 +21,7 @@
 #define INSTANCE_SCRIPTS_SETUP_H
 
 void SetupInstant80(ScriptMgr * mgr);
-//void SetupL70etc(ScriptMgr * mgr);
+//void SetupL80etc(ScriptMgr * mgr);
 void SetupPortals(ScriptMgr * mgr);
 void SetupPvPToken(ScriptMgr * mgr);
 //void SetupWeddingNPC(ScriptMgr * mgr);
