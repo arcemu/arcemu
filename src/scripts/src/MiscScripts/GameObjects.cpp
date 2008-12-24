@@ -43,7 +43,45 @@ public:
 	}
 };
 
-/*--------------------------------------------------------------------------------------------------------*/
+/*----------------------------- Teleport to Violet Stand Crystal -----------------------------------*/
+
+class DalaranTeleCrystal : public GameObjectAIScript
+{
+public:
+	DalaranTeleCrystal(GameObject* goinstance) : GameObjectAIScript(goinstance) {}
+	static GameObjectAIScript *Create(GameObject * GO) { return new DalaranTeleCrystal(GO); }
+
+	void OnActivate(Player * pPlayer)
+	{
+	  pPlayer->CastSpell(pPlayer,42953,true);
+	  if(pPlayer->HasQuest(12790)){
+	    QuestLogEntry *qe = pPlayer->GetQuestLogForEntry(12790);
+	    qe->SendUpdateAddKill(191229);
+
+	  }
+	  
+	}
+};
+
+/*----------------------------- Teleport to Dalaran Crystal -----------------------------------*/
+
+class VioletStandTeleCrystal : public GameObjectAIScript
+{
+public:
+	VioletStandTeleCrystal(GameObject* goinstance) : GameObjectAIScript(goinstance) {}
+	static GameObjectAIScript *Create(GameObject * GO) { return new VioletStandTeleCrystal(GO); }
+
+	void OnActivate(Player * pPlayer)
+	{
+	  pPlayer->CastSpell(pPlayer,53360,true);
+	  if(pPlayer->HasQuest(12790)){
+	    QuestLogEntry *qe = pPlayer->GetQuestLogForEntry(12790);
+	    qe->SendUpdateAddKill(191230);
+	  }
+	}
+};
+
+/*----------------------------- Orb of translocation Undercity to Silvermoon City -----------------------------------*/
 
 class OrbOfTransLocUC : public GameObjectAIScript
 {
@@ -53,18 +91,11 @@ public:
 
 	void OnActivate(Player * pPlayer)
 	{
-		if(pPlayer->getRace() == RACE_TAUREN || pPlayer->getRace() == RACE_TROLL || pPlayer->getRace() == RACE_ORC || pPlayer->getRace() == RACE_UNDEAD || pPlayer->getRace() == RACE_BLOODELF )
-		{
-			pPlayer->SafeTeleport(530, 0, 10021.254883f, -7014.893066f, 49.717690f, 4.00532f);		 // teleports to Silvermoon
-		}
-		else
-		{
-			pPlayer->BroadcastMessage("You are not alowed to use this orb");
-		}
+		pPlayer->CastSpell(pPlayer,35730,true);
 	}
 };
 
-/*--------------------------------------------------------------------------------------------------------*/
+/*---------------------- Orb of Translocation Silvermoon city to Undercity -------------------------------------------*/
 
 class OrbOfTransLocSILVM : public GameObjectAIScript
 {
@@ -74,14 +105,7 @@ public:
 
 	void OnActivate(Player * pPlayer)
 	{
-		if( pPlayer->getRace() == RACE_TAUREN || pPlayer->getRace() == RACE_TROLL || pPlayer->getRace() == RACE_ORC || pPlayer->getRace() == RACE_UNDEAD || pPlayer->getRace() == RACE_BLOODELF )
-		{
-			pPlayer->SafeTeleport(0, 0, 1805.823975f, 334.009796f, 70.397469f, 4.724170f);		 // teleports to UC
-		}
-		else
-		{
-			pPlayer->BroadcastMessage("You are not alowed to use this orb");
-		}
+		pPlayer->CastSpell(pPlayer,25649,true);
 	}
 };
 
@@ -522,7 +546,21 @@ public:
 
     void OnActivate(Player * pPlayer)
     {
-        pPlayer->SafeTeleport(609, 0, 2357.95f, -5662.73f, 426.028f, 0.56313f);
+        pPlayer->CastSpell(pPlayer,53822,true);
+    }
+};
+
+/*------------------------------------Portal to Acherus--------------------------------------*/
+
+class PortalToAcherus : public GameObjectAIScript
+{
+public:
+    PortalToAcherus(GameObject* goinstance) : GameObjectAIScript(goinstance) {}
+    static GameObjectAIScript *Create(GameObject * GO) { return new PortalToAcherus(GO); }
+
+    void OnActivate(Player * pPlayer)
+    {
+        pPlayer->CastSpell(pPlayer,53098,true);
     }
 };
 
@@ -531,6 +569,8 @@ public:
 void SetupGoHandlers(ScriptMgr * mgr)
 {
 	mgr->register_gameobject_script(179879, &OrbOfCommand::Create);
+	mgr->register_gameobject_script(191229, &DalaranTeleCrystal::Create);
+	mgr->register_gameobject_script(191230, &VioletStandTeleCrystal::Create);
 	mgr->register_gameobject_script(184503, &OrbOfTransLocUC::Create);
 	mgr->register_gameobject_script(184502, &OrbOfTransLocSILVM::Create);
 	mgr->register_gameobject_script(184500, &FalconTowerUpper::Create);
@@ -554,4 +594,5 @@ void SetupGoHandlers(ScriptMgr * mgr)
 	mgr->register_gameobject_script(1571,	&DustySpellbooks::Create);
 	mgr->register_gameobject_script(179552, &LearnFieldRepairBot::Create);
 	mgr->register_gameobject_script(190942, &DeathKnightDeathGate::Create);
+	mgr->register_gameobject_script(191155, &PortalToAcherus::Create);
 }
