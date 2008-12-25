@@ -1148,13 +1148,13 @@ bool Creature::Load(CreatureSpawn *spawn, uint32 mode, MapInfo *info)
 	//if(spawn->displayid != creature_info->Male_DisplayID)
 	//	setGender(1);   // Female
 	
-	uint32 model = 0;
-	uint32 gender = creature_info->GenerateModelId(&model);
-	setGender(gender);
+	// uint32 model = 0;
+	// uint32 gender = creature_info->GenerateModelId(&model);
+	// setGender(gender);
 	
-	SetByte(UNIT_FIELD_BYTES_0, UNIT_FIELD_BYTES_2, get_byte(spawn->bytes0, spawn->bytes2));
-	SetUInt32Value(UNIT_FIELD_DISPLAYID,model);
-	SetUInt32Value(UNIT_FIELD_NATIVEDISPLAYID,model);
+	SetByte(UNIT_FIELD_BYTES_0,2,get_byte(spawn->bytes0,2));
+	SetUInt32Value(UNIT_FIELD_DISPLAYID,spawn->displayid);
+	SetUInt32Value(UNIT_FIELD_NATIVEDISPLAYID,spawn->displayid);
 	SetUInt32Value(UNIT_FIELD_MOUNTDISPLAYID,spawn->MountedDisplayID);
 
 	EventModelChange();
