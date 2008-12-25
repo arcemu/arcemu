@@ -120,7 +120,7 @@
 				Name="VCLinkerTool"
 				AdditionalDependencies="ws2_32.lib libmysql.lib libeay32.lib dbghelp.lib zlib.lib pcre.lib"
 				OutputFile="$(OutDir)/arcemu-world.exe"
-				AdditionalLibraryDirectories="..\..\extras\collision\collision_dll\Release"
+				AdditionalLibraryDirectories="..\..\extras\Step2_Vmaps\landwalker"
 				GenerateDebugInformation="TRUE"
 				ProgramDatabaseFile="$(OutDir)/arcemu-world.pdb"
 				OptimizeReferences="2"
@@ -238,6 +238,12 @@
 				</File>
 			</Filter>
 		</Filter>
+		<File
+			RelativePath="..\..\src\arcemu-world\AchievementMgr.cpp">
+		</File>
+		<File
+			RelativePath="..\..\src\arcemu-world\AchievementMgr.h">
+		</File>
 		<File
 			RelativePath="..\..\src\arcemu-world\AddonMgr.cpp">
 		</File>

@@ -442,6 +442,12 @@ RevisionExtractor.exe
 			RelativePath="..\..\src\arcemu-shared\FastQueue.h">
 		</File>
 		<File
+			RelativePath="..\..\src\arcemu-shared\hashmap.cpp">
+		</File>
+		<File
+			RelativePath="..\..\src\arcemu-shared\hashmap.h">
+		</File>
+		<File
 			RelativePath="..\..\src\arcemu-shared\Storage.h">
 		</File>
 	</Files>
