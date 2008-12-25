@@ -1353,7 +1353,7 @@ void World::Rehash(bool load)
 	m_AdditionalFun = (uint32)Config.OptionalConfig.GetBoolDefault("Optional", "AdditionalFun",false);
 
 	// Max Gold Settings
-	GoldCapEnabled = Config.OptionalConfig.GetBoolDefault("GoldSettings", "EnableGoldCap", false);
+	GoldCapEnabled = Config.OptionalConfig.GetBoolDefault("GoldSettings", "EnableGoldCap", true);
 	GoldLimit = Config.OptionalConfig.GetIntDefault("GoldSettings", "MaximumGold", 214000);
 	if(GoldLimit)
 		GoldLimit *= 10000; // Convert into gsc (gold, silver, copper)
