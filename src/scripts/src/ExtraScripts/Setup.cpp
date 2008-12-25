@@ -36,8 +36,8 @@ extern "C" SCRIPT_DECL void _exp_script_register(ScriptMgr* mgr)
 /*
 	if(Config.MainConfig.GetBoolDefault("Extra", "L80etc", false))
 	{
-		sLog.outColor(TGREEN,"\n	L70etc Enabled");
-		SetupL70etc(mgr);
+		sLog.outColor(TGREEN,"\n	L80etc Enabled");
+		SetupL80etc(mgr);
 	}
 */
 	if(Config.OptionalConfig.GetBoolDefault("Extra", "Portals", false))
