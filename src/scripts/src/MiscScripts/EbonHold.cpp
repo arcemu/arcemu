@@ -24,7 +24,7 @@
 // Notes: Please try to keep this file clean if modifications are made.
 // Also, please include references to header files, and locations for easy access, thanks.
 
-// Lower level of Ebon Hold Teleporter
+// Lower level of Ebon Hold Teleporter / Teleport up
 class Doodad_Nox_portal_purple_bossroom01 : public GameObjectAIScript
 // Line 226 ScriptMgr.h
 {
@@ -42,19 +42,27 @@ public:
 
 	void AIUpdate()
 	{ 
-		Player * plr = _gameobject->GetMapMgr()->GetInterface()->GetPlayerNearestCoords( _gameobject->GetPositionX(), _gameobject->GetPositionY(), _gameobject->GetPositionZ() );
+		Player * plr = _gameobject->GetMapMgr()->GetInterface()->GetPlayerNearestCoords( _gameobject->GetPositionX(), _gameobject->GetPositionY(), _gameobject->GetPositionZ());
 		if( !plr )
-			return;	
-		// You need to standing 2 meters from the actual center of the pink ring
-		if( _gameobject->CalcDistance( _gameobject, plr ) <= 2.0f )
-			// Teleport up (Coordinates should be almost exact to retail)
-			// Player.h declaration (Map, Instance, x, y, z, orientation)
-			// bool SafeTeleport(uint32 MapID, uint32 InstanceID, float X, float Y, float Z, float O);
-			plr->SafeTeleport( 609, plr->GetInstanceID(), 2387.468994f, -5642.544922f, 420.809937f, 0.620461f);
+			return;
+		// Teleport up (Coordinates should be almost exact to retail)
+		// First if the plr is on map 609 then teleport him upstairs on map 609
+		if( _gameobject->CalcDistance( _gameobject, plr ) <= 2.0f ) // You need to standing 2 meters from the actual center of the pink ring
+		if (plr->GetMapId() == 609) 
+		plr->SafeTeleport( 609, plr->GetInstanceID(), 2387.468994f, -5642.544922f, 420.809937f, 0.620461f); // Player.h declaration (Map, Instance, x, y, z, orientation)
+		// bool SafeTeleport(uint32 MapID, uint32 InstanceID, float X, float Y, float Z, float O);
+	
+		// else if the plr is on map 0 then teleport him upstairs on map 0
+		if( _gameobject->CalcDistance( _gameobject, plr ) <= 2.0f ) 
+		if (plr->GetMapId() == 0)
+		plr->SafeTeleport( 0, plr->GetInstanceID(), 2387.468994f, -5642.544922f, 420.809937f, 0.620461f);
 	}
 };
 
-// Upper level of Ebon Hold Teleporter
+			
+			
+
+// Upper level of Ebon Hold Teleporter / Teleports down
 
 class Doodad_Nox_portal_purple_bossroom17 : public GameObjectAIScript
 {
@@ -74,14 +82,18 @@ public:
 	{ 
 		Player * plr = _gameobject->GetMapMgr()->GetInterface()->GetPlayerNearestCoords( _gameobject->GetPositionX(), _gameobject->GetPositionY(), _gameobject->GetPositionZ());
 		if( !plr )
-			return;
-		// You need to standing 2 meters from the actual center of the pink ring
-		if( _gameobject->CalcDistance( _gameobject, plr ) <= 2.0f )
-			// Teleport up (Coordinates should be almost exact to retail)
-			// Player.h declaration (Map, Instance, x, y, z, orientation)
-			// bool SafeTeleport(uint32 MapID, uint32 InstanceID, float X, float Y, float Z, float O);
-			plr->SafeTeleport( 609, plr->GetInstanceID(), 2395.233154f, -5637.875488f, 377.086884f, 0.520721f);
-			
+			return;			
+			// Teleport down (Coordinates should be almost exact to retail)
+		// First if the plr is on map 609 then teleport him downstairs on map 609
+		if( _gameobject->CalcDistance( _gameobject, plr ) <= 2.0f ) // You need to standing 2 meters from the actual center of the pink ring
+		if (plr->GetMapId() == 609) 
+		plr->SafeTeleport( 609, plr->GetInstanceID(), 2395.233154f, -5637.875488f, 377.086884f, 0.520721f); // Player.h declaration (Map, Instance, x, y, z, orientation)
+		// bool SafeTeleport(uint32 MapID, uint32 InstanceID, float X, float Y, float Z, float O);
+		
+		// else if the plr is on map 0 then teleport him downstairs on map 0
+		if( _gameobject->CalcDistance( _gameobject, plr ) <= 2.0f ) 
+		if (plr->GetMapId() == 0)
+		plr->SafeTeleport( 0, plr->GetInstanceID(), 2395.233154f, -5637.875488f, 377.086884f, 0.520721f);
 	}
 };
 
