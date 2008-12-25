@@ -201,22 +201,25 @@ void WorldSession::HandlePetInfo(WorldPacket & recv_data)
 	sLog.outDebug("HandlePetInfo is called");
 }
 
-void WorldSession::HandlePetNameQuery(WorldPacket & recv_data)
+void WorldSession::HandlePetNameQuery( WorldPacket & recv_data )
 {
-	if(!_player->IsInWorld()) return;
+	if( !_player->IsInWorld() )
+		return;
 	uint32 petNumber = 0;
 	uint64 petGuid = 0;
 
 	recv_data >> petNumber >> petGuid;
-	Pet *pPet = _player->GetMapMgr()->GetPet((uint32)petGuid);
-	if(!pPet) return;
+	Pet *pPet = _player->GetMapMgr()->GetPet( GET_LOWGUID_PART( petGuid ) );
+	if( !pPet )
+		return;
 
-	WorldPacket data(8 + pPet->GetName().size());
-	data.SetOpcode(SMSG_PET_NAME_QUERY_RESPONSE);
-	data << (uint32)pPet->GetUIdFromGUID();
+	WorldPacket data( 9 + pPet->GetName().size() );
+	data.SetOpcode( SMSG_PET_NAME_QUERY_RESPONSE );
+	data << petNumber;
 	data << pPet->GetName();
-	data << pPet->GetUInt32Value(UNIT_FIELD_PET_NAME_TIMESTAMP);		// stops packet flood
-	SendPacket(&data);
+	data << pPet->GetUInt32Value( UNIT_FIELD_PET_NAME_TIMESTAMP );
+	data << uint8( 0 );
+	SendPacket( &data );
 }
 
 void WorldSession::HandleStablePet(WorldPacket & recv_data)
@@ -356,16 +359,18 @@ void WorldSession::HandleBuyStableSlot( WorldPacket &recv_data )
 }
 
 
-void WorldSession::HandlePetSetActionOpcode(WorldPacket& recv_data)
+void WorldSession::HandlePetSetActionOpcode( WorldPacket& recv_data )
 {
-	if(!_player->IsInWorld()) return;
-	uint32 unk1;
-	uint32 unk2;
+	if( !_player->IsInWorld() )
+		return;
+	uint64 guid;
 	uint32 slot;
 	uint16 spell;
 	uint16 state;
-	recv_data >> unk1 >> unk2 >> slot >> spell >> state;
-	if(!_player->GetSummon())
+	
+	recv_data >> guid >> slot >> spell >> state;
+	
+	if( !_player->GetSummon() )
 		return;
 
 	Pet * pet = _player->GetSummon();
@@ -378,8 +383,8 @@ void WorldSession::HandlePetSetActionOpcode(WorldPacket& recv_data)
 	if( itr == pet->GetSpells()->end( ) )
 		return;
 
-	pet->ActionBar[slot] = spell;
-	pet->SetSpellState(spell, state);
+	pet->ActionBar[ slot ] = spell;
+	pet->SetSpellState( spell, state );
 }
 
 void WorldSession::HandlePetRename(WorldPacket & recv_data)
