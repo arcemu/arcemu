@@ -50,7 +50,7 @@ public:
 			// Teleport up (Coordinates should be almost exact to retail)
 			// Player.h declaration (Map, Instance, x, y, z, orientation)
 			// bool SafeTeleport(uint32 MapID, uint32 InstanceID, float X, float Y, float Z, float O);
-			plr->SafeTeleport( 609, plr->GetInstanceID(), 2419.420410f, -5620.614746f, 420.643860f, 3.758132f );
+			plr->SafeTeleport( 609, plr->GetInstanceID(), 2387.468994f, -5642.544922f, 420.809937f, 0.620461f);
 	}
 };
 
@@ -80,7 +80,8 @@ public:
 			// Teleport up (Coordinates should be almost exact to retail)
 			// Player.h declaration (Map, Instance, x, y, z, orientation)
 			// bool SafeTeleport(uint32 MapID, uint32 InstanceID, float X, float Y, float Z, float O);
-			plr->SafeTeleport( 609, plr->GetInstanceID(), 2402.604736f, -5633.028809f, 377.021118f, 3.693730f);
+			plr->SafeTeleport( 609, plr->GetInstanceID(), 2395.233154f, -5637.875488f, 377.086884f, 0.520721f);
+			
 	}
 };
 
