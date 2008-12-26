@@ -169,24 +169,31 @@ public:
 	uint32 GetUntrainCost();
 	void SetSpellState(SpellEntry * sp, uint16 State);
 	uint16 GetSpellState(SpellEntry * sp);
-	ARCEMU_INLINE void RemoveSpell(uint32 SpellID)
-	{
-		SpellEntry * sp = dbcSpell.LookupEntry(SpellID);
-		if(sp) RemoveSpell(sp);
+	bool HasSpell( uint32 SpellID )
+	{ 
+		SpellEntry * sp = dbcSpell.LookupEntry( SpellID );
+		if( sp )
+			return mSpells.find( sp ) != mSpells.end();
+		return false;
 	}
-	ARCEMU_INLINE void SetSpellState(uint32 SpellID, uint16 State)
+	ARCEMU_INLINE void RemoveSpell( uint32 SpellID )
 	{
-		SpellEntry * sp = dbcSpell.LookupEntry(SpellID);
-		if(sp) SetSpellState(sp, State);
+		SpellEntry * sp = dbcSpell.LookupEntry( SpellID );
+		if( sp ) RemoveSpell( sp );
 	}
-	ARCEMU_INLINE uint16 GetSpellState(uint32 SpellID)
+	ARCEMU_INLINE void SetSpellState( uint32 SpellID, uint16 State )
 	{
-		if(SpellID == 0)
+		SpellEntry * sp = dbcSpell.LookupEntry( SpellID );
+		if( sp ) SetSpellState(sp, State);
+	}
+	ARCEMU_INLINE uint16 GetSpellState( uint32 SpellID )
+	{
+		if( SpellID == 0 )
 			return DEFAULT_SPELL_STATE;
 
-		SpellEntry * sp = dbcSpell.LookupEntry(SpellID);
-		if(sp)
-			return GetSpellState(sp);
+		SpellEntry * sp = dbcSpell.LookupEntry( SpellID );
+		if( sp )
+			return GetSpellState( sp );
 		return DEFAULT_SPELL_STATE;
 	}
 	

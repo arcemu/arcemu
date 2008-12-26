@@ -507,11 +507,43 @@ void WorldSession::HandlePetLearnTalent( WorldPacket & recvPacket )
 	if( pPet->GetTPs() < 1 )
 		return;
 
-	// find talent and spell
+	// find talent entry
 	TalentEntry *te = dbcTalent.LookupEntry( talentid );
 	if( te == NULL )
 		return;
+
+	// check if it requires another talent
+	if( te->DependsOn > 0 )
+	{
+		TalentEntry *dep_te = dbcTalent.LookupEntryForced( te->DependsOn );
+		if( dep_te == NULL )
+			return;
+
+		bool req_ok = false;
+		for( uint8 i = te->DependsOnRank; i < 5; ++i )
+		{
+			if( dep_te->RankID[i] != 0 )
+			{
+				if( pPet->HasSpell( dep_te->RankID[i] ) )
+				{
+					req_ok = true;
+					break;
+				}
+			}
+		}
+		if( !req_ok )
+			return;
+	}
+
+	// check if we have enough spent points
+	if( pPet->GetSpentTPs() < ( te->Row * 3 ) )
+		return;
 	
+	// remove lower talent rank
+	if( talentcol > 0 && te->RankID[ talentcol - 1 ] != 0 )
+		pPet->RemoveSpell( te->RankID[ talentcol - 1 ] );
+
+	// add spell, discount talent point
 	SpellEntry* sp = dbcSpell.LookupEntry( te->RankID[ talentcol ] );
 	if( sp != NULL )
 	{

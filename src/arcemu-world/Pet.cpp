@@ -360,7 +360,7 @@ void Pet::SendSpellsToOwner()
 	if( m_Owner == NULL )
 		return;
 
-	uint16 packetsize = ( m_uint32Values[ OBJECT_FIELD_ENTRY ] != WATER_ELEMENTAL) ? ( mSpells.size() * 4 + 61 ) : 64;
+	uint16 packetsize = ( m_uint32Values[ OBJECT_FIELD_ENTRY ] != WATER_ELEMENTAL) ? ( ( uint16 )mSpells.size() * 4 + 61 ) : 64;
 	WorldPacket * data = new WorldPacket( SMSG_PET_SPELLS, packetsize );
 	*data << GetGUID();
 	*data << uint32( myFamily != NULL ? myFamily->ID : 0 );	// pet family to determine talent tree
@@ -418,7 +418,8 @@ void Pet::SendCastFailed( uint32 spellid, uint8 fail )
 	if( m_Owner == NULL || m_Owner->GetSession() == NULL)
 		return;
 
-	WorldPacket data( SMSG_PET_CAST_FAILED, (4+1) );
+	WorldPacket data( SMSG_PET_CAST_FAILED, 6 );
+	data << uint8( 0 );
 	data << uint32( spellid );
 	data << uint8( fail );
 	m_Owner->GetSession()->SendPacket(&data);
@@ -847,7 +848,6 @@ void Pet::SetDefaultSpells()
 	}
 	else
 	{
-
 		uint32 Line = 0;
 		if( GetCreatureInfo() )
 		{
