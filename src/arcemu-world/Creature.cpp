@@ -1102,8 +1102,8 @@ uint8 get_byte(uint32 buffer, uint32 index){
 	if(index > sizeof(uint32)-1)
 		return 0;
 
-	buffer >> index*8;
-	mask   >> 3*8;
+	buffer = buffer >> index*8;
+	mask   = mask   >> 3*8;
 	buffer = buffer & mask;
 
 	return (uint8)buffer;
