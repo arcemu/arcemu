@@ -108,7 +108,7 @@ void WorldSession::HandleLearnTalentOpcode( WorldPacket & recv_data )
 		if(depTalentInfo)
 		{
 			bool hasEnoughRank = false;
-			for (int i = talentInfo->DependsOnRank; i < 5; ++i)
+			for (int i = 0; i < 5; ++i)
 			{
 				if (depTalentInfo->RankID[i] != 0)
 				{

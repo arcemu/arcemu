@@ -520,7 +520,7 @@ void WorldSession::HandlePetLearnTalent( WorldPacket & recvPacket )
 			return;
 
 		bool req_ok = false;
-		for( uint8 i = te->DependsOnRank; i < 5; ++i )
+		for( uint8 i = 0; i < 5; ++i )
 		{
 			if( dep_te->RankID[i] != 0 )
 			{
