@@ -1,12 +1,3 @@
-/*
-MySQL Data Transfer
-Source Host: localhost
-Source Database: world_structure
-Target Host: localhost
-Target Database: world_structure
-Date: 12/21/2008 11:40:38 AM
-*/
-
 SET FOREIGN_KEY_CHECKS=0;
 -- ----------------------------
 -- Table structure for ai_agents
@@ -19556,3 +19547,8 @@ INSERT INTO `worldstring_tables` VALUES ('77', 'Target is of the wrong faction.'
 INSERT INTO `worldstring_tables` VALUES ('78', 'Target player cannot sign your charter for one or more reasons.');
 INSERT INTO `worldstring_tables` VALUES ('79', 'You have already signed that charter.');
 INSERT INTO `worldstring_tables` VALUES ('80', 'You don\'t have the required amount of signatures to turn in this petition.');
+
+
+alter table `trainer_defs` add column `RequiredRace` int DEFAULT '0' NOT NULL after `req_class`;
+alter table `trainer_defs` add column `RequiredReputation` int DEFAULT '0' NOT NULL after `RequiredRace`;
+alter table `trainer_defs` add column `RequiredReputationValue` int DEFAULT '0' NOT NULL after `RequiredReputation`;
