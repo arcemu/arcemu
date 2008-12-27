@@ -797,20 +797,20 @@ void Pet::GiveXP( uint32 xp )
 	if( getLevel() >= m_Owner->getLevel() )		//pet do not get xp if its level >= owners level
 		return;
 
-	xp += m_uint32Values[UNIT_FIELD_PETEXPERIENCE];
-	uint32 nxp = m_uint32Values[UNIT_FIELD_PETNEXTLEVELEXP];
-	bool changed = false;
+	xp += m_uint32Values[ UNIT_FIELD_PETEXPERIENCE ];
+	uint32 nxp = m_uint32Values[ UNIT_FIELD_PETNEXTLEVELEXP ];
 
 	if( xp >= nxp )
 	{
-		ModUnsigned32Value(UNIT_FIELD_LEVEL, 1);
+		SetTPs( GetTPsForLevel( getLevel() + 1 ) - GetSpentTPs() );
+		ModUnsigned32Value( UNIT_FIELD_LEVEL, 1 );
 		xp -= nxp;
-		nxp = GetNextLevelXP(m_uint32Values[UNIT_FIELD_LEVEL]);
+		nxp = GetNextLevelXP( m_uint32Values[ UNIT_FIELD_LEVEL ] );
 		ApplyStatsForLevel();
 	}
 
-	SetUInt32Value(UNIT_FIELD_PETEXPERIENCE, xp);
-	SetUInt32Value(UNIT_FIELD_PETNEXTLEVELEXP, nxp);
+	SetUInt32Value( UNIT_FIELD_PETEXPERIENCE, xp );
+	SetUInt32Value( UNIT_FIELD_PETNEXTLEVELEXP, nxp );
 }
 
 uint32 Pet::GetNextLevelXP(uint32 level)
