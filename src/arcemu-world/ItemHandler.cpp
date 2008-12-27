@@ -22,7 +22,8 @@
 
 void WorldSession::HandleSplitOpcode(WorldPacket& recv_data)
 {
-	if(!_player->IsInWorld()) return;
+	if( !_player || !_player->IsInWorld() )
+		return;
 	CHECK_PACKET_SIZE(recv_data, 5);
 	int8 DstInvSlot=0, DstSlot=0, SrcInvSlot=0, SrcSlot=0;
 	uint8 count=0;
@@ -30,8 +31,6 @@ void WorldSession::HandleSplitOpcode(WorldPacket& recv_data)
 	AddItemResult result;
 
 	recv_data >> SrcInvSlot >> SrcSlot >> DstInvSlot >> DstSlot >> count;
-	if(!GetPlayer())
-		return;
 
 	if( count==0 || count >= 127 || (SrcInvSlot <= 0 && SrcSlot < INVENTORY_SLOT_ITEM_START) || (DstInvSlot <= 0 && DstSlot < INVENTORY_SLOT_ITEM_START))
 	{
@@ -129,7 +128,9 @@ void WorldSession::HandleSplitOpcode(WorldPacket& recv_data)
 
 void WorldSession::HandleSwapItemOpcode(WorldPacket& recv_data)
 {
-	if(!_player->IsInWorld()) return;
+	if( !_player || !_player->IsInWorld() )
+		return;
+
 	CHECK_PACKET_SIZE(recv_data, 4);
 	WorldPacket data;
 	WorldPacket packet;
@@ -142,16 +143,13 @@ void WorldSession::HandleSwapItemOpcode(WorldPacket& recv_data)
 	int8 DstInvSlot=0, DstSlot=0, SrcInvSlot=0, SrcSlot=0, error=0;
 	//	 20		   5			255	  26
 
-	if(!GetPlayer())
-		return;
-	
 	recv_data >> DstInvSlot >> DstSlot >> SrcInvSlot >> SrcSlot;
 
 	sLog.outDetail("ITEM: swap, DstInvSlot %i DstSlot %i SrcInvSlot %i SrcSlot %i", DstInvSlot, DstSlot, SrcInvSlot, SrcSlot);
 
-	if(DstInvSlot == SrcSlot && SrcInvSlot == -1) // player trying to add self container to self container slots
+	if( DstInvSlot == SrcSlot && SrcInvSlot == -1 ) // player trying to add self container to self container slots
 	{
-		GetPlayer()->GetItemInterface()->BuildInventoryChangeError(NULL, NULL, INV_ERR_ITEMS_CANT_BE_SWAPPED);
+		GetPlayer()->GetItemInterface()->BuildInventoryChangeError( NULL, NULL, INV_ERR_ITEMS_CANT_BE_SWAPPED );
 		return;
 	}
 
@@ -161,17 +159,17 @@ void WorldSession::HandleSwapItemOpcode(WorldPacket& recv_data)
 	if( ( SrcInvSlot <= 0 && SrcSlot < 0 ) || SrcInvSlot < -1 )
 		return;
 
-	SrcItem=_player->GetItemInterface()->GetInventoryItem(SrcInvSlot,SrcSlot);
-	if(!SrcItem)
+	SrcItem = _player->GetItemInterface()->GetInventoryItem( SrcInvSlot,SrcSlot );
+	if( !SrcItem )
 		return;
 
-	DstItem=_player->GetItemInterface()->GetInventoryItem(DstInvSlot,DstSlot);
+	DstItem = _player->GetItemInterface()->GetInventoryItem( DstInvSlot,DstSlot );
 
-	if(DstItem)
+	if( DstItem )
 	{   //check if it will go to equipment slot
-		if(SrcInvSlot==INVENTORY_SLOT_NOT_SET)//not bag
+		if( SrcInvSlot == INVENTORY_SLOT_NOT_SET )//not bag
 		{
-			if(DstItem->IsContainer())
+			if( DstItem->IsContainer() )
 			{
 				if(((Container*)DstItem)->HasItems())
 				{
@@ -361,7 +359,8 @@ void WorldSession::HandleSwapItemOpcode(WorldPacket& recv_data)
 
 void WorldSession::HandleSwapInvItemOpcode( WorldPacket & recv_data )
 {
-	if(!_player->IsInWorld()) return;
+	if( !_player || !_player->IsInWorld() )
+		return;
 	CHECK_PACKET_SIZE(recv_data, 2);
 	WorldPacket data;
 	int8 srcslot=0, dstslot=0;
@@ -369,9 +368,6 @@ void WorldSession::HandleSwapInvItemOpcode( WorldPacket & recv_data )
 
 	recv_data >> srcslot >> dstslot;
 	bool titansgrip = false;
-
-	if(!GetPlayer())
-		return;
 
 	if(GetPlayer()->HasSpell(46917))
 		titansgrip = true;
@@ -493,9 +489,9 @@ void WorldSession::HandleSwapInvItemOpcode( WorldPacket & recv_data )
 
 void WorldSession::HandleDestroyItemOpcode( WorldPacket & recv_data )
 {
-	if(!_player->IsInWorld()) return;
+	if( !_player || !_player->IsInWorld() )
+		return;
 	CHECK_PACKET_SIZE(recv_data, 2);
-	//Player *plyr = GetPlayer();
 
 	int8 SrcInvSlot, SrcSlot;
 
@@ -580,7 +576,8 @@ void WorldSession::HandleDestroyItemOpcode( WorldPacket & recv_data )
 
 void WorldSession::HandleAutoEquipItemOpcode( WorldPacket & recv_data )
 {
-	if(!_player->IsInWorld()) return;
+	if( !_player || !_player->IsInWorld() )
+		return;
 	CHECK_PACKET_SIZE(recv_data, 2);
 	WorldPacket data;
 
@@ -588,9 +585,6 @@ void WorldSession::HandleAutoEquipItemOpcode( WorldPacket & recv_data )
 	int8 SrcInvSlot, SrcSlot, error=0;
 	
 	bool titansgrip = false;
-
-	if(!GetPlayer())
-		return;
 
 	if(GetPlayer()->HasSpell(46917))
 		titansgrip = true;
@@ -866,7 +860,8 @@ void WorldSession::HandleItemQuerySingleOpcode( WorldPacket & recv_data )
 
 void WorldSession::HandleBuyBackOpcode( WorldPacket & recv_data )
 {
-	if(!_player->IsInWorld()) return;
+	if( !_player || !_player->IsInWorld() )
+		return;
 	CHECK_PACKET_SIZE(recv_data, 8);
 	WorldPacket data(16);
 	uint64 guid;
@@ -948,11 +943,10 @@ void WorldSession::HandleBuyBackOpcode( WorldPacket & recv_data )
 
 void WorldSession::HandleSellItemOpcode( WorldPacket & recv_data )
 {
-	if(!_player->IsInWorld()) return;
+	if( !_player || !_player->IsInWorld() )
+		return;
 	CHECK_PACKET_SIZE(recv_data, 17);
 	sLog.outDetail( "WORLD: Received CMSG_SELL_ITEM" );
-	if(!GetPlayer())
-		return;
 
 	uint64 vendorguid=0, itemguid=0;
 	int8 amount=0;
@@ -1062,15 +1056,12 @@ void WorldSession::HandleSellItemOpcode( WorldPacket & recv_data )
 
 void WorldSession::HandleBuyItemInSlotOpcode( WorldPacket & recv_data ) // drag & drop
 {
-	if( !_player->IsInWorld() )
+	if( !_player || !_player->IsInWorld() )
 		return;
 
 	CHECK_PACKET_SIZE( recv_data, 22 );
 
 	sLog.outDetail( "WORLD: Received CMSG_BUY_ITEM_IN_SLOT" );
-
-	if( GetPlayer() == NULL )
-		return;
 
 	uint64 srcguid, bagguid;
 	uint32 itemid;
@@ -1258,12 +1249,10 @@ void WorldSession::HandleBuyItemInSlotOpcode( WorldPacket & recv_data ) // drag 
 
 void WorldSession::HandleBuyItemOpcode( WorldPacket & recv_data ) // right-click on item
 {
-	if(!_player->IsInWorld()) return;
+	if( !_player || !_player->IsInWorld() )
+		return;
 	CHECK_PACKET_SIZE(recv_data, 14);
 	sLog.outDetail( "WORLD: Received CMSG_BUY_ITEM" );
-
-	if(!GetPlayer())
-		return;
 
 	WorldPacket data(45);
 	uint64 srcguid=0;
@@ -1489,9 +1478,6 @@ void WorldSession::HandleAutoStoreBagItemOpcode( WorldPacket & recv_data )
 	CHECK_PACKET_SIZE(recv_data, 3);
 	sLog.outDetail( "WORLD: Recvd CMSG_AUTO_STORE_BAG_ITEM" );
 	
-	if(!GetPlayer())
-		return;
-
 	//WorldPacket data;
 	WorldPacket packet;
 	int8 SrcInv=0, Slot=0, DstInv=0;
@@ -1603,13 +1589,11 @@ void WorldSession::HandleAutoStoreBagItemOpcode( WorldPacket & recv_data )
 
 void WorldSession::HandleReadItemOpcode(WorldPacket &recvPacket)
 {
-	if(!_player->IsInWorld()) return;
+	if( !_player || !_player->IsInWorld() )
+		return;
 	CHECK_PACKET_SIZE(recvPacket, 2);
 	int8 uslot=0, slot=0;
 	recvPacket >> uslot >> slot;
-
-	if(!GetPlayer())
-		return;
 
 	Item *item = _player->GetItemInterface()->GetInventoryItem(uslot, slot);
 	sLog.outDebug("Received CMSG_READ_ITEM %d", slot);
@@ -1667,11 +1651,9 @@ ARCEMU_INLINE bool RepairItem(Player * pPlayer, Item * pItem)
 
 void WorldSession::HandleRepairItemOpcode(WorldPacket &recvPacket)
 {
-	if(!_player->IsInWorld()) return;
-	CHECK_PACKET_SIZE(recvPacket, 12);
-
-	if(!GetPlayer())
+	if( !_player || !_player->IsInWorld() )
 		return;
+	CHECK_PACKET_SIZE(recvPacket, 12);
 
 	uint64 npcguid;
 	uint64 itemguid;
@@ -1766,7 +1748,8 @@ void WorldSession::HandleBuyBankSlotOpcode(WorldPacket& recvPacket)
 
 void WorldSession::HandleAutoBankItemOpcode(WorldPacket &recvPacket)
 {
-	if(!_player->IsInWorld()) return;
+	if( !_player || !_player->IsInWorld() )
+		return;
 	CHECK_PACKET_SIZE(recvPacket, 2);
 	sLog.outDebug("WORLD: CMSG_AUTO_BANK_ITEM");
 
@@ -1774,9 +1757,6 @@ void WorldSession::HandleAutoBankItemOpcode(WorldPacket &recvPacket)
 
 	SlotResult slotresult;
 	int8 SrcInvSlot, SrcSlot;//, error=0;
-
-	if(!GetPlayer())
-		return;
 
 	recvPacket >> SrcInvSlot >> SrcSlot;
 
@@ -1814,16 +1794,14 @@ void WorldSession::HandleAutoBankItemOpcode(WorldPacket &recvPacket)
 
 void WorldSession::HandleAutoStoreBankItemOpcode(WorldPacket &recvPacket)
 {
-	if(!_player->IsInWorld()) return;
+	if( !_player || !_player->IsInWorld() )
+		return;
 	CHECK_PACKET_SIZE(recvPacket, 2);
 	sLog.outDebug("WORLD: CMSG_AUTOSTORE_BANK_ITEM");
 
 	//WorldPacket data;
 
 	int8 SrcInvSlot, SrcSlot;//, error=0, slot=-1, specialbagslot=-1;
-
-	if(!GetPlayer())
-		return;
 
 	recvPacket >> SrcInvSlot >> SrcSlot;
 
@@ -1976,6 +1954,9 @@ void WorldSession::HandleInsertGemOpcode(WorldPacket &recvPacket)
 
 void WorldSession::HandleWrapItemOpcode( WorldPacket& recv_data )
 {
+	if( !_player || !_player->IsInWorld() )
+		return;
+
 	int8 sourceitem_bagslot, sourceitem_slot;
 	int8 destitem_bagslot, destitem_slot;
 	uint32 source_entry;
@@ -1984,9 +1965,6 @@ void WorldSession::HandleWrapItemOpcode( WorldPacket& recv_data )
 
 	recv_data >> sourceitem_bagslot >> sourceitem_slot;
 	recv_data >> destitem_bagslot >> destitem_slot;
-
-	if( !_player->IsInWorld() )
-		return;
 
 	src = _player->GetItemInterface()->GetInventoryItem( sourceitem_bagslot, sourceitem_slot );
 	dst = _player->GetItemInterface()->GetInventoryItem( destitem_bagslot, destitem_slot );
