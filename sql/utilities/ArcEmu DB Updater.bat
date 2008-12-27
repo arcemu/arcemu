@@ -102,69 +102,69 @@ ECHO.
 ECHO [Importing] Started...
 ECHO [Importing] ArcEmu World Updates ...
 ECHO [Importing] 104_rituals_objects.sql
-mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < world_updates\104_rituals_objects.sql
+mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < ..\world_updates\104_rituals_objects.sql
 ECHO [Importing] 185_quest_rewards.sql
-mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < world_updates\185_quest_rewards.sql
+mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < ..\world_updates\185_quest_rewards.sql
 ECHO [Importing] 456_ai_agents.sql
-mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < world_updates\456_ai_agents.sql
+mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < ..\world_updates\456_ai_agents.sql
 ECHO [Importing] 505_worldmap_info.sql
-mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < world_updates\505_worldmap_info.sql
+mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < ..\world_updates\505_worldmap_info.sql
 ECHO [Importing] 581_items_extendedcost.sql
-mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < world_updates\581_items_extendedcost.sql
+mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < ..\world_updates\581_items_extendedcost.sql
 ECHO [Importing] 616_quests_rewrep.sql
-mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < world_updates\616_quests_rewrep.sql
+mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < ..\world_updates\616_quests_rewrep.sql
 ECHO [Importing] 633_creature_spawns_bytes.sql
-mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < world_updates\633_creature_spawns_bytes.sql
+mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < ..\world_updates\633_creature_spawns_bytes.sql
 ECHO [Importing] 672_instance-system.sql
-mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < world_updates\672_instance-system.sql
+mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < ..\world_updates\672_instance-system.sql
 ECHO [Importing] 678_ai_threattospell.sql
-mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < world_updates\678_ai_threattospell.sql
+mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < ..\world_updates\678_ai_threattospell.sql
 ECHO [Importing] 744_spellfixes.sql
-mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < world_updates\744_spellfixes.sql
+mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < ..\world_updates\744_spellfixes.sql
 ECHO [Importing] 762_instance_bosses.sql
-mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < world_updates\762_instance_bosses.sql
+mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < ..\world_updates\762_instance_bosses.sql
 ECHO [Importing] 834_creature_proto.sql
-mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < world_updates\834_creature_proto.sql
+mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < ..\world_updates\834_creature_proto.sql
 ECHO [Importing] 1174_worldbroadcast.sql
-mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < world_updates\1174_worldbroadcast.sql
+mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < ..\world_updates\1174_worldbroadcast.sql
 ECHO [Importing] 1174_worldbroadcast_localized.sql
-mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < world_updates\1174_worldbroadcast_localized.sql
+mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < ..\world_updates\1174_worldbroadcast_localized.sql
 ECHO [Importing] 1174_worldmap_info_localized.sql
-mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < world_updates\1174_worldmap_info_localized.sql
+mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < ..\world_updates\1174_worldmap_info_localized.sql
 ECHO [Importing] 1174_worldstring_tables.sql
-mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < world_updates\1174_worldstring_tables.sql
+mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < ..\world_updates\1174_worldstring_tables.sql
 ECHO [Importing] 1174_worldstring_tables_localized.sql
-mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < world_updates\1174_worldstring_tables_localized.sql
+mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < ..\world_updates\1174_worldstring_tables_localized.sql
 ECHO [Importing] 1497_bugfixes.sql
-mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < world_updates\1497_bugfixes.sql
+mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < ..\world_updates\1497_bugfixes.sql
 ECHO [Importing] 1564_items.sql
-mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < world_updates\1564_items.sql
+mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < ..\world_updates\1564_items.sql
 ECHO [Importing] 1564_removed_spells.sql
-mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < world_updates\1564_removed_spells.sql
+mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < ..\world_updates\1564_removed_spells.sql
 ECHO [Importing] 1576_wotlk_worldstring_table.sql
-mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < world_updates\1576_wotlk_worldstring_table.sql
+mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < ..\world_updates\1576_wotlk_worldstring_table.sql
 ECHO [Importing] 1587_quests.sql
-mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < world_updates\1587_quests.sql
+mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < ..\world_updates\1587_quests.sql
 ECHO [Importing] 1658_playercreateinfo_intros.sql
-mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < world_updates\1658_playercreateinfo_intros.sql
+mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < ..\world_updates\1658_playercreateinfo_intros.sql
 ECHO [Importing] 1694_quests.sql
-mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < world_updates\1694_quests.sql
+mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < ..\world_updates\1694_quests.sql
 ECHO [Importing] 1707_creature_proto.sql
-mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < world_updates\1707_creature_proto.sql
+mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < ..\world_updates\1707_creature_proto.sql
 ECHO [Importing] 1729_creature_proto.sql
-mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < world_updates\1729_creature_proto.sql
+mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < ..\world_updates\1729_creature_proto.sql
 ECHO [Importing] 1735_quests.sql
-mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < world_updates\1735_quests.sql
+mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < ..\world_updates\1735_quests.sql
 ECHO [Importing] 1746_spawns.sql
-mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < world_updates\1746_spawns.sql
+mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < ..\world_updates\1746_spawns.sql
 ECHO [Importing] 1797_transport_data.sql
-mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < world_updates\1797_transport_data.sql
+mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < ..\world_updates\1797_transport_data.sql
 ECHO [Importing] 1860_loot.sql
-mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < world_updates\1860_loot.sql
+mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < ..\world_updates\1860_loot.sql
 ECHO [Importing] 1902_trainers.sql
-mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < world_updates\1902_trainers.sql
+mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < ..\world_updates\1902_trainers.sql
 ECHO [Importing] spellfixes.sql
-mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < world_updates\spellfixes.sql
+mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < ..\world_updates\spellfixes.sql
 ECHO [Importing] Finished
 ECHO.
 PAUSE    
@@ -177,35 +177,35 @@ ECHO.
 ECHO [Importing] Started...
 ECHO [Importing] ArcEmu Character Updates ...
 ECHO [Importing] 147_pet_untrain_cost.sql
-mysql -h %server% --user=%user% --password=%pass% --port=%port% %chr% < character_updates\147_pet_untrain_cost.sql
+mysql -h %server% --user=%user% --password=%pass% --port=%port% %chr% < ..\character_updates\147_pet_untrain_cost.sql
 ECHO [Importing] 261_gm_tickets.sql
-mysql -h %server% --user=%user% --password=%pass% --port=%port% %chr% < character_updates\261_gm_tickets.sql
+mysql -h %server% --user=%user% --password=%pass% --port=%port% %chr% < ..\character_updates\261_gm_tickets.sql
 ECHO [Importing] 566_gm_tickets.sql
-mysql -h %server% --user=%user% --password=%pass% --port=%port% %chr% < character_updates\566_gm_tickets.sql
+mysql -h %server% --user=%user% --password=%pass% --port=%port% %chr% < ..\character_updates\566_gm_tickets.sql
 ECHO [Importing] 624_guild_leader_rights.sql
-mysql -h %server% --user=%user% --password=%pass% --port=%port% %chr% < character_updates\624_guild_leader_rights.sql
+mysql -h %server% --user=%user% --password=%pass% --port=%port% %chr% < ..\character_updates\624_guild_leader_rights.sql
 ECHO [Importing] 711_instance-system.sql
-mysql -h %server% --user=%user% --password=%pass% --port=%port% %chr% < character_updates\711_instance-system.sql
+mysql -h %server% --user=%user% --password=%pass% --port=%port% %chr% < ..\character_updates\711_instance-system.sql
 ECHO [Importing] 912_pvp_titles.sql
-mysql -h %server% --user=%user% --password=%pass% --port=%port% %chr% < character_updates\912_pvp_titles.sql
+mysql -h %server% --user=%user% --password=%pass% --port=%port% %chr% < ..\character_updates\912_pvp_titles.sql
 ECHO [Importing] 943_playerpets_spellid.sql
-mysql -h %server% --user=%user% --password=%pass% --port=%port% %chr% < character_updates\943_playerpets_spellid.sql
+mysql -h %server% --user=%user% --password=%pass% --port=%port% %chr% < ..\character_updates\943_playerpets_spellid.sql
 ECHO [Importing] 1033_playersummons.sql
-mysql -h %server% --user=%user% --password=%pass% --port=%port% %chr% < character_updates\1033_playersummons.sql
+mysql -h %server% --user=%user% --password=%pass% --port=%port% %chr% < ..\character_updates\1033_playersummons.sql
 ECHO [Importing] 1497_bugfixes.sql
-mysql -h %server% --user=%user% --password=%pass% --port=%port% %chr% < character_updates\1497_bugfixes.sql
+mysql -h %server% --user=%user% --password=%pass% --port=%port% %chr% < ..\character_updates\1497_bugfixes.sql
 ECHO [Importing] 1564_character_achievements.sql
-mysql -h %server% --user=%user% --password=%pass% --port=%port% %chr% < character_updates\1564_character_achievements.sql
+mysql -h %server% --user=%user% --password=%pass% --port=%port% %chr% < ..\character_updates\1564_character_achievements.sql
 ECHO [Importing] 1564_character_glyphs.sql
-mysql -h %server% --user=%user% --password=%pass% --port=%port% %chr% < character_updates\1564_character_glyphs.sql
+mysql -h %server% --user=%user% --password=%pass% --port=%port% %chr% < ..\character_updates\1564_character_glyphs.sql
 ECHO [Importing] 1564_removed_spells.sql
-mysql -h %server% --user=%user% --password=%pass% --port=%port% %chr% < character_updates\1564_removed_spells.sql
+mysql -h %server% --user=%user% --password=%pass% --port=%port% %chr% < ..\character_updates\1564_removed_spells.sql
 ECHO [Importing] 1653_achievements.sql
-mysql -h %server% --user=%user% --password=%pass% --port=%port% %chr% < character_updates\1653_achievements.sql
+mysql -h %server% --user=%user% --password=%pass% --port=%port% %chr% < ..\character_updates\1653_achievements.sql
 ECHO [Importing] 1835_playerpets_loyalty.sql
-mysql -h %server% --user=%user% --password=%pass% --port=%port% %chr% < character_updates\1835_playerpets_loyalty.sql
+mysql -h %server% --user=%user% --password=%pass% --port=%port% %chr% < ..\character_updates\1835_playerpets_loyalty.sql
 ECHO [Importing] 1911_playertitles.sql
-mysql -h %server% --user=%user% --password=%pass% --port=%port% %chr% < character_updates\1911_playertitles.sql
+mysql -h %server% --user=%user% --password=%pass% --port=%port% %chr% < ..\character_updates\1911_playertitles.sql
 ECHO [Importing] Finished
 ECHO  Update Success.
 ECHO.
@@ -219,11 +219,11 @@ ECHO.
 ECHO [Importing] Started...
 ECHO [Importing] ArcEmu Logon Updates ...
 ECHO [Importing] 1066_add_banreasons.sql
-mysql -h %server% --user=%user% --password=%pass% --port=%port% %logon% < logon_updates\1066_add_banreasons.sql
+mysql -h %server% --user=%user% --password=%pass% --port=%port% %logon% < ..\logon_updates\1066_add_banreasons.sql
 ECHO [Importing] correction_to_ipbans(allrevs).sql
-mysql -h %server% --user=%user% --password=%pass% --port=%port% %logon% < logon_updates\correction_to_ipbans(allrevs).sql
+mysql -h %server% --user=%user% --password=%pass% --port=%port% %logon% < ..\logon_updates\correction_to_ipbans(allrevs).sql
 ECHO [Importing] 1842_Account_Flags.sql
-mysql -h %server% --user=%user% --password=%pass% --port=%port% %logon% < logon_updates\1842_Account_Flags.sql
+mysql -h %server% --user=%user% --password=%pass% --port=%port% %logon% < ..\logon_updates\1842_Account_Flags.sql
 ECHO [Importing] Finished
 ECHO  Update Success.
 ECHO.
@@ -237,69 +237,69 @@ ECHO.
 ECHO [Importing] Started...
 ECHO [Importing] ArcEmu World Updates ...
 ECHO [Importing] 104_rituals_objects.sql
-mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < world_updates\104_rituals_objects.sql
+mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < ..\world_updates\104_rituals_objects.sql
 ECHO [Importing] 185_quest_rewards.sql
-mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < world_updates\185_quest_rewards.sql
+mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < ..\world_updates\185_quest_rewards.sql
 ECHO [Importing] 456_ai_agents.sql
-mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < world_updates\456_ai_agents.sql
+mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < ..\world_updates\456_ai_agents.sql
 ECHO [Importing] 505_worldmap_info.sql
-mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < world_updates\505_worldmap_info.sql
+mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < ..\world_updates\505_worldmap_info.sql
 ECHO [Importing] 581_items_extendedcost.sql
-mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < world_updates\581_items_extendedcost.sql
+mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < ..\world_updates\581_items_extendedcost.sql
 ECHO [Importing] 616_quests_rewrep.sql
-mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < world_updates\616_quests_rewrep.sql
+mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < ..\world_updates\616_quests_rewrep.sql
 ECHO [Importing] 633_creature_spawns_bytes.sql
-mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < world_updates\633_creature_spawns_bytes.sql
+mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < ..\world_updates\633_creature_spawns_bytes.sql
 ECHO [Importing] 672_instance-system.sql
-mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < world_updates\672_instance-system.sql
+mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < ..\world_updates\672_instance-system.sql
 ECHO [Importing] 678_ai_threattospell.sql
-mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < world_updates\678_ai_threattospell.sql
+mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < ..\world_updates\678_ai_threattospell.sql
 ECHO [Importing] 744_spellfixes.sql
-mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < world_updates\744_spellfixes.sql
+mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < ..\world_updates\744_spellfixes.sql
 ECHO [Importing] 762_instance_bosses.sql
-mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < world_updates\762_instance_bosses.sql
+mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < ..\world_updates\762_instance_bosses.sql
 ECHO [Importing] 834_creature_proto.sql
-mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < world_updates\834_creature_proto.sql
+mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < ..\world_updates\834_creature_proto.sql
 ECHO [Importing] 1174_worldbroadcast.sql
-mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < world_updates\1174_worldbroadcast.sql
+mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < ..\world_updates\1174_worldbroadcast.sql
 ECHO [Importing] 1174_worldbroadcast_localized.sql
-mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < world_updates\1174_worldbroadcast_localized.sql
+mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < ..\world_updates\1174_worldbroadcast_localized.sql
 ECHO [Importing] 1174_worldmap_info_localized.sql
-mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < world_updates\1174_worldmap_info_localized.sql
+mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < ..\world_updates\1174_worldmap_info_localized.sql
 ECHO [Importing] 1174_worldstring_tables.sql
-mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < world_updates\1174_worldstring_tables.sql
+mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < ..\world_updates\1174_worldstring_tables.sql
 ECHO [Importing] 1174_worldstring_tables_localized.sql
-mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < world_updates\1174_worldstring_tables_localized.sql
+mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < ..\world_updates\1174_worldstring_tables_localized.sql
 ECHO [Importing] 1497_bugfixes.sql
-mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < world_updates\1497_bugfixes.sql
+mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < ..\world_updates\1497_bugfixes.sql
 ECHO [Importing] 1564_items.sql
-mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < world_updates\1564_items.sql
+mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < ..\world_updates\1564_items.sql
 ECHO [Importing] 1564_removed_spells.sql
-mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < world_updates\1564_removed_spells.sql
+mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < ..\world_updates\1564_removed_spells.sql
 ECHO [Importing] 1576_wotlk_worldstring_table.sql
-mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < world_updates\1576_wotlk_worldstring_table.sql
+mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < ..\world_updates\1576_wotlk_worldstring_table.sql
 ECHO [Importing] 1587_quests.sql
-mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < world_updates\1587_quests.sql
+mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < ..\world_updates\1587_quests.sql
 ECHO [Importing] 1658_playercreateinfo_intros.sql
-mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < world_updates\1658_playercreateinfo_intros.sql
+mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < ..\world_updates\1658_playercreateinfo_intros.sql
 ECHO [Importing] 1694_quests.sql
-mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < world_updates\1694_quests.sql
+mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < ..\world_updates\1694_quests.sql
 ECHO [Importing] 1707_creature_proto.sql
-mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < world_updates\1707_creature_proto.sql
+mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < ..\world_updates\1707_creature_proto.sql
 ECHO [Importing] 1729_creature_proto.sql
-mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < world_updates\1729_creature_proto.sql
+mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < ..\world_updates\1729_creature_proto.sql
 ECHO [Importing] 1735_quests.sql
-mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < world_updates\1735_quests.sql
+mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < ..\world_updates\1735_quests.sql
 ECHO [Importing] 1746_spawns.sql
-mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < world_updates\1746_spawns.sql
+mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < ..\world_updates\1746_spawns.sql
 ECHO [Importing] 1797_transport_data.sql
-mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < world_updates\1797_transport_data.sql
+mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < ..\world_updates\1797_transport_data.sql
 ECHO [Importing] 1860_loot.sql
-mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < world_updates\1860_loot.sql
+mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < ..\world_updates\1860_loot.sql
 ECHO [Importing] 1902_trainers.sql
-mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < world_updates\1902_trainers.sql
+mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < ..\world_updates\1902_trainers.sql
 ECHO [Importing] spellfixes.sql
-mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < world_updates\spellfixes.sql
+mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < ..\world_updates\spellfixes.sql
 
 ECHO [Importing] World Updates Finished
 ECHO.
@@ -308,35 +308,35 @@ REM ############################################################################
 REM End World, start Character
 ECHO [Importing] ArcEmu Character Updates ...
 ECHO [Importing] 147_pet_untrain_cost.sql
-mysql -h %server% --user=%user% --password=%pass% --port=%port% %chr% < character_updates\147_pet_untrain_cost.sql
+mysql -h %server% --user=%user% --password=%pass% --port=%port% %chr% < ..\character_updates\147_pet_untrain_cost.sql
 ECHO [Importing] 261_gm_tickets.sql
-mysql -h %server% --user=%user% --password=%pass% --port=%port% %chr% < character_updates\261_gm_tickets.sql
+mysql -h %server% --user=%user% --password=%pass% --port=%port% %chr% < ..\character_updates\261_gm_tickets.sql
 ECHO [Importing] 566_gm_tickets.sql
-mysql -h %server% --user=%user% --password=%pass% --port=%port% %chr% < character_updates\566_gm_tickets.sql
+mysql -h %server% --user=%user% --password=%pass% --port=%port% %chr% < ..\character_updates\566_gm_tickets.sql
 ECHO [Importing] 624_guild_leader_rights.sql
-mysql -h %server% --user=%user% --password=%pass% --port=%port% %chr% < character_updates\624_guild_leader_rights.sql
+mysql -h %server% --user=%user% --password=%pass% --port=%port% %chr% < ..\character_updates\624_guild_leader_rights.sql
 ECHO [Importing] 711_instance-system.sql
-mysql -h %server% --user=%user% --password=%pass% --port=%port% %chr% < character_updates\711_instance-system.sql
+mysql -h %server% --user=%user% --password=%pass% --port=%port% %chr% < ..\character_updates\711_instance-system.sql
 ECHO [Importing] 912_pvp_titles.sql
-mysql -h %server% --user=%user% --password=%pass% --port=%port% %chr% < character_updates\912_pvp_titles.sql
+mysql -h %server% --user=%user% --password=%pass% --port=%port% %chr% < ..\character_updates\912_pvp_titles.sql
 ECHO [Importing] 943_playerpets_spellid.sql
-mysql -h %server% --user=%user% --password=%pass% --port=%port% %chr% < character_updates\943_playerpets_spellid.sql
+mysql -h %server% --user=%user% --password=%pass% --port=%port% %chr% < ..\character_updates\943_playerpets_spellid.sql
 ECHO [Importing] 1033_playersummons.sql
-mysql -h %server% --user=%user% --password=%pass% --port=%port% %chr% < character_updates\1033_playersummons.sql
+mysql -h %server% --user=%user% --password=%pass% --port=%port% %chr% < ..\character_updates\1033_playersummons.sql
 ECHO [Importing] 1497_bugfixes.sql
-mysql -h %server% --user=%user% --password=%pass% --port=%port% %chr% < character_updates\1497_bugfixes.sql
+mysql -h %server% --user=%user% --password=%pass% --port=%port% %chr% < ..\character_updates\1497_bugfixes.sql
 ECHO [Importing] 1564_character_achievements.sql
-mysql -h %server% --user=%user% --password=%pass% --port=%port% %chr% < character_updates\1564_character_achievements.sql
+mysql -h %server% --user=%user% --password=%pass% --port=%port% %chr% < ..\character_updates\1564_character_achievements.sql
 ECHO [Importing] 1564_character_glyphs.sql
-mysql -h %server% --user=%user% --password=%pass% --port=%port% %chr% < character_updates\1564_character_glyphs.sql
+mysql -h %server% --user=%user% --password=%pass% --port=%port% %chr% < ..\character_updates\1564_character_glyphs.sql
 ECHO [Importing] 1564_removed_spells.sql
-mysql -h %server% --user=%user% --password=%pass% --port=%port% %chr% < character_updates\1564_removed_spells.sql
+mysql -h %server% --user=%user% --password=%pass% --port=%port% %chr% < ..\character_updates\1564_removed_spells.sql
 ECHO [Importing] 1653_achievements.sql
-mysql -h %server% --user=%user% --password=%pass% --port=%port% %chr% < character_updates\1653_achievements.sql
+mysql -h %server% --user=%user% --password=%pass% --port=%port% %chr% < ..\character_updates\1653_achievements.sql
 ECHO [Importing] 1835_playerpets_loyalty.sql
-mysql -h %server% --user=%user% --password=%pass% --port=%port% %chr% < character_updates\1835_playerpets_loyalty.sql
+mysql -h %server% --user=%user% --password=%pass% --port=%port% %chr% < ..\character_updates\1835_playerpets_loyalty.sql
 ECHO [Importing] 1911_playertitles.sql
-mysql -h %server% --user=%user% --password=%pass% --port=%port% %chr% < character_updates\1911_playertitles.sql
+mysql -h %server% --user=%user% --password=%pass% --port=%port% %chr% < ..\character_updates\1911_playertitles.sql
 ECHO [Importing] Character Updates Finished
 ECHO.
 ECHO.
@@ -344,11 +344,11 @@ REM ############################################################################
 REM End Character, start logon.
 ECHO [Importing] ArcEmu Logon Updates ...
 ECHO [Importing] 1066_add_banreasons.sql
-mysql -h %server% --user=%user% --password=%pass% --port=%port% %logon% < logon_updates\1066_add_banreasons.sql
+mysql -h %server% --user=%user% --password=%pass% --port=%port% %logon% < ..\logon_updates\1066_add_banreasons.sql
 ECHO [Importing] correction_to_ipbans(allrevs).sql
-mysql -h %server% --user=%user% --password=%pass% --port=%port% %logon% < logon_updates\correction_to_ipbans(allrevs).sql
+mysql -h %server% --user=%user% --password=%pass% --port=%port% %logon% < ..\logon_updates\correction_to_ipbans(allrevs).sql
 ECHO [Importing] 1842_Account_Flags.sql
-mysql -h %server% --user=%user% --password=%pass% --port=%port% %logon% < logon_updates\1842_Account_Flags.sql
+mysql -h %server% --user=%user% --password=%pass% --port=%port% %logon% < ..\logon_updates\1842_Account_Flags.sql
 ECHO [Importing] Logon Updates Finished
 ECHO  Update Success.
 ECHO [Importing] All Updates Finished
