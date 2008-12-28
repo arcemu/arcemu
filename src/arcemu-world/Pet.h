@@ -165,7 +165,7 @@ public:
 	void LoadSpells();
 	void AddSpell(SpellEntry * sp, bool learning);
 	void RemoveSpell(SpellEntry * sp);
-	void WipeSpells();
+	void WipeTalents();
 	uint32 GetUntrainCost();
 	void SetSpellState(SpellEntry * sp, uint16 State);
 	uint16 GetSpellState(SpellEntry * sp);

@@ -415,7 +415,7 @@ void WorldSession::HandlePetAbandon(WorldPacket & recv_data)
 
 	pet->Dismiss(false);
 }
-void WorldSession::HandlePetUnlearn(WorldPacket & recv_data)
+void WorldSession::HandlePetUnlearn( WorldPacket & recv_data )
 {
 	if( !_player->IsInWorld() )
 		return;
@@ -433,7 +433,7 @@ void WorldSession::HandlePetUnlearn(WorldPacket & recv_data)
 	int32 cost = pPet->GetUntrainCost();
 	if( cost > ( int32 )_player->GetUInt32Value( PLAYER_FIELD_COINAGE ) )
 	{
-		WorldPacket data(SMSG_BUY_FAILED, 12);
+		WorldPacket data( SMSG_BUY_FAILED, 12 );
 		data << uint64( _player->GetGUID() );
 		data << uint32( 0 );
 		data << uint8( 2 );		//not enough money
@@ -441,8 +441,11 @@ void WorldSession::HandlePetUnlearn(WorldPacket & recv_data)
 		return;	
 	}
 	_player->ModUnsigned32Value( PLAYER_FIELD_COINAGE, -cost );
-	pPet->WipeSpells();
+	
+	pPet->WipeTalents();
+	pPet->SetTPs( pPet->GetTPsForLevel( pPet->getLevel() ) );
 }
+
 void WorldSession::HandlePetSpellAutocast( WorldPacket& recvPacket )
 {
 	// handles toggle autocast from spellbook
@@ -549,7 +552,7 @@ void WorldSession::HandlePetLearnTalent( WorldPacket & recvPacket )
 	{
 		pPet->AddSpell( sp, true );
 		pPet->SetTPs( pPet->GetTPs() - 1 );
-		OutPacket( SMSG_PET_LEARNED_SPELL, 4, &sp->Id );
+		OutPacket( SMSG_PET_LEARNED_SPELL, 2, &sp->Id );
 	}
 }
 

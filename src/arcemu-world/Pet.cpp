@@ -1020,11 +1020,18 @@ void Pet::SetDefaultActionbar()
 	ActionBar[9] = PET_SPELL_PASSIVE;
 }
 
-void Pet::WipeSpells()
+void Pet::WipeTalents()
 {
-	while( mSpells.size() > 0 )
+	uint32 rows, i, j;
+	rows = dbcTalent.GetNumRows();
+	for( i = 0; i < rows; i++ )
 	{
-		RemoveSpell( mSpells.begin()->first );
+		TalentEntry *te = dbcTalent.LookupRow( i );
+		if( te == NULL || te->TalentTree < 409 || te->TalentTree > 411 ) // 409-Tenacity, 410-Ferocity, 411-Cunning
+			continue;
+		for( j = 0; j < 5; j++ )
+			if( te->RankID[ j ] != NULL && HasSpell( te->RankID[ j ] ) )
+				RemoveSpell( te->RankID[ j ] );
 	}
 	SendSpellsToOwner();
 }
@@ -1083,21 +1090,25 @@ void Pet::RemoveSpell(SpellEntry * sp)
 		if( ActionBar[pos] == sp->Id )
 			ActionBar[pos] = 0;
 	}
+	
+	if( m_Owner != NULL && m_Owner->GetSession() != NULL )
+		m_Owner->GetSession()->OutPacket( SMSG_PET_UNLEARNED_SPELL, 2, &sp->Id );
 }
 
-void Pet::Rename(string NewName)
+void Pet::Rename( string NewName )
 {
 	m_name = NewName;
 	// update petinfo
-	UpdatePetInfo(false);
+	UpdatePetInfo( false );
 
 	// update timestamp to force a re-query
-	SetUInt32Value(UNIT_FIELD_PET_NAME_TIMESTAMP, (uint32)UNIXTIME);
+	SetUInt32Value( UNIT_FIELD_PET_NAME_TIMESTAMP, ( uint32 )UNIXTIME );
 
 	// save new summoned name to db (.pet renamepet)
-	if(m_Owner->getClass() == WARLOCK) {
-		CharacterDatabase.Execute("UPDATE `playersummons` SET `name`='%s' WHERE `ownerguid`=%u AND `entry`=%u",
-			m_name.data(), m_Owner->GetLowGUID(), GetEntry());
+	if( m_Owner->getClass() == WARLOCK )
+	{
+		CharacterDatabase.Execute( "UPDATE `playersummons` SET `name`='%s' WHERE `ownerguid`=%u AND `entry`=%u",
+			m_name.data(), m_Owner->GetLowGUID(), GetEntry() );
 	}
 }
 
@@ -1723,13 +1734,13 @@ void Pet::SetAutoCast(AI_Spell * sp, bool on)
 }
 uint32 Pet::GetUntrainCost()
 {
-	uint32 days = (uint32)(sWorld.GetGameTime() - reset_time)/60*60*24;
+	uint32 days = (uint32)( sWorld.GetGameTime() - reset_time ) / 60 * 60 * 24;
 
-	if(reset_cost < 1000 || days > 0)
+	if( reset_cost < 1000 || days > 0 )
 		reset_cost = 1000;
-	else if(reset_cost < 5000)
+	else if( reset_cost < 5000 )
 		reset_cost = 5000;
-	else if(reset_cost < 10000)
+	else if( reset_cost < 10000 )
 		reset_cost = 10000;
 	else
 		reset_cost = reset_cost + 10000 > 100000 ? 100000 : reset_cost + 10000;
