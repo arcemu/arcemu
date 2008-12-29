@@ -768,7 +768,7 @@ inline static unsigned int MakeIP(const char * str)
 #ifndef WIN32
 __inline unsigned long PtrToUlong( const void  *p )
 {
-    return((unsigned long) (ULONG_PTR) p );
+	return((unsigned long) p );
 }
 #endif
 
