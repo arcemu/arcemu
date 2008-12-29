@@ -552,7 +552,7 @@ void WorldSession::HandlePetLearnTalent( WorldPacket & recvPacket )
 	{
 		pPet->AddSpell( sp, true );
 		pPet->SetTPs( pPet->GetTPs() - 1 );
-		OutPacket( SMSG_PET_LEARNED_SPELL, 2, &sp->Id );
+		OutPacket( SMSG_PET_LEARNED_SPELL, 4, &sp->Id );
 	}
 }
 
