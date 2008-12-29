@@ -71,7 +71,7 @@ if '%l%'=='A' goto installall
 if '%l%'=='a' goto installall
 if '%l%'=='x' goto quit
 if '%l%'=='X' goto quit
-if '%l%'=='D' goto quit
+if '%l%'=='D' goto dbinfo
 if '%l%'=='d' goto dbinfo
 goto error
 

@@ -91,7 +91,7 @@ if %l%==A goto installall
 if %l%==a goto installall
 if %l%==x goto quit
 if %l%==X goto quit
-if %l%==D goto quit
+if %l%==D goto dbinfo
 if %l%==d goto dbinfo
 goto error
 
@@ -373,3 +373,15 @@ ECHO [ERROR] An error has occured, you will be directed back to the
 ECHO [ERROR] login screen.
 PAUSE    
 GOTO dbinfo
+
+:quit
+rem in case we're in a command prompt, unset the variables to free up environment
+set server=
+set port=
+set user=
+set pass=
+set logon=
+set chr=
+set wdb=
+set l=
+set imp=
