@@ -43,5 +43,6 @@ EXPORTME void collision_shutdown()
 	vmgr->unloadMap(0);
 	vmgr->unloadMap(1);
 	vmgr->unloadMap(530);
+	vmgr->unloadMap(571);
 }
 
