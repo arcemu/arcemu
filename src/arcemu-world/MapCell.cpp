@@ -26,11 +26,6 @@
 MapCell::~MapCell()
 {
 	RemoveObjects();
-
-	if (_respawnObjects) {
-		hashmap64_free(_respawnObjects);
-		_respawnObjects = NULL;
-	}
 }
 
 void MapCell::Init(uint32 x, uint32 y, uint32 mapid, MapMgr *mapmgr)
@@ -43,7 +38,6 @@ void MapCell::Init(uint32 x, uint32 y, uint32 mapid, MapMgr *mapmgr)
 	_y=y;
 	_unloadpending=false;
 	_objects.clear();
-	_respawnObjects = hashmap64_new();
 }
 
 void MapCell::AddObject(Object *obj)
@@ -103,7 +97,6 @@ void MapCell::RemoveObjects()
 {
 	ObjectSet::iterator itr;
 	uint32 count = 0;
-	int i;
 	//uint32 ltime = getMSTime();
 
 	//Zack : we are delaying cell removal so transports can see objects far away. We are waiting for the event to remove us
@@ -111,33 +104,26 @@ void MapCell::RemoveObjects()
 		return;
 
 	/* delete objects in pending respawn state */
-	for(i=0; i<hashmap64_length(_respawnObjects); i++) {
-		uint64 guid;
-		if (hashmap64_get_index(_respawnObjects, i, (int64*)&guid, NULL) == MAP_OK) {
-			Object *obj = _mapmgr->_GetObject(guid);
-			if (obj) {
-				switch(obj->GetTypeId()) {
-					case TYPEID_UNIT: {
-						if( !obj->IsPet() ) {
-							_mapmgr->_reusable_guids_creature.push_back( obj->GetUIdFromGUID() );
-							static_cast< Creature* >( obj)->m_respawnCell=NULL;
-							delete static_cast< Creature* >( obj );
-						}
-					}break;
-
-					case TYPEID_GAMEOBJECT: {
-						_mapmgr->_reusable_guids_gameobject.push_back( obj->GetUIdFromGUID() );
-						static_cast< GameObject* >( obj )->m_respawnCell=NULL;
-						delete static_cast< GameObject* >( obj );
-						}break;
+	for( itr = _respawnObjects.begin(); itr != _respawnObjects.end(); ++itr )
+	{
+		switch((*itr)->GetTypeId())
+		{
+			case TYPEID_UNIT:
+				if( !(*itr)->IsPet() )
+				{
+					_mapmgr->_reusable_guids_creature.push_back( (*itr)->GetUIdFromGUID() );
+					static_cast< Creature* >(*itr)->m_respawnCell=NULL;
+					delete static_cast< Creature* >( *itr );
 				}
-			}
+				break;
+			case TYPEID_GAMEOBJECT:
+				_mapmgr->_reusable_guids_gameobject.push_back( (*itr)->GetUIdFromGUID() );
+				static_cast< GameObject* >( *itr )->m_respawnCell=NULL;
+				delete static_cast< GameObject* >( *itr );
+				break;
 		}
 	}
-	if (_respawnObjects) {
-		hashmap64_free(_respawnObjects);
-		_respawnObjects = NULL;
-	}
+	_respawnObjects.clear();
 
 	//This time it's simpler! We just remove everything :)
 	for(itr = _objects.begin(); itr != _objects.end(); )

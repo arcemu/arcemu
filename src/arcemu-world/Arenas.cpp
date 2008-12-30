@@ -35,9 +35,6 @@ Arena::Arena(MapMgr * mgr, uint32 id, uint32 lgroup, uint32 t, uint32 players_pe
 	m_worldStates.clear();
 	m_pvpData.clear();
 	m_resurrectMap.clear();
-	m_players2[0] = hashmap_new();
-	m_players2[1] = hashmap_new();
-	m_playersAlive = hashmap_new();
 
 	m_started = false;
 	m_playerCountPerTeam = players_per_side;
@@ -76,17 +73,6 @@ Arena::~Arena()
 			delete m_buffs[i];
 	}
 
-	if (m_playersAlive) {
-		hashmap_free(m_playersAlive);
-		m_playersAlive = NULL;
-	}
-
-	for (i=0; i<2; i++) {
-		if (m_players2[i]) {
-			hashmap_free(m_players2[i]);
-			m_players2[i] = NULL;
-		}
-	}
 
 	for(set<GameObject*>::iterator itr = m_gates.begin(); itr != m_gates.end(); ++itr)
 	{
@@ -145,7 +131,7 @@ void Arena::OnAddPlayer(Player * plr)
 	if(!plr->HasFlag(PLAYER_FLAGS, PLAYER_FLAG_FREE_FOR_ALL_PVP))
 		plr->SetFlag(PLAYER_FLAGS, PLAYER_FLAG_FREE_FOR_ALL_PVP);
 
-	hashmap_put(m_playersAlive, plr->GetLowGUID(), (any_t)1);
+	m_playersAlive.insert(plr->GetLowGUID());
 }
 
 void Arena::OnRemovePlayer(Player * plr)
@@ -192,10 +178,11 @@ void Arena::HookOnPlayerDeath(Player * plr)
 
 	if( plr->m_isGmInvisible == true ) return;
 
-	if (hashmap_get(m_playersAlive, plr->GetLowGUID(), NULL) == MAP_OK) {
+	if(m_playersAlive.find(plr->GetLowGUID()) != m_playersAlive.end())
+	{
 		m_playersCount[plr->GetTeam()]--;
 		UpdatePlayerCounts();
-		hashmap_remove(m_playersAlive, plr->GetLowGUID());
+		m_playersAlive.erase(plr->GetLowGUID());
 	}
 }
 
@@ -380,7 +367,7 @@ void Arena::OnStart()
 		for(set<Player*>::iterator itr = m_players[i].begin(); itr != m_players[i].end(); ++itr) {
 			Player *plr = *itr;
 			plr->RemoveAura(ARENA_PREPARATION);
-			hashmap_put(m_players2[i], plr->GetLowGUID(), (any_t)1);
+			m_players2[i].insert(plr->GetLowGUID());
 
 			/* update arena team stats */
 			if(rated_match && plr->m_arenaTeams[m_arenateamtype] != NULL)
@@ -511,21 +498,20 @@ void Arena::Finish()
 			m_teams[i]->m_stat_rating += m_deltaRating[i];
 			if (m_teams[i]->m_stat_rating < 0) m_teams[i]->m_stat_rating = 0;
 
-			for (int x=0; x<hashmap_length(m_players2[i]); x++) {
-				uint32 key;
-				if (MAP_OK == hashmap_get_index(m_players2[i], x, (int*)&key, (any_t*) NULL)) {
-					PlayerInfo * info = objmgr.GetPlayerInfo(key);
-					if (info) {
-						ArenaTeamMember * tp = m_teams[i]->GetMember(info);
+			for( set<uint32>::iterator itr=m_players2[i].begin(); itr != m_players2[i].end(); ++itr )
+			{
+				PlayerInfo * info = objmgr.GetPlayerInfo(*itr);
+				if (info) {
+					ArenaTeamMember * tp = m_teams[i]->GetMember(info);
 
-						if(tp != NULL) {
-							tp->PersonalRating += CalcDeltaRating(tp->PersonalRating, m_teams[j]->m_stat_rating, outcome);
-							if (tp->PersonalRating < 0) tp->PersonalRating = 0;
+					if(tp != NULL) {
+						tp->PersonalRating += CalcDeltaRating(tp->PersonalRating, m_teams[j]->m_stat_rating, outcome);
+						if (tp->PersonalRating < 0)
+							tp->PersonalRating = 0;
 
-							if(outcome) {
-								tp->Won_ThisWeek++;
-								tp->Won_ThisSeason++;
-							}
+						if(outcome) {
+							++(tp->Won_ThisWeek);
+							++(tp->Won_ThisSeason);
 						}
 					}
 				}

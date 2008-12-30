@@ -80,7 +80,7 @@ GameObject::~GameObject()
 	}
 
 	if(m_respawnCell!=NULL)
-		hashmap64_remove(m_respawnCell->_respawnObjects, GetGUID());
+		m_respawnCell->_respawnObjects.erase(this);
 
 	if (m_summonedGo && m_summoner)
 		for(int i = 0; i < 4; i++)
@@ -269,7 +269,7 @@ void GameObject::Despawn(uint32 delay, uint32 respawntime)
 		/* Get our originiating mapcell */
 		MapCell * pCell = m_mapCell;
 		ASSERT(pCell);
-		hashmap64_put(pCell->_respawnObjects, GetGUID(), NULL);
+		pCell->_respawnObjects.insert((Object*)this);
 		sEventMgr.RemoveEvents(this);
 		sEventMgr.AddEvent(m_mapMgr, &MapMgr::EventRespawnGameObject, this, pCell, EVENT_GAMEOBJECT_ITEM_SPAWN, respawntime, 1, 0);
 		Object::RemoveFromWorld(false);

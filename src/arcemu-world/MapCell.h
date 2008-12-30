@@ -71,7 +71,7 @@ public:
 	ARCEMU_INLINE uint16 GetPositionX() { return _x; }
 	ARCEMU_INLINE uint16 GetPositionY() { return _y; }
 
-	map_t _respawnObjects;
+	ObjectSet _respawnObjects;
 
 private:
 	uint16 _x,_y;
