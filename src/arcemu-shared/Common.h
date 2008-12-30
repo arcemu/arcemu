@@ -764,12 +764,4 @@ inline static unsigned int MakeIP(const char * str)
 // fixing the problem that causes the crash is the proper way to fix things
 //#define FORCED_SERVER_KEEPALIVE
 
-// apparently PtrToUlong isn't known by all compilers
-#ifndef WIN32
-__inline unsigned long PtrToUlong( const void  *p )
-{
-	return((unsigned long) p );
-}
-#endif
-
 #endif
