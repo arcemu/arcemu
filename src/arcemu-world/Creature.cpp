@@ -199,15 +199,15 @@ void Creature::OnRemoveCorpse()
 
 void Creature::OnRespawn(MapMgr * m)
 {
-	if(m_noRespawn)
+	if( m_noRespawn )
 		return;
 
 	InstanceBossInfoMap *bossInfoMap = objmgr.m_InstanceBossInfoMap[m->GetMapId()];
-	if(bossInfoMap != NULL)
+	Instance *pInstance = m->pInstance;
+	if( bossInfoMap != NULL && pInstance != NULL )
 	{
 		bool skip = false;
-		Instance *pInstance = m->pInstance;
-		for(std::set<uint32>::iterator killedNpc = pInstance->m_killedNpcs.begin(); killedNpc != pInstance->m_killedNpcs.end(); ++killedNpc)
+		for( std::set<uint32>::iterator killedNpc = pInstance->m_killedNpcs.begin(); killedNpc != pInstance->m_killedNpcs.end(); ++killedNpc )
 		{
 			// Is killed boss?
 			if(creature_info && (*killedNpc) == creature_info->Id)
@@ -1476,7 +1476,7 @@ void Creature::Load(CreatureProto * proto_, float x, float y, float z, float o)
 
 	//////////////AI
 
-	myFamily = dbcCreatureFamily.LookupEntry(creature_info->Family);
+	myFamily = dbcCreatureFamily.LookupEntry( creature_info->Family );
 
 
 	// PLACE FOR DIRTY FIX BASTARDS
@@ -1485,19 +1485,15 @@ void Creature::Load(CreatureProto * proto_, float x, float y, float z, float o)
 		m_aiInterface->m_CallForHelpHealth = 100;
 
 	//HACK!
-	if(m_uint32Values[UNIT_FIELD_DISPLAYID] == 17743 ||
-		m_uint32Values[UNIT_FIELD_DISPLAYID] == 20242 ||
-		m_uint32Values[UNIT_FIELD_DISPLAYID] == 15435 ||
-		(creature_info->Family == UNIT_TYPE_MISC))
+	if( m_uint32Values[ UNIT_FIELD_DISPLAYID ] == 17743 ||
+		m_uint32Values[ UNIT_FIELD_DISPLAYID ] == 20242 ||
+		m_uint32Values[ UNIT_FIELD_DISPLAYID ] == 15435 ||
+		creature_info->Type == UNIT_TYPE_MISC )
 	{
 		m_useAI = false;
 	}
 
-	/* more hacks! */
-	if(proto->Mana != 0)
-		SetPowerType(POWER_TYPE_MANA);
-	else
-		SetPowerType(0);
+	SetPowerType( POWER_TYPE_MANA );
 
 	has_combat_text = objmgr.HasMonsterSay(GetEntry(), MONSTER_SAY_EVENT_ENTER_COMBAT);
 	has_waypoint_text = objmgr.HasMonsterSay(GetEntry(), MONSTER_SAY_EVENT_RANDOM_WAYPOINT);

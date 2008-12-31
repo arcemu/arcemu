@@ -636,7 +636,7 @@ mysql> select id,name from spell where EffectImplicitTargetb1 = 29;
 | 36037 | Rina's Bough Lightning Cloud Visual		   |
 +-------+-----------------------------------------------+
 */
-/// Spell Target Handling for type 29: all object around the the caster / object (so it seems)
+/// Spell Target Handling for type 29: all object around the caster / object (so it seems)
 void Spell::SpellTargetTypeTAOE(uint32 i, uint32 j)
 {
 	Unit* Target = m_caster->GetMapMgr()->GetUnit(m_targets.m_unitTarget);

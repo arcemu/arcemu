@@ -42,387 +42,11 @@ void CreateDummySpell(uint32 id)
 	sWorld.dummyspells.push_back(sp);
 }
 
-void Apply112SpellFixes()
-{
-	SpellEntry * sp;
-	// Spell 1455 Proc Chance (Life Tap Rank 2)
-	sp = dbcSpell.LookupEntryForced(1455);
-	if(sp != NULL)
-		sp->procChance = 100;
-
-	// Spell 1456 Proc Chance (Life Tap Rank 3)
-	sp = dbcSpell.LookupEntryForced(1456);
-	if(sp != NULL)
-		sp->procChance = 100;
-
-	// Spell 3391 Proc Chance (Thrash )
-	sp = dbcSpell.LookupEntryForced(3391);
-	if(sp != NULL)
-		sp->procChance = 10;
-
-	// Spell 8033 Proc Chance (Frostbrand Weapon Rank 1)
-	sp = dbcSpell.LookupEntryForced(8033);
-	if(sp != NULL)
-		sp->procChance = 10;
-
-	// Spell 8034 Proc Chance (Frostbrand Attack Rank 1)
-	sp = dbcSpell.LookupEntryForced(8034);
-	if(sp != NULL)
-		sp->procChance = 10;
-
-	// Spell 8037 Proc Chance (Frostbrand Attack Rank 2)
-	sp = dbcSpell.LookupEntryForced(8037);
-	if(sp != NULL)
-		sp->procChance = 10;
-
-	// Spell 8182 Proc Chance (Frost Resistance Rank 1)
-	sp = dbcSpell.LookupEntryForced(8182);
-	if(sp != NULL)
-		sp->procChance = 100;
-
-	// Spell 8185 Proc Chance (Fire Resistance Rank 1)
-	sp = dbcSpell.LookupEntryForced(8185);
-	if(sp != NULL)
-		sp->procChance = 100;
-
-	// Spell 8516 Proc Chance (Windfury Totem Rank 1)
-	sp = dbcSpell.LookupEntryForced(8516);
-	if(sp != NULL)
-		sp->procChance = 10;
-
-	// Spell 10456 Proc Chance (Frostbrand Weapon Rank 3)
-	sp = dbcSpell.LookupEntryForced(10456);
-	if(sp != NULL)
-		sp->procChance = 10;
-
-	// Spell 10458 Proc Chance (Frostbrand Attack Rank 3)
-	sp = dbcSpell.LookupEntryForced(10458);
-	if(sp != NULL)
-		sp->procChance = 10;
-
-	// Spell 10476 Proc Chance (Frost Resistance Rank 2)
-	sp = dbcSpell.LookupEntryForced(10476);
-	if(sp != NULL)
-		sp->procChance = 100;
-
-	// Spell 10477 Proc Chance (Frost Resistance Rank 3)
-	sp = dbcSpell.LookupEntryForced(10477);
-	if(sp != NULL)
-		sp->procChance = 100;
-
-	// Spell 10534 Proc Chance (Fire Resistance Rank 2)
-	sp = dbcSpell.LookupEntryForced(10534);
-	if(sp != NULL)
-		sp->procChance = 100;
-
-	// Spell 10535 Proc Chance (Fire Resistance Rank 3)
-	sp = dbcSpell.LookupEntryForced(10535);
-	if(sp != NULL)
-		sp->procChance = 100;
-
-	// Spell 10608 Proc Chance (Windfury Totem Rank 2)
-	sp = dbcSpell.LookupEntryForced(10608);
-	if(sp != NULL)
-		sp->procChance = 10;
-
-	// Spell 10610 Proc Chance (Windfury Totem Rank 3)
-	sp = dbcSpell.LookupEntryForced(10610);
-	if(sp != NULL)
-		sp->procChance = 10;
-
-	// Spell 11175 Group Relation (Permafrost Rank 1)
-	sp = dbcSpell.LookupEntryForced(11175);
-	if(sp != NULL) {
-		sp->EffectMiscValue[1] = SMT_MISC_EFFECT;
-	}
-
-	// Spell 11687 Proc Chance (Life Tap Rank 4)
-	sp = dbcSpell.LookupEntryForced(11687);
-	if(sp != NULL)
-		sp->procChance = 100;
-
-	// Spell 11688 Proc Chance (Life Tap Rank 5)
-	sp = dbcSpell.LookupEntryForced(11688);
-	if(sp != NULL)
-		sp->procChance = 100;
-
-	// Spell 11689 Proc Chance (Life Tap Rank 6)
-	sp = dbcSpell.LookupEntryForced(11689);
-	if(sp != NULL)
-		sp->procChance = 100;
-
-	// Spell 12284 Proc Chance (Mace Specialization Rank 1)
-	sp = dbcSpell.LookupEntryForced(12284);
-	if(sp != NULL)
-		sp->procChance = 1;
-
-	// Spell 12292 Proc Chance (Death Wish )
-	sp = dbcSpell.LookupEntryForced(12292);
-	if(sp != NULL)
-		sp->procChance = 100;
-
-	// Spell 12322 Proc Chance (Unbridled Wrath Rank 1)
-	sp = dbcSpell.LookupEntryForced(12322);
-	if(sp != NULL)
-		sp->procChance = 8;
-
-	// Spell 12569 Group Relation (Permafrost Rank 2)
-	sp = dbcSpell.LookupEntryForced(12569);
-	if(sp != NULL) {
-		sp->EffectMiscValue[1] = SMT_MISC_EFFECT;
-	}
-
-	// Spell 12571 Group Relation (Permafrost Rank 3)
-	sp = dbcSpell.LookupEntryForced(12571);
-	if(sp != NULL) {
-		sp->EffectMiscValue[1] = SMT_MISC_EFFECT;
-	}
-
-	// Spell 23689 Proc Chance (Darkmoon Card: Heroism)
-	sp = dbcSpell.LookupEntryForced(23689);
-	if(sp != NULL)
-		sp->procChance = 10;
-
-	// Spell 12701 Proc Chance (Mace Specialization Rank 2)
-	sp = dbcSpell.LookupEntryForced(12701);
-	if(sp != NULL)
-		sp->procChance = 2;
-
-	// Spell 12702 Proc Chance (Mace Specialization Rank 3)
-	sp = dbcSpell.LookupEntryForced(12702);
-	if(sp != NULL)
-		sp->procChance = 3;
-
-	// Spell 12703 Proc Chance (Mace Specialization Rank 4)
-	sp = dbcSpell.LookupEntryForced(12703);
-	if(sp != NULL)
-		sp->procChance = 4;
-
-	// Spell 12704 Proc Chance (Mace Specialization Rank 5)
-	sp = dbcSpell.LookupEntryForced(12704);
-	if(sp != NULL)
-		sp->procChance = 6;
-
-	// Spell 12999 Proc Chance (Unbridled Wrath Rank 2)
-	sp = dbcSpell.LookupEntryForced(12999);
-	if(sp != NULL)
-		sp->procChance = 16;
-
-	// Spell 13000 Proc Chance (Unbridled Wrath Rank 3)
-	sp = dbcSpell.LookupEntryForced(13000);
-	if(sp != NULL)
-		sp->procChance = 24;
-
-	// Spell 13001 Proc Chance (Unbridled Wrath Rank 4)
-	sp = dbcSpell.LookupEntryForced(13001);
-	if(sp != NULL)
-		sp->procChance = 32;
-
-	// Spell 13002 Proc Chance (Unbridled Wrath Rank 5)
-	sp = dbcSpell.LookupEntryForced(13002);
-	if(sp != NULL)
-		sp->procChance = 40;
-
-	// Spell 14076 Proc Chance (Dirty Tricks Rank 1)
-	sp = dbcSpell.LookupEntryForced(14076);
-	if(sp != NULL)
-		sp->procChance = 30;
-
-	// Spell 14094 Proc Chance (Dirty Tricks Rank 2)
-	sp = dbcSpell.LookupEntryForced(14094);
-	if(sp != NULL)
-		sp->procChance = 60;
-
-	// Spell 14177 Group Relation\Interrupt Flag (Cold Blood )
-	sp = dbcSpell.LookupEntryForced(14177);
-	if(sp != NULL) {
-		sp->AuraInterruptFlags |= AURA_INTERRUPT_ON_CAST_SPELL;
-	}
-
-	// Spell 15494 Proc Chance (Fury of Forgewright )
-	sp = dbcSpell.LookupEntryForced(15494);
-	if(sp != NULL)
-		sp->procChance = 10;
-
-	// Spell 15600 Proc Chance (Hand of Justice )
-	sp = dbcSpell.LookupEntryForced(15600);
-	if(sp != NULL)
-		sp->procChance = 2;
-
-	// Spell 15601 Proc Chance (Hand of Justice )
-	sp = dbcSpell.LookupEntryForced(15601);
-	if(sp != NULL)
-		sp->procChance = 10;
-
-	// Spell 15642 Proc Chance (Ironfoe )
-	sp = dbcSpell.LookupEntryForced(15642);
-	if(sp != NULL)
-		sp->procChance = 10;
-
-	// Spell 16246 Group Relation (Clearcasting )
-	sp = dbcSpell.LookupEntryForced(16246);
-	if(sp != NULL) {
-		sp->procCharges = 3; // Should be 2 but now 1 is used when spell triggers leaving 2
-		sp->procFlags = PROC_ON_CAST_SPELL;
-	}
-
-	// Spell 16352 Proc Chance (Frostbrand Attack Rank 4)
-	sp = dbcSpell.LookupEntryForced(16352);
-	if(sp != NULL)
-		sp->procChance = 10;
-
-	// Spell 16353 Proc Chance (Frostbrand Attack Rank 5)
-	sp = dbcSpell.LookupEntryForced(16353);
-	if(sp != NULL)
-		sp->procChance = 10;
-
-	// Spell 16355 Proc Chance (Frostbrand Weapon Rank 4)
-	sp = dbcSpell.LookupEntryForced(16355);
-	if(sp != NULL)
-		sp->procChance = 10;
-
-	// Spell 16356 Proc Chance (Frostbrand Weapon Rank 5)
-	sp = dbcSpell.LookupEntryForced(16356);
-	if(sp != NULL)
-		sp->procChance = 10;
-
-	// Spell 16459 Proc Chance (Sword Specialization )
-	sp = dbcSpell.LookupEntryForced(16459);
-	if(sp != NULL)
-		sp->procChance = 10;
-
-	// Spell 16843 Proc Chance (Crimson Fury )
-	sp = dbcSpell.LookupEntryForced(16843);
-	if(sp != NULL)
-		sp->procChance = 10;
-
-	// Spell 16850 Proc Chance (Celestial Focus Rank 1)
-	sp = dbcSpell.LookupEntryForced(16850);
-	if(sp != NULL)
-		sp->procChance = 3;
-
-	// Spell 16923 Proc Chance (Celestial Focus Rank 2)
-	sp = dbcSpell.LookupEntryForced(16923);
-	if(sp != NULL)
-		sp->procChance = 6;
-
-	// Spell 16924 Proc Chance (Celestial Focus Rank 3)
-	sp = dbcSpell.LookupEntryForced(16924);
-	if(sp != NULL)
-		sp->procChance = 9;
-
-	// Spell 18797 Proc Chance (Flurry Axe )
-	sp = dbcSpell.LookupEntryForced(18797);
-	if(sp != NULL)
-		sp->procChance = 10;
-
-	// Spell 18803 Proc Chance (Focus )
-	sp = dbcSpell.LookupEntryForced(18803);
-	if(sp != NULL)
-		sp->procChance = 100;
-
-	// Spell 19105 Proc Chance (MHTest01 Effect )
-	sp = dbcSpell.LookupEntryForced(19105);
-	if(sp != NULL)
-		sp->procChance = 10;
-
-	// Spell 19109 Proc Chance (MHTest02 Effect )
-	sp = dbcSpell.LookupEntryForced(19109);
-	if(sp != NULL)
-		sp->procChance = 10;
-
-	// Spell 19184 Proc Chance (Entrapment Rank 1)
-	sp = dbcSpell.LookupEntryForced(19184);
-	if(sp != NULL)
-		sp->procChance = 5;
-
-	// Spell 19228 Proc Chance (Improved Wing Clip Rank 1)
-	sp = dbcSpell.LookupEntryForced(19228);
-	if(sp != NULL)
-		sp->procChance = 4;
-
-	// Spell 19232 Proc Chance (Improved Wing Clip Rank 2)
-	sp = dbcSpell.LookupEntryForced(19232);
-	if(sp != NULL)
-		sp->procChance = 8;
-
-	// Spell 19233 Proc Chance (Improved Wing Clip Rank 3)
-	sp = dbcSpell.LookupEntryForced(19233);
-	if(sp != NULL)
-		sp->procChance = 12;
-
-	// Spell 19387 Proc Chance (Entrapment Rank 2)
-	sp = dbcSpell.LookupEntryForced(19387);
-	if(sp != NULL)
-		sp->procChance = 10;
-
-	// Spell 19388 Proc Chance (Entrapment Rank 3)
-	sp = dbcSpell.LookupEntryForced(19388);
-	if(sp != NULL)
-		sp->procChance = 15;
-
-	// Spell 20178 Proc Chance (Reckoning )
-	sp = dbcSpell.LookupEntryForced(20178);
-	if(sp != NULL)
-		sp->procChance = 10;
-
-	// Spell 21919 Proc Chance (Thrash )
-	sp = dbcSpell.LookupEntryForced(21919);
-	if(sp != NULL)
-		sp->procChance = 10;
-
-	// Spell 23158 Proc Chance (Concussive Shot Cooldown Reduction )
-	sp = dbcSpell.LookupEntryForced(23158);
-	if(sp != NULL)
-		sp->procChance = 4;
-
-	// Spell 26022 Proc Chance (Pursuit of Justice Rank 1)
-	sp = dbcSpell.LookupEntryForced(26022);
-	if(sp != NULL)
-		sp->procChance = 100;
-
-	// Spell 26023 Proc Chance (Pursuit of Justice Rank 2)
-	sp = dbcSpell.LookupEntryForced(26023);
-	if(sp != NULL)
-		sp->procChance = 100;
-
-	// Spell 27035 Proc Chance (Sword Specialization (OLD) )
-	sp = dbcSpell.LookupEntryForced(27035);
-	if(sp != NULL)
-		sp->procChance = 10;
-
-	// Spell 27521 Proc Chance (Mana Restore )
-	sp = dbcSpell.LookupEntryForced(27521);
-	if(sp != NULL)
-		sp->procChance = 2;
-
-	// Spell 27867 Proc Chance (Freeze )
-	sp = dbcSpell.LookupEntryForced(27867);
-	if(sp != NULL)
-		sp->procChance = 2;
-
-	// Spell 25500 Proc Chance (Frostbrand Weapon Rank 6)
-	sp = dbcSpell.LookupEntryForced(25500);
-	if(sp != NULL)
-		sp->procChance = 10;
-
-	// Spell 25501 Proc Chance (Frostbrand Attack Rank 6)
-	sp = dbcSpell.LookupEntryForced(25501);
-	if(sp != NULL)
-		sp->procChance = 10;
-
-	// Spell 38617 Proc Chance (Frostbrand Attack )
-	sp = dbcSpell.LookupEntryForced(38617);
-	if(sp != NULL)
-		sp->procChance = 10;
-}
-
 void ApplyNormalFixes()
 {
 	//Updating spell.dbc
 
 	Log.Notice("World", "Processing %u spells...", dbcSpell.GetNumRows());
-	Apply112SpellFixes();
 
 	uint32 cnt = dbcSpell.GetNumRows();
 	uint32 effect;
@@ -1807,8 +1431,7 @@ void ApplyNormalFixes()
 
 
 		//////////////////////////////////////////
-	
-		// MAGE								//
+		// MAGE									//
 		//////////////////////////////////////////
 
 
@@ -3744,10 +3367,17 @@ void ApplyNormalFixes()
 			sp->EffectSpellGroupRelation[0] = 8389120 | 256 | 1024;
 	#endif
 
-		//rogue - Killing Spree Stealth fix
+	//Rogue - Killing Spree Stealth fix
 	sp = dbcSpell.LookupEntryForced( 51690 );
 	if( sp != NULL )
 		sp->AttributesEx |= ATTRIBUTESEX_NOT_BREAK_STEALTH;
+
+	// Rogue - Cold Blood (Interrupt Flag)
+	sp = dbcSpell.LookupEntryForced( 14177 );
+	if(sp != NULL)
+	{
+		sp->AuraInterruptFlags |= AURA_INTERRUPT_ON_CAST_SPELL;
+	}
 
 	//////////////////////////////////////////
 	// PRIEST								//
@@ -4983,6 +4613,27 @@ void ApplyNormalFixes()
 		sp = dbcSpell.LookupEntryForced( 41425 ); 
 		if( sp != NULL )
 			sp->c_is_flags = SPELL_FLAG_IS_FORCEDDEBUFF;
+		
+		// Mage - Permafrost Rank 1
+		sp = dbcSpell.LookupEntryForced(11175);
+		if(sp != NULL)
+		{
+			sp->EffectMiscValue[1] = SMT_MISC_EFFECT;
+		}
+
+		// Mage - Permafrost Rank 2
+		sp = dbcSpell.LookupEntryForced(12569);
+		if(sp != NULL)
+		{
+			sp->EffectMiscValue[1] = SMT_MISC_EFFECT;
+		}
+
+		// Mage - Permafrost Rank 3
+		sp = dbcSpell.LookupEntryForced(12571);
+		if(sp != NULL)
+		{
+			sp->EffectMiscValue[1] = SMT_MISC_EFFECT;
+		}
 
 	//////////////////////////////////////////
 	// WARLOCK								//

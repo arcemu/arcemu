@@ -267,7 +267,6 @@ bool BasicTaskExecutor::run()
 	return true;
 }
 
-void Apply112SpellFixes();
 void ApplyNormalFixes();
 
 bool World::SetInitialWorldSettings()
@@ -388,7 +387,6 @@ bool World::SetInitialWorldSettings()
 	FillSpellReplacementsTable();
 	sLog.outString("");*/
 
-	Apply112SpellFixes();
 	ApplyNormalFixes();
 
 #define MAKE_TASK(sp, ptr) tl.AddTask(new Task(new CallbackP0<sp>(sp::getSingletonPtr(), &sp::ptr)))
