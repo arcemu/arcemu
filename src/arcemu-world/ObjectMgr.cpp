@@ -1892,7 +1892,7 @@ void ObjectMgr::LoadTrainers()
 		if(!result2)
 		{
 			Log.Error("LoadTrainers", "Trainer with no spells, entry %u.", entry);
-			if((unsigned long)(tr->UIMessage) != (unsigned long)(NormalTalkMessage))
+			if(tr->UIMessage != NormalTalkMessage)
 				delete [] tr->UIMessage;
 			delete tr;
 			continue;
@@ -1971,7 +1971,7 @@ void ObjectMgr::LoadTrainers()
 			//and now we insert it to our lookup table
 			if(!tr->SpellCount)
 			{
-				if((unsigned long)(tr->UIMessage) != (unsigned long)(NormalTalkMessage))
+				if(tr->UIMessage != NormalTalkMessage)
 					delete [] tr->UIMessage;
 				delete tr;
 				continue;
