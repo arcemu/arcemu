@@ -57,6 +57,8 @@ class SpeedDetector;
 #define TOTAL_NORMAL_RUNE_TYPES 3
 #define TOTAL_USED_RUNES (TOTAL_NORMAL_RUNE_TYPES*2)
 #define TOTAL_RUNE_TYPES 4
+#define MAX_RUNE_VALUE 1
+
 //====================================================================
 //  Inventory
 //  Holds the display id and item type id for objects in
