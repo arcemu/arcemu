@@ -394,8 +394,9 @@ void Object::DestroyForPlayer(Player *target) const
 
 	ASSERT(target);
 
-	WorldPacket data(SMSG_DESTROY_OBJECT, 8);
+	WorldPacket data( SMSG_DESTROY_OBJECT, 9 );
 	data << GetGUID();
+	data << uint8( 0 ); //TODO: unk bool
 
 	target->GetSession()->SendPacket( &data );
 }
@@ -757,7 +758,6 @@ void Object::_BuildValuesUpdate(ByteBuffer * data, UpdateMask *updateMask, Playe
 			break;
 		}
 	}
-
 }
 
 void Object::BuildHeartBeatMsg(WorldPacket *data) const
@@ -852,20 +852,12 @@ bool Object::SetPosition( float newX, float newY, float newZ, float newOrientati
 	return result;
 }
 
-void Object::SetRotation( uint64 guid )
-{
-	WorldPacket data(SMSG_AI_REACTION, 12);
-	data << guid;
-	data << uint32(2);
-	SendMessageToSet(&data, false);
-}
-
 void Object::OutPacketToSet(uint16 Opcode, uint16 Len, const void * Data, bool self)
 {
-	if(self && m_objectTypeId == TYPEID_PLAYER)
-		static_cast< Player* >( this )->GetSession()->OutPacket(Opcode, Len, Data);
+	if( self && m_objectTypeId == TYPEID_PLAYER )
+		static_cast< Player* >( this )->GetSession()->OutPacket( Opcode, Len, Data );
 
-	if(!IsInWorld())
+	if( !IsInWorld() )
 		return;
 
 	std::set<Player*>::iterator itr = m_inRangePlayers.begin();
@@ -1812,15 +1804,15 @@ void Object::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
 
 	if(this->IsUnit())
 	{
-/*		if(!pVictim->isInCombat() && pVictim->IsPlayer())
+		if( pVictim->CombatStatus.IsInCombat() && pVictim->IsPlayer() )
 			sHookInterface.OnEnterCombat( static_cast< Player* >( pVictim ), static_cast< Unit* >( this ) );
 
-		if(IsPlayer() && ! static_cast< Player* >( this )->isInCombat())
-			sHookInterface.OnEnterCombat( static_cast< Player* >( this ), static_cast< Player* >( this ) );*/
+		if( IsPlayer() && static_cast< Player* >( this )->CombatStatus.IsInCombat() == true )
+			sHookInterface.OnEnterCombat( static_cast< Player* >( this ), static_cast< Player* >( this ) );
 
 		//the black sheep , no actually it is paladin : Ardent Defender
-		if(static_cast<Unit*>(this)->DamageTakenPctModOnHP35 && HasFlag(UNIT_FIELD_AURASTATE , AURASTATE_FLAG_HEALTH35) )
-			damage = damage - float2int32(damage * static_cast<Unit*>(this)->DamageTakenPctModOnHP35) / 100 ;
+		if( static_cast< Unit* >( this )->DamageTakenPctModOnHP35 && HasFlag( UNIT_FIELD_AURASTATE , AURASTATE_FLAG_HEALTH35 ) )
+			damage = damage - float2int32( damage * static_cast< Unit* >( this )->DamageTakenPctModOnHP35 ) / 100 ;
 			
 		plr = 0;
 		if(IsPet())
@@ -2860,23 +2852,24 @@ void Object::SendSpellLog(Object *Caster, Object *Target,uint32 Ability, uint8 S
 		)
 		return;
 
-	WorldPacket data(SMSG_SPELLLOGMISS,28);
+
+	WorldPacket data( SMSG_SPELLLOGMISS, 26 );
 	data << Ability;										// spellid
 	data << Caster->GetGUID();							  // caster / player
 	data << (uint8)1;									   // unknown but I think they are const
 	data << (uint32)1;									  // unknown but I think they are const
 	data << Target->GetGUID();							  // target
 	data << SpellLogType;								   // spelllogtype
-	Caster->SendMessageToSet(&data, true);
+	Caster->SendMessageToSet( &data, true );
 }
 
 
 void Object::SendSpellNonMeleeDamageLog( Object* Caster, Object* Target, uint32 SpellID, uint32 Damage, uint8 School, uint32 AbsorbedDamage, uint32 ResistedDamage, bool PhysicalDamage, uint32 BlockedDamage, bool CriticalHit, bool bToset )
 {
-	if ((!Caster || !Target) && SpellID)
+	if( !Caster || !Target || !SpellID )
 		return;
 
-	WorldPacket data(SMSG_SPELLNONMELEEDAMAGELOG,40);
+	WorldPacket data( SMSG_SPELLNONMELEEDAMAGELOG, 48 );
 	data << Target->GetNewGUID();
 	data << Caster->GetNewGUID();
 	data << SpellID;                    // SpellID / AbilityID
