@@ -244,6 +244,15 @@ void Spell::Init(Object* Caster, SpellEntry *info, bool triggered, Aura* aur)
 	{
 		m_targetUnits[i].clear();
 	}
+	//create rune avail snapshot
+	if( p_caster && p_caster->getClass() == DEATHKNIGHT )
+	{
+		m_rune_avail_before = 0;
+		m_runes_to_update = 0;
+		for( int i=0;i<TOTAL_USED_RUNES;i++)
+			if( p_caster->m_runes[ i ] == MAX_RUNE_VALUE )
+				m_rune_avail_before |= (1 << i);
+	}
 }
 
 Spell::~Spell()
@@ -2227,44 +2236,44 @@ enum SpellGoFlags
 	SPELL_GO_FLAGS_ITEM_CASTER      = 0x100,
 	SPELL_GO_FLAGS_UNK200			= 0x200, 
 	SPELL_GO_FLAGS_EXTRA_MESSAGE    = 0x400, //TARGET MISSES AND OTHER MESSAGES LIKE "Resist"
-	//0x800 - needs some additional info to be sent
+	SPELL_GO_FLAGS_POWER_UPDATE		= 0x800, //seems to work hand in hand with some visual effect of update actually
 	//0x1000
 	SPELL_GO_FLAGS_UNK2000			= 0x2000, 
 	SPELL_GO_FLAGS_UNK1000			= 0x1000, //no idea
 	//0x4000
 	SPELL_GO_FLAGS_UNK8000			= 0x8000, //seems to make server send extra 2 bytes before SPELL_GO_FLAGS_UNK1 and after SPELL_GO_FLAGS_UNK20000
 	SPELL_GO_FLAGS_UNK20000			= 0x20000, //seems to make server send an uint32 after m_targets.write
+	SPELL_GO_FLAGS_UNK40000			= 0x40000, //1 uint32. this is not confirmed but i have a feeling about it :D
 	SPELL_GO_FLAGS_UNK80000			= 0x80000, //2 functions called (same ones as for ranged but different)
-	SPELL_GO_FLAGS_UNK200000		= 0x200000, //seems to be some sort of extra guid like thing to be sent
+	SPELL_GO_FLAGS_RUNE_UPDATE		= 0x200000, //2 bytes for the rune cur and rune next flags
 	SPELL_GO_FLAGS_UNK400000		= 0x400000, //seems to make server send an uint32 after m_targets.write
 };
 
 void Spell::SendSpellGo()
 {
 	// Fill UniqueTargets
-	TargetsList::iterator i,j ;
-
+	TargetsList::iterator i, j;
 	for( uint32 x = 0; x < 3; x++ )
 	{
 		if( GetProto()->Effect[x] )
 		{
 			bool add = true;
-			for( i=m_targetUnits[x].begin(); i!=m_targetUnits[x].end(); ++i )
+			for( i = m_targetUnits[x].begin(); i != m_targetUnits[x].end(); i++ )
 			{
 				add = true;
-				for( j=UniqueTargets.begin(); j!=UniqueTargets.end(); ++j )
+				for( j = UniqueTargets.begin(); j != UniqueTargets.end(); j++ )
 				{
-					if(*j == *i)
+					if( (*j) == (*i) )
 					{
 						add = false;
 						break;
 					}
 				}
-
-				if( add && (*i != 0) )
-				{
-					UniqueTargets.push_back( *i );
-				}
+				if( add && (*i) != 0 )
+					UniqueTargets.push_back( (*i) );
+				//TargetsList::iterator itr = std::unique(m_targetUnits[x].begin(), m_targetUnits[x].end());
+				//UniqueTargets.insert(UniqueTargets.begin(),));
+				//UniqueTargets.insert(UniqueTargets.begin(), itr);
 			}
 		}
 	}
@@ -2287,6 +2296,19 @@ void Spell::SendSpellGo()
 	if( ModeratedTargets.size() > 0 )
 		flags |= SPELL_GO_FLAGS_EXTRA_MESSAGE; // 0x400 TARGET MISSES AND OTHER MESSAGES LIKE "Resist"
 
+	//experiments with rune updates
+	uint8 cur_have_runes;
+	if( p_caster && p_caster->getClass() == DEATHKNIGHT ) //send our rune updates ^^
+	{
+		//see what we will have after cast
+		cur_have_runes = 0;
+		for( int i=0;i<TOTAL_USED_RUNES;i++)
+			if( p_caster->m_runes[ i ] == MAX_RUNE_VALUE )
+				cur_have_runes |= (1 << i);
+		if( cur_have_runes != m_rune_avail_before )
+			flags |= SPELL_GO_FLAGS_RUNE_UPDATE | SPELL_GO_FLAGS_POWER_UPDATE;
+	}
+
 	// hacky..
 	if( GetProto()->Id == 8326 ) // death
 		flags = SPELL_GO_FLAGS_ITEM_CASTER | 0x0D;
@@ -2304,7 +2326,7 @@ void Spell::SendSpellGo()
 	data << GetProto()->Id;
 	data << flags;
 	data << getMSTime();
-	data << (uint8)UniqueTargets.size(); // number of hits
+	data << (uint8)(UniqueTargets.size()); //number of hits
 	writeSpellGoTargets( &data );
 
 	if( flags & SPELL_GO_FLAGS_EXTRA_MESSAGE )
@@ -2330,9 +2352,7 @@ void Spell::SendSpellGo()
 					ip = it->GetProto();
 			}
 			else
-			{
 				ip = ItemPrototypeStorage.LookupEntry(2512);	/*rough arrow*/
-			}
 		}
 		else
 		{
@@ -2343,20 +2363,25 @@ void Spell::SendSpellGo()
 		}
 		if( ip != NULL)
 			data << ip->DisplayInfoID << ip->InventoryType;
+		else 
+			data << uint32( 0 ) << uint32( 0 );
 	}
 
-	/*
-	//well no.this does not seem to be correct :(
-	if( ( flags & SPELL_GO_FLAGS_UNK8000 ) && u_caster )
+	//data order depending on flags : 0x800, 0x200000, 0x20000, 0x20, 0x80000, 0x40 (this is not spellgoflag but seems to be from spellentry or packet..)
+//.text:00401110                 mov     eax, [ecx+14h] -> them
+//.text:00401115                 cmp     eax, [ecx+10h] -> us
+	if( flags & SPELL_GO_FLAGS_RUNE_UPDATE )
 	{
-		data << uint16( u_caster->GetUInt32Value( UNIT_FIELD_POWER1 + u_caster->GetPowerType() ) );
-		if( flags & SPELL_GO_FLAGS_UNK8000 )
-			data << uint16( 0 );
-		if( !(flags & SPELL_GO_FLAGS_LOCK_PLAYER_CAST_ANIM) )
-			data << uint8( 0 ); //maybe a new standstate ?
-	}*/
+		if( flags & SPELL_GO_FLAGS_POWER_UPDATE )
+			data << uint32( 0 ); //no idea about this :S.If not sent there is no visual update
+		//we already substracted power
+		data << uint8( m_rune_avail_before );
+		data << uint8( cur_have_runes );
+		for(uint8 i=0;i<m_runes_to_update;i++)
+			data << uint8( 0 ); //values of the rune converted into byte. We just think it is 0 but maybe it is not :P 
+	}
 	if( m_targets.m_targetMask & 0x40 )
-		data << uint8( 0 ); //some spells require this ? not sure if it is last byte or before that
+		data << uint8( 0 ); //some spells require this ? not sure if it is last byte or before that.
 
 	m_caster->SendMessageToSet( &data, true );
 

@@ -2027,7 +2027,9 @@ protected:
     float       Rad[3];
     bool        bRadSet[3];
 	bool        m_cancelled;
-	bool m_isCasting;
+	bool		m_isCasting;
+	uint8		m_rune_avail_before;
+	uint8		m_runes_to_update; //we need to store the values for these later :P
     //void _DamageRangeUpdate();
 
 	ARCEMU_INLINE bool HasTarget(const uint64& guid, TargetsList* tmpMap)

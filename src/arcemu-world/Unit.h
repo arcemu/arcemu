@@ -544,6 +544,11 @@ enum UnitFieldFlags // UNIT_FIELD_FLAGS #46 - these are client flags
 	UNIT_FLAG_UNKNOWN_32                 = 0x80000000, // 32  2147483648
 };
 
+enum UnitFieldFlags2
+{
+	UNIT_FLAG2_ENABLE_POWER_REGEN				= 0x800,
+};
+
 enum UnitDynamicFlags
 {
 	U_DYN_FLAG_LOOTABLE				 = 0x01,

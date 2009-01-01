@@ -54,6 +54,9 @@ class SpeedDetector;
 #define ACHIEVEMENT_SEND_DELAY 1000 //we have this delay of sending auras to other players so client will have time to create object first
 #define LOGIN_CIENT_SEND_DELAY 1000 //we have this delay of sending auras to other players so client will have time to create object first
 
+#define TOTAL_NORMAL_RUNE_TYPES 3
+#define TOTAL_USED_RUNES (TOTAL_NORMAL_RUNE_TYPES*2)
+#define TOTAL_RUNE_TYPES 4
 //====================================================================
 //  Inventory
 //  Holds the display id and item type id for objects in

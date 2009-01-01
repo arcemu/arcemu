@@ -44,6 +44,11 @@ Player::Player( uint32 guid ) : m_mailBox(guid), m_achievementMgr(this)
 	SetUInt32Value( OBJECT_FIELD_TYPE,TYPE_PLAYER|TYPE_UNIT|TYPE_OBJECT);
 	SetUInt32Value( OBJECT_FIELD_GUID,guid);
 	m_wowGuid.Init(GetGUID());
+	SetUInt32Value( UNIT_FIELD_FLAGS_2, UNIT_FLAG2_ENABLE_POWER_REGEN );
+	SetFloatValue( PLAYER_RUNE_REGEN_1, 0.100000f ); 
+	SetFloatValue( PLAYER_RUNE_REGEN_1_1, 0.100000f );
+	SetFloatValue( PLAYER_RUNE_REGEN_1_2, 0.100000f );
+	SetFloatValue( PLAYER_RUNE_REGEN_1_3, 0.100000f );
 
 	m_finishingmovesdodge	= false;
 	iActivePet				= 0;
