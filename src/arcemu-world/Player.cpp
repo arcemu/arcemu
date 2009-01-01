@@ -5226,8 +5226,8 @@ void Player::UpdateStats()
 		break;
 
 	case SHAMAN:   
-		//(Strength x 2) + (Character Level x 2) - 20
-		AP = (str *2) + (lev *2) -20;
+		//(Strength) + (Agility) + (Character Level x 2) - 20
+		AP = str + agi + (lev *2) - 20;
 		//Agility - 10
 		RAP = agi - 10;
 		
