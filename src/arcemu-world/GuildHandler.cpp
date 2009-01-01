@@ -1372,7 +1372,14 @@ void WorldSession::HandleGuildBankDepositItem(WorldPacket & recv_data)
 			source_bagslot = sr.ContainerSlot;
 			source_slot = sr.Slot;
 		}
-
+		
+		if( source_bagslot==0xff && source_slot < INVENTORY_SLOT_ITEM_START && pDestItem != NULL)
+		{
+			sCheatLog.writefromsession(this,"Tried to equip an item from the guild bank (WPE HACK)");
+			SystemMessage("You don't have permission to do that.");
+			return;
+		}
+		
 		if(pDestItem != NULL)
 		{
 			if(pMember->pRank->iTabPermissions[dest_bank].iStacksPerDay == 0)
@@ -1380,14 +1387,7 @@ void WorldSession::HandleGuildBankDepositItem(WorldPacket & recv_data)
 				SystemMessage("You don't have permission to do that.");
 				return;
 			}
-/*
-			Zack : well this was made in an attempt to avoid WPE hack to equip anything to any slot. Seems like i failed :(
-			int8 error;
-			if( error=_player->GetItemInterface()->CanEquipItemInSlot2(source_bagslot, source_slot, pDestItem) )
-			{
-				_player->GetItemInterface()->BuildInventoryChangeError(NULL , pDestItem, error);
-				return;
-			}*/
+
 			if(pMember->pRank->iTabPermissions[dest_bank].iStacksPerDay > 0)
 			{
 				if(pMember->CalculateAllowedItemWithdraws(dest_bank) == 0)

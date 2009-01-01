@@ -363,10 +363,6 @@ void WorldSession::HandleSendMail(WorldPacket & recv_data )
 
 	// Set up the cost
 	int32 cost = 0;
-	if( !sMailSystem.MailOption( MAIL_FLAG_DISABLE_POSTAGE_COSTS ) && !( GetPermissionCount() && sMailSystem.MailOption( MAIL_FLAG_NO_COST_FOR_GM ) ) )
-	{
-		cost = 30;
-	}
 
 	// Check for attached money
 	if( msg.money > 0 )
@@ -378,6 +374,16 @@ void WorldSession::HandleSendMail(WorldPacket & recv_data )
 		return;
 	}
 
+	if( !sMailSystem.MailOption( MAIL_FLAG_DISABLE_POSTAGE_COSTS ) && !( GetPermissionCount() && sMailSystem.MailOption( MAIL_FLAG_NO_COST_FOR_GM ) ) )
+	{
+		cost += 30;
+		if( cost < 30 )//Overflow prevention for those silly WPE hoez.
+		{
+			SendMailError(MAIL_ERR_INTERNAL_ERROR);
+			return;
+		}			
+	}	
+	
 	// check that we have enough in our backpack
 	if( (int32)_player->GetUInt32Value( PLAYER_FIELD_COINAGE ) < cost )
 	{

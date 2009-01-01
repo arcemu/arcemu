@@ -6776,4 +6776,11 @@ void ApplyNormalFixes()
 			sp->EffectApplyAuraName[0] = SPELL_AURA_WATER_WALK;
 			sp->Effect[0] = SPELL_EFFECT_APPLY_AURA;
 		}
+	
+		//Shadow of Death
+		sp = dbcSpell.LookupEntryForced( 49157 );
+		if( sp != NULL )
+		{
+			sp->EffectApplyAuraName[0] = SPELL_AURA_DUMMY;
+		}
 }
