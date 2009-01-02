@@ -2751,6 +2751,7 @@ void ApplyNormalFixes()
 			sp->Effect[0] = SPELL_EFFECT_APPLY_AREA_AURA;
 		}
 
+        /*
         // Paladin - Sheath of Light - Rank 1
         sp = dbcSpell.LookupEntryForced( 53501 );
         if( sp != NULL )
@@ -2776,7 +2777,7 @@ void ApplyNormalFixes()
             sp->EffectApplyAuraName[0] = SPELL_AURA_MOD_SPELL_DAMAGE_FROM_AP;
             sp->EffectApplyAuraName[1] = SPELL_AURA_DUMMY;
             sp->EffectApplyAuraName[2] = SPELL_AURA_MOD_HEALING_FROM_AP;
-        }
+        }*/
 
 	//////////////////////////////////////////
 	// HUNTER								//
