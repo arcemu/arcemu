@@ -894,8 +894,9 @@ public:
 	std::map<uint32,struct SpellCharge> m_chargeSpells;
 	deque<uint32> m_chargeSpellRemoveQueue;
 	bool m_chargeSpellsInUse;
-	ARCEMU_INLINE void SetOnMeleeSpell(uint32 spell ) { m_meleespell = spell; }
+	ARCEMU_INLINE void SetOnMeleeSpell( uint32 spell, uint8 ecn = 0 ) { m_meleespell = spell; m_meleespell_ecn = ecn;  }
 	ARCEMU_INLINE uint32 GetOnMeleeSpell() { return m_meleespell; }
+	ARCEMU_INLINE uint8 GetOnMeleeSpellEcn() { return m_meleespell_ecn; }
 
 	uint32 DoDamageSplitTarget(uint32 res, uint32 school_type, bool melee_dmg);
 
@@ -1219,9 +1220,9 @@ public:
 	ARCEMU_INLINE void DisableAI() { m_useAI = false; }
 	ARCEMU_INLINE void EnableAI() { m_useAI = true; }
 
-	ARCEMU_INLINE void SetPowerType(uint8 type)
+	ARCEMU_INLINE void SetPowerType( uint8 type )
 	{
-		SetByte(UNIT_FIELD_BYTES_0,3,type);
+		SetByte( UNIT_FIELD_BYTES_0, 3, type );
 	}
 
 	ARCEMU_INLINE bool IsSpiritHealer()
@@ -1327,6 +1328,7 @@ protected:
 	Unit ();
 
 	uint32 m_meleespell;
+	uint8 m_meleespell_ecn; // extra_cast_number
 	void _UpdateSpells(uint32 time);
 
 	uint16 m_H_regenTimer;

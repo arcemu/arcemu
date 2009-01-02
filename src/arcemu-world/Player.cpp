@@ -1147,13 +1147,14 @@ void Player::_EventAttack( bool offhand )
 		} 
 		else 
 		{ 
-			SpellEntry *spellInfo = dbcSpell.LookupEntry(GetOnMeleeSpell());
-			SetOnMeleeSpell(0);
+			SpellEntry *spellInfo = dbcSpell.LookupEntry( GetOnMeleeSpell() );
 			Spell *spell = SpellPool.PooledNew();
-			spell->Init(this,spellInfo,true,NULL);
+			spell->Init( this, spellInfo, true, NULL );
+			spell->extra_cast_number = GetOnMeleeSpellEcn();
 			SpellCastTargets targets;
 			targets.m_unitTarget = GetSelection();
-			spell->prepare(&targets);
+			spell->prepare( &targets );
+			SetOnMeleeSpell( 0 );
 		}
 	}
 }

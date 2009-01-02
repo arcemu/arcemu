@@ -1785,9 +1785,9 @@ void Spell::cast(bool check)
 			}*/
 
 			m_isCasting = false;
-			SendCastResult(cancastresult);
+			SendCastResult( cancastresult );
 			if( u_caster != NULL )
-				u_caster->SetOnMeleeSpell(GetProto()->Id);
+				u_caster->SetOnMeleeSpell( GetProto()->Id, extra_cast_number );
 
 			finish();
 		}
