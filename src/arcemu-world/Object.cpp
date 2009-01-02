@@ -852,6 +852,14 @@ bool Object::SetPosition( float newX, float newY, float newZ, float newOrientati
 	return result;
 }
 
+void Object::SetRotation( uint64 guid )
+{
+	WorldPacket data(SMSG_AI_REACTION, 12);
+	data << guid;
+	data << uint32(2);
+	SendMessageToSet(&data, false);
+}
+
 void Object::OutPacketToSet(uint16 Opcode, uint16 Len, const void * Data, bool self)
 {
 	if( self && m_objectTypeId == TYPEID_PLAYER )

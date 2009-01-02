@@ -21,7 +21,7 @@
 #ifndef __WORLD_H
 #define __WORLD_H
 
-#define IS_INSTANCE(a) (((a)>1)&&((a)!=530))
+#define IS_INSTANCE( a ) ( ( a > 1 ) && ( a != 530 ) && ( a != 571 ) )
 
 class Object;
 class WorldPacket;

@@ -69,7 +69,7 @@ function DoomWalker_OnLeaveCombat(unit)
 unit:RemoveEvents()
 end
 
-function DoomWalker_KilledTarget(unit)
+function DoomWalker_OnKilledTarget(unit)
 unit:SendChatMessage(12, 0, "Target Exterminated.")
 unit:PlaySoundToSet (11351)
 unit:RemoveEvents()

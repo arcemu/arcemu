@@ -10479,7 +10479,7 @@ void Player::_ModifySkillMaximum(uint32 SkillLine, uint32 NewMax)
 {
 	// force to be within limits
 #if PLAYER_LEVEL_CAP==80
-	NewMax = ( NewMax > 400 ? 400 : NewMax );
+	NewMax = ( NewMax > 450 ? 450 : NewMax );
 #else
 	NewMax = ( NewMax > 375 ? 375 : NewMax );
 #endif

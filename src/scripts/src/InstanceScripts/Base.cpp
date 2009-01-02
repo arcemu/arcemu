@@ -335,16 +335,20 @@ ArcScriptCreatureAI* ArcScriptCreatureAI::SpawnCreature(uint32 pCreatureId, bool
 	return SpawnCreature(pCreatureId, _unit->GetPositionX(), _unit->GetPositionY(), _unit->GetPositionZ(), _unit->GetOrientation(), pForceSameFaction);
 }
 
-ArcScriptCreatureAI* ArcScriptCreatureAI::SpawnCreature(uint32 pCreatureId, float pX, float pY, float pZ, float pO, bool pForceSameFaction)
+ArcScriptCreatureAI* ArcScriptCreatureAI::SpawnCreature( uint32 pCreatureId, float pX, float pY, float pZ, float pO, bool pForceSameFaction )
 {
-	Creature* NewCreature = _unit->GetMapMgr()->GetInterface()->SpawnCreature(pCreatureId, pX, pY, pZ, pO, false, false, 0, 0);
-	ArcScriptCreatureAI* CreatureScriptAI = ( NewCreature ) ? static_cast<ArcScriptCreatureAI*>(NewCreature->GetScript()) : NULL;
-	if( pForceSameFaction && NewCreature )
+	Creature* NewCreature = _unit->GetMapMgr()->GetInterface()->SpawnCreature( pCreatureId, pX, pY, pZ, pO, false, false, 0, 0 );
+	if( NewCreature != NULL )
 	{
-		uint32 FactionTemplate = _unit->GetUInt32Value(UNIT_FIELD_FACTIONTEMPLATE);
-		NewCreature->SetUInt32Value(UNIT_FIELD_FACTIONTEMPLATE, FactionTemplate);
+		NewCreature->LoadScript();
+		ArcScriptCreatureAI* CreatureScriptAI = static_cast< ArcScriptCreatureAI* >( NewCreature->GetScript() );
+
+		if( pForceSameFaction )
+			NewCreature->SetUInt32Value( UNIT_FIELD_FACTIONTEMPLATE, _unit->GetUInt32Value( UNIT_FIELD_FACTIONTEMPLATE ) );
+
+		return CreatureScriptAI;
 	}
-	return CreatureScriptAI;
+	return NULL;
 }
 
 void ArcScriptCreatureAI::Despawn(uint32 pDelay, uint32 pRespawnTime)
