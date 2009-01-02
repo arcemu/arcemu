@@ -910,7 +910,7 @@ public:
     uint32              taxi_model_id;
 	uint32              lastNode;
     uint32              m_taxi_ride_time;
-    uint32              m_taximask[8];
+    uint32              m_taximask[12];
     float               m_taxi_pos_x;
     float               m_taxi_pos_y;
     float               m_taxi_pos_z;

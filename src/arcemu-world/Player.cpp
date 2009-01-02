@@ -679,7 +679,7 @@ bool Player::Create(WorldPacket& data )
 	m_restAmount = 0;
 	m_restState = 0;
 
-	memset(m_taximask, 0, sizeof(uint32)*8);
+	memset(m_taximask, 0, sizeof(uint32)*12);
 	
 	// set race dbc
 	myRace = dbcCharRace.LookupEntry(race);
@@ -2355,7 +2355,7 @@ void Player::SaveToDB(bool bNewCharacter /* =false */)
 
 	ss << m_zoneId << ", '";
 		
-	for(uint32 i = 0; i < 8; i++ )
+	for(uint32 i = 0; i < 12; i++ )
 		ss << m_taximask[i] << " ";
 	ss << "', "
 	
@@ -5791,7 +5791,7 @@ void Player::LoadTaxiMask(const char* data)
 	vector<string>::iterator iter;
 
 	for (iter = tokens.begin(), index = 0;
-		(index < 8) && (iter != tokens.end()); ++iter, ++index)
+		(index < 12) && (iter != tokens.end()); ++iter, ++index)
 	{
 		m_taximask[index] = atol((*iter).c_str());
 	}
@@ -10676,7 +10676,7 @@ void Player::save_Taxi()
 {
 	char buffer[1024] = {0};
 	int p = 0;
-	for(uint32 i = 0; i < 8; ++i)
+	for(uint32 i = 0; i < 12; ++i)
 		p += sprintf(&buffer[p], "%u ", m_taximask[i]);
 
 	if(m_onTaxi) {
