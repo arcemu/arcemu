@@ -4863,7 +4863,7 @@ void Spell::Heal(int32 amount, bool ForceCrit)
 		//Bonus from Intellect & Spirit
 		if( p_caster != NULL )
 		{
-			for(uint32 a = 0; a < 5; a++)
+			for(uint32 a = 0; a < 6; a++)
 				bonus += float2int32(p_caster->SpellHealDoneByAttribute[a][GetProto()->School] * p_caster->GetUInt32Value(UNIT_FIELD_STAT0 + a));
 		}
 

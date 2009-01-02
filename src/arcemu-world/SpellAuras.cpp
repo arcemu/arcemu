@@ -289,7 +289,7 @@ pSpellAura SpellAuraHandler[TOTAL_SPELL_AURAS]={
 		&Aura::SpellAuraNULL,//265
 		&Aura::SpellAuraNULL,//266
 		&Aura::SpellAuraNULL,//267
-		&Aura::SpellAuraNULL,//268
+		&Aura::SpellAuraModShammyAttackPower, //268 Shaman attack power Talent 
 		&Aura::SpellAuraNULL,//269
 		&Aura::SpellAuraNULL,//270
 		&Aura::SpellAuraNULL,//271
@@ -545,8 +545,8 @@ const char* SpellAuraNames[TOTAL_SPELL_AURAS] = {
 	"",													// 234
 	"",													// 235
 	"CONTROL_VEHICLE",									// 236
-	"",													// 237
-	"",													// 238
+    "SPELL_AURA_MOD_HEALING_FROM_AP",                   // 237
+    "SPELL_AURA_MOD_SPELL_DAMAGE_FROM_AP",              // 238
 	"",													// 239
 	"MODIFY_AXE_SKILL",									// 240
 	"241",												// 241
@@ -560,6 +560,7 @@ const char* SpellAuraNames[TOTAL_SPELL_AURAS] = {
     "249",												// 249
     "MOD_INCREASE_HEALTH_2",							// 250
     "MOD_ENEMY_DODGE",									// 251
+	"MOD_SHAMMY_ATTACK_POWER",                          // 268 Mental Dexterity (increases ap by x% of intellect)
 };
 
 
@@ -7846,6 +7847,7 @@ void Aura::SpellAuraIncreaseHealingByAttribute(bool apply)
 			return;
 
 		val = mod->m_amount;
+		
 		if(val<0)
 			SetNegative();
 		else
@@ -9057,4 +9059,17 @@ void Aura::SpellAuraRemoveReagentCost(bool apply)
 	{
 		static_cast<Player*>(m_target)->removeReagentCost = false;
 	}
+}
+
+void Aura::SpellAuraModShammyAttackPower(bool apply)
+{
+	if(mod->m_amount<0)
+		SetNegative();
+	else
+		SetPositive();
+
+	uint32 Intell=(m_target->GetUInt32Value(UNIT_FIELD_STAT3) * mod->m_amount / 100);
+	
+	m_target->ModUnsigned32Value(UNIT_FIELD_ATTACK_POWER_MODS,apply? uint32(Intell) : -uint32(Intell));
+	m_target->CalcDamage();
 }

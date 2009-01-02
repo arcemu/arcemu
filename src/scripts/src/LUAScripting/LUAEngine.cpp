@@ -2929,7 +2929,9 @@ int luaUnit_GetPlayerClass(lua_State * L, Unit * ptr)
       case 5:
          lua_pushstring(L, "Priest");
          break;
-      //case 6:
+      case 6:
+		  lua_pushstring(L, "DeathKnight");
+		  break;
       case 7:
          lua_pushstring(L, "Shaman");
          break;

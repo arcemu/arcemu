@@ -2751,6 +2751,32 @@ void ApplyNormalFixes()
 			sp->Effect[0] = SPELL_EFFECT_APPLY_AREA_AURA;
 		}
 
+        // Paladin - Sheath of Light - Rank 1
+        sp = dbcSpell.LookupEntryForced( 53501 );
+        if( sp != NULL )
+        {
+            sp->EffectApplyAuraName[0] = SPELL_AURA_MOD_SPELL_DAMAGE_FROM_AP;
+            sp->EffectApplyAuraName[1] = SPELL_AURA_DUMMY;
+            sp->EffectApplyAuraName[2] = SPELL_AURA_MOD_HEALING_FROM_AP;
+        }
+
+        // Paladin - Sheath of Light - Rank 2
+        sp = dbcSpell.LookupEntryForced( 53502 );
+        if( sp != NULL )
+        {
+            sp->EffectApplyAuraName[0] = SPELL_AURA_MOD_SPELL_DAMAGE_FROM_AP;
+            sp->EffectApplyAuraName[1] = SPELL_AURA_DUMMY;
+            sp->EffectApplyAuraName[2] = SPELL_AURA_MOD_HEALING_FROM_AP;
+        }
+
+        // Paladin - Sheath of Light - Rank 3
+        sp = dbcSpell.LookupEntryForced( 53503 );
+        if( sp != NULL )
+        {
+            sp->EffectApplyAuraName[0] = SPELL_AURA_MOD_SPELL_DAMAGE_FROM_AP;
+            sp->EffectApplyAuraName[1] = SPELL_AURA_DUMMY;
+            sp->EffectApplyAuraName[2] = SPELL_AURA_MOD_HEALING_FROM_AP;
+        }
 
 	//////////////////////////////////////////
 	// HUNTER								//
@@ -3379,6 +3405,12 @@ void ApplyNormalFixes()
 		sp->AuraInterruptFlags |= AURA_INTERRUPT_ON_CAST_SPELL;
 	}
 
+	/* Rogue - Improved Expose Armor (rank 1)
+	sp = dbcSpell.LookupEntryForced( 14168 );
+	if(sp != NULL)
+	{
+		sp->EffectApplyAuraName[0] = */
+
 	//////////////////////////////////////////
 	// PRIEST								//
 	//////////////////////////////////////////
@@ -3935,17 +3967,18 @@ void ApplyNormalFixes()
 		if( sp != NULL )
 			sp->procFlags = PROC_ON_CRIT_HIT_VICTIM;
 
-		/**********************************************************
-		 *	Shamanistic Focus
-		 **********************************************************/
+		//Shaman - Shamanistic Focus
+		// needs to be fixed (doesn't need to proc, it now just reduces mana cost always by %)
 		sp = dbcSpell.LookupEntryForced( 43338 );
 		if( sp != NULL )
-			sp->procFlags = PROC_ON_CRIT_ATTACK;
+		{
+			sp->EffectTriggerSpell[0] = 43339;
+		}
 
 		sp = dbcSpell.LookupEntryForced( 43339 );
 		if( sp != NULL )
 		{
-			sp->procFlags = PROC_ON_CAST_SPELL;
+			sp->EffectMiscValue[0] = SMT_COST;
 		}
 
 		//shaman - Improved Chain Heal
@@ -4126,6 +4159,41 @@ void ApplyNormalFixes()
 			sp->procChance = sp->EffectBasePoints[0] + 1;
 		}
 		*/
+		/*********************************************************
+		 * Unleashed Rage - LordLeeCH
+		 *********************************************************/
+		sp = dbcSpell.LookupEntryForced( 30802 ); 
+		if( sp != NULL )
+		{
+			sp->procFlags = PROC_ON_CRIT_ATTACK;
+			sp->Effect[0] = SPELL_EFFECT_APPLY_AREA_AURA;
+		}
+		sp = dbcSpell.LookupEntryForced( 30808 ); 
+		if( sp != NULL )
+		{
+			sp->procFlags = PROC_ON_CRIT_ATTACK;
+			sp->Effect[0] = SPELL_EFFECT_APPLY_AREA_AURA;
+		}
+		sp = dbcSpell.LookupEntryForced( 30809 ); 
+		if( sp != NULL )
+		{
+			sp->procFlags = PROC_ON_CRIT_ATTACK;
+			sp->Effect[0] = SPELL_EFFECT_APPLY_AREA_AURA;
+		}
+		sp = dbcSpell.LookupEntryForced( 30810 ); 
+		if( sp != NULL )
+		{
+			sp->procFlags = PROC_ON_CRIT_ATTACK;
+			sp->Effect[0] = SPELL_EFFECT_APPLY_AREA_AURA;
+		}
+
+		sp = dbcSpell.LookupEntryForced( 30811 ); 
+		if( sp != NULL )
+		{
+			sp->procFlags = PROC_ON_CRIT_ATTACK;
+			sp->Effect[0] = SPELL_EFFECT_APPLY_AREA_AURA;
+		}
+
 
 		/**********************************************************
 		 *	Elemental Devastation
@@ -4185,31 +4253,37 @@ void ApplyNormalFixes()
 		if( sp != NULL )
 		{
 			sp->Effect[0] = SPELL_EFFECT_APPLY_AREA_AURA;
+			sp->Effect[1] = SPELL_EFFECT_APPLY_AREA_AURA;
 		}
 		sp = dbcSpell.LookupEntryForced( 8162 ); 
 		if( sp != NULL )
 		{
 			sp->Effect[0] = SPELL_EFFECT_APPLY_AREA_AURA;
+			sp->Effect[1] = SPELL_EFFECT_APPLY_AREA_AURA;
 		}
 		sp = dbcSpell.LookupEntryForced( 8163 ); 
 		if( sp != NULL )
 		{
 			sp->Effect[0] = SPELL_EFFECT_APPLY_AREA_AURA;
+			sp->Effect[1] = SPELL_EFFECT_APPLY_AREA_AURA;
 		}
 		sp = dbcSpell.LookupEntryForced( 10441 ); 
 		if( sp != NULL )
 		{
 			sp->Effect[0] = SPELL_EFFECT_APPLY_AREA_AURA;
+			sp->Effect[1] = SPELL_EFFECT_APPLY_AREA_AURA;
 		}
 		sp = dbcSpell.LookupEntryForced( 25362 ); 
 		if( sp != NULL )
 		{
 			sp->Effect[0] = SPELL_EFFECT_APPLY_AREA_AURA;
+			sp->Effect[1] = SPELL_EFFECT_APPLY_AREA_AURA;
 		}
 		sp = dbcSpell.LookupEntryForced( 25527 ); 
 		if( sp != NULL )
 		{
 			sp->Effect[0] = SPELL_EFFECT_APPLY_AREA_AURA;
+			sp->Effect[1] = SPELL_EFFECT_APPLY_AREA_AURA;
 		}
 		//////////////////////////////////////////
 		// SHAMAN STONESKIN TOTEM				//

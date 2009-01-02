@@ -1833,6 +1833,12 @@ uint32 Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, ui
 						//we need a finishing move for this 
 						if(!(CastingSpell->c_is_flags & SPELL_FLAG_IS_FINISHING_MOVE) || victim==this)
 							continue;
+					//should fix issue with combo points
+					if(IsPlayer())
+						{
+							static_cast<Player*>(this)->m_spellcomboPoints++;
+							static_cast<Player*>(this)->UpdateComboPoints();
+						}
 					}break;
 				//rogue - Relentless Strikes
 				case 14181:

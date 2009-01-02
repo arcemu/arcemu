@@ -267,6 +267,7 @@ enum MOD_TYPES
     SPELL_AURA_249 = 249,
     SPELL_AURA_MOD_INCREASE_HEALTH_2 = 250,
     SPELL_AURA_MOD_ENEMY_DODGE = 251,
+	SPELL_AURA_MOD_SHAMMY_ATTACK_POWER = 268,
     TOTAL_SPELL_AURAS = 284,
 };
 enum AuraTickFlags
@@ -618,6 +619,7 @@ public:
 	void EventPeriodicDrink(uint32 amount);
 	void SpellAuraAddHealth(bool apply);
 	void SpellAuraRemoveReagentCost(bool apply);
+	void SpellAuraModShammyAttackPower(bool apply);
 
 	void UpdateAuraModDecreaseSpeed();
 
