@@ -249,7 +249,7 @@ enum MOD_TYPES
 	SPELL_AURA_FINISHING_MOVES_CANNOT_BE_DODGED = 202,
     SPELL_AURA_REDUCE_ATTACKER_CRICTICAL_HIT_DAMAGE_MELEE_PCT = 203,
     SPELL_AURA_REDUCE_ATTACKER_CRICTICAL_HIT_DAMAGE_RANGED_PCT = 204,
-    SPELL_AURA_INCREASE_RANGED_ATTACK_POWER_PCT_OF_INTELLECT = 212,
+    SPELL_AURA_MOD_RANGED_ATTACK_POWER_BY_STAT_PCT = 212,
     SPELL_AURA_INCREASE_RAGE_FROM_DAMAGE_DEALT_PCT = 213,
     SPELL_AURA_INCREASE_CASTING_TIME_PCT = 216,
     SPELL_AURA_REGEN_MANA_STAT_PCT=219,
@@ -604,7 +604,7 @@ public:
 	void SpellAuraSpiritOfRedemption(bool apply);
 	void SpellAuraIncreaseAttackerSpellCrit(bool apply);
 	void SpellAuraIncreaseRepGainPct(bool apply);
-	void SpellAuraIncreaseRangedAPStatPCT(bool apply);
+	void SpellAuraIncreaseRAPbyStatPct(bool apply);
 	//void SpellAuraModRangedDamageTakenPCT(bool apply);
 	void SpellAuraModBlockValue(bool apply);
 	void SpellAuraFinishingMovesCannotBeDodged(bool apply);
@@ -619,7 +619,7 @@ public:
 	void EventPeriodicDrink(uint32 amount);
 	void SpellAuraAddHealth(bool apply);
 	void SpellAuraRemoveReagentCost(bool apply);
-	void SpellAuraModShammyAttackPower(bool apply);
+	void SpellAuraIncreaseAPbyStatPct(bool apply);
 
 	void UpdateAuraModDecreaseSpeed();
 

@@ -233,7 +233,7 @@ pSpellAura SpellAuraHandler[TOTAL_SPELL_AURAS]={
 		&Aura::SpellAuraNULL,//209  // mod flight speed?
 		&Aura::SpellAuraNULL,//210	// commentator's command - spell 42009
 		&Aura::SpellAuraIncreaseFlightSpeed,//211
-		&Aura::SpellAuraIncreaseRangedAPStatPCT,//SPELL_AURA_MOD_RANGED_ATTACK_POWER_OF_INTELLECT //212 Apply Aura: Increase Ranged Atk Power by % of Intellect
+		&Aura::SpellAuraIncreaseRAPbyStatPct,//SPELL_AURA_MOD_RANGED_ATTACK_POWER_BY_STAT_PCT //212 Apply Aura: Increase Ranged Atk Power by % of stat
 		&Aura::SpellAuraIncreaseRageFromDamageDealtPCT, //213 Apply Aura: Increase Rage from Damage Dealt by %
 		&Aura::SpellAuraNULL,//214 // Tamed Pet Passive (DND)
 		&Aura::SpellAuraRemoveReagentCost,//215 // arena preparation buff - cancel soul shard requirement?
@@ -289,7 +289,7 @@ pSpellAura SpellAuraHandler[TOTAL_SPELL_AURAS]={
 		&Aura::SpellAuraNULL,//265
 		&Aura::SpellAuraNULL,//266
 		&Aura::SpellAuraNULL,//267
-		&Aura::SpellAuraModShammyAttackPower, //268 Shaman attack power Talent 
+		&Aura::SpellAuraIncreaseAPbyStatPct, //268 Increase attack power by % of stat
 		&Aura::SpellAuraNULL,//269
 		&Aura::SpellAuraNULL,//270
 		&Aura::SpellAuraNULL,//271
@@ -6691,7 +6691,7 @@ void Aura::SendModifierLog( int32** m, int32 v, uint32* mask, uint8 type, bool p
 	}
 	else
 	{
-		for(uint32 bit = 0; bit < SPELL_GROUPS; ++bit,++intbit)
+		for(uint8 bit = 0; bit < SPELL_GROUPS; ++bit,++intbit)
 		{
 			if(intbit == 32)
 			{
@@ -6736,7 +6736,7 @@ void Aura::SendDummyModifierLog( std::map< SpellEntry*, uint32 >* m, SpellEntry*
 	}
 
 	uint32 intbit = 0, groupnum = 0;
-	for(uint32 bit = 0; bit < SPELL_GROUPS; ++bit, ++intbit)
+	for(uint8 bit = 0; bit < SPELL_GROUPS; ++bit, ++intbit)
 	{
 		if(intbit == 32)
  		{
@@ -6980,7 +6980,7 @@ void Aura::SpellAuraModHealing(bool apply)
 	else
 		val=-mod->m_amount;
 
-	for(uint32 x=0;x<7;x++)
+	for(uint8 x=0;x<7;x++)
 	{
 		if (mod->m_miscValue & (((uint32)1)<<x) )
 		{
@@ -7036,7 +7036,7 @@ void Aura::SpellAuraModHealingPCT(bool apply)
 	else
 		val=-mod->m_amount;
 
-	for(uint32 x=0; x<7; x++)
+	for(uint8 x=0; x<7; x++)
 	{
 		if (mod->m_miscValue & (((uint32)1)<<x) )
 		{
@@ -7190,7 +7190,7 @@ void Aura::SpellAuraModTotalStatPerc(bool apply)
 	{
 		if(m_target->IsPlayer())
 		{
-			for(uint32 x=0;x<5;x++)
+			for(uint8 x=0;x<5;x++)
 			{
 				if(mod->m_amount>0)
 					static_cast< Player* >( m_target )->TotalStatModPctPos[x] += val;
@@ -8758,24 +8758,22 @@ void Aura::SpellAuraIncreaseRepGainPct(bool apply)
 	}
 }
 
-void Aura::SpellAuraIncreaseRangedAPStatPCT(bool apply)
+void Aura::SpellAuraIncreaseRAPbyStatPct( bool apply )
 {
-	if(p_target)
+	if( apply )
 	{
-		if(apply)
-		{
-			if(mod->m_amount > 0)
-				SetPositive();
-			else
-				SetNegative();
-
-			p_target->m_rap_mod_pct += mod->m_amount;
-		}
+		if( mod->m_amount > 0 )
+			SetPositive();
 		else
-			p_target->m_rap_mod_pct -= mod->m_amount;
+			SetNegative();
 
-		p_target->UpdateStats();
+		mod->fixed_amount[mod->i] = m_target->GetUInt32Value( UNIT_FIELD_STAT0 + mod->m_miscValue ) * mod->m_amount / 100;
+		m_target->ModUnsigned32Value( UNIT_FIELD_RANGED_ATTACK_POWER_MODS, mod->fixed_amount[mod->i] );
 	}
+	else
+		m_target->ModUnsigned32Value( UNIT_FIELD_RANGED_ATTACK_POWER_MODS, -mod->fixed_amount[mod->i] );
+
+	m_target->CalcDamage();
 }
 
 /* not used
@@ -9061,15 +9059,20 @@ void Aura::SpellAuraRemoveReagentCost(bool apply)
 	}
 }
 
-void Aura::SpellAuraModShammyAttackPower(bool apply)
+void Aura::SpellAuraIncreaseAPbyStatPct( bool apply )
 {
-	if(mod->m_amount<0)
-		SetNegative();
-	else
-		SetPositive();
+	if( apply )
+	{
+		if( mod->m_amount > 0 )
+			SetPositive();
+		else
+			SetNegative();
 
-	uint32 Intell=(m_target->GetUInt32Value(UNIT_FIELD_STAT3) * mod->m_amount / 100);
-	
-	m_target->ModUnsigned32Value(UNIT_FIELD_ATTACK_POWER_MODS,apply? uint32(Intell) : -uint32(Intell));
+		mod->fixed_amount[mod->i] = m_target->GetUInt32Value( UNIT_FIELD_STAT0 + mod->m_miscValue ) * mod->m_amount / 100;
+		m_target->ModUnsigned32Value( UNIT_FIELD_ATTACK_POWER_MODS, mod->fixed_amount[mod->i] );
+	}
+	else
+		m_target->ModUnsigned32Value( UNIT_FIELD_ATTACK_POWER_MODS, -mod->fixed_amount[mod->i] );
+
 	m_target->CalcDamage();
 }
