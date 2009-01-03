@@ -1696,6 +1696,7 @@ void Player::GiveXP(uint32 xp, const uint64 &guid, bool allowbonus)
 			}
 		}
 		//Event_Achiement_Received(ACHIEVEMENT_CRITERIA_TYPE_REACH_LEVEL,0,level);
+		GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_REACH_LEVEL);
 	}
 
 	// Set the update bit
@@ -1704,7 +1705,6 @@ void Player::GiveXP(uint32 xp, const uint64 &guid, bool allowbonus)
 	HandleProc(PROC_ON_GAIN_EXPIERIENCE, this, NULL);
 	m_procCounter = 0;
 
-	GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_REACH_LEVEL);
 }
 
 void Player::smsg_InitialSpells()
@@ -1844,6 +1844,7 @@ void Player::_SavePet(QueryBuffer * buf)
 			<< itr->second->xp << "','"
 			<< (itr->second->active ?  1 : 0) + itr->second->stablestate * 10 << "','"
 			<< itr->second->level << "','"
+			<< "100','"// happiness is not a member of m_Pets
 			<< itr->second->actionbar << "','"
 			<< itr->second->happinessupdate << "','"
 			<< itr->second->summon << "','"
@@ -4522,6 +4523,7 @@ void Player::KillPlayer()
 
 	if(this->getClass() == WARRIOR) // Rage resets on death
 		SetPower(POWER_TYPE_RAGE, 0);
+	if(this->getClass() == DEATHKNIGHT)
 		SetPower(POWER_TYPE_RUNIC_POWER, 0);
 
 	sHookInterface.OnDeath(this);
@@ -7985,7 +7987,7 @@ void Player::UpdateChannels(uint16 AreaID)
 	if(!AreaID || AreaID == 0xFFFF)
 	{
 		MapInfo *pMapinfo = WorldMapInfoStorage.LookupEntry(GetMapId());
-		if(GetMapId() != 1 && GetMapId() != 0 && GetMapId() != 530)
+		if(IS_INSTANCE(GetMapId()))
 			AreaName = pMapinfo->name;
 		else
 			return;//How'd we get here?

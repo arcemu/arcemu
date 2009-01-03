@@ -202,6 +202,8 @@ bool Player::IsHostileBasedOnReputation( FactionDBC * dbc )
 
 void Player::ModStanding( uint32 Faction, int32 Value )
 {
+// 999/1000 Exalted = current max
+#define MAX_REPUTATION_VALUE 42999
 	FactionDBC * f = dbcFaction.LookupEntry( Faction );
 	if ( f == NULL || f->RepListId < 0 )
 		return;
@@ -230,7 +232,8 @@ void Player::ModStanding( uint32 Faction, int32 Value )
 		{
 			itr->second->standing += Value;
 		}
-		
+		if(itr->second->standing > MAX_REPUTATION_VALUE)
+			itr->second->standing = MAX_REPUTATION_VALUE;
 		OnModStanding( f, itr->second );
    }
 

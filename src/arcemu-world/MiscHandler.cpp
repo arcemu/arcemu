@@ -295,6 +295,7 @@ void WorldSession::HandleLootMoneyOpcode( WorldPacket & recv_data )
 			else
 			{
 				GetPlayer()->ModUnsigned32Value( PLAYER_FIELD_COINAGE , money);
+				GetPlayer()->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_LOOT_MONEY, money, 0, 0);
 			}
 			sHookInterface.OnLoot(_player, pt, money, 0);
 		}
@@ -342,6 +343,7 @@ void WorldSession::HandleLootMoneyOpcode( WorldPacket & recv_data )
 				{
 					(*itr)->ModUnsigned32Value(PLAYER_FIELD_COINAGE, share);
 					(*itr)->GetSession()->SendPacket(&pkt);
+					(*itr)->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_LOOT_MONEY, share, 0, 0);
 				}
 			}
 		}
