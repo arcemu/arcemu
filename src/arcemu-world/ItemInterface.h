@@ -135,8 +135,22 @@ public:
 	bool IsEquipped(uint32 itemid);
 
 	void CheckAreaItems();
-};
 
+public:
+	ARCEMU_INLINE bool VerifyBagSlots(int8 ContainerSlot, int8 Slot)
+	{
+		if( ContainerSlot < -1 || Slot < 0 )
+			return false;
+
+		if( ContainerSlot > 0 && (ContainerSlot < INVENTORY_SLOT_BAG_START || ContainerSlot >= INVENTORY_SLOT_BAG_END) )
+			return false;
+
+		if( ContainerSlot == -1 && (Slot >= INVENTORY_SLOT_ITEM_END  || Slot <= EQUIPMENT_SLOT_END) )
+			return false;
+			
+		return true;
+	}
+};
 class ItemIterator
 {
 	bool m_atEnd;

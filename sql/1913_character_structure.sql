@@ -100,7 +100,7 @@ CREATE TABLE `character_achievement` (
   `guid` int(10) unsigned default NULL,
   `achievement` int(10) unsigned default NULL,
   `date` int(10) unsigned default NULL,
-  KEY `a` (`guid`)
+  PRIMARY KEY (`guid`,`achievement`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 -- ----------------------------
@@ -112,7 +112,7 @@ CREATE TABLE `character_achievement_progress` (
   `criteria` int(10) unsigned default NULL,
   `counter` int(10) unsigned default NULL,
   `date` int(10) unsigned default NULL,
-  KEY `a` (`guid`)
+  PRIMARY KEY (`guid`,`criteria`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 -- ----------------------------

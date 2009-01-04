@@ -38,6 +38,13 @@ void WorldSession::HandleSplitOpcode(WorldPacket& recv_data)
 		return;
 	}
 
+
+	if( !_player->GetItemInterface()->VerifyBagSlots(SrcInvSlot, SrcSlot) )
+		return;
+
+	if( !_player->GetItemInterface()->VerifyBagSlots(DstInvSlot, DstSlot) )
+		return;
+
 	int32 c=count;
 	Item *i1 =_player->GetItemInterface()->GetInventoryItem(SrcInvSlot,SrcSlot);
 	if(!i1)
