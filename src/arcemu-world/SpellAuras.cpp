@@ -8766,14 +8766,21 @@ void Aura::SpellAuraIncreaseRAPbyStatPct( bool apply )
 			SetPositive();
 		else
 			SetNegative();
-
-		mod->fixed_amount[mod->i] = m_target->GetUInt32Value( UNIT_FIELD_STAT0 + mod->m_miscValue ) * mod->m_amount / 100;
-		m_target->ModUnsigned32Value( UNIT_FIELD_RANGED_ATTACK_POWER_MODS, mod->fixed_amount[mod->i] );
+		
+		// Player aura effect is calculated in Player::UpdateStats
+		if( !m_target->IsPlayer() )
+		{
+			mod->fixed_amount[mod->i] = m_target->GetUInt32Value( UNIT_FIELD_STAT0 + mod->m_miscValue ) * mod->m_amount / 100;
+			m_target->ModUnsigned32Value( UNIT_FIELD_RANGED_ATTACK_POWER_MODS, mod->fixed_amount[mod->i] );
+		}
 	}
 	else
 		m_target->ModUnsigned32Value( UNIT_FIELD_RANGED_ATTACK_POWER_MODS, -mod->fixed_amount[mod->i] );
 
-	m_target->CalcDamage();
+	if( m_target->IsPlayer() )
+		static_cast<Player*>(m_target)->UpdateStats();
+	else
+		m_target->CalcDamage();
 }
 
 /* not used
@@ -9067,12 +9074,19 @@ void Aura::SpellAuraIncreaseAPbyStatPct( bool apply )
 			SetPositive();
 		else
 			SetNegative();
-
-		mod->fixed_amount[mod->i] = m_target->GetUInt32Value( UNIT_FIELD_STAT0 + mod->m_miscValue ) * mod->m_amount / 100;
-		m_target->ModUnsigned32Value( UNIT_FIELD_ATTACK_POWER_MODS, mod->fixed_amount[mod->i] );
+		
+		// Player aura effect is calculated in Player::UpdateStats
+		if( !m_target->IsPlayer() )
+		{
+			mod->fixed_amount[mod->i] = m_target->GetUInt32Value( UNIT_FIELD_STAT0 + mod->m_miscValue ) * mod->m_amount / 100;
+			m_target->ModUnsigned32Value( UNIT_FIELD_ATTACK_POWER_MODS, mod->fixed_amount[mod->i] );
+		}
 	}
 	else
 		m_target->ModUnsigned32Value( UNIT_FIELD_ATTACK_POWER_MODS, -mod->fixed_amount[mod->i] );
 
-	m_target->CalcDamage();
+	if( m_target->IsPlayer() )
+		static_cast<Player*>(m_target)->UpdateStats();
+	else
+		m_target->CalcDamage();
 }

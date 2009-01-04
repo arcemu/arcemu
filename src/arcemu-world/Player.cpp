@@ -1844,7 +1844,6 @@ void Player::_SavePet(QueryBuffer * buf)
 			<< itr->second->xp << "','"
 			<< (itr->second->active ?  1 : 0) + itr->second->stablestate * 10 << "','"
 			<< itr->second->level << "','"
-			<< "100','"// happiness is not a member of m_Pets
 			<< itr->second->actionbar << "','"
 			<< itr->second->happinessupdate << "','"
 			<< itr->second->summon << "','"
@@ -3281,7 +3280,7 @@ void Player::LoadFromDBProc(QueryResultVector & results)
 			continue;
 		LoginAura la;
 		la.id = glyph->SpellID;
-		la.dur = -1;
+		la.dur = uint32(-1);
 		loginauras.push_back(la);
 	}
 
@@ -3387,7 +3386,7 @@ void Player::LoadFromDBProc(QueryResultVector & results)
 	uint32 uniques[64];
 	int nuniques=0;
 
-	for( uint32 x = EQUIPMENT_SLOT_START; x < EQUIPMENT_SLOT_END; ++x )
+	for( uint8 x = EQUIPMENT_SLOT_START; x < EQUIPMENT_SLOT_END; ++x )
 	{
 		ItemInterface *itemi = GetItemInterface();
 		Item * it = itemi->GetInventoryItem(x);
@@ -5246,6 +5245,7 @@ void Player::UpdateStats()
 
 
 	case WARRIOR:
+	case DEATHKNIGHT:
 		//(Strength x 2) + (Character Level x 3) - 20
 		AP = (str *2) + (lev *3) - 20;
 		//Character Level + Agility - 10
@@ -5372,6 +5372,28 @@ void Player::UpdateStats()
 	// 100 / 15.77 = 6.3% reduced dodge/parry chances
 	SetUInt32Value( PLAYER_EXPERTISE, float2int32( CalcRating( PLAYER_RATING_MODIFIER_EXPERTISE ) ) ); // value displayed in char sheet
 	//SetUInt32Value( PLAYER_RATING_MODIFIER_EXPERTISE2, GetUInt32Value( PLAYER_RATING_MODIFIER_EXPERTISE ) );
+
+	// Dynamic aura application, auras 212, 268
+	int32 temp;
+	Modifier* m;
+	for( uint32 x = MAX_PASSIVE_AURAS_START; x < MAX_POSITIVE_AURAS_EXTEDED_END; x++ )
+		if( m_auras[x] && m_auras[x]->mod )
+		{
+			m = m_auras[x]->mod;
+			if( m->m_type == SPELL_AURA_MOD_ATTACK_POWER_BY_STAT_PCT )
+			{
+				temp = -m->fixed_amount[m->i];
+				m->fixed_amount[m->i] = GetUInt32Value( UNIT_FIELD_STAT0 + m->m_miscValue ) * m->m_amount / 100;
+				ModUnsigned32Value( UNIT_FIELD_ATTACK_POWER_MODS, temp + m->fixed_amount[m->i] );
+			}
+			
+			if( m->m_type == SPELL_AURA_MOD_RANGED_ATTACK_POWER_BY_STAT_PCT )
+			{
+				temp = -m->fixed_amount[m->i];
+				m->fixed_amount[m->i] = GetUInt32Value( UNIT_FIELD_STAT0 + m->m_miscValue ) * m->m_amount / 100;
+				ModUnsigned32Value( UNIT_FIELD_RANGED_ATTACK_POWER_MODS, temp + m->fixed_amount[m->i] );
+			}
+		}
 
 	UpdateChances();
 	CalcDamage();
@@ -7274,7 +7296,7 @@ void Player::_Relocate(uint32 mapid, const LocationVector & v, bool sendpending,
 void Player::AddItemsToWorld()
 {
 	Item * pItem;
-	for(uint32 i = 0; i < INVENTORY_KEYRING_END; i++)
+	for(uint8 i = 0; i < INVENTORY_KEYRING_END; i++)
 	{
 		pItem = GetItemInterface()->GetInventoryItem(i);
 		if( pItem != NULL )
@@ -9441,13 +9463,13 @@ void Player::ModifyBonuses( uint32 type, int32 val, bool apply )
 			}break;
 		case SPELL_POWER:
 			{
-				for(uint32 school=1;school < 7; ++school)
+				for(uint8 school=1;school < 7; ++school)
 				{
 					ModUnsigned32Value( PLAYER_FIELD_MOD_DAMAGE_DONE_POS + school, val );
 					HealDoneMod[school] += val;
 				}
 				// not sure if spell power conversion for healing is correct (will double check soon)
-				ModUnsigned32Value( PLAYER_FIELD_MOD_HEALING_DONE_POS, val / 1.88 );
+				ModUnsigned32Value( PLAYER_FIELD_MOD_HEALING_DONE_POS, uint32( float( val ) / 1.88f ) );
 			}break;
 		}
 }
@@ -9841,7 +9863,7 @@ void Player::UpdateComboPoints()
 {
 	// fuck bytebuffers :D
 	unsigned char buffer[10];
-	uint32 c = 2;
+	uint16 c = 2;
 
 	// check for overflow
 	if(m_comboPoints > 5)
@@ -11999,13 +12021,13 @@ uint32 Player::HasRunes(uint8 type, uint32 count)
 
 uint32 Player::TakeRunes(uint8 type, uint32 count)
 {
-	uint32 found = 0;
-	for(uint32 i=0; i<6 && count != found; ++i)
+	uint8 found = 0;
+	for(uint8 i=0; i<6 && count != found; ++i)
 	{
 		if(GetRune(i) == type)
 		{
 			ConvertRune(i, RUNE_RECHARGE);
-			sEventMgr.AddEvent( this, &Player::ConvertRune, (uint8)i, baseRunes[i], EVENT_PLAYER_RUNE_REGEN + i, 10000, 1, 0 );
+			sEventMgr.AddEvent( this, &Player::ConvertRune, i, baseRunes[i], EVENT_PLAYER_RUNE_REGEN + i, 10000, 1, 0 );
 			found++;
 		}
 	}
