@@ -209,8 +209,8 @@ Player::Player( uint32 guid ) : m_mailBox(guid), m_achievementMgr(this)
 
 	m_bUnlimitedBreath	  = false;
 	m_UnderwaterState	   = 0;
-	m_UnderwaterTime		= 60000;
-	m_UnderwaterMaxTime	 = 60000;
+	m_UnderwaterTime		= 180000;
+	m_UnderwaterMaxTime	 = 180000;
 	m_UnderwaterLastDmg	 = getMSTime();
 	m_SwimmingTime		  = 0;
 	m_BreathDamageTimer	 = 0;
