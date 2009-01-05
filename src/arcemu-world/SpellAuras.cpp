@@ -908,10 +908,9 @@ void Aura::ApplyModifiers( bool apply )
 {
 	for( uint32 x = 0; x < m_modcount; x++ )
 	{
-		mod = &m_modList[x];
-
-		if(mod->m_type<TOTAL_SPELL_AURAS)
+		if( m_modList[x].m_type < TOTAL_SPELL_AURAS )
 		{
+			mod = &m_modList[x];
 			sLog.outDebug( "WORLD: target=%u, Spell Aura id=%u (%s), SpellId=%u, i=%u, apply=%s, duration=%u, miscValue=%d, damage=%d",
 				m_target->GetLowGUID(),mod->m_type, SpellAuraNames[mod->m_type], m_spellProto->Id, mod->i, apply ? "true" : "false",GetDuration(),mod->m_miscValue,mod->m_amount);
 			(*this.*SpellAuraHandler[mod->m_type])(apply);
@@ -926,7 +925,7 @@ void Aura::ApplyModifiers( bool apply )
 			
 		}
 		else
-			sLog.outError("Unknown Aura id %d", (uint32)mod->m_type);
+			sLog.outError("Unknown Aura id %d", m_modList[x].m_type);
 	}
 }
 
