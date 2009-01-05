@@ -5374,25 +5374,12 @@ void Player::UpdateStats()
 	//SetUInt32Value( PLAYER_RATING_MODIFIER_EXPERTISE2, GetUInt32Value( PLAYER_RATING_MODIFIER_EXPERTISE ) );
 
 	// Dynamic aura application, auras 212, 268
-	int32 temp;
-	Modifier* m;
-	for( uint32 x = MAX_PASSIVE_AURAS_START; x < MAX_POSITIVE_AURAS_EXTEDED_END; x++ )
-		if( m_auras[x] && m_auras[x]->mod )
+	for( uint32 x = MAX_TOTAL_AURAS_START; x < MAX_TOTAL_AURAS_END; x++ )
+		if( m_auras[x] != NULL )
 		{
-			m = m_auras[x]->mod;
-			if( m->m_type == SPELL_AURA_MOD_ATTACK_POWER_BY_STAT_PCT )
-			{
-				temp = -m->fixed_amount[m->i];
-				m->fixed_amount[m->i] = GetUInt32Value( UNIT_FIELD_STAT0 + m->m_miscValue ) * m->m_amount / 100;
-				ModUnsigned32Value( UNIT_FIELD_ATTACK_POWER_MODS, temp + m->fixed_amount[m->i] );
-			}
-			
-			if( m->m_type == SPELL_AURA_MOD_RANGED_ATTACK_POWER_BY_STAT_PCT )
-			{
-				temp = -m->fixed_amount[m->i];
-				m->fixed_amount[m->i] = GetUInt32Value( UNIT_FIELD_STAT0 + m->m_miscValue ) * m->m_amount / 100;
-				ModUnsigned32Value( UNIT_FIELD_RANGED_ATTACK_POWER_MODS, temp + m->fixed_amount[m->i] );
-			}
+			if( m_auras[x]->HasModType( SPELL_AURA_MOD_ATTACK_POWER_BY_STAT_PCT ) ||
+				m_auras[x]->HasModType( SPELL_AURA_MOD_RANGED_ATTACK_POWER_BY_STAT_PCT ) )
+				m_auras[x]->UpdateModifiers();
 		}
 
 	UpdateChances();
@@ -6907,8 +6894,8 @@ void Player::TaxiStart(TaxiPath *path, uint32 modelid, uint32 start_node)
 	//also remove morph spells
 	if(GetUInt32Value(UNIT_FIELD_DISPLAYID)!=GetUInt32Value(UNIT_FIELD_NATIVEDISPLAYID))
 	{
-		RemoveAllAuraType(SPELL_AURA_TRANSFORM);
-		RemoveAllAuraType(SPELL_AURA_MOD_SHAPESHIFT);
+		RemoveAllAuraType( SPELL_AURA_TRANSFORM );
+		RemoveAllAuraType( SPELL_AURA_MOD_SHAPESHIFT );
 	}
 	
 	SetUInt32Value( UNIT_FIELD_MOUNTDISPLAYID, modelid );

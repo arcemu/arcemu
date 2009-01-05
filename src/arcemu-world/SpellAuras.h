@@ -34,7 +34,7 @@ enum AURA_INTERNAL_USAGE_FLAGS
 	MOD_2_RESISTED	= 4,
 };
 
-enum AURA_STAE_FLAGS
+enum AURA_STATE_FLAGS
 {
 	AURASTATE_FLAG_DODGE_BLOCK			= 1,        //1
     AURASTATE_FLAG_HEALTH20             = 2,        //2
@@ -416,7 +416,14 @@ public:
 		else 
 		return (m_duration-n);
 	}
-
+	
+	bool HasModType( uint32 type )
+	{
+		for( uint8 x = 0; x <= m_modcount; ++x )
+			if( m_modList[x].m_type == type )
+				return true;
+		return false;
+	}
 		// Aura Handlers
 	void SpellAuraNULL(bool apply);
 	void SpellAuraBindSight(bool apply);
@@ -692,7 +699,6 @@ public:
 	bool WasCastInDuel() { return m_castInDuel; }
 
 	SpellEntry * m_spellProto;
-	Modifier * mod;
 	AreaAuraList targets;//this is only used for AA
 	uint64 m_casterGuid;
 
@@ -754,6 +760,7 @@ private:
 
 	uint32 m_modcount;
 	Modifier m_modList[3];
+	Modifier * mod;
 
 	uint32	m_dynamicValue;
 	uint32	m_flags;

@@ -931,18 +931,24 @@ void Aura::ApplyModifiers( bool apply )
 
 void Aura::UpdateModifiers( )
 {
-	for( uint32 x = 0; x < m_modcount; x++ )
+	for( uint8 x = 0; x < m_modcount; x++ )
 	{
 		mod = &m_modList[x];
 
-		if(mod->m_type<TOTAL_SPELL_AURAS)
+		if( mod->m_type < TOTAL_SPELL_AURAS )
 		{
 			sLog.outDebug( "WORLD: Update Aura mods : target = %u , Spell Aura id = %u (%s), SpellId  = %u, i = %u, duration = %u, damage = %d",
-				m_target->GetLowGUID(),mod->m_type, SpellAuraNames[mod->m_type], m_spellProto->Id, mod->i, GetDuration(),mod->m_amount);
+				m_target->GetLowGUID(), mod->m_type, SpellAuraNames[mod->m_type], m_spellProto->Id, mod->i, GetDuration(),mod->m_amount);
 			switch (mod->m_type)
 			{
-				case 33: UpdateAuraModDecreaseSpeed(); break;
-
+				case SPELL_AURA_MOD_DECREASE_SPEED:
+					UpdateAuraModDecreaseSpeed(); 
+					break;
+				case SPELL_AURA_MOD_ATTACK_POWER_BY_STAT_PCT:
+				case SPELL_AURA_MOD_RANGED_ATTACK_POWER_BY_STAT_PCT:
+					( *this.*SpellAuraHandler[ mod->m_type ] )( false );
+					( *this.*SpellAuraHandler[ mod->m_type ] )( true );
+					break;
 			}
 		}
 		else
@@ -8766,20 +8772,13 @@ void Aura::SpellAuraIncreaseRAPbyStatPct( bool apply )
 		else
 			SetNegative();
 		
-		// Player aura effect is calculated in Player::UpdateStats
-		if( !m_target->IsPlayer() )
-		{
-			mod->fixed_amount[mod->i] = m_target->GetUInt32Value( UNIT_FIELD_STAT0 + mod->m_miscValue ) * mod->m_amount / 100;
-			m_target->ModUnsigned32Value( UNIT_FIELD_RANGED_ATTACK_POWER_MODS, mod->fixed_amount[mod->i] );
-		}
+		mod->fixed_amount[mod->i] = m_target->GetUInt32Value( UNIT_FIELD_STAT0 + mod->m_miscValue ) * mod->m_amount / 100;
+		m_target->ModUnsigned32Value( UNIT_FIELD_RANGED_ATTACK_POWER_MODS, mod->fixed_amount[mod->i] );
 	}
 	else
 		m_target->ModUnsigned32Value( UNIT_FIELD_RANGED_ATTACK_POWER_MODS, -mod->fixed_amount[mod->i] );
 
-	if( m_target->IsPlayer() )
-		static_cast<Player*>(m_target)->UpdateStats();
-	else
-		m_target->CalcDamage();
+	m_target->CalcDamage();
 }
 
 /* not used
@@ -9074,18 +9073,11 @@ void Aura::SpellAuraIncreaseAPbyStatPct( bool apply )
 		else
 			SetNegative();
 		
-		// Player aura effect is calculated in Player::UpdateStats
-		if( !m_target->IsPlayer() )
-		{
-			mod->fixed_amount[mod->i] = m_target->GetUInt32Value( UNIT_FIELD_STAT0 + mod->m_miscValue ) * mod->m_amount / 100;
-			m_target->ModUnsigned32Value( UNIT_FIELD_ATTACK_POWER_MODS, mod->fixed_amount[mod->i] );
-		}
+		mod->fixed_amount[mod->i] = m_target->GetUInt32Value( UNIT_FIELD_STAT0 + mod->m_miscValue ) * mod->m_amount / 100;
+		m_target->ModUnsigned32Value( UNIT_FIELD_ATTACK_POWER_MODS, mod->fixed_amount[mod->i] );
 	}
 	else
 		m_target->ModUnsigned32Value( UNIT_FIELD_ATTACK_POWER_MODS, -mod->fixed_amount[mod->i] );
 
-	if( m_target->IsPlayer() )
-		static_cast<Player*>(m_target)->UpdateStats();
-	else
-		m_target->CalcDamage();
+	m_target->CalcDamage();
 }

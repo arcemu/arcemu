@@ -3735,13 +3735,13 @@ void Spell::SpellEffectDispel(uint32 i) // Dispel
 						spell->prepare(&targets);
 					}
 				}
-				else if ( aur->GetSpellProto()->NameHash == SPELL_HASH_LIFEBLOOM )
+				/*else if ( aur->GetSpellProto()->NameHash == SPELL_HASH_LIFEBLOOM )
 				{
 					Spell* spell=SpellPool.PooledNew();
 					spell->Init(aur->GetCaster(), aur->GetSpellProto(), true, NULL);
 					spell->SetUnitTarget( unitTarget );
 					spell->Heal( aur->mod->m_amount );
-				}
+				}*/
 			}
 
 		}
@@ -5138,7 +5138,7 @@ void Spell::SpellEffectSanctuary(uint32 i) // Stop all attacks made to you
 	Unit * pUnit;
 
 	if(u_caster->IsPlayer())
-		static_cast<Player*>(u_caster)->RemoveAllAuraType(SPELL_AURA_MOD_ROOT);
+		static_cast<Player*>(u_caster)->RemoveAllAuraType( SPELL_AURA_MOD_ROOT );
 
 	for( ; itr != itr_end; ++itr )
 		if( (*itr)->IsUnit() )

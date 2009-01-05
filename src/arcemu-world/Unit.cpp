@@ -4650,15 +4650,11 @@ void Unit::RemoveAllAuras()
 }
 
 //ex:to remove morph spells
-void Unit::RemoveAllAuraType(uint32 auratype)
+void Unit::RemoveAllAuraType( uint32 auratype )
 {
-    for(uint32 x=MAX_TOTAL_AURAS_START;x<MAX_TOTAL_AURAS_END;x++)
-		if(m_auras[x])
-		{
-			SpellEntry *proto=m_auras[x]->GetSpellProto();
-			if(proto->EffectApplyAuraName[0]==auratype || proto->EffectApplyAuraName[1]==auratype || proto->EffectApplyAuraName[2]==auratype)
-				RemoveAura(m_auras[x]->GetSpellId());//remove all morph auras containig to this spell (like wolf motph also gives speed)
-		}
+    for( uint32 x = MAX_TOTAL_AURAS_START; x < MAX_TOTAL_AURAS_END; x++ )
+		if( m_auras[x] && m_auras[x]->HasModType( auratype ) )
+			m_auras[x]->Remove();//remove all morph auras containig to this spell (like wolf motph also gives speed)
 }
 
 
