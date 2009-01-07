@@ -17,8 +17,5 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-#define _CRTDBG_MAP_ALLOC
-#include <stdlib.h>
-#include <crtdbg.h>
 
 #include "StdAfx.h"
