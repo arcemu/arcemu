@@ -181,6 +181,7 @@ void AchievementMgr::SendCriteriaUpdate(CriteriaProgress *progress)
 }
 void AchievementMgr::CheckAllAchievementCriteria()
 {
+	return; // disable this for now...
 	for(uint32 i=0; i<ACHIEVEMENT_CRITERIA_TYPE_TOTAL; i++)
 		UpdateAchievementCriteria(AchievementCriteriaTypes(i));
 }
@@ -265,7 +266,7 @@ void AchievementMgr::UpdateAchievementCriteria(AchievementCriteriaTypes type)
 			achievement->factionFlag == ACHIEVEMENT_FACTION_FLAG_ALLIANCE && GetPlayer()->GetTeam() != 0 )
 			continue;
 
-		switch (type)
+		switch(type)
 		{
 		//Start of Achievement List
 		case ACHIEVEMENT_CRITERIA_TYPE_REACH_LEVEL:
@@ -332,6 +333,8 @@ void AchievementMgr::UpdateAchievementCriteria(AchievementCriteriaTypes type)
 			}
 			break;
 			//End of Achievement List
+		default:
+			break;
 		}
 		if(IsCompletedCriteria(achievementCriteria))
 			CompletedCriteria(achievementCriteria);
