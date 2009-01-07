@@ -3462,8 +3462,17 @@ uint8 Spell::CanCast(bool tolerate)
 				return SPELL_FAILED_REQUIRES_SPELL_FOCUS;
 		}
 
-		if (GetProto()->RequiresAreaId && GetProto()->RequiresAreaId != p_caster->GetMapMgr()->GetAreaID(p_caster->GetPositionX(),p_caster->GetPositionY()))
-			return SPELL_FAILED_REQUIRES_AREA;
+		if( GetProto()->RequiresAreaId ) 
+		{
+			AreaGroup *ag = dbcAreaGroup.LookupEntry( GetProto()->RequiresAreaId );
+			uint8 i;
+			uint16 plrarea = p_caster->GetMapMgr()->GetAreaID( p_caster->GetPositionX(), p_caster->GetPositionY() );
+			for( i = 0; i < 7; i++ )
+				if( ag->AreaId[i] == plrarea )
+					break;
+			if( 7 == i )
+				return SPELL_FAILED_REQUIRES_AREA;
+		}
 
 		// aurastate check
 		if( GetProto()->CasterAuraState )

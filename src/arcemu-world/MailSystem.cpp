@@ -352,7 +352,7 @@ void WorldSession::HandleSendMail(WorldPacket & recv_data )
 		return;
 	}
 
-	if( msg.stationary == 0x3d || msg.stationary == 0x3d && !HasGMPermissions())
+	if( msg.stationary == 0x3d && !HasGMPermissions())
 	{
 		SendMailError(MAIL_ERR_INTERNAL_ERROR);
 		return;

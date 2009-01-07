@@ -1029,6 +1029,12 @@ struct RandomProps
 
 };
 
+struct AreaGroup
+{
+	uint32 AreaGroupId;
+	uint32 AreaId[7];
+};
+
 struct AreaTable
 {
 	uint32 AreaId;
@@ -1714,6 +1720,7 @@ extern SERVER_DECL DBCStorage<SpellRange> dbcSpellRange;
 extern SERVER_DECL DBCStorage<emoteentry> dbcEmoteEntry;
 extern SERVER_DECL DBCStorage<SpellRadius> dbcSpellRadius;
 extern SERVER_DECL DBCStorage<SpellCastTime> dbcSpellCastTime;
+extern SERVER_DECL DBCStorage<AreaGroup> dbcAreaGroup;
 extern SERVER_DECL DBCStorage<AreaTable> dbcArea;
 extern SERVER_DECL DBCStorage<FactionTemplateDBC> dbcFactionTemplate;
 extern SERVER_DECL DBCStorage<FactionDBC> dbcFaction;
