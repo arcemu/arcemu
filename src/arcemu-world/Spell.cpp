@@ -2089,7 +2089,17 @@ void Spell::SendCastResult(uint8 result)
 		break;
 
 	case SPELL_FAILED_REQUIRES_AREA:
-		Extra = GetProto()->RequiresAreaId;
+		if( GetProto()->RequiresAreaId )
+		{
+			AreaGroup *ag = dbcAreaGroup.LookupEntry( GetProto()->RequiresAreaId );
+			uint16 plrarea = plr->GetMapMgr()->GetAreaID( plr->GetPositionX(), plr->GetPositionY() );
+			for( uint8 i = 0; i < 7; i++ )
+				if( ag->AreaId[i] != 0 && ag->AreaId[i] != plrarea )
+				{	
+					Extra = ag->AreaId[i];
+					break;
+				}
+		}
 		break;
 
 	case SPELL_FAILED_TOTEMS:
