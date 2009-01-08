@@ -9463,6 +9463,8 @@ void Player::ModifyBonuses( uint32 type, int32 val, bool apply )
 
 bool Player::CanSignCharter(Charter * charter, Player * requester)
 {
+	if(charter==NULL || requester==NULL)
+		return false;
 	if(charter->CharterType >= CHARTER_TYPE_ARENA_2V2 && m_arenaTeams[charter->CharterType-1] != NULL)
 		return false;
 	
