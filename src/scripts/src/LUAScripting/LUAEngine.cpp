@@ -3259,7 +3259,7 @@ int luaUnit_GetSpawnO(lua_State * L, Unit * ptr)
 int luaUnit_GetInRangePlayersCount(lua_State * L, Unit * ptr)
 {
 	if(ptr)
-		lua_pushnumber(L,ptr->GetInRangePlayersCount());
+		lua_pushnumber(L,(lua_Number)ptr->GetInRangePlayersCount());
 	return 1;
 }
 int luaUnit_GetEntry(lua_State * L, Unit * ptr)
@@ -3527,16 +3527,18 @@ int luaUnit_SetPowerType(lua_State * L, Unit * ptr)
 	const char * message = luaL_checklstring(L,1,NULL);
 	if(!ptr||!message)
 		return 0;
-	if( message == "health")
+	if( stricmp(message, "health") == 0 )
 		ptr->SetPowerType(POWER_TYPE_HEALTH);
-	else if( message == "mana")
+	else if( stricmp(message, "mana") == 0 )
 		ptr->SetPowerType(POWER_TYPE_MANA);
-	else if(message == "rage")
+	else if( stricmp(message, "rage") == 0 )
 		ptr->SetPowerType(POWER_TYPE_RAGE);
-	else if(message == "focus")
+	else if( stricmp(message, "focus") == 0 )
 		ptr->SetPowerType(POWER_TYPE_FOCUS);
-	else if (message == "energy")
+	else if( stricmp(message, "energy") == 0 )
 		ptr->SetPowerType(POWER_TYPE_ENERGY);
+	else if( stricmp(message, "runicpower") == 0 )
+		ptr->SetPowerType(POWER_TYPE_RUNIC_POWER);
 	return 1;
 }
 int luaUnit_GetPowerType(lua_State * L, Unit * ptr)
@@ -3742,7 +3744,7 @@ int luaUnit_IsInWater(lua_State * L, Unit * ptr)
 int luaUnit_GetAITargetsCount(lua_State * L, Unit * ptr)
 {
 	if(ptr)
-		lua_pushnumber(L,ptr->GetAIInterface()->getAITargetsCount());
+		lua_pushnumber(L,(lua_Number)ptr->GetAIInterface()->getAITargetsCount());
 	return 1;
 }
 int luaUnit_GetUnitByGUID(lua_State * L, Unit * ptr)
@@ -3772,7 +3774,7 @@ int luaUnit_GetUnitByGUID(lua_State * L, Unit * ptr)
 int luaUnit_GetInRangeObjectsCount(lua_State * L, Unit * ptr)
 {
 	if(ptr)
-		lua_pushnumber(L,ptr->GetInRangeCount());
+		lua_pushnumber(L,(lua_Number)ptr->GetInRangeCount());
 	return 1;
 }
 int luaUnit_GetInRangePlayers(lua_State * L, Unit * ptr)
@@ -4407,7 +4409,7 @@ int luaGameObject_GetClosestPlayer(lua_State * L, GameObject * ptr)
 	float dist, d2;
 	Player * ret=NULL;
 
-	for(set<Player*>::iterator itr = ptr->GetInRangePlayerSetBegin(); itr != ptr->GetInRangePlayerSetEnd(); itr)
+	for(set<Player*>::iterator itr = ptr->GetInRangePlayerSetBegin(); itr != ptr->GetInRangePlayerSetEnd(); ++itr)
 	{
 		d2=(*itr)->GetDistanceSq(ptr);
 		if(!ret||d2<dist)
@@ -4592,7 +4594,7 @@ int luaGameObject_GetO(lua_State * L, GameObject * ptr)
 int luaGameObject_GetInRangePlayersCount(lua_State * L, GameObject * ptr)
 {
 	if(ptr)
-		lua_pushnumber(L,ptr->GetInRangePlayersCount());
+		lua_pushnumber(L,(lua_Number)ptr->GetInRangePlayersCount());
 	return 1;
 }
 int luaGameObject_GetEntry(lua_State * L, GameObject * ptr)
