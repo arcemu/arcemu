@@ -71,19 +71,19 @@ UPDATE creature_proto SET faction =14,minlevel =70,maxlevel =70 WHERE entry =195
 delete from loot_creatures where entryid in (20064, 20060, 20062, 20063);
 
 -- Advisors should have equiped the legendary weapons
-UPDATE creature_spawns SET slot1item = 45345  where entry = 20060; -- Lord Sanguinar
-update creature_spawns SET slot2item = '40867' where entry='20060'; -- Lord Sanguinar Shield
+UPDATE creature_spawns SET slot1item = 30311  where entry = 20060; -- Lord Sanguinar
+update creature_spawns SET slot2item = 30314 where entry='20060'; -- Lord Sanguinar Shield
 
-UPDATE creature_spawns SET slot1item = 41895 where entry = 20062; -- capernian
-UPDATE creature_spawns SET slot1item = 41872 where entry = 20063; -- Telonicus
-UPDATE creature_spawns SET slot1item = 41560 where entry = 20064; -- Thaladred The Darkener
+UPDATE creature_spawns SET slot1item = 30313 where entry = 20062; -- capernian
+UPDATE creature_spawns SET slot1item = 30312 where entry = 20063; -- Telonicus
+UPDATE creature_spawns SET slot1item = 30316 where entry = 20064; -- Thaladred The Darkener
 
 -- Thaladread should 1 shot ppl
 UPDATE creature_proto SET mindamage = 15000, maxdamage = 20000 where entry = 20064; -- Thaladred The Darkener
 
 -- Legendary wep's have equip stuff messed up.
 update creature_spawns set slot1item = '0' where entry='21273'; -- Phaseshift Bulwark
-update creature_spawns set slot2item = '40867' where entry='21273'; -- Phaseshift Bulwark
+update creature_spawns set slot2item = '30314' where entry='21273'; -- Phaseshift Bulwark
 
 -- Needed for Alar
 -- insert into `creature_proto` (`entry`, `minlevel`, `maxlevel`, `faction`, `minhealth`, `maxhealth`, `mana`, `scale`, `bounding_radius`, `auras`) values('20602','70','70','16','10000','10000','0','1','1','0');
@@ -154,8 +154,7 @@ REPLACE INTO creature_proto (`entry`, `minlevel`, `maxlevel`, `faction`, `minhea
 
 delete from creature_spawns where entry in (22917, 22990, 22996, 22997, 23336, 30001);
 INSERT INTO creature_spawns (`entry`, `map`, `position_x`, `position_y`, `position_z`, `orientation`, `movetype`, `displayid`, `faction`, `flags`, `bytes0`, `bytes1`, `emote_state`, `npc_respawn_link`, `channel_spell`, `channel_target_sqlid`, `channel_target_sqlid_creature`, `slot1item`, `slot2item`) VALUES 
-(22917, 564, 704.539, 305.282, 353.919, 6.14417, 0, 21135, 1825, 256, 0, 0, 0, 0, 0, 0, 0, 45479, 45481),
-(22990, 564, 661.563, 305.711, 271.689, 0.00628138, 4, 20681, 1858, 256, 0, 1, 0, 0, 0, 0, 0, 43903, 43903),
+(22917, 564, 704.539, 305.282, 353.919, 6.14417, 0, 21135, 1825, 256, 0, 0, 0, 0, 0, 0, 0, 32837, 32838),
 (30001, 564, 771.5, 304.7, 319, 3.10568, 0, 15294, 35, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
 
 REPLACE INTO gameobject_names (entry, Type, DisplayID, Name, spellfocus, sound1, sound2, sound3, sound4, sound5, sound6, sound7, sound8, sound9, unknown1, unknown2, unknown3, unknown4, unknown5, unknown6, unknown7, unknown8, unknown9, unknown10, unknown11, unknown12, unknown13, unknown14) VALUES 
@@ -178,12 +177,17 @@ DELETE FROM creature_spawns WHERE entry = 23419;
 -- Essence of Anger
 DELETE FROM creature_spawns WHERE entry = 23420;
 
--- Akama
-DELETE FROM creature_spawns WHERE (`entry`= 22990 AND `id`= 4661153 AND `map`= 564 AND `faction`= 1858 AND `displayid`= 20681);
+-- Akama needs some weapons to use too
+delete from items where `entry`=30699;
+INSERT INTO items
+   (`entry`, `class`, `subclass`, `field4`, `name1`, `displayid`, `quality`, `flags`, `buyprice`, `sellprice`, `inventorytype`, `allowableclass`, `allowablerace`, `itemlevel`, `requiredlevel`, `RequiredSkill`, `RequiredSkillRank`, `RequiredSkillSubRank`, `RequiredPlayerRank1`, `RequiredPlayerRank2`, `RequiredFaction`, `RequiredFactionStanding`, `Unique`, `maxcount`, `ContainerSlots`, `ScaledStatsDistributionId`, `ScaledStatsDistributionFlags`, `dmg_min1`, `dmg_max1`, `dmg_type1`, `delay`, `ammo_type`, `range`, `bonding`, `description`, `page_id`, `page_language`, `page_material`, `quest_id`, `lock_id`, `lock_material`, `sheathID`, `randomprop`, `unk203_1`, `block`, `itemset`, `MaxDurability`, `ZoneNameID`, `mapid`, `bagfamily`, `TotemCategory`, `socket_color_1`, `unk201_3`, `socket_color_2`, `unk201_5`, `socket_color_3`, `unk201_7`, `socket_bonus`, `GemProperties`, `ReqDisenchantSkill`, `unk2`, `ItemLimitCategoryId`)
+VALUES
+   (30699, 2, 7, -1, 'Akamas Weapon (ONLY FOR DISPLAY)', 43903, 0, 0, 0, 0, 13, -1, -1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 3, 7, 0, 2000, 0, 0, 0, '', 0, 0, 0, 0, 0, 1, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, 0, 0);
+DELETE FROM creature_spawns WHERE (`entry`= 22990 AND `map`= 564 AND `faction`= 1858 AND `displayid`= 20681);
 INSERT INTO creature_spawns 
- (`id`, `entry`, `map`, `position_x`, `position_y`, `position_z`, `orientation`, `movetype`, `displayid`, `faction`, `flags`, `bytes0`, `bytes1`, `bytes2`, `emote_state`, `npc_respawn_link`, `channel_spell`, `channel_target_sqlid`, `channel_target_sqlid_creature`, `standstate`, `slot1item`, `slot2item`)
+ (`id`, `entry`, `map`, `position_x`, `position_y`, `position_z`, `orientation`, `movetype`, `displayid`, `faction`, `flags`, `bytes0`, `bytes1`, `bytes2`, `emote_state`, `npc_respawn_link`, `channel_spell`, `channel_target_sqlid`, `channel_target_sqlid_creature`, `standstate`, `slot1item`, `slot2item`, `slot3item`)
 VALUES 
- (4661153, 22990, 564, 641.623, 310.398, 271.683, 0.0196238, 4, 20681, 1858, 256, 0, 0, 0, 0, 0, 0, 0, 0, 0, 43903, 43903);
+ (4661153, 22990, 564, 641.623, 310.398, 271.683, 0.0196238, 4, 20681, 1858, 256, 0, 0, 0, 0, 0, 0, 0, 0, 0, 30699, 30699, 0);
 
 -- DoortriggerUpdate more Blizzlike
 UPDATE `creature_spawns` SET `position_x`= '773.992371', `position_y`= '304.742706', `position_z`= '320.536560' WHERE (`entry`= 30001 AND `map`= 564 AND `id`= 4660674 AND `displayid`= 15294);
