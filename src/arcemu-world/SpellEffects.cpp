@@ -6303,13 +6303,16 @@ void Spell::SpellEffectDummyMelee( uint32 i ) // Normalized Weapon damage +
 	switch( GetProto()->Id )
 	{
 			// AMBUSH
-	case 8676: add_damage = 70; return; break;			// r1
-	case 8724: add_damage = 100; return; break;			// r2
-	case 8725: add_damage = 125; return; break;			// r3
-	case 11267: add_damage = 185; return; break;		// r4
-	case 11268: add_damage = 230; return; break;		// r5
-	case 11269: add_damage = 290; return; break;		// r6
-	case 27441: add_damage = 335; return; break;		// r7
+	case 8676: add_damage = 77; return; break;			// r1
+	case 8724: add_damage = 110; return; break;			// r2
+	case 8725: add_damage = 138; return; break;			// r3
+	case 11267: add_damage = 204; return; break;		// r4
+	case 11268: add_damage = 253; return; break;		// r5
+	case 11269: add_damage = 319; return; break;		// r6
+	case 27441: add_damage = 369; return; break;		// r7
+	case 48689: add_damage = 509; return; break;		// r8
+	case 48690: add_damage = 770; return; break;		// r9
+	case 48691: add_damage = 908; return; break;		// r10
 
 			// BACKSTAB
 	case 53: add_damage = 15; return; break;			// r1
@@ -6322,6 +6325,8 @@ void Spell::SpellEffectDummyMelee( uint32 i ) // Normalized Weapon damage +
 	case 11281: add_damage = 210; return; break;		// r8
 	case 25300: add_damage = 225; return; break;		// r9
 	case 26863: add_damage = 255; return; break;		// r10
+	case 48656: add_damage = 383; return; break;		// r11
+	case 48657: add_damage = 465; return; break;		// r12
 	}
 
 	// rogue ambush etc
