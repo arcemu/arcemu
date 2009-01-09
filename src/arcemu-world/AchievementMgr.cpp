@@ -37,6 +37,25 @@
 
 #include "StdAfx.h"
 
+bool IsReputationAchievement(const AchievementEntry* a)
+{
+	switch(a->categoryId)
+	{
+		case 81:
+		case 147:
+		case 201:
+		case 14801:
+		case 14802:
+		case 14804:
+		case 14864:
+		case 14865:
+		case 14866:
+			return true;
+		default:
+			return false;
+	}
+}
+
 AchievementMgr::AchievementMgr(Player *player)
 {
 	m_player = player;
@@ -89,7 +108,7 @@ void AchievementMgr::SaveToDB()
 				{
 					// SQL query length is limited to 16384 characters
 					CharacterDatabase.Query( ss.str().c_str() );
-					ss.clear();
+					ss.str("");
 					ss << "REPLACE INTO character_achievement_progress (guid, criteria, counter, date) VALUES ";
 					first = true;
 				}
@@ -371,6 +390,7 @@ bool AchievementMgr::IsCompletedCriteria(AchievementCriteriaEntry const* achieve
 		return false;
 	}
 
+
 	if(achievement->flags & ACHIEVEMENT_FLAG_COUNTER)
 	{
 		return false;
@@ -379,7 +399,9 @@ bool AchievementMgr::IsCompletedCriteria(AchievementCriteriaEntry const* achieve
 	if(achievement->flags & (ACHIEVEMENT_FLAG_REALM_FIRST_REACH | ACHIEVEMENT_FLAG_REALM_FIRST_KILL))
 	{
 		if(objmgr.allCompletedAchievements.find(achievement->ID)!=objmgr.allCompletedAchievements.end())
+		{
 			return false;
+		}
 	}
 
 	CriteriaProgressMap::iterator itr = m_criteriaProgress.find(achievementCriteria->ID);
@@ -588,7 +610,9 @@ void AchievementMgr::BuildAllDataPacket(WorldPacket *data)
 	*data << int32(-1);
 	for(CriteriaProgressMap::iterator iter = m_criteriaProgress.begin(); iter!=m_criteriaProgress.end(); ++iter)
 	{
-		if(iter->second->counter > 0) // only send achievements that have been started
+		AchievementEntry const *achievement = dbcAchievementStore.LookupEntry(iter->second->id);
+		if((iter->second->counter > 0) // only send achievement progresses that have been started
+			&& !IsReputationAchievement(achievement)) // dont send unfinished reputation achievements
 		{
 			*data << uint32(iter->second->id);
 			data->appendPackGUID(iter->second->counter);
