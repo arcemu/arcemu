@@ -206,6 +206,8 @@ ECHO [Importing] 1835_playerpets_loyalty.sql
 mysql -h %server% --user=%user% --password=%pass% --port=%port% %chr% < ..\character_updates\1835_playerpets_loyalty.sql
 ECHO [Importing] 1911_playertitles.sql
 mysql -h %server% --user=%user% --password=%pass% --port=%port% %chr% < ..\character_updates\1911_playertitles.sql
+ECHO [Importing] 1996_character_achievements.sql
+mysql -h %server% --user=%user% --password=%pass% --port=%port% %chr% < ..\character_updates\1996_character_achievements.sql
 ECHO [Importing] Finished
 ECHO  Update Success.
 ECHO.

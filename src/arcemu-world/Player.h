@@ -1064,6 +1064,7 @@ public:
 	void SetFactionInactive( uint32 faction, bool set );
 	bool AddNewFaction( FactionDBC * dbc, int32 standing, bool base );
 	void OnModStanding( FactionDBC * dbc, FactionReputation * rep );
+	uint32              GetExaltedCount(void);
 	
     /************************************************************************/
     /* Factions                                                             */

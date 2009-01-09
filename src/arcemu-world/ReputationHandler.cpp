@@ -149,6 +149,10 @@ int32 Player::GetBaseStanding( uint32 Faction )
 
 void Player::SetStanding( uint32 Faction, int32 Value )
 {
+	const int32 minReputation = -42000;      //   0/36000 Hated
+	const int32 exaltedReputation = 42000;   //   0/1000  Exalted
+	const int32 maxReputation = 42999;       // 999/1000  Exalted
+	int32 newValue = Value;
 	FactionDBC * f = dbcFaction.LookupEntry( Faction );
 	if ( f == NULL || f->RepListId < 0 )
 		return;
@@ -161,14 +165,23 @@ void Player::SetStanding( uint32 Faction, int32 Value )
 	}
 	else
 	{
+		if(newValue < minReputation)
+			newValue = minReputation;
+		else if(newValue > maxReputation)
+			newValue = maxReputation;
 		// Increment it.
-		if ( RankChangedFlat( itr->second->standing, Value ) )
+		if ( RankChangedFlat( itr->second->standing, newValue ) )
 		{
-			itr->second->standing = Value;
+			if(itr->second->standing-newValue >= exaltedReputation) // somehow we lost exalted status
+				m_achievementMgr.UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_GAIN_EXALTED_REPUTATION, -1, 0, 0); // decrement # of exalted
+			else if(newValue >= exaltedReputation) // check if we are exalted now
+				m_achievementMgr.UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_GAIN_EXALTED_REPUTATION, 1, 0, 0); // increment # of exalted
+			itr->second->standing = newValue;
 			UpdateInrangeSetsBasedOnReputation();
+			m_achievementMgr.UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_GAIN_REPUTATION, f->ID, Value, 0);
 		}
 		else
-			itr->second->standing = Value;
+			itr->second->standing = newValue;
 		
 		OnModStanding( f, itr->second );
 	}
@@ -202,9 +215,11 @@ bool Player::IsHostileBasedOnReputation( FactionDBC * dbc )
 
 void Player::ModStanding( uint32 Faction, int32 Value )
 {
-// 999/1000 Exalted = current max
-#define MAX_REPUTATION_VALUE 42999
+	const int32 minReputation = -42000;      //   0/36000 Hated
+	const int32 exaltedReputation = 42000;   //   0/1000  Exalted
+	const int32 maxReputation = 42999;       // 999/1000  Exalted
 	FactionDBC * f = dbcFaction.LookupEntry( Faction );
+	int32 newValue = Value;
 	if ( f == NULL || f->RepListId < 0 )
 		return;
 	ReputationMap::iterator itr = m_reputation.find( Faction );
@@ -212,7 +227,7 @@ void Player::ModStanding( uint32 Faction, int32 Value )
 	if ( pctReputationMod > 0 )
 	{
 		float d = float( float( pctReputationMod ) / 100.0f );
-		Value += FL2UINT( float( float( Value ) * d ) );
+		newValue = Value + FL2UINT( float( float( Value ) * d ) );
 	}
 
 	if ( itr == m_reputation.end() )
@@ -223,17 +238,24 @@ void Player::ModStanding( uint32 Faction, int32 Value )
 	else
 	{
 		// Increment it.
-		if ( RankChanged( itr->second->standing, Value ) )
+		if ( RankChanged( itr->second->standing, newValue ) )
 		{
-			itr->second->standing += Value;
+			itr->second->standing += newValue;
 			UpdateInrangeSetsBasedOnReputation();
+			this->m_achievementMgr.UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_GAIN_REPUTATION, f->ID, itr->second->standing, 0);
+			if(itr->second->standing >= exaltedReputation) // check if we are exalted now
+				m_achievementMgr.UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_GAIN_EXALTED_REPUTATION, 1, 0, 0); // increment # of exalted
+			else if(itr->second->standing-newValue >= exaltedReputation) // somehow we lost exalted status
+				m_achievementMgr.UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_GAIN_EXALTED_REPUTATION, -1, 0, 0); // decrement # of exalted
 		}
 		else
 		{
-			itr->second->standing += Value;
+			itr->second->standing += newValue;
 		}
-		if(itr->second->standing > MAX_REPUTATION_VALUE)
-			itr->second->standing = MAX_REPUTATION_VALUE;
+		if(itr->second->standing < minReputation)
+			itr->second->standing = minReputation;
+		else if(itr->second->standing > maxReputation)
+			itr->second->standing = maxReputation;
 		OnModStanding( f, itr->second );
    }
 
@@ -485,4 +507,18 @@ void Player::OnModStanding( FactionDBC * dbc, FactionReputation * rep )
 				SetKnownTitle( PVP_TITLE_CONQUEROR , false );
 		} break;
 	}*/
+}
+
+uint32 Player::GetExaltedCount(void)
+{
+	const int32 exaltedReputation = 42000;
+	uint32 ec = 0;
+	ReputationMap::iterator itr = m_reputation.begin();
+	while(itr != m_reputation.end())
+	{
+		if(itr->second->standing >= exaltedReputation)
+			++ec;
+		++itr;
+	}
+	return ec;
 }

@@ -23,6 +23,15 @@
 	- ACHIEVEMENT_CRITERIA_TYPE_REACH_LEVEL
 	- ACHIEVEMENT_CRITERIA_TYPE_LOOT_ITEM
 	- ACHIEVEMENT_CRITERIA_TYPE_OWN_ITEM // Partial - need also to check item's that player's have already.
+	- ACHIEVEMENT_CRITERIA_TYPE_EXPLORE_AREA
+	- ACHIEVEMENT_CRITERIA_TYPE_LOOT_MONEY
+	- ACHIEVEMENT_CRITERIA_TYPE_COMPLETE_QUEST_COUNT
+	- ACHIEVEMENT_CRITERIA_TYPE_COMPLETE_QUESTS_IN_ZONE
+	- ACHIEVEMENT_CRITERIA_TYPE_COMPLETE_QUEST
+	- ACHIEVEMENT_CRITERIA_TYPE_QUEST_REWARD_GOLD
+	- ACHIEVEMENT_CRITERIA_TYPE_GAIN_REPUTATION
+	- ACHIEVEMENT_CRITERIA_TYPE_GAIN_EXALTED_REPUTATION
+	- ACHIEVEMENT_CRITERIA_TYPE_COMPLETE_ACHIEVEMENT
 
 */
 
@@ -38,7 +47,9 @@ AchievementMgr::~AchievementMgr()
 	for(CriteriaProgressMap::iterator iter = m_criteriaProgress.begin(); iter!=m_criteriaProgress.end(); ++iter)
 		delete iter->second;
 	m_criteriaProgress.clear();
-} 
+	m_completedAchievements.clear();
+}
+
 void AchievementMgr::SaveToDB()
 {
 	if(!m_completedAchievements.empty())
@@ -72,19 +83,22 @@ void AchievementMgr::SaveToDB()
 		bool first = true;
 		for(CriteriaProgressMap::iterator iter = m_criteriaProgress.begin(); iter!=m_criteriaProgress.end(); ++iter)
 		{
-			if (ss.str().length() >= 16000)
+			if(iter->second->counter > 0) // only save progress if it's been started
 			{
-				// SQL query length is limited to 16384 characters
-				CharacterDatabase.Query( ss.str().c_str() );
-				ss.str("");
-				ss << "REPLACE INTO character_achievement_progress (guid, criteria, counter, date) VALUES ";
-				first = true;
+				if (ss.str().length() >= 16000)
+				{
+					// SQL query length is limited to 16384 characters
+					CharacterDatabase.Query( ss.str().c_str() );
+					ss.clear();
+					ss << "REPLACE INTO character_achievement_progress (guid, criteria, counter, date) VALUES ";
+					first = true;
+				}
+				if(!first)
+					ss << ", ";
+				else
+					first = false;
+				ss << "(" << GetPlayer()->GetUInt32Value(OBJECT_FIELD_GUID) << ", " << iter->first << ", " << iter->second->counter << ", " << iter->second->date << ")";
 			}
-			if(!first)
-				ss << ", ";
-			else
-				first = false;
-			ss << "(" << GetPlayer()->GetUInt32Value(OBJECT_FIELD_GUID) << ", " << iter->first << ", " << iter->second->counter << ", " << iter->second->date << ")";
 		}
 		CharacterDatabase.Query( ss.str().c_str() );
 	}
@@ -181,12 +195,12 @@ void AchievementMgr::SendCriteriaUpdate(CriteriaProgress *progress)
 }
 void AchievementMgr::CheckAllAchievementCriteria()
 {
-	return; // disable this for now...
+//	return; // disable this for now...
 	for(uint32 i=0; i<ACHIEVEMENT_CRITERIA_TYPE_TOTAL; i++)
 		UpdateAchievementCriteria(AchievementCriteriaTypes(i));
 }
 
-void AchievementMgr::UpdateAchievementCriteria(AchievementCriteriaTypes type, uint32 miscvalue1, uint32 miscvalue2, uint32 time)
+void AchievementMgr::UpdateAchievementCriteria(AchievementCriteriaTypes type, int32 miscvalue1, int32 miscvalue2, uint32 time)
 {
 	AchievementCriteriaEntryList const& achievementCriteriaList = objmgr.GetAchievementCriteriaByType(type);
 	for(AchievementCriteriaEntryList::const_iterator i = achievementCriteriaList.begin(); i!=achievementCriteriaList.end(); ++i)
@@ -239,6 +253,12 @@ void AchievementMgr::UpdateAchievementCriteria(AchievementCriteriaTypes type, ui
 			case ACHIEVEMENT_CRITERIA_TYPE_LOOT_MONEY:
 				UpdateCriteriaProgress(achievementCriteria, miscvalue1);
 				break;
+			case ACHIEVEMENT_CRITERIA_TYPE_GAIN_REPUTATION:
+				if(achievementCriteria->gain_reputation.factionID == miscvalue1)
+					SetCriteriaProgress(achievementCriteria, miscvalue2);
+				break;
+			case ACHIEVEMENT_CRITERIA_TYPE_GAIN_EXALTED_REPUTATION:
+				UpdateCriteriaProgress(achievementCriteria, miscvalue1);
 			//End of Achievement List
 			default:
 				return;
@@ -281,7 +301,7 @@ void AchievementMgr::UpdateAchievementCriteria(AchievementCriteriaTypes type)
 				SetCriteriaProgress(achievementCriteria, 1);
 			break;
 		case ACHIEVEMENT_CRITERIA_TYPE_COMPLETE_QUEST_COUNT:
-			SetCriteriaProgress(achievementCriteria, (uint32)GetPlayer()->m_finishedQuests.size());
+			SetCriteriaProgress(achievementCriteria, (int32)GetPlayer()->m_finishedQuests.size());
 			break;
 		case ACHIEVEMENT_CRITERIA_TYPE_COMPLETE_QUESTS_IN_ZONE:
 			{
@@ -289,23 +309,17 @@ void AchievementMgr::UpdateAchievementCriteria(AchievementCriteriaTypes type)
 				set<uint32>::iterator qc = GetPlayer()->m_finishedQuests.begin();
 				for(; qc!=GetPlayer()->m_finishedQuests.end(); ++qc)
 				{
-					QueryResult* result = WorldDatabase.Query("SELECT ZoneId FROM quests WHERE entry=%u;", (*qc));
-					if(result)
+					Quest* qst = QuestStorage.LookupEntry(*qc);
+					if(qst && qst->zone_id == achievementCriteria->complete_quests_in_zone.zoneID)
 					{
-						Field* field = result->Fetch();
-						if(field->GetUInt32() == achievementCriteria->complete_quests_in_zone.zoneID)
-						{
-							++qcinzone;
-						}
+						++qcinzone;
 					}
-					delete result;
 				}
 				SetCriteriaProgress(achievementCriteria, qcinzone);
 			}
 			break;
 		case ACHIEVEMENT_CRITERIA_TYPE_COMPLETE_QUEST:
 			{
-				//uint32 completed = achievementCriteria->complete_quest.questCount;
 				uint32 completed = 0;
 				set<uint32>::iterator it = GetPlayer()->m_finishedQuests.find(achievementCriteria->complete_quest.questID);
 				if( it!=GetPlayer()->m_finishedQuests.end() )
@@ -321,16 +335,23 @@ void AchievementMgr::UpdateAchievementCriteria(AchievementCriteriaTypes type)
 				set<uint32>::iterator fq = GetPlayer()->m_finishedQuests.begin();
 				for(; fq!=GetPlayer()->m_finishedQuests.end(); ++fq)
 				{
-					QueryResult* result = WorldDatabase.Query("SELECT RewMoney FROM quests WHERE entry=%u;", (*fq));
-					if(result)
+					Quest* qst = QuestStorage.LookupEntry(*fq);
+					if(qst)
 					{
-						Field* field = result->Fetch();
-						qrmoney += field->GetUInt32();
+						qrmoney += qst->reward_money;
 					}
-					delete result;
 				}
 				SetCriteriaProgress(achievementCriteria, qrmoney);
 			}
+			break;
+		case ACHIEVEMENT_CRITERIA_TYPE_GAIN_REPUTATION:
+			{
+				int32 rep = GetPlayer()->GetStanding(achievementCriteria->gain_reputation.factionID);
+				SetCriteriaProgress(achievementCriteria, rep);
+			}
+			break;
+		case ACHIEVEMENT_CRITERIA_TYPE_GAIN_EXALTED_REPUTATION:
+			SetCriteriaProgress(achievementCriteria,GetPlayer()->GetExaltedCount());
 			break;
 			//End of Achievement List
 		default:
@@ -369,6 +390,12 @@ bool AchievementMgr::IsCompletedCriteria(AchievementCriteriaEntry const* achieve
 
 	CriteriaProgress *progress = itr->second;
 
+	if(progress->counter < 1) // 0 or negative
+	{
+		return false;
+	}
+
+	uint32 progresscounter = (uint32)progress->counter;
 	switch(achievementCriteria->requiredType)
 	{
 	//Start of Achievement List
@@ -394,23 +421,27 @@ bool AchievementMgr::IsCompletedCriteria(AchievementCriteriaEntry const* achieve
 				achievement->ID == 1412 && GetPlayer()->getRace() != RACE_TROLL ||
 				achievement->ID == 1413 && GetPlayer()->getRace() != RACE_UNDEAD )
 				return false;
-			return progress->counter >= achievementCriteria->reach_level.level;
+			return progresscounter >= (int32)achievementCriteria->reach_level.level;
 			break;
 		case ACHIEVEMENT_CRITERIA_TYPE_LOOT_ITEM:
 		case ACHIEVEMENT_CRITERIA_TYPE_OWN_ITEM:
-			return progress->counter >= achievementCriteria->loot_item.itemCount;
+			return progresscounter >= achievementCriteria->loot_item.itemCount;
 		case ACHIEVEMENT_CRITERIA_TYPE_EXPLORE_AREA:
-			return progress->counter >= 1;
+			return progresscounter >= 1;
 		case ACHIEVEMENT_CRITERIA_TYPE_LOOT_MONEY:
-			return progress->counter >= achievementCriteria->loot_money.goldInCopper;
+			return progresscounter >= achievementCriteria->loot_money.goldInCopper;
 		case ACHIEVEMENT_CRITERIA_TYPE_COMPLETE_QUEST_COUNT:
-			return progress->counter >= achievementCriteria->complete_quest_count.totalQuestCount;
+			return progresscounter >= achievementCriteria->complete_quest_count.totalQuestCount;
 		case ACHIEVEMENT_CRITERIA_TYPE_COMPLETE_QUESTS_IN_ZONE:
-			return progress->counter >= achievementCriteria->complete_quests_in_zone.questCount;
+			return progresscounter >= achievementCriteria->complete_quests_in_zone.questCount;
 		case ACHIEVEMENT_CRITERIA_TYPE_COMPLETE_QUEST:
-			return progress->counter >= 1;
+			return progresscounter >= 1;
 		case ACHIEVEMENT_CRITERIA_TYPE_QUEST_REWARD_GOLD:
-			return progress->counter >= achievementCriteria->quest_reward_money.goldInCopper;
+			return progresscounter >= achievementCriteria->quest_reward_money.goldInCopper;
+		case ACHIEVEMENT_CRITERIA_TYPE_GAIN_REPUTATION:
+			return progresscounter >= achievementCriteria->gain_reputation.reputationAmount;
+		case ACHIEVEMENT_CRITERIA_TYPE_GAIN_EXALTED_REPUTATION:
+			return progresscounter >= achievementCriteria->gain_exalted_reputation.numberOfExaltedFactions;
 		case ACHIEVEMENT_CRITERIA_TYPE_COMPLETE_ACHIEVEMENT:
 			return m_completedAchievements.find(achievementCriteria->complete_achievement.linkedAchievement) != m_completedAchievements.end();
 		//End of Achievement List
@@ -473,7 +504,7 @@ AchievementCompletionState AchievementMgr::GetAchievementCompletionState(Achieve
 	}
 }
 
-void AchievementMgr::SetCriteriaProgress(AchievementCriteriaEntry const* entry, uint32 newValue, bool relative)
+void AchievementMgr::SetCriteriaProgress(AchievementCriteriaEntry const* entry, int32 newValue, bool relative)
 {
 	CriteriaProgress *progress = NULL;
 
@@ -489,10 +520,13 @@ void AchievementMgr::SetCriteriaProgress(AchievementCriteriaEntry const* entry, 
 				return;
 		progress->counter = newValue;
 	}
-	SendCriteriaUpdate( progress );
+	if(progress->counter > 0)
+	{
+		SendCriteriaUpdate( progress );
+	}
 }
 
-void AchievementMgr::UpdateCriteriaProgress(AchievementCriteriaEntry const* entry, uint32 updateByValue)
+void AchievementMgr::UpdateCriteriaProgress(AchievementCriteriaEntry const* entry, int32 updateByValue)
 {
 	CriteriaProgress *progress = NULL;
 
@@ -506,7 +540,10 @@ void AchievementMgr::UpdateCriteriaProgress(AchievementCriteriaEntry const* entr
 		progress = m_criteriaProgress[entry->ID];
 		progress->counter += updateByValue;
 	}
-	SendCriteriaUpdate( progress );
+	if(progress->counter > 0)
+	{
+		SendCriteriaUpdate( progress );
+	}
 }
 
 void AchievementMgr::CompletedAchievement(AchievementEntry const* achievement)
@@ -551,13 +588,16 @@ void AchievementMgr::BuildAllDataPacket(WorldPacket *data)
 	*data << int32(-1);
 	for(CriteriaProgressMap::iterator iter = m_criteriaProgress.begin(); iter!=m_criteriaProgress.end(); ++iter)
 	{
-		*data << uint32(iter->second->id);
-		data->appendPackGUID(iter->second->counter);
-		*data << GetPlayer()->GetNewGUID(); 
-		*data << uint32(0);
-		*data << uint32(secsToTimeBitFields(iter->second->date));
-		*data << uint32(0);
-		*data << uint32(0);
+		if(iter->second->counter > 0) // only send achievements that have been started
+		{
+			*data << uint32(iter->second->id);
+			data->appendPackGUID(iter->second->counter);
+			*data << GetPlayer()->GetNewGUID(); 
+			*data << uint32(0);
+			*data << uint32(secsToTimeBitFields(iter->second->date));
+			*data << uint32(0);
+			*data << uint32(0);
+		}
 	}
 	*data << int32(-1);
 }

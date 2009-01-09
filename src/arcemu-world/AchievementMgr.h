@@ -10,7 +10,7 @@ struct CriteriaProgress
         this->date = date;
     }
     uint32 id;
-    uint32 counter;
+    int32 counter;
     time_t date;
 };
  
@@ -37,11 +37,15 @@ enum AchievementFactionFlags
 
 enum AchievementFlags
 {
-    ACHIEVEMENT_FLAG_COUNTER = 0x00000001,
-    ACHIEVEMENT_FLAG_REACH_LEVEL = 0x00000004,
-    ACHIEVEMENT_FLAG_AVERAGE = 0x00000040,
-    ACHIEVEMENT_FLAG_REALM_FIRST_REACH= 0x00000100,
-    ACHIEVEMENT_FLAG_REALM_FIRST_KILL = 0x00000200,
+	ACHIEVEMENT_FLAG_NONE              = 0x00000000,
+	ACHIEVEMENT_FLAG_COUNTER           = 0x00000001,
+	ACHIEVEMENT_FLAG_REACH_LEVEL       = 0x00000004,
+	ACHIEVEMENT_FLAG_UNKNOWN1          = 0x00000008,
+	ACHIEVEMENT_FLAG_UNKNOWN2          = 0x00000010,
+	ACHIEVEMENT_FLAG_UNKNOWN3          = 0x00000020, // This is set in one of Sporeggar reputation checks
+	ACHIEVEMENT_FLAG_AVERAGE           = 0x00000040,
+	ACHIEVEMENT_FLAG_REALM_FIRST_REACH = 0x00000100,
+	ACHIEVEMENT_FLAG_REALM_FIRST_KILL  = 0x00000200,
 };
 
 enum AchievementCriteriaCondition
@@ -178,34 +182,34 @@ enum AchievementCriteriaTypes
 
 class AchievementMgr
 {
-    public:
-        AchievementMgr(Player* pl);
-			~AchievementMgr();
+	public:
+		AchievementMgr(Player* pl);
+		~AchievementMgr();
 
-        void LoadFromDB(QueryResult *achievementResult, QueryResult *criteriaResult);
-        void SaveToDB();
-        void CheckAllAchievementCriteria();
-        void SendAllAchievementData(Player* player);
-        void SendRespondInspectAchievements(Player* player);
-		void UpdateAchievementCriteria(AchievementCriteriaTypes type, uint32 miscvalue1, uint32 miscvalue2, uint32 time);
+		void LoadFromDB(QueryResult *achievementResult, QueryResult *criteriaResult);
+		void SaveToDB();
+		void CheckAllAchievementCriteria();
+		void SendAllAchievementData(Player* player);
+		void SendRespondInspectAchievements(Player* player);
+		void UpdateAchievementCriteria(AchievementCriteriaTypes type, int32 miscvalue1, int32 miscvalue2, uint32 time);
 		void UpdateAchievementCriteria(AchievementCriteriaTypes type);
 
-        Player* GetPlayer() { return m_player;}
+		Player* GetPlayer() { return m_player;}
 
     private:
-        void SendAchievementEarned(AchievementEntry const* achievement);
-        void SendCriteriaUpdate(CriteriaProgress *progress);
-        void SetCriteriaProgress(AchievementCriteriaEntry const* entry, uint32 newValue, bool relative=false);
-		void UpdateCriteriaProgress(AchievementCriteriaEntry const* entry, uint32 updateByValue);
-        void CompletedCriteria(AchievementCriteriaEntry const* entry);
-        void CompletedAchievement(AchievementEntry const* entry);
-        bool IsCompletedCriteria(AchievementCriteriaEntry const* entry);
-        AchievementCompletionState GetAchievementCompletionState(AchievementEntry const* entry);
-        void BuildAllDataPacket(WorldPacket *data);
+		void SendAchievementEarned(AchievementEntry const* achievement);
+		void SendCriteriaUpdate(CriteriaProgress *progress);
+		void SetCriteriaProgress(AchievementCriteriaEntry const* entry, int32 newValue, bool relative=false);
+		void UpdateCriteriaProgress(AchievementCriteriaEntry const* entry, int32 updateByValue);
+		void CompletedCriteria(AchievementCriteriaEntry const* entry);
+		void CompletedAchievement(AchievementEntry const* entry);
+		bool IsCompletedCriteria(AchievementCriteriaEntry const* entry);
+		AchievementCompletionState GetAchievementCompletionState(AchievementEntry const* entry);
+		void BuildAllDataPacket(WorldPacket *data);
 
-        Player* m_player;
-        CriteriaProgressMap m_criteriaProgress;
-        CompletedAchievementMap m_completedAchievements;
+		Player* m_player;
+		CriteriaProgressMap m_criteriaProgress;
+		CompletedAchievementMap m_completedAchievements;
 };
 
 
