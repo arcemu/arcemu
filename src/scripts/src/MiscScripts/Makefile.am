@@ -11,4 +11,5 @@ libMoonMiscScripts_la_SOURCES = Creatures.cpp \
 GameObjects.cpp \
 RandomScripts.cpp \
 QuelDanasPortal.cpp \
+EbonHold.cpp \
 Setup.cpp
