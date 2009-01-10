@@ -1,6 +1,6 @@
 /*
- * OpenAscent MMORPG Server
- * Copyright (C) 2008 <http://www.openascent.com/>
+ * ArcEmu MMORPG Server
+ * Copyright (C) 2008-2009 <http://www.arcemu.org/>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by

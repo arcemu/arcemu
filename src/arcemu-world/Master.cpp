@@ -1,7 +1,7 @@
 /*
  * ArcEmu MMORPG Server
  * Copyright (C) 2005-2007 Ascent Team <http://www.ascentemu.com/>
- * Copyright (C) 2008 <http://www.ArcEmu.org/>
+ * Copyright (C) 2008-2009 <http://www.ArcEmu.org/>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -181,7 +181,7 @@ bool Master::Run(int argc, char ** argv)
 	printf("\nRepack: %s | Author: %s | %s\n", REPACK, REPACK_AUTHOR, REPACK_WEBSITE);
 #endif
 	Log.Color(TBLUE);
-	printf("\nCopyright (C) 2008 ArcEmu. http://www.arcemu.org/\n");
+	printf("\nCopyright (C) 2008-2009 ArcEmu. http://www.arcemu.org/\n");
 	printf("This program is free software: you can redistribute it and/or modify\n");
 	printf("it under the terms of the GNU Affero General Public License as published by\n");
 	printf("the Free Software Foundation, either version 3 of the License, or\n");

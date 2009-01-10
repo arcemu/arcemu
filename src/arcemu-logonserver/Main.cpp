@@ -1,6 +1,6 @@
 /*
  * ArcEmu MMORPG Server
- * Copyright (C) 2008 <http://www.ArcEmu.org/>
+ * Copyright (C) 2008-2009 <http://www.ArcEmu.org/>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -307,7 +307,7 @@ void LogonServer::Run(int argc, char ** argv)
 	
 	sLog.outString(BANNER, BUILD_TAG, BUILD_REVISION, CONFIG, PLATFORM_TEXT, ARCH);
 	Log.Color(TBLUE);
-	printf("\nCopyright (C) 2008 ArcEmu. http://www.arcemu.org/\n");
+	printf("\nCopyright (C) 2008-2009 ArcEmu. http://www.arcemu.org/\n");
 	printf("This program is free software: you can redistribute it and/or modify\n");
 	printf("it under the terms of the GNU Affero General Public License as published by\n");
 	printf("the Free Software Foundation, either version 3 of the License, or\n");

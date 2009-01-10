@@ -1,6 +1,6 @@
 /*
  * ArcScript Scripts for Arcemu MMORPG Server
- * Copyright (C) 2008 Arcemu Team
+ * Copyright (C) 2008-2009 Arcemu Team
  * Copyright (C) 2007 Moon++ <http://www.moonplusplus.com/>
  *
  * This program is free software: you can redistribute it and/or modify
@@ -71,7 +71,7 @@ extern "C" SCRIPT_DECL void _exp_script_register(ScriptMgr* mgr)	// Comment any 
 	SetupTheEye(mgr);
 	SetupZulGurub(mgr);
 	SetupSerpentshrineCavern(mgr);
-	SetupMagtheridonsLair(mgr);
+	//SetupMagtheridonsLair(mgr); // This script crashes + leaks
 	SetupSunwellPlateau(mgr);
 	//SetupWorldBosses(mgr); 
 	SetupZulAman(mgr);

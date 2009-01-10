@@ -1,3 +1,9 @@
+# Commented scripts:
+# 
+# Magtheridon's Lair script, currently leaks memory/crashes 01/10/08
+# Raid_Magtheridons_Lair.cpp \
+#
+
 INCLUDES = -I$(top_srcdir)/src/arcemu-logonserver \
    -I$(top_srcdir)/src/arcemu-realmserver -I$(top_srcdir)/src/arcemu-shared -I$(top_srcdir)/src/arcemu-voicechat \
    -I$(top_srcdir)/src/arcemu-world -I$(srcdir) -I$(srcdir)/../../../../dep/include \
@@ -51,7 +57,6 @@ Raid_OnyxiasLair.cpp \
 Raid_SerpentshrineCavern.cpp \
 Raid_TheEye.cpp \
 Raid_ZulGurub.cpp \
-Raid_Magtheridons_Lair.cpp \
 Raid_WorldBosses.cpp \
 Raid_ZulAman.cpp \
 Raid_SunwellPlateau.cpp \

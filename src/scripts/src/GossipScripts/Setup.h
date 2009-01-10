@@ -1,6 +1,6 @@
 /*
  * ArcScript Sccripts for Arcemu MMORPG Server
- * Copyright (C) 2008 Arcemu Team
+ * Copyright (C) 2008-2009 Arcemu Team
  * Copyright (C) 2007 Moon++  <http://www.moonplusplus.info/>
  *
  * This program is free software: you can redistribute it and/or modify
@@ -28,5 +28,6 @@ void SetupShattrathGossip(ScriptMgr * mgr);
 void SetupTanarisGossip(ScriptMgr * mgr);
 void SetupMoongladeScript(ScriptMgr * mgr);
 void SetupStormwindGossip(ScriptMgr * mgr);
+//void SetupWotlkgossips(ScriptMgr * mgr) //Wotlk gossips incomplete
 
 #endif

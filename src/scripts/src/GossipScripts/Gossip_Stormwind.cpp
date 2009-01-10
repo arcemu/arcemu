@@ -1,6 +1,6 @@
 /*
  * ArcScript Scripts for ArcEmu MMORPG Server
- * Copyright (C) 2008 Arcemu Team
+ * Copyright (C) 2008-2009 Arcemu Team
  * Copyright (C) 2007 Moon++ <http://www.moonplusplus.info/>
  *
  * This program is free software: you can redistribute it and/or modify

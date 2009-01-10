@@ -1,6 +1,6 @@
 /*
  * ArcScript Scripts for Arcemu MMORPG Server
- * Copyright (C) 2008 Arcemu Team
+ * Copyright (C) 2008-2009 Arcemu Team
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by

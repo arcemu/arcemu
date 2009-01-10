@@ -4,7 +4,7 @@
  *
  * Circular Buffer Class
  * Based on the Bip Buffer concept, from http://www.codeproject.com/KB/IP/bipbuffer.aspx
- * Implementation Copyright (c) 2008 Burlex
+ * Implementation Copyright (C) 2008-2009 Burlex
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
