@@ -652,10 +652,11 @@ bool Player::Create(WorldPacket& data )
 		// info not found... disconnect
 		//sCheatLog.writefromsession(m_session, "tried to create invalid player with race %u and class %u", race, class_);
 		m_session->Disconnect();
+		// don't use Log.LargeErrorMessage() here, it doesn't handle %s %u in the string.
 		if(class_ == DEATHKNIGHT)
-			Log.LargeErrorMessage(LARGERRORMESSAGE_ERROR, "Account Name: %s tried to create a deathknight, however your playercreateinfo table does not support this class, please update your database.", m_session->GetAccountName().c_str());
+			sLog.outError("Account Name: %s tried to create a deathknight, however your player creatinfo table does not support this class, please update your database.", m_session->GetAccountName().c_str());
 		else
-			Log.LargeErrorMessage(LARGERRORMESSAGE_ERROR, "Account Name: %s tried to create an invalid character with race %u and class %u, if this is intended please update your playercreateinfo table inside your database.", m_session->GetAccountName().c_str(), race, class_);
+			sLog.outError("Account Name: %s tried to create an invalid character with race %u and class %u, if this is intended please update your playercreateinfo table inside your database.", m_session->GetAccountName().c_str(), race, class_);
 		return false;
 	}
 
