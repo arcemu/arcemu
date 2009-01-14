@@ -4521,12 +4521,12 @@ void Player::KillPlayer()
 	SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_PLAYER_CONTROLLED); // Player death animation, also can be used with DYNAMIC_FLAGS <- huh???
 	SetUInt32Value( UNIT_DYNAMIC_FLAGS, 0x00 );
 
-	if(this->getClass() == WARRIOR) // Rage resets on death
-		SetPower(POWER_TYPE_RAGE, 0);
-	if(this->getClass() == DEATHKNIGHT)
-		SetPower(POWER_TYPE_RUNIC_POWER, 0);
+	if( getClass() == WARRIOR ) // Rage resets on death
+		SetPower( POWER_TYPE_RAGE, 0 );
+	else if( getClass() == DEATHKNIGHT )
+		SetPower( POWER_TYPE_RUNIC_POWER, 0 );
 
-	sHookInterface.OnDeath(this);
+	sHookInterface.OnDeath( this );
 
 }
 
@@ -11989,7 +11989,7 @@ void Player::ConvertRune(uint8 index, uint8 value)
 {
 	ASSERT(index < 6);
 	m_runes[index] = value;
-	if(value >= 4)
+	if( value >= RUNE_RECHARGE )
 		return;
 
 	WorldPacket data(SMSG_CONVERT_RUNE, 2);

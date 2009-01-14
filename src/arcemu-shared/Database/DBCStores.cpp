@@ -193,7 +193,7 @@ const char* spellentryFormat =
 	"uu" // TotemCategory[2]
 	"u" // RequiresAreaId
 	"u" // School
-	"xx"
+	"ux"
 ;
 
 
