@@ -267,6 +267,12 @@ void WorldSession::HandleSetTradeItem(WorldPacket & recv_data)
 
 	if( pTarget == NULL || pItem == 0 || TradeSlot > 6 || ( TradeSlot < 6 && pItem->IsSoulbound() ) )
  		return;
+	if(pItem->IsAccountbound())
+	{
+		PlayerInfo* pinfo = ObjectMgr::getSingleton().GetPlayerInfo(_player->mTradeTarget);
+		if(pinfo == NULL || GetAccountId() != pinfo->acct) // can't trade account-based items
+			return;
+	}
 
 /*	if( pItem->IsContainer() )
 	{
@@ -322,12 +328,23 @@ void WorldSession::HandleSetTradeItem(WorldPacket & recv_data)
 	}			
 		
 
-	if(TradeSlot < 6 && pItem->IsSoulbound())
-	{
-		sCheatLog.writefromsession(this, "tried to cheat trade a soulbound item");
-		Disconnect();
-		return;
-	}
+	if(TradeSlot < 6)
+		if(pItem->IsSoulbound())
+		{
+			sCheatLog.writefromsession(this, "tried to cheat trade a soulbound item");
+			Disconnect();
+			return;
+		}
+		else if(pItem->IsAccountbound())
+		{
+			PlayerInfo* pinfo = ObjectMgr::getSingleton().GetPlayerInfo(_player->mTradeTarget);
+			if(pinfo == NULL || GetAccountId() != pinfo->acct) // can't trade account-based items
+			{
+				sCheatLog.writefromsession(this, "tried to cheat trade an accountbound item");
+				Disconnect();
+				return;
+			}
+		}
 
 	for(uint32 i = 0; i < 8; ++i)
 	{

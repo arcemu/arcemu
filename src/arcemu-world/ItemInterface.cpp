@@ -263,8 +263,11 @@ AddItemResult ItemInterface::m_AddItem(Item *item, int8 ContainerSlot, int8 slot
 				item->SetUInt64Value(ITEM_FIELD_CONTAINED, m_pOwner->GetGUID());
 				m_pItems[(int)slot] = item;
 
-				if (item->GetProto()->Bonding == ITEM_BIND_ON_PICKUP) 
-					item->SoulBind();
+				if(item->GetProto()->Bonding == ITEM_BIND_ON_PICKUP)
+					if(item->GetProto()->Flags & ITEM_FLAG_ACCOUNTBOUND) // don't "Soulbind" account-bound items
+						item->AccountBind();
+					else
+						item->SoulBind();
 
 				if( m_pOwner->IsInWorld() && !item->IsInWorld())
 				{

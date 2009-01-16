@@ -302,13 +302,26 @@ void WorldSession::HandleSendMail(WorldPacket & recv_data )
 		return;
 	}
 
+	// Search for the recipient
+	PlayerInfo* player = ObjectMgr::getSingleton().GetPlayerInfoByName(recepient.c_str());
+	if( player == NULL )
+	{
+		SendMailError( MAIL_ERR_RECIPIENT_NOT_FOUND );
+		return;
+	}
+
 	for( i = 0; i < itemcount; ++i )
 	{
 		recv_data >> itemslot;
 		recv_data >> itemguid;
 
-        pItem = _player->GetItemInterface()->GetItemByGUID( itemguid );
+		pItem = _player->GetItemInterface()->GetItemByGUID( itemguid );
 		if( pItem == NULL || pItem->IsSoulbound() || pItem->HasFlag( ITEM_FIELD_FLAGS, ITEM_FLAG_CONJURED ) )
+		{
+			SendMailError( MAIL_ERR_INTERNAL_ERROR );
+			return;
+		}
+		if(pItem->IsAccountbound() && GetAccountId() !=  player->acct) // don't mail account-bound items to another account
 		{
 			SendMailError( MAIL_ERR_INTERNAL_ERROR );
 			return;
@@ -324,14 +337,6 @@ void WorldSession::HandleSendMail(WorldPacket & recv_data )
 	// uint32
 	// uint8
 	
-	// Search for the recipient
-	PlayerInfo* player = ObjectMgr::getSingleton().GetPlayerInfoByName(recepient.c_str());
-	if( player == NULL )
-	{
-		SendMailError( MAIL_ERR_RECIPIENT_NOT_FOUND );
-		return;
-	}
-
 	bool interfaction = false;
 	if( sMailSystem.MailOption( MAIL_FLAG_CAN_SEND_TO_OPPOSITE_FACTION ) || (HasGMPermissions() && sMailSystem.MailOption( MAIL_FLAG_CAN_SEND_TO_OPPOSITE_FACTION_GM ) ) )
 	{

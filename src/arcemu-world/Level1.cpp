@@ -198,7 +198,7 @@ bool ChatHandler::HandleKickCommand(const char* args, WorldSession *m_session)
 		sGMLog.writefromsession(m_session, "Kicked player %s from the server for %s", chr->GetName(), kickreason.c_str());
 		if(!m_session->CanUseCommand('z') && chr->GetSession()->CanUseCommand('z'))
 		{
-			RedSystemMessage(m_session, "You cannot kick a GM who's permissions outrank yours.", chr->GetName());
+			RedSystemMessage(m_session, "You cannot kick %s, a GM whose permissions outrank yours.", chr->GetName());
 			return true;
 		}
 		/*if(m_session->GetSecurity() < chr->GetSession()->GetSecurity())
@@ -253,7 +253,10 @@ bool ChatHandler::HandleAddInvItemCommand(const char *args, WorldSession *m_sess
 
 		item->SetUInt32Value(ITEM_FIELD_STACK_COUNT, ((count > it->MaxCount) ? it->MaxCount : count));
 		if(it->Bonding==ITEM_BIND_ON_PICKUP)
-			item->SoulBind();
+			if(it->Flags & ITEM_FLAG_ACCOUNTBOUND) // don't "Soulbind" account-bound items
+				item->AccountBind();
+			else
+				item->SoulBind();
 		if(randomprop!=0)
 		{
 			if(randomprop<0)

@@ -151,6 +151,16 @@ public:
 		return this->HasFlag( ITEM_FIELD_FLAGS, ITEM_FLAG_QUEST | ITEM_FLAG_SOULBOUND );
 	}
 
+	ARCEMU_INLINE void AccountBind()
+	{
+		this->SetFlag( ITEM_FIELD_FLAGS, ITEM_FLAG_ACCOUNTBOUND );
+	}
+
+	ARCEMU_INLINE bool IsAccountbound()
+	{
+		return this->HasFlag( ITEM_FIELD_FLAGS, ITEM_FLAG_ACCOUNTBOUND );  // 134217728 = 0x8000000
+	}
+
 	ARCEMU_INLINE uint32 GetChargesLeft()
 	{
 		for( uint32 x = 0; x < 5; x++ )

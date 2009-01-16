@@ -4411,9 +4411,7 @@ void Unit::AddAura(Aura *aur)
 	if(!aur->IsPositive() && aur->IsCombatStateAffecting())	  // Creature
 	{
 		Unit * pCaster = aur->GetUnitCaster();
-		if( pCaster && isAlive() 
-			&& this->isAlive() //seems so logical i wonder why i put it here
-			)
+		if( pCaster && pCaster->isAlive() && this->isAlive() )
 		{
 			pCaster->CombatStatus.OnDamageDealt(this);
 

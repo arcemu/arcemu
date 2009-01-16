@@ -1027,6 +1027,9 @@ bool ChatHandler::HandleAddItemSetCommand(const char* args, WorldSession* m_sess
 		Item *itm = objmgr.CreateItem((*itr)->ItemId, m_session->GetPlayer());
 		if(!itm) continue;
 		if(itm->GetProto()->Bonding == ITEM_BIND_ON_PICKUP)
+			if(itm->GetProto()->Flags & ITEM_FLAG_ACCOUNTBOUND) // don't "Soulbind" account-bound items
+				itm->AccountBind();
+			else
 			itm->SoulBind();
 
 		if(!chr->GetItemInterface()->AddItemToFreeSlot(itm))
