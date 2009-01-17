@@ -1744,7 +1744,9 @@ void WorldSession::HandleGuildBankQueryText( WorldPacket & recv_data )
 
 void WorldSession::HandleSetGuildBankText( WorldPacket & recv_data )
 {
-	if( _player->GetGuild() == NULL )
+	GuildMember * pMember = _player->m_playerInfo->guildMember;
+
+	if( _player->GetGuild() == NULL || pMember == NULL )
 		return;
 
 	uint8 tabid;
@@ -1753,7 +1755,8 @@ void WorldSession::HandleSetGuildBankText( WorldPacket & recv_data )
 	recv_data >> tabid >> text;
 
 	GuildBankTab * tab = _player->GetGuild()->GetBankTab( tabid );
-	if( tab != NULL )
+	if( tab != NULL && 
+		pMember->pRank->CanPerformBankCommand( GR_RIGHT_GUILD_BANK_CHANGE_TABTXT, tabid ) )
 	{
 		tab->szTabInfo = strdup( text.c_str() );
 		WorldPacket data( SMSG_GUILD_EVENT, 4 );
