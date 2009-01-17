@@ -1130,8 +1130,8 @@ bool ChatHandler::HandleGodModeCommand(const char* args, WorldSession* m_session
 	if(strcmp(args, "on") == 0)
 	{
 		plyr->GodModeCheat = true;
-		BlueSystemMessage(m_session, "activated the god mode cheat on %s.", plyr->GetName());
-		GreenSystemMessageToPlr(plyr, "activated the god mode cheat on you.", m_session->GetPlayer()->GetName());
+		BlueSystemMessage(m_session, "Activating the god mode cheat on %s.", plyr->GetName());
+		GreenSystemMessageToPlr(plyr, "%s activated the god mode cheat on you.", m_session->GetPlayer()->GetName());
 	}
 	else if(strcmp(args, "off") == 0)
 	{
