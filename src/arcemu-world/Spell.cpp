@@ -2760,7 +2760,7 @@ bool Spell::TakePower()
 					uint32 credit = p_caster->TakeRunes(RUNE_BLOOD, runecost->bloodRuneCost) +
 						p_caster->TakeRunes(RUNE_FROST, runecost->frostRuneCost) +
 						p_caster->TakeRunes(RUNE_UNHOLY, runecost->unholyRuneCost);
-					if(credit > 0 && p_caster->TakeRunes(3, credit) > 0)
+					if(credit > 0 && p_caster->TakeRunes( RUNE_DEATH, credit ) > 0)
 						return false;
 					if(runecost->runePowerGain)
 						u_caster->SetPower(POWER_TYPE_RUNIC_POWER, runecost->runePowerGain + u_caster->GetUInt32Value(UNIT_FIELD_POWER7));

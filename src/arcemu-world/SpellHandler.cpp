@@ -185,11 +185,10 @@ void WorldSession::HandleUseItemOpcode(WorldPacket& recvPacket)
 
 				Spell *spell = SpellPool.PooledNew();
 				spell->Init(_player, spellInfo, false, NULL);
-				uint8 result;
 				spell->extra_cast_number=cn;
 				spell->i_caster = tmpItem;
 				//GetPlayer()->setCurrentSpell(spell);
-				result = spell->prepare(&targets);
+				spell->prepare(&targets);
 			}
 		}
 	}

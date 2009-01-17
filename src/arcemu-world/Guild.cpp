@@ -74,7 +74,9 @@ Guild::~Guild()
 
 		for(list<GuildBankEvent*>::iterator it2 = (*itr)->lLog.begin(); it2 != (*itr)->lLog.end(); ++it2)
 			delete (*it2);
-
+		
+		(*itr)->szTabIcon = (*itr)->szTabInfo = (*itr)->szTabName = NULL;
+		
 		delete (*itr);
 	}
 
@@ -575,6 +577,7 @@ bool Guild::LoadFromDB(Field * f)
 			pTab->iTabId = (uint8)result->Fetch()[1].GetUInt32();
 			pTab->szTabName = (strlen(result->Fetch()[2].GetString()) > 0) ? strdup(result->Fetch()[2].GetString()) : NULL;
 			pTab->szTabIcon = (strlen(result->Fetch()[3].GetString()) > 0) ? strdup(result->Fetch()[3].GetString()) : NULL;
+			pTab->szTabInfo = (strlen(result->Fetch()[4].GetString()) > 0) ? strdup(result->Fetch()[4].GetString()) : NULL;
 			
 			memset(pTab->pSlots, 0, sizeof(Item*) * MAX_GUILD_BANK_SLOTS);
 
@@ -1113,7 +1116,7 @@ void Guild::SendGuildRoster(WorldSession * pClient)
 	Player * pPlayer;
 	uint32 i;
 	uint32 c =0;
-	uint32 pos;
+	size_t pos;
 	GuildRank * myRank;
 	bool ofnote;
 	if(pClient->GetPlayer()->m_playerInfo->guild != this)
@@ -1135,7 +1138,7 @@ void Guild::SendGuildRoster(WorldSession * pClient)
 	else
 		data << uint8(0);
 
-	pos = (uint32)data.wpos();
+	pos = data.wpos();
 	data << uint32(MAX_GUILD_RANKS);
 
 	for(i = 0; i < MAX_GUILD_RANKS; ++i)
@@ -1267,8 +1270,9 @@ void Guild::BuyBankTab(WorldSession * pClient)
 	GuildBankTab * pTab = new GuildBankTab;
 	pTab->iTabId = m_bankTabCount;
 	memset(pTab->pSlots, 0, sizeof(Item*)*MAX_GUILD_BANK_SLOTS);
-	pTab->szTabName=NULL;
-	pTab->szTabIcon=NULL;
+	pTab->szTabName = NULL;
+	pTab->szTabIcon = NULL;
+	pTab->szTabInfo = NULL;
 
 	m_bankTabs.push_back(pTab);
 	m_bankTabCount++;
@@ -1440,7 +1444,7 @@ void Guild::SendGuildBankLog(WorldSession * pClient, uint8 iSlot)
 		// sending the money log
 		WorldPacket data(MSG_GUILD_BANK_LOG_QUERY, (17*m_moneyLog.size()) + 2);
 		uint32 lt = (uint32)UNIXTIME;
-		data << uint8(0x06);
+		data << uint8( iSlot );
 		data << uint8((m_moneyLog.size() < 25) ? m_moneyLog.size() : 25);
 		list<GuildBankEvent*>::iterator itr = m_moneyLog.begin();
 		for(; itr != m_moneyLog.end(); ++itr)
@@ -1473,7 +1477,7 @@ void Guild::SendGuildBankLog(WorldSession * pClient, uint8 iSlot)
 			return;
 		}
 
-		WorldPacket data(MSG_GUILD_BANK_LOG_QUERY, (17*m_moneyLog.size()) + 2);
+		WorldPacket data( MSG_GUILD_BANK_LOG_QUERY, ( 21 * m_moneyLog.size() ) + 2 );
 		uint32 lt = (uint32)UNIXTIME;
 		data << uint8(iSlot);
 		data << uint8((pTab->lLog.size() < 25) ? pTab->lLog.size() : 25);
@@ -1485,7 +1489,7 @@ void Guild::SendGuildBankLog(WorldSession * pClient, uint8 iSlot)
 			data << (*itr)->uPlayer;
 			data << uint32(0);			// highguid
 			data << (*itr)->uEntry;
-			data << (*itr)->iStack;
+			data << uint32((*itr)->iStack);
 			data << uint32(lt - (*itr)->uTimeStamp);
 
 			if( (++count) >= 25 )

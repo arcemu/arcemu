@@ -1603,7 +1603,7 @@ void Guild::SendGuildBank(WorldSession * pClient, GuildBankTab * pTab, int8 upda
 {
 	size_t pos;
 	uint32 count=0;
-	WorldPacket data(SMSG_GUILD_BANK_LIST, 1100);
+	WorldPacket data( SMSG_GUILD_BANK_LIST, 1300 );
 	GuildMember * pMember = pClient->GetPlayer()->m_playerInfo->guildMember;
 
 	if(pMember==NULL || !pMember->pRank->CanPerformBankCommand(GR_RIGHT_GUILD_BANK_VIEW_TAB, pTab->iTabId))
@@ -1611,15 +1611,15 @@ void Guild::SendGuildBank(WorldSession * pClient, GuildBankTab * pTab, int8 upda
 
 	//Log.Debug("SendGuildBank", "sending tab %u to client.", pTab->iTabId);
 
-	data << uint64(m_bankBalance);			// amount you have deposited
-	data << uint8(pTab->iTabId);				// unknown
+	data << uint64(m_bankBalance);	// amount you have deposited
+	data << uint8(pTab->iTabId);
 	data << uint32(pMember->CalculateAllowedItemWithdraws(pTab->iTabId));		// remaining stacks for this day
-	data << uint8(0);		// some sort of view flag?
+	data << uint8(0);	// Packet type: 0-tab content, 1-tab info, 
 
 	// no need to send tab names here..
 
 	pos = data.wpos();
-	data << uint8(0);
+	data << uint8(0);	// number of items, will be filled later
 
 	for(int32 j = 0; j < MAX_GUILD_BANK_SLOTS; ++j)
 	{
@@ -1633,15 +1633,14 @@ void Guild::SendGuildBank(WorldSession * pClient, GuildBankTab * pTab, int8 upda
 
 			++count;
 
-			// what i don't understand here, where is the field for random properties? :P - Burlex
 			data << uint8(j);			// slot
 			data << pTab->pSlots[j]->GetEntry();
-
 			data << (uint32)pTab->pSlots[j]->GetItemRandomPropertyId();
-			if (pTab->pSlots[j]->GetItemRandomPropertyId())
+
+			if( pTab->pSlots[j]->GetItemRandomPropertyId() )
 				data << (uint32)pTab->pSlots[j]->GetItemRandomSuffixFactor();
 
-			data << uint8(pTab->pSlots[j]->GetUInt32Value(ITEM_FIELD_STACK_COUNT));
+			data << uint32(pTab->pSlots[j]->GetUInt32Value(ITEM_FIELD_STACK_COUNT));
 			data << uint32(0);			// unknown value
 			data << uint8(0);			// unknown 2.4.2
 			uint32 Enchant0 = 0;
@@ -1681,7 +1680,7 @@ void Guild::SendGuildBank(WorldSession * pClient, GuildBankTab * pTab, int8 upda
 		}
 	}
 
-	*(uint8*)&data.contents()[pos] = (uint8)count;
+	*(uint8*)&data.contents()[pos] = (uint8)count; // push number of items
 	pClient->SendPacket(&data);
 }
 
@@ -1717,4 +1716,53 @@ void WorldSession::HandleGuildBankViewLog(WorldPacket & recv_data)
 		return;
 
 	_player->GetGuild()->SendGuildBankLog(this, slotid);
+}
+void WorldSession::HandleGuildBankQueryText( WorldPacket & recv_data )
+{
+	if( _player->GetGuild() == NULL )
+		return;
+
+	uint8 tabid;
+	recv_data >> tabid;
+
+	GuildBankTab * tab = _player->GetGuild()->GetBankTab( tabid );
+	if( tab == NULL )
+		return;
+
+	uint32 len = tab->szTabInfo != NULL ? strlen( tab->szTabInfo ) : 1;
+
+	WorldPacket data( MSG_QUERY_GUILD_BANK_TEXT, 1 + len );
+	data << tabid;
+	
+	if( tab->szTabInfo != NULL )
+		data << tab->szTabInfo;
+	else 
+		data << uint8( 0 );
+
+	SendPacket( &data );
+}
+
+void WorldSession::HandleSetGuildBankText( WorldPacket & recv_data )
+{
+	if( _player->GetGuild() == NULL )
+		return;
+
+	uint8 tabid;
+	string text;
+
+	recv_data >> tabid >> text;
+
+	GuildBankTab * tab = _player->GetGuild()->GetBankTab( tabid );
+	if( tab != NULL )
+	{
+		tab->szTabInfo = strdup( text.c_str() );
+		WorldPacket data( SMSG_GUILD_EVENT, 4 );
+		data << uint8( GUILD_EVENT_TABINFO );
+		data << uint8( 1 );
+		data << uint16( 0x30 + tabid );
+		SendPacket( &data );
+	
+		CharacterDatabase.Execute("UPDATE guild_banktabs SET tabInfo = \"%s\" WHERE guildId = %u AND tabId = %u", 
+			CharacterDatabase.EscapeString(text).c_str(), _player->m_playerInfo->guild->GetGuildId(), (uint32)tabid );
+	}
 }

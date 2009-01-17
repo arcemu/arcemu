@@ -590,6 +590,8 @@ protected:
 	void HandleGuildLog(WorldPacket & recv_data);
 	void HandleGuildBankViewTab(WorldPacket & recv_data);
 	void HandleGuildBankViewLog(WorldPacket & recv_data);
+	void HandleGuildBankQueryText(WorldPacket & recv_data);
+	void HandleSetGuildBankText(WorldPacket & recv_data);
 	void HandleGuildBankOpenVault(WorldPacket & recv_data);
 	void HandleGuildBankBuyTab(WorldPacket & recv_data);
 	void HandleGuildBankDepositMoney(WorldPacket & recv_data);

@@ -208,6 +208,8 @@ ECHO [Importing] 1911_playertitles.sql
 mysql -h %server% --user=%user% --password=%pass% --port=%port% %chr% < ..\character_updates\1911_playertitles.sql
 ECHO [Importing] 1996_character_achievements.sql
 mysql -h %server% --user=%user% --password=%pass% --port=%port% %chr% < ..\character_updates\1996_character_achievements.sql
+ECHO [Importing] 2005_guildbank_tabinfo.sql
+mysql -h %server% --user=%user% --password=%pass% --port=%port% %chr% < ..\character_updates\2005_guildbank_tabinfo.sql
 ECHO [Importing] Finished
 ECHO  Update Success.
 ECHO.
@@ -341,6 +343,8 @@ ECHO [Importing] 1911_playertitles.sql
 mysql -h %server% --user=%user% --password=%pass% --port=%port% %chr% < ..\character_updates\1911_playertitles.sql
 ECHO [Importing] 1996_character_achievements.sql
 mysql -h %server% --user=%user% --password=%pass% --port=%port% %chr% < ..\character_updates\1996_character_achievements.sql
+ECHO [Importing] 2005_guildbank_tabinfo.sql
+mysql -h %server% --user=%user% --password=%pass% --port=%port% %chr% < ..\character_updates\2005_guildbank_tabinfo.sql
 ECHO [Importing] Character Updates Finished
 ECHO.
 ECHO.
