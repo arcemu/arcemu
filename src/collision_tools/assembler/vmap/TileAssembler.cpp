@@ -434,7 +434,11 @@ namespace VMAP
 							}
 
 							if(fread(&blockId, 4, 1, rf) != 1) { fclose(rf); return(false); }
-							if(strcmp(blockId, "GRP ") != 0) { fclose(rf); return(false); }
+							if(strcmp(blockId, "GRP ") != 0)
+							{
+								if(fread(&blockId, 4, 1, rf) != 1) { fclose(rf); return(false); }
+							}
+							if(strcmp(blockId, "GRP ") != 0) { printf("BUG: (%s)\n",blockId); fclose(rf); return(false); }
 							if(fread(&blocksize, sizeof(int), 1, rf) != 1) { fclose(rf); return(false); }
 							if(fread(&branches, sizeof(uint32), 1, rf) != 1) { fclose(rf); return(false); }
 							for(int b=0;b<(int)branches; b++)

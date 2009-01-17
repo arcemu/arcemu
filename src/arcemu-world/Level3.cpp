@@ -2786,12 +2786,18 @@ bool ChatHandler::HandleGOMove(const char * args, WorldSession * m_session)
 		return true;
 	}
 
+	// new GO position (player location)
+	// orientation doesn't change
+	float x = m_session->GetPlayer()->GetPositionX();
+	float y = m_session->GetPlayer()->GetPositionY();
+	float z = m_session->GetPlayer()->GetPositionZ();
+	float o = go->GetOrientation();
+
 	go->RemoveFromWorld(true);
-	go->SetPosition(m_session->GetPlayer()->GetPosition());
-	go->SetFloatValue(GAMEOBJECT_POS_X, m_session->GetPlayer()->GetPositionX());
-	go->SetFloatValue(GAMEOBJECT_POS_Y, m_session->GetPlayer()->GetPositionY());
-	go->SetFloatValue(GAMEOBJECT_POS_Z, m_session->GetPlayer()->GetPositionZ());
-	go->SetFloatValue(GAMEOBJECT_FACING, m_session->GetPlayer()->GetOrientation());
+	go->SetPosition(x, y, z, o);
+	go->SetFloatValue(GAMEOBJECT_POS_X, x);
+	go->SetFloatValue(GAMEOBJECT_POS_Y, y);
+	go->SetFloatValue(GAMEOBJECT_POS_Z, z);
 	uint32 NewGuid = m_session->GetPlayer()->GetMapMgr()->GenerateGameobjectGuid();
 	go->SetNewGuid(NewGuid);
 	go->SaveToDB();
