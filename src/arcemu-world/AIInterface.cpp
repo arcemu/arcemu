@@ -4012,6 +4012,9 @@ void AIInterface::CheckTarget(Unit* target)
 
 uint32 AIInterface::_CalcThreat(uint32 damage, SpellEntry * sp, Unit* Attacker)
 {
+	if(!Attacker)
+		return 0; // No attacker means no threat and we prevent crashes this way
+
 	if(m_Unit->m_faction != NULL && Attacker->m_faction != NULL)
 		if (isSameFaction(m_Unit,Attacker))
 			return 0;

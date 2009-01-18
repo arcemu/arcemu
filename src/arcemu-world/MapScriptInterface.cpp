@@ -108,6 +108,9 @@ Creature* MapScriptInterface::SpawnCreature(uint32 Entry, float cX, float cY, fl
 
 	CreatureSpawn * sp = new CreatureSpawn;
 	sp->entry = Entry;
+	uint32 DisplayID = 0;
+	uint32 Gender = info->GenerateModelId(&DisplayID);
+	sp->displayid = DisplayID;
 	sp->form = 0;
 	sp->id = 0;
 	sp->movetype = 0;
@@ -132,6 +135,7 @@ Creature* MapScriptInterface::SpawnCreature(uint32 Entry, float cX, float cY, fl
 	Creature * p = this->mapMgr.CreateCreature(Entry);
 	ASSERT(p);
 	p->Load(sp, (uint32)NULL, NULL);
+	p->setGender(Gender);
 	p->spawnid = 0;
 	p->m_spawn = 0;
 	delete sp;
