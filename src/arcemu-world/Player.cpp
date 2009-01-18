@@ -4365,7 +4365,7 @@ void Player::RepopRequestedPlayer()
 	sEventMgr.RemoveEvents(this, EVENT_PLAYER_CHECKFORCHEATS); // cebernic:-> Remove this first
 	sEventMgr.RemoveEvents( this, EVENT_PLAYER_FORECED_RESURECT ); //in case somebody resurrected us before this event happened
 
-	if( myCorpse != NULL ) {
+	if( myCorpse == NULL ) {
 		// Cebernic: wOOo dead+dead = undead ? :D just resurrect player
 		myCorpse->ResetDeathClock();
 		ResurrectPlayer();
