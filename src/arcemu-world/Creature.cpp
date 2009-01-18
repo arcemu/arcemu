@@ -249,9 +249,9 @@ void Creature::OnRespawn(MapMgr * m)
 	/* creature death state */
 	if(proto && proto->death_state == 1)
 	{
-		uint32 newhealth = m_uint32Values[UNIT_FIELD_HEALTH] / 100;
+		/*uint32 newhealth = m_uint32Values[UNIT_FIELD_HEALTH] / 100;
 		if(!newhealth)
-			newhealth = 1;
+			newhealth = 1;*/
 		SetUInt32Value(UNIT_FIELD_HEALTH, 1);
 		m_limbostate = true;
 		bInvincible = true;
@@ -1316,9 +1316,9 @@ bool Creature::Load(CreatureSpawn *spawn, uint32 mode, MapInfo *info)
 	/* creature death state */
 	if(proto->death_state == 1)
 	{
-		uint32 newhealth = m_uint32Values[UNIT_FIELD_HEALTH] / 100;
+		/*uint32 newhealth = m_uint32Values[UNIT_FIELD_HEALTH] / 100;
 		if(!newhealth)
-			newhealth = 1;
+			newhealth = 1;*/
 		SetUInt32Value(UNIT_FIELD_HEALTH, 1);
 		m_limbostate = true;
 		bInvincible = true;
@@ -1505,9 +1505,9 @@ void Creature::Load(CreatureProto * proto_, float x, float y, float z, float o)
 	/* creature death state */
 	if(proto->death_state == 1)
 	{
-		uint32 newhealth = m_uint32Values[UNIT_FIELD_HEALTH] / 100;
+		/*uint32 newhealth = m_uint32Values[UNIT_FIELD_HEALTH] / 100;
 		if(!newhealth)
-			newhealth = 1;
+			newhealth = 1;*/
 		SetUInt32Value(UNIT_FIELD_HEALTH, 1);
 		m_limbostate = true;
 		bInvincible = true;

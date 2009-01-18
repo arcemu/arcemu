@@ -723,6 +723,11 @@ bool ChatHandler::HandleModifyGoldCommand(const char* args, WorldSession *m_sess
 
 bool ChatHandler::HandleTriggerCommand(const char* args, WorldSession* m_session)
 {
+	if(!args)
+	{
+		RedSystemMessage(m_session, "No information was provided.");
+		return true;
+	}
 	int32 instance_id;
 	uint32 trigger_id;
 	int valcount = sscanf(args, "%u %d", (unsigned int*)&trigger_id, (int*)&instance_id);
@@ -734,7 +739,7 @@ bool ChatHandler::HandleTriggerCommand(const char* args, WorldSession* m_session
 	AreaTriggerEntry *entry = dbcAreaTrigger.LookupEntry(trigger_id);
 	if(trigger_id == 0 || entry == NULL)
 	{
-		RedSystemMessage(m_session, "Could not find trigger %s", (args == NULL ? "NULL" : args));
+		RedSystemMessage(m_session, "Could not find trigger %s", args);
 		return true;
 	}
 

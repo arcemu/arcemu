@@ -714,7 +714,7 @@ Item *ItemInterface::GetInventoryItem( int8 ContainerSlot, int8 slot )
 //-------------------------------------------------------------------//
 Item* ItemInterface::FindItemLessMax(uint32 itemid, uint32 cnt, bool IncBank)
 {
-	uint32 i = 0;
+	uint32 i;
 	for(i = INVENTORY_SLOT_ITEM_START; i < INVENTORY_SLOT_ITEM_END; i++)
 	{
 		Item *item = GetInventoryItem(i);
@@ -799,7 +799,7 @@ Item* ItemInterface::FindItemLessMax(uint32 itemid, uint32 cnt, bool IncBank)
 uint32 ItemInterface::GetItemCount(uint32 itemid, bool IncBank)
 {
 	uint32 cnt = 0;
-	uint32 i = 0;
+	uint32 i;
 	for(i = EQUIPMENT_SLOT_START; i < INVENTORY_SLOT_ITEM_END; i++)
 	{
 		Item *item = GetInventoryItem(i);
