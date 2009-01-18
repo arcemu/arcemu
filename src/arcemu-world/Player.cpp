@@ -4367,8 +4367,9 @@ void Player::RepopRequestedPlayer()
 
 	if( myCorpse == NULL ) {
 		// Cebernic: wOOo dead+dead = undead ? :D just resurrect player
-		myCorpse->ResetDeathClock();
-		ResurrectPlayer();
+		/*myCorpse->ResetDeathClock();
+		ResurrectPlayer();*/
+		// No corpse found so just repop to graveyard instead of providing free revive
 		RepopAtGraveyard( GetPositionX(), GetPositionY(), GetPositionZ(), GetMapId() );
 		return;
 	}
@@ -4380,7 +4381,8 @@ void Player::RepopRequestedPlayer()
 		m_CurrentTransporter = NULL;
 		m_TransporterGUID = 0;
 
-		ResurrectPlayer();
+		// ResurrectPlayer();
+		// Free revive woohoo
 		RepopAtGraveyard( GetPositionX(), GetPositionY(), GetPositionZ(), GetMapId() );
 		return;
 	}
