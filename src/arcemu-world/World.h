@@ -37,10 +37,14 @@ class Battleground;
 
 enum Rates
 {
-	RATE_HEALTH=0,
-	RATE_POWER1,	
-	RATE_POWER2,	
-	RATE_POWER3,	
+	RATE_HEALTH=0,// hp regen
+	RATE_POWER1,  // mp regen
+	RATE_POWER2,  // rage (rate unused)
+	RATE_POWER3,  // focus regen (pets)
+	RATE_POWER4,  // energy regen
+//	RATE_POWER5,  // happiness (pets; rate unused)
+//	RATE_POWER6,  // what is this? (rate unused)
+	RATE_POWER7,  // runic power (rate unused)
 	RATE_DROP0, // separate rates for each quality level
 	RATE_DROP1,
 	RATE_DROP2,

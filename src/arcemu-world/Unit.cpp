@@ -246,8 +246,7 @@ Unit::Unit()
 		BaseStats[i]=0;
 
 	m_H_regenTimer = 2000;
-	m_P_regenTimer = 100;
-	m_P_regenTick = 0;
+	m_P_regenTimer = 2000;
 
 	//	if(GetTypeId() == TYPEID_PLAYER) //only player for now
 	//		CalculateActualArmor();
@@ -2550,12 +2549,11 @@ void Unit::RegenerateHealth()
 
 void Unit::RegeneratePower(bool isinterrupted)
 {
-    // This is only 2000 IF the power is not rage
+	// This is only 2000 IF the power is not rage
 	if (isinterrupted)
-		m_interruptedRegenTime = 100;
+		m_interruptedRegenTime = 2000;
 	else
-		m_P_regenTimer = 100;//set next regen time 
-	++m_P_regenTick;
+		m_P_regenTimer = 2000;//set next regen time 
 
 	if(!isAlive())
 		return;
@@ -2563,11 +2561,16 @@ void Unit::RegeneratePower(bool isinterrupted)
 	//druids regen every tick, which is every 100ms, at one energy, as of 3.0.2 
 	//I don't know how mana has changed exactly, but it has, will research it - optical
 	if (IsPlayer() && GetPowerType() == POWER_TYPE_ENERGY)
+	{
 		static_cast< Player* >( this )->RegenerateEnergy();
-	if (m_P_regenTick != 20)
+		// druids regen mana when shapeshifted
+		if(getClass() == DRUID)
+		{
+			static_cast< Player* >( this )->RegenerateMana(isinterrupted);
+		}
 		return;
-	m_P_regenTick = 0; // set back to 0, cycle every 20 seconds
-	
+	}
+
 	// player regen
 	if(this->IsPlayer())
 	{
@@ -3957,7 +3960,8 @@ void Unit::Strike( Unit* pVictim, uint32 weapon_damage_type, SpellEntry* ability
 
 		val = conv * dmg.full_damage + f * s / 2.0f;
 		val *= ( 1 + ( static_cast< Player* >( this )->rageFromDamageDealt / 100.0f ) );
-		val *= 10;
+		float ragerate = sWorld.getRate(RATE_POWER2);
+		val *= 10 * ragerate;
 
 		//float r = ( 7.5f * dmg.full_damage / c + f * s ) / 2.0f;
 		//float p = ( 1 + ( static_cast< Player* >( this )->rageFromDamageDealt / 100.0f ) );
@@ -3983,8 +3987,8 @@ void Unit::Strike( Unit* pVictim, uint32 weapon_damage_type, SpellEntry* ability
 		// Berserker Rage Effect + 35% rage when taking damage by Aziel
 		if ( pVictim->HasAura(18499) )
 			val *= 1.35f;
-
-		val *= 10;
+		float ragerate = sWorld.getRate(RATE_POWER2);
+		val *= 10 * ragerate;
 
 		//sLog.outDebug( "Rd(%i) d(%i) c(%f) rage = %f", realdamage, dmg.full_damage, c, val );
 

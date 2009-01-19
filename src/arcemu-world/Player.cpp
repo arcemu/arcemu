@@ -7114,33 +7114,37 @@ void Player::CalcStat( uint32 type )
 
 void Player::RegenerateMana(bool is_interrupted)
 {
-	//if (m_interruptRegen)
-	//	return;
-
 	uint32 cur = GetUInt32Value(UNIT_FIELD_POWER1);
 	uint32 mm = GetUInt32Value(UNIT_FIELD_MAXPOWER1);
-	if(cur >= mm)return;
+	if(cur >= mm)
+		return;
+	float wrate = sWorld.getRate(RATE_POWER1); // config file regen rate
 	float amt = (is_interrupted) ? GetFloatValue(UNIT_FIELD_POWER_REGEN_INTERRUPTED_FLAT_MODIFIER) : GetFloatValue(UNIT_FIELD_POWER_REGEN_FLAT_MODIFIER);
-	amt *= 2; //floats are Mana Regen Per Sec. Regen Applied every 2 secs so real value =X*2 . Shady
-	//Apply shit from conf file
-	amt *= sWorld.getRate(RATE_POWER1);
+	amt *= wrate * 2.0f;
 
 	if((amt<=1.0)&&(amt>0))//this fixes regen like 0.98
 	{
 		if(is_interrupted)
 			return;
-		cur++;
+		++cur;
 	}
 	else
 		cur += float2int32(amt);	
-	SetPower(0, cur);
+//	Unit::SetPower() will call Object::SetUInt32Value(), which will (for players) call SendPowerUpdate(),
+//	which can be slightly out-of-sync with client regeneration [with latency] (and wastes packets since client can handle this on its own)
+	if(wrate != 1.0) // our config has custom regen rate, so send new amount to player's client
+	{
+		SetPower(0, cur);
+	}
+	else // let player's own client handle normal regen rates.
+	{
+		m_uint32Values[UNIT_FIELD_POWER1] = (cur>=mm)?mm:cur;
+		SendPowerUpdate(false); // send update to other in-range players
+	}
 }
 
 void Player::RegenerateHealth( bool inCombat )
 {
-	gtFloat* HPRegenBase = dbcHPRegenBase.LookupEntry(getLevel()-1 + (getClass()-1)*100);
-	gtFloat* HPRegen =  dbcHPRegen.LookupEntry(getLevel()-1 + (getClass()-1)*100);
-
 	uint32 cur = GetUInt32Value(UNIT_FIELD_HEALTH);
 	uint32 mh = GetUInt32Value(UNIT_FIELD_MAXHEALTH);
 
@@ -7149,12 +7153,15 @@ void Player::RegenerateHealth( bool inCombat )
 	if(cur >= mh)
 		return;
 
+	gtFloat* HPRegenBase = dbcHPRegenBase.LookupEntry(getLevel()-1 + (getClass()-1)*100);
+	gtFloat* HPRegen =  dbcHPRegen.LookupEntry(getLevel()-1 + (getClass()-1)*100);
 	float amt = (m_uint32Values[UNIT_FIELD_STAT4]*HPRegen->val+HPRegenBase->val*100);
 
 	if (PctRegenModifier)
 		amt+= (amt * PctRegenModifier) / 100;
 
-	amt *= sWorld.getRate(RATE_HEALTH);//Apply shit from conf file
+	amt *= 2.0f;
+	amt *= sWorld.getRate(RATE_HEALTH);//Apply conf file rate
 	//Near values from official
 	// wowwiki: Health Regeneration is increased by 33% while sitting.
 	if(m_isResting)
@@ -7183,11 +7190,15 @@ void Player::LooseRage(int32 decayValue)
 	//Rage is lost at a rate of 3 rage every 3 seconds. 
 	//The Anger Management talent changes this to 2 rage every 3 seconds.
 	uint32 cur = GetUInt32Value(UNIT_FIELD_POWER2);
-    uint32 newrage = ((int)cur <= decayValue) ? 0 : cur-decayValue;
-    if (newrage > 1000 )
-	  newrage = 1000;
-
-    SetUInt32Value(UNIT_FIELD_POWER2,newrage);
+	uint32 newrage = ((int)cur <= decayValue) ? 0 : cur-decayValue;
+	if (newrage > 1000 )
+		newrage = 1000;
+// Object::SetUInt32Value() will (for players) call SendPowerUpdate(),
+// which can be slightly out-of-sync with client rage loss
+// config file rage rate is rage gained, not lost, so we don't need that here
+//	SetUInt32Value(UNIT_FIELD_POWER2,newrage);
+	m_uint32Values[UNIT_FIELD_POWER2] = newrage;
+	SendPowerUpdate(false); // send update to other in-range players
 }
 
 void Player::RegenerateEnergy()
@@ -7196,10 +7207,23 @@ void Player::RegenerateEnergy()
 	uint32 mh = GetUInt32Value(UNIT_FIELD_MAXPOWER4);
 	if(cur >= mh)
 		return;
-	float amt = 1.0f * PctPowerRegenModifier[POWER_TYPE_ENERGY];
+
+	float wrate = sWorld.getRate(RATE_POWER4);
+	float amt = PctPowerRegenModifier[POWER_TYPE_ENERGY];
+	amt *= wrate * 20.0f;
 
 	cur += float2int32(amt);
-	SetUInt32Value(UNIT_FIELD_POWER4,(cur>=mh) ? mh : cur);
+//	Object::SetUInt32Value() will (for players) call SendPowerUpdate(),
+//	which can be slightly out-of-sync with client regeneration [latency] (and wastes packets since client can handle this on its own)
+	if(wrate != 1.0f) // our config has custom regen rate, so send new amount to player's client
+	{
+		SetPower(GetPowerType(), (cur>=mh) ? mh : cur);
+	}
+	else // let player's own client handle normal regen rates.
+	{
+		m_uint32Values[UNIT_FIELD_POWER4] = (cur>=mh) ? mh : cur;
+		SendPowerUpdate(false); // send update to other in-range players
+	}
 }
 
 uint32 Player::GeneratePetNumber()

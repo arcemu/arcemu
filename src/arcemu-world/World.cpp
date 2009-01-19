@@ -1177,10 +1177,12 @@ void World::Rehash(bool load)
 	compression_threshold = Config.MainConfig.GetIntDefault("Server", "CompressionThreshold", 1000);
 
 	// load regeneration rates.
-	setRate(RATE_HEALTH,Config.MainConfig.GetFloatDefault("Rates", "Health",1));
-	setRate(RATE_POWER1,Config.MainConfig.GetFloatDefault("Rates", "Power1",1));
-	setRate(RATE_POWER2,Config.MainConfig.GetFloatDefault("Rates", "Power2",1));
-	setRate(RATE_POWER3,Config.MainConfig.GetFloatDefault("Rates", "Power4",1));
+	setRate(RATE_HEALTH,Config.MainConfig.GetFloatDefault("Rates", "Health",1)); // health
+	setRate(RATE_POWER1,Config.MainConfig.GetFloatDefault("Rates", "Power1",1)); // mana
+	setRate(RATE_POWER2,Config.MainConfig.GetFloatDefault("Rates", "Power2",1)); // rage
+	setRate(RATE_POWER3,Config.MainConfig.GetFloatDefault("Rates", "Power3",1)); // focus
+	setRate(RATE_POWER4,Config.MainConfig.GetFloatDefault("Rates", "Power4",1)); // energy
+	setRate(RATE_POWER7,Config.MainConfig.GetFloatDefault("Rates", "Power7",1)); // runic power (rate unused)
 	setRate(RATE_DROP0,Config.MainConfig.GetFloatDefault("Rates", "DropGrey",1));
 	setRate(RATE_DROP1,Config.MainConfig.GetFloatDefault("Rates", "DropWhite",1));
 	setRate(RATE_DROP2,Config.MainConfig.GetFloatDefault("Rates", "DropGreen",1));

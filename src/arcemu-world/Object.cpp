@@ -1141,7 +1141,9 @@ void Object::SetUInt32Value( const uint32 index, const uint32 value )
 			case UNIT_FIELD_POWER2:
 			case UNIT_FIELD_POWER4:
 			case UNIT_FIELD_POWER7:
-				static_cast< Player* >( this )->SendPowerUpdate();
+				static_cast< Player* >( this )->SendPowerUpdate(true);
+				break;
+			default:
 				break;
 		}
 	}
@@ -1219,7 +1221,9 @@ void Object::ModUnsigned32Value(uint32 index, int32 mod)
 			case UNIT_FIELD_POWER2:
 			case UNIT_FIELD_POWER4:
 			case UNIT_FIELD_POWER7:
-				static_cast< Player* >( this )->SendPowerUpdate();
+				static_cast< Player* >( this )->SendPowerUpdate(true);
+				break;
+			default:
 				break;
 		}
 	}
@@ -1897,7 +1901,8 @@ void Object::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
 			conv = DamageToRageConversionTable[ level ];
 		else 
 			conv = ( 2.5f * 10 ) / (0.0091107836f * level * level + 3.225598133f * level + 4.2652911f);
-		val = damage * conv;
+		float ragerate = sWorld.getRate(RATE_POWER2);
+		val = damage * conv * ragerate;
 		if( pVictim->IsPlayer() )
 			val *= ( 1 + ( static_cast< Player * >( pVictim )->rageFromDamageTaken / 100.0f ) );
 		uint32 rage = pVictim->GetUInt32Value( UNIT_FIELD_POWER2 );
