@@ -1077,7 +1077,9 @@ void Pet::RemoveSpell(SpellEntry * sp)
 			if((*it)->spell == sp)
 			{
 				// woot?
+				AI_Spell * spe = *it;
 				m_aiInterface->m_spells.erase(it);
+				delete spe;
 				break;
 			}
 		}
