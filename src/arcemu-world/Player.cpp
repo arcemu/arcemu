@@ -4365,11 +4365,10 @@ void Player::RepopRequestedPlayer()
 	sEventMgr.RemoveEvents(this, EVENT_PLAYER_CHECKFORCHEATS); // cebernic:-> Remove this first
 	sEventMgr.RemoveEvents( this, EVENT_PLAYER_FORECED_RESURECT ); //in case somebody resurrected us before this event happened
 
-	if( myCorpse == NULL ) {
+	if( myCorpse != NULL ) {
 		// Cebernic: wOOo dead+dead = undead ? :D just resurrect player
-		/*myCorpse->ResetDeathClock();
-		ResurrectPlayer();*/
-		// No corpse found so just repop to graveyard instead of providing free revive
+		myCorpse->ResetDeathClock();
+		ResurrectPlayer();
 		RepopAtGraveyard( GetPositionX(), GetPositionY(), GetPositionZ(), GetMapId() );
 		return;
 	}
@@ -4381,8 +4380,7 @@ void Player::RepopRequestedPlayer()
 		m_CurrentTransporter = NULL;
 		m_TransporterGUID = 0;
 
-		// ResurrectPlayer();
-		// Free revive woohoo
+		ResurrectPlayer();
 		RepopAtGraveyard( GetPositionX(), GetPositionY(), GetPositionZ(), GetMapId() );
 		return;
 	}
