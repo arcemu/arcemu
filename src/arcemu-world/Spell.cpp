@@ -249,8 +249,8 @@ void Spell::Init(Object* Caster, SpellEntry *info, bool triggered, Aura* aur)
 	{
 		m_rune_avail_before = 0;
 		m_runes_to_update = 0;
-		for( int i=0;i<TOTAL_USED_RUNES;i++)
-			if( p_caster->m_runes[ i ] == MAX_RUNE_VALUE )
+		for( uint8 i=0; i < TOTAL_USED_RUNES;i++ )
+			if( p_caster->m_runes[ i ] < RUNE_RECHARGE )
 				m_rune_avail_before |= (1 << i);
 	}
 }
@@ -2312,8 +2312,8 @@ void Spell::SendSpellGo()
 	{
 		//see what we will have after cast
 		cur_have_runes = 0;
-		for( int i=0;i<TOTAL_USED_RUNES;i++)
-			if( p_caster->m_runes[ i ] == MAX_RUNE_VALUE )
+		for( uint8 i=0; i < TOTAL_USED_RUNES; i++ )
+			if( p_caster->m_runes[ i ] < RUNE_RECHARGE )
 				cur_have_runes |= (1 << i);
 		if( cur_have_runes != m_rune_avail_before )
 			flags |= SPELL_GO_FLAGS_RUNE_UPDATE | SPELL_GO_FLAGS_POWER_UPDATE;

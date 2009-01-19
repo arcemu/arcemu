@@ -79,7 +79,7 @@ pSpellTarget SpellTargetHandler[EFF_TARGET_LIST_LENGTH_MARKER] =
 	&Spell::SpellTargetTargetAreaSelectedUnit,  // 53
 	&Spell::SpellTargetInFrontOfCaster2,		// 54
 	&Spell::SpellTargetNULL,					// 55 Not handled (Not realy handled by the current spell system)
-	&Spell::SpellTarget56,					  // 56
+	&Spell::SpellTargetAllRaid,		  			// 56
 	&Spell::SpellTargetTargetPartyMember,	   // 57
 	&Spell::SpellTargetNULL,					// 58
 	&Spell::SpellTargetNULL,					// 59
@@ -1019,14 +1019,34 @@ void Spell::SpellTargetInFrontOfCaster2(uint32 i, uint32 j)
 	m_caster->ReleaseInrangeLock();
 }
 
-/// Spell Target Handling for type 56: Target should be infected (Aura holder) caster...
-void Spell::SpellTarget56(uint32 i, uint32 j)
+// Spell Target Handling for type 56: Target all raid members. (WotLK)
+void Spell::SpellTargetAllRaid( uint32 i, uint32 j )
 {
-	if(!m_caster->IsInWorld())
+	if( !m_caster->IsInWorld() || !m_caster->IsUnit() )
 		return;
 
-	TargetsList* tmpMap=&m_targetUnits[i];
-	SafeAddTarget(tmpMap,m_caster->GetGUID());
+	Group * group = static_cast< Unit* >( m_caster )->GetGroup(); 
+	if( group == NULL )
+		return;
+	
+	TargetsList* tmpMap = &m_targetUnits[i];
+	uint32 count = group->GetSubGroupCount();
+
+	// Loop through each raid group.
+	for( uint8 k = 0; k < count; k++ )
+	{
+		SubGroup * subgroup = group->GetSubGroup( k );
+		if( subgroup )
+		{
+			group->Lock();
+			for( GroupMembersSet::iterator itr = subgroup->GetGroupMembersBegin(); itr != subgroup->GetGroupMembersEnd(); ++itr )
+			{
+				if( (*itr)->m_loggedInPlayer ) 
+					SafeAddTarget( tmpMap,(*itr)->m_loggedInPlayer->GetGUID() );
+			}
+			group->Unlock();
+		}
+	}
 }
 
 /// Spell Target Handling for type 57: Targeted Party Member

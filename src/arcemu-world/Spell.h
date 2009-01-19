@@ -226,8 +226,8 @@ enum SPELL_DMG_TYPE // SPELL_ENTRY_Spell_Dmg_Type
 enum SPELL_RUNE_TYPES
 {
 	RUNE_BLOOD		= 0,
-	RUNE_UNHOLY		= 1,
-	RUNE_FROST		= 2,
+	RUNE_FROST		= 1,
+	RUNE_UNHOLY		= 2,
 	RUNE_DEATH		= 3,
 	RUNE_RECHARGE	= 4
 };
@@ -1405,6 +1405,7 @@ typedef enum {
    EFF_TARGET_CURRENT_SELECTION							= 53,
    EFF_TARGET_TARGET_AT_ORIENTATION_TO_CASTER			= 54,
    EFF_TARGET_LOCATION_INFRONT_CASTER					= 55,
+   EFF_TARGET_ALL_RAID									= 56,
    EFF_TARGET_PARTY_MEMBER								= 57,
    EFF_TARGET_TARGET_FOR_VISUAL_EFFECT					= 59,
    EFF_TARGET_SCRIPTED_TARGET2							= 60,
@@ -1481,6 +1482,7 @@ inline int GetAiTargetType(SpellEntry *sp)
 		HasTargetType(sp,EFF_TARGET_ALL_PARTY_IN_AREA) ||
 		HasTargetType(sp,EFF_TARGET_SINGLE_PARTY) ||
 		HasTargetType(sp,EFF_TARGET_ALL_PARTY) ||
+		HasTargetType(sp,EFF_TARGET_ALL_RAID) ||
 		HasTargetType(sp,EFF_TARGET_PARTY_MEMBER) ||
 		HasTargetType(sp,EFF_TARGET_AREAEFFECT_PARTY_AND_CLASS)
 		)
@@ -1796,7 +1798,7 @@ public:
     void SpellTargetTotem(uint32 i, uint32 j);
     void SpellTargetChainTargeting(uint32 i, uint32 j);
     void SpellTargetSimpleTargetAdd(uint32 i, uint32 j);
-    void SpellTarget56(uint32 o, uint32 j);
+	void SpellTargetAllRaid(uint32 i, uint32 j);
     void SpellTargetTargetAreaSelectedUnit(uint32 i, uint32 j);
     void SpellTargetInFrontOfCaster2(uint32 i, uint32 j);
     void SpellTargetTargetPartyMember(uint32 i, uint32 j);

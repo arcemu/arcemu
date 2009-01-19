@@ -617,6 +617,12 @@ void WorldSession::HandleCharterBuy(WorldPacket & recv_data)
 	}
 	else
 	{
+        if( _player->GetUInt32Value( PLAYER_FIELD_COINAGE ) < 1000 )
+        {
+            SendNotification("You don't have enough money.");
+            return;
+        }
+
 		Guild * g = objmgr.GetGuildByGuildName(name);
 		Charter * c = objmgr.GetCharterByName(name, CHARTER_TYPE_GUILD);
 		if(g != 0 || c != 0)
@@ -683,6 +689,7 @@ void WorldSession::HandleCharterBuy(WorldPacket & recv_data)
 			SendItemPushResult(i, false, true, false, true, _player->GetItemInterface()->LastSearchItemBagSlot(), _player->GetItemInterface()->LastSearchItemSlot(), 1);
 
 			_player->m_charters[CHARTER_TYPE_GUILD] = c;
+            _player->ModUnsigned32Value( PLAYER_FIELD_COINAGE, -1000 );
 			_player->SaveToDB(false);
 		}
 	}
