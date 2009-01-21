@@ -174,6 +174,10 @@ void AddonMgr::SendAddonInfoPacket(WorldPacket *source, uint32 pos, WorldSession
 		/*if(!AppendPublicKey(returnpacket, name, crc))
 			returnpacket << uint8(1) << uint8(0) << uint8(0);*/
 	}
+
+	/*unknown 4 bytes at the end of the packet. Stays 0 for me. Tried custom addons, deleting, faulty etc. It stays 0.
+	*/
+
 	m_session->SendPacket(&returnpacket);
 }
 
