@@ -18,11 +18,11 @@
  *
  */
 
-/* Achievement Working List:
-
+/*
+	Achievement Working List:
 	- ACHIEVEMENT_CRITERIA_TYPE_REACH_LEVEL
 	- ACHIEVEMENT_CRITERIA_TYPE_LOOT_ITEM
-	- ACHIEVEMENT_CRITERIA_TYPE_OWN_ITEM // Partial - need also to check item's that player's have already.
+	- ACHIEVEMENT_CRITERIA_TYPE_OWN_ITEM
 	- ACHIEVEMENT_CRITERIA_TYPE_EXPLORE_AREA
 	- ACHIEVEMENT_CRITERIA_TYPE_LOOT_MONEY
 	- ACHIEVEMENT_CRITERIA_TYPE_COMPLETE_QUEST_COUNT
@@ -32,7 +32,24 @@
 	- ACHIEVEMENT_CRITERIA_TYPE_GAIN_REPUTATION
 	- ACHIEVEMENT_CRITERIA_TYPE_GAIN_EXALTED_REPUTATION
 	- ACHIEVEMENT_CRITERIA_TYPE_COMPLETE_ACHIEVEMENT
+	- ACHIEVEMENT_CRITERIA_TYPE_LEARN_SPELL
+	- ACHIEVEMENT_CRITERIA_TYPE_KILL_CREATURE
+	- ACHIEVEMENT_CRITERIA_TYPE_REACH_SKILL_LEVEL
+	- ACHIEVEMENT_CRITERIA_TYPE_LEARN_SKILL_LEVEL
+	- ACHIEVEMENT_CRITERIA_TYPE_EQUIP_ITEM
+	- ACHIEVEMENT_CRITERIA_TYPE_EQUIP_EPIC_ITEM
+	- ACHIEVEMENT_CRITERIA_TYPE_NUMBER_OF_MOUNTS
 
+	Achievement Rewards Working List:
+	- Titles
+	- Spells
+	- Items (goes to inventory?)
+	As long as the achievement type is handled, the reward should work too.
+
+	What's Not Working Yet:
+	- Several achievement types
+	- Time limits on achievements
+	- Inspecting other players' achievements
 */
 
 #include "StdAfx.h"
@@ -215,7 +232,6 @@ void AchievementMgr::SendCriteriaUpdate(CriteriaProgress *progress)
 }
 void AchievementMgr::CheckAllAchievementCriteria()
 {
-//	return; // disable this for now...
 	for(uint32 i=0; i<ACHIEVEMENT_CRITERIA_TYPE_TOTAL; i++)
 		UpdateAchievementCriteria(AchievementCriteriaTypes(i));
 }
@@ -250,7 +266,7 @@ void AchievementMgr::UpdateAchievementCriteria(AchievementCriteriaTypes type, in
 			case ACHIEVEMENT_CRITERIA_TYPE_LOOT_ITEM:
 			case ACHIEVEMENT_CRITERIA_TYPE_OWN_ITEM:
 				if (achievementCriteria->loot_item.itemID == miscvalue1)
-					UpdateCriteriaProgress(achievementCriteria, 1);
+					UpdateCriteriaProgress(achievementCriteria, miscvalue2);
 				break;
 			case ACHIEVEMENT_CRITERIA_TYPE_EXPLORE_AREA:
 				if (GetPlayer()->HasOverlayUncovered(achievementCriteria->explore_area.areaReference))
@@ -279,6 +295,44 @@ void AchievementMgr::UpdateAchievementCriteria(AchievementCriteriaTypes type, in
 				break;
 			case ACHIEVEMENT_CRITERIA_TYPE_GAIN_EXALTED_REPUTATION:
 				UpdateCriteriaProgress(achievementCriteria, miscvalue1);
+				break;
+			case ACHIEVEMENT_CRITERIA_TYPE_LEARN_SPELL:
+				if(achievementCriteria->learn_spell.spellID == miscvalue1)
+					SetCriteriaProgress(achievementCriteria, miscvalue2);
+				break;
+			case ACHIEVEMENT_CRITERIA_TYPE_NUMBER_OF_MOUNTS:
+				UpdateCriteriaProgress(achievementCriteria, miscvalue1);
+				break;
+			case ACHIEVEMENT_CRITERIA_TYPE_KILL_CREATURE:
+				if(achievementCriteria->kill_creature.creatureID == miscvalue1)
+					UpdateCriteriaProgress(achievementCriteria, miscvalue2);
+				break;
+			case ACHIEVEMENT_CRITERIA_TYPE_REACH_SKILL_LEVEL:
+				if(achievementCriteria->reach_skill_level.skillID == miscvalue1)
+					SetCriteriaProgress(achievementCriteria, miscvalue2);
+				break;
+			case ACHIEVEMENT_CRITERIA_TYPE_LEARN_SKILL_LEVEL:
+				if(achievementCriteria->learn_skill_level.skillID == miscvalue1)
+					SetCriteriaProgress(achievementCriteria, miscvalue2);
+				break;
+			case ACHIEVEMENT_CRITERIA_TYPE_EQUIP_ITEM:
+				if(achievementCriteria->equip_item.itemID == miscvalue1)
+					SetCriteriaProgress(achievementCriteria, 1);
+				break;
+			case ACHIEVEMENT_CRITERIA_TYPE_EQUIP_EPIC_ITEM:
+				// Achievement ID:556 description Equip an epic item in every slot with a minimum item level of 213.
+				// "213" value not found in achievement or criteria entries, have to hard-code it here? :(
+				// Achievement ID:557 description Equip a superior item in every slot with a minimum item level of 187.
+				// "187" value not found in achievement or criteria entries, have to hard-code it here? :(
+				// AchievementType for both Achievement ID:556 (Equip epic items) and ID:557 (Equip superior items)
+				//    is the same (47) ACHIEVEMENT_CRITERIA_TYPE_EQUIP_EPIC_ITEM
+				// Going to send item slot in miscvalue1 and item quality in miscvalue2 when calling UpdateAchievementCriteria.
+				if(achievementCriteria->equip_epic_item.itemSlot == miscvalue1)
+					if(achievementCriteria->referredAchievement == 556 && miscvalue2 == ITEM_QUALITY_EPIC_PURPLE)
+						SetCriteriaProgress(achievementCriteria, 1);
+					else if(achievementCriteria->referredAchievement == 557 && miscvalue2 == ITEM_QUALITY_RARE_BLUE)
+						SetCriteriaProgress(achievementCriteria, 1);
+				break;
 			//End of Achievement List
 			default:
 				return;
@@ -318,7 +372,7 @@ void AchievementMgr::UpdateAchievementCriteria(AchievementCriteriaTypes type)
 			break;
 		case ACHIEVEMENT_CRITERIA_TYPE_COMPLETE_ACHIEVEMENT:
 			if (m_completedAchievements.find(achievementCriteria->complete_achievement.linkedAchievement) != m_completedAchievements.end())
-				SetCriteriaProgress(achievementCriteria, 1);
+				UpdateCriteriaProgress(achievementCriteria, 1);
 			break;
 		case ACHIEVEMENT_CRITERIA_TYPE_COMPLETE_QUEST_COUNT:
 			SetCriteriaProgress(achievementCriteria, (int32)GetPlayer()->m_finishedQuests.size());
@@ -349,6 +403,8 @@ void AchievementMgr::UpdateAchievementCriteria(AchievementCriteriaTypes type)
 				SetCriteriaProgress(achievementCriteria, completed);
 			}
 			break;
+/* Disabling this in case it is eating up CPU time
+- not even sure if it's blizz-like to count already-completed quest gold at time when achievements were added?
 		case ACHIEVEMENT_CRITERIA_TYPE_QUEST_REWARD_GOLD:
 			{
 				uint32 qrmoney = 0;
@@ -364,6 +420,7 @@ void AchievementMgr::UpdateAchievementCriteria(AchievementCriteriaTypes type)
 				SetCriteriaProgress(achievementCriteria, qrmoney);
 			}
 			break;
+*/
 		case ACHIEVEMENT_CRITERIA_TYPE_GAIN_REPUTATION:
 			{
 				int32 rep = GetPlayer()->GetStanding(achievementCriteria->gain_reputation.factionID);
@@ -373,12 +430,50 @@ void AchievementMgr::UpdateAchievementCriteria(AchievementCriteriaTypes type)
 		case ACHIEVEMENT_CRITERIA_TYPE_GAIN_EXALTED_REPUTATION:
 			SetCriteriaProgress(achievementCriteria,GetPlayer()->GetExaltedCount());
 			break;
-			//End of Achievement List
+		case ACHIEVEMENT_CRITERIA_TYPE_LEARN_SPELL:
+			if(GetPlayer()->HasSpell(achievementCriteria->learn_spell.spellID))
+				SetCriteriaProgress(achievementCriteria, 1);
+			break;
+		case ACHIEVEMENT_CRITERIA_TYPE_NUMBER_OF_MOUNTS:
+/*
+TODO: fix this
+			{
+				set<uint32> sl = GetPlayer()->m_SpellList.begin();
+				uint32 nm = 0;
+				while(sl != GetPlayer()->m_SpellList.end())
+				{
+					SpellEntry* sp = dbcSpell.LookupEntry(*sl);
+					if(sp && sp->MechanicsType==MECHANIC_MOUNTED) // mount spell
+						++nm;
+					++sl;
+				}
+				sl.clear();
+				delete sl;
+				SetCriteriaProgress(achievementCriteria, nm);
+			}
+*/
+			break;
+		case ACHIEVEMENT_CRITERIA_TYPE_REACH_SKILL_LEVEL:
+			SetCriteriaProgress(achievementCriteria, GetPlayer()->_GetSkillLineCurrent(achievementCriteria->reach_skill_level.skillID, true));
+			break;
+		case ACHIEVEMENT_CRITERIA_TYPE_LEARN_SKILL_LEVEL:
+			SetCriteriaProgress(achievementCriteria, GetPlayer()->_GetSkillLineMax(achievementCriteria->learn_skill_level.skillID)/75);
+			break;
+/*
+		Not going to bother putting this in right now ... just unequip and equip item again to update stuff you're already wearing
+		case ACHIEVEMENT_CRITERIA_TYPE_EQUIP_ITEM:
+			break;
+		case ACHIEVEMENT_CRITERIA_TYPE_EQUIP_EPIC_ITEM:
+			break;
+*/
+		//End of Achievement List
 		default:
 			break;
 		}
 		if(IsCompletedCriteria(achievementCriteria))
+		{
 			CompletedCriteria(achievementCriteria);
+		}
 	}
 }
 
@@ -465,6 +560,20 @@ bool AchievementMgr::IsCompletedCriteria(AchievementCriteriaEntry const* achieve
 			return progresscounter >= achievementCriteria->gain_reputation.reputationAmount;
 		case ACHIEVEMENT_CRITERIA_TYPE_GAIN_EXALTED_REPUTATION:
 			return progresscounter >= achievementCriteria->gain_exalted_reputation.numberOfExaltedFactions;
+		case ACHIEVEMENT_CRITERIA_TYPE_LEARN_SPELL:
+			return progresscounter>0;
+		case ACHIEVEMENT_CRITERIA_TYPE_NUMBER_OF_MOUNTS:
+			return progresscounter >= achievementCriteria->number_of_mounts.mountCount;
+		case ACHIEVEMENT_CRITERIA_TYPE_KILL_CREATURE:
+			return progresscounter >= achievementCriteria->kill_creature.creatureCount;
+		case ACHIEVEMENT_CRITERIA_TYPE_REACH_SKILL_LEVEL:
+			return progresscounter >= achievementCriteria->reach_skill_level.skillLevel;
+		case ACHIEVEMENT_CRITERIA_TYPE_LEARN_SKILL_LEVEL:
+			return progresscounter >= achievementCriteria->learn_skill_level.skillLevel;
+		case ACHIEVEMENT_CRITERIA_TYPE_EQUIP_ITEM:
+			return progresscounter >= 1;
+		case ACHIEVEMENT_CRITERIA_TYPE_EQUIP_EPIC_ITEM:
+			return progresscounter >= 1;
 		case ACHIEVEMENT_CRITERIA_TYPE_COMPLETE_ACHIEVEMENT:
 			return m_completedAchievements.find(achievementCriteria->complete_achievement.linkedAchievement) != m_completedAchievements.end();
 		//End of Achievement List
@@ -498,6 +607,7 @@ AchievementCompletionState AchievementMgr::GetAchievementCompletionState(Achieve
 		return ACHIEVEMENT_COMPLETED_COMPLETED_STORED;
 	}
 
+	uint32 completedCount = 0;
 	bool foundOutstanding = false;
 	for ( uint32 rowId = 0; rowId<dbcAchievementCriteriaStore.GetNumRows(); ++rowId )
 	{
@@ -516,14 +626,23 @@ AchievementCompletionState AchievementMgr::GetAchievementCompletionState(Achieve
 		{
 			foundOutstanding = true;
 		}
+		else
+		{
+			++completedCount;
+		}
 	}
-	if( foundOutstanding )
-	{
-		return ACHIEVEMENT_COMPLETED_NONE;
-	}
-	else
+	if(!foundOutstanding)
 	{
 		return ACHIEVEMENT_COMPLETED_COMPLETED_NOT_STORED;
+	}
+
+	switch(entry->ID)
+	{
+		case 705: // Master of Arms requires 4 criteria to be completed
+			if(completedCount>=4)
+				return ACHIEVEMENT_COMPLETED_COMPLETED_NOT_STORED;
+		default:
+			return ACHIEVEMENT_COMPLETED_NONE;
 	}
 }
 
@@ -579,23 +698,26 @@ void AchievementMgr::CompletedAchievement(AchievementEntry const* achievement)
 	SendAchievementEarned( achievement );
 	m_completedAchievements[achievement->ID] = time(NULL);
 
-	if( ! ( achievement->flags & ACHIEVEMENT_FLAG_REALM_FIRST_KILL ) )
+	if(!(achievement->flags & ACHIEVEMENT_FLAG_REALM_FIRST_KILL))
 	{
 		objmgr.allCompletedAchievements.insert( achievement->ID );
 		UpdateAchievementCriteria( ACHIEVEMENT_CRITERIA_TYPE_COMPLETE_ACHIEVEMENT );
 	}
+
+	// check for reward
+	GiveAchievementReward(achievement);
 }
 
 void AchievementMgr::SendAllAchievementData(Player* player)
 {
-	WorldPacket data( SMSG_ALL_ACHIEVEMENT_DATA,4*3+m_completedAchievements.size()*4*2+m_criteriaProgress.size()*7*4 );
+	WorldPacket data( SMSG_ALL_ACHIEVEMENT_DATA,4*3+m_completedAchievements.size()*4*2+GetCriteriaProgressCount()*7*4 );
 	BuildAllDataPacket(&data);
 	player->GetSession()->SendPacket(&data);
 }
 
 void AchievementMgr::SendRespondInspectAchievements(Player* player)
 {
-	WorldPacket data( SMSG_ALL_ACHIEVEMENT_DATA,4+4*3+m_completedAchievements.size()*4*2+m_criteriaProgress.size()*7*4 );
+	WorldPacket data( SMSG_ALL_ACHIEVEMENT_DATA,4+4*3+m_completedAchievements.size()*4*2+GetCriteriaProgressCount()*7*4 );
 	data.append(GetPlayer()->GetGUID());
 	BuildAllDataPacket(&data);
 	player->GetSession()->SendPacket(&data);
@@ -626,3 +748,266 @@ void AchievementMgr::BuildAllDataPacket(WorldPacket *data)
 	}
 	*data << int32(-1);
 }
+
+uint32 AchievementMgr::GetCriteriaProgressCount(void)
+{
+	uint32 criteriapc = 0;
+	for(CriteriaProgressMap::iterator iter = m_criteriaProgress.begin(); iter!=m_criteriaProgress.end(); ++iter)
+	{
+		AchievementEntry const *achievement = dbcAchievementStore.LookupEntry(iter->second->id);
+		if((iter->second->counter > 0) // only count progresses that have been started
+			&& !IsReputationAchievement(achievement)) // dont count unfinished reputation achievements
+		{
+			++criteriapc;
+		}
+	}
+	return criteriapc;
+}
+
+void AchievementMgr::GiveAchievementReward(AchievementEntry const* entry)
+{
+	AchievementReward r;
+	r.type = ACHIEVEMENT_REWARDTYPE_NONE;
+	r.itemId = 0;
+	r.rankId = 0;
+
+	if(strlen(entry->rewardName)>0)
+	{
+		switch(entry->unknown2)
+		{
+			case 0x0000000b: // Title Reward: The Flawless Victor
+				r.type = ACHIEVEMENT_REWARDTYPE_TITLE;
+				r.rankId = PVPTITLE_THE_FLAWLESS_VICTOR;
+				break;
+			case 0x000000b6: // Title Reward: Champion of the Frozen Wastes
+				r.type = ACHIEVEMENT_REWARDTYPE_TITLE;
+				r.rankId = PVPTITLE_CHAMPION_OF_THE_FROZEN_WASTES;
+				break;
+			case 0x00000229: // Title Reward: Guardian of Cenarius
+				r.type = ACHIEVEMENT_REWARDTYPE_TITLE;
+				r.rankId = PVPTITLE_GUARDIAN_OF_CENARIUS;
+				break;
+			case 0x00000244: // Title Reward: Salty
+				r.type = ACHIEVEMENT_REWARDTYPE_TITLE;
+				r.rankId = PVPTITLE_SALTY;
+				break;
+			case 0x000005f2: // Reward: Reeking Pet Carrier
+				r.type = ACHIEVEMENT_REWARDTYPE_ITEM;
+				r.itemId = 40653;
+				break;
+			case 0x0000066c: // Reward: Title & Loremaster's Colors
+				r.type = ACHIEVEMENT_REWARDTYPE_ITEM | ACHIEVEMENT_REWARDTYPE_TITLE;
+				r.itemId = 43300;
+				r.rankId = PVPTITLE_LOREMASTER;
+				break;
+			case 0x000006a4: // Title Reward: The Magic Seeker
+				r.type = ACHIEVEMENT_REWARDTYPE_TITLE;
+				r.rankId = PVPTITLE_THE_MAGIC_SEEKER;
+				break;
+			case 0x000006a7: // Reward: Black War Bear [Horde]
+				// spellId 60018 or 60019 ?
+				r.type = ACHIEVEMENT_REWARDTYPE_ITEM;
+				r.itemId = 44224;
+				break;
+			case 0x000006a8: // Reward: Black War Bear [Alliance]
+				// spellId 60018 or 60019 ?
+				r.type = ACHIEVEMENT_REWARDTYPE_ITEM;
+				r.itemId = 44223;
+				break;
+			case 0x00000749: // Reward: The Schools of Arcane Magic - Mastery
+				r.type = ACHIEVEMENT_REWARDTYPE_SPELL;
+				r.spellId = 59983;
+				break;
+			case 0x0000076a: // Title Reward: Conqueror of Naxxramas
+				r.type = ACHIEVEMENT_REWARDTYPE_TITLE;
+				r.rankId = PVPTITLE_CONQUEROR_OF_NAXXRAMAS;
+				break;
+			case 0x000007fc: // Reward: Black Proto-Drake
+				r.type = ACHIEVEMENT_REWARDTYPE_SPELL;
+				r.spellId = 59976;
+				break;
+			case 0x00000858: // Title Reward: Elder
+				r.type = ACHIEVEMENT_REWARDTYPE_TITLE;
+				r.rankId = PVPTITLE_ELDER;
+				break;
+			case 0x0000085b: // Title Reward: The Argent Champion
+				r.type = ACHIEVEMENT_REWARDTYPE_TITLE;
+				r.rankId = PVPTITLE_THE_ARGENT_CHAMPION;
+				break;
+			case 0x0000085f: // Title Reward: The Immortal
+				r.type = ACHIEVEMENT_REWARDTYPE_TITLE;
+				r.rankId = PVPTITLE_THE_IMMORTAL;
+				break;
+			case 0x000008f4: // Title Reward: The Undying
+				r.type = ACHIEVEMENT_REWARDTYPE_TITLE;
+				r.rankId = PVPTITLE_THE_UNDYING;
+				break;
+			case 0x00000975: // Title: Bloodsail Admiral
+				r.type = ACHIEVEMENT_REWARDTYPE_TITLE;
+				r.rankId = PVPTITLE_BLOODSAIL_ADMIRAL;
+				break;
+			case 0x000009d3: // Title Reward: Brewmaster
+				r.type = ACHIEVEMENT_REWARDTYPE_TITLE;
+				r.rankId = PVPTITLE_BREWMASTER;
+				break;
+			case 0x000009db: // Title Reward: Matron/Patron
+				r.type = ACHIEVEMENT_REWARDTYPE_TITLE;
+				r.rankId = (GetPlayer()->getGender()==0) ? /* Matron */ PVPTITLE_MATRON : /* Patron */ PVPTITLE_PATRON;
+				break;
+			case 0x00000a03: // Title Reward: Conqueror
+				r.type = ACHIEVEMENT_REWARDTYPE_TITLE;
+				r.rankId = PVPTITLE_CONQUEROR;
+				break;
+			case 0x00000ab1: // Title Reward: The Diplomat
+				r.type = ACHIEVEMENT_REWARDTYPE_TITLE;
+				r.rankId = PVPTITLE_THE_DIPLOMAT;
+				break;
+			case 0x00000ac7: // Title Reward: The Explorer
+				r.type = ACHIEVEMENT_REWARDTYPE_TITLE;
+				r.rankId = PVPTITLE_THE_EXPLORER;
+				break;
+			case 0x00000b6c: // Title Reward: Justicar
+				r.type = ACHIEVEMENT_REWARDTYPE_TITLE;
+				r.rankId = PVPTITLE_JUSTICAR;
+				break;
+			case 0x00000b9e: // Title Reward: Flame Warden
+				r.type = ACHIEVEMENT_REWARDTYPE_TITLE;
+				r.rankId = PVPTITLE_FLAME_WARDEN;
+				break;
+			case 0x00000b9f: // Title Reward: Flame Keeper
+				r.type = ACHIEVEMENT_REWARDTYPE_TITLE;
+				r.rankId = PVPTITLE_FLAME_KEEPER;
+				break;
+			case 0x00000bb1: // Reward: Titanium Seal of Dalaran
+				r.type = ACHIEVEMENT_REWARDTYPE_SPELL;
+				r.spellId = 60650;
+				break;
+			case 0x00000be0: // Reward: Tabard of the Achiever
+				r.type = ACHIEVEMENT_REWARDTYPE_ITEM;
+				r.itemId = 40643;
+				break;
+			case 0x00000c14: // Title Reward: Merrymaker
+				r.type = ACHIEVEMENT_REWARDTYPE_TITLE;
+				r.rankId = PVPTITLE_MERRYMAKER;
+				break;
+			case 0x00000c78: // Title Reward: The Love Fool
+				r.type = ACHIEVEMENT_REWARDTYPE_TITLE;
+				r.rankId = PVPTITLE_THE_LOVE_FOOL;
+				break;
+			case 0x00000cb4: // Title Reward: Of the Nightfall [Normal] Title Reward: Twilight Vanquisher [Heroic]
+				r.type = ACHIEVEMENT_REWARDTYPE_TITLE;
+				r.rankId = (entry->ID == 2051) ? /* Normal */ PVPTITLE_OF_THE_NIGHTFALL : /* Heroic ID==2054 */ PVPTITLE_TWILIGHT_VANQUISHER;
+				break;
+			case 0x00000cec: // Title Reward: Obsidian Slayer
+				r.type = ACHIEVEMENT_REWARDTYPE_TITLE;
+				r.rankId = PVPTITLE_OBSIDIAN_SLAYER;
+				break;
+			case 0x00000d2c: // Title Reward: Battlemaster
+				r.type = ACHIEVEMENT_REWARDTYPE_TITLE;
+				r.rankId = PVPTITLE_BATTLEMASTER;
+				break;
+			case 0x00000d2d: // Title Reward: Battlemaster
+				r.type = ACHIEVEMENT_REWARDTYPE_TITLE;
+				r.rankId = PVPTITLE_BATTLEMASTER;
+				break;
+			case 0x00000d2e: // Title Reward: Ambassador
+				r.type = ACHIEVEMENT_REWARDTYPE_TITLE;
+				r.rankId = PVPTITLE_AMBASSADOR;
+				break;
+			case 0x00000d2f: // Title Reward: Ambassador
+				r.type = ACHIEVEMENT_REWARDTYPE_TITLE;
+				r.rankId = PVPTITLE_AMBASSADOR;
+				break;
+			case 0x00000d56: // Title Reward: The Seeker
+				r.type = ACHIEVEMENT_REWARDTYPE_TITLE;
+				r.rankId = PVPTITLE_THE_SEEKER;
+				break;
+			case 0x00000d74: // Reward: Albino Drake
+				r.type = ACHIEVEMENT_REWARDTYPE_SPELL;
+				r.spellId = 60025;
+				break;
+			case 0x00000d7d: // Title Reward: Of the Horde or Of the Alliance
+				r.type = ACHIEVEMENT_REWARDTYPE_TITLE;
+				r.rankId = (GetPlayer()->GetTeam()==1) ? /* Horde */ PVPTITLE_OF_THE_HORDE : /* Alliance */ PVPTITLE_OF_THE_ALLIANCE;
+				break;
+			case 0x00000da5: // Reward: Tabard of the Explorer
+				r.type = ACHIEVEMENT_REWARDTYPE_ITEM;
+				r.itemId = 43348;
+				break;
+			case 0x00000da6: // Reward: Red Proto-Drake
+				r.type = ACHIEVEMENT_REWARDTYPE_SPELL;
+				r.spellId = 59961;
+				break;
+			case 0x00000da7: // Title: Jenkins
+				r.type = ACHIEVEMENT_REWARDTYPE_TITLE;
+				r.rankId = PVPTITLE_JENKINS;
+				break;
+			case 0x00000dab: // Reward: Plagued Proto-Drake
+				r.type = ACHIEVEMENT_REWARDTYPE_SPELL;
+				r.spellId = 60021;
+				break;
+			case 0x00000dac: // Reward: Violet Proto-Drake
+				r.type = ACHIEVEMENT_REWARDTYPE_SPELL;
+				r.spellId = 60024;
+				break;
+			case 0x00000dba: // Title Reward: The Hallowed
+				r.type = ACHIEVEMENT_REWARDTYPE_TITLE;
+				r.rankId = PVPTITLE_THE_HALLOWED;
+				break;
+			case 0x00000e0b: // Reward: Tabard of Brute Force
+				r.type = ACHIEVEMENT_REWARDTYPE_ITEM;
+				r.itemId = 0; // Hmm, Tabard of Brute Force not found in my item DB ...
+			case 0x00000e10: // Title Reward: Arena Master
+				r.type = ACHIEVEMENT_REWARDTYPE_TITLE;
+				r.rankId = PVPTITLE_ARENA_MASTER;
+				break;
+			case 0x00000e12: // Title Reward: The Exalted
+				r.type = ACHIEVEMENT_REWARDTYPE_TITLE;
+				r.rankId = PVPTITLE_THE_EXALTED;
+				break;
+			case 0x00000e5e: // Title Reward: Chef
+				r.type = ACHIEVEMENT_REWARDTYPE_TITLE;
+				r.rankId = PVPTITLE_CHEF;
+				break;
+			default:
+				break;
+		}
+		if(r.type & ACHIEVEMENT_REWARDTYPE_TITLE)
+		{
+			GetPlayer()->SetKnownTitle(static_cast< RankTitles >(r.rankId), true);
+			GetPlayer()->SetUInt32Value( PLAYER_CHOSEN_TITLE, 0 );
+		}
+		if(r.type & ACHIEVEMENT_REWARDTYPE_ITEM)
+		{
+			// How does this work? Add item directly to inventory, or send through mail?
+			ItemPrototype* it = ItemPrototypeStorage.LookupEntry(r.itemId);
+			if(it)
+			{
+				Item *item;
+				item = objmgr.CreateItem(r.itemId, GetPlayer());
+				if(item == NULL) // this is bad - item not found in db or unable to be created for some reason
+				{
+					GetPlayer()->GetSession()->SendNotification("Unable to create item with id %lu!", r.itemId);
+					return;
+				}
+				item->SetUInt32Value(ITEM_FIELD_STACK_COUNT, 1);
+				if(it->Bonding==ITEM_BIND_ON_PICKUP)
+					if(it->Flags & ITEM_FLAG_ACCOUNTBOUND) // any "accountbound" items for achievement rewards?
+						item->AccountBind();
+					else
+						item->SoulBind();
+				if(!GetPlayer()->GetItemInterface()->AddItemToFreeSlot(item)) // this is bad. inventory full. maybe we should mail it instead?
+				{
+					GetPlayer()->GetSession()->SendNotification("No free slots were found in your inventory!");
+					item->DeleteMe();
+					return;
+				}
+			}
+		}
+		if(r.type & ACHIEVEMENT_REWARDTYPE_SPELL)
+		{
+			GetPlayer()->addSpell(r.spellId);
+		}
+	}
+}
+

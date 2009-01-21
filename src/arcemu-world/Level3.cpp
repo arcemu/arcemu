@@ -356,6 +356,7 @@ bool ChatHandler::HandleExploreCheatCommand(const char* args, WorldSession *m_se
 			chr->SetFlag(PLAYER_EXPLORED_ZONES_1+i,0);
 		}
 	}
+	chr->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_EXPLORE_AREA); // update
 	return true;
 }
 

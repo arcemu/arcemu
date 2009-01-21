@@ -24,6 +24,7 @@
 SERVER_DECL DBCStorage<WorldMapOverlay> dbcWorldMapOverlayStore;
 SERVER_DECL DBCStorage<AchievementEntry> dbcAchievementStore;
 SERVER_DECL DBCStorage<AchievementCriteriaEntry> dbcAchievementCriteriaStore;
+SERVER_DECL DBCStorage<AchievementCategoryEntry> dbcAchievementCategoryStore;
 SERVER_DECL DBCStorage<CharTitlesEntry> dbcCharTitlesEntry;
 SERVER_DECL DBCStorage<BarberShopStyleEntry> dbcBarberShopStyleStore;
 SERVER_DECL DBCStorage<GemPropertyEntry> dbcGemProperty;
@@ -77,9 +78,6 @@ SERVER_DECL DBCStorage<gtFloat> dbcHPRegenBase;
 SERVER_DECL DBCStorage<AreaTriggerEntry> dbcAreaTrigger;
 
 const char* WorldMapOverlayStoreFormat="nxiiiixxxxxxxxxxx";
-const char* AchievementStoreFormat="niixxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxiixixxxxxxxxxxxxxxxxxxxx";
-const char* AchievementCriteriaStoreFormat="niiiiiiiixxxxxxxxxxxxxxxxxiixix";
-const char* CharTitlesEntryfmt = "uxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxu";
 const char* BarberShopStyleEntryFormat="nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxi";
 const char* ItemSetFormat = "ulxxxxxxxxxxxxxxxxuuuuuuuuxxxxxxxxxuuuuuuuuuuuuuuuuuu";
 const char* LockFormat = "uuuuuuxxxuuuuuxxxuuuuuxxxxxxxxxxx";
@@ -89,7 +87,64 @@ const char* EnchantEntrYFormat = "uuuuuuuuuuuuulxxxxxxxxxxxxxxxxuuuuxxx";
 const char* GemPropertyEntryFormat = "uuuuu";
 const char* GlyphPropertyEntryFormat = "uuuu";
 const char* skilllineentrYFormat = "uuulxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx";
-//								1        10        20        30
+
+const char* CharTitlesEntryfmt =
+	"u" // ID
+	"u" // unk1
+	"lxxxxxxxxxxxxxxx" // name
+	"u" // name_flag
+	"lxxxxxxxxxxxxxxx" // name2
+	"u" // name2_flag
+	"u" // bit_index
+;
+
+const char* AchievementStoreFormat=
+	"n" // ID
+	"i" // factionFlag
+	"i" // mapID
+	"lxxxxxxxxxxxxxxx" // name
+	"u" // name_flags
+	"u" // unknown1
+	"lxxxxxxxxxxxxxxx" // description
+	"u" // desc_flags
+	"i" // categoryId
+	"i" // points
+	"u" // orderInCategory
+	"i" // flags
+	"u" // flags2
+	"lxxxxxxxxxxxxxxx" // rewardName
+	"u" // rewardName_flags
+	"u" // count
+	"u" // refAchievement
+;
+
+const char* AchievementCategoryStoreFormat=
+	"n" // ID
+	"u" // parentCategory
+	"lxxxxxxxxxxxxxxx" // name
+	"u" // name_flags
+	"u" // sortOrder
+;
+
+const char* AchievementCriteriaStoreFormat=
+	"n" // ID
+	"i" // referredAchievement
+	"i" // requiredType
+	"i" // raw.field3
+	"i" // raw.field4
+	"i" // raw.additionalRequirement1_type
+	"i" // raw.additionalRequirement1_value
+	"i" // raw.additionalRequirement2_type
+	"i" // raw.additionalRequirement2_value
+	"lxxxxxxxxxxxxxxx" // name
+	"u" // name_flags
+	"i" // completionFlag
+	"i" // timeLimit
+	"u" // index
+	"i" // groupFlag
+	"u" // unk2
+;
+
 const char* spellentryFormat = 
 	"u" // Id
 	"u" // Category
@@ -263,9 +318,10 @@ bool loader_stub(const char * filename, const char * format, bool ind, T& l, boo
 bool LoadDBCs()
 {
 	LOAD_DBC("DBC/WorldMapOverlay.dbc", WorldMapOverlayStoreFormat, true, dbcWorldMapOverlayStore, true);
+	LOAD_DBC("DBC/Achievement_Category.dbc", AchievementCategoryStoreFormat, true, dbcAchievementCategoryStore, true);
 	LOAD_DBC("DBC/Achievement_Criteria.dbc", AchievementCriteriaStoreFormat, true, dbcAchievementCriteriaStore, true);
 	LOAD_DBC("DBC/Achievement.dbc", AchievementStoreFormat, true, dbcAchievementStore, true);
-	LOAD_DBC("DBC/CharTitles.dbc", CharTitlesEntryfmt, true, dbcCharTitlesEntry, false);
+	LOAD_DBC("DBC/CharTitles.dbc", CharTitlesEntryfmt, true, dbcCharTitlesEntry, true);
 	LOAD_DBC("DBC/BarberShopStyle.dbc", BarberShopStyleEntryFormat, true, dbcBarberShopStyleStore, true);
 	LOAD_DBC("DBC/ItemSet.dbc", ItemSetFormat, true, dbcItemSet, true);
 	LOAD_DBC("DBC/Lock.dbc", LockFormat, true, dbcLock, false);

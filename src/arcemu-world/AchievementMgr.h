@@ -63,6 +63,7 @@ enum AchievementCriteriaCompletionFlags
 {
 	// some Achievements (like 698) have several criteria but only one has to be fulfilled. These are identified by this flag.
 	ACHIEVEMENT_CRITERIA_COMPLETE_FLAG_ALL = 2,
+	ACHIEVEMENT_CRITERIA_COMPLETE_FLAG_SOME = 4,
 };
 
 enum AchievementCriteriaGroupFlags
@@ -138,7 +139,7 @@ enum AchievementCriteriaTypes
 	ACHIEVEMENT_CRITERIA_TYPE_FISH_IN_GAMEOBJECT = 72,
 	// TODO: title id is not mentioned in dbc
 	ACHIEVEMENT_CRITERIA_TYPE_EARNED_PVP_TITLE = 74,
-	ACHIEVEMENT_CRITERIA_TYPE_LEARN_SKILLLINE_SPELLS= 75,
+	ACHIEVEMENT_CRITERIA_TYPE_NUMBER_OF_MOUNTS= 75,
 	ACHIEVEMENT_CRITERIA_TYPE_WIN_DUEL = 76,
 	ACHIEVEMENT_CRITERIA_TYPE_LOSE_DUEL = 77,
 	// TODO: creature type (demon, undead etc.) is not stored in dbc
@@ -180,6 +181,23 @@ enum AchievementCriteriaTypes
 	ACHIEVEMENT_CRITERIA_TYPE_TOTAL = 115,
 };
 
+enum AchievementRewardTypes
+{
+	ACHIEVEMENT_REWARDTYPE_NONE = 0,
+	ACHIEVEMENT_REWARDTYPE_ITEM = 1,
+	ACHIEVEMENT_REWARDTYPE_TITLE = 2,
+	ACHIEVEMENT_REWARDTYPE_SPELL = 4,
+// This is used as a bit field, next type (if any more) will be 8
+};
+
+struct AchievementReward
+{
+	uint32 type;
+	uint32 itemId;
+	uint32 rankId;
+	uint32 spellId;
+};
+
 class AchievementMgr
 {
 	public:
@@ -193,6 +211,7 @@ class AchievementMgr
 		void SendRespondInspectAchievements(Player* player);
 		void UpdateAchievementCriteria(AchievementCriteriaTypes type, int32 miscvalue1, int32 miscvalue2, uint32 time);
 		void UpdateAchievementCriteria(AchievementCriteriaTypes type);
+		void GiveAchievementReward(AchievementEntry const* entry);
 
 		Player* GetPlayer() { return m_player;}
 
@@ -206,6 +225,7 @@ class AchievementMgr
 		bool IsCompletedCriteria(AchievementCriteriaEntry const* entry);
 		AchievementCompletionState GetAchievementCompletionState(AchievementEntry const* entry);
 		void BuildAllDataPacket(WorldPacket *data);
+		uint32 AchievementMgr::GetCriteriaProgressCount(void);
 
 		Player* m_player;
 		CriteriaProgressMap m_criteriaProgress;

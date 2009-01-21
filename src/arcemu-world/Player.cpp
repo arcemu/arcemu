@@ -2072,10 +2072,10 @@ void Player::addSpell(uint32 spell_id)
 
 	// Add the skill line for this spell if we don't already have it.
 	skilllinespell * sk = objmgr.GetSpellSkill(spell_id);
+	SpellEntry * spell = dbcSpell.LookupEntry(spell_id);
 	if(sk && !_HasSkillLine(sk->skilline))
 	{
 		skilllineentry * skill = dbcSkillLine.LookupEntry(sk->skilline);
-		SpellEntry * spell = dbcSpell.LookupEntry(spell_id);
 		uint32 max = 1;
 		switch(skill->type)
 		{
@@ -2098,6 +2098,11 @@ void Player::addSpell(uint32 spell_id)
 
 		_AddSkillLine(sk->skilline, 1, max);
 		_UpdateMaxSkillCounts();
+	}
+	m_achievementMgr.UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_LEARN_SPELL, spell_id, 1, 0);
+	{
+		if(spell->MechanicsType == MECHANIC_MOUNTED) // Mount
+			m_achievementMgr.UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_NUMBER_OF_MOUNTS, 1, 0, 0);
 	}
 }
 
@@ -10263,6 +10268,8 @@ void Player::_AddSkillLine(uint32 SkillLine, uint32 Curr_sk, uint32 Max_sk)
 
 	// Displaying bug fix
 	_UpdateSkillFields();
+	m_achievementMgr.UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_LEARN_SKILL_LEVEL, SkillLine, Max_sk/75, 0);
+	m_achievementMgr.UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_REACH_SKILL_LEVEL, SkillLine, Curr_sk, 0);
 }
 
 void Player::_UpdateSkillFields()
@@ -10280,9 +10287,15 @@ void Player::_UpdateSkillFields()
 
 		ASSERT(f <= PLAYER_CHARACTER_POINTS1);
 		if(itr->second.Skill->type == SKILL_TYPE_PROFESSION)
+		{
 			SetUInt32Value(f++, itr->first | 0x10000);
+			m_achievementMgr.UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_REACH_SKILL_LEVEL, itr->second.Skill->id, itr->second.CurrentValue, 0);
+		}
 		else
+		{
 			SetUInt32Value(f++, itr->first);
+			m_achievementMgr.UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_LEARN_SKILL_LEVEL, itr->second.Skill->id, itr->second.MaximumValue/75, 0);
+		}
 
 		SetUInt32Value(f++, (itr->second.MaximumValue << 16) | itr->second.CurrentValue);
 		SetUInt32Value(f++, itr->second.BonusValue);
@@ -10311,6 +10324,8 @@ void Player::_AdvanceSkillLine(uint32 SkillLine, uint32 Count /* = 1 */)
 		_AddSkillLine(SkillLine, Count, getLevel() * 5);
 		_UpdateMaxSkillCounts();
 		sHookInterface.OnAdvanceSkillLine(this, SkillLine, Count);
+		m_achievementMgr.UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_LEARN_SKILL_LEVEL, SkillLine, _GetSkillLineMax(SkillLine), 0);
+		m_achievementMgr.UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_REACH_SKILL_LEVEL, SkillLine, Count, 0);
 	}
 	else
 	{	
@@ -10321,6 +10336,8 @@ void Player::_AdvanceSkillLine(uint32 SkillLine, uint32 Count /* = 1 */)
 			_UpdateSkillFields();
 			sHookInterface.OnAdvanceSkillLine(this, SkillLine, curr_sk);
 		}
+		m_achievementMgr.UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_LEARN_SKILL_LEVEL, SkillLine, itr->second.MaximumValue/75, 0);
+		m_achievementMgr.UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_REACH_SKILL_LEVEL, SkillLine, itr->second.CurrentValue, 0);
 	}
 }
 

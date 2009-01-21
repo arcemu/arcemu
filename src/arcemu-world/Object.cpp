@@ -2402,7 +2402,11 @@ void Object::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
 								}
 							}
 							if( !pVictim->IsPlayer() )
+							{
 								sQuestMgr.OnPlayerKill( pTagger, static_cast< Creature* >( pVictim ) );
+								if(pVictim->IsCreature())
+									pTagger->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_KILL_CREATURE, pVictim->GetEntry(), 1, 0);
+							}
 						}
 					}
 					else if (uTagger->IsPet())
@@ -2445,7 +2449,11 @@ void Object::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
 									}
 								}
 								if(pVictim->GetTypeId() != TYPEID_PLAYER)
+								{
 									sQuestMgr.OnPlayerKill( petOwner, static_cast< Creature* >( pVictim ) );
+									if(pVictim->IsCreature())
+										petOwner->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_KILL_CREATURE, pVictim->GetEntry(), 1, 0);
+								}
 							}
 						}
 					}

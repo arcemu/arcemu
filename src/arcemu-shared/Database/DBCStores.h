@@ -40,29 +40,30 @@ struct WorldMapOverlay
 struct AchievementEntry
 {
 	uint32    ID;                                           // 0
-	uint32    factionFlag;                                  // 1 -1=all, 0=horde, 1=alliance
-	uint32    mapID;                                        // 2 -1=none
-//	char*     name[16];                                     // 3-19
-//	uint32    name_flags;                                   // 20
-//	char*     description[16];                              // 21-36
-//	uint32    desc_flags;                                   // 37
+	int32     factionFlag;                                  // 1 -1=all, 0=horde, 1=alliance
+	int32     mapID;                                        // 2 -1=none
+	char*     name;                                         // 3-18
+	uint32    name_flags;                                   // 19
+	uint32    unknown1;                                     // 20
+	char*     description;                                  // 21-36
+	uint32    desc_flags;                                   // 37
 	uint32    categoryId;                                   // 38
 	uint32    points;                                       // 39 reward points
-//	uint32    OrderInCategory;                              // 40
+	uint32    orderInCategory;                              // 40
 	uint32    flags;                                        // 41
-//	uint32    flags;                                        // 42 not flags, some unknown value...
-//	char*     unk1[16];                                     // 43-58
-//	uint32    unk_flags;                                    // 59
-//	uint32    count;                                        // 60
-//	uint32    refAchievement;                               // 61
+	uint32    unknown2;                                     // 42
+	char*     rewardName;                                   // 43-58 title/item reward name
+	uint32    rewardName_flags;                             // 59
+	uint32    count;                                        // 60
+	uint32    refAchievement;                               // 61
 };
 
 struct AchievementCategoryEntry
 {
 	uint32    ID;                                           // 0
 	uint32    parentCategory;                               // 1 -1 for main category
-//	char*     name[16];                                     // 2-17
-//	uint32    name_flags;                                   // 18
+	char*     name;                                         // 2-17
+	uint32    name_flags;                                   // 18
 	uint32    sortOrder;                                    // 19
 };
 
@@ -384,12 +385,12 @@ struct AchievementCriteriaEntry
 			uint32  lootCount;                              // 4
 		} fish_in_gameobject;
 
-		// ACHIEVEMENT_CRITERIA_TYPE_LEARN_SKILLLINE_SPELLS= 75
+		// ACHIEVEMENT_CRITERIA_TYPE_NUMBER_OF_MOUNTS= 75
 		struct
 		{
-			uint32  skillLine;                              // 3
-			uint32  spellCount;                             // 4
-		} learn_skilline_spell;
+			uint32  unknown;                                // 3 777=?
+			uint32  mountCount;                             // 4
+		} number_of_mounts;
 
 		// ACHIEVEMENT_CRITERIA_TYPE_WIN_DUEL = 76
 		struct
@@ -460,12 +461,13 @@ struct AchievementCriteriaEntry
 			uint32  additionalRequirement2_value;           // 8 additional requirement 1 value
 		} raw;
 	};
-//	char*   name[16];                                     // 9-24
-//	uint32  name_flags;                                   // 25
+	char*   name;                                         // 9-24
+	uint32  name_flags;                                   // 25
 	uint32  completionFlag;                               // 26
 	uint32  groupFlag;                                    // 27
+	uint32  index;                                        // 28
 	uint32  timeLimit;                                    // 29 time limit in seconds
-//	uint32  unk1;                                         // 30
+	uint32  unk1;                                         // 30
 };
  
 
@@ -478,11 +480,11 @@ struct BankSlotPrice
 struct CharTitlesEntry
 {
 	uint32  ID;                                           // 0, title ids
-//	uint32  unk1;                                         // 1 flags?
-//	char*   name[16];                                     // 2-17, unused
-	                                                      // 18 string flag, unused
-//	char*   name2[16];                                    // 19-34, unused
-	                                                      // 35 string flag, unused
+	uint32  unk1;                                         // 1 flags?
+	char*   name;                                         // 2-17, unused
+	uint32  name_flag;                                    // 18 string flag, unused
+	char*   name2;                                        // 19-34, unused
+	char*   name2_flag;                                   // 35 string flag, unused
 	uint32  bit_index;                                    // 36 used in PLAYER_CHOSEN_TITLE and 1<<index in PLAYER__FIELD_KNOWN_TITLES
 };
 
@@ -1709,6 +1711,8 @@ public:
 extern SERVER_DECL DBCStorage<WorldMapOverlay> dbcWorldMapOverlayStore;
 extern SERVER_DECL DBCStorage<AchievementEntry> dbcAchievementStore;
 extern SERVER_DECL DBCStorage<AchievementCriteriaEntry> dbcAchievementCriteriaStore;
+extern SERVER_DECL DBCStorage<AchievementCategoryEntry> dbcAchievementCategoryStore;
+extern SERVER_DECL DBCStorage<CharTitlesEntry> dbcCharTitlesEntry;
 extern SERVER_DECL DBCStorage<BarberShopStyleEntry> dbcBarberShopStyleStore;
 extern SERVER_DECL DBCStorage<GemPropertyEntry> dbcGemProperty;
 extern SERVER_DECL DBCStorage<GlyphPropertyEntry> dbcGlyphProperty;
