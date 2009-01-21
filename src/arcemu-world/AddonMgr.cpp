@@ -158,6 +158,9 @@ void AddonMgr::SendAddonInfoPacket(WorldPacket *source, uint32 pos, WorldSession
 
 	for(uint32 i = 0; i < addoncount; i++)
 	{
+		if(unpacked.rpos() >= unpacked.size())
+			break;
+
 		unpacked >> name;
 		unpacked >> Enable;
 		unpacked >> crc;
