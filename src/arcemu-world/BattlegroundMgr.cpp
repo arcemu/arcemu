@@ -1052,14 +1052,14 @@ void CBattleground::RemovePendingPlayer(Player * plr)
 void CBattleground::OnPlayerPushed(Player * plr)
 {
 	if( plr->GetGroup() && !Rated() )
-		plr->GetGroup()->RemovePlayer(plr->m_playerInfo);
+		plr->GetGroup()->RemovePlayer(plr->getPlayerInfo());
 
 	plr->ProcessPendingUpdates();
 
 	if( plr->GetGroup() == NULL )
 	{
 		if ( plr->m_isGmInvisible == false ) //do not join invisible gm's into bg groups.
-			m_groups[plr->m_bgTeam]->AddMember( plr->m_playerInfo );
+			m_groups[plr->m_bgTeam]->AddMember( plr->getPlayerInfo() );
 	}
 }
 
@@ -1125,7 +1125,7 @@ void CBattleground::PortPlayer(Player * plr, bool skip_teleport /* = false*/)
 	if(plr->GetGroup() && !Rated())
 	{
 		// remove them from their group
-		plr->GetGroup()->RemovePlayer( plr->m_playerInfo );
+		plr->GetGroup()->RemovePlayer( plr->getPlayerInfo() );
 	}
 
 	if(!m_countdownStage)
@@ -1452,7 +1452,7 @@ void CBattleground::RemovePlayer(Player * plr, bool logout)
 
 	/* are we in the group? */
 	if(plr->GetGroup() == m_groups[plr->m_bgTeam])
-		plr->GetGroup()->RemovePlayer( plr->m_playerInfo );
+		plr->GetGroup()->RemovePlayer( plr->getPlayerInfo() );
 
 	// reset team
 	plr->ResetTeam();
@@ -1801,7 +1801,7 @@ void CBattlegroundManager::HandleArenaJoin(WorldSession * m_session, uint32 Batt
 			m_session->SystemMessage(m_session->LocalizedWorldSrv(55) );
 			return;
 		}
-		if(pGroup->GetLeader() != m_session->GetPlayer()->m_playerInfo)
+		if(pGroup->GetLeader() != m_session->GetPlayer()->getPlayerInfo())
 		{
 			m_session->SystemMessage(m_session->LocalizedWorldSrv(56) );
 			return;

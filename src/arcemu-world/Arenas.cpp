@@ -373,7 +373,7 @@ void Arena::OnStart()
 			if(rated_match && plr->m_arenaTeams[m_arenateamtype] != NULL)
 			{
 				m_teams[i] = plr->m_arenaTeams[m_arenateamtype];
-				ArenaTeamMember * tp = m_teams[i]->GetMember(plr->m_playerInfo);
+				ArenaTeamMember * tp = m_teams[i]->GetMember(plr->getPlayerInfo());
 				if(tp != NULL)
 				{
 					tp->Played_ThisWeek++;

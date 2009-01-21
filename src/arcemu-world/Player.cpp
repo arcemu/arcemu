@@ -31,15 +31,192 @@ UpdateMask Player::m_visibleUpdateMask;
 static uint32 TonkSpecials[4] = {FLAMETHROWER,MACHINEGUN,DROPMINE,SHIELD};
 static const uint8 baseRunes[6] = {0,0,1,1,2,2};
 
-Player::Player( uint32 guid ) : m_mailBox(guid), m_achievementMgr(this)
+Player::Player( uint32 guid )
+:
+m_mailBox(guid), 
+m_achievementMgr(this),
+m_finishingmovesdodge(false),
+iActivePet(0),
+//resurrector(0),
+SpellCrtiticalStrikeRatingBonus(0),
+SpellHasteRatingBonus(1.0f),
+m_lifetapbonus(0),
+info(NULL), // Playercreate info
+SoulStone(0),
+SoulStoneReceiver(0),
+misdirectionTarget(0),
+bReincarnation(false),
+removeReagentCost(false),
+m_furorChance(0),
+Seal(0),
+judgespell(0),
+m_session(0),
+TrackingSpell(0),
+m_status(0),
+offhand_dmg_mod(0.5),
+m_isMoving(false),
+strafing(false),
+jumping(false),
+moving(false),
+m_ShapeShifted(0),
+m_curTarget(0),
+m_curSelection(0),
+m_lootGuid(0),
+m_Summon(NULL),
+
+m_PetNumberMax(0),
+m_lastShotTime(0),
+
+m_onTaxi(false),
+
+m_taxi_pos_x(0),
+m_taxi_pos_y(0),
+m_taxi_pos_z(0),
+m_taxi_ride_time(0),
+
+// Attack related variables
+m_blockfromspellPCT(0),
+m_critfromspell(0),
+m_spellcritfromspell(0),
+m_hitfromspell(0),
+
+m_healthfromspell(0),
+m_manafromspell(0),
+m_healthfromitems(0),
+m_manafromitems(0),
+
+m_talentresettimes(0),
+
+m_nextSave(getMSTime() + sWorld.getIntRate(INTRATE_SAVE)),
+
+m_resurrectMana(0),
+m_resurrectHealth(0),
+
+m_GroupInviter(0),
+
+Lfgcomment(""),
+
+m_Autojoin(false),
+m_AutoAddMem(false),
+LfmDungeonId(0),
+LfmType(0),
+
+m_currentMovement(MOVE_UNROOT),
+m_isGmInvisible(false),
+
+//DK
+m_invitersGuid(0),
+
+//Trade
+mTradeTarget(0),
+
+//Duel
+DuelingWith(NULL),
+m_duelCountdownTimer(0),
+m_duelStatus(0),
+m_duelState(DUEL_STATE_FINISHED),		// finished
+
+//WayPoint
+waypointunit(NULL),
+
+//PVP
+//PvPTimeoutEnabled(false),
+
+m_banned(false),
+
+//Bind possition
+m_bind_pos_x(0),
+m_bind_pos_y(0),
+m_bind_pos_z(0),
+m_bind_mapid(0),
+m_bind_zoneid(0),
+
+// Rest
+m_timeLogoff(0),
+m_isResting(0),
+m_restState(0),
+m_restAmount(0),
+m_afk_reason(""),
+
+m_AllowAreaTriggerPort(true),
+
+// Battleground
+m_bgEntryPointMap(0),
+m_bgEntryPointX(0),
+m_bgEntryPointY(0),
+m_bgEntryPointZ(0),
+m_bgEntryPointO(0),
+m_bgQueueType(0),
+m_bgQueueInstanceId(0),
+m_bgIsQueued(false),
+m_bg(0),
+
+m_bgEntryPointInstance(0),
+
+// gm stuff
+//m_invincible(false),
+bGMTagOn(false),
+CooldownCheat(false),
+CastTimeCheat(false),
+PowerCheat(false),
+GodModeCheat(false),
+FlyCheat(false),
+
+//FIX for professions
+weapon_proficiency(0x4000), //2^14
+//FIX for shit like shirt etc
+armor_proficiency(1),
+
+m_bUnlimitedBreath(false),
+m_UnderwaterState(0),
+m_UnderwaterTime(180000),
+m_UnderwaterMaxTime(180000),
+m_UnderwaterLastDmg(getMSTime()),
+m_SwimmingTime(0),
+m_BreathDamageTimer(0),
+
+//transport shit
+m_TransporterGUID(0),
+m_TransporterX(0.0f),
+m_TransporterY(0.0f),
+m_TransporterZ(0.0f),
+m_TransporterO(0.0f),
+m_TransporterUnk(0.0f),
+m_lockTransportVariables(false),
+
+// Autoshot variables
+m_AutoShotTarget(0),
+m_onAutoShot(false),
+m_AutoShotDuration(0),
+m_AutoShotAttackTimer(0),
+m_AutoShotSpell(NULL),
+
+m_AttackMsgTimer(0),
+
+timed_quest_slot(0),
+m_GM_SelectedGO(0)
 {
 	int i,j;
 
+	//These should really be done in the unit constructor...
+	m_currentSpell = NULL;
+
+	m_H_regenTimer = 0;
+	m_P_regenTimer = 0;
+	//////////////////////////////////////////////////////////////////////////
+
+	//These should be set in the object constructor..
+	m_runSpeed = PLAYER_NORMAL_RUN_SPEED;
+	m_walkSpeed = 2.5f;
+
 	m_objectTypeId = TYPEID_PLAYER;
 	m_valuesCount = PLAYER_END;
+	//////////////////////////////////////////////////////////////////////////
+
+	//Why is there a pointer to the same thing in a dirived class? ToDo: sort this out..
 	m_uint32Values = _fields;
 
-	memset(m_uint32Values, 0,(PLAYER_END)*sizeof(uint32));
+	memset(m_uint32Values, 0, (PLAYER_END) * sizeof(uint32));
 	m_updateMask.SetCount(PLAYER_END);
 	SetUInt32Value( OBJECT_FIELD_TYPE,TYPE_PLAYER|TYPE_UNIT|TYPE_OBJECT);
 	SetUInt32Value( OBJECT_FIELD_GUID,guid);
@@ -50,71 +227,6 @@ Player::Player( uint32 guid ) : m_mailBox(guid), m_achievementMgr(this)
 	SetFloatValue( PLAYER_RUNE_REGEN_02, 0.100000f );
 	SetFloatValue( PLAYER_RUNE_REGEN_03, 0.100000f );
 
-	m_finishingmovesdodge	= false;
-	iActivePet				= 0;
-	// resurrector			= 0;
-	SpellCrtiticalStrikeRatingBonus	= 0;
-	SpellHasteRatingBonus	= 1.0f;
-	m_lifetapbonus			= 0;
-	info					= NULL;				 // Playercreate info
-	SoulStone				= 0;
-	SoulStoneReceiver		= 0;
-	misdirectionTarget		= 0;
-	bReincarnation			= false;
-	removeReagentCost		= false;
-	m_furorChance			= 0;
-	Seal					= 0;
-	judgespell				= 0;
-	m_session				= 0;
-	TrackingSpell			= 0;
-	m_status				= 0;
-	offhand_dmg_mod			= 0.5;
-	m_walkSpeed				= 2.5f;
-	m_runSpeed				= PLAYER_NORMAL_RUN_SPEED;
-	m_isMoving				= false;
-	strafing				= false;
-	jumping					=  false;
-	moving					= false;
-	m_ShapeShifted			= 0;
-	m_curTarget				= 0;
-	m_curSelection			= 0;
-	m_lootGuid				= 0;
-	m_Summon				= NULL;
-
-	m_PetNumberMax			= 0;
-	m_lastShotTime			= 0;
-
-	m_H_regenTimer			= 0;
-	m_P_regenTimer			= 0;
-	m_onTaxi				= false;
-	
-	m_taxi_pos_x			= 0;
-	m_taxi_pos_y			= 0;
-	m_taxi_pos_z			= 0;
-	m_taxi_ride_time		= 0;
-
-	// Attack related variables
-	m_blockfromspellPCT		= 0;
-	m_critfromspell			= 0;
-	m_spellcritfromspell	= 0;
-	m_hitfromspell			= 0;
-
-	m_healthfromspell		= 0;
-	m_manafromspell			= 0;
-	m_healthfromitems		= 0;
-	m_manafromitems			= 0;
-
-	m_talentresettimes		= 0;
-
-	m_nextSave				= getMSTime() + sWorld.getIntRate(INTRATE_SAVE);
-
-	m_currentSpell			= NULL;
-	m_resurrectHealth		= m_resurrectMana = 0;
-
-	m_GroupInviter			= 0;
-	
-	Lfgcomment = "";
-	
 	for(i=0;i<3;i++)
 	{
 		LfgType[i]=0;
@@ -125,116 +237,16 @@ Player::Player( uint32 guid ) : m_mailBox(guid), m_achievementMgr(this)
 		MechanicDurationPctMod[i]=0;
 	}
 
-	m_Autojoin = false;
-	m_AutoAddMem = false;
-	LfmDungeonId=0;
-	LfmType=0;
-
-	m_invitersGuid		  = 0;
-
-	m_currentMovement	   = MOVE_UNROOT;
-	m_isGmInvisible		 = false;
-
-	//DK
-	m_invitersGuid		  = 0;
-
 	//Trade
 	ResetTradeVariables();
-	mTradeTarget = 0;
-
-	//Duel
-	DuelingWith			 = NULL;
-	m_duelCountdownTimer	= 0;
-	m_duelStatus			= 0;
-	m_duelState			 = DUEL_STATE_FINISHED;		// finished
-
-	//WayPoint
-	waypointunit			= NULL;
-
-	//PVP
-	//PvPTimeoutEnabled	   = false;
 
 	//Tutorials
 	for (i = 0 ; i < 8 ; i++ )
 		m_Tutorials[ i ] = 0x00;
 
-	m_lootGuid			  = 0;
-	m_banned				= false;
-
-	//Bind possition
-	m_bind_pos_x			= 0;
-	m_bind_pos_y			= 0;
-	m_bind_pos_z			= 0;
-	m_bind_mapid			= 0;
-	m_bind_zoneid		   = 0;
-
-	// Rest
-	m_timeLogoff			= 0;
-	m_isResting			 = 0;
-	m_restState			 = 0;
-	m_restAmount			= 0;
-	m_afk_reason			= "";
 	m_playedtime[0]		 = 0;
 	m_playedtime[1]		 = 0;
 	m_playedtime[2]		 = (uint32)UNIXTIME;
-
-	m_AllowAreaTriggerPort  = true;
-
-	// Battleground
-	m_bgEntryPointMap	   = 0;
-	m_bgEntryPointX		 = 0;	
-	m_bgEntryPointY		 = 0;
-	m_bgEntryPointZ		 = 0;
-	m_bgEntryPointO		 = 0;
-	m_bgQueueType = 0;
-	m_bgQueueInstanceId = 0;
-	m_bgIsQueued = false;
-	m_bg = 0;
-
-	m_bgEntryPointInstance  = 0;
-
-	// gm stuff
-	//m_invincible			= false;
-	bGMTagOn				= false;
-	CooldownCheat		   = false;
-	CastTimeCheat		   = false;
-	PowerCheat			  = false;
-	GodModeCheat			= false;
-	FlyCheat				= false;
-	
-	//FIX for professions
-	weapon_proficiency	  = 0x4000;//2^14
-	//FIX for shit like shirt etc
-	armor_proficiency	   = 1;
-
-	m_bUnlimitedBreath	  = false;
-	m_UnderwaterState	   = 0;
-	m_UnderwaterTime		= 180000;
-	m_UnderwaterMaxTime	 = 180000;
-	m_UnderwaterLastDmg	 = getMSTime();
-	m_SwimmingTime		  = 0;
-	m_BreathDamageTimer	 = 0;
-
-	//transport shit
-	m_TransporterGUID		= 0;
-	m_TransporterX			= 0.0f;
-	m_TransporterY			= 0.0f;
-	m_TransporterZ			= 0.0f;
-	m_TransporterO			= 0.0f;
-	m_TransporterUnk		= 0.0f;
-	m_lockTransportVariables= false;
-
-	// Autoshot variables
-	m_AutoShotTarget		= 0;
-	m_onAutoShot			= false;
-	m_AutoShotDuration		= 0;
-	m_AutoShotAttackTimer	= 0;
-	m_AutoShotSpell			= NULL;
-
-	m_AttackMsgTimer		= 0;
-
-	timed_quest_slot		= 0;
-	m_GM_SelectedGO			= 0;
 
 	for(i = 0;i < 7; i++)
 	{
@@ -6868,7 +6880,10 @@ void Player::EventTaxiInterpolate()
 {
 	if(!m_CurrentTaxiPath || m_mapMgr==NULL) return;
 
-	float x,y,z = 0.0f;
+	float x = 0.0f;
+	float y = 0.0f;
+	float z = 0.0f;
+
 	uint32 ntime = getMSTime();
 
 	if (ntime > m_taxi_ride_time)

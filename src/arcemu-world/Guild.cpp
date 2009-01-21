@@ -279,7 +279,7 @@ void Guild::CreateFromCharter(Charter * pCharter, WorldSession * pTurnIn)
 	m_commandLogging = false;
 
 	// add the leader to the guild
-	AddGuildMember(pTurnIn->GetPlayer()->m_playerInfo, NULL, leaderRank->iId);
+	AddGuildMember(pTurnIn->GetPlayer()->getPlayerInfo(), NULL, leaderRank->iId);
 
 	// add all the other people
 	for(i = 0; i < pCharter->SignatureCount; ++i)
@@ -297,10 +297,10 @@ void Guild::CreateFromCharter(Charter * pCharter, WorldSession * pTurnIn)
 
 void Guild::PromoteGuildMember(PlayerInfo * pMember, WorldSession * pClient)
 {
-	if(pClient->GetPlayer()->m_playerInfo->guild != this || pMember->guild != this)
+	if(pClient->GetPlayer()->getPlayerInfo()->guild != this || pMember->guild != this)
 		return;
 
-	if(!pClient->GetPlayer()->m_playerInfo->guildRank->CanPerformCommand(GR_RIGHT_PROMOTE))
+	if(!pClient->GetPlayer()->getPlayerInfo()->guildRank->CanPerformCommand(GR_RIGHT_PROMOTE))
 	{
 		SendGuildCommandResult(pClient, GUILD_PROMOTE_S, "", GUILD_PERMISSIONS);
 		return;
@@ -359,10 +359,10 @@ void Guild::PromoteGuildMember(PlayerInfo * pMember, WorldSession * pClient)
 
 void Guild::DemoteGuildMember(PlayerInfo * pMember, WorldSession * pClient)
 {
-	if(pClient->GetPlayer()->m_playerInfo->guild != this || pMember->guild != this)
+	if(pClient->GetPlayer()->getPlayerInfo()->guild != this || pMember->guild != this)
 		return;
 
-	if(!pClient->GetPlayer()->m_playerInfo->guildRank->CanPerformCommand(GR_RIGHT_DEMOTE) ||
+	if(!pClient->GetPlayer()->getPlayerInfo()->guildRank->CanPerformCommand(GR_RIGHT_DEMOTE) ||
 		pMember->guid == GetGuildLeader())
 	{
 		SendGuildCommandResult(pClient, GUILD_PROMOTE_S, "", GUILD_PERMISSIONS);
@@ -648,10 +648,10 @@ bool Guild::LoadFromDB(Field * f)
 
 void Guild::SetMOTD(const char * szNewMotd, WorldSession * pClient)
 {
-	if(pClient->GetPlayer()->m_playerInfo->guild != this)
+	if(pClient->GetPlayer()->getPlayerInfo()->guild != this)
 		return;
 
-	if(!pClient->GetPlayer()->m_playerInfo->guildRank->CanPerformCommand(GR_RIGHT_SETMOTD))
+	if(!pClient->GetPlayer()->getPlayerInfo()->guildRank->CanPerformCommand(GR_RIGHT_SETMOTD))
 	{
 		Guild::SendGuildCommandResult(pClient, GUILD_INVITE_S, "", GUILD_PERMISSIONS);
 		return;
@@ -676,10 +676,10 @@ void Guild::SetMOTD(const char * szNewMotd, WorldSession * pClient)
 
 void Guild::SetGuildInformation(const char * szGuildInformation, WorldSession * pClient)
 {
-	if(pClient->GetPlayer()->m_playerInfo->guild != this)
+	if(pClient->GetPlayer()->getPlayerInfo()->guild != this)
 		return;
 
-	if(!pClient->GetPlayer()->m_playerInfo->guildRank->CanPerformCommand(GR_RIGHT_EGUILDINFO))
+	if(!pClient->GetPlayer()->getPlayerInfo()->guildRank->CanPerformCommand(GR_RIGHT_EGUILDINFO))
 	{
 		Guild::SendGuildCommandResult(pClient, GUILD_INVITE_S, "", GUILD_PERMISSIONS);
 		return;
@@ -706,10 +706,10 @@ void Guild::AddGuildMember(PlayerInfo * pMember, WorldSession * pClient, int32 F
 	if(pMember->guild != NULL)
 		return;
 
-	if(pClient && pClient->GetPlayer()->m_playerInfo->guild != this)
+	if(pClient && pClient->GetPlayer()->getPlayerInfo()->guild != this)
 		return;
 
-	if(pClient && !pClient->GetPlayer()->m_playerInfo->guildRank->CanPerformCommand(GR_RIGHT_INVITE))
+	if(pClient && !pClient->GetPlayer()->getPlayerInfo()->guildRank->CanPerformCommand(GR_RIGHT_INVITE))
 		return;
 
 	m_lock.Acquire();
@@ -757,10 +757,10 @@ void Guild::RemoveGuildMember(PlayerInfo * pMember, WorldSession * pClient)
 	if(pMember->guild != this)
 		return;
 
-	if(pClient && pClient->GetPlayer()->m_playerInfo->guild != this)
+	if(pClient && pClient->GetPlayer()->getPlayerInfo()->guild != this)
 		return;
 
-	if(pClient && !pClient->GetPlayer()->m_playerInfo->guildRank->CanPerformCommand(GR_RIGHT_REMOVE) && pClient->GetPlayer()->m_playerInfo != pMember)
+	if(pClient && !pClient->GetPlayer()->getPlayerInfo()->guildRank->CanPerformCommand(GR_RIGHT_REMOVE) && pClient->GetPlayer()->getPlayerInfo() != pMember)
 	{
 		Guild::SendGuildCommandResult(pClient, GUILD_CREATE_S, "", GUILD_PERMISSIONS);
 		return;
@@ -790,7 +790,7 @@ void Guild::RemoveGuildMember(PlayerInfo * pMember, WorldSession * pClient)
 		m_members.erase(itr);
 	}
 
-	if(pClient && pClient->GetPlayer()->m_playerInfo != pMember)
+	if(pClient && pClient->GetPlayer()->getPlayerInfo() != pMember)
 	{
 		if(pMember->m_loggedInPlayer)
 		{
@@ -825,10 +825,10 @@ void Guild::SetPublicNote(PlayerInfo * pMember, const char * szNewNote, WorldSes
 	if(pMember->guild != this)
 		return;
 
-	if(pClient->GetPlayer()->m_playerInfo->guild != this)
+	if(pClient->GetPlayer()->getPlayerInfo()->guild != this)
 		return;
 
-	if(!pClient->GetPlayer()->m_playerInfo->guildRank->CanPerformCommand(GR_RIGHT_EPNOTE))
+	if(!pClient->GetPlayer()->getPlayerInfo()->guildRank->CanPerformCommand(GR_RIGHT_EPNOTE))
 	{
 		Guild::SendGuildCommandResult(pClient, GUILD_MEMBER_S, "", GUILD_PERMISSIONS);
 		return;
@@ -865,10 +865,10 @@ void Guild::SetOfficerNote(PlayerInfo * pMember, const char * szNewNote, WorldSe
 	if(pMember->guild != this)
 		return;
 
-	if(pClient->GetPlayer()->m_playerInfo->guild != this)
+	if(pClient->GetPlayer()->getPlayerInfo()->guild != this)
 		return;
 
-	if(!pClient->GetPlayer()->m_playerInfo->guildRank->CanPerformCommand(GR_RIGHT_EOFFNOTE))
+	if(!pClient->GetPlayer()->getPlayerInfo()->guildRank->CanPerformCommand(GR_RIGHT_EOFFNOTE))
 	{
 		Guild::SendGuildCommandResult(pClient, GUILD_MEMBER_S, "", GUILD_PERMISSIONS);
 		return;
@@ -975,7 +975,7 @@ void Guild::ChangeGuildMaster(PlayerInfo * pNewMaster, WorldSession * pClient)
 	}
 
 	GuildMemberMap::iterator itr = m_members.find(pNewMaster);
-	GuildMemberMap::iterator itr2 = m_members.find(pClient->GetPlayer()->m_playerInfo);
+	GuildMemberMap::iterator itr2 = m_members.find(pClient->GetPlayer()->getPlayerInfo());
 	ASSERT(m_ranks[0]!=NULL);
 	if(itr==m_members.end())
 	{
@@ -1017,10 +1017,10 @@ uint32 Guild::GenerateGuildLogEventId()
 
 void Guild::GuildChat(const char * szMessage, WorldSession * pClient, uint32 iType)
 {
-	if(pClient->GetPlayer()->m_playerInfo->guild != this)
+	if(pClient->GetPlayer()->getPlayerInfo()->guild != this)
 		return;
 
-	if(!pClient->GetPlayer()->m_playerInfo->guildRank->CanPerformCommand(GR_RIGHT_GCHATSPEAK))
+	if(!pClient->GetPlayer()->getPlayerInfo()->guildRank->CanPerformCommand(GR_RIGHT_GCHATSPEAK))
 	{
 		Guild::SendGuildCommandResult(pClient, GUILD_MEMBER_S, "", GUILD_PERMISSIONS);
 		return;
@@ -1042,10 +1042,10 @@ void Guild::GuildChat(const char * szMessage, WorldSession * pClient, uint32 iTy
 
 void Guild::OfficerChat(const char * szMessage, WorldSession * pClient, uint32 iType)
 {
-	if(pClient->GetPlayer()->m_playerInfo->guild != this)
+	if(pClient->GetPlayer()->getPlayerInfo()->guild != this)
 		return;
 
-	if(!pClient->GetPlayer()->m_playerInfo->guildRank->CanPerformCommand(GR_RIGHT_OFFCHATSPEAK))
+	if(!pClient->GetPlayer()->getPlayerInfo()->guildRank->CanPerformCommand(GR_RIGHT_OFFCHATSPEAK))
 	{
 		Guild::SendGuildCommandResult(pClient, GUILD_MEMBER_S, "", GUILD_PERMISSIONS);
 		return;
@@ -1119,10 +1119,10 @@ void Guild::SendGuildRoster(WorldSession * pClient)
 	size_t pos;
 	GuildRank * myRank;
 	bool ofnote;
-	if(pClient->GetPlayer()->m_playerInfo->guild != this)
+	if(pClient->GetPlayer()->getPlayerInfo()->guild != this)
 		return;
 
-	myRank = pClient->GetPlayer()->m_playerInfo->guildRank;
+	myRank = pClient->GetPlayer()->getPlayerInfo()->guildRank;
 	ofnote = myRank->CanPerformCommand(GR_RIGHT_VIEWOFFNOTE);
 
 	m_lock.Acquire();
@@ -1378,7 +1378,7 @@ void Guild::DepositMoney(WorldSession * pClient, uint32 uAmount)
 
 void Guild::WithdrawMoney(WorldSession * pClient, uint32 uAmount)
 {
-	GuildMember * pMember = pClient->GetPlayer()->m_playerInfo->guildMember;
+	GuildMember * pMember = pClient->GetPlayer()->getPlayerInfo()->guildMember;
 	if(pMember==NULL)
 		return;
 

@@ -90,17 +90,17 @@ bool ChatHandler::HandleResetInstanceCommand(const char* args, WorldSession *m_s
 		if(m_session->CanUseCommand('z'))
 		{
 			bool foundSomething = false;
-			plr->m_playerInfo->savedInstanceIdsLock.Acquire();
+			plr->getPlayerInfo()->savedInstanceIdsLock.Acquire();
 			for(int difficulty=0; difficulty<NUM_INSTANCE_MODES; difficulty++)
 			{
-				PlayerInstanceMap::iterator itr = plr->m_playerInfo->savedInstanceIds[difficulty].find(instance->m_mapId);
-				if(itr == plr->m_playerInfo->savedInstanceIds[difficulty].end() || (*itr).second != instance->m_instanceId)
+				PlayerInstanceMap::iterator itr = plr->getPlayerInfo()->savedInstanceIds[difficulty].find(instance->m_mapId);
+				if(itr == plr->getPlayerInfo()->savedInstanceIds[difficulty].end() || (*itr).second != instance->m_instanceId)
 					continue;
 				plr->SetPersistentInstanceId(instance->m_mapId, difficulty, 0);
 				SystemMessage(m_session, "Instance with id %u (%s) is persistent and will only be revoked from player.", instanceId, GetDifficultyString(difficulty));
 				foundSomething = true;
 			}
-			plr->m_playerInfo->savedInstanceIdsLock.Release();
+			plr->getPlayerInfo()->savedInstanceIdsLock.Release();
 			if(!foundSomething)
 				RedSystemMessage(m_session, "Player is not assigned to persistent instance with id %u.", instanceId);
 			return true;
@@ -289,10 +289,10 @@ bool ChatHandler::HandleShowInstancesCommand(const char* args, WorldSession* m_s
 	uint32 count = 0;
 	std::stringstream ss;
 	ss << "Show persistent instances of " << MSG_COLOR_CYAN << plr->GetName() << "|r\n";
-	plr->m_playerInfo->savedInstanceIdsLock.Acquire();
+	plr->getPlayerInfo()->savedInstanceIdsLock.Acquire();
 	for(int difficulty=0; difficulty<NUM_INSTANCE_MODES; difficulty++)
 	{
-		for(PlayerInstanceMap::iterator itr = plr->m_playerInfo->savedInstanceIds[difficulty].begin(); itr != plr->m_playerInfo->savedInstanceIds[difficulty].end(); ++itr)
+		for(PlayerInstanceMap::iterator itr = plr->getPlayerInfo()->savedInstanceIds[difficulty].begin(); itr != plr->getPlayerInfo()->savedInstanceIds[difficulty].end(); ++itr)
 		{
 			count++;
 			ss << " - " << MSG_COLOR_CYAN << (*itr).second << "|r";
@@ -323,7 +323,7 @@ bool ChatHandler::HandleShowInstancesCommand(const char* args, WorldSession* m_s
 			ss << "\n";
 		}
 	}
-	plr->m_playerInfo->savedInstanceIdsLock.Release();
+	plr->getPlayerInfo()->savedInstanceIdsLock.Release();
 
 	if(count == 0)
 		ss << "Player is not assigned to any persistent instances.\n";

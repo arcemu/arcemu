@@ -230,7 +230,7 @@ Group * ObjectMgr::GetGroupByLeader(Player* pPlayer)
 	m_groupLock.AcquireReadLock();
 	for(itr = m_groups.begin(); itr != m_groups.end(); ++itr)
 	{
-		if(itr->second->GetLeader()==pPlayer->m_playerInfo)
+		if(itr->second->GetLeader()==pPlayer->getPlayerInfo())
 		{
 			ret = itr->second;
 			break;

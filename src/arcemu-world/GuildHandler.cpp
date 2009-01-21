@@ -1570,7 +1570,7 @@ void WorldSession::HandleGuildBankViewTab(WorldPacket & recv_data)
 
 void Guild::SendGuildBankInfo(WorldSession * pClient)
 {
-	GuildMember * pMember = pClient->GetPlayer()->m_playerInfo->guildMember;
+	GuildMember * pMember = pClient->GetPlayer()->getPlayerInfo()->guildMember;
 
 	if(pMember==NULL)
 		return;
@@ -1611,7 +1611,7 @@ void Guild::SendGuildBank(WorldSession * pClient, GuildBankTab * pTab, int8 upda
 	size_t pos;
 	uint32 count=0;
 	WorldPacket data( SMSG_GUILD_BANK_LIST, 1300 );
-	GuildMember * pMember = pClient->GetPlayer()->m_playerInfo->guildMember;
+	GuildMember * pMember = pClient->GetPlayer()->getPlayerInfo()->guildMember;
 
 	if(pMember==NULL || !pMember->pRank->CanPerformBankCommand(GR_RIGHT_GUILD_BANK_VIEW_TAB, pTab->iTabId))
 		return;

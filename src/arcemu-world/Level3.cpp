@@ -408,7 +408,7 @@ bool ChatHandler::HandleBanCharacterCommand(const char* args, WorldSession *m_se
 		string sReason = string(pReason);
 		uint32 uBanTime = BanTime ? BanTime+(uint32)UNIXTIME : 1;
 		pPlayer->SetBanned(uBanTime, sReason);
-		pInfo = pPlayer->m_playerInfo;
+		pInfo = pPlayer->getPlayerInfo();
 	}
 
 	SystemMessage(m_session, "This ban is due to expire %s%s.", BanTime ? "on " : "", BanTime ? ConvertTimeStampToDataTime(BanTime+(uint32)UNIXTIME).c_str() : "Never");
@@ -3033,7 +3033,7 @@ bool ChatHandler::HandleGuildRemovePlayerCommand(const char* args, WorldSession 
 	if(plr->GetLowGUID() != m_session->GetPlayer()->GetLowGUID())
 		sGMLog.writefromsession(m_session, "Kicked %s from Guild %s", plr->GetName(), plr->GetGuild()->GetGuildName());
 
-	plr->GetGuild()->RemoveGuildMember(plr->m_playerInfo, plr->GetSession());
+	plr->GetGuild()->RemoveGuildMember(plr->getPlayerInfo(), plr->GetSession());
 	return true;
 }
 
@@ -3115,7 +3115,7 @@ bool ChatHandler::HandleArenaCreateTeamCommand(const char * args, WorldSession *
 	t->m_backgroundColour=4284906803UL;
 	t->m_leader=plr->GetLowGUID();
 	t->m_name = string(name);
-	t->AddMember(plr->m_playerInfo);
+	t->AddMember(plr->getPlayerInfo());
 	objmgr.AddArenaTeam(t);
 	SystemMessage(m_session, "created arena team.");
 	return true;
@@ -3158,7 +3158,7 @@ bool ChatHandler::HandleArenaSetTeamLeaderCommand(const char * args, WorldSessio
 	}
 
 	ArenaTeam * t = plr->m_arenaTeams[real_type];
-	t->SetLeader(plr->m_playerInfo);
+	t->SetLeader(plr->getPlayerInfo());
 	SystemMessage(m_session, "player is now arena team leader.");
 	return true;
 }

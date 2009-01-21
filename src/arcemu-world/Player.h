@@ -2138,10 +2138,17 @@ public:
 	/* end social                                                           */
 	/************************************************************************/
 
-	PlayerInfo * m_playerInfo;
 	uint32 m_outStealthDamageBonusPct;
 	uint32 m_outStealthDamageBonusPeriod;
 	uint32 m_outStealthDamageBonusTimer;
+
+	//ToDo: sort out where all the publics and privates go. This will do for now..
+private:
+	PlayerInfo * m_playerInfo;
+
+public:
+
+	ARCEMU_INLINE PlayerInfo * getPlayerInfo() const { return m_playerInfo; }
 
 	void LoadFieldsFromString(const char * string, uint32 firstField, uint32 fieldsNum);
 	void UpdateGlyphs();

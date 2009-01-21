@@ -218,7 +218,7 @@ void LfgMgr::UpdateLfgQueue(uint32 LfgDungeonId)
 				}
 
 				// found a group for him, lets insert him.
-				if((*itr)->GetGroup()->AddMember((*it2)->m_playerInfo))
+				if((*itr)->GetGroup()->AddMember((*it2)->getPlayerInfo()))
 				{
 					(*it2)->m_lfgInviterGuid = (*itr)->GetLowGUID();
 
@@ -250,7 +250,7 @@ void LfgMgr::UpdateLfgQueue(uint32 LfgDungeonId)
 		Group * pGroup = new Group(true);
 		for(i = 0; i < 5 && possibleMembers.size() > 0; ++i)
 		{
-			pGroup->AddMember( possibleMembers.front()->m_playerInfo );
+			pGroup->AddMember( possibleMembers.front()->getPlayerInfo() );
 			possibleMembers.front()->SendMeetingStoneQueue( LfgDungeonId, 0 );
 			m_lookingForGroup[LfgDungeonId].remove( possibleMembers.front() );
 			possibleMembers.pop_front();

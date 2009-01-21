@@ -197,7 +197,7 @@ void Group::SetLeader(Player* pPlayer, bool silent)
 {
 	if( pPlayer != NULL )
 	{
-		m_Leader = pPlayer->m_playerInfo;
+		m_Leader = pPlayer->getPlayerInfo();
 		m_dirty = true;
 		if( !silent )
 		{
@@ -220,7 +220,7 @@ void Group::Update()
 	{
 		pNewLeader = FindFirstPlayer();
 		if( pNewLeader != NULL )
-			m_Leader = pNewLeader->m_playerInfo;
+			m_Leader = pNewLeader->getPlayerInfo();
 	}
 
 	if( m_Looter != NULL && m_Looter->m_loggedInPlayer == NULL )
@@ -228,7 +228,7 @@ void Group::Update()
 		if( pNewLeader == NULL )
 			pNewLeader = FindFirstPlayer();
 		if( pNewLeader != NULL )
-			m_Looter = pNewLeader->m_playerInfo;
+			m_Looter = pNewLeader->getPlayerInfo();
 	}
 
 	WorldPacket data( 50 + ( m_MemberCount * 20 ) );
@@ -540,7 +540,7 @@ void Group::RemovePlayer(PlayerInfo * info)
 	{
 		newPlayer = FindFirstPlayer();
 		if( newPlayer != NULL )
-            m_Looter = newPlayer->m_playerInfo;
+            m_Looter = newPlayer->getPlayerInfo();
 		else
 			m_Looter = NULL;
 	}
@@ -591,7 +591,7 @@ void Group::SetLooter(Player *pPlayer, uint8 method, uint16 threshold)
 	if( pPlayer != NULL )
 	{
 		m_LootMethod = method;
-		m_Looter = pPlayer->m_playerInfo;
+		m_Looter = pPlayer->getPlayerInfo();
 		m_LootThreshold  = threshold;
 		m_dirty = true;
 	}
@@ -644,7 +644,7 @@ bool Group::HasMember(Player * pPlayer)
 	{
 		if( m_SubGroups[i] != NULL )
 		{
-			if( m_SubGroups[i]->m_GroupMembers.find( pPlayer->m_playerInfo ) != m_SubGroups[i]->m_GroupMembers.end() )
+			if( m_SubGroups[i]->m_GroupMembers.find( pPlayer->getPlayerInfo() ) != m_SubGroups[i]->m_GroupMembers.end() )
 			{
 				m_groupLock.Release();
 				return true;
