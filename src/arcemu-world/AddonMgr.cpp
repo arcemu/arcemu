@@ -151,7 +151,7 @@ void AddonMgr::SendAddonInfoPacket(WorldPacket *source, uint32 pos, WorldSession
 	
 	std::string name;
 	for (uint32 i=0; i<addoncount; ++i) // 3.0.8
-	size_t p = unpacked.rpos();
+	// size_t p = unpacked.rpos(); // Removed for 3.0.8 updated*
 	while(p != unpacked.size())	// make sure theres always room, otherwise *BAM* crash.
 	{
 		unpacked >> name;
