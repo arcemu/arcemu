@@ -339,6 +339,10 @@ void AchievementMgr::UpdateAchievementCriteria(AchievementCriteriaTypes type, in
 					}
 				}
 				break;
+           case ACHIEVEMENT_CRITERIA_TYPE_DO_EMOTE:
+				if(achievementCriteria->do_emote.emoteID == miscvalue1)
+					UpdateCriteriaProgress(achievementCriteria, miscvalue1);
+				break;			
 			//End of Achievement List
 			default:
 				return;
@@ -472,6 +476,22 @@ TODO: fix this
 		case ACHIEVEMENT_CRITERIA_TYPE_EQUIP_EPIC_ITEM:
 			break;
 */
+		case ACHIEVEMENT_CRITERIA_TYPE_DO_EMOTE:
+            {
+                uint32 completed = 0;
+
+                /*if( achievement->ID == 2379 ) // Make Love, Not Warcraft
+                {
+                    if( !target || !target->IsPlayer() || !target->isDead() || !isHostile(target, GetPlayer()) )
+                        return;
+       
+                    else
+						SetCriteriaProgress(achievementCriteria, completed);                   
+                }
+				else */
+					SetCriteriaProgress(achievementCriteria, completed);
+			}
+			break;			
 		//End of Achievement List
 		default:
 			break;
@@ -580,6 +600,8 @@ bool AchievementMgr::IsCompletedCriteria(AchievementCriteriaEntry const* achieve
 			return progresscounter >= 1;
 		case ACHIEVEMENT_CRITERIA_TYPE_EQUIP_EPIC_ITEM:
 			return progresscounter >= 1;
+		case ACHIEVEMENT_CRITERIA_TYPE_DO_EMOTE:
+            return progresscounter >= achievementCriteria->do_emote.emoteID;
 		case ACHIEVEMENT_CRITERIA_TYPE_COMPLETE_ACHIEVEMENT:
 			return m_completedAchievements.find(achievementCriteria->complete_achievement.linkedAchievement) != m_completedAchievements.end();
 		//End of Achievement List
