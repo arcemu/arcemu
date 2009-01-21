@@ -37,6 +37,8 @@ extern "C" SCRIPT_DECL void _exp_script_register(ScriptMgr* mgr)
 	SetupTanarisGossip(mgr);
 	SetupMoongladeScript(mgr);
 	SetupStormwindGossip(mgr);
+	SetupReputationNPC(mgr);
+	SetupWarpNPC(mgr);
 	//SetupWotlkgossips(mgr); //Wotlk gossips incomplete
 }
 

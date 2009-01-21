@@ -143,15 +143,13 @@ void AddonMgr::SendAddonInfoPacket(WorldPacket *source, uint32 pos, WorldSession
 
 	sLog.outDetail("Decompression of addon section of CMSG_AUTH_SESSION succeeded.");
 	
-	unpacked >> addoncount; // 3.0.8
 	
 	uint8 Enable; // based on the parsed files from retool
 	uint32 crc;
 	uint32 unknown;
 	
 	std::string name;
-	for (uint32 i=0; i<addoncount; ++i) // 3.0.8
-	// size_t p = unpacked.rpos(); // Removed for 3.0.8 updated*
+	size_t p = unpacked.rpos();
 	while(p != unpacked.size())	// make sure theres always room, otherwise *BAM* crash.
 	{
 		unpacked >> name;
@@ -169,8 +167,6 @@ void AddonMgr::SendAddonInfoPacket(WorldPacket *source, uint32 pos, WorldSession
 
 		p = unpacked.rpos();
 	}
-	uint32 unk308; // 3.0.8
-	unpacked >> unk308; // 3.0.8
 	m_session->SendPacket(&returnpacket);
 }
 
