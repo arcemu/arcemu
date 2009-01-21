@@ -28,8 +28,6 @@ void SetupShattrathGossip(ScriptMgr * mgr);
 void SetupTanarisGossip(ScriptMgr * mgr);
 void SetupMoongladeScript(ScriptMgr * mgr);
 void SetupStormwindGossip(ScriptMgr * mgr);
-void SetupReputationNPC(ScriptMgr * mgr);
-void SetupWarpNPC(ScriptMgr * mgr);
 //void SetupWotlkgossips(ScriptMgr * mgr) //Wotlk gossips incomplete
 
 #endif
