@@ -194,7 +194,25 @@ m_AutoShotSpell(NULL),
 m_AttackMsgTimer(0),
 
 timed_quest_slot(0),
-m_GM_SelectedGO(0)
+m_GM_SelectedGO(0),
+
+PctIgnoreRegenModifier(0.0f),
+m_retainedrage(0),
+DetectedRange(0),
+
+m_targetIcon(0),
+bShouldHaveLootableOnCorpse(false),
+m_MountSpellId(0),
+bHasBindDialogOpen(false),
+m_CurrentCharm(0),
+m_CurrentTransporter(NULL),
+m_SummonedObject(NULL),
+m_currentLoot(0),
+pctReputationMod(0),
+roll(0),
+mUpdateCount(0),
+mCreationCount(0),
+mOutOfRangeIdCount(0)
 {
 	int i,j;
 
@@ -261,13 +279,11 @@ m_GM_SelectedGO(0)
 	} 
 		
 	for(i = 0; i < 5; i++)
+	{
 		for(j = 0; j < 7; j++)
 		{	
 			SpellHealDoneByAttribute[i][j] = 0;
 		}
-
-	for(i = 0; i < 5; i++)
-	{
 		FlatStatModPos[i] = 0;
 		FlatStatModNeg[i] = 0;
 		StatModPctPos[i] = 0;
@@ -276,7 +292,6 @@ m_GM_SelectedGO(0)
 		TotalStatModPctNeg[i] = 0;
 	}
 
-
 	for(i = 0; i < 12; i++)
 	{
 		IncreaseDamageByType[i] = 0;
@@ -284,26 +299,10 @@ m_GM_SelectedGO(0)
 		IncreaseCricticalByTypePCT[i] = 0;
 	}
 
-	PctIgnoreRegenModifier  = 0.0f;
-	m_retainedrage          = 0;
-	DetectedRange		   = 0;
-
-	m_targetIcon			= 0;
-	bShouldHaveLootableOnCorpse = false;
-	m_MountSpellId		  = 0;
-	bHasBindDialogOpen	  = false;
-	m_CurrentCharm		  = 0;
-	m_CurrentTransporter	= NULL;
-	m_SummonedObject		= NULL;
-	m_currentLoot		   = (uint64)NULL;
-	pctReputationMod		= 0;
-	roll					= 0;
-	mUpdateCount			= 0;
-    mCreationCount          = 0;
     bCreationBuffer.reserve(40000);
 	bUpdateBuffer.reserve(30000);//ought to be > than enough ;)
 	mOutOfRangeIds.reserve(1000);
-	mOutOfRangeIdCount	  = 0;
+
 
 	bProcessPending		 = false;
 	for(i = 0; i < 25; ++i)

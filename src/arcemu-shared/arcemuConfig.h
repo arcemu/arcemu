@@ -23,18 +23,6 @@
 #ifndef __arcemuCONFIG_H
 #define __arcemuCONFIG_H
 
-/** Enable/disable arcemu world server cluster support.
- * Warning: arcemu will no longer function independantly when built in cluster mode. 
- * It will require a realmserver to function.
- * As of last update, it is nowhere near complete, only enable for dev use.
- * Default: Disabled
- */
-#ifdef ENABLE_CLUSTERING
-#  error Sorry but clustering is not finished yet. dont bother to try to compile it. it wont work.
-#  define CLUSTERING 1
-#endif
-//#define CLUSTERING 1
-
 #ifndef ENABLE_IMPROVED_TICKETSYSTEM
 #define GM_TICKET_MY_MASTER_COMPATIBLE
 #endif

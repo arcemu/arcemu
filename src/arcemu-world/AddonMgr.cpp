@@ -111,6 +111,9 @@ void AddonMgr::SendAddonInfoPacket(WorldPacket *source, uint32 pos, WorldSession
 
 	uint32 realsize;
 	uLongf rsize;
+	
+	//source->hexlike();
+
 	try
 	{
 		*source >> realsize;
@@ -149,8 +152,11 @@ void AddonMgr::SendAddonInfoPacket(WorldPacket *source, uint32 pos, WorldSession
 	uint32 unknown;
 	
 	std::string name;
-	size_t p = unpacked.rpos();
-	while(p != unpacked.size())	// make sure theres always room, otherwise *BAM* crash.
+
+	uint32 addoncount;
+	unpacked >> addoncount;
+
+	for(uint32 i = 0; i < addoncount; i++)
 	{
 		unpacked >> name;
 		unpacked >> Enable;
@@ -164,8 +170,6 @@ void AddonMgr::SendAddonInfoPacket(WorldPacket *source, uint32 pos, WorldSession
 			returnpacket << uint8(0x02) << uint8(0x01) << uint8(0x00) << uint32(0) << uint8(0);
 		/*if(!AppendPublicKey(returnpacket, name, crc))
 			returnpacket << uint8(1) << uint8(0) << uint8(0);*/
-
-		p = unpacked.rpos();
 	}
 	m_session->SendPacket(&returnpacket);
 }
