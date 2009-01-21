@@ -328,10 +328,16 @@ void AchievementMgr::UpdateAchievementCriteria(AchievementCriteriaTypes type, in
 				//    is the same (47) ACHIEVEMENT_CRITERIA_TYPE_EQUIP_EPIC_ITEM
 				// Going to send item slot in miscvalue1 and item quality in miscvalue2 when calling UpdateAchievementCriteria.
 				if(achievementCriteria->equip_epic_item.itemSlot == miscvalue1)
-					if(achievementCriteria->referredAchievement == 556 && miscvalue2 == ITEM_QUALITY_EPIC_PURPLE)
+				{
+					if((achievementCriteria->referredAchievement == 556) && (miscvalue2 == ITEM_QUALITY_EPIC_PURPLE))
+					{
 						SetCriteriaProgress(achievementCriteria, 1);
-					else if(achievementCriteria->referredAchievement == 557 && miscvalue2 == ITEM_QUALITY_RARE_BLUE)
+					}
+					else if((achievementCriteria->referredAchievement == 557) && (miscvalue2 == ITEM_QUALITY_RARE_BLUE))
+					{
 						SetCriteriaProgress(achievementCriteria, 1);
+					}
+				}
 				break;
 			//End of Achievement List
 			default:
@@ -356,8 +362,8 @@ void AchievementMgr::UpdateAchievementCriteria(AchievementCriteriaTypes type)
 		if(IsCompletedCriteria(achievementCriteria))
 			continue;
 
-		if(achievement->factionFlag == ACHIEVEMENT_FACTION_FLAG_HORDE && GetPlayer()->GetTeam() != 1 ||
-			achievement->factionFlag == ACHIEVEMENT_FACTION_FLAG_ALLIANCE && GetPlayer()->GetTeam() != 0 )
+		if((achievement->factionFlag == ACHIEVEMENT_FACTION_FLAG_HORDE && GetPlayer()->GetTeam() != 1) ||
+		   (achievement->factionFlag == ACHIEVEMENT_FACTION_FLAG_ALLIANCE && GetPlayer()->GetTeam() != 0) )
 			continue;
 
 		switch(type)
@@ -994,9 +1000,13 @@ void AchievementMgr::GiveAchievementReward(AchievementEntry const* entry)
 				if(it->Bonding==ITEM_BIND_ON_PICKUP)
 				{
 					if(it->Flags & ITEM_FLAG_ACCOUNTBOUND) // any "accountbound" items for achievement rewards?
+					{
 						item->AccountBind();
+					}
 					else
+					{
 						item->SoulBind();
+					}
 				}
 
 				if(!GetPlayer()->GetItemInterface()->AddItemToFreeSlot(item)) // this is bad. inventory full. maybe we should mail it instead?

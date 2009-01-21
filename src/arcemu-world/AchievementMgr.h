@@ -225,7 +225,7 @@ class AchievementMgr
 		bool IsCompletedCriteria(AchievementCriteriaEntry const* entry);
 		AchievementCompletionState GetAchievementCompletionState(AchievementEntry const* entry);
 		void BuildAllDataPacket(WorldPacket *data);
-		uint32 AchievementMgr::GetCriteriaProgressCount(void);
+		uint32 GetCriteriaProgressCount(void);
 
 		Player* m_player;
 		CriteriaProgressMap m_criteriaProgress;
