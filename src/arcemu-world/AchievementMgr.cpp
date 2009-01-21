@@ -992,10 +992,13 @@ void AchievementMgr::GiveAchievementReward(AchievementEntry const* entry)
 				}
 				item->SetUInt32Value(ITEM_FIELD_STACK_COUNT, 1);
 				if(it->Bonding==ITEM_BIND_ON_PICKUP)
+				{
 					if(it->Flags & ITEM_FLAG_ACCOUNTBOUND) // any "accountbound" items for achievement rewards?
 						item->AccountBind();
 					else
 						item->SoulBind();
+				}
+
 				if(!GetPlayer()->GetItemInterface()->AddItemToFreeSlot(item)) // this is bad. inventory full. maybe we should mail it instead?
 				{
 					GetPlayer()->GetSession()->SendNotification("No free slots were found in your inventory!");

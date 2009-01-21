@@ -19548,7 +19548,3 @@ INSERT INTO `worldstring_tables` VALUES ('78', 'Target player cannot sign your c
 INSERT INTO `worldstring_tables` VALUES ('79', 'You have already signed that charter.');
 INSERT INTO `worldstring_tables` VALUES ('80', 'You don\'t have the required amount of signatures to turn in this petition.');
 
-
-alter table `trainer_defs` add column `RequiredRace` int DEFAULT '0' NOT NULL after `req_class`;
-alter table `trainer_defs` add column `RequiredReputation` int DEFAULT '0' NOT NULL after `RequiredRace`;
-alter table `trainer_defs` add column `RequiredReputationValue` int DEFAULT '0' NOT NULL after `RequiredReputation`;
