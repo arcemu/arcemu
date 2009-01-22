@@ -76,10 +76,6 @@
 #include "UpdateMask.h"
 #include "Opcodes.h"
 
-#ifdef CLUSTERING
-	#include "../arcemu-realmserver/WorkerOpcodes.h"
-#endif
-
 #include "Packets.h"
 
 #include "../arcemu-shared/CallBack.h"
@@ -166,11 +162,6 @@
 #include "CommonScheduleThread.h"
 #include "VoiceChatHandler.h"
 #include "LocalizationMgr.h"
-
-#ifdef CLUSTERING
-	#include "WorkerServerClient.h"
-	#include "ClusterInterface.h"
-#endif
 
 #include "CollideInterface.h"
 

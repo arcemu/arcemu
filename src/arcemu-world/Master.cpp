@@ -454,7 +454,6 @@ bool Master::Run(int argc, char ** argv)
 	uint32 loopcounter = 0;
 	//ThreadPool.Gobble();
 
-#ifndef CLUSTERING
 	/* Connect to realmlist servers / logon servers */
 	new LogonCommHandler();
 	sLogonCommHandler.Startup();
@@ -472,12 +471,8 @@ bool Master::Run(int argc, char ** argv)
 	if( listnersockcreate )
 		ThreadPool.ExecuteTask(ls);
 #endif
+
 	while( !m_stopEvent && listnersockcreate )
-#else
-	new ClusterInterface;
-	sClusterInterface.ConnectToRealmServer();
-	while(!m_stopEvent)
-#endif
 	{
 		start = now();
 		diff = start - last_time;
@@ -503,12 +498,8 @@ bool Master::Run(int argc, char ** argv)
 			g_localTime = *localtime(&curTime);
 		}
 
-#ifndef CLUSTERING
 #ifdef VOICE_CHAT
 		sVoiceChatHandler.Update();
-#endif
-#else
-		sClusterInterface.Update();
 #endif
 		sSocketGarbageCollector.Update();
 
@@ -607,9 +598,7 @@ bool Master::Run(int argc, char ** argv)
 	cs->terminate();
 	cs = NULL;
 
-#ifndef CLUSTERING
 	ls->Close();
-#endif
 
 	CloseConsoleListener();
 	sWorld.SaveAllPlayers();

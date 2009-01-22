@@ -62,11 +62,14 @@ const static CreateBattlegroundFunc BGCFuncs[BATTLEGROUND_NUM_TYPES] = {
 	NULL,                  // SOTA, needs to be updated when SOTA is in
 };
 
-CBattlegroundManager::CBattlegroundManager() : EventableObject()
+CBattlegroundManager::CBattlegroundManager()
+:
+EventableObject(),
+m_maxBattlegroundId(0)
 {
 	int i;
 	LoadBGSetFromConfig(); // config
-	m_maxBattlegroundId = 0;
+
 	sEventMgr.AddEvent(this, &CBattlegroundManager::EventQueueUpdate, EVENT_BATTLEGROUND_QUEUE_UPDATE, 15000, 0,0);
 
 	for (i=0; i<BATTLEGROUND_NUM_TYPES; i++) {

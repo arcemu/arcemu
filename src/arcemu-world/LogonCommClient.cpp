@@ -27,8 +27,6 @@ typedef struct
 }logonpacket;
 #pragma pack(pop)
 
-#ifndef CLUSTERING
-
 #ifndef USING_BIG_ENDIAN
 ARCEMU_INLINE static void swap32(uint32* p) { *p = ((*p >> 24 & 0xff)) | ((*p >> 8) & 0xff00) | ((*p << 8) & 0xff0000) | (*p << 24); }
 #endif
@@ -429,43 +427,3 @@ void LogonCommClientSocket::HandlePopulationRequest(WorldPacket & recvData)
 	data << realmId << LogonCommHandler::getSingleton().GetServerPopulation();
 	SendPacket(&data, false);
 }
-
-#else
-void LogonCommHandler::LogonDatabaseReloadAccounts()
-{
-
-}
-
-void LogonCommHandler::LogonDatabaseSQLExecute(const char* str, ...)
-{
-
-}
-
-void LogonCommHandler::Startup()
-{
-
-}
-
-void LogonCommHandler::UpdateAccountCount(uint32 account_id, uint8 add)
-{
-
-}
-
-void LogonCommHandler::UpdateSockets()
-{
-
-}
-
-LogonCommHandler::LogonCommHandler()
-{
-
-}
-
-LogonCommHandler::~LogonCommHandler()
-{
-
-}
-
-#endif
-
-

@@ -20,7 +20,7 @@
 
 #include "StdAfx.h"
 initialiseSingleton(LogonCommHandler);
-#ifndef CLUSTERING
+
 LogonCommHandler::LogonCommHandler()
 {
 	idhigh = 1;
@@ -548,4 +548,3 @@ void LogonCommHandler::RefreshRealmPop()
 	// Calc pop: 0 >= low, 1 >= med, 2 >= hig, 3 >= full
 	server_population = float(((sWorld.AlliancePlayers + sWorld.HordePlayers) * 3) / pLimit);
 }
-#endif

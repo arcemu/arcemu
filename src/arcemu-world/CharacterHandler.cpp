@@ -876,7 +876,7 @@ void WorldSession::FullLogin(Player * plr)
 	CharacterDatabase.Execute("UPDATE characters SET online = 1 WHERE guid = %u" , plr->GetLowGUID());
 
 	bool enter_world = true;
-#ifndef CLUSTERING
+
 	// Find our transporter and add us if we're on one.
 	if(plr->m_TransporterGUID != 0)
 	{
@@ -913,7 +913,6 @@ void WorldSession::FullLogin(Player * plr)
 			pTrans->AddPlayer(plr);
 		}
 	}
-#endif
 
 	Log.Debug("Login", "Player %s logged in.", plr->GetName());
 
@@ -1020,12 +1019,7 @@ void WorldSession::FullLogin(Player * plr)
 			plr->AddCalculatedRestXP(timediff);
 	}
 
-#ifdef CLUSTERING
-	plr->SetInstanceID(forced_instance_id);
-	plr->SetMapId(forced_map_id);
-#else
 	sHookInterface.OnEnterWorld2(_player);
-#endif
 
 	if(info->m_Group)
 		info->m_Group->Update();

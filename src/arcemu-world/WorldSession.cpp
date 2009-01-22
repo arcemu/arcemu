@@ -29,23 +29,36 @@
 
 OpcodeHandler WorldPacketHandlers[NUM_MSG_TYPES];
 
-WorldSession::WorldSession(uint32 id, string Name, WorldSocket *sock) : _player(0), _socket(sock), _accountId(id), _accountName(Name),
-_logoutTime(0), permissions(NULL), permissioncount(0), _loggingOut(false),LoggingOut(false), instanceId(0)
+WorldSession::WorldSession(uint32 id, string Name, WorldSocket *sock)
+:
+_player(0),
+_socket(sock),
+_accountId(id),
+_accountName(Name),
+_logoutTime(0),
+permissions(NULL),
+permissioncount(0),
+_loggingOut(false),
+LoggingOut(false),
+instanceId(0),
+
+m_currMsTime(getMSTime()),
+bDeleted(false),
+m_bIsWLevelSet(false),
+floodLines(0),
+floodTime(UNIXTIME),
+_updatecount(0),
+m_moveDelayTime(0),
+m_clientTimeDelay(0),
+m_loggingInPlayer(NULL),
+language(0),
+m_muted(0),
+_side(-1),
+has_level_55_char(false)
+
 {
 	memset(movement_packet, 0, sizeof(movement_packet));
-	m_currMsTime = getMSTime();
-	bDeleted = false;
-	m_bIsWLevelSet = false;
-	floodLines = 0;
-	floodTime = UNIXTIME;
-	_updatecount = 0;
-	m_moveDelayTime=0;
-	m_clientTimeDelay =0;
-	m_loggingInPlayer=NULL;
-	language=0;
-	m_muted = 0;
-	_side = -1;
-	has_level_55_char = false;
+
 	movement_info.FallTime = 0;
 
 	for(uint32 x=0;x<8;x++)
@@ -79,10 +92,8 @@ WorldSession::~WorldSession()
 			delete [] sAccountData[x].data;
 	}
 
-#ifndef CLUSTERING
 	if(_socket)
 		_socket->SetSession(0);
-#endif
 
 	if(m_loggingInPlayer)
 		m_loggingInPlayer->SetSession(NULL);
@@ -94,10 +105,8 @@ int WorldSession::Update(uint32 InstanceID)
 {
 	m_currMsTime = getMSTime();
 
-#ifndef CLUSTERING
 	if(!((++_updatecount) % 2) && _socket)
 		_socket->UpdateQueuedPackets();
-#endif
 
 	WorldPacket *packet;
 	OpcodeHandler * Handler;
@@ -421,7 +430,7 @@ void WorldSession::LoadSecurity(std::string securitystring)
 	for(uint32 i = 0; i < securitystring.length(); ++i)
 	{
 		char c = securitystring.at(i);
-		c = tolower(c);
+		c = (char) tolower(c);
 		if(c == '4' || c == '3')
 			c = 'a';	// for the lazy people
 
@@ -909,10 +918,6 @@ void WorldSession::InitPacketHandlerTable()
 	WorldPacketHandlers[CMSG_ARENA_TEAM_LEADER].handler = &WorldSession::HandleArenaTeamPromoteOpcode;
 	WorldPacketHandlers[MSG_INSPECT_ARENA_TEAMS].handler = &WorldSession::HandleInspectArenaStatsOpcode;
 
-#ifdef CLUSTERING
-	WorldPacketHandlers[CMSG_PING].handler = &WorldSession::HandlePingOpcode;
-#endif
-
 	// cheat/gm commands?
 	WorldPacketHandlers[MSG_MOVE_TELEPORT_CHEAT].handler = &WorldSession::HandleTeleportCheatOpcode;
 	WorldPacketHandlers[CMSG_TELEPORT_TO_UNIT].handler = &WorldSession::HandleTeleportToUnitOpcode;
@@ -958,18 +963,6 @@ void SessionLogWriter::writefromsession(WorldSession* session, const char* forma
 	fflush(m_file);
 	va_end(ap);
 }
-
-#ifdef CLUSTERING
-void WorldSession::HandlePingOpcode(WorldPacket& recvPacket)
-{
-	uint32 pong;
-	recvPacket >> pong;
-	WorldPacket data(SMSG_PONG, 4);
-	data << pong;
-	SendPacket(&data);
-}
-
-#endif
 
 void WorldSession::SystemMessage(const char * format, ...)
 {

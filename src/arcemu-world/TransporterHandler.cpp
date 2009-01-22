@@ -452,9 +452,6 @@ Transporter::~Transporter()
 
 void ObjectMgr::LoadTransporters()
 {
-#ifdef CLUSTERING
-	return;
-#endif
 	Log.Notice("ObjectMgr", "Loading Transports...");
 	QueryResult * QR = WorldDatabase.Query("SELECT * FROM transport_data");
 	if(!QR) return;

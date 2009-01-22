@@ -24,9 +24,6 @@
 #ifndef __WORLDSOCKET_H
 #define __WORLDSOCKET_H
 
-/* Normal WorldSocket when not using clustering */
-#ifndef CLUSTERING
-
 #define WORLDSOCKET_SENDBUF_SIZE 131078
 #define WORLDSOCKET_RECVBUF_SIZE 16384
 
@@ -99,7 +96,6 @@ private:
 	string * m_fullAccountName;
 };
 
-#endif
 
 static inline void FastGUIDPack(ByteBuffer & buf, const uint64 & oldguid)
 {
@@ -230,28 +226,4 @@ static inline unsigned int FastGUIDPack(const uint64 & oldguid, unsigned char * 
 	return (j - pos);
 }
 
-/* Modified/Simplified WorldSocket for use with clustering */
-#ifdef CLUSTERING
-class WorldSocket
-{
-public:
-	WorldSocket(uint32 sessionid);
-	~WorldSocket();
-
-	void Disconnect();
-	bool IsConnected();
-	ARCEMU_INLINE string GetRemoteIP() { return string(inet_ntoa(m_address.sin_addr)); }
-	ARCEMU_INLINE uint32 GetRemotePort() { return ntohs(m_address.sin_port); }
-
-	ARCEMU_INLINE void SendPacket(WorldPacket* packet) { if(!packet) return; OutPacket(packet->GetOpcode(), (uint16)packet->size(), (packet->size() ? (const void*)packet->contents() : NULL)); }
-	ARCEMU_INLINE void SendPacket(StackBufferBase * packet) { if(!packet) return; OutPacket(packet->GetOpcode(), packet->GetSize(), (packet->GetSize() ? (const void*)packet->GetBufferPointer() : NULL)); }
-	void __fastcall OutPacket(uint16 opcode, uint16 len, const void* data);
-	ARCEMU_INLINE uint32 GetSessionId() { return m_sessionId; }
-
-protected:
-	uint32 m_sessionId;
-	sockaddr_in m_address;
-};
-
-#endif
 #endif

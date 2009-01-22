@@ -66,10 +66,10 @@ World::World()
 	announce_output = true;
 	map_unload_time=0;
 	antiMasterLootNinja = false;
-#ifndef CLUSTERING
+
 	SocketSendBufSize = WORLDSOCKET_SENDBUF_SIZE;
 	SocketRecvBufSize = WORLDSOCKET_RECVBUF_SIZE;
-#endif
+
 	m_levelCap=PLAYER_LEVEL_CAP;
 	m_genLevelCap=PLAYER_LEVEL_CAP;
 	StartingLevel=1;
@@ -879,7 +879,6 @@ uint32 World::GetQueuePos(WorldSocket* Socket)
 
 void World::UpdateQueuedSessions(uint32 diff)
 {
-#ifndef CLUSTERING
 	if(diff >= m_queueUpdateTimer) 
 	{
 		m_queueUpdateTimer = mQueueUpdateInterval;
@@ -933,7 +932,6 @@ void World::UpdateQueuedSessions(uint32 diff)
 	{
 		m_queueUpdateTimer -= diff;
 	}
-#endif
 }
 
 void World::SaveAllPlayers()
@@ -1217,10 +1215,8 @@ void World::Rehash(bool load)
 	gm_skip_attunement = Config.MainConfig.GetBoolDefault("Server", "SkipAttunementsForGM", true);
 	Collision = Config.MainConfig.GetBoolDefault("Server", "Collision", 0);
 	DisableFearMovement = Config.MainConfig.GetBoolDefault("Server", "DisableFearMovement", 0);
-#ifndef CLUSTERING
 	SocketRecvBufSize = Config.MainConfig.GetIntDefault("WorldSocket", "RecvBufSize", WORLDSOCKET_RECVBUF_SIZE);
 	SocketSendBufSize = Config.MainConfig.GetIntDefault("WorldSocket", "SendBufSize", WORLDSOCKET_SENDBUF_SIZE);
-#endif
 
 	bool log_enabled = Config.MainConfig.GetBoolDefault("Log", "Cheaters", false);
 	if(Anticheat_Log->IsOpen())

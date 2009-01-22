@@ -74,8 +74,10 @@ bool IsReputationAchievement(const AchievementEntry* a)
 }
 
 AchievementMgr::AchievementMgr(Player *player)
+:
+m_player(player)
 {
-	m_player = player;
+
 }
 
 AchievementMgr::~AchievementMgr()

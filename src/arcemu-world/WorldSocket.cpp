@@ -26,7 +26,6 @@
 /* echo send/received packets to console */
 //#define ECHO_PACKET_LOG_TO_CONSOLE 1
 
-#ifndef CLUSTERING
 #pragma pack(push, 1)
 struct ClientPktHeader
 {
@@ -41,18 +40,23 @@ struct ServerPktHeader
 };
 #pragma pack(pop)
 
-WorldSocket::WorldSocket(SOCKET fd) : Socket(fd, sWorld.SocketSendBufSize, sWorld.SocketRecvBufSize)
+WorldSocket::WorldSocket(SOCKET fd)
+:
+Socket(fd, sWorld.SocketSendBufSize, sWorld.SocketRecvBufSize),
+Authed(false),
+mSize(0),
+mOpcode(0),
+mRemaining(0),
+_latency(0),
+mSession(NULL),
+mSeed(RandomUInt()),
+pAuthenticationPacket(NULL),
+mQueued(false),
+mRequestID(0),
+m_nagleEanbled(false),
+m_fullAccountName(NULL)
 {
-	Authed = false;
-	mSize = mOpcode = mRemaining = 0;
-	_latency = 0;
-	mSession = NULL;
-	mSeed = RandomUInt();
-	pAuthenticationPacket = NULL;
-	mQueued = false;
-	mRequestID = 0;
-	m_nagleEanbled = false;
-	m_fullAccountName = NULL;
+
 }
 
 WorldSocket::~WorldSocket()
@@ -605,7 +609,7 @@ void WorldSocket::OnRead()
 	}
 }
 
-#endif
+
 
 void WorldLog::LogPacket(uint32 len, uint16 opcode, const uint8* data, uint8 direction)
 {

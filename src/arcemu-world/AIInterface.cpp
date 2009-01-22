@@ -30,96 +30,103 @@
 #endif
 
 AIInterface::AIInterface()
+:
+m_waypoints(NULL),
+m_canMove(true),
+m_destinationX(0),
+m_destinationY(0),
+m_destinationZ(0),
+m_nextPosX(0),
+m_nextPosY(0),
+m_nextPosZ(0),
+UnitToFollow(NULL),
+FollowDistance(0.0f),
+m_fallowAngle(float(M_PI/2)),
+m_timeToMove(0),
+m_timeMoved(0),
+m_moveTimer(0),
+m_WayPointsShowing(false),
+m_WayPointsShowBackwards(false),
+m_currentWaypoint(0),
+m_moveBackward(false),
+m_moveType(0),
+m_moveRun(false),
+m_moveSprint(false),
+m_moveFly(false),
+m_creatureState(STOPPED),
+m_canCallForHelp(false),
+m_hasCalledForHelp(false),
+m_fleeTimer(0),
+m_FleeDuration(0),
+m_canFlee(false),
+m_hasFleed(false),
+m_canRangedAttack(false),
+m_FleeHealth(0.0f),
+m_CallForHelpHealth(0.0f),
+m_AIState(STATE_IDLE),
+
+m_updateAssist(false),
+m_updateTargets(false),
+m_updateAssistTimer(1),
+m_updateTargetsTimer(TARGET_UPDATE_INTERVAL_ON_PLAYER),
+m_updateTargetsTimer2(0),
+
+m_nextSpell(NULL),
+m_nextTarget(0),
+totemspell(NULL),
+m_Unit(NULL),
+m_PetOwner(NULL),
+m_aiCurrentAgent(AGENT_NULL),
+m_runSpeed(0.0f),
+m_flySpeed(0.0f),
+UnitToFear(NULL),
+m_outOfCombatRange(2500), // Where did u get this value?
+
+tauntedBy(NULL),
+isTaunted(false),
+soullinkedWith(NULL),
+isSoulLinked(false),
+m_AllowedToEnterCombat(true),
+m_totalMoveTime(0),
+m_lastFollowX(0),
+m_lastFollowY(0),
+m_FearTimer(0),
+m_WanderTimer(0),
+m_totemspelltime(0),
+m_totemspelltimer(0),
+m_formationFollowAngle(0.0f),
+m_formationFollowDistance(0.0f),
+m_formationLinkTarget(0),
+m_formationLinkSqlId(0),
+m_currentHighestThreat(0),
+
+disable_combat(false),
+
+disable_melee(false),
+disable_ranged(false),
+disable_spell(false),
+
+disable_targeting(false),
+
+next_spell_time(0),
+waiting_for_cooldown(false),
+UnitToFollow_backup(NULL),
+m_isGuard(false),
+m_isNeutralGuard(false),
+m_is_in_instance(false),
+skip_reset_hp(false),
+timed_emotes(NULL),
+timed_emote_expire(0xFFFFFFFF),
+m_MovementState(MOVEMENTSTATE_STOP)
+
+#ifdef HACKY_SERVER_CLIENT_POS_SYNC
+,
+moved_for_attack(false)
+#endif
 {
-	m_waypoints=NULL;
-	m_canMove = true;
-	m_destinationX = m_destinationY = m_destinationZ = 0;
-	m_nextPosX = m_nextPosY = m_nextPosZ = 0;
-	UnitToFollow = NULL;
-	FollowDistance = 0.0f;
-	m_fallowAngle = float(M_PI/2);
-	m_timeToMove = 0;
-	m_timeMoved = 0;
-	m_moveTimer = 0;
-	m_WayPointsShowing = false;
-	m_WayPointsShowBackwards = false;
-	m_currentWaypoint = 0;
-	m_moveBackward = false;
-	m_moveType = 0;
-	m_moveRun = false;
-	m_moveSprint = false;
-	m_moveFly = false;
-	m_creatureState = STOPPED;
-	m_canCallForHelp = false;
-	m_hasCalledForHelp = false;
-	m_fleeTimer = 0;
-	m_FleeDuration = 0;
-	m_canFlee = false;
-	m_hasFleed = false;
-	m_canRangedAttack = false;
-	m_FleeHealth = m_CallForHelpHealth = 0.0f;
-	m_AIState = STATE_IDLE;
-
-	m_updateAssist = false;
-	m_updateTargets = false;
-	m_updateAssistTimer = 1;
-	m_updateTargetsTimer = TARGET_UPDATE_INTERVAL_ON_PLAYER;
-	m_updateTargetsTimer2 = 0;
-
-	m_nextSpell = NULL;
-	m_nextTarget = 0;
-	totemspell = NULL;
-	m_Unit = NULL;
-	m_PetOwner = NULL;
-	m_aiCurrentAgent = AGENT_NULL;
-	m_runSpeed = 0.0f;
-	m_flySpeed = 0.0f;
-	UnitToFear = NULL;
-	m_outOfCombatRange = 2500; // Where did u get this value?
-
-	tauntedBy = NULL;
-	isTaunted = false;
-	soullinkedWith = NULL;
-	isSoulLinked = false;
-	m_AllowedToEnterCombat = true;
-	m_totalMoveTime = 0;
-	m_lastFollowX = m_lastFollowY = 0;
-	m_FearTimer = 0;
-	m_WanderTimer = 0;
-	m_totemspelltime = 0;
-	m_totemspelltimer = 0;
-	m_formationFollowAngle = 0.0f;
-	m_formationFollowDistance = 0.0f;
-	m_formationLinkTarget = 0;
-	m_formationLinkSqlId = 0;
-	m_currentHighestThreat = 0;
-
-	disable_combat = false;
-
-	disable_melee = false;
-	disable_ranged = false;
-	disable_spell = false;
-
-	disable_targeting = false;
-
-	next_spell_time = 0;
-	waiting_for_cooldown = false;
-	UnitToFollow_backup = NULL;
-	m_isGuard = false;
-	m_isNeutralGuard = false;
-	m_is_in_instance = false;
-	skip_reset_hp = false;
-	timed_emotes = NULL;
-	timed_emote_expire = 0xFFFFFFFF;
-	m_MovementState = MOVEMENTSTATE_STOP;
-
 	m_aiTargets.clear();
 	m_assistTargets.clear();
 	m_spells.clear();
-
-#ifdef HACKY_SERVER_CLIENT_POS_SYNC
-	moved_for_attack = false;
-#endif
 }
 
 void AIInterface::EventAiInterfaceParamsetFinish()

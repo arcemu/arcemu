@@ -7265,7 +7265,7 @@ void Player::RemovePlayerPet(uint32 pet_number)
 		EventDismissPet();
 	}
 }
-#ifndef CLUSTERING
+
 void Player::_Relocate(uint32 mapid, const LocationVector & v, bool sendpending, bool force_new_world, uint32 instance_id)
 {
 	//this func must only be called when switching between maps!
@@ -7319,7 +7319,7 @@ void Player::_Relocate(uint32 mapid, const LocationVector & v, bool sendpending,
 	if( m_MountSpellId )
 		RemoveAura( m_MountSpellId );
 }
-#endif
+
 
 // Player::AddItemsToWorld
 // Adds all items to world, applies any modifiers for them.
@@ -8597,57 +8597,7 @@ bool Player::SafeTeleport(uint32 MapID, uint32 InstanceID, const LocationVector 
 			m_TransporterGUID = 0;
 		}
 	}
-#ifdef CLUSTERING
-	/* Clustering Version */
-	MapInfo * mi = WorldMapInfoStorage.LookupEntry(MapID);
 
-	// Lookup map info
-	if(mi && mi->flags & WMI_INSTANCE_XPACK_01 && !m_session->HasFlag(ACCOUNT_FLAG_XPACK_01))
-	{
-		WorldPacket msg(SMSG_MOTD, 50);
-		msg << uint32(3) << "You must have The Burning Crusade Expansion to access this content." << uint8(0);
-		m_session->SendPacket(&msg);
-		return false;
-	}
-
-	uint32 instance_id;
-	bool map_change = false;
-	if(mi && mi->type == 0)
-	{
-		// single instance map
-		if(MapID != m_mapId)
-		{
-			map_change = true;
-			instance_id = 0;
-		}
-	}
-	else
-	{
-		// instanced map
-		if(InstanceID != GetInstanceID())
-			map_change = true;
-
-		instance_id = InstanceID;
-	}
-
-	if(map_change)
-	{
-		WorldPacket data(SMSG_TRANSFER_PENDING, 4);
-		data << uint32(MapID);
-		GetSession()->SendPacket(&data);
-		sClusterInterface.RequestTransfer(this, MapID, instance_id, vec);
-		return;
-	}
-
-	m_sentTeleportPosition = vec;
-	SetPosition(vec);
-	ResetHeartbeatCoords();
-
-	WorldPacket * data = BuildTeleportAckMsg(vec);
-	m_session->SendPacket(data);
-	delete data;
-#else
-	/* Normal Version */
 	bool instance = false;
 	MapInfo * mi = WorldMapInfoStorage.LookupEntry(MapID);
 
@@ -8707,7 +8657,6 @@ bool Player::SafeTeleport(uint32 MapID, uint32 InstanceID, const LocationVector 
 	SpeedCheatReset();
 	ForceZoneUpdate();
 	return true;
-#endif
 }
 
 void Player::ForceZoneUpdate()
@@ -10192,13 +10141,6 @@ void Player::RemoveFromBattlegroundQueue()
 	m_pendingBattleground = 0;
 }
 
-#ifdef CLUSTERING
-void Player::EventRemoveAndDelete()
-{
-
-}
-#endif
-
 void Player::_AddSkillLine(uint32 SkillLine, uint32 Curr_sk, uint32 Max_sk)
 {
 	skilllineentry * CheckedSkill = dbcSkillLine.LookupEntry(SkillLine);
@@ -10907,12 +10849,6 @@ void Player::save_Auras()
 }
 
 #endif
-
-#ifdef CLUSTERING
-
-
-#endif
-
 
 void Player::EventGroupFullUpdate()
 {
