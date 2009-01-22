@@ -3314,13 +3314,16 @@ void Player::LoadFromDBProc(QueryResultVector & results)
 	switch(getClass())
 	{
 	case PALADIN:
-		armor_proficiency|=(1<<7);//LIBRAM
+		armor_proficiency |= ( 1 << 7 );//LIBRAM
 		break;
 	case DRUID:
-		armor_proficiency|=(1<<8);//IDOL
+		armor_proficiency |= ( 1 << 8 );//IDOL
 		break;
 	case SHAMAN:
-		armor_proficiency|=(1<<9);//TOTEM
+		armor_proficiency |= ( 1 << 9 );//TOTEM
+		break;
+	case DEATHKNIGHT:
+		armor_proficiency |= ( 1 << 10 );//SIGIL
 		break;
 	case WARLOCK:
 	case HUNTER:
