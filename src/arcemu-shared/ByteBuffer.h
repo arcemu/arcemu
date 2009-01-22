@@ -381,6 +381,23 @@ public:
                 guid >>= 8;
             }
         }
+	
+	uint64 unpackGUID()
+	{
+		uint64 guid = 0;
+		uint8 mask;
+		uint8 temp;
+		*this >> mask;
+		for( uint8 i = 0; i < 8; ++i )
+		{
+			if( mask & ( 1 << i ) )
+			{
+				*this >> temp;
+				guid |= uint64( temp << uint64( i << 3 ) );
+			}
+		}
+		return guid;
+	}
 
 	void put(size_t pos, const uint8 *src, size_t cnt) {
 		ASSERT(pos + cnt <= size());
