@@ -2537,6 +2537,8 @@ void AIInterface::SendCurrentMove(Player* plyr/*uint64 guid*/)
 	*splineBuf << m_destinationX << m_destinationY << m_destinationZ;
 	*splineBuf << m_destinationX << m_destinationY << m_destinationZ;
 
+	*splineBuf << uint8(0);
+
 	plyr->AddSplinePacket(m_Unit->GetGUID(), splineBuf);
 
 	//This should only be called by Players AddInRangeObject() ONLY

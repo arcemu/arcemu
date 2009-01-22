@@ -76,7 +76,7 @@ void SpellCastTargets::read( WorldPacket & data,uint64 caster )
 
 	if( m_targetMask & TARGET_FLAG_DEST_LOCATION )
 	{
-		data >> m_destX >> m_destY >> m_destZ;
+		data >> guid >> m_destX >> m_destY >> m_destZ;
 		if( !( m_targetMask & TARGET_FLAG_SOURCE_LOCATION ) )
 		{
 			m_srcX = m_destX;
@@ -108,7 +108,7 @@ void SpellCastTargets::write( WorldPacket& data )
 		data << m_srcX << m_srcY << m_srcZ;
 
 	if( m_targetMask & TARGET_FLAG_DEST_LOCATION )
-		data << m_destX << m_destY << m_destZ;
+		data << uint8(0) << m_destX << m_destY << m_destZ;
 
 	if( m_targetMask & TARGET_FLAG_STRING )
 		data << m_strTarget;
