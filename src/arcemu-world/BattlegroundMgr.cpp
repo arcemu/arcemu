@@ -20,9 +20,6 @@
 
 #include "StdAfx.h"
 
-#define ENABLE_AB
-#define ENABLE_EOTS
-
 initialiseSingleton(CBattlegroundManager);
 typedef CBattleground*(*CreateBattlegroundFunc)(MapMgr* mgr,uint32 iid,uint32 group, uint32 type);
 
@@ -43,23 +40,15 @@ uint32 BGMinimumPlayers[ BATTLEGROUND_NUM_TYPES ] = { 0, 0, 0, 0, 0, 0, 0, 0, 0 
 
 
 const static CreateBattlegroundFunc BGCFuncs[BATTLEGROUND_NUM_TYPES] = {
-	NULL,                  // 0
-	NULL,                  // AV
-	&WarsongGulch::Create,      // WSG
-#ifdef ENABLE_AB
-	&ArathiBasin::Create,      // AB
-#else
-	NULL,                  // AB
-#endif
-	NULL,                  // 2v2
-	NULL,                  // 3v3
-	NULL,                  // 5v5
-#ifdef ENABLE_EOTS
-	&EyeOfTheStorm::Create,      // EotS
-#else
-	NULL,                  // EotS
-#endif
-	NULL,                  // SOTA, needs to be updated when SOTA is in
+	NULL,								// 0
+	NULL,								// AV
+	&WarsongGulch::Create,				// WSG
+	&ArathiBasin::Create,				// AB
+	NULL,								// 2v2
+	NULL,								// 3v3
+	NULL,								// 5v5
+	&EyeOfTheStorm::Create,				// EotS
+	NULL,								// SOTA, needs to be updated when SOTA is in
 };
 
 CBattlegroundManager::CBattlegroundManager()
@@ -93,7 +82,6 @@ void CBattlegroundManager::LoadBGSetFromConfig()
 	BGMaximumPlayers[6] = 10;
 	BGMaximumPlayers[7] = sWorld.m_bgSet_EOS_MAX;
 	BGMaximumPlayers[8] = sWorld.m_bgSet_SOTA_MAX;
-
 	BGMinimumPlayers[0] = 0;
 	BGMinimumPlayers[1] = sWorld.m_bgSet_AV_MIN;
 	BGMinimumPlayers[2] = sWorld.m_bgSet_WS_MIN;
@@ -104,11 +92,11 @@ void CBattlegroundManager::LoadBGSetFromConfig()
 	BGMinimumPlayers[7] = sWorld.m_bgSet_EOS_MIN;
 	BGMinimumPlayers[8] = sWorld.m_bgSet_SOTA_MIN;
 	Log.Notice("BattlegroundManager","Min/Max - AV(%d/%d) AB(%d/%d) WS(%d/%d) EOTS(%d/%d) SOTA(%d/%d).",
-		sWorld.m_bgSet_AV_MIN,sWorld.m_bgSet_AV_MAX,
-		sWorld.m_bgSet_AB_MIN,sWorld.m_bgSet_AB_MAX,
-		sWorld.m_bgSet_WS_MIN,sWorld.m_bgSet_WS_MAX,
-		sWorld.m_bgSet_EOS_MIN,sWorld.m_bgSet_EOS_MAX,
-		sWorld.m_bgSet_SOTA_MIN,sWorld.m_bgSet_SOTA_MAX);
+	sWorld.m_bgSet_AV_MIN,sWorld.m_bgSet_AV_MAX,
+	sWorld.m_bgSet_AB_MIN,sWorld.m_bgSet_AB_MAX,
+	sWorld.m_bgSet_WS_MIN,sWorld.m_bgSet_WS_MAX,
+	sWorld.m_bgSet_EOS_MIN,sWorld.m_bgSet_EOS_MAX,
+	sWorld.m_bgSet_SOTA_MIN,sWorld.m_bgSet_SOTA_MAX);
 }
 
 void CBattlegroundManager::HandleBattlegroundListPacket(WorldSession * m_session, uint32 BattlegroundType)
