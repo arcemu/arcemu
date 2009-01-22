@@ -6876,7 +6876,7 @@ void ApplyNormalFixes()
 		if( sp != NULL )
 		{
 			sp->Attributes = ATTRIBUTES_CANT_BE_DPB;   
-		{
+		}
 		sp = dbcSpell.LookupEntryForced( 51417 );
 		if( sp != NULL )
 		{
