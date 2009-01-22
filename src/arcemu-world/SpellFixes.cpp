@@ -5425,28 +5425,28 @@ void ApplyNormalFixes()
 		sp = dbcSpell.LookupEntryForced( 50796 );
 		if( sp != NULL )
 		{
-			sp->AttributesEx |= ATTRIBUTES_IGNORE_INVULNERABILITY;
+			sp->Attributes |= ATTRIBUTES_IGNORE_INVULNERABILITY;
 			sp->School = 2;
 		}
 			
 		sp = dbcSpell.LookupEntryForced( 59170 );
 		if( sp != NULL )
 		{
-			sp->AttributesEx |= ATTRIBUTES_IGNORE_INVULNERABILITY;
+			sp->Attributes |= ATTRIBUTES_IGNORE_INVULNERABILITY;
 			sp->School = 2;
 		}		
 					
 		sp = dbcSpell.LookupEntryForced( 59171 );
 		if( sp != NULL )
 		{
-			sp->AttributesEx |= ATTRIBUTES_IGNORE_INVULNERABILITY;
+			sp->Attributes |= ATTRIBUTES_IGNORE_INVULNERABILITY;
 			sp->School = 2;
 		}
 			
 		sp = dbcSpell.LookupEntryForced( 59172 );
 		if( sp != NULL )
 		{
-			sp->AttributesEx |= ATTRIBUTES_IGNORE_INVULNERABILITY;	
+			sp->Attributes |= ATTRIBUTES_IGNORE_INVULNERABILITY;	
 			sp->School = 2;
 		}
 		// End Warlock chaos bolt
@@ -6858,4 +6858,45 @@ void ApplyNormalFixes()
 		{
 			sp->EffectApplyAuraName[0] = SPELL_AURA_DUMMY;
 		}
+
+		//Rune Strike
+		sp = dbcSpell.LookupEntryForced( 56815 );
+		if( sp != NULL )
+		{
+			sp->Attributes = ATTRIBUTES_CANT_BE_DPB;
+		}   
+		
+		//Frost Strike
+		sp = dbcSpell.LookupEntryForced( 49143 );
+		if( sp != NULL )
+		{
+			sp->Attributes = ATTRIBUTES_CANT_BE_DPB;
+		} 
+		sp = dbcSpell.LookupEntryForced( 51416 );
+		if( sp != NULL )
+		{
+			sp->Attributes = ATTRIBUTES_CANT_BE_DPB;   
+		{
+		sp = dbcSpell.LookupEntryForced( 51417 );
+		if( sp != NULL )
+		{
+			sp->Attributes = ATTRIBUTES_CANT_BE_DPB;
+		}   
+		sp = dbcSpell.LookupEntryForced( 51418 );
+		if( sp != NULL )
+		{
+			sp->Attributes = ATTRIBUTES_CANT_BE_DPB;     
+		}
+		sp = dbcSpell.LookupEntryForced( 51419 );
+		if( sp != NULL )
+		{
+			sp->Attributes = ATTRIBUTES_CANT_BE_DPB;   
+		}   
+		sp = dbcSpell.LookupEntryForced( 55268 );
+		if( sp != NULL )
+		{
+			sp->Attributes = ATTRIBUTES_CANT_BE_DPB;   
+		}   
+	
+
 }
