@@ -29,17 +29,17 @@ static uint8 PublicKey[265] = { 0x02, 0x01, 0x01, 0xC3, 0x5B, 0x50, 0x84, 0xB9, 
 
 AddonMgr::AddonMgr()
 {
-	KnownAddons.clear();
+	mKnownAddons.clear();
 }
 
 AddonMgr::~AddonMgr()
 {
-	std::map<std::string, AddonEntry*>::iterator itr;
-	for(itr = KnownAddons.begin(); itr!=KnownAddons.end(); ++itr) 
+	KnownAddonsItr itr;
+	for(itr = mKnownAddons.begin(); itr!=mKnownAddons.end(); ++itr) 
 	{
 		delete itr->second;
 	}
-	KnownAddons.clear();
+	mKnownAddons.clear();
 }
 
 bool AddonMgr::IsAddonBanned(uint64 crc, std::string name)
@@ -49,10 +49,10 @@ bool AddonMgr::IsAddonBanned(uint64 crc, std::string name)
 
 bool AddonMgr::IsAddonBanned(std::string name, uint64 crc)
 {
-	std::map<std::string,AddonEntry*>::iterator i = KnownAddons.find(name);
-	if(i != KnownAddons.end())
+	KnownAddonsItr itr = mKnownAddons.find(name);
+	if(itr != mKnownAddons.end())
 	{
-		if(i->second->banned)
+		if(itr->second->banned)
 		{
 			sLog.outDebug("Addon %s is banned.", name.c_str());
 			return true;
@@ -70,7 +70,7 @@ bool AddonMgr::IsAddonBanned(std::string name, uint64 crc)
 
 		sLog.outDebug("Discovered new addon %s sent by client.", name.c_str());
 
-		KnownAddons[ent->name] = ent;
+		mKnownAddons[ent->name] = ent;
 	}
 
 	return false;
@@ -78,10 +78,11 @@ bool AddonMgr::IsAddonBanned(std::string name, uint64 crc)
 
 bool AddonMgr::ShouldShowInList(std::string name)
 {
-	std::map<std::string,AddonEntry*>::iterator i = KnownAddons.find(name);
-	if(i != KnownAddons.end())
+	KnownAddonsItr itr = mKnownAddons.find(name);
+
+	if(itr != mKnownAddons.end())
 	{
-		if(i->second->showinlist)
+		if(itr->second->showinlist)
 			return true;
 		else
 			return false;
@@ -98,7 +99,7 @@ bool AddonMgr::ShouldShowInList(std::string name)
 
 		sLog.outDebug("Discovered new addon %s sent by client.", name.c_str());
 
-		KnownAddons[ent->name] = ent;
+		mKnownAddons[ent->name] = ent;
 	}
 
 	return true;
@@ -111,8 +112,6 @@ void AddonMgr::SendAddonInfoPacket(WorldPacket *source, uint32 pos, WorldSession
 
 	uint32 realsize;
 	uLongf rsize;
-	
-	//source->hexlike();
 
 	try
 	{
@@ -122,7 +121,8 @@ void AddonMgr::SendAddonInfoPacket(WorldPacket *source, uint32 pos, WorldSession
 	{
 		sLog.outDebug("Warning: Incomplete auth session sent.");
 		return;
-	}	
+	}
+
 	rsize = realsize;
 	size_t position = source->rpos();
 
@@ -135,8 +135,8 @@ void AddonMgr::SendAddonInfoPacket(WorldPacket *source, uint32 pos, WorldSession
 		sLog.outDebug("Warning: Incomplete auth session sent.");
 		return;
 	}
-	int32 result;
-	result = uncompress((uint8*)unpacked.contents(), &rsize, (uint8*)(*source).contents() + position, (uLong)((*source).size() - position));
+
+	int32 result = uncompress((uint8*)unpacked.contents(), &rsize, (uint8*)(*source).contents() + position, (uLong)((*source).size() - position));
 
 	if(result != Z_OK)
 	{
@@ -145,7 +145,6 @@ void AddonMgr::SendAddonInfoPacket(WorldPacket *source, uint32 pos, WorldSession
 	}
 
 	sLog.outDetail("Decompression of addon section of CMSG_AUTH_SESSION succeeded.");
-	
 	
 	uint8 Enable; // based on the parsed files from retool
 	uint32 crc;
@@ -156,7 +155,7 @@ void AddonMgr::SendAddonInfoPacket(WorldPacket *source, uint32 pos, WorldSession
 	uint32 addoncount;
 	unpacked >> addoncount;
 
-	for(uint32 i = 0; i < addoncount; i++)
+	for(uint32 i = 0; i < addoncount; ++i)
 	{
 		if(unpacked.rpos() >= unpacked.size())
 			break;
@@ -181,13 +180,14 @@ void AddonMgr::SendAddonInfoPacket(WorldPacket *source, uint32 pos, WorldSession
 	m_session->SendPacket(&returnpacket);
 }
 
-bool AddonMgr::AppendPublicKey(WorldPacket& data, string AddonName, uint32 CRC)
+bool AddonMgr::AppendPublicKey(WorldPacket& data, std::string &AddonName, uint32 CRC)
 {
 	if(CRC == 0x4C1C776D)
 	{
 		// Open public key file with that addon
-		map<string, ByteBuffer>::iterator itr = AddonData.find(AddonName);
-		if(itr != AddonData.end())
+		AddonDataItr itr = mAddonData.find(AddonName);
+
+		if(itr != mAddonData.end())
 			data.append(itr->second);
 		else
 		{
@@ -206,14 +206,14 @@ bool AddonMgr::AppendPublicKey(WorldPacket& data, string AddonName, uint32 CRC)
 				fread((void*)buf.contents(), length, 1, f);
 				fclose(f);
 
-				AddonData[AddonName] = buf;
+				mAddonData[AddonName] = buf;
 				data.append(buf);
 			}
 			else
 			{
 				ByteBuffer buf;
 				buf.append(PublicKey, 264);
-				AddonData[AddonName] = buf;
+				mAddonData[AddonName] = buf;
 				data.append(buf);
 			}
 		}
@@ -231,19 +231,25 @@ void AddonMgr::LoadFromDB()
 		return;
 	}
 
+	Field *field;
+	AddonEntry *ent;
+
 	do 
 	{
-		Field *field = result->Fetch();
-		AddonEntry *ent = new AddonEntry;
+		field = result->Fetch();
+		ent = new AddonEntry;
 
 		ent->name = field[1].GetString();
 		ent->crc = field[2].GetUInt64();
 		ent->banned = (field[3].GetUInt32()>0? true:false);
 		ent->isNew = false;
-		if(result->GetFieldCount() == 5)				// To avoid crashes for stilly nubs who don't update table :P
+
+		// To avoid crashes for stilly nubs who don't update table :P
+		if(result->GetFieldCount() == 5)
 			ent->showinlist = (field[4].GetUInt32()>0 ? true : false);
 
-		KnownAddons[ent->name] = ent;
+		mKnownAddons[ent->name] = ent;
+
 	} while(result->NextRow());
 
 	delete result;
@@ -252,7 +258,10 @@ void AddonMgr::LoadFromDB()
 void AddonMgr::SaveToDB()
 {
 	sLog.outString("AddonMgr: Saving any new addons discovered in this session to database.");
-	for(std::map<std::string, AddonEntry*>::iterator itr = KnownAddons.begin();itr!=KnownAddons.end();++itr)
+
+	KnownAddonsItr itr;
+
+	for(itr = mKnownAddons.begin(); itr != mKnownAddons.end(); ++itr)
 	{
 		if(itr->second->isNew)
 		{

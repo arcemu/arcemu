@@ -30,25 +30,31 @@ struct AddonEntry
 	bool showinlist;
 };
 
-class AddonMgr :  public Singleton < AddonMgr >
+typedef std::map<std::string, AddonEntry *> KnownAddons;
+typedef KnownAddons::iterator KnownAddonsItr;
+
+typedef std::map<std::string, ByteBuffer> AddonData;
+typedef AddonData::iterator AddonDataItr;
+
+class AddonMgr : public Singleton < AddonMgr >
 {
 public:
 	AddonMgr();
 	~AddonMgr();
 
-	void LoadFromDB();
-	void SaveToDB();
+	void					LoadFromDB();
+	void					SaveToDB();
 
-	void SendAddonInfoPacket(WorldPacket *source, uint32 pos, WorldSession *m_session);
-	bool AppendPublicKey(WorldPacket& data, string AddonName, uint32 CRC);
+	void					SendAddonInfoPacket(WorldPacket *source, uint32 pos, WorldSession *m_session);
+	bool					AppendPublicKey(WorldPacket &data, std::string &AddonName, uint32 CRC);
 
 private:
-	std::map<std::string, AddonEntry*> KnownAddons;
-	map<string, ByteBuffer> AddonData;
+	bool					IsAddonBanned(uint64 crc, std::string name = "");
+	bool					IsAddonBanned(std::string name, uint64 crc = 0);
+	bool					ShouldShowInList(std::string name);
 
-	bool IsAddonBanned(uint64 crc, std::string name = "");
-	bool IsAddonBanned(std::string name, uint64 crc = 0);
-	bool ShouldShowInList(std::string name);
+	KnownAddons				mKnownAddons;
+	AddonData				mAddonData;
 };
 
 #define sAddonMgr AddonMgr::getSingleton()

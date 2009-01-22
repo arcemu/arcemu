@@ -255,11 +255,6 @@ bool Master::Run(int argc, char ** argv)
 		else
 			Log.Warning( "Config", "Encountered one or more errors.\n");
 
-		/* Removed useless Die directive */
-		/*string die;
-		if( Config.MainConfig.GetString( "die", "msg", &die) || Config.MainConfig.GetString("die2", "msg", &die ) )
-			Log.Warning( "Config", "Die directive received: %s", die.c_str() );*/
-
 		return true;
 	}
 
@@ -293,16 +288,6 @@ bool Master::Run(int argc, char ** argv)
 		Log.Error("Config", ">> configs/arcemu-optional.conf");
 		return false;
 	}
-
-	/* Removed useless die directive */
-	/*
-	string die;
-	if( Config.MainConfig.GetString( "die", "msg", &die) || Config.MainConfig.GetString( "die2", "msg", &die ) )
-	{
-		Log.Warning( "Config", "Die directive received: %s", die.c_str() );
-		return false;
-	}	
-	*/
 
 	if(Config.RealmConfig.SetSource(realm_config_file))
 		Log.Success( "Config", ">> configs/arcemu-realms.conf" );

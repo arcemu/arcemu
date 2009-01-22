@@ -2646,7 +2646,7 @@ void AIInterface::deleteWayPoint(uint32 wpid)
 		if((*itr) == NULL || (*itr)->id == wpid)
 		{
 			if((*itr) != NULL)
-				delete ((*itr));
+				delete (*itr);
 
 			continue;
 		}

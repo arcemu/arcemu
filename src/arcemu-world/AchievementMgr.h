@@ -3,17 +3,18 @@
 
 struct CriteriaProgress
 {
-    CriteriaProgress(uint32 id, uint32 counter, time_t date = time(NULL))
-    {
-        this->id = id;
-        this->counter = counter;
-        this->date = date;
-    }
+    CriteriaProgress(uint32 iid, uint32 icounter, time_t tdate = time(NULL))
+	:
+	id(iid),
+	counter(icounter),
+	date(tdate)
+    { }
+
     uint32 id;
     int32 counter;
     time_t date;
 };
- 
+
 typedef HM_NAMESPACE::hash_map<uint32, CriteriaProgress*> CriteriaProgressMap;
 typedef HM_NAMESPACE::hash_map<uint32, time_t> CompletedAchievementMap;
 typedef std::set<uint32> AchievementSet;
@@ -200,36 +201,37 @@ struct AchievementReward
 
 class AchievementMgr
 {
-	public:
-		AchievementMgr(Player* pl);
-		~AchievementMgr();
+public:
+	AchievementMgr(Player* pl);
+	~AchievementMgr();
 
-		void LoadFromDB(QueryResult *achievementResult, QueryResult *criteriaResult);
-		void SaveToDB();
-		void CheckAllAchievementCriteria();
-		void SendAllAchievementData(Player* player);
-		void SendRespondInspectAchievements(Player* player);
-		void UpdateAchievementCriteria(AchievementCriteriaTypes type, int32 miscvalue1, int32 miscvalue2, uint32 time);
-		void UpdateAchievementCriteria(AchievementCriteriaTypes type);
-		void GiveAchievementReward(AchievementEntry const* entry);
+	void							LoadFromDB(QueryResult *achievementResult, QueryResult *criteriaResult);
+	void							SaveToDB();
+	void							CheckAllAchievementCriteria();
+	void							SendAllAchievementData(Player* player);
+	void							SendRespondInspectAchievements(Player* player);
+	void							UpdateAchievementCriteria(AchievementCriteriaTypes type, int32 miscvalue1, int32 miscvalue2, uint32 time);
+	void							UpdateAchievementCriteria(AchievementCriteriaTypes type);
+	void							GiveAchievementReward(AchievementEntry const* entry);
 
-		Player* GetPlayer() { return m_player;}
+	Player*							GetPlayer()
+									{ return m_player; }
 
-    private:
-		void SendAchievementEarned(AchievementEntry const* achievement);
-		void SendCriteriaUpdate(CriteriaProgress *progress);
-		void SetCriteriaProgress(AchievementCriteriaEntry const* entry, int32 newValue, bool relative=false);
-		void UpdateCriteriaProgress(AchievementCriteriaEntry const* entry, int32 updateByValue);
-		void CompletedCriteria(AchievementCriteriaEntry const* entry);
-		void CompletedAchievement(AchievementEntry const* entry);
-		bool IsCompletedCriteria(AchievementCriteriaEntry const* entry);
-		AchievementCompletionState GetAchievementCompletionState(AchievementEntry const* entry);
-		void BuildAllDataPacket(WorldPacket *data);
-		uint32 GetCriteriaProgressCount(void);
+private:
+	void							SendAchievementEarned(AchievementEntry const* achievement);
+	void							SendCriteriaUpdate(CriteriaProgress *progress);
+	void							SetCriteriaProgress(AchievementCriteriaEntry const* entry, int32 newValue, bool relative=false);
+	void							UpdateCriteriaProgress(AchievementCriteriaEntry const* entry, int32 updateByValue);
+	void							CompletedCriteria(AchievementCriteriaEntry const* entry);
+	void							CompletedAchievement(AchievementEntry const* entry);
+	bool							IsCompletedCriteria(AchievementCriteriaEntry const* entry);
+	AchievementCompletionState		GetAchievementCompletionState(AchievementEntry const* entry);
+	void							BuildAllDataPacket(WorldPacket *data);
+	uint32							GetCriteriaProgressCount(void);
 
-		Player* m_player;
-		CriteriaProgressMap m_criteriaProgress;
-		CompletedAchievementMap m_completedAchievements;
+	Player *						m_player;
+	CriteriaProgressMap				m_criteriaProgress;
+	CompletedAchievementMap			m_completedAchievements;
 };
 
 
