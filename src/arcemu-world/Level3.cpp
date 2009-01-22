@@ -1137,8 +1137,8 @@ bool ChatHandler::HandleGodModeCommand(const char* args, WorldSession* m_session
 	else if(strcmp(args, "off") == 0)
 	{
 		plyr->GodModeCheat = false;
-		BlueSystemMessage(m_session, "deactivated the god mode cheat on %s.", plyr->GetName());
-		GreenSystemMessageToPlr(plyr, "deactivated the god mode cheat on you.", m_session->GetPlayer()->GetName());
+		BlueSystemMessage(m_session, "Deactivating the god mode cheat on %s.", plyr->GetName());
+		GreenSystemMessageToPlr(plyr, "%s deactivated the god mode cheat on you.", m_session->GetPlayer()->GetName());
 	
 		if ( plyr != m_session->GetPlayer() )
 			sGMLog.writefromsession(m_session, "god mode cheat on %s set to %s", plyr->GetName(), args);
@@ -3415,6 +3415,134 @@ bool ChatHandler::HandleFixScaleCommand(const char * args, WorldSession * m_sess
 	return true;
 }
 
+bool ChatHandler::HandleModifyWeaponCommand(const char * args, WorldSession * m_session)
+{
+	Creature * pCreature = getSelectedCreature(m_session, true);
+	if( pCreature == NULL )
+		return true;
+
+	int ID = (int)atof(args);
+	ItemPrototype * iProto	= ItemPrototypeStorage.LookupEntry(ID);
+	if(!ID)
+	{
+		SystemMessage(m_session, "Invalid ID.");
+		return false;
+	}
+	pCreature->SetUInt32Value(UNIT_VIRTUAL_ITEM_SLOT_ID, ID);
+	pCreature->m_spawn->Item1SlotDisplay = ID;
+	pCreature->SaveToDB();
+	return true;
+}
+
+bool ChatHandler::HandleModifyWeapon1Command(const char * args, WorldSession * m_session)
+{
+	Creature * pCreature = getSelectedCreature(m_session, true);
+	if( pCreature == NULL )
+		return true;
+
+	int ID = (int)atof(args);
+	ItemPrototype * iProto	= ItemPrototypeStorage.LookupEntry(ID);
+	if(!ID)
+	{
+		SystemMessage(m_session, "Invalid ID.");
+		return false;
+	}
+	pCreature->SetUInt32Value(UNIT_VIRTUAL_ITEM_SLOT_ID_1, ID);
+	pCreature->m_spawn->Item2SlotDisplay = ID;
+	pCreature->SaveToDB();
+	return true;
+}
+
+bool ChatHandler::HandleModifyWeapon2Command(const char * args, WorldSession * m_session)
+{
+	Creature * pCreature = getSelectedCreature(m_session, true);
+	if( pCreature == NULL )
+		return true;
+
+	int ID = (int)atof(args);
+	ItemPrototype * iProto	= ItemPrototypeStorage.LookupEntry(ID);
+	if(!iProto)
+	{
+		SystemMessage(m_session, "Invalid ID.");
+		return false;
+	}
+	pCreature->SetUInt32Value(UNIT_VIRTUAL_ITEM_SLOT_ID_2, ID);
+	pCreature->m_spawn->Item3SlotDisplay = ID;
+	pCreature->SaveToDB();
+	return true;
+}
+
+bool ChatHandler::HandleModifyMountIDCommand(const char * args, WorldSession * m_session)
+{
+	Creature * pCreature = getSelectedCreature(m_session, true);
+	if( pCreature == NULL )
+		return true;
+
+	int ID = (int)atof(args);
+	
+	CreatureInfo * ci = CreatureNameStorage.LookupEntry(ID);
+	if(!ci)
+	{
+		SystemMessage(m_session, "Invalid ID.");
+		return false;
+	}
+	pCreature->SetUInt32Value(UNIT_FIELD_MOUNTDISPLAYID, ID);
+	pCreature->m_spawn->MountedDisplayID = ID;
+	pCreature->SaveToDB();
+	return true;
+}
+
+bool ChatHandler::HandleModifyDamageCommand(const char * args, WorldSession * m_session)
+{
+	char* mindamage = strtok((char*)args, " ");
+	if(!mindamage)
+		return false;
+	char* maxdamage = strtok(NULL, " ");
+	if(!maxdamage)
+		return false;
+
+	Creature* target = m_session->GetPlayer()->GetMapMgr()->GetCreature(GET_LOWGUID_PART(m_session->GetPlayer()->GetSelection()));
+	if(!target)
+	{
+		RedSystemMessage(m_session, "You have to select a Creature!");
+		return false;
+	}
+
+	std::stringstream qry;
+	qry << "UPDATE creature_proto SET mindamage = '" << mindamage << "' AND maxdamage = '" << maxdamage << "' WHERE entry = '" << target->GetUInt32Value(OBJECT_FIELD_ENTRY) << "'";
+	WorldDatabase.Execute( qry.str().c_str( ) );
+	return true;
+}
+
+bool ChatHandler::HandleRemoveWeaponsCommand(const char * args, WorldSession * m_session)
+{
+	Creature * pCreature = getSelectedCreature(m_session, true);
+	if( pCreature == NULL )
+		return true;
+
+	int ID = 0;
+	pCreature->SetUInt32Value(UNIT_VIRTUAL_ITEM_SLOT_ID, ID);
+	pCreature->m_spawn->Item1SlotDisplay = ID;
+	pCreature->SetUInt32Value(UNIT_VIRTUAL_ITEM_SLOT_ID_1, ID);
+	pCreature->m_spawn->Item2SlotDisplay = ID;
+	pCreature->SetUInt32Value(UNIT_VIRTUAL_ITEM_SLOT_ID_2, ID);
+	pCreature->m_spawn->Item3SlotDisplay = ID;
+	pCreature->SaveToDB();
+	return true;
+}
+
+bool ChatHandler::HandleSetStandStateCommand(const char * args, WorldSession * m_session)
+{
+	Creature * pCreature = getSelectedCreature(m_session, true);
+	if( pCreature == NULL )
+		return true;
+
+	int ID = (int)atof(args);
+	pCreature->SetStandState(ID);
+	pCreature->SaveToDB();
+	return true;
+}
+
 bool ChatHandler::HandleAddTrainerSpellCommand( const char * args, WorldSession * m_session )
 {
 	Creature * pCreature = getSelectedCreature(m_session, true);
@@ -3492,4 +3620,3 @@ bool ChatHandler::HandleSetTitle( const char *args, WorldSession *m_session )
 	SystemMessage( m_session, "Title has been %s.", title > 0 ? "set" : "reset" );
 	return true;
 }
-
