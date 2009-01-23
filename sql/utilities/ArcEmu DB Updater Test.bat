@@ -83,7 +83,7 @@ ECHO [Importing] Started...
 ECHO [Importing] ArcEmu World Updates ...
 for %%W in (..\world_updates\*.sql) do (
    ECHO [Importing] %%~nxW
-	mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < %%~fW
+	mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < "%%~fW"
 )
 ECHO [Importing] Finished
 ECHO.
@@ -98,7 +98,7 @@ ECHO [Importing] Started...
 ECHO [Importing] ArcEmu Character Updates ...
 for %%C in (..\character_updates\*.sql) do (
 	ECHO [Importing] %%~nxC
-	mysql -h %server% --user=%user% --password=%pass% --port=%port% %chr% < %%~fC
+	mysql -h %server% --user=%user% --password=%pass% --port=%port% %chr% < "%%~fC"
 )
 ECHO [Importing] Finished
 ECHO  Update Success.
@@ -114,7 +114,7 @@ ECHO [Importing] Started...
 ECHO [Importing] ArcEmu Logon Updates ...
 for %%L in (..\logon_updates\*.sql) do (
 	ECHO [Importing] %%~nxL
-	mysql -h %server% --user=%user% --password=%pass% --port=%port% %logon% < %%~fL
+	mysql -h %server% --user=%user% --password=%pass% --port=%port% %logon% < "%%~fL"
 )
 ECHO [Importing] Finished
 ECHO  Update Success.
@@ -130,7 +130,7 @@ ECHO [Importing] Started...
 ECHO [Importing] ArcEmu World Updates ...
 for %%W in (..\world_updates\*.sql) do (
 	ECHO [Importing] %%~nxW
-	mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < %%~fW
+	mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < "%%~fW"
 )
 ECHO [Importing] World Updates Finished
 ECHO.
@@ -138,7 +138,7 @@ ECHO.
 ECHO [Importing] ArcEmu Character Updates ...
 for %%C in (..\character_updates\*.sql) do (
 	ECHO [Importing] %%~nxC
-	mysql -h %server% --user=%user% --password=%pass% --port=%port% %chr% < %%~fC
+	mysql -h %server% --user=%user% --password=%pass% --port=%port% %chr% < "%%~fC"
 )
 ECHO [Importing] Character Updates Finished
 ECHO.
@@ -146,7 +146,7 @@ ECHO.
 ECHO [Importing] ArcEmu Logon Updates ...
 for %%L in (..\logon_updates\*.sql) do (
 	ECHO [Importing] %%~nxL
-	mysql -h %server% --user=%user% --password=%pass% --port=%port% %logon% < %%~fL
+	mysql -h %server% --user=%user% --password=%pass% --port=%port% %logon% < "%%~fL"
 )
 ECHO [Importing] Logon Updates Finished
 ECHO  Update Success.

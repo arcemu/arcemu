@@ -39,6 +39,7 @@
 	- ACHIEVEMENT_CRITERIA_TYPE_EQUIP_ITEM
 	- ACHIEVEMENT_CRITERIA_TYPE_EQUIP_EPIC_ITEM
 	- ACHIEVEMENT_CRITERIA_TYPE_NUMBER_OF_MOUNTS
+	- ACHIEVEMENT_CRITERIA_TYPE_DO_EMOTE (partial)
 
 	Achievement Rewards Working List:
 	- Titles
@@ -240,6 +241,11 @@ void AchievementMgr::CheckAllAchievementCriteria()
 
 void AchievementMgr::UpdateAchievementCriteria(AchievementCriteriaTypes type, int32 miscvalue1, int32 miscvalue2, uint32 time)
 {
+	uint64 selectedGUID;
+	if(type==ACHIEVEMENT_CRITERIA_TYPE_DO_EMOTE)
+	{
+		selectedGUID = GetPlayer()->GetSelection();
+	}
 	AchievementCriteriaEntryList const& achievementCriteriaList = objmgr.GetAchievementCriteriaByType(type);
 	for(AchievementCriteriaEntryList::const_iterator i = achievementCriteriaList.begin(); i!=achievementCriteriaList.end(); ++i)
 	{
@@ -303,7 +309,12 @@ void AchievementMgr::UpdateAchievementCriteria(AchievementCriteriaTypes type, in
 					SetCriteriaProgress(achievementCriteria, miscvalue2);
 				break;
 			case ACHIEVEMENT_CRITERIA_TYPE_NUMBER_OF_MOUNTS:
-				UpdateCriteriaProgress(achievementCriteria, miscvalue1);
+				// Vanity pets owned - miscvalue1==778
+				// Number of mounts  - miscvalue1==777
+				if(achievementCriteria->number_of_mounts.unknown == miscvalue1)
+				{
+					UpdateCriteriaProgress(achievementCriteria, 1);
+				}
 				break;
 			case ACHIEVEMENT_CRITERIA_TYPE_KILL_CREATURE:
 				if(achievementCriteria->kill_creature.creatureID == miscvalue1)
@@ -341,9 +352,105 @@ void AchievementMgr::UpdateAchievementCriteria(AchievementCriteriaTypes type, in
 					}
 				}
 				break;
-           case ACHIEVEMENT_CRITERIA_TYPE_DO_EMOTE:
+			case ACHIEVEMENT_CRITERIA_TYPE_DO_EMOTE:
 				if(achievementCriteria->do_emote.emoteID == miscvalue1)
-					UpdateCriteriaProgress(achievementCriteria, miscvalue1);
+				{
+					// emote matches, check the achievement target ... (if required)
+					Unit* pUnit = GetPlayer()->GetMapMgr()->GetUnit(selectedGUID);
+					switch(achievement->ID)
+					{
+						case 1206: // To All The Squirrels I've Loved Before
+							if(pUnit) // requires a target
+							{
+								uint32 ent = pUnit->GetEntry();
+								if (  (ent== 1412 && achievementCriteria->index== 1)   // Squirrel
+									|| (ent==25679 && achievementCriteria->index== 2)   // Steam Frog
+									|| (ent==25677 && achievementCriteria->index== 3)   // Borean Frog
+									|| (ent== 6368 && achievementCriteria->index== 4)   // Cat
+									|| (ent==  620 && achievementCriteria->index== 5)   // Chicken
+									|| (ent== 2442 && achievementCriteria->index== 6)   // Cow
+									|| (ent== 6827 && achievementCriteria->index== 7)   // Crab
+									|| (ent==  883 && achievementCriteria->index== 8)   // Deer
+									|| (ent==19665 && achievementCriteria->index== 9)   // Ewe
+									|| (ent==  890 && achievementCriteria->index==10)   // Fawn
+									|| (ent==13321 && achievementCriteria->index==11)   // Frog
+									|| (ent== 4166 && achievementCriteria->index==12)   // Gazelle
+									|| (ent== 5951 && achievementCriteria->index==13)   // Hare
+									|| (ent== 9600 && achievementCriteria->index==14)   // Parrot
+									|| (ent==  721 && achievementCriteria->index==15)   // Rabbit
+									|| (ent== 2098 && achievementCriteria->index==16)   // Ram
+									|| (ent== 1933 && achievementCriteria->index==17)   // Sheep
+									|| (ent==17467 && achievementCriteria->index==18)   // Skunk
+									|| (ent==10685 && achievementCriteria->index==19)   // Swine
+									|| (ent== 1420 && achievementCriteria->index==20)   // Toad
+									|| (ent== 2620 && achievementCriteria->index==21) ) // Prairie Dog
+								{
+									SetCriteriaProgress(achievementCriteria, 1);
+								}
+							}
+							break;
+						case 2557: // To All The Squirrels Who Shared My Life
+							if(pUnit) // requires a target
+							{
+								uint32 ent = pUnit->GetEntry();
+								if (  (ent==29328 && achievementCriteria->index== 1)   // Arctic Hare
+									|| (ent==31685 && achievementCriteria->index== 2)   // Borean Marmot
+									|| (ent==28407 && achievementCriteria->index== 3)   // Fjord Penguin
+									|| (ent==24746 && achievementCriteria->index== 4)   // Fjord Turkey
+									|| (ent==32498 && achievementCriteria->index== 5)   // Glacier Penguin (not in db?)
+									|| (ent==31889 && achievementCriteria->index== 6)   // Grizzly Squirrel
+									|| (ent== 6653 && achievementCriteria->index== 7)   // Huge Toad
+									|| (ent== 9700 && achievementCriteria->index== 8)   // Lava Crab
+									|| (ent==31890 && achievementCriteria->index== 9)   // Mountain Skunk
+									|| (ent==26503 && achievementCriteria->index==10)   // Scalawag Frog
+									|| (ent==28093 && achievementCriteria->index==11)   // Sholazar Tickbird
+									|| (ent==28440 && achievementCriteria->index==12) ) // Tundra Penguin
+								{
+									SetCriteriaProgress(achievementCriteria, 1);
+								}
+							}
+							break;
+						case 247: // Make Love, Not Warcraft
+							{
+								Player* pTarget = objmgr.GetPlayer(selectedGUID);
+								if( pTarget && pTarget->IsPlayer() && pTarget->isDead() && isHostile(pTarget, GetPlayer()) )
+								{
+									UpdateCriteriaProgress(achievementCriteria, 1);
+								}
+							}
+							break;
+						case 293: // TODO:  Disturbing the Peace
+							// While wearing 3 pieces of Brewfest clothing, get completely smashed and dance in Dalaran.
+							break;
+						case 1280: // TODO: Flirt With Disaster
+							// Get completely smashed, put on your best perfume, throw a handful of rose petals on Jeremiah Payson and then kiss him. You'll regret it in the morning.
+							break;
+						case 1279: // TODO: Flirt With Disaster
+							// Get completely smashed, put on your best perfume, throw a handful of rose petals on Sraaz and then kiss him. You'll regret it in the morning.
+							break;
+						case 1690: // TODO: A Frosty Shake
+							// During the Feast of Winter Veil, use your Winter Veil Disguise kit to become a snowman and then dance with another snowman in Dalaran.
+							break;
+						case 1704: // TODO: I Pitied The Fool
+							// Pity the Love Fool in the locations specified below.
+							// Wintergrasp (achievementCriteria->index==1)
+							// Battle Ring of Gurubashi Arena (achievementCriteria->index==2)
+							// Arathi Basin Blacksmith (achievementCriteria->index==3)
+							// The Culling of Stratholme (achievementCriteria->index==4)
+							// Naxxramas (achievementCriteria->index==5)
+							break;
+						case 1042: // Number of Hugs
+						case 1045: // Total cheers
+						case 1047: // Total facepalms
+						case 1065: // Total waves
+						case 1066: // Total times LOL'd (laugh, guffaw, rofl, giggle, chuckle)
+						case 1067: // Total times playing world's smallest violin
+							UpdateCriteriaProgress(achievementCriteria, 1);
+							break;
+						default:
+							break;
+					}
+				}
 				break;			
 			//End of Achievement List
 			default:
@@ -447,23 +554,26 @@ void AchievementMgr::UpdateAchievementCriteria(AchievementCriteriaTypes type)
 				SetCriteriaProgress(achievementCriteria, 1);
 			break;
 		case ACHIEVEMENT_CRITERIA_TYPE_NUMBER_OF_MOUNTS:
-/*
-TODO: fix this
 			{
-				set<uint32> sl = GetPlayer()->m_SpellList.begin();
+				// achievementCriteria field4 = 777 for mounts, 778 for companion pets
+				SpellSet::iterator sl = GetPlayer()->mSpells.begin();
 				uint32 nm = 0;
-				while(sl != GetPlayer()->m_SpellList.end())
+				while(sl != GetPlayer()->mSpells.end())
 				{
 					SpellEntry* sp = dbcSpell.LookupEntry(*sl);
-					if(sp && sp->MechanicsType==MECHANIC_MOUNTED) // mount spell
+					if(achievementCriteria->number_of_mounts.unknown==777 && sp && sp->MechanicsType==MECHANIC_MOUNTED) // mount spell
+					{
 						++nm;
+					}
+					else if(achievementCriteria->number_of_mounts.unknown==778 && sp && (sp->Effect[0]==SPELL_EFFECT_SUMMON) && (sp->School==0)) // Companion pet?
+					{
+						++nm;
+					}
 					++sl;
 				}
-				sl.clear();
-				delete sl;
 				SetCriteriaProgress(achievementCriteria, nm);
 			}
-*/
+
 			break;
 		case ACHIEVEMENT_CRITERIA_TYPE_REACH_SKILL_LEVEL:
 			SetCriteriaProgress(achievementCriteria, GetPlayer()->_GetSkillLineCurrent(achievementCriteria->reach_skill_level.skillID, true));
@@ -471,29 +581,6 @@ TODO: fix this
 		case ACHIEVEMENT_CRITERIA_TYPE_LEARN_SKILL_LEVEL:
 			SetCriteriaProgress(achievementCriteria, GetPlayer()->_GetSkillLineMax(achievementCriteria->learn_skill_level.skillID)/75);
 			break;
-/*
-		Not going to bother putting this in right now ... just unequip and equip item again to update stuff you're already wearing
-		case ACHIEVEMENT_CRITERIA_TYPE_EQUIP_ITEM:
-			break;
-		case ACHIEVEMENT_CRITERIA_TYPE_EQUIP_EPIC_ITEM:
-			break;
-*/
-		case ACHIEVEMENT_CRITERIA_TYPE_DO_EMOTE:
-            {
-                uint32 completed = 0;
-
-                /*if( achievement->ID == 2379 ) // Make Love, Not Warcraft
-                {
-                    if( !target || !target->IsPlayer() || !target->isDead() || !isHostile(target, GetPlayer()) )
-                        return;
-       
-                    else
-						SetCriteriaProgress(achievementCriteria, completed);                   
-                }
-				else */
-					SetCriteriaProgress(achievementCriteria, completed);
-			}
-			break;			
 		//End of Achievement List
 		default:
 			break;
@@ -603,7 +690,7 @@ bool AchievementMgr::IsCompletedCriteria(AchievementCriteriaEntry const* achieve
 		case ACHIEVEMENT_CRITERIA_TYPE_EQUIP_EPIC_ITEM:
 			return progresscounter >= 1;
 		case ACHIEVEMENT_CRITERIA_TYPE_DO_EMOTE:
-            return progresscounter >= achievementCriteria->do_emote.emoteID;
+			return progresscounter >= 1;
 		case ACHIEVEMENT_CRITERIA_TYPE_COMPLETE_ACHIEVEMENT:
 			return m_completedAchievements.find(achievementCriteria->complete_achievement.linkedAchievement) != m_completedAchievements.end();
 		//End of Achievement List

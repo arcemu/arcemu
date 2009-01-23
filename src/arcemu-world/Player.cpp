@@ -2099,9 +2099,15 @@ void Player::addSpell(uint32 spell_id)
 		_UpdateMaxSkillCounts();
 	}
 	m_achievementMgr.UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_LEARN_SPELL, spell_id, 1, 0);
+	if(spell->MechanicsType == MECHANIC_MOUNTED) // Mounts
 	{
-		if(spell->MechanicsType == MECHANIC_MOUNTED) // Mount
-			m_achievementMgr.UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_NUMBER_OF_MOUNTS, 1, 0, 0);
+		// miscvalue1==777 for mounts, 778 for pets
+		m_achievementMgr.UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_NUMBER_OF_MOUNTS, 777, 0, 0);
+	}
+	else if(spell->Effect[0]==SPELL_EFFECT_SUMMON && spell->School==0) // Companion pet?
+	{
+		// miscvalue1==777 for mounts, 778 for pets
+		m_achievementMgr.UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_NUMBER_OF_MOUNTS, 778, 0, 0);
 	}
 }
 

@@ -139,10 +139,10 @@ const char* AchievementCriteriaStoreFormat=
 	"lxxxxxxxxxxxxxxx" // name
 	"u" // name_flags
 	"i" // completionFlag
+	"i" // groupFlag
+	"u" // unk1
 	"i" // timeLimit
 	"u" // index
-	"i" // groupFlag
-	"u" // unk2
 ;
 
 const char* spellentryFormat = 
