@@ -1135,3 +1135,8 @@ void AchievementMgr::GiveAchievementReward(AchievementEntry const* entry)
 	}
 }
 
+uint32 AchievementMgr::GetCompletedAchievementsCount() const
+{
+	return (uint32)m_completedAchievements.size();
+}
+

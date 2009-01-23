@@ -213,6 +213,9 @@ public:
 	void							UpdateAchievementCriteria(AchievementCriteriaTypes type, int32 miscvalue1, int32 miscvalue2, uint32 time);
 	void							UpdateAchievementCriteria(AchievementCriteriaTypes type);
 	void							GiveAchievementReward(AchievementEntry const* entry);
+	uint32							GetCompletedAchievementsCount() const;
+	uint32							GetCriteriaProgressCount();
+	void							BuildAllDataPacket(WorldPacket *data);
 
 	Player*							GetPlayer()
 									{ return m_player; }
@@ -226,8 +229,6 @@ private:
 	void							CompletedAchievement(AchievementEntry const* entry);
 	bool							IsCompletedCriteria(AchievementCriteriaEntry const* entry);
 	AchievementCompletionState		GetAchievementCompletionState(AchievementEntry const* entry);
-	void							BuildAllDataPacket(WorldPacket *data);
-	uint32							GetCriteriaProgressCount(void);
 
 	Player *						m_player;
 	CriteriaProgressMap				m_criteriaProgress;

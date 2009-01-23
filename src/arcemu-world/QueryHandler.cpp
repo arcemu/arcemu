@@ -328,7 +328,17 @@ void WorldSession::HandleInrangeQuestgiverQuery(WorldPacket & recv_data)
 
 void WorldSession::HandleAchievmentQueryOpcode( WorldPacket & recv_data )
 {
-	sLog.outDebug("WORLD: CMSG_QUERY_INSPECT_ACHIEVEMENTS -> not handled yet ");
-	//probably we will get a guid to who to send the list to
-//	CHECK_PACKET_SIZE(recv_data, 27);
+	CHECK_INWORLD_RETURN;
+
+	uint64 guid = recv_data.unpackGUID(); // Get the inspectee's GUID
+	Player* pTarget = objmgr.GetPlayer(guid);
+	if(!pTarget)
+	{
+		return;
+	}
+	WorldPacket data( SMSG_RESPOND_INSPECT_ACHIEVEMENTS,4*3+pTarget->GetAchievementMgr().GetCompletedAchievementsCount()*4*2+
+		pTarget->GetAchievementMgr().GetCriteriaProgressCount()*7*4 );
+	FastGUIDPack(data, guid);
+	pTarget->GetAchievementMgr().BuildAllDataPacket(&data);
+	GetPlayer()->GetSession()->SendPacket(&data);
 }
