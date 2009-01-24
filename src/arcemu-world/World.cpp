@@ -1359,7 +1359,6 @@ void World::Rehash(bool load)
 
 	//script engine
 	m_LuaEngine = Config.MainConfig.GetBoolDefault("ScriptBackends", "LUA", true);
-	m_ASEngine = Config.MainConfig.GetBoolDefault("ScriptBackends", "AS", false);
 
 	map_unload_time=Config.MainConfig.GetIntDefault("Server", "MapUnloadTime", 0);
 

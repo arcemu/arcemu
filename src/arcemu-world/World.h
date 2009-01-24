@@ -589,7 +589,6 @@ public:
 	uint32 GoldStartAmount;
 
 	bool m_LuaEngine;
-	bool m_ASEngine;
 
 	char * m_banTable;
 
