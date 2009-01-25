@@ -1073,7 +1073,7 @@ void AchievementMgr::GiveAchievementReward(AchievementEntry const* entry)
 				break;
 			case 0x00000e0b: // Reward: Tabard of Brute Force
 				r.type = ACHIEVEMENT_REWARDTYPE_ITEM;
-				r.itemId = 0; // Hmm, Tabard of Brute Force not found in my item DB ...
+				r.itemId = 43349; // Hmm, Tabard of Brute Force not found in my item DB ...
 			case 0x00000e10: // Title Reward: Arena Master
 				r.type = ACHIEVEMENT_REWARDTYPE_TITLE;
 				r.rankId = PVPTITLE_ARENA_MASTER;
