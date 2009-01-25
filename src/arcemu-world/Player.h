@@ -109,6 +109,7 @@ enum ShapeshiftForm
 	FORM_BATTLESTANCE       = 17,
 	FORM_DEFENSIVESTANCE    = 18,
 	FORM_BERSERKERSTANCE    = 19,
+	FORM_DEMON				= 22,
 	FORM_SWIFT              = 27,
 	FORM_SHADOW             = 28,
 	FORM_FLIGHT             = 29,

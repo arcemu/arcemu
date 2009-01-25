@@ -4272,6 +4272,11 @@ void Aura::SpellAuraModShapeshift(bool apply)
 		{
 			spellId = 7381;
 		} break;
+	case FORM_DEMON:
+		{
+			spellId = 47241;
+			modelId = 25277;
+	}break;
 	case FORM_SHADOW:
 		{
 			if(apply)
