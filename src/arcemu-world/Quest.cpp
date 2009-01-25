@@ -30,6 +30,7 @@ WorldPacket* WorldSession::BuildQuestQueryResponse(Quest *qst)
 
 	WorldPacket *data = new WorldPacket(SMSG_QUEST_QUERY_RESPONSE, 2048);
 	LocalizedQuest * lci = (language>0) ? sLocalizationMgr.GetLocalizedQuest(qst->id, language) : NULL;
+	uint32 i;
    
 	*data << uint32(qst->id);					   // Quest ID
 	*data << uint32(2);							 // Unknown, always seems to be 2
@@ -73,14 +74,14 @@ WorldPacket* WorldSession::BuildQuestQueryResponse(Quest *qst)
 	*data << qst->rewardtalents;
 
 	// (loop 4 times)
-	for(uint32 i = 0; i < 4; ++i)
+	for(i = 0; i < 4; ++i)
 	{
 		*data << qst->reward_item[i];			   // Forced Reward Item [i]
 		*data << qst->reward_itemcount[i];		  // Forced Reward Item Count [i]
 	}
 
 	// (loop 6 times)
-	for(uint32 i = 0; i < 6; ++i)
+	for(i = 0; i < 6; ++i)
 	{
 		*data << qst->reward_choiceitem[i];		 // Choice Reward Item [i]
 		*data << qst->reward_choiceitemcount[i];	// Choice Reward Item Count [i]
@@ -106,17 +107,20 @@ WorldPacket* WorldSession::BuildQuestQueryResponse(Quest *qst)
 		*data << qst->endtext;						  // Subdescription
 	}
 
-	// (loop 4 times)
-	for(uint32 i = 0; i < 4; ++i)
+	for(i = 0; i < 4; ++i)
 	{
 		*data << qst->required_mob[i];			  // Kill mob entry ID [i]
 		*data << qst->required_mobcount[i];		 // Kill mob count [i]
+		*data << (uint32)0; // Unknown
+	}
 
+	for(i = 0; i < 4; ++i)
+	{
 		*data << qst->required_item[i];			 // Collect item [i]
 		*data << qst->required_itemcount[i];		// Collect item count [i]
-
-		*data << (uint32)(0);		//unk 3.0.2
 	}
+	*data << (uint32)0; // 5th Collect item id
+	*data << (uint32)0; // 5th Collect item count
 
 	if(lci)
 	{
