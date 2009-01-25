@@ -620,7 +620,7 @@ void Pet::InitializeMe(bool first)
 
 	if(GetEntry() == 17252) //felguard
 	{
-		SetUInt32Value( UNIT_VIRTUAL_ITEM_SLOT_ID, 23904 );
+		SetUInt32Value( UNIT_VIRTUAL_ITEM_SLOT_ID, 12784 );
 	}
 
 	// Load our spells
