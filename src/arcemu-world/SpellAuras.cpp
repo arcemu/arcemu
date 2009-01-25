@@ -1942,6 +1942,21 @@ void Aura::SpellAuraDummy(bool apply)
 			m_target->ModUnsigned32Value(UNIT_FIELD_ATTACK_POWER_MODS, -mod->realamount);
 		m_target->CalcDamage();
 	}break;
+	case 61216: //Armored to the teeth
+	case 61221:
+	case 61222:
+	{
+		if(apply)
+		{	
+			uint32 mod1 = m_target->GetUInt32Value(UNIT_FIELD_RESISTANCES);
+			uint32 mod2 = m_spellProto->EffectBasePoints[0] + 1; //Thanks Andy for pointing out that BasePoints
+			uint32 mod3 = m_spellProto->EffectBasePoints[1] + 1; // Should always be used instead of static modifiers.
+			mod->realamount = (mod->m_amount + (mod1/mod3)*mod2 );
+			m_target->ModUnsigned32Value(UNIT_FIELD_ATTACK_POWER_MODS,mod->realamount);
+		}else
+			m_target->ModUnsigned32Value(UNIT_FIELD_ATTACK_POWER_MODS, -mod->realamount);
+		m_target->CalcDamage();
+	}break;
 	case 974:
 	case 32593:
 	case 32594:

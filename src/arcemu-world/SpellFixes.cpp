@@ -1387,6 +1387,22 @@ void ApplyNormalFixes()
 
 		// Insert rogue spell fixes here
 
+		// Waylay talent rank 1
+		sp = dbcSpell.LookupEntryForced(51692);
+		if(sp != NULL)
+		{
+			sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
+			sp->EffectTriggerSpell[0]=51693;// Waylay debuff
+			sp->procChance = 50;
+		}
+		//Waylay talent rank 2
+		sp = dbcSpell.LookupEntryForced(51696);
+		if(sp != NULL)
+		{
+			sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
+			sp->EffectTriggerSpell[0]=51693;// Waylay debuff
+			sp->procChance = 100;
+		}
 		//////////////////////////////////////////
 		// PRIEST								//
 		//////////////////////////////////////////
@@ -1434,6 +1450,48 @@ void ApplyNormalFixes()
 		// MAGE									//
 		//////////////////////////////////////////
 
+		// Brain Freeze rank 1
+		sp = dbcSpell.LookupEntryForced( 44546 );
+		if(sp != NULL)
+		{
+			sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
+			sp->EffectTriggerSpell[0] = 57761;
+			sp->procChance = 5;
+		}
+		// Brain Freeze rank 2
+		sp = dbcSpell.LookupEntryForced( 44548 );
+		if(sp != NULL)
+		{
+			sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
+			sp->EffectTriggerSpell[0] = 57761;
+			sp->procChance = 10;
+		}
+		// Brain Freeze rank 3
+		sp = dbcSpell.LookupEntryForced( 44549 );
+		if(sp != NULL)
+		{
+			sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
+			sp->EffectTriggerSpell[0] = 57761;
+			sp->procChance = 15;
+		}
+
+		// Fingers of Frost rank 1
+		sp = dbcSpell.LookupEntryForced( 44543 );
+		if(sp != NULL)
+		{
+			sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
+			sp->EffectTriggerSpell[0] = 44544;
+			sp->procChance = 7;
+		}
+
+		// Fingers of Frost rank 2
+		sp = dbcSpell.LookupEntryForced( 44545 );
+		if(sp != NULL)
+		{
+			sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
+			sp->EffectTriggerSpell[0] = 44544;
+			sp->procChance = 15;
+		}
 
 		//////////////////////////////////////////
 		// WARLOCK								//
@@ -2096,6 +2154,42 @@ void ApplyNormalFixes()
 		//////////////////////////////////////////
 
 		// Insert paladin spell fixes here
+
+		//Vengeance
+		sp = dbcSpell.LookupEntryForced( 20049 ); //Rank 1
+		if( sp != NULL )
+		{
+			sp->EffectTriggerSpell[0] = 20050;
+			sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
+			sp->procFlags = PROC_ON_CRIT_ATTACK;
+		}
+
+		sp = dbcSpell.LookupEntryForced( 20050 ); // Rank 1 proc
+		if( sp != NULL )
+			sp->maxstack = 5;
+
+		sp = dbcSpell.LookupEntryForced( 20056 ); //Rank 2
+		if( sp != NULL )
+		{
+			sp->EffectTriggerSpell[0] = 20052;
+			sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
+			sp->procFlags = PROC_ON_CRIT_ATTACK;
+		}
+
+		sp = dbcSpell.LookupEntryForced( 20052 ); // Rank 2 proc
+		if( sp != NULL )
+			sp->maxstack = 5;
+
+		sp = dbcSpell.LookupEntryForced( 20057 ); //Rank 3
+		if( sp != NULL )
+		{
+			sp->EffectTriggerSpell[0] = 20053;
+			sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
+			sp->procFlags = PROC_ON_CRIT_ATTACK;
+		}
+		sp = dbcSpell.LookupEntryForced( 20053 ); // Rank 3 proc
+		if( sp != NULL )
+			sp->maxstack = 5;
 
 		// Seal of Command - trigger
 		sp = dbcSpell.LookupEntryForced( 20375 );
@@ -6775,7 +6869,6 @@ void ApplyNormalFixes()
 			sp->Effect[1] = SPELL_EFFECT_APPLY_AREA_AURA;
 			sp->EffectImplicitTargetA[1] = EFF_TARGET_SELF;
 		}
-		
 		sp = dbcSpell.LookupEntryForced( 50392 ); 
 		if( sp != NULL )
 		{		   
@@ -6897,6 +6990,20 @@ void ApplyNormalFixes()
 		{
 			sp->Attributes = ATTRIBUTES_CANT_BE_DPB;   
 		}   
-	
 
+		// Blood Fury Healing Debuff
+		sp = dbcSpell.LookupEntryForced( 23230 );
+		if( sp != NULL )
+		{
+			sp->c_is_flags |= SPELL_FLAG_IS_FORCEDDEBUFF;
+		}
+
+		// Noggenfogger elixir - reduce size effect
+		sp = dbcSpell.LookupEntryForced( 16595 );
+		if( sp != NULL )
+		{		
+			sp->EffectApplyAuraName[0] = SPELL_AURA_MOD_SCALE;
+			sp->EffectBasePoints[0] = -50;
+		
+      	}
 }
