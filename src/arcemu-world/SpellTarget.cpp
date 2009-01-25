@@ -1025,11 +1025,13 @@ void Spell::SpellTargetAllRaid( uint32 i, uint32 j )
 	if( !m_caster->IsInWorld() || !m_caster->IsUnit() )
 		return;
 
+    TargetsList* tmpMap = &m_targetUnits[i];
+    SafeAddTarget( tmpMap, m_caster->GetGUID() );
+
 	Group * group = static_cast< Unit* >( m_caster )->GetGroup(); 
 	if( group == NULL )
 		return;
 	
-	TargetsList* tmpMap = &m_targetUnits[i];
 	uint32 count = group->GetSubGroupCount();
 
 	// Loop through each raid group.
@@ -1041,7 +1043,7 @@ void Spell::SpellTargetAllRaid( uint32 i, uint32 j )
 			group->Lock();
 			for( GroupMembersSet::iterator itr = subgroup->GetGroupMembersBegin(); itr != subgroup->GetGroupMembersEnd(); ++itr )
 			{
-				if( (*itr)->m_loggedInPlayer ) 
+				if( (*itr)->m_loggedInPlayer && (*itr)->m_loggedInPlayer != m_caster)
 					SafeAddTarget( tmpMap,(*itr)->m_loggedInPlayer->GetGUID() );
 			}
 			group->Unlock();
