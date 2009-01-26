@@ -9417,13 +9417,13 @@ void Player::ModifyBonuses( uint32 type, int32 val, bool apply )
 			{
 				ModUnsigned32Value( PLAYER_RATING_MODIFIER_MELEE_HIT, val );//melee
 				ModUnsigned32Value( PLAYER_RATING_MODIFIER_RANGED_HIT, val );//ranged
-				// maybe should do spell here? (7)
+				ModUnsigned32Value( PLAYER_RATING_MODIFIER_SPELL_HIT, val ); //Spell
 			}break;
 		case CRITICAL_STRIKE_RATING:
 			{
 				ModUnsigned32Value( PLAYER_RATING_MODIFIER_MELEE_CRIT, val );//melee
 				ModUnsigned32Value( PLAYER_RATING_MODIFIER_RANGED_CRIT, val );//ranged
-				// maybe should do spell here? (10)
+				ModUnsigned32Value( PLAYER_RATING_MODIFIER_SPELL_CRIT, val ); //spell
 			}break;
 		case HIT_AVOIDANCE_RATING:// this is guessed based on layout of other fields
 			{
@@ -9448,7 +9448,7 @@ void Player::ModifyBonuses( uint32 type, int32 val, bool apply )
 			{
 				ModUnsigned32Value( PLAYER_RATING_MODIFIER_MELEE_HASTE, val );//melee
 				ModUnsigned32Value( PLAYER_RATING_MODIFIER_RANGED_HASTE, val );//ranged
-				// maybe should do spell here? (19)
+				ModUnsigned32Value( PLAYER_RATING_MODIFIER_SPELL_HASTE, val ); // Spell
 			}break;
 		case SPELL_POWER:
 			{
