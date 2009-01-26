@@ -2278,6 +2278,21 @@ void Aura::SpellAuraDummy(bool apply)
 			Unit *caster = GetUnitCaster();
 			if(caster && caster->IsPlayer())
 				static_cast< Player* >(caster)->SetTriggerChill(12494,mod->m_amount, false);
+		}break; //brain freeze
+	case 44543:
+	case 44545:
+		{
+			Unit *caster = GetUnitCaster();
+			if(caster && caster->IsPlayer())
+				static_cast< Player* >(caster)->SetTriggerChill(44544,mod->m_amount, true);
+		}break;
+	case 44546:
+	case 44548:
+	case 44549:
+		{
+			Unit *caster = GetUnitCaster();
+			if(caster && caster->IsPlayer())
+				static_cast< Player* >(caster)->SetTriggerChill(57761,mod->m_amount, true);
 		}break;
 	//mage Magic Absorption
 	case 29441:
@@ -4289,9 +4304,9 @@ void Aura::SpellAuraModShapeshift(bool apply)
 		} break;
 	case FORM_DEMON:
 		{
-			spellId = 54879;
+		if(apply)
 			modelId = 25277;
-	}break;
+		}break;
 	case FORM_SHADOW:
 		{
 			if(apply)

@@ -1453,45 +1453,28 @@ void ApplyNormalFixes()
 		// Brain Freeze rank 1
 		sp = dbcSpell.LookupEntryForced( 44546 );
 		if(sp != NULL)
-		{
-			sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
-			sp->EffectTriggerSpell[0] = 57761;
-			sp->procChance = 5;
-		}
+			sp->EffectApplyAuraName[0] = SPELL_AURA_DUMMY;
+
 		// Brain Freeze rank 2
 		sp = dbcSpell.LookupEntryForced( 44548 );
 		if(sp != NULL)
-		{
-			sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
-			sp->EffectTriggerSpell[0] = 57761;
-			sp->procChance = 10;
-		}
+			sp->EffectApplyAuraName[0] = SPELL_AURA_DUMMY;
+
 		// Brain Freeze rank 3
 		sp = dbcSpell.LookupEntryForced( 44549 );
 		if(sp != NULL)
-		{
-			sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
-			sp->EffectTriggerSpell[0] = 57761;
-			sp->procChance = 15;
-		}
+			sp->EffectApplyAuraName[0] = SPELL_AURA_DUMMY;
 
 		// Fingers of Frost rank 1
 		sp = dbcSpell.LookupEntryForced( 44543 );
 		if(sp != NULL)
-		{
-			sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
-			sp->EffectTriggerSpell[0] = 44544;
-			sp->procChance = 7;
-		}
+			sp->EffectApplyAuraName[0] = SPELL_AURA_DUMMY;
+		
 
 		// Fingers of Frost rank 2
 		sp = dbcSpell.LookupEntryForced( 44545 );
 		if(sp != NULL)
-		{
-			sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
-			sp->EffectTriggerSpell[0] = 44544;
-			sp->procChance = 15;
-		}
+			sp->EffectApplyAuraName[0] = SPELL_AURA_DUMMY;
 
 		//////////////////////////////////////////
 		// WARLOCK								//
