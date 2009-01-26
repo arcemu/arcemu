@@ -3929,6 +3929,7 @@ uint8 Spell::CanCast(bool tolerate)
 				}break;
 				case 603: //curse of doom, can't be casted on players
 				case 30910:
+				case 47867: // Curse of doom rank 4
 				{
 					if(target->IsPlayer())
 						return SPELL_FAILED_TARGET_IS_PLAYER;

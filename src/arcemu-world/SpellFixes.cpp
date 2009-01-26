@@ -3909,6 +3909,11 @@ void ApplyNormalFixes()
 			sp->EffectApplyAuraName[0] = SPELL_AURA_PERIODIC_DAMAGE;
 		}
 		
+		sp = dbcSpell.LookupEntryForced( 48156 ); // Mind Flay rank 9
+        if( sp != NULL )
+        {    
+            sp->EffectApplyAuraName[0] = SPELL_AURA_PERIODIC_DAMAGE;
+        }
 		//Mind Sear - Effect rank 1
 
 		sp = dbcSpell.LookupEntryForced( 49821 ); 
