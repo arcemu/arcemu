@@ -1,6 +1,33 @@
 #ifndef _ITEM_BUFFER_POOL
 #define _ITEM_BUFFER_POOL
 
+//no pools :P
+#define OBJECT_WAS_ALLOCATED_STANDARD_WAY -1	//should add this to constructors instead of constant number :)
+template< class T > class SERVER_DECL tPPoolClass : public Singleton< tPPoolClass< T > >
+{
+private:
+	typedef tPPoolClass< T > tBaseType;
+public:
+	tPPoolClass(){}
+	~tPPoolClass(){};
+	T* PooledNew()
+	{
+		return new T;	
+	}
+	void PooledDelete(T* dumped)
+	{
+		delete dumped;
+	}
+	void DestroyPool()	{	}
+};
+
+// Grey: ContainerPooling have to come with a sepperate Patch 
+//#define ContainerPool tPPoolClass<Container>::getSingleton()
+#define ItemPool tPPoolClass<Item>::getSingleton()
+#define AuraPool tPPoolClass<Aura>::getSingleton()
+#define SpellPool tPPoolClass<Spell>::getSingleton()
+
+/*
 //hmm with 2000 players each have 50 items ...Decrease it if you need the space ;)
 #define INITI_POOL_WITH_SIZE 100000
 #define INITI_CONTAINER_POOL_WITH_SIZE 5000
@@ -23,9 +50,7 @@ class Container;
 class Aura;
 class Spell;
 
-/* Maybe we should use template< class T, int InitPoolSize > but for now
-all Pools use the same val so we don't need */
-
+// Maybe we should use template< class T, int InitPoolSize > but for now all Pools use the same val so we don't need 
 template< class T > class SERVER_DECL tPPoolClass : public Singleton< tPPoolClass< T > >
 {
 private:
@@ -157,12 +182,13 @@ private:
 	}
 };
 
-/* Grey: ContainerPooling have to come with a sepperate Patch */
+// Grey: ContainerPooling have to come with a sepperate Patch 
 
 //#define ContainerPool tPPoolClass<Container>::getSingleton()
 #define ItemPool tPPoolClass<Item>::getSingleton()
 #define AuraPool tPPoolClass<Aura>::getSingleton()
 #define SpellPool tPPoolClass<Spell>::getSingleton()
+*/
 
 #endif
 
