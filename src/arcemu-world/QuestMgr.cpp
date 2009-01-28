@@ -517,6 +517,7 @@ void QuestMgr::BuildQuestComplete(Player*plr, Quest* qst)
 	data << xp;
 	data << uint32( GenerateRewardMoney( plr, qst ) );
 	data << uint32(0);
+	data << uint32(rewardtalents);
 	data << uint32(qst->count_reward_item); //Reward item count
 
 	for(uint32 i = 0; i < 4; ++i)

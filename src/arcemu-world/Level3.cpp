@@ -2638,6 +2638,8 @@ bool ChatHandler::HandleLookupSpellCommand(const char * args, WorldSession * m_s
 	GreenSystemMessage(m_session, "Starting search of spell `%s`...", x.c_str());
 	uint32 t = getMSTime();
 	uint32 count = 0;
+	string recout;
+	char itoabuf[12];
 	for (uint32 index = 0; index < dbcSpell.GetNumRows(); ++index)
 	{
 		SpellEntry* spell = dbcSpell.LookupRow(index);
@@ -2646,7 +2648,16 @@ bool ChatHandler::HandleLookupSpellCommand(const char * args, WorldSession * m_s
 		if(FindXinYString(x, y))
  		{
  			// Print out the name in a cool highlighted fashion
-			SendHighlightedName(m_session, "Spell", spell->Name, y, x, spell->Id);
+			// SendHighlightedName(m_session, "Spell", spell->Name, y, x, spell->Id);
+			// Send spell link instead
+			recout = itoa(spell->Id,(char*)itoabuf,10);
+			recout += ": |cff71d5ff|Hspell:";
+			recout += itoa(spell->Id,(char*)itoabuf,10);
+			recout += "|h[";
+			recout += spell->Name;
+			recout += "]|h|r";
+			SendMultilineMessage(m_session, recout.c_str());
+			
 			++count;
 			if(count == 25)
 			{
