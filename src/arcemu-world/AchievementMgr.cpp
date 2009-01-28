@@ -50,7 +50,6 @@
 	What's Not Working Yet:
 	- Several achievement types
 	- Time limits on achievements
-	- Inspecting other players' achievements
 */
 
 #include "StdAfx.h"
@@ -318,7 +317,34 @@ void AchievementMgr::UpdateAchievementCriteria(AchievementCriteriaTypes type, in
 				break;
 			case ACHIEVEMENT_CRITERIA_TYPE_KILL_CREATURE:
 				if(achievementCriteria->kill_creature.creatureID == miscvalue1)
-					UpdateCriteriaProgress(achievementCriteria, miscvalue2);
+				switch(achievement->ID)
+				{
+					case 2556: // Pest Control
+						if (  (miscvalue1== 3300 && achievementCriteria->index== 1)   // Adder
+							|| (miscvalue1==32261 && achievementCriteria->index== 2)   // Crystal Spider
+							|| (miscvalue1==24270 && achievementCriteria->index== 3)   // Devouring Maggot
+							|| (miscvalue1== 9699 && achievementCriteria->index== 4)   // Fire Beetle
+							|| (miscvalue1==24174 && achievementCriteria->index== 5)   // Fjord Rat
+							|| (miscvalue1==32258 && achievementCriteria->index== 6)   // Gold Beetle
+							|| (miscvalue1==16068 && achievementCriteria->index== 7)   // Larva
+							|| (miscvalue1==16030 && achievementCriteria->index== 8)   // Maggot
+							|| (miscvalue1== 4953 && achievementCriteria->index== 9)   // Moccasin
+							|| (miscvalue1== 6271 && achievementCriteria->index==10)   // Mouse
+							|| (miscvalue1== 4075 && achievementCriteria->index==11)   // Rat
+							|| (miscvalue1== 4076 && achievementCriteria->index==12)   // Roach
+							|| (miscvalue1==15476 && achievementCriteria->index==13)   // Scorpion
+							|| (miscvalue1== 2914 && achievementCriteria->index==14)   // Snake
+							|| (miscvalue1==14881 && achievementCriteria->index==15)   // Spider
+							|| (miscvalue1==32428 && achievementCriteria->index==16)   // Underbelly Rat
+							|| (miscvalue1==28202 && achievementCriteria->index==17) ) // Zul'Drak Rat
+							{
+								SetCriteriaProgress(achievementCriteria, 1);
+							}
+						break;
+					default:
+						UpdateCriteriaProgress(achievementCriteria, miscvalue2);
+						break;
+				}
 				break;
 			case ACHIEVEMENT_CRITERIA_TYPE_REACH_SKILL_LEVEL:
 				if(achievementCriteria->reach_skill_level.skillID == miscvalue1)
@@ -753,14 +779,11 @@ AchievementCompletionState AchievementMgr::GetAchievementCompletionState(Achieve
 		return ACHIEVEMENT_COMPLETED_COMPLETED_NOT_STORED;
 	}
 
-	switch(entry->ID)
+	if( (entry->count > 1) && (completedCount >= entry->count) )
 	{
-		case 705: // Master of Arms requires 4 criteria to be completed
-			if(completedCount>=4)
-				return ACHIEVEMENT_COMPLETED_COMPLETED_NOT_STORED;
-		default:
-			return ACHIEVEMENT_COMPLETED_NONE;
+		return ACHIEVEMENT_COMPLETED_COMPLETED_NOT_STORED;
 	}
+	return ACHIEVEMENT_COMPLETED_NONE;
 }
 
 void AchievementMgr::SetCriteriaProgress(AchievementCriteriaEntry const* entry, int32 newValue, bool relative)

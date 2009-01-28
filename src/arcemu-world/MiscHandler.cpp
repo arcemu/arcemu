@@ -152,6 +152,7 @@ void WorldSession::HandleAutostoreLootItemOpcode( WorldPacket & recv_data )
 		{
 			sQuestMgr.OnPlayerItemPickup(GetPlayer(),item);
 			_player->GetSession()->SendItemPushResult(item,false,true,true,true,slotresult.ContainerSlot,slotresult.Slot,1);
+			_player->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_LOOT_ITEM, item->GetEntry(), 1, 0);
 		}
 		else
 			item->DeleteMe();
@@ -163,6 +164,7 @@ void WorldSession::HandleAutostoreLootItemOpcode( WorldPacket & recv_data )
 
 		sQuestMgr.OnPlayerItemPickup(GetPlayer(),add);
 		_player->GetSession()->SendItemPushResult(add, false, false, true, false, _player->GetItemInterface()->GetBagSlotByGuid(add->GetGUID()), 0xFFFFFFFF,amt);
+		_player->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_LOOT_ITEM, add->GetEntry(), 1, 0);
 	}
 
 	//in case of ffa_loot update only the player who recives it.
@@ -2050,6 +2052,7 @@ void WorldSession::HandleLootMasterGiveOpcode(WorldPacket& recv_data)
 	{
 		player->GetSession()->SendItemPushResult(item,false,true,true,true,slotresult.ContainerSlot,slotresult.Slot,1);
 		sQuestMgr.OnPlayerItemPickup(player,item);
+		_player->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_LOOT_ITEM, item->GetEntry(), 1, 0);
 	}
 	else
 		item->DeleteMe();

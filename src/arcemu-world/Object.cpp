@@ -1995,7 +1995,17 @@ void Object::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
 	if(pVictim->GetTypeId() == TYPEID_UNIT && ((Creature*)pVictim)->GetCreatureInfo())
 	{
 			if(((Creature*)pVictim)->GetCreatureInfo()->Type == CRITTER)
+			{
 				isCritter = true;
+				if(IsPlayer()) // Player killed a critter
+				{
+					((Player*)this)->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_KILL_CREATURE, pVictim->GetEntry(), 1, 0);
+				}
+				else if(IsPet()) // Player's pet killed a critter
+				{
+					((Pet*)this)->GetPetOwner()->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_KILL_CREATURE, pVictim->GetEntry(), 1, 0);
+				}
+			}
 	}
 	/* -------------------------- HIT THAT CAUSES VICTIM TO DIE ---------------------------*/
 	if ((isCritter || health <= damage) )

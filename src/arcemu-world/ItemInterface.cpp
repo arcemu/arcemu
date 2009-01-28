@@ -337,7 +337,7 @@ AddItemResult ItemInterface::m_AddItem(Item *item, int8 ContainerSlot, int8 slot
 		m_pOwner->SetDualWield( true );
 
 
-	m_pOwner->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_LOOT_ITEM, item->GetEntry(), 1, 0);
+	m_pOwner->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_OWN_ITEM, item->GetEntry(), 1, 0);
 	return ADD_ITEM_RESULT_OK;
 }
 

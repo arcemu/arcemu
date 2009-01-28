@@ -284,6 +284,7 @@ bool ChatHandler::HandleAddInvItemCommand(const char *args, WorldSession *m_sess
 
 		SlotResult *lr = chr->GetItemInterface()->LastSearchResult();
 		chr->GetSession()->SendItemPushResult(item,false,true,false,true,lr->ContainerSlot,lr->Slot,count);
+		chr->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_LOOT_ITEM, itemid, 1, 0);
 
 		return true;
 	} else {
