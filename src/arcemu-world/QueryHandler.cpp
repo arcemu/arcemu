@@ -331,7 +331,7 @@ void WorldSession::HandleAchievmentQueryOpcode( WorldPacket & recv_data )
 	CHECK_INWORLD_RETURN;
 
 	uint64 guid = recv_data.unpackGUID(); // Get the inspectee's GUID
-	Player* pTarget = objmgr.GetPlayer(guid);
+	Player* pTarget = objmgr.GetPlayer((uint32)guid);
 	if(!pTarget)
 	{
 		return;
