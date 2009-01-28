@@ -170,7 +170,22 @@ bool ChatHandler::HandleGPSCommand(const char* args, WorldSession *m_session)
 	
 	
 	SystemMessage(m_session, buf);
-
+// ".gps 1" will save gps info to file logs/gps.log - This probably isn't very multithread safe so don't have many gms spamming it!
+	if(args != NULL && *args=='1')
+	{
+		FILE* gpslog = fopen(FormatOutputString("logs","gps",false).c_str(), "at");
+		if(gpslog)
+		{
+			fprintf(gpslog, "%d, %u, %u, %f, %f, %f, %f, \"%s\"",
+				(unsigned int)obj->GetMapId(), at->ZoneId,at->AreaId, obj->GetPositionX(), obj->GetPositionY(), obj->GetPositionZ(), obj->GetOrientation(),at->name);
+// ".gps 1 comment" will save comment after the gps data
+			if(*(args+1) == ' ')
+				fprintf(gpslog,",%s\n",args+2);
+			else
+				fprintf(gpslog,"\n");
+			fclose(gpslog);
+		}
+	}
 	return true;
 }
 
