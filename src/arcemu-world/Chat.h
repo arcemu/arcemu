@@ -352,6 +352,9 @@ protected:
 	bool HandleMonsterSayCommand(const char* args, WorldSession *m_session);
 	bool HandleMonsterYellCommand(const char* args, WorldSession* m_session);
 	bool HandleNpcComeCommand(const char* args, WorldSession* m_session);
+	bool HandleNPCEquipOneCommand(const char * args, WorldSession * m_session);
+	bool HandleNPCEquipTwoCommand(const char * args, WorldSession * m_session);
+	bool HandleNPCEquipThreeCommand(const char * args, WorldSession * m_session);
 	bool HandleClearCooldownsCommand(const char* args, WorldSession *m_session);
 	bool HandleBattlegroundCommand(const char* args, WorldSession *m_session);
 	bool HandleSetWorldStateCommand(const char* args, WorldSession *m_session);

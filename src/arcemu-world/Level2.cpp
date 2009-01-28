@@ -1274,6 +1274,108 @@ bool ChatHandler::HandleNpcComeCommand(const char* args, WorldSession* m_session
 	return true;
 }
 
+bool ChatHandler::HandleNPCEquipOneCommand(const char * args, WorldSession * m_session)
+{
+	if(!args)
+		return false;
+
+	uint32 ItemID = atol(args);
+	Creature * SelectedCreature = getSelectedCreature(m_session, false);
+	if(!SelectedCreature)
+	{
+		m_session->SystemMessage("Please select a creature to modify.");
+		return true;
+	}
+
+	m_session->SystemMessage("Creature: %s (%u) SpawnID: %u - Item1: %u.", SelectedCreature->GetCreatureInfo()->Name, SelectedCreature->GetProto()->Id, SelectedCreature->spawnid, SelectedCreature->m_spawn->Item1SlotDisplay);
+
+	if(ItemID == 0)
+	{
+		SelectedCreature->SetUInt32Value(UNIT_VIRTUAL_ITEM_SLOT_ID, 0);
+		SelectedCreature->SaveToDB();
+		m_session->SystemMessage("Resetted item 1 of %s (%u).", SelectedCreature->GetCreatureInfo()->Name, SelectedCreature->GetProto()->Id);
+		return true;
+	}
+
+	ItemPrototype * ItemProvided = ItemPrototypeStorage.LookupEntry(ItemID);
+	if(!ItemProvided)
+	{
+		m_session->SystemMessage("Item ID: %u does not excist.", ItemID);
+		return true;
+	}
+	SelectedCreature->SetUInt32Value(UNIT_VIRTUAL_ITEM_SLOT_ID, ItemProvided->ItemId);
+	SelectedCreature->SaveToDB();
+	return true;
+}
+
+bool ChatHandler::HandleNPCEquipTwoCommand(const char * args, WorldSession * m_session)
+{
+	if(!args)
+		return false;
+
+	uint32 ItemID = atol(args);
+	Creature * SelectedCreature = getSelectedCreature(m_session, false);
+	if(!SelectedCreature)
+	{
+		m_session->SystemMessage("Please select a creature to modify.");
+		return true;
+	}
+
+	m_session->SystemMessage("Creature: %s (%u) SpawnID: %u - Item2: %u.", SelectedCreature->GetCreatureInfo()->Name, SelectedCreature->GetProto()->Id, SelectedCreature->spawnid, SelectedCreature->m_spawn->Item2SlotDisplay);
+
+	if(ItemID == 0)
+	{
+		SelectedCreature->SetUInt32Value(UNIT_VIRTUAL_ITEM_SLOT_ID_1, 0);
+		SelectedCreature->SaveToDB();
+		m_session->SystemMessage("Resetted item 2 of %s (%u).", SelectedCreature->GetCreatureInfo()->Name, SelectedCreature->GetProto()->Id);
+		return true;
+	}
+
+	ItemPrototype * ItemProvided = ItemPrototypeStorage.LookupEntry(ItemID);
+	if(!ItemProvided)
+	{
+		m_session->SystemMessage("Item ID: %u does not excist.", ItemID);
+		return true;
+	}
+	SelectedCreature->SetUInt32Value(UNIT_VIRTUAL_ITEM_SLOT_ID_1, ItemProvided->ItemId);
+	SelectedCreature->SaveToDB();
+	return true;
+}
+
+bool ChatHandler::HandleNPCEquipThreeCommand(const char * args, WorldSession * m_session)
+{
+	if(!args)
+		return false;
+
+	uint32 ItemID = atol(args);
+	Creature * SelectedCreature = getSelectedCreature(m_session, false);
+	if(!SelectedCreature)
+	{
+		m_session->SystemMessage("Please select a creature to modify.");
+		return true;
+	}
+
+	m_session->SystemMessage("Creature: %s (%u) SpawnID: %u - Item3: %u.", SelectedCreature->GetCreatureInfo()->Name, SelectedCreature->GetProto()->Id, SelectedCreature->spawnid, SelectedCreature->m_spawn->Item3SlotDisplay);
+
+	if(ItemID == 0)
+	{
+		SelectedCreature->SetUInt32Value(UNIT_VIRTUAL_ITEM_SLOT_ID_2, 0);
+		SelectedCreature->SaveToDB();
+		m_session->SystemMessage("Resetted item 3 of %s (%u).", SelectedCreature->GetCreatureInfo()->Name, SelectedCreature->GetProto()->Id);
+		return true;
+	}
+
+	ItemPrototype * ItemProvided = ItemPrototypeStorage.LookupEntry(ItemID);
+	if(!ItemProvided)
+	{
+		m_session->SystemMessage("Item ID: %u does not excist.", ItemID);
+		return true;
+	}
+	SelectedCreature->SetUInt32Value(UNIT_VIRTUAL_ITEM_SLOT_ID_2, ItemProvided->ItemId);
+	SelectedCreature->SaveToDB();
+	return true;
+}
+
 ARCEMU_INLINE void RepairItem2(Player * pPlayer, Item * pItem)
 {
     pItem->SetDurabilityToMax();

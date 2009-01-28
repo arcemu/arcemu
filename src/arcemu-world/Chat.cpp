@@ -417,6 +417,9 @@ void CommandTableStorage::Init()
 		{ "formationlink1",   'm', &ChatHandler::HandleFormationLink1Command, "Sets formation master.",                                                                                                                  NULL, 0, 0, 0 },
 		{ "formationlink2",   'm', &ChatHandler::HandleFormationLink2Command, "Sets formation slave with distance and angle",                                                                                            NULL, 0, 0, 0 },
 		{ "formationclear",   'm', &ChatHandler::HandleFormationClearCommand, "Removes formation from creature",                                                                                                         NULL, 0, 0, 0 },
+		{ "equip1",			  'm', &ChatHandler::HandleNPCEquipOneCommand,	  "Use: .npc equip1 <itemid> - use .npc equip1 0 to remove the item",                                                                        NULL, 0, 0, 0 },
+		{ "equip2",			  'm', &ChatHandler::HandleNPCEquipTwoCommand,	  "Use: .npc equip2 <itemid> - use .npc equip2 0 to remove the item",                                                                        NULL, 0, 0, 0 },
+		{ "equip3",			  'm', &ChatHandler::HandleNPCEquipThreeCommand,  "Use: .npc equip3 <itemid> - use .npc equip3 0 to remove the item",                                                                        NULL, 0, 0, 0 },
 		{ NULL,               '0', NULL,                                      "",                                                                                                                                        NULL, 0, 0, 0 }
 	};
 	dupe_command_table(NPCCommandTable, _NPCCommandTable);
