@@ -2650,9 +2650,10 @@ bool ChatHandler::HandleLookupSpellCommand(const char * args, WorldSession * m_s
  			// Print out the name in a cool highlighted fashion
 			// SendHighlightedName(m_session, "Spell", spell->Name, y, x, spell->Id);
 			// Send spell link instead
-			recout = itoa(spell->Id,(char*)itoabuf,10);
+			sprintf((char*)itoabuf,"%u",spell->Id);
+			recout = (char*)itoabuf;
 			recout += ": |cff71d5ff|Hspell:";
-			recout += itoa(spell->Id,(char*)itoabuf,10);
+			recout += (char*)itoabuf;
 			recout += "|h[";
 			recout += spell->Name;
 			recout += "]|h|r";
