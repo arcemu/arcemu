@@ -158,6 +158,7 @@ void LogonCommServerSocket::HandlePacket(WorldPacket & recvData)
 	if(recvData.GetOpcode() >= RMSG_COUNT || Handlers[recvData.GetOpcode()] == 0)
 	{
 		printf("Got unknwon packet from logoncomm: %u\n", recvData.GetOpcode());
+		Disconnect();
 		return;
 	}
 
@@ -175,13 +176,24 @@ void LogonCommServerSocket::HandleRegister(WorldPacket & recvData)
 	if (my_id == -1)
 	{
 		my_id = sInfoCore.GenerateRealmID();
-		sLog.outString("Registering realm `%s` under ID %u.", Name.c_str(), my_id);
+#ifdef WIN32
+		if ( _IsStringUTF8(Name.c_str()) )
+			sLog.outString("Registering realm `%s`(UNICODE) under ID %u.", _StringToANSI(Name.c_str()), my_id);
+		else
+#endif
+			sLog.outString("Registering realm `%s` under ID %u.",Name.c_str(), my_id);
 	}
 	else 
 	{
 		sInfoCore.RemoveRealm(my_id);
 		int new_my_id = sInfoCore.GenerateRealmID(); //socket timout will DC old id after a while, make sure it's not the one we restarted
-		sLog.outString("Updating realm `%s` with ID %u to new ID %u.", Name.c_str(), my_id, new_my_id );
+#ifdef WIN32
+		if ( _IsStringUTF8(Name.c_str()) )
+			sLog.outString("Updating realm `%s`(UNICODE) with ID %u to new ID %u.", _StringToANSI(Name.c_str()), my_id, new_my_id );
+		else
+#endif			
+			sLog.outString("Updating realm `%s` with ID %u to new ID %u.", Name.c_str(), my_id, new_my_id );
+						
 		my_id = new_my_id;
 	}
 
@@ -218,7 +230,12 @@ void LogonCommServerSocket::HandleSessionRequest(WorldPacket & recvData)
 	uint32 request_id;
 	string account_name;
 	recvData >> request_id;
+
+	if ( request_id == 0 ) return;
+
 	recvData >> account_name;
+	
+	if ( recvData.size() < 4+account_name.size()+1 ) {Disconnect();return;} // cebernic: hack ya?
 
 	// get sessionkey!
 	uint32 error = 0;
@@ -307,6 +324,9 @@ void LogonCommServerSocket::HandleAuthChallenge(WorldPacket & recvData)
 {
 	unsigned char key[20];
 	uint32 result = 1;
+	
+	if (recvData.size() < 20) return; // cebernic:hack?
+
 	recvData.read(key, 20);
 
 	// check if we have the correct password
@@ -339,7 +359,11 @@ void LogonCommServerSocket::HandleMappingReply(WorldPacket & recvData)
 {
 	/* this packet is gzipped, whee! :D */
 	uint32 real_size;
+
+	if (recvData.size() < 4) return;
+
 	recvData >> real_size;
+
 	uLongf rsize = real_size;
 
 	ByteBuffer buf(real_size);
@@ -400,6 +424,7 @@ void LogonCommServerSocket::HandleUpdateMapping(WorldPacket & recvData)
 		realm->CharacterMap.insert( make_pair( account_id, chars_to_add ) );
 
 	sInfoCore.getRealmLock().Release();
+
 }
 
 void LogonCommServerSocket::HandleTestConsoleLogin(WorldPacket & recvData)
@@ -538,6 +563,7 @@ void LogonCommServerSocket::HandlePopulationRespond(WorldPacket & recvData)
 {
 	float population;
 	uint32 realmId;
+	if ( recvData.size() < 16 ) return;
 	recvData >> realmId >> population;
 	sInfoCore.UpdateRealmPop(realmId, population);
 }

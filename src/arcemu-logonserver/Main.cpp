@@ -81,12 +81,30 @@ int main(int argc, char** argv)
 		if (setrlimit(RLIMIT_CORE, &rl) == -1)
 			printf("setrlimit failed. Server may not save core.dump files.\n");
 	}
+#else
+	SetThreadName( "arcemuLogonServerThread" );
+	StartCrashHandler();
+
+int nError = false;
+	HANDLE hHeap = GetProcessHeap();
+	HeapLock(hHeap);
+	unsigned long arg=2;
+	if ( !HeapSetInformation(GetProcessHeap(), HeapCompatibilityInformation, &arg, sizeof(arg)) ){
+		nError = true;
+	}
+
+	HeapUnlock(hHeap);
+
+	if ( nError ) {
+		printf("LFH not supported on this system!...ignored....\n");
+		Sleep(500);
+	}
 #endif
+#define sLogonServer LogonServer::getSingleton()
 
 	new LogonServer;
-
-	// Run!
-	LogonServer::getSingleton( ).Run(argc, argv);
+		// Run!
+	sLogonServer.Run(argc, argv);
 	delete LogonServer::getSingletonPtr();
 }
 
@@ -362,12 +380,11 @@ void LogonServer::Run(int argc, char ** argv)
 			printf("  Passed without errors.\n");
 		else
 			printf("  Encountered one or more errors.\n");
-		/* Remved useless die directive */
-		/*
+		/* test for die variables */
 		string die;
 		if(Config.MainConfig.GetString("die", "msg", &die) || Config.MainConfig.GetString("die2", "msg", &die))
 			printf("Die directive received: %s", die.c_str());
-		*/
+
 		return;
 	}
 	
@@ -419,14 +436,17 @@ void LogonServer::Run(int argc, char ** argv)
 	Sha1Hash hash;
 	hash.UpdateData(logon_pass);
 	hash.Finalize();
+
+	memset(sql_hash,0,20);
 	memcpy(sql_hash, hash.GetDigest(), 20);
 	
 	ThreadPool.ExecuteTask(new LogonConsoleThread);
 
 	new SocketMgr;
-	new SocketGarbageCollector;
-	sSocketMgr.SpawnWorkerThreads();
 
+	new SocketGarbageCollector;
+	sSocketGarbageCollector.Startup();
+	sSocketMgr.SpawnWorkerThreads();
 	ListenSocket<AuthSocket> * cl = new ListenSocket<AuthSocket>(host.c_str(), cport);
 	ListenSocket<LogonCommServerSocket> * sl = new ListenSocket<LogonCommServerSocket>(shost.c_str(), sport);
 
@@ -435,11 +455,22 @@ void LogonServer::Run(int argc, char ** argv)
 	bool authsockcreated = cl->IsOpen();
 	bool intersockcreated = sl->IsOpen();
 #ifdef WIN32
-	if(authsockcreated)
+
+	Sleep(50);
+	if(authsockcreated){
 		ThreadPool.ExecuteTask(cl);
-	if(intersockcreated)
+		Log.Success("Main","Auth listen socket created.");
+	}
+
+	Sleep(50);
+	if(intersockcreated){
 		ThreadPool.ExecuteTask(sl);
+		Log.Success("Main","CommServer listen socket created.");
+	}
+
+	Sleep(50);
 #endif
+
 	// hook signals
 	sLog.outString("Hooking signals...");
 	signal(SIGINT, _OnSignal);
@@ -464,28 +495,34 @@ void LogonServer::Run(int argc, char ** argv)
 		fprintf(fPid, "%u", (unsigned int)pid);
 		fclose(fPid);
 	}
+
 	uint32 loop_counter = 0;
 	//ThreadPool.Gobble();
-	sLog.outString("Success! Ready for connections");
+	sLog.outString("LogonServer ready for connections...");
+
 	while(mrunning && authsockcreated && intersockcreated)
 	{
-		if(!(++loop_counter % 400))	 // 20 seconds
-			CheckForDeadSockets();
-
-		if(!(loop_counter%10000))	// 5mins
-			ThreadPool.IntegrityCheck();
-
-		if(!(loop_counter%10))
-		{
-			sInfoCore.TimeoutSockets();
-			sSocketGarbageCollector.Update();
-			CheckForDeadSockets();			  // Flood Protection
 			UNIXTIME = time(NULL);
 			g_localTime = *localtime(&UNIXTIME);
+
+			Sleep(1000);
+			++loop_counter;
+#ifndef WIN32 //cebernic: WIN32 Checkfordead() nolonger needed,we have new garbage system already.
+		if(!(loop_counter % 3))	 // 3 seconds
+			CheckForDeadSockets();
+#endif
+
+
+		if(!(loop_counter%300))	// 5mins
+			ThreadPool.IntegrityCheck();
+
+		if(!(loop_counter%5)) // 5 seconds
+		{
+			sInfoCore.TimeoutSockets();
 		}
 
 		PatchMgr::getSingleton().UpdateJobs();
-		Sleep(10);
+		if ( loop_counter > 18000 ) loop_counter = 0; // never be unlimited counter
 	}
 
 	sLog.outString("Shutting down...");
@@ -499,13 +536,16 @@ void LogonServer::Run(int argc, char ** argv)
 #endif
 
 	pfc->kill();
-
 	cl->Close();
 	sl->Close();
-	sSocketMgr.CloseAll();
+
 #ifdef WIN32
 	sSocketMgr.ShutdownThreads();
 #endif
+
+	sSocketGarbageCollector.Shutdown();
+	sSocketMgr.CloseAll();
+
 	sLogonConsole.Kill();
 	delete LogonConsole::getSingletonPtr();
 
@@ -515,10 +555,16 @@ void LogonServer::Run(int argc, char ** argv)
 	sLogonSQL->Shutdown();
 	delete sLogonSQL;
 
-	ThreadPool.Shutdown();
 
 	// delete pid file
 	remove("logonserver.pid");
+
+	delete pfc;
+
+	// cebernic: don't delete listensocket,threadpool did.
+	//delete cl;
+	//delete sl;
+	ThreadPool.Shutdown();
 
 	delete AccountMgr::getSingletonPtr();
 	delete InformationCore::getSingletonPtr();
@@ -526,16 +572,43 @@ void LogonServer::Run(int argc, char ** argv)
 	delete IPBanner::getSingletonPtr();
 	delete SocketMgr::getSingletonPtr();
 	delete SocketGarbageCollector::getSingletonPtr();
-	delete pfc;
-	delete cl;
-	delete sl;
+	
 	printf("Shutdown complete.\n");
+	Sleep(1000);
 }
 
-void OnCrash(bool Terminate)
+#ifdef WIN32
+
+Mutex m_crashedMutex;
+
+// Crash Handler
+void OnCrash( bool Terminate )
 {
+		Log.Error( "Crash Handler","Advanced crash handler initialized." );
 
+	if( !m_crashedMutex.AttemptAcquire() )
+		TerminateThread( GetCurrentThread(), 0 );
+
+	try
+	{
+		Log.Notice( "Crash Handler","nothing to do." );
+	}
+	catch(...)
+	{
+		Log.Error( "Crash Handler","catching." );
+	}
+
+	Log.Notice( "Server","Closing." );
+	
+	if( Terminate )
+	{
+		HANDLE pH = OpenProcess( PROCESS_TERMINATE, TRUE, GetCurrentProcessId() );
+		TerminateProcess( pH, 1 );
+		CloseHandle( pH );
+	}
 }
+
+#endif
 
 void LogonServer::CheckForDeadSockets()
 {
@@ -557,7 +630,7 @@ void LogonServer::CheckForDeadSockets()
 		{
 			_authSockets.erase(it2);
 			s->removedFromSet = true;
-			s->Disconnect();
+			if (s ) s->Delete();
 		}
 	}
 	_authSocketLock.Release();

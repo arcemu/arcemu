@@ -157,7 +157,7 @@ void LogonConsole::ReloadAccts(char *str)
 
 void LogonConsole::NetworkStatus(char *str)
 {
-	//sSocketMgr.ShowStatus();
+	sSocketMgr.ShowStatus();
 }
 
 // quit | exit
