@@ -75,7 +75,9 @@ Guild::~Guild()
 		for(list<GuildBankEvent*>::iterator it2 = (*itr)->lLog.begin(); it2 != (*itr)->lLog.end(); ++it2)
 			delete (*it2);
 		
-		(*itr)->szTabIcon = (*itr)->szTabInfo = (*itr)->szTabName = NULL;
+		free( (*itr)->szTabIcon );
+		free( (*itr)->szTabInfo );
+		free( (*itr)->szTabName );
 		
 		delete (*itr);
 	}
