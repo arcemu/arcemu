@@ -283,6 +283,13 @@ void WorldSession::CharacterEnumProc(QueryResult * result)
 
 void WorldSession::HandleCharEnumOpcode( WorldPacket & recv_data )
 {	
+	if ( UNIXTIME < m_lastEnumChar || UNIXTIME - m_lastEnumChar < 2 ) {
+		//Disconnect();
+		return; // cebernic:anti faster char enum. it was SQL directly,so we need slow down the operation else u got spam
+	}
+	
+	m_lastEnumChar = (uint32)UNIXTIME;
+
 	AsyncQuery * q = new AsyncQuery( new SQLClassCallbackP1<World, uint32>(World::getSingletonPtr(), &World::CharacterEnumProc, GetAccountId()) );
 	q->AddQuery("SELECT guid, level, race, class, gender, bytes, bytes2, name, positionX, positionY, positionZ, mapId, zoneId, banned, restState, deathstate, forced_rename_pending, player_flags, guild_data.guildid FROM characters LEFT JOIN guild_data ON characters.guid = guild_data.playerid WHERE acct=%u ORDER BY guid LIMIT 10", GetAccountId());
 	CharacterDatabase.QueueAsyncQuery(q);
@@ -465,8 +472,8 @@ void WorldSession::HandleCharCreateOpcode( WorldPacket & recv_data )
 	pNewChar->ok_to_remove = true;
 	delete  pNewChar;
 
-	OutPacket( SMSG_CHAR_CREATE, 1, CHAR_CREATE_SUCCESS );
-
+	OutPacket( SMSG_CHAR_CREATE, 1, CHAR_CREATE_SUCCESS ); // char deleted
+	m_lastCreateChar = (uint32)UNIXTIME;
 	sLogonCommHandler.UpdateAccountCount( GetAccountId(), 1 );
 }
 
@@ -474,6 +481,13 @@ void WorldSession::HandleCharDeleteOpcode( WorldPacket & recv_data )
 {
 	CHECK_PACKET_SIZE(recv_data, 8);
 	uint8 fail = 0x3E;
+
+	if ( m_lastCreateChar >= UNIXTIME || UNIXTIME - m_lastCreateChar < 2 )
+	{
+		fail = 0x40;
+		OutPacket(SMSG_CHAR_DELETE, 1, &fail);
+		return;
+	}
 
 	uint64 guid;
 	recv_data >> guid;
@@ -931,11 +945,13 @@ void WorldSession::FullLogin(Player * plr)
 #endif
 		OutPacket(SMSG_TRIGGER_CINEMATIC, 4, &introid);
 
+#ifdef _TEST_EXTENDED_FEATURES_
 		if ( sWorld.m_AdditionalFun ) //cebernic: tells people who 's newbie :D
 		{
 			const int classtext[] ={0,5,6,8,9,11,0,4,3,7,0,10};
 			sWorld.SendLocalizedWorldText(true,"{65}",classtext[ (uint32)plr->getClass() ] , plr->GetName() , (plr->GetTeam() ? "{63}":"{64}") );
 		}
+#endif
 
 	}
 

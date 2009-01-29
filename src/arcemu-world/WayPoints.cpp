@@ -900,6 +900,7 @@ bool ChatHandler::HandleNpcSelectCommand(const char * args, WorldSession * m_ses
 	float dist2;
 	Player * plr = m_session->GetPlayer();
 	set<Object*>::iterator itr;
+	plr->AquireInrangeLock(); // cebernic:lock:D
 	for(itr = plr->GetInRangeSetBegin(); itr != plr->GetInRangeSetEnd(); ++itr)
 	{
 		if( (dist2 = plr->GetDistance2dSq(*itr)) < dist && (*itr)->GetTypeId() == TYPEID_UNIT )
@@ -908,7 +909,7 @@ bool ChatHandler::HandleNpcSelectCommand(const char * args, WorldSession * m_ses
 			dist = dist2;
 		}
 	}
-
+	plr->ReleaseInrangeLock();
 	if(!un)
 	{
 		SystemMessage(m_session, "No inrange creatures found.");

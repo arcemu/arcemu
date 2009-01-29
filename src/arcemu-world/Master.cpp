@@ -398,9 +398,11 @@ bool Master::Run(int argc, char ** argv)
 	Log.Notice( "Network","Starting subsystem..." );
 	new SocketMgr;
 	new SocketGarbageCollector;
-	sSocketMgr.SpawnWorkerThreads();
 
 	sScriptMgr.LoadScripts();
+
+	sSocketGarbageCollector.Startup();
+	sSocketMgr.SpawnWorkerThreads();
 
 	LoadingTime = getMSTime() - LoadingTime;
 	Log.Notice( "Server","Ready for connections. Startup time: %ums\n", LoadingTime );
@@ -483,11 +485,14 @@ bool Master::Run(int argc, char ** argv)
 			g_localTime = *localtime(&curTime);
 		}
 
+		if(!(loopcounter%2))
+		{
 #ifdef VOICE_CHAT
 		sVoiceChatHandler.Update();
 #endif
-		sSocketGarbageCollector.Update();
+		}
 
+		if ( loopcounter > 10000 ) loopcounter = 0;
 		/* UPDATE */
 		last_time = now();
 		etime = last_time - start;
@@ -552,7 +557,7 @@ bool Master::Run(int argc, char ** argv)
 	}
 	_UnhookSignals();
 
-    wr->SetThreadState( THREADSTATE_TERMINATE );
+  wr->SetThreadState( THREADSTATE_TERMINATE );
 	ThreadPool.ShowStats();
 	/* Shut down console system */
 	console->terminate();
@@ -575,6 +580,7 @@ bool Master::Run(int argc, char ** argv)
 	CharacterDatabase.EndThreads();
 	WorldDatabase.EndThreads();
 
+
 	Log.Notice( "DayWatcherThread", "Exiting..." );
 	dw->terminate();
 	dw = NULL;
@@ -589,20 +595,22 @@ bool Master::Run(int argc, char ** argv)
 	sWorld.SaveAllPlayers();
 
 	Log.Notice( "Network", "Shutting down network subsystem." );
+
+	sLogonCommHandler.Shutdown(); // logoncomm shuting down
+
 #ifdef WIN32
 	sSocketMgr.ShutdownThreads();
 #endif
+
+	sSocketGarbageCollector.Shutdown();
 	sSocketMgr.CloseAll();
 
 	bServerShutdown = true;
 	ThreadPool.Shutdown();
 
-	delete ls;
-
 	sWorld.LogoutPlayers();
-	sLog.outString( "" );
+	sLog.outString( "\n" );
 
-	delete LogonCommHandler::getSingletonPtr();
 
 	//should delete pools before other handlers !
 	Log.Notice( "Item Pool", "Item Pool" );
@@ -631,8 +639,9 @@ bool Master::Run(int argc, char ** argv)
 	_StopDB();
 
 	Log.Notice( "Network", "Deleting Network Subsystem..." );
-	delete SocketMgr::getSingletonPtr();
 	delete SocketGarbageCollector::getSingletonPtr();
+	delete LogonCommHandler::getSingletonPtr();
+	delete SocketMgr::getSingletonPtr();
 #ifdef VOICE_CHAT
 	Log.Notice( "VoiceChatHandler", "~VoiceChatHandler()" );
 	delete VoiceChatHandler::getSingletonPtr();
@@ -656,6 +665,7 @@ bool Master::Run(int argc, char ** argv)
 	remove( "arcemu.pid" );
 
 	Log.Notice( "Shutdown", "Shutdown complete." );
+	Sleep(1000);
 
 #ifdef WIN32
 	WSACleanup();

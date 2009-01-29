@@ -56,19 +56,30 @@ int unix_main(int argc, char ** argv)
 
 int win32_main( int argc, char ** argv )
 {
-	SetThreadName( "Main Thread" );
+	SetThreadName( "arcemuWorldServerThread" );
 	StartCrashHandler();
-
-	//Andy: windows only, helps fight heap allocation on allocs lower then 16KB
+	int nError = false;
+	HANDLE hHeap = GetProcessHeap();
+	HeapLock(hHeap);
 	unsigned long arg=2;
-	HeapSetInformation(GetProcessHeap(), HeapCompatibilityInformation, &arg, sizeof(arg));
+	if ( !HeapSetInformation(GetProcessHeap(), HeapCompatibilityInformation, &arg, sizeof(arg)) ){
+		nError = true;
+	}
+
+	HeapUnlock(hHeap);
+
+	if ( nError ) {
+		printf("LFH not supported on this system!...ignored....\n");
+		Sleep(500);
+	}
+
 
 	THREAD_TRY_EXECUTION
 	{
 		sMaster.Run( argc, argv );
 	}
 	THREAD_HANDLE_CRASH;
-	exit( 0 );
+	return true;
 }
 
 #endif

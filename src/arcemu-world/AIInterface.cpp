@@ -204,7 +204,7 @@ void AIInterface::HandleEvent(uint32 event, Unit* pUnit, uint32 misc1)
 		{
 		case EVENT_ENTERCOMBAT:
 			{
-				if( pUnit == NULL || pUnit->isDead() || m_Unit->isDead() ) return;
+				if( pUnit == NULL || pUnit->isDead() || m_Unit->isDead() || !m_Unit->IsInWorld() || !pUnit->IsInWorld() ) return;
 
 				/* send the message */
 				if( m_Unit->GetTypeId() == TYPEID_UNIT )
@@ -339,7 +339,7 @@ void AIInterface::HandleEvent(uint32 event, Unit* pUnit, uint32 misc1)
 				else
 				{
 					m_AIState = STATE_EVADE;
-
+					if ( !m_Unit || !m_Unit->IsInWorld()  ) return;
 					Unit* SavedFollow = UnitToFollow;
 					UnitToFollow = NULL;
 					FollowDistance = 0.0f;
@@ -516,7 +516,7 @@ void AIInterface::HandleEvent(uint32 event, Unit* pUnit, uint32 misc1)
 	{
 		case EVENT_UNITDIED:
 		{
-			if( pUnit == NULL ) return;
+			if( pUnit == NULL || m_Unit==NULL || !m_Unit->IsInWorld() || !pUnit->IsInWorld() ) return;
 
 			if( static_cast< Creature* >( m_Unit )->has_combat_text )
 				objmgr.HandleMonsterSayEvent( static_cast< Creature* >( m_Unit ), MONSTER_SAY_EVENT_ON_DIED );
@@ -1025,8 +1025,8 @@ void AIInterface::_UpdateCombat(uint32 p_time)
 		moved_for_attack = false;
 	}
 #endif
-
-	if (sWorld.Collision) {
+	// cebernic:tempBlocked due to BUG
+	/*if (sWorld.Collision) {
 		float target_land_z=0.0f;
 		if ( m_Unit->GetMapMgr() != NULL && GetNextTarget() != NULL )
 		{
@@ -1053,7 +1053,7 @@ void AIInterface::_UpdateCombat(uint32 p_time)
 				}
 			}
 		}
-	}
+	}*/
 
 	if ( GetNextTarget() != NULL && GetNextTarget()->GetTypeId() == TYPEID_UNIT && m_AIState == STATE_EVADE)
 		HandleEvent( EVENT_LEAVECOMBAT, m_Unit, 0);
@@ -1315,8 +1315,8 @@ void AIInterface::_UpdateCombat(uint32 p_time)
 			}break;
 		case AGENT_SPELL:
 			{
-				if(!m_nextSpell || !GetNextTarget())
-					return;  // this shouldnt happen
+				if(!m_nextSpell || !m_nextSpell->spell || !GetNextTarget())
+					return;  // this shouldnt happened
 
 				SpellCastTime *sd = dbcSpellCastTime.LookupEntry(m_nextSpell->spell->CastingTimeIndex);
 
@@ -1433,7 +1433,7 @@ void AIInterface::_UpdateCombat(uint32 p_time)
 			}break;
 		case AGENT_CALLFORHELP:
 			{
-				FindFriends( 64.0f /*8.0f*/ );
+				FindFriends( 75.0f /*8.0f*/ );
 				m_hasCalledForHelp = true; // We only want to call for Help once in a Fight.
 				if( m_Unit->GetTypeId() == TYPEID_UNIT )
 						objmgr.HandleMonsterSayEvent( static_cast< Creature* >( m_Unit ), MONSTER_SAY_EVENT_CALL_HELP );
@@ -1488,8 +1488,8 @@ void AIInterface::AttackReaction(Unit* pUnit, uint32 damage_dealt, uint32 spellI
 {
 	if( m_AIState == STATE_EVADE || !pUnit || !pUnit->isAlive() || m_Unit->isDead() || m_Unit == pUnit )
 		return;
-
-	if( sWorld.Collision && pUnit->IsPlayer() )
+//tempBlocked
+/*	if( sWorld.Collision && pUnit->IsPlayer() )
 	{
 		float target_land_z=0.0f;
 		if ( m_Unit->GetMapMgr() != NULL )
@@ -1514,7 +1514,7 @@ void AIInterface::AttackReaction(Unit* pUnit, uint32 damage_dealt, uint32 spellI
 				}
 			}
 		}
-	}
+	}*/
 
 	if (pUnit->GetTypeId() == TYPEID_PLAYER && static_cast<Player *>(pUnit)->GetMisdirectionTarget() != 0)
 	{
@@ -2648,7 +2648,7 @@ void AIInterface::deleteWayPoint(uint32 wpid)
 		if((*itr) == NULL || (*itr)->id == wpid)
 		{
 			if((*itr) != NULL)
-				delete (*itr);
+				delete ((*itr));
 
 			continue;
 		}
@@ -2933,7 +2933,7 @@ void AIInterface::_UpdateMovement(uint32 p_time)
 				float z = m_Unit->GetPositionZ() + (m_destinationZ - m_Unit->GetPositionZ()) * q;
 
 				//Andy
-				if (sWorld.Collision) {
+				/*if (sWorld.Collision) {
 					float target_land_z=0.0f;
 					if( m_Unit->GetMapMgr() != NULL )
 					{
@@ -2951,7 +2951,7 @@ void AIInterface::_UpdateMovement(uint32 p_time)
 						if ( z > m_Unit->GetMapMgr()->GetWaterHeight( m_nextPosX, m_nextPosY ) && target_land_z != 0.0f )
 							z = target_land_z;
 					}
-				}
+				}*/
 
 				m_Unit->SetPosition(x, y, z, m_Unit->GetOrientation());
 				
@@ -3347,7 +3347,8 @@ void AIInterface::CastSpell(Unit* caster, SpellEntry *spellInfo, SpellCastTarget
 		sSpellStore.LookupString(spellInfo->Name), targets.m_unitTarget);
 #endif
 
-	//i wonder if this will lead to a memory leak :S
+	if ( caster==NULL || spellInfo==NULL) return; // cebernic: for crashfix AIScript
+
 	Spell *nspell = SpellPool.PooledNew();
 	nspell->Init(caster, spellInfo, false, NULL);
 	nspell->prepare(&targets);

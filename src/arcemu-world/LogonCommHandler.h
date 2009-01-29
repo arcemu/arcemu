@@ -52,7 +52,7 @@ enum RealmType
 };
 
 class SocketLoadBalancer;
-
+class LogonCommWatcherThread;
 class LogonCommHandler : public Singleton<LogonCommHandler>
 {
 #ifdef WIN32
@@ -74,7 +74,7 @@ class LogonCommHandler : public Singleton<LogonCommHandler>
 	uint32 _realmType;
 	uint32 pLimit;
 	float server_population;
-
+	LogonCommWatcherThread *logoncommthread;
 public:
 	uint8 sql_passhash[20];
 
@@ -91,6 +91,7 @@ public:
 	void UpdateSockets();
 	void Connect(LogonServer * server);
 	void ConnectAll();
+	void Shutdown();
 	//void LogonDatabaseSQLExecute(const char* str, ...);
 	//void LogonDatabaseReloadAccounts();
 	void RefreshRealmPop();
@@ -117,13 +118,12 @@ public:
 	void RemoveUnauthedSocket(uint32 id);
 	WorldSocket* GetSocketByRequest(uint32 id)
 	{
-		//pendingLock.Acquire();
-
 		WorldSocket * sock;
+		pendingLock.Acquire();
 		map<uint32, WorldSocket*>::iterator itr = pending_logons.find(id);
-		sock = (itr == pending_logons.end()) ? 0 : itr->second;
-
-		//pendingLock.Release();
+		if ( itr != pending_logons.end() ) sock = itr->second;
+		else sock = NULL;
+		pendingLock.Release();
 		return sock;
 	}
 	ARCEMU_INLINE Mutex & GetPendingLock() { return pendingLock; }		

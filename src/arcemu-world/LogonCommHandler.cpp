@@ -48,11 +48,6 @@ LogonCommHandler::LogonCommHandler()
 
 LogonCommHandler::~LogonCommHandler()
 {
-	for(set<LogonServer*>::iterator i = servers.begin(); i != servers.end(); ++i)
-		delete (*i);
-
-	for(set<Realm*>::iterator i = realms.begin(); i != realms.end(); ++i)
-		delete (*i);
 }
 
 LogonCommClientSocket * LogonCommHandler::ConnectToLogon(string Address, uint32 Port)
@@ -63,6 +58,7 @@ LogonCommClientSocket * LogonCommHandler::ConnectToLogon(string Address, uint32 
 
 void LogonCommHandler::RequestAddition(LogonCommClientSocket * Socket)
 {
+	if ( realms.size()==0 ) return;
 	set<Realm*>::iterator itr = realms.begin();
 
 	for(; itr != realms.end(); ++itr)
@@ -83,49 +79,93 @@ void LogonCommHandler::RequestAddition(LogonCommClientSocket * Socket)
 
 class LogonCommWatcherThread : public ThreadBase
 {
-	bool running;
 #ifdef WIN32
 	HANDLE hEvent;
+#else
+	pthread_cond_t cond;
+	pthread_mutex_t mutex;
 #endif
+	bool running;
+	bool closed;
 public:
-
 	LogonCommWatcherThread()
 	{
-#ifdef WIN32
-		hEvent = CreateEvent( NULL, TRUE, FALSE, NULL );
-#endif
-		running = true;
 	}
 
 	~LogonCommWatcherThread()
 	{
-
+	Log.Notice("LogonCommClient", "Commwatcher thread was shutdown.");
+#ifdef WIN32
+	CloseHandle(hEvent);
+#else
+	pthread_cond_destroy(&cond);
+	pthread_mutex_destroy(&mutex);
+#endif
 	}
 
 	void OnShutdown()
 	{
-		running = false;
+	running=false;
 #ifdef WIN32
-		SetEvent( hEvent );
+	SetEvent(hEvent);
+#else
+	pthread_cond_signal(&cond);
 #endif
+	closed=true;
 	}
 
 	bool run()
 	{
+#ifdef WIN32
+	hEvent = CreateEvent(NULL,FALSE,FALSE,NULL);
+#else
+	pthread_mutex_init(&mutex,NULL);
+	pthread_cond_init(&cond,NULL);
+#endif
+	running=true;
+	closed = false;
+
 		sLogonCommHandler.ConnectAll();
 		while( running )
 		{
 			sLogonCommHandler.UpdateSockets();
-#ifdef WIN32
-			WaitForSingleObject( hEvent, 5000 );
-#else
-			Sleep( 5000 );
-#endif
+			Sleep( 1000 );
 		}
-
+		closed=true;
 		return true;
 	}
+	void terminate()
+	{
+	running=false;
+#ifdef WIN32
+	SetEvent(hEvent);
+#else
+	pthread_cond_signal(&cond);
+#endif
+		while ( !closed )
+		{
+			Log.Notice("LogonCommClient", "Waiting for logoncomm thread to end...");
+			Sleep(1000);
+		}
+	Sleep(1000);
+	}
 };
+
+void LogonCommHandler::Shutdown()
+{
+
+	for(set<LogonServer*>::iterator i = servers.begin(); i != servers.end(); ++i)
+		delete (*i);
+
+	for(set<Realm*>::iterator i = realms.begin(); i != realms.end(); ++i)
+		delete (*i);
+
+	// cleanup
+	servers.clear();
+	realms.clear();
+
+	logoncommthread->terminate();
+}
 
 void LogonCommHandler::Startup()
 {
@@ -148,7 +188,8 @@ void LogonCommHandler::Startup()
 		delete result;
 	}
 
-	ThreadPool.ExecuteTask( new LogonCommWatcherThread() );
+	logoncommthread = new LogonCommWatcherThread();
+	ThreadPool.ExecuteTask(logoncommthread);
 }
 
 void LogonCommHandler::ConnectAll()
@@ -181,7 +222,8 @@ void LogonCommHandler::Connect(LogonServer * server)
 		Log.Notice("LogonCommClient", "Connection failed. Will try again in 10 seconds.");
 		return;
 	}
-	Log.Notice("LogonCommClient", "Authenticating...");
+
+	Log.Notice("LogonCommClient", "Authenticating...[%s]",(server->Address).c_str());
 	uint32 tt = (uint32)UNIXTIME + 10;
 	conn->SendChallenge();
 	while(!conn->authenticated)
@@ -269,7 +311,7 @@ void LogonCommHandler::UpdateSockets()
 		{
 			if(!pings) continue;
 
-            if(cs->IsDeleted() || !cs->IsConnected())
+            if( cs->IsDeleted() )
             {
                 cs->_id = 0;
                 itr->second = 0;
@@ -338,7 +380,7 @@ uint32 LogonCommHandler::ClientConnected(string AccountName, WorldSocket * Socke
 	}
 
 	LogonCommClientSocket * s = itr->second;
-	if( s == NULL )
+	if( s == NULL || Socket == NULL)
 		return (uint32)-1;
 
 	pendingLock.Acquire();
@@ -363,13 +405,18 @@ uint32 LogonCommHandler::ClientConnected(string AccountName, WorldSocket * Socke
 void LogonCommHandler::UnauthedSocketClose(uint32 id)
 {
 	pendingLock.Acquire();
-	pending_logons.erase(id);
+	map<uint32, WorldSocket*>::iterator itr = pending_logons.find(id);
+	if ( itr != pending_logons.end() ) pending_logons.erase(itr);
 	pendingLock.Release();
 }
 
 void LogonCommHandler::RemoveUnauthedSocket(uint32 id)
 {
-	pending_logons.erase(id);
+	pendingLock.Acquire();
+	map<uint32, WorldSocket*>::iterator itr = pending_logons.find(id);
+	if ( itr != pending_logons.end() ) pending_logons.erase(itr);
+	//pending_logons.erase(id);
+	pendingLock.Release();
 }
 
 void LogonCommHandler::LoadRealmConfiguration()
@@ -546,5 +593,5 @@ void LogonCommHandler::RefreshRealmPop()
 {
 	// Get realm player limit, it's better that we get the player limit once and save it! <-done	
 	// Calc pop: 0 >= low, 1 >= med, 2 >= hig, 3 >= full
-	server_population = float(((sWorld.AlliancePlayers + sWorld.HordePlayers) * 3) / pLimit);
+	server_population = float(((sWorld.AlliancePlayers + sWorld.HordePlayers) * 3) / (float)pLimit);
 }

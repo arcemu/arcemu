@@ -62,6 +62,9 @@ void LogonCommClientSocket::OnRead()
 				_recvCrypto.Process((uint8*)&remaining, (uint8*)&remaining, 4);
 			}
 
+			if ( opcode >=RMSG_COUNT ) // we haven't this opcode
+				return;
+
 #ifdef USING_BIG_ENDIAN
 			opcode = swap16(opcode);
 #else
@@ -123,6 +126,7 @@ void LogonCommClientSocket::HandlePacket(WorldPacket & recvData)
 	if(recvData.GetOpcode() >= RMSG_COUNT || Handlers[recvData.GetOpcode()] == 0)
 	{
 		printf("Got unknown packet from logoncomm: %u\n", recvData.GetOpcode());
+		Disconnect();
 		return;
 	}
 
@@ -156,12 +160,15 @@ void LogonCommClientSocket::HandleSessionInfo(WorldPacket & recvData)
 
 	// find the socket with this request
 	WorldSocket * sock = sLogonCommHandler.GetSocketByRequest(request_id);
-	if(sock == 0 || sock->Authed || !sock->IsConnected())	   // Expired/Client disconnected
+	if(sock == 0 || sock->Authed || sock->IsDeleted())	   // Expired/Client disconnected
 	{
+		sock->Disconnect();
 		m.Release();
 		return;
 	}
 
+	sock->markConnected();
+	
 	// extract sessionkey / account information (done by WS)
 	sock->Authed = true;
 	sLogonCommHandler.RemoveUnauthedSocket(request_id);
@@ -188,7 +195,7 @@ void LogonCommClientSocket::SendPacket(WorldPacket * data, bool no_crypto)
 {
 	logonpacket header;
 	bool rv;
-	if(!m_connected || m_deleted)
+	if( IsDeleted() )
 		return;
 
 	BurstBegin();
@@ -246,7 +253,8 @@ void LogonCommClientSocket::SendChallenge()
 
 	WorldPacket data(RCMSG_AUTH_CHALLENGE, 20);
 	data.append(key, 20);
-	SendPacket(&data, true);
+	SendPacket(&data,true);
+	Log.Notice("LogonCommClient","Challenge packet sending...");
 }
 
 void LogonCommClientSocket::HandleAuthResponse(WorldPacket & recvData)
@@ -261,6 +269,7 @@ void LogonCommClientSocket::HandleAuthResponse(WorldPacket & recvData)
 	{
 		authenticated = 1;
 	}
+	Log.Notice("LogonCommClient","Got responsed flag from Logonserver [0x%x]\n",authenticated);
 }
 
 void LogonCommClientSocket::UpdateAccountCount(uint32 account_id, uint8 add)

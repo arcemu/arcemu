@@ -947,6 +947,17 @@ void Mailbox::Load(QueryResult * result)
 		msg.read_flag = fields[i++].GetBool();
 		msg.deleted_flag = fields[i++].GetBool();
 
+		if( msg.deleted_flag ) // cebernic : code for explito itemdupe
+		{
+			CharacterDatabase.Execute( "DELETE FROM mailbox WHERE message_id = %u", msg.message_id );
+			continue;
+		}
+		else
+		{
+			msg.copy_made = false;
+			CharacterDatabase.Execute( "UPDATE mailbox SET copy_made = 0 WHERE message_id = %u", msg.message_id	);
+		}
+
 		/*if( msg.copy_made )
 		{
 			QueryResult * result = CharacterDatabase.Query( "SELECT * FROM playeritems WHERE itemtext = %u", msg.message_id );

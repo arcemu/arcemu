@@ -97,5 +97,6 @@ bool WorldRunnable::run()
 	}
 
 	THREAD_HANDLE_CRASH2
+	Log.Notice("WorldRunner","Thread terminated.");
 	return true;
 }
