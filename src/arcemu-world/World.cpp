@@ -93,8 +93,7 @@ void World::LogoutPlayers()
 		p = i->second;
 		++i;
 
-		DeleteSession(p);
-		//delete p;
+		if ( p ) DeleteSession(p);
 	}
 }
 
@@ -206,16 +205,21 @@ void World::AddGlobalSession(WorldSession *session)
 	if(!session)
 		return;
 
-	SessionsMutex.Acquire();
-	Sessions.insert(session);
-	SessionsMutex.Release();
+	GlobalSessionlock.AcquireWriteLock();
+	SessionSet::const_iterator itr = Sessions.find(session);
+	if ( itr==Sessions.end() ) Sessions.insert(session);
+	GlobalSessionlock.ReleaseWriteLock();
 }
 
 void World::RemoveGlobalSession(WorldSession *session)
 {
-	SessionsMutex.Acquire();
-	Sessions.erase(session);
-	SessionsMutex.Release();
+	if(!session)
+		return;
+
+	GlobalSessionlock.AcquireWriteLock();
+	SessionSet::const_iterator itr = Sessions.find(session);
+	if ( itr==Sessions.end() ) Sessions.erase(session);
+	GlobalSessionlock.ReleaseWriteLock();
 }
 
 bool BasicTaskExecutor::run()
@@ -495,6 +499,8 @@ bool World::SetInitialWorldSettings()
 	sAuctionMgr.LoadAuctionHouses();
 
 	m_queueUpdateTimer = mQueueUpdateInterval;
+	m_sessionsUpdateTimer = mSessionsUpdateInterval;
+
 	if(Config.MainConfig.GetBoolDefault("Startup", "BackgroundLootLoading", true))
 	{
 		Log.Notice("World", "Backgrounding loot loading...");
@@ -754,27 +760,36 @@ void World::UpdateSessions(uint32 diff)
 {
 	SessionSet::iterator itr, it2;
 	WorldSession *session;
-	int result;
-	for(itr = Sessions.begin(); itr != Sessions.end();)
-	{
-		session = (*itr);
-		it2 = itr;
-		++itr;
-		if(!session || session->GetInstance() != 0)
-		{
-			Sessions.erase(it2);
-			continue;
-		}
+	int result = 0;
 
-		if((result = session->Update(0)) != 0)
+	if(diff >= m_sessionsUpdateTimer) 
+	{
+		m_sessionsUpdateTimer = mSessionsUpdateInterval;
+		GlobalSessionlock.AcquireWriteLock();
+		for(itr = Sessions.begin(); itr != Sessions.end();)
 		{
-			if(result == 1)
+			session = (*itr);
+			it2 = itr;
+			++itr;
+
+			if(session==NULL || (session && session->GetInstance() != 0 && session->GetPlayer() && !session->GetPlayer()->m_beingPushed)  )
 			{
-				// complete deletion
-				DeleteSession(session);
+				Sessions.erase(it2);
+				continue;
 			}
-			Sessions.erase(it2);
+
+			if(session && (result = session->Update( 0 )) != 0)
+			{
+				if ( session->bDeleted && result==1) {
+					DeleteSession(session);
+					Sessions.erase(it2);
+				}
+			}
 		}
+		GlobalSessionlock.ReleaseWriteLock();
+	}else
+	{
+		m_sessionsUpdateTimer -= diff;
 	}
 }
 
@@ -791,7 +806,7 @@ void World::DeleteSession(WorldSession *session)
 {
 	m_sessionlock.AcquireWriteLock();
 	// remove from big map
-	m_sessions.erase(session->GetAccountId());
+	if ( m_sessions.size() ) m_sessions.erase(session->GetAccountId());
 
 	m_sessionlock.ReleaseWriteLock();
 
@@ -897,7 +912,7 @@ void World::UpdateQueuedSessions(uint32 diff)
 			// this is in a different thread again.
 
 			QueueSet::iterator iter = mQueuedSessions.begin();
-			WorldSocket * QueuedSocket = *iter;
+			WorldSocket * QueuedSocket = (*iter);
 			mQueuedSessions.erase(iter);
 
 			// Welcome, sucker.
@@ -920,11 +935,11 @@ void World::UpdateQueuedSessions(uint32 diff)
 		uint32 Position = 1;
 		while(iter != mQueuedSessions.end())
 		{
-			(*iter)->UpdateQueuePosition(Position++);
-			if(iter==mQueuedSessions.end())
-				break;
-			else
-				++iter;
+			if ( (*iter) && (*iter)->GetSession() && (*iter)->GetSession()->GetSocket() ) {
+				(*iter)->UpdateQueuePosition(Position++);
+				if( iter==mQueuedSessions.end() ) break;
+			}
+			++iter;
 		}
 		queueMutex.Release();
 	} 
@@ -1066,9 +1081,9 @@ void TaskList::spawn()
 #else
 		SYSTEM_INFO s;
 		GetSystemInfo(&s);
-		threadcount = s.dwNumberOfProcessors * 2;
-		if(threadcount>8)
-			threadcount=8;
+		threadcount = (s.dwNumberOfProcessors * 2)+2;
+		if(threadcount>10)
+			threadcount=10;
 #endif
 	}
 	else
@@ -1208,6 +1223,7 @@ void World::Rehash(bool load)
 	SetPlayerLimit(Config.MainConfig.GetIntDefault("Server", "PlayerLimit", 1000));
 	SetMotd(Config.MainConfig.GetStringDefault("Server", "Motd", "Arcemu Default MOTD").c_str());
 	mQueueUpdateInterval = Config.MainConfig.GetIntDefault("Server", "QueueUpdateInterval", 5000);
+	mSessionsUpdateInterval = Config.MainConfig.GetIntDefault("Server", "SessionsUpdateInterval", 1000); // cebernic:D
 	SetKickAFKPlayerTime(Config.MainConfig.GetIntDefault("Server", "KickAFKPlayers", 0));
 	sLog.SetScreenLoggingLevel(Config.MainConfig.GetIntDefault("LogLevel", "Screen", 1));
 	sLog.SetFileLoggingLevel(Config.MainConfig.GetIntDefault("LogLevel", "File", -1));

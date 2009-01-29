@@ -104,7 +104,7 @@ void InstanceMgr::Load(TaskList * l)
 			if(strlen(id) <= 20)
 				continue;
 			uint32 mapId = atoi(id + 20);
-			if(mapId > NUM_MAPS)
+			if(mapId >= NUM_MAPS)
 				continue;
 			m_nextInstanceReset[mapId] = value;
 		}while(result->NextRow());
@@ -416,6 +416,9 @@ MapMgr * InstanceMgr::GetInstance(Object* obj)
 	Instance * in;
 	InstanceMap::iterator itr;
 	InstanceMap * instancemap;
+
+	if (!obj) return NULL;
+
 	MapInfo * inf = WorldMapInfoStorage.LookupEntry(obj->GetMapId());
 
 	// we can *never* teleport to maps without a mapinfo.

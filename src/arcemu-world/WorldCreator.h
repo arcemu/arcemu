@@ -113,7 +113,7 @@ public:
 
 	ARCEMU_INLINE Map* GetMap(uint32 mapid)
 	{
-		if(mapid>NUM_MAPS)
+		if(mapid>=NUM_MAPS)
 			return NULL;
 		else
 			return m_maps[mapid];
@@ -189,7 +189,7 @@ public:
 
 	Instance* GetInstanceByIds(uint32 mapid, uint32 instanceId)
 	{
-		if(mapid > NUM_MAPS)
+		if(mapid >= NUM_MAPS)
 			return NULL;
 		if(mapid == NUM_MAPS)
 		{
