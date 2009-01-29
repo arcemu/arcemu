@@ -27,9 +27,12 @@
 #else
 	
 	volatile int threadid_count = 0;
+	Mutex m_threadIdLock;
 	int GenerateThreadId()
 	{
+		m_threadIdLock.Acquire();
 		int i = ++threadid_count;
+		m_threadIdLock.Release();
 		return i;
 	}
 

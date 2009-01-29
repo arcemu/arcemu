@@ -29,7 +29,7 @@ public:
 	class error {
 	};
 
-	const static size_t DEFAULT_SIZE = 0x1000;
+	const static size_t DEFAULT_SIZE = 0x4000; //16,384
 
 	ByteBuffer(): _rpos(0), _wpos(0) {
 		_storage.reserve(DEFAULT_SIZE);
@@ -349,6 +349,9 @@ public:
 	}
 	void append(const uint8 *src, size_t cnt) {
 		if (!cnt) return;
+
+		//if (_wpos + cnt <=0 || src==NULL) return;
+		//if ( _storage.size() > 10000000) return;
 
 		// noone should even need uint8buffer longer than 10mb
 		// if you DO need, think about it

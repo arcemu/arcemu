@@ -79,11 +79,13 @@ public:
 		m_event = ev;
 	}
 
-	void Mark()
+	bool Mark() // cebernic: tell us marking with failed,so we need delete you,hacker?
 	{
 		long val = InterlockedCompareExchange(&m_inUse, 1, 0);
-		if(val != 0)
-			printf("!!!! Network: Detected double use of read/write event! Previous event was %u.\n", m_event);
+		if(val != 0){
+			Log.Notice("SocketMgr","WARNING! read/write double event,prev was %u",m_event);
+			return false;
+		}else return true;
 	}
 
 	void Unmark()

@@ -149,6 +149,7 @@ public:
 #else
 
 #define FastMutex Mutex
+#define FastMutex() Mutex()
 
 #endif
 

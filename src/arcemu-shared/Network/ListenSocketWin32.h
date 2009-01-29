@@ -14,16 +14,19 @@
 
 #include "../Threading/ThreadPool.h"
 
+#define MAX_CONNECTOR_ON_LISTENSOCKET 20000
+
 template<class T>
 class SERVER_DECL ListenSocket : public ThreadBase
 {
+	bool closed;
 public:
 	ListenSocket(const char * ListenAddress, uint32 Port)
 	{
 		m_socket = WSASocket(AF_INET, SOCK_STREAM, 0, NULL, 0, WSA_FLAG_OVERLAPPED);
 		SocketOps::ReuseAddr(m_socket);
 		SocketOps::Blocking(m_socket);
-		SocketOps::SetTimeout(m_socket, 60);
+		SocketOps::SetTimeout(m_socket, 30);
 
 		m_address.sin_family = AF_INET;
 		m_address.sin_port = ntohs((u_short)Port);
@@ -41,14 +44,14 @@ public:
 		int ret = bind(m_socket, (const sockaddr*)&m_address, sizeof(m_address));
 		if(ret != 0)
 		{
-			printf("Bind unsuccessful on port %u.", Port);
+			printf("Bind unsuccessful on port %u.\n", Port);
 			return;
 		}
 
 		ret = listen(m_socket, 5);
 		if(ret != 0) 
 		{
-			printf("Unable to listen on port %u.", Port);
+			printf("Unable to listen on port %u.\n", Port);
 			return;
 		}
 
@@ -59,30 +62,33 @@ public:
 
 	~ListenSocket()
 	{
-		Close();	
+		if ( !closed ) Close();
 	}
 
 	bool run()
 	{
+		closed = false;
 		while(m_opened)
 		{
-			//aSocket = accept(m_socket, (sockaddr*)&m_tempAddress, (socklen_t*)&len);
-			aSocket = WSAAccept(m_socket, (sockaddr*)&m_tempAddress, (socklen_t*)&len, NULL, NULL);
-			if(aSocket == INVALID_SOCKET)
+			Sleep(10);
+
+			if(sSocketGarbageCollector.GetSocketSize() > MAX_CONNECTOR_ON_LISTENSOCKET)
+				continue;
+
+			memset(&m_tempAddress,0,sizeof(sockaddr_in));
+
+			aSocket = accept(m_socket, (sockaddr*)&m_tempAddress, (socklen_t*)&len);
+			if(aSocket == INVALID_SOCKET){
+				SocketOps::CloseSocket(aSocket);
 				continue;		// shouldn't happen, we are blocking.
+			}
 
 			socket = new T(aSocket);
 			socket->SetCompletionPort(m_cp);
 			socket->Accept(&m_tempAddress);
 		}
-		return false;
-		/*aSocket = WSAAccept(m_socket, (sockaddr*)&m_tempAddress, (socklen_t*)&len, NULL, NULL);
-		if(aSocket == INVALID_SOCKET)
-			return;
-
-		socket = new T(aSocket);
-		socket->SetCompletionPort(m_cp);
-		socket->Accept(&m_tempAddress);*/
+		closed = true;
+		return true;
 	}
 
 	void Close()
@@ -90,9 +96,15 @@ public:
 		// prevent a race condition here.
 		bool mo = m_opened;
 		m_opened = false;
-
 		if(mo)
 			SocketOps::CloseSocket(m_socket);
+
+		while ( !closed )
+		{
+			printf("An listen socket closing...\n");
+			Sleep(500);
+		}
+		printf("Ok! Listen socket closed.\n");
 	}
 
 	ARCEMU_INLINE bool IsOpen() { return m_opened; }
