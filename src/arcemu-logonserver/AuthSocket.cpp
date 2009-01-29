@@ -491,10 +491,16 @@ void AuthSocket::OnRead()
 
 	uint8 Command = *(uint8*)GetReadBuffer().GetBufferStart();
 	last_recv = UNIXTIME;
-	if(Command < MAX_AUTH_CMD && Handlers[Command] != NULL)
+	if(Command < MAX_AUTH_CMD && Handlers[Command] != NULL){
 		(this->*Handlers[Command])();
-	else
-		Log.Debug("AuthSocket", "Unknown cmd %u", Command);
+	}
+	else{
+		Log.Notice("AuthSocket", "Unknown cmd %u", Command);
+		// for attacker
+		// Steps for auth simply ,unknown cmd isn't allowed.
+		Disconnect();
+		return;
+	}
 }
 
 void AuthSocket::HandleRealmlist()
@@ -525,6 +531,7 @@ void AuthSocket::HandleReconnectChallenge()
 
 	sLog.outDebug("[AuthChallenge] got full packet.");
 
+	memset(&m_challenge, 0, full_size + 4);
 	memcpy(&m_challenge, ReceiveBuffer, full_size + 4);
 	//RemoveReadBufferBytes(full_size + 4, false);
 	GetReadBuffer().Read(&m_challenge, full_size + 4);
