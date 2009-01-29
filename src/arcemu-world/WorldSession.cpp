@@ -61,8 +61,10 @@ has_level_55_char(false)
 
 	movement_info.FallTime = 0;
 
-	for(uint32 x=0;x<8;x++)
-		sAccountData[x].data=NULL;	
+	for( uint8 x = 0; x < 8; x++ )
+		sAccountData[x].data = NULL;
+
+	m_lastCreateChar = m_lastEnumChar = 0;
 }
 
 WorldSession::~WorldSession()
