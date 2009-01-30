@@ -1549,7 +1549,7 @@ bool ChatHandler::HandleRemovePetSpellCommand(const char* args, WorldSession* m_
 	}
 
 	pPet->RemoveSpell(SpellId);
-	GreenSystemMessage(m_session, "Added spell %u to %s's pet.", SpellId, plr->GetName());
+	GreenSystemMessage(m_session, "Removed spell %u from %s's pet.", SpellId, plr->GetName());
 	return true;
 }
 
