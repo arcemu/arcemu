@@ -1268,26 +1268,30 @@ public:
         read(data, caster);
     }
 
-    SpellCastTargets& operator=(const SpellCastTargets &target)
-    {
-        m_unitTarget = target.m_unitTarget;
-        m_itemTarget = target.m_itemTarget;
+	SpellCastTargets& operator=(const SpellCastTargets &target)
+	{
+		m_unitTarget = target.m_unitTarget;
+		m_itemTarget = target.m_itemTarget;
 
-        m_srcX = target.m_srcX;
-        m_srcY = target.m_srcY;
-        m_srcZ = target.m_srcZ;
+		m_srcX = target.m_srcX;
+		m_srcY = target.m_srcY;
+		m_srcZ = target.m_srcZ;
 
-        m_destX = target.m_destX;
-        m_destY = target.m_destY;
-        m_destZ = target.m_destZ;
+		m_destX = target.m_destX;
+		m_destY = target.m_destY;
+		m_destZ = target.m_destZ;
 
+		if(m_strTarget)
+		{
+			delete [] m_strTarget;
+		}
 		m_strTarget = target.m_strTarget ? strdup(target.m_strTarget) : NULL;
 
-        m_targetMask = target.m_targetMask;
-	m_targetMaskExtended = target.m_targetMaskExtended;
+		m_targetMask = target.m_targetMask;
+		m_targetMaskExtended = target.m_targetMaskExtended;
 
-        return *this;
-    }
+		return *this;
+	}
 
     uint16 m_targetMask;
     uint16 m_targetMaskExtended;			// this could be a 32 also
