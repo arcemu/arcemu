@@ -184,7 +184,8 @@ void AchievementMgr::SaveToDB()
 				ss << "(" << GetPlayer()->GetUInt32Value(OBJECT_FIELD_GUID) << ", " << iter->first << ", " << iter->second->counter << ", " << iter->second->date << ")";
 			}
 		}
-		CharacterDatabase.Query( ss.str().c_str() );
+		if(!first) // don't execute query if there's no entries to save
+			CharacterDatabase.Query( ss.str().c_str() );
 	}
 } 
 
