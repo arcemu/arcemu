@@ -1523,7 +1523,7 @@ bool ChatHandler::HandleAddPetSpellCommand(const char* args, WorldSession* m_ses
 	}
 
 	pPet->AddSpell(spell, true);
-	GreenSystemMessage(m_session, "Added spell %u to your pet.", SpellId);
+	GreenSystemMessage( m_session, "Added spell %u to %s's pet.", SpellId, plr->GetName() );
 	return true;
 }
 
