@@ -28,7 +28,7 @@ typedef struct
 
 ARCEMU_INLINE static void swap32(uint32* p) { *p = ((*p >> 24 & 0xff)) | ((*p >> 8) & 0xff00) | ((*p << 8) & 0xff0000) | (*p << 24); }
 
-LogonCommServerSocket::LogonCommServerSocket(SOCKET fd) : Socket(fd, 65536, 524288)
+LogonCommServerSocket::LogonCommServerSocket(SOCKET fd) : Socket(fd, 2048,16384)
 {
 	// do nothing
 	last_ping = (uint32)UNIXTIME;
@@ -37,11 +37,15 @@ LogonCommServerSocket::LogonCommServerSocket(SOCKET fd) : Socket(fd, 65536, 5242
 
 	use_crypto = false;
 	authenticated = 0;
+	server_id = 0;
 }
 
 LogonCommServerSocket::~LogonCommServerSocket()
 {
-
+	server_id = 0;
+	authenticated = 0;
+	remaining = opcode = 0;
+	removed = true;
 }
 
 void LogonCommServerSocket::OnDisconnect()
@@ -49,11 +53,7 @@ void LogonCommServerSocket::OnDisconnect()
 	// if we're registered -> Set offline
 	if(!removed)
 	{
-		set<uint32>::iterator itr = server_ids.begin();
-		for(; itr != server_ids.end(); ++itr)
-			//sInfoCore.RemoveRealm((*itr));
-			sInfoCore.UpdateRealmStatus((*itr), 2);
-
+		sInfoCore.UpdateRealmStatus(server_id, 2);
 		sInfoCore.RemoveServerSocket(this);
 	}
 }
@@ -217,7 +217,8 @@ void LogonCommServerSocket::HandleRegister(WorldPacket & recvData)
 	data << my_id;		  // Realm ID
 	data << realm->Name;
 	SendPacket(&data);
-	server_ids.insert(my_id);
+
+	server_id = my_id; // cebernic: assigned
 
 	/* request character mapping for this realm */
 	data.Initialize(RSMSG_REQUEST_ACCOUNT_CHARACTER_MAPPING);
@@ -230,12 +231,7 @@ void LogonCommServerSocket::HandleSessionRequest(WorldPacket & recvData)
 	uint32 request_id;
 	string account_name;
 	recvData >> request_id;
-
-	if ( request_id == 0 ) return;
-
 	recvData >> account_name;
-	
-	if ( recvData.size() < 4+account_name.size()+1 ) {Disconnect();return;} // cebernic: hack ya?
 
 	// get sessionkey!
 	uint32 error = 0;
@@ -359,11 +355,7 @@ void LogonCommServerSocket::HandleMappingReply(WorldPacket & recvData)
 {
 	/* this packet is gzipped, whee! :D */
 	uint32 real_size;
-
-	if (recvData.size() < 4) return;
-
 	recvData >> real_size;
-
 	uLongf rsize = real_size;
 
 	ByteBuffer buf(real_size);
@@ -424,7 +416,6 @@ void LogonCommServerSocket::HandleUpdateMapping(WorldPacket & recvData)
 		realm->CharacterMap.insert( make_pair( account_id, chars_to_add ) );
 
 	sInfoCore.getRealmLock().Release();
-
 }
 
 void LogonCommServerSocket::HandleTestConsoleLogin(WorldPacket & recvData)
@@ -563,22 +554,14 @@ void LogonCommServerSocket::HandlePopulationRespond(WorldPacket & recvData)
 {
 	float population;
 	uint32 realmId;
-	if ( recvData.size() < 16 ) return;
 	recvData >> realmId >> population;
 	sInfoCore.UpdateRealmPop(realmId, population);
 }
 
 void LogonCommServerSocket::RefreshRealmsPop()
 {
-	if(server_ids.empty())
-		return;
-
 	WorldPacket data(RSMSG_REALM_POP_REQ, 4);
-	set<uint32>::iterator itr = server_ids.begin();
-	for( ; itr != server_ids.end() ; itr++ )
-	{
-		data.clear();
-		data << (*itr);
-		SendPacket(&data);
-	}
+	data.clear();
+	data << server_id;
+	SendPacket(&data);	
 }

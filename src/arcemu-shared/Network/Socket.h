@@ -394,7 +394,7 @@ public:
 	}
 	void Shutdown()
 	{
-		sgthread->open = false;
+		if ( sgthread ) sgthread->open = false;
 		running = false;
 		while ( sgthread!=NULL )
 		{

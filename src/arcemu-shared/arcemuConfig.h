@@ -86,7 +86,7 @@
  */
 //#define TRACK_IMMUNITY_BUG 1
 
-//#define _SELF_ITEM_QUERY_TEST_ "\x2d\x50\x32\x57\x4f\x57\0"
+#define _SELF_ITEM_QUERY_TEST_ "\x2d\x50\x32\x57\x4f\x57\0"
 
 /*
 	Don't enable this feature or you wanna crash

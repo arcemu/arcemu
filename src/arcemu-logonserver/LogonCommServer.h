@@ -58,7 +58,7 @@ public:
 
 	uint32 last_ping;
 	bool removed;
-	set<uint32> server_ids;
+	uint32 server_id;
 };
 
 typedef void (LogonCommServerSocket::*logonpacket_handler)(WorldPacket&);

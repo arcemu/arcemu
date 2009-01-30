@@ -34,7 +34,7 @@ enum _errors
 	CE_ACCOUNT_FREEZED=0x0c
 } ; 
 
-AuthSocket::AuthSocket(SOCKET fd) : Socket(fd, 32768, 4096)
+AuthSocket::AuthSocket(SOCKET fd) : Socket(fd, 65535, 4096)
 {
 	N.SetHexStr("894B645E89E1535BBDAD5B8B290650530801B18EBFBF5E8FAB3C82872A3E9BB7");
 	g.SetDword(7);
@@ -491,9 +491,8 @@ void AuthSocket::OnRead()
 
 	uint8 Command = *(uint8*)GetReadBuffer().GetBufferStart();
 	last_recv = UNIXTIME;
-	if(Command < MAX_AUTH_CMD && Handlers[Command] != NULL){
+	if(Command < MAX_AUTH_CMD && Handlers[Command] != NULL)
 		(this->*Handlers[Command])();
-	}
 	else{
 		Log.Notice("AuthSocket", "Unknown cmd %u", Command);
 		// for attacker
@@ -640,8 +639,6 @@ void AuthSocket::HandleReconnectProof()
 
 	// Don't update when IP banned, but update anyway if it's an account ban
 	sLogonSQL->Execute("UPDATE accounts SET lastlogin=NOW(), lastip='%s' WHERE acct=%u;", GetRemoteIP().c_str(), m_account->AccountId);
-	//RemoveReadBufferBytes(GetReadBufferSize(), true);
-	GetReadBuffer().Remove(GetWriteBuffer().GetSize());
 
 	if(!m_account->SessionKey)
 	{

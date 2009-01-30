@@ -335,30 +335,8 @@ void LogonServer::Run(int argc, char ** argv)
 	printf("MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n");
 	printf("GNU Affero General Public License for more details.\n");
 	printf("                                                \n");
-	printf("                     ``````                     \n");
-	printf("    ArcEmu!        `/o/::-:/-                   \n"); 
-	printf("                   oho/-.-:yN-                  \n"); 
-	printf("                    os+/-.:::                   \n"); 
-	printf("                    :ysyoo+:`                   \n"); 
-	printf("					`ohdys/.                    \n"); 
-	printf("                     oyho/-`   ``               \n"); 
-	printf("                   `shyo+:./ssmdsyo:`           \n"); 
-	printf("                    .shss+:yNMMNNMNmms.         \n"); 
-	printf("                    :ysss+:mNMMMMNNmmds.        \n"); 
-	printf("                `-//sssoo/:NMNMMMNMNNdy-        \n"); 
-	printf("    -`/`       `omhyyhyyyshNMMNNNMMMNmy:        \n"); 
-	printf("    :/::-`     `sdmdmmNMNMMMMMMNMNNNNms-        \n"); 
-	printf("     /+++/-.....shdmmNMMNMMMMMMMMMNNNd+         \n");
-	printf("     ./+oshyhhhddmhdmNMMMMMMMMMMMMNNds.         \n"); 
-	printf("       `:/:.`````.:+ymmNMMNMMMNMMNNd/           \n"); 
-	printf("                     -+shmNNMMMNmhy/            \n"); 
-	printf("                          `..-ods:.             \n");
-	printf("                               o:.`             \n");
-	printf("                               :-.              \n");
-	printf("                              `/-...            \n"); 
-	printf("    Introducing the emu!     --``-/:`           \n"); 
-	printf("                           .:/+:-.-::.          \n"); 
-	printf("                          `.-///:-.`            \n");
+	printf("\x20\x20\x20\x20\x3a\x3a\x3a\x20\x20\x20\x20\x20\x3a\x3a\x3a\x3a\x3a\x3a\x3a\x3a\x3a\x20\x20\x20\x3a\x3a\x3a\x3a\x3a\x3a\x3a\x3a\x20\x20\x3a\x3a\x3a\x3a\x3a\x3a\x3a\x3a\x3a\x3a\x20\x3a\x3a\x3a\x3a\x20\x20\x20\x20\x3a\x3a\x3a\x3a\x20\x20\x3a\x3a\x3a\x20\x20\x20\x20\x3a\x3a\x3a\x20\xd\xa\x20\x20\x3a\x2b\x3a\x20\x3a\x2b\x3a\x20\x20\x20\x3a\x2b\x3a\x20\x20\x20\x20\x3a\x2b\x3a\x20\x3a\x2b\x3a\x20\x20\x20\x20\x3a\x2b\x3a\x20\x3a\x2b\x3a\x20\x20\x20\x20\x20\x20\x20\x20\x2b\x3a\x2b\x3a\x2b\x3a\x20\x3a\x2b\x3a\x2b\x3a\x2b\x20\x3a\x2b\x3a\x20\x20\x20\x20\x3a\x2b\x3a\x20\xd\xa\x20\x2b\x3a\x2b\x20\x20\x20\x2b\x3a\x2b\x20\x20\x2b\x3a\x2b\x20\x20\x20\x20\x2b\x3a\x2b\x20\x2b\x3a\x2b\x20\x20\x20\x20\x20\x20\x20\x20\x2b\x3a\x2b\x20\x20\x20\x20\x20\x20\x20\x20\x2b\x3a\x2b\x20\x2b\x3a\x2b\x3a\x2b\x20\x2b\x3a\x2b\x20\x2b\x3a\x2b\x20\x20\x20\x20\x2b\x3a\x2b\x20\xd\xa\x2b\x23\x2b\x2b\x3a\x2b\x2b\x23\x2b\x2b\x3a\x20\x2b\x23\x2b\x2b\x3a\x2b\x2b\x23\x3a\x20\x20\x2b\x23\x2b\x20\x20\x20\x20\x20\x20\x20\x20\x2b\x23\x2b\x2b\x3a\x2b\x2b\x23\x20\x20\x20\x2b\x23\x2b\x20\x20\x2b\x3a\x2b\x20\x20\x2b\x23\x2b\x20\x2b\x23\x2b\x20\x20\x20\x20\x2b\x3a\x2b\x20\xd\xa\x2b\x23\x2b\x20\x20\x20\x20\x20\x2b\x23\x2b\x20\x2b\x23\x2b\x20\x20\x20\x20\x2b\x23\x2b\x20\x2b\x23\x2b\x20\x20\x20\x20\x20\x20\x20\x20\x2b\x23\x2b\x20\x20\x20\x20\x20\x20\x20\x20\x2b\x23\x2b\x20\x20\x20\x20\x20\x20\x20\x2b\x23\x2b\x20\x2b\x23\x2b\x20\x20\x20\x20\x2b\x23\x2b\x20\xd\xa\x23\x2b\x23\x20\x20\x20\x20\x20\x23\x2b\x23\x20\x23\x2b\x23\x20\x20\x20\x20\x23\x2b\x23\x20\x23\x2b\x23\x20\x20\x20\x20\x23\x2b\x23\x20\x23\x2b\x23\x20\x20\x20\x20\x20\x20\x20\x20\x23\x2b\x23\x20\x20\x20\x20\x20\x20\x20\x23\x2b\x23\x20\x23\x2b\x23\x20\x20\x20\x20\x23\x2b\x23\x20\xd\xa\x23\x23\x23\x20\x20\x20\x20\x20\x23\x23\x23\x20\x23\x23\x23\x20\x20\x20\x20\x23\x23\x23\x20\x20\x23\x23\x23\x23\x23\x23\x23\x23\x20\x20\x23\x23\x23\x23\x23\x23\x23\x23\x23\x23\x20\x23\x23\x23\x20\x20\x20\x20\x20\x20\x20\x23\x23\x23\x20\x20\x23\x23\x23\x23\x23\x23\x23\x23\x20\x20");
+	printf("                                                \n");
 	printf(" Website: http://www.ArcEmu.org	     			\n");
 	printf(" Forums: http://www.ArcEmu.org/forums/          \n");
 	printf(" Credits: http://www.ArcEmu.org/credits         \n");
@@ -436,8 +414,6 @@ void LogonServer::Run(int argc, char ** argv)
 	Sha1Hash hash;
 	hash.UpdateData(logon_pass);
 	hash.Finalize();
-
-	memset(sql_hash,0,20);
 	memcpy(sql_hash, hash.GetDigest(), 20);
 	
 	ThreadPool.ExecuteTask(new LogonConsoleThread);
@@ -507,18 +483,15 @@ void LogonServer::Run(int argc, char ** argv)
 
 			Sleep(1000);
 			++loop_counter;
-#ifndef WIN32 //cebernic: WIN32 Checkfordead() nolonger needed,we have new garbage system already.
-		if(!(loop_counter % 3))	 // 3 seconds
-			CheckForDeadSockets();
-#endif
 
 
 		if(!(loop_counter%300))	// 5mins
 			ThreadPool.IntegrityCheck();
 
-		if(!(loop_counter%5)) // 5 seconds
+		if(!(loop_counter%10)) // 5 seconds
 		{
 			sInfoCore.TimeoutSockets();
+			CheckForDeadSockets();
 		}
 
 		PatchMgr::getSingleton().UpdateJobs();
@@ -624,7 +597,7 @@ void LogonServer::CheckForDeadSockets()
 		it2 = itr;
 		s = (*it2);
 		++itr;
-
+		if ( !s ) continue;
 		diff = t - s->GetLastRecv();
 		if(diff > 300)		   // More than 5mins
 		{
