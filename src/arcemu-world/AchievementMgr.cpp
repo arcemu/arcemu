@@ -40,37 +40,83 @@
 	- ACHIEVEMENT_CRITERIA_TYPE_EQUIP_EPIC_ITEM
 	- ACHIEVEMENT_CRITERIA_TYPE_NUMBER_OF_MOUNTS
 	- ACHIEVEMENT_CRITERIA_TYPE_DO_EMOTE (partial)
+	- ACHIEVEMENT_CRITERIA_TYPE_KILLING_BLOW (most)
+	- ACHIEVEMENT_CRITERIA_TYPE_KILL_CREATURE_TYPE
+	- ACHIEVEMENT_CRITERIA_TYPE_USE_ITEM
 
 	Achievement Rewards Working List:
 	- Titles
 	- Spells
 	- Items (goes to inventory?)
-	As long as the achievement type is handled, the reward should work too.
+	As long as the achievement type is handled, the reward -should- work too.
 
 	What's Not Working Yet:
 	- Several achievement types
 	- Time limits on achievements
+	- Realm-First achievements (everyone gets them)
 */
 
 #include "StdAfx.h"
 
-bool IsReputationAchievement(const AchievementEntry* a)
+bool SendAchievementProgress(const CriteriaProgress* c)
+{
+	if(c->counter <= 0) // achievement not started yet, don't send progress
+		return false;
+	AchievementCriteriaEntry const* acEntry = dbcAchievementCriteriaStore.LookupEntry(c->id);
+	if(acEntry->requiredType==ACHIEVEMENT_CRITERIA_TYPE_GAIN_REPUTATION) // Exalted with X faction (don't send 12323/42000 progress, it's not shown anyway)
+		return false;
+	if(acEntry->requiredType==ACHIEVEMENT_CRITERIA_TYPE_REACH_LEVEL) // Reach level (don't send 7/80 progress, it's not shown anyway)
+		return false;
+	return true;
+}
+
+bool IsStatisticAchievement(const AchievementEntry* a)
 {
 	switch(a->categoryId)
 	{
-		case 81:
-		case 147:
-		case 201:
-		case 14801:
-		case 14802:
-		case 14804:
-		case 14864:
-		case 14865:
-		case 14866:
+		case    21: // Total deaths from other players, Total deaths from opposite faction
+		case   122: // Total deaths
+		case   125: // Total raid and dungeon deaths (and for each dungeon/raid type)
+		case   128: // Total kills, Total kills that grant experience or honor
+		case   131: // Total facepalms, etc. (Social)
+		case   136: // Total Honorable Kills, World Honorable Kills, Continent with the most Honorable Kills, ...
+		case   137: // Total Killing Blows, World Killing Blows, Continent with the most Killing Blows, ...
+		case   140: // Total gold acquired, Average gold earned per day, Gold looted, Gold from quest rewards, ...
+		case   141: // Total damage done, Total damage received, Total healing done, Total healing received, Largest hit dealt, ...
+		case   147: // Total factions encountered, Most factions at Exalted, Most factions at Revered or higher, ...
+		case 14807: // Total 5-player dungeons entered, Total 10-player raids entered, Total 25-player raids entered, ...
 			return true;
 		default:
-			return false;
+			break;
 	}
+	return false;
+}
+
+bool SaveAchievementProgressToDB(const CriteriaProgress* c)
+{
+	if(c->counter <= 0) // don't save it if it's not started yet
+		return false;
+	AchievementCriteriaEntry const* acEntry = dbcAchievementCriteriaStore.LookupEntry(c->id);
+	switch(acEntry->requiredType)
+	{
+		// these get updated when character logs on, don't save to character progress db
+		case ACHIEVEMENT_CRITERIA_TYPE_REACH_LEVEL:
+		case ACHIEVEMENT_CRITERIA_TYPE_EXPLORE_AREA:
+		case ACHIEVEMENT_CRITERIA_TYPE_COMPLETE_ACHIEVEMENT:
+		case ACHIEVEMENT_CRITERIA_TYPE_COMPLETE_QUEST_COUNT:
+		case ACHIEVEMENT_CRITERIA_TYPE_COMPLETE_QUESTS_IN_ZONE:
+		case ACHIEVEMENT_CRITERIA_TYPE_COMPLETE_QUEST:
+		case ACHIEVEMENT_CRITERIA_TYPE_GAIN_REPUTATION:
+		case ACHIEVEMENT_CRITERIA_TYPE_GAIN_EXALTED_REPUTATION:
+		case ACHIEVEMENT_CRITERIA_TYPE_LEARN_SPELL:
+		case ACHIEVEMENT_CRITERIA_TYPE_NUMBER_OF_MOUNTS:
+		case ACHIEVEMENT_CRITERIA_TYPE_REACH_SKILL_LEVEL:
+		case ACHIEVEMENT_CRITERIA_TYPE_LEARN_SKILL_LEVEL:
+			return false;
+		default:
+			break;
+	}
+	return true;
 }
 
 AchievementMgr::AchievementMgr(Player *player)
@@ -121,7 +167,7 @@ void AchievementMgr::SaveToDB()
 		bool first = true;
 		for(CriteriaProgressMap::iterator iter = m_criteriaProgress.begin(); iter!=m_criteriaProgress.end(); ++iter)
 		{
-			if(iter->second->counter > 0) // only save progress if it's been started
+			if(SaveAchievementProgressToDB(iter->second)) // only save some progresses, others will be updated when character logs in
 			{
 				if (ss.str().length() >= 16000)
 				{
@@ -360,9 +406,9 @@ void AchievementMgr::UpdateAchievementCriteria(AchievementCriteriaTypes type, in
 				break;
 			case ACHIEVEMENT_CRITERIA_TYPE_EQUIP_EPIC_ITEM:
 				// Achievement ID:556 description Equip an epic item in every slot with a minimum item level of 213.
-				// "213" value not found in achievement or criteria entries, have to hard-code it here? :(
+				// "213" value not found in achievement or criteria entries (dbc), have to hard-code it here? :(
 				// Achievement ID:557 description Equip a superior item in every slot with a minimum item level of 187.
-				// "187" value not found in achievement or criteria entries, have to hard-code it here? :(
+				// "187" value not found in achievement or criteria entries (dbc), have to hard-code it here? :(
 				// AchievementType for both Achievement ID:556 (Equip epic items) and ID:557 (Equip superior items)
 				//    is the same (47) ACHIEVEMENT_CRITERIA_TYPE_EQUIP_EPIC_ITEM
 				// Going to send item slot in miscvalue1 and item quality in miscvalue2 when calling UpdateAchievementCriteria.
@@ -477,7 +523,145 @@ void AchievementMgr::UpdateAchievementCriteria(AchievementCriteriaTypes type, in
 							break;
 					}
 				}
-				break;			
+				break;
+			case ACHIEVEMENT_CRITERIA_TYPE_KILLING_BLOW:
+				// miscvalue1 contain Map ID
+				switch(achievementCriteria->referredAchievement)
+				{
+					case 231:
+						if(   ( (miscvalue1 ==  30) && (achievementCriteria->index==1) )   // Alterac Valley
+							|| ( (miscvalue1 == 529) && (achievementCriteria->index==2) )   // Arathi Basin
+							|| ( (miscvalue1 == 566) && (achievementCriteria->index==3) )   // Eye of the Storm
+							|| ( (miscvalue1 == 489) && (achievementCriteria->index==4) )   // Warsong Gulch
+							|| ( (miscvalue1 == 607) && (achievementCriteria->index==5) ) ) // Strand of the Ancients
+						{
+							UpdateCriteriaProgress(achievementCriteria, 1);
+						}
+						break;
+					case 233: // TODO: Berserking killing blow
+						break;
+					case 1487: // Total Killing Blows
+						UpdateCriteriaProgress(achievementCriteria, 1);
+						break;
+					case 1488:
+						if(   ( (miscvalue1 ==   0) && (achievementCriteria->index==1) )   // Eastern Kingdoms
+							|| ( (miscvalue1 ==   1) && (achievementCriteria->index==2) )   // Kalimdor
+							|| ( (miscvalue1 == 530) && (achievementCriteria->index==3) )   // Burning Crusade Areas
+							|| ( (miscvalue1 == 571) && (achievementCriteria->index==4) ) ) // Northrend
+						{
+							UpdateCriteriaProgress(achievementCriteria, 1);
+						}
+						break;
+					case 1490:
+						if(   ( (miscvalue1 == 559) && (achievementCriteria->index==1) )   // Nagrand Arena
+							|| ( (miscvalue1 == 562) && (achievementCriteria->index==2) )   // Blade's Edge Arena
+							|| ( (miscvalue1 == 572) && (achievementCriteria->index==3) )   // Ruins of Lordaeron
+							|| ( (miscvalue1 == 617) && (achievementCriteria->index==4) )   // Dalaran Sewers
+							|| ( (miscvalue1 == 618) && (achievementCriteria->index==5) ) ) // Ring of Valor
+						{
+							UpdateCriteriaProgress(achievementCriteria, 1);
+						}
+						break;
+					case 1491:
+						if(   ( (miscvalue1 ==  30) && (achievementCriteria->index==1) )   // Alterac Valley
+							|| ( (miscvalue1 == 529) && (achievementCriteria->index==2) )   // Arathi Basin
+							|| ( (miscvalue1 == 489) && (achievementCriteria->index==3) )   // Warsong Gulch
+							|| ( (miscvalue1 == 566) && (achievementCriteria->index==4) )   // Eye of the Storm
+							|| ( (miscvalue1 == 607) && (achievementCriteria->index==5) ) ) // Strand of the Ancients
+						{
+							UpdateCriteriaProgress(achievementCriteria, 1);
+						}
+						break;
+					case 1492: // TODO: 2v2 Arena Killing Blows
+						break;
+					case 1493: // TODO: 3v3 Arena Killing Blows
+						break;
+					case 1494: // TODO: 5v5 Arena Killing Blows
+						break;
+					case 1495: // Alterac Valley Killing Blows
+						if(miscvalue1 == 30)
+						{
+							UpdateCriteriaProgress(achievementCriteria, 1);
+						}
+						break;
+					case 1496: // Arathi Basin Killing Blows
+						if(miscvalue1 == 529)
+						{
+							UpdateCriteriaProgress(achievementCriteria, 1);
+						}
+						break;
+					case 1497: // Warsong Gulch Killing Blows
+						if(miscvalue1 == 489)
+						{
+							UpdateCriteriaProgress(achievementCriteria, 1);
+						}
+						break;
+					case 1498: // Eye of the Storm Killing Blows
+						if(miscvalue1 == 566)
+						{
+							UpdateCriteriaProgress(achievementCriteria, 1);
+						}
+						break;
+					case 1499: // Strand of the Ancients Killing Blows
+						if(miscvalue1 == 607)
+						{
+							UpdateCriteriaProgress(achievementCriteria, 1);
+						}
+						break;
+					case 2148: // TODO: Deliver a killing blow to a Scion of Eternity while riding on a hover disk
+						break;
+					case 2149: // TODO: Deliver a killing blow to a Scion of Eternity while riding on a hover disk
+						break;
+					default:
+						break;
+				}
+				break;
+			case ACHIEVEMENT_CRITERIA_TYPE_USE_ITEM:
+				if(achievementCriteria->use_item.itemID == miscvalue1)
+					UpdateCriteriaProgress(achievementCriteria, 1);
+				break;
+			case ACHIEVEMENT_CRITERIA_TYPE_KILL_CREATURE_TYPE:
+				// Total NPC kills, Kill an NPC that yeilds XP, Beasts, Critters killed, Demons, Dragonkin ...
+				// miscvalue1 = killed creature high GUID
+				// miscvalue2 = killed creature low GUID
+				{
+					uint64 crGUID = miscvalue1;
+					crGUID <<= 32; // shift to high 32-bits
+					crGUID += miscvalue2;
+					Unit* pUnit = GetPlayer()->GetMapMgr()->GetUnit(crGUID);
+					if(pUnit)
+					{
+						uint8 crTypeId = pUnit->GetTypeId();
+						uint32 crType = NOUNITTYPE;
+						bool crTotem = false;
+						bool yieldXP = CalculateXpToGive( pUnit, GetPlayer() )  > 0;
+						if(crTypeId == TYPEID_UNIT)
+						{
+							crTotem = ((Creature*)pUnit)->IsTotem();
+							if(((Creature*)pUnit)->GetCreatureInfo())
+							{
+								crType = ((Creature*)pUnit)->GetCreatureInfo()->Type;
+							}
+							if(     (achievementCriteria->ID == 4944)                             // Total NPC kills              refAch==1197
+								|| ( (achievementCriteria->ID == 4946) && (yieldXP)            )   // Kill an NPC that yields XP   refAch==1198
+								|| ( (achievementCriteria->ID == 4948) && (crType==BEAST)      )   // Beasts                       refAch== 107
+								|| ( (achievementCriteria->ID == 4958) && (crType==CRITTER)    )   // Critters killed              refAch== 107
+								|| ( (achievementCriteria->ID == 4949) && (crType==DEMON)      )   // Demons                       refAch== 107
+								|| ( (achievementCriteria->ID == 4950) && (crType==DRAGONSKIN) )   // Dragonkin                    refAch== 107
+								|| ( (achievementCriteria->ID == 4951) && (crType==ELEMENTAL)  )   // Elemental                    refAch== 107
+								|| ( (achievementCriteria->ID == 4952) && (crType==GIANT)      )   // Giant                        refAch== 107
+								|| ( (achievementCriteria->ID == 4953) && (crType==HUMANOID)   )   // Humanoid                     refAch== 107
+								|| ( (achievementCriteria->ID == 4954) && (crType==MECHANICAL) )   // Mechanical                   refAch== 107
+								|| ( (achievementCriteria->ID == 4955) && (crType==UNDEAD)     )   // Undead                       refAch== 107
+								|| ( (achievementCriteria->ID == 4956) && (crType==NOUNITTYPE) )   // Unspecified                  refAch== 107
+								|| ( (achievementCriteria->ID == 4957) && (crTotem)            ) ) // Totems                       refAch== 107
+							{
+								UpdateCriteriaProgress(achievementCriteria, 1);
+							}
+						}
+					}
+				}
+				break;
 			//End of Achievement List
 			default:
 				return;
@@ -717,6 +901,8 @@ bool AchievementMgr::IsCompletedCriteria(AchievementCriteriaEntry const* achieve
 			return progresscounter >= 1;
 		case ACHIEVEMENT_CRITERIA_TYPE_DO_EMOTE:
 			return progresscounter >= 1;
+		case ACHIEVEMENT_CRITERIA_TYPE_USE_ITEM:
+			return progresscounter >= achievementCriteria->use_item.itemCount;
 		case ACHIEVEMENT_CRITERIA_TYPE_COMPLETE_ACHIEVEMENT:
 			return m_completedAchievements.find(achievementCriteria->complete_achievement.linkedAchievement) != m_completedAchievements.end();
 		//End of Achievement List
@@ -859,11 +1045,11 @@ void AchievementMgr::SendRespondInspectAchievements(Player* player)
 {
 	WorldPacket data( SMSG_ALL_ACHIEVEMENT_DATA,4+4*3+m_completedAchievements.size()*4*2+GetCriteriaProgressCount()*7*4 );
 	data.append(GetPlayer()->GetGUID());
-	BuildAllDataPacket(&data);
+	BuildAllDataPacket(&data, false);
 	player->GetSession()->SendPacket(&data);
 }
 
-void AchievementMgr::BuildAllDataPacket(WorldPacket *data)
+void AchievementMgr::BuildAllDataPacket(WorldPacket *data, bool self)
 {
 	for( CompletedAchievementMap::iterator iter = m_completedAchievements.begin(); iter!=m_completedAchievements.end(); ++iter )
 	{
@@ -874,16 +1060,31 @@ void AchievementMgr::BuildAllDataPacket(WorldPacket *data)
 	for(CriteriaProgressMap::iterator iter = m_criteriaProgress.begin(); iter!=m_criteriaProgress.end(); ++iter)
 	{
 		AchievementEntry const *achievement = dbcAchievementStore.LookupEntry(iter->second->id);
-		if((iter->second->counter > 0) // only send achievement progresses that have been started
-			&& !IsReputationAchievement(achievement)) // dont send unfinished reputation achievements
+		if(self) // achievement progress to send to self
 		{
-			*data << uint32(iter->second->id);
-			data->appendPackGUID(iter->second->counter);
-			*data << GetPlayer()->GetNewGUID(); 
-			*data << uint32(0);
-			*data << uint32(secsToTimeBitFields(iter->second->date));
-			*data << uint32(0);
-			*data << uint32(0);
+			if(SendAchievementProgress(iter->second))
+			{
+				*data << uint32(iter->second->id);
+				data->appendPackGUID(iter->second->counter);
+				*data << GetPlayer()->GetNewGUID(); 
+				*data << uint32(0);
+				*data << uint32(secsToTimeBitFields(iter->second->date));
+				*data << uint32(0);
+				*data << uint32(0);
+			}
+		}
+		else // achievement progress to send to other players (inspect)
+		{
+			if(IsStatisticAchievement(achievement)) // only send statistics, no other unfinished achievement progress, since client only displays them as completed or not completed
+			{
+				*data << uint32(iter->second->id);
+				data->appendPackGUID(iter->second->counter);
+				*data << GetPlayer()->GetNewGUID(); 
+				*data << uint32(0);
+				*data << uint32(secsToTimeBitFields(iter->second->date));
+				*data << uint32(0);
+				*data << uint32(0);
+			}
 		}
 	}
 	*data << int32(-1);
@@ -895,8 +1096,7 @@ uint32 AchievementMgr::GetCriteriaProgressCount(void)
 	for(CriteriaProgressMap::iterator iter = m_criteriaProgress.begin(); iter!=m_criteriaProgress.end(); ++iter)
 	{
 		AchievementEntry const *achievement = dbcAchievementStore.LookupEntry(iter->second->id);
-		if((iter->second->counter > 0) // only count progresses that have been started
-			&& !IsReputationAchievement(achievement)) // dont count unfinished reputation achievements
+		if(SendAchievementProgress(iter->second))
 		{
 			++criteriapc;
 		}

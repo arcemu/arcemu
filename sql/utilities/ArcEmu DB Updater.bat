@@ -210,6 +210,8 @@ ECHO [Importing] 1996_character_achievements.sql
 mysql -h %server% --user=%user% --password=%pass% --port=%port% %chr% < ..\character_updates\1996_character_achievements.sql
 ECHO [Importing] 2005_guildbank_tabinfo.sql
 mysql -h %server% --user=%user% --password=%pass% --port=%port% %chr% < ..\character_updates\2005_guildbank_tabinfo.sql
+ECHO [Importing] 2084_character_achievement_progress.sql
+mysql -h %server% --user=%user% --password=%pass% --port=%port% %chr% < ..\character_updates\2084_character_achievement_progress.sql
 ECHO [Importing] Finished
 ECHO  Update Success.
 ECHO.
@@ -345,6 +347,8 @@ ECHO [Importing] 1996_character_achievements.sql
 mysql -h %server% --user=%user% --password=%pass% --port=%port% %chr% < ..\character_updates\1996_character_achievements.sql
 ECHO [Importing] 2005_guildbank_tabinfo.sql
 mysql -h %server% --user=%user% --password=%pass% --port=%port% %chr% < ..\character_updates\2005_guildbank_tabinfo.sql
+ECHO [Importing] 2084_character_achievement_progress.sql
+mysql -h %server% --user=%user% --password=%pass% --port=%port% %chr% < ..\character_updates\2084_character_achievement_progress.sql
 ECHO [Importing] Character Updates Finished
 ECHO.
 ECHO.

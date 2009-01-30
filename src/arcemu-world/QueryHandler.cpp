@@ -339,6 +339,6 @@ void WorldSession::HandleAchievmentQueryOpcode( WorldPacket & recv_data )
 	WorldPacket data( SMSG_RESPOND_INSPECT_ACHIEVEMENTS,4*3+pTarget->GetAchievementMgr().GetCompletedAchievementsCount()*4*2+
 		pTarget->GetAchievementMgr().GetCriteriaProgressCount()*7*4 );
 	FastGUIDPack(data, guid);
-	pTarget->GetAchievementMgr().BuildAllDataPacket(&data);
+	pTarget->GetAchievementMgr().BuildAllDataPacket(&data, false);
 	GetPlayer()->GetSession()->SendPacket(&data);
 }

@@ -96,6 +96,7 @@ enum AchievementCriteriaTypes
 	ACHIEVEMENT_CRITERIA_TYPE_FALL_WITHOUT_DYING = 24,
 	ACHIEVEMENT_CRITERIA_TYPE_COMPLETE_QUEST = 27,
 	ACHIEVEMENT_CRITERIA_TYPE_BE_SPELL_TARGET = 28,
+	// for some reason "Slay 15 Turkeys in 3 minutes" uses criteria type 28 (be spell target) - bug or on purpose?
 	ACHIEVEMENT_CRITERIA_TYPE_CAST_SPELL= 29,
 	ACHIEVEMENT_CRITERIA_TYPE_BG_OBJECTIVE_CAPTURE = 30,
 	ACHIEVEMENT_CRITERIA_TYPE_HONORABLE_KILL_AT_AREA = 31,
@@ -126,6 +127,7 @@ enum AchievementCriteriaTypes
 	ACHIEVEMENT_CRITERIA_TYPE_HK_RACE = 53,
 	ACHIEVEMENT_CRITERIA_TYPE_DO_EMOTE = 54,
 	ACHIEVEMENT_CRITERIA_TYPE_HEALING_DONE = 55,
+	ACHIEVEMENT_CRITERIA_TYPE_KILLING_BLOW = 56,
 	ACHIEVEMENT_CRITERIA_TYPE_EQUIP_ITEM = 57,
 	ACHIEVEMENT_CRITERIA_TYPE_GOLD_SPENT_FOR_TALENTS = 60,
 	ACHIEVEMENT_CRITERIA_TYPE_NUMBER_OF_TALENT_RESETS = 61,
@@ -215,7 +217,7 @@ public:
 	void							GiveAchievementReward(AchievementEntry const* entry);
 	uint32							GetCompletedAchievementsCount() const;
 	uint32							GetCriteriaProgressCount();
-	void							BuildAllDataPacket(WorldPacket *data);
+	void							BuildAllDataPacket(WorldPacket *data, bool self=true);
 
 	Player*							GetPlayer()
 									{ return m_player; }

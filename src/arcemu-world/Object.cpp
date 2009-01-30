@@ -1992,20 +1992,31 @@ void Object::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
 	/*------------------------------------ DUEL HANDLERS END--------------------------*/
 
 	bool isCritter = false;
+	uint32 highGUID = 0;
+	uint32 lowGUID = 0;
 	if(pVictim->GetTypeId() == TYPEID_UNIT && ((Creature*)pVictim)->GetCreatureInfo())
 	{
-			if(((Creature*)pVictim)->GetCreatureInfo()->Type == CRITTER)
+		uint64 crGUID = pVictim->GetGUID();
+		lowGUID = crGUID & 0x00000000ffffffff;
+		highGUID = crGUID >> 32;
+		if(((Creature*)pVictim)->GetCreatureInfo()->Type == CRITTER)
+		{
+			isCritter = true;
+			if(IsPlayer()) // Player killed a critter
 			{
-				isCritter = true;
-				if(IsPlayer()) // Player killed a critter
-				{
-					((Player*)this)->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_KILL_CREATURE, pVictim->GetEntry(), 1, 0);
-				}
-				else if(IsPet()) // Player's pet killed a critter
-				{
-					((Pet*)this)->GetPetOwner()->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_KILL_CREATURE, pVictim->GetEntry(), 1, 0);
-				}
+				((Player*)this)->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_KILL_CREATURE, pVictim->GetEntry(), 1, 0);
+				((Player*)this)->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_KILL_CREATURE_TYPE, highGUID, lowGUID, 0);
 			}
+			else if(IsPet()) // Player's pet killed a critter
+			{
+				((Pet*)this)->GetPetOwner()->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_KILL_CREATURE, pVictim->GetEntry(), 1, 0);
+				((Pet*)this)->GetPetOwner()->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_KILL_CREATURE_TYPE, highGUID, lowGUID, 0);
+			}
+		}
+	}
+	if(pVictim->IsUnit() && this->IsPlayer()) // Player delivered a killing blow
+	{
+		((Player*)this)->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_KILLING_BLOW, GetMapId(), 0, 0);
 	}
 	/* -------------------------- HIT THAT CAUSES VICTIM TO DIE ---------------------------*/
 	if ((isCritter || health <= damage) )
@@ -2415,7 +2426,10 @@ void Object::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
 							{
 								sQuestMgr.OnPlayerKill( pTagger, static_cast< Creature* >( pVictim ) );
 								if(pVictim->IsCreature())
+								{
 									pTagger->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_KILL_CREATURE, pVictim->GetEntry(), 1, 0);
+									pTagger->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_KILL_CREATURE_TYPE, highGUID, lowGUID, 0);
+								}
 							}
 						}
 					}
@@ -2462,7 +2476,10 @@ void Object::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
 								{
 									sQuestMgr.OnPlayerKill( petOwner, static_cast< Creature* >( pVictim ) );
 									if(pVictim->IsCreature())
+									{
 										petOwner->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_KILL_CREATURE, pVictim->GetEntry(), 1, 0);
+										petOwner->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_KILL_CREATURE_TYPE, highGUID, lowGUID, 0);
+									}
 								}
 							}
 						}

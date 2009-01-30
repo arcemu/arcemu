@@ -192,7 +192,7 @@ void WorldSession::HandleUseItemOpcode(WorldPacket& recvPacket)
 			}
 		}
 	}
-
+	_player->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_USE_ITEM,itemProto->ItemId,0,0);
 }
 
 void WorldSession::HandleSpellClick(WorldPacket& recvPacket)
