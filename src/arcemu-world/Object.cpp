@@ -2014,13 +2014,13 @@ void Object::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
 			}
 		}
 	}
-	if(pVictim->IsUnit() && this->IsPlayer()) // Player delivered a killing blow
-	{
-		((Player*)this)->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_KILLING_BLOW, GetMapId(), 0, 0);
-	}
 	/* -------------------------- HIT THAT CAUSES VICTIM TO DIE ---------------------------*/
 	if ((isCritter || health <= damage) )
 	{
+		if(pVictim->IsUnit() && this->IsPlayer()) // Player delivered a killing blow
+		{
+			((Player*)this)->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_KILLING_BLOW, GetMapId(), 0, 0);
+		}
 		//general hook for die
 		sHookInterface.OnPreUnitDie( static_cast< Unit* >( this ), pVictim);
 		//warlock - seed of corruption
