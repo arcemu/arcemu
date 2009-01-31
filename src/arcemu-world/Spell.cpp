@@ -2093,7 +2093,7 @@ void Spell::SendCastResult(uint8 result)
 		break;
 
 	case SPELL_FAILED_REQUIRES_AREA:
-		if( GetProto()->RequiresAreaId )
+		if( GetProto()->RequiresAreaId > 0 )
 		{
 			AreaGroup *ag = dbcAreaGroup.LookupEntry( GetProto()->RequiresAreaId );
 			uint16 plrarea = plr->GetMapMgr()->GetAreaID( plr->GetPositionX(), plr->GetPositionY() );
@@ -3481,7 +3481,7 @@ uint8 Spell::CanCast(bool tolerate)
 				return SPELL_FAILED_REQUIRES_SPELL_FOCUS;
 		}
 
-		if( GetProto()->RequiresAreaId ) 
+		if( GetProto()->RequiresAreaId > 0 ) 
 		{
 			AreaGroup *ag = dbcAreaGroup.LookupEntry( GetProto()->RequiresAreaId );
 			uint8 i;

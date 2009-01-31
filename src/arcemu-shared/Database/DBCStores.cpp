@@ -246,7 +246,7 @@ const char* spellentryFormat =
 	"u" // MinReputation
 	"u" // RequiredAuraVision
 	"uu" // TotemCategory[2]
-	"u" // RequiresAreaId
+	"i" // RequiresAreaId
 	"u" // School
 	"ux"
 ;
