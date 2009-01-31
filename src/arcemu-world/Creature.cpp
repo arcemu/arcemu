@@ -1098,6 +1098,15 @@ WayPoint * Creature::CreateWaypointStruct()
 }
 //#define SAFE_FACTIONS
 
+bool Creature::isattackable(CreatureSpawn *spawn){
+    if(spawn == NULL)
+       return false;
+	    
+    if( (spawn->flags & 2 ) || (spawn->flags & 128 ) || (spawn->flags & 256 ) || (spawn->flags & 65536 ))
+	return false;
+	else return true;
+} 
+
 uint8 get_byte(uint32 buffer, uint32 index){
 	uint32 mask = ~0;
 	if(index > sizeof(uint32)-1)
@@ -1267,6 +1276,10 @@ bool Creature::Load(CreatureSpawn *spawn, uint32 mode, MapInfo *info)
 	//these fields are always 0 in db
 	GetAIInterface()->setMoveType(0);
 	GetAIInterface()->setMoveRunFlag(0);
+
+	if(isattackable(spawn))
+	  GetAIInterface()->SetAllowedToEnterCombat(true);
+	  else GetAIInterface()->SetAllowedToEnterCombat(false);
 	
 	// load formation data
 	if( spawn->form != NULL )

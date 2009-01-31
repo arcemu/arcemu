@@ -1283,6 +1283,7 @@ public:
 	SpellEntry * pLastSpell;
 	bool bProcInUse;
 	bool bInvincible;
+	bool bUnbeatable; // can take damage, but cannot be killed. Example: training dummies
 	Player * m_redirectSpellPackets;
 	void UpdateVisibility();
 

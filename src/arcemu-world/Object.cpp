@@ -1958,7 +1958,7 @@ void Object::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
 			if(NewHP < 5) 
 				NewHP = 5;
 
-			//Set there health to 1% or 5 if 1% is lower then 5
+			//Set their health to 1% or 5 if 1% is lower then 5
 			pVictim->SetUInt32Value(UNIT_FIELD_HEALTH, NewHP);
 			//End Duel
 			static_cast< Player* >( this )->EndDuel(DUEL_WINNER_KNOCKOUT);
@@ -1981,7 +1981,7 @@ void Object::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
 				uint32 NewHP = pVictim->GetUInt32Value(UNIT_FIELD_MAXHEALTH)/100;
 				if(NewHP < 5) NewHP = 5;
 				
-				//Set there health to 1% or 5 if 1% is lower then 5
+				//Set their health to 1% or 5 if 1% is lower then 5
 				pVictim->SetUInt32Value(UNIT_FIELD_HEALTH, NewHP);
 				//End Duel
 				petOwner->EndDuel(DUEL_WINNER_KNOCKOUT);
@@ -2015,7 +2015,7 @@ void Object::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
 		}
 	}
 	/* -------------------------- HIT THAT CAUSES VICTIM TO DIE ---------------------------*/
-	if ((isCritter || health <= damage) )
+	if ((isCritter || health <= damage) && !pVictim->bUnbeatable)
 	{
 		if(pVictim->IsUnit() && this->IsPlayer()) // Player delivered a killing blow
 		{
@@ -2656,7 +2656,10 @@ void Object::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
 			
 		}*/	
 
-		pVictim->SetUInt32Value( UNIT_FIELD_HEALTH, health - damage );
+		if(!pVictim->bUnbeatable)
+			pVictim->SetUInt32Value( UNIT_FIELD_HEALTH, health - damage );
+		else if(health <= damage)
+			pVictim->SetUInt32Value( UNIT_FIELD_HEALTH, 1 );
 	}
 }
 

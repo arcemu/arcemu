@@ -581,6 +581,7 @@ public:
 	uint32 m_transportGuid;
 
 	float GetBaseParry();
+	bool isattackable(CreatureSpawn *spawn);
 protected:
 	CreatureAIScript *_myScriptClass;
 	bool m_limbostate;
