@@ -1249,24 +1249,24 @@ ARCEMU_INLINE bool TargetTypeCheck(Object *obj,uint32 ReqCreatureTypeMask)
 class SpellCastTargets
 {
 public:
-    void read ( WorldPacket & data,uint64 caster );
-    void write ( WorldPacket & data);
+	void read ( WorldPacket & data,uint64 caster );
+	void write ( WorldPacket & data);
 
-    SpellCastTargets() : m_targetMask(0), m_targetMaskExtended(0), m_unitTarget(0), m_itemTarget(0), m_srcX(0), m_srcY(0), m_srcZ(0),
-        m_destX(0), m_destY(0), m_destZ(0), m_strTarget(NULL) {}
+	SpellCastTargets() : m_targetMask(0), m_targetMaskExtended(0), m_unitTarget(0), m_itemTarget(0), m_srcX(0), m_srcY(0), m_srcZ(0),
+		m_destX(0), m_destY(0), m_destZ(0) {}
 
-    SpellCastTargets(uint16 TargetMask, uint64 unitTarget, uint64 itemTarget, float srcX, float srcY,
-        float srcZ, float destX, float destY, float destZ) : m_targetMask(TargetMask), m_targetMaskExtended(0), m_unitTarget(unitTarget),
-        m_itemTarget(itemTarget), m_srcX(srcX), m_srcY(srcY), m_srcZ(srcZ), m_destX(destX), m_destY(destY), m_destZ(destZ), m_strTarget(NULL) {}
+	SpellCastTargets(uint16 TargetMask, uint64 unitTarget, uint64 itemTarget, float srcX, float srcY,
+		float srcZ, float destX, float destY, float destZ) : m_targetMask(TargetMask), m_targetMaskExtended(0), m_unitTarget(unitTarget),
+		m_itemTarget(itemTarget), m_srcX(srcX), m_srcY(srcY), m_srcZ(srcZ), m_destX(destX), m_destY(destY), m_destZ(destZ) {}
 
-    SpellCastTargets(uint64 unitTarget) : m_targetMask(0x2), m_targetMaskExtended(0), m_unitTarget(unitTarget), m_itemTarget(0),
-        m_srcX(0), m_srcY(0), m_srcZ(0), m_destX(0), m_destY(0), m_destZ(0), m_strTarget(NULL) {}
+	SpellCastTargets(uint64 unitTarget) : m_targetMask(0x2), m_targetMaskExtended(0), m_unitTarget(unitTarget), m_itemTarget(0),
+		m_srcX(0), m_srcY(0), m_srcZ(0), m_destX(0), m_destY(0), m_destZ(0) {}
 
-    SpellCastTargets(WorldPacket & data, uint64 caster) : m_targetMask(0), m_targetMaskExtended(0), m_unitTarget(0), m_itemTarget(0), m_srcX(0), m_srcY(0), m_srcZ(0),
-        m_destX(0), m_destY(0), m_destZ(0), m_strTarget(NULL)
-    {
-        read(data, caster);
-    }
+	SpellCastTargets(WorldPacket & data, uint64 caster) : m_targetMask(0), m_targetMaskExtended(0), m_unitTarget(0), m_itemTarget(0), m_srcX(0), m_srcY(0), m_srcZ(0),
+		m_destX(0), m_destY(0), m_destZ(0)
+	{
+		read(data, caster);
+	}
 
 	SpellCastTargets& operator=(const SpellCastTargets &target)
 	{
@@ -1281,11 +1281,7 @@ public:
 		m_destY = target.m_destY;
 		m_destZ = target.m_destZ;
 
-		if(m_strTarget)
-		{
-			delete [] m_strTarget;
-		}
-		m_strTarget = target.m_strTarget ? strdup(target.m_strTarget) : NULL;
+		m_strTarget = target.m_strTarget;
 
 		m_targetMask = target.m_targetMask;
 		m_targetMaskExtended = target.m_targetMaskExtended;
@@ -1293,14 +1289,14 @@ public:
 		return *this;
 	}
 
-    uint16 m_targetMask;
-    uint16 m_targetMaskExtended;			// this could be a 32 also
-    uint64 m_unitTarget;
-    uint64 m_itemTarget;
-    float m_srcX, m_srcY, m_srcZ;
-    float m_destX, m_destY, m_destZ;
-    char* m_strTarget;
-
+	~SpellCastTargets()	{ m_strTarget.clear(); }
+	uint16 m_targetMask;
+	uint16 m_targetMaskExtended;			// this could be a 32 also
+	uint64 m_unitTarget;
+	uint64 m_itemTarget;
+	float m_srcX, m_srcY, m_srcZ;
+	float m_destX, m_destY, m_destZ;
+	string m_strTarget;
 };
 
 enum SpellState

@@ -89,7 +89,7 @@ void SpellCastTargets::read( WorldPacket & data,uint64 caster )
 	{
 		std::string ss;
 		data >> ss;
-		m_strTarget = strdup(ss.c_str());
+		m_strTarget = ss;
 	}
 }
 
@@ -111,7 +111,7 @@ void SpellCastTargets::write( WorldPacket& data )
 		data << uint8(0) << m_destX << m_destY << m_destZ;
 
 	if( m_targetMask & TARGET_FLAG_STRING )
-		data << m_strTarget;
+		data << m_strTarget.c_str();
 }
 
 Spell::Spell()
@@ -3888,7 +3888,7 @@ uint8 Spell::CanCast(bool tolerate)
 					if(target->GetEntry() != 22357)
 						return SPELL_FAILED_BAD_TARGETS;
 				}break;
-				case 37136: // cebernic:µç´ÅÂö³åÊÕ¼¯Æ÷
+				case 37136: // cebernic:ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Õ¼ï¿½ï¿½ï¿½
 				{
 					if(target->GetEntry() != 21731)
 						return SPELL_FAILED_BAD_TARGETS;

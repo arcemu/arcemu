@@ -465,7 +465,7 @@ void WorldSession::HandlePetCastSpell(WorldPacket & recvPacket)
 //		recvPacket >> flags;		// skip one byte
 		std::string ss;
 		recvPacket >> ss;
-		targets.m_strTarget = strdup(ss.c_str());
+		targets.m_strTarget = ss;
 	}
 	if(spellid == 33395)	// Summoned Water Elemental's freeze
 	{
