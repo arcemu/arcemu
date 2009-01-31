@@ -2354,8 +2354,8 @@ void ObjectMgr::LoadSpellOverride()
 					continue;
 				list->push_back(sp);
 			}while(resultIn->NextRow());
+			delete resultIn;
 		}
-		delete resultIn;
 		if(list->size() == 0)
 			delete list;
 		else
