@@ -254,7 +254,10 @@ enum MOD_TYPES
     SPELL_AURA_INCREASE_CASTING_TIME_PCT = 216,
     SPELL_AURA_REGEN_MANA_STAT_PCT=219,
     SPELL_AURA_HEALING_STAT_PCT=220,
+	SPELL_AURA_PERIODIC_TRIGGER_SPELL_WITH_VALUE=227, // Used by Mind Flay etc
     SPELL_AURA_INCREASE_MAX_HEALTH=230,//Used by Commanding Shout
+	SPELL_AURA_MOD_HEALING_BY_AP=237,
+	SPELL_AURA_MOD_SPELL_DAMAGE_BY_AP=238,
 	SPELL_AURA_MODIFY_AXE_SKILL=240,
 	SPELL_AURA_241 = 241,
     SPELL_AURA_MOD_SPELL_DAMAGE_FROM_HEALING = 242,
@@ -627,7 +630,7 @@ public:
 	void SpellAuraAddHealth(bool apply);
 	void SpellAuraRemoveReagentCost(bool apply);
 	void SpellAuraIncreaseAPbyStatPct(bool apply);
-
+	void SpellAuraPeriodicTriggerSpellWithValue(bool apply);
 	void UpdateAuraModDecreaseSpeed();
 
 	void SendModifierLog(int32 ** m,int32 v,uint32* mask,uint8 type,bool pct = false);

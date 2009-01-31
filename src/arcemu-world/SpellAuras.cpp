@@ -248,7 +248,7 @@ pSpellAura SpellAuraHandler[TOTAL_SPELL_AURAS]={
 		&Aura::SpellAuraNULL,//224 // not used
 		&Aura::SpellAuraNULL,//225 // Prayer of Mending "Places a spell on the target that heals them for $s1 the next time they take damage.  When the heal occurs, Prayer of Mending jumps to a raid member within $a1 yards.  Jumps up to $n times and lasts $d after each jump.  This spell can only be placed on one target at a time."
 		&Aura::SpellAuraDrinkNew,//226 // used in brewfest spells, headless hoerseman, Aspect of the Viper
-		&Aura::SpellAuraNULL,//227 Inflicts [SPELL DAMAGE] damage to enemies in a cone in front of the caster. (based on combat range) http://www.thottbot.com/s40938
+		&Aura::SpellAuraPeriodicTriggerSpellWithValue,//227 // Used by Mind Flay, Siege Turrets 'Machine gun' and a few other spells.
 		&Aura::SpellAuraModStealthDetection,//228 Stealth Detection. http://www.thottbot.com/s34709
 		&Aura::SpellAuraNULL,//229 Apply Aura:Reduces the damage your pet takes from area of effect attacks http://www.thottbot.com/s35694
 		&Aura::SpellAuraIncreaseMaxHealth,//230 Increase Max Health (commanding shout);
@@ -535,7 +535,7 @@ const char* SpellAuraNames[TOTAL_SPELL_AURAS] = {
 	"",													// 224
 	"",													// 225
 	"",													// 226
-	"",													// 227
+	"TRIGGER_SPELL_WITH_VALUE",							// 227 Used by Mind Flay and some other spells.
 	"",													// 228
 	"",													// 229
     "INCREASE_MAX_HEALTH",								// 230 Used by Commanding Shout
@@ -3563,6 +3563,11 @@ void Aura::SpellAuraModResistance(bool apply)
 	}
 }
 
+void Aura::SpellAuraPeriodicTriggerSpellWithValue(bool apply)
+{
+// todo
+}
+
 void Aura::SpellAuraPeriodicTriggerSpell(bool apply)
 {
 	if(m_spellProto->EffectTriggerSpell[mod->i] == 0)
@@ -6060,7 +6065,6 @@ void Aura::SpellAuraModRegen(bool apply)
 			EVENT_AURA_PERIODIC_REGEN,3000,0,EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
 	}
 }
-
 void Aura::SpellAuraDrinkNew(bool apply)
 {
 	switch( m_spellProto->NameHash )
@@ -7829,7 +7833,7 @@ void Aura::SpellAuraIncreaseSpellDamageByAttribute(bool apply)
 
 	if(m_target->IsPlayer())
 	{
-		for(uint32 x=0;x<7;x++)
+		for(uint32 x=1;x<7;x++)
 		{
 			if (mod->m_miscValue & (((uint32)1)<<x) )
 			{
@@ -7871,7 +7875,7 @@ void Aura::SpellAuraModSpellDamageByAP(bool apply)
 
 	if(m_target->IsPlayer())
 	{
-		for(uint32 x=0;x<7;x++)
+		for(uint32 x=1;x<7;x++) //melee damage != spell damage.
 			if (mod->m_miscValue & (((uint32)1)<<x) )
 				m_target->ModUnsigned32Value( PLAYER_FIELD_MOD_DAMAGE_DONE_POS + x, val );
 		if(m_target->IsPlayer())
@@ -7915,7 +7919,7 @@ void Aura::SpellAuraIncreaseHealingByAttribute(bool apply)
 
 	if(m_target->IsPlayer())
 	{
-		for(uint32 x=1;x<7;x++)
+		for(uint32 x=0;x<7;x++)
 		{
 			static_cast< Player* >( m_target )->SpellHealDoneByAttribute[stat][x] += ((float)(val))/100;
 		}

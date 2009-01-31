@@ -9452,6 +9452,11 @@ void Player::ModifyBonuses( uint32 type, int32 val, bool apply )
 				ModUnsigned32Value( PLAYER_RATING_MODIFIER_RANGED_HASTE, val );//ranged
 				ModUnsigned32Value( PLAYER_RATING_MODIFIER_SPELL_HASTE, val ); // Spell
 			}break;
+		case ATTACK_POWER:
+			{
+				ModUnsigned32Value(UNIT_FIELD_ATTACK_POWER_MODS, val);
+				ModUnsigned32Value(UNIT_FIELD_RANGED_ATTACK_POWER_MODS, val);	
+			}break;
 		case SPELL_POWER:
 			{
 				for(uint8 school=1;school < 7; ++school)

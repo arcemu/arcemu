@@ -4508,6 +4508,12 @@ void ApplyNormalFixes()
 			sp->EffectImplicitTargetB[1] = 0;
 			sp->EffectImplicitTargetB[2] = 0;
 		}
+        //shaman - Hex
+        sp = dbcSpell.LookupEntryForced( 51514 );
+        if( sp != NULL )
+        { // Damage caused may interrupt the effect.
+                sp->AuraInterruptFlags |= AURA_INTERRUPT_ON_UNUSED2;
+       }
 
 	//////////////////////////////////////////
 	// MAGE								//

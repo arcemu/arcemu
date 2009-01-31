@@ -2801,7 +2801,7 @@ void Spell::SpellEffectSummon(uint32 i) // Summon
 	{
 		Pet *summon = objmgr.CreatePet();
 		summon->SetInstanceID(u_caster->GetInstanceID());
-		summon->CreateAsSummon(GetProto()->EffectMiscValue[i], ci, NULL, p_caster, GetProto(), 1, 45000);
+		summon->CreateAsSummon(GetProto()->EffectMiscValue[i], ci, NULL, p_caster, GetProto(), 1, GetDuration());
 		summon->SetUInt32Value(UNIT_FIELD_LEVEL, u_caster->getLevel());
 		summon->AddSpell(dbcSpell.LookupEntry(31707), true);
 		summon->AddSpell(dbcSpell.LookupEntry(33395), true);
@@ -6319,7 +6319,7 @@ void Spell::SpellEffectDummyMelee( uint32 i ) // Normalized Weapon damage +
 	case 48689: add_damage = 509; return; break;		// r8
 	case 48690: add_damage = 770; return; break;		// r9
 	case 48691: add_damage = 908; return; break;		// r10
-
+	
 			// BACKSTAB
 	case 53: add_damage = 15; return; break;			// r1
 	case 2589: add_damage = 30; return; break;			// r2
