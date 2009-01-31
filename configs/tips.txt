@@ -1,0 +1,32 @@
+::Win32 tipz::
+
+
+- The Restarter -
+There's no app restarter needed...or u want kill process on time specified unless :D
+
+BAT would be great something like:
+==================================
+:go
+arcemu-world.exe
+goto go
+==================================
+save the contents and name a file to Restarter.bat put it into same directory of arcemu-world.exe
+
+
+
+- Directory without SVN Controlled -
+==================================
+@echo On
+@Rem Directory without SVN Controlled
+@PROMPT [Com]
+
+@for /r . %%a in (.) do @if exist "%%a\.svn" rd /s /q "%%a\.svn"
+@Rem for /r . %%a in (.) do @if exist "%%a\.svn" @echo "%%a\.svn"
+
+@echo Done.
+@pause
+==================================
+save the contents to plain text as a file BAT.
+
+
+:D cEbernic
