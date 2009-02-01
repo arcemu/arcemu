@@ -2220,6 +2220,7 @@ void Player::InitVisibleUpdateBits()
 	Player::m_visibleUpdateMask.SetBit(PLAYER_GUILDRANK);
 	Player::m_visibleUpdateMask.SetBit(UNIT_FIELD_BASE_MANA);
 	Player::m_visibleUpdateMask.SetBit(UNIT_FIELD_BYTES_2);
+	Player::m_visibleUpdateMask.SetBit(UNIT_FIELD_AURASTATE);
 
 	// Players visible items are not inventory stuff
     for(uint16 i = 0; i < EQUIPMENT_SLOT_END; ++i)
