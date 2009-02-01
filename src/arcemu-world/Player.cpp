@@ -759,7 +759,10 @@ bool Player::Create(WorldPacket& data )
 		SetUInt32Value(PLAYER_NEXT_LEVEL_XP, 148200);
 	}
 	UpdateGlyphs();
-	SetUInt32Value(PLAYER_CHARACTER_POINTS1, 0 ); // It gets overwritten later
+	if(getClass() == DEATHKNIGHT)
+		SetUInt32Value(PLAYER_CHARACTER_POINTS1, sWorld.DKStartTalentPoints); // Default is 0 in case you do not want to modify it
+	else
+		SetUInt32Value(PLAYER_CHARACTER_POINTS1, 0 ); // It gets overwritten later
 	SetUInt32Value(PLAYER_CHARACTER_POINTS2, sWorld.MaxProfs );
 	
 	SetUInt32Value(UNIT_FIELD_BYTES_0, ( ( race ) | ( class_ << 8 ) | ( gender << 16 ) | ( powertype << 24 ) ) );

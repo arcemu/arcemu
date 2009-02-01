@@ -425,6 +425,7 @@ public:
 	int32 StartingLevel;
 	uint32 ExtraTalents;
 	uint32 MaxProfs;
+	uint32 DKStartTalentPoints;
 	
 	uint32 HordePlayers;
 	uint32 AlliancePlayers;

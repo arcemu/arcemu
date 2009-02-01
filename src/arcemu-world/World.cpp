@@ -75,6 +75,7 @@ World::World()
 	StartingLevel=1;
 	m_limitedNames=false;
 	m_banTable = NULL;
+	DKStartTalentPoints = 0;
 }
 
 void CleanupRandomNumberGenerators();
@@ -1372,6 +1373,8 @@ void World::Rehash(bool load)
 	GoldStartAmount = Config.OptionalConfig.GetIntDefault("GoldSettings", "StartingGold", 0);
 	if(GoldStartAmount)
 		GoldStartAmount *= 10000;
+
+	DKStartTalentPoints = Config.OptionalConfig.GetIntDefault("Optional", "DKStartingTalents", 0);
 
 	//script engine
 	m_LuaEngine = Config.MainConfig.GetBoolDefault("ScriptBackends", "LUA", true);
