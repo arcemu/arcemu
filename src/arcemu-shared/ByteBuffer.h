@@ -29,7 +29,7 @@ public:
 	class error {
 	};
 
-	const static size_t DEFAULT_SIZE = 0x4000; //16,384
+	const static size_t DEFAULT_SIZE = 0x2000;
 
 	ByteBuffer(): _rpos(0), _wpos(0) {
 		_storage.reserve(DEFAULT_SIZE);

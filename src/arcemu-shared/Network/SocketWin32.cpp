@@ -29,16 +29,14 @@ void Socket::WriteCallback()
 		buf.len = (u_long)writeBuffer.GetContiguiousBytes();
 		buf.buf = (char*)writeBuffer.GetBufferStart();
 
-		m_writeEvent.Reset(SOCKET_IO_EVENT_WRITE_END);
-
 		if ( !m_writeEvent.Mark() ) {
 			m_writeEvent.Unmark();
 			DecSendLock();
-			Disconnect();
 			m_writeMutex.Release();
 			return;
 		}
 
+		m_writeEvent.Reset(SOCKET_IO_EVENT_WRITE_END);
 		int r = WSASend(m_fd, &buf, 1, &w_length, flags, &m_writeEvent.m_overlap, 0);
 		if(r == SOCKET_ERROR)
 		{
@@ -47,8 +45,6 @@ void Socket::WriteCallback()
 				m_writeEvent.Unmark();
 				DecSendLock();
 				Disconnect();
-				m_writeMutex.Release();
-				return;
 			}
 		}
 	}
@@ -57,7 +53,6 @@ void Socket::WriteCallback()
 		// Write operation is completed.
 		DecSendLock();
 	}
-	m_writeEvent.Unmark(); // unmark imediatelly!
 	m_writeMutex.Release();
 }
 
@@ -71,6 +66,18 @@ void Socket::SetupReadEvent(uint32 len)
 		return;
 	}
 
+	DWORD r_length = 0;
+	DWORD flags = 0;
+	WSABUF buf;
+	buf.len = (u_long)readBuffer.GetSpace();
+	buf.buf = (char*)readBuffer.GetBuffer();
+
+	if ( !m_readEvent.Mark() ){
+		m_readEvent.Unmark();
+		m_readMutex.Release();
+		return;
+	}
+
 	if (len>0) { // cebernic: correct packet received.
 		readBuffer.IncrementWritten(len);
 		OnRead();
@@ -78,33 +85,15 @@ void Socket::SetupReadEvent(uint32 len)
 	}
 
 	m_readEvent.Reset(SOCKET_IO_EVENT_READ_COMPLETE);
-
-	if ( !m_readEvent.Mark() ){
-		m_readEvent.Unmark();
-		Disconnect();
-		m_readMutex.Release();
-		return;
-	}
-
-	DWORD r_length = 0;
-	DWORD flags = 0;
-	WSABUF buf;
-	buf.len = (u_long)readBuffer.GetSpace();
-	buf.buf = (char*)readBuffer.GetBuffer();
-
-	memset(buf.buf,0,buf.len);
 	if(WSARecv(m_fd, &buf, 1, &r_length, &flags, &m_readEvent.m_overlap, 0) == SOCKET_ERROR)
 	{
 		if(WSAGetLastError() != WSA_IO_PENDING)
 		{
 			m_readEvent.Unmark();
 			Disconnect();
-			m_readMutex.Release();
-			return;
 		}
 	}
 
-	m_readEvent.Unmark();
 	m_readMutex.Release();
 }
 
@@ -115,15 +104,7 @@ void Socket::ReadCallback(uint32 len)
 
 void Socket::AssignToCompletionPort()
 {
-	if ( m_deleted ) return;
-
-	SYSTEM_INFO si;
-	GetSystemInfo(&si);
-	long portthreads = (si.dwNumberOfProcessors*2)+2;
-
-	if ( CreateIoCompletionPort((HANDLE)m_fd, m_completionPort, (ULONG_PTR)this,portthreads)==0 )
-		Disconnect();
-
+	/*HANDLE h = */CreateIoCompletionPort((HANDLE)m_fd, m_completionPort, (ULONG_PTR)this, 0);
 	//__asm int 3;
 }
 

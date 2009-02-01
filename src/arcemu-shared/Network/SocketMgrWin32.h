@@ -22,8 +22,6 @@ public:
 	~SocketMgr();
 
 	ARCEMU_INLINE HANDLE GetCompletionPort() { return m_completionPort; }
-	ARCEMU_INLINE void SetCompletionPort(HANDLE port) { m_completionPort = port; }
-
 	void SpawnWorkerThreads();
 	void CloseAll();
 	void ShowStatus();
@@ -47,14 +45,15 @@ public:
 
 	void MakeSnapShot() // execute the global socket snapshot
 	{
-		set<Socket*>::iterator itr;
+		set<Socket*>::iterator itr,itr2;
 		socketLock.Acquire();
 		if ( _sockets.size() ){
 			for(itr = _sockets.begin(); itr != _sockets.end();)
 			{
-				Socket *s = (*itr);
+				itr2 = itr;
 				++itr;
-				if ( s!=NULL ){
+				Socket *s = *itr2;
+				if ( s!=NULL && s->IsConnected() ){
 					if ( s->snapshot_read_bytes != s->total_read_bytes || s->snapshot_send_bytes != s->total_send_bytes ) // heartbeat with traffic
 					{
 						s->snapshot_read_bytes = s->total_read_bytes;
@@ -69,16 +68,17 @@ public:
 
 	void CheckDeadSocket_Internal() // kicked for no traffic connection
 	{
-		set<Socket*>::iterator itr;
+		set<Socket*>::iterator itr,itr2;
 		uint32 t = getMSTime();
 		uint32 counter=0;
 		socketLock.Acquire();
 		if ( _sockets.size() ){
 			for(itr = _sockets.begin(); itr != _sockets.end();)
 			{
-				Socket *s = (*itr);
+				itr2 = itr;
 				++itr;
-				if ( s!=NULL ){
+				Socket *s = *itr2;
+				if ( s!=NULL && s->IsConnected() ){
 					if ( s->getLastheartbeat()+GLOBAL_DEAD_SOCKET_CHECK <= t )
 					{
 						s->Disconnect(); // remove socket to garbage queue.
@@ -98,7 +98,7 @@ public:
 private:
 	HANDLE m_completionPort;
 	set<Socket*> _sockets;
-	FastMutex socketLock;
+	Mutex socketLock;
 };
 
 #define sSocketMgr SocketMgr::getSingleton()

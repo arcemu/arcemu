@@ -198,6 +198,7 @@ bool Master::Run(int argc, char ** argv)
 	printf(" SVN: http://arcemu.info/svn/                   \n");
 	printf(" Have fun!                                      \n");
 	Log.Line();
+	Sleep(1000);
 #ifdef REPACK
 	Log.Color(TRED);
 	printf("Warning: Using repacks is potentially dangerous. You should always compile\n");

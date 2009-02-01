@@ -64,7 +64,7 @@ public:
 	OverlappedStruct(SocketIOEvent ev) : m_event(ev)
 	{
 		memset(&m_overlap, 0, sizeof(OVERLAPPED));
-		m_inUse = 0;
+		m_inUse = ev;
 	};
 
 	OverlappedStruct()
@@ -79,7 +79,7 @@ public:
 		m_event = ev;
 	}
 
-	bool Mark() // cebernic: tell us marking with failed,so we need delete you,hacker?
+	bool Mark()
 	{
 		long val = InterlockedCompareExchange(&m_inUse, 1, 0);
 		if(val != 0){

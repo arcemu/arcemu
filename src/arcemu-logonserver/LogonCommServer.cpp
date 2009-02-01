@@ -28,7 +28,7 @@ typedef struct
 
 ARCEMU_INLINE static void swap32(uint32* p) { *p = ((*p >> 24 & 0xff)) | ((*p >> 8) & 0xff00) | ((*p << 8) & 0xff0000) | (*p << 24); }
 
-LogonCommServerSocket::LogonCommServerSocket(SOCKET fd) : Socket(fd, 2048,16384)
+LogonCommServerSocket::LogonCommServerSocket(SOCKET fd) : Socket(fd, 65536, 524288)
 {
 	// do nothing
 	last_ping = (uint32)UNIXTIME;

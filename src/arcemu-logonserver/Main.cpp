@@ -343,6 +343,7 @@ void LogonServer::Run(int argc, char ** argv)
 	printf(" SVN: http://arcemu.info/svn/                   \n");
 	printf(" Have fun!                                      \n");
 	Log.Line();
+	Sleep(1000);
 #ifdef REPACK
 	sLog.outString("Repack: %s | Author: %s | %s\n", REPACK, REPACK_AUTHOR, REPACK_WEBSITE);
 #endif

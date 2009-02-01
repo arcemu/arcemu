@@ -65,6 +65,9 @@ public:
 
 	ARCEMU_INLINE void SetSession(WorldSession * session) { mSession = session; }
 	ARCEMU_INLINE WorldSession * GetSession() { return mSession; }
+	ARCEMU_INLINE void SetRequestID(uint32 mid) { mRequestID = mid; }
+	ARCEMU_INLINE uint32 GetRequestID() { return mRequestID; }
+
 	bool Authed;
 	bool AuthRequestSent;
 	bool Authed_worldsocket;

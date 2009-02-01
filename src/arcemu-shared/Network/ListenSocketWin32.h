@@ -14,7 +14,7 @@
 
 #include "../Threading/ThreadPool.h"
 
-#define MAX_CONNECTOR_ON_LISTENSOCKET 20000
+#define MAX_CONNECTOR_ON_LISTENSOCKET 50000
 
 template<class T>
 class SERVER_DECL ListenSocket : public ThreadBase
@@ -72,7 +72,12 @@ public:
 		{
 			Sleep(10);
 
-			if(sSocketGarbageCollector.GetSocketSize() > MAX_CONNECTOR_ON_LISTENSOCKET)
+			// cebernic: this was temporary.
+			// to be a fast way to comparing hashmap with ip storaging from GarbageCollector (but ipfaker?).
+			// in that way,new incoming connection request will be dropped for huge connections from bot.
+			// with flooding ur port by bot,i think CC firewall required currently:P
+			// In Linux,firewall was bulit into the core.
+			if(sSocketGarbageCollector.GetSocketSize() > MAX_CONNECTOR_ON_LISTENSOCKET) 
 				continue;
 
 			memset(&m_tempAddress,0,sizeof(sockaddr_in));

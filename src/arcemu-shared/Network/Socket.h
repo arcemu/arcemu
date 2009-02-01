@@ -74,11 +74,11 @@ public:
 	void SetupReadEvent(uint32 len);
 	void ReadCallback(uint32 len);
 	void WriteCallback();
+	void markConnected();
 
 	ARCEMU_INLINE bool IsDeleted() { return m_deleted; }
 	ARCEMU_INLINE bool IsConnected() { return m_connected; }
-	ARCEMU_INLINE void markConnected() { m_connected = true; }
-
+	
 	ARCEMU_INLINE sockaddr_in & GetRemoteStruct() { return m_client; }
 	ARCEMU_INLINE CircularBuffer& GetReadBuffer() { return readBuffer; }
 	ARCEMU_INLINE CircularBuffer& GetWriteBuffer() { return writeBuffer; }
@@ -244,7 +244,7 @@ T* ConnectTCPSocket(const char * hostname, u_short port)
 }
 
 /* Sockets Garbage Collector :D */
-#define SOCKET_GC_TIMEOUT 2000 // cebernic: don't modify this value better !
+#define SOCKET_GC_TIMEOUT 4000 // cebernic: don't modify this value better !
 /* 
   cebernic: The garbageCollector ,it also collecting the shit from WIN32 CompletionPortSocket
 	This will gets something helpful for anti-dDOS. the attacker should be made many of connections as vaild.
@@ -284,10 +284,7 @@ public:
 				Socket *s = i2->second;
 				if ( s==NULL ) continue;
 				s->Disconnect(true); // disconnect without queue the socket again.
-				if ( s->IsDeleted() ) {
-					delete s;
-					deletionQueue.erase(i2);
-				}
+				deletionQueue.erase(i2);
 			}
 		}
 		lock.ReleaseWriteLock();
@@ -349,15 +346,12 @@ public:
 				i2 = i;
 				++i;
 				Socket *s = i2->second;
-				if ( s==NULL ) continue;
+				if ( s==NULL || s->IsConnected() ) continue;
 				if( s->getLastheartbeat()+SOCKET_GC_TIMEOUT <=t)
 				{
 					//printf("Socket timeout! Read:%u Send:%u\n",s->total_read_bytes,s->total_send_bytes);
 					s->Disconnect(true);
-					if ( s->IsDeleted() ) {
-						if (s) delete s;
-						deletionQueue.erase(i2);
-					}
+					deletionQueue.erase(i2);
 				}
 
 			}

@@ -126,33 +126,28 @@ public:
 	closed = false;
 
 		sLogonCommHandler.ConnectAll();
-		while( running )
+		while( running && !closed )
 		{
 			sLogonCommHandler.UpdateSockets();
-			Sleep( 1000 );
+			Sleep( 500 );
 		}
 		closed=true;
 		return true;
 	}
 	void terminate()
 	{
-	running=false;
-#ifdef WIN32
-	SetEvent(hEvent);
-#else
-	pthread_cond_signal(&cond);
-#endif
+	OnShutdown();
 		while ( !closed )
 		{
 			Log.Notice("LogonCommClient", "Waiting for logoncomm thread to end...");
 			Sleep(1000);
 		}
-	Sleep(1000);
 	}
 };
 
 void LogonCommHandler::Shutdown()
 {
+	logoncommthread->terminate();
 
 	for(set<LogonServer*>::iterator i = servers.begin(); i != servers.end(); ++i)
 		delete (*i);
@@ -164,7 +159,6 @@ void LogonCommHandler::Shutdown()
 	servers.clear();
 	realms.clear();
 
-	logoncommthread->terminate();
 }
 
 void LogonCommHandler::Startup()
@@ -328,7 +322,7 @@ void LogonCommHandler::UpdateSockets()
 				continue;
 			}
             
-			if( (t - cs->last_ping) > 15 )
+			if( (t - cs->last_ping) > 10 )
 			{
 				// send a ping packet.
 				cs->SendPing();
@@ -366,6 +360,15 @@ void LogonCommHandler::ConnectionDropped(uint32 ID)
 uint32 LogonCommHandler::ClientConnected(string AccountName, WorldSocket * Socket)
 {
 	uint32 request_id = next_request++;
+
+	if ( next_request >= 0xFFFFFFFE ) // too big?
+	{
+		sLog.outString ("Too many clients at this moment!");
+		next_request = 1;
+		pending_logons.clear();
+		return uint32(-1);
+	}
+
 	size_t i = 0;
 	const char * acct = AccountName.c_str();
 	sLog.outDebug ( " >> sending request for account information: `%s` (request %u).", AccountName.c_str(), request_id);
@@ -380,12 +383,18 @@ uint32 LogonCommHandler::ClientConnected(string AccountName, WorldSocket * Socke
 	}
 
 	LogonCommClientSocket * s = itr->second;
-	if( s == NULL || Socket == NULL)
+	if( s == NULL || Socket == NULL )
 		return (uint32)-1;
 
-	pendingLock.Acquire();
 
-	WorldPacket data(RCMSG_REQUEST_SESSION, 100);
+	Socket->SetRequestID(request_id);
+
+	pendingLock.Acquire();
+	pending_logons[request_id] = Socket;
+	pendingLock.Release();
+
+
+	WorldPacket data(RCMSG_REQUEST_SESSION, 36);
 	data << request_id;
 
 	// strip the shitty hash from it
@@ -393,12 +402,11 @@ uint32 LogonCommHandler::ClientConnected(string AccountName, WorldSocket * Socke
 		data.append( &acct[i], 1 );
 
 	data.append( "\0", 1 );
-	s->SendPacket(&data,false);
 
-	pending_logons[request_id] = Socket;
-	pendingLock.Release();
+	s->SendPacket(&data,false); // CommClientHandle
 
 	RefreshRealmPop();
+
 	return request_id;
 }
 
@@ -412,11 +420,8 @@ void LogonCommHandler::UnauthedSocketClose(uint32 id)
 
 void LogonCommHandler::RemoveUnauthedSocket(uint32 id)
 {
-	pendingLock.Acquire();
 	map<uint32, WorldSocket*>::iterator itr = pending_logons.find(id);
 	if ( itr != pending_logons.end() ) pending_logons.erase(itr);
-	//pending_logons.erase(id);
-	pendingLock.Release();
 }
 
 void LogonCommHandler::LoadRealmConfiguration()

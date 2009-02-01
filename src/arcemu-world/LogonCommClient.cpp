@@ -153,22 +153,25 @@ void LogonCommClientSocket::HandleRegister(WorldPacket & recvData)
 void LogonCommClientSocket::HandleSessionInfo(WorldPacket & recvData)
 {
 	uint32 request_id;
+	if ( recvData.size() < 16+1 ) {
+		sLog.outString("SessionInfo::Request id has no integrated.");
+		return;
+	}
+
 	recvData >> request_id;
 
 	Mutex & m = sLogonCommHandler.GetPendingLock();
 	m.Acquire();
-
 	// find the socket with this request
 	WorldSocket * sock = sLogonCommHandler.GetSocketByRequest(request_id);
-	if(sock == 0 || sock->Authed || sock->IsDeleted())	   // Expired/Client disconnected
+
+	if( sock == 0 || sock->Authed || sock->IsDeleted() || sock->GetRequestID()!=request_id )	   // Expired/Client disconnected
 	{
-		sock->Disconnect();
+		sLog.outString("SessionInfo::Worldsock expired!");
 		m.Release();
 		return;
 	}
 
-	sock->markConnected();
-	
 	// extract sessionkey / account information (done by WS)
 	sock->Authed = true;
 	sLogonCommHandler.RemoveUnauthedSocket(request_id);
@@ -195,8 +198,6 @@ void LogonCommClientSocket::SendPacket(WorldPacket * data, bool no_crypto)
 {
 	logonpacket header;
 	bool rv;
-	if( IsDeleted() )
-		return;
 
 	BurstBegin();
 
