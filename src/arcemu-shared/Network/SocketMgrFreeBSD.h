@@ -67,7 +67,9 @@ public:
     void AddSocket(Socket * s);
 	void AddListenSocket(ListenSocketBase * s);
 
-    /// remove a socket from set/fd mapping
+	void ShowStatus();	//TODO: Script it
+	
+	/// remove a socket from set/fd mapping
     void RemoveSocket(Socket * s);
 
     /// returns kqueue fd
