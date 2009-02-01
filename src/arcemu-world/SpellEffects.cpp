@@ -2454,14 +2454,24 @@ void Spell::SpellEffectCreateItem(uint32 i) // Create item
 			if (m_itemProto->RandomPropId)
 			{
 				RandomProps * iRandomProperty = lootmgr.GetRandomProperties(m_itemProto);
-				newItem->SetRandomProperty(iRandomProperty->ID);
-				newItem->ApplyRandomProperties(false);
+				if( iRandomProperty == NULL )
+					sLog.outError( "DB Error: Item %u has unknown RandomPropId %u", m_itemProto->ItemId, m_itemProto->RandomPropId );
+				else
+				{
+					newItem->SetRandomProperty(iRandomProperty->ID);
+					newItem->ApplyRandomProperties(false);
+				}
 			}
 			if (m_itemProto->RandomSuffixId)
 			{
 				ItemRandomSuffixEntry * iRandomSuffix = lootmgr.GetRandomSuffix(m_itemProto);
-				newItem->SetRandomSuffix(iRandomSuffix->id);
-				newItem->ApplyRandomProperties(false);
+				if( iRandomSuffix == NULL )
+					sLog.outError( "DB Error: Item %u has unknown RandomSuffixId %u", m_itemProto->ItemId, m_itemProto->RandomSuffixId );
+				else 
+				{
+					newItem->SetRandomSuffix(iRandomSuffix->id);
+					newItem->ApplyRandomProperties(false);
+				}
 			}
 
 			if(p_target->GetItemInterface()->SafeAddItem(newItem,slotresult.ContainerSlot, slotresult.Slot))
