@@ -79,8 +79,8 @@ void ObjectMgr::LoadProfessionDiscoveries()
 			ProfessionDiscoveryTable.insert( pf );
 		}
 		while( result->NextRow() );
+		delete result;
 	}
-	delete result;
 }
 
 void ObjectMgr::LoadExtraCreatureProtoStuff()
@@ -310,8 +310,8 @@ void ObjectMgr::LoadExtraItemStuff()
 			foodItems.insert( make_pair( f[0].GetUInt32(), f[1].GetUInt32() ) );
 		}
 		while(result->NextRow());
+		delete result;
 	}
-	delete result;
 
 	StorageContainerIterator<ItemPrototype> * itr = ItemPrototypeStorage.MakeIterator();
 	ItemPrototype * pItemPrototype;

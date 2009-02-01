@@ -116,7 +116,9 @@ void WorldSession::HandleAutostoreLootItemOpcode( WorldPacket & recv_data )
 	}
 
 	if(pGO)
+	{
 		CALL_GO_SCRIPT_EVENT(pGO, OnLootTaken)(_player, it);
+	}
 	else if(pCreature)
 		CALL_SCRIPT_EVENT(pCreature, OnLootTaken)(_player, it);
 
