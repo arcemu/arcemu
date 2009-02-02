@@ -2353,8 +2353,8 @@ void Player::SaveToDB(bool bNewCharacter /* =false */)
 	<< m_uint32Values[PLAYER_AMMO_ID] << ","
 	<< m_uint32Values[PLAYER_CHARACTER_POINTS2] << ",";
 
-	if (m_uint32Values[PLAYER_CHARACTER_POINTS1] > 61 &&  ! GetSession()->HasGMPermissions())
-            SetUInt32Value(PLAYER_CHARACTER_POINTS1, 61);
+	if (m_uint32Values[PLAYER_CHARACTER_POINTS1] > 71 &&  ! GetSession()->HasGMPermissions())
+            SetUInt32Value(PLAYER_CHARACTER_POINTS1, 71);
 	ss << m_uint32Values[PLAYER_CHARACTER_POINTS1] << ","
 	<< load_health << ","
 	<< load_mana << ","
