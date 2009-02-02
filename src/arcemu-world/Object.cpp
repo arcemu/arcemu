@@ -265,6 +265,9 @@ uint32 Object::BuildCreateUpdateBlockForPlayer(ByteBuffer *data, Player *target)
 					updatetype = UPDATETYPE_CREATE_YOURSELF;
 				}break;
 		}
+		//The above 3 checks FAIL to identify transports, thus their flags remain 0x58, and this is BAAAAAAD! Later they don't get position x,y,z,o updates, so they appear randomly by a client-calculated path, they allways face north, etc... By: VLack aka. VLsoft
+		if( flags != 0x5A && GetTypeId() == TYPEID_GAMEOBJECT && static_cast<GameObject*>(this)->GetInfo()->Type == GAMEOBJECT_TYPE_TRANSPORT )
+			flags = 0x5A;
 	}
 
 	// build our actual update
@@ -822,6 +825,10 @@ bool Object::SetPosition(const LocationVector & v, bool allowPorting /* = false 
 bool Object::SetPosition( float newX, float newY, float newZ, float newOrientation, bool allowPorting )
 {
 	bool updateMap = false, result = true;
+
+	//It's a good idea to push through EVERY transport position change, no matter how small they are. By: VLack aka. VLsoft
+	if( GetTypeId() == TYPEID_GAMEOBJECT && static_cast<GameObject*>(this)->GetInfo()->Type == GAMEOBJECT_TYPE_TRANSPORT )
+		updateMap = true;
 
 	//if (m_position.x != newX || m_position.y != newY)
 		//updateMap = true;

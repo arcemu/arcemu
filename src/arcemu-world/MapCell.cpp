@@ -23,6 +23,8 @@
 //
 #include "StdAfx.h"
 
+extern bool bServerShutdown;
+
 MapCell::~MapCell()
 {
 	RemoveObjects();
@@ -147,6 +149,10 @@ void MapCell::RemoveObjects()
 			if(!obj->m_loadedFromDB)
 				continue;
 		}
+
+		//If MapUnloadTime is non-zero, a transport could get deleted here (when it arrives to a cell that's scheduled to be unloaded because players left from it), so don't delete it! - By: VLack aka. VLsoft
+		if( sWorld.map_unload_time && !bServerShutdown && obj->GetTypeId() == TYPEID_GAMEOBJECT && static_cast<GameObject*>(obj)->GetInfo()->Type == GAMEOBJECT_TYPE_TRANSPORT )
+			continue;
 
 		if( obj->Active )
 			obj->Deactivate( _mapmgr );

@@ -740,6 +740,9 @@ void MapMgr::ChangeObjectLocation( Object *obj )
 				fRange = 0.0f; // unlimited distance for people on same boat
 			else if( curObj->GetTypeFromGUID() == HIGHGUID_TYPE_TRANSPORTER )
 				fRange = 0.0f; // unlimited distance for transporters (only up to 2 cells +/- anyway.)
+			//If the object announcing it's position is a transport, then it should announce it to everyone and everything; thus deleting it from visible objects should be avoided. - By: VLack aka. VLsoft
+			else if( obj->GetTypeId() == TYPEID_GAMEOBJECT && static_cast<GameObject*>(obj)->GetInfo()->Type == GAMEOBJECT_TYPE_TRANSPORT ) 
+				fRange = 0.0f;
 			else
 				fRange = m_UpdateDistance; // normal distance
 
@@ -865,6 +868,14 @@ void MapMgr::ChangeObjectLocation( Object *obj )
 	uint32 posX, posY;
 	MapCell *cell;
 
+	//If the object announcing it's position is a transport, then it should do so in a much wider area - like the distance between the two transport towers in Orgrimmar, or more. - By: VLack aka. VLsoft
+	if( obj->GetTypeId() == TYPEID_GAMEOBJECT && static_cast<GameObject*>(obj)->GetInfo()->Type == GAMEOBJECT_TYPE_TRANSPORT ) {
+		endX = cellX + 5 <= _sizeX ? cellX + 6 : ( _sizeX - 1 );
+		endY = cellY + 5 <= _sizeY ? cellY + 6 : ( _sizeY - 1 );
+		startX = cellX - 5 > 0 ? cellX - 6 : 0;
+		startY = cellY - 5 > 0 ? cellY - 6 : 0;
+	}
+
 	for (posX = startX; posX <= endX; ++posX )
 	{
 		for (posY = startY; posY <= endY; ++posY )
@@ -906,6 +917,9 @@ void MapMgr::UpdateInRangeSet( Object *obj, Player *plObj, MapCell* cell, ByteBu
 			fRange = 0.0f; // unlimited distance for people on same boat
 		else if( curObj->GetTypeFromGUID() == HIGHGUID_TYPE_TRANSPORTER )
 			fRange = 0.0f; // unlimited distance for transporters (only up to 2 cells +/- anyway.)
+		//If the object announcing it's position is a transport, then it should announce it to everyone and everything as far as possible. - By: VLack aka. VLsoft
+		else if( obj->GetTypeId() == TYPEID_GAMEOBJECT && static_cast<GameObject*>(obj)->GetInfo()->Type == GAMEOBJECT_TYPE_TRANSPORT ) 
+			fRange = 0.0f;
 		else
 			fRange = m_UpdateDistance; // normal distance
 
