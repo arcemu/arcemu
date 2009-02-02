@@ -13,6 +13,11 @@
 #include "Timer.h"
 #include "../Threading/RWLock.h"
 
+// cebernic: seems it was *nix required with my code
+#ifndef CONFIG_USE_IOCP
+#include <netinet/tcp.h>
+#endif
+
 class SERVER_DECL Socket
 {
 public:

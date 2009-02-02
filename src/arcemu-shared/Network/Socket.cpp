@@ -90,7 +90,6 @@ void Socket::_OnConnect()
 	SocketOps::SetSendBufferSize(m_fd, _sendbuffsize );
 
 	SocketOps::Nonblocking(m_fd);
-	SocketOps::DisableBuffering(m_fd);
 
 	// for fast garbage collector.
 	setGUID(GenerateGUID());
@@ -98,6 +97,7 @@ void Socket::_OnConnect()
 
 	int optval = 1;
 	setsockopt(m_fd,SOL_SOCKET,SO_KEEPALIVE,(const char*)&optval,sizeof(optval));
+	// nagle disabled for high performance.
 	setsockopt(m_fd,IPPROTO_TCP,TCP_NODELAY,(char*)&optval,sizeof(optval));
 
 #ifdef CONFIG_USE_IOCP
