@@ -14,7 +14,7 @@
 
 #include "../Threading/ThreadPool.h"
 
-#define MAX_CONNECTOR_ON_LISTENSOCKET 50000
+#define MAX_CONNECTOR_ON_LISTENSOCKET 2000
 
 template<class T>
 class SERVER_DECL ListenSocket : public ThreadBase
@@ -26,7 +26,7 @@ public:
 		m_socket = WSASocket(AF_INET, SOCK_STREAM, 0, NULL, 0, WSA_FLAG_OVERLAPPED);
 		SocketOps::ReuseAddr(m_socket);
 		SocketOps::Blocking(m_socket);
-		SocketOps::SetTimeout(m_socket, 30);
+		SocketOps::SetTimeout(m_socket, 60);
 
 		m_address.sin_family = AF_INET;
 		m_address.sin_port = ntohs((u_short)Port);
@@ -70,7 +70,7 @@ public:
 		closed = false;
 		while(m_opened)
 		{
-			Sleep(10);
+			Sleep(0);
 
 			// cebernic: this was temporary.
 			// to be a fast way to comparing hashmap with ip storaging from GarbageCollector (but ipfaker?).
@@ -80,11 +80,10 @@ public:
 			if(sSocketGarbageCollector.GetSocketSize() > MAX_CONNECTOR_ON_LISTENSOCKET) 
 				continue;
 
-			memset(&m_tempAddress,0,sizeof(sockaddr_in));
-
 			aSocket = accept(m_socket, (sockaddr*)&m_tempAddress, (socklen_t*)&len);
 			if(aSocket == INVALID_SOCKET){
-				SocketOps::CloseSocket(aSocket);
+				//for reuse
+				//SocketOps::CloseSocket(aSocket);
 				continue;		// shouldn't happen, we are blocking.
 			}
 

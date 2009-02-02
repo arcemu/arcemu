@@ -25,7 +25,7 @@
 
 /* echo send/received packets to console */
 //#define ECHO_PACKET_LOG_TO_CONSOLE 1
-#define AUTH_SENT_CHECK if ( AuthRequestSent ) {Disconnect();return;}
+#define AUTH_SENT_CHECK if ( AuthRequestSent ) {Disconnect(true);return;}
 
 #pragma pack(push, 1)
 struct ClientPktHeader

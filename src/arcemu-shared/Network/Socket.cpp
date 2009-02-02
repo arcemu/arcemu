@@ -54,22 +54,18 @@ Socket::~Socket()
 
 bool Socket::Connect(const char * Address, uint32 Port)
 {
-	SocketOps::Blocking(m_fd);
-	SocketOps::SetTimeout(m_fd,15);
-
 	struct hostent * ci = gethostbyname(Address);
 	if(ci == 0)
 		return false;
 
 	m_client.sin_family = ci->h_addrtype;
 	m_client.sin_port = ntohs((u_short)Port);
+	memcpy(&m_client.sin_addr.s_addr, ci->h_addr_list[0], ci->h_length);
 
-	memset(&m_client.sin_addr,0,sizeof(in_addr));
-	memcpy(&m_client.sin_addr, ci->h_addr_list[0], sizeof(in_addr));
-
+	SocketOps::Blocking(m_fd);
 	if(connect(m_fd, (const sockaddr*)&m_client, sizeof(m_client)) == -1)
 	{
-		SocketOps::CloseSocket(m_fd);
+//		SocketOps::CloseSocket(m_fd);
 		return false;
 	}
 
@@ -89,6 +85,10 @@ void Socket::Accept(sockaddr_in * address)
 
 void Socket::_OnConnect()
 {
+
+	SocketOps::SetRecvBufferSize(m_fd, _recvbuffsize );
+	SocketOps::SetSendBufferSize(m_fd, _sendbuffsize );
+
 	SocketOps::Nonblocking(m_fd);
 	SocketOps::DisableBuffering(m_fd);
 
@@ -96,13 +96,13 @@ void Socket::_OnConnect()
 	setGUID(GenerateGUID());
 	setLastheartbeat(); // first set
 
+	int optval = 1;
+	setsockopt(m_fd,SOL_SOCKET,SO_KEEPALIVE,(const char*)&optval,sizeof(optval));
+	setsockopt(m_fd,IPPROTO_TCP,TCP_NODELAY,(char*)&optval,sizeof(optval));
+
 #ifdef CONFIG_USE_IOCP
 	m_deleted = false;
 	sSocketGarbageCollector.QueueSocket(this); 
-	SocketOps::SetRecvBufferSize(m_fd, _recvbuffsize );
-	SocketOps::SetSendBufferSize(m_fd, _sendbuffsize );
-	BOOL bDontLinger = FALSE;
-	setsockopt(m_fd,SOL_SOCKET,SO_DONTLINGER,(const char*)&bDontLinger,sizeof(BOOL)); // notimewait
 #else
 	sSocketMgr.AddSocket(this);
 	m_connected = true;
@@ -149,8 +149,6 @@ string Socket::GetRemoteIP()
 
 void Socket::Disconnect(bool no_garbageprocess)
 {
-	if ( m_deleted && !no_garbageprocess ) return;
-
 	// remove from mgr
 	if ( m_connected ) {
 		OnDisconnect(); // virtual disconnect exec immediately!
@@ -159,22 +157,27 @@ void Socket::Disconnect(bool no_garbageprocess)
 
 	m_connected = false;
 
-	SocketOps::CloseSocket(m_fd);
+	//for reuse
+	//SocketOps::CloseSocket(m_fd);
 
 	if(!m_deleted) {
 		if ( !no_garbageprocess ){
 			sSocketGarbageCollector.QueueSocket(this); // send this to garbage collector.
+			// Queue -> Die directly
+			// Queue -> Connected(marked) -> Queue -> Die
 		}
 		m_deleted = true;
 	}
 
-	if ( no_garbageprocess ) delete this;
+	if ( no_garbageprocess ) {
+		//Log.Notice("Socket","Socket being destroyed.\n");
+		delete this;
+	}
 }
 
 void Socket::Delete(bool force)
 {
 	Disconnect(force); // force true ,we will not queue the socket.
-	if ( force ) delete this; // delete immediately!
 }
 
 void Socket::markConnected()

@@ -346,7 +346,10 @@ public:
 				i2 = i;
 				++i;
 				Socket *s = i2->second;
-				if ( s==NULL || s->IsConnected() ) continue;
+				if ( s==NULL || s->IsConnected() ) {
+					deletionQueue.erase(i2);
+					continue;
+				}
 				if( s->getLastheartbeat()+SOCKET_GC_TIMEOUT <=t)
 				{
 					//printf("Socket timeout! Read:%u Send:%u\n",s->total_read_bytes,s->total_send_bytes);

@@ -72,33 +72,30 @@ bool SocketWorkerThread::run()
 		DWORD   dwLastError=GetLastError();
 
 		if   (ERROR_INVALID_HANDLE==dwLastError || ERROR_OPERATION_ABORTED==dwLastError || FALSE==_ret || NULL==s)
-		{
-			if ( _ret && s && !s->IsDeleted() ) {
-				if ( s->IsConnected() ) s->Disconnect(); // really need to be end.
-			}
-			continue; // we just continue ,if thread was terminated we all died so :D
-		}
+			continue;
 
 		if ( _gov->m_event == SOCKET_IO_EVENT_READ_COMPLETE )
 		{
-			if ( s && len > 0 ){
+			if ( s && len > 0 && !s->IsDeleted() ){
+				if ( len > s->_recvbuffsize ) continue; // maybe useless
 				s->LockReader();
 				s->total_read_bytes +=len;
-				if ( !s->IsConnected() && !s->IsDeleted() ) s->markConnected();
+				if ( !s->IsConnected() ) s->markConnected();
 				s->ReleaseReader();
 			}
 		}
 		else
 		if ( _gov->m_event == SOCKET_IO_EVENT_WRITE_END )
 		{
-			if ( s && len > 0 ){
+			if ( s && len > 0 && !s->IsDeleted() ){
+				if ( len > s->_sendbuffsize ) continue;
 				s->BurstBegin();
 				s->total_send_bytes +=len;
 				s->BurstEnd();
 			}
 		}
 
-		if( _gov->m_event < NUM_SOCKET_IO_EVENTS )
+		if( s && _gov->m_event < NUM_SOCKET_IO_EVENTS )
 			ophandlers[_gov->m_event](s, len);
 
 	}
@@ -110,7 +107,6 @@ bool SocketWorkerThread::run()
 
 void HandleReadComplete(Socket * s, uint32 len)
 {
-	if ( s==NULL) return;
 	if(!s->IsDeleted())
 	{
 		s->m_readEvent.Unmark();
@@ -118,14 +114,13 @@ void HandleReadComplete(Socket * s, uint32 len)
 		{
 			s->ReadCallback(len);
 		}
-		//else
-		//	s->Disconnect();
+		else
+			s->Disconnect(); // drop it
 	}
 }
 
 void HandleWriteComplete(Socket * s, uint32 len)
 {
-	if ( s==NULL) return;
 	if(!s->IsDeleted())
 	{
 		s->m_writeEvent.Unmark();

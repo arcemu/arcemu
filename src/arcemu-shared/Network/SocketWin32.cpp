@@ -12,12 +12,10 @@
 
 void Socket::WriteCallback()
 {
-	m_writeMutex.Acquire();
 
-	if(m_deleted){
-		m_writeMutex.Release();
-		return;
-	}
+	if(m_deleted) return;
+
+	m_writeMutex.Acquire();
 
 	DWORD w_length = 0;
 	DWORD flags = 0;
@@ -32,6 +30,7 @@ void Socket::WriteCallback()
 		if ( !m_writeEvent.Mark() ) {
 			m_writeEvent.Unmark();
 			DecSendLock();
+			Disconnect();
 			m_writeMutex.Release();
 			return;
 		}
@@ -59,12 +58,9 @@ void Socket::WriteCallback()
 void Socket::SetupReadEvent(uint32 len)
 {
 
+	if(m_deleted) return;
+
 	m_readMutex.Acquire();
-	
-	if(m_deleted){
-		m_readMutex.Release();
-		return;
-	}
 
 	DWORD r_length = 0;
 	DWORD flags = 0;
@@ -74,6 +70,7 @@ void Socket::SetupReadEvent(uint32 len)
 
 	if ( !m_readEvent.Mark() ){
 		m_readEvent.Unmark();
+		Disconnect();
 		m_readMutex.Release();
 		return;
 	}
