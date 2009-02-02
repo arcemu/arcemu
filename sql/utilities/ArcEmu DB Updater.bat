@@ -163,6 +163,8 @@ ECHO [Importing] 1860_loot.sql
 mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < ..\world_updates\1860_loot.sql
 ECHO [Importing] 1902_trainers.sql
 mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < ..\world_updates\1902_trainers.sql
+ECHO [Importing] 2118_items.sql
+mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < ..\world_updates\2118_items.sql
 ECHO [Importing] spellfixes.sql
 mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < ..\world_updates\spellfixes.sql
 ECHO [Importing] Finished
@@ -304,6 +306,8 @@ ECHO [Importing] 1860_loot.sql
 mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < ..\world_updates\1860_loot.sql
 ECHO [Importing] 1902_trainers.sql
 mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < ..\world_updates\1902_trainers.sql
+ECHO [Importing] 2118_items.sql
+mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < ..\world_updates\2118_items.sql
 ECHO [Importing] spellfixes.sql
 mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < ..\world_updates\spellfixes.sql
 
