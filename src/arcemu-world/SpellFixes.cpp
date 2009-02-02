@@ -3606,6 +3606,18 @@ void ApplyNormalFixes()
 			sp->Effect[1] = 64;
 			sp->EffectTriggerSpell[1] = 25329;
 		}
+		sp = dbcSpell.LookupEntryForced( 48077 );
+		if( sp != NULL )
+		{
+			sp->Effect[1] = 64;
+			sp->EffectTriggerSpell[1] = 48075;
+		}
+		sp = dbcSpell.LookupEntryForced( 48078 );
+		if( sp != NULL )
+		{
+			sp->Effect[1] = 64;
+			sp->EffectTriggerSpell[1] = 48076;
+		}
 		// Holy Concentration
         sp = dbcSpell.LookupEntryForced( 34753 ); //Rank 1
             if( sp != NULL )
