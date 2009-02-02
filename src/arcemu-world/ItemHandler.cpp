@@ -850,16 +850,12 @@ void WorldSession::HandleItemQuerySingleOpcode( WorldPacket & recv_data )
 	data << itemProto->Unique;
 	data << itemProto->MaxCount;
 	data << itemProto->ContainerSlots;
-	data << uint32(10);								// 3.0.2 count of stats
-	for(i = 0; i < 10; i++)
+	data << itemProto->itemstatscount;
+	for(i = 0; i < itemProto->itemstatscount; i++)
 	{
 		data << itemProto->Stats[i].Type;
 		data << itemProto->Stats[i].Value;
 	}
-	/*
-	data << uint32(0);
-	data << uint32(0);
-	*/
 	data << itemProto->ScalingStatsEntry;
 	data << itemProto->ScalingStatsFlag;
 	for(i = 0; i < 5; i++)
@@ -931,7 +927,7 @@ void WorldSession::HandleItemQuerySingleOpcode( WorldPacket & recv_data )
 	data << itemProto->GemProperties;
 	data << itemProto->DisenchantReqSkill;
 	data << itemProto->ArmorDamageModifier;
-	data << uint32(0);								// 2.4.2 Item duration in seconds
+	data << itemProto->ExistingDuration;								// 2.4.2 Item duration in seconds
 	data << itemProto->ItemLimitCategory;
 	SendPacket( &data );
 

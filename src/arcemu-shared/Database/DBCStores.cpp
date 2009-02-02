@@ -76,6 +76,8 @@ SERVER_DECL DBCStorage<gtFloat> dbcManaRegenBase;
 SERVER_DECL DBCStorage<gtFloat> dbcHPRegen;
 SERVER_DECL DBCStorage<gtFloat> dbcHPRegenBase;
 SERVER_DECL DBCStorage<AreaTriggerEntry> dbcAreaTrigger;
+SERVER_DECL DBCStorage<ScalingStatDistributionEntry> dbcScalingStatDistribution;
+SERVER_DECL DBCStorage<ScalingStatValuesEntry> dbcScalingStatValues;
 
 const char* WorldMapOverlayStoreFormat="nxiiiixxxxxxxxxxx";
 const char* BarberShopStyleEntryFormat="nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxi";
@@ -305,6 +307,8 @@ const char* bankslotpriceformat = "uu";
 const char* barbershopstyleFormat="nulxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxuuu";
 const char* gtfloatformat = "f";
 const char* areatriggerformat = "uuffffffff";
+const char* scalingstatdistributionformat = "uiiiiiiiiiiuuuuuuuuuuu";
+const char* scalingstatvaluesformat = "uuuuuuuuuuuuuuuuuuu";
 
 template<class T>
 bool loader_stub(const char * filename, const char * format, bool ind, T& l, bool loadstrs)
@@ -370,5 +374,7 @@ bool LoadDBCs()
 	LOAD_DBC("DBC/gtRegenHPPerSpt.dbc", gtfloatformat, false, dbcHPRegenBase, false); //it's not a mistake.
 	LOAD_DBC("DBC/gtOCTRegenHP.dbc", gtfloatformat, false, dbcHPRegen, false); //it's not a mistake.
 	LOAD_DBC("DBC/AreaTrigger.dbc", areatriggerformat, true, dbcAreaTrigger, true);
+	LOAD_DBC("DBC/ScalingStatDistribution.dbc",scalingstatdistributionformat,true,dbcScalingStatDistribution, false);
+	LOAD_DBC("DBC/ScalingStatValues.dbc",scalingstatvaluesformat,true,dbcScalingStatValues, false);
 	return true;
 }

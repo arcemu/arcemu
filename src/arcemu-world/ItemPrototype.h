@@ -559,6 +559,7 @@ struct ItemPrototype
 	uint32 Unique;
 	uint32 MaxCount;
 	uint32 ContainerSlots;
+	uint32 itemstatscount;
 	ItemStat Stats[10];
 	uint32 ScalingStatsEntry;
 	uint32 ScalingStatsFlag;
@@ -597,6 +598,7 @@ struct ItemPrototype
 	uint32 GemProperties;
 	int32 DisenchantReqSkill;
 	uint32 ArmorDamageModifier;
+	uint32 ExistingDuration;
 	uint32 ItemLimitCategory;
 
 	string lowercase_name;	// used in auctions

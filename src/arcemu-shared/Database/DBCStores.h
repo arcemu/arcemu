@@ -1382,6 +1382,19 @@ struct WeatherEntry
 }
 */
 
+struct ScalingStatDistributionEntry{
+	uint32 id;
+	int32 stat[10];
+	uint32 statmodifier[10];
+	uint32 maxlevel;
+};
+
+struct ScalingStatValuesEntry{
+	uint32 id;
+	uint32 level;
+	uint32 multiplier[17];
+};
+
 #pragma pack(pop)
 
 ARCEMU_INLINE float GetRadius(SpellRadius *radius)
@@ -1763,6 +1776,8 @@ extern SERVER_DECL DBCStorage<gtFloat> dbcManaRegenBase;
 extern SERVER_DECL DBCStorage<gtFloat> dbcHPRegen;
 extern SERVER_DECL DBCStorage<gtFloat> dbcHPRegenBase;
 extern SERVER_DECL DBCStorage<AreaTriggerEntry> dbcAreaTrigger;
+extern SERVER_DECL DBCStorage<ScalingStatDistributionEntry> dbcScalingStatDistribution;
+extern SERVER_DECL DBCStorage<ScalingStatValuesEntry> dbcScalingStatValues;
 
 bool LoadDBCs();
 

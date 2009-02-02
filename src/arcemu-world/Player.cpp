@@ -3859,6 +3859,21 @@ void Player::RemoveFromWorld()
 	m_playerInfo->lastOnline = UNIXTIME; // don't destroy conjured items yet
 }
 
+/* 
+   ScalingStats DBC entry by level 
+   FIXME: This should not be neccessary, but I don't know how to lookup dbc rows by the 2nd column
+*/
+uint32 SSVDBCEByLevel[81] = { 
+1,1,2,3,4,5,6,7,8,9,10,
+81,82,83,84,85,136,137,138,139,61,
+141,142,143,144,145,146,147,148,149,150,
+151,152,153,154,155,156,157,158,159,160,
+161,162,163,164,165,166,167,168,169,170,171,
+172,173,174,175,176,177,178,179,180,181,182,
+183,184,185,186,187,188,189,190,191,192,193,
+194,195,196,197,198,199,200
+};
+
 // TODO: perhaps item should just have a list of mods, that will simplify code
 void Player::_ApplyItemMods(Item* item, int8 slot, bool apply, bool justdrokedown /* = false */, bool skip_stat_apply /* = false  */)
 {
@@ -4015,14 +4030,6 @@ void Player::_ApplyItemMods(Item* item, int8 slot, bool apply, bool justdrokedow
 		}
 	}
  
-	// Armor
-	if( proto->Armor )
-	{
-		if( apply )BaseResistance[0 ]+= proto->Armor;  
-		else  BaseResistance[0] -= proto->Armor;
-		CalcResistance( 0 );
-	}
-
 	// Resistances
 	//TODO: FIXME: can there be negative resistances from items?
 	if( proto->FireRes )
@@ -4069,38 +4076,109 @@ void Player::_ApplyItemMods(Item* item, int8 slot, bool apply, bool justdrokedow
 			FlatResistanceModifierPos[6] -= proto->ArcaneRes;
 		CalcResistance( 6 );
 	}
-	
-	// Stats
-	for( int i = 0; i < 10; i++ )
-	{
-		int32 val = proto->Stats[i].Value;
-		if( val == 0 )
-			continue;
-		ModifyBonuses( proto->Stats[i].Type, val, apply );
-	}
-
-	// Damage
-	if( proto->Damage[0].Min )
-	{
-		if( proto->InventoryType == INVTYPE_RANGED || proto->InventoryType == INVTYPE_RANGEDRIGHT || proto->InventoryType == INVTYPE_THROWN )	
-		{	
-			BaseRangedDamage[0] += apply ? proto->Damage[0].Min : -proto->Damage[0].Min;
-			BaseRangedDamage[1] += apply ? proto->Damage[0].Max : -proto->Damage[0].Max;
+	/* Heirloom scaling items */
+	if(proto->ScalingStatsEntry != 0){
+		int i = 0;
+		ScalingStatDistributionEntry *ssdrow = dbcScalingStatDistribution.LookupEntry( proto->ScalingStatsEntry );
+		ScalingStatValuesEntry *ssvrow = dbcScalingStatValues.LookupEntry( SSVDBCEByLevel[ getLevel() ] );
+		uint32 StatType;
+		uint32 StatMod;
+		uint32 StatMultiplier;
+		int32 StatValue;
+		
+		/* Not going to put a check here since unless you put a random id/flag in the tables these should never return NULL */
+		
+		/* Calculating the stats correct for our level and applying them */
+		for(i = 0; ssdrow->stat[i] != -1; i++){
+			StatType = ssdrow->stat[i];
+			StatMod  = ssdrow->statmodifier[i];
+			StatMultiplier = ssvrow->multiplier[GetStatScalingStatValueColumn(proto,SCALINGSTATSTAT)];
+			StatValue = StatMod*StatMultiplier/10000;
+			ModifyBonuses(StatType,StatValue,apply);
 		}
-		else
-		{
-			if( slot == EQUIPMENT_SLOT_OFFHAND )
-			{
-				BaseOffhandDamage[0] = apply ? proto->Damage[0].Min : 0;
-				BaseOffhandDamage[1] = apply ? proto->Damage[0].Max : 0;
+
+		if((proto->ScalingStatsFlag & 32768) && i < 10){
+			StatType = ssdrow->stat[i];
+			StatMod  = ssdrow->statmodifier[i];
+			StatMultiplier = ssvrow->multiplier[GetStatScalingStatValueColumn(proto,SCALINGSTATSPELLPOWER)];
+			StatValue = StatMod*StatMultiplier/10000;
+			ModifyBonuses(45,StatValue,apply);
+		}
+
+		/* Calculating the Armor correct for our level and applying it */
+		uint32 scaledarmorval = ssvrow->multiplier[ GetStatScalingStatValueColumn(proto,SCALINGSTATARMOR) ];
+
+		if( apply )BaseResistance[0 ]+= scaledarmorval;
+			else  BaseResistance[0] -= scaledarmorval;
+			CalcResistance( 0 );
+
+		/* Calculating the damages correct for our level and applying it */
+		uint32 scaleddps = ssvrow->multiplier [ GetStatScalingStatValueColumn(proto,SCALINGSTATDAMAGE) ];
+		float scaledmindmg = (float)scaleddps*2*(proto->Delay/1000)/2.5;
+		float scaledmaxdmg = 1.5*scaledmindmg;
+
+		if( proto->InventoryType == INVTYPE_RANGED || proto->InventoryType == INVTYPE_RANGEDRIGHT || proto->InventoryType == INVTYPE_THROWN )	
+			{	
+				BaseRangedDamage[0] += apply ? scaledmindmg : -scaledmindmg;
+				BaseRangedDamage[1] += apply ? scaledmaxdmg : -scaledmaxdmg;
 			}
 			else
 			{
-				BaseDamage[0] = apply ? proto->Damage[0].Min : 1;
-				BaseDamage[1] = apply ? proto->Damage[0].Max : 1;
+				if( slot == EQUIPMENT_SLOT_OFFHAND )
+				{
+					BaseOffhandDamage[0] = apply ? scaledmindmg : 0;
+					BaseOffhandDamage[1] = apply ? scaledmaxdmg : 0;
+				}
+				else
+				{
+					BaseDamage[0] = apply ? scaledmindmg : 1;
+					BaseDamage[1] = apply ? scaledmaxdmg : 1;
+				}
+			}
+
+	/* Normal items */
+	}else{
+		// Stats
+		for( int i = 0; i < proto->itemstatscount; i++ ){
+			int32 val = proto->Stats[i].Value;
+			/*
+			if( val == 0 )
+				continue;
+			*/
+			ModifyBonuses( proto->Stats[i].Type, val, apply );
+		}
+
+		// Armor
+		if( proto->Armor )
+		{
+			if( apply )BaseResistance[0 ]+= proto->Armor;  
+			else  BaseResistance[0] -= proto->Armor;
+			CalcResistance( 0 );
+		}
+
+		// Damage
+		if( proto->Damage[0].Min )
+		{
+			if( proto->InventoryType == INVTYPE_RANGED || proto->InventoryType == INVTYPE_RANGEDRIGHT || proto->InventoryType == INVTYPE_THROWN )	
+			{	
+				BaseRangedDamage[0] += apply ? proto->Damage[0].Min : -proto->Damage[0].Min;
+				BaseRangedDamage[1] += apply ? proto->Damage[0].Max : -proto->Damage[0].Max;
+			}
+			else
+			{
+				if( slot == EQUIPMENT_SLOT_OFFHAND )
+				{
+					BaseOffhandDamage[0] = apply ? proto->Damage[0].Min : 0;
+					BaseOffhandDamage[1] = apply ? proto->Damage[0].Max : 0;
+				}
+				else
+				{
+					BaseDamage[0] = apply ? proto->Damage[0].Min : 1;
+					BaseDamage[1] = apply ? proto->Damage[0].Max : 1;
+				}
 			}
 		}
-	}
+	} // end of the scalingstats else branch
 
 	// Misc
 	if( apply )

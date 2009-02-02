@@ -112,6 +112,13 @@ typedef std::map<uint32, EnchantmentInstance> EnchantmentMap;
 #define APPLY true
 #define REMOVE false
 
+enum scalingstatmodtypes {
+	SCALINGSTATSTAT,
+	SCALINGSTATARMOR,
+	SCALINGSTATDAMAGE,
+	SCALINGSTATSPELLPOWER
+};
+
 #define RANDOM_SUFFIX_MAGIC_CALCULATION( __suffix, __scale ) int32( float( ( float( ( __suffix ) ) * float( ( __scale ) ) ) ) / 10000.0f );
 
 class SERVER_DECL Item : public Object
@@ -285,5 +292,7 @@ uint32 GetSellPriceForItem( uint32 itemid, uint32 count);
 uint32 GetBuyPriceForItem( uint32 itemid, uint32 count, Player* plr, Creature* vendor );
 
 string GetItemLinkByProto(ItemPrototype * iProto, uint32 language);
+
+uint32 GetStatScalingStatValueColumn(ItemPrototype *proto, uint32 type);
 
 #endif
