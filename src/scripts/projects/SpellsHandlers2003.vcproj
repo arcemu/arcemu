@@ -146,6 +146,9 @@
 				RelativePath="..\src\SpellHandlers\PaladinSpells.cpp">
 			</File>
 			<File
+				RelativePath="..\src\SpellHandlers\PriestSpells.cpp"
+				>
+			<File
 				RelativePath="..\src\SpellHandlers\RogueSpells.cpp">
 			</File>
 			<File

@@ -402,6 +402,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\src\SpellHandlers\PriestSpells.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\src\SpellHandlers\RogueSpells.cpp"
 				>
 			</File>

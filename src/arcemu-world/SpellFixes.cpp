@@ -3934,6 +3934,60 @@ void ApplyNormalFixes()
 			sp->c_is_flags = SPELL_FLAG_IS_FORCEDDEBUFF;
 		}
 
+		// Penance
+		sp = dbcSpell.LookupEntryForced( 47540 );
+		if ( sp != NULL )
+		{
+			sp->DurationIndex = 566; // Change to instant cast as script will cast the real channeled spell.
+			sp->ChannelInterruptFlags = 0; // Remove channeling behaviour.
+		}
+
+		sp = dbcSpell.LookupEntryForced( 53005 );
+		if ( sp != NULL )
+		{
+			sp->DurationIndex = 566;
+			sp->ChannelInterruptFlags = 0;
+		}
+
+		sp = dbcSpell.LookupEntryForced( 53006 );
+		if ( sp != NULL )
+		{
+			sp->DurationIndex = 566;
+			sp->ChannelInterruptFlags = 0;
+		}
+
+		sp = dbcSpell.LookupEntryForced( 53007 );
+		if ( sp != NULL )
+		{
+			sp->DurationIndex = 566;
+			sp->ChannelInterruptFlags = 0;
+		}
+
+		// Penance triggered healing spells have wrong targets.
+		sp = dbcSpell.LookupEntryForced( 47750 );
+		if ( sp != NULL )
+		{
+			sp->EffectImplicitTargetA[0] = EFF_TARGET_SINGLE_FRIEND;
+		}
+
+		sp = dbcSpell.LookupEntryForced( 52983 );
+		if ( sp != NULL )
+		{
+			sp->EffectImplicitTargetA[0] = EFF_TARGET_SINGLE_FRIEND;
+		}
+
+		sp = dbcSpell.LookupEntryForced( 52984 );
+		if ( sp != NULL )
+		{
+			sp->EffectImplicitTargetA[0] = EFF_TARGET_SINGLE_FRIEND;
+		}
+
+		sp = dbcSpell.LookupEntryForced( 52985 );
+		if ( sp != NULL )
+		{
+			sp->EffectImplicitTargetA[0] = EFF_TARGET_SINGLE_FRIEND;
+		}
+
 	//////////////////////////////////////////
 	// SHAMAN								//
 	//////////////////////////////////////////
