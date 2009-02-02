@@ -5387,6 +5387,7 @@ uint32 GetDiminishingGroup(uint32 NameHash)
 	case SPELL_HASH_POLYMORPH__TURTLE:		// Turtle
 	case SPELL_HASH_POLYMORPH__SHEEP:		// Good ol' sheep
 	case SPELL_HASH_MAIM:					// Maybe here?
+	case SPELL_HASH_HEX:					// Should share diminish group with polymorph, but not interruptflags.
 			grp = DIMINISHING_GROUP_GOUGE_POLY_SAP;
 		break;
 
