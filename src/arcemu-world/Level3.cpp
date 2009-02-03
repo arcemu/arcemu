@@ -26,6 +26,20 @@
 #include "ObjectMgr.h"
 #include "Master.h"
 
+int32 GetSpellIDFromLink(const char* spelllink)
+{
+	if(spelllink==NULL)
+		return 0;
+
+	const char* ptr = strstr(spelllink, "|Hspell:");
+	if(ptr == NULL)
+	{
+		return 0;
+	}
+
+	return atol(ptr+8); // spell id is just past "|Hspell:" (8 bytes)
+}
+
 bool ChatHandler::HandleWorldPortCommand(const char* args, WorldSession *m_session)
 {
 	float x, y, z;
@@ -268,6 +282,8 @@ bool ChatHandler::HandleLearnCommand(const char* args, WorldSession *m_session)
 	}
 
 	uint32 spell = atol((char*)args);
+	if(spell==0)
+		spell = GetSpellIDFromLink(args);
 
 	SpellEntry * sp = dbcSpell.LookupEntry(spell);
 	if(!sp)

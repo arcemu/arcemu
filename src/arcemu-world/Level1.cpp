@@ -24,6 +24,36 @@
 
 #include "StdAfx.h"
 
+uint16 GetItemIDFromLink(const char* itemlink, uint32* itemid)
+{
+	if(itemlink==NULL)
+	{
+		*itemid = 0;
+		return 0;
+	}
+	uint16 slen = (uint16)strlen(itemlink);
+
+	const char* ptr = strstr(itemlink, "|Hitem:");
+	if(ptr == NULL)
+	{
+		*itemid = 0;
+		return slen;
+	}
+
+	ptr += 7; // item id is just past "|Hitem:" (7 bytes)
+	*itemid = atoi(ptr);
+	
+	ptr = strstr(itemlink, "|r"); // the end of the item link
+	if(ptr == NULL) // item link was invalid
+	{
+		*itemid = 0;
+		return slen;
+	}
+
+	ptr += 2;
+	return ptr-itemlink;
+}
+
 bool ChatHandler::HandleAnnounceCommand(const char* args, WorldSession *m_session)
 {
 	if( !*args || strlen(args) < 4 || strchr(args, '%'))
@@ -251,7 +281,13 @@ bool ChatHandler::HandleAddInvItemCommand(const char *args, WorldSession *m_sess
 	}
 
 	if(sscanf(args, "%u %u %d", &itemid, &count, &randomprop) < 1)
-		return false;
+	{
+		// check for item link
+		uint16 ofs = GetItemIDFromLink(args, &itemid);
+		if(itemid == 0)
+			return false;
+		sscanf(args+ofs,"%u %d", &count, &randomprop); // these may be empty
+	}
 
 	Player * chr = getSelectedChar( m_session, false );
 	if ( chr == NULL )
@@ -776,8 +812,12 @@ bool ChatHandler::HandleUnlearnCommand(const char* args, WorldSession * m_sessio
 	uint32 SpellId = atol(args);
 	if(SpellId == 0)
 	{
-		RedSystemMessage(m_session, "You must specify a spell id.");
-		return true;
+		SpellId = GetSpellIDFromLink(args);
+		if(SpellId == 0)
+		{
+			RedSystemMessage(m_session, "You must specify a spell id.");
+			return true;
+		}
 	}
 
 	sGMLog.writefromsession(m_session, "removed spell %u from %s", SpellId, plr->GetName());
