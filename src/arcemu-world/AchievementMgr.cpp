@@ -55,6 +55,7 @@
 	- Several achievement types
 	- Time limits on achievements
 	- Realm-First achievements (everyone gets them)
+	- Special conditions for achievements (group size, nobody in raid die during fight, etc.)
 */
 
 #include "StdAfx.h"
@@ -80,12 +81,22 @@ bool IsStatisticAchievement(const AchievementEntry* a)
 		case   125: // Total raid and dungeon deaths (and for each dungeon/raid type)
 		case   128: // Total kills, Total kills that grant experience or honor
 		case   131: // Total facepalms, etc. (Social)
+		case   132: // Weapon skills at maximum skill, Professions learned, ...
+		case   133: // Quests completed, Quests abandoned, Daily quests completed, ...
+		case   135: // Creatures killed, Critters killed, ...
 		case   136: // Total Honorable Kills, World Honorable Kills, Continent with the most Honorable Kills, ...
 		case   137: // Total Killing Blows, World Killing Blows, Continent with the most Killing Blows, ...
 		case   140: // Total gold acquired, Average gold earned per day, Gold looted, Gold from quest rewards, ...
 		case   141: // Total damage done, Total damage received, Total healing done, Total healing received, Largest hit dealt, ...
+		case   145: // Beverages consumed, Different foods eaten, ...
 		case   147: // Total factions encountered, Most factions at Exalted, Most factions at Revered or higher, ...
+		case   152: // Arenas won, Arenas played, Highest 5 man team rating, ...
+		case   153: // Battlegrounds played, Battleground won the most, ...
+		case   173: // Highest alchemy skill, Tailoring patterns learned, ...
+		case   178: // Fishing daily quests completed, Cooking Recipes known, ...
+		case   191: // Mounts owned, Vanity pets owned, Extra bank slots purchased, Greed rolls made on loot, ...
 		case 14807: // Total 5-player dungeons entered, Total 10-player raids entered, Total 25-player raids entered, ...
+		case 14821: // Edwin VanCleef kills (Deadmines), C'Thun kills (Temple of Ahn'Qiraj), ...
 			return true;
 		default:
 			break;
@@ -1251,9 +1262,14 @@ void AchievementMgr::BuildAllDataPacket(WorldPacket *data, bool self)
 	*data << int32(-1);
 	for(CriteriaProgressMap::iterator iter = m_criteriaProgress.begin(); iter!=m_criteriaProgress.end(); ++iter)
 	{
-		AchievementEntry const *achievement = dbcAchievementStore.LookupEntry(iter->second->id);
-//		if(self) // achievement progress to send to self
-//		{
+		AchievementCriteriaEntry const* acEntry = dbcAchievementCriteriaStore.LookupEntry(iter->second->id);
+		if(!acEntry)
+			continue;
+		AchievementEntry const *achievement = dbcAchievementStore.LookupEntry(acEntry->referredAchievement);
+		if(!achievement)
+			continue;
+		if(self) // achievement progress to send to self
+		{
 			if(SendAchievementProgress(iter->second))
 			{
 				*data << uint32(iter->second->id);
@@ -1264,20 +1280,20 @@ void AchievementMgr::BuildAllDataPacket(WorldPacket *data, bool self)
 				*data << uint32(0);
 				*data << uint32(0);
 			}
-//		}
-//		else // achievement progress to send to other players (inspect)
-//		{
-//			if(iter->second->counter > 0 && IsStatisticAchievement(achievement)) // only send statistics, no other unfinished achievement progress, since client only displays them as completed or not completed
-//			{
-//				*data << uint32(iter->second->id);
-//				data->appendPackGUID(iter->second->counter);
-//				*data << GetPlayer()->GetNewGUID(); 
-//				*data << uint32(0);
-//				*data << uint32(secsToTimeBitFields(iter->second->date));
-//				*data << uint32(0);
-//				*data << uint32(0);
-//			}
-//		}
+		}
+		else // achievement progress to send to other players (inspect)
+		{
+			if(iter->second->counter > 0 && IsStatisticAchievement(achievement)) // only send statistics, no other unfinished achievement progress, since client only displays them as completed or not completed
+			{
+				*data << uint32(iter->second->id);
+				data->appendPackGUID(iter->second->counter);
+				*data << GetPlayer()->GetNewGUID(); 
+				*data << uint32(0);
+				*data << uint32(secsToTimeBitFields(iter->second->date));
+				*data << uint32(0);
+				*data << uint32(0);
+			}
+		}
 	}
 	*data << int32(-1);
 }
