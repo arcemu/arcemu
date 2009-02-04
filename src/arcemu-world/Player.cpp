@@ -10117,26 +10117,26 @@ void Player::Possess(Unit * pTarget)
 	if(pTarget->m_temp_summon)
 		return;
 	
-	if( !( pTarget->m_isPet && static_cast< Pet* >( pTarget ) == m_Summon ) )
+	if( !( pTarget->IsPet() && static_cast< Pet* >( pTarget ) == m_Summon ) )
 	{
 		list<uint32> avail_spells;
-	//Steam Tonks
-	if(pTarget->GetUInt32Value(OBJECT_FIELD_ENTRY) == 15328)
-	{
-		uint32 rand_spellid = TonkSpecials[RandomUInt(3)];
-		avail_spells.push_back(CANNON);
-		avail_spells.push_back(MORTAR);
-		avail_spells.push_back(rand_spellid);
-		avail_spells.push_back(NITROUS);
-	}
-	else
-	{
-		for(list<AI_Spell*>::iterator itr = pTarget->GetAIInterface()->m_spells.begin(); itr != pTarget->GetAIInterface()->m_spells.end(); ++itr)
+		//Steam Tonks
+		if(pTarget->GetUInt32Value(OBJECT_FIELD_ENTRY) == 15328)
 		{
-			if((*itr)->agent == AGENT_SPELL)
-				avail_spells.push_back((*itr)->spell->Id);
+			uint32 rand_spellid = TonkSpecials[RandomUInt(3)];
+			avail_spells.push_back(CANNON);
+			avail_spells.push_back(MORTAR);
+			avail_spells.push_back(rand_spellid);
+			avail_spells.push_back(NITROUS);
 		}
-	}
+		else
+		{
+			for(list<AI_Spell*>::iterator itr = pTarget->GetAIInterface()->m_spells.begin(); itr != pTarget->GetAIInterface()->m_spells.end(); ++itr)
+			{
+				if((*itr)->agent == AGENT_SPELL)
+					avail_spells.push_back((*itr)->spell->Id);
+			}
+		}
 		list<uint32>::iterator itr = avail_spells.begin();
 
 		WorldPacket data(SMSG_PET_SPELLS, pTarget->GetAIInterface()->m_spells.size() * 4 + 20);
@@ -10172,7 +10172,7 @@ void Player::Possess(Unit * pTarget)
 
 void Player::UnPossess()
 {
-	if( m_Summon || !m_CurrentCharm)
+	if( /*m_Summon ||*/ !m_CurrentCharm)
 		return;
 
 	Unit * pTarget = GetMapMgr()->GetUnit( m_CurrentCharm ); 
@@ -10209,7 +10209,7 @@ void Player::UnPossess()
 	if(pTarget->m_temp_summon)
 		return;
  
-	if( pTarget->m_isPet && static_cast< Pet* >( pTarget ) != m_Summon )
+	if( !( pTarget->m_isPet && static_cast< Pet* >( pTarget ) == m_Summon ) )
 	{
 		data.Initialize( SMSG_PET_SPELLS );
 		data << uint64(0);
