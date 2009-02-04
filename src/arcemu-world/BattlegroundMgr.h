@@ -38,8 +38,8 @@ enum BattleGroundTypes
 	BATTLEGROUND_ARENA_3V3				= 5,
 	BATTLEGROUND_ARENA_5V5				= 6,
 	BATTLEGROUND_EYE_OF_THE_STORM		= 7,
-	BATTLEGROUND_STRAND_OF_THE_ANCIENT	= 8,
-	BATTLEGROUND_NUM_TYPES				= 9,
+	BATTLEGROUND_STRAND_OF_THE_ANCIENT	= 9,
+	BATTLEGROUND_NUM_TYPES				= 12,
 };
 
 struct BGScore
@@ -163,6 +163,8 @@ public:
 	/* Get the Config */
 	void LoadBGSetFromConfig();
 
+	void SetupStrandOfTheAncientBattleMasters();
+
 	/* Packet Handlers */
 	void HandleBattlegroundListPacket(WorldSession * m_session, uint32 BattlegroundType);
 	void HandleArenaJoin(WorldSession * m_session, uint32 BattlegroundType, uint8 as_group, uint8 rated_match);
@@ -210,6 +212,9 @@ public:
 
 	/* Add a group to an arena */
 	void AddGroupToArena(CBattleground * bg, Group * group, int nteam);
+
+	/* Returns a mapid for the battleground */
+	uint32 GetMap(uint32 bg_index);
 };
 
 class CBattleground : public EventableObject

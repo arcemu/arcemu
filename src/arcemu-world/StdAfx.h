@@ -132,6 +132,7 @@
 #include "SpellAuras.h"
 #include "TaxiMgr.h"
 #include "TransporterHandler.h"
+#include "StrandOfTheAncient.h"
 #include "WarsongGulch.h"
 #include "WeatherMgr.h"
 #include "World.h"

@@ -67,7 +67,7 @@ bool ChatHandler::HandleBGInfoCommnad(const char *args, WorldSession *m_session)
 bool ChatHandler::HandleBattlegroundCommand(const char* args, WorldSession *m_session)
 {
 	uint32 type = atoi(args);
-	if(type != 2 && type != 3 && type != 4 && type != 5 && type != 7)
+	if (type >= BATTLEGROUND_NUM_TYPES)
 		return false;
 
 	Player * plr = getSelectedChar(m_session, true);

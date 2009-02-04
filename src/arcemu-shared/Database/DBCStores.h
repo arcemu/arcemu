@@ -469,7 +469,24 @@ struct AchievementCriteriaEntry
 	uint32  timeLimit;                                    // 29 time limit in seconds
 	uint32  index;                                        // 30
 };
- 
+
+struct BattlemasterListEntry
+{
+	uint32	bg_index;
+	int32	maps[8];
+	uint32	instance_type;
+	uint32	max_players_per_faction;
+	uint32	min_players_per_faction;
+	uint32	flag; // EOTS AND SOTA have this set to nine, otherwise it's zero
+	uint32  always_true;
+	uint32	some_id;
+	int32	zeros[15];
+	uint32	unk[2];
+	uint32	always_same; // Always 16712190
+	uint32	minimum_payer_level; // ??? Is it, 3.0.8 doesn't match 3.0.3 numbers
+								 // Do not use for now (NAQUADA)
+	//char*	name;
+};
 
 struct BankSlotPrice
 {
@@ -1553,7 +1570,7 @@ public:
 		uint32 val;
 		size_t len = strlen(format);
 		if(len!= cols)
-			printf("!!! possible invalid format in file %s (us: %zd, them: %u)\n", filename, len, cols);
+			printf("!!! possible invalid format in file %s (us: %u, them: %u)\n", filename, len, cols);
 
 		while(*t != 0)
 		{
@@ -1725,6 +1742,7 @@ extern SERVER_DECL DBCStorage<WorldMapOverlay> dbcWorldMapOverlayStore;
 extern SERVER_DECL DBCStorage<AchievementEntry> dbcAchievementStore;
 extern SERVER_DECL DBCStorage<AchievementCriteriaEntry> dbcAchievementCriteriaStore;
 extern SERVER_DECL DBCStorage<AchievementCategoryEntry> dbcAchievementCategoryStore;
+extern SERVER_DECL DBCStorage<BattlemasterListEntry> dbcBattlemasterListEntry;
 extern SERVER_DECL DBCStorage<CharTitlesEntry> dbcCharTitlesEntry;
 extern SERVER_DECL DBCStorage<BarberShopStyleEntry> dbcBarberShopStyleStore;
 extern SERVER_DECL DBCStorage<GemPropertyEntry> dbcGemProperty;

@@ -33,10 +33,14 @@ const static uint32 BGMapIds[ BATTLEGROUND_NUM_TYPES ] =
 	0,		// 3v3
 	0,		// 5v5
 	566,	// EOTS
+	0,
+	607,	// SOTA
+	0,
+	0,
 };
 
-uint32 BGMaximumPlayers[ BATTLEGROUND_NUM_TYPES ] = { 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-uint32 BGMinimumPlayers[ BATTLEGROUND_NUM_TYPES ] = { 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+uint32 BGMaximumPlayers[ BATTLEGROUND_NUM_TYPES ] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 15, 0, 0 };
+uint32 BGMinimumPlayers[ BATTLEGROUND_NUM_TYPES ] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 10, 0, 0 };
 
 
 const static CreateBattlegroundFunc BGCFuncs[BATTLEGROUND_NUM_TYPES] = {
@@ -48,7 +52,10 @@ const static CreateBattlegroundFunc BGCFuncs[BATTLEGROUND_NUM_TYPES] = {
 	NULL,								// 3v3
 	NULL,								// 5v5
 	&EyeOfTheStorm::Create,				// EotS
-	NULL,								// SOTA, needs to be updated when SOTA is in
+	NULL,
+	&StrandOfTheAncient::Create,		// SOTA, needs to be updated when SOTA is in
+	NULL,
+	NULL,
 };
 
 CBattlegroundManager::CBattlegroundManager()
@@ -64,12 +71,23 @@ m_maxBattlegroundId(0)
 	for (i=0; i<BATTLEGROUND_NUM_TYPES; i++) {
 		m_instances[i].clear();
 	}
+
+	SetupStrandOfTheAncientBattleMasters();
 }
 
 CBattlegroundManager::~CBattlegroundManager()
 {
 
 }
+
+uint32 CBattlegroundManager::GetMap(uint32 bg_index)
+{
+	if (bg_index >= BATTLEGROUND_NUM_TYPES)
+		return 0;
+	return BGMapIds[ bg_index ];
+}
+
+
 void CBattlegroundManager::LoadBGSetFromConfig()
 {
 	// cebernic: for external controlled
@@ -227,6 +245,8 @@ uint8 GetBattlegroundCaption(BattleGroundTypes bgType)
 		return 43;
 	case BATTLEGROUND_EYE_OF_THE_STORM:
 		return 44;
+	case BATTLEGROUND_STRAND_OF_THE_ANCIENT:
+		return 34;
 	default:
 		return 45;
 	}
@@ -1215,9 +1235,10 @@ CBattleground * CBattlegroundManager::CreateInstance(uint32 Type, uint32 LevelGr
 		case BATTLEGROUND_WARSUNG_GULCH: n = 0; break;
 		case BATTLEGROUND_ARATHI_BASIN: n = 1; break;
 		case BATTLEGROUND_EYE_OF_THE_STORM: n = 2; break;
+		case BATTLEGROUND_STRAND_OF_THE_ANCIENT: n = 3; break;
 		default: n = 0; break;
 	}
-	if (((tm.tm_yday / 7) % 3) == n)
+	if (((tm.tm_yday / 7) % 4) == n)
 	{
 		/* Set weekend from thursday night at midnight until tuesday morning */
 		isWeekend = tm.tm_wday >= 5 || tm.tm_wday < 2;

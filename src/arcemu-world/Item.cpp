@@ -1254,7 +1254,6 @@ uint32 GetStatScalingStatValueColumn(ItemPrototype *proto, uint32 type){
 			if(proto->ScalingStatsFlag & 32768)
 				return 15;
 			break; }
-
-		default:{ return 0; break; }
 	}
+	return 0;
 }
