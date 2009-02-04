@@ -1693,9 +1693,11 @@ Unit* AIInterface::FindTarget()
 				Unit *pPTarget = GetUnit()->GetMapMgr()->GetUnit( tmpPlr->CombatStatus.GetPrimaryAttackTarget() );
 				if( pPTarget == NULL)
 					continue;
-				if (!pPTarget->IsPlayer())
+				if( !pPTarget->IsPlayer() )
 					continue;
-				if (tmpPlr->DuelingWith == static_cast<Player*>(pPTarget))
+				if( tmpPlr->DuelingWith == static_cast<Player*>(pPTarget) )
+					continue;
+				if( !tmpPlr->IsAttacking() )
 					continue;
 			}
 
