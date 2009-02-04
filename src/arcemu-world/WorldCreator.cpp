@@ -774,7 +774,7 @@ void InstanceMgr::ResetSavedInstances(Player * plr)
 				in = itr->second;
 				++itr;
 
-				if( ( in->m_mapInfo->type == INSTANCE_NONRAID && (plr->GetGroup() && plr->GetGroup()->GetID() == in->m_creatorGroup) ) || ( in->m_mapInfo->type == INSTANCE_NONRAID && plr->GetLowGUID() == in->m_creatorGuid ) )
+				if (IS_RESETABLE_INSTANCE(in) && (CHECK_INSTANCE_GROUP(in, plr->GetGroup()) || plr->GetLowGUID() == in->m_creatorGuid))
 				{
 					if(in->m_mapMgr && in->m_mapMgr->HasPlayers())
 					{
