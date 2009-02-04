@@ -1,5 +1,7 @@
 /*
- * LunarEMU MMORPG Server
+ * ArcEmu MMORPG Server
+ * Copyright (C) 2005-2007 Ascent Team <http://www.ascentemu.com/>
+ * Copyright (C) 2008-2009 <http://www.ArcEmu.org/>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -13,12 +15,6 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *
- */
-
-/*
- *		This class (as-is) keeps trying to respawn new instance over and over
- *		it is causing a new instance to be created, every x seconds.
  *
  */
 
@@ -204,7 +200,7 @@ void StrandOfTheAncient::OnCreate()
 
 void StrandOfTheAncient::OnStart()
 {
-	printf("OnStart: SOTA Battleground\n");
+	sLog.outDebug("OnStart: SOTA Battleground\n");
 
 	LocationVector dest;
 

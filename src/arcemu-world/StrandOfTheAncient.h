@@ -81,7 +81,7 @@ public:
 
 	~StrandOfTheAncient()
 	{
-		printf("DEBUG: StrandOfTheAncients BG destroyed\n");
+		sLog.outDebug("DEBUG: StrandOfTheAncients BG destroyed\n");
 		//ObjectMgr::getSingleton().DeleteTransport(m_boats[0]);
 	}
 
