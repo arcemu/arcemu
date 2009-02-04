@@ -4114,32 +4114,33 @@ void Player::_ApplyItemMods(Item* item, int8 slot, bool apply, bool justdrokedow
 
 		/* Calculating the damages correct for our level and applying it */
 		uint32 scaleddps = ssvrow->multiplier [ GetStatScalingStatValueColumn(proto,SCALINGSTATDAMAGE) ];
-		float scaledmindmg = (float)scaleddps*2*(proto->Delay/1000)/2.5;
-		float scaledmaxdmg = 1.5*scaledmindmg;
+		float scaledmindmg = float( scaleddps * 2 * proto->Delay / 1000 ) / 2.5f;
+		float scaledmaxdmg = 1.5f * scaledmindmg;
 
-		if( proto->InventoryType == INVTYPE_RANGED || proto->InventoryType == INVTYPE_RANGEDRIGHT || proto->InventoryType == INVTYPE_THROWN )	
-			{	
-				BaseRangedDamage[0] += apply ? scaledmindmg : -scaledmindmg;
-				BaseRangedDamage[1] += apply ? scaledmaxdmg : -scaledmaxdmg;
+		if( proto->InventoryType == INVTYPE_RANGED || proto->InventoryType == INVTYPE_RANGEDRIGHT || proto->InventoryType == INVTYPE_THROWN )
+		{	
+			BaseRangedDamage[0] += apply ? scaledmindmg : -scaledmindmg;
+			BaseRangedDamage[1] += apply ? scaledmaxdmg : -scaledmaxdmg;
+		}
+		else
+		{
+			if( slot == EQUIPMENT_SLOT_OFFHAND )
+			{
+				BaseOffhandDamage[0] = apply ? scaledmindmg : 0;
+				BaseOffhandDamage[1] = apply ? scaledmaxdmg : 0;
 			}
 			else
 			{
-				if( slot == EQUIPMENT_SLOT_OFFHAND )
-				{
-					BaseOffhandDamage[0] = apply ? scaledmindmg : 0;
-					BaseOffhandDamage[1] = apply ? scaledmaxdmg : 0;
-				}
-				else
-				{
-					BaseDamage[0] = apply ? scaledmindmg : 1;
-					BaseDamage[1] = apply ? scaledmaxdmg : 1;
-				}
+				BaseDamage[0] = apply ? scaledmindmg : 1;
+				BaseDamage[1] = apply ? scaledmaxdmg : 1;
 			}
+		}
 
 	/* Normal items */
 	}else{
 		// Stats
-		for( int i = 0; i < proto->itemstatscount; i++ ){
+		for( uint32 i = 0; i < proto->itemstatscount; i++ )
+		{
 			int32 val = proto->Stats[i].Value;
 			/*
 			if( val == 0 )
