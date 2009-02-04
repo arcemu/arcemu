@@ -1,0 +1,17 @@
+for legal,we have no provided any files with compiled for wow emulator on this SVN.
+I still provide it personally for ppl requested.
+
+The fully sourcecodes all storaged on this directory,you if hate binary.
+but I know there's someone(noob) are looking up for easy to use.
+
+so you can download the binary from this link,these Extractors is usable and all-in-one.
+still make a copy of sourcecode with there.
+
+http://code.assembla.com/easyext/subversion/nodes/Client_Extractor_Suite.rar
+
+Have a good day.
+
+- cebernic
+
+
+
