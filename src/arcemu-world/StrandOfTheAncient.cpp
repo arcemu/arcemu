@@ -210,7 +210,7 @@ void StrandOfTheAncient::OnStart()
 
 	for(list<Player*>::iterator itr = sota_players.begin(); itr != sota_players.end(); ++itr)
 	{
-		Player *plr = itr._Ptr->_Myval;
+		Player *plr = *itr;
 		dest.ChangeCoords(sotaStopBoatsPlayer[plr->GetTeam()][0], sotaStopBoatsPlayer[plr->GetTeam()][1],
 			sotaStopBoatsPlayer[plr->GetTeam()][2], sotaStopBoatsPlayer[plr->GetTeam()][3]);
 

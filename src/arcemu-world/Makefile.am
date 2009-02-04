@@ -41,6 +41,8 @@ arcemu_world_SOURCES = \
     BattlegroundHandler.cpp \
     BattlegroundMgr.cpp \
     BattlegroundMgr.h \
+    StrandOfTheAncient.h \
+    StrandOfTheAncient.cpp \
     CellHandler.h \
     Channel.cpp \
     Channel.h \
