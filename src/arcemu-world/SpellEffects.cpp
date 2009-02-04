@@ -2775,6 +2775,7 @@ void Spell::SpellEffectSummon(uint32 i) // Summon
 				return;
 			}
 		case 61:
+		case 881:
 			{
 				SpellEffectSummonGuardian(i);
 				return;
@@ -3843,17 +3844,12 @@ void Spell::SpellEffectSummonGuardian(uint32 i) // Summon Guardian
 	GameObject * obj = NULL; //Snake trap part 1
 	LocationVector * vec = NULL;
 	
-	if ( g_caster ) 
+	if ( g_caster && g_caster->m_summoner) 
 	{
-		if ( g_caster->m_summoner )
-		{
-			u_caster = g_caster->m_summoner; //set the caster to the summoner unit
-			obj = g_caster; //and keep the trap info
-		}
-		else
-			return;
+		u_caster = g_caster->m_summoner; //set the caster to the summoner unit
+		obj = g_caster; //and keep the trap info
 	}
-	else if ( !u_caster )
+	if( !u_caster )
 		return;
 
 	uint32 cr_entry = GetProto()->EffectMiscValue[i];
