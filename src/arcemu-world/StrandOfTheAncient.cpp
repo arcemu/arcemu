@@ -23,6 +23,29 @@ Strand of the Ancients
 ======================
 * Ship Gameobject ID: 20808
 
+* Battlemaster NPC Text id's (Needs to be setup in database to use these NPC's!)
+	npc_gossip_textid
+			30586	13832	// Jojindi
+			29234	13832	// Strand of the Ancients Battlemaster - Wintergrasp
+			30578	13832	// Bethany Aldire - Stormwind City
+			30581	13832	// Buhurda - Exodar?
+			30590	13832	// Godo Cloudcleaver - Thunder Bluff
+			30584	13832	// Mabrian Fardawn - Silvermoon?
+			30579	13832	// Marga Bearbrawn - Ironforge
+			30580	13832	// Nivara Bladedancer - Darnassus
+			30583	13832	// Sarah Forthright - Undercity
+			30582	13832	// Ufuda Giant-Slayer - Orgrimmar
+			30587	13832	// Vinvo Goldgear - Shattrath
+
+	creature_protos (for above creatures)
+			npcflags = 1048577
+
+	npc_text
+		 13832 = You are not yet strong enough to do battle in the Strand of the Ancients. Return when you have gained more experience.
+		 13834 = We cannot allow the Alliance to turn the hidden secrets of the Strand of the Ancients against us. Will you join our brave warriors there?
+		+13833 = We must protect the hidden secrets of the Strand of the Ancients, or all will be lost. Will you join our brave warriors there?
+
+
 * Change: Currently porting to 1519.53, 1482.868, >328
 
 * Attackers starting location (Boat location)
@@ -42,6 +65,7 @@ Strand of the Ancients
 
 #include "StdAfx.h"
 
+/*
 // Strand of the Ancients Battlemaster
 class StrandOfTheAncientsBattlemaster : public GossipScript
 {
@@ -106,6 +130,7 @@ void CBattlegroundManager::SetupStrandOfTheAncientBattleMasters()
 	mgr->register_gossip_script(30587, sota);		// Vinvo Goldgear - Shattrath
 
 }
+*/
 
 void StrandOfTheAncient::HookOnAreaTrigger(Player * plr, uint32 id)
 {

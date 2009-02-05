@@ -72,7 +72,6 @@ m_maxBattlegroundId(0)
 		m_instances[i].clear();
 	}
 
-	SetupStrandOfTheAncientBattleMasters();
 }
 
 CBattlegroundManager::~CBattlegroundManager()
@@ -193,7 +192,7 @@ void CBattlegroundManager::HandleBattlegroundJoin(WorldSession * m_session, Worl
 	/* Queue him! */
 	m_queueLock.Acquire();
 	m_queuedPlayers[bgtype][lgroup].push_back(pguid);
-	Log.Success("BattlegroundManager", "Player %u is now in battleground queue for instance %u", m_session->GetPlayer()->GetLowGUID(), instance );
+	Log.Success("BattlegroundManager", "Player %u is now in battleground queue for instance %u", m_session->GetPlayer()->GetLowGUID(), (instance + 1) );
 
 	/* send the battleground status packet */
 	SendBattlefieldStatus(m_session->GetPlayer(), 1, bgtype, instance, 0, BGMapIds[bgtype],0);
@@ -1302,6 +1301,9 @@ void CBattlegroundManager::DeleteBattleground(CBattleground * bg)
 	m_queueLock.Release();
 	m_instanceLock.Release();
 
+	sLog.outDetail("Deleting battleground from queue %u, instance %u", bg->GetType(), bg->GetId());
+	delete bg;
+
 }
 
 GameObject * CBattleground::SpawnGameObject(uint32 entry,uint32 MapId , float x, float y, float z, float o, uint32 flags, uint32 faction, float scale)
@@ -1324,7 +1326,7 @@ GameObject * CBattleground::SpawnGameObject(uint32 entry,uint32 MapId , float x,
 	return go;
 }
 
-Creature *CBattleground::SpawnCreature(uint32 entry,float x, float y, float z, float o)
+Creature *CBattleground::SpawnCreature(uint32 entry, float x, float y, float z, float o)
 {
 	CreatureProto *cp = CreatureProtoStorage.LookupEntry(entry);
 	Creature *c = m_mapMgr->CreateCreature(entry);

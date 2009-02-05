@@ -480,7 +480,6 @@ void GossipScript::GossipHello(Object* pObject, Player* Plr, bool AutoSend)
 	if(!pCreature)
 		return;
 
-	Trainer *pTrainer = pCreature->GetTrainer();
 	uint32 Text = objmgr.GetGossipTextForNpc(pCreature->GetEntry());
 	if(Text != 0)
 	{
@@ -491,15 +490,15 @@ void GossipScript::GossipHello(Object* pObject, Player* Plr, bool AutoSend)
 
 	objmgr.CreateGossipMenuForPlayer(&Menu, pCreature->GetGUID(), TextID, Plr);
 	
-	uint32 flags = pCreature->GetUInt32Value(UNIT_NPC_FLAGS);
-
-	if(flags & UNIT_NPC_FLAG_VENDOR)
+	if (pCreature->isVendor())
 		Menu->AddItem(1, Plr->GetSession()->LocalizedWorldSrv(1), 1);
 	
-	if( flags & ( UNIT_NPC_FLAG_TRAINER | UNIT_NPC_FLAG_TRAINER_PROF ) && pTrainer != 0)
+	if (pCreature->isTrainer() || pCreature->isProf())
 	{
+		Trainer *pTrainer = pCreature->GetTrainer();
 		string name = pCreature->GetCreatureInfo()->Name;
 		string::size_type pos = name.find(" ");	  // only take first name
+
 		if(pos != string::npos)
 			name = name.substr(0, pos);
 
@@ -563,49 +562,48 @@ void GossipScript::GossipHello(Object* pObject, Player* Plr, bool AutoSend)
 			
 			Menu->AddItem(3, Plr->GetSession()->LocalizedWorldSrv(13), 2);
 		}
-	}
 
-	if(flags & UNIT_NPC_FLAG_TAXIVENDOR)
+		if (pTrainer->RequiredClass &&					  // class trainer
+			pTrainer->RequiredClass == Plr->getClass() &&   // correct class
+			pCreature->getLevel() > 10 &&				   // creature level
+			pTrainer->TrainerType != TRAINER_TYPE_PET &&  // Pet Trainers do not respec hunter talents
+			Plr->getLevel() > 10 )						  // player level
+		{
+			Menu->AddItem(0, Plr->GetSession()->LocalizedWorldSrv(22), 11);
+		}
+	
+		if (pTrainer->TrainerType == TRAINER_TYPE_PET &&	// pet trainer type
+			Plr->getClass() == HUNTER &&					// hunter class
+			Plr->GetSummon() != NULL )						// have pet
+		{
+			Menu->AddItem(0, Plr->GetSession()->LocalizedWorldSrv(23), 13);
+		}
+
+	} // end architype trainer / profession trainer
+
+	if (pCreature->isTaxi())
 		Menu->AddItem(2, Plr->GetSession()->LocalizedWorldSrv(14), 3);
 
-	if(flags & UNIT_NPC_FLAG_AUCTIONEER)
+	if (pCreature->isAuctioner())
 		Menu->AddItem(0, Plr->GetSession()->LocalizedWorldSrv(15), 4);
 
-	if(flags & UNIT_NPC_FLAG_INNKEEPER)
+	if (pCreature->isInnkeeper())
 		Menu->AddItem(5, Plr->GetSession()->LocalizedWorldSrv(16), 5);
 
-	if(flags & UNIT_NPC_FLAG_BANKER)
-		Menu->AddItem(0, Plr->GetSession()->LocalizedWorldSrv(17), 6);
-
-	if(flags & UNIT_NPC_FLAG_SPIRITHEALER)
-		Menu->AddItem(0, Plr->GetSession()->LocalizedWorldSrv(18), 7);
-
-	if(flags & UNIT_NPC_FLAG_ARENACHARTER)
-		Menu->AddItem(0, Plr->GetSession()->LocalizedWorldSrv(19), 8);
-
-	if(flags & UNIT_NPC_FLAG_TABARDCHANGER)
-		Menu->AddItem(0, Plr->GetSession()->LocalizedWorldSrv(20), 9);
-
-	if(flags & UNIT_NPC_FLAG_BATTLEFIELDPERSON)
+	if (pCreature->isBattleMaster())
 		Menu->AddItem(0, Plr->GetSession()->LocalizedWorldSrv(21), 10);
 
-	if( pTrainer &&
-		pTrainer->RequiredClass &&					  // class trainer
-		pTrainer->RequiredClass == Plr->getClass() &&   // correct class
-		pCreature->getLevel() > 10 &&				   // creature level
-		pTrainer->TrainerType != TRAINER_TYPE_PET &&  // Pet Trainers do not respec hunter talents
-		Plr->getLevel() > 10 )						  // player level
-	{
-		Menu->AddItem(0, Plr->GetSession()->LocalizedWorldSrv(22), 11);
-	}
-	
-	if( pTrainer &&
-		pTrainer->TrainerType == TRAINER_TYPE_PET &&	// pet trainer type
-		Plr->getClass() == HUNTER &&					// hunter class
-		Plr->GetSummon() != NULL )						// have pet
-	{
-		Menu->AddItem(0, Plr->GetSession()->LocalizedWorldSrv(23), 13);
-	}
+	if (pCreature->isBanker())
+		Menu->AddItem(0, Plr->GetSession()->LocalizedWorldSrv(17), 6);
+
+	if (pCreature->isSpiritHealer())
+		Menu->AddItem(0, Plr->GetSession()->LocalizedWorldSrv(18), 7);
+
+	if (pCreature->isCharterGiver())
+		Menu->AddItem(0, Plr->GetSession()->LocalizedWorldSrv(19), 8);
+
+	if (pCreature->isTabardDesigner())
+		Menu->AddItem(0, Plr->GetSession()->LocalizedWorldSrv(20), 9);
 
 	if(AutoSend)
 		Menu->SendTo(Plr);
@@ -616,6 +614,8 @@ void GossipScript::GossipSelectOption(Object* pObject, Player* Plr, uint32 Id, u
 	Creature* pCreature = static_cast< Creature* >( pObject );
 	if( pObject->GetTypeId() != TYPEID_UNIT )
 		return;
+
+	sLog.outDebug("GossipSelectOption: Id = %u, IntId = %u", Id, IntId);
 
 	switch( IntId )
 	{

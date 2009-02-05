@@ -368,22 +368,22 @@ public:
 	list<QuestRelation *>::iterator QuestsEnd() { return m_quests->end(); };
 	void SetQuestList(std::list<QuestRelation *>* qst_lst) { m_quests = qst_lst; };
 
-	ARCEMU_INLINE bool isVendor()       const { return HasFlag( UNIT_NPC_FLAGS, UNIT_NPC_FLAG_VENDOR ); }
-  ARCEMU_INLINE bool isTrainer()      const { return HasFlag( UNIT_NPC_FLAGS, UNIT_NPC_FLAG_TRAINER ); }
-  ARCEMU_INLINE bool isProf()      const { return HasFlag( UNIT_NPC_FLAGS, UNIT_NPC_FLAG_TRAINER_PROF ); }
-  ARCEMU_INLINE bool isQuestGiver()   const { return HasFlag( UNIT_NPC_FLAGS, UNIT_NPC_FLAG_QUESTGIVER ); }
-  ARCEMU_INLINE bool isGossip()       const { return HasFlag( UNIT_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP ); }
-  ARCEMU_INLINE bool isTaxi()         const { return HasFlag( UNIT_NPC_FLAGS, UNIT_NPC_FLAG_TAXIVENDOR ); }
-  ARCEMU_INLINE bool isCharterGiver()  const { return HasFlag( UNIT_NPC_FLAGS, UNIT_NPC_FLAG_ARENACHARTER ); }
-	ARCEMU_INLINE bool isGuildBank()  const { return HasFlag( UNIT_NPC_FLAGS, UNIT_NPC_FLAG_GUILD_BANK ); }
-  ARCEMU_INLINE bool isBattleMaster() const { return HasFlag( UNIT_NPC_FLAGS, UNIT_NPC_FLAG_BATTLEFIELDPERSON ); }
-  ARCEMU_INLINE bool isBanker()       const { return HasFlag( UNIT_NPC_FLAGS, UNIT_NPC_FLAG_BANKER ); }
-  ARCEMU_INLINE bool isInnkeeper()    const { return HasFlag( UNIT_NPC_FLAGS, UNIT_NPC_FLAG_INNKEEPER ); }
-  ARCEMU_INLINE bool isSpiritHealer() const { return HasFlag( UNIT_NPC_FLAGS, UNIT_NPC_FLAG_SPIRITHEALER ); }
-  ARCEMU_INLINE bool isTabardDesigner()  const { return HasFlag( UNIT_NPC_FLAGS, UNIT_NPC_FLAG_TABARDCHANGER ); }
-  ARCEMU_INLINE bool isAuctioner()    const { return HasFlag( UNIT_NPC_FLAGS, UNIT_NPC_FLAG_AUCTIONEER ); }
-  ARCEMU_INLINE bool isStableMaster()    const { return HasFlag( UNIT_NPC_FLAGS, UNIT_NPC_FLAG_STABLEMASTER ); }
-  ARCEMU_INLINE bool isArmorer()      const { return HasFlag( UNIT_NPC_FLAGS, UNIT_NPC_FLAG_ARMORER ); }
+	ARCEMU_INLINE bool isVendor()		const { return HasFlag( UNIT_NPC_FLAGS, UNIT_NPC_FLAG_VENDOR ); }
+	ARCEMU_INLINE bool isTrainer()		const { return HasFlag( UNIT_NPC_FLAGS, UNIT_NPC_FLAG_TRAINER ); }
+	ARCEMU_INLINE bool isProf()			const { return HasFlag( UNIT_NPC_FLAGS, UNIT_NPC_FLAG_TRAINER_PROF ); }
+	ARCEMU_INLINE bool isQuestGiver()	const { return HasFlag( UNIT_NPC_FLAGS, UNIT_NPC_FLAG_QUESTGIVER ); }
+	ARCEMU_INLINE bool isGossip()		const { return HasFlag( UNIT_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP ); }
+	ARCEMU_INLINE bool isTaxi()			const { return HasFlag( UNIT_NPC_FLAGS, UNIT_NPC_FLAG_TAXIVENDOR ); }
+	ARCEMU_INLINE bool isCharterGiver()	const { return HasFlag( UNIT_NPC_FLAGS, UNIT_NPC_FLAG_ARENACHARTER ); }
+	ARCEMU_INLINE bool isGuildBank()	const { return HasFlag( UNIT_NPC_FLAGS, UNIT_NPC_FLAG_GUILD_BANK ); }
+	ARCEMU_INLINE bool isBattleMaster()	const { return HasFlag( UNIT_NPC_FLAGS, UNIT_NPC_FLAG_BATTLEFIELDPERSON ); }
+	ARCEMU_INLINE bool isBanker()		const { return HasFlag( UNIT_NPC_FLAGS, UNIT_NPC_FLAG_BANKER ); }
+	ARCEMU_INLINE bool isInnkeeper()	const { return HasFlag( UNIT_NPC_FLAGS, UNIT_NPC_FLAG_INNKEEPER ); }
+	ARCEMU_INLINE bool isSpiritHealer()	const { return HasFlag( UNIT_NPC_FLAGS, UNIT_NPC_FLAG_SPIRITHEALER ); }
+	ARCEMU_INLINE bool isTabardDesigner() const { return HasFlag( UNIT_NPC_FLAGS, UNIT_NPC_FLAG_TABARDCHANGER ); }
+	ARCEMU_INLINE bool isAuctioner()	const { return HasFlag( UNIT_NPC_FLAGS, UNIT_NPC_FLAG_AUCTIONEER ); }
+	ARCEMU_INLINE bool isStableMaster()	const { return HasFlag( UNIT_NPC_FLAGS, UNIT_NPC_FLAG_STABLEMASTER ); }
+	ARCEMU_INLINE bool isArmorer()		const { return HasFlag( UNIT_NPC_FLAGS, UNIT_NPC_FLAG_ARMORER ); }
 	
 	ARCEMU_INLINE uint32 GetHealthFromSpell() { return m_healthfromspell; }
 	void SetHealthFromSpell(uint32 value) { m_healthfromspell = value;}

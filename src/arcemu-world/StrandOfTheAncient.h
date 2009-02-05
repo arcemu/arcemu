@@ -71,17 +71,18 @@ public:
 
 		m_boats[0]->Spawn(mgr);
 
+		/*
 		m_boats[1] = SpawnGameObject(20808,
 			mapId,
 			sotaStopBoats[0][0], sotaStopBoats[0][1], sotaStopBoats[0][2], sotaStopBoats[0][3], 0, 0, 1.0f);
 
 		m_boats[1]->Spawn(mgr);
+		*/
 
 	}
 
 	~StrandOfTheAncient()
 	{
-		sLog.outDebug("DEBUG: StrandOfTheAncients BG destroyed\n");
 		//ObjectMgr::getSingleton().DeleteTransport(m_boats[0]);
 	}
 

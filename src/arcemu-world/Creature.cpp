@@ -1223,19 +1223,19 @@ bool Creature::Load(CreatureSpawn *spawn, uint32 mode, MapInfo *info)
 //SETUP NPC FLAGS
 	SetUInt32Value(UNIT_NPC_FLAGS,proto->NPCFLags);
 
-	if ( HasFlag( UNIT_NPC_FLAGS, UNIT_NPC_FLAG_VENDOR ) )
+	if ( isVendor() )
 		m_SellItems = objmgr.GetVendorList(GetEntry());
 
-	if ( HasFlag( UNIT_NPC_FLAGS, UNIT_NPC_FLAG_QUESTGIVER ) )
+	if ( isQuestGiver() )
 		_LoadQuests();
 
-	if ( HasFlag( UNIT_NPC_FLAGS, UNIT_NPC_FLAG_TAXIVENDOR) )
+	if ( isTaxi() )
 		m_TaxiNode = sTaxiMgr.GetNearestTaxiNode( m_position.x, m_position.y, m_position.z, GetMapId() );
 
-	if ( HasFlag( UNIT_NPC_FLAGS, UNIT_NPC_FLAG_TRAINER) || HasFlag(UNIT_NPC_FLAGS,UNIT_NPC_FLAG_TRAINER_PROF))
+	if ( isTrainer() | isProf() )
 		mTrainer = objmgr.GetTrainer(GetEntry());
 
-	if ( HasFlag( UNIT_NPC_FLAGS, UNIT_NPC_FLAG_AUCTIONEER ) )
+	if ( isAuctioner() )
 		auctionHouse = sAuctionMgr.GetAuctionHouse(GetEntry());
 
 //NPC FLAGS
@@ -1435,19 +1435,19 @@ void Creature::Load(CreatureProto * proto_, float x, float y, float z, float o)
 	//SETUP NPC FLAGS
 	SetUInt32Value(UNIT_NPC_FLAGS,proto->NPCFLags);
 
-	if ( HasFlag( UNIT_NPC_FLAGS, UNIT_NPC_FLAG_VENDOR ) )
+	if ( isVendor() )
 		m_SellItems = objmgr.GetVendorList(GetEntry());
 
-	if ( HasFlag( UNIT_NPC_FLAGS, UNIT_NPC_FLAG_QUESTGIVER ) )
+	if ( isQuestGiver() )
 		_LoadQuests();
 
-	if ( HasFlag( UNIT_NPC_FLAGS, UNIT_NPC_FLAG_TAXIVENDOR) )
+	if ( isTaxi() )
 		m_TaxiNode = sTaxiMgr.GetNearestTaxiNode( m_position.x, m_position.y, m_position.z, GetMapId() );
 
-	if ( HasFlag( UNIT_NPC_FLAGS, UNIT_NPC_FLAG_TRAINER) || HasFlag(UNIT_NPC_FLAGS,UNIT_NPC_FLAG_TRAINER_PROF))
+	if ( isTrainer() | isProf() )
 		mTrainer = objmgr.GetTrainer(GetEntry());
 
-	if ( HasFlag( UNIT_NPC_FLAGS, UNIT_NPC_FLAG_AUCTIONEER ) )
+	if ( isAuctioner() )
 		auctionHouse = sAuctionMgr.GetAuctionHouse(GetEntry());
 
 	//load resistances

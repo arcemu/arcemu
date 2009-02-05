@@ -1742,7 +1742,7 @@ void WorldSession::HandleRepairItemOpcode(WorldPacket &recvPacket)
 	if( pCreature == NULL )
 		return;
 
-	if( !pCreature->HasFlag( UNIT_NPC_FLAGS, UNIT_NPC_FLAG_ARMORER ) )
+	if( !pCreature->isArmorer() )
 		return;
 
 	//this is a blizzlike check

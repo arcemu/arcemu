@@ -113,7 +113,7 @@ void WorldSession::HandleBattleMasterHelloOpcode(WorldPacket &recv_data)
 	if(!bm)
 		return;
 
-	if(!bm->HasFlag( UNIT_NPC_FLAGS, UNIT_NPC_FLAG_BATTLEFIELDPERSON ))		// Not a Battlemaster
+	if(!bm->isBattleMaster())		// Not a Battlemaster
 		return;
 
 	SendBattlegroundList(bm, 0);

@@ -603,7 +603,39 @@ bool ChatHandler::HandleNpcInfoCommand(const char *args, WorldSession *m_session
 		BlueSystemMessage(m_session, "Showing creature info for %s", crt->GetCreatureInfo()->Name);
 	SystemMessage(m_session, "GUID: %d", guid);
 	SystemMessage(m_session, "Faction: %d", crt->GetUInt32Value(UNIT_FIELD_FACTIONTEMPLATE));
-	SystemMessage(m_session, "NPCFlags: %d", crt->GetUInt32Value(UNIT_NPC_FLAGS));
+	{
+		string s = "";
+		if (crt->isBattleMaster())
+				s.append(" (Battlemaster)");
+		if (crt->isTrainer())
+				s.append(" (Trainer)");
+		if (crt->isProf())
+				s.append(" (Profession Trainer)");
+		if (crt->isQuestGiver())
+				s.append(" (Quests)");
+		if (crt->isGossip())
+				s.append(" (Gossip)");
+		if (crt->isTaxi())
+				s.append(" (Taxi)");
+		if (crt->isCharterGiver())
+				s.append(" (Charter)");
+		if (crt->isGuildBank())
+				s.append(" (Guild Bank)");
+		if (crt->isSpiritHealer())
+				s.append(" (Spirit Healer)");
+		if (crt->isInnkeeper())
+				s.append(" (Innkeeper)");
+		if (crt->isTabardDesigner())
+				s.append(" (Tabard Designer)");
+		if (crt->isAuctioner())
+				s.append(" (Auctioner)");
+		if (crt->isStableMaster())
+				s.append(" (Stablemaster)");
+		if (crt->isArmorer())
+				s.append(" (Armorer)");
+
+		SystemMessage(m_session, "NPCFlags: %d%s", crt->GetUInt32Value(UNIT_NPC_FLAGS), s.c_str());
+	}
 	SystemMessage(m_session, "DisplayID: %d", crt->GetUInt32Value(UNIT_FIELD_DISPLAYID));
 	if(crt->m_faction)
 		SystemMessage(m_session, "Combat Support: 0x%.3X", crt->m_faction->FriendlyMask);
