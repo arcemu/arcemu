@@ -179,21 +179,6 @@ void StrandOfTheAncient::HookOnAreaTrigger(Player * plr, uint32 id)
 
 }
 
-void StrandOfTheAncient::HookFlagStand(Player * plr, GameObject * obj)
-{
-	sLog.outDebug("SOTA: HookFlagStand()");
-}
-
-void StrandOfTheAncient::HookOnFlagDrop(Player * plr)
-{
-	sLog.outDebug("SOTA: HookOnFlagDrop()");
-}
-
-void StrandOfTheAncient::HookFlagDrop(Player * plr, GameObject * obj)
-{
-	sLog.outDebug("SOTA: HookFlagDrop()");
-}
-
 void StrandOfTheAncient::HookOnPlayerKill(Player * plr, Player * pVictim)
 {
 	plr->m_bgScore.KillingBlows++;
@@ -334,22 +319,50 @@ void StrandOfTheAncient::OnStart()
 
 }
 
-void StrandOfTheAncient::HookOnShadowSight() 
-{
-
-}
-
 void StrandOfTheAncient::HookGenerateLoot(Player *plr, Object * pOCorpse)
 {
-
+	sLog.outDebug("*** StrandOfTheAncient::HookGenerateLoot");
 }
 
 void StrandOfTheAncient::HookOnUnitKill(Player * plr, Unit * pVictim)
 {
-
+	sLog.outDebug("*** StrandOfTheAncient::HookOnUnitKill");
 }
 
 void StrandOfTheAncient::SetIsWeekend(bool isweekend) 
 {
+	sLog.outDebug("*** StrandOfTheAncient::SetIsWeekend");
 	m_isWeekend = isweekend;
+}
+
+// end game, attackers captured flag
+bool StrandOfTheAncient::HookSlowLockOpen(GameObject * pGo, Player * pPlayer, Spell * pSpell)
+{
+	sLog.outDebug("*** StrandOfTheAncient::HookSlowLockOpen");
+	PlaySoundToAll( 8212 );
+	sEventMgr.RemoveEvents(this, EVENT_BATTLEGROUND_CLOSE);
+	sEventMgr.AddEvent(((CBattleground*)this), &CBattleground::Close, EVENT_BATTLEGROUND_CLOSE, 120000, 1,0);
+
+	/* increment the score world state */
+	//SetWorldState(pPlayer->GetTeam() ? WSG_CURRENT_HORDE_SCORE : WSG_CURRENT_ALLIANCE_SCORE, m_scores[pPlayer->GetTeam()]);
+
+	UpdatePvPData();
+
+	return true;
+}
+
+// Probably safe not using these
+void StrandOfTheAncient::HookFlagStand(Player * plr, GameObject * obj)
+{
+}
+
+void StrandOfTheAncient::HookOnFlagDrop(Player * plr)
+{
+}
+
+void StrandOfTheAncient::HookFlagDrop(Player * plr, GameObject * obj)
+{
+}
+void StrandOfTheAncient::HookOnShadowSight() 
+{
 }

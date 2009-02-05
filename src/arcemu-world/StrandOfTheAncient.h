@@ -57,6 +57,7 @@ public:
 	void HookGenerateLoot(Player *plr, Object * pOCorpse);
 	void HookOnUnitKill(Player * plr, Unit * pVictim);
 	void SetIsWeekend(bool isweekend);
+	bool HookSlowLockOpen(GameObject * pGo, Player * pPlayer, Spell * pSpell);
 
 protected:
 	uint32 m_flagHolders[2];
