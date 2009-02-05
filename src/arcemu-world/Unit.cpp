@@ -3883,7 +3883,7 @@ void Unit::Strike( Unit* pVictim, uint32 weapon_damage_type, SpellEntry* ability
 		// have to set attack target here otherwise it wont be set
 		// because dealdamage is not called.
 		//setAttackTarget(pVictim);
-		pVictim->CombatStatus.OnDamageDealt( this );
+		this->CombatStatus.OnDamageDealt( pVictim );
 	}
 //==========================================================================================
 //==============================Post Damage Dealing Processing==============================
@@ -4362,7 +4362,7 @@ void Unit::AddAura(Aura *aur)
 		}
 	}
 	
-		Unit* target = aur->GetTarget();
+	Unit* target = aur->GetTarget();
 	if (target != NULL)
 	{
 		//send the aura log
@@ -4418,7 +4418,7 @@ void Unit::AddAura(Aura *aur)
 		Unit * pCaster = aur->GetUnitCaster();
 		if( pCaster && pCaster->isAlive() && this->isAlive() )
 		{
-			pCaster->CombatStatus.OnDamageDealt(this);
+			pCaster->CombatStatus.OnDamageDealt( this );
 
 			if(m_objectTypeId == TYPEID_UNIT)
 				m_aiInterface->AttackReaction(pCaster, 1, aur->GetSpellId());
@@ -6516,24 +6516,24 @@ void CombatStatusHandler::RemoveAttacker(Unit * pAttacker, const uint64& guid)
 	}*/
 }
 
-void CombatStatusHandler::OnDamageDealt(Unit * pTarget)
+void CombatStatusHandler::OnDamageDealt( Unit * pTarget )
 {
 	// we added an aura, or dealt some damage to a target. they need to have us as an attacker, and they need to be our attack target if not.
 	//printf("OnDamageDealt to "I64FMT" from "I64FMT"\n", pTarget->GetGUID(), m_Unit->GetGUID());
-	if(pTarget == m_Unit)
+	if( pTarget == m_Unit )
 		return;
 
 	//no need to be in combat if dead
 	if( !pTarget->isAlive() || !m_Unit->isAlive() )
 		return;
 
-	AttackerMap::iterator itr = m_attackTargets.find(pTarget->GetGUID());
-	if(itr == m_attackTargets.end())
+	AttackerMap::iterator itr = m_attackTargets.find( pTarget->GetGUID() );
+	if( itr == m_attackTargets.end() )
 		AddAttackTarget(pTarget->GetGUID());
 
-	itr = pTarget->CombatStatus.m_attackers.find(m_Unit->GetGUID());
-	if(itr == pTarget->CombatStatus.m_attackers.end())
-		pTarget->CombatStatus.AddAttacker(m_Unit->GetGUID());
+	itr = pTarget->CombatStatus.m_attackers.find( m_Unit->GetGUID() );
+	if( itr == pTarget->CombatStatus.m_attackers.end() )
+		pTarget->CombatStatus.AddAttacker( m_Unit->GetGUID() );
 
 	// update the timeout
 	m_Unit->CombatStatusHandler_ResetPvPTimeout();

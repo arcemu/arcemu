@@ -401,7 +401,7 @@ void AIInterface::HandleEvent(uint32 event, Unit* pUnit, uint32 misc1)
 				{
 					m_aiTargets.insert(TargetMap::value_type(pUnit->GetGUID(), misc1));
 				}
-				m_Unit->CombatStatus.OnDamageDealt(pUnit);
+				pUnit->CombatStatus.OnDamageDealt( m_Unit );
 			}break;
 		case EVENT_FOLLOWOWNER:
 			{
@@ -1691,13 +1691,11 @@ Unit* AIInterface::FindTarget()
 			else
 			{
 				Unit *pPTarget = GetUnit()->GetMapMgr()->GetUnit( tmpPlr->CombatStatus.GetPrimaryAttackTarget() );
-				if( pPTarget == NULL)
+				if( pPTarget == NULL )
 					continue;
 				if( !pPTarget->IsPlayer() )
 					continue;
-				if( tmpPlr->DuelingWith == static_cast<Player*>(pPTarget) )
-					continue;
-				if( !tmpPlr->IsAttacking() )
+				if( tmpPlr->DuelingWith == static_cast< Player* >( pPTarget ) )
 					continue;
 			}
 
