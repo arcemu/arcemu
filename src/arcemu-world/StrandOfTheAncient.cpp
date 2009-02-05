@@ -23,6 +23,8 @@ Strand of the Ancients
 ======================
 * Ship Gameobject ID: 20808
 
+* Setup index 34 in worldstring_tables to equal "Strand of the Ancients"
+
 * Battlemaster NPC Text id's (Needs to be setup in database to use these NPC's!)
 	npc_gossip_textid
 			30586	13832	// Jojindi
@@ -43,17 +45,7 @@ Strand of the Ancients
 	npc_text
 		 13832 = You are not yet strong enough to do battle in the Strand of the Ancients. Return when you have gained more experience.
 		 13834 = We cannot allow the Alliance to turn the hidden secrets of the Strand of the Ancients against us. Will you join our brave warriors there?
-		+13833 = We must protect the hidden secrets of the Strand of the Ancients, or all will be lost. Will you join our brave warriors there?
-
-
-* Change: Currently porting to 1519.53, 1482.868, >328
-
-* Attackers starting location (Boat location)
-  Boat 1: 2439.4, 845.38, 20, o=3.76
-	  Go in a straight line you'll go right to the docks
-	  ??Ending location: 1623.34, 37, ~10, o=4.143
-		With two boats, might need to switch sides
-		of the dock
+		+13833 = We cannot allow the Horde to turn the hidden secrets of the Strand of the Ancients against us. Will you join our brave warriors there?
 
 * Location of "relic" (Courtyard of the Ancients)
 	836.97, -108.9, 111.59
@@ -66,10 +58,6 @@ Strand of the Ancients
 #include "StdAfx.h"
 
 /*
-// Strand of the Ancients Battlemaster
-class StrandOfTheAncientsBattlemaster : public GossipScript
-{
-public:
 	void GossipHello(Object* pObject, Player * plr, bool AutoSend)
 	{
 		GossipMenu *Menu;
@@ -103,34 +91,88 @@ public:
 
 		plr->GetSession()->SendBattlegroundList(((Creature*)pObject), BATTLEGROUND_STRAND_OF_THE_ANCIENT);
 	}
+*/
 
-	void Destroy()
-	{
-		delete this;
-	}
+const float sotaAttackers[2][4] = {
+	{ 2445.288f, 849.35f, 12.0f, 3.76f },
+	{ 2445.288f, 849.35f, 12.0f, 3.76f },
 };
 
-void CBattlegroundManager::SetupStrandOfTheAncientBattleMasters()
+const float sotaDefenders[2][4] = {
+	{ 2428.288f, 837.05f, 13.0f, 3.76f },
+	{ 2428.288f, 837.05f, 13.0f, 3.76f },
+};
+
+const float sotaRepop[2][4] = {
+	{ 1600.0f, 58.3f, 11.0f, 2.98f },
+	{ 1600.0f, 58.3f, 11.0f, 2.98f },
+};
+
+const float sotaBoats[2][4] = {
+	{ 2439.4f, 845.38f, 1.0f, 3.76f },
+	{ 2439.4f, 845.38f, 1.0f, 3.76f },
+};
+
+const float sotaStopBoats[2][4] = {
+	{ 1623.34f, 37.0f, 1.0f, 3.9f },
+	{ 1623.34f, 37.0f, 1.0f, 3.9f },
+};
+
+const float sotaStopBoatsPlayer[2][4] = {
+	{ 1624.7f, 42.93f, 12.0f, 2.63f },
+	{ 1624.7f, 42.93f, 12.0f, 2.63f },
+};
+
+const float sotaFlag[4] = { 836.97f, -108.9f, 111.59f, 0.0f };
+
+StrandOfTheAncient::StrandOfTheAncient(MapMgr * mgr, uint32 id, uint32 lgroup, uint32 t) : CBattleground(mgr, id, lgroup, t)
 {
-	ScriptMgr * mgr = &sScriptMgr;
+	int i;
 
-	// Battlemaster Interaction Handler
-	GossipScript * sota = (GossipScript*) new StrandOfTheAncientsBattlemaster;
+	for (i=0; i<2; i++) {
+		m_players[i].clear();
+		m_pendPlayers[i].clear();
+	}
+	m_worldStates.clear();
+	m_pvpData.clear();
+	m_resurrectMap.clear();
 
-	mgr->register_gossip_script(30586, sota);		// Jojindi
-	mgr->register_gossip_script(29234, sota);		// Strand of the Ancients Battlemaster - Wintergrasp
-	mgr->register_gossip_script(30578, sota);		// Bethany Aldire - Stormwind City
-	mgr->register_gossip_script(30581, sota);		// Buhurda - Exodar?
-	mgr->register_gossip_script(30590, sota);		// Godo Cloudcleaver - Thunder Bluff
-	mgr->register_gossip_script(30584, sota);		// Mabrian Fardawn - Silvermoon?
-	mgr->register_gossip_script(30579, sota);		// Marga Bearbrawn - Ironforge
-	mgr->register_gossip_script(30580, sota);		// Nivara Bladedancer - Darnassus
-	mgr->register_gossip_script(30583, sota);		// Sarah Forthright - Undercity
-	mgr->register_gossip_script(30582, sota);		// Ufuda Giant-Slayer - Orgrimmar
-	mgr->register_gossip_script(30587, sota);		// Vinvo Goldgear - Shattrath
+	uint32 mapId = BattlegroundManager.GetMap(BATTLEGROUND_STRAND_OF_THE_ANCIENT);
+	m_boats[0] = SpawnGameObject(20808,
+		mapId,
+		sotaBoats[0][0], sotaBoats[0][1], sotaBoats[0][2], sotaBoats[0][3], 0, 0, 1.0f);
+
+	m_boats[0]->Spawn(mgr);
+
+	m_boats[1] = SpawnGameObject(20808,
+		mapId,
+		sotaStopBoats[0][0], sotaStopBoats[0][1], sotaStopBoats[0][2], sotaStopBoats[0][3], 0, 0, 1.0f);
+
+	m_boats[1]->Spawn(mgr);
+
+	/* create the buffs */
+	for(i = 0; i < 6; ++i)
+		SpawnBuff(i);
 
 }
-*/
+
+StrandOfTheAncient::~StrandOfTheAncient()
+{
+	//ObjectMgr::getSingleton().DeleteTransport(m_boats[0]);
+
+	// gates are always spawned, so mapmgr will clean them up
+	for (uint32 i = 0; i < 6; ++i)
+	{
+		// buffs may not be spawned, so delete them if they're not
+		if(m_buffs[i] && !m_buffs[i]->IsInWorld())
+			delete m_buffs[i];
+	}
+
+	if (m_standFlag && !m_standFlag->IsInWorld())
+		delete m_standFlag;
+
+}
+
 
 void StrandOfTheAncient::HookOnAreaTrigger(Player * plr, uint32 id)
 {
@@ -139,17 +181,17 @@ void StrandOfTheAncient::HookOnAreaTrigger(Player * plr, uint32 id)
 
 void StrandOfTheAncient::HookFlagStand(Player * plr, GameObject * obj)
 {
-
+	sLog.outDebug("SOTA: HookFlagStand()");
 }
 
 void StrandOfTheAncient::HookOnFlagDrop(Player * plr)
 {
-
+	sLog.outDebug("SOTA: HookOnFlagDrop()");
 }
 
 void StrandOfTheAncient::HookFlagDrop(Player * plr, GameObject * obj)
 {
-
+	sLog.outDebug("SOTA: HookFlagDrop()");
 }
 
 void StrandOfTheAncient::HookOnPlayerKill(Player * plr, Player * pVictim)
@@ -174,12 +216,7 @@ void StrandOfTheAncient::OnAddPlayer(Player * plr)
 
 void StrandOfTheAncient::OnRemovePlayer(Player * plr)
 {
-	/* drop the flag if we have it */
-	if(m_flagHolders[plr->GetTeam()] == plr->GetLowGUID())
-		HookOnFlagDrop(plr);
-
 	plr->RemoveAura(BG_PREPARATION);
-
 	sota_players.remove(plr);
 }
 
@@ -192,19 +229,13 @@ LocationVector StrandOfTheAncient::GetStartingCoords(uint32 team)
 void StrandOfTheAncient::HookOnPlayerDeath(Player * plr)
 {
 	plr->m_bgScore.Deaths++;
-
-	/* do we have the flag? */
-	if(m_flagHolders[plr->GetTeam()] == plr->GetLowGUID())
-		HookOnFlagDrop(plr);
-
 	UpdatePvPData();
 }
 
 void StrandOfTheAncient::HookOnMount(Player * plr)
 {
-	/* do we have the flag? */
-	if(m_flagHolders[plr->GetTeam()] == plr->GetLowGUID())
-		HookOnFlagDrop(plr);
+	/* Denied! */
+	plr->RemoveAllAuraType(SPELL_AURA_MOUNTED);
 }
 
 bool StrandOfTheAncient::HookHandleRepop(Player * plr)
@@ -218,9 +249,72 @@ bool StrandOfTheAncient::HookHandleRepop(Player * plr)
 	return true;
 }
 
+void StrandOfTheAncient::SpawnBuff(uint32 x)
+{
+    switch(x)
+	{
+	case 0:
+		m_buffs[x] = SpawnGameObject(179871, 489, 1449.9296875f, 1470.70971679688f, 342.634552001953f, -1.64060950279236f, 0, 114, 1);
+		m_buffs[x]->SetFloatValue(GAMEOBJECT_PARENTROTATION_02,0.73135370016098f);
+		m_buffs[x]->SetFloatValue(GAMEOBJECT_PARENTROTATION_03,-0.681998312473297f);
+		m_buffs[x]->SetByte(GAMEOBJECT_BYTES_1, 0, 1);
+		m_buffs[x]->SetByte(GAMEOBJECT_BYTES_1, 1, 6);
+		m_buffs[x]->SetByte(GAMEOBJECT_BYTES_1, 3, 100);
+		break;
+	case 1:
+		m_buffs[x] = SpawnGameObject(179899, 489, 1005.17071533203f, 1447.94567871094f, 335.903228759766f, 1.64060950279236f, 0, 114, 1);
+		m_buffs[x]->SetFloatValue(GAMEOBJECT_PARENTROTATION_02,0.73135370016098f);
+		m_buffs[x]->SetFloatValue(GAMEOBJECT_PARENTROTATION_03,0.681998372077942f);
+		m_buffs[x]->SetByte(GAMEOBJECT_BYTES_1, 0, 1);
+		m_buffs[x]->SetByte(GAMEOBJECT_BYTES_1, 1, 6);
+		m_buffs[x]->SetByte(GAMEOBJECT_BYTES_1, 3, 100);
+		break;
+	case 2:
+		m_buffs[x] = SpawnGameObject(179904, 489, 1317.50573730469f, 1550.85070800781f, 313.234375f, -0.26179963350296f, 0, 114, 1);
+		m_buffs[x]->SetFloatValue(GAMEOBJECT_PARENTROTATION_02,0.130526319146156f);
+		m_buffs[x]->SetFloatValue(GAMEOBJECT_PARENTROTATION_03,-0.991444826126099f);
+		m_buffs[x]->SetByte(GAMEOBJECT_BYTES_1, 0, 1);
+		m_buffs[x]->SetByte(GAMEOBJECT_BYTES_1, 1, 6);
+		m_buffs[x]->SetByte(GAMEOBJECT_BYTES_1, 3, 100);
+		break;
+	case 3:
+		m_buffs[x] = SpawnGameObject(179906, 489, 1110.45129394531f, 1353.65563964844f, 316.518096923828f, -0.68067866563797f, 0, 114, 1);
+		m_buffs[x]->SetFloatValue(GAMEOBJECT_PARENTROTATION_02,0.333806991577148f);
+		m_buffs[x]->SetFloatValue(GAMEOBJECT_PARENTROTATION_03,-0.94264143705368f);
+		m_buffs[x]->SetByte(GAMEOBJECT_BYTES_1, 0, 1);
+		m_buffs[x]->SetByte(GAMEOBJECT_BYTES_1, 1, 6);
+		m_buffs[x]->SetByte(GAMEOBJECT_BYTES_1, 3, 100);
+		break;
+	case 4:
+		m_buffs[x] = SpawnGameObject(179905, 489, 1320.09375f, 1378.78967285156f, 314.753234863281f, 1.18682384490967f, 0, 114, 1);
+		m_buffs[x]->SetFloatValue(GAMEOBJECT_PARENTROTATION_02,0.559192895889282f);
+		m_buffs[x]->SetFloatValue(GAMEOBJECT_PARENTROTATION_03,0.829037606716156f);
+		m_buffs[x]->SetByte(GAMEOBJECT_BYTES_1, 0, 1);
+		m_buffs[x]->SetByte(GAMEOBJECT_BYTES_1, 1, 6);
+		m_buffs[x]->SetByte(GAMEOBJECT_BYTES_1, 3, 100);
+		break;
+	case 5:
+		m_buffs[x] = SpawnGameObject(179907, 489, 1139.68774414063f, 1560.28771972656f, 306.843170166016f, -2.4434609413147f, 0, 114, 1);
+		m_buffs[x]->SetFloatValue(GAMEOBJECT_PARENTROTATION_02,0.939692616462708f);
+		m_buffs[x]->SetFloatValue(GAMEOBJECT_PARENTROTATION_03,-0.342020124197006f);
+		m_buffs[x]->SetByte(GAMEOBJECT_BYTES_1, 0, 1);
+		m_buffs[x]->SetByte(GAMEOBJECT_BYTES_1, 1, 6);
+		m_buffs[x]->SetByte(GAMEOBJECT_BYTES_1, 3, 100);
+		break;
+	}
+}
+
 void StrandOfTheAncient::OnCreate()
 {
+	sLog.outDebug("OnCreate: SOTA Battleground\n");
 
+	/* Flag */
+	m_standFlag = m_mapMgr->CreateGameObject(184141);
+	m_standFlag->CreateFromProto( 184141, m_mapMgr->GetMapId(), sotaFlag[0], sotaFlag[1], sotaFlag[2], sotaFlag[3] );
+	m_standFlag->SetFloatValue( GAMEOBJECT_PARENTROTATION_02, 0.662620f );
+	m_standFlag->SetFloatValue( GAMEOBJECT_PARENTROTATION_03, -0.748956f );
+	m_standFlag->SetFloatValue( OBJECT_FIELD_SCALE_X, 2.5f );
+	m_standFlag->PushToWorld( m_mapMgr );
 }
 
 void StrandOfTheAncient::OnStart()
