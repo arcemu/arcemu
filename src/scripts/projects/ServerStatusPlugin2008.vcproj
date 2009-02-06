@@ -220,7 +220,7 @@
 				OmitFramePointers="true"
 				EnableFiberSafeOptimizations="true"
 				WholeProgramOptimization="true"
-				AdditionalIncludeDirectories="..\..\arcemu-shared;..\..\arcemu-world;..\..\..\dep\include;..\..\..\dep\src"
+				AdditionalIncludeDirectories="..\..\..\extras\arcemu-windows-libraries\VC\include;..\..\arcemu-shared;..\..\arcemu-world;..\..\..\dep\include;..\..\..\dep\src"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;SCRIPTLIB"
 				StringPooling="true"
 				ExceptionHandling="2"
