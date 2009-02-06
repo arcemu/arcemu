@@ -101,6 +101,18 @@ void Socket::_OnConnect()
 	setsockopt(m_fd,IPPROTO_TCP,TCP_NODELAY,(char*)&optval,sizeof(optval));
 
 #ifdef CONFIG_USE_IOCP
+
+	// test
+	struct linger {
+		u_short l_onoff;
+		u_short l_linger;
+	};
+	linger m_sLinger;
+	m_sLinger.l_onoff=1;
+	m_sLinger.l_linger=0;
+	setsockopt(m_fd,SOL_SOCKET,SO_LINGER,(const char*)&m_sLinger,sizeof(linger)); // immediately!
+
+
 	m_deleted = false;
 	sSocketGarbageCollector.QueueSocket(this); 
 #else
@@ -149,6 +161,15 @@ string Socket::GetRemoteIP()
 
 void Socket::Disconnect(bool no_garbageprocess)
 {
+#ifdef CONFIG_USE_IOCP // i know this craps:D ,just for some reasons.
+	//printf("rb%u s:%d\n",readBuffer.GetSize(),m_fd);
+	readBuffer.Remove(readBuffer.GetSize());
+	writeBuffer.Remove(writeBuffer.GetSize());
+	m_readEvent.Reset(SOCKET_IO_EVENT_READ_COMPLETE);
+	m_readEvent.Unmark();
+	m_writeEvent.Reset(SOCKET_IO_EVENT_WRITE_END);
+	m_writeEvent.Unmark();
+#endif
 	// remove from mgr
 	if ( m_connected ) {
 		OnDisconnect(); // virtual disconnect exec immediately!

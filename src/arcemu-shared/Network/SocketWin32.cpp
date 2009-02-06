@@ -10,12 +10,13 @@
 #include "Network.h"
 #ifdef CONFIG_USE_IOCP
 
-void Socket::WriteCallback()
+void Socket::WriteCallback(uint32 len)
 {
-
-	if(m_deleted) return;
-
 	m_writeMutex.Acquire();
+	if(m_deleted) {
+		m_writeMutex.Release();
+		return;
+	}
 
 	DWORD w_length = 0;
 	DWORD flags = 0;
@@ -35,6 +36,8 @@ void Socket::WriteCallback()
 			return;
 		}
 
+		total_send_bytes +=len;
+
 		m_writeEvent.Reset(SOCKET_IO_EVENT_WRITE_END);
 		int r = WSASend(m_fd, &buf, 1, &w_length, flags, &m_writeEvent.m_overlap, 0);
 		if(r == SOCKET_ERROR)
@@ -52,15 +55,17 @@ void Socket::WriteCallback()
 		// Write operation is completed.
 		DecSendLock();
 	}
+
 	m_writeMutex.Release();
 }
 
 void Socket::SetupReadEvent(uint32 len)
 {
-
-	if(m_deleted) return;
-
 	m_readMutex.Acquire();
+	if(m_deleted) {
+		m_readMutex.Release();
+		return;
+	}
 
 	DWORD r_length = 0;
 	DWORD flags = 0;
@@ -75,11 +80,7 @@ void Socket::SetupReadEvent(uint32 len)
 		return;
 	}
 
-	if (len>0) { // cebernic: correct packet received.
-		readBuffer.IncrementWritten(len);
-		OnRead();
-		readBuffer.Remove(len);
-	}
+	total_read_bytes +=len;
 
 	m_readEvent.Reset(SOCKET_IO_EVENT_READ_COMPLETE);
 	if(WSARecv(m_fd, &buf, 1, &r_length, &flags, &m_readEvent.m_overlap, 0) == SOCKET_ERROR)
@@ -101,8 +102,7 @@ void Socket::ReadCallback(uint32 len)
 
 void Socket::AssignToCompletionPort()
 {
-	/*HANDLE h = */CreateIoCompletionPort((HANDLE)m_fd, m_completionPort, (ULONG_PTR)this, 0);
-	//__asm int 3;
+	CreateIoCompletionPort((HANDLE)m_fd, m_completionPort, (ULONG_PTR)this, 0);
 }
 
 void Socket::CompletionPortIOComplete()
@@ -114,7 +114,7 @@ void Socket::CompletionPortIOComplete()
 void Socket::BurstPush()
 {
 	if(AcquireSendLock()){
-		WriteCallback();
+		WriteCallback(0);
 	}
 }
 

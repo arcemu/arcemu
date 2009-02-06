@@ -34,6 +34,8 @@ public:
 		socketLock.Release();
 	}
 
+	ARCEMU_INLINE uint32 GetSize()	{		return _sockets.size();	}
+
 	void RemoveSocket(Socket * s)
 	{
 		if ( s==NULL ) return;

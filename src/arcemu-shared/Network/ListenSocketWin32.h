@@ -5,6 +5,7 @@
  * ListenSocket<T>: Creates a socket listener on specified address and port,
  *				  requires Update() to be called every loop.
  *
+ * Modded by Cebernic 2009
  */
 
 #ifndef LISTEN_SOCKET_WIN32_H
@@ -14,7 +15,8 @@
 
 #include "../Threading/ThreadPool.h"
 
-#define MAX_CONNECTOR_ON_LISTENSOCKET 2000
+#define MAX_SESSION_ON_DETECTING 6000
+#define MAX_DROPPING_ON_HOLD 15
 
 template<class T>
 class SERVER_DECL ListenSocket : public ThreadBase
@@ -26,7 +28,9 @@ public:
 		m_socket = WSASocket(AF_INET, SOCK_STREAM, 0, NULL, 0, WSA_FLAG_OVERLAPPED);
 		SocketOps::ReuseAddr(m_socket);
 		SocketOps::Blocking(m_socket);
-		SocketOps::SetTimeout(m_socket, 60);
+
+	
+		ZeroMemory((char *)&m_address, sizeof(m_address));
 
 		m_address.sin_family = AF_INET;
 		m_address.sin_port = ntohs((u_short)Port);
@@ -44,11 +48,12 @@ public:
 		int ret = bind(m_socket, (const sockaddr*)&m_address, sizeof(m_address));
 		if(ret != 0)
 		{
+			closesocket(m_socket);
 			printf("Bind unsuccessful on port %u.\n", Port);
 			return;
 		}
 
-		ret = listen(m_socket, 5);
+		ret = listen(m_socket, SOMAXCONN);
 		if(ret != 0) 
 		{
 			printf("Unable to listen on port %u.\n", Port);
@@ -56,8 +61,8 @@ public:
 		}
 
 		m_opened = true;
-		len = sizeof(sockaddr_in);
 		m_cp = sSocketMgr.GetCompletionPort();
+		len = sizeof(sockaddr_in);
 	}
 
 	~ListenSocket()
@@ -68,22 +73,20 @@ public:
 	bool run()
 	{
 		closed = false;
+
 		while(m_opened)
 		{
-			Sleep(0);
+			Sleep(1); // for ID generation.
+			if( sSocketMgr.GetSize() > MAX_SESSION_ON_DETECTING) {
+				if ( sSocketGarbageCollector.GetSocketSize() > MAX_DROPPING_ON_HOLD ){
+					printf("\nWarning,seems the server was under attacking!!\n\n");
+					Sleep(50);
+					continue;
+				}
+			}
 
-			// cebernic: this was temporary.
-			// to be a fast way to comparing hashmap with ip storaging from GarbageCollector (but ipfaker?).
-			// in that way,new incoming connection request will be dropped for huge connections from bot.
-			// with flooding ur port by bot,i think CC firewall required currently:P
-			// In Linux,firewall was bulit into the core.
-			if(sSocketGarbageCollector.GetSocketSize() > MAX_CONNECTOR_ON_LISTENSOCKET) 
-				continue;
-
-			aSocket = accept(m_socket, (sockaddr*)&m_tempAddress, (socklen_t*)&len);
+			aSocket = WSAAccept(m_socket, (sockaddr*)&m_tempAddress, (socklen_t*)&len,NULL,NULL);
 			if(aSocket == INVALID_SOCKET){
-				//for reuse
-				//SocketOps::CloseSocket(aSocket);
 				continue;		// shouldn't happen, we are blocking.
 			}
 
