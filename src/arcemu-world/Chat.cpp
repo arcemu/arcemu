@@ -370,6 +370,7 @@ void CommandTableStorage::Init()
 		{ "export",       'o', &ChatHandler::HandleGOExport,       "Exports the current GO selected",          NULL, 0, 0, 0 },
 		{ "move",         'g', &ChatHandler::HandleGOMove,         "Moves gameobject to player xyz",           NULL, 0, 0, 0 },
 		{ "rotate",       'g', &ChatHandler::HandleGORotate,       "<Axis> <Value> - Rotates the object. <Axis> x,y, Default o.",             NULL, 0, 0, 0 },
+		{ "sdid",		  'g', &ChatHandler::HandleSpawnByDisplayId, "Spawns a generic game object with the specified display id. Clear your client cache after using this!", NULL, 0, 0, 0 },
 		{ NULL,           '0', NULL,                               "",                                         NULL, 0, 0, 0 }
 	};
 	dupe_command_table(GameObjectCommandTable, _GameObjectCommandTable);
@@ -622,6 +623,7 @@ void CommandTableStorage::Init()
 
 	static ChatCommand instanceCommandTable[] =
 	{
+		{ "create",   'z', &ChatHandler::HandleCreateInstanceCommand,    "Generically instances a map that requires instancing, mapid x y z",		      NULL, 0, 0, 0 },
 		{ "reset",    'z', &ChatHandler::HandleResetInstanceCommand,     "Removes instance ID x from target player.",                         NULL, 0, 0, 0 },
 		{ "resetall", 'm', &ChatHandler::HandleResetAllInstancesCommand, "Removes all instance IDs from target player.",                      NULL, 0, 0, 0 },
 		{ "shutdown", 'z', &ChatHandler::HandleShutdownInstanceCommand,  "Shutdown instance with ID x (default is current instance).",        NULL, 0, 0, 0 },
@@ -645,6 +647,7 @@ void CommandTableStorage::Init()
 	{
 		{ "commands",        '0', &ChatHandler::HandleCommandsCommand,                      "Shows Commands",                                                                                                                          NULL,                     0, 0, 0 },
 		{ "help",            '0', &ChatHandler::HandleHelpCommand,                          "Shows help for command",                                                                                                                  NULL,                     0, 0, 0 },
+		{ "calcdist",        '0', &ChatHandler::HandleSimpleDistanceCommand,                "Display the distance between your current position and the specified point x y z",                                                           NULL,                     0, 0, 0 },
 		{ "announce",        'u', &ChatHandler::HandleAnnounceCommand,                      "Sends Msg To All",                                                                                                                        NULL,                     0, 0, 0 },
 		{ "wannounce",       'u', &ChatHandler::HandleWAnnounceCommand,                     "Sends Widescreen Msg To All",                                                                                                             NULL,                     0, 0, 0 },
 		{ "appear",          'v', &ChatHandler::HandleAppearCommand,                        "Teleports to x's position.",                                                                                                              NULL,                     0, 0, 0 },

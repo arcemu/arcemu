@@ -504,6 +504,14 @@ public:
 		return _storage.MakeIterator();
 	}
 
+	bool SetEntry(uint32 Entry, T * pT)
+	{
+		//T * pT = _storage.LookupEntryAllocate(Entry);
+		//for (int i = 0; i < sizeof(T); i++)
+		//	pT[i] = (&nT)[i];
+		return _storage.SetEntry(Entry, pT);
+	}
+
 	/** Calls the storage container lookup function.
 	 */
 	T * LookupEntry(uint32 Entry)

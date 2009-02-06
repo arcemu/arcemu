@@ -222,6 +222,7 @@ protected:
 	bool HandleGMListCommand(const char* args, WorldSession *m_session);
 	bool HandleGmLogCommentCommand( const char *args , WorldSession *m_session);
 	bool HandleRatingsCommand( const char *args , WorldSession *m_session );
+	bool HandleSimpleDistanceCommand( const char *args , WorldSession *m_session );
 
 	// Level 1 commands
 	bool CmdSetValueField(WorldSession *m_session, uint32 field, uint32 fieldmax, const char *fieldname, const char* args);
@@ -380,7 +381,8 @@ protected:
     bool HandlePlayerInfo(const char* args, WorldSession * m_session);
 	bool HandleCreatureSpawnCommand(const char *args, WorldSession *m_session);
 	bool HandleCreatureRespawnCommand(const char *args, WorldSession *m_session);
-    
+	bool HandleSpawnByDisplayId(const char * args, WorldSession * m_session);
+
 	//Ban
 	bool HandleBanCharacterCommand(const char* args, WorldSession *m_session);
 	bool HandleBanAllCommand(const char* args, WorldSession *m_session);
@@ -392,6 +394,7 @@ protected:
 	bool HandleGetBattlegroundQueueCommand(const char *args, WorldSession *m_session);
 
 	//Instance
+	bool HandleCreateInstanceCommand(const char * args, WorldSession * m_session);    
 	bool HandleResetAllInstancesCommand(const char* args, WorldSession *m_session);
 	bool HandleResetInstanceCommand(const char* args, WorldSession *m_session);
 	bool HandleShutdownInstanceCommand(const char* args, WorldSession *m_session);

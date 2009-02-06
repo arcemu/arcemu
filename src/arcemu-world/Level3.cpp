@@ -40,6 +40,43 @@ int32 GetSpellIDFromLink(const char* spelllink)
 	return atol(ptr+8); // spell id is just past "|Hspell:" (8 bytes)
 }
 
+bool ChatHandler::HandleSpawnByDisplayId(const char * args, WorldSession * m_session)
+{
+	uint32 displayId, entry = 1000000 + RandomUInt(1000000);
+	if(sscanf(args, "%u", &displayId) != 1)
+		return false;
+
+	while (GameObjectNameStorage.LookupEntry(entry))
+		entry = 1000000 + RandomUInt(1000000);
+
+	GameObjectInfo *goinfo = new GameObjectInfo();
+	goinfo->DisplayID = displayId;
+	goinfo->Name = "Magic Spawn";
+	goinfo->sound1 = goinfo->sound2 = goinfo->sound3 = goinfo->sound4 =
+		goinfo->sound5 = goinfo->sound6 = goinfo->sound7 = goinfo->sound8 =
+		goinfo->sound9 = goinfo->SpellFocus = goinfo->Unknown1 = goinfo->Unknown2 =
+		goinfo->Unknown3 = goinfo->Unknown4 = goinfo->Unknown5 = goinfo->Unknown6 =
+		goinfo->Unknown7 = goinfo->Unknown8 = goinfo->Unknown9 = goinfo->Unknown10 =
+		goinfo->Unknown11 = goinfo->Unknown12 = goinfo->Unknown13 =
+		goinfo->Unknown14 = 0;
+	goinfo->Type = 21;
+	GameObjectNameStorage.SetEntry(entry, goinfo);
+
+	Player *plr = getSelectedChar(m_session, true);
+	if(!plr)
+	{
+		plr = m_session->GetPlayer();
+		SystemMessage(m_session, "Auto-targeting self.");
+	}
+	if(!plr)
+		return false;
+
+	plr->GetMapMgr()->CreateAndSpawnGameObject(entry, plr->GetPositionX(), plr->GetPositionY(),
+		plr->GetPositionZ(), plr->GetOrientation(), 1);
+
+	return true;
+}
+
 bool ChatHandler::HandleWorldPortCommand(const char* args, WorldSession *m_session)
 {
 	float x, y, z;

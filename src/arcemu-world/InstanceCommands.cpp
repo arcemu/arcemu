@@ -141,9 +141,12 @@ bool ChatHandler::HandleResetInstanceCommand(const char* args, WorldSession *m_s
 
 bool ChatHandler::HandleShutdownInstanceCommand(const char* args, WorldSession *m_session)
 {
-	//RedSystemMessage(m_session, "Command not implemented yet.");
-	//return true;
+	RedSystemMessage(m_session, "Command disabled, broke.");
+	return true;
 
+	// sInstanceMgr.GetInstanceByIds, always returns null
+
+	/*
 	uint32 instanceId = (args ? atoi(args) : 0);
 	if(instanceId == 0)
 		return false;
@@ -163,15 +166,16 @@ bool ChatHandler::HandleShutdownInstanceCommand(const char* args, WorldSession *
 
 	SystemMessage(m_session, "Attempting to shutdown instance with id %u...", instanceId);
 
-	//Isn't there a better way?
-	instance->m_mapMgr->InstanceShutdown();
+	sInstanceMgr.SafeDeleteInstance(instance->m_mapMgr);
 	instance->m_mapMgr = NULL;
 	delete instance->m_mapMgr;
 
 	SystemMessage(m_session, "...done");
 
 	sGMLog.writefromsession(m_session, "used shutdown instance command on instance %u,", instanceId);
+
 	return true;
+	*/
 }
 
 //bool ChatHandler::HandleDeleteInstanceCommand(const char* args, WorldSession *m_session)
@@ -183,6 +187,12 @@ bool ChatHandler::HandleShutdownInstanceCommand(const char* args, WorldSession *
 
 bool ChatHandler::HandleGetInstanceInfoCommand(const char* args, WorldSession *m_session)
 {
+	RedSystemMessage(m_session, "Command disabled, broke.");
+	return true;
+
+	// sInstanceMgr.GetInstanceByIds, always returns null
+
+	/*
 	Player *plr = m_session->GetPlayer();
 	if(plr == NULL)
 		return false;
@@ -264,6 +274,37 @@ bool ChatHandler::HandleGetInstanceInfoCommand(const char* args, WorldSession *m
 	}
 	SendMultilineMessage(m_session, ss.str().c_str());
 	return true;
+	*/
+}
+
+bool ChatHandler::HandleCreateInstanceCommand(const char * args, WorldSession * m_session)
+{
+	Player *plr = getSelectedChar(m_session, true);
+	float x, y, z;
+	uint32 mapid;
+	if(sscanf(args, "%u %f %f %f", (unsigned int*)&mapid, &x, &y, &z) != 4)
+		return false;
+
+	if(!plr)
+	{
+		plr = m_session->GetPlayer();
+		SystemMessage(m_session, "Auto-targeting self.");
+	}
+	if(!plr) return false;
+
+	/* Create Map Manager */
+	MapMgr * mgr = sInstanceMgr.CreateInstance(INSTANCE_NONRAID, mapid);
+	if(mgr == NULL)
+	{
+		Log.Error("CreateInstanceGMCommand", "CreateInstance() call failed for map %u", mapid);
+		return NULL;      // Shouldn't happen
+	}
+	Log.Notice("CreateInstanceGMCommand", "GM created instance for map %u", mapid);
+
+	LocationVector vec(x, y, z);
+	m_session->GetPlayer()->SafeTeleport(mgr, vec);
+	return true;
+
 }
 
 bool ChatHandler::HandleExitInstanceCommand(const char* args, WorldSession* m_session)

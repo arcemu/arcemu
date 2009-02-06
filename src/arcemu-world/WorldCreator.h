@@ -178,6 +178,12 @@ public:
 	void BuildSavedInstancesForPlayer(Player * plr);
 	MapMgr * CreateBattlegroundInstance(uint32 mapid);
 
+	// Create an instance for Level 3 gm command
+	MapMgr * CreateInstance(uint32 instanceType, uint32 mapid);
+
+	// A (should be) safe way for scripts to delete an active instance
+	void SafeDeleteInstance(MapMgr * mgr);
+
 	// this only frees the instance pointer, not the mapmgr itself
 	void DeleteBattlegroundInstance(uint32 mapid, uint32 instanceid);
 	MapMgr* GetMapMgr(uint32 mapId);

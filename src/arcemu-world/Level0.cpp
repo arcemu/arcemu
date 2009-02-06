@@ -443,6 +443,34 @@ bool ChatHandler::HandleRatingsCommand( const char *args , WorldSession *m_sessi
 	return true;
 }
 
+float CalculateDistance(float x1, float y1, float z1, float x2, float y2, float z2)
+{
+	float dx = x1 - x2;
+	float dy = y1 - y2;
+	float dz = z1 - z2;
+	return sqrt(dx*dx + dy*dy + dz*dz);
+}
+
+bool ChatHandler::HandleSimpleDistanceCommand( const char *args , WorldSession *m_session )
+{
+	float toX, toY, toZ;
+	if(sscanf(args, "%f %f %f", &toX, &toY, &toZ) != 3)
+		return false;
+
+	if(toX >= _maxX || toX <= _minX || toY <= _minY || toY >= _maxY)
+		return false;
+
+	float distance = CalculateDistance(
+		m_session->GetPlayer()->GetPositionX(),
+		m_session->GetPlayer()->GetPositionY(),
+		m_session->GetPlayer()->GetPositionZ(),
+		toX, toY, toZ);
+
+	m_session->SystemMessage("Your distance to location (%f, %f, %f) is %0.2f meters.",
+		toX, toY, toZ, distance);
+
+	return true;
+}
 
 
 

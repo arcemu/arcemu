@@ -51,7 +51,10 @@ Strand of the Ancients
 	836.97, -108.9, 111.59
 
 * Defenders starting location
-	...
+	1209.7, -65.16, 70.1
+
+// Create internal objects
+// GameObjectNameStorage.SetEntry(entry, go);
 
 ************************************************************************/
 
@@ -294,12 +297,15 @@ void StrandOfTheAncient::OnCreate()
 	sLog.outDebug("OnCreate: SOTA Battleground\n");
 
 	/* Flag */
+	m_mapMgr->CreateAndSpawnGameObject(184141, sotaFlag[0], sotaFlag[1], sotaFlag[2], sotaFlag[3], 2.5f);
+	/*
 	m_standFlag = m_mapMgr->CreateGameObject(184141);
 	m_standFlag->CreateFromProto( 184141, m_mapMgr->GetMapId(), sotaFlag[0], sotaFlag[1], sotaFlag[2], sotaFlag[3] );
 	m_standFlag->SetFloatValue( GAMEOBJECT_PARENTROTATION_02, 0.662620f );
 	m_standFlag->SetFloatValue( GAMEOBJECT_PARENTROTATION_03, -0.748956f );
 	m_standFlag->SetFloatValue( OBJECT_FIELD_SCALE_X, 2.5f );
 	m_standFlag->PushToWorld( m_mapMgr );
+	*/
 }
 
 void StrandOfTheAncient::OnStart()

@@ -106,6 +106,7 @@ public:
 	uint32 m_GOHighGuid;
 	GameObject ** m_GOStorage;
 	GameObject * CreateGameObject(uint32 entry);
+	GameObject * CreateAndSpawnGameObject(uint32 entryID, float x, float y, float z, float o, float scale);
 
 	ARCEMU_INLINE uint32 GenerateGameobjectGuid() { return ++m_GOHighGuid; }
 	ARCEMU_INLINE GameObject * GetGameObject(uint32 guid)

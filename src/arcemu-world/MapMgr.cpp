@@ -2058,6 +2058,61 @@ Creature * MapMgr::CreateCreature(uint32 entry)
 	return new Creature(newguid);
 }
 
+// Spawns the object too, without which you can not interact with the object
+GameObject * MapMgr::CreateAndSpawnGameObject(uint32 entryID, float x, float y, float z, float o, float scale)
+{
+	GameObjectInfo* goi = GameObjectNameStorage.LookupEntry(entryID);
+	if(!goi)
+	{
+		sLog.outDebug("Error looking up entry in CreateAndSpawnGameObject");
+		return NULL;
+	}
+
+	sLog.outDebug("CreateAndSpawnGameObject: By Entry '%u'", entryID);
+
+	GameObject *go = CreateGameObject(entryID);
+
+	//Player *chr = m_session->GetPlayer();
+	uint32 mapid = GetMapId();
+	// Setup game object
+	go->SetInstanceID(GetInstanceID());
+	go->CreateFromProto(entryID,mapid,x,y,z,o);
+	go->SetFloatValue(OBJECT_FIELD_SCALE_X, scale);
+	go->InitAI();
+	go->PushToWorld(this);
+
+	// Create spawn instance
+	GOSpawn * gs = new GOSpawn;
+	gs->entry = go->GetEntry();
+	gs->facing = go->GetOrientation();
+	gs->faction = go->GetUInt32Value(GAMEOBJECT_FACTION);
+	gs->flags = go->GetUInt32Value(GAMEOBJECT_FLAGS);
+	gs->id = objmgr.GenerateGameObjectSpawnID();
+	gs->o = go->GetFloatValue(GAMEOBJECT_ROTATION);
+	gs->o1 = go->GetFloatValue(GAMEOBJECT_PARENTROTATION);
+	gs->o2 = go->GetFloatValue(GAMEOBJECT_PARENTROTATION_02);
+	gs->o3 = go->GetFloatValue(GAMEOBJECT_PARENTROTATION_03);
+	gs->scale = go->GetFloatValue(OBJECT_FIELD_SCALE_X);
+	gs->x = go->GetPositionX();
+	gs->y = go->GetPositionY();
+	gs->z = go->GetPositionZ();
+	gs->state = go->GetByte(GAMEOBJECT_BYTES_1, 0);
+	//gs->stateNpcLink = 0;
+
+	uint32 cx = GetPosX(x);
+	uint32 cy = GetPosY(y);
+
+	GetBaseMap()->GetSpawnsListAndCreate(cx,cy)->GOSpawns.push_back(gs);
+	go->m_spawn = gs;
+
+	MapCell * mCell = GetCell( cx, cy );
+
+	if( mCell != NULL )
+		mCell->SetLoaded();
+
+	return go;
+}
+
 GameObject * MapMgr::CreateGameObject(uint32 entry)
 {
 	if( _reusable_guids_gameobject.size() > GO_GUID_RECYCLE_INTERVAL )

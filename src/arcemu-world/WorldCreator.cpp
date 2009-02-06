@@ -1119,13 +1119,64 @@ MapMgr * InstanceMgr::CreateBattlegroundInstance(uint32 mapid)
 	return ret;
 }
 
+MapMgr * InstanceMgr::CreateInstance(uint32 instanceType, uint32 mapid)
+{
+	// shouldn't happen
+	if( mapid >= NUM_MAPS )
+		return NULL;
+
+	if(!m_maps[mapid])
+	{
+		_CreateMap(mapid);
+		if(!m_maps[mapid])
+			return NULL;
+	}
+
+	MapMgr * ret = new MapMgr(m_maps[mapid],mapid,GenerateInstanceID());
+	Instance * pInstance = new Instance();
+	pInstance->m_creation = UNIXTIME;
+	pInstance->m_creatorGroup = 0;
+	pInstance->m_creatorGuid = 0;
+	pInstance->m_difficulty = 0;
+	pInstance->m_expiration = 0;
+	pInstance->m_instanceId = ret->GetInstanceID();
+	pInstance->m_persistent = false;
+	pInstance->m_mapId = mapid;
+	pInstance->m_mapInfo = WorldMapInfoStorage.LookupEntry( mapid );
+	pInstance->m_mapMgr = ret;
+	m_mapLock.Acquire();
+	if( m_instances[mapid] == NULL )
+		m_instances[mapid] = new InstanceMap;
+
+	m_instances[mapid]->insert( make_pair( pInstance->m_instanceId, pInstance ) );
+	m_mapLock.Release();
+	ThreadPool.ExecuteTask(ret);
+	return ret;
+}
+
+// should be safe to do for instances of any non-world maps
+void InstanceMgr::SafeDeleteInstance(MapMgr * mgr)
+{
+	if (!mgr)
+		return;
+
+	uint32 mapId = mgr->GetMapId();
+	uint32 instanceId = mgr->GetInstanceID();
+
+	// Shutdown Instance
+	mgr->TeleportPlayers(); // Get everyone out
+	mgr->InstanceShutdown();
+
+	DeleteBattlegroundInstance( mapId, instanceId );
+}
+
 void InstanceMgr::DeleteBattlegroundInstance(uint32 mapid, uint32 instanceid)
 {
 	m_mapLock.Acquire();
 	InstanceMap::iterator itr = m_instances[mapid]->find( instanceid );
 	if( itr == m_instances[mapid]->end() )
 	{
-		printf("Could not delete battleground instance!\n");
+		sLog.outError("Could not delete battleground instance!\n");
 		m_mapLock.Release();
 		return;
 	}
