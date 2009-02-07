@@ -797,7 +797,7 @@ void WorldSession::HandleItemQuerySingleOpcode( WorldPacket & recv_data )
 {
 	CHECK_PACKET_SIZE(recv_data, 4);
  
-	int i;
+	uint32 i;
 	uint32 itemid=0;
 	recv_data >> itemid;
 
@@ -851,7 +851,7 @@ void WorldSession::HandleItemQuerySingleOpcode( WorldPacket & recv_data )
 	data << itemProto->MaxCount;
 	data << itemProto->ContainerSlots;
 	data << itemProto->itemstatscount;
-	for(i = 0; i < itemProto->itemstatscount; i++)
+	for( i = 0; i < itemProto->itemstatscount; i++ )
 	{
 		data << itemProto->Stats[i].Type;
 		data << itemProto->Stats[i].Value;

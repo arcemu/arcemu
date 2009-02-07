@@ -743,7 +743,7 @@ void WorldSession::HandleWhoOpcode( WorldPacket & recv_data )
 		data << plr->m_uint32Values[UNIT_FIELD_LEVEL];
 		data << uint32(plr->getClass());
 		data << uint32(plr->getRace());
-		data << uint8(0);					// new string added in 2.4.0
+		data << plr->getGender();
 		data << uint32(plr->GetZoneId());
 		++sent_count;
 	}

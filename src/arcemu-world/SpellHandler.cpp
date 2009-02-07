@@ -446,23 +446,19 @@ void WorldSession::HandlePetCastSpell(WorldPacket & recvPacket)
 	else if(flags & TARGET_FLAG_UNIT)
 	{
 		WoWGuid guid;
-//		recvPacket >> flags;		// skip one byte
 		recvPacket >> guid;
 		targets.m_unitTarget = guid.GetOldGuid();
 	}
 	else if(flags & TARGET_FLAG_SOURCE_LOCATION)
 	{
-//		recvPacket >> flags;		// skip one byte
 		recvPacket >> targets.m_srcX >> targets.m_srcY >> targets.m_srcZ;
 	}
 	else if(flags & TARGET_FLAG_DEST_LOCATION)
 	{
-//		recvPacket >> flags;		// skip one byte
 		recvPacket >> targets.m_destX >> targets.m_destY >> targets.m_destZ;
 	}
 	else if (flags & TARGET_FLAG_STRING)
 	{
-//		recvPacket >> flags;		// skip one byte
 		std::string ss;
 		recvPacket >> ss;
 		targets.m_strTarget = ss;

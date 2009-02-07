@@ -3886,7 +3886,7 @@ uint8 Spell::CanCast(bool tolerate)
 					if(target->GetEntry() != 22357)
 						return SPELL_FAILED_BAD_TARGETS;
 				}break;
-				case 37136: // cebernic:��������ռ���
+				case 37136:
 				{
 					if(target->GetEntry() != 21731)
 						return SPELL_FAILED_BAD_TARGETS;
