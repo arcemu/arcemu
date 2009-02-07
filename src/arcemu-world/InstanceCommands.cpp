@@ -133,20 +133,19 @@ bool ChatHandler::HandleResetInstanceCommand(const char* args, WorldSession *m_s
 		return true;
 	}
 
-	//TODO: Reset that instance...^^
-	RedSystemMessage(m_session, "Resetting single non-persistent instances is not available yet.");
+	WorldPacket data(SMSG_INSTANCE_RESET, 4);
+	data << instance->m_mapId;
+	plr->GetSession()->SendPacket(&data);
+	sInstanceMgr.SafeDeleteInstance(instance->m_mapMgr);
+	instance->m_mapMgr = NULL;
+	delete instance->m_mapMgr;
+//	RedSystemMessage(m_session, "Resetting single non-persistent instances is not available yet.");
 	sGMLog.writefromsession(m_session, "used reset instance command on %s, instance %u,", plr->GetName(), instanceId);
 	return true;
 }
 
 bool ChatHandler::HandleShutdownInstanceCommand(const char* args, WorldSession *m_session)
 {
-	RedSystemMessage(m_session, "Command disabled, broke.");
-	return true;
-
-	// sInstanceMgr.GetInstanceByIds, always returns null
-
-	/*
 	uint32 instanceId = (args ? atoi(args) : 0);
 	if(instanceId == 0)
 		return false;
@@ -175,7 +174,6 @@ bool ChatHandler::HandleShutdownInstanceCommand(const char* args, WorldSession *
 	sGMLog.writefromsession(m_session, "used shutdown instance command on instance %u,", instanceId);
 
 	return true;
-	*/
 }
 
 //bool ChatHandler::HandleDeleteInstanceCommand(const char* args, WorldSession *m_session)
@@ -187,12 +185,6 @@ bool ChatHandler::HandleShutdownInstanceCommand(const char* args, WorldSession *
 
 bool ChatHandler::HandleGetInstanceInfoCommand(const char* args, WorldSession *m_session)
 {
-	RedSystemMessage(m_session, "Command disabled, broke.");
-	return true;
-
-	// sInstanceMgr.GetInstanceByIds, always returns null
-
-	/*
 	Player *plr = m_session->GetPlayer();
 	if(plr == NULL)
 		return false;
@@ -236,7 +228,8 @@ bool ChatHandler::HandleGetInstanceInfoCommand(const char* args, WorldSession *m
 		ss << "\n";
 	}
 	ss << "Created: " << MSG_COLOR_CYAN << ConvertTimeStampToDataTime((uint32)instance->m_creation) << "|r\n";
-	ss << "Expires: " << MSG_COLOR_CYAN << ConvertTimeStampToDataTime((uint32)instance->m_expiration) << "|r\n";
+	if(instance->m_expiration != 0)
+		ss << "Expires: " << MSG_COLOR_CYAN << ConvertTimeStampToDataTime((uint32)instance->m_expiration) << "|r\n";
 
 	if(instance->m_mapMgr == NULL)
 	{
@@ -274,7 +267,6 @@ bool ChatHandler::HandleGetInstanceInfoCommand(const char* args, WorldSession *m
 	}
 	SendMultilineMessage(m_session, ss.str().c_str());
 	return true;
-	*/
 }
 
 bool ChatHandler::HandleCreateInstanceCommand(const char * args, WorldSession * m_session)

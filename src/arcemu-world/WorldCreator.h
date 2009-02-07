@@ -195,7 +195,7 @@ public:
 
 	Instance* GetInstanceByIds(uint32 mapid, uint32 instanceId)
 	{
-		if(mapid >= NUM_MAPS)
+		if(mapid > NUM_MAPS)
 			return NULL;
 		if(mapid == NUM_MAPS)
 		{
