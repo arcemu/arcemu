@@ -306,6 +306,7 @@ StrandOfTheAncient::~StrandOfTheAncient()
 		m_endgate = 0;
 	}
 
+	/*
 	for (uint32 i = 0; i < BUFF_COUNT; ++i)
 	{
 		// buffs may not be spawned, so delete them if they're not
@@ -315,6 +316,7 @@ StrandOfTheAncient::~StrandOfTheAncient()
 			m_buffs[i] = 0;
 		}
 	}
+	*/
 
 }
 

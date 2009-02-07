@@ -497,7 +497,10 @@ void Group::RemovePlayer(PlayerInfo * info)
 	--m_MemberCount;
 
 	if( info->m_loggedInPlayer != NULL )
+	{
 		sInstanceMgr.PlayerLeftGroup( this, info->m_loggedInPlayer );
+		info->m_loggedInPlayer->m_bg = NULL;
+	}
 
 	if( pPlayer != NULL )
 	{

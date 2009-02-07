@@ -1513,17 +1513,14 @@ void Spell::cast(bool check)
 			// special case battleground additional actions
 			if(p_caster->m_bg)
 			{
-
 				// SOTA Teleporters
-				if (GetProto() && GetProto()->Id == 54640 &&
+				if (GetProto()->Id == 54640 &&
 					p_caster->m_bg->GetType() == BATTLEGROUND_STRAND_OF_THE_ANCIENT)
 				{
-					// Find the closest transport coordinates to
-					// the platform
+					// Find the closest transport coordinates to the platform
 					StrandOfTheAncient * sota = (StrandOfTheAncient *)p_caster->m_bg;
 					sota->OnPlatformTeleport(p_caster);
 				}
-
 				// warsong gulch & eye of the storm flag pickup check
 				// also includes check for trying to cast stealth/etc while you have the flag
 				switch(GetProto()->Id)
