@@ -1035,20 +1035,20 @@ void Spell::SpellTargetAllRaid( uint32 i, uint32 j )
 	uint32 count = group->GetSubGroupCount();
 
 	// Loop through each raid group.
+	group->Lock();
 	for( uint8 k = 0; k < count; k++ )
 	{
 		SubGroup * subgroup = group->GetSubGroup( k );
 		if( subgroup )
 		{
-			group->Lock();
 			for( GroupMembersSet::iterator itr = subgroup->GetGroupMembersBegin(); itr != subgroup->GetGroupMembersEnd(); ++itr )
 			{
 				if( (*itr)->m_loggedInPlayer && (*itr)->m_loggedInPlayer != m_caster)
 					SafeAddTarget( tmpMap,(*itr)->m_loggedInPlayer->GetGUID() );
 			}
-			group->Unlock();
 		}
 	}
+	group->Unlock();
 }
 
 /// Spell Target Handling for type 57: Targeted Party Member
