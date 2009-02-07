@@ -2349,9 +2349,13 @@ void Player::SaveToDB(bool bNewCharacter /* =false */)
 	<< m_uint32Values[PLAYER_CHOSEN_TITLE]<< ","
 	<< GetUInt64Value(PLAYER_FIELD_KNOWN_TITLES) << ","
 	<< GetUInt64Value(PLAYER_FIELD_KNOWN_TITLES1) << ","
-	<< m_uint32Values[PLAYER_FIELD_COINAGE] << ","
-	<< m_uint32Values[PLAYER_AMMO_ID] << ","
-	<< m_uint32Values[PLAYER_CHARACTER_POINTS2] << ",";
+	<< m_uint32Values[PLAYER_FIELD_COINAGE] << ",";
+
+	if((getClass()==MAGE) || (getClass()==PRIEST) || (getClass()==WARLOCK))
+		ss << (uint32)0 << ","; // make sure ammo slot is 0 for these classes, otherwise it can mess up wand shoot
+	else
+		ss << m_uint32Values[PLAYER_AMMO_ID] << ",";
+	ss << m_uint32Values[PLAYER_CHARACTER_POINTS2] << ",";
 
 	if (m_uint32Values[PLAYER_CHARACTER_POINTS1] > 71 &&  ! GetSession()->HasGMPermissions())
             SetUInt32Value(PLAYER_CHARACTER_POINTS1, 71);
