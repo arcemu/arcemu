@@ -86,9 +86,6 @@ Strand of the Ancients
 * Battles consist of two 10 minute rounds, it appears that
   horde always defend first.
 
-* Vehicles and Guns are probably some customized mount, but stationary and unbound
-  when not mounted. Need the green cursor arrows for mounting these.
-
 * Increase the view distance on map 607 to 500 or 0 (Unlimited).
 
 ************************************************************************/
@@ -161,6 +158,24 @@ const float sotaGateSigils[GATE_COUNT][4] = {
 	{ 1217.8f, 79.532f, 66.58f, 0.0565f },
 };
 
+// Defender transporter platform locations
+const float sotaTransporters[GATE_COUNT][4] = {
+	{ 1394.0444f, 72.586f, 31.0535f, 0.0f },
+	{ 1065.0f, -89.7f, 81.08f, 0.0f },
+	{ 1467.95f, -225.67f, 30.9f, 0.0f },
+	{ 1255.93f, -233.382f, 56.44f, 0.0f },
+	{ 1215.679f, 47.47f, 54.281f, 0.0f },
+};
+
+// Defender transporter destination locations
+const float sotaTransporterDestination[GATE_COUNT][4] = {
+	{ 1388.94f, 103.067f, 34.49f, 5.4571f },
+	{ 1043.69f, -87.95f, 87.12f, 0.003f },
+	{ 1441.0411f, -240.974f, 35.264f, 0.949f },
+	{ 1228.342f, -235.234f, 60.03f, 0.4584f },
+	{ 1193.857f, 69.9f, 58.046f, 5.7245f },
+};
+
 // Two guns per gate, GUN_LEFT and GUN_RIGHT
 const float sotaGunMounts[GATE_COUNT][2][4] = {
 	{ { 1436.429f, 110.05f, 41.407f, 5.4f }, { 1404.9023f, 84.758f, 41.183f, 5.46f } },
@@ -196,6 +211,14 @@ const float sotaStopBoatsPlayer[2][4] = {
 };
 const float sotaDefenderStartingPosition[4] = { 1209.7f, -65.16f, 70.1f, 0.0f };
 
+const float sotaStartingPosition[2][4] = {
+	{ 2445.288f, 849.35f, 9.25f, 3.76f },
+	{ 1209.7f, -65.16f, 70.1f, 0.0f },
+};
+
+
+float CalculateDistance(float x1, float y1, float z1, float x2, float y2, float z2);
+
 StrandOfTheAncient::StrandOfTheAncient(MapMgr * mgr, uint32 id, uint32 lgroup, uint32 t) : CBattleground(mgr, id, lgroup, t)
 {
 	int i;
@@ -207,16 +230,16 @@ StrandOfTheAncient::StrandOfTheAncient(MapMgr * mgr, uint32 id, uint32 lgroup, u
 	m_worldStates.clear();
 	m_pvpData.clear();
 	m_resurrectMap.clear();
-	m_relic = 0;
 
 	uint32 mapId = BattlegroundManager.GetMap(BATTLEGROUND_STRAND_OF_THE_ANCIENT);
 
 	// Boats
 	for (int i = 0; i < 4; i++)
 	{
-		m_boats[i] = SpawnGameObject(20808,
-			mapId,
-			sotaBoats[i][0], sotaBoats[i][1], sotaBoats[i][2], sotaBoats[i][3], 0, 0, 1.0f);
+		//m_boats[i] = SpawnGameObject(20808,
+		//	mapId,
+		m_boats[i] = m_mapMgr->CreateAndSpawnGameObject(20808,
+			sotaBoats[i][0], sotaBoats[i][1], sotaBoats[i][2], sotaBoats[i][3], 1.0f);
 		m_boats[i]->PushToWorld(mgr);
 	}
 
@@ -231,6 +254,9 @@ StrandOfTheAncient::StrandOfTheAncient(MapMgr * mgr, uint32 id, uint32 lgroup, u
 		m_gateSigils[i] = m_mapMgr->CreateAndSpawnGameObject(GateSigilGOIds[i],
 			sotaGateSigils[i][0], sotaGateSigils[i][1], sotaGateSigils[i][2],
 			sotaGateSigils[i][3], 1.0f);
+		m_gateTransporters[i] = m_mapMgr->CreateAndSpawnGameObject(192819,
+			sotaTransporters[i][0], sotaTransporters[i][1], sotaTransporters[i][2],
+			sotaTransporters[i][3], 1.0f);
 	}
 
 	// Spawn door for Chamber of Ancient Relics
@@ -249,16 +275,46 @@ StrandOfTheAncient::~StrandOfTheAncient()
 {
 	//ObjectMgr::getSingleton().DeleteTransport(m_boats[0]);
 
-	// gates are always spawned, so mapmgr will clean them up
+	if (m_relic && !m_relic->IsInWorld())
+	{
+		delete m_relic;
+		m_relic = 0;
+	}
+
+	for (int i = 0; i < GATE_COUNT; i++)
+	{
+		if (m_gates[i] && !m_gates[i]->IsInWorld())
+		{
+			delete m_gates[i];
+			m_gates[i] = 0;
+		}
+		if (m_gateSigils[i] && !m_gateSigils[i]->IsInWorld())
+		{
+			delete m_gateSigils[i];
+			m_gateSigils[i] = 0;
+		}
+		if (m_gateTransporters[i] && !m_gateTransporters[i]->IsInWorld())
+		{
+			delete m_gateTransporters[i];
+			m_gateTransporters[i] = 0;
+		}
+	}
+
+	if (m_endgate && !m_endgate->IsInWorld())
+	{
+		delete m_endgate;
+		m_endgate = 0;
+	}
+
 	for (uint32 i = 0; i < BUFF_COUNT; ++i)
 	{
 		// buffs may not be spawned, so delete them if they're not
 		if(m_buffs[i] && !m_buffs[i]->IsInWorld())
+		{
 			delete m_buffs[i];
+			m_buffs[i] = 0;
+		}
 	}
-
-	//if (m_relic && !m_relic->IsInWorld())
-	//	delete m_relic;
 
 }
 
@@ -280,6 +336,32 @@ void StrandOfTheAncient::HookOnHK(Player * plr)
 	UpdatePvPData();
 }
 
+void StrandOfTheAncient::OnPlatformTeleport(Player *plr)
+{
+	LocationVector dest;
+	uint32 closest_platform = 0;
+
+	for (uint32 i = 0; i < GATE_COUNT; i++)
+	{
+		float distance = CalculateDistance(plr->GetPositionX(),
+			plr->GetPositionY(), plr->GetPositionZ(),
+			sotaTransporterDestination[i][0],
+			sotaTransporterDestination[i][1],
+			sotaTransporterDestination[i][2]);
+		if (distance < 75)
+		{
+			closest_platform = i;
+			break;
+		}
+	}
+	dest.ChangeCoords(sotaTransporterDestination[closest_platform][0],
+		sotaTransporterDestination[closest_platform][1],
+		sotaTransporterDestination[closest_platform][2],
+		sotaTransporterDestination[closest_platform][3]);
+
+	plr->SafeTeleport(plr->GetMapId(), plr->GetInstanceID(), dest);
+}
+
 void StrandOfTheAncient::OnAddPlayer(Player * plr)
 {
 	if(!m_started)
@@ -296,9 +378,9 @@ void StrandOfTheAncient::OnRemovePlayer(Player * plr)
 
 LocationVector StrandOfTheAncient::GetStartingCoords(uint32 team)
 {
-	return LocationVector(sotaAttackerStartingPosition[team][0],
-		sotaAttackerStartingPosition[team][1], sotaAttackerStartingPosition[team][2],
-		sotaAttackerStartingPosition[team][3]);
+	return LocationVector(sotaStartingPosition[team][0],
+		sotaStartingPosition[team][1], sotaStartingPosition[team][2],
+		sotaStartingPosition[team][3]);
 }
 
 void StrandOfTheAncient::HookOnPlayerDeath(Player * plr)
@@ -358,23 +440,6 @@ void StrandOfTheAncient::SpawnBuff(uint32 x)
 void StrandOfTheAncient::OnCreate()
 {
 	sLog.outDebug("OnCreate: SOTA Battleground\n");
-
-	// Gates and their Sigils
-	/*
-	uint32 mapId = BattlegroundManager.GetMap(BATTLEGROUND_STRAND_OF_THE_ANCIENT);
-	for (int i = 0; i < GATE_COUNT; i++)
-	{
-		
-		m_gates[i] = SpawnGameObject(190722, mapId,
-			sotaGates[i][0], sotaGates[i][1], sotaGates[i][2], sotaGates[i][3], 0, 0, 1.0f);
-		m_gates[i]->PushToWorld(m_mapMgr);
-		m_gateSigils[i] = SpawnGameObject(192687, mapId,
-			sotaGateSigils[i][0], sotaGateSigils[i][1], sotaGateSigils[i][2],
-			sotaGateSigils[i][3], 0, 0, 1.0f);
-		m_gateSigils[i]->PushToWorld(m_mapMgr);
-	}
-	*/
-
 }
 
 void StrandOfTheAncient::OnStart()
@@ -382,6 +447,7 @@ void StrandOfTheAncient::OnStart()
 	sLog.outDebug("OnStart: SOTA Battleground\n");
 
 	LocationVector dest;
+	m_started = true;
 
 	for(list<Player*>::iterator itr = sota_players.begin(); itr != sota_players.end(); ++itr)
 	{

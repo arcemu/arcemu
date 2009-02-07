@@ -46,6 +46,7 @@ private:
 	GameObject * m_endgate;
 	GameObject * m_gates[GATE_COUNT];
 	GameObject * m_gateSigils[GATE_COUNT];
+	GameObject * m_gateTransporters[GATE_COUNT];
 	list<Player *> sota_players;
 	PassengerMap boat1Crew;
 	PassengerMap boat2Crew;
@@ -70,6 +71,7 @@ public:
 	void HookOnPlayerDeath(Player * plr);
 	void HookOnMount(Player * plr);
 	bool HookHandleRepop(Player * plr);
+	void OnPlatformTeleport(Player *plr);
 	void OnCreate();
 	void OnStart();
 	void HookOnShadowSight();
