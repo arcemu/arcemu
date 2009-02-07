@@ -1,6 +1,5 @@
 /*
  * ArcEmu MMORPG Server
- * Copyright (C) 2005-2007 Ascent Team <http://www.ascentemu.com/>
  * Copyright (C) 2008-2009 <http://www.ArcEmu.org/>
  *
  * This program is free software: you can redistribute it and/or modify
@@ -22,14 +21,8 @@
 Strand of the Ancients
 ======================
 
-* Gates
-	* Gate of the Green Emerald, 190722
-	* Gate of the Yellow Moon, 190727
-	* Gate of the Blue Sapphire, 190724
-	* Gate of the Red Sun, 190726
-	* Gate of the Purple Amethyst, 190723
-
 * Banners
+	* Flagpole, 191311
 	* Alliance Banner, 191310
 	* Alliance Banner, 191306
 	* Alliance Banner, 191308
@@ -39,19 +32,12 @@ Strand of the Ancients
 	* Horde Banner, 191305
 	* Horde Banner Aura, 180101
 
-* Sigils
-	* Red Moon Sigil, 192690
-	* Green Moon Sigil, 192687
-	* Purple Moon Sigil, 192691
-	* Blue Moon Sigil, 192689
-	* Yellow Moon Sigil, 192685
-
 * Buffs
 	* Restoration Buff, 184977
 	* Restoration Buff, 184971
 	* Restoration Buff, 184965
 
-* Seaforium
+* Seaforium (Mount Projectiles)
 	* Seaforium Barrel, 194086 (Not used atm)
 	* Seaforium Barrel, 190753
 	* Massive Seaforium Charge, 190752
@@ -60,17 +46,15 @@ Strand of the Ancients
 	* Defender's Portal, 190763
 	* Defender's Portal, 191575
 	* Defender's Portal, 192819
-	* Defender's Portal, 
-	* Titan Relic (another), 194083
-	* Titan Relic, 192834
+		-gps at:
+		-gps to:
+	* Titan Relic, 194083 (different one, not supported atm)
 	* Collision PC Size, 188215
 	* The Coffin Carrier, 193184
 	* The Blightbringer, 193183
 	* The Frostbreaker, 193185
 	* The Graceful Maiden (boat?), 193182
-	* Doodad_WG_Keep_Door01_collision01, 194162
-	* Chamber of Ancient Relics, 192549
-	* Flagpole, 191311
+	* Doodad_WG_Keep_Door01_collision01, 194162 (Not implemented atm)
 
 * Revive everyone after round one
 	* bg->EventResurrectPlayers()
@@ -99,12 +83,13 @@ Strand of the Ancients
 		 13834 = We cannot allow the Alliance to turn the hidden secrets of the Strand of the Ancients against us. Will you join our brave warriors there?
 		+13833 = We cannot allow the Horde to turn the hidden secrets of the Strand of the Ancients against us. Will you join our brave warriors there?
 
-* Location of "relic" (Courtyard of the Ancients)
-	836.97, -108.9, 111.59
+* Battles consist of two 10 minute rounds, it appears that
+  horde always defend first.
 
-* Defenders starting location
-	1209.7, -65.16, 70.1
+* Vehicles and Guns are probably some customized mount, but stationary and unbound
+  when not mounted. Need the green cursor arrows for mounting these.
 
+* Increase the view distance on map 607 to 500 or 0 (Unlimited).
 
 ************************************************************************/
 
@@ -146,37 +131,70 @@ Strand of the Ancients
 	}
 */
 
-const float sotaAttackers[2][4] = {
-	{ 2445.288f, 849.35f, 12.0f, 3.76f },
-	{ 2445.288f, 849.35f, 12.0f, 3.76f },
+#define GO_RELIC 192834
+const float sotaTitanRelic[4] = { 836.5f, -108.8f, 111.59f, 0.0f };
+
+const uint32 GateGOIds[6] = {
+	190722,	// Gate of the Green Emerald
+	190727,	// Gate of the Yellow Moon
+	190724,	// Gate of the Blue Sapphire
+	190726,	// Gate of the Red Sun
+	190723,	// Gate of the Purple Amethyst
+	192549,	// Chamber of Ancient Relics
+};
+const float sotaGates[GATE_COUNT][4] = {
+	{ 1411.57f, 108.163f, 28.692f, 5.441f },
+	{ 1055.452f, -108.1f, 82.134f, 0.034f },
+	{ 1431.3413f, -219.437f, 30.893f, 0.9736f },
+	{ 1227.667f, -212.555f, 55.372f, 0.5023f },
+	{ 1214.681f, 81.21f, 53.413f, 5.745f },
+};
+const float sotaChamberGate[4] = { 878.555f, -108.989f, 119.835f, 0.0565f };
+
+// Things radiating out from the doors... same orientation as door.
+const uint32 GateSigilGOIds[5] =  { 192687, 192685, 192689, 192690, 192691, };
+const float sotaGateSigils[GATE_COUNT][4] = {
+	{ 1414.054f, 106.72f, 41.442f, 5.441f },
+	{ 1060.63f, -107.8f, 94.7f, 0.034f },
+	{ 1433.383f, -216.4f, 43.642f, 0.9736f },
+	{ 1230.75f, -210.724f, 67.611f, 0.5023f },
+	{ 1217.8f, 79.532f, 66.58f, 0.0565f },
 };
 
-const float sotaDefenders[2][4] = {
-	{ 2428.288f, 837.05f, 13.0f, 3.76f },
-	{ 2428.288f, 837.05f, 13.0f, 3.76f },
+// Two guns per gate, GUN_LEFT and GUN_RIGHT
+const float sotaGunMounts[GATE_COUNT][2][4] = {
+	{ { 1436.429f, 110.05f, 41.407f, 5.4f }, { 1404.9023f, 84.758f, 41.183f, 5.46f } },
+	{ { 1068.693f, -86.951f, 93.81f, 0.02f }, { 1068.83f, -127.56f, 96.45f, 0.0912f } },
+	{ { 1422.115f, -196.433f, 42.1825f, 1.0222f }, { 1454.887f, -220.454f, 41.956f, 0.9627f } },
+	{ { 1232.345f, -187.517f, 66.945f, 0.45f }, { 1249.634f, 224.189f, 66.72f, 0.635f } },
+	{ { 1236.213f, 92.287f, 64.965f, 5.751f }, { 1215.11f, 57.772f, 64.739f, 5.78f } },
 };
 
+// ---- Verify remaining ----- //
+
+// This change as the game progresses
 const float sotaRepop[2][4] = {
 	{ 1600.0f, 58.3f, 11.0f, 2.98f },
 	{ 1600.0f, 58.3f, 11.0f, 2.98f },
 };
 
-const float sotaBoats[2][4] = {
-	{ 2439.4f, 845.38f, 1.0f, 3.5f },
-	{ 2439.4f, 845.38f, 1.0f, 3.5 },
+// There should only be two boats. boats three and four here
+// are a lazy hack for not wanting to program the boats to move via waypoints
+const float sotaBoats[4][4] = {
+	{ 1623.34f, 37.0f, 1.0f, 3.65f },
+	{ 2439.4f, 845.38f, 1.0f, 3.35f },
+	{ 1623.34f, 37.0f, 1.0f, 3.65f },
+	{ 2439.4f, 845.38f, 1.0f, 3.35f },
 };
-
-const float sotaStopBoats[2][4] = {
-	{ 1623.34f, 37.0f, 1.0f, 3.9f },
-	{ 1623.34f, 37.0f, 1.0f, 3.9f },
+const float sotaAttackerStartingPosition[2][4] = {
+	{ 2445.288f, 849.35f, 10.0f, 3.76f },
+	{ 2445.288f, 849.35f, 10.0f, 3.76f },
 };
-
 const float sotaStopBoatsPlayer[2][4] = {
-	{ 1624.7f, 42.93f, 12.0f, 2.63f },
-	{ 1624.7f, 42.93f, 12.0f, 2.63f },
+	{ 1624.7f, 42.93f, 10.0f, 2.63f },
+	{ 1624.7f, 42.93f, 10.0f, 2.63f },
 };
-
-const float sotaFlag[4] = { 836.97f, -108.9f, 111.59f, 0.0f };
+const float sotaDefenderStartingPosition[4] = { 1209.7f, -65.16f, 70.1f, 0.0f };
 
 StrandOfTheAncient::StrandOfTheAncient(MapMgr * mgr, uint32 id, uint32 lgroup, uint32 t) : CBattleground(mgr, id, lgroup, t)
 {
@@ -189,22 +207,40 @@ StrandOfTheAncient::StrandOfTheAncient(MapMgr * mgr, uint32 id, uint32 lgroup, u
 	m_worldStates.clear();
 	m_pvpData.clear();
 	m_resurrectMap.clear();
+	m_relic = 0;
 
 	uint32 mapId = BattlegroundManager.GetMap(BATTLEGROUND_STRAND_OF_THE_ANCIENT);
-	m_boats[0] = SpawnGameObject(20808,
-		mapId,
-		sotaBoats[0][0], sotaBoats[0][1], sotaBoats[0][2], sotaBoats[0][3], 0, 0, 1.0f);
 
-	m_boats[0]->Spawn(mgr);
+	// Boats
+	for (int i = 0; i < 4; i++)
+	{
+		m_boats[i] = SpawnGameObject(20808,
+			mapId,
+			sotaBoats[i][0], sotaBoats[i][1], sotaBoats[i][2], sotaBoats[i][3], 0, 0, 1.0f);
+		m_boats[i]->PushToWorld(mgr);
+	}
 
-	m_boats[1] = SpawnGameObject(20808,
-		mapId,
-		sotaStopBoats[0][0], sotaStopBoats[0][1], sotaStopBoats[0][2], sotaStopBoats[0][3], 0, 0, 1.0f);
+	/* Relic */
+	m_relic = m_mapMgr->CreateAndSpawnGameObject(GO_RELIC, sotaTitanRelic[0],
+		sotaTitanRelic[1], sotaTitanRelic[2], sotaTitanRelic[3], 1.0f);
 
-	m_boats[1]->Spawn(mgr);
+	for (i = 0; i < GATE_COUNT; i++)
+	{
+		m_gates[i] = m_mapMgr->CreateAndSpawnGameObject(GateGOIds[i],
+			sotaGates[i][0], sotaGates[i][1], sotaGates[i][2], sotaGates[i][3], 1.0f);
+		m_gateSigils[i] = m_mapMgr->CreateAndSpawnGameObject(GateSigilGOIds[i],
+			sotaGateSigils[i][0], sotaGateSigils[i][1], sotaGateSigils[i][2],
+			sotaGateSigils[i][3], 1.0f);
+	}
+
+	// Spawn door for Chamber of Ancient Relics
+	m_endgate = m_mapMgr->CreateAndSpawnGameObject(GateGOIds[i],
+		sotaChamberGate[0], sotaChamberGate[1], sotaChamberGate[2],
+		sotaChamberGate[3], 1.0f);
+
 
 	/* create the buffs */
-	for(i = 0; i < 6; ++i)
+	for(i = 0; i < BUFF_COUNT; ++i)
 		SpawnBuff(i);
 
 }
@@ -214,15 +250,15 @@ StrandOfTheAncient::~StrandOfTheAncient()
 	//ObjectMgr::getSingleton().DeleteTransport(m_boats[0]);
 
 	// gates are always spawned, so mapmgr will clean them up
-	for (uint32 i = 0; i < 6; ++i)
+	for (uint32 i = 0; i < BUFF_COUNT; ++i)
 	{
 		// buffs may not be spawned, so delete them if they're not
 		if(m_buffs[i] && !m_buffs[i]->IsInWorld())
 			delete m_buffs[i];
 	}
 
-	if (m_standFlag && !m_standFlag->IsInWorld())
-		delete m_standFlag;
+	//if (m_relic && !m_relic->IsInWorld())
+	//	delete m_relic;
 
 }
 
@@ -260,8 +296,9 @@ void StrandOfTheAncient::OnRemovePlayer(Player * plr)
 
 LocationVector StrandOfTheAncient::GetStartingCoords(uint32 team)
 {
-	return LocationVector(sotaAttackers[team][0], sotaAttackers[team][1],
-		sotaAttackers[team][2], sotaAttackers[team][3]);
+	return LocationVector(sotaAttackerStartingPosition[team][0],
+		sotaAttackerStartingPosition[team][1], sotaAttackerStartingPosition[team][2],
+		sotaAttackerStartingPosition[team][3]);
 }
 
 void StrandOfTheAncient::HookOnPlayerDeath(Player * plr)
@@ -272,8 +309,7 @@ void StrandOfTheAncient::HookOnPlayerDeath(Player * plr)
 
 void StrandOfTheAncient::HookOnMount(Player * plr)
 {
-	/* Denied! */
-	plr->RemoveAllAuraType(SPELL_AURA_MOUNTED);
+	/* Allowed */
 }
 
 bool StrandOfTheAncient::HookHandleRepop(Player * plr)
@@ -289,10 +325,11 @@ bool StrandOfTheAncient::HookHandleRepop(Player * plr)
 
 void StrandOfTheAncient::SpawnBuff(uint32 x)
 {
+	uint32 mapid = BattlegroundManager.GetMap(BATTLEGROUND_STRAND_OF_THE_ANCIENT);
     switch(x)
 	{
 	case 0:
-		m_buffs[x] = SpawnGameObject(179871, 489, 1449.9296875f, 1470.70971679688f, 342.634552001953f, -1.64060950279236f, 0, 114, 1);
+		m_buffs[x] = SpawnGameObject(184977, mapid, 1449.9296875f, 1470.70971679688f, 342.634552001953f, -1.64060950279236f, 0, 114, 1);
 		m_buffs[x]->SetFloatValue(GAMEOBJECT_PARENTROTATION_02,0.73135370016098f);
 		m_buffs[x]->SetFloatValue(GAMEOBJECT_PARENTROTATION_03,-0.681998312473297f);
 		m_buffs[x]->SetByte(GAMEOBJECT_BYTES_1, 0, 1);
@@ -300,7 +337,7 @@ void StrandOfTheAncient::SpawnBuff(uint32 x)
 		m_buffs[x]->SetByte(GAMEOBJECT_BYTES_1, 3, 100);
 		break;
 	case 1:
-		m_buffs[x] = SpawnGameObject(179899, 489, 1005.17071533203f, 1447.94567871094f, 335.903228759766f, 1.64060950279236f, 0, 114, 1);
+		m_buffs[x] = SpawnGameObject(184971, mapid, 1005.17071533203f, 1447.94567871094f, 335.903228759766f, 1.64060950279236f, 0, 114, 1);
 		m_buffs[x]->SetFloatValue(GAMEOBJECT_PARENTROTATION_02,0.73135370016098f);
 		m_buffs[x]->SetFloatValue(GAMEOBJECT_PARENTROTATION_03,0.681998372077942f);
 		m_buffs[x]->SetByte(GAMEOBJECT_BYTES_1, 0, 1);
@@ -308,33 +345,9 @@ void StrandOfTheAncient::SpawnBuff(uint32 x)
 		m_buffs[x]->SetByte(GAMEOBJECT_BYTES_1, 3, 100);
 		break;
 	case 2:
-		m_buffs[x] = SpawnGameObject(179904, 489, 1317.50573730469f, 1550.85070800781f, 313.234375f, -0.26179963350296f, 0, 114, 1);
+		m_buffs[x] = SpawnGameObject(184965, mapid, 1317.50573730469f, 1550.85070800781f, 313.234375f, -0.26179963350296f, 0, 114, 1);
 		m_buffs[x]->SetFloatValue(GAMEOBJECT_PARENTROTATION_02,0.130526319146156f);
 		m_buffs[x]->SetFloatValue(GAMEOBJECT_PARENTROTATION_03,-0.991444826126099f);
-		m_buffs[x]->SetByte(GAMEOBJECT_BYTES_1, 0, 1);
-		m_buffs[x]->SetByte(GAMEOBJECT_BYTES_1, 1, 6);
-		m_buffs[x]->SetByte(GAMEOBJECT_BYTES_1, 3, 100);
-		break;
-	case 3:
-		m_buffs[x] = SpawnGameObject(179906, 489, 1110.45129394531f, 1353.65563964844f, 316.518096923828f, -0.68067866563797f, 0, 114, 1);
-		m_buffs[x]->SetFloatValue(GAMEOBJECT_PARENTROTATION_02,0.333806991577148f);
-		m_buffs[x]->SetFloatValue(GAMEOBJECT_PARENTROTATION_03,-0.94264143705368f);
-		m_buffs[x]->SetByte(GAMEOBJECT_BYTES_1, 0, 1);
-		m_buffs[x]->SetByte(GAMEOBJECT_BYTES_1, 1, 6);
-		m_buffs[x]->SetByte(GAMEOBJECT_BYTES_1, 3, 100);
-		break;
-	case 4:
-		m_buffs[x] = SpawnGameObject(179905, 489, 1320.09375f, 1378.78967285156f, 314.753234863281f, 1.18682384490967f, 0, 114, 1);
-		m_buffs[x]->SetFloatValue(GAMEOBJECT_PARENTROTATION_02,0.559192895889282f);
-		m_buffs[x]->SetFloatValue(GAMEOBJECT_PARENTROTATION_03,0.829037606716156f);
-		m_buffs[x]->SetByte(GAMEOBJECT_BYTES_1, 0, 1);
-		m_buffs[x]->SetByte(GAMEOBJECT_BYTES_1, 1, 6);
-		m_buffs[x]->SetByte(GAMEOBJECT_BYTES_1, 3, 100);
-		break;
-	case 5:
-		m_buffs[x] = SpawnGameObject(179907, 489, 1139.68774414063f, 1560.28771972656f, 306.843170166016f, -2.4434609413147f, 0, 114, 1);
-		m_buffs[x]->SetFloatValue(GAMEOBJECT_PARENTROTATION_02,0.939692616462708f);
-		m_buffs[x]->SetFloatValue(GAMEOBJECT_PARENTROTATION_03,-0.342020124197006f);
 		m_buffs[x]->SetByte(GAMEOBJECT_BYTES_1, 0, 1);
 		m_buffs[x]->SetByte(GAMEOBJECT_BYTES_1, 1, 6);
 		m_buffs[x]->SetByte(GAMEOBJECT_BYTES_1, 3, 100);
@@ -346,26 +359,22 @@ void StrandOfTheAncient::OnCreate()
 {
 	sLog.outDebug("OnCreate: SOTA Battleground\n");
 
-	/* Relic */
-	m_standFlag = m_mapMgr->CreateAndSpawnGameObject(184141, sotaFlag[0], sotaFlag[1], sotaFlag[2], sotaFlag[3], 2.5f);
-	m_standFlag->SetByte(GAMEOBJECT_BYTES_1, 0, 1);
-	m_standFlag->SetByte(GAMEOBJECT_BYTES_1, 1, 24);
-	m_standFlag->SetByte(GAMEOBJECT_BYTES_1, 3, 100);
-	
-
-	// Alliance Gates
-	GameObject *gate = SpawnGameObject(179921, 489, 1471.554688f, 1458.778076f, 362.633240f, 0, 33, 114, 2.33271f);
-	gate->PushToWorld(m_mapMgr);
-	m_gates.push_back(gate);
-
+	// Gates and their Sigils
 	/*
-	m_standFlag = m_mapMgr->CreateGameObject(184141);
-	m_standFlag->CreateFromProto( 184141, m_mapMgr->GetMapId(), sotaFlag[0], sotaFlag[1], sotaFlag[2], sotaFlag[3] );
-	m_standFlag->SetFloatValue( GAMEOBJECT_PARENTROTATION_02, 0.662620f );
-	m_standFlag->SetFloatValue( GAMEOBJECT_PARENTROTATION_03, -0.748956f );
-	m_standFlag->SetFloatValue( OBJECT_FIELD_SCALE_X, 2.5f );
-	m_standFlag->PushToWorld( m_mapMgr );
+	uint32 mapId = BattlegroundManager.GetMap(BATTLEGROUND_STRAND_OF_THE_ANCIENT);
+	for (int i = 0; i < GATE_COUNT; i++)
+	{
+		
+		m_gates[i] = SpawnGameObject(190722, mapId,
+			sotaGates[i][0], sotaGates[i][1], sotaGates[i][2], sotaGates[i][3], 0, 0, 1.0f);
+		m_gates[i]->PushToWorld(m_mapMgr);
+		m_gateSigils[i] = SpawnGameObject(192687, mapId,
+			sotaGateSigils[i][0], sotaGateSigils[i][1], sotaGateSigils[i][2],
+			sotaGateSigils[i][3], 0, 0, 1.0f);
+		m_gateSigils[i]->PushToWorld(m_mapMgr);
+	}
 	*/
+
 }
 
 void StrandOfTheAncient::OnStart()

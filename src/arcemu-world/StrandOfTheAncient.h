@@ -18,15 +18,34 @@
  *
  */
 
+#define BUFF_COUNT		3
+
+#define TEAM_DEFENDER	0
+#define TEAM_ATTACKER	1
+#define GUN_LEFT		0
+#define GUN_RIGHT		1
+
+enum Gate
+{
+	GATE_GREEN	= 0,
+	GATE_YELLOW = 1,
+	GATE_BLUE	= 2,
+	GATE_RED	= 3,
+	GATE_PURPLE	= 4,
+	GATE_COUNT	= 5,
+};
+
 class StrandOfTheAncient : public CBattleground
 {
 private:
 	//Transporter * m_boats[2];
 	//TransportPath path;
 	GameObject * m_boats[2];
-	GameObject * m_buffs[6];
-	GameObject * m_standFlag;
-	list<GameObject*> m_gates;
+	GameObject * m_buffs[BUFF_COUNT];
+	GameObject * m_relic;
+	GameObject * m_endgate;
+	GameObject * m_gates[GATE_COUNT];
+	GameObject * m_gateSigils[GATE_COUNT];
 	list<Player *> sota_players;
 	PassengerMap boat1Crew;
 	PassengerMap boat2Crew;
