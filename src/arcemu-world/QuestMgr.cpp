@@ -511,6 +511,10 @@ void QuestMgr::BuildQuestComplete(Player*plr, Quest* qst)
 	if(currtalentpoints <= playerlevel-9-rewardtalents)
 		plr->GiveTalent(rewardtalents);
 
+	// Reward title
+	if( qst->rewardtitleid > 0 )
+		plr->SetKnownTitle( static_cast< RankTitles >( qst->rewardtitleid ), true );
+
 	WorldPacket data( SMSG_QUESTGIVER_QUEST_COMPLETE,72 );
 
 	data << qst->id;
