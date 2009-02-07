@@ -21,7 +21,59 @@
 /***********************************************************************
 Strand of the Ancients
 ======================
-* Ship Gameobject ID: 20808
+
+* Gates
+	* Gate of the Green Emerald, 190722
+	* Gate of the Yellow Moon, 190727
+	* Gate of the Blue Sapphire, 190724
+	* Gate of the Red Sun, 190726
+	* Gate of the Purple Amethyst, 190723
+
+* Banners
+	* Alliance Banner, 191310
+	* Alliance Banner, 191306
+	* Alliance Banner, 191308
+	* Alliance Banner Aura, 180100
+	* Horde Banner, 191307
+	* Horde Banner, 191309
+	* Horde Banner, 191305
+	* Horde Banner Aura, 180101
+
+* Sigils
+	* Red Moon Sigil, 192690
+	* Green Moon Sigil, 192687
+	* Purple Moon Sigil, 192691
+	* Blue Moon Sigil, 192689
+	* Yellow Moon Sigil, 192685
+
+* Buffs
+	* Restoration Buff, 184977
+	* Restoration Buff, 184971
+	* Restoration Buff, 184965
+
+* Seaforium
+	* Seaforium Barrel, 194086 (Not used atm)
+	* Seaforium Barrel, 190753
+	* Massive Seaforium Charge, 190752
+
+* Other Game Objects
+	* Defender's Portal, 190763
+	* Defender's Portal, 191575
+	* Defender's Portal, 192819
+	* Defender's Portal, 
+	* Titan Relic (another), 194083
+	* Titan Relic, 192834
+	* Collision PC Size, 188215
+	* The Coffin Carrier, 193184
+	* The Blightbringer, 193183
+	* The Frostbreaker, 193185
+	* The Graceful Maiden (boat?), 193182
+	* Doodad_WG_Keep_Door01_collision01, 194162
+	* Chamber of Ancient Relics, 192549
+	* Flagpole, 191311
+
+* Revive everyone after round one
+	* bg->EventResurrectPlayers()
 
 * Setup index 34 in worldstring_tables to equal "Strand of the Ancients"
 
@@ -53,8 +105,6 @@ Strand of the Ancients
 * Defenders starting location
 	1209.7, -65.16, 70.1
 
-// Create internal objects
-// GameObjectNameStorage.SetEntry(entry, go);
 
 ************************************************************************/
 
@@ -112,8 +162,8 @@ const float sotaRepop[2][4] = {
 };
 
 const float sotaBoats[2][4] = {
-	{ 2439.4f, 845.38f, 1.0f, 3.76f },
-	{ 2439.4f, 845.38f, 1.0f, 3.76f },
+	{ 2439.4f, 845.38f, 1.0f, 3.5f },
+	{ 2439.4f, 845.38f, 1.0f, 3.5 },
 };
 
 const float sotaStopBoats[2][4] = {
@@ -296,7 +346,7 @@ void StrandOfTheAncient::OnCreate()
 {
 	sLog.outDebug("OnCreate: SOTA Battleground\n");
 
-	/* Flag */
+	/* Relic */
 	m_standFlag = m_mapMgr->CreateAndSpawnGameObject(184141, sotaFlag[0], sotaFlag[1], sotaFlag[2], sotaFlag[3], 2.5f);
 	m_standFlag->SetByte(GAMEOBJECT_BYTES_1, 0, 1);
 	m_standFlag->SetByte(GAMEOBJECT_BYTES_1, 1, 24);
@@ -304,9 +354,9 @@ void StrandOfTheAncient::OnCreate()
 	
 
 	// Alliance Gates
-	//GameObject *gate = SpawnGameObject(179921, 489, 1471.554688f, 1458.778076f, 362.633240f, 0, 33, 114, 2.33271f);
-	//gate->PushToWorld(m_mapMgr);
-	//m_gates.push_back(gate);
+	GameObject *gate = SpawnGameObject(179921, 489, 1471.554688f, 1458.778076f, 362.633240f, 0, 33, 114, 2.33271f);
+	gate->PushToWorld(m_mapMgr);
+	m_gates.push_back(gate);
 
 	/*
 	m_standFlag = m_mapMgr->CreateGameObject(184141);
