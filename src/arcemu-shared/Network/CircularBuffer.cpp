@@ -37,8 +37,6 @@ CircularBuffer::CircularBuffer()
 CircularBuffer::~CircularBuffer()
 {
 	if ( m_buffer ) free(m_buffer);
-	m_buffer = m_bufferEnd = m_regionAPointer = m_regionBPointer = NULL;
-	m_regionASize = m_regionBSize = 0;
 }
 
 /** Read bytes from the buffer

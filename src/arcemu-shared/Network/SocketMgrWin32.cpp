@@ -30,7 +30,7 @@ void SocketMgr::SpawnWorkerThreads()
 	SYSTEM_INFO si;
 	GetSystemInfo(&si);
 
-	threadcount = si.dwNumberOfProcessors*2;
+	threadcount = (si.dwNumberOfProcessors*2)+2; // don'tworry it performance increased.
 
 	Log.Notice("SocketMgr","IOCP Spawning [-%u-] worker threads.", threadcount);
 	for(long x = 0; x < threadcount; ++x)
@@ -41,8 +41,8 @@ bool SocketWorkerThread::run()
 {
 	THREAD_TRY_EXECUTION2
 	HANDLE cp = sSocketMgr.GetCompletionPort();
-	DWORD len = 0;
-	Socket * s=NULL;
+	DWORD len;
+	Socket * s;
 	LPOVERLAPPED ol_ptr;
 	BOOL _ret=0;
 	OverlappedStruct * _gov =NULL;
@@ -50,29 +50,18 @@ bool SocketWorkerThread::run()
 	while(!shutdown)
 	{
 #ifndef _WIN64
-		_ret = GetQueuedCompletionStatus(cp, &len,  (LPDWORD)&s, &ol_ptr, INFINITE);
+		_ret = GetQueuedCompletionStatus(cp, &len,  (LPDWORD)&s, &ol_ptr, 5000);
 #else
-		_ret = GetQueuedCompletionStatus(cp, &len, (PULONG_PTR)&s, &ol_ptr,INFINITE);
+		_ret = GetQueuedCompletionStatus(cp, &len, (PULONG_PTR)&s, &ol_ptr,5000);
 #endif
 
-		if ( NULL == s ) continue; // null?
+		if ( !_ret ) continue;
+			
+		_gov = CONTAINING_RECORD(ol_ptr, OverlappedStruct, m_overlap);
 
-		if ( FALSE == _ret ) { // still get this with INFINITE? i can't believe:D
-			s->Disconnect();
-			continue;
-		}
+		if ( _gov==NULL ) continue;
 
-		if ( s->IsDeleted() ) {
-			continue; // do not operate the socket which in garbagesystem
-		}
-
-		_gov = CONTAINING_RECORD(ol_ptr, OverlappedStruct, m_overlap); // Calc
-		if ( _gov==NULL ) {
-			s->Disconnect();
-			continue;
-		}
-
-		if ( _gov->m_event == SOCKET_IO_THREAD_SHUTDOWN ) // workthread going down
+		if ( _gov->m_event == SOCKET_IO_THREAD_SHUTDOWN )
 		{
 			ophandlers[_gov->m_event](s, len);
 			if ( _gov ) delete _gov;
@@ -80,15 +69,34 @@ bool SocketWorkerThread::run()
 			break;
 		}
 		
-		if ( 0 == len ) // No posting status to us,just go ahead.
-		{
-			s->Disconnect();
+		DWORD   dwLastError=GetLastError();
+
+		if   (ERROR_INVALID_HANDLE==dwLastError || ERROR_OPERATION_ABORTED==dwLastError || FALSE==_ret || NULL==s)
 			continue;
+
+		if ( _gov->m_event == SOCKET_IO_EVENT_READ_COMPLETE )
+		{
+			if ( s && len > 0 && !s->IsDeleted() ){
+				if ( len > s->_recvbuffsize ) continue; // maybe useless
+				s->LockReader();
+				s->total_read_bytes +=len;
+				if ( !s->IsConnected() ) s->markConnected();
+				s->ReleaseReader();
+			}
+		}
+		else
+		if ( _gov->m_event == SOCKET_IO_EVENT_WRITE_END )
+		{
+			if ( s && len > 0 && !s->IsDeleted() ){
+				if ( len > s->_sendbuffsize ) continue;
+				s->BurstBegin();
+				s->total_send_bytes +=len;
+				s->BurstEnd();
+			}
 		}
 
-		if( _gov->m_event < NUM_SOCKET_IO_EVENTS )
+		if( s && _gov->m_event < NUM_SOCKET_IO_EVENTS )
 			ophandlers[_gov->m_event](s, len);
-
 
 	}
 	--sSocketMgr.threadcount;
@@ -99,48 +107,35 @@ bool SocketWorkerThread::run()
 
 void HandleReadComplete(Socket * s, uint32 len)
 {
-	s->m_readEvent.Unmark();
-	if ( len > s->_recvbuffsize ) {
-		s->Disconnect();
-		return;	
+	if(!s->IsDeleted())
+	{
+		s->m_readEvent.Unmark();
+		if(len)
+		{
+			s->ReadCallback(len);
+		}
+		else
+			s->Disconnect(); // drop it
 	}
-	if ( s->GetReadBuffer().GetSpace() < len ) {
-		s->Disconnect();
-		return;
-	}
-	if ( !s->IsConnected() ) s->markConnected();
-
-	s->LockReader();
-	if ( s->GetReadBuffer().GetSize()==0 ) s->GetReadBuffer().IncrementWritten(len);
-	s->ReleaseReader();
-
-	if ( s->IsConnected() ) s->OnRead();
-
-	s->LockReader();
-	if ( s->GetReadBuffer().GetSize()!=0 ) s->GetReadBuffer().Remove(s->GetReadBuffer().GetSize()); // cleanup
-	s->ReleaseReader();
-
-	s->ReadCallback(len);
 }
 
 void HandleWriteComplete(Socket * s, uint32 len)
 {
-	s->m_writeEvent.Unmark();
-	if ( len > s->_sendbuffsize || s->GetWriteBuffer().GetSize() > s->_sendbuffsize ) {
-		s->Disconnect();
-		return;
+	if(!s->IsDeleted())
+	{
+		s->m_writeEvent.Unmark();
+		s->BurstBegin();					// Lock
+		s->GetWriteBuffer().Remove(len);
+		if( s->GetWriteBuffer().GetContiguiousBytes() > 0 ){
+			s->BurstEnd();
+			s->WriteCallback();
+			return;
+		}
+		else{
+			s->DecSendLock();
+		}
+		s->BurstEnd();					  // Unlock
 	}
-	s->BurstBegin();				// Lock
-	s->GetWriteBuffer().Remove(len);
-	if( s->GetWriteBuffer().GetContiguiousBytes() > 0 ){
-		s->BurstEnd();
-		s->WriteCallback(len);
-	return;
-	}
-	else{
-		s->DecSendLock();
-	}
-	s->BurstEnd();					  // Unlock
 }
 
 void HandleShutdown(Socket * s, uint32 len)

@@ -78,7 +78,7 @@ public:
 
 	void SetupReadEvent(uint32 len);
 	void ReadCallback(uint32 len);
-	void WriteCallback(uint32 len);
+	void WriteCallback();
 	void markConnected();
 
 	ARCEMU_INLINE bool IsDeleted() { return m_deleted; }
@@ -249,7 +249,7 @@ T* ConnectTCPSocket(const char * hostname, u_short port)
 }
 
 /* Sockets Garbage Collector :D */
-#define SOCKET_GC_TIMEOUT 2000 // cebernic: don't modify this value better !
+#define SOCKET_GC_TIMEOUT 4000 // cebernic: don't modify this value better !
 /* 
   cebernic: The garbageCollector ,it also collecting the shit from WIN32 CompletionPortSocket
 	This will gets something helpful for anti-dDOS. the attacker should be made many of connections as vaild.
@@ -361,6 +361,7 @@ public:
 					s->Disconnect(true);
 					deletionQueue.erase(i2);
 				}
+
 			}
 		}
 		lock.ReleaseWriteLock();

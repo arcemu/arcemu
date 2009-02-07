@@ -1756,7 +1756,6 @@ void Object::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
 		return;
 	if( pVictim->IsSpiritHealer() )
 		return;
-		// anti...
 	if( damage > 10000 && this != pVictim && this->IsPlayer() && !static_cast< Player* >(this)->GetSession()->HasPermissions())
 	{
 		if( spellId )

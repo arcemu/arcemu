@@ -64,7 +64,7 @@ public:
 	OverlappedStruct(SocketIOEvent ev) : m_event(ev)
 	{
 		memset(&m_overlap, 0, sizeof(OVERLAPPED));
-		m_inUse = 0;
+		m_inUse = ev;
 	};
 
 	OverlappedStruct()
