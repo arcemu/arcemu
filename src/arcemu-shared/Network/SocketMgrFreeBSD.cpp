@@ -27,6 +27,10 @@ void SocketMgr::AddSocket(Socket * s)
         return;
     }
 }
+void SocketMgr::ShowStatus()
+{
+	sLog.outString("Sockets: %d", 0);
+}
 
 void SocketMgr::AddListenSocket(ListenSocketBase * s)
 {

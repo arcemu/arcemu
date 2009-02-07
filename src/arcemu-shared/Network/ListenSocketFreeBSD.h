@@ -30,6 +30,7 @@ public:
         m_socket = socket(AF_INET, SOCK_STREAM, 0);
         SocketOps::ReuseAddr(m_socket);
         SocketOps::Nonblocking(m_socket);
+		SocketOps::SetTimeout(m_socket, 60);
 
         m_address.sin_family = AF_INET;
         m_address.sin_port = ntohs((u_short)Port);
