@@ -496,6 +496,12 @@ void GossipScript::GossipHello(Object* pObject, Player* Plr, bool AutoSend)
 	if (pCreature->isTrainer() || pCreature->isProf())
 	{
 		Trainer *pTrainer = pCreature->GetTrainer();
+		if(!pTrainer)
+		{
+			if(AutoSend)
+				Menu->SendTo(Plr);
+			return;
+		}
 		string name = pCreature->GetCreatureInfo()->Name;
 		string::size_type pos = name.find(" ");	  // only take first name
 
