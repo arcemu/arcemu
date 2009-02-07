@@ -1489,7 +1489,7 @@ void CBattleground::RemovePlayer(Player * plr, bool logout)
 	/* teleport out */
 	if(!logout)
 	{
-		if(!m_ended)
+		if(!m_ended && !plr->GetSession()->HasGMPermissions())
 			plr->CastSpell(plr, BG_DESERTER, true);
 
 		if(!IS_INSTANCE(plr->m_bgEntryPointMap))

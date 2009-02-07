@@ -297,7 +297,17 @@ void StrandOfTheAncient::OnCreate()
 	sLog.outDebug("OnCreate: SOTA Battleground\n");
 
 	/* Flag */
-	m_mapMgr->CreateAndSpawnGameObject(184141, sotaFlag[0], sotaFlag[1], sotaFlag[2], sotaFlag[3], 2.5f);
+	m_standFlag = m_mapMgr->CreateAndSpawnGameObject(184141, sotaFlag[0], sotaFlag[1], sotaFlag[2], sotaFlag[3], 2.5f);
+	m_standFlag->SetByte(GAMEOBJECT_BYTES_1, 0, 1);
+	m_standFlag->SetByte(GAMEOBJECT_BYTES_1, 1, 24);
+	m_standFlag->SetByte(GAMEOBJECT_BYTES_1, 3, 100);
+	
+
+	// Alliance Gates
+	//GameObject *gate = SpawnGameObject(179921, 489, 1471.554688f, 1458.778076f, 362.633240f, 0, 33, 114, 2.33271f);
+	//gate->PushToWorld(m_mapMgr);
+	//m_gates.push_back(gate);
+
 	/*
 	m_standFlag = m_mapMgr->CreateGameObject(184141);
 	m_standFlag->CreateFromProto( 184141, m_mapMgr->GetMapId(), sotaFlag[0], sotaFlag[1], sotaFlag[2], sotaFlag[3] );
