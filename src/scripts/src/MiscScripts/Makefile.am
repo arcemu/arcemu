@@ -8,6 +8,7 @@ AM_CXXFLAGS = -DSCRIPTLIB
 lib_LTLIBRARIES = libMoonMiscScripts.la
 
 libMoonMiscScripts_la_SOURCES = Creatures.cpp \
+GameObjectTeleportTable.cpp \
 GameObjects.cpp \
 RandomScripts.cpp \
 QuelDanasPortal.cpp \
