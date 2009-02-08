@@ -40,9 +40,9 @@ enum AreaTriggerFailures
 	AREA_TRIGGER_FAILURE_LEVEL			= 7,
 	AREA_TRIGGER_FAILURE_NO_GROUP		= 8,
 	AREA_TRIGGER_FAILURE_NO_KEY         = 9,
-	AREA_TRIGGER_FAILURE_LEVEL_HEROIC	= 9,
 	AREA_TRIGGER_FAILURE_NO_CHECK		= 10,
 	AREA_TRIGGER_FAILURE_NO_WOTLK		= 11,
+	AREA_TRIGGER_FAILURE_LEVEL_HEROIC	= 12,
 };
 
 uint32 AreaTriggerFailureMessages[] = {
@@ -51,13 +51,14 @@ uint32 AreaTriggerFailureMessages[] = {
 	27,
 	28,
 	29,
-	30, //TODO: Replace attunment with real itemname
-	30, //TODO: Replace attunment with real itemname
+	30,
+	30,
 	31,
 	32,
-	30, //TODO: Replace attunment with real itemname
+	30,
 	33,
 	81,
+	31, // 33="You must be level 70 to enter Heroic mode." 31="You must be at least level %u to pass through here."
 };
 
 uint32 CheckTriggerPrerequsites(AreaTrigger * pAreaTrigger, WorldSession * pSession, Player * pPlayer, MapInfo * pMapInfo)
@@ -99,7 +100,7 @@ uint32 CheckTriggerPrerequsites(AreaTrigger * pAreaTrigger, WorldSession * pSess
 		!pPlayer->GetItemInterface()->GetItemCount(pMapInfo->heroic_key_2, false))
 		return AREA_TRIGGER_FAILURE_NO_KEY;
 
-	if(pPlayer->getLevel()<PLAYER_LEVEL_CAP_70 && pPlayer->iInstanceType>=MODE_HEROIC && pMapInfo->type != INSTANCE_NULL)
+	if(pMapInfo->type != INSTANCE_NULL && pPlayer->iInstanceType>=MODE_HEROIC && pPlayer->getLevel()<pMapInfo->minlevel_heroic)
 		return AREA_TRIGGER_FAILURE_LEVEL_HEROIC;
 
 	return AREA_TRIGGER_FAILURE_OK;
@@ -197,6 +198,13 @@ void WorldSession::_HandleAreaTriggerOpcode(uint32 id)
 
 							data << msg;
 						}break;
+					case AREA_TRIGGER_FAILURE_LEVEL_HEROIC:
+						{
+							MapInfo* pMi = WorldMapInfoStorage.LookupEntry(pAreaTrigger->Mapid);
+							snprintf(msg,200,pReason,pMi->minlevel_heroic);
+							data << msg;
+						}
+						break;
 					default:
 						data << pReason;
 						break;

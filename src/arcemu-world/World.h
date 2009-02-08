@@ -124,6 +124,7 @@ struct MapInfo
 	uint32 type;
 	uint32 playerlimit;
 	uint32 minlevel;
+	uint32 minlevel_heroic;
 	float repopx;
 	float repopy;
 	float repopz;
