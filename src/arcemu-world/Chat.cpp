@@ -478,10 +478,11 @@ void CommandTableStorage::Init()
 	static ChatCommand recallCommandTable[] =
 	{
 		{ "list",       'q', &ChatHandler::HandleRecallListCommand,       "List recall locations",     NULL, 0, 0, 0 },
-		{ "port",       'q', &ChatHandler::HandleRecallGoCommand,         "Port to recalled location", NULL, 0, 0, 0 },
-		{ "add",        'q', &ChatHandler::HandleRecallAddCommand,        "Add recall location",       NULL, 0, 0, 0 },
+		{ "add",        'q', &ChatHandler::HandleRecallAddCommand,        "Add a recall location",       NULL, 0, 0, 0 },
 		{ "del",        'q', &ChatHandler::HandleRecallDelCommand,        "Remove a recall location",  NULL, 0, 0, 0 },
-		{ "portplayer", 'm', &ChatHandler::HandleRecallPortPlayerCommand, "recall ports player",       NULL, 0, 0, 0 },
+		{ "port",       'q', &ChatHandler::HandleRecallGoCommand,         "Ports you to recalled location", NULL, 0, 0, 0 },
+		{ "portplayer", 'm', &ChatHandler::HandleRecallPortPlayerCommand, "Ports specified player to a recalled location", NULL, 0, 0, 0 },
+		{ "portus",		'm', &ChatHandler::HandleRecallPortUsCommand,	  "Ports you and the selected player to recalled location",       NULL, 0, 0, 0 },
 		{ NULL,         '0', NULL,                                        "",                          NULL, 0, 0, 0 }
 	};
 	dupe_command_table(recallCommandTable, _recallCommandTable);

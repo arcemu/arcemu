@@ -481,6 +481,7 @@ protected:
 	bool HandleModPeriodCommand(const char* args, WorldSession * m_session);
 	bool HandleGlobalPlaySoundCommand(const char* args, WorldSession * m_session);
 	bool HandleRecallPortPlayerCommand(const char* args, WorldSession * m_session);
+	bool HandleRecallPortUsCommand(const char* args, WorldSession * m_session);
 
 	// bans
 	bool HandleIPBanCommand(const char * args, WorldSession * m_session);

@@ -20,17 +20,8 @@
 
 #include "StdAfx.h"
 
-bool ChatHandler::HandleRecallGoCommand(const char* args, WorldSession *m_session)
+bool GetRecallLocation(const char* location, uint32 &map, LocationVector &v)
 {
-	if( args == NULL )
-		return false;
-
-	if( !*args )
-		return false;
-
-	if( m_session == NULL )
-		return false;
-
 	QueryResult *result = WorldDatabase.Query( "SELECT * FROM recall ORDER BY name" );
 
 	if( result == NULL)
@@ -45,24 +36,75 @@ bool ChatHandler::HandleRecallGoCommand(const char* args, WorldSession *m_sessio
 		float y = fields[4].GetFloat();
 		float z = fields[5].GetFloat();
 
-		if( strnicmp( const_cast< char* >( args ), locname, strlen( args ) ) == 0 )
+		if( strnicmp( const_cast< char* >( location ), locname, strlen( location ) ) == 0 )
 		{
-			if( m_session->GetPlayer() != NULL )
-			{
-				m_session->GetPlayer()->SafeTeleport(locmap, 0, LocationVector(x, y, z));
-				delete result;
-				return true;
-			}
-			else
-			{
-				delete result;
-				return false;
-			}
+			map = locmap;
+			v.x = x;
+			v.y = y;
+			v.z = z;
+			v.o = 0.0;
+			delete result;
+			return true;
 		}
 
 	}while (result->NextRow());
 
 	delete result;
+	return false;
+
+}
+
+bool ChatHandler::HandleRecallGoCommand(const char* args, WorldSession *m_session)
+{
+	if( args == NULL )
+		return false;
+
+	if( !*args )
+		return false;
+
+	if( m_session == NULL )
+		return false;
+
+	uint32 map;
+	LocationVector v;
+	if (GetRecallLocation(args, map, v))
+	{
+		if( m_session->GetPlayer() != NULL )
+		{
+			m_session->GetPlayer()->SafeTeleport(map, 0, v);
+			return true;
+		}
+		return false;
+	}
+	return false;
+}
+
+bool ChatHandler::HandleRecallPortUsCommand(const char* args, WorldSession * m_session)
+{
+	if( args == NULL )
+		return false;
+
+	if( !*args )
+		return false;
+
+	if( m_session == NULL )
+		return false;
+
+	uint32 map;
+	LocationVector v;
+	Player *player = m_session->GetPlayer();
+	if (GetRecallLocation(args, map, v))
+	{
+		Player * target = objmgr.GetPlayer((uint32)m_session->GetPlayer()->GetSelection());
+		if (!target)
+		{
+			SystemMessage(m_session, "Select a player first.");
+			return true;
+		}
+		player->SafeTeleport(map, 0, v);
+		target->SafeTeleport(map, 0, v);
+		return true;
+	}
 	return false;
 }
 
