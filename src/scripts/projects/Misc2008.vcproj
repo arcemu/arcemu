@@ -227,7 +227,7 @@
 				RuntimeLibrary="2"
 				BufferSecurityCheck="false"
 				FloatingPointModel="2"
-				UsePrecompiledHeader="2"
+				UsePrecompiledHeader="0"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="false"
 				DebugInformationFormat="3"
@@ -373,14 +373,6 @@
 			<File
 				RelativePath="..\src\MiscScripts\Setup.cpp"
 				>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="1"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\src\MiscScripts\Setup.h"
@@ -407,8 +399,8 @@
 			<File
 				RelativePath="..\src\MiscScripts\GameObjectTeleportTable.cpp"
 				>
-			</File>
-			<File
+				</File>
+				<File
 				RelativePath="..\src\MiscScripts\QuelDanasPortal.cpp"
 				>
 			</File>
