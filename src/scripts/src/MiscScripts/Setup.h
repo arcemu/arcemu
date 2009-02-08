@@ -25,5 +25,6 @@ void SetupQDGoHandlers(ScriptMgr * mgr);
 void SetupRandomScripts(ScriptMgr * mgr);
 void SetupMiscCreatures(ScriptMgr * mgr);
 void SetupEbonHold(ScriptMgr * mgr);
+void InitializeGameObjectTeleportTable(ScriptMgr * mgr);
 
 #endif
