@@ -230,14 +230,13 @@ StrandOfTheAncient::StrandOfTheAncient(MapMgr * mgr, uint32 id, uint32 lgroup, u
 	m_worldStates.clear();
 	m_pvpData.clear();
 	m_resurrectMap.clear();
+	m_scores[0] = m_scores[1] = 0;
 
 	uint32 mapId = BattlegroundManager.GetMap(BATTLEGROUND_STRAND_OF_THE_ANCIENT);
 
 	// Boats
 	for (int i = 0; i < 4; i++)
 	{
-		//m_boats[i] = SpawnGameObject(20808,
-		//	mapId,
 		m_boats[i] = m_mapMgr->CreateAndSpawnGameObject(20808,
 			sotaBoats[i][0], sotaBoats[i][1], sotaBoats[i][2], sotaBoats[i][3], 1.0f);
 		m_boats[i]->PushToWorld(mgr);
@@ -273,8 +272,6 @@ StrandOfTheAncient::StrandOfTheAncient(MapMgr * mgr, uint32 id, uint32 lgroup, u
 
 StrandOfTheAncient::~StrandOfTheAncient()
 {
-	//ObjectMgr::getSingleton().DeleteTransport(m_boats[0]);
-
 	if (m_relic && !m_relic->IsInWorld())
 	{
 		delete m_relic;
@@ -306,7 +303,6 @@ StrandOfTheAncient::~StrandOfTheAncient()
 		m_endgate = 0;
 	}
 
-	/*
 	for (uint32 i = 0; i < BUFF_COUNT; ++i)
 	{
 		// buffs may not be spawned, so delete them if they're not
@@ -316,7 +312,6 @@ StrandOfTheAncient::~StrandOfTheAncient()
 			m_buffs[i] = 0;
 		}
 	}
-	*/
 
 }
 
@@ -369,7 +364,7 @@ void StrandOfTheAncient::OnAddPlayer(Player * plr)
 	if(!m_started)
 		plr->CastSpell(plr, BG_PREPARATION, true);
 	//plr->m_CurrentTransporter = m_boat[0];
-		sota_players.push_back(plr);
+	sota_players.push_back(plr);
 }
 
 void StrandOfTheAncient::OnRemovePlayer(Player * plr)
@@ -487,22 +482,22 @@ bool StrandOfTheAncient::HookSlowLockOpen(GameObject * pGo, Player * pPlayer, Sp
 	sEventMgr.AddEvent(((CBattleground*)this), &CBattleground::Close, EVENT_BATTLEGROUND_CLOSE, 120000, 1,0);
 
 	/* increment the score world state */
-	//SetWorldState(pPlayer->GetTeam() ? WSG_CURRENT_HORDE_SCORE : WSG_CURRENT_ALLIANCE_SCORE, m_scores[pPlayer->GetTeam()]);
+	SetWorldState(pPlayer->GetTeam() ? WSG_CURRENT_HORDE_SCORE : WSG_CURRENT_ALLIANCE_SCORE, m_scores[pPlayer->GetTeam()]);
 
 	UpdatePvPData();
 
 	return true;
 }
 
-// Probably safe not using these
+// For banners
 void StrandOfTheAncient::HookFlagStand(Player * plr, GameObject * obj)
 {
 }
 
+// Not used?
 void StrandOfTheAncient::HookOnFlagDrop(Player * plr)
 {
 }
-
 void StrandOfTheAncient::HookFlagDrop(Player * plr, GameObject * obj)
 {
 }

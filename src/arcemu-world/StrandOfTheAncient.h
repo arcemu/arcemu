@@ -40,6 +40,7 @@ class StrandOfTheAncient : public CBattleground
 private:
 	//Transporter * m_boats[2];
 	//TransportPath path;
+	uint32		 m_scores[2];
 	GameObject * m_boats[2];
 	GameObject * m_buffs[BUFF_COUNT];
 	GameObject * m_relic;
