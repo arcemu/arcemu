@@ -662,10 +662,75 @@ void Spell::SpellTargetAllyBasedAreaEffect(uint32 i, uint32 j)
 	FillAllFriendlyInArea(i,m_caster->GetPositionX(),m_caster->GetPositionY(),m_caster->GetPositionZ(),GetRadius(i));
 }
 
-/// Spell Target Handling for type 31: related to scripted effects
-void Spell::SpellTargetScriptedEffects(uint32 i, uint32 j)
+// Used to target top 5 lowest hp players.
+bool hpLessThan(Player* left, Player* right)
 {
-	FillAllTargetsInArea(i,m_targets.m_destX,m_targets.m_destY,m_targets.m_destZ,GetRadius(i));
+	return (*left).GetHealthPct() < (*right).GetHealthPct();
+}
+
+/// Spell Target Handling for type 31: related to scripted effects
+void Spell::SpellTargetScriptedEffects( uint32 i, uint32 j )
+{
+	// Circle of healing or Wild Growth
+	// - target top 5 hp deficient raid members around target.
+	if( GetProto()->NameHash == SPELL_HASH_CIRCLE_OF_HEALING || GetProto()->NameHash == SPELL_HASH_WILD_GROWTH )
+	{
+		if( p_caster == NULL || !p_caster->IsInWorld() )
+			return;
+
+		TargetsList* tmpMap = &m_targetUnits[i];
+		Unit * pTarget = p_caster->GetMapMgr()->GetUnit( m_targets.m_unitTarget );
+
+		if( !pTarget )
+			return;
+		
+		if( p_caster == pTarget ||
+			IsInrange( p_caster->GetPositionX(), p_caster->GetPositionY(), p_caster->GetPositionZ(), pTarget, GetMaxRange( dbcSpellRange.LookupEntry( GetProto()->rangeIndex ) ) ) )
+			SafeAddTarget( tmpMap, pTarget->GetGUID() );	 
+		else
+		{
+			cancastresult = SPELL_FAILED_OUT_OF_RANGE;
+			return; // No point targetting others if the target is not in casting range.
+		}
+
+		Group * group = p_caster->GetGroup(); 
+		if( group == NULL )
+			return;
+
+		std::vector<Player*> raidList;
+		std::vector<Player*>::iterator itr;
+
+		uint32 count = group->GetSubGroupCount();
+
+		group->Lock();
+		for( uint32 k = 0; k < count; k++ )
+		{
+			SubGroup * subgroup = group->GetSubGroup( k );
+			if( subgroup )
+			{
+				for( GroupMembersSet::iterator itr = subgroup->GetGroupMembersBegin(); itr != subgroup->GetGroupMembersEnd(); ++itr )
+				{
+					if( (*itr)->m_loggedInPlayer && m_caster != (*itr)->m_loggedInPlayer && 
+						IsInrange( pTarget->GetPositionX(), pTarget->GetPositionY(), pTarget->GetPositionZ(), (*itr)->m_loggedInPlayer, GetRadius(i) ) )
+						raidList.push_back( (*itr)->m_loggedInPlayer );
+				}
+			}
+		}
+		group->Unlock();
+
+		std::sort( raidList.begin(), raidList.end(), hpLessThan );
+
+		uint32 maxTargets = 4;
+		if( GetProto()->NameHash == SPELL_HASH_CIRCLE_OF_HEALING && p_caster->HasSpell( 55675 ) ) // Glyph of circle of healing
+			maxTargets++;
+
+		for( itr = raidList.begin(); itr != raidList.end() && maxTargets > 0; ++itr, maxTargets-- )
+		{
+			SafeAddTarget( tmpMap, (*itr)->GetGUID() );
+		}
+	}
+	else
+		FillAllTargetsInArea( i, m_targets.m_destX, m_targets.m_destY, m_targets.m_destZ, GetRadius(i) );
 }
 
 /// Spell Target Handling for type 32 / 73: related to summoned pet or creature
