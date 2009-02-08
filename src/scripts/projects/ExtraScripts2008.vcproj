@@ -313,7 +313,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="arcemu-world.lib"
-				OutputFile="../../bin/release_x64/script_bin/ExtraScripts.dll"
+				OutputFile="../../../bin/release_x64/script_bin/ExtraScripts.dll"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="..\..\..\bin\release_x64"
 				GenerateDebugInformation="true"
