@@ -1,4 +1,4 @@
-ï»¿/* moonplusplus_full.sql
+/* moonplusplus_full.sql
 This file contains every SQL query needed by our blizzlike scripts
 Modded by ArcEmu Development Team */
 
@@ -12,7 +12,7 @@ DELETE FROM npc_gossip_textid WHERE (`creatureid`='7804');
 INSERT INTO `npc_gossip_textid` (`creatureid`,`textid`) VALUES ('7804','1758');
 UPDATE `creature_proto` SET `npcflags`='3' WHERE (`entry`='7804');
 
---- Warsong Gulch Battlemasters Flag
+-- Warsong Gulch Battlemasters Flag
 UPDATE `creature_proto` SET `npcflags`='1048577' WHERE entry IN (19910,15105,20118,16696,2804,20272,20269,19908,15102,14981,14982,2302,10360,3890);
 
 -- Arathi Basin Battlemasters Flag
@@ -427,10 +427,10 @@ VALUES
 UPDATE `quests` SET `ReqKillMobOrGOId1`='22401', `ReqKillMobOrGOId2`='21182', `ReqKillMobOrGOId3`='22402', `ReqKillMobOrGOId4`='22403', `ReqKillMobOrGOCount1`='1', `ReqKillMobOrGOCount2`='1', `ReqKillMobOrGOCount3`='1', `ReqKillMobOrGOCount4`='1' WHERE (`entry`='10895');
 
 -- Language Settings
-UPDATE `quests_localized` SET `ObjectiveText1` = 'NÃ¶rdlicher Turm markiert',
-`ObjectiveText2` = 'SÃ¼dlicher Turm markiert',
+UPDATE `quests_localized` SET `ObjectiveText1` = 'Nördlicher Turm markiert',
+`ObjectiveText2` = 'Südlicher Turm markiert',
 `ObjectiveText3` = 'Schmiedenturm markiert',
-`ObjectiveText4` = 'HÃ¼gelturm markiert' WHERE `entry` ='10895' AND `language_code`='deDE';
+`ObjectiveText4` = 'Hügelturm markiert' WHERE `entry` ='10895' AND `language_code`='deDE';
 
 UPDATE `quests_localized` SET `ObjectiveText1` = 'Northern Tower marked',
 `ObjectiveText2` = 'Southern Tower marked',
@@ -485,8 +485,8 @@ UPDATE `quests` SET `ReqKillMobOrGOId1`='20813',`ReqKillMobOrGOId2`='20815',`Req
 
 -- Language Settings
 UPDATE `quests_localized` SET `ObjectiveText1` = 'Barracke verbrannt',
-`ObjectiveText2` = 'Ã–stliche HÃ¼tte verbrannt',
-`ObjectiveText3` = 'Westliche HÃ¼tte verbrannt',
+`ObjectiveText2` = 'Östliche Hütte verbrannt',
+`ObjectiveText3` = 'Westliche Hütte verbrannt',
 `ObjectiveText4` = 'Stall verbrannt' WHERE `entry`='10792' AND `language_code`='deDE';
 
 UPDATE `quests_localized` SET `ObjectiveText1` = 'Barracks burned',
