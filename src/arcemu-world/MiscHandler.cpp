@@ -1243,12 +1243,27 @@ void WorldSession::HandleAmmoSetOpcode(WorldPacket & recv_data)
 			}
 		}
 	}
-	_player->SetUInt32Value(PLAYER_AMMO_ID, ammoId);
-	_player->CalcDamage();
-
+	switch(_player->getClass())
+	{
+		case PRIEST:  // allowing priest, warlock, mage to equip ammo will mess up wand shoot. stop it.
+		case WARLOCK:
+		case MAGE:
+		case SHAMAN: // these don't get messed up since they don't use wands, but they don't get to use bows/guns/crossbows anyways
+		case DRUID:  // we wouldn't want them cheating extra stats from ammo, would we?
+		case PALADIN:
+		case DEATHKNIGHT:
+			_player->GetItemInterface()->BuildInventoryChangeError(NULL, NULL, INV_ERR_YOU_CAN_NEVER_USE_THAT_ITEM); // good error message?
+			_player->SetUInt32Value(PLAYER_AMMO_ID, 0);
+			_player->CalcDamage();
+			return;
+		default:
+			_player->SetUInt32Value(PLAYER_AMMO_ID, ammoId);
+			_player->CalcDamage();
 #ifdef OPTIMIZED_PLAYER_SAVING
-	_player->save_Misc();
+			_player->save_Misc();
 #endif
+			break;
+	}
 }
 
 #define OPEN_CHEST 11437 
