@@ -44,18 +44,26 @@
 	- ACHIEVEMENT_CRITERIA_TYPE_KILL_CREATURE (some)
 	- ACHIEVEMENT_CRITERIA_TYPE_KILL_CREATURE_TYPE
 	- ACHIEVEMENT_CRITERIA_TYPE_USE_ITEM
+	- Realm-First achievements (most)
+	- Reward Titles
+	- Reward Spells
+	- Reward Items (goes to inventory?)
 
-	Achievement Rewards Working List:
-	- Titles
-	- Spells
-	- Items (goes to inventory?)
-	As long as the achievement type is handled, the reward -should- work too.
-
-	What's Not Working Yet:
+	What's Not Working Yet (known):
 	- Several achievement types
 	- Time limits on achievements
-	- Realm-First achievements (everyone gets them)
 	- Special conditions for achievements (group size, nobody in raid die during fight, etc.)
+
+	About realm-first achievements:
+	I'm doing this a somewhat weird way, I think, but it should make sense.
+	If not, it should actually be easier to re-do in a more normal way.
+	What I'm trying now is this:
+		All "realm-first" achievements get "completed" and "saved" to database,
+		but will not be sent to a player if they are not the first,
+		or be sent to another player inspecting their achievements.
+	Why count these as completed and save them?
+		The only reason I'm choosing to save them is so that if a character that actually is the first on the realm to complete it
+		is deleted, the one 2nd in line gets the title as Realm First.  I have no idea whether this is like a 'lizzard server.
 */
 
 #include "StdAfx.h"
@@ -125,6 +133,76 @@ bool SaveAchievementProgressToDB(const CriteriaProgress* c)
 		case ACHIEVEMENT_CRITERIA_TYPE_REACH_SKILL_LEVEL:
 		case ACHIEVEMENT_CRITERIA_TYPE_LEARN_SKILL_LEVEL:
 			return false;
+		default:
+			break;
+	}
+	return true;
+}
+
+bool ShowCompletedAchievement(uint32 achievementID, const Player* plr)
+{
+	switch(achievementID)
+	{
+		case  457: // Realm First! Level 80
+		case  467: // Realm First! Level 80 Shaman
+		case  466: // Realm First! Level 80 Druid
+		case  465: // Realm First! Level 80 Paladin
+		case  464: // Realm First! Level 80 Priest
+		case  463: // Realm First! Level 80 Warlock
+		case  462: // Realm First! Level 80 Hunter
+		case  461: // Realm First! Level 80 Death Knight
+		case  460: // Realm First! Level 80 Mage
+		case  459: // Realm First! Level 80 Warrior
+		case  458: // Realm First! Level 80 Rogue
+		case 1404: // Realm First! Level 80 Gnome
+		case 1405: // Realm First! Level 80 Blood Elf
+		case 1406: // Realm First! Level 80 Draenei
+		case 1407: // Realm First! Level 80 Dwarf
+		case 1408: // Realm First! Level 80 Human
+		case 1409: // Realm First! Level 80 Night Elf
+		case 1410: // Realm First! Level 80 Orc
+		case 1411: // Realm First! Level 80 Tauren
+		case 1412: // Realm First! Level 80 Troll
+		case 1413: // Realm First! Level 80 Forsaken
+		case 1415: // Realm First! Grand Master Alchemist
+		case 1414: // Realm First! Grand Master Blacksmith
+		case 1416: // Realm First! Cooking Grand Master
+		case 1417: // Realm First! Grand Master Enchanter
+		case 1418: // Realm First! Grand Master Engineer
+		case 1419: // Realm First! First Aid Grand Master
+		case 1420: // Realm First! Grand Master Angler
+		case 1421: // Realm First! Grand Master Herbalist
+		case 1422: // Realm First! Grand Master Scribe
+		case 1423: // Realm First! Grand Master Jewelcrafter
+		case 1424: // Realm First! Grand Master Leatherworker
+		case 1425: // Realm First! Grand Master Miner
+		case 1426: // Realm First! Grand Master Skinner
+		case 1427: // Realm First! Grand Master Tailor
+		case 1463: // Realm First! Northrend Vanguard: First player on the realm to gain exalted reputation with the Argent Crusade, Wyrmrest Accord, Kirin Tor and Knights of the Ebon Blade.
+			{
+				QueryResult* achievementResult = CharacterDatabase.Query("SELECT guid FROM character_achievement WHERE achievement=%u ORDER BY date", achievementID);
+				// sorted by date/time, so we're only interested in the first result
+				if(achievementResult != NULL)
+				{
+					Field* field = achievementResult->Fetch();
+					if(field != NULL) // somebody has this Realm First achievement... is it this player?
+					{
+						uint64 firstguid = field->GetUInt32();
+						if(firstguid != (uint32)plr->GetGUID()) // nope, somebody else was first.
+						{
+							delete achievementResult;
+							return false;
+						}
+					}
+					delete achievementResult;
+				}
+			}
+			break;
+// All raid members should receive these last 3 Realm First achievements when they first occur.
+// (not implemented yet)
+//		case 1400: // Realm First! Magic Seeker: Participated in the realm first defeat of Malygos on Heroic Difficulty.
+//		case  456: // Realm First! Obsidian Slayer: Participated in the realm first defeat of Sartharion the Onyx Guardian on Heroic Difficulty.
+//		case 1402: // Realm First! Conqueror of Naxxramas: Participated in the realm first defeat of Kel'Thuzad on Heroic Difficulty in Naxxramas.
 		default:
 			break;
 	}
@@ -1224,7 +1302,8 @@ void AchievementMgr::CompletedAchievement(AchievementEntry const* achievement)
 		return;
 	}
 
-	SendAchievementEarned( achievement );
+	if(ShowCompletedAchievement(achievement->ID, GetPlayer()))
+		SendAchievementEarned( achievement );
 	m_completedAchievements[achievement->ID] = time(NULL);
 
 	if(!(achievement->flags & ACHIEVEMENT_FLAG_REALM_FIRST_KILL))
@@ -1256,8 +1335,11 @@ void AchievementMgr::BuildAllDataPacket(WorldPacket *data, bool self)
 {
 	for( CompletedAchievementMap::iterator iter = m_completedAchievements.begin(); iter!=m_completedAchievements.end(); ++iter )
 	{
-		*data << uint32(iter->first);
-		*data << uint32(secsToTimeBitFields(iter->second));
+		if(ShowCompletedAchievement(iter->first, GetPlayer()))
+		{
+			*data << uint32(iter->first);
+			*data << uint32(secsToTimeBitFields(iter->second));
+		}
 	}
 	*data << int32(-1);
 	for(CriteriaProgressMap::iterator iter = m_criteriaProgress.begin(); iter!=m_criteriaProgress.end(); ++iter)
