@@ -2921,7 +2921,7 @@ void Unit::Strike( Unit* pVictim, uint32 weapon_damage_type, SpellEntry* ability
 //==========================================================================================
 //==============================Unacceptable Cases Processing===============================
 //==========================================================================================
-	if(!pVictim->isAlive() || !isAlive()  || IsStunned() || IsPacified() || IsFeared())
+	if( !pVictim || !pVictim->isAlive() || !isAlive()  || IsStunned() || IsPacified() || IsFeared())
 		return;
 
 	if(!isInFront(pVictim))
@@ -7352,9 +7352,9 @@ void Unit::UpdatePowerAmm()
 {
 	if( !IsPlayer() )
 		return;
-	WorldPacket data(SMSG_POWER_UPDATE, 5);
-	FastGUIDPack(data, GetGUID());
+	WorldPacket data( SMSG_POWER_UPDATE, 5 );
+	FastGUIDPack( data, GetGUID() );
 	data << uint8( GetPowerType() );
 	data << GetUInt32Value( UNIT_FIELD_POWER1 + GetPowerType() );
-	SendMessageToSet(&data, true);
+	SendMessageToSet( &data, true );
 }
