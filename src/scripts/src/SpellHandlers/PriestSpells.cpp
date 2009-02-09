@@ -76,6 +76,7 @@ bool Penance(uint32 i, Spell * pSpell)
 		player->CastSpell(target, friendlySpell[0], true);
 		player->CastSpell(target, friendlySpell[1], false);
 	}
+	return true;
 }
 
 void SetupPriestSpells(ScriptMgr * mgr)
