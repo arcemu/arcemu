@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 10.00
 # Visual Studio 2008
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ExtraScripts", "projects\ExtraScripts2008.vcproj", "{9F200BBC-57C3-4F0C-8BB5-F9053E4BB4B3}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ExtraScripts", "projects\ExtraScripts2008.vcproj", "{BAAF7C60-9243-43D3-8091-829BCA93EBC5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,14 +11,14 @@ Global
 		Release|x64 = Release|x64
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{9F200BBC-57C3-4F0C-8BB5-F9053E4BB4B3}.Debug|Win32.ActiveCfg = Debug|Win32
-		{9F200BBC-57C3-4F0C-8BB5-F9053E4BB4B3}.Debug|Win32.Build.0 = Debug|Win32
-		{9F200BBC-57C3-4F0C-8BB5-F9053E4BB4B3}.Debug|x64.ActiveCfg = Debug|x64
-		{9F200BBC-57C3-4F0C-8BB5-F9053E4BB4B3}.Debug|x64.Build.0 = Debug|x64
-		{9F200BBC-57C3-4F0C-8BB5-F9053E4BB4B3}.Release|Win32.ActiveCfg = Release|Win32
-		{9F200BBC-57C3-4F0C-8BB5-F9053E4BB4B3}.Release|Win32.Build.0 = Release|Win32
-		{9F200BBC-57C3-4F0C-8BB5-F9053E4BB4B3}.Release|x64.ActiveCfg = Release|x64
-		{9F200BBC-57C3-4F0C-8BB5-F9053E4BB4B3}.Release|x64.Build.0 = Release|x64
+		{BAAF7C60-9243-43D3-8091-829BCA93EBC5}.Debug|Win32.ActiveCfg = Debug|Win32
+		{BAAF7C60-9243-43D3-8091-829BCA93EBC5}.Debug|Win32.Build.0 = Debug|Win32
+		{BAAF7C60-9243-43D3-8091-829BCA93EBC5}.Debug|x64.ActiveCfg = Debug|x64
+		{BAAF7C60-9243-43D3-8091-829BCA93EBC5}.Debug|x64.Build.0 = Debug|x64
+		{BAAF7C60-9243-43D3-8091-829BCA93EBC5}.Release|Win32.ActiveCfg = Release|Win32
+		{BAAF7C60-9243-43D3-8091-829BCA93EBC5}.Release|Win32.Build.0 = Release|Win32
+		{BAAF7C60-9243-43D3-8091-829BCA93EBC5}.Release|x64.ActiveCfg = Release|x64
+		{BAAF7C60-9243-43D3-8091-829BCA93EBC5}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
