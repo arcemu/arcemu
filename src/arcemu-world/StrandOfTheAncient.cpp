@@ -75,18 +75,38 @@ Strand of the Ancients
 			30582	13832	// Ufuda Giant-Slayer - Orgrimmar
 			30587	13832	// Vinvo Goldgear - Shattrath
 
+* SQL Patched (Build 2172)
 	creature_protos (for above creatures)
 			npcflags = 1048577
 
+* Fix level requirements to join the battleground. And fix which npc text is used
+  for the battlemaster gossip scripts, displaying the proper of 3 messages
 	npc_text
 		 13832 = You are not yet strong enough to do battle in the Strand of the Ancients. Return when you have gained more experience.
 		 13834 = We cannot allow the Alliance to turn the hidden secrets of the Strand of the Ancients against us. Will you join our brave warriors there?
 		+13833 = We cannot allow the Horde to turn the hidden secrets of the Strand of the Ancients against us. Will you join our brave warriors there?
 
-* Battles consist of two 10 minute rounds, it appears that
-  horde always defend first.
+* Battles consist of two 10 minute rounds
 
-* Increase the view distance on map 607 to 500 or 0 (Unlimited).
+* Rounds end whe time expires or when the relic is captured.
+
+* Who defends first and attacks first should be random.
+
+* Increase the view distance on map 607 to 500 or 0 (Unlimited). See the
+  transporter patch... Need a way to see the gates from as far away as
+  the boats.
+
+* Besure to spawn, platforms, vehicels, and relic so only the proper faction
+  can use them.
+
+* Fix it where a BG is instanced as soon as the first player joins, only
+  after one faction has field their entire queue for a particular battlefield,
+  would a new BG instance be created. It might actually be this way, if so
+  just patch so that these pre-loaded instances appear in the battlemaster lists.
+
+* Also change so numbers are reused, once SOTA instance 1 is deleted, there is
+  no reason why that instance id can't be reused. Also each BG needs it own
+  unique numbering, instead of a shared pool.
 
 ************************************************************************/
 
@@ -148,14 +168,14 @@ const float sotaGates[GATE_COUNT][4] = {
 };
 const float sotaChamberGate[4] = { 878.555f, -108.989f, 119.835f, 0.0565f };
 
-// Things radiating out from the doors... same orientation as door.
+// Things radiating out from the gates... same orientation as door.
 const uint32 GateSigilGOIds[5] =  { 192687, 192685, 192689, 192690, 192691, };
 const float sotaGateSigils[GATE_COUNT][4] = {
 	{ 1414.054f, 106.72f, 41.442f, 5.441f },
 	{ 1060.63f, -107.8f, 94.7f, 0.034f },
 	{ 1433.383f, -216.4f, 43.642f, 0.9736f },
 	{ 1230.75f, -210.724f, 67.611f, 0.5023f },
-	{ 1217.8f, 79.532f, 66.58f, 0.0565f },
+	{ 1217.8f, 79.532f, 66.58f, 5.745f },
 };
 
 // Defender transporter platform locations
@@ -216,7 +236,7 @@ const float sotaStartingPosition[2][4] = {
 	{ 1209.7f, -65.16f, 70.1f, 0.0f },
 };
 
-
+// We'll need to borrow this from elsewhere
 float CalculateDistance(float x1, float y1, float z1, float x2, float y2, float z2);
 
 StrandOfTheAncient::StrandOfTheAncient(MapMgr * mgr, uint32 id, uint32 lgroup, uint32 t) : CBattleground(mgr, id, lgroup, t)
@@ -230,7 +250,6 @@ StrandOfTheAncient::StrandOfTheAncient(MapMgr * mgr, uint32 id, uint32 lgroup, u
 	m_worldStates.clear();
 	m_pvpData.clear();
 	m_resurrectMap.clear();
-	m_scores[0] = m_scores[1] = 0;
 
 	uint32 mapId = BattlegroundManager.GetMap(BATTLEGROUND_STRAND_OF_THE_ANCIENT);
 
@@ -375,6 +394,11 @@ void StrandOfTheAncient::OnRemovePlayer(Player * plr)
 
 LocationVector StrandOfTheAncient::GetStartingCoords(uint32 team)
 {
+	/*
+	 *	This needs to be flexible, we can't be starting players in the ocean for
+	 *	late arrivals. Also Repop locations need to change as the attack progresses.
+	 */
+
 	return LocationVector(sotaStartingPosition[team][0],
 		sotaStartingPosition[team][1], sotaStartingPosition[team][2],
 		sotaStartingPosition[team][3]);
@@ -434,9 +458,27 @@ void StrandOfTheAncient::SpawnBuff(uint32 x)
 	}
 }
 
+#define TEST_1	3562
+#define TEST_2	3563
+#define TEST_3	3538
+#define TEST_4	3539
+
 void StrandOfTheAncient::OnCreate()
 {
 	sLog.outDebug("OnCreate: SOTA Battleground\n");
+
+	SetWorldState(WORLDSTATE_SOTA_CAPTURE_BAR_DISPLAY, 0);
+	SetWorldState(WORLDSTATE_SOTA_CAPTURE_BAR_VALUE, 0);
+	PrepareRound();
+	SetWorldState(WORLDSTATE_SOTA_BONUS_TIME, 0);
+	SetWorldState(WORLDSTATE_SOTA_TIMER_1, 0);
+	SetWorldState(WORLDSTATE_SOTA_TIMER_2, 0);
+	SetWorldState(WORLDSTATE_SOTA_TIMER_3, 0);
+
+	SetWorldState(TEST_1, 0);
+	SetWorldState(TEST_2, 0);
+	SetWorldState(TEST_3, 0);
+	SetWorldState(TEST_4, 0);
 }
 
 void StrandOfTheAncient::OnStart()
@@ -455,6 +497,20 @@ void StrandOfTheAncient::OnStart()
 		plr->SafeTeleport(plr->GetMapId(), plr->GetInstanceID(), dest);
 	}
 
+	SetWorldState(WORLDSTATE_SOTA_CAPTURE_BAR_DISPLAY, (uint32)-1);
+	SetWorldState(WORLDSTATE_SOTA_CAPTURE_BAR_VALUE, (uint32)-1);
+	SetWorldState(WORLDSTATE_SOTA_BONUS_TIME, 1);
+	SetWorldState(WORLDSTATE_SOTA_TIMER_1, 10); // 10 Minute Timer
+
+	SetWorldState(TEST_1, (uint32)-1);
+	SetWorldState(TEST_2, (uint32)-1);
+	SetWorldState(TEST_3, (uint32)-1);
+	SetWorldState(TEST_4, (uint32)-1);
+
+	//SetTime(ROUND_LENGTH, 0);
+	sEventMgr.AddEvent( this, &StrandOfTheAncient::TimeTick, EVENT_SOTA_TIMER, MSTIME_SECOND * 5, 0, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT );
+
+	UpdatePvPData();
 }
 
 void StrandOfTheAncient::HookGenerateLoot(Player *plr, Object * pOCorpse)
@@ -476,16 +532,20 @@ void StrandOfTheAncient::SetIsWeekend(bool isweekend)
 // end game, attackers captured flag
 bool StrandOfTheAncient::HookSlowLockOpen(GameObject * pGo, Player * pPlayer, Spell * pSpell)
 {
-	sLog.outDebug("*** StrandOfTheAncient::HookSlowLockOpen");
+	sLog.outDebug("*** StrandOfTheAncient::HookSlowLockOpen - Relic Captured");
 	PlaySoundToAll( 8212 );
+
+	/*
+	// Root everyone, THEN Start next round, and Unroot -- OR -- Shutdown battleground.
 	sEventMgr.RemoveEvents(this, EVENT_BATTLEGROUND_CLOSE);
 	sEventMgr.AddEvent(((CBattleground*)this), &CBattleground::Close, EVENT_BATTLEGROUND_CLOSE, 120000, 1,0);
 
-	/* increment the score world state */
+	// increment the score world state
 	SetWorldState(pPlayer->GetTeam() ? WSG_CURRENT_HORDE_SCORE : WSG_CURRENT_ALLIANCE_SCORE, m_scores[pPlayer->GetTeam()]);
+	this->GetMapMgr()->SetWorldState
 
 	UpdatePvPData();
-
+	*/
 	return true;
 }
 
@@ -493,6 +553,40 @@ bool StrandOfTheAncient::HookSlowLockOpen(GameObject * pGo, Player * pPlayer, Sp
 void StrandOfTheAncient::HookFlagStand(Player * plr, GameObject * obj)
 {
 }
+
+// time in seconds
+void StrandOfTheAncient::SetTime(uint32 secs, uint32 WorldState)
+{
+	uint32 minutes = secs / TIME_MINUTE;
+	uint32 seconds = secs % TIME_MINUTE;
+	uint32 digits[3];
+	digits[0] = minutes;
+	digits[1] = seconds / 10;
+	digits[2] = seconds % 10;
+
+	//m_mapMgr->GetStateManager().UpdateWorldState( WorldState, 1 );
+	SetWorldState( WORLDSTATE_SOTA_TIMER_1, digits[0] );
+	SetWorldState( WORLDSTATE_SOTA_TIMER_2, digits[1] );
+	SetWorldState( WORLDSTATE_SOTA_TIMER_3, digits[2] );
+	SetRoundTime( secs );
+}
+
+void StrandOfTheAncient::PrepareRound()
+{
+	//SetWorldState( WORLDSTATE_SOTA_ALLIANCE_DEFENDER, Attackers == HORDE ? 1 : 0 );
+	//SetWorldState( WORLDSTATE_SOTA_ALLIANCE_ATTACKER, Attackers == HORDE ? 0 : 1 );
+	SetWorldState( WORLDSTATE_SOTA_ALLIANCE_DEFENDER, 1);
+	SetWorldState( WORLDSTATE_SOTA_ALLIANCE_ATTACKER, 0);
+};
+
+void StrandOfTheAncient::TimeTick()
+{
+	SetTime(GetRoundTime() - 5,0);
+	if(GetRoundTime() == 0)
+	{
+		sEventMgr.RemoveEvents(this, EVENT_SOTA_TIMER);
+	}
+};
 
 // Not used?
 void StrandOfTheAncient::HookOnFlagDrop(Player * plr)

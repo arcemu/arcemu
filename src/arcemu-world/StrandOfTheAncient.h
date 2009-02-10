@@ -25,6 +25,28 @@
 #define GUN_LEFT		0
 #define GUN_RIGHT		1
 
+#define HORDE 0
+#define ALLIANCE 1
+#define ROUND_LENGTH 600 //in secs
+
+// Is this number importing or just an ID?
+#define EVENT_SOTA_TIMER 0x57283dd
+
+// World States
+enum SotaWorldStates
+{
+	WORLDSTATE_SOTA_CAPTURE_BAR_DISPLAY = 3536,
+	WORLDSTATE_SOTA_CAPTURE_BAR_VALUE = 3537,
+	WORLDSTATE_SOTA_ALLIANCE_ATTACKER = 3564,
+	WORLDSTATE_SOTA_HORDE_DEFENDER = 3564,
+	WORLDSTATE_SOTA_ALLIANCE_DEFENDER = 3565,
+	WORLDSTATE_SOTA_HORDE_ATTACKER = 3565,
+	WORLDSTATE_SOTA_BONUS_TIME = 3571,
+	WORLDSTATE_SOTA_TIMER_1 = 3559,
+	WORLDSTATE_SOTA_TIMER_2 = 3560,
+	WORLDSTATE_SOTA_TIMER_3 = 3561,
+};
+
 enum Gate
 {
 	GATE_GREEN	= 0,
@@ -40,7 +62,9 @@ class StrandOfTheAncient : public CBattleground
 private:
 	//Transporter * m_boats[2];
 	//TransportPath path;
-	uint32		 m_scores[2];
+	uint32 Attackers; // 0 - horde / 1 - alliance
+	uint32 BattleRound;
+	uint32 RoundTime;
 	GameObject * m_boats[2];
 	GameObject * m_buffs[BUFF_COUNT];
 	GameObject * m_relic;
@@ -60,26 +84,31 @@ public:
 
 	uint32 GetNameID() { return 34; } // in worldstring_tables
 
+	uint32 GetRoundTime(){ return RoundTime; };
+	LocationVector GetStartingCoords(uint32 team);
 	void HookOnAreaTrigger(Player * plr, uint32 id);
 	void HookFlagStand(Player * plr, GameObject * obj);
 	void HookOnFlagDrop(Player * plr);
 	void HookFlagDrop(Player * plr, GameObject * obj);
 	void HookOnPlayerKill(Player * plr, Player * pVictim);
 	void HookOnHK(Player * plr);
-	void OnAddPlayer(Player * plr);
-	void OnRemovePlayer(Player * plr);
-	LocationVector GetStartingCoords(uint32 team);
-	void HookOnPlayerDeath(Player * plr);
-	void HookOnMount(Player * plr);
-	bool HookHandleRepop(Player * plr);
-	void OnPlatformTeleport(Player *plr);
-	void OnCreate();
-	void OnStart();
 	void HookOnShadowSight();
 	void HookGenerateLoot(Player *plr, Object * pOCorpse);
 	void HookOnUnitKill(Player * plr, Unit * pVictim);
-	void SetIsWeekend(bool isweekend);
 	bool HookSlowLockOpen(GameObject * pGo, Player * pPlayer, Spell * pSpell);
+	void HookOnPlayerDeath(Player * plr);
+	void HookOnMount(Player * plr);
+	bool HookHandleRepop(Player * plr);
+	void OnAddPlayer(Player * plr);
+	void OnRemovePlayer(Player * plr);
+	void OnPlatformTeleport(Player *plr);
+	void OnCreate();
+	void OnStart();
+	void SetIsWeekend(bool isweekend);
+	void SetRoundTime(uint32 secs){ RoundTime = secs; };
+	void SetTime(uint32 secs, uint32 WorldState);
+	void TimeTick();
+	void PrepareRound();
 
 protected:
 	uint32 m_flagHolders[2];
