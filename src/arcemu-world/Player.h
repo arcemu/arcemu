@@ -36,7 +36,6 @@ class Charter;
 class LFGMatch;
 struct LevelInfo;
 class SpeedDetector;
-#define MAX_PET_NO 3
 #define PLAYER_NORMAL_RUN_SPEED 7.0f
 #define PLAYER_NORMAL_SWIM_SPEED 4.722222f
 #define PLAYER_NORMAL_FLIGHT_SPEED 7.0f
@@ -1183,6 +1182,7 @@ public:
 	}
 	void						SpawnPet(uint32 pet_number);
 	void						SpawnActivePet();
+	void						DismissActivePet();
 
 	ARCEMU_INLINE uint8         GetPetCount(void) { return (uint8)m_Pets.size(); }
 	ARCEMU_INLINE void			SetStableSlotCount(uint8 count) { m_StableSlotCount = count; }
@@ -1439,7 +1439,6 @@ public:
 	bool m_AllowAreaTriggerPort;
 	void EventAllowTiggerPort(bool enable);
 	void UpdatePowerAmm();
-
 	uint32 m_modblockabsorbvalue;
 	uint32 m_modblockvaluefromspells;
 	void SendInitialLogonPackets();

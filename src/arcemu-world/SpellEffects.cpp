@@ -2818,7 +2818,6 @@ void Spell::SpellEffectSummon(uint32 i) // Summon
 		summon->AddSpell(dbcSpell.LookupEntry(33395), true);
 		summon->SetUInt32Value(UNIT_FIELD_FACTIONTEMPLATE, u_caster->GetUInt32Value(UNIT_FIELD_FACTIONTEMPLATE));
 		summon->_setFaction();
-
 		u_caster->SetUInt64Value(UNIT_FIELD_SUMMON, summon->GetGUID());
 	}
 	else
@@ -6402,15 +6401,8 @@ void Spell::SpellEffectFilming( uint32 i )
 		if(!modelid) return;
 	}
 
-	if(playerTarget->GetSummon() != NULL)
-	{
-		if(playerTarget->GetSummon()->GetUInt32Value(UNIT_CREATED_BY_SPELL) > 0)
-			playerTarget->GetSummon()->Dismiss(false);						   // warlock summon -> dismiss
-		else
-			playerTarget->GetSummon()->Remove( false, true, false );					  // hunter pet -> just remove for later re-call
-	}
-
-	playerTarget->TaxiStart(taxipath, modelid, 0);
+	playerTarget->DismissActivePet();
+	playerTarget->TaxiStart( taxipath, modelid, 0 );
 }
 
 void Spell::SpellEffectSpellSteal( uint32 i )

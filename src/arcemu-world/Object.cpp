@@ -2589,10 +2589,6 @@ void Object::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
 					}
 					
 					pPet->DelayedRemove( false, true );
-					
-					//remove owner warlock soul link from caster
-					if( owner != NULL )
-						owner->EventDismissPet();
 				}
 				/* ----------------------------- PET DEATH HANDLING END -------------- */
 				else if( pVictim->GetUInt64Value( UNIT_FIELD_CHARMEDBY ) )
@@ -2614,14 +2610,7 @@ void Object::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
 			static_cast< Player* >( pVictim )->m_SwimmingTime = 0;
 
 			/* -------------------- KILL PET WHEN PLAYER DIES ---------------*/
-			if( static_cast< Player* >( pVictim )->GetSummon() != NULL )
-			{
-				if( pVictim->GetUInt32Value( UNIT_CREATED_BY_SPELL ) > 0 )
-					static_cast< Player* >( pVictim )->GetSummon()->Dismiss( true );
-				else
-					static_cast< Player* >( pVictim )->GetSummon()->Remove( true, true, false );
-			}
-			/* -------------------- KILL PET WHEN PLAYER DIES END---------------*/
+			static_cast< Player* >( pVictim )->DismissActivePet();
 		}
 		else sLog.outError("DealDamage for Unknown Object.");
 	}

@@ -521,9 +521,7 @@ Player::~Player ( )
 	if(pTarget)
 		pTarget->SetInviter(0);
 
-	if( m_Summon )
-		m_Summon->Remove( true, true, false );
-
+	DismissActivePet();
 	mTradeTarget = 0;
 
 	if(DuelingWith != 0)
@@ -2016,7 +2014,7 @@ void Player::SpawnPet(uint32 pet_number)
 }
 void Player::SpawnActivePet()
 {
-	if( m_Summon != NULL )
+	if( m_Summon != NULL || getClass() != HUNTER ) //TODO: only hunters for now
 		return;
 
 	std::map< uint32, PlayerPet* >::iterator itr = m_Pets.begin();
@@ -2026,6 +2024,16 @@ void Player::SpawnActivePet()
 			SpawnPet( itr->first );
 			return;
 		}
+}
+void Player::DismissActivePet()
+{
+	if( m_Summon == NULL )
+		return;
+	
+	if( m_Summon->IsSummon() )
+		m_Summon->Dismiss();			// summons
+	else
+		m_Summon->Remove( true, true, false );// hunter pets
 }
 
 void Player::_LoadPetSpells(QueryResult * result)
@@ -2563,7 +2571,7 @@ void Player::SaveToDB(bool bNewCharacter /* =false */)
 	if(buf)
 		CharacterDatabase.AddQueryBuffer(buf);
 
-		m_achievementMgr.SaveToDB();
+	m_achievementMgr.SaveToDB();
 }
 
 void Player::_SaveQuestLogEntry(QueryBuffer * buf)
@@ -3788,8 +3796,6 @@ void Player::RemoveFromWorld()
 		m_bg = NULL;
 	}
 
-	RemoveFieldSummon();
-
 	// Cancel trade if it's active.
 	Player * pTarget;
 	if(mTradeTarget != 0)
@@ -3811,11 +3817,8 @@ void Player::RemoveFromWorld()
 
 	ClearSplinePackets();
 
-	if( m_Summon )
-	{
-		m_Summon->GetAIInterface()->SetPetOwner(0);
-		m_Summon->Remove( false, true, false );
-	}
+	DismissActivePet();
+	RemoveFieldSummon();
 
 	if(m_SummonedObject)
 	{
@@ -5814,11 +5817,6 @@ void Player::OnRemoveInRangeObject(Object* pObj)
 	if (pObj == NULL)
 		return;
 
-	if (pObj->GetGUID() == GetUInt64Value(UNIT_FIELD_SUMMON))
-	{
-		RemoveFieldSummon();
-	}
-
 	m_visibleObjects.erase(pObj);
 	Unit::OnRemoveInRangeObject(pObj);
 
@@ -5837,22 +5835,11 @@ void Player::OnRemoveInRangeObject(Object* pObj)
 			static_cast< Creature* >( p )->SafeDelete();
 	}
  
-	if(pObj == m_Summon)
-	{
-		if(m_Summon->IsSummon())
-		{
-			m_Summon->Dismiss(true);
-		}
-		else
-		{
-			m_Summon->Remove(true, true, false);
-		}
-		if(m_Summon)
-		{
-			m_Summon->ClearPetOwner();
-			m_Summon = 0;
-		}
-	}
+	if( m_Summon && pObj == m_Summon )
+		DismissActivePet();
+	
+	if( pObj->GetGUID() == GetUInt64Value( UNIT_FIELD_SUMMON ) )
+		RemoveFieldSummon();
 
 	/* wehee loop unrolling */
 /*	if(m_spellTypeTargets[0] == pObj)
@@ -7355,12 +7342,11 @@ uint32 Player::GeneratePetNumber()
 
 void Player::RemovePlayerPet(uint32 pet_number)
 {
-	std::map<uint32, PlayerPet*>::iterator itr = m_Pets.find(pet_number);
-	if(itr != m_Pets.end())
+	std::map<uint32, PlayerPet*>::iterator itr = m_Pets.find( pet_number );
+	if( itr != m_Pets.end() )
 	{
 		delete itr->second;
 		m_Pets.erase(itr);
-		EventDismissPet();
 	}
 }
 

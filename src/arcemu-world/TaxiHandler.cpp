@@ -233,14 +233,7 @@ void WorldSession::HandleActivateTaxiOpcode( WorldPacket & recv_data )
 	// 0x000008 seems to enable detailed collision checking
 
 	// check for a summon -> if we do, remove.
-	if(_player->GetSummon() != NULL)
-	{
-		if(_player->GetSummon()->GetUInt32Value(UNIT_CREATED_BY_SPELL) > 0)
-			_player->GetSummon()->Dismiss(false);						   // warlock summon -> dismiss
-		else
-			_player->GetSummon()->Remove(false, true, true);					  // hunter pet -> just remove for later re-call
-	}
-
+	_player->DismissActivePet();
 	_player->taxi_model_id = modelid;
 	GetPlayer()->TaxiStart(taxipath, modelid, 0);
 	
@@ -385,14 +378,7 @@ void WorldSession::HandleMultipleActivateTaxiOpcode(WorldPacket & recvPacket)
 	// 0x000008 seems to enable detailed collision checking
 
 	// check for a summon -> if we do, remove.
-	if(_player->GetSummon() != NULL)
-	{
-		if(_player->GetSummon()->GetUInt32Value(UNIT_CREATED_BY_SPELL) > 0)
-			_player->GetSummon()->Dismiss(false);						   // warlock summon -> dismiss
-		else
-			_player->GetSummon()->Remove(false, true, true);					  // hunter pet -> just remove for later re-call
-	}
-
+	_player->DismissActivePet();
 	_player->taxi_model_id = modelid;
 	
 	// build the rest of the path list
