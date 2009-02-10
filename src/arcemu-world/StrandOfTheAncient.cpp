@@ -61,7 +61,7 @@ Strand of the Ancients
 
 * Setup index 34 in worldstring_tables to equal "Strand of the Ancients"
 
-* Battlemaster NPC Text id's (Needs to be setup in database to use these NPC's!)
+* SQL Patched (Build 2177)
 	npc_gossip_textid
 			30586	13832	// Jojindi
 			29234	13832	// Strand of the Ancients Battlemaster - Wintergrasp
