@@ -2800,6 +2800,7 @@ void Spell::SpellEffectSummon(uint32 i) // Summon
 
 	if( !p_caster )
 		return;
+	
 	u_caster->RemoveFieldSummon();
 
 	/* This is for summon water elemenal, etc */
@@ -2808,17 +2809,12 @@ void Spell::SpellEffectSummon(uint32 i) // Summon
 	if( !ci || !cp )
 		return;
 
-	if(GetProto()->EffectMiscValue[i] == 510)	// Water Elemental
+	if( GetProto()->EffectMiscValue[i] == 510 )	// Water Elemental
 	{
 		Pet *summon = objmgr.CreatePet();
-		summon->SetInstanceID(u_caster->GetInstanceID());
-		summon->CreateAsSummon(GetProto()->EffectMiscValue[i], ci, NULL, p_caster, GetProto(), 1, GetDuration());
-		summon->SetUInt32Value(UNIT_FIELD_LEVEL, u_caster->getLevel());
-		summon->AddSpell(dbcSpell.LookupEntry(31707), true);
-		summon->AddSpell(dbcSpell.LookupEntry(33395), true);
-		summon->SetUInt32Value(UNIT_FIELD_FACTIONTEMPLATE, u_caster->GetUInt32Value(UNIT_FIELD_FACTIONTEMPLATE));
-		summon->_setFaction();
-		u_caster->SetUInt64Value(UNIT_FIELD_SUMMON, summon->GetGUID());
+		summon->CreateAsSummon( GetProto()->EffectMiscValue[i], ci, NULL, p_caster, GetProto(), 1, GetDuration() );
+		summon->AddSpell( dbcSpell.LookupEntry(31707), true );
+		summon->AddSpell( dbcSpell.LookupEntry(33395), true );
 	}
 	else
 	{
@@ -4225,10 +4221,7 @@ void Spell::SpellEffectTameCreature(uint32 i)
 	// Remove target
 	tame->GetAIInterface()->HandleEvent(EVENT_LEAVECOMBAT, p_caster, 0);
 	Pet *pPet = objmgr.CreatePet();
-	pPet->SetInstanceID(p_caster->GetInstanceID());
 	pPet->CreateAsSummon(tame->GetEntry(), tame->GetCreatureInfo(), tame, p_caster, NULL, 2, 0);
-	//tame->SafeDelete();
-	//delete tame;
 	tame->Despawn(0,tame->GetProto()? tame->GetProto()->RespawnTime:0);
 }
 
@@ -4273,16 +4266,14 @@ void Spell::SpellEffectSummonPet(uint32 i) //summon - pet
 	// remove old pet
 	Pet *old = static_cast< Player* >(m_caster)->GetSummon();
 	if(old)
-		old->Dismiss(false);		
+		old->Dismiss();
 	
-	CreatureInfo *ci = CreatureNameStorage.LookupEntry(GetProto()->EffectMiscValue[i]);
-	if(ci)
+	CreatureInfo *ci = CreatureNameStorage.LookupEntry( GetProto()->EffectMiscValue[i] );
+	if( ci )
 	{
 		if(p_caster->getClass() == WARLOCK)
 		{
-		//if demonic sacrifice auras are still active, remove them
-		//uint32 spids[] = { 18789, 18790, 18791, 18792, 35701, 0 };
-		//p_caster->RemoveAuras(spids);
+			//if demonic sacrifice auras are still active, remove them
 			p_caster->RemoveAura(18789);
 			p_caster->RemoveAura(18790);
 			p_caster->RemoveAura(18791);
@@ -4292,8 +4283,7 @@ void Spell::SpellEffectSummonPet(uint32 i) //summon - pet
 
 
 		Pet *summon = objmgr.CreatePet();
-		summon->SetInstanceID(m_caster->GetInstanceID());
-		summon->CreateAsSummon(GetProto()->EffectMiscValue[i], ci, NULL, p_caster, GetProto(), 1, 0);
+		summon->CreateAsSummon( GetProto()->EffectMiscValue[i], ci, NULL, p_caster, GetProto(), 1, 0 );
 	}
 }
 
@@ -6067,7 +6057,7 @@ void Spell::SpellEffectSummonDemon(uint32 i)
 	Pet *pPet = p_caster->GetSummon();
 	if(pPet)
 	{
-		pPet->Dismiss(false);
+		pPet->Dismiss();
 	}
 
 	CreatureInfo *ci = CreatureNameStorage.LookupEntry(GetProto()->EffectMiscValue[i]);
@@ -6079,7 +6069,6 @@ void Spell::SpellEffectSummonDemon(uint32 i)
 			vec = new LocationVector(m_targets.m_destX, m_targets.m_destY, m_targets.m_destZ);
 		}
 		pPet = objmgr.CreatePet();
-		pPet->SetInstanceID(p_caster->GetInstanceID());
 		pPet->CreateAsSummon(GetProto()->EffectMiscValue[i], ci, NULL, p_caster, GetProto(), 1, 300000, vec);
 		if (vec) delete vec;
 	}
@@ -6668,7 +6657,7 @@ void Spell::SpellEffectDismissPet(uint32 i)
 	Pet *pPet = p_caster->GetSummon();
 	if(!pPet)
 		return;
-	pPet->Remove(true, true, true);
+	pPet->Remove( true, true );
 }
 
 void Spell::SpellEffectEnchantHeldItem( uint32 i )

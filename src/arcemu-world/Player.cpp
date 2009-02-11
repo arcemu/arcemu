@@ -573,6 +573,11 @@ Player::~Player ( )
 	/*std::map<uint32,AchievementVal*>::iterator itr;
 	for(itr=m_achievements.begin();itr!=m_achievements.end();itr++)
 		delete itr->second;*/
+	
+	std::map< uint32, PlayerPet* >::iterator itr = m_Pets.begin();
+	for( ; itr != m_Pets.end(); itr++ )
+		delete itr->second;
+	m_Pets.clear();
 }
 
 ARCEMU_INLINE uint32 GetSpellForLanguage(uint32 SkillID)
@@ -1990,8 +1995,7 @@ void Player::SpawnPet(uint32 pet_number)
 	if (itr->second->spellid == 0)
 	{
 		Pet *pPet = objmgr.CreatePet();
-		pPet->SetInstanceID(GetInstanceID());
-		pPet->LoadFromDB(this, itr->second);
+		pPet->LoadFromDB( this, itr->second );
 	}
 	else
 	{
@@ -2007,8 +2011,8 @@ void Player::SpawnPet(uint32 pet_number)
 			RemoveAura(35701);
 
 			Pet *summon = objmgr.CreatePet();
-			summon->SetInstanceID(GetInstanceID());
-			summon->CreateAsSummon(pSpell->EffectMiscValue[0], ci, NULL, this, pSpell, 1, 0);
+			//TODO: find better solution, now it creates new PlayerPet struct, but we already have one.
+			summon->CreateAsSummon( pSpell->EffectMiscValue[0], ci, NULL, this, pSpell, 1, 0 );
 		}
 	}
 }
@@ -2033,7 +2037,7 @@ void Player::DismissActivePet()
 	if( m_Summon->IsSummon() )
 		m_Summon->Dismiss();			// summons
 	else
-		m_Summon->Remove( true, true, false );// hunter pets
+		m_Summon->Remove( true, false );// hunter pets
 }
 
 void Player::_LoadPetSpells(QueryResult * result)
@@ -7348,6 +7352,7 @@ void Player::RemovePlayerPet(uint32 pet_number)
 		delete itr->second;
 		m_Pets.erase(itr);
 	}
+	CharacterDatabase.Execute("DELETE FROM playerpetspells WHERE ownerguid=%u AND petnumber=%u", GetLowGUID(), pet_number );
 }
 
 void Player::_Relocate(uint32 mapid, const LocationVector & v, bool sendpending, bool force_new_world, uint32 instance_id)

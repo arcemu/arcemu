@@ -143,13 +143,13 @@ public:
 	}
 
 	void UpdatePetInfo(bool bSetToOffline);
-	void Remove(bool bSafeDelete, bool bUpdate, bool bSetOffline);
-	void Dismiss(bool bSafeDelete = false);
+	void Remove( bool bUpdate, bool bSetOffline );
+	void Dismiss();
 
 	void DelayedRemove(bool bTime, bool bDeath);
 
 	ARCEMU_INLINE Player* GetPetOwner() { return m_Owner; }
-	ARCEMU_INLINE void ClearPetOwner() { m_Owner = 0; }
+	ARCEMU_INLINE void ClearPetOwner() { m_Owner = NULL; }
 	void GiveXP(uint32 xp);
 	uint32 GetNextLevelXP(uint32 currentlevel);
 	void ApplyStatsForLevel();
@@ -207,7 +207,7 @@ public:
 	uint32 CanLearnSpell( SpellEntry* sp );
 	
 	// talents
-	ARCEMU_INLINE uint8 GetTPsForLevel( uint32 level ) { return ( level >= 20 ) ? ( level - 16 ) >> 2 : 0; }	// pet gain first talent point at lvl 20, then every 4 lvls another point
+	ARCEMU_INLINE uint8 GetTPsForLevel( uint32 level ) { return ( level >= 20 ) ? uint8( level - 16 ) >> 2 : 0; }	// pet gain first talent point at lvl 20, then every 4 lvls another point
 	ARCEMU_INLINE void SetTPs( uint8 TP ) { SetByte( UNIT_FIELD_BYTES_1, 1, TP ); }								// sets talent points
 	ARCEMU_INLINE uint8 GetTPs() { return GetByte( UNIT_FIELD_BYTES_1, 1 ); }									// returns available talent points
 	ARCEMU_INLINE uint8 GetSpentTPs() { return GetTPsForLevel( getLevel() ) - GetTPs(); }						// returns amount of spent talent points
@@ -231,7 +231,6 @@ protected:
 
 	uint32 m_AutoCombatSpell;
 
-	uint32 m_PartySpellsUpdateTimer;
 	uint32 m_HappinessTimer;
 	uint32 m_PetNumber;
 	uint32 m_Action;
@@ -245,7 +244,7 @@ protected:
 	bool Summon;
 	string m_name;
 	HappinessState GetHappinessState();
-	uint32 GetHighestRankSpell(uint32 spellId);
+	void SetNameForEntry( uint32 entry );
 
 	list<AI_Spell*> m_autoCastSpells[AUTOCAST_EVENT_COUNT];
 };

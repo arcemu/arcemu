@@ -2503,9 +2503,8 @@ void Aura::SpellAuraDummy(bool apply)
 
 				tamed->GetAIInterface()->HandleEvent( EVENT_LEAVECOMBAT, p_caster, 0 );
 				Pet *pPet = objmgr.CreatePet();
-				pPet->SetInstanceID( p_caster->GetInstanceID() );
 				pPet->CreateAsSummon( tamed->GetEntry(), tamed->GetCreatureInfo(), tamed, p_caster, triggerspell, 2, 900000 );
-				pPet->CastSpell( tamed, triggerspell, false );
+				//pPet->CastSpell( tamed, triggerspell, false );
 				tamed->SafeDelete();
 				qle->SetMobCount( 0, 1 );
 				qle->SendUpdateAddKill( 1 );
