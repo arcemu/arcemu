@@ -176,6 +176,8 @@ arcemu_world_SOURCES = \
     Unit.h \
     UpdateFields.h \
     UpdateMask.h \
+    Vehicle.cpp \
+    Vehicle.h \
     WarsongGulch.cpp \
     WarsongGulch.h \
     WayPoints.cpp \

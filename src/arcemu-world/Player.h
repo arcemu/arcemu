@@ -32,6 +32,7 @@ class Corpse;
 class Guild;
 struct GuildRank;
 class Pet;
+class Vehicle;
 class Charter;
 class LFGMatch;
 struct LevelInfo;
@@ -2193,7 +2194,24 @@ public:
     /* Player Vehicles							                            */
     /************************************************************************/
 public:
-	Unit *controlled_vehicle;
+
+	ARCEMU_INLINE Vehicle * GetVehicle() { return (Vehicle *)m_vehicle; }
+	ARCEMU_INLINE int8 GetVehicleSeat() { return m_vehicleSeat; }
+	ARCEMU_INLINE void SetVehicle(Vehicle *v, int8 seat)
+	{
+		m_vehicle = (Unit *)v;
+		m_vehicleSeat = seat;
+	}
+	ARCEMU_INLINE void ResetVehicleSettings()
+	{
+		m_vehicle = NULL;
+		m_vehicleSeat = -1;
+	}
+
+private:
+	Unit *		m_vehicle;
+	int8		m_vehicleSeat;
+
 };
 
 class SkillIterator
@@ -2245,6 +2263,7 @@ public:
 
 	ARCEMU_INLINE PlayerSkill* Grab() { return &m_itr->second; }
 	ARCEMU_INLINE bool End() { return (m_itr==m_endItr)?true:false; }
+
 };
 
 #ifdef ENABLE_COMPRESSED_MOVEMENT

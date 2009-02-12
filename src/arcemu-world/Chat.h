@@ -150,6 +150,7 @@ class SERVER_DECL CommandTableStorage : public Singleton<CommandTableStorage>
 	ChatCommand* _GameObjectCommandTable;
 	ChatCommand* _BattlegroundCommandTable;
 	ChatCommand* _NPCCommandTable;
+	ChatCommand* _VehicleCommandTable;
 	ChatCommand* _CheatCommandTable;
 	ChatCommand* _accountCommandTable;
 	ChatCommand* _honorCommandTable;
@@ -383,7 +384,18 @@ protected:
 	bool HandleCreatureRespawnCommand(const char *args, WorldSession *m_session);
 	bool HandleSpawnByDisplayId(const char * args, WorldSession * m_session);
 
-	//Ban
+	// Vehicles
+	bool HandleVehicleSpawn(const char * args, WorldSession * m_session);
+	bool HandleVehiclePossess(const char * args, WorldSession * m_session);
+	bool HandleVehicleUnpossess(const char * args, WorldSession * m_session);
+	bool HandleVehicleMoveSpeed(const char * args, WorldSession * m_session);
+	bool HandleVehicleTurnSpeed(const char * args, WorldSession * m_session);
+	bool HandleVehicleProtectileSpeed(const char * args, WorldSession * m_session);
+	bool HandleVehicleTurnRadians(const char * args, WorldSession * m_session);
+	bool HandleVehicleMove(const char * args, WorldSession * m_session);
+	bool HandleVehicleFire(const char * args, WorldSession * m_session);
+
+	// Ban
 	bool HandleBanCharacterCommand(const char* args, WorldSession *m_session);
 	bool HandleBanAllCommand(const char* args, WorldSession *m_session);
 	bool HandleUnBanCharacterCommand(const char* args, WorldSession *m_session);

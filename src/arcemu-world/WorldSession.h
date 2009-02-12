@@ -308,6 +308,14 @@ public:
 	void LoadAccountDataProc(QueryResult * result);
 	ARCEMU_INLINE bool IsLoggingOut() { return _loggingOut; }
 
+	// Vehicles
+	ARCEMU_INLINE void SetActiveMover(WoWGuid guid)
+	{
+		m_MoverWoWGuid = guid;
+		movement_packet[0] = m_MoverWoWGuid.GetNewGuidMask();
+		memcpy(&movement_packet[1], m_MoverWoWGuid.GetNewGuid(), m_MoverWoWGuid.GetNewGuidLen());
+	}
+
 protected:
 
 	/// Login screen opcodes (PlayerHandler.cpp):
@@ -634,6 +642,9 @@ protected:
 	void HandleInspectHonorStatsOpcode(WorldPacket &recv_data);
 	void HandlePVPLogDataOpcode(WorldPacket &recv_data);
 	void HandleBattlefieldListOpcode(WorldPacket &recv_data);
+
+	// Vehicles
+	void HandleVehicleDismiss(WorldPacket & recv_data);
 
 	void HandleSetActionBarTogglesOpcode(WorldPacket &recvPacket);
 	void HandleMoveSplineCompleteOpcode(WorldPacket &recvPacket);

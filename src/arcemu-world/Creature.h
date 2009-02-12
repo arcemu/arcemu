@@ -263,6 +263,8 @@ public:
 	void Create ( const char* creature_name, uint32 mapid, float x, float y, float z, float ang);	
 	void CreateWayPoint ( uint32 WayPointID, uint32 mapid, float x, float y, float z, float ang);
 	
+	// Vehicles
+	virtual bool IsVehicle() { return false; }
 
 	/// Updates
 	virtual void Update( uint32 time );

@@ -108,6 +108,7 @@ Strand of the Ancients
   no reason why that instance id can't be reused. Also each BG needs it own
   unique numbering, instead of a shared pool.
 
+
 ************************************************************************/
 
 #include "StdAfx.h"
@@ -458,11 +459,6 @@ void StrandOfTheAncient::SpawnBuff(uint32 x)
 	}
 }
 
-#define TEST_1	3562
-#define TEST_2	3563
-#define TEST_3	3538
-#define TEST_4	3539
-
 void StrandOfTheAncient::OnCreate()
 {
 	sLog.outDebug("OnCreate: SOTA Battleground\n");
@@ -474,11 +470,6 @@ void StrandOfTheAncient::OnCreate()
 	SetWorldState(WORLDSTATE_SOTA_TIMER_1, 0);
 	SetWorldState(WORLDSTATE_SOTA_TIMER_2, 0);
 	SetWorldState(WORLDSTATE_SOTA_TIMER_3, 0);
-
-	SetWorldState(TEST_1, 0);
-	SetWorldState(TEST_2, 0);
-	SetWorldState(TEST_3, 0);
-	SetWorldState(TEST_4, 0);
 }
 
 void StrandOfTheAncient::OnStart()
@@ -501,11 +492,6 @@ void StrandOfTheAncient::OnStart()
 	SetWorldState(WORLDSTATE_SOTA_CAPTURE_BAR_VALUE, (uint32)-1);
 	SetWorldState(WORLDSTATE_SOTA_BONUS_TIME, 1);
 	SetWorldState(WORLDSTATE_SOTA_TIMER_1, 10); // 10 Minute Timer
-
-	SetWorldState(TEST_1, (uint32)-1);
-	SetWorldState(TEST_2, (uint32)-1);
-	SetWorldState(TEST_3, (uint32)-1);
-	SetWorldState(TEST_4, (uint32)-1);
 
 	//SetTime(ROUND_LENGTH, 0);
 	sEventMgr.AddEvent( this, &StrandOfTheAncient::TimeTick, EVENT_SOTA_TIMER, MSTIME_SECOND * 5, 0, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT );

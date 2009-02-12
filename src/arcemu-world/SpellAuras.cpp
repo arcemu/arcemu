@@ -8952,9 +8952,9 @@ void Aura::HandleAuraControlVehicle(bool apply)
 		data << (uint8)1; // we are going to loose control !
 		pcaster->GetSession()->SendPacket(&data);
 
-		pcaster->controlled_vehicle = static_cast< Unit* >( m_target );
-		pcaster->SetUInt64Value( UNIT_FIELD_CHARM, pcaster->controlled_vehicle->GetGUID() );
-		pcaster->SetUInt64Value( PLAYER_FARSIGHT, pcaster->controlled_vehicle->GetGUID() ); //focus camera on this 
+		pcaster->SetVehicle( static_cast< Vehicle* >( m_target ), -1);
+		pcaster->SetUInt64Value( UNIT_FIELD_CHARM, pcaster->GetVehicle()->GetGUID() );
+		pcaster->SetUInt64Value( PLAYER_FARSIGHT, pcaster->GetVehicle()->GetGUID() ); //focus camera on this 
 
 		//add mana to the vehicle. It is supposed to already have mana
 		if( m_target->GetUInt32Value( UNIT_FIELD_MAXPOWER1 ) < 100 )
@@ -9048,10 +9048,10 @@ void Aura::HandleAuraControlVehicle(bool apply)
 		data2 << m_target->GetPosition();
 		pcaster->GetSession()->SendPacket(&data2);
 
-		pcaster->controlled_vehicle = NULL;
+		pcaster->ResetVehicleSettings();
 
 		//unroot the player
-		pcaster->Root();
+		pcaster->Unroot();
 
 		//put him near vehicle. Or not ?
 

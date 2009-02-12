@@ -139,6 +139,7 @@
 #include "ItemInterface.h"
 #include "Stats.h"
 #include "WorldCreator.h"
+#include "Vehicle.h"
 
 
 #include "ObjectMgr.h"

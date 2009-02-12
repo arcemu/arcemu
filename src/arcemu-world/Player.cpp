@@ -218,6 +218,9 @@ mOutOfRangeIdCount(0)
 {
 	int i,j;
 
+	// Reset vehicle settings
+	ResetVehicleSettings();
+
 	//These should really be done in the unit constructor...
 	m_currentSpell = NULL;
 
@@ -434,7 +437,6 @@ mOutOfRangeIdCount(0)
 	m_vampiricEmbrace = m_vampiricTouch = 0;
 	LastSeal = 0;
 	m_flyhackCheckTimer = 0;
-	controlled_vehicle = NULL;
 #ifdef TRACK_IMMUNITY_BUG
 	m_immunityTime = 0;
 #endif
