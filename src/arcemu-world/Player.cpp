@@ -8046,10 +8046,11 @@ void Player::ZoneUpdate(uint32 ZoneId)
 		}
 	}
 
-	if( !m_channels.empty() )
+	at = dbcArea.LookupEntryForced( ZoneId );
+
+	if( !m_channels.empty() && at)
 	{
 		// change to zone name, not area name
-		at = dbcArea.LookupEntryForced( ZoneId );
 		for( std::set<Channel*>::iterator itr = m_channels.begin(),nextitr ; itr != m_channels.end() ; itr = nextitr)
 		{
 			nextitr = itr; ++nextitr;
