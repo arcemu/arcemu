@@ -92,7 +92,7 @@ const char* GlyphPropertyEntryFormat = "uuuu";
 const char* skilllineentrYFormat = "uuulxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx";
 
 
-const char* BattlemasterListEntryFormat = "uiiiiiiiiuuuuuiiiiiiiiiiiiiiiiiuu";
+const char* BattlemasterListEntryFormat = "uiiiiiiiiuuuuuiiiiiiiiiiiiiiiiiiuu";
 
 const char* CharTitlesEntryfmt =
 	"u" // ID
@@ -143,8 +143,11 @@ const char* AchievementCriteriaStoreFormat=
 	"i" // raw.additionalRequirement2_type
 	"i" // raw.additionalRequirement2_value
 	"lxxxxxxxxxxxxxxx" // name
+	"u" // name_flags
 	"i" // completionFlag
 	"i" // groupFlag
+	"u" // unk1
+	"i" // timeLimit
 	"u" // index
 ;
 
@@ -309,7 +312,7 @@ const char* barbershopstyleFormat="nulxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxuuu";
 const char* gtfloatformat = "f";
 const char* areatriggerformat = "uuffffffff";
 const char* scalingstatdistributionformat = "uiiiiiiiiiiuuuuuuuuuuu";
-const char* scalingstatvaluesformat = "uuuuuuuuuuuuuuuuuuuu";
+const char* scalingstatvaluesformat = "uuuuuuuuuuuuuuuuuuu";
 
 template<class T>
 bool loader_stub(const char * filename, const char * format, bool ind, T& l, bool loadstrs)

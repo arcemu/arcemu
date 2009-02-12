@@ -465,8 +465,8 @@ struct AchievementCriteriaEntry
 	uint32  name_flags;                                   // 25
 	uint32  completionFlag;                               // 26
 	uint32  groupFlag;                                    // 27
-	//uint32  unk1;                                         // 28
-	//uint32  timeLimit;                                    // 29 time limit in seconds
+	uint32  unk1;                                         // 28
+	uint32  timeLimit;                                    // 29 time limit in seconds
 	uint32  index;                                        // 30
 };
 
@@ -478,7 +478,7 @@ struct BattlemasterListEntry
 	uint32	max_players_per_faction;
 	uint32	min_players_per_faction;
 	uint32	flag; // EOTS AND SOTA have this set to nine, otherwise it's zero
-	//uint32  always_true;
+	uint32  always_true;
 	uint32	some_id;
 	int32	zeros[15];
 	uint32	unk[2];
@@ -1409,7 +1409,7 @@ struct ScalingStatDistributionEntry{
 struct ScalingStatValuesEntry{
 	uint32 id;
 	uint32 level;
-	uint32 multiplier[18];
+	uint32 multiplier[17];
 };
 
 #pragma pack(pop)
