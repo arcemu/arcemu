@@ -24,7 +24,7 @@
 
 Creature::Creature(uint64 guid)
 {
-	proto=0;
+	proto = 0;
 	m_valuesCount = UNIT_END;
 	m_objectTypeId = TYPEID_UNIT;
 	m_uint32Values = _fields;

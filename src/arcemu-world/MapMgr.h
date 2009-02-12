@@ -122,7 +122,7 @@ public:
 	uint32 m_CreatureArraySize;
 	uint32 m_CreatureHighGuid;
 	Creature ** m_CreatureStorage;
-	Creature * CreateCreature(uint32 entry);
+	Creature * CreateCreature(uint32 entry, bool isVehicle = false);
 
 	__inline Creature * GetCreature(uint32 guid)
 	{

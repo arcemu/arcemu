@@ -33,12 +33,20 @@
 
 Vehicle::Vehicle(uint64 guid) : Creature(guid)
 {
-	m_passengers.clear();
+	ClearPassengers();
 }
 
 Vehicle::~Vehicle()
 {
 
+}
+
+void Vehicle::ClearPassengers()
+{
+	for (int i = 0; i < MAX_PASSENGERS; i++)
+		m_passengers[i] = NULL;
+	m_controller = NULL;
+	m_passengerCount = 0;
 }
 
 void Vehicle::Load(uint32 vehicleid)
@@ -50,25 +58,26 @@ void Vehicle::Load(uint32 vehicleid)
 
 	m_VehicleEntry = vehicleid;
 	*/
-	m_passengers.clear();
+	ClearPassengers();
 }
 
-void Vehicle::AddPassenger(Player * player, uint8 seat)
+void Vehicle::AddPassenger(Player * player, int8 seat)
 {
 	if (!player->IsInWorld())
 		return;
 
-	if (seat == 0xFF) //choose a seat for us
+	if (seat == -1) //choose a seat for us
 	{
-		for (uint8 i=0; i < GetOccupancyLimit(); ++i)
+		for (uint8 i=0; i < GetOccupancyLimit(); i++)
 			if (m_passengers[i] == NULL)
 			{
 				seat = i;
 				break;
 			}
 
-		if (seat == 0xFF) //can't find a seat
+		if (seat == -1) //can't find a seat
 			return;
+		seat = 0;
 	}
 	else
 	{
@@ -84,6 +93,8 @@ void Vehicle::AddPassenger(Player * player, uint8 seat)
 	if (seatentry == NULL)
 		return;
 	*/
+
+	sLog.outDebug("AddPassenger");
 
 	m_passengers[seat] = player;
 
@@ -159,7 +170,16 @@ void Vehicle::AddPassenger(Player * player, uint8 seat)
 		SetUInt64Value(UNIT_FIELD_CHARMEDBY, player->GetGUID());
 		SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_PLAYER_CONTROLLED_CREATURE);
 
-		//set active mover
+		// Set player world states
+		player->GetMapMgr()->SetWorldState(0x0DE5, 0x190);
+		player->GetMapMgr()->SetWorldState(0x0DE7, 0x06);
+ 		player->GetMapMgr()->SetWorldState(0x0DE8, 0x28);
+ 		player->GetMapMgr()->SetWorldState(0x0DE9, 0x00);
+ 		player->GetMapMgr()->SetWorldState(0x0DE9, 0x00);
+ 		player->GetMapMgr()->SetWorldState(0x0DE8, 0x28);
+ 		player->GetMapMgr()->SetWorldState(0x0DE8, 0x04);
+
+		 //set active mover
 		player->GetSession()->SetActiveMover(GetNewGUID());
 
 		data.Initialize(SMSG_PET_SPELLS);
@@ -221,6 +241,15 @@ void Vehicle::RemovePassenger(Player * player)
 	data << uint32(0);
 	player->GetSession()->SendPacket(&data);
 
+	// Set player's world state
+ 	player->GetMapMgr()->SetWorldState(0x0DE5, 0x18B);
+ 	player->GetMapMgr()->SetWorldState(0x0DE7, 0x06);
+ 	player->GetMapMgr()->SetWorldState(0x0DE8, 0x23);
+ 	player->GetMapMgr()->SetWorldState(0x0DE9, 0x00);
+  	player->GetMapMgr()->SetWorldState(0x0DE9, 0x05);
+  	player->GetMapMgr()->SetWorldState(0x0DE8, 0x1E);
+  	player->GetMapMgr()->SetWorldState(0x0DE8, 0x03);
+
 	if (player == m_controller)
 	{
 		m_controller = NULL;
@@ -261,31 +290,6 @@ void Vehicle::setDeathState(DeathState s)
 			RemovePassenger(m_passengers[i]);
 }
 
-void Vehicle::PossessVehicle(bool possess)
-{
-
-	//SetWorldState(TEST_1, 0);
-	// Mount Seige Vehicle (SOTA, Attacker)
-	/*
- *		WorldState 0x0DE5 = 0x190;
- *		WorldState 0x0DE7 = 0x06;
- *		WorldState 0x0DE8 = 0x28;
- *		WorldState 0x0DE9 = 0x00;
- *		WorldState 0x0DE9 = 0x00;
- *		WorldState 0x0DE8 = 0x28;
- *		WorldState 0x0DE8 = 0x04;
- *
- *	Unmount Seige Vehice (SOTA, Attacker)
- *		WorldState 0x0DE5 = 0x18B;
- *		WorldState 0x0DE7 = 0x06;
- *		WorldState 0x0DE8 = 0x23;
- *		WorldState 0x0DE9 = 0x00;
- *		WorldState 0x0DE9 = 0x05;
- *		WorldState 0x0DE8 = 0x1E;
- *		WorldState 0x0DE8 = 0x03;
- */
-}
-
 void WorldSession::HandleVehicleDismiss(WorldPacket & recv_data)
 {
 	//i dont give a crap what this packet structure is :P
@@ -297,19 +301,101 @@ void WorldSession::HandleVehicleDismiss(WorldPacket & recv_data)
 
 bool ChatHandler::HandleVehicleSpawn(const char * args, WorldSession * m_session)
 {
-	RedSystemMessage(m_session, "Not Implemented.");
+	uint32 entry = atol(args);
+	uint8 gender = 0; 
+
+	if(entry == 0)
+		return false;
+
+	CreatureProto * proto = CreatureProtoStorage.LookupEntry(entry);
+	CreatureInfo * info = CreatureNameStorage.LookupEntry(entry);
+	if(proto == 0 || info == 0)
+	{
+		RedSystemMessage(m_session, "Invalid entry id.");
+		return true;
+	}
+
+	CreatureSpawn * sp = new CreatureSpawn;
+	//sp->displayid = info->DisplayID;
+	gender = (uint8)info->GenerateModelId(&sp->displayid);
+ 	sp->entry = entry; 
+	sp->entry = entry;
+	sp->form = 0;
+	sp->id = objmgr.GenerateCreatureSpawnID();
+	sp->movetype = 0;
+	sp->x = m_session->GetPlayer()->GetPositionX();
+	sp->y = m_session->GetPlayer()->GetPositionY();
+	sp->z = m_session->GetPlayer()->GetPositionZ();
+	sp->o = m_session->GetPlayer()->GetOrientation();
+	sp->emote_state = 0;
+	sp->flags = 0;
+	sp->factionid = proto->Faction;
+	sp->bytes0 = sp->setbyte(0,2,gender);
+	sp->bytes1 = 0;
+	sp->bytes2 = 0;
+	//sp->respawnNpcLink = 0;
+	sp->stand_state = 0;
+	sp->channel_spell=sp->channel_target_creature=sp->channel_target_go=0;
+	sp->MountedDisplayID = 0;
+	sp->Item1SlotDisplay = 0;
+	sp->Item2SlotDisplay = 0;
+	sp->Item3SlotDisplay = 0;
+
+
+	Creature * p = m_session->GetPlayer()->GetMapMgr()->CreateCreature(entry, true);
+	ASSERT(p);
+	p->Load(sp, (uint32)NULL, NULL);
+	p->m_loadedFromDB = true;
+	p->PushToWorld(m_session->GetPlayer()->GetMapMgr());
+	
+	uint32 x = m_session->GetPlayer()->GetMapMgr()->GetPosX(m_session->GetPlayer()->GetPositionX());
+	uint32 y = m_session->GetPlayer()->GetMapMgr()->GetPosY(m_session->GetPlayer()->GetPositionY());
+
+	// Add spawn to map
+	m_session->GetPlayer()->GetMapMgr()->GetBaseMap()->GetSpawnsListAndCreate(
+		x,
+		y)->CreatureSpawns.push_back(sp);
+
+	MapCell * mCell = m_session->GetPlayer()->GetMapMgr()->GetCell( x, y );
+
+	if( mCell != NULL )
+		mCell->SetLoaded();
+
+	BlueSystemMessage(m_session, "Spawned a vehicle `%s` with entry %u at %f %f %f on map %u", info->Name, 
+		entry, sp->x, sp->y, sp->z, m_session->GetPlayer()->GetMapId());
+
+	sGMLog.writefromsession(m_session, "spawned a %s at %u %f %f %f", info->Name, m_session->GetPlayer()->GetMapId(),sp->x,sp->y,sp->z);
+
 	return true;
 }
 
 bool ChatHandler::HandleVehiclePossess(const char * args, WorldSession * m_session)
 {
-	RedSystemMessage(m_session, "Not Implemented.");
+	Creature * creature = this->getSelectedCreature(m_session);
+	if (!creature || !creature->IsVehicle())
+	{
+		SystemMessage(m_session, "Select a vehicle first");
+		return true;
+	}
+	Vehicle * vehicle = (Vehicle *)creature;
+
+	vehicle->AddPassenger(m_session->GetPlayer());
+	//void Vehicle::AddPassenger(Player * player, uint8 seat)
+	GreenSystemMessage(m_session, "Possessing Selected Vehicle...");
 	return true;
 }
 
 bool ChatHandler::HandleVehicleUnpossess(const char * args, WorldSession * m_session)
 {
-	RedSystemMessage(m_session, "Not Implemented.");
+	Player * player = m_session->GetPlayer();
+	Vehicle * vehicle = player->GetVehicle();
+	if (!vehicle)
+	{
+		SystemMessage(m_session, "You're not in possession of a vehicle");
+		return true;
+	}
+	vehicle->RemovePassenger(player);
+	GreenSystemMessage(m_session, "Unpossessing Current Vehicle...");
 	return true;
 }
 

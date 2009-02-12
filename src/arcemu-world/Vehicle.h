@@ -21,28 +21,32 @@
 #ifndef __VEHICLE_H
 #define __VEHICLE_H
 
+#define MAX_PASSENGERS 16
+
 class SERVER_DECL Vehicle : public Creature
 {
+	Player * m_passengers[MAX_PASSENGERS];
+	Player * m_controller;
+	int8	 m_passengerCount;
+	//uint32 m_VehicleEntry; //dbc entry
+
 public:
 	Vehicle(uint64 guid);
 	~Vehicle();
 
 	void MoveVehicle();
 
-	vector<Player *> m_passengers;
-	Player * m_controller;
-	//uint32 m_VehicleEntry; //dbc entry
+	// Handle Passengers
+	void ClearPassengers();
+	int8 GetOccupancyLimit() { return 1; } // CHANGE THIS
+	int8 GetPassengerCount() { return m_passengerCount; }
 
 	bool IsVehicle() { return true; }
-	uint32 GetOccupancyLimit() { return 1; } // CHANGE THIS
-	int8 GetPassengerCount() { return m_passengers.size(); }
 
 	void Load(uint32 vehicleid);
-	void AddPassenger(Player * player, uint8 seat = 0xFF);
+	void AddPassenger(Player * player, int8 seat = -1);
 	void RemovePassenger(Player * player);
 	void MoveVehicle(float x, float y, float z, float o);
-
-	void PossessVehicle(bool possess);
 
 	void setDeathState(DeathState s);
 };

@@ -1489,6 +1489,16 @@ void WorldSession::HandleListInventoryOpcode( WorldPacket & recv_data )
 
 void WorldSession::SendInventoryList(Creature* unit)
 {
+	// Get on a vehicle
+	if (unit->IsVehicle())
+	{
+		sLog.outDebug("*** Get on a vehicle ***");
+		//Vehicle * vehicle = (Vehicle *)unit;
+		//vehicle->AddPassenger(GetPlayer());
+		GetPlayer()->Gossip_Complete();
+		return;
+	}
+
 	if(!unit->HasItems())
 	{
 		sChatHandler.BlueSystemMessageToPlr(_player, "No sell template found. Report this to devs: %d (%s)", unit->GetEntry(), unit->GetCreatureInfo()->Name);

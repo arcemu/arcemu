@@ -116,15 +116,6 @@ struct CreatureProto
 	uint32 RangedAttackTime;
 	float RangedMinDamage;
 	float RangedMaxDamage;
-	
-	/* moved to creature_spawns
-	uint32 MountedDisplayID;
-	uint32 Item1SlotDisplay;
-	uint32 Item2SlotDisplay;
-	uint32 Item3SlotDisplay;
-	*/
-	
-
 	uint32 RespawnTime;
 	uint32 Resistances[7];
 	float CombatReach;
