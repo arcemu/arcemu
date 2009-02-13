@@ -361,6 +361,22 @@ skilllinespell* ObjectMgr::GetSpellSkill(uint32 id)
 	return mSpellSkills[id];
 }
 
+SpellEntry* ObjectMgr::GetNextSpellRank( SpellEntry * sp, uint32 level )
+{
+	// Looks for next spell rank
+	if( sp == NULL )
+		return NULL;
+
+	skilllinespell* skill = GetSpellSkill( sp->Id );
+	if( skill != NULL && skill->next > 0 )
+	{
+		SpellEntry* sp1 = dbcSpell.LookupEntry( skill->next );
+		if( sp1->baseLevel <= level ) // check level
+			return GetNextSpellRank( sp1, level ); // recursive for higher ranks
+	}
+	return sp;
+}
+
 void ObjectMgr::LoadPlayersInfo()
 {
 	PlayerInfo * pn;

@@ -611,15 +611,6 @@ void Creature::RemoveFromWorld(bool addrespawnevent, bool free_guid)
 
 	RemoveAllAuras();
 	
-	if(IsPet()) /* Is a pet: IsPet() actually returns false on a pet? o_X */
-	{
-		if(IsInWorld())
-			Unit::RemoveFromWorld(true);
-
-		SafeDelete();
-		return;
-	}
-
 	if(IsInWorld())
 	{
 		uint32 delay = 0;

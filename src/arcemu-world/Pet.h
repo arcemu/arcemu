@@ -153,7 +153,8 @@ public:
 
 	ARCEMU_INLINE Player* GetPetOwner() { return m_Owner; }
 	ARCEMU_INLINE void ClearPetOwner() { m_Owner = NULL; }
-	void GiveXP(uint32 xp);
+	bool CanGainXP();
+	void GiveXP( uint32 xp );
 	uint32 GetNextLevelXP(uint32 currentlevel);
 	void ApplyStatsForLevel();
 	void ApplySummonLevelAbilities();
@@ -208,12 +209,13 @@ public:
 	void Rename(string NewName);
 	ARCEMU_INLINE string& GetName() { return m_name; }
 	uint32 CanLearnSpell( SpellEntry* sp );
+	void SkillUp();
 	
 	// talents
 	ARCEMU_INLINE uint8 GetTPsForLevel( uint32 level ) { return ( level >= 20 ) ? uint8( level - 16 ) >> 2 : 0; }	// pet gain first talent point at lvl 20, then every 4 lvls another point
-	ARCEMU_INLINE void SetTPs( uint8 TP ) { SetByte( UNIT_FIELD_BYTES_1, 1, TP ); }								// sets talent points
-	ARCEMU_INLINE uint8 GetTPs() { return GetByte( UNIT_FIELD_BYTES_1, 1 ); }									// returns available talent points
-	ARCEMU_INLINE uint8 GetSpentTPs() { return GetTPsForLevel( getLevel() ) - GetTPs(); }						// returns amount of spent talent points
+	ARCEMU_INLINE void SetTPs( uint8 TP ) { SetByte( UNIT_FIELD_BYTES_1, 1, TP ); }			// sets talent points
+	ARCEMU_INLINE uint8 GetTPs() { return GetByte( UNIT_FIELD_BYTES_1, 1 ); }				// returns available talent points
+	ARCEMU_INLINE uint8 GetSpentTPs() { return GetTPsForLevel( getLevel() ) - GetTPs(); }	// returns amount of spent talent points
 	
 	void HandleAutoCastEvent( AutoCastEvents Type );
 	AI_Spell * HandleAutoCastEvent();

@@ -245,11 +245,14 @@ Pet::Pet( uint64 guid ) : Creature( guid )
 
 Pet::~Pet()
 {
-	for(std::map<uint32, AI_Spell*>::iterator itr = m_AISpellStore.begin(); itr != m_AISpellStore.end(); ++itr)
+	for( std::map<uint32, AI_Spell*>::iterator itr = m_AISpellStore.begin(); itr != m_AISpellStore.end(); ++itr )
 		delete itr->second;
+	m_AISpellStore.clear();
 
-	if(IsInWorld())
-		this->Remove( true, true );
+	for( uint8 i = 0; i < AUTOCAST_EVENT_COUNT; i++ )
+		m_autoCastSpells[i].clear();
+
+	mSpells.clear();
 }
 
 void Pet::Update( uint32 time )
@@ -604,6 +607,7 @@ void Pet::InitializeMe( bool first )
 		SetDefaultActionbar();
 	}
 
+	SkillUp();
 	SendSpellsToOwner();
 
 	// set to active
@@ -693,38 +697,44 @@ void Pet::Remove( bool bUpdate, bool bSetOffline )
 
 void Pet::PetSafeDelete()
 {
-	if(this->IsInWorld())
+	// remove from world, and delete
+	if( IsInWorld() )
 	{
-		// remove from world, and delete
-		RemoveFromWorld(false, false);
+		RemoveFromWorld( false, false );
 	}
-
-	//sEventMgr.AddEvent(World::getSingletonPtr(), &World::DeleteObject, ((Object*)this), EVENT_CREATURE_SAFE_DELETE, 1000, 1);
-	Creature::SafeDelete();
+	
+	sEventMgr.RemoveEvents( this ); // to avoid crash of double delete
+	delete this;					// destructs pet -> creature -> unit...
 }
 
 void Pet::DelayedRemove( bool bTime, bool bDeath )
 {
+	// called when pet has died
 	if( bTime )
 	{
-		m_Owner = objmgr.GetPlayer( ( uint32 )this->m_OwnerGuid ); // if we need this, then it should be here
-		if( GetUInt32Value( UNIT_CREATED_BY_SPELL ) > 0 /*|| bDeath*/ ) // why should we perma delete our dead pet??
+		if( !m_Owner )
+			m_Owner = objmgr.GetPlayer( GET_LOWGUID_PART( m_OwnerGuid ) );
+
+		if( Summon )
 			Dismiss();  // remove us..
 		else
 			Remove( true, false );
 	}
 	else
-		sEventMgr.AddEvent(this, &Pet::DelayedRemove, true, bDeath, EVENT_PET_DELAYED_REMOVE, PET_DELAYED_REMOVAL_TIME, 1,EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
+		sEventMgr.AddEvent(this, &Pet::DelayedRemove, true, bDeath, EVENT_PET_DELAYED_REMOVE, PET_DELAYED_REMOVAL_TIME, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
+}
+
+bool Pet::CanGainXP()
+{
+	// only hunter pets which are below owner level can gain experience
+	if( Summon || !m_Owner || getLevel() >= m_Owner->getLevel() )
+		return false;
+	else
+		return true;
 }
 
 void Pet::GiveXP( uint32 xp )
 {
-	if( !m_Owner || Summon ) // Only hunter pets
-		return;	
-
-	if( getLevel() >= m_Owner->getLevel() )		//pet do not get xp if its level >= owners level
-		return;
-
 	xp += m_uint32Values[ UNIT_FIELD_PETEXPERIENCE ];
 	uint32 nxp = m_uint32Values[ UNIT_FIELD_PETNEXTLEVELEXP ];
 
@@ -736,6 +746,7 @@ void Pet::GiveXP( uint32 xp )
 		nxp = GetNextLevelXP( m_uint32Values[ UNIT_FIELD_LEVEL ] );
 		SetUInt32Value( UNIT_FIELD_PETNEXTLEVELEXP, nxp );
 		ApplyStatsForLevel();
+		SkillUp();
 	}
 
 	SetUInt32Value( UNIT_FIELD_PETEXPERIENCE, xp );
@@ -1470,7 +1481,20 @@ Group *Pet::GetGroup()
 	return NULL;
 }
 
-
-
+void Pet::SkillUp()
+{
+	// Pets increase in spell ranks as they level up
+	SpellEntry* tmp;
+	PetSpellMap::iterator itr, itr2;
+	for( itr = mSpells.begin(); itr != mSpells.end(); )
+	{
+		itr2 = itr++; // itr2 gets deleted in AddSpell(..)
+		tmp = objmgr.GetNextSpellRank( itr2->first, getLevel() );
+		if( itr2->first != tmp )
+			AddSpell( tmp, true ); // old rank is removed in AddSpell(..)
+			//TODO: summon spells should go to m_Owner->SummonSpells too
+			//TODO: send smsg_pet_learnt_spell
+	}
+}
 
 

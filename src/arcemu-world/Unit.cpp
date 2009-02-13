@@ -824,9 +824,9 @@ void Unit::GiveGroupXP(Unit *pVictim, Player *PlayerInGroup)
 				sEventMgr.ModifyEventTimeLeft(active_player_list[i],EVENT_LASTKILLWITHHONOR_FLAG_EXPIRE,20000);
 			}
 
-			if ( plr->GetSummon() && plr->GetSummon()->GetUInt32Value( UNIT_CREATED_BY_SPELL ) == 0 )
+			if ( plr->GetSummon() && plr->GetSummon()->CanGainXP() )
 			{
-				uint32 pet_xp = (int)(CalculateXpToGive( pVictim, plr->GetSummon() ) * xp_mod); // vojta: this isn't blizzlike probably but i have no idea, feel free to correct it
+				uint32 pet_xp = (uint32)(CalculateXpToGive( pVictim, plr->GetSummon() ) * xp_mod); // vojta: this isn't blizzlike probably but i have no idea, feel free to correct it
 				if ( pet_xp > 0 )
 					plr->GetSummon()->GiveXP( pet_xp );
 			}

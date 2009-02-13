@@ -518,6 +518,7 @@ public:
 	//std::list<GM_Ticket*>* GetGMTicketsByPlayer(uint64 playerGuid);
 
 	skilllinespell* GetSpellSkill(uint32 id);
+	SpellEntry * GetNextSpellRank( SpellEntry * sp, uint32 level );
 
 	//Vendors
 	std::vector<CreatureItem> *GetVendorList(uint32 entry);

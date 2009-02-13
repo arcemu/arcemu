@@ -2422,7 +2422,7 @@ void Object::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
 										sEventMgr.ModifyEventTimeLeft(this,EVENT_LASTKILLWITHHONOR_FLAG_EXPIRE,20000);
 									}*/
 
-									if( pTagger->GetSummon() && !pTagger->GetSummon()->IsSummon() )
+									if( pTagger->GetSummon() && pTagger->GetSummon()->CanGainXP() )
 									{
 										xp = CalculateXpToGive( pVictim, pTagger->GetSummon() );
 										if( xp > 0 )
@@ -2512,7 +2512,7 @@ void Object::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
 											sEventMgr.ModifyEventTimeLeft(this,EVENT_LASTKILLWITHHONOR_FLAG_EXPIRE,20000);
 										}*/
 
-										if( !petTagger->IsSummon() )
+										if( petTagger->CanGainXP() )
 										{
 											xp = CalculateXpToGive( pVictim, petTagger );
 											if( xp > 0 )
