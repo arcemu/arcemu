@@ -110,53 +110,46 @@ int32 GetTimePeriodFromString(const char * str)
 	string number_temp;
 	uint32 multipliee;
 	number_temp.reserve(10);
-
 	while(*p != 0)
 	{
 		// always starts with a number.
 		if(!isdigit(*p))
 			break;
-
 		number_temp.clear();
 		while(isdigit(*p) && *p != 0)
 		{
 			number_temp += *p;
 			++p;
 		}
-
-		// try and find a letter
-		if(*p == 0)
-			break;
-
-		// check the type
-		switch(tolower(*p))
+		// try to find a letter
+		if(*p != 0)
 		{
-		case 'y':
-			multiplier = TIME_YEAR;		// eek!
-			break;
-
-		case 'm':
-			multiplier = TIME_MONTH;
-			break;
-
-		case 'd':
-			multiplier = TIME_DAY;
-			break;
-
-		case 'h':
-			multiplier = TIME_HOUR;
-			break;
-
-		default:
-			return -1;
-			break;
+		// check the type
+			switch(tolower(*p))
+			{
+			case 'y':
+				multiplier = TIME_YEAR;		// eek!
+				break;
+			case 'm':
+				multiplier = TIME_MONTH;
+				break;
+			case 'd':
+				multiplier = TIME_DAY;
+				break;
+			case 'h':
+				multiplier = TIME_HOUR;
+				break;
+			default:
+				return -1;
+				break;
+			}
+			++p;
 		}
-
-		++p;
+		else
+			multiplier = TIME_MINUTE; // Defaults to MINUTES, if no letter is given
 		multipliee = atoi(number_temp.c_str());
 		time_to_ban += (multiplier * multipliee);
 	}
-
 	return time_to_ban;
 }
 

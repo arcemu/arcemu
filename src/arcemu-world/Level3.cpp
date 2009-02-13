@@ -26,6 +26,42 @@
 #include "ObjectMgr.h"
 #include "Master.h"
 
+void ParseBanArgs(char* args, char** BanDuration, char** BanReason)
+{
+	// Usage: .ban character <char> [duration] [reason]
+	//        .ban ip <ipaddr> [duration] [reaspon]
+	//        .ban account <acct> [duration] [reason]
+	//        .ban all <char> [duration] [reason]
+	// Duration must be a number optionally followed by a character representing the calendar subdivision to use (h>hours, d>days, w>weeks, m>months, y>years, default minutes)
+	// Lack of duration results in a permanent ban.
+	char* pBanDuration = strchr(args, ' ');
+	char* pReason = NULL;
+	int32 BanTime = 0;
+	if(pBanDuration != NULL)
+	{
+		if(isdigit(*(pBanDuration+1))) // this is the duration of the ban
+		{
+			*pBanDuration = 0; // NULL-terminate the first string (character/account/ip)
+			++pBanDuration; // point to next arg
+			pReason = strchr(pBanDuration+1, ' ');
+			if(pReason != NULL) // BanReason is OPTIONAL
+			{
+				*pReason = 0; // BanReason was given, so NULL-terminate the duration string
+				++pReason; // and point to the ban reason
+			}
+		}
+		else // no duration was given (didn't start with a digit) - so this arg must be ban reason and duration defaults to permanent
+		{
+			pReason = pBanDuration;
+			pBanDuration = NULL;
+			*pReason = 0;
+			++pReason;
+		}
+	}
+	*BanDuration = pBanDuration;
+	*BanReason = pReason;
+}
+
 int32 GetSpellIDFromLink(const char* spelllink)
 {
 	if(spelllink==NULL)
@@ -418,27 +454,18 @@ bool ChatHandler::HandleBanCharacterCommand(const char* args, WorldSession *m_se
 	if(!*args)
 		return false;
 
-	// this is rather complicated due to ban reasons being able to have spaces. so we'll have to some c string magic
-	// rather than just sscanf'ing it.
-	char * pCharacter = (char*)args;
-	char * pBanDuration = strchr(pCharacter, ' ');
+	char* pCharacter = (char*)args;
 	PlayerInfo * pInfo = NULL;
-	if(pBanDuration == NULL)
-		return false;
-
-	char * pReason = strchr(pBanDuration+1, ' ');
-	if(pReason == NULL)
-		return false;
-
-	// zero them out to create sepearate strings.
-	*pBanDuration = 0;
-	++pBanDuration;
-	*pReason = 0;
-	++pReason;
-
-	int32 BanTime = GetTimePeriodFromString(pBanDuration);
-	if(BanTime < 1)
-		return false;
+	char* pReason;
+	char* pDuration;
+	int32 BanTime = 0;
+	ParseBanArgs(pCharacter, &pDuration, &pReason);
+	if(pDuration != NULL)
+	{
+		BanTime = GetTimePeriodFromString(pDuration);
+		if(BanTime < 0) // if time is 0, ban is permanent
+			return false;
+	}
 
 	Player * pPlayer = objmgr.GetPlayer(pCharacter, false);
 	if(pPlayer == NULL)
@@ -449,22 +476,19 @@ bool ChatHandler::HandleBanCharacterCommand(const char* args, WorldSession *m_se
 			SystemMessage(m_session, "Player not found.");
 			return true;
 		}
-
-		SystemMessage(m_session, "Banning player '%s' in database for '%s'.", pCharacter, pReason);
-		string escaped_reason = CharacterDatabase.EscapeString(string(pReason));
-		
+		SystemMessage(m_session, "Banning player '%s' in database for '%s'.", pCharacter, (pReason==NULL)?"No reason.":pReason);
+		string escaped_reason = (pReason==NULL)?"No reason.":CharacterDatabase.EscapeString(string(pReason));
 		CharacterDatabase.Execute("UPDATE characters SET banned = %u, banReason = '%s' WHERE guid = %u",
-			BanTime ? BanTime+(uint32)UNIXTIME : 1, escaped_reason.c_str(), pInfo->guid);
+		BanTime ? BanTime+(uint32)UNIXTIME : 1, escaped_reason.c_str(), pInfo->guid);
 	}
 	else
 	{
-		SystemMessage(m_session, "Banning player '%s' ingame for '%s'.", pCharacter, pReason);
-		string sReason = string(pReason);
+		SystemMessage(m_session, "Banning player '%s' ingame for '%s'.", pCharacter, (pReason==NULL)?"No reason.":pReason);
+		string sReason = (pReason==NULL)?"No Reason.":string(pReason);
 		uint32 uBanTime = BanTime ? BanTime+(uint32)UNIXTIME : 1;
 		pPlayer->SetBanned(uBanTime, sReason);
 		pInfo = pPlayer->getPlayerInfo();
 	}
-
 	SystemMessage(m_session, "This ban is due to expire %s%s.", BanTime ? "on " : "", BanTime ? ConvertTimeStampToDataTime(BanTime+(uint32)UNIXTIME).c_str() : "Never");
 	if(pPlayer)
 	{
@@ -472,13 +496,13 @@ bool ChatHandler::HandleBanCharacterCommand(const char* args, WorldSession *m_se
 		pPlayer->Kick();
 	}
 
-	sGMLog.writefromsession(m_session, "banned %s, reason %s, for %s", pCharacter, pReason, BanTime ? ConvertTimeStampToString(BanTime).c_str() : "ever");
+	sGMLog.writefromsession(m_session, "banned %s, reason %s, for %s", pCharacter, (pReason==NULL)?"No reason":pReason, BanTime ? ConvertTimeStampToString(BanTime).c_str() : "ever");
 	char msg[200];
-	snprintf( msg, 200, "%sGM: %s has been banned by %s for %s. Reason: %s", MSG_COLOR_RED, pCharacter, m_session->GetPlayer()->GetName(), BanTime ? ConvertTimeStampToString( BanTime ).c_str() : "ever", pReason );
+	snprintf( msg, 200, "%sGM: %s has been banned by %s for %s. Reason: %s", MSG_COLOR_RED, pCharacter, m_session->GetPlayer()->GetName(), BanTime ? ConvertTimeStampToString( BanTime ).c_str() : "ever", (pReason==NULL)?"No reason.":pReason );
 	sWorld.SendWorldText( msg, NULL );
 	if( sWorld.m_banTable && pInfo )
 	{
-		CharacterDatabase.Execute("INSERT INTO %s VALUES('%s', '%s', %u, %u, '%s')", sWorld.m_banTable, m_session->GetPlayer()->GetName(), pInfo->name, (uint32)UNIXTIME, (uint32)UNIXTIME + BanTime, CharacterDatabase.EscapeString(string(pReason)).c_str() );
+		CharacterDatabase.Execute("INSERT INTO %s VALUES('%s', '%s', %u, %u, '%s')", sWorld.m_banTable, m_session->GetPlayer()->GetName(), pInfo->name, (uint32)UNIXTIME, (uint32)UNIXTIME + BanTime, (pReason==NULL)?"No reason.":CharacterDatabase.EscapeString(string(pReason)).c_str() );
 	}
 	return true;
 }
@@ -493,28 +517,17 @@ bool ChatHandler::HandleBanAllCommand(const char* args, WorldSession *m_session)
 	string pAcc;
 	string pIP;
 	string pArgs = args;
-	char * pCharacter = (char*)args;
-	char * pBanDuration = strchr(pCharacter, ' ');
-	PlayerInfo * pInfo = NULL;
-	if(pBanDuration == NULL)
+	char* pCharacter = (char*)args;
+	char* pReason;
+	char* pDuration;
+	ParseBanArgs(pCharacter, &pDuration, &pReason);
+	int32 BanTime = 0;
+	if(pDuration != NULL)
 	{
-		RedSystemMessage(m_session,"You must enter in a duration of the ban!");
-		return true;
+		BanTime = GetTimePeriodFromString(pDuration);
+		if(BanTime < 0)
+			return false;
 	}
-
-	char * pReason = strchr(pBanDuration+1, ' ');
-	if(pReason == NULL)
-	{
-		RedSystemMessage(m_session,"You must enter in a reason for the ban!");
-		return true;
-	}
-
-	// zero them out to create sepearate strings.
-	*pBanDuration = 0;
-	++pBanDuration;
-	*pReason = 0;
-	++pReason;
-	int32 BanTime = GetTimePeriodFromString(pBanDuration);
 	pBanned = objmgr.GetPlayer(pCharacter,false);
 	if (!pBanned || !pBanned->IsInWorld())
 	{
@@ -553,10 +566,10 @@ bool ChatHandler::HandleBanAllCommand(const char* args, WorldSession *m_session)
 	sWorld.SendWorldText(Msg,NULL);*/
 	HandleBanCharacterCommand(pArgs.c_str(),m_session);
 	char pIPCmd[256];
-	snprintf(pIPCmd,254,"%s %s %s",pIP.c_str(),pBanDuration,pReason);
+	snprintf(pIPCmd,254,"%s %s %s",pIP.c_str(),pDuration,pReason);
 	HandleIPBanCommand(pIPCmd,m_session);
 	char pAccCmd[256];
-	snprintf(pAccCmd,254,"%s %s %s",pAcc.c_str(),pBanDuration,pReason);
+	snprintf(pAccCmd,254,"%s %s %s",pAcc.c_str(),pDuration,pReason);
 	HandleAccountBannedCommand((const char*)pAccCmd,m_session);
 	//GreenSystemMessage(m_session,"Successfully banned player %s with ip %s and account %s",pCharacter,pIP.c_str(),pAcc.c_str());
 	return true;
@@ -808,7 +821,7 @@ bool ChatHandler::HandleIncreaseWeaponSkill(const char *args, WorldSession *m_se
 	if(!pr->_HasSkillLine(skill))
 	{
 		SystemMessage(m_session, "Does not have skill line, adding.");
-		pr->_AddSkillLine(skill, 1, 300);   
+		pr->_AddSkillLine(skill, 1, 450);
 	} 
 	else 
 	{
@@ -876,29 +889,22 @@ bool ChatHandler::HandleAccountUnbanCommand(const char * args, WorldSession * m_
 
 bool ChatHandler::HandleAccountBannedCommand(const char * args, WorldSession * m_session)
 {
-    if(!*args) return false;
-
-	/*char account[100];
-	uint32 banned;
-	int argc = sscanf(args, "%s %u", account, (unsigned int*)&banned);
-	if(argc != 2)
-		return false;*/
-
-	char * pAccount = (char*)args;
-	char * pDuration = strchr(pAccount, ' ');
-	if( pDuration == NULL )
+	if(!*args)
 		return false;
-	*pDuration = 0;
-	++pDuration;
-
-	int32 timeperiod = GetTimePeriodFromString(pDuration);
-	if( timeperiod < 0 )
-		return false;
-
+	char* pAccount = (char*)args;
+	char* pReason;
+	char* pDuration;
+	ParseBanArgs(pAccount, &pDuration, &pReason);
+	int32 timeperiod = 0;
+	if(pDuration != NULL)
+	{
+		timeperiod = GetTimePeriodFromString(pDuration);
+		if(timeperiod < 0)
+			return false;
+	}
 	uint32 banned = (timeperiod ? (uint32)UNIXTIME+timeperiod : 1);
 
 	char emptystring = 0;
-	char * pReason = strchr(pDuration+1, ' ');
 	if( pReason == NULL )
 		pReason = &emptystring;
 
@@ -2240,16 +2246,17 @@ bool ChatHandler::HandleGlobalPlaySoundCommand(const char* args, WorldSession * 
 
 bool ChatHandler::HandleIPBanCommand(const char * args, WorldSession * m_session)
 {
-	char * pIp = (char*)args;
-	char * pDuration = strchr(pIp, ' ');
-	if(pDuration == NULL)
-		return false;
-	*pDuration = 0;
-	++pDuration;
-
-	int32 timeperiod = GetTimePeriodFromString(pDuration);
-	if(timeperiod < 1)
-		return false;
+	char* pIp = (char*)args;
+	char* pReason;
+	char* pDuration;
+	ParseBanArgs(pIp, &pDuration, &pReason);
+	int32 timeperiod = 0;
+	if(pDuration != NULL)
+	{
+		timeperiod = GetTimePeriodFromString(pDuration);
+		if(timeperiod < 0)
+			return false;
+	}
 
 	uint32 o1, o2, o3, o4;
 	if ( sscanf(pIp, "%3u.%3u.%3u.%3u", (unsigned int*)&o1, (unsigned int*)&o2, (unsigned int*)&o3, (unsigned int*)&o4) != 4
@@ -2275,7 +2282,6 @@ bool ChatHandler::HandleIPBanCommand(const char * args, WorldSession * m_session
 
 	//temporal IP or real pro flooder who will change it tomorrow ?
 	char emptystring = 0;
-	char * pReason = strchr(pDuration+1, ' ');
 	if( pReason == NULL )
 		pReason = &emptystring;
 
