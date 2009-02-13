@@ -606,17 +606,17 @@ void CommandTableStorage::Init()
 		{ "castall",               'z', &ChatHandler::HandleCastAllCommand,         "Makes all players online cast spell <x>.",                      NULL, 0, 0, 0 },
 		{ "dispelall",             'z', &ChatHandler::HandleDispelAllCommand,       "Dispels all negative (or positive w/ 1) auras on all players.", NULL, 0, 0, 0 },
 		{ "renameallinvalidchars", 'z', &ChatHandler::HandleRenameAllCharacter,     "Renames all invalid character names",                           NULL, 0, 0, 0 },
-		{ "masssummon",            'z', &ChatHandler::HandleMassSummonCommand,      ".masssummon - Summons all players.",                            NULL, 0, 0, 0 },
-		{ "playall",               'z', &ChatHandler::HandleGlobalPlaySoundCommand, "Plays a sound to the entire server.",                           NULL, 0, 0, 0 },
+		{ "masssummon",            'z', &ChatHandler::HandleMassSummonCommand,      "Summons all online players to your location",                            NULL, 0, 0, 0 },
+		{ "playall",               'z', &ChatHandler::HandleGlobalPlaySoundCommand, "Plays a sound to everyone on the realm.",                           NULL, 0, 0, 0 },
 		{ NULL,                    '0', NULL,                                       "",                                                              NULL, 0, 0, 0 }
 	};
 	dupe_command_table(adminCommandTable, _adminCommandTable);
 
 	static ChatCommand kickCommandTable[] =
 	{
-		{ "byplayer",  'f', &ChatHandler::HandleKillByPlayerCommand,  "Disconnects the player with name <s>.",          NULL, 0, 0, 0 },
-		{ "byaccount", 'f', &ChatHandler::HandleKillBySessionCommand, "Disconnects the session with account name <s>.", NULL, 0, 0, 0 },
-		{ "byip",      'f', &ChatHandler::HandleKillByIPCommand,      "Disconnects the session with the ip <s>.",       NULL, 0, 0, 0 },
+		{ "player",  'f', &ChatHandler::HandleKillByPlayerCommand,  "Disconnects the player with name <s>.",          NULL, 0, 0, 0 },
+		{ "account", 'f', &ChatHandler::HandleKillBySessionCommand, "Disconnects the session with account name <s>.", NULL, 0, 0, 0 },
+		{ "ip",      'f', &ChatHandler::HandleKillByIPCommand,      "Disconnects the session with the ip <s>.",       NULL, 0, 0, 0 },
 		{ NULL,        '0', NULL,                                     "",                                               NULL, 0, 0, 0 }
 	};
 	dupe_command_table(kickCommandTable, _kickCommandTable);
@@ -657,20 +657,20 @@ void CommandTableStorage::Init()
 	{
 		{ "createteam",      'e', &ChatHandler::HandleArenaCreateTeamCommand,      "Creates arena team",                            NULL, 0, 0, 0 },
 		{ "setteamleader",   'e', &ChatHandler::HandleArenaSetTeamLeaderCommand,   "Sets the arena team leader",                    NULL, 0, 0, 0 },
-		{ "resetallratings", 'z', &ChatHandler::HandleArenaResetAllRatingsCommand, "Resets all area teams to their default rating", NULL, 0, 0, 0 },
+		{ "resetallratings", 'z', &ChatHandler::HandleArenaResetAllRatingsCommand, "Resets all arena teams to their default rating", NULL, 0, 0, 0 },
 		{ NULL,              '0', NULL,                                            "",                                              NULL, 0, 0, 0 }
 	};
 	dupe_command_table(arenaCommandTable, _arenaCommandTable);
 
 	static ChatCommand commandTable[] =
 	{
-		{ "commands",        '0', &ChatHandler::HandleCommandsCommand,                      "Shows Commands",                                                                                                                          NULL,                     0, 0, 0 },
+		{ "commands",        '0', &ChatHandler::HandleCommandsCommand,                      "Shows commands",                                                                                                                          NULL,                     0, 0, 0 },
 		{ "help",            '0', &ChatHandler::HandleHelpCommand,                          "Shows help for command",                                                                                                                  NULL,                     0, 0, 0 },
 		{ "calcdist",        '0', &ChatHandler::HandleSimpleDistanceCommand,                "Display the distance between your current position and the specified point x y z",                                                           NULL,                     0, 0, 0 },
-		{ "announce",        'u', &ChatHandler::HandleAnnounceCommand,                      "Sends Msg To All",                                                                                                                        NULL,                     0, 0, 0 },
-		{ "wannounce",       'u', &ChatHandler::HandleWAnnounceCommand,                     "Sends Widescreen Msg To All",                                                                                                             NULL,                     0, 0, 0 },
+		{ "announce",        'u', &ChatHandler::HandleAnnounceCommand,                      "Sends a normal chat message broadcast to all players.",                                                                                                                        NULL,                     0, 0, 0 },
+		{ "wannounce",       'u', &ChatHandler::HandleWAnnounceCommand,                     "Sends a widescreen raid style announcement to all players.",                                                                                                             NULL,                     0, 0, 0 },
 		{ "appear",          'v', &ChatHandler::HandleAppearCommand,                        "Teleports to x's position.",                                                                                                              NULL,                     0, 0, 0 },
-		{ "summon",          'v', &ChatHandler::HandleSummonCommand,                        "Summons x to your position",                                                                                                              NULL,                     0, 0, 0 },
+		{ "summon",          'v', &ChatHandler::HandleSummonCommand,                        "Summons x to your position.",                                                                                                              NULL,                     0, 0, 0 },
 		{ "kill",            'r', &ChatHandler::HandleKillCommand,                          ".kill - Kills selected unit.",                                                                                                            NULL,                     0, 0, 0 },
 		{ "killplr",         'r', &ChatHandler::HandleKillByPlrCommand,                     ".killplr <name> - Kills specified player",                                                                                                NULL,                     0, 0, 0 },
 		{ "revive",          'r', &ChatHandler::HandleReviveCommand,                        "Revives you.",                                                                                                                            NULL,                     0, 0, 0 },
@@ -679,8 +679,8 @@ void CommandTableStorage::Init()
 		{ "mount",           'm', &ChatHandler::HandleMountCommand,                         "Mounts into modelid x.",                                                                                                                  NULL,                     0, 0, 0 },
 		{ "dismount",        'h', &ChatHandler::HandleDismountCommand,                      "Dismounts.",                                                                                                                              NULL,                     0, 0, 0 },
 		{ "gps",             '0', &ChatHandler::HandleGPSCommand,                           "Shows Position",                                                                                                                          NULL,                     0, 0, 0 },
-		{ "worldport",       'v', &ChatHandler::HandleWorldPortCommand,                     "",                                                                                                                                        NULL,                     0, 0, 0 },
-		{ "start",           'm', &ChatHandler::HandleStartCommand,                         "Teleport's you to a starting location",                                                                                                   NULL,                     0, 0, 0 },
+		{ "worldport",       'v', &ChatHandler::HandleWorldPortCommand,                     "Teleports you to a location with mapid x y z",                                                                                                                                        NULL,                     0, 0, 0 },
+		{ "start",           'm', &ChatHandler::HandleStartCommand,                         "Teleports you to a starting location",                                                                                                   NULL,                     0, 0, 0 },
 		{ "invincible",      'j', &ChatHandler::HandleInvincibleCommand,                    ".invincible - Toggles INVINCIBILITY (mobs won't attack you)",                                                                             NULL,                     0, 0, 0 },
 		{ "invisible",       'i', &ChatHandler::HandleInvisibleCommand,                     ".invisible - Toggles INVINCIBILITY and INVISIBILITY (mobs won't attack you and nobody can see you, but they can see your chat messages)", NULL,                     0, 0, 0 },
 		{ "playerinfo",      'm', &ChatHandler::HandlePlayerInfo,                           ".playerinfo - Displays informations about the selected character (account...)",                                                           NULL,                     0, 0, 0 },
