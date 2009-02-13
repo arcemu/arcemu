@@ -725,6 +725,10 @@ public:
 	virtual void RemoveFromWorld(bool free_guid);
 	virtual void OnPushToWorld();
 
+	// Have subclasses change these to true
+	virtual bool IsPlayer() { return false; }
+	virtual bool IsCreature() { return false; }
+
     void setAttackTimer(int32 time, bool offhand);
 	bool isAttackReady(bool offhand);
 
@@ -1094,9 +1098,6 @@ public:
 		
 	uint32 GetResistance(uint32 type);	
 	
-	//Pet
-	ARCEMU_INLINE void SetIsPet(bool chck) { m_isPet = chck; }
-	
 	//In-Range
 	virtual void AddInRangeObject(Object* pObj);
 	virtual void OnRemoveInRangeObject(Object* pObj);
@@ -1202,7 +1203,6 @@ public:
 		}
 	}
 
-	bool m_isPet;
 	uint32 m_stealth;
 	bool m_can_stealth;
 

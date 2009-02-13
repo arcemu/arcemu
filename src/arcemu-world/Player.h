@@ -797,6 +797,8 @@ public:
 	Player ( uint32 guid );
 	~Player ( );
 
+	bool IsPlayer() { return true; }
+
 	ARCEMU_INLINE Guild * GetGuild() { return m_playerInfo->guild; }
 	ARCEMU_INLINE GuildMember * GetGuildMember() { return m_playerInfo->guildMember; }
 	ARCEMU_INLINE GuildRank * GetGuildRankS() { return m_playerInfo->guildRank; }

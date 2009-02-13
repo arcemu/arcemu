@@ -649,7 +649,6 @@ void Creature::EnslaveExpire()
 	}
 	SetUInt64Value(UNIT_FIELD_CHARMEDBY, 0);
 	SetUInt64Value(UNIT_FIELD_SUMMONEDBY, 0);
-	SetIsPet(false);
 
 	m_walkSpeed = m_base_walkSpeed;
 	m_runSpeed = m_base_runSpeed;

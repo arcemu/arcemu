@@ -1649,8 +1649,9 @@ bool Object::IsPet()
 	if( this->GetTypeId() != TYPEID_UNIT )
 		return false;
 
-	if( static_cast< Unit* >( this )->m_isPet && m_uint32Values[UNIT_FIELD_CREATEDBY] != 0 && m_uint32Values[UNIT_FIELD_SUMMONEDBY] != 0 )
-		return true;
+	if (this->IsCreature() && static_cast< Creature * >(this)->IsPet() &&
+		m_uint32Values[UNIT_FIELD_CREATEDBY] != 0 && m_uint32Values[UNIT_FIELD_SUMMONEDBY] != 0 )
+			return true;
 
 	return false;
 }

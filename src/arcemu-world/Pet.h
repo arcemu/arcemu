@@ -108,6 +108,9 @@ public:
 	Pet(uint64 guid);
 	~Pet();
 
+	// Override superclass method that returns false
+	bool IsPet() { return true; }
+
 	void LoadFromDB(Player* owner, PlayerPet * pi);
 	void CreateAsSummon(uint32 entry, CreatureInfo *ci, Creature *created_from_creature, Player* owner, SpellEntry *created_by_spell, uint32 type, uint32 expiretime, LocationVector* Vec = NULL);
 

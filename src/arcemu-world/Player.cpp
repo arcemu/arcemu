@@ -10207,7 +10207,7 @@ void Player::UnPossess()
 	if(pTarget->m_temp_summon)
 		return;
  
-	if( !( pTarget->m_isPet && static_cast< Pet* >( pTarget ) == m_Summon ) )
+	if( !( pTarget->IsPet() && static_cast< Pet* >( pTarget ) == m_Summon ) )
 	{
 		data.Initialize( SMSG_PET_SPELLS );
 		data << uint64(0);

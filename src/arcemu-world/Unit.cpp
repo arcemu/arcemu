@@ -134,9 +134,6 @@ Unit::Unit()
 	m_silenced = 0;
 	disarmed   = false;
 
-	// Pet
-	m_isPet = false;
-	
 	//DK:modifiers
 	PctRegenModifier = 0;
 	for( i = 0; i < 4; i++ )

@@ -243,7 +243,15 @@ public:
 
 	Creature(uint64 guid);
 	virtual ~Creature();
-    bool Load(CreatureSpawn *spawn, uint32 mode, MapInfo *info);
+
+	// Override superclass method that returns false
+	bool IsCreature() { return true; }
+
+	// For derived subclasses of Creature
+	virtual bool IsVehicle() { return false; }
+	virtual bool IsPet() { return false; }
+
+	bool Load(CreatureSpawn *spawn, uint32 mode, MapInfo *info);
 	void Load(CreatureProto * proto_, float x, float y, float z, float o=0);
 
 	void AddToWorld();
@@ -254,9 +262,6 @@ public:
 	void Create ( const char* creature_name, uint32 mapid, float x, float y, float z, float ang);	
 	void CreateWayPoint ( uint32 WayPointID, uint32 mapid, float x, float y, float z, float ang);
 	
-	// Vehicles
-	virtual bool IsVehicle() { return false; }
-
 	/// Updates
 	virtual void Update( uint32 time );
 

@@ -110,8 +110,6 @@ void Pet::SetNameForEntry( uint32 entry )
 
 void Pet::CreateAsSummon( uint32 entry, CreatureInfo *ci, Creature* created_from_creature, Player* owner, SpellEntry* created_by_spell, uint32 type, uint32 expiretime, LocationVector* Vec )
 {
-	SetIsPet( true );
-
 	if( !ci || !owner )
 		return; //TODO: delete pet before return
 
@@ -441,7 +439,6 @@ void Pet::LoadFromDB( Player* owner, PlayerPet * pi )
 	Create( pi->name.c_str(), owner->GetMapId(), owner->GetPositionX() + 2 , owner->GetPositionY() + 2, owner->GetPositionZ(), owner->GetOrientation() );
 
 	LoadValues( mPi->fields.c_str() );
-	SetIsPet( true );
 	
 	m_PetNumber = mPi->number;
 	m_PetXP = mPi->xp;
@@ -1188,7 +1185,7 @@ void Pet::ApplyPetLevelAbilities()
 	uint32 level = getLevel();
 	if( level > PLAYER_LEVEL_CAP )
 		level = PLAYER_LEVEL_CAP;
-	else if (level < 0)
+	else if (level < 1)
 		level = 1;
 	static uint32 family_aura[46] = { 0, 17223, 17210, 17129, 17208, 7000, 17212, 17209, 17211, 17214, 0, 17217, 17220, 0, 0, 0, 0, 0, 0, 0, 17218, 17221, 0, 0, 17206, 17215, 17216, 17222, 0, 0, 34887, 35257, 35254, 35258, 35253, 35386, 50297, 54676, 0, 55192, 55729, 56634, 56635, 58598, 61199 };
 		

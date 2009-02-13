@@ -41,6 +41,7 @@ public:
 	int8 GetOccupancyLimit() { return 1; } // CHANGE THIS
 	int8 GetPassengerCount() { return m_passengerCount; }
 
+	// Override superclass method that returns false
 	bool IsVehicle() { return true; }
 
 	void Load(uint32 vehicleid);
