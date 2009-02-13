@@ -465,8 +465,8 @@ struct AchievementCriteriaEntry
 	uint32  name_flags;                                   // 25
 	uint32  completionFlag;                               // 26
 	uint32  groupFlag;                                    // 27
-	//uint32  unk1;                                         // 28
-	//uint32  timeLimit;                                    // 29 time limit in seconds
+	uint32  unk1;                                         // 28
+	uint32  timeLimit;                                    // 29 time limit in seconds
 	uint32  index;                                        // 30
 };
 
@@ -478,7 +478,7 @@ struct BattlemasterListEntry
 	uint32	max_players_per_faction;
 	uint32	min_players_per_faction;
 	uint32	flag; // EOTS AND SOTA have this set to nine, otherwise it's zero
-	//uint32  always_true;
+	uint32  always_true;
 	uint32	some_id;
 	int32	zeros[15];
 	uint32	unk[2];
@@ -734,7 +734,7 @@ struct SpellEntry
 	uint32 EffectMiscValueB[3];             //117 - 119  2.4.3
 	uint32 EffectTriggerSpell[3];           //120 - 122
 	float  EffectPointsPerComboPoint[3];    //123 - 125
-	//uint32 EffectSpellClassMask[3][3];      //126 - 134
+	uint32 EffectSpellClassMask[3][3];      //126 - 134
 	uint32 SpellVisual;                     //135
 	uint32 field114;                        //136
 	uint32 spellIconID;                     //137
@@ -1270,21 +1270,14 @@ struct MapEntry
 	char*  hordeIntro;   // text for PvP Zones
 	char*  allianceIntro;// text for PvP Zones
 	uint32 multimap_id;
-	uint32 unk1;
-	uint32 unk2;
-	float  unk_float;
 	char*  normalReqText;// normal mode requirement text
 	char*  heroicReqText;// heroic mode requirement text
-	char*  emptyText;
-	uint32  parent_map;   // map_id of parent map
+	int32  parent_map;   // map_id of parent map
 	float  start_x;      // enter x coordinate (if exist single entry)
 	float  start_y;      // enter y coordinate (if exist single entry)
 	uint32 resetTimeRaid;
 	uint32 resetTimeHeroic;
-	float  unk3;
-	float  unk4;	
 	uint32 addon;        // 0-original maps, 1-tbc addon, 2-wotlk addon
-	float  unk5;
 };
 
 struct ItemRandomSuffixEntry
@@ -1416,7 +1409,7 @@ struct ScalingStatDistributionEntry{
 struct ScalingStatValuesEntry{
 	uint32 id;
 	uint32 level;
-	uint32 multiplier[18];
+	uint32 multiplier[17];
 };
 
 #pragma pack(pop)

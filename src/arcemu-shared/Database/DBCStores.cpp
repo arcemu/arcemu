@@ -92,7 +92,7 @@ const char* GlyphPropertyEntryFormat = "uuuu";
 const char* skilllineentrYFormat = "uuulxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx";
 
 
-const char* BattlemasterListEntryFormat = "uiiiiiiiiuuuuuiiiiiiiiiiiiiiiiiuu";
+const char* BattlemasterListEntryFormat = "uiiiiiiiiuuuuuiiiiiiiiiiiiiiiiiiuu";
 
 const char* CharTitlesEntryfmt =
 	"u" // ID
@@ -143,8 +143,11 @@ const char* AchievementCriteriaStoreFormat=
 	"i" // raw.additionalRequirement2_type
 	"i" // raw.additionalRequirement2_value
 	"lxxxxxxxxxxxxxxx" // name
+	"u" // name_flags
 	"i" // completionFlag
 	"i" // groupFlag
+	"u" // unk1
+	"i" // timeLimit
 	"u" // index
 ;
 
@@ -196,12 +199,12 @@ const char* spellentryFormat =
 	"f" // speed
 	"u" // modalNextSpell
 	"u" // maxstack
-	"uu" // Totem[2] -48
+	"uu" // Totem[2]
 	"uuuuuuuu" // Reagent[8]
 	"uuuuuuuu" // ReagentCount[8]
 	"u" // EquippedItemClass
 	"u" // EquippedItemSubClass
-	"u" // RequiredItemFlags -67
+	"u" // RequiredItemFlags
 	"uuu" // Effect[3]
 	"uuu" // EffectDieSides[3]
 	"uuu" // EffectBaseDice[3]
@@ -212,7 +215,7 @@ const char* spellentryFormat =
 	"uuu" // EffectImplicitTargetA[3]
 	"uuu" // EffectImplicitTargetB[3]
 	"uuu" // EffectRadiusIndex[3]
-	"uuu" // EffectApplyAuraName[3] -100
+	"uuu" // EffectApplyAuraName[3]
 	"uuu" // EffectAmplitude[3]
 	"uuu" // Effectunknown[3]
 	"uuu" // EffectChainTarget[3]
@@ -220,10 +223,10 @@ const char* spellentryFormat =
 	"uuu" // EffectMiscValue[3]
 	"uuu" // EffectMiscValueB[3]
 	"uuu" // EffectTriggerSpell[3]
-	"uuu" // EffectPointsPerComboPoint[3] -124
-	//"uuu" // EffectUnk0[3] // cebernic:seems to be removed since 9551?
-	//"uuu" // EffectUnk1[3]
-	//"uuu" // EffectUnk2[3]
+	"uuu" // EffectPointsPerComboPoint[3]
+	"uuu" // EffectUnk0[3]
+	"uuu" // EffectUnk1[3]
+	"uuu" // EffectUnk2[3]
 	"u" // SpellVisual
 	"u" // field114
 	"u" // spellIconID
@@ -283,13 +286,9 @@ const char* mapentryFormat =
 	"u"					// 3 is_pvp_zone
 	"lxxxxxxxxxxxxxxxx"	// 4-20 real_name
 	"u"					// 21 linked_zone
-	"xxxxxxxxxxxxxxxxxxxxxxx" // 22-38 hordeIntro (44)
+	"xxxxxxxxxxxxxxxxx" // 22-38 hordeIntro
 	"xxxxxxxxxxxxxxxxx" // 39-55 allianceIntro
 	"u"					// 56 multimap_id
-
-	"u"					// unk (63)
-	"u"					// unk (64)
-
 	"x"					// 57 unk_float (all 1 but arathi 1.25)
 	"xxxxxxxxxxxxxxxxx"	// 58-74 normalReqText
 	"xxxxxxxxxxxxxxxxx"	// 75-91 heroicReqText
@@ -313,7 +312,7 @@ const char* barbershopstyleFormat="nulxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxuuu";
 const char* gtfloatformat = "f";
 const char* areatriggerformat = "uuffffffff";
 const char* scalingstatdistributionformat = "uiiiiiiiiiiuuuuuuuuuuu";
-const char* scalingstatvaluesformat = "uuuuuuuuuuuuuuuuuuuu";
+const char* scalingstatvaluesformat = "uuuuuuuuuuuuuuuuuuu";
 
 template<class T>
 bool loader_stub(const char * filename, const char * format, bool ind, T& l, bool loadstrs)
