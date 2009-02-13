@@ -129,9 +129,11 @@ bool ChatHandler::HandleQuestLookupCommand(const char * args, WorldSession * m_s
 			const char * questtitle = localizedFound ? li->Title : i->title;
 			// send quest link
 			recout = questid.c_str();
-			recout += ": |cff00ccff|Hquest:"; // color actually should depend on character level but I'm lazy
+			recout += ": |cff00ccff|Hquest:";
 			recout += questid.c_str();
-			recout += ":10|h[";
+			recout += ":";
+			recout += MyConvertIntToString(i->min_level);
+			recout += "|h[";
 			recout += questtitle;
 			recout += "]|h|r";
 			SendMultilineMessage(m_session, recout.c_str());
