@@ -171,6 +171,8 @@ void Vehicle::AddPassenger(Player * player, int8 seat)
 		SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_PLAYER_CONTROLLED_CREATURE);
 
 		// Set player world states
+		// UNIX (LINKING PROBLEM WITH SetWorldState as INLINE)
+		/*
 		player->GetMapMgr()->SetWorldState(0x0DE5, 0x190);
 		player->GetMapMgr()->SetWorldState(0x0DE7, 0x06);
  		player->GetMapMgr()->SetWorldState(0x0DE8, 0x28);
@@ -178,6 +180,7 @@ void Vehicle::AddPassenger(Player * player, int8 seat)
  		player->GetMapMgr()->SetWorldState(0x0DE9, 0x00);
  		player->GetMapMgr()->SetWorldState(0x0DE8, 0x28);
  		player->GetMapMgr()->SetWorldState(0x0DE8, 0x04);
+		*/
 
 		 //set active mover
 		player->GetSession()->SetActiveMover(GetNewGUID());
@@ -242,6 +245,7 @@ void Vehicle::RemovePassenger(Player * player)
 	player->GetSession()->SendPacket(&data);
 
 	// Set player's world state
+	/*
  	player->GetMapMgr()->SetWorldState(0x0DE5, 0x18B);
  	player->GetMapMgr()->SetWorldState(0x0DE7, 0x06);
  	player->GetMapMgr()->SetWorldState(0x0DE8, 0x23);
@@ -249,6 +253,7 @@ void Vehicle::RemovePassenger(Player * player)
   	player->GetMapMgr()->SetWorldState(0x0DE9, 0x05);
   	player->GetMapMgr()->SetWorldState(0x0DE8, 0x1E);
   	player->GetMapMgr()->SetWorldState(0x0DE8, 0x03);
+	*/
 
 	if (player == m_controller)
 	{
