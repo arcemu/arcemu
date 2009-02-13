@@ -7344,6 +7344,7 @@ void Aura::SpellAuraModHaste( bool apply )
 
 void Aura::SpellAuraForceReaction( bool apply )
 {
+#ifndef IMA_MAC
 	map<uint32,uint32>::iterator itr;
 	Player * p_target = static_cast<Player*>( m_target );
 	if( !m_target->IsPlayer() )
@@ -7369,6 +7370,7 @@ void Aura::SpellAuraForceReaction( bool apply )
 	}
 
 	p_target->GetSession()->SendPacket( &data );
+#endif
 }
 
 void Aura::SpellAuraModRangedHaste( bool apply )
