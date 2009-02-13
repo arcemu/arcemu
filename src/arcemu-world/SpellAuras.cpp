@@ -4596,11 +4596,21 @@ void Aura::SpellAuraProcTriggerSpell(bool apply)
 		ProcTriggerSpell pts;
 		pts.origId = GetSpellProto()->Id;
 		pts.caster = m_casterGuid;
-		pts.groupRelation[0] = GetSpellProto()->EffectSpellClassMask[mod->i][0];
-		pts.groupRelation[1] = GetSpellProto()->EffectSpellClassMask[mod->i][1];
-		pts.groupRelation[2] = GetSpellProto()->EffectSpellClassMask[mod->i][2];
-		if(GetSpellProto()->EffectTriggerSpell[mod->i])
+		pts.groupRelation[0] = 0;
+		pts.groupRelation[1] = 0;
+		pts.groupRelation[2] = 0;
+		if(GetSpellProto()->EffectTriggerSpell[mod->i]){
 			pts.spellId=GetSpellProto()->EffectTriggerSpell[mod->i];
+			SpellEntry * ptsInfo = dbcSpell.LookupEntry( pts.spellId );
+			if ( !ptsInfo )
+			{
+				sLog.outDebug("Warning,trigger spell is null for spell %u",GetSpellProto()->Id);
+				return;
+			}
+			pts.groupRelation[0] = ptsInfo->SpellGroupType[0];
+			pts.groupRelation[1] = ptsInfo->SpellGroupType[1];
+			pts.groupRelation[2] = ptsInfo->SpellGroupType[2];
+		}
 		else
 		{
 			sLog.outDebug("Warning,trigger spell is null for spell %u",GetSpellProto()->Id);
@@ -6584,9 +6594,9 @@ void Aura::SpellAuraHover( bool apply )
 void Aura::SpellAuraAddPctMod( bool apply )
 {
 	int32 val = apply ? mod->m_amount : -mod->m_amount;
-	uint32* AffectedGroups = GetSpellProto()->EffectSpellClassMask[mod->i];
+	uint32 *AffectedGroups = &(GetSpellProto()->SpellGroupType[0]);
 
-//	sLog.outDebug("%s: AffectedGroups %I64x ,the smt type %u, val=%d",__FUNCTION__,AffectedGroups,mod->m_miscValue, val);
+	//sLog.outString("%s: AffectedGroups %I64x ,the smt type %u, val=%d",__FUNCTION__,AffectedGroups,mod->m_miscValue, val);
 	switch( mod->m_miscValue )//let's generate warnings for unknown types of modifiers
 	{
 	case SMT_CRITICAL:
@@ -6757,7 +6767,7 @@ void Aura::SendDummyModifierLog( std::map< SpellEntry*, uint32 >* m, SpellEntry*
 	packetSMSG_SET_FLAT_SPELL_MODIFIER data;
 
 	int32 v = spellInfo->EffectBasePoints[i] + 1;
-	uint32* mask = spellInfo->EffectSpellClassMask[i];
+	uint32 *mask = spellInfo->SpellGroupType;
 	uint8 type = static_cast<uint8>(spellInfo->EffectMiscValue[i]);
 
 	if(apply)
@@ -7967,9 +7977,9 @@ void Aura::SpellAuraModHealingByAP(bool apply)
 void Aura::SpellAuraAddFlatModifier(bool apply)
 {
 	int32 val = apply?mod->m_amount:-mod->m_amount;
-	uint32* AffectedGroups = GetSpellProto()->EffectSpellClassMask[mod->i];
+	uint32 *AffectedGroups = GetSpellProto()->SpellGroupType;
 
-//	sLog.outDebug("%s: AffectedGroups %I64x smt type %u\n", __FUNCTION__, AffectedGroups, mod->m_miscValue);
+	//sLog.outString("%s: AffectedGroups %I64x smt type %u\n", __FUNCTION__, AffectedGroups, mod->m_miscValue);
 	switch (mod->m_miscValue)//let's generate warnings for unknown types of modifiers
 	{
 	case SMT_CRITICAL:

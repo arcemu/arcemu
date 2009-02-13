@@ -676,10 +676,10 @@ public:
 		data << (uint32)1;					  // unknown? need research?
 		data << uint32(Flags | 0x1);			// aura school
 		data << Amount;						 // amount of done to target / heal / damage
+		data << (uint32)0;				 // cebernic: unknown?? needs more research,but it should fix unknow damage type with suffered.
 		data << g_spellSchoolConversionTable[School];
 		data << uint32(abs_dmg);
 		data << uint32(resisted_damage);
-
 		Caster->SendMessageToSet(&data, true);
 	}
 
@@ -689,13 +689,13 @@ public:
 		data << Target->GetNewGUID();		   // target guid
 		FastGUIDPack(data, CasterGuid);		 // caster guid
 		data << SpellID;						// spellid
-		data << (uint32)1;					  // unknown?? need resource?
+		data << (uint32)1;					  // unknown?? need research?
 		data << uint32(Flags | 0x1);			// aura school
 		data << Amount;						 // amount of done to target / heal / damage
+		data << (uint32)0;				 // cebernic: unknown?? needs more research,but it should fix unknow damage type with suffered.
 		data << g_spellSchoolConversionTable[School];
 		data << uint32(abs_dmg);
 		data << uint32(resisted_damage);
-
 		Target->SendMessageToSet(&data, true);
 	}
 
