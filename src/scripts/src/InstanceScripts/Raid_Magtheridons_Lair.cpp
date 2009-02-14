@@ -524,6 +524,9 @@ public:
 
 	void AIUpdate()
 	{
+		if (!CubeTrigger)
+			return;
+
 		// Channeler settings check
 		// We check if pointer has Channeler data and if so we check if that channeler is alive, in world and if channels Cube
 		if (Channeler && (!Channeler->isAlive() || !Channeler->IsInWorld()))
@@ -590,6 +593,10 @@ public:
 			if (GlobalCubeTrigger && GlobalCubeTrigger->GetUInt32Value(UNIT_CHANNEL_SPELL) == SHADOW_GRASP && CubeTrigger->GetUInt64Value(UNIT_FIELD_CHANNEL_OBJECT) == Magtheridon->GetGUID())
 				Counter++;
 		}
+
+		// Null pointer check
+		if (!Magtheridon)
+			return;
 
 		// If it's the first and the only one Cube triggering spell we use Magtheridon's yell
 		if (Counter == 1 && !MagYell)
