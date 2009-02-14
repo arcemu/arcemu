@@ -144,6 +144,17 @@ struct CreatureProto
 	set<uint32> start_auras;
 	list<AI_Spell*> spells;
 };
+
+struct VendorRestrictionEntry
+{
+	uint32 entry;
+	int32 racemask;
+	uint32 reqrepfaction;
+	uint32 reqrepvalue;
+	uint32 canbuyattextid;
+	uint32 cannotbuyattextid;
+};
+
 #pragma pack(pop)
 
 struct Formation{

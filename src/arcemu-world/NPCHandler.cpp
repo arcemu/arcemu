@@ -407,9 +407,9 @@ void WorldSession::HandleGossipHelloOpcode( WorldPacket & recv_data )
 		return;
 
 	//stop when talked to for 3 min
-	/*if(qst_giver->GetAIInterface())
-		qst_giver->GetAIInterface()->StopMovement(180000);*/
- 
+	if(qst_giver->GetAIInterface())
+		qst_giver->GetAIInterface()->StopMovement(180000);
+
 	// unstealth meh
 	if( _player->IsStealth() )
 		_player->RemoveAllAuraType( SPELL_AURA_MOD_STEALTH );

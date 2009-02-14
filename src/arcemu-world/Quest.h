@@ -204,6 +204,16 @@ struct Quest
 	uint32 rewardtalents;
 	uint32 suggestedplayers;
 
+	/* emotes */
+	uint32 detailemotecount;
+	uint32 detailemote[4];
+	uint32 detailemotedelay[4];
+	uint32 completionemotecount;
+	uint32 completionemote[4];
+	uint32 completionemotedelay[4];
+	uint32 completeemote;
+	uint32 incompleteemote;
+
 	/* this marks the end of the fields loaded from db - don't remove the comment please */
 
 	uint32 count_required_mob;

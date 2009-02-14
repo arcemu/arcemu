@@ -293,6 +293,6 @@ uint32 GetBuyPriceForItem( uint32 itemid, uint32 count, Player* plr, Creature* v
 
 string GetItemLinkByProto(ItemPrototype * iProto, uint32 language);
 
-uint32 GetStatScalingStatValueColumn(ItemPrototype *proto, uint32 type);
+int32 GetStatScalingStatValueColumn(ItemPrototype *proto, uint32 type);
 
 #endif

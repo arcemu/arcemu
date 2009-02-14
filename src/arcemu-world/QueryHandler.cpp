@@ -134,7 +134,7 @@ void WorldSession::HandleCreatureQueryOpcode( WorldPacket & recv_data )
 void WorldSession::HandleGameObjectQueryOpcode( WorldPacket & recv_data )
 {
 	CHECK_PACKET_SIZE(recv_data, 12);
-	WorldPacket data(SMSG_GAMEOBJECT_QUERY_RESPONSE, 300);
+	WorldPacket data(SMSG_GAMEOBJECT_QUERY_RESPONSE, 900);
 
 	uint32 entryID;
 	uint64 guid;
@@ -160,7 +160,12 @@ void WorldSession::HandleGameObjectQueryOpcode( WorldPacket & recv_data )
 	else
 		data << goinfo->Name;
 
-	data << uint8(0) << uint8(0) << uint8(0) << uint8(0) << uint8(0) << uint8(0);   // new string in 1.12
+	data << goinfo->Name2;
+	data << goinfo->Name3;
+	data << goinfo->Name4;
+	data << goinfo->Category;
+	data << goinfo->Castbartext;
+	data << goinfo->Unkstr;
 	data << goinfo->SpellFocus;
 	data << goinfo->sound1;
 	data << goinfo->sound2;
@@ -280,16 +285,23 @@ void WorldSession::HandleItemNameQueryOpcode( WorldPacket & recv_data )
 	recv_data >> itemid;
 	reply << itemid;
 	ItemPrototype *proto=ItemPrototypeStorage.LookupEntry(itemid);
-	if(!proto)
+	ItemName *MetaName = ItemNameStorage.LookupEntry(itemid);
+	if(!proto && !MetaName)
 		reply << "Unknown Item";
 	else
 	{
-		LocalizedItem * li = (language>0) ? sLocalizationMgr.GetLocalizedItem(itemid, language) : NULL;
-		if(li)
-			reply << li->Name;
+		if(proto)
+		{
+			LocalizedItem * li = (language>0) ? sLocalizationMgr.GetLocalizedItem(itemid, language) : NULL;
+			if(li)
+				reply << li->Name;
+			else
+				reply << proto->Name1;
+		}
 		else
-			reply << proto->Name1;
+			reply << MetaName->name;
 	}
+
 	SendPacket(&reply);	
 }
 

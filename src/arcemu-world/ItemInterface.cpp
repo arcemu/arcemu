@@ -1610,8 +1610,21 @@ int8 ItemInterface::CanEquipItemInSlot(int8 DstInvSlot, int8 slot, ItemPrototype
 
 		if(proto->Class == 4)
 		{
+			uint32 bogus_subclass = 0;
+			uint32 playerlevel = 0;
+			/* scaling heirloom items */
+			if(proto->ScalingStatsEntry != 0 && proto->ScalingStatsFlag != 0)
+			{
+				playerlevel = m_pOwner->getLevel();
 
-			if(!(m_pOwner->GetArmorProficiency()&(((uint32)(1))<<proto->SubClass)))
+				if (playerlevel < 40 && proto->SubClass >= 3)
+					bogus_subclass = proto->SubClass - 1; /* mail items become leather, plate items become mail below lvl40 */
+				else bogus_subclass = proto->SubClass;
+			}
+			else
+				bogus_subclass = proto->SubClass;
+
+			if(!(m_pOwner->GetArmorProficiency()&(((uint32)(1))<<bogus_subclass)))
 				return INV_ERR_NO_REQUIRED_PROFICIENCY;
 
 		}

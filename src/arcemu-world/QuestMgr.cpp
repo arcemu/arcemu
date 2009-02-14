@@ -297,6 +297,7 @@ void QuestMgr::BuildOfferReward(WorldPacket *data, Quest* qst, Object* qst_giver
 {
 	LocalizedQuest * lq = (language>0) ? sLocalizationMgr.GetLocalizedQuest(qst->id,language):NULL;
 	ItemPrototype * it;
+	uint32 i = 0;
 	data->SetOpcode(SMSG_QUESTGIVER_OFFER_REWARD);
 	*data << qst_giver->GetGUID();
 	*data << qst->id;
@@ -316,14 +317,16 @@ void QuestMgr::BuildOfferReward(WorldPacket *data, Quest* qst, Object* qst_giver
 
 	*data << (qst->next_quest_id ? uint32(1) : uint32(0));	  // next quest shit
 	*data << uint32(0);										 // maybe required money
-	*data << uint32(1);										 // emotes count
-	*data << uint32(0);										 // emote delay
-	*data << uint32(1);										 // emote type
+	*data << qst->completionemotecount;
+	for(i = 0; i < qst->completionemotecount; i++){
+		*data << qst->completionemote[i];
+		*data << qst->completionemotedelay[i];
+	}
 
 	*data << qst->count_reward_choiceitem;
 	if (qst->count_reward_choiceitem)
 	{
-		for(uint32 i = 0; i < 6; ++i)
+		for(i = 0; i < 6; ++i)
 		{
 			if(qst->reward_choiceitem[i])
 			{
@@ -426,14 +429,11 @@ void QuestMgr::BuildQuestDetails(WorldPacket *data, Quest* qst, Object* qst_give
 	*data << qst->effect_on_player; // this is the spell the quest finisher casts on you as a reward
 	*data << qst->rewardtitleid; //10 reward title
 	*data << qst->rewardtalents; // reward talents
-	*data << uint32(0);						// 3.0.2         8
-	*data << uint32(1);						// emote count   7
-	*data << uint32( EMOTE_ONESHOT_TALK );	// emote1 type   6
-	*data << uint32(0);						// emote1 delay  5
-	*data << uint32(0);						// 3.0.2  4
-	*data << uint32(0);						// 3.0.2  3
-	*data << uint32(0);						// 3.0.2  2
-	*data << uint32(0);						// 3.0.2  1
+	*data << qst->detailemotecount;
+	for(i = 0; i < qst->detailemotecount; i++){
+		*data << qst->detailemote[i];
+		*data << qst->detailemotedelay[i];
+	}
 }
 
 void QuestMgr::BuildRequestItems(WorldPacket *data, Quest* qst, Object* qst_giver, uint32 status, uint32 language)
@@ -457,7 +457,10 @@ void QuestMgr::BuildRequestItems(WorldPacket *data, Quest* qst, Object* qst_give
 	}
 	
 	*data << uint32(0);
-	*data << uint32(1);				 // Emote count
+	if(status == QMGR_QUEST_NOT_FINISHED)
+		*data << qst->incompleteemote;
+	else
+		*data << qst->completeemote;
 
 	*data << uint32(0);				 // Emote delay
 	*data << uint32(1);				 // Emote type

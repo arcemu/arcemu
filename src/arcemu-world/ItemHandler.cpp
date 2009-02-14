@@ -20,6 +20,18 @@
 
 #include "StdAfx.h"
 
+bool CanBuyAt(Player *plr, VendorRestrictionEntry *vendor)
+{
+	uint8 plracemask = plr->getRaceMask();
+	uint32 plrep = plr->GetStanding(vendor->reqrepfaction);
+
+	/* if either the player has the right race or has the right reputation, he/she can buy at the vendor */
+	if ( (plracemask & vendor->racemask) || (plrep >= vendor->reqrepvalue) )
+		return true;
+
+	return false;
+}
+
 void WorldSession::HandleSplitOpcode(WorldPacket& recv_data)
 {
 	if( !_player || !_player->IsInWorld() )
@@ -1476,15 +1488,25 @@ void WorldSession::HandleListInventoryOpcode( WorldPacket & recv_data )
 	if (unit == NULL)
 		return;
 
+	VendorRestrictionEntry *vendor = VendorRestrictionEntryStorage.LookupEntry(unit->GetProto()->Id);
+
 	//this is a blizzlike check
-	if( _player->GetDistanceSq( unit ) > 100 )
+	if ( _player->GetDistanceSq( unit ) > 100 )
 		return; //avoid talking to anyone by guid hacking. Like sell farmed items anytime ? Low chance hack
 
-	/*if(unit->GetAIInterface())
-		unit->GetAIInterface()->StopMovement(180000);*/
+	if (unit->GetAIInterface())
+		unit->GetAIInterface()->StopMovement(180000);
 
 	_player->Reputation_OnTalk(unit->m_factionDBC);
-	SendInventoryList(unit);
+	
+	if (!vendor || CanBuyAt(_player,vendor))
+		SendInventoryList(unit);
+	else
+	{
+		GossipMenu * pMenu;
+		objmgr.CreateGossipMenuForPlayer(&pMenu,unit->GetGUID(),vendor->cannotbuyattextid,_player);
+		pMenu->SendTo(_player);
+	}
 }
 
 void WorldSession::SendInventoryList(Creature* unit)

@@ -607,11 +607,20 @@ struct ItemPrototype
 	int32 ForcedPetId;
 };
 
-typedef struct {
+struct ItemName
+{
+	uint32 entry;
+	char *name;
+	uint32 slot;
+};
+
+typedef struct
+{
 	uint32 setid;
 	uint32 itemscount;
 	//Spell* spell[8];
-}ItemSet;
+} ItemSet;
+
 #pragma pack(pop)
 
 #endif

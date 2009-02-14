@@ -1209,7 +1209,8 @@ string GetItemLinkByProto(ItemPrototype * iProto, uint32 language = NULL)
 	return ItemLink;
 }
 
-uint32 GetStatScalingStatValueColumn(ItemPrototype *proto, uint32 type){
+int32 GetStatScalingStatValueColumn(ItemPrototype *proto, uint32 type)
+{
 	switch(type){
 		case SCALINGSTATSTAT:{ 
 			if(proto->ScalingStatsFlag & 1)
@@ -1255,5 +1256,5 @@ uint32 GetStatScalingStatValueColumn(ItemPrototype *proto, uint32 type){
 				return 15;
 			break; }
 	}
-	return 0;
+	return 1;
 }

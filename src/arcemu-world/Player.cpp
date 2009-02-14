@@ -4096,8 +4096,9 @@ void Player::_ApplyItemMods(Item* item, int8 slot, bool apply, bool justdrokedow
 		ScalingStatValuesEntry *ssvrow = dbcScalingStatValues.LookupEntry( SSVDBCEByLevel[ getLevel() ] );
 		uint32 StatType;
 		uint32 StatMod;
-		uint32 StatMultiplier;
+		int32 StatMultiplier;
 		int32 StatValue;
+		int32 col = 0;
 		
 		/* Not going to put a check here since unless you put a random id/flag in the tables these should never return NULL */
 		
@@ -4105,7 +4106,9 @@ void Player::_ApplyItemMods(Item* item, int8 slot, bool apply, bool justdrokedow
 		for(i = 0; ssdrow->stat[i] != -1; i++){
 			StatType = ssdrow->stat[i];
 			StatMod  = ssdrow->statmodifier[i];
-			StatMultiplier = ssvrow->multiplier[GetStatScalingStatValueColumn(proto,SCALINGSTATSTAT)];
+			col = GetStatScalingStatValueColumn(proto,SCALINGSTATSTAT);
+			if(col == -1) continue;
+			StatMultiplier = ssvrow->multiplier[col]; 
 			StatValue = StatMod*StatMultiplier/10000;
 			ModifyBonuses(StatType,StatValue,apply);
 		}
@@ -4113,44 +4116,59 @@ void Player::_ApplyItemMods(Item* item, int8 slot, bool apply, bool justdrokedow
 		if((proto->ScalingStatsFlag & 32768) && i < 10){
 			StatType = ssdrow->stat[i];
 			StatMod  = ssdrow->statmodifier[i];
-			StatMultiplier = ssvrow->multiplier[GetStatScalingStatValueColumn(proto,SCALINGSTATSPELLPOWER)];
-			StatValue = StatMod*StatMultiplier/10000;
-			ModifyBonuses(45,StatValue,apply);
+			col = GetStatScalingStatValueColumn(proto,SCALINGSTATSPELLPOWER);
+			if(col != -1){
+				StatMultiplier = ssvrow->multiplier[col];
+				StatValue = StatMod*StatMultiplier/10000;
+				ModifyBonuses(45,StatValue,apply);
+			}
 		}
 
 		/* Calculating the Armor correct for our level and applying it */
-		uint32 scaledarmorval = ssvrow->multiplier[ GetStatScalingStatValueColumn(proto,SCALINGSTATARMOR) ];
-
-		if( apply )BaseResistance[0 ]+= scaledarmorval;
+		col = GetStatScalingStatValueColumn(proto,SCALINGSTATARMOR);
+		if(col != -1)
+		{
+			uint32 scaledarmorval = ssvrow->multiplier[ col ];
+			if( apply )BaseResistance[0 ]+= scaledarmorval;
 			else  BaseResistance[0] -= scaledarmorval;
 			CalcResistance( 0 );
+		}
 
 		/* Calculating the damages correct for our level and applying it */
-		uint32 scaleddps = ssvrow->multiplier [ GetStatScalingStatValueColumn(proto,SCALINGSTATDAMAGE) ];
-		float scaledmindmg = float( scaleddps * 2 * proto->Delay / 1000 ) / 2.5f;
-		float scaledmaxdmg = 1.5f * scaledmindmg;
+		col = GetStatScalingStatValueColumn(proto,SCALINGSTATDAMAGE);
+		if(col != -1){
+			uint32 scaleddps = ssvrow->multiplier [ col ];
+			float dpsmod = 1.0;
 
-		if( proto->InventoryType == INVTYPE_RANGED || proto->InventoryType == INVTYPE_RANGEDRIGHT || proto->InventoryType == INVTYPE_THROWN )
-		{	
-			BaseRangedDamage[0] += apply ? scaledmindmg : -scaledmindmg;
-			BaseRangedDamage[1] += apply ? scaledmaxdmg : -scaledmaxdmg;
-		}
-		else
-		{
-			if( slot == EQUIPMENT_SLOT_OFFHAND )
+			if (proto->ScalingStatsFlag & 0x1400)
+				dpsmod = 0.2;
+			else dpsmod = 0.3;
+
+			float scaledmindmg = (scaleddps - (scaleddps * dpsmod)) * (proto->Delay/1000);
+			float scaledmaxdmg = (scaleddps * (dpsmod+1.0)) * (proto->Delay/1000);
+
+			if( proto->InventoryType == INVTYPE_RANGED || proto->InventoryType == INVTYPE_RANGEDRIGHT || proto->InventoryType == INVTYPE_THROWN )
 			{
-				BaseOffhandDamage[0] = apply ? scaledmindmg : 0;
-				BaseOffhandDamage[1] = apply ? scaledmaxdmg : 0;
+				BaseRangedDamage[0] += apply ? scaledmindmg : -scaledmindmg;
+				BaseRangedDamage[1] += apply ? scaledmaxdmg : -scaledmaxdmg;
 			}
 			else
 			{
-				BaseDamage[0] = apply ? scaledmindmg : 1;
-				BaseDamage[1] = apply ? scaledmaxdmg : 1;
+				if( slot == EQUIPMENT_SLOT_OFFHAND )
+				{
+					BaseOffhandDamage[0] = apply ? scaledmindmg : 0;
+					BaseOffhandDamage[1] = apply ? scaledmaxdmg : 0;
+				}
+				else
+				{
+					BaseDamage[0] = apply ? scaledmindmg : 1;
+					BaseDamage[1] = apply ? scaledmaxdmg : 1;
+				}
 			}
 		}
 
 	/* Normal items */
-	}else{
+	} else {
 		// Stats
 		for( uint32 i = 0; i < proto->itemstatscount; i++ )
 		{

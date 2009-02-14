@@ -167,6 +167,8 @@ ECHO [Importing] 2118_items.sql
 mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < ..\world_updates\2118_items.sql
 ECHO [Importing] 2157_worldmap_info.sql
 mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < ..\world_updates\2157_worldmap_info.sql
+ECHO [Importing] 2199_gosandquests.sql
+mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < ..\world_updates\2199_gosandquests.sql
 ECHO [Importing] spellfixes.sql
 mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < ..\world_updates\spellfixes.sql
 ECHO [Importing] Finished
