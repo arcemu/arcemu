@@ -4147,7 +4147,7 @@ void Player::_ApplyItemMods(Item* item, int8 slot, bool apply, bool justdrokedow
 			else dpsmod = 0.3;
 
 			float scaledmindmg = (scaleddps - (scaleddps * dpsmod)) * (proto->Delay/1000);
-			float scaledmaxdmg = (scaleddps * (dpsmod+1.0)) * (proto->Delay/1000);
+			float scaledmaxdmg = (scaleddps * (dpsmod+1.0f)) * (proto->Delay/1000);
 
 			if( proto->InventoryType == INVTYPE_RANGED || proto->InventoryType == INVTYPE_RANGEDRIGHT || proto->InventoryType == INVTYPE_THROWN )
 			{
