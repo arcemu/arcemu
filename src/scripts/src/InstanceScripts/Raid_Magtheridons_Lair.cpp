@@ -555,7 +555,7 @@ public:
 		}
 
 		// Safe check to prevent crashes when Channeler was nulled
-		if (!Channeler)
+		if (Magtheridon && !Channeler)
 		{
 			uint32 Counter = 0;
 			for (int i = 0; i < 5; i++)
