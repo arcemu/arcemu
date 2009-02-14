@@ -38,6 +38,8 @@ Player::Player( uint32 guid )
 m_mailBox(guid), 
 m_achievementMgr(this),
 m_finishingmovesdodge(false),
+disableAppear(false),
+disableSummon(false),
 iActivePet(0),
 //resurrector(0),
 SpellCrtiticalStrikeRatingBonus(0),
