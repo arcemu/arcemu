@@ -349,7 +349,33 @@ bool ChatHandler::HandleSummonCommand(const char* args, WorldSession *m_session)
 	if(!*args)
 		return false;
 
-	sGMLog.writefromsession(m_session, "summoned %s on map %u, %f %f %f", args, m_session->GetPlayer()->GetMapId(),m_session->GetPlayer()->GetPositionX(),m_session->GetPlayer()->GetPositionY(),m_session->GetPlayer()->GetPositionZ());
+	// Summon Blocking
+	if (!stricmp(args, "on"))
+	{
+		if(m_session->GetPlayer()->IsSummonDisabled())
+		{
+			BlueSystemMessage(m_session, "Summon blocking is already enabled");
+		}
+		else
+		{
+			m_session->GetPlayer()->DisableSummon(true);
+			GreenSystemMessage(m_session, "Summon blocking is now enabled");
+		}
+		return true;
+	}
+	else if (!stricmp(args, "off"))
+	{
+		if(m_session->GetPlayer()->IsSummonDisabled())
+		{
+			m_session->GetPlayer()->DisableSummon(false);
+			GreenSystemMessage(m_session, "Summon blocking is now disabled");
+		}
+		else
+		{
+			BlueSystemMessage(m_session, "Summon blocking is already disabled");
+		}
+		return true;
+	}
 
 	Player *chr = objmgr.GetPlayer(args, false);
 	if (chr)
@@ -357,7 +383,15 @@ bool ChatHandler::HandleSummonCommand(const char* args, WorldSession *m_session)
 		// send message to user
 		char buf[256];
 		char buf0[256];
-		if(chr->IsBeingTeleported()==true) 
+
+		if (!m_session->CanUseCommand('z') && chr->IsSummonDisabled())
+		{
+			snprintf((char*)buf,256, "%s has blocked other GMs from summoning them.", chr->GetName());
+			SystemMessage(m_session, buf);
+			return true;
+		}
+
+		if (chr->IsBeingTeleported() == true) 
 		{
 			snprintf((char*)buf,256, "%s is already being teleported.", chr->GetName());
 			SystemMessage(m_session, buf);
@@ -366,7 +400,7 @@ bool ChatHandler::HandleSummonCommand(const char* args, WorldSession *m_session)
 		snprintf((char*)buf,256, "You are summoning %s.", chr->GetName());
 		SystemMessage(m_session, buf);
 
-		if(!m_session->GetPlayer()->m_isGmInvisible)
+		if (!m_session->GetPlayer()->m_isGmInvisible)
 		{
 			// send message to player
 			snprintf((char*)buf0,256, "You are being summoned by %s.", m_session->GetPlayer()->GetName());
@@ -375,7 +409,7 @@ bool ChatHandler::HandleSummonCommand(const char* args, WorldSession *m_session)
 
 		Player * plr = m_session->GetPlayer();
 
-		if(plr->GetMapMgr()==chr->GetMapMgr())
+		if (plr->GetMapMgr()==chr->GetMapMgr())
 			chr->_Relocate(plr->GetMapId(),plr->GetPosition(),false,false,plr->GetInstanceID());
 		else
 		{
@@ -385,11 +419,12 @@ bool ChatHandler::HandleSummonCommand(const char* args, WorldSession *m_session)
 	else
 	{
 		PlayerInfo * pinfo = objmgr.GetPlayerInfoByName(args);
-		if(!pinfo)
+		if (!pinfo)
 		{
 			char buf[256];
 			snprintf((char*)buf,256,"Player (%s) does not exist.", args);
 			SystemMessage(m_session, buf);
+			return true;
 		}
 		else
 		{
@@ -400,8 +435,11 @@ bool ChatHandler::HandleSummonCommand(const char* args, WorldSession *m_session)
 			char buf[256];
 			snprintf((char*)buf,256,"(Offline) %s has been summoned.", pinfo->name);
 			SystemMessage(m_session, buf);
+			return true;
 		}
 	}
+
+	sGMLog.writefromsession(m_session, "summoned %s on map %u, %f %f %f", args, m_session->GetPlayer()->GetMapId(),m_session->GetPlayer()->GetPositionX(),m_session->GetPlayer()->GetPositionY(),m_session->GetPlayer()->GetPositionZ());
 	return true;
 }
 
@@ -411,11 +449,48 @@ bool ChatHandler::HandleAppearCommand(const char* args, WorldSession *m_session)
 	if(!*args)
 		return false;
 
+	// Appear Blocking
+	if (!stricmp(args, "on"))
+	{
+		if(m_session->GetPlayer()->IsAppearDisabled())
+		{
+			BlueSystemMessage(m_session, "Appear blocking is already enabled");
+		}
+		else
+		{
+			m_session->GetPlayer()->DisableAppear(true);
+			GreenSystemMessage(m_session, "Appear blocking is now enabled");
+		}
+		return true;
+	}
+	else if (!stricmp(args, "off"))
+	{
+		if(m_session->GetPlayer()->IsAppearDisabled())
+		{
+			m_session->GetPlayer()->DisableAppear(false);
+			GreenSystemMessage(m_session, "Appear blocking is now disabled");
+		}
+		else
+		{
+			BlueSystemMessage(m_session, "Appear blocking is already disabled");
+		}
+		return true;
+	}
+
 	Player *chr = objmgr.GetPlayer(args, false);
 	if (chr)
 	{
 		char buf[256];
-		if( chr->IsBeingTeleported() ) {
+
+		if (!m_session->CanUseCommand('z') && chr->IsAppearDisabled())
+		{
+			snprintf((char*)buf,256, "%s has blocked other GMs from appearing to them.", chr->GetName());
+			SystemMessage(m_session, buf);
+			return true;
+		}
+
+		if (chr->IsBeingTeleported())
+		{
 			snprintf((char*)buf,256, "%s is already being teleported.", chr->GetName());
 			SystemMessage(m_session, buf);
 			return true;
@@ -423,7 +498,7 @@ bool ChatHandler::HandleAppearCommand(const char* args, WorldSession *m_session)
 		snprintf((char*)buf,256, "Appearing at %s's location.", chr->GetName());  // -- europa
 		SystemMessage(m_session, buf);
 
-		if(!m_session->GetPlayer()->m_isGmInvisible)
+		if (!m_session->GetPlayer()->m_isGmInvisible)
 		{
 			char buf0[256];
 			snprintf((char*)buf0,256, "%s is appearing to your location.", m_session->GetPlayer()->GetName());
@@ -457,12 +532,12 @@ bool ChatHandler::HandleTaxiCheatCommand(const char* args, WorldSession *m_sessi
 	if (chr == NULL) 
 		return true;
 
-	if(strcmp(args, "on") == 0)
+	if(stricmp(args, "on") == 0)
 	{
 		GreenSystemMessage(m_session, "%s has all taxi nodes now.", chr->GetName());
 		SystemMessage(m_session, "%s has given you all taxi nodes.", m_session->GetPlayer()->GetName());
 	}
-	else if(strcmp(args, "off") == 0)
+	else if(stricmp(args, "off") == 0)
 	{
 		GreenSystemMessage(m_session, "%s has no more taxi nodes now.", chr->GetName());
 		SystemMessage(chr->GetSession(), "%s has deleted all your taxi nodes.", m_session->GetPlayer()->GetName());
@@ -472,11 +547,11 @@ bool ChatHandler::HandleTaxiCheatCommand(const char* args, WorldSession *m_sessi
 
 	for (uint8 i=0; i<12; i++)
 	{
-		if(strcmp(args, "on") == 0)
+		if(stricmp(args, "on") == 0)
 		{
 			chr->SetTaximask(i, 0xFFFFFFFF);
 		}
-		else if(strcmp(args, "off") == 0)
+		else if(stricmp(args, "off") == 0)
 		{
 			chr->SetTaximask(i, 0);
 		}

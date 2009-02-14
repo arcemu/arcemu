@@ -31,55 +31,55 @@ ChatCommand * ChatHandler::getCommandTable()
 
 ChatCommand * CommandTableStorage::GetSubCommandTable(const char * name)
 {
-	if(!strcmp(name, "modify"))
+	if(!stricmp(name, "modify"))
 		return _modifyCommandTable;
-	else if(!strcmp(name, "waypoint"))
+	else if(!stricmp(name, "waypoint"))
 		return _waypointCommandTable;
-	else if(!strcmp(name, "debug"))
+	else if(!stricmp(name, "debug"))
 		return _debugCommandTable;
-	else if(!strcmp(name, "gmTicket"))
+	else if(!stricmp(name, "gmTicket"))
 		return _GMTicketCommandTable;
-	else if(!strcmp(name, "gobject"))
+	else if(!stricmp(name, "gobject"))
 		return _GameObjectCommandTable;
-	else if(!strcmp(name, "battleground"))
+	else if(!stricmp(name, "battleground"))
 		return _BattlegroundCommandTable;
-	else if(!strcmp(name, "npc"))
+	else if(!stricmp(name, "npc"))
 		return _NPCCommandTable;
-	else if(!strcmp(name, "vehicle"))
+	else if(!stricmp(name, "vehicle"))
 		return _VehicleCommandTable;
-	else if(!strcmp(name, "cheat"))
+	else if(!stricmp(name, "cheat"))
 		return _CheatCommandTable;
-	else if(!strcmp(name, "account"))
+	else if(!stricmp(name, "account"))
 		return _accountCommandTable;
-	else if(!strcmp(name, "honor"))
+	else if(!stricmp(name, "honor"))
 		return _honorCommandTable;
-	else if(!strcmp(name, "quest"))
+	else if(!stricmp(name, "quest"))
 		return _questCommandTable;
-	else if(!strcmp(name, "pet"))
+	else if(!stricmp(name, "pet"))
 		return _petCommandTable;
-	else if(!strcmp(name, "recall"))
+	else if(!stricmp(name, "recall"))
 		return _recallCommandTable;
-	else if(!strcmp(name, "guild"))
+	else if(!stricmp(name, "guild"))
 		return _GuildCommandTable;
-	else if(!strcmp(name, "gm"))
+	else if(!stricmp(name, "gm"))
 		return _gmCommandTable;
-	else if(!strcmp(name, "server"))
+	else if(!stricmp(name, "server"))
 		return _serverCommandTable;
-	else if(!strcmp(name, "character"))
+	else if(!stricmp(name, "character"))
 		return _characterCommandTable;
-	else if(!strcmp(name, "lookup"))
+	else if(!stricmp(name, "lookup"))
 		return _lookupCommandTable;
-	else if(!strcmp(name, "admin"))
+	else if(!stricmp(name, "admin"))
 		return _adminCommandTable;
-	else if(!strcmp(name, "kick"))
+	else if(!stricmp(name, "kick"))
 		return _kickCommandTable;
-	else if(!strcmp(name, "ban"))
+	else if(!stricmp(name, "ban"))
 		return _banCommandTable;
-	else if(!strcmp(name, "unban"))
+	else if(!stricmp(name, "unban"))
 		return _unbanCommandTable;
-	else if(!strcmp(name, "instance"))
+	else if(!stricmp(name, "instance"))
 		return _instanceCommandTable;
-	else if(!strcmp(name, "arena"))
+	else if(!stricmp(name, "arena"))
 		return _arenaCommandTable;
 	return 0;
 }

@@ -833,17 +833,31 @@ public:
 
 	void EventTimeoutLfgInviter();
 
+	// Summon and Appear Blocking
+	void DisableSummon(bool disable) { disableSummon = disable; }
+	bool IsSummonDisabled() { return disableSummon; }
+	void DisableAppear(bool disable) { disableAppear = disable; }
+	bool IsAppearDisabled() { return disableAppear; }
+
 protected:
 
 	void _UpdateSkillFields();
 
 	SkillMap m_skills;
 
-
+	// Summon and Appear Blocking
+	bool disableAppear;
+	bool disableSummon;
+ 	
 	// COOLDOWNS
 	PlayerCooldownMap m_cooldownMap[NUM_COOLDOWN_TYPES];
 	uint32 m_globalCooldown;
 	
+/***********************************************************************************
+	AFTER THIS POINT, public and private ARE PASSED AROUND LIKE A CHEAP WH*RE :P
+	Let's keeps thing clean (use encapsulation) above this like. Thanks.
+***********************************************************************************/
+
 public:
 	void Cooldown_AddStart(SpellEntry * pSpell);
 	void Cooldown_Add(SpellEntry * pSpell, Item * pItemCaster);

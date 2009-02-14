@@ -204,7 +204,7 @@ bool HandleShutDownCommand(BaseConsole * pConsole, int argc, const char * argv[]
 	uint32 delay = 5;
 	if(argc >= 2)
 	{
-		if (strcmp(argv[1], "fast") == 0)
+		if (stricmp(argv[1], "fast") == 0)
 		{
 			PlayerStorageMap::const_iterator itr;
 			uint32 stime = now();
