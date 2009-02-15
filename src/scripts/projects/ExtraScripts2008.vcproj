@@ -421,6 +421,10 @@
 				RelativePath="..\src\ExtraScripts\PvPToken.cpp"
 				>
 			</File>
+			<File
+				RelativePath="..\src\ExtraScripts\Unstuck.cpp"
+				>
+			</File>
 		</Filter>
 	</Files>
 	<Globals>

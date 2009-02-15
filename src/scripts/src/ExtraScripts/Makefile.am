@@ -9,4 +9,5 @@ libExtraScripts_la_SOURCES = L80etc.cpp \
 	Insta80.cpp \
 	Portals.cpp \
 	PvPToken.cpp \
+	Unstuck.cpp \
 	Setup.cpp

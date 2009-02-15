@@ -57,6 +57,15 @@ extern "C" SCRIPT_DECL void _exp_script_register(ScriptMgr* mgr)
 		SetupWeddingNPC(mgr);
 	}
 */
+
+    // Allows users to type "+unstuck" without quotes to revive them if
+	// needed and teleport them to either Stormwind or Orgrimmar
+    if(Config.OptionalConfig.GetBoolDefault("Extra", "Unstuck", false))
+    {
+        sLog.outColor(TGREEN,"\n    Unstuck Enabled");
+        SetupUnstuck(mgr);
+    }
+
 	sLog.outColor(TNORMAL, "\n");
 }
 

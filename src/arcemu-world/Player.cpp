@@ -347,6 +347,7 @@ mOutOfRangeIdCount(0)
 	TriggerpassCheat = false;
 	m_pvpTimer			  = 0;
 	m_globalCooldown = 0;
+	m_unstuckCooldown = 0;
 	m_lastHonorResetTime	= 0;
 	memset(&mActions, 0, PLAYER_ACTION_BUTTON_SIZE);
 	tutorialsDirty = true;

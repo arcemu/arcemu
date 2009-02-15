@@ -25,5 +25,6 @@ void SetupInstant80(ScriptMgr * mgr);
 void SetupPortals(ScriptMgr * mgr);
 void SetupPvPToken(ScriptMgr * mgr);
 //void SetupWeddingNPC(ScriptMgr * mgr);
+void SetupUnstuck(ScriptMgr * mgr);
 
 #endif
