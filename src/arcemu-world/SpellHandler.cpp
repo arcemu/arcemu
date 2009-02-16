@@ -251,11 +251,18 @@ void WorldSession::HandleCastSpellOpcode(WorldPacket& recvPacket)
 	// check for spell id
 	SpellEntry *spellInfo = dbcSpell.LookupEntryForced(spellId );
 
-	if(!spellInfo || !sHookInterface.OnCastSpell(_player, spellInfo))
+	if(!spellInfo)
 	{
 		sLog.outError("WORLD: unknown spell id %i\n", spellId);
 		return;
 	}
+
+	sLog.outDetail("WORLD: got cast spell packet, spellId - %i (%s), data length = %i",
+		spellId, spellInfo->Name, recvPacket.size());
+
+	// HookInterface events
+	if (!sHookInterface.OnCastSpell(_player, spellInfo))
+		return;
 
 /*  this is breaks capturing flags at arathi basin (marcelo)
 	if (spellInfo->Attributes & ATTRIBUTES_NO_CAST)
@@ -263,9 +270,6 @@ void WorldSession::HandleCastSpellOpcode(WorldPacket& recvPacket)
 		sLog.outError("WORLD: attempt to cast spell %i, %s which has ATTRIBUTES_NO_CAST\n", spellId, spellInfo->Name);
 		return;
 	}*/
-
-	sLog.outDetail("WORLD: got cast spell packet, spellId - %i (%s), data length = %i",
-		spellId, spellInfo->Name, recvPacket.size());
 	
 	// Cheat Detection only if player and not from an item
 	// this could fuck up things but meh it's needed ALOT of the newbs are using WPE now
