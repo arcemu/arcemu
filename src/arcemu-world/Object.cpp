@@ -1757,26 +1757,67 @@ void Object::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
 		return;
 	if( pVictim->IsSpiritHealer() )
 		return;
-	if( damage > 10000 && this != pVictim && this->IsPlayer() && !static_cast< Player* >(this)->GetSession()->HasPermissions())
+	if(sWorld.maxdmg_enable)
 	{
-		if( spellId )
+		if(spellId && sWorld.maxdmg_spell>0)
 		{
-			SpellEntry *spellInfo = dbcSpell.LookupEntryForced(spellId );
-			sCheatLog.writefromsession(static_cast< Player* >(this)->GetSession(),"Dealt %u damage with spell %u ( %s )", damage, spellId, (spellInfo != NULL) ? spellInfo->Name : "ERROR (NULL SPELL)");
+			if((damage > sWorld.maxdmg_spell) && this!=pVictim && this->IsPlayer() && !((Player*)this)->GetSession()->HasPermissions())
+			{
+				SpellEntry* spellInfo = dbcSpell.LookupEntryForced(spellId);
+				char dmglog[256];
+				snprintf(dmglog, 256, "Dealt %u damage with spell %u ( %s )", damage, spellId, (spellInfo != NULL) ? spellInfo->Name : "ERROR (NULL SPELL)");
+				sCheatLog.writefromsession(((Player*)this)->GetSession(),dmglog);
+				if(sWorld.maxdmg_broadcast) // send info to online GM
+				{
+					string gm_ann = MSG_COLOR_GREEN;
+					gm_ann += "|Hplayer:";
+					gm_ann += ((Player*)this)->GetName();
+					gm_ann += "|h[";
+					gm_ann += ((Player*)this)->GetName();
+					gm_ann += "]|h: ";
+					gm_ann += MSG_COLOR_YELLOW;
+					gm_ann += dmglog;
+					sWorld.SendGMWorldText(gm_ann.c_str());
+				}
+				if((sWorld.maxdmg_disconnect>0) && (damage > sWorld.maxdmg_disconnect))
+				{
+					((Player*)this)->GetSession()->Disconnect();
+				}
+				else // not enough dmg to disconnect, we'll just set it to the cap. it's been logged and gms have been notified (if configured)
+				{
+					damage = sWorld.maxdmg_spell;
+				}
+			}
 		}
-		else
-			sCheatLog.writefromsession(static_cast< Player* >(this)->GetSession(),"Dealt %u damage with Auto Attack", damage);
-
-		if( damage > 500000 )
-			static_cast< Player* >(this)->GetSession()->Disconnect();
-
-		if( ( spellId && static_cast< Player* >(this)->HasSpell(spellId) && damage > 19500 ) || (static_cast< Player* >(this)->getClass() == WARRIOR && damage > 17000) )
+		else // !spellId
 		{
-			damage = 0;
+			if((sWorld.maxdmg_autoattack>0) && (damage > sWorld.maxdmg_autoattack) && (this!=pVictim) && (this->IsPlayer()) && !((Player*)this)->GetSession()->HasPermissions())
+			{
+				char dmglog[64];
+				snprintf(dmglog, 64, "Dealt %u damage with Auto Attack", damage);
+				sCheatLog.writefromsession(((Player*)this)->GetSession(),dmglog);
+				if(sWorld.maxdmg_broadcast) // send info to GM
+				{
+					string gm_ann = MSG_COLOR_GREEN;
+					gm_ann += "|Hplayer:";
+					gm_ann += ((Player*)this)->GetName();
+					gm_ann += "|h[";
+					gm_ann += ((Player*)this)->GetName();
+					gm_ann += "]|h: ";
+					gm_ann += MSG_COLOR_YELLOW;
+					gm_ann += dmglog;
+					sWorld.SendGMWorldText(gm_ann.c_str());
+				}
+				if((sWorld.maxdmg_disconnect>0) && (damage > sWorld.maxdmg_disconnect))
+				{
+					((Player*)this)->GetSession()->Disconnect();
+				}
+				else // not enough dmg to disconnect, we'll just set it to the cap. it's been logged and gms have been notified (if configured)
+				{
+					damage = sWorld.maxdmg_autoattack;
+				}
+			}
 		}
-
-		if( !spellId && static_cast<Player*>(this)->getClass() != WARRIOR)
-			damage = 0;
 	}
 	if( this->IsUnit() && pVictim->IsUnit() && pVictim != this )
 	{

@@ -1414,6 +1414,12 @@ void World::Rehash(bool load)
 	m_bgSet_SOTA_MAX = Config.MainConfig.GetIntDefault("Battleground", "SOTA_MAX", 15);
 	
 
+	// damagecap settings
+	maxdmg_enable = Config.MainConfig.GetBoolDefault("MaxDamage", "Enable", true);
+	maxdmg_autoattack = (uint32)Config.MainConfig.GetIntDefault("MaxDamage", "AutoAttack", 10000);
+	maxdmg_spell = (uint32)Config.MainConfig.GetIntDefault("MaxDamage", "Spell", 30000);
+	maxdmg_disconnect = (uint32)Config.MainConfig.GetIntDefault("MaxDamage", "Disconnect", 500000);
+	maxdmg_broadcast = Config.MainConfig.GetBoolDefault("MaxDamage", "BroadcastGMs", true);
 
 	if(instance_DailyHeroicInstanceResetHour < 0)
 		instance_DailyHeroicInstanceResetHour = 0;
