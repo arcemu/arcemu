@@ -90,7 +90,7 @@ void SetupUnstuck(ScriptMgr * mgr)
 	Config.OptionalConfig.GetBool("Extra", "UnstuckToBind", &useBindPosition);
 	sLog.outDebug("UnstuckToBind: %u", uint32(useBindPosition));
 	Config.OptionalConfig.GetInt("Extra", "UnstuckCooldown", &unstuckCooldownTime);
-    mgr->register_hook(SERVER_HOOK_EVENT_ON_CHAT, OnChat);
+    mgr->register_hook(SERVER_HOOK_EVENT_ON_CHAT, (void*)OnChat);
 	// Disable spell 7355, GM Ticket Tool
 }
 
