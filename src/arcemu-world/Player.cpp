@@ -4144,8 +4144,8 @@ void Player::_ApplyItemMods(Item* item, int8 slot, bool apply, bool justdrokedow
 			float dpsmod = 1.0;
 
 			if (proto->ScalingStatsFlag & 0x1400)
-				dpsmod = 0.2;
-			else dpsmod = 0.3;
+				dpsmod = 0.2f;
+			else dpsmod = 0.3f;
 
 			float scaledmindmg = (scaleddps - (scaleddps * dpsmod)) * (proto->Delay/1000);
 			float scaledmaxdmg = (scaleddps * (dpsmod+1.0f)) * (proto->Delay/1000);
@@ -6321,14 +6321,14 @@ int32 Player::CanShootRangedWeapon( uint32 spellid, Unit* target, bool autoshot 
 
 	// Check ammo type
 	ItemPrototype * iprot1 = ItemPrototypeStorage.LookupEntry(itm->GetEntry());
-	if( iprot && iprot1 && iprot->SubClass != iprot1->AmmoType )
+	if( !m_requiresNoAmmo && iprot && iprot1 && iprot->SubClass != iprot1->AmmoType )
 		return SPELL_FAILED_NEED_AMMO;
 
 	// Player has clicked off target. Fail spell.
 	if( m_curSelection != m_AutoShotTarget )
 		return SPELL_FAILED_INTERRUPTED;
 
-	// Check if target is allready dead
+	// Check if target is already dead
 	if( target->isDead() )
 		return SPELL_FAILED_TARGETS_DEAD;
 
@@ -6381,7 +6381,7 @@ int32 Player::CanShootRangedWeapon( uint32 spellid, Unit* target, bool autoshot 
 	}
  
 	// Check ammo count
-	if( iprot && itm->GetProto()->SubClass != ITEM_SUBCLASS_WEAPON_WAND )
+	if( !m_requiresNoAmmo && iprot && itm->GetProto()->SubClass != ITEM_SUBCLASS_WEAPON_WAND )
 	{
 		uint32 ammocount = GetItemInterface()->GetItemCount(iprot->ItemId);
 		if(ammocount == 0)
@@ -6392,10 +6392,8 @@ int32 Player::CanShootRangedWeapon( uint32 spellid, Unit* target, bool autoshot 
 	if( spellid != SPELL_RANGED_WAND )//no min limit for wands
 		if( minrange > dist )
 			fail = SPELL_FAILED_TOO_CLOSE;
-#ifdef COLLISION
-	if (GetMapId() == target->GetMapId() && !CollideInterface.CheckLOS(GetMapId(),GetPositionNC(),target->GetPositionNC()))
+	if(sWorld.Collision && GetMapId() == target->GetMapId() && !CollideInterface.CheckLOS(GetMapId(),GetPositionNC(),target->GetPositionNC()))
 		fail = SPELL_FAILED_LINE_OF_SIGHT ;
-#endif
 	if( dist > maxr )
 	{
 		//	sLog.outString( "Auto shot failed: out of range (Maxr: %f, Dist: %f)" , maxr , dist );
