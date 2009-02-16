@@ -84,11 +84,15 @@ void WorldSession::HandleUseItemOpcode(WorldPacket& recvPacket)
 				// check for spell id
 				SpellEntry *spellInfo = dbcSpell.LookupEntryForced( spellId );
 
-				if ( !spellInfo || !sHookInterface.OnCastSpell( _player, spellInfo ) )
+				if (!spellInfo)
 				{
 					sLog.outError("WORLD: unknown spell id %i\n", spellId);
 					return;
 				}
+
+				// HookInterface
+				if (!sHookInterface.OnCastSpell( _player, spellInfo ))
+					return;
 
 				if (spellInfo->AuraInterruptFlags & AURA_INTERRUPT_ON_STAND_UP)
 				{

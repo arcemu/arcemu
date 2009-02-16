@@ -770,7 +770,13 @@ void WorldSession::HandleLogoutRequestOpcode( WorldPacket & recv_data )
 
 	if(pPlayer)
 	{
-		sHookInterface.OnLogoutRequest(pPlayer);
+		if (!sHookInterface.OnLogoutRequest(pPlayer))
+		{
+			// Declined Logout Request
+        	data << uint32(1) << uint8(0);
+			SendPacket( &data );
+			return;
+		}
 
 		if(GetPermissionCount() > 0)
 		{

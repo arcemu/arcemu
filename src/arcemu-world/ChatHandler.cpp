@@ -86,6 +86,7 @@ void WorldSession::HandleMessagechatOpcode( WorldPacket & recv_data )
 		return;
 	}
 
+	// Flood protection
 	if(lang != -1 && !GetPermissionCount() && sWorld.flood_lines != 0)
 	{
 		/* flood detection, wheeee! */
@@ -104,14 +105,6 @@ void WorldSession::HandleMessagechatOpcode( WorldPacket & recv_data )
 		}
 	}
 
-	/* Not needed?
-	std::stringstream irctext;
-	irctext.rdbuf()->str("");*/
-
-	std::string msg;
-	msg.reserve(256);
-
-	//arghhh STFU. I'm not giving you gold or items NOOB
 	switch(type)
 	{
 	case CHAT_MSG_EMOTE:
@@ -128,12 +121,52 @@ void WorldSession::HandleMessagechatOpcode( WorldPacket & recv_data )
 		}break;
 	}
 
+	std::string msg, to = "", channel = "", tmp;
+	msg.reserve(256);
+
+	// Process packet
+	switch(type)
+	{
+		case CHAT_MSG_SAY:
+		case CHAT_MSG_EMOTE:
+		case CHAT_MSG_PARTY:
+		case CHAT_MSG_RAID:
+		case CHAT_MSG_RAID_LEADER:
+		case CHAT_MSG_RAID_WARNING:
+		case CHAT_MSG_GUILD:
+		case CHAT_MSG_OFFICER:
+		case CHAT_MSG_YELL:
+			recv_data >> msg;
+			pMsg=msg.c_str();
+			pMisc=0;
+			break;
+		case CHAT_MSG_WHISPER:
+			recv_data >> to >> msg;
+			pMsg=msg.c_str();
+			pMisc=to.c_str();
+			break;
+		case CHAT_MSG_CHANNEL:
+			recv_data >> channel;
+			recv_data >> msg;
+			pMsg=msg.c_str();
+			pMisc=channel.c_str();
+			break;
+		case CHAT_MSG_AFK:
+		case CHAT_MSG_DND:
+			break;
+		default:
+			sLog.outError("CHAT: unknown msg type %u, lang: %u", type, lang);
+	}
+
+	// HookInterface OnChat event
+	if (pMsg && !sHookInterface.OnChat(_player, type, lang, pMsg, pMisc))
+		return;
+
+	// Main chat message processing
 	switch(type)
 	{
 	case CHAT_MSG_EMOTE:
 		{
-			recv_data >> msg;
-
 			if(sWorld.interfaction_chat && lang > 0)
 				lang=0;
 
@@ -148,14 +181,9 @@ void WorldSession::HandleMessagechatOpcode( WorldPacket & recv_data )
 			//sLog.outString("[emote] %s: %s", _player->GetName(), msg.c_str());
 			delete data;
 			
-			pMsg=msg.c_str();
-			pMisc=0;
-
 		}break;
 	case CHAT_MSG_SAY:
 		{
-			recv_data >> msg;
-
 			if(sWorld.interfaction_chat && lang > 0)
 				lang=0;
 
@@ -188,20 +216,14 @@ void WorldSession::HandleMessagechatOpcode( WorldPacket & recv_data )
 					(*itr)->GetSession()->SendChatPacket(data, 1, lang, this);
 				}
 			}
-
-			
-			//sLog.outString("[say] %s: %s", _player->GetName(), msg.c_str());
 			delete data;
-			pMsg=msg.c_str();
-			pMisc=0;
+
 		} break;
 	case CHAT_MSG_PARTY:
 	case CHAT_MSG_RAID:
 	case CHAT_MSG_RAID_LEADER:
 	case CHAT_MSG_RAID_WARNING:
 		{
-			recv_data >> msg;
-
 			if (sChatHandler.ParseCommands(msg.c_str(), this) > 0)
 				break;
 
@@ -257,12 +279,9 @@ void WorldSession::HandleMessagechatOpcode( WorldPacket & recv_data )
 			}
 			//sLog.outString("[party] %s: %s", _player->GetName(), msg.c_str());
 			delete data;
-			pMsg=msg.c_str();
-			pMisc=0;
 		} break;
 	case CHAT_MSG_GUILD:
 		{
-			recv_data >> msg;
 			if (sChatHandler.ParseCommands(msg.c_str(), this) > 0)
 			{
 				break;
@@ -277,13 +296,9 @@ void WorldSession::HandleMessagechatOpcode( WorldPacket & recv_data )
 			if(_player->m_playerInfo->guild)
 				_player->m_playerInfo->guild->GuildChat(msg.c_str(), this, lang);
 
-			pMsg=msg.c_str();
-			pMisc=0;
 		} break;
 	case CHAT_MSG_OFFICER:
 		{
-			recv_data >> msg;
-
 			if (sChatHandler.ParseCommands(msg.c_str(), this) > 0)
 				break;
 
@@ -296,13 +311,9 @@ void WorldSession::HandleMessagechatOpcode( WorldPacket & recv_data )
 			if(_player->m_playerInfo->guild)
 				_player->m_playerInfo->guild->OfficerChat(msg.c_str(), this, lang);
 
-			pMsg=msg.c_str();
-			pMisc=0;
 		} break;
 	case CHAT_MSG_YELL:
 		{
-			recv_data >> msg;
-
 			if(sWorld.interfaction_chat && lang > 0)
 				lang=0;
 
@@ -328,19 +339,11 @@ void WorldSession::HandleMessagechatOpcode( WorldPacket & recv_data )
 			else
 				data = sChatHandler.FillMessageData( CHAT_MSG_YELL, (CanUseCommand('c') && lang != -1) ? LANG_UNIVERSAL : lang,  msg.c_str(), _player->GetGUID(), _player->bGMTagOn ? 4 : 0 );
 
-			//SendPacket(data);
-			//sWorld.SendZoneMessage(data, GetPlayer()->GetZoneId(), this);
 			_player->GetMapMgr()->SendChatMessageToCellPlayers(_player, data, 2, 1, lang, this);
 			delete data;
-			//sLog.outString("[yell] %s: %s", _player->GetName(), msg.c_str());
-			pMsg=msg.c_str();
-			pMisc=0;
 		} break;
 	case CHAT_MSG_WHISPER:
 		{
-			std::string to = "",tmp;
-			recv_data >> to >> msg;
-
 			if(sWorld.interfaction_chat && lang > 0)
 				lang=0;
 
@@ -421,16 +424,9 @@ void WorldSession::HandleMessagechatOpcode( WorldPacket & recv_data )
 				delete data;
 			}
 
-			//sLog.outString("[whisper] %s to %s: %s", _player->GetName(), to.c_str(), msg.c_str());
-			pMsg=msg.c_str();
-			pMisc=to.c_str();
 		} break;
 	case CHAT_MSG_CHANNEL:
-		{
-			std::string channel = "";
-			recv_data >> channel;
-			recv_data >> msg;
-		 
+		{		 
 			if(g_chatFilter->Parse(msg) == true)
 			{
 				SystemMessage("Your chat message was blocked by a server-side filter.");
@@ -444,15 +440,12 @@ void WorldSession::HandleMessagechatOpcode( WorldPacket & recv_data )
 			if(chn) 
 				chn->Say(GetPlayer(),msg.c_str(), NULL, false);
 
-			//sLog.outString("[%s] %s: %s", channel.c_str(), _player->GetName(), msg.c_str());
-			pMsg=msg.c_str();
-			pMisc=channel.c_str();
-
 		} break;
 	case CHAT_MSG_AFK:
 		{
-			std::string reason;
+			std::string reason = "";
 			recv_data >> reason;
+
 			GetPlayer()->SetAFKReason(reason);
 
 			if(g_chatFilter->Parse(msg) == true)
@@ -498,12 +491,8 @@ void WorldSession::HandleMessagechatOpcode( WorldPacket & recv_data )
 				GetPlayer()->SetFlag(PLAYER_FLAGS, 0x04);
 			}		  
 		} break;
-	default:
-		sLog.outError("CHAT: unknown msg type %u, lang: %u", type, lang);
 	}
 
-	if(pMsg)
-		sHookInterface.OnChat(_player, type, lang, pMsg, pMisc);
 }
 
 void WorldSession::HandleTextEmoteOpcode( WorldPacket & recv_data )
