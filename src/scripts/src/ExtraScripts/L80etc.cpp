@@ -701,6 +701,7 @@ public:
 				_unit->Despawn(1000,300000);
 			}break;
 			timer++;
+		}
 	}
 protected:
 	uint32 timer;
@@ -782,4 +783,3 @@ void SetupL80etc(ScriptMgr * mgr)
 	mgr->register_creature_script(UNDEAD3, &Undead3AI::Create);
 	mgr->register_creature_script(TRIGGER, &TriggerAI::Create);
 }
-*/
