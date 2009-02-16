@@ -46,8 +46,7 @@ bool OnChat(Player * pPlayer, uint32 type, uint32 lang, const char * msg, const 
 		if (useBindPosition) // FIX, NOT WORKING FOR SOME DUMB ASS REASON
 		{
 			// Use the player's bind (Hearthstone) location
-			pPlayer->SafeTeleport(pPlayer->GetBindMapId(), 0, pPlayer->GetBindPositionX(),
-				pPlayer->GetBindPositionY(), pPlayer->GetBindPositionZ(), 0.0f);
+		pPlayer->SafeTeleport(pPlayer->GetBindMapId(), 0, pPlayer->GetBindPositionX(), pPlayer->GetBindPositionY(), pPlayer->GetBindPositionZ(), 0.0f);
 		}
 		else
 		{
