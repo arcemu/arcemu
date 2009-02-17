@@ -2950,7 +2950,80 @@ void ObjectMgr::HandleMonsterSayEvent(Creature * pCreature, MONSTER_SAY_EVENTS E
 		// chance successful.
 		int choice = (ms->TextCount == 1) ? 0 : RandomUInt(ms->TextCount - 1);
 		const char * text = ms->Texts[choice];
-		pCreature->SendChatMessage(ms->Type, ms->Language, text);
+		// check for special variables $N=name $C=class $R=race $G=gender
+		// $G is followed by male_string:female_string;
+		string newText = text;
+		static const char* races[12] = {"None","Human","Orc","Dwarf","Night Elf","Undead","Tauren","Gnome","Troll","None","Blood Elf","Draenei"};
+		static const char* classes[12] = {"None","Warrior", "Paladin", "Hunter", "Rogue", "Priest", "Death Knight", "Shaman", "Mage", "Warlock", "None", "Druid"};
+		char* test=strstr((char*)text,"$R");
+		if(test==NULL)
+			test = strstr((char*)text,"$r");
+		if(test != NULL)
+		{
+			uint64 targetGUID = pCreature->GetUInt64Value(UNIT_FIELD_TARGET);
+			Unit* CurrentTarget = pCreature->GetMapMgr()->GetUnit(targetGUID);
+			if(CurrentTarget)
+			{
+				uint64 testOfs = test-text;
+				newText.replace(testOfs, 2, races[CurrentTarget->getRace()]);
+			}
+		}
+		test = strstr((char*)text,"$N");
+		if(test==NULL)
+			test = strstr((char*)text,"$n");
+		if(test != NULL)
+		{
+			uint64 targetGUID = pCreature->GetUInt64Value(UNIT_FIELD_TARGET);
+			Unit* CurrentTarget = pCreature->GetMapMgr()->GetUnit(targetGUID);
+			if(CurrentTarget && CurrentTarget->IsPlayer())
+			{
+				uint64 testOfs = test-text;
+				newText.replace(testOfs, 2, ((Player*)CurrentTarget)->GetName());
+			}
+		}
+		test = strstr((char*)text,"$C");
+		if(test==NULL)
+			test = strstr((char*)text,"$c");
+		if(test != NULL)
+		{
+			uint64 targetGUID = pCreature->GetUInt64Value(UNIT_FIELD_TARGET);
+			Unit* CurrentTarget = pCreature->GetMapMgr()->GetUnit(targetGUID);
+			if(CurrentTarget)
+			{
+				uint64 testOfs = test-text;
+				newText.replace(testOfs, 2, classes[CurrentTarget->getClass()]);
+			}
+		}
+		test = strstr((char*)text,"$G");
+		if(test==NULL)
+			test = strstr((char*)text,"$g");
+		if(test != NULL)
+		{
+			uint64 targetGUID = pCreature->GetUInt64Value(UNIT_FIELD_TARGET);
+			Unit* CurrentTarget = pCreature->GetMapMgr()->GetUnit(targetGUID);
+			if(CurrentTarget)
+			{
+				char* g0 = test+2;
+				char* g1 = strchr(g0,':');
+				if(g1)
+				{
+					char* gEnd = strchr(g1,';');
+					if(gEnd)
+					{
+						*g1 = 0x00;
+						++g1;
+						*gEnd = 0x00;
+						++gEnd;
+						*test = 0x00;
+						newText = text;
+						newText += (CurrentTarget->getGender()==0) ? g0 : g1;
+						newText += gEnd;
+					}
+				}
+			}
+		}
+
+		pCreature->SendChatMessage(ms->Type, ms->Language, newText.c_str());
 	}
 }
 

@@ -206,6 +206,11 @@ void AIInterface::HandleEvent(uint32 event, Unit* pUnit, uint32 misc1)
 			{
 				if( pUnit == NULL || pUnit->isDead() || m_Unit->isDead() || !m_Unit->IsInWorld() || !pUnit->IsInWorld() ) return;
 
+				// set the target first
+				if(pUnit && pUnit->GetInstanceID() == m_Unit->GetInstanceID())
+				{
+					m_Unit->SetUInt64Value(UNIT_FIELD_TARGET, pUnit->GetGUID());
+				}
 				/* send the message */
 				if( m_Unit->GetTypeId() == TYPEID_UNIT )
 				{
@@ -236,10 +241,6 @@ void AIInterface::HandleEvent(uint32 event, Unit* pUnit, uint32 misc1)
 					StopMovement(0);
 
 				m_AIState = STATE_ATTACKING;
-				if(pUnit && pUnit->GetInstanceID() == m_Unit->GetInstanceID())
-				{
-					m_Unit->SetUInt64Value(UNIT_FIELD_TARGET, pUnit->GetGUID());
-				}
 				if(m_Unit->GetMapMgr() && m_Unit->GetMapMgr()->GetMapInfo() && m_Unit->GetMapMgr()->GetMapInfo()->type == INSTANCE_RAID)
 				{
 					if(m_Unit->GetTypeId() == TYPEID_UNIT)
