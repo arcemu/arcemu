@@ -30,8 +30,8 @@
 #define PET_FELHUNTER	417
 #define PET_FELGUARD	17252
 #define SHADOWFIEND		19668
-
-
+#define SPIRITWOLF		29264
+#define DANCINGRUNEWEAPON 27893
 uint32 GetAutoCastTypeForSpell( SpellEntry * ent )
 {
 	switch( ent->NameHash )
@@ -84,6 +84,12 @@ void Pet::SetNameForEntry( uint32 entry )
 			break;
 		case SHADOWFIEND:
 			m_name = "Shadowfiend";
+			break;
+		case SPIRITWOLF:
+			m_name = "Spirit Wolf";
+			break;
+		case DANCINGRUNEWEAPON:
+			m_name = "Rune Weapon";
 			break;
 		case PET_IMP:
 		case PET_VOIDWALKER:
@@ -1093,6 +1099,15 @@ void Pet::ApplySummonLevelAbilities()
 		break;
 	case 19668:    // Priest's Shadowfiend, until someone knows the stats that real have
 		stat_index = 5;
+		break;
+	case 26125:
+		stat_index = 4;
+		break;
+	case 29264:
+		stat_index = 5;
+		break;
+	case 27893:
+		stat_index = 4;
 		break;
 	}
 	if(m_uint32Values[OBJECT_FIELD_ENTRY] == 89)

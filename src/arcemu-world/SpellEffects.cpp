@@ -418,7 +418,6 @@ void Spell::SpellEffectInstantKill(uint32 i)
 	case 20402:
 		{
 		}break;
-
 	case 29364:	// encapsulate voidwalker
 		{
 			return;
@@ -1105,7 +1104,114 @@ void Spell::SpellEffectDummy(uint32 i) // Dummy(Scripted events)
 				unitTarget->DealDamage(u_caster,pet_dmg,0,0,25228,true);
 			}
 		}break;
+	/************************
+		Death Knight Spells
+	*************************/
+		case 46584:
+		{
+			if(p_caster	!= NULL)
+			{
+			float x = p_caster->GetPositionX()+rand()%25;
+			float y = p_caster->GetPositionY()+rand()%25;
+			float z = p_caster->GetPositionZ();
+			SpellEntry *ghoulSpell = dbcSpell.LookupEntryForced(52150);
+				if(corpseTarget) // We are targeting a corpse.
+				{
+					x = corpseTarget->GetPositionX();
+					y = corpseTarget->GetPositionY();
+					z = corpseTarget->GetPositionZ();
+				}
+				p_caster->CastSpellAoF(x,y,z,ghoulSpell,true );
+				CreatureInfo * ci = CreatureNameStorage.LookupEntry(26125);
+				CreatureProto * cp = CreatureProtoStorage.LookupEntry(26125);
+				if( !ci || !cp )
+					return;
+					
+				if(p_caster->HasSpell(52143))
+					{	
+						LocationVector *vec = new LocationVector(x,y,z);
+						Pet *summon = objmgr.CreatePet(26125);
+						summon->SetPower( POWER_TYPE_ENERGY, (uint32)100 );
+						summon->SetUInt32Value( UNIT_FIELD_POWER4, (uint32)100 );
+						summon->CreateAsSummon(26125, ci, NULL, p_caster, GetProto(), 6, 0, vec); // considered pet
+						summon->AddSpell(dbcSpell.LookupEntry(47481), true); // Gnaw
+						summon->AddSpell(dbcSpell.LookupEntry(47482), true); // Leap 
+						summon->AddSpell(dbcSpell.LookupEntry(47484), true); // Huddle
+						summon->AddSpell(dbcSpell.LookupEntry(47468), true); // Claw
+						summon->CastSpell(summon,50142,true);
+					}
+					else
+					{
+						SpellEffectSummonGuardian(26125);
+						return;
+					}
+	
+				
+			}
+		}break;
+		case 49576: //Death grip
+		{
+		if(!u_caster || !u_caster->isAlive() || !unitTarget || !unitTarget->isAlive())
+			return;
+		
+			if(unitTarget->IsPlayer())
+			{
 
+				Player *playerTarget = static_cast<Player*>(unitTarget);
+
+				if(playerTarget->m_CurrentTransporter) // Blizzard screwed this up, so we won't.
+					return;
+
+				SpellEffectPlayerPull(i);
+
+			return;
+			}
+			else
+			{
+
+				float posX, posY, posZ;
+				float deltaX,deltaY;
+				if(u_caster->GetPositionX() == 0.0f || u_caster->GetPositionY() == 0.0f)
+					return;
+				deltaX = u_caster->GetPositionX()-unitTarget->GetPositionX();
+				deltaY = u_caster->GetPositionY()-unitTarget->GetPositionY();
+				if(deltaX == 0.0f || deltaY == 0.0f)
+					return;
+				float d = sqrt(deltaX*deltaX+deltaY*deltaY)-u_caster->GetFloatValue(UNIT_FIELD_BOUNDINGRADIUS)-unitTarget->GetFloatValue(UNIT_FIELD_BOUNDINGRADIUS);
+				float alpha = atanf(deltaY/deltaX);
+				if(deltaX<0)
+					alpha += float(M_PI);
+
+				posX = d*cosf(alpha)+unitTarget->GetPositionX();
+				posY = d*sinf(alpha)+unitTarget->GetPositionY();
+				posZ = u_caster->GetPositionZ();
+
+				uint32 time = uint32( (unitTarget->CalcDistance(m_caster) / ((unitTarget->m_runSpeed * 3.5) * 0.001f)) + 0.5);
+
+				WorldPacket data(SMSG_MONSTER_MOVE, 50);
+				data << unitTarget->GetNewGUID();
+				data << unitTarget->GetPositionX();
+				data << unitTarget->GetPositionY();
+				data << unitTarget->GetPositionZ();
+				data << getMSTime();
+				data << uint8(0x00);
+				data << uint32(0x00000100);
+				data << time;
+				data << uint32(1);
+				data << posX << posY << posZ;
+				if(unitTarget->GetTypeId() == TYPEID_UNIT)
+					unitTarget->GetAIInterface()->StopMovement(2000);
+
+				unitTarget->SendMessageToSet(&data, true);   
+				
+				unitTarget->SetPosition(posX,posY,posZ,alpha,true);
+				unitTarget->addStateFlag(UF_ATTACKING);
+				unitTarget->smsg_AttackStart( unitTarget );
+				unitTarget->setAttackTimer(time, false);
+				unitTarget->setAttackTimer(time, true);
+				unitTarget->GetAIInterface()->taunt(u_caster,true);
+			}
+		}break;
 	/*************************
 		Non-Class spells
 		- Done
@@ -2755,7 +2861,7 @@ void Spell::SpellEffectPersistentAA(uint32 i) // Persistent Area Aura
 	m_AreaAura = true;	
 }
 
-void Spell::SpellEffectSummon(uint32 i) // Summon
+void Spell::SpellEffectSummon(uint32 i)
 {
 	switch(m_spellInfo->EffectMiscValueB[i])
 	{
@@ -2800,7 +2906,7 @@ void Spell::SpellEffectSummon(uint32 i) // Summon
 
 	if( !p_caster )
 		return;
-	
+	if(GetProto()->EffectMiscValue[i] != 24207) //Tempfix
 	u_caster->RemoveFieldSummon();
 
 	/* This is for summon water elemenal, etc */
@@ -2809,45 +2915,114 @@ void Spell::SpellEffectSummon(uint32 i) // Summon
 	if( !ci || !cp )
 		return;
 
-	if( GetProto()->EffectMiscValue[i] == 510 )	// Water Elemental
+	switch( GetProto()->EffectMiscValue[i] )
 	{
-		Pet *summon = objmgr.CreatePet( GetProto()->EffectMiscValue[i] );
-		summon->CreateAsSummon( GetProto()->EffectMiscValue[i], ci, NULL, p_caster, GetProto(), 1, GetDuration() );
-		summon->AddSpell( dbcSpell.LookupEntry(31707), true );
-		summon->AddSpell( dbcSpell.LookupEntry(33395), true );
-	}
-	else
-	{
-		Creature * pCreature = u_caster->GetMapMgr()->CreateCreature(cp->Id);
-		ASSERT(pCreature != NULL);
-
-		pCreature->Load(cp, u_caster->GetPositionX(), u_caster->GetPositionY(), u_caster->GetPositionZ());
-		pCreature->_setFaction();
-		pCreature->GetAIInterface()->Init(pCreature,AITYPE_PET,MOVEMENTTYPE_NONE,u_caster);
-		pCreature->GetAIInterface()->SetUnitToFollow(u_caster);
-		pCreature->GetAIInterface()->SetUnitToFollowAngle(float(-(M_PI/2)));
-		pCreature->GetAIInterface()->SetFollowDistance(GetRadius(i));
-		pCreature->SetUInt32Value(UNIT_FIELD_LEVEL, u_caster->getLevel());
-		pCreature->SetUInt32Value(UNIT_FIELD_FACTIONTEMPLATE, u_caster->GetUInt32Value(UNIT_FIELD_FACTIONTEMPLATE));
-		pCreature->_setFaction();
-
-		pCreature->SetUInt64Value(UNIT_FIELD_SUMMONEDBY, p_caster->GetGUID());
-		pCreature->SetUInt64Value(UNIT_FIELD_CREATEDBY, p_caster->GetGUID());
- 		u_caster->SetUInt64Value(UNIT_FIELD_SUMMON, pCreature->GetGUID());
-
-		if ( m_spellInfo->EffectMiscValue[i] == 19668 ) //shadowfiend
+		case 510:	// Water Elemental
 		{
-			float parent_bonus = (float)(p_caster->GetDamageDoneMod(SCHOOL_SHADOW)*0.065f);
-			pCreature->SetFloatValue(UNIT_FIELD_MINDAMAGE, pCreature->GetFloatValue(UNIT_FIELD_MINDAMAGE) + parent_bonus);
-			pCreature->SetFloatValue(UNIT_FIELD_MAXDAMAGE, pCreature->GetFloatValue(UNIT_FIELD_MAXDAMAGE) + parent_bonus);
-			pCreature->BaseDamage[0] += parent_bonus;
-			pCreature->BaseDamage[1] += parent_bonus;
-			//TODO add avoidance chance 75%
-		}
+			Pet *summon = objmgr.CreatePet(GetProto()->EffectMiscValue[i]);
+			summon->CreateAsSummon( GetProto()->EffectMiscValue[i], ci, NULL, p_caster, GetProto(), 1, GetDuration() ); 
+ 			summon->AddSpell( dbcSpell.LookupEntry(31707), true ); 
+ 			summon->AddSpell( dbcSpell.LookupEntry(33395), true ); 
+		}break;
+		case 29264: // Feral Spirit
+		{
+		/*
+		Feral Spirit
+		12% of base mana	30 yd range
+		Instant cast		3 min cooldown
+		Summons two Spirit Wolves under the command of the Shaman, lasting 45 sec.
+		*/
+				Pet *summon = objmgr.CreatePet(GetProto()->EffectMiscValue[i]);
+				summon->CreateAsSummon(GetProto()->EffectMiscValue[i], ci, NULL, p_caster, GetProto(), 4, GetDuration());
+				summon->AddSpell(dbcSpell.LookupEntry(58877), true); // Spirit Hunt
+				summon->AddSpell(dbcSpell.LookupEntry(58875), true); // Spirit walk
+				summon->AddSpell(dbcSpell.LookupEntry(58857), true); // Twin Howl 
+				summon->AddSpell(dbcSpell.LookupEntry(58861), true); // Spirit Bash
+				// Second wolf
+				Unit *summon2 = u_caster->create_guardian(GetProto()->EffectMiscValue[i],GetDuration(),float(-(M_PI/2)),u_caster->getLevel(),NULL, NULL );
+				summon->GetAIInterface()->SetSoulLinkedWith(summon2);
+		}break;
+		case 27893: // Dancing Rune Weapon
+		{
+			/*
+			Dancing Rune Weapon
+			40 Runic Power	30 yd range
+			Instant	3 min cooldown
+			Requires Melee Weapon
+			Unleashes all available runic power to summon a second rune weapon 
+			that fights on its own for 10 sec plus 1 sec per 5 additional runic power, 
+			doing the same attacks as the Death Knight.	
+			*/
+				uint32 duration = 10000;
+				uint32 curPow = p_caster->GetUInt32Value(UNIT_FIELD_POWER7)+1;
+				uint32 extradur = float2int32(duration+(curPow/50.0f));
+				Item * item = p_caster->GetItemInterface()->GetInventoryItem( EQUIPMENT_SLOT_MAINHAND );
+				uint32 mitemID;
+				if(item)
+					mitemID = item->GetUInt32Value( OBJECT_FIELD_ENTRY );
 
-		pCreature->PushToWorld(u_caster->GetMapMgr());
+				Pet *summon = objmgr.CreatePet(GetProto()->EffectMiscValue[i]);
+				summon->CreateAsSummon(26125, ci, NULL, p_caster, GetProto(), 1, extradur );
+				summon->SetUInt32Value(UNIT_FIELD_DISPLAYID, (uint32)15435);
+				summon->SetUInt32Value(UNIT_VIRTUAL_ITEM_SLOT_ID, mitemID );
+				summon->SetUInt32Value(UNIT_FIELD_BASEATTACKTIME, item->GetProto()->Delay);
+				summon->SetFloatValue(UNIT_FIELD_MINDAMAGE,(float)p_caster->GetDamageDoneMod(SCHOOL_NORMAL));
+				summon->SetFloatValue(UNIT_FIELD_MAXDAMAGE,(float)p_caster->GetDamageDoneMod(SCHOOL_NORMAL));
+				summon->GetAIInterface()->SetUnitToFollowAngle(float(-(M_PI/2)));
+				p_caster->SetUInt32Value(UNIT_FIELD_POWER7,0); //Drains all runic power.
+		}break;
+		default: 
+		{
+			Creature * pCreature = u_caster->GetMapMgr()->CreateCreature(cp->Id);
+			ASSERT(pCreature != NULL);
 
-		sEventMgr.AddEvent(pCreature, &Creature::SafeDelete, EVENT_CREATURE_REMOVE_CORPSE, GetDuration(), 1, 0);
+			pCreature->Load(cp, u_caster->GetPositionX(), u_caster->GetPositionY(), u_caster->GetPositionZ());
+			pCreature->_setFaction();
+			pCreature->GetAIInterface()->Init(pCreature,AITYPE_PET,MOVEMENTTYPE_NONE,u_caster);
+			pCreature->GetAIInterface()->SetUnitToFollow(u_caster);
+			pCreature->GetAIInterface()->SetUnitToFollowAngle(float(-(M_PI/2)));
+			pCreature->GetAIInterface()->SetFollowDistance(GetRadius(i));
+			pCreature->SetUInt32Value(UNIT_FIELD_LEVEL, u_caster->getLevel());
+			pCreature->SetUInt32Value(UNIT_FIELD_FACTIONTEMPLATE, u_caster->GetUInt32Value(UNIT_FIELD_FACTIONTEMPLATE));
+			pCreature->_setFaction();
+
+			pCreature->SetUInt64Value(UNIT_FIELD_SUMMONEDBY, p_caster->GetGUID());
+			pCreature->SetUInt64Value(UNIT_FIELD_CREATEDBY, p_caster->GetGUID());
+ 			u_caster->SetUInt64Value(UNIT_FIELD_SUMMON, pCreature->GetGUID());
+
+			if ( m_spellInfo->EffectMiscValue[i] == 19668 ) //shadowfiend
+			{
+				float parent_bonus = (float)(p_caster->GetDamageDoneMod(SCHOOL_SHADOW)*0.065f);
+				pCreature->SetFloatValue(UNIT_FIELD_MINDAMAGE, pCreature->GetFloatValue(UNIT_FIELD_MINDAMAGE) + parent_bonus);
+				pCreature->SetFloatValue(UNIT_FIELD_MAXDAMAGE, pCreature->GetFloatValue(UNIT_FIELD_MAXDAMAGE) + parent_bonus);
+				pCreature->BaseDamage[0] += parent_bonus;
+				pCreature->BaseDamage[1] += parent_bonus;
+				Unit* uTarget = p_caster->GetMapMgr()->GetUnit( p_caster->GetSelection() );
+				if( uTarget != NULL && isAttackable( p_caster, uTarget ) )
+				{
+					pCreature->GetAIInterface()->AttackReaction( uTarget, 1 );
+					pCreature->GetAIInterface()->SetNextTarget( uTarget );
+				}
+			}
+			if ( m_spellInfo->EffectMiscValue[i] == 24207 ) //Army of the dead ghoul.
+			{
+				float parent_bonus = (float)(p_caster->GetDamageDoneMod(SCHOOL_NORMAL)*0.04f);
+				float pi_rand = ((int32)(rand()-RAND_MAX*0.5f)%15707)/10000.0f; // should be random enough.
+				pCreature->SetFloatValue(UNIT_FIELD_MINDAMAGE, pCreature->GetFloatValue(UNIT_FIELD_MINDAMAGE) + parent_bonus);
+				pCreature->SetFloatValue(UNIT_FIELD_MAXDAMAGE, pCreature->GetFloatValue(UNIT_FIELD_MAXDAMAGE) + parent_bonus);
+				pCreature->GetAIInterface()->SetUnitToFollowAngle(pi_rand);
+				pCreature->GetAIInterface()->SetFollowDistance(3.0f);
+				float x,y,z;
+				x = u_caster->GetPositionX()+rand()%20;
+				y = u_caster->GetPositionY()+rand()%20;
+				z = u_caster->GetPositionZ();
+				pCreature->SetPosition(x,y,z,0.0f,true);
+				pCreature->CastSpell(pCreature,50142,true);
+			}
+			pCreature->PushToWorld(u_caster->GetMapMgr());
+
+			sEventMgr.AddEvent(pCreature, &Creature::SafeDelete, EVENT_CREATURE_REMOVE_CORPSE, GetDuration(), 1, 0);
+		}break;
 	}
 }
 

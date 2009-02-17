@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="9.00"
+	Version="9,00"
 	Name="ExtraScripts"
 	ProjectGUID="{BAAF7C60-9243-43D3-8091-829BCA93EBC5}"
 	RootNamespace="ExtraScripts"
@@ -406,12 +406,28 @@
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
+				RelativePath="..\src\ExtraScripts\DeathKnightFix.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\src\ExtraScripts\Insta80.cpp"
 				>
 			</File>
 			<File
 				RelativePath="..\src\ExtraScripts\L80etc.cpp"
 				>
+			</File>
+			<File
+				RelativePath="..\src\ExtraScripts\NeutralGuards.cpp"
+				>
+				<FileConfiguration
+					Name="Release|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\src\ExtraScripts\Portals.cpp"

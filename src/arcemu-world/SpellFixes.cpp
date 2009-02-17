@@ -6992,7 +6992,7 @@ void ApplyNormalFixes()
 		sp = dbcSpell.LookupEntryForced( 49576 );
 		if( sp != NULL )
 		{
-			sp->Effect[0] = SPELL_EFFECT_ATTACK_ME;
+			sp->Effect[0] = SPELL_EFFECT_DUMMY;
 		}
 		
 		/**********************************************************
@@ -7077,4 +7077,27 @@ void ApplyNormalFixes()
 			sp->EffectBasePoints[0] = -50;
 		
       	}
+
+		sp = dbcSpell.LookupEntryForced( 46585 );
+		if( sp != NULL )
+		{
+		sp->Effect[0] = SPELL_EFFECT_SUMMON;
+		sp->EffectMiscValue[0] = 26125;
+		}
+		
+		sp = dbcSpell.LookupEntryForced( 51052 );
+		if( sp != NULL )
+		{
+		sp->Effect[0] = SPELL_EFFECT_SUMMON;
+		sp->EffectMiscValue[0] = 26125;
+		}
+
+		sp = dbcSpell.LookupEntryForced( 46584 );
+		if( sp != NULL )
+		{
+		sp->Effect[0] = SPELL_EFFECT_DUMMY;
+		sp->Effect[1] = SPELL_EFFECT_DUMMY;
+		}
+
+
 }

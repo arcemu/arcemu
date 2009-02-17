@@ -38,6 +38,7 @@ extern "C" SCRIPT_DECL void _exp_script_register(ScriptMgr* mgr)
     SetupPaladinSpells(mgr);
     SetupRogueSpells(mgr);
 	SetupPriestSpells(mgr);
+	SetupPetAISpells(mgr);
 }
 
 #ifdef WIN32
