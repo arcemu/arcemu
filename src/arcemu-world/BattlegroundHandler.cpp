@@ -75,7 +75,7 @@ void WorldSession::SendBattlegroundList(Creature* pCreature, uint32 mapid)
 		return;
 
 	/* we should have a bg id selection here. */
-	uint32 t = BATTLEGROUND_WARSUNG_GULCH;
+	uint32 t = BATTLEGROUND_WARSONG_GULCH;
 	if (mapid == 0)
 	{
 		if(pCreature->GetCreatureInfo())
@@ -87,7 +87,7 @@ void WorldSession::SendBattlegroundList(Creature* pCreature, uint32 mapid)
 			else if(strstr(pCreature->GetCreatureInfo()->SubName, "Eye of the Storm") != NULL)
 				t = BATTLEGROUND_EYE_OF_THE_STORM;
 			else if(strstr(pCreature->GetCreatureInfo()->SubName, "Warsong") != NULL)
-				t = BATTLEGROUND_WARSUNG_GULCH;
+				t = BATTLEGROUND_WARSONG_GULCH;
 			else if(strstr(pCreature->GetCreatureInfo()->SubName, "Strand") != NULL)
 				t = BATTLEGROUND_STRAND_OF_THE_ANCIENT;
 		}

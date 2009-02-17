@@ -152,7 +152,7 @@ void WarsongGulch::HookOnAreaTrigger(Player * plr, uint32 id)
 		return;
 	}
 
-	if(((id == 3646 && plr->GetTeam() == 0) || (id == 3647 && plr->GetTeam() == 1)) && m_flagHolders[plr->GetTeam()] == plr->GetLowGUID())
+	if(((id == 3646 && plr->GetTeam() == 0) || (id == 3647 && plr->GetTeam() == 1)) && (plr->m_bgHasFlag && m_flagHolders[plr->GetTeam()] == plr->GetLowGUID()))
 	{
 		if(m_flagHolders[plr->GetTeam() ? 0 : 1] != 0 || m_dropFlags[plr->GetTeam() ? 0 : 1]->IsInWorld())
 		{
@@ -170,7 +170,8 @@ void WarsongGulch::HookOnAreaTrigger(Player * plr, uint32 id)
 
 		/* remove the bool from the player so the flag doesn't drop */
 		m_flagHolders[plr->GetTeam()] = 0;
-
+		plr->m_bgHasFlag = 0;
+		
 		/* remove flag aura from player */
 		plr->RemoveAura(23333+(plr->GetTeam() * 2));
 
@@ -266,7 +267,7 @@ void WarsongGulch::EventReturnFlags()
 
 void WarsongGulch::HookOnFlagDrop(Player * plr)
 {
-	if(m_flagHolders[plr->GetTeam()] != plr->GetLowGUID() || m_dropFlags[plr->GetTeam()]->IsInWorld())
+	if(!plr->m_bgHasFlag || m_dropFlags[plr->GetTeam()]->IsInWorld())
 		return;
 
 	/* drop the flag! */
@@ -278,6 +279,7 @@ void WarsongGulch::HookOnFlagDrop(Player * plr)
 	m_dropFlags[plr->GetTeam()]->PushToWorld(m_mapMgr);
 
 	m_flagHolders[plr->GetTeam()] = 0;
+	plr->m_bgHasFlag = false;
 	plr->RemoveAura(23333 + (plr->GetTeam() * 2));
 
 	SetWorldState(plr->GetTeam() ? WSG_ALLIANCE_FLAG_CAPTURED : WSG_HORDE_FLAG_CAPTURED, 1);
@@ -336,6 +338,7 @@ void WarsongGulch::HookFlagDrop(Player * plr, GameObject * obj)
 		m_dropFlags[plr->GetTeam()]->RemoveFromWorld(false);
 
 	m_flagHolders[plr->GetTeam()] = plr->GetLowGUID();
+	plr->m_bgHasFlag = true;
 
 	/* This is *really* strange. Even though the A9 create sent to the client is exactly the same as the first one, if
 	 * you spawn and despawn it, then spawn it again it will not show. So we'll assign it a new guid, hopefully that
@@ -398,6 +401,7 @@ void WarsongGulch::HookFlagStand(Player * plr, GameObject * obj)
 	sp->prepare(&targets);
 
 	/* set the flag holder */
+	plr->m_bgHasFlag = true;
 	m_flagHolders[plr->GetTeam()] = plr->GetLowGUID();
 	if(m_homeFlags[plr->GetTeam()]->IsInWorld())
 		m_homeFlags[plr->GetTeam()]->RemoveFromWorld(false);
@@ -427,8 +431,8 @@ void WarsongGulch::OnAddPlayer(Player * plr)
 void WarsongGulch::OnRemovePlayer(Player * plr)
 {
 	/* drop the flag if we have it */
-	if(m_flagHolders[plr->GetTeam()] == plr->GetLowGUID())
-		HookOnFlagDrop(plr);
+	if(plr->m_bgHasFlag)
+		HookOnMount(plr);
 
 	plr->RemoveAura(BG_PREPARATION);
 }
@@ -446,8 +450,8 @@ void WarsongGulch::HookOnPlayerDeath(Player * plr)
 	plr->m_bgScore.Deaths++;
 
 	/* do we have the flag? */
-	if(m_flagHolders[plr->GetTeam()] == plr->GetLowGUID())
-		HookOnFlagDrop(plr);
+	if(plr->m_bgHasFlag)
+	    plr->RemoveAura( 23333 + (plr->GetTeam() * 2) );
 
 	UpdatePvPData();
 }

@@ -1567,7 +1567,7 @@ void Spell::cast(bool check)
 					case 58984:		// Shadowmeld
 					case 17624:		// Petrification-> http://www.wowhead.com/?spell=17624
 					case 66:		// Invisibility
-						if(p_caster->m_bg->GetType() == BATTLEGROUND_WARSUNG_GULCH)
+						if(p_caster->m_bg->GetType() == BATTLEGROUND_WARSONG_GULCH)
 						{
 							if(p_caster->GetTeam() == 0)
 								p_caster->RemoveAura(23333);	// ally player drop horde flag if they have it
@@ -3382,6 +3382,33 @@ uint8 Spell::CanCast(bool tolerate)
 		{
 			if ( p_caster->isDead() && !p_caster->HasAura(20584) && !p_caster->HasAura(9036) && !p_caster->HasAura(8326) ) // cebernic: anti exploite
 				return SPELL_FAILED_CASTER_DEAD;
+		}
+
+			// check if spell is allowed while we have a battleground flag
+		if(p_caster->m_bgHasFlag)
+		{
+			switch(m_spellInfo->Id)
+			{
+				// stealth spells
+				case 1784:
+				case 1785:
+				case 1786:
+				case 1787:
+				case 5215:
+				case 6783:
+				case 9913:
+				case 1856:
+				case 1857:
+				case 26889:
+				{
+					// thank Cruders for this :P
+					if(p_caster->m_bg && p_caster->m_bg->GetType() == BATTLEGROUND_WARSONG_GULCH)
+						((WarsongGulch*)p_caster->m_bg)->HookOnFlagDrop( p_caster );
+					else if(p_caster->m_bg && p_caster->m_bg->GetType() == BATTLEGROUND_EYE_OF_THE_STORM)
+						((EyeOfTheStorm*)p_caster->m_bg)->HookOnFlagDrop( p_caster ); 
+					break;
+				}
+			}
 		}
 
 		//Check if spell allowed while out of stealth

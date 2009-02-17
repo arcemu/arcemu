@@ -1475,6 +1475,7 @@ public:
 	float m_bgEntryPointZ;
 	float m_bgEntryPointO;
 	int32 m_bgEntryPointInstance;
+	bool m_bgHasFlag;
 	bool m_bgIsQueued;
 	uint32 m_bgQueueType;
 	uint32 m_bgQueueInstanceId;

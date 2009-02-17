@@ -232,7 +232,7 @@ uint8 GetBattlegroundCaption(BattleGroundTypes bgType)
 	{
 	case BATTLEGROUND_ALTERAC_VALLEY:
 		return 38;
-	case BATTLEGROUND_WARSUNG_GULCH:
+	case BATTLEGROUND_WARSONG_GULCH:
 		return 39;
 	case BATTLEGROUND_ARATHI_BASIN:
 		return 40;
@@ -1231,7 +1231,7 @@ CBattleground * CBattlegroundManager::CreateInstance(uint32 Type, uint32 LevelGr
 
 	switch (Type)
 	{
-		case BATTLEGROUND_WARSUNG_GULCH: n = 0; break;
+		case BATTLEGROUND_WARSONG_GULCH: n = 0; break;
 		case BATTLEGROUND_ARATHI_BASIN: n = 1; break;
 		case BATTLEGROUND_EYE_OF_THE_STORM: n = 2; break;
 		case BATTLEGROUND_STRAND_OF_THE_ANCIENT: n = 3; break;

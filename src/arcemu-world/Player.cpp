@@ -154,7 +154,7 @@ m_bgQueueType(0),
 m_bgQueueInstanceId(0),
 m_bgIsQueued(false),
 m_bg(0),
-
+m_bgHasFlag(false),
 m_bgEntryPointInstance(0),
 
 // gm stuff

@@ -3281,6 +3281,18 @@ void Aura::SpellAuraModStealth(bool apply)
 {
 	if(apply)
 	{
+		if(p_target && p_target->m_bgHasFlag)
+		{
+			if(p_target->m_bg && p_target->m_bg->GetType() == BATTLEGROUND_WARSONG_GULCH)
+			{
+				((WarsongGulch*)p_target->m_bg)->HookOnFlagDrop(p_target);
+			}
+			if(p_target->m_bg && p_target->m_bg->GetType() == BATTLEGROUND_EYE_OF_THE_STORM)
+			{
+				((EyeOfTheStorm*)p_target->m_bg)->HookOnFlagDrop(p_target);
+			}
+	     }
+
 		SetPositive();
 		if( m_spellProto->NameHash != SPELL_HASH_VANISH)
 			m_target->SetStealth(GetSpellId());
@@ -3356,7 +3368,19 @@ void Aura::SpellAuraModStealth(bool apply)
 
 			if(p_caster->IsMounted())
 				p_caster->RemoveAura(p_caster->m_MountSpellId);
-		}
+			
+			if(p_caster->m_bg && p_caster->m_bgHasFlag)
+			{
+				if(p_caster->m_bg->GetType() == BATTLEGROUND_WARSONG_GULCH)
+				{
+					((WarsongGulch*)p_caster->m_bg)->HookOnFlagDrop(p_caster);
+				}
+				if(p_caster->m_bg->GetType() == BATTLEGROUND_EYE_OF_THE_STORM)
+				{
+					((EyeOfTheStorm*)p_caster->m_bg)->HookOnFlagDrop(p_caster);
+				}
+			 }
+		 }
 	}
 	else
 	{
