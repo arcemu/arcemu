@@ -22,34 +22,57 @@
 #define __VEHICLE_H
 
 #define MAX_PASSENGERS 16
+#define MAX_GOBJECTS 16
+#define MAX_VEHICLE_SPELLS 16
 
 class SERVER_DECL Vehicle : public Creature
 {
+	// Vehicle specific data
 	Player * m_passengers[MAX_PASSENGERS];
 	Player * m_controller;
 	int8	 m_passengerCount;
+	uint32	 m_fire_SpellIds[MAX_VEHICLE_SPELLS];
+
+	// DBC Support
 	//uint32 m_VehicleEntry; //dbc entry
+
+	// FUTURE --- NOT USED --- DON'T USE --- DON'T COMMENT OUT - Thanks
+	// Game objects in fixed relative positions to the vehicle
+	// Custom stuff for future development
+	GameObject * m_gameobjects[MAX_GOBJECTS];  
 
 public:
 	Vehicle(uint64 guid);
 	~Vehicle();
 
-	void MoveVehicle();
-
-	// Handle Passengers
-	void ClearPassengers();
-	int8 GetOccupancyLimit() { return 1; } // CHANGE THIS
-	int8 GetPassengerCount() { return m_passengerCount; }
-
 	// Override superclass method that returns false
 	bool IsVehicle() { return true; }
 
-	void Load(uint32 vehicleid);
+	// Packet Sends
+	void RelocateToVehicle(Player * player);
+	void SendFarsightPacket(Player * player, bool enabled);
+	void SendRideSpellPacket(Player * player);
+	void SendRidePacket(Player * player);
+	void SendHeartbeatPacket(Player *player);
+
+	// Clears the passenger
+	void ClearPassengers();
+	void ClearGameObjects();
+
+	// Get information about the vehicle
+	int8 GetOccupancyLimit() { return 1; } // CHANGE THIS
+	int8 GetPassengerCount() { return m_passengerCount; }
+
+	// Passenger Control
 	void AddPassenger(Player * player, int8 seat = -1);
 	void RemovePassenger(Player * player);
-	void MoveVehicle(float x, float y, float z, float o);
 
-	void setDeathState(DeathState s);
+	// Vehicle Control
+	void MoveVehicle(float x, float y, float z, float o);
+	void MoveVehicle();
+
+	// Set the vehicle's death state
+	void SetDeathState(DeathState s);
 };
 
 #endif

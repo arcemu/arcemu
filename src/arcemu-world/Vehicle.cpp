@@ -33,14 +33,24 @@
 
 Vehicle::Vehicle(uint64 guid) : Creature(guid)
 {
+	sLog.outDebug("Vehicle Constructed");
+	ClearGameObjects();
 	ClearPassengers();
 }
 
 Vehicle::~Vehicle()
 {
-
+	sLog.outDebug("Vehicle Removed");
 }
 
+// Remove game objects before calling
+void Vehicle::ClearGameObjects()
+{
+	for (int i = 0; i < MAX_GOBJECTS; i++)
+		m_gameobjects[i] = NULL;
+}
+
+// Remove passengers before calling
 void Vehicle::ClearPassengers()
 {
 	for (int i = 0; i < MAX_PASSENGERS; i++)
@@ -49,16 +59,106 @@ void Vehicle::ClearPassengers()
 	m_passengerCount = 0;
 }
 
-void Vehicle::Load(uint32 vehicleid)
+void Vehicle::SendHeartbeatPacket(Player *player)
 {
-	/*
-	VehicleEntry* v = dbcVehicle.LookupEntry(vehicleid);
-	if (v == NULL)
-		return;
+	WorldPacket data;
+	data.Initialize(MSG_MOVE_HEARTBEAT);
+	data << player->GetNewGUID();
+	data << uint32(0x800);
+	data << uint16(0x40);
+	data << getMSTime();
+	data << GetPositionX();
+	data << GetPositionY();
+	data << GetPositionZ();
+	data << GetOrientation();
+	data << uint32(0);
+	player->SendMessageToSet(&data, false);
+}
 
-	m_VehicleEntry = vehicleid;
+void Vehicle::SendRidePacket(Player * player)
+{
+	// ADD Player
+	/*
+	WorldPacket data(MSG_MOVE_TELEPORT, 50);
+	data << player->GetNewGUID();
+	data << uint32(0x200); //transport data
+	data << uint16(0);
+	data << getMSTime();
+	data << GetPositionX();
+	data << GetPositionY();
+	data << GetPositionZ();
+	data << GetOrientation();
+	data << GetGUID();
+	data << float(0.0f); //seatentry->offsetX;
+	data << float(0.0f); //seatentry->offsetY;
+	data << float(0.0f); // seatentry->offsetZ;
+	data << float(0.0f); // orientation???
+	data << getMSTime(); //WTF IS THIS
+	data << seat;
+	data << uint32(0);
+
+	player->SendMessageToSet(&data, false);
+
 	*/
-	ClearPassengers();
+
+	// Remove Player
+	WorldPacket data;
+	data.Initialize(MSG_MOVE_TELEPORT_ACK);
+	data << player->GetNewGUID();
+	data << uint32(1); //counter
+	data << uint32(0x800);
+	data << uint16(0x40);
+	data << getMSTime();
+	data << GetPositionX();
+	data << GetPositionY();
+	data << GetPositionZ();
+	data << GetOrientation();
+	data << uint32(0);
+	player->GetSession()->SendPacket(&data);
+}
+
+void Vehicle::RelocateToVehicle(Player * player)
+{
+	player->SetPlayerStatus(TRANSFER_PENDING);
+	player->m_sentTeleportPosition.ChangeCoords(GetPositionX(), GetPositionY(), GetPositionZ());
+}
+
+void Vehicle::SendFarsightPacket(Player * player, bool enabled)
+{
+	if (enabled)
+	{
+		player->SetUInt64Value(PLAYER_FARSIGHT, GetGUID());
+		WorldPacket ack(0x49D, 0);
+		if (player->GetSession() != NULL)
+			player->GetSession()->SendPacket(&ack);
+	}
+	else
+	{
+		player->SetUInt64Value(PLAYER_FARSIGHT, 0);
+		player->SetUInt64Value(UNIT_FIELD_CHARM, 0);
+	}
+}
+
+void Vehicle::SendRideSpellPacket(Player * player)
+{
+	WorldPacket data;
+	data.Initialize(SMSG_PET_SPELLS);
+			
+	data << GetGUID();
+	data << uint32(0);
+	data << uint32(0);
+	data << uint32(0x00000101);
+
+	for(uint32 i=0; i<10; ++i)
+	{
+		data << uint16(0);
+		data << uint8(0);
+		data << uint8(8 + i);
+	}
+
+	data << uint8(0);
+	data << uint8(0);
+	player->GetSession()->SendPacket(&data);
 }
 
 void Vehicle::AddPassenger(Player * player, int8 seat)
@@ -101,36 +201,13 @@ void Vehicle::AddPassenger(Player * player, int8 seat)
 	// Set this vehicle and seat to player
 	player->SetVehicle(this, seat);
 
-	//Time to move the unit...
-	player->Root();
+	// Time to move into the unit...
+	//player->Root();
 
-	WorldPacket data(MSG_MOVE_TELEPORT, 50);
-	data << player->GetNewGUID();
-	data << uint32(0x200); //transport data
-	data << uint16(0);
-	data << getMSTime();
-	data << GetPositionX();
-	data << GetPositionY();
-	data << GetPositionZ();
-	data << GetOrientation();
-	data << GetGUID();
-	data << float(0.0f); //seatentry->offsetX;
-	data << float(0.0f); //seatentry->offsetY;
-	data << float(0.0f); // seatentry->offsetZ;
-	data << float(0.0f); // orientation???
-	data << getMSTime(); //WTF IS THIS
-	data << seat;
-	data << uint32(0);
+	SendFarsightPacket(player, true);
+	RelocateToVehicle(player);
 
-	player->SendMessageToSet(&data, false);
-
-	player->SetUInt64Value(PLAYER_FARSIGHT, GetGUID());
-	WorldPacket ack(0x49D, 0);
-	if (player->GetSession() != NULL)
-		player->GetSession()->SendPacket(&ack);
-	player->SetPlayerStatus(TRANSFER_PENDING);
-	player->m_sentTeleportPosition.ChangeCoords(GetPositionX(), GetPositionY(), GetPositionZ());
-
+	/*
 	data.Initialize(MSG_MOVE_TELEPORT_ACK);
 	data << player->GetNewGUID();
 	data << uint32(0); //counter
@@ -151,17 +228,21 @@ void Vehicle::AddPassenger(Player * player, int8 seat)
 	data << uint32(0);
 
 	player->GetSession()->SendPacket(&data);
+	*/
 
 	if (seat == 0) //todo: what if its uncontrollable (skybreaker flightpath, rocket mount from k3)
 	{
 		//give control to player
+		/*
 		data.Initialize(SMSG_FORCE_RUN_SPEED_CHANGE);
 		data << GetNewGUID();
 		data << uint32(0);
 		data << uint8(1);
 		data << m_runSpeed; //speed;
 		player->GetSession()->SendPacket(&data);
+		*/
 
+		WorldPacket data;
 		data.Initialize(SMSG_CLIENT_CONTROL_UPDATE);
 		data << GetNewGUID() << uint8(1);
 		player->GetSession()->SendPacket(&data);
@@ -185,64 +266,18 @@ void Vehicle::AddPassenger(Player * player, int8 seat)
 		 //set active mover
 		player->GetSession()->SetActiveMover(GetNewGUID());
 
-		data.Initialize(SMSG_PET_SPELLS);
-			
-		data << GetGUID();
-		data << uint32(0);
-		data << uint32(0);
-		data << uint32(0x00000101);
-
-		for(uint32 i=0; i<10; ++i)
-		{
-			data << uint16(0);
-			data << uint8(0);
-			data << uint8(8 + i);
-		}
-
-		data << uint8(0);
-		data << uint8(0);
-		player->GetSession()->SendPacket(&data);
+		// Show the vehicle action bar ???
+		SendRideSpellPacket(player);
 	}
 }
 
 void Vehicle::RemovePassenger(Player * player)
 {
-	//shared_ptr<Vehicle> sthis = SPCAST(shared_from_this(), Vehicle); //don't allow deletion during execution
-
 	if (player == NULL || player->GetVehicle() != this ||
 		player->GetVehicleSeat() >= GetPassengerCount() ||
 		m_passengers[player->GetVehicleSeat()] != player)
 			return;
 
-	WorldPacket data(MSG_MOVE_HEARTBEAT, 50);
-	data.Initialize(MSG_MOVE_HEARTBEAT);
-	data << player->GetNewGUID();
-	data << uint32(0x800);
-	data << uint16(0x40);
-	data << getMSTime();
-	data << GetPositionX();
-	data << GetPositionY();
-	data << GetPositionZ();
-	data << GetOrientation();
-	data << uint32(0);
-	player->SendMessageToSet(&data, false);
-
-	player->SetUInt64Value(PLAYER_FARSIGHT, 0);
-	player->SetUInt64Value(UNIT_FIELD_CHARM, 0);
-	player->SetPlayerStatus(TRANSFER_PENDING);
-	player->m_sentTeleportPosition.ChangeCoords(GetPositionX(), GetPositionY(), GetPositionZ());
-	data.Initialize(MSG_MOVE_TELEPORT_ACK);
-	data << player->GetNewGUID();
-	data << uint32(1); //counter
-	data << uint32(0x800);
-	data << uint16(0x40);
-	data << getMSTime();
-	data << GetPositionX();
-	data << GetPositionY();
-	data << GetPositionZ();
-	data << GetOrientation();
-	data << uint32(0);
-	player->GetSession()->SendPacket(&data);
 
 	// Set player's world state
 	/*
@@ -255,8 +290,12 @@ void Vehicle::RemovePassenger(Player * player)
   	player->GetMapMgr()->SetWorldState(0x0DE8, 0x03);
 	*/
 
+	SendFarsightPacket(player, false);
+	RelocateToVehicle(player);
+
 	if (player == m_controller)
 	{
+		WorldPacket data;
 		m_controller = NULL;
 
 		SetUInt64Value(UNIT_FIELD_CHARMEDBY, 0);
@@ -285,7 +324,7 @@ void Vehicle::MoveVehicle(float x, float y, float z, float o)
 			m_passengers[i]->SetPosition(x, y, z, o);
 }
 
-void Vehicle::setDeathState(DeathState s)
+void Vehicle::SetDeathState(DeathState s)
 {
 	Creature::setDeathState(s);
 
@@ -303,6 +342,11 @@ void WorldSession::HandleVehicleDismiss(WorldPacket & recv_data)
 
 	GetPlayer()->GetVehicle()->RemovePassenger(GetPlayer());
 }
+
+
+/*******************************************************************************
+ *	GM Commands
+ *******************************************************************************/
 
 bool ChatHandler::HandleVehicleSpawn(const char * args, WorldSession * m_session)
 {
@@ -382,10 +426,13 @@ bool ChatHandler::HandleVehiclePossess(const char * args, WorldSession * m_sessi
 		SystemMessage(m_session, "Select a vehicle first");
 		return true;
 	}
-	Vehicle * vehicle = (Vehicle *)creature;
 
-	vehicle->AddPassenger(m_session->GetPlayer());
-	//void Vehicle::AddPassenger(Player * player, uint8 seat)
+	Vehicle * vehicle = (Vehicle *)creature;
+	Player * player = m_session->GetPlayer();
+
+	vehicle->AddPassenger(player);
+	player->Possess(vehicle);
+	
 	GreenSystemMessage(m_session, "Possessing Selected Vehicle...");
 	return true;
 }
@@ -399,6 +446,7 @@ bool ChatHandler::HandleVehicleUnpossess(const char * args, WorldSession * m_ses
 		SystemMessage(m_session, "You're not in possession of a vehicle");
 		return true;
 	}
+	player->UnPossess();
 	vehicle->RemovePassenger(player);
 	GreenSystemMessage(m_session, "Unpossessing Current Vehicle...");
 	return true;
