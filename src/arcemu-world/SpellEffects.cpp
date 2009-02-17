@@ -2811,7 +2811,7 @@ void Spell::SpellEffectSummon(uint32 i) // Summon
 
 	if( GetProto()->EffectMiscValue[i] == 510 )	// Water Elemental
 	{
-		Pet *summon = objmgr.CreatePet();
+		Pet *summon = objmgr.CreatePet( GetProto()->EffectMiscValue[i] );
 		summon->CreateAsSummon( GetProto()->EffectMiscValue[i], ci, NULL, p_caster, GetProto(), 1, GetDuration() );
 		summon->AddSpell( dbcSpell.LookupEntry(31707), true );
 		summon->AddSpell( dbcSpell.LookupEntry(33395), true );
@@ -4220,7 +4220,7 @@ void Spell::SpellEffectTameCreature(uint32 i)
 
 	// Remove target
 	tame->GetAIInterface()->HandleEvent(EVENT_LEAVECOMBAT, p_caster, 0);
-	Pet *pPet = objmgr.CreatePet();
+	Pet *pPet = objmgr.CreatePet( tame->GetEntry() );
 	pPet->CreateAsSummon(tame->GetEntry(), tame->GetCreatureInfo(), tame, p_caster, NULL, 2, 0);
 	tame->Despawn(0,tame->GetProto()? tame->GetProto()->RespawnTime:0);
 }
@@ -4282,7 +4282,7 @@ void Spell::SpellEffectSummonPet(uint32 i) //summon - pet
 		}
 
 
-		Pet *summon = objmgr.CreatePet();
+		Pet *summon = objmgr.CreatePet( GetProto()->EffectMiscValue[i] );
 		summon->CreateAsSummon( GetProto()->EffectMiscValue[i], ci, NULL, p_caster, GetProto(), 1, 0 );
 	}
 }
@@ -6068,7 +6068,7 @@ void Spell::SpellEffectSummonDemon(uint32 i)
 		{
 			vec = new LocationVector(m_targets.m_destX, m_targets.m_destY, m_targets.m_destZ);
 		}
-		pPet = objmgr.CreatePet();
+		pPet = objmgr.CreatePet( GetProto()->EffectMiscValue[i] );
 		pPet->CreateAsSummon(GetProto()->EffectMiscValue[i], ci, NULL, p_caster, GetProto(), 1, 300000, vec);
 		if (vec) delete vec;
 	}

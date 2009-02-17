@@ -831,7 +831,7 @@ void Pet::AddSpell( SpellEntry * sp, bool learning )
 			}
 		}
 
-		if(!has)
+		if( !has && !learning )
 		{
 			for(int i = 0; i < 10; ++i)
 			{
@@ -844,7 +844,7 @@ void Pet::AddSpell( SpellEntry * sp, bool learning )
 		}
 
 		bool done=false;
-		if(learning)
+		if( learning )
 		{
 			for(PetSpellMap::iterator itr = mSpells.begin(); itr != mSpells.end(); ++itr)
 			{

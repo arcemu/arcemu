@@ -1999,7 +1999,7 @@ void Player::SpawnPet(uint32 pet_number)
 	}
 	if (itr->second->spellid == 0)
 	{
-		Pet *pPet = objmgr.CreatePet();
+		Pet *pPet = objmgr.CreatePet( itr->second->entry );
 		pPet->LoadFromDB( this, itr->second );
 	}
 	else
@@ -2015,7 +2015,7 @@ void Player::SpawnPet(uint32 pet_number)
 			RemoveAura(18792);
 			RemoveAura(35701);
 
-			Pet *summon = objmgr.CreatePet();
+			Pet *summon = objmgr.CreatePet( pSpell->EffectMiscValue[0] );
 			//TODO: find better solution, now it creates new PlayerPet struct, but we already have one.
 			summon->CreateAsSummon( pSpell->EffectMiscValue[0], ci, NULL, this, pSpell, 1, 0 );
 		}

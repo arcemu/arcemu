@@ -1481,7 +1481,7 @@ bool ChatHandler::HandleCreatePetCommand(const char* args, WorldSession* m_sessi
 	}
 
 	// create a pet from this creature
-	Pet * pPet = objmgr.CreatePet();
+	Pet * pPet = objmgr.CreatePet( Entry );
 	pPet->SetInstanceID(plr->GetInstanceID());
 	pPet->SetMapId(plr->GetMapId());
 	pPet->CreateAsSummon(Entry, pCreatureInfo, pCreature, plr, NULL, 0x2, 0);
@@ -1557,7 +1557,7 @@ bool ChatHandler::HandlePetSpawnAIBot(const char* args, WorldSession *m_session)
 	}
 
 	// create a pet from this creature
-	Pet * pPet = objmgr.CreatePet();
+	Pet * pPet = objmgr.CreatePet( Entry );
 	pPet->SetInstanceID(plr->GetInstanceID());
 	pPet->SetMapId(plr->GetMapId());
 

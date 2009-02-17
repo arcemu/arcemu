@@ -2488,10 +2488,11 @@ void Aura::SpellAuraDummy(bool apply)
 			}
 		}break;
 	}
-	if ( TamingSpellid && ! GetTimeLeft() )
+
+	if( TamingSpellid && !GetTimeLeft() && GetUnitCaster()->IsPlayer() )
 	{
 		// Creates a 15 minute pet, if player has the quest that goes with the spell and if target corresponds to quest
-		Player *p_caster =(Player*)GetUnitCaster();
+		Player *p_caster = static_cast< Player* >( GetUnitCaster() );
 		SpellEntry *triggerspell = dbcSpell.LookupEntry( TamingSpellid );
 		Quest* tamequest = QuestStorage.LookupEntry( triggerspell->EffectMiscValue[1] );
 		if ( p_caster->GetQuestLogForEntry(tamequest->id )&& m_target->GetEntry() == tamequest->required_mob[0] )
@@ -2502,7 +2503,7 @@ void Aura::SpellAuraDummy(bool apply)
 				QuestLogEntry *qle = p_caster->GetQuestLogForEntry(tamequest->id );
 
 				tamed->GetAIInterface()->HandleEvent( EVENT_LEAVECOMBAT, p_caster, 0 );
-				Pet *pPet = objmgr.CreatePet();
+				Pet *pPet = objmgr.CreatePet( tamed->GetEntry() );
 				pPet->CreateAsSummon( tamed->GetEntry(), tamed->GetCreatureInfo(), tamed, p_caster, triggerspell, 2, 900000 );
 				//pPet->CastSpell( tamed, triggerspell, false );
 				tamed->SafeDelete();

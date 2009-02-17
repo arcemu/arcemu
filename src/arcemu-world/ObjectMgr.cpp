@@ -2500,13 +2500,13 @@ WayPointMap*ObjectMgr::GetWayPointMap(uint32 spawnid)
 	else return NULL;
 }
 
-Pet * ObjectMgr::CreatePet()
+Pet * ObjectMgr::CreatePet( uint32 entry )
 {
 	uint32 guid;
 	m_petlock.Acquire();
 	guid =++m_hiPetGuid;
 	m_petlock.Release();
-	return new Pet((uint64)HIGHGUID_TYPE_PET<<32 | guid);
+	return new Pet( ( ( uint64 )HIGHGUID_TYPE_PET << 32 ) | ( ( uint64 )entry << 24 ) | guid );
 }
 
 Player * ObjectMgr::CreatePlayer()

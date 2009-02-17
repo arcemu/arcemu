@@ -62,7 +62,7 @@ void WorldSession::HandlePetAction(WorldPacket & recv_data)
 		}
 		return;
 	}
-	Pet *pPet = _player->GetMapMgr()->GetPet((uint32)petGuid);
+	Pet *pPet = _player->GetMapMgr()->GetPet( GET_LOWGUID_PART( petGuid ) );
 	if(!pPet || !pPet->isAlive())
 		return;
 

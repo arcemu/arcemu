@@ -529,7 +529,7 @@ public:
 
 	std::list<ItemPrototype*>* GetListForItemSet(uint32 setid);
 
-	Pet * CreatePet();
+	Pet * CreatePet( uint32 entry );
 	uint32 m_hiPetGuid;
 	uint32 m_hiArenaTeamId;
 	uint32 GenerateArenaTeamId()

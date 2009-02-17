@@ -75,9 +75,9 @@ enum StableState
 };
 enum HappinessState
 {
-	UNHAPPY		=1,
-	CONTENT		=2,
-	HAPPY		=3
+	UNHAPPY		= 1,
+	CONTENT		= 2,
+	HAPPY		= 3
 };
 
 enum AutoCastEvents

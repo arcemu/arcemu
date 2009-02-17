@@ -2914,7 +2914,7 @@ void Spell::HandleEffects(uint64 guid, uint32 i)
 				break;
 			case HIGHGUID_TYPE_PLAYER:
 				{
-					unitTarget =  m_caster->GetMapMgr()->GetPlayer((uint32)guid);
+					unitTarget =  m_caster->GetMapMgr()->GetPlayer( GET_LOWGUID_PART( guid ) );
 					playerTarget = static_cast< Player* >(unitTarget);
 				}break;
 			case HIGHGUID_TYPE_ITEM:
@@ -2926,7 +2926,7 @@ void Spell::HandleEffects(uint64 guid, uint32 i)
 				gameObjTarget = m_caster->GetMapMgr()->GetGameObject(GET_LOWGUID_PART(guid));
 				break;
 			case HIGHGUID_TYPE_CORPSE:
-				corpseTarget = objmgr.GetCorpse((uint32)guid);
+				corpseTarget = objmgr.GetCorpse( GET_LOWGUID_PART( guid ) );
 				break;
 			}
 		}
