@@ -593,8 +593,8 @@ bool ChatHandler::HandleModifySpeedCommand(const char* args, WorldSession *m_ses
 
 	chr->SetPlayerSpeed(RUN, Speed);
 	chr->SetPlayerSpeed(SWIM, Speed);
-	chr->SetPlayerSpeed(RUNBACK, Speed);
-	chr->SetPlayerSpeed(FLY, Speed);
+	chr->SetPlayerSpeed(RUNBACK, Speed / 2); // Backwards slower, it's more natural :P
+	chr->SetPlayerSpeed(FLY, Speed * 2); // Flying is faster :P
 
 	return true;
 }
