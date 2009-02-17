@@ -251,8 +251,12 @@ public:
 	Instance * pInstance;
 	void BeginInstanceExpireCountdown();
 
-	ARCEMU_INLINE void SetWorldState(uint32 state, uint32 value);
-	ARCEMU_INLINE uint32 GetWorldState(uint32 state);
+	//worldstates
+	WorldStateHandlerMap m_worldStates;
+
+	void SendInitialStates(Player * plr);
+	void SetWorldState(uint32 zoneid, uint32 index, uint32 value);
+	//ARCEMU_INLINE uint32 GetWorldState(uint32 state);
 	
 	// better hope to clear any references to us when calling this :P
 	void InstanceShutdown()
@@ -296,7 +300,7 @@ private:
 	bool _CellActive(uint32 x, uint32 y);
 	void UpdateInRangeSet(Object *obj, Player *plObj, MapCell* cell, ByteBuffer ** buf);
 
-	WorldPacket* BuildInitialWorldState();
+	//WorldPacket* BuildInitialWorldState();
 
 public:
 	// Distance a Player can "see" other objects and receive updates from them (!! ALREADY dist*dist !!)

@@ -94,6 +94,7 @@
 #include "AlteracValley.h"
 #include "ArathiBasin.h"
 #include "EyeOfTheStorm.h"
+#include "WorldState.h"
 #include "CellHandler.h"
 #include "Chat.h"
 #include "Corpse.h"

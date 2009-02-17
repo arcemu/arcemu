@@ -148,10 +148,15 @@ MapMgr::~MapMgr()
 	}
 	m_corpses.clear();
 
+	//clear worldstates
+	for (WorldStateHandlerMap::iterator itr=m_worldStates.begin(); itr!= m_worldStates.end(); ++itr)
+		delete itr->second;
+	m_worldStates.clear();
+
 	Log.Notice("MapMgr", "Instance %u shut down. (%s)" , m_instanceID, GetBaseMap()->GetName());
 }
 
-WorldPacket* MapMgr::BuildInitialWorldState()
+/*WorldPacket* MapMgr::BuildInitialWorldState()
 {
 	WorldPacket * data = new WorldPacket(SMSG_INIT_WORLD_STATES, 99);
 	*data << GetMapId();
@@ -166,41 +171,46 @@ WorldPacket* MapMgr::BuildInitialWorldState()
 	}
 
 	return data;
-}
+}*/
 
-void MapMgr::SetWorldState(uint32 state, uint32 value)
+void MapMgr::SetWorldState(uint32 zoneid, uint32 index, uint32 value)
 {
-	if(_worldStateSet.find(state) == _worldStateSet.end())
-	{
-		_worldStateSet.insert( make_pair(state, value) );
-	}
+	//do we have a worldstate already?
+	WorldStateHandlerMap::iterator itr=m_worldStates.find(zoneid);
+
+	if (itr != m_worldStates.end())
+		itr->second->SetState(index, value);
 	else
 	{
-		_worldStateSet[state] = value;
+		//we got here, no state set
+		WorldStateHandler* ws=new WorldStateHandler;
+		ws->SetState(index, value);
+		m_worldStates.insert(std::make_pair<uint32, WorldStateHandler*>(zoneid, ws));
 	}
 
-	// Distribute this update
-	
-	SessionSet::iterator itr = Sessions.begin();
-	for(; itr != Sessions.end(); itr++)
-	{
-		WorldSession * pSession = (*itr);
-		if(!pSession)
-			continue;
+	WorldPacket data(SMSG_UPDATE_WORLD_STATE, 8);
+	data << index << value;
 
-		WorldPacket data(SMSG_UPDATE_WORLD_STATE, 8);
-		data << state;
-		data << value;
-		pSession->SendPacket(&data);
-	}
+	//update all players in this zone
+	for (PlayerStorageMap::iterator itr=m_PlayerStorage.begin(); itr!=m_PlayerStorage.end(); ++itr)
+		if (itr->second->GetSession() != NULL && itr->second->GetZoneId() == zoneid)
+			itr->second->GetSession()->SendPacket(&data);
 }
 
-uint32 MapMgr::GetWorldState(uint32 state)
+void MapMgr::SendInitialStates(Player * plr)
 {
-	if(_worldStateSet.find(state) == _worldStateSet.end())
-		return 0;
+	std::map<uint32, WorldStateHandler*>::iterator itr=m_worldStates.find(plr->GetZoneId());
 
-	return _worldStateSet[state];
+	if (itr == m_worldStates.end())
+		return;
+
+	WorldPacket data(SMSG_INIT_WORLD_STATES, 14 + (itr->second->m_states.size() * 8));
+	data << GetMapId() << uint32(0) << uint32(0) << uint16(itr->second->m_states.size());
+
+	for (WorldStateMap::iterator itr2=itr->second->m_states.begin(); itr2!=itr->second->m_states.end(); ++itr2)
+		data << itr2->first << itr2->second;
+
+	plr->GetSession()->SendPacket(&data);
 }
 
 uint32 MapMgr::GetTeamPlayersCount(uint32 teamId)
