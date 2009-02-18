@@ -4451,6 +4451,18 @@ void ApplyNormalFixes()
 			sp->Effect[0] = SPELL_EFFECT_APPLY_AREA_AURA;
 			sp->Effect[1] = SPELL_EFFECT_APPLY_AREA_AURA;
 		}
+		sp = dbcSpell.LookupEntryForced( 58646 ); 
+		if( sp != NULL )
+		{
+			sp->Effect[0] = SPELL_EFFECT_APPLY_AREA_AURA;
+			sp->Effect[1] = SPELL_EFFECT_APPLY_AREA_AURA;
+		}
+		sp = dbcSpell.LookupEntryForced( 57621 ); 
+		if( sp != NULL )
+		{
+			sp->Effect[0] = SPELL_EFFECT_APPLY_AREA_AURA;
+			sp->Effect[1] = SPELL_EFFECT_APPLY_AREA_AURA;
+		}
 		//////////////////////////////////////////
 		// SHAMAN STONESKIN TOTEM				//
 		//////////////////////////////////////////
@@ -4490,6 +4502,16 @@ void ApplyNormalFixes()
 			sp->Effect[0] = SPELL_EFFECT_APPLY_AREA_AURA;
 		}
 		sp = dbcSpell.LookupEntryForced( 25507 ); 
+		if( sp != NULL )
+		{
+			sp->Effect[0] = SPELL_EFFECT_APPLY_AREA_AURA;
+		}
+		sp = dbcSpell.LookupEntryForced( 58752 ); 
+		if( sp != NULL )
+		{
+			sp->Effect[0] = SPELL_EFFECT_APPLY_AREA_AURA;
+		}
+		sp = dbcSpell.LookupEntryForced( 58754 ); 
 		if( sp != NULL )
 		{
 			sp->Effect[0] = SPELL_EFFECT_APPLY_AREA_AURA;
