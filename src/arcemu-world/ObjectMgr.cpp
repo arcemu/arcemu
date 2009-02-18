@@ -2964,7 +2964,7 @@ void ObjectMgr::HandleMonsterSayEvent(Creature * pCreature, MONSTER_SAY_EVENTS E
 			Unit* CurrentTarget = pCreature->GetMapMgr()->GetUnit(targetGUID);
 			if(CurrentTarget)
 			{
-				uint64 testOfs = test-text;
+				uint32 testOfs = test-text;
 				newText.replace(testOfs, 2, races[CurrentTarget->getRace()]);
 			}
 		}
@@ -2977,7 +2977,7 @@ void ObjectMgr::HandleMonsterSayEvent(Creature * pCreature, MONSTER_SAY_EVENTS E
 			Unit* CurrentTarget = pCreature->GetMapMgr()->GetUnit(targetGUID);
 			if(CurrentTarget && CurrentTarget->IsPlayer())
 			{
-				uint64 testOfs = test-text;
+				uint32 testOfs = test-text;
 				newText.replace(testOfs, 2, ((Player*)CurrentTarget)->GetName());
 			}
 		}
@@ -2990,7 +2990,7 @@ void ObjectMgr::HandleMonsterSayEvent(Creature * pCreature, MONSTER_SAY_EVENTS E
 			Unit* CurrentTarget = pCreature->GetMapMgr()->GetUnit(targetGUID);
 			if(CurrentTarget)
 			{
-				uint64 testOfs = test-text;
+				uint32 testOfs = test-text;
 				newText.replace(testOfs, 2, classes[CurrentTarget->getClass()]);
 			}
 		}

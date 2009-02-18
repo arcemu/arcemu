@@ -1742,7 +1742,7 @@ Unit* MapMgr::GetUnit(const uint64 & guid)
 		break;
 
 	case HIGHGUID_TYPE_PET:
-		return GetPet( (uint32)guid );
+		return GetPet( GET_LOWGUID_PART( guid ) );
 		break;
 	}
 
