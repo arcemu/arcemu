@@ -3420,19 +3420,21 @@ uint8 Spell::CanCast(bool tolerate)
 		// item spell checks
 		if(i_caster && i_caster->GetProto()) //Let's just make sure there's something here, so we don't crash ;)
 		{
-			if( i_caster->GetProto()->ZoneNameID && i_caster->GetProto()->ZoneNameID != i_caster->GetZoneId() )
+			if (i_caster->GetProto()->ZoneNameID && i_caster->GetProto()->ZoneNameID != i_caster->GetZoneId())
 				return SPELL_FAILED_NOT_HERE;
-			if( i_caster->GetProto()->MapID && i_caster->GetProto()->MapID != i_caster->GetMapId() )
+			if (i_caster->GetProto()->MapID && i_caster->GetProto()->MapID != i_caster->GetMapId())
 				return SPELL_FAILED_NOT_HERE;
 
-			if(i_caster->GetProto()->Spells[0].Charges != 0)
+			if (i_caster->GetProto()->Spells[0].Charges != 0)
 			{
 				// check if the item has the required charges
-				if(i_caster->GetUInt32Value(ITEM_FIELD_SPELL_CHARGES) == 0)
+				if (i_caster->GetUInt32Value(ITEM_FIELD_SPELL_CHARGES) == 0)
 					return SPELL_FAILED_NO_CHARGES_REMAIN;
 
 				// for items that combine to create a new item, check if we have the required quantity of the item
-				if(i_caster->GetProto()->ItemId == GetProto()->Reagent[0])
+				if ((i_caster->GetProto()->ItemId == GetProto()->Reagent[0]) &&
+					(i_caster->GetProto()->Flags != 268435520)) // Enchanting scrolls
+
 					if(p_caster->GetItemInterface()->GetItemCount(GetProto()->Reagent[0]) < 1 + GetProto()->ReagentCount[0])
 						return SPELL_FAILED_ITEM_GONE;
 			}
@@ -3441,13 +3443,17 @@ uint8 Spell::CanCast(bool tolerate)
 		// check if we have the required reagents
 		if (!(p_caster->removeReagentCost && GetProto()->AttributesExD & 2) )
 		{
-			for(i=0; i<8 ;i++)
+			// Skip this with enchanting scrolls
+			if (!i_caster || (i_caster->GetProto() && i_caster->GetProto()->Flags != 268435520))
 			{
-				if( GetProto()->Reagent[i] == 0 || GetProto()->ReagentCount[i] == 0)
-					continue;
+				for(i=0; i<8 ;i++)
+				{
+					if( GetProto()->Reagent[i] == 0 || GetProto()->ReagentCount[i] == 0)
+						continue;
 
-				if(p_caster->GetItemInterface()->GetItemCount(GetProto()->Reagent[i]) < GetProto()->ReagentCount[i])
-					return SPELL_FAILED_ITEM_GONE;
+					if(p_caster->GetItemInterface()->GetItemCount(GetProto()->Reagent[i]) < GetProto()->ReagentCount[i])
+						return SPELL_FAILED_ITEM_GONE;
+				}
 			}
 		}
 
