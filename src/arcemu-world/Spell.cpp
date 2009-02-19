@@ -5371,7 +5371,7 @@ uint32 GetDiminishingGroup(uint32 NameHash)
 	case SPELL_HASH_CHEAP_SHOT:
 	case SPELL_HASH_SHADOWFURY:
 	case SPELL_HASH_CHARGE_STUN:
-	case SPELL_HASH_INTERCEPT_STUN:
+	case SPELL_HASH_INTERCEPT:
 	case SPELL_HASH_CONCUSSION_BLOW:
 	case SPELL_HASH_INTIMIDATION:
 	case SPELL_HASH_WAR_STOMP:
@@ -5385,7 +5385,7 @@ uint32 GetDiminishingGroup(uint32 NameHash)
  	case SPELL_HASH_STONECLAW_STUN:
 	case SPELL_HASH_STUN:					// Generic ones
 	case SPELL_HASH_BLACKOUT:
-	case SPELL_HASH_MACE_STUN_EFFECT:		// Mace Specialization
+	case SPELL_HASH_MACE_SPECIALIZATION:		// Mace Specialization
 		{
 			grp = DIMINISHING_GROUP_STUN_PROC;
 			pve = true;
@@ -5421,9 +5421,10 @@ uint32 GetDiminishingGroup(uint32 NameHash)
 	case SPELL_HASH_REPENTANCE:			// Repentance
 	case SPELL_HASH_SAP:
 	case SPELL_HASH_POLYMORPH:				// Polymorph
+	case SPELL_HASH_POLYMORPH___PENGUIN: // Polymorph: Penguin
 	case SPELL_HASH_POLYMORPH__CHICKEN:		// Chicken
-	case SPELL_HASH_POLYMORPH__PIG:			// Pig
-	case SPELL_HASH_POLYMORPH__TURTLE:		// Turtle
+	//case SPELL_HASH_POLYMORPH__PIG:			// Pig
+	//case SPELL_HASH_POLYMORPH__TURTLE:		// Turtle
 	case SPELL_HASH_POLYMORPH__SHEEP:		// Good ol' sheep
 	case SPELL_HASH_MAIM:					// Maybe here?
 	case SPELL_HASH_HEX:					// Should share diminish group with polymorph, but not interruptflags.

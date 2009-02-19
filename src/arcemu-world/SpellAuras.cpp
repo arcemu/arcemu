@@ -8114,7 +8114,7 @@ void Aura::SpellAuraAddFlatModifier(bool apply)
 			case SPELL_HASH_ENDURANCE_TRAINING:
 				p->LoadPetAuras(2);
 				break;
-			case SPELL_HASH_BESTIAL_SWIFTNESS:
+			case SPELL_HASH_FERAL_SWIFTNESS:
 				p->LoadPetAuras(3);
 				break;
 			case SPELL_HASH_BESTIAL_DISCIPLINE:

@@ -4468,7 +4468,7 @@ void Spell::SpellEffectWeapondamage( uint32 i ) // Weapon damage +
 		return;
 
 	//Hackfix for Mangle
-	if( GetProto()->NameHash == SPELL_HASH_MANGLE__CAT_ && u_caster->IsPlayer() )
+	if( GetProto()->NameHash == SPELL_HASH_MANGLE___CAT && u_caster->IsPlayer() )
 		static_cast< Player* >( u_caster )->AddComboPoints( unitTarget->GetGUID(), 1 );
 
 	// Hacky fix for druid spells where it would "double attack".
@@ -6847,13 +6847,11 @@ void Spell::SpellEffectEnchantHeldItem( uint32 i )
 	uint32 Duration = 1800; // Needs to be found in dbc.. I guess?
 	switch( GetProto()->NameHash )
 	{
-		/* Windfury Totem removed in 3.0.2
-		case SPELL_HASH_WINDFURY_TOTEM_EFFECT: // Windfury Totem Effect
+		case SPELL_HASH_WINDFURY_WEAPON: // Windfury Weapon Effect
 		{   
 			Duration = 10;
 		}
-		*/
-		case SPELL_HASH_FLAMETONGUE_TOTEM_EFFECT: // Flametongue Totem Effect
+		case SPELL_HASH_FLAMETONGUE_WEAPON: // Flametongue Weapon Effect
 		{   
 			Duration = 10;
 		}
