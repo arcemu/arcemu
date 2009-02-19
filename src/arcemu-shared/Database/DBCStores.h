@@ -1742,7 +1742,7 @@ extern SERVER_DECL DBCStorage<WorldMapOverlay> dbcWorldMapOverlayStore;
 extern SERVER_DECL DBCStorage<AchievementEntry> dbcAchievementStore;
 extern SERVER_DECL DBCStorage<AchievementCriteriaEntry> dbcAchievementCriteriaStore;
 extern SERVER_DECL DBCStorage<AchievementCategoryEntry> dbcAchievementCategoryStore;
-extern SERVER_DECL DBCStorage<BattlemasterListEntry> dbcBattlemasterListEntry;
+extern SERVER_DECL DBCStorage<BattlemasterListEntry> dbcBattlemasterListStore;
 extern SERVER_DECL DBCStorage<CharTitlesEntry> dbcCharTitlesEntry;
 extern SERVER_DECL DBCStorage<BarberShopStyleEntry> dbcBarberShopStyleStore;
 extern SERVER_DECL DBCStorage<GemPropertyEntry> dbcGemProperty;

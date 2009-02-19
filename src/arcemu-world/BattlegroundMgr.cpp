@@ -39,10 +39,6 @@ const static uint32 BGMapIds[ BATTLEGROUND_NUM_TYPES ] =
 	0,
 };
 
-uint32 BGMaximumPlayers[ BATTLEGROUND_NUM_TYPES ] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 15, 0, 0 };
-uint32 BGMinimumPlayers[ BATTLEGROUND_NUM_TYPES ] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 10, 0, 0 };
-
-
 const static CreateBattlegroundFunc BGCFuncs[BATTLEGROUND_NUM_TYPES] = {
 	NULL,								// 0
 	NULL,								// AV
@@ -64,7 +60,7 @@ EventableObject(),
 m_maxBattlegroundId(0)
 {
 	int i;
-	LoadBGSetFromConfig(); // config
+	//dbcBattlemasterListStore.LookupEntry(
 
 	sEventMgr.AddEvent(this, &CBattlegroundManager::EventQueueUpdate, EVENT_BATTLEGROUND_QUEUE_UPDATE, 15000, 0,0);
 
@@ -84,36 +80,6 @@ uint32 CBattlegroundManager::GetMap(uint32 bg_index)
 	if (bg_index >= BATTLEGROUND_NUM_TYPES)
 		return 0;
 	return BGMapIds[ bg_index ];
-}
-
-
-void CBattlegroundManager::LoadBGSetFromConfig()
-{
-	// cebernic: for external controlled
-	BGMaximumPlayers[0] = 0;
-	BGMaximumPlayers[1] = sWorld.m_bgSet_AV_MAX;
-	BGMaximumPlayers[2] = sWorld.m_bgSet_WS_MAX;
-	BGMaximumPlayers[3] = sWorld.m_bgSet_AB_MAX;
-	BGMaximumPlayers[4] = 4;
-	BGMaximumPlayers[5] = 6;
-	BGMaximumPlayers[6] = 10;
-	BGMaximumPlayers[7] = sWorld.m_bgSet_EOS_MAX;
-	BGMaximumPlayers[8] = sWorld.m_bgSet_SOTA_MAX;
-	BGMinimumPlayers[0] = 0;
-	BGMinimumPlayers[1] = sWorld.m_bgSet_AV_MIN;
-	BGMinimumPlayers[2] = sWorld.m_bgSet_WS_MIN;
-	BGMinimumPlayers[3] = sWorld.m_bgSet_AB_MIN;
-	BGMinimumPlayers[4] = 4;
-	BGMinimumPlayers[5] = 6;
-	BGMinimumPlayers[6] = 10;
-	BGMinimumPlayers[7] = sWorld.m_bgSet_EOS_MIN;
-	BGMinimumPlayers[8] = sWorld.m_bgSet_SOTA_MIN;
-	Log.Notice("BattlegroundManager","Min/Max - AV(%d/%d) AB(%d/%d) WS(%d/%d) EOTS(%d/%d) SOTA(%d/%d).",
-	sWorld.m_bgSet_AV_MIN,sWorld.m_bgSet_AV_MAX,
-	sWorld.m_bgSet_AB_MIN,sWorld.m_bgSet_AB_MAX,
-	sWorld.m_bgSet_WS_MIN,sWorld.m_bgSet_WS_MAX,
-	sWorld.m_bgSet_EOS_MIN,sWorld.m_bgSet_EOS_MAX,
-	sWorld.m_bgSet_SOTA_MIN,sWorld.m_bgSet_SOTA_MAX);
 }
 
 void CBattlegroundManager::HandleBattlegroundListPacket(WorldSession * m_session, uint32 BattlegroundType)
@@ -604,7 +570,8 @@ void CBattlegroundManager::EventQueueUpdate(bool forceStart)
 			if(IS_ARENA(i))
 			{
 				// enough players to start a round?
-				if(!forceStart && tempPlayerVec[0].size() < BGMinimumPlayers[i])
+				uint32 minPlayers = BattlegroundManager.GetMinimumPlayers(i);
+				if(!forceStart && tempPlayerVec[0].size() < minPlayers)
 					continue;
 
 				if(CanCreateInstance(i,j))
@@ -639,7 +606,8 @@ void CBattlegroundManager::EventQueueUpdate(bool forceStart)
 			}
 			else
 			{
-				if(forceStart || (tempPlayerVec[0].size() >= BGMinimumPlayers[i] && tempPlayerVec[1].size() >= BGMinimumPlayers[i]))
+				uint32 minPlayers = BattlegroundManager.GetMinimumPlayers(i);
+				if(forceStart || (tempPlayerVec[0].size() >= minPlayers && tempPlayerVec[1].size() >= minPlayers))
 				{
 					if(CanCreateInstance(i,j))
 					{
@@ -843,6 +811,19 @@ bool CBattlegroundManager::CanCreateInstance(uint32 Type, uint32 LevelGroup)
 
 	return true;
 }
+
+/* Returns the minimum number of players (Only valid for battlegrounds) */
+uint32 CBattlegroundManager::GetMinimumPlayers(uint32 dbcIndex)
+{
+	return dbcBattlemasterListStore.LookupEntry(dbcIndex)->min_players_per_faction;
+}
+
+/* Returns the maximum number of players (Only valid for battlegrounds) */
+uint32 CBattlegroundManager::GetMaximumPlayers(uint32 dbcIndex)
+{
+	return dbcBattlemasterListStore.LookupEntry(dbcIndex)->max_players_per_faction;
+}
+
 
 void CBattleground::SendWorldStates(Player * plr)
 {
@@ -1988,3 +1969,36 @@ void CBattleground::QueueAtNearestSpiritGuide(Player *plr, Creature *old)
 
 	m_lock.Release();
 }
+
+uint32 CBattleground::GetFreeSlots(uint32 t, uint32 type)
+{
+	uint32 maxPlayers = BattlegroundManager.GetMaximumPlayers(type);
+
+	m_mainLock.Acquire();
+	size_t s = maxPlayers - m_players[t].size() - m_pendPlayers[t].size();
+	m_mainLock.Release();
+	return (uint32)s;
+}
+
+bool CBattleground::HasFreeSlots(uint32 Team, uint32 type)
+{
+	bool res;
+	uint32 maxPlayers = BattlegroundManager.GetMaximumPlayers(type);
+
+	m_mainLock.Acquire();
+	if (type >= BATTLEGROUND_ARENA_2V2 && type <= BATTLEGROUND_ARENA_5V5)
+	{
+		res = ((uint32)m_players[Team].size() + m_pendPlayers[Team].size() < maxPlayers);
+	}
+	else
+	{
+		uint32 size[2];
+		size[0] = uint32(m_players[0].size() + m_pendPlayers[0].size());
+		size[1] = uint32(m_players[1].size() + m_pendPlayers[1].size());
+		res = (size[Team] < maxPlayers) && (((int)size[Team] - (int)size[1-Team]) <= 0);
+	}
+	m_mainLock.Release();
+	return res; 
+}
+
+

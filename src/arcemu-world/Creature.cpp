@@ -708,11 +708,15 @@ void Creature::CalcResistance(uint32 type)
 	
 	if( IsPet() )
 	{
-		Player* owner = static_cast< Pet* >( this )->GetPetOwner();
-		if( type == 0 && owner )
-			pos += int32(0.35f * owner->GetUInt32Value( UNIT_FIELD_RESISTANCES + type ));
-		else if( owner )
-			pos += int32(0.40f * owner->GetUInt32Value( UNIT_FIELD_RESISTANCES + type ));
+		Pet * pet = static_cast< Pet* >( this );
+		if (pet->IsPet()) // HACK
+		{
+			Player * owner = pet->GetPetOwner();
+			if( type == 0 && owner )
+				pos += int32(0.35f * owner->GetUInt32Value( UNIT_FIELD_RESISTANCES + type ));
+			else if( owner )
+				pos += int32(0.40f * owner->GetUInt32Value( UNIT_FIELD_RESISTANCES + type ));
+		}
 	}
 	
 	if( ResistanceModPct[ type ] < 0 )

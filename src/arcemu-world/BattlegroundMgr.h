@@ -29,6 +29,22 @@ class Player;
 class Map;
 class Group;
 
+enum BattlegroundDbcIndex
+{
+	BGDBC_ALTERAC_VALLEY		= 1,
+	BGDBC_WARSONG_GULCH			= 2,
+	BGDBC_ARATHI_BASIN			= 3,
+	BGDBC_ARENA_NAGRAND			= 4,
+	BGDBC_ARENA_BLADES_EDGE		= 5,
+	BGDBC_ARENA_ALLMAPS			= 6,
+	BGDBC_EYE_OF_THE_STORM		= 7,
+	BGDBC_RUINS_OF_LORDAERON	= 8,
+	BGDBC_STRAND_OF_THE_ANCIENT	= 9,
+	BGDBC_DALARAN_SEWERS		= 10,
+	BGDBC_RING_OF_VALOR			= 11,
+	BGDBC_ROWS					= 11,
+};
+
 enum BattleGroundTypes
 {
 	BATTLEGROUND_ALTERAC_VALLEY			= 1,
@@ -54,9 +70,6 @@ struct BGScore
 	uint32 Misc2;
 	uint32 MiscData[5];
 };
-
-extern uint32 BGMaximumPlayers[ BATTLEGROUND_NUM_TYPES ];
-extern uint32 BGMinimumPlayers[ BATTLEGROUND_NUM_TYPES ];
 
 #define SOUND_BATTLEGROUND_BEGIN			0xD6F
 #define SOUND_HORDE_SCORES					8213
@@ -213,6 +226,12 @@ public:
 
 	/* Returns a mapid for the battleground */
 	uint32 GetMap(uint32 bg_index);
+
+	/* Returns the minimum number of players (Only valid for battlegrounds) */
+	uint32 GetMinimumPlayers(uint32 dbcIndex);
+
+	/* Returns the maximum number of players (Only valid for battlegrounds) */
+	uint32 GetMaximumPlayers(uint32 dbcIndex);
 };
 
 class CBattleground : public EventableObject
@@ -342,23 +361,7 @@ public:
 	ARCEMU_INLINE bool IsFull() { return !(HasFreeSlots(0,m_type) || HasFreeSlots(1,m_type)); }
 
 	/* Are we full? */
-	bool HasFreeSlots(uint32 Team, uint32 type) {
-		bool res;
-		m_mainLock.Acquire();
-		if (type >= BATTLEGROUND_ARENA_2V2 && type <= BATTLEGROUND_ARENA_5V5)
-		{
-			res = ((uint32)m_players[Team].size() + m_pendPlayers[Team].size() < BGMaximumPlayers[type]);
-		}
-		else
-		{
-			uint32 size[2];
-			size[0] = uint32(m_players[0].size() + m_pendPlayers[0].size());
-			size[1] = uint32(m_players[1].size() + m_pendPlayers[1].size());
-			res = (size[Team] < BGMaximumPlayers[type]) && (((int)size[Team] - (int)size[1-Team]) <= 0);
-		}
-		m_mainLock.Release();
-		return res; 
-	}
+	bool HasFreeSlots(uint32 Team, uint32 type);
 
 	/* Add Player */
 	void AddPlayer(Player * plr, uint32 team);
@@ -376,13 +379,7 @@ public:
 	void RemovePendingPlayer(Player * plr);
 
 	/* Gets the number of free slots */
-	uint32 GetFreeSlots(uint32 t, uint32 type)
-	{
-		m_mainLock.Acquire();
-		size_t s = BGMaximumPlayers[type] - m_players[t].size() - m_pendPlayers[t].size();
-		m_mainLock.Release();
-		return (uint32)s;
-	}
+	uint32 GetFreeSlots(uint32 t, uint32 type);
 
 	GameObject * SpawnGameObject(uint32 entry,uint32 MapId , float x, float y, float z, float o, uint32 flags, uint32 faction, float scale);
 	Creature * SpawnCreature(uint32 entry,float x, float y, float z, float o);

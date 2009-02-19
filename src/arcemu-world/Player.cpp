@@ -4555,7 +4555,7 @@ void Player::RepopRequestedPlayer()
 		pMapinfo = WorldMapInfoStorage.LookupEntry( GetMapId() );
 		if( pMapinfo != NULL )
 		{
-			if( pMapinfo->type == INSTANCE_NULL || pMapinfo->type == INSTANCE_PVP )
+			if( pMapinfo->type == INSTANCE_NULL || pMapinfo->type == INSTANCE_BATTLEGROUND )
 			{
 				RepopAtGraveyard( GetPositionX(), GetPositionY(), GetPositionZ(), GetMapId() );
 			}
@@ -9387,7 +9387,7 @@ void Player::OnWorldPortAck()
 			welcome_msg = string(GetSession()->LocalizedWorldSrv(62))+" ";
 			welcome_msg += string(GetSession()->LocalizedMapName(pMapinfo->mapid));
 			welcome_msg += ". ";
-			if(pMapinfo->type != INSTANCE_NONRAID && !(pMapinfo->type == INSTANCE_MULTIMODE && iInstanceType >= MODE_HEROIC) && m_mapMgr->pInstance)
+			if(pMapinfo->type != INSTANCE_NONRAID && !(pMapinfo->type == INSTANCE_ARENA && iInstanceType >= MODE_HEROIC) && m_mapMgr->pInstance)
 			{
 				/*welcome_msg += "This instance is scheduled to reset on ";
 				welcome_msg += asctime(localtime(&m_mapMgr->pInstance->m_expiration));*/
@@ -11980,9 +11980,22 @@ void Player::SpeedCheatDelay(uint32 ms_delay)
 	SDetector->SkipSamplingUntil( getMSTime() + ms_delay + GetSession()->GetLatency() * 2 + 2000 ); //2 second should be enough to send our packets to client
 }
 
+// Reset GM speed hacks after a SafeTeleport
 void Player::SpeedCheatReset()
 { 
-	SDetector->EventSpeedChange(); 
+	// wtf?
+	SDetector->EventSpeedChange();
+
+	/*
+	SetPlayerSpeed(RUN, m_runSpeed);
+	SetPlayerSpeed(SWIM, m_runSpeed);
+	SetPlayerSpeed(RUNBACK, m_runSpeed / 2); // Backwards slower, it's more natural :P
+
+	WorldPacket data(SMSG_FORCE_FLIGHT_SPEED_CHANGE, 16);
+	data << GetNewGUID();
+	data << uint32(0) << m_flySpeed;
+	SendMessageToSet(&data, true);
+	*/
 }
 
 uint32 Player::GetMaxPersonalRating()

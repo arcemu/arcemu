@@ -79,13 +79,13 @@ uint32 CheckTriggerPrerequsites(AreaTrigger * pAreaTrigger, WorldSession * pSess
 	if(pAreaTrigger->required_level && pPlayer->getLevel() < pAreaTrigger->required_level)
 		return AREA_TRIGGER_FAILURE_LEVEL;
 
-	if(pPlayer->iInstanceType >= MODE_HEROIC && pMapInfo->type != INSTANCE_MULTIMODE && pMapInfo->type != INSTANCE_NULL)
+	if(pPlayer->iInstanceType >= MODE_HEROIC && pMapInfo->type != INSTANCE_ARENA && pMapInfo->type != INSTANCE_NULL)
 		return AREA_TRIGGER_FAILURE_NO_HEROIC;
 
 	if(pMapInfo->type == INSTANCE_RAID && (!pPlayer->GetGroup() || (pPlayer->GetGroup() && pPlayer->GetGroup()->GetGroupType() != GROUP_TYPE_RAID)))
 		return AREA_TRIGGER_FAILURE_NO_RAID;
 
-	if((pMapInfo->type == INSTANCE_MULTIMODE && pPlayer->iInstanceType >= MODE_HEROIC) && !pPlayer->GetGroup())
+	if((pMapInfo->type == INSTANCE_ARENA && pPlayer->iInstanceType >= MODE_HEROIC) && !pPlayer->GetGroup())
 		return AREA_TRIGGER_FAILURE_NO_GROUP;
 
 	if(pMapInfo && pMapInfo->required_quest && !pPlayer->HasFinishedQuest(pMapInfo->required_quest))
@@ -95,7 +95,7 @@ uint32 CheckTriggerPrerequsites(AreaTrigger * pAreaTrigger, WorldSession * pSess
 		return AREA_TRIGGER_FAILURE_NO_ATTUNE_I;
 
 	if (pPlayer->iInstanceType >= MODE_HEROIC && 
-		pMapInfo->type == INSTANCE_MULTIMODE && 
+		pMapInfo->type == INSTANCE_ARENA && 
 		!pPlayer->GetItemInterface()->GetItemCount(pMapInfo->heroic_key_1, false) && 
 		!pPlayer->GetItemInterface()->GetItemCount(pMapInfo->heroic_key_2, false))
 		return AREA_TRIGGER_FAILURE_NO_KEY;

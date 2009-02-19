@@ -630,7 +630,7 @@ void WorldSession::HandleMovementOpcodes( WorldPacket & recv_data )
 				MapInfo *pMapinfo = WorldMapInfoStorage.LookupEntry( _player->GetMapId() );
 				if( pMapinfo != NULL )
 				{
-					if( pMapinfo->type == INSTANCE_NULL || pMapinfo->type == INSTANCE_PVP )
+					if( pMapinfo->type == INSTANCE_NULL || pMapinfo->type == INSTANCE_BATTLEGROUND )
 					{
 						_player->RepopAtGraveyard( _player->GetPositionX(), _player->GetPositionY(), _player->GetPositionZ(), _player->GetMapId() );
 					}

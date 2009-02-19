@@ -211,7 +211,7 @@ void WorldSession::HandleCorpseQueryOpcode(WorldPacket &recv_data)
 		pMapinfo = WorldMapInfoStorage.LookupEntry(pCorpse->GetMapId());
 		if(pMapinfo)
 		{
-			if(pMapinfo->type == INSTANCE_NULL || pMapinfo->type == INSTANCE_PVP)
+			if(pMapinfo->type == INSTANCE_NULL || pMapinfo->type == INSTANCE_BATTLEGROUND)
 			{
 				data << uint8(0x01); //show ?
 				data << pCorpse->GetMapId(); // mapid (that tombstones shown on)

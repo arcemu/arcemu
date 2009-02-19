@@ -45,9 +45,9 @@ const char * GetMapTypeString(uint8 type)
 		return "Raid";
 	case INSTANCE_NONRAID:
 		return "Non-Raid";
-	case INSTANCE_PVP:
+	case INSTANCE_BATTLEGROUND:
 		return "PvP";
-	case INSTANCE_MULTIMODE:
+	case INSTANCE_ARENA:
 		return "MultiMode";
 	default:
 		return "Unknown";
@@ -222,7 +222,7 @@ bool ChatHandler::HandleGetInstanceInfoCommand(const char* args, WorldSession *m
 	if(instance->m_mapInfo != NULL)
 	{
 		ss << "Type: " << MSG_COLOR_CYAN << GetMapTypeString(instance->m_mapInfo->type) << "|r";
-		if(instance->m_mapInfo->type == INSTANCE_MULTIMODE)
+		if(instance->m_mapInfo->type == INSTANCE_ARENA)
 		{
 			ss << " (" << MSG_COLOR_CYAN << GetDifficultyString(instance->m_difficulty) << "|r)";
 		}
@@ -339,7 +339,7 @@ bool ChatHandler::HandleShowInstancesCommand(const char* args, WorldSession* m_s
 			else
 			{
 				ss << " [" << GetMapTypeString(pInstance->m_mapInfo->type) << "]";
-				if(pInstance->m_mapInfo->type == INSTANCE_MULTIMODE)
+				if(pInstance->m_mapInfo->type == INSTANCE_ARENA)
 				{
 					ss << " [" << GetDifficultyString(pInstance->m_difficulty) << "]";
 				}

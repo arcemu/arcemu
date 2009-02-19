@@ -178,13 +178,13 @@ uint32 InstanceMgr::PreTeleport(uint32 mapid, Player * plr, uint32 instanceid)
 	}
 
 	// shouldn't happen
-	if(inf->type==INSTANCE_PVP)
+	if(inf->type==INSTANCE_BATTLEGROUND)
 		return INSTANCE_ABORT_NOT_FOUND;
 
 	pGroup = plr->GetGroup();
 
 	// players without groups cannot enter raids and heroic instances
-	if(pGroup == NULL && (inf->type == INSTANCE_RAID || (inf->type == INSTANCE_MULTIMODE && plr->iInstanceType >= MODE_HEROIC)) && !plr->TriggerpassCheat)
+	if(pGroup == NULL && (inf->type == INSTANCE_RAID || (inf->type == INSTANCE_ARENA && plr->iInstanceType >= MODE_HEROIC)) && !plr->TriggerpassCheat)
 		return INSTANCE_ABORT_NOT_IN_RAID_GROUP;
 
 	// players without raid groups cannot enter raid instances
@@ -192,7 +192,7 @@ uint32 InstanceMgr::PreTeleport(uint32 mapid, Player * plr, uint32 instanceid)
 		return INSTANCE_ABORT_NOT_IN_RAID_GROUP;
 
 	// check that heroic mode is available if the player has requested it.
-	if(plr->iInstanceType && inf->type != INSTANCE_MULTIMODE)
+	if(plr->iInstanceType && inf->type != INSTANCE_ARENA)
 		return INSTANCE_ABORT_HEROIC_MODE_NOT_AVAILABLE;
 
 	// if we are here, it means:
@@ -252,7 +252,7 @@ uint32 InstanceMgr::PreTeleport(uint32 mapid, Player * plr, uint32 instanceid)
 			in = NULL;
 			if(pGroup != NULL)
 			{
-				if((inf->type == INSTANCE_MULTIMODE && pGroup->m_difficulty >= MODE_HEROIC) || inf->type == INSTANCE_RAID)
+				if((inf->type == INSTANCE_ARENA && pGroup->m_difficulty >= MODE_HEROIC) || inf->type == INSTANCE_RAID)
 				{
 					if(plr->GetPersistentInstanceId(mapid, pGroup->m_difficulty) == 0)
 					{
@@ -353,14 +353,14 @@ uint32 InstanceMgr::PreTeleport(uint32 mapid, Player * plr, uint32 instanceid)
 	in->m_creatorGroup = pGroup ? pGroup->GetID() : 0;
 	if(sWorld.instance_SlidingExpiration)
 	{
-		if(inf->type == INSTANCE_MULTIMODE && in->m_difficulty >= MODE_HEROIC)
+		if(inf->type == INSTANCE_ARENA && in->m_difficulty >= MODE_HEROIC)
 			in->m_expiration = UNIXTIME + TIME_DAY;
 		else
-			in->m_expiration = (inf->type == INSTANCE_NONRAID || (inf->type == INSTANCE_MULTIMODE && in->m_difficulty == MODE_NORMAL)) ? 0 : UNIXTIME + inf->cooldown;
+			in->m_expiration = (inf->type == INSTANCE_NONRAID || (inf->type == INSTANCE_ARENA && in->m_difficulty == MODE_NORMAL)) ? 0 : UNIXTIME + inf->cooldown;
 	}
 	else
 	{
-		if(inf->type == INSTANCE_MULTIMODE && in->m_difficulty >= MODE_HEROIC)
+		if(inf->type == INSTANCE_ARENA && in->m_difficulty >= MODE_HEROIC)
 		{
 			in->m_expiration = UNIXTIME - (UNIXTIME % TIME_DAY) + ( (UNIXTIME % TIME_DAY) > (sWorld.instance_DailyHeroicInstanceResetHour * TIME_HOUR) ? 82800 : -3600 ) + ((sWorld.instance_DailyHeroicInstanceResetHour - sWorld.GMTTimeZone) * TIME_HOUR);
 		}
@@ -385,7 +385,7 @@ uint32 InstanceMgr::PreTeleport(uint32 mapid, Player * plr, uint32 instanceid)
 		}
 		else
 		{
-			in->m_expiration = (inf->type == INSTANCE_NONRAID || (inf->type == INSTANCE_MULTIMODE && in->m_difficulty == MODE_NORMAL)) ? 0 : UNIXTIME + inf->cooldown;
+			in->m_expiration = (inf->type == INSTANCE_NONRAID || (inf->type == INSTANCE_ARENA && in->m_difficulty == MODE_NORMAL)) ? 0 : UNIXTIME + inf->cooldown;
 		}
 	}
 	plr->SetInstanceID(in->m_instanceId);
@@ -919,7 +919,7 @@ void InstanceMgr::CheckForExpiredInstances()
 				++itr;
 
 				// use a "soft" delete here.
-				if(in->m_mapInfo->type != INSTANCE_NONRAID && !(in->m_mapInfo->type == INSTANCE_MULTIMODE && in->m_difficulty == MODE_NORMAL) && HasInstanceExpired(in))
+				if(in->m_mapInfo->type != INSTANCE_NONRAID && !(in->m_mapInfo->type == INSTANCE_ARENA && in->m_difficulty == MODE_NORMAL) && HasInstanceExpired(in))
 					_DeleteInstance(in, false);
 			}
 

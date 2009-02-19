@@ -25,7 +25,7 @@ SERVER_DECL DBCStorage<WorldMapOverlay> dbcWorldMapOverlayStore;
 SERVER_DECL DBCStorage<AchievementEntry> dbcAchievementStore;
 SERVER_DECL DBCStorage<AchievementCriteriaEntry> dbcAchievementCriteriaStore;
 SERVER_DECL DBCStorage<AchievementCategoryEntry> dbcAchievementCategoryStore;
-SERVER_DECL DBCStorage<BattlemasterListEntry> dbcBattlemasterListEntry;
+SERVER_DECL DBCStorage<BattlemasterListEntry> dbcBattlemasterListStore;
 SERVER_DECL DBCStorage<CharTitlesEntry> dbcCharTitlesEntry;
 SERVER_DECL DBCStorage<BarberShopStyleEntry> dbcBarberShopStyleStore;
 SERVER_DECL DBCStorage<GemPropertyEntry> dbcGemProperty;
@@ -329,7 +329,7 @@ bool LoadDBCs()
 	LOAD_DBC("DBC/Achievement_Category.dbc", AchievementCategoryStoreFormat, true, dbcAchievementCategoryStore, true);
 	LOAD_DBC("DBC/Achievement_Criteria.dbc", AchievementCriteriaStoreFormat, true, dbcAchievementCriteriaStore, true);
 	LOAD_DBC("DBC/Achievement.dbc", AchievementStoreFormat, true, dbcAchievementStore, true);
-	LOAD_DBC("DBC/BattlemasterList.dbc", BattlemasterListEntryFormat, true, dbcBattlemasterListEntry, true);
+	LOAD_DBC("DBC/BattlemasterList.dbc", BattlemasterListEntryFormat, true, dbcBattlemasterListStore, true);
 	LOAD_DBC("DBC/CharTitles.dbc", CharTitlesEntryfmt, true, dbcCharTitlesEntry, true);
 	LOAD_DBC("DBC/BarberShopStyle.dbc", BarberShopStyleEntryFormat, true, dbcBarberShopStyleStore, true);
 	LOAD_DBC("DBC/ItemSet.dbc", ItemSetFormat, true, dbcItemSet, true);

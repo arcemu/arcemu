@@ -3270,7 +3270,7 @@ bool Object::IsInBg()
 	MapInfo *pMapinfo = WorldMapInfoStorage.LookupEntry(this->GetMapId());
 	if(pMapinfo)
 	{
-		return (pMapinfo->type == INSTANCE_PVP);
+		return (pMapinfo->type == INSTANCE_BATTLEGROUND);
 	}
 
 	return false;

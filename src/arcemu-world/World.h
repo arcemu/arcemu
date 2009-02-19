@@ -102,7 +102,7 @@ enum WorldMapInfoFlag
 {
 	WMI_INSTANCE_ENABLED   = 0x1,
 	WMI_INSTANCE_WELCOME   = 0x2,
-	WMI_INSTANCE_MULTIMODE = 0x4,
+	WMI_INSTANCE_ARENA = 0x4,
 	WMI_INSTANCE_XPACK_01  = 0x8, //The Burning Crusade expansion
 	WMI_INSTANCE_XPACK_02  = 0x10, //Wrath of the Lich King expansion
 };
