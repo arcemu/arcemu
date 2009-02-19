@@ -167,8 +167,14 @@ ECHO [Importing] 2118_items.sql
 mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < ..\world_updates\2118_items.sql
 ECHO [Importing] 2157_worldmap_info.sql
 mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < ..\world_updates\2157_worldmap_info.sql
+ECHO [Importing] 2177_sota_battlemaster_gossip_text.sql
+mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < ..\world_updates\2177_sota_battlemaster_gossip_text.sql
 ECHO [Importing] 2199_gosandquests.sql
 mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < ..\world_updates\2199_gosandquests.sql
+ECHO [Importing] 2227_totems.sql
+mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < ..\world_updates\SpellFixes\2227_totems.sql
+ECHO [Importing] ArcScript_full.sql
+mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < ..\ArcScripts\ArcScript_full.sql
 ECHO [Importing] spellfixes.sql
 mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < ..\world_updates\spellfixes.sql
 ECHO [Importing] Finished
@@ -316,6 +322,10 @@ ECHO [Importing] 2157_worldmap_info.sql
 mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < ..\world_updates\2157_worldmap_info.sql
 ECHO [Importing] 2177_sota_battlemaster_gossip_text.sql
 mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < ..\world_updates\2177_sota_battlemaster_gossip_text.sql
+ECHO [Importing] 2199_gosandquests.sql
+mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < ..\world_updates\2199_gosandquests.sql
+ECHO [Importing] 2227_totems.sql
+mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < ..\world_updates\SpellFixes\2227_totems.sql
 ECHO [Importing] ArcScript_full.sql
 mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < ..\ArcScripts\ArcScript_full.sql
 ECHO [Importing] spellfixes.sql
