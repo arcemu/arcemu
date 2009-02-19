@@ -220,6 +220,7 @@ void ArenaTeam::Roster(WorldPacket & data)
 	data.Initialize(SMSG_ARENA_TEAM_ROSTER);
 	data.reserve(m_memberCount * 81 + 9);
 	data << m_id;
+	data << uint8(0); // 3.0.8 
 	data << m_memberCount;
 	data << GetPlayersPerTeam();
 
