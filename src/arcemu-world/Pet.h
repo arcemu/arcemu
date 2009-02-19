@@ -73,11 +73,22 @@ enum StableState
 	STABLE_STATE_ACTIVE		= 1,
 	STABLE_STATE_PASSIVE	= 2
 };
+
 enum HappinessState
 {
 	UNHAPPY		= 1,
 	CONTENT		= 2,
 	HAPPY		= 3
+};
+
+enum LoyaltyLevel
+{
+    REBELIOUS	=1,
+    UNRULY		=2,
+    SUBMISIVE	=3,
+    DEPENDABLE	=4,
+    FAITHFUL	=5,
+    BEST_FRIEND	=6
 };
 
 enum AutoCastEvents
