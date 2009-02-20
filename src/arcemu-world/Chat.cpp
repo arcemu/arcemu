@@ -668,10 +668,10 @@ void CommandTableStorage::Init()
 
 	static ChatCommand achievementCommandTable[] =
 	{
-		{ "complete",        'm', &ChatHandler::HandleAchievementCompleteCommand, "Completes the specified achievement.",          NULL, 0, 0, 0 },
-		{ "criteria",        'm', &ChatHandler::HandleAchievementCriteriaCommand, "Completes the specified achievement criteria.", NULL, 0, 0, 0 },
-		{ "resetall",        'm', &ChatHandler::HandleAchievementResetCommand,    "Resets all achievement data for the target.",   NULL, 0, 0, 0 },
-		{ NULL,              '0', NULL,                                            "",                                             NULL, 0, 0, 0 }
+		{ "complete", 'm', &ChatHandler::HandleAchievementCompleteCommand, "Completes the specified achievement.",          NULL, 0, 0, 0 },
+		{ "criteria", 'm', &ChatHandler::HandleAchievementCriteriaCommand, "Completes the specified achievement criteria.", NULL, 0, 0, 0 },
+		{ "reset",    'm', &ChatHandler::HandleAchievementResetCommand,    "Resets achievement data from the target.",      NULL, 0, 0, 0 },
+		{ NULL,       '0', NULL,                                           "",                                              NULL, 0, 0, 0 }
 	};
 	dupe_command_table(achievementCommandTable, _achievementCommandTable);
 

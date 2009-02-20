@@ -64,7 +64,9 @@
 
 	.achieve complete id                : completes achievement "id" (can be an achievement link) for the selected player
 	.achieve criteria id                : completes achievement criteria "id" for the selected player
-	.achieve resetall                   : removes all achievement data from the selected player
+	.achieve reset id                   : removes achievement "id" (can be an achievement link) from the selected player
+	.achieve reset criteria id          : removes achievement criteria "id" from the selected player
+	.achieve reset all                  : removes all achievement and criteria data from the selected player
 */
 
 #include "StdAfx.h"
@@ -1682,7 +1684,8 @@ bool AchievementMgr::GMCompleteAchievement(WorldSession* gmSession, uint32 achie
 	}
 	if(achievement->flags & ACHIEVEMENT_FLAG_COUNTER)
 	{
-		gmSession->SystemMessage("Achievement %lu is a counter and cannot be completed.");
+		gmSession->SystemMessage("Achievement (%lu) |Hachievement:%lu:"I64FMT":0:0:0:-1:0:0:0:0|h[%s]|h is a counter and cannot be completed.",
+			achievement->ID, achievement->ID, achievement->name);
 		return false;
 	}
 	CompletedAchievement(achievement);
@@ -1710,7 +1713,8 @@ bool AchievementMgr::GMCompleteCriteria(WorldSession* gmSession, uint32 criteria
 	}
 	if(achievement->flags & ACHIEVEMENT_FLAG_COUNTER) // can't complete this type of achivement (counter)
 	{
-		gmSession->SystemMessage("Referred achievement (%lu) is a counter and cannot be completed.");
+		gmSession->SystemMessage("Referred achievement (%lu) |Hachievement:%lu:"I64FMT":0:0:0:-1:0:0:0:0|h[%s]|h is a counter and cannot be completed.",
+			achievement->ID, achievement->ID, achievement->name);
 		return false;
 	}
 
@@ -1730,12 +1734,40 @@ bool AchievementMgr::GMCompleteCriteria(WorldSession* gmSession, uint32 criteria
 	return true;
 }
 
-void AchievementMgr::GMResetAchievementData()
+void AchievementMgr::GMResetAchievement(int32 achievementID)
 {
-	for(CriteriaProgressMap::iterator iter = m_criteriaProgress.begin(); iter!=m_criteriaProgress.end(); ++iter)
-		delete iter->second;
-	m_criteriaProgress.clear();
-	m_completedAchievements.clear();
+	std::ostringstream ss;
+	if(achievementID == -1) // reset all achievements
+	{
+		m_completedAchievements.clear();
+		ss << "DELETE FROM character_achievement WHERE guid = " << m_player->GetLowGUID();
+		CharacterDatabase.Query( ss.str().c_str() );
+	}
+	else // reset a single achievement
+	{
+		m_completedAchievements.erase(achievementID);
+		ss << "DELETE FROM character_achievement WHERE guid = " << m_player->GetLowGUID() << " AND achievement = " << achievementID;
+		CharacterDatabase.Query( ss.str().c_str() );
+	}
+}
+
+void AchievementMgr::GMResetCriteria(int32 criteriaID)
+{
+	std::ostringstream ss;
+	if(criteriaID == -1) // reset all achievement criteria
+	{
+		for(CriteriaProgressMap::iterator iter = m_criteriaProgress.begin(); iter!=m_criteriaProgress.end(); ++iter)
+			delete iter->second;
+		m_criteriaProgress.clear();
+		ss << "DELETE FROM character_achievement_progress WHERE guid = " << m_player->GetLowGUID();
+		CharacterDatabase.Query( ss.str().c_str() );
+	}
+	else // reset a single achievement criteria
+	{
+		m_criteriaProgress.erase(criteriaID);
+		ss << "DELETE FROM character_achievement_progress WHERE guid = " << m_player->GetLowGUID() << " AND criteria = " << criteriaID;
+		CharacterDatabase.Query( ss.str().c_str() );
+	}
 	CheckAllAchievementCriteria();
 }
 
@@ -1756,7 +1788,8 @@ bool AchievementMgr::HasCompleted(uint32 achievementID)
 
 bool ChatHandler::HandleAchievementCompleteCommand(const char * args, WorldSession * m_session)
 {
-	if(!*args) return false;
+	if(!*args)
+		return false;
 
 	Player *plr = getSelectedChar(m_session, true);
 	if(!plr)
@@ -1783,7 +1816,8 @@ bool ChatHandler::HandleAchievementCompleteCommand(const char * args, WorldSessi
 
 bool ChatHandler::HandleAchievementCriteriaCommand(const char * args, WorldSession * m_session)
 {
-	if(!*args) return false;
+	if(!*args)
+		return false;
 
 	Player *plr = getSelectedChar(m_session, true);
 	if(!plr)
@@ -1806,21 +1840,58 @@ bool ChatHandler::HandleAchievementCriteriaCommand(const char * args, WorldSessi
 
 bool ChatHandler::HandleAchievementResetCommand(const char * args, WorldSession * m_session)
 {
+	if(!*args)
+		return false;
+
 	Player *plr = getSelectedChar(m_session, true);
 	if(!plr)
 	{
 		plr = m_session->GetPlayer();
 		SystemMessage(m_session, "Auto-targeting self.");
 	}
-	plr->GetAchievementMgr().GMResetAchievementData();
+
+	bool resetAch = true, resetCri = false;
+	int32 achievement_id;
+	if(strnicmp(args, "criteria ", 9) == 0)
+	{
+		achievement_id = atol(args+9);
+		if(achievement_id==0)
+		{
+			achievement_id = GetAchievementIDFromLink(args+9);
+			if(achievement_id==0)
+				return false;
+		}
+		resetCri = true;
+		resetAch = false;
+	}
+	else if(stricmp(args,"all") == 0)
+	{
+		achievement_id = -1;
+		resetCri = true;
+	}
+	else
+	{
+		achievement_id = atol(args);
+		if(achievement_id==0)
+		{
+			achievement_id = GetAchievementIDFromLink(args);
+			if(achievement_id==0)
+				return false;
+		}
+	}
+
+	if(resetAch)
+		plr->GetAchievementMgr().GMResetAchievement(achievement_id);
+	if(resetCri)
+		plr->GetAchievementMgr().GMResetCriteria(achievement_id);
 	return true;
 }
 
 bool ChatHandler::HandleLookupAchievementCmd(const char* args, WorldSession* m_session)
 {
-	if(!*args) return false;
+	if(!*args)
+		return false;
 
-	char* lookupstring = (char*)args;
 	string x;
 	bool lookupname = true, lookupdesc = false, lookupcriteria = false, lookupreward = false;
 	if(strnicmp(args,"name ",5)==0)
@@ -1863,10 +1934,11 @@ bool ChatHandler::HandleLookupAchievementCmd(const char* args, WorldSession* m_s
 	uint32 i, j, numFound=0;
 	string y, recout;
 	std::set<uint8, uint32> foundList;
+	char playerGUID[17];
+	snprintf(playerGUID,17,I64FMT,m_session->GetPlayer()->GetGUID());
 	if(lookupname || lookupdesc || lookupreward)
 	{
 		std::set<uint32> foundList;
-		char playerGUID[17];
 		j = dbcAchievementStore.GetNumRows();
 		bool foundmatch;
 		for( i=0; i<j && numFound<50; ++i )
@@ -1905,7 +1977,6 @@ bool ChatHandler::HandleLookupAchievementCmd(const char* args, WorldSession* m_s
 				recout+=": |cfffff000|Hachievement:";
 				recout+=strm.str();
 				recout+=":";
-				snprintf(playerGUID,17,I64FMT,m_session->GetPlayer()->GetGUID());
 				recout+=(char*)playerGUID;
 				time_t completetime = m_session->GetPlayer()->GetAchievementMgr().GetCompletedTime(achievement);
 				if(completetime) // achievement is complete
@@ -1964,6 +2035,42 @@ bool ChatHandler::HandleLookupAchievementCmd(const char* args, WorldSession* m_s
 				recout+=": |cfffff000";
 				recout+=criteria->name;
 				strm.str("");
+				AchievementEntry const* achievement = dbcAchievementStore.LookupEntry(criteria->referredAchievement);
+				if(achievement)
+				{
+					recout+=" |cffffffffAchievement ";
+					strm<<achievement->ID;
+					recout+= strm.str();
+					recout+=": |cfffff000|Hachievement:";
+					recout+=strm.str();
+					recout+=":";
+					recout+=(char*)playerGUID;
+					time_t completetime = m_session->GetPlayer()->GetAchievementMgr().GetCompletedTime(achievement);
+					if(completetime) // achievement is complete
+					{
+						struct tm* ct;
+						ct = localtime(&completetime);
+						strm.str("");
+						strm<<":1:"<<ct->tm_mon+1<<":"<<ct->tm_mday<<":"<<ct->tm_year-100<<":-1:-1:-1:-1|h[";
+						recout+=strm.str();
+					}
+					else // not-completed achievement
+					{
+						recout+=":0:0:0:-1:0:0:0:0|h[";
+					}
+					recout+=achievement->name;
+					if(!lookupreward)
+					{
+						recout+="]|h|r";
+					}
+					else
+					{
+						recout+="]|h |cffffffff";
+						recout+=achievement->rewardName;
+						recout+="|r";
+					}
+					strm.str("");
+				}
 				SendMultilineMessage(m_session,recout.c_str());
 				if(++numFound>=50)
 				{

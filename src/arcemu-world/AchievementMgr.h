@@ -220,7 +220,8 @@ public:
 	void							BuildAllDataPacket(WorldPacket *data, bool self=true);
 	bool GMCompleteAchievement(WorldSession* gmSession, uint32 achievementID); // completes an achievement for the selected player
 	bool GMCompleteCriteria(WorldSession* gmSession, uint32 criteriaID); // completes an achievement criteria for the selected player
-	void GMResetAchievementData(); // erase all the character's achievements then re-build (most data will be completely lost, only character level, skill level, etc. will be restored with today's date)
+	void GMResetAchievement(int achievementID); // erase achievement ID from character (id -1 = erase ALL achievements)
+	void GMResetCriteria(int criteriaID); // erase achievement criteria ID from character (id -1 = erase ALL achievement criteria)
 	time_t GetCompletedTime(AchievementEntry const* achievement); // returns Date/Time achievement was completed, or 0 if achievement not completed
 	bool HasCompleted(uint32 achievementID); // true is player has completed achievement
 
