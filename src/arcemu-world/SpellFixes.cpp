@@ -4539,6 +4539,16 @@ void ApplyNormalFixes()
 		{
 			sp->Effect[0] = SPELL_EFFECT_APPLY_AREA_AURA;
 		}
+		sp = dbcSpell.LookupEntryForced( 58738 );
+		if( sp != NULL )
+		{
+			sp->Effect[0] = SPELL_EFFECT_APPLY_AREA_AURA;
+		}
+		sp = dbcSpell.LookupEntryForced( 58740 );
+		if( sp != NULL )
+		{
+			sp->Effect[0] = SPELL_EFFECT_APPLY_AREA_AURA;
+		}
 		//////////////////////////////////////////
 		// SHAMAN FROST RESIST TOTEM			//
 		//////////////////////////////////////////
@@ -4562,6 +4572,16 @@ void ApplyNormalFixes()
 		{
 			sp->Effect[0] = SPELL_EFFECT_APPLY_AREA_AURA;
 		}
+		sp = dbcSpell.LookupEntryForced( 58742 );
+		if( sp != NULL )
+		{
+			sp->Effect[0] = SPELL_EFFECT_APPLY_AREA_AURA;
+		}
+		sp = dbcSpell.LookupEntryForced( 58744 );
+		if( sp != NULL )
+		{
+			sp->Effect[0] = SPELL_EFFECT_APPLY_AREA_AURA;
+		}
 		//////////////////////////////////////////
 		// SHAMAN NATURE RESIST TOTEM			//
 		//////////////////////////////////////////
@@ -4581,6 +4601,16 @@ void ApplyNormalFixes()
 			sp->Effect[0] = SPELL_EFFECT_APPLY_AREA_AURA;
 		}
 		sp = dbcSpell.LookupEntryForced( 25573 ); 
+		if( sp != NULL )
+		{
+			sp->Effect[0] = SPELL_EFFECT_APPLY_AREA_AURA;
+		}
+		sp = dbcSpell.LookupEntryForced( 58748 );
+		if( sp != NULL )
+		{
+			sp->Effect[0] = SPELL_EFFECT_APPLY_AREA_AURA;
+		}
+		sp = dbcSpell.LookupEntryForced( 58750 );
 		if( sp != NULL )
 		{
 			sp->Effect[0] = SPELL_EFFECT_APPLY_AREA_AURA;
