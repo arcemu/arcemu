@@ -1685,7 +1685,7 @@ bool AchievementMgr::GMCompleteAchievement(WorldSession* gmSession, uint32 achie
 	if(achievement->flags & ACHIEVEMENT_FLAG_COUNTER)
 	{
 		gmSession->SystemMessage("Achievement (%lu) |Hachievement:%lu:"I64FMT":0:0:0:-1:0:0:0:0|h[%s]|h is a counter and cannot be completed.",
-			achievement->ID, achievement->ID, achievement->name);
+			achievement->ID, achievement->ID, gmSession->GetPlayer()->GetGUID(), achievement->name);
 		return false;
 	}
 	CompletedAchievement(achievement);
@@ -1714,7 +1714,7 @@ bool AchievementMgr::GMCompleteCriteria(WorldSession* gmSession, uint32 criteria
 	if(achievement->flags & ACHIEVEMENT_FLAG_COUNTER) // can't complete this type of achivement (counter)
 	{
 		gmSession->SystemMessage("Referred achievement (%lu) |Hachievement:%lu:"I64FMT":0:0:0:-1:0:0:0:0|h[%s]|h is a counter and cannot be completed.",
-			achievement->ID, achievement->ID, achievement->name);
+			achievement->ID, achievement->ID, gmSession->GetPlayer()->GetGUID(), achievement->name);
 		return false;
 	}
 
