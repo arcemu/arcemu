@@ -108,9 +108,9 @@ const char* AchievementStoreFormat=
 	"n" // ID
 	"i" // factionFlag
 	"i" // mapID
+	"u" // unknown1
 	"lxxxxxxxxxxxxxxx" // name
 	"u" // name_flags
-	"u" // unknown1
 	"lxxxxxxxxxxxxxxx" // description
 	"u" // desc_flags
 	"i" // categoryId

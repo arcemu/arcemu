@@ -81,6 +81,8 @@ ChatCommand * CommandTableStorage::GetSubCommandTable(const char * name)
 		return _instanceCommandTable;
 	else if(!stricmp(name, "arena"))
 		return _arenaCommandTable;
+	else if(!stricmp(name, "achieve"))
+		return _achievementCommandTable;
 	return 0;
 }
 
@@ -216,6 +218,7 @@ void CommandTableStorage::Dealloc()
 	free( _unbanCommandTable );
 	free( _instanceCommandTable );
 	free( _arenaCommandTable );
+	free( _achievementCommandTable );
 	free( _commandTable );
 }
 
@@ -597,7 +600,8 @@ void CommandTableStorage::Init()
 		{ "spell",    '1', &ChatHandler::HandleLookupSpellCommand,    "Looks up spell string x.", NULL, 0, 0, 0 },
 		{ "skill",    '1', &ChatHandler::HandleLookupSkillCommand,    "Looks up skill string x.", NULL, 0, 0, 0 },
 		{ "faction",  '1', &ChatHandler::HandleLookupFactionCommand,  "Looks up faction string x.", NULL, 0, 0, 0 },
-		{ NULL,       '0', NULL,                                      "",                         NULL, 0, 0, 0 }
+		{ "achievement", '1', &ChatHandler::HandleLookupAchievementCmd,  "Looks up achievement string x.", NULL, 0, 0, 0 },
+		{ NULL,          '0', NULL,                                      "",                               NULL, 0, 0, 0 }
 	};
 	dupe_command_table(lookupCommandTable, _lookupCommandTable);
 
@@ -662,6 +666,15 @@ void CommandTableStorage::Init()
 	};
 	dupe_command_table(arenaCommandTable, _arenaCommandTable);
 
+	static ChatCommand achievementCommandTable[] =
+	{
+		{ "complete",        'm', &ChatHandler::HandleAchievementCompleteCommand, "Completes the specified achievement.",          NULL, 0, 0, 0 },
+		{ "criteria",        'm', &ChatHandler::HandleAchievementCriteriaCommand, "Completes the specified achievement criteria.", NULL, 0, 0, 0 },
+		{ "resetall",        'm', &ChatHandler::HandleAchievementResetCommand,    "Resets all achievement data for the target.",   NULL, 0, 0, 0 },
+		{ NULL,              '0', NULL,                                            "",                                             NULL, 0, 0, 0 }
+	};
+	dupe_command_table(achievementCommandTable, _achievementCommandTable);
+
 	static ChatCommand commandTable[] =
 	{
 		{ "commands",        '0', &ChatHandler::HandleCommandsCommand,                      "Shows commands",                                                                                                                          NULL,                     0, 0, 0 },
@@ -722,6 +735,7 @@ void CommandTableStorage::Init()
 		{ "removesickness",  'm', &ChatHandler::HandleRemoveRessurectionSickessAuraCommand, "Removes ressurrection sickness from the target",                                                                                          NULL,                     0, 0, 0 },
 		{ "fixscale",        'm', &ChatHandler::HandleFixScaleCommand,                      "",                                                                                                                                        NULL,                     0, 0, 0 },
 		{ "addtrainerspell", 'm', &ChatHandler::HandleAddTrainerSpellCommand,               "",                                                                                                                                        NULL,                     0, 0, 0 },
+		{ "achieve",         'm', NULL,                                                     "",                                                                                                                                        achievementCommandTable,  0, 0, 0 },
 		{ NULL,              '0', NULL,                                                     "",                                                                                                                                        NULL,                     0, 0, 0 }
 	};
 	dupe_command_table(commandTable, _commandTable);

@@ -54,19 +54,34 @@
 	- Time limits on achievements
 	- Special conditions for achievements (group size, nobody in raid die during fight, etc.)
 
-	About realm-first achievements:
-	I'm doing this a somewhat weird way, I think, but it should make sense.
-	If not, it should actually be easier to re-do in a more normal way.
-	What I'm trying now is this:
-		All "realm-first" achievements get "completed" and "saved" to database,
-		but will not be sent to a player if they are not the first,
-		or be sent to another player inspecting their achievements.
-	Why count these as completed and save them?
-		The only reason I'm choosing to save them is so that if a character that actually is the first on the realm to complete it
-		is deleted, the one 2nd in line gets the title as Realm First.  I have no idea whether this is like a 'lizzard server.
+	GM achievement lookup command usage:
+	.lookup achievement string          : searches for "string" in achievement name
+	.lookup achievement desc string     : searches for "string" in achievement description
+	.lookup achievement reward string   : searches for "string" in achievement reward name
+	.lookup achievement criteria string : searches for "string" in achievement criteria name
+	.lookup achievement all string      : searches for "string" in achievement name, description, reward, and critiera
+	A maximum of 50 results is shown.
+
+	.achieve complete id                : completes achievement "id" (can be an achievement link) for the selected player
+	.achieve criteria id                : completes achievement criteria "id" for the selected player
+	.achieve resetall                   : removes all achievement data from the selected player
 */
 
 #include "StdAfx.h"
+
+uint32 GetAchievementIDFromLink(const char* achievementlink)
+{
+	if(achievementlink==NULL)
+		return 0;
+
+	const char* ptr = strstr(achievementlink, "|Hachievement:");
+	if(ptr == NULL)
+	{
+		return 0;
+	}
+
+	return atol(ptr+14); // achievement id is just past "|Hachievement:" (14 bytes)
+}
 
 bool SendAchievementProgress(const CriteriaProgress* c)
 {
@@ -180,8 +195,7 @@ bool ShowCompletedAchievement(uint32 achievementID, const Player* plr)
 		case 1427: // Realm First! Grand Master Tailor
 		case 1463: // Realm First! Northrend Vanguard: First player on the realm to gain exalted reputation with the Argent Crusade, Wyrmrest Accord, Kirin Tor and Knights of the Ebon Blade.
 			{
-				QueryResult* achievementResult = CharacterDatabase.Query("SELECT guid FROM character_achievement WHERE achievement=%u ORDER BY date", achievementID);
-				// sorted by date/time, so we're only interested in the first result
+				QueryResult* achievementResult = CharacterDatabase.Query("SELECT guid FROM character_achievement WHERE achievement=%u ORDER BY date LIMIT 1", achievementID);
 				if(achievementResult != NULL)
 				{
 					Field* field = achievementResult->Fetch();
@@ -1586,7 +1600,7 @@ void AchievementMgr::GiveAchievementReward(AchievementEntry const* entry)
 				break;
 			case 0x00000e0b: // Reward: Tabard of Brute Force
 				r.type = ACHIEVEMENT_REWARDTYPE_ITEM;
-				r.itemId = 43349; // Hmm, Tabard of Brute Force not found in my item DB ...
+				r.itemId = 43349;
 			case 0x00000e10: // Title Reward: Arena Master
 				r.type = ACHIEVEMENT_REWARDTYPE_TITLE;
 				r.rankId = PVPTITLE_ARENA_MASTER;
@@ -1653,3 +1667,318 @@ uint32 AchievementMgr::GetCompletedAchievementsCount() const
 	return (uint32)m_completedAchievements.size();
 }
 
+bool AchievementMgr::GMCompleteAchievement(WorldSession* gmSession, uint32 achievementID)
+{
+	if(m_completedAchievements.find(achievementID) != m_completedAchievements.end())
+	{
+		gmSession->SystemMessage("Player has already completed that achievement.");
+		return false;
+	}
+	AchievementEntry const* achievement = dbcAchievementStore.LookupEntry(achievementID);
+	if(!achievement)
+	{
+		gmSession->SystemMessage("Achievement %lu entry not found.", achievementID);
+		return false;
+	}
+	if(achievement->flags & ACHIEVEMENT_FLAG_COUNTER)
+	{
+		gmSession->SystemMessage("Achievement %lu is a counter and cannot be completed.");
+		return false;
+	}
+	CompletedAchievement(achievement);
+	return true;
+}
+
+bool AchievementMgr::GMCompleteCriteria(WorldSession* gmSession, uint32 criteriaID)
+{
+	AchievementCriteriaEntry const* criteria = dbcAchievementCriteriaStore.LookupEntry(criteriaID);
+	if(!criteria)
+	{
+		gmSession->SystemMessage("Achievement criteria %lu not found.", criteriaID);
+		return false;
+	}
+	if(IsCompletedCriteria(criteria))
+	{
+		gmSession->SystemMessage("Achievement criteria %lu already completed.", criteriaID);
+		return false;
+	}
+	AchievementEntry const* achievement = dbcAchievementStore.LookupEntry(criteria->referredAchievement);
+	if(!achievement) // achievement not found
+	{
+		gmSession->SystemMessage("Referred achievement (%lu) entry not found.", criteria->referredAchievement);
+		return false;
+	}
+	if(achievement->flags & ACHIEVEMENT_FLAG_COUNTER) // can't complete this type of achivement (counter)
+	{
+		gmSession->SystemMessage("Referred achievement (%lu) is a counter and cannot be completed.");
+		return false;
+	}
+
+	CriteriaProgressMap::iterator itr = m_criteriaProgress.find(criteriaID);
+	CriteriaProgress *progress;
+	if(itr == m_criteriaProgress.end()) // not in progress map
+	{
+		progress = new CriteriaProgress(criteriaID, 0);
+		m_criteriaProgress[criteriaID]=progress;
+	}
+	else
+		progress = itr->second;
+
+	progress->counter = criteria->raw.field3;
+	SendCriteriaUpdate( progress );
+	CompletedCriteria(criteria);
+	return true;
+}
+
+void AchievementMgr::GMResetAchievementData()
+{
+	for(CriteriaProgressMap::iterator iter = m_criteriaProgress.begin(); iter!=m_criteriaProgress.end(); ++iter)
+		delete iter->second;
+	m_criteriaProgress.clear();
+	m_completedAchievements.clear();
+	CheckAllAchievementCriteria();
+}
+
+time_t AchievementMgr::GetCompletedTime(AchievementEntry const* achievement)
+{
+	CompletedAchievementMap::iterator iter = m_completedAchievements.find(achievement->ID);
+	if(iter != m_completedAchievements.end()) // achievement is completed, return the date it was completed
+	{
+		return iter->second;
+	}
+	return 0; // achievement not completed
+}
+
+bool AchievementMgr::HasCompleted(uint32 achievementID)
+{
+	return (m_completedAchievements.find(achievementID) != m_completedAchievements.end());
+}
+
+bool ChatHandler::HandleAchievementCompleteCommand(const char * args, WorldSession * m_session)
+{
+	if(!*args) return false;
+
+	Player *plr = getSelectedChar(m_session, true);
+	if(!plr)
+	{
+		plr = m_session->GetPlayer();
+		SystemMessage(m_session, "Auto-targeting self.");
+	}
+
+	uint32 achievement_id = atol(args);
+	if(achievement_id==0)
+	{
+		achievement_id = GetAchievementIDFromLink(args);
+		if(achievement_id==0)
+			return false;
+	}
+
+	if(plr->GetAchievementMgr().GMCompleteAchievement(m_session, achievement_id))
+	{
+		SystemMessage(m_session,"The achievement has now been completed for that player.");
+		sGMLog.writefromsession( m_session, "completed achievement %u for player %s", achievement_id, plr->GetName() );
+	}
+	return true;
+}
+
+bool ChatHandler::HandleAchievementCriteriaCommand(const char * args, WorldSession * m_session)
+{
+	if(!*args) return false;
+
+	Player *plr = getSelectedChar(m_session, true);
+	if(!plr)
+	{
+		plr = m_session->GetPlayer();
+		SystemMessage(m_session, "Auto-targeting self.");
+	}
+
+	uint32 criteria_id = atol(args);
+	if(criteria_id==0)
+		return false;
+
+	if(plr->GetAchievementMgr().GMCompleteCriteria(m_session, criteria_id))
+	{
+		SystemMessage(m_session,"The achievement criteria has now been completed for that player.");
+		sGMLog.writefromsession( m_session, "completed achievement criteria %u for player %s", criteria_id, plr->GetName() );
+	}
+	return true;
+}
+
+bool ChatHandler::HandleAchievementResetCommand(const char * args, WorldSession * m_session)
+{
+	Player *plr = getSelectedChar(m_session, true);
+	if(!plr)
+	{
+		plr = m_session->GetPlayer();
+		SystemMessage(m_session, "Auto-targeting self.");
+	}
+	plr->GetAchievementMgr().GMResetAchievementData();
+	return true;
+}
+
+bool ChatHandler::HandleLookupAchievementCmd(const char* args, WorldSession* m_session)
+{
+	if(!*args) return false;
+
+	char* lookupstring = (char*)args;
+	string x;
+	bool lookupname = true, lookupdesc = false, lookupcriteria = false, lookupreward = false;
+	if(strnicmp(args,"name ",5)==0)
+	{
+		x = string(args+5);
+	}
+	else if(strnicmp(args,"desc ",5)==0)
+	{
+		lookupname = false;
+		lookupdesc = true;
+		x = string(args+5);
+	}
+	else if(strnicmp(args,"criteria ",9)==0)
+	{
+		lookupname = false;
+		lookupcriteria = true;
+		x = string(args+9);
+	}
+	else if(strnicmp(args,"reward ",7)==0)
+	{
+		lookupname = false;
+		lookupreward = true;
+		x = string(args+7);
+	}
+	else if(strnicmp(args,"all ",4)==0)
+	{
+		lookupdesc = true;
+		lookupcriteria = true;
+		lookupreward = true;
+		x = string(args+4);
+	}
+	else
+	{
+		x = string(args);
+	}
+	arcemu_TOLOWER(x);
+
+	GreenSystemMessage(m_session, "Starting search of achievement `%s`...", x.c_str());
+	uint32 t = getMSTime();
+	uint32 i, j, numFound=0;
+	string y, recout;
+	std::set<uint8, uint32> foundList;
+	if(lookupname || lookupdesc || lookupreward)
+	{
+		std::set<uint32> foundList;
+		char playerGUID[17];
+		j = dbcAchievementStore.GetNumRows();
+		bool foundmatch;
+		for( i=0; i<j && numFound<50; ++i )
+		{
+			AchievementEntry const* achievement = dbcAchievementStore.LookupEntry(i);
+			if(achievement)
+			{
+				if(foundList.find(achievement->ID) != foundList.end()) // already listed this achievement (some achievements have multiple entries in dbc)
+					continue;
+				foundmatch = false;
+				if(lookupname)
+				{
+					y = string(achievement->name);
+					arcemu_TOLOWER(y);
+					foundmatch = FindXinYString(x,y);
+				}
+				if(!foundmatch && lookupdesc)
+				{
+					y = string(achievement->description);
+					arcemu_TOLOWER(y);
+					foundmatch = FindXinYString(x,y);
+				}
+				if(!foundmatch && lookupreward)
+				{
+					y = string(achievement->rewardName);
+					arcemu_TOLOWER(y);
+					foundmatch = FindXinYString(x,y);
+				}
+				if(!foundmatch)
+					continue;
+				foundList.insert(achievement->ID);
+				std::stringstream strm;
+				strm<<achievement->ID;
+				recout="|cffffffffAchievement ";
+				recout+= strm.str();
+				recout+=": |cfffff000|Hachievement:";
+				recout+=strm.str();
+				recout+=":";
+				snprintf(playerGUID,17,I64FMT,m_session->GetPlayer()->GetGUID());
+				recout+=(char*)playerGUID;
+				time_t completetime = m_session->GetPlayer()->GetAchievementMgr().GetCompletedTime(achievement);
+				if(completetime) // achievement is complete
+				{
+					struct tm* ct;
+					ct = localtime(&completetime);
+					strm.str("");
+					strm<<":1:"<<ct->tm_mon+1<<":"<<ct->tm_mday<<":"<<ct->tm_year-100<<":-1:-1:-1:-1|h[";
+					recout+=strm.str();
+				}
+				else // not-completed achievement
+				{
+					recout+=":0:0:0:-1:0:0:0:0|h[";
+				}
+				recout+=achievement->name;
+				if(!lookupreward)
+				{
+					recout+="]|h|r";
+				}
+				else
+				{
+					recout+="]|h |cffffffff";
+					recout+=achievement->rewardName;
+					recout+="|r";
+				}
+				strm.str("");
+				SendMultilineMessage(m_session,recout.c_str());
+				if(++numFound>=50)
+				{
+					RedSystemMessage(m_session,"More than 50 results found.");
+					break;
+				}
+			}
+		} // for loop (number of rows, up to 50)
+	} // lookup name or description
+	if(lookupcriteria && numFound<50)
+	{
+		std::set<uint32> foundList;
+		j = dbcAchievementCriteriaStore.GetNumRows();
+		for( i=0; i<j && numFound<50; ++i )
+		{
+			AchievementCriteriaEntry const* criteria = dbcAchievementCriteriaStore.LookupEntry(i);
+			if(criteria)
+			{
+				if(foundList.find(criteria->ID) != foundList.end()) // already listed this achievement (some achievements have multiple entries in dbc)
+					continue;
+				y = string(criteria->name);
+				arcemu_TOLOWER(y);
+				if(!FindXinYString(x,y))
+					continue;
+				foundList.insert(criteria->ID);
+				std::stringstream strm;
+				strm<<criteria->ID;
+				recout="|cffffffffCriteria ";
+				recout+= strm.str();
+				recout+=": |cfffff000";
+				recout+=criteria->name;
+				strm.str("");
+				SendMultilineMessage(m_session,recout.c_str());
+				if(++numFound>=50)
+				{
+					RedSystemMessage(m_session,"More than 50 results found.");
+					break;
+				}
+			}
+		} // for loop (number of rows, up to 50)
+	} // lookup criteria
+	if(numFound==0)
+	{
+		recout="|cff00ccffNo matches found.";
+		SendMultilineMessage(m_session,recout.c_str());
+	}
+	BlueSystemMessage(m_session,"Search completed in %u ms.",getMSTime()-t);
+
+	return true;
+}

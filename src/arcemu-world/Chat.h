@@ -167,6 +167,7 @@ class SERVER_DECL CommandTableStorage : public Singleton<CommandTableStorage>
 	ChatCommand* _unbanCommandTable;
 	ChatCommand* _instanceCommandTable;
 	ChatCommand* _arenaCommandTable;
+	ChatCommand* _achievementCommandTable;
 	ChatCommand* _commandTable;
 
 	ChatCommand * GetSubCommandTable(const char * name);
@@ -518,6 +519,7 @@ protected:
 	bool HandleLookupSpellCommand(const char * args, WorldSession * m_session);
 	bool HandleLookupSkillCommand(const char * args, WorldSession * m_session);
 	bool HandleLookupFactionCommand(const char * args, WorldSession * m_session);
+	bool HandleLookupAchievementCmd(const char* args, WorldSession* m_session);
 
 	//bool HandleReloadScriptsCommand(const char * args, WorldSession * m_session);
 	bool HandleNpcPossessCommand(const char * args, WorldSession * m_session);
@@ -569,6 +571,9 @@ protected:
 
 	bool HandleFixScaleCommand(const char * args, WorldSession * m_session);
 	bool HandleAddTrainerSpellCommand( const char * args, WorldSession * m_session );
+	bool HandleAchievementCompleteCommand(const char * args, WorldSession * m_session);
+	bool HandleAchievementCriteriaCommand(const char * args, WorldSession * m_session);
+	bool HandleAchievementResetCommand(const char * args, WorldSession * m_session);
 };
 
 
