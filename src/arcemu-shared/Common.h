@@ -668,7 +668,6 @@ typedef std::list<spawn_timed_emotes*> TimedEmoteList;
 ARCEMU_INLINE void reverse_array(uint8 * pointer, size_t count)
 {
 	size_t x;
-	if ( !count ) return;
 	uint8 * temp = (uint8*)malloc(count);
 	memcpy(temp, pointer, count);
 	for(x = 0; x < count; ++x)

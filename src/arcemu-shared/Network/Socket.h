@@ -1,22 +1,15 @@
 /*
  * Multiplatform Async Network Library
  * Copyright (c) 2007 Burlex
+ *
  * Socket implementable class.
  *
- * Modded by Cebernic
  */
 
 #ifndef SOCKET_H
 #define SOCKET_H
 
 #include "SocketDefines.h"
-#include "Timer.h"
-#include "../Threading/RWLock.h"
-
-// cebernic: seems it was *nix required with my code
-#ifndef CONFIG_USE_IOCP
-#include <netinet/tcp.h>
-#endif
 
 class SERVER_DECL Socket
 {
@@ -31,7 +24,7 @@ public:
 	bool Connect(const char * Address, uint32 Port);
 
 	// Disconnect the socket.
-	void Disconnect(bool no_garbageprocess=false);
+	void Disconnect();
 
 	// Accept from the already-set fd.
 	void Accept(sockaddr_in * address);
@@ -54,7 +47,6 @@ public:
 
 	// Burst system - Locks the sending mutex.
 	ARCEMU_INLINE void BurstBegin() { m_writeMutex.Acquire(); }
-	ARCEMU_INLINE void LockReader() { m_readMutex.Acquire(); }
 
 	// Burst system - Adds bytes to output buffer.
 	bool BurstSend(const uint8 * Bytes, uint32 Size);
@@ -64,7 +56,6 @@ public:
 
 	// Burst system - Unlocks the sending mutex.
 	ARCEMU_INLINE void BurstEnd() { m_writeMutex.Release(); }
-	ARCEMU_INLINE void ReleaseReader() { m_readMutex.Release(); }
 
 /* Client Operations */
 
@@ -73,46 +64,24 @@ public:
 	ARCEMU_INLINE uint32 GetRemotePort() { return ntohs(m_client.sin_port); }
 	ARCEMU_INLINE SOCKET GetFd() { return m_fd; }
 	
+/* Platform-specific methods */
 
-	/* Platform-specific methods */
-
-	void SetupReadEvent(uint32 len);
+	void SetupReadEvent();
 	void ReadCallback(uint32 len);
 	void WriteCallback();
-	void markConnected();
 
 	ARCEMU_INLINE bool IsDeleted() { return m_deleted; }
 	ARCEMU_INLINE bool IsConnected() { return m_connected; }
-	
 	ARCEMU_INLINE sockaddr_in & GetRemoteStruct() { return m_client; }
 	ARCEMU_INLINE CircularBuffer& GetReadBuffer() { return readBuffer; }
 	ARCEMU_INLINE CircularBuffer& GetWriteBuffer() { return writeBuffer; }
 
 /* Deletion */
-	void Delete(bool force=false);
+	void Delete();
 
-	ARCEMU_INLINE uint32 GenerateGUID() { return getMSTime(); }
-	ARCEMU_INLINE void setGUID(uint32 x) { guid = x; }
-	ARCEMU_INLINE uint32 getGUID() { return guid; }
-	ARCEMU_INLINE void setLastheartbeat() { lastheartbeat = GenerateGUID(); }
-	ARCEMU_INLINE uint32 getLastheartbeat() { return lastheartbeat; }
 	ARCEMU_INLINE in_addr GetRemoteAddress() { return m_client.sin_addr; }
 
-	// traffic counter
-	uint64 total_send_bytes;
-	uint64 total_read_bytes;
-
-	// for internal deadsocket collector.
-	uint64 snapshot_send_bytes;
-	uint64 snapshot_read_bytes;
-
-	uint32 _recvbuffsize;
-	uint32 _sendbuffsize;
-
 protected:
-
-	uint32 guid;
-	uint32 lastheartbeat;
 
 	// Called when connection is opened.
 	void _OnConnect();
@@ -167,8 +136,6 @@ private:
 	// Assigns the socket to his completion port.
 	void AssignToCompletionPort();
 
-	// Send Complete
-	void CompletionPortIOComplete();
 #endif
 
 /* Linux - EPOLL Specific Calls */
@@ -239,170 +206,66 @@ private:
 template<class T>
 T* ConnectTCPSocket(const char * hostname, u_short port)
 {
+	sockaddr_in conn;
+	hostent * host;
+
+	/* resolve the peer */
+	host = gethostbyname(hostname);
+
+	if(!host)
+		return NULL;
+
+	/* copy into our address struct */
+	memcpy(&conn.sin_addr, host->h_addr_list[0], sizeof(in_addr));
+	conn.sin_family = AF_INET;
+	conn.sin_port = ntohs(port);
+
 	T * s = new T(0);
 	if(!s->Connect(hostname, port))
 	{
-		delete s; // cebernic:connect failed,so we just delete it directly
+		s->Delete();
 		return 0;
 	}
 	return s;	
 }
 
-/* Sockets Garbage Collector :D */
-#define SOCKET_GC_TIMEOUT 4000 // cebernic: don't modify this value better !
-/* 
-  cebernic: The garbageCollector ,it also collecting the shit from WIN32 CompletionPortSocket
-	This will gets something helpful for anti-dDOS. the attacker should be made many of connections as vaild.
-	with that,they didn't send any size of bytes to us ,they just kept the connecting
-	so right now,system will be kicked any connection without bytes sent after 2 sec.
-	btw: win32platform only!
-*/
-
-class SocketGarbageCollectorThread : public ThreadBase
-{
-public:
-	bool open;
-	void OnShutdown()
-	{
-		open = false;
-	}
-	bool run();
-};
+/* Socket Garbage Collector */
+#define SOCKET_GC_TIMEOUT 15
 
 class SocketGarbageCollector : public Singleton<SocketGarbageCollector>
 {
-	HM_NAMESPACE::hash_map<uint32,Socket*> deletionQueue;
+	map<Socket*, time_t> deletionQueue;
+	Mutex lock;
 public:
-	RWLock lock;
-	SocketGarbageCollectorThread *sgthread;
-	bool running;
 	~SocketGarbageCollector()
 	{
-		if ( running ) Shutdown();
-		HM_NAMESPACE::hash_map<uint32,Socket*>::iterator i,i2;
-		lock.AcquireWriteLock();
-		if ( deletionQueue.size() ){
-			for(i = deletionQueue.begin(); i != deletionQueue.end();)
-			{
-				i2 = i;
-				++i;
-				Socket *s = i2->second;
-				if ( s==NULL ) continue;
-				s->Disconnect(true); // disconnect without queue the socket again.
-				deletionQueue.erase(i2);
-			}
-		}
-		lock.ReleaseWriteLock();
-		printf("SGC shut down.\n");
-	}
-	bool FindSocket(Socket *s)
-	{
-		if ( s==NULL ) return false;
-		bool found=false;
-
-		lock.AcquireReadLock();
-		if ( deletionQueue.size() ) {
-			HM_NAMESPACE::hash_map<uint32,Socket*>::iterator i = deletionQueue.find(s->getGUID());
-			if ( i!=deletionQueue.end() ) // found
-			{
-				found = true;
-			}
-		}
-		lock.ReleaseReadLock();
-
-		return found;
-	}
-	bool RemoveSocket(Socket *s)
-	{
-		bool found=false;
-		if ( s==NULL ) return found;
-		lock.AcquireWriteLock();
-		if ( deletionQueue.size() ) {
-			HM_NAMESPACE::hash_map<uint32,Socket*>::iterator i = deletionQueue.find(s->getGUID());
-			if ( i!=deletionQueue.end() ) // found
-			{
-				deletionQueue.erase(i);
-				found=true;
-			}
-		}
-		lock.ReleaseWriteLock();
-		return found;
-	}
-
-	uint32 GetSocketSize()
-	{
-		uint32 t =0;
-		if ( !running ) return t;
-		lock.AcquireReadLock();
-		t = deletionQueue.size();
-		lock.ReleaseReadLock();
-		return t;
+		map<Socket*, time_t>::iterator i;
+		for(i=deletionQueue.begin();i!=deletionQueue.end();++i)
+			delete i->first;
 	}
 
 	void Update()
 	{
-		HM_NAMESPACE::hash_map<uint32,Socket*>::iterator i,i2;
-		uint32 t = getMSTime();
-		if ( !running ) return;
-		lock.AcquireWriteLock();
-		if ( deletionQueue.size() ){
-			for(i = deletionQueue.begin(); i != deletionQueue.end();)
+		map<Socket*, time_t>::iterator i, i2;
+		time_t t = UNIXTIME;
+		lock.Acquire();
+		for(i = deletionQueue.begin(); i != deletionQueue.end();)
+		{
+			i2 = i++;
+			if(i2->second <= t)
 			{
-				i2 = i;
-				++i;
-				Socket *s = i2->second;
-				if ( s==NULL || s->IsConnected() ) {
-					deletionQueue.erase(i2);
-					continue;
-				}
-				if( s->getLastheartbeat()+SOCKET_GC_TIMEOUT <=t)
-				{
-					//printf("Socket timeout! Read:%u Send:%u\n",s->total_read_bytes,s->total_send_bytes);
-					s->Disconnect(true);
-					deletionQueue.erase(i2);
-				}
-
+				delete i2->first;
+				deletionQueue.erase(i2);
 			}
 		}
-		lock.ReleaseWriteLock();
+		lock.Release();
 	}
 
 	void QueueSocket(Socket * s)
 	{
-		if ( s == NULL ) return;
-		if ( s->getGUID()==0 ) return; // we don't queue the un-listen socket.
-
-		lock.AcquireWriteLock();
-		if ( FindSocket(s) ) {
-			lock.ReleaseWriteLock();
-			return; // already inserted.
-		}
-		deletionQueue.insert( HM_NAMESPACE::hash_map<uint32,Socket*>::value_type(s->getGUID(), s) );
-		lock.ReleaseWriteLock();
-	}
-	void Startup()
-	{
-		sgthread = new SocketGarbageCollectorThread();
-		sgthread->open = true;
-		running = true;
-		ThreadPool.ExecuteTask(sgthread);
-		Log.Color(TGREEN);
-#ifdef WIN32
-		Log.Notice("SGC","Socket garbage collector startup. - (AntiAttacker)");
-#else
-		Log.Notice("SGC","Socket garbage collector startup.");
-#endif
-		Log.Color(TNORMAL);
-	}
-	void Shutdown()
-	{
-		if ( sgthread ) sgthread->open = false;
-		running = false;
-		while ( sgthread!=NULL )
-		{
-			printf("Waiting for collector of socket garbage thread to end...\n");
-			Sleep(500);
-		}
+		lock.Acquire();
+		deletionQueue.insert( map<Socket*, time_t>::value_type( s, UNIXTIME + SOCKET_GC_TIMEOUT ) );
+		lock.Release();
 	}
 };
 

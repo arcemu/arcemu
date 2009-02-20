@@ -36,7 +36,7 @@ CircularBuffer::CircularBuffer()
  */
 CircularBuffer::~CircularBuffer()
 {
-	if ( m_buffer ) free(m_buffer);
+	free(m_buffer);
 }
 
 /** Read bytes from the buffer

@@ -3,7 +3,7 @@
  * Copyright (c) 2007 Burlex
  *
  * SocketMgr - iocp-based SocketMgr for windows.
- * Modded by 2009 Cebernic
+ *
  */
 
 #include "Network.h"
@@ -30,9 +30,9 @@ void SocketMgr::SpawnWorkerThreads()
 	SYSTEM_INFO si;
 	GetSystemInfo(&si);
 
-	threadcount = (si.dwNumberOfProcessors*2)+2; // don'tworry it performance increased.
+	threadcount = si.dwNumberOfProcessors;
 
-	Log.Notice("SocketMgr","IOCP Spawning [-%u-] worker threads.", threadcount);
+	printf("IOCP: Spawning %u worker threads.\n", threadcount);
 	for(long x = 0; x < threadcount; ++x)
 		ThreadPool.ExecuteTask(new SocketWorkerThread());
 }
@@ -43,79 +43,48 @@ bool SocketWorkerThread::run()
 	HANDLE cp = sSocketMgr.GetCompletionPort();
 	DWORD len;
 	Socket * s;
+	OverlappedStruct * ov;
 	LPOVERLAPPED ol_ptr;
-	BOOL _ret=0;
-	OverlappedStruct * _gov =NULL;
-	shutdown = false;
-	while(!shutdown)
+
+	while(true)
 	{
 #ifndef _WIN64
-		_ret = GetQueuedCompletionStatus(cp, &len,  (LPDWORD)&s, &ol_ptr, 5000);
+		if(!GetQueuedCompletionStatus(cp, &len, (LPDWORD)&s, &ol_ptr, 10000))
 #else
-		_ret = GetQueuedCompletionStatus(cp, &len, (PULONG_PTR)&s, &ol_ptr,5000);
+		if(!GetQueuedCompletionStatus(cp, &len, (PULONG_PTR)&s, &ol_ptr, 10000))
 #endif
-
-		if ( !_ret ) continue;
-			
-		_gov = CONTAINING_RECORD(ol_ptr, OverlappedStruct, m_overlap);
-
-		if ( _gov==NULL ) continue;
-
-		if ( _gov->m_event == SOCKET_IO_THREAD_SHUTDOWN )
-		{
-			ophandlers[_gov->m_event](s, len);
-			if ( _gov ) delete _gov;
-			_gov = NULL;
-			break;
-		}
-		
-		DWORD   dwLastError=GetLastError();
-
-		if   (ERROR_INVALID_HANDLE==dwLastError || ERROR_OPERATION_ABORTED==dwLastError || FALSE==_ret || NULL==s)
 			continue;
 
-		if ( _gov->m_event == SOCKET_IO_EVENT_READ_COMPLETE )
+		ov = CONTAINING_RECORD(ol_ptr, OverlappedStruct, m_overlap);
+
+		if(ov->m_event == SOCKET_IO_THREAD_SHUTDOWN)
 		{
-			if ( s && len > 0 && !s->IsDeleted() ){
-				if ( len > s->_recvbuffsize ) continue; // maybe useless
-				s->LockReader();
-				s->total_read_bytes +=len;
-				if ( !s->IsConnected() ) s->markConnected();
-				s->ReleaseReader();
-			}
-		}
-		else
-		if ( _gov->m_event == SOCKET_IO_EVENT_WRITE_END )
-		{
-			if ( s && len > 0 && !s->IsDeleted() ){
-				if ( len > s->_sendbuffsize ) continue;
-				s->BurstBegin();
-				s->total_send_bytes +=len;
-				s->BurstEnd();
-			}
+			delete ov;
+			return true;
 		}
 
-		if( s && _gov->m_event < NUM_SOCKET_IO_EVENTS )
-			ophandlers[_gov->m_event](s, len);
-
+		if(ov->m_event < NUM_SOCKET_IO_EVENTS)
+			ophandlers[ov->m_event](s, len);
 	}
-	--sSocketMgr.threadcount;
-	Log.Notice("SocketMgr","IOCP thread was shut down,current (%d) remaining.",sSocketMgr.threadcount);
+
 	THREAD_HANDLE_CRASH2
 	return true;
 }
 
 void HandleReadComplete(Socket * s, uint32 len)
 {
+	//s->m_readEvent=NULL;
 	if(!s->IsDeleted())
 	{
 		s->m_readEvent.Unmark();
 		if(len)
 		{
-			s->ReadCallback(len);
+			s->GetReadBuffer().IncrementWritten(len);
+			s->OnRead();
+			s->SetupReadEvent();
 		}
 		else
-			s->Disconnect(); // drop it
+			s->Delete();	  // Queue deletion.
 	}
 }
 
@@ -126,21 +95,17 @@ void HandleWriteComplete(Socket * s, uint32 len)
 		s->m_writeEvent.Unmark();
 		s->BurstBegin();					// Lock
 		s->GetWriteBuffer().Remove(len);
-		if( s->GetWriteBuffer().GetContiguiousBytes() > 0 ){
-			s->BurstEnd();
+		if( s->GetWriteBuffer().GetContiguiousBytes() > 0 )
 			s->WriteCallback();
-			return;
-		}
-		else{
+		else
 			s->DecSendLock();
-		}
 		s->BurstEnd();					  // Unlock
 	}
 }
 
 void HandleShutdown(Socket * s, uint32 len)
 {
-	Log.Notice("SocketMgr","IOCP single thread shutdown requesting...");
+	
 }
 
 void SocketMgr::CloseAll()
@@ -166,18 +131,19 @@ void SocketMgr::CloseAll()
 
 void SocketMgr::ShutdownThreads()
 {
-	Log.Notice("SocketMgr","Going to shutdown all spawned threads.");
 	for(int i = 0; i < threadcount; ++i)
 	{
 		OverlappedStruct * ov = new OverlappedStruct(SOCKET_IO_THREAD_SHUTDOWN);
-		PostQueuedCompletionStatus(sSocketMgr.GetCompletionPort(), 0, (ULONG_PTR)0, &ov->m_overlap);
+		PostQueuedCompletionStatus(m_completionPort, 0, (ULONG_PTR)0, &ov->m_overlap);
 	}
 }
 
 void SocketMgr::ShowStatus()
 {
 	socketLock.Acquire();
-	sLog.outString("current _sockets: %u garbage sockets: %u", _sockets.size(),sSocketGarbageCollector.GetSocketSize());
+
+	sLog.outString("_sockets.size(): %d", _sockets.size());
+
 	socketLock.Release();
 }
 

@@ -407,8 +407,6 @@ public:
 	Mutex queueMutex;
 
 	uint32 mQueueUpdateInterval;
-	uint32 mSessionsUpdateInterval;
-
 	bool m_useIrc;
 
 	void SaveAllPlayers();
@@ -558,7 +556,7 @@ private:
 	AreaTriggerMap m_AreaTrigger;
 
 protected:
-	RWLock GlobalSessionlock;//FOR GLOBAL !
+	Mutex SessionsMutex;//FOR GLOBAL !
 	SessionSet Sessions;
 
 	float regen_values[MAX_RATES];
@@ -577,7 +575,6 @@ protected:
 
 	uint32 m_StartTime;
 	uint32 m_queueUpdateTimer;
-	uint32 m_sessionsUpdateTimer;
 
 	QueueSet mQueuedSessions;
 

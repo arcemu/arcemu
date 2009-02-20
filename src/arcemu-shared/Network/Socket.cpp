@@ -3,7 +3,7 @@
  * Copyright (c) 2007 Burlex
  *
  * Socket implementable class.
- * Modded by 2009 Cebernic
+ *
  */
 
 #include "Network.h"
@@ -16,9 +16,6 @@ Socket::Socket(SOCKET fd, uint32 sendbuffersize, uint32 recvbuffersize) : m_fd(f
 	readBuffer.Allocate(recvbuffersize);
 	writeBuffer.Allocate(sendbuffersize);
 
-	_recvbuffsize = recvbuffersize;
-	_sendbuffsize = sendbuffersize;
-
 	// IOCP Member Variables
 #ifdef CONFIG_USE_IOCP
 	m_writeLock = 0;
@@ -26,13 +23,6 @@ Socket::Socket(SOCKET fd, uint32 sendbuffersize, uint32 recvbuffersize) : m_fd(f
 #else
 	m_writeLock = 0;
 #endif
-	guid = 0;
-
-	total_send_bytes=0;
-	total_read_bytes=0;
-
-	snapshot_send_bytes=0;
-	snapshot_read_bytes=0;
 
 	// Check for needed fd allocation.
 	if(m_fd == 0)
@@ -41,15 +31,7 @@ Socket::Socket(SOCKET fd, uint32 sendbuffersize, uint32 recvbuffersize) : m_fd(f
 
 Socket::~Socket()
 {
-	if ( m_connected || !m_deleted ){ // cebernic:destroy by accident,without feedback?
-		OnDisconnect();
-		sSocketMgr.RemoveSocket(this);
-	}
 
-	m_deleted = true;
-	m_connected = false;
-
-	if(m_fd != 0) SocketOps::CloseSocket(m_fd);
 }
 
 bool Socket::Connect(const char * Address, uint32 Port)
@@ -64,10 +46,7 @@ bool Socket::Connect(const char * Address, uint32 Port)
 
 	SocketOps::Blocking(m_fd);
 	if(connect(m_fd, (const sockaddr*)&m_client, sizeof(m_client)) == -1)
-	{
-//		SocketOps::CloseSocket(m_fd);
 		return false;
-	}
 
 	// at this point the connection was established
 #ifdef CONFIG_USE_IOCP
@@ -85,35 +64,19 @@ void Socket::Accept(sockaddr_in * address)
 
 void Socket::_OnConnect()
 {
-
-	SocketOps::SetRecvBufferSize(m_fd, _recvbuffsize );
-	SocketOps::SetSendBufferSize(m_fd, _sendbuffsize );
-
+	// set common parameters on the file descriptor
 	SocketOps::Nonblocking(m_fd);
-
-	// for fast garbage collector.
-	setGUID(GenerateGUID());
-	setLastheartbeat(); // first set
-
-	int optval = 1;
-	setsockopt(m_fd,SOL_SOCKET,SO_KEEPALIVE,(const char*)&optval,sizeof(optval));
-	// nagle disabled for high performance.
-	setsockopt(m_fd,IPPROTO_TCP,TCP_NODELAY,(char*)&optval,sizeof(optval));
-
-#ifdef CONFIG_USE_IOCP
-	m_deleted = false;
-	sSocketGarbageCollector.QueueSocket(this); 
-#else
-	sSocketMgr.AddSocket(this);
+	SocketOps::DisableBuffering(m_fd);
+/*	SocketOps::SetRecvBufferSize(m_fd, m_writeBufferSize);
+	SocketOps::SetSendBufferSize(m_fd, m_writeBufferSize);*/
 	m_connected = true;
-	m_deleted = false;
-#endif
 
 	// IOCP stuff
 #ifdef CONFIG_USE_IOCP
 	AssignToCompletionPort();
-	SetupReadEvent(0); // Recv now
+	SetupReadEvent();
 #endif
+	sSocketMgr.AddSocket(this);
 
 	// Call virtual onconnect
 	OnConnect();
@@ -147,72 +110,27 @@ string Socket::GetRemoteIP()
 		return string( "noip" );
 }
 
-void Socket::Disconnect(bool no_garbageprocess)
+void Socket::Disconnect()
 {
-	// remove from mgr
-	if ( m_connected ) {
-		OnDisconnect(); // virtual disconnect exec immediately!
-		sSocketMgr.RemoveSocket(this);
-	}
-
 	m_connected = false;
 
-	//for reuse
-	//SocketOps::CloseSocket(m_fd);
+	// remove from mgr
+	sSocketMgr.RemoveSocket(this);
 
-	if(!m_deleted) {
-		if ( !no_garbageprocess ){
-			sSocketGarbageCollector.QueueSocket(this); // send this to garbage collector.
-			// Queue -> Die directly
-			// Queue -> Connected(marked) -> Queue -> Die
-		}
-		m_deleted = true;
-	}
+	SocketOps::CloseSocket(m_fd);
 
-	if ( no_garbageprocess ) {
-		//Log.Notice("Socket","Socket being destroyed.\n");
-		delete this;
-	}
+	// Call virtual ondisconnect
+	OnDisconnect();
+
+	if(!m_deleted) Delete();
 }
 
-void Socket::Delete(bool force)
+void Socket::Delete()
 {
-	Disconnect(force); // force true ,we will not queue the socket.
+	if(m_deleted) return;
+	m_deleted = true;
+
+	if(m_connected) Disconnect();
+	sSocketGarbageCollector.QueueSocket(this);
 }
 
-void Socket::markConnected()
-{
-	m_connected = true;
-	m_deleted = false;
-	if ( sSocketGarbageCollector.RemoveSocket(this) ) // yes we have completed with read ,so just remove this socket from garbage's queue.
-		sSocketMgr.AddSocket(this); // read complete,so add socket to global alive sockets
-}
-
-bool SocketGarbageCollectorThread::run()
-{
-	bool run();
-	{
-		uint32 loop=0;
-		while( open && sSocketGarbageCollector.running )
-		{
-			loop++;
-
-			if ( !(loop%2) ) sSocketGarbageCollector.Update(); // garbage system
-
-#ifdef CONFIG_USE_IOCP
-
-			if ( !(loop%20) )  // 20 second for snapshot
-				sSocketMgr.MakeSnapShot();
-
-			if ( !(loop%60) ) // 60 second for checkdeadsocket *internal*
-				sSocketMgr.CheckDeadSocket_Internal();
-#endif
-
-
-			if (loop>101)loop=0;
-			Sleep(1000);
-		}
-		sSocketGarbageCollector.sgthread=NULL;
-		return true; // threadpool delete us.
-	}
-}

@@ -22,7 +22,7 @@
 #define WOWSERVER_DEFINITION_H
 
 
-#define NUM_MAPS 1200
+#define NUM_MAPS 700
 
 
 // Sorry...need this enumeration in Player.*

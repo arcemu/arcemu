@@ -71,7 +71,7 @@ namespace SocketOps
 	// Closes a socket fully.
 	void CloseSocket(SOCKET fd)
 	{
-		//shutdown(fd, SD_BOTH); // cebernic: we do not need shutdown for target ACK,reason in dDOS!!!!
+		shutdown(fd, SD_BOTH);
 		closesocket(fd);
 	}
 

@@ -64,7 +64,6 @@ has_level_55_char(false)
 	for( uint8 x = 0; x < 8; x++ )
 		sAccountData[x].data = NULL;
 
-	m_lastCreateChar = m_lastEnumChar = 0;
 }
 
 WorldSession::~WorldSession()

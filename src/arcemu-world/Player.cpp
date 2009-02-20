@@ -19,8 +19,6 @@
  */
 
 #include "StdAfx.h"
-#pragma warning(disable:4355)
-
 UpdateMask Player::m_visibleUpdateMask;
 #define COLLISION_INDOOR_CHECK_INTERVAL 1000
 #define CANNON 24933 //39692, 34154
@@ -10437,7 +10435,7 @@ void Player::_UpdateMaxSkillCounts()
 		else if (itr->second.Skill->type == SKILL_TYPE_PROFESSION || itr->second.Skill->type == SKILL_TYPE_SECONDARY)
 		{
 			new_max = itr->second.MaximumValue;
-			if (new_max > 375)
+			if (new_max >= 450)
 				new_max = 450;
 		}
 		else
@@ -10689,7 +10687,7 @@ void Player::EventTalentHearthOfWildChange(bool apply)
 		SetFloatValue(UNIT_FIELD_ATTACK_POWER_MULTIPLIER,GetFloatValue(UNIT_FIELD_ATTACK_POWER_MULTIPLIER)+float(tval/200.0f));
 		SetFloatValue(UNIT_FIELD_RANGED_ATTACK_POWER_MULTIPLIER, GetFloatValue(UNIT_FIELD_RANGED_ATTACK_POWER_MULTIPLIER)+float(tval/200.0f));
 		UpdateStats();
-		UpdateChances();
+		
 
 	}
 }

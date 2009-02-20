@@ -113,7 +113,7 @@ public:
 
 	ARCEMU_INLINE Map* GetMap(uint32 mapid)
 	{
-		if(mapid>=NUM_MAPS)
+		if(mapid>NUM_MAPS)
 			return NULL;
 		else
 			return m_maps[mapid];

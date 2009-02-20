@@ -112,7 +112,7 @@ initialiseSingleton(ConsoleAuthMgr);
 void ConsoleAuthCallback(uint32 request, uint32 result)
 {
 	ConsoleSocket * pSocket = ConsoleAuthMgr::getSingleton().GetRequest(request);
-	if(pSocket == NULL || pSocket->IsDeleted() )
+	if(pSocket == NULL || !pSocket->IsConnected())
 		return;
 
     if(result)

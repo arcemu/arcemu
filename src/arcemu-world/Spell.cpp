@@ -89,7 +89,7 @@ void SpellCastTargets::read( WorldPacket & data,uint64 caster )
 	{
 		std::string ss;
 		data >> ss;
-		m_strTarget = ss;
+		m_strTarget = strdup(ss.c_str());
 	}
 }
 
@@ -156,8 +156,8 @@ void Spell::Init(Object* Caster, SpellEntry *info, bool triggered, Aura* aur)
 #ifdef GM_Z_DEBUG_DIRECTLY
    	    // cebernic added it
    	    if ( p_caster->GetSession() && p_caster->GetSession()->CanUseCommand('z')  && p_caster->IsInWorld() )
-					sChatHandler.BlueSystemMessage( p_caster->GetSession(), "[%sSystem%s] |rSpell::Spell: %s ID:%u(%d),CATE:%u,CD:%u,DisType%u,MT:%u,etA0=%u,etA1=%u,etA2=%u,etB0=%u,etB1=%u,etB2=%u", MSG_COLOR_WHITE, MSG_COLOR_LIGHTBLUE, MSG_COLOR_SUBWHITE, 
-    		info->Id,triggered,info->Category,info->RecoveryTime,info->DispelType,info->MechanicsType,info->EffectImplicitTargetA[0],info->EffectImplicitTargetA[1],info->EffectImplicitTargetA[2],info->EffectImplicitTargetB[0],info->EffectImplicitTargetB[1],info->EffectImplicitTargetB[2]);
+    		sChatHandler.BlueSystemMessage( p_caster->GetSession(), "[%sSystem%s] |rSpell::Spell: %s ID:%u,Category%u,CD:%u,DisType%u,Field4:%u,etA0=%u,etA1=%u,etA2=%u,etB0=%u,etB1=%u,etB2=%u", MSG_COLOR_WHITE, MSG_COLOR_LIGHTBLUE, MSG_COLOR_SUBWHITE, 
+    		info->Id,info->Category,info->RecoveryTime,info->DispelType,info->castUI,info->EffectImplicitTargetA[0],info->EffectImplicitTargetA[1],info->EffectImplicitTargetA[2],info->EffectImplicitTargetB[0],info->EffectImplicitTargetB[1],info->EffectImplicitTargetB[2]  );
 #endif
 				
 		} break;
@@ -1163,8 +1163,6 @@ uint8 Spell::prepare( SpellCastTargets * targets )
 {
 	uint8 ccr;
 
-	if ( GetProto()==NULL ) return SPELL_FAILED_UNKNOWN;
-
 	// In case spell got cast from a script check fear/wander states
 	if (!p_caster && u_caster && u_caster->GetAIInterface())
 	{
@@ -1390,8 +1388,6 @@ void Spell::AddStartCooldown()
 
 void Spell::cast(bool check)
 {
-	if ( GetProto() == NULL ) return;
-
 	if( duelSpell && (
 		( p_caster != NULL && p_caster->GetDuelState() != DUEL_STATE_STARTED ) ||
 		( u_caster != NULL && u_caster->IsPet() && static_cast< Pet* >( u_caster )->GetPetOwner() && static_cast< Pet* >( u_caster )->GetPetOwner()->GetDuelState() != DUEL_STATE_STARTED ) ) )
@@ -3378,11 +3374,6 @@ uint8 Spell::CanCast(bool tolerate)
 				}
 			}
 		}
-		else
-		{
-			if ( p_caster->isDead() && !p_caster->HasAura(20584) && !p_caster->HasAura(9036) && !p_caster->HasAura(8326) ) // cebernic: anti exploite
-				return SPELL_FAILED_CASTER_DEAD;
-		}
 
 			// check if spell is allowed while we have a battleground flag
 		if(p_caster->m_bgHasFlag)
@@ -3482,7 +3473,7 @@ uint8 Spell::CanCast(bool tolerate)
 		{
 			bool found = false;
 
-			p_caster->AquireInrangeLock(); //make sure to release lock before exit function !
+			m_caster->AquireInrangeLock(); //make sure to release lock before exit function !
 			for(std::set<Object*>::iterator itr = p_caster->GetInRangeSetBegin(); itr != p_caster->GetInRangeSetEnd(); itr++ )
 			{
 				if((*itr)->GetTypeId() != TYPEID_GAMEOBJECT)
@@ -3515,7 +3506,7 @@ uint8 Spell::CanCast(bool tolerate)
 				}
 			}
 
-			p_caster->ReleaseInrangeLock();
+			m_caster->ReleaseInrangeLock();
 			if(!found)
 				return SPELL_FAILED_REQUIRES_SPELL_FOCUS;
 		}
@@ -3922,7 +3913,7 @@ uint8 Spell::CanCast(bool tolerate)
 					if(target->GetEntry() != 20058)
 						return SPELL_FAILED_BAD_TARGETS;
 				}break;
-				case 41291: // cebernic:Soul Cannon
+				case 41291:
 				{
 					if(target->GetEntry() != 22357)
 						return SPELL_FAILED_BAD_TARGETS;
@@ -5093,7 +5084,6 @@ void Spell::Heal(int32 amount, bool ForceCrit)
 	{
 		std::vector<Unit*> target_threat;
 		int count = 0;
-		u_caster->AquireInrangeLock(); // cebernic:inrange lock added
 		for(std::set<Object*>::iterator itr = u_caster->GetInRangeSetBegin(); itr != u_caster->GetInRangeSetEnd(); ++itr)
 		{
 			if((*itr)->GetTypeId() != TYPEID_UNIT || !static_cast<Unit *>(*itr)->CombatStatus.IsInCombat() || (static_cast<Unit *>(*itr)->GetAIInterface()->getThreatByPtr(u_caster) == 0 && static_cast<Unit *>(*itr)->GetAIInterface()->getThreatByPtr(unitTarget) == 0))
@@ -5102,7 +5092,6 @@ void Spell::Heal(int32 amount, bool ForceCrit)
 			target_threat.push_back(static_cast<Unit *>(*itr));
 			count++;
 		}
-		u_caster->ReleaseInrangeLock();
 		if (count == 0)
 			return;
 

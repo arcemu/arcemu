@@ -64,7 +64,7 @@ public:
 	OverlappedStruct(SocketIOEvent ev) : m_event(ev)
 	{
 		memset(&m_overlap, 0, sizeof(OVERLAPPED));
-		m_inUse = ev;
+		m_inUse = 0;
 	};
 
 	OverlappedStruct()
@@ -79,13 +79,11 @@ public:
 		m_event = ev;
 	}
 
-	bool Mark()
+	void Mark()
 	{
 		long val = InterlockedCompareExchange(&m_inUse, 1, 0);
-		if(val != 0){
-			Log.Notice("SocketMgr","WARNING! read/write double event,prev was %u",m_event);
-			return false;
-		}else return true;
+		if(val != 0)
+			printf("!!!! Network: Detected double use of read/write event! Previous event was %u.\n", m_event);
 	}
 
 	void Unmark()

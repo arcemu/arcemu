@@ -176,19 +176,19 @@ public:
 	Player * m_loggingInPlayer;
 	ARCEMU_INLINE void SendPacket(WorldPacket* packet)
 	{
-		if(_socket && !_socket->IsDeleted())
+		if(_socket && _socket->IsConnected())
 			_socket->SendPacket(packet);
 	}
 
 	ARCEMU_INLINE void SendPacket(StackBufferBase * packet)
 	{
-		if(_socket && !_socket->IsDeleted())
+		if(_socket && _socket->IsConnected())
 			_socket->SendPacket(packet);
 	}
 
 	ARCEMU_INLINE void OutPacket(uint16 opcode)
 	{
-		if(_socket && !_socket->IsDeleted())
+		if(_socket && _socket->IsConnected())
 			_socket->OutPacket(opcode, 0, NULL);
 	}
 
@@ -198,8 +198,6 @@ public:
 
 	uint32 m_currMsTime;
 	uint32 m_lastPing;
-	uint32 m_lastCreateChar;
-	uint32 m_lastEnumChar;
 
 	ARCEMU_INLINE uint32 GetAccountId() const { return _accountId; }
 	ARCEMU_INLINE Player* GetPlayer() { return _player; }
@@ -260,14 +258,13 @@ public:
 
 	ARCEMU_INLINE void QueuePacket(WorldPacket* packet)
 	{
-		if ( packet==NULL ) return;
 		m_lastPing = (uint32)UNIXTIME;
 		_recvQueue.Push(packet);
 	}
 	
 	void OutPacket(uint16 opcode, uint16 len, const void* data)
 	{
-		if(_socket && !_socket->IsDeleted())
+		if(_socket && _socket->IsConnected())
 			_socket->OutPacket(opcode, len, data);
 	}
 
@@ -275,8 +272,8 @@ public:
 	
 	void Disconnect()
 	{
-		if(_socket && !_socket->IsDeleted())
-			_socket->Delete();
+		if(_socket && _socket->IsConnected())
+			_socket->Disconnect();
 	}
 
 	int __fastcall Update(uint32 InstanceID);

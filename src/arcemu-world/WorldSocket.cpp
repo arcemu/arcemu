@@ -25,7 +25,6 @@
 
 /* echo send/received packets to console */
 //#define ECHO_PACKET_LOG_TO_CONSOLE 1
-#define AUTH_SENT_CHECK if ( AuthRequestSent ) {Disconnect(true);return;}
 
 #pragma pack(push, 1)
 struct ClientPktHeader
@@ -50,14 +49,14 @@ mOpcode(0),
 mRemaining(0),
 _latency(0),
 mSession(NULL),
-mSeed( RandomUInt() ),
+mSeed(RandomUInt()),
 pAuthenticationPacket(NULL),
 mQueued(false),
 mRequestID(0),
 m_nagleEanbled(false),
 m_fullAccountName(NULL)
 {
-	mClientSeed = mSeed;
+
 }
 
 WorldSocket::~WorldSocket()
@@ -111,8 +110,6 @@ void WorldSocket::OutPacket(uint16 opcode, size_t len, const void* data)
 		printf("WARNING: Tried to send a packet of %u bytes (which is too large) to a socket. Opcode was: %u (0x%03X)\n", (unsigned int)len, (unsigned int)opcode, (unsigned int)opcode);
 		return;
 	}
-
-	if ( opcode == SMSG_AUTH_CHALLENGE ) AuthRequestSent = true;
 
 	res = _OutPacket(opcode, len, data);
 	if(res == OUTPACKET_RESULT_SUCCESS)
@@ -173,14 +170,8 @@ void WorldSocket::UpdateQueuedPackets()
 OUTPACKET_RESULT WorldSocket::_OutPacket(uint16 opcode, size_t len, const void* data)
 {
 	bool rv;
-	if( IsDeleted() )
+	if(!IsConnected())
 		return OUTPACKET_RESULT_NOT_CONNECTED;
-		
-	if( (len + 10) > WORLDSOCKET_SENDBUF_SIZE )
-	{
-		printf("WARNING: Tried to send a packet of %u bytes (which is too large) to a socket. Opcode was: %u (0x%03X)\n", (unsigned int)len, (unsigned int)opcode, (unsigned int)opcode);
-		return OUTPACKET_RESULT_SOCKET_ERROR;
-	}
 
 	BurstBegin();
 	//if((m_writeByteCount + len + 4) >= m_writeBufferSize)
@@ -234,54 +225,50 @@ void WorldSocket::OnConnect()
 
 void WorldSocket::_HandleAuthSession(WorldPacket* recvPacket)
 {
-
 	std::string account;
 	uint32 unk2, unk3;
 	
 	_latency = getMSTime() - _latency;
-	if ( recvPacket==NULL || recvPacket->size() < 16+16+20+16  ) { Disconnect();return;}
 
-	*recvPacket >> mClientBuild;
-	*recvPacket >> unk2;
-	*recvPacket >> account;
-	*recvPacket >> unk3;
-
-	if (recvPacket->size() < 16+16+(account.size()+1)+16+16 )
+	try
 	{
-		sLog.outString("Incomplete copy of AUTH_SESSION Received.");
+		*recvPacket >> mClientBuild;
+		*recvPacket >> unk2;
+		*recvPacket >> account;
+		*recvPacket >> unk3;
+		*recvPacket >> mClientSeed;
+	}
+	catch(ByteBuffer::error &)
+	{
+		sLog.outDetail("Incomplete copy of AUTH_SESSION Received.");
 		return;
 	}
 
-	*recvPacket >> mClientSeed;
-
-	if ( mClientBuild==0 || account.length() < 1 || account.length() >= 20 ) { Disconnect();return;}
+	// Send out a request for this account.
+	mRequestID = sLogonCommHandler.ClientConnected(account, this);
+	
+	if(mRequestID == 0xFFFFFFFF)
+	{
+		Disconnect();
+		return;
+	}
 
 	// shitty hash !
 	m_fullAccountName = new string( account );
 
 	// Set the authentication packet 
-  pAuthenticationPacket = recvPacket;
-   
-	// Send out a request for this account.
-	mRequestID = sLogonCommHandler.ClientConnected(account, this);
-
-	if( mRequestID == 0xFFFFFFFF ) //-1
-	{
-		delete pAuthenticationPacket;
-		pAuthenticationPacket = 0;
-		if ( !IsDeleted() ) Disconnect();
-		return;
-	}
-	 
+    pAuthenticationPacket = recvPacket;
 }
 
 void WorldSocket::InformationRetreiveCallback(WorldPacket & recvData, uint32 requestid)
 {
+	if(requestid != mRequestID)
+		return;
 
 	uint32 error;
 	recvData >> error;
 
-	if(error != 0 || mRequestID!=requestid || pAuthenticationPacket == NULL || pAuthenticationPacket->size() < 20 )
+	if(error != 0 || pAuthenticationPacket == NULL)
 	{
 		// something happened wrong @ the logon server
 		OutPacket(SMSG_AUTH_RESPONSE, 1, "\x0D");
@@ -296,21 +283,8 @@ void WorldSocket::InformationRetreiveCallback(WorldPacket & recvData, uint32 req
 	uint8 AccountFlags;
 	string lang = "enUS";
 	uint32 i;
-
-	if (recvData.size() < 16+20+20+4+1)
-	{
-		sLog.outString("WorldSocket::InformationRetreiveCallback - Incorrect size of recvData recieved, recvData.size=%d.", recvData.size());
-		return;
-	}
 	
 	recvData >> AccountID >> AccountName >> GMFlags >> AccountFlags;
-
-  if (recvData.size() < 16+(AccountName.size()+1)+(GMFlags.size()+1)+4+40)
-  {
-		sLog.outString("WorldSocket::InformationRetreiveCallback - Recheck size incorrect, recvData.size=%d.", recvData.size() );
-		return;
-	}
-
 	ForcedPermissions = sLogonCommHandler.GetForcedPermissions(AccountName);
 	if( ForcedPermissions != NULL )
 		GMFlags.assign(ForcedPermissions->c_str());
@@ -318,6 +292,7 @@ void WorldSocket::InformationRetreiveCallback(WorldPacket & recvData, uint32 req
 	sLog.outDebug( " >> got information packet from logon: `%s` ID %u (request %u)", AccountName.c_str(), AccountID, mRequestID);
 //	sLog.outColor(TNORMAL, "\n");
 
+	mRequestID = 0;
 	// Pull the session key.
 	uint8 K[40];
 	recvData.read(K, 40);
@@ -435,6 +410,14 @@ void WorldSocket::InformationRetreiveCallback(WorldPacket & recvData, uint32 req
 	}
 
 	Log.Debug("Auth", "%s from %s:%u [%ums]", AccountName.c_str(), GetRemoteIP().c_str(), GetRemotePort(), _latency);
+#ifdef SESSION_CAP
+	if( sWorld.GetSessionCount() >= SESSION_CAP )
+	{
+		OutPacket(SMSG_AUTH_RESPONSE, 1, "\x0D");
+		Disconnect();
+		return;
+	}
+#endif
 
 	// Check for queue.
 	if( (sWorld.GetSessionCount() < sWorld.GetPlayerLimit()) || pSession->HasGMPermissions() ) {
@@ -456,9 +439,6 @@ void WorldSocket::Authenticate()
 {
 	WorldSession * pSession = mSession;
 	ASSERT(pAuthenticationPacket);
-
-	if ( mQueued ) sWorld.RemoveQueuedSocket(this); // cebernic: remove the socket from queue
-
 	mQueued = false;
 
 	if(!pSession) return;
@@ -489,20 +469,17 @@ void WorldSocket::Authenticate()
 			sWorld.gmList.insert(pSession);
 	}
 
-	mRequestID = 0; // reset 0,skipped with onDisconnect
-
-	Authed_worldsocket = true;
 	pSession->deleteMutex.Release();
 }
 
 void WorldSocket::UpdateQueuePosition(uint32 Position)
 {
-	// cebernic: Displays re-correctly until 2.4.3
-	if ( !mQueued ) return;
-	WorldPacket QueuePacket(SMSG_AUTH_RESPONSE, 15);
+// cebernic: Displays re-correctly until 2.4.3,there will not be always 0
+	WorldPacket QueuePacket(SMSG_AUTH_RESPONSE, 16);
 	QueuePacket << uint8(0x1B) << uint8(0x2C) << uint8(0x73) << uint8(0) << uint8(0);
 	QueuePacket << uint32(0) << uint8(0) << uint8(0);
 	QueuePacket << Position;
+	QueuePacket << uint8(1);
 	SendPacket(&QueuePacket);
 }
 
@@ -512,7 +489,7 @@ void WorldSocket::_HandlePing(WorldPacket* recvPacket)
 	if(recvPacket->size() < 4)
 	{
 		sLog.outString("Socket closed due to incomplete ping packet.");
-		Delete();
+		Disconnect();
 		return;
 	}
 
@@ -538,7 +515,7 @@ void WorldSocket::_HandlePing(WorldPacket* recvPacket)
 	// Dynamically change nagle buffering status based on latency.
 	//if(_latency >= 250)
 	// I think 350 is better, in a MMO 350 latency isn't that big that we need to worry about reducing the number of packets being sent.
-	if(_latency >= 500)
+	if(_latency >= 350)
 	{
 		if(!m_nagleEanbled)
 		{
@@ -569,7 +546,6 @@ void WorldSocket::OnRead()
 			if(GetReadBuffer().GetSize() < 6)
 			{
 				// No header in the packet, let's wait.
-				AUTH_SENT_CHECK // I sent u chanllenge,but what th you replied ?
 				return;
 			}
 
@@ -615,23 +591,21 @@ void WorldSocket::OnRead()
 		// Check for packets that we handle
 		switch(Packet->GetOpcode())
 		{
-			case CMSG_PING:
-				{
-					_HandlePing(Packet);
-					delete Packet;
-				}break;
-			case CMSG_AUTH_SESSION:
-				{
-					_HandleAuthSession(Packet);
-					AuthRequestSent = false;
-				}break;
-			default:
-				{
-					if(mSession) mSession->QueuePacket(Packet);
-					else delete Packet;
-				}break;
+		case CMSG_PING:
+			{
+				_HandlePing(Packet);
+				delete Packet;
+			}break;
+		case CMSG_AUTH_SESSION:
+			{
+				_HandleAuthSession(Packet);
+			}break;
+		default:
+			{
+				if(mSession) mSession->QueuePacket(Packet);
+				else delete Packet;
+			}break;
 		}
-		//AUTH_SENT_CHECK
 	}
 }
 

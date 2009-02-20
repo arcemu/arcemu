@@ -12,8 +12,6 @@
 
 #ifdef CONFIG_USE_IOCP
 
-#define GLOBAL_DEAD_SOCKET_CHECK 80000
-
 class Socket;
 class SERVER_DECL SocketMgr : public Singleton<SocketMgr>
 {
@@ -27,8 +25,6 @@ public:
 	void ShowStatus();
 	void AddSocket(Socket * s)
 	{
-		if ( s==NULL ) return;
-		if ( s->IsDeleted() ) return;
 		socketLock.Acquire();
 		_sockets.insert(s);
 		socketLock.Release();
@@ -36,59 +32,8 @@ public:
 
 	void RemoveSocket(Socket * s)
 	{
-		if ( s==NULL ) return;
-		if ( s->IsDeleted() ) return;
 		socketLock.Acquire();
 		_sockets.erase(s);
-		socketLock.Release();
-	}
-
-	void MakeSnapShot() // execute the global socket snapshot
-	{
-		set<Socket*>::iterator itr,itr2;
-		socketLock.Acquire();
-		if ( _sockets.size() ){
-			for(itr = _sockets.begin(); itr != _sockets.end();)
-			{
-				itr2 = itr;
-				++itr;
-				Socket *s = *itr2;
-				if ( s!=NULL && s->IsConnected() ){
-					if ( s->snapshot_read_bytes != s->total_read_bytes || s->snapshot_send_bytes != s->total_send_bytes ) // heartbeat with traffic
-					{
-						s->snapshot_read_bytes = s->total_read_bytes;
-						s->snapshot_send_bytes = s->total_send_bytes;
-						s->setLastheartbeat();
-					}
-				}
-			}
-		}
-		socketLock.Release();
-	}
-
-	void CheckDeadSocket_Internal() // kicked for no traffic connection
-	{
-		set<Socket*>::iterator itr,itr2;
-		uint32 t = getMSTime();
-		uint32 counter=0;
-		socketLock.Acquire();
-		if ( _sockets.size() ){
-			for(itr = _sockets.begin(); itr != _sockets.end();)
-			{
-				itr2 = itr;
-				++itr;
-				Socket *s = *itr2;
-				if ( s!=NULL && s->IsConnected() ){
-					if ( s->getLastheartbeat()+GLOBAL_DEAD_SOCKET_CHECK <= t )
-					{
-						s->Disconnect(); // remove socket to garbage queue.
-						counter++;
-					}
-				}
-			}
-			if ( counter )
-				Log.Notice("SocketMgr","Recover (%u) sockets into garbage due to no traffic.",counter);
-		}
 		socketLock.Release();
 	}
 
@@ -107,13 +52,7 @@ typedef void(*OperationHandler)(Socket * s, uint32 len);
 
 class SocketWorkerThread : public ThreadBase
 {
-	bool shutdown;
 public:
-	/*void OnShutdown()
-	{
-		shutdown = true;
-		Log.Notice("SocketWorkerThread","Detected the shutdown event from threadpool.");
-	}*/
 	bool run();
 };
 

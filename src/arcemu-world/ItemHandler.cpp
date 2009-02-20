@@ -809,7 +809,7 @@ void WorldSession::HandleItemQuerySingleOpcode( WorldPacket & recv_data )
 {
 	CHECK_PACKET_SIZE(recv_data, 4);
  
-	uint32 i;
+	int i;
 	uint32 itemid=0;
 	recv_data >> itemid;
 
@@ -894,20 +894,7 @@ void WorldSession::HandleItemQuerySingleOpcode( WorldPacket & recv_data )
 		data << itemProto->Spells[i].Category;
 		data << itemProto->Spells[i].CategoryCooldown;
 	}
-#ifdef _SELF_ITEM_QUERY_TEST_ // just test something correctly...
-	char *LearnSpellDesc = NULL;
-	if ( itemProto->Spells[1].Trigger == 6)
-	{
-		SpellEntry *LearnSpell = dbcSpell.LookupEntryForced( itemProto->Spells[1].Id );
-		if ( LearnSpell ) LearnSpellDesc = LearnSpell->Name;
-	}
-#endif
 	data << itemProto->Bonding;
-#ifdef _SELF_ITEM_QUERY_TEST_
-	if ( LearnSpellDesc )
-    data << string(string(LearnSpellDesc) + string(_SELF_ITEM_QUERY_TEST_)).c_str();
-  else //-
-#endif
 	if(li)
 		data << li->Description;
 	else

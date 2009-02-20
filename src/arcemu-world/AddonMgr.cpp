@@ -113,12 +113,6 @@ void AddonMgr::SendAddonInfoPacket(WorldPacket *source, uint32 pos, WorldSession
 	uint32 realsize;
 	uLongf rsize;
 
-	if (source==NULL || source->size() < 4)
-  {
-		sLog.outDebug("Warning: Incomplete auth session sent.");
-		return;
-	}
-	
 	try
 	{
 		*source >> realsize;
@@ -135,7 +129,7 @@ void AddonMgr::SendAddonInfoPacket(WorldPacket *source, uint32 pos, WorldSession
 	ByteBuffer unpacked;
 	unpacked.resize(realsize);
 
-	if((source->size() - position) < 4 || realsize == 0 || realsize > 0x2000)
+	if((source->size() - position) < 4 || realsize == 0)
 	{
 		// we shouldnt get here.. but just in case this will stop any crash here.
 		sLog.outDebug("Warning: Incomplete auth session sent.");

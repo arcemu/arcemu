@@ -128,8 +128,6 @@ void CBattlegroundManager::HandleBattlegroundJoin(WorldSession * m_session, Worl
 
 	pck >> guid >> bgtype >> instance;
 
-	if ( !guid )
-		return;
 
 	if(bgtype >= BATTLEGROUND_NUM_TYPES || !bgtype)
 	{

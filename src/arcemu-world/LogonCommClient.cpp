@@ -62,9 +62,6 @@ void LogonCommClientSocket::OnRead()
 				_recvCrypto.Process((uint8*)&remaining, (uint8*)&remaining, 4);
 			}
 
-			if ( opcode >=RMSG_COUNT ) // we haven't this opcode
-				return;
-
 #ifdef USING_BIG_ENDIAN
 			opcode = swap16(opcode);
 #else
@@ -126,7 +123,6 @@ void LogonCommClientSocket::HandlePacket(WorldPacket & recvData)
 	if(recvData.GetOpcode() >= RMSG_COUNT || Handlers[recvData.GetOpcode()] == 0)
 	{
 		printf("Got unknown packet from logoncomm: %u\n", recvData.GetOpcode());
-		Disconnect();
 		return;
 	}
 
@@ -153,21 +149,15 @@ void LogonCommClientSocket::HandleRegister(WorldPacket & recvData)
 void LogonCommClientSocket::HandleSessionInfo(WorldPacket & recvData)
 {
 	uint32 request_id;
-	if ( recvData.size() < 16+1 ) {
-		sLog.outString("SessionInfo::Request id has no integrated.");
-		return;
-	}
-
 	recvData >> request_id;
 
 	Mutex & m = sLogonCommHandler.GetPendingLock();
 	m.Acquire();
+
 	// find the socket with this request
 	WorldSocket * sock = sLogonCommHandler.GetSocketByRequest(request_id);
-
-	if( sock == 0 || sock->Authed || sock->IsDeleted() || sock->GetRequestID()!=request_id )	   // Expired/Client disconnected
+	if(sock == 0 || sock->Authed || !sock->IsConnected())	   // Expired/Client disconnected
 	{
-		sLog.outString("SessionInfo::Worldsock expired!");
 		m.Release();
 		return;
 	}
@@ -198,6 +188,8 @@ void LogonCommClientSocket::SendPacket(WorldPacket * data, bool no_crypto)
 {
 	logonpacket header;
 	bool rv;
+	if(!m_connected || m_deleted)
+		return;
 
 	BurstBegin();
 
@@ -254,8 +246,7 @@ void LogonCommClientSocket::SendChallenge()
 
 	WorldPacket data(RCMSG_AUTH_CHALLENGE, 20);
 	data.append(key, 20);
-	SendPacket(&data,true);
-	Log.Notice("LogonCommClient","Challenge packet sending...");
+	SendPacket(&data, true);
 }
 
 void LogonCommClientSocket::HandleAuthResponse(WorldPacket & recvData)
@@ -270,7 +261,6 @@ void LogonCommClientSocket::HandleAuthResponse(WorldPacket & recvData)
 	{
 		authenticated = 1;
 	}
-	Log.Notice("LogonCommClient","Got responsed flag from Logonserver [0x%x]\n",authenticated);
 }
 
 void LogonCommClientSocket::UpdateAccountCount(uint32 account_id, uint8 add)

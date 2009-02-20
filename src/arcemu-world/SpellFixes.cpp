@@ -6908,7 +6908,7 @@ void ApplyNormalFixes()
 		}
 
 
-		//Bandage cebernic: dueto dbc case
+		//Bandage
 		sp = dbcSpell.LookupEntryForced( 11196 );
 		if( sp != NULL )
 			sp->c_is_flags = SPELL_FLAG_IS_FORCEDDEBUFF;

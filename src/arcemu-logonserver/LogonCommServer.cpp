@@ -37,15 +37,11 @@ LogonCommServerSocket::LogonCommServerSocket(SOCKET fd) : Socket(fd, 65536, 5242
 
 	use_crypto = false;
 	authenticated = 0;
-	server_id = 0;
 }
 
 LogonCommServerSocket::~LogonCommServerSocket()
 {
-	server_id = 0;
-	authenticated = 0;
-	remaining = opcode = 0;
-	removed = true;
+
 }
 
 void LogonCommServerSocket::OnDisconnect()
@@ -53,7 +49,11 @@ void LogonCommServerSocket::OnDisconnect()
 	// if we're registered -> Set offline
 	if(!removed)
 	{
-		sInfoCore.UpdateRealmStatus(server_id, 2);
+		set<uint32>::iterator itr = server_ids.begin();
+		for(; itr != server_ids.end(); ++itr)
+			//sInfoCore.RemoveRealm((*itr));
+			sInfoCore.UpdateRealmStatus((*itr), 2);
+
 		sInfoCore.RemoveServerSocket(this);
 	}
 }
@@ -158,7 +158,6 @@ void LogonCommServerSocket::HandlePacket(WorldPacket & recvData)
 	if(recvData.GetOpcode() >= RMSG_COUNT || Handlers[recvData.GetOpcode()] == 0)
 	{
 		printf("Got unknwon packet from logoncomm: %u\n", recvData.GetOpcode());
-		Disconnect();
 		return;
 	}
 
@@ -176,24 +175,13 @@ void LogonCommServerSocket::HandleRegister(WorldPacket & recvData)
 	if (my_id == -1)
 	{
 		my_id = sInfoCore.GenerateRealmID();
-#ifdef WIN32
-		if ( _IsStringUTF8(Name.c_str()) )
-			sLog.outString("Registering realm `%s`(UNICODE) under ID %u.", _StringToANSI(Name.c_str()), my_id);
-		else
-#endif
-			sLog.outString("Registering realm `%s` under ID %u.",Name.c_str(), my_id);
+		sLog.outString("Registering realm `%s` under ID %u.", Name.c_str(), my_id);
 	}
 	else 
 	{
 		sInfoCore.RemoveRealm(my_id);
 		int new_my_id = sInfoCore.GenerateRealmID(); //socket timout will DC old id after a while, make sure it's not the one we restarted
-#ifdef WIN32
-		if ( _IsStringUTF8(Name.c_str()) )
-			sLog.outString("Updating realm `%s`(UNICODE) with ID %u to new ID %u.", _StringToANSI(Name.c_str()), my_id, new_my_id );
-		else
-#endif			
-			sLog.outString("Updating realm `%s` with ID %u to new ID %u.", Name.c_str(), my_id, new_my_id );
-						
+		sLog.outString("Updating realm `%s` with ID %u to new ID %u.", Name.c_str(), my_id, new_my_id );
 		my_id = new_my_id;
 	}
 
@@ -217,8 +205,7 @@ void LogonCommServerSocket::HandleRegister(WorldPacket & recvData)
 	data << my_id;		  // Realm ID
 	data << realm->Name;
 	SendPacket(&data);
-
-	server_id = my_id; // cebernic: assigned
+	server_ids.insert(my_id);
 
 	/* request character mapping for this realm */
 	data.Initialize(RSMSG_REQUEST_ACCOUNT_CHARACTER_MAPPING);
@@ -320,9 +307,6 @@ void LogonCommServerSocket::HandleAuthChallenge(WorldPacket & recvData)
 {
 	unsigned char key[20];
 	uint32 result = 1;
-	
-	if (recvData.size() < 20) return; // cebernic:hack?
-
 	recvData.read(key, 20);
 
 	// check if we have the correct password
@@ -560,8 +544,15 @@ void LogonCommServerSocket::HandlePopulationRespond(WorldPacket & recvData)
 
 void LogonCommServerSocket::RefreshRealmsPop()
 {
+	if(server_ids.empty())
+		return;
+
 	WorldPacket data(RSMSG_REALM_POP_REQ, 4);
-	data.clear();
-	data << server_id;
-	SendPacket(&data);	
+	set<uint32>::iterator itr = server_ids.begin();
+	for( ; itr != server_ids.end() ; itr++ )
+	{
+		data.clear();
+		data << (*itr);
+		SendPacket(&data);
+	}
 }

@@ -38,7 +38,6 @@ void WowCrypt::DecryptRecv(uint8 *data, size_t len)
 	if (len < CRYPTED_RECV_LEN) return;
 	uint8 x;
 
-	if ( _key.size()==0 ) return;
 	for (size_t t = 0; t < CRYPTED_RECV_LEN; t++) {
 		_recv_i %= _key.size();
 		x = (data[t] - _recv_j) ^ _key[_recv_i];
@@ -102,7 +101,6 @@ void WowCrypt::EncryptSend(uint8 *data, size_t len)
 	if (!_initialized) return;
 	if (len < CRYPTED_SEND_LEN) return;
 
-	if ( _key.size()==0 ) return;
 	for (size_t t = 0; t < CRYPTED_SEND_LEN; t++) {
 		_send_i %= _key.size();
 		data[t] = _send_j = (data[t] ^ _key[_send_i]) + _send_j;
@@ -115,8 +113,6 @@ void WowCrypt::EncryptFourSend(uint8 * data)
     if (!_initialized) return;
 
     uint8 KeySize = (uint8)_key.size();
-
-		if ( KeySize ==0 ) return;
 
     _send_i %= KeySize;
     data[0] = _send_j = (data[0] ^ _key[_send_i]) + _send_j;

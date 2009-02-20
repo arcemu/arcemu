@@ -442,8 +442,13 @@ void InformationCore::RemoveRealm(uint32 realm_id)
 
 void InformationCore::UpdateRealmStatus(uint32 realm_id, uint8 Color)
 {
-	Realm* rl = GetRealm(realm_id);
-	if ( rl ) rl->Colour = Color;
+	realmLock.Acquire();
+	map<uint32, Realm*>::iterator itr = m_realms.find(realm_id);
+	if(itr != m_realms.end())
+	{
+		itr->second->Colour = Color;
+	}
+	realmLock.Release();
 }
 
 void InformationCore::UpdateRealmPop(uint32 realm_id, float pop)
@@ -469,8 +474,6 @@ void InformationCore::UpdateRealmPop(uint32 realm_id, float pop)
 }
 void InformationCore::SendRealms(AuthSocket * Socket)
 {
-	if ( Socket==NULL || ( Socket && Socket->removedFromSet) ) return;
-
 	realmLock.Acquire();
 
 	// packet header
@@ -481,6 +484,7 @@ void InformationCore::SendRealms(AuthSocket * Socket)
 	// dunno what this is..
 	data << uint32(0);
 
+	//sAuthLogonChallenge_C * client = Socket->GetChallenge();
 	data << uint16(m_realms.size());
 	
 	// loop realms :/
@@ -488,7 +492,6 @@ void InformationCore::SendRealms(AuthSocket * Socket)
 	HM_NAMESPACE::hash_map<uint32, uint8>::iterator it;
 	for(; itr != m_realms.end(); ++itr)
 	{
-
 //		data << uint8(itr->second->Icon);
 //		data << uint8(0);				   // Locked Flag
 //		data << uint8(itr->second->Colour);		
@@ -530,15 +533,12 @@ void InformationCore::SendRealms(AuthSocket * Socket)
 	// this is kinda bad, it's like Arp Arp Arp
 	set<LogonCommServerSocket*>::iterator itr1;
 	for(itr1 = m_serverSockets.begin(); itr1 != m_serverSockets.end(); ++itr1)
-		if ( (*itr1) && (*itr1)->IsConnected() ) (*itr1)->RefreshRealmsPop();
+		(*itr1)->RefreshRealmsPop();
 }
 
 void InformationCore::TimeoutSockets()
 {
 	if(!usepings)
-		return;
-
-	if( m_serverSockets.empty() )
 		return;
 
 	/* burlex: this is vulnerable to race conditions, adding a mutex to it. */
@@ -553,18 +553,20 @@ void InformationCore::TimeoutSockets()
 		s = *itr;
 		it2 = itr;
 		++itr;
-		if ( s == NULL ) continue;
-		if( !s->removed && s->last_ping < t && ((t - s->last_ping) > 60 ) )
+
+		if(s->last_ping < t && ((t - s->last_ping) > 300))
 		{
 			// ping timeout
 			printf("Closing socket due to ping timeout.\n");
-			UpdateRealmStatus(s->server_id, 2);
 			s->removed = true;
+			set<uint32>::iterator itr = s->server_ids.begin();
+			for(; itr != s->server_ids.end(); ++itr)
+//				RemoveRealm(*itr);
+				UpdateRealmStatus((*itr), 2);
 			m_serverSockets.erase(it2);
+
 			s->Disconnect();
 		}
-		//else s->RefreshRealmsPop();
-
 	}
 
 	serverSocketLock.Release();
@@ -581,12 +583,11 @@ void InformationCore::CheckServers()
 		s = *itr;
 		it2 = itr;
 		++itr;
-		if (!s) continue;
+
 		if(!IsServerAllowed(s->GetRemoteAddress().s_addr))
 		{
 			printf("Disconnecting socket: %s due to it no longer being on an allowed IP.\n", s->GetRemoteIP().c_str());
-			m_serverSockets.erase(it2);
-			if (s && s->IsConnected() ) s->Disconnect();
+			s->Disconnect();
 		}
 	}
 

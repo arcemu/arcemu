@@ -248,8 +248,6 @@ void AiAgentHealSupport::Update(uint32 p_time)
 	_UpdateTimer(p_time);
 	_UpdateMovement(p_time);
 
-	if ( !m_Unit->GetMapMgr() ) return; //cebenic:OOps
-		
 	if( !m_PetOwner )
 		return; //oh noez, our master has abandoned us ! Where is te luv ?
 

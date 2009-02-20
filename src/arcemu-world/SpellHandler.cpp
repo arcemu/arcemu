@@ -480,7 +480,7 @@ void WorldSession::HandlePetCastSpell(WorldPacket & recvPacket)
 	else			// trinket?
 	{
 		Unit *nc = _player->GetMapMgr()->GetUnit( _player->m_CurrentCharm );
-		if( nc && nc->GetAIInterface() )
+		if( nc )
 		{
 			bool check = false;
 			for(list<AI_Spell*>::iterator itr = nc->GetAIInterface()->m_spells.begin(); itr != nc->GetAIInterface()->m_spells.end(); ++itr)//.......meh. this is a crappy way of doing this, i bet.

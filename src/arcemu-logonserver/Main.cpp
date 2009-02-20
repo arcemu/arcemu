@@ -81,30 +81,12 @@ int main(int argc, char** argv)
 		if (setrlimit(RLIMIT_CORE, &rl) == -1)
 			printf("setrlimit failed. Server may not save core.dump files.\n");
 	}
-#else
-	SetThreadName( "arcemuLogonServerThread" );
-	StartCrashHandler();
-
-int nError = false;
-	HANDLE hHeap = GetProcessHeap();
-	HeapLock(hHeap);
-	unsigned long arg=2;
-	if ( !HeapSetInformation(GetProcessHeap(), HeapCompatibilityInformation, &arg, sizeof(arg)) ){
-		nError = true;
-	}
-
-	HeapUnlock(hHeap);
-
-	if ( nError ) {
-		printf("LFH not supported on this system!...ignored....\n");
-		Sleep(500);
-	}
 #endif
-#define sLogonServer LogonServer::getSingleton()
 
 	new LogonServer;
-		// Run!
-	sLogonServer.Run(argc, argv);
+
+	// Run!
+	LogonServer::getSingleton( ).Run(argc, argv);
 	delete LogonServer::getSingletonPtr();
 }
 
@@ -335,15 +317,36 @@ void LogonServer::Run(int argc, char ** argv)
 	printf("MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n");
 	printf("GNU Affero General Public License for more details.\n");
 	printf("                                                \n");
-	printf("\x20\x20\x20\x20\x3a\x3a\x3a\x20\x20\x20\x20\x20\x3a\x3a\x3a\x3a\x3a\x3a\x3a\x3a\x3a\x20\x20\x20\x3a\x3a\x3a\x3a\x3a\x3a\x3a\x3a\x20\x20\x3a\x3a\x3a\x3a\x3a\x3a\x3a\x3a\x3a\x3a\x20\x3a\x3a\x3a\x3a\x20\x20\x20\x20\x3a\x3a\x3a\x3a\x20\x20\x3a\x3a\x3a\x20\x20\x20\x20\x3a\x3a\x3a\x20\xd\xa\x20\x20\x3a\x2b\x3a\x20\x3a\x2b\x3a\x20\x20\x20\x3a\x2b\x3a\x20\x20\x20\x20\x3a\x2b\x3a\x20\x3a\x2b\x3a\x20\x20\x20\x20\x3a\x2b\x3a\x20\x3a\x2b\x3a\x20\x20\x20\x20\x20\x20\x20\x20\x2b\x3a\x2b\x3a\x2b\x3a\x20\x3a\x2b\x3a\x2b\x3a\x2b\x20\x3a\x2b\x3a\x20\x20\x20\x20\x3a\x2b\x3a\x20\xd\xa\x20\x2b\x3a\x2b\x20\x20\x20\x2b\x3a\x2b\x20\x20\x2b\x3a\x2b\x20\x20\x20\x20\x2b\x3a\x2b\x20\x2b\x3a\x2b\x20\x20\x20\x20\x20\x20\x20\x20\x2b\x3a\x2b\x20\x20\x20\x20\x20\x20\x20\x20\x2b\x3a\x2b\x20\x2b\x3a\x2b\x3a\x2b\x20\x2b\x3a\x2b\x20\x2b\x3a\x2b\x20\x20\x20\x20\x2b\x3a\x2b\x20\xd\xa\x2b\x23\x2b\x2b\x3a\x2b\x2b\x23\x2b\x2b\x3a\x20\x2b\x23\x2b\x2b\x3a\x2b\x2b\x23\x3a\x20\x20\x2b\x23\x2b\x20\x20\x20\x20\x20\x20\x20\x20\x2b\x23\x2b\x2b\x3a\x2b\x2b\x23\x20\x20\x20\x2b\x23\x2b\x20\x20\x2b\x3a\x2b\x20\x20\x2b\x23\x2b\x20\x2b\x23\x2b\x20\x20\x20\x20\x2b\x3a\x2b\x20\xd\xa\x2b\x23\x2b\x20\x20\x20\x20\x20\x2b\x23\x2b\x20\x2b\x23\x2b\x20\x20\x20\x20\x2b\x23\x2b\x20\x2b\x23\x2b\x20\x20\x20\x20\x20\x20\x20\x20\x2b\x23\x2b\x20\x20\x20\x20\x20\x20\x20\x20\x2b\x23\x2b\x20\x20\x20\x20\x20\x20\x20\x2b\x23\x2b\x20\x2b\x23\x2b\x20\x20\x20\x20\x2b\x23\x2b\x20\xd\xa\x23\x2b\x23\x20\x20\x20\x20\x20\x23\x2b\x23\x20\x23\x2b\x23\x20\x20\x20\x20\x23\x2b\x23\x20\x23\x2b\x23\x20\x20\x20\x20\x23\x2b\x23\x20\x23\x2b\x23\x20\x20\x20\x20\x20\x20\x20\x20\x23\x2b\x23\x20\x20\x20\x20\x20\x20\x20\x23\x2b\x23\x20\x23\x2b\x23\x20\x20\x20\x20\x23\x2b\x23\x20\xd\xa\x23\x23\x23\x20\x20\x20\x20\x20\x23\x23\x23\x20\x23\x23\x23\x20\x20\x20\x20\x23\x23\x23\x20\x20\x23\x23\x23\x23\x23\x23\x23\x23\x20\x20\x23\x23\x23\x23\x23\x23\x23\x23\x23\x23\x20\x23\x23\x23\x20\x20\x20\x20\x20\x20\x20\x23\x23\x23\x20\x20\x23\x23\x23\x23\x23\x23\x23\x23\x20\x20");
-	printf("                                                \n");
+	printf("                     ``````                     \n");
+	printf("    ArcEmu!        `/o/::-:/-                   \n"); 
+	printf("                   oho/-.-:yN-                  \n"); 
+	printf("                    os+/-.:::                   \n"); 
+	printf("                    :ysyoo+:`                   \n"); 
+	printf("					`ohdys/.                    \n"); 
+	printf("                     oyho/-`   ``               \n"); 
+	printf("                   `shyo+:./ssmdsyo:`           \n"); 
+	printf("                    .shss+:yNMMNNMNmms.         \n"); 
+	printf("                    :ysss+:mNMMMMNNmmds.        \n"); 
+	printf("                `-//sssoo/:NMNMMMNMNNdy-        \n"); 
+	printf("    -`/`       `omhyyhyyyshNMMNNNMMMNmy:        \n"); 
+	printf("    :/::-`     `sdmdmmNMNMMMMMMNMNNNNms-        \n"); 
+	printf("     /+++/-.....shdmmNMMNMMMMMMMMMNNNd+         \n");
+	printf("     ./+oshyhhhddmhdmNMMMMMMMMMMMMNNds.         \n"); 
+	printf("       `:/:.`````.:+ymmNMMNMMMNMMNNd/           \n"); 
+	printf("                     -+shmNNMMMNmhy/            \n"); 
+	printf("                          `..-ods:.             \n");
+	printf("                               o:.`             \n");
+	printf("                               :-.              \n");
+	printf("                              `/-...            \n"); 
+	printf("    Introducing the emu!     --``-/:`           \n"); 
+	printf("                           .:/+:-.-::.          \n"); 
+	printf("                          `.-///:-.`            \n");
 	printf(" Website: http://www.ArcEmu.org	     			\n");
 	printf(" Forums: http://www.ArcEmu.org/forums/          \n");
 	printf(" Credits: http://www.ArcEmu.org/credits         \n");
 	printf(" SVN: http://arcemu.info/svn/                   \n");
 	printf(" Have fun!                                      \n");
 	Log.Line();
-	Sleep(1000);
 #ifdef REPACK
 	sLog.outString("Repack: %s | Author: %s | %s\n", REPACK, REPACK_AUTHOR, REPACK_WEBSITE);
 #endif
@@ -359,11 +362,12 @@ void LogonServer::Run(int argc, char ** argv)
 			printf("  Passed without errors.\n");
 		else
 			printf("  Encountered one or more errors.\n");
-		/* test for die variables */
+		/* Remved useless die directive */
+		/*
 		string die;
 		if(Config.MainConfig.GetString("die", "msg", &die) || Config.MainConfig.GetString("die2", "msg", &die))
 			printf("Die directive received: %s", die.c_str());
-
+		*/
 		return;
 	}
 	
@@ -420,10 +424,9 @@ void LogonServer::Run(int argc, char ** argv)
 	ThreadPool.ExecuteTask(new LogonConsoleThread);
 
 	new SocketMgr;
-
 	new SocketGarbageCollector;
-	sSocketGarbageCollector.Startup();
 	sSocketMgr.SpawnWorkerThreads();
+
 	ListenSocket<AuthSocket> * cl = new ListenSocket<AuthSocket>(host.c_str(), cport);
 	ListenSocket<LogonCommServerSocket> * sl = new ListenSocket<LogonCommServerSocket>(shost.c_str(), sport);
 
@@ -432,22 +435,11 @@ void LogonServer::Run(int argc, char ** argv)
 	bool authsockcreated = cl->IsOpen();
 	bool intersockcreated = sl->IsOpen();
 #ifdef WIN32
-
-	Sleep(50);
-	if(authsockcreated){
+	if(authsockcreated)
 		ThreadPool.ExecuteTask(cl);
-		Log.Success("Main","Auth listen socket created.");
-	}
-
-	Sleep(50);
-	if(intersockcreated){
+	if(intersockcreated)
 		ThreadPool.ExecuteTask(sl);
-		Log.Success("Main","CommServer listen socket created.");
-	}
-
-	Sleep(50);
 #endif
-
 	// hook signals
 	sLog.outString("Hooking signals...");
 	signal(SIGINT, _OnSignal);
@@ -472,31 +464,28 @@ void LogonServer::Run(int argc, char ** argv)
 		fprintf(fPid, "%u", (unsigned int)pid);
 		fclose(fPid);
 	}
-
 	uint32 loop_counter = 0;
 	//ThreadPool.Gobble();
-	sLog.outString("LogonServer ready for connections...");
-
+	sLog.outString("Success! Ready for connections");
 	while(mrunning && authsockcreated && intersockcreated)
 	{
-			UNIXTIME = time(NULL);
-			g_localTime = *localtime(&UNIXTIME);
+		if(!(++loop_counter % 400))	 // 20 seconds
+			CheckForDeadSockets();
 
-			Sleep(1000);
-			++loop_counter;
-
-
-		if(!(loop_counter%300))	// 5mins
+		if(!(loop_counter%10000))	// 5mins
 			ThreadPool.IntegrityCheck();
 
-		if(!(loop_counter%10)) // 5 seconds
+		if(!(loop_counter%10))
 		{
 			sInfoCore.TimeoutSockets();
-			CheckForDeadSockets();
+			sSocketGarbageCollector.Update();
+			CheckForDeadSockets();			  // Flood Protection
+			UNIXTIME = time(NULL);
+			g_localTime = *localtime(&UNIXTIME);
 		}
 
 		PatchMgr::getSingleton().UpdateJobs();
-		if ( loop_counter > 18000 ) loop_counter = 0; // never be unlimited counter
+		Sleep(10);
 	}
 
 	sLog.outString("Shutting down...");
@@ -510,16 +499,13 @@ void LogonServer::Run(int argc, char ** argv)
 #endif
 
 	pfc->kill();
+
 	cl->Close();
 	sl->Close();
-
+	sSocketMgr.CloseAll();
 #ifdef WIN32
 	sSocketMgr.ShutdownThreads();
 #endif
-
-	sSocketGarbageCollector.Shutdown();
-	sSocketMgr.CloseAll();
-
 	sLogonConsole.Kill();
 	delete LogonConsole::getSingletonPtr();
 
@@ -529,16 +515,10 @@ void LogonServer::Run(int argc, char ** argv)
 	sLogonSQL->Shutdown();
 	delete sLogonSQL;
 
+	ThreadPool.Shutdown();
 
 	// delete pid file
 	remove("logonserver.pid");
-
-	delete pfc;
-
-	// cebernic: don't delete listensocket,threadpool did.
-	//delete cl;
-	//delete sl;
-	ThreadPool.Shutdown();
 
 	delete AccountMgr::getSingletonPtr();
 	delete InformationCore::getSingletonPtr();
@@ -546,43 +526,16 @@ void LogonServer::Run(int argc, char ** argv)
 	delete IPBanner::getSingletonPtr();
 	delete SocketMgr::getSingletonPtr();
 	delete SocketGarbageCollector::getSingletonPtr();
-	
+	delete pfc;
+	delete cl;
+	delete sl;
 	printf("Shutdown complete.\n");
-	Sleep(1000);
 }
 
-#ifdef WIN32
-
-Mutex m_crashedMutex;
-
-// Crash Handler
-void OnCrash( bool Terminate )
+void OnCrash(bool Terminate)
 {
-		Log.Error( "Crash Handler","Advanced crash handler initialized." );
 
-	if( !m_crashedMutex.AttemptAcquire() )
-		TerminateThread( GetCurrentThread(), 0 );
-
-	try
-	{
-		Log.Notice( "Crash Handler","nothing to do." );
-	}
-	catch(...)
-	{
-		Log.Error( "Crash Handler","catching." );
-	}
-
-	Log.Notice( "Server","Closing." );
-	
-	if( Terminate )
-	{
-		HANDLE pH = OpenProcess( PROCESS_TERMINATE, TRUE, GetCurrentProcessId() );
-		TerminateProcess( pH, 1 );
-		CloseHandle( pH );
-	}
 }
-
-#endif
 
 void LogonServer::CheckForDeadSockets()
 {
@@ -598,13 +551,13 @@ void LogonServer::CheckForDeadSockets()
 		it2 = itr;
 		s = (*it2);
 		++itr;
-		if ( !s ) continue;
+
 		diff = t - s->GetLastRecv();
 		if(diff > 300)		   // More than 5mins
 		{
 			_authSockets.erase(it2);
 			s->removedFromSet = true;
-			if (s ) s->Delete();
+			s->Disconnect();
 		}
 	}
 	_authSocketLock.Release();

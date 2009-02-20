@@ -14,12 +14,9 @@
 
 #include "../Threading/ThreadPool.h"
 
-#define MAX_CONNECTOR_ON_LISTENSOCKET 2000
-
 template<class T>
 class SERVER_DECL ListenSocket : public ThreadBase
 {
-	bool closed;
 public:
 	ListenSocket(const char * ListenAddress, uint32 Port)
 	{
@@ -44,14 +41,14 @@ public:
 		int ret = bind(m_socket, (const sockaddr*)&m_address, sizeof(m_address));
 		if(ret != 0)
 		{
-			printf("Bind unsuccessful on port %u.\n", Port);
+			printf("Bind unsuccessful on port %u.", Port);
 			return;
 		}
 
 		ret = listen(m_socket, 5);
 		if(ret != 0) 
 		{
-			printf("Unable to listen on port %u.\n", Port);
+			printf("Unable to listen on port %u.", Port);
 			return;
 		}
 
@@ -62,37 +59,30 @@ public:
 
 	~ListenSocket()
 	{
-		if ( !closed ) Close();
+		Close();	
 	}
 
 	bool run()
 	{
-		closed = false;
 		while(m_opened)
 		{
-			Sleep(0);
-
-			// cebernic: this was temporary.
-			// to be a fast way to comparing hashmap with ip storaging from GarbageCollector (but ipfaker?).
-			// in that way,new incoming connection request will be dropped for huge connections from bot.
-			// with flooding ur port by bot,i think CC firewall required currently:P
-			// In Linux,firewall was bulit into the core.
-			if(sSocketGarbageCollector.GetSocketSize() > MAX_CONNECTOR_ON_LISTENSOCKET) 
-				continue;
-
-			aSocket = accept(m_socket, (sockaddr*)&m_tempAddress, (socklen_t*)&len);
-			if(aSocket == INVALID_SOCKET){
-				//for reuse
-				//SocketOps::CloseSocket(aSocket);
+			//aSocket = accept(m_socket, (sockaddr*)&m_tempAddress, (socklen_t*)&len);
+			aSocket = WSAAccept(m_socket, (sockaddr*)&m_tempAddress, (socklen_t*)&len, NULL, NULL);
+			if(aSocket == INVALID_SOCKET)
 				continue;		// shouldn't happen, we are blocking.
-			}
 
 			socket = new T(aSocket);
 			socket->SetCompletionPort(m_cp);
 			socket->Accept(&m_tempAddress);
 		}
-		closed = true;
-		return true;
+		return false;
+		/*aSocket = WSAAccept(m_socket, (sockaddr*)&m_tempAddress, (socklen_t*)&len, NULL, NULL);
+		if(aSocket == INVALID_SOCKET)
+			return;
+
+		socket = new T(aSocket);
+		socket->SetCompletionPort(m_cp);
+		socket->Accept(&m_tempAddress);*/
 	}
 
 	void Close()
@@ -100,15 +90,9 @@ public:
 		// prevent a race condition here.
 		bool mo = m_opened;
 		m_opened = false;
+
 		if(mo)
 			SocketOps::CloseSocket(m_socket);
-
-		while ( !closed )
-		{
-			printf("An listen socket closing...\n");
-			Sleep(500);
-		}
-		printf("Ok! Listen socket closed.\n");
 	}
 
 	ARCEMU_INLINE bool IsOpen() { return m_opened; }

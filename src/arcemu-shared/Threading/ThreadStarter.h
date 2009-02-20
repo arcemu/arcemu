@@ -23,21 +23,15 @@
 class SERVER_DECL ThreadBase
 {
 public:
-	ThreadBase() { m_threadRunning = true; }
+	ThreadBase() {}
 	virtual ~ThreadBase() {}
 	virtual bool run() = 0;
-
+	virtual void OnShutdown() {}
 #ifdef WIN32
 	HANDLE THREAD_HANDLE;
 #else
 	pthread_t THREAD_HANDLE;
 #endif
-
-	ARCEMU_INLINE void Terminate() { m_threadRunning = false; }
-	virtual void OnShutdown() { Terminate(); }
-
-protected:
-	bool m_threadRunning;
 };
 
 #endif
