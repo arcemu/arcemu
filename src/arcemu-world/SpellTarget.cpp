@@ -348,6 +348,11 @@ void Spell::SpellTargetSingleTargetEnemy(uint32 i, uint32 j)
 	if(!pTarget)
 		return;
 
+	if(p_caster && p_caster == pTarget) // spell bug: target is supposed to be a single enemy, not self
+	{
+		pTarget = p_caster->GetMapMgr()->GetUnit(p_caster->GetSelection());
+	}
+
 	TargetsList* tmpMap=&m_targetUnits[i];
 	if(m_spellInfo->TargetCreatureType && pTarget->GetTypeId()==TYPEID_UNIT)
 	{		
