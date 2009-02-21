@@ -363,6 +363,7 @@ protected:
 	void HandleSetSheathedOpcode(WorldPacket & recv_data);
 	void HandleCompleteCinematic(WorldPacket & recv_data);
 	void HandleInspectOpcode( WorldPacket & recv_data );
+	void HandleGameobjReportUseOpCode( WorldPacket& recv_data ); // CMSG_GAMEOBJ_REPORT_USE
 
 	/// Gm Ticket System in GMTicket.cpp:
 	void HandleGMTicketCreateOpcode(WorldPacket& recvPacket);

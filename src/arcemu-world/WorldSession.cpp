@@ -902,6 +902,7 @@ void WorldSession::InitPacketHandlerTable()
 	WorldPacketHandlers[CMSG_TOGGLE_HELM].handler							   = &WorldSession::HandleToggleHelmOpcode;
 	WorldPacketHandlers[CMSG_SET_TITLE].handler							= &WorldSession::HandleSetVisibleRankOpcode;
 	WorldPacketHandlers[CMSG_COMMENTATOR_GET_PLAYER_INFO].handler								= &WorldSession::HandleReportSpamOpcode;
+	WorldPacketHandlers[CMSG_GAMEOBJ_REPORT_USE].handler = &WorldSession::HandleGameobjReportUseOpCode;
 
 	WorldPacketHandlers[CMSG_PET_CAST_SPELL].handler				= &WorldSession::HandlePetCastSpell;
 

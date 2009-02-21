@@ -2422,3 +2422,16 @@ void WorldSession::HandleRemoveGlyph(WorldPacket & recv_data)
 	_player->SetUInt32Value(PLAYER_FIELD_GLYPHS_1 + glyphNum, 0);
 	_player->RemoveAllAuras(glyph->SpellID, 0);
 }
+
+void WorldSession::HandleGameobjReportUseOpCode( WorldPacket& recv_data )   // CMSG_GAMEOBJ_REPORT_USE
+{
+	CHECK_INWORLD_RETURN;
+	uint64 guid;
+	recv_data >> guid;
+	GameObject* gameobj = _player->GetMapMgr()->GetGameObject((uint32)guid);
+	if(gameobj==NULL)
+		return;
+	sQuestMgr.OnGameObjectActivate(_player, gameobj);
+	_player->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_USE_GAMEOBJECT,gameobj->GetEntry(),0,0);
+	return;
+}

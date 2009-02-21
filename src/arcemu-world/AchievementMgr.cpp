@@ -44,6 +44,7 @@
 	- ACHIEVEMENT_CRITERIA_TYPE_KILL_CREATURE (some)
 	- ACHIEVEMENT_CRITERIA_TYPE_KILL_CREATURE_TYPE
 	- ACHIEVEMENT_CRITERIA_TYPE_USE_ITEM
+	- ACHIEVEMENT_CRITERIA_TYPE_USE_GAMEOBJECT
 	- Realm-First achievements (most)
 	- Reward Titles
 	- Reward Spells
@@ -959,6 +960,10 @@ void AchievementMgr::UpdateAchievementCriteria(AchievementCriteriaTypes type, in
 					}
 				}
 				break;
+			case ACHIEVEMENT_CRITERIA_TYPE_USE_GAMEOBJECT:
+				if(achievementCriteria->use_gameobject.goEntry == miscvalue1)
+					UpdateCriteriaProgress(achievementCriteria, 1);
+				break;
 			//End of Achievement List
 			default:
 				return;
@@ -1200,6 +1205,8 @@ bool AchievementMgr::IsCompletedCriteria(AchievementCriteriaEntry const* achieve
 			return progresscounter >= 1;
 		case ACHIEVEMENT_CRITERIA_TYPE_USE_ITEM:
 			return progresscounter >= achievementCriteria->use_item.itemCount;
+		case ACHIEVEMENT_CRITERIA_TYPE_USE_GAMEOBJECT:
+			return progresscounter >= achievementCriteria->use_gameobject.useCount;
 		case ACHIEVEMENT_CRITERIA_TYPE_COMPLETE_ACHIEVEMENT:
 			return m_completedAchievements.find(achievementCriteria->complete_achievement.linkedAchievement) != m_completedAchievements.end();
 		//End of Achievement List
