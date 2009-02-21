@@ -430,8 +430,8 @@ protected:
 	void _UpdateTargets();
 	void _UpdateMovement(uint32 p_time);
 	void _UpdateTimer(uint32 p_time);
-	int m_updateAssist;
-	int m_updateTargets;
+	bool m_updateAssist;
+	bool m_updateTargets;
 	uint32 m_updateAssistTimer;
 	uint32 m_updateTargetsTimer;
 	uint32 m_updateTargetsTimer2;
