@@ -1387,22 +1387,6 @@ void ApplyNormalFixes()
 
 		// Insert rogue spell fixes here
 
-		// Waylay talent rank 1
-		sp = dbcSpell.LookupEntryForced(51692);
-		if(sp != NULL)
-		{
-			sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
-			sp->EffectTriggerSpell[0]=51693;// Waylay debuff
-			sp->procChance = 50;
-		}
-		//Waylay talent rank 2
-		sp = dbcSpell.LookupEntryForced(51696);
-		if(sp != NULL)
-		{
-			sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
-			sp->EffectTriggerSpell[0]=51693;// Waylay debuff
-			sp->procChance = 100;
-		}
 		//////////////////////////////////////////
 		// PRIEST								//
 		//////////////////////////////////////////
@@ -1453,36 +1437,12 @@ void ApplyNormalFixes()
 		// MAGE									//
 		//////////////////////////////////////////
 
-		// Brain Freeze rank 1
-		sp = dbcSpell.LookupEntryForced( 44546 );
-		if(sp != NULL)
-			sp->EffectApplyAuraName[0] = SPELL_AURA_DUMMY;
-
-		// Brain Freeze rank 2
-		sp = dbcSpell.LookupEntryForced( 44548 );
-		if(sp != NULL)
-			sp->EffectApplyAuraName[0] = SPELL_AURA_DUMMY;
-
-		// Brain Freeze rank 3
-		sp = dbcSpell.LookupEntryForced( 44549 );
-		if(sp != NULL)
-			sp->EffectApplyAuraName[0] = SPELL_AURA_DUMMY;
-
-		// Fingers of Frost rank 1
-		sp = dbcSpell.LookupEntryForced( 44543 );
-		if(sp != NULL)
-			sp->EffectApplyAuraName[0] = SPELL_AURA_DUMMY;
-		
-
-		// Fingers of Frost rank 2
-		sp = dbcSpell.LookupEntryForced( 44545 );
-		if(sp != NULL)
-			sp->EffectApplyAuraName[0] = SPELL_AURA_DUMMY;
 
 		//////////////////////////////////////////
 		// WARLOCK								//
 		//////////////////////////////////////////
-
+		if(sp->NameHash == SPELL_HASH_BLOOD_PACT)
+			sp->Effect[0] = SPELL_EFFECT_APPLY_AREA_AURA;
 
 		//////////////////////////////////////////
 		// DRUID								//
@@ -3205,6 +3165,23 @@ void ApplyNormalFixes()
 
 	// Insert rogue spell fixes here
 
+		// Waylay talent rank 1
+		sp = dbcSpell.LookupEntryForced(51692);
+		if(sp != NULL)
+		{
+			sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
+			sp->EffectTriggerSpell[0]=51693;// Waylay debuff
+			sp->procChance = 50;
+		}
+		//Waylay talent rank 2
+		sp = dbcSpell.LookupEntryForced(51696);
+		if(sp != NULL)
+		{
+			sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
+			sp->EffectTriggerSpell[0]=51693;// Waylay debuff
+			sp->procChance = 100;
+		}
+
 		/**********************************************************
 		 *	Garrote - this is used? 
 		 **********************************************************/
@@ -4635,6 +4612,32 @@ void ApplyNormalFixes()
 	//////////////////////////////////////////
 
 	// Insert mage spell fixes here
+
+		// Brain Freeze rank 1
+		sp = dbcSpell.LookupEntryForced( 44546 );
+		if(sp != NULL)
+			sp->EffectApplyAuraName[0] = SPELL_AURA_DUMMY;
+
+		// Brain Freeze rank 2
+		sp = dbcSpell.LookupEntryForced( 44548 );
+		if(sp != NULL)
+			sp->EffectApplyAuraName[0] = SPELL_AURA_DUMMY;
+
+		// Brain Freeze rank 3
+		sp = dbcSpell.LookupEntryForced( 44549 );
+		if(sp != NULL)
+			sp->EffectApplyAuraName[0] = SPELL_AURA_DUMMY;
+
+		// Fingers of Frost rank 1
+		sp = dbcSpell.LookupEntryForced( 44543 );
+		if(sp != NULL)
+			sp->EffectApplyAuraName[0] = SPELL_AURA_DUMMY;
+		
+
+		// Fingers of Frost rank 2
+		sp = dbcSpell.LookupEntryForced( 44545 );
+		if(sp != NULL)
+			sp->EffectApplyAuraName[0] = SPELL_AURA_DUMMY;
 
 		/**********************************************************
 		*    Improved Blink by Alice
