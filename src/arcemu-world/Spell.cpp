@@ -47,7 +47,19 @@ void SpellCastTargets::read( WorldPacket & data,uint64 caster )
 
 	if( m_targetMask == TARGET_FLAG_SELF )
 	{
-		m_unitTarget = caster;
+		switch(*(uint32*)((data.contents())+1))
+		{
+			case 14285: // Arcane Shot (Rank 6)
+			case 14286: // Arcane Shot (Rank 7)
+			case 14287: // Arcane Shot (Rank 8)
+			case 27019: // Arcane Shot (Rank 9)
+			case 49044: // Arcane Shot (Rank 10)
+			case 49045: // Arcane Shot (Rank 11)
+				m_unitTarget = objmgr.GetPlayer((uint32)caster)->GetUInt64Value(UNIT_FIELD_TARGET);
+				break;
+			default:
+				m_unitTarget = caster;
+		}
 	}
 
 	if( m_targetMask & (TARGET_FLAG_OBJECT | TARGET_FLAG_UNIT | TARGET_FLAG_CORPSE | TARGET_FLAG_CORPSE2 ) )
