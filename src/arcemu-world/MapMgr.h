@@ -295,7 +295,7 @@ private:
 	uint32 _mapId;
 	set<Object*> _mapWideStaticObjects;
 
-	std::map<uint32,uint32> _worldStateSet;
+	//std::map<uint32,uint32> _worldStateSet;
 
 	bool _CellActive(uint32 x, uint32 y);
 	void UpdateInRangeSet(Object *obj, Player *plObj, MapCell* cell, ByteBuffer ** buf);

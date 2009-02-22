@@ -75,7 +75,7 @@ MapMgr::MapMgr(Map *map, uint32 mapId, uint32 instanceid) : CellHandler<MapCell>
 
 	_combatProgress.clear();
 	_mapWideStaticObjects.clear();
-	_worldStateSet.clear();
+	//_worldStateSet.clear();
 	_updates.clear();
 	_processQueue.clear();
 	Sessions.clear();

@@ -248,7 +248,7 @@ StrandOfTheAncient::StrandOfTheAncient(MapMgr * mgr, uint32 id, uint32 lgroup, u
 		m_players[i].clear();
 		m_pendPlayers[i].clear();
 	}
-	m_worldStates.clear();
+	//m_worldStates.clear();
 	m_pvpData.clear();
 	m_resurrectMap.clear();
 

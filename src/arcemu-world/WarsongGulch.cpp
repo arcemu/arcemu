@@ -34,7 +34,7 @@ WarsongGulch::WarsongGulch(MapMgr * mgr, uint32 id, uint32 lgroup, uint32 t) : C
 		m_players[i].clear();
 		m_pendPlayers[i].clear();
 	}
-	m_worldStates.clear();
+	//m_worldStates.clear();
 	m_pvpData.clear();
 	m_resurrectMap.clear();
 
@@ -107,7 +107,7 @@ WarsongGulch::~WarsongGulch()
 	}
 
 	m_resurrectMap.clear();
-	m_worldStates.clear();
+	//m_worldStates.clear();
 }
 
 void WarsongGulch::HookOnAreaTrigger(Player * plr, uint32 id)

@@ -434,7 +434,7 @@ ArathiBasin::ArathiBasin(MapMgr * mgr, uint32 id, uint32 lgroup, uint32 t) : CBa
 		m_players[i].clear();
 		m_pendPlayers[i].clear();
 	}
-	m_worldStates.clear();
+	//m_worldStates.clear();
 	m_pvpData.clear();
 	m_resurrectMap.clear();
 
@@ -511,7 +511,7 @@ ArathiBasin::~ArathiBasin()
 	}
 
 	m_resurrectMap.clear();
-	m_worldStates.clear();
+	//m_worldStates.clear();
 }
 
 void ArathiBasin::EventUpdateResources(uint32 Team)

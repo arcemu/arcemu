@@ -706,7 +706,7 @@ void Creature::CalcResistance(uint32 type)
 	else
 		pos = ( BaseResistance[ type ] * BaseResistanceModPct[ type ] ) / 100;
 	
-	if( IsPet() )
+	if( IsPet() && isAlive() && IsInWorld() )
 	{
 		Pet * pet = static_cast< Pet* >( this );
 		if (pet->IsPet()) // HACK
