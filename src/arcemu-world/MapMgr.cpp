@@ -473,7 +473,7 @@ void MapMgr::RemoveObject(Object *obj, bool free_guid)
 	//ASSERT(obj->GetPositionY() > _minY && obj->GetPositionY() < _maxY);
 	ASSERT(_cells);
 
-	if(obj->Active)
+	if (obj->IsActive())
 		obj->Deactivate(this);
 
 	//there is a very small chance that on double player ports on same update player is added to multiple insertpools but not removed
@@ -838,7 +838,7 @@ void MapMgr::ChangeObjectLocation( Object *obj )
 		// cell into an inactive one, it will disable itself and will never return.
 		// This is to prevent cpu leaks. I will think of a better solution very soon :P
 
-		if(!objCell->IsActive() && !plObj && obj->Active)
+		if(!objCell->IsActive() && !plObj && obj->IsActive())
 			obj->Deactivate(this);
 
 		if(obj->GetMapCell())

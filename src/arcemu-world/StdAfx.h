@@ -140,6 +140,7 @@
 #include "ItemInterface.h"
 #include "Stats.h"
 #include "WorldCreator.h"
+#include "ObjectContainer.h"
 #include "Vehicle.h"
 
 

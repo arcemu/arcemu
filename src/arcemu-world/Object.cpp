@@ -160,6 +160,8 @@ Object::Object() : m_position(0,0,0,0), m_spawnLocation(0,0,0,0)
 	m_inRangePlayers.clear();
 	m_oppFactsInRange.clear();
 	m_sameFactsInRange.clear();
+
+	Active = false;
 }
 
 Object::~Object( )

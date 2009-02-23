@@ -40,7 +40,6 @@ Item::Item()//this is called when constructing as container
 	m_faction = NULL;
 	m_factionDBC = NULL;
 	m_instanceId = 0;
-	Active = false;
 	m_inQueue = false;
 	m_extensions = NULL;
 	m_loadedFromDB = false;
@@ -81,7 +80,6 @@ void Item::Virtual_Constructor()
 	m_faction = NULL;
 	m_factionDBC = NULL;
 	m_instanceId = 0;
-	Active = false;
 	m_inQueue = false;
 	m_extensions = NULL;
 	m_loadedFromDB = false;

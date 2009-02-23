@@ -110,6 +110,7 @@ class WorldSession;
 class Player;
 class MapCell;
 class MapMgr;
+class ObjectContainer;
 
 //====================================================================
 //  Object
@@ -160,10 +161,10 @@ public:
 
 	// type
 	ARCEMU_INLINE const uint8& GetTypeId() const { return m_objectTypeId; }
-	ARCEMU_INLINE bool IsUnit()	{ return ( m_objectTypeId == TYPEID_UNIT || m_objectTypeId == TYPEID_PLAYER ); }
-	ARCEMU_INLINE bool IsPlayer() { return m_objectTypeId == TYPEID_PLAYER; }
-	ARCEMU_INLINE bool IsCreature() { return m_objectTypeId == TYPEID_UNIT; }
-	bool IsPet();
+	virtual bool IsUnit()	{ return ( m_objectTypeId == TYPEID_UNIT || m_objectTypeId == TYPEID_PLAYER ); }
+	virtual bool IsPlayer() { return m_objectTypeId == TYPEID_PLAYER; }
+	virtual bool IsCreature() { return m_objectTypeId == TYPEID_UNIT; }
+	virtual bool IsPet();
 
 	//! This includes any nested objects we have, inventory for example.
 	virtual uint32 __fastcall BuildCreateUpdateBlockForPlayer( ByteBuffer *data, Player *target );
@@ -529,10 +530,15 @@ public:
 
 	int32 event_GetInstanceID();
 
+	// Object activation
+private:
 	bool Active;
-	bool CanActivate();
-	void Activate(MapMgr * mgr);
-	void Deactivate(MapMgr * mgr);
+public:
+	bool IsActive() { return Active; }
+	virtual bool CanActivate();
+	virtual void Activate(MapMgr * mgr);
+	virtual void Deactivate(MapMgr * mgr);
+
 	bool m_inQueue;
 	ARCEMU_INLINE void SetMapMgr(MapMgr * mgr) { m_mapMgr = mgr; }
 
@@ -646,6 +652,7 @@ public:
 
 	bool m_loadedFromDB;
 };
+
 
 #endif
 

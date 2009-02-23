@@ -125,6 +125,8 @@ arcemu_world_SOURCES = \
     NPCHandler.h \
     Object.cpp \
     Object.h \
+    ObjectContainer.cpp \
+    ObjectContainer.h \
     ObjectMgr.cpp \
     ObjectMgr.h \
     Opcodes.cpp \

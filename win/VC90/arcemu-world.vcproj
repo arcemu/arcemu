@@ -943,6 +943,14 @@
 			>
 		</File>
 		<File
+			RelativePath="..\..\src\arcemu-world\ObjectContainer.cpp"
+			>
+		</File>
+		<File
+			RelativePath="..\..\src\arcemu-world\ObjectContainer.h"
+			>
+		</File>
+		<File
 			RelativePath="..\..\src\arcemu-world\ObjectMgr.cpp"
 			>
 		</File>

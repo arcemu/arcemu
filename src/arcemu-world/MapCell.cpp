@@ -65,7 +65,7 @@ void MapCell::SetActivity(bool state)
 		// Move all objects to active set.
 		for(ObjectSet::iterator itr = _objects.begin(); itr != _objects.end(); ++itr)
 		{
-			if(!(*itr)->Active && (*itr)->CanActivate())
+			if(!(*itr)->IsActive() && (*itr)->CanActivate())
 				(*itr)->Activate(_mapmgr);
 		}
 
@@ -80,7 +80,7 @@ void MapCell::SetActivity(bool state)
 		// Move all objects from active set.
 		for(ObjectSet::iterator itr = _objects.begin(); itr != _objects.end(); ++itr)
 		{
-			if((*itr)->Active)
+			if((*itr)->IsActive())
 				(*itr)->Deactivate(_mapmgr);
 		}
 
@@ -154,7 +154,7 @@ void MapCell::RemoveObjects()
 		if( sWorld.map_unload_time && !bServerShutdown && obj->GetTypeId() == TYPEID_GAMEOBJECT && static_cast<GameObject*>(obj)->GetInfo()->Type == GAMEOBJECT_TYPE_TRANSPORT )
 			continue;
 
-		if( obj->Active )
+		if( obj->IsActive() )
 			obj->Deactivate( _mapmgr );
 
 		if( obj->IsInWorld() )
