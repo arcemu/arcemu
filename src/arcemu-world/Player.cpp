@@ -8030,7 +8030,12 @@ QuestStatus Player::GetQuestStatus( uint32 quest_id )
 
 void Player::ZoneUpdate(uint32 ZoneId)
 {
-	m_zoneId = ZoneId;
+	if( m_zoneId != ZoneId )
+	{
+		m_zoneId = ZoneId;
+		RemoveAurasByInterruptFlag( AURA_INTERRUPT_ON_LEAVE_AREA );	
+	}
+	
 	/* how the f*ck is this happening */
 	if( m_playerInfo == NULL )
 	{
