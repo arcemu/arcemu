@@ -62,9 +62,17 @@ void WorldSession::HandlePetAction(WorldPacket & recv_data)
 		}
 		return;
 	}
+	
 	Pet *pPet = _player->GetMapMgr()->GetPet( GET_LOWGUID_PART( petGuid ) );
-	if(!pPet || !pPet->isAlive())
+	
+	if( !pPet )
 		return;
+	
+	if( !pPet->isAlive() )
+	{
+		pPet->SendActionFeedback( PET_FEEDBACK_PET_DEAD );	
+		return;
+	}
 
 	Unit *pTarget = NULL;
 
@@ -87,7 +95,7 @@ void WorldSession::HandlePetAction(WorldPacket & recv_data)
 					// make sure the target is attackable
 					if( pTarget == pPet || !isAttackable( pPet, pTarget ) )
  					{
-						pPet->SendCastFailed( 0, SPELL_FAILED_BAD_TARGETS );
+						pPet->SendActionFeedback( PET_FEEDBACK_CANT_ATTACK_TARGET );
 						return;
 					}
 
@@ -155,7 +163,7 @@ void WorldSession::HandlePetAction(WorldPacket & recv_data)
 						// make sure the target is attackable
 						if( pTarget == pPet || !isAttackable( pPet, pTarget ) )
 						{
-							pPet->SendCastFailed( misc, SPELL_FAILED_BAD_TARGETS );
+							pPet->SendActionFeedback( PET_FEEDBACK_CANT_ATTACK_TARGET );
 							return;
 						}
 					}
@@ -556,7 +564,7 @@ void WorldSession::HandlePetLearnTalent( WorldPacket & recvPacket )
 	{
 		pPet->AddSpell( sp, true );
 		pPet->SetTPs( pPet->GetTPs() - 1 );
-		OutPacket( SMSG_PET_LEARNED_SPELL, 4, &sp->Id );
+		OutPacket( SMSG_PET_LEARNED_SPELL, 2, &sp->Id );
 	}
 }
 

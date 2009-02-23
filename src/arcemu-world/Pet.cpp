@@ -32,6 +32,7 @@
 #define SHADOWFIEND		19668
 #define SPIRITWOLF		29264
 #define DANCINGRUNEWEAPON 27893
+
 uint32 GetAutoCastTypeForSpell( SpellEntry * ent )
 {
 	switch( ent->NameHash )
@@ -117,7 +118,10 @@ void Pet::SetNameForEntry( uint32 entry )
 void Pet::CreateAsSummon( uint32 entry, CreatureInfo *ci, Creature* created_from_creature, Player* owner, SpellEntry* created_by_spell, uint32 type, uint32 expiretime, LocationVector* Vec )
 {
 	if( !ci || !owner )
-		return; //TODO: delete pet before return
+	{
+		sEventMgr.AddEvent( this, &Pet::PetSafeDelete, EVENT_CREATURE_SAFE_DELETE, 1, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT );
+		return;
+	}
 
 	m_Owner = owner;
 	m_OwnerGuid = m_Owner->GetGUID();
@@ -237,8 +241,6 @@ Pet::Pet( uint64 guid ) : Creature( guid )
 	m_ExpireTime = 0;
 	bExpires = false;
 	m_Diet = 0;
-	m_Action = PET_ACTION_FOLLOW;
-	m_State = PET_STATE_DEFENSIVE;
 	reset_time = 0;
 	reset_cost = 0;
 
@@ -306,46 +308,42 @@ void Pet::SendSpellsToOwner()
 	if( m_Owner == NULL )
 		return;
 
-	uint16 packetsize = ( m_uint32Values[ OBJECT_FIELD_ENTRY ] != WATER_ELEMENTAL) ? ( ( uint16 )mSpells.size() * 4 + 61 ) : 64;
+	uint16 packetsize = ( GetEntry() != WATER_ELEMENTAL) ? ( ( uint16 )mSpells.size() * 4 + 61 ) : 64;
 	WorldPacket * data = new WorldPacket( SMSG_PET_SPELLS, packetsize );
 	*data << GetGUID();
 	*data << uint32( myFamily != NULL ? myFamily->ID : 0 );	// pet family to determine talent tree
-	*data << uint32(0);					// unk
-	
-	uint32 state_flags = 0;
-	if( GetAIInterface() != NULL && GetAIInterface()->getUnitToFollow() != NULL )
-		 state_flags = 0x100;			// 0x0 = stay, 0x100 = follow, 0x200 = attack
-	state_flags |= GetPetState();		// 0x0 = passive, 0x1 = defensive, 0x2 = agressive, 0xFF0000 = disabled pet bar (eg. pet stunned)
-	
-	*data << state_flags;		
-																			
+	*data << m_ExpireTime;
+	*data << uint8( GetPetState() );	// 0x0 = passive, 0x1 = defensive, 0x2 = agressive
+	*data << uint8( GetPetAction() );	// 0x0 = stay, 0x1 = follow, 0x2 = attack
+	*data << uint16( 0 );				// flags: 0xFF = disabled pet bar (eg. when pet stunned)
+																				
 	// Send the actionbar
-	for(uint32 i = 0; i < 10; ++i)
+	for( uint8 i = 0; i < 10; ++i )
 	{
 		if(ActionBar[i] & 0x4000000)		// Commands
-			*data << uint32(ActionBar[i]);
+			*data << uint32( ActionBar[i] );
 		else
 		{
-			if(uint16(ActionBar[i]))
-				*data << uint16(ActionBar[i]) << GetSpellState(ActionBar[i]);
+			if( ActionBar[i] )
+				*data << uint16( ActionBar[i] ) << GetSpellState( ActionBar[i] );
 			else
 				*data << uint16(0) << uint8(0) << uint8(i+5);
 		}
 	}
 
 	// we don't send spells for the water elemental so it doesn't show up in the spellbook
-	if(m_uint32Values[OBJECT_FIELD_ENTRY] != WATER_ELEMENTAL)	
+	if( GetEntry() != WATER_ELEMENTAL )	
 	{
 		// Send the rest of the spells.
-		*data << uint8(mSpells.size());
-		for(PetSpellMap::iterator itr = mSpells.begin(); itr != mSpells.end(); ++itr)
-			*data << uint16(itr->first->Id) << uint16(itr->second);
+		*data << uint8( mSpells.size() );
+		for( PetSpellMap::iterator itr = mSpells.begin(); itr != mSpells.end(); ++itr )
+			*data << uint16( itr->first->Id ) << uint16( itr->second );
 	}
 	*data << uint8(0); 			// loop cycles
 	/*in loop:
 	*data << uint32(0x6010);	//spellid
 	*data << uint64(0);			// unk */
-	m_Owner->delayedPackets.add(data);
+	m_Owner->delayedPackets.add( data );
 }
 
 void Pet::SendNullSpellsToOwner()
@@ -369,6 +367,13 @@ void Pet::SendCastFailed( uint32 spellid, uint8 fail )
 	data << uint32( spellid );
 	data << uint8( fail );
 	m_Owner->GetSession()->SendPacket( &data );
+}
+
+void Pet::SendActionFeedback( PetActionFeedback value )
+{
+	if( m_Owner == NULL || m_Owner->GetSession() == NULL)
+		return;
+	m_Owner->GetSession()->OutPacket( SMSG_PET_ACTION_FEEDBACK, 1, &value );
 }
 
 void Pet::InitializeSpells()
@@ -804,6 +809,8 @@ void Pet::SetDefaultSpells()
 					if( SpellData->Spells[i] != 0 )
 						AddSpell( dbcSpell.LookupEntry( SpellData->Spells[i] ), false ); //add spell to pet
 		}
+		
+		AddSpell( dbcSpell.LookupEntry( GROWL_RANK_1 ), false );
 	}
 }
 

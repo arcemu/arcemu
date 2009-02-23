@@ -58,6 +58,14 @@ enum PET_STATE
 	PET_STATE_AGGRESSIVE
 };
 
+enum PetActionFeedback
+{
+	PET_FEEDBACK_NONE,
+	PET_FEEDBACK_PET_DEAD,
+	PET_FEEDBACK_NOTHING_TO_ATTACK,
+	PET_FEEDBACK_CANT_ATTACK_TARGET
+};
+
 enum PET_SPELL
 {
 	PET_SPELL_PASSIVE = 0x06000000,
@@ -125,6 +133,7 @@ public:
 	void SendSpellsToOwner();
 	void SendNullSpellsToOwner();
 	void SendCastFailed( uint32 spellid, uint8 fail );
+	void SendActionFeedback( PetActionFeedback value  );
 
 	ARCEMU_INLINE void SetPetAction(uint32 act) { m_Action = act; }
 	ARCEMU_INLINE uint32 GetPetAction(void) { return m_Action; }
