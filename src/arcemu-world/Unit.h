@@ -963,9 +963,9 @@ public:
 	uint64 stalkedby;
 	uint32 dispels[10];
 	bool trackStealth;
-	uint32 MechanicsDispels[31];
-	float MechanicsResistancesPCT[31]; 
-	float ModDamageTakenByMechPCT[31];
+	uint32 MechanicsDispels[32];
+	float MechanicsResistancesPCT[32];
+	float ModDamageTakenByMechPCT[32];
 	//int32 RangedDamageTakenPct; 
 
 	//SM

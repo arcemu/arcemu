@@ -5790,7 +5790,7 @@ void Aura::SpellAuraMechanicImmunity(bool apply)
 	{
 		//sLog.outString( "mod->m_miscValue = %u" , (uint32) mod->m_miscValue );
 		//sLog.outString( "Incrementing MechanicsDispels (current value: %u, new val: %u)" , m_target->MechanicsDispels[mod->m_miscValue] , m_target->MechanicsDispels[mod->m_miscValue] + 1 );
-		assert(mod->m_miscValue < 31);
+		assert(mod->m_miscValue < MECHANIC_END);
 		m_target->MechanicsDispels[mod->m_miscValue]++;
 
 		if(mod->m_miscValue != 16 && mod->m_miscValue != 25 && mod->m_miscValue != 19) // dont remove bandages, Power Word and protection effect
@@ -7073,7 +7073,7 @@ void Aura::SpellAuraModMechanicResistance(bool apply)
 	//mecanics=9 ?
 	if(apply)
 	{
-		assert( mod->m_miscValue < 31 );
+		assert( mod->m_miscValue < MECHANIC_END );
 		m_target->MechanicsResistancesPCT[mod->m_miscValue]+=mod->m_amount;
 
 		if(mod->m_miscValue != MECHANIC_HEALING && mod->m_miscValue != MECHANIC_INVULNARABLE && mod->m_miscValue != MECHANIC_SHIELDED ) // dont remove bandages, Power Word and protection effect

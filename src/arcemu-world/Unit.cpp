@@ -144,11 +144,11 @@ Unit::Unit()
 	m_slowdown = 0;
 	m_mountedspeedModifier=0;
 	m_maxSpeed = 0;
-	for(i=0;i<31;i++)
+	for( i = 0; i < 32 ; i++ )
 	{
-		MechanicsDispels[i]=0;
-		MechanicsResistancesPCT[i]=0;
-		ModDamageTakenByMechPCT[i]=0;
+		MechanicsDispels[i] = 0;
+		MechanicsResistancesPCT[i] = 0;
+		ModDamageTakenByMechPCT[i] = 0;
 	}
 
 	//SM
@@ -551,6 +551,7 @@ Unit::~Unit()
 	delete m_aiInterface;
 	m_aiInterface = NULL;
 
+	
 	if( m_currentSpell ) {
 		m_currentSpell->cancel();
 		m_currentSpell = NULL;

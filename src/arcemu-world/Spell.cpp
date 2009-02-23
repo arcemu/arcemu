@@ -760,7 +760,7 @@ uint8 Spell::DidHit(uint32 effindex,Unit* target)
 	}
 	//check mechanical resistance
 	//i have no idea what is the best pace for this code
-	if( GetProto()->MechanicsType < 31 )
+	if( GetProto()->MechanicsType < MECHANIC_END )
 	{
 		if(p_victim)
 			resistchance += p_victim->MechanicsResistancesPCT[GetProto()->MechanicsType];
