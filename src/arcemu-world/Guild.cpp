@@ -1185,7 +1185,7 @@ void Guild::SendGuildRoster(WorldSession * pClient)
 		data << itr->second->pRank->iId;
 		data << uint8(itr->first->lastLevel);
 		data << uint8(itr->first->cl);
-		data << uint8(0);
+		data << uint8(itr->first->gender);
 		data << itr->first->lastZone;
 
 		if(!pPlayer)

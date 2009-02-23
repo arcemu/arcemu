@@ -809,7 +809,7 @@ void WorldSession::HandleItemQuerySingleOpcode( WorldPacket & recv_data )
 {
 	CHECK_PACKET_SIZE(recv_data, 4);
  
-	int i;
+	uint32 i;
 	uint32 itemid=0;
 	recv_data >> itemid;
 
