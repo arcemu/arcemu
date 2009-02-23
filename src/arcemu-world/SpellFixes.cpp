@@ -4018,30 +4018,14 @@ void ApplyNormalFixes()
 		/**********************************************************
 		 *	Bloodlust
 		 **********************************************************/
-		sp = dbcSpell.LookupEntryForced( 2825 );
-		if( sp != NULL )
-		{
-			sp->EffectImplicitTargetA[0] = EFF_TARGET_ALL_PARTY;
-			sp->EffectImplicitTargetA[1] = EFF_TARGET_ALL_PARTY;
-			sp->EffectImplicitTargetA[2] = EFF_TARGET_ALL_PARTY;
-			sp->EffectImplicitTargetB[0] = 0;
-			sp->EffectImplicitTargetB[1] = 0;
-			sp->EffectImplicitTargetB[2] = 0;
-		}
+		// Bloodlust is working now without any fix required (2/23/2009, rev 2255)
+		// The old fix made it not function as described (target raid)
 
 		/**********************************************************
 		 *	Heroism
 		 **********************************************************/
-		sp = dbcSpell.LookupEntryForced( 32182 );
-		if( sp != NULL )
-		{
-			sp->EffectImplicitTargetA[0] = EFF_TARGET_ALL_PARTY;
-			sp->EffectImplicitTargetA[1] = EFF_TARGET_ALL_PARTY;
-			sp->EffectImplicitTargetA[2] = EFF_TARGET_ALL_PARTY;
-			sp->EffectImplicitTargetB[0] = 0;
-			sp->EffectImplicitTargetB[1] = 0;
-			sp->EffectImplicitTargetB[2] = 0;
-		}
+		// Heroism is working now without any fix required (2/23/2009, rev 2255)
+		// The old fix made it not function as described (target raid)
 
 		/**********************************************************
 		 *	Lightning Overload 
