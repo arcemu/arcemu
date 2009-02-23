@@ -876,6 +876,8 @@ void Aura::Remove()
 			caster->SetUInt64Value(PLAYER_FARSIGHT, 0);
 		}
 	}
+	if( m_spellProto->MechanicsType == MECHANIC_ENRAGED )
+		m_target->RemoveFlag( UNIT_FIELD_AURASTATE, AURASTATE_FLAG_ENRAGED );
 
 	AuraPool.PooledDelete( this ); // suicide xD	leaking this shit out
 }

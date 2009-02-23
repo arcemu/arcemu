@@ -4444,6 +4444,9 @@ void Unit::AddAura(Aura *aur)
 			pCaster->RemoveAllAuraByNameHash(SPELL_HASH_BLESSING_OF_PROTECTION);
 		}
 	}
+	
+	if( aur->GetSpellProto()->MechanicsType == MECHANIC_ENRAGED )
+		SetFlag( UNIT_FIELD_AURASTATE, AURASTATE_FLAG_ENRAGED );
 }
 
 bool Unit::RemoveAura(Aura *aur)
