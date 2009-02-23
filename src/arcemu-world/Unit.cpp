@@ -6169,17 +6169,22 @@ void Unit::RemoveSoloAura(uint32 type)
 void Unit::EventHealthChangeSinceLastUpdate()
 {
 	int pct = GetHealthPct();
-	if(pct<35)
+	if( pct < 35 )
 	{
-		uint32 toset=AURASTATE_FLAG_HEALTH35;
-		if(pct<20)
+		uint32 toset = AURASTATE_FLAG_HEALTH35;
+		if( pct < 20 )
 			toset |= AURASTATE_FLAG_HEALTH20;
 		else
-			RemoveFlag(UNIT_FIELD_AURASTATE,AURASTATE_FLAG_HEALTH20);
-		SetFlag(UNIT_FIELD_AURASTATE,toset);
+			RemoveFlag( UNIT_FIELD_AURASTATE, AURASTATE_FLAG_HEALTH20 );
+		SetFlag( UNIT_FIELD_AURASTATE, toset );
 	}
 	else
-		RemoveFlag(UNIT_FIELD_AURASTATE , AURASTATE_FLAG_HEALTH35 | AURASTATE_FLAG_HEALTH20);
+		RemoveFlag( UNIT_FIELD_AURASTATE, AURASTATE_FLAG_HEALTH35 | AURASTATE_FLAG_HEALTH20 );
+	
+	if( pct < 75 )
+		RemoveFlag( UNIT_FIELD_AURASTATE, AURASTATE_FLAG_HEALTH75 );
+	else
+		SetFlag( UNIT_FIELD_AURASTATE, AURASTATE_FLAG_HEALTH75 );
 }
 
 int32 Unit::GetAP()
