@@ -672,9 +672,8 @@ void Pet::UpdatePetInfo( bool bSetToOffline )
 
 void Pet::Dismiss() //Abandon pet
 {
-	// Delete any petspells for us.
-	if( m_Owner )
-		m_Owner->RemovePlayerPet( m_PetNumber ); // find out playerpet entry, delete it
+	if( m_Owner && !bExpires )
+		m_Owner->RemovePlayerPet( m_PetNumber ); // find playerpet entry and delete it
 
 	Remove( false, true );
 }
