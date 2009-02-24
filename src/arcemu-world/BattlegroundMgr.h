@@ -28,6 +28,9 @@ class MapMgr;
 class Player;
 class Map;
 class Group;
+#ifdef ENABLE_AV
+class Corpse;
+#endif
 
 enum BattlegroundDbcIndex
 {
@@ -236,6 +239,9 @@ public:
 
 class CBattleground : public EventableObject
 {
+#ifdef ENABLE_AV
+	friend class AVNode;
+#endif
 protected:
 	/* Groups */
 	Group * m_groups[2];
