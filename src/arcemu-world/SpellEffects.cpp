@@ -594,10 +594,14 @@ void Spell::SpellEffectSchoolDMG(uint32 i) // dmg school
 		case SPELL_HASH_MOLTEN_ARMOR:		// fire armor, is static damage
 			static_damage=true;
 			break;
+		default:
+			break;
 		}
 	}
 
 	// check for no more damage left (chains)
+	if(!dmg)
+		dmg = GetProto()->EffectBasePoints[i];
 	if(!dmg) return;
 	/*********************************************************************
 	CONFLAGRATE SHOULD REMOVE THE IMMOLATE DEBUFF
@@ -6930,7 +6934,7 @@ void Spell::SpellEffectTriggerSpellWithValue(uint32 i)
 		return;
 
 	Spell *sp=SpellPool.PooledNew();
-	sp->Init(m_caster,dbcSpell.LookupEntry(TriggeredSpell->Id),true,NULL);
+	sp->Init(m_caster,TriggeredSpell,true,NULL);
 
 	for(uint32 x=0;x<3;x++)
 	{

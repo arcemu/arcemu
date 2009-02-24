@@ -3597,7 +3597,7 @@ void Aura::SpellAuraModResistance(bool apply)
 
 void Aura::SpellAuraPeriodicTriggerSpellWithValue(bool apply)
 {
-// todo
+	return SpellAuraPeriodicTriggerSpell(apply); // what's the difference? where is the value?
 }
 
 void Aura::SpellAuraPeriodicTriggerSpell(bool apply)
@@ -6718,10 +6718,10 @@ void Aura::SpellAuraAddPctMod( bool apply )
 	case SMT_TIME:
 		break;
 	*/
-	//unknown Modifier type
 	case SMT_RESIST_DISPEL:
 		SendModifierLog( &m_target->SM_PRezist_dispell, val, AffectedGroups, mod->m_miscValue, true );
 		break;
+	//unknown Modifier type
 	default:
 		sLog.outError( "Unknown spell modifier type %u in spell %u.<<--report this line to the developer\n", mod->m_miscValue, GetSpellId() );
 		//don't add val, though we could formaly could do,but as we don't know what it is-> no sense

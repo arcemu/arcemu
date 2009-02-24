@@ -3726,54 +3726,18 @@ void ApplyNormalFixes()
 		}
 		
 		// Mind Flay - Reduce movements by 50% and deal periodic damage to target.
-		
-		sp = dbcSpell.LookupEntryForced( 15407 ); 
-		if( sp != NULL )
-		{	
-			sp->EffectApplyAuraName[0] = SPELL_AURA_PERIODIC_DAMAGE;
+/*
+		const uint32 MindFlayRanks[] = { 15407, 17311, 17312, 17313, 17314, 18807, 25387, 48155, 48156, 0 };
+		for(uint8 _i=0; MindFlayRanks[_i]!=0; ++_i)
+		{
+			sp = dbcSpell.LookupEntryForced( MindFlayRanks[_i] ); 
+			if( sp != NULL )
+			{	
+				sp->EffectApplyAuraName[0] = SPELL_AURA_PERIODIC_DAMAGE;
+				sp->EffectImplicitTargetA[0] = EFF_TARGET_SINGLE_ENEMY;
+			}
 		}
-		
-		sp = dbcSpell.LookupEntryForced( 17311 ); 
-		if( sp != NULL )
-		{	
-			sp->EffectApplyAuraName[0] = SPELL_AURA_PERIODIC_DAMAGE;
-		}
-		sp = dbcSpell.LookupEntryForced( 17312 ); 
-		if( sp != NULL )
-		{	
-			sp->EffectApplyAuraName[0] = SPELL_AURA_PERIODIC_DAMAGE;
-		}
-		sp = dbcSpell.LookupEntryForced( 17313 ); 
-		if( sp != NULL )
-		{	
-			sp->EffectApplyAuraName[0] = SPELL_AURA_PERIODIC_DAMAGE;
-		}
-		sp = dbcSpell.LookupEntryForced( 17314 ); 
-		if( sp != NULL )
-		{	
-			sp->EffectApplyAuraName[0] = SPELL_AURA_PERIODIC_DAMAGE;
-		}
-		sp = dbcSpell.LookupEntryForced( 18807 ); 
-		if( sp != NULL )
-		{	
-			sp->EffectApplyAuraName[0] = SPELL_AURA_PERIODIC_DAMAGE;
-		}
-		sp = dbcSpell.LookupEntryForced( 25387 ); 
-		if( sp != NULL )
-		{	
-			sp->EffectApplyAuraName[0] = SPELL_AURA_PERIODIC_DAMAGE;
-		}
-		sp = dbcSpell.LookupEntryForced( 48155 ); 
-		if( sp != NULL )
-		{	
-			sp->EffectApplyAuraName[0] = SPELL_AURA_PERIODIC_DAMAGE;
-		}
-		
-		sp = dbcSpell.LookupEntryForced( 48156 ); // Mind Flay rank 9
-        if( sp != NULL )
-        {    
-            sp->EffectApplyAuraName[0] = SPELL_AURA_PERIODIC_DAMAGE;
-        }
+*/
 		//Mind Sear - Effect rank 1
 
 		sp = dbcSpell.LookupEntryForced( 49821 ); 
@@ -3790,6 +3754,8 @@ void ApplyNormalFixes()
 		if( sp != NULL )
 		{	
 			sp->EffectApplyAuraName[0] = SPELL_AURA_PERIODIC_DAMAGE;
+			sp->EffectImplicitTargetA[0] = EFF_TARGET_SINGLE_ENEMY;
+			sp->EffectImplicitTargetB[0] = EFF_TARGET_SINGLE_ENEMY;
 		}
 		
 		// Weakened Soul - Is forced debuff

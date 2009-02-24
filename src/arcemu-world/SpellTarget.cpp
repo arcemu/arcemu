@@ -351,9 +351,7 @@ void Spell::SpellTargetSingleTargetEnemy(uint32 i, uint32 j)
 	if(p_caster && p_caster == pTarget) // spell bug: target is supposed to be a single enemy, not self
 	{
 		if(GetProto())
-			sLog.outError("Spell %lu has target type enemy, but is targeting the caster.", GetProto()->Id);
-		cancastresult = SPELL_FAILED_BAD_TARGETS;
-		return;
+			sLog.outDebug("Spell %lu has target single enemy, but is targeting the caster.", GetProto()->Id);
 	}
 
 	TargetsList* tmpMap=&m_targetUnits[i];
