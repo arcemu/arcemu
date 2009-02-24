@@ -4897,44 +4897,8 @@ void Spell::Heal(int32 amount, bool ForceCrit)
 	bool critical = false;
 	int32 critchance = 0;
 	int32 bonus = 0;
-	float healdoneaffectperc = 1.0f;
 	if( u_caster != NULL )
 	{
-		//Downranking
-		if(p_caster && p_caster->IsPlayer() && GetProto()->baseLevel > 0 && GetProto()->maxLevel > 0)
-		{
-			float downrank1 = 1.0f;
-			if (GetProto()->baseLevel < 20)
-				downrank1 = 1.0f - (20.0f - float (GetProto()->baseLevel) ) * 0.0375f;
-			float downrank2 = ( float(GetProto()->maxLevel + 5.0f) / float(p_caster->getLevel()) );
-			if (downrank2 >= 1 || downrank2 < 0)
-				downrank2 = 1.0f;
-			healdoneaffectperc *= downrank1 * downrank2;
-		}
-
-		//Spells Not affected by Bonus Healing
-		if(GetProto()->NameHash == SPELL_HASH_SEAL_OF_LIGHT) //Seal of Light
-			healdoneaffectperc = 0.0f;
-
-		if(GetProto()->NameHash == SPELL_HASH_JUDGEMENT_OF_LIGHT) //Judgement of Light
-			healdoneaffectperc = 0.0f;
-
-		if(GetProto()->NameHash == SPELL_HASH_LESSER_HEROISM) //Lesser Heroism
-			healdoneaffectperc = 0.0f;
-
-		if(GetProto()->NameHash == SPELL_HASH_HEROISM) //Heroism, a.k.a. Darkmoon Card: Heroism
-			healdoneaffectperc = 0.0f;
-
-		if(GetProto()->NameHash == SPELL_HASH_CITRINE_PENDANT_OF_GOLDEN_HEALING) //Citrine Pendant of Golden Healing
-			healdoneaffectperc = 0.0f;
-
-		if(GetProto()->NameHash == SPELL_HASH_LIVING_RUBY_PENDANT) //Living Ruby Pendant
-			healdoneaffectperc = 0.0f;
-
-		//Spells affected by Bonus Healing
-		if(GetProto()->NameHash == SPELL_HASH_EARTH_SHIELD) //Earth Shield
-			healdoneaffectperc = 0.3f;
-
 		//Basic bonus
 		bonus += u_caster->HealDoneMod[GetProto()->School];
 		bonus += unitTarget->HealTakenMod[GetProto()->School];
@@ -5023,7 +4987,7 @@ void Spell::Heal(int32 amount, bool ForceCrit)
 			}
 		}
 
-		amount += float2int32( float( bonus ) * healdoneaffectperc ); //apply downranking on final value ?
+		amount += float2int32( float( bonus ) * 1.88f ); //apply 3.0.2 spell coeff
 		amount += amount*u_caster->HealDonePctMod[GetProto()->School]/100;
 		amount += float2int32( float( amount ) * unitTarget->HealTakenPctMod[GetProto()->School] );
 

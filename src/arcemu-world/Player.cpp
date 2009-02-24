@@ -8121,6 +8121,9 @@ void Player::ZoneUpdate(uint32 ZoneId)
 #ifdef OPTIMIZED_PLAYER_SAVING
 	save_Zone();
 #endif
+	
+	GetMapMgr()->SendInitialStates(this);
+	
 	UpdateChannels(ZoneId);
 	/*std::map<uint32, AreaTable*>::iterator iter = sWorld.mZoneIDToTable.find(ZoneId);
 	if(iter == sWorld.mZoneIDToTable.end())
@@ -8135,7 +8138,7 @@ void Player::ZoneUpdate(uint32 ZoneId)
 
 	sLog.outDetail("ZONE_UPDATE: Player %s entered zone %s", GetName(), sAreaStore.LookupString((int)p->name));*/
 	//UpdatePvPArea();
-	GetMapMgr()->SendInitialStates(this);
+	
 }
 void Player::UpdateChannels(uint16 AreaID)
 {
@@ -8784,6 +8787,8 @@ void Player::ForceZoneUpdate()
 
 	if(at->ZoneId && at->ZoneId != m_zoneId)
 		ZoneUpdate(at->ZoneId);
+
+	GetMapMgr()->SendInitialStates(this);
 }
 
 void Player::SafeTeleport(MapMgr * mgr, const LocationVector & vec)
@@ -9485,15 +9490,15 @@ void Player::ModifyBonuses( uint32 type, int32 val, bool apply )
 			}break;
 		case MELEE_HIT_AVOIDANCE_RATING:
 			{
-				
+	//			ModUnsigned32Value( PLAYER_RATING_MODIFIER_MELEE_HIT_AVOIDANCE, val );	
 			}break;
 		case RANGED_HIT_AVOIDANCE_RATING:
 			{
-
+				ModUnsigned32Value( PLAYER_RATING_MODIFIER_RANGED_HIT_AVOIDANCE, val );
 			}break;
 		case SPELL_HIT_AVOIDANCE_RATING:
 			{
-
+				ModUnsigned32Value( PLAYER_RATING_MODIFIER_SPELL_HIT_AVOIDANCE, val );
 			}break;
 		case MELEE_CRITICAL_AVOIDANCE_RATING:
 			{
@@ -9533,9 +9538,9 @@ void Player::ModifyBonuses( uint32 type, int32 val, bool apply )
 			}break;
 		case HIT_AVOIDANCE_RATING:// this is guessed based on layout of other fields
 			{
-				//ModUnsigned32Value( PLAYER_RATING_MODIFIER_MELEE_HIT_AVOIDANCE, val );//melee
-				//ModUnsigned32Value( PLAYER_RATING_MODIFIER_RANGED_HIT_AVOIDANCE, val );//ranged
-				//ModUnsigned32Value( PLAYER_RATING_MODIFIER_SPELL_HIT_AVOIDANCE, val );//spell
+//				ModUnsigned32Value( PLAYER_RATING_MODIFIER_MELEE_HIT_AVOIDANCE, val );//melee
+				ModUnsigned32Value( PLAYER_RATING_MODIFIER_RANGED_HIT_AVOIDANCE, val );//ranged
+				ModUnsigned32Value( PLAYER_RATING_MODIFIER_SPELL_HIT_AVOIDANCE, val );//spell
 			}break;
 		case EXPERTISE_RATING:
 		case EXPERTISE_RATING_2:
@@ -9560,6 +9565,37 @@ void Player::ModifyBonuses( uint32 type, int32 val, bool apply )
 			{
 				ModUnsigned32Value(UNIT_FIELD_ATTACK_POWER_MODS, val);
 				ModUnsigned32Value(UNIT_FIELD_RANGED_ATTACK_POWER_MODS, val);	
+			}break;
+		case RANGED_ATTACK_POWER:
+			{
+				ModUnsigned32Value( UNIT_FIELD_RANGED_ATTACK_POWER_MODS, val );
+			}break;
+		case FERAL_ATTACK_POWER:
+			{
+				
+			}break;
+		case SPELL_HEALING_DONE:
+			{
+				for(uint32 school=1;school < 7; ++school)
+				{
+					HealDoneMod[school] += val;
+				}
+				ModUnsigned32Value( PLAYER_FIELD_MOD_HEALING_DONE_POS, val );
+			}break;
+		case SPELL_DAMAGE_DONE:
+			{
+				for(uint32 school=1;school < 7; ++school)
+				{
+					ModUnsigned32Value( PLAYER_FIELD_MOD_DAMAGE_DONE_POS + school, val );
+				}
+			}break;
+		case MANA_REGENERATION:
+			{
+				m_ModInterrMRegen += val;
+			}break;
+		case ARMOR_PENETRATION_RATING:
+			{
+//				ModUnsigned32Value(PLAYER_RATING_MODIFIER_ARMOR_PENETRATION_RATING, val);
 			}break;
 		case SPELL_POWER:
 			{

@@ -759,13 +759,12 @@ void Aura::Virtual_Destructor()
 
 void Aura::Remove()
 {
-	//just lol, this should be properly solved ?
-	{
-		if( m_deleted )
-			return;
-		m_deleted = true;
-	}
+	if( m_deleted )
+		return;
 
+	sLog.outDebug("Removing aura %u from unit %u", m_spellProto->Id, m_target->GetGUID());
+
+	m_deleted = true;
 	sEventMgr.RemoveEvents( this );
 
 	if( !IsPassive() || m_spellProto->AttributesEx & 1024 )
@@ -2868,7 +2867,7 @@ void Aura::EventPeriodicHeal( uint32 amount )
 		//removed by Zack : Why is this directly setting bonus to 0 ? It's not logical
 //		else bonus = 0;
 	}
-    //Downranking
+    /*Downranking
     if( c != NULL && c->IsPlayer() )
     {
 		if( m_spellProto->baseLevel > 0 && m_spellProto->maxLevel > 0 )
@@ -2883,7 +2882,7 @@ void Aura::EventPeriodicHeal( uint32 amount )
 
             bonus = float2int32( float( bonus ) * downrank1 * downrank2 );
         }
-    }
+    }*/
 
 	int add = ( bonus + amount > 0 ) ? bonus + amount : 0;
 	if( c != NULL )
@@ -5876,8 +5875,13 @@ void Aura::SpellAuraMounted(bool apply)
 		m_target->RemoveAura(id);
 	}*/
 
+	bool isVehicleSpell  = m_spellProto->Effect[1] == SPELL_EFFECT_SUMMON ? true : false;
+
 	if(apply)
 	{
+		if( isVehicleSpell ) 
+			SetDuration(100);
+
 		SetPositive();
 
 		//p_target->AdvanceSkillLine(762); // advance riding skill
