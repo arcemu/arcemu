@@ -691,8 +691,15 @@ void WorldSession::HandleAutoEquipItemOpcode( WorldPacket & recv_data )
 
 		if((error = _player->GetItemInterface()->CanEquipItemInSlot2(INVENTORY_SLOT_NOT_SET, Slot, eitem, true, true, titansgrip)) != 0)
 		{
-			_player->GetItemInterface()->BuildInventoryChangeError(eitem,NULL, error);
-			return;
+			if( Slot == EQUIPMENT_SLOT_OFFHAND && !titansgrip ) // Dual-wield 2h didn't work, auto-equip should try to replace the 2h now
+			{
+				Slot = EQUIPMENT_SLOT_MAINHAND;
+			}
+			else
+			{
+				_player->GetItemInterface()->BuildInventoryChangeError(eitem,NULL, error);
+				return;
+			}
 		}
 
 		if(eitem->GetProto()->InventoryType == INVTYPE_2HWEAPON)
