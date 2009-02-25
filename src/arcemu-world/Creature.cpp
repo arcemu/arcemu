@@ -155,7 +155,7 @@ void Creature::SafeDelete()
 {
 	sEventMgr.RemoveEvents(this);
 	//sEventMgr.AddEvent(World::getSingletonPtr(), &World::DeleteObject, ((Object*)this), EVENT_CREATURE_SAFE_DELETE, 1000, 1);
-	sEventMgr.AddEvent(this, &Creature::DeleteMe, EVENT_CREATURE_SAFE_DELETE, 2000, 1,EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
+	sEventMgr.AddEvent( this, &Creature::DeleteMe, EVENT_CREATURE_SAFE_DELETE, 2000, 1, EVENT_FLAG_DELETES_OBJECT );
 }
 
 void Creature::DeleteMe()
@@ -601,9 +601,12 @@ bool Creature::CanAddToWorld()
 	return true;
 }
 
-void Creature::RemoveFromWorld(bool addrespawnevent, bool free_guid)
+void Creature::RemoveFromWorld( bool addrespawnevent, bool free_guid )
 {
-	if (GetScript() != NULL )
+	//remove ai stuff
+	sEventMgr.RemoveEvents( this, EVENT_CREATURE_AISPELL );
+
+	if( GetScript() != NULL )
 	{
 		GetScript()->Destroy();
 		_myScriptClass = NULL;
@@ -611,16 +614,14 @@ void Creature::RemoveFromWorld(bool addrespawnevent, bool free_guid)
 
 	RemoveAllAuras();
 	
-	if(IsInWorld())
+	if( IsInWorld() )
 	{
 		uint32 delay = 0;
-		if(addrespawnevent && (m_respawnTimeOverride > 0 || (proto && proto->RespawnTime > 0)))
+		if( addrespawnevent && ( m_respawnTimeOverride > 0 || ( proto && proto->RespawnTime > 0 ) ) )
 			delay = m_respawnTimeOverride > 0 ? m_respawnTimeOverride : proto->RespawnTime;
-		Despawn(0, delay);
+		
+		Despawn( 0, delay );
 	}
-
-	//remove ai stuff
-	sEventMgr.RemoveEvents(this, EVENT_CREATURE_AISPELL);
 }
 
 void Creature::EnslaveExpire()
@@ -968,12 +969,13 @@ void Creature::TotemExpire()
 	totemSlot = -1;
 	totemOwner = NULL;
 
-	if( IsInWorld() )
-		RemoveFromWorld(false, true);
 	if(pOwner != NULL)
 		DestroyForPlayer(pOwner); //make sure the client knows it's gone...
 
-	SafeDelete();
+	if( IsInWorld() )
+		RemoveFromWorld( false, true );
+	else 
+		SafeDelete();
 }
 
 void Creature::FormationLinkUp(uint32 SqlId)
@@ -1706,8 +1708,10 @@ void Creature::AISpellUpdate()
 // this is used for guardians. They are non respawnable creatures linked to a player
 void Creature::SummonExpire()
 {
-	RemoveFromWorld(false, true);
-	SafeDelete();//delete creature totaly.
+	if( IsInWorld() )
+		RemoveFromWorld(false, true);
+	else
+		SafeDelete();
 }
 
 void Creature::Despawn(uint32 delay, uint32 respawntime)
