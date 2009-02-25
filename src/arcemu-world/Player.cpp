@@ -8122,8 +8122,9 @@ void Player::ZoneUpdate(uint32 ZoneId)
 	save_Zone();
 #endif
 	
-	GetMapMgr()->SendInitialStates(this);
-	
+	if( m_mapMgr != NULL )
+		m_mapMgr->SendInitialStates( this );
+
 	UpdateChannels(ZoneId);
 	/*std::map<uint32, AreaTable*>::iterator iter = sWorld.mZoneIDToTable.find(ZoneId);
 	if(iter == sWorld.mZoneIDToTable.end())
