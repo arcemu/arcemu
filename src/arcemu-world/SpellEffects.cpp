@@ -86,7 +86,7 @@ pSpellEffect SpellEffectsHandler[TOTAL_SPELL_EFFECTS]={
 		&Spell::SpellEffectPowerBurn,				//SPELL_EFFECT_POWER_BURN - 62
 		&Spell::SpellEffectThreat,					//SPELL_EFFECT_THREAT - 63
 		&Spell::SpellEffectTriggerSpell,			//SPELL_EFFECT_TRIGGER_SPELL - 64
-		&Spell::SpellEffectHealthFunnel,			//SPELL_EFFECT_HEALTH_FUNNEL - 65
+		&Spell::SpellEffectApplyAA,					//SPELL_EFFECT_APPLY_AREA_AURA2 - 65
 		&Spell::SpellEffectPowerFunnel,				//SPELL_EFFECT_POWER_FUNNEL - 66
 		&Spell::SpellEffectHealMaxHealth,			//SPELL_EFFECT_HEAL_MAX_HEALTH - 67
 		&Spell::SpellEffectInterruptCast,			//SPELL_EFFECT_INTERRUPT_CAST - 68
@@ -4402,13 +4402,12 @@ void Spell::SpellEffectTameCreature(uint32 i)
 
 void Spell::SpellEffectSummonPet(uint32 i) //summon - pet
 {
-	if(GetProto()->Id == 883)
-	{
-		// "Call Pet" spell
-		if(!p_caster)
-			return;
+	if( !p_caster )
+		return;
 
-		if(p_caster->GetSummon() != 0)
+	if( GetProto()->Id == 883 )// "Call Pet" spell
+	{
+		if( p_caster->GetSummon() != NULL )
 		{
 			p_caster->GetSession()->SendNotification("You already have a pet summoned.");
 			return;
@@ -4416,7 +4415,7 @@ void Spell::SpellEffectSummonPet(uint32 i) //summon - pet
 
 		uint32 petno = p_caster->GetUnstabledPetNumber();
 
-		if(petno)
+		if( petno )
 		{
 			p_caster->SpawnPet(petno);
 		}
@@ -4435,9 +4434,6 @@ void Spell::SpellEffectSummonPet(uint32 i) //summon - pet
 	//Succubus:lash of pain, soothing kiss, seduce , lesser invisibility
 	//felhunter:	 Devour Magic,Paranoia,Spell Lock,	Tainted Blood
  
-	if(!p_caster)
-		return;
-	
 	// remove old pet
 	Pet *old = static_cast< Player* >(m_caster)->GetSummon();
 	if(old)
@@ -4455,7 +4451,6 @@ void Spell::SpellEffectSummonPet(uint32 i) //summon - pet
 			p_caster->RemoveAura(18792);
 			p_caster->RemoveAura(35701);
 		}
-
 
 		Pet *summon = objmgr.CreatePet( GetProto()->EffectMiscValue[i] );
 		summon->CreateAsSummon( GetProto()->EffectMiscValue[i], ci, NULL, p_caster, GetProto(), 1, 0 );
@@ -4541,16 +4536,6 @@ void Spell::SpellEffectTriggerSpell(uint32 i) // Trigger Spell
 	Spell *sp = SpellPool.PooledNew();
 	sp->Init(m_caster,entry,true,NULL);
 	sp->prepare(&targets);
-}
-
-void Spell::SpellEffectHealthFunnel(uint32 i) // Health Funnel
-{
-	if(!unitTarget)
-		return;		
-	if(!unitTarget->isAlive() || !unitTarget->IsPet())
-		return;
-
-	//does not exist
 }
 
 void Spell::SpellEffectPowerFunnel(uint32 i) // Power Funnel
@@ -5590,7 +5575,10 @@ void Spell::SpellEffectSummonTotem(uint32 i) // Summon Totem
 		uint32 j;
 		for( j = 0; j < 3; ++j )
 		{
-			if( TotemSpell->Effect[j] == SPELL_EFFECT_APPLY_AREA_AURA || TotemSpell->Effect[j] == SPELL_EFFECT_PERSISTENT_AREA_AURA || TotemSpell->EffectApplyAuraName[j] == SPELL_AURA_PERIODIC_TRIGGER_SPELL )
+			if( TotemSpell->Effect[j] == SPELL_EFFECT_APPLY_AREA_AURA || 
+				TotemSpell->Effect[j] == SPELL_EFFECT_APPLY_AREA_AURA2 ||
+				TotemSpell->Effect[j] == SPELL_EFFECT_PERSISTENT_AREA_AURA || 
+				TotemSpell->EffectApplyAuraName[j] == SPELL_AURA_PERIODIC_TRIGGER_SPELL )
 			{
 				break;
 			}

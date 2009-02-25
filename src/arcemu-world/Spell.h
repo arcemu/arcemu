@@ -839,7 +839,7 @@ enum SpellEffects
 	SPELL_EFFECT_POWER_BURN,                //    62
 	SPELL_EFFECT_THREAT,                    //    63
 	SPELL_EFFECT_TRIGGER_SPELL,             //    64
-	SPELL_EFFECT_HEALTH_FUNNEL,             //    65
+	SPELL_EFFECT_APPLY_AREA_AURA2,			//    65
 	SPELL_EFFECT_POWER_FUNNEL,              //    66
 	SPELL_EFFECT_HEAL_MAX_HEALTH,           //    67
 	SPELL_EFFECT_INTERRUPT_CAST,            //    68
@@ -1091,7 +1091,8 @@ ARCEMU_INLINE bool IsDamagingSpell(SpellEntry *sp)
             return true;
     }
     if( sp->Effect[0]==SPELL_EFFECT_APPLY_AURA ||
-       sp->Effect[0]==SPELL_EFFECT_APPLY_AREA_AURA)
+		sp->Effect[0]==SPELL_EFFECT_APPLY_AREA_AURA ||
+		sp->Effect[0]==SPELL_EFFECT_APPLY_AREA_AURA2 )
     {
         switch (sp->EffectApplyAuraName[0])
         {
@@ -1103,7 +1104,8 @@ ARCEMU_INLINE bool IsDamagingSpell(SpellEntry *sp)
         }
     }
     if( sp->Effect[1]==SPELL_EFFECT_APPLY_AURA ||
-        sp->Effect[1]==SPELL_EFFECT_APPLY_AREA_AURA)
+        sp->Effect[1]==SPELL_EFFECT_APPLY_AREA_AURA ||
+		sp->Effect[1]==SPELL_EFFECT_APPLY_AREA_AURA2 )
     {
         switch (sp->EffectApplyAuraName[1])
         {
@@ -1115,7 +1117,8 @@ ARCEMU_INLINE bool IsDamagingSpell(SpellEntry *sp)
         }
     }
     if( sp->Effect[2]==SPELL_EFFECT_APPLY_AURA ||
-        sp->Effect[2]==SPELL_EFFECT_APPLY_AREA_AURA)
+        sp->Effect[2]==SPELL_EFFECT_APPLY_AREA_AURA ||
+		sp->Effect[2]==SPELL_EFFECT_APPLY_AREA_AURA2 )
     {
         switch (sp->EffectApplyAuraName[2])
         {
@@ -1135,7 +1138,6 @@ ARCEMU_INLINE uint32 IsHealingSpell(SpellEntry *sp)
     {
         case SPELL_EFFECT_HEALTH_LEECH:
         case SPELL_EFFECT_HEAL:
-        case SPELL_EFFECT_HEALTH_FUNNEL:
         case SPELL_EFFECT_HEAL_MAX_HEALTH:
             return 1;
 		default: break;
@@ -1144,7 +1146,6 @@ ARCEMU_INLINE uint32 IsHealingSpell(SpellEntry *sp)
     {
         case SPELL_EFFECT_HEALTH_LEECH:
         case SPELL_EFFECT_HEAL:
-        case SPELL_EFFECT_HEALTH_FUNNEL:
         case SPELL_EFFECT_HEAL_MAX_HEALTH:
             return 2;
 		default: break;
@@ -1153,13 +1154,13 @@ ARCEMU_INLINE uint32 IsHealingSpell(SpellEntry *sp)
     {
         case SPELL_EFFECT_HEALTH_LEECH:
         case SPELL_EFFECT_HEAL:
-        case SPELL_EFFECT_HEALTH_FUNNEL:
         case SPELL_EFFECT_HEAL_MAX_HEALTH:
             return 3;
 		default: break;
     }
     if( sp->Effect[0] == SPELL_EFFECT_APPLY_AURA ||
-		sp->Effect[0] == SPELL_EFFECT_APPLY_AREA_AURA )
+		sp->Effect[0] == SPELL_EFFECT_APPLY_AREA_AURA ||
+		sp->Effect[0] == SPELL_EFFECT_APPLY_AREA_AURA2 )
     {
         switch( sp->EffectApplyAuraName[0] )
         {
@@ -1170,7 +1171,8 @@ ARCEMU_INLINE uint32 IsHealingSpell(SpellEntry *sp)
         }
     }
     if( sp->Effect[1] == SPELL_EFFECT_APPLY_AURA ||
-        sp->Effect[1] == SPELL_EFFECT_APPLY_AREA_AURA )
+        sp->Effect[1] == SPELL_EFFECT_APPLY_AREA_AURA ||
+		sp->Effect[1] == SPELL_EFFECT_APPLY_AREA_AURA2 )
     {
         switch (sp->EffectApplyAuraName[1])
         {
@@ -1181,7 +1183,8 @@ ARCEMU_INLINE uint32 IsHealingSpell(SpellEntry *sp)
         }
     }
     if( sp->Effect[2] == SPELL_EFFECT_APPLY_AURA ||
-        sp->Effect[2] == SPELL_EFFECT_APPLY_AREA_AURA )
+        sp->Effect[2] == SPELL_EFFECT_APPLY_AREA_AURA ||
+		sp->Effect[2] == SPELL_EFFECT_APPLY_AREA_AURA2 )
     {
         switch( sp->EffectApplyAuraName[2] )
         {
@@ -1700,7 +1703,6 @@ public:
     void SpellEffectPowerBurn(uint32 i);
     void SpellEffectThreat(uint32 i);
     void SpellEffectTriggerSpell(uint32 i);
-    void SpellEffectHealthFunnel(uint32 i);
     void SpellEffectPowerFunnel(uint32 i);
     void SpellEffectHealMaxHealth(uint32 i);
     void SpellEffectInterruptCast(uint32 i);

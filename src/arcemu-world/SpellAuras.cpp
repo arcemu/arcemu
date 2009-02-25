@@ -783,7 +783,8 @@ void Aura::Remove()
 			if ( dbcSpell.LookupEntryForced( GetSpellProto()->EffectTriggerSpell[x] )->DurationIndex < m_spellProto->DurationIndex )
 			m_target->RemoveAura(GetSpellProto()->EffectTriggerSpell[x]);
 		}
-		else if( m_spellProto->Effect[x] == SPELL_EFFECT_APPLY_AREA_AURA && m_casterGuid == m_target->GetGUID())
+		else if( ( m_spellProto->Effect[x] == SPELL_EFFECT_APPLY_AREA_AURA || m_spellProto->Effect[x] == SPELL_EFFECT_APPLY_AREA_AURA2 )
+			&& m_casterGuid == m_target->GetGUID() )
 		{
 			RemoveAA();
 		}
@@ -1004,7 +1005,8 @@ void Aura::EventUpdateAA(float r)
 			for(i = 0; i < m_modcount; ++i)
 			{
 				/* is this an area aura modifier? */
-				if(m_spellProto->Effect[m_modList[i].i] == SPELL_EFFECT_APPLY_AREA_AURA)
+				if( m_spellProto->Effect[m_modList[i].i] == SPELL_EFFECT_APPLY_AREA_AURA || 
+					m_spellProto->Effect[m_modList[i].i] == SPELL_EFFECT_APPLY_AREA_AURA2 )
 				{
 					if(!aura)
 					{
@@ -1066,7 +1068,8 @@ void Aura::EventUpdateAA(float r)
 					for(i = 0; i < m_modcount; ++i)
 					{
 						/* is this an area aura modifier? */
-						if(m_spellProto->Effect[m_modList[i].i] == SPELL_EFFECT_APPLY_AREA_AURA)
+						if( m_spellProto->Effect[m_modList[i].i] == SPELL_EFFECT_APPLY_AREA_AURA ||
+							m_spellProto->Effect[m_modList[i].i] == SPELL_EFFECT_APPLY_AREA_AURA2 )
 						{
 							if(!aura)
 							{

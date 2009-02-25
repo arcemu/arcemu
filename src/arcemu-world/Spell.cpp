@@ -1022,7 +1022,7 @@ void Spell::GenerateTargets(SpellCastTargets *store_buff)
 										bool applies_aura=false;
 										for (int i=0; i<3; i++)
 										{
-											if (GetProto()->Effect[i] == SPELL_EFFECT_APPLY_AURA || GetProto()->Effect[i] == SPELL_EFFECT_APPLY_AREA_AURA)
+											if (GetProto()->Effect[i] == SPELL_EFFECT_APPLY_AURA || GetProto()->Effect[i] == SPELL_EFFECT_APPLY_AREA_AURA || GetProto()->Effect[i] == SPELL_EFFECT_APPLY_AREA_AURA2 )
 											{
 												applies_aura=true;
 												break;
@@ -1157,7 +1157,7 @@ void Spell::GenerateTargets(SpellCastTargets *store_buff)
 								bool applies_aura=false;
 								for (int i=0; i<3; i++)
 								{
-									if (m_spellInfo->Effect[i] == SPELL_EFFECT_APPLY_AURA || m_spellInfo->Effect[i] == SPELL_EFFECT_APPLY_AREA_AURA)
+									if (m_spellInfo->Effect[i] == SPELL_EFFECT_APPLY_AURA || m_spellInfo->Effect[i] == SPELL_EFFECT_APPLY_AREA_AURA || m_spellInfo->Effect[i] == SPELL_EFFECT_APPLY_AREA_AURA2 )
 									{
 										applies_aura=true;
 										break;
@@ -3298,7 +3298,7 @@ uint8 Spell::CanCast(bool tolerate)
 			for(i = 0; i < 3; ++i)
 			{
 				if( GetProto()->Effect[i] && GetProto()->Effect[i] != SPELL_EFFECT_APPLY_AURA && GetProto()->Effect[i] != SPELL_EFFECT_APPLY_PET_AURA
-					&& GetProto()->Effect[i] != SPELL_EFFECT_APPLY_AREA_AURA)
+					&& GetProto()->Effect[i] != SPELL_EFFECT_APPLY_AREA_AURA && GetProto()->Effect[i] != SPELL_EFFECT_APPLY_AREA_AURA2 )
 				{
 					return SPELL_FAILED_TARGET_DUELING;
 				}
