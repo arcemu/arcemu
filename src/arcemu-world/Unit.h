@@ -1215,7 +1215,6 @@ public:
 
 	ARCEMU_INLINE uint32 GetCharmTempVal() { return m_charmtemp; }
 	ARCEMU_INLINE void SetCharmTempVal(uint32 val) { m_charmtemp = val; }
-	set<uint32> m_SpellList;
 
 	ARCEMU_INLINE void DisableAI() { m_useAI = false; }
 	ARCEMU_INLINE void EnableAI() { m_useAI = true; }

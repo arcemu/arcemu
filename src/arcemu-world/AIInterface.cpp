@@ -171,6 +171,7 @@ AIInterface::~AIInterface()
 {
 	for(list<AI_Spell*>::iterator itr = m_spells.begin(); itr != m_spells.end(); ++itr)
 			delete (*itr);
+	m_spells.clear();
 }
 
 void AIInterface::Init(Unit *un, AIType at, MovementType mt, Unit *owner)
@@ -3537,8 +3538,6 @@ void AIInterface::addSpellToList(AI_Spell *sp)
 	AI_Spell * sp2 = new AI_Spell;
 	memcpy(sp2, sp, sizeof(AI_Spell));
 	m_spells.push_back(sp2);
-
-	m_Unit->m_SpellList.insert(sp2->spell->Id); // add to list
 }
 
 uint32 AIInterface::getThreatByGUID(uint64 guid)
