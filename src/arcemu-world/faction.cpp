@@ -459,8 +459,8 @@ bool isCombatSupport(Object* objA, Object* objB)// B combat supports A?
 	if(objB->GetTypeId() == TYPEID_CORPSE)
 		return false;
 
-//	if(objB->m_faction == 0 || objA->m_faction == 0)
-//		return false;
+	if ( objA->GetTypeId()!=TYPEID_UNIT || objB->GetTypeId()!=TYPEID_UNIT ) return false; // cebernic: lowchance crashfix.
+	// also if it's not a unit, it shouldn't support combat anyways.
 
 	if( objA->IsPet() || objB->IsPet() ) // fixes an issue where horde pets would chain aggro horde guards and vice versa for alliance.
 		return false;
