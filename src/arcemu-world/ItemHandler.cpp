@@ -656,8 +656,6 @@ void WorldSession::HandleAutoEquipItemOpcode( WorldPacket & recv_data )
 	AddItemResult result;
 	int8 SrcInvSlot, SrcSlot, error=0;
 	
-	bool titansgrip = GetPlayer()->HasSpell(46917);
-
 	recv_data >> SrcInvSlot >> SrcSlot;
 
 	sLog.outDetail("ITEM: autoequip, Inventory slot: %i Source Slot: %i", SrcInvSlot, SrcSlot); 
@@ -677,32 +675,68 @@ void WorldSession::HandleAutoEquipItemOpcode( WorldPacket & recv_data )
 		return;
 	}
 
-	// handle equipping of 2h when we have two items equipped! :) special case.
+	bool titansgrip = false; // with Titan's Grip: 2h Axe, 2h Mace, and 2h Sword count as 1h weapon (allow dual wield or shield)
+	bool main1h = false;
+	bool eitem1h = false;
+	bool dualwield = false;
+
 	if(Slot == EQUIPMENT_SLOT_MAINHAND || Slot == EQUIPMENT_SLOT_OFFHAND)
 	{
+		titansgrip = GetPlayer()->HasSpell(46917);
+		dualwield = GetPlayer()->_HasSkillLine(SKILL_DUAL_WIELD);
 		Item * mainhandweapon = _player->GetItemInterface()->GetInventoryItem(INVENTORY_SLOT_NOT_SET, EQUIPMENT_SLOT_MAINHAND);
-		if( mainhandweapon != NULL && mainhandweapon->GetProto()->InventoryType == INVTYPE_2HWEAPON )
+		if(mainhandweapon!=NULL && (mainhandweapon->GetProto()->InventoryType==INVTYPE_WEAPON ||     // 1h weapon
+			mainhandweapon->GetProto()->InventoryType==INVTYPE_WEAPONMAINHAND ||                      // main hand (1h) weapon
+			(titansgrip && (mainhandweapon->GetProto()->SubClass==ITEM_SUBCLASS_WEAPON_TWOHAND_AXE || // titan's grip - treat 2h axe,
+			mainhandweapon->GetProto()->SubClass==ITEM_SUBCLASS_WEAPON_TWOHAND_MACE ||                // 2h mace
+			mainhandweapon->GetProto()->SubClass==ITEM_SUBCLASS_WEAPON_TWOHAND_SWORD) ) ) )           // 2h sword as 1h
 		{
-			if( Slot == EQUIPMENT_SLOT_OFFHAND && eitem->GetProto()->InventoryType == INVTYPE_WEAPON )
+			main1h = true;
+		}
+		switch(eitem->GetProto()->InventoryType)
+		{
+			case INVTYPE_WEAPON:
+			case INVTYPE_WEAPONMAINHAND:
+			case INVTYPE_WEAPONOFFHAND:
+				eitem1h = true; // actual 1h weapon
+				break;
+			case INVTYPE_2HWEAPON: // actual 2h weapon, check titan's grip and weapon type to see if it counts as 1h weapon
+				if(titansgrip && (eitem->GetProto()->SubClass==ITEM_SUBCLASS_WEAPON_TWOHAND_AXE || // 2h axe
+					eitem->GetProto()->SubClass==ITEM_SUBCLASS_WEAPON_TWOHAND_MACE ||               // 2h mace
+					eitem->GetProto()->SubClass==ITEM_SUBCLASS_WEAPON_TWOHAND_SWORD) )              // 2h sword
+				{
+					eitem1h = true; // these count as 1h weapons with titan's grip
+				}
+				break;
+			default: // not a 1h or 2h weapon, other (off-hand) item
+				eitem1h = true;
+				Slot = EQUIPMENT_SLOT_OFFHAND;
+				break;
+		}
+		if(Slot == EQUIPMENT_SLOT_OFFHAND) // check whether it should really go in main hand
+		{
+			if(!dualwield) // not dual-wielding
+			{
+				if(eitem->GetProto()->InventoryType==INVTYPE_WEAPON || eitem->GetProto()->InventoryType==INVTYPE_2HWEAPON || eitem->GetProto()->InventoryType==INVTYPE_WEAPONMAINHAND) // equipping a weapon, should go in main hand.
+				{
+					Slot = EQUIPMENT_SLOT_MAINHAND;
+				}
+			}
+			else if(!eitem1h) // dual-wield is available, but equipping 2h weapon, so replace mainhand weapon
+			{
+				Slot = EQUIPMENT_SLOT_MAINHAND;
+			}
+			else if(!main1h) // dual-wield is available, but main hand is 2h weapon, so replace it
 			{
 				Slot = EQUIPMENT_SLOT_MAINHAND;
 			}
 		}
-
 		if((error = _player->GetItemInterface()->CanEquipItemInSlot2(INVENTORY_SLOT_NOT_SET, Slot, eitem, true, true, titansgrip)) != 0)
 		{
-			if( Slot == EQUIPMENT_SLOT_OFFHAND && !titansgrip ) // Dual-wield 2h didn't work, auto-equip should try to replace the 2h now
-			{
-				Slot = EQUIPMENT_SLOT_MAINHAND;
-			}
-			else
-			{
-				_player->GetItemInterface()->BuildInventoryChangeError(eitem,NULL, error);
-				return;
-			}
+			_player->GetItemInterface()->BuildInventoryChangeError(eitem,NULL, error);
+			return;
 		}
-
-		if(eitem->GetProto()->InventoryType == INVTYPE_2HWEAPON)
+		if(!eitem1h)
 		{
 			// see if we have a weapon equipped in the offhand, if so we need to remove it
 			Item * offhandweapon = _player->GetItemInterface()->GetInventoryItem(INVENTORY_SLOT_NOT_SET, EQUIPMENT_SLOT_OFFHAND);
@@ -726,11 +760,10 @@ void WorldSession::HandleAutoEquipItemOpcode( WorldPacket & recv_data )
 						offhandweapon->DeleteMe();
 			}
 		}
-		else
+		else if(!main1h)
 		{
 			// can't equip a non-two-handed weapon with a two-handed weapon
-			mainhandweapon = _player->GetItemInterface()->GetInventoryItem(INVENTORY_SLOT_NOT_SET, EQUIPMENT_SLOT_MAINHAND);
-			if( mainhandweapon != NULL && mainhandweapon->GetProto()->InventoryType == INVTYPE_2HWEAPON )
+			if( mainhandweapon )
 			{
 				// we need to de-equip this
 				SlotResult result = _player->GetItemInterface()->FindFreeInventorySlot(mainhandweapon->GetProto());
@@ -751,18 +784,17 @@ void WorldSession::HandleAutoEquipItemOpcode( WorldPacket & recv_data )
 			}
 		}
 	}
-	else
+	else if( Slot <= INVENTORY_SLOT_BAG_END )
 	{
-		if((error = _player->GetItemInterface()->CanEquipItemInSlot2(INVENTORY_SLOT_NOT_SET, Slot, eitem)) != 0)
+		if((error = _player->GetItemInterface()->CanEquipItemInSlot2(INVENTORY_SLOT_NOT_SET, Slot, eitem, false, false, titansgrip)) != 0)
 		{
 			_player->GetItemInterface()->BuildInventoryChangeError(eitem,NULL, error);
 			return;
 		}
 	}
-
-	if( Slot <= INVENTORY_SLOT_BAG_END )
+	else
 	{
-		if((error = _player->GetItemInterface()->CanEquipItemInSlot2(INVENTORY_SLOT_NOT_SET, Slot, eitem, false, false, titansgrip)) != 0)
+		if((error = _player->GetItemInterface()->CanEquipItemInSlot2(INVENTORY_SLOT_NOT_SET, Slot, eitem)) != 0)
 		{
 			_player->GetItemInterface()->BuildInventoryChangeError(eitem,NULL, error);
 			return;
@@ -784,7 +816,7 @@ void WorldSession::HandleAutoEquipItemOpcode( WorldPacket & recv_data )
 			result = _player->GetItemInterface()->SafeAddItem(oitem,SrcInvSlot,SrcSlot);
 			if(!result)
 			{
-				printf("HandleAutoEquip: Error while adding item to SrcSlot");
+				sLog.outError("HandleAutoEquip: Error while adding item to SrcSlot");
 				oitem->DeleteMe();
 				oitem = NULL;
 			}
@@ -792,7 +824,7 @@ void WorldSession::HandleAutoEquipItemOpcode( WorldPacket & recv_data )
 		result = _player->GetItemInterface()->SafeAddItem(eitem, INVENTORY_SLOT_NOT_SET, Slot);
 		if(!result)
 		{
-			printf("HandleAutoEquip: Error while adding item to Slot");
+			sLog.outError("HandleAutoEquip: Error while adding item to Slot");
 			eitem->DeleteMe();
 			eitem = NULL;
 			return;

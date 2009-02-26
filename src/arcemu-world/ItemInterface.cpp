@@ -1795,7 +1795,7 @@ int8 ItemInterface::CanEquipItemInSlot(int8 DstInvSlot, int8 slot, ItemPrototype
 				{
 					if(mainweapon->GetProto())
 					{
-						if(mainweapon->GetProto()->InventoryType != INVTYPE_2HWEAPON)
+						if(mainweapon->GetProto()->InventoryType != INVTYPE_2HWEAPON || titansgrip)
 						{
 							return 0;
 						}
