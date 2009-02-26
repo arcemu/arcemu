@@ -127,6 +127,7 @@ public:
 		free( avail_list );
 		avail_list = NULL;
 		avail_indexes.clear();
+		delete this;
 	}
 private:
 	void InitPoolNewSection(uint32 from, uint32 to)
