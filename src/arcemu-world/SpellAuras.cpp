@@ -8147,7 +8147,7 @@ void Aura::SpellAuraModHealingDone(bool apply)
 	else
 		val = -mod->m_amount;
 
-	val = (int32)(val*1.87);
+	val = (int32)( float( val ) * 1.88f );
 
 	for(uint32 x=0;x<7;x++)
 	{

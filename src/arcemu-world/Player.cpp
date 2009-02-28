@@ -9600,13 +9600,12 @@ void Player::ModifyBonuses( uint32 type, int32 val, bool apply )
 			}break;
 		case SPELL_POWER:
 			{
-				for(uint8 school=1;school < 7; ++school)
+				for( uint8 school = 1; school < 7; ++school )
 				{
 					ModUnsigned32Value( PLAYER_FIELD_MOD_DAMAGE_DONE_POS + school, val );
 					HealDoneMod[school] += val;
 				}
-				// not sure if spell power conversion for healing is correct (will double check soon)
-				ModUnsigned32Value( PLAYER_FIELD_MOD_HEALING_DONE_POS, uint32( float( val ) / 1.88f ) );
+				ModUnsigned32Value( PLAYER_FIELD_MOD_HEALING_DONE_POS, uint32( float( val ) * 1.88f ) );
 			}break;
 		}
 }
