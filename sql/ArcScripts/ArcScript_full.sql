@@ -1,4 +1,4 @@
-/* moonplusplus_full.sql
+/* ArcScript_full.sql
 This file contains every SQL query needed by our blizzlike scripts
 Modded by ArcEmu Development Team */
 
@@ -160,10 +160,10 @@ INSERT INTO creature_spawns (`entry`, `map`, `position_x`, `position_y`, `positi
 (22917, 564, 704.539, 305.282, 353.919, 6.14417, 0, 21135, 1825, 256, 0, 0, 0, 0, 0, 0, 0, 32837, 32838),
 (30001, 564, 771.5, 304.7, 319, 3.10568, 0, 15294, 35, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
 
-REPLACE INTO gameobject_names (entry, Type, DisplayID, Name, spellfocus, sound1, sound2, sound3, sound4, sound5, sound6, sound7, sound8, sound9, unknown1, unknown2, unknown3, unknown4, unknown5, unknown6, unknown7, unknown8, unknown9, unknown10, unknown11, unknown12, unknown13, unknown14) VALUES 
-(185905, 0, 7388, "Gate", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
-(200000, 0, 7421, 'BT_ILLIDAN_DOOR_RIGHT', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
-(200001, 0, 7422, 'BT_ILLIDAN_DOOR_LEFT', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+REPLACE INTO gameobject_names (entry, Type, DisplayID, Name, Name2, Name3, Name4, Category, CastBarText, UnkStr, spellfocus, sound1, sound2, sound3, sound4, sound5, sound6, sound7, sound8, sound9, unknown1, unknown2, unknown3, unknown4, unknown5, unknown6, unknown7, unknown8, unknown9, unknown10, unknown11, unknown12, unknown13, unknown14) VALUES 
+(185905, 0, 7388, "Gate", '', '', '', '', '', '', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
+(200000, 0, 7421, 'BT_ILLIDAN_DOOR_RIGHT', '', '', '', '', '', '', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
+(200001, 0, 7422, 'BT_ILLIDAN_DOOR_LEFT', '', '', '', '', '', '', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
 
 delete from gameobject_spawns where entry in (185905, 200000, 200001);
 INSERT INTO gameobject_spawns (Entry, map, position_x, position_y, position_z, Facing, orientation1, orientation2, orientation3, orientation4, State, Flags, Faction, Scale, stateNpcLink) VALUES 
@@ -224,10 +224,10 @@ INSERT INTO creature_spawns (`entry`, `map`, `position_x`, `position_y`, `positi
 (15990, 533, 3749.95, -5113.46, 142.03, 2.92278, 0, 15945, 14, 0, 0, 0, 0, 0, 0, 0, 0),
 (30002, 533, 3767.58, -5117.15, 174.49, 2.95544, 0, 15294, 14, 33554432, 0, 0, 0, 0, 0, 0, 0);
 
-REPLACE INTO gameobject_names (`entry`, `Type`, `DisplayID`, `Name`, `spellfocus`, `sound1`, `sound2`, `sound3`, `sound4`, `sound5`, `sound6`, `sound7`, `sound8`, `sound9`, `unknown1`, `unknown2`, `unknown3`, `unknown4`, `unknown5`, `unknown6`, `unknown7`, `unknown8`, `unknown9`, `unknown10`, `unknown11`, `unknown12`, `unknown13`, `unknown14`) VALUES 
-(181228, 0, 6675, 'KelThuzad Door', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
-(181640, 7, 6690, 'Doodad_kelthuzad_throne02', 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
-(200002, 0, 6770, 'KELTHUZAD_WINDOW_PORTAL', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+REPLACE INTO gameobject_names (`entry`, `Type`, `DisplayID`, `Name`, `Name2`, `Name3`, `Name4`, `category`, `CastBarText`, `UnkStr`, `spellfocus`, `sound1`, `sound2`, `sound3`, `sound4`, `sound5`, `sound6`, `sound7`, `sound8`, `sound9`, `unknown1`, `unknown2`, `unknown3`, `unknown4`, `unknown5`, `unknown6`, `unknown7`, `unknown8`, `unknown9`, `unknown10`, `unknown11`, `unknown12`, `unknown13`, `unknown14`) VALUES 
+(181228, 0, 6675, 'KelThuzad Door', '', '', '', '', '', '', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
+(181640, 7, 6690, 'Doodad_kelthuzad_throne02', '', '', '', '', '', '', 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
+(200002, 0, 6770, 'KELTHUZAD_WINDOW_PORTAL', '', '', '', '', '', '', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
 
 DELETE FROM gameobject_spawns WHERE Entry IN (181640, 181228, 200002);
 INSERT INTO gameobject_spawns (`Entry`, `map`, `position_x`, `position_y`, `position_z`, `Facing`, `orientation1`, `orientation2`, `orientation3`, `orientation4`, `State`, `Flags`, `Faction`, `Scale`, `stateNpcLink`) VALUES 
@@ -254,8 +254,8 @@ INSERT INTO `creature_proto` (`entry`, `minlevel`, `maxlevel`, `faction`, `minhe
 ('50011','70','70','21','100000','100000','0','1','0','10000',0,'0','0','0','0','0','0','0','0','0','0','0','0','0','1','1','0','0',0,'0','0','0','0','0',0),
 ('50012','70','70','21','100000','100000','0','3','0','10000',0,'0','0','0','0','0','0','0','0','0','0','0','0','0','1','1','0','0',0,'0','0','0','0','0',0),
 ('50013','70','70','21','100000','100000','0','1','0','10000',0,'0','0','0','0','0','0','0','0','0','0','0','0','0','1','1','0','0',0,'0','0','0','0','0',0);
-INSERT INTO `gameobject_names` (`entry`, `Type`, `DisplayID`, `Name`, `spellfocus`, `sound1`, `sound2`, `sound3`, `sound4`, `sound5`, `sound6`, `sound7`, `sound8`, `sound9`, `unknown1`, `unknown2`, `unknown3`, `unknown4`, `unknown5`, `unknown6`, `unknown7`, `unknown8`, `unknown9`, `unknown10`, `unknown11`, `unknown12`, `unknown13`, `unknown14`) VALUES
-('181225','0','6695','Frostwyrm Waterfall Door','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0');
+INSERT INTO `gameobject_names` (`entry`, `Type`, `DisplayID`, `Name`, `Name2`, `Name3`, `Name4`, `category`, `CastBarText`, `UnkStr`, `spellfocus`, `sound1`, `sound2`, `sound3`, `sound4`, `sound5`, `sound6`, `sound7`, `sound8`, `sound9`, `unknown1`, `unknown2`, `unknown3`, `unknown4`, `unknown5`, `unknown6`, `unknown7`, `unknown8`, `unknown9`, `unknown10`, `unknown11`, `unknown12`, `unknown13`, `unknown14`) VALUES
+('181225','0','6695','Frostwyrm Waterfall Door','','','','','','','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0');
 INSERT INTO `gameobject_spawns` (`Entry`, `map`, `position_x`, `position_y`, `position_z`, `Facing`, `orientation1`, `orientation2`, `orientation3`, `orientation4`, `State`, `Flags`, `Faction`, `Scale`, `stateNpcLink`) VALUES
 ('181225','533','3536.9','-5159.75','143.666','4.51997','0','0','0.771762','-0.635911','0','1','0','1','0');
 
@@ -290,16 +290,16 @@ INSERT INTO `creature_spawns` (`entry`, `map`, `position_x`, `position_y`, `posi
 (17474,544,'-29.691','29.643','-0.034676','0.478655',12,'15435',35,0,16777472,4097,0,0,0,0,0,0),
 (133338,544,'-16.6199','2.19251','-0.405228','2.98687',0,'169',35,33554432,0,0,0,0,0,0,0,0);
 
-REPLACE INTO `gameobject_names` (`entry`, `Type`, `DisplayID`, `Name`, `spellfocus`, `sound1`, `sound2`, `sound3`, `sound4`, `sound5`, `sound6`, `sound7`, `sound8`, `sound9`, `unknown1`, `unknown2`, `unknown3`, `unknown4`, `unknown5`, `unknown6`, `unknown7`, `unknown8`, `unknown9`, `unknown10`, `unknown11`, `unknown12`, `unknown13`, `unknown14`) VALUES
-('181713','10','6896','Manticron Cube','0','0','0','65536','0','0','0','0','0','0','30420','0','0','1','0','0','0','0','0','0','0','0','0','0'),
-('183847','0','7093','Doodad_HF_Mag_door01','1','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0'),
-('184634','0','7206','Magtheridon Column 003','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0'),
-('184635','0','7206','Magtheridon Column 002','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0'),
-('184636','0','7206','Magtheridon Column 004','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0'),
-('184637','0','7206','Magtheridon Column 005','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0'),
-('184638','0','7206','Magtheridon Column 000','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0'),
-('184639','0','7206','Magtheridon Column 001','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0'),
-('184653','0','7208','Doodad_Hellfire_Raid_FX01','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0');
+REPLACE INTO `gameobject_names` (`entry`, `Type`, `DisplayID`, `Name`, `Name2`, `Name3`, `Name4`, `category`, `CastBarText`, `UnkStr`, `spellfocus`, `sound1`, `sound2`, `sound3`, `sound4`, `sound5`, `sound6`, `sound7`, `sound8`, `sound9`, `unknown1`, `unknown2`, `unknown3`, `unknown4`, `unknown5`, `unknown6`, `unknown7`, `unknown8`, `unknown9`, `unknown10`, `unknown11`, `unknown12`, `unknown13`, `unknown14`) VALUES
+('181713','10','6896','Manticron Cube','','','','','','','0','0','0','65536','0','0','0','0','0','0','30420','0','0','1','0','0','0','0','0','0','0','0','0','0'),
+('183847','0','7093','Doodad_HF_Mag_door01','','','','','','','1','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0'),
+('184634','0','7206','Magtheridon Column 003','','','','','','','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0'),
+('184635','0','7206','Magtheridon Column 002','','','','','','','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0'),
+('184636','0','7206','Magtheridon Column 004','','','','','','','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0'),
+('184637','0','7206','Magtheridon Column 005','','','','','','','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0'),
+('184638','0','7206','Magtheridon Column 000','','','','','','','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0'),
+('184639','0','7206','Magtheridon Column 001','','','','','','','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0'),
+('184653','0','7208','Doodad_Hellfire_Raid_FX01','','','','','','','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0');
 
 DELETE FROM gameobject_spawns WHERE entry IN (181713, 183847, 184634, 184635, 184636, 184637, 184638, 184639, 184653) AND map = 544;
 INSERT INTO `gameobject_spawns` (`Entry`, `map`, `position_x`, `position_y`, `position_z`, `Facing`, `orientation1`, `orientation2`, `orientation3`, `orientation4`, `State`, `Flags`, `Faction`, `Scale`, `stateNpcLink`) VALUES
@@ -378,8 +378,8 @@ UPDATE creature_proto SET faction=14 WHERE entry IN (21875, 21215);
 UPDATE creature_names SET male_displayid =11686,female_displayid =0 WHERE entry =19870;
 UPDATE creature_proto SET faction=14 WHERe entry IN (21212, 21958, 22055, 22056);
 UPDATE creature_spawns SET faction=14 WHERE entry IN (21212, 21958, 22055, 22056);
-INSERT IGNORE INTO `gameobject_names` (`entry`, `Type`, `DisplayID`, `Name`, `spellfocus`, `sound1`, `sound2`, `sound3`, `sound4`, `sound5`, `sound6`, `sound7`, `sound8`, `sound9`, `unknown1`, `unknown2`, `unknown3`, `unknown4`, `unknown5`, `unknown6`, `unknown7`, `unknown8`, `unknown9`, `unknown10`, `unknown11`, `unknown12`, `unknown13`, `unknown14`) VALUES
-(185051, 0, 7265, 'Shield Generator', 0, 1718, 131072, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+INSERT IGNORE INTO `gameobject_names` (`entry`, `Type`, `DisplayID`, `Name`, `Name2`, `Name3`, `Name4`, `category`, `CastBarText`, `UnkStr`, `spellfocus`, `sound1`, `sound2`, `sound3`, `sound4`, `sound5`, `sound6`, `sound7`, `sound8`, `sound9`, `unknown1`, `unknown2`, `unknown3`, `unknown4`, `unknown5`, `unknown6`, `unknown7`, `unknown8`, `unknown9`, `unknown10`, `unknown11`, `unknown12`, `unknown13`, `unknown14`) VALUES
+(185051, 0, 7265, 'Shield Generator', '', '', '', '', '', '', 0, 1718, 131072, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
 DELETE FROM gameobject_spawns WHERE entry=185051;
 INSERT INTO `gameobject_spawns` (`Entry`, `map`, `position_x`, `position_y`, `position_z`, `Facing`, `orientation1`, `orientation2`, `orientation3`, `orientation4`, `State`, `Flags`, `Faction`, `Scale`, `stateNpcLink`) VALUES
 (185051, 548, 49.256, -902.354, 42.9769, 3.93902, 0, 0, 0.929729, -0.368245, 1, 0, 0, 1.5, 0),
@@ -410,9 +410,9 @@ UPDATE `gameobject_names` SET `spellfocus` = '1390' WHERE `entry` = 300142;
 DELETE FROM `gameobject_names` WHERE `spellfocus` = '1399';
 
 INSERT INTO gameobject_names
-  (entry, Type, DisplayID, Name, spellfocus, sound1, sound2, sound3, sound4, sound5, sound6, sound7, sound8, sound9, unknown1, unknown2, unknown3, unknown4, unknown5, unknown6, unknown7, unknown8, unknown9, unknown10, unknown11, unknown12, unknown13, unknown14)
+  (entry, Type, DisplayID, Name, Name2, Name3, Name4, Category, CastBarText, UnkStr, spellfocus, sound1, sound2, sound3, sound4, sound5, sound6, sound7, sound8, sound9, unknown1, unknown2, unknown3, unknown4, unknown5, unknown6, unknown7, unknown8, unknown9, unknown10, unknown11, unknown12, unknown13, unknown14)
 VALUES
-  (300152, 8, 0, "TEMP Blade Throwers", 1399, 10, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+  (300152, 8, 0, "TEMP Blade Throwers", '', '', '', '', '', '', 1399, 10, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
 
 REPLACE INTO gameobject_spawns
   (id, Entry, map, position_x, position_y, position_z, Facing, orientation1, orientation2, orientation3, orientation4, State, Flags, Faction, Scale, stateNpcLink)
@@ -446,9 +446,9 @@ UPDATE `quests_localized` SET `ObjectiveText1` = 'Northern Tower marked',
 DELETE FROM `gameobject_names` WHERE `spellfocus` = '1447';
 
 INSERT INTO gameobject_names
-  (entry, Type, DisplayID, Name, spellfocus, sound1, sound2, sound3, sound4, sound5, sound6, sound7, sound8, sound9, unknown1, unknown2, unknown3, unknown4, unknown5, unknown6, unknown7, unknown8, unknown9, unknown10, unknown11, unknown12, unknown13, unknown14)
+  (entry, Type, DisplayID, Name, Name2, Name3, Name4, Category, CastBarText, UnkStr, spellfocus, sound1, sound2, sound3, sound4, sound5, sound6, sound7, sound8, sound9, unknown1, unknown2, unknown3, unknown4, unknown5, unknown6, unknown7, unknown8, unknown9, unknown10, unknown11, unknown12, unknown13, unknown14)
 VALUES
-  (300150, 8, 0, "Zeth\'Gor must Burn Alliance", 1447, 10, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+  (300150, 8, 0, "Zeth\'Gor must Burn Alliance", '', '', '', '', '', '', 1447, 10, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
 
 REPLACE INTO gameobject_spawns
   (id, Entry, map, position_x, position_y, position_z, Facing, orientation1, orientation2, orientation3, orientation4, State, Flags, Faction, Scale, stateNpcLink)
@@ -507,10 +507,10 @@ UPDATE `items` SET `bonding`='0',`description`='This Item is required for the Qu
 DELETE FROM `gameobject_names` WHERE `spellfocus` = '1443';
 
 REPLACE INTO gameobject_names
-  (entry, Type, DisplayID, Name, spellfocus, sound1, sound2, sound3, sound4, sound5, sound6, sound7, sound8, sound9, unknown1, unknown2, unknown3, unknown4, unknown5, unknown6, unknown7, unknown8, unknown9, unknown10, unknown11, unknown12, unknown13, unknown14)
+  (entry, Type, DisplayID, Name, Name2, Name3, Name4, Category, CastBarText, UnkStr, spellfocus, sound1, sound2, sound3, sound4, sound5, sound6, sound7, sound8, sound9, unknown1, unknown2, unknown3, unknown4, unknown5, unknown6, unknown7, unknown8, unknown9, unknown10, unknown11, unknown12, unknown13, unknown14)
 VALUES
-  (300116, 8, 0, "TEMP Bleeding Hollow Forge", 1443, 10, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
-  (300151, 8, 0, "Zeth\'Gor must Burn Horde", 0, 10, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+  (300116, 8, 0, "TEMP Bleeding Hollow Forge", '', '', '', '', '', '', 1443, 10, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
+  (300151, 8, 0, "Zeth\'Gor must Burn Horde", '', '', '', '', '', '', 0, 10, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
 
 INSERT INTO gameobject_spawns
   (id, Entry, map, position_x, position_y, position_z, Facing, orientation1, orientation2, orientation3, orientation4, State, Flags, Faction, Scale, stateNpcLink)
@@ -590,8 +590,11 @@ UPDATE `creature_proto` SET `auras`='19502' WHERE `entry`=12298;
 DELETE FROM `gameobject_names` WHERE `entry`='185554';
 DELETE FROM `gameobject_names` WHERE `entry`='300154';
 
-INSERT INTO `gameobject_names` VALUES ('185554', '10', '7363', 'The Raven\'s Claw', '1732', '196608', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0');
-INSERT INTO `gameobject_names` VALUES ('300154', '10', '4891', 'The Raven\'s Claw', '1732', '196608', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0');
+INSERT INTO `gameobject_names`
+   (entry, Type, DisplayID, Name, Name2, Name3, Name4, Category, CastBarText, UnkStr, spellfocus, sound1, sound2, sound3, sound4, sound5, sound6, sound7, sound8, sound9, unknown1, unknown2, unknown3, unknown4, unknown5, unknown6, unknown7, unknown8, unknown9, unknown10, unknown11, unknown12, unknown13, unknown14)
+VALUES 
+   ('185554', '10', '7363', 'The Raven\'s Claw', '', '', '', '', '', '', '1732', '196608', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'),
+   ('300154', '10', '4891', 'The Raven\'s Claw', '', '', '', '', '', '', '1732', '196608', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0');
 
 DELETE FROM `gameobject_spawns` WHERE `Entry`='185554';
 DELETE FROM `gameobject_spawns` WHERE `Entry`='300154';
