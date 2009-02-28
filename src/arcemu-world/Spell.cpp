@@ -4040,6 +4040,11 @@ uint8 Spell::CanCast(bool tolerate)
 					if ( !target->IsCreature() || target->GetEntry() != 20774 ) // castable only on Farahlon Lasher
 						return SPELL_FAILED_BAD_TARGETS;
 				} break;
+				case 52487:// Charm Channel 
+				{
+					if( !target->IsCreature() || target->GetEntry() != 28843 ) // castable only on Bloated Abomination
+							return SPELL_FAILED_BAD_TARGETS;
+				}break;
 			}
 
 			// if the target is not the unit caster and not the masters pet
