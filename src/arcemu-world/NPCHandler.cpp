@@ -327,44 +327,52 @@ void WorldSession::SendCharterRequest(Creature* pCreature)
 			pCreature->GetEntry()==18897 || pCreature->GetEntry()==19856 || pCreature->GetEntry()==sWorld.m_CustomCharterGiver ) )
 	{
 		WorldPacket data(SMSG_PETITION_SHOWLIST, 81);
-		static const uint8 tdata[13] = { 0x03, 0x01, 0x00, 0x00, 0x00, 0x08, 0x5C, 0x00, 0x00, 0x21, 0x3F, 0x00, 0x00 }; //2v2 charter cost here (4bytes)
-		static const uint8 tdata2[20] = { 0x01, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x02, 0x00, 0x00, 0x00, 0x09, 0x5C, 0x00, 0x00, 0x21, 0x3F, 0x00, 0x00 }; //3v3 charter cost here (4bytes)
-		static const uint8 tdata3[20] = { 0x01, 0x00, 0x00, 0x00, 0x02, 0x00, 0x00, 0x00, 0x03, 0x00, 0x00, 0x00, 0x0A, 0x5C, 0x00, 0x00, 0x21, 0x3F, 0x00, 0x00 }; //5v5 charter cost here (4bytes)
-		static const uint8 tdata4[8] = { 0x01, 0x00, 0x00, 0x00, 0x04, 0x00, 0x00, 0x00 };
+
 		data << pCreature->GetGUID();
-		data.append(tdata,13);
-		data << (uint32)ARENA_TEAM_CHARTER_2v2_COST;
-		data.append(tdata2,20);
-		data << (uint32)ARENA_TEAM_CHARTER_3v3_COST;
-		data.append(tdata3,20);
-		data << (uint32)ARENA_TEAM_CHARTER_5v5_COST;
-		data.append(tdata3,8);
+		data << uint8(0x03); //number of charter types in packet
+		
+		//2v2 arena charters start
+		data << uint32(0x01); //petition number (in packet)
+		data << uint32(ARENA_TEAM_CHARTER_2v2); //itemid
+		data << uint32(0x3F21); //item displayid
+		data << uint32(ARENA_TEAM_CHARTER_2v2_COST); //charter cost
+		data << uint32(0x01); //unknown, (charter type? seems to be 0x0 for guilds and 0x1 for arena charters)
+		data << uint32(0x01); // Signatures required (besides petiton owner)
+		//2v2 arena charters end
+		
+		//3v3 arena charters start
+		data << uint32(0x02); //petition number (in packet)
+		data << uint32(ARENA_TEAM_CHARTER_3v3); //itemid
+		data << uint32(0x3F21); //item displayid
+		data << uint32(ARENA_TEAM_CHARTER_3v3_COST); //charter cost
+		data << uint32(0x01);
+		data << uint32(0x02); // Signatures required (besides petiton owner)
+		//3v3 arena charters end
+		
+		//5v5 arena charters start
+		data << uint32(0x03); //petition number (in packet)
+		data << uint32(ARENA_TEAM_CHARTER_5v5); //itemid
+		data << uint32(0x3F21); //item displayid
+		data << uint32(ARENA_TEAM_CHARTER_5v5_COST); //charter cost
+		data << uint32(0x01);
+		data << uint32(0x04); // Signatures required (besides petiton owner)
+		//5v5 arena charters end
+		
 		SendPacket(&data);
 	}
 	else
 	{
-		WorldPacket data(29);
+		WorldPacket data(33);
 		data.Initialize( SMSG_PETITION_SHOWLIST );
 		data << pCreature->GetGUID();
-		data << uint8(1);		   // BOOL SHOW_COST = 1
-		data << uint32(1);		  // unknown
-		if(pCreature && ( pCreature->GetEntry()==19861 ||
-			pCreature->GetEntry()==18897 || pCreature->GetEntry()==19856 || pCreature->GetEntry()==sWorld.m_CustomCharterGiver ) )
-		{
-			data << uint16(ARENA_TEAM_CHARTER_2v2);	 // ItemId of the guild charter
-		}
-		else
-		{
-			data << uint16(0x16E7);	 // ItemId of the guild charter
-		}
-		
-		data << float(0.62890625);  // strange floating point
-		data << uint16(0);		  // unknown
-	//	data << uint32(0x3F21);	 // unknown
+		data << uint8(1);                  // num charters in packet (although appears to only turn off the cost display, maybe due to packet not being parsed /shrug)
+		data << uint32(1);                // charter 1 in packet
+		data << uint32(0x16E7);  // ItemId of the guild charter
+	    data << uint32(0x3F21);  // item displayid
 
-		data << uint32(1000);	   // charter prise
-		data << uint32(0);		  // unknown, maybe charter type
-		data << uint32(9);		  // amount of unique players needed to sign the charter
+		data << uint32(1000);      // charter price
+		data << uint32(0);                // unknown, maybe charter type
+		data << uint32(9);                // amount of unique players needed to sign the charter
 		SendPacket( &data );
 	}
 }
