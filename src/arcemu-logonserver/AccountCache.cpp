@@ -321,6 +321,7 @@ bool IPBanner::Add(const char * ip, uint32 dur)
 	ipb.db_ip = sip;
 	ipb.Bytes = ipmask;
 	ipb.Mask = ipraw;
+	ipb.Expire = dur;
 	
 	listBusy.Acquire();
 	banList.push_back(ipb);

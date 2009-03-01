@@ -1026,6 +1026,7 @@ bool ChatHandler::HandleQuestDelStartCommand(const char * args, WorldSession * m
 	SendMultilineMessage(m_session, recout.c_str());
 	sGMLog.writefromsession( m_session, "deleted starter of quest %u [%s] to NPC %u [%s]", qst->id, qst->title, unit->GetEntry(), unit->GetCreatureInfo()->Name );
 
+	delete qstrel;
 	return true;
 }
 
@@ -1116,7 +1117,8 @@ bool ChatHandler::HandleQuestDelFinishCommand(const char * args, WorldSession * 
 	recout += "\n\n";
 	SendMultilineMessage(m_session, recout.c_str());
 	sGMLog.writefromsession( m_session, "deleted finisher of quest %u [%s] to NPC %u [%s]", qst->id, qst->title, unit->GetEntry(), unit->GetCreatureInfo()->Name );
-
+	
+	delete qstrel;
 	return true;
 }
 

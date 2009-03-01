@@ -326,7 +326,7 @@ void AchievementMgr::SendAchievementEarned(AchievementEntry const* achievement)
 	if(GetPlayer()->IsInGuild())
 	{
 		//Guild* guild = objmgr.GetGuildByGuildName(GetPlayer()->m_playerInfo->guild->GetGuildName());
-		Guild * guild = GetPlayer()->getPlayerInfo()->guild;
+		//Guild * guild = GetPlayer()->getPlayerInfo()->guild;
 		WorldPacket data(SMSG_MESSAGECHAT, 200);
 		data << uint8(CHAT_MSG_ACHIEVEMENT);
 		data << uint8(CHAT_MSG_GUILD_ACHIEVEMENT);

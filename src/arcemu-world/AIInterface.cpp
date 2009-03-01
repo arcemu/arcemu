@@ -961,7 +961,6 @@ void AIInterface::_UpdateTargets()
 			 {
 				 AttackReaction(target, 1, 0);
 			 }
-
 		}
 	}
 	// Find new Targets when we are ooc
@@ -990,7 +989,7 @@ void AIInterface::_UpdateCombat(uint32 p_time)
 	uint16 agent = m_aiCurrentAgent;
 
 	// If creature is very far from spawn point return to spawnpoint
-	// If at instance dont return -- this is wrong ... instance creatures always returns to spawnpoint, dunno how do you got this ideia. 
+	// If at instance dont return -- this is wrong ... instance creatures always returns to spawnpoint, dunno how do you got this idea. 
 	// If at instance returns to spawnpoint after empty agrolist
 	if(	m_AIType != AITYPE_PET 
 		&& m_AIState != STATE_EVADE
@@ -1005,7 +1004,9 @@ void AIInterface::_UpdateCombat(uint32 p_time)
 //		SetNextTarget(FindTargetForSpell(m_nextSpell));
 		if( m_is_in_instance )
 			SetNextTarget( FindTarget() );
-		else SetNextTarget( GetMostHated() );
+		else 
+			SetNextTarget( GetMostHated() );
+
 		if( GetNextTarget() == NULL )
 		{
 			HandleEvent( EVENT_LEAVECOMBAT, m_Unit, 0 );
@@ -1660,9 +1661,11 @@ Unit* AIInterface::FindTarget()
 //	Object *pObj;
 	Unit *pUnit;
 	float dist;
+	
+	/* Commented due to no use
 	bool pvp=true;
 	if(m_Unit->GetTypeId()==TYPEID_UNIT&&((Creature*)m_Unit)->GetCreatureInfo()&&((Creature*)m_Unit)->GetCreatureInfo()->Civilian)
-		pvp=false;
+		pvp=false;*/
 
 	//target is immune to all form of attacks, cant attack either.
 	// not attackable creatures sometimes fight enemies in scripted fights though
@@ -3381,7 +3384,6 @@ SpellCastTargets AIInterface::setSpellTargets(SpellEntry *spellInfo, Unit* targe
 	if(m_nextSpell->spelltargetType == TTYPE_SINGLETARGET)
 	{
 		targets.m_targetMask = 2;
-		targets.m_unitTarget = target->GetGUID();
 	}
 	else if(m_nextSpell->spelltargetType == TTYPE_SOURCE)
 	{
@@ -4273,11 +4275,14 @@ bool isNeutralGuard(uint32 id)
 
 void AIInterface::WipeCurrentTarget()
 {
-	LockAITargets(true);
-	TargetMap::iterator itr = m_aiTargets.find( GetNextTarget() ? GetNextTarget()->GetGUID() : 0 );
-	if( itr != m_aiTargets.end() )
-		m_aiTargets.erase( itr );
-	LockAITargets(false);
+	if( GetNextTarget() )
+	{
+		LockAITargets( true );
+		TargetMap::iterator itr = m_aiTargets.find( GetNextTarget()->GetGUID() );
+		if( itr != m_aiTargets.end() )
+			m_aiTargets.erase( itr );
+		LockAITargets( false );
+	}
 
 	SetNextTarget( (Unit*)NULL );
 
@@ -4292,15 +4297,15 @@ void AIInterface::WipeCurrentTarget()
 
 bool AIInterface::CheckCurrentTarget()
 {
-	bool cansee = false;
-
 	//in case target was removed from map since our last check on him
 	if( GetNextTarget() == NULL )
 	{
 		WipeCurrentTarget();
 		return false;
 	}
-	if( GetNextTarget() && GetNextTarget()->GetInstanceID() == m_Unit->GetInstanceID())
+	
+	bool cansee = false;
+	if( GetNextTarget()->GetInstanceID() == m_Unit->GetInstanceID())
 	{
 		if( m_Unit->GetTypeId() == TYPEID_UNIT )
 			cansee = static_cast< Creature* >( m_Unit )->CanSee( GetNextTarget() );

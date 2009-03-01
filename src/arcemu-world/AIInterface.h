@@ -30,7 +30,6 @@
 #define UNIT_MOVEMENT_INTERPOLATE_INTERVAL 400/*750*/ // ms smoother server/client side moving vs less cpu/ less b/w
 #define TARGET_UPDATE_INTERVAL_ON_PLAYER 1000 // we most likely will have to kil players and only then check mobs
 #define TARGET_UPDATE_INTERVAL 5000 // this is a multiple of PLAYER_TARGET_UPDATE_INTERVAL
-#define oocr 50.0f // out of combat range
 #define PLAYER_SIZE 1.5f
 
 #define ENABLE_CREATURE_DAZE

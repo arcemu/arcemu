@@ -521,7 +521,7 @@ void LogonCommServerSocket::HandleDatabaseModify(WorldPacket& recvData)
 			
 		}break;
 
-	case 5:		// ip ban reomve
+	case 5:		// ip ban remove
 		{
 			string ip;
 			recvData >> ip;

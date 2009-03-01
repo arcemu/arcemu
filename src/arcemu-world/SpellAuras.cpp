@@ -662,11 +662,12 @@ void Aura::Init( SpellEntry* proto, int32 duration, Object* caster, Unit* target
 		m_castedItemId = 0;
 
 	// Modifies current aura duration based on its mechanic type
-	if(m_target->IsPlayer()){
-		int32 DurationModifier = static_cast< Player* >( m_target )->MechanicDurationPctMod[proto->MechanicsType];
-		if(DurationModifier < - 100)
+	if( p_target )
+	{
+		int32 DurationModifier = p_target->MechanicDurationPctMod[ proto->MechanicsType ];
+		if( DurationModifier < - 100 )
 			DurationModifier = -100; // Can't reduce by more than 100%
-		SetDuration((GetDuration()*(100+DurationModifier))/100);
+		SetDuration( ( GetDuration() * ( 100 + DurationModifier ) ) / 100 );
 	}
 
 	/*if( caster->GetTypeId() == TYPEID_PLAYER && target->GetTypeId() == TYPEID_PLAYER )

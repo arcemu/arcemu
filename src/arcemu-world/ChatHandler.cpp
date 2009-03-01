@@ -334,7 +334,7 @@ void WorldSession::HandleMessagechatOpcode( WorldPacket & recv_data )
 			else if(lang==0 && !CanUseCommand('c'))
 				return;
 
-			if(GetPlayer()->m_modlanguage >=0)
+			else if(GetPlayer()->m_modlanguage >=0)
 				data = sChatHandler.FillMessageData( CHAT_MSG_YELL, GetPlayer()->m_modlanguage,  msg.c_str(), _player->GetGUID(), _player->bGMTagOn ? 4 : 0 );
 			else
 				data = sChatHandler.FillMessageData( CHAT_MSG_YELL, (CanUseCommand('c') && lang != -1) ? LANG_UNIVERSAL : lang,  msg.c_str(), _player->GetGUID(), _player->bGMTagOn ? 4 : 0 );
@@ -381,7 +381,7 @@ void WorldSession::HandleMessagechatOpcode( WorldPacket & recv_data )
 			else if(lang==0 && !CanUseCommand('c'))
 				return;
 
-			if( player->Social_IsIgnoring( _player->GetLowGUID() ) )
+			else if( player->Social_IsIgnoring( _player->GetLowGUID() ) )
 			{
 				data = sChatHandler.FillMessageData( CHAT_MSG_IGNORED, LANG_UNIVERSAL,  msg.c_str(), player->GetGUID(), _player->bGMTagOn ? 4 : 0 );
 				SendPacket(data);

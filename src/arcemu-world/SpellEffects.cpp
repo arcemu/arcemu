@@ -1141,6 +1141,7 @@ void Spell::SpellEffectDummy(uint32 i) // Dummy(Scripted events)
 						summon->AddSpell(dbcSpell.LookupEntry(47484), true); // Huddle
 						summon->AddSpell(dbcSpell.LookupEntry(47468), true); // Claw
 						summon->CastSpell(summon,50142,true);
+						delete vec;
 					}
 					else
 					{
