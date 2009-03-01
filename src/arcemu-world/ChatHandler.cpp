@@ -346,7 +346,6 @@ void WorldSession::HandleMessagechatOpcode( WorldPacket & recv_data )
 		{
 			if(sWorld.interfaction_chat && lang > 0)
 				lang=0;
-
 			if(g_chatFilter->Parse(msg) == true)
 			{
 				SystemMessage("Your chat message was blocked by a server-side filter.");
@@ -400,11 +399,13 @@ void WorldSession::HandleMessagechatOpcode( WorldPacket & recv_data )
 			}
 
 			//Sent the to Users id as the channel, this should be fine as it's not used for wisper
-		  
-			data = sChatHandler.FillMessageData(CHAT_MSG_WHISPER_INFORM, LANG_UNIVERSAL,msg.c_str(), player->GetGUID(), player->bGMTagOn ? 4 : 0  );
-			SendPacket(data);
-			delete data;
-
+			if(lang!=-1) //DO NOT SEND if its an addon message!
+			{
+				data = sChatHandler.FillMessageData(CHAT_MSG_WHISPER_INFORM, LANG_UNIVERSAL,msg.c_str(), player->GetGUID(), player->bGMTagOn ? 4 : 0  );
+				SendPacket(data);
+				delete data;
+			}
+			
 			if(player->HasFlag(PLAYER_FLAGS, 0x02))
 			{
 				// Has AFK flag, autorespond.
@@ -414,7 +415,7 @@ void WorldSession::HandleMessagechatOpcode( WorldPacket & recv_data )
 			}
 			else if(player->HasFlag(PLAYER_FLAGS, 0x04))
 			{
-				// Has AFK flag, autorespond.
+				// Has DND flag, autorespond.
 				if (player->GetTeamInitial() == _player->GetTeamInitial()) {
 					data = sChatHandler.FillMessageData(CHAT_MSG_DND, LANG_UNIVERSAL, player->m_afk_reason.c_str(),player->GetGUID(), player->bGMTagOn ? 4 : 0);
 				} else {
