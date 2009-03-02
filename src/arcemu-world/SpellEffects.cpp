@@ -5645,6 +5645,8 @@ void Spell::SpellEffectSummonTotem(uint32 i) // Summon Totem
 			case 11307: //Fire Nova Totem 5
 			case 25535: //Fire Nova Totem 6
 			case 25537: //Fire Nova Totem 7
+			case 61650: //Fire Nova Totem 8
+			case 61654: //Fire Nova Totem 9
 			{
 				totemspelltimer =  4000;
 				// Improved Fire Totems
