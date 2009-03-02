@@ -375,18 +375,22 @@ void WorldSession::HandleMessagechatOpcode( WorldPacket & recv_data )
 
 			if(lang > 0 && LanguageSkills[lang] && _player->_HasSkillLine(LanguageSkills[lang]) == false)
 				return;
-
-			if(lang==0 && sWorld.interfaction_chat)
-				data = sChatHandler.FillMessageData( CHAT_MSG_WHISPER, ((CanUseCommand('0') || player->GetSession()->CanUseCommand('0')) && lang != -1) ? LANG_UNIVERSAL : lang,  msg.c_str(), _player->GetGUID(), _player->bGMTagOn ? 4 : 0 );
-			else if(lang==0 && !CanUseCommand('c'))
-				return;
-
-			else if( player->Social_IsIgnoring( _player->GetLowGUID() ) )
+				
+			if( player->Social_IsIgnoring( _player->GetLowGUID() ) )
 			{
 				data = sChatHandler.FillMessageData( CHAT_MSG_IGNORED, LANG_UNIVERSAL,  msg.c_str(), player->GetGUID(), _player->bGMTagOn ? 4 : 0 );
 				SendPacket(data);
 				delete data;
+				break;
+			}				
+			else if(lang==0 && sWorld.interfaction_chat)
+			{
+				data = sChatHandler.FillMessageData( CHAT_MSG_WHISPER, ((CanUseCommand('0') || player->GetSession()->CanUseCommand('0')) && lang != -1) ? LANG_UNIVERSAL : lang,  msg.c_str(), _player->GetGUID(), _player->bGMTagOn ? 4 : 0 );
+				player->GetSession()->SendPacket(data);
+				delete data;
 			}
+			else if(lang==0 && !CanUseCommand('c'))
+				return;
 			else
 			{
 				if(GetPlayer()->m_modlanguage >=0)
