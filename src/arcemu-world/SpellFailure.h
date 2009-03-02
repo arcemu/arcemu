@@ -204,9 +204,11 @@ enum SpellCastError
 	SPELL_FAILED_ITEM_AT_MAX_CHARGES                             = 178,
 	SPELL_FAILED_NOT_IN_BARBERSHOP                               = 179,
 	SPELL_FAILED_FISHING_TOO_LOW                                 = 180,
-	SPELL_FAILED_UNKNOWN                                         = 181,
+	SPELL_FAILED_ITEM_ENCHANT_TRADE_WINDOW						 = 181,
+	SPELL_FAILED_UNKNOWN                                         = 182,
 	SPELL_CANCAST_OK                                             = 255,
 };
+
 enum PetTameFailure
 {
 	PETTAME_INVALIDCREATURE			= 1,

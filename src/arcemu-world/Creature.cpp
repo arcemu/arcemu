@@ -617,7 +617,7 @@ void Creature::RemoveFromWorld( bool addrespawnevent, bool free_guid )
 	if( IsInWorld() )
 	{
 		uint32 delay = 0;
-		if( addrespawnevent && ( m_respawnTimeOverride > 0 || ( proto && proto->RespawnTime > 0 ) ) )
+		if( !IsPet() && addrespawnevent && ( m_respawnTimeOverride > 0 || ( proto && proto->RespawnTime > 0 ) ) )
 			delay = m_respawnTimeOverride > 0 ? m_respawnTimeOverride : proto->RespawnTime;
 		
 		Despawn( 0, delay );

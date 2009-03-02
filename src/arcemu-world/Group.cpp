@@ -92,6 +92,13 @@ Group::Group(bool Assign)
 
 Group::~Group()
 {
+	for( uint32 j = 0; j < m_SubGroupCount; ++j ) 
+	{
+		SubGroup * sub = GetSubGroup( j );
+		if( sub )
+			delete sub;
+	}
+
 	ObjectMgr::getSingleton().RemoveGroup(this);
 }
 
