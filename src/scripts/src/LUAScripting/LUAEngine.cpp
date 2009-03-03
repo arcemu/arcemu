@@ -2007,11 +2007,13 @@ int luaUnit_SpawnGameObject(lua_State * L, Unit * ptr)
 	float z = (float)luaL_checkint(L, 4);
 	float o = (float)luaL_checkint(L, 5);
 	uint32 duration = luaL_checkint(L, 6);
+	float scale = (float)luaL_optint(L, 7, 1);
 	if(entry_id)
 	{
 		GameObject* pC = ptr->GetMapMgr()->GetInterface()->SpawnGameObject(entry_id,x,y,z,o,false,0,0);
 		pC->SetInstanceID(ptr->GetInstanceID());
 		pC->SetMapId(ptr->GetMapId());
+		pC->SetFloatValue(OBJECT_FIELD_SCALE_X, scale);
 		pC->Spawn(ptr->GetMapMgr());
 		if(duration && duration > 0)
 			sEventMgr.AddEvent(pC,&GameObject::ExpireAndDelete,EVENT_GAMEOBJECT_UPDATE,duration,1,EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
@@ -3029,8 +3031,12 @@ int luaUnit_ReturnToSpawnPoint(lua_State * L, Unit * ptr)
 }
 int luaUnit_GetGUID(lua_State * L, Unit * ptr)
 {
-	if(!ptr) return 0;
-	lua_pushinteger(L,(int)ptr->GetGUID()); return 0;
+	if(!ptr)
+		return 0;
+	char theGuid[19];
+	sprintf(theGuid,"%0#16llX",ptr->GetGUID());
+	lua_pushstring(L,theGuid);
+	return 1;
 }
 int luaUnit_GetDistance(lua_State * L, Unit * ptr)
 {
@@ -4513,6 +4519,7 @@ int luaGameObject_SpawnGameObject(lua_State * L, GameObject * ptr)
 	float z = (float)luaL_checkint(L, 4);
 	float o = (float)luaL_checkint(L, 5);
 	uint32 duration = luaL_checkint(L, 6);
+	float scale = (float)luaL_optint(L, 7, 1);
 
 	if(!entry_id || !duration)
 	{
@@ -4526,6 +4533,7 @@ int luaGameObject_SpawnGameObject(lua_State * L, GameObject * ptr)
     pC->m_spawn=0;
     pC->CreateFromProto(entry_id, ptr->GetMapId(), (float)x, (float)y, (float)z, (float)o);
     pC->SetMapId(ptr->GetMapId());
+	pC->SetFloatValue(OBJECT_FIELD_SCALE_X, scale);
     pC->SetInstanceID(ptr->GetInstanceID());
 	pC->Spawn(ptr->GetMapMgr());
 	if(duration)
