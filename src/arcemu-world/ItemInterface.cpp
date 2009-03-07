@@ -297,6 +297,7 @@ AddItemResult ItemInterface::m_AddItem(Item *item, int8 ContainerSlot, int8 slot
 			}
 			else
 			{
+				item->DeleteFromDB(); //wpe dupefix ..we dont want it reappearing on the next relog now do we?
 				return ADD_ITEM_RESULT_ERROR;
 			}
 		}

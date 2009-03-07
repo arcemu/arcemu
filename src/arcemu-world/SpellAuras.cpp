@@ -2366,7 +2366,9 @@ void Aura::SpellAuraDummy(bool apply)
 	case 21791:
 	case 25817:
 	case 26983:
-	case 34550:		// Tranquility
+	case 34550:
+	case 48446:
+	case 48447:		// Tranquility 6+7 Fix by MtR
 		{
 			//uint32 duration = GetDuration();
 			//printf("moo\n");
@@ -2388,7 +2390,7 @@ void Aura::SpellAuraDummy(bool apply)
 				sEventMgr.RemoveEvents(this, EVENT_AURA_PERIODIC_DAMAGE);
 		}break;
 
-	case 33763:		// lifebloom
+	case 33763:		// Lifebloom Rank 1 by MtR
 		{
 			if(apply)
 				return;
@@ -2408,6 +2410,82 @@ void Aura::SpellAuraDummy(bool apply)
 				if(m_target->m_auras[x])
 				{
 					if( m_target->m_auras[x]->GetSpellId() == 33763 )
+					{
+						m_target->m_auras[x]->m_ignoreunapply = true;
+						if( m_target->m_auras[x]->GetTimeLeft() )
+							expired = false;
+						m_target->m_auras[x]->Remove();
+					}
+				}
+			}
+			
+			if( expired )
+			{
+				Spell *spell=SpellPool.PooledNew();
+				spell->Init(pCaster, m_spellProto, true, NULL);
+				spell->SetUnitTarget( m_target );
+				spell->Heal( mod->m_amount );
+			}
+			
+		}break;
+	case 48450:		// Lifebloom Rank 2 by MtR
+		{
+			if(apply)
+				return;
+
+			// apply ONCE only.
+			if( m_ignoreunapply )
+				return;
+
+			Unit * pCaster = GetUnitCaster();
+			if( pCaster == NULL )
+				pCaster = m_target;
+
+			// Remove other Lifeblooms - but do NOT handle unapply again
+			bool expired = true;
+			for(uint32 x=MAX_POSITIVE_AURAS_EXTEDED_START;x<MAX_POSITIVE_AURAS_EXTEDED_END;x++)
+			{
+				if(m_target->m_auras[x])
+				{
+					if( m_target->m_auras[x]->GetSpellId() == 48450 )
+					{
+						m_target->m_auras[x]->m_ignoreunapply = true;
+						if( m_target->m_auras[x]->GetTimeLeft() )
+							expired = false;
+						m_target->m_auras[x]->Remove();
+					}
+				}
+			}
+			
+			if( expired )
+			{
+				Spell *spell=SpellPool.PooledNew();
+				spell->Init(pCaster, m_spellProto, true, NULL);
+				spell->SetUnitTarget( m_target );
+				spell->Heal( mod->m_amount );
+			}
+			
+		}break;
+	case 48451:		// Lifebloom Rank 3 by MtR
+		{
+			if(apply)
+				return;
+
+			// apply ONCE only.
+			if( m_ignoreunapply )
+				return;
+
+			Unit * pCaster = GetUnitCaster();
+			if( pCaster == NULL )
+				pCaster = m_target;
+
+			// Remove other Lifeblooms - but do NOT handle unapply again
+			bool expired = true;
+			for(uint32 x=MAX_POSITIVE_AURAS_EXTEDED_START;x<MAX_POSITIVE_AURAS_EXTEDED_END;x++)
+			{
+				if(m_target->m_auras[x])
+				{
+					if( m_target->m_auras[x]->GetSpellId() == 48451 )
 					{
 						m_target->m_auras[x]->m_ignoreunapply = true;
 						if( m_target->m_auras[x]->GetTimeLeft() )

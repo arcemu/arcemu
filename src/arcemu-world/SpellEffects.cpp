@@ -594,6 +594,18 @@ void Spell::SpellEffectSchoolDMG(uint32 i) // dmg school
 		case SPELL_HASH_MOLTEN_ARMOR:		// fire armor, is static damage
 			static_damage=true;
 			break;
+
+		//Heroic Throw Damage
+		case SPELL_HASH_HEROIC_THROW:
+			{
+				dmg=float2int32(float(u_caster->GetAP())*0.50f+12.0f);
+			}break;
+
+		//Shockwave Damage
+		case SPELL_HASH_SHOCKWAVE:
+			{
+				dmg=float2int32(float(u_caster->GetAP())*0.75f);
+			}break;
 		default:
 			break;
 		}
@@ -778,7 +790,13 @@ void Spell::SpellEffectDummy(uint32 i) // Dummy(Scripted events)
 			}
 		}
 		break;
-
+	//heroic fury clear intercept cooldown
+	case 60970:
+		{
+				if(p_caster->HasSpell(20252))
+				p_caster->ClearCooldownForSpell(20252);
+			
+		}break;
 	/*************************
 	 * ROGUE SPELLS
 	 *************************
@@ -4937,7 +4955,32 @@ void Spell::SpellEffectScriptEffect(uint32 i) // Script Effect
 		}
 		CreateItem(22103);
 		break;
-
+	case 47871:		// Demonic Healthstone
+		if (p_caster->HasSpell(18693))	// Improved Healthstone (2)
+		{
+			CreateItem(36891);
+			break;
+		}
+		if (p_caster->HasSpell(18692))	// Improved Healthstone (1)
+		{
+			CreateItem(36890);
+			break;
+		}
+		CreateItem(36889);
+		break;
+	case 47878:		// Fel Healthstone
+		if (p_caster->HasSpell(18693))	// Improved Healthstone (2)
+		{
+			CreateItem(36894);
+			break;
+		}
+		if (p_caster->HasSpell(18692))	// Improved Healthstone (1)
+		{
+			CreateItem(36893);
+			break;
+		}
+		CreateItem(36892);
+		break;
 	// Holy Light
 	case 635:
 	case 639:

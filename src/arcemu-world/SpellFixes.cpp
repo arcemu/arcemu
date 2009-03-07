@@ -1964,6 +1964,24 @@ void ApplyNormalFixes()
 		if(sp != NULL)
 			sp->RequiredShapeShift = 0x00070000;
 
+		//Heroic Throw
+		sp = dbcSpell.LookupEntryForced( 57755 );
+		if( sp != NULL ){
+			sp->Effect[0] = SPELL_EFFECT_SCHOOL_DAMAGE;
+		}
+
+		//Heroic Fury
+		sp = dbcSpell.LookupEntryForced( 60970 );
+		if( sp != NULL ){
+			sp->Effect[0] = SPELL_EFFECT_DUMMY;
+		}
+
+		//Shockwave Damage
+		sp = dbcSpell.LookupEntryForced( 46968 );
+		if(sp!=NULL){
+			sp->Effect[1] = SPELL_EFFECT_SCHOOL_DAMAGE;
+			sp->Effect[2] = SPELL_EFFECT_DUMMY;
+		}
 		//////////////////////////////////////////
 		// DRUID								//
 		//////////////////////////////////////////
@@ -4115,6 +4133,32 @@ void ApplyNormalFixes()
 			sp->EffectTriggerSpell[1] = 36032;
 			sp->procFlags = PROC_ON_CAST_SPECIFIC_SPELL;
 		}
+		
+		 //Updated ranks by Joker
+
+		sp = dbcSpell.LookupEntryForced( 42894 );
+		if( sp != NULL )
+		{
+			sp->EffectApplyAuraName[1] = SPELL_AURA_PROC_TRIGGER_SPELL;
+			sp->EffectTriggerSpell[1] = 36032;
+			sp->procFlags = PROC_ON_CAST_SPECIFIC_SPELL;
+		}
+
+		sp = dbcSpell.LookupEntryForced( 42896 );
+		if( sp != NULL )
+		{
+			sp->EffectApplyAuraName[1] = SPELL_AURA_PROC_TRIGGER_SPELL;
+			sp->EffectTriggerSpell[1] = 36032;
+			sp->procFlags = PROC_ON_CAST_SPECIFIC_SPELL;
+		}
+
+		sp = dbcSpell.LookupEntryForced( 42897 );
+		if( sp != NULL )
+		{
+			sp->EffectApplyAuraName[1] = SPELL_AURA_PROC_TRIGGER_SPELL;
+			sp->EffectTriggerSpell[1] = 36032;
+			sp->procFlags = PROC_ON_CAST_SPECIFIC_SPELL;
+		}
 
 		//mage : Empowered Arcane Missiles
 		sp = dbcSpell.LookupEntryForced( 31579 );
@@ -4315,6 +4359,25 @@ void ApplyNormalFixes()
 			sp->EffectMiscValue[1] = SMT_MISC_EFFECT;
 		}
 
+		//Improved Counterspell rank 1
+		sp = dbcSpell.LookupEntryForced( 11255 );
+		if( sp!=NULL )
+		{
+			sp->procFlags = PROC_ON_CAST_SPECIFIC_SPELL;
+			sp->ProcOnNameHash[0] = SPELL_HASH_COUNTERSPELL;
+			sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
+			sp->EffectTriggerSpell[0] = 18469;
+		}
+
+		//Improved Counterspell rank 2
+		sp = dbcSpell.LookupEntryForced( 12598 );
+		if( sp!=NULL )
+		{
+			sp->procFlags = PROC_ON_CAST_SPECIFIC_SPELL;
+			sp->ProcOnNameHash[0] = SPELL_HASH_COUNTERSPELL;
+			sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
+			sp->EffectTriggerSpell[0] = 55021;
+		}
 	//////////////////////////////////////////
 	// WARLOCK								//
 	//////////////////////////////////////////
@@ -5055,6 +5118,17 @@ void ApplyNormalFixes()
 			sp->School = 2;
 		}
 		// End Warlock chaos bolt
+
+		//Warlock Healthstones
+		int HealthStoneID[8]={6201,6202,5699,11729,11730,27230,47871,47878};
+		for(int i=0;i<8;i++)
+		{
+			sp = dbcSpell.LookupEntryForced( HealthStoneID[i] );
+			if( sp != NULL )
+			{
+				sp->Reagent[1] = NULL;
+			}
+		}
 
 	//////////////////////////////////////////
 	// DRUID								//

@@ -8499,6 +8499,20 @@ void Player::EndDuel(uint8 WinCondition)
 	// removing auras that kills players after if low HP
 	/*RemoveNegativeAuras(); NOT NEEDED. External targets can always gank both duelers with DoTs. :D
 	DuelingWith->RemoveNegativeAuras();*/
+	//Same as above only cleaner.
+	for(uint32 x=MAX_NEGATIVE_AURAS_EXTEDED_START;x<MAX_REMOVABLE_AURAS_END;x++)
+	{
+		if(DuelingWith->m_auras[x])
+		{
+			if(DuelingWith->m_auras[x]->WasCastInDuel())
+			    DuelingWith->m_auras[x]->Remove();
+		}
+		if(m_auras[x])
+		{
+			if(m_auras[x]->WasCastInDuel())
+			    m_auras[x]->Remove();
+		}
+	}
 
 	//Stop Players attacking so they don't kill the other player
 	m_session->OutPacket( SMSG_CANCEL_COMBAT );

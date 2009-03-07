@@ -389,6 +389,7 @@ void WorldSession::HandleSwapItemOpcode(WorldPacket& recv_data)
 			{
 				printf("HandleSwapItem: Error while adding item to dstslot\n");
 				SrcItem->DeleteMe();
+                SrcItem = NULL;
 			}
 		}
 
@@ -399,6 +400,7 @@ void WorldSession::HandleSwapItemOpcode(WorldPacket& recv_data)
 			{
 				printf("HandleSwapItem: Error while adding item to srcslot\n");
 				DstItem->DeleteMe();
+                DstItem = NULL;
 			}
 		}
 	}

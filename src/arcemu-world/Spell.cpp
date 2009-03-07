@@ -3017,7 +3017,7 @@ void Spell::HandleAddAura(uint64 guid)
 		spellid = 6788;
 	else if( GetProto()->Id == 45438) // Cast spell Hypothermia
 		spellid = 41425;
-	else if( GetProto()->Id == 30451) // Cast spell Arcane Blast
+	else if( GetProto()->Id == 30451 || GetProto()->Id == 42894 || GetProto()->Id == 42896 || GetProto()->Id == 42897) // Cast spell Arcane Blast
 		spellid = 36032;
 	else if( GetProto()->Id == 9036) // cebernic: Cast Wisp Spirit
 		spellid = 20584;
