@@ -74,7 +74,7 @@
 
 uint32 GetAchievementIDFromLink(const char* achievementlink)
 {
-	if(achievementlink==NULL)
+	if(achievementlink == NULL)
 		return 0;
 
 	const char* ptr = strstr(achievementlink, "|Hachievement:");
@@ -338,7 +338,7 @@ void AchievementMgr::SendAchievementEarned(AchievementEntry const* achievement)
 		data << msg;
 		data << uint8(0);
 		data << uint32(achievement->ID);
-		GetPlayer()->GetSession()->SendPacket(&data);     
+		GetPlayer()->GetSession()->SendPacket(&data);   
 	}
 	if(achievement->flags & (ACHIEVEMENT_FLAG_REALM_FIRST_KILL|ACHIEVEMENT_FLAG_REALM_FIRST_REACH))
 	{
