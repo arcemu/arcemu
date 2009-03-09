@@ -1349,7 +1349,7 @@ void GuildMember::OnMoneyWithdraw(uint32 amt)
 	else
 	{
 		// increment counter
-		uWithdrawlsSinceLastReset++;
+		uWithdrawlsSinceLastReset+=amt;
 		CharacterDatabase.Execute("UPDATE guild_data SET withdrawlsSinceLastReset = %u WHERE playerid = %u",
 			uWithdrawlsSinceLastReset, pPlayer->guid);
 	}

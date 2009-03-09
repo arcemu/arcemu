@@ -4330,7 +4330,8 @@ void Aura::SpellAuraModShapeshift(bool apply)
 			modelId  = 864;
 			freeMovements=true;
 			spellId = 5420;//3122;
-			if(apply) //Tree of Life Healing Bonus AreaAura
+			//we'll get to this later, right now it's a major game breaker :(
+			/*if(apply) //Tree of Life Healing Bonus AreaAura
 	  		{
 	  			SpellEntry* spellInfo = dbcSpell.LookupEntry( 34123 );
 				Spell *sp = SpellPool.PooledNew();
@@ -4346,7 +4347,7 @@ void Aura::SpellAuraModShapeshift(bool apply)
 	  		else
 	  		{
 	  			m_target->RemoveAura( 34123 );
-	  		}
+	  		}*/
 		} break;
 	case FORM_TRAVEL:
 		{//druid
