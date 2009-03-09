@@ -45,11 +45,11 @@ extern "C" SCRIPT_DECL void _exp_script_register(ScriptMgr* mgr)
 		sLog.outColor(TGREEN,"\n	Portals Enabled");
 		SetupPortals(mgr);
 	}
-	if(Config.OptionalConfig.GetBoolDefault("Extra", "PVPToken", false))
+	/*if(Config.OptionalConfig.GetBoolDefault("Extra", "PVPToken", false))
 	{
 		sLog.outColor(TGREEN,"\n	PvP Tokens Enabled");
 		SetupPvPToken(mgr);
-	}
+	}*/
 /*
 	if(Config.OptionalConfig.GetBoolDefault("Extra", "WeddingNPC", false))
 	{

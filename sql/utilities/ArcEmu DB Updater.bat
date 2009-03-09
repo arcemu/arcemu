@@ -377,6 +377,9 @@ ECHO [Importing] 2005_guildbank_tabinfo.sql
 mysql -h %server% --user=%user% --password=%pass% --port=%port% %chr% < ..\character_updates\2005_guildbank_tabinfo.sql
 ECHO [Importing] 2084_character_achievement_progress.sql
 mysql -h %server% --user=%user% --password=%pass% --port=%port% %chr% < ..\character_updates\2084_character_achievement_progress.sql
+ECHO [Importing] 2298_guilds.sql
+mysql -h %server% --user=%user% --password=%pass% --port=%port% %chr% < ..\character_updates\2298_guilds.sql
+
 ECHO [Importing] Character Updates Finished
 ECHO.
 ECHO.
