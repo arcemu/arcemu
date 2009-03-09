@@ -1066,7 +1066,7 @@ void WorldSession::HandleGuildBankGetAvailableAmount(WorldPacket & recv_data)
 	if(_player->m_playerInfo->guildMember == NULL)
 		return;
 
-	uint32 money = _player->m_playerInfo->guild->GetBankBalance();
+	uint64 money = _player->m_playerInfo->guild->GetBankBalance();
 	uint32 avail = _player->m_playerInfo->guildMember->CalculateAvailableAmount();
 
 	/* pls gm mi hero poor give 1 gold coin pl0x */

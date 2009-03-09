@@ -455,7 +455,7 @@ public:
 	ARCEMU_INLINE const uint32 GetGuildLeader() const { return m_guildLeader; }
 	ARCEMU_INLINE const uint32 GetGuildId() const { return m_guildId; }
 	ARCEMU_INLINE const uint32 GetBankTabCount() const { return m_bankTabCount; }
-	ARCEMU_INLINE const uint32 GetBankBalance() const { return m_bankBalance; }
+	ARCEMU_INLINE const uint64 GetBankBalance() const { return m_bankBalance; }
 	ARCEMU_INLINE const size_t GetNumMembers() const { return m_members.size(); }
 	/** Creates a guild rank with the specified permissions.
 	 */
