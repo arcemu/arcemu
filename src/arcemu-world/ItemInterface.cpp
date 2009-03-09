@@ -1364,7 +1364,8 @@ AddItemResult ItemInterface::AddItemToFreeSlot(Item *item)
 		}
 		else if(m_pItems[i]->GetProto()->ItemId == item->GetProto()->ItemId &&
 				item->GetProto()->MaxCount > 1 &&
-				m_pItems[i]->GetUInt32Value(ITEM_FIELD_STACK_COUNT) < m_pItems[i]->GetProto()->MaxCount)
+				m_pItems[i]->GetUInt32Value( ITEM_FIELD_STACK_COUNT ) < m_pItems[i]->GetProto()->MaxCount  &&
+				m_pItems[i]->GetUInt32Value( ITEM_FIELD_STACK_COUNT ) + item->GetUInt32Value( ITEM_FIELD_STACK_COUNT ) <= item->GetProto()->MaxCount )
 			{
 				m_pItems[i]->SetUInt32Value( ITEM_FIELD_STACK_COUNT,m_pItems[i]->GetUInt32Value( ITEM_FIELD_STACK_COUNT ) + item->GetUInt32Value( ITEM_FIELD_STACK_COUNT ) );
 				result.Slot=i;
@@ -1393,7 +1394,8 @@ AddItemResult ItemInterface::AddItemToFreeSlot(Item *item)
 				}
 				else if(item2->GetProto()->ItemId == item->GetProto()->ItemId &&
 					item->GetProto()->MaxCount > 1 &&
-					item2->GetUInt32Value(ITEM_FIELD_STACK_COUNT) < item2->GetProto()->MaxCount)
+					item2->GetUInt32Value(ITEM_FIELD_STACK_COUNT) < item2->GetProto()->MaxCount &&
+					item2->GetUInt32Value( ITEM_FIELD_STACK_COUNT ) + item->GetUInt32Value( ITEM_FIELD_STACK_COUNT ) <= item->GetProto()->MaxCount )
 				{
 					item2->SetUInt32Value( ITEM_FIELD_STACK_COUNT,item2->GetUInt32Value( ITEM_FIELD_STACK_COUNT ) + item->GetUInt32Value( ITEM_FIELD_STACK_COUNT ) );
 					result.Slot=i;

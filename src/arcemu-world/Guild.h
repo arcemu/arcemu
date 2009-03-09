@@ -551,7 +551,7 @@ protected:
 	uint32 m_guildLeader;
 	uint32 m_creationTimeStamp;
 	uint32 m_bankTabCount;
-	uint32 m_bankBalance;
+	uint64 m_bankBalance; //use a 64 bit int so we can store more gold in the gbank
 
 	typedef vector<GuildBankTab*> GuildBankTabVector;
 	GuildBankTabVector m_bankTabs;
