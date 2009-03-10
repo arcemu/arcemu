@@ -302,7 +302,8 @@ void Guild::PromoteGuildMember(PlayerInfo * pMember, WorldSession * pClient)
 	if(pClient->GetPlayer()->getPlayerInfo()->guild != this || pMember->guild != this)
 		return;
 
-	if(!pClient->GetPlayer()->getPlayerInfo()->guildRank->CanPerformCommand(GR_RIGHT_PROMOTE))
+	if(!pClient->GetPlayer()->getPlayerInfo()->guildRank->CanPerformCommand(GR_RIGHT_PROMOTE) || 
+		(pMember->guildRank->iId - pClient->GetPlayer()->getPlayerInfo()->guildRank->iId) <= 1 )
 	{
 		SendGuildCommandResult(pClient, GUILD_PROMOTE_S, "", GUILD_PERMISSIONS);
 		return;
@@ -365,7 +366,8 @@ void Guild::DemoteGuildMember(PlayerInfo * pMember, WorldSession * pClient)
 		return;
 
 	if(!pClient->GetPlayer()->getPlayerInfo()->guildRank->CanPerformCommand(GR_RIGHT_DEMOTE) ||
-		pMember->guid == GetGuildLeader())
+		pMember->guid == GetGuildLeader() || 
+		pClient->GetPlayer()->getPlayerInfo()->guildRank->iId >= pMember->guildRank->iId )
 	{
 		SendGuildCommandResult(pClient, GUILD_PROMOTE_S, "", GUILD_PERMISSIONS);
 		return;
@@ -705,21 +707,32 @@ void Guild::SetGuildInformation(const char * szGuildInformation, WorldSession * 
 // adding a member
 void Guild::AddGuildMember(PlayerInfo * pMember, WorldSession * pClient, int32 ForcedRank /* = -1 */)
 {
-	if(pMember->guild != NULL)
-		return;
 
-	if(pClient && pClient->GetPlayer()->getPlayerInfo()->guild != this)
-		return;
+	if(!pClient)
+	{
+		if(pMember->guild != NULL)
+			return;
 
-	if(pClient && !pClient->GetPlayer()->getPlayerInfo()->guildRank->CanPerformCommand(GR_RIGHT_INVITE))
-		return;
+		if(pClient && pClient->GetPlayer()->getPlayerInfo()->guild != this )
+			return;
 
+		if(pClient && !pClient->GetPlayer()->getPlayerInfo()->guildRank->CanPerformCommand(GR_RIGHT_INVITE))
+			return;
+	}
 	m_lock.Acquire();
 	GuildRank * r;
 	if(m_members.size())
-		r = (ForcedRank<=0) ? FindLowestRank() : m_ranks[ForcedRank];
+	{
+		if( ForcedRank > 0 ) r = m_ranks[ForcedRank];
+		else if(ForcedRank == -2 ) r = FindHighestRank();
+		else r = FindLowestRank();
+	}
 	else
-		r = (ForcedRank<0) ? FindLowestRank() : m_ranks[ForcedRank];
+	{
+		if( ForcedRank >= 0 ) r = m_ranks[ForcedRank];
+		else if(ForcedRank == -2 ) r = FindHighestRank();
+		else r = FindLowestRank();
+	}
 
 	if(r==NULL)
 		r=FindLowestRank();
@@ -761,13 +774,18 @@ void Guild::RemoveGuildMember(PlayerInfo * pMember, WorldSession * pClient)
 
 	if(pClient && pClient->GetPlayer()->getPlayerInfo()->guild != this)
 		return;
-
-	if(pClient && !pClient->GetPlayer()->getPlayerInfo()->guildRank->CanPerformCommand(GR_RIGHT_REMOVE) && pClient->GetPlayer()->getPlayerInfo() != pMember)
+	if(pClient)
 	{
-		Guild::SendGuildCommandResult(pClient, GUILD_CREATE_S, "", GUILD_PERMISSIONS);
-		return;
-	}
+		int RDiff = pMember->guildRank->iId - pClient->GetPlayer()->getPlayerInfo()->guildRank->iId;
 
+		if(pClient && 
+			!pClient->GetPlayer()->getPlayerInfo()->guildRank->CanPerformCommand(GR_RIGHT_REMOVE) && 
+			pClient->GetPlayer()->getPlayerInfo() != pMember || RDiff <= 0 && pClient->GetPlayer()->getPlayerInfo() != pMember)
+		{
+			Guild::SendGuildCommandResult(pClient, GUILD_CREATE_S, "", GUILD_PERMISSIONS);
+			return;
+		}
+	}
 	if(pMember->guildRank->iId==0)
 	{
 		if(pClient)

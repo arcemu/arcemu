@@ -126,7 +126,6 @@ void WorldSession::HandleGuildAccept(WorldPacket & recv_data)
 	{
 		return;
 	}
-
 	pGuild->AddGuildMember(plyr->m_playerInfo, NULL);
 }
 

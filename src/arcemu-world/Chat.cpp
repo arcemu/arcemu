@@ -354,6 +354,7 @@ void CommandTableStorage::Init()
 
 	static ChatCommand GuildCommandTable[] =
 	{
+		{ "join",         'm', &ChatHandler::HandleGuildJoinCommand,         "Force joins a guild",                 NULL, 0, 0, 0 },
 		{ "create",       'm', &ChatHandler::CreateGuildCommand,             "Creates a guild.",                    NULL, 0, 0, 0 },
 		{ "rename",       'm', &ChatHandler::HandleRenameGuildCommand,       "Renames a guild.",                    NULL, 0, 0, 0 },
 		{ "members",      'm', &ChatHandler::HandleGuildMembersCommand,      "Lists guildmembers and their ranks.", NULL, 0, 0, 0 },

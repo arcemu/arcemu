@@ -284,6 +284,7 @@ protected:
 	bool HandleDeleteWaypoints(const char* args, WorldSession * m_session);
 
 	// Guild commands
+	bool HandleGuildJoinCommand(const char* args,WorldSession *m_session);
 	bool HandleGuildMembersCommand(const char* args, WorldSession *m_session);
 	bool CreateGuildCommand(const char* args, WorldSession *m_session);
 	bool HandleRenameGuildCommand(const char* args, WorldSession *m_session);

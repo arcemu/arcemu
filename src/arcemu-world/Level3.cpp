@@ -3109,6 +3109,33 @@ bool ChatHandler::HandleGuildDisbandCommand(const char* args, WorldSession *m_se
 	return true;
 }
 
+bool ChatHandler::HandleGuildJoinCommand(const char * args,WorldSession *m_session)
+{
+	if(!*args)
+		return false;
+
+	Player * ptarget = getSelectedChar(m_session);
+	if(!ptarget) return false;
+
+	if(ptarget->IsInGuild())
+	{
+		RedSystemMessage(m_session, "%s is already in a guild.", ptarget->GetName());
+		return true;
+	}
+
+	Guild * pGuild = NULL;
+	pGuild = objmgr.GetGuildByGuildName(string(args));
+	
+	if(pGuild)
+	{
+		pGuild->AddGuildMember(ptarget->getPlayerInfo(),m_session,-2);
+		GreenSystemMessage(m_session, "You have joined the guild '%s'",pGuild->GetGuildName());
+		return true;
+	}
+
+	return false;
+}
+
 //-DGM
 bool ChatHandler::HandleGuildMembersCommand(const char* args, WorldSession *m_session)
 {
