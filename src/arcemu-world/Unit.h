@@ -784,7 +784,7 @@ public:
 	void CastSpellAoF(float x,float y,float z,SpellEntry* Sp, bool triggered);
 	void EventCastSpell(Unit * Target, SpellEntry * Sp);
 
-	bool isCasting();
+	bool IsCasting();
 	bool IsInInstance();
     void CalculateResistanceReduction(Unit *pVictim,dealdamage *dmg,SpellEntry* ability) ;
 	void RegenerateHealth();
@@ -827,7 +827,7 @@ public:
 
 	/// Combat / Death Status
 	ARCEMU_INLINE bool isAlive() { return m_deathState == ALIVE; };
-	ARCEMU_INLINE bool isDead() { return  m_deathState !=ALIVE; };
+	ARCEMU_INLINE bool IsDead() { return  m_deathState !=ALIVE; };
 	virtual void setDeathState(DeathState s) {
 		m_deathState = s;
 		if ( m_deathState==JUST_DIED ) DropAurasOnDeath();

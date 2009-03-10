@@ -3974,7 +3974,7 @@ uint8 Spell::CanCast(bool tolerate)
 					if( !target->IsCreature() || target->GetEntry()!=24972 ) // Erratic Sentry
 						return SPELL_FAILED_BAD_TARGETS;
 
-					if( !target->IsCreature() || !target->isDead() )
+					if( !target->IsCreature() || !target->IsDead() )
 						return SPELL_FAILED_TARGET_NOT_DEAD;
 				}break;
 				case 30077: // Carinda's Retribution
@@ -4027,7 +4027,7 @@ uint8 Spell::CanCast(bool tolerate)
 				case 982: //Revive Pet
 				{
 					Pet *pPet = p_caster->GetSummon();
-					if(pPet && !pPet->isDead())
+					if(pPet && !pPet->IsDead())
 						return SPELL_FAILED_TARGET_NOT_DEAD;
 				}break;
 				case 38177: //Blackwhelp Net

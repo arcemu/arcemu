@@ -567,7 +567,7 @@ void Unit::Update( uint32 p_time )
 {
 	_UpdateSpells( p_time );
 
-	if(!isDead())
+	if(!IsDead())
 	{
 		//-----------------------POWER & HP REGENERATION-----------------
 /* Please dont do temp fixes. Better report to me. Thx. Shady */
@@ -2506,7 +2506,7 @@ void Unit::HandleProcSpellOnSpell(Unit* Victim,uint32 damage,bool critical)
 {
 }
 */
-bool Unit::isCasting()
+bool Unit::IsCasting()
 {
 	return (m_currentSpell != NULL);
 }

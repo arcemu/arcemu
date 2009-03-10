@@ -3119,7 +3119,7 @@ int luaUnit_IsAlive(lua_State * L, Unit * ptr)
 int luaUnit_IsDead(lua_State * L, Unit * ptr)
 {
 	if(ptr)
-		if(ptr->isDead())
+		if(ptr->IsDead())
 			lua_pushboolean(L, 1);
 		else
 			lua_pushboolean(L, 0);

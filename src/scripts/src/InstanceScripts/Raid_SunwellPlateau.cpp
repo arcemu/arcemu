@@ -492,12 +492,12 @@ class KilJaedenAI : public ArcScriptBossAI
 
 	void AIUpdate()
 	{
-		if ((HandOfTheDeceiver1 && HandOfTheDeceiver2 && HandOfTheDeceiver3 && HandOfTheDeceiver4) && (HandOfTheDeceiver1->isDead() || HandOfTheDeceiver2->isDead() || HandOfTheDeceiver3->isDead() || HandOfTheDeceiver4->isDead()) && (GetPhase() != 1))
+		if ((HandOfTheDeceiver1 && HandOfTheDeceiver2 && HandOfTheDeceiver3 && HandOfTheDeceiver4) && (HandOfTheDeceiver1->IsDead() || HandOfTheDeceiver2->IsDead() || HandOfTheDeceiver3->IsDead() || HandOfTheDeceiver4->IsDead()) && (GetPhase() != 1))
 		{
 			RemoveAura(46410);
 		}
 
-		if ((HandOfTheDeceiver1 && HandOfTheDeceiver2 && HandOfTheDeceiver3 && HandOfTheDeceiver4) && (HandOfTheDeceiver1->isDead() && HandOfTheDeceiver2->isDead() && HandOfTheDeceiver3->isDead() && HandOfTheDeceiver4->isDead()) && (GetPhase() != 1) && (GetPhase() != 2))
+		if ((HandOfTheDeceiver1 && HandOfTheDeceiver2 && HandOfTheDeceiver3 && HandOfTheDeceiver4) && (HandOfTheDeceiver1->IsDead() && HandOfTheDeceiver2->IsDead() && HandOfTheDeceiver3->IsDead() && HandOfTheDeceiver4->IsDead()) && (GetPhase() != 1) && (GetPhase() != 2))
 		{
 			SetPhase(1);
 			_unit->SetUInt64Value(UNIT_FIELD_FLAGS, ( true ) ? 0 : UNIT_FLAG_NOT_ATTACKABLE_9);

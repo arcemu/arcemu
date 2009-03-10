@@ -1763,7 +1763,7 @@ void CBattleground::EventResurrectPlayers()
 		for(itr = i->second.begin(); itr != i->second.end(); ++itr)
 		{
 			plr = m_mapMgr->GetPlayer(*itr);
-			if(plr && plr->isDead())
+			if(plr && plr->IsDead())
 			{
 				data.Initialize(SMSG_SPELL_START);
 				data << plr->GetNewGUID() << plr->GetNewGUID() << uint32(RESURRECT_SPELL) << uint8(0) << uint16(0) << uint32(0) << uint16(2) << plr->GetGUID();

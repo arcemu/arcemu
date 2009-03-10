@@ -129,7 +129,7 @@ Creature::~Creature()
 void Creature::Update( uint32 p_time )
 {
 	Unit::Update( p_time );
-	if(IsTotem() && isDead())
+	if(IsTotem() && IsDead())
 	{
 		SafeDelete();
 		return;

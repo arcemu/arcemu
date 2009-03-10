@@ -525,7 +525,7 @@ void WorldSession::HandleSwapInvItemOpcode( WorldPacket & recv_data )
 	}
 
 	// swap items
-  if( _player->isDead() ) {
+  if( _player->IsDead() ) {
   	_player->GetItemInterface()->BuildInventoryChangeError(srcitem,NULL,INV_ERR_YOU_ARE_DEAD);
 	  return;
   }
@@ -1073,7 +1073,7 @@ void WorldSession::HandleSellItemOpcode( WorldPacket & recv_data )
 	recv_data >> itemguid;
 	recv_data >> amount;
 
-	if(_player->isCasting())
+	if(_player->IsCasting())
 		_player->InterruptSpell();
 
 	// Check if item exists
@@ -1193,7 +1193,7 @@ void WorldSession::HandleBuyItemInSlotOpcode( WorldPacket & recv_data ) // drag 
 	if(amount < 1)
 		amount = 1;
 
-	if( _player->isCasting() )
+	if( _player->IsCasting() )
 		_player->InterruptSpell();
 
 	Creature* unit = _player->GetMapMgr()->GetCreature( GET_LOWGUID_PART(srcguid) );

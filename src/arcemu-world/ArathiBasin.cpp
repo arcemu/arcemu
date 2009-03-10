@@ -691,7 +691,7 @@ void ArathiBasin::HookOnAreaTrigger(Player * plr, uint32 id)
 		break;
 	}
 
-	if(plr->isDead())		// dont apply to dead players... :P
+	if(plr->IsDead())		// dont apply to dead players... :P
 		return;	
 
 	uint32 x = (uint32)buffslot;
@@ -841,7 +841,7 @@ void ArathiBasin::AssaultControlPoint(Player * pPlayer, uint32 Id)
 				for( set<uint32>::iterator it2 = itr->second.begin(); it2 != itr->second.end(); ++it2 )
 				{
 					Player* r_plr = m_mapMgr->GetPlayer( *it2 );
-					if( r_plr != NULL && r_plr->isDead() )
+					if( r_plr != NULL && r_plr->IsDead() )
 						HookHandleRepop( r_plr );
 				}
 			}

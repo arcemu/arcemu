@@ -69,7 +69,7 @@ Arena::~Arena()
 	for(i = 0; i < 2; ++i)
 	{
 		// buffs may not be spawned, so delete them if they're not
-		if(m_buffs[i] && m_buffs[i]->IsInWorld()==false)
+		if(m_buffs[i] && m_buffs[i]->IsInWorld() == false)
 			delete m_buffs[i];
 	}
 
@@ -88,7 +88,8 @@ Arena::~Arena()
 
 void Arena::OnAddPlayer(Player * plr)
 {
-	if (plr == NULL) return;
+	if (plr == NULL) 
+		return;
 
 	plr->m_deathVision = true;
 
@@ -105,20 +106,24 @@ void Arena::OnAddPlayer(Player * plr)
 			}
 		}
 	}
+	// On arena start all conjured items are removed
 	plr->GetItemInterface()->RemoveAllConjured();
-	if( !m_started )
-	{
-		plr->ResetAllCooldowns();
-	}
 
-	if( plr->m_isGmInvisible == false )
+	// Before the arena starts all your cooldowns are reset
+	if( !m_started )
+		plr->ResetAllCooldowns();
+
+	// if( plr->m_isGmInvisible == false )
+	// Make sure the player isn't a GM an isn't invisible (monitoring?)
+	if ( !plr->m_isGmInvisible )
 	{
 		if( !m_started )
 			plr->CastSpell(plr, ARENA_PREPARATION, true);
+
 		m_playersCount[plr->GetTeam()]++;
 		UpdatePlayerCounts();
 	}
-
+	// If they're still queued for the arena, remove them from the queue
 	if (plr->m_bgIsQueued)
 		plr->m_bgIsQueued = false;
 
@@ -128,7 +133,7 @@ void Arena::OnAddPlayer(Player * plr)
 	plr->AddAura(aura);
 	
 	/* Set FFA PvP Flag */
-	if(!plr->HasFlag(PLAYER_FLAGS, PLAYER_FLAG_FREE_FOR_ALL_PVP))
+	if ( !plr->HasFlag(PLAYER_FLAGS, PLAYER_FLAG_FREE_FOR_ALL_PVP))
 		plr->SetFlag(PLAYER_FLAGS, PLAYER_FLAG_FREE_FOR_ALL_PVP);
 
 	m_playersAlive.insert(plr->GetLowGUID());
@@ -138,17 +143,22 @@ void Arena::OnRemovePlayer(Player * plr)
 {
 	/* remove arena readyness buff */
 	plr->m_deathVision = false;
-	plr->RemoveAura(ARENA_PREPARATION);
 
-	/* plr left arena, call HookOnPlayerDeath as if he died */
+	// All auras are removed on exit 
+	// plr->RemoveAura(ARENA_PREPARATION);
+	plr->RemoveAllAuras();
+
+	// Player has left arena, call HookOnPlayerDeath as if he died
 	HookOnPlayerDeath(plr);
 
 	plr->RemoveAura(plr->GetTeamInitial() ? 35775-plr->m_bgTeam : 32725-plr->m_bgTeam);
-	if(plr->HasFlag(PLAYER_FLAGS, PLAYER_FLAG_FREE_FOR_ALL_PVP))
+	if (plr->HasFlag(PLAYER_FLAGS, PLAYER_FLAG_FREE_FOR_ALL_PVP ))
 		plr->RemoveFlag(PLAYER_FLAGS, PLAYER_FLAG_FREE_FOR_ALL_PVP);
 	
 	plr->m_bg = NULL;
 
+	// Reset all their cooldowns and restore their HP/Mana/Energy to max
+	plr->ResetAllCooldowns();
 	plr->FullHPMP();
 }
 

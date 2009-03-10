@@ -44,7 +44,7 @@ void WorldSession::HandleInitiateTrade(WorldPacket & recv_data)
 	// Handle possible error outcomes
 	if(pTarget->CalcDistance(_player) > 10.0f)		// This needs to be checked
 		TradeStatus = TRADE_STATUS_TOO_FAR_AWAY;
-	else if(pTarget->isDead())
+	else if(pTarget->IsDead())
 		TradeStatus = TRADE_STATUS_DEAD;
 	else if(pTarget->mTradeTarget != 0)
 		TradeStatus = TRADE_STATUS_ALREADY_TRADING;

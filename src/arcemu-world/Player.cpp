@@ -1322,7 +1322,7 @@ bool Player::HasAreaExplored(AreaTable const * at)
 
 void Player::_EventExploration()
 {
-	if (isDead())
+	if (IsDead())
 		return;
 
 	if (!IsInWorld())
@@ -1541,7 +1541,7 @@ void Player::BuildEnumData( WorldPacket * p_data )
 
 	if(rename_pending)  *p_data << uint32(0x00A04342);  // wtf blizz? :P
 	else if(m_banned)   *p_data << (uint32)7;	// Banned (cannot login)
-	else if(isDead())   *p_data << (uint32)8704; // Dead (displaying as Ghost)
+	else if(IsDead())   *p_data << (uint32)8704; // Dead (displaying as Ghost)
 	else				*p_data << (uint32)1;	// Alive
 
 	*p_data << (uint8)m_restState;	  // rest state
@@ -1704,7 +1704,7 @@ void Player::GiveXP(uint32 xp, const uint64 &guid, bool allowbonus)
 		}
 
 		// Small chance you die and levelup at the same time, and you enter a weird state.
-		if(isDead())
+		if(IsDead())
 			ResurrectPlayer();
 
 		//set full hp and mana
@@ -6327,7 +6327,7 @@ int32 Player::CanShootRangedWeapon( uint32 spellid, Unit* target, bool autoshot 
 		return SPELL_FAILED_INTERRUPTED;
 
 	// Check if target is already dead
-	if( target->isDead() )
+	if( target->IsDead() )
 		return SPELL_FAILED_TARGETS_DEAD;
 
 	// Check if in line of sight (need collision detection).
@@ -9333,7 +9333,7 @@ void Player::CompleteLoading()
 		}
 	}
 
-	if( isDead() )
+	if( IsDead() )
 	{
 		if ( myCorpse!=NULL ) { 
 			// cebernic: tempfix. This send a counter for player with just logging in.
@@ -9389,7 +9389,7 @@ void Player::OnWorldPortAck()
 {
 	//only rezz if player is porting to a instance portal
 	MapInfo *pMapinfo = WorldMapInfoStorage.LookupEntry(GetMapId());
-	if(isDead())
+	if(IsDead())
 	{
 		if(pMapinfo)
 		{
@@ -10027,7 +10027,7 @@ void Player::UpdateComboPoints()
 	if(m_comboTarget != 0)
 	{
 		Unit * target = (m_mapMgr != NULL) ? m_mapMgr->GetUnit(m_comboTarget) : NULL;
-		if(!target || target->isDead() || GetSelection() != m_comboTarget)
+		if(!target || target->IsDead() || GetSelection() != m_comboTarget)
 		{
 			buffer[0] = buffer[1] = 0;
 		}
@@ -12080,7 +12080,7 @@ uint32 Player::GetMaxPersonalRating()
 
 void Player::FullHPMP()
 {
-	if(isDead())
+	if(IsDead())
 		ResurrectPlayer();
     SetUInt32Value(UNIT_FIELD_HEALTH, GetUInt32Value(UNIT_FIELD_MAXHEALTH));
 	SetPower(POWER_TYPE_MANA, GetUInt32Value(UNIT_FIELD_MAXPOWER1));

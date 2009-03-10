@@ -424,7 +424,7 @@ void Transporter::TransportPassengers(uint32 mapid, uint32 oldmap, float x, floa
 			plr->_Relocate(mapid, v, false, true, 0);
 
 			// Lucky bitch. Do it like on official.
-			if(plr->isDead())
+			if(plr->IsDead())
 			{
 				plr->ResurrectPlayer();
 				plr->SetUInt32Value(UNIT_FIELD_HEALTH, plr->GetUInt32Value(UNIT_FIELD_MAXHEALTH));

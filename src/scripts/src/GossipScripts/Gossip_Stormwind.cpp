@@ -60,11 +60,68 @@ public:
     }
 };
 
+/*********************************************
+// Stormwind Harbor View Taxi Begin
+**********************************************/
+
+//This is when you talk to Thargold Ironwing...He will fly you through Stormwind Harbor to check it out.
+class SCRIPT_DECL SWHarborFlyAround : public GossipScript
+{
+public:
+    void GossipHello(Object * pObject, Player* Plr, bool AutoSend);
+    void GossipSelectOption(Object * pObject, Player* Plr, uint32 Id, uint32 IntId, const char * Code);
+    void GossipEnd(Object * pObject, Player* Plr);
+	void Destroy()
+	{
+		delete this;
+	}
+};
+
+void SWHarborFlyAround::GossipHello(Object * pObject, Player* Plr, bool AutoSend)
+{
+    GossipMenu *Menu;
+	objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 13454, Plr);
+	Menu->AddItem( 0, "Yes, please.", 1 );
+	Menu->AddItem( 0, "No, thank you.", 2 );
+	if(AutoSend)
+    Menu->SendTo(Plr);
+}
+
+void SWHarborFlyAround::GossipSelectOption(Object * pObject, Player* Plr, uint32 Id, uint32 IntId, const char * Code)
+{
+	Creature * pCreature = (pObject->GetTypeId()==TYPEID_UNIT)?((Creature*)pObject):NULL;
+	if(pCreature==NULL)
+		return;
+
+    switch(IntId)
+    {
+    case 1:{
+	TaxiPath * taxipath = sTaxiMgr.GetTaxiPath(1041);
+	Plr->DismissActivePet();
+	Plr->TaxiStart(taxipath, 25679, 0);
+	}break;
+	
+	case 2:
+	{Plr->Gossip_Complete();}
+	break;
+    }
+}
+
+void SWHarborFlyAround::GossipEnd(Object * pObject, Player* Plr)
+{
+    GossipScript::GossipEnd(pObject, Plr);
+}
+
+/*********************************************
+// Stormwind Harbor View Taxi End
+**********************************************/
+
 
 void SetupStormwindGossip(ScriptMgr * mgr)
 {
 	GossipScript * ArchmageMalinGossip = (GossipScript*) new ArchmageMalin_Gossip;
 
 	mgr->register_gossip_script(2708, ArchmageMalinGossip); // Archmage Malin
-
+	GossipScript * SWHARFLY = (GossipScript*) new SWHarborFlyAround();
+	mgr->register_gossip_script(29154, SWHARFLY);
 }

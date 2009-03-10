@@ -321,7 +321,7 @@ void WorldSession::LogoutPlayer(bool Save)
 			BattlegroundManager.RemovePlayerFromQueues( _player );
 
 		// cebernic ,don't forget repop
-		if( _player->isDead() && _player->getDeathState() == JUST_DIED )
+		if( _player->IsDead() && _player->getDeathState() == JUST_DIED )
 			_player->RepopRequestedPlayer();
 
 		//Duel Cancel on Leave

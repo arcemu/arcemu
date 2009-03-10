@@ -196,7 +196,7 @@ void EyeOfTheStorm::RepopPlayersOfTeam(int32 team, Creature * sh)
 		for( set<uint32>::iterator it2 = itr->second.begin(); it2 != itr->second.end(); ++it2 )
 		{
 			Player* r_plr = m_mapMgr->GetPlayer( *it2 );
-			if( r_plr != NULL && (team < 0 || (int32)r_plr->GetTeam() == team) && r_plr->isDead() )
+			if( r_plr != NULL && (team < 0 || (int32)r_plr->GetTeam() == team) && r_plr->IsDead() )
 				HookHandleRepop( r_plr );
 		}
 	}

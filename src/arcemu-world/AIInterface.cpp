@@ -205,7 +205,7 @@ void AIInterface::HandleEvent(uint32 event, Unit* pUnit, uint32 misc1)
 		{
 		case EVENT_ENTERCOMBAT:
 			{
-				if( pUnit == NULL || pUnit->isDead() || m_Unit->isDead() ) return;
+				if( pUnit == NULL || pUnit->IsDead() || m_Unit->IsDead() ) return;
 
 				// set the target first
 				if(pUnit && pUnit->GetInstanceID() == m_Unit->GetInstanceID())
@@ -1081,7 +1081,7 @@ void AIInterface::_UpdateCombat(uint32 p_time)
 		cansee = false;
 	}
 #endif
-	if( cansee && GetNextTarget() && GetNextTarget()->isAlive() && m_AIState != STATE_EVADE && !m_Unit->isCasting() )
+	if( cansee && GetNextTarget() && GetNextTarget()->isAlive() && m_AIState != STATE_EVADE && !m_Unit->IsCasting() )
 	{
 		if( agent == AGENT_NULL || ( m_AIType == AITYPE_PET && !m_nextSpell ) ) // allow pets autocast
 		{
@@ -1490,7 +1490,7 @@ void AIInterface::DismissPet()
 
 void AIInterface::AttackReaction(Unit* pUnit, uint32 damage_dealt, uint32 spellId)
 {
-	if( m_AIState == STATE_EVADE || !pUnit || !pUnit->isAlive() || m_Unit->isDead() || m_Unit == pUnit )
+	if( m_AIState == STATE_EVADE || !pUnit || !pUnit->isAlive() || m_Unit->IsDead() || m_Unit == pUnit )
 		return;
 
 	if( sWorld.Collision && pUnit->IsPlayer() )
@@ -4139,7 +4139,7 @@ void AIInterface::Event_Summon_FE_totem(uint32 summon_duration)
 void AIInterface::CancelSpellCast()
 {
 	//hmm unit spell casting is not the same as Ai spell casting ? Have to test this
-	if(m_Unit->isCasting())
+	if(m_Unit->IsCasting())
 		m_Unit->m_currentSpell->safe_cancel();
 	//i can see this crashing already :P.
 	m_AIState = STATE_IDLE;

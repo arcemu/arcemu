@@ -360,7 +360,7 @@ bool HandleRevivePlayer(BaseConsole * pConsole, int argc, const char * argv[])
 		return true;
 	}
 
-	if(plr->isDead())
+	if(plr->IsDead())
 	{
 		plr->RemoteRevive();
 		pConsole->Write("Revived player %s.\r\n", argv[1]);

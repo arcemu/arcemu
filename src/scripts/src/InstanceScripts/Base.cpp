@@ -428,7 +428,7 @@ SpellDesc* ArcScriptCreatureAI::FindSpellByFunc(SpellFunc pFnc)
 
 bool ArcScriptCreatureAI::IsCasting()
 {
-	return _unit->isCasting();
+	return _unit->IsCasting();
 }
 
 void ArcScriptCreatureAI::ApplyAura(uint32 pSpellId)

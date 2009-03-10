@@ -3169,7 +3169,7 @@ void Aura::SpellAuraModStun(bool apply)
 			static_cast<Unit*>(caster)->EventStunOrImmobilize( m_target );
 		if( m_target && caster )
 			static_cast<Unit*>(m_target)->EventStunOrImmobilize( caster, true );
-		if (m_target->isCasting())
+		if (m_target->IsCasting())
 			m_target->CancelSpell(NULL); //cancel spells.
 	}
 	else if( (m_flags & (1 << mod->i)) == 0 ) //add these checks to mods where imunity can cancel only 1 mod and not whole spell
@@ -3800,7 +3800,7 @@ void Aura::EventPeriodicTriggerSpell(SpellEntry* spellInfo)
 	if(!oTarget->IsUnit())
 		return;
 
-	if(!pTarget || pTarget->isDead())
+	if(!pTarget || pTarget->IsDead())
 	{
 		SendInterrupted(SPELL_FAILED_TARGETS_DEAD, m_caster);
 		SendChannelUpdate(0, m_caster);
@@ -5619,7 +5619,7 @@ void Aura::SpellAuraFeignDeath(bool apply)
 					{
 						Player* plr = static_cast< Player* >( *itr );
 
-						if( plr->isCasting() && plr->GetSelection() == pTarget->GetGUID() )
+						if( plr->IsCasting() && plr->GetSelection() == pTarget->GetGUID() )
 							plr->CancelSpell( NULL ); //cancel current casting spell
 
 						plr->GetSession()->SendPacket( &data );
@@ -6306,7 +6306,7 @@ void Aura::SpellAuraChannelDeathItem(bool apply)
 			if ( m_target->GetTypeId() == TYPEID_UNIT && ((Creature*)m_target)->GetCreatureInfo() != NULL && ((Creature*)m_target)->GetCreatureInfo()->Type == CRITTER )
 				return;
 
-			if(m_target->isDead())
+			if(m_target->IsDead())
 			{
 				Player *pCaster = m_target->GetMapMgr()->GetPlayer((uint32)m_casterGuid);
 				if(!pCaster)
@@ -8775,7 +8775,7 @@ void Aura::SpellAuraIncreaseRating( bool apply )
 
 void Aura::EventPeriodicRegenManaStatPct(uint32 perc,uint32 stat)
 {
-	if(m_target->isDead())
+	if(m_target->IsDead())
 		return;
 
 	uint32 mana = m_target->GetUInt32Value(UNIT_FIELD_POWER1) + (m_target->GetUInt32Value(UNIT_FIELD_STAT0 + stat)*perc)/100;

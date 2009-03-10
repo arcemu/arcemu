@@ -42,7 +42,7 @@ void WorldSession::HandleAutostoreLootItemOpcode( WorldPacket & recv_data )
 	Item *add;
 	Loot *pLoot = NULL;
 
-	if(_player->isCasting())
+	if(_player->IsCasting())
 		_player->InterruptSpell();
 	GameObject * pGO = NULL;
 	Creature * pCreature = NULL;
@@ -226,7 +226,7 @@ void WorldSession::HandleLootMoneyOpcode( WorldPacket & recv_data )
 	if(!lootguid)
 		return;   // duno why this happens
 
-	if(_player->isCasting())
+	if(_player->IsCasting())
 		_player->InterruptSpell();
 
 	WorldPacket pkt;	
@@ -356,16 +356,27 @@ void WorldSession::HandleLootMoneyOpcode( WorldPacket & recv_data )
 
 void WorldSession::HandleLootOpcode( WorldPacket & recv_data )
 {
-	if(!_player->IsInWorld())
+	if(!_player->IsInWorld()) // Check that the player is currently in world
 		return;
 
 	uint64 guid;
 	recv_data >> guid;
-  if ( !guid ) return;
-	if(_player->isCasting())
-		_player->InterruptSpell();
-		
-	_player->RemoveStealth(); // cebernic:RemoveStealth on looting. Blizzlike
+
+	if ( !guid ) // Check that the player exists
+	  return;
+
+	if ( _player->IsDead() ) // If the player is dead they can't loot!
+		return;
+
+	if ( _player->IsStealth() ) // Check if the player is stealthed
+		_player->RemoveStealth(); // cebernic:RemoveStealth on looting. Blizzlike
+
+	if ( _player->IsCasting() ) // Check if the player is casting
+		_player->InterruptSpell(); // Cancel spell casting
+
+	if ( _player->IsInvisible() ) // Check if the player is invisible for what ever reason 
+		_player->RemoveInvisibility(); // Remove all invsibility
+	
 
 	if(_player->InGroup() && !_player->m_bg)
 	{
@@ -416,11 +427,11 @@ void WorldSession::HandleLootOpcode( WorldPacket & recv_data )
 
 void WorldSession::HandleLootReleaseOpcode( WorldPacket & recv_data )
 {
-	if(!_player->IsInWorld()) return;
+	if ( !_player->IsInWorld() ) 
+		return;
+
 	uint64 guid;
-
 	recv_data >> guid;
-
 	WorldPacket data(SMSG_LOOT_RELEASE_RESPONSE, 9);
 	data << guid << uint8( 1 );
 	SendPacket( &data );
@@ -461,7 +472,7 @@ void WorldSession::HandleLootReleaseOpcode( WorldPacket & recv_data )
 	else if( GET_TYPE_FROM_GUID( guid ) == HIGHGUID_TYPE_GAMEOBJECT )
 	{
 		GameObject* pGO = _player->GetMapMgr()->GetGameObject( (uint32)guid );
-		if( pGO == NULL )
+		if ( pGO == NULL )
 			return;
 
 		switch( pGO->GetByte( GAMEOBJECT_BYTES_1, 1 ) )
@@ -469,7 +480,7 @@ void WorldSession::HandleLootReleaseOpcode( WorldPacket & recv_data )
 		case GAMEOBJECT_TYPE_FISHINGNODE:
 			{
 				pGO->loot.looters.erase(_player->GetLowGUID());
-				if(pGO->IsInWorld())
+				if ( pGO->IsInWorld() )
 				{
 					pGO->RemoveFromWorld(true);
 				}
@@ -522,7 +533,7 @@ void WorldSession::HandleLootReleaseOpcode( WorldPacket & recv_data )
 								}
 								else
 								{
-									if(pGO->HasLoot())
+									if( pGO->HasLoot() )
 									{
 										pGO->SetByte(GAMEOBJECT_BYTES_1, 0, 1);
 										return;
@@ -533,7 +544,7 @@ void WorldSession::HandleLootReleaseOpcode( WorldPacket & recv_data )
 							}
 							else //other type of locks that i dont bother to split atm ;P
 							{
-								if(pGO->HasLoot())
+								if( pGO->HasLoot() )
 								{
 									pGO->SetByte(GAMEOBJECT_BYTES_1, 0, 1);
 									return;
@@ -563,23 +574,23 @@ void WorldSession::HandleLootReleaseOpcode( WorldPacket & recv_data )
 			break;
 		}
 	}
-	else if(GET_TYPE_FROM_GUID(guid) == HIGHGUID_TYPE_CORPSE)
+	else if (GET_TYPE_FROM_GUID(guid) == HIGHGUID_TYPE_CORPSE)
 	{
 		Corpse *pCorpse = objmgr.GetCorpse((uint32)guid);
-		if(pCorpse) 
+		if ( pCorpse ) 
 			pCorpse->SetUInt32Value(CORPSE_FIELD_DYNAMIC_FLAGS, 0);
 	}
-	else if(GET_TYPE_FROM_GUID(guid) == HIGHGUID_TYPE_PLAYER)
+	else if (GET_TYPE_FROM_GUID(guid) == HIGHGUID_TYPE_PLAYER)
 	{
 		Player *plr = objmgr.GetPlayer((uint32)guid);
-		if(plr)
+		if (plr)
 		{
 			plr->bShouldHaveLootableOnCorpse = false;
 			plr->loot.items.clear();
 			plr->RemoveFlag(UNIT_DYNAMIC_FLAGS, U_DYN_FLAG_LOOTABLE);
 		}
 	}
-	else if(GUID_HIPART(guid))
+	else if (GUID_HIPART(guid))
 	{
 		// suicide!
 		_player->GetItemInterface()->SafeFullRemoveItemByGuid(guid);
@@ -605,7 +616,7 @@ void WorldSession::HandleWhoOpcode( WorldPacket & recv_data )
 	recv_data >> chatname >> unkstr >> race_mask >> class_mask;
 	recv_data >> zone_count;
 
-	if(zone_count > 0 && zone_count < 10)
+	if ( zone_count > 0 && zone_count < 10 )
 	{
 		zones = new uint32[zone_count];
 	
@@ -618,7 +629,7 @@ void WorldSession::HandleWhoOpcode( WorldPacket & recv_data )
 	}
 
 	recv_data >> name_count;
-	if(name_count > 0 && name_count < 10)
+	if ( name_count > 0 && name_count < 10 )
 	{
 		names = new string[name_count];
 
@@ -630,7 +641,7 @@ void WorldSession::HandleWhoOpcode( WorldPacket & recv_data )
 		name_count = 0;
 	}
 
-	if(chatname.length() > 0)
+	if ( chatname.length() > 0 )
 		cname = true;
 	else
 		cname = false;
@@ -639,7 +650,7 @@ void WorldSession::HandleWhoOpcode( WorldPacket & recv_data )
 	
 	bool gm = false;
 	uint32 team = _player->GetTeam();
-	if(HasGMPermissions())
+	if ( HasGMPermissions() )
 		gm = true;
 
 	uint32 sent_count = 0;
@@ -656,22 +667,22 @@ void WorldSession::HandleWhoOpcode( WorldPacket & recv_data )
 	objmgr._playerslock.AcquireReadLock();
 	iend=objmgr._players.end();
 	itr=objmgr._players.begin();
-	while(itr !=iend && sent_count < 49) /* WhoList should display 49 names not including your own */
+	while ( itr !=iend && sent_count < 49 ) // WhoList should display 49 names not including your own
 	{
 		plr = itr->second;
 		++itr;
 
-		if(!plr->GetSession() || !plr->IsInWorld())
+		if ( !plr->GetSession() || !plr->IsInWorld() )
 			continue;
 
-		if(!sWorld.show_gm_in_who_list && !HasGMPermissions())
+		if ( !sWorld.show_gm_in_who_list && !HasGMPermissions() )
 		{
-			if(plr->GetSession()->HasGMPermissions())
+			if ( plr->GetSession()->HasGMPermissions() )
 				continue;
 		}
 
 		// Team check
-		if(!gm && plr->GetTeam() != team && !plr->GetSession()->HasGMPermissions() &&!sWorld.interfaction_misc)
+		if ( !gm && plr->GetTeam() != team && !plr->GetSession()->HasGMPermissions() &&!sWorld.interfaction_misc )
 			continue;
 
 		++total_count;
@@ -735,7 +746,7 @@ void WorldSession::HandleWhoOpcode( WorldPacket & recv_data )
 		// if we're here, it means we've passed all testing
 		// so add the names :)
 		data << plr->GetName();
-		if(plr->m_playerInfo->guild)
+		if (plr->m_playerInfo->guild)
 			data << plr->m_playerInfo->guild->GetGuildName();
 		else
 			data << uint8(0);	   // Guild name

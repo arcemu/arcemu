@@ -884,7 +884,7 @@ void WorldSession::FullLogin(Player * plr)
 		Transporter * pTrans = objmgr.GetTransporter(GUID_LOPART(plr->m_TransporterGUID));
 		if(pTrans)
 		{
-			if(plr->isDead())
+			if(plr->IsDead())
 			{
 				plr->ResurrectPlayer();
 				plr->SetUInt32Value(UNIT_FIELD_HEALTH, plr->GetUInt32Value(UNIT_FIELD_MAXHEALTH));

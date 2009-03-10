@@ -456,7 +456,7 @@ bool ChatHandler::HandleKillByPlrCommand( const char *args , WorldSession *m_ses
 		return true;
 	}
 
-	if(plr->isDead())
+	if(plr->IsDead())
 	{
 		RedSystemMessage(m_session, "Player %s is already dead.", args);
 	} else {
@@ -1043,7 +1043,7 @@ bool ChatHandler::HandleReviveStringcommand(const char* args, WorldSession* m_se
 		return true;
 	}
 
-	if(plr->isDead())
+	if(plr->IsDead())
 	{
 		if(plr->GetInstanceID() == m_session->GetPlayer()->GetInstanceID())
 			plr->RemoteRevive();

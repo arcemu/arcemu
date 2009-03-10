@@ -921,7 +921,7 @@ void Group::UpdateOutOfRangePlayer(Player * pPlayer, uint32 Flags, bool Distribu
 			member_flags |= 0x02;
 		if(pPlayer->getDeathState() == CORPSE)
 			member_flags |= 0x08;
-		else if(pPlayer->isDead())
+		else if(pPlayer->IsDead())
 			member_flags |= 0x10;
 
 		*data << member_flags << uint8(0);

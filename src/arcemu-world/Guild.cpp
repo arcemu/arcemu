@@ -708,17 +708,10 @@ void Guild::SetGuildInformation(const char * szGuildInformation, WorldSession * 
 void Guild::AddGuildMember(PlayerInfo * pMember, WorldSession * pClient, int32 ForcedRank /* = -1 */)
 {
 
-	if(!pClient)
-	{
-		if(pMember->guild != NULL)
-			return;
+	//we dont need useless paranoia checks.
+	if(pMember->guild != NULL)
+		return;
 
-		if(pClient && pClient->GetPlayer()->getPlayerInfo()->guild != this )
-			return;
-
-		if(pClient && !pClient->GetPlayer()->getPlayerInfo()->guildRank->CanPerformCommand(GR_RIGHT_INVITE))
-			return;
-	}
 	m_lock.Acquire();
 	GuildRank * r;
 	if(m_members.size())

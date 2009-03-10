@@ -577,7 +577,7 @@ void WorldSession::HandleGossipSelectOptionOpcode( WorldPacket & recv_data )
 //////////////////////////////////////////////////////////////
 void WorldSession::HandleSpiritHealerActivateOpcode( WorldPacket & recv_data )
 {
-	if(!_player->IsInWorld() ||!_player->isDead()) return;
+	if(!_player->IsInWorld() ||!_player->IsDead()) return;
 	GetPlayer( )->DeathDurabilityLoss(0.25);
 	GetPlayer( )->ResurrectPlayer();
 
