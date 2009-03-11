@@ -3318,13 +3318,18 @@ uint8 Spell::CanCast(bool tolerate)
 				return SPELL_FAILED_CANT_DUEL_WHILE_STEALTHED;
 		}
 
-		// check if spell is allowed while player is on a taxi
-		//Shady: handled via ATTRIBUTES_MOUNT_CASTABLE, nah?
-		//if(p_caster->m_onTaxi)
-		//{
-		//	if( GetProto()->Id != 33836 || GetProto()->Id != 33655) // exception for Area 52 Special
-		//		return SPELL_FAILED_NOT_ON_TAXI;
-		//}
+ 		// check if spell is allowed while player is on a taxi
+		if(p_caster->m_onTaxi && !(GetProto()->Attributes & ATTRIBUTES_MOUNT_CASTABLE) )//Are mount castable spells allowed on a taxi?
+		{
+			if( m_spellInfo->Id != 33836 && m_spellInfo->Id != 45072 && m_spellInfo->Id != 45115 && m_spellInfo->Id != 31958) // exception for taxi bombs
+				return SPELL_FAILED_NOT_ON_TAXI;
+		}
+		
+		if( !p_caster->m_onTaxi )
+		{
+			if( m_spellInfo->Id == 33836 || m_spellInfo->Id == 45072 || m_spellInfo->Id == 45115 || m_spellInfo->Id == 31958)
+				return SPELL_FAILED_NOT_HERE;
+		}
 
 		// check if spell is allowed while player is on a transporter
 		if(p_caster->m_CurrentTransporter)

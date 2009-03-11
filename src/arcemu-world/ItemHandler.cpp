@@ -134,6 +134,7 @@ void WorldSession::HandleSplitOpcode(WorldPacket& recv_data)
 			if(!result)
 			{
 				printf("HandleBuyItemInSlot: Error while adding item to dstslot");
+			    i2->DeleteFromDB();
 				i2->DeleteMe();
 				i2 = NULL;
 			}
@@ -388,6 +389,7 @@ void WorldSession::HandleSwapItemOpcode(WorldPacket& recv_data)
 			if(!result)
 			{
 				printf("HandleSwapItem: Error while adding item to dstslot\n");
+				SrcItem->DeleteFromDB();
 				SrcItem->DeleteMe();
                 SrcItem = NULL;
 			}
@@ -399,6 +401,7 @@ void WorldSession::HandleSwapItemOpcode(WorldPacket& recv_data)
 			if(!result)
 			{
 				printf("HandleSwapItem: Error while adding item to srcslot\n");
+				DstItem->DeleteFromDB();
 				DstItem->DeleteMe();
                 DstItem = NULL;
 			}
