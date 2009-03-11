@@ -757,10 +757,15 @@ bool Player::Create(WorldPacket& data )
 	SetUInt32Value(UNIT_FIELD_BASE_HEALTH, info->health);
 	SetUInt32Value(UNIT_FIELD_BASE_MANA, info->mana );
 	SetUInt32Value(UNIT_FIELD_FACTIONTEMPLATE, info->factiontemplate );
-
+	
+	if(class_ == DEATHKNIGHT)
+		SetUInt32Value(PLAYER_CHARACTER_POINTS1, sWorld.DKStartTalentPoints); // Default is 0 in case you do not want to modify it
+	else
+		SetUInt32Value(PLAYER_CHARACTER_POINTS1,0);
 	if(class_ != DEATHKNIGHT || sWorld.StartingLevel > 55)
 	{	
 		SetUInt32Value(UNIT_FIELD_LEVEL, sWorld.StartingLevel );
+		if(sWorld.StartingLevel >= 10 && class_ != DEATHKNIGHT )
 		SetUInt32Value(PLAYER_CHARACTER_POINTS1,sWorld.StartingLevel - 9);
 	}
 	else
@@ -769,9 +774,7 @@ bool Player::Create(WorldPacket& data )
 		SetUInt32Value(PLAYER_NEXT_LEVEL_XP, 148200);
 	}
 	UpdateGlyphs();
-	if(class_ == DEATHKNIGHT)
-		SetUInt32Value(PLAYER_CHARACTER_POINTS1, sWorld.DKStartTalentPoints); // Default is 0 in case you do not want to modify it
-
+	
 	SetUInt32Value(PLAYER_CHARACTER_POINTS2, sWorld.MaxProfs );
 	
 	SetUInt32Value(UNIT_FIELD_BYTES_0, ( ( race ) | ( class_ << 8 ) | ( gender << 16 ) | ( powertype << 24 ) ) );
