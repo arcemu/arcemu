@@ -19,7 +19,7 @@
 */
 
 #include "StdAfx.h"
-
+#define  SENDSURVEY "\x03"
 #ifdef GM_TICKET_MY_MASTER_COMPATIBLE
 
 bool ChatHandler::HandleGMTicketListCommand(const char* args, WorldSession *m_session)
@@ -150,11 +150,20 @@ bool ChatHandler::HandleGMTicketRemoveByIdCommand(const char* args, WorldSession
 	WorldPacket data(SMSG_GMTICKET_DELETETICKET, 4);
 	data << uint32(9);
 	plr->GetSession()->SendPacket( &data );
+	// Reponse - Send GM Survey
+	WorldPacket datab(SMSG_GM_TICKET_STATUS_UPDATE, 1);
+	datab << uint32(3);
+	plr->GetSession()->SendPacket( &datab );
 
 	return true;
 }
 
 #else
+
+void ChatHandler::SendGMSurvey()
+{
+
+}
 
 bool ChatHandler::HandleGMTicketListCommand(const char* args, WorldSession *m_session)
 {
@@ -299,9 +308,15 @@ bool ChatHandler::HandleGMTicketRemoveByIdCommand(const char* args, WorldSession
 	WorldPacket data(SMSG_GMTICKET_DELETETICKET, 4);
 	data << uint32(9);
 	plr->GetSession()->SendPacket( &data );
-
+	// Reponse - Send GM Survey
+	WorldPacket datab(SMSG_GM_TICKET_STATUS_UPDATE,1 );
+	datab << uint32(3);
+	plr->GetSession()->SendPacket( &datab );
+	//plr->GetSession()->GetPlayer()->OutPacketToSet( SMSG_GM_TICKET_STATUS_UPDATE, 1, SENDSURVEY,true);
+	SystemMessageToPlr(plr, "You have been selected to fill out a GM Preformance Survey. Please respond truthfully to the questions that you are asked and include the Game Masters name to your comment.");
 	return true;
 }
+
 
 bool ChatHandler::HandleGMTicketAssignToCommand(const char* args, WorldSession *m_session)
 {
@@ -324,6 +339,8 @@ bool ChatHandler::HandleGMTicketAssignToCommand(const char* args, WorldSession *
 		return false;
 
 	GM_Ticket *ticket = objmgr.GetGMTicket(ticketGuid);
+	Player* mplr = objmgr.GetPlayer((uint32)ticket->playerGuid);
+
 	if(ticket == NULL || ticket->deleted)
 	{
 		chn->Say(cplr, "GmTicket:0:Ticket not found.", cplr, true);
@@ -373,7 +390,18 @@ bool ChatHandler::HandleGMTicketAssignToCommand(const char* args, WorldSession *
 	ss << ":" << ticket->guid;
 	ss << ":" << plr->GetName();
 	chn->Say(cplr, ss.str().c_str(), NULL, true);
-
+	//Send Reponse Packet to update Ticket
+	//WorldPacket data(SMSG_GMTICKET_GETTICKET, 400);
+	//data << uint32(6); // Packet Status
+	//data << uint8(0x7);//static Category
+	//data << ticket->message.c_str();//ticketDescription
+	//data << float(0.0);//ticketAge - days //update time =  last time ticket was modified?
+	//data << float(0.0);//oldestTicketTime - days
+	//data << float(0.0);//updateTime - days | How recent is the data for oldest ticket time, measured in days.  If this number 1 hour, we have bad data.
+	//data << unit64(2);//assignedToGM |0 - ticket is not currently assigned to a gm | 1 - ticket is assigned to a normal gm |	2 - ticket is in the escalation queue
+	//data << uint64(1);//openedByGM | 0 - ticket has never been opened by a gm | 1 - ticket has been opened by a gm
+	//mplr->GetSession()->SendPacket( &data );
+	SystemMessageToPlr(mplr, "SYSTEM: Your ticket has been escalated. A Senior Game Master will be with you shortly!");
 	return true;
 }
 
@@ -407,7 +435,7 @@ bool ChatHandler::HandleGMTicketReleaseCommand(const char* args, WorldSession *m
 	Player *plr = objmgr.GetPlayer((uint32)ticket->assignedToPlayer);
 	if(!cplr->GetSession()->CanUseCommand('z') && plr != NULL && plr->IsInWorld() && plr->GetSession()->CanUseCommand('z'))
 	{
-		chn->Say(cplr, "GmTicket:0:You can not release tickets from admins.", cplr, true);
+		chn->Say(cplr, "GmTicket:0:You can not release tickets from Senior Game Masters.", cplr, true);
 		return true;
 	}
 	
@@ -513,14 +541,21 @@ bool ChatHandler::HandleGMTicketDeletePermanentCommand(const char* args, WorldSe
 
 	objmgr.DeleteGMTicketPermanently(ticket->guid);
 	ticket = NULL;
-
 	if(plr != NULL && plr->IsInWorld())
 	{
 		// Notify player about removing ticket
 		WorldPacket data(SMSG_GMTICKET_DELETETICKET, 4);
 		data << uint32(9);
 		plr->GetSession()->SendPacket( &data );
-	}
+		
+		// Reponse - Send GM Survey
+		WorldPacket datab(SMSG_GM_TICKET_STATUS_UPDATE, 1);
+		datab << uint32(3);
+		plr->GetSession()->SendPacket( &datab );
+		//plr->GetSession()->GetPlayer()->OutPacketToSet( SMSG_GM_TICKET_STATUS_UPDATE, 1, SENDSURVEY,true);
+		SystemMessageToPlr(plr, "You have been selected to fill out a GM Preformance Survey. Please respond truthfully to the questions that you are asked and include the Game Masters name to your comment.");
+	}	
+	
 	return true;
 }
 
@@ -534,4 +569,5 @@ bool ChatHandler::HandleGMTicketToggleTicketSystemStatusCommand(const char* args
 		GreenSystemMessage(m_session, "TicketSystem disabled.");
 	return true;
 }
+
 

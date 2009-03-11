@@ -363,11 +363,13 @@ void WorldSession::HandleMessagechatOpcode( WorldPacket & recv_data )
 			}
 
 			// Check that the player isn't a gm with his status on
+			// TODO: Game Master's on retail are able to have block whispers after they close the ticket with the current packet.
+			// When a Game Master is visible to your player it says "This player is unavailible for whisper" i need to figure out how this done.
 			if(!_player->GetSession()->GetPermissionCount() && player->bGMTagOn && player->gmTargets.count(_player) == 0)
 			{
 				// Build automated reply
-				string Reply = "This Game Master does not currently have an open ticket from you and did not receive your whisper. Please submit a new GM Ticket request if you need to speak to a GM. This is an automatic message.";
-				data = sChatHandler.FillMessageData( CHAT_MSG_WHISPER, LANG_UNIVERSAL, Reply.c_str(), player->GetGUID(), 3);
+				string Reply = "SYSTEM: This Game Master does not currently have an open ticket from you and did not receive your whisper. Please submit a new GM Ticket request if you need to speak to a GM. This is an automatic message.";
+				data = sChatHandler.FillMessageData( CHAT_MSG_WHISPER_INFORM, LANG_UNIVERSAL, Reply.c_str(), player->GetGUID(), 4);
 				SendPacket(data);
 				delete data;
 				break;
