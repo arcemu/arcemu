@@ -313,7 +313,7 @@ bool ChatHandler::HandleGMTicketRemoveByIdCommand(const char* args, WorldSession
 	datab << uint32(3);
 	plr->GetSession()->SendPacket( &datab );
 	//plr->GetSession()->GetPlayer()->OutPacketToSet( SMSG_GM_TICKET_STATUS_UPDATE, 1, SENDSURVEY,true);
-	SystemMessageToPlr(plr, "You have been selected to fill out a GM Preformance Survey. Please respond truthfully to the questions that you are asked and include the Game Masters name to your comment.");
+	SystemMessageToPlr(plr, "You have been selected to fill out a GM Performance Survey. Please respond truthfully to the questions that you are asked and include the Game Masters name to your comment.");
 	return true;
 }
 
@@ -553,7 +553,7 @@ bool ChatHandler::HandleGMTicketDeletePermanentCommand(const char* args, WorldSe
 		datab << uint32(3);
 		plr->GetSession()->SendPacket( &datab );
 		//plr->GetSession()->GetPlayer()->OutPacketToSet( SMSG_GM_TICKET_STATUS_UPDATE, 1, SENDSURVEY,true);
-		SystemMessageToPlr(plr, "You have been selected to fill out a GM Preformance Survey. Please respond truthfully to the questions that you are asked and include the Game Masters name to your comment.");
+		SystemMessageToPlr(plr, "You have been selected to fill out a GM Performance Survey. Please respond truthfully to the questions that you are asked and include the Game Masters name to your comment.");
 	}	
 	
 	return true;
