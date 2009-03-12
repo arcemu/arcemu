@@ -431,7 +431,7 @@ bool Guild::LoadFromDB(Field * f)
 	m_motd = strlen(f[9].GetString()) ? strdup(f[9].GetString()) : NULL;
 	m_creationTimeStamp = f[10].GetUInt32();
 	m_bankTabCount = f[11].GetUInt32();
-	m_bankBalance = f[12].GetUInt32();
+	m_bankBalance = f[12].GetUInt64();
 
 	// load ranks
 	uint32 j;
@@ -1373,10 +1373,10 @@ void Guild::DepositMoney(WorldSession * pClient, uint32 uAmount)
 
 	// add to the bank balance
 	m_bankBalance += uAmount;
-
+	
 	// update in db
-	CharacterDatabase.Execute("UPDATE guilds SET bankBalance = %u WHERE guildId = %u", m_bankBalance, m_guildId);
-
+	CharacterDatabase.Execute("UPDATE guilds SET bankBalance = %llu WHERE guildId = %u", m_bankBalance, m_guildId);
+	
 	// take the money, oh noes gm pls gief gold mi hero poor
 	pClient->GetPlayer()->ModUnsigned32Value(PLAYER_FIELD_COINAGE, -(int32)uAmount);
 
@@ -1434,7 +1434,7 @@ void Guild::WithdrawMoney(WorldSession * pClient, uint32 uAmount)
 	m_bankBalance -= uAmount;
 
 	// update in db
-	CharacterDatabase.Execute("UPDATE guilds SET bankBalance = %u WHERE guildId = %u", (m_bankBalance>0)?m_bankBalance:0, m_guildId);
+	CharacterDatabase.Execute("UPDATE guilds SET bankBalance = %llu WHERE guildId = %u", (m_bankBalance>0)?m_bankBalance:0, m_guildId);
 
 	// notify everyone with the new balance
 	char buf[20];
