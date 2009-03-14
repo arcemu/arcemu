@@ -416,7 +416,7 @@ void WorldSession::HandleSendMail(WorldPacket & recv_data )
 				sGMLog.writefromsession(this, "sent mail with item entry %u to %s, with gold %u.", pItem->GetEntry(), player->name, msg.money);
 			}
 
-			pItem->DeleteMe();
+			sItemMgr.DestroyItem(pItem);
 		}
 	}
 
@@ -575,7 +575,7 @@ void WorldSession::HandleTakeItem(WorldPacket & recv_data )
 		data << uint32(MAIL_ERR_BAG_FULL);
 		SendPacket(&data);
 
-		item->DeleteMe();
+		sItemMgr.DestroyItem(item);
 		return;
 	}
 	item->m_isDirty = true;
@@ -587,7 +587,7 @@ void WorldSession::HandleTakeItem(WorldPacket & recv_data )
 			//End of slots
 			data << uint32(MAIL_ERR_BAG_FULL);
 			SendPacket(&data);
-			item->DeleteMe();
+			sItemMgr.DestroyItem(item);
 			return;
 		}
 	}
@@ -755,7 +755,7 @@ void WorldSession::HandleMailCreateTextItem(WorldPacket & recv_data )
 	}
 	else
 	{
-		pItem->DeleteMe();
+		sItemMgr.DestroyItem(pItem);
 	}
 }
 

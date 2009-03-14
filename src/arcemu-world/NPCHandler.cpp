@@ -590,8 +590,7 @@ void WorldSession::HandleSpiritHealerActivateOpcode( WorldPacket & recv_data )
 			SpellEntry *spellInfo = dbcSpell.LookupEntry( 15007 );//resurrection sickness
 			SpellCastTargets targets;
 			targets.m_unitTarget = GetPlayer()->GetGUID();
-			Spell*sp=SpellPool.PooledNew();
-			sp->Init(_player,spellInfo,true,NULL);
+			Spell * sp = sSpellMgr.CreateSpell(_player, spellInfo, true, NULL);
 			sp->prepare(&targets);
 		}
 
@@ -726,7 +725,7 @@ void WorldSession::SendInnkeeperBind(Creature* pCreature)
 				SendItemPushResult(item,false,true,false,true,lr->ContainerSlot,lr->Slot,1);
 			}
 			else
-				item->DeleteMe();
+				sItemMgr.DestroyItem(item);
 		}
 	}
 

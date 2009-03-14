@@ -109,6 +109,7 @@
 #include "ItemPrototype.h"
 #include "Item.h"
 #include "Container.h"
+#include "ItemMgr.h"
 #include "AuctionHouse.h"
 #include "AuctionMgr.h"
 #include "LfgMgr.h"
@@ -131,6 +132,7 @@
 #include "SpellNameHashes.h"
 #include "Spell.h"
 #include "SpellAuras.h"
+#include "SpellMgr.h"
 #include "TaxiMgr.h"
 #include "TransporterHandler.h"
 #include "StrandOfTheAncient.h"
@@ -175,6 +177,5 @@
 //#define COLLECTION_OF_UNTESTED_STUFF_AND_TESTERS 1
 #include "SpeedDetector.h"
 //#define PVP_REALM_MEANS_CONSTANT_PVP
-#include "BufferPools/BufferPools.h"
 #include "ProcCondHandler.h"
 #endif

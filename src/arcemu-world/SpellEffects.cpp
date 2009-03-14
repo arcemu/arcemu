@@ -472,8 +472,7 @@ void Spell::SpellEffectInstantKill(uint32 i)
 				return;
 
 			SpellCastTargets targets( u_caster->GetGUID() );
-			Spell * sp = SpellPool.PooledNew();
-			sp->Init( static_cast< Pet* >( u_caster )->GetPetOwner(), se, true, 0 );
+			Spell * sp = sSpellMgr.CreateSpell(static_cast< Pet* >( u_caster )->GetPetOwner(), se, true, 0 );
 			sp->prepare( &targets );
 
 			return;
@@ -489,8 +488,7 @@ void Spell::SpellEffectInstantKill(uint32 i)
 			if(se == 0) return;
 
 			SpellCastTargets targets( unitTarget->GetGUID() );
-			Spell * sp = SpellPool.PooledNew();
-			sp->Init( p_caster, se, true, 0 );
+			Spell * sp = sSpellMgr.CreateSpell(p_caster, se, true, 0);
 			sp->prepare( &targets );
 			return;
 		}break;
@@ -1051,8 +1049,7 @@ void Spell::SpellEffectDummy(uint32 i) // Dummy(Scripted events)
 					if(!p_caster) return;
 					if(p_caster->m_TotemSlots[0] && p_caster->m_TotemSlots[1] && p_caster->m_TotemSlots[2] && p_caster->m_TotemSlots[3])
 					{
-						Aura *aur = AuraPool.PooledNew();
-						aur->Init(dbcSpell.LookupEntry(38437), 5000, p_caster, p_caster, true);
+						Aura *aur = sSpellMgr.CreateAura(dbcSpell.LookupEntry(38437), 5000, p_caster, p_caster, true);
 						for( uint32 i=0; i<3; i++ ) 
 							aur->AddMod( aur->GetSpellProto()->EffectApplyAuraName[i], aur->GetSpellProto()->EffectBasePoints[i]+1, aur->GetSpellProto()->EffectMiscValue[i], i );
 						p_caster->AddAura(aur);
@@ -1407,8 +1404,7 @@ void Spell::SpellEffectDummy(uint32 i) // Dummy(Scripted events)
 	case 27172: //Judgement of Command
 		{
 			uint32 SpellID = GetProto()->EffectBasePoints[i]+1;
-			Spell * spell=SpellPool.PooledNew();
-			spell->Init(m_caster,dbcSpell.LookupEntry(SpellID),true,NULL);
+			Spell * spell = sSpellMgr.CreateSpell(m_caster,dbcSpell.LookupEntry(SpellID),true,NULL);
 			SpellCastTargets targets;
 			targets.m_unitTarget = unitTarget->GetGUID();
 			spell->prepare(&targets);
@@ -1474,9 +1470,8 @@ void Spell::SpellEffectDummy(uint32 i) // Dummy(Scripted events)
 
 			SpellCastTargets tgt;
 			tgt.m_unitTarget = playerTarget->GetGUID();
-			SpellEntry * inf =dbcSpell.LookupEntry(23782);
-			Spell * spe = SpellPool.PooledNew();
-			spe->Init(u_caster,inf,true,NULL);
+			SpellEntry * inf = dbcSpell.LookupEntry(23782);
+			Spell * spe = sSpellMgr.CreateSpell(u_caster, inf, true, NULL);
 			spe->prepare(&tgt);
 
 		}break;
@@ -1486,9 +1481,8 @@ void Spell::SpellEffectDummy(uint32 i) // Dummy(Scripted events)
 				break;
 			SpellCastTargets tgt;
 			tgt.m_unitTarget = playerTarget->GetGUID();
-			SpellEntry * inf =dbcSpell.LookupEntry(12976);
-			Spell * spe = SpellPool.PooledNew();
-			spe->Init(u_caster,inf,true,NULL);
+			SpellEntry * inf = dbcSpell.LookupEntry(12976);
+			Spell * spe = sSpellMgr.CreateSpell(u_caster, inf, true, NULL);
 			spe->prepare(&tgt);
 		}break;
 	/*************************
@@ -2128,11 +2122,10 @@ void Spell::SpellEffectApplyAura(uint32 i)  // Apply Aura
 			SendCastResult(SPELL_FAILED_IMMUNE);
 			return;
 		}
-		pAura=AuraPool.PooledNew();
 		if(g_caster && g_caster->GetUInt32Value(OBJECT_FIELD_CREATED_BY) && g_caster->m_summoner)
-			 pAura->Init(GetProto(), Duration, g_caster->m_summoner, unitTarget, m_triggeredSpell, i_caster);
+			pAura = sSpellMgr.CreateAura(GetProto(), Duration, g_caster->m_summoner, unitTarget, m_triggeredSpell, i_caster);
 		else
-			pAura->Init(GetProto(), Duration, m_caster, unitTarget, m_triggeredSpell, i_caster);
+			pAura = sSpellMgr.CreateAura(GetProto(), Duration, m_caster, unitTarget, m_triggeredSpell, i_caster);
 
 		pAura->pSpellId = pSpellId; //this is required for triggered spells
 		
@@ -2300,10 +2293,9 @@ void Spell::SpellEffectHeal(uint32 i) // Heal
 							amplitude = 3;
 
 						//our hapiness is that we did not store the aura mod amount so we have to recalc it
-						Spell *spell = SpellPool.PooledNew();
-						spell->Init( m_caster, taura->GetSpellProto(), false, NULL );				
+						Spell *spell = new Spell(m_caster, taura->GetSpellProto(), false, NULL);
 						uint32 healamount = spell->CalculateEffect( 1, unitTarget );  
-						SpellPool.PooledDelete( spell );
+						delete spell;
 						new_dmg = healamount * 18 / amplitude;
 
 						unitTarget->RemoveAura( taura );
@@ -2325,10 +2317,9 @@ void Spell::SpellEffectHeal(uint32 i) // Heal
 								amplitude = 3;
 
 							//our hapiness is that we did not store the aura mod amount so we have to recalc it
-							Spell *spell = SpellPool.PooledNew();
-							spell->Init( m_caster, taura->GetSpellProto(), false, NULL );				
+							Spell *spell = new Spell(m_caster, taura->GetSpellProto(), false, NULL);
 							uint32 healamount = spell->CalculateEffect( 0, unitTarget );  
-							SpellPool.PooledDelete( spell );
+							delete spell;
 							new_dmg = healamount * 12 / amplitude;
 
 							unitTarget->RemoveAura( taura );
@@ -2341,8 +2332,7 @@ void Spell::SpellEffectHeal(uint32 i) // Heal
 					if( new_dmg > 0 )
 					{
 						SpellEntry *spellInfo = dbcSpell.LookupEntry(18562);
-						Spell *spell=SpellPool.PooledNew();
-						spell->Init(unitTarget, spellInfo, true, NULL);
+						Spell *spell = sSpellMgr.CreateSpell(unitTarget, spellInfo, true, NULL);
 						spell->SetUnitTarget( unitTarget );
 						spell->Heal( (int32)new_dmg );
 					}
@@ -2607,7 +2597,7 @@ void Spell::SpellEffectCreateItem(uint32 i) // Create item
 				p_caster->SendMessageToSet(&data, true);*/
 				p_target->GetSession()->SendItemPushResult(newItem,true,false,true,true,slotresult.ContainerSlot,slotresult.Slot,item_count);
 			} else {
-				newItem->DeleteMe();
+				sItemMgr.DestroyItem(newItem);
 			}
 		}
 		else
@@ -2633,7 +2623,7 @@ void Spell::SpellEffectCreateItem(uint32 i) // Create item
 					newItem->SetUInt32Value(ITEM_FIELD_STACK_COUNT, item_count - item_count_filled);
 					if(!p_target->GetItemInterface()->SafeAddItem(newItem,slotresult.ContainerSlot, slotresult.Slot))
 					{
-						newItem->DeleteMe();
+						sItemMgr.DestroyItem(newItem);
 						item_count = item_count_filled;
 					}
 					else
@@ -3294,8 +3284,7 @@ void Spell::SpellEffectTriggerMissile(uint32 i) // Trigger Missile
 		if(!isAttackable(m_caster, static_cast<Unit*>(*itr)))//Fixme only enemy targets?
 			continue;
 
-		Spell*sp=SpellPool.PooledNew();
-		sp->Init(m_caster,spInfo,true,NULL);
+		Spell * sp = sSpellMgr.CreateSpell(m_caster, spInfo, true, NULL);
 		SpellCastTargets tgt;
 		tgt.m_unitTarget=(*itr)->GetGUID();
 		sp->prepare(&tgt);
@@ -3448,8 +3437,7 @@ void Spell::SpellEffectOpenLock(uint32 i) // Open Lock
 
 			uint32 spellid = !gameObjTarget->GetInfo()->Unknown1 ? 23932 : gameObjTarget->GetInfo()->Unknown1;
 			SpellEntry*en=dbcSpell.LookupEntry(spellid);
-			Spell *sp=SpellPool.PooledNew();
-			sp->Init(p_caster,en,true,NULL);
+			Spell * sp = sSpellMgr.CreateSpell(p_caster, en, true, NULL);
 			SpellCastTargets tgt;
 			tgt.m_unitTarget=gameObjTarget->GetGUID();
 			sp->prepare(&tgt);
@@ -3676,10 +3664,8 @@ void Spell::SpellEffectApplyAA(uint32 i) // Apply Area Aura
 	std::map<uint32,Aura*>::iterator itr=unitTarget->tmpAura.find(GetProto()->Id);
 	if(itr==unitTarget->tmpAura.end())
 	{
-		pAura=AuraPool.PooledNew();
-		pAura->Init(GetProto(),GetDuration(),m_caster,unitTarget);
-		
-		unitTarget->tmpAura [GetProto()->Id]= pAura;
+		pAura = sSpellMgr.CreateAura(GetProto(),GetDuration(),m_caster,unitTarget);
+		unitTarget->tmpAura[GetProto()->Id] = pAura;
 	
 		float r=GetRadius(i);
 		if(!sEventMgr.HasEvent(pAura, EVENT_AREAAURA_UPDATE))		/* only add it once */
@@ -3812,8 +3798,7 @@ void Spell::SpellEffectLearnSpell(uint32 i) // Learn Spell
 			   spellinfo->Effect[i] == SPELL_EFFECT_PROFICIENCY ||
 			   spellinfo->Effect[i] == SPELL_EFFECT_DUAL_WIELD )
 			{
-				Spell *sp = SpellPool.PooledNew();
-				sp->Init(unitTarget, spellinfo, true, NULL);
+				Spell *sp = sSpellMgr.CreateSpell(unitTarget, spellinfo, true, NULL);
 				SpellCastTargets targets;
 				targets.m_unitTarget = unitTarget->GetGUID();
 				targets.m_targetMask = 0x02;
@@ -3929,8 +3914,7 @@ void Spell::SpellEffectDispel(uint32 i) // Dispel
 					SpellEntry *spellInfo = dbcSpell.LookupEntry(31117);
 					if ( spellInfo != NULL )
 					{
-						Spell *spell = SpellPool.PooledNew();
-						spell->Init(u_caster, spellInfo ,true, NULL);
+						Spell *spell = sSpellMgr.CreateSpell(u_caster, spellInfo ,true, NULL);
 						spell->forced_basepoints[0] = (aur->GetSpellProto()->EffectBasePoints[0]+1)*9; //damage effect
 						spell->ProcedOnSpell = GetProto();
 						spell->pSpellId = aur->GetSpellId();
@@ -4552,8 +4536,7 @@ void Spell::SpellEffectTriggerSpell(uint32 i) // Trigger Spell
 	if (entry == NULL) return;
 
 	SpellCastTargets targets = m_targets;
-	Spell *sp = SpellPool.PooledNew();
-	sp->Init(m_caster,entry,true,NULL);
+	Spell *sp = sSpellMgr.CreateSpell(m_caster, entry, true, NULL);
 	sp->prepare(&targets);
 }
 
@@ -5016,8 +4999,7 @@ void Spell::SpellEffectScriptEffect(uint32 i) // Script Effect
 			if(!unitTarget || !p_caster) return;
 
 			SpellEntry*en=dbcSpell.LookupEntry(p_caster->judgespell);
-			Spell *sp=SpellPool.PooledNew();
-			sp->Init(p_caster,en,true,NULL);
+			Spell * sp = sSpellMgr.CreateSpell(p_caster,en,true,NULL);
 			SpellCastTargets tgt;
 			tgt.m_unitTarget=unitTarget->GetGUID();
 			tgt.m_targetMask=TARGET_FLAG_UNIT;
@@ -5071,26 +5053,26 @@ void Spell::SpellEffectScriptEffect(uint32 i) // Script Effect
 			if( casted_spell_id )
 			{
 				//for self
-				Spell *sp = SpellPool.PooledNew();
-				sp->Init( p_caster, dbcSpell.LookupEntry( casted_spell_id ), true, NULL );
+				Spell *sp = sSpellMgr.CreateSpell(p_caster,
+					dbcSpell.LookupEntry(casted_spell_id), true, NULL);
 				SpellCastTargets tgt( p_caster->GetGUID() );
 				sp->prepare( &tgt );
 				//for pet
-				sp = SpellPool.PooledNew();
-				sp->Init(  unitTarget, dbcSpell.LookupEntry( casted_spell_id ), true, NULL );
+				sp = sSpellMgr.CreateSpell(unitTarget,
+					dbcSpell.LookupEntry( casted_spell_id ), true, NULL);
 				SpellCastTargets tgt1( unitTarget->GetGUID() );
 				sp->prepare( &tgt1 );
 			}
 			if( inc_resist_by_level_spell )
 			{
 				//for self
-				Spell *sp = SpellPool.PooledNew();
-				sp->Init( p_caster, dbcSpell.LookupEntry( inc_resist_by_level_spell ), true, NULL );
+				Spell *sp = sSpellMgr.CreateSpell(p_caster,
+					dbcSpell.LookupEntry( inc_resist_by_level_spell ), true, NULL);
 				SpellCastTargets tgt( p_caster->GetGUID() );
 				sp->prepare( &tgt );
 				//for pet
-				sp = SpellPool.PooledNew();
-				sp->Init( unitTarget, dbcSpell.LookupEntry( inc_resist_by_level_spell ), true, NULL );
+				sp = sSpellMgr.CreateSpell(unitTarget,
+					dbcSpell.LookupEntry( inc_resist_by_level_spell ), true, NULL);
 				SpellCastTargets tgt1( unitTarget->GetGUID() );
 				sp->prepare( &tgt1 );
 			}
@@ -5123,26 +5105,26 @@ void Spell::SpellEffectScriptEffect(uint32 i) // Script Effect
 			if( casted_spell_id )
 			{
 				//for self
-				Spell *sp = SpellPool.PooledNew();
-				sp->Init( p_caster, dbcSpell.LookupEntry( casted_spell_id ), true, NULL );
+				Spell *sp = sSpellMgr.CreateSpell(p_caster,
+					dbcSpell.LookupEntry( casted_spell_id ), true, NULL);
 				SpellCastTargets tgt( p_caster->GetGUID() );
 				sp->prepare( &tgt );
 				//for pet
-				sp = SpellPool.PooledNew();
-				sp->Init(  unitTarget, dbcSpell.LookupEntry( casted_spell_id ), true, NULL );
+				sp = sSpellMgr.CreateSpell(unitTarget,
+					dbcSpell.LookupEntry( casted_spell_id ), true, NULL);
 				SpellCastTargets tgt1( unitTarget->GetGUID() );
 				sp->prepare( &tgt1 );
 			}
 			if( inc_resist_by_level_spell )
 			{
 				//for self
-				Spell *sp = SpellPool.PooledNew();
-				sp->Init( p_caster, dbcSpell.LookupEntry( inc_resist_by_level_spell ), true, NULL );
+				Spell *sp = sSpellMgr.CreateSpell(p_caster,
+					dbcSpell.LookupEntry( inc_resist_by_level_spell ), true, NULL);
 				SpellCastTargets tgt( p_caster->GetGUID() );
 				sp->prepare( &tgt );
 				//for pet
-				sp = SpellPool.PooledNew();
-				sp->Init( unitTarget, dbcSpell.LookupEntry( inc_resist_by_level_spell ), true, NULL );
+				sp = sSpellMgr.CreateSpell(unitTarget,
+					dbcSpell.LookupEntry( inc_resist_by_level_spell ), true, NULL);
 				SpellCastTargets tgt1( unitTarget->GetGUID() );
 				sp->prepare( &tgt1 );
 			}
@@ -5175,26 +5157,26 @@ void Spell::SpellEffectScriptEffect(uint32 i) // Script Effect
 			if( casted_spell_id )
 			{
 				//for self
-				Spell *sp = SpellPool.PooledNew();
-				sp->Init( p_caster, dbcSpell.LookupEntry( casted_spell_id ), true, NULL );
+				Spell *sp = sSpellMgr.CreateSpell(p_caster,
+					dbcSpell.LookupEntry( casted_spell_id ), true, NULL);
 				SpellCastTargets tgt( p_caster->GetGUID() );
 				sp->prepare( &tgt );
 				//for pet
-				sp = SpellPool.PooledNew();
-				sp->Init(  unitTarget, dbcSpell.LookupEntry( casted_spell_id ), true, NULL );
+				sp = sSpellMgr.CreateSpell(unitTarget,
+					dbcSpell.LookupEntry( casted_spell_id ), true, NULL);
 				SpellCastTargets tgt1( unitTarget->GetGUID() );
 				sp->prepare( &tgt1 );
 			}
 			if( inc_resist_by_level_spell )
 			{
 				//for self
-				Spell *sp = SpellPool.PooledNew();
-				sp->Init( p_caster, dbcSpell.LookupEntry( inc_resist_by_level_spell ), true, NULL );
+				Spell *sp = sSpellMgr.CreateSpell(p_caster,
+					dbcSpell.LookupEntry( inc_resist_by_level_spell ), true, NULL);
 				SpellCastTargets tgt( p_caster->GetGUID() );
 				sp->prepare( &tgt );
 				//for pet
-				sp = SpellPool.PooledNew();
-				sp->Init( unitTarget, dbcSpell.LookupEntry( inc_resist_by_level_spell ), true, NULL );
+				sp = sSpellMgr.CreateSpell(unitTarget,
+					dbcSpell.LookupEntry( inc_resist_by_level_spell ), true, NULL );
 				SpellCastTargets tgt1( unitTarget->GetGUID() );
 				sp->prepare( &tgt1 );
 			}
@@ -5227,26 +5209,26 @@ void Spell::SpellEffectScriptEffect(uint32 i) // Script Effect
 			if( casted_spell_id )
 			{
 				//for self
-				Spell *sp = SpellPool.PooledNew();
-				sp->Init( p_caster, dbcSpell.LookupEntry( casted_spell_id ), true, NULL );
+				Spell *sp = sSpellMgr.CreateSpell(p_caster,
+					dbcSpell.LookupEntry( casted_spell_id ), true, NULL );
 				SpellCastTargets tgt( p_caster->GetGUID() );
 				sp->prepare( &tgt );
 				//for pet
-				sp = SpellPool.PooledNew();
-				sp->Init(  unitTarget, dbcSpell.LookupEntry( casted_spell_id ), true, NULL );
+				sp = sSpellMgr.CreateSpell(unitTarget,
+					dbcSpell.LookupEntry( casted_spell_id ), true, NULL );
 				SpellCastTargets tgt1( unitTarget->GetGUID() );
 				sp->prepare( &tgt1 );
 			}
 			if( inc_resist_by_level_spell )
 			{
 				//for self
-				Spell *sp = SpellPool.PooledNew();
-				sp->Init( p_caster, dbcSpell.LookupEntry( inc_resist_by_level_spell ), true, NULL );
+				Spell *sp = sSpellMgr.CreateSpell(p_caster,
+					dbcSpell.LookupEntry( inc_resist_by_level_spell ), true, NULL );
 				SpellCastTargets tgt( p_caster->GetGUID() );
 				sp->prepare( &tgt );
 				//for pet
-				sp = SpellPool.PooledNew();
-				sp->Init( unitTarget, dbcSpell.LookupEntry( inc_resist_by_level_spell ), true, NULL );
+				sp = sSpellMgr.CreateSpell(unitTarget,
+					dbcSpell.LookupEntry( inc_resist_by_level_spell ), true, NULL );
 				SpellCastTargets tgt1( unitTarget->GetGUID() );
 				sp->prepare( &tgt1 );
 			}
@@ -5300,26 +5282,26 @@ void Spell::SpellEffectScriptEffect(uint32 i) // Script Effect
 			if( casted_spell_id )
 			{
 				//for self
-				Spell *sp = SpellPool.PooledNew();
-				sp->Init( p_caster, dbcSpell.LookupEntry( casted_spell_id ), true, NULL );
+				Spell *sp = sSpellMgr.CreateSpell(p_caster,
+					dbcSpell.LookupEntry( casted_spell_id ), true, NULL);
 				SpellCastTargets tgt( p_caster->GetGUID() );
 				sp->prepare( &tgt );
 				//for pet
-				sp = SpellPool.PooledNew();
-				sp->Init(  unitTarget, dbcSpell.LookupEntry( casted_spell_id ), true, NULL );
+				sp = sSpellMgr.CreateSpell(unitTarget,
+					dbcSpell.LookupEntry( casted_spell_id ), true, NULL);
 				SpellCastTargets tgt1( unitTarget->GetGUID() );
 				sp->prepare( &tgt1 );
 			}
 			if( inc_resist_by_level_spell )
 			{
 				//for self
-				Spell *sp = SpellPool.PooledNew();
-				sp->Init( p_caster, dbcSpell.LookupEntry( inc_resist_by_level_spell ), true, NULL );
+				Spell * sp = sSpellMgr.CreateSpell(p_caster,
+					dbcSpell.LookupEntry( inc_resist_by_level_spell ), true, NULL );
 				SpellCastTargets tgt( p_caster->GetGUID() );
 				sp->prepare( &tgt );
 				//for pet
-				sp = SpellPool.PooledNew();
-				sp->Init( unitTarget, dbcSpell.LookupEntry( inc_resist_by_level_spell ), true, NULL );
+				sp = sSpellMgr.CreateSpell(unitTarget,
+					dbcSpell.LookupEntry( inc_resist_by_level_spell ), true, NULL );
 				SpellCastTargets tgt1( unitTarget->GetGUID() );
 				sp->prepare( &tgt1 );
 			}
@@ -5636,8 +5618,7 @@ void Spell::SpellEffectSummonTotem(uint32 i) // Summon Totem
 			pTotem->DisableAI();
 			pTotem->GetAIInterface()->totemspell = GetProto();
 
-			Spell * pSpell = SpellPool.PooledNew();
-			pSpell->Init(pTotem, TotemSpell, true, 0);
+			Spell * pSpell = sSpellMgr.CreateSpell(pTotem, TotemSpell, true, 0);
 
 			SpellCastTargets targets;
 			targets.m_destX = pTotem->GetPositionX();
@@ -6069,8 +6050,7 @@ void Spell::SpellEffectFeedPet(uint32 i)  // Feed Pet
 	damage *= 1000;
 
 	SpellEntry *spellInfo = dbcSpell.LookupEntry(GetProto()->EffectTriggerSpell[i]);
-	Spell *sp= SpellPool.PooledNew();
-	sp->Init(static_cast<Object*>(p_caster),spellInfo,true,NULL);
+	Spell *sp = sSpellMgr.CreateSpell(static_cast<Object*>(p_caster), spellInfo, true, NULL);
 	sp->forced_basepoints[0] = damage;
 	SpellCastTargets tgt;
 	tgt.m_unitTarget=pPet->GetGUID();
@@ -6284,8 +6264,7 @@ void Spell::SpellEffectSummonDemon(uint32 i)
 	{
 		SpellEntry *spellInfo = dbcSpell.LookupEntry(11726);
 		
-		Spell *sp=SpellPool.PooledNew();
-		sp->Init(static_cast<Object*>(pPet),spellInfo,true,NULL);
+		Spell * sp = sSpellMgr.CreateSpell(static_cast<Object*>(pPet), spellInfo, true, NULL);
 		SpellCastTargets tgt;
 		tgt.m_unitTarget=pPet->GetGUID();
 		sp->prepare(&tgt);
@@ -6473,8 +6452,7 @@ void Spell::SpellEffectDummyMelee( uint32 i ) // Normalized Weapon damage +
 		if(!spellInfo)
 			return; //omg how did this happen ?
 		//we should also cast sunder armor effect on target with or without dmg
-		Spell *spell = SpellPool.PooledNew();
-		spell->Init(u_caster, spellInfo ,true, NULL);
+		Spell *spell = sSpellMgr.CreateSpell(u_caster, spellInfo ,true, NULL);
 		spell->ProcedOnSpell = GetProto();
 		spell->pSpellId=GetProto()->Id;
 		SpellCastTargets targets(unitTarget->GetGUID());
@@ -6494,9 +6472,7 @@ void Spell::SpellEffectDummyMelee( uint32 i ) // Normalized Weapon damage +
 				Aura * aur = unitTarget->m_auras[x];
 				SpellEntry * spinfo = aur->GetSpellProto();
 				aur->Remove();
-				Spell * sp = SpellPool.PooledNew();
-				sp->Init( this->u_caster , spinfo , true , NULL );
-				
+				Spell * sp = sSpellMgr.CreateSpell(this->u_caster, spinfo, true, NULL);
 				SpellCastTargets tgt;
 				tgt.m_unitTarget = unitTarget->GetGUID();
 				sp->prepare( &tgt );
@@ -6641,8 +6617,7 @@ void Spell::SpellEffectSpellSteal( uint32 i )
 				m_caster->SendMessageToSet(&data,true);
 
 				uint32 aurdur = ( aur->GetDuration()>120000 ? 120000 : aur->GetDuration() );
-				Aura *aura = AuraPool.PooledNew();
-				aura->Init(aur->GetSpellProto(), aurdur, u_caster, u_caster );
+				Aura *aura = sSpellMgr.CreateAura(aur->GetSpellProto(), aurdur, u_caster, u_caster);
 				uint32 aur_removed = unitTarget->RemoveAllAuraByNameHash( aur->GetSpellProto()->NameHash );
 				for ( uint32 i = 0; i < 3; i++ )
 				{
@@ -6656,8 +6631,7 @@ void Spell::SpellEffectSpellSteal( uint32 i )
 					Aura *aur = NULL;
 					for(uint32 i = 0; i<aur_removed-1; i++)
 					{
-						aur = AuraPool.PooledNew();
-						aur->Init( aura->GetSpellProto(), aurdur, u_caster, u_caster );
+						aur = sSpellMgr.CreateAura(aura->GetSpellProto(), aurdur, u_caster, u_caster);
 						u_caster->AddAura(aur);
 						aur = NULL;
 					}
@@ -6831,7 +6805,7 @@ void Spell::SpellEffectTranformItem(uint32 i)
 	if(!result2) //should never get here
 	{ 
 		owner->GetItemInterface()->BuildInventoryChangeError(NULL,NULL,INV_ERR_BAG_FULL);
-		it->DeleteMe();
+		sItemMgr.DestroyItem(it);
 	}
 }
 
@@ -6967,8 +6941,7 @@ void Spell::SpellEffectTriggerSpellWithValue(uint32 i)
 	if( TriggeredSpell == NULL )
 		return;
 
-	Spell *sp=SpellPool.PooledNew();
-	sp->Init(m_caster,TriggeredSpell,true,NULL);
+	Spell *sp = sSpellMgr.CreateSpell(m_caster, TriggeredSpell, true, NULL);
 
 	for(uint32 x=0;x<3;x++)
 	{

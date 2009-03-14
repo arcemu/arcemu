@@ -41,7 +41,7 @@ void onPvpKill(Player* pPlayer)
 		if(!pPlayer->GetItemInterface()->AddItemToFreeSlot(item))
 		{
 			pPlayer->GetSession()->SendNotification("No free slots were found in your inventory!");
-			item->DeleteMe();
+			sItemMgr.DestroyItem(item);
 		}
 		else
 		{

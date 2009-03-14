@@ -276,8 +276,7 @@ void EyeOfTheStorm::HookOnAreaTrigger(Player * plr, uint32 id)
 			SpellEntry * sp = dbcSpell.LookupEntryForced(spellid);
 			if(sp)
 			{
-				Spell * pSpell = SpellPool.PooledNew();
-				pSpell->Init(plr, sp, true, NULL);
+				Spell * pSpell = sSpellMgr.CreateSpell(plr, sp, true, NULL);
 				SpellCastTargets targets(plr->GetGUID());
 				pSpell->prepare(&targets);
 			}
@@ -843,7 +842,7 @@ bool EyeOfTheStorm::GivePoints(uint32 team, uint32 points)
 					if(!(*itr)->GetItemInterface()->AddItemToFreeSlot(item))
 					{
 						(*itr)->GetSession()->SendNotification("No free slots were found in your inventory!");
-						item->DeleteMe();
+						sItemMgr.DestroyItem(item);
 					}
 					else
 					{
@@ -873,7 +872,7 @@ bool EyeOfTheStorm::GivePoints(uint32 team, uint32 points)
 					if(!(*itr)->GetItemInterface()->AddItemToFreeSlot(item))
 					{
 						(*itr)->GetSession()->SendNotification("No free slots were found in your inventory!");
-						item->DeleteMe();
+						sItemMgr.DestroyItem(item);
 					}
 					else
 					{

@@ -39,7 +39,7 @@ ItemInterface::~ItemInterface()
 	{
 		if( m_pItems[i] != NULL && m_pItems[i]->GetOwner() == m_pOwner )
 		{
-			m_pItems[i]->DeleteMe();
+			sItemMgr.DestroyItem(m_pItems[i]);
 		}
 	}
 }
@@ -144,14 +144,13 @@ Item *ItemInterface::SafeAddItem(uint32 ItemId, int8 ContainerSlot, int8 slot)
 		}
 		else
 		{
-			pItem->DeleteMe();
+			sItemMgr.DestroyItem(pItem);
 			return NULL;
 		}
 	}
 	else
 	{
-		pItem = ItemPool.PooledNew();
-		pItem->Init(HIGHGUID_TYPE_ITEM,objmgr.GenerateLowGuid(HIGHGUID_TYPE_ITEM));
+		pItem = sItemMgr.CreateItem(HIGHGUID_TYPE_ITEM, objmgr.GenerateLowGuid(HIGHGUID_TYPE_ITEM));
 		pItem->Create( ItemId, m_pOwner);
 		if(m_AddItem(pItem, ContainerSlot, slot))
 		{
@@ -159,7 +158,7 @@ Item *ItemInterface::SafeAddItem(uint32 ItemId, int8 ContainerSlot, int8 slot)
 		}
 		else
 		{
-			ItemPool.PooledDelete( pItem );
+			sItemMgr.DestroyItem(pItem);
 			return NULL;
 		}
 	}
@@ -567,7 +566,7 @@ bool ItemInterface::SafeFullRemoveItemFromSlot(int8 ContainerSlot, int8 slot)
 			}
 
 			pItem->DeleteFromDB();
-			ItemPool.PooledDelete( pItem );
+			sItemMgr.DestroyItem(pItem);
 		}
 	}
 	else
@@ -2406,7 +2405,7 @@ void ItemInterface::EmptyBuyBack()
 			 {
 				if (m_pBuyBack[j]->IsInWorld())
 					m_pBuyBack[j]->RemoveFromWorld();
-				ItemPool.PooledDelete( m_pBuyBack[j] );
+				sItemMgr.DestroyItem(m_pBuyBack[j]);
 			 }
 
 			 m_pOwner->SetUInt64Value(PLAYER_FIELD_VENDORBUYBACK_SLOT_1 + (2*j),0);
@@ -2440,7 +2439,7 @@ void ItemInterface::AddBuyBackItem(Item *it,uint32 price)
 			 {
 				if (m_pBuyBack[0]->IsInWorld())
 					m_pBuyBack[0]->RemoveFromWorld();
-				ItemPool.PooledDelete( m_pBuyBack[0] );
+				sItemMgr.DestroyItem(m_pBuyBack[0]);
 			 }
 
 			m_pBuyBack[0] = NULL;
@@ -2808,15 +2807,14 @@ void ItemInterface::mLoadItemsFromDatabase(QueryResult * result)
 				}
 				else
 				{
-					item = ItemPool.PooledNew();
-					item->Init( HIGHGUID_TYPE_ITEM, fields[1].GetUInt32() );
+					item = sItemMgr.CreateItem(HIGHGUID_TYPE_ITEM, fields[1].GetUInt32());
 					item->LoadFromDB( fields, m_pOwner, false);
 
 				}
 				if( SafeAddItem( item, containerslot, slot ) )
 				    item->m_isDirty = false;
 				else
-					ItemPool.PooledDelete( item );
+					sItemMgr.DestroyItem(item);
 			}
 		}
 		while( result->NextRow() );

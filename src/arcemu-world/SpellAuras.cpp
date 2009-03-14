@@ -634,12 +634,7 @@ Object* Aura::GetCaster()
 		return NULL;
 }
 
-Aura::Aura()
-{
-	m_bufferPoolId = OBJECT_WAS_ALLOCATED_STANDARD_WAY;
-}
-
-void Aura::Init( SpellEntry* proto, int32 duration, Object* caster, Unit* target, bool temporary, Item* i_caster)
+Aura::Aura(SpellEntry* proto, int32 duration, Object* caster, Unit* target, bool temporary, Item* i_caster)
 {
 	m_castInDuel = false;
 	m_spellProto = proto;
@@ -741,20 +736,8 @@ void Aura::Init( SpellEntry* proto, int32 duration, Object* caster, Unit* target
 	//fixed_amount = 0;//used only por percent values to be able to recover value correctly.No need to init this if we are not using it
 }
 
-void Aura::Virtual_Constructor()
-{
-}
-
 Aura::~Aura()
 {
-	sEventMgr.RemoveEvents( this );
-}
-
-void Aura::Virtual_Destructor()
-{
-	//forget about context and events to avoid memory leaks
-	static_cast< EventableObject* >( this )->Virtual_Destructor();
-	//this should do nothing now
 	sEventMgr.RemoveEvents( this );
 }
 
@@ -880,7 +863,8 @@ void Aura::Remove()
 	if( m_spellProto->MechanicsType == MECHANIC_ENRAGED )
 		m_target->RemoveFlag( UNIT_FIELD_AURASTATE, AURASTATE_FLAG_ENRAGED );
 
-	AuraPool.PooledDelete( this ); // suicide xD	leaking this shit out
+	// NAQUADA - CHECK THIS
+	sSpellMgr.DestroyAura( this ); // suicide xD	leaking this shit out
 }
 
 void Aura::AddMod( uint32 t, int32 a, uint32 miscValue, uint32 i )
@@ -1011,8 +995,7 @@ void Aura::EventUpdateAA(float r)
 				{
 					if(!aura)
 					{
-						aura = AuraPool.PooledNew();
-						aura->Init(m_spellProto, -1, u_caster, plr, true);
+						aura = sSpellMgr.CreateAura(m_spellProto, -1, u_caster, plr, true);
 						aura->m_areaAura = true;
 					}
 					aura->AddMod(m_modList[i].m_type, m_modList[i].m_amount,
@@ -1039,8 +1022,7 @@ void Aura::EventUpdateAA(float r)
 		Unit *summon = plr->GetSummon();
 		if( summon && summon->isAlive() && summon->GetDistanceSq(u_caster) <= r && !summon->HasAura( m_spellProto->Id ))
 		{
-			Aura * aura = AuraPool.PooledNew();
-			aura->Init(m_spellProto, -1, u_caster, summon, true );
+			Aura * aura = sSpellMgr.CreateAura(m_spellProto, -1, u_caster, summon, true );
 			aura->m_areaAura = true;
 			aura->AddMod( mod->m_type, mod->m_amount, mod->m_miscValue, mod->i);
 			summon->AddAura( aura );
@@ -1074,8 +1056,7 @@ void Aura::EventUpdateAA(float r)
 						{
 							if(!aura)
 							{
-								aura = AuraPool.PooledNew();
-								aura->Init(m_spellProto, -1, u_caster, (*itr)->m_loggedInPlayer, true);
+								aura = sSpellMgr.CreateAura(m_spellProto, -1, u_caster, (*itr)->m_loggedInPlayer, true);
 								aura->m_areaAura = true;
 							}
 							aura->AddMod(m_modList[i].m_type, m_modList[i].m_amount,
@@ -1353,8 +1334,7 @@ void Aura::SpellAuraPeriodicDamage(bool apply)
 				{
 					if (!dmg)
 						return;
-					Spell *spell = SpellPool.PooledNew();
-					spell->Init(GetUnitCaster(), parentsp ,false,NULL);
+					Spell *spell = sSpellMgr.CreateSpell(GetUnitCaster(), parentsp , false, NULL);
 					SpellCastTargets targets(m_target->GetGUID());
 					//this is so not good, maybe parent spell has more then dmg effect and we use it to calc our new dmg :(
 					dmg = 0;
@@ -1363,7 +1343,7 @@ void Aura::SpellAuraPeriodicDamage(bool apply)
 					  //dmg +=parentsp->EffectBasePoints[i]*m_spellProto->EffectBasePoints[0];
 						dmg +=spell->CalculateEffect(i,m_target->IsUnit()?(Unit*)m_target:NULL)*parentsp->EffectBasePoints[0]/100;
 					}
-					SpellPool.PooledDelete( spell );
+					sSpellMgr.DestroySpell( spell );
 				}
 			}
 		};
@@ -2421,8 +2401,7 @@ void Aura::SpellAuraDummy(bool apply)
 			
 			if( expired )
 			{
-				Spell *spell=SpellPool.PooledNew();
-				spell->Init(pCaster, m_spellProto, true, NULL);
+				Spell * spell = sSpellMgr.CreateSpell(pCaster, m_spellProto, true, NULL);
 				spell->SetUnitTarget( m_target );
 				spell->Heal( mod->m_amount );
 			}
@@ -2459,8 +2438,7 @@ void Aura::SpellAuraDummy(bool apply)
 			
 			if( expired )
 			{
-				Spell *spell=SpellPool.PooledNew();
-				spell->Init(pCaster, m_spellProto, true, NULL);
+				Spell * spell = sSpellMgr.CreateSpell(pCaster, m_spellProto, true, NULL);
 				spell->SetUnitTarget( m_target );
 				spell->Heal( mod->m_amount );
 			}
@@ -2497,8 +2475,7 @@ void Aura::SpellAuraDummy(bool apply)
 			
 			if( expired )
 			{
-				Spell *spell=SpellPool.PooledNew();
-				spell->Init(pCaster, m_spellProto, true, NULL);
+				Spell * spell = sSpellMgr.CreateSpell(pCaster, m_spellProto, true, NULL);
 				spell->SetUnitTarget( m_target );
 				spell->Heal( mod->m_amount );
 			}
@@ -3767,8 +3744,7 @@ void Aura::EventPeriodicTriggerSpell(SpellEntry* spellInfo)
 
 	if( spellInfo->EffectImplicitTargetA[0] == 18 )			// Hellfire, if there are any others insert here
 	{
-		Spell *spell = SpellPool.PooledNew();
-		spell->Init(m_caster, spellInfo, true, this);
+		Spell *spell = sSpellMgr.CreateSpell(m_caster, spellInfo, true, this);
 		SpellCastTargets targets;
 		targets.m_targetMask = TARGET_FLAG_SOURCE_LOCATION;
 		targets.m_srcX = m_caster->GetPositionX();
@@ -3784,8 +3760,7 @@ void Aura::EventPeriodicTriggerSpell(SpellEntry* spellInfo)
 
 	if(oTarget->GetTypeId()==TYPEID_DYNAMICOBJECT)
 	{
-		Spell *spell = SpellPool.PooledNew();
-		spell->Init(m_caster, spellInfo, true, this);
+		Spell *spell = sSpellMgr.CreateSpell(m_caster, spellInfo, true, this);
 		SpellCastTargets targets;
 		targets.m_targetMask = TARGET_FLAG_DEST_LOCATION;
 		targets.m_destX = oTarget->GetPositionX();
@@ -3830,8 +3805,7 @@ void Aura::EventPeriodicTriggerSpell(SpellEntry* spellInfo)
 		return;
 	}
 
-	Spell *spell = SpellPool.PooledNew();
-	spell->Init(m_caster, spellInfo, true, this);
+	Spell * spell = sSpellMgr.CreateSpell(m_caster, spellInfo, true, this);
 	SpellCastTargets targets;
 	targets.m_unitTarget = pTarget->GetGUID();
 	targets.m_targetMask = TARGET_FLAG_UNIT;
@@ -4379,8 +4353,7 @@ void Aura::SpellAuraModShapeshift(bool apply)
 				//some say there is a second effect
 				SpellEntry* spellInfo = dbcSpell.LookupEntry( 21178 );
 
-				Spell *sp = SpellPool.PooledNew();
-				sp->Init( m_target, spellInfo, true, NULL );
+				Spell *sp = sSpellMgr.CreateSpell(m_target, spellInfo, true, NULL);
 				SpellCastTargets tgt;
 				tgt.m_unitTarget = m_target->GetGUID();
 				sp->prepare( &tgt );
@@ -4513,8 +4486,7 @@ void Aura::SpellAuraModShapeshift(bool apply)
 				{
 					SpellEntry *spellInfo = dbcSpell.LookupEntry( furorSpell );
 
-					Spell *sp = SpellPool.PooledNew();
-					sp->Init( m_target, spellInfo, true, NULL );
+					Spell *sp = sSpellMgr.CreateSpell(m_target, spellInfo, true, NULL);
 					SpellCastTargets tgt;
 					tgt.m_unitTarget = m_target->GetGUID();
 					sp->prepare(&tgt);
@@ -4544,8 +4516,7 @@ void Aura::SpellAuraModShapeshift(bool apply)
 
 		SpellEntry* spellInfo = dbcSpell.LookupEntry(spellId );
 
-		Spell *sp = SpellPool.PooledNew();
-		sp->Init( m_target, spellInfo, true, NULL );
+		Spell * sp = sSpellMgr.CreateSpell(m_target, spellInfo, true, NULL);
 		SpellCastTargets tgt;
 		tgt.m_unitTarget = m_target->GetGUID();
 		sp->prepare( &tgt );
@@ -6328,7 +6299,7 @@ void Aura::SpellAuraChannelDeathItem(bool apply)
 					if(!pCaster->GetItemInterface()->AddItemToFreeSlot(item))
 					{
 						pCaster->GetItemInterface()->BuildInventoryChangeError(0, 0, INV_ERR_INVENTORY_FULL);
-						item->DeleteMe();
+						sItemMgr.DestroyItem(item);
 						return;
 					}
 					/*WorldPacket data(45);
@@ -8867,8 +8838,7 @@ void Aura::SpellAuraSpiritOfRedemption(bool apply)
 		m_target->SetUInt32Value(UNIT_FIELD_HEALTH, 1);
 		SpellEntry * sorInfo = dbcSpell.LookupEntry(27792);
 		if(!sorInfo) return;
-		Spell * sor = SpellPool.PooledNew();
-		sor->Init(m_target, sorInfo, true, NULL);
+		Spell * sor = sSpellMgr.CreateSpell(m_target, sorInfo, true, NULL);
 		SpellCastTargets targets;
 		targets.m_unitTarget = m_target->GetGUID();
 		sor->prepare(&targets);

@@ -20,7 +20,7 @@
 
 #include "StdAfx.h"
 
-Container::Container(uint32 high,uint32 low) : Item()
+Container::Container(uint32 high, uint32 low) : Item(high, low)
 {
 	m_objectTypeId = TYPEID_CONTAINER;
 	m_valuesCount = CONTAINER_END;
@@ -45,7 +45,7 @@ Container::~Container( )
 	{
 		if(m_Slot[i] && m_Slot[i]->GetOwner() == m_owner)
 		{
-			m_Slot[i]->DeleteMe();
+			sItemMgr.DestroyItem(m_Slot[i]);
 		}
 	}
 
@@ -281,7 +281,7 @@ bool Container::SafeFullRemoveItemFromSlot(int8 slot)
 		pItem->RemoveFromWorld();
 	}
 	pItem->DeleteFromDB();
-	pItem->DeleteMe();
+	sItemMgr.DestroyItem(pItem);
 
 	return true;
 }

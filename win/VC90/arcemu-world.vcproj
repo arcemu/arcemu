@@ -482,18 +482,6 @@
 				</File>
 			</Filter>
 		</Filter>
-		<Filter
-			Name="BufferPools"
-			>
-			<File
-				RelativePath="..\..\src\arcemu-world\BufferPools\BufferPools.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\arcemu-world\BufferPools\BufferPools.h"
-				>
-			</File>
-		</Filter>
 		<File
 			RelativePath="..\..\src\arcemu-world\AchievementMgr.cpp"
 			>
@@ -811,6 +799,14 @@
 			>
 		</File>
 		<File
+			RelativePath="..\..\src\arcemu-world\ItemMgr.cpp"
+			>
+		</File>
+		<File
+			RelativePath="..\..\src\arcemu-world\ItemMgr.h"
+			>
+		</File>
+		<File
 			RelativePath="..\..\src\arcemu-world\ItemPrototype.h"
 			>
 		</File>
@@ -1108,6 +1104,14 @@
 		</File>
 		<File
 			RelativePath="..\..\src\arcemu-world\SpellHandler.cpp"
+			>
+		</File>
+		<File
+			RelativePath="..\..\src\arcemu-world\SpellMgr.cpp"
+			>
+		</File>
+		<File
+			RelativePath="..\..\src\arcemu-world\SpellMgr.h"
 			>
 		</File>
 		<File

@@ -226,7 +226,7 @@ void AuctionHouse::RemoveAuction(Auction * auct)
 
 	// Destroy the item from memory (it still remains in the db)
 	if (auct->pItem)
-		auct->pItem->DeleteMe();
+		sItemMgr.DestroyItem(auct->pItem);
 
 	// Finally destroy the auction instance.
 	auct->DeleteFromDB();

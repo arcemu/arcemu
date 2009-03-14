@@ -314,10 +314,8 @@ bool Master::Run(int argc, char ** argv)
 
 	new EventMgr;
 	new World;
-	//have to init this ones for singleton
-	new tPPoolClass<Item>;
-	new tPPoolClass<Aura>;
-	new tPPoolClass<Spell>;
+	new ItemMgr;
+	new SpellMgr;
 
 	// open cheat log file
 	Anticheat_Log = new SessionLogWriter(FormatOutputString( "logs", "cheaters", false).c_str(), false );
@@ -579,17 +577,14 @@ bool Master::Run(int argc, char ** argv)
 	sWorld.LogoutPlayers();
 	sLog.outString( "" );
 
+	Log.Notice( "LogonCommHandler", "~LogonCommHandler" );
 	delete LogonCommHandler::getSingletonPtr();
 
-	//should delete pools before other handlers !
-	Log.Notice( "Item Pool", "Item Pool" );
-	ItemPool.DestroyPool();
+	Log.Notice( "ItemMgr", "~ItemMgr" );
+	delete ItemMgr::getSingletonPtr();
 
-	Log.Notice( "Spell Pool", "Spell Pool" );
-	SpellPool.DestroyPool();
-
-	Log.Notice( "Aura Pool", "Aura Pool" );
-	AuraPool.DestroyPool();
+	Log.Notice( "SpellMgr", "~SpellMgr" );
+	delete SpellMgr::getSingletonPtr();
 
 	sWorld.ShutdownClasses();
 	Log.Notice( "World", "~World()" );

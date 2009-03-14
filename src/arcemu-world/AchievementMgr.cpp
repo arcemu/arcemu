@@ -1659,7 +1659,7 @@ void AchievementMgr::GiveAchievementReward(AchievementEntry const* entry)
 				if(!GetPlayer()->GetItemInterface()->AddItemToFreeSlot(item)) // this is bad. inventory full. maybe we should mail it instead?
 				{
 					GetPlayer()->GetSession()->SendNotification("No free slots were found in your inventory!");
-					item->DeleteMe();
+					sItemMgr.DestroyItem(item);
 					return;
 				}
 			}

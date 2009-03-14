@@ -1564,17 +1564,73 @@ enum SpellDidHitResult
 	SPELL_DID_HIT_IMMUNE					= 7,
 };
 
+enum SpellStartFlags
+{
+	//0x01
+	SPELL_START_FLAG_DEFAULT = 0x02, // atm set as default flag
+	//0x04
+	//0x08
+	//0x10
+	SPELL_START_FLAG_RANGED = 0x20,
+	//0x40
+	//0x80
+	//0x100
+	//0x200
+	//0x400
+	//0x800
+	//0x1000
+	//0x2000
+	//0x4000
+	//0x8000
+};
+
+/************************************************************************/
+/* General Spell Go Flags, for documentation reasons                    */
+/************************************************************************/
+enum SpellGoFlags
+{
+	//seems to make server send 1 less byte at the end. Byte seems to be 0 and not sent on triggered spells
+	//this is used only when server also sends power update to client
+	//maybe it is regen related ?
+	SPELL_GO_FLAGS_LOCK_PLAYER_CAST_ANIM	= 0x01,  //also do not send standstate update
+	//0x02
+	//0x04
+	//0x08 //seems like all of these mean some spell anim state
+	//0x10
+	SPELL_GO_FLAGS_RANGED           = 0x20, //2 functions are called on 2 values
+	//0x40
+	//0x80
+	SPELL_GO_FLAGS_ITEM_CASTER      = 0x100,
+	SPELL_GO_FLAGS_UNK200			= 0x200, 
+	SPELL_GO_FLAGS_EXTRA_MESSAGE    = 0x400, //TARGET MISSES AND OTHER MESSAGES LIKE "Resist"
+	SPELL_GO_FLAGS_POWER_UPDATE		= 0x800, //seems to work hand in hand with some visual effect of update actually
+	//0x1000
+	SPELL_GO_FLAGS_UNK2000			= 0x2000, 
+	SPELL_GO_FLAGS_UNK1000			= 0x1000, //no idea
+	//0x4000
+	SPELL_GO_FLAGS_UNK8000			= 0x8000, //seems to make server send extra 2 bytes before SPELL_GO_FLAGS_UNK1 and after SPELL_GO_FLAGS_UNK20000
+	SPELL_GO_FLAGS_UNK20000			= 0x20000, //seems to make server send an uint32 after m_targets.write
+	SPELL_GO_FLAGS_UNK40000			= 0x40000, //1 uint32. this is not confirmed but i have a feeling about it :D
+	SPELL_GO_FLAGS_UNK80000			= 0x80000, //2 functions called (same ones as for ranged but different)
+	SPELL_GO_FLAGS_RUNE_UPDATE		= 0x200000, //2 bytes for the rune cur and rune next flags
+	SPELL_GO_FLAGS_UNK400000		= 0x400000, //seems to make server send an uint32 after m_targets.write
+};
+
+enum SpellTargetSpecification
+{
+    TARGET_SPECT_NONE       = 0,
+    TARGET_SPEC_INVISIBLE   = 1,
+    TARGET_SPEC_DEAD        = 2,
+};
+
+
 // Spell instance
 class SERVER_DECL Spell
 {
 public:
     friend class DummySpellHandler;
-    Spell( );
-	void Init( Object* Caster, SpellEntry *info, bool triggered, Aura* aur );
-	void Virtual_Constructor();		//when using object pool contructor is not good to be called again sometimes. Use this instead
+    Spell( Object* Caster, SpellEntry *info, bool triggered, Aura* aur );
     ~Spell();
-	void Virtual_Destructor();		//this makes sure we do not leave events on objects that are supposed to be deleted
-	int32 m_bufferPoolId;
 
     // Fills specified targets at the area of effect
     void FillSpecifiedTargetsInArea(float srcx,float srcy,float srcz,uint32 ind, uint32 specification);
