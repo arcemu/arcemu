@@ -35,6 +35,8 @@ enum SpellTargetSpecification
     TARGET_SPEC_DEAD        = 2,
 };
 
+
+
 void SpellCastTargets::read( WorldPacket & data,uint64 caster )
 {
 	m_unitTarget = m_itemTarget = 0;
@@ -139,16 +141,12 @@ void SpellCastTargets::write( WorldPacket& data )
 		data << m_strTarget.c_str();
 }
 
-Spell::Spell()
-{
-	m_bufferPoolId = OBJECT_WAS_ALLOCATED_STANDARD_WAY;
-}
+
 
 void Spell::Virtual_Constructor()
 {
 }
-
-void Spell::Init(Object* Caster, SpellEntry *info, bool triggered, Aura* aur)
+Spell::Spell( Object* Caster, SpellEntry *info, bool triggered, Aura* aur )
 {
 	if(info==NULL) return;
 	ASSERT( Caster != NULL && info != NULL );
@@ -280,6 +278,138 @@ void Spell::Init(Object* Caster, SpellEntry *info, bool triggered, Aura* aur)
 	}
 }
 
+/*void Spell::Init(Object* Caster, SpellEntry *info, bool triggered, Aura* aur)
+{
+	if(info==NULL) return;
+	ASSERT( Caster != NULL && info != NULL );
+
+	chaindamage = 0;
+	bDurSet = 0;
+	damage = 0;
+	m_spellInfo_override = 0;
+	bRadSet[0] = 0;
+	bRadSet[1] = 0;
+	bRadSet[2] = 0;
+
+	m_spellInfo = info;
+	m_spellInfo_override = NULL;
+	m_caster = Caster;
+	duelSpell = false;
+	m_DelayStep = 0;
+
+	switch( Caster->GetTypeId() )
+	{
+		case TYPEID_PLAYER:
+		{
+			g_caster = NULL;
+			i_caster = NULL;
+			u_caster = static_cast< Unit* >( Caster );
+			p_caster = static_cast< Player* >( Caster );
+			if( p_caster->GetDuelState() == DUEL_STATE_STARTED )
+				duelSpell = true;
+				
+#ifdef GM_Z_DEBUG_DIRECTLY
+   	    // cebernic added it
+   	    if ( p_caster->GetSession() && p_caster->GetSession()->CanUseCommand('z')  && p_caster->IsInWorld() )
+    		sChatHandler.BlueSystemMessage( p_caster->GetSession(), "[%sSystem%s] |rSpell::Spell: %s ID:%u,Category%u,CD:%u,DisType%u,Field4:%u,etA0=%u,etA1=%u,etA2=%u,etB0=%u,etB1=%u,etB2=%u", MSG_COLOR_WHITE, MSG_COLOR_LIGHTBLUE, MSG_COLOR_SUBWHITE, 
+    		info->Id,info->Category,info->RecoveryTime,info->DispelType,info->castUI,info->EffectImplicitTargetA[0],info->EffectImplicitTargetA[1],info->EffectImplicitTargetA[2],info->EffectImplicitTargetB[0],info->EffectImplicitTargetB[1],info->EffectImplicitTargetB[2]  );
+#endif
+				
+		} break;
+
+		case TYPEID_UNIT:
+		{
+			g_caster = NULL;
+			i_caster = NULL;
+			p_caster = NULL;
+			u_caster = static_cast< Unit* >( Caster );
+			if( u_caster->IsPet() && static_cast< Pet* >( u_caster)->GetPetOwner() != NULL && static_cast< Pet* >( u_caster )->GetPetOwner()->GetDuelState() == DUEL_STATE_STARTED )
+				duelSpell = true;
+		} break;
+
+		case TYPEID_ITEM:
+		case TYPEID_CONTAINER:
+		{
+			g_caster = NULL;
+			u_caster = NULL;
+			p_caster = NULL;
+			i_caster = static_cast< Item* >( Caster );
+			if( i_caster->GetOwner() && i_caster->GetOwner()->GetDuelState() == DUEL_STATE_STARTED )
+				duelSpell = true;
+		} break;
+
+		case TYPEID_GAMEOBJECT:
+		{
+			u_caster = NULL;
+			p_caster = NULL;
+			i_caster = NULL;
+			g_caster = static_cast< GameObject* >( Caster );
+		} break;
+
+		default:
+			sLog.outDebug("[DEBUG][SPELL] Incompatible object type, please report this to the dev's");
+			break;
+	}
+
+	m_spellState = SPELL_STATE_NULL;
+
+	m_castPositionX = m_castPositionY = m_castPositionZ = 0;
+	//TriggerSpellId = 0;
+	//TriggerSpellTarget = 0;
+	m_triggeredSpell = triggered;
+	m_AreaAura = false;
+
+	m_triggeredByAura = aur;
+
+	damageToHit = 0;
+	castedItemId = 0;
+
+	m_usesMana = false;
+	m_Spell_Failed = false;
+	m_CanRelect = false;
+	m_IsReflected = false;
+	hadEffect = false;
+	bDurSet = false;
+	bRadSet[0] = false;
+	bRadSet[1] = false;
+	bRadSet[2] = false;
+
+	cancastresult = SPELL_CANCAST_OK;
+
+	m_requiresCP = false;
+	unitTarget = NULL;
+	itemTarget = NULL;
+	gameObjTarget = NULL;
+	playerTarget = NULL;
+	corpseTarget = NULL;
+	judgement = false;
+	add_damage = 0;
+	m_Delayed = false;
+	pSpellId = 0;
+	m_cancelled = false;
+	ProcedOnSpell = 0;
+	forced_basepoints[0] = forced_basepoints[1] = forced_basepoints[2] = 0;
+	extra_cast_number = 0;
+	m_reflectedParent = NULL;
+	m_isCasting = false;
+
+	UniqueTargets.clear();
+	ModeratedTargets.clear();
+	for( uint32 i=0; i<3; ++i )
+	{
+		m_targetUnits[i].clear();
+	}
+	//create rune avail snapshot
+	if( p_caster && p_caster->getClass() == DEATHKNIGHT )
+	{
+		m_rune_avail_before = 0;
+		m_runes_to_update = 0;
+		for( uint8 i=0; i < TOTAL_USED_RUNES;i++ )
+			if( p_caster->m_runes[ i ] < RUNE_RECHARGE )
+				m_rune_avail_before |= (1 << i);
+	}
+}
+*/
 Spell::~Spell()
 {
 	for(uint32 i=0; i<3; ++i)
@@ -1826,7 +1956,7 @@ void Spell::cast(bool check)
 			finish();
 		}
 
-		if( u_caster != NULL )
+		if( u_caster != NULL && !m_triggeredSpell && !m_triggeredByAura)
 			u_caster->RemoveAurasByInterruptFlagButSkip(AURA_INTERRUPT_ON_CAST_SPELL, GetProto()->Id);
 	}
 	else
@@ -2097,7 +2227,7 @@ void Spell::finish()
 		if(!m_triggeredSpell && (GetProto()->ChannelInterruptFlags || m_castTime>0))
 			u_caster->SetCurrentSpell(NULL);
 	}
-	SpellPool.PooledDelete( this );
+	delete this;
 }
 
 void Spell::SendCastResult(uint8 result)
@@ -3027,8 +3157,8 @@ void Spell::HandleAddAura(uint64 guid)
 	{
 		SpellEntry *spellInfo = dbcSpell.LookupEntry( spellid );
 		if(!spellInfo) return;
-		Spell *spell = SpellPool.PooledNew();
-		spell->Init(p_caster, spellInfo ,true, NULL);
+		Spell *spell = new Spell(p_caster, spellInfo ,true, NULL);
+		//spell->Init(p_caster, spellInfo ,true, NULL);
 		SpellCastTargets targets(Target->GetGUID());
 		spell->prepare(&targets);
 	}
@@ -3061,8 +3191,8 @@ void Spell::HandleAddAura(uint64 guid)
 				}
 				for(int i=0;i<charges-1;i++)
 				{
-					aur = AuraPool.PooledNew();
-					aur->Init(itr->second->GetSpellProto(),itr->second->GetDuration(),itr->second->GetCaster(),itr->second->GetTarget(), m_triggeredSpell, i_caster);
+					aur = new Aura(itr->second->GetSpellProto(),itr->second->GetDuration(),itr->second->GetCaster(),itr->second->GetTarget(), m_triggeredSpell, i_caster);
+					//aur->Init(itr->second->GetSpellProto(),itr->second->GetDuration(),itr->second->GetCaster(),itr->second->GetTarget(), m_triggeredSpell, i_caster);
 					Target->AddAura(aur);
 					aur=NULL;
 				}
@@ -5234,8 +5364,8 @@ bool Spell::Reflect(Unit *refunit)
 
 	if(!refspell) return false;
 
-	Spell *spell = SpellPool.PooledNew();
-	spell->Init(refunit, refspell, true, NULL);
+	Spell *spell = new Spell(refunit, refspell, true, NULL);
+	//spell->Init(refunit, refspell, true, NULL);
 	spell->SetReflected();
 	SpellCastTargets targets;
 	targets.m_unitTarget = m_caster->GetGUID();

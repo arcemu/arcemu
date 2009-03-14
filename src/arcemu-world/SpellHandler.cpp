@@ -187,8 +187,8 @@ void WorldSession::HandleUseItemOpcode(WorldPacket& recvPacket)
 					}
 				}
 
-				Spell *spell = SpellPool.PooledNew();
-				spell->Init(_player, spellInfo, false, NULL);
+				Spell *spell = new Spell(_player, spellInfo, false, NULL);
+				//spell->Init(_player, spellInfo, false, NULL);
 				spell->extra_cast_number=cn;
 				spell->i_caster = tmpItem;
 				//GetPlayer()->setCurrentSpell(spell);
@@ -232,8 +232,8 @@ void WorldSession::HandleSpellClick(WorldPacket& recvPacket)
 		return;
 
 	SpellEntry *spellInfo = dbcSpell.LookupEntryForced( cast_spell_id );
- 	Spell *spell = SpellPool.PooledNew();
- 	spell->Init(_player, spellInfo, false, NULL);
+ 	Spell *spell = new Spell(_player, spellInfo, false, NULL);
+ 	//spell->Init(_player, spellInfo, false, NULL);
 	SpellCastTargets targets( target_guid );
 	spell->prepare(&targets);
 }
@@ -367,8 +367,8 @@ void WorldSession::HandleCastSpellOpcode(WorldPacket& recvPacket)
 			}
 		}
 
-		Spell *spell = SpellPool.PooledNew();
-		spell->Init(GetPlayer(), spellInfo, false, NULL);
+		Spell *spell = new Spell(GetPlayer(), spellInfo, false, NULL);
+		//spell->Init(GetPlayer(), spellInfo, false, NULL);
 		spell->extra_cast_number=cn;
 		spell->prepare(&targets);
 	}
@@ -473,8 +473,8 @@ void WorldSession::HandlePetCastSpell(WorldPacket & recvPacket)
 	}
 	if(spellid == 33395)	// Summoned Water Elemental's freeze
 	{
-		Spell * pSpell = SpellPool.PooledNew();
-		pSpell->Init(_player->m_Summon, sp, false, 0);
+		Spell * pSpell = new Spell(_player->m_Summon, sp, false, 0);
+		//pSpell->Init(_player->m_Summon, sp, false, 0);
 		pSpell->prepare(&targets);
 	}
 	else			// trinket?
@@ -494,8 +494,8 @@ void WorldSession::HandlePetCastSpell(WorldPacket & recvPacket)
 			if( !check )
 				return;
 		
-			Spell * pSpell = SpellPool.PooledNew();
-			pSpell->Init(nc, sp, false, 0);
+			Spell * pSpell = new Spell(nc, sp, false, 0);
+			//pSpell->Init(nc, sp, false, 0);
 			pSpell->prepare(&targets);
 		}
 	}

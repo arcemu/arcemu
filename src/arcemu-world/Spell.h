@@ -1569,7 +1569,8 @@ class SERVER_DECL Spell
 {
 public:
     friend class DummySpellHandler;
-    Spell( );
+	Spell();
+    Spell( Object* Caster, SpellEntry *info, bool triggered, Aura* aur);
 	void Init( Object* Caster, SpellEntry *info, bool triggered, Aura* aur );
 	void Virtual_Constructor();		//when using object pool contructor is not good to be called again sometimes. Use this instead
     ~Spell();

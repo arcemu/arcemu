@@ -486,11 +486,11 @@
 			Name="BufferPools"
 			>
 			<File
-				RelativePath="..\..\src\arcemu-world\BufferPools\BufferPools.cpp"
+				RelativePath="..\..\src\arcemu-world\BufferPools\BufferPools.cppz"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\arcemu-world\BufferPools\BufferPools.h"
+				RelativePath="..\..\src\arcemu-world\BufferPools\BufferPools.hz"
 				>
 			</File>
 		</Filter>

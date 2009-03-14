@@ -125,6 +125,7 @@ class SERVER_DECL Item : public Object
 {
 public:
 	Item();
+	Item(uint32 high, uint32 low);
 	void Init( uint32 high, uint32 low );
 	void Virtual_Constructor();		//when using object pool contructor is not good to be called again sometimes. Use this instead
 	virtual ~Item();

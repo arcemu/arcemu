@@ -20,9 +20,20 @@
 
 #include "StdAfx.h"
 
-Item::Item()//this is called when constructing as container
+Item::Item()
 {
-	m_bufferPoolId = OBJECT_WAS_ALLOCATED_STANDARD_WAY;
+	m_itemProto = NULL;
+	m_owner = NULL;
+	loot = NULL;
+	locked = false;
+	wrapped_item_id = 0;
+}
+
+
+Item::Item( uint32 high, uint32 low )//this is called when constructing as container
+{
+	//m_bufferPoolId = OBJECT_WAS_ALLOCATED_STANDARD_WAY;
+	
 	m_itemProto = NULL;
 	m_owner = NULL;
 	loot = NULL;
@@ -31,7 +42,13 @@ Item::Item()//this is called when constructing as container
 	m_objectTypeId = TYPEID_ITEM;
 	m_valuesCount = ITEM_END;
 	m_uint32Values = _fields;
+	memset( m_uint32Values, 0, (ITEM_END) * sizeof( uint32 ) );
 	m_updateMask.SetCount(ITEM_END);
+    SetUInt32Value( OBJECT_FIELD_TYPE,TYPE_ITEM | TYPE_OBJECT );
+	SetUInt32Value( OBJECT_FIELD_GUID, low );
+	SetUInt32Value( OBJECT_FIELD_GUID + 1, high );
+	m_wowGuid.Init( GetGUID() );
+	SetFloatValue( OBJECT_FIELD_SCALE_X, 1 );//always 1
 	random_prop = 0;
 	random_suffix = 0;
 	m_mapMgr = 0;
@@ -43,17 +60,16 @@ Item::Item()//this is called when constructing as container
 	m_inQueue = false;
 	m_extensions = NULL;
 	m_loadedFromDB = false;
-
 	Enchantments.clear();
 }
 
 //called instead of parametrized constructor
-void Item::Init( uint32 high, uint32 low )
+/*void Item::Init( uint32 high, uint32 low )
 {
 	SetUInt32Value( OBJECT_FIELD_GUID, low );
 	SetUInt32Value( OBJECT_FIELD_GUID + 1, high );
 	m_wowGuid.Init( GetGUID() );
-}
+}*/
 
 void Item::Virtual_Constructor()
 {
@@ -447,7 +463,7 @@ void Item::DeleteMe()
 	if( IsContainer() ) {
 		delete static_cast<Container*>(this);
 	} else {
-		ItemPool.PooledDelete( this );
+		delete this;
 	}
 }
 
@@ -851,8 +867,8 @@ void Item::ApplyEnchantmentBonus( uint32 Slot, bool Apply )
 							if( sp == NULL )
 								continue;
 
-							spell = SpellPool.PooledNew();
-							spell->Init( m_owner, sp, true, 0 );
+							spell = new Spell( m_owner, sp, true, 0 );
+							//spell->Init( m_owner, sp, true, 0 );
 							spell->i_caster = this;
 							spell->prepare( &targets );
 						}
