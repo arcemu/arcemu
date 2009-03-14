@@ -248,9 +248,12 @@ public:
 						if (BuffedChanneler && BuffedChanneler != Channeler && BuffedChanneler->isAlive())
 						{
 							// We apply Soul Transfer Aura to channeler who should be buffed
-							Aura * aura = sSpellMgr.CreateAura(dbcSpell.LookupEntry(SOUL_TRANSFER), -1, BuffedChanneler, BuffedChanneler);
+							Aura * aura = new Aura();
 							if (aura != NULL)
+							{
+								aura->Init(dbcSpell.LookupEntry(SOUL_TRANSFER), -1, BuffedChanneler, BuffedChanneler);
 								BuffedChanneler->AddAura(aura);
+							}
 						}
 					}
 					// We count channeler which died between last and this trigger as dead and count him as dead one
@@ -615,9 +618,12 @@ public:
 				Magtheridon->GetCurrentSpell()->cancel();
 
 			// We add channeling player aura that does not allow that go to be used again in 1.3 min
-			Aura *aura = sSpellMgr.CreateAura(dbcSpell.LookupEntry(MIND_EXHAUSTION), 78000, Magtheridon, Channeler);
+			Aura *aura = new Aura();
 			if (aura != NULL)
-				Channeler->AddAura(aura);
+			{
+				aura->Init(dbcSpell.LookupEntry(MIND_EXHAUSTION), 78000, Magtheridon, Channeler);
+			}
+			Channeler->AddAura(aura);
 
 			MagYell = true;
 
@@ -1329,9 +1335,12 @@ public:
 		spells[6].instant = true;
 
 		_unit->SetUInt64Value(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_ATTACKABLE_9);
-		Aura * aura = sSpellMgr.CreateAura(dbcSpell.LookupEntry(BANISHMENT), -1, _unit, _unit);
+		Aura * aura = new Aura();
 		if (aura != NULL)
+		{
+			aura->Init(dbcSpell.LookupEntry(BANISHMENT), -1, _unit, _unit);
 			_unit->AddAura(aura);
+		}
 		_unit->CastSpell(_unit, dbcSpell.LookupEntry(BANISH), true);
 		_unit->GetAIInterface()->SetAllowedToEnterCombat(false);
 		_unit->SetUInt32Value(UNIT_FIELD_BYTES_2, 1);

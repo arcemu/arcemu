@@ -202,7 +202,8 @@ void GameObject::Update(uint32 p_time)
 					if(!isAttackable(m_summoner,pUnit))continue;
 				}
 				
-				Spell * sp = sSpellMgr.CreateSpell((Object*)this, spell, true, NULL);
+				Spell * sp=SpellPool.PooledNew();
+				sp->Init((Object*)this,spell,true,NULL);
 				SpellCastTargets tgt((*itr)->GetGUID());
 				tgt.m_destX = GetPositionX();
 				tgt.m_destY = GetPositionY();
@@ -591,14 +592,13 @@ void GameObject::EndFishing(Player* player, bool abort )
 		{
 			//FIXME: here 'failed' should appear over progress bar
 			spell->SendChannelUpdate(0);
-			spell->cancel();
-			//spell->finish();
+			//spell->cancel();
+			spell->finish();
 		}
 		else		// spell ended
 		{
 			spell->SendChannelUpdate(0);
 			spell->finish();
-			sSpellMgr.DestroySpell(spell);
 		}
 	}
 

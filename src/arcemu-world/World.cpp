@@ -1789,7 +1789,7 @@ void World::PollMailboxInsertQueue(DatabaseConnection * con)
 				0, pItem ? pItem->GetGUID() : 0, f[4].GetUInt32() );
 
 			if( pItem != NULL )
-				sItemMgr.DestroyItem(pItem);
+				pItem->DeleteMe();
 
 		} while ( result->NextRow() );
 		delete result;

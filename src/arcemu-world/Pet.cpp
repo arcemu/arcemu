@@ -386,9 +386,11 @@ void Pet::InitializeSpells()
 		if( info->Attributes & ATTRIBUTES_PASSIVE )
 		{
 			// Cast on self..
-			Spell * sp = sSpellMgr.CreateSpell(this, info, true, false);
+			Spell * sp = SpellPool.PooledNew();
+			sp->Init( this, info, true, false );
 			SpellCastTargets targets( this->GetGUID() );
 			sp->prepare( &targets );
+
 			continue;
 		}
 
@@ -821,7 +823,8 @@ void Pet::AddSpell( SpellEntry * sp, bool learning )
 	{
 		if( IsInWorld() )
 		{
-			Spell * spell = sSpellMgr.CreateSpell(this, sp, true, false);
+			Spell * spell = SpellPool.PooledNew();
+			spell->Init(this, sp, true, false);
 			SpellCastTargets targets(this->GetGUID());
 			spell->prepare(&targets);
 			mSpells[sp] = 0x0100;
@@ -830,7 +833,7 @@ void Pet::AddSpell( SpellEntry * sp, bool learning )
 	else
 	{
 	   // Active spell add to the actionbar.
-		bool has = false;
+		bool has=false;
 		for(int i = 0; i < 10; ++i)
 		{
 			if(ActionBar[i] == sp->Id)

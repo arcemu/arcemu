@@ -629,7 +629,8 @@ void AIInterface::Update(uint32 p_time)
 		assert(totemspell != 0);
 		if(p_time >= m_totemspelltimer)
 		{
-			Spell *pSpell = sSpellMgr.CreateSpell(m_Unit, totemspell, true, 0);
+			Spell *pSpell = SpellPool.PooledNew();
+			pSpell->Init(m_Unit, totemspell, true, 0);
 
 			SpellCastTargets targets(0);
 			if(!GetNextTarget() ||
@@ -656,16 +657,13 @@ void AIInterface::Update(uint32 p_time)
 				// need proper cooldown time!
 				m_totemspelltimer = m_totemspelltime;
 			}
-			else
-				sSpellMgr.DestroySpell(pSpell);
-
+			else SpellPool.PooledDelete( pSpell );
 			// these will *almost always* be AoE, so no need to find a target here.
 //			SpellCastTargets targets(m_Unit->GetGUID());
 //			Spell * pSpell = new Spell(m_Unit, totemspell, true, 0);
 //			pSpell->prepare(&targets);
 			// need proper cooldown time!
 //			m_totemspelltimer = m_totemspelltime;
-
 		}
 		else
 		{
@@ -1219,7 +1217,8 @@ void AIInterface::_UpdateCombat(uint32 p_time)
 								if(fabs(our_facing-his_facing)<CREATURE_DAZE_TRIGGER_ANGLE && !GetNextTarget()->HasAura(CREATURE_SPELL_TO_DAZE))
 								{
 									SpellEntry *info = dbcSpell.LookupEntry(CREATURE_SPELL_TO_DAZE);
-									Spell *sp = sSpellMgr.CreateSpell(m_Unit, info, false, NULL);
+									Spell *sp = SpellPool.PooledNew();
+									sp->Init(m_Unit, info, false, NULL);
 									SpellCastTargets targets;
 									targets.m_unitTarget = GetNextTarget()->GetGUID();
 									sp->prepare(&targets);
@@ -1293,7 +1292,8 @@ void AIInterface::_UpdateCombat(uint32 p_time)
 							SpellEntry *info = dbcSpell.LookupEntry(SPELL_RANGED_GENERAL);
 							if(info)
 							{
-								Spell *sp = sSpellMgr.CreateSpell(m_Unit, info, false, NULL);
+								Spell *sp = SpellPool.PooledNew();
+								sp->Init(m_Unit, info, false, NULL);
 								SpellCastTargets targets;
 								targets.m_unitTarget = GetNextTarget()->GetGUID();
 								sp->prepare(&targets);
@@ -3354,7 +3354,8 @@ void AIInterface::CastSpell(Unit* caster, SpellEntry *spellInfo, SpellCastTarget
 #endif
 
 	//i wonder if this will lead to a memory leak :S
-	Spell *nspell = sSpellMgr.CreateSpell(caster, spellInfo, false, NULL);
+	Spell *nspell = SpellPool.PooledNew();
+	nspell->Init(caster, spellInfo, false, NULL);
 	nspell->prepare(&targets);
 }
 

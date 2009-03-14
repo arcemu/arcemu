@@ -1049,7 +1049,7 @@ void QuestMgr::OnQuestFinished(Player* plr, Quest* qst, Object *qst_giver, uint3
 
 							itm->SetUInt32Value(ITEM_FIELD_STACK_COUNT, uint32(qst->reward_itemcount[i]));
 							if( !plr->GetItemInterface()->SafeAddItem(itm,slotresult.ContainerSlot, slotresult.Slot) )
-								sItemMgr.DestroyItem(itm);
+								itm->DeleteMe();
 						}
 					}
 					else
@@ -1089,8 +1089,8 @@ void QuestMgr::OnQuestFinished(Player* plr, Quest* qst, Object *qst_giver, uint3
 
 						itm->SetUInt32Value(ITEM_FIELD_STACK_COUNT, uint32(qst->reward_choiceitemcount[reward_slot]));
 						if( !plr->GetItemInterface()->SafeAddItem(itm,slotresult.ContainerSlot, slotresult.Slot) )
-							sItemMgr.DestroyItem(itm);
-		
+							itm->DeleteMe();
+
 					}
 				}
 				else
@@ -1117,7 +1117,8 @@ void QuestMgr::OnQuestFinished(Player* plr, Quest* qst, Object *qst_giver, uint3
 			SpellEntry  * inf =dbcSpell.LookupEntry(qst->effect_on_player);
 			if(inf)
 			{
-				Spell * spe = sSpellMgr.CreateSpell(qst_giver, inf, true, NULL);
+				Spell * spe = SpellPool.PooledNew();
+				spe->Init(qst_giver,inf,true,NULL);
 				SpellCastTargets tgt;
 				tgt.m_unitTarget = plr->GetGUID();
 				spe->prepare(&tgt);
@@ -1166,7 +1167,7 @@ void QuestMgr::OnQuestFinished(Player* plr, Quest* qst, Object *qst_giver, uint3
 
 							itm->SetUInt32Value(ITEM_FIELD_STACK_COUNT, uint32(qst->reward_itemcount[i]));
 							if( !plr->GetItemInterface()->SafeAddItem(itm,slotresult.ContainerSlot, slotresult.Slot) )
-								sItemMgr.DestroyItem(itm);
+								itm->DeleteMe();
 						}
 					}
 					else
@@ -1206,7 +1207,7 @@ void QuestMgr::OnQuestFinished(Player* plr, Quest* qst, Object *qst_giver, uint3
 
 						itm->SetUInt32Value(ITEM_FIELD_STACK_COUNT, uint32(qst->reward_choiceitemcount[reward_slot]));
 						if( !plr->GetItemInterface()->SafeAddItem(itm,slotresult.ContainerSlot, slotresult.Slot) )
-							sItemMgr.DestroyItem(itm);
+							itm->DeleteMe();
 					}
 				}
 				else
@@ -1265,7 +1266,8 @@ void QuestMgr::OnQuestFinished(Player* plr, Quest* qst, Object *qst_giver, uint3
 			SpellEntry  * inf =dbcSpell.LookupEntry(qst->effect_on_player);
 			if(inf)
 			{
-				Spell * spe = sSpellMgr.CreateSpell(qst_giver, inf, true, NULL);
+				Spell * spe = SpellPool.PooledNew();
+				spe->Init(qst_giver,inf,true,NULL);
 				SpellCastTargets tgt;
 				tgt.m_unitTarget = plr->GetGUID();
 				spe->prepare(&tgt);

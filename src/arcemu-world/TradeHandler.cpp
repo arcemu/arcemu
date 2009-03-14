@@ -562,7 +562,7 @@ void WorldSession::HandleAcceptTrade(WorldPacket & recv_data)
 				{
 					pItem->SetOwner(pTarget); // crash fixed.
 					if( !pTarget->m_ItemInterface->AddItemToFreeSlot(pItem) )
-						sItemMgr.DestroyItem(pItem);
+						pItem->DeleteMe();
 				}
 
 				pItem = pTarget->mTradeItems[Index];
@@ -570,7 +570,7 @@ void WorldSession::HandleAcceptTrade(WorldPacket & recv_data)
 				{
 					pItem->SetOwner(_player);
 					if( !_player->m_ItemInterface->AddItemToFreeSlot(pItem) )
-						sItemMgr.DestroyItem(pItem);
+						pItem->DeleteMe();
 				}
 			}
 

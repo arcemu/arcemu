@@ -862,7 +862,7 @@ void LootRoll::Finalize()
 			_player->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_LOOT_ITEM, item->GetEntry(), 1, 0);
 		}
 		else
-			sItemMgr.DestroyItem(item);
+			item->DeleteMe();
 	}
 	else 
 	{	

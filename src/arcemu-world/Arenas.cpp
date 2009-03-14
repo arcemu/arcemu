@@ -128,8 +128,8 @@ void Arena::OnAddPlayer(Player * plr)
 		plr->m_bgIsQueued = false;
 
 	/* Add the green/gold team flag */
-	Aura * aura = sSpellMgr.CreateAura(dbcSpell.LookupEntry((plr->GetTeamInitial()) ? 35775-plr->m_bgTeam : 32725-plr->m_bgTeam),
-		-1, plr, plr, true);
+	Aura * aura = AuraPool.PooledNew();
+	aura->Init(dbcSpell.LookupEntry((plr->GetTeamInitial()) ? 35775-plr->m_bgTeam : 32725-plr->m_bgTeam), -1, plr, plr, true);
 	plr->AddAura(aura);
 	
 	/* Set FFA PvP Flag */
@@ -676,11 +676,12 @@ void Arena::HookOnAreaTrigger(Player * plr, uint32 id)
 		{
 			/* apply the buff */
 			SpellEntry * sp = dbcSpell.LookupEntry(m_buffs[buffslot]->GetInfo()->sound3);
-			Spell * s = sSpellMgr.CreateSpell(plr, sp, true, 0);
+			Spell * s = SpellPool.PooledNew();
 
 			ASSERT(sp != NULL);
 			ASSERT(s != NULL);
 
+			s->Init(plr, sp, true, 0);
 			SpellCastTargets targets(plr->GetGUID());
 			s->prepare(&targets);
 

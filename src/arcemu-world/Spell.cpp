@@ -25,7 +25,15 @@
 /// externals for spell system
 extern pSpellEffect SpellEffectsHandler[TOTAL_SPELL_EFFECTS];
 extern pSpellTarget SpellTargetHandler[EFF_TARGET_LIST_LENGTH_MARKER];
+
 extern const char* SpellEffectNames[TOTAL_SPELL_EFFECTS];
+
+enum SpellTargetSpecification
+{
+    TARGET_SPECT_NONE       = 0,
+    TARGET_SPEC_INVISIBLE   = 1,
+    TARGET_SPEC_DEAD        = 2,
+};
 
 void SpellCastTargets::read( WorldPacket & data,uint64 caster )
 {
@@ -131,7 +139,16 @@ void SpellCastTargets::write( WorldPacket& data )
 		data << m_strTarget.c_str();
 }
 
-Spell::Spell(Object* Caster, SpellEntry *info, bool triggered, Aura* aur)
+Spell::Spell()
+{
+	m_bufferPoolId = OBJECT_WAS_ALLOCATED_STANDARD_WAY;
+}
+
+void Spell::Virtual_Constructor()
+{
+}
+
+void Spell::Init(Object* Caster, SpellEntry *info, bool triggered, Aura* aur)
 {
 	if(info==NULL) return;
 	ASSERT( Caster != NULL && info != NULL );
@@ -265,6 +282,14 @@ Spell::Spell(Object* Caster, SpellEntry *info, bool triggered, Aura* aur)
 
 Spell::~Spell()
 {
+	for(uint32 i=0; i<3; ++i)
+	{
+		m_targetUnits[i].clear();
+	}
+}
+
+void Spell::Virtual_Destructor()
+{
 	if( u_caster != NULL && u_caster->GetCurrentSpell() == this )
 		u_caster->SetCurrentSpell(NULL);
 
@@ -274,11 +299,6 @@ Spell::~Spell()
 
 	if( m_spellInfo_override != NULL)
 		delete[] m_spellInfo_override;
-
-	for(uint32 i=0; i<3; ++i)
-	{
-		m_targetUnits[i].clear();
-	}
 }
 
 //i might forget conditions here. Feel free to add them
@@ -2077,7 +2097,7 @@ void Spell::finish()
 		if(!m_triggeredSpell && (GetProto()->ChannelInterruptFlags || m_castTime>0))
 			u_caster->SetCurrentSpell(NULL);
 	}
-
+	SpellPool.PooledDelete( this );
 }
 
 void Spell::SendCastResult(uint8 result)
@@ -2144,6 +2164,25 @@ void Spell::SendCastResult(uint8 result)
 }
 
 // uint16 0xFFFF
+enum SpellStartFlags
+{
+	//0x01
+	SPELL_START_FLAG_DEFAULT = 0x02, // atm set as default flag
+	//0x04
+	//0x08
+	//0x10
+	SPELL_START_FLAG_RANGED = 0x20,
+	//0x40
+	//0x80
+	//0x100
+	//0x200
+	//0x400
+	//0x800
+	//0x1000
+	//0x2000
+	//0x4000
+	//0x8000
+};
 
 void Spell::SendSpellStart()
 {
@@ -2221,6 +2260,38 @@ void Spell::SendSpellStart()
 	data << (uint32)139; //3.0.2 seems to be some small value around 250 for shadow bolt.
 	m_caster->SendMessageToSet( &data, true );
 }
+
+/************************************************************************/
+/* General Spell Go Flags, for documentation reasons                    */
+/************************************************************************/
+enum SpellGoFlags
+{
+	//seems to make server send 1 less byte at the end. Byte seems to be 0 and not sent on triggered spells
+	//this is used only when server also sends power update to client
+	//maybe it is regen related ?
+	SPELL_GO_FLAGS_LOCK_PLAYER_CAST_ANIM	= 0x01,  //also do not send standstate update
+	//0x02
+	//0x04
+	//0x08 //seems like all of these mean some spell anim state
+	//0x10
+	SPELL_GO_FLAGS_RANGED           = 0x20, //2 functions are called on 2 values
+	//0x40
+	//0x80
+	SPELL_GO_FLAGS_ITEM_CASTER      = 0x100,
+	SPELL_GO_FLAGS_UNK200			= 0x200, 
+	SPELL_GO_FLAGS_EXTRA_MESSAGE    = 0x400, //TARGET MISSES AND OTHER MESSAGES LIKE "Resist"
+	SPELL_GO_FLAGS_POWER_UPDATE		= 0x800, //seems to work hand in hand with some visual effect of update actually
+	//0x1000
+	SPELL_GO_FLAGS_UNK2000			= 0x2000, 
+	SPELL_GO_FLAGS_UNK1000			= 0x1000, //no idea
+	//0x4000
+	SPELL_GO_FLAGS_UNK8000			= 0x8000, //seems to make server send extra 2 bytes before SPELL_GO_FLAGS_UNK1 and after SPELL_GO_FLAGS_UNK20000
+	SPELL_GO_FLAGS_UNK20000			= 0x20000, //seems to make server send an uint32 after m_targets.write
+	SPELL_GO_FLAGS_UNK40000			= 0x40000, //1 uint32. this is not confirmed but i have a feeling about it :D
+	SPELL_GO_FLAGS_UNK80000			= 0x80000, //2 functions called (same ones as for ranged but different)
+	SPELL_GO_FLAGS_RUNE_UPDATE		= 0x200000, //2 bytes for the rune cur and rune next flags
+	SPELL_GO_FLAGS_UNK400000		= 0x400000, //seems to make server send an uint32 after m_targets.write
+};
 
 void Spell::SendSpellGo()
 {
@@ -2956,7 +3027,8 @@ void Spell::HandleAddAura(uint64 guid)
 	{
 		SpellEntry *spellInfo = dbcSpell.LookupEntry( spellid );
 		if(!spellInfo) return;
-		Spell *spell = sSpellMgr.CreateSpell(p_caster, spellInfo ,true, NULL);
+		Spell *spell = SpellPool.PooledNew();
+		spell->Init(p_caster, spellInfo ,true, NULL);
 		SpellCastTargets targets(Target->GetGUID());
 		spell->prepare(&targets);
 	}
@@ -2989,9 +3061,8 @@ void Spell::HandleAddAura(uint64 guid)
 				}
 				for(int i=0;i<charges-1;i++)
 				{
-					aur = sSpellMgr.CreateAura(itr->second->GetSpellProto(),
-						itr->second->GetDuration(),itr->second->GetCaster(),
-						itr->second->GetTarget(), m_triggeredSpell, i_caster);
+					aur = AuraPool.PooledNew();
+					aur->Init(itr->second->GetSpellProto(),itr->second->GetDuration(),itr->second->GetCaster(),itr->second->GetTarget(), m_triggeredSpell, i_caster);
 					Target->AddAura(aur);
 					aur=NULL;
 				}
@@ -4734,7 +4805,7 @@ void Spell::CreateItem(uint32 itemId)
 		AddItemResult result = pUnit->GetItemInterface()->SafeAddItem(newItem, slotresult.ContainerSlot, slotresult.Slot);
 		if(!result)
 		{
-			sItemMgr.DestroyItem(newItem);
+			newItem->DeleteMe();
 			return;
 		}
 
@@ -5163,7 +5234,8 @@ bool Spell::Reflect(Unit *refunit)
 
 	if(!refspell) return false;
 
-	Spell *spell = sSpellMgr.CreateSpell(refunit, refspell, true, NULL);
+	Spell *spell = SpellPool.PooledNew();
+	spell->Init(refunit, refspell, true, NULL);
 	spell->SetReflected();
 	SpellCastTargets targets;
 	targets.m_unitTarget = m_caster->GetGUID();

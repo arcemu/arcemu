@@ -1107,7 +1107,7 @@ bool ChatHandler::HandleAddItemSetCommand(const char* args, WorldSession* m_sess
 		if(!chr->GetItemInterface()->AddItemToFreeSlot(itm))
 		{
 			m_session->SendNotification("No free slots left!");
-			sItemMgr.DestroyItem(itm);
+			itm->DeleteMe();
 			return true;
 		} else {
 			//SystemMessage(m_session, "Added item: %s [%u]", (*itr)->Name1, (*itr)->ItemId);
@@ -1829,7 +1829,8 @@ bool ChatHandler::HandleCastAllCommand(const char* args, WorldSession* m_session
 			}
 			else
 			{
-				Spell * sp = sSpellMgr.CreateSpell(plr, info, true, 0);
+				Spell * sp = SpellPool.PooledNew();
+				sp->Init(plr, info, true, 0);
 				SpellCastTargets targets(plr->GetGUID());
 				sp->prepare(&targets);
 			}
