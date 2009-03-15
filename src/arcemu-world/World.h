@@ -465,6 +465,10 @@ public:
 	bool gamemaster_hidePermissions;
 	bool gamemaster_startonGMIsland;
 
+	//Arena Settings
+	int arena_season;
+	int arena_progress;
+
 	// broadcast system config
 	bool BCSystemEnable;
 	int BCInterval;

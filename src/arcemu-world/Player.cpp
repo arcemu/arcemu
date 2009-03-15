@@ -6749,6 +6749,11 @@ void Player::SendInitialLogonPackets()
 	m_lastRunSpeed = 0;
 	UpdateSpeed();
 
+	WorldPacket ArenaSettings(SMSG_UPDATE_WORLD_STATE, 16);
+	ArenaSettings << uint32(0xC77) << uint32(sWorld.arena_progress);
+	ArenaSettings << uint32(0xF3D) << uint32(sWorld.arena_season);
+	GetSession()->SendPacket( &ArenaSettings );
+
 	sLog.outDetail("WORLD: Sent initial logon packets for %s.", GetName());
 }
 

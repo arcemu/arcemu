@@ -285,8 +285,6 @@ void Arena::OnCreate()
 	SetWorldState(0x08D3	,0x0000);
 	SetWorldState(0x0C0D	,0x017B);
 
-	SetWorldState(0x0C77,0x01); // 1 - arena season in progress, 0 - end of season
-	SetWorldState(0x0F3D,0x05); // arena season id
 
 	// Show players count
 	switch(m_mapMgr->GetMapId())
