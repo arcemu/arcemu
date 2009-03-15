@@ -187,11 +187,14 @@ void LogonCommServerSocket::HandleRegister(WorldPacket & recvData)
 
 	Realm * realm = new Realm;
 
-//	recvData >> realm->Name >> realm->Address;
-//	recvData >> realm->Colour >> realm->Icon >> realm->TimeZone >> realm->Population;
-	realm->Name = Name;
 	realm->Colour = 0;
-	recvData >> realm->Address >> realm->Icon >> realm->TimeZone >> realm->Population >> realm->Lock;
+	realm->Icon = 0;
+	realm->TimeZone = 0;
+	realm->Population = 0;
+	realm->Lock = 0;
+
+	realm->Name = Name;
+	recvData >> realm->Address >> realm->Colour >> realm->Icon >> realm->TimeZone >> realm->Population >> realm->Lock;
 
 //	uint32 my_id = sInfoCore.GenerateRealmID();
 //	sLog.outString("Registering realm `%s` under ID %u.", realm->Name.c_str(), my_id);
