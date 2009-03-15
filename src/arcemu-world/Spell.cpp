@@ -143,10 +143,7 @@ void SpellCastTargets::write( WorldPacket& data )
 
 
 
-void Spell::Virtual_Constructor()
-{
-}
-Spell::Spell( Object* Caster, SpellEntry *info, bool triggered, Aura* aur )
+Spell::Spell(Object* Caster, SpellEntry *info, bool triggered, Aura* aur)
 {
 	if(info==NULL) return;
 	ASSERT( Caster != NULL && info != NULL );
@@ -277,7 +274,6 @@ Spell::Spell( Object* Caster, SpellEntry *info, bool triggered, Aura* aur )
 				m_rune_avail_before |= (1 << i);
 	}
 }
-
 /*void Spell::Init(Object* Caster, SpellEntry *info, bool triggered, Aura* aur)
 {
 	if(info==NULL) return;
@@ -412,24 +408,22 @@ Spell::Spell( Object* Caster, SpellEntry *info, bool triggered, Aura* aur )
 */
 Spell::~Spell()
 {
-	for(uint32 i=0; i<3; ++i)
-	{
-		m_targetUnits[i].clear();
-	}
+		if( u_caster != NULL && u_caster->GetCurrentSpell() == this )
+                u_caster->SetCurrentSpell(NULL);
+
+        if( p_caster )
+                if( hadEffect || ( cancastresult == SPELL_CANCAST_OK && !GetSpellFailed() ) )
+                        RemoveItems();
+
+        if( m_spellInfo_override != NULL)
+                delete[] m_spellInfo_override;
+
+        for(uint32 i=0; i<3; ++i)
+        {
+                m_targetUnits[i].clear();
+        }
 }
 
-void Spell::Virtual_Destructor()
-{
-	if( u_caster != NULL && u_caster->GetCurrentSpell() == this )
-		u_caster->SetCurrentSpell(NULL);
-
-	if( p_caster )
-		if( hadEffect || ( cancastresult == SPELL_CANCAST_OK && !GetSpellFailed() ) )
-			RemoveItems();
-
-	if( m_spellInfo_override != NULL)
-		delete[] m_spellInfo_override;
-}
 
 //i might forget conditions here. Feel free to add them
 bool Spell::IsStealthSpell()

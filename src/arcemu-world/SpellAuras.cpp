@@ -633,10 +633,7 @@ Object* Aura::GetCaster()
 	else
 		return NULL;
 }
-Aura::Aura()
-{
-}
-Aura::Aura(SpellEntry *proto, int32 duration,Object* caster, Unit *target, bool temporary , Item* i_caster)
+Aura::Aura(SpellEntry* proto, int32 duration, Object* caster, Unit* target, bool temporary, Item* i_caster)
 {
 	m_castInDuel = false;
 	m_spellProto = proto;
@@ -735,6 +732,7 @@ Aura::Aura(SpellEntry *proto, int32 duration,Object* caster, Unit *target, bool 
 	m_auraSlot = 0xffff;
 	m_interrupted = -1;
 	m_flags = 0;
+	//fixed_amount = 0;//used only por percent values to be able to recover value correctly.No need to init this if we are not using it
 }
 
 /*void Aura::Init( SpellEntry* proto, int32 duration, Object* caster, Unit* target, bool temporary, Item* i_caster)
@@ -839,22 +837,13 @@ Aura::Aura(SpellEntry *proto, int32 duration,Object* caster, Unit *target, bool 
 	//fixed_amount = 0;//used only por percent values to be able to recover value correctly.No need to init this if we are not using it
 }
 */
-void Aura::Virtual_Constructor()
-{
-}
+
 
 Aura::~Aura()
 {
 	sEventMgr.RemoveEvents( this );
 }
 
-void Aura::Virtual_Destructor()
-{
-	//forget about context and events to avoid memory leaks
-	static_cast< EventableObject* >( this )->Virtual_Destructor();
-	//this should do nothing now
-	sEventMgr.RemoveEvents( this );
-}
 
 void Aura::Remove()
 {
