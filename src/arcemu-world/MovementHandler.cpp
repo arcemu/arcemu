@@ -150,7 +150,7 @@ void _HandleBreathing(MovementInfo &movement_info, Player * _player, WorldSessio
 		{
 			_player->m_UnderwaterState &= ~UNDERWATERSTATE_UNDERWATER;
 			WorldPacket data(SMSG_START_MIRROR_TIMER, 20);
-			data << uint32(1) << _player->m_UnderwaterTime << _player->m_UnderwaterMaxTime << int32(-1) << uint32(0);
+			data << uint32( TIMER_BREATH ) << _player->m_UnderwaterTime << _player->m_UnderwaterMaxTime << int32(-1) << uint32(0);
 			pSession->SendPacket(&data);
 		}
 
@@ -172,9 +172,7 @@ void _HandleBreathing(MovementInfo &movement_info, Player * _player, WorldSessio
 	//player is swiming and not flagged as in the water
 	if( movement_info.flags & MOVEFLAG_SWIMMING && !( _player->m_UnderwaterState & UNDERWATERSTATE_SWIMMING ) )
 	{
-		// dismount if mounted
-		if( _player->m_MountSpellId )
-			_player->RemoveAura( _player->m_MountSpellId );
+		_player->RemoveAurasByInterruptFlag( AURA_INTERRUPT_ON_ENTER_WATER );
 
 		// get water level only if it was not set before
 		if( !pSession->m_bIsWLevelSet )
@@ -210,7 +208,7 @@ void _HandleBreathing(MovementInfo &movement_info, Player * _player, WorldSessio
 		{
 			_player->m_UnderwaterState |= UNDERWATERSTATE_UNDERWATER;
 			WorldPacket data(SMSG_START_MIRROR_TIMER, 20);
-			data << uint32(1) << _player->m_UnderwaterTime << _player->m_UnderwaterMaxTime << int32(-1) << uint32(0);
+			data << uint32( TIMER_BREATH ) << _player->m_UnderwaterTime << _player->m_UnderwaterMaxTime << int32(-1) << uint32(0);
 			pSession->SendPacket(&data);
 		}
 	}
@@ -223,7 +221,7 @@ void _HandleBreathing(MovementInfo &movement_info, Player * _player, WorldSessio
 		{
 			_player->m_UnderwaterState &= ~UNDERWATERSTATE_UNDERWATER;
 			WorldPacket data(SMSG_START_MIRROR_TIMER, 20);
-			data << uint32(1) << _player->m_UnderwaterTime << _player->m_UnderwaterMaxTime << int32(10) << uint32(0);
+			data << uint32( TIMER_BREATH ) << _player->m_UnderwaterTime << _player->m_UnderwaterMaxTime << int32(10) << uint32(0);
 			pSession->SendPacket(&data);
 		}
 	}
@@ -236,7 +234,7 @@ void _HandleBreathing(MovementInfo &movement_info, Player * _player, WorldSessio
 		{
 			_player->m_UnderwaterState &= ~UNDERWATERSTATE_UNDERWATER;
 			WorldPacket data(SMSG_START_MIRROR_TIMER, 20);
-			data << uint32(1) << _player->m_UnderwaterTime << _player->m_UnderwaterMaxTime << int32(10) << uint32(0);
+			data << uint32( TIMER_BREATH ) << _player->m_UnderwaterTime << _player->m_UnderwaterMaxTime << int32(10) << uint32(0);
 			pSession->SendPacket(&data);
 		}
 	}
@@ -433,10 +431,7 @@ void WorldSession::HandleMovementOpcodes( WorldPacket & recv_data )
 #endif
 		}
 	}
-	if( !(movement_info.flags & MOVEFLAG_SWIMMING || movement_info.flags & MOVEFLAG_FALLING) && _player->GetShapeShift()==FORM_AQUA )
-		_player->RemoveAura(1066);
-	if( (movement_info.flags & MOVEFLAG_SWIMMING) && _player->IsMounted() )
-		_player->RemoveAura(_player->m_MountSpellId);
+	
 	/************************************************************************/
 	/* Hack Detection by Classic	                                        */
 	/************************************************************************/
@@ -604,7 +599,12 @@ void WorldSession::HandleMovementOpcodes( WorldPacket & recv_data )
 	/************************************************************************/
 	/* Remove Spells                                                        */
 	/************************************************************************/
-	_player->RemoveAurasByInterruptFlag(AURA_INTERRUPT_ON_MOVEMENT);
+	uint32 flags = AURA_INTERRUPT_ON_MOVEMENT;
+	if( !( movement_info.flags & MOVEFLAG_SWIMMING || movement_info.flags & MOVEFLAG_FALLING ) )
+		flags |= AURA_INTERRUPT_ON_LEAVE_WATER;
+	if( movement_info.flags & MOVEFLAG_SWIMMING )
+		flags |= AURA_INTERRUPT_ON_ENTER_WATER;
+	_player->RemoveAurasByInterruptFlag( flags );
 
 	/************************************************************************/
 	/* Update our position in the server.                                   */

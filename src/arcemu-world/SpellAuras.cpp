@@ -5681,7 +5681,7 @@ void Aura::SpellAuraFeignDeath(bool apply)
 			//pTarget->SetUInt32Value( UNIT_NPC_EMOTESTATE, EMOTE_STATE_DEAD );
 
 			data.SetOpcode( SMSG_START_MIRROR_TIMER );
-			data << uint32( 2 );		// type
+			data << uint32( TIMER_FEIGNDEATH );
 			data << uint32( GetDuration() );
 			data << uint32( GetDuration() );
 			data << uint32( 0xFFFFFFFF );
@@ -6089,6 +6089,7 @@ void Aura::SpellAuraMounted(bool apply)
 			
 		//if we had pet then respawn
 		p_target->SpawnActivePet();
+		p_target->RemoveAurasByInterruptFlag( AURA_INTERRUPT_ON_DISMOUNT );
 	}
 }
 
