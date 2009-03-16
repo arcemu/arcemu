@@ -1950,8 +1950,8 @@ void Spell::cast(bool check)
 			finish();
 		}
 
-		if( u_caster != NULL && !m_triggeredSpell && !m_triggeredByAura)
-			u_caster->RemoveAurasByInterruptFlagButSkip(AURA_INTERRUPT_ON_CAST_SPELL, GetProto()->Id);
+		//if( u_caster != NULL && !m_triggeredSpell && !m_triggeredByAura)
+		//	u_caster->RemoveAurasByInterruptFlagButSkip(AURA_INTERRUPT_ON_CAST_SPELL, GetProto()->Id);
 	}
 	else
 	{
