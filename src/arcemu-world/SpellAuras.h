@@ -630,6 +630,7 @@ public:
 	void SpellAuraRemoveReagentCost(bool apply);
 	void SpellAuraIncreaseAPbyStatPct(bool apply);
 	void SpellAuraPeriodicTriggerSpellWithValue(bool apply);
+	void SpellAuraIgnoreShapeshift(bool apply);
 	void UpdateAuraModDecreaseSpeed();
 
 	void SendModifierLog(int32 ** m,int32 v,uint32* mask,uint8 type,bool pct = false);

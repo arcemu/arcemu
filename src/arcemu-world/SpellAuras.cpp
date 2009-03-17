@@ -296,7 +296,7 @@ pSpellAura SpellAuraHandler[TOTAL_SPELL_AURAS]={
 		&Aura::SpellAuraNULL,//272
 		&Aura::SpellAuraNULL,//273
 		&Aura::SpellAuraNULL,//274
-		&Aura::SpellAuraNULL,//275
+		&Aura::SpellAuraIgnoreShapeshift,//275
 		&Aura::SpellAuraNULL,//276
 		&Aura::SpellAuraNULL,//277
 		&Aura::SpellAuraNULL,//278
@@ -9319,4 +9319,19 @@ void Aura::SpellAuraIncreaseAPbyStatPct( bool apply )
 		m_target->ModUnsigned32Value( UNIT_FIELD_ATTACK_POWER_MODS, -mod->fixed_amount[mod->i] );
 
 	m_target->CalcDamage();
+}
+
+void Aura::SpellAuraIgnoreShapeshift( bool apply )
+{
+	if(!m_target->IsPlayer())
+		return;
+
+	if( apply )
+	{
+		static_cast<Player*>(m_target)->ignoreShapeShiftChecks = true;
+	}
+	else
+	{
+		static_cast<Player*>(m_target)->ignoreShapeShiftChecks = false;
+	}
 }

@@ -3364,19 +3364,23 @@ uint8 Spell::CanCast(bool tolerate)
 		}
 	}
 
-	if (u_caster != NULL)
+	if( u_caster != NULL )
 	{
-		if (GetProto()->Attributes & ATTRIBUTES_REQ_STEALTH && !u_caster->IsStealth())
-			return SPELL_FAILED_ONLY_STEALTHED;
-
 		if (GetProto()->Attributes & ATTRIBUTES_REQ_OOC && u_caster->CombatStatus.IsInCombat())
-			return SPELL_FAILED_TARGET_IN_COMBAT;
+		{
+			if( (GetProto()->Id !=  100 && GetProto()->Id != 6178 && GetProto()->Id != 11578 ) 
+				|| ( p_caster != NULL && !p_caster->ignoreShapeShiftChecks ) )	// Warbringer (Warrior 51Prot Talent effect)
+				return SPELL_FAILED_TARGET_IN_COMBAT;
+		}
 	}
-	//Shady: EquippedItemClass, EquippedItemSubClass (doesn't it handled with client?)
 
+	//Shady: EquippedItemClass, EquippedItemSubClass (doesn't it handled with client?)
 
 	if( p_caster != NULL )
 	{
+		if( GetProto()->Attributes & ATTRIBUTES_REQ_STEALTH && !p_caster->IsStealth() && !p_caster->ignoreShapeShiftChecks ) 
+			return SPELL_FAILED_ONLY_STEALTHED;
+
 		if (sWorld.Collision) {
 			if (GetProto()->MechanicsType == MECHANIC_MOUNTED)
 			{
@@ -3556,12 +3560,6 @@ uint8 Spell::CanCast(bool tolerate)
 					break;
 				}
 			}
-		}
-
-		//Check if spell allowed while out of stealth
-		if(m_spellInfo->Attributes & ATTRIBUTES_REQ_STEALTH && !p_caster->IsStealth()) //Stealth check
-		{
-			return SPELL_FAILED_ONLY_STEALTHED;
 		}
 
 		// item spell checks

@@ -1558,6 +1558,7 @@ public:
 
 	bool bReincarnation;
 	bool removeReagentCost;
+	bool ignoreShapeShiftChecks;
 
 	map<uint32, WeaponModifier> damagedone;
 	map<uint32, WeaponModifier> tocritchance;
