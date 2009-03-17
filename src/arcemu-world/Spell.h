@@ -1979,6 +1979,7 @@ public:
     uint32 castedItemId;
     bool judgement;
 	uint8 extra_cast_number;
+	uint32 m_glyphslot;
 
     void SendCastSuccess(Object * target);
     void SendCastSuccess(const uint64& guid);

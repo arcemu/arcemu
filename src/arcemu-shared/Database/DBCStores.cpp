@@ -30,6 +30,7 @@ SERVER_DECL DBCStorage<CharTitlesEntry> dbcCharTitlesEntry;
 SERVER_DECL DBCStorage<BarberShopStyleEntry> dbcBarberShopStyleStore;
 SERVER_DECL DBCStorage<GemPropertyEntry> dbcGemProperty;
 SERVER_DECL DBCStorage<GlyphPropertyEntry> dbcGlyphProperty;
+SERVER_DECL DBCStorage<GlyphSlotEntry> dbcGlyphSlot;
 SERVER_DECL DBCStorage<ItemSetEntry> dbcItemSet;
 SERVER_DECL DBCStorage<Lock> dbcLock;
 SERVER_DECL DBCStorage<SpellEntry> dbcSpell;
@@ -89,6 +90,7 @@ const char* skilllinespellFormat = "uuuxxxxxuuuuxx";
 const char* EnchantEntrYFormat = "uxuuuuuuuuuuuusxxxxxxxxxxxxxxxxuuuuxx";
 const char* GemPropertyEntryFormat = "uuuuu";
 const char* GlyphPropertyEntryFormat = "uuuu";
+const char* GlyphSlotEntryFormat = "uuu";
 const char* skilllineentrYFormat = "uuulxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx";
 
 
@@ -339,6 +341,7 @@ bool LoadDBCs()
 	LOAD_DBC("DBC/SpellItemEnchantment.dbc", EnchantEntrYFormat, true, dbcEnchant, true);
 	LOAD_DBC("DBC/GemProperties.dbc", GemPropertyEntryFormat, true, dbcGemProperty, false);
 	LOAD_DBC("DBC/GlyphProperties.dbc", GlyphPropertyEntryFormat, true, dbcGlyphProperty, false);
+	LOAD_DBC("DBC/GlyphSlot.dbc", GlyphSlotEntryFormat, true, dbcGlyphSlot, false);
 	LOAD_DBC("DBC/SkillLine.dbc", skilllineentrYFormat, true, dbcSkillLine, true);
 	LOAD_DBC("DBC/Spell.dbc", spellentryFormat, true, dbcSpell, true);
 	LOAD_DBC("DBC/ItemExtendedCost.dbc", itemextendedcostFormat, true, dbcItemExtendedCost, false);

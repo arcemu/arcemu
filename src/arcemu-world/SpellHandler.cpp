@@ -189,8 +189,9 @@ void WorldSession::HandleUseItemOpcode(WorldPacket& recvPacket)
 
 				Spell *spell = new Spell(_player, spellInfo, false, NULL);
 				//spell->Init(_player, spellInfo, false, NULL);
-				spell->extra_cast_number=cn;
+				spell->extra_cast_number = cn;
 				spell->i_caster = tmpItem;
+				spell->m_glyphslot = glyphIndex;
 				//GetPlayer()->setCurrentSpell(spell);
 				spell->prepare(&targets);
 			}

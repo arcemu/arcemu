@@ -3850,7 +3850,7 @@ void Player::RemoveFromWorld()
 				{
 					m_SummonedObject->RemoveFromWorld(true);
 				}
-				delete m_SummonedObject;
+				delete m_SummonedObject; 
 			}
 		}
 		m_SummonedObject = NULL;
@@ -12327,15 +12327,22 @@ void Player::UpdatePowerAmm()
 // Initialize Glyphs or update them after level change
 void Player::UpdateGlyphs()
 {
-	// Set 1 for minor, 2 for major
-	SetUInt32Value(PLAYER_FIELD_GLYPH_SLOTS_1, 4);
-	SetUInt32Value(PLAYER_FIELD_GLYPH_SLOTS_01, 1);
-	SetUInt32Value(PLAYER_FIELD_GLYPH_SLOTS_02, 1);
-	SetUInt32Value(PLAYER_FIELD_GLYPH_SLOTS_03, 4);
-	SetUInt32Value(PLAYER_FIELD_GLYPH_SLOTS_04, 1);
-	SetUInt32Value(PLAYER_FIELD_GLYPH_SLOTS_05, 4);
-	// Enable number of glyphs depending on level
 	uint32 level = getLevel();
+
+	// Init glyph slots
+	if( level >= 15 )
+	{
+		GlyphSlotEntry * gse;
+		uint32 y = 0;
+		for( uint32 i = 0; i < dbcGlyphSlot.GetNumRows(); ++i )
+		{	
+			gse = dbcGlyphSlot.LookupRow( i );	
+			if( gse->Slot > 0 )
+				SetUInt32Value( PLAYER_FIELD_GLYPH_SLOTS_1 + y++, gse->Id );
+		}
+	}
+
+	// Enable number of glyphs depending on level
 	uint32 glyph_mask = 0; 
 	if(level == 80)
 		glyph_mask = 6;

@@ -174,7 +174,7 @@ pSpellEffect SpellEffectsHandler[TOTAL_SPELL_EFFECTS]={
 		&Spell::SpellEffectNULL,// unknown - 150
 		&Spell::SpellEffectNULL,// Summon Target - 151
 		&Spell::SpellEffectNULL,// Summon Refer-a-Friend - 152
-		&Spell::SpellEffectNULL,// Tame Creature - 153
+		&Spell::SpellEffectNULL,// Create tamed pet - 153
 		&Spell::SpellEffectNULL,// unknown - 154
 		&Spell::SpellEffectNULL,// unknown - 155
 		&Spell::SpellEffectNULL,// unknown - 156
@@ -4770,35 +4770,45 @@ void Spell::SpellEffectSummonPossessed(uint32 i) // eye of kilrog
 
 void Spell::SpellEffectUseGlyph(uint32 i)
 {
-	if(!p_caster)
+	if( !p_caster )
 		return;
-	uint32 glyphId = m_spellInfo->EffectMiscValue[i];
-	// Get info
-	GlyphPropertyEntry *glyph = dbcGlyphProperty.LookupEntry(glyphId);
-	if(!glyph)
+
+	uint32 g_new = m_spellInfo->EffectMiscValue[i];
+	GlyphPropertyEntry * gp_new = dbcGlyphProperty.LookupEntry( g_new );
+	if( !gp_new )
 		return;
-	uint32 type = glyph->Type;
-	if(type == 0) type = 4; // We are using 4 slot value instead of 0 for Major glyphs. Otherwise they can't be removed from client
-	// try to find place for it
-	int32 place = -1;
-	uint32 glyphX = 0;
-	for(uint32 x=0; x<6; ++x)
+	
+	if( !( p_caster->GetUInt32Value( PLAYER_GLYPHS_ENABLED ) & ( 1 << m_glyphslot ) ) )
 	{
-		glyphX = p_caster->GetUInt32Value(PLAYER_FIELD_GLYPHS_1 + x);
-		if(glyphX == glyphId)
-		{
-			place = -1; // player already has this glyph
-			break;
-		}
-		if(glyphX == 0 &&	// This place is free
-			p_caster->GetUInt32Value(PLAYER_FIELD_GLYPH_SLOTS_1 + x) == type &&	// Glyph type matches
-			(p_caster->GetUInt32Value(PLAYER_GLYPHS_ENABLED) & (1 << x))) // This place is enabled
-				place = x; // Found it
-	}
-	if(place == -1) // can't apply
+		SendCastResult( SPELL_FAILED_GLYPH_SOCKET_LOCKED );
 		return;
-	p_caster->SetUInt32Value(PLAYER_FIELD_GLYPHS_1 + place, glyphId);
-	p_caster->CastSpell(p_caster, glyph->SpellID, true);	// Apply the glyph effect
+	}
+
+	uint32 g_old = p_caster->GetUInt32Value( PLAYER_FIELD_GLYPHS_1 + m_glyphslot );
+	if( g_old )
+	{
+		if( g_old == g_new )
+			return;
+		else
+		{
+			GlyphPropertyEntry * gp_old = dbcGlyphProperty.LookupEntry( g_old );
+			if( gp_old )
+				p_caster->RemoveAura( gp_old->SpellID );
+			p_caster->SetUInt32Value( PLAYER_FIELD_GLYPHS_1 + m_glyphslot, 0 );
+		}
+	}
+
+	GlyphSlotEntry * gs = dbcGlyphSlot.LookupEntry( p_caster->GetUInt32Value( PLAYER_FIELD_GLYPH_SLOTS_1 + m_glyphslot ) );
+	if( gs )
+	{
+		if( gs->Type != gp_new->Type )
+		{
+			SendCastResult( SPELL_FAILED_INVALID_GLYPH );
+			return;
+		}
+		p_caster->SetUInt32Value( PLAYER_FIELD_GLYPHS_1 + m_glyphslot, g_new );
+		p_caster->CastSpell( p_caster, gp_new->SpellID, true );
+	}
 }
 
 void Spell::SpellEffectCreateSummonTotem(uint32 i)

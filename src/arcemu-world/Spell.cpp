@@ -257,6 +257,7 @@ Spell::Spell(Object* Caster, SpellEntry *info, bool triggered, Aura* aur)
 	extra_cast_number = 0;
 	m_reflectedParent = NULL;
 	m_isCasting = false;
+	m_glyphslot = 0;
 
 	UniqueTargets.clear();
 	ModeratedTargets.clear();
@@ -519,10 +520,10 @@ void Spell::FillAllTargetsInArea(float srcx,float srcy,float srcz,uint32 ind)
 	FillAllTargetsInArea(ind,srcx,srcy,srcz,GetRadius(ind));
 }
 
-/// We fill all the targets in the area, including the stealth ed one's
+/// We fill all the targets in the area, including the stealthed one's
 void Spell::FillAllTargetsInArea(uint32 i,float srcx,float srcy,float srcz, float range)
 {
-	TargetsList* tmpMap=&m_targetUnits[i];
+	TargetsList* tmpMap = &m_targetUnits[i];
 	float r = range*range;
 	uint8 did_hit_result;
 	std::set<Object*>::iterator itr,itr2;
