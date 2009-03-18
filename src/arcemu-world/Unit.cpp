@@ -2078,14 +2078,12 @@ uint32 Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, ui
 						if( !IsPlayer() )
 							continue; //great, we can only make this for players 
 						Player* c = static_cast< Player* >( this );
-//printf("is there a seal on the player ? %u \n",c->Seal);
 						if( !c->LastSeal )
 							continue; //how the hack did we manage to cast judgement without a seal ?
 						SpellEntry *spellInfo = dbcSpell.LookupEntry( c->LastSeal ); //null pointer check was already made
 						if( !spellInfo )
 							continue;	//now this is getting freeky, how the hell did we manage to create this bug ?
 						dmg_overwrite = spellInfo->manaCost * (ospinfo->EffectBasePoints[0] + 1 ) / 100 ; //only half dmg
-//printf("is there a seal on the player ? %u \n",dmg_overwrite);
 					}break;
 				//Energized
 				case 43751:
@@ -4445,8 +4443,13 @@ void Unit::AddAura(Aura *aur)
 		}
 	}
 	
+	uint32 flag = 0;
 	if( aur->GetSpellProto()->MechanicsType == MECHANIC_ENRAGED )
-		SetFlag( UNIT_FIELD_AURASTATE, AURASTATE_FLAG_ENRAGED );
+		flag |= AURASTATE_FLAG_ENRAGED;
+	if( aur->GetSpellProto()->BGR_one_buff_on_target & SPELL_TYPE_SEAL )
+		flag |= AURASTATE_FLAG_JUDGEMENT;
+	
+	SetFlag( UNIT_FIELD_AURASTATE, flag );
 }
 
 bool Unit::RemoveAura(Aura *aur)

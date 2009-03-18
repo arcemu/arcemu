@@ -5026,16 +5026,20 @@ void Spell::SpellEffectScriptEffect(uint32 i) // Script Effect
 	case 53407: //Justice
 	case 53408: //Wisdom
 		{
-			if(!unitTarget || !p_caster) return;
+			if(!unitTarget || !p_caster)
+				return;
 
-			SpellEntry*en=dbcSpell.LookupEntry(p_caster->judgespell);
-			Spell *sp=new Spell(p_caster,en,true,NULL);
-			//sp->Init(p_caster,en,true,NULL);
-			SpellCastTargets tgt;
-			tgt.m_unitTarget=unitTarget->GetGUID();
-			tgt.m_targetMask=TARGET_FLAG_UNIT;
-			sp->judgement = true;
-			sp->prepare(&tgt);
+			if( p_caster->judgespell )
+			{
+				SpellEntry*en = dbcSpell.LookupEntry( p_caster->judgespell );
+				Spell *sp = new Spell( p_caster, en, true, NULL );
+				//sp->Init(p_caster,en,true,NULL);
+				SpellCastTargets tgt;
+				tgt.m_unitTarget = unitTarget->GetGUID();
+				tgt.m_targetMask = TARGET_FLAG_UNIT;
+				sp->judgement = true;
+				sp->prepare( &tgt );
+			}
 			
 			uint32 judge_extra = 0;
 			// This is for handling specific Judgement's debuff application spells
@@ -5051,8 +5055,7 @@ void Spell::SpellEffectScriptEffect(uint32 i) // Script Effect
 				judge_extra = 20186;
 				break;
 			}
-			p_caster->CastSpell(unitTarget, judge_extra, false);
-			p_caster->RemoveAura(p_caster->Seal);
+			p_caster->CastSpell( unitTarget, judge_extra, false );
 		}break;
 
 	//warlock - Master Demonologist

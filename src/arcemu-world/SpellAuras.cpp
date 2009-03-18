@@ -964,8 +964,12 @@ void Aura::Remove()
 			caster->SetUInt64Value(PLAYER_FARSIGHT, 0);
 		}
 	}
+	uint32 flag = 0;
 	if( m_spellProto->MechanicsType == MECHANIC_ENRAGED )
-		m_target->RemoveFlag( UNIT_FIELD_AURASTATE, AURASTATE_FLAG_ENRAGED );
+		flag |= AURASTATE_FLAG_ENRAGED;
+	if( m_spellProto->BGR_one_buff_on_target & SPELL_TYPE_SEAL )
+		flag |= AURASTATE_FLAG_JUDGEMENT;
+	m_target->RemoveFlag( UNIT_FIELD_AURASTATE, flag );
 
 	delete this; // suicide xD	leaking this shit out
 }
@@ -1679,7 +1683,6 @@ void Aura::SpellAuraDummy(bool apply)
 
 		if( apply )
 		{
-			c->SetFlag( UNIT_FIELD_AURASTATE, AURASTATE_FLAG_JUDGEMENT );
 			if( !c->judgespell )
 				c->judgespell = mod->m_amount;
 			if( !c->Seal )
@@ -1690,8 +1693,6 @@ void Aura::SpellAuraDummy(bool apply)
 		}
 		else
 		{
-			c->RemoveFlag( UNIT_FIELD_AURASTATE, AURASTATE_FLAG_JUDGEMENT );
-
 			if( c->judgespell )
 				c->judgespell = 0;
 			if( c->Seal )

@@ -409,20 +409,21 @@ Spell::Spell(Object* Caster, SpellEntry *info, bool triggered, Aura* aur)
 */
 Spell::~Spell()
 {
-		if( u_caster != NULL && u_caster->GetCurrentSpell() == this )
-                u_caster->SetCurrentSpell(NULL);
+	if( u_caster != NULL && u_caster->GetCurrentSpell() == this )
+            u_caster->SetCurrentSpell(NULL);
 
-        if( p_caster )
-                if( hadEffect || ( cancastresult == SPELL_CANCAST_OK && !GetSpellFailed() ) )
-                        RemoveItems();
+    if( p_caster )
+            if( hadEffect || ( cancastresult == SPELL_CANCAST_OK && !GetSpellFailed() ) )
+                    RemoveItems();
 
-        if( m_spellInfo_override != NULL)
-                delete[] m_spellInfo_override;
+    if( m_spellInfo_override != NULL)
+            delete[] m_spellInfo_override;
+	m_spellInfo_override = NULL;
 
-        for(uint32 i=0; i<3; ++i)
-        {
-                m_targetUnits[i].clear();
-        }
+    for(uint32 i=0; i<3; ++i)
+    {
+            m_targetUnits[i].clear();
+    }
 }
 
 
@@ -1443,7 +1444,7 @@ uint8 Spell::prepare( SpellCastTargets * targets )
 		}
 
 		// aura state removal
-		if( GetProto()->CasterAuraState )
+		if( GetProto()->CasterAuraState && GetProto()->CasterAuraState != AURASTATE_FLAG_JUDGEMENT )
 			u_caster->RemoveFlag( UNIT_FIELD_AURASTATE, GetProto()->CasterAuraState );
 	}
 
