@@ -598,13 +598,15 @@ void Spell::SpellEffectSchoolDMG(uint32 i) // dmg school
 		//Heroic Throw Damage
 		case SPELL_HASH_HEROIC_THROW:
 			{
-				dmg=float2int32(float(u_caster->GetAP())*0.50f+12.0f);
+				dmg = ( u_caster->GetAP() >> 1 ) + 12;
 			}break;
 
 		//Shockwave Damage
+		//Concussion Blow
 		case SPELL_HASH_SHOCKWAVE:
+		case SPELL_HASH_CONCUSSION_BLOW:
 			{
-				dmg=float2int32(float(u_caster->GetAP())*0.75f);
+				dmg = float2int32( float( u_caster->GetAP() ) * 0.75f );
 			}break;
 		default:
 			break;

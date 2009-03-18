@@ -4222,7 +4222,7 @@ void ApplyNormalFixes()
 		{
 			sp->EffectApplyAuraName[2] = SPELL_AURA_PERIODIC_TRIGGER_SPELL;
 			sp->Effect[2] = SPELL_EFFECT_APPLY_AURA;
-			sp->EffectAmplitude[2] = 6000;
+			sp->EffectAmplitude[2] = 3000;
 			sp->EffectImplicitTargetA[2] = EFF_TARGET_SELF;
 			sp->EffectBaseDice[2] = 1;
 			sp->EffectDieSides[2] = 1;
