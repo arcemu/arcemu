@@ -412,6 +412,8 @@ void AuthSocket::SendProofError(uint8 Error, uint8 * M2)
 	}
 	
 	memcpy(&buffer[2], M2, 20);
+	buffer[22]=0x01; //<-- ARENA TOURNAMENT ACC FLAG!
+
 	Send(buffer, 32);
 }
 
