@@ -1148,28 +1148,26 @@ void Spell::SpellEffectDummy(uint32 i) // Dummy(Scripted events)
 				CreatureProto * cp = CreatureProtoStorage.LookupEntry(26125);
 				if( !ci || !cp )
 					return;
-					
+				LocationVector *vec = new LocationVector(x,y,z);
+				Pet *summon = objmgr.CreatePet(26125);
+				summon->SetPower( POWER_TYPE_ENERGY, (uint32)100 );
+				summon->SetUInt32Value( UNIT_FIELD_POWER4, (uint32)100 );
 				if(p_caster->HasSpell(52143))
 					{	
-						LocationVector *vec = new LocationVector(x,y,z);
-						Pet *summon = objmgr.CreatePet(26125);
-						summon->SetPower( POWER_TYPE_ENERGY, (uint32)100 );
-						summon->SetUInt32Value( UNIT_FIELD_POWER4, (uint32)100 );
 						summon->CreateAsSummon(26125, ci, NULL, p_caster, GetProto(), 6, 0, vec); // considered pet
 						summon->AddSpell(dbcSpell.LookupEntry(47481), true); // Gnaw
 						summon->AddSpell(dbcSpell.LookupEntry(47482), true); // Leap 
 						summon->AddSpell(dbcSpell.LookupEntry(47484), true); // Huddle
 						summon->AddSpell(dbcSpell.LookupEntry(47468), true); // Claw
-						summon->CastSpell(summon,50142,true);
-						delete vec;
 					}
-					else
-					{
-						SpellEffectSummonGuardian(26125);
-						return;
-					}
-	
-				
+				else
+				{
+					summon->CreateAsSummon(26125, ci, NULL, p_caster, GetProto(), 6, 120, vec); // 2 min duration
+				}
+					
+				summon->CastSpell(summon,50142,true);
+				delete vec;
+
 			}
 		}break;
 		case 49576: //Death grip

@@ -4676,11 +4676,10 @@ exit:
 	}
 
 	//scripted shit
-	if( GetProto()->Id == 34120)
-	{	//A steady shot that causes ${$RAP*0.3+$m1} damage.
-		//	Actual Equation (http://www.wowwiki.com/Steady_Shot)
-		//		* The tooltip is proven to be wrong and the following is the best player worked out formula so far with data taken from [1]
-		//		* Formula: DamagePercentageBonus*RangedWeaponSpecialization*(150 + WeaponDamage/WeaponSpeed*2.8 + 0.2*RAP + [Dazed: 175])
+	//Steady Shot rank 1 to 4
+	// Causes Weapon Damage + Ammo + RAP * 0.1 + EffectBasePoints[2] and additional EffectBasePoints[3] if the target is dazed
+	if( GetProto()->Id == 56641 || GetProto()->Id == 34120 || GetProto()->Id == 49051 || GetProto()->Id == 49052  )
+	{
 		if(i==0 && u_caster)
 		{
 			if( p_caster != NULL )
@@ -4692,13 +4691,13 @@ exit:
 					if(it)
 					{
 						float weapondmg = RandomFloat(1)*(it->GetProto()->Damage[0].Max - it->GetProto()->Damage[0].Min) + it->GetProto()->Damage[0].Min;
-						value += float2int32(150 + weapondmg/float(it->GetProto()->Delay/1000.0f)*2.8f);
+						value += float2int32(GetProto()->EffectBasePoints[2] + weapondmg/float(it->GetProto()->Delay/1000.0f)*2.8f);
 					}
 				}
 			}
-			if(target && target->IsDazed() )
-				value += 175;
-			value += (uint32)(u_caster->GetRAP()*0.2);
+			if(target && target->IsDazed())
+				value += GetProto()->EffectBasePoints[3];
+			value += (uint32)(u_caster->GetRAP()*0.1);
 		}
 	}
 	else if( GetProto()->NameHash == SPELL_HASH_EVISCERATE ) //Eviscerate

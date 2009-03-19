@@ -6575,7 +6575,6 @@ void ApplyNormalFixes()
 		{
 			sp->Attributes = ATTRIBUTES_CANT_BE_DPB;   
 		}   
-
 		// Blood Fury Healing Debuff
 		sp = dbcSpell.LookupEntryForced( 23230 );
 		if( sp != NULL )
@@ -6612,6 +6611,31 @@ void ApplyNormalFixes()
 		sp->Effect[0] = SPELL_EFFECT_DUMMY;
 		sp->Effect[1] = SPELL_EFFECT_DUMMY;
 		}
+		//Wild quiver rank 1
+		sp = dbcSpell.LookupEntryForced( 53215 );
+		if( sp != NULL )
+		{
+			sp->procFlags = PROC_ON_RANGED_ATTACK;
+			sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
+			sp->EffectTriggerSpell[0] = 53254;
+			sp->procChance = 4;
+		}
 
+		sp = dbcSpell.LookupEntryForced( 53216 );
+		if( sp != NULL )
+		{
+			sp->procFlags = PROC_ON_RANGED_ATTACK;
+			sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
+			sp->EffectTriggerSpell[0] = 53254;
+			sp->procChance = 7;
+		}
 
+		sp = dbcSpell.LookupEntryForced( 53217 );
+		if( sp != NULL )
+		{
+			sp->procFlags = PROC_ON_RANGED_ATTACK;
+			sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
+			sp->EffectTriggerSpell[0] = 53254;
+			sp->procChance = 10;
+		}
 }
