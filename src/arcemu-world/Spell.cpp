@@ -410,20 +410,20 @@ Spell::Spell(Object* Caster, SpellEntry *info, bool triggered, Aura* aur)
 Spell::~Spell()
 {
 	if( u_caster != NULL && u_caster->GetCurrentSpell() == this )
-            u_caster->SetCurrentSpell(NULL);
+		u_caster->SetCurrentSpell(NULL);
 
-    if( p_caster )
-            if( hadEffect || ( cancastresult == SPELL_CANCAST_OK && !GetSpellFailed() ) )
-                    RemoveItems();
+	if( p_caster )
+		if( hadEffect || ( cancastresult == SPELL_CANCAST_OK && !GetSpellFailed() ) )
+			RemoveItems();
 
-    if( m_spellInfo_override != NULL)
-            delete[] m_spellInfo_override;
+	if( m_spellInfo_override != NULL)
+		free( m_spellInfo_override );
 	m_spellInfo_override = NULL;
 
-    for(uint32 i=0; i<3; ++i)
-    {
-            m_targetUnits[i].clear();
-    }
+	for(uint32 i=0; i<3; ++i)
+	{
+		m_targetUnits[i].clear();
+	}
 }
 
 
@@ -2467,11 +2467,10 @@ void Spell::SendSpellGo()
 		flags |= SPELL_GO_FLAGS_EXTRA_MESSAGE; // 0x400 TARGET MISSES AND OTHER MESSAGES LIKE "Resist"
 
 	//experiments with rune updates
-	uint8 cur_have_runes;
+	uint8 cur_have_runes = 0;
 	if( p_caster && p_caster->getClass() == DEATHKNIGHT ) //send our rune updates ^^
 	{
 		//see what we will have after cast
-		cur_have_runes = 0;
 		for( uint8 i=0; i < TOTAL_USED_RUNES; i++ )
 			if( p_caster->m_runes[ i ] < RUNE_RECHARGE )
 				cur_have_runes |= (1 << i);
@@ -4413,14 +4412,10 @@ uint8 Spell::CanCast(bool tolerate)
 					case 0xC7C45478: //Immune Movement Impairment and Loss of Control
 					case 0x048c32f9:	// insignia of the alliance/horde
 					case 0xDD06F1BF: // Stop fucking renaming the spell, Blizzard! (This time it's PvP Trinket)
-						break;
-
-
 						{
 							if( u_caster->m_special_state & ( UNIT_STATE_FEAR | UNIT_STATE_CHARM | UNIT_STATE_SLEEP | UNIT_STATE_ROOT | UNIT_STATE_STUN | UNIT_STATE_CONFUSE | UNIT_STATE_SNARE ) )
 								break;
-						}
-							break;
+						}break;
 
 					case 0xCD4CDF55: // Barksin
 					{ // This spell is usable while stunned, frozen, incapacitated, feared or asleep.  Lasts 12 sec.

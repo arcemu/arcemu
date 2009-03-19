@@ -102,7 +102,7 @@ void WorldSession::SendTaxiList(Creature* pCreature)
 	TaxiMask[field] |= 1 << ((curloc-1)%32);
 
 	//Remove nodes unknown to player
-	for(int i = 0; i < 12; i++)
+	for(uint8 i = 0; i < 12; i++)
 	{
 		TaxiMask[i] &= GetPlayer( )->GetTaximask(i);
 	}

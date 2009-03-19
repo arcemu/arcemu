@@ -252,7 +252,7 @@ StrandOfTheAncient::StrandOfTheAncient(MapMgr * mgr, uint32 id, uint32 lgroup, u
 	m_pvpData.clear();
 	m_resurrectMap.clear();
 
-	uint32 mapId = BattlegroundManager.GetMap(BATTLEGROUND_STRAND_OF_THE_ANCIENT);
+	//uint32 mapId = BattlegroundManager.GetMap(BATTLEGROUND_STRAND_OF_THE_ANCIENT);
 
 	// Boats
 	for (int i = 0; i < 4; i++)

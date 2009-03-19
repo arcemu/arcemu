@@ -1177,7 +1177,7 @@ void InstanceMgr::DeleteBattlegroundInstance(uint32 mapid, uint32 instanceid)
 		m_mapLock.Release();
 		return;
 	}
-
+	delete itr->second;
 	m_instances[mapid]->erase( itr );
 	m_mapLock.Release();
 }

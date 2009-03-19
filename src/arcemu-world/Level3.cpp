@@ -36,7 +36,6 @@ void ParseBanArgs(char* args, char** BanDuration, char** BanReason)
 	// Lack of duration results in a permanent ban.
 	char* pBanDuration = strchr(args, ' ');
 	char* pReason = NULL;
-	int32 BanTime = 0;
 	if(pBanDuration != NULL)
 	{
 		if(isdigit(*(pBanDuration+1))) // this is the duration of the ban

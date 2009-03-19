@@ -2622,7 +2622,6 @@ void Object::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
 				if( pVictim->IsPet() )
 				{
 					Pet* pPet = static_cast< Pet* >( pVictim );
-					Player* owner = pPet->GetPetOwner();
 
 					// dying pet looses 1 happiness level (not in BG)
 					if( !pPet->IsSummon() && !pPet->IsInBg() )

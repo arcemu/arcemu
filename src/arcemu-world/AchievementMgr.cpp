@@ -1408,7 +1408,7 @@ uint32 AchievementMgr::GetCriteriaProgressCount(void)
 	uint32 criteriapc = 0;
 	for(CriteriaProgressMap::iterator iter = m_criteriaProgress.begin(); iter!=m_criteriaProgress.end(); ++iter)
 	{
-		AchievementEntry const *achievement = dbcAchievementStore.LookupEntry(iter->second->id);
+		//AchievementEntry const *achievement = dbcAchievementStore.LookupEntry(iter->second->id);
 		if(SendAchievementProgress(iter->second))
 		{
 			++criteriapc;
@@ -1423,6 +1423,7 @@ void AchievementMgr::GiveAchievementReward(AchievementEntry const* entry)
 	r.type = ACHIEVEMENT_REWARDTYPE_NONE;
 	r.itemId = 0;
 	r.rankId = 0;
+	r.spellId = 0;
 
 	if(strlen(entry->rewardName)>0)
 	{

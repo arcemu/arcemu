@@ -1550,7 +1550,7 @@ void ObjectMgr::LoadSpellEffectsOverride()
 			uint32 seo_Effect = f[3].GetUInt32();
 			uint32 seo_BasePoints = f[4].GetUInt32();
 			uint32 seo_ApplyAuraName = f[5].GetUInt32();
-			uint32 seo_SpellGroupRelation = f[6].GetUInt32();
+			//uint32 seo_SpellGroupRelation = f[6].GetUInt32();
 			uint32 seo_MiscValue = f[7].GetUInt32();
 			uint32 seo_TriggerSpell = f[8].GetUInt32();
 			uint32 seo_ImplicitTargetA = f[9].GetUInt32();
