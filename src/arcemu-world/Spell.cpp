@@ -3134,8 +3134,6 @@ void Spell::HandleAddAura(uint64 guid)
 
 	if( GetProto()->MechanicsType == MECHANIC_INVULNARABLE && GetProto()->Id != 25771) // Cast spell Forbearance
 		spellid = 25771;
-	else if( GetProto()->NameHash == SPELL_HASH_AVENGING_WRATH )
-		spellid = 25771;
 	else if( GetProto()->MechanicsType == MECHANIC_HEALING && GetProto()->Id != 11196) // Cast spell Recently Bandaged
 		spellid = 11196;
 	else if( GetProto()->MechanicsType == MECHANIC_SHIELDED && GetProto()->Id != 6788) // Cast spell Weakened Soul
@@ -4369,8 +4367,6 @@ uint8 Spell::CanCast(bool tolerate)
 	if (GetProto()->MechanicsType == MECHANIC_SHIELDED && ((target) ? target->HasAura(6788) : u_caster->HasAura(6766))) //Weakened Soul
 		return SPELL_FAILED_DAMAGE_IMMUNE;
 	if (GetProto()->MechanicsType == MECHANIC_INVULNARABLE && ((target) ? target->HasAura(25771) : u_caster->HasAura(25771))) //Forbearance
-		return SPELL_FAILED_DAMAGE_IMMUNE;
-	if( GetProto()->NameHash == SPELL_HASH_AVENGING_WRATH && ((target) ? target->HasAura(25771) : u_caster->HasAura(25771))) // forbearance, avenging wrath
 		return SPELL_FAILED_DAMAGE_IMMUNE;
 	if (GetProto()->NameHash == SPELL_HASH_ICE_BLOCK && u_caster->HasAura(41425))
 		return SPELL_FAILED_DAMAGE_IMMUNE;
