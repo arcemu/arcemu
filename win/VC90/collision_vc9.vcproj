@@ -55,7 +55,7 @@
 				FloatingPointModel="0"
 				FloatingPointExceptions="true"
 				UsePrecompiledHeader="0"
-				WarningLevel="4"
+				WarningLevel="3"
 				Detect64BitPortabilityProblems="false"
 				DebugInformationFormat="4"
 				CompileAs="0"
@@ -72,6 +72,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="msvcrtd.lib"
+				LinkIncremental="1"
 				RandomizedBaseAddress="1"
 				DataExecutionPrevention="0"
 			/>
@@ -123,6 +124,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				AdditionalOptions="/Zm256"
 				Optimization="0"
 				AdditionalIncludeDirectories="..\..\src\collision\g3dlite\"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;COLLISION_EXPORTS;X64"
@@ -131,7 +133,7 @@
 				RuntimeLibrary="1"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
-				Detect64BitPortabilityProblems="true"
+				Detect64BitPortabilityProblems="false"
 				DebugInformationFormat="3"
 			/>
 			<Tool
@@ -145,6 +147,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
+				LinkIncremental="1"
 				GenerateDebugInformation="true"
 				RandomizedBaseAddress="1"
 				DataExecutionPrevention="0"
