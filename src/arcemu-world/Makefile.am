@@ -25,10 +25,6 @@ arcemu_world_SOURCES = \
     AddonMgr.h \
     AIInterface.cpp \
     AIInterface.h \
-    AlteracValley.cpp \
-    AlteracValley.h \
-    ArathiBasin.cpp \
-    ArathiBasin.h \
     AreaTrigger.cpp \
     AreaTrigger.h \
     Arenas.cpp \
@@ -41,8 +37,6 @@ arcemu_world_SOURCES = \
     BattlegroundHandler.cpp \
     BattlegroundMgr.cpp \
     BattlegroundMgr.h \
-    StrandOfTheAncient.h \
-    StrandOfTheAncient.cpp \
     CellHandler.h \
     Channel.cpp \
     Channel.h \
@@ -64,8 +58,6 @@ arcemu_world_SOURCES = \
     DynamicObject.cpp \
     DynamicObject.h \
     EventableObject.cpp \
-    EyeOfTheStorm.cpp \
-    EyeOfTheStorm.h \
     EventableObject.h \
     EventMgr.cpp \
     EventMgr.h \
@@ -178,8 +170,6 @@ arcemu_world_SOURCES = \
     UpdateMask.h \
     Vehicle.cpp \
     Vehicle.h \
-    WarsongGulch.cpp \
-    WarsongGulch.h \
     WayPoints.cpp \
     WeatherMgr.cpp \
     WeatherMgr.h \
