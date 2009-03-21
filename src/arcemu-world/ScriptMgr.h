@@ -210,8 +210,10 @@ protected:
 	QuestScripts _questscripts;
 
 private:
+#ifdef WIN32
 	uint32 LoadScript(string &full_path, vector< ScriptingEngine > &ScriptEngines, WIN32_FIND_DATA &data);
 	uint32 LoadScript(string &full_path);
+#endif
 };
 
 class SERVER_DECL CreatureAIScript

@@ -57,6 +57,7 @@ float ScriptMgr::CalculateDistance(float x1, float y1, float z1, float x2, float
 	return sqrt(dx*dx + dy*dy + dz*dz);
 }
 
+#ifdef WIN32
 uint32 ScriptMgr::LoadScript(string &full_path)
 {
 	HMODULE mod = LoadLibrary( full_path.c_str() );
@@ -97,6 +98,7 @@ uint32 ScriptMgr::LoadScript(string &full_path)
 	}
 	return 0;
 }
+
 uint32 ScriptMgr::LoadScript(string &full_path, vector< ScriptingEngine > &ScriptEngines, WIN32_FIND_DATA &data)
 {
 	HMODULE mod = LoadLibrary( full_path.c_str() );
@@ -152,6 +154,7 @@ uint32 ScriptMgr::LoadScript(string &full_path, vector< ScriptingEngine > &Scrip
 	}
 	return 0;
 }
+#endif
 
 void ScriptMgr::LoadScripts()
 {
