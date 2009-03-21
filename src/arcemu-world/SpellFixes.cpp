@@ -6638,4 +6638,45 @@ void ApplyNormalFixes()
 			sp->EffectTriggerSpell[0] = 53254;
 			sp->procChance = 10;
 		}
+		// Wrecking Crew Rank 1
+		sp = dbcSpell.LookupEntryForced( 46867 );
+		if( sp != NULL )
+		{
+			sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
+			sp->EffectTriggerSpell[0] = 57518;
+			sp->procFlags = PROC_ON_CRIT_ATTACK;
+			sp->procChance = 100;
+		}
+		sp = dbcSpell.LookupEntryForced( 56611 );
+		if( sp != NULL )
+		{
+			sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
+			sp->EffectTriggerSpell[0] = 57519;
+			sp->procFlags = PROC_ON_CRIT_ATTACK;
+			sp->procChance = 100;
+		}
+		sp = dbcSpell.LookupEntryForced( 56612 );
+		if( sp != NULL )
+		{
+			sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
+			sp->EffectTriggerSpell[0] = 57520;
+			sp->procFlags = PROC_ON_CRIT_ATTACK;
+			sp->procChance = 100;
+		}
+		sp = dbcSpell.LookupEntryForced( 56613 );
+		if( sp != NULL )
+		{
+			sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
+			sp->EffectTriggerSpell[0] = 57521;
+			sp->procFlags = PROC_ON_CRIT_ATTACK;
+			sp->procChance = 100;
+		}
+		sp = dbcSpell.LookupEntryForced( 56614 );
+		if( sp != NULL )
+		{
+			sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
+			sp->EffectTriggerSpell[0] = 57522;
+			sp->procFlags = PROC_ON_CRIT_ATTACK;
+			sp->procChance = 100;
+		}
 }

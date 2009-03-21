@@ -4596,10 +4596,9 @@ exit:
 		p_caster->m_spellcomboPoints = 0;
 	}
 
-	//scripted shit
 	//Steady Shot rank 1 to 4
-	// Causes Weapon Damage + Ammo + RAP * 0.1 + EffectBasePoints[2] and additional EffectBasePoints[3] if the target is dazed
-	if( GetProto()->Id == 56641 || GetProto()->Id == 34120 || GetProto()->Id == 49051 || GetProto()->Id == 49052  )
+	// Causes Weapon Damage + Ammo + RAP * 0.1 + EffectBasePoints[0] and additional EffectBasePoints[1] if the target is dazed
+	if( GetProto()->NameHash == SPELL_HASH_STEADY_SHOT )
 	{
 		if(i==0 && u_caster)
 		{
@@ -4612,13 +4611,29 @@ exit:
 					if(it)
 					{
 						float weapondmg = RandomFloat(1)*(it->GetProto()->Damage[0].Max - it->GetProto()->Damage[0].Min) + it->GetProto()->Damage[0].Min;
-						value += float2int32(GetProto()->EffectBasePoints[2] + weapondmg/float(it->GetProto()->Delay/1000.0f)*2.8f);
+						value += float2int32(GetProto()->EffectBasePoints[0] + weapondmg/float(it->GetProto()->Delay/1000.0f)*2.8f);
 					}
 				}
 			}
 			if(target && target->IsDazed())
-				value += GetProto()->EffectBasePoints[3];
+				value += GetProto()->EffectBasePoints[1];
 			value += (uint32)(u_caster->GetRAP()*0.1);
+		}
+	}
+	else if( GetProto()->NameHash == SPELL_HASH_SLAM )
+	{
+		if( p_caster != NULL )
+		{
+			Item *it;
+			if(p_caster->GetItemInterface())
+			{
+				it = p_caster->GetItemInterface()->GetInventoryItem(EQUIPMENT_SLOT_MAINHAND);
+				if(it)
+				{
+					float weapondmg = ( it->GetProto()->Damage[0].Max + it->GetProto()->Damage[0].Min ) / 2;
+					value += float2int32( GetProto()->EffectBasePoints[0] + weapondmg );
+				}
+			}
 		}
 	}
 	else if( GetProto()->NameHash == SPELL_HASH_EVISCERATE ) //Eviscerate
@@ -4639,7 +4654,7 @@ exit:
 		if( i==0 && p_caster != NULL )
 		{
 			//Increases healing received by 25% of the Tree of Life's total spirit.
-			value = p_caster->GetUInt32Value( UNIT_FIELD_STAT4 ) >> 2;
+			value = ( p_caster->GetUInt32Value( UNIT_FIELD_STAT4 ) * 25 / 100 );
 		}
 	}
 	// HACK FIX
@@ -4708,8 +4723,7 @@ exit:
 	else if ( GetProto()->Id == 34501 && ( i == 0 || i == 1 ) ) //Hunter - Expose Weakness
 	{
 		if (u_caster != NULL) {
-//			value = ( u_caster->GetUInt32Value( UNIT_FIELD_STAT1 ) * 25 / 100 );
-			value = u_caster->GetUInt32Value( UNIT_FIELD_STAT1 ) >> 2;
+			value = ( u_caster->GetUInt32Value( UNIT_FIELD_STAT1 ) * 25 / 100 );
 		}
 	}
 /*	else if ( GetProto()->NameHash == SPELL_HASH_HUNTER_S_MARK && target && target->HasAurasWithNameHash( SPELL_HASH_HUNTER_S_MARK ) ) //Hunter - Hunter's Mark

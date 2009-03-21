@@ -2349,6 +2349,14 @@ void Spell::SpellEffectHeal(uint32 i) // Heal
 					}
 				}
 			}break;
+			//Bloodthirst
+			case 23880:
+			{
+				if(unitTarget)
+				{
+					Heal(unitTarget->GetUInt32Value(UNIT_FIELD_MAXHEALTH)/100);
+				}
+			}break;
 		default:
 			Heal((int32)damage);
 			break;
