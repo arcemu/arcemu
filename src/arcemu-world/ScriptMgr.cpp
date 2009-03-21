@@ -878,8 +878,6 @@ void HookInterface::OnUnitKill(Player * pPlayer, Unit * pVictim)
 		((tOnUnitKill)*itr)(pPlayer, pVictim);
 }
 
-
-
 void HookInterface::OnDestoryGameObject(GameObject *gameObject)
 {
 	ServerHookList hookList = sScriptMgr._hooks[SERVER_HOOK_EVENT_ON_DESTROY_GAME_OBJ];

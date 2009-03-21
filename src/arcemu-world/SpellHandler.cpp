@@ -91,7 +91,7 @@ void WorldSession::HandleUseItemOpcode(WorldPacket& recvPacket)
 				}
 
 				// HookInterface
-				if (!sHookInterface.OnSpellCast( _player, spellInfo ))
+				if (sHookInterface.OnSpellCast( _player, spellInfo ))
 					return;
 
 				if (spellInfo->AuraInterruptFlags & AURA_INTERRUPT_ON_STAND_UP)
