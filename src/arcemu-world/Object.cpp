@@ -2105,15 +2105,10 @@ void Object::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
 
 		if( plr != NULL)
 		{
-			if( plr->m_bg != NULL )
-				plr->m_bg->HookOnUnitKill( plr, pVictim );
-
 			if( pVictim->IsPlayer() )
 			{
-				if( plr->m_bg != NULL )
-					plr->m_bg->HookOnPlayerKill( plr, static_cast< Player* >( pVictim ) );
+				sHookInterface.OnPlayerKill( plr, static_cast< Player* >( pVictim ) );
 
-				sHookInterface.OnKillPlayer( plr, static_cast< Player* >( pVictim ) );
 				bool setAurastateFlag = false;
 				if(plr->getLevel() > pVictim->getLevel())
 				{
@@ -2140,6 +2135,7 @@ void Object::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
 			}
 			else
 			{
+				sHookInterface.OnUnitKill( plr, pVictim );
 				if (!isCritter) // REPUTATION
 				{
 					plr->Reputation_OnKilledUnit( pVictim, false );

@@ -1362,8 +1362,7 @@ void WorldSession::HandleGameObjectUse(WorldPacket & recv_data)
 
 	CALL_GO_SCRIPT_EVENT(obj, OnActivate)(_player);
 	
-  _player->RemoveStealth(); // cebernic:RemoveStealth due to GO was using. Blizzlike
-	
+	_player->RemoveStealth(); // cebernic:RemoveStealth due to GO was using. Blizzlike
 
 	uint32 type = obj->GetByte(GAMEOBJECT_BYTES_1, 1);
 	switch (type)
@@ -1425,15 +1424,13 @@ void WorldSession::HandleGameObjectUse(WorldPacket & recv_data)
 	case GAMEOBJECT_TYPE_FLAGSTAND:
 		{
 			// battleground/warsong gulch flag
-			if(plyr->m_bg)
-				plyr->m_bg->HookFlagStand(plyr, obj);
+			sHookInterface.OnFlagStandPickup(plyr, obj);
 
 		}break;
 	case GAMEOBJECT_TYPE_FLAGDROP:
 		{
 			// Dropped flag
-			if(plyr->m_bg)
-				plyr->m_bg->HookFlagDrop(plyr, obj);
+			sHookInterface.OnFlagDropPickup(plyr, obj);
 
 		}break;
 	case GAMEOBJECT_TYPE_QUESTGIVER:

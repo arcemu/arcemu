@@ -24,6 +24,10 @@
 #define GREEN_TEAM 0
 #define GOLD_TEAM 1
 
+#ifndef BUFF_RESPAWN_TIME
+#define BUFF_RESPAWN_TIME 90000
+#endif
+
 Arena::Arena(MapMgr * mgr, uint32 id, uint32 lgroup, uint32 t, uint32 players_per_side) : CBattleground(mgr, id, lgroup, t)
 {
 	int i;
@@ -60,6 +64,7 @@ Arena::Arena(MapMgr * mgr, uint32 id, uint32 lgroup, uint32 t, uint32 players_pe
 		break;
 	}
 	rated_match=false;
+
 }
 
 Arena::~Arena()
@@ -149,7 +154,7 @@ void Arena::OnRemovePlayer(Player * plr)
 	plr->RemoveAllAuras();
 
 	// Player has left arena, call HookOnPlayerDeath as if he died
-	HookOnPlayerDeath(plr);
+	sHookInterface.OnPlayerDeath(plr);
 
 	plr->RemoveAura(plr->GetTeamInitial() ? 35775-plr->m_bgTeam : 32725-plr->m_bgTeam);
 	if (plr->HasFlag(PLAYER_FLAGS, PLAYER_FLAG_FREE_FOR_ALL_PVP ))
@@ -160,40 +165,6 @@ void Arena::OnRemovePlayer(Player * plr)
 	// Reset all their cooldowns and restore their HP/Mana/Energy to max
 	plr->ResetAllCooldowns();
 	plr->FullHPMP();
-}
-
-void Arena::HookOnPlayerKill(Player * plr, Player * pVictim)
-{
-#ifdef ANTI_CHEAT
-	if (!m_started)
-	{
-		plr->KillPlayer(); //cheater.
-		return;
-	}
-#endif
-	if ( pVictim->IsPlayer() )
-	{
-		plr->m_bgScore.KillingBlows++;
-	}
-}
-
-void Arena::HookOnHK(Player * plr)
-{
-	plr->m_bgScore.HonorableKills++;
-}
-
-void Arena::HookOnPlayerDeath(Player * plr)
-{
-	ASSERT(plr != NULL);
-
-	if( plr->m_isGmInvisible == true ) return;
-
-	if(m_playersAlive.find(plr->GetLowGUID()) != m_playersAlive.end())
-	{
-		m_playersCount[plr->GetTeam()]--;
-		UpdatePlayerCounts();
-		m_playersAlive.erase(plr->GetLowGUID());
-	}
 }
 
 void Arena::OnCreate()
@@ -304,6 +275,13 @@ void Arena::OnCreate()
 		SetWorldState(2577, 1);
 		break;
 	}
+
+	sScriptMgr.register_hook(SERVER_HOOK_EVENT_ON_AREA_TRIGGER, (void*)&Arena::OnAreaTrigger);
+	sScriptMgr.register_hook(SERVER_HOOK_EVENT_ON_PLAYER_DEATH, (void*)&Arena::OnPlayerDeath);
+	sScriptMgr.register_hook(SERVER_HOOK_EVENT_ON_REPOP, (void*)&Arena::OnRepopRequest);
+	sScriptMgr.register_hook(SERVER_HOOK_EVENT_ON_PLAYER_KILL, (void*)&Arena::OnPlayerKill);
+	sScriptMgr.register_hook(SERVER_HOOK_EVENT_ON_HONOR_KILL, (void*)&Arena::OnHonorKill);
+
 }
 
 void Arena::HookOnShadowSight()
@@ -606,8 +584,84 @@ LocationVector Arena::GetStartingCoords(uint32 Team)
 	return LocationVector(0,0,0,0);
 }
 
-bool Arena::HookHandleRepop(Player * plr)
+/*
+ *	Event Handlers
+ */
+bool Arena::IsArenaPlayer(Player *plr)
 {
+	ASSERT(plr != NULL);
+
+	if (!plr->m_bg)
+		return false;
+
+	uint32 m_type = plr->m_bg->GetType();
+	if (m_type != BATTLEGROUND_ARENA_2V2 && m_type != BATTLEGROUND_ARENA_3V3 && m_type != BATTLEGROUND_ARENA_5V5)
+			return false;
+
+	return true;
+}
+
+void Arena::OnAreaTrigger(Player * plr, uint32 id)
+{
+	if (!IsArenaPlayer(plr))
+		return;
+
+	int32 buffslot = -1;
+	
+	switch (id) 
+	{
+		case 4536:
+		case 4538:
+		case 4696:
+			buffslot = 0;
+			break;
+		case 4537:
+		case 4539:
+		case 4697:
+			buffslot = 1;
+			break;
+	}
+
+	if(buffslot >= 0)
+	{
+		Arena * arena = static_cast<Arena *>(plr->m_bg);
+		if(arena->m_buffs[buffslot] != NULL && arena->m_buffs[buffslot]->IsInWorld())
+		{
+			/* apply the buff */
+			SpellEntry * sp = dbcSpell.LookupEntry(arena->m_buffs[buffslot]->GetInfo()->sound3);
+			Spell * s = new Spell(plr, sp, true, 0);
+
+			ASSERT(sp != NULL);
+			ASSERT(s != NULL);
+
+			//s->Init(plr, sp, true, 0);
+			SpellCastTargets targets(plr->GetGUID());
+			s->prepare(&targets);
+
+			/* despawn the gameobject (not delete!) */
+			arena->m_buffs[buffslot]->Despawn(0, BUFF_RESPAWN_TIME);
+		}
+	}
+}
+
+void Arena::OnPlayerDeath(Player * plr)
+{
+	if (!IsArenaPlayer(plr))
+		return;
+
+	if (plr->m_isGmInvisible == true)
+		return;
+
+	Arena * arena = static_cast<Arena *>(plr->m_bg);
+	if (arena->IsPlayerAlive(plr))
+		arena->SetPlayerDead(plr);
+}
+
+bool Arena::OnRepopRequest(Player * plr)
+{
+	if (!IsArenaPlayer(plr))
+		return false; // No reason to interupt the Repop
+
 	// 559, 562, 572
 	/*
 	A start
@@ -626,7 +680,7 @@ bool Arena::HookHandleRepop(Player * plr)
 	559 4057.042725 2918.686523 13.051933
 	*/
 	LocationVector dest(0,0,0,0);
-	switch(m_mapMgr->GetMapId())
+	switch(plr->GetMapMgr()->GetMapId())
 	{
 		/* loraedeon */
 	case 572: {
@@ -644,58 +698,34 @@ bool Arena::HookHandleRepop(Player * plr)
 		}break;
 	}
 
-	plr->SafeTeleport(m_mapMgr->GetMapId(), m_mapMgr->GetInstanceID(), dest);
+	plr->SafeTeleport(plr->GetMapMgr()->GetMapId(), plr->GetMapMgr()->GetInstanceID(), dest);
 	return true;
 }
 
-void Arena::HookOnAreaTrigger(Player * plr, uint32 id)
+void Arena::OnPlayerKill(Player * plr, Player * pVictim)
 {
-	int32 buffslot = -1;
+	if (!IsArenaPlayer(plr))
+		return;
 
-	ASSERT(plr != NULL);
+	Arena * arena = static_cast<Arena *>(plr->m_bg);
 
-	switch (id) 
+#ifdef ANTI_CHEAT
+	if (!arena->m_started)
 	{
-		case 4536:
-		case 4538:
-		case 4696:
-			buffslot = 0;
-			break;
-		case 4537:
-		case 4539:
-		case 4697:
-			buffslot = 1;
-			break;
+		plr->KillPlayer(); //cheater.
+		return;
 	}
-
-	if(buffslot >= 0)
+#endif
+	if ( pVictim->IsPlayer() )
 	{
-		if(m_buffs[buffslot] != NULL && m_buffs[buffslot]->IsInWorld())
-		{
-			/* apply the buff */
-			SpellEntry * sp = dbcSpell.LookupEntry(m_buffs[buffslot]->GetInfo()->sound3);
-			Spell * s = new Spell(plr, sp, true, 0);
-
-			ASSERT(sp != NULL);
-			ASSERT(s != NULL);
-
-			//s->Init(plr, sp, true, 0);
-			SpellCastTargets targets(plr->GetGUID());
-			s->prepare(&targets);
-
-			/* despawn the gameobject (not delete!) */
-			m_buffs[buffslot]->Despawn(0, BUFF_RESPAWN_TIME);
-		}
+		plr->m_bgScore.KillingBlows++;
 	}
 }
-void Arena::HookGenerateLoot( Player * plr, Object * pCorpse )// Not Used
-{
-}
 
-void Arena::HookOnUnitKill(Player * plr, Unit * pVictim)
+void Arena::OnHonorKill(Player * plr)
 {
-}
+	if (!IsArenaPlayer(plr))
+		return;
 
-void Arena::HookOnFlagDrop(Player *plr)
-{
+	plr->m_bgScore.HonorableKills++;
 }

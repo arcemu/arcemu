@@ -1539,7 +1539,7 @@ void Spell::AddStartCooldown()
 
 void Spell::cast(bool check)
 {
-	if( duelSpell && (
+	if (duelSpell && (
 		( p_caster != NULL && p_caster->GetDuelState() != DUEL_STATE_STARTED ) ||
 		( u_caster != NULL && u_caster->IsPet() && static_cast< Pet* >( u_caster )->GetPetOwner() && static_cast< Pet* >( u_caster )->GetPetOwner()->GetDuelState() != DUEL_STATE_STARTED ) ) )
 	{
@@ -1549,14 +1549,15 @@ void Spell::cast(bool check)
 		return;
 	}
 
-	sLog.outDebug("Spell::cast %u, Unit: %u", GetProto()->Id, m_caster->GetLowGUID());
+	if (m_caster)
+		sLog.outDebug("Spell::cast %u, Unit: %u", GetProto()->Id, m_caster->GetLowGUID());
 
-	if(check)
+	if (check)
 		cancastresult = CanCast(true);
 	else
 		cancastresult = SPELL_CANCAST_OK;
 
-	if(cancastresult == SPELL_CANCAST_OK)
+	if (cancastresult == SPELL_CANCAST_OK)
 	{
 		if (p_caster && !m_triggeredSpell && p_caster->IsInWorld() && GET_TYPE_FROM_GUID(m_targets.m_unitTarget)==HIGHGUID_TYPE_UNIT)
 		{
@@ -1564,10 +1565,10 @@ void Spell::cast(bool check)
 		}
 		if( GetProto()->Attributes & ATTRIBUTE_ON_NEXT_ATTACK)
 		{
-			if(!m_triggeredSpell)
+			if (!m_triggeredSpell)
 			{
 				// on next attack - we don't take the mana till it actually attacks.
-				if(!HasPower())
+				if (!HasPower())
 				{
 					SendInterrupted(SPELL_FAILED_NO_POWER);
 					finish();
@@ -1577,7 +1578,7 @@ void Spell::cast(bool check)
 			else
 			{
 				// this is the actual spell cast
-				if(!TakePower())	// shouldn't happen
+				if (!TakePower())	// shouldn't happen
 				{
 					SendInterrupted(SPELL_FAILED_NO_POWER);
 					finish();
@@ -1587,9 +1588,9 @@ void Spell::cast(bool check)
 		}
 		else
 		{
-			if(!m_triggeredSpell)
+			if (!m_triggeredSpell)
 			{
-				if(!TakePower()) //not enough mana
+				if (!TakePower()) //not enough mana
 				{
 					//sLog.outDebug("Spell::Not Enough Mana");
 					SendInterrupted(SPELL_FAILED_NO_POWER);
@@ -1600,15 +1601,15 @@ void Spell::cast(bool check)
 			}
 		}
 
-		for(uint32 i=0;i<3;i++)
+		for(uint32 i=0; i<3; i++)
 		{
-			if( GetProto()->Effect[i] && GetProto()->Effect[i] != SPELL_EFFECT_PERSISTENT_AREA_AURA)
+			if (GetProto()->Effect[i] && GetProto()->Effect[i] != SPELL_EFFECT_PERSISTENT_AREA_AURA)
 				FillTargetMap(i);
 			if ( i > 3 )
 				return;
 		}
 
-		if(m_magnetTarget){ // Spell was redirected
+		if (m_magnetTarget){ // Spell was redirected
 			// Grounding Totem gets destroyed after redirecting 1 spell
 			Unit *MagnetTarget = m_caster->GetMapMgr()->GetUnit(m_magnetTarget);
 			m_magnetTarget = 0;
@@ -1621,7 +1622,7 @@ void Spell::cast(bool check)
 		}
 
 		SendCastResult(cancastresult);
-		if(cancastresult != SPELL_CANCAST_OK)
+		if (cancastresult != SPELL_CANCAST_OK)
 		{
 			finish();
 			return;
@@ -1630,10 +1631,10 @@ void Spell::cast(bool check)
 		m_isCasting = true;
 
 		//sLog.outString( "CanCastResult: %u" , cancastresult );
-		if(!m_triggeredSpell)
+		if (!m_triggeredSpell)
 			AddCooldown();
 
-		if( p_caster )
+		if (p_caster)
 		{
 			if( GetProto()->NameHash == SPELL_HASH_SLAM)
 			{
@@ -1658,76 +1659,15 @@ void Spell::cast(bool check)
 				}
 			}
 
-			// special case battleground additional actions
-			if(p_caster->m_bg)
+			// check if spell is allowed while we have a battleground flag
+			if (p_caster && p_caster->m_bg && p_caster->m_bgHasFlag)
 			{
-				// SOTA Gameobject spells
-				if (p_caster->m_bg->GetType() == BATTLEGROUND_STRAND_OF_THE_ANCIENT)
+				if (BattlegroundManager.IsSpellRestricted(m_spellInfo->Id))
 				{
-					StrandOfTheAncient * sota = (StrandOfTheAncient *)p_caster->m_bg;
-					// Transporter platforms
-					if (GetProto()->Id == 54640)
-						sota->OnPlatformTeleport(p_caster);
-				}
-				// warsong gulch & eye of the storm flag pickup check
-				// also includes check for trying to cast stealth/etc while you have the flag
-				switch(GetProto()->Id)
-				{
-					case 21651:
-						// Arathi Basin opening spell, remove stealth, invisibility, etc. 
-						p_caster->RemoveStealth();
-						p_caster->RemoveInvisibility();
-						p_caster->RemoveAllAuraByNameHash(SPELL_HASH_DIVINE_SHIELD);
-						p_caster->RemoveAllAuraByNameHash(SPELL_HASH_DIVINE_PROTECTION);
-						p_caster->RemoveAllAuraByNameHash(SPELL_HASH_BLESSING_OF_PROTECTION);
-						break;
-					case 23333:
-					case 23335:
-					case 34976:
-						// if we're picking up the flag remove the buffs
-						p_caster->RemoveStealth();
-						p_caster->RemoveInvisibility();
-						p_caster->RemoveAllAuraByNameHash(SPELL_HASH_DIVINE_SHIELD);
-						p_caster->RemoveAllAuraByNameHash(SPELL_HASH_DIVINE_PROTECTION);
-						p_caster->RemoveAllAuraByNameHash(SPELL_HASH_BLESSING_OF_PROTECTION);
-						break;
-					// cases for stealth - etc
-					// we can cast the spell, but we drop the flag (if we have it)
-                    case 1784:		// Stealth rank 1
-                    case 1785:		// Stealth rank 2
-                    case 1786:		// Stealth rank 3
-                    case 1787:		// Stealth rank 4
-                    case 5215:		// Prowl rank 1
-                    case 6783:		// Prowl rank 2
-					case 9913:		// Prowl rank 3
-					case 498:		// Divine protection
-					case 5573:		// Unknown spell
-					case 642:		// Divine shield
-					case 1020:		// Unknown spell
-					case 1022:		// Hand of Protection rank 1 (ex blessing of protection)
-					case 5599:		// Hand of Protection rank 2 (ex blessing of protection)
-                    case 10278:		// Hand of Protection rank 3 (ex blessing of protection)
-					case 1856:		// Vanish rank 1
-					case 1857:		// Vanish rank 2
-					case 26889:		// Vanish rank 3
-					case 45438:		// Ice block
-					case 20580:		// Unknown spell
-					case 58984:		// Shadowmeld
-					case 17624:		// Petrification-> http://www.wowhead.com/?spell=17624
-					case 66:		// Invisibility
-						if(p_caster->m_bg->GetType() == BATTLEGROUND_WARSONG_GULCH)
-						{
-							if(p_caster->GetTeam() == 0)
-								p_caster->RemoveAura(23333);	// ally player drop horde flag if they have it
-							else
-								p_caster->RemoveAura(23335); 	// horde player drop ally flag if they have it
-						}
-						if(p_caster->m_bg->GetType() == BATTLEGROUND_EYE_OF_THE_STORM)
-
-							p_caster->RemoveAura(34976);	// drop the flag
-						break;	
+					sHookInterface.OnFlagDrop(p_caster);
 				}
 			}
+			sHookInterface.OnSpellCast(p_caster, GetProto());
 		}
 
 		/*SpellExtraInfo* sp = objmgr.GetSpellExtraData(GetProto()->Id);
@@ -1738,7 +1678,7 @@ void Spell::cast(bool check)
 				Target->RemoveBySpecialType(sp->specialtype, p_caster->GetGUID());
 		}*/
 
-		if(!(GetProto()->Attributes & ATTRIBUTE_ON_NEXT_ATTACK  && !m_triggeredSpell))//on next attack
+		if (!(GetProto()->Attributes & ATTRIBUTE_ON_NEXT_ATTACK  && !m_triggeredSpell))//on next attack
 		{
 			SendSpellGo();
 
@@ -1830,7 +1770,7 @@ void Spell::cast(bool check)
 					break;
 			}
 
-			if(!IsReflected() && GetCanReflect() && m_caster->IsInWorld())
+			if (!IsReflected() && GetCanReflect() && m_caster->IsInWorld())
 			{
 				for( i=UniqueTargets.begin(); i!=UniqueTargets.end(); ++i )
 				{
@@ -1852,25 +1792,25 @@ void Spell::cast(bool check)
 
 			// we're much better to remove this here, because otherwise spells that change powers etc,
 			// don't get applied.
-			if(u_caster && !m_triggeredSpell && !m_triggeredByAura)
+			if (u_caster && !m_triggeredSpell && !m_triggeredByAura)
 				u_caster->RemoveAurasByInterruptFlagButSkip(AURA_INTERRUPT_ON_CAST_SPELL, GetProto()->Id);
 
             // if the spell is not reflected
-			if(!IsReflected())
+			if (!IsReflected())
 			{
-				for(uint32 x=0;x<3;x++)
+				for(uint32 x=0; x<3; x++)
 				{
                     // check if we actualy have a effect
-					if( GetProto()->Effect[x])
+					if (GetProto()->Effect[x])
 					{
 						isDuelEffect = isDuelEffect ||  GetProto()->Effect[x] == SPELL_EFFECT_DUEL;
-						if( GetProto()->Effect[x] == SPELL_EFFECT_PERSISTENT_AREA_AURA)
+						if (GetProto()->Effect[x] == SPELL_EFFECT_PERSISTENT_AREA_AURA)
                         {
 							HandleEffects(m_caster->GetGUID(),x);
                         }
 						else if (m_targetUnits[x].size()>0)
 						{
-							for( i=m_targetUnits[x].begin(); i!=m_targetUnits[x].end(); )
+							for (i=m_targetUnits[x].begin(); i!=m_targetUnits[x].end(); )
 							{
 								i2 = i++;
 								HandleEffects(*i2,x);
@@ -1878,7 +1818,7 @@ void Spell::cast(bool check)
 						}
 
 						// Capt: The way this is done is NOT GOOD. Target code should be redone.
-						else if( GetProto()->Effect[x] == SPELL_EFFECT_TELEPORT_UNITS ||
+						else if (GetProto()->Effect[x] == SPELL_EFFECT_TELEPORT_UNITS ||
 							     GetProto()->Effect[x] == SPELL_EFFECT_SUMMON ||
 								 GetProto()->Effect[x] == SPELL_EFFECT_TRIGGER_SPELL)
                         {
@@ -1888,27 +1828,27 @@ void Spell::cast(bool check)
 				}
 
 				/* don't call HandleAddAura unless we actually have auras... - Burlex*/
-				if( GetProto()->EffectApplyAuraName[0] != 0 || GetProto()->EffectApplyAuraName[1] != 0 ||
-				   GetProto()->EffectApplyAuraName[2] != 0)
+				if (GetProto()->EffectApplyAuraName[0] != 0 || GetProto()->EffectApplyAuraName[1] != 0 ||
+				    GetProto()->EffectApplyAuraName[2] != 0)
 				{
 					hadEffect = true; // spell has had an effect (for item removal & possibly other things)
 
-					for( i=UniqueTargets.begin(); i!=UniqueTargets.end(); ++i )
+					for(i=UniqueTargets.begin(); i!=UniqueTargets.end(); ++i)
 					{
 						HandleAddAura(*i);
 					}
 				}
 				// spells that proc on spell cast, some talents
-				if(p_caster && p_caster->IsInWorld())
+				if (p_caster && p_caster->IsInWorld())
 				{
-					for( i=UniqueTargets.begin(); i!=UniqueTargets.end(); ++i )
+					for(i=UniqueTargets.begin(); i!=UniqueTargets.end(); ++i )
 					{
 						Unit * Target = p_caster->GetMapMgr()->GetUnit(*i);
 
-						if(!Target)
+						if (!Target)
 							continue; //we already made this check, so why make it again ?
 
-						if(!m_triggeredSpell || GetProto()->NameHash == SPELL_HASH_DEEP_WOUND )//Deep Wounds may trigger Blood Frenzy
+						if (!m_triggeredSpell || GetProto()->NameHash == SPELL_HASH_DEEP_WOUND )//Deep Wounds may trigger Blood Frenzy
 						{
 							p_caster->HandleProc(PROC_ON_CAST_SPECIFIC_SPELL | PROC_ON_CAST_SPELL,Target, GetProto());
 							Target->HandleProc(PROC_ON_SPELL_LAND_VICTIM,u_caster,GetProto());
@@ -1922,7 +1862,7 @@ void Spell::cast(bool check)
 
 			m_isCasting = false;
 
-			if(m_spellState != SPELL_STATE_CASTING)
+			if (m_spellState != SPELL_STATE_CASTING)
 				finish();
 		}
 		else //this shit has nothing to do with instant, this only means it will be on NEXT melee hit
@@ -1930,7 +1870,7 @@ void Spell::cast(bool check)
 			// we're much better to remove this here, because otherwise spells that change powers etc,
 			// don't get applied.
 
-			if(u_caster && !m_triggeredSpell && !m_triggeredByAura)
+			if (u_caster && !m_triggeredSpell && !m_triggeredByAura)
 				u_caster->RemoveAurasByInterruptFlagButSkip(AURA_INTERRUPT_ON_CAST_SPELL, GetProto()->Id);
 
 			//not sure if it must be there...
@@ -3536,30 +3476,12 @@ uint8 Spell::CanCast(bool tolerate)
 			}
 		}
 
-			// check if spell is allowed while we have a battleground flag
-		if(p_caster->m_bgHasFlag)
+		// check if spell is allowed while we have a battleground flag
+		if (p_caster && p_caster->m_bg && p_caster->m_bgHasFlag)
 		{
-			switch(m_spellInfo->Id)
+			if (BattlegroundManager.IsSpellBlocked(m_spellInfo->Id))
 			{
-				// stealth spells
-				case 1784:
-				case 1785:
-				case 1786:
-				case 1787:
-				case 5215:
-				case 6783:
-				case 9913:
-				case 1856:
-				case 1857:
-				case 26889:
-				{
-					// thank Cruders for this :P
-					if(p_caster->m_bg && p_caster->m_bg->GetType() == BATTLEGROUND_WARSONG_GULCH)
-						((WarsongGulch*)p_caster->m_bg)->HookOnFlagDrop( p_caster );
-					else if(p_caster->m_bg && p_caster->m_bg->GetType() == BATTLEGROUND_EYE_OF_THE_STORM)
-						((EyeOfTheStorm*)p_caster->m_bg)->HookOnFlagDrop( p_caster ); 
-					break;
-				}
+				sHookInterface.OnFlagDrop(p_caster);
 			}
 		}
 

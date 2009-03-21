@@ -507,22 +507,6 @@
 			>
 		</File>
 		<File
-			RelativePath="..\..\src\arcemu-world\AlteracValley.cpp"
-			>
-		</File>
-		<File
-			RelativePath="..\..\src\arcemu-world\AlteracValley.h"
-			>
-		</File>
-		<File
-			RelativePath="..\..\src\arcemu-world\ArathiBasin.cpp"
-			>
-		</File>
-		<File
-			RelativePath="..\..\src\arcemu-world\ArathiBasin.h"
-			>
-		</File>
-		<File
 			RelativePath="..\..\src\arcemu-world\AreaTrigger.cpp"
 			>
 		</File>
@@ -708,14 +692,6 @@
 		</File>
 		<File
 			RelativePath="..\..\src\arcemu-world\EventMgr.h"
-			>
-		</File>
-		<File
-			RelativePath="..\..\src\arcemu-world\EyeOfTheStorm.cpp"
-			>
-		</File>
-		<File
-			RelativePath="..\..\src\arcemu-world\EyeOfTheStorm.h"
 			>
 		</File>
 		<File
@@ -1151,14 +1127,6 @@
 			>
 		</File>
 		<File
-			RelativePath="..\..\src\arcemu-world\StrandOfTheAncient.cpp"
-			>
-		</File>
-		<File
-			RelativePath="..\..\src\arcemu-world\StrandOfTheAncient.h"
-			>
-		</File>
-		<File
 			RelativePath="..\..\src\arcemu-world\TaxiHandler.cpp"
 			>
 		</File>
@@ -1228,14 +1196,6 @@
 		</File>
 		<File
 			RelativePath="..\..\src\arcemu-world\VoiceChatHandler.h"
-			>
-		</File>
-		<File
-			RelativePath="..\..\src\arcemu-world\WarsongGulch.cpp"
-			>
-		</File>
-		<File
-			RelativePath="..\..\src\arcemu-world\WarsongGulch.h"
 			>
 		</File>
 		<File

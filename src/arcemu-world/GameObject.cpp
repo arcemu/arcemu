@@ -63,13 +63,13 @@ GameObject::GameObject(uint64 guid)
 GameObject::~GameObject()
 {
 	sEventMgr.RemoveEvents(this);
-	if(m_ritualmembers) {
+	if (m_ritualmembers) {
 		delete[] m_ritualmembers;
 		m_ritualmembers = NULL;
 	}
 
 	uint32 guid = GetUInt32Value(OBJECT_FIELD_CREATED_BY);
-	if(guid)
+	if (guid)
 	{
 		Player *plr = objmgr.GetPlayer(guid);
 		if(plr && plr->GetSummonedObject() == this)
@@ -79,7 +79,7 @@ GameObject::~GameObject()
 			m_summoner = 0;
 	}
 
-	if(m_respawnCell!=NULL)
+	if (m_respawnCell != NULL)
 		m_respawnCell->_respawnObjects.erase(this);
 
 	if (m_summonedGo && m_summoner)
@@ -87,14 +87,9 @@ GameObject::~GameObject()
 			if (m_summoner->m_ObjectSlots[i] == GetLowGUID())
 				m_summoner->m_ObjectSlots[i] = 0;
 
-	if( m_battleground != NULL && m_battleground->GetType() == BATTLEGROUND_ARATHI_BASIN )
-	{
-		if( bannerslot >= 0 && static_cast<ArathiBasin*>(m_battleground)->m_controlPoints[bannerslot] == this )
-			static_cast<ArathiBasin*>(m_battleground)->m_controlPoints[bannerslot] = NULL;
+	if (m_battleground != NULL)
+		sHookInterface.OnDestoryGameObject(this);
 
-		if( bannerauraslot >= 0 && static_cast<ArathiBasin*>(m_battleground)->m_controlPointAuras[bannerauraslot] == this )
-			static_cast<ArathiBasin*>(m_battleground)->m_controlPointAuras[bannerauraslot] = NULL;
-	}
 }
 
 bool GameObject::CreateFromProto(uint32 entry,uint32 mapid, float x, float y, float z, float ang)

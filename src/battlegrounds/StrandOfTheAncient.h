@@ -18,6 +18,9 @@
  *
  */
 
+#ifndef HEADER_SOTA
+#define HEADER_SOTA
+
 #define BUFF_COUNT		3
 
 #define TEAM_DEFENDER	0
@@ -93,11 +96,11 @@ public:
 	void HookOnPlayerKill(Player * plr, Player * pVictim);
 	void HookOnHK(Player * plr);
 	void HookOnShadowSight();
-	void HookGenerateLoot(Player *plr, Object * pOCorpse);
-	void HookOnUnitKill(Player * plr, Unit * pVictim);
 	bool HookSlowLockOpen(GameObject * pGo, Player * pPlayer, Spell * pSpell);
 	void HookOnPlayerDeath(Player * plr);
 	void HookOnMount(Player * plr);
+	void HookOnSpellCast(Player *caster, uint32 spellID);
+	void HookOnDestoryGameObject(GameObject * gameobject);
 	bool HookHandleRepop(Player * plr);
 	void OnAddPlayer(Player * plr);
 	void OnRemovePlayer(Player * plr);
@@ -113,6 +116,22 @@ public:
 protected:
 	uint32 m_flagHolders[2];
 
-	void SpawnBuff(uint32 x);
+	/* Boats */
+	void SpawnBoats();
+	void DestroyBoats();
 
+	/* Gates */
+	void SpawnAllGates();
+	void DestroyAllGates();
+
+	/* Relic */
+	void SpawnRelic();
+	void DestroyRelic();
+
+	/* Buffs */
+	void SpawnAllBuffs();
+	void SpawnBuff(uint32 x);
+	void DestroyAllBuffs();
 };
+
+#endif // HEADER_SOTA

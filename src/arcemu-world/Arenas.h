@@ -32,19 +32,24 @@ class Arena : public CBattleground
 public:
 	bool rated_match;
 	Arena(MapMgr * mgr, uint32 id, uint32 lgroup, uint32 t, uint32 players_per_side);
-	virtual ~Arena();
+	~Arena();
 
-	bool HookHandleRepop(Player * plr);
+	ARCEMU_INLINE bool IsPlayerAlive(Player * plr)
+	{
+		return (m_playersAlive.find(plr->GetLowGUID()) != m_playersAlive.end());
+	}
+
+	ARCEMU_INLINE void SetPlayerDead(Player *plr)
+	{
+		m_playersCount[plr->GetTeam()]--;
+		UpdatePlayerCounts();
+		m_playersAlive.erase(plr->GetLowGUID());
+	}
+
 	void OnAddPlayer(Player * plr);
 	void OnRemovePlayer(Player * plr);
 	void OnCreate();
-	void HookOnPlayerDeath(Player * plr);
-	void HookOnPlayerKill(Player * plr, Player * pVictim);
-	void HookOnUnitKill(Player * plr, Unit * pVictim);
-	void HookOnFlagDrop(Player * plr);
-	void HookOnHK(Player * plr);
 	void HookOnShadowSight();
-	void HookGenerateLoot( Player * plr, Object * pCorpse );
 	void UpdatePlayerCounts();
 	LocationVector GetStartingCoords(uint32 Team);
 	uint32 GetNameID() { return 50; }
@@ -58,12 +63,6 @@ public:
 	}
 
 	bool CreateCorpse(Player * plr) { return false; }
-
-	/* dummy stuff */
-	void HookOnMount(Player * plr) {}
-	void HookFlagDrop(Player * plr, GameObject * obj) {}
-	void HookFlagStand(Player * plr, GameObject * obj) {}
-	void HookOnAreaTrigger(Player * plr, uint32 id);
 
 	int32 GetFreeTeam()
 	{
@@ -82,4 +81,14 @@ public:
 	ARCEMU_INLINE uint32 GetArenaTeamType() { return m_arenateamtype; }
 	ARCEMU_INLINE ArenaTeam ** GetTeams() { return m_teams; }
 	uint32 CalcDeltaRating(uint32 oldRating, uint32 opponentRating, bool outcome);
+
+	/* Event Handlers */
+	static bool IsArenaPlayer(Player *plr);
+	static void OnPlayerKill(Player * plr, Player * pVictim);
+	static void OnAreaTrigger(Player * plr, uint32 id);
+	static void OnPlayerDeath(Player * plr);
+	static bool OnRepopRequest(Player * plr);
+	static void OnHonorKill(Player * plr);
+
+
 };

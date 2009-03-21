@@ -165,7 +165,9 @@ void HonorHandler::OnPlayerKilledUnit( Player *pPlayer, Unit* pVictim )
 
 					(*vtr)->m_killsToday++;
 					(*vtr)->m_killsLifetime++;
-					pPlayer->m_bg->HookOnHK(*vtr);
+
+					sHookInterface.OnHonorKill(*vtr);
+
 					if(pVictim)
 					{
 						// Send PVP credit
@@ -227,7 +229,7 @@ void HonorHandler::OnPlayerKilledUnit( Player *pPlayer, Unit* pVictim )
 				pAffectedPlayer->m_killsToday++;
 				pAffectedPlayer->m_killsLifetime++;
 				if(pAffectedPlayer->m_bg)
-					pAffectedPlayer->m_bg->HookOnHK(pAffectedPlayer);
+					sHookInterface.OnHonorKill(pAffectedPlayer);
 
 				int32 contributorpts = Points / (int32)contributors.size();
 				AddHonorPointsToPlayer(pAffectedPlayer, contributorpts);

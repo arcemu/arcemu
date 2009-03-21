@@ -2,9 +2,9 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="9.00"
-	Name="ArcScriptEventScripts"
-	ProjectGUID="{9F200BBC-57C3-4F0C-8BB5-F9053E4BB4B3}"
-	RootNamespace="ArcScriptEventScripts"
+	Name="Battlegrounds"
+	ProjectGUID="{9F200AAA-57C3-4F0C-8BB5-F9053E4BB4B3}"
+	RootNamespace="Battlefields"
 	Keyword="Win32Proj"
 	TargetFrameworkVersion="131072"
 	>
@@ -21,8 +21,8 @@
 	<Configurations>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory="..\..\..\bin\debug\script_bin"
-			IntermediateDirectory="2008_int_debug_ArcScriptEventScripts"
+			OutputDirectory=".\..\..\bin\Debug"
+			IntermediateDirectory=".\battlegrounds___Win32_Debug"
 			ConfigurationType="2"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
 			CharacterSet="2"
@@ -44,9 +44,9 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalOptions="/MP /Zm256"
+				AdditionalOptions="/MP"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;..\..\..\extras\arcemu-windows-libraries\VC\include&quot;;&quot;..\..\arcemu-shared&quot;;&quot;..\..\arcemu-world&quot;;..\..\..\dep\include;..\..\..\dep\src"
+				AdditionalIncludeDirectories="&quot;..\..\..\extras\arcemu-windows-libraries\VC\include&quot;;..\..\src\arcemu-shared;..\..\src\arcemu-world;..\..\..\dep\include;..\..\..\dep\src"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;SCRIPTLIB"
 				MinimalRebuild="false"
 				ExceptionHandling="2"
@@ -69,15 +69,15 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="arcemu-world.lib"
-				OutputFile="../../../bin/debug/script_bin/ArcScriptEventScripts.dll"
+				OutputFile="$(OutDir)\Battlegrounds.dll"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="..\..\..\bin\debug"
+				AdditionalLibraryDirectories="$(OutDir)\"
 				GenerateDebugInformation="true"
-				ProgramDatabaseFile="../../../bin/debug/script_bin/ArcScriptEventScripts.pdb"
+				ProgramDatabaseFile="$(OutDir)\Battlegrounds.pdb"
 				SubSystem="2"
 				RandomizedBaseAddress="1"
 				DataExecutionPrevention="0"
-				ImportLibrary="$(OutDir)/ArcScriptEventScripts.lib"
+				ImportLibrary="$(OutDir)/Battlefields.lib"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -104,8 +104,8 @@
 		</Configuration>
 		<Configuration
 			Name="Debug|x64"
-			OutputDirectory="..\..\..\bin\debug_x64\script_bin"
-			IntermediateDirectory="2008_int_debug_ArcScriptEventScripts_x64"
+			OutputDirectory=".\..\..\bin\Debug_x64"
+			IntermediateDirectory=".\battlegrounds___Debug_x64"
 			ConfigurationType="2"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
 			CharacterSet="2"
@@ -128,9 +128,9 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalOptions="/MP /Zm256"
+				AdditionalOptions="/MP"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\arcemu-shared;..\..\arcemu-world;..\..\..\dep\include;..\..\..\dep\src"
+				AdditionalIncludeDirectories="..\..\src\arcemu-shared;..\..\src\arcemu-world;..\..\..\dep\include;..\..\..\dep\src"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;SCRIPTLIB;X64"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -152,15 +152,15 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="arcemu-world.lib"
-				OutputFile="../../../bin/debug_x64/script_bin/ArcScriptEventScripts.dll"
+				OutputFile="$(OutDir)\Battlegrounds.dll"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="..\..\..\bin\debug_x64"
+				AdditionalLibraryDirectories="$(OutDir)\"
 				GenerateDebugInformation="true"
-				ProgramDatabaseFile="../../../bin/debug/script_bin/ArcScriptEventScripts.pdb"
+				ProgramDatabaseFile="$(OutDir)\Battlegrounds.pdb"
 				SubSystem="2"
 				RandomizedBaseAddress="1"
 				DataExecutionPrevention="0"
-				ImportLibrary="$(OutDir)/ArcScriptEventScripts.lib"
+				ImportLibrary="$(OutDir)/Battlefields.lib"
 				TargetMachine="17"
 			/>
 			<Tool
@@ -187,8 +187,8 @@
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
-			OutputDirectory="..\..\..\bin\release\script_bin"
-			IntermediateDirectory="2008_int_release_ArcScriptEventScripts"
+			OutputDirectory=".\..\..\bin\Release"
+			IntermediateDirectory=".\battlegrounds___Win32_Release"
 			ConfigurationType="2"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
 			CharacterSet="2"
@@ -219,7 +219,7 @@
 				FavorSizeOrSpeed="1"
 				OmitFramePointers="true"
 				EnableFiberSafeOptimizations="false"
-				AdditionalIncludeDirectories="..\..\..\extras\arcemu-windows-libraries\VC\include;..\..\arcemu-shared;..\..\arcemu-world;..\..\..\dep\include;..\..\..\dep\src"
+				AdditionalIncludeDirectories="..\..\src\arcemu-shared;..\..\src\arcemu-world;..\..\src\arcemu-world\Collision\vmap;..\..\src\arcemu-world\Collision\g3dlite;..\..\extras\arcemu-windows-libraries\VC\include"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;SCRIPTLIB"
 				StringPooling="true"
 				ExceptionHandling="1"
@@ -244,17 +244,17 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="arcemu-world.lib"
-				OutputFile="../../../bin/release/script_bin/ArcScriptEventScripts.dll"
+				OutputFile="$(OutDir)\Battlegrounds.dll"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="..\..\..\bin\release"
+				AdditionalLibraryDirectories="$(OutDir)\"
 				GenerateDebugInformation="true"
-				ProgramDatabaseFile="../../../bin/release/script_bin/ArcScriptEventScripts.pdb"
+				ProgramDatabaseFile="$(OutDir)\Battlegrounds.pdb"
 				SubSystem="2"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
 				RandomizedBaseAddress="1"
 				DataExecutionPrevention="0"
-				ImportLibrary="$(OutDir)/ArcScriptEventScripts.lib"
+				ImportLibrary="$(OutDir)/Battlefields.lib"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -281,8 +281,8 @@
 		</Configuration>
 		<Configuration
 			Name="Release|x64"
-			OutputDirectory="..\..\..\bin\release_x64\script_bin"
-			IntermediateDirectory="2008_int_release_ArcScriptEventScripts_x64"
+			OutputDirectory=".\..\..\bin\Release_x64"
+			IntermediateDirectory=".\battlegrounds___Release_x64"
 			ConfigurationType="2"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
 			CharacterSet="2"
@@ -313,7 +313,7 @@
 				FavorSizeOrSpeed="1"
 				OmitFramePointers="true"
 				WholeProgramOptimization="true"
-				AdditionalIncludeDirectories="..\..\arcemu-shared;..\..\arcemu-world;..\..\..\dep\include;..\..\..\dep\src"
+				AdditionalIncludeDirectories="..\..\src\arcemu-shared;..\..\src\arcemu-world;..\..\..\dep\include;..\..\..\dep\src"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;SCRIPTLIB;X64"
 				StringPooling="true"
 				RuntimeLibrary="2"
@@ -336,17 +336,17 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="arcemu-world.lib"
-				OutputFile="../../../bin/release_x64/script_bin/ArcScriptEventScripts.dll"
+				OutputFile="$(OutDir)\Battlegrounds.dll"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="..\..\..\bin\release_x64"
+				AdditionalLibraryDirectories="$(OutDir)\"
 				GenerateDebugInformation="true"
-				ProgramDatabaseFile="../../../bin/release/script_bin/ArcScriptEventScripts.pdb"
+				ProgramDatabaseFile="$(OutDir)\Battlegrounds.pdb"
 				SubSystem="2"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
 				RandomizedBaseAddress="1"
 				DataExecutionPrevention="0"
-				ImportLibrary="$(OutDir)/ArcScriptEventScripts.lib"
+				ImportLibrary="$(OutDir)/Battlefields.lib"
 				TargetMachine="17"
 			/>
 			<Tool
@@ -381,7 +381,7 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
-				RelativePath="..\src\EventScripts\Setup.cpp"
+				RelativePath="..\..\src\battlegrounds\Setup.cpp"
 				>
 				<FileConfiguration
 					Name="Release|Win32"
@@ -391,17 +391,9 @@
 						UsePrecompiledHeader="1"
 					/>
 				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|x64"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="1"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="..\src\EventScripts\Setup.h"
+				RelativePath="..\..\src\battlegrounds\Setup.h"
 				>
 			</File>
 		</Filter>
@@ -411,11 +403,43 @@
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
-				RelativePath="..\src\EventScripts\DarkmoonFaire.cpp"
+				RelativePath="..\..\src\battlegrounds\AlteracValley.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\src\EventScripts\DarkmoonFaireObjects.cpp"
+				RelativePath="..\..\src\battlegrounds\AlteracValley.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\battlegrounds\ArathiBasin.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\battlegrounds\ArathiBasin.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\battlegrounds\EyeOfTheStorm.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\battlegrounds\EyeOfTheStorm.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\battlegrounds\StrandOfTheAncient.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\battlegrounds\StrandOfTheAncient.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\battlegrounds\WarsongGulch.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\battlegrounds\WarsongGulch.h"
 				>
 			</File>
 		</Filter>

@@ -47,7 +47,7 @@
 				AdditionalOptions="/MP"
 				Optimization="0"
 				InlineFunctionExpansion="2"
-				AdditionalIncludeDirectories="..\..\arcemu-shared;..\..\arcemu-world;..\..\..\dep\include;..\..\..\dep\src"
+				AdditionalIncludeDirectories="&quot;..\..\..\extras\arcemu-windows-libraries\VC\include&quot;;..\..\arcemu-shared;..\..\arcemu-world;..\..\..\dep\include;..\..\..\dep\src"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;SCRIPTLIB;_CRT_SECURE_NO_WARNINGS"
 				MinimalRebuild="false"
 				ExceptionHandling="2"

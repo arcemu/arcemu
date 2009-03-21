@@ -47,7 +47,7 @@
 				AdditionalOptions="/MP"
 				Optimization="0"
 				InlineFunctionExpansion="2"
-				AdditionalIncludeDirectories="..\..\arcemu-shared;..\..\arcemu-world;..\..\..\dep\include;..\..\..\dep\src"
+				AdditionalIncludeDirectories="&quot;..\..\..\extras\arcemu-windows-libraries\VC\include&quot;;..\..\arcemu-shared;..\..\arcemu-world;..\..\..\dep\include;..\..\..\dep\src"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;SCRIPTLIB"
 				MinimalRebuild="false"
 				ExceptionHandling="2"
@@ -411,10 +411,6 @@
 			Filter="h;hpp;hxx;hm;inl;inc;xsd"
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
-			<File
-				RelativePath="..\src\GossipScripts\Gossip_Battlemaster.cpp"
-				>
-			</File>
 			<File
 				RelativePath="..\src\GossipScripts\Gossip_Guard.cpp"
 				>

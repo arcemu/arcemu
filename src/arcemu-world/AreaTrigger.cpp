@@ -136,7 +136,7 @@ void WorldSession::_HandleAreaTriggerOpcode(uint32 id)
 	// if in BG handle is triggers
 	if( _player->m_bg )
 	{
-		_player->m_bg->HookOnAreaTrigger(_player, id);
+		sHookInterface.OnAreaTrigger(_player, id);
 		return;
 	}
 
