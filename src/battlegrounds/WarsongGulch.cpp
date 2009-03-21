@@ -618,8 +618,8 @@ void WarsongGulch::OnFlagDropPickup(Player * plr, GameObject * obj)
 			(obj->GetEntry() == 179786 && plr->GetTeam() == 1) )
 		{
 			bg->ReturnTeamFlag(plr, obj);
-			return;
 		}
+		return;
 	}
 
 	map<uint32,uint32>::iterator itr = plr->m_forcedReactions.find(1059);
