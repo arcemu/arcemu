@@ -269,6 +269,7 @@ AC_CONFIG_FILES([
    src/arcemu-world/Makefile
    src/arcemu-logonserver/Makefile
    src/arcemu-crashreport/Makefile
+   src/battlegrounds/Makefile
    src/scripts/Makefile
    src/scripts/src/Makefile
    src/scripts/src/GossipScripts/Makefile
