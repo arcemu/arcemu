@@ -3411,6 +3411,16 @@ bool ChatHandler::HandleCollisionTestLOS(const char * args, WorldSession * m_ses
 	}
 }
 
+bool ChatHandler::HandleGetDeathState(const char * args, WorldSession * m_session)
+{
+	Player* SelectedPlayer = getSelectedChar(m_session, true);
+	if(!SelectedPlayer) 
+		return true;
+	
+	SystemMessage(m_session, "Death State: %d",SelectedPlayer->getDeathState());
+	return true;
+}
+
 bool ChatHandler::HandleCollisionGetHeight(const char * args, WorldSession * m_session)
 {
 	if (sWorld.Collision) {

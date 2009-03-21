@@ -4651,6 +4651,10 @@ void Player::ResurrectPlayer()
 
 void Player::KillPlayer()
 {
+
+	if(getDeathState() != ALIVE) //You can't kill what has no life.
+		return;
+		
 	setDeathState(JUST_DIED);
 
 	sHookInterface.OnPlayerDeath( this );

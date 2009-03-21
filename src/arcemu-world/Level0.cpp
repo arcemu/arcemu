@@ -257,7 +257,7 @@ bool ChatHandler::HandleInfoCommand(const char* args, WorldSession *m_session)
 	WorldPacket data;
 
 	
-	uint32 clientsNum = (uint32)sWorld.GetSessionCount();
+	//uint32 clientsNum = (uint32)sWorld.GetSessionCount();
 
 	int gm = 0;
 	int count = 0;
@@ -278,7 +278,7 @@ bool ChatHandler::HandleInfoCommand(const char* args, WorldSession *m_session)
 	GreenSystemMessage(m_session, "Server Revision: |r%sArcEmu r%u/%s-%s-%s %s(www.arcemu.org)", MSG_COLOR_WHITE,
 		BUILD_REVISION, CONFIG, PLATFORM_TEXT, ARCH, MSG_COLOR_LIGHTBLUE);
 	GreenSystemMessage(m_session, "Server Uptime: |r%s", sWorld.GetUptimeString().c_str());
-	GreenSystemMessage(m_session, "Current Players: |r%d (%d GMs, %d queued)", clientsNum, gm,  0);
+	GreenSystemMessage(m_session, "Current Players: |r%d (%d GMs)", count, gm);
 	GreenSystemMessage(m_session, "Active Thread Count: |r%u", ThreadPool.GetActiveThreadCount());
 	GreenSystemMessage(m_session, "Free Thread Count: |r%u", ThreadPool.GetFreeThreadCount());
 	GreenSystemMessage(m_session, "Average Latency: |r%.3fms", (float)((float)avg / (float)count));
