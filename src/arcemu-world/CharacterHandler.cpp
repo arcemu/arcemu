@@ -807,8 +807,8 @@ void WorldSession::FullLogin(Player * plr)
 #endif
 
 	plr->UpdateAttackSpeed();
-	/*if(plr->getLevel()>PLAYER_LEVEL_CAP_70)
-		plr->SetUInt32Value(UNIT_FIELD_LEVEL,PLAYER_LEVEL_CAP_70);*/
+	/*if(plr->getLevel()>PLAYER_LEVEL_CAP)
+		plr->SetUInt32Value(UNIT_FIELD_LEVEL,PLAYER_LEVEL_CAP);*/
 
 	// enable trigger cheat by default
 	// plr->TriggerpassCheat = HasGMPermissions();
