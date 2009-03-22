@@ -7751,22 +7751,14 @@ void Aura::SpellAuraSafeFall(bool apply)
 	if( !m_target->IsPlayer() )
 		return;
 
-	WorldPacket data( 12 );
-	if( apply )
+	if(apply)
 	{
-		SetPositive();
-		data.SetOpcode( SMSG_MOVE_FEATHER_FALL );
-		( ( Player* )m_target )->m_safeFall += mod->m_amount;
+		static_cast< Player* >( m_target )->m_safeFall += mod->m_amount;
 	}
 	else
 	{
-		data.SetOpcode(SMSG_MOVE_NORMAL_FALL);
-		( ( Player* )m_target )->m_safeFall -= mod->m_amount;
+		static_cast< Player* >( m_target )->m_safeFall -= mod->m_amount;
 	}
-
-	data << m_target->GetNewGUID();
-	data << uint32( 0 );
-	static_cast< Player* >( m_target )->GetSession()->SendPacket( &data );
 }
 
 void Aura::SpellAuraModReputationAdjust(bool apply)
