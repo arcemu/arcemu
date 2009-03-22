@@ -76,7 +76,7 @@ public:
 	static bool OnRepopRequest(Player * plr);
 	static void OnHonorKill(Player * plr);
 	static void OnPlayerKill(Player * plr, Player * pVictim);
-	static bool OnSpellCast(Player * caster, uint32 spellId);
+	static bool OnSpellCast(Player * caster, SpellEntry * pSpell);
 
 };
 

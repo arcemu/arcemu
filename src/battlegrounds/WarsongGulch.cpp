@@ -641,10 +641,10 @@ void WarsongGulch::OnFlagDropPickup(Player * plr, GameObject * obj)
 
 }
 
-bool WarsongGulch::OnSpellCast(Player * p_caster, uint32 spellId)
+bool WarsongGulch::OnSpellCast(Player * p_caster, SpellEntry * pSpell)
 {
 	// if we're picking up the flag remove the buffs
-	if ((spellId == 23333) || (spellId == 23335) || (spellId == 34976))
+	if ((pSpell->Id == 23333) || (pSpell->Id == 23335) || (pSpell->Id == 34976))
 	{
 		p_caster->RemoveStealth();
 		p_caster->RemoveInvisibility();
@@ -654,7 +654,7 @@ bool WarsongGulch::OnSpellCast(Player * p_caster, uint32 spellId)
 	}
 
 	// also includes check for trying to cast stealth/etc while you have the flag
-	if (BattlegroundManager.IsSpellRestricted(spellId))
+	if (BattlegroundManager.IsSpellRestricted(pSpell->Id))
 	{
 		if (p_caster->GetTeam() == 0)
 			p_caster->RemoveAura(23333);	// ally player drop horde flag if they have it

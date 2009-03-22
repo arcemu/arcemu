@@ -365,25 +365,7 @@ void StrandOfTheAncient::DestroyAllGates()
 	}
 }
 
-
-void StrandOfTheAncient::HookOnAreaTrigger(Player * plr, uint32 id)
-{
-
-}
-
-void StrandOfTheAncient::HookOnPlayerKill(Player * plr, Player * pVictim)
-{
-	plr->m_bgScore.KillingBlows++;
-	UpdatePvPData();
-}
-
-void StrandOfTheAncient::HookOnHK(Player * plr)
-{
-	plr->m_bgScore.HonorableKills++;
-	UpdatePvPData();
-}
-
-void StrandOfTheAncient::OnPlatformTeleport(Player *plr)
+void StrandOfTheAncient::PlatformTeleport(Player *plr)
 {
 	LocationVector dest;
 	uint32 closest_platform = 0;
@@ -433,28 +415,6 @@ LocationVector StrandOfTheAncient::GetStartingCoords(uint32 team)
 	return LocationVector(sotaStartingPosition[team][0],
 		sotaStartingPosition[team][1], sotaStartingPosition[team][2],
 		sotaStartingPosition[team][3]);
-}
-
-void StrandOfTheAncient::HookOnPlayerDeath(Player * plr)
-{
-	plr->m_bgScore.Deaths++;
-	UpdatePvPData();
-}
-
-void StrandOfTheAncient::HookOnMount(Player * plr)
-{
-	/* Allowed */
-}
-
-bool StrandOfTheAncient::HookHandleRepop(Player * plr)
-{
-	LocationVector dest;
-
-	dest.ChangeCoords(sotaRepop[plr->GetTeam()][0], sotaRepop[plr->GetTeam()][1],
-		sotaRepop[plr->GetTeam()][2], sotaRepop[plr->GetTeam()][3]);
-
-	plr->SafeTeleport(plr->GetMapId(), plr->GetInstanceID(), dest);
-	return true;
 }
 
 void StrandOfTheAncient::OnCreate()
@@ -529,11 +489,6 @@ bool StrandOfTheAncient::HookSlowLockOpen(GameObject * pGo, Player * pPlayer, Sp
 	return true;
 }
 
-// For banners
-void StrandOfTheAncient::HookFlagStand(Player * plr, GameObject * obj)
-{
-}
-
 // time in seconds
 void StrandOfTheAncient::SetTime(uint32 secs, uint32 WorldState)
 {
@@ -568,26 +523,69 @@ void StrandOfTheAncient::TimeTick()
 	}
 };
 
-void StrandOfTheAncient::HookOnSpellCast(Player* caster, uint32 spellId) 
+bool StrandOfTheAncient::IsInStrandOfTheAncient(Player * plr)
 {
-	// Transporter platforms
-	if (spellId == 54640)
-		OnPlatformTeleport(caster);
+	if (plr == NULL || !plr->m_bg)
+		return false;
+	if (plr->m_bg->GetType() != BATTLEGROUND_STRAND_OF_THE_ANCIENT)
+		return false;
+	return true;
 }
 
-// Not used?
-void StrandOfTheAncient::HookOnDestoryGameObject(GameObject * gameobject)
+void StrandOfTheAncient::OnPlayerKill(Player * plr, Player * pVictim)
 {
+	if (!IsInStrandOfTheAncient(plr))
+		return;
+	StrandOfTheAncient * bg = static_cast<StrandOfTheAncient *>(plr->m_bg);
+	plr->m_bgScore.KillingBlows++;
+	bg->UpdatePvPData();
 }
-void StrandOfTheAncient::HookOnFlagDrop(Player * plr)
+
+void StrandOfTheAncient::OnHonorKill(Player * plr)
 {
+	if (!IsInStrandOfTheAncient(plr))
+		return;
+	StrandOfTheAncient * bg = static_cast<StrandOfTheAncient *>(plr->m_bg);
+	plr->m_bgScore.HonorableKills++;
+	bg->UpdatePvPData();
 }
-void StrandOfTheAncient::HookFlagDrop(Player * plr, GameObject * obj)
+
+void StrandOfTheAncient::OnPlayerDeath(Player * plr)
 {
+	if (!IsInStrandOfTheAncient(plr))
+		return;
+	StrandOfTheAncient * bg = static_cast<StrandOfTheAncient *>(plr->m_bg);
+	plr->m_bgScore.Deaths++;
+	bg->UpdatePvPData();
 }
-void StrandOfTheAncient::HookOnShadowSight() 
+
+bool StrandOfTheAncient::OnSpellCast(Player* caster, SpellEntry * pSpell) 
 {
+	if (!IsInStrandOfTheAncient(caster))
+		return false;
+	StrandOfTheAncient * bg = static_cast<StrandOfTheAncient *>(caster->m_bg);
+	
+	// Transporter platforms
+	if (pSpell->Id == 54640)
+		bg->PlatformTeleport(caster);
+
+	return false; // Don't stop the default handler
 }
+
+bool StrandOfTheAncient::OnRepopRequest(Player * plr)
+{
+	LocationVector dest;
+	if (!IsInStrandOfTheAncient(plr))
+		return false;
+	StrandOfTheAncient * bg = static_cast<StrandOfTheAncient *>(plr->m_bg);
+
+	dest.ChangeCoords(sotaRepop[plr->GetTeam()][0], sotaRepop[plr->GetTeam()][1],
+		sotaRepop[plr->GetTeam()][2], sotaRepop[plr->GetTeam()][3]);
+
+	plr->SafeTeleport(plr->GetMapId(), plr->GetInstanceID(), dest);
+	return true;
+}
+
 
 // Strand of the Ancients Battlemaster
 class SCRIPT_DECL StrandOfTheAncientsBattlemaster : public GossipScript
@@ -646,6 +644,8 @@ void SetupStrandOfTheAncient(ScriptMgr * mgr)
 	// Battlemaster Interaction Handler
 	GossipScript * sota = (GossipScript*) new StrandOfTheAncientsBattlemaster;
 
+
+	// Uncomment when SOTA is ready for use
 	/*
 	mgr->register_gossip_script(30586, sota);		// Jojindi
 	mgr->register_gossip_script(29234, sota);		// Strand of the Ancients Battlemaster - Wintergrasp
@@ -659,4 +659,11 @@ void SetupStrandOfTheAncient(ScriptMgr * mgr)
 	mgr->register_gossip_script(30582, sota);		// Ufuda Giant-Slayer - Orgrimmar
 	mgr->register_gossip_script(30587, sota);		// Vinvo Goldgear - Shattrath
 	*/
+
+	mgr->register_hook(SERVER_HOOK_EVENT_ON_HONOR_KILL, &StrandOfTheAncient::OnHonorKill);
+	mgr->register_hook(SERVER_HOOK_EVENT_ON_PLAYER_KILL, &StrandOfTheAncient::OnPlayerKill);
+	mgr->register_hook(SERVER_HOOK_EVENT_ON_PLAYER_DEATH, &StrandOfTheAncient::OnPlayerDeath);
+	mgr->register_hook(SERVER_HOOK_EVENT_ON_SPELL_CAST, &StrandOfTheAncient::OnSpellCast);
+	mgr->register_hook(SERVER_HOOK_EVENT_ON_REPOP, &StrandOfTheAncient::OnRepopRequest);
+
 }
