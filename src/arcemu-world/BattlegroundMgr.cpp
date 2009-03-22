@@ -75,7 +75,7 @@ uint32 CBattlegroundManager::GetMap(uint32 bg_index)
 
 void CBattlegroundManager::HandleBattlegroundListPacket(WorldSession * m_session, uint32 BattlegroundType)
 {
-	if(BattlegroundType == BATTLEGROUND_ARENA_2V2 || BattlegroundType == BATTLEGROUND_ARENA_3V3 || BattlegroundType == BATTLEGROUND_ARENA_5V5)
+	if(BattlegroundType >= BATTLEGROUND_ARENA_2V2 && BattlegroundType <= BATTLEGROUND_ARENA_5V5)
 	{
 		WorldPacket data(SMSG_BATTLEFIELD_LIST, 17);
 		data << m_session->GetPlayer()->GetGUID() << uint32(6) << uint32(0xC) << uint8(0);
@@ -891,7 +891,7 @@ CBattleground::~CBattleground()
 
 void CBattleground::UpdatePvPData()
 {
-	if (m_type == BATTLEGROUND_ARENA_2V2 || m_type == BATTLEGROUND_ARENA_3V3 || m_type == BATTLEGROUND_ARENA_5V5)
+	if (m_type >= BATTLEGROUND_ARENA_2V2 && m_type <= BATTLEGROUND_ARENA_5V5)
 	{
 		if (!m_ended)
 		{
@@ -1145,7 +1145,7 @@ CBattleground * CBattlegroundManager::CreateInstance(uint32 Type, uint32 LevelGr
 	time_t t;
 	int n;
 
-	if (Type == BATTLEGROUND_ARENA_2V2 || Type == BATTLEGROUND_ARENA_3V3 || Type == BATTLEGROUND_ARENA_5V5)
+	if (Type >= BATTLEGROUND_ARENA_2V2 && Type <= BATTLEGROUND_ARENA_5V5)
 	{
 		/* arenas follow a different procedure. */
 		static const uint32 arena_map_ids[3] = { 559, 562, 572 };

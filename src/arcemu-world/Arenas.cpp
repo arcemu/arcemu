@@ -276,11 +276,11 @@ void Arena::OnCreate()
 		break;
 	}
 
-	sScriptMgr.register_hook(SERVER_HOOK_EVENT_ON_AREA_TRIGGER, (void*)&Arena::OnAreaTrigger);
-	sScriptMgr.register_hook(SERVER_HOOK_EVENT_ON_PLAYER_DEATH, (void*)&Arena::OnPlayerDeath);
-	sScriptMgr.register_hook(SERVER_HOOK_EVENT_ON_REPOP, (void*)&Arena::OnRepopRequest);
-	sScriptMgr.register_hook(SERVER_HOOK_EVENT_ON_PLAYER_KILL, (void*)&Arena::OnPlayerKill);
-	sScriptMgr.register_hook(SERVER_HOOK_EVENT_ON_HONOR_KILL, (void*)&Arena::OnHonorKill);
+	sScriptMgr.register_hook(SERVER_HOOK_EVENT_ON_AREA_TRIGGER, &Arena::OnAreaTrigger);
+	sScriptMgr.register_hook(SERVER_HOOK_EVENT_ON_PLAYER_DEATH, &Arena::OnPlayerDeath);
+	sScriptMgr.register_hook(SERVER_HOOK_EVENT_ON_REPOP, &Arena::OnRepopRequest);
+	sScriptMgr.register_hook(SERVER_HOOK_EVENT_ON_PLAYER_KILL, &Arena::OnPlayerKill);
+	sScriptMgr.register_hook(SERVER_HOOK_EVENT_ON_HONOR_KILL, &Arena::OnHonorKill);
 
 }
 

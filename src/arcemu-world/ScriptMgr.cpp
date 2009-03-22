@@ -782,6 +782,7 @@ bool HookInterface::OnNewCharacter(uint32 Race, uint32 Class, WorldSession * Ses
 
 void HookInterface::OnPlayerKill(Player * pPlayer, Player * pVictim)
 {
+	sLog.outDebug("Debug: Calling OnPlayerKill Hooks");
 	ServerHookList hookList = sScriptMgr._hooks[SERVER_HOOK_EVENT_ON_PLAYER_KILL];
 	for(ServerHookList::iterator itr = hookList.begin(); itr != hookList.end(); ++itr)
 		((tOnPlayerKill)*itr)(pPlayer, pVictim);
@@ -824,7 +825,8 @@ void HookInterface::OnGuildJoin(Player * pPlayer, Guild * pGuild)
 
 void HookInterface::OnPlayerDeath(Player * pPlayer)
 {
-	ServerHookList hookList = sScriptMgr._hooks[SERVER_HOOK_EVENT_ON_DEATH];
+	sLog.outDebug("Debug: Calling OnPlayerDeath Hooks");
+	ServerHookList hookList = sScriptMgr._hooks[SERVER_HOOK_EVENT_ON_PLAYER_DEATH];
 	for(ServerHookList::iterator itr = hookList.begin(); itr != hookList.end(); ++itr)
 		((tOnPlayerDeath)*itr)(pPlayer);
 }
@@ -852,6 +854,7 @@ void HookInterface::OnFlagDrop(Player * pPlayer)
 
 void HookInterface::OnHonorKill(Player * pPlayer)
 {
+	sLog.outDebug("Debug: Calling OnHonorKill Hooks");
 	ServerHookList hookList = sScriptMgr._hooks[SERVER_HOOK_EVENT_ON_HONOR_KILL];
 	for(ServerHookList::iterator itr = hookList.begin(); itr != hookList.end(); ++itr)
 		((tOnHonorKill)*itr)(pPlayer);
