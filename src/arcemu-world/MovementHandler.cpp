@@ -350,8 +350,22 @@ void WorldSession::HandleMovementOpcodes( WorldPacket & recv_data )
 		_player->jumping = false;
 	if( !_player->jumping && (recv_data.GetOpcode() == MSG_MOVE_JUMP || movement_info.flags & MOVEFLAG_FALLING))
 		_player->jumping = true;
-
-
+	
+	if( !(HasGMPermissions() && sWorld.no_antihack_on_gm) && !_player->m_uint32Values[UNIT_FIELD_CHARM] )
+	{
+		/************************************************************************/
+		/* Anti-Teleport                                                        */
+		/************************************************************************/
+		if(sWorld.antihack_teleport && _player->m_position.Distance2DSq(movement_info.x, movement_info.y) > 3025.0f
+		   && _player->m_runSpeed < 50.0f && !_player->m_TransporterGUID)
+		{
+			sCheatLog.writefromsession(this, "Disconnected for teleport hacking. Player speed: %f, Distance traveled: %f", _player->m_runSpeed, sqrt(_player->m_position.Distance2DSq(movement_info.x, movement_info.y)));
+			Disconnect();
+			return;
+		}
+	}
+	
+	
 	//update the detector
 	if( sWorld.antihack_speed && !_player->GetTaxiState() && _player->m_TransporterGUID == 0 && !_player->GetSession()->GetPermissionCount())
 	{
