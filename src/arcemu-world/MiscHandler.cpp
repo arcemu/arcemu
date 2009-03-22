@@ -967,6 +967,7 @@ void WorldSession::HandleCorpseReclaimOpcode(WorldPacket &recv_data)
 	// Check that we're reviving from a corpse, and that corpse is associated with us.
 	if( pCorpse->GetUInt32Value( CORPSE_FIELD_OWNER ) != _player->GetLowGUID() && pCorpse->GetUInt32Value( CORPSE_FIELD_FLAGS ) == 5 )
 	{
+		sLog.outDetail("WORLD: CMSG_RECLAIM_CORPSE failed on check 1");
 		WorldPacket data( SMSG_RESURRECT_FAILED, 4 );
 		data << uint32(1); // this is a real guess!
 		SendPacket(&data);
@@ -976,6 +977,7 @@ void WorldSession::HandleCorpseReclaimOpcode(WorldPacket &recv_data)
 	// Check we are actually in range of our corpse
 	if ( pCorpse->GetDistance2dSq( _player ) > CORPSE_MINIMUM_RECLAIM_RADIUS_SQ )
 	{
+		sLog.outDetail("WORLD: CMSG_RECLAIM_CORPSE failed on check 2");
 		WorldPacket data( SMSG_RESURRECT_FAILED, 4 );
 		data << uint32(1);
 		SendPacket(&data);
@@ -986,6 +988,7 @@ void WorldSession::HandleCorpseReclaimOpcode(WorldPacket &recv_data)
 	// cebernic: changes for better logic
 	if( time(NULL) < pCorpse->GetDeathClock() + CORPSE_RECLAIM_TIME )
 	{
+		sLog.outDetail("WORLD: CMSG_RECLAIM_CORPSE failed on check 3");
 		WorldPacket data( SMSG_RESURRECT_FAILED, 4 );
 		data << uint32(1);
 		SendPacket(&data);

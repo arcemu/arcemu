@@ -4553,13 +4553,14 @@ void Player::RepopRequestedPlayer()
 
 	BuildPlayerRepop();
 	
-
+sLog.outString("corpse recovery");
 	// Cebernic: don't do this.
   if ( !m_bg || ( m_bg && m_bg->HasStarted() ) )
   {
 		pMapinfo = WorldMapInfoStorage.LookupEntry( GetMapId() );
 		if( pMapinfo != NULL )
 		{
+
 			if( pMapinfo->type == INSTANCE_NULL || pMapinfo->type == INSTANCE_BATTLEGROUND )
 			{
 				RepopAtGraveyard( GetPositionX(), GetPositionY(), GetPositionZ(), GetMapId() );
@@ -4567,6 +4568,17 @@ void Player::RepopRequestedPlayer()
 			else
 			{
 				RepopAtGraveyard( pMapinfo->repopx, pMapinfo->repopy, pMapinfo->repopz, pMapinfo->repopmapid );
+			}
+			
+			switch( pMapinfo->mapid )
+			{
+				case 533: // Naxx
+				case 550: // The Eye
+				case 552: // The Arcatraz
+				case 553: // The Botanica
+				case 554: // The Mechanar
+					ResurrectPlayer();
+					return;
 			}
 		}
 		else
@@ -4594,17 +4606,7 @@ void Player::RepopRequestedPlayer()
 		GetSession()->SendPacket( &data2 );
 	}
 
-	if (pMapinfo) {
-		switch( pMapinfo->mapid )
-		{
-			case 550: // The Eye
-			case 552: // The Arcatraz
-			case 553: // The Botanica
-			case 554: // The Mechanar
-				ResurrectPlayer();
-				break;
-		}
-	}
+
 }
 
 void Player::ResurrectPlayer()
