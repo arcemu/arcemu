@@ -435,7 +435,6 @@ void WorldSession::HandleMovementOpcodes( WorldPacket & recv_data )
 	/************************************************************************/
 	/* Hack Detection by Classic	                                        */
 	/************************************************************************/
-#ifdef ENABLE_CLASSICS_DETECTION
 	if( !movement_info.transGuid && recv_data.GetOpcode() != MSG_MOVE_JUMP && !_player->FlyCheat && !_player->flying_aura && !(movement_info.flags & MOVEFLAG_SWIMMING || movement_info.flags & MOVEFLAG_FALLING) && movement_info.z > _player->GetPositionZ() && movement_info.x == _player->GetPositionX() && movement_info.y == _player->GetPositionY() )
 	{
 		WorldPacket data (SMSG_MOVE_UNSET_CAN_FLY, 13);
@@ -451,7 +450,7 @@ void WorldSession::HandleMovementOpcodes( WorldPacket & recv_data )
 		data << uint32(5);
 		SendPacket(&data);
 	}
-
+#ifdef ENABLE_CLASSICS_DETECTION
 	if( movement_info.z > -0.001 && movement_info.z < 0.001 && !(movement_info.flags & MOVEFLAG_FALLING_FAR) && (_player->GetPositionZ() > 3.0 || _player->GetPositionZ() < -3.0)/*3 meter tolerance to prevent false triggers*/)
 	{
 		sCheatLog.writefromsession(this, "Detected using teleport to plane");

@@ -1038,11 +1038,11 @@ void Player::Update( uint32 p_time )
 			m_indoorCheckTimer = mstime + COLLISION_INDOOR_CHECK_INTERVAL;
 		}
 
-		if( mstime >= m_flyhackCheckTimer )
+		/*if( mstime >= m_flyhackCheckTimer )
 		{
 			_FlyhackCheck();
 			m_flyhackCheckTimer = mstime + 10000; 
-		}
+		}*/
 	}
 
 #ifdef TRACK_IMMUNITY_BUG
@@ -11591,7 +11591,7 @@ void Player::_LoadPlayerCooldowns(QueryResult * result)
 
 void Player::_FlyhackCheck()
 {
-	if(!sWorld.antihack_flight || m_TransporterGUID != 0 || GetTaxiState() || (sWorld.no_antihack_on_gm && GetSession()->HasGMPermissions()))
+	if(|| !sWorld.antihack_flight || m_TransporterGUID != 0 || GetTaxiState() || (sWorld.no_antihack_on_gm && GetSession()->HasGMPermissions()))
 		return;
 
 	MovementInfo * mi = GetSession()->GetMovementInfo();
