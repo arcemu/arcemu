@@ -11591,8 +11591,10 @@ void Player::_LoadPlayerCooldowns(QueryResult * result)
 
 void Player::_FlyhackCheck()
 {
-	if(|| !sWorld.antihack_flight || m_TransporterGUID != 0 || GetTaxiState() || (sWorld.no_antihack_on_gm && GetSession()->HasGMPermissions()))
+	if( !sWorld.antihack_flight || m_TransporterGUID != 0 || GetTaxiState() || (sWorld.no_antihack_on_gm && GetSession()->HasGMPermissions()))
 		return;
+	
+	return;//Disabled
 
 	MovementInfo * mi = GetSession()->GetMovementInfo();
 	if(!mi) return; //wtf?
