@@ -164,7 +164,7 @@ public:
 	virtual bool IsUnit()	{ return ( m_objectTypeId == TYPEID_UNIT || m_objectTypeId == TYPEID_PLAYER ); }
 	virtual bool IsPlayer() { return m_objectTypeId == TYPEID_PLAYER; }
 	virtual bool IsCreature() { return m_objectTypeId == TYPEID_UNIT; }
-	virtual bool IsPet();
+	virtual bool IsPet() { return false; } // Ok, it's overridden by the Pet class
 
 	//! This includes any nested objects we have, inventory for example.
 	virtual uint32 __fastcall BuildCreateUpdateBlockForPlayer( ByteBuffer *data, Player *target );
@@ -374,6 +374,7 @@ public:
 	// In-range object management, not sure if we need it
 	ARCEMU_INLINE bool IsInRangeSet( Object* pObj )
 	{
+		//return true;
 		return !( m_objectsInRange.find( pObj ) == m_objectsInRange.end() );
 	}
 	
