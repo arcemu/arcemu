@@ -294,18 +294,18 @@ void WorldSession::HandleMovementOpcodes( WorldPacket & recv_data )
 		case MSG_MOVE_START_STRAFE_RIGHT:
 			_player->strafing = true;
 			break;
-		case MSG_MOVE_JUMP:
+		/*case MSG_MOVE_JUMP:
 			_player->jumping = true;
-			break;
+			break;*/
 		case MSG_MOVE_STOP:
 			_player->moving = false;
 			break;
 		case MSG_MOVE_STOP_STRAFE:
 			_player->strafing = false;
 			break;
-		case MSG_MOVE_FALL_LAND:
+		/*case MSG_MOVE_FALL_LAND:
 			_player->jumping = false;
-			break;
+			break;*/
 		default:
 			moved = false;
 			break;
@@ -338,6 +338,18 @@ void WorldSession::HandleMovementOpcodes( WorldPacket & recv_data )
 			sEventMgr.AddEvent( _player, &Player::_Kick, EVENT_PLAYER_KICK, 5000, 1, 0 );
 		}
 	} */
+	
+	/*Anti Multi-Jump Check*/
+	if( recv_data.GetOpcode() == MSG_MOVE_JUMP && _player->jumping == true && !GetPermissionCount())
+	{
+		sCheatLog.writefromsession(this, "Detected jump hacking");
+		Disconnect();
+		return;
+	}
+	if( recv_data.GetOpcode() == MSG_MOVE_FALL_LAND || movement_info.flags & MOVEFLAG_SWIMMING)
+		_player->jumping = false;
+	if( !_player->jumping && (recv_data.GetOpcode() == MSG_MOVE_JUMP || movement_info.flags & MOVEFLAG_FALLING))
+		_player->jumping = true;
 
 
 	//update the detector
@@ -457,12 +469,6 @@ void WorldSession::HandleMovementOpcodes( WorldPacket & recv_data )
 		Disconnect();
 		return;
 	}
-	if( recv_data.GetOpcode() == MSG_MOVE_JUMP && _player->jumping == true && !GetPermissionCount())
-	{
-		sCheatLog.writefromsession(this, "Detected jump hacking");
-		Disconnect();
-		return;
-	}
 
 	if( !GetPermissionCount() && recv_data.GetOpcode() == MSG_MOVE_START_FORWARD &&  movement_info.flags == MOVEFLAG_TAXI && !_player->GetTaxiState() )
 	{
@@ -470,10 +476,6 @@ void WorldSession::HandleMovementOpcodes( WorldPacket & recv_data )
 		Disconnect();
 		return;
 	}
-	if( recv_data.GetOpcode() == MSG_MOVE_FALL_LAND || movement_info.flags & MOVEFLAG_SWIMMING)
-		_player->jumping = false;
-	if( !_player->jumping && (recv_data.GetOpcode() == MSG_MOVE_JUMP || movement_info.flags & MOVEFLAG_FALLING))
-		_player->jumping = true;
 #endif
 	/************************************************************************/
 	/* Falling damage checks                                                */
