@@ -811,15 +811,15 @@ void SetupWarsongGulch(ScriptMgr * mgr)
 	mgr->register_gossip_script(3890, wsg);			// Brakgul Deathbringer
 
 	// Register the event hooks
-	mgr->register_hook(SERVER_HOOK_EVENT_ON_PLAYER_DEATH, &WarsongGulch::OnPlayerDeath);
-	mgr->register_hook(SERVER_HOOK_EVENT_ON_REPOP, &WarsongGulch::OnRepopRequest);
-	mgr->register_hook(SERVER_HOOK_EVENT_ON_AREA_TRIGGER, &WarsongGulch::OnAreaTrigger);
-	mgr->register_hook(SERVER_HOOK_EVENT_ON_FLAG_DROP_PICKUP, &WarsongGulch::OnFlagDropPickup);
-	mgr->register_hook(SERVER_HOOK_EVENT_ON_FLAG_STAND_PICKUP, &WarsongGulch::OnFlagStandPickup);
-	mgr->register_hook(SERVER_HOOK_EVENT_ON_FLAG_DROP, &WarsongGulch::OnFlagDrop);
-	mgr->register_hook(SERVER_HOOK_EVENT_ON_MOUNT, &WarsongGulch::OnMount);
-	mgr->register_hook(SERVER_HOOK_EVENT_ON_HONOR_KILL, &WarsongGulch::OnHonorKill);
-	mgr->register_hook(SERVER_HOOK_EVENT_ON_PLAYER_KILL, &WarsongGulch::OnPlayerKill);
-	mgr->register_hook(SERVER_HOOK_EVENT_ON_SPELL_CAST, &WarsongGulch::OnSpellCast);
+	mgr->register_hook(SERVER_HOOK_EVENT_ON_PLAYER_DEATH, (void *)&WarsongGulch::OnPlayerDeath);
+	mgr->register_hook(SERVER_HOOK_EVENT_ON_REPOP, (void *)&WarsongGulch::OnRepopRequest);
+	mgr->register_hook(SERVER_HOOK_EVENT_ON_AREA_TRIGGER, (void *)&WarsongGulch::OnAreaTrigger);
+	mgr->register_hook(SERVER_HOOK_EVENT_ON_FLAG_DROP_PICKUP, (void *)&WarsongGulch::OnFlagDropPickup);
+	mgr->register_hook(SERVER_HOOK_EVENT_ON_FLAG_STAND_PICKUP, (void *)&WarsongGulch::OnFlagStandPickup);
+	mgr->register_hook(SERVER_HOOK_EVENT_ON_FLAG_DROP, (void *)&WarsongGulch::OnFlagDrop);
+	mgr->register_hook(SERVER_HOOK_EVENT_ON_MOUNT, (void *)&WarsongGulch::OnMount);
+	mgr->register_hook(SERVER_HOOK_EVENT_ON_HONOR_KILL, (void *)&WarsongGulch::OnHonorKill);
+	mgr->register_hook(SERVER_HOOK_EVENT_ON_PLAYER_KILL, (void *)&WarsongGulch::OnPlayerKill);
+	mgr->register_hook(SERVER_HOOK_EVENT_ON_SPELL_CAST, (void *)&WarsongGulch::OnSpellCast);
 
 }

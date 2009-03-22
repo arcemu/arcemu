@@ -1048,12 +1048,12 @@ void SetupArathiBasin(ScriptMgr * mgr)
 	mgr->register_gossip_script(15006, ab);			// Deze Snowbane
 	mgr->register_gossip_script(14991, ab);			// League of Arathor Emissary
 
-	mgr->register_hook(SERVER_HOOK_EVENT_ON_PLAYER_DEATH, &ArathiBasin::OnPlayerDeath);
-	mgr->register_hook(SERVER_HOOK_EVENT_ON_AREA_TRIGGER, &ArathiBasin::OnAreaTrigger);
-	mgr->register_hook(SERVER_HOOK_EVENT_ON_SPELL_CAST, &ArathiBasin::OnSpellCast);
-	mgr->register_hook(SERVER_HOOK_EVENT_ON_REPOP, &ArathiBasin::OnRepopRequest);
-	mgr->register_hook(SERVER_HOOK_EVENT_ON_HONOR_KILL, &ArathiBasin::OnHonorKill);
-	mgr->register_hook(SERVER_HOOK_EVENT_ON_PLAYER_KILL, &ArathiBasin::OnPlayerKill);
-	mgr->register_hook(SERVER_HOOK_EVENT_ON_DESTROY_GAME_OBJ, &ArathiBasin::OnDestoryGameObject);
+	mgr->register_hook(SERVER_HOOK_EVENT_ON_PLAYER_DEATH, (void *)&ArathiBasin::OnPlayerDeath);
+	mgr->register_hook(SERVER_HOOK_EVENT_ON_AREA_TRIGGER, (void *)&ArathiBasin::OnAreaTrigger);
+	mgr->register_hook(SERVER_HOOK_EVENT_ON_SPELL_CAST, (void *)&ArathiBasin::OnSpellCast);
+	mgr->register_hook(SERVER_HOOK_EVENT_ON_REPOP, (void *)&ArathiBasin::OnRepopRequest);
+	mgr->register_hook(SERVER_HOOK_EVENT_ON_HONOR_KILL, (void *)&ArathiBasin::OnHonorKill);
+	mgr->register_hook(SERVER_HOOK_EVENT_ON_PLAYER_KILL, (void *)&ArathiBasin::OnPlayerKill);
+	mgr->register_hook(SERVER_HOOK_EVENT_ON_DESTROY_GAME_OBJ, (void *)&ArathiBasin::OnDestoryGameObject);
 
 }

@@ -1130,13 +1130,13 @@ void SetupEyeOfTheStorm(ScriptMgr * mgr)
 	mgr->register_gossip_script(20384, eots);		// Yula the Fair
 
 	// Event Hooks
-	mgr->register_hook(SERVER_HOOK_EVENT_ON_PLAYER_DEATH, &EyeOfTheStorm::OnPlayerDeath);
-	mgr->register_hook(SERVER_HOOK_EVENT_ON_FLAG_DROP_PICKUP, &EyeOfTheStorm::OnFlagDropPickup);
-	mgr->register_hook(SERVER_HOOK_EVENT_ON_MOUNT, &EyeOfTheStorm::OnMount);
-	mgr->register_hook(SERVER_HOOK_EVENT_ON_AREA_TRIGGER, &EyeOfTheStorm::OnAreaTrigger);
-	mgr->register_hook(SERVER_HOOK_EVENT_ON_REPOP, &EyeOfTheStorm::OnRepopRequest);
-	mgr->register_hook(SERVER_HOOK_EVENT_ON_FLAG_DROP, &EyeOfTheStorm::OnFlagDrop);
-	mgr->register_hook(SERVER_HOOK_EVENT_ON_HONOR_KILL, &EyeOfTheStorm::OnHonorKill);
-	mgr->register_hook(SERVER_HOOK_EVENT_ON_PLAYER_KILL, &EyeOfTheStorm::OnPlayerKill);
+	mgr->register_hook(SERVER_HOOK_EVENT_ON_PLAYER_DEATH, (void *)&EyeOfTheStorm::OnPlayerDeath);
+	mgr->register_hook(SERVER_HOOK_EVENT_ON_FLAG_DROP_PICKUP, (void *)&EyeOfTheStorm::OnFlagDropPickup);
+	mgr->register_hook(SERVER_HOOK_EVENT_ON_MOUNT, (void *)&EyeOfTheStorm::OnMount);
+	mgr->register_hook(SERVER_HOOK_EVENT_ON_AREA_TRIGGER, (void *)&EyeOfTheStorm::OnAreaTrigger);
+	mgr->register_hook(SERVER_HOOK_EVENT_ON_REPOP, (void *)&EyeOfTheStorm::OnRepopRequest);
+	mgr->register_hook(SERVER_HOOK_EVENT_ON_FLAG_DROP, (void *)&EyeOfTheStorm::OnFlagDrop);
+	mgr->register_hook(SERVER_HOOK_EVENT_ON_HONOR_KILL, (void *)&EyeOfTheStorm::OnHonorKill);
+	mgr->register_hook(SERVER_HOOK_EVENT_ON_PLAYER_KILL, (void *)&EyeOfTheStorm::OnPlayerKill);
 
 }

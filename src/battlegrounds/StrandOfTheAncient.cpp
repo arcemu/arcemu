@@ -21,6 +21,18 @@
 Strand of the Ancients
 ======================
 
+* Main ToDo, Functionality Bug
+	* (OnGameobjectDestroy)
+		Relic should not spawn until just before the final gate is destroyed,
+		else it is clickable when the gate is closed.
+	* Boat transportation and waypoints
+	* Support for the second boat
+	* Revive everyone after round one
+		* bg->EventResurrectPlayers()
+
+* Secondary ToDo
+	* Support for random starting positions
+
 * Banners
 	* Flagpole, 191311
 	* Alliance Banner, 191310
@@ -55,9 +67,6 @@ Strand of the Ancients
 	* The Frostbreaker, 193185
 	* The Graceful Maiden (boat?), 193182
 	* Doodad_WG_Keep_Door01_collision01, 194162 (Not implemented atm)
-
-* Revive everyone after round one
-	* bg->EventResurrectPlayers()
 
 * Setup index 34 in worldstring_tables to equal "Strand of the Ancients"
 
@@ -660,10 +669,10 @@ void SetupStrandOfTheAncient(ScriptMgr * mgr)
 	mgr->register_gossip_script(30587, sota);		// Vinvo Goldgear - Shattrath
 	*/
 
-	mgr->register_hook(SERVER_HOOK_EVENT_ON_HONOR_KILL, &StrandOfTheAncient::OnHonorKill);
-	mgr->register_hook(SERVER_HOOK_EVENT_ON_PLAYER_KILL, &StrandOfTheAncient::OnPlayerKill);
-	mgr->register_hook(SERVER_HOOK_EVENT_ON_PLAYER_DEATH, &StrandOfTheAncient::OnPlayerDeath);
-	mgr->register_hook(SERVER_HOOK_EVENT_ON_SPELL_CAST, &StrandOfTheAncient::OnSpellCast);
-	mgr->register_hook(SERVER_HOOK_EVENT_ON_REPOP, &StrandOfTheAncient::OnRepopRequest);
+	mgr->register_hook(SERVER_HOOK_EVENT_ON_HONOR_KILL, (void *)&StrandOfTheAncient::OnHonorKill);
+	mgr->register_hook(SERVER_HOOK_EVENT_ON_PLAYER_KILL, (void *)&StrandOfTheAncient::OnPlayerKill);
+	mgr->register_hook(SERVER_HOOK_EVENT_ON_PLAYER_DEATH, (void *)&StrandOfTheAncient::OnPlayerDeath);
+	mgr->register_hook(SERVER_HOOK_EVENT_ON_SPELL_CAST, (void *)&StrandOfTheAncient::OnSpellCast);
+	mgr->register_hook(SERVER_HOOK_EVENT_ON_REPOP, (void *)&StrandOfTheAncient::OnRepopRequest);
 
 }
