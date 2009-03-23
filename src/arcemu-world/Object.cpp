@@ -1648,14 +1648,12 @@ bool Object::isInRange(Object* target, float range)
 
 bool Object::IsPet()
 {
-	if (this->GetTypeId() != TYPEID_UNIT || !m_uint32Values || !this->IsCreature())
+	if( this->GetTypeId() != TYPEID_UNIT )
 		return false;
 
-	if (m_uint32Values[UNIT_FIELD_CREATEDBY] == 0 || m_uint32Values[UNIT_FIELD_SUMMONEDBY] == 0)
-		return false;
-
-	if (static_cast< Creature * >(this)->IsPet())
-		return true;
+	if (this->IsCreature() && static_cast< Creature * >(this)->IsPet() && m_uint32Values &&
+		m_uint32Values[UNIT_FIELD_CREATEDBY] != 0 && m_uint32Values[UNIT_FIELD_SUMMONEDBY] != 0 )
+			return true;
 
 	return false;
 }
@@ -2298,8 +2296,8 @@ void Object::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
 				SpellEntry* sorInfo = dbcSpell.LookupEntry(27827);
 				if( sorInfo != NULL )
 				{
-					Spell *sor = new Spell( pVictim, sorInfo, true, NULL );
-					//sor->Init( pVictim, sorInfo, true, NULL );
+					Spell *sor = SpellPool.PooledNew();
+					sor->Init( pVictim, sorInfo, true, NULL );
 					SpellCastTargets targets;
 					targets.m_unitTarget = pVictim->GetGUID();
 					sor->prepare(&targets);
@@ -2624,6 +2622,7 @@ void Object::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
 				if( pVictim->IsPet() )
 				{
 					Pet* pPet = static_cast< Pet* >( pVictim );
+					Player* owner = pPet->GetPetOwner();
 
 					// dying pet looses 1 happiness level (not in BG)
 					if( !pPet->IsSummon() && !pPet->IsInBg() )

@@ -25,7 +25,6 @@
 Creature::Creature(uint64 guid)
 {
 	proto = 0;
-	m_isPet = false;
 	m_valuesCount = UNIT_END;
 	m_objectTypeId = TYPEID_UNIT;
 	m_uint32Values = _fields;
@@ -1659,8 +1658,8 @@ void Creature::AISpellUpdate()
 				//get the spell
 				SpellEntry* newspell=dbcSpell.LookupEntry(this->GetProto()->AISpells[i]);
 				SpellCastTime* casttime=dbcSpellCastTime.LookupEntry(newspell->CastingTimeIndex);
-				Spell* spell=new Spell(this, newspell, false, 0);
-				//spell->Init(this, newspell, false, 0);
+				Spell* spell=SpellPool.PooledNew();
+				spell->Init(this, newspell, false, 0);
 				SpellCastTargets t(0);
 				spell->GenerateTargets(&t);
 
@@ -1672,7 +1671,7 @@ void Creature::AISpellUpdate()
 				if (t.m_destX == 0.0f && t.m_destY == 0.0f && t.m_destZ == 0.0f && t.m_itemTarget == 0 && t.m_unitTarget == 0)
 				{
 					//printf("\nNo target, not casting!");
-					delete spell;
+					SpellPool.PooledDelete( spell );
 					continue;
 				}
 
@@ -1681,7 +1680,7 @@ void Creature::AISpellUpdate()
 
 				if (spell->CanCast(false) != SPELL_CANCAST_OK || !spell->HasPower() || m_silenced || IsStunned() || IsFeared())
 				{
-					delete spell;
+					SpellPool.PooledDelete( spell );
 					continue;
 				}
 

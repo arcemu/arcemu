@@ -49,7 +49,6 @@ SoulStoneReceiver(0),
 misdirectionTarget(0),
 bReincarnation(false),
 removeReagentCost(false),
-ignoreShapeShiftChecks(false),
 m_furorChance(0),
 Seal(0),
 judgespell(0),
@@ -1038,11 +1037,11 @@ void Player::Update( uint32 p_time )
 			m_indoorCheckTimer = mstime + COLLISION_INDOOR_CHECK_INTERVAL;
 		}
 
-		/*if( mstime >= m_flyhackCheckTimer )
+		if( mstime >= m_flyhackCheckTimer )
 		{
 			_FlyhackCheck();
 			m_flyhackCheckTimer = mstime + 10000; 
-		}*/
+		}
 	}
 
 #ifdef TRACK_IMMUNITY_BUG
@@ -1178,8 +1177,8 @@ void Player::_EventAttack( bool offhand )
 		else 
 		{ 
 			SpellEntry *spellInfo = dbcSpell.LookupEntry( GetOnMeleeSpell() );
-			Spell *spell = new Spell( this, spellInfo, true, NULL );
-			//spell->Init( this, spellInfo, true, NULL );
+			Spell *spell = SpellPool.PooledNew();
+			spell->Init( this, spellInfo, true, NULL );
 			spell->extra_cast_number = GetOnMeleeSpellEcn();
 			SpellCastTargets targets;
 			targets.m_unitTarget = GetSelection();
@@ -1269,8 +1268,8 @@ void Player::_EventCharmAttack()
 			{ 
 				SpellEntry *spellInfo = dbcSpell.LookupEntry(currentCharm->GetOnMeleeSpell());
 				currentCharm->SetOnMeleeSpell(0);
-				Spell *spell = new Spell(currentCharm,spellInfo,true,NULL);
-				//spell->Init(currentCharm,spellInfo,true,NULL);
+				Spell *spell = SpellPool.PooledNew();
+				spell->Init(currentCharm,spellInfo,true,NULL);
 				SpellCastTargets targets;
 				targets.m_unitTarget = GetSelection();
 				spell->prepare(&targets);
@@ -3851,7 +3850,7 @@ void Player::RemoveFromWorld()
 				{
 					m_SummonedObject->RemoveFromWorld(true);
 				}
-				delete m_SummonedObject; 
+				delete m_SummonedObject;
 			}
 		}
 		m_SummonedObject = NULL;
@@ -4021,8 +4020,8 @@ void Player::_ApplyItemMods(Item* item, int8 slot, bool apply, bool justdrokedow
 					if( Set->itemscount==set->itemscount[x])
 					{//cast new spell
 						SpellEntry *info = dbcSpell.LookupEntry( set->SpellID[x] );
-						Spell * spell = new Spell( this, info, true, NULL );
-						//spell->Init( this, info, true, NULL );
+						Spell * spell = SpellPool.PooledNew();
+						spell->Init( this, info, true, NULL );
 						SpellCastTargets targets;
 						targets.m_unitTarget = this->GetGUID();
 						spell->prepare( &targets );
@@ -4241,8 +4240,8 @@ void Player::_ApplyItemMods(Item* item, int8 slot, bool apply, bool justdrokedow
 					continue;
 				}
 
-				Spell *spell = new Spell( this, spells ,true, NULL );
-				//spell->Init( this, spells ,true, NULL );
+				Spell *spell = SpellPool.PooledNew();
+				spell->Init( this, spells ,true, NULL );
 				SpellCastTargets targets;
 				targets.m_unitTarget = this->GetGUID();
 				spell->castedItemId = item->GetEntry();
@@ -4487,15 +4486,15 @@ void Player::BuildPlayerRepop()
 	if(getRace()==RACE_NIGHTELF)
 	{
 		SpellEntry *inf=dbcSpell.LookupEntry(9036); // Cebernic:20584 triggered.
-		Spell*sp=new Spell(this,inf,true,NULL);
-		//sp->Init(this,inf,true,NULL);
+		Spell*sp=SpellPool.PooledNew();
+		sp->Init(this,inf,true,NULL);
 		sp->prepare(&tgt);
 	}
 	else
 	{
 		SpellEntry *inf=dbcSpell.LookupEntry(8326);
-		Spell*sp=new Spell(this,inf,true,NULL);
-		//sp->Init(this,inf,true,NULL);
+		Spell*sp=SpellPool.PooledNew();
+		sp->Init(this,inf,true,NULL);
 		sp->prepare(&tgt);
 	}
 
@@ -4553,14 +4552,13 @@ void Player::RepopRequestedPlayer()
 
 	BuildPlayerRepop();
 	
-sLog.outString("corpse recovery");
+
 	// Cebernic: don't do this.
   if ( !m_bg || ( m_bg && m_bg->HasStarted() ) )
   {
 		pMapinfo = WorldMapInfoStorage.LookupEntry( GetMapId() );
 		if( pMapinfo != NULL )
 		{
-
 			if( pMapinfo->type == INSTANCE_NULL || pMapinfo->type == INSTANCE_BATTLEGROUND )
 			{
 				RepopAtGraveyard( GetPositionX(), GetPositionY(), GetPositionZ(), GetMapId() );
@@ -4568,17 +4566,6 @@ sLog.outString("corpse recovery");
 			else
 			{
 				RepopAtGraveyard( pMapinfo->repopx, pMapinfo->repopy, pMapinfo->repopz, pMapinfo->repopmapid );
-			}
-			
-			switch( pMapinfo->mapid )
-			{
-				case 533: // Naxx
-				case 550: // The Eye
-				case 552: // The Arcatraz
-				case 553: // The Botanica
-				case 554: // The Mechanar
-					ResurrectPlayer();
-					return;
 			}
 		}
 		else
@@ -4606,7 +4593,17 @@ sLog.outString("corpse recovery");
 		GetSession()->SendPacket( &data2 );
 	}
 
-
+	if (pMapinfo) {
+		switch( pMapinfo->mapid )
+		{
+			case 550: // The Eye
+			case 552: // The Arcatraz
+			case 553: // The Botanica
+			case 554: // The Mechanar
+				ResurrectPlayer();
+				break;
+		}
+	}
 }
 
 void Player::ResurrectPlayer()
@@ -4653,10 +4650,6 @@ void Player::ResurrectPlayer()
 
 void Player::KillPlayer()
 {
-
-	if(getDeathState() != ALIVE) //You can't kill what has no life.
-		return;
-		
 	setDeathState(JUST_DIED);
 
 	// Battleground stuff
@@ -6494,8 +6487,8 @@ void Player::EventRepeatSpell()
 	{		
 		m_AutoShotAttackTimer = m_AutoShotDuration;
 	
-		Spell* sp = new Spell( this, m_AutoShotSpell, true, NULL );
-		//sp->Init( this, m_AutoShotSpell, true, NULL );
+		Spell* sp = SpellPool.PooledNew();
+		sp->Init( this, m_AutoShotSpell, true, NULL );
 		SpellCastTargets tgt;
 		tgt.m_unitTarget = m_curSelection;
 		tgt.m_targetMask = TARGET_FLAG_UNIT;
@@ -6755,11 +6748,6 @@ void Player::SendInitialLogonPackets()
 	// cebernic for speedhack bug
 	m_lastRunSpeed = 0;
 	UpdateSpeed();
-
-	WorldPacket ArenaSettings(SMSG_UPDATE_WORLD_STATE, 16);
-	ArenaSettings << uint32(0xC77) << uint32(sWorld.arena_progress);
-	ArenaSettings << uint32(0xF3D) << uint32(sWorld.arena_season);
-	GetSession()->SendPacket( &ArenaSettings );
 
 	sLog.outDetail("WORLD: Sent initial logon packets for %s.", GetName());
 }
@@ -9260,8 +9248,8 @@ void Player::CompleteLoading()
 					continue;
 			}
 
-			Spell * spell=new Spell(this,info,true,NULL);
-			//spell->Init(this,info,true,NULL);
+			Spell * spell=SpellPool.PooledNew();
+			spell->Init(this,info,true,NULL);
 			spell->prepare(&targets);
 		}
 	}
@@ -9288,8 +9276,8 @@ void Player::CompleteLoading()
 		if ( sp->c_is_flags & SPELL_FLAG_IS_EXPIREING_WITH_PET )
 			continue; //do not load auras that only exist while pet exist. We should recast these when pet is created anyway
 
-		Aura * aura = new Aura(sp,(*i).dur,this,this, false);
-		//aura->Init(sp,(*i).dur,this,this, false);
+		Aura * aura = AuraPool.PooledNew();
+		aura->Init(sp,(*i).dur,this,this, false);
 		//if ( !(*i).positive ) // do we need this? - vojta
 		//	aura->SetNegative();
 
@@ -9306,8 +9294,8 @@ void Player::CompleteLoading()
 			Aura * a = NULL;
 			for ( uint32 x = 0; x < (*i).charges - 1; x++ )
 			{
-				a = new Aura( sp, (*i).dur, this, this, false );
-				//a->Init( sp, (*i).dur, this, this, false );
+				a = AuraPool.PooledNew();
+				a->Init( sp, (*i).dur, this, this, false );
 				this->AddAura( a );
 				a = NULL;
 			}
@@ -9370,8 +9358,8 @@ void Player::CompleteLoading()
 
 
 	// useless logon spell
-	Spell *logonspell = new Spell(this, dbcSpell.LookupEntry(836), false, NULL);
-	//logonspell->Init(this, dbcSpell.LookupEntry(836), false, NULL);
+	Spell *logonspell = SpellPool.PooledNew();
+	logonspell->Init(this, dbcSpell.LookupEntry(836), false, NULL);
 	logonspell->prepare(&targets);
 
 	// Banned
@@ -9766,8 +9754,8 @@ void Player::SetShapeShift(uint8 ss)
 		{
 			if( sp->RequiredShapeShift && ((uint32)1 << (ss-1)) & sp->RequiredShapeShift )
 			{
-				spe = new Spell( this, sp, true, NULL );
-				//spe->Init( this, sp, true, NULL );
+				spe = SpellPool.PooledNew();
+				spe->Init( this, sp, true, NULL );
 				spe->prepare( &t );
 			}
 		}
@@ -9779,8 +9767,8 @@ void Player::SetShapeShift(uint8 ss)
 		sp = dbcSpell.LookupEntry( *itr );
 		if( sp->RequiredShapeShift && ((uint32)1 << (ss-1)) & sp->RequiredShapeShift )
 		{
-			spe = new Spell( this, sp, true, NULL );
-			//spe->Init( this, sp, true, NULL );
+			spe = SpellPool.PooledNew();
+			spe->Init( this, sp, true, NULL );
 			spe->prepare( &t );
 		}
 	}
@@ -11145,16 +11133,16 @@ void Player::EventSummonPet( Pet *new_pet )
 		{
 			this->RemoveAllAuras( SpellID, this->GetGUID() ); //this is required since unit::addaura does not check for talent stacking
 			SpellCastTargets targets( this->GetGUID() );
-			Spell *spell = new Spell(this, spellInfo ,true, NULL);
-			//spell->Init(this, spellInfo ,true, NULL);	//we cast it as a proc spell, maybe we should not !
+			Spell *spell = SpellPool.PooledNew();
+			spell->Init(this, spellInfo ,true, NULL);	//we cast it as a proc spell, maybe we should not !
 			spell->prepare(&targets);
 		}
 		if( spellInfo->c_is_flags & SPELL_FLAG_IS_CASTED_ON_PET_SUMMON_ON_PET )
 		{
 			this->RemoveAllAuras( SpellID, this->GetGUID() ); //this is required since unit::addaura does not check for talent stacking
 			SpellCastTargets targets( new_pet->GetGUID() );
-			Spell *spell = new Spell(this, spellInfo ,true, NULL);
-			//spell->Init(this, spellInfo ,true, NULL);	//we cast it as a proc spell, maybe we should not !
+			Spell *spell = SpellPool.PooledNew();
+			spell->Init(this, spellInfo ,true, NULL);	//we cast it as a proc spell, maybe we should not !
 			spell->prepare(&targets);
 		}
 	}
@@ -11308,8 +11296,8 @@ void Player::AddShapeShiftSpell(uint32 id)
 
 	if( sp->RequiredShapeShift && ((uint32)1 << (GetShapeShift()-1)) & sp->RequiredShapeShift )
 	{
-		Spell * spe = new Spell( this, sp, true, NULL );
-		//spe->Init( this, sp, true, NULL );
+		Spell * spe = SpellPool.PooledNew();
+		spe->Init( this, sp, true, NULL );
 		SpellCastTargets t(this->GetGUID());
 		spe->prepare( &t );
 	}
@@ -11594,10 +11582,8 @@ void Player::_LoadPlayerCooldowns(QueryResult * result)
 
 void Player::_FlyhackCheck()
 {
-	if( !sWorld.antihack_flight || m_TransporterGUID != 0 || GetTaxiState() || (sWorld.no_antihack_on_gm && GetSession()->HasGMPermissions()))
+	if(!sWorld.antihack_flight || m_TransporterGUID != 0 || GetTaxiState() || (sWorld.no_antihack_on_gm && GetSession()->HasGMPermissions()))
 		return;
-	
-	return;//Disabled
 
 	MovementInfo * mi = GetSession()->GetMovementInfo();
 	if(!mi) return; //wtf?
@@ -12336,22 +12322,15 @@ void Player::UpdatePowerAmm()
 // Initialize Glyphs or update them after level change
 void Player::UpdateGlyphs()
 {
-	uint32 level = getLevel();
-
-	// Init glyph slots
-	if( level >= 15 )
-	{
-		GlyphSlotEntry * gse;
-		uint32 y = 0;
-		for( uint32 i = 0; i < dbcGlyphSlot.GetNumRows(); ++i )
-		{	
-			gse = dbcGlyphSlot.LookupRow( i );	
-			if( gse->Slot > 0 )
-				SetUInt32Value( PLAYER_FIELD_GLYPH_SLOTS_1 + y++, gse->Id );
-		}
-	}
-
+	// Set 1 for minor, 2 for major
+	SetUInt32Value(PLAYER_FIELD_GLYPH_SLOTS_1, 4);
+	SetUInt32Value(PLAYER_FIELD_GLYPH_SLOTS_01, 1);
+	SetUInt32Value(PLAYER_FIELD_GLYPH_SLOTS_02, 1);
+	SetUInt32Value(PLAYER_FIELD_GLYPH_SLOTS_03, 4);
+	SetUInt32Value(PLAYER_FIELD_GLYPH_SLOTS_04, 1);
+	SetUInt32Value(PLAYER_FIELD_GLYPH_SLOTS_05, 4);
 	// Enable number of glyphs depending on level
+	uint32 level = getLevel();
 	uint32 glyph_mask = 0; 
 	if(level == 80)
 		glyph_mask = 6;

@@ -455,7 +455,7 @@ void Channel::Kick(Player * plr, Player * die_player, bool ban)
 		return;
 	}
 
-	if(!(me_itr->second & CHANNEL_FLAG_OWNER || me_itr->second & CHANNEL_FLAG_MODERATOR) && !plr->GetSession()->CanUseCommand('a') )
+	if(!(me_itr->second & CHANNEL_FLAG_OWNER || me_itr->second & CHANNEL_FLAG_MODERATOR))
 	{
 		data << uint8(CHANNEL_NOTIFY_FLAG_NOTMOD) << m_name;
 		plr->GetSession()->SendPacket(&data);
@@ -507,7 +507,7 @@ void Channel::Unban(Player * plr, PlayerInfo * bplr)
 		return;
 	}
 
-	if(!(itr->second & CHANNEL_FLAG_OWNER || itr->second & CHANNEL_FLAG_MODERATOR) && !plr->GetSession()->CanUseCommand('a') )
+	if(!(itr->second & CHANNEL_FLAG_OWNER || itr->second & CHANNEL_FLAG_MODERATOR))
 	{
 		data << uint8(CHANNEL_NOTIFY_FLAG_NOTMOD) << m_name;
 		plr->GetSession()->SendPacket(&data);
@@ -547,7 +547,7 @@ void Channel::Voice(Player * plr, Player * v_player)
 		return;
 	}
 
-	if(!(itr->second & CHANNEL_FLAG_OWNER || itr->second & CHANNEL_FLAG_MODERATOR) && !plr->GetSession()->CanUseCommand('a') )
+	if(!(itr->second & CHANNEL_FLAG_OWNER || itr->second & CHANNEL_FLAG_MODERATOR))
 	{
 		data << uint8(CHANNEL_NOTIFY_FLAG_NOTMOD) << m_name;
 		plr->GetSession()->SendPacket(&data);
@@ -580,7 +580,7 @@ void Channel::Devoice(Player * plr, Player * v_player)
 		return;
 	}
 
-	if(!(itr->second & CHANNEL_FLAG_OWNER || itr->second & CHANNEL_FLAG_MODERATOR) && !plr->GetSession()->CanUseCommand('a') )
+	if(!(itr->second & CHANNEL_FLAG_OWNER || itr->second & CHANNEL_FLAG_MODERATOR))
 	{
 		data << uint8(CHANNEL_NOTIFY_FLAG_NOTMOD) << m_name;
 		plr->GetSession()->SendPacket(&data);
@@ -613,7 +613,7 @@ void Channel::Mute(Player * plr, Player * die_player)
 		return;
 	}
 
-	if(!(itr->second & CHANNEL_FLAG_OWNER || itr->second & CHANNEL_FLAG_MODERATOR) && !plr->GetSession()->CanUseCommand('a') )
+	if(!(itr->second & CHANNEL_FLAG_OWNER || itr->second & CHANNEL_FLAG_MODERATOR))
 	{
 		data << uint8(CHANNEL_NOTIFY_FLAG_NOTMOD) << m_name;
 		plr->GetSession()->SendPacket(&data);
@@ -646,7 +646,7 @@ void Channel::Unmute(Player * plr, Player * die_player)
 		return;
 	}
 
-	if(!(itr->second & CHANNEL_FLAG_OWNER || itr->second & CHANNEL_FLAG_MODERATOR) && !plr->GetSession()->CanUseCommand('a') )
+	if(!(itr->second & CHANNEL_FLAG_OWNER || itr->second & CHANNEL_FLAG_MODERATOR))
 	{
 		data << uint8(CHANNEL_NOTIFY_FLAG_NOTMOD) << m_name;
 		plr->GetSession()->SendPacket(&data);
@@ -712,7 +712,7 @@ void Channel::TakeModerator(Player * plr, Player * new_player)
 		return;
 	}
 
-	if(!(itr->second & CHANNEL_FLAG_OWNER || itr->second & CHANNEL_FLAG_MODERATOR) && !plr->GetSession()->CanUseCommand('a') )
+	if(!(itr->second & CHANNEL_FLAG_OWNER || itr->second & CHANNEL_FLAG_MODERATOR))
 	{
 		data << uint8(CHANNEL_NOTIFY_FLAG_NOTMOD) << m_name;
 		plr->GetSession()->SendPacket(&data);
@@ -737,7 +737,7 @@ void Channel::Announce(Player * plr)
 		return;
 	}
 
-	if(!(itr->second & CHANNEL_FLAG_OWNER || itr->second & CHANNEL_FLAG_MODERATOR) && !plr->GetSession()->CanUseCommand('a') )
+	if(!(itr->second & CHANNEL_FLAG_OWNER || itr->second & CHANNEL_FLAG_MODERATOR))
 	{
 		data << uint8(CHANNEL_NOTIFY_FLAG_NOTMOD) << m_name;
 		plr->GetSession()->SendPacket(&data);
@@ -761,7 +761,7 @@ void Channel::Password(Player * plr, const char * pass)
 		return;
 	}
 
-	if(!(itr->second & CHANNEL_FLAG_OWNER || itr->second & CHANNEL_FLAG_MODERATOR) && !plr->GetSession()->CanUseCommand('a') )
+	if(!(itr->second & CHANNEL_FLAG_OWNER || itr->second & CHANNEL_FLAG_MODERATOR))
 	{
 		data << uint8(CHANNEL_NOTIFY_FLAG_NOTMOD) << m_name;
 		plr->GetSession()->SendPacket(&data);

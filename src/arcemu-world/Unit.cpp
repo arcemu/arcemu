@@ -1358,8 +1358,8 @@ uint32 Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, ui
 					if( new_caster && new_caster->isAlive() )
 					{
 						SpellEntry *spellInfo = dbcSpell.LookupEntry( spellId ); //we already modified this spell on server loading so it must exist
-						Spell *spell = new Spell( new_caster, spellInfo ,true, NULL );
-						//spell->Init( new_caster, spellInfo ,true, NULL );
+						Spell *spell = SpellPool.PooledNew();
+						spell->Init( new_caster, spellInfo ,true, NULL );
 						SpellCastTargets targets;
 						targets.m_destX = GetPositionX();
 						targets.m_destY = GetPositionY();
@@ -1402,8 +1402,8 @@ uint32 Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, ui
 						if( new_caster != NULL && new_caster->isAlive() )
 						{
 							SpellEntry* spellInfo = dbcSpell.LookupEntry( 25228 ); //we already modified this spell on server loading so it must exist
-							Spell* spell = new Spell( new_caster, spellInfo, true, NULL );
-							//spell->Init( new_caster, spellInfo, true, NULL );
+							Spell* spell = SpellPool.PooledNew();
+							spell->Init( new_caster, spellInfo, true, NULL );
 							spell->forced_basepoints[0] = dmg;
 							SpellCastTargets targets;
 							targets.m_unitTarget = GetGUID();
@@ -1501,11 +1501,11 @@ uint32 Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, ui
 						SpellEntry *spellInfo = dbcSpell.LookupEntry(spellId );
 						if(!spellInfo)
 							continue;
-						Spell *spell = new Spell(this, spellInfo ,true, NULL);
-						//spell->Init(this, spellInfo ,true, NULL);
+						Spell *spell = SpellPool.PooledNew();
+						spell->Init(this, spellInfo ,true, NULL);
 						spell->SetUnitTarget(this);
 						spell->Heal(amount*(ospinfo->EffectBasePoints[0]+1)/100);
-						delete spell;
+						SpellPool.PooledDelete( spell );
 						continue;
 					}break;
 				//warlock - pyroclasm
@@ -1640,8 +1640,8 @@ uint32 Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, ui
 
 						if( Next_new_target )
 						{
-							Spell *spell = new Spell( p_caster, ospinfo ,true, NULL);
-							//spell->Init( p_caster, ospinfo ,true, NULL);
+							Spell *spell = SpellPool.PooledNew();
+							spell->Init( p_caster, ospinfo ,true, NULL);
 							spell->forced_basepoints[0] = pa->GetModAmount( 0 ) - 1 ;
 							SpellCastTargets targets( Next_new_target->GetGUID() ); //no target so spelltargeting will get an injured party member
 							spell->prepare( &targets );
@@ -1694,8 +1694,8 @@ uint32 Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, ui
 						if (!parentproc || !spellInfo)
 							continue;
 						int32 val = parentproc->EffectBasePoints[0] + 1;
-                        Spell *spell = new Spell(this, spellInfo ,true, NULL);
-						//spell->Init(this, spellInfo ,true, NULL);
+                        Spell *spell = SpellPool.PooledNew();
+						spell->Init(this, spellInfo ,true, NULL);
                         spell->forced_basepoints[0] = (val*dmg)/300; //per tick
                         SpellCastTargets targets;
                         targets.m_unitTarget = GetGUID();
@@ -2078,12 +2078,14 @@ uint32 Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, ui
 						if( !IsPlayer() )
 							continue; //great, we can only make this for players 
 						Player* c = static_cast< Player* >( this );
+//printf("is there a seal on the player ? %u \n",c->Seal);
 						if( !c->LastSeal )
 							continue; //how the hack did we manage to cast judgement without a seal ?
 						SpellEntry *spellInfo = dbcSpell.LookupEntry( c->LastSeal ); //null pointer check was already made
 						if( !spellInfo )
 							continue;	//now this is getting freeky, how the hell did we manage to create this bug ?
 						dmg_overwrite = spellInfo->manaCost * (ospinfo->EffectBasePoints[0] + 1 ) / 100 ; //only half dmg
+//printf("is there a seal on the player ? %u \n",dmg_overwrite);
 					}break;
 				//Energized
 				case 43751:
@@ -2341,8 +2343,8 @@ uint32 Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, ui
 			targets.m_unitTarget = victim->GetGUID();
 
 		SpellEntry *spellInfo = dbcSpell.LookupEntry(spellId );
-		Spell *spell = new Spell(this, spellInfo ,true, NULL);
-		//spell->Init(this, spellInfo ,true, NULL);
+		Spell *spell = SpellPool.PooledNew();
+		spell->Init(this, spellInfo ,true, NULL);
 		spell->forced_basepoints[0] = dmg_overwrite;
 		spell->ProcedOnSpell = CastingSpell;
 		//Spell *spell = new Spell(this,spellInfo,false,0,true,false);
@@ -2350,7 +2352,7 @@ uint32 Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, ui
 		{
 			spell->pSpellId=itr2->spellId;
 			spell->SpellEffectDummy(0);
-			delete spell;
+			SpellPool.PooledDelete( spell );
 			continue;
 		}
 		spell->pSpellId=origId;
@@ -3742,14 +3744,14 @@ void Unit::Strike( Unit* pVictim, uint32 weapon_damage_type, SpellEntry* ability
 					}
 
 					// Cast.
-					cspell = new Spell(this, itr->first, true, NULL);
-					//cspell->Init(this, itr->first, true, NULL);
+					cspell = SpellPool.PooledNew();
+					cspell->Init(this, itr->first, true, NULL);
 					cspell->prepare(&targets);
 				}
 				else
 				{
-					cspell = new Spell(this, itr->first, true, NULL);
-					//cspell->Init(this, itr->first, true, NULL);
+					cspell = SpellPool.PooledNew();
+					cspell->Init(this, itr->first, true, NULL);
 					cspell->prepare(&targets);
 				}			
 			}
@@ -3786,8 +3788,8 @@ void Unit::Strike( Unit* pVictim, uint32 weapon_damage_type, SpellEntry* ability
 				Aura * aur = pVictim->m_auras[x];
 				SpellEntry * spinfo = aur->GetSpellProto();
 				aur->Remove();
-				Spell * sp = new Spell( this , spinfo , true , NULL );
-				//sp->Init( this , spinfo , true , NULL );
+				Spell * sp = SpellPool.PooledNew();
+				sp->Init( this , spinfo , true , NULL );
 				SpellCastTargets tgt;
 				tgt.m_unitTarget = pVictim->GetGUID();
 				sp->prepare( &tgt );
@@ -4187,7 +4189,7 @@ void Unit::AddAura(Aura *aur)
 			if( aur->GetSpellProto()->EffectApplyAuraName[i] == 208 || aur->GetSpellProto()->EffectApplyAuraName[i] == 207 )
 			{
 				sEventMgr.RemoveEvents(aur);
-				delete aur;
+				AuraPool.PooledDelete( aur );
 				return;
 			}
 		}
@@ -4195,7 +4197,7 @@ void Unit::AddAura(Aura *aur)
 	
 	if( aur->GetSpellProto()->School && SchoolImmunityList[aur->GetSpellProto()->School] )
 	{
-		delete aur;
+		AuraPool.PooledDelete( aur );
 		return;
 	}
 
@@ -4309,7 +4311,7 @@ void Unit::AddAura(Aura *aur)
 			if(deleteAur)
 			{
 				sEventMgr.RemoveEvents(aur);
-				delete aur;
+				AuraPool.PooledDelete( aur );
 				return;
 			}
 		}
@@ -4342,7 +4344,7 @@ void Unit::AddAura(Aura *aur)
 	{
 		sLog.outError("Aura error in active aura. ");
 		sEventMgr.RemoveEvents(aur);
-		delete aur;
+		AuraPool.PooledDelete( aur );
 		return;
 	}
 
@@ -4377,7 +4379,7 @@ void Unit::AddAura(Aura *aur)
 	{
 		//TODO : notify client that we are imune to this spell
 		sEventMgr.RemoveEvents(aur);
-		delete aur;
+		AuraPool.PooledDelete( aur );
 		return;
 	}
 
@@ -4443,13 +4445,8 @@ void Unit::AddAura(Aura *aur)
 		}
 	}
 	
-	uint32 flag = 0;
 	if( aur->GetSpellProto()->MechanicsType == MECHANIC_ENRAGED )
-		flag |= AURASTATE_FLAG_ENRAGED;
-	if( aur->GetSpellProto()->BGR_one_buff_on_target & SPELL_TYPE_SEAL )
-		flag |= AURASTATE_FLAG_JUDGEMENT;
-	
-	SetFlag( UNIT_FIELD_AURASTATE, flag );
+		SetFlag( UNIT_FIELD_AURASTATE, AURASTATE_FLAG_ENRAGED );
 }
 
 bool Unit::RemoveAura(Aura *aur)
@@ -5521,8 +5518,8 @@ void Unit::EventSummonPetExpire()
 			if(!spInfo)
 				return;
 
-			Spell*sp=new Spell(summonPet,spInfo,true,NULL);
-			//sp->Init(summonPet,spInfo,true,NULL);
+			Spell*sp=SpellPool.PooledNew();
+			sp->Init(summonPet,spInfo,true,NULL);
 			SpellCastTargets tgt;
 			tgt.m_unitTarget=summonPet->GetGUID();
 			sp->prepare(&tgt);
@@ -5542,8 +5539,8 @@ uint8 Unit::CastSpell(Unit* Target, SpellEntry* Sp, bool triggered)
 	if( Sp == NULL )
 		return SPELL_FAILED_UNKNOWN;
 
-	Spell *newSpell = new Spell(this, Sp, triggered, 0);
-	//newSpell->Init(this, Sp, triggered, 0);
+	Spell *newSpell = SpellPool.PooledNew();
+	newSpell->Init(this, Sp, triggered, 0);
 	SpellCastTargets targets(0);
 	if(Target)
 	{
@@ -5562,8 +5559,8 @@ uint8 Unit::CastTrainerSpell(Unit* Target, SpellEntry* Sp, bool triggered)
 	if( Sp == NULL )
 		return SPELL_FAILED_UNKNOWN;
 
-	Spell *newSpell = new Spell(Target, Sp, triggered, 0);
-	//newSpell->Init(Target, Sp, triggered, 0);
+	Spell *newSpell = SpellPool.PooledNew();
+	newSpell->Init(Target, Sp, triggered, 0);
 	SpellCastTargets targets(0);
 	if(Target)
 	{
@@ -5591,8 +5588,8 @@ uint8 Unit::CastSpell(uint64 targetGuid, SpellEntry* Sp, bool triggered)
 		return SPELL_FAILED_UNKNOWN;
 
 	SpellCastTargets targets(targetGuid);
-	Spell *newSpell = new Spell(this, Sp, triggered, 0);
-	//newSpell->Init(this, Sp, triggered, 0);
+	Spell *newSpell = SpellPool.PooledNew();
+	newSpell->Init(this, Sp, triggered, 0);
 	return newSpell->prepare(&targets);
 }
 
@@ -5613,8 +5610,8 @@ void Unit::CastSpellAoF(float x,float y,float z,SpellEntry* Sp, bool triggered)
 	targets.m_destY = y;
 	targets.m_destZ = z;
 	targets.m_targetMask=TARGET_FLAG_DEST_LOCATION;
-	Spell *newSpell = new Spell(this, Sp, triggered, 0);
-	//newSpell->Init(this, Sp, triggered, 0);
+	Spell *newSpell = SpellPool.PooledNew();
+	newSpell->Init(this, Sp, triggered, 0);
 	newSpell->prepare(&targets);
 }
 
@@ -6229,8 +6226,8 @@ bool Unit::GetSpeedDecrease()
 
 void Unit::EventCastSpell(Unit * Target, SpellEntry * Sp)
 {
-	Spell * pSpell = new Spell(Target, Sp, true, NULL);
-	//pSpell->Init(Target, Sp, true, NULL);
+	Spell * pSpell = SpellPool.PooledNew();
+	pSpell->Init(Target, Sp, true, NULL);
 	SpellCastTargets targets(Target->GetGUID());
 	pSpell->prepare(&targets);
 }
@@ -7213,8 +7210,8 @@ void Unit::EventStunOrImmobilize(Unit *proc_target, bool is_victim)
 		if(!spellInfo)
 			return;
 
-		Spell *spell = new Spell(this, spellInfo ,true, NULL);
-		//spell->Init(this, spellInfo ,true, NULL);
+		Spell *spell = SpellPool.PooledNew();
+		spell->Init(this, spellInfo ,true, NULL);
 		SpellCastTargets targets;
 
 		if ( spellInfo->procFlags & PROC_TARGET_SELF )
@@ -7255,8 +7252,8 @@ void Unit::EventChill(Unit *proc_target, bool is_victim)
 		if(!spellInfo)
 			return;
 
-		Spell *spell = new Spell(this, spellInfo ,true, NULL);
-		//spell->Init(this, spellInfo ,true, NULL);
+		Spell *spell = SpellPool.PooledNew();
+		spell->Init(this, spellInfo ,true, NULL);
 		SpellCastTargets targets;
 
 		if ( spellInfo->procFlags & PROC_TARGET_SELF )

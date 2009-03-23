@@ -1858,7 +1858,7 @@ void CBattlegroundManager::HandleArenaJoin(WorldSession * m_session, uint32 Batt
 					return;
 				}
 
-				if( (*itx)->lastLevel < PLAYER_ARENA_MIN_LEVEL )
+				if((*itx)->lastLevel < PLAYER_LEVEL_CAP_70)
 				{
 					m_session->SystemMessage(m_session->LocalizedWorldSrv(59));
 					pGroup->Unlock();

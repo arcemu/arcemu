@@ -20,25 +20,43 @@
 
 #include "StdAfx.h"
 
-Item::Item()
+Item::Item()//this is called when constructing as container
 {
+	m_bufferPoolId = OBJECT_WAS_ALLOCATED_STANDARD_WAY;
 	m_itemProto = NULL;
 	m_owner = NULL;
 	loot = NULL;
 	locked = false;
 	wrapped_item_id = 0;
-}
-
-
-Item::Item(uint32 high, uint32 low)
-{
 	m_objectTypeId = TYPEID_ITEM;
 	m_valuesCount = ITEM_END;
 	m_uint32Values = _fields;
 	m_updateMask.SetCount(ITEM_END);
+	random_prop = 0;
+	random_suffix = 0;
+	m_mapMgr = 0;
+	m_mapCell = 0;
+	mSemaphoreTeleport = false;
+	m_faction = NULL;
+	m_factionDBC = NULL;
+	m_instanceId = 0;
+	m_inQueue = false;
+	m_extensions = NULL;
+	m_loadedFromDB = false;
 
 	Enchantments.clear();
+}
 
+//called instead of parametrized constructor
+void Item::Init( uint32 high, uint32 low )
+{
+	SetUInt32Value( OBJECT_FIELD_GUID, low );
+	SetUInt32Value( OBJECT_FIELD_GUID + 1, high );
+	m_wowGuid.Init( GetGUID() );
+}
+
+void Item::Virtual_Constructor()
+{
 	memset( m_uint32Values, 0, (ITEM_END) * sizeof( uint32 ) );
 	SetUInt32Value( OBJECT_FIELD_TYPE,TYPE_ITEM | TYPE_OBJECT );
 	SetFloatValue( OBJECT_FIELD_SCALE_X, 1 );//always 1
@@ -65,50 +83,64 @@ Item::Item(uint32 high, uint32 low)
 	m_inQueue = false;
 	m_extensions = NULL;
 	m_loadedFromDB = false;
-
-
-	SetUInt32Value( OBJECT_FIELD_GUID, low );
-	SetUInt32Value( OBJECT_FIELD_GUID + 1, high );
-	m_wowGuid.Init( GetGUID() );
-
 }
-//called instead of parametrized constructor
-/*void Item::Init( uint32 high, uint32 low )
-{
-	SetUInt32Value( OBJECT_FIELD_GUID, low );
-	SetUInt32Value( OBJECT_FIELD_GUID + 1, high );
-	m_wowGuid.Init( GetGUID() );
-}*/
-
-
 
 Item::~Item()
 {
 	if( loot != NULL )
-    {
-        delete loot;
-        loot = NULL;
-    }
-	
-    sEventMgr.RemoveEvents( this );
+	{
+		delete loot;
+		loot = NULL;
+	}
+
+	sEventMgr.RemoveEvents( this );
+
 	EnchantmentMap::iterator itr;
-    for( itr = Enchantments.begin(); itr != Enchantments.end(); ++itr )
-    {
-        if( itr->second.Enchantment->type == 0 && itr->second.Slot == 0 && itr->second.ApplyTime == 0 && itr->second.Duration == 0 )
-        {
-             delete itr->second.Enchantment;
-             itr->second.Enchantment = NULL;
-        }
-    }
-    Enchantments.clear();
-	
-    if( IsInWorld() )
-        RemoveFromWorld();
-	
-    m_owner = NULL;
+	for( itr = Enchantments.begin(); itr != Enchantments.end(); ++itr )
+	{
+		if( itr->second.Enchantment->type == 0 && itr->second.Slot == 0 && itr->second.ApplyTime == 0 && itr->second.Duration == 0 )
+		{
+			delete itr->second.Enchantment;
+			itr->second.Enchantment = NULL;
+		}
+	}
+	Enchantments.clear();
+
+	if( IsInWorld() )
+		RemoveFromWorld();
+
+	m_owner = NULL;
 }
 
+void Item::Virtual_Destructor()
+{
+	if( loot != NULL )
+	{
+		delete loot;
+		loot = NULL;
+	}
 
+	sEventMgr.RemoveEvents( this );
+
+	EnchantmentMap::iterator itr;
+	for( itr = Enchantments.begin(); itr != Enchantments.end(); ++itr )
+	{
+		if( itr->second.Enchantment->type == 0 && itr->second.Slot == 0 && itr->second.ApplyTime == 0 && itr->second.Duration == 0 )
+		{
+			delete itr->second.Enchantment;
+			itr->second.Enchantment = NULL;
+		}
+	}
+	Enchantments.clear();
+
+	//don't want to keep context ....
+	static_cast< EventableObject* >( this )->Virtual_Destructor();
+
+	if( IsInWorld() )
+		RemoveFromWorld();
+
+	m_owner = NULL;
+}
 
 void Item::Create( uint32 itemid, Player* owner )
 {
@@ -415,7 +447,7 @@ void Item::DeleteMe()
 	if( IsContainer() ) {
 		delete static_cast<Container*>(this);
 	} else {
-		delete this;
+		ItemPool.PooledDelete( this );
 	}
 }
 
@@ -819,8 +851,8 @@ void Item::ApplyEnchantmentBonus( uint32 Slot, bool Apply )
 							if( sp == NULL )
 								continue;
 
-							spell = new Spell( m_owner, sp, true, 0 );
-							//spell->Init( m_owner, sp, true, 0 );
+							spell = SpellPool.PooledNew();
+							spell->Init( m_owner, sp, true, 0 );
 							spell->i_caster = this;
 							spell->prepare( &targets );
 						}

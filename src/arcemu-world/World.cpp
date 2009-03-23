@@ -1318,9 +1318,6 @@ void World::Rehash(bool load)
 	antiMasterLootNinja = Config.OptionalConfig.GetBoolDefault("Optional", "AntiMasterLootNinja", false);
 	realmAllowTBCcharacters = Config.OptionalConfig.GetBoolDefault("Optional", "AllowTBC", true);
 
-	arena_season = Config.MainConfig.GetIntDefault("Arena", "Season", 1);
-	arena_progress = Config.MainConfig.GetIntDefault("Arena", "Progress", 1);
-
 	announce_tag = Config.MainConfig.GetStringDefault("Announce", "Tag", "Staff");
 	GMAdminTag = Config.MainConfig.GetBoolDefault("Announce", "GMAdminTag", false);
 	NameinAnnounce = Config.MainConfig.GetBoolDefault("Announce", "NameinAnnounce", true);

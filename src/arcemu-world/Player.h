@@ -46,8 +46,8 @@ class SpeedDetector;
 #define PLAYER_ACTION_BUTTON_COUNT 132
 #define PLAYER_ACTION_BUTTON_SIZE PLAYER_ACTION_BUTTON_COUNT * sizeof(ActionButton)
 
-#define PLAYER_LEVEL_CAP		80
-#define PLAYER_ARENA_MIN_LEVEL	70
+#define PLAYER_LEVEL_CAP_70 80
+#define PLAYER_LEVEL_CAP	80
 
 #define PLAYER_EXPLORED_ZONES_LENGTH 128
 
@@ -1558,7 +1558,6 @@ public:
 
 	bool bReincarnation;
 	bool removeReagentCost;
-	bool ignoreShapeShiftChecks;
 
 	map<uint32, WeaponModifier> damagedone;
 	map<uint32, WeaponModifier> tocritchance;

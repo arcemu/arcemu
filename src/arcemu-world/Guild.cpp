@@ -51,15 +51,13 @@ Guild::~Guild()
 			free((void*)itr->second->szPublicNote);
 		delete itr->second;
 	}
-	m_members.clear();
 
-	for( uint8 i = 0; i < MAX_GUILD_RANKS; ++i )
+	for(uint32 i = 0; i < MAX_GUILD_RANKS; ++i)
 	{
-		if( m_ranks[i] != NULL )
+		if(m_ranks[i] != NULL)
 		{
-			free( m_ranks[i]->szRankName );
+			free(m_ranks[i]->szRankName);
 			delete m_ranks[i];
-			m_ranks[i] = NULL;
 		}
 	}
 
@@ -67,20 +65,15 @@ Guild::~Guild()
 	{
 		delete (*itr);
 	}
-	m_log.clear();
 
-	for( GuildBankTabVector::iterator itr = m_bankTabs.begin(); itr != m_bankTabs.end(); ++itr )
+	for(GuildBankTabVector::iterator itr = m_bankTabs.begin(); itr != m_bankTabs.end(); ++itr)
 	{
-		for( uint32 i = 0; i < MAX_GUILD_BANK_SLOTS; ++i )
-			if( (*itr)->pSlots[i] != NULL )
-			{
-				(*itr)->pSlots[i]->DeleteMe();
-				(*itr)->pSlots[i] = NULL;
-			}
+		//for(uint32 i = 0; i < MAX_GUILD_BANK_SLOTS; ++i) vojta: we've deleted this in ItemPool
+		//	if((*itr)->pSlots[i] != NULL)
+		//		delete (*itr)->pSlots[i];
 
 		for(list<GuildBankEvent*>::iterator it2 = (*itr)->lLog.begin(); it2 != (*itr)->lLog.end(); ++it2)
 			delete (*it2);
-		(*itr)->lLog.clear();
 		
 		free( (*itr)->szTabIcon );
 		free( (*itr)->szTabInfo );
@@ -88,11 +81,9 @@ Guild::~Guild()
 		
 		delete (*itr);
 	}
-	m_bankTabs.clear();
 
 	for(list<GuildBankEvent*>::iterator it2 = m_moneyLog.begin(); it2 != m_moneyLog.end(); ++it2)
 		delete (*it2);
-	m_moneyLog.clear();
 
 	if(m_guildInfo)
 		free(m_guildInfo);

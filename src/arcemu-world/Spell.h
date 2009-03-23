@@ -369,11 +369,11 @@ enum AuraInterruptFlags
     AURA_INTERRUPT_ON_HOSTILE_SPELL_INFLICTED = 0x1,
     AURA_INTERRUPT_ON_ANY_DAMAGE_TAKEN        = 0x2,
     AURA_INTERRUPT_ON_UNK1                    = 0x4,
-    AURA_INTERRUPT_ON_MOVEMENT                = 0x8,
-    AURA_INTERRUPT_ON_TURNING                 = 0x10,
-    AURA_INTERRUPT_ON_ENTER_COMBAT            = 0x20,
-    AURA_INTERRUPT_ON_DISMOUNT                = 0x40,
-    AURA_INTERRUPT_ON_ENTER_WATER             = 0x80,
+    AURA_INTERRUPT_ON_MOVEMENT                = 0x8, // could be AURA_INTERRUPT_ON_MOVEMENT
+    AURA_INTERRUPT_ON_UNK2                    = 0x10,
+    AURA_INTERRUPT_ON_UNK3                    = 0x20,
+    AURA_INTERRUPT_ON_UNUSED1                 = 0x40,
+    AURA_INTERRUPT_ON_SLOWED                  = 0x80,
     AURA_INTERRUPT_ON_LEAVE_WATER             = 0x100, // could be AURA_INTERRUPT_ON_LEAVE_CURRENT_SURFACE
     AURA_INTERRUPT_ON_UNUSED2                 = 0x200,
     AURA_INTERRUPT_ON_UNK4                    = 0x400,
@@ -390,7 +390,6 @@ enum AuraInterruptFlags
     AURA_INTERRUPT_ON_STEALTH                 = 0x200000,
     AURA_INTERRUPT_ON_UNK8                    = 0x400000,
 	AURA_INTERRUPT_ON_PVP_ENTER				  =	0x800000,
-	AURA_INTERRUPT_ON_DIRECT_DAMAGE			  = 0x1000000,
     AURA_INTERRUPT_ON_AFTER_CAST_SPELL        = 0x80000000,
 };
 
@@ -770,14 +769,6 @@ enum LOCKTYPES{
     LOCKTYPE_BLASTING               =16,
     LOCKTYPE_SLOW_OPEN              =17,
     LOCKTYPE_SLOW_CLOSE             =18
-};
-
-enum TIMER_TYPE
-{
-	TIMER_EXHAUSTION,
-	TIMER_BREATH,
-	TIMER_FEIGNDEATH,
-	TIMER_UNKNOWN
 };
 
 enum SpellEffects
@@ -1578,10 +1569,12 @@ class SERVER_DECL Spell
 {
 public:
     friend class DummySpellHandler;
-	
-    Spell( Object* Caster, SpellEntry *info, bool triggered, Aura* aur);
-	~Spell();
-
+    Spell( );
+	void Init( Object* Caster, SpellEntry *info, bool triggered, Aura* aur );
+	void Virtual_Constructor();		//when using object pool contructor is not good to be called again sometimes. Use this instead
+    ~Spell();
+	void Virtual_Destructor();		//this makes sure we do not leave events on objects that are supposed to be deleted
+	int32 m_bufferPoolId;
 
     // Fills specified targets at the area of effect
     void FillSpecifiedTargetsInArea(float srcx,float srcy,float srcz,uint32 ind, uint32 specification);
@@ -1979,7 +1972,6 @@ public:
     uint32 castedItemId;
     bool judgement;
 	uint8 extra_cast_number;
-	uint32 m_glyphslot;
 
     void SendCastSuccess(Object * target);
     void SendCastSuccess(const uint64& guid);

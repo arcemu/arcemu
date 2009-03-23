@@ -2,7 +2,6 @@
 ===============================
 Title: The Harvest Festival Remove
 Author: Nexis
-Updated by: Krzysiek
 Duration: Sept 8th - Sept 13th
 ===============================
 */

@@ -22,4 +22,4 @@ Duration: Sept 8th - Sept 13th
 	1.	[Midsummer Ground Flower] is missing from the database.
 
 == SCRIPTS ==
-	1. 	[Midsummer Ground Flower] must be scripted.
+	1. [Midsummer Ground Flower] must be scripted.

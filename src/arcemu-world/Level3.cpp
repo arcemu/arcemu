@@ -36,6 +36,7 @@ void ParseBanArgs(char* args, char** BanDuration, char** BanReason)
 	// Lack of duration results in a permanent ban.
 	char* pBanDuration = strchr(args, ' ');
 	char* pReason = NULL;
+	int32 BanTime = 0;
 	if(pBanDuration != NULL)
 	{
 		if(isdigit(*(pBanDuration+1))) // this is the duration of the ban
@@ -1828,8 +1829,8 @@ bool ChatHandler::HandleCastAllCommand(const char* args, WorldSession* m_session
 			}
 			else
 			{
-				Spell * sp = new Spell(plr, info, true, 0);
-				//sp->Init(plr, info, true, 0);
+				Spell * sp = SpellPool.PooledNew();
+				sp->Init(plr, info, true, 0);
 				SpellCastTargets targets(plr->GetGUID());
 				sp->prepare(&targets);
 			}
@@ -3409,16 +3410,6 @@ bool ChatHandler::HandleCollisionTestLOS(const char * args, WorldSession * m_ses
 		SystemMessage(m_session, "Collision is not enabled.");
 		return true;
 	}
-}
-
-bool ChatHandler::HandleGetDeathState(const char * args, WorldSession * m_session)
-{
-	Player* SelectedPlayer = getSelectedChar(m_session, true);
-	if(!SelectedPlayer) 
-		return true;
-	
-	SystemMessage(m_session, "Death State: %d",SelectedPlayer->getDeathState());
-	return true;
 }
 
 bool ChatHandler::HandleCollisionGetHeight(const char * args, WorldSession * m_session)

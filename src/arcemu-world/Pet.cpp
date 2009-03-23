@@ -227,7 +227,6 @@ void Pet::CreateAsSummon( uint32 entry, CreatureInfo *ci, Creature* created_from
 
 Pet::Pet( uint64 guid ) : Creature( guid )
 {
-	m_isPet = true;
 	m_PetXP = 0;
 	Summon = false;
 	memset(ActionBar, 0, sizeof(uint32)*10);
@@ -387,8 +386,8 @@ void Pet::InitializeSpells()
 		if( info->Attributes & ATTRIBUTES_PASSIVE )
 		{
 			// Cast on self..
-			Spell * sp = new Spell( this, info, true, false );
-			//sp->Init( this, info, true, false );
+			Spell * sp = SpellPool.PooledNew();
+			sp->Init( this, info, true, false );
 			SpellCastTargets targets( this->GetGUID() );
 			sp->prepare( &targets );
 
@@ -824,8 +823,8 @@ void Pet::AddSpell( SpellEntry * sp, bool learning )
 	{
 		if( IsInWorld() )
 		{
-			Spell * spell = new Spell(this, sp, true, false);
-			//spell->Init(this, sp, true, false);
+			Spell * spell = SpellPool.PooledNew();
+			spell->Init(this, sp, true, false);
 			SpellCastTargets targets(this->GetGUID());
 			spell->prepare(&targets);
 			mSpells[sp] = 0x0100;

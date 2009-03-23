@@ -190,7 +190,7 @@ namespace VMAP
 									char buffer[100];
 									if(iCoordModelMapping->isWorldAreaMap(mapId) && x<65 && y<65)
 									{
-										sprintf(buffer, "%03u_%d_%d",mapId,x,y); // Let's flip x and y here --- OR MAYBE NOT, it's good for the server as X,Y even if it loads them by Y,X - test confirmed it - by: VLack aka. VLsoft
+										sprintf(buffer, "%03u_%d_%d",mapId,y,x); // Let's flip x and y here
 										dirname = std::string(buffer);
 									}
 									else
@@ -232,7 +232,7 @@ namespace VMAP
 							char fullnamedestnamebuffer[500];
 							if(nameCollection.iMainFiles.size() >0)
 							{
-								sprintf(destnamebuffer,"%03u_%i_%i.vmap",pMapId, pXPos, pYPos); // flip it here too --- OR MAYBE NOT, it's good for the server as X,Y even if it loads them by Y,X - test confirmed it - by: VLack aka. VLsoft
+								sprintf(destnamebuffer,"%03u_%i_%i.vmap",pMapId, pYPos, pXPos); // flip it here too
 								std::string checkDoubleStr = std::string(dirfilename);
 								checkDoubleStr.append("##");
 								checkDoubleStr.append(std::string(destnamebuffer));

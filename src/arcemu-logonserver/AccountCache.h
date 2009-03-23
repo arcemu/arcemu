@@ -178,9 +178,9 @@ typedef struct
 {
 	string Name;
 	string Address;
-	uint32 Colour;
-	uint32 Icon;
-	uint32 TimeZone;
+	uint8 Colour;
+	uint8 Icon;
+	uint8 TimeZone;
 	float Population;
 	uint8 Lock;
 	HM_NAMESPACE::hash_map<uint32, uint8> CharacterMap;

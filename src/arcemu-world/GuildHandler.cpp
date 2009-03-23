@@ -561,13 +561,6 @@ void WorldSession::HandleCharterBuy(WorldPacket & recv_data)
 			return;
 		}
 
-		if( _player->getLevel() < PLAYER_ARENA_MIN_LEVEL )
-		{
-			//TODO: Replace by LocalizedWorldSrv(..)
-			SendNotification( "You must be at least level %u to buy Arena charter", PLAYER_ARENA_MIN_LEVEL );
-			return;
-		}
-
 		static uint32 item_ids[] = {ARENA_TEAM_CHARTER_2v2, ARENA_TEAM_CHARTER_3v3, ARENA_TEAM_CHARTER_5v5};
 		static uint32 costs[] = {ARENA_TEAM_CHARTER_2v2_COST,ARENA_TEAM_CHARTER_3v3_COST,ARENA_TEAM_CHARTER_5v5_COST};
 

@@ -36,9 +36,9 @@ typedef struct
 {
 	string Name;
 	string Address;
-	uint32 Colour;
-	uint32 Icon;
-	uint32 TimeZone;
+	//uint32 Colour;
+	uint8 Icon;
+	uint8 TimeZone;
 	float Population;
 	uint8 Lock;
 }Realm;

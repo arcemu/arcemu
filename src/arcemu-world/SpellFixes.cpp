@@ -4222,7 +4222,7 @@ void ApplyNormalFixes()
 		{
 			sp->EffectApplyAuraName[2] = SPELL_AURA_PERIODIC_TRIGGER_SPELL;
 			sp->Effect[2] = SPELL_EFFECT_APPLY_AURA;
-			sp->EffectAmplitude[2] = 3000;
+			sp->EffectAmplitude[2] = 6000;
 			sp->EffectImplicitTargetA[2] = EFF_TARGET_SELF;
 			sp->EffectBaseDice[2] = 1;
 			sp->EffectDieSides[2] = 1;
@@ -6575,6 +6575,7 @@ void ApplyNormalFixes()
 		{
 			sp->Attributes = ATTRIBUTES_CANT_BE_DPB;   
 		}   
+
 		// Blood Fury Healing Debuff
 		sp = dbcSpell.LookupEntryForced( 23230 );
 		if( sp != NULL )
@@ -6611,72 +6612,6 @@ void ApplyNormalFixes()
 		sp->Effect[0] = SPELL_EFFECT_DUMMY;
 		sp->Effect[1] = SPELL_EFFECT_DUMMY;
 		}
-		//Wild quiver rank 1
-		sp = dbcSpell.LookupEntryForced( 53215 );
-		if( sp != NULL )
-		{
-			sp->procFlags = PROC_ON_RANGED_ATTACK;
-			sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
-			sp->EffectTriggerSpell[0] = 53254;
-			sp->procChance = 4;
-		}
 
-		sp = dbcSpell.LookupEntryForced( 53216 );
-		if( sp != NULL )
-		{
-			sp->procFlags = PROC_ON_RANGED_ATTACK;
-			sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
-			sp->EffectTriggerSpell[0] = 53254;
-			sp->procChance = 7;
-		}
 
-		sp = dbcSpell.LookupEntryForced( 53217 );
-		if( sp != NULL )
-		{
-			sp->procFlags = PROC_ON_RANGED_ATTACK;
-			sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
-			sp->EffectTriggerSpell[0] = 53254;
-			sp->procChance = 10;
-		}
-		// Wrecking Crew Rank 1
-		sp = dbcSpell.LookupEntryForced( 46867 );
-		if( sp != NULL )
-		{
-			sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
-			sp->EffectTriggerSpell[0] = 57518;
-			sp->procFlags = PROC_ON_CRIT_ATTACK;
-			sp->procChance = 100;
-		}
-		sp = dbcSpell.LookupEntryForced( 56611 );
-		if( sp != NULL )
-		{
-			sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
-			sp->EffectTriggerSpell[0] = 57519;
-			sp->procFlags = PROC_ON_CRIT_ATTACK;
-			sp->procChance = 100;
-		}
-		sp = dbcSpell.LookupEntryForced( 56612 );
-		if( sp != NULL )
-		{
-			sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
-			sp->EffectTriggerSpell[0] = 57520;
-			sp->procFlags = PROC_ON_CRIT_ATTACK;
-			sp->procChance = 100;
-		}
-		sp = dbcSpell.LookupEntryForced( 56613 );
-		if( sp != NULL )
-		{
-			sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
-			sp->EffectTriggerSpell[0] = 57521;
-			sp->procFlags = PROC_ON_CRIT_ATTACK;
-			sp->procChance = 100;
-		}
-		sp = dbcSpell.LookupEntryForced( 56614 );
-		if( sp != NULL )
-		{
-			sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
-			sp->EffectTriggerSpell[0] = 57522;
-			sp->procFlags = PROC_ON_CRIT_ATTACK;
-			sp->procChance = 100;
-		}
 }

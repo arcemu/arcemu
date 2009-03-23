@@ -128,8 +128,8 @@ void Arena::OnAddPlayer(Player * plr)
 		plr->m_bgIsQueued = false;
 
 	/* Add the green/gold team flag */
-	Aura * aura = new Aura(dbcSpell.LookupEntry((plr->GetTeamInitial()) ? 35775-plr->m_bgTeam : 32725-plr->m_bgTeam), -1, plr, plr, true);
-	//aura->Init(dbcSpell.LookupEntry((plr->GetTeamInitial()) ? 35775-plr->m_bgTeam : 32725-plr->m_bgTeam), -1, plr, plr, true);
+	Aura * aura = AuraPool.PooledNew();
+	aura->Init(dbcSpell.LookupEntry((plr->GetTeamInitial()) ? 35775-plr->m_bgTeam : 32725-plr->m_bgTeam), -1, plr, plr, true);
 	plr->AddAura(aura);
 	
 	/* Set FFA PvP Flag */
@@ -285,6 +285,8 @@ void Arena::OnCreate()
 	SetWorldState(0x08D3	,0x0000);
 	SetWorldState(0x0C0D	,0x017B);
 
+	SetWorldState(0x0C77,0x01); // 1 - arena season in progress, 0 - end of season
+	SetWorldState(0x0F3D,0x05); // arena season id
 
 	// Show players count
 	switch(m_mapMgr->GetMapId())
@@ -674,12 +676,12 @@ void Arena::HookOnAreaTrigger(Player * plr, uint32 id)
 		{
 			/* apply the buff */
 			SpellEntry * sp = dbcSpell.LookupEntry(m_buffs[buffslot]->GetInfo()->sound3);
-			Spell * s = new Spell(plr, sp, true, 0);
+			Spell * s = SpellPool.PooledNew();
 
 			ASSERT(sp != NULL);
 			ASSERT(s != NULL);
 
-			//s->Init(plr, sp, true, 0);
+			s->Init(plr, sp, true, 0);
 			SpellCastTargets targets(plr->GetGUID());
 			s->prepare(&targets);
 

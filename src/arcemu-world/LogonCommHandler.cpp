@@ -73,9 +73,8 @@ void LogonCommHandler::RequestAddition(LogonCommClientSocket * Socket)
 		Realm * realm = *itr;
 		data << realm->Name;
 		data << realm->Address;
-		data << realm->Colour;
-		data << realm->Icon;
-		data << realm->TimeZone;
+		data << uint8(realm->Icon);
+		data << uint8(realm->TimeZone);
 		data << float(realm->Population);
 		data << uint8(realm->Lock);
 		Socket->SendPacket(&data,false);
@@ -394,7 +393,6 @@ void LogonCommHandler::LoadRealmConfiguration()
 			Realm * realm = new Realm;
 			realm->Name = Config.RealmConfig.GetStringVA("Name", "SomeRealm", "Realm%u", i);
 			realm->Address = Config.RealmConfig.GetStringVA("Address", "127.0.0.1:8129", "Realm%u", i);
-			realm->Colour = 0;
 			realm->TimeZone = Config.RealmConfig.GetIntVA("TimeZone", 1, "Realm%u", i);
 			realm->Population = Config.RealmConfig.GetFloatVA("Population", 0, "Realm%u", i);
 			realm->Lock = Config.RealmConfig.GetIntVA("Lock", 0, "Realm%u", i);			
