@@ -2539,12 +2539,11 @@ void AIInterface::SendCurrentMove(Player* plyr/*uint64 guid*/)
 
 	*splineBuf << m_sourceX << m_sourceY << m_sourceZ;
 	*splineBuf << m_Unit->GetPositionX() << m_Unit->GetPositionY() << m_Unit->GetPositionZ();
-	*splineBuf << m_destinationX << m_destinationY << m_destinationZ;
-	*splineBuf << m_destinationX << m_destinationY << m_destinationZ;
-	*splineBuf << m_destinationX << m_destinationY << m_destinationZ;
-
+	*splineBuf << m_destinationX << m_destinationY << m_destinationZ + 0.1f;
+	*splineBuf << m_destinationX << m_destinationY << m_destinationZ + 0.2f;
 	*splineBuf << uint8(0);
-
+	*splineBuf << m_destinationX << m_destinationY << m_destinationZ;
+	
 	plyr->AddSplinePacket(m_Unit->GetGUID(), splineBuf);
 
 	//This should only be called by Players AddInRangeObject() ONLY
