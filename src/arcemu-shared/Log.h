@@ -75,7 +75,7 @@ public:
   FILE *m_file;
 };
 
-class SERVER_DECL SessionLogWriter
+class SessionLogWriter
 {
 	FILE * m_file;
 	char * m_filename;
@@ -90,9 +90,9 @@ public:
 	void Close();
 };
 
-extern SERVER_DECL SessionLogWriter * Anticheat_Log;
-extern SERVER_DECL SessionLogWriter * GMCommand_Log;
-extern SERVER_DECL SessionLogWriter * Player_Log;
+extern SessionLogWriter * Anticheat_Log;
+extern SessionLogWriter * GMCommand_Log;
+extern SessionLogWriter * Player_Log;
 
 #define sLog oLog::getSingleton()
 #define sCheatLog (*Anticheat_Log)

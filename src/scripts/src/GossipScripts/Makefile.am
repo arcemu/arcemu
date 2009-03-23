@@ -8,6 +8,7 @@ AM_CXXFLAGS = -DSCRIPTLIB
 lib_LTLIBRARIES = libSunGossipScripts.la
 
 libSunGossipScripts_la_SOURCES = \
+Gossip_Battlemaster.cpp \
 Gossip_Innkeepers.cpp \
 Gossip_Guard.cpp \
 Gossip_Trainer.cpp \

@@ -44,16 +44,16 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalOptions="/MP /Zm256"
+				AdditionalOptions="/MP"
 				Optimization="0"
 				InlineFunctionExpansion="2"
-				AdditionalIncludeDirectories="&quot;..\..\..\extras\arcemu-windows-libraries\VC\include&quot;;..\..\arcemu-shared;..\..\arcemu-world;..\..\..\dep\include;..\..\..\dep\src"
+				AdditionalIncludeDirectories="..\..\arcemu-shared;..\..\arcemu-world;..\..\..\dep\include;..\..\..\dep\src"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;SCRIPTLIB"
 				MinimalRebuild="false"
 				ExceptionHandling="2"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
-				UsePrecompiledHeader="2"
+				UsePrecompiledHeader="0"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="false"
 				DebugInformationFormat="3"
@@ -129,10 +129,9 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalOptions="/Zm256"
 				Optimization="0"
 				InlineFunctionExpansion="2"
-				AdditionalIncludeDirectories="..\..\..\extras\arcemu-windows-libraries\VC\include;..\..\arcemu-shared;..\..\arcemu-world;..\..\..\dep\include;..\..\..\dep\src"
+				AdditionalIncludeDirectories="..\..\arcemu-shared;..\..\arcemu-world;..\..\..\dep\include;..\..\..\dep\src"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;SCRIPTLIB;X64;_CRT_SECURE_NO_WARNINGS;_CRT_NONSTDC_NO_WARNINGS"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -315,7 +314,7 @@
 				FavorSizeOrSpeed="1"
 				OmitFramePointers="true"
 				WholeProgramOptimization="true"
-				AdditionalIncludeDirectories="..\..\..\extras\arcemu-windows-libraries\VC\include;..\..\arcemu-shared;..\..\arcemu-world;..\..\..\dep\include;..\..\..\dep\src"
+				AdditionalIncludeDirectories="..\..\arcemu-shared;..\..\arcemu-world;..\..\..\dep\include;..\..\..\dep\src"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;SCRIPTLIB;X64;_CRT_SECURE_NO_WARNINGS;_CRT_NONSTDC_NO_WARNINGS"
 				StringPooling="true"
 				RuntimeLibrary="2"
@@ -386,14 +385,6 @@
 				RelativePath="..\src\GossipScripts\Setup.cpp"
 				>
 				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
 					Name="Release|Win32"
 					>
 					<Tool
@@ -420,6 +411,10 @@
 			Filter="h;hpp;hxx;hm;inl;inc;xsd"
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
+			<File
+				RelativePath="..\src\GossipScripts\Gossip_Battlemaster.cpp"
+				>
+			</File>
 			<File
 				RelativePath="..\src\GossipScripts\Gossip_Guard.cpp"
 				>

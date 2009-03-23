@@ -92,7 +92,6 @@ MapMgr::MapMgr(Map *map, uint32 mapId, uint32 instanceid) : CellHandler<MapCell>
 
 MapMgr::~MapMgr()
 {
-	sLog.outDetail("~MapMgr");
 	_shutdown=true;
 	sEventMgr.RemoveEvents(this);
 	if (ScriptInterface != NULL) {
@@ -101,15 +100,15 @@ MapMgr::~MapMgr()
 	}
 	
 	// Remove objects
-	if (_cells)
+	if(_cells)
 	{
-		for(uint32 i = 0; i < _sizeX; i++)
+		for (uint32 i = 0; i < _sizeX; i++)
 		{
-			if (_cells[i] != 0)
+			if(_cells[i] != 0)
 			{
-				for(uint32 j = 0; j < _sizeY; j++)
+				for (uint32 j = 0; j < _sizeY; j++)
 				{
-					if (_cells[i][j] != 0)
+					if(_cells[i][j] != 0)
 					{
 						_cells[i][j]->_unloadpending=false;
 						_cells[i][j]->RemoveObjects();
@@ -1485,7 +1484,6 @@ void MapMgr::TeleportCorruptedPlayers()
 //there might be cases when we should restart the mapmanager made for the the map (like always loaded maps)
 void MapMgr::KillThreadWithCleanup()
 {
-	sLog.outDetail("MapMgr::KillThreadWithCleanup()");
 	try
 	{
 		// remove all events regarding to this map
@@ -1496,10 +1494,8 @@ void MapMgr::KillThreadWithCleanup()
 
 		if(m_battleground)
 		{
-			sLog.outDebug("sInstanceMgr.DeleteBattlegroundInstance( %ld, %ld )", GetMapId(), GetInstanceID());
-			sInstanceMgr.DeleteBattlegroundInstance( GetMapId(), GetInstanceID() );
 			BattlegroundManager.DeleteBattleground(m_battleground);
-			m_battleground = NULL;
+			sInstanceMgr.DeleteBattlegroundInstance( GetMapId(), GetInstanceID() );
 		}
 
 		if(pInstance)
@@ -1508,7 +1504,6 @@ void MapMgr::KillThreadWithCleanup()
 			if(GetMapInfo()->type == INSTANCE_NONRAID || pInstance->m_isBattleground)
 			{
 				pInstance->m_mapMgr = NULL;
-				sLog.outDebug("sInstanceMgr._DeleteInstance( %ld )", pInstance);
 				sInstanceMgr._DeleteInstance(pInstance, true);
 			}
 			else
@@ -2052,8 +2047,7 @@ Creature * MapMgr::CreateCreature(uint32 entry, bool isVehicle)
 	pHighGuid[5] |= pEntry[2];
 	pHighGuid[6] |= pEntry[3];
 
-	if (isVehicle)
-		sLog.outDebug("CreateCreature: IsVehicle = true");
+	sLog.outDebug("CreateCreature: IsVehicle = %u", uint32((uint32)isVehicle));
 
 	if(_reusable_guids_creature.size())
 	{

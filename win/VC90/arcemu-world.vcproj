@@ -44,7 +44,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalOptions="/MP /Zm256 /bigobj"
+				AdditionalOptions="/MP /Zm256"
 				Optimization="0"
 				InlineFunctionExpansion="0"
 				AdditionalIncludeDirectories="&quot;..\..\src\arcemu-shared&quot;;&quot;..\..\src\arcemu-world\Collision\vmap&quot;;&quot;..\..\src\arcemu-world\Collision\g3dlite&quot;;&quot;..\..\extras\arcemu-windows-libraries\VC\include&quot;"
@@ -144,7 +144,7 @@
 				AdditionalOptions="/Zm250"
 				Optimization="0"
 				InlineFunctionExpansion="2"
-				AdditionalIncludeDirectories="..\..\extras\arcemu-windows-libraries\VC\include;..\..\src\arcemu-shared"
+				AdditionalIncludeDirectories="..\..\src\arcemu-shared"
 				PreprocessorDefinitions="WIN32,_DEBUG,_LIB;_CRT_SECURE_NO_WARNINGS;_CRT_NONSTDC_NO_WARNINGS;X64"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -177,8 +177,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="ws2_32.lib libmysql.lib libeay32.lib dbghelp.lib zlib.lib pcre.lib"
-				AdditionalLibraryDirectories="..\..\extras\arcemu-windows-libraries\VC\lib\amd64;..\..\extras\collision\collision_dll\x64\Debug"
-				IgnoreDefaultLibraryNames="msvcrt.lib"
+				AdditionalLibraryDirectories="..\..\extras\collision\collision_dll\x64\Debug"
 				GenerateDebugInformation="true"
 				RandomizedBaseAddress="1"
 				DataExecutionPrevention="0"
@@ -274,7 +273,6 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="ws2_32.lib msvcrt.lib libmysql.lib libeay32.lib dbghelp.lib zlib.lib pcre.lib"
-				LinkIncremental="0"
 				AdditionalLibraryDirectories="..\..\extras\collision\collision_dll\Debug;&quot;..\..\extras\arcemu-windows-libraries\VC\lib&quot;"
 				IgnoreDefaultLibraryNames="msvcrtd.lib"
 				GenerateDebugInformation="true"
@@ -338,7 +336,7 @@
 				InlineFunctionExpansion="2"
 				FavorSizeOrSpeed="0"
 				WholeProgramOptimization="false"
-				AdditionalIncludeDirectories="&quot;..\..\src\arcemu-shared&quot;;&quot;..\..\src\arcemu-world\Collision\vmap&quot;;&quot;..\..\src\arcemu-world\Collision\g3dlite&quot;;&quot;..\..\extras\arcemu-windows-libraries\VC\include&quot;"
+				AdditionalIncludeDirectories="..\..\src\arcemu-shared"
 				PreprocessorDefinitions="_HAS_ITERATOR_DEBUGGING=0;WIN32;NDEBUG;_LIB;_CRT_SECURE_NO_WARNINGS;_CRT_NONSTDC_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE;X64"
 				StringPooling="true"
 				MinimalRebuild="false"
@@ -372,8 +370,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="ws2_32.lib libmysql.lib libeay32.lib dbghelp.lib zlib.lib pcre.lib"
-				LinkIncremental="1"
-				AdditionalLibraryDirectories="..\..\extras\collision\collision_dll\x64\Release;..\..\extras\arcemu-windows-libraries\VC\lib\amd64"
+				AdditionalLibraryDirectories="..\..\extras\collision\collision_dll\x64\Release"
 				GenerateDebugInformation="true"
 				RandomizedBaseAddress="1"
 				DataExecutionPrevention="0"
@@ -507,6 +504,22 @@
 		</File>
 		<File
 			RelativePath="..\..\src\arcemu-world\AIInterface.h"
+			>
+		</File>
+		<File
+			RelativePath="..\..\src\arcemu-world\AlteracValley.cpp"
+			>
+		</File>
+		<File
+			RelativePath="..\..\src\arcemu-world\AlteracValley.h"
+			>
+		</File>
+		<File
+			RelativePath="..\..\src\arcemu-world\ArathiBasin.cpp"
+			>
+		</File>
+		<File
+			RelativePath="..\..\src\arcemu-world\ArathiBasin.h"
 			>
 		</File>
 		<File
@@ -695,6 +708,14 @@
 		</File>
 		<File
 			RelativePath="..\..\src\arcemu-world\EventMgr.h"
+			>
+		</File>
+		<File
+			RelativePath="..\..\src\arcemu-world\EyeOfTheStorm.cpp"
+			>
+		</File>
+		<File
+			RelativePath="..\..\src\arcemu-world\EyeOfTheStorm.h"
 			>
 		</File>
 		<File
@@ -1130,6 +1151,14 @@
 			>
 		</File>
 		<File
+			RelativePath="..\..\src\arcemu-world\StrandOfTheAncient.cpp"
+			>
+		</File>
+		<File
+			RelativePath="..\..\src\arcemu-world\StrandOfTheAncient.h"
+			>
+		</File>
+		<File
 			RelativePath="..\..\src\arcemu-world\TaxiHandler.cpp"
 			>
 		</File>
@@ -1199,6 +1228,14 @@
 		</File>
 		<File
 			RelativePath="..\..\src\arcemu-world\VoiceChatHandler.h"
+			>
+		</File>
+		<File
+			RelativePath="..\..\src\arcemu-world\WarsongGulch.cpp"
+			>
+		</File>
+		<File
+			RelativePath="..\..\src\arcemu-world\WarsongGulch.h"
 			>
 		</File>
 		<File

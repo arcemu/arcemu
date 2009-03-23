@@ -29,17 +29,16 @@ class Guild;
 struct Quest;
 enum ServerHookEvents
 {
-	SERVER_HOOK_EVENT_NULL					= 0,
 	SERVER_HOOK_EVENT_ON_NEW_CHARACTER		= 1,
-	SERVER_HOOK_EVENT_ON_PLAYER_KILL		= 2,
+	SERVER_HOOK_EVENT_ON_KILL_PLAYER		= 2,
 	SERVER_HOOK_EVENT_ON_FIRST_ENTER_WORLD	= 3,
 	SERVER_HOOK_EVENT_ON_ENTER_WORLD		= 4,
 	SERVER_HOOK_EVENT_ON_GUILD_JOIN			= 5,
-	SERVER_HOOK_EVENT_ON_PLAYER_DEATH		= 6,
+	SERVER_HOOK_EVENT_ON_DEATH				= 6,
 	SERVER_HOOK_EVENT_ON_REPOP				= 7,
 	SERVER_HOOK_EVENT_ON_EMOTE				= 8,
 	SERVER_HOOK_EVENT_ON_ENTER_COMBAT		= 9,
-	SERVER_HOOK_EVENT_ON_SPELL_CAST			= 10,
+	SERVER_HOOK_EVENT_ON_CAST_SPELL			= 10,
 	SERVER_HOOK_EVENT_ON_TICK				= 11,
 	SERVER_HOOK_EVENT_ON_LOGOUT_REQUEST		= 12,
 	SERVER_HOOK_EVENT_ON_LOGOUT				= 13,
@@ -55,17 +54,10 @@ enum ServerHookEvents
 	SERVER_HOOK_EVENT_ON_HONORABLE_KILL		= 23,
 	SERVER_HOOK_EVENT_ON_ARENA_FINISH		= 24,
 	SERVER_HOOK_EVENT_ON_OBJECTLOOT			= 25,
-	SERVER_HOOK_EVENT_ON_AREA_TRIGGER		= 26,
+	SERVER_HOOK_EVENT_ON_AREATRIGGER		= 26,
 	SERVER_HOOK_EVENT_ON_POST_LEVELUP       = 27,
 	SERVER_HOOK_EVENT_ON_PRE_DIE	        = 28,	//general unit die, not only based on players
 	SERVER_HOOK_EVENT_ON_ADVANCE_SKILLLINE  = 29,
-	SERVER_HOOK_EVENT_ON_MOUNT				= 30,
-	SERVER_HOOK_EVENT_ON_FLAG_DROP			= 31,
-	SERVER_HOOK_EVENT_ON_FLAG_DROP_PICKUP	= 32,
-	SERVER_HOOK_EVENT_ON_FLAG_STAND_PICKUP	= 32,
-	SERVER_HOOK_EVENT_ON_HONOR_KILL			= 33,
-	SERVER_HOOK_EVENT_ON_UNIT_KILL			= 34,
-	SERVER_HOOK_EVENT_ON_DESTROY_GAME_OBJ	= 35,
 
 	NUM_SERVER_HOOKS,
 };
@@ -81,18 +73,17 @@ enum ScriptTypes
 
 /* Hook typedefs */
 typedef bool(*tOnNewCharacter)(uint32 Race, uint32 Class, WorldSession * Session, const char * Name);
-typedef void(*tOnPlayerKill)(Player * pPlayer, Player * pVictim);
-typedef void(*tOnHonorKill)(Player * pPlayer);
+typedef void(*tOnKillPlayer)(Player * pPlayer, Player * pVictim);
 typedef void(*tOCharacterCreate)(Player * pPlayer);
 typedef void(*tOnFirstEnterWorld)(Player * pPlayer);
 typedef void(*tOnEnterWorld)(Player * pPlayer);
 typedef void(*tOnGuildCreate)(Player * pLeader, Guild * pGuild);
 typedef void(*tOnGuildJoin)(Player * pPlayer, Guild * pGuild);
-typedef void(*tOnPlayerDeath)(Player * pPlayer);
+typedef void(*tOnDeath)(Player * pPlayer);
 typedef bool(*tOnRepop)(Player * pPlayer);
 typedef void(*tOnEmote)(Player * pPlayer, uint32 Emote, Unit * pUnit);
 typedef void(*tOnEnterCombat)(Player * pPlayer, Unit * pTarget);
-typedef bool(*tOnSpellCast)(Player * pPlayer, SpellEntry * pSpell);
+typedef bool(*tOnCastSpell)(Player * pPlayer, SpellEntry * pSpell);
 typedef void(*tOnTick)();
 typedef bool(*tOnLogoutRequest)(Player * pPlayer);
 typedef void(*tOnLogout)(Player * pPlayer);
@@ -110,13 +101,6 @@ typedef void(*tOnAreaTrigger)(Player * pPlayer, uint32 areaTrigger);
 typedef void(*tOnPostLevelUp)(Player * pPlayer);
 typedef void(*tOnPreUnitDie)(Unit *killer, Unit *target);
 typedef void(*tOnAdvanceSkillLine)(Player * pPlayer, uint32 SkillLine, uint32 Current);
-typedef void(*tOnMount)(Player * pPlayer);
-typedef void(*tOnFlagDropPickup)(Player * plr, GameObject * obj);
-typedef void(*tOnFlagStandPickup)(Player * plr, GameObject * obj);
-typedef void(*tOnFlagDrop)(Player * plr);
-typedef bool(*tOnRepopRequest)(Player * plr);
-typedef void(*tOnUnitKill)(Player * plr, Unit * pVictim);
-typedef void(*tOnDestoryGameObject)(GameObject * gameobject);
 
 class Spell;
 class Aura;
@@ -152,17 +136,6 @@ typedef list<SCRIPT_MODULE> LibraryHandleMap;
 #define MAX_SCRIPTS 1000
 #define MAX_INSTANCE_SCRIPTS 1000
 
-struct ScriptingEngine
-{
-#ifdef WIN32
-	HMODULE Handle;
-#else
-	void* Handle;
-#endif
-	exp_script_register InitializeCall;
-	uint32 Type;
-};
-
 class SERVER_DECL ScriptMgr : public Singleton<ScriptMgr>
 {
 public:
@@ -194,9 +167,6 @@ public:
 
 	ARCEMU_INLINE GossipScript * GetDefaultGossipScript() { return DefaultGossipScript; }
 
-	// Helper function
-	float CalculateDistance(float x1, float y1, float z1, float x2, float y2, float z2);
-
 protected:
 	CreatureCreateMap _creatures;
 	GameObjectCreateMap _gameobjects;
@@ -207,12 +177,6 @@ protected:
 	GossipScript * DefaultGossipScript;
 	CustomGossipScripts _customgossipscripts;
 	QuestScripts _questscripts;
-
-private:
-#ifdef WIN32
-	uint32 LoadScript(string &full_path, vector< ScriptingEngine > &ScriptEngines, WIN32_FIND_DATA &data);
-	uint32 LoadScript(string &full_path);
-#endif
 };
 
 class SERVER_DECL CreatureAIScript
@@ -318,26 +282,11 @@ public:
 	void OnEnterWorld(Player * pPlayer);
 	void OnGuildCreate(Player * pLeader, Guild * pGuild);
 	void OnGuildJoin(Player * pPlayer, Guild * pGuild);
-
-	/* OnPlayerDeath, Callee is in Player.cpp, Player::KillPlayer */
-	void OnPlayerDeath(Player * pPlayer);
-
-	/* OnRepopRequest, Callee is Player.cpp, Player::RepopAtGraveyard */
-	bool OnRepopRequest(Player * plr); // used to be HookHandleRepop and OnRepop
-
-	/* OnMount, Callee SpellAuras.cpp, Aura::SpellAuraMounted */
-	void OnMount(Player * plr); // used to be HookOnMount
-
-	/* Callee MiscHandler.cpp, WorldSession::HandleGameObjectUse */
-	void OnFlagDropPickup(Player * plr, GameObject * obj);
-	void OnFlagStandPickup(Player * plr, GameObject * obj);
-
-	/* Callee Spell.cpp, cast */
-	void OnFlagDrop(Player *plr);
-
+	void OnDeath(Player * pPlayer);
+	bool OnRepop(Player * pPlayer);
 	void OnEmote(Player * pPlayer, uint32 Emote, Unit * pUnit);
 	void OnEnterCombat(Player * pPlayer, Unit * pTarget);
-	bool OnSpellCast(Player * pPlayer, SpellEntry * pSpell);
+	bool OnCastSpell(Player * pPlayer, SpellEntry * pSpell);
 	bool OnLogoutRequest(Player * pPlayer);
 	void OnLogout(Player * pPlayer);
 	void OnQuestAccept(Player * pPlayer, Quest * pQuest, Object * pQuestGiver);
@@ -351,22 +300,10 @@ public:
 	void OnHonorableKill(Player * pPlayer, Player * pKilled);
 	void OnArenaFinish(Player * pPlayer, ArenaTeam* pTeam, bool victory, bool rated);
 	void OnObjectLoot(Player * pPlayer, Object * pTarget, uint32 Money, uint32 ItemId);
+	void OnAreaTrigger(Player * pPlayer, uint32 areaTrigger);
 	void OnPostLevelUp(Player * pPlayer);
 	void OnPreUnitDie(Unit *Killer, Unit *Victim);
 	void OnAdvanceSkillLine(Player * pPlayer, uint32 SkillLine, uint32 Current);
-
-	/* On Area Trigger */
-	void OnAreaTrigger(Player * pPlayer, uint32 areaTrigger);
-
-	/* Used when a player kills a player */
-	void OnPlayerKill(Player * pPlayer, Player * pVictim); // used to be HookOnPlayerKill
-	void OnHonorKill(Player * pPlayer); // used to be HookOnHK
-
-	/* On Unit Killing */
-	void OnUnitKill(Player * plr, Unit * pVictim);
-
-	/* Callee is in GameObject.cpp, GameObject::~GameObject */
-	void OnDestoryGameObject(GameObject * gameobject);
 };
 
 #define sScriptMgr ScriptMgr::getSingleton()

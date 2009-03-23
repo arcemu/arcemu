@@ -32,21 +32,6 @@ class Group;
 class Corpse;
 #endif
 
-// From BattlemasterList.dbc, 3.0.3
-enum BattlefieldMaps
-{
-	MAP_ALTERAC_VALLEY					= 30,
-	MAP_WARSONG_GULCH					= 489,
-	MAP_ARATHI_BASIN					= 529,
-	MAP_NAGRAND_ARENA					= 559,
-	MAP_BLADES_EDGE_ARENA				= 562,
-	MAP_EYE_OF_THE_STORM				= 566,
-	MAP_RUINS_OF_LORDAERON				= 572,
-	MAP_STRAND_OF_THE_ANCIENT			= 607,
-	MAP_DALARAN_SEWERS					= 617,
-	MAP_RING_OF_VALOR					= 618,
-};
-
 enum BattlegroundDbcIndex
 {
 	BGDBC_ALTERAC_VALLEY		= 1,
@@ -168,9 +153,8 @@ static inline uint32 GetLevelGrouping(uint32 level)
 #define MAXIMUM_BATTLEGROUNDS_PER_LEVEL_GROUP 50
 #define LEVEL_GROUP_70 8
 
-typedef CBattleground*(*CreateBattlegroundFunc)(MapMgr* mgr,uint32 iid,uint32 group, uint32 type);
 
-class SERVER_DECL CBattlegroundManager : public Singleton<CBattlegroundManager>, public EventableObject
+class CBattlegroundManager : public Singleton<CBattlegroundManager>, public EventableObject
 {
 	/* Battleground Instance Map */
 	map<uint32, CBattleground*> m_instances[BATTLEGROUND_NUM_TYPES];
@@ -188,21 +172,9 @@ class SERVER_DECL CBattlegroundManager : public Singleton<CBattlegroundManager>,
 
 	Mutex m_queueLock;
 
-	// Individually registered battleground create functions
-	// Set by RegisterBattleground
-	uint32 BGMapIds[ BATTLEGROUND_NUM_TYPES ];
-	uint32 BGMinimumLevel[ BATTLEGROUND_NUM_TYPES ];
-	uint32 BGMinimumPlayers[ BATTLEGROUND_NUM_TYPES ];
-	uint32 BGMaximumPlayers[ BATTLEGROUND_NUM_TYPES ];
-	uint32 BGNameID[ BATTLEGROUND_NUM_TYPES ];
-	CreateBattlegroundFunc BGCFuncs[ BATTLEGROUND_NUM_TYPES ];
-
 public:
 	CBattlegroundManager();
 	~CBattlegroundManager();
-
-	/* Register a battleground */
-	void RegisterBattleground(uint32 battlefieldIndex, uint32 mapId, uint32 nameId, uint32 minLevel, uint32 minPlayers, uint32 maxPlayers, CreateBattlegroundFunc bgCreateFunction);
 
 	/* Get the Config */
 	void LoadBGSetFromConfig();
@@ -263,63 +235,9 @@ public:
 
 	/* Returns the maximum number of players (Only valid for battlegrounds) */
 	uint32 GetMaximumPlayers(uint32 dbcIndex);
-
-	/* Returns true if the provided spellId is restricted in WSG and EOTS */
-	bool IsSpellRestricted(uint32 spellId)
-	{
-		switch (spellId)
-		{
-			case 1784:		// Stealth rank 1
-			case 1785:		// Stealth rank 2
-			case 1786:		// Stealth rank 3
-			case 1787:		// Stealth rank 4
-			case 5215:		// Prowl rank 1
-			case 6783:		// Prowl rank 2
-			case 9913:		// Prowl rank 3
-			case 498:		// Divine protection
-			case 5573:		// Unknown spell
-			case 642:		// Divine shield
-			case 1020:		// Unknown spell
-			case 1022:		// Hand of Protection rank 1 (ex blessing of protection)
-			case 5599:		// Hand of Protection rank 2 (ex blessing of protection)
-			case 10278:		// Hand of Protection rank 3 (ex blessing of protection)
-			case 1856:		// Vanish rank 1
-			case 1857:		// Vanish rank 2
-			case 26889:		// Vanish rank 3
-			case 45438:		// Ice block
-			case 20580:		// Unknown spell
-			case 58984:		// Shadowmeld
-			case 17624:		// Petrification-> http://www.wowhead.com/?spell=17624
-			case 66:		// Invisibility
-				return true;
-		}
-		return false;
-	}
-
-	/* A list of spellId's that will cause you to drop a flag in WSG and EOTS */
-	bool IsSpellBlocked(uint32 spellId)
-	{
-		switch (spellId)
-		{
-			case 1784:		// Stealth rank 1
-			case 1785:		// Stealth rank 2
-			case 1786:		// Stealth rank 3
-			case 1787:		// Stealth rank 4
-			case 5215:		// Prowl rank 1
-			case 6783:		// Prowl rank 2
-			case 9913:		// Prowl rank 3
-			case 1856:		// Vanish rank 1
-			case 1857:		// Vanish rank 2
-			case 26889:		// Vanish rank 3
-			case 58984:		// Shadowmeld
-				return true;
-		}
-		return false;
-	}
-
 };
 
-class SERVER_DECL CBattleground : public EventableObject
+class CBattleground : public EventableObject
 {
 #ifdef ENABLE_AV
 	friend class AVNode;
@@ -380,10 +298,35 @@ public:
 
 	void SendChatMessage(uint32 Type, uint64 Guid, const char * Format, ...);
 
+	/* Hook Functions */
+	virtual void HookOnPlayerDeath(Player * plr) = 0;
+
+	/* Repopping - different battlegrounds have different ways of handling this */
+	virtual bool HookHandleRepop(Player * plr) = 0;
+
+	/* In CTF battlegrounds mounting will cause you to lose your flag. */
+	virtual void HookOnMount(Player * plr) = 0;
+
+	/* Only used in CTF (as far as I know) */
+	virtual void HookFlagDrop(Player * plr, GameObject * obj) = 0;
+	virtual void HookFlagStand(Player * plr, GameObject * obj) = 0;
+	virtual void HookOnFlagDrop(Player *plr) = 0;
+
+	/* Used when a player kills a player */
+	virtual void HookOnPlayerKill(Player * plr, Player * pVictim) = 0;
+	virtual void HookOnHK(Player * plr) = 0;
+
+	/* On Area Trigger */
+	virtual void HookOnAreaTrigger(Player * plr, uint32 id) = 0;
+
 	/* On Shadow Sight */
-	virtual void HookOnShadowSight()
-	{
-	}
+	virtual void HookOnShadowSight() = 0;
+
+	/* On Loot Generating */
+	virtual void HookGenerateLoot(Player *plr, Object *pCorpse) = 0;
+
+	/* On Unit Killing */
+	virtual void HookOnUnitKill(Player * plr, Unit * pVictim) = 0;
 
 	/* Retreival Functions */
 	ARCEMU_INLINE uint32 GetId() { return m_id; }

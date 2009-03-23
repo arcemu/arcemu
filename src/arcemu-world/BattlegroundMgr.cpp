@@ -21,6 +21,42 @@
 #include "StdAfx.h"
 
 initialiseSingleton(CBattlegroundManager);
+typedef CBattleground*(*CreateBattlegroundFunc)(MapMgr* mgr,uint32 iid,uint32 group, uint32 type);
+
+const static uint32 BGMapIds[ BATTLEGROUND_NUM_TYPES ] = 
+{
+	0,		// 0
+	30,		// AV
+	489,	// WSG
+	529,	// AB
+	0,		// 2v2
+	0,		// 3v3
+	0,		// 5v5
+	566,	// EOTS
+	0,
+	607,	// SOTA
+	0,
+	0,
+};
+
+const static CreateBattlegroundFunc BGCFuncs[BATTLEGROUND_NUM_TYPES] = {
+	NULL,								// 0
+#ifdef ENABLE_AV
+	&AlteracValley::Create,				// AV
+#else
+	NULL,								// AV
+#endif
+	&WarsongGulch::Create,				// WSG
+	&ArathiBasin::Create,				// AB
+	NULL,								// 2v2
+	NULL,								// 3v3
+	NULL,								// 5v5
+	&EyeOfTheStorm::Create,				// EotS
+	NULL,
+	&StrandOfTheAncient::Create,		// SOTA, needs to be updated when SOTA is in
+	NULL,
+	NULL,
+};
 
 CBattlegroundManager::CBattlegroundManager()
 :
@@ -32,18 +68,8 @@ m_maxBattlegroundId(0)
 
 	sEventMgr.AddEvent(this, &CBattlegroundManager::EventQueueUpdate, EVENT_BATTLEGROUND_QUEUE_UPDATE, 15000, 0,0);
 
-	for (i=0; i<BATTLEGROUND_NUM_TYPES; i++)
-	{
+	for (i=0; i<BATTLEGROUND_NUM_TYPES; i++) {
 		m_instances[i].clear();
-
-		// BG Callbacks
-		BGCFuncs[i] = 0;
-		BGMapIds[i] = 0;
-		// DEBUG: Not yet implemented
-		BGMaximumPlayers[i] = 0;
-		BGMinimumPlayers[i] = 0;
-		BGMinimumLevel[i] = 0;
-		BGNameID[i] = 34; // 0, 34, or 45???
 	}
 
 }
@@ -51,19 +77,6 @@ m_maxBattlegroundId(0)
 CBattlegroundManager::~CBattlegroundManager()
 {
 
-}
-
-void CBattlegroundManager::RegisterBattleground(uint32 battlefieldIndex, uint32 mapId, uint32 nameId, uint32 minLevel, uint32 minPlayers, uint32 maxPlayers, CreateBattlegroundFunc bgCreateFunction)
-{
-	if (battlefieldIndex < BATTLEGROUND_NUM_TYPES)
-	{
-		BGCFuncs[battlefieldIndex] = bgCreateFunction;
-		BGMapIds[battlefieldIndex] = mapId;
-		BGMinimumPlayers[battlefieldIndex] = minPlayers;
-		BGMaximumPlayers[battlefieldIndex] = maxPlayers;
-		BGMinimumLevel[battlefieldIndex] = minLevel;
-		BGNameID[battlefieldIndex] = nameId;
-	}
 }
 
 uint32 CBattlegroundManager::GetMap(uint32 bg_index)
@@ -75,7 +88,7 @@ uint32 CBattlegroundManager::GetMap(uint32 bg_index)
 
 void CBattlegroundManager::HandleBattlegroundListPacket(WorldSession * m_session, uint32 BattlegroundType)
 {
-	if(BattlegroundType >= BATTLEGROUND_ARENA_2V2 && BattlegroundType <= BATTLEGROUND_ARENA_5V5)
+	if(BattlegroundType == BATTLEGROUND_ARENA_2V2 || BattlegroundType == BATTLEGROUND_ARENA_3V3 || BattlegroundType == BATTLEGROUND_ARENA_5V5)
 	{
 		WorldPacket data(SMSG_BATTLEFIELD_LIST, 17);
 		data << m_session->GetPlayer()->GetGUID() << uint32(6) << uint32(0xC) << uint8(0);
@@ -857,7 +870,6 @@ CBattleground::CBattleground(MapMgr * mgr, uint32 id, uint32 levelgroup, uint32 
 	m_startTime = (uint32)UNIXTIME;
 	m_lastResurrect = (uint32)UNIXTIME;
 	m_invisGMs = 0;
-	m_type = type;
 	sEventMgr.AddEvent(this, &CBattleground::EventResurrectPlayers, EVENT_BATTLEGROUND_QUEUE_UPDATE, 30000, 0,0);
 
 	/* create raid groups */
@@ -871,7 +883,6 @@ CBattleground::CBattleground(MapMgr * mgr, uint32 id, uint32 levelgroup, uint32 
 
 CBattleground::~CBattleground()
 {
-	sLog.outDebug("Destructor for Battleground: %ld", this->GetId());
 	sEventMgr.RemoveEvents(this);
 	for(uint32 i = 0; i < 2; ++i)
 	{
@@ -891,9 +902,9 @@ CBattleground::~CBattleground()
 
 void CBattleground::UpdatePvPData()
 {
-	if (m_type >= BATTLEGROUND_ARENA_2V2 && m_type <= BATTLEGROUND_ARENA_5V5)
+	if(m_type >= BATTLEGROUND_ARENA_2V2 && m_type <= BATTLEGROUND_ARENA_5V5)
 	{
-		if (!m_ended)
+		if(!m_ended)
 		{
 			return;
 		}
@@ -1145,7 +1156,7 @@ CBattleground * CBattlegroundManager::CreateInstance(uint32 Type, uint32 LevelGr
 	time_t t;
 	int n;
 
-	if (Type >= BATTLEGROUND_ARENA_2V2 && Type <= BATTLEGROUND_ARENA_5V5)
+	if(Type == BATTLEGROUND_ARENA_2V2 || Type == BATTLEGROUND_ARENA_3V3 || Type == BATTLEGROUND_ARENA_5V5)
 	{
 		/* arenas follow a different procedure. */
 		static const uint32 arena_map_ids[3] = { 559, 562, 572 };
@@ -1188,7 +1199,7 @@ CBattleground * CBattlegroundManager::CreateInstance(uint32 Type, uint32 LevelGr
 		return bg;
 	}
 
-	if (cfunc == NULL)
+	if(cfunc == NULL)
 	{
 		Log.Error("BattlegroundManager", "Could not find CreateBattlegroundFunc pointer for type %u level group %u", Type, LevelGroup);
 		return NULL;
@@ -1219,7 +1230,7 @@ CBattleground * CBattlegroundManager::CreateInstance(uint32 Type, uint32 LevelGr
 
 	/* Create Map Manager */
 	mgr = sInstanceMgr.CreateBattlegroundInstance(BGMapIds[Type]);
-	if (mgr == NULL)
+	if(mgr == NULL)
 	{
 		Log.Error("BattlegroundManager", "CreateInstance() call failed for map %u, type %u, level group %u", BGMapIds[Type], Type, LevelGroup);
 		return NULL;      // Shouldn't happen
@@ -1242,8 +1253,6 @@ CBattleground * CBattlegroundManager::CreateInstance(uint32 Type, uint32 LevelGr
 
 void CBattlegroundManager::DeleteBattleground(CBattleground * bg)
 {
-	sLog.outDebug("DeleteBattleGround: ", bg->GetId());
-
 	uint32 i = bg->GetType();
 	uint32 j = bg->GetLevelGroup();
 	Player * plr;
@@ -1282,7 +1291,7 @@ void CBattlegroundManager::DeleteBattleground(CBattleground * bg)
 
 }
 
-GameObject * CBattleground::SpawnGameObject(uint32 entry, uint32 MapId , float x, float y, float z, float o, uint32 flags, uint32 faction, float scale)
+GameObject * CBattleground::SpawnGameObject(uint32 entry,uint32 MapId , float x, float y, float z, float o, uint32 flags, uint32 faction, float scale)
 {
 	GameObject *go = m_mapMgr->CreateGameObject(entry);
 

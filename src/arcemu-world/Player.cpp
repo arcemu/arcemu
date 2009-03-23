@@ -4659,7 +4659,9 @@ void Player::KillPlayer()
 		
 	setDeathState(JUST_DIED);
 
-	sHookInterface.OnPlayerDeath( this );
+	// Battleground stuff
+	if(m_bg)
+		m_bg->HookOnPlayerDeath(this);
 
 	EventDeath();
 	
@@ -4678,6 +4680,8 @@ void Player::KillPlayer()
 		SetPower( POWER_TYPE_RAGE, 0 );
 	else if( getClass() == DEATHKNIGHT )
 		SetPower( POWER_TYPE_RUNIC_POWER, 0 );
+
+	sHookInterface.OnDeath( this );
 
 }
 
@@ -4850,9 +4854,8 @@ void Player::RepopAtGraveyard(float ox, float oy, float oz, uint32 mapid)
 	float closest_dist = 999999.0f;
 	float dist;
 
-	if (sHookInterface.OnRepopRequest(this))
+	if(m_bg && m_bg->HookHandleRepop(this))
 	{
-		// This action has handled by a script hook
 		return;
 	}
 	else
@@ -4886,7 +4889,7 @@ void Player::RepopAtGraveyard(float ox, float oy, float oz, uint32 mapid)
 		itr->Destruct();
 	}
 
-	if (dest.x != 0 && dest.y != 0 && dest.z != 0)
+	if(sHookInterface.OnRepop(this) && dest.x != 0 && dest.y != 0 && dest.z != 0)
 	{
 		SafeTeleport(mapid, 0, dest);
 	}

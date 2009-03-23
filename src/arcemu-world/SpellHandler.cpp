@@ -91,7 +91,7 @@ void WorldSession::HandleUseItemOpcode(WorldPacket& recvPacket)
 				}
 
 				// HookInterface
-				if (sHookInterface.OnSpellCast( _player, spellInfo ))
+				if (!sHookInterface.OnCastSpell( _player, spellInfo ))
 					return;
 
 				if (spellInfo->AuraInterruptFlags & AURA_INTERRUPT_ON_STAND_UP)
@@ -262,10 +262,8 @@ void WorldSession::HandleCastSpellOpcode(WorldPacket& recvPacket)
 		spellId, spellInfo->Name, recvPacket.size());
 
 	// HookInterface events
-	if (sHookInterface.OnSpellCast(_player, spellInfo))
-	{
+	if (!sHookInterface.OnCastSpell(_player, spellInfo))
 		return;
-	}
 
 /*  this is breaks capturing flags at arathi basin (marcelo)
 	if (spellInfo->Attributes & ATTRIBUTES_NO_CAST)

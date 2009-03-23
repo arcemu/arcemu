@@ -31,11 +31,6 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "zlib", "..\extras\arcemu-wi
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "pcre", "..\extras\arcemu-windows-libraries\Sources\VC90-pcre.vcproj", "{311F016D-F785-47EF-B032-5350397F16B6}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Battlegrounds", "VC90\battlegrounds.vcproj", "{9F200AAA-57C3-4F0C-8BB5-F9053E4BB4B3}"
-	ProjectSection(ProjectDependencies) = postProject
-		{1DC6C4DA-A028-41F3-877D-D5400C594F88} = {1DC6C4DA-A028-41F3-877D-D5400C594F88}
-	EndProjectSection
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -90,14 +85,6 @@ Global
 		{311F016D-F785-47EF-B032-5350397F16B6}.Release|Win32.Build.0 = Release|Win32
 		{311F016D-F785-47EF-B032-5350397F16B6}.Release|x64.ActiveCfg = Release|x64
 		{311F016D-F785-47EF-B032-5350397F16B6}.Release|x64.Build.0 = Release|x64
-		{9F200AAA-57C3-4F0C-8BB5-F9053E4BB4B3}.Debug|Win32.ActiveCfg = Debug|Win32
-		{9F200AAA-57C3-4F0C-8BB5-F9053E4BB4B3}.Debug|Win32.Build.0 = Debug|Win32
-		{9F200AAA-57C3-4F0C-8BB5-F9053E4BB4B3}.Debug|x64.ActiveCfg = Debug|x64
-		{9F200AAA-57C3-4F0C-8BB5-F9053E4BB4B3}.Debug|x64.Build.0 = Debug|x64
-		{9F200AAA-57C3-4F0C-8BB5-F9053E4BB4B3}.Release|Win32.ActiveCfg = Release|Win32
-		{9F200AAA-57C3-4F0C-8BB5-F9053E4BB4B3}.Release|Win32.Build.0 = Release|Win32
-		{9F200AAA-57C3-4F0C-8BB5-F9053E4BB4B3}.Release|x64.ActiveCfg = Release|x64
-		{9F200AAA-57C3-4F0C-8BB5-F9053E4BB4B3}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

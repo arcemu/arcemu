@@ -21,7 +21,7 @@
 #ifndef HONORHANDLER_H
 #define HONORHANDLER_H
 
-class SERVER_DECL HonorHandler
+class HonorHandler
 {
 public:
 	static int32 CalculateHonorPointsForKill(Player *pPlayer, Unit* pVictim);

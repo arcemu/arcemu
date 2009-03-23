@@ -48,118 +48,24 @@ ScriptMgr::~ScriptMgr()
 
 }
 
-
-float ScriptMgr::CalculateDistance(float x1, float y1, float z1, float x2, float y2, float z2)
+struct ScriptingEngine
 {
-	float dx = x1 - x2;
-	float dy = y1 - y2;
-	float dz = z1 - z2;
-	return sqrt(dx*dx + dy*dy + dz*dz);
-}
-
 #ifdef WIN32
-uint32 ScriptMgr::LoadScript(string &full_path)
-{
-	HMODULE mod = LoadLibrary( full_path.c_str() );
-	//printf( "  %s : 0x%p : ", full_path.c_str(), reinterpret_cast< uint32* >( mod ));
-	if( mod == 0 )
-	{
-		printf( "error!\n" );
-	}
-	else
-	{
-		// find version import
-		exp_get_version vcall = (exp_get_version)GetProcAddress(mod, "_exp_get_version");
-		exp_script_register rcall = (exp_script_register)GetProcAddress(mod, "_exp_script_register");
-		exp_get_script_type scall = (exp_get_script_type)GetProcAddress(mod, "_exp_get_script_type");
-		if(vcall == 0 || rcall == 0 || scall == 0)
-		{
-			printf("version functions not found!\n");
-			FreeLibrary(mod);
-		}
-		else
-		{
-			uint32 version = vcall();
-			uint32 stype = scall();
-			if(SCRIPTLIB_LOPART(version) == SCRIPTLIB_VERSION_MINOR && SCRIPTLIB_HIPART(version) == SCRIPTLIB_VERSION_MAJOR)
-			{
-				_handles.push_back(((SCRIPT_MODULE)mod));
-				//printf("v%u.%u : ", SCRIPTLIB_HIPART(version), SCRIPTLIB_LOPART(version));
-				rcall(this);
-				//printf("loaded.\n");
-				return 1;
-			}
-			else
-			{
-				FreeLibrary(mod);
-				printf("version mismatch!\n");						
-			}
-		}
-	}
-	return 0;
-}
-
-uint32 ScriptMgr::LoadScript(string &full_path, vector< ScriptingEngine > &ScriptEngines, WIN32_FIND_DATA &data)
-{
-	HMODULE mod = LoadLibrary( full_path.c_str() );
-	printf( "  %s : 0x%p : ", data.cFileName, reinterpret_cast< uint32* >( mod ));
-	if( mod == 0 )
-	{
-		printf( "error!\n" );
-	}
-	else
-	{
-		// find version import
-		exp_get_version vcall = (exp_get_version)GetProcAddress(mod, "_exp_get_version");
-		exp_script_register rcall = (exp_script_register)GetProcAddress(mod, "_exp_script_register");
-		exp_get_script_type scall = (exp_get_script_type)GetProcAddress(mod, "_exp_get_script_type");
-		if(vcall == 0 || rcall == 0 || scall == 0)
-		{
-			printf("version functions not found!\n");
-			FreeLibrary(mod);
-		}
-		else
-		{
-			uint32 version = vcall();
-			uint32 stype = scall();
-			if(SCRIPTLIB_LOPART(version) == SCRIPTLIB_VERSION_MINOR && SCRIPTLIB_HIPART(version) == SCRIPTLIB_VERSION_MAJOR)
-			{
-				if( stype & SCRIPT_TYPE_SCRIPT_ENGINE )
-				{
-					printf("v%u.%u : ", SCRIPTLIB_HIPART(version), SCRIPTLIB_LOPART(version));
-					printf("delayed load.\n");
-					ScriptingEngine se;
-					se.Handle = mod;
-					se.InitializeCall = rcall;
-					se.Type = stype;
-
-					ScriptEngines.push_back( se );
-				}
-				else
-				{
-					_handles.push_back(((SCRIPT_MODULE)mod));
-					printf("v%u.%u : ", SCRIPTLIB_HIPART(version), SCRIPTLIB_LOPART(version));
-					rcall(this);
-					printf("loaded.\n");						
-				}
-
-				return 1;
-			}
-			else
-			{
-				FreeLibrary(mod);
-				printf("version mismatch!\n");						
-			}
-		}
-	}
-	return 0;
-}
+	HMODULE Handle;
+#else
+	void* Handle;
 #endif
+	exp_script_register InitializeCall;
+	uint32 Type;
+};
 
 void ScriptMgr::LoadScripts()
 {
 	if(!HookInterface::getSingletonPtr())
 		new HookInterface;
+
+	Log.Notice("Server","Loading External Script Libraries...");
+	sLog.outString("");
 
 	string start_path = Config.MainConfig.GetStringDefault( "Script", "BinaryLocation", "script_bin" ) + "\\";
 	string search_path = start_path + "*.";
@@ -168,18 +74,6 @@ void ScriptMgr::LoadScripts()
 
 	/* Loading system for win32 */
 #ifdef WIN32
-
-	/* Load Battlegrounds DLL */
-	Log.Notice("Server","Loading Battlegrounds...");
-	string bg_path = start_path + "..\\Battlegrounds.dll";
-	if (LoadScript(bg_path) > 0)
-		Log.Notice("Server","Battlegrounds Loaded.");
-	else
-		Log.Notice("Server","Battlegrounds module did not loaded.");
-
-	Log.Notice("Server","Loading External Script Libraries...");
-	sLog.outString("");
-
 	search_path += "dll";
 
 	WIN32_FIND_DATA data;
@@ -192,7 +86,58 @@ void ScriptMgr::LoadScripts()
 		do
 		{
 			string full_path = start_path + data.cFileName;
-			count += LoadScript(full_path, ScriptEngines, data);
+			HMODULE mod = LoadLibrary( full_path.c_str() );
+			printf( "  %s : 0x%p : ", data.cFileName, reinterpret_cast< uint32* >( mod ));
+			if( mod == 0 )
+			{
+				printf( "error!\n" );
+			}
+			else
+			{
+				// find version import
+				exp_get_version vcall = (exp_get_version)GetProcAddress(mod, "_exp_get_version");
+				exp_script_register rcall = (exp_script_register)GetProcAddress(mod, "_exp_script_register");
+				exp_get_script_type scall = (exp_get_script_type)GetProcAddress(mod, "_exp_get_script_type");
+				if(vcall == 0 || rcall == 0 || scall == 0)
+				{
+					printf("version functions not found!\n");
+					FreeLibrary(mod);
+				}
+				else
+				{
+					uint32 version = vcall();
+					uint32 stype = scall();
+					if(SCRIPTLIB_LOPART(version) == SCRIPTLIB_VERSION_MINOR && SCRIPTLIB_HIPART(version) == SCRIPTLIB_VERSION_MAJOR)
+					{
+						if( stype & SCRIPT_TYPE_SCRIPT_ENGINE )
+						{
+							printf("v%u.%u : ", SCRIPTLIB_HIPART(version), SCRIPTLIB_LOPART(version));
+							printf("delayed load.\n");
+
+							ScriptingEngine se;
+							se.Handle = mod;
+							se.InitializeCall = rcall;
+							se.Type = stype;
+
+							ScriptEngines.push_back( se );
+						}
+						else
+						{
+							_handles.push_back(((SCRIPT_MODULE)mod));
+							printf("v%u.%u : ", SCRIPTLIB_HIPART(version), SCRIPTLIB_LOPART(version));
+							rcall(this);
+							printf("loaded.\n");						
+						}
+
+						++count;
+					}
+					else
+					{
+						FreeLibrary(mod);
+						printf("version mismatch!\n");						
+					}
+				}
+			}
 		}
 		while(FindNextFile(find_handle, &data));
 		FindClose(find_handle);
@@ -780,12 +725,11 @@ bool HookInterface::OnNewCharacter(uint32 Race, uint32 Class, WorldSession * Ses
 	return ret_val;
 }
 
-void HookInterface::OnPlayerKill(Player * pPlayer, Player * pVictim)
+void HookInterface::OnKillPlayer(Player * pPlayer, Player * pVictim)
 {
-	sLog.outDebug("Debug: Calling OnPlayerKill Hooks");
-	ServerHookList hookList = sScriptMgr._hooks[SERVER_HOOK_EVENT_ON_PLAYER_KILL];
+	ServerHookList hookList = sScriptMgr._hooks[SERVER_HOOK_EVENT_ON_KILL_PLAYER];
 	for(ServerHookList::iterator itr = hookList.begin(); itr != hookList.end(); ++itr)
-		((tOnPlayerKill)*itr)(pPlayer, pVictim);
+		((tOnKillPlayer)*itr)(pPlayer, pVictim);
 }
 
 void HookInterface::OnFirstEnterWorld(Player * pPlayer)
@@ -823,80 +767,22 @@ void HookInterface::OnGuildJoin(Player * pPlayer, Guild * pGuild)
 		((tOnGuildJoin)*itr)(pPlayer, pGuild);
 }
 
-void HookInterface::OnPlayerDeath(Player * pPlayer)
+void HookInterface::OnDeath(Player * pPlayer)
 {
-	sLog.outDebug("Debug: Calling OnPlayerDeath Hooks");
-	ServerHookList hookList = sScriptMgr._hooks[SERVER_HOOK_EVENT_ON_PLAYER_DEATH];
+	ServerHookList hookList = sScriptMgr._hooks[SERVER_HOOK_EVENT_ON_DEATH];
 	for(ServerHookList::iterator itr = hookList.begin(); itr != hookList.end(); ++itr)
-		((tOnPlayerDeath)*itr)(pPlayer);
+		((tOnDeath)*itr)(pPlayer);
 }
 
-void HookInterface::OnMount(Player * pPlayer)
-{
-	ServerHookList hookList = sScriptMgr._hooks[SERVER_HOOK_EVENT_ON_MOUNT];
-	for(ServerHookList::iterator itr = hookList.begin(); itr != hookList.end(); ++itr)
-		((tOnMount)*itr)(pPlayer);
-}
-
-void HookInterface::OnFlagDropPickup(Player * pPlayer, GameObject * obj)
-{
-	ServerHookList hookList = sScriptMgr._hooks[SERVER_HOOK_EVENT_ON_FLAG_DROP_PICKUP];
-	for(ServerHookList::iterator itr = hookList.begin(); itr != hookList.end(); ++itr)
-		((tOnFlagDropPickup)*itr)(pPlayer, obj);
-}
-
-void HookInterface::OnFlagDrop(Player * pPlayer)
-{
-	ServerHookList hookList = sScriptMgr._hooks[SERVER_HOOK_EVENT_ON_FLAG_DROP];
-	for(ServerHookList::iterator itr = hookList.begin(); itr != hookList.end(); ++itr)
-		((tOnFlagDrop)*itr)(pPlayer);
-}
-
-void HookInterface::OnHonorKill(Player * pPlayer)
-{
-	sLog.outDebug("Debug: Calling OnHonorKill Hooks");
-	ServerHookList hookList = sScriptMgr._hooks[SERVER_HOOK_EVENT_ON_HONOR_KILL];
-	for(ServerHookList::iterator itr = hookList.begin(); itr != hookList.end(); ++itr)
-		((tOnHonorKill)*itr)(pPlayer);
-}
-
-void HookInterface::OnAreaTrigger(Player * pPlayer, uint32 id)
-{
-	ServerHookList hookList = sScriptMgr._hooks[SERVER_HOOK_EVENT_ON_AREA_TRIGGER];
-	for(ServerHookList::iterator itr = hookList.begin(); itr != hookList.end(); ++itr)
-		((tOnAreaTrigger)*itr)(pPlayer, id);
-}
-
-void HookInterface::OnFlagStandPickup(Player * pPlayer, GameObject * obj)
-{
-	ServerHookList hookList = sScriptMgr._hooks[SERVER_HOOK_EVENT_ON_FLAG_STAND_PICKUP];
-	for(ServerHookList::iterator itr = hookList.begin(); itr != hookList.end(); ++itr)
-		((tOnFlagDropPickup)*itr)(pPlayer, obj);
-}
-
-void HookInterface::OnUnitKill(Player * pPlayer, Unit * pVictim)
-{
-	ServerHookList hookList = sScriptMgr._hooks[SERVER_HOOK_EVENT_ON_UNIT_KILL];
-	for(ServerHookList::iterator itr = hookList.begin(); itr != hookList.end(); ++itr)
-		((tOnUnitKill)*itr)(pPlayer, pVictim);
-}
-
-void HookInterface::OnDestoryGameObject(GameObject *gameObject)
-{
-	ServerHookList hookList = sScriptMgr._hooks[SERVER_HOOK_EVENT_ON_DESTROY_GAME_OBJ];
-	for(ServerHookList::iterator itr = hookList.begin(); itr != hookList.end(); ++itr)
-		((tOnDestoryGameObject)*itr)(gameObject);
-}
-
-bool HookInterface::OnRepopRequest(Player * pPlayer)
+bool HookInterface::OnRepop(Player * pPlayer)
 {
 	ServerHookList hookList = sScriptMgr._hooks[SERVER_HOOK_EVENT_ON_REPOP];
-	bool ret_val = false;
+	bool ret_val = true;
 	for(ServerHookList::iterator itr = hookList.begin(); itr != hookList.end(); ++itr)
 	{
-		bool rv = ((tOnRepopRequest)*itr)(pPlayer);
-		if (rv == true) // never set ret_val back to false, once it's true
-			ret_val = true;
+		bool rv = ((tOnRepop)*itr)(pPlayer);
+		if (rv == false) // never set ret_val back to true, once it's false
+			ret_val = false;
 	}
 	return ret_val;
 }
@@ -915,15 +801,15 @@ void HookInterface::OnEnterCombat(Player * pPlayer, Unit * pTarget)
 		((tOnEnterCombat)*itr)(pPlayer, pTarget);
 }
 
-bool HookInterface::OnSpellCast(Player * pPlayer, SpellEntry* pSpell)
+bool HookInterface::OnCastSpell(Player * pPlayer, SpellEntry* pSpell)
 {
-	ServerHookList hookList = sScriptMgr._hooks[SERVER_HOOK_EVENT_ON_SPELL_CAST];
-	bool ret_val = false;
+	ServerHookList hookList = sScriptMgr._hooks[SERVER_HOOK_EVENT_ON_CAST_SPELL];
+	bool ret_val = true;
 	for(ServerHookList::iterator itr = hookList.begin(); itr != hookList.end(); ++itr)
 	{
-		bool rv = ((tOnSpellCast)*itr)(pPlayer, pSpell);
-		if (rv == true) // never set ret_val back to false, once it's true
-			ret_val = true;
+		bool rv = ((tOnCastSpell)*itr)(pPlayer, pSpell);
+		if (rv == false) // never set ret_val back to true, once it's false
+			ret_val = false;
 	}
 	return ret_val;
 }
@@ -1022,6 +908,13 @@ void HookInterface::OnArenaFinish(Player * pPlayer, ArenaTeam* pTeam, bool victo
 	ServerHookList hookList = sScriptMgr._hooks[SERVER_HOOK_EVENT_ON_ARENA_FINISH];
 	for(ServerHookList::iterator itr = hookList.begin(); itr != hookList.end(); ++itr)
 		((tOnArenaFinish)*itr)(pPlayer, pTeam, victory, rated);
+}
+
+void HookInterface::OnAreaTrigger(Player * pPlayer, uint32 areaTrigger)
+{
+	ServerHookList hookList = sScriptMgr._hooks[SERVER_HOOK_EVENT_ON_AREATRIGGER];
+	for(ServerHookList::iterator itr = hookList.begin(); itr != hookList.end(); ++itr)
+		((tOnAreaTrigger)*itr)(pPlayer, areaTrigger);
 }
 
 void HookInterface::OnPostLevelUp(Player * pPlayer)

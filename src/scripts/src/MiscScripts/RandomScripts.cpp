@@ -107,5 +107,5 @@ void OnAreaTrigger(Player * pPlayer, uint32 AreaTrigger)
 void SetupRandomScripts(ScriptMgr * mgr)
 {	// Register Hook Event here
 	mgr->register_hook(SERVER_HOOK_EVENT_ON_EMOTE, (void *)&OnEmote);
-	mgr->register_hook(SERVER_HOOK_EVENT_ON_AREA_TRIGGER, (void *)&OnAreaTrigger);
+	mgr->register_hook(SERVER_HOOK_EVENT_ON_AREATRIGGER, (void *)&OnAreaTrigger);
 }

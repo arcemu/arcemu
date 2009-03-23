@@ -21,18 +21,6 @@
 Strand of the Ancients
 ======================
 
-* Main ToDo, Functionality Bug
-	* (OnGameobjectDestroy)
-		Relic should not spawn until just before the final gate is destroyed,
-		else it is clickable when the gate is closed.
-	* Boat transportation and waypoints
-	* Support for the second boat
-	* Revive everyone after round one
-		* bg->EventResurrectPlayers()
-
-* Secondary ToDo
-	* Support for random starting positions
-
 * Banners
 	* Flagpole, 191311
 	* Alliance Banner, 191310
@@ -67,6 +55,9 @@ Strand of the Ancients
 	* The Frostbreaker, 193185
 	* The Graceful Maiden (boat?), 193182
 	* Doodad_WG_Keep_Door01_collision01, 194162 (Not implemented atm)
+
+* Revive everyone after round one
+	* bg->EventResurrectPlayers()
 
 * Setup index 34 in worldstring_tables to equal "Strand of the Ancients"
 
@@ -119,8 +110,44 @@ Strand of the Ancients
 
 
 ************************************************************************/
+
 #include "StdAfx.h"
-#include "StrandOfTheAncient.h"
+
+/*
+	void GossipHello(Object* pObject, Player * plr, bool AutoSend)
+	{
+		GossipMenu *Menu;
+		uint32 Team = plr->GetTeam();
+		if(Team > 1) Team = 1;
+
+		// Check if the player can be entered into the bg or not.
+		if(plr->getLevel() < 71) //Levels 71-80 else don't let them into the bg menu.
+		{
+			// Send "you cannot enter" message.
+			objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 13832, plr);
+		}
+		else
+		{
+			uint32 FactMessages[2] = { 13833, 13834 }; // NEED TO BE UPDATED TO SOTA
+
+			// Ask to enter battleground
+			objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), FactMessages[Team], plr);
+			Menu->AddItem( 0, "I would like to enter the battleground.", BATTLEGROUND_STRAND_OF_THE_ANCIENT);
+		}
+
+		if (AutoSend)
+			Menu->SendTo(plr);
+	}
+
+	void GossipSelectOption(Object* pObject, Player * plr, uint32 Id, uint32 IntId, const char * Code)
+	{
+		// Send battleground list.
+		if(pObject->GetTypeId()!=TYPEID_UNIT)
+			return;
+
+		plr->GetSession()->SendBattlegroundList(((Creature*)pObject), BATTLEGROUND_STRAND_OF_THE_ANCIENT);
+	}
+*/
 
 #define GO_RELIC 192834
 const float sotaTitanRelic[4] = { 836.5f, -108.8f, 111.59f, 0.0f };
@@ -210,6 +237,9 @@ const float sotaStartingPosition[2][4] = {
 	{ 1209.7f, -65.16f, 70.1f, 0.0f },
 };
 
+// We'll need to borrow this from elsewhere
+float CalculateDistance(float x1, float y1, float z1, float x2, float y2, float z2);
+
 StrandOfTheAncient::StrandOfTheAncient(MapMgr * mgr, uint32 id, uint32 lgroup, uint32 t) : CBattleground(mgr, id, lgroup, t)
 {
 	int i;
@@ -222,112 +252,20 @@ StrandOfTheAncient::StrandOfTheAncient(MapMgr * mgr, uint32 id, uint32 lgroup, u
 	m_pvpData.clear();
 	m_resurrectMap.clear();
 
-	//uint32 mapId = MAP_STRAND_OF_THE_ANCIENT;
+	//uint32 mapId = BattlegroundManager.GetMap(BATTLEGROUND_STRAND_OF_THE_ANCIENT);
 
-	SpawnBoats();
-	SpawnRelic();
-	SpawnAllGates();
-	SpawnAllBuffs();
-
-}
-
-StrandOfTheAncient::~StrandOfTheAncient()
-{
-	DestroyRelic();
-	DestroyAllGates();
-	DestroyAllBuffs();
-}
-
-/* Boats */
-void StrandOfTheAncient::SpawnBoats()
-{
 	// Boats
-	for (int i = 0; i < 2; i++)
+	for (int i = 0; i < 4; i++)
 	{
 		m_boats[i] = m_mapMgr->CreateAndSpawnGameObject(20808,
 			sotaBoats[i][0], sotaBoats[i][1], sotaBoats[i][2], sotaBoats[i][3], 1.0f);
-		m_boats[i]->PushToWorld(m_mapMgr);
+		m_boats[i]->PushToWorld(mgr);
 	}
-}
-void StrandOfTheAncient::DestroyBoats()
-{
-	// Boats
-	for (int i = 0; i < 2; i++)
-	{
-		m_mapMgr->RemoveObject(m_boats[i], true);
-		delete m_boats[i];
-	}
-}
 
-/* Relic */
-void StrandOfTheAncient::SpawnRelic()
-{
+	/* Relic */
 	m_relic = m_mapMgr->CreateAndSpawnGameObject(GO_RELIC, sotaTitanRelic[0],
 		sotaTitanRelic[1], sotaTitanRelic[2], sotaTitanRelic[3], 1.0f);
-}
-void StrandOfTheAncient::DestroyRelic()
-{
-	if (m_relic && !m_relic->IsInWorld())
-	{
-		delete m_relic;
-		m_relic = 0;
-	}
-}
 
-/* Buffs */
-void StrandOfTheAncient::SpawnAllBuffs()
-{
-	/* create the buffs */
-	for (int i = 0; i < BUFF_COUNT; i++)
-		SpawnBuff(i);
-}
-void StrandOfTheAncient::SpawnBuff(uint32 x)
-{
-	uint32 mapid = MAP_STRAND_OF_THE_ANCIENT;
-    switch(x)
-	{
-	case 0:
-		m_buffs[x] = SpawnGameObject(184977, mapid, 1449.9296875f, 1470.70971679688f, 342.634552001953f, -1.64060950279236f, 0, 114, 1);
-		m_buffs[x]->SetFloatValue(GAMEOBJECT_PARENTROTATION_02,0.73135370016098f);
-		m_buffs[x]->SetFloatValue(GAMEOBJECT_PARENTROTATION_03,-0.681998312473297f);
-		m_buffs[x]->SetByte(GAMEOBJECT_BYTES_1, 0, 1);
-		m_buffs[x]->SetByte(GAMEOBJECT_BYTES_1, 1, 6);
-		m_buffs[x]->SetByte(GAMEOBJECT_BYTES_1, 3, 100);
-		break;
-	case 1:
-		m_buffs[x] = SpawnGameObject(184971, mapid, 1005.17071533203f, 1447.94567871094f, 335.903228759766f, 1.64060950279236f, 0, 114, 1);
-		m_buffs[x]->SetFloatValue(GAMEOBJECT_PARENTROTATION_02,0.73135370016098f);
-		m_buffs[x]->SetFloatValue(GAMEOBJECT_PARENTROTATION_03,0.681998372077942f);
-		m_buffs[x]->SetByte(GAMEOBJECT_BYTES_1, 0, 1);
-		m_buffs[x]->SetByte(GAMEOBJECT_BYTES_1, 1, 6);
-		m_buffs[x]->SetByte(GAMEOBJECT_BYTES_1, 3, 100);
-		break;
-	case 2:
-		m_buffs[x] = SpawnGameObject(184965, mapid, 1317.50573730469f, 1550.85070800781f, 313.234375f, -0.26179963350296f, 0, 114, 1);
-		m_buffs[x]->SetFloatValue(GAMEOBJECT_PARENTROTATION_02,0.130526319146156f);
-		m_buffs[x]->SetFloatValue(GAMEOBJECT_PARENTROTATION_03,-0.991444826126099f);
-		m_buffs[x]->SetByte(GAMEOBJECT_BYTES_1, 0, 1);
-		m_buffs[x]->SetByte(GAMEOBJECT_BYTES_1, 1, 6);
-		m_buffs[x]->SetByte(GAMEOBJECT_BYTES_1, 3, 100);
-		break;
-	}
-}
-void StrandOfTheAncient::DestroyAllBuffs()
-{
-	for (uint32 i = 0; i < BUFF_COUNT; ++i)
-	{
-		// buffs may not be spawned, so only delete if they're are
-		if (m_buffs[i] && !m_buffs[i]->IsInWorld())
-		{
-			delete m_buffs[i];
-			m_buffs[i] = 0;
-		}
-	}
-}
-
-void StrandOfTheAncient::SpawnAllGates()
-{
-	int i;
 	for (i = 0; i < GATE_COUNT; i++)
 	{
 		m_gates[i] = m_mapMgr->CreateAndSpawnGameObject(GateGOIds[i],
@@ -344,10 +282,22 @@ void StrandOfTheAncient::SpawnAllGates()
 	m_endgate = m_mapMgr->CreateAndSpawnGameObject(GateGOIds[i],
 		sotaChamberGate[0], sotaChamberGate[1], sotaChamberGate[2],
 		sotaChamberGate[3], 1.0f);
+
+
+	/* create the buffs */
+	for(i = 0; i < BUFF_COUNT; ++i)
+		SpawnBuff(i);
+
 }
 
-void StrandOfTheAncient::DestroyAllGates()
+StrandOfTheAncient::~StrandOfTheAncient()
 {
+	if (m_relic && !m_relic->IsInWorld())
+	{
+		delete m_relic;
+		m_relic = 0;
+	}
+
 	for (int i = 0; i < GATE_COUNT; i++)
 	{
 		if (m_gates[i] && !m_gates[i]->IsInWorld())
@@ -372,16 +322,45 @@ void StrandOfTheAncient::DestroyAllGates()
 		delete m_endgate;
 		m_endgate = 0;
 	}
+
+	for (uint32 i = 0; i < BUFF_COUNT; ++i)
+	{
+		// buffs may not be spawned, so delete them if they're not
+		if(m_buffs[i] && !m_buffs[i]->IsInWorld())
+		{
+			delete m_buffs[i];
+			m_buffs[i] = 0;
+		}
+	}
+
 }
 
-void StrandOfTheAncient::PlatformTeleport(Player *plr)
+
+void StrandOfTheAncient::HookOnAreaTrigger(Player * plr, uint32 id)
+{
+
+}
+
+void StrandOfTheAncient::HookOnPlayerKill(Player * plr, Player * pVictim)
+{
+	plr->m_bgScore.KillingBlows++;
+	UpdatePvPData();
+}
+
+void StrandOfTheAncient::HookOnHK(Player * plr)
+{
+	plr->m_bgScore.HonorableKills++;
+	UpdatePvPData();
+}
+
+void StrandOfTheAncient::OnPlatformTeleport(Player *plr)
 {
 	LocationVector dest;
 	uint32 closest_platform = 0;
 
 	for (uint32 i = 0; i < GATE_COUNT; i++)
 	{
-		float distance = sScriptMgr.CalculateDistance(plr->GetPositionX(),
+		float distance = CalculateDistance(plr->GetPositionX(),
 			plr->GetPositionY(), plr->GetPositionZ(),
 			sotaTransporterDestination[i][0],
 			sotaTransporterDestination[i][1],
@@ -426,6 +405,60 @@ LocationVector StrandOfTheAncient::GetStartingCoords(uint32 team)
 		sotaStartingPosition[team][3]);
 }
 
+void StrandOfTheAncient::HookOnPlayerDeath(Player * plr)
+{
+	plr->m_bgScore.Deaths++;
+	UpdatePvPData();
+}
+
+void StrandOfTheAncient::HookOnMount(Player * plr)
+{
+	/* Allowed */
+}
+
+bool StrandOfTheAncient::HookHandleRepop(Player * plr)
+{
+	LocationVector dest;
+
+	dest.ChangeCoords(sotaRepop[plr->GetTeam()][0], sotaRepop[plr->GetTeam()][1],
+		sotaRepop[plr->GetTeam()][2], sotaRepop[plr->GetTeam()][3]);
+
+	plr->SafeTeleport(plr->GetMapId(), plr->GetInstanceID(), dest);
+	return true;
+}
+
+void StrandOfTheAncient::SpawnBuff(uint32 x)
+{
+	uint32 mapid = BattlegroundManager.GetMap(BATTLEGROUND_STRAND_OF_THE_ANCIENT);
+    switch(x)
+	{
+	case 0:
+		m_buffs[x] = SpawnGameObject(184977, mapid, 1449.9296875f, 1470.70971679688f, 342.634552001953f, -1.64060950279236f, 0, 114, 1);
+		m_buffs[x]->SetFloatValue(GAMEOBJECT_PARENTROTATION_02,0.73135370016098f);
+		m_buffs[x]->SetFloatValue(GAMEOBJECT_PARENTROTATION_03,-0.681998312473297f);
+		m_buffs[x]->SetByte(GAMEOBJECT_BYTES_1, 0, 1);
+		m_buffs[x]->SetByte(GAMEOBJECT_BYTES_1, 1, 6);
+		m_buffs[x]->SetByte(GAMEOBJECT_BYTES_1, 3, 100);
+		break;
+	case 1:
+		m_buffs[x] = SpawnGameObject(184971, mapid, 1005.17071533203f, 1447.94567871094f, 335.903228759766f, 1.64060950279236f, 0, 114, 1);
+		m_buffs[x]->SetFloatValue(GAMEOBJECT_PARENTROTATION_02,0.73135370016098f);
+		m_buffs[x]->SetFloatValue(GAMEOBJECT_PARENTROTATION_03,0.681998372077942f);
+		m_buffs[x]->SetByte(GAMEOBJECT_BYTES_1, 0, 1);
+		m_buffs[x]->SetByte(GAMEOBJECT_BYTES_1, 1, 6);
+		m_buffs[x]->SetByte(GAMEOBJECT_BYTES_1, 3, 100);
+		break;
+	case 2:
+		m_buffs[x] = SpawnGameObject(184965, mapid, 1317.50573730469f, 1550.85070800781f, 313.234375f, -0.26179963350296f, 0, 114, 1);
+		m_buffs[x]->SetFloatValue(GAMEOBJECT_PARENTROTATION_02,0.130526319146156f);
+		m_buffs[x]->SetFloatValue(GAMEOBJECT_PARENTROTATION_03,-0.991444826126099f);
+		m_buffs[x]->SetByte(GAMEOBJECT_BYTES_1, 0, 1);
+		m_buffs[x]->SetByte(GAMEOBJECT_BYTES_1, 1, 6);
+		m_buffs[x]->SetByte(GAMEOBJECT_BYTES_1, 3, 100);
+		break;
+	}
+}
+
 void StrandOfTheAncient::OnCreate()
 {
 	sLog.outDebug("OnCreate: SOTA Battleground\n");
@@ -449,13 +482,10 @@ void StrandOfTheAncient::OnStart()
 	for(list<Player*>::iterator itr = sota_players.begin(); itr != sota_players.end(); ++itr)
 	{
 		Player *plr = *itr;
-		if (plr->GetTeam() == Attackers)
-		{
-			dest.ChangeCoords(sotaStopBoatsPlayer[plr->GetTeam()][0], sotaStopBoatsPlayer[plr->GetTeam()][1],
-				sotaStopBoatsPlayer[plr->GetTeam()][2], sotaStopBoatsPlayer[plr->GetTeam()][3]);
+		dest.ChangeCoords(sotaStopBoatsPlayer[plr->GetTeam()][0], sotaStopBoatsPlayer[plr->GetTeam()][1],
+			sotaStopBoatsPlayer[plr->GetTeam()][2], sotaStopBoatsPlayer[plr->GetTeam()][3]);
 
-			plr->SafeTeleport(plr->GetMapId(), plr->GetInstanceID(), dest);
-		}
+		plr->SafeTeleport(plr->GetMapId(), plr->GetInstanceID(), dest);
 	}
 
 	SetWorldState(WORLDSTATE_SOTA_CAPTURE_BAR_DISPLAY, (uint32)-1);
@@ -467,9 +497,16 @@ void StrandOfTheAncient::OnStart()
 	sEventMgr.AddEvent( this, &StrandOfTheAncient::TimeTick, EVENT_SOTA_TIMER, MSTIME_SECOND * 5, 0, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT );
 
 	UpdatePvPData();
+}
 
-	PlaySoundToAll(SOUND_BATTLEGROUND_BEGIN);
+void StrandOfTheAncient::HookGenerateLoot(Player *plr, Object * pOCorpse)
+{
+	sLog.outDebug("*** StrandOfTheAncient::HookGenerateLoot");
+}
 
+void StrandOfTheAncient::HookOnUnitKill(Player * plr, Unit * pVictim)
+{
+	sLog.outDebug("*** StrandOfTheAncient::HookOnUnitKill");
 }
 
 void StrandOfTheAncient::SetIsWeekend(bool isweekend) 
@@ -496,6 +533,11 @@ bool StrandOfTheAncient::HookSlowLockOpen(GameObject * pGo, Player * pPlayer, Sp
 	UpdatePvPData();
 	*/
 	return true;
+}
+
+// For banners
+void StrandOfTheAncient::HookFlagStand(Player * plr, GameObject * obj)
+{
 }
 
 // time in seconds
@@ -532,147 +574,13 @@ void StrandOfTheAncient::TimeTick()
 	}
 };
 
-bool StrandOfTheAncient::IsInStrandOfTheAncient(Player * plr)
+// Not used?
+void StrandOfTheAncient::HookOnFlagDrop(Player * plr)
 {
-	if (plr == NULL || !plr->m_bg)
-		return false;
-	if (plr->m_bg->GetType() != BATTLEGROUND_STRAND_OF_THE_ANCIENT)
-		return false;
-	return true;
 }
-
-void StrandOfTheAncient::OnPlayerKill(Player * plr, Player * pVictim)
+void StrandOfTheAncient::HookFlagDrop(Player * plr, GameObject * obj)
 {
-	if (!IsInStrandOfTheAncient(plr))
-		return;
-	StrandOfTheAncient * bg = static_cast<StrandOfTheAncient *>(plr->m_bg);
-	plr->m_bgScore.KillingBlows++;
-	bg->UpdatePvPData();
 }
-
-void StrandOfTheAncient::OnHonorKill(Player * plr)
+void StrandOfTheAncient::HookOnShadowSight() 
 {
-	if (!IsInStrandOfTheAncient(plr))
-		return;
-	StrandOfTheAncient * bg = static_cast<StrandOfTheAncient *>(plr->m_bg);
-	plr->m_bgScore.HonorableKills++;
-	bg->UpdatePvPData();
-}
-
-void StrandOfTheAncient::OnPlayerDeath(Player * plr)
-{
-	if (!IsInStrandOfTheAncient(plr))
-		return;
-	StrandOfTheAncient * bg = static_cast<StrandOfTheAncient *>(plr->m_bg);
-	plr->m_bgScore.Deaths++;
-	bg->UpdatePvPData();
-}
-
-bool StrandOfTheAncient::OnSpellCast(Player* caster, SpellEntry * pSpell) 
-{
-	if (!IsInStrandOfTheAncient(caster))
-		return false;
-	StrandOfTheAncient * bg = static_cast<StrandOfTheAncient *>(caster->m_bg);
-	
-	// Transporter platforms
-	if (pSpell->Id == 54640)
-		bg->PlatformTeleport(caster);
-
-	return false; // Don't stop the default handler
-}
-
-bool StrandOfTheAncient::OnRepopRequest(Player * plr)
-{
-	LocationVector dest;
-	if (!IsInStrandOfTheAncient(plr))
-		return false;
-	StrandOfTheAncient * bg = static_cast<StrandOfTheAncient *>(plr->m_bg);
-
-	dest.ChangeCoords(sotaRepop[plr->GetTeam()][0], sotaRepop[plr->GetTeam()][1],
-		sotaRepop[plr->GetTeam()][2], sotaRepop[plr->GetTeam()][3]);
-
-	plr->SafeTeleport(plr->GetMapId(), plr->GetInstanceID(), dest);
-	return true;
-}
-
-
-// Strand of the Ancients Battlemaster
-class SCRIPT_DECL StrandOfTheAncientsBattlemaster : public GossipScript
-{
-public:
-	void GossipHello(Object* pObject, Player * plr, bool AutoSend)
-	{
-		GossipMenu *Menu;
-		uint32 Team = plr->GetTeam();
-		if(Team > 1) Team = 1;
-
-		// Check if the player can be entered into the bg or not.
-		if(plr->getLevel() < 71) //Levels 71-80 else don't let them into the bg menu.
-		{
-			uint32 FactMessages[2] = { 7658, 7658 }; // NEED TO BE UPDATED TO SOTA
-
-			// Send "you cannot enter" message.
-			objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), FactMessages[Team], plr);
-		}
-		else
-		{
-			uint32 FactMessages[2] = { 7658, 7659 }; // NEED TO BE UPDATED TO SOTA
-
-			// Send "you cannot enter" message.
-			objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), FactMessages[Team], plr);
-			Menu->AddItem( 0, "I would like to enter the battleground.", 8);
-		}
-
-		if(AutoSend)
-			Menu->SendTo(plr);
-	}
-
-	void GossipSelectOption(Object* pObject, Player * plr, uint32 Id, uint32 IntId, const char * Code)
-	{
-		// Send battleground list.
-		if(pObject->GetTypeId()!=TYPEID_UNIT)
-			return;
-
-		plr->GetSession()->SendBattlegroundList(((Creature*)pObject), 8);  // AV = 1
-	}
-
-	void Destroy()
-	{
-		delete this;
-	}
-};
-
-void SetupStrandOfTheAncient(ScriptMgr * mgr)
-{
-	uint32 nameId = 46;
-
-	// Register the battleground
-	BattlegroundManager.RegisterBattleground(BATTLEGROUND_STRAND_OF_THE_ANCIENT,
-		MAP_STRAND_OF_THE_ANCIENT, nameId, 71, 15, 10, &StrandOfTheAncient::Create);
-
-	// Battlemaster Interaction Handler
-	GossipScript * sota = (GossipScript*) new StrandOfTheAncientsBattlemaster;
-
-
-	// Uncomment when SOTA is ready for use
-	/*
-	mgr->register_gossip_script(30586, sota);		// Jojindi
-	mgr->register_gossip_script(29234, sota);		// Strand of the Ancients Battlemaster - Wintergrasp
-	mgr->register_gossip_script(30578, sota);		// Bethany Aldire - Stormwind City
-	mgr->register_gossip_script(30581, sota);		// Buhurda - Exodar?
-	mgr->register_gossip_script(30590, sota);		// Godo Cloudcleaver - Thunder Bluff
-	mgr->register_gossip_script(30584, sota);		// Mabrian Fardawn - Silvermoon?
-	mgr->register_gossip_script(30579, sota);		// Marga Bearbrawn - Ironforge
-	mgr->register_gossip_script(30580, sota);		// Nivara Bladedancer - Darnassus
-	mgr->register_gossip_script(30583, sota);		// Sarah Forthright - Undercity
-	mgr->register_gossip_script(30582, sota);		// Ufuda Giant-Slayer - Orgrimmar
-	mgr->register_gossip_script(30587, sota);		// Vinvo Goldgear - Shattrath
-	*/
-
-	mgr->register_hook(SERVER_HOOK_EVENT_ON_HONOR_KILL, (void *)&StrandOfTheAncient::OnHonorKill);
-	mgr->register_hook(SERVER_HOOK_EVENT_ON_PLAYER_KILL, (void *)&StrandOfTheAncient::OnPlayerKill);
-	mgr->register_hook(SERVER_HOOK_EVENT_ON_PLAYER_DEATH, (void *)&StrandOfTheAncient::OnPlayerDeath);
-	mgr->register_hook(SERVER_HOOK_EVENT_ON_SPELL_CAST, (void *)&StrandOfTheAncient::OnSpellCast);
-	mgr->register_hook(SERVER_HOOK_EVENT_ON_REPOP, (void *)&StrandOfTheAncient::OnRepopRequest);
-
 }

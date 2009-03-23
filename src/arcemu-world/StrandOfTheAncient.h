@@ -18,9 +18,6 @@
  *
  */
 
-#ifndef HEADER_SOTA
-#define HEADER_SOTA
-
 #define BUFF_COUNT		3
 
 #define TEAM_DEFENDER	0
@@ -89,11 +86,22 @@ public:
 
 	uint32 GetRoundTime(){ return RoundTime; };
 	LocationVector GetStartingCoords(uint32 team);
-
+	void HookOnAreaTrigger(Player * plr, uint32 id);
+	void HookFlagStand(Player * plr, GameObject * obj);
+	void HookOnFlagDrop(Player * plr);
+	void HookFlagDrop(Player * plr, GameObject * obj);
+	void HookOnPlayerKill(Player * plr, Player * pVictim);
+	void HookOnHK(Player * plr);
+	void HookOnShadowSight();
+	void HookGenerateLoot(Player *plr, Object * pOCorpse);
+	void HookOnUnitKill(Player * plr, Unit * pVictim);
 	bool HookSlowLockOpen(GameObject * pGo, Player * pPlayer, Spell * pSpell);
+	void HookOnPlayerDeath(Player * plr);
+	void HookOnMount(Player * plr);
+	bool HookHandleRepop(Player * plr);
 	void OnAddPlayer(Player * plr);
 	void OnRemovePlayer(Player * plr);
-	void PlatformTeleport(Player *plr);
+	void OnPlatformTeleport(Player *plr);
 	void OnCreate();
 	void OnStart();
 	void SetIsWeekend(bool isweekend);
@@ -102,35 +110,9 @@ public:
 	void TimeTick();
 	void PrepareRound();
 
-	// Event handlers
-	static bool IsInStrandOfTheAncient(Player * plr);
-	static void OnPlayerKill(Player * plr, Player * pVictim);
-	static void OnHonorKill(Player * plr);
-	static void OnPlayerDeath(Player * plr);
-	static bool OnSpellCast(Player *caster, SpellEntry * pSpell);
-	static bool OnRepopRequest(Player * plr);
-
-
-
 protected:
 	uint32 m_flagHolders[2];
 
-	/* Boats */
-	void SpawnBoats();
-	void DestroyBoats();
-
-	/* Gates */
-	void SpawnAllGates();
-	void DestroyAllGates();
-
-	/* Relic */
-	void SpawnRelic();
-	void DestroyRelic();
-
-	/* Buffs */
-	void SpawnAllBuffs();
 	void SpawnBuff(uint32 x);
-	void DestroyAllBuffs();
-};
 
-#endif // HEADER_SOTA
+};

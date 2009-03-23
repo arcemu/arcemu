@@ -49,7 +49,6 @@ void Socket::WriteCallback()
 				m_writeEvent.Unmark();
 				DecSendLock();
 				Disconnect();
-				sLog.outDebug("Debug: WriteCallback WSAGetLastError");
 			}
 		}
 	}

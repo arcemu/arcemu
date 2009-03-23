@@ -53,5 +53,5 @@ void onPvpKill(Player* pPlayer)
 
 void SetupPvPToken(ScriptMgr * mgr)
 {
-	mgr->register_hook(SERVER_HOOK_EVENT_ON_PLAYER_KILL, (void*)onPvpKill);
+	mgr->register_hook(SERVER_HOOK_EVENT_ON_KILL_PLAYER, (void*)onPvpKill);
 }

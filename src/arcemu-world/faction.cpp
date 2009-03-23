@@ -205,7 +205,7 @@ bool isAttackable(Object* objA, Object* objB, bool CheckStealth)// A can attack 
 	if(!objB->IsPlayer())
 		if(objB->HasFlag(UNIT_FIELD_FLAGS_2, 0x00000001))
 			return false;*/
-	if(objB->IsPlayer() && static_cast<*Player>(objB)->HasFlag(PLAYER_FLAGS, PLAYER_FLAG_GM))
+	if(objB->IsPlayer() && static_cast<Player *>(objB)->HasFlag(PLAYER_FLAGS, PLAYER_FLAG_GM))
 		return false;
 
 	// Checks for untouchable, unattackable
