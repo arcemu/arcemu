@@ -3241,7 +3241,7 @@ uint8 Spell::CanCast(bool tolerate)
 		if( target )
 		{
 			// GM Flagged Players should be immune to other players' casts, but not their own.
-			if (target->IsPlayer() && static_cast<Player*>(target)->HasFlag(PLAYER_FLAGS, PLAYER_FLAG_GM))
+			if ( (!p_caster || p_caster->HasFlag(PLAYER_FLAGS, PLAYER_FLAG_GM) ) && target->IsPlayer() && static_cast<Player*>(target)->HasFlag(PLAYER_FLAGS, PLAYER_FLAG_GM))
 			{
 				if(target != m_caster)
 					return SPELL_FAILED_BM_OR_INVISGOD;

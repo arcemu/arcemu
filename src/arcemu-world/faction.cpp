@@ -205,6 +205,8 @@ bool isAttackable(Object* objA, Object* objB, bool CheckStealth)// A can attack 
 	if(!objB->IsPlayer())
 		if(objB->HasFlag(UNIT_FIELD_FLAGS_2, 0x00000001))
 			return false;*/
+	if(objB->IsPlayer() && static_cast<*Player>(objB)->HasFlag(PLAYER_FLAGS, PLAYER_FLAG_GM))
+		return false;
 
 	// Checks for untouchable, unattackable
 	if(objA->IsUnit() && objA->HasFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_MOUNTED_TAXI | UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_DEAD))
@@ -232,6 +234,9 @@ bool isAttackable(Object* objA, Object* objB, bool CheckStealth)// A can attack 
 			static_cast< Player* >( objA )->GetDuelState() == DUEL_STATE_STARTED
 			)
 		return true;
+		
+		if( static_cast< Player* >( objA )->GetGroup() == static_cast< Player* >( objB )->GetGroup() )
+			return false;
 
 		//players in same group should not attack each other. Required for arenas with mixed groups
 		if( static_cast< Player* >( objA )->GetGroup() && static_cast< Player* >( objA )->GetGroup() == static_cast< Player* >( objB )->GetGroup() )
