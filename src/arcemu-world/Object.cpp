@@ -1648,12 +1648,14 @@ bool Object::isInRange(Object* target, float range)
 
 bool Object::IsPet()
 {
-	if( this->GetTypeId() != TYPEID_UNIT )
+	if (this->GetTypeId() != TYPEID_UNIT || !m_uint32Values || !this->IsCreature())
 		return false;
 
-	if (this->IsCreature() && static_cast< Creature * >(this)->IsPet() && m_uint32Values &&
-		m_uint32Values[UNIT_FIELD_CREATEDBY] != 0 && m_uint32Values[UNIT_FIELD_SUMMONEDBY] != 0 )
-			return true;
+	if (m_uint32Values[UNIT_FIELD_CREATEDBY] == 0 || m_uint32Values[UNIT_FIELD_SUMMONEDBY] == 0)
+		return false;
+
+	if (static_cast< Creature * >(this)->IsPet())
+		return true;
 
 	return false;
 }

@@ -50,6 +50,7 @@ Creature::Creature(uint64 guid)
 
 	Skinned = false;
 	
+	m_isPet = false;
 	m_enslaveCount = 0;
 	m_enslaveSpell = 0;
 	

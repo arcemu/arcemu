@@ -227,6 +227,7 @@ void Pet::CreateAsSummon( uint32 entry, CreatureInfo *ci, Creature* created_from
 
 Pet::Pet( uint64 guid ) : Creature( guid )
 {
+	m_isPet = true;
 	m_PetXP = 0;
 	Summon = false;
 	memset(ActionBar, 0, sizeof(uint32)*10);

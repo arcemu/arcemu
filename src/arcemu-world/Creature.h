@@ -260,7 +260,7 @@ public:
 
 	// For derived subclasses of Creature
 	virtual bool IsVehicle() { return false; }
-	virtual bool IsPet() { return false; }
+	bool IsPet() { return m_isPet; }
 
 	bool Load(CreatureSpawn *spawn, uint32 mode, MapInfo *info);
 	void Load(CreatureProto * proto_, float x, float y, float z, float o=0);
@@ -610,6 +610,7 @@ protected:
 	std::list<QuestRelation *>* m_quests;
    
 	/// Pet
+	bool m_isPet;
 	uint32 m_enslaveCount;
 	uint32 m_enslaveSpell;
 
