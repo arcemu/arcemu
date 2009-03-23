@@ -58,7 +58,7 @@ void WorldSession::HandleUseItemOpcode(WorldPacket& recvPacket)
 
 	if(sScriptMgr.CallScriptedItem(tmpItem,_player))
 		return;
-	
+
 	if( itemProto->InventoryType != 0 && !_player->GetItemInterface()->IsEquipped(itemProto->ItemId) )//Equipable items cannot be used before they're equipped. Prevents exploits
 		return;//Prevents exploits such as keeping an on-use trinket in your bag and using WPE to use it from your bag in mid-combat.
 
@@ -94,7 +94,7 @@ void WorldSession::HandleUseItemOpcode(WorldPacket& recvPacket)
 				}
 
 				// HookInterface
-				if (sHookInterface.OnCastSpell( _player, spellInfo ))
+				if (!sHookInterface.OnCastSpell( _player, spellInfo ))
 					return;
 
 				if (spellInfo->AuraInterruptFlags & AURA_INTERRUPT_ON_STAND_UP)
