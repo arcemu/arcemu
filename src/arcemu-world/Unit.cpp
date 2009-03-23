@@ -3369,6 +3369,26 @@ void Unit::Strike( Unit* pVictim, uint32 weapon_damage_type, SpellEntry* ability
 //--------------------------------postroll processing---------------------------------------
 	uint32 abs = 0;
 
+	
+//Aggro PvP Guards
+	if( pVictim->IsPlayer() )
+	{
+		Unit *tmpUnit;
+		this->AquireInrangeLock();
+		for(Object::InRangeSet::iterator i = GetInRangeSetBegin(); i != GetInRangeSetEnd(); ++i)
+		{
+			if((*i)->GetTypeId() == TYPEID_UNIT)
+			{
+				tmpUnit = (*i);
+				if( tmpUnit->GetAIInterface() && tmpUnit->GetAIInterface()->m_isNeutralGuard && CalcDistance(tmpUnit) <= (50.0f * 50.0f) )
+				{
+					tmpUnit->GetAIInterface()->AttackReaction(this, 1, 0);
+				}
+			}
+		}
+		this->ReleaseInrangeLock();		
+	}
+
 	switch(r)
 	{
 //--------------------------------miss------------------------------------------------------

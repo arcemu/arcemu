@@ -1674,7 +1674,7 @@ Unit* AIInterface::FindTarget()
 		return 0;
 	}
 
-	if (m_isNeutralGuard)
+	/*if (m_isNeutralGuard)
 	{
 		Player *tmpPlr;
 		for (std::set<Player*>::iterator itrPlr = m_Unit->GetInRangePlayerSetBegin(); itrPlr != m_Unit->GetInRangePlayerSetEnd(); ++itrPlr)
@@ -1735,7 +1735,7 @@ Unit* AIInterface::FindTarget()
 			return target;
 		}
 		distance = 999999.0f; //Reset Distance for normal check
-	}
+	}*/
 
 	//we have a high chance that we will agro a player
 	//this is slower then oppfaction list BUT it has a lower chance that contains invalid pointers
