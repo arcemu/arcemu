@@ -1322,6 +1322,8 @@ public:
 	void SetBlockFromSpell(float value) { m_blockfromspell = value; }
 	void SetParryFromSpell(float value) { m_parryfromspell = value; }
 	void SetDodgeFromSpell(float value) { m_dodgefromspell = value; }
+	
+	void AggroPvPGuards();
 
 
 protected:

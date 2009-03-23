@@ -3369,26 +3369,8 @@ void Unit::Strike( Unit* pVictim, uint32 weapon_damage_type, SpellEntry* ability
 //--------------------------------postroll processing---------------------------------------
 	uint32 abs = 0;
 
+	AggroPvPGuards();
 	
-//Aggro PvP Guards
-	if( pVictim->IsPlayer() )
-	{
-		Unit *tmpUnit;
-		this->AquireInrangeLock();
-		for(Object::InRangeSet::iterator i = GetInRangeSetBegin(); i != GetInRangeSetEnd(); ++i)
-		{
-			if((*i)->GetTypeId() == TYPEID_UNIT)
-			{
-				tmpUnit = static_cast< Unit* >(*i);
-				if( tmpUnit->GetAIInterface() && tmpUnit->GetAIInterface()->m_isNeutralGuard && CalcDistance(tmpUnit) <= (50.0f * 50.0f) )
-				{
-					tmpUnit->GetAIInterface()->AttackReaction(this, 1, 0);
-				}
-			}
-		}
-		this->ReleaseInrangeLock();		
-	}
-
 	switch(r)
 	{
 //--------------------------------miss------------------------------------------------------
@@ -7238,6 +7220,24 @@ void Unit::RemoveFieldSummon()
 		}
 		SetUInt64Value(UNIT_FIELD_SUMMON, 0);
 	}
+}
+
+void Unit::AggroPvPGuards()
+{
+	Unit *tmpUnit;
+	this->AquireInrangeLock();
+	for(Object::InRangeSet::iterator i = GetInRangeSetBegin(); i != GetInRangeSetEnd(); ++i)
+	{
+		if((*i)->GetTypeId() == TYPEID_UNIT)
+		{
+			tmpUnit = static_cast< Unit* >(*i);
+			if( tmpUnit->GetAIInterface() && tmpUnit->GetAIInterface()->m_isNeutralGuard && CalcDistance(tmpUnit) <= (50.0f * 50.0f) )
+			{
+				tmpUnit->GetAIInterface()->AttackReaction(this, 1, 0);
+			}
+		}
+	}
+	this->ReleaseInrangeLock();
 }
 
 //what is an Immobilize spell ? Have to add it later to spell effect handler

@@ -1764,22 +1764,7 @@ void Object::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
 	if(pVictim->IsPlayer() && this->IsPlayer() && static_cast< Player*>(this) != static_cast< Player* >(pVictim))
 	{
 		if( isAttackable(this,pVictim) && static_cast< Player* >(this)->DuelingWith != static_cast< Player* >(pVictim) )
-		{
-			Unit *tmpUnit;
-			this->AquireInrangeLock();
-			for(Object::InRangeSet::iterator i = GetInRangeSetBegin(); i != GetInRangeSetEnd(); ++i)
-			{
-				if((*i)->GetTypeId() == TYPEID_UNIT)
-				{
-					tmpUnit = static_cast< Unit* >(*i);
-					if( tmpUnit->GetAIInterface() && tmpUnit->GetAIInterface()->m_isNeutralGuard && CalcDistance(tmpUnit) <= (50.0f * 50.0f) )
-					{
-						tmpUnit->GetAIInterface()->AttackReaction(static_cast< Unit * >(this), 1, 0);
-					}
-				}
-			}
-			this->ReleaseInrangeLock();
-		}
+			static_cast<Unit*>(this)->AggroPvPGuards();
 	}
 	
 	if( damage > 14000 && this != pVictim && this->IsPlayer() && !static_cast< Player* >(this)->GetSession()->HasPermissions())

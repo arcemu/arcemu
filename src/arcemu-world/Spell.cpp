@@ -3002,22 +3002,7 @@ void Spell::HandleAddAura(uint64 guid)
 		if(static_cast< Player* >(Target)->IsPvPFlagged())
 			p_caster->SetPvPFlag();
 		if( isAttackable(p_caster,Target) && p_caster->DuelingWith != static_cast< Player* >(Target) )
-		{
-			Unit *tmpUnit;
-			p_caster->AquireInrangeLock();
-			for(Object::InRangeSet::iterator i = p_caster->GetInRangeSetBegin(); i != p_caster->GetInRangeSetEnd(); ++i)
-			{
-				if((*i)->GetTypeId() == TYPEID_UNIT)
-				{
-					tmpUnit = static_cast< Unit* >(*i);
-					if( tmpUnit->GetAIInterface() && tmpUnit->GetAIInterface()->m_isNeutralGuard && p_caster->CalcDistance(tmpUnit) <= (50.0f * 50.0f) )
-					{
-						tmpUnit->GetAIInterface()->AttackReaction(p_caster, 1, 0);
-					}
-				}
-			}
-			p_caster->ReleaseInrangeLock();		
-		}
+			p_caster->AggroPvPGuards();
 	}
 
 	// remove any auras with same type
