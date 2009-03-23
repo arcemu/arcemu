@@ -27,7 +27,7 @@ LogonCommHandler::LogonCommHandler()
 	next_request = 1;
 	pings = !Config.MainConfig.GetBoolDefault("LogonServer", "DisablePings", false);
 	string logon_pass = Config.MainConfig.GetStringDefault("LogonServer", "RemotePassword", "r3m0t3");
-	
+
 	// sha1 hash it
 	Sha1Hash hash;
 	hash.UpdateData(logon_pass);
@@ -57,7 +57,7 @@ LogonCommHandler::~LogonCommHandler()
 
 LogonCommClientSocket * LogonCommHandler::ConnectToLogon(string Address, uint32 Port)
 {
-	LogonCommClientSocket * conn = ConnectTCPSocket<LogonCommClientSocket>(Address.c_str(), Port);	
+	LogonCommClientSocket * conn = ConnectTCPSocket<LogonCommClientSocket>(Address.c_str(), Port);
 	return conn;
 }
 
@@ -73,8 +73,9 @@ void LogonCommHandler::RequestAddition(LogonCommClientSocket * Socket)
 		Realm * realm = *itr;
 		data << realm->Name;
 		data << realm->Address;
-		data << uint8(realm->Icon);
-		data << uint8(realm->TimeZone);
+        data << realm->Colour;
+        data << realm->Icon;
+        data << realm->TimeZone;
 		data << float(realm->Population);
 		data << uint8(realm->Lock);
 		Socket->SendPacket(&data,false);
@@ -136,7 +137,7 @@ void LogonCommHandler::Startup()
 	QueryResult * result = CharacterDatabase.Query("SELECT * FROM account_forced_permissions");
 	if( result != NULL )
 	{
-		do 
+		do
 		{
 			string acct = result->Fetch()[0].GetString();
 			string perm = result->Fetch()[1].GetString();
@@ -285,7 +286,7 @@ void LogonCommHandler::UpdateSockets()
 				itr->second = 0;
 				continue;
 			}
-            
+
 			if( (t - cs->last_ping) > 15 )
 			{
 				// send a ping packet.
@@ -393,9 +394,10 @@ void LogonCommHandler::LoadRealmConfiguration()
 			Realm * realm = new Realm;
 			realm->Name = Config.RealmConfig.GetStringVA("Name", "SomeRealm", "Realm%u", i);
 			realm->Address = Config.RealmConfig.GetStringVA("Address", "127.0.0.1:8129", "Realm%u", i);
+			realm->Colour = 0;
 			realm->TimeZone = Config.RealmConfig.GetIntVA("TimeZone", 1, "Realm%u", i);
 			realm->Population = Config.RealmConfig.GetFloatVA("Population", 0, "Realm%u", i);
-			realm->Lock = Config.RealmConfig.GetIntVA("Lock", 0, "Realm%u", i);			
+			realm->Lock = Config.RealmConfig.GetIntVA("Lock", 0, "Realm%u", i);
 			string rt = Config.RealmConfig.GetStringVA("Icon", "Normal", "Realm%u", i);
 			uint32 type;
 
@@ -544,7 +546,7 @@ void LogonCommHandler::IPBan_Remove(const char * ip)
 
 void LogonCommHandler::RefreshRealmPop()
 {
-	// Get realm player limit, it's better that we get the player limit once and save it! <-done	
+	// Get realm player limit, it's better that we get the player limit once and save it! <-done
 	// Calc pop: 0 >= low, 1 >= med, 2 >= hig, 3 >= full
 	server_population = float(((sWorld.AlliancePlayers + sWorld.HordePlayers) * 3) / pLimit);
 }

@@ -626,6 +626,13 @@ struct GlyphPropertyEntry	//GlyphProperties.dbc
 	uint32 unk; // some flag
 };
 
+struct GlyphSlotEntry
+{
+        uint32 Id;
+        uint32 Type;
+        uint32 Slot;
+};
+
 struct skilllineentry //SkillLine.dbc
 {
 	uint32 id;
@@ -761,13 +768,13 @@ struct SpellEntry
 	uint32 MaxTargets;                      //216
 	uint32 Spell_Dmg_Type;                  //217   dmg_class Integer      0=None, 1=Magic, 2=Melee, 3=Ranged
 	uint32 PreventionType;                  //218   0,1,2 related to Spell_Dmg_Type I think
-	int32  StanceBarOrder;                  //219   related to paladin aura's 
+	int32  StanceBarOrder;                  //219   related to paladin aura's
 	float  dmg_multiplier[3];               //220 - 222   if the name is correct I dono
 	uint32 MinFactionID;                    //223   only one spellid:6994 has this value = 369 UNUSED
 	uint32 MinReputation;                   //224   only one spellid:6994 has this value = 4 UNUSED
-	uint32 RequiredAuraVision;              //225  3 spells 1 or 2   
+	uint32 RequiredAuraVision;              //225  3 spells 1 or 2
 	uint32 TotemCategory[2];                //226-227
-	int32  RequiresAreaId;                  //228 
+	int32  RequiresAreaId;                  //228
 	uint32 School;                          //229
 	uint32 RuneCostID;                      //230 from 3.0.1
 //	uint32 SpellMissileID;                  //231 from 3.0.1
@@ -1096,7 +1103,7 @@ struct AreaTable
 struct FactionTemplateDBC
 {
 	uint32 ID;
-	uint32 Faction;	
+	uint32 Faction;
 	uint32 FactionGroup;
 	uint32 Mask;
 	uint32 FriendlyMask;
@@ -1455,7 +1462,7 @@ class SERVER_DECL DBCStorage
 	uint32 header;
 
 public:
-	
+
 	DBCStorage()
 	{
 		m_heapBlock = NULL;
@@ -1747,6 +1754,7 @@ extern SERVER_DECL DBCStorage<CharTitlesEntry> dbcCharTitlesEntry;
 extern SERVER_DECL DBCStorage<BarberShopStyleEntry> dbcBarberShopStyleStore;
 extern SERVER_DECL DBCStorage<GemPropertyEntry> dbcGemProperty;
 extern SERVER_DECL DBCStorage<GlyphPropertyEntry> dbcGlyphProperty;
+extern SERVER_DECL DBCStorage<GlyphSlotEntry> dbcGlyphSlot;
 extern SERVER_DECL DBCStorage<ItemSetEntry> dbcItemSet;
 extern SERVER_DECL DBCStorage<Lock> dbcLock;
 extern SERVER_DECL DBCStorage<SpellEntry> dbcSpell;

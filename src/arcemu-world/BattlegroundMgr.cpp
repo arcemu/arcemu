@@ -23,7 +23,7 @@
 initialiseSingleton(CBattlegroundManager);
 typedef CBattleground*(*CreateBattlegroundFunc)(MapMgr* mgr,uint32 iid,uint32 group, uint32 type);
 
-const static uint32 BGMapIds[ BATTLEGROUND_NUM_TYPES ] = 
+const static uint32 BGMapIds[ BATTLEGROUND_NUM_TYPES ] =
 {
 	0,		// 0
 	30,		// AV
@@ -426,7 +426,7 @@ void CBattlegroundManager::AddPlayerToBg(CBattleground * bg, deque<uint32> *play
 			bg->AddPlayer(plr, plr->GetTeam());
 			ErasePlayerFromList(plr->GetLowGUID(), &m_queuedPlayers[i][j]);
 		}
-		else 
+		else
 		{
 			// Put again the player in the queue
 			playerVec->push_back(plrguid);
@@ -766,7 +766,7 @@ void CBattlegroundManager::RemovePlayerFromQueues(Player * plr)
 	plr->m_pendingBattleground=0;
 	SendBattlefieldStatus(plr,0,0,0,0,0,0);
 	m_queueLock.Release();
-	
+
 	Group* group;
 	group = plr->GetGroup();
 	if (group) //if da niggas in a group, boot dis bitch ass' group outa da q
@@ -1106,7 +1106,7 @@ void CBattleground::PortPlayer(Player * plr, bool skip_teleport /* = false*/)
 
 	if(!plr->IsPvPFlagged())
 		plr->SetPvPFlag();
-	
+
 	plr->RemoveAurasByInterruptFlag( AURA_INTERRUPT_ON_PVP_ENTER );
 
 	/* Reset the score */
@@ -1137,7 +1137,7 @@ void CBattleground::PortPlayer(Player * plr, bool skip_teleport /* = false*/)
 
 	if(!skip_teleport)
 	{
-		/* This is where we actually teleport the player to the battleground. */   
+		/* This is where we actually teleport the player to the battleground. */
 		plr->SafeTeleport(m_mapMgr,GetStartingCoords(plr->m_bgTeam));
 		BattlegroundManager.SendBattlefieldStatus(plr, 3, m_type, m_id, (uint32)UNIXTIME - m_startTime, m_mapMgr->GetMapId(),Rated());   // Elapsed time is the last argument
 	}
@@ -1299,7 +1299,7 @@ GameObject * CBattleground::SpawnGameObject(uint32 entry,uint32 MapId , float x,
 
 	go->SetUInt32Value(GAMEOBJECT_FACTION,faction);
 	go->_setFaction();
-	go->SetFloatValue(OBJECT_FIELD_SCALE_X,scale);   
+	go->SetFloatValue(OBJECT_FIELD_SCALE_X,scale);
 	go->SetUInt32Value(GAMEOBJECT_FLAGS, flags);
 	go->SetFloatValue(GAMEOBJECT_POS_X, x);
 	go->SetFloatValue(GAMEOBJECT_POS_Y, y);
@@ -1315,7 +1315,7 @@ Creature *CBattleground::SpawnCreature(uint32 entry, float x, float y, float z, 
 {
 	CreatureProto *cp = CreatureProtoStorage.LookupEntry(entry);
 	Creature *c = m_mapMgr->CreateCreature(entry);
-	
+
 	c->Load(cp,x, y, z, o);
 	c->PushToWorld(m_mapMgr);
 	return c;
@@ -1858,7 +1858,7 @@ void CBattlegroundManager::HandleArenaJoin(WorldSession * m_session, uint32 Batt
 					return;
 				}
 
-				if((*itx)->lastLevel < PLAYER_LEVEL_CAP_70)
+				if( (*itx)->lastLevel < PLAYER_ARENA_MIN_LEVEL )
 				{
 					m_session->SystemMessage(m_session->LocalizedWorldSrv(59));
 					pGroup->Unlock();
@@ -2002,7 +2002,7 @@ bool CBattleground::HasFreeSlots(uint32 Team, uint32 type)
 		res = (size[Team] < maxPlayers) && (((int)size[Team] - (int)size[1-Team]) <= 0);
 	}
 	m_mainLock.Release();
-	return res; 
+	return res;
 }
 
 

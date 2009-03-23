@@ -100,7 +100,7 @@ ArenaTeam::ArenaTeam(Field * f)
 		}
 		else
 			m_members[i].Info = NULL;
-	}	
+	}
 }
 
 void ArenaTeam::SendPacket(WorldPacket * data)
@@ -158,7 +158,7 @@ bool ArenaTeam::AddMember(PlayerInfo * info)
 		base_field = (m_type*6) + PLAYER_FIELD_ARENA_TEAM_INFO_1_1;
 		plr->SetUInt32Value(base_field, m_id);
 		plr->SetUInt32Value(base_field+1,m_leader);
-        
+
         plr->m_arenaTeams[m_type]=this;
 		plr->GetSession()->SystemMessage("You are now a member of the arena team, '%s'.", m_name.c_str());
 	}
@@ -220,7 +220,7 @@ void ArenaTeam::Roster(WorldPacket & data)
 	data.Initialize(SMSG_ARENA_TEAM_ROSTER);
 	data.reserve(m_memberCount * 81 + 9);
 	data << m_id;
-	data << uint8(0); // 3.0.8 
+	data << uint8(0); // 3.0.8
 	data << m_memberCount;
 	data << GetPlayersPerTeam();
 
@@ -263,7 +263,7 @@ void ArenaTeam::SaveToDB()
 		<< m_stat_gamesplayedweek << " " << m_stat_gameswonweek << " "
 		<< m_stat_gamesplayedseason << " " << m_stat_gameswonseason << "',"
 		<< m_stat_ranking;
-    
+
 	for(i = 0; i < m_memberCount; ++i)
 	{
 		if(m_members[i].Info)
@@ -408,9 +408,9 @@ void WorldSession::HandleArenaTeamAddMemberOpcode(WorldPacket & recv_data)
 		return;
 	}
 
-	if(plr->getLevel() < PLAYER_LEVEL_CAP_70)
-	{
-		SystemMessage("Player must be level 70 to join an arena team.");
+    if( plr->getLevel() < PLAYER_ARENA_MIN_LEVEL )
+    {
+        SystemMessage( "Player must be level %u to join an arena team.", PLAYER_ARENA_MIN_LEVEL );
 		return;
 	}
 
@@ -628,7 +628,7 @@ void WorldSession::HandleArenaTeamDisbandOpcode(WorldPacket & recv_data)
 	team->Destroy();
 }
 
-void WorldSession::HandleArenaTeamPromoteOpcode(WorldPacket & recv_data) 
+void WorldSession::HandleArenaTeamPromoteOpcode(WorldPacket & recv_data)
 {
 	uint32 teamId;
 	uint8 slot;

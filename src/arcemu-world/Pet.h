@@ -117,7 +117,7 @@ public:
 	~Pet();
 
 	// Override superclass method that returns false
-	bool IsPet() { return true; }
+    //bool IsPet() { return Creature  }
 
 	void LoadFromDB(Player* owner, PlayerPet * pi);
 	void CreateAsSummon(uint32 entry, CreatureInfo *ci, Creature *created_from_creature, Player* owner, SpellEntry *created_by_spell, uint32 type, uint32 expiretime, LocationVector* Vec = NULL);
@@ -144,7 +144,7 @@ public:
 	ARCEMU_INLINE void SetPetDiet(uint32 diet) { m_Diet = diet; }
 	ARCEMU_INLINE void SetPetDiet() { m_Diet = myFamily->petdietflags; }
 	ARCEMU_INLINE uint32 GetPetDiet(void) { return m_Diet; }
-	
+
 	ARCEMU_INLINE AI_Spell* GetAISpellForSpellId(uint32 spellid)
 	{
 		std::map<uint32, AI_Spell*>::iterator itr = m_AISpellStore.find(spellid);
@@ -183,7 +183,7 @@ public:
 	void SetSpellState(SpellEntry * sp, uint16 State);
 	uint16 GetSpellState(SpellEntry * sp);
 	bool HasSpell( uint32 SpellID )
-	{ 
+	{
 		SpellEntry * sp = dbcSpell.LookupEntry( SpellID );
 		if( sp )
 			return mSpells.find( sp ) != mSpells.end();
@@ -209,7 +209,7 @@ public:
 			return GetSpellState( sp );
 		return DEFAULT_SPELL_STATE;
 	}
-	
+
 	AI_Spell * CreateAISpell(SpellEntry * info);
 	ARCEMU_INLINE PetSpellMap* GetSpells() { return &mSpells; }
 	ARCEMU_INLINE bool IsSummon() { return Summon; }
@@ -219,13 +219,13 @@ public:
 	ARCEMU_INLINE string& GetName() { return m_name; }
 	uint32 CanLearnSpell( SpellEntry* sp );
 	void SkillUp();
-	
+
 	// talents
 	ARCEMU_INLINE uint8 GetTPsForLevel( uint32 level ) { return ( level >= 20 ) ? uint8( level - 16 ) >> 2 : 0; }	// pet gain first talent point at lvl 20, then every 4 lvls another point
 	ARCEMU_INLINE void SetTPs( uint8 TP ) { SetByte( UNIT_FIELD_BYTES_1, 1, TP ); }			// sets talent points
 	ARCEMU_INLINE uint8 GetTPs() { return GetByte( UNIT_FIELD_BYTES_1, 1 ); }				// returns available talent points
 	ARCEMU_INLINE uint8 GetSpentTPs() { return GetTPsForLevel( getLevel() ) - GetTPs(); }	// returns amount of spent talent points
-	
+
 	void HandleAutoCastEvent( AutoCastEvents Type );
 	AI_Spell * HandleAutoCastEvent();
 	void SetPetSpellState(uint32 spell, uint16 state);
@@ -240,7 +240,7 @@ protected:
 	PetSpellMap mSpells;
 	PlayerPet * mPi;
 	uint32 ActionBar[10];   // 10 slots
-	
+
 	std::map<uint32, AI_Spell*> m_AISpellStore;
 
 	uint32 m_AutoCombatSpell;

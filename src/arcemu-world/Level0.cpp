@@ -237,7 +237,7 @@ bool ChatHandler::HandleStartCommand(const char* args, WorldSession *m_session)
 		 info = objmgr.GetPlayerCreateInfo(raceid, i);
 		 if(info != NULL) break;
 	}
-	
+
 	if(info == NULL)
 	{
 		RedSystemMessage(m_session, "Internal error: Could not find create info.");
@@ -256,8 +256,8 @@ bool ChatHandler::HandleInfoCommand(const char* args, WorldSession *m_session)
 {
 	WorldPacket data;
 
-	
-	uint32 clientsNum = (uint32)sWorld.GetSessionCount();
+
+	//uint32 clientsNum = (uint32)sWorld.GetSessionCount();
 
 	int gm = 0;
 	int count = 0;
@@ -272,13 +272,13 @@ bool ChatHandler::HandleInfoCommand(const char* args, WorldSession *m_session)
 			avg += itr->second->GetSession()->GetLatency();
 			if(itr->second->GetSession()->GetPermissionCount())
 				gm++;
-		}			
+		}
 	}
 	objmgr._playerslock.ReleaseReadLock();
 	GreenSystemMessage(m_session, "Server Revision: |r%sArcEmu r%u/%s-%s-%s %s(www.arcemu.org)", MSG_COLOR_WHITE,
 		BUILD_REVISION, CONFIG, PLATFORM_TEXT, ARCH, MSG_COLOR_LIGHTBLUE);
 	GreenSystemMessage(m_session, "Server Uptime: |r%s", sWorld.GetUptimeString().c_str());
-	GreenSystemMessage(m_session, "Current Players: |r%d (%d GMs, %d queued)", clientsNum, gm,  0);
+	GreenSystemMessage(m_session, "Current Players: |r%d (%d GMs)", count, gm);
 	GreenSystemMessage(m_session, "Active Thread Count: |r%u", ThreadPool.GetActiveThreadCount());
 	GreenSystemMessage(m_session, "Free Thread Count: |r%u", ThreadPool.GetFreeThreadCount());
 	GreenSystemMessage(m_session, "Average Latency: |r%.3fms", (float)((float)avg / (float)count));

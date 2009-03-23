@@ -43,13 +43,13 @@ void WorldSession::HandleTaxiNodeStatusQueryOpcode( WorldPacket & recv_data )
 
 	// Check for known nodes
 	if ( (GetPlayer( )->GetTaximask(field) & submask) != submask )
-	{   
-		data << uint8( 0 );	
+	{
+		data << uint8( 0 );
 	}
 	else
 	{
 		data << uint8( 1 );
-	}	
+	}
 
 	SendPacket( &data );
 	sLog.outDebug( "WORLD: Sent SMSG_TAXINODE_STATUS" );
@@ -102,7 +102,7 @@ void WorldSession::SendTaxiList(Creature* pCreature)
 	TaxiMask[field] |= 1 << ((curloc-1)%32);
 
 	//Remove nodes unknown to player
-	for(int i = 0; i < 12; i++)
+	for(uint8 i = 0; i < 12; i++)
 	{
 		TaxiMask[i] &= GetPlayer( )->GetTaximask(i);
 	}
@@ -150,7 +150,7 @@ void WorldSession::HandleActivateTaxiOpcode( WorldPacket & recv_data )
 
 	// Check for known nodes
 	if ( (GetPlayer( )->GetTaximask(field) & submask) != submask )
-	{   
+	{
 		data << uint32( 1 );
 		SendPacket( &data );
 		return;
@@ -236,7 +236,7 @@ void WorldSession::HandleActivateTaxiOpcode( WorldPacket & recv_data )
 	_player->DismissActivePet();
 	_player->taxi_model_id = modelid;
 	GetPlayer()->TaxiStart(taxipath, modelid, 0);
-	
+
 	//sLog.outString("TAXI: Starting taxi trip. Next update in %d msec.", first_node_time);
 }
 
@@ -281,7 +281,7 @@ void WorldSession::HandleMultipleActivateTaxiOpcode(WorldPacket & recvPacket)
 
 	// Check for known nodes
 	if ( (GetPlayer( )->GetTaximask(field) & submask) != submask )
-	{   
+	{
 		data << uint32( 1 );
 		SendPacket( &data );
 		return;
@@ -380,7 +380,7 @@ void WorldSession::HandleMultipleActivateTaxiOpcode(WorldPacket & recvPacket)
 	// check for a summon -> if we do, remove.
 	_player->DismissActivePet();
 	_player->taxi_model_id = modelid;
-	
+
 	// build the rest of the path list
 	for(uint32 i = 2; i < nodecount; ++i)
 	{

@@ -171,13 +171,13 @@ void LogonCommServerSocket::HandleRegister(WorldPacket & recvData)
 
 	recvData >> Name;
 	my_id = sInfoCore.GetRealmIdByName(Name);
-	
+
 	if (my_id == -1)
 	{
 		my_id = sInfoCore.GenerateRealmID();
 		sLog.outString("Registering realm `%s` under ID %u.", Name.c_str(), my_id);
 	}
-	else 
+	else
 	{
 		sInfoCore.RemoveRealm(my_id);
 		int new_my_id = sInfoCore.GenerateRealmID(); //socket timout will DC old id after a while, make sure it's not the one we restarted
@@ -187,11 +187,16 @@ void LogonCommServerSocket::HandleRegister(WorldPacket & recvData)
 
 	Realm * realm = new Realm;
 
-//	recvData >> realm->Name >> realm->Address;
-//	recvData >> realm->Colour >> realm->Icon >> realm->TimeZone >> realm->Population;
-	realm->Name = Name;
+    realm->Colour = 0;
+    realm->Icon = 0;
+    realm->TimeZone = 0;
+    realm->Population = 0;
+    realm->Lock = 0;
+
+    realm->Name = Name;
 	realm->Colour = 0;
-	recvData >> realm->Address >> realm->Icon >> realm->TimeZone >> realm->Population >> realm->Lock;
+	recvData >> realm->Address >> realm->Colour >> realm->Icon >> realm->TimeZone >> realm->Population >> realm->Lock;
+
 
 //	uint32 my_id = sInfoCore.GenerateRealmID();
 //	sLog.outString("Registering realm `%s` under ID %u.", realm->Name.c_str(), my_id);
@@ -245,7 +250,7 @@ void LogonCommServerSocket::HandleSessionRequest(WorldPacket & recvData)
 		data.append(acct->Locale, 4);
 		data << acct->Muted;
 	}
-	
+
 	SendPacket(&data);
 }
 
@@ -321,7 +326,7 @@ void LogonCommServerSocket::HandleAuthChallenge(WorldPacket & recvData)
 	printf("\n");
 
 	recvCrypto.Setup(key, 20);
-	sendCrypto.Setup(key, 20);	
+	sendCrypto.Setup(key, 20);
 
 	/* packets are encrypted from now on */
 	use_crypto = true;
@@ -389,7 +394,7 @@ void LogonCommServerSocket::HandleUpdateMapping(WorldPacket & recvData)
 	Realm * realm = sInfoCore.GetRealm(realm_id);
 	if(!realm)
 		return;
-	
+
 	sInfoCore.getRealmLock().Acquire();
 	recvData >> account_id >> chars_to_add;
 
@@ -518,7 +523,7 @@ void LogonCommServerSocket::HandleDatabaseModify(WorldPacket& recvData)
 
 			if( sIPBanner.Add( ip.c_str(), duration ) )
 				sLogonSQL->Execute("INSERT INTO ipbans VALUES(\"%s\", %u, \"%s\")", sLogonSQL->EscapeString(ip).c_str(), duration, sLogonSQL->EscapeString(banreason).c_str() );
-			
+
 		}break;
 
 	case 5:		// ip ban remove

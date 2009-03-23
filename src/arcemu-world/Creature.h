@@ -162,8 +162,8 @@ struct Formation{
 	float ang;
 	float dist;
 };
- 
-   
+
+
 enum UNIT_TYPE
 {
 	NOUNITTYPE	  = 0,
@@ -197,7 +197,7 @@ enum FAMILY
 	FAMILY_SUCCUBUS,
 	FAMILY_DOOMGUARD = 19,
 	FAMILY_SCORPID,
-	FAMILY_TURTLE, 
+	FAMILY_TURTLE,
 	FAMILY_IMP = 23,
 	FAMILY_BAT,
 	FAMILY_HYENA,
@@ -260,7 +260,7 @@ public:
 
 	// For derived subclasses of Creature
 	virtual bool IsVehicle() { return false; }
-	virtual bool IsPet() { return false; }
+    bool IsPet() { return m_isPet; }
 
 	bool Load(CreatureSpawn *spawn, uint32 mode, MapInfo *info);
 	void Load(CreatureProto * proto_, float x, float y, float z, float o=0);
@@ -270,9 +270,9 @@ public:
 	void RemoveFromWorld(bool addrespawnevent, bool free_guid);
 
 	/// Creation
-	void Create ( const char* creature_name, uint32 mapid, float x, float y, float z, float ang);	
+	void Create ( const char* creature_name, uint32 mapid, float x, float y, float z, float ang);
 	void CreateWayPoint ( uint32 WayPointID, uint32 mapid, float x, float y, float z, float ang);
-	
+
 	/// Updates
 	virtual void Update( uint32 time );
 
@@ -291,7 +291,7 @@ public:
 			if(itr->itemid == itemid)
 				return slot;
 			else
-				++slot;			
+				++slot;
 		}
 		return -1;
 	}
@@ -317,7 +317,7 @@ public:
 		{
 			if(itr->itemid == itemid)
 			{
-				ci = (*itr);   
+				ci = (*itr);
 				return;
 			}
 		}
@@ -393,7 +393,7 @@ public:
 	ARCEMU_INLINE bool isAuctioner()	const { return HasFlag( UNIT_NPC_FLAGS, UNIT_NPC_FLAG_AUCTIONEER ); }
 	ARCEMU_INLINE bool isStableMaster()	const { return HasFlag( UNIT_NPC_FLAGS, UNIT_NPC_FLAG_STABLEMASTER ); }
 	ARCEMU_INLINE bool isArmorer()		const { return HasFlag( UNIT_NPC_FLAGS, UNIT_NPC_FLAG_ARMORER ); }
-	
+
 	ARCEMU_INLINE uint32 GetHealthFromSpell() { return m_healthfromspell; }
 	void SetHealthFromSpell(uint32 value) { m_healthfromspell = value;}
 
@@ -401,16 +401,16 @@ public:
 	int32 FlatResistanceMod[7];
 	int32 BaseResistanceModPct[7];
 	int32 ResistanceModPct[7];
-	
+
 	int32 FlatStatMod[5];
 	int32 StatModPct[5];
 	int32 TotalStatModPct[5];
-	
+
 	int32 ModDamageDone[7];
 	float ModDamageDonePct[7];
 	void CalcResistance(uint32 type);
 	void CalcStat(uint32 type);
-	
+
 	bool m_canRegenerateHP;
 	void RegenerateHealth();
 	void RegenerateMana();
@@ -448,7 +448,7 @@ public:
 			{
 				if(GetStealthDetectBonus() > 1000) return true; // immune to stealth
 				else detectRange = 0.0f;
-			}	
+			}
 
 			detectRange += GetFloatValue(UNIT_FIELD_BOUNDINGRADIUS); // adjust range for size of creature
 			detectRange += obj->GetFloatValue(UNIT_FIELD_BOUNDINGRADIUS); // adjust range for size of stealthed player
@@ -465,7 +465,7 @@ public:
 
 	/// Looting
 	void generateLoot();
-	
+
 	bool Skinned;
 
 	bool Tagged;
@@ -528,7 +528,7 @@ public:
 	void CallScriptUpdate();
 
 	uint32 m_TaxiNode;
-	
+
 	ARCEMU_INLINE CreatureInfo *GetCreatureInfo() { return creature_info; }
 	ARCEMU_INLINE void SetCreatureInfo(CreatureInfo *ci) { creature_info = ci; }
 	ARCEMU_INLINE Trainer* GetTrainer() { return mTrainer; }
@@ -555,7 +555,7 @@ public:
 	WayPoint * CreateWaypointStruct();
 	uint32 spawnid;
 	uint32 original_emotestate;
-	
+
 	CreatureSpawn * m_spawn;
 
 	void AISpellUpdate();
@@ -608,8 +608,9 @@ protected:
 
 	/// Quest data
 	std::list<QuestRelation *>* m_quests;
-   
+
 	/// Pet
+    bool m_isPet;
 	uint32 m_enslaveCount;
 	uint32 m_enslaveSpell;
 
@@ -621,7 +622,7 @@ protected:
 	uint32 m_healthfromspell;
 
 	CreatureInfo *creature_info;
-	CreatureProto * proto;	
+	CreatureProto * proto;
 };
 
 #endif

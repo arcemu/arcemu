@@ -24,7 +24,7 @@ void WorldSession::HandleUseItemOpcode(WorldPacket& recvPacket)
 {
 	if(!_player->IsInWorld()) return;
 	typedef std::list<Aura*> AuraList;
-	
+
 	Player* p_User = GetPlayer();
 	sLog.outDetail("WORLD: got use Item packet, data length = %i",recvPacket.size());
 	int8 tmp1,slot;
@@ -55,22 +55,22 @@ void WorldSession::HandleUseItemOpcode(WorldPacket& recvPacket)
 
 	if(itemProto->Bonding == ITEM_BIND_ON_USE)
 		tmpItem->SoulBind();
-	
+
 	if(sScriptMgr.CallScriptedItem(tmpItem,_player))
 		return;
-	
+
 	if(itemProto->QuestId)
 	{
 		// Item Starter
 		Quest *qst = QuestStorage.LookupEntry(itemProto->QuestId);
-		if(!qst) 
+		if(!qst)
 			return;
 
 		WorldPacket data;
 		sQuestMgr.BuildQuestDetails(&data, qst, tmpItem, 0, language, _player);
 		SendPacket(&data);
 	}
-	
+
 	SpellCastTargets targets(recvPacket, _player->GetGUID());
 	uint32 x;
 	for(x = 0; x < 5; x++)
@@ -91,7 +91,7 @@ void WorldSession::HandleUseItemOpcode(WorldPacket& recvPacket)
 				}
 
 				// HookInterface
-				if (!sHookInterface.OnCastSpell( _player, spellInfo ))
+				if (sHookInterface.OnCastSpell( _player, spellInfo ))
 					return;
 
 				if (spellInfo->AuraInterruptFlags & AURA_INTERRUPT_ON_STAND_UP)
@@ -148,12 +148,12 @@ void WorldSession::HandleUseItemOpcode(WorldPacket& recvPacket)
 						}
 					}
 				}
-				
+
 				if( itemProto->AllowableClass && !(_player->getClassMask() & itemProto->AllowableClass) || itemProto->AllowableRace && !(_player->getRaceMask() & itemProto->AllowableRace) )
 				{
 					_player->GetItemInterface()->BuildInventoryChangeError(tmpItem,NULL,INV_ERR_YOU_CAN_NEVER_USE_THAT_ITEM);
 					return;
-				}		
+				}
 
 				if( !_player->Cooldown_CanCast( itemProto, x ) )
 				{
@@ -191,6 +191,7 @@ void WorldSession::HandleUseItemOpcode(WorldPacket& recvPacket)
 				spell->Init(_player, spellInfo, false, NULL);
 				spell->extra_cast_number=cn;
 				spell->i_caster = tmpItem;
+				spell->m_glyphslot = glyphIndex;
 				//GetPlayer()->setCurrentSpell(spell);
 				spell->prepare(&targets);
 			}
@@ -203,7 +204,7 @@ void WorldSession::HandleSpellClick(WorldPacket& recvPacket)
 {
 	sLog.outDetail("WORLD: got CMSG_SPELLCLICK packet, data length = %i",recvPacket.size());
 
-	if(!_player->IsInWorld()) 
+	if(!_player->IsInWorld())
 		return;
 	if(_player->getDeathState()==CORPSE)
 		return;
@@ -227,7 +228,7 @@ void WorldSession::HandleSpellClick(WorldPacket& recvPacket)
 
 	if( target_unit->GetUInt32Value( OBJECT_FIELD_ENTRY ) == 29929 )
 		cast_spell_id = 55531; // Mechano-Hog
-	
+
 	if( cast_spell_id == 0 )
 		return;
 
@@ -270,7 +271,7 @@ void WorldSession::HandleCastSpellOpcode(WorldPacket& recvPacket)
 		sLog.outError("WORLD: attempt to cast spell %i, %s which has ATTRIBUTES_NO_CAST\n", spellId, spellInfo->Name);
 		return;
 	}*/
-	
+
 	// Cheat Detection only if player and not from an item
 	// this could fuck up things but meh it's needed ALOT of the newbs are using WPE now
 	// WPE allows them to mod the outgoing packet and basicly choose what ever spell they want :(
@@ -288,7 +289,7 @@ void WorldSession::HandleCastSpellOpcode(WorldPacket& recvPacket)
 		{
 			//sLog.outString( "HandleSpellCast: Auto Shot-type spell cast (id %u, name %s)" , spellInfo->Id , spellInfo->Name );
 			Item *weapon = GetPlayer()->GetItemInterface()->GetInventoryItem(EQUIPMENT_SLOT_RANGED);
-			if(!weapon) 
+			if(!weapon)
 				return;
 			uint32 spellid;
 			switch(weapon->GetProto()->SubClass)
@@ -308,10 +309,10 @@ void WorldSession::HandleCastSpellOpcode(WorldPacket& recvPacket)
 				spellid = 0;
 				break;
 			}
-		   
-			if(!spellid) 
+
+			if(!spellid)
 				spellid = spellInfo->Id;
-			
+
 			if(!_player->m_onAutoShot)
 			{
 				_player->m_AutoShotTarget = _player->GetSelection();
@@ -323,7 +324,7 @@ void WorldSession::HandleCastSpellOpcode(WorldPacket& recvPacket)
 					return;
 				}
 				SpellEntry *sp = dbcSpell.LookupEntry(spellid);
-			
+
 				_player->m_AutoShotSpell = sp;
 				_player->m_AutoShotDuration = duration;
 				//This will fix fast clicks
@@ -387,7 +388,7 @@ void WorldSession::HandleCancelAuraOpcode( WorldPacket& recvPacket )
 {
 	uint32 spellId;
 	recvPacket >> spellId;
-	
+
 	if( _player->m_currentSpell && _player->m_currentSpell->GetProto()->Id == spellId )
 		_player->m_currentSpell->cancel();
 	else
@@ -411,7 +412,7 @@ void WorldSession::HandleCancelChannellingOpcode( WorldPacket& recvPacket)
 	if(!plyr)
 		return;
 	if(plyr->m_currentSpell)
-	{		
+	{
 		plyr->m_currentSpell->cancel();
 	}
 }
@@ -430,9 +431,9 @@ void WorldSession::HandlePetCastSpell(WorldPacket & recvPacket)
 	uint32 spellid;
 	uint32 flags;
 	recvPacket >> guid >> spellid >> flags;
-	
+
 	SpellEntry * sp = dbcSpell.LookupEntryForced(spellid);
-	if ( !sp ) 
+	if ( !sp )
 		return;
 	// Summoned Elemental's Freeze
     if (spellid == 33395)
@@ -444,7 +445,7 @@ void WorldSession::HandlePetCastSpell(WorldPacket & recvPacket)
     {
         return;
     }
-	
+
 	/* burlex: this is.. strange */
 	SpellCastTargets targets;
 	targets.m_targetMask = flags;
@@ -493,7 +494,7 @@ void WorldSession::HandlePetCastSpell(WorldPacket & recvPacket)
 			}
 			if( !check )
 				return;
-		
+
 			Spell * pSpell = SpellPool.PooledNew();
 			pSpell->Init(nc, sp, false, 0);
 			pSpell->prepare(&targets);

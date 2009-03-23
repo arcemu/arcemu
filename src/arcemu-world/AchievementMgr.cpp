@@ -266,7 +266,7 @@ void AchievementMgr::SaveToDB()
 		}
 		CharacterDatabase.Query( ss.str().c_str() );
 	}
- 
+
 	if(!m_criteriaProgress.empty())
 	{
 		std::ostringstream ss;
@@ -294,7 +294,7 @@ void AchievementMgr::SaveToDB()
 		if(!first) // don't execute query if there's no entries to save
 			CharacterDatabase.Query( ss.str().c_str() );
 	}
-} 
+}
 
 void AchievementMgr::LoadFromDB(QueryResult *achievementResult, QueryResult *criteriaResult)
 {
@@ -307,7 +307,7 @@ void AchievementMgr::LoadFromDB(QueryResult *achievementResult, QueryResult *cri
 		} while(achievementResult->NextRow());
 		delete achievementResult;
 	}
- 
+
 	if(criteriaResult)
 	{
 		do
@@ -317,8 +317,8 @@ void AchievementMgr::LoadFromDB(QueryResult *achievementResult, QueryResult *cri
 			m_criteriaProgress[progress->id] = progress;
 		} while(criteriaResult->NextRow());
 		delete criteriaResult;
-	} 
-} 
+	}
+}
 void AchievementMgr::SendAchievementEarned(AchievementEntry const* achievement)
 {
 	const char *msg = "|Hplayer:$N|h[$N]|h has earned the achievement $a!";
@@ -338,7 +338,7 @@ void AchievementMgr::SendAchievementEarned(AchievementEntry const* achievement)
 		data << msg;
 		data << uint8(0);
 		data << uint32(achievement->ID);
-		GetPlayer()->GetSession()->SendPacket(&data);   
+		GetPlayer()->GetSession()->SendPacket(&data);
 	}
 	if(achievement->flags & (ACHIEVEMENT_FLAG_REALM_FIRST_KILL|ACHIEVEMENT_FLAG_REALM_FIRST_REACH))
 	{
@@ -365,7 +365,7 @@ void AchievementMgr::SendAchievementEarned(AchievementEntry const* achievement)
  	}
 
 	WorldPacket data( SMSG_ACHIEVEMENT_EARNED, 30);
-	data << GetPlayer()->GetNewGUID();      
+	data << GetPlayer()->GetNewGUID();
 	data << uint32( achievement->ID );
 	data << uint32( secsToTimeBitFields(UNIXTIME) );
 	data << uint32(0);
@@ -379,7 +379,7 @@ void AchievementMgr::SendCriteriaUpdate(CriteriaProgress *progress)
 
 	data.appendPackGUID(progress->counter);
 
-	data << GetPlayer()->GetNewGUID();   
+	data << GetPlayer()->GetNewGUID();
 	data << uint32(0);
 	data << uint32(secsToTimeBitFields(progress->date));
 	data << uint32(0);  // timer 1
@@ -674,7 +674,7 @@ void AchievementMgr::UpdateAchievementCriteria(AchievementCriteriaTypes type, in
 								UpdateCriteriaProgress(achievementCriteria, miscvalue2);
 							}
 							break;
-					}		
+					}
 				}
 				break;
 			case ACHIEVEMENT_CRITERIA_TYPE_REACH_SKILL_LEVEL:
@@ -1379,7 +1379,7 @@ void AchievementMgr::BuildAllDataPacket(WorldPacket *data, bool self)
 			{
 				*data << uint32(iter->second->id);
 				data->appendPackGUID(iter->second->counter);
-				*data << GetPlayer()->GetNewGUID(); 
+				*data << GetPlayer()->GetNewGUID();
 				*data << uint32(0);
 				*data << uint32(secsToTimeBitFields(iter->second->date));
 				*data << uint32(0);
@@ -1392,7 +1392,7 @@ void AchievementMgr::BuildAllDataPacket(WorldPacket *data, bool self)
 			{
 				*data << uint32(iter->second->id);
 				data->appendPackGUID(iter->second->counter);
-				*data << GetPlayer()->GetNewGUID(); 
+				*data << GetPlayer()->GetNewGUID();
 				*data << uint32(0);
 				*data << uint32(secsToTimeBitFields(iter->second->date));
 				*data << uint32(0);
@@ -1408,7 +1408,7 @@ uint32 AchievementMgr::GetCriteriaProgressCount(void)
 	uint32 criteriapc = 0;
 	for(CriteriaProgressMap::iterator iter = m_criteriaProgress.begin(); iter!=m_criteriaProgress.end(); ++iter)
 	{
-		AchievementEntry const *achievement = dbcAchievementStore.LookupEntry(iter->second->id);
+		//AchievementEntry const *achievement = dbcAchievementStore.LookupEntry(iter->second->id);
 		if(SendAchievementProgress(iter->second))
 		{
 			++criteriapc;
@@ -1423,6 +1423,7 @@ void AchievementMgr::GiveAchievementReward(AchievementEntry const* entry)
 	r.type = ACHIEVEMENT_REWARDTYPE_NONE;
 	r.itemId = 0;
 	r.rankId = 0;
+	r.spellId = 0;
 
 	if(strlen(entry->rewardName)>0)
 	{

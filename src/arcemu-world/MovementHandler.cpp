@@ -150,7 +150,8 @@ void _HandleBreathing(MovementInfo &movement_info, Player * _player, WorldSessio
 		{
 			_player->m_UnderwaterState &= ~UNDERWATERSTATE_UNDERWATER;
 			WorldPacket data(SMSG_START_MIRROR_TIMER, 20);
-			data << uint32(1) << _player->m_UnderwaterTime << _player->m_UnderwaterMaxTime << int32(-1) << uint32(0);
+            data << uint32( TIMER_BREATH ) << _player->m_UnderwaterTime << _player->m_UnderwaterMaxTime << int32(-1) << uint32(0);
+
 			pSession->SendPacket(&data);
 		}
 
@@ -159,9 +160,7 @@ void _HandleBreathing(MovementInfo &movement_info, Player * _player, WorldSessio
 		{
 			if( ( movement_info.z + _player->m_noseLevel ) > pSession->m_wLevel )
 			{
-				// remove druid aquatic form on land
-				if( _player->getClass() == DRUID )
-					_player->RemoveAura( 1066 );
+                _player->RemoveAurasByInterruptFlag( AURA_INTERRUPT_ON_LEAVE_WATER );
 
 				// unset swim session water level
 				pSession->m_bIsWLevelSet = false;
@@ -174,9 +173,7 @@ void _HandleBreathing(MovementInfo &movement_info, Player * _player, WorldSessio
 	//player is swiming and not flagged as in the water
 	if( movement_info.flags & MOVEFLAG_SWIMMING && !( _player->m_UnderwaterState & UNDERWATERSTATE_SWIMMING ) )
 	{
-		// dismount if mounted
-		if( _player->m_MountSpellId )
-			_player->RemoveAura( _player->m_MountSpellId );
+        _player->RemoveAurasByInterruptFlag( AURA_INTERRUPT_ON_ENTER_WATER );
 
 		// get water level only if it was not set before
 		if( !pSession->m_bIsWLevelSet )
@@ -195,9 +192,7 @@ void _HandleBreathing(MovementInfo &movement_info, Player * _player, WorldSessio
 		// player is above water level
 		if( ( movement_info.z + _player->m_noseLevel ) > pSession->m_wLevel )
 		{
-			// remove druid aquatic form on land
-			if( _player->getClass() == DRUID )
-				_player->RemoveAura( 1066 );
+            _player->RemoveAurasByInterruptFlag( AURA_INTERRUPT_ON_LEAVE_WATER );
 
 			// unset swim session water level
 			pSession->m_bIsWLevelSet = false;
@@ -214,7 +209,8 @@ void _HandleBreathing(MovementInfo &movement_info, Player * _player, WorldSessio
 		{
 			_player->m_UnderwaterState |= UNDERWATERSTATE_UNDERWATER;
 			WorldPacket data(SMSG_START_MIRROR_TIMER, 20);
-			data << uint32(1) << _player->m_UnderwaterTime << _player->m_UnderwaterMaxTime << int32(-1) << uint32(0);
+            data << uint32( TIMER_BREATH ) << _player->m_UnderwaterTime << _player->m_UnderwaterMaxTime << int32(-1) << uint32(0);
+
 			pSession->SendPacket(&data);
 		}
 	}
@@ -227,7 +223,7 @@ void _HandleBreathing(MovementInfo &movement_info, Player * _player, WorldSessio
 		{
 			_player->m_UnderwaterState &= ~UNDERWATERSTATE_UNDERWATER;
 			WorldPacket data(SMSG_START_MIRROR_TIMER, 20);
-			data << uint32(1) << _player->m_UnderwaterTime << _player->m_UnderwaterMaxTime << int32(10) << uint32(0);
+            data << uint32( TIMER_BREATH ) << _player->m_UnderwaterTime << _player->m_UnderwaterMaxTime << int32(10) << uint32(0);
 			pSession->SendPacket(&data);
 		}
 	}
@@ -240,7 +236,7 @@ void _HandleBreathing(MovementInfo &movement_info, Player * _player, WorldSessio
 		{
 			_player->m_UnderwaterState &= ~UNDERWATERSTATE_UNDERWATER;
 			WorldPacket data(SMSG_START_MIRROR_TIMER, 20);
-			data << uint32(1) << _player->m_UnderwaterTime << _player->m_UnderwaterMaxTime << int32(10) << uint32(0);
+            data << uint32( TIMER_BREATH ) << _player->m_UnderwaterTime << _player->m_UnderwaterMaxTime << int32(10) << uint32(0);
 			pSession->SendPacket(&data);
 		}
 	}
@@ -250,7 +246,7 @@ void _HandleBreathing(MovementInfo &movement_info, Player * _player, WorldSessio
 void WorldSession::HandleMovementOpcodes( WorldPacket & recv_data )
 {
 	bool moved = true;
-	
+
 	if(!_player->IsInWorld() || _player->m_uint32Values[UNIT_FIELD_CHARMEDBY] || _player->GetPlayerStatus() == TRANSFER_PENDING || _player->GetTaxiState())
 		return;
 
@@ -261,7 +257,7 @@ void WorldSession::HandleMovementOpcodes( WorldPacket & recv_data )
 		if (t_go->GetEntry() == GO_FISHING_BOBBER)
 			((GameObject*)t_go)->EndFishing(GetPlayer(),true);
 	}
-	
+
 	uint32 aurtoremove = 0;
 	if(_player->HasAura(2096))
 		aurtoremove = 2096;
@@ -269,7 +265,7 @@ void WorldSession::HandleMovementOpcodes( WorldPacket & recv_data )
 		aurtoremove = 10909;
 	if(aurtoremove)
 		_player->RemoveAura(aurtoremove);
-	
+
 	/************************************************************************/
 	/* Clear standing state to stand.				                        */
 	/************************************************************************/
@@ -288,7 +284,7 @@ void WorldSession::HandleMovementOpcodes( WorldPacket & recv_data )
 	/************************************************************************/
 	/* Update player movement state                                         */
 	/************************************************************************/
-	
+
 	uint16 opcode = recv_data.GetOpcode();
 	switch( opcode )
 	{
@@ -300,18 +296,18 @@ void WorldSession::HandleMovementOpcodes( WorldPacket & recv_data )
 		case MSG_MOVE_START_STRAFE_RIGHT:
 			_player->strafing = true;
 			break;
-		case MSG_MOVE_JUMP:
+		/*case MSG_MOVE_JUMP:
 			_player->jumping = true;
-			break;
+			break;*/
 		case MSG_MOVE_STOP:
 			_player->moving = false;
 			break;
 		case MSG_MOVE_STOP_STRAFE:
 			_player->strafing = false;
 			break;
-		case MSG_MOVE_FALL_LAND:
+		/*case MSG_MOVE_FALL_LAND:
 			_player->jumping = false;
-			break;
+			break;*/
 		default:
 			moved = false;
 			break;
@@ -327,12 +323,12 @@ void WorldSession::HandleMovementOpcodes( WorldPacket & recv_data )
 			_player->m_isMoving = true;
 		}
 	}
-	
+
 
 	/************************************************************************/
 	/* Anti-Fly Hack Checks       - Alice : Disabled for now                                           */
 	/************************************************************************/
-	/*if( sWorld.antihack_flight && ( recv_data.GetOpcode() == CMSG_MOVE_FLY_START_AND_END || recv_data.GetOpcode() == CMSG_FLY_PITCH_DOWN_AFTER_UP ) && !( movement_info.flags & MOVEFLAG_SWIMMING || movement_info.flags & MOVEFLAG_FALLING || movement_info.flags & MOVEFLAG_FALLING_FAR || movement_info.flags & MOVEFLAG_FREE_FALLING ) && _player->flying_aura == 0 )	
+	/*if( sWorld.antihack_flight && ( recv_data.GetOpcode() == CMSG_MOVE_FLY_START_AND_END || recv_data.GetOpcode() == CMSG_FLY_PITCH_DOWN_AFTER_UP ) && !( movement_info.flags & MOVEFLAG_SWIMMING || movement_info.flags & MOVEFLAG_FALLING || movement_info.flags & MOVEFLAG_FALLING_FAR || movement_info.flags & MOVEFLAG_FREE_FALLING ) && _player->flying_aura == 0 )
 	{
 		if( sWorld.no_antihack_on_gm && _player->GetSession()->HasGMPermissions() )
 		{
@@ -344,7 +340,31 @@ void WorldSession::HandleMovementOpcodes( WorldPacket & recv_data )
 			sEventMgr.AddEvent( _player, &Player::_Kick, EVENT_PLAYER_KICK, 5000, 1, 0 );
 		}
 	} */
+        /*Anti Multi-Jump Check*/
+        if( recv_data.GetOpcode() == MSG_MOVE_JUMP && _player->jumping == true && !GetPermissionCount())
+        {
+                sCheatLog.writefromsession(this, "Detected jump hacking");
+                Disconnect();
+                return;
+        }
+        if( recv_data.GetOpcode() == MSG_MOVE_FALL_LAND || movement_info.flags & MOVEFLAG_SWIMMING)
+                _player->jumping = false;
+        if( !_player->jumping && (recv_data.GetOpcode() == MSG_MOVE_JUMP || movement_info.flags & MOVEFLAG_FALLING))
+                _player->jumping = true;
 
+        if( !(HasGMPermissions() && sWorld.no_antihack_on_gm) && !_player->m_uint32Values[UNIT_FIELD_CHARM] )
+        {
+                /************************************************************************/
+                /* Anti-Teleport                                                        */
+                /************************************************************************/
+                if(sWorld.antihack_teleport && _player->m_position.Distance2DSq(movement_info.x, movement_info.y) > 3025.0f
+                   && _player->m_runSpeed < 50.0f && !_player->m_TransporterGUID)
+                {
+                        sCheatLog.writefromsession(this, "Disconnected for teleport hacking. Player speed: %f, Distance traveled: %f", _player->m_runSpeed, sqrt(_player->m_position.Distance2DSq(movement_info.x, movement_info.y)));
+                        Disconnect();
+                        return;
+                }
+        }
 
 	//update the detector
 	if( sWorld.antihack_speed && !_player->GetTaxiState() && _player->m_TransporterGUID == 0 && !_player->GetSession()->GetPermissionCount())
@@ -433,18 +453,14 @@ void WorldSession::HandleMovementOpcodes( WorldPacket & recv_data )
 			else
 				(*itr)->GetSession()->OutPacket(recv_data.GetOpcode(), uint16(recv_data.size() + pos), movement_packet);
 #else
-			(*itr)->GetSession()->OutPacket(recv_data.GetOpcode(), uint16(recv_data.size() + pos), movement_packet);			
+			(*itr)->GetSession()->OutPacket(recv_data.GetOpcode(), uint16(recv_data.size() + pos), movement_packet);
 #endif
 		}
 	}
-	if( !(movement_info.flags & MOVEFLAG_SWIMMING || movement_info.flags & MOVEFLAG_FALLING) && _player->GetShapeShift()==FORM_AQUA )
-		_player->RemoveAura(1066);
-	if( (movement_info.flags & MOVEFLAG_SWIMMING) && _player->IsMounted() )
-		_player->RemoveAura(_player->m_MountSpellId);
+
 	/************************************************************************/
 	/* Hack Detection by Classic	                                        */
 	/************************************************************************/
-#ifdef ENABLE_CLASSICS_DETECTION
 	if( !movement_info.transGuid && recv_data.GetOpcode() != MSG_MOVE_JUMP && !_player->FlyCheat && !_player->flying_aura && !(movement_info.flags & MOVEFLAG_SWIMMING || movement_info.flags & MOVEFLAG_FALLING) && movement_info.z > _player->GetPositionZ() && movement_info.x == _player->GetPositionX() && movement_info.y == _player->GetPositionY() )
 	{
 		WorldPacket data (SMSG_MOVE_UNSET_CAN_FLY, 13);
@@ -460,16 +476,10 @@ void WorldSession::HandleMovementOpcodes( WorldPacket & recv_data )
 		data << uint32(5);
 		SendPacket(&data);
 	}
-
+#ifdef ENABLE_CLASSICS_DETECTION
 	if( movement_info.z > -0.001 && movement_info.z < 0.001 && !(movement_info.flags & MOVEFLAG_FALLING_FAR) && (_player->GetPositionZ() > 3.0 || _player->GetPositionZ() < -3.0)/*3 meter tolerance to prevent false triggers*/)
 	{
 		sCheatLog.writefromsession(this, "Detected using teleport to plane");
-		Disconnect();
-		return;
-	}
-	if( recv_data.GetOpcode() == MSG_MOVE_JUMP && _player->jumping == true && !GetPermissionCount())
-	{
-		sCheatLog.writefromsession(this, "Detected jump hacking");
 		Disconnect();
 		return;
 	}
@@ -480,10 +490,6 @@ void WorldSession::HandleMovementOpcodes( WorldPacket & recv_data )
 		Disconnect();
 		return;
 	}
-	if( recv_data.GetOpcode() == MSG_MOVE_FALL_LAND || movement_info.flags & MOVEFLAG_SWIMMING)
-		_player->jumping = false;
-	if( !_player->jumping && (recv_data.GetOpcode() == MSG_MOVE_JUMP || movement_info.flags & MOVEFLAG_FALLING))
-		_player->jumping = true;
 #endif
 	/************************************************************************/
 	/* Falling damage checks                                                */
@@ -508,30 +514,26 @@ void WorldSession::HandleMovementOpcodes( WorldPacket & recv_data )
 			uint32 falldistance = float2int32( _player->z_axisposition - movement_info.z );
 			if( _player->z_axisposition <= movement_info.z)
 				falldistance = 1;
-			/*if player is a rogue or druid(in cat form), then apply -17 modifier to fall distance.
-			these checks need improving, low level rogue/druid should not receive this benefit*/
-			if( ( _player->getClass() == ROGUE ) || ( _player->GetShapeShift() == FORM_CAT ) )
-			{
-				if( falldistance > 17 ) 
-					falldistance -=17;
-				else
-					falldistance = 1;
-			}
+            /*Safe Fall*/
+            if( (int)falldistance < _player->m_safeFall )
+                falldistance -= _player->m_safeFall;
+            else
+                falldistance = 1;
 
 			//checks that player has fallen more than 12 units, otherwise no damage will be dealt
-			//falltime check is also needed here, otherwise sudden changes in Z axis position, such as using !recall, may result in death			
-			if( _player->isAlive() && !_player->GodModeCheat && falldistance > 12 && ( UNIXTIME >= _player->m_fallDisabledUntil ) && movement_info.FallTime > 1000 )
+			//falltime check is also needed here, otherwise sudden changes in Z axis position, such as using !recall, may result in death
+            if( _player->isAlive() && !_player->GodModeCheat && falldistance > 12 && ( UNIXTIME >= _player->m_fallDisabledUntil ) /*&& movement_info.FallTime > 1000*/ && !_player->m_noFallDamage )
 			{
 				// 1.7% damage for each unit fallen on Z axis over 13
 				uint32 health_loss = float2int32( float( _player->GetUInt32Value( UNIT_FIELD_MAXHEALTH ) * ( ( falldistance - 12 ) * 0.017 ) ) );
-													
+
 				if( health_loss >= _player->GetUInt32Value( UNIT_FIELD_HEALTH ) )
 					health_loss = _player->GetUInt32Value( UNIT_FIELD_HEALTH );
 
 				_player->SendEnvironmentalDamageLog( _player->GetGUID(), DAMAGE_FALL, health_loss );
 				_player->DealDamage( _player, health_loss, 0, 0, 0 );
 
-				//_player->RemoveStealth(); // cebernic : why again? lost stealth by AURA_INTERRUPT_ON_ANY_DAMAGE_TAKEN already. 
+				//_player->RemoveStealth(); // cebernic : why again? lost stealth by AURA_INTERRUPT_ON_ANY_DAMAGE_TAKEN already.
 			}
 			_player->z_axisposition = 0.0f;
 		}
@@ -598,7 +600,7 @@ void WorldSession::HandleMovementOpcodes( WorldPacket & recv_data )
 	/* Anti-Speed Hack Checks                                               */
 	/************************************************************************/
 
-	
+
 
 	/************************************************************************/
 	/* Breathing System                                                     */
@@ -608,7 +610,16 @@ void WorldSession::HandleMovementOpcodes( WorldPacket & recv_data )
 	/************************************************************************/
 	/* Remove Spells                                                        */
 	/************************************************************************/
-	_player->RemoveAurasByInterruptFlag(AURA_INTERRUPT_ON_MOVEMENT);
+        uint32 flags = AURA_INTERRUPT_ON_MOVEMENT;
+        if( !( movement_info.flags & MOVEFLAG_SWIMMING || movement_info.flags & MOVEFLAG_FALLING ) )
+                flags |= AURA_INTERRUPT_ON_LEAVE_WATER;
+        if( movement_info.flags & MOVEFLAG_SWIMMING )
+                flags |= AURA_INTERRUPT_ON_ENTER_WATER;
+        if( movement_info.flags & ( MOVEFLAG_TURN_LEFT | MOVEFLAG_TURN_RIGHT ) )
+        flags |= AURA_INTERRUPT_ON_TURNING;
+
+        _player->RemoveAurasByInterruptFlag( flags );
+
 
 	/************************************************************************/
 	/* Update our position in the server.                                   */
@@ -621,7 +632,7 @@ void WorldSession::HandleMovementOpcodes( WorldPacket & recv_data )
 	}
 	else
 	{
-		if(!_player->m_CurrentTransporter) 
+		if(!_player->m_CurrentTransporter)
 		{
 			if( !_player->SetPosition(movement_info.x, movement_info.y, movement_info.z, movement_info.orientation) )
 			{
@@ -647,15 +658,15 @@ void WorldSession::HandleMovementOpcodes( WorldPacket & recv_data )
 		}
 		else
 		{
-			_player->SetPosition(movement_info.x, movement_info.y, movement_info.z, 
+			_player->SetPosition(movement_info.x, movement_info.y, movement_info.z,
 				movement_info.orientation + movement_info.transO, false);
 		}
-	}	
+	}
 }
 
 void WorldSession::HandleMoveTimeSkippedOpcode( WorldPacket & recv_data )
 {
-	
+
 }
 
 void WorldSession::HandleMoveNotActiveMoverOpcode( WorldPacket & recv_data )
@@ -712,7 +723,7 @@ void WorldSession::HandleWorldportOpcode(WorldPacket & recv_data)
 	recv_data >> unk >> mapid >> x >> y >> z >> o;
 
 	//printf("\nTEST: %u %f %f %f %f", mapid, x, y, z, o);
-	
+
 	if(!_player->IsInWorld())
 		return;
 

@@ -51,13 +51,14 @@ Guild::~Guild()
 			free((void*)itr->second->szPublicNote);
 		delete itr->second;
 	}
-
-	for(uint32 i = 0; i < MAX_GUILD_RANKS; ++i)
+	m_members.clear();
+	for(uint8 i = 0; i < MAX_GUILD_RANKS; ++i)
 	{
 		if(m_ranks[i] != NULL)
 		{
 			free(m_ranks[i]->szRankName);
 			delete m_ranks[i];
+			m_ranks[i] = NULL;
 		}
 	}
 
@@ -66,24 +67,33 @@ Guild::~Guild()
 		delete (*itr);
 	}
 
-	for(GuildBankTabVector::iterator itr = m_bankTabs.begin(); itr != m_bankTabs.end(); ++itr)
-	{
-		//for(uint32 i = 0; i < MAX_GUILD_BANK_SLOTS; ++i) vojta: we've deleted this in ItemPool
-		//	if((*itr)->pSlots[i] != NULL)
-		//		delete (*itr)->pSlots[i];
+    m_log.clear();
+
+    for( GuildBankTabVector::iterator itr = m_bankTabs.begin(); itr != m_bankTabs.end(); ++itr )
+    {
+        for( uint32 i = 0; i < MAX_GUILD_BANK_SLOTS; ++i )
+        if( (*itr)->pSlots[i] != NULL )
+    {
+        (*itr)->pSlots[i]->DeleteMe();
+        (*itr)->pSlots[i] = NULL;
+    }
 
 		for(list<GuildBankEvent*>::iterator it2 = (*itr)->lLog.begin(); it2 != (*itr)->lLog.end(); ++it2)
 			delete (*it2);
-		
+        (*itr)->lLog.clear();
+
 		free( (*itr)->szTabIcon );
 		free( (*itr)->szTabInfo );
 		free( (*itr)->szTabName );
-		
+
 		delete (*itr);
 	}
+    m_bankTabs.clear();
 
 	for(list<GuildBankEvent*>::iterator it2 = m_moneyLog.begin(); it2 != m_moneyLog.end(); ++it2)
 		delete (*it2);
+
+    m_moneyLog.clear();
 
 	if(m_guildInfo)
 		free(m_guildInfo);
@@ -302,7 +312,7 @@ void Guild::PromoteGuildMember(PlayerInfo * pMember, WorldSession * pClient)
 	if(pClient->GetPlayer()->getPlayerInfo()->guild != this || pMember->guild != this)
 		return;
 
-	if(!pClient->GetPlayer()->getPlayerInfo()->guildRank->CanPerformCommand(GR_RIGHT_PROMOTE) || 
+	if(!pClient->GetPlayer()->getPlayerInfo()->guildRank->CanPerformCommand(GR_RIGHT_PROMOTE) ||
 		(pMember->guildRank->iId - pClient->GetPlayer()->getPlayerInfo()->guildRank->iId) <= 1 )
 	{
 		SendGuildCommandResult(pClient, GUILD_PROMOTE_S, "", GUILD_PERMISSIONS);
@@ -366,7 +376,7 @@ void Guild::DemoteGuildMember(PlayerInfo * pMember, WorldSession * pClient)
 		return;
 
 	if(!pClient->GetPlayer()->getPlayerInfo()->guildRank->CanPerformCommand(GR_RIGHT_DEMOTE) ||
-		pMember->guid == GetGuildLeader() || 
+		pMember->guid == GetGuildLeader() ||
 		pClient->GetPlayer()->getPlayerInfo()->guildRank->iId >= pMember->guildRank->iId )
 	{
 		SendGuildCommandResult(pClient, GUILD_PROMOTE_S, "", GUILD_PERMISSIONS);
@@ -441,7 +451,7 @@ bool Guild::LoadFromDB(Field * f)
 
 	uint32 sid = 0;
 
-	do 
+	do
 	{
 		GuildRank * r = new GuildRank;
 		Field * f2 = result->Fetch();
@@ -458,7 +468,7 @@ bool Guild::LoadFromDB(Field * f)
 		r->szRankName = strdup(f2[2].GetString());
 		r->iRights = f2[3].GetUInt32();
 		r->iGoldLimitPerDay = f2[4].GetUInt32();
-		
+
 		for(j = 0; j < MAX_GUILD_BANK_TABS; ++j)
 		{
 			r->iTabPermissions[j].iFlags = f2[5+(j*2)].GetUInt32();
@@ -477,7 +487,7 @@ bool Guild::LoadFromDB(Field * f)
 	if(result==NULL)
 		return false;
 
-	do 
+	do
 	{
 		Field * f3 = result->Fetch();
 		GuildMember * gm = new GuildMember;
@@ -488,7 +498,7 @@ bool Guild::LoadFromDB(Field * f)
 			continue;
 		}
 
-		if(f3[2].GetUInt32() >= MAX_GUILD_RANKS || m_ranks[f3[2].GetUInt32()] == NULL) 
+		if(f3[2].GetUInt32() >= MAX_GUILD_RANKS || m_ranks[f3[2].GetUInt32()] == NULL)
 		{
 			delete gm;
 			continue;
@@ -544,7 +554,7 @@ bool Guild::LoadFromDB(Field * f)
 	result = CharacterDatabase.Query("SELECT * FROM guild_logs WHERE guildid = %u ORDER BY timestamp ASC", m_guildId);
 	if(result)
 	{
-		do 
+		do
 		{
 			GuildLogEvent * li = new GuildLogEvent;
 			li->iLogId = result->Fetch()[0].GetUInt32();
@@ -562,7 +572,7 @@ bool Guild::LoadFromDB(Field * f)
 	sid = 0;
 	if(result)
 	{
-		do 
+		do
 		{
 			if((sid++) != result->Fetch()[1].GetUInt32())
 			{
@@ -582,12 +592,12 @@ bool Guild::LoadFromDB(Field * f)
 			pTab->szTabName = (strlen(result->Fetch()[2].GetString()) > 0) ? strdup(result->Fetch()[2].GetString()) : NULL;
 			pTab->szTabIcon = (strlen(result->Fetch()[3].GetString()) > 0) ? strdup(result->Fetch()[3].GetString()) : NULL;
 			pTab->szTabInfo = (strlen(result->Fetch()[4].GetString()) > 0) ? strdup(result->Fetch()[4].GetString()) : NULL;
-			
+
 			memset(pTab->pSlots, 0, sizeof(Item*) * MAX_GUILD_BANK_SLOTS);
 
 			if(res2)
 			{
-				do 
+				do
 				{
 					Item * pItem = objmgr.LoadItem(res2->Fetch()[3].GetUInt64());
 					if(pItem == NULL)
@@ -605,7 +615,7 @@ bool Guild::LoadFromDB(Field * f)
 			res2 = CharacterDatabase.Query("SELECT * FROM guild_banklogs WHERE guildid = %u AND tabid = %u ORDER BY timestamp ASC", m_guildId, result->Fetch()[1].GetUInt32());
 			if(res2 != NULL)
 			{
-				do 
+				do
 				{
 					GuildBankEvent * ev= new GuildBankEvent;
 					ev->iLogId=res2->Fetch()[0].GetUInt32();
@@ -630,7 +640,7 @@ bool Guild::LoadFromDB(Field * f)
 	result = CharacterDatabase.Query("SELECT * FROM guild_banklogs WHERE guildid = %u AND tabid = 6 ORDER BY timestamp ASC", m_guildId);
 	if(result != NULL)
 	{
-		do 
+		do
 		{
 			GuildBankEvent * ev= new GuildBankEvent;
 			ev->iLogId=result->Fetch()[0].GetUInt32();
@@ -771,8 +781,8 @@ void Guild::RemoveGuildMember(PlayerInfo * pMember, WorldSession * pClient)
 	{
 		int RDiff = pMember->guildRank->iId - pClient->GetPlayer()->getPlayerInfo()->guildRank->iId;
 
-		if(pClient && 
-			!pClient->GetPlayer()->getPlayerInfo()->guildRank->CanPerformCommand(GR_RIGHT_REMOVE) && 
+		if(pClient &&
+			!pClient->GetPlayer()->getPlayerInfo()->guildRank->CanPerformCommand(GR_RIGHT_REMOVE) &&
 			pClient->GetPlayer()->getPlayerInfo() != pMember || RDiff <= 0 && pClient->GetPlayer()->getPlayerInfo() != pMember)
 		{
 			Guild::SendGuildCommandResult(pClient, GUILD_CREATE_S, "", GUILD_PERMISSIONS);
@@ -860,10 +870,10 @@ void Guild::SetPublicNote(PlayerInfo * pMember, const char * szNewNote, WorldSes
 			itr->second->szPublicNote = NULL;
 
 			// Update the database
-		if (itr->second->szPublicNote == NULL) 
+		if (itr->second->szPublicNote == NULL)
 			CharacterDatabase.Execute("UPDATE guild_data SET publicNote=\"\" WHERE playerid=%u", pMember->guid);
 		else
-			CharacterDatabase.Execute("UPDATE guild_data SET publicNote=\"%s\" WHERE playerid=%u", 
+			CharacterDatabase.Execute("UPDATE guild_data SET publicNote=\"%s\" WHERE playerid=%u",
 				CharacterDatabase.EscapeString(string(itr->second->szPublicNote)).c_str(),
 				pMember->guid
 			);
@@ -900,10 +910,10 @@ void Guild::SetOfficerNote(PlayerInfo * pMember, const char * szNewNote, WorldSe
 			itr->second->szOfficerNote = NULL;
 
 		// Update the database
-		if (itr->second->szOfficerNote == NULL) 
+		if (itr->second->szOfficerNote == NULL)
 			CharacterDatabase.Execute("UPDATE guild_data SET officerNote=\"\" WHERE playerid=%u", pMember->guid);
 		else
-			CharacterDatabase.Execute("UPDATE guild_data SET officerNote=\"%s\" WHERE playerid=%u", 
+			CharacterDatabase.Execute("UPDATE guild_data SET officerNote=\"%s\" WHERE playerid=%u",
 				CharacterDatabase.EscapeString(string(itr->second->szOfficerNote)).c_str(),
 				pMember->guid
 			);
@@ -922,7 +932,7 @@ void Guild::RemoveGuildRank(WorldSession * pClient)
 	{
 		pClient->SystemMessage("Cannot find a rank to delete.");
 		m_lock.Release();
-		return;		
+		return;
 	}
 
 	// check for players that need to be promoted
@@ -1013,7 +1023,7 @@ void Guild::ChangeGuildMaster(PlayerInfo * pNewMaster, WorldSession * pClient)
 	CharacterDatabase.Execute("UPDATE guilds SET leaderGuid = %u WHERE guildId = %u", itr->first->guid, m_guildId);
 	m_guildLeader = itr->first->guid;
 	m_lock.Release();
-	
+
 
 	LogGuildEvent(GUILD_EVENT_LEADER_CHANGED, 2, pClient->GetPlayer()->GetName(), pNewMaster->name);
 	//TODO: Figure out the GUILD_LOG_EVENT_LEADER_CHANGED code
@@ -1097,7 +1107,7 @@ void Guild::SendGuildLog(WorldSession * pClient)
 				data << uint64((*itr)->iEventData[1]);
 				data << uint8((*itr)->iEventData[2]);
 			}break;
-			
+
 		case GUILD_LOG_EVENT_INVITE:
 		case GUILD_LOG_EVENT_REMOVAL:
 			{
@@ -1373,10 +1383,10 @@ void Guild::DepositMoney(WorldSession * pClient, uint32 uAmount)
 
 	// add to the bank balance
 	m_bankBalance += uAmount;
-	
+
 	// update in db
 	CharacterDatabase.Execute("UPDATE guilds SET bankBalance = %llu WHERE guildId = %u", m_bankBalance, m_guildId);
-	
+
 	// take the money, oh noes gm pls gief gold mi hero poor
 	pClient->GetPlayer()->ModUnsigned32Value(PLAYER_FIELD_COINAGE, -(int32)uAmount);
 
@@ -1508,7 +1518,7 @@ void Guild::SendGuildBankLog(WorldSession * pClient, uint8 iSlot)
 			if( (++count) >= 25 )
 				break;
 		}
-		
+
 		m_lock.Release();
 		SendPacket(&data);
 	}
@@ -1603,5 +1613,5 @@ void Guild::SendGuildInfo(WorldSession * pClient)
 	data << uint32(m_members.size());
 	data << uint32(m_members.size());
 
-	pClient->SendPacket(&data);	
+	pClient->SendPacket(&data);
 }

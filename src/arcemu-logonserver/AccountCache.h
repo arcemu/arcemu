@@ -60,7 +60,7 @@ struct Account
 			GMFlags = NULL;
 			return;
 		}
-		
+
 		GMFlags = new char[len+1];
 		memcpy(GMFlags, flags, len);
 		GMFlags[len] = 0;
@@ -78,7 +78,7 @@ struct Account
 
 };
 
-typedef struct 
+typedef struct
 {
 	unsigned int Mask;
 	unsigned char Bytes;
@@ -178,9 +178,9 @@ typedef struct
 {
 	string Name;
 	string Address;
-	uint8 Colour;
-	uint8 Icon;
-	uint8 TimeZone;
+	uint32 Colour;
+	uint32 Icon;
+	uint32 TimeZone;
 	float Population;
 	uint8 Lock;
 	HM_NAMESPACE::hash_map<uint32, uint8> CharacterMap;
@@ -206,7 +206,7 @@ public:
 	ARCEMU_INLINE Mutex & getRealmLock() { return realmLock; }
 
 	InformationCore()
-	{ 
+	{
 		realmhigh = 0;
 		usepings  = !Config.MainConfig.GetBoolDefault("LogonServer", "DisablePings", false);
 		m_realms.clear();
@@ -214,7 +214,7 @@ public:
 
 	// Packets
 	void		  SendRealms(AuthSocket * Socket);
-	
+
 	// Realm management
 	uint32 GenerateRealmID()
 	{

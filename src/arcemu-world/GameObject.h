@@ -195,6 +195,7 @@ public:
 	//void LoadFromDB(GameObjectTemplate *t);
 	void DeleteFromDB();
 	void EventCloseDoor();
+	void EventCastSpell(uint32 guid, uint32 sp, bool triggered);
 	void SetRotation(float rad);
 
 	//Fishing stuff

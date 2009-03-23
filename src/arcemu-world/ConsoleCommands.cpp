@@ -39,7 +39,7 @@ bool HandleInfoCommand(BaseConsole * pConsole, int argc, const char * argv[])
 			avg += itr->second->GetSession()->GetLatency();
 			if(itr->second->GetSession()->GetPermissionCount())
 				gm++;
-		}			
+		}
 	}
 	objmgr._playerslock.ReleaseReadLock();
 
@@ -207,7 +207,6 @@ bool HandleShutDownCommand(BaseConsole * pConsole, int argc, const char * argv[]
 		if (stricmp(argv[1], "fast") == 0)
 		{
 			PlayerStorageMap::const_iterator itr;
-			uint32 stime = now();
 			uint32 count = 0;
 			objmgr._playerslock.AcquireReadLock();
 			for (itr = objmgr._players.begin(); itr != objmgr._players.end(); itr++)
@@ -257,15 +256,15 @@ bool HandleBanAccountCommand(BaseConsole * pConsole, int argc, const char * argv
 	char * pReason;
 	if( argc == 4 )
 		pReason = (char *)argv[3];
-	else 
+	else
 		pReason = &emptystring;
 
 	/// apply instantly in db
 	sLogonCommHandler.Account_SetBanned(argv[1], banned, pReason);
 
-	pConsole->Write("Account '%s' has been banned %s%s. The change will be effective immediately.\r\n", argv[1], 
+	pConsole->Write("Account '%s' has been banned %s%s. The change will be effective immediately.\r\n", argv[1],
 		timeperiod ? "until " : "forever", timeperiod ? ConvertTimeStampToDataTime(timeperiod+(uint32)UNIXTIME).c_str() : "");
-	
+
 	return true;
 }
 

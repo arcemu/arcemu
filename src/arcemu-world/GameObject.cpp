@@ -151,6 +151,14 @@ void GameObject::Create( uint32 guidlow, uint32 guidhigh,uint32 displayid, uint8
 	SetUInt32Value( GAMEOBJECT_FLAGS, flags );
 }*/
 
+void GameObject::EventCastSpell(uint32 guid, uint32 sp, bool triggered)
+{
+	Spell * spp = new Spell();
+	spp->Init(this,dbcSpell.LookupEntry(sp),false,NULL);
+	SpellCastTargets tars(guid);
+	spp->prepare(&tars);
+}
+
 void GameObject::TrapSearchTarget()
 {
 	Update(100);

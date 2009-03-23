@@ -54,7 +54,7 @@ MapMgr::MapMgr(Map *map, uint32 mapId, uint32 instanceid) : CellHandler<MapCell>
 	m_GOStorage = (GameObject**)malloc(sizeof(GameObject*) * m_GOArraySize);
 	memset(m_GOStorage,0,sizeof(GameObject*)*m_GOArraySize);
 	m_GOHighGuid = m_CreatureHighGuid = 0;
-	m_DynamicObjectHighGuid=0; 
+	m_DynamicObjectHighGuid=0;
 	lastUnitUpdate = getMSTime();
 	lastGameobjectUpdate = getMSTime();
 	m_battleground = 0;
@@ -98,7 +98,7 @@ MapMgr::~MapMgr()
 		delete ScriptInterface;
 		ScriptInterface = NULL;
 	}
-	
+
 	// Remove objects
 	if(_cells)
 	{
@@ -233,7 +233,7 @@ void MapMgr::PushObject(Object *obj)
 	// Assertions
 	/////////////
 	ASSERT(obj);
-	
+
 	// That object types are not map objects. TODO: add AI groups here?
 	if(obj->GetTypeId() == TYPEID_ITEM || obj->GetTypeId() == TYPEID_CONTAINER)
 	{
@@ -244,11 +244,11 @@ void MapMgr::PushObject(Object *obj)
 	if(obj->GetTypeId() == TYPEID_CORPSE)
 	{
 		m_corpses.insert(((Corpse*)obj));
-	}	
-	
+	}
+
 	obj->ClearInRangeSet();
 	ASSERT(obj->GetMapId() == _mapId);
-	if(!(obj->GetPositionX() < _maxX && obj->GetPositionX() > _minX) || 
+	if(!(obj->GetPositionX() < _maxX && obj->GetPositionX() > _minX) ||
 	   !(obj->GetPositionY() < _maxY && obj->GetPositionY() > _minY))
 	{
 		if(obj->IsPlayer())
@@ -477,7 +477,7 @@ void MapMgr::RemoveObject(Object *obj, bool free_guid)
 		obj->Deactivate(this);
 
 	//there is a very small chance that on double player ports on same update player is added to multiple insertpools but not removed
-	//one clear example was the double port proc when exploiting double resurect 
+	//one clear example was the double port proc when exploiting double resurect
 	m_objectinsertlock.Acquire();
 	m_objectinsertpool.erase( obj );
 	m_objectinsertlock.Release();
@@ -489,7 +489,7 @@ void MapMgr::RemoveObject(Object *obj, bool free_guid)
 	///////////////////////////////////////
 	// Remove object from all needed places
 	///////////////////////////////////////
- 
+
 	switch(obj->GetTypeFromGUID())
 	{
 		case HIGHGUID_TYPE_UNIT:
@@ -549,16 +549,16 @@ void MapMgr::RemoveObject(Object *obj, bool free_guid)
 		else
 		{
 			obj->SetMapCell(this->GetCellByCoords(obj->GetPositionX(), obj->GetPositionY()));
-		}		
+		}
 	}
 
 	if(obj->GetMapCell())
 	{
 		ASSERT(obj->GetMapCell());
-	
+
 		// Remove object from cell
 		obj->GetMapCell()->RemoveObject(obj);
-	
+
 		// Unset object's cell
 		obj->SetMapCell(NULL);
 	}
@@ -569,7 +569,7 @@ void MapMgr::RemoveObject(Object *obj, bool free_guid)
 		_processQueue.erase( static_cast< Player* >( obj ) );
 		static_cast< Player* >( obj )->ClearAllPendingUpdates();
 	}
-	
+
 	// Remove object from all objects 'seeing' him
 	//there is a small chance for deadlock here. On the a situation i never understood how it can happen and corrupt the list too.
 	obj->AquireInrangeLock(); //make sure to release lock before exit function !
@@ -587,7 +587,7 @@ void MapMgr::RemoveObject(Object *obj, bool free_guid)
 		}
 	}
 	obj->ReleaseInrangeLock();
-	
+
 	// Clear object's in-range set
 	obj->ClearInRangeSet();
 
@@ -633,7 +633,7 @@ void MapMgr::RemoveObject(Object *obj, bool free_guid)
 			this->pInstance->m_creatorGroup = 0;
 		if(!InactiveMoveTime && !forced_expire && GetMapInfo()->type != INSTANCE_NULL)
 		{
-			InactiveMoveTime = UNIXTIME + (MAPMGR_INACTIVE_MOVE_TIME * 60);	 
+			InactiveMoveTime = UNIXTIME + (MAPMGR_INACTIVE_MOVE_TIME * 60);
 			Log.Debug("MapMgr", "Instance %u is now idle. (%s)", m_instanceID, GetBaseMap()->GetName());
 		}
 	}
@@ -738,7 +738,7 @@ void MapMgr::ChangeObjectLocation( Object *obj )
 #undef IN_RANGE_LOOP
 #undef END_IN_RANGE_LOOP*/
 
-	if(obj->HasInRangeObjects()) 
+	if(obj->HasInRangeObjects())
 	{
 		obj->AquireInrangeLock(); //make sure to release lock before exit function !
 		for (Object::InRangeSet::iterator iter = obj->GetInRangeSetBegin(), iter2;
@@ -751,7 +751,7 @@ void MapMgr::ChangeObjectLocation( Object *obj )
 			else if( curObj->GetTypeFromGUID() == HIGHGUID_TYPE_TRANSPORTER )
 				fRange = 0.0f; // unlimited distance for transporters (only up to 2 cells +/- anyway.)
 			//If the object announcing it's position is a transport, then it should announce it to everyone and everything; thus deleting it from visible objects should be avoided. - By: VLack aka. VLsoft
-			else if( obj->GetTypeId() == TYPEID_GAMEOBJECT && static_cast<GameObject*>(obj)->GetInfo()->Type == GAMEOBJECT_TYPE_TRANSPORT ) 
+			else if( obj->GetTypeId() == TYPEID_GAMEOBJECT && static_cast<GameObject*>(obj)->GetInfo()->Type == GAMEOBJECT_TYPE_TRANSPORT )
 				fRange = 0.0f;
 			else
 				fRange = m_UpdateDistance; // normal distance
@@ -843,7 +843,7 @@ void MapMgr::ChangeObjectLocation( Object *obj )
 
 		if(obj->GetMapCell())
 			obj->GetMapCell()->RemoveObject(obj);
-	
+
 		objCell->AddObject(obj);
 		obj->SetMapCell(objCell);
 
@@ -928,7 +928,7 @@ void MapMgr::UpdateInRangeSet( Object *obj, Player *plObj, MapCell* cell, ByteBu
 		else if( curObj->GetTypeFromGUID() == HIGHGUID_TYPE_TRANSPORTER )
 			fRange = 0.0f; // unlimited distance for transporters (only up to 2 cells +/- anyway.)
 		//If the object announcing it's position is a transport, then it should announce it to everyone and everything as far as possible. - By: VLack aka. VLsoft
-		else if( obj->GetTypeId() == TYPEID_GAMEOBJECT && static_cast<GameObject*>(obj)->GetInfo()->Type == GAMEOBJECT_TYPE_TRANSPORT ) 
+		else if( obj->GetTypeId() == TYPEID_GAMEOBJECT && static_cast<GameObject*>(obj)->GetInfo()->Type == GAMEOBJECT_TYPE_TRANSPORT )
 			fRange = 0.0f;
 		else
 			fRange = m_UpdateDistance; // normal distance
@@ -1047,7 +1047,7 @@ void MapMgr::UpdateInRangeSet( Object *obj, Player *plObj, MapCell* cell, ByteBu
 						plObj2->AddVisibleObject(obj); \
 						(*buf)->clear(); \
 					} \
-				} 
+				}
 
 #define IN_RANGE_LOOP_P2 \
 			} \
@@ -1149,7 +1149,7 @@ void MapMgr::_UpdateObjects()
 	Player * lplr;
 	ByteBuffer update(2500);
 	uint32 count = 0;
-	
+
 	m_updateMutex.Acquire();
 	UpdateQueue::iterator iter = _updates.begin();
 	PUpdateQueue::iterator it, eit;
@@ -1217,7 +1217,7 @@ void MapMgr::_UpdateObjects()
 	}
 	_updates.clear();
 	m_updateMutex.Release();
-	
+
 	// generate pending a9packets and send to clients.
 	Player *plyr;
 	for(it = _processQueue.begin(); it != _processQueue.end();)
@@ -1241,7 +1241,7 @@ void MapMgr::LoadAllCells()
 		for( uint32 y = 0 ; y < _sizeY ; y ++ )
 		{
 			cellInfo = GetCell( x , y );
-			
+
 			if( !cellInfo )
 			{
 				// Cell doesn't exist, create it.
@@ -1268,7 +1268,7 @@ void MapMgr::LoadAllCells()
 
 					if (!cellInfo->IsLoaded())
 					{
-						//sLog.outDetail("Loading objects for Cell [%d][%d] on map %d (instance %d)...", 
+						//sLog.outDetail("Loading objects for Cell [%d][%d] on map %d (instance %d)...",
 						//	posX, posY, this->_mapId, m_instanceID);
 						spawns = _map->GetSpawnsList( x , y );
 						if( spawns )
@@ -1304,14 +1304,14 @@ void MapMgr::UpdateCellActivity(uint32 x, uint32 y, int radius)
 					objCell = Create(posX, posY);
 					objCell->Init(posX, posY, _mapId, this);
 
-					sLog.outDetail("Cell [%d,%d] on map %d (instance %d) is now active.", 
+					sLog.outDetail("Cell [%d,%d] on map %d (instance %d) is now active.",
 						posX, posY, this->_mapId, m_instanceID);
 					objCell->SetActivity(true);
 					_map->CellGoneActive(posX, posY);
 
 					ASSERT(!objCell->IsLoaded());
 
-					sLog.outDetail("Loading objects for Cell [%d][%d] on map %d (instance %d)...", 
+					sLog.outDetail("Loading objects for Cell [%d][%d] on map %d (instance %d)...",
 						posX, posY, this->_mapId, m_instanceID);
 
 					sp = _map->GetSpawnsList(posX, posY);
@@ -1323,14 +1323,14 @@ void MapMgr::UpdateCellActivity(uint32 x, uint32 y, int radius)
 				//Cell is now active
 				if (_CellActive(posX, posY) && !objCell->IsActive())
 				{
-					sLog.outDetail("Cell [%d,%d] on map %d (instance %d) is now active.", 
+					sLog.outDetail("Cell [%d,%d] on map %d (instance %d) is now active.",
 						posX, posY, this->_mapId, m_instanceID);
 					_map->CellGoneActive(posX, posY);
 					objCell->SetActivity(true);
 
 					if (!objCell->IsLoaded())
 					{
-						sLog.outDetail("Loading objects for Cell [%d][%d] on map %d (instance %d)...", 
+						sLog.outDetail("Loading objects for Cell [%d][%d] on map %d (instance %d)...",
 							posX, posY, this->_mapId, m_instanceID);
 						sp = _map->GetSpawnsList(posX, posY);
 						if(sp) objCell->LoadObjects(sp);
@@ -1339,7 +1339,7 @@ void MapMgr::UpdateCellActivity(uint32 x, uint32 y, int radius)
 				//Cell is no longer active
 				else if (!_CellActive(posX, posY) && objCell->IsActive())
 				{
-					sLog.outDetail("Cell [%d,%d] on map %d (instance %d) is now idle.", 
+					sLog.outDetail("Cell [%d,%d] on map %d (instance %d) is now idle.",
 						posX, posY, this->_mapId, m_instanceID);
 					_map->CellGoneIdle(posX, posY);
 					objCell->SetActivity(false);
@@ -1444,7 +1444,7 @@ void MapMgr::ChangeFarsightLocation(Player *plr, DynamicObject *farsight)
 							plr->m_visibleFarsightObjects.insert(obj);
 						}
 					}
-					
+
 				}
 			}
 		}
@@ -1464,8 +1464,8 @@ void MapMgr::TeleportCorruptedPlayers()
 	{
 		Player *p = itr->second;
 		++itr;
-		try	
-		{ 
+		try
+		{
 //			p->EjectFromInstance();
 			if( p->GetSession() )
 			{
@@ -1490,7 +1490,7 @@ void MapMgr::KillThreadWithCleanup()
 		sEventMgr.RemoveEvents( this );
 
 		// Teleport any left-over players out.
-		TeleportCorruptedPlayers();	
+		TeleportCorruptedPlayers();
 
 		if(m_battleground)
 		{
@@ -1600,7 +1600,7 @@ bool MapMgr::Do()
 		}
 		m_objectinsertlock.Release();//>>>>>>>>>>>>>>>>
 		//-------------------------------------------------------
-				
+
 		//Now update sessions of this map + objects
 		_PerformObjectDuties();
 
@@ -1656,7 +1656,7 @@ bool MapMgr::Do()
 		sInstanceMgr.m_singleMaps[GetMapId()] = NULL;
 
 	// Teleport any left-over players out.
-	TeleportPlayers();	
+	TeleportPlayers();
 
 	thread_running = false;
 	if(thread_kill_only)
@@ -1793,7 +1793,7 @@ void MapMgr::_PerformObjectDuties()
 		PetStorageMap::iterator it2 = m_PetStorage.begin();
 		Creature * ptr;
 		Pet * ptr2;
-		
+
 		for(; itr != creatures.end();)
 		{
 			ptr = *itr;
@@ -1808,7 +1808,7 @@ void MapMgr::_PerformObjectDuties()
 			++it2;
 
 			ptr2->Update(difftime);
-		}		
+		}
 	}
 
 	// Update players.
@@ -1841,7 +1841,7 @@ void MapMgr::_PerformObjectDuties()
 		}
 
 		lastGameobjectUpdate = mstime;
-	}	
+	}
 
 	// Sessions are updated every loop.
 	{
@@ -1930,7 +1930,7 @@ void MapMgr::UnloadCell(uint32 x,uint32 y)
 	MapCell * c = GetCell(x,y);
 	if(c == NULL || c->HasPlayers() || _CellActive(x,y) || !c->IsUnloadPending()) return;
 
-	sLog.outDetail("Unloading Cell [%d][%d] on map %d (instance %d)...", 
+	sLog.outDetail("Unloading Cell [%d][%d] on map %d (instance %d)...",
 		x,y,_mapId,m_instanceID);
 
 	c->Unload();
@@ -2166,15 +2166,18 @@ void MapMgr::RemoveForcedCell(MapCell* c)
 	UpdateCellActivity( c->GetPositionX(), c->GetPositionY(), 1 );
 }
 
-float MapMgr::GetFirstZWithCPZ(float x,float y ,float z)
+float MapMgr::GetFirstZWithCPZ( float x, float y, float z )
 {
-	if (!sWorld.Collision) return NO_WMO_HEIGHT;
-	float posZ;
-	for (int i=Z_SEARCH_RANGE;i>= (Z_SEARCH_RANGE-Z_SEARCH_RANGE*2);i--)
+    if( !sWorld.Collision )
+        return NO_WMO_HEIGHT;
+
+    float posZ = NO_WMO_HEIGHT;
+    for( int i = Z_SEARCH_RANGE; i >= -Z_SEARCH_RANGE; i-- )
 	{
 		//if ( i==0 && !IsUnderground(x,y,z) ) return GetBaseMap()->GetLandHeight(x, y);
-		posZ = CollideInterface.GetHeight(GetMapId(), x, y,z+(float)i);
-		if ( posZ!=NO_WMO_HEIGHT ) break;
+        posZ = CollideInterface.GetHeight( GetMapId(), x, y, z + ( float )i );
+        if( posZ != NO_WMO_HEIGHT )
+            break;
 	}
 	return posZ;
 }

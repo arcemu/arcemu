@@ -32,7 +32,7 @@ enum _errors
 	CE_WRONG_BUILD_NUMBER=0x09,						 //Unable to validate game version.  This may be caused by file corruption or the interference of another program.
 	CE_UPDATE_CLIENT=0x0a,
 	CE_ACCOUNT_FREEZED=0x0c
-} ; 
+} ;
 
 AuthSocket::AuthSocket(SOCKET fd) : Socket(fd, 32768, 4096)
 {
@@ -75,7 +75,7 @@ void AuthSocket::HandleChallenge()
 {
 	// No header
 	if(GetReadBuffer().GetContiguiousBytes() < 4)
-		return;	
+		return;
 
 	// Check the rest of the packet is complete.
 	uint8 * ReceiveBuffer = (uint8*)GetReadBuffer().GetBufferStart();
@@ -106,7 +106,7 @@ void AuthSocket::HandleChallenge()
 //	uint16 build = swap16(m_challenge.build);
 //	printf("Build: %u\n", build);
 //#endif
- 
+
 	// Check client build.
 #ifdef USING_BIG_ENDIAN
 	uint16 build = swap16(m_challenge.build);
@@ -296,7 +296,7 @@ void AuthSocket::HandleProof()
 
 	BigNumber u;
 	u.SetBinary(sha.GetDigest(), 20);
-	
+
 	BigNumber S = (A * (v.ModExp(u, N))).ModExp(b, N);
 	uint8 t[32];
 	uint8 t1[16];
@@ -410,8 +410,10 @@ void AuthSocket::SendProofError(uint8 Error, uint8 * M2)
 		Send(buffer, 6);
 		return;
 	}
-	
+
 	memcpy(&buffer[2], M2, 20);
+    buffer[22]=0x01; //<-- ARENA TOURNAMENT ACC FLAG!
+
 	Send(buffer, 32);
 }
 
@@ -506,7 +508,7 @@ void AuthSocket::HandleReconnectChallenge()
 {
 	// No header
 	if(GetReadBuffer().GetContiguiousBytes() < 4)
-		return;	
+		return;
 
 	// Check the rest of the packet is complete.
 	uint8 * ReceiveBuffer = /*GetReadBuffer(0)*/(uint8*)GetReadBuffer().GetBufferStart();

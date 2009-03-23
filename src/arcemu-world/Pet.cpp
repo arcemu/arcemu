@@ -49,7 +49,7 @@ uint32 GetAutoCastTypeForSpell( SpellEntry * ent )
 	case SPELL_HASH_FIRE_SHIELD:		// Fire Shield
 		return AUTOCAST_EVENT_OWNER_ATTACKED;
 		break;
-		
+
 	case SPELL_HASH_PHASE_SHIFT:		// Phase Shift
 	case SPELL_HASH_CONSUME_SHADOWS:
 	case SPELL_HASH_LESSER_INVISIBILITY:
@@ -62,7 +62,7 @@ uint32 GetAutoCastTypeForSpell( SpellEntry * ent )
 	case SPELL_HASH_THUNDERSTOMP:		// Thunderstomp
 	case SPELL_HASH_FURIOUS_HOWL:		// Furious Howl
 	case SPELL_HASH_DASH:				// Dash
-	case SPELL_HASH_DIVE:				// Dive 
+	case SPELL_HASH_DIVE:				// Dive
 	case SPELL_HASH_PROWL:				// Prowl
 	case SPELL_HASH_SHELL_SHIELD:		// Shell Shield
 		return AUTOCAST_EVENT_NONE;
@@ -143,9 +143,9 @@ void Pet::CreateAsSummon( uint32 entry, CreatureInfo *ci, Creature* created_from
 		z = owner->GetPositionZ();
 	}
 
-	// Create ourself	
+	// Create ourself
 	Create( m_name.c_str(), owner->GetMapId(), x, y, z, owner->GetOrientation() );
-	
+
 	// Hunter pet should be max 5 levels below owner
 	uint32 level = owner->GetUInt32Value( UNIT_FIELD_LEVEL );
 	if( type & 0x2 && created_from_creature != NULL )
@@ -197,7 +197,7 @@ void Pet::CreateAsSummon( uint32 entry, CreatureInfo *ci, Creature* created_from
 		SetUInt32Value( UNIT_FIELD_BYTES_2, 1 | (0x28 << 8) | (0x3 << 16) );// 0x3 -> Enable pet rename.
 		SetPowerType( POWER_TYPE_FOCUS);
 	}
-	
+
 	BaseDamage[0] = 0;
 	BaseDamage[1] = 0;
 	BaseOffhandDamage[0 ] = 0;
@@ -206,7 +206,7 @@ void Pet::CreateAsSummon( uint32 entry, CreatureInfo *ci, Creature* created_from
 	BaseRangedDamage[1] = 0;
 	m_base_runSpeed = m_runSpeed = owner->m_base_runSpeed;
 	m_base_walkSpeed = m_walkSpeed = owner->m_base_walkSpeed;
-	
+
 	ApplyStatsForLevel();
 
 	m_ExpireTime = expiretime;
@@ -220,13 +220,14 @@ void Pet::CreateAsSummon( uint32 entry, CreatureInfo *ci, Creature* created_from
 		pp->stablestate = STABLE_STATE_ACTIVE;
 		pp->spellid = created_by_spell ? created_by_spell->Id : 0;
 		owner->AddPlayerPet( pp, pp->number );
-	}	
+	}
 
 	InitializeMe( true );
 }
 
 Pet::Pet( uint64 guid ) : Creature( guid )
 {
+    m_isPet = true;
 	m_PetXP = 0;
 	Summon = false;
 	memset(ActionBar, 0, sizeof(uint32)*10);
@@ -266,19 +267,19 @@ Pet::~Pet()
 void Pet::Update( uint32 time )
 {
 	Creature::Update( time ); // passthrough
-	
+
 	if( !Summon && !bExpires && isAlive() )
 	{
 		//ApplyPetLevelAbilities();
 		//Happiness
 		if( m_HappinessTimer == 0 )
-		{	
+		{
 			int32 burn = 1042;		//Based on WoWWiki pet looses 50 happiness over 6 min => 1042 every 7.5 s
 			if( CombatStatus.IsInCombat() )
-				burn >>= 1;			//in combat reduce burn by half (guessed) 
+				burn >>= 1;			//in combat reduce burn by half (guessed)
 			ModUnsigned32Value( UNIT_FIELD_POWER5, -burn );
 			m_HappinessTimer = PET_HAPPINESS_UPDATE_TIMER;// reset timer
-		} 
+		}
 		else if( !IsInBg() )
 		{
 			if( time > m_HappinessTimer )
@@ -316,7 +317,7 @@ void Pet::SendSpellsToOwner()
 	*data << uint8( GetPetState() );	// 0x0 = passive, 0x1 = defensive, 0x2 = agressive
 	*data << uint8( GetPetAction() );	// 0x0 = stay, 0x1 = follow, 0x2 = attack
 	*data << uint16( 0 );				// flags: 0xFF = disabled pet bar (eg. when pet stunned)
-																				
+
 	// Send the actionbar
 	for( uint8 i = 0; i < 10; ++i )
 	{
@@ -332,7 +333,7 @@ void Pet::SendSpellsToOwner()
 	}
 
 	// we don't send spells for the water elemental so it doesn't show up in the spellbook
-	if( GetEntry() != WATER_ELEMENTAL )	
+	if( GetEntry() != WATER_ELEMENTAL )
 	{
 		// Send the rest of the spells.
 		*data << uint8( mSpells.size() );
@@ -404,7 +405,7 @@ void Pet::InitializeSpells()
 
 AI_Spell * Pet::CreateAISpell(SpellEntry * info)
 {
-	ASSERT( info != NULL ); 
+	ASSERT( info != NULL );
 
 	// Create an AI_Spell
 	map<uint32,AI_Spell*>::iterator itr = m_AISpellStore.find( info->Id );
@@ -430,12 +431,12 @@ AI_Spell * Pet::CreateAISpell(SpellEntry * info)
 	if( sp->cooldown == 0 )
 		sp->cooldown = PET_SPELL_SPAM_COOLDOWN; //omg, avoid spaming at least
 	sp->cooldowntime = 0;
-	
+
 	if( info->Effect[0] == SPELL_EFFECT_APPLY_AURA || info->Effect[0] == SPELL_EFFECT_APPLY_AREA_AURA || info->Effect[0] == SPELL_EFFECT_APPLY_AREA_AURA2 )
 		sp->spellType = STYPE_BUFF;
-	else 
+	else
 		sp->spellType = STYPE_DAMAGE;
-	
+
 	sp->spelltargetType = info->ai_target_type;
 	sp->autocast_type = GetAutoCastTypeForSpell( info );
 	sp->procCount = 0;
@@ -453,7 +454,7 @@ void Pet::LoadFromDB( Player* owner, PlayerPet * pi )
 	Create( pi->name.c_str(), owner->GetMapId(), owner->GetPositionX() + 2 , owner->GetPositionY() + 2, owner->GetPositionZ(), owner->GetOrientation() );
 
 	LoadValues( mPi->fields.c_str() );
-	
+
 	m_PetNumber = mPi->number;
 	m_PetXP = mPi->xp;
 	m_name = mPi->name;
@@ -494,7 +495,7 @@ void Pet::LoadFromDB( Player* owner, PlayerPet * pi )
 
 		free(ab);
 	}
-	
+
 	//Preventing overbuffs
 	SetUInt32Value( UNIT_FIELD_ATTACK_POWER, 0 );
 	SetUInt32Value( UNIT_FIELD_ATTACK_POWER_MODS, 0 );
@@ -507,7 +508,7 @@ void Pet::LoadFromDB( Player* owner, PlayerPet * pi )
 			level = m_Owner->getLevel() - 5;
 		else if( level > m_Owner->getLevel() )
 			level = m_Owner->getLevel();
-		
+
 		if( getLevel() != level )
 		{
 			if( !Summon )
@@ -525,7 +526,7 @@ void Pet::LoadFromDB( Player* owner, PlayerPet * pi )
 	}
 
 	InitializeMe( false );
-	
+
 	//if pet was dead on logout then it should be dead now too
 	if( HasFlag( UNIT_FIELD_FLAGS, UNIT_FLAG_DEAD ) )
 	{
@@ -537,7 +538,7 @@ void Pet::LoadFromDB( Player* owner, PlayerPet * pi )
 
 void Pet::OnPushToWorld()
 {
-	//before we initialize pet spells so we can apply spell mods on them 
+	//before we initialize pet spells so we can apply spell mods on them
 	if( m_Owner )
 		m_Owner->EventSummonPet( this );
 
@@ -552,17 +553,17 @@ void Pet::InitializeMe( bool first )
 
 	SetCreatureInfo( CreatureNameStorage.LookupEntry( GetEntry() ) );
 	proto = CreatureProtoStorage.LookupEntry( GetEntry() );
-	
+
 	m_Owner->SetSummon( this );
 	m_Owner->SetUInt64Value( UNIT_FIELD_SUMMON, GetGUID() );
-	
+
 	SetUInt32Value( UNIT_FIELD_PETNUMBER, GetUIdFromGUID() );
 	SetUInt32Value( UNIT_FIELD_PET_NAME_TIMESTAMP, (uint32)UNIXTIME );
-	
+
 	if( GetCreatureInfo() )
 		myFamily = dbcCreatureFamily.LookupEntry( GetCreatureInfo()->Family );
 	else myFamily = NULL;
-	
+
 	SetInstanceID( m_Owner->GetInstanceID() );
 	SetPetDiet();
 	_setFaction();
@@ -596,7 +597,7 @@ void Pet::InitializeMe( bool first )
 			m_Owner->GetLowGUID(), m_PetNumber );
 		if( query )
 		{
-			do 
+			do
 			{
 				Field * f = query->Fetch();
 				SpellEntry* spell = dbcSpell.LookupEntry( f[2].GetUInt32() );
@@ -609,9 +610,9 @@ void Pet::InitializeMe( bool first )
 		delete query;
 	}
 
-	InitializeSpells(); 
+	InitializeSpells();
 	PushToWorld( m_Owner->GetMapMgr() );
-	
+
 	if( first )
 	{
 		// Set up default actionbar
@@ -687,7 +688,7 @@ void Pet::Remove( bool bUpdate, bool bSetOffline )
 
 		if( bUpdate )
 		{
-			if( !bExpires ) 
+			if( !bExpires )
 				UpdatePetInfo( bSetOffline );
 			if( !IsSummon() )
 				m_Owner->_SavePet( NULL );
@@ -697,11 +698,11 @@ void Pet::Remove( bool bUpdate, bool bSetOffline )
 		SendNullSpellsToOwner();
 		ClearPetOwner();
 	}
-	
+
 	// has to be next loop - reason because of RemoveFromWorld, iterator gets broken
 	if( IsInWorld() && IsActive() )
 		Deactivate( m_mapMgr );
-	
+
 	sEventMgr.AddEvent( this, &Pet::PetSafeDelete, EVENT_CREATURE_SAFE_DELETE, 1, 1,EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT );
 }
 
@@ -712,7 +713,7 @@ void Pet::PetSafeDelete()
 	{
 		RemoveFromWorld( false, false );
 	}
-	
+
 	sEventMgr.RemoveEvents( this ); // to avoid crash of double delete
 	delete this;					// destructs pet -> creature -> unit...
 }
@@ -745,21 +746,33 @@ bool Pet::CanGainXP()
 
 void Pet::GiveXP( uint32 xp )
 {
-	xp += m_uint32Values[ UNIT_FIELD_PETEXPERIENCE ];
-	uint32 nxp = m_uint32Values[ UNIT_FIELD_PETNEXTLEVELEXP ];
-
-	if( xp >= nxp )
+	if( m_Owner || !Summon )
 	{
-		SetTPs( GetTPsForLevel( getLevel() + 1 ) - GetSpentTPs() );
-		ModUnsigned32Value( UNIT_FIELD_LEVEL, 1 );
-		xp -= nxp;
-		nxp = GetNextLevelXP( m_uint32Values[ UNIT_FIELD_LEVEL ] );
-		SetUInt32Value( UNIT_FIELD_PETNEXTLEVELEXP, nxp );
-		ApplyStatsForLevel();
-		SkillUp();
-	}
 
-	SetUInt32Value( UNIT_FIELD_PETEXPERIENCE, xp );
+		if(!getLevel() >= m_Owner->getLevel())
+		{
+			xp += m_uint32Values[UNIT_FIELD_PETEXPERIENCE];
+			uint32 nxp = m_uint32Values[UNIT_FIELD_PETNEXTLEVELEXP];
+			bool changed = false;
+
+			while(xp >= nxp)
+			{
+                ModUnsigned32Value(UNIT_FIELD_LEVEL, 1);
+                xp -= nxp;
+                nxp = GetNextLevelXP(m_uint32Values[UNIT_FIELD_LEVEL]);
+                changed = true;
+                SkillUp();
+			}
+
+			SetUInt32Value(UNIT_FIELD_PETEXPERIENCE, xp);
+			SetUInt32Value(UNIT_FIELD_PETNEXTLEVELEXP, nxp);
+			if(changed) ApplyStatsForLevel();
+
+		}
+		else return;
+	}
+	else return;
+
 }
 
 uint32 Pet::GetNextLevelXP(uint32 level)
@@ -808,7 +821,7 @@ void Pet::SetDefaultSpells()
 					if( SpellData->Spells[i] != 0 )
 						AddSpell( dbcSpell.LookupEntry( SpellData->Spells[i] ), false ); //add spell to pet
 		}
-		
+
 		AddSpell( dbcSpell.LookupEntry( GROWL_RANK_1 ), false );
 	}
 }
@@ -828,7 +841,7 @@ void Pet::AddSpell( SpellEntry * sp, bool learning )
 			SpellCastTargets targets(this->GetGUID());
 			spell->prepare(&targets);
 			mSpells[sp] = 0x0100;
-		}	
+		}
 	}
 	else
 	{
@@ -934,7 +947,7 @@ void Pet::SetSpellState(SpellEntry* sp, uint16 State)
 			else
 				SetAutoCast(sp2,false);
 		}
-	}		
+	}
 }
 
 uint16 Pet::GetSpellState(SpellEntry* sp)
@@ -1037,7 +1050,7 @@ void Pet::RemoveSpell(SpellEntry * sp)
 		if( ActionBar[pos] == sp->Id )
 			ActionBar[pos] = 0;
 	}
-	
+
 	if( m_Owner != NULL && m_Owner->GetSession() != NULL )
 		m_Owner->GetSession()->OutPacket( SMSG_PET_UNLEARNED_SPELL, 2, &sp->Id );
 }
@@ -1190,7 +1203,7 @@ void Pet::ApplySummonLevelAbilities()
 
 	// Apply attack power.
 	SetUInt32Value(UNIT_FIELD_ATTACK_POWER, FL2UINT(pet_pwr));
-		
+
 	BaseResistance[0] = FL2UINT(pet_arm);
 	CalcResistance(0);
 
@@ -1220,7 +1233,7 @@ void Pet::ApplyPetLevelAbilities()
 	else if (level < 1)
 		level = 1;
 	static uint32 family_aura[46] = { 0, 17223, 17210, 17129, 17208, 7000, 17212, 17209, 17211, 17214, 0, 17217, 17220, 0, 0, 0, 0, 0, 0, 0, 17218, 17221, 0, 0, 17206, 17215, 17216, 17222, 0, 0, 34887, 35257, 35254, 35258, 35253, 35386, 50297, 54676, 0, 55192, 55729, 56634, 56635, 58598, 61199 };
-		
+
 	RemoveAura( family_aura[ pet_family ] );//If the pet gained a level, we need to remove the auras to re-calculate everything.
 	LoadPetAuras(-1);//These too
 
@@ -1248,10 +1261,10 @@ void Pet::ApplyPetLevelAbilities()
 		sLog.outError( "PETSTAT: Creature family %i [%s] has missing data.", pet_family, myFamily->name );
 	else if( family_aura[ pet_family ] != 0 )
 		this->CastSpell( this, family_aura[ pet_family ], true );
-		
+
 	for( uint32 x = 0; x < 5; ++x )
 		CalcStat( x );
-	
+
 	LoadPetAuras(-2);//Load all BM auras
 }
 
@@ -1277,7 +1290,7 @@ void Pet::ApplyStatsForLevel()
 	// Apply health fields.
 	SetUInt32Value( UNIT_FIELD_HEALTH, m_uint32Values[ UNIT_FIELD_MAXHEALTH ] );
 	SetUInt32Value( UNIT_FIELD_POWER1, m_uint32Values[ UNIT_FIELD_MAXPOWER1 ] );
-	SetUInt32Value( UNIT_FIELD_POWER3, m_uint32Values[ UNIT_FIELD_MAXPOWER3 ] );	
+	SetUInt32Value( UNIT_FIELD_POWER3, m_uint32Values[ UNIT_FIELD_MAXPOWER3 ] );
 }
 
 void Pet::LoadPetAuras(int32 id)
@@ -1294,10 +1307,10 @@ void Pet::LoadPetAuras(int32 id)
 	Catlike Reflexes		34667
 	Serpent's Swiftness		34675
 	*/
-	
+
 	static uint32 mod_auras[9] = { 8875, 19580, 19581, 19582, 19589, 19591, 34666, 34667, 34675 };//Beastmastery Talent's auras.
 	InheritSMMods( m_Owner );
-	
+
 	if( id == -1 )//unload all
 	{
 		for( uint32 x = 0; x < 9; ++x )
@@ -1334,10 +1347,10 @@ uint32 Pet::CanLearnSpell( SpellEntry * sp )
 	// level requirement
 	if( getLevel() < sp->spellLevel )
 		return SPELL_FAILED_LEVEL_REQUIREMENT;
-	
+
 	return 0;
 }
-HappinessState Pet::GetHappinessState() 
+HappinessState Pet::GetHappinessState()
 {
 	//gets happiness state from happiness points
 	uint32 pts = GetUInt32Value( UNIT_FIELD_POWER5 );
@@ -1354,7 +1367,7 @@ AI_Spell * Pet::HandleAutoCastEvent()
 	list<AI_Spell*>::iterator itr,itr2;
 	bool chance = true;
 	uint32 size = 0;
-	
+
 	for(  itr2 = m_autoCastSpells[AUTOCAST_EVENT_ATTACK].begin(); itr2 != m_autoCastSpells[AUTOCAST_EVENT_ATTACK].end(); )
 	{
 		itr = itr2;
@@ -1362,7 +1375,7 @@ AI_Spell * Pet::HandleAutoCastEvent()
 		size = (uint32)m_autoCastSpells[ AUTOCAST_EVENT_ATTACK ].size();
 		if( size > 1 )
 			chance = Rand( 100.0f / float( size ) );
-		
+
 		if((*itr)->autocast_type == AUTOCAST_EVENT_ATTACK)
 		{
 			// spells still spammed, I think the cooldowntime is being set incorrectly somewhere else
@@ -1417,7 +1430,7 @@ void Pet::HandleAutoCastEvent( AutoCastEvents Type )
 			sp =*m_autoCastSpells[ AUTOCAST_EVENT_ATTACK ].begin();
 			if( sp->cooldown && getMSTime() < sp->cooldowntime )
 				return;
-			
+
 			m_aiInterface->SetNextSpell( sp );
 		}
 
@@ -1496,8 +1509,8 @@ uint32 Pet::GetUntrainCost()
 }
 
 Group *Pet::GetGroup()
-{ 
-	if( m_Owner ) 
+{
+	if( m_Owner )
 		return m_Owner->GetGroup();
 	return NULL;
 }

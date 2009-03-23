@@ -36,9 +36,9 @@ typedef struct
 {
 	string Name;
 	string Address;
-	//uint32 Colour;
-	uint8 Icon;
-	uint8 TimeZone;
+	uint32 Colour;
+	uint32 Icon;
+	uint32 TimeZone;
 	float Population;
 	uint8 Lock;
 }Realm;
@@ -126,7 +126,7 @@ public:
 		//pendingLock.Release();
 		return sock;
 	}
-	ARCEMU_INLINE Mutex & GetPendingLock() { return pendingLock; }		
+	ARCEMU_INLINE Mutex & GetPendingLock() { return pendingLock; }
 	const string* GetForcedPermissions(string& username);
 
 	void TestConsoleLogon(string& username, string& password, uint32 requestnum);

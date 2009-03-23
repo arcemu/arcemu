@@ -190,7 +190,7 @@ public:
 	WorldPacket * FillSystemMessageData( const char* message ) const;
 
 	int ParseCommands(const char* text, WorldSession *session);
-	
+
 	void SystemMessage(WorldSession *m_session, const char *message, ...);
 	void ColorSystemMessage(WorldSession *m_session, const char *colorcode, const char *message, ...);
 	void RedSystemMessage(WorldSession *m_session, const char *message, ...);
@@ -200,7 +200,7 @@ public:
 	void GreenSystemMessageToPlr(Player* plr, const char *message, ...);
 	void BlueSystemMessageToPlr(Player* plr, const char *message, ...);
 	void SystemMessageToPlr(Player *plr, const char *message, ...);
-	   
+
 protected:
 
 	bool hasStringAbbr(const char* s1, const char* s2);
@@ -408,7 +408,7 @@ protected:
 	bool HandleGetBattlegroundQueueCommand(const char *args, WorldSession *m_session);
 
 	//Instance
-	bool HandleCreateInstanceCommand(const char * args, WorldSession * m_session);    
+	bool HandleCreateInstanceCommand(const char * args, WorldSession * m_session);
 	bool HandleResetAllInstancesCommand(const char* args, WorldSession *m_session);
 	bool HandleResetInstanceCommand(const char* args, WorldSession *m_session);
 	bool HandleShutdownInstanceCommand(const char* args, WorldSession *m_session);
@@ -446,17 +446,17 @@ protected:
 	bool HandleFlyCommand(const char* args, WorldSession* m_session);
 	bool HandleRemoveRessurectionSickessAuraCommand(const char *args, WorldSession *m_session);
 	bool HandleDBReloadCommand(const char* args, WorldSession* m_session);
-	
+
 	// honor
 	bool HandleAddHonorCommand(const char* args, WorldSession* m_session);
 	bool HandleAddKillCommand(const char* args, WorldSession* m_session);
 	bool HandleGlobalHonorDailyMaintenanceCommand(const char* args, WorldSession* m_session);
 	bool HandleNextDayCommand(const char* args, WorldSession* m_session);
 	bool HandlePVPCreditCommand(const char* args, WorldSession* m_session);
-	
+
 	bool HandleUnlearnCommand(const char* args, WorldSession * m_session);
 	bool HandleModifyLevelCommand(const char* args, WorldSession* m_session);
-	
+
 	// pet
 	bool HandleCreatePetCommand(const char* args, WorldSession* m_session);
 	bool HandleAddPetSpellCommand(const char* args, WorldSession* m_session);
@@ -562,6 +562,7 @@ protected:
 	bool HandleShowItems(const char * args, WorldSession * m_session);
 	bool HandleShowSkills(const char * args, WorldSession * m_session);
 	bool HandleCollisionTestIndoor(const char * args, WorldSession * m_session);
+    bool HandleGetDeathState(const char * args, WorldSession * m_session);
 	bool HandleCollisionTestLOS(const char * args, WorldSession * m_session);
 	bool HandleRenameAllCharacter(const char * args, WorldSession * m_session);
 	bool HandleCollisionGetHeight(const char * args, WorldSession * m_session);

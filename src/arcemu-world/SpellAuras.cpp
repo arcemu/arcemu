@@ -296,7 +296,7 @@ pSpellAura SpellAuraHandler[TOTAL_SPELL_AURAS]={
 		&Aura::SpellAuraNULL,//272
 		&Aura::SpellAuraNULL,//273
 		&Aura::SpellAuraNULL,//274
-		&Aura::SpellAuraNULL,//275
+        &Aura::SpellAuraIgnoreShapeshift,//275
 		&Aura::SpellAuraNULL,//276
 		&Aura::SpellAuraNULL,//277
 		&Aura::SpellAuraNULL,//278
@@ -347,7 +347,7 @@ const char* SpellAuraNames[TOTAL_SPELL_AURAS] = {
     "MOD_SHAPESHIFT",									//  36 Shapeshift
     "EFFECT_IMMUNITY",									//  37 Immune Effect
     "STATE_IMMUNITY",									//  38 Immune State
-    "SCHOOL_IMMUNITY",									//  39 Immune School    
+    "SCHOOL_IMMUNITY",									//  39 Immune School
     "DAMAGE_IMMUNITY",									//  40 Immune Damage
     "DISPEL_IMMUNITY",									//  41 Immune Dispel Type
     "PROC_TRIGGER_SPELL",								//  42 Proc Trigger Spell
@@ -357,7 +357,7 @@ const char* SpellAuraNames[TOTAL_SPELL_AURAS] = {
     "MOD_PARRY_SKILL",									//  46 Mod Parry Skill
     "MOD_PARRY_PERCENT",								//  47 Mod Parry Percent
     "MOD_DODGE_SKILL",									//  48 Mod Dodge Skill
-    "MOD_DODGE_PERCENT",								//  49 Mod Dodge Percent  
+    "MOD_DODGE_PERCENT",								//  49 Mod Dodge Percent
     "MOD_BLOCK_SKILL",									//  50 Mod Block Skill
     "MOD_BLOCK_PERCENT",								//  51 Mod Block Percent
     "MOD_CRIT_PERCENT",									//  52 Mod Crit Percent
@@ -367,7 +367,7 @@ const char* SpellAuraNames[TOTAL_SPELL_AURAS] = {
     "TRANSFORM",										//  56 Transform
     "MOD_SPELL_CRIT_CHANCE",							//  57 Mod Spell Crit Chance
     "MOD_INCREASE_SWIM_SPEED",							//  58 Mod Speed Swim
-    "MOD_DAMAGE_DONE_CREATURE",							//  59 Mod Creature Dmg Done   
+    "MOD_DAMAGE_DONE_CREATURE",							//  59 Mod Creature Dmg Done
     "MOD_PACIFY_SILENCE",								//  60 Pacify & Silence
     "MOD_SCALE",										//  61 Mod Scale
     "PERIODIC_HEALTH_FUNNEL",							//  62 Periodic Health Funnel
@@ -377,7 +377,7 @@ const char* SpellAuraNames[TOTAL_SPELL_AURAS] = {
     "FEIGN_DEATH",										//  66 Feign Death
     "MOD_DISARM",										//  67 Disarm
     "MOD_STALKED",										//  68 Mod Stalked
-    "SCHOOL_ABSORB",									//  69 School Absorb    
+    "SCHOOL_ABSORB",									//  69 School Absorb
     "EXTRA_ATTACKS",									//  70 Extra Attacks
     "MOD_SPELL_CRIT_CHANCE_SCHOOL",						//  71 Mod School Spell Crit Chance
     "MOD_POWER_COST",									//  72 Mod Power Cost
@@ -387,7 +387,7 @@ const char* SpellAuraNames[TOTAL_SPELL_AURAS] = {
     "FAR_SIGHT",										//  76 Far Sight
     "MECHANIC_IMMUNITY",								//  77 Immune Mechanic
     "MOUNTED",											//  78 Mounted
-    "MOD_DAMAGE_PERCENT_DONE",							//  79 Mod Dmg %   
+    "MOD_DAMAGE_PERCENT_DONE",							//  79 Mod Dmg %
     "MOD_PERCENT_STAT",									//  80 Mod Stat %
     "SPLIT_DAMAGE",										//  81 Split Damage
     "WATER_BREATHING",									//  82 Water Breathing
@@ -397,7 +397,7 @@ const char* SpellAuraNames[TOTAL_SPELL_AURAS] = {
     "CHANNEL_DEATH_ITEM",								//  86 Create Death Item
     "MOD_DAMAGE_PERCENT_TAKEN",							//  87 Mod Dmg % Taken
     "MOD_PERCENT_REGEN",								//  88 Mod Health Regen Percent
-    "PERIODIC_DAMAGE_PERCENT",							//  89 Periodic Damage Percent   
+    "PERIODIC_DAMAGE_PERCENT",							//  89 Periodic Damage Percent
     "MOD_RESIST_CHANCE",								//  90 Mod Resist Chance
     "MOD_DETECT_RANGE",									//  91 Mod Detect Range
     "PREVENTS_FLEEING",									//  92 Prevent Fleeing
@@ -417,7 +417,7 @@ const char* SpellAuraNames[TOTAL_SPELL_AURAS] = {
     "HOVER",											// 106 Hover
     "ADD_FLAT_MODIFIER",								// 107 Add Flat Modifier
     "ADD_PCT_MODIFIER",									// 108 Add % Modifier
-    "ADD_TARGET_TRIGGER",								// 109 Add Class Target Trigger    
+    "ADD_TARGET_TRIGGER",								// 109 Add Class Target Trigger
     "MOD_POWER_REGEN_PERCENT",							// 110 Mod Power Regen %
     "ADD_CASTER_HIT_TRIGGER",							// 111 Add Class Caster Hit Trigger
     "OVERRIDE_CLASS_SCRIPTS",							// 112 Override Class Scripts
@@ -427,7 +427,7 @@ const char* SpellAuraNames[TOTAL_SPELL_AURAS] = {
     "IGNORE_REGEN_INTERRUPT",							// 116 Regen During Combat
     "MOD_MECHANIC_RESISTANCE",							// 117 Mod Mechanic Resistance
     "MOD_HEALING_PCT",									// 118 Mod Healing %
-    "SHARE_PET_TRACKING",								// 119 Share Pet Tracking    
+    "SHARE_PET_TRACKING",								// 119 Share Pet Tracking
     "UNTRACKABLE",										// 120 Untrackable
     "EMPATHY",											// 121 Empathy (Lore, whatever)
     "MOD_OFFHAND_DAMAGE_PCT",							// 122 Mod Offhand Dmg %
@@ -437,7 +437,7 @@ const char* SpellAuraNames[TOTAL_SPELL_AURAS] = {
     "MOD_MELEE_DAMAGE_TAKEN_PCT",						// 126 Mod Melee % Dmg Taken
     "RANGED_ATTACK_POWER_ATTACKER_BONUS",				// 127 Rngd Atk Pwr Attckr Bonus
     "MOD_POSSESS_PET",									// 128 Mod Possess Pet
-    "MOD_INCREASE_SPEED_ALWAYS",						// 129 Mod Speed Always   
+    "MOD_INCREASE_SPEED_ALWAYS",						// 129 Mod Speed Always
     "MOD_MOUNTED_SPEED_ALWAYS",							// 130 Mod Mounted Speed Always
     "MOD_CREATURE_RANGED_ATTACK_POWER",					// 131 Mod Creature Ranged Attack Power
     "MOD_INCREASE_ENERGY_PERCENT",						// 132 Mod Increase Energy %
@@ -447,7 +447,7 @@ const char* SpellAuraNames[TOTAL_SPELL_AURAS] = {
     "MOD_HEALING_DONE_PERCENT",							// 136 Mod Healing Done %
     "MOD_TOTAL_STAT_PERCENTAGE",						// 137 Mod Total Stat %
     "MOD_HASTE",										// 138 Haste - Melee
-    "FORCE_REACTION",									// 139 Force Reaction    
+    "FORCE_REACTION",									// 139 Force Reaction
     "MOD_RANGED_HASTE",									// 140 Haste - Ranged
     "MOD_RANGED_AMMO_HASTE",							// 141 Haste - Ranged (Ammo Only)
     "MOD_BASE_RESISTANCE_PCT",							// 142 Mod Base Resistance %
@@ -467,10 +467,10 @@ const char* SpellAuraNames[TOTAL_SPELL_AURAS] = {
     "MOD_REPUTATION_ADJUST",							// 156 Mod Reputation Gain
     "PET_DAMAGE_MULTI",									// 157 Mod Pet Damage
     "MOD_SHIELD_BLOCK",									// 158 Mod Shield Block
-    "NO_PVP_CREDIT",									// 159 No PVP Credit 
-    "MOD_SIDE_REAR_PDAE_DAMAGE_TAKEN",					// 160 Mod Side/Rear PBAE Damage Taken 
+    "NO_PVP_CREDIT",									// 159 No PVP Credit
+    "MOD_SIDE_REAR_PDAE_DAMAGE_TAKEN",					// 160 Mod Side/Rear PBAE Damage Taken
     "MOD_HEALTH_REGEN_IN_COMBAT",						// 161 Mod Health Regen In Combat
-    "POWER_BURN",										// 162 Power Burn 
+    "POWER_BURN",										// 162 Power Burn
     "MOD_CRIT_DAMAGE_BONUS_MELEE",						// 163 Mod Critical Damage Bonus (Physical)
 	"",													// 164
     "MELEE_ATTACK_POWER_ATTACKER_BONUS",				// 165 Melee AP Attacker Bonus
@@ -485,7 +485,7 @@ const char* SpellAuraNames[TOTAL_SPELL_AURAS] = {
     "INCREASE_SPELL_DAMAGE_PCT",						// 174 Increase Spell Damage by % status
     "INCREASE_SPELL_HEALING_PCT",						// 175 Increase Spell Healing by % status
     "SPIRIT_OF_REDEMPTION",								// 176 Spirit of Redemption Auras
-    "AREA_CHARM",										// 177 Area Charm 
+    "AREA_CHARM",										// 177 Area Charm
 	"",													// 178
     "INCREASE_ATTACKER_SPELL_CRIT",						// 179 Increase Attacker Spell Crit Type
     "INCREASE_SPELL_DAMAGE_VS_TYPE",					// 180 Increase Spell Damage Type
@@ -493,7 +493,7 @@ const char* SpellAuraNames[TOTAL_SPELL_AURAS] = {
     "INCREASE_ARMOR_BASED_ON_INTELLECT_PCT",			// 182 Increase Armor based on Intellect
     "DECREASE_CRIT_THREAT",								// 183 Decrease Critical Threat by
     "DECREASE_ATTACKER_CHANCE_TO_HIT_MELEE",			// 184 Reduces Attacker Chance to Hit with Melee
-    "DECREASE_ATTACKER_CHANGE_TO_HIT_RANGED",			// 185 Reduces Attacker Chance to Hit with Ranged 
+    "DECREASE_ATTACKER_CHANGE_TO_HIT_RANGED",			// 185 Reduces Attacker Chance to Hit with Ranged
     "DECREASE_ATTACKER_CHANGE_TO_HIT_SPELLS",			// 186 Reduces Attacker Chance to Hit with Spells
     "DECREASE_ATTACKER_CHANGE_TO_CRIT_MELEE",			// 187 Reduces Attacker Chance to Crit with Melee (Ranged?)
     "DECREASE_ATTACKER_CHANGE_TO_CRIT_RANGED",			// 188 Reduces Attacker Chance to Crit with Ranged (Melee?)
@@ -689,7 +689,7 @@ void Aura::Init( SpellEntry* proto, int32 duration, Object* caster, Unit* target
 		SetNegative( 100 );
 	else if( m_spellProto->c_is_flags & SPELL_FLAG_IS_FORCEDBUFF )
 		SetPositive( 100 );
-	
+
 	if( caster->IsUnit() )
 	{
 		if( m_spellProto->BGR_one_buff_from_caster_on_1target > 0 && caster->IsPlayer() )
@@ -877,8 +877,12 @@ void Aura::Remove()
 			caster->SetUInt64Value(PLAYER_FARSIGHT, 0);
 		}
 	}
-	if( m_spellProto->MechanicsType == MECHANIC_ENRAGED )
-		m_target->RemoveFlag( UNIT_FIELD_AURASTATE, AURASTATE_FLAG_ENRAGED );
+    uint32 flag = 0;
+    flag |= AURASTATE_FLAG_ENRAGED;
+    if( m_spellProto->BGR_one_buff_on_target & SPELL_TYPE_SEAL )
+        flag |= AURASTATE_FLAG_JUDGEMENT;
+    m_target->RemoveFlag( UNIT_FIELD_AURASTATE, flag );
+
 
 	AuraPool.PooledDelete( this ); // suicide xD	leaking this shit out
 }
@@ -917,15 +921,15 @@ void Aura::ApplyModifiers( bool apply )
 			sLog.outDebug( "WORLD: target=%u, Spell Aura id=%u (%s), SpellId=%u, i=%u, apply=%s, duration=%u, miscValue=%d, damage=%d",
 				m_target->GetLowGUID(),mod->m_type, SpellAuraNames[mod->m_type], m_spellProto->Id, mod->i, apply ? "true" : "false",GetDuration(),mod->m_miscValue,mod->m_amount);
 			(*this.*SpellAuraHandler[mod->m_type])(apply);
-			
+
 #ifdef GM_Z_DEBUG_DIRECTLY
 		  if( m_target->IsPlayer() && m_target->IsInWorld() && x==0) {
-  		  if ( static_cast< Player* >( m_target )->GetSession() && static_cast< Player* >( m_target )->GetSession()->CanUseCommand('z')  ) 
-				sChatHandler.BlueSystemMessage( static_cast< Player* >( m_target )->GetSession(), "[%sSystem%s] |rAura::ApplyModifiers: %s Target = %u, Spell Aura id = %u, SpellId = %u, modi=%u, apply = [%d], duration = %u, damage = %d, GiverGUID: %u.", MSG_COLOR_WHITE, MSG_COLOR_LIGHTBLUE, MSG_COLOR_SUBWHITE, 
+  		  if ( static_cast< Player* >( m_target )->GetSession() && static_cast< Player* >( m_target )->GetSession()->CanUseCommand('z')  )
+				sChatHandler.BlueSystemMessage( static_cast< Player* >( m_target )->GetSession(), "[%sSystem%s] |rAura::ApplyModifiers: %s Target = %u, Spell Aura id = %u, SpellId = %u, modi=%u, apply = [%d], duration = %u, damage = %d, GiverGUID: %u.", MSG_COLOR_WHITE, MSG_COLOR_LIGHTBLUE, MSG_COLOR_SUBWHITE,
 				m_target->GetLowGUID(),mod->m_type, m_spellProto->Id, mod->i, apply ,GetDuration(),mod->m_amount,m_casterGuid );
   		}
 #endif
-			
+
 		}
 		else
 			sLog.outError("Unknown Aura id %d", m_modList[x].m_type);
@@ -945,7 +949,7 @@ void Aura::UpdateModifiers( )
 			switch (mod->m_type)
 			{
 				case SPELL_AURA_MOD_DECREASE_SPEED:
-					UpdateAuraModDecreaseSpeed(); 
+					UpdateAuraModDecreaseSpeed();
 					break;
 				case SPELL_AURA_MOD_ATTACK_POWER_BY_STAT_PCT:
 				case SPELL_AURA_MOD_RANGED_ATTACK_POWER_BY_STAT_PCT:
@@ -1006,7 +1010,7 @@ void Aura::EventUpdateAA(float r)
 			for(i = 0; i < m_modcount; ++i)
 			{
 				/* is this an area aura modifier? */
-				if( m_spellProto->Effect[m_modList[i].i] == SPELL_EFFECT_APPLY_AREA_AURA || 
+				if( m_spellProto->Effect[m_modList[i].i] == SPELL_EFFECT_APPLY_AREA_AURA ||
 					m_spellProto->Effect[m_modList[i].i] == SPELL_EFFECT_APPLY_AREA_AURA2 )
 				{
 					if(!aura)
@@ -1266,7 +1270,7 @@ void Aura::SpellAuraModPossess(bool apply)
 
 	if(apply)
 	{
-		if( caster != NULL && caster->IsInWorld() && caster->GetTypeId() == TYPEID_PLAYER ) 
+		if( caster != NULL && caster->IsInWorld() && caster->GetTypeId() == TYPEID_PLAYER )
 			static_cast< Player* >(caster)->Possess( m_target );
 	}
 	else
@@ -1592,7 +1596,6 @@ void Aura::SpellAuraDummy(bool apply)
 
 		if( apply )
 		{
-			c->SetFlag( UNIT_FIELD_AURASTATE, AURASTATE_FLAG_JUDGEMENT );
 			if( !c->judgespell )
 				c->judgespell = mod->m_amount;
 			if( !c->Seal )
@@ -1603,8 +1606,6 @@ void Aura::SpellAuraDummy(bool apply)
 		}
 		else
 		{
-			c->RemoveFlag( UNIT_FIELD_AURASTATE, AURASTATE_FLAG_JUDGEMENT );
-
 			if( c->judgespell )
 				c->judgespell = 0;
 			if( c->Seal )
@@ -1636,23 +1637,23 @@ void Aura::SpellAuraDummy(bool apply)
 		m_target->RemoveAllMovementImpairing();
 	}break;
 	//Cheat Death
-	case 45182: 
+	case 45182:
 	{
 		if(apply){
 			SetPositive();
 			// calc and saving the absorb pct value
 			mod->m_miscValue = (int32)(8 * static_cast< Player* >( m_target )->CalcRating(PLAYER_RATING_MODIFIER_MELEE_CRIT_RESILIENCE));
 			if( mod->m_miscValue > 90 )
-				mod->m_miscValue = 90;			
+				mod->m_miscValue = 90;
 		}
 
 		// apply or remove the pct!!
 		for(uint32 x=0;x<7;x++){
 			if(apply)
-				m_target->DamageTakenPctMod[x]-=(float)(mod->m_miscValue) / 100.0f;				
+				m_target->DamageTakenPctMod[x]-=(float)(mod->m_miscValue) / 100.0f;
 			else
-				m_target->DamageTakenPctMod[x]+=(float)(mod->m_miscValue) / 100.0f;				
-		}	
+				m_target->DamageTakenPctMod[x]+=(float)(mod->m_miscValue) / 100.0f;
+		}
 	}break;
 	//Requires No Ammo
 	case 46699:
@@ -1666,11 +1667,11 @@ void Aura::SpellAuraDummy(bool apply)
 	case 19574:
 	case 34471:
 		{
-			static uint32 mechanics[15] = { MECHANIC_CHARMED, MECHANIC_DISORIENTED,	MECHANIC_DISTRACED, MECHANIC_FLEEING, 
+			static uint32 mechanics[15] = { MECHANIC_CHARMED, MECHANIC_DISORIENTED,	MECHANIC_DISTRACED, MECHANIC_FLEEING,
 											MECHANIC_ROOTED, MECHANIC_ASLEEP, MECHANIC_ENSNARED, MECHANIC_STUNNED,
 											MECHANIC_FROZEN, MECHANIC_INCAPACIPATED, MECHANIC_POLYMORPHED, MECHANIC_BANISHED,
 											MECHANIC_SEDUCED, MECHANIC_HORRIFIED, MECHANIC_SAPPED };
-			
+
 			for( uint32 x = 0; x < 15; x++ )
 			{
 				if( apply )
@@ -1950,6 +1951,18 @@ void Aura::SpellAuraDummy(bool apply)
 	case 61216: // Armored to the teeth
 	case 61221:
 	case 61222:
+		{
+		if(apply)
+		{
+			uint32 mod1 = m_target->GetUInt32Value(UNIT_FIELD_RESISTANCES);
+			uint32 mod2 = m_spellProto->EffectBasePoints[0] + 1;
+			uint32 mod3 = m_spellProto->EffectBasePoints[1] + 1;
+			mod->realamount = (mod->m_amount + (mod1/mod3)*mod2 );
+			m_target->ModUnsigned32Value(UNIT_FIELD_ATTACK_POWER_MODS,mod->realamount);
+		 }else
+                m_target->ModUnsigned32Value(UNIT_FIELD_ATTACK_POWER_MODS, -mod->realamount);
+                m_target->CalcDamage();
+    }break;
 	case 48978: // Bladed Armor
 	case 49390:
 	case 49391:
@@ -1957,7 +1970,7 @@ void Aura::SpellAuraDummy(bool apply)
 	case 49393:
 	{
 		if(apply)
-		{	
+		{
 			uint32 mod1 = m_target->GetUInt32Value(UNIT_FIELD_RESISTANCES);
 			uint32 mod2 = m_spellProto->EffectBasePoints[0] + 1; //Thanks Andy for pointing out that BasePoints
 			uint32 mod3 = m_spellProto->EffectBasePoints[1] + 1; //Should always be used instead of static modifiers.
@@ -1965,17 +1978,45 @@ void Aura::SpellAuraDummy(bool apply)
 			m_target->ModUnsigned32Value(UNIT_FIELD_ATTACK_POWER_MODS,mod->realamount);
 		}
 		else
-		{	
+		{
 			m_target->ModUnsigned32Value(UNIT_FIELD_ATTACK_POWER_MODS, -mod->realamount);
 		}
 
 		m_target->CalcDamage();
 	}break;
 	case 974:
-	case 32593:
+	case 32593: // Earth Shield
 	case 32594:
+	case 49284:
+	case 49283:
 		{
 			if(apply)
+			{
+			ProcTriggerSpell pts;
+			pts.origId = GetSpellProto()->Id;
+			pts.caster = m_casterGuid;
+			pts.spellId=GetSpellProto()->Id;
+			if(!pts.spellId)
+				return;
+			pts.procChance = GetSpellProto()->procChance;
+			pts.procFlags = GetSpellProto()->procFlags;
+			pts.procCharges = GetSpellProto()->procCharges;
+			pts.LastTrigger = 0;
+			pts.deleted = false;
+			m_target->m_procSpells.push_front(pts);
+			}
+			else
+			{
+			for(std::list<struct ProcTriggerSpell>::iterator itr = m_target->m_procSpells.begin();itr != m_target->m_procSpells.end();itr++)
+			{
+				if(itr->origId == GetSpellId() && itr->caster == m_casterGuid && !itr->deleted)
+				{
+					itr->deleted = true;
+					break;
+				}
+			}
+			}
+			/* if(apply)
 			{
 			ProcTriggerSpell pts;
 			pts.origId = GetSpellProto()->Id;
@@ -2018,7 +2059,7 @@ void Aura::SpellAuraDummy(bool apply)
 					break;
 				}
 			}
-			}
+			}*/
 		}break;
 	case 126: //Eye of Kilrogg
 		{
@@ -2370,7 +2411,7 @@ void Aura::SpellAuraDummy(bool apply)
 	case 48446:
 	case 48447:		// Tranquility 6+7 Fix by MtR
 		{
-			//uint32 duration = GetDuration();
+		//uint32 duration = GetDuration();
 			//printf("moo\n");
 			if(apply)
 				sEventMgr.AddEvent(this, &Aura::EventPeriodicHeal1, (uint32)mod->m_amount, EVENT_AURA_PERIODIC_HEAL, 2000, 0, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
@@ -2418,7 +2459,7 @@ void Aura::SpellAuraDummy(bool apply)
 					}
 				}
 			}
-			
+
 			if( expired )
 			{
 				Spell *spell=SpellPool.PooledNew();
@@ -2426,7 +2467,7 @@ void Aura::SpellAuraDummy(bool apply)
 				spell->SetUnitTarget( m_target );
 				spell->Heal( mod->m_amount );
 			}
-			
+
 		}break;
 	case 48450:		// Lifebloom Rank 2 by MtR
 		{
@@ -2456,7 +2497,7 @@ void Aura::SpellAuraDummy(bool apply)
 					}
 				}
 			}
-			
+
 			if( expired )
 			{
 				Spell *spell=SpellPool.PooledNew();
@@ -2464,7 +2505,7 @@ void Aura::SpellAuraDummy(bool apply)
 				spell->SetUnitTarget( m_target );
 				spell->Heal( mod->m_amount );
 			}
-			
+
 		}break;
 	case 48451:		// Lifebloom Rank 3 by MtR
 		{
@@ -2494,7 +2535,7 @@ void Aura::SpellAuraDummy(bool apply)
 					}
 				}
 			}
-			
+
 			if( expired )
 			{
 				Spell *spell=SpellPool.PooledNew();
@@ -2502,7 +2543,7 @@ void Aura::SpellAuraDummy(bool apply)
 				spell->SetUnitTarget( m_target );
 				spell->Heal( mod->m_amount );
 			}
-			
+
 		}break;
 
 	case 2584:			// Area spirit healer aura for BG's
@@ -2880,7 +2921,7 @@ void Aura::EventPeriodicHeal( uint32 amount )
 	int32 bonus = 0;
 
 	if( c != NULL)
-	{ 
+	{
 		bonus += c->HealDoneMod[GetSpellProto()->School] + m_target->HealTakenMod[m_spellProto->School];
 		if( c->IsPlayer() )
 		{
@@ -2933,7 +2974,7 @@ void Aura::EventPeriodicHeal( uint32 amount )
 	if( !amp )
 		amp = static_cast< EventableObject* >( this )->event_GetEventPeriod( EVENT_AURA_PERIODIC_HEAL );
 //	if(m_spellProto->NameHash != SPELL_HASH_HEALING_STREAM)// Healing Stream is not a HOT
-	{  
+	{
 		int32 dur = GetDuration();
 		//example : Citrine Pendant of Golden Healing is in AA aura that does not have duration. In this case he woul dhave full healbonus benefit
 		if( (dur==0 || dur==-1) && GetSpellProto()->DurationIndex)
@@ -2998,7 +3039,7 @@ void Aura::EventPeriodicHeal( uint32 amount )
 	Unit* u_caster = this->GetUnitCaster();
 	if( u_caster != NULL )
 	{
-		if (GetSpellProto()->NameHash == SPELL_HASH_HEALTH_FUNNEL && add > 0) 
+		if (GetSpellProto()->NameHash == SPELL_HASH_HEALTH_FUNNEL && add > 0)
 		{
 			dealdamage sdmg;
 
@@ -3072,7 +3113,7 @@ void Aura::SpellAuraModAttackSpeed( bool apply )
 			m_target->ModUnsigned32Value(UNIT_FIELD_RANGEDATTACKTIME, mod->fixed_amount[2]);
 		}
 	}
-	 
+
 }
 
 void Aura::SpellAuraModThreatGenerated(bool apply)
@@ -3459,7 +3500,7 @@ void Aura::SpellAuraModStealth(bool apply)
 
 			if(p_caster->IsMounted())
 				p_caster->RemoveAura(p_caster->m_MountSpellId);
-			
+
 			if(p_caster->m_bg && p_caster->m_bgHasFlag)
 			{
 				if(p_caster->m_bg->GetType() == BATTLEGROUND_WARSONG_GULCH)
@@ -3523,7 +3564,7 @@ void Aura::SpellAuraModInvisibility(bool apply)
 		m_target->m_invisFlag = mod->m_miscValue;
 		if( m_target->GetTypeId() == TYPEID_PLAYER )
 		{
-			if( GetSpellId() == 32612 ) 
+			if( GetSpellId() == 32612 )
 				static_cast<Player*>(m_target)->SetFlag( PLAYER_FIELD_BYTES2, 0x4000 ); //Mage Invis self visual
 		}
 
@@ -3534,7 +3575,7 @@ void Aura::SpellAuraModInvisibility(bool apply)
 		m_target->m_invisFlag = INVIS_FLAG_NORMAL;
 		if( m_target->GetTypeId() == TYPEID_PLAYER )
 		{
-			if( GetSpellId() == 32612 ) 
+			if( GetSpellId() == 32612 )
 				static_cast<Player*>(m_target)->RemoveFlag( PLAYER_FIELD_BYTES2, 0x4000 );
 		}
 	}
@@ -3727,14 +3768,14 @@ void Aura::SpellAuraPeriodicTriggerSpell(bool apply)
 		if(!m_caster)
 			return;
 
-		if ( GetSpellProto()->Id == 23493 || GetSpellProto()->Id == 24379 ) 
+		if ( GetSpellProto()->Id == 23493 || GetSpellProto()->Id == 24379 )
 			// Cebernic: Restoration on battleground fixes(from p2wow's merged)
 			// it wasn't prefectly,just for tempfix
 		{
 			SetPositive();
 			sEventMgr.AddEvent(this, &Aura::EventPeriodicHealPct,10.0f,
 			EVENT_AURA_PERIODIC_HEALPERC,	GetSpellProto()->EffectAmplitude[mod->i],0,EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
-	
+
 			sEventMgr.AddEvent(this, &Aura::EventPeriodicManaPct,10.0f,
 			EVENT_AURA_PERIOCIC_MANA,	GetSpellProto()->EffectAmplitude[mod->i],0,EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
 			return;
@@ -3856,7 +3897,7 @@ void Aura::EventPeriodicEnergize( uint32 amount, uint32 type )
 
 	if( GetUnitCaster() == NULL )
 		return;
-	
+
 	GetUnitCaster()->Energize( m_target, m_spellProto->Id, amount, type );
 
 	if( ( GetSpellProto()->AuraInterruptFlags & AURA_INTERRUPT_ON_STAND_UP ) && type == POWER_TYPE_MANA )
@@ -4452,7 +4493,7 @@ void Aura::SpellAuraModShapeshift(bool apply)
 			    if(m_target->getRace() == RACE_NIGHTELF)
 				    modelId = 20857;
 			    else
-				    modelId = 20872;			
+				    modelId = 20872;
 			}
 		}break;
 	case FORM_STEALTH:
@@ -5033,9 +5074,9 @@ void Aura::EventPeriodicLeech(uint32 amount)
 							itx = auras.find(aura->GetCasterGUID());
 							if( itx == auras.end() )
 							{
-								std::set<uint32> *ids = new std::set<uint32>; 
-								auras.insert(make_pair(aura->GetCasterGUID(),ids)); 
-								itx = auras.find(aura->GetCasterGUID()); 
+								std::set<uint32> *ids = new std::set<uint32>;
+								auras.insert(make_pair(aura->GetCasterGUID(),ids));
+								itx = auras.find(aura->GetCasterGUID());
 							}
 
 							std::set<uint32> *ids = itx->second;
@@ -5613,7 +5654,7 @@ void Aura::SpellAuraFeignDeath(bool apply)
 				{
 					if((*itr)->GetTypeId()==TYPEID_UNIT)
 						static_cast< Unit* >(*itr)->GetAIInterface()->RemoveThreatByPtr( pTarget );
-					
+
 					//if this is player and targeting us then we interrupt cast
 					if( (*itr)->IsPlayer() )
 					{
@@ -5636,7 +5677,7 @@ void Aura::SpellAuraFeignDeath(bool apply)
 			//pTarget->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_DEAD);
 			//pTarget->SetUInt32Value(UNIT_NPC_EMOTESTATE, 0);
 			data.SetOpcode(SMSG_STOP_MIRROR_TIMER);
-			data << uint32(2);
+            data << uint32( TIMER_FEIGNDEATH );
 			pTarget->GetSession()->SendPacket(&data);
 		}
 	}
@@ -5949,7 +5990,7 @@ void Aura::SpellAuraMounted(bool apply)
 {
 	if(!p_target) return;
 
-	/*Shady: Is it necessary? Stealth should be broken since all spells with Mounted SpellEffect don't have "does not break stealth" flag (except internal Video mount spell). 
+	/*Shady: Is it necessary? Stealth should be broken since all spells with Mounted SpellEffect don't have "does not break stealth" flag (except internal Video mount spell).
 	So commented, cause we don't need useless checks and hackfixes*/
 	/* if(m_target->IsStealth())
 	{
@@ -5962,7 +6003,7 @@ void Aura::SpellAuraMounted(bool apply)
 
 	if(apply)
 	{
-		if( isVehicleSpell ) 
+		if( isVehicleSpell )
 			SetDuration(100);
 
 		SetPositive();
@@ -5999,9 +6040,10 @@ void Aura::SpellAuraMounted(bool apply)
 		p_target->flying_aura = 0;
 		m_target->SetUInt32Value(UNIT_FIELD_MOUNTDISPLAYID, 0);
 		//m_target->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_MOUNTED_TAXI);
-			
+
 		//if we had pet then respawn
 		p_target->SpawnActivePet();
+		p_target->RemoveAurasByInterruptFlag( AURA_INTERRUPT_ON_DISMOUNT );
 	}
 }
 
@@ -6202,7 +6244,7 @@ void Aura::SpellAuraDrinkNew(bool apply)
 void Aura::EventPeriodicEnergizeVariable( uint32 amount, uint32 type )
 {
 	uint32 POWER_TYPE = UNIT_FIELD_POWER1 + type;
-	
+
 	ASSERT(POWER_TYPE<=UNIT_FIELD_POWER5);
 	uint32 curEnergy = m_target->GetUInt32Value( POWER_TYPE );
 	uint32 maxEnergy = m_target->GetUInt32Value( POWER_TYPE + 6 );
@@ -6216,7 +6258,7 @@ void Aura::EventPeriodicEnergizeVariable( uint32 amount, uint32 type )
 			// MP5Viper = Intellect  ( 0.55 - 22/35  ( Manacurrent / Manamax - 0.2 ) -- by emsy... 55 is stored in DBC, maybe blizz changes it in future
 			// We're including also the Effect[1]:Dummy (35% of player's level) from the AotV in this
 			//   it's missing some values in dbc plus it saves one event this way
-							
+
 			manaPct = (float)curEnergy / (float)maxEnergy;
 			if( manaPct < 0.2f )
 				manaPct = 0.2f;
@@ -6629,7 +6671,7 @@ void Aura::SpellAuraModCreatureAttackPower(bool apply)
 }
 
 void Aura::SpellAuraModTotalThreat( bool apply )
-{	
+{
 	if( apply )
 	{
 		if( mod->m_amount < 0 )
@@ -6670,19 +6712,15 @@ void Aura::SpellAuraFeatherFall( bool apply )
 	//FIXME:Find true flag
 	if( m_target->GetTypeId() == TYPEID_PLAYER )
 	{
-		WorldPacket data(12);
-		if( apply )
-		{
-			data.SetOpcode(SMSG_MOVE_FEATHER_FALL);
-			static_cast< Player* >( m_target )->m_noFallDamage = true;
-		}
-		else
-		{
-			data.SetOpcode(SMSG_MOVE_NORMAL_FALL);
-			static_cast< Player* >( m_target )->m_noFallDamage = false;
-		}
-		data << m_target->GetNewGUID() << (uint32)0;
-		static_cast< Player* >( m_target )->GetSession()->SendPacket( &data );
+        if(apply)
+        {
+                static_cast< Player* >( m_target )->m_safeFall += mod->m_amount;
+        }
+        else
+        {
+                static_cast< Player* >( m_target )->m_safeFall -= mod->m_amount;
+        }
+
 	}
 }
 
@@ -7446,7 +7484,7 @@ void Aura::SpellAuraModHaste( bool apply )
 
 			m_target->ModUnsigned32Value( UNIT_FIELD_BASEATTACKTIME, -mod->fixed_amount[mod->i] );
 			m_target->ModUnsigned32Value( UNIT_FIELD_BASEATTACKTIME_01, -mod->fixed_amount[mod->i*2] );
-			
+
 			if ( m_target->GetTypeId() == TYPEID_UNIT )
 				static_cast< Creature* >( m_target )->m_speedFromHaste += mod->fixed_amount[mod->i];
 		}
@@ -7511,7 +7549,7 @@ void Aura::SpellAuraModRangedHaste( bool apply )
 			static_cast< Player* >( m_target )->ModAttackSpeed( mod->m_amount, MOD_RANGED );
 		else
 			static_cast< Player* >( m_target )->ModAttackSpeed( -mod->m_amount, MOD_RANGED );
-		
+
 		static_cast< Player* >( m_target )->UpdateAttackSpeed();
 	}
 	else
@@ -8003,7 +8041,7 @@ void Aura::SpellAuraIncreaseHealingByAttribute(bool apply)
 			return;
 
 		val = mod->m_amount;
-		
+
 		if(val<0)
 			SetNegative();
 		else
@@ -8226,7 +8264,10 @@ void Aura::SpellAuraModHealingDone(bool apply)
 	}
 	else
 		val = -mod->m_amount;
-
+	uint32 player_class = static_cast< Player* >( m_target )->getClass();
+	if ( player_class != DRUID && player_class != PALADIN && player_class != SHAMAN && player_class != PRIEST )
+		val = (int32)( float( val ));
+	else
 	val = (int32)( float( val ) * 1.88f );
 
 	for(uint32 x=0;x<7;x++)
@@ -8466,9 +8507,9 @@ void Aura::SpellAuraMeleeHaste( bool apply )
 {
 	if( mod->m_amount < 0 )
 		SetNegative();
-	else 
+	else
 		SetPositive();
-	
+
 	if( m_target->IsPlayer() )
 	{
 		if( apply )
@@ -8611,7 +8652,7 @@ void Aura::SpellAuraIncreaseHitRate( bool apply )
 {
 	if( !m_target->IsPlayer() )
 		return;
-	
+
 	static_cast< Player* >( m_target )->ModifyBonuses( SPELL_HIT_RATING, mod->m_amount, apply );
 	static_cast< Player* >( m_target )->UpdateStats();
 }
@@ -8922,7 +8963,7 @@ void Aura::SpellAuraIncreaseRAPbyStatPct( bool apply )
 			SetPositive();
 		else
 			SetNegative();
-		
+
 		mod->fixed_amount[mod->i] = m_target->GetUInt32Value( UNIT_FIELD_STAT0 + mod->m_miscValue ) * mod->m_amount / 100;
 		m_target->ModUnsigned32Value( UNIT_FIELD_RANGED_ATTACK_POWER_MODS, mod->fixed_amount[mod->i] );
 	}
@@ -9073,7 +9114,7 @@ void Aura::HandleAuraControlVehicle(bool apply)
 
 		pcaster->SetVehicle( static_cast< Vehicle* >( m_target ), -1);
 		pcaster->SetUInt64Value( UNIT_FIELD_CHARM, pcaster->GetVehicle()->GetGUID() );
-		pcaster->SetUInt64Value( PLAYER_FARSIGHT, pcaster->GetVehicle()->GetGUID() ); //focus camera on this 
+		pcaster->SetUInt64Value( PLAYER_FARSIGHT, pcaster->GetVehicle()->GetGUID() ); //focus camera on this
 
 		//add mana to the vehicle. It is supposed to already have mana
 		if( m_target->GetUInt32Value( UNIT_FIELD_MAXPOWER1 ) < 100 )
@@ -9090,7 +9131,7 @@ void Aura::HandleAuraControlVehicle(bool apply)
 		data5 << uint8( 1 );
 		data5 << float( 40 );
 		pcaster->GetSession()->SendPacket(&data5);
-		
+
 		//show the interface for the vehicle
 		WorldPacket data2(SMSG_CONTROL_VECHICLE, 0);
 		pcaster->GetSession()->SendPacket(&data2);
@@ -9138,7 +9179,7 @@ void Aura::HandleAuraControlVehicle(bool apply)
 		data4 << uint32(0);
 		data4 << uint32(0);
 		data4 << uint32(0x101);
-		data4 << uint32(0x0800CC28); //cc28 = 52264 = 
+		data4 << uint32(0x0800CC28); //cc28 = 52264 =
 		data4 << uint32(0x0900CC2C);
 		data4 << uint32(0x0A000000);
 		data4 << uint32(0x0B000000);
@@ -9223,7 +9264,7 @@ void Aura::SpellAuraIncreaseAPbyStatPct( bool apply )
 			SetPositive();
 		else
 			SetNegative();
-		
+
 		mod->fixed_amount[mod->i] = m_target->GetUInt32Value( UNIT_FIELD_STAT0 + mod->m_miscValue ) * mod->m_amount / 100;
 		m_target->ModUnsigned32Value( UNIT_FIELD_ATTACK_POWER_MODS, mod->fixed_amount[mod->i] );
 	}
@@ -9231,4 +9272,19 @@ void Aura::SpellAuraIncreaseAPbyStatPct( bool apply )
 		m_target->ModUnsigned32Value( UNIT_FIELD_ATTACK_POWER_MODS, -mod->fixed_amount[mod->i] );
 
 	m_target->CalcDamage();
+}
+
+void Aura::SpellAuraIgnoreShapeshift( bool apply )
+{
+        if(!m_target->IsPlayer())
+                return;
+
+        if( apply )
+        {
+                static_cast<Player*>(m_target)->ignoreShapeShiftChecks = true;
+        }
+        else
+        {
+                static_cast<Player*>(m_target)->ignoreShapeShiftChecks = false;
+        }
 }
