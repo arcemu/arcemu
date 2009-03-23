@@ -625,7 +625,8 @@ void Spell::SpellEffectSchoolDMG(uint32 i) // dmg school
 					}
 				}
 			}break;
-
+		case SPELL_HASH_FIRE_STRIKE:
+		case SPELL_HASH_LIGHTNING_STRIKE:
 		case SPELL_HASH_MOLTEN_ARMOR:		// fire armor, is static damage
 			static_damage=true;
 			break;
@@ -635,6 +636,7 @@ void Spell::SpellEffectSchoolDMG(uint32 i) // dmg school
 			break;
 		}
 	}
+
 
 	// check for no more damage left (chains)
 	if(!dmg)

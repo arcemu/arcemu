@@ -515,7 +515,7 @@ void WorldSession::HandleMovementOpcodes( WorldPacket & recv_data )
 			if( _player->z_axisposition <= movement_info.z)
 				falldistance = 1;
             /*Safe Fall*/
-            if( (int)falldistance < _player->m_safeFall )
+            if( (int)falldistance > _player->m_safeFall )
                 falldistance -= _player->m_safeFall;
             else
                 falldistance = 1;
