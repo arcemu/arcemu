@@ -429,6 +429,14 @@
 				RelativePath="..\..\src\arcemu-world\WayPoints.cpp"
 				>
 			</File>
+			<File
+				RelativePath="..\..\src\arcemu-world\WordFilter.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\arcemu-world\WordFilter.h"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="CreatureAI"
