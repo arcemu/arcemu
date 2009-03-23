@@ -1771,10 +1771,10 @@ void Object::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
 			{
 				if((*i)->GetTypeId() == TYPEID_UNIT)
 				{
-					tmpUnit = (*i);
+					tmpUnit = static_cast< Unit* >(*i);
 					if( tmpUnit->GetAIInterface() && tmpUnit->GetAIInterface()->m_isNeutralGuard && CalcDistance(tmpUnit) <= (50.0f * 50.0f) )
 					{
-						tmpUnit->GetAIInterface()->AttackReaction(this, 1, 0);
+						tmpUnit->GetAIInterface()->AttackReaction(static_cast< Unit * >(this), 1, 0);
 					}
 				}
 			}

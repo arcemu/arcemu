@@ -3009,7 +3009,7 @@ void Spell::HandleAddAura(uint64 guid)
 			{
 				if((*i)->GetTypeId() == TYPEID_UNIT)
 				{
-					tmpUnit = (*i);
+					tmpUnit = static_cast< Unit* >(*i);
 					if( tmpUnit->GetAIInterface() && tmpUnit->GetAIInterface()->m_isNeutralGuard && p_caster->CalcDistance(tmpUnit) <= (50.0f * 50.0f) )
 					{
 						tmpUnit->GetAIInterface()->AttackReaction(p_caster, 1, 0);

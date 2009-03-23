@@ -3379,7 +3379,7 @@ void Unit::Strike( Unit* pVictim, uint32 weapon_damage_type, SpellEntry* ability
 		{
 			if((*i)->GetTypeId() == TYPEID_UNIT)
 			{
-				tmpUnit = (*i);
+				tmpUnit = static_cast< Unit* >(*i);
 				if( tmpUnit->GetAIInterface() && tmpUnit->GetAIInterface()->m_isNeutralGuard && CalcDistance(tmpUnit) <= (50.0f * 50.0f) )
 				{
 					tmpUnit->GetAIInterface()->AttackReaction(this, 1, 0);
