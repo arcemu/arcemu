@@ -612,8 +612,8 @@ void CommandTableStorage::Init()
 		{ "castall",               'z', &ChatHandler::HandleCastAllCommand,         "Makes all players online cast spell <x>.",                      NULL, 0, 0, 0 },
 		{ "dispelall",             'z', &ChatHandler::HandleDispelAllCommand,       "Dispels all negative (or positive w/ 1) auras on all players.", NULL, 0, 0, 0 },
 		{ "renameallinvalidchars", 'z', &ChatHandler::HandleRenameAllCharacter,     "Renames all invalid character names",                           NULL, 0, 0, 0 },
-		{ "masssummon",            'z', &ChatHandler::HandleMassSummonCommand,      "Summons all online players to your location",                            NULL, 0, 0, 0 },
-		{ "playall",               'z', &ChatHandler::HandleGlobalPlaySoundCommand, "Plays a sound to everyone on the realm.",                           NULL, 0, 0, 0 },
+		{ "masssummon",            'z', &ChatHandler::HandleMassSummonCommand,      "Summons all online players to your location,add the a/A parameter for alliance or h/H for horde.",                            NULL, 0, 0, 0 },
+		{ "playall",               'z', &ChatHandler::HandleGlobalPlaySoundCommand, "Plays a sound to everyone on the realm.",                       NULL, 0, 0, 0 },
 		{ NULL,                    '0', NULL,                                       "",                                                              NULL, 0, 0, 0 }
 	};
 	dupe_command_table(adminCommandTable, _adminCommandTable);

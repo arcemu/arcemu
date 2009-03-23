@@ -98,7 +98,7 @@ enum OBJECT_UPDATE_TYPE {
 };
 
 typedef struct
-{ 
+{
 	uint32 school_type;
 	int32 full_damage;
 	uint32 resisted_damage;
@@ -126,8 +126,8 @@ public:
 
 	virtual void Update ( uint32 time ) { }
   //! True if object exists in world
- 
-	
+
+
 	ARCEMU_INLINE bool IsInWorld() { return m_mapMgr != NULL; }
 	virtual void AddToWorld();
 	virtual void AddToWorld(MapMgr * pMapMgr);
@@ -145,7 +145,7 @@ public:
 
 	ARCEMU_INLINE const WoWGuid& GetNewGUID() const { return m_wowGuid; }
 	ARCEMU_INLINE uint32 GetEntry(){return m_uint32Values[3];}
-	
+
 	ARCEMU_INLINE const uint32 GetEntryFromGUID() const
 	{
 /*		uint64 entry = *(uint64*)m_uint32Values;
@@ -177,7 +177,7 @@ public:
 	void BuildFieldUpdatePacket(ByteBuffer * buf, uint32 Index, uint32 Value);
 
 	void DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32 unitEvent, uint32 spellId, bool no_remove_auras = false);
-	
+
 
 	virtual void DestroyForPlayer( Player *target ) const;
 
@@ -279,7 +279,7 @@ public:
 		return ((uint8*)m_uint32Values)[i*4+i1];
 #endif
 	}
-	
+
 	void __fastcall SetByteFlag( uint16 index, uint8 offset, uint8 newFlag );
     void __fastcall RemoveByteFlag( uint16 index, uint8 offset, uint8 newFlag );
 
@@ -287,7 +287,7 @@ public:
 	{
 		return ((GetByte(index, index1) & flag) != 0);
 	}
-	
+
 	ARCEMU_INLINE void SetNewGuid(uint32 Guid)
 	{
 		SetUInt32Value(OBJECT_FIELD_GUID, Guid);
@@ -312,7 +312,7 @@ public:
 		ASSERT( index < m_valuesCount );
 		return (m_uint32Values[ index ] & flag) != 0;
 	}
-	
+
 	////////////////////////////////////////
 	void ClearUpdateMask( )
 	{
@@ -334,7 +334,7 @@ public:
 	bool isInFront(Object* target);
 	bool isInBack(Object* target);
 	// Check to see if an object is in front of a target in a specified arc (in degrees)
-	bool isInArc(Object* target , float degrees); 
+	bool isInArc(Object* target , float degrees);
 	bool HasInArc( float degrees, Object* target );  // scriptdev2
 	/* Calculates the angle between two Positions */
 	float calcAngle( float Position1X, float Position1Y, float Position2X, float Position2Y );
@@ -376,7 +376,7 @@ public:
 	{
 		return !( m_objectsInRange.find( pObj ) == m_objectsInRange.end() );
 	}
-	
+
 	virtual void AddInRangeObject(Object* pObj)
 	{
 		if( pObj == NULL )
@@ -440,7 +440,7 @@ public:
 	ARCEMU_INLINE InRangeSet::iterator FindInRangeSet(Object * obj) { return m_objectsInRange.find(obj); }
 
 	void RemoveInRangeObject(InRangeSet::iterator itr)
-	{ 
+	{
 		AquireInrangeLock();
 		OnRemoveInRangeObject(*itr);
 		m_objectsInRange.erase(itr);
@@ -455,7 +455,7 @@ public:
 
 		if( itr == m_objectsInRange.end() )
 			return false;
-		
+
 		AquireInrangeLock();
 		m_objectsInRange.erase( itr );
 		ReleaseInrangeLock();
@@ -510,7 +510,7 @@ public:
 
 	void EventSpellDamage(uint64 Victim, uint32 SpellID, uint32 Damage);
 	void SpellNonMeleeDamageLog(Unit *pVictim, uint32 spellID, uint32 damage, bool allowProc, bool static_damage = false, bool no_remove_auras = false);
-	
+
 	//*****************************************************************************************
 	//* SpellLog packets just to keep the code cleaner and better to read
 	//*****************************************************************************************
@@ -521,7 +521,7 @@ public:
 	//object faction
 	void _setFaction();
 	uint32 _getFaction(){return m_faction->Faction;}
-	
+
 	FactionTemplateDBC *m_faction;
 	FactionDBC *m_factionDBC;
 
@@ -588,7 +588,7 @@ protected:
 
 	/* Main Function called by isInFront(); */
 	bool inArc(float Position1X, float Position1Y, float FOV, float Orientation, float Position2X, float Position2Y );
-	
+
 	LocationVector m_position;
 	LocationVector m_lastMapUpdatePosition;
 	LocationVector m_spawnLocation;
@@ -617,8 +617,8 @@ protected:
 	std::set<Player*> m_inRangePlayers;
 	std::set<Object*> m_oppFactsInRange;
 	std::set<Object*> m_sameFactsInRange;
-   
-  
+
+
 	//! Remove object from map
 	void _RemoveFromMap();
 

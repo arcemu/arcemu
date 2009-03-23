@@ -1767,9 +1767,23 @@ bool ChatHandler::HandleMassSummonCommand(const char* args, WorldSession* m_sess
 	objmgr._playerslock.AcquireReadLock();
 	Player * summoner = m_session->GetPlayer();
 	Player * plr;
-	uint32 c=0;
+	int faction=-1;
 	char Buffer[170];
-	snprintf(Buffer,170,"%s%s Has requested a mass summon of all players. Do not feel obliged to accept the summon, as it is most likely for an event or a test of sorts",MSG_COLOR_GOLD,m_session->GetPlayer()->GetName());
+        if(*args == 'a' || *args == 'A')
+        {
+            faction=0;
+           	snprintf(Buffer,170,"%s%s Has requested a mass summon of all Alliance players. Do not feel obliged to accept the summon, as it is most likely for an event or a test of sorts",MSG_COLOR_GOLD,m_session->GetPlayer()->GetName());
+
+        }
+        else if(*args == 'h' || *args == 'H')
+        {
+            faction=1;
+            snprintf(Buffer,170,"%s%s Has requested a mass summon of all Horde players. Do not feel obliged to accept the summon, as it is most likely for an event or a test of sorts",MSG_COLOR_GOLD,m_session->GetPlayer()->GetName());
+        }
+        else  snprintf(Buffer,170,"%s%s Has requested a mass summon of all players. Do not feel obliged to accept the summon, as it is most likely for an event or a test of sorts",MSG_COLOR_GOLD,m_session->GetPlayer()->GetName());
+
+	uint32 c=0;
+
 	for (itr = objmgr._players.begin(); itr != objmgr._players.end(); itr++)
 	{
 		plr = itr->second;
@@ -1777,8 +1791,17 @@ bool ChatHandler::HandleMassSummonCommand(const char* args, WorldSession* m_sess
 		{
 			//plr->SafeTeleport(summoner->GetMapId(), summoner->GetInstanceID(), summoner->GetPosition());
 			/* let's do this the blizz way */
-			plr->SummonRequest(summoner->GetLowGUID(), summoner->GetZoneId(), summoner->GetMapId(), summoner->GetInstanceID(), summoner->GetPosition());
-			++c;
+			if(faction>-1 && plr->GetTeam() == faction)
+			{
+                plr->SummonRequest(summoner->GetLowGUID(), summoner->GetZoneId(), summoner->GetMapId(), summoner->GetInstanceID(), summoner->GetPosition());
+                ++c;
+			}
+			else if (faction==-1)
+			{
+                plr->SummonRequest(summoner->GetLowGUID(), summoner->GetZoneId(), summoner->GetMapId(), summoner->GetInstanceID(), summoner->GetPosition());
+                ++c;
+            }
+
 		}
 	}
 	sGMLog.writefromsession(m_session, "requested a mass summon of %u players.", c);

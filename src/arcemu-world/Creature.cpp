@@ -49,7 +49,7 @@ Creature::Creature(uint64 guid)
 	TaggerGuid = 0;
 
 	Skinned = false;
-
+    m_isPet = false;
     m_enslaveCount = 0;
 	m_enslaveSpell = 0;
 
