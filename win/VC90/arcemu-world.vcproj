@@ -903,58 +903,6 @@
 			</Filter>
 		</Filter>
 		<Filter
-			Name="GM Support"
-			>
-			<File
-				RelativePath="..\..\src\arcemu-world\GMTicket.cpp"
-				>
-			</File>
-			<Filter
-				Name="GM Commands"
-				>
-				<File
-					RelativePath="..\..\src\arcemu-world\BattlegroundCommands.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\arcemu-world\debugcmds.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\arcemu-world\GMTicketCommands.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\arcemu-world\InstanceCommands.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\arcemu-world\Level0.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\arcemu-world\Level1.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\arcemu-world\Level2.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\arcemu-world\Level3.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\arcemu-world\QuestCommands.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\arcemu-world\RecallCommands.cpp"
-					>
-				</File>
-			</Filter>
-		</Filter>
-		<Filter
 			Name="Launcher"
 			>
 			<File
@@ -1221,6 +1169,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\src\arcemu-world\GMTicket.cpp"
+					>
+				</File>
+				<File
 					RelativePath="..\..\src\arcemu-world\GroupHandler.cpp"
 					>
 				</File>
@@ -1383,6 +1335,50 @@
 			</File>
 			<File
 				RelativePath="..\..\src\arcemu-world\WorldRunnable.h"
+				>
+			</File>
+		</Filter>
+		<Filter
+			Name="GM Commands"
+			>
+			<File
+				RelativePath="..\..\src\arcemu-world\BattlegroundCommands.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\arcemu-world\debugcmds.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\arcemu-world\GMTicketCommands.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\arcemu-world\InstanceCommands.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\arcemu-world\Level0.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\arcemu-world\Level1.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\arcemu-world\Level2.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\arcemu-world\Level3.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\arcemu-world\QuestCommands.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\arcemu-world\RecallCommands.cpp"
 				>
 			</File>
 		</Filter>
