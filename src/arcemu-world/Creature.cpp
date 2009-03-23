@@ -25,6 +25,7 @@
 Creature::Creature(uint64 guid)
 {
 	proto = 0;
+	m_isPet = false;
 	m_valuesCount = UNIT_END;
 	m_objectTypeId = TYPEID_UNIT;
 	m_uint32Values = _fields;
@@ -50,7 +51,6 @@ Creature::Creature(uint64 guid)
 
 	Skinned = false;
 	
-	m_isPet = false;
 	m_enslaveCount = 0;
 	m_enslaveSpell = 0;
 	
