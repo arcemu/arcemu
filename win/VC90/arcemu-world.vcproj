@@ -1070,6 +1070,14 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\arcemu-world\QuestMgr.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\arcemu-world\QuestMgr.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\arcemu-world\ScriptMgr.cpp"
 				>
 			</File>
@@ -1126,18 +1134,6 @@
 				</File>
 				<File
 					RelativePath="..\..\src\arcemu-world\AuctionMgr.h"
-					>
-				</File>
-			</Filter>
-			<Filter
-				Name="Quests"
-				>
-				<File
-					RelativePath="..\..\src\arcemu-world\QuestMgr.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\arcemu-world\QuestMgr.h"
 					>
 				</File>
 			</Filter>
@@ -1333,10 +1329,6 @@
 					>
 				</File>
 			</Filter>
-		</Filter>
-		<Filter
-			Name="Quest, QuestMgr"
-			>
 		</Filter>
 		<Filter
 			Name="Spells"
