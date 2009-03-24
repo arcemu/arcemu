@@ -45,6 +45,7 @@
 	- ACHIEVEMENT_CRITERIA_TYPE_KILL_CREATURE_TYPE
 	- ACHIEVEMENT_CRITERIA_TYPE_USE_ITEM
 	- ACHIEVEMENT_CRITERIA_TYPE_USE_GAMEOBJECT
+	- ACHIEVEMENT_CRITERIA_TYPE_BUY_BANK_SLOT
 	- Realm-First achievements (most)
 	- Reward Titles
 	- Reward Spells
@@ -150,6 +151,7 @@ bool SaveAchievementProgressToDB(const CriteriaProgress* c)
 		case ACHIEVEMENT_CRITERIA_TYPE_NUMBER_OF_MOUNTS:
 		case ACHIEVEMENT_CRITERIA_TYPE_REACH_SKILL_LEVEL:
 		case ACHIEVEMENT_CRITERIA_TYPE_LEARN_SKILL_LEVEL:
+		case ACHIEVEMENT_CRITERIA_TYPE_BUY_BANK_SLOT:
 			return false;
 		default:
 			break;
@@ -964,6 +966,9 @@ void AchievementMgr::UpdateAchievementCriteria(AchievementCriteriaTypes type, in
 				if(achievementCriteria->use_gameobject.goEntry == miscvalue1)
 					UpdateCriteriaProgress(achievementCriteria, 1);
 				break;
+			case ACHIEVEMENT_CRITERIA_TYPE_BUY_BANK_SLOT:
+				UpdateCriteriaProgress(achievementCriteria, miscvalue1);
+				break;
 			//End of Achievement List
 			default:
 				return;
@@ -1093,6 +1098,9 @@ void AchievementMgr::UpdateAchievementCriteria(AchievementCriteriaTypes type)
 		case ACHIEVEMENT_CRITERIA_TYPE_LEARN_SKILL_LEVEL:
 			SetCriteriaProgress(achievementCriteria, GetPlayer()->_GetSkillLineMax(achievementCriteria->learn_skill_level.skillID)/75);
 			break;
+		case ACHIEVEMENT_CRITERIA_TYPE_BUY_BANK_SLOT:
+			SetCriteriaProgress(achievementCriteria, (uint8)(GetPlayer()->GetUInt32Value(PLAYER_BYTES_2) >> 16));
+			break;
 		//End of Achievement List
 		default:
 			break;
@@ -1207,6 +1215,8 @@ bool AchievementMgr::IsCompletedCriteria(AchievementCriteriaEntry const* achieve
 			return progresscounter >= achievementCriteria->use_item.itemCount;
 		case ACHIEVEMENT_CRITERIA_TYPE_USE_GAMEOBJECT:
 			return progresscounter >= achievementCriteria->use_gameobject.useCount;
+		case ACHIEVEMENT_CRITERIA_TYPE_BUY_BANK_SLOT:
+			return progresscounter >= achievementCriteria->buy_bank_slot.numberOfSlots;
 		case ACHIEVEMENT_CRITERIA_TYPE_COMPLETE_ACHIEVEMENT:
 			return m_completedAchievements.find(achievementCriteria->complete_achievement.linkedAchievement) != m_completedAchievements.end();
 		//End of Achievement List

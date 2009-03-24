@@ -1881,6 +1881,7 @@ void WorldSession::HandleBuyBankSlotOpcode(WorldPacket& recvPacket)
 	{
 	   _player->SetUInt32Value(PLAYER_BYTES_2, (bytes&0xff00ffff) | ((slots+1) << 16) );
 	   _player->ModUnsigned32Value(PLAYER_FIELD_COINAGE, -price);
+		_player->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_BUY_BANK_SLOT, 1, 0, 0);
 	}
 }
 
