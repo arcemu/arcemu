@@ -245,8 +245,6 @@ void WorldSession::HandleSpellClick(WorldPacket& recvPacket)
 void WorldSession::HandleCastSpellOpcode(WorldPacket& recvPacket)
 {
 	if(!_player->IsInWorld()) return;
-	if(_player->getDeathState()==CORPSE)
-		return;
 
 	uint32 spellId;
 	uint8 cn, unk; //Alice : Added to 3.0.2
@@ -261,6 +259,9 @@ void WorldSession::HandleCastSpellOpcode(WorldPacket& recvPacket)
 		return;
 	}
 
+	if( !_player->IsAlive() && _player->GetShapeShift() != FORM_SPIRITOFREDEMPTION && spellId != 7355)//They're dead and not in spirit of redemption. 7355 (stuck) can be cast while dead.
+		return;	
+	
 	sLog.outDetail("WORLD: got cast spell packet, spellId - %i (%s), data length = %i",
 		spellId, spellInfo->Name, recvPacket.size());
 

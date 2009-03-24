@@ -247,7 +247,7 @@ void WorldSession::HandleMovementOpcodes( WorldPacket & recv_data )
 {
 	bool moved = true;
 
-	if(!_player->IsInWorld() || _player->m_uint32Values[UNIT_FIELD_CHARMEDBY] || _player->GetPlayerStatus() == TRANSFER_PENDING || _player->GetTaxiState())
+	if(!_player->IsInWorld() || _player->m_uint32Values[UNIT_FIELD_CHARMEDBY] || _player->GetPlayerStatus() == TRANSFER_PENDING || _player->GetTaxiState() || _player->getDeathState() == JUST_DIED)
 		return;
 
 	// spell cancel on movement, for now only fishing is added
