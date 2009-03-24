@@ -2000,6 +2000,24 @@ void Aura::SpellAuraDummy(bool apply)
 				return;
 			pts.procChance = GetSpellProto()->procChance;
 			pts.procFlags = GetSpellProto()->procFlags;
+            pts.procCharges = GetSpellProto()->procCharges;
+            pts.LastTrigger = 0;
+            pts.deleted = false;
+            m_target->m_procSpells.push_front(pts);
+            }
+            else
+            {
+                for(std::list<struct ProcTriggerSpell>::iterator itr = m_target->m_procSpells.begin();itr != m_target->m_procSpells.end();itr++)
+                {
+                    if(itr->origId == GetSpellId() && itr->caster == m_casterGuid && !itr->deleted)
+                    {
+                        itr->deleted = true;
+                        break;
+                    }
+                }
+
+            }
+
 			/* if(apply)
 			{
 			ProcTriggerSpell pts;
