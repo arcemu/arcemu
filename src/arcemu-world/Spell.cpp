@@ -4583,38 +4583,6 @@ exit:
 
     }
 
-	else if( GetProto()->NameHash == SPELL_HASH_REND) // 0.05201 * ((MWB + mwb) / 2 + AP / 14 * MWS)
-	{
-		 if( p_caster )
-		 {
-			  Item *mainHand;
-			    if(p_caster->GetItemInterface())
-				{
-					  mainHand = p_caster->GetItemInterface()->GetInventoryItem(EQUIPMENT_SLOT_MAINHAND);
-					     if(mainHand && mainHand->GetProto() && mainHand->GetDurability() != 0)
-						 {
-							     float avgWeaponDmg = (mainHand->GetProto()->Damage[0].Max + mainHand->GetProto()->Damage[0].Min) / 2 + p_caster->GetAP() * mainHand->GetProto()->Delay / 14000;
-								  value += float2int32(0.05201f * avgWeaponDmg / 7);
-						 }
-				}
-		 }
-	}
-    else if( GetProto()->NameHash == SPELL_HASH_SLAM )
-    {
-        if( p_caster != NULL )
-        {
-            Item *it;
-            if(p_caster->GetItemInterface())
-            {
-                it = p_caster->GetItemInterface()->GetInventoryItem(EQUIPMENT_SLOT_MAINHAND);
-                if(it)
-                {
-                    float weapondmg = ( it->GetProto()->Damage[0].Max + it->GetProto()->Damage[0].Min ) / 2;
-                    value += float2int32( GetProto()->EffectBasePoints[0] + weapondmg );
-                }
-            }
-        }
-    }
 
 	else if( GetProto()->NameHash == SPELL_HASH_EVISCERATE ) //Eviscerate
 	{
