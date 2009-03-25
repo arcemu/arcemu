@@ -749,7 +749,7 @@ void Pet::GiveXP( uint32 xp )
 	if( m_Owner || !Summon )
 	{
 
-		if(!getLevel() >= m_Owner->getLevel())
+		if(getLevel() < m_Owner->getLevel())
 		{
 			xp += m_uint32Values[UNIT_FIELD_PETEXPERIENCE];
 			uint32 nxp = m_uint32Values[UNIT_FIELD_PETNEXTLEVELEXP];
