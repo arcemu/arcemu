@@ -1401,12 +1401,14 @@ void World::Rehash(bool load)
 	m_bgSet_SOTA_MAX = Config.MainConfig.GetIntDefault("Battleground", "SOTA_MAX", 15);
 	
 
-	// damagecap settings
-	maxdmg_enable = Config.MainConfig.GetBoolDefault("MaxDamage", "Enable", true);
-	maxdmg_autoattack = (uint32)Config.MainConfig.GetIntDefault("MaxDamage", "AutoAttack", 10000);
-	maxdmg_spell = (uint32)Config.MainConfig.GetIntDefault("MaxDamage", "Spell", 30000);
-	maxdmg_disconnect = (uint32)Config.MainConfig.GetIntDefault("MaxDamage", "Disconnect", 500000);
-	maxdmg_broadcast = Config.MainConfig.GetBoolDefault("MaxDamage", "BroadcastGMs", true);
+	// damage/hp/mp cap settings
+	m_limits.enable = Config.MainConfig.GetBoolDefault("Limits", "Enable", true);
+	m_limits.autoattackDamageCap = (uint32)Config.MainConfig.GetIntDefault("Limits", "AutoAttackDmg", 10000);
+	m_limits.spellDamageCap = (uint32)Config.MainConfig.GetIntDefault("Limits", "SpellDmg", 30000);
+	m_limits.healthCap = (uint32)Config.MainConfig.GetIntDefault("Limits", "Health", 80000);
+	m_limits.manaCap = (uint32)Config.MainConfig.GetIntDefault("Limits", "Mana", 80000);
+	m_limits.disconnect = Config.MainConfig.GetBoolDefault("Limits", "Disconnect", false);
+	m_limits.broadcast = Config.MainConfig.GetBoolDefault("Limits", "BroadcastGMs", true);
 
 	if(instance_DailyHeroicInstanceResetHour < 0)
 		instance_DailyHeroicInstanceResetHour = 0;

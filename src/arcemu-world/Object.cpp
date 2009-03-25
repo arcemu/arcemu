@@ -1769,15 +1769,15 @@ void Object::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
 	
 	if( damage > 14000 && this != pVictim && this->IsPlayer() && !static_cast< Player* >(this)->GetSession()->HasPermissions())
 	{
-		if(spellId && sWorld.maxdmg_spell>0)
+		if(spellId && sWorld.m_limits.spellDamageCap > 0)
 		{
-			if((damage > sWorld.maxdmg_spell) && this!=pVictim && this->IsPlayer() && !((Player*)this)->GetSession()->HasPermissions())
+			if((damage > sWorld.m_limits.spellDamageCap) && this!=pVictim && this->IsPlayer() && !((Player*)this)->GetSession()->HasPermissions())
 			{
 				SpellEntry* spellInfo = dbcSpell.LookupEntryForced(spellId);
 				char dmglog[256];
 				snprintf(dmglog, 256, "Dealt %u damage with spell %u ( %s )", damage, spellId, (spellInfo != NULL) ? spellInfo->Name : "ERROR (NULL SPELL)");
 				sCheatLog.writefromsession(((Player*)this)->GetSession(),dmglog);
-				if(sWorld.maxdmg_broadcast) // send info to online GM
+				if(sWorld.m_limits.broadcast) // send info to online GM
 				{
 					string gm_ann = MSG_COLOR_GREEN;
 					gm_ann += "|Hplayer:";
@@ -1789,24 +1789,24 @@ void Object::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
 					gm_ann += dmglog;
 					sWorld.SendGMWorldText(gm_ann.c_str());
 				}
-				if((sWorld.maxdmg_disconnect>0) && (damage > sWorld.maxdmg_disconnect))
+				if(sWorld.m_limits.disconnect)
 				{
 					((Player*)this)->GetSession()->Disconnect();
 				}
-				else // not enough dmg to disconnect, we'll just set it to the cap. it's been logged and gms have been notified (if configured)
+				else // no disconnect, we'll just set it to the cap. it's been logged and gms have been notified (if configured)
 				{
-					damage = sWorld.maxdmg_spell;
+					damage = sWorld.m_limits.spellDamageCap;
 				}
 			}
 		}
 		else // !spellId
 		{
-			if((sWorld.maxdmg_autoattack>0) && (damage > sWorld.maxdmg_autoattack) && (this!=pVictim) && (this->IsPlayer()) && !((Player*)this)->GetSession()->HasPermissions())
+			if((sWorld.m_limits.autoattackDamageCap > 0) && (damage > sWorld.m_limits.autoattackDamageCap) && (this!=pVictim) && (this->IsPlayer()) && !((Player*)this)->GetSession()->HasPermissions())
 			{
 				char dmglog[64];
 				snprintf(dmglog, 64, "Dealt %u damage with Auto Attack", damage);
 				sCheatLog.writefromsession(((Player*)this)->GetSession(),dmglog);
-				if(sWorld.maxdmg_broadcast) // send info to GM
+				if(sWorld.m_limits.broadcast) // send info to GM
 				{
 					string gm_ann = MSG_COLOR_GREEN;
 					gm_ann += "|Hplayer:";
@@ -1818,13 +1818,13 @@ void Object::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
 					gm_ann += dmglog;
 					sWorld.SendGMWorldText(gm_ann.c_str());
 				}
-				if((sWorld.maxdmg_disconnect>0) && (damage > sWorld.maxdmg_disconnect))
+				if(sWorld.m_limits.disconnect)
 				{
 					((Player*)this)->GetSession()->Disconnect();
 				}
-				else // not enough dmg to disconnect, we'll just set it to the cap. it's been logged and gms have been notified (if configured)
+				else // no disconnect, we'll just set it to the cap. it's been logged and gms have been notified (if configured)
 				{
-					damage = sWorld.maxdmg_autoattack;
+					damage = sWorld.m_limits.autoattackDamageCap;
 				}
 			}
 		}

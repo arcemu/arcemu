@@ -5433,21 +5433,43 @@ void Player::UpdateStats()
 		manadelta -= lvlinfo->Stat[3] * 15;
 	}
 
-	int32 hp = GetUInt32Value( UNIT_FIELD_BASE_HEALTH );
+	uint32 hp = GetUInt32Value( UNIT_FIELD_BASE_HEALTH );
 
 	int32 stat_bonus = GetUInt32Value( UNIT_FIELD_POSSTAT2 ) - GetUInt32Value( UNIT_FIELD_NEGSTAT2 );
 	if ( stat_bonus < 0 )
 		stat_bonus = 0; // Avoid of having negative health
 	int32 bonus = stat_bonus * 10 + m_healthfromspell + m_healthfromitems;
 
-	int32 res = hp + bonus + hpdelta;
-	int32 oldmaxhp = GetUInt32Value( UNIT_FIELD_MAXHEALTH );
+	uint32 res = hp + bonus + hpdelta;
+	uint32 oldmaxhp = GetUInt32Value( UNIT_FIELD_MAXHEALTH );
 
-	if( res < hp ) res = hp;
-	if ( res > 50000 && GetSession()->GetPermissionCount() <= 0 ) //hacker?
+	if( res < hp )
+		res = hp;
+	if((sWorld.m_limits.healthCap > 0) && (res > sWorld.m_limits.healthCap) && GetSession()->GetPermissionCount() <= 0 ) //hacker?
 	{
-		sCheatLog.writefromsession(GetSession(), "has over 50k hp (%i)",res);
-		GetSession()->Disconnect();
+		char logmsg[256];
+		snprintf(logmsg, 256, "has over %lu health (%i)", sWorld.m_limits.healthCap, res);
+		sCheatLog.writefromsession(GetSession(), logmsg);
+		if(sWorld.m_limits.broadcast) // send info to online GM
+		{
+			string gm_ann = MSG_COLOR_GREEN;
+			gm_ann += "|Hplayer:";
+			gm_ann += GetName();
+			gm_ann += "|h[";
+			gm_ann += GetName();
+			gm_ann += "]|h: ";
+			gm_ann += MSG_COLOR_YELLOW;
+			gm_ann += logmsg;
+			sWorld.SendGMWorldText(gm_ann.c_str());
+		}
+		if(sWorld.m_limits.disconnect)
+		{
+			GetSession()->Disconnect();
+		}
+		else // no disconnect, set it to the cap instead
+		{
+			res = sWorld.m_limits.healthCap;
+		}
 	}
 	SetUInt32Value( UNIT_FIELD_MAXHEALTH, res );
 
@@ -5462,7 +5484,7 @@ void Player::UpdateStats()
 	if( cl != WARRIOR && cl != ROGUE && cl != DEATHKNIGHT)
 	{
 		// MP
-		int32 mana = GetUInt32Value( UNIT_FIELD_BASE_MANA );
+		uint32 mana = GetUInt32Value( UNIT_FIELD_BASE_MANA );
 
 		stat_bonus = GetUInt32Value( UNIT_FIELD_POSSTAT3 ) - GetUInt32Value( UNIT_FIELD_NEGSTAT3 );
 		if ( stat_bonus < 0 )
@@ -5470,7 +5492,34 @@ void Player::UpdateStats()
 		bonus = stat_bonus * 15 + m_manafromspell + m_manafromitems ;
 
 		res = mana + bonus + manadelta;
-		if( res < mana )res = mana;
+		if( res < mana )
+			res = mana;	
+		if((sWorld.m_limits.manaCap > 0) && (res > sWorld.m_limits.manaCap) && GetSession()->GetPermissionCount() <= 0 ) //hacker?
+		{
+			char logmsg[256];
+			snprintf(logmsg, 256, "has over %lu mana (%i)", sWorld.m_limits.manaCap, res);
+			sCheatLog.writefromsession(GetSession(), logmsg);
+			if(sWorld.m_limits.broadcast) // send info to online GM
+			{
+				string gm_ann = MSG_COLOR_GREEN;
+				gm_ann += "|Hplayer:";
+				gm_ann += GetName();
+				gm_ann += "|h[";
+				gm_ann += GetName();
+				gm_ann += "]|h: ";
+				gm_ann += MSG_COLOR_YELLOW;
+				gm_ann += logmsg;
+				sWorld.SendGMWorldText(gm_ann.c_str());
+			}
+			if(sWorld.m_limits.disconnect)
+			{
+				GetSession()->Disconnect();
+			}
+			else // no disconnect, set it to the cap instead
+			{
+				res = sWorld.m_limits.manaCap;
+			}
+		}
 		SetUInt32Value( UNIT_FIELD_MAXPOWER1, res );
 
 		if((int32)GetUInt32Value(UNIT_FIELD_POWER1)>res)

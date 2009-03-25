@@ -517,12 +517,17 @@ public:
 	uint32 m_bgSet_SOTA_MIN;
 	uint32 m_bgSet_SOTA_MAX;
 
-	// damagecap settings
-	bool   maxdmg_enable;
-	uint32 maxdmg_autoattack;
-	uint32 maxdmg_spell;
-	uint32 maxdmg_disconnect;
-	bool   maxdmg_broadcast;
+	// damage/hp/mp cap settings
+	struct
+	{
+		bool enable;
+		uint32 autoattackDamageCap;
+		uint32 spellDamageCap;
+		uint32 healthCap;
+		uint32 manaCap;
+		bool disconnect;
+		bool broadcast;
+	} m_limits;
 
 	int GMTTimeZone;
 
