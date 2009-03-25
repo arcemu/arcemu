@@ -521,7 +521,12 @@ void ObjectMgr::LoadPlayerCreateInfo()
 	do
 	{
 		Field *fields = result->Fetch();
-
+		if(result->GetFieldCount() != 24)
+		{
+			Log.Error("MySQL","Wrong field count in table playercreateinfo (got %lu, need 24)", result->GetFieldCount());
+			delete result;
+			return;
+		}
 		pPlayerCreateInfo = new PlayerCreateInfo;
 
 		pPlayerCreateInfo->index = fields[0].GetUInt8();
