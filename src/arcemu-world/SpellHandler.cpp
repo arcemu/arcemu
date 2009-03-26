@@ -232,6 +232,30 @@ void WorldSession::HandleSpellClick(WorldPacket& recvPacket)
 	if( target_unit->GetUInt32Value( OBJECT_FIELD_ENTRY ) == 29929 )
 		cast_spell_id = 55531; // Mechano-Hog
 
+	if( target_unit->HasAura(59907) )
+	{
+		if( target_unit->GetUInt32Value( OBJECT_FIELD_ENTRY ) == 31897 )
+			cast_spell_id = 7001; // Lightwell Rank 1
+		if( target_unit->GetUInt32Value( OBJECT_FIELD_ENTRY ) == 31896 )
+			cast_spell_id = 27873; // Lightwell Rank 2
+		if( target_unit->GetUInt32Value( OBJECT_FIELD_ENTRY ) == 31895 )
+			cast_spell_id = 27874; // Lightwell Rank 3
+		if( target_unit->GetUInt32Value( OBJECT_FIELD_ENTRY ) == 31894 )
+			cast_spell_id = 28276; // Lightwell Rank 4
+		if( target_unit->GetUInt32Value( OBJECT_FIELD_ENTRY ) == 31893 )
+			cast_spell_id = 48084; // Lightwell Rank 5
+		if( target_unit->GetUInt32Value( OBJECT_FIELD_ENTRY ) == 31883 )
+			cast_spell_id = 48085; // Lightwell Rank 6
+
+		target_unit->CastSpell(_player, cast_spell_id, true);
+
+		target_unit->RemoveAura(59907);
+		if( !target_unit->HasAura(59907) )
+			if(target_unit->IsCreature())
+				static_cast<Creature*>(target_unit)->Despawn(0,0);
+
+		return;
+	}
 	if( cast_spell_id == 0 )
 		return;
 
@@ -260,8 +284,8 @@ void WorldSession::HandleCastSpellOpcode(WorldPacket& recvPacket)
 	}
 
 	if( !_player->isAlive() && _player->GetShapeShift() != FORM_SPIRITOFREDEMPTION && spellId != 7355)//They're dead and not in spirit of redemption. 7355 (stuck) can be cast while dead.
-		return;
-
+		return;	
+	
 	sLog.outDetail("WORLD: got cast spell packet, spellId - %i (%s), data length = %i",
 		spellId, spellInfo->Name, recvPacket.size());
 

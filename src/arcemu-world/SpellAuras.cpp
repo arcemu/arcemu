@@ -2336,6 +2336,22 @@ void Aura::SpellAuraDummy(bool apply)
 			if(caster && caster->IsPlayer())
 				static_cast< Player* >(caster)->SetTriggerChill(12494,mod->m_amount, false);
 		}break; //brain freeze
+	case 66:
+		{
+			// mage - invisibility
+			if( apply && !this->IsInterrupted() )
+				m_target->CastSpell( m_target, 32612, true );
+		}break;
+
+	case 32612:
+		{
+			// mage - invisibility override
+			if( p_target != NULL )
+			{
+				p_target->m_mageInvisibility = apply;
+				p_target->UpdateVisibility();
+			}
+		}break;
 	case 44543:
 	case 44545:
 		{

@@ -228,6 +228,7 @@ Unit::Unit()
 	m_invisibility = 0;
 	m_invisible = false;
 	m_invisFlag = INVIS_FLAG_NORMAL;
+	m_mageInvisibility = false;
 
 	for(i = 0; i < INVIS_FLAG_TOTAL; i++)
 	{

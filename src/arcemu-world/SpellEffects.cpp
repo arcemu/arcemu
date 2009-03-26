@@ -3101,7 +3101,8 @@ void Spell::SpellEffectSummon(uint32 i)
 			pCreature->SetUInt64Value(UNIT_FIELD_CREATEDBY, p_caster->GetGUID());
  			u_caster->SetUInt64Value(UNIT_FIELD_SUMMON, pCreature->GetGUID());
 
-			if ( m_spellInfo->EffectMiscValue[i] == 19668 ) //shadowfiend
+			uint32 MiscValue = m_spellInfo->EffectMiscValue[i];
+			if ( MiscValue == 19668 ) //shadowfiend
 			{
 				float parent_bonus = (float)(p_caster->GetDamageDoneMod(SCHOOL_SHADOW)*0.065f);
 				pCreature->SetFloatValue(UNIT_FIELD_MINDAMAGE, pCreature->GetFloatValue(UNIT_FIELD_MINDAMAGE) + parent_bonus);
@@ -3115,7 +3116,7 @@ void Spell::SpellEffectSummon(uint32 i)
 					pCreature->GetAIInterface()->SetNextTarget( uTarget );
 				}
 			}
-			if ( m_spellInfo->EffectMiscValue[i] == 24207 ) //Army of the dead ghoul.
+			if ( MiscValue == 24207 ) //Army of the dead ghoul.
 			{
 				float parent_bonus = (float)(p_caster->GetDamageDoneMod(SCHOOL_NORMAL)*0.04f);
 				float pi_rand = ((int32)(rand()-RAND_MAX*0.5f)%15707)/10000.0f; // should be random enough.
@@ -3129,6 +3130,13 @@ void Spell::SpellEffectSummon(uint32 i)
 				z = u_caster->GetPositionZ();
 				pCreature->SetPosition(x,y,z,0.0f,true);
 				pCreature->CastSpell(pCreature,50142,true);
+			}
+
+			if ( MiscValue == 31893 || MiscValue == 31894 || MiscValue == 31895 || MiscValue == 31896 || MiscValue == 31897 || MiscValue == 31883) //Light wells!
+			{
+				pCreature->CastSpell(pCreature,59907,true);
+				sEventMgr.AddEvent(pCreature, &Creature::SafeDelete, EVENT_CREATURE_REMOVE_CORPSE, 180000, 1, 0);
+				break;
 			}
 			pCreature->PushToWorld(u_caster->GetMapMgr());
 
