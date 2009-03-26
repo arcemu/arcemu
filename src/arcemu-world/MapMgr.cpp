@@ -1798,16 +1798,16 @@ void MapMgr::_PerformObjectDuties()
 		{
 			ptr = *itr;
 			++itr;
-//			if (ptr) //Zack : we never set this to null. We simply remove it from list
-			ptr->Update(difftime);
+			if(ptr != NULL)
+				ptr->Update(difftime);
 		}
 
 		for(; it2 != m_PetStorage.end();)
 		{
 			ptr2 = it2->second;
 			++it2;
-
-			ptr2->Update(difftime);
+			if(ptr2 != NULL)
+				ptr2->Update(difftime);
 		}
 	}
 
@@ -1837,7 +1837,8 @@ void MapMgr::_PerformObjectDuties()
 		{
 			ptr = *itr;
 			++itr;
-			ptr->Update( difftime );
+			if(ptr != NULL)
+				ptr->Update( difftime );
 		}
 
 		lastGameobjectUpdate = mstime;

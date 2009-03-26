@@ -255,7 +255,7 @@ void AchievementMgr::SaveToDB()
 			if (ss.str().length() >= 16000)
 			{
 				// SQL query length is limited to 16384 characters
-				CharacterDatabase.Query( ss.str().c_str() );
+				CharacterDatabase.Execute( ss.str().c_str() );
 				ss.str("");
 				ss << "REPLACE INTO character_achievement (guid, achievement, date) VALUES ";
 				first = true;
@@ -266,7 +266,7 @@ void AchievementMgr::SaveToDB()
 				first = false;
 			ss << "("<<GetPlayer()->GetUInt32Value(OBJECT_FIELD_GUID) << ", " << iter->first << ", " << iter->second << ")";
 		}
-		CharacterDatabase.Query( ss.str().c_str() );
+		CharacterDatabase.Execute( ss.str().c_str() );
 	}
 
 	if(!m_criteriaProgress.empty())
@@ -281,7 +281,7 @@ void AchievementMgr::SaveToDB()
 				if (ss.str().length() >= 16000)
 				{
 					// SQL query length is limited to 16384 characters
-					CharacterDatabase.Query( ss.str().c_str() );
+					CharacterDatabase.Execute( ss.str().c_str() );
 					ss.str("");
 					ss << "REPLACE INTO character_achievement_progress (guid, criteria, counter, date) VALUES ";
 					first = true;
@@ -294,7 +294,7 @@ void AchievementMgr::SaveToDB()
 			}
 		}
 		if(!first) // don't execute query if there's no entries to save
-			CharacterDatabase.Query( ss.str().c_str() );
+			CharacterDatabase.Execute( ss.str().c_str() );
 	}
 }
 
@@ -1759,13 +1759,13 @@ void AchievementMgr::GMResetAchievement(int32 achievementID)
 	{
 		m_completedAchievements.clear();
 		ss << "DELETE FROM character_achievement WHERE guid = " << m_player->GetLowGUID();
-		CharacterDatabase.Query( ss.str().c_str() );
+		CharacterDatabase.Execute( ss.str().c_str() );
 	}
 	else // reset a single achievement
 	{
 		m_completedAchievements.erase(achievementID);
 		ss << "DELETE FROM character_achievement WHERE guid = " << m_player->GetLowGUID() << " AND achievement = " << achievementID;
-		CharacterDatabase.Query( ss.str().c_str() );
+		CharacterDatabase.Execute( ss.str().c_str() );
 	}
 }
 
@@ -1778,13 +1778,13 @@ void AchievementMgr::GMResetCriteria(int32 criteriaID)
 			delete iter->second;
 		m_criteriaProgress.clear();
 		ss << "DELETE FROM character_achievement_progress WHERE guid = " << m_player->GetLowGUID();
-		CharacterDatabase.Query( ss.str().c_str() );
+		CharacterDatabase.Execute( ss.str().c_str() );
 	}
 	else // reset a single achievement criteria
 	{
 		m_criteriaProgress.erase(criteriaID);
 		ss << "DELETE FROM character_achievement_progress WHERE guid = " << m_player->GetLowGUID() << " AND criteria = " << criteriaID;
-		CharacterDatabase.Query( ss.str().c_str() );
+		CharacterDatabase.Execute( ss.str().c_str() );
 	}
 	CheckAllAchievementCriteria();
 }
