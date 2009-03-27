@@ -51,22 +51,6 @@ void ApplyNormalFixes()
 	uint32 cnt = dbcSpell.GetNumRows();
 	uint32 effect;
 	uint32 result;
-	uint32 All_Seal_Groups_Combined=0;
-	// Relation Groups
-
-	uint32 group_relation_paladin_sanctified_light = 0;
-	uint32 group_relation_shaman_enhancing_totems = 0;
-	uint32 group_relation_shaman_restorative_totems = 0;
-	uint32 group_relation_shaman_totems = 0;
-	uint32 group_relation_shaman_lightning = 0;
-	uint32 group_relation_shaman_shock = 0;
-	uint32 group_relation_shaman_mental_quickness = 0;
-	uint32 group_relation_rogue_elusiveness = 0;
-	uint32 group_relation_rogue_poisons = 0;
-	uint32 group_relation_rogue_find_weakness = 0;
-	uint32 group_relation_rogue_shadow_step = 0;
-	uint32 group_relation_rogue_lethality = 0;
-
 
 	map<uint32, uint32> talentSpells;
 	map<uint32,uint32>::iterator talentSpellIterator;
@@ -1298,262 +1282,14 @@ void ApplyNormalFixes()
 
 		// Insert shaman spell fixes here
 	
-
-
-#ifdef NEW_PROCFLAGS
-
-
-
-
-	//Shaman - Healing Focus
-	sp = dbcSpell.LookupEntryForced( 16181 );
-	if( sp != NULL )
-		sp->EffectSpellGroupRelation[0] =  64 | 128 | 256;
-	sp = dbcSpell.LookupEntryForced( 16230 );
-	if( sp != NULL )
-		sp->EffectSpellGroupRelation[0] =  64 | 128 | 256;
-	sp = dbcSpell.LookupEntryForced( 16232 );
-	if( sp != NULL )
-		sp->EffectSpellGroupRelation[0] =  64 | 128 | 256;
-	sp = dbcSpell.LookupEntryForced( 16233 );
-	if( sp != NULL )
-		sp->EffectSpellGroupRelation[0] =  64 | 128 | 256;
-	sp = dbcSpell.LookupEntryForced( 16234 );
-	if( sp != NULL )
-		sp->EffectSpellGroupRelation[0] =  64 | 128 | 256;
-
-
-	//shaman - Tidal focus . Add more heal spells here if i forgot any :P
-	sp = dbcSpell.LookupEntryForced( 16179 );
-	if( sp != NULL )
-		sp->EffectSpellGroupRelation[0] = 64 | 128 | 256;
-	sp = dbcSpell.LookupEntryForced( 16214 );
-	if( sp != NULL )
-		sp->EffectSpellGroupRelation[0] = 64 | 128 | 256;
-	sp = dbcSpell.LookupEntryForced( 16215 );
-	if( sp != NULL )
-		sp->EffectSpellGroupRelation[0] = 64 | 128 | 256;
-	sp = dbcSpell.LookupEntryForced( 16216 );
-	if( sp != NULL )
-		sp->EffectSpellGroupRelation[0] = 64 | 128 | 256;
-	sp = dbcSpell.LookupEntryForced( 16217 );
-	if( sp != NULL )
-		sp->EffectSpellGroupRelation[0] = 64 | 128 | 256;
-
-	//shaman - Earth's Grasp
-	sp = dbcSpell.LookupEntryForced( 16130 );
-	if( sp != NULL ){
-		sp->EffectSpellGroupRelation[0] = 0x8;
-		sp->EffectSpellGroupRelation_high[1] = 0x1;
-	}
-	sp = dbcSpell.LookupEntryForced( 16043 );
-	if( sp != NULL ){
-		sp->EffectSpellGroupRelation[0] = 0x8;
-		sp->EffectSpellGroupRelation_high[1] = 0x1;
-	}
-
-	//shaman - Healing Grace
-	sp = dbcSpell.LookupEntryForced( 29191 );
-	if( sp != NULL ){
-		sp->EffectSpellGroupRelation[0] = 64 | 128 | 256;
-		sp->EffectSpellGroupRelation[1] = 0xFFFFFFFF; // all spells
-		sp->EffectSpellGroupRelation_high[1] = 0xFFFFFFFF; // all spells
-	}
-	sp = dbcSpell.LookupEntryForced( 29189 );
-	if( sp != NULL ){
-		sp->EffectSpellGroupRelation[0] = 64 | 128 | 256;
-		sp->EffectSpellGroupRelation[1] = 0xFFFFFFFF; // all spells
-		sp->EffectSpellGroupRelation_high[1] = 0xFFFFFFFF; // all spells
-	}
-	sp = dbcSpell.LookupEntryForced( 29187 );
-	if( sp != NULL ){
-		sp->EffectSpellGroupRelation[0] = 64 | 128 | 256;
-		sp->EffectSpellGroupRelation[1] = 0xFFFFFFFF; // all spells
-		sp->EffectSpellGroupRelation_high[1] = 0xFFFFFFFF; // all spells
-	}
-
-	//shaman - Tidal Mastery
-	sp = dbcSpell.LookupEntryForced( 16221 );
-	if( sp != NULL )
-		sp->EffectSpellGroupRelation[0] = 451;
-	sp = dbcSpell.LookupEntryForced( 16220 );
-	if( sp != NULL )
-		sp->EffectSpellGroupRelation[0] = 451;
-	sp = dbcSpell.LookupEntryForced( 16219 );
-	if( sp != NULL )
-		sp->EffectSpellGroupRelation[0] = 451;
-	sp = dbcSpell.LookupEntryForced( 16218 );
-	if( sp != NULL )
-		sp->EffectSpellGroupRelation[0] = 451;
-	sp = dbcSpell.LookupEntryForced( 16217 );
-	if( sp != NULL )
-		sp->EffectSpellGroupRelation[0] = 451;
-
-	//shaman - Improved Chain Heal
-	sp = dbcSpell.LookupEntryForced( 30873 );
-	if( sp != NULL ){
-		sp->EffectSpellGroupRelation[0] = 256;
-		sp->EffectDieSides[0] = 0;
-	}
-	sp = dbcSpell.LookupEntryForced( 30872 );
-	if( sp != NULL ){
-		sp->EffectSpellGroupRelation[0] = 256;
-		sp->EffectDieSides[0] = 0;
-	}
-	// Shaman - Call of Flame
-	sp = dbcSpell.LookupEntryForced( 16038 );
-	if( sp != NULL )
-		sp->EffectSpellGroupRelation[0] = 0x40000000;
-	sp = dbcSpell.LookupEntryForced( 16160 );
-	if( sp != NULL )
-		sp->EffectSpellGroupRelation[0] = 0x40000000;
-	sp = dbcSpell.LookupEntryForced( 16161 );
-	if( sp != NULL )
-		sp->EffectSpellGroupRelation[0] = 0x40000000;
-
-		//shaman ( grouping ) Mental Quickness (missing 18 spells which have no grouping)
-	group_relation_shaman_mental_quickness = 0x00000008 | 0x00000010 | 0x00000200 | 0x00000400 | 0x00080000 | 0x00100000 | 0x00400000 | 0x20000000 | 0x10000000 | 0x80000000;
-
-	//shaman - Mental Quickness
-	sp = dbcSpell.LookupEntryForced( 30812 );
-	if( sp != NULL )
-		sp->EffectSpellGroupRelation[0] = group_relation_shaman_mental_quickness;
-	sp = dbcSpell.LookupEntryForced( 30813 );
-	if( sp != NULL )
-		sp->EffectSpellGroupRelation[0] = group_relation_shaman_mental_quickness;
-	sp = dbcSpell.LookupEntryForced( 30814 );
-	if( sp != NULL )
-		sp->EffectSpellGroupRelation[0] = group_relation_shaman_mental_quickness;
-
-	//shaman ( grouping ) Totems
-	group_relation_shaman_totems |= 0x00000008 | 0x00000010 | 0x00001000 | 0x00080000 | 0x20000000; //these are only selected flag since some totems contain more then 1 flag
-
-	//shaman - Totemic focus
-	sp = dbcSpell.LookupEntryForced( 16173 );
-	if( sp != NULL )
-		sp->EffectSpellGroupRelation[0] = group_relation_shaman_totems;
-	sp = dbcSpell.LookupEntryForced( 16222 );
-	if( sp != NULL )
-		sp->EffectSpellGroupRelation[0] = group_relation_shaman_totems;
-	sp = dbcSpell.LookupEntryForced( 16223 );
-	if( sp != NULL )
-		sp->EffectSpellGroupRelation[0] = group_relation_shaman_totems;
-	sp = dbcSpell.LookupEntryForced( 16224 );
-	if( sp != NULL )
-		sp->EffectSpellGroupRelation[0] = group_relation_shaman_totems;
-	sp = dbcSpell.LookupEntryForced( 16225 );
-	if( sp != NULL )
-		sp->EffectSpellGroupRelation[0] = group_relation_shaman_totems;
-
-	//shaman ( grouping ) Lightning = Lightning Bolt + Chain Lightning
-	group_relation_shaman_lightning = 0x00000001 | 0x00000002;
-
-	//shaman - Call of Thunder
-	sp = dbcSpell.LookupEntryForced( 16041 );
-	if( sp != NULL )
-		sp->EffectSpellGroupRelation[0] = group_relation_shaman_lightning;
-	sp = dbcSpell.LookupEntryForced( 16117 );
-	if( sp != NULL )
-		sp->EffectSpellGroupRelation[0] = group_relation_shaman_lightning;
-	sp = dbcSpell.LookupEntryForced( 16118 );
-	if( sp != NULL )
-		sp->EffectSpellGroupRelation[0] = group_relation_shaman_lightning;
-	sp = dbcSpell.LookupEntryForced( 16119 );
-	if( sp != NULL )
-		sp->EffectSpellGroupRelation[0] = group_relation_shaman_lightning;
-	sp = dbcSpell.LookupEntryForced( 16120 );
-	if( sp != NULL )
-		sp->EffectSpellGroupRelation[0] = group_relation_shaman_lightning;
-
-    //shaman ( grouping ) Shock = Earth + Flame + Frost
-	group_relation_shaman_shock = 0x00100000 | 0x10000000 | 0x80000000;
-
-	//shaman - Convection
-	sp = dbcSpell.LookupEntryForced( 16039 );
-	if( sp != NULL )
-		sp->EffectSpellGroupRelation[0] = group_relation_shaman_shock | group_relation_shaman_lightning;
-	sp = dbcSpell.LookupEntryForced( 16109 );
-	if( sp != NULL )
-		sp->EffectSpellGroupRelation[0] = group_relation_shaman_shock | group_relation_shaman_lightning;
-	sp = dbcSpell.LookupEntryForced( 16110 );
-	if( sp != NULL )
-		sp->EffectSpellGroupRelation[0] = group_relation_shaman_shock | group_relation_shaman_lightning;
-	sp = dbcSpell.LookupEntryForced( 16111 );
-	if( sp != NULL )
-		sp->EffectSpellGroupRelation[0] = group_relation_shaman_shock | group_relation_shaman_lightning;
-	sp = dbcSpell.LookupEntryForced( 16112 );
-	if( sp != NULL )
-		sp->EffectSpellGroupRelation[0] = group_relation_shaman_shock | group_relation_shaman_lightning;
-
-    //shaman - Concussion
-    sp = dbcSpell.LookupEntryForced( 16035 );
-    if( sp != NULL )
-        sp->EffectSpellGroupRelation[0] = group_relation_shaman_shock | group_relation_shaman_lightning;
-    sp = dbcSpell.LookupEntryForced( 16105 );
-    if( sp != NULL )
-        sp->EffectSpellGroupRelation[0] = group_relation_shaman_shock | group_relation_shaman_lightning;
-    sp = dbcSpell.LookupEntryForced( 16106 );
-    if( sp != NULL )
-        sp->EffectSpellGroupRelation[0] = group_relation_shaman_shock | group_relation_shaman_lightning;
-    sp = dbcSpell.LookupEntryForced( 16107 );
-    if( sp != NULL )
-        sp->EffectSpellGroupRelation[0] = group_relation_shaman_shock | group_relation_shaman_lightning;
-    sp = dbcSpell.LookupEntryForced( 16108 );
-    if( sp != NULL )
-        sp->EffectSpellGroupRelation[0] = group_relation_shaman_shock | group_relation_shaman_lightning;
-
-	// Shaman Shock Range Bonus (Gauntlets bonus)
-	sp = dbcSpell.LookupEntryForced( 32973 );
-	if( sp != NULL )
-		sp->EffectSpellGroupRelation[0] = group_relation_shaman_shock;
-
-	// Shaman Shock Crit Bonus (set bonus)
-	sp = dbcSpell.LookupEntryForced( 22804 );
-	if( sp != NULL )
-		sp->EffectSpellGroupRelation[0] = group_relation_shaman_shock;
-
-	// Shaman - Storm Reach
-	sp = dbcSpell.LookupEntryForced( 28999 );
-	if( sp != NULL )
-		sp->EffectSpellGroupRelation[0] = 2 | 1;
-	sp = dbcSpell.LookupEntryForced( 29000 );
-	if( sp != NULL )
-		sp->EffectSpellGroupRelation[0] = 2 | 1;
-
-
-	#endif
-	#ifndef NEW_PROCFLAGS
-	//shaman - Healing Way
-	sp = dbcSpell.LookupEntryForced( 29202 );
-	if( sp != NULL )
-	{
-		sp->procFlags = PROC_ON_CAST_SPELL;
-		sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
-	}
-	sp = dbcSpell.LookupEntryForced( 29205 );
-	if( sp != NULL )
-	{
-		sp->procFlags = PROC_ON_CAST_SPELL;
-		sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
-	}
-	sp = dbcSpell.LookupEntryForced( 29206 );
-	if( sp != NULL )
-	{
-		sp->procFlags = PROC_ON_CAST_SPELL;
-		sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
-	}
-#else
-	//shaman - Healing Way
-	sp = dbcSpell.LookupEntryForced( 29202 );
-	if( sp != NULL )
-		sp->EffectSpellGroupRelation[0] = 64;
-	sp = dbcSpell.LookupEntryForced( 29205 );
-	if( sp != NULL )
-		sp->EffectSpellGroupRelation[0] = 64;
-	sp = dbcSpell.LookupEntryForced( 29206 );
-	if( sp != NULL )
-		sp->EffectSpellGroupRelation[0] = 64;
-#endif
+		// Flametongue Totem passive target fix
+		if( sp->NameHash == SPELL_HASH_FLAMETONGUE_TOTEM && sp->Attributes & ATTRIBUTES_PASSIVE )
+		{
+			sp->EffectImplicitTargetA[0] = EFF_TARGET_SELF;
+			sp->EffectImplicitTargetB[0] = 0;
+			sp->EffectImplicitTargetA[1] = EFF_TARGET_SELF;
+			sp->EffectImplicitTargetB[1] = 0;
+		}
 			// Lightning Shield - cannot crit
 			if( sp->NameHash == SPELL_HASH_LIGHTNING_SHIELD ) // not a mistake, the correct proc spell for lightning shield is also called lightning shield
 				sp->spell_can_crit = false;
@@ -1725,15 +1461,6 @@ void ApplyNormalFixes()
 		Enchantment->type[0] = 1;
 		Enchantment->spell[0] = 8026;
 	}
-
-	// Flametongue Totem passive target fix
-				if(sp->NameHash == SPELL_HASH_FLAMETONGUE_TOTEM && sp->Attributes & ATTRIBUTES_PASSIVE)
-				{
-					sp->EffectImplicitTargetA[0] = EFF_TARGET_SELF;
-					sp->EffectImplicitTargetB[0] = 0;
-					sp->EffectImplicitTargetA[1] = EFF_TARGET_SELF;
-					sp->EffectImplicitTargetB[1] = 0;
-				}
 
 	/********************************************************
 	 * Windfury Enchantment
@@ -3863,6 +3590,256 @@ void ApplyNormalFixes()
 	//////////////////////////////////////////
 
 	// Insert shaman spell fixes here
+#ifdef NEW_PROCFLAGS
+	//Shaman - Healing Focus
+	sp = dbcSpell.LookupEntryForced( 16181 );
+	if( sp != NULL )
+		sp->EffectSpellGroupRelation[0] =  64 | 128 | 256;
+	sp = dbcSpell.LookupEntryForced( 16230 );
+	if( sp != NULL )
+		sp->EffectSpellGroupRelation[0] =  64 | 128 | 256;
+	sp = dbcSpell.LookupEntryForced( 16232 );
+	if( sp != NULL )
+		sp->EffectSpellGroupRelation[0] =  64 | 128 | 256;
+	sp = dbcSpell.LookupEntryForced( 16233 );
+	if( sp != NULL )
+		sp->EffectSpellGroupRelation[0] =  64 | 128 | 256;
+	sp = dbcSpell.LookupEntryForced( 16234 );
+	if( sp != NULL )
+		sp->EffectSpellGroupRelation[0] =  64 | 128 | 256;
+
+
+	//shaman - Tidal focus . Add more heal spells here if i forgot any :P
+	sp = dbcSpell.LookupEntryForced( 16179 );
+	if( sp != NULL )
+		sp->EffectSpellGroupRelation[0] = 64 | 128 | 256;
+	sp = dbcSpell.LookupEntryForced( 16214 );
+	if( sp != NULL )
+		sp->EffectSpellGroupRelation[0] = 64 | 128 | 256;
+	sp = dbcSpell.LookupEntryForced( 16215 );
+	if( sp != NULL )
+		sp->EffectSpellGroupRelation[0] = 64 | 128 | 256;
+	sp = dbcSpell.LookupEntryForced( 16216 );
+	if( sp != NULL )
+		sp->EffectSpellGroupRelation[0] = 64 | 128 | 256;
+	sp = dbcSpell.LookupEntryForced( 16217 );
+	if( sp != NULL )
+		sp->EffectSpellGroupRelation[0] = 64 | 128 | 256;
+
+	//shaman - Earth's Grasp
+	sp = dbcSpell.LookupEntryForced( 16130 );
+	if( sp != NULL ){
+		sp->EffectSpellGroupRelation[0] = 0x8;
+		sp->EffectSpellGroupRelation_high[1] = 0x1;
+	}
+	sp = dbcSpell.LookupEntryForced( 16043 );
+	if( sp != NULL ){
+		sp->EffectSpellGroupRelation[0] = 0x8;
+		sp->EffectSpellGroupRelation_high[1] = 0x1;
+	}
+
+	//shaman - Healing Grace
+	sp = dbcSpell.LookupEntryForced( 29191 );
+	if( sp != NULL ){
+		sp->EffectSpellGroupRelation[0] = 64 | 128 | 256;
+		sp->EffectSpellGroupRelation[1] = 0xFFFFFFFF; // all spells
+		sp->EffectSpellGroupRelation_high[1] = 0xFFFFFFFF; // all spells
+	}
+	sp = dbcSpell.LookupEntryForced( 29189 );
+	if( sp != NULL ){
+		sp->EffectSpellGroupRelation[0] = 64 | 128 | 256;
+		sp->EffectSpellGroupRelation[1] = 0xFFFFFFFF; // all spells
+		sp->EffectSpellGroupRelation_high[1] = 0xFFFFFFFF; // all spells
+	}
+	sp = dbcSpell.LookupEntryForced( 29187 );
+	if( sp != NULL ){
+		sp->EffectSpellGroupRelation[0] = 64 | 128 | 256;
+		sp->EffectSpellGroupRelation[1] = 0xFFFFFFFF; // all spells
+		sp->EffectSpellGroupRelation_high[1] = 0xFFFFFFFF; // all spells
+	}
+
+	//shaman - Tidal Mastery
+	sp = dbcSpell.LookupEntryForced( 16221 );
+	if( sp != NULL )
+		sp->EffectSpellGroupRelation[0] = 451;
+	sp = dbcSpell.LookupEntryForced( 16220 );
+	if( sp != NULL )
+		sp->EffectSpellGroupRelation[0] = 451;
+	sp = dbcSpell.LookupEntryForced( 16219 );
+	if( sp != NULL )
+		sp->EffectSpellGroupRelation[0] = 451;
+	sp = dbcSpell.LookupEntryForced( 16218 );
+	if( sp != NULL )
+		sp->EffectSpellGroupRelation[0] = 451;
+	sp = dbcSpell.LookupEntryForced( 16217 );
+	if( sp != NULL )
+		sp->EffectSpellGroupRelation[0] = 451;
+
+	//shaman - Improved Chain Heal
+	sp = dbcSpell.LookupEntryForced( 30873 );
+	if( sp != NULL ){
+		sp->EffectSpellGroupRelation[0] = 256;
+		sp->EffectDieSides[0] = 0;
+	}
+	sp = dbcSpell.LookupEntryForced( 30872 );
+	if( sp != NULL ){
+		sp->EffectSpellGroupRelation[0] = 256;
+		sp->EffectDieSides[0] = 0;
+	}
+	// Shaman - Call of Flame
+	sp = dbcSpell.LookupEntryForced( 16038 );
+	if( sp != NULL )
+		sp->EffectSpellGroupRelation[0] = 0x40000000;
+	sp = dbcSpell.LookupEntryForced( 16160 );
+	if( sp != NULL )
+		sp->EffectSpellGroupRelation[0] = 0x40000000;
+	sp = dbcSpell.LookupEntryForced( 16161 );
+	if( sp != NULL )
+		sp->EffectSpellGroupRelation[0] = 0x40000000;
+
+		//shaman ( grouping ) Mental Quickness (missing 18 spells which have no grouping)
+	group_relation_shaman_mental_quickness = 0x00000008 | 0x00000010 | 0x00000200 | 0x00000400 | 0x00080000 | 0x00100000 | 0x00400000 | 0x20000000 | 0x10000000 | 0x80000000;
+
+	//shaman - Mental Quickness
+	sp = dbcSpell.LookupEntryForced( 30812 );
+	if( sp != NULL )
+		sp->EffectSpellGroupRelation[0] = group_relation_shaman_mental_quickness;
+	sp = dbcSpell.LookupEntryForced( 30813 );
+	if( sp != NULL )
+		sp->EffectSpellGroupRelation[0] = group_relation_shaman_mental_quickness;
+	sp = dbcSpell.LookupEntryForced( 30814 );
+	if( sp != NULL )
+		sp->EffectSpellGroupRelation[0] = group_relation_shaman_mental_quickness;
+
+	//shaman ( grouping ) Totems
+	group_relation_shaman_totems |= 0x00000008 | 0x00000010 | 0x00001000 | 0x00080000 | 0x20000000; //these are only selected flag since some totems contain more then 1 flag
+
+	//shaman - Totemic focus
+	sp = dbcSpell.LookupEntryForced( 16173 );
+	if( sp != NULL )
+		sp->EffectSpellGroupRelation[0] = group_relation_shaman_totems;
+	sp = dbcSpell.LookupEntryForced( 16222 );
+	if( sp != NULL )
+		sp->EffectSpellGroupRelation[0] = group_relation_shaman_totems;
+	sp = dbcSpell.LookupEntryForced( 16223 );
+	if( sp != NULL )
+		sp->EffectSpellGroupRelation[0] = group_relation_shaman_totems;
+	sp = dbcSpell.LookupEntryForced( 16224 );
+	if( sp != NULL )
+		sp->EffectSpellGroupRelation[0] = group_relation_shaman_totems;
+	sp = dbcSpell.LookupEntryForced( 16225 );
+	if( sp != NULL )
+		sp->EffectSpellGroupRelation[0] = group_relation_shaman_totems;
+
+	//shaman ( grouping ) Lightning = Lightning Bolt + Chain Lightning
+	group_relation_shaman_lightning = 0x00000001 | 0x00000002;
+
+	//shaman - Call of Thunder
+	sp = dbcSpell.LookupEntryForced( 16041 );
+	if( sp != NULL )
+		sp->EffectSpellGroupRelation[0] = group_relation_shaman_lightning;
+	sp = dbcSpell.LookupEntryForced( 16117 );
+	if( sp != NULL )
+		sp->EffectSpellGroupRelation[0] = group_relation_shaman_lightning;
+	sp = dbcSpell.LookupEntryForced( 16118 );
+	if( sp != NULL )
+		sp->EffectSpellGroupRelation[0] = group_relation_shaman_lightning;
+	sp = dbcSpell.LookupEntryForced( 16119 );
+	if( sp != NULL )
+		sp->EffectSpellGroupRelation[0] = group_relation_shaman_lightning;
+	sp = dbcSpell.LookupEntryForced( 16120 );
+	if( sp != NULL )
+		sp->EffectSpellGroupRelation[0] = group_relation_shaman_lightning;
+
+    //shaman ( grouping ) Shock = Earth + Flame + Frost
+	group_relation_shaman_shock = 0x00100000 | 0x10000000 | 0x80000000;
+
+	//shaman - Convection
+	sp = dbcSpell.LookupEntryForced( 16039 );
+	if( sp != NULL )
+		sp->EffectSpellGroupRelation[0] = group_relation_shaman_shock | group_relation_shaman_lightning;
+	sp = dbcSpell.LookupEntryForced( 16109 );
+	if( sp != NULL )
+		sp->EffectSpellGroupRelation[0] = group_relation_shaman_shock | group_relation_shaman_lightning;
+	sp = dbcSpell.LookupEntryForced( 16110 );
+	if( sp != NULL )
+		sp->EffectSpellGroupRelation[0] = group_relation_shaman_shock | group_relation_shaman_lightning;
+	sp = dbcSpell.LookupEntryForced( 16111 );
+	if( sp != NULL )
+		sp->EffectSpellGroupRelation[0] = group_relation_shaman_shock | group_relation_shaman_lightning;
+	sp = dbcSpell.LookupEntryForced( 16112 );
+	if( sp != NULL )
+		sp->EffectSpellGroupRelation[0] = group_relation_shaman_shock | group_relation_shaman_lightning;
+
+    //shaman - Concussion
+    sp = dbcSpell.LookupEntryForced( 16035 );
+    if( sp != NULL )
+        sp->EffectSpellGroupRelation[0] = group_relation_shaman_shock | group_relation_shaman_lightning;
+    sp = dbcSpell.LookupEntryForced( 16105 );
+    if( sp != NULL )
+        sp->EffectSpellGroupRelation[0] = group_relation_shaman_shock | group_relation_shaman_lightning;
+    sp = dbcSpell.LookupEntryForced( 16106 );
+    if( sp != NULL )
+        sp->EffectSpellGroupRelation[0] = group_relation_shaman_shock | group_relation_shaman_lightning;
+    sp = dbcSpell.LookupEntryForced( 16107 );
+    if( sp != NULL )
+        sp->EffectSpellGroupRelation[0] = group_relation_shaman_shock | group_relation_shaman_lightning;
+    sp = dbcSpell.LookupEntryForced( 16108 );
+    if( sp != NULL )
+        sp->EffectSpellGroupRelation[0] = group_relation_shaman_shock | group_relation_shaman_lightning;
+
+	// Shaman Shock Range Bonus (Gauntlets bonus)
+	sp = dbcSpell.LookupEntryForced( 32973 );
+	if( sp != NULL )
+		sp->EffectSpellGroupRelation[0] = group_relation_shaman_shock;
+
+	// Shaman Shock Crit Bonus (set bonus)
+	sp = dbcSpell.LookupEntryForced( 22804 );
+	if( sp != NULL )
+		sp->EffectSpellGroupRelation[0] = group_relation_shaman_shock;
+
+	// Shaman - Storm Reach
+	sp = dbcSpell.LookupEntryForced( 28999 );
+	if( sp != NULL )
+		sp->EffectSpellGroupRelation[0] = 2 | 1;
+	sp = dbcSpell.LookupEntryForced( 29000 );
+	if( sp != NULL )
+		sp->EffectSpellGroupRelation[0] = 2 | 1;
+
+
+	#endif
+	#ifndef NEW_PROCFLAGS
+	//shaman - Healing Way
+	sp = dbcSpell.LookupEntryForced( 29202 );
+	if( sp != NULL )
+	{
+		sp->procFlags = PROC_ON_CAST_SPELL;
+		sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
+	}
+	sp = dbcSpell.LookupEntryForced( 29205 );
+	if( sp != NULL )
+	{
+		sp->procFlags = PROC_ON_CAST_SPELL;
+		sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
+	}
+	sp = dbcSpell.LookupEntryForced( 29206 );
+	if( sp != NULL )
+	{
+		sp->procFlags = PROC_ON_CAST_SPELL;
+		sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
+	}
+#else
+	//shaman - Healing Way
+	sp = dbcSpell.LookupEntryForced( 29202 );
+	if( sp != NULL )
+		sp->EffectSpellGroupRelation[0] = 64;
+	sp = dbcSpell.LookupEntryForced( 29205 );
+	if( sp != NULL )
+		sp->EffectSpellGroupRelation[0] = 64;
+	sp = dbcSpell.LookupEntryForced( 29206 );
+	if( sp != NULL )
+		sp->EffectSpellGroupRelation[0] = 64;
+#endif
 		
 		/**********************************************************
 		 *	Elemental Mastery
