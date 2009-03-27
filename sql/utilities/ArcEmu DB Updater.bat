@@ -175,6 +175,8 @@ ECHO [Importing] 2227_totems.sql
 mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < ..\world_updates\SpellFixes\2227_totems.sql
 ECHO [Importing] 2243_totemspells.sql
 mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < ..\world_updates\2243_totemspells.sql
+ECHO [Importing] 2387_LightWell.sql
+mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < ..\world_updates\2387_LightWell.sql
 ECHO [Importing] ArcScript_full.sql
 mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < ..\ArcScripts\ArcScript_full.sql
 ECHO [Importing] spellfixes.sql
@@ -226,6 +228,8 @@ ECHO [Importing] 2005_guildbank_tabinfo.sql
 mysql -h %server% --user=%user% --password=%pass% --port=%port% %chr% < ..\character_updates\2005_guildbank_tabinfo.sql
 ECHO [Importing] 2084_character_achievement_progress.sql
 mysql -h %server% --user=%user% --password=%pass% --port=%port% %chr% < ..\character_updates\2084_character_achievement_progress.sql
+ECHO [Importing] 2310_guilds.sql
+mysql -h %server% --user=%user% --password=%pass% --port=%port% %chr% < ..\character_updates\2310_guilds.sql
 ECHO [Importing] Finished
 ECHO  Update Success.
 ECHO.
@@ -330,6 +334,8 @@ ECHO [Importing] 2227_totems.sql
 mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < ..\world_updates\SpellFixes\2227_totems.sql
 ECHO [Importing] 2243_totemspells.sql
 mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < ..\world_updates\2243_totemspells.sql
+ECHO [Importing] 2387_LightWell.sql
+mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < ..\world_updates\2387_LightWell.sql
 ECHO [Importing] ArcScript_full.sql
 mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < ..\ArcScripts\ArcScript_full.sql
 ECHO [Importing] spellfixes.sql
@@ -377,8 +383,8 @@ ECHO [Importing] 2005_guildbank_tabinfo.sql
 mysql -h %server% --user=%user% --password=%pass% --port=%port% %chr% < ..\character_updates\2005_guildbank_tabinfo.sql
 ECHO [Importing] 2084_character_achievement_progress.sql
 mysql -h %server% --user=%user% --password=%pass% --port=%port% %chr% < ..\character_updates\2084_character_achievement_progress.sql
-ECHO [Importing] 2298_guilds.sql
-mysql -h %server% --user=%user% --password=%pass% --port=%port% %chr% < ..\character_updates\2298_guilds.sql
+ECHO [Importing] 2310_guilds.sql
+mysql -h %server% --user=%user% --password=%pass% --port=%port% %chr% < ..\character_updates\2310_guilds.sql
 
 ECHO [Importing] Character Updates Finished
 ECHO.
