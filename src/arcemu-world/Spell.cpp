@@ -3561,10 +3561,23 @@ uint8 Spell::CanCast(bool tolerate)
 		}
 
 		// aurastate check
-		if( GetProto()->CasterAuraState )
+		if( GetProto()->CasterAuraState && !p_caster->HasFlag( UNIT_FIELD_AURASTATE, GetProto()->CasterAuraState ) )
 		{
-			if( !p_caster->HasFlag( UNIT_FIELD_AURASTATE, GetProto()->CasterAuraState ) )
-				return SPELL_FAILED_CASTER_AURASTATE;
+			return SPELL_FAILED_CASTER_AURASTATE;
+		}
+		if( GetProto()->CasterAuraStateNot && p_caster->HasFlag( UNIT_FIELD_AURASTATE, GetProto()->CasterAuraStateNot ) )
+		{
+			return SPELL_FAILED_CASTER_AURASTATE;
+		}
+
+		// aura check
+		if( GetProto()->casterAuraSpell && !p_caster->HasAura( GetProto()->casterAuraSpell ) )
+		{
+			return SPELL_FAILED_NOT_READY;
+		}
+		if( GetProto()->casterAuraSpellNot && p_caster->HasAura( GetProto()->casterAuraSpellNot ) )
+		{
+			return SPELL_FAILED_NOT_READY;
 		}
 
 		// Let's not allow players to blink trew gates.
@@ -3815,12 +3828,23 @@ uint8 Spell::CanCast(bool tolerate)
 				}
 
 				// check aurastate
-				if( GetProto()->TargetAuraState )
+				if( GetProto()->TargetAuraState && !target->HasFlag( UNIT_FIELD_AURASTATE, GetProto()->TargetAuraState ) )
 				{
-					if( !target->HasFlag( UNIT_FIELD_AURASTATE, GetProto()->TargetAuraState ) )
-					{
-						return SPELL_FAILED_TARGET_AURASTATE;
-					}
+					return SPELL_FAILED_TARGET_AURASTATE;
+				}
+				if( GetProto()->TargetAuraStateNot && target->HasFlag( UNIT_FIELD_AURASTATE, GetProto()->TargetAuraStateNot ) )
+				{
+					return SPELL_FAILED_TARGET_AURASTATE;
+				}
+				
+				// check aura
+				if( GetProto()->targetAuraSpell && !target->HasAura( GetProto()->targetAuraSpell ) )
+				{
+					return SPELL_FAILED_NOT_READY;
+				}
+				if( GetProto()->targetAuraSpellNot && target->HasAura( GetProto()->targetAuraSpellNot ) )
+				{
+					return SPELL_FAILED_NOT_READY;
 				}
 
 				if(target->IsPlayer())
@@ -4242,16 +4266,6 @@ uint8 Spell::CanCast(bool tolerate)
 			}	*/
 		}
 	}
-
-	//Checking for Debuffs that dont allow power word:shield, those Pala spells, ice block or use first aid, hacky, is there any way to check if he has "immune mechanic"?
-	if (GetProto()->MechanicsType == MECHANIC_SHIELDED && ((target) ? target->HasAura(6788) : u_caster->HasAura(6766))) //Weakened Soul
-		return SPELL_FAILED_DAMAGE_IMMUNE;
-	if (GetProto()->MechanicsType == MECHANIC_INVULNARABLE && ((target) ? target->HasAura(25771) : u_caster->HasAura(25771))) //Forbearance
-		return SPELL_FAILED_DAMAGE_IMMUNE;
-	if (GetProto()->NameHash == SPELL_HASH_ICE_BLOCK && u_caster->HasAura(41425))
-		return SPELL_FAILED_DAMAGE_IMMUNE;
-	if (GetProto()->MechanicsType == MECHANIC_HEALING && ((target) ? target->HasAura(11196) : u_caster->HasAura(11196)))
-		return SPELL_FAILED_DAMAGE_IMMUNE;
 
 	// Special State Checks (for creatures & players)
 	if( u_caster )

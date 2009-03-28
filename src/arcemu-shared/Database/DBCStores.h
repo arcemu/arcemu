@@ -692,8 +692,8 @@ struct SpellEntry
 	uint32 TargetAuraStateNot;              //21
 	uint32 casterAuraSpell;                 //22
 	uint32 targetAuraSpell;                 //23
-	uint32 ExcludeCasterAuraState;          //24 2.0.1 unknown two
-	uint32 ExcludeTargetAuraState;          //25 2.0.1 unknown three
+	uint32 casterAuraSpellNot;              //24
+	uint32 targetAuraSpellNot;              //25
 	uint32 CastingTimeIndex;                //26
 	uint32 RecoveryTime;                    //27
 	uint32 CategoryRecoveryTime;            //28 recoverytime
