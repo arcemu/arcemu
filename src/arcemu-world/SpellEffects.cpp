@@ -5392,6 +5392,7 @@ void Spell::SpellEffectScriptEffect(uint32 i) // Script Effect
 		}break;
 		case 34026: //Hunter: Kill Command
 		{
+			/* Disabled - Spell changed in patch 3.0.2
 			// in this case unitTarget == pet
 			if( p_caster == NULL || unitTarget == NULL || unitTarget->getDeathState() != ALIVE )
 				return;
@@ -5408,7 +5409,7 @@ void Spell::SpellEffectScriptEffect(uint32 i) // Script Effect
 			else if( unitTarget->CombatStatus.GetPrimaryAttackTarget() == 0 )
 				return;
 			unitTarget->GetAIInterface()->SetNextSpell( Sp );
-			//TODO: Kill Command - return to previous pet target after cast
+			//TODO: Kill Command - return to previous pet target after cast*/
 
          }break;
 		case 35708:
