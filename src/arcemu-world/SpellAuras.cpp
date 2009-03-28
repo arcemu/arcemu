@@ -877,13 +877,13 @@ void Aura::Remove()
 			caster->SetUInt64Value(PLAYER_FARSIGHT, 0);
 		}
 	}
+
     uint32 flag = 0;
     if( m_spellProto->MechanicsType == MECHANIC_ENRAGED )
 		flag |= AURASTATE_FLAG_ENRAGED;
     if( m_spellProto->BGR_one_buff_on_target & SPELL_TYPE_SEAL )
         flag |= AURASTATE_FLAG_JUDGEMENT;
     m_target->RemoveFlag( UNIT_FIELD_AURASTATE, flag );
-
 
 	AuraPool.PooledDelete( this ); // suicide xD	leaking this shit out
 }
@@ -3977,6 +3977,9 @@ void Aura::SpellAuraModRoot(bool apply)
 			static_cast<Unit*>(caster)->EventStunOrImmobilize( m_target );
 		if( m_target && caster )
 			static_cast<Unit*>(m_target)->EventStunOrImmobilize( caster, true );
+		
+		if( GetSpellProto()->School == SCHOOL_FROST )
+			m_target->SetFlag( UNIT_FIELD_AURASTATE, AURASTATE_FLAG_FROZEN );
 
 		/* -Supalosa- TODO: Mobs will attack nearest enemy in range on aggro list when rooted. */
 	}
@@ -3989,6 +3992,10 @@ void Aura::SpellAuraModRoot(bool apply)
 
 		if(m_target->GetTypeId() == TYPEID_UNIT)
 			m_target->GetAIInterface()->AttackReaction(GetUnitCaster(), 1, 0);
+
+		if( GetSpellProto()->School == SCHOOL_FROST )
+			m_target->RemoveFlag( UNIT_FIELD_AURASTATE, AURASTATE_FLAG_FROZEN );
+
 	}
 }
 
