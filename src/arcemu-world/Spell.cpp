@@ -3860,9 +3860,9 @@ uint8 Spell::CanCast(bool tolerate)
 						return static_cast<uint8>(status);
 				}
 
-				if( GetProto()->EffectApplyAuraName[0]==2)//mind control
+				if( GetProto()->EffectApplyAuraName[0] == SPELL_AURA_MOD_POSSESS )//mind control
 				{
-					if( GetProto()->EffectBasePoints[0])//got level req;
+					if( GetProto()->EffectBasePoints[0] )//got level req;
 					{
 						if((int32)target->getLevel() > GetProto()->EffectBasePoints[0]+1 + int32(p_caster->getLevel() - GetProto()->spellLevel))
 							return SPELL_FAILED_HIGHLEVEL;
@@ -3881,7 +3881,6 @@ uint8 Spell::CanCast(bool tolerate)
 			{
 				case 1515: // tame beast
 				{
-
 					uint8 result = 0;
 					Unit* tgt = unitTarget;
 					if( tgt == NULL )
@@ -3909,9 +3908,9 @@ uint8 Spell::CanCast(bool tolerate)
 						result = PETTAME_TOOHIGHLEVEL;
 					else if( p_caster->GetSummon() || p_caster->GetUnstabledPetNumber() )
 						result = PETTAME_ANOTHERSUMMONACTIVE;
-					else if( p_caster->GetPetCount() >= 3 )
+					else if( p_caster->GetPetCount() >= 5 )
 						result = PETTAME_TOOMANY;
-					else if( !p_caster->HasSpell(53270) && tame->IsExotic())
+					else if( !p_caster->HasSpell(53270) && tame->IsExotic() )
 						result = PETTAME_CANTCONTROLEXOTIC;
 					else
 					{
@@ -4120,13 +4119,12 @@ uint8 Spell::CanCast(bool tolerate)
 
 			// all spells with target 61 need to be in group or raid
 			// TODO: need to research this if its not handled by the client!!!
-			if(
-				GetProto()->EffectImplicitTargetA[0] == 61 ||
-				GetProto()->EffectImplicitTargetA[1] == 61 ||
-				GetProto()->EffectImplicitTargetA[2] == 61)
+			if(	GetProto()->EffectImplicitTargetA[0] == EFF_TARGET_AREAEFFECT_PARTY_AND_CLASS ||
+				GetProto()->EffectImplicitTargetA[1] == EFF_TARGET_AREAEFFECT_PARTY_AND_CLASS ||
+				GetProto()->EffectImplicitTargetA[2] == EFF_TARGET_AREAEFFECT_PARTY_AND_CLASS )
 			{
 				if( target->IsPlayer() && !static_cast< Player* >( target )->InGroup() )
-					return SPELL_FAILED_NOT_READY;//return SPELL_FAILED_TARGET_NOT_IN_PARTY or SPELL_FAILED_TARGET_NOT_IN_PARTY;
+					return SPELL_FAILED_TARGET_NOT_IN_PARTY;
 			}
 
 			// pet's owner stuff
@@ -4138,10 +4136,10 @@ uint8 Spell::CanCast(bool tolerate)
 					return SPELL_FAILED_TARGET_NOT_PLAYER; //if you are there something is very wrong
 			}*/
 
-			// target 39 is fishing, all fishing spells are handled
-			if( GetProto()->EffectImplicitTargetA[0] == 39 )//||
-			 //GetProto()->EffectImplicitTargetA[1] == 39 ||
-			 //GetProto()->EffectImplicitTargetA[2] == 39)
+			// fishing spells
+			if( GetProto()->EffectImplicitTargetA[0] == EFF_TARGET_SELF_FISHING )//||
+			 //GetProto()->EffectImplicitTargetA[1] == EFF_TARGET_SELF_FISHING ||
+			 //GetProto()->EffectImplicitTargetA[2] == EFF_TARGET_SELF_FISHING )
 			{
 				uint32 entry = GetProto()->EffectMiscValue[0];
 				if(entry == GO_FISHING_BOBBER)
@@ -4198,7 +4196,7 @@ uint8 Spell::CanCast(bool tolerate)
 				}
 
 				if(target->dispels[GetProto()->DispelType])
-					return SPELL_FAILED_PREVENTED_BY_MECHANIC-1;			// hackfix - burlex
+					return SPELL_FAILED_DAMAGE_IMMUNE;			// hackfix - burlex
 
 				// Removed by Supalosa and moved to 'completed cast'
 				//if(target->MechanicsDispels[GetProto()->MechanicsType])
@@ -4602,7 +4600,7 @@ exit:
 		if( i==0 && p_caster != NULL )
 		{
 			//Increases healing received by 25% of the Tree of Life's total spirit.
-			value = ( p_caster->GetUInt32Value( UNIT_FIELD_STAT4 ) * 25 / 100 );
+			value = p_caster->GetUInt32Value( UNIT_FIELD_STAT4 ) >> 2;
 		}
 	}
 	// HACK FIX
@@ -4648,7 +4646,7 @@ exit:
 		if( p_caster != NULL && i == 0 )
 		{
 			int8 cp = p_caster->m_comboPoints;
-			value += (uint32) ceilf( ( u_caster->GetAP() * 0.04f * cp ) / ( ( 6 + ( cp * 2 ) ) / 2 ) );
+			value += (uint32) ceilf( ( u_caster->GetAP() * 0.04f * cp ) / ( ( 6 + ( cp << 1 ) ) >> 1 ) );
 		}
 	}
 	else if( GetProto()->NameHash == SPELL_HASH_RIP ) //rip
@@ -4671,7 +4669,7 @@ exit:
 	else if ( GetProto()->Id == 34501 && ( i == 0 || i == 1 ) ) //Hunter - Expose Weakness
 	{
 		if (u_caster != NULL) {
-            value = ( u_caster->GetUInt32Value( UNIT_FIELD_STAT1 ) * 25 / 100 );
+            value = u_caster->GetUInt32Value( UNIT_FIELD_STAT1 ) >> 2;
 		}
 	}
 /*	else if ( GetProto()->NameHash == SPELL_HASH_HUNTER_S_MARK && target && target->HasAurasWithNameHash( SPELL_HASH_HUNTER_S_MARK ) ) //Hunter - Hunter's Mark
@@ -4902,7 +4900,7 @@ void Spell::SendHealManaSpellOnPlayer(Object * caster, Object * target, uint32 d
 
 void Spell::Heal(int32 amount, bool ForceCrit)
 {
-	int32 base_amount = amount; //store base_amount for later use
+	//int32 base_amount = amount; //store base_amount for later use
 
 	if(!unitTarget || !unitTarget->isAlive())
 		return;
@@ -5204,9 +5202,10 @@ bool Spell::Reflect(Unit *refunit)
 		return false;
 
 	// if the spell to reflect is a reflect spell, do nothing.
-	for(int i=0; i<3; i++)
+	for( uint8 i = 0; i < 3; i++ )
 	{
-		if( GetProto()->Effect[i] == 6 && (GetProto()->EffectApplyAuraName[i] == 74 || GetProto()->EffectApplyAuraName[i] == 28))
+		if( GetProto()->Effect[i] == SPELL_EFFECT_APPLY_AURA && ( GetProto()->EffectApplyAuraName[i] == SPELL_AURA_REFLECT_SPELLS_SCHOOL || 
+			GetProto()->EffectApplyAuraName[i] == SPELL_AURA_REFLECT_SPELLS ) )
 			return false;
 	}
 	for(std::list<struct ReflectSpellSchool*>::iterator i = refunit->m_reflectSpellSchool.begin();i != refunit->m_reflectSpellSchool.end();i++)
@@ -5250,60 +5249,42 @@ bool Spell::Reflect(Unit *refunit)
 
 void ApplyDiminishingReturnTimer(uint32 * Duration, Unit * Target, SpellEntry * spell)
 {
-	uint32 status = GetDiminishingGroup(spell->NameHash);
+	uint32 status = spell->DiminishStatus;
 	uint32 Grp = status & 0xFFFF;   // other bytes are if apply to pvp
 	uint32 PvE = (status >> 16) & 0xFFFF;
 
 	// Make sure we have a group
-	if(Grp == 0xFFFF) return;
+	if( Grp == 0xFFFF )
+		return;
 
 	// Check if we don't apply to pve
 	if(!PvE && Target->GetTypeId() != TYPEID_PLAYER && !Target->IsPet())
 		return;
 
 	// TODO: check for spells that should do this
-	float Dur = float(*Duration);
+	uint32 Dur = *Duration;
+	uint32 count = Target->m_diminishCount[Grp];
 
-	switch(Target->m_diminishCount[Grp])
+	if( count > 2 ) // Target immune to spell
 	{
-	case 0: // Full effect
-		if (( Target->IsPlayer() || Target->IsPet() ) && Dur > 10000)
+		*Duration = 0;
+		return;
+	}
+	else
+	{
+		Dur >>= count; //100%, 50%, 25% bitwise
+		if( ( Target->IsPlayer() || Target->IsPet() ) && Dur > uint32( 10000 >> count ) )
 		{
-			Dur = 10000;
-
-			// for this group only lower duration to 10s
-			if (status == DIMINISHING_GROUP_NOT_DIMINISHED) {
-				*Duration = FL2UINT(Dur);
+			Dur = 10000 >> count;
+			if( status == DIMINISHING_GROUP_NOT_DIMINISHED )
+			{
+				*Duration = Dur;
 				return;
-			}
-		}
-		break;
-
-	case 1: // Reduced by 50%
-		Dur *= 0.5f;
-		if (( Target->IsPlayer() || Target->IsPet() ) && Dur > 5000)
-		{
-			Dur = 5000;
-		}
-		break;
-
-	case 2: // Reduced by 75%
-		Dur *= 0.25f;
-		if (( Target->IsPlayer() || Target->IsPet() ) && Dur > 2500)
-		{
-			Dur = 2500;
-		}
-		break;
-
-	default:// Target immune to spell
-		{
-			*Duration = 0;
-			return;
-		}break;
+			}			
+		}	
 	}
 
-	// Convert back
-	*Duration = FL2UINT(Dur);
+	*Duration = Dur;
 
 	// Reset the diminishing return counter, and add to the aura count (we don't decrease the timer till we
 	// have no auras of this type left.
@@ -5313,7 +5294,7 @@ void ApplyDiminishingReturnTimer(uint32 * Duration, Unit * Target, SpellEntry * 
 
 void UnapplyDiminishingReturnTimer(Unit * Target, SpellEntry * spell)
 {
-	uint32 status = GetDiminishingGroup(spell->NameHash);
+	uint32 status = spell->DiminishStatus;
 	uint32 Grp = status & 0xFFFF;   // other bytes are if apply to pvp
 	uint32 PvE = (status >> 16) & 0xFFFF;
 	uint32 aura_grp;
@@ -5335,7 +5316,7 @@ void UnapplyDiminishingReturnTimer(Unit * Target, SpellEntry * spell)
 	{
 		if( Target->m_auras[x] )
 		{
-			aura_grp = GetDiminishingGroup( Target->m_auras[x]->GetSpellProto()->NameHash );
+			aura_grp = Target->m_auras[x]->GetSpellProto()->DiminishStatus;
 			if( aura_grp == status )
 				Target->m_diminishAuraCount[Grp]++;
 		}
@@ -5434,6 +5415,7 @@ uint32 GetDiminishingGroup(uint32 NameHash)
 
 	case SPELL_HASH_ENSLAVE_DEMON:			// Enslave Demon
 	case SPELL_HASH_MIND_CONTROL:
+	case SPELL_HASH_TURN_EVIL:
 			grp = DIMINISHING_GROUP_CHARM;		//Charm???
 		break;
 
@@ -5447,23 +5429,31 @@ uint32 GetDiminishingGroup(uint32 NameHash)
 			grp = DIMINISHING_GROUP_HORROR;
 		break;
 
-
 	case SPELL_HASH_BANISH:					// Banish
 			grp = DIMINISHING_GROUP_BANISH;
 		break;
-
-	// group where only 10s limit is pvp is applied, not DR
+	
+	// group where only 10s limit in pvp is applied, not DR
 	case SPELL_HASH_FREEZING_TRAP_EFFECT:	// Freezing Trap Effect
 	case SPELL_HASH_HAMSTRING:	// Hamstring
 	case SPELL_HASH_CURSE_OF_TONGUES:
 		{
 			grp = DIMINISHING_GROUP_NOT_DIMINISHED;
 		}break;
-
-	case SPELL_HASH_RIPOSTE:			// Riposte
+	
+	case SPELL_HASH_RIPOSTE:		// Riposte
 	case SPELL_HASH_DISARM:			// Disarm
 		{
 			grp = DIMINISHING_GROUP_DISARM;
+		}break;
+
+	case SPELL_HASH_SILENCE:
+	case SPELL_HASH_GARROTE___SILENCE:
+	case SPELL_HASH_SILENCED___IMPROVED_COUNTERSPELL:
+	case SPELL_HASH_SILENCED___IMPROVED_KICK:
+	case SPELL_HASH_SILENCED___GAG_ORDER:
+		{
+ 			grp = DIMINISHING_GROUP_SILENCE;
 		}break;
 	}
 

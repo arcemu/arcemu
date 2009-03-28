@@ -364,7 +364,7 @@ void ApplyNormalFixes()
 		fclose(f);*/
 
 		// find diminishing status
-		sp->DiminishStatus = GetDiminishingGroup(namehash);
+		sp->DiminishStatus = GetDiminishingGroup( namehash );
 
 		//another grouping rule
 

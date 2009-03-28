@@ -1046,13 +1046,14 @@ enum DiminishingGroup
 	DIMINISHING_GROUP_KIDNEY_SHOT		= 9,
 	DIMINISHING_GROUP_HORROR			= 10,
 	DIMINISHING_GROUP_BANISH			= 11,
-	DIMINISHING_GROUP_NOT_DIMINISHED			= 12,
+	DIMINISHING_GROUP_NOT_DIMINISHED	= 12,
 	DIMINISHING_GROUP_DISARM			= 13,
+	DIMINISHING_GROUP_SILENCE			= 14,
 };
 
 ARCEMU_INLINE bool CanAgroHash(uint32 spellhashname)
 {
-    if (spellhashname == 4287212498UL) //hunter's mark
+    if( spellhashname == SPELL_HASH_HUNTER_S_MARK ) //hunter's mark
         return false;
     else
         return true;

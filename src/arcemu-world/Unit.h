@@ -46,6 +46,7 @@ bool SERVER_DECL Rand(float);
 #define UF_TARGET_DIED  1
 #define UF_ATTACKING	2 // this unit is attacking it's selection
 #define SPELL_GROUPS	96//This is actually on 64 bits !
+#define DIMINISHING_GROUP_COUNT 15
 
 #define UNIT_TYPE_HUMANOID_BIT (1 << (HUMANOID-1)) //should get computed by precompiler ;)
 
@@ -1260,9 +1261,9 @@ public:
 	AuraCheckResponse AuraCheck(uint32 name_hash, uint32 rank, Object *caster=NULL);
 	AuraCheckResponse AuraCheck(uint32 name_hash, uint32 rank, Aura* aur, Object *caster=NULL);
 
-	uint16 m_diminishCount[14];
-	uint8  m_diminishAuraCount[14];
-	uint16 m_diminishTimer[14];
+	uint16 m_diminishCount[DIMINISHING_GROUP_COUNT];
+	uint8  m_diminishAuraCount[DIMINISHING_GROUP_COUNT];
+	uint16 m_diminishTimer[DIMINISHING_GROUP_COUNT];
 	bool   m_diminishActive;
 
 	void SetDiminishTimer(uint32 index)
