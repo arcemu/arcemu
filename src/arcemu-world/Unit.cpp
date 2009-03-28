@@ -357,6 +357,10 @@ Unit::Unit()
 	for (i=0; i<7; i++) {
 		Absorbs[i].clear();
 	}
+
+	asc_frozen = 0;
+	asc_enraged = 0;
+	asc_seal = 0;
 }
 
 Unit::~Unit()
@@ -3036,8 +3040,8 @@ void Unit::Strike( Unit* pVictim, uint32 weapon_damage_type, SpellEntry* ability
 		{
 			// not an attack from behind so we may dodge/parry/block
 
-			uint32 pClass = plr->getClass();
-			uint32 pLevel = (getLevel() > PLAYER_LEVEL_CAP) ? PLAYER_LEVEL_CAP : getLevel();
+			//uint32 pClass = plr->getClass();
+			//uint32 pLevel = (getLevel() > PLAYER_LEVEL_CAP) ? PLAYER_LEVEL_CAP : getLevel();
 
 			if ( weapon_damage_type != RANGED )
 			{
@@ -4477,14 +4481,14 @@ void Unit::AddAura(Aura *aur)
 			pCaster->RemoveAllAuraByNameHash(SPELL_HASH_BLESSING_OF_PROTECTION);
 		}
 	}
-    uint32 flag = 0;
-	if( aur->GetSpellProto()->MechanicsType == MECHANIC_ENRAGED )
+    
+	uint32 flag = 0;
+	if( aur->GetSpellProto()->MechanicsType == MECHANIC_ENRAGED && !asc_enraged++ )
         flag |= AURASTATE_FLAG_ENRAGED;
-        if( aur->GetSpellProto()->BGR_one_buff_on_target & SPELL_TYPE_SEAL )
-            flag |= AURASTATE_FLAG_JUDGEMENT;
+	if( aur->GetSpellProto()->BGR_one_buff_on_target & SPELL_TYPE_SEAL && !asc_seal++ )
+		flag |= AURASTATE_FLAG_JUDGEMENT;
 
-        SetFlag( UNIT_FIELD_AURASTATE, flag );
-
+	SetFlag( UNIT_FIELD_AURASTATE, flag );
 }
 
 bool Unit::RemoveAura(Aura *aur)

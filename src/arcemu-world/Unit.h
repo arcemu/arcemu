@@ -1149,6 +1149,11 @@ public:
 	int32 m_fearmodifiers;
 	int64 m_magnetcaster; // Unit who acts as a magnet for this unit
 	//std::set<SpellEntry*> m_onStrikeSpells;
+	
+	// aurastate counters
+	int8 asc_frozen;
+	int8 asc_enraged;
+	int8 asc_seal;
 
 	uint16 m_noInterrupt;
 	int32 m_rooted;

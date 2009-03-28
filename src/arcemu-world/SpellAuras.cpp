@@ -879,9 +879,9 @@ void Aura::Remove()
 	}
 
     uint32 flag = 0;
-    if( m_spellProto->MechanicsType == MECHANIC_ENRAGED )
+	if( m_spellProto->MechanicsType == MECHANIC_ENRAGED && !--m_target->asc_enraged )
 		flag |= AURASTATE_FLAG_ENRAGED;
-    if( m_spellProto->BGR_one_buff_on_target & SPELL_TYPE_SEAL )
+	if( m_spellProto->BGR_one_buff_on_target & SPELL_TYPE_SEAL && !--m_target->asc_seal )
         flag |= AURASTATE_FLAG_JUDGEMENT;
     m_target->RemoveFlag( UNIT_FIELD_AURASTATE, flag );
 
@@ -3978,7 +3978,7 @@ void Aura::SpellAuraModRoot(bool apply)
 		if( m_target && caster )
 			static_cast<Unit*>(m_target)->EventStunOrImmobilize( caster, true );
 		
-		if( GetSpellProto()->School == SCHOOL_FROST )
+		if( GetSpellProto()->School == SCHOOL_FROST && !m_target->asc_frozen++ )
 			m_target->SetFlag( UNIT_FIELD_AURASTATE, AURASTATE_FLAG_FROZEN );
 
 		/* -Supalosa- TODO: Mobs will attack nearest enemy in range on aggro list when rooted. */
@@ -3993,9 +3993,8 @@ void Aura::SpellAuraModRoot(bool apply)
 		if(m_target->GetTypeId() == TYPEID_UNIT)
 			m_target->GetAIInterface()->AttackReaction(GetUnitCaster(), 1, 0);
 
-		if( GetSpellProto()->School == SCHOOL_FROST )
+		if( GetSpellProto()->School == SCHOOL_FROST && !--m_target->asc_frozen )
 			m_target->RemoveFlag( UNIT_FIELD_AURASTATE, AURASTATE_FLAG_FROZEN );
-
 	}
 }
 
