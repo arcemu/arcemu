@@ -106,8 +106,8 @@ int32 HonorHandler::CalculateHonorPointsForKill( Player *pPlayer, Unit* pVictim 
 
 void HonorHandler::OnPlayerKilledUnit( Player *pPlayer, Unit* pVictim )
 {
-	int PvPToken;
-	int PvPTokenID;
+	int PvPToken = 0;
+	int PvPTokenID = 0;
 	Item *PvPTokenItem;
 	if( pVictim == NULL || pPlayer == NULL )
 		return;
@@ -246,8 +246,11 @@ void HonorHandler::OnPlayerKilledUnit( Player *pPlayer, Unit* pVictim )
 				{
 					Config.OptionalConfig.GetInt("Extra","PvPTokenID",&PvPTokenID);
 					PvPTokenItem = objmgr.CreateItem(PvPTokenID,pAffectedPlayer);
-					PvPTokenItem->SoulBind();
-					pAffectedPlayer->GetItemInterface()->AddItemToFreeSlot(PvPTokenItem);
+					if( PvPTokenItem )
+					{
+						PvPTokenItem->SoulBind();
+						pAffectedPlayer->GetItemInterface()->AddItemToFreeSlot( PvPTokenItem );
+					}
 				}
 				if(pAffectedPlayer->GetZoneId() == 3518)
 				{
