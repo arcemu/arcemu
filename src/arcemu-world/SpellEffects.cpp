@@ -609,7 +609,7 @@ void Spell::SpellEffectSchoolDMG(uint32 i) // dmg school
 					MWS = mainHand->GetProto()->Delay / 1000.0f;
 				uint32 AP = p_caster->GetAP(); // Attack Power
 				uint32 SPH = p_caster->GetUInt32Value(PLAYER_FIELD_MOD_DAMAGE_DONE_POS + SCHOOL_HOLY); // Holy Spell Damage
-				float dmg = MWS * (0.022f * AP + 0.044f * SPH);
+				dmg = float2int32( MWS * ( 0.022f * float( AP ) + 0.044f * float( SPH ) ) );
 			}
 		case SPELL_HASH_SHIELD_SLAM:	// Shield Slam - damage is increased by block value
 			{
@@ -649,6 +649,7 @@ void Spell::SpellEffectSchoolDMG(uint32 i) // dmg school
 				break;
 			default:
 				break;
+		}
 	}
 
 
@@ -3082,7 +3083,7 @@ void Spell::SpellEffectSummon(uint32 i)
 				uint32 curPow = p_caster->GetUInt32Value(UNIT_FIELD_POWER7)+1;
 				uint32 extradur = float2int32(duration+(curPow/50.0f));
 				Item * item = p_caster->GetItemInterface()->GetInventoryItem( EQUIPMENT_SLOT_MAINHAND );
-				uint32 mitemID;
+				uint32 mitemID = 0;
 				if(item)
 					mitemID = item->GetUInt32Value( OBJECT_FIELD_ENTRY );
 
