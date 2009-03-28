@@ -657,58 +657,6 @@ void WorldSession::HandlePlayerLoginOpcode( WorldPacket & recv_data )
 	plr->LoadFromDB((uint32)playerGuid);
 }
 
-void WorldSession::HandleAlterAppearance(WorldPacket & recv_data)
-{
-	sLog.outDebug("WORLD: CMSG_ALTER_APPEARANCE");
-	CHECK_PACKET_SIZE(recv_data, 12);
-	
-	uint32 hair, colour, facialhair;
-	recv_data >> hair >> colour >> facialhair;
-	
-	BarberShopStyleEntry * Hair = dbcBarberShopStyle.LookupEntry(hair);
-	BarberShopStyleEntry * facialHair = dbcBarberShopStyle.LookupEntry(facialhair);
-	if(!facialHair || !Hair)
-		return;
-
-	uint8 newHair = Hair->hair_id;
-	uint8 newFacialHair = facialHair->hair_id;	
-	uint32 level = _player->getLevel();
-	uint32 cost = 0;
-	uint8 oldHair = _player->GetByte(PLAYER_BYTES, 2);
-	uint8 oldColour = _player->GetByte(PLAYER_BYTES, 3);
-	uint8 oldFacialHair = _player->GetByte(PLAYER_BYTES_2, 0);
-
-	if(oldHair == newHair && oldColour == (uint8)colour && oldFacialHair == newFacialHair)
-		return;
-
-	if(level >= 100)
-		level = 100;
-
-	gtFloat *cutcosts = dbcBarberShopPrices.LookupEntry(level - 1);
-	if(!cutcosts)
-		return;
-
-	WorldPacket data(SMSG_BARBER_SHOP_RESULT, 4);
-
-	if(oldHair != newHair || oldColour != colour || oldFacialHair != newFacialHair)
-		cost += (uint32)cutcosts->val;
-
-	if(_player->GetUInt32Value(PLAYER_FIELD_COINAGE) < cost)
-	{		
-		data << uint32(1); 
-		SendPacket(&data);
-		return;
-	}
-
-	data << uint32(0);
-	SendPacket(&data);
-	_player->ModUnsigned32Value(PLAYER_FIELD_COINAGE, -(int32)cost);
-	_player->SetByte(PLAYER_BYTES, 2, newHair);
-	_player->SetByte(PLAYER_BYTES, 3, (uint8)colour);
-	_player->SetByte(PLAYER_BYTES_2, 0, newFacialHair);
-	_player->SetStandState(0);
-}
-
 
 void WorldSession::FullLogin(Player * plr)
 {

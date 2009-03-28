@@ -435,9 +435,6 @@ void AchievementMgr::UpdateAchievementCriteria(AchievementCriteriaTypes type, in
 				if (GetPlayer()->HasOverlayUncovered(achievementCriteria->explore_area.areaReference))
 					SetCriteriaProgress(achievementCriteria, 1);
 				break;
-			case ACHIEVEMENT_CRITERIA_TYPE_COMPLETE_QUEST_COUNT:
-				UpdateCriteriaProgress(achievementCriteria, 1);
-				break;
 			case ACHIEVEMENT_CRITERIA_TYPE_COMPLETE_QUESTS_IN_ZONE:
 				if(achievementCriteria->complete_quests_in_zone.zoneID == miscvalue1)
 					UpdateCriteriaProgress(achievementCriteria, 1);
@@ -446,18 +443,9 @@ void AchievementMgr::UpdateAchievementCriteria(AchievementCriteriaTypes type, in
 				if(achievementCriteria->complete_quest.questID == miscvalue1)
 					UpdateCriteriaProgress(achievementCriteria, 1);
 				break;
-			case ACHIEVEMENT_CRITERIA_TYPE_QUEST_REWARD_GOLD:
-				UpdateCriteriaProgress(achievementCriteria, miscvalue1);
-				break;
-			case ACHIEVEMENT_CRITERIA_TYPE_LOOT_MONEY:
-				UpdateCriteriaProgress(achievementCriteria, miscvalue1);
-				break;
 			case ACHIEVEMENT_CRITERIA_TYPE_GAIN_REPUTATION:
 				if(achievementCriteria->gain_reputation.factionID == miscvalue1)
 					SetCriteriaProgress(achievementCriteria, miscvalue2);
-				break;
-			case ACHIEVEMENT_CRITERIA_TYPE_GAIN_EXALTED_REPUTATION:
-				UpdateCriteriaProgress(achievementCriteria, miscvalue1);
 				break;
 			case ACHIEVEMENT_CRITERIA_TYPE_LEARN_SPELL:
 				if(achievementCriteria->learn_spell.spellID == miscvalue1)
@@ -903,7 +891,7 @@ void AchievementMgr::UpdateAchievementCriteria(AchievementCriteriaTypes type, in
 						break;
 				}
 				break;
-			case ACHIEVEMENT_CRITERIA_TYPE_USE_ITEM:
+			case ACHIEVEMENT_CRITERIA_TYPE_USE_ITEM: // itemID in miscvalue1
 				if(achievementCriteria->use_item.itemID == miscvalue1)
 				{
 					switch(achievementCriteria->referredAchievement)
@@ -966,7 +954,14 @@ void AchievementMgr::UpdateAchievementCriteria(AchievementCriteriaTypes type, in
 				if(achievementCriteria->use_gameobject.goEntry == miscvalue1)
 					UpdateCriteriaProgress(achievementCriteria, 1);
 				break;
+			// these achievement criteria types simply update the progress by the value passed in miscvalue1
+			case ACHIEVEMENT_CRITERIA_TYPE_QUEST_REWARD_GOLD:
+			case ACHIEVEMENT_CRITERIA_TYPE_LOOT_MONEY:
+			case ACHIEVEMENT_CRITERIA_TYPE_GAIN_EXALTED_REPUTATION:
+			case ACHIEVEMENT_CRITERIA_TYPE_COMPLETE_QUEST_COUNT:
 			case ACHIEVEMENT_CRITERIA_TYPE_BUY_BANK_SLOT:
+			case ACHIEVEMENT_CRITERIA_TYPE_VISIT_BARBER_SHOP:
+			case ACHIEVEMENT_CRITERIA_TYPE_GOLD_SPENT_AT_BARBER:
 				UpdateCriteriaProgress(achievementCriteria, miscvalue1);
 				break;
 			//End of Achievement List
@@ -1179,24 +1174,18 @@ bool AchievementMgr::IsCompletedCriteria(AchievementCriteriaEntry const* achieve
 		case ACHIEVEMENT_CRITERIA_TYPE_LOOT_ITEM:
 		case ACHIEVEMENT_CRITERIA_TYPE_OWN_ITEM:
 			return progresscounter >= achievementCriteria->loot_item.itemCount;
-		case ACHIEVEMENT_CRITERIA_TYPE_EXPLORE_AREA:
-			return progresscounter >= 1;
 		case ACHIEVEMENT_CRITERIA_TYPE_LOOT_MONEY:
 			return progresscounter >= achievementCriteria->loot_money.goldInCopper;
 		case ACHIEVEMENT_CRITERIA_TYPE_COMPLETE_QUEST_COUNT:
 			return progresscounter >= achievementCriteria->complete_quest_count.totalQuestCount;
 		case ACHIEVEMENT_CRITERIA_TYPE_COMPLETE_QUESTS_IN_ZONE:
 			return progresscounter >= achievementCriteria->complete_quests_in_zone.questCount;
-		case ACHIEVEMENT_CRITERIA_TYPE_COMPLETE_QUEST:
-			return progresscounter >= 1;
 		case ACHIEVEMENT_CRITERIA_TYPE_QUEST_REWARD_GOLD:
 			return progresscounter >= achievementCriteria->quest_reward_money.goldInCopper;
 		case ACHIEVEMENT_CRITERIA_TYPE_GAIN_REPUTATION:
 			return progresscounter >= achievementCriteria->gain_reputation.reputationAmount;
 		case ACHIEVEMENT_CRITERIA_TYPE_GAIN_EXALTED_REPUTATION:
 			return progresscounter >= achievementCriteria->gain_exalted_reputation.numberOfExaltedFactions;
-		case ACHIEVEMENT_CRITERIA_TYPE_LEARN_SPELL:
-			return progresscounter>0;
 		case ACHIEVEMENT_CRITERIA_TYPE_NUMBER_OF_MOUNTS:
 			return progresscounter >= achievementCriteria->number_of_mounts.mountCount;
 		case ACHIEVEMENT_CRITERIA_TYPE_KILL_CREATURE:
@@ -1205,12 +1194,6 @@ bool AchievementMgr::IsCompletedCriteria(AchievementCriteriaEntry const* achieve
 			return progresscounter >= achievementCriteria->reach_skill_level.skillLevel;
 		case ACHIEVEMENT_CRITERIA_TYPE_LEARN_SKILL_LEVEL:
 			return progresscounter >= achievementCriteria->learn_skill_level.skillLevel;
-		case ACHIEVEMENT_CRITERIA_TYPE_EQUIP_ITEM:
-			return progresscounter >= 1;
-		case ACHIEVEMENT_CRITERIA_TYPE_EQUIP_EPIC_ITEM:
-			return progresscounter >= 1;
-		case ACHIEVEMENT_CRITERIA_TYPE_DO_EMOTE:
-			return progresscounter >= 1;
 		case ACHIEVEMENT_CRITERIA_TYPE_USE_ITEM:
 			return progresscounter >= achievementCriteria->use_item.itemCount;
 		case ACHIEVEMENT_CRITERIA_TYPE_USE_GAMEOBJECT:
@@ -1219,6 +1202,15 @@ bool AchievementMgr::IsCompletedCriteria(AchievementCriteriaEntry const* achieve
 			return progresscounter >= achievementCriteria->buy_bank_slot.numberOfSlots;
 		case ACHIEVEMENT_CRITERIA_TYPE_COMPLETE_ACHIEVEMENT:
 			return m_completedAchievements.find(achievementCriteria->complete_achievement.linkedAchievement) != m_completedAchievements.end();
+		// These achievements only require counter to be 1 (or higher)
+		case ACHIEVEMENT_CRITERIA_TYPE_EXPLORE_AREA:
+		case ACHIEVEMENT_CRITERIA_TYPE_COMPLETE_QUEST:
+		case ACHIEVEMENT_CRITERIA_TYPE_LEARN_SPELL:
+		case ACHIEVEMENT_CRITERIA_TYPE_EQUIP_ITEM:
+		case ACHIEVEMENT_CRITERIA_TYPE_EQUIP_EPIC_ITEM:
+		case ACHIEVEMENT_CRITERIA_TYPE_DO_EMOTE:
+		case ACHIEVEMENT_CRITERIA_TYPE_VISIT_BARBER_SHOP:
+			return progresscounter >= 1;
 		//End of Achievement List
 	}
 	return false;
