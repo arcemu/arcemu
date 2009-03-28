@@ -878,7 +878,8 @@ void Aura::Remove()
 		}
 	}
     uint32 flag = 0;
-    flag |= AURASTATE_FLAG_ENRAGED;
+    if( m_spellProto->MechanicsType == MECHANIC_ENRAGED )
+		flag |= AURASTATE_FLAG_ENRAGED;
     if( m_spellProto->BGR_one_buff_on_target & SPELL_TYPE_SEAL )
         flag |= AURASTATE_FLAG_JUDGEMENT;
     m_target->RemoveFlag( UNIT_FIELD_AURASTATE, flag );
