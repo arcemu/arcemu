@@ -636,6 +636,20 @@ void Spell::SpellEffectSchoolDMG(uint32 i) // dmg school
 			break;
 		}
 	}
+	
+	if( p_caster && !static_damage )
+	{
+		switch( p_caster->getClass() )
+		{
+			case WARRIOR:
+			case ROGUE:
+			case HUNTER:
+			case DEATHKNIGHT:
+				static_damage=true;//No spells from these classes benefit from spell damage. Prevents Arc hunters, frost DKs, etc.
+				break;
+			default:
+				break;
+	}
 
 
 	// check for no more damage left (chains)

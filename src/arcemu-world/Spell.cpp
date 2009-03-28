@@ -4925,7 +4925,8 @@ void Spell::Heal(int32 amount, bool ForceCrit)
 	if( u_caster != NULL )
 	{
 		//Basic bonus
-		bonus += u_caster->HealDoneMod[GetProto()->School];
+		if( !p_caster || !(p_caster->getClass() == ROGUE || p_caster->getClass() == WARRIOR || p_caster->getClass() == HUNTER || p_caster->getClass() == DEATHKNIGHT) )
+			bonus += u_caster->HealDoneMod[GetProto()->School];
 		bonus += unitTarget->HealTakenMod[GetProto()->School];
 
 		//Bonus from Intellect & Spirit
@@ -5012,7 +5013,9 @@ void Spell::Heal(int32 amount, bool ForceCrit)
 			}
 		}
 
-		amount += float2int32( float( bonus ) * 1.88f ); //apply 3.0.2 spell coeff
+		//amount += float2int32( float( bonus ) * 1.88f ); //apply 3.0.2 spell coeff  //NO. FAIL. COEFFICIENTS WERE ALREADY HANDLED.
+		//3.0.2 spell healing coefficients should be set in database coefficient overrides.
+		amount += bonus;
 		amount += amount*u_caster->HealDonePctMod[GetProto()->School]/100;
 		amount += float2int32( float( amount ) * unitTarget->HealTakenPctMod[GetProto()->School] );
 

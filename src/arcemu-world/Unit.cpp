@@ -4836,6 +4836,18 @@ int32 Unit::GetSpellDmgBonus(Unit *pVictim, SpellEntry *spellInfo,int32 base_dmg
 
 	if( spellInfo->c_is_flags & SPELL_FLAG_IS_NOT_USING_DMG_BONUS )
 		return 0;
+	if( caster->IsPlayer() )
+	{
+		switch( static_cast<Player*>(this)->getClass() )
+		{
+			case ROGUE:
+			case WARRIOR:
+			case DEATHKNIGHT:
+			case HUNTER:
+				return 0;
+			default: break;
+		}
+	}
 
 //------------------------------by school---------------------------------------------------
 	plus_damage += caster->GetDamageDoneMod(school);
