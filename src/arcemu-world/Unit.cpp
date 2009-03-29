@@ -3374,7 +3374,11 @@ void Unit::Strike( Unit* pVictim, uint32 weapon_damage_type, SpellEntry* ability
 //--------------------------------postroll processing---------------------------------------
 	uint32 abs = 0;
 
-	AggroPvPGuards();
+	if( (IsPlayer() || IsPet()) && (pVictim->IsPlayer() || pVictim->IsPet())
+	   && ( ((IsPlayer()) ? static_cast<Player*>(this) : static_cast< Pet* >( this )->GetPetOwner())->DuelingWith
+		   != ((pVictim->IsPlayer()) ? static_cast<Player*>(pVictim) : static_cast< Pet* >( u_caster )->GetPetOwner())) )
+		AggroPvPGuards();//If this is a pet/player, and target is a pet/player, and the players (pet owner if it's a pet) aren't dueling, aggro.
+		//Damn that's some complicated logic... Hope I didn't mess it up :O
 	
 	switch(r)
 	{

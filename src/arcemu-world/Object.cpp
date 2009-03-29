@@ -1761,11 +1761,12 @@ void Object::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
 	if( pVictim->IsSpiritHealer() )
 		return;
 	
-	if(pVictim->IsPlayer() && this->IsPlayer() && static_cast< Player*>(this) != static_cast< Player* >(pVictim))
+	/*if(pVictim->IsPlayer() && this->IsPlayer() && static_cast< Player*>(this) != static_cast< Player* >(pVictim))
 	{
 		if( isAttackable(this,pVictim) && static_cast< Player* >(this)->DuelingWith != static_cast< Player* >(pVictim) )
 			static_cast<Unit*>(this)->AggroPvPGuards();
-	}
+	}*/
+	//Not all damage should aggro guards. Damage shields? (thorns, holy shield)
 	
 	if( damage > 14000 && this != pVictim && this->IsPlayer() && !static_cast< Player* >(this)->GetSession()->HasPermissions())
 	{
