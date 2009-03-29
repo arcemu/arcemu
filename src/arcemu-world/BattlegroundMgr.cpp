@@ -817,13 +817,53 @@ bool CBattlegroundManager::CanCreateInstance(uint32 Type, uint32 LevelGroup)
 /* Returns the minimum number of players (Only valid for battlegrounds) */
 uint32 CBattlegroundManager::GetMinimumPlayers(uint32 dbcIndex)
 {
-	return dbcBattlemasterListStore.LookupEntry(dbcIndex)->min_players_per_faction;
+	switch((int)dbcIndex)
+	{
+		case BATTLEGROUND_ALTERAC_VALLEY:
+			return Config.MainConfig.GetIntDefault("Battleground", "AV_MIN", dbcBattlemasterListStore.LookupEntry(dbcIndex)->min_players_per_faction);
+		case BATTLEGROUND_WARSONG_GULCH:
+			return Config.MainConfig.GetIntDefault("Battleground", "WS_MIN", dbcBattlemasterListStore.LookupEntry(dbcIndex)->min_players_per_faction);
+		case BATTLEGROUND_ARATHI_BASIN:
+			return Config.MainConfig.GetIntDefault("Battleground", "AB_MIN", dbcBattlemasterListStore.LookupEntry(dbcIndex)->min_players_per_faction);
+		case BATTLEGROUND_EYE_OF_THE_STORM:
+			return Config.MainConfig.GetIntDefault("Battleground", "EOS_MIN", dbcBattlemasterListStore.LookupEntry(dbcIndex)->min_players_per_faction);
+		case BATTLEGROUND_ARENA_2V2:
+			return 2;
+		case BATTLEGROUND_ARENA_3V3:
+			return 3;
+		case BATTLEGROUND_ARENA_5V5:
+			return 5;
+		case BATTLEGROUND_STRAND_OF_THE_ANCIENT:
+			return Config.MainConfig.GetIntDefault("Battleground", "SOTA_MIN", dbcBattlemasterListStore.LookupEntry(dbcIndex)->min_players_per_faction);
+		default:
+			return dbcBattlemasterListStore.LookupEntry(dbcIndex)->min_players_per_faction;
+	}
 }
 
 /* Returns the maximum number of players (Only valid for battlegrounds) */
 uint32 CBattlegroundManager::GetMaximumPlayers(uint32 dbcIndex)
 {
-	return dbcBattlemasterListStore.LookupEntry(dbcIndex)->max_players_per_faction;
+	switch((int)dbcIndex)
+	{
+		case BATTLEGROUND_ALTERAC_VALLEY:
+			return Config.MainConfig.GetIntDefault("Battleground", "AV_MAX", dbcBattlemasterListStore.LookupEntry(dbcIndex)->min_players_per_faction);
+		case BATTLEGROUND_WARSONG_GULCH:
+			return Config.MainConfig.GetIntDefault("Battleground", "WS_MAX", dbcBattlemasterListStore.LookupEntry(dbcIndex)->min_players_per_faction);
+		case BATTLEGROUND_ARATHI_BASIN:
+			return Config.MainConfig.GetIntDefault("Battleground", "AB_MAX", dbcBattlemasterListStore.LookupEntry(dbcIndex)->min_players_per_faction);
+		case BATTLEGROUND_EYE_OF_THE_STORM:
+			return Config.MainConfig.GetIntDefault("Battleground", "EOS_MAX", dbcBattlemasterListStore.LookupEntry(dbcIndex)->min_players_per_faction);
+		case BATTLEGROUND_ARENA_2V2:
+			return 2;
+		case BATTLEGROUND_ARENA_3V3:
+			return 3;
+		case BATTLEGROUND_ARENA_5V5:
+			return 5;
+		case BATTLEGROUND_STRAND_OF_THE_ANCIENT:
+			return Config.MainConfig.GetIntDefault("Battleground", "SOTA_MAX", dbcBattlemasterListStore.LookupEntry(dbcIndex)->min_players_per_faction);
+		default:
+			return dbcBattlemasterListStore.LookupEntry(dbcIndex)->min_players_per_faction;
+	}
 }
 
 
