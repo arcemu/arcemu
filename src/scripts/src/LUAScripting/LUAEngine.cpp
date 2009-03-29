@@ -4190,7 +4190,7 @@ int luaUnit_SetPlayerLevel(lua_State * L, Unit * ptr)
 {
 	CHECK_TYPEID_RET(TYPEID_PLAYER);
 	uint32 level = luaL_checkint(L,1);
-	if( level <= 70)
+	if( level <= 80)
 	{
 		LevelInfo * Info = objmgr.GetLevelInfo(ptr->getRace(),ptr->getClass(),level);
 		if (Info != 0)
@@ -4206,7 +4206,7 @@ int luaUnit_AddSkill(lua_State * L, Unit * ptr)
 	uint32 skill = luaL_checkint(L,1);
 	uint32 current = luaL_checkint(L,2);
 	uint32 max = luaL_checkint(L,3);
-	if(!max) max = 375;
+	if(!max) max = 450;
 	if(current > max)
 		((Player*)ptr)->BroadcastMessage("CURRENT LEVEL CAN'T BE GREATER THAN MAX LEVEL");
 		return 0;
