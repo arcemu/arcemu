@@ -1248,7 +1248,7 @@ void MapMgr::LoadAllCells()
 				// There is no spoon. Err... cell.
 				cellInfo = Create( x , y );
 				cellInfo->Init( x , y , _mapId , this );
-				sLog.outDetail( "Created cell [%u,%u] on map %d (instance %d)." , x , y , _mapId , m_instanceID );
+				sLog.outDetail( "Created cell [%u,%u] on map %u (instance %u)." , x , y , _mapId , m_instanceID );
 				cellInfo->SetActivity( true );
 				_map->CellGoneActive( x , y );
 				ASSERT( !cellInfo->IsLoaded() );
@@ -1262,13 +1262,13 @@ void MapMgr::LoadAllCells()
 				// Cell exists, but is inactive
 				if ( !cellInfo->IsActive() )
 				{
-					sLog.outDetail("Activated cell [%u,%u] on map %d (instance %d).", x, y, _mapId, m_instanceID );
+					sLog.outDetail("Activated cell [%u,%u] on map %u (instance %u).", x, y, _mapId, m_instanceID );
 					_map->CellGoneActive( x , y );
 					cellInfo->SetActivity( true );
 
 					if (!cellInfo->IsLoaded())
 					{
-						//sLog.outDetail("Loading objects for Cell [%d][%d] on map %d (instance %d)...",
+						//sLog.outDetail("Loading objects for Cell [%u][%u] on map %u (instance %u)...",
 						//	posX, posY, this->_mapId, m_instanceID);
 						spawns = _map->GetSpawnsList( x , y );
 						if( spawns )
@@ -1304,14 +1304,14 @@ void MapMgr::UpdateCellActivity(uint32 x, uint32 y, int radius)
 					objCell = Create(posX, posY);
 					objCell->Init(posX, posY, _mapId, this);
 
-					sLog.outDetail("Cell [%d,%d] on map %d (instance %d) is now active.",
+					sLog.outDetail("Cell [%u,%u] on map %u (instance %u) is now active.",
 						posX, posY, this->_mapId, m_instanceID);
 					objCell->SetActivity(true);
 					_map->CellGoneActive(posX, posY);
 
 					ASSERT(!objCell->IsLoaded());
 
-					sLog.outDetail("Loading objects for Cell [%d][%d] on map %d (instance %d)...",
+					sLog.outDetail("Loading objects for Cell [%u][%u] on map %u (instance %u)...",
 						posX, posY, this->_mapId, m_instanceID);
 
 					sp = _map->GetSpawnsList(posX, posY);
@@ -1323,14 +1323,14 @@ void MapMgr::UpdateCellActivity(uint32 x, uint32 y, int radius)
 				//Cell is now active
 				if (_CellActive(posX, posY) && !objCell->IsActive())
 				{
-					sLog.outDetail("Cell [%d,%d] on map %d (instance %d) is now active.",
+					sLog.outDetail("Cell [%u,%u] on map %u (instance %u) is now active.",
 						posX, posY, this->_mapId, m_instanceID);
 					_map->CellGoneActive(posX, posY);
 					objCell->SetActivity(true);
 
 					if (!objCell->IsLoaded())
 					{
-						sLog.outDetail("Loading objects for Cell [%d][%d] on map %d (instance %d)...",
+						sLog.outDetail("Loading objects for Cell [%u][%u] on map %u (instance %u)...",
 							posX, posY, this->_mapId, m_instanceID);
 						sp = _map->GetSpawnsList(posX, posY);
 						if(sp) objCell->LoadObjects(sp);
@@ -1339,7 +1339,7 @@ void MapMgr::UpdateCellActivity(uint32 x, uint32 y, int radius)
 				//Cell is no longer active
 				else if (!_CellActive(posX, posY) && objCell->IsActive())
 				{
-					sLog.outDetail("Cell [%d,%d] on map %d (instance %d) is now idle.",
+					sLog.outDetail("Cell [%u,%u] on map %u (instance %u) is now idle.",
 						posX, posY, this->_mapId, m_instanceID);
 					_map->CellGoneIdle(posX, posY);
 					objCell->SetActivity(false);
@@ -1931,7 +1931,7 @@ void MapMgr::UnloadCell(uint32 x,uint32 y)
 	MapCell * c = GetCell(x,y);
 	if(c == NULL || c->HasPlayers() || _CellActive(x,y) || !c->IsUnloadPending()) return;
 
-	sLog.outDetail("Unloading Cell [%d][%d] on map %d (instance %d)...",
+	sLog.outDetail("Unloading Cell [%u][%u] on map %u (instance %u)...",
 		x,y,_mapId,m_instanceID);
 
 	c->Unload();

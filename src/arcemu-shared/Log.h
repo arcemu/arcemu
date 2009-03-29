@@ -64,7 +64,7 @@ public:
   void SetFileLoggingLevel(int32 level);
   void SetScreenLoggingLevel(int32 level);
 
-  void outColor(uint32 colorcode, const char * str, ...);
+  void outColor(uint8 colorcode, const char * str, ...);
   
 #ifdef WIN32
   HANDLE stdout_handle, stderr_handle;

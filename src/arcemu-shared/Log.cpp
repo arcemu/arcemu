@@ -80,11 +80,11 @@ void oLog::outTime()
 
 void oLog::outString( const char * str, ... )
 {
-	va_list ap;
-	char buf[32768];
-
 	if(m_fileLogLevel < 0 && m_screenLogLevel < 0)
 		return;
+
+	va_list ap;
+	char buf[32768];
 
 	va_start(ap, str);
 	vsnprintf(buf, 32768, str, ap);
@@ -105,11 +105,11 @@ void oLog::outString( const char * str, ... )
 
 void oLog::outError( const char * err, ... )
 {
-	va_list ap;
-	char buf[32768];
-
 	if(m_fileLogLevel < 1 && m_screenLogLevel < 1)
 		return;
+		
+	va_list ap;
+	char buf[32768];
 
 	va_start(ap, err);
 	vsnprintf(buf, 32768, err, ap);
@@ -140,11 +140,11 @@ void oLog::outError( const char * err, ... )
 
 void oLog::outBasic( const char * str, ... )
 {
-	va_list ap;
-	char buf[32768];
-
 	if(m_fileLogLevel < 1 && m_screenLogLevel < 1)
 		return;
+	
+	va_list ap;
+	char buf[32768];
 
 	va_start(ap, str);
 	vsnprintf(buf, 32768, str, ap);
@@ -164,11 +164,11 @@ void oLog::outBasic( const char * str, ... )
 
 void oLog::outDetail( const char * str, ... )
 {
-	va_list ap;
-	char buf[32768];
-
 	if(m_fileLogLevel < 2 && m_screenLogLevel < 2)
 		return;
+
+	va_list ap;
+	char buf[32768];
 
 	va_start(ap, str);
 	vsnprintf(buf, 32768, str, ap);
@@ -189,11 +189,10 @@ void oLog::outDetail( const char * str, ... )
 
 void oLog::outDebug( const char * str, ... )
 {
-	va_list ap;
-	char buf[32768];
-
 	if(m_fileLogLevel < 3 && m_screenLogLevel < 3)
 		return;
+	va_list ap;
+	char buf[32768];
 
 	va_start(ap, str);
 	vsnprintf(buf, 32768, str, ap);
@@ -323,7 +322,7 @@ if (m_file)
 	}
 }
 
-void oLog::outColor(uint32 colorcode, const char * str, ...)
+void oLog::outColor(uint8 colorcode, const char * str, ...)
 {
 	if( !str ) return;
 	va_list ap;
