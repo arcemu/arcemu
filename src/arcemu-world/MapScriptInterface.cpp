@@ -97,6 +97,25 @@ GameObject* MapScriptInterface::SpawnGameObject(uint32 Entry, float cX, float cY
 	return pGameObject;
 }
 
+GameObject * MapScriptInterface::SpawnGameObject(GOSpawn * gs, bool AddToWorld)
+{
+	if(!gs)
+		return NULL;
+
+	GameObject *pGameObject = mapMgr.CreateGameObject(gs->entry);
+	pGameObject->SetInstanceID(mapMgr.GetInstanceID());
+	if(!pGameObject->Load(gs))
+	{
+		delete pGameObject;
+		return NULL;
+	}
+
+	if(AddToWorld)
+		pGameObject->PushToWorld(&mapMgr);
+
+	return pGameObject;
+}
+
 Creature* MapScriptInterface::SpawnCreature(uint32 Entry, float cX, float cY, float cZ, float cO, bool AddToWorld, bool tmplate, uint32 Misc1, uint32 Misc2)
 {
 	CreatureProto * proto = CreatureProtoStorage.LookupEntry(Entry);
@@ -139,6 +158,30 @@ Creature* MapScriptInterface::SpawnCreature(uint32 Entry, float cX, float cY, fl
 	p->spawnid = 0;
 	p->m_spawn = 0;
 	delete sp;
+	if (AddToWorld)
+		p->PushToWorld(&mapMgr);
+	return p;
+}
+
+Creature * MapScriptInterface::SpawnCreature(CreatureSpawn * sp, bool AddToWorld)
+{
+	if(!sp)
+		return NULL;
+
+	CreatureProto * proto = CreatureProtoStorage.LookupEntry(sp->entry);
+	CreatureInfo * info = CreatureNameStorage.LookupEntry(sp->entry);
+	if(proto == 0 || info == 0)
+	{
+		return 0;
+	}
+
+	uint32 Gender = info->GenerateModelId(&sp->displayid);
+	Creature * p = this->mapMgr.CreateCreature(sp->entry);
+	ASSERT(p);
+	p->Load(sp, (uint32)NULL, NULL);
+	p->setGender(Gender);
+	p->spawnid = 0;
+	p->m_spawn = 0;
 	if (AddToWorld)
 		p->PushToWorld(&mapMgr);
 	return p;
