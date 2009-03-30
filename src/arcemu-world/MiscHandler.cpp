@@ -1347,7 +1347,7 @@ void WorldSession::HandleBarberShopResult(WorldPacket & recv_data)
 	_player->SetByte( PLAYER_BYTES, 2, newhair);
 	_player->SetByte( PLAYER_BYTES, 3, newhaircolor);
 	_player->SetByte( PLAYER_BYTES_2, 0, newfacial);
-	_player->ModUnsigned32Value( PLAYER_FIELD_COINAGE, -cost );
+	_player->ModUnsigned32Value( PLAYER_FIELD_COINAGE, 0-cost );
 
 	_player->SetStandState(0);                              // stand up
 	_player->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_VISIT_BARBER_SHOP, 1, 0, 0);
