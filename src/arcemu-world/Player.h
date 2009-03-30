@@ -1964,7 +1964,6 @@ protected:
 	uint32 m_summonMapId;
 	uint32 m_summoner;
 
-	uint32 iActivePet;
 	void _SetCreateBits(UpdateMask *updateMask, Player *target) const;
 	void _SetUpdateBits(UpdateMask *updateMask, Player *target) const;
 

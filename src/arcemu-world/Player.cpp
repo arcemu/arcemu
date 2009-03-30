@@ -38,7 +38,6 @@ m_achievementMgr(this),
 m_finishingmovesdodge(false),
 disableAppear(false),
 disableSummon(false),
-iActivePet(0),
 //resurrector(0),
 SpellCrtiticalStrikeRatingBonus(0),
 SpellHasteRatingBonus(1.0f),
@@ -1979,56 +1978,36 @@ void Player::_LoadPet(QueryResult * result)
 		pet->spellid = fields[13].GetUInt32();
 
 		m_Pets[pet->number] = pet;
-		if(pet->active)
-		{
-			if(iActivePet)  // how the hell can this happen
-			{
-				//printf("pet warning - >1 active pet.. weird..");
-			}
-			else
-				iActivePet = pet->number;
-		}
 
 		if(pet->number > m_PetNumberMax)
 			m_PetNumberMax =  pet->number;
 	}while(result->NextRow());
 }
 
-void Player::SpawnPet(uint32 pet_number)
+void Player::SpawnPet( uint32 pet_number )
 {
-	std::map<uint32, PlayerPet*>::iterator itr = m_Pets.find(pet_number);
-	if(itr == m_Pets.end())
+	std::map< uint32, PlayerPet* >::iterator itr = m_Pets.find( pet_number );
+	if( itr == m_Pets.end() )
 	{
 		sLog.outError("PET SYSTEM: "I64FMT" Tried to load invalid pet %d", GetGUID(), pet_number);
 		return;
 	}
-	if (itr->second->spellid == 0)
+	Pet *pPet = objmgr.CreatePet( itr->second->entry );
+	pPet->LoadFromDB( this, itr->second );
+	
+	if( itr->second->spellid )
 	{
-		Pet *pPet = objmgr.CreatePet( itr->second->entry );
-		pPet->LoadFromDB( this, itr->second );
-	}
-	else
-	{
-		SpellEntry *pSpell = dbcSpell.LookupEntry(itr->second->spellid);
-		CreatureInfo *ci = CreatureNameStorage.LookupEntry(pSpell->EffectMiscValue[0]);
-		if(ci)
-		{
-			//if demonic sacrifice auras are still active, remove them
-			RemoveAura(18789);
-			RemoveAura(18790);
-			RemoveAura(18791);
-			RemoveAura(18792);
-			RemoveAura(35701);
-
-			Pet *summon = objmgr.CreatePet( pSpell->EffectMiscValue[0] );
-			//TODO: find better solution, now it creates new PlayerPet struct, but we already have one.
-			summon->CreateAsSummon( pSpell->EffectMiscValue[0], ci, NULL, this, pSpell, 1, 0 );
-		}
+		//if demonic sacrifice auras are still active, remove them
+		RemoveAura( 18789 );
+		RemoveAura( 18790 );
+		RemoveAura( 18791 );
+		RemoveAura( 18792 );
+		RemoveAura( 35701 );
 	}
 }
 void Player::SpawnActivePet()
 {
-	if( m_Summon != NULL || getClass() != HUNTER ) //TODO: only hunters for now
+	if( m_Summon != NULL || getClass() != HUNTER || !isAlive() ) //TODO: only hunters for now
 		return;
 
 	std::map< uint32, PlayerPet* >::iterator itr = m_Pets.begin();
@@ -4646,6 +4625,8 @@ void Player::ResurrectPlayer()
 	// We can afford this bullshit atm since auras are lost uppon death -> no immunities
 	for(uint32 i = 0; i < 7; i++)
 		SchoolImmunityList[i]=0;
+	
+	SpawnActivePet();
 }
 
 void Player::KillPlayer()
@@ -7488,6 +7469,8 @@ void Player::_Relocate(uint32 mapid, const LocationVector & v, bool sendpending,
 	//Dismount before teleport
 	if( m_MountSpellId )
 		RemoveAura( m_MountSpellId );
+	
+	SpawnActivePet();
 }
 
 
@@ -9409,9 +9392,7 @@ void Player::CompleteLoading()
 		//sEventMgr.AddEvent(this, &Player::RepopRequestedPlayer, EVENT_PLAYER_CHECKFORCHEATS, 2000, 1,EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
 	}
 
-	if(iActivePet)
-		SpawnPet(iActivePet);	   // cebernic in OA: only spawn if >0
-
+	SpawnActivePet();
 
 	// useless logon spell
 	Spell *logonspell = SpellPool.PooledNew();
