@@ -1674,7 +1674,7 @@ Unit* AIInterface::FindTarget()
 		return 0;
 	}
 
-	/*if (m_isNeutralGuard)
+	if (m_isNeutralGuard)
 	{
 		Player *tmpPlr;
 		for (std::set<Player*>::iterator itrPlr = m_Unit->GetInRangePlayerSetBegin(); itrPlr != m_Unit->GetInRangePlayerSetEnd(); ++itrPlr)
@@ -1692,18 +1692,8 @@ Unit* AIInterface::FindTarget()
 				continue;
 			if (tmpPlr->m_invisible)
 				continue;
-			if (tmpPlr->CombatStatus.GetPrimaryAttackTarget() == 0)
+			if( !tmpPlr->HasFlag( PLAYER_FLAGS, 0x100) )//PvP Guard Attackable.
 				continue;
-			else
-			{
-				Unit *pPTarget = GetUnit()->GetMapMgr()->GetUnit( tmpPlr->CombatStatus.GetPrimaryAttackTarget() );
-				if( pPTarget == NULL )
-					continue;
-				if( !pPTarget->IsPlayer() )
-					continue;
-				if( tmpPlr->DuelingWith == static_cast< Player* >( pPTarget ) )
-					continue;
-			}
 
 			dist = m_Unit->GetDistanceSq(tmpPlr);
 
@@ -1735,7 +1725,7 @@ Unit* AIInterface::FindTarget()
 			return target;
 		}
 		distance = 999999.0f; //Reset Distance for normal check
-	}*/
+	}
 
 	//we have a high chance that we will agro a player
 	//this is slower then oppfaction list BUT it has a lower chance that contains invalid pointers

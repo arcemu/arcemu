@@ -2966,8 +2966,6 @@ void Spell::HandleEffects(uint64 guid, uint32 i)
 	}
 #endif
 
-	if( (playerTarget || (unitTarget && unitTarget->IsPet()) )
-
 	id = GetProto()->Effect[i];
 	if( id<TOTAL_SPELL_EFFECTS)
 	{
@@ -3002,17 +3000,6 @@ void Spell::HandleAddAura(uint64 guid)
 	{
 		if(static_cast< Player* >(Target)->IsPvPFlagged())
 			p_caster->SetPvPFlag();
-		
-		//Players aggro pvp guards
-		if( isAttackable(u_caster,Target) && p_caster->DuelingWith != static_cast< Player* >(Target) )
-			p_caster->AggroPvPGuards();
-	}
-	//Pets aggro pvp guards!! Yay!
-	if( !p_caster && u_caster && u_caster->IsPet() && isAttackable(u_caster,Target) && static_cast< Pet* >( u_caster )->GetPetOwner()->DuelingWith != static_cast< Player* >(Target) )
-	{
-		u_caster->AggroPvPGuards();
-		static_cast< Pet* >( u_caster )->GetPetOwner()->AggroPvPGuards();
-		//Aggro guards on the pet and his owner.
 	}
 
 	// remove any auras with same type

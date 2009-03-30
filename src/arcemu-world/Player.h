@@ -1766,6 +1766,8 @@ public:
 //		RemoveByteFlag(UNIT_FIELD_BYTES_2, 1, 0x28);
 		SetByteFlag(UNIT_FIELD_BYTES_2, 1, U_FIELD_BYTES_FLAG_PVP);
 		SetFlag(PLAYER_FLAGS, PLAYER_FLAG_PVP);
+		if( CombatStatus.IsInCombat() )
+			SetFlag(PLAYER_FLAGS, 0x100);
 	}
 
 	ARCEMU_INLINE void RemovePvPFlag()

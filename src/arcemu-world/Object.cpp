@@ -1761,13 +1761,6 @@ void Object::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
 	if( pVictim->IsSpiritHealer() )
 		return;
 	
-	/*if(pVictim->IsPlayer() && this->IsPlayer() && static_cast< Player*>(this) != static_cast< Player* >(pVictim))
-	{
-		if( isAttackable(this,pVictim) && static_cast< Player* >(this)->DuelingWith != static_cast< Player* >(pVictim) )
-			static_cast<Unit*>(this)->AggroPvPGuards();
-	}*/
-	//Not all damage should aggro guards. Damage shields? (thorns, holy shield)
-	
 	if( damage > 14000 && this != pVictim && this->IsPlayer() && !static_cast< Player* >(this)->GetSession()->HasPermissions())
 	{
 		if(spellId && sWorld.m_limits.spellDamageCap > 0)
@@ -1854,7 +1847,10 @@ void Object::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
 		Player* owner = static_cast< Player* >( static_cast< Pet* >( this )->GetPetOwner() );
 		if( owner != NULL )
 			if( owner->isAlive() && static_cast< Player* >( pVictim )->DuelingWith != owner )
+			{
 				owner->SetPvPFlag();
+				static_cast<Unit*>(this)->AggroPvPGuards();
+			}
 	}
 
 	if(!no_remove_auras)
