@@ -3739,7 +3739,38 @@ void Aura::SpellAuraModResistance(bool apply)
 
 void Aura::SpellAuraPeriodicTriggerSpellWithValue(bool apply)
 {
-	return SpellAuraPeriodicTriggerSpell(apply); // what's the difference? where is the value?
+	if(m_spellProto->EffectTriggerSpell[mod->i] == 0)
+		return;
+	if(apply)
+	{
+		uint32 sp = GetSpellProto()->EffectTriggerSpell[mod->i];
+		SpellEntry *spe = dbcSpell.LookupEntry(sp);
+		if(!sp || !spe)
+		{
+			return; // invalid spell
+		}
+
+		Unit *m_caster = GetUnitCaster();
+		if(!m_caster)
+		{
+			return; // invalid caster
+		}
+
+		spe->EffectBasePoints[0] = mod->m_amount; // set the base damage value
+
+		if(m_caster->GetUInt64Value(UNIT_FIELD_CHANNEL_OBJECT))
+		{
+			sEventMgr.AddEvent(this, &Aura::EventPeriodicTriggerSpell, spe,
+			EVENT_AURA_PERIODIC_TRIGGERSPELL,GetSpellProto()->EffectAmplitude[mod->i], 0, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
+			periodic_target = m_caster->GetUInt64Value(UNIT_FIELD_CHANNEL_OBJECT);
+		}
+		else if(m_target)
+		{
+			sEventMgr.AddEvent(this, &Aura::EventPeriodicTriggerSpell, spe,
+				EVENT_AURA_PERIODIC_TRIGGERSPELL,GetSpellProto()->EffectAmplitude[mod->i], 0,EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
+			periodic_target = m_target->GetGUID();
+		}
+	}
 }
 
 void Aura::SpellAuraPeriodicTriggerSpell(bool apply)

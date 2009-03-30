@@ -55,16 +55,15 @@ void SpellCastTargets::read( WorldPacket & data,uint64 caster )
 			case 27019: // Arcane Shot (Rank 9)
 			case 49044: // Arcane Shot (Rank 10)
 			case 49045: // Arcane Shot (Rank 11)
-//			case 15407: // Mind Flay (Rank 1) - for some reason the client is crashing with Rank 1 ... so no slow effect
+			case 15407: // Mind Flay (Rank 1)
 			case 17311: // Mind Flay (Rank 2)
 			case 17312: // Mind Flay (Rank 3)
 			case 17313: // Mind Flay (Rank 4)
 			case 17314: // Mind Flay (Rank 5)
 			case 18807: // Mind Flay (Rank 6)
-			case 25387: // Mind Flay (Rank 7) - for some reason slow effect also affects caster with Rank 7... weird
+			case 25387: // Mind Flay (Rank 7)
 			case 48155: // Mind Flay (Rank 8)
 			case 48156: // Mind Flay (Rank 9)
-//			case 58381: // Mind Flay triggered spell (damage)
 				m_targetMask = TARGET_FLAG_UNIT;
 				m_unitTarget = objmgr.GetPlayer((uint32)caster)->GetUInt64Value(UNIT_FIELD_TARGET);
 				break;
