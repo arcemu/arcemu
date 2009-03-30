@@ -6875,4 +6875,68 @@ void ApplyNormalFixes()
 		}
 
 
+		//STEW's VEHICLE MOUNT TEMP FIXES
+		//MECHANO HOG (Horde bike)
+		sp = dbcSpell.LookupEntryForced( 55531 );
+		if( sp != NULL )
+		{
+			sp->Effect[0] = SPELL_EFFECT_APPLY_AURA;
+			sp->Effect[1] = SPELL_EFFECT_APPLY_AURA;
+			sp->EffectApplyAuraName[0] = SPELL_AURA_MOUNTED;
+			sp->EffectApplyAuraName[1] = SPELL_AURA_MOD_INCREASE_MOUNTED_SPEED;
+			sp->EffectMiscValue[0] = 29929;
+			sp->EffectMiscValueB[1] = 0;
+			sp->EffectImplicitTargetA[0] = 1;
+			sp->EffectImplicitTargetA[1] = 1;
+			sp->EffectBasePoints[0] = 0;
+			sp->EffectBasePoints[1] = 99;
+		}
+		//MEKGINEER'S CHOPPER (Alliance Bike)
+		sp = dbcSpell.LookupEntryForced( 60424 );
+		if( sp != NULL )
+		{
+			sp->Effect[0] = SPELL_EFFECT_APPLY_AURA;
+			sp->Effect[1] = SPELL_EFFECT_APPLY_AURA;
+			sp->EffectApplyAuraName[0] = SPELL_AURA_MOUNTED;
+			sp->EffectApplyAuraName[1] = SPELL_AURA_MOD_INCREASE_MOUNTED_SPEED;
+			sp->EffectMiscValue[0] = 32286;
+			sp->EffectMiscValueB[1] = 0;
+			sp->EffectImplicitTargetA[0] = 1;
+			sp->EffectImplicitTargetA[1] = 1;
+			sp->EffectBasePoints[0] = 0;
+			sp->EffectBasePoints[1] = 99;
+		}
+		//Tundra Mammoth (Alliance flavour)
+		sp = dbcSpell.LookupEntryForced( 61425 );
+		if( sp != NULL )
+		{
+			sp->Effect[0] = SPELL_EFFECT_APPLY_AURA;
+			sp->Effect[1] = SPELL_EFFECT_APPLY_AURA;
+			sp->EffectApplyAuraName[0] = SPELL_AURA_MOUNTED;
+			sp->EffectApplyAuraName[1] = SPELL_AURA_MOD_INCREASE_MOUNTED_SPEED;
+			sp->EffectMiscValue[0] = 32633;
+			sp->EffectMiscValueB[1] = 0;
+			sp->EffectImplicitTargetA[0] = 1;
+			sp->EffectImplicitTargetA[1] = 1;
+			sp->EffectBasePoints[0] = 0;
+			sp->EffectBasePoints[1] = 99;
+		}
+		 
+		//Tundra Mammoth (Horde flavour)
+		sp = dbcSpell.LookupEntryForced( 61447 );
+		if( sp != NULL )
+		{
+			sp->Effect[0] = SPELL_EFFECT_APPLY_AURA;
+			sp->Effect[1] = SPELL_EFFECT_APPLY_AURA;
+			sp->EffectApplyAuraName[0] = SPELL_AURA_MOUNTED;
+			sp->EffectApplyAuraName[1] = SPELL_AURA_MOD_INCREASE_MOUNTED_SPEED;
+			sp->EffectMiscValue[0] = 32640;
+			sp->EffectMiscValueB[1] = 0;
+			sp->EffectImplicitTargetA[0] = 1;
+			sp->EffectImplicitTargetA[1] = 1;
+			sp->EffectBasePoints[0] = 0;
+			sp->EffectBasePoints[1] = 99;
+		}
+		 
+		
 }
