@@ -2525,11 +2525,27 @@ void SendItemLinkToPlayer(ItemPrototype * iProto, WorldSession * pSession, bool 
  	if(ItemCount)
 	{
 		int8 count = static_cast<int8>(owner->GetItemInterface()->GetItemCount(iProto->ItemId, true));
-		int8 slot = owner->GetItemInterface()->GetBagSlotByGuid(iProto->ItemId);
-		sChatHandler.SystemMessage(pSession,"Item %u %s Count %u Slot %u ContainerSlots %u", iProto->ItemId, GetItemLinkByProto(iProto, language).c_str(), count, slot, iProto->ContainerSlots);
+		//int8 slot = owner->GetItemInterface()->GetInventorySlotById(iProto->ItemId); //DISABLED due to being a retarded concept
+		if( iProto->ContainerSlots > 0 )
+		{
+			sChatHandler.SystemMessage(pSession,"Item %u %s Count %u ContainerSlots %u", iProto->ItemId, GetItemLinkByProto(iProto, language).c_str(), count, iProto->ContainerSlots);
+		}
+		else
+		{
+			sChatHandler.SystemMessage(pSession,"Item %u %s Count %u", iProto->ItemId, GetItemLinkByProto(iProto, language).c_str(), count);
+		}
 	}
  	else
-		sChatHandler.SystemMessage(pSession,"Item %u %s ContainerSlots %u", iProto->ItemId, GetItemLinkByProto(iProto, language).c_str(), iProto->ContainerSlots);
+	{
+		if( iProto->ContainerSlots > 0 )
+		{
+			sChatHandler.SystemMessage(pSession,"Item %u %s ContainerSlots %u", iProto->ItemId, GetItemLinkByProto(iProto, language).c_str(), iProto->ContainerSlots);
+		}
+		else
+		{
+			sChatHandler.SystemMessage(pSession,"Item %u %s", iProto->ItemId, GetItemLinkByProto(iProto, language).c_str());
+		}
+	}
 }
 
 
@@ -2613,6 +2629,8 @@ bool ChatHandler::HandleLookupObjectCommand(const char * args, WorldSession * m_
 			string Name;
 			std::stringstream strm;
 			strm<<i->ID;
+			strm << ", Display ";
+			strm << i->DisplayID;
 			//string ObjectID = i.c_str();
 			const char*objectName=i->Name;
 			recout="|cfffff000Object ";
@@ -2621,6 +2639,7 @@ bool ChatHandler::HandleLookupObjectCommand(const char * args, WorldSession * m_
 			recout+=objectName;
 			recout = recout + Name;
 			SendMultilineMessage(m_session,recout.c_str());
+			
 			++count;
 			if(count==50 || count > 50)
 			{
