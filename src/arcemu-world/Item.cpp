@@ -133,11 +133,11 @@ void Item::Virtual_Destructor()
 	}
 	Enchantments.clear();
 
-	if( IsInWorld() )
-		RemoveFromWorld();
-
 	// call EventableObject virtual destructor
 	EventableObject::Virtual_Destructor();
+
+	if( IsInWorld() )
+		RemoveFromWorld();
 
 	m_owner = NULL;
 }
