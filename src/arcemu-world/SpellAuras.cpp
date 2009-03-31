@@ -747,14 +747,15 @@ void Aura::Virtual_Constructor()
 
 Aura::~Aura()
 {
-	sEventMgr.RemoveEvents( this );
+	//sEventMgr.RemoveEvents( this );
 }
 
 void Aura::Virtual_Destructor()
 {
-	//forget about context and events to avoid memory leaks
-	static_cast< EventableObject* >( this )->Virtual_Destructor();
-	//this should do nothing now
+	// Call EventableObject virtual destructor
+	EventableObject::Virtual_Destructor();
+	
+	// Remove events for this
 	sEventMgr.RemoveEvents( this );
 }
 
