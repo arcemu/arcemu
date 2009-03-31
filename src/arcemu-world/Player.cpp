@@ -5426,7 +5426,7 @@ void Player::UpdateStats()
 
 	if( res < hp )
 		res = hp;
-	if((sWorld.m_limits.healthCap > 0) && (res > sWorld.m_limits.healthCap) && GetSession()->GetPermissionCount() <= 0 ) //hacker?
+	if( sWorld.m_limits.enable && (sWorld.m_limits.healthCap > 0) && (res > sWorld.m_limits.healthCap) && GetSession()->GetPermissionCount() <= 0 ) //hacker?
 	{
 		char logmsg[256];
 		snprintf(logmsg, 256, "has over %lu health (%i)", sWorld.m_limits.healthCap, res);
@@ -5475,7 +5475,7 @@ void Player::UpdateStats()
 		res = mana + bonus + manadelta;
 		if( res < mana )
 			res = mana;	
-		if((sWorld.m_limits.manaCap > 0) && (res > sWorld.m_limits.manaCap) && GetSession()->GetPermissionCount() <= 0 ) //hacker?
+		if( sWorld.m_limits.enable && (sWorld.m_limits.manaCap > 0) && (res > sWorld.m_limits.manaCap) && GetSession()->GetPermissionCount() <= 0 ) //hacker?
 		{
 			char logmsg[256];
 			snprintf(logmsg, 256, "has over %lu mana (%i)", sWorld.m_limits.manaCap, res);

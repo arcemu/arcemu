@@ -1761,7 +1761,7 @@ void Object::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
 	if( pVictim->IsSpiritHealer() )
 		return;
 	
-	if( damage > 14000 && this != pVictim && this->IsPlayer() && !static_cast< Player* >(this)->GetSession()->HasPermissions())
+	if( damage > 14000 && this != pVictim && this->IsPlayer() && !static_cast< Player* >(this)->GetSession()->HasPermissions() && sWorld.m_limits.enable )
 	{
 		if(spellId && sWorld.m_limits.spellDamageCap > 0)
 		{
