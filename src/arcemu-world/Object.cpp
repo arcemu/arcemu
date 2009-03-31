@@ -2467,15 +2467,14 @@ void Object::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
 							{
 								pTagger->GiveGroupXP( pVictim, pTagger);
 							}
-							else
+							else if( IsUnit() )
 							{
 								uint32 xp = CalculateXpToGive( pVictim, uTagger );
 								if( xp > 0 )
 								{
 									pTagger->GiveXP( xp, victimGuid, true );
 
-									// This is crashing sometimes, commented by now
-/*									this->SetFlag(UNIT_FIELD_AURASTATE,AURASTATE_FLAG_LASTKILLWITHHONOR);
+									this->SetFlag(UNIT_FIELD_AURASTATE,AURASTATE_FLAG_LASTKILLWITHHONOR);
 									if(!sEventMgr.HasEvent(this,EVENT_LASTKILLWITHHONOR_FLAG_EXPIRE))
 									{
 										sEventMgr.AddEvent((Unit*)this,&Unit::EventAurastateExpire,(uint32)AURASTATE_FLAG_LASTKILLWITHHONOR,EVENT_LASTKILLWITHHONOR_FLAG_EXPIRE,20000,1,0);
@@ -2483,7 +2482,7 @@ void Object::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
 									else
 									{
 										sEventMgr.ModifyEventTimeLeft(this,EVENT_LASTKILLWITHHONOR_FLAG_EXPIRE,20000);
-									}*/
+									}
 
 									if( pTagger->GetSummon() && pTagger->GetSummon()->CanGainXP() )
 									{
@@ -2557,15 +2556,14 @@ void Object::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
 									//Calc Group XP
 									petOwner->GiveGroupXP( pVictim, petOwner );
 								}
-								else
+								else if( IsUnit() )
 								{
 									uint32 xp = CalculateXpToGive( pVictim, petOwner );
 									if( xp > 0 )
 									{
 										petOwner->GiveXP( xp, victimGuid, true );
 
-										// This is crashing sometimes, commented by now
-/*										this->SetFlag(UNIT_FIELD_AURASTATE,AURASTATE_FLAG_LASTKILLWITHHONOR);
+										this->SetFlag(UNIT_FIELD_AURASTATE,AURASTATE_FLAG_LASTKILLWITHHONOR);
 										if(!sEventMgr.HasEvent(this,EVENT_LASTKILLWITHHONOR_FLAG_EXPIRE))
 										{
 											sEventMgr.AddEvent((Unit*)this,&Unit::EventAurastateExpire,(uint32)AURASTATE_FLAG_LASTKILLWITHHONOR,EVENT_LASTKILLWITHHONOR_FLAG_EXPIRE,20000,1,0);
@@ -2573,7 +2571,7 @@ void Object::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
 										else
 										{
 											sEventMgr.ModifyEventTimeLeft(this,EVENT_LASTKILLWITHHONOR_FLAG_EXPIRE,20000);
-										}*/
+										}
 
 										if( petTagger->CanGainXP() )
 										{
