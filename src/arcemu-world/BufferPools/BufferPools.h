@@ -51,15 +51,15 @@ public:
 	//insert into free object list
 	void PooledDelete(T* dumped)
 	{
-		if( dumped ) dumped->Virtual_Destructor();
+		if( dumped )
+		{
+			dumped->Virtual_Destructor();
+			delete dumped;
+		}
 		else return; //shit happens, in too many forms sadly
 
 	}
 
-	void DestroyPool()
-	{
-		delete this;
-	}
 private:
 	void InitPoolNewSection(uint32 from, uint32 to)
 	{
