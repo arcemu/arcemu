@@ -21,7 +21,7 @@
  * Prints stack trace to user defined buffer.
  * Always terminates the buffer with 0.
  */
-void printStackTrace( char* buffer, int bufferSize )
+extern void printStackTrace( char* buffer, int bufferSize )
 {
 #if defined(WIN32) && defined(_DEBUG)
 	// find out map file name
@@ -58,7 +58,7 @@ void printStackTrace( char* buffer, int bufferSize )
 /**
  * Prints stack trace to stdout
  */
-void printStackTrace()
+extern void printStackTrace()
 {
 #if defined(WIN32) && defined(_DEBUG)
 	char buffer[6400];
@@ -70,7 +70,7 @@ void printStackTrace()
 /**
  * Used for assertions
  */
-void arcAssertFailed( const char* fname, int line, const char* expr )
+extern void arcAssertFailed( const char* fname, int line, const char* expr )
 {
 	printf( "Assertion Failed: (%s)\n", expr );
 	printf( "Location: %s(%i)\n", fname, line );
