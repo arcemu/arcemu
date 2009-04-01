@@ -43,7 +43,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalOptions="/MP /Zm256"
+				AdditionalOptions="/Zm256 /bigobj"
 				Optimization="0"
 				InlineFunctionExpansion="0"
 				AdditionalIncludeDirectories="&quot;..\..\src\arcemu-shared&quot;;&quot;..\..\extras\arcemu-windows-libraries\VC\include&quot;"
@@ -75,7 +75,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="ws2_32.lib libmysql.lib libeay32.lib dbghelp.lib zlib.lib pcre.lib"
+				AdditionalDependencies="ws2_32.lib libmysql_debug_win32.lib libeay32_win32.lib dbghelp.lib zlib_debug_win32.lib pcre_debug_win32.lib"
 				OutputFile="$(OutDir)/arcemu-logonserver.exe"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="..\..\extras\arcemu-windows-libraries\VC\lib"
@@ -136,9 +136,10 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				AdditionalOptions="/Zm256 /bigobj"
 				Optimization="0"
 				InlineFunctionExpansion="2"
-				AdditionalIncludeDirectories="..\..\src\arcemu-shared"
+				AdditionalIncludeDirectories="&quot;..\..\src\arcemu-shared&quot;;&quot;..\..\extras\arcemu-windows-libraries\VC\include&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE;_CRT_SECURE_NO_WARNINGS;_CRT_NONSTDC_NO_WARNINGS;X64"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -165,10 +166,10 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="ws2_32.lib libmysql.lib libeay32.lib dbghelp.lib zlib.lib pcre.lib"
+				AdditionalDependencies="ws2_32.lib libmysql_debug_x64.lib libeay32_win64.lib dbghelp.lib zlib_debug_x64.lib pcre_debug_x64.lib"
 				OutputFile="$(OutDir)/arcemu-logonserver.exe"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="..\..\dep\lib64"
+				AdditionalLibraryDirectories="..\..\extras\arcemu-windows-libraries\VC\lib"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/arcemu-logonserver.pdb"
 				SubSystem="1"
@@ -264,7 +265,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="ws2_32.lib msvcrt.lib libmysql.lib libeay32.lib dbghelp.lib zlib.lib pcre.lib"
+				AdditionalDependencies="ws2_32.lib msvcrt.lib libmysql_release_win32.lib libeay32_win32.lib dbghelp.lib zlib_release_win32.lib pcre_release_win32.lib"
 				OutputFile="$(OutDir)/arcemu-logonserver.exe"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="..\..\extras\arcemu-windows-libraries\VC\lib"
@@ -330,7 +331,7 @@
 				AdditionalOptions="/MP /Zm256"
 				Optimization="4"
 				InlineFunctionExpansion="2"
-				AdditionalIncludeDirectories="..\..\src\arcemu-shared"
+				AdditionalIncludeDirectories="&quot;..\..\src\arcemu-shared&quot;;&quot;..\..\extras\arcemu-windows-libraries\VC\include&quot;"
 				PreprocessorDefinitions="_HAS_ITERATOR_DEBUGGING=0;WIN32;NDEBUG;_CONSOLE;_CRT_SECURE_NO_WARNINGS;_CRT_NONSTDC_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE;X64"
 				StringPooling="true"
 				MinimalRebuild="false"
@@ -360,16 +361,16 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="ws2_32.lib libmysql.lib libeay32.lib dbghelp.lib zlib.lib pcre.lib"
+				AdditionalDependencies="ws2_32.lib libmysql_release_x64.lib libeay32_win64.lib dbghelp.lib zlib_release_x64.lib pcre_release_x64.lib"
 				OutputFile="$(OutDir)/arcemu-logonserver.exe"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="..\..\dep\lib64"
+				AdditionalLibraryDirectories="..\..\extras\arcemu-windows-libraries\VC\lib"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/arcemu-logonserver.pdb"
 				SubSystem="1"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
-				OptimizeForWindows98="1"
+				OptimizeForWindows98="0"
 				RandomizedBaseAddress="1"
 				DataExecutionPrevention="0"
 				TargetMachine="17"
