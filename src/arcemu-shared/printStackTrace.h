@@ -20,8 +20,8 @@
  * Uses stack frame to find out the caller function address and 
  * the map file to find out the function name.
  */
-void printStackTrace( char* buffer, int bufferSize );
-void printStackTrace( );
-void arcAssertFailed( const char* fname, int line, const char* expr );
+extern void printStackTrace( char* buffer, int bufferSize );
+extern void printStackTrace( );
+extern void arcAssertFailed( const char* fname, int line, const char* expr );
 
 #endif // _PRINTSTACKTRACE_H
