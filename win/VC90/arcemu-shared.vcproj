@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="9,00"
+	Version="9.00"
 	Name="arcemu-shared"
 	ProjectGUID="{90297C34-F231-4DF4-848E-A74BCC0E40ED}"
 	RootNamespace="shared"
@@ -109,88 +109,6 @@
 			/>
 		</Configuration>
 		<Configuration
-			Name="Debug|Win32"
-			OutputDirectory=".\arcemu-shared___Win32_Debug"
-			IntermediateDirectory=".\arcemu-shared___Win32_Debug"
-			ConfigurationType="4"
-			UseOfMFC="0"
-			ATLMinimizesCRunTimeLibraryUsage="false"
-			CharacterSet="2"
-			>
-			<Tool
-				Name="VCPreBuildEventTool"
-				Description="Extracting SVN revision..."
-				CommandLine="cd $(SolutionDir)\..\src\arcemu-shared&#x0D;&#x0A;RevisionExtractor.exe&#x0D;&#x0A;"
-			/>
-			<Tool
-				Name="VCCustomBuildTool"
-			/>
-			<Tool
-				Name="VCXMLDataGeneratorTool"
-			/>
-			<Tool
-				Name="VCWebServiceProxyGeneratorTool"
-			/>
-			<Tool
-				Name="VCMIDLTool"
-			/>
-			<Tool
-				Name="VCCLCompilerTool"
-				AdditionalOptions="/MP /Zm256"
-				Optimization="0"
-				InlineFunctionExpansion="0"
-				AdditionalIncludeDirectories="&quot;..\..\src\arcemu-shared&quot;;&quot;..\..\extras\arcemu-windows-libraries\VC\include&quot;"
-				PreprocessorDefinitions="WIN32;_DEBUG;_LIB;_CRT_SECURE_NO_WARNINGS;_CRT_NONSTDC_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE"
-				MinimalRebuild="false"
-				ExceptionHandling="2"
-				BasicRuntimeChecks="3"
-				RuntimeLibrary="3"
-				FloatingPointExceptions="true"
-				UsePrecompiledHeader="0"
-				PrecompiledHeaderFile=".\shared___Win32_Debug/shared.pch"
-				AssemblerListingLocation="$(IntDir)/"
-				ObjectFile="$(IntDir)/"
-				ProgramDataBaseFileName="$(IntDir)/"
-				WarningLevel="4"
-				SuppressStartupBanner="true"
-				Detect64BitPortabilityProblems="false"
-				DebugInformationFormat="4"
-				CompileAs="0"
-			/>
-			<Tool
-				Name="VCManagedResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCResourceCompilerTool"
-				PreprocessorDefinitions="_DEBUG"
-				Culture="1033"
-			/>
-			<Tool
-				Name="VCPreLinkEventTool"
-			/>
-			<Tool
-				Name="VCLibrarianTool"
-				OutputFile="$(IntDir)/shared.lib"
-				SuppressStartupBanner="true"
-			/>
-			<Tool
-				Name="VCALinkTool"
-			/>
-			<Tool
-				Name="VCXDCMakeTool"
-			/>
-			<Tool
-				Name="VCBscMakeTool"
-			/>
-			<Tool
-				Name="VCFxCopTool"
-			/>
-			<Tool
-				Name="VCPostBuildEventTool"
-				CommandLine=""
-			/>
-		</Configuration>
-		<Configuration
 			Name="Release|x64"
 			OutputDirectory=".\arcemu-shared___Win32_Release_x64"
 			IntermediateDirectory=".\arcemu-shared___Win32_Release_x64"
@@ -248,6 +166,89 @@
 			<Tool
 				Name="VCResourceCompilerTool"
 				PreprocessorDefinitions="NDEBUG"
+				Culture="1033"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLibrarianTool"
+				OutputFile="$(IntDir)/shared.lib"
+				SuppressStartupBanner="true"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+				CommandLine=""
+			/>
+		</Configuration>
+		<Configuration
+			Name="Debug|Win32"
+			OutputDirectory=".\arcemu-shared___Win32_Debug"
+			IntermediateDirectory=".\arcemu-shared___Win32_Debug"
+			ConfigurationType="4"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="false"
+			CharacterSet="2"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+				Description="Extracting SVN revision..."
+				CommandLine="cd $(SolutionDir)\..\src\arcemu-shared&#x0D;&#x0A;RevisionExtractor.exe&#x0D;&#x0A;"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				AdditionalOptions="/MP /Zm256"
+				Optimization="0"
+				InlineFunctionExpansion="0"
+				AdditionalIncludeDirectories="&quot;..\..\src\arcemu-shared&quot;;&quot;..\..\extras\arcemu-windows-libraries\VC\include&quot;"
+				PreprocessorDefinitions="WIN32;_DEBUG;_LIB;_CRT_SECURE_NO_WARNINGS;_CRT_NONSTDC_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE"
+				MinimalRebuild="false"
+				ExceptionHandling="2"
+				BasicRuntimeChecks="3"
+				RuntimeLibrary="3"
+				FloatingPointExceptions="true"
+				UsePrecompiledHeader="0"
+				PrecompiledHeaderFile=".\shared___Win32_Debug/shared.pch"
+				AssemblerListingLocation="$(IntDir)/"
+				ObjectFile="$(IntDir)/"
+				ProgramDataBaseFileName="$(IntDir)/"
+				WarningLevel="4"
+				SuppressStartupBanner="true"
+				Detect64BitPortabilityProblems="false"
+				DebugInformationFormat="4"
+				CompileAs="0"
+				DisableSpecificWarnings="4127"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="_DEBUG"
 				Culture="1033"
 			/>
 			<Tool
@@ -635,6 +636,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\arcemu-shared\Array.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\arcemu-shared\ByteBuffer.h"
 				>
 			</File>
@@ -663,6 +668,22 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\arcemu-shared\MapFile.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\arcemu-shared\MapFile.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\arcemu-shared\MapFileEntry.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\arcemu-shared\MapFileEntry.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\arcemu-shared\MemoryLeaks.cpp"
 				>
 			</File>
@@ -687,6 +708,14 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\arcemu-shared\printStackTrace.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\arcemu-shared\printStackTrace.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\arcemu-shared\Singleton.h"
 				>
 			</File>
@@ -695,11 +724,27 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\arcemu-shared\StackTrace.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\arcemu-shared\StackTrace.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\arcemu-shared\StackWalker.cpp"
 				>
 			</File>
 			<File
 				RelativePath="..\..\src\arcemu-shared\StackWalker.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\arcemu-shared\TextFile.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\arcemu-shared\TextFile.h"
 				>
 			</File>
 			<File

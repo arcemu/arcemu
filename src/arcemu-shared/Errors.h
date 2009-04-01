@@ -20,15 +20,12 @@
 #ifndef WOWSERVER_ERRORS_H
 #define WOWSERVER_ERRORS_H
 
+#include "printStackTrace.h"
 #include "CrashHandler.h"
 // TODO: handle errors better
 
 // An assert isn't necessarily fatal, although if compiled with asserts enabled it will be.
-#if defined(WIN32) && defined(_DEBUG)
-#define WPAssert( assertion ) { if( !(assertion) ) { fprintf( stderr, "\n%s:%i ASSERTION FAILED:\n  %s\n", __FILE__, __LINE__, #assertion ); CStackWalker sw; sw.ShowCallstack(); assert(assertion); } }
-#else
-#define WPAssert( assertion ) { if( !(assertion) ) { fprintf( stderr, "\n%s:%i ASSERTION FAILED:\n  %s\n", __FILE__, __LINE__, #assertion ); assert(assertion); } }
-#endif
+#define WPAssert( EXPR ) if (!(EXPR)) { arcAssertFailed(__FILE__,__LINE__,#EXPR); assert(EXPR); }
 
 #define WPError( assertion, errmsg ) if( ! (assertion) ) { Log::getSingleton( ).outError( "%s:%i ERROR:\n  %s\n", __FILE__, __LINE__, (char *)errmsg ); assert( false ); }
 #define WPWarning( assertion, errmsg ) if( ! (assertion) ) { Log::getSingleton( ).outError( "%s:%i WARNING:\n  %s\n", __FILE__, __LINE__, (char *)errmsg ); }

@@ -72,6 +72,12 @@
 #include "../arcemu-shared/Threading/Condition.h"
 #include "../arcemu-shared/arcemu_getopt.h"
 
+#ifdef WIN32
+#include "printStackTrace.h"
+//#include "StackTrace.h"
+//#include "MapFile.h"
+#endif
+
 #include "UpdateFields.h"
 #include "UpdateMask.h"
 #include "Opcodes.h"

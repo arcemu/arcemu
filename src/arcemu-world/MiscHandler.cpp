@@ -878,7 +878,7 @@ void WorldSession::HandleLogoutCancelOpcode( WorldPacket & recv_data )
 void WorldSession::HandleZoneUpdateOpcode( WorldPacket & recv_data )
 {
 	uint32 newZone;
-	WPAssert(GetPlayer());
+	ASSERT(GetPlayer());
 
 	recv_data >> newZone;
 

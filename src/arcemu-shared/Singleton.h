@@ -40,7 +40,7 @@ public:
   /// Constructor
   Singleton( ) {
 	/// If you hit this assert, this singleton already exists -- you can't create another one!
-	WPAssert( this->mSingleton == 0 );
+	ASSERT( this->mSingleton == 0 );
 	this->mSingleton = static_cast<type *>(this);
   }
   /// Destructor
@@ -48,7 +48,7 @@ public:
 	this->mSingleton = 0;
   }
 
-  ARCEMU_INLINE static type & getSingleton( ) { WPAssert( mSingleton ); return *mSingleton; }
+  ARCEMU_INLINE static type & getSingleton( ) { ASSERT( mSingleton ); return *mSingleton; }
   ARCEMU_INLINE static type * getSingletonPtr( ) { return mSingleton; }
 
 protected:

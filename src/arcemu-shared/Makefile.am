@@ -15,6 +15,8 @@ libshared_a_SOURCES = \
     Errors.h \
     Log.h \
     MemoryLeaks.h \
+    printStackTrace.cpp \
+    printStackTrace.h \
     Singleton.h \
     Threading.h \
     Timer.h \

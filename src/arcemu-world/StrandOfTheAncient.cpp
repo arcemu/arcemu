@@ -244,6 +244,23 @@ StrandOfTheAncient::StrandOfTheAncient(MapMgr * mgr, uint32 id, uint32 lgroup, u
 {
 	int i;
 
+	// Print a stack trace just for the hell of it
+	printf("\n\nStack Trace:\n");
+	printStackTrace(); // for Win32 Debug
+
+	// Look people, this is called exception handling, lets start using
+	// exception handling rather than relying on the crash handler.
+	try
+	{
+		// Crash on purpose... :P
+		printf("char *crash = 0;\n");
+		printf("*crash = 10;\n");
+		printf("\nBuilding as Win32/Debug... Cause an exception rather than crashing! :)\n");
+		char *crash = 0;
+		*crash = 10;
+	}
+	catch (...) { printStackTrace(); } // for Win32 Debug
+
 	for (i=0; i<2; i++) {
 		m_players[i].clear();
 		m_pendPlayers[i].clear();

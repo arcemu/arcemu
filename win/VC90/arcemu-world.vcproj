@@ -68,6 +68,7 @@
 				Detect64BitPortabilityProblems="false"
 				DebugInformationFormat="4"
 				CompileAs="0"
+				DisableSpecificWarnings="4127"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -88,6 +89,8 @@
 				IgnoreAllDefaultLibraries="false"
 				IgnoreDefaultLibraryNames="msvcrt.lib"
 				GenerateDebugInformation="true"
+				GenerateMapFile="true"
+				MapFileName="$(TargetDir)arcemu-world.map"
 				RandomizedBaseAddress="1"
 				DataExecutionPrevention="0"
 			/>
@@ -273,9 +276,12 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="ws2_32.lib msvcrt.lib libmysql.lib libeay32.lib dbghelp.lib zlib.lib pcre.lib"
+				LinkIncremental="0"
 				AdditionalLibraryDirectories="..\..\extras\collision\collision_dll\Debug;&quot;..\..\extras\arcemu-windows-libraries\VC\lib&quot;"
 				IgnoreDefaultLibraryNames="msvcrtd.lib"
 				GenerateDebugInformation="true"
+				GenerateMapFile="false"
+				MapFileName=""
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
 				RandomizedBaseAddress="1"
