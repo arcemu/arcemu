@@ -2048,7 +2048,8 @@ Creature * MapMgr::CreateCreature(uint32 entry, bool isVehicle)
 	pHighGuid[5] |= pEntry[2];
 	pHighGuid[6] |= pEntry[3];
 
-	sLog.outDebug("CreateCreature: IsVehicle = %u", uint32((uint32)isVehicle));
+	if (isVehicle)
+		sLog.outDebug("CreateCreature: IsVehicle = true");
 
 	if(_reusable_guids_creature.size())
 	{

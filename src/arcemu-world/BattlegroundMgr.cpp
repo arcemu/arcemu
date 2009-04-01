@@ -1293,41 +1293,50 @@ CBattleground * CBattlegroundManager::CreateInstance(uint32 Type, uint32 LevelGr
 
 void CBattlegroundManager::DeleteBattleground(CBattleground * bg)
 {
-	uint32 i = bg->GetType();
-	uint32 j = bg->GetLevelGroup();
-	Player * plr;
-
-	m_instanceLock.Acquire();
-	m_queueLock.Acquire();
-	m_instances[i].erase(bg->GetId());
-
-	/* erase any queued players */
-	list<uint32>::iterator itr = m_queuedPlayers[i][j].begin();
-	list<uint32>::iterator it2;
-	for(; itr != m_queuedPlayers[i][j].end();)
+	try
 	{
-		it2 = itr++;
-		plr = objmgr.GetPlayer(*it2);
-		if(!plr)
+		uint32 i = bg->GetType();
+		uint32 j = bg->GetLevelGroup();
+		Player * plr;
+
+		m_instanceLock.Acquire();
+		m_queueLock.Acquire();
+		m_instances[i].erase(bg->GetId());
+
+		/* erase any queued players */
+		list<uint32>::iterator itr = m_queuedPlayers[i][j].begin();
+		list<uint32>::iterator it2;
+		for(; itr != m_queuedPlayers[i][j].end();)
 		{
-			m_queuedPlayers[i][j].erase(it2);
-			continue;
+			it2 = itr++;
+			plr = objmgr.GetPlayer(*it2);
+			if(!plr)
+			{
+				m_queuedPlayers[i][j].erase(it2);
+				continue;
+			}
+
+			if (plr && plr->m_bgQueueInstanceId == bg->GetId())
+			{
+				sChatHandler.SystemMessageToPlr(plr, plr->GetSession()->LocalizedWorldSrv(54), bg->GetId());
+				SendBattlefieldStatus(plr, 0, 0, 0, 0, 0,0);
+				plr->m_bgIsQueued = false;
+				m_queuedPlayers[i][j].erase(it2);
+			}
 		}
 
-		if(plr && plr->m_bgQueueInstanceId == bg->GetId())
-		{
-			sChatHandler.SystemMessageToPlr(plr, plr->GetSession()->LocalizedWorldSrv(54), bg->GetId());
-			SendBattlefieldStatus(plr, 0, 0, 0, 0, 0,0);
-			plr->m_bgIsQueued = false;
-			m_queuedPlayers[i][j].erase(it2);
-		}
+		m_queueLock.Release();
+		m_instanceLock.Release();
+
+		//sLog.outDetail("Deleting battleground from queue %u, instance %u", bg->GetType(), bg->GetId());
+		delete bg;
 	}
-
-	m_queueLock.Release();
-	m_instanceLock.Release();
-
-	sLog.outDetail("Deleting battleground from queue %u, instance %u", bg->GetType(), bg->GetId());
-	delete bg;
+	catch (...) // for Win32 Debug
+	{	
+		printf("Exception: CBattlegroundManager::DeleteBattleground\n");
+		printStackTrace();
+		throw;
+	} 
 
 }
 
