@@ -91,6 +91,7 @@
 				GenerateDebugInformation="true"
 				GenerateMapFile="true"
 				MapFileName="$(TargetDir)arcemu-world.map"
+				MapExports="true"
 				RandomizedBaseAddress="1"
 				DataExecutionPrevention="0"
 			/>

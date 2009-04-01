@@ -244,66 +244,65 @@ StrandOfTheAncient::StrandOfTheAncient(MapMgr * mgr, uint32 id, uint32 lgroup, u
 {
 	int i;
 
-	// Print a stack trace just for the hell of it
-	printf("\n\nStack Trace:\n");
-	printStackTrace(); // for Win32 Debug
-
-	// Look people, this is called exception handling, lets start using
-	// exception handling rather than relying on the crash handler.
+	// Lets start using exception handling rather than relying on
+	// the crash handler all the time. :)
 	try
 	{
 		// Crash on purpose... :P
-		printf("char *crash = 0;\n");
-		printf("*crash = 10;\n");
-		printf("\nBuilding as Win32/Debug... Cause an exception rather than crashing! :)\n");
-		char *crash = 0;
-		*crash = 10;
+		//char *crash = 0;
+		//*crash = 10;
+
+		for (i=0; i<2; i++) {
+			m_players[i].clear();
+			m_pendPlayers[i].clear();
+		}
+		//m_worldStates.clear();
+		m_pvpData.clear();
+		m_resurrectMap.clear();
+
+		//uint32 mapId = BattlegroundManager.GetMap(BATTLEGROUND_STRAND_OF_THE_ANCIENT);
+
+		// Boats
+		for (int i = 0; i < 4; i++)
+		{
+			m_boats[i] = m_mapMgr->CreateAndSpawnGameObject(20808,
+				sotaBoats[i][0], sotaBoats[i][1], sotaBoats[i][2], sotaBoats[i][3], 1.0f);
+			m_boats[i]->PushToWorld(mgr);
+		}
+
+		/* Relic */
+		m_relic = m_mapMgr->CreateAndSpawnGameObject(GO_RELIC, sotaTitanRelic[0],
+			sotaTitanRelic[1], sotaTitanRelic[2], sotaTitanRelic[3], 1.0f);
+
+		for (i = 0; i < GATE_COUNT; i++)
+		{
+			m_gates[i] = m_mapMgr->CreateAndSpawnGameObject(GateGOIds[i],
+				sotaGates[i][0], sotaGates[i][1], sotaGates[i][2], sotaGates[i][3], 1.0f);
+			m_gateSigils[i] = m_mapMgr->CreateAndSpawnGameObject(GateSigilGOIds[i],
+				sotaGateSigils[i][0], sotaGateSigils[i][1], sotaGateSigils[i][2],
+				sotaGateSigils[i][3], 1.0f);
+			m_gateTransporters[i] = m_mapMgr->CreateAndSpawnGameObject(192819,
+				sotaTransporters[i][0], sotaTransporters[i][1], sotaTransporters[i][2],
+				sotaTransporters[i][3], 1.0f);
+		}
+
+		// Spawn door for Chamber of Ancient Relics
+		m_endgate = m_mapMgr->CreateAndSpawnGameObject(GateGOIds[i],
+			sotaChamberGate[0], sotaChamberGate[1], sotaChamberGate[2],
+			sotaChamberGate[3], 1.0f);
+
+
+		/* create the buffs */
+		for(i = 0; i < BUFF_COUNT; ++i)
+			SpawnBuff(i);
+
 	}
-	catch (...) { printStackTrace(); } // for Win32 Debug
-
-	for (i=0; i<2; i++) {
-		m_players[i].clear();
-		m_pendPlayers[i].clear();
-	}
-	//m_worldStates.clear();
-	m_pvpData.clear();
-	m_resurrectMap.clear();
-
-	//uint32 mapId = BattlegroundManager.GetMap(BATTLEGROUND_STRAND_OF_THE_ANCIENT);
-
-	// Boats
-	for (int i = 0; i < 4; i++)
-	{
-		m_boats[i] = m_mapMgr->CreateAndSpawnGameObject(20808,
-			sotaBoats[i][0], sotaBoats[i][1], sotaBoats[i][2], sotaBoats[i][3], 1.0f);
-		m_boats[i]->PushToWorld(mgr);
-	}
-
-	/* Relic */
-	m_relic = m_mapMgr->CreateAndSpawnGameObject(GO_RELIC, sotaTitanRelic[0],
-		sotaTitanRelic[1], sotaTitanRelic[2], sotaTitanRelic[3], 1.0f);
-
-	for (i = 0; i < GATE_COUNT; i++)
-	{
-		m_gates[i] = m_mapMgr->CreateAndSpawnGameObject(GateGOIds[i],
-			sotaGates[i][0], sotaGates[i][1], sotaGates[i][2], sotaGates[i][3], 1.0f);
-		m_gateSigils[i] = m_mapMgr->CreateAndSpawnGameObject(GateSigilGOIds[i],
-			sotaGateSigils[i][0], sotaGateSigils[i][1], sotaGateSigils[i][2],
-			sotaGateSigils[i][3], 1.0f);
-		m_gateTransporters[i] = m_mapMgr->CreateAndSpawnGameObject(192819,
-			sotaTransporters[i][0], sotaTransporters[i][1], sotaTransporters[i][2],
-			sotaTransporters[i][3], 1.0f);
-	}
-
-	// Spawn door for Chamber of Ancient Relics
-	m_endgate = m_mapMgr->CreateAndSpawnGameObject(GateGOIds[i],
-		sotaChamberGate[0], sotaChamberGate[1], sotaChamberGate[2],
-		sotaChamberGate[3], 1.0f);
-
-
-	/* create the buffs */
-	for(i = 0; i < BUFF_COUNT; ++i)
-		SpawnBuff(i);
+	catch (...) // Exception handling
+	{	
+		printf("Exception: StrandOfTheAncient constructor\n");
+		printStackTrace();
+		throw;
+	} 
 
 }
 
