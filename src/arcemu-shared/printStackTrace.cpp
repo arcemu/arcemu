@@ -10,7 +10,8 @@
  * of this software for any purpose. It is provided "as is" 
  * without express or implied warranty.
  */
- 
+
+#include "Common.h"
 #include "printStackTrace.h"
 #include "StackTrace.h"
 #include "MapFile.h"
@@ -21,7 +22,7 @@
  * Prints stack trace to user defined buffer.
  * Always terminates the buffer with 0.
  */
-extern void printStackTrace( char* buffer, int bufferSize )
+extern SERVER_DECL void printStackTrace( char* buffer, int bufferSize )
 {
 #if defined(WIN32) && defined(_DEBUG)
 	// find out map file name
@@ -58,7 +59,7 @@ extern void printStackTrace( char* buffer, int bufferSize )
 /**
  * Prints stack trace to stdout
  */
-extern void printStackTrace()
+extern SERVER_DECL void printStackTrace()
 {
 #if defined(WIN32) && defined(_DEBUG)
 	char buffer[6400];
@@ -70,7 +71,7 @@ extern void printStackTrace()
 /**
  * Used for assertions
  */
-extern void arcAssertFailed( const char* fname, int line, const char* expr )
+extern SERVER_DECL void arcAssertFailed( const char* fname, int line, const char* expr )
 {
 	printf( "Assertion Failed: (%s)\n", expr );
 	printf( "Location: %s(%i)\n", fname, line );
