@@ -59,6 +59,7 @@
 				Detect64BitPortabilityProblems="false"
 				DebugInformationFormat="4"
 				CompileAs="0"
+				DisableSpecificWarnings="4127,4100,4121,4714"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -72,6 +73,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="msvcrtd.lib"
+				LinkIncremental="2"
 				RandomizedBaseAddress="1"
 				DataExecutionPrevention="0"
 			/>
@@ -130,9 +132,10 @@
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="1"
 				UsePrecompiledHeader="0"
-				WarningLevel="3"
-				Detect64BitPortabilityProblems="true"
+				WarningLevel="4"
+				Detect64BitPortabilityProblems="false"
 				DebugInformationFormat="3"
+				DisableSpecificWarnings="4127,4100,4121,4714"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -145,6 +148,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
+				LinkIncremental="2"
 				GenerateDebugInformation="true"
 				RandomizedBaseAddress="1"
 				DataExecutionPrevention="0"

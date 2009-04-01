@@ -68,7 +68,7 @@
 				Detect64BitPortabilityProblems="false"
 				DebugInformationFormat="4"
 				CompileAs="0"
-				DisableSpecificWarnings="4127"
+				DisableSpecificWarnings="4127,4100,4121,4714"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -84,7 +84,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="msvcrtd.lib ws2_32.lib libmysql_debug_win32.lib libeay32_win32.lib dbghelp.lib zlib_debug_win32.lib pcre_debug_win32.lib"
-				LinkIncremental="1"
+				LinkIncremental="2"
 				AdditionalLibraryDirectories="..\..\extras\collision\collision_dll\Debug;&quot;..\..\extras\arcemu-windows-libraries\VC\lib&quot;"
 				IgnoreAllDefaultLibraries="false"
 				IgnoreDefaultLibraryNames="msvcrt.lib"
@@ -161,11 +161,12 @@
 				ObjectFile="$(IntDir)/"
 				ProgramDataBaseFileName="$(IntDir)/"
 				BrowseInformation="0"
-				WarningLevel="3"
+				WarningLevel="4"
 				SuppressStartupBanner="true"
 				Detect64BitPortabilityProblems="false"
 				DebugInformationFormat="3"
 				CompileAs="0"
+				DisableSpecificWarnings="4127,4100,4121,4714"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -181,6 +182,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="ws2_32.lib libmysql_debug_x64.lib libeay32_win64.lib dbghelp.lib zlib_debug_x64.lib pcre_debug_x64.lib"
+				LinkIncremental="2"
 				AdditionalLibraryDirectories="..\..\extras\collision\collision_dll\x64\Debug;..\..\extras\arcemu-windows-libraries\VC\lib"
 				GenerateDebugInformation="true"
 				RandomizedBaseAddress="1"

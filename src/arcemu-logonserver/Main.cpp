@@ -202,7 +202,7 @@ bool Rehash()
 		string smask = itr->substr(i+1);
 
 		unsigned int ipraw = MakeIP(stmp.c_str());
-		unsigned int ipmask = atoi(smask.c_str());
+		unsigned char ipmask = (char)atoi(smask.c_str());
 		if( ipraw == 0 || ipmask == 0 )
 		{
 			printf("IP: %s could not be parsed. Ignoring\n", itr->c_str());
@@ -228,7 +228,7 @@ bool Rehash()
 		string smask = itr->substr(i+1);
 
 		unsigned int ipraw = MakeIP(stmp.c_str());
-		unsigned int ipmask = atoi(smask.c_str());
+		unsigned char ipmask = (char)atoi(smask.c_str());
 		if( ipraw == 0 || ipmask == 0 )
 		{
 			printf("IP: %s could not be parsed. Ignoring\n", itr->c_str());
@@ -274,7 +274,7 @@ void LogonServer::Run(int argc, char ** argv)
 		{ 0, 0, 0, 0 }
 	};
 
-	char c;
+	int c;
 	while ((c = arcemu_getopt_long_only(argc, argv, ":f:", longopts, NULL)) != -1)
 	{
 		switch (c)

@@ -241,7 +241,7 @@
 				Detect64BitPortabilityProblems="false"
 				DebugInformationFormat="4"
 				CompileAs="0"
-				DisableSpecificWarnings="4127"
+				DisableSpecificWarnings="4127,4100"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -318,11 +318,12 @@
 				AssemblerListingLocation="$(IntDir)/"
 				ObjectFile="$(IntDir)/"
 				ProgramDataBaseFileName="$(IntDir)/"
-				WarningLevel="3"
+				WarningLevel="4"
 				SuppressStartupBanner="true"
 				Detect64BitPortabilityProblems="false"
 				DebugInformationFormat="3"
 				CompileAs="0"
+				DisableSpecificWarnings="4127,4100"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
