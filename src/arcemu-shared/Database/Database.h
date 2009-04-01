@@ -31,7 +31,7 @@ class Database;
 
 struct DatabaseConnection
 {
-	FastMutex Busy;
+	Mutex Busy;
 };
 
 struct SERVER_DECL AsyncQueryResult
