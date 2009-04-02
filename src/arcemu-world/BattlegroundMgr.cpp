@@ -1071,17 +1071,20 @@ void CBattleground::AddPlayer(Player * plr, uint32 team)
 	m_mainLock.Release();
 }
 
-void CBattleground::RemovePendingPlayer(Player * plr)
+void CBattleground::RemovePendingPlayer(Player * plr, bool alreadyLocked)
 {
-	m_mainLock.Acquire();
+	if (!alreadyLocked)
+		m_mainLock.Acquire();
+
 	m_pendPlayers[plr->m_bgTeam].erase(plr->GetLowGUID());
 
 	/* send a null bg update (so they don't join) */
 	BattlegroundManager.SendBattlefieldStatus(plr, 0, 0, 0, 0, 0,0);
 	plr->m_pendingBattleground =0;
 	plr->m_bgTeam=plr->GetTeam();
-
-	m_mainLock.Release();
+	
+	if (!alreadyLocked)
+		m_mainLock.Release();
 }
 
 void CBattleground::OnPlayerPushed(Player * plr)
@@ -1479,7 +1482,7 @@ void CBattlegroundManager::SendBattlefieldStatus(Player * plr, uint32 Status, ui
 	plr->GetSession()->SendPacket(&data);
 }
 
-void CBattleground::RemovePlayer(Player * plr, bool logout)
+void CBattleground::RemovePlayer(Player * plr, bool logout, bool alreadyLocked)
 {
 	WorldPacket data(SMSG_BATTLEGROUND_PLAYER_LEFT, 30);
 	data << plr->GetGUID();
@@ -1492,7 +1495,10 @@ void CBattleground::RemovePlayer(Player * plr, bool logout)
 	{
 		RemoveInvisGM();
 	}
-	m_mainLock.Acquire();
+
+	if (!alreadyLocked)
+		m_mainLock.Acquire();
+
 	m_players[plr->m_bgTeam].erase(plr);
 
 	memset(&plr->m_bgScore, 0, sizeof(BGScore));
@@ -1554,7 +1560,9 @@ void CBattleground::RemovePlayer(Player * plr, bool logout)
 	}
 
 	plr->m_bgTeam=plr->GetTeam();
-	m_mainLock.Release();
+
+	if (!alreadyLocked)
+		m_mainLock.Release();
 }
 
 void CBattleground::SendPVPData(Player * plr)
@@ -1680,7 +1688,7 @@ void CBattleground::Close()
 		{
 			plr = *itr;
 			++itr;
-			RemovePlayer(plr, false);
+			RemovePlayer(plr, false, true);
 		}
 
 		for(it2 = m_pendPlayers[i].begin(); it2 != m_pendPlayers[i].end();)

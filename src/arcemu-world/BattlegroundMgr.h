@@ -374,7 +374,7 @@ public:
 	virtual void OnAddPlayer(Player * plr) = 0;
 
 	/* Remove Player */
-	void RemovePlayer(Player * plr, bool logout);
+	void RemovePlayer(Player * plr, bool logout, bool alreadyLocked = false);
 	virtual void OnRemovePlayer(Player * plr) = 0;
 
 	/* Port Player */
@@ -382,7 +382,7 @@ public:
 	virtual void OnCreate() = 0;
 
 	/* Remove pending player */
-	void RemovePendingPlayer(Player * plr);
+	void RemovePendingPlayer(Player * plr, bool alreadyLocked = false);
 
 	/* Gets the number of free slots */
 	uint32 GetFreeSlots(uint32 t, uint32 type);
