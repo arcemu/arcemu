@@ -5710,9 +5710,9 @@ void Unit::RemoveAurasByBuffType(uint32 buff_type, const uint64 &guid, uint32 sk
 	for(uint32 x=MAX_TOTAL_AURAS_START;x<MAX_TOTAL_AURAS_END;x++)
 	{
 		if(	m_auras[x] //have aura
-			&& (m_auras[x]->GetSpellProto()->BGR_one_buff_on_target & buff_type) //aura is in same group
-			&& m_auras[x]->GetSpellId() != skip //make sure to not do self removes in case aura will stack
-			&& (!sguid || (sguid && m_auras[x]->m_casterGuid == sguid)) //we eighter remove everything or just buffs from us
+			&& (m_auras[x]->GetSpellProto()->BGR_one_buff_on_target & buff_type) // aura is in same group
+			&& m_auras[x]->GetSpellId() != skip // make sure to not do self removes in case aura will stack
+			&& (!sguid || (sguid && m_auras[x]->m_casterGuid == sguid)) // we either remove everything or just buffs from us
 			)
 				m_auras[x]->Remove();
 	}
