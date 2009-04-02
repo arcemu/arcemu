@@ -737,6 +737,9 @@ void CBattlegroundManager::RemovePlayerFromQueues(Player * plr)
 	m_queueLock.Acquire();
 
 	ASSERT(plr->m_bgQueueType < BATTLEGROUND_NUM_TYPES);
+
+	sEventMgr.RemoveEvents(plr, EVENT_BATTLEGROUND_QUEUE_UPDATE);
+
 	uint32 lgroup = GetLevelGrouping(plr->getLevel());
 	list<uint32>::iterator itr;
 

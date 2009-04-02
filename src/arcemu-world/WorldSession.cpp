@@ -317,13 +317,6 @@ void WorldSession::LogoutPlayer(bool Save)
 		if( _player->m_bgIsQueued )
 			BattlegroundManager.RemovePlayerFromQueues( _player );
 
-		// Remove event that give player 1 minute, 20 seconds to join a bg
-		if (_player->m_pendingBattleground)
-		{
-			sEventMgr.RemoveEvents(_player, EVENT_BATTLEGROUND_QUEUE_UPDATE);
-			_player->m_pendingBattleground = 0;
-		}
-
 		// Repop or Resurrect and remove from battlegrounds
 		else if( _player->m_bg )
 		{
