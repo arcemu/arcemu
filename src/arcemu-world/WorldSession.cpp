@@ -320,7 +320,7 @@ void WorldSession::LogoutPlayer(bool Save)
 		// Repop or Resurrect and remove from battlegrounds
 		if( _player->m_bg )
 		{
-			if( _player->IsDead() || _player->getDeathState() != ALIVE )
+			if( _player->IsDead() )
 				_player->ResurrectPlayer();
 			_player->m_bg->RemovePlayer( _player, true );
 		}
