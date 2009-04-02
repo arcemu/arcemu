@@ -61,7 +61,7 @@
 				ProgramDataBaseFileName="$(IntDir)/"
 				WarningLevel="4"
 				Detect64BitPortabilityProblems="false"
-				DebugInformationFormat="4"
+				DebugInformationFormat="3"
 				CompileAs="0"
 				DisableSpecificWarnings="4127,4100"
 			/>
@@ -78,7 +78,7 @@
 				Name="VCLinkerTool"
 				AdditionalDependencies="ws2_32.lib libmysql_debug_win32.lib libeay32_win32.lib dbghelp.lib zlib_debug_win32.lib pcre_debug_win32.lib"
 				OutputFile="$(OutDir)/arcemu-logonserver.exe"
-				LinkIncremental="2"
+				LinkIncremental="1"
 				AdditionalLibraryDirectories="..\..\extras\arcemu-windows-libraries\VC\lib"
 				IgnoreDefaultLibraryNames="msvcrt.lib"
 				GenerateDebugInformation="true"

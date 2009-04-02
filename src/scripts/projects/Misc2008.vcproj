@@ -56,7 +56,7 @@
 				UsePrecompiledHeader="2"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="false"
-				DebugInformationFormat="4"
+				DebugInformationFormat="3"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -71,7 +71,7 @@
 				Name="VCLinkerTool"
 				AdditionalDependencies="arcemu-world.lib"
 				OutputFile="../../../bin/debug/script_bin/ArcScriptMiscScripts.dll"
-				LinkIncremental="2"
+				LinkIncremental="1"
 				AdditionalLibraryDirectories="..\..\..\bin\debug"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="../../../bin/debug/script_bin/ArcScriptMiscScripts.pdb"

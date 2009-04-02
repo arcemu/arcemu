@@ -79,7 +79,7 @@ int StackTrace::printStackTrace( MapFile** map, int maps,
 	// output call stack
 	if ( bufferSize > 0 )
 		*buffer = 0;
-	size_t needed = 0;
+	int needed = 0;
 	for ( i = initLevel ; i < callers ; ++i )
 	{
 		long addr = callersAddr[callers-i-1];
@@ -108,7 +108,7 @@ int StackTrace::printStackTrace( MapFile** map, int maps,
 			sprintf( buf+strlen(buf), "%s (%x)\n", entryMap->getEntry(entry).name(), addr );
 
 		// append temporary buf to output buffer if space left
-		needed += strlen( buf );
+		needed += (int)strlen( buf );
 		if ( needed < bufferSize )
 			strcat( buffer, buf );
 	}
@@ -118,5 +118,5 @@ int StackTrace::printStackTrace( MapFile** map, int maps,
 		buffer[needed] = 0;
 	else if ( bufferSize > 0 )
 		buffer[bufferSize-1] = 0;
-	return (int)needed;
+	return needed;
 }
