@@ -1476,14 +1476,6 @@ void CBattleground::RemovePlayer(Player * plr, bool logout)
 {
 	m_mainLock.Acquire();
 
-	// A player is added before they actually accept porting to the BG
-	// Remove event that allows player 1 minute, 20 seconds to enter BG
-	if (plr->m_pendingBattleground)
-	{
-		sEventMgr.RemoveEvents(plr, EVENT_BATTLEGROUND_QUEUE_UPDATE);
-		plr->m_pendingBattleground = 0;
-	}
-
 	WorldPacket data(SMSG_BATTLEGROUND_PLAYER_LEFT, 30);
 	data << plr->GetGUID();
 	if ( plr->m_isGmInvisible == false )
