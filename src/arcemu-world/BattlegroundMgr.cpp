@@ -1676,7 +1676,7 @@ void CBattleground::Close()
 		{
 			plr = *itr;
 			++itr;
-			RemovePlayer(plr, false, true);
+			RemovePlayer(plr, false);
 		}
 
 		for(it2 = m_pendPlayers[i].begin(); it2 != m_pendPlayers[i].end();)
