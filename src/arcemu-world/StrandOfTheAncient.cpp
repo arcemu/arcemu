@@ -244,6 +244,9 @@ StrandOfTheAncient::StrandOfTheAncient(MapMgr * mgr, uint32 id, uint32 lgroup, u
 {
 	int i;
 
+	printf("\nStack Trace:\n");
+	printStackTrace();
+
 	// Lets start using exception handling rather than relying on
 	// the crash handler all the time. :)
 	try
@@ -445,7 +448,8 @@ bool StrandOfTheAncient::HookHandleRepop(Player * plr)
 
 void StrandOfTheAncient::SpawnBuff(uint32 x)
 {
-	uint32 mapid = BattlegroundManager.GetMap(BATTLEGROUND_STRAND_OF_THE_ANCIENT);
+	//uint32 mapid = BattlegroundManager.GetMap(BATTLEGROUND_STRAND_OF_THE_ANCIENT);
+	uint32 mapid = 607;
     switch(x)
 	{
 	case 0:

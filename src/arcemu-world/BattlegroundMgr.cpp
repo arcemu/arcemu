@@ -59,9 +59,7 @@ const static CreateBattlegroundFunc BGCFuncs[BATTLEGROUND_NUM_TYPES] = {
 };
 
 CBattlegroundManager::CBattlegroundManager()
-:
-EventableObject(),
-m_maxBattlegroundId(0)
+:EventableObject()
 {
 	int i;
 	//dbcBattlemasterListStore.LookupEntry(
@@ -70,6 +68,7 @@ m_maxBattlegroundId(0)
 
 	for (i=0; i<BATTLEGROUND_NUM_TYPES; i++) {
 		m_instances[i].clear();
+		m_maxBattlegroundId[i] = 0;
 	}
 
 }
@@ -77,13 +76,6 @@ m_maxBattlegroundId(0)
 CBattlegroundManager::~CBattlegroundManager()
 {
 
-}
-
-uint32 CBattlegroundManager::GetMap(uint32 bg_index)
-{
-	if (bg_index >= BATTLEGROUND_NUM_TYPES)
-		return 0;
-	return BGMapIds[ bg_index ];
 }
 
 void CBattlegroundManager::HandleBattlegroundListPacket(WorldSession * m_session, uint32 BattlegroundType)
@@ -1231,7 +1223,7 @@ CBattleground * CBattlegroundManager::CreateInstance(uint32 Type, uint32 LevelGr
 			break;
 		}
 
-		iid = ++m_maxBattlegroundId;
+		iid = ++m_maxBattlegroundId[Type];
 		bg = new Arena(mgr, iid, LevelGroup, Type, players_per_side);
 		mgr->m_battleground = bg;
 		Log.Success("BattlegroundManager", "Created arena battleground type %u for level group %u on map %u.", Type, LevelGroup, mapid);
@@ -1280,7 +1272,7 @@ CBattleground * CBattlegroundManager::CreateInstance(uint32 Type, uint32 LevelGr
 	}
 
 	/* Call the create function */
-	iid = ++m_maxBattlegroundId;
+	iid = ++m_maxBattlegroundId[Type];
 	bg = cfunc(mgr, iid, LevelGroup, Type);
 	bg->SetIsWeekend(isWeekend);
 	mgr->m_battleground = bg;

@@ -161,7 +161,7 @@ class CBattlegroundManager : public Singleton<CBattlegroundManager>, public Even
 	Mutex m_instanceLock;
 
 	/* Max Id */
-	uint32 m_maxBattlegroundId;
+	uint32 m_maxBattlegroundId[BATTLEGROUND_NUM_TYPES];
 	
 	/* Queue System */
 	// Instance Id -> list<Player guid> [ BattlegroundType ] (instance 0 - first available)
@@ -226,9 +226,6 @@ public:
 
 	/* Add a group to an arena */
 	void AddGroupToArena(CBattleground * bg, Group * group, int nteam);
-
-	/* Returns a mapid for the battleground */
-	uint32 GetMap(uint32 bg_index);
 
 	/* Returns the minimum number of players (Only valid for battlegrounds) */
 	uint32 GetMinimumPlayers(uint32 dbcIndex);
