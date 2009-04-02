@@ -3003,7 +3003,13 @@ void Spell::HandleAddAura(uint64 guid)
 
 	// remove any auras with same type
 	if( GetProto()->BGR_one_buff_on_target > 0)
-		Target->RemoveAurasByBuffType(GetProto()->BGR_one_buff_on_target, m_caster->GetGUID(), (GetProto()->maxstack > 1) ? GetProto()->Id : -1);
+	{
+		Target->RemoveAurasByBuffType(GetProto()->BGR_one_buff_on_target, m_caster->GetGUID(), -1);
+	}
+	else
+	{
+		Target->RemoveAura(m_spellInfo->Id, m_caster->GetGUID());
+	}
 
 	uint32 spellid = 0;
 
