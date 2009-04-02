@@ -1054,11 +1054,11 @@ void CBattleground::AddPlayer(Player * plr, uint32 team)
 	m_pendPlayers[team].insert(plr->GetLowGUID());
 
 	/* Send a packet telling them that they can enter */
+	plr->m_pendingBattleground = this;
 	BattlegroundManager.SendBattlefieldStatus(plr, 2, m_type, m_id, 80000, m_mapMgr->GetMapId(),Rated());      // You will be removed from the queue in 2 minutes.
 
 	/* Add an event to remove them in 1 minute 20 seconds time. */
 	sEventMgr.AddEvent(plr, &Player::RemoveFromBattlegroundQueue, EVENT_BATTLEGROUND_QUEUE_UPDATE, 80000, 1,0);
-	plr->m_pendingBattleground = this;
 
 	m_mainLock.Release();
 }
@@ -1474,6 +1474,16 @@ void CBattlegroundManager::SendBattlefieldStatus(Player * plr, uint32 Status, ui
 
 void CBattleground::RemovePlayer(Player * plr, bool logout)
 {
+	m_mainLock.Acquire();
+
+	// A player is added before they actually accept porting to the BG
+	// Remove event that allows player 1 minute, 20 seconds to enter BG
+	if (plr->m_pendingBattleground)
+	{
+		sEventMgr.RemoveEvents(plr, EVENT_BATTLEGROUND_QUEUE_UPDATE);
+		plr->m_pendingBattleground = 0;
+	}
+
 	WorldPacket data(SMSG_BATTLEGROUND_PLAYER_LEFT, 30);
 	data << plr->GetGUID();
 	if ( plr->m_isGmInvisible == false )
@@ -1486,14 +1496,14 @@ void CBattleground::RemovePlayer(Player * plr, bool logout)
 		RemoveInvisGM();
 	}
 
-	m_mainLock.Acquire();
-
-	m_players[plr->m_bgTeam].erase(plr);
-
-	memset(&plr->m_bgScore, 0, sizeof(BGScore));
+	// Call subclassed virtual method
 	OnRemovePlayer(plr);
+
+	// Clean-up
 	plr->m_bg = NULL;
 	plr->FullHPMP();
+	m_players[plr->m_bgTeam].erase(plr);
+	memset(&plr->m_bgScore, 0, sizeof(BGScore));
 
 	/* are we in the group? */
 	if(plr->GetGroup() == m_groups[plr->m_bgTeam])
