@@ -314,14 +314,17 @@ void WorldSession::LogoutPlayer(bool Save)
 				sWorld.AlliancePlayers--;
 		}
 
-		if( _player->m_bg )
-			_player->m_bg->RemovePlayer( _player, true );
-
 		if( _player->m_bgIsQueued )
 			BattlegroundManager.RemovePlayerFromQueues( _player );
 
-		// cebernic ,don't forget repop
-		if( _player->IsDead() && _player->getDeathState() == JUST_DIED )
+		// Repop or Resurrect and remove from battlegrounds
+		if( _player->m_bg )
+		{
+			if( _player->IsDead() || _player->getDeathState() != ALIVE )
+				_player->ResurrectPlayer();
+			_player->m_bg->RemovePlayer( _player, true );
+		}
+		else if( _player->IsDead() && _player->getDeathState() == JUST_DIED )
 			_player->RepopRequestedPlayer();
 
 		//Duel Cancel on Leave
