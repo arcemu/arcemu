@@ -318,10 +318,12 @@ void WorldSession::LogoutPlayer(bool Save)
 			BattlegroundManager.RemovePlayerFromQueues( _player );
 
 		// Repop or Resurrect and remove from battlegrounds
-		else if( _player->m_bg )
+		if( _player->m_bg )
 		{
-			if( _player->IsDead() )
-				_player->ResurrectPlayer();
+			if (pPlayer->getDeathState() == 1) // Just died
+				pPlayer->RemoteRevive();
+			if (pPlayer->getDeathState() != 0) // Not alive
+				pPlayer->ResurrectPlayer();
 			_player->m_bg->RemovePlayer( _player, true );
 		}
 		else if( _player->IsDead() && _player->getDeathState() == JUST_DIED )
