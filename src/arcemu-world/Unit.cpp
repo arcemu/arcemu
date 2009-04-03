@@ -7428,6 +7428,18 @@ void Unit::SetPower(uint32 type, int32 value)
 	SetUInt32Value(UNIT_FIELD_POWER1 + type, value);
 }
 
+void Unit::SendPowerUpdate(bool self)
+{
+	WorldPacket data(SMSG_POWER_UPDATE, 14);
+	FastGUIDPack(data, GetGUID());
+	data << (uint8)GetPowerType();
+	data << GetUInt32Value(UNIT_FIELD_POWER1 + GetPowerType());
+//	This was added in revision 1726.  Is it necessary?  To me, it seems to just be sending the packet twice.
+//	If it is needed for something, put it back in I guess.
+//	CopyAndSendDelayedPacket(&data);
+	SendMessageToSet(&data, self);
+}
+
 void Unit::UpdatePowerAmm()
 {
 	if( !IsPlayer() )

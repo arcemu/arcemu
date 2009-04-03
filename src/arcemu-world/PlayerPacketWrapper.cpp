@@ -106,18 +106,6 @@ void Player::SendEnvironmentalDamageLog(const uint64 & guid, uint8 type, uint32 
 }
 
 
-void Player::SendPowerUpdate(bool self)
-{
-	WorldPacket data(SMSG_POWER_UPDATE, 14);
-	FastGUIDPack(data, GetGUID());
-	data << (uint8)GetPowerType();
-	data << GetUInt32Value(UNIT_FIELD_POWER1 + GetPowerType());
-//	This was added in revision 1726.  Is it necessary?  To me, it seems to just be sending the packet twice.
-//	If it is needed for something, put it back in I guess.
-//	CopyAndSendDelayedPacket(&data);
-	SendMessageToSet(&data, self);
-}
-
 void Player::SendCastResult(uint32 SpellId, uint8 ErrorMessage, uint8 MultiCast, uint32 Extra)
 {
 	if( Extra )

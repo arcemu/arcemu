@@ -1150,7 +1150,22 @@ void Object::SetUInt32Value( const uint32 index, const uint32 value )
 			case UNIT_FIELD_POWER2:
 			case UNIT_FIELD_POWER4:
 			case UNIT_FIELD_POWER7:
-				static_cast< Player* >( this )->SendPowerUpdate(true);
+				static_cast< Unit* >( this )->SendPowerUpdate(true);
+				break;
+			default:
+				break;
+		}
+	}
+	else if(m_objectTypeId == TYPEID_UNIT)
+	{
+		switch(index)
+		{
+			case UNIT_FIELD_POWER1:
+			case UNIT_FIELD_POWER2:
+			case UNIT_FIELD_POWER3:
+			case UNIT_FIELD_POWER4:
+			case UNIT_FIELD_POWER7:
+				static_cast< Unit* >( this )->SendPowerUpdate(false);
 				break;
 			default:
 				break;
@@ -1230,7 +1245,22 @@ void Object::ModUnsigned32Value(uint32 index, int32 mod)
 			case UNIT_FIELD_POWER2:
 			case UNIT_FIELD_POWER4:
 			case UNIT_FIELD_POWER7:
-				static_cast< Player* >( this )->SendPowerUpdate(true);
+				static_cast< Unit* >( this )->SendPowerUpdate(true);
+				break;
+			default:
+				break;
+		}
+	}
+	else if(m_objectTypeId == TYPEID_UNIT)
+	{
+		switch(index)
+		{
+			case UNIT_FIELD_POWER1:
+			case UNIT_FIELD_POWER2:
+			case UNIT_FIELD_POWER3:
+			case UNIT_FIELD_POWER4:
+			case UNIT_FIELD_POWER7:
+				static_cast< Unit* >( this )->SendPowerUpdate(false);
 				break;
 			default:
 				break;
@@ -2174,7 +2204,7 @@ void Object::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
 		else
 		{
 			pVictim->setDeathState( JUST_DIED );
-			pVictim->GetAIInterface()->HandleEvent( EVENT_LEAVECOMBAT, static_cast< Unit* >( this ), 0);
+			pVictim->GetAIInterface()->HandleEvent( EVENT_LEAVECOMBAT, pVictim, 0);
 		}
 
 		if( pVictim->IsPlayer() && !IsPlayer())

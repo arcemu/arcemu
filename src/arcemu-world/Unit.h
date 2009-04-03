@@ -1318,6 +1318,7 @@ public:
 	void DispelAll(bool positive);
 
 	void SetPower(uint32 type, int32 value);
+	void SendPowerUpdate(bool self);
 
 	int8 m_hasVampiricTouch;
 	int8 m_hasVampiricEmbrace;

@@ -2168,7 +2168,6 @@ public:
 
 	void LoadFieldsFromString(const char * string, uint32 firstField, uint32 fieldsNum);
 	void UpdateGlyphs();
-	void SendPowerUpdate(bool self);
 
 	ARCEMU_INLINE uint8 GetRune(uint32 index)
 	{
