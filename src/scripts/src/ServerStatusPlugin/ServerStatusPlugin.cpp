@@ -370,7 +370,7 @@ void StatDumper::DumpStats()
         GMCount = gm;
 
         fprintf(f, "    <uptime>%s</uptime>\n", uptime);
-        fprintf(f, "    <oplayers>%u</oplayers>\n", (unsigned int)(sWorld.AlliancePlayers + sWorld.HordePlayers));
+		fprintf(f, "    <oplayers>%u</oplayers>\n", (unsigned int)(sWorld.getPlayerCount()));
         fprintf(f, "    <cpu>%2.2f</cpu>\n", GetCPUUsage());
         fprintf(f, "    <qplayers>%u</qplayers>\n", (unsigned int)sWorld.GetQueueCount());
         fprintf(f, "    <ram>%.3f</ram>\n", GetRAMUsage());
@@ -380,8 +380,8 @@ void StatDumper::DumpStats()
         time_t t = (time_t)UNIXTIME;
         fprintf(f, "    <gmcount>%u</gmcount>\n", (unsigned int)GMCount);
         fprintf(f, "    <lastupdate>%s</lastupdate>\n", asctime(localtime(&t)));
-        fprintf(f, "    <alliance>%u</alliance>\n", (unsigned int)sWorld.AlliancePlayers);
-        fprintf(f, "    <horde>%u</horde>\n", (unsigned int)sWorld.HordePlayers);
+		fprintf(f, "    <alliance>%u</alliance>\n", (unsigned int)sWorld.getAlliancePlayerCount());
+		fprintf(f, "    <horde>%u</horde>\n", (unsigned int)sWorld.getHordePlayerCount());
         fprintf(f, "    <acceptedconns>%u</acceptedconns>\n", (unsigned int)sWorld.mAcceptedConnections);
         fprintf(f, "    <peakcount>%u</peakcount>\n", (unsigned int)sWorld.PeakSessionCount);
 		fprintf(f, "    <wdbquerysize>%u</wdbquerysize>\n", WorldDatabase.GetQueueSize());
