@@ -303,16 +303,8 @@ void WorldSession::LogoutPlayer(bool Save)
 
 		_player->Social_TellFriendsOffline();
 
-		if( _player->GetTeam() == 1 )
-		{
-			if( sWorld.HordePlayers )
-				sWorld.HordePlayers--;
-		}
-		else
-		{
-			if( sWorld.AlliancePlayers )
-				sWorld.AlliancePlayers--;
-		}
+		// Decrement the global player count
+		sWorld.decrementPlayerCount(_player->GetTeam());
 
 		if( _player->m_bgIsQueued )
 			BattlegroundManager.RemovePlayerFromQueues( _player );

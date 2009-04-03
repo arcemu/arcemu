@@ -865,10 +865,7 @@ void WorldSession::FullLogin(Player * plr)
 
 	Log.Debug("Login", "Player %s logged in.", plr->GetName());
 
-	if(plr->GetTeam() == 1)
-		sWorld.HordePlayers++;
-	else
-		sWorld.AlliancePlayers++;
+	sWorld.incrementPlayerCount(plr->GetTeam());
 
 	if(plr->m_FirstLogin)
 	{

@@ -255,6 +255,31 @@ typedef set<WorldSession*> SessionSet;
 
 class SERVER_DECL World : public Singleton<World>, public EventableObject
 {
+private:
+	uint32 HordePlayers;
+	uint32 AlliancePlayers;
+
+public:
+	ARCEMU_INLINE uint32 getHordePlayerCount() { return HordePlayers; }
+	ARCEMU_INLINE uint32 getAlliancePlayerCount() { return AlliancePlayers; }
+	ARCEMU_INLINE uint32 getPlayerCount() { return (HordePlayers + AlliancePlayers); }
+	ARCEMU_INLINE void resetPlayerCount() { HordePlayers = AlliancePlayers = 0; }
+	ARCEMU_INLINE void incrementPlayerCount(uint32 faction)
+	{
+		if( faction == 1 )
+			HordePlayers++;
+		else
+			AlliancePlayers++;
+	}
+	ARCEMU_INLINE void decrementPlayerCount(uint32 faction)
+	{
+		if( faction == 1 )
+			HordePlayers--;
+		else
+			AlliancePlayers--;
+	}
+
+// ToDo: Encapsulate below this point
 public:
 	World();
 	~World();
@@ -425,9 +450,7 @@ public:
 	uint32 ExtraTalents;
 	uint32 MaxProfs;
 	uint32 DKStartTalentPoints;
-	
-	uint32 HordePlayers;
-	uint32 AlliancePlayers;
+
 	uint32 PeakSessionCount;
 	uint32 ArenaQueueDiff;
 	bool SendStatsOnJoin;

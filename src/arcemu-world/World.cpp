@@ -31,6 +31,7 @@ uint32 World::m_movementCompressInterval;
 
 World::World()
 {
+	resetPlayerCount();
 	m_playerLimit = 0;
 	m_allowMovement = true;
 	m_gmTicketSystem = true;
@@ -46,8 +47,6 @@ World::World()
 	PeakSessionCount = 0;
 	mInWorldPlayerCount = 0;
 	mAcceptedConnections = 0;
-	HordePlayers = 0;
-	AlliancePlayers = 0;
 	gm_skip_attunement = false;
 	show_gm_in_who_list = true;
 	interfaction_chat = false;

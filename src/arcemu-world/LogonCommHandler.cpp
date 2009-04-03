@@ -548,5 +548,5 @@ void LogonCommHandler::RefreshRealmPop()
 {
 	// Get realm player limit, it's better that we get the player limit once and save it! <-done
 	// Calc pop: 0 >= low, 1 >= med, 2 >= hig, 3 >= full
-	server_population = float(((sWorld.AlliancePlayers + sWorld.HordePlayers) * 3) / pLimit);
+	server_population = float(((sWorld.getPlayerCount()) * 3) / pLimit);
 }
