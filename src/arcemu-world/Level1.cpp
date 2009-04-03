@@ -453,6 +453,13 @@ bool ChatHandler::HandleSummonCommand(const char* args, WorldSession *m_session)
 		snprintf((char*)buf,256, "You are summoning %s.", chr->GetName());
 		SystemMessage(m_session, buf);
 
+		// Don't summon the dead, lol, I see dead people. :P
+		// If you do, we better bring them back to life
+		if (chr->getDeathState() == 1) // Just died
+			chr->RemoteRevive();
+		if (chr->getDeathState() != 0) // Not alive
+			chr->ResurrectPlayer();
+
 		if (!m_session->GetPlayer()->m_isGmInvisible)
 		{
 			// send message to player
