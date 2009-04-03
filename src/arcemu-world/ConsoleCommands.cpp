@@ -30,7 +30,7 @@ bool HandleInfoCommand(BaseConsole * pConsole, int argc, const char * argv[])
 	int count = 0;
 	int avg = 0;
 	PlayerStorageMap::const_iterator itr;
-	objmgr._playerslock.Acquire();
+	objmgr._playerslock.AcquireReadLock();
 	for (itr = objmgr._players.begin(); itr != objmgr._players.end(); itr++)
 	{
 		if(itr->second->GetSession())
@@ -41,7 +41,7 @@ bool HandleInfoCommand(BaseConsole * pConsole, int argc, const char * argv[])
 				gm++;
 		}
 	}
-	objmgr._playerslock.Release();
+	objmgr._playerslock.ReleaseReadLock();
 
 	pConsole->Write("======================================================================\r\n");
 	pConsole->Write("Server Information: \r\n");
@@ -76,7 +76,7 @@ bool HandleGMsCommand(BaseConsole * pConsole, int argc, const char * argv[])
 	pConsole->Write("======================================================\r\n");
 
 	PlayerStorageMap::const_iterator itr;
-	objmgr._playerslock.Acquire();
+	objmgr._playerslock.AcquireReadLock();
 	for (itr = objmgr._players.begin(); itr != objmgr._players.end(); itr++)
 	{
 		if(itr->second->GetSession()->GetPermissionCount())
@@ -84,7 +84,7 @@ bool HandleGMsCommand(BaseConsole * pConsole, int argc, const char * argv[])
 			pConsole->Write("| %21s | %15s | %03u ms |\r\n" , itr->second->GetName(), itr->second->GetSession()->GetPermissions(), itr->second->GetSession()->GetLatency());
 		}
 	}
-	objmgr._playerslock.Release();
+	objmgr._playerslock.ReleaseReadLock();
 
 	pConsole->Write("======================================================\r\n\r\n");
 	return true;
@@ -102,12 +102,12 @@ bool HandleOnlinePlayersCommand(BaseConsole * pConsole, int argc, const char * a
 	pConsole->Write("======================================================\r\n");
 
 	PlayerStorageMap::const_iterator itr;
-	objmgr._playerslock.Acquire();
+	objmgr._playerslock.AcquireReadLock();
 	for (itr = objmgr._players.begin(); itr != objmgr._players.end(); itr++)
 	{
 		pConsole->Write("| %21s | %15s | %03u ms |\r\n" , itr->second->GetName(), itr->second->GetSession()->GetPlayer()->getLevel(), itr->second->GetSession()->GetLatency());
 	}
-	objmgr._playerslock.Release();
+	objmgr._playerslock.ReleaseReadLock();
 
 	pConsole->Write("======================================================\r\n\r\n");
 	return true;
@@ -208,7 +208,7 @@ bool HandleShutDownCommand(BaseConsole * pConsole, int argc, const char * argv[]
 		{
 			PlayerStorageMap::const_iterator itr;
 			uint32 count = 0;
-			objmgr._playerslock.Acquire();
+			objmgr._playerslock.AcquireReadLock();
 			for (itr = objmgr._players.begin(); itr != objmgr._players.end(); itr++)
 			{
 				if(itr->second->GetSession())
@@ -217,7 +217,7 @@ bool HandleShutDownCommand(BaseConsole * pConsole, int argc, const char * argv[]
 					count++;
 				}
 			}
-			objmgr._playerslock.Release();
+			objmgr._playerslock.ReleaseReadLock();
 
 			exit(0);
 		}

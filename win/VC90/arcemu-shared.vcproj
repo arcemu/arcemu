@@ -602,6 +602,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\arcemu-shared\Threading\RWLock.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\arcemu-shared\Threading\Threading.h"
 				>
 			</File>

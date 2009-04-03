@@ -227,7 +227,7 @@ Group * ObjectMgr::GetGroupByLeader(Player* pPlayer)
 {
 	GroupMap::iterator itr;
 	Group * ret=NULL;
-	m_groupLock.Acquire();
+	m_groupLock.AcquireReadLock();
 	for(itr = m_groups.begin(); itr != m_groups.end(); ++itr)
 	{
 		if(itr->second->GetLeader()==pPlayer->getPlayerInfo())
@@ -237,7 +237,7 @@ Group * ObjectMgr::GetGroupByLeader(Player* pPlayer)
 		}
 	}
 
-	m_groupLock.Release();
+	m_groupLock.ReleaseReadLock();
 	return ret;
 }
 
@@ -245,12 +245,12 @@ Group * ObjectMgr::GetGroupById(uint32 id)
 {
 	GroupMap::iterator itr;
 	Group * ret=NULL;
-	m_groupLock.Acquire();
+	m_groupLock.AcquireReadLock();
 	itr = m_groups.find(id);
 	if(itr!=m_groups.end())
 		ret=itr->second;
 
-	m_groupLock.Release();
+	m_groupLock.ReleaseReadLock();
 	return ret;
 }
 
@@ -262,11 +262,11 @@ void ObjectMgr::DeletePlayerInfo( uint32 guid )
 	PlayerInfo * pl;
 	HM_NAMESPACE::hash_map<uint32,PlayerInfo*>::iterator i;
 	PlayerNameStringIndexMap::iterator i2;
-	playernamelock.Acquire();
+	playernamelock.AcquireWriteLock();
 	i=m_playersinfo.find(guid);
 	if(i==m_playersinfo.end())
 	{
-		playernamelock.Release();
+		playernamelock.ReleaseWriteLock();
 		return;
 	}
 
@@ -295,36 +295,36 @@ void ObjectMgr::DeletePlayerInfo( uint32 guid )
 	delete i->second;
 	m_playersinfo.erase(i);
 
-	playernamelock.Release();
+	playernamelock.ReleaseWriteLock();
 }
 
 PlayerInfo *ObjectMgr::GetPlayerInfo( uint32 guid )
 {
 	HM_NAMESPACE::hash_map<uint32,PlayerInfo*>::iterator i;
 	PlayerInfo * rv;
-	playernamelock.Acquire();
+	playernamelock.AcquireReadLock();
 	i=m_playersinfo.find(guid);
 	if(i!=m_playersinfo.end())
 		rv = i->second;
 	else
 		rv = NULL;
-	playernamelock.Release();
+	playernamelock.ReleaseReadLock();
 	return rv;
 }
 
 void ObjectMgr::AddPlayerInfo(PlayerInfo *pn)
 {
-	playernamelock.Acquire();
+	playernamelock.AcquireWriteLock();
 	m_playersinfo[pn->guid] =  pn ;
 	string pnam = string(pn->name);
 	arcemu_TOLOWER(pnam);
 	m_playersInfoByName[pnam] = pn;
-	playernamelock.Release();
+	playernamelock.ReleaseWriteLock();
 }
 
 void ObjectMgr::RenamePlayerInfo(PlayerInfo * pn, const char * oldname, const char * newname)
 {
-	playernamelock.Acquire();
+	playernamelock.AcquireWriteLock();
 	string oldn = string(oldname);
 	arcemu_TOLOWER(oldn);
 
@@ -337,7 +337,7 @@ void ObjectMgr::RenamePlayerInfo(PlayerInfo * pn, const char * oldname, const ch
 		m_playersInfoByName[newn] = pn;
 	}
 
-	playernamelock.Release();
+	playernamelock.ReleaseWriteLock();
 }
 
 void ObjectMgr::LoadSpellSkills()
@@ -482,13 +482,13 @@ PlayerInfo* ObjectMgr::GetPlayerInfoByName(const char * name)
 	arcemu_TOLOWER(lpn);
 	PlayerNameStringIndexMap::iterator i;
 	PlayerInfo *rv = NULL;
-	playernamelock.Acquire();
+	playernamelock.AcquireReadLock();
 
 	i=m_playersInfoByName.find(lpn);
 	if( i != m_playersInfoByName.end() )
 		rv = i->second;
 
-	playernamelock.Release();
+	playernamelock.ReleaseReadLock();
 	return rv;
 }
 
@@ -1083,7 +1083,7 @@ Player* ObjectMgr::GetPlayer(const char* name, bool caseSensitive)
 {
 	Player * rv = NULL;
 	PlayerStorageMap::const_iterator itr;
-	_playerslock.Acquire();
+	_playerslock.AcquireReadLock();
 
 	if(!caseSensitive)
 	{
@@ -1110,7 +1110,7 @@ Player* ObjectMgr::GetPlayer(const char* name, bool caseSensitive)
 		}
 	}
 
-	_playerslock.Release();
+	_playerslock.ReleaseReadLock();
 
 	return rv;
 }
@@ -1119,10 +1119,10 @@ Player* ObjectMgr::GetPlayer(uint32 guid)
 {
 	Player * rv;
 
-	_playerslock.Acquire();
+	_playerslock.AcquireReadLock();
 	PlayerStorageMap::const_iterator itr = _players.find(guid);
 	rv = (itr != _players.end()) ? itr->second : 0;
-	_playerslock.Release();
+	_playerslock.ReleaseReadLock();
 
 	return rv;
 }
@@ -2526,16 +2526,16 @@ Player * ObjectMgr::CreatePlayer()
 
 void ObjectMgr::AddPlayer(Player * p)//add it to global storage
 {
-	_playerslock.Acquire();
+	_playerslock.AcquireWriteLock();
 	_players[p->GetLowGUID()] = p;
-	_playerslock.Release();
+	_playerslock.ReleaseWriteLock();
 }
 
 void ObjectMgr::RemovePlayer(Player * p)
 {
-	_playerslock.Acquire();
+	_playerslock.AcquireWriteLock();
 	_players.erase(p->GetLowGUID());
-	_playerslock.Release();
+	_playerslock.ReleaseWriteLock();
 
 }
 
@@ -2626,19 +2626,19 @@ Charter * ObjectMgr::GetCharter(uint32 CharterId, CharterTypes Type)
 {
 	Charter * rv;
 	HM_NAMESPACE::hash_map<uint32,Charter*>::iterator itr;
-	m_charterLock.Acquire();
+	m_charterLock.AcquireReadLock();
 	itr = m_charters[Type].find(CharterId);
 	rv = (itr == m_charters[Type].end()) ? 0 : itr->second;
-	m_charterLock.Release();
+	m_charterLock.ReleaseReadLock();
 	return rv;
 }
 
 Charter * ObjectMgr::CreateCharter(uint32 LeaderGuid, CharterTypes Type)
 {
-	m_charterLock.Acquire();
+	m_charterLock.AcquireWriteLock();
 	Charter * c = new Charter(++m_hiCharterId, LeaderGuid, Type);
 	m_charters[c->CharterType].insert(make_pair(c->GetID(), c));
-	m_charterLock.Release();
+	m_charterLock.ReleaseWriteLock();
 	return c;
 }
 
@@ -2751,7 +2751,7 @@ void Charter::SaveToDB()
 
 Charter * ObjectMgr::GetCharterByItemGuid(uint64 guid)
 {
-	m_charterLock.Acquire();
+	m_charterLock.AcquireReadLock();
 	for(int i = 0; i < NUM_CHARTER_TYPES; ++i)
 	{
 		HM_NAMESPACE::hash_map<uint32, Charter*>::iterator itr = m_charters[i].begin();
@@ -2759,18 +2759,18 @@ Charter * ObjectMgr::GetCharterByItemGuid(uint64 guid)
 		{
 			if(itr->second->ItemGuid == guid)
 			{
-				m_charterLock.Release();
+				m_charterLock.ReleaseReadLock();
 				return itr->second;
 			}
 		}
 	}
-	m_charterLock.Release();
+	m_charterLock.ReleaseReadLock();
 	return NULL;
 }
 
 Charter * ObjectMgr::GetCharterByGuid(uint64 playerguid, CharterTypes type)
 {
-	m_charterLock.Acquire();
+	m_charterLock.AcquireReadLock();
 	for(int i = 0; i < NUM_CHARTER_TYPES; ++i)
 	{
 		HM_NAMESPACE::hash_map<uint32, Charter*>::iterator itr = m_charters[i].begin();
@@ -2778,7 +2778,7 @@ Charter * ObjectMgr::GetCharterByGuid(uint64 playerguid, CharterTypes type)
 		{
 			if(playerguid == itr->second->LeaderGuid)
 			{
-				m_charterLock.Release();
+				m_charterLock.ReleaseReadLock();
 				return itr->second;
 			}
 
@@ -2786,20 +2786,20 @@ Charter * ObjectMgr::GetCharterByGuid(uint64 playerguid, CharterTypes type)
 			{
 				if(itr->second->Signatures[j] == playerguid)
 				{
-					m_charterLock.Release();
+					m_charterLock.ReleaseReadLock();
 					return itr->second;
 				}
 			}
 		}
 	}
-	m_charterLock.Release();
+	m_charterLock.ReleaseReadLock();
 	return NULL;
 }
 
 Charter * ObjectMgr::GetCharterByName(string &charter_name, CharterTypes Type)
 {
 	Charter * rv = 0;
-	m_charterLock.Acquire();
+	m_charterLock.AcquireReadLock();
 	HM_NAMESPACE::hash_map<uint32, Charter*>::iterator itr = m_charters[Type].begin();
 	for(; itr != m_charters[Type].end(); ++itr)
 	{
@@ -2810,7 +2810,7 @@ Charter * ObjectMgr::GetCharterByName(string &charter_name, CharterTypes Type)
 		}
 	}
 
-	m_charterLock.Release();
+	m_charterLock.ReleaseReadLock();
 	return rv;
 }
 
@@ -2823,9 +2823,9 @@ void ObjectMgr::RemoveCharter(Charter * c)
 		Log.Notice("ObjectMgr", "Charter %u cannot be destroyed as type %u is not a sane type value.", c->CharterId, c->CharterType );
 		return;
 	}
-	m_charterLock.Acquire();
+	m_charterLock.AcquireWriteLock();
 	m_charters[c->CharterType].erase(c->CharterId);
-	m_charterLock.Release();
+	m_charterLock.ReleaseWriteLock();
 }
 
 void ObjectMgr::LoadReputationModifierTable(const char * tablename, ReputationModMap * dmap)
@@ -3339,7 +3339,7 @@ void ObjectMgr::UpdateArenaTeamWeekly()
 
 void ObjectMgr::ResetDailies()
 {
-	_playerslock.Acquire();
+	_playerslock.AcquireReadLock();
 	PlayerStorageMap::iterator itr = _players.begin();
 	for(; itr != _players.end(); itr++)
 	{
@@ -3348,7 +3348,7 @@ void ObjectMgr::ResetDailies()
 		pPlayer->m_finishedDailies.clear();
 		pPlayer->DailyMutex.Release();
 	}
-	_playerslock.Release();
+	_playerslock.ReleaseReadLock();
 }
 
 #ifdef VOICE_CHAT

@@ -263,7 +263,7 @@ bool ChatHandler::HandleInfoCommand(const char* args, WorldSession *m_session)
 	int count = 0;
 	int avg = 0;
 	PlayerStorageMap::const_iterator itr;
-	objmgr._playerslock.Acquire();
+	objmgr._playerslock.AcquireReadLock();
 	for (itr = objmgr._players.begin(); itr != objmgr._players.end(); itr++)
 	{
 		if(itr->second->GetSession())
@@ -274,7 +274,7 @@ bool ChatHandler::HandleInfoCommand(const char* args, WorldSession *m_session)
 				gm++;
 		}
 	}
-	objmgr._playerslock.Release();
+	objmgr._playerslock.ReleaseReadLock();
 	GreenSystemMessage(m_session, "Server Revision: |r%sArcEmu r%u/%s-%s-%s %s(www.arcemu.org)", MSG_COLOR_WHITE,
 		BUILD_REVISION, CONFIG, PLATFORM_TEXT, ARCH, MSG_COLOR_LIGHTBLUE);
 	GreenSystemMessage(m_session, "Server Uptime: |r%s", sWorld.GetUptimeString().c_str());
@@ -364,7 +364,7 @@ bool ChatHandler::HandleGMListCommand(const char* args, WorldSession *m_session)
 	bool isGM = m_session->GetPermissionCount() != 0;
 
 	PlayerStorageMap::const_iterator itr;
-	objmgr._playerslock.Acquire();
+	objmgr._playerslock.AcquireReadLock();
 	for (itr = objmgr._players.begin(); itr != objmgr._players.end(); itr++)
 	{
 		if(itr->second->GetSession()->GetPermissionCount())
@@ -388,7 +388,7 @@ bool ChatHandler::HandleGMListCommand(const char* args, WorldSession *m_session)
 			}
 		}
 	}
-	objmgr._playerslock.Release();
+	objmgr._playerslock.ReleaseReadLock();
 
 	if(first)
 		SystemMessage(m_session, "There are no GMs currently logged in on this server.");

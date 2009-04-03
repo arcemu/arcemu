@@ -85,7 +85,7 @@ void AuctionHouse::UpdateDeletionQueue()
 
 void AuctionHouse::UpdateAuctions()
 {
-	auctionLock.Acquire();
+	auctionLock.AcquireReadLock();
 	removalLock.Acquire();
 
 	uint32 t = (uint32)UNIXTIME;
@@ -114,20 +114,20 @@ void AuctionHouse::UpdateAuctions()
 	}
 
 	removalLock.Release();
-	auctionLock.Release();
+	auctionLock.ReleaseReadLock();
 }
 
 void AuctionHouse::AddAuction(Auction * auct)
 {
 	// add to the map
-	auctionLock.Acquire();
+	auctionLock.AcquireWriteLock();
 	auctions.insert( HM_NAMESPACE::hash_map<uint32, Auction*>::value_type( auct->Id , auct ) );
-	auctionLock.Release();
+	auctionLock.ReleaseWriteLock();
 
 	// add the item
-	itemLock.Acquire();
+	itemLock.AcquireWriteLock();
 	auctionedItems.insert( HM_NAMESPACE::hash_map<uint64, Item*>::value_type( auct->pItem->GetGUID(), auct->pItem ) );
-	itemLock.Release();
+	itemLock.ReleaseWriteLock();
 
 	Log.Debug("AuctionHouse", "%u: Add auction %u, expire@ %u.", dbc->id, auct->Id, auct->ExpiryTime);
 }
@@ -136,10 +136,10 @@ Auction * AuctionHouse::GetAuction(uint32 Id)
 {
 	Auction * ret;
 	HM_NAMESPACE::hash_map<uint32, Auction*>::iterator itr;
-	auctionLock.Acquire();
+	auctionLock.AcquireReadLock();
 	itr = auctions.find(Id);
 	ret = (itr == auctions.end()) ? 0 : itr->second;
-	auctionLock.Release();
+	auctionLock.ReleaseReadLock();
 	return ret;
 }
 
@@ -215,14 +215,14 @@ void AuctionHouse::RemoveAuction(Auction * auct)
 	}
 
 	// Remove the auction from the hashmap.
-	auctionLock.Acquire();
-	itemLock.Acquire();
+	auctionLock.AcquireWriteLock();
+	itemLock.AcquireWriteLock();
 
 	auctions.erase(auct->Id);
 	auctionedItems.erase(auct->pItem->GetGUID());
 
-	auctionLock.Release();
-	itemLock.Release();
+	auctionLock.ReleaseWriteLock();
+	itemLock.ReleaseWriteLock();
 
 	// Destroy the item from memory (it still remains in the db)
 	if (auct->pItem)
@@ -301,7 +301,7 @@ void AuctionHouse::SendBidListPacket(Player * plr, WorldPacket * packet)
 	data << uint32(0);										  // Placeholder
 
 	Auction * auct;
-	auctionLock.Acquire();
+	auctionLock.AcquireReadLock();
 	HM_NAMESPACE::hash_map<uint32, Auction*>::iterator itr = auctions.begin();
 	for(; itr != auctions.end(); ++itr)
 	{
@@ -319,13 +319,13 @@ void AuctionHouse::SendBidListPacket(Player * plr, WorldPacket * packet)
 	swap32((uint32*)&data.contents()[0]);
 #endif
 	data << count;
-	auctionLock.Release();
+	auctionLock.ReleaseReadLock();
 	plr->GetSession()->SendPacket(&data);
 }
 
 void AuctionHouse::UpdateOwner(uint32 oldGuid, uint32 newGuid)
 {
-	auctionLock.Acquire();
+	auctionLock.AcquireWriteLock();
 	HM_NAMESPACE::hash_map<uint32, Auction*>::iterator itr = auctions.begin();
 	Auction * auction;
 	for(; itr != auctions.end(); ++itr)
@@ -339,7 +339,7 @@ void AuctionHouse::UpdateOwner(uint32 oldGuid, uint32 newGuid)
 			auction->UpdateInDB();
 		}
 	}
-	auctionLock.Release();
+	auctionLock.ReleaseWriteLock();
 }
 
 void AuctionHouse::SendOwnerListPacket(Player * plr, WorldPacket * packet)
@@ -350,7 +350,7 @@ void AuctionHouse::SendOwnerListPacket(Player * plr, WorldPacket * packet)
 	data << uint32(0);										  // Placeholder
 
 	Auction * auct;
-	auctionLock.Acquire();
+	auctionLock.AcquireReadLock();
 	HM_NAMESPACE::hash_map<uint32, Auction*>::iterator itr = auctions.begin();
 	for(; itr != auctions.end(); ++itr)
 	{
@@ -368,7 +368,7 @@ void AuctionHouse::SendOwnerListPacket(Player * plr, WorldPacket * packet)
 #ifdef USING_BIG_ENDIAN
 	swap32((uint32*)&data.contents()[0]);
 #endif
-	auctionLock.Release();
+	auctionLock.ReleaseReadLock();
 	plr->GetSession()->SendPacket(&data);
 }
 
@@ -693,7 +693,7 @@ void AuctionHouse::SendAuctionList(Player * plr, WorldPacket * packet)
 	WorldPacket data(SMSG_AUCTION_LIST_RESULT, 7000);
 	data << uint32(0);
 
-	auctionLock.Acquire();
+	auctionLock.AcquireReadLock();
 	HM_NAMESPACE::hash_map<uint32, Auction*>::iterator itr = auctions.begin();
 	ItemPrototype * proto;
 	for(; itr != auctions.end(); ++itr)
@@ -769,7 +769,7 @@ void AuctionHouse::SendAuctionList(Player * plr, WorldPacket * packet)
 	swap32((uint32*)&data.contents()[0]);
 #endif
 
-	auctionLock.Release();
+	auctionLock.ReleaseReadLock();
 	plr->GetSession()->SendPacket(&data);
 }
 

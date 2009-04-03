@@ -666,7 +666,7 @@ void WorldSession::HandleWhoOpcode( WorldPacket & recv_data )
 	data.SetOpcode(SMSG_WHO);
 	data << uint64(0);
 
-	objmgr._playerslock.Acquire();
+	objmgr._playerslock.AcquireReadLock();
 	iend=objmgr._players.end();
 	itr=objmgr._players.begin();
 	while ( itr !=iend && sent_count < 49 ) // WhoList should display 49 names not including your own
@@ -760,7 +760,7 @@ void WorldSession::HandleWhoOpcode( WorldPacket & recv_data )
 		data << uint32(plr->GetZoneId());
 		++sent_count;
 	}
-	objmgr._playerslock.Release();
+	objmgr._playerslock.ReleaseReadLock();
 	data.wpos(0);
 	data << sent_count;
 	data << sent_count;

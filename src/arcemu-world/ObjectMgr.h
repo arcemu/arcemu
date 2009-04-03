@@ -461,16 +461,16 @@ public:
 
 	void AddGroup(Group* group)
 	{
-		m_groupLock.Acquire();
+		m_groupLock.AcquireWriteLock();
 		m_groups.insert(make_pair(group->GetID(), group));
-		m_groupLock.Release();
+		m_groupLock.ReleaseWriteLock();
 	}
 
 	void RemoveGroup(Group* group)
 	{
-		m_groupLock.Acquire();
+		m_groupLock.AcquireWriteLock();
 		m_groups.erase(group->GetID());
-		m_groupLock.Release();
+		m_groupLock.ReleaseWriteLock();
 	}
 
 	void GroupVoiceReconnected();
@@ -546,7 +546,7 @@ public:
 	Player * CreatePlayer();
 	 Mutex m_playerguidlock;
 	PlayerStorageMap _players;
-	Mutex _playerslock;
+	RWLock _playerslock;
 	uint32 m_hiPlayerGuid;
 	
 	void AddPlayer(Player * p);//add it to global storage
@@ -704,7 +704,7 @@ public:
 
 protected:
 	BCEntryStorage m_BCEntryStorage; // broadcast system.
-	Mutex playernamelock;
+	RWLock playernamelock;
 	uint32 m_mailid;
 	uint64 m_ticketid;
 	// highest GUIDs, used for creating new objects
@@ -716,7 +716,7 @@ protected:
     };
 	uint32 m_hiGroupId;
 	uint32 m_hiCharterId;
-	Mutex m_charterLock;
+	RWLock m_charterLock;
 
 	ReputationModMap m_reputation_faction;
 	ReputationModMap m_reputation_creature;
@@ -743,7 +743,7 @@ protected:
 	// These tables are modified as creatures are created and destroyed in the world
 
 	// Group List
-	Mutex m_groupLock;
+	RWLock m_groupLock;
 	GroupMap m_groups;
 
 	// Map of all starting infos needed for player creation

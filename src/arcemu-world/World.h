@@ -583,7 +583,7 @@ private:
 	//! Timers
 	typedef HM_NAMESPACE::hash_map<uint32, WorldSession*> SessionMap;
 	SessionMap m_sessions;
-	Mutex m_sessionlock;
+	RWLock m_sessionlock;
 
 	typedef HM_NAMESPACE::hash_map<uint32, AreaTrigger*> AreaTriggerMap;
 	AreaTriggerMap m_AreaTrigger;

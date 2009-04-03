@@ -346,7 +346,7 @@ void StatDumper::DumpStats()
         int count = 0;
         int avg = 0;
         // lock players reader
-        objmgr._playerslock.Acquire();
+        objmgr._playerslock.AcquireReadLock();
 
         HM_NAMESPACE::hash_map<uint32, Player*>::const_iterator itr;
         for (itr = objmgr._players.begin(); itr != objmgr._players.end(); itr++)
@@ -364,7 +364,7 @@ void StatDumper::DumpStats()
 				races[itr->second->getRace()]++;
             }            
         }
-        objmgr._playerslock.Release();
+        objmgr._playerslock.ReleaseReadLock();
 
         AvgLat = count ? (float)((float)avg / (float)count) : 0;
         GMCount = gm;
@@ -480,7 +480,7 @@ void StatDumper::DumpStats()
     {
     fprintf(f, "  <sessions>\n");
         // Dump Player Information
-        objmgr._playerslock.Acquire();
+        objmgr._playerslock.AcquireReadLock();
         HM_NAMESPACE::hash_map<uint32, Player*>::const_iterator itr;
 
         for (itr = objmgr._players.begin(); itr != objmgr._players.end(); itr++)
@@ -509,7 +509,7 @@ void StatDumper::DumpStats()
                     gms.push_back(plr);
             }
         }
-        objmgr._playerslock.Release();
+        objmgr._playerslock.ReleaseReadLock();
         fprintf(f, "  </sessions>\n");
 
         

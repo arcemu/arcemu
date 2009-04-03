@@ -71,7 +71,7 @@ public:
 protected:
 
 	int32 m_event_Instanceid;
-	Mutex m_lock;
+	FastMutex m_lock;
 	EventMap m_events;
 	EventableObjectHolder * m_holder;
 	
