@@ -5836,8 +5836,6 @@ void Unit::RemoveFromWorld(bool free_guid)
 		}
 	}
 
-	Object::RemoveFromWorld(free_guid);
-
 	//zack: should relocate new events to new eventmanager and not to -1
 	for(uint32 x = MAX_TOTAL_AURAS_START; x < MAX_TOTAL_AURAS_END; ++x)
 		if(m_auras[x] != 0)
@@ -5849,6 +5847,9 @@ void Unit::RemoveFromWorld(bool free_guid)
 			}
 			m_auras[x]->RelocateEvents();
 		}
+
+	Object::RemoveFromWorld(free_guid);
+
 	m_aiInterface->WipeReferences();
 }
 
