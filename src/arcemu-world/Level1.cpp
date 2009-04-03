@@ -51,7 +51,7 @@ uint16 GetItemIDFromLink(const char* itemlink, uint32* itemid)
 	}
 
 	ptr += 2;
-	return ptr-itemlink;
+	return (ptr-itemlink) & 0x0000ffff;
 }
 
 bool ChatHandler::HandleAnnounceCommand(const char* args, WorldSession *m_session)
@@ -274,6 +274,7 @@ bool ChatHandler::HandleAddInvItemCommand(const char *args, WorldSession *m_sess
 {
 	uint32 itemid, count=1;
 	int32 randomprop=0;
+	uint32 numadded = 0;
 
 	if(strlen(args) < 1)
 	{
@@ -296,47 +297,99 @@ bool ChatHandler::HandleAddInvItemCommand(const char *args, WorldSession *m_sess
 	ItemPrototype* it = ItemPrototypeStorage.LookupEntry(itemid);
 	if(it)
 	{
-		sGMLog.writefromsession(m_session, "used add item command, item id %u [%s] to %s", it->ItemId, it->Name1, chr->GetName());
-		Item *item;
-		item = objmgr.CreateItem( itemid, chr);
-		if (item == NULL)
-			return false;
-
-		item->SetUInt32Value(ITEM_FIELD_STACK_COUNT, ((count > it->MaxCount) ? it->MaxCount : count));
-		if(it->Bonding==ITEM_BIND_ON_PICKUP)
-			if(it->Flags & ITEM_FLAG_ACCOUNTBOUND) // don't "Soulbind" account-bound items
-				item->AccountBind();
-			else
-				item->SoulBind();
-		if(randomprop!=0)
+		bool freeslots = true;
+		// more than one stack
+		while( (count > it->MaxCount) && freeslots )
 		{
-			if(randomprop<0)
-				item->SetRandomSuffix(abs(int(randomprop)));
-			else
-				item->SetRandomProperty(randomprop);
+			Item *item;
+			item = objmgr.CreateItem( itemid, chr);
+			if (item == NULL)
+				return false;
 
-			item->ApplyRandomProperties(false);
+			if(it->Bonding==ITEM_BIND_ON_PICKUP)
+				if(it->Flags & ITEM_FLAG_ACCOUNTBOUND) // don't "Soulbind" account-bound items
+					item->AccountBind();
+				else
+					item->SoulBind();
+			if(randomprop!=0)
+			{
+				if(randomprop<0)
+					item->SetRandomSuffix(abs(int(randomprop)));
+				else
+					item->SetRandomProperty(randomprop);
+
+				item->ApplyRandomProperties(false);
+			}
+			item->SetUInt32Value(ITEM_FIELD_STACK_COUNT, it->MaxCount);
+			if(chr->GetItemInterface()->AddItemToFreeSlot(item))
+			{
+				SlotResult *lr = chr->GetItemInterface()->LastSearchResult();
+				chr->GetSession()->SendItemPushResult(item,false,true,false,true,lr->ContainerSlot,lr->Slot,it->MaxCount);
+				chr->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_LOOT_ITEM, itemid, 1, 0);
+				count -= it->MaxCount;
+				numadded += it->MaxCount;
+			}
+			else
+			{
+				freeslots = false;
+				m_session->SendNotification("No free slots were found in your inventory!");
+				item->DeleteMe();
+			}
 		}
+		// last stack
+		if(freeslots)
+		{
+			Item *item;
+			item = objmgr.CreateItem( itemid, chr);
+			if (item == NULL)
+				return false;
+
+			if(it->Bonding==ITEM_BIND_ON_PICKUP)
+				if(it->Flags & ITEM_FLAG_ACCOUNTBOUND) // don't "Soulbind" account-bound items
+					item->AccountBind();
+				else
+					item->SoulBind();
+			if(randomprop!=0)
+			{
+				if(randomprop<0)
+					item->SetRandomSuffix(abs(int(randomprop)));
+				else
+					item->SetRandomProperty(randomprop);
+
+				item->ApplyRandomProperties(false);
+			}
+			item->SetUInt32Value(ITEM_FIELD_STACK_COUNT, count);
 	  
-		if(!chr->GetItemInterface()->AddItemToFreeSlot(item))
-		{
-			m_session->SendNotification("No free slots were found in your inventory!");
-			item->DeleteMe();
-			return true;
+			if(chr->GetItemInterface()->AddItemToFreeSlot(item))
+			{
+				SlotResult *lr = chr->GetItemInterface()->LastSearchResult();
+				chr->GetSession()->SendItemPushResult(item,false,true,false,true,lr->ContainerSlot,lr->Slot,count);
+				chr->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_LOOT_ITEM, itemid, 1, 0);
+				numadded += count;
+				count = 0;
+			}
+			else
+			{
+				m_session->SendNotification("No free slots were found in your inventory!");
+				item->DeleteMe();
+			}
 		}
 
+		if( count == 0 )
+		{
+			sGMLog.writefromsession(m_session, "used add item command, item id %u [%s], quantity %lu, to %s", it->ItemId, it->Name1, numadded, chr->GetName());
+		}
+		else
+		{
+			sGMLog.writefromsession(m_session, "used add item command, item id %u [%s], quantity %lu (only %lu added due to full inventory), to %s", count + numadded, numadded, chr->GetName());
+		}
 		char messagetext[512];
-		snprintf(messagetext, 512, "Adding item %s (id: %d) to %s's inventory.", GetItemLinkByProto(it, m_session->language).c_str(), (unsigned int)it->ItemId, chr->GetName());
+		snprintf(messagetext, 512, "Added item %s (id: %d), quantity %lu, to %s's inventory.", GetItemLinkByProto(it, m_session->language).c_str(), (unsigned int)it->ItemId, numadded, chr->GetName());
 		SystemMessage(m_session, messagetext);
-		snprintf(messagetext, 128, "%s added item %d (%s) to your inventory.", m_session->GetPlayer()->GetName(), (unsigned int)itemid, it->Name1);
-		snprintf(messagetext, 512, "%s added item %s to your inventory.", m_session->GetPlayer()->GetName(), GetItemLinkByProto(it, chr->GetSession()->language).c_str());
+		//snprintf(messagetext, 128, "%s added item %d (%s) to your inventory.", m_session->GetPlayer()->GetName(), (unsigned int)itemid, it->Name1);
+		snprintf(messagetext, 512, "%s added item %s, quantity %lu, to your inventory.", m_session->GetPlayer()->GetName(), GetItemLinkByProto(it, chr->GetSession()->language).c_str(), numadded);
 		
 		SystemMessageToPlr(chr,  messagetext);
-
-		SlotResult *lr = chr->GetItemInterface()->LastSearchResult();
-		chr->GetSession()->SendItemPushResult(item,false,true,false,true,lr->ContainerSlot,lr->Slot,count);
-		chr->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_LOOT_ITEM, itemid, 1, 0);
-
 		return true;
 	} else {
 		RedSystemMessage(m_session, "Item %d is not a valid item!", itemid);
