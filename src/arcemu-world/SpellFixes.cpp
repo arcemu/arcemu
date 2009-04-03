@@ -6938,5 +6938,117 @@ void ApplyNormalFixes()
 			sp->EffectBasePoints[1] = 99;
 		}
 		 
+		//Swift Mooncloth Carpet
+		sp = dbcSpell.LookupEntryForced( 61442 );
+		if( sp != NULL )
+		{
+			sp->Effect[0] = SPELL_EFFECT_APPLY_AURA;
+			sp->Effect[1] = SPELL_EFFECT_APPLY_AURA;
+			sp->EffectApplyAuraName[0] = SPELL_AURA_MOUNTED;
+			sp->EffectApplyAuraName[1] = SPELL_AURA_MOD_INCREASE_MOUNTED_SPEED;
+			sp->EffectMiscValue[0] = 32634;
+			sp->EffectMiscValueB[1] = 0;
+			sp->EffectImplicitTargetA[0] = 1;
+			sp->EffectImplicitTargetA[1] = 1;
+			sp->EffectBasePoints[0] = 0;
+			sp->EffectBasePoints[1] = 99;
+		}
+		 
+		//Swift Spellfire Carpet
+		sp = dbcSpell.LookupEntryForced( 61446 );
+		if( sp != NULL )
+		{
+			sp->Effect[0] = SPELL_EFFECT_APPLY_AURA;
+			sp->Effect[1] = SPELL_EFFECT_APPLY_AURA;
+			sp->EffectApplyAuraName[0] = SPELL_AURA_MOUNTED;
+			sp->EffectApplyAuraName[1] = SPELL_AURA_MOD_INCREASE_MOUNTED_SPEED;
+			sp->EffectMiscValue[0] = 32636;
+			sp->EffectMiscValueB[1] = 0;
+			sp->EffectImplicitTargetA[0] = 1;
+			sp->EffectImplicitTargetA[1] = 1;
+			sp->EffectBasePoints[0] = 0;
+			sp->EffectBasePoints[1] = 99;
+		}
+		 
+		//Swift Shadoweave Carpet
+		sp = dbcSpell.LookupEntryForced( 61444 );
+		if( sp != NULL )
+		{
+			sp->Effect[0] = SPELL_EFFECT_APPLY_AURA;
+			sp->Effect[1] = SPELL_EFFECT_APPLY_AURA;
+			sp->EffectApplyAuraName[0] = SPELL_AURA_MOUNTED;
+			sp->EffectApplyAuraName[1] = SPELL_AURA_MOD_INCREASE_MOUNTED_SPEED;
+			sp->EffectMiscValue[0] = 32635;
+			sp->EffectMiscValueB[1] = 0;
+			sp->EffectImplicitTargetA[0] = 1;
+			sp->EffectImplicitTargetA[1] = 1;
+			sp->EffectBasePoints[0] = 0;
+			sp->EffectBasePoints[1] = 99;
+		}
+		 
+		//Grand Ice Mammoth (Horde flavour)
+		sp = dbcSpell.LookupEntryForced( 61469 );
+		if( sp != NULL )
+		{
+			sp->Effect[0] = SPELL_EFFECT_APPLY_AURA;
+			sp->Effect[1] = SPELL_EFFECT_APPLY_AURA;
+			sp->EffectApplyAuraName[0] = SPELL_AURA_MOUNTED;
+			sp->EffectApplyAuraName[1] = SPELL_AURA_MOD_INCREASE_MOUNTED_SPEED;
+			sp->EffectMiscValue[0] = 31857;
+			sp->EffectMiscValueB[1] = 0;
+			sp->EffectImplicitTargetA[0] = 1;
+			sp->EffectImplicitTargetA[1] = 1;
+			sp->EffectBasePoints[0] = 0;
+			sp->EffectBasePoints[1] = 99;
+		}
+		 
+		//Grand Ice Mammoth (Alliance flavour)
+		sp = dbcSpell.LookupEntryForced( 61470 );
+		if( sp != NULL )
+		{
+			sp->Effect[0] = SPELL_EFFECT_APPLY_AURA;
+			sp->Effect[1] = SPELL_EFFECT_APPLY_AURA;
+			sp->EffectApplyAuraName[0] = SPELL_AURA_MOUNTED;
+			sp->EffectApplyAuraName[1] = SPELL_AURA_MOD_INCREASE_MOUNTED_SPEED;
+			sp->EffectMiscValue[0] = 31858;
+			sp->EffectMiscValueB[1] = 0;
+			sp->EffectImplicitTargetA[0] = 1;
+			sp->EffectImplicitTargetA[1] = 1;
+			sp->EffectBasePoints[0] = 0;
+			sp->EffectBasePoints[1] = 99;
+		}
+		 
+		//Grand Black War Mammoth (Horde flavour)
+		sp = dbcSpell.LookupEntryForced( 61467 );
+		if( sp != NULL )
+		{
+			sp->Effect[0] = SPELL_EFFECT_APPLY_AURA;
+			sp->Effect[1] = SPELL_EFFECT_APPLY_AURA;
+			sp->EffectApplyAuraName[0] = SPELL_AURA_MOUNTED;
+			sp->EffectApplyAuraName[1] = SPELL_AURA_MOD_INCREASE_MOUNTED_SPEED;
+			sp->EffectMiscValue[0] = 31861;
+			sp->EffectMiscValueB[1] = 0;
+			sp->EffectImplicitTargetA[0] = 1;
+			sp->EffectImplicitTargetA[1] = 1;
+			sp->EffectBasePoints[0] = 0;
+			sp->EffectBasePoints[1] = 99;
+		}
+		 
+		//Grand Black War Mammoth (Alliance flavour)
+		sp = dbcSpell.LookupEntryForced( 61465 );
+		if( sp != NULL )
+		{
+			sp->Effect[0] = SPELL_EFFECT_APPLY_AURA;
+			sp->Effect[1] = SPELL_EFFECT_APPLY_AURA;
+			sp->EffectApplyAuraName[0] = SPELL_AURA_MOUNTED;
+			sp->EffectApplyAuraName[1] = SPELL_AURA_MOD_INCREASE_MOUNTED_SPEED;
+			sp->EffectMiscValue[0] = 31862;
+			sp->EffectMiscValueB[1] = 0;
+			sp->EffectImplicitTargetA[0] = 1;
+			sp->EffectImplicitTargetA[1] = 1;
+			sp->EffectBasePoints[0] = 0;
+			sp->EffectBasePoints[1] = 99;
+		}
+		 
 		
 }
