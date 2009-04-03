@@ -2557,7 +2557,7 @@ bool ChatHandler::HandleLookupItemCommand(const char * args, WorldSession * m_se
 	arcemu_TOLOWER(x);
 	if(x.length() < 4)
 	{
-		RedSystemMessage(m_session, "Your search string must be at least 5 characters long.");
+		RedSystemMessage(m_session, "Your search string must be at least 4 characters long.");
 		return true;
 	}
 
@@ -2641,9 +2641,9 @@ bool ChatHandler::HandleLookupObjectCommand(const char * args, WorldSession * m_
 			SendMultilineMessage(m_session,recout.c_str());
 			
 			++count;
-			if(count==50 || count > 50)
+			if(count==25 || count > 25)
 			{
-				RedSystemMessage(m_session,"More than 50 results returned. aborting.");
+				RedSystemMessage(m_session,"More than 25 results returned. aborting.");
 				break;
 			}
 		}
@@ -2666,7 +2666,7 @@ bool ChatHandler::HandleLookupCreatureCommand(const char * args, WorldSession * 
 	arcemu_TOLOWER(x);
 	if(x.length() < 4)
 	{
-		RedSystemMessage(m_session, "Your search string must be at least 5 characters long.");
+		RedSystemMessage(m_session, "Your search string must be at least 4 characters long.");
 		return true;
 	}
 
@@ -2718,7 +2718,7 @@ bool ChatHandler::HandleLookupSpellCommand(const char * args, WorldSession * m_s
 	arcemu_TOLOWER(x);
 	if(x.length() < 4)
 	{
-		RedSystemMessage(m_session, "Your search string must be at least 5 characters long.");
+		RedSystemMessage(m_session, "Your search string must be at least 4 characters long.");
 		return true;
 	}
 
@@ -2767,7 +2767,7 @@ bool ChatHandler::HandleLookupSkillCommand(const char * args, WorldSession * m_s
 	arcemu_TOLOWER(x);
 	if(x.length() < 4)
 	{
-		RedSystemMessage(m_session, "Your search string must be at least 5 characters long.");
+		RedSystemMessage(m_session, "Your search string must be at least 4 characters long.");
 		return true;
 	}
 
@@ -2804,7 +2804,7 @@ bool ChatHandler::HandleLookupFactionCommand(const char * args, WorldSession * m
 	arcemu_TOLOWER(x);
 	if(x.length() < 4)
 	{
-		RedSystemMessage(m_session, "Your search string must be at least 5 characters long.");
+		RedSystemMessage(m_session, "Your search string must be at least 4 characters long.");
 		return true;
 	}
 
@@ -3375,17 +3375,20 @@ bool ChatHandler::HandleShowItems(const char * args, WorldSession * m_session)
 	string q;
 	Player * plr = getSelectedChar(m_session, true);
 	if(!plr) return true;
-
+	BlueSystemMessage(m_session, "Listing items for player %s",plr->GetName());
+	int itemcount=0;
 	ItemIterator itr(plr->GetItemInterface());
 	itr.BeginSearch();
 	for(; !itr.End(); itr.Increment())
 	{
 		if(!(*itr))
 			return false;
-
+		itemcount++;
 		SendItemLinkToPlayer((*itr)->GetProto(), m_session, true, plr, m_session->language);
 	}
 	itr.EndSearch();
+	BlueSystemMessage(m_session, "Listed %d items for player %s",itemcount,plr->GetName());
+
 	sGMLog.writefromsession(m_session, "used show items command on %s,", plr->GetName());
 
    return true;
@@ -3397,13 +3400,17 @@ bool ChatHandler::HandleShowSkills(const char * args, WorldSession * m_session)
 	if(!plr)
 		return true;
 
+	BlueSystemMessage(m_session, "Listing items for player %s",plr->GetName());
+	int itemcount=0;
 	SkillIterator itr2(plr);
 	itr2.BeginSearch();
 	for(; !itr2.End(); itr2.Increment())
 	{
+		itemcount++;
 		SystemMessage(m_session, "Skill %u %s %u/%u", itr2->Skill->id, itr2->Skill->Name ,itr2->CurrentValue, itr2->MaximumValue);
 	}
 	itr2.EndSearch();
+	BlueSystemMessage(m_session, "Listed %d skills for player %s",itemcount,plr->GetName());
 	sGMLog.writefromsession(m_session, "used show skills command on %s,", plr->GetName());
 
 	return true;

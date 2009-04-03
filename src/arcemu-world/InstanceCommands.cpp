@@ -56,9 +56,17 @@ const char * GetMapTypeString(uint8 type)
 
 bool ChatHandler::HandleResetAllInstancesCommand(const char* args, WorldSession *m_session)
 {
-	Player * plr = getSelectedChar(m_session, true);
-	if(!plr)
+
+	Player * plr;
+	if(strlen(args)==0)
+		plr = getSelectedChar(m_session, true);
+	else
+		plr = objmgr.GetPlayer(args, false);;
+		
+	if(!plr){
+		RedSystemMessage(m_session, "Player not found");
 		return true;
+	}
 
 	SystemMessage(m_session, "Trying to reset all instances of player %s...", plr->GetName());
 	sInstanceMgr.ResetSavedInstances(plr);
@@ -70,14 +78,41 @@ bool ChatHandler::HandleResetAllInstancesCommand(const char* args, WorldSession 
 
 bool ChatHandler::HandleResetInstanceCommand(const char* args, WorldSession *m_session)
 {
-	uint32 instanceId = (args ? atoi(args) : 0);
-	if(instanceId == 0)
-		return false;
 
-	Player * plr = getSelectedChar(m_session, true);
-	if(!plr)
+	uint32 instanceId;
+	int argc = 1;
+	char* playername = NULL;
+	char* guidString = (char*)args;
+
+	// Parse arguments
+	char* space = (char*)strchr(args, ' ');
+	if(space)
+	{	
+		*space = '\0';
+		playername = space + 1;
+		argc = 2;
+	}
+
+	instanceId = atoi(guidString);
+	if(!instanceId)
+	{
+		RedSystemMessage(m_session, "You must specify an instance id.");
 		return true;
+	}
+	
 
+	Player * plr;
+
+	if( argc == 1 )
+		plr = getSelectedChar(m_session, true);
+	else
+		plr = objmgr.GetPlayer((const char*)playername, false);;
+		
+	if(!plr){
+		RedSystemMessage(m_session, "Player not found");
+		return true;
+	}
+	
 	Instance *instance = sInstanceMgr.GetInstanceByIds(NUM_MAPS, instanceId);
 	if(instance == NULL)
 	{

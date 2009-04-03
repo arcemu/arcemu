@@ -93,7 +93,7 @@ bool ChatHandler::HandleQuestLookupCommand(const char * args, WorldSession * m_s
 	arcemu_TOLOWER(x);
 	if(x.length() < 4)
 	{
-		RedSystemMessage(m_session, "Your search string must be at least 5 characters long.");
+		RedSystemMessage(m_session, "Your search string must be at least 4 characters long.");
 		return true;
 	}
 

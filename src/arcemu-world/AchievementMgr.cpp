@@ -1938,7 +1938,11 @@ bool ChatHandler::HandleLookupAchievementCmd(const char* args, WorldSession* m_s
 		x = string(args);
 	}
 	arcemu_TOLOWER(x);
-
+	if(x.length() < 4)
+	{
+		RedSystemMessage(m_session, "Your search string must be at least 4 characters long.");
+		return true;
+	}
 	GreenSystemMessage(m_session, "Starting search of achievement `%s`...", x.c_str());
 	uint32 t = getMSTime();
 	uint32 i, j, numFound=0;
@@ -1951,7 +1955,7 @@ bool ChatHandler::HandleLookupAchievementCmd(const char* args, WorldSession* m_s
 		std::set<uint32> foundList;
 		j = dbcAchievementStore.GetNumRows();
 		bool foundmatch;
-		for( i=0; i<j && numFound<50; ++i )
+		for( i=0; i<j && numFound<25; ++i )
 		{
 			AchievementEntry const* achievement = dbcAchievementStore.LookupEntry(i);
 			if(achievement)

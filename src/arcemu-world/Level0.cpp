@@ -396,6 +396,21 @@ bool ChatHandler::HandleGMListCommand(const char* args, WorldSession *m_session)
 	return true;
 }
 
+bool ChatHandler::HandleGMStatusCommand(const char* args, WorldSession *m_session)
+{
+	if(m_session->GetPlayer()->bGMTagOn)
+		BlueSystemMessage(m_session, "GM Flag: On");
+	else
+		BlueSystemMessage(m_session, "GM Flag: Off");
+	
+	if(m_session->GetPlayer()->m_isGmInvisible)
+		BlueSystemMessage(m_session, "GM Invis: On");
+	else
+		BlueSystemMessage(m_session, "GM Invis: Off");
+
+	return true;
+}
+
 bool ChatHandler::HandleRangeCheckCommand( const char *args , WorldSession *m_session )
 {
 	WorldPacket data;

@@ -222,6 +222,7 @@ protected:
 	bool HandleDismountCommand(const char* args, WorldSession *m_session);
 	bool HandleSaveCommand(const char* args, WorldSession *m_session);
 	bool HandleGMListCommand(const char* args, WorldSession *m_session);
+	bool HandleGMStatusCommand(const char* args, WorldSession *m_session);
 	bool HandleGmLogCommentCommand( const char *args , WorldSession *m_session);
 	bool HandleRatingsCommand( const char *args , WorldSession *m_session );
 	bool HandleSimpleDistanceCommand( const char *args , WorldSession *m_session );
