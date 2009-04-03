@@ -340,7 +340,7 @@ bool ChatHandler::HandleQuestFinishCommand(const char * args, WorldSession * m_s
 				uint32 giver_id = 0;
 				std::string my_query = "";
 
-				my_query = "SELECT id FROM creature_quest_starter WHERE quest = " + string(args);
+				my_query = "SELECT id FROM creature_quest_starter WHERE quest = " + MyConvertIntToString(quest_id);
 				QueryResult *creatureResult = WorldDatabase.Query(my_query.c_str());
 
 				if(creatureResult)
@@ -351,7 +351,7 @@ bool ChatHandler::HandleQuestFinishCommand(const char * args, WorldSession * m_s
 				}
 				else
 				{
-					my_query = "SELECT id FROM gameobject_quest_starter WHERE quest = " + string(args);
+					my_query = "SELECT id FROM gameobject_quest_starter WHERE quest = " + MyConvertIntToString(quest_id);
 					QueryResult *objectResult = WorldDatabase.Query(my_query.c_str());
 					if(objectResult)
 					{
@@ -384,9 +384,7 @@ bool ChatHandler::HandleQuestFinishCommand(const char * args, WorldSession * m_s
 					if(quest_giver)
 					{
 						GreenSystemMessage(m_session, "Found a quest_giver creature.");
-						//WorldPacket data;
-						//sQuestMgr.BuildOfferReward(&data, qst, quest_giver, 1);
-						//m_session->SendPacket(&data);
+						sQuestMgr.OnActivateQuestGiver(quest_giver, plr);
 						sQuestMgr.GiveQuestRewardReputation(plr, qst, quest_giver);
 					}
 					else
