@@ -4290,19 +4290,44 @@ void Unit::AddAura(Aura *aur)
 			{
 				if( m_auras[x] )
 				{
-					if(	m_auras[x]->GetSpellProto()->Id != aur->GetSpellId() &&
-						( aur->pSpellId != m_auras[x]->GetSpellProto()->Id ) //if this is a proc spell then it should not remove it's mother : test with combustion later
-						)
+					if( m_auras[x]->GetSpellId() == aur->GetSpellId() )
+					{
+						if( !aur->IsPositive()
+							&& m_auras[x]->m_casterGuid != aur->m_casterGuid
+							&& ( m_auras[x]->GetSpellProto()->c_is_flags & SPELL_FLAG_IS_MAXSTACK_FOR_DEBUFF) == 0
+							)
+						{
+							continue;
+						}
+						AlreadyApplied++;
+						//update duration,the same aura (update the whole stack whenever we cast a new one)
+						m_auras[x]->SetDuration(aur->GetDuration());
+						sEventMgr.ModifyEventTimeLeft(m_auras[x], EVENT_AURA_REMOVE, aur->GetDuration());
+
+						if(maxStack <= AlreadyApplied)
+						{
+							ModVisualAuraStackCount(m_auras[x], 0);
+							if (AlreadyApplied == 1)
+								m_auras[x]->UpdateModifiers();
+							deleteAur = true;
+							break;
+						}
+					}
+					else if( ( aur->pSpellId != m_auras[x]->GetSpellProto()->Id ) ) // if this is a proc spell then it should not remove it's mother : test with combustion later
 					{
 						// Check for auras by specific type.
-						// Check for auras with the same name and a different rank.
 						if(info->BGR_one_buff_on_target > 0 && m_auras[x]->GetSpellProto()->BGR_one_buff_on_target & info->BGR_one_buff_on_target && maxStack == 0)
+						{
 							deleteAur = HasAurasOfBuffType(info->BGR_one_buff_on_target, aur->m_casterGuid,0);
+						}
+						// Check for auras with the same name and a different rank.
 						else
 						{
 							acr = AuraCheck(info->NameHash, info->RankNumber, m_auras[x],aur->GetCaster());
 							if(acr.Error == AURA_CHECK_RESULT_HIGHER_BUFF_PRESENT)
+							{
 								deleteAur = true;
+							}
 							else if(acr.Error == AURA_CHECK_RESULT_LOWER_BUFF_PRESENT)
 							{
 								// remove the lower aura
@@ -4313,34 +4338,11 @@ void Unit::AddAura(Aura *aur)
 							}
 						}
 					}
-					else if( m_auras[x]->GetSpellId() == aur->GetSpellId() ) // not the best formula to test this I know, but it works until we find a solution
-					{
-						if( !aur->IsPositive() //sais who ?
-							&& m_auras[x]->m_casterGuid != aur->m_casterGuid //it's a lie !
-							&& ( m_auras[x]->GetSpellProto()->c_is_flags & SPELL_FLAG_IS_MAXSTACK_FOR_DEBUFF) == 0 //the truth is revealed
-							)
-							continue;
-						AlreadyApplied++;
-						if(AlreadyApplied == 1)
-						{
-							//update duration,the same aura (update the whole stack whenever we cast a new one)
-							m_auras[x]->SetDuration(aur->GetDuration());
-							sEventMgr.ModifyEventTimeLeft(m_auras[x], EVENT_AURA_REMOVE, aur->GetDuration());
-
-							if(maxStack <= 1 && this->IsPlayer() )
-								ModVisualAuraStackCount(m_auras[x], 0);
-						}
-						if(maxStack <= AlreadyApplied)
-						{
-							if (AlreadyApplied == 1)
-								m_auras[x]->UpdateModifiers();
-							deleteAur = true;
-							break;
-						}
-					}
 				}
 				else if( AuraSlot == 0xFFFF )
+				{
 					AuraSlot = x;
+				}
 			}
 
 			if(deleteAur)

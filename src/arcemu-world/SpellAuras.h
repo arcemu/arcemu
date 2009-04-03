@@ -393,7 +393,11 @@ public:
     ARCEMU_INLINE bool IsPassive(){ if(!m_spellProto) return false; return (m_spellProto->Attributes & ATTRIBUTES_PASSIVE && !m_areaAura);}
 
     ARCEMU_INLINE int32 GetDuration() const { return m_duration; }
-    void SetDuration(int32 duration) { m_duration = duration; }
+	 void SetDuration(int32 duration)
+	 {
+		 m_duration = duration;
+		 timeleft = (uint32)UNIXTIME;
+	 }
 
     ARCEMU_INLINE uint16 GetAuraSlot() const { return m_auraSlot; }
 	void SetAuraSlot( uint16 slot ) { m_auraSlot = slot; }
@@ -413,7 +417,7 @@ public:
 	void EventUpdateAA(float r);
 	void RemoveAA();
 
-	ARCEMU_INLINE uint32 GetTimeLeft()//in sec
+	ARCEMU_INLINE uint32 GetTimeLeft() // in milliseconds
 	{
 		if(m_duration==-1)return (uint32)-1;
 		int32 n=int32((UNIXTIME-time_t(timeleft))*1000);
