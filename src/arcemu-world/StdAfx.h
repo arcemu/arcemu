@@ -68,7 +68,6 @@
 #include "../arcemu-shared/CrashHandler.h"
 #include "../arcemu-shared/FastQueue.h"
 #include "../arcemu-shared/CircularQueue.h"
-#include "../arcemu-shared/Threading/RWLock.h"
 #include "../arcemu-shared/Threading/Condition.h"
 #include "../arcemu-shared/arcemu_getopt.h"
 

@@ -100,10 +100,10 @@ public:
 	void SendAuctionList(Player * plr, WorldPacket * packet);
 
 private:
-	RWLock itemLock;
+	Mutex itemLock;
 	HM_NAMESPACE::hash_map<uint64, Item*> auctionedItems;
 
-	RWLock auctionLock;
+	Mutex auctionLock;
 	HM_NAMESPACE::hash_map<uint32, Auction*> auctions;
 
 	Mutex removalLock;

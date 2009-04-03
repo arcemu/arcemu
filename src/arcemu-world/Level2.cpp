@@ -373,7 +373,7 @@ bool ChatHandler::HandleSaveAllCommand(const char *args, WorldSession *m_session
 	PlayerStorageMap::const_iterator itr;
 	uint32 stime = now();
 	uint32 count = 0;
-	objmgr._playerslock.AcquireReadLock();
+	objmgr._playerslock.Acquire();
 	for (itr = objmgr._players.begin(); itr != objmgr._players.end(); itr++)
 	{
 		if(itr->second->GetSession())
@@ -382,7 +382,7 @@ bool ChatHandler::HandleSaveAllCommand(const char *args, WorldSession *m_session
 			count++;
 		}
 	}
-	objmgr._playerslock.ReleaseReadLock();
+	objmgr._playerslock.Release();
 	char msg[100];
 	snprintf(msg, 100, "Saved all %d online players in %d msec.", (int)count, int((uint32)now() - stime));
 	sWorld.SendWorldText(msg);

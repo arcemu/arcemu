@@ -1764,7 +1764,7 @@ bool ChatHandler::HandleKillByIPCommand(const char* args, WorldSession* m_sessio
 bool ChatHandler::HandleMassSummonCommand(const char* args, WorldSession* m_session)
 {
 	PlayerStorageMap::const_iterator itr;
-	objmgr._playerslock.AcquireReadLock();
+	objmgr._playerslock.Acquire();
 	Player * summoner = m_session->GetPlayer();
 	Player * plr;
 	int faction=-1;
@@ -1805,7 +1805,7 @@ bool ChatHandler::HandleMassSummonCommand(const char* args, WorldSession* m_sess
 		}
 	}
 	sGMLog.writefromsession(m_session, "requested a mass summon of %u players.", c);
-	objmgr._playerslock.ReleaseReadLock();
+	objmgr._playerslock.Release();
 	return true;
 }
 
@@ -1839,7 +1839,7 @@ bool ChatHandler::HandleCastAllCommand(const char* args, WorldSession* m_session
 	sGMLog.writefromsession(m_session, "used castall command, spellid %u", spellid);
 
 	PlayerStorageMap::const_iterator itr;
-	objmgr._playerslock.AcquireReadLock();
+	objmgr._playerslock.Acquire();
 	for (itr = objmgr._players.begin(); itr != objmgr._players.end(); itr++)
 	{
 		plr = itr->second;
@@ -1858,7 +1858,7 @@ bool ChatHandler::HandleCastAllCommand(const char* args, WorldSession* m_session
 			}
 		}
 	}
-	objmgr._playerslock.ReleaseReadLock();
+	objmgr._playerslock.Release();
 
 	BlueSystemMessage(m_session, "Casted spell %u on all players!", spellid);
 	return true;
@@ -3347,7 +3347,7 @@ bool ChatHandler::HandleDispelAllCommand(const char * args, WorldSession * m_ses
 	sGMLog.writefromsession(m_session, "used dispelall command, pos %u", pos);
 
 	PlayerStorageMap::const_iterator itr;
-	objmgr._playerslock.AcquireReadLock();
+	objmgr._playerslock.Acquire();
 	for (itr = objmgr._players.begin(); itr != objmgr._players.end(); itr++)
 	{
 		plr = itr->second;
@@ -3364,7 +3364,7 @@ bool ChatHandler::HandleDispelAllCommand(const char * args, WorldSession * m_ses
 		}
 	}
 	sGMLog.writefromsession(m_session, "used mass dispel");
-	objmgr._playerslock.ReleaseReadLock();
+	objmgr._playerslock.Release();
 
 	BlueSystemMessage(m_session, "Dispel action done.");
 	return true;
