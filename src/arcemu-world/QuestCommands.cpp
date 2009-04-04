@@ -319,11 +319,37 @@ bool ChatHandler::HandleQuestFinishCommand(const char * args, WorldSession * m_s
 	}
 
 	uint32 quest_id = atol(args);
+	// reward_slot is for when quest has choice of rewards (0 is the first choice, 1 is the second choice, ...)
+	// reward_slot will default to 0 if none is specified
+	uint32 reward_slot;
 	if(quest_id==0)
 	{
 		quest_id = GetQuestIDFromLink(args);
 		if(quest_id==0)
 			return false;
+		if(strstr(args,"|r"))
+		{
+			reward_slot = atol(strstr(args,"|r")+2);
+		}
+		else
+		{
+			reward_slot = 0;
+		}
+	}
+	else if(strchr(args,' '))
+	{
+		reward_slot = atol(strchr(args,' ')+1);
+	}
+	else
+	{
+		reward_slot = 0;
+	}
+	// currently Quest::reward_choiceitem declaration is
+	// uint32 reward_choiceitem[6];
+	// so reward_slot must be 0 to 5
+	if(reward_slot > 5)
+	{
+		reward_slot = 0;
 	}
 	std::string recout = "|cff00ff00";
 
@@ -391,20 +417,143 @@ bool ChatHandler::HandleQuestFinishCommand(const char * args, WorldSession * m_s
 						RedSystemMessage(m_session, "Unable to find quest_giver object.");
 				}
 
-				sQuestMgr.GenerateQuestXP(plr, qst);
-				sQuestMgr.BuildQuestComplete(plr, qst);
-
 				IsPlrOnQuest->Finish();
 				recout += "Player was on that quest, but has now completed it.";
 			}
 			else
+			{
 				recout += "The quest has now been completed for that player.";
+			}
 			
 			sGMLog.writefromsession( m_session, "completed quest %u [%s] for player %s", quest_id, qst->title, plr->GetName() );
+			sQuestMgr.BuildQuestComplete(plr, qst);
 			plr->AddToFinishedQuests(quest_id);
+
+			// Quest Rewards : Copied from QuestMgr::OnQuestFinished()
+			// Reputation reward
+			for(int z = 0; z < 6; z++)
+			{
+				if( qst->reward_repfaction[z] )
+				{
+					int32 amt;
+					uint32 fact = qst->reward_repfaction[z];
+					if( qst->reward_repvalue[z] )
+					{
+						amt = qst->reward_repvalue[z];
+					}
+					if( qst->reward_replimit && (plr->GetStanding(fact) >= (int32)qst->reward_replimit) )
+					{
+						continue;
+					}
+					amt = float2int32( float( amt ) * sWorld.getRate( RATE_QUESTREPUTATION ) );
+					plr->ModStanding( fact, amt );
+				}
+			}
+			// Static Item reward
+			for(uint32 i = 0; i < 4; ++i)
+			{
+				if(qst->reward_item[i])
+				{
+					ItemPrototype *proto = ItemPrototypeStorage.LookupEntry(qst->reward_item[i]);
+					if(!proto)
+					{
+						sLog.outError("Invalid item prototype in quest reward! ID %d, quest %d", qst->reward_item[i], qst->id);
+					}
+					else
+					{   
+						Item *add;
+						SlotResult slotresult;
+						add = plr->GetItemInterface()->FindItemLessMax(qst->reward_item[i], qst->reward_itemcount[i], false);
+						if (!add)
+						{
+							slotresult = plr->GetItemInterface()->FindFreeInventorySlot(proto);
+							if(!slotresult.Result)
+							{
+								plr->GetItemInterface()->BuildInventoryChangeError(NULL, NULL, INV_ERR_INVENTORY_FULL);
+							}
+							else
+							{
+								Item *itm = objmgr.CreateItem(qst->reward_item[i], plr);
+								if( itm )
+								{
+									itm->SetUInt32Value(ITEM_FIELD_STACK_COUNT, uint32(qst->reward_itemcount[i]));
+									if( !plr->GetItemInterface()->SafeAddItem(itm,slotresult.ContainerSlot, slotresult.Slot) )
+									{
+										itm->DeleteMe();
+									}
+								}
+							}
+						}
+						else
+						{
+							add->SetCount(add->GetUInt32Value(ITEM_FIELD_STACK_COUNT) + qst->reward_itemcount[i]);
+							add->m_isDirty = true;
+						}
+					}
+				}
+			}
+			// Choice Rewards -- Defaulting to choice 0 for ".quest complete" command
+			if(qst->reward_choiceitem[reward_slot])
+			{
+				ItemPrototype *proto = ItemPrototypeStorage.LookupEntry(qst->reward_choiceitem[reward_slot]);
+				if(!proto)
+				{
+					sLog.outError("Invalid item prototype in quest reward! ID %d, quest %d", qst->reward_choiceitem[reward_slot], qst->id);
+				}
+				else
+				{
+					Item *add;
+					SlotResult slotresult;
+					add = plr->GetItemInterface()->FindItemLessMax(qst->reward_choiceitem[reward_slot], qst->reward_choiceitemcount[reward_slot], false);
+					if (!add)
+					{
+						slotresult = plr->GetItemInterface()->FindFreeInventorySlot(proto);
+						if(!slotresult.Result)
+						{
+							plr->GetItemInterface()->BuildInventoryChangeError(NULL, NULL, INV_ERR_INVENTORY_FULL);
+						}
+						else
+						{
+							Item *itm = objmgr.CreateItem(qst->reward_choiceitem[reward_slot], plr);
+							if( itm )
+							{
+								itm->SetUInt32Value(ITEM_FIELD_STACK_COUNT, uint32(qst->reward_choiceitemcount[reward_slot]));
+								if( !plr->GetItemInterface()->SafeAddItem(itm,slotresult.ContainerSlot, slotresult.Slot) )
+								{
+									itm->DeleteMe();
+								}
+							}
+						}
+					}
+					else
+					{
+						add->SetCount(add->GetUInt32Value(ITEM_FIELD_STACK_COUNT) + qst->reward_choiceitemcount[reward_slot]);
+						add->m_isDirty = true;
+					}
+				}
+			}
+			// if daily then append to finished dailies
+			if ( qst->is_repeatable == arcemu_QUEST_REPEATABLE_DAILY )
+				plr->PushToFinishedDailies( qst->id );
+			// Remove quests that are listed to be removed on quest complete.
+			set<uint32>::iterator iter = qst->remove_quest_list.begin();
+			for(; iter != qst->remove_quest_list.end(); ++iter)
+			{
+				if( !plr->HasFinishedQuest( (*iter ) ))
+					plr->AddToFinishedQuests( (*iter ) );
+			}
+
 			plr->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_COMPLETE_QUEST_COUNT, 1, 0, 0);
-			if(qst->reward_money)
+			if( qst->reward_money > 0 )
+			{
+				// Money reward
+				// Check they dont have more than the max gold
+				if(sWorld.GoldCapEnabled && (plr->GetUInt32Value(PLAYER_FIELD_COINAGE) + qst->reward_money) <= sWorld.GoldLimit)
+				{
+					plr->ModUnsigned32Value( PLAYER_FIELD_COINAGE, qst->reward_money );
+				}
 				plr->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_QUEST_REWARD_GOLD, qst->reward_money, 0, 0);
+			}
 			plr->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_COMPLETE_QUESTS_IN_ZONE, qst->zone_id, 0, 0);
 			plr->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_COMPLETE_QUEST, qst->id, 0, 0);
 		}
