@@ -970,6 +970,7 @@ void Guild::Disband()
 
 		delete itr->second;
 	}
+	m_members.clear();
 	objmgr.RemoveGuild(m_guildId);
 	CharacterDatabase.Execute("DELETE FROM guilds WHERE guildId = %u", m_guildId);
 	CharacterDatabase.Execute("DELETE FROM guild_logs WHERE guildid = %u", m_guildId);
