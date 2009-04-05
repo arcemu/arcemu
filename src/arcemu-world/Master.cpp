@@ -581,16 +581,6 @@ bool Master::Run(int argc, char ** argv)
 
 	delete LogonCommHandler::getSingletonPtr();
 
-	//should delete pools before other handlers !
-	Log.Notice( "Item Pool", "Item Pool" );
-	delete tPPoolClass<Item>::getSingletonPtr();
-
-	Log.Notice( "Spell Pool", "Spell Pool" );
-	delete tPPoolClass<Spell>::getSingletonPtr();
-
-	Log.Notice( "Aura Pool", "Aura Pool" );
-	delete tPPoolClass<Aura>::getSingletonPtr();
-
 	sWorld.ShutdownClasses();
 	Log.Notice( "World", "~World()" );
 	delete World::getSingletonPtr();
@@ -603,6 +593,15 @@ bool Master::Run(int argc, char ** argv)
 
 	Log.Notice( "EventMgr", "~EventMgr()" );
 	delete EventMgr::getSingletonPtr();
+	
+	Log.Notice( "Item Pool", "Item Pool" );
+	delete tPPoolClass<Item>::getSingletonPtr();
+
+	Log.Notice( "Spell Pool", "Spell Pool" );
+	delete tPPoolClass<Spell>::getSingletonPtr();
+
+	Log.Notice( "Aura Pool", "Aura Pool" );
+	delete tPPoolClass<Aura>::getSingletonPtr();
 
 	Log.Notice( "Database", "Closing Connections..." );
 	_StopDB();
