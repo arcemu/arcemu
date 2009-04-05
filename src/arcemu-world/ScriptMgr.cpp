@@ -712,228 +712,215 @@ void ScriptMgr::register_hook(ServerHookEvents event, void * function_pointer)
 }
 
 /* Hook Implementations */
+#define OUTER_LOOP_BEGIN(type, fptr_type) if(!sScriptMgr._hooks[type].size()) { \
+	return; } \
+	fptr_type call; \
+	for(ServerHookList::iterator itr = sScriptMgr._hooks[type].begin(); itr != sScriptMgr._hooks[type].end(); ++itr) { \
+	call = ((fptr_type)*itr);
+
+#define OUTER_LOOP_END }
+
+#define OUTER_LOOP_BEGIN_COND(type, fptr_type) if(!sScriptMgr._hooks[type].size()) { \
+	return true; } \
+	fptr_type call; \
+	bool ret_val = true; \
+	for(ServerHookList::iterator itr = sScriptMgr._hooks[type].begin(); itr != sScriptMgr._hooks[type].end(); ++itr) { \
+		call = ((fptr_type)*itr);
+
+#define OUTER_LOOP_END_COND } return ret_val;
+
 bool HookInterface::OnNewCharacter(uint32 Race, uint32 Class, WorldSession * Session, const char * Name)
 {
-	ServerHookList hookList = sScriptMgr._hooks[SERVER_HOOK_EVENT_ON_NEW_CHARACTER];
-	bool ret_val = true;
-	for(ServerHookList::iterator itr = hookList.begin(); itr != hookList.end(); ++itr)
-	{
-		bool rv = ((tOnNewCharacter)*itr)(Race, Class, Session, Name);
-		if (rv == false) // never set ret_val back to true, once it's false
-			ret_val = false;
-	}
-	return ret_val;
+	OUTER_LOOP_BEGIN_COND(SERVER_HOOK_EVENT_ON_NEW_CHARACTER, tOnNewCharacter)
+		ret_val = (call)(Race, Class, Session, Name);
+	OUTER_LOOP_END_COND
 }
 
 void HookInterface::OnKillPlayer(Player * pPlayer, Player * pVictim)
 {
-	ServerHookList hookList = sScriptMgr._hooks[SERVER_HOOK_EVENT_ON_KILL_PLAYER];
-	for(ServerHookList::iterator itr = hookList.begin(); itr != hookList.end(); ++itr)
-		((tOnKillPlayer)*itr)(pPlayer, pVictim);
+	OUTER_LOOP_BEGIN(SERVER_HOOK_EVENT_ON_KILL_PLAYER, tOnKillPlayer)
+		(call)(pPlayer, pVictim);
+	OUTER_LOOP_END
 }
 
 void HookInterface::OnFirstEnterWorld(Player * pPlayer)
 {
-	ServerHookList hookList = sScriptMgr._hooks[SERVER_HOOK_EVENT_ON_FIRST_ENTER_WORLD];
-	for(ServerHookList::iterator itr = hookList.begin(); itr != hookList.end(); ++itr)
-		((tOnFirstEnterWorld)*itr)(pPlayer);
+	OUTER_LOOP_BEGIN(SERVER_HOOK_EVENT_ON_FIRST_ENTER_WORLD, tOnFirstEnterWorld)
+		(call)(pPlayer);
+	OUTER_LOOP_END
 }
 
 void HookInterface::OnCharacterCreate(Player * pPlayer)
 {
-	ServerHookList hookList = sScriptMgr._hooks[SERVER_HOOK_EVENT_ON_CHARACTER_CREATE];
-	for(ServerHookList::iterator itr = hookList.begin(); itr != hookList.end(); ++itr)
-		((tOCharacterCreate)*itr)(pPlayer);
+	OUTER_LOOP_BEGIN(SERVER_HOOK_EVENT_ON_CHARACTER_CREATE, tOCharacterCreate)
+		(call)(pPlayer);
+	OUTER_LOOP_END
 }
 
 void HookInterface::OnEnterWorld(Player * pPlayer)
 {
-	ServerHookList hookList = sScriptMgr._hooks[SERVER_HOOK_EVENT_ON_ENTER_WORLD];
-	for(ServerHookList::iterator itr = hookList.begin(); itr != hookList.end(); ++itr)
-		((tOnEnterWorld)*itr)(pPlayer);
+	OUTER_LOOP_BEGIN(SERVER_HOOK_EVENT_ON_ENTER_WORLD, tOnEnterWorld)
+		(call)(pPlayer);
+	OUTER_LOOP_END
 }
 
 void HookInterface::OnGuildCreate(Player * pLeader, Guild * pGuild)
 {
-	ServerHookList hookList = sScriptMgr._hooks[SERVER_HOOK_EVENT_ON_GUILD_CREATE];
-	for(ServerHookList::iterator itr = hookList.begin(); itr != hookList.end(); ++itr)
-		((tOnGuildCreate)*itr)(pLeader, pGuild);
+	OUTER_LOOP_BEGIN(SERVER_HOOK_EVENT_ON_GUILD_CREATE, tOnGuildCreate)
+		(call)(pLeader, pGuild);
+	OUTER_LOOP_END
 }
 
 void HookInterface::OnGuildJoin(Player * pPlayer, Guild * pGuild)
 {
-	ServerHookList hookList = sScriptMgr._hooks[SERVER_HOOK_EVENT_ON_GUILD_JOIN];
-	for(ServerHookList::iterator itr = hookList.begin(); itr != hookList.end(); ++itr)
-		((tOnGuildJoin)*itr)(pPlayer, pGuild);
+	OUTER_LOOP_BEGIN(SERVER_HOOK_EVENT_ON_GUILD_JOIN, tOnGuildJoin)
+		(call)(pPlayer, pGuild);
+	OUTER_LOOP_END
 }
 
 void HookInterface::OnDeath(Player * pPlayer)
 {
-	ServerHookList hookList = sScriptMgr._hooks[SERVER_HOOK_EVENT_ON_DEATH];
-	for(ServerHookList::iterator itr = hookList.begin(); itr != hookList.end(); ++itr)
-		((tOnDeath)*itr)(pPlayer);
+	OUTER_LOOP_BEGIN(SERVER_HOOK_EVENT_ON_DEATH, tOnDeath)
+		(call)(pPlayer);
+	OUTER_LOOP_END
 }
 
 bool HookInterface::OnRepop(Player * pPlayer)
 {
-	ServerHookList hookList = sScriptMgr._hooks[SERVER_HOOK_EVENT_ON_REPOP];
-	bool ret_val = true;
-	for(ServerHookList::iterator itr = hookList.begin(); itr != hookList.end(); ++itr)
-	{
-		bool rv = ((tOnRepop)*itr)(pPlayer);
-		if (rv == false) // never set ret_val back to true, once it's false
-			ret_val = false;
-	}
-	return ret_val;
+	OUTER_LOOP_BEGIN_COND(SERVER_HOOK_EVENT_ON_REPOP, tOnRepop)
+		ret_val = (call)(pPlayer);
+	OUTER_LOOP_END_COND
 }
 
 void HookInterface::OnEmote(Player * pPlayer, uint32 Emote, Unit * pUnit)
 {
-	ServerHookList hookList = sScriptMgr._hooks[SERVER_HOOK_EVENT_ON_EMOTE];
-	for(ServerHookList::iterator itr = hookList.begin(); itr != hookList.end(); ++itr)
-		((tOnEmote)*itr)(pPlayer, Emote, pUnit);
+	OUTER_LOOP_BEGIN(SERVER_HOOK_EVENT_ON_EMOTE, tOnEmote)
+		(call)(pPlayer, Emote, pUnit);
+	OUTER_LOOP_END
 }
 
 void HookInterface::OnEnterCombat(Player * pPlayer, Unit * pTarget)
 {
-	ServerHookList hookList = sScriptMgr._hooks[SERVER_HOOK_EVENT_ON_ENTER_COMBAT];
-	for(ServerHookList::iterator itr = hookList.begin(); itr != hookList.end(); ++itr)
-		((tOnEnterCombat)*itr)(pPlayer, pTarget);
+	OUTER_LOOP_BEGIN(SERVER_HOOK_EVENT_ON_ENTER_COMBAT, tOnEnterCombat)
+		(call)(pPlayer, pTarget);
+	OUTER_LOOP_END
 }
 
 bool HookInterface::OnCastSpell(Player * pPlayer, SpellEntry* pSpell)
 {
-	ServerHookList hookList = sScriptMgr._hooks[SERVER_HOOK_EVENT_ON_CAST_SPELL];
-	bool ret_val = true;
-	for(ServerHookList::iterator itr = hookList.begin(); itr != hookList.end(); ++itr)
-	{
-		bool rv = ((tOnCastSpell)*itr)(pPlayer, pSpell);
-		if (rv == false) // never set ret_val back to true, once it's false
-			ret_val = false;
-	}
-	return ret_val;
+	OUTER_LOOP_BEGIN_COND(SERVER_HOOK_EVENT_ON_CAST_SPELL, tOnCastSpell)
+		ret_val = (call)(pPlayer, pSpell);
+	OUTER_LOOP_END_COND
 }
 
 bool HookInterface::OnLogoutRequest(Player * pPlayer)
 {
-	ServerHookList hookList = sScriptMgr._hooks[SERVER_HOOK_EVENT_ON_LOGOUT_REQUEST];
-	bool ret_val = true;
-	for(ServerHookList::iterator itr = hookList.begin(); itr != hookList.end(); ++itr)
-	{
-		bool rv = ((tOnLogoutRequest)*itr)(pPlayer);
-		if (rv == false) // never set ret_val back to true, once it's false
-			ret_val = false;
-	}
-	return ret_val;
+	OUTER_LOOP_BEGIN_COND(SERVER_HOOK_EVENT_ON_LOGOUT_REQUEST, tOnLogoutRequest)
+		ret_val = (call)(pPlayer);
+	OUTER_LOOP_END_COND
 }
 
 void HookInterface::OnLogout(Player * pPlayer)
 {
-	ServerHookList hookList = sScriptMgr._hooks[SERVER_HOOK_EVENT_ON_LOGOUT];
-	for(ServerHookList::iterator itr = hookList.begin(); itr != hookList.end(); ++itr)
-		((tOnLogout)*itr)(pPlayer);
+	OUTER_LOOP_BEGIN(SERVER_HOOK_EVENT_ON_LOGOUT, tOnLogout)
+		(call)(pPlayer);
+	OUTER_LOOP_END
 }
 
 void HookInterface::OnQuestAccept(Player * pPlayer, Quest * pQuest, Object * pQuestGiver)
 {
-	ServerHookList hookList = sScriptMgr._hooks[SERVER_HOOK_EVENT_ON_QUEST_ACCEPT];
-	for(ServerHookList::iterator itr = hookList.begin(); itr != hookList.end(); ++itr)
-		((tOnQuestAccept)*itr)(pPlayer, pQuest, pQuestGiver);
+	OUTER_LOOP_BEGIN(SERVER_HOOK_EVENT_ON_QUEST_ACCEPT, tOnQuestAccept)
+		(call)(pPlayer, pQuest, pQuestGiver);
+	OUTER_LOOP_END
 }
 
-void HookInterface::OnZone(Player * pPlayer, uint32 zone)
+void HookInterface::OnZone(Player * pPlayer, uint32 Zone)
 {
-	ServerHookList hookList = sScriptMgr._hooks[SERVER_HOOK_EVENT_ON_ZONE];
-	for(ServerHookList::iterator itr = hookList.begin(); itr != hookList.end(); ++itr)
-		((tOnZone)*itr)(pPlayer, zone);
+	OUTER_LOOP_BEGIN(SERVER_HOOK_EVENT_ON_ZONE, tOnZone)
+		(call)(pPlayer, Zone);
+	OUTER_LOOP_END
 }
 
-bool HookInterface::OnChat(Player * pPlayer, uint32 type, uint32 lang, const char * message, const char * misc)
+bool HookInterface::OnChat(Player * pPlayer, uint32 Type, uint32 Lang, const char * Message, const char * Misc)
 {
-	ServerHookList hookList = sScriptMgr._hooks[SERVER_HOOK_EVENT_ON_CHAT];
-	bool ret_val = true;
-	for(ServerHookList::iterator itr = hookList.begin(); itr != hookList.end(); ++itr)
-	{
-		bool rv = ((tOnChat)*itr)(pPlayer, type, lang, message, misc);
-		if (rv == false) // never set ret_val back to true, once it's false
-			ret_val = false;
-	}
-	return ret_val;
+	OUTER_LOOP_BEGIN_COND(SERVER_HOOK_EVENT_ON_CHAT, tOnChat)
+		ret_val = (call)(pPlayer, Type, Lang, Message, Misc);
+	OUTER_LOOP_END_COND
 }
 
-void HookInterface::OnLoot(Player * pPlayer, Unit * pTarget, uint32 money, uint32 itemId)
+void HookInterface::OnLoot(Player * pPlayer, Unit * pTarget, uint32 Money, uint32 ItemId)
 {
-	ServerHookList hookList = sScriptMgr._hooks[SERVER_HOOK_EVENT_ON_LOOT];
-	for(ServerHookList::iterator itr = hookList.begin(); itr != hookList.end(); ++itr)
-		((tOnLoot)*itr)(pPlayer, pTarget, money, itemId);
+	OUTER_LOOP_BEGIN(SERVER_HOOK_EVENT_ON_LOOT, tOnLoot)
+		(call)(pPlayer, pTarget, Money, ItemId);
+	OUTER_LOOP_END
 }
 
-void HookInterface::OnObjectLoot(Player * pPlayer, Object * pTarget, uint32 money, uint32 itemId)
+void HookInterface::OnObjectLoot(Player * pPlayer, Object * pTarget, uint32 Money, uint32 ItemId)
 {
-	ServerHookList hookList = sScriptMgr._hooks[SERVER_HOOK_EVENT_ON_OBJECTLOOT];
-	for(ServerHookList::iterator itr = hookList.begin(); itr != hookList.end(); ++itr)
-		((tOnObjectLoot)*itr)(pPlayer, pTarget, money, itemId);
+	OUTER_LOOP_BEGIN(SERVER_HOOK_EVENT_ON_OBJECTLOOT, tOnObjectLoot)
+		(call)(pPlayer, pTarget, Money, ItemId);
+	OUTER_LOOP_END
 }
 
 void HookInterface::OnEnterWorld2(Player * pPlayer)
 {
-	ServerHookList hookList = sScriptMgr._hooks[SERVER_HOOK_EVENT_ON_ENTER_WORLD_2];
-	for(ServerHookList::iterator itr = hookList.begin(); itr != hookList.end(); ++itr)
-		((tOnEnterWorld)*itr)(pPlayer);
+	OUTER_LOOP_BEGIN(SERVER_HOOK_EVENT_ON_ENTER_WORLD_2, tOnEnterWorld)
+		(call)(pPlayer);
+	OUTER_LOOP_END
 }
 
 void HookInterface::OnQuestCancelled(Player * pPlayer, Quest * pQuest)
 {
-	ServerHookList hookList = sScriptMgr._hooks[SERVER_HOOK_EVENT_ON_QUEST_CANCELLED];
-	for(ServerHookList::iterator itr = hookList.begin(); itr != hookList.end(); ++itr)
-		((tOnQuestCancel)*itr)(pPlayer, pQuest);
+	OUTER_LOOP_BEGIN(SERVER_HOOK_EVENT_ON_QUEST_CANCELLED, tOnQuestCancel)
+		(call)(pPlayer, pQuest);
+	OUTER_LOOP_END
 }
 
 void HookInterface::OnQuestFinished(Player * pPlayer, Quest * pQuest, Object * pQuestGiver)
 {
-	ServerHookList hookList = sScriptMgr._hooks[SERVER_HOOK_EVENT_ON_QUEST_FINISHED];
-	for(ServerHookList::iterator itr = hookList.begin(); itr != hookList.end(); ++itr)
-		((tOnQuestFinished)*itr)(pPlayer, pQuest, pQuestGiver);
+	OUTER_LOOP_BEGIN(SERVER_HOOK_EVENT_ON_QUEST_FINISHED, tOnQuestFinished)
+		(call)(pPlayer, pQuest, pQuestGiver);
+	OUTER_LOOP_END
 }
 
 void HookInterface::OnHonorableKill(Player * pPlayer, Player * pKilled)
 {
-	ServerHookList hookList = sScriptMgr._hooks[SERVER_HOOK_EVENT_ON_HONORABLE_KILL];
-	for(ServerHookList::iterator itr = hookList.begin(); itr != hookList.end(); ++itr)
-		((tOnHonorableKill)*itr)(pPlayer, pKilled);
+	OUTER_LOOP_BEGIN(SERVER_HOOK_EVENT_ON_HONORABLE_KILL, tOnHonorableKill)
+		(call)(pPlayer, pKilled);
+	OUTER_LOOP_END
 }
 
 void HookInterface::OnArenaFinish(Player * pPlayer, ArenaTeam* pTeam, bool victory, bool rated)
 {
-	ServerHookList hookList = sScriptMgr._hooks[SERVER_HOOK_EVENT_ON_ARENA_FINISH];
-	for(ServerHookList::iterator itr = hookList.begin(); itr != hookList.end(); ++itr)
-		((tOnArenaFinish)*itr)(pPlayer, pTeam, victory, rated);
+	OUTER_LOOP_BEGIN(SERVER_HOOK_EVENT_ON_ARENA_FINISH, tOnArenaFinish)
+		(call)(pPlayer, pTeam, victory, rated);
+	OUTER_LOOP_END
 }
 
 void HookInterface::OnAreaTrigger(Player * pPlayer, uint32 areaTrigger)
 {
-	ServerHookList hookList = sScriptMgr._hooks[SERVER_HOOK_EVENT_ON_AREATRIGGER];
-	for(ServerHookList::iterator itr = hookList.begin(); itr != hookList.end(); ++itr)
-		((tOnAreaTrigger)*itr)(pPlayer, areaTrigger);
+	OUTER_LOOP_BEGIN(SERVER_HOOK_EVENT_ON_AREATRIGGER, tOnAreaTrigger)
+		(call)(pPlayer, areaTrigger);
+	OUTER_LOOP_END
 }
 
 void HookInterface::OnPostLevelUp(Player * pPlayer)
 {
-	ServerHookList hookList = sScriptMgr._hooks[SERVER_HOOK_EVENT_ON_POST_LEVELUP];
-	for(ServerHookList::iterator itr = hookList.begin(); itr != hookList.end(); ++itr)
-		((tOnPostLevelUp)*itr)(pPlayer);
+	OUTER_LOOP_BEGIN(SERVER_HOOK_EVENT_ON_POST_LEVELUP, tOnPostLevelUp)
+		(call)(pPlayer);
+	OUTER_LOOP_END
 }
 
-void HookInterface::OnPreUnitDie(Unit *killer, Unit *victim)
+void HookInterface::OnPreUnitDie(Unit *Killer, Unit *Victim)
 {
-	ServerHookList hookList = sScriptMgr._hooks[SERVER_HOOK_EVENT_ON_PRE_DIE];
-	for(ServerHookList::iterator itr = hookList.begin(); itr != hookList.end(); ++itr)
-		((tOnPreUnitDie)*itr)(killer, victim);
+	OUTER_LOOP_BEGIN(SERVER_HOOK_EVENT_ON_PRE_DIE, tOnPreUnitDie)
+		(call)(Killer, Victim);
+	OUTER_LOOP_END
 }
 
-void HookInterface::OnAdvanceSkillLine(Player * pPlayer, uint32 skillLine, uint32 current)
+void HookInterface::OnAdvanceSkillLine(Player * pPlayer, uint32 SkillLine, uint32 Current)
 {
-	ServerHookList hookList = sScriptMgr._hooks[SERVER_HOOK_EVENT_ON_ADVANCE_SKILLLINE];
-	for(ServerHookList::iterator itr = hookList.begin(); itr != hookList.end(); ++itr)
-		((tOnAdvanceSkillLine)*itr)(pPlayer, skillLine, current);
+	OUTER_LOOP_BEGIN(SERVER_HOOK_EVENT_ON_ADVANCE_SKILLLINE, tOnAdvanceSkillLine)
+		(call)(pPlayer, SkillLine, Current);
+	OUTER_LOOP_END
 }
