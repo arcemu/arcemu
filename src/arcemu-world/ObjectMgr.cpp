@@ -1157,7 +1157,7 @@ bool ObjectMgr::RemoveGuild(uint32 guildId)
 		return false;
 	}
 
-
+	delete i->second;
 	mGuild.erase(i);
 	return true;
 }
