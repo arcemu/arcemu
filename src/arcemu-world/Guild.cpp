@@ -1520,7 +1520,7 @@ void Guild::SendGuildBankLog(WorldSession * pClient, uint8 iSlot)
 		}
 
 		m_lock.Release();
-		pClient->SendPacket($data);
+		pClient->SendPacket(&data);
 	}
 }
 
