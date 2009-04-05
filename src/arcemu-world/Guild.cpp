@@ -73,10 +73,9 @@ Guild::~Guild()
     {
         for( uint32 i = 0; i < MAX_GUILD_BANK_SLOTS; ++i )
         if( (*itr)->pSlots[i] != NULL )
-    {
-        (*itr)->pSlots[i]->DeleteMe();
-        (*itr)->pSlots[i] = NULL;
-    }
+		{
+			delete (*itr)->pSlots[i];
+		}
 
 		for(list<GuildBankEvent*>::iterator it2 = (*itr)->lLog.begin(); it2 != (*itr)->lLog.end(); ++it2)
 			delete (*it2);
