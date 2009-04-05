@@ -157,7 +157,14 @@ void WorldSession::HandleMessagechatOpcode( WorldPacket & recv_data )
 		default:
 			sLog.outError("CHAT: unknown msg type %u, lang: %u", type, lang);
 	}
+	
 
+	if (int(msg.find("|T")) > -1 )
+	{
+		GetPlayer()->BroadcastMessage("Don't even THINK about doing that again");
+		return;
+	}
+	
 	// HookInterface OnChat event
 	if (pMsg && !sHookInterface.OnChat(_player, type, lang, pMsg, pMisc))
 		return;
