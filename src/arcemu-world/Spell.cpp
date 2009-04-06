@@ -3062,6 +3062,7 @@ void Spell::HandleAddAura(uint64 guid)
 				for(int i=0;i<charges-1;i++)
 				{
 					aur = AuraPool.PooledNew();
+					ASSERT(aur != NULL);
 					aur->Init(itr->second->GetSpellProto(),itr->second->GetDuration(),itr->second->GetCaster(),itr->second->GetTarget(), m_triggeredSpell, i_caster);
 					Target->AddAura(aur);
 					aur=NULL;
