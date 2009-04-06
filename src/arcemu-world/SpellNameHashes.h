@@ -22,7 +22,7 @@
 #ifndef _SPELLHASHES_H
 #define _SPELLHASHES_H
 
-#define SPELL_HASH_WORD_OF_RECALL__OLD_                                                   0xC7C45478
+#define SPELL_HASH_IMMUNE_MOVEMENT_IMPAIRMENT                                             0xC7C45478
 #define SPELL_HASH_WORD_OF_MASS_RECALL__OLD_                                              0xB71F1ECC
 #define SPELL_HASH_WORD_OF_RECALL_OTHER                                                   0x849EF326
 #define SPELL_HASH_DEATH_TOUCH                                                            0x7CFD5D8B

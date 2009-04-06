@@ -555,7 +555,7 @@ enum Flags4
 	FLAGS4_UNK23						= 0x200000,
 	FLAGS4_PLAYER_RANGED_WAND           = 0x400000,
 	FLAGS4_UNK25						= 0x800000,
-	FLAGS4_UNK26						= 0x1000000,
+	FLAGS4_TYPE_OFFHAND					= 0x1000000,
 	FLAGS4_UNK27						= 0x2000000,
 	FLAGS4_UNK28						= 0x4000000,
 	FLAGS4_UNK29						= 0x8000000,
@@ -606,7 +606,7 @@ enum Flags6
 {
 	FLAGS6_NULL							= 0x0,
 	FLAGS6_UNK2							= 0x1,
-	FLAGS6_UNK3							= 0x2,
+	FLAGS6_REAGENT_REMOVAL				= 0x2,
 	FLAGS6_UNK4							= 0x4,
 	FLAGS6_UNK5							= 0x8,
 	FLAGS6_UNK6							= 0x10,
@@ -1626,8 +1626,29 @@ public:
     bool HasPower();
     // Trigger Spell function that triggers triggered spells
     void TriggerSpell();
-    // Checks the caster is ready for cast
+    
+	// Checks the caster is ready for cast
     uint8 CanCast(bool);
+	ARCEMU_INLINE bool hasAttribute(uint32 attribute)
+	{
+		return (GetProto()->Attributes & attribute);
+	}
+	ARCEMU_INLINE bool hasAttributeEx(uint32 attribute)
+	{
+		return (GetProto()->AttributesEx & attribute);
+	}
+	ARCEMU_INLINE bool hasAttributeExB(uint32 attribute)
+	{
+		return (GetProto()->AttributesExB & attribute);
+	}
+	ARCEMU_INLINE bool hasAttributeExC(uint32 attribute)
+	{
+		return (GetProto()->AttributesExC & attribute);
+	}
+	ARCEMU_INLINE bool hasAttributeExD(uint32 attribute)
+	{
+		return (GetProto()->AttributesExD & attribute);
+	}
     // Removes reagents, ammo, and items/charges
     void RemoveItems();
     // Calculates the i'th effect value
