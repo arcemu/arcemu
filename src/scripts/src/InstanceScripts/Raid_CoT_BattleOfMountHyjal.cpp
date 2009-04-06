@@ -533,12 +533,8 @@ public:
 				{
 					if (i == 1)
 					{
-						Aura *aura = new Aura();
-						if (aura != NULL)
-						{
-							aura->Init(spells[1].info, 5000, _unit, _unit);
-							_unit->AddAura(aura);
-						}
+						Aura *aura = new Aura(spells[1].info, 5000, _unit, _unit);
+						_unit->AddAura(aura);
 					}
 
 					else
@@ -1076,12 +1072,8 @@ public:
 
 			if (i == 3)
 			{
-				Aura *aura = new Aura();
-				if (aura != NULL)
-				{
-					aura->Init(spells[3].info, 20000, _unit, RTarget);
-					RTarget->AddAura(aura);
-				}
+				Aura *aura = new Aura(spells[3].info, 20000, _unit, RTarget);
+				RTarget->AddAura(aura);
 
 				TargetTable.clear();
 				return;
