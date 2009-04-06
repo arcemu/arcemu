@@ -122,12 +122,18 @@
 
 struct mpqeOptions
 {
-	bool option_usepatchfiles;
-	bool option_verbose;
+	bool  option_verbose;
 	char* option_outdir;
-	bool option_lowercase;
+	bool  option_lowercase;
 	char* option_baseMPQ;
 	char* option_searchglob;
+	bool  option_skipdirstructure;
+};
+
+struct FileList
+{
+	LARGE_INTEGER fwtime;
+	char*  fname;
 };
 
 struct mpqLCID
@@ -355,10 +361,13 @@ struct AddressTable
 	Function_MpqSetFileLocale pMpqSetFileLocale;
 };
 
+#define ERRBUF_SIZE 1024
+
 BOOL LoadAddresses(AddressTable* at);
 void ShowHelp(void);
 void mpqExtract(const AddressTable* at, mpqeOptions* op, char* fileMPQ);
 bool Match(char* pattern, char* s, bool caseSensitive);
 char* bytes2text(int bytes);
+char* GetErrorText(DWORD err);
 
 #endif // _SFMPQ_H_

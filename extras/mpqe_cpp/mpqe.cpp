@@ -34,24 +34,21 @@ int main(int argc, char** argv)
 	size_t slen = 0;
 	mpqeOptions op;
 	AddressTable at;
-	op.option_usepatchfiles = false;
 	op.option_verbose = false;
 	op.option_outdir = NULL;
 	op.option_lowercase = false;
 	op.option_baseMPQ = NULL;
 	op.option_searchglob = NULL;
-
+	op.option_skipdirstructure = false;
+	char* curdir;
+	char* errbuf;
+	
 	printf("MPQ-Extractor v%s by WRS", version);
 	if(!LoadAddresses(&at))
 	{
 		return -1;
 	}
 	printf(" powered by %s\n", at.pMpqGetVersionString());
-	printf("version: %f\n", at.pMpqGetVersion());
-	printf("version: %s\n", at.pSFMpqGetVersionString());
-	char test[64];
-	printf("strlen: %d ",at.pSFMpqGetVersionString2(&test[0],63));
-	printf("%s\n",test);
 	SFMPQVERSION v = at.pSFMpqGetVersion();
 	printf("version: %d.%d.%d.%d\n", v.Major, v.Minor, v.Revision, v.Subrevision);
 	if(argc<2)
@@ -59,12 +56,22 @@ int main(int argc, char** argv)
 		ShowHelp();
 		return -1;
 	}
+	errbuf = new char[ERRBUF_SIZE];
+	curdir = new char[MAX_PATH];
+	if(_getcwd(curdir, MAX_PATH) == NULL)
+	{
+		_strerror_s(errbuf, ERRBUF_SIZE, NULL);
+		fprintf(stderr,"Unable to get current working directory : %s\n", errbuf);
+		strcpy_s(curdir,MAX_PATH,".");
+	}
 	for(int i = 1; i < argc; ++i)
 	{
 		if(_stricmp(argv[i],"/p")==0) // use patch files if available
 		{
-			printf("Using patch MPQ archives if available: Enabled\n");
-			op.option_usepatchfiles = true;
+// this can be a major slowdown in a batch file processing several MPQs
+// for speed, extract all the other MPQs first then the patch-*.mpq last
+// don't fatal-error out, just print warning message
+			printf("Ignoring /p option (removed)\n");
 		}
 		else if(_stricmp(argv[i],"/l")==0)
 		{
@@ -92,6 +99,11 @@ int main(int argc, char** argv)
 			slen = strlen(argv[i])+1;
 			op.option_outdir = new char[slen];
 			strcpy_s(op.option_outdir, slen, argv[i]);
+		}
+		else if(_stricmp(argv[i],"/s")==0)
+		{
+			op.option_skipdirstructure = true;
+			printf("Skipping directory structure creation\n");
 		}
 		else if(argv[i][0]=='/')
 		{
@@ -130,29 +142,92 @@ int main(int argc, char** argv)
 		op.option_outdir = new char[16];
 		strcpy_s(op.option_outdir, 16, "MPQOUT");
 	}
-// worker
-	FILE* tmp;
-	errno_t err = fopen_s(&tmp, op.option_baseMPQ, "rb");
-	if(tmp==NULL)
+	if(strchr(op.option_baseMPQ,'\\')) // contains a backslash, change directory
 	{
-		fprintf(stderr,"Fatal: Could not open MPQ archive %s Error: %lu\n", op.option_baseMPQ, err);
+		char* d = op.option_baseMPQ;
+		char* p = strrchr(op.option_baseMPQ,'\\');
+		*p = '\0';
+		p++;
+		op.option_baseMPQ = p;
+		if(_chdir(d)==-1)
+		{
+			_strerror_s(errbuf, ERRBUF_SIZE, NULL);
+			fprintf(stderr,"Unable to change directory to %s : %s\n", d, errbuf);
+			return -1;
+		}
+	}
+
+	WIN32_FIND_DATA fd;
+	HANDLE hf = FindFirstFile(op.option_baseMPQ, &fd);
+	if(hf == INVALID_HANDLE_VALUE)
+	{
+		fprintf(stderr,"Fatal: Could not open MPQ archive %s Error: %s\n", op.option_baseMPQ, GetErrorText(GetLastError()));
+		_chdir(curdir);
 		return -1;
 	}
-	fclose(tmp);
-	if(_strnicmp(op.option_baseMPQ,"patch",5)==0)
+	// first, get number of matching mpq files ...
+	DWORD nFiles = 1;
+	while(GetLastError()!=ERROR_NO_MORE_FILES)
 	{
-		fprintf(stderr,"Error: %s is already a patch file, ignoring /p option\n", op.option_baseMPQ);
-		op.option_usepatchfiles = false;
+		if(FindNextFile(hf, &fd))
+		{
+			++nFiles;
+		}
 	}
-	if(op.option_usepatchfiles)
+	FindClose(hf);
+	// got number of files, now fill information
+	FileList* fList = new FileList[nFiles];
+	hf = FindFirstFile(op.option_baseMPQ, &fd);
+	if(hf == INVALID_HANDLE_VALUE) // how did this happen? it was valid before!
 	{
-// TODO: add search for "patch*.MPQ" files [ FindFirstFile(), FindNextFile(), FindClose() ]
-//		foreach(string patchfile in Directory.GetFiles(fi.DirectoryName, "patch*.MPQ"))
-//			mpqExtract(&at, &op, patchfile);
-		fprintf(stderr,"Error: patch file searching not yet implemented. Please specify a patch MPQ file on the command line.\n");
+		fprintf(stderr,"Fatal: Could not open MPQ archive %s Error: %s\n", op.option_baseMPQ, GetErrorText(GetLastError()));
+		_chdir(curdir);
+		return -1;
 	}
-	mpqExtract(&at, &op, op.option_baseMPQ);
-
+	// first, get number of matching mpq files ...
+	DWORD index;
+	for( index=0; index<nFiles; ++index )
+	{
+		fList[index].fwtime.HighPart = fd.ftLastWriteTime.dwHighDateTime;
+		fList[index].fwtime.LowPart = fd.ftLastWriteTime.dwLowDateTime;
+		fList[index].fname = new char[strlen(fd.cFileName)+1];
+		strcpy(fList[index].fname, fd.cFileName);
+		while(!FindNextFile(hf, &fd))
+		{
+			if(GetLastError()==ERROR_NO_MORE_FILES)
+			{
+				nFiles = index+1;
+				break;
+			}
+		}
+	}
+	// got all mpq file names and last-write-times, now sort them (process oldest first)
+	if(nFiles > 1) // no need to sort if there's only one
+	{
+		FileList tmp;
+		// this is probably a slow sorter, but how many mpqs are there going to be anyway?
+		for(index=1; index<nFiles; ++index)
+		{
+			if(fList[index-1].fwtime.QuadPart > fList[index].fwtime.QuadPart) // swap these
+			{
+				tmp.fname = fList[index].fname;
+				tmp.fwtime = fList[index].fwtime;
+				fList[index].fname = fList[index-1].fname;
+				fList[index].fwtime = fList[index-1].fwtime;
+				fList[index-1].fname = tmp.fname;
+				fList[index-1].fwtime = tmp.fwtime;
+				index = 0; // start over
+			}
+		}
+	}
+	// now process the mpqs
+	for( index=0; index<nFiles; ++index )
+	{
+		mpqExtract(&at, &op, fList[index].fname);
+	}
+	_chdir(curdir);
+	delete [] curdir;
+	delete [] errbuf;
 	return 0;
 }
 
@@ -264,220 +339,220 @@ char* bytes2text(int bytes)
 BOOL LoadAddresses(AddressTable* at)
 {
 	HMODULE hModule = NULL;
-	hModule = LoadLibrary(L"SFMPQ.DLL");
+	hModule = LoadLibrary("SFMPQ.DLL");
 	if(hModule==NULL)
 	{
-		fprintf(stderr,"\nError %lu loading SFMPQ.DLL\n", GetLastError());
+		fprintf(stderr,"\nError loading SFMPQ.DLL: %s\n", GetErrorText(GetLastError()));
 		return FALSE;
 	}
 	at->pMpqGetVersionString = (Function_MpqGetVersionString)GetProcAddress(hModule,"MpqGetVersionString");
 	if(at->pMpqGetVersionString == NULL)
 	{
-		fprintf(stderr,"\nError %lu locating address of MpqGetVersionString.\n", GetLastError());
+		fprintf(stderr,"\nError locating address of MpqGetVersionString: %s\n", GetErrorText(GetLastError()));
 		return FALSE;
 	}
 	at->pMpqGetVersion = (Function_MpqGetVersion)GetProcAddress(hModule,"MpqGetVersion");
 	if(at->pMpqGetVersion == NULL)
 	{
-		fprintf(stderr,"\nError %lu locating address of MpqGetVersion.\n", GetLastError());
+		fprintf(stderr,"\nError locating address of MpqGetVersion: %s\n", GetErrorText(GetLastError()));
 		return FALSE;
 	}
 	at->pSFMpqGetVersionString = (Function_SFMpqGetVersionString)GetProcAddress(hModule,"SFMpqGetVersionString");
 	if(at->pSFMpqGetVersionString == NULL)
 	{
-		fprintf(stderr,"\nError %lu locating address of SFMpqGetVersionString.\n", GetLastError());
+		fprintf(stderr,"\nError locating address of SFMpqGetVersionString: %s\n", GetErrorText(GetLastError()));
 		return FALSE;
 	}
 	at->pSFMpqGetVersionString2 = (Function_SFMpqGetVersionString2)GetProcAddress(hModule,"SFMpqGetVersionString2");
 	if(at->pSFMpqGetVersionString2 == NULL)
 	{
-		fprintf(stderr,"\nError %lu locating address of SFMpqGetVersionString2.\n", GetLastError());
+		fprintf(stderr,"\nError locating address of SFMpqGetVersionString2: %s\n", GetErrorText(GetLastError()));
 		return FALSE;
 	}
 	at->pSFMpqGetVersion = (Function_SFMpqGetVersion)GetProcAddress(hModule,"SFMpqGetVersion");
 	if(at->pSFMpqGetVersion == NULL)
 	{
-		fprintf(stderr,"\nError %lu locating address of SFMpqGetVersion.\n", GetLastError());
+		fprintf(stderr,"\nError locating address of SFMpqGetVersion: %s\n", GetErrorText(GetLastError()));
 		return FALSE;
 	}
 	at->pSFileOpenArchive = (Function_SFileOpenArchive)GetProcAddress(hModule,"SFileOpenArchive");
 	if(at->pSFileOpenArchive == NULL)
 	{
-		fprintf(stderr,"\nError %lu locating address of SFileOpenArchive.\n", GetLastError());
+		fprintf(stderr,"\nError locating address of SFileOpenArchive: %s\n", GetErrorText(GetLastError()));
 		return FALSE;
 	}
 	at->pSFileCloseArchive = (Function_SFileCloseArchive)GetProcAddress(hModule,"SFileCloseArchive");
 	if(at->pSFileCloseArchive == NULL)
 	{
-		fprintf(stderr,"\nError %lu locating address of SFileCloseArchive.\n", GetLastError());
+		fprintf(stderr,"\nError locating address of SFileCloseArchive: %s\n", GetErrorText(GetLastError()));
 		return FALSE;
 	}
 	at->pSFileGetArchiveName = (Function_SFileGetArchiveName)GetProcAddress(hModule,"SFileGetArchiveName");
 	if(at->pSFileGetArchiveName == NULL)
 	{
-		fprintf(stderr,"\nError %lu locating address of SFileGetArchiveName.\n", GetLastError());
+		fprintf(stderr,"\nError locating address of SFileGetArchiveName: %s\n", GetErrorText(GetLastError()));
 		return FALSE;
 	}
 	at->pSFileOpenFile = (Function_SFileOpenFile)GetProcAddress(hModule,"SFileOpenFile");
 	if(at->pSFileOpenFile == NULL)
 	{
-		fprintf(stderr,"\nError %lu locating address of SFileOpenFile.\n", GetLastError());
+		fprintf(stderr,"\nError locating address of SFileOpenFile: %s\n", GetErrorText(GetLastError()));
 		return FALSE;
 	}
 	at->pSFileOpenFileEx = (Function_SFileOpenFileEx)GetProcAddress(hModule,"SFileOpenFileEx");
 	if(at->pSFileOpenFileEx == NULL)
 	{
-		fprintf(stderr,"\nError %lu locating address of SFileOpenFileEx.\n", GetLastError());
+		fprintf(stderr,"\nError locating address of SFileOpenFileEx: %s\n", GetErrorText(GetLastError()));
 		return FALSE;
 	}
 	at->pSFileCloseFile = (Function_SFileCloseFile)GetProcAddress(hModule,"SFileCloseFile");
 	if(at->pSFileCloseFile == NULL)
 	{
-		fprintf(stderr,"\nError %lu locating address of SFileCloseFile.\n", GetLastError());
+		fprintf(stderr,"\nError locating address of SFileCloseFile: %s\n", GetErrorText(GetLastError()));
 		return FALSE;
 	}
 	at->pSFileGetFileSize = (Function_SFileGetFileSize)GetProcAddress(hModule,"SFileGetFileSize");
 	if(at->pSFileGetFileSize == NULL)
 	{
-		fprintf(stderr,"\nError %lu locating address of SFileGetFileSize.\n", GetLastError());
+		fprintf(stderr,"\nError locating address of SFileGetFileSize: %s\n", GetErrorText(GetLastError()));
 		return FALSE;
 	}
 	at->pSFileGetFileArchive = (Function_SFileGetFileArchive)GetProcAddress(hModule,"SFileGetFileArchive");
 	if(at->pSFileGetFileArchive == NULL)
 	{
-		fprintf(stderr,"\nError %lu locating address of SFileGetFileArchive.\n", GetLastError());
+		fprintf(stderr,"\nError locating address of SFileGetFileArchive: %s\n", GetErrorText(GetLastError()));
 		return FALSE;
 	}
 	at->pSFileGetFileName = (Function_SFileGetFileName)GetProcAddress(hModule,"SFileGetFileName");
 	if(at->pSFileGetFileName == NULL)
 	{
-		fprintf(stderr,"\nError %lu locating address of SFileGetFileName.\n", GetLastError());
+		fprintf(stderr,"\nError locating address of SFileGetFileName: %s\n", GetErrorText(GetLastError()));
 		return FALSE;
 	}
 	at->pSFileSetFilePointer = (Function_SFileSetFilePointer)GetProcAddress(hModule,"SFileSetFilePointer");
 	if(at->pSFileSetFilePointer == NULL)
 	{
-		fprintf(stderr,"\nError %lu locating address of SFileSetFilePointer.\n", GetLastError());
+		fprintf(stderr,"\nError locating address of SFileSetFilePointer: %s\n", GetErrorText(GetLastError()));
 		return FALSE;
 	}
 	at->pSFileReadFile = (Function_SFileReadFile)GetProcAddress(hModule,"SFileReadFile");
 	if(at->pSFileReadFile == NULL)
 	{
-		fprintf(stderr,"\nError %lu locating address of SFileReadFile.\n", GetLastError());
+		fprintf(stderr,"\nError locating address of SFileReadFile: %s\n", GetErrorText(GetLastError()));
 		return FALSE;
 	}
 	at->pSFileSetLocale = (Function_SFileSetLocale)GetProcAddress(hModule,"SFileSetLocale");
 	if(at->pSFileSetLocale == NULL)
 	{
-		fprintf(stderr,"\nError %lu locating address of SFileSetLocale.\n", GetLastError());
+		fprintf(stderr,"\nError locating address of SFileSetLocale: %s\n", GetErrorText(GetLastError()));
 		return FALSE;
 	}
 	at->pSFileGetBasePath = (Function_SFileGetBasePath)GetProcAddress(hModule,"SFileGetBasePath");
 	if(at->pSFileGetBasePath == NULL)
 	{
-		fprintf(stderr,"\nError %lu locating address of SFileGetBasePath.\n", GetLastError());
+		fprintf(stderr,"\nError locating address of SFileGetBasePath: %s\n", GetErrorText(GetLastError()));
 		return FALSE;
 	}
 	at->pSFileSetBasePath = (Function_SFileSetBasePath)GetProcAddress(hModule,"SFileSetBasePath");
 	if(at->pSFileSetBasePath == NULL)
 	{
-		fprintf(stderr,"\nError %lu locating address of SFileSetBasePath.\n", GetLastError());
+		fprintf(stderr,"\nError locating address of SFileSetBasePath: %s\n", GetErrorText(GetLastError()));
 		return FALSE;
 	}
 	at->pSFileGetFileInfo = (Function_SFileGetFileInfo)GetProcAddress(hModule,"SFileGetFileInfo");
 	if(at->pSFileGetFileInfo == NULL)
 	{
-		fprintf(stderr,"\nError %lu locating address of SFileGetFileInfo.\n", GetLastError());
+		fprintf(stderr,"\nError locating address of SFileGetFileInfo: %s\n", GetErrorText(GetLastError()));
 		return FALSE;
 	}
 	at->pSFileSetArchivePriority = (Function_SFileSetArchivePriority)GetProcAddress(hModule,"SFileSetArchivePriority");
 	if(at->pSFileSetArchivePriority == NULL)
 	{
-		fprintf(stderr,"\nError %lu locating address of SFileSetArchivePriority.\n", GetLastError());
+		fprintf(stderr,"\nError locating address of SFileSetArchivePriority: %s\n", GetErrorText(GetLastError()));
 		return FALSE;
 	}
 	at->pSFileFindMpqHeader = (Function_SFileFindMpqHeader)GetProcAddress(hModule,"SFileFindMpqHeader");
 	if(at->pSFileFindMpqHeader == NULL)
 	{
-		fprintf(stderr,"\nError %lu locating address of SFileFindMpqHeader.\n", GetLastError());
+		fprintf(stderr,"\nError locating address of SFileFindMpqHeader: %s\n", GetErrorText(GetLastError()));
 		return FALSE;
 	}
 	at->pSFileListFiles = (Function_SFileListFiles)GetProcAddress(hModule,"SFileListFiles");
 	if(at->pSFileListFiles == NULL)
 	{
-		fprintf(stderr,"\nError %lu locating address of SFileListFiles.\n", GetLastError());
+		fprintf(stderr,"\nError locating address of SFileListFiles: %s\n", GetErrorText(GetLastError()));
 		return FALSE;
 	}
 	at->pMpqOpenArchiveForUpdate = (Function_MpqOpenArchiveForUpdate)GetProcAddress(hModule,"MpqOpenArchiveForUpdate");
 	if(at->pMpqOpenArchiveForUpdate == NULL)
 	{
-		fprintf(stderr,"\nError %lu locating address of MpqOpenArchiveForUpdate.\n", GetLastError());
+		fprintf(stderr,"\nError locating address of MpqOpenArchiveForUpdate: %s\n", GetErrorText(GetLastError()));
 		return FALSE;
 	}
 	at->pMpqCloseUpdatedArchive = (Function_MpqCloseUpdatedArchive)GetProcAddress(hModule,"MpqCloseUpdatedArchive");
 	if(at->pMpqCloseUpdatedArchive == NULL)
 	{
-		fprintf(stderr,"\nError %lu locating address of MpqCloseUpdatedArchive.\n", GetLastError());
+		fprintf(stderr,"\nError locating address of MpqCloseUpdatedArchive: %s\n", GetErrorText(GetLastError()));
 		return FALSE;
 	}
 	at->pMpqAddFileToArchive = (Function_MpqAddFileToArchive)GetProcAddress(hModule,"MpqAddFileToArchive");
 	if(at->pMpqAddFileToArchive == NULL)
 	{
-		fprintf(stderr,"\nError %lu locating address of MpqAddFileToArchive.\n", GetLastError());
+		fprintf(stderr,"\nError locating address of MpqAddFileToArchive: %s\n", GetErrorText(GetLastError()));
 		return FALSE;
 	}
 	at->pMpqAddWaveToArchive = (Function_MpqAddWaveToArchive)GetProcAddress(hModule,"MpqAddWaveToArchive");
 	if(at->pMpqAddWaveToArchive == NULL)
 	{
-		fprintf(stderr,"\nError %lu locating address of MpqAddWaveToArchive.\n", GetLastError());
+		fprintf(stderr,"\nError locating address of MpqAddWaveToArchive: %s\n", GetErrorText(GetLastError()));
 		return FALSE;
 	}
 	at->pMpqRenameFile = (Function_MpqRenameFile)GetProcAddress(hModule,"MpqRenameFile");
 	if(at->pMpqRenameFile == NULL)
 	{
-		fprintf(stderr,"\nError %lu locating address of MpqRenameFile.\n", GetLastError());
+		fprintf(stderr,"\nError locating address of MpqRenameFile: %s\n", GetErrorText(GetLastError()));
 		return FALSE;
 	}
 	at->pMpqDeleteFile = (Function_MpqDeleteFile)GetProcAddress(hModule,"MpqDeleteFile");
 	if(at->pMpqDeleteFile == NULL)
 	{
-		fprintf(stderr,"\nError %lu locating address of MpqDeleteFile.\n", GetLastError());
+		fprintf(stderr,"\nError locating address of MpqDeleteFile: %s\n", GetErrorText(GetLastError()));
 		return FALSE;
 	}
 	at->pMpqCompactArchive = (Function_MpqCompactArchive)GetProcAddress(hModule,"MpqCompactArchive");
 	if(at->pMpqCompactArchive == NULL)
 	{
-		fprintf(stderr,"\nError %lu locating address of MpqCompactArchive.\n", GetLastError());
+		fprintf(stderr,"\nError locating address of MpqCompactArchive: %s\n", GetErrorText(GetLastError()));
 		return FALSE;
 	}
 	at->pMpqAddFileToArchiveEx = (Function_MpqAddFileToArchiveEx)GetProcAddress(hModule,"MpqAddFileToArchiveEx");
 	if(at->pMpqAddFileToArchiveEx == NULL)
 	{
-		fprintf(stderr,"\nError %lu locating address of MpqAddFileToArchiveEx.\n", GetLastError());
+		fprintf(stderr,"\nError locating address of MpqAddFileToArchiveEx: %s\n", GetLastError());
 		return FALSE;
 	}
 	at->pMpqAddFileFromBufferEx = (Function_MpqAddFileFromBufferEx)GetProcAddress(hModule,"MpqAddFileFromBufferEx");
 	if(at->pMpqAddFileFromBufferEx == NULL)
 	{
-		fprintf(stderr,"\nError %lu locating address of MpqAddFileFromBufferEx.\n", GetLastError());
+		fprintf(stderr,"\nError locating address of MpqAddFileFromBufferEx: %s\n", GetErrorText(GetLastError()));
 		return FALSE;
 	}
 	at->pMpqAddFileFromBuffer = (Function_MpqAddFileFromBuffer)GetProcAddress(hModule,"MpqAddFileFromBuffer");
 	if(at->pMpqAddFileFromBuffer == NULL)
 	{
-		fprintf(stderr,"\nError %lu locating address of MpqAddFileFromBuffer.\n", GetLastError());
+		fprintf(stderr,"\nError locating address of MpqAddFileFromBuffer: %s\n", GetErrorText(GetLastError()));
 		return FALSE;
 	}
 	at->pMpqAddWaveFromBuffer = (Function_MpqAddWaveFromBuffer)GetProcAddress(hModule,"MpqAddWaveFromBuffer");
 	if(at->pMpqAddWaveFromBuffer == NULL)
 	{
-		fprintf(stderr,"\nError %lu locating address of MpqAddWaveFromBuffer.\n", GetLastError());
+		fprintf(stderr,"\nError locating address of MpqAddWaveFromBuffer: %s\n", GetErrorText(GetLastError()));
 		return FALSE;
 	}
 	at->pMpqSetFileLocale = (Function_MpqSetFileLocale)GetProcAddress(hModule,"MpqSetFileLocale");
 	if(at->pMpqSetFileLocale == NULL)
 	{
-		fprintf(stderr,"\nError %lu locating address of MpqSetFileLocale.\n", GetLastError());
+		fprintf(stderr,"\nError locating address of MpqSetFileLocale: %s\n", GetErrorText(GetLastError()));
 		return FALSE;
 	}
 	return TRUE;
@@ -486,37 +561,51 @@ BOOL LoadAddresses(AddressTable* at)
 void ShowHelp(void)
 {
 	printf("Extracts compressed files from MoPAQ archives.\n\n");
-	printf("MPQE [options] <MPQfile> [glob]\n\n");
+	printf("MPQE_CPP [options] <MPQfile> [glob]\n\n");
 	printf("Options:\n");
-	printf(" /p\t\tExtract newer files from patch MPQ archives if available\n");
+//	printf(" /p\t\tExtract newer files from patch MPQ archives if available\n");
 	printf(" /d <directory>\tSet output directory ( default: MPQOUT )\n");
 	printf(" /v\t\tEnable verbose output\n");
 	printf(" /l\t\tUse lowercase filenames\n");
+	printf(" /s\t\tSkip directory structure creation [all files go in outdir]\n");
 }
 
 void mpqExtract(const AddressTable* at, mpqeOptions* op, char* fileMPQ)
 {
-	static char* extractedFiles = new char[1024*1024];
+	unsigned int buffersize = 1024*1024; // start at 1 MB
+	static bool firsttime = true;
+	static char* extractedFiles = NULL;
+	static char* filebuffer = NULL;
+	static char* errbuf = NULL;
+	if(firsttime)
+	{
+		errbuf = new char[ERRBUF_SIZE];
+		extractedFiles = new char[buffersize];
+		extractedFiles[0] = 0x00;
+		firsttime = false;
+	}
 	int hMPQ = 0;
 	int hFile = 0;
 	printf("Extracting from %s\n",fileMPQ);
 	if(at->pSFileOpenArchive(fileMPQ, 0, 0, &hMPQ) != 1)
 	{
-		fprintf(stderr,"Error: Could not open %s\n", fileMPQ);
+		fprintf(stderr,"Error: Could not open %s: %s\n", fileMPQ, GetErrorText(GetLastError()));
 		return;
 	}
 	if(at->pSFileOpenFileEx(hMPQ, "(listfile)", 0, &hFile) != 1)
 	{
 		at->pSFileCloseArchive(hMPQ);
-		fprintf(stderr,"Error: Could not find (listfile) in %s\n", fileMPQ);
+		fprintf(stderr,"Error: Could not find (listfile) in %s: %s\n", fileMPQ, GetErrorText(GetLastError()));
 		return;
 	}
 	byte* buffer;
+	byte* baselist;
+	char* list;
 	uint32 FileSize = 0, FileSizeHigh = 0;
 	FileSize = at->pSFileGetFileSize(hFile, &FileSizeHigh);
-	buffer = new byte[FileSize];
+	baselist = new byte[FileSize];
 	uint32 FileRead;
-	if(at->pSFileReadFile(hFile, buffer, (uint32)FileSize, &FileRead, NULL) != 1)
+	if(at->pSFileReadFile(hFile, baselist, (uint32)FileSize, &FileRead, NULL) != 1)
 	{
 		at->pSFileCloseFile(hFile);
 		at->pSFileCloseArchive(hMPQ);
@@ -524,11 +613,12 @@ void mpqExtract(const AddressTable* at, mpqeOptions* op, char* fileMPQ)
 		return;
 	}
 	at->pSFileCloseFile(hFile);
-	char* file;
-	char* list = (char*)buffer;
+	list = (char*)baselist;
+	char* file = NULL;
 	char* context1 = NULL;
 	char* dirpath = NULL;
-	size_t slen;
+	char* shortfname = NULL;
+	size_t slen = 0;
 	while((file=strchr(list,'\n')) != NULL)
 	{
 		*file = '\0';
@@ -540,29 +630,44 @@ void mpqExtract(const AddressTable* at, mpqeOptions* op, char* fileMPQ)
 			return;
 		if(strchr(file,'\r')!=NULL)
 			*strchr(file,'\r') = '\0';
-		if(strstr(extractedFiles,file) != NULL)
+		if(strstr(extractedFiles, file) != NULL) // already got this one, go to next
+		{
 			continue;
+		}
 		slen = strlen(file) + 8;
 		if(dirpath != NULL)
 		{
 			delete [] dirpath;
 		}
 		dirpath = new char[slen];
+		shortfname = dirpath;
 		strcpy_s(dirpath, slen, file);
 // remove the filename from the end, so only the directory path is left
-		_strrev(dirpath);
-		if(strchr(dirpath,'\\') != NULL)
+		shortfname = strrchr(dirpath,'\\');
+		if(shortfname == NULL)
 		{
-			*strchr(dirpath,'\\') = '\0';
+			shortfname = dirpath;
 		}
-		_strrev(dirpath);
+		else
+		{
+			*shortfname = 0x00;
+			shortfname++;
+		}
 		if(op->option_lowercase)
 		{
 			slen = strlen(dirpath);
+			// somewhere in here, dirpath gets corrupted ???
 			_strlwr_s(dirpath, slen);
+			slen = strlen(shortfname);
+			_strlwr_s(shortfname, slen);
+			slen = strlen(file);
+			_strlwr_s(file, slen);
 		}
 		if(op->option_searchglob != NULL && !Match(op->option_searchglob, file, false))
 			continue;
+//		printf("filename: %s\n", file);
+//		printf("dirpath: %s\n", dirpath);
+//		printf("shortfname: %s\n", shortfname);
 		if(at->pSFileOpenFileEx(hMPQ, file, 0, &hFile) != 1)
 		{
 			fprintf(stderr,"Error: Could not find %s in %s\n", file, fileMPQ);
@@ -582,12 +687,53 @@ void mpqExtract(const AddressTable* at, mpqeOptions* op, char* fileMPQ)
 			fprintf(stderr,"Error: Could not read %s in %s\n", file, fileMPQ);
 			continue;
 		}
-		char* dname = NULL;
-		slen = strlen(op->option_outdir) + strlen(dirpath) + 8;
-		dname = new char [slen];
-		sprintf_s(dname, slen, "%s\\%s", op->option_outdir, dirpath);
-		_mkdir(dname);
-		delete [] dname;
+		if(!op->option_skipdirstructure) // create directory structure for the current file
+		{
+			char* dname = NULL;
+			slen = strlen(op->option_outdir) + strlen(dirpath) + 8;
+			dname = new char [slen];
+			sprintf_s(dname, slen, "%s\\%s", op->option_outdir, dirpath);
+			char* dptr = dname;
+			while(strchr(dptr,'\\') != NULL)
+			{
+				errno_t err;
+				dptr = strchr(dptr,'\\');
+				*dptr = 0x00;
+				err = _mkdir(dname);
+				if(err==-1 && err!=17) // EEXIST
+				{
+					_strerror_s(errbuf, ERRBUF_SIZE, NULL);
+					fprintf(stderr,"Error creating directory %s : %s\n", dname, errbuf);
+					delete [] dname;
+					continue;
+				}
+				*dptr = '\\';
+				dptr++;
+			}
+			if(op->option_verbose)
+			{
+				printf("Creating directory %s\n", dname);
+			}
+			errno_t err = _mkdir(dname);
+			if(err==-1 && errno!=17) // EEXIST
+			{
+				_strerror_s(errbuf, ERRBUF_SIZE, NULL);
+				fprintf(stderr,"Error creating directory %s : %s\n", dname, errbuf);
+				delete [] dname;
+				continue;
+			}
+			delete [] dname;
+		}
+		else // create just the base output directory
+		{
+			errno_t err = _mkdir(op->option_outdir);
+			if(err==-1 && errno!=17) // EEXIST
+			{
+				_strerror_s(errbuf, ERRBUF_SIZE, NULL);
+				fprintf(stderr,"Error creating directory %s : %s\n", op->option_outdir, errbuf);
+				continue;
+			}
+		}
 		FILE* fs = NULL;
 		char* fname = NULL;
 		slen = strlen(op->option_outdir) + strlen(file) + 2;
@@ -603,11 +749,19 @@ void mpqExtract(const AddressTable* at, mpqeOptions* op, char* fileMPQ)
 			l2 = strlen(file);
 			_strlwr_s(file, l2);
 		}
-		sprintf_s(fname, slen, "%s\\%s", op->option_outdir, file);
+		if(op->option_skipdirstructure) // file goes into option_outdir\\shortfilename
+		{
+			sprintf_s(fname, slen, "%s\\%s", op->option_outdir, shortfname);
+		}
+		else // file goes into option_outdir\\file [file contains directory structure]
+		{
+			sprintf_s(fname, slen, "%s\\%s", op->option_outdir, file);
+		}
 		errno_t err = fopen_s(&fs, fname, "wb");
 		if(fs == NULL)
 		{
-			fprintf(stderr,"Error creating file %s\n", file);
+			_strerror_s(errbuf, ERRBUF_SIZE, NULL);
+			fprintf(stderr,"Error creating file %s : %s\n", fname, errbuf);
 			continue;
 		}
 		fwrite(buffer, FileSize, 1, fs);
@@ -615,10 +769,38 @@ void mpqExtract(const AddressTable* at, mpqeOptions* op, char* fileMPQ)
 		fclose(fs);
 		if(op->option_verbose)
 			printf("Extracted: %s (%s)\n", file, bytes2text(FileSize));
-
-		strncpy_s(extractedFiles, 1024*1024, file, strlen(file));
-		strcat_s(extractedFiles, 1024*1024, "+"); // token
+		delete [] buffer;
+		if(extractedFiles[0]==0x00) // first element?
+		{
+			strncpy_s(extractedFiles, buffersize, file, strlen(file));
+		}
+		else
+		{
+			strcat_s(extractedFiles, buffersize, file);
+		}
+		strcat_s(extractedFiles, buffersize, "+"); // token
+		if((strlen(extractedFiles) % buffersize) < 256) // nearing end of buffer, increase it
+		{
+			filebuffer = new char[buffersize + (1024*1024)]; // increase buffer by 1 MB
+			memcpy(filebuffer, extractedFiles, buffersize);
+			delete [] extractedFiles;
+			extractedFiles = filebuffer;
+			filebuffer = NULL;
+			buffersize += (1024*1024);
+		}
 	}
+	delete [] baselist;
 	at->pSFileCloseArchive(hMPQ);
 }
 
+char* GetErrorText(DWORD err)
+{
+	static char* s = NULL;
+	if(s != NULL)
+	{
+		LocalFree(s);
+		s = NULL;
+	}
+	FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER|FORMAT_MESSAGE_FROM_SYSTEM, NULL, err, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), (LPTSTR)&s,0,NULL);
+	return s;
+}
