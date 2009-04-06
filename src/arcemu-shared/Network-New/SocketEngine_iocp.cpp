@@ -70,7 +70,7 @@ void iocpEngine::WantWrite(BaseSocket * s)
 	ov->m_op = IO_EVENT_WRITE;
 
 	DWORD sent;
-	if(WSASend(s->GetFd(), &buf, 1, &sent, 0, &ov->m_ov, 0) == SOCKET_ERROR)
+	if( UNLIKELY( WSASend(s->GetFd(), &buf, 1, &sent, 0, &ov->m_ov, 0) == SOCKET_ERROR ) )
 	{
 		if(WSAGetLastError() != WSA_IO_PENDING)
 		{

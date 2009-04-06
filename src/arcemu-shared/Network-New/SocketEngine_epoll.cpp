@@ -81,7 +81,7 @@ void epollEngine::MessageLoop()
 		for(i = 0; i < nfds; ++i)
 		{
 	            s = fds[events[i].data.fd];
-			if(s == 0)
+			if( UNLIKELY( s == 0 ) )
 			{
 				printf("epoll returned invalid fd %u\n", events[i].data.fd);
 				continue;
@@ -124,7 +124,7 @@ void epollEngine::Shutdown()
 	m_running = false;
 	for(int i = 0; i < MAX_DESCRIPTORS; ++i)
 	{
-		if(fds[i] != 0)
+		if( LIKELY( fds[i] != 0 ) )
 		{
 			fds[i]->Delete();
 		}

@@ -38,7 +38,7 @@ void kqueueEngine::AddSocket(BaseSocket * s)
 
 	struct kevent ev;
 	EV_SET(&ev, s->GetFd(), s->Writable() ? EVFILT_WRITE : EVFILT_READ, EV_ADD, 0, 0, NULL);
-	if(kevent(kq, &ev, 1, NULL, 0, NULL) < 0)
+	if( UNLIKELY( kevent(kq, &ev, 1, NULL, 0, NULL) < 0 ) )
 		printf("!! could not add kevent for fd %u\n", s->GetFd());
 }
 
@@ -59,7 +59,7 @@ void kqueueEngine::WantWrite(BaseSocket * s)
 {
 	struct kevent ev;
 	EV_SET(&ev, s->GetFd(), EVFILT_WRITE, EV_ADD | EV_ONESHOT, 0, 0, NULL);
-	if(kevent(kq, &ev, 1, NULL, 0, NULL) < 0)
+	if( UNLIKELY( kevent(kq, &ev, 1, NULL, 0, NULL) < 0 ) )
 		printf("!! could not modify kevent for fd %u\n", s->GetFd());
 }
 
@@ -79,7 +79,7 @@ void kqueueEngine::MessageLoop()
 		for(i = 0; i < nfds; ++i)
 		{
 	        s = fds[events[i].ident];
-			if(s == 0)
+			if( UNLIKELY( s == 0 ) )
 			{
 				printf("kqueue returned invalid fd %u\n", events[i].ident);
 				continue;
@@ -91,7 +91,7 @@ void kqueueEngine::MessageLoop()
 				continue;
 			}
 
-			if(events[i].filter == EVFILT_READ)
+			if( LIKELY( events[i].filter == EVFILT_READ ) )
 			{
 				s->OnRead(0);
                 if(s->Writable() && !s->m_writeLock)
@@ -103,7 +103,7 @@ void kqueueEngine::MessageLoop()
 			else if(events[i].filter == EVFILT_WRITE)
 			{
 				s->OnWrite(0);
-				if(!s->Writable())
+				if( UNLIKELY( !s->Writable( ) ) )
 				{
 					--s->m_writeLock;
 					EV_SET(&ev, s->GetFd(), EVFILT_READ, EV_ADD, 0, 0, NULL);
@@ -131,7 +131,7 @@ void kqueueEngine::Shutdown()
 	m_running = false;
 	for(int i = 0; i < MAX_DESCRIPTORS; ++i)
 	{
-		if(fds[i] != 0)
+		if( LIKELY( fds[i] != 0 ) )
 		{
 			fds[i]->Delete();
 		}
