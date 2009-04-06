@@ -236,6 +236,18 @@ enum MsTimeVariables
 #include <cstdlib>
 //#include <iostream>
 
+#if defined ( __GNUC__ )
+#	define LIKELY( _x ) \
+		__builtin_expect( ( _x ), 1 )
+#	define UNLIKELY( _x ) \
+ 		__builtin_expect( ( _x ), 0 )
+#else
+#	define LIKELY( _x ) \
+		_x
+#	define UNLIKELY( _x ) \
+		_x
+#endif
+
 #if defined (__GNUC__)
 #  define GCC_VERSION (__GNUC__ * 10000 \
 					   + __GNUC_MINOR__ * 100 \
