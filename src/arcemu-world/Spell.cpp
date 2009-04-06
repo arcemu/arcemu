@@ -140,7 +140,8 @@ void SpellCastTargets::write( WorldPacket& data )
 
 Spell::Spell(Object* Caster, SpellEntry *info, bool triggered, Aura* aur)
 {
-	ASSERT(Caster != NULL && info != NULL );
+	ASSERT(Caster != NULL);
+	ASSERT(info != NULL);
 
 	chaindamage = 0;
 	bDurSet = 0;
