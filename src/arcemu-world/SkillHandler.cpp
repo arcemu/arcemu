@@ -226,8 +226,7 @@ void WorldSession::HandleLearnTalentOpcode( WorldPacket & recv_data )
 				}
 				else
 				{
-					Spell*sp=SpellPool.PooledNew();
-					sp->Init(_player,spellInfo,true,NULL);
+					Spell * sp = new Spell(_player, spellInfo, true, NULL);
 					SpellCastTargets tgt;
 					tgt.m_unitTarget=_player->GetGUID();
 					sp->prepare(&tgt);

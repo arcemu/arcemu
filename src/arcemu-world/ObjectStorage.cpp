@@ -212,6 +212,7 @@ void ObjectMgr::LoadExtraCreatureProtoStuff()
 					{
 						sLog.outDebug("SpellId %u in ai_agent for %u is invalid.\n", (unsigned int)fields[5].GetUInt32(), (unsigned int)sp->entryId);
 						delete sp;
+						sp = NULL;
 						continue;
 					}
 					
@@ -220,6 +221,7 @@ void ObjectMgr::LoadExtraCreatureProtoStuff()
 					{
 						sLog.outDebug("Teaching spell %u in ai_agent for %u\n", (unsigned int)fields[5].GetUInt32(), (unsigned int)sp->entryId);
 						delete sp;
+						sp = NULL;
 						continue;
 					}
 
@@ -250,6 +252,7 @@ void ObjectMgr::LoadExtraCreatureProtoStuff()
 					{
 						//printf("SpellId %u in ai_agent for %u is invalid.\n", (unsigned int)fields[5].GetUInt32(), (unsigned int)sp->entryId);
 						delete sp;
+						sp = NULL;
 						continue;
 					}
 					if(sp->spellType==0)
@@ -268,6 +271,7 @@ void ObjectMgr::LoadExtraCreatureProtoStuff()
 				{
 					cn->m_canRangedAttack = true;
 					delete sp;
+					sp = NULL;
 				}
 				else if(sp->agent == AGENT_FLEE)
 				{
@@ -283,6 +287,7 @@ void ObjectMgr::LoadExtraCreatureProtoStuff()
 						cn->m_fleeDuration = 10000;
 
 					delete sp;
+					sp = NULL;
 				}
 				else if(sp->agent == AGENT_CALLFORHELP)
 				{
@@ -290,6 +295,7 @@ void ObjectMgr::LoadExtraCreatureProtoStuff()
 					if(sp->floatMisc1)
 						cn->m_callForHelpHealth = 0.2f;
 					delete sp;
+					sp = NULL;
 				}
 				else
 				{

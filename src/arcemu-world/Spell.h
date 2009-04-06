@@ -1579,12 +1579,8 @@ class SERVER_DECL Spell
 {
 public:
     friend class DummySpellHandler;
-    Spell( );
-	void Init( Object* Caster, SpellEntry *info, bool triggered, Aura* aur );
-	void Virtual_Constructor();		//when using object pool contructor is not good to be called again sometimes. Use this instead
+    Spell(Object* Caster, SpellEntry *info, bool triggered, Aura* aur);
     ~Spell();
-	void Virtual_Destructor();		//this makes sure we do not leave events on objects that are supposed to be deleted
-	int32 m_bufferPoolId;
 
     // Fills specified targets at the area of effect
     void FillSpecifiedTargetsInArea(float srcx,float srcy,float srcz,uint32 ind, uint32 specification);
@@ -1631,23 +1627,23 @@ public:
     uint8 CanCast(bool);
 	ARCEMU_INLINE bool hasAttribute(uint32 attribute)
 	{
-		return (GetProto()->Attributes & attribute);
+		return ((GetProto()->Attributes & attribute) > 0);
 	}
 	ARCEMU_INLINE bool hasAttributeEx(uint32 attribute)
 	{
-		return (GetProto()->AttributesEx & attribute);
+		return ((GetProto()->AttributesEx & attribute) > 0);
 	}
 	ARCEMU_INLINE bool hasAttributeExB(uint32 attribute)
 	{
-		return (GetProto()->AttributesExB & attribute);
+		return ((GetProto()->AttributesExB & attribute) > 0);
 	}
 	ARCEMU_INLINE bool hasAttributeExC(uint32 attribute)
 	{
-		return (GetProto()->AttributesExC & attribute);
+		return ((GetProto()->AttributesExC & attribute) > 0);
 	}
 	ARCEMU_INLINE bool hasAttributeExD(uint32 attribute)
 	{
-		return (GetProto()->AttributesExD & attribute);
+		return ((GetProto()->AttributesExD & attribute) > 0);
 	}
     // Removes reagents, ammo, and items/charges
     void RemoveItems();

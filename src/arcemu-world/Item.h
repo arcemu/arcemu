@@ -124,13 +124,8 @@ enum scalingstatmodtypes {
 class SERVER_DECL Item : public Object
 {
 public:
-	Item();
-	void Init( uint32 high, uint32 low );
-	void Virtual_Constructor();		//when using object pool contructor is not good to be called again sometimes. Use this instead
+	Item( uint32 high, uint32 low );
 	virtual ~Item();
-	void Virtual_Destructor();		//this makes sure we do not leave events on objects that are supposed to be deleted
-	int32 m_bufferPoolId;
-
 	void Create( uint32 itemid, Player* owner );
 
 	ARCEMU_INLINE ItemPrototype* GetProto() const { return m_itemProto; }

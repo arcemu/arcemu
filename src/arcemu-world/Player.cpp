@@ -1176,8 +1176,7 @@ void Player::_EventAttack( bool offhand )
 		else
 		{
 			SpellEntry *spellInfo = dbcSpell.LookupEntry( GetOnMeleeSpell() );
-			Spell *spell = SpellPool.PooledNew();
-			spell->Init( this, spellInfo, true, NULL );
+			Spell *spell = new Spell( this, spellInfo, true, NULL );
 			spell->extra_cast_number = GetOnMeleeSpellEcn();
 			SpellCastTargets targets;
 			targets.m_unitTarget = GetSelection();
@@ -1267,8 +1266,7 @@ void Player::_EventCharmAttack()
 			{
 				SpellEntry *spellInfo = dbcSpell.LookupEntry(currentCharm->GetOnMeleeSpell());
 				currentCharm->SetOnMeleeSpell(0);
-				Spell *spell = SpellPool.PooledNew();
-				spell->Init(currentCharm,spellInfo,true,NULL);
+				Spell *spell = new Spell(currentCharm,spellInfo,true,NULL);
 				SpellCastTargets targets;
 				targets.m_unitTarget = GetSelection();
 				spell->prepare(&targets);
@@ -3999,8 +3997,7 @@ void Player::_ApplyItemMods(Item* item, int8 slot, bool apply, bool justdrokedow
 					if( Set->itemscount==set->itemscount[x])
 					{//cast new spell
 						SpellEntry *info = dbcSpell.LookupEntry( set->SpellID[x] );
-						Spell * spell = SpellPool.PooledNew();
-						spell->Init( this, info, true, NULL );
+						Spell * spell = new Spell( this, info, true, NULL );
 						SpellCastTargets targets;
 						targets.m_unitTarget = this->GetGUID();
 						spell->prepare( &targets );
@@ -4219,8 +4216,7 @@ void Player::_ApplyItemMods(Item* item, int8 slot, bool apply, bool justdrokedow
 					continue;
 				}
 
-				Spell *spell = SpellPool.PooledNew();
-				spell->Init( this, spells ,true, NULL );
+				Spell *spell = new Spell( this, spells ,true, NULL );
 				SpellCastTargets targets;
 				targets.m_unitTarget = this->GetGUID();
 				spell->castedItemId = item->GetEntry();
@@ -4465,15 +4461,13 @@ void Player::BuildPlayerRepop()
 	if(getRace()==RACE_NIGHTELF)
 	{
 		SpellEntry *inf=dbcSpell.LookupEntry(9036); // Cebernic:20584 triggered.
-		Spell*sp=SpellPool.PooledNew();
-		sp->Init(this,inf,true,NULL);
+		Spell * sp = new Spell(this,inf,true,NULL);
 		sp->prepare(&tgt);
 	}
 	else
 	{
 		SpellEntry *inf=dbcSpell.LookupEntry(8326);
-		Spell*sp=SpellPool.PooledNew();
-		sp->Init(this,inf,true,NULL);
+		Spell * sp = new Spell(this,inf,true,NULL);
 		sp->prepare(&tgt);
 	}
 
@@ -6518,8 +6512,7 @@ void Player::EventRepeatSpell()
 	{
 		m_AutoShotAttackTimer = m_AutoShotDuration;
 
-		Spell* sp = SpellPool.PooledNew();
-		sp->Init( this, m_AutoShotSpell, true, NULL );
+		Spell * sp = new Spell(this, m_AutoShotSpell, true, NULL);
 		SpellCastTargets tgt;
 		tgt.m_unitTarget = m_curSelection;
 		tgt.m_targetMask = TARGET_FLAG_UNIT;
@@ -9286,8 +9279,7 @@ void Player::CompleteLoading()
 					continue;
 			}
 
-			Spell * spell=SpellPool.PooledNew();
-			spell->Init(this,info,true,NULL);
+			Spell * spell = new Spell(this,info,true,NULL);
 			spell->prepare(&targets);
 		}
 	}
@@ -9314,8 +9306,7 @@ void Player::CompleteLoading()
 		if ( sp->c_is_flags & SPELL_FLAG_IS_EXPIREING_WITH_PET )
 			continue; //do not load auras that only exist while pet exist. We should recast these when pet is created anyway
 
-		Aura * aura = AuraPool.PooledNew();
-		aura->Init(sp,(*i).dur,this,this, false);
+		Aura * aura = new Aura(sp,(*i).dur,this,this, false);
 		//if ( !(*i).positive ) // do we need this? - vojta
 		//	aura->SetNegative();
 
@@ -9332,8 +9323,7 @@ void Player::CompleteLoading()
 			Aura * a = NULL;
 			for ( uint32 x = 0; x < (*i).charges - 1; x++ )
 			{
-				a = AuraPool.PooledNew();
-				a->Init( sp, (*i).dur, this, this, false );
+				a = new Aura( sp, (*i).dur, this, this, false );
 				this->AddAura( a );
 				a = NULL;
 			}
@@ -9394,8 +9384,7 @@ void Player::CompleteLoading()
 	SpawnActivePet();
 
 	// useless logon spell
-	Spell *logonspell = SpellPool.PooledNew();
-	logonspell->Init(this, dbcSpell.LookupEntry(836), false, NULL);
+	Spell *logonspell = new Spell(this, dbcSpell.LookupEntry(836), false, NULL);
 	logonspell->prepare(&targets);
 
 	// Banned
@@ -9791,8 +9780,7 @@ void Player::SetShapeShift(uint8 ss)
 		{
 			if( sp->RequiredShapeShift && ((uint32)1 << (ss-1)) & sp->RequiredShapeShift )
 			{
-				spe = SpellPool.PooledNew();
-				spe->Init( this, sp, true, NULL );
+				spe = new Spell( this, sp, true, NULL );
 				spe->prepare( &t );
 			}
 		}
@@ -9804,8 +9792,7 @@ void Player::SetShapeShift(uint8 ss)
 		sp = dbcSpell.LookupEntry( *itr );
 		if( sp->RequiredShapeShift && ((uint32)1 << (ss-1)) & sp->RequiredShapeShift )
 		{
-			spe = SpellPool.PooledNew();
-			spe->Init( this, sp, true, NULL );
+			spe = new Spell( this, sp, true, NULL );
 			spe->prepare( &t );
 		}
 	}
@@ -11170,16 +11157,14 @@ void Player::EventSummonPet( Pet *new_pet )
 		{
 			this->RemoveAllAuras( SpellID, this->GetGUID() ); //this is required since unit::addaura does not check for talent stacking
 			SpellCastTargets targets( this->GetGUID() );
-			Spell *spell = SpellPool.PooledNew();
-			spell->Init(this, spellInfo ,true, NULL);	//we cast it as a proc spell, maybe we should not !
+			Spell *spell = new Spell(this, spellInfo ,true, NULL);	//we cast it as a proc spell, maybe we should not !
 			spell->prepare(&targets);
 		}
 		if( spellInfo->c_is_flags & SPELL_FLAG_IS_CASTED_ON_PET_SUMMON_ON_PET )
 		{
 			this->RemoveAllAuras( SpellID, this->GetGUID() ); //this is required since unit::addaura does not check for talent stacking
 			SpellCastTargets targets( new_pet->GetGUID() );
-			Spell *spell = SpellPool.PooledNew();
-			spell->Init(this, spellInfo ,true, NULL);	//we cast it as a proc spell, maybe we should not !
+			Spell *spell = new Spell(this, spellInfo ,true, NULL);	//we cast it as a proc spell, maybe we should not !
 			spell->prepare(&targets);
 		}
 	}
@@ -11333,8 +11318,7 @@ void Player::AddShapeShiftSpell(uint32 id)
 
 	if( sp->RequiredShapeShift && ((uint32)1 << (GetShapeShift()-1)) & sp->RequiredShapeShift )
 	{
-		Spell * spe = SpellPool.PooledNew();
-		spe->Init( this, sp, true, NULL );
+		Spell * spe = new Spell( this, sp, true, NULL );
 		SpellCastTargets t(this->GetGUID());
 		spe->prepare( &t );
 	}
