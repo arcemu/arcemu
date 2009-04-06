@@ -312,12 +312,9 @@ bool Master::Run(int argc, char ** argv)
 	ScriptSystem->Reload();
 #endif
 
+	// init singletons
 	new EventMgr;
 	new World;
-	//have to init this ones for singleton
-	new tPPoolClass<Item>;
-	new tPPoolClass<Aura>;
-	new tPPoolClass<Spell>;
 
 	// open cheat log file
 	Anticheat_Log = new SessionLogWriter(FormatOutputString( "logs", "cheaters", false).c_str(), false );
@@ -594,15 +591,6 @@ bool Master::Run(int argc, char ** argv)
 	Log.Notice( "EventMgr", "~EventMgr()" );
 	delete EventMgr::getSingletonPtr();
 	
-	Log.Notice( "Item Pool", "Item Pool" );
-	delete tPPoolClass<Item>::getSingletonPtr();
-
-	Log.Notice( "Spell Pool", "Spell Pool" );
-	delete tPPoolClass<Spell>::getSingletonPtr();
-
-	Log.Notice( "Aura Pool", "Aura Pool" );
-	delete tPPoolClass<Aura>::getSingletonPtr();
-
 	Log.Notice( "Database", "Closing Connections..." );
 	_StopDB();
 
