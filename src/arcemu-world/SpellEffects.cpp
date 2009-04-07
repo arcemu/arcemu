@@ -632,7 +632,7 @@ void Spell::SpellEffectSchoolDMG(uint32 i) // dmg school
 	CONFLAGRATE SHOULD REMOVE THE IMMOLATE DEBUFF
 	**********************************************************************/
 	if( GetProto()->NameHash == SPELL_HASH_CONFLAGRATE )
-		unitTarget->RemoveFlag( UNIT_FIELD_AURASTATE, AURASTATE_FLAG_IMMOLATE )
+		unitTarget->RemoveFlag( UNIT_FIELD_AURASTATE, AURASTATE_FLAG_IMMOLATE );
 	//	unitTarget->RemoveAuraByNameHash(SPELL_HASH_IMMOLATE );
 	// RemoveFlag works better because it updates instead of just removing from the map?
 	// needs testing.
