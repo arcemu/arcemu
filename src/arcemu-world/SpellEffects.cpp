@@ -386,40 +386,9 @@ void Spell::SpellEffectInstantKill(uint32 i)
 
 	switch( spellId )
 	{
-	case 3617://Goblin Bomb Suicide
-		{
-			if( m_caster->GetTypeId() != TYPEID_UNIT )
-				break;
-			Unit *caster = m_caster->GetMapMgr()->GetPlayer( m_caster->GetUInt32Value( UNIT_FIELD_SUMMONEDBY ) );
-			if( caster )
-			{
-				caster->summonPet->RemoveFromWorld( false, true );
-				delete caster->summonPet;
-				caster->summonPet = NULL;
-			}
-		}break;
-	case 7814:
-	case 7815:
-	case 7816:
-	case 7876:
-	case 7877:
-	case 7878:
-	case 11778:
-	case 11779:
-	case 11780:
-	case 15968:
-	case 15969:
-	case 18128:
-	case 18129:
-	case 20398:
-	case 20399:
-	case 20400:
-	case 20401:
-	case 20402:
-		{
-		}break;
 	case 29364:	// encapsulate voidwalker
 		{
+			// retarget? some one test this spell.
 			return;
 		}break;
 	case 18788: //Demonic Sacrifice (508745)
@@ -547,12 +516,16 @@ void Spell::SpellEffectSchoolDMG(uint32 i) // dmg school
 		switch(GetProto()->NameHash)
 		{
 		case SPELL_HASH_ICE_LANCE: // Ice Lance
-			if (dmg>300)   //dirty bugfix.
-				dmg = (int32)(damage >> 1);
-			break;
+			{
+				if( unitTarget->HasFlag( UNIT_FIELD_AURASTATE, AURASTATE_FLAG_FROZEN))
+					dmg *= 3;
+		//	if (dmg>300)   //dirty bugfix.
+		//		dmg = (int32)(damage >> 1);
+			
+			}break;
 		case SPELL_HASH_INCINERATE:	// Incinerate -> Deals x-x extra damage if the target is affected by immolate
 			{
-				if( unitTarget->HasAurasWithNameHash( SPELL_HASH_IMMOLATE ) )
+				if( unitTarget->HasFlag( UNIT_FIELD_AURASTATE, AURASTATE_FLAG_IMMOLATE ) )
 				{
 					// random extra damage
 					uint32 extra_dmg = 111 + (GetProto()->RankNumber * 11) + RandomUInt(GetProto()->RankNumber * 11);
@@ -659,7 +632,10 @@ void Spell::SpellEffectSchoolDMG(uint32 i) // dmg school
 	CONFLAGRATE SHOULD REMOVE THE IMMOLATE DEBUFF
 	**********************************************************************/
 	if( GetProto()->NameHash == SPELL_HASH_CONFLAGRATE )
-		unitTarget->RemoveAuraByNameHash(SPELL_HASH_IMMOLATE );
+		unitTarget->RemoveFlag( UNIT_FIELD_AURASTATE, AURASTATE_FLAG_IMMOLATE )
+	//	unitTarget->RemoveAuraByNameHash(SPELL_HASH_IMMOLATE );
+	// RemoveFlag works better because it updates instead of just removing from the map?
+	// needs testing.
 
 	/**************************************************************************
 	* This handles the correct damage of "Judgement of Command" (all ranks)
