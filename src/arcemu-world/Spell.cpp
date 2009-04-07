@@ -3231,7 +3231,7 @@ uint8 Spell::CanCast(bool tolerate)
 	/**
 	 *	Unit caster checks
 	 */
-	if (u_caster && u_caster->IsInWorld())
+	if (u_caster)
 	{
 		if (hasAttribute(ATTRIBUTES_REQ_OOC) && u_caster->CombatStatus.IsInCombat())
 		{
@@ -3245,7 +3245,7 @@ uint8 Spell::CanCast(bool tolerate)
 	/**
 	 *	Player caster checks
 	 */
-	if (p_caster && p_caster->IsInWorld())
+	if (p_caster)
 	{
 		/**
 		 *	Stealth check
@@ -3593,7 +3593,7 @@ uint8 Spell::CanCast(bool tolerate)
 	/**
 	 *	Targetted Item Checks
 	 */ 
-	if (p_caster && p_caster->IsInWorld() && m_targets.m_itemTarget)
+	if (p_caster && m_targets.m_itemTarget)
 	{
 		Item *i_target = NULL;
 
@@ -3626,7 +3626,7 @@ uint8 Spell::CanCast(bool tolerate)
 		}
 
 		// check to make sure we have a targeted item
-		if (! i_target )
+		if (!i_target)
 			return SPELL_FAILED_BAD_TARGETS;
 
 		ItemPrototype* proto = i_target->GetProto();
@@ -3804,7 +3804,6 @@ uint8 Spell::CanCast(bool tolerate)
 	/**
 	 *	Targeted Unit Checks
 	 */
-	//Unit *target = NULL;
 	if (m_targets.m_unitTarget)
 	{
 		Unit *target = (m_caster->IsInWorld()) ? m_caster->GetMapMgr()->GetUnit(m_targets.m_unitTarget) : NULL;
