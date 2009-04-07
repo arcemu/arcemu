@@ -656,7 +656,6 @@ void mpqExtract(const AddressTable* at, mpqeOptions* op, char* fileMPQ)
 		if(op->option_lowercase)
 		{
 			slen = strlen(dirpath);
-			// somewhere in here, dirpath gets corrupted ???
 			_strlwr_s(dirpath, slen);
 			slen = strlen(shortfname);
 			_strlwr_s(shortfname, slen);
@@ -665,9 +664,6 @@ void mpqExtract(const AddressTable* at, mpqeOptions* op, char* fileMPQ)
 		}
 		if(op->option_searchglob != NULL && !Match(op->option_searchglob, file, false))
 			continue;
-//		printf("filename: %s\n", file);
-//		printf("dirpath: %s\n", dirpath);
-//		printf("shortfname: %s\n", shortfname);
 		if(at->pSFileOpenFileEx(hMPQ, file, 0, &hFile) != 1)
 		{
 			fprintf(stderr,"Error: Could not find %s in %s\n", file, fileMPQ);
@@ -699,20 +695,22 @@ void mpqExtract(const AddressTable* at, mpqeOptions* op, char* fileMPQ)
 				errno_t err;
 				dptr = strchr(dptr,'\\');
 				*dptr = 0x00;
+				if((dptr > dname) && (*(dptr-1)==':'))
+				{
+					*dptr = '\\';
+					dptr++;
+					continue;
+				}
 				err = _mkdir(dname);
-				if(err==-1 && err!=17) // EEXIST
+				if(err==-1 && errno!=17) // EEXIST
 				{
 					_strerror_s(errbuf, ERRBUF_SIZE, NULL);
 					fprintf(stderr,"Error creating directory %s : %s\n", dname, errbuf);
 					delete [] dname;
-					continue;
+					return;
 				}
 				*dptr = '\\';
 				dptr++;
-			}
-			if(op->option_verbose)
-			{
-				printf("Creating directory %s\n", dname);
 			}
 			errno_t err = _mkdir(dname);
 			if(err==-1 && errno!=17) // EEXIST
@@ -722,16 +720,46 @@ void mpqExtract(const AddressTable* at, mpqeOptions* op, char* fileMPQ)
 				delete [] dname;
 				continue;
 			}
+			else if(errno!=17 && op->option_verbose)
+			{
+				printf("Created directory %s\n", dname);
+			}
 			delete [] dname;
 		}
 		else // create just the base output directory
 		{
+			char* dptr = op->option_outdir;
+			while(strchr(dptr,'\\') != NULL)
+			{
+				errno_t err;
+				dptr = strchr(dptr,'\\');
+				*dptr = 0x00;
+				if((dptr > op->option_outdir) && (*(dptr-1)==':'))
+				{
+					*dptr = '\\';
+					dptr++;
+					continue;
+				}
+				err = _mkdir(op->option_outdir);
+				if(err==-1 && errno!=17) // EEXIST
+				{
+					_strerror_s(errbuf, ERRBUF_SIZE, NULL);
+					fprintf(stderr,"Error creating directory %s : %s\n", op->option_outdir, errbuf);
+					return;
+				}
+				*dptr = '\\';
+				dptr++;
+			}
 			errno_t err = _mkdir(op->option_outdir);
 			if(err==-1 && errno!=17) // EEXIST
 			{
 				_strerror_s(errbuf, ERRBUF_SIZE, NULL);
 				fprintf(stderr,"Error creating directory %s : %s\n", op->option_outdir, errbuf);
 				continue;
+			}
+			else if(errno!=17 && op->option_verbose)
+			{
+				printf("Created directory %s\n", op->option_outdir);
 			}
 		}
 		FILE* fs = NULL;

@@ -21,15 +21,14 @@ set /p wowloc= World of Warcraft Language (enUS, enGB, deDE, frFR, koKR, etc.) :
 echo.
 echo.
 if not exist "%wowdir%\data\%wowloc%\*.mpq" goto nompq
-for %%I in ("%wowdir%\data\%wowloc%\*.mpq") do (
-   if "%extractor%"=="mpqe.exe" (
+if "%extractor%"=="mpqe.exe" (
+	for %%I in ("%wowdir%\data\%wowloc%\*.mpq") do (
 	   %extractor% %extswitches% /d "%arcdir%" "%%~fI" *.dbc
-	) else (
-		echo %%~fI
-	   %extractor% %extswitches% /d "%arcdir%\dbc" "%%~fI" *.dbc
 	)
+	ren %arcdir%\DBFilesClient dbc
+) else (
+   %extractor% %extswitches% /d "%arcdir%\dbc" "%wowdir%\data\%wowloc%\*.mpq" *.dbc
 )
-if "%extractor%"=="mpqe.exe" ren %arcdir%\DBFilesClient dbc
 goto exit
 
 :noextractor
