@@ -959,6 +959,8 @@ void CBattleground::UpdatePvPData()
 
 void CBattleground::BuildPvPUpdateDataPacket(WorldPacket * data)
 {
+	ASSERT( data )
+
 	data->Initialize(MSG_PVP_LOG_DATA);
 	data->reserve(10*(m_players[0].size()+m_players[1].size())+50);
 
@@ -1031,8 +1033,10 @@ void CBattleground::BuildPvPUpdateDataPacket(WorldPacket * data)
 		{
 			for(set<Player*>::iterator itr = m_players[i].begin(); itr != m_players[i].end(); ++itr)
 			{
-				if( (*itr)->m_isGmInvisible )continue;
-				*data << (*itr)->GetGUID();
+				ASSERT( *itr );
+				if( (*itr)->m_isGmInvisible )
+					continue;
+				*data << (*itr)->GetGUID(); // apparently there is a crash here
 				bs = &(*itr)->m_bgScore;
 
 				*data << bs->KillingBlows;

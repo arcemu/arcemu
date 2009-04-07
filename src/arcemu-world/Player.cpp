@@ -11181,8 +11181,9 @@ void Player::EventSummonPet( Pet *new_pet )
 void Player::EventDismissPet()
 {
 	for(uint32 x=MAX_TOTAL_AURAS_START;x<MAX_TOTAL_AURAS_END;x++)
-		if(m_auras[x] && m_auras[x]->GetSpellProto()->c_is_flags & SPELL_FLAG_IS_EXPIREING_WITH_PET)
-			m_auras[x]->Remove();
+		if( m_auras[ x ] )
+			if( m_auras [ x ]->GetSpellProto( )->c_is_flags & SPELL_FLAG_IS_EXPIREING_WITH_PET )
+				m_auras[ x ]->Remove( );
 }
 
 #ifdef ENABLE_COMPRESSED_MOVEMENT
