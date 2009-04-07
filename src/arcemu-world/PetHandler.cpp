@@ -412,6 +412,7 @@ void WorldSession::HandlePetRename(WorldPacket & recv_data)
 		return;
 	}
 
+	name = CharacterDatabase.EscapeString(name);
 	Pet * pet = _player->GetSummon();
 	pet->Rename(name);
 

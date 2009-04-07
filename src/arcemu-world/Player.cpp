@@ -1864,7 +1864,7 @@ void Player::_SavePet(QueryBuffer * buf)
 		ss << "REPLACE INTO playerpets VALUES('"
 			<< GetLowGUID() << "','"
 			<< itr->second->number << "','"
-			<< CharacterDatabase.EscapeString(itr->second->name) << "','"
+			<< itr->second->name << "','"
 			<< itr->second->entry << "','"
 			<< itr->second->fields << "','"
 			<< itr->second->xp << "','"
