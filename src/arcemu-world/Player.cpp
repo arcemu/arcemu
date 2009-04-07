@@ -7461,8 +7461,6 @@ void Player::_Relocate(uint32 mapid, const LocationVector & v, bool sendpending,
 	//Dismount before teleport
 	if( m_MountSpellId )
 		RemoveAura( m_MountSpellId );
-	
-	SpawnActivePet();
 }
 
 
