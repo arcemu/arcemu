@@ -386,6 +386,7 @@ void Spell::SpellEffectInstantKill(uint32 i)
 
 	switch( spellId )
 	{
+	case 48743:
 	case 29364:	// encapsulate voidwalker
 		{
 			// retarget? some one test this spell.
