@@ -252,6 +252,25 @@ void AIInterface::HandleEvent(uint32 event, Unit* pUnit, uint32 misc1)
 						}
 					}
 				}
+				if (pUnit->IsPlayer() && static_cast<Player*>(pUnit)->InGroup())
+				{
+					Group *pGroup = static_cast<Player*>(pUnit)->GetGroup();
+
+					Player *pGroupGuy;
+					GroupMembersSet::iterator itr;
+					pGroup->Lock();
+					for(uint32 i = 0; i < pGroup->GetSubGroupCount(); i++) {
+						for(itr = pGroup->GetSubGroup(i)->GetGroupMembersBegin(); itr != pGroup->GetSubGroup(i)->GetGroupMembersEnd(); ++itr)
+						{
+							pGroupGuy = (*itr)->m_loggedInPlayer;
+							if( pGroupGuy && pGroupGuy->isAlive() && m_Unit->GetMapMgr() == pGroupGuy->GetMapMgr() && pGroupGuy->GetDistanceSq(pUnit) <= 40*40) //50 yards for now. lets see if it works
+							{
+								m_Unit->GetAIInterface()->AttackReaction(pGroupGuy, 1, 0);
+							}
+						}
+					}
+					pGroup->Unlock();
+				}
 				//Zack : Put mob into combat animation. Take out weapons and start to look serious :P
 				m_Unit->smsg_AttackStart( pUnit );
 			}break;
