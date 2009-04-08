@@ -66,30 +66,53 @@ EventableObject::EventableObject()
 
 void EventableObject::event_AddEvent(TimedEvent * ptr)
 {
-	m_lock.Acquire();
 
-	if(!m_holder)
-	{
-		m_event_Instanceid = event_GetInstanceID();
-		m_holder = sEventMgr.GetEventHolder(m_event_Instanceid);
+#if defined(WIN32)
+	__try {
+#endif
+//		m_lock.Acquire();
+
+		if(!m_holder)
+		{
+			m_event_Instanceid = event_GetInstanceID();
+			m_holder = sEventMgr.GetEventHolder(m_event_Instanceid);
+		}
+
+		ptr->IncRef();
+		ptr->instanceId = m_event_Instanceid;
+		pair<uint32,TimedEvent*> p(ptr->eventType, ptr);
+		m_events.insert( p );
+//		m_lock.Release();
+
+		/* Add to event manager */
+		if(!m_holder)
+		{
+			/* relocate to -1 eventholder :/ */
+			m_event_Instanceid = -1;
+			m_holder = sEventMgr.GetEventHolder(m_event_Instanceid);
+			ASSERT(m_holder);
+		}
+
+		m_holder->AddEvent(ptr);
+
+#if defined(WIN32)
+	} __except(EXCEPTION_EXECUTE_HANDLER) {
+
+		if( ptr != NULL )
+			OutputCrashLogLine("Tried to add event to NULL EventableObj - Type: %u - Flag: %u - deleted: %u", ptr->eventType, ptr->eventFlag, ptr->instanceId);
+
+		Log.Error("Crash", "Prevented crash due to a NULL EventableObject!");
+
+	#if defined(_DEBUG)
+		char buffer[6400];
+		printStackTrace( &buffer[0], 6400 );
+		printf("%s", buffer);
+		OutputCrashLogLine( "%s", buffer );
+	#endif
+
+		return;
 	}
-
-	ptr->IncRef();
-	ptr->instanceId = m_event_Instanceid;
-	pair<uint32,TimedEvent*> p(ptr->eventType, ptr);
-	m_events.insert( p );
-	m_lock.Release();
-
-	/* Add to event manager */
-	if(!m_holder)
-	{
-		/* relocate to -1 eventholder :/ */
-		m_event_Instanceid = -1;
-		m_holder = sEventMgr.GetEventHolder(m_event_Instanceid);
-		ASSERT(m_holder);
-	}
-
-	m_holder->AddEvent(ptr);
+#endif
 }
 
 void EventableObject::event_RemoveByPointer(TimedEvent * ev)
