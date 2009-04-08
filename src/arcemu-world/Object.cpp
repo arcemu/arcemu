@@ -1086,6 +1086,7 @@ void Object::PushToWorld(MapMgr*mgr)
 	OnPushToWorld();
 }
 
+//! Remove object from world
 void Object::RemoveFromWorld(bool free_guid)
 {
 	ASSERT(m_mapMgr);
@@ -1104,7 +1105,7 @@ void Object::RemoveFromWorld(bool free_guid)
 void Object::SetUInt32Value( const uint32 index, const uint32 value )
 {
 	ASSERT( index < m_valuesCount );
-	// save updating when val isn't changing.
+	//! Save updating when val isn't changing.
 	if(m_uint32Values[index] == value)
 		return;
 
@@ -1121,7 +1122,7 @@ void Object::SetUInt32Value( const uint32 index, const uint32 value )
 		}
 	}
 
-	// Group update handling
+	//! Group update handling
 	if(m_objectTypeId == TYPEID_PLAYER)
 	{
 		if(IsInWorld())

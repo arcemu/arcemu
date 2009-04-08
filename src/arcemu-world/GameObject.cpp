@@ -686,9 +686,9 @@ void GameObject::_LoadQuests()
 	sQuestMgr.LoadGOQuests(this);
 }
 
-/////////////////
-// Summoned Go's
-
+/**
+* Summoned Go's
+*/
 void GameObject::_Expire()
 {
 	sEventMgr.RemoveEvents(this);
@@ -706,11 +706,12 @@ void GameObject::ExpireAndDelete()
 
 	m_deleted = true;
 	
-	/* remove any events */
+	//! remove any events
 	sEventMgr.RemoveEvents(this);
 	sEventMgr.AddEvent(this, &GameObject::_Expire, EVENT_GAMEOBJECT_EXPIRE, 1, 1,EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
 }
 
+//! Deactivates selected gameobject ex. stops doors from opening/closing.
 void GameObject::Deactivate()
 {
 	SetUInt32Value(GAMEOBJECT_DYNAMIC, 0);
@@ -740,7 +741,7 @@ void GameObject::OnRemoveInRangeObject(Object* pObj)
 		ExpireAndDelete();
 	}
 }
-
+//! Remove gameobject from world, using their despawn animation.
 void GameObject::RemoveFromWorld(bool free_guid)
 {
 	WorldPacket data(SMSG_GAMEOBJECT_DESPAWN_ANIM, 8);
@@ -751,6 +752,7 @@ void GameObject::RemoveFromWorld(bool free_guid)
 	Object::RemoveFromWorld(free_guid);
 }
 
+//! Gameobject contains loot ex. chest
 bool GameObject::HasLoot()
 {
     int count=0;
@@ -768,11 +770,15 @@ bool GameObject::HasLoot()
 
 uint32 GameObject::GetGOReqSkill()  
 {
-	if(GetEntry() == 180215) return 300;
+	//! Hardcoded values are BAD.
+	if(GetEntry() == 180215) 
+		return 300;
 
+	//! Gameobject does not require a skill, so let everyone use it.
 	if(GetInfo() == NULL)
 		return 0;
-
+	
+	//! Here we check the SpellFocus table against the dbcs
 	Lock *lock = dbcLock.LookupEntry( GetInfo()->SpellFocus );
 	if(!lock) return 0;
 	for(uint32 i=0;i<5;i++)
@@ -782,7 +788,7 @@ uint32 GameObject::GetGOReqSkill()
 		}
 	return 0;
 }
-
+//! Set GameObject rotational value
 void GameObject::SetRotation(float rad)
 {
 	if (rad > (float)M_PI)

@@ -1928,6 +1928,7 @@ public:
 
 	void RemoveFromBattlegroundQueue();
 	void FullHPMP();
+	void RemoveTempEnchantsOnArena();
 	uint32 m_arenateaminviteguid;
 
     /************************************************************************/

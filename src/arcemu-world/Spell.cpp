@@ -5384,6 +5384,7 @@ uint32 GetDiminishingGroup(uint32 NameHash)
 	case SPELL_HASH_INTIMIDATION:
 	case SPELL_HASH_WAR_STOMP:
 	case SPELL_HASH_POUNCE:
+	case SPELL_HASH_HAMMER_OF_JUSTICE:
 		{
 			grp = DIMINISHING_GROUP_STUN;
 			pve = true;

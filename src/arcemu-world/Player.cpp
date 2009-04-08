@@ -12103,6 +12103,9 @@ uint32 Player::GetMaxPersonalRating()
 
 	return maxrating;
 }
+/***********************************
+* Give player full hp/mana
+***********************************/
 
 void Player::FullHPMP()
 {
@@ -12111,6 +12114,53 @@ void Player::FullHPMP()
     SetUInt32Value(UNIT_FIELD_HEALTH, GetUInt32Value(UNIT_FIELD_MAXHEALTH));
 	SetPower(POWER_TYPE_MANA, GetUInt32Value(UNIT_FIELD_MAXPOWER1));
     SetUInt32Value(UNIT_FIELD_POWER4, GetUInt32Value(UNIT_FIELD_MAXPOWER4));
+}
+
+/***********************************
+* Remove all temporary enchants
+***********************************/
+void Player::RemoveTempEnchantsOnArena()
+{
+	ItemInterface *itemi = GetItemInterface();
+
+	for( uint32 x = EQUIPMENT_SLOT_START; x < EQUIPMENT_SLOT_END; ++x ) // all equipment items
+	{
+		Item * it = itemi->GetInventoryItem(x);
+
+		if( it != NULL )
+		{
+			it->RemoveAllEnchantments(true);
+		}
+	}
+
+	for( uint32 x = INVENTORY_SLOT_BAG_START; x < INVENTORY_SLOT_BAG_END; ++x) // all bags items
+	{
+		Item * it = itemi->GetInventoryItem(x);
+		
+		if( it != NULL )
+		{
+			if( it->IsContainer() )
+			{
+				Container *bag = static_cast<Container*>( it );
+				for( uint32 ci = 0; ci < bag->GetProto()->ContainerSlots; ++ci )
+				{
+					it = bag->GetItem( ci );
+					if( it != NULL )
+						it->RemoveAllEnchantments(true);
+				}
+			}
+		}
+	}
+
+	for( uint32 x = INVENTORY_SLOT_ITEM_START; x < INVENTORY_SLOT_ITEM_END; ++x ) // all inventory items
+	{
+		Item * it = itemi->GetInventoryItem(x);
+
+		if( it != NULL )
+		{
+			it->RemoveAllEnchantments(true);
+		}
+	}
 }
 
 void Player::PlaySound( uint32 sound_id )

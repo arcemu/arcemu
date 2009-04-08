@@ -5802,6 +5802,7 @@ void Unit::OnPushToWorld()
 	}
 }
 
+//! Remove Unit from world
 void Unit::RemoveFromWorld(bool free_guid)
 {
 	CombatStatus.OnRemoveFromWorld();

@@ -125,9 +125,8 @@ public:
 	virtual ~Object ( );
 
 	virtual void Update ( uint32 time ) { }
-  //! True if object exists in world
 
-
+	//! True if object exists in world, else false
 	ARCEMU_INLINE bool IsInWorld() { return m_mapMgr != NULL; }
 	virtual void AddToWorld();
 	virtual void AddToWorld(MapMgr * pMapMgr);
@@ -136,7 +135,7 @@ public:
 	virtual void OnPrePushToWorld() { }
 	virtual void RemoveFromWorld(bool free_guid);
 
-	// Guid always comes first
+	//! Guid always comes first
 #ifndef USING_BIG_ENDIAN
 	ARCEMU_INLINE const uint64& GetGUID() const { return *((uint64*)m_uint32Values); }
 #else
@@ -150,7 +149,8 @@ public:
 	{
 /*		uint64 entry = *(uint64*)m_uint32Values;
 		entry >>= 24;
-		return (uint32)(entry & 0xFFFFFFFF);*/
+		return (uint32)(entry & 0xFFFFFFFF);
+*/
 
 		return uint32( (*(uint64*)m_uint32Values >> 24) & 0xFFFFFFFF );
 	}
@@ -205,13 +205,13 @@ public:
 	ARCEMU_INLINE LocationVector & GetPositionNC() { return m_position; }
 	ARCEMU_INLINE LocationVector * GetPositionV() { return &m_position; }
 
-	//Distance Calculation
+	//! Distance Calculation
 	float CalcDistance(Object* Ob);
 	float CalcDistance(float ObX, float ObY, float ObZ);
 	float CalcDistance(Object *Oa, Object *Ob);
 	float CalcDistance(Object *Oa, float ObX, float ObY, float ObZ);
 	float CalcDistance(float OaX, float OaY, float OaZ, float ObX, float ObY, float ObZ);
-	// scriptdev2
+	//! NYS: scriptdev2
 	bool IsInMap( Object* obj) { return GetMapId()==obj->GetMapId() && GetInstanceID()==obj->GetInstanceID(); }
  	bool IsWithinDistInMap( Object* obj, const float dist2compare) const;
 	bool IsWithinLOSInMap( Object* obj);
@@ -326,21 +326,22 @@ public:
 		return m_updateMask.GetBit(index);
 	}
 
-	//Use it to check if a object is in range of another
+	//! Use this to check if a object is in range of another
 	bool isInRange(Object* target, float range);
 
-
-	// Use it to Check if a object is in front of another one
+	//! Use this to Check if a object is in front of another object.
 	bool isInFront(Object* target);
+	//! Use this to Check if a object is in back of another object.
 	bool isInBack(Object* target);
-	// Check to see if an object is in front of a target in a specified arc (in degrees)
+	//! Check to see if an object is in front of a target in a specified arc (in degrees)
 	bool isInArc(Object* target , float degrees);
-	bool HasInArc( float degrees, Object* target );  // scriptdev2
-	/* Calculates the angle between two Positions */
+	//! NYS: Scriptdev2
+	bool HasInArc( float degrees, Object* target ); 
+	//! Calculates the angle between two positions
 	float calcAngle( float Position1X, float Position1Y, float Position2X, float Position2Y );
 	float calcRadAngle( float Position1X, float Position1Y, float Position2X, float Position2Y );
 
-	/* converts to 360 > x > 0 */
+	//! Converts to 360 > x > 0
 	float getEasyAngle( float angle );
 
 	ARCEMU_INLINE const float GetDistanceSq(Object* obj)
@@ -538,23 +539,28 @@ public:
 	virtual bool CanActivate();
 	virtual void Activate(MapMgr * mgr);
 	virtual void Deactivate(MapMgr * mgr);
-
+	//! Player is in pvp queue.
 	bool m_inQueue;
 	ARCEMU_INLINE void SetMapMgr(MapMgr * mgr) { m_mapMgr = mgr; }
-
+	
 	void Delete()
 	{
 		if(IsInWorld())
 			RemoveFromWorld(true);
 		delete this;
 	}
-
+	//! GMScript not used anylonger (Dropped for 64bit compatibility.
 	void GMScriptEvent(void * function, uint32 argc, uint32 * argv, uint32 * argt);
+	//! 
 	ARCEMU_INLINE size_t GetInRangeOppFactCount() { return m_oppFactsInRange.size(); }
+	//! Play's a sound to players in range.
 	void PlaySoundToSet(uint32 sound_entry);
+	//! Is the player in a battleground?
 	bool IsInBg();
+	//! What's their faction? Horde/Ally.
 	uint32 GetTeam();
-	ARCEMU_INLINE virtual Group *GetGroup() { return NULL; } //objects directly cannot be in a group
+	//! Objects directly cannot be in a group.
+	ARCEMU_INLINE virtual Group *GetGroup() { return NULL; }
 
 protected:
 	Object (  );
@@ -566,17 +572,14 @@ protected:
 	virtual void _SetUpdateBits(UpdateMask *updateMask, Player *target) const;
 	//! Mark values that player should get when he/she/it sees object for first time.
 	virtual void _SetCreateBits(UpdateMask *updateMask, Player *target) const;
-
+	//! Create updates that player will see
 	void _BuildMovementUpdate( ByteBuffer *data, uint8 flags, uint32 flags2, Player* target );
 	void _BuildValuesUpdate( ByteBuffer *data, UpdateMask *updateMask, Player* target );
 
-
 	//! WoWGuid class
 	WoWGuid m_wowGuid;
-
 	 //! Type id.
 	uint8 m_objectTypeId;
-
 	//! Zone id.
 	uint32 m_zoneId;
 	//! Continent/map id.

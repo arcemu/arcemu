@@ -108,6 +108,8 @@ void Arena::OnAddPlayer(Player * plr)
 	}
 	// On arena start all conjured items are removed
 	plr->GetItemInterface()->RemoveAllConjured();
+	// On arena start remove all temp enchants
+	plr->RemoveTempEnchantsOnArena();
 
 	// Before the arena starts all your cooldowns are reset
 	if( !m_started )
