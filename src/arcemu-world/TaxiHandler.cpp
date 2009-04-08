@@ -233,6 +233,9 @@ void WorldSession::HandleActivateTaxiOpcode( WorldPacket & recv_data )
 	// 0x000008 seems to enable detailed collision checking
 
 	// check for a summon -> if we do, remove.
+	//! Check if the player is casting, obviously they should not be able to cast on a taxi
+	if ( _player->GetCurrentSpell() != NULL )
+		 _player->GetCurrentSpell()->cancel();
 	_player->DismissActivePet();
 	_player->taxi_model_id = modelid;
 	GetPlayer()->TaxiStart(taxipath, modelid, 0);
