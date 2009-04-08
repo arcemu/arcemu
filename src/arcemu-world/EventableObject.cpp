@@ -67,11 +67,11 @@ EventableObject::EventableObject()
 void EventableObject::event_AddEvent(TimedEvent * ptr)
 {
 
-#if defined(WIN32)
+#if defined(WIN32) && defined(_DEBUG)
 	__try {
+#else
+		m_lock.Acquire();
 #endif
-//		m_lock.Acquire();
-
 		if(!m_holder)
 		{
 			m_event_Instanceid = event_GetInstanceID();
@@ -82,7 +82,10 @@ void EventableObject::event_AddEvent(TimedEvent * ptr)
 		ptr->instanceId = m_event_Instanceid;
 		pair<uint32,TimedEvent*> p(ptr->eventType, ptr);
 		m_events.insert( p );
-//		m_lock.Release();
+
+#if !( defined(WIN32) && defined(_DEBUG) )
+		m_lock.Release();
+#endif
 
 		/* Add to event manager */
 		if(!m_holder)
@@ -95,7 +98,7 @@ void EventableObject::event_AddEvent(TimedEvent * ptr)
 
 		m_holder->AddEvent(ptr);
 
-#if defined(WIN32)
+#if defined(WIN32) && defined(_DEBUG)
 	} __except(EXCEPTION_EXECUTE_HANDLER) {
 
 		if( ptr != NULL )
@@ -103,12 +106,10 @@ void EventableObject::event_AddEvent(TimedEvent * ptr)
 
 		Log.Error("Crash", "Prevented crash due to a NULL EventableObject!");
 
-	#if defined(_DEBUG)
 		char buffer[6400];
 		printStackTrace( &buffer[0], 6400 );
 		printf("%s", buffer);
 		OutputCrashLogLine( "%s", buffer );
-	#endif
 
 		return;
 	}
