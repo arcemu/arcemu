@@ -586,6 +586,8 @@ void Spell::SpellTargetInFrontOfCaster(uint32 i, uint32 j)
 /// Spell Target Handling for type 25: Single Target Friend	 // Used o.a. in Duel
 void Spell::SpellTargetSingleFriend(uint32 i, uint32 j)
 {
+	if( !m_caster->IsInWorld() )
+		return;
 	TargetsList* tmpMap=&m_targetUnits[i];
 	Unit *target = m_caster->GetMapMgr()->GetUnit((uint32)m_targets.m_unitTarget);
 	if( target != NULL && isAttackable(u_caster, target) )
