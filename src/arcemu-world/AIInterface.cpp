@@ -254,6 +254,7 @@ void AIInterface::HandleEvent(uint32 event, Unit* pUnit, uint32 misc1)
 				}
 				if (pUnit->IsPlayer() && static_cast<Player*>(pUnit)->InGroup())
 				{
+					m_Unit->GetAIInterface()->modThreatByPtr(pUnit, 1);
 					Group *pGroup = static_cast<Player*>(pUnit)->GetGroup();
 
 					Player *pGroupGuy;
