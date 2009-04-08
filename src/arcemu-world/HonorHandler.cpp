@@ -153,7 +153,7 @@ void HonorHandler::OnPlayerKilledUnit( Player *pPlayer, Unit* pVictim )
 			for(set<Player*>::iterator itr = s->begin(); itr != s->end(); ++itr)
 			{
 				// Also check that the player is in range, and the player is alive.
-				if((*itr) == pPlayer && (*itr)->isAlive() && (*itr)->isInRange(pPlayer,100.0f))
+				if((*itr) == pPlayer || ((*itr)->isAlive() && (*itr)->isInRange(pPlayer,100.0f)))
 					toadd.push_back(*itr);
 			}
 
