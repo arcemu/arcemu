@@ -446,7 +446,8 @@ void WorldSession::HandleSendMail(WorldPacket & recv_data )
 
 	// Great, all our info is filled in. Now we can add it to the other players mailbox.
 	sMailSystem.DeliverMessage(player->guid, &msg);
-
+	// Save/Update character's gold if they've recieved gold that is. This prevents a rollback.
+	CharacterDatabase.Execute("UPDATE `characters` SET `gold`='%u' WHERE (`guid`='%u')", _player->GetUInt32Value(PLAYER_FIELD_COINAGE), _player->m_playerInfo->guid);
 	// Success packet :)
 	SendMailError(MAIL_OK);
 }
