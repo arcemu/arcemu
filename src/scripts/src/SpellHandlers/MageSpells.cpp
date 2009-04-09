@@ -33,6 +33,7 @@ bool Deep_Freeze(uint32 i, Spell *pSpell){
 	if(!pTarget->HasFlag(UNIT_FIELD_AURASTATE, AURASTATE_FLAG_FROZEN)){
 		// TODO: why isn't client updated with frozen state information
 		// when mobs on serverside clearly has this info.
+		// pTarget->SendChatMessage(CHAT_MSG_MONSTER_SAY, LANG_UNIVERSAL, "lol I r frozen");
 		return true;
 	}
 	return true;
