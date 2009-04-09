@@ -5105,8 +5105,10 @@ void Unit::AddInRangeObject(Object* pObj)
 
 void Unit::OnRemoveInRangeObject(Object* pObj)
 {
+	AquireInrangeLock();
 	m_oppFactsInRange.erase(pObj);
 	m_sameFactsInRange.erase(pObj);
+	ReleaseInrangeLock();
 
 	if(pObj->GetTypeId() == TYPEID_UNIT || pObj->GetTypeId() == TYPEID_PLAYER)
 	{

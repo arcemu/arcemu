@@ -327,7 +327,7 @@ void MapMgr::PushObject(Object *obj)
 	uint32 startY = y > 0 ? y - 1 : 0;
 	uint32 posX, posY;
 	MapCell *cell;
-	MapCell::ObjectSet::iterator iter;
+	//MapCell::ObjectSet::iterator iter;
 
 	ByteBuffer * buf = 0;
 	uint32 count;
@@ -910,11 +910,12 @@ void MapMgr::UpdateInRangeSet( Object *obj, Player *plObj, MapCell* cell, ByteBu
 	Object* curObj;
 	Player* plObj2;
 	int count;
-	ObjectSet::iterator iter = cell->Begin();
 	ObjectSet::iterator itr;
 	float fRange;
 	bool cansee, isvisible;
 
+	cell->AquireLock();
+	ObjectSet::iterator iter = cell->Begin();
 	while( iter != cell->End() )
 	{
 		curObj = *iter;
@@ -1011,6 +1012,8 @@ void MapMgr::UpdateInRangeSet( Object *obj, Player *plObj, MapCell* cell, ByteBu
 			}
 		}
 	}
+	cell->ReleaseLock();
+
 /*
 #define IN_RANGE_LOOP_P1 \
 	while(iter != cell->End()) \
@@ -1431,6 +1434,7 @@ void MapMgr::ChangeFarsightLocation(Player *plr, DynamicObject *farsight)
 				cell = GetCell(posX, posY);
 				if (cell)
 				{
+					cell->AquireLock();
 					iter = cell->Begin();
 					iend = cell->End();
 					for(; iter != iend; ++iter)
@@ -1444,7 +1448,7 @@ void MapMgr::ChangeFarsightLocation(Player *plr, DynamicObject *farsight)
 							plr->m_visibleFarsightObjects.insert(obj);
 						}
 					}
-
+					cell->ReleaseLock();
 				}
 			}
 		}
@@ -1978,6 +1982,7 @@ void MapMgr::SendMessageToCellPlayers(Object * obj, WorldPacket * packet, uint32
 			cell = GetCell(posX, posY);
 			if (cell && cell->HasPlayers() )
 			{
+				cell->AquireLock();
 				iter = cell->Begin();
 				iend = cell->End();
 				for(; iter != iend; ++iter)
@@ -1987,6 +1992,7 @@ void MapMgr::SendMessageToCellPlayers(Object * obj, WorldPacket * packet, uint32
 						static_cast< Player* >(*iter)->GetSession()->SendPacket(packet);
 					}
 				}
+				cell->ReleaseLock();
 			}
 		}
 	}
@@ -2011,6 +2017,7 @@ void MapMgr::SendChatMessageToCellPlayers(Object * obj, WorldPacket * packet, ui
 			cell = GetCell(posX, posY);
 			if (cell && cell->HasPlayers() )
 			{
+				cell->AquireLock();
 				iter = cell->Begin();
 				iend = cell->End();
 				for(; iter != iend; ++iter)
@@ -2021,6 +2028,7 @@ void MapMgr::SendChatMessageToCellPlayers(Object * obj, WorldPacket * packet, ui
 						static_cast< Player* >(*iter)->GetSession()->SendChatPacket(packet, langpos, lang, originator);
 					}
 				}
+				cell->ReleaseLock();
 			}
 		}
 	}

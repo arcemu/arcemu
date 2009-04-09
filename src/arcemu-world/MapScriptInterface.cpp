@@ -63,6 +63,7 @@ uint32 MapScriptInterface::GetPlayerCountInRadius(float x, float y, float z /* =
 			if(pCell == 0 || pCell->GetPlayerCount() == 0)
 				continue;
 
+			pCell->AquireLock();
 			iter = pCell->Begin();
 			iter_end = pCell->End();
 
@@ -74,6 +75,7 @@ uint32 MapScriptInterface::GetPlayerCountInRadius(float x, float y, float z /* =
 					++PlayerCount;
 				}
 			}
+			pCell->ReleaseLock();
 		}
 	}
 

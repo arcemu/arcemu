@@ -41,6 +41,9 @@ public:
 
 	//Init
 	void Init(uint32 x, uint32 y, uint32 mapid, MapMgr *mapmgr);
+	
+	ARCEMU_INLINE void AquireLock(){ m_objectlock.Acquire(); }
+	ARCEMU_INLINE void ReleaseLock(){ m_objectlock.Release(); }
 
 	//Object Managing
 	void AddObject(Object *obj); 
@@ -81,6 +84,8 @@ private:
 
 	uint16 _playerCount;
 	MapMgr* _mapmgr;
+
+	Mutex m_objectlock;
 };
 
 #endif
