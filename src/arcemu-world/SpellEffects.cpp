@@ -2192,7 +2192,6 @@ void Spell::SpellEffectApplyAura(uint32 i)  // Apply Aura
 		pAura=itr->second;
 	}
 	pAura->AddMod(GetProto()->EffectApplyAuraName[i],damage,GetProto()->EffectMiscValue[i],i);
-	if (pAura) delete pAura;
 
 	switch(GetProto()->Id)
 	{
@@ -3713,7 +3712,6 @@ void Spell::SpellEffectApplyAA(uint32 i) // Apply Area Aura
 	}
 
 	pAura->AddMod(GetProto()->EffectApplyAuraName[i],damage,GetProto()->EffectMiscValue[i],i);
-	if(pAura) delete pAura;
 }
 
 void Spell::SpellEffectLearnSpell(uint32 i) // Learn Spell
@@ -6631,7 +6629,6 @@ void Spell::SpellEffectSpellSteal( uint32 i )
 						{
 							aur = new Aura(aura->GetSpellProto(), aurdur, u_caster, u_caster);
 							u_caster->AddAura(aur);
-							if(aur) delete aur;
 						}
 						if(!(aura->GetSpellProto()->procFlags & PROC_REMOVEONUSE))
 						{
@@ -6644,7 +6641,6 @@ void Spell::SpellEffectSpellSteal( uint32 i )
 						}
 					}
 					u_caster->AddAura(aura);
-					if(aura) delete aura;
 					break;
 				}
 			}
