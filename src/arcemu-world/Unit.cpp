@@ -2053,6 +2053,41 @@ uint32 Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, ui
 							CastingSpell->Id != 20271 )
 							continue;
 					}break;
+				case 21183: //Paladin - Heart of the Crusader
+				case 54498:
+				case 54499:
+					{
+						if( CastingSpell == NULL )
+							continue;
+						if( CastingSpell->Id != 53408 &&
+							CastingSpell->Id != 53407 &&
+							CastingSpell->Id != 20271 )
+							continue;
+					}break;
+				case 54203: //Paladin - Sheath of Light 
+					{
+						if( CastingSpell == NULL )
+							continue;
+						if( CastingSpell->NameHash != SPELL_HASH_FLASH_OF_LIGHT &&
+							CastingSpell->NameHash != SPELL_HASH_HOLY_LIGHT )
+							continue;
+						SpellEntry* spellInfo = dbcSpell.LookupEntry( 54203 ); 
+						SpellDuration* sd = dbcSpellDuration.LookupEntryForced( spellInfo->DurationIndex );
+						uint32 tickcount = GetDuration( sd ) / spellInfo->EffectAmplitude[0] ;
+						dmg_overwrite = ospinfo->EffectBasePoints[0] * dmg / (100  * tickcount );
+					}break;
+				case 59578: //Paladin - Art of War
+				case 53489:
+					{
+						if( CastingSpell == NULL )
+							continue;
+						if( CastingSpell->Id != 53408 &&
+							CastingSpell->Id != 53407 &&
+							CastingSpell->Id != 20271 &&
+							CastingSpell->NameHash != SPELL_HASH_DIVINE_STORM &&
+							CastingSpell->NameHash != SPELL_HASH_CRUSADER_STRIKE )
+							continue;
+					}break;
 				//paladin - Spiritual Attunement
 				case 31786:
 					{
@@ -2106,23 +2141,21 @@ uint32 Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, ui
 						resisted_dmg = dmg/2;
 						continue; //there is no visual for this ?
 					}break;
-				//paladin - sanctified judgement
-				case 31930:
+				//paladin - Judgements of the Wise
+				case 54180:
 					{
-						//!! not working since we use post even hook and seal disapears before event
 						if( CastingSpell == NULL )
-							continue;//this should not ocur unless we made a fuckup somewhere
-						if(	CastingSpell->NameHash != SPELL_HASH_JUDGEMENT )
+							continue;
+						if(	CastingSpell->Id != 53408 && CastingSpell->Id != 53407 && CastingSpell->Id != 20271 )
 							continue;
 						if( !IsPlayer() )
-							continue; //great, we can only make this for players
+							continue;
 						Player* c = static_cast< Player* >( this );
 						if( !c->LastSeal )
-							continue; //how the hack did we manage to cast judgement without a seal ?
-						SpellEntry *spellInfo = dbcSpell.LookupEntry( c->LastSeal ); //null pointer check was already made
+							continue;
+						SpellEntry *spellInfo = dbcSpell.LookupEntry( c->LastSeal );
 						if( !spellInfo )
-							continue;	//now this is getting freeky, how the hell did we manage to create this bug ?
-						dmg_overwrite = spellInfo->manaCost * (ospinfo->EffectBasePoints[0] + 1 ) / 100 ; //only half dmg
+							continue;
 					}break;
 				//Energized
 				case 43751:
@@ -5918,7 +5951,15 @@ void Unit::RemoveAurasByInterruptFlagButSkip(uint32 flag, uint32 skip)
 							if( spi && spi->NameHash != SPELL_HASH_SHADOW_BOLT && spi->NameHash != SPELL_HASH_INCINERATE )
 								continue;
 						}break;
-
+					case 59578: // Art of War
+					case 53489:
+						{
+							if( m_currentSpell && m_currentSpell->m_spellInfo->NameHash == SPELL_HASH_FLASH_OF_LIGHT)
+								continue;
+							SpellEntry *spi = dbcSpell.LookupEntry( skip );
+							if( spi && spi->NameHash != SPELL_HASH_FLASH_OF_LIGHT )
+								continue;
+						}break;
 					case 17941: //Shadow Trance
 						{
 							if( m_currentSpell && m_currentSpell->GetProto()->NameHash == SPELL_HASH_SHADOW_BOLT)

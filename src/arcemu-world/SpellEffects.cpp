@@ -1094,6 +1094,16 @@ out:
 				return;
 			}
 		}break;
+	//Judgements of the Wise
+	case 54180:
+		{
+			if(!p_caster)
+				break;
+
+			p_caster->Energize(p_caster, 31930, uint32(0.15f*p_caster->GetUInt32Value(UNIT_FIELD_BASE_MANA)), POWER_TYPE_MANA );
+			p_caster->CastSpell(p_caster, 57669, false);
+
+		}break;
 		/*************************
 		* PRIEST SPELLS
 		*************************
@@ -1440,9 +1450,9 @@ out:
 		}break;
 	case 53385: // Divine Storm
 		{
-			if(unitTarget == NULL)
+			if(unitTarget != NULL)
 				u_caster->Heal(u_caster, spellId, float2int32(damage * 0.25f));
-		}
+		}break;
 	case 39610://Mana Tide
 		{
 			if(unitTarget == NULL || unitTarget->IsDead() || unitTarget->getClass() == WARRIOR || unitTarget->getClass() == ROGUE)
@@ -3255,6 +3265,10 @@ void Spell::SpellEffectEnergize(uint32 i) // Energize
 	{
 		modEnergy = uint32( modEnergy * 1.4f );
 	}
+
+	//Judgement of Wisdom 
+	if( GetProto()->Id == 20268 )
+		modEnergy = uint32(0.02f*unitTarget->GetUInt32Value(UNIT_FIELD_BASE_MANA));
 
 	u_caster->Energize( unitTarget, GetProto()->Id, modEnergy, GetProto()->EffectMiscValue[i] );
 }
