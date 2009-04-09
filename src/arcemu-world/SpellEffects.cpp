@@ -426,7 +426,7 @@ void Spell::SpellEffectInstantKill(uint32 i)
 			SpellCastTargets targets( u_caster->GetGUID() );
 			Spell * sp = new Spell( static_cast< Pet* >( u_caster )->GetPetOwner(), se, true, 0 );
 			sp->prepare( &targets );
-			delete sp;
+			if(sp) delete sp;
 			return;
 		}break;
 	case SPELL_HASH_DEMONIC_SACRIFICE:
@@ -442,7 +442,7 @@ void Spell::SpellEffectInstantKill(uint32 i)
 			SpellCastTargets targets( unitTarget->GetGUID() );
 			Spell * sp = new Spell(p_caster, se, true, 0);
 			sp->prepare( &targets );
-			delete sp;
+			if(sp) delete sp;
 			return;
 		}break;
 
@@ -1198,7 +1198,7 @@ out:
 					summon->CreateAsSummon(26125, ci, NULL, p_caster, GetProto(), 6, 120, vec); // 2 min duration
 				}
 				summon->CastSpell(summon,50142,true);
-				delete vec;
+				if(vec) delete vec;
 
 			}
 		}break;
@@ -2192,7 +2192,7 @@ void Spell::SpellEffectApplyAura(uint32 i)  // Apply Aura
 		pAura=itr->second;
 	}
 	pAura->AddMod(GetProto()->EffectApplyAuraName[i],damage,GetProto()->EffectMiscValue[i],i);
-	delete pAura;
+	if (pAura) delete pAura;
 
 	switch(GetProto()->Id)
 	{
@@ -2361,7 +2361,7 @@ void Spell::SpellEffectHeal(uint32 i) // Heal
 						//our hapiness is that we did not store the aura mod amount so we have to recalc it
 						Spell *spell = new Spell(m_caster, taura->GetSpellProto(), false, NULL);
 						uint32 healamount = spell->CalculateEffect( 1, unitTarget );
-						delete spell;
+						if(spell) delete spell;
 						new_dmg = healamount * 18 / amplitude;
 
 						unitTarget->RemoveAura( taura );
@@ -2384,7 +2384,7 @@ void Spell::SpellEffectHeal(uint32 i) // Heal
 							//our hapiness is that we did not store the aura mod amount so we have to recalc it
 							Spell *spell = new Spell( m_caster, taura->GetSpellProto(), false, NULL );
 							uint32 healamount = spell->CalculateEffect( 0, unitTarget );
-							delete spell;
+							if(spell) delete spell;
 							new_dmg = healamount * 12 / amplitude;
 
 							unitTarget->RemoveAura( taura );
@@ -2400,7 +2400,7 @@ void Spell::SpellEffectHeal(uint32 i) // Heal
 						Spell *spell = new Spell(unitTarget, spellInfo, true, NULL);
 						spell->SetUnitTarget( unitTarget );
 						spell->Heal( (int32)new_dmg );
-						delete spell;
+						if( spell)  delete spell;
 					}
 				}
 			}break;
@@ -3329,7 +3329,7 @@ void Spell::SpellEffectTriggerMissile(uint32 i) // Trigger Missile
 		SpellCastTargets tgt;
 		tgt.m_unitTarget=(*itr)->GetGUID();
 		sp->prepare(&tgt);
-		delete sp;
+		if(sp) delete sp;
 	}
 }
 
@@ -3482,7 +3482,7 @@ void Spell::SpellEffectOpenLock(uint32 i) // Open Lock
 			SpellCastTargets tgt;
 			tgt.m_unitTarget=gameObjTarget->GetGUID();
 			sp->prepare(&tgt);
-			delete sp;
+			if(sp) delete sp;
 			return;
 		}
 		break;
@@ -3713,7 +3713,7 @@ void Spell::SpellEffectApplyAA(uint32 i) // Apply Area Aura
 	}
 
 	pAura->AddMod(GetProto()->EffectApplyAuraName[i],damage,GetProto()->EffectMiscValue[i],i);
-	delete pAura;
+	if(pAura) delete pAura;
 }
 
 void Spell::SpellEffectLearnSpell(uint32 i) // Learn Spell
@@ -3838,7 +3838,7 @@ void Spell::SpellEffectLearnSpell(uint32 i) // Learn Spell
 				targets.m_unitTarget = unitTarget->GetGUID();
 				targets.m_targetMask = 0x02;
 				sp->prepare(&targets);
-				delete sp;
+				if(sp) delete sp;
 				break;
 			}
 			return;
@@ -3956,7 +3956,7 @@ void Spell::SpellEffectDispel(uint32 i) // Dispel
 							SpellCastTargets targets;
 							targets.m_unitTarget = u_caster->GetGUID();
 							spell->prepare(&targets);
-							delete spell;
+							if(spell) delete spell;
 						}
 					}
 					/*else if ( aur->GetSpellProto()->NameHash == SPELL_HASH_LIFEBLOOM )
@@ -4551,7 +4551,7 @@ void Spell::SpellEffectTriggerSpell(uint32 i) // Trigger Spell
 	SpellCastTargets targets = m_targets;
 	Spell *sp = new Spell(m_caster,entry,true,NULL);
 	sp->prepare(&targets);
-	delete sp;
+	if(sp) delete sp;
 }
 
 void Spell::SpellEffectPowerFunnel(uint32 i) // Power Funnel
@@ -5008,7 +5008,7 @@ void Spell::SpellEffectScriptEffect(uint32 i) // Script Effect
 			tgt.m_targetMask=TARGET_FLAG_UNIT;
 			sp->judgement = true;
 			sp->prepare(&tgt);
-			delete sp;
+			if(sp) delete sp;
 			if(!unitTarget || !p_caster)
 				return;
 
@@ -5021,7 +5021,7 @@ void Spell::SpellEffectScriptEffect(uint32 i) // Script Effect
 				tgt.m_targetMask = TARGET_FLAG_UNIT;
 				sp->judgement = true;
 				sp->prepare( &tgt );
-				delete sp;
+				if(sp) delete sp;
 			}
 
 
@@ -5078,7 +5078,7 @@ void Spell::SpellEffectScriptEffect(uint32 i) // Script Effect
 				sp = new Spell(unitTarget, dbcSpell.LookupEntry( casted_spell_id ), true, NULL);
 				SpellCastTargets tgt1( unitTarget->GetGUID() );
 				sp->prepare( &tgt1 );
-				delete sp;
+				if(sp) delete sp;
 			}
 			if( inc_resist_by_level_spell )
 			{
@@ -5090,7 +5090,7 @@ void Spell::SpellEffectScriptEffect(uint32 i) // Script Effect
 				sp = new Spell(unitTarget, dbcSpell.LookupEntry( inc_resist_by_level_spell ), true, NULL);
 				SpellCastTargets tgt1( unitTarget->GetGUID() );
 				sp->prepare( &tgt1 );
-				delete sp;
+				if(sp) delete sp;
 			}
 		}break;
 	case 23830:
@@ -5128,7 +5128,7 @@ void Spell::SpellEffectScriptEffect(uint32 i) // Script Effect
 				sp = new Spell(unitTarget, dbcSpell.LookupEntry( casted_spell_id ), true, NULL);
 				SpellCastTargets tgt1( unitTarget->GetGUID() );
 				sp->prepare( &tgt1 );
-				delete sp;
+				if(sp) delete sp;
 			}
 			if( inc_resist_by_level_spell )
 			{
@@ -5140,7 +5140,7 @@ void Spell::SpellEffectScriptEffect(uint32 i) // Script Effect
 				sp = new Spell(unitTarget, dbcSpell.LookupEntry( inc_resist_by_level_spell ), true, NULL);
 				SpellCastTargets tgt1( unitTarget->GetGUID() );
 				sp->prepare( &tgt1 );
-				delete sp;
+				if(sp) delete sp;
 			}
 		}break;
 	case 23831:
@@ -5178,7 +5178,7 @@ void Spell::SpellEffectScriptEffect(uint32 i) // Script Effect
 				sp = new Spell(unitTarget, dbcSpell.LookupEntry( casted_spell_id ), true, NULL);
 				SpellCastTargets tgt1( unitTarget->GetGUID() );
 				sp->prepare( &tgt1 );
-				delete sp;
+				if(sp) delete sp;
 			}
 			if( inc_resist_by_level_spell )
 			{
@@ -5190,7 +5190,7 @@ void Spell::SpellEffectScriptEffect(uint32 i) // Script Effect
 				sp = new Spell( unitTarget, dbcSpell.LookupEntry( inc_resist_by_level_spell ), true, NULL );
 				SpellCastTargets tgt1( unitTarget->GetGUID() );
 				sp->prepare( &tgt1 );
-				delete sp;
+				if(sp) delete sp;
 			}
 		}break;
 	case 23832:
@@ -5228,7 +5228,7 @@ void Spell::SpellEffectScriptEffect(uint32 i) // Script Effect
 				sp = new Spell(  unitTarget, dbcSpell.LookupEntry( casted_spell_id ), true, NULL );
 				SpellCastTargets tgt1( unitTarget->GetGUID() );
 				sp->prepare( &tgt1 );
-				delete sp;
+				if(sp) delete sp;
 			}
 			if( inc_resist_by_level_spell )
 			{
@@ -5240,7 +5240,7 @@ void Spell::SpellEffectScriptEffect(uint32 i) // Script Effect
 				sp = new Spell( unitTarget, dbcSpell.LookupEntry( inc_resist_by_level_spell ), true, NULL );
 				SpellCastTargets tgt1( unitTarget->GetGUID() );
 				sp->prepare( &tgt1 );
-				delete sp;
+				if(sp) delete sp;
 			}
 		}break;
 	case 34026: //Hunter: Kill Command
@@ -5300,7 +5300,7 @@ void Spell::SpellEffectScriptEffect(uint32 i) // Script Effect
 				sp = new Spell( unitTarget, dbcSpell.LookupEntry( casted_spell_id ), true, NULL );
 				SpellCastTargets tgt1( unitTarget->GetGUID() );
 				sp->prepare( &tgt1 );
-				delete sp;
+				if(sp) delete sp;
 			}
 			if( inc_resist_by_level_spell )
 			{
@@ -5312,7 +5312,7 @@ void Spell::SpellEffectScriptEffect(uint32 i) // Script Effect
 				sp = new Spell( unitTarget, dbcSpell.LookupEntry( inc_resist_by_level_spell ), true, NULL );
 				SpellCastTargets tgt1( unitTarget->GetGUID() );
 				sp->prepare( &tgt1 );
-				delete sp;
+				if(sp) delete sp;
 			}
 		}break;
 	}
@@ -5629,7 +5629,7 @@ void Spell::SpellEffectSummonTotem(uint32 i) // Summon Totem
 			targets.m_targetMask = TARGET_FLAG_DEST_LOCATION;
 
 			pSpell->prepare(&targets);
-			delete pSpell;
+			if(pSpell) delete pSpell;
 		}
 		else
 		{
@@ -6009,7 +6009,7 @@ void Spell::SpellEffectDisenchant( uint32 i )
 	}
 	if( it == i_caster )
 		i_caster = NULL;
-	delete it;
+
 }
 
 void Spell::SpellEffectInebriate(uint32 i) // lets get drunk!
@@ -6050,7 +6050,7 @@ void Spell::SpellEffectFeedPet(uint32 i)  // Feed Pet
 	SpellCastTargets tgt;
 	tgt.m_unitTarget=pPet->GetGUID();
 	sp->prepare(&tgt);
-	delete sp;
+	if(sp) delete sp;
 
 	if(itemTarget->GetUInt32Value(ITEM_FIELD_STACK_COUNT)>1)
 	{
@@ -6264,7 +6264,7 @@ void Spell::SpellEffectSummonDemon(uint32 i)
 		SpellCastTargets tgt;
 		tgt.m_unitTarget=pPet->GetGUID();
 		sp->prepare(&tgt);
-		delete sp;
+		if(sp) delete sp;
 	}
 }
 
@@ -6451,7 +6451,7 @@ void Spell::SpellEffectDummyMelee( uint32 i ) // Normalized Weapon damage +
 			spell->pSpellId=GetProto()->Id;
 			SpellCastTargets targets(unitTarget->GetGUID());
 			spell->prepare(&targets);
-			delete spell;
+			if(spell) delete spell;
 			if(!sunder_count)
 				return; //no damage = no joy
 			damage = damage*sunder_count;
@@ -6472,7 +6472,7 @@ void Spell::SpellEffectDummyMelee( uint32 i ) // Normalized Weapon damage +
 				SpellCastTargets tgt;
 				tgt.m_unitTarget = unitTarget->GetGUID();
 				sp->prepare( &tgt );
-				delete sp;
+				if(sp) delete sp;
 			}
 		}
 	}
@@ -6631,7 +6631,7 @@ void Spell::SpellEffectSpellSteal( uint32 i )
 						{
 							aur = new Aura(aura->GetSpellProto(), aurdur, u_caster, u_caster);
 							u_caster->AddAura(aur);
-							delete aur;
+							if(aur) delete aur;
 						}
 						if(!(aura->GetSpellProto()->procFlags & PROC_REMOVEONUSE))
 						{
@@ -6644,7 +6644,7 @@ void Spell::SpellEffectSpellSteal( uint32 i )
 						}
 					}
 					u_caster->AddAura(aura);
-					delete aura;
+					if(aura) delete aura;
 					break;
 				}
 			}
@@ -6680,7 +6680,6 @@ void Spell::SpellEffectProspecting(uint32 i)
 		Log.Debug("SpellEffect","Prospecting failed, item %d has no loot", uint32(itemTarget->GetEntry()));
 		SendCastResult(SPELL_FAILED_CANT_BE_PROSPECTED);
 	}
-	delete itemTarget;
 }
 
 void Spell::SpellEffectMilling(uint32 i)
@@ -6711,7 +6710,6 @@ void Spell::SpellEffectMilling(uint32 i)
 		Log.Debug("SpellEffect","Milling failed, item %d has no loot", uint32(itemTarget->GetEntry()));
 		SendCastResult(SPELL_FAILED_CANT_BE_PROSPECTED);
 	}
-	delete itemTarget;
 }
 
 void Spell::SpellEffectResurrectNew(uint32 i)
@@ -6948,7 +6946,7 @@ void Spell::SpellEffectTriggerSpellWithValue(uint32 i)
 
 	SpellCastTargets tgt(unitTarget->GetGUID());
 	sp->prepare(&tgt);
-	delete sp;
+	if(sp) delete sp;
 }
 
 void Spell::SpellEffectSummonTarget(uint32 i) // ritual of summoning
