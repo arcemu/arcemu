@@ -1511,6 +1511,15 @@ void Spell::cast(bool check)
 				p_caster->RemoveFlag(UNIT_FIELD_AURASTATE,AURASTATE_FLAG_LASTKILLWITHHONOR);
 			}
 
+			if( GetProto()->NameHash == SPELL_HASH_HOLY_LIGHT || GetProto()->NameHash == SPELL_HASH_FLASH_OF_LIGHT)
+			{
+               if( p_caster->HasAura( 53672 ) )                   
+				   p_caster->RemoveAura(53672);
+
+               if( p_caster->HasAura( 54149 ) )
+                   p_caster->RemoveAura(54149);
+			}
+
 			if( p_caster->IsStealth() && !hasAttributeEx(ATTRIBUTESEX_NOT_BREAK_STEALTH)
 				 && GetProto()->Id != 1 ) //check spells that get trigger spell 1 after spell loading
 			{

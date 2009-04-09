@@ -2022,6 +2022,37 @@ uint32 Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, ui
 						if( CastingSpell->NameHash != SPELL_HASH_LAY_ON_HANDS )
 							continue;
 					}break;
+				//paladin - Infusion of Light
+				case 53672:
+				case 54149:
+					{
+						if( CastingSpell == NULL )
+							continue;
+						if( CastingSpell->NameHash != SPELL_HASH_HOLY_SHOCK )
+							continue;
+					}break;
+				//paladin - Sacred Cleansing
+				case 53659:
+					{
+						if( CastingSpell == NULL )
+							continue;
+						if( CastingSpell->NameHash != SPELL_HASH_CLEANSE )
+							continue;
+					}break;
+				//paladin - Judgements of the Pure
+				case 53655:
+				case 53656:
+				case 53657:
+				case 54152:
+				case 54153:
+					{
+						if( CastingSpell == NULL )
+							continue;
+						if( CastingSpell->Id != 53408 &&
+							CastingSpell->Id != 53407 &&
+							CastingSpell->Id != 20271 )
+							continue;
+					}break;
 				//paladin - Spiritual Attunement
 				case 31786:
 					{
@@ -2465,7 +2496,7 @@ uint32 Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, ui
 						}break;
 					case 14177: //cold blood will get removed on offensive spell
 						{
-							if(victim==this || isFriendly(this, victim))
+							if(CastingSpell == NULL || CastingSpell->Id == 36554 || victim==this || isFriendly(this, victim))
 								continue;
 						}break;
 					}

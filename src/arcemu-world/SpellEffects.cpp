@@ -4965,7 +4965,7 @@ void Spell::SpellEffectScriptEffect(uint32 i) // Script Effect
 		}
 		CreateItem(36892);
 		break;
-		// Holy Light
+	// Holy Light
 	case 635:
 	case 639:
 	case 647:
@@ -4974,11 +4974,12 @@ void Spell::SpellEffectScriptEffect(uint32 i) // Script Effect
 	case 3472:
 	case 10328:
 	case 10329:
-	case 10348:
 	case 25292:
 	case 27135:
 	case 27136:
-		//Flash of light
+	case 48781:
+	case 48782:
+	//Flash of light
 	case 19750:
 	case 19939:
 	case 19940:
@@ -4986,6 +4987,8 @@ void Spell::SpellEffectScriptEffect(uint32 i) // Script Effect
 	case 19942:
 	case 19943:
 	case 27137:
+	case 48784:
+	case 48785:
 		if( u_caster->HasAura( 20216 ) )
 			Heal((int32)damage, true);
 		else

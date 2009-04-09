@@ -2425,6 +2425,72 @@ void ApplyNormalFixes()
 			sp->c_is_flags |= SPELL_FLAG_IS_FORCEDDEBUFF;
 		}
 
+		//Paladin - Infusion of Light
+		sp = dbcSpell.LookupEntryForced( 53569 );
+		if( sp != NULL )
+		{
+			sp->procFlags = PROC_ON_SPELL_CRIT_HIT;
+			sp->procChance = 100;
+		}
+		sp = dbcSpell.LookupEntryForced( 53576 );
+		if( sp != NULL )
+		{
+			sp->procFlags = PROC_ON_SPELL_CRIT_HIT;
+			sp->procChance = 100;
+		}
+
+		//Paladin - Sacred Cleansing
+		sp = dbcSpell.LookupEntryForced( 53551 );
+		if( sp != NULL )
+		{
+			sp->procFlags = PROC_ON_CAST_SPELL;
+			sp->procChance = 10;
+		}
+		sp = dbcSpell.LookupEntryForced( 53552 );
+		if( sp != NULL )
+		{
+			sp->procFlags = PROC_ON_CAST_SPELL;
+			sp->procChance = 20;
+		}
+		sp = dbcSpell.LookupEntryForced( 53553 );
+		if( sp != NULL )
+		{
+			sp->procFlags = PROC_ON_CAST_SPELL;
+			sp->procChance = 30;
+		}
+
+		//Paladin - Judgements of the Pure
+		sp = dbcSpell.LookupEntryForced( 53671 );
+		if( sp != NULL )
+		{
+			sp->procFlags = PROC_ON_CAST_SPELL;
+			sp->procChance = 100;
+		}
+		sp = dbcSpell.LookupEntryForced( 53673 );
+		if( sp != NULL )
+		{
+			sp->procFlags = PROC_ON_CAST_SPELL;
+			sp->procChance = 100;
+		}
+		sp = dbcSpell.LookupEntryForced( 54151 );
+		if( sp != NULL )
+		{
+			sp->procFlags = PROC_ON_CAST_SPELL;
+			sp->procChance = 100;
+		}
+		sp = dbcSpell.LookupEntryForced( 54154 );
+		if( sp != NULL )
+		{
+			sp->procFlags = PROC_ON_CAST_SPELL;
+			sp->procChance = 100;
+		}
+		sp = dbcSpell.LookupEntryForced( 54155 );
+		if( sp != NULL )
+		{
+			sp->procFlags = PROC_ON_CAST_SPELL;
+			sp->procChance = 100;
+		}
+
         /*
         // Paladin - Sheath of Light - Rank 1
         sp = dbcSpell.LookupEntryForced( 53501 );
@@ -3109,9 +3175,7 @@ void ApplyNormalFixes()
 	// Rogue - Cold Blood (Interrupt Flag)
 	sp = dbcSpell.LookupEntryForced( 14177 );
 	if(sp != NULL)
-	{
-		sp->AuraInterruptFlags |= AURA_INTERRUPT_ON_CAST_SPELL;
-	}
+		sp->AuraInterruptFlags |= AURA_INTERRUPT_ON_AFTER_CAST_SPELL;
 
 	/* Rogue - Improved Expose Armor (rank 1)
 	sp = dbcSpell.LookupEntryForced( 14168 );

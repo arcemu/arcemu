@@ -5507,8 +5507,8 @@ void Player::UpdateStats()
 		uint32 level = getLevel();
 		if(level > 80) level = 80;
 		float amt = ( 0.001f + sqrt((float)Intellect) * Spirit * BaseRegen[level-1] )*PctPowerRegenModifier[POWER_TYPE_MANA];
-		SetFloatValue(UNIT_FIELD_POWER_REGEN_FLAT_MODIFIER,amt+m_ModInterrMRegen*0.5f);
-		SetFloatValue(UNIT_FIELD_POWER_REGEN_INTERRUPTED_FLAT_MODIFIER,amt*m_ModInterrMRegenPCT/100.0f+m_ModInterrMRegen*0.5f);
+		SetFloatValue(UNIT_FIELD_POWER_REGEN_FLAT_MODIFIER,amt+m_ModInterrMRegen*0.2f);
+		SetFloatValue(UNIT_FIELD_POWER_REGEN_INTERRUPTED_FLAT_MODIFIER,amt*m_ModInterrMRegenPCT/100.0f+m_ModInterrMRegen*0.2f);
 	}
 
 	// Spell haste rating
