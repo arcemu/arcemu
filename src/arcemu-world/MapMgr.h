@@ -83,8 +83,6 @@ class Transporter;
 
 class SERVER_DECL MapMgr : public CellHandler <MapCell>, public EventableObject,public CThread
 {
-	friend class UpdateObjectThread;
-	friend class ObjectUpdaterThread;
 	friend class MapCell;
 	friend class MapScriptInterface;
 public:
