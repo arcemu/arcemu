@@ -53,7 +53,7 @@ public:
 		float ClosestDist = 999999.0f;
 		float CurrentDist = 0;
 
-		pCell->AddObject();
+		pCell->AquireLock();
         ObjectSet::const_iterator iter = pCell->Begin();
 		for(; iter != pCell->End(); ++iter)
 		{
