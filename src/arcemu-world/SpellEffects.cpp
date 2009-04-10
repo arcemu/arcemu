@@ -4050,8 +4050,8 @@ void Spell::SpellEffectSummonWild(uint32 i)  // Summon Wild
 
 void Spell::SpellEffectSummonGuardian(uint32 i) // Summon Guardian
 {
-	GameObject * obj; //Snake trap part 1
-	LocationVector * vec;
+	GameObject * obj = NULL; //Snake trap part 1
+	LocationVector * vec = NULL;
 
 	if ( g_caster && g_caster->m_summoner)
 	{
