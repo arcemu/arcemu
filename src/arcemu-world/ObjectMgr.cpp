@@ -1586,7 +1586,7 @@ void ObjectMgr::LoadSpellEffectsOverride()
 
 					if( seo_TriggerSpell )
 						sp->EffectTriggerSpell[seo_EffectId] = seo_TriggerSpell;
-
+					
 					if( seo_ImplicitTargetA )
 						sp->EffectImplicitTargetA[seo_EffectId] = seo_ImplicitTargetA;
 
@@ -1597,7 +1597,7 @@ void ObjectMgr::LoadSpellEffectsOverride()
 
 		}while(result->NextRow());
 		delete result;
-	}
+	}	
 }
 
 Item * ObjectMgr::CreateItem(uint32 entry,Player * owner)
@@ -1614,7 +1614,8 @@ Item * ObjectMgr::CreateItem(uint32 entry,Player * owner)
 	}
 	else
 	{
-		Item * pItem = new Item(HIGHGUID_TYPE_ITEM,GenerateLowGuid(HIGHGUID_TYPE_ITEM));
+		Item * pItem = ItemPool.PooledNew();
+		pItem->Init(HIGHGUID_TYPE_ITEM,GenerateLowGuid(HIGHGUID_TYPE_ITEM));
 		pItem->Create(entry, owner);
 		pItem->SetUInt32Value(ITEM_FIELD_STACK_COUNT, 1);
 		return pItem;
@@ -1640,13 +1641,14 @@ Item * ObjectMgr::LoadItem(uint64 guid)
 		}
 		else
 		{
-			Item * pItem = new Item(HIGHGUID_TYPE_ITEM,(uint32)guid);
+			Item * pItem = ItemPool.PooledNew();
+			pItem->Init(HIGHGUID_TYPE_ITEM,(uint32)guid);
 			pItem->LoadFromDB(result->Fetch(), 0, false);
 			pReturn = pItem;
 		}
 		delete result;
 	}
-
+	
 	return pReturn;
 }
 
@@ -1669,7 +1671,8 @@ Item * ObjectMgr::LoadExternalItem(uint64 guid)
 		}
 		else
 		{
-			Item * pItem = new Item(HIGHGUID_TYPE_ITEM,(uint32)guid);
+			Item * pItem = ItemPool.PooledNew();
+			pItem->Init(HIGHGUID_TYPE_ITEM,(uint32)guid);
 			pItem->LoadFromDB(result->Fetch(), 0, false);
 			pReturn = pItem;
 		}
@@ -1744,7 +1747,7 @@ void ObjectMgr::DespawnCorpse(uint64 Guid)
 	Corpse * pCorpse = objmgr.GetCorpse((uint32)Guid);
 	if(pCorpse == 0)	// Already Deleted
 		return;
-
+	
 	pCorpse->Despawn();
 	delete pCorpse;
 }
@@ -1782,7 +1785,7 @@ void GossipMenu::AddItem(uint8 Icon, const char* Text, int32 Id /* = -1 */, int8
 	if(Id > 0)
 		Item.IntId = Id;
 	else
-		Item.IntId = Item.Id;
+		Item.IntId = Item.Id;		
 
 	Menu.push_back(Item);
 }
@@ -1796,7 +1799,7 @@ void GossipMenu::AddMenuItem(uint8 Icon, std::string Message, uint32 dtSender, u
 	Item.m_gBoxMessage = BoxMessage;
 	Item.m_gBoxMoney = BoxMoney;
 	Item.Id = (uint32)Menu.size();
-	Item.IntId = Item.Id;
+	Item.IntId = Item.Id;		
 
 	Menu.push_back(Item);
 }
@@ -1876,7 +1879,7 @@ void ObjectMgr::LoadTrainers()
 		return;
 
 
-	do
+	do 
 	{
 		Field * fields = result->Fetch();
 		uint32 entry = fields[0].GetUInt32();
@@ -1998,7 +2001,7 @@ void ObjectMgr::LoadTrainers()
 
 			mTrainers.insert( TrainerMap::value_type( entry, tr ) );
 		}
-
+		
 	} while(result->NextRow());
 	delete result;
 	Log.Notice("ObjectMgr", "%u trainers loaded.", mTrainers.size());
@@ -2257,7 +2260,7 @@ void ObjectMgr::LoadDefaultPetSpells()
 	QueryResult * result = WorldDatabase.Query("SELECT * FROM petdefaultspells");
 	if(result)
 	{
-		do
+		do 
 		{
 			Field * f = result->Fetch();
 			uint32 Entry = f[0].GetUInt32();
@@ -2369,7 +2372,7 @@ void ObjectMgr::LoadSpellOverride()
 				Field *fieldsIn = resultIn->Fetch();
 				spellid = fieldsIn[0].GetUInt32();
 				sp = dbcSpell.LookupEntry(spellid);
-				if(!spellid || !sp)
+				if(!spellid || !sp) 
 					continue;
 				list->push_back(sp);
 			}while(resultIn->NextRow());
@@ -2419,7 +2422,7 @@ void ObjectMgr::LoadCreatureTimedEmotes()
 		{
 			TimedEmoteList* m=new TimedEmoteList;
 			m->push_back( te );
-			m_timedemotes[spawnid]=m;
+			m_timedemotes[spawnid]=m;		
 		}else
 		{
 			i->second->push_back( te );
@@ -2473,7 +2476,7 @@ void ObjectMgr::LoadCreatureWaypoints()
 			if(m->size() <= wp->id)
 				m->resize(wp->id+1);
 			(*m)[wp->id]=wp;
-			m_waypoints[spawnid]=m;
+			m_waypoints[spawnid]=m;		
 		}else
 		{
 			if(i->second->size() <= wp->id)
@@ -2608,7 +2611,7 @@ void ObjectMgr::LoadGuildCharters()
 	m_hiCharterId = 0;
 	QueryResult * result = CharacterDatabase.Query("SELECT * FROM charters");
 	if(!result) return;
-	do
+	do 
 	{
 		Charter * c = new Charter(result->Fetch());
 		m_charters[c->CharterType].insert(make_pair(c->GetID(), c));
@@ -2834,7 +2837,7 @@ void ObjectMgr::LoadReputationModifierTable(const char * tablename, ReputationMo
 
 	if(result)
 	{
-		do
+		do 
 		{
 			mod.faction[0] = result->Fetch()[1].GetUInt32();
 			mod.faction[1] = result->Fetch()[2].GetUInt32();
@@ -2889,7 +2892,7 @@ void ObjectMgr::LoadMonsterSay()
 
 	uint32 Entry, Event;
 	Field * fields = result->Fetch();
-	do
+	do 
 	{
 		Entry = fields[0].GetUInt32();
 		Event = fields[1].GetUInt32();
@@ -3044,7 +3047,7 @@ void ObjectMgr::LoadInstanceReputationModifiers()
 	QueryResult * result = WorldDatabase.Query("SELECT * FROM reputation_instance_onkill");
 	if(!result) return;
 
-	do
+	do 
 	{
 		Field * fields = result->Fetch();
 		InstanceReputationMod mod;
@@ -3123,7 +3126,7 @@ void ObjectMgr::LoadDisabledSpells()
 	QueryResult * result = WorldDatabase.Query("SELECT * FROM spell_disable");
 	if(result)
 	{
-		do
+		do 
 		{
 			m_disabled_spells.insert( result->Fetch()[0].GetUInt32() );
 		} while(result->NextRow());
@@ -3149,7 +3152,7 @@ void ObjectMgr::LoadGroups()
 			Log.LargeErrorMessage(LARGERRORMESSAGE_WARNING, "groups table format is invalid. Please update your database.");
 			return;
 		}
-		do
+		do 
 		{
 			Group * g = new Group(false);
 			g->LoadFromDB(result->Fetch());
@@ -3170,7 +3173,7 @@ void ObjectMgr::LoadArenaTeams()
 			Log.LargeErrorMessage(LARGERRORMESSAGE_WARNING, "arenateams table format is invalid. Please update your database.");
 			return;
 		}
-		do
+		do 
 		{
 			ArenaTeam * team = new ArenaTeam(result->Fetch());
 			AddArenaTeam(team);
@@ -3259,7 +3262,7 @@ void ObjectMgr::UpdateArenaTeamRankings()
 	for(uint32 i = 0; i < NUM_ARENA_TEAM_TYPES; ++i)
 	{
 		vector<ArenaTeam*> ranking;
-
+		
 		for(HM_NAMESPACE::hash_map<uint32,ArenaTeam*>::iterator itr = m_arenaTeamMap[i].begin(); itr != m_arenaTeamMap[i].end(); ++itr)
 			ranking.push_back(itr->second);
 

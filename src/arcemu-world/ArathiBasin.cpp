@@ -708,7 +708,8 @@ void ArathiBasin::HookOnAreaTrigger(Player * plr, uint32 id)
 		SpellEntry * sp = dbcSpell.LookupEntryForced(spellid);
 		if(sp)
 		{
-			Spell * pSpell = new Spell(plr, sp, true, NULL);
+			Spell * pSpell = SpellPool.PooledNew();
+			pSpell->Init(plr, sp, true, NULL);
 			SpellCastTargets targets(plr->GetGUID());
 			pSpell->prepare(&targets);
 		}
@@ -805,7 +806,7 @@ void ArathiBasin::AssaultControlPoint(Player * pPlayer, uint32 Id)
 		Anticheat_Log->writefromsession(pPlayer->GetSession(), "%s tryed to assault control point in arathi basin before battleground (ID %u) started.", pPlayer->GetName(), this->m_id);
 		SendChatMessage(CHAT_MSG_BG_EVENT_NEUTRAL, pPlayer->GetGUID(), "%s will be removed from the game for cheating.", pPlayer->GetName());
 		// Remove player from battleground.
-		RemovePlayer(pPlayer, false);
+		this->RemovePlayer(pPlayer, false);
 		// Kick player from server.
 		pPlayer->Kick(6000);
 		return;
