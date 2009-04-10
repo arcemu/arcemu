@@ -91,7 +91,7 @@ void WorldSession::HandleAutostoreLootItemOpcode( WorldPacket & recv_data )
 	if (!pLoot->items.at(lootSlot).ffa_loot)
 	{
 		if (!amt)//Test for party loot
-		{  
+		{
 			GetPlayer()->GetItemInterface()->BuildInventoryChangeError(NULL, NULL,INV_ERR_ALREADY_LOOTED);
 			return;
 		}
@@ -134,7 +134,7 @@ void WorldSession::HandleAutostoreLootItemOpcode( WorldPacket & recv_data )
 			GetPlayer()->GetItemInterface()->BuildInventoryChangeError(NULL, NULL, INV_ERR_INVENTORY_FULL);
 			return;
 		}
-	
+
 		sLog.outDebug("AutoLootItem MISC");
 		Item *item = objmgr.CreateItem( itemid, GetPlayer());
 		if(item==NULL)
@@ -161,8 +161,8 @@ void WorldSession::HandleAutostoreLootItemOpcode( WorldPacket & recv_data )
 		else
 			item->DeleteMe();
 	}
-	else 
-	{	
+	else
+	{
 		add->SetCount(add->GetUInt32Value(ITEM_FIELD_STACK_COUNT) + amt);
 		add->m_isDirty = true;
 
@@ -231,7 +231,7 @@ void WorldSession::HandleLootMoneyOpcode( WorldPacket & recv_data )
 	if(_player->IsCasting())
 		_player->InterruptSpell();
 
-	WorldPacket pkt;	
+	WorldPacket pkt;
 	Unit * pt = 0;
 	uint32 guidtype = GET_TYPE_FROM_GUID(lootguid);
 
@@ -353,7 +353,7 @@ void WorldSession::HandleLootMoneyOpcode( WorldPacket & recv_data )
 				}
 			}
 		}
-	}   
+	}
 }
 
 void WorldSession::HandleLootOpcode( WorldPacket & recv_data )
@@ -376,9 +376,9 @@ void WorldSession::HandleLootOpcode( WorldPacket & recv_data )
 	if ( _player->IsCasting() ) // Check if the player is casting
 		_player->InterruptSpell(); // Cancel spell casting
 
-	if ( _player->IsInvisible() ) // Check if the player is invisible for what ever reason 
+	if ( _player->IsInvisible() ) // Check if the player is invisible for what ever reason
 		_player->RemoveInvisibility(); // Remove all invsibility
-	
+
 
 	if(_player->InGroup() && !_player->m_bg)
 	{
@@ -386,7 +386,7 @@ void WorldSession::HandleLootOpcode( WorldPacket & recv_data )
 		if(party)
 		{
 			if(party->GetMethod() == PARTY_LOOT_MASTER)
-			{				
+			{
 				WorldPacket data(SMSG_LOOT_MASTER_LIST, 330);  // wont be any larger
 				data << (uint8)party->MemberCount();
 				uint32 real_count = 0;
@@ -421,7 +421,7 @@ void WorldSession::HandleLootOpcode( WorldPacket & recv_data )
 					else return;
 				}
 			}*/
-		}	
+		}
 	}
 	GetPlayer()->SendLoot(guid,LOOT_CORPSE);
 }
@@ -429,7 +429,7 @@ void WorldSession::HandleLootOpcode( WorldPacket & recv_data )
 
 void WorldSession::HandleLootReleaseOpcode( WorldPacket & recv_data )
 {
-	if ( !_player->IsInWorld() ) 
+	if ( !_player->IsInWorld() )
 		return;
 
 	uint64 guid;
@@ -450,7 +450,7 @@ void WorldSession::HandleLootReleaseOpcode( WorldPacket & recv_data )
 		// remove from looter set
 		pCreature->loot.looters.erase(_player->GetLowGUID());
 		if( pCreature->loot.gold <= 0)
-		{			
+		{
 			for( std::vector<__LootItem>::iterator i = pCreature->loot.items.begin(); i != pCreature->loot.items.end(); i++ )
 			if( i->iItemsCount > 0 )
 			{
@@ -579,7 +579,7 @@ void WorldSession::HandleLootReleaseOpcode( WorldPacket & recv_data )
 	else if (GET_TYPE_FROM_GUID(guid) == HIGHGUID_TYPE_CORPSE)
 	{
 		Corpse *pCorpse = objmgr.GetCorpse((uint32)guid);
-		if ( pCorpse ) 
+		if ( pCorpse )
 			pCorpse->SetUInt32Value(CORPSE_FIELD_DYNAMIC_FLAGS, 0);
 	}
 	else if (GET_TYPE_FROM_GUID(guid) == HIGHGUID_TYPE_PLAYER)
@@ -621,7 +621,7 @@ void WorldSession::HandleWhoOpcode( WorldPacket & recv_data )
 	if ( zone_count > 0 && zone_count < 10 )
 	{
 		zones = new uint32[zone_count];
-	
+
 		for(i = 0; i < zone_count; ++i)
 			recv_data >> zones[i];
 	}
@@ -649,7 +649,7 @@ void WorldSession::HandleWhoOpcode( WorldPacket & recv_data )
 		cname = false;
 
 	sLog.outDebug( "WORLD: Recvd CMSG_WHO Message with %u zones and %u names", zone_count, name_count );
-	
+
 	bool gm = false;
 	uint32 team = _player->GetTeam();
 	if ( HasGMPermissions() )
@@ -695,7 +695,7 @@ void WorldSession::HandleWhoOpcode( WorldPacket & recv_data )
 		// Chat name
 		if(cname && chatname != *plr->GetNameString())
 			continue;
-		
+
 		// Level check
 		lvl = plr->m_uint32Values[UNIT_FIELD_LEVEL];
 		if(min_level && max_level)
@@ -878,7 +878,7 @@ void WorldSession::HandleLogoutCancelOpcode( WorldPacket & recv_data )
 void WorldSession::HandleZoneUpdateOpcode( WorldPacket & recv_data )
 {
 	uint32 newZone;
-	WPAssert(GetPlayer());
+	ASSERT(GetPlayer());
 
 	recv_data >> newZone;
 
@@ -1075,14 +1075,14 @@ void WorldSession::HandleUpdateAccountData(WorldPacket &recv_data)
 		int32 ZlibResult;
 
 		ZlibResult = uncompress((uint8*)data, &uid, recv_data.contents() + 8, (uLong)ReceivedPackedSize);
-		
+
 		switch (ZlibResult)
 		{
 		case Z_OK:				  //0 no error decompression is OK
 			SetAccountData(uiID, data, false,uiDecompressedSize);
 			sLog.outDetail("WORLD: Successfully decompressed account data %d for %s, and updated storage array.", uiID, GetPlayer()->GetName());
 			break;
-		
+
 		case Z_ERRNO:			   //-1
 		case Z_STREAM_ERROR:		//-2
 		case Z_DATA_ERROR:		  //-3
@@ -1090,13 +1090,13 @@ void WorldSession::HandleUpdateAccountData(WorldPacket &recv_data)
 		case Z_BUF_ERROR:		   //-5
 		case Z_VERSION_ERROR:	   //-6
 		{
-			delete [] data;	 
+			delete [] data;
 			sLog.outString("WORLD WARNING: Decompression of account data %d for %s FAILED.", uiID, GetPlayer()->GetName());
 			break;
 		}
 
 		default:
-			delete [] data;	 
+			delete [] data;
 			sLog.outString("WORLD WARNING: Decompression gave a unknown error: %x, of account data %d for %s FAILED.", ZlibResult, uiID, GetPlayer()->GetName());
 			break;
 		}
@@ -1116,7 +1116,7 @@ void WorldSession::HandleRequestAccountData(WorldPacket& recv_data)
 	if(!sWorld.m_useAccountData)
 		return;
 	recv_data >> id;
-	
+
 	if(id > 8)
 	{
 		// Shit..
@@ -1140,41 +1140,41 @@ void WorldSession::HandleRequestAccountData(WorldPacket& recv_data)
 		if(res->sz>200)
 		{
 			data.resize( res->sz+800 );  // give us plenty of room to work with..
-			
+
 			if ( ( compress(const_cast<uint8*>(data.contents()) + (sizeof(uint32)*2), &destsize, (const uint8*)res->data, res->sz)) != Z_OK)
 			{
 				sLog.outError("Error while compressing ACCOUNT_DATA");
 				return;
 			}
-			
+
 			data.resize(destsize+8);
 		}
-		else 
-			data.append(	res->data,res->sz);	
+		else
+			data.append(	res->data,res->sz);
 	}
-		
-	SendPacket(&data);	
+
+	SendPacket(&data);
 }
 
 void WorldSession::HandleSetActionButtonOpcode(WorldPacket& recv_data)
 {
-	sLog.outDebug( "WORLD: Received CMSG_SET_ACTION_BUTTON" ); 
-	uint8 button, misc, type; 
-	uint16 action; 
-	recv_data >> button >> action >> misc >> type; 
-	sLog.outDebug( "BUTTON: %u ACTION: %u TYPE: %u MISC: %u", button, action, type, misc ); 
+	sLog.outDebug( "WORLD: Received CMSG_SET_ACTION_BUTTON" );
+	uint8 button, misc, type;
+	uint16 action;
+	recv_data >> button >> action >> misc >> type;
+	sLog.outDebug( "BUTTON: %u ACTION: %u TYPE: %u MISC: %u", button, action, type, misc );
 	if(action==0)
 	{
-		sLog.outDebug( "MISC: Remove action from button %u", button ); 
+		sLog.outDebug( "MISC: Remove action from button %u", button );
 		//remove the action button from the db
 		GetPlayer()->setAction(button, 0, 0, 0);
 	}
 	else
-	{ 
+	{
 		if(button >= 120)
 			return;
 
-		if(type == 64 || type == 65) 
+		if(type == 64 || type == 65)
 		{
 			sLog.outDebug( "MISC: Added Macro %u into button %u", action, button );
 			GetPlayer()->setAction(button,action,misc,type);
@@ -1188,7 +1188,7 @@ void WorldSession::HandleSetActionButtonOpcode(WorldPacket& recv_data)
 		{
 			sLog.outDebug( "MISC: Added Spell %u into button %u", action, button );
 			GetPlayer()->setAction(button,action,type,misc);
-		} 
+		}
 	}
 
 #ifdef OPTIMIZED_PLAYER_SAVING
@@ -1285,22 +1285,19 @@ void WorldSession::HandleAmmoSetOpcode(WorldPacket & recv_data)
 	}
 }
 
-#define OPEN_CHEST 11437 
+#define OPEN_CHEST 11437
 
 void WorldSession::HandleBarberShopResult(WorldPacket & recv_data)
 {
 	sLog.outDebug("WORLD: CMSG_ALTER_APPEARANCE ");
-	if( !_player->IsInWorld() ) 
-		return;
-	if( _player->GetUInt32Value( PLAYER_FIELD_COINAGE ) < 25000 )
-		return; //not enough money
-    uint32 hair, haircolor, facialhairorpiercing;
-    recv_data >> hair >> haircolor >> facialhairorpiercing;
+	CHECK_INWORLD_RETURN;
+	uint32 hair, haircolor, facialhairorpiercing;
+	recv_data >> hair >> haircolor >> facialhairorpiercing;
 	uint32 oldhair = _player->GetByte( PLAYER_BYTES, 2 );
 	uint32 oldhaircolor = _player->GetByte( PLAYER_BYTES, 3 );
 	uint32 oldfacial = _player->GetByte( PLAYER_BYTES_2, 0 );
 	uint32 newhair,newhaircolor,newfacial;
-	int32 cost = 0;
+	uint32 cost = 0;
 	BarberShopStyleEntry *bbse;
 
 	bbse = dbcBarberShopStyleStore.LookupEntry( hair );
@@ -1313,33 +1310,48 @@ void WorldSession::HandleBarberShopResult(WorldPacket & recv_data)
 	if( !bbse )		return;
 	newfacial = bbse->type;
 
-    if( newhair != oldhair )
-		cost+=24800;
-    if( newhair == oldhair && newhaircolor != oldhaircolor )
-		cost+=12400;
-	if( newfacial != oldfacial )
-		cost+=18600;
+	uint32 level = _player->getLevel();
+	if(level >= 100)
+		level = 100;
+	gtFloat *cutcosts = dbcBarberShopPrices.LookupEntry(level - 1);
+	if(!cutcosts)
+		return;
 
-	if(_player->GetUInt32Value( PLAYER_FIELD_COINAGE ) < (uint32)cost)
-    {
-        WorldPacket data( SMSG_BARBER_SHOP_RESULT, 4);
-        data << uint32(1);                                  // no money
-        SendPacket(&data);
-        return;
-    }
-    else
-    {
-        WorldPacket data(SMSG_BARBER_SHOP_RESULT, 4);
-        data << uint32(0);                                  // ok
-        SendPacket(&data);
-    }
+	// hair style cost = cutcosts
+	// hair color cost = cutcosts * 0.5 or free if hair style changed
+	// facial hair cost = cutcosts * 0.75
+	if( newhair != oldhair )
+	{
+		cost += (uint32)cutcosts->val;
+	}
+	else if( newhaircolor != oldhaircolor )
+	{
+		cost += (uint32)(cutcosts->val) >> 1;
+	}
+	if( newfacial != oldfacial )
+	{
+		cost+= (uint32)(cutcosts->val * 0.75f);
+	}
+
+	if(_player->GetUInt32Value( PLAYER_FIELD_COINAGE ) < cost)
+	{
+		WorldPacket data( SMSG_BARBER_SHOP_RESULT, 4);
+		data << uint32(1);                                  // no money
+		SendPacket(&data);
+		return;
+	}
+	WorldPacket data(SMSG_BARBER_SHOP_RESULT, 4);
+	data << uint32(0);                                  // ok
+	SendPacket(&data);
 
 	_player->SetByte( PLAYER_BYTES, 2, newhair);
 	_player->SetByte( PLAYER_BYTES, 3, newhaircolor);
 	_player->SetByte( PLAYER_BYTES_2, 0, newfacial);
-	_player->ModUnsigned32Value( PLAYER_FIELD_COINAGE, -cost );
+	_player->ModUnsigned32Value( PLAYER_FIELD_COINAGE, 0-cost );
 
-    _player->SetStandState(0);                              // stand up
+	_player->SetStandState(0);                              // stand up
+	_player->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_VISIT_BARBER_SHOP, 1, 0, 0);
+	_player->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_GOLD_SPENT_AT_BARBER, cost, 0, 0);
 }
 
 void WorldSession::HandleGameObjectUse(WorldPacket & recv_data)
@@ -1350,7 +1362,7 @@ void WorldSession::HandleGameObjectUse(WorldPacket & recv_data)
 	SpellCastTargets targets;
 	Spell *spell = NULL;;
 	SpellEntry *spellInfo = NULL;;
-	sLog.outDebug("WORLD: CMSG_GAMEOBJ_USE: [GUID %d]", guid);   
+	sLog.outDebug("WORLD: CMSG_GAMEOBJ_USE: [GUID %d]", guid);
 
 	GameObject *obj = _player->GetMapMgr()->GetGameObject((uint32)guid);
 	if (!obj) return;
@@ -1360,9 +1372,9 @@ void WorldSession::HandleGameObjectUse(WorldPacket & recv_data)
 	Player *plyr = GetPlayer();
 
 	CALL_GO_SCRIPT_EVENT(obj, OnActivate)(_player);
-	
+
   _player->RemoveStealth(); // cebernic:RemoveStealth due to GO was using. Blizzlike
-	
+
 
 	uint32 type = obj->GetByte(GAMEOBJECT_BYTES_1, 1);
 	switch (type)
@@ -1389,21 +1401,20 @@ void WorldSession::HandleGameObjectUse(WorldPacket & recv_data)
 			plyr->UpdateSpeed();
 			//send barber shop menu to player
 			WorldPacket data(SMSG_ENABLE_BARBER_SHOP, 0);
-			SendPacket(&data);		
+			SendPacket(&data);
 			plyr->SetStandState( STANDSTATE_SIT_HIGH_CHAIR );
 			//Zack : no idea if this phaseshift is even required
 //			WorldPacket data2(SMSG_SET_PHASE_SHIFT, 4);
 //			data2 << uint32(0x00000200);
-//			plyr->SendMessageToSet(&data2, true);		
+//			plyr->SendMessageToSet(&data2, true);
 		}break;
 	case GAMEOBJECT_TYPE_CHEST://cast da spell
 		{
 			spellInfo = dbcSpell.LookupEntry( OPEN_CHEST );
-			spell = SpellPool.PooledNew();
-			spell->Init(plyr, spellInfo, true, NULL);
+			spell = new Spell(plyr, spellInfo, true, NULL);
 			_player->m_currentSpell = spell;
 			targets.m_unitTarget = obj->GetGUID();
-			spell->prepare(&targets); 
+			spell->prepare(&targets);
 		}break;
 	case GAMEOBJECT_TYPE_FISHINGNODE:
 		{
@@ -1456,8 +1467,7 @@ void WorldSession::HandleGameObjectUse(WorldPacket & recv_data)
 			SpellEntry *info = dbcSpell.LookupEntry(goinfo->SpellFocus);
 			if(!info)
 				break;
-			Spell * spell = SpellPool.PooledNew();
-			spell->Init(plyr, info, false, NULL);
+			Spell * spell = new Spell(plyr, info, false, NULL);
 			//spell->SpellByOther = true;
 			SpellCastTargets targets;
 			targets.m_unitTarget = plyr->GetGUID();
@@ -1465,7 +1475,7 @@ void WorldSession::HandleGameObjectUse(WorldPacket & recv_data)
 			if ( obj->charges > 0 && !--obj->charges )
 				obj->ExpireAndDelete();
 		}break;
-	case GAMEOBJECT_TYPE_RITUAL: 
+	case GAMEOBJECT_TYPE_RITUAL:
 		{
 			// store the members in the ritual, cast sacrifice spell, and summon.
 			uint32 i = 0;
@@ -1480,7 +1490,7 @@ void WorldSession::HandleGameObjectUse(WorldPacket & recv_data)
 					plyr->SetUInt64Value(UNIT_FIELD_CHANNEL_OBJECT, obj->GetGUID());
 					plyr->SetUInt32Value(UNIT_CHANNEL_SPELL, obj->m_ritualspell);
 					break;
-				}else if(obj->m_ritualmembers[i] == plyr->GetLowGUID()) 
+				}else if(obj->m_ritualmembers[i] == plyr->GetLowGUID())
 				{
 					// we're deselecting :(
 					obj->m_ritualmembers[i] = 0;
@@ -1503,7 +1513,7 @@ void WorldSession::HandleGameObjectUse(WorldPacket & recv_data)
 						plr->SetUInt32Value(UNIT_CHANNEL_SPELL, 0);
 					}
 				}
-				
+
 				SpellEntry *info = NULL;
 				if( goinfo->ID == 36727 ) // summon portal
 				{
@@ -1515,8 +1525,7 @@ void WorldSession::HandleGameObjectUse(WorldPacket & recv_data)
 					Player * target = objmgr.GetPlayer( obj->m_ritualtarget );
 					if( target == NULL || !target->IsInWorld() )
 						return;
-					spell = SpellPool.PooledNew();
-					spell->Init( _player->GetMapMgr()->GetPlayer( obj->m_ritualcaster ), info, true, NULL );
+					spell = new Spell( _player->GetMapMgr()->GetPlayer( obj->m_ritualcaster ), info, true, NULL );
 					SpellCastTargets targets;
 					targets.m_unitTarget = target->GetGUID();
 					spell->prepare( &targets );
@@ -1525,7 +1534,7 @@ void WorldSession::HandleGameObjectUse(WorldPacket & recv_data)
 				{
 					Player *psacrifice = NULL;
 					Spell * spell = NULL;
-					
+
 					// kill the sacrifice player
 					psacrifice = _player->GetMapMgr()->GetPlayer(obj->m_ritualmembers[(int)(rand()%(goinfo->SpellFocus-1))]);
 					Player * pCaster = obj->GetMapMgr()->GetPlayer(obj->m_ritualcaster);
@@ -1535,15 +1544,13 @@ void WorldSession::HandleGameObjectUse(WorldPacket & recv_data)
 					info = dbcSpell.LookupEntry(goinfo->sound4);
 					if(!info)
 						break;
-					spell = SpellPool.PooledNew();
-					spell->Init(psacrifice, info, true, NULL);
+					spell = new Spell(psacrifice, info, true, NULL);
 					targets.m_unitTarget = psacrifice->GetGUID();
 					spell->prepare(&targets);
-					
+
 					// summons demon
 					info = dbcSpell.LookupEntry(goinfo->sound1);
-					spell = SpellPool.PooledNew();
-					spell->Init(pCaster, info, true, NULL);
+					spell = new Spell(pCaster, info, true, NULL);
 					SpellCastTargets targets;
 					targets.m_unitTarget = pCaster->GetGUID();
 					spell->prepare(&targets);
@@ -1559,8 +1566,7 @@ void WorldSession::HandleGameObjectUse(WorldPacket & recv_data)
 						return;
 
 					info = dbcSpell.LookupEntry(goinfo->sound1);
-					Spell * spell = SpellPool.PooledNew();
-					spell->Init( pleader, info, true, NULL );
+					Spell * spell = new Spell( pleader, info, true, NULL );
 					SpellCastTargets targets( plr->GetGUID() );
 					spell->prepare(&targets);
 
@@ -1572,8 +1578,7 @@ void WorldSession::HandleGameObjectUse(WorldPacket & recv_data)
 					info = dbcSpell.LookupEntry( goinfo->sound1 );
 					if ( info == NULL )
 						return;
-					Spell * spell = SpellPool.PooledNew();
-					spell->Init( _player->GetMapMgr()->GetPlayer( obj->m_ritualcaster ), info, true, NULL );
+					Spell * spell = new Spell( _player->GetMapMgr()->GetPlayer( obj->m_ritualcaster ), info, true, NULL );
 					SpellCastTargets targets( obj->m_ritualcaster );
 					spell->prepare( &targets );
 					obj->ExpireAndDelete();
@@ -1593,7 +1598,7 @@ void WorldSession::HandleGameObjectUse(WorldPacket & recv_data)
 			/* these are usually scripted effects. but in the case of some, (e.g. orb of translocation) the spellid is located in unknown1 */
 			/*SpellEntry * sp = dbcSpell.LookupEntryForced(goinfo->Unknown1);
 			if(sp != NULL)
-				_player->CastSpell(_player,sp,true);  -   WTF?  Cast spell 1 ?*/  
+				_player->CastSpell(_player,sp,true);  -   WTF?  Cast spell 1 ?*/
 
 			if(goinfo->Unknown1)
 			{
@@ -1624,7 +1629,7 @@ void WorldSession::HandleGameObjectUse(WorldPacket & recv_data)
 			pGo->m_ritualmembers[0] = _player->GetLowGUID();
 			_player->SetUInt64Value(UNIT_FIELD_CHANNEL_OBJECT, pGo->GetGUID());
 			_player->SetUInt32Value(UNIT_CHANNEL_SPELL, pGo->m_ritualspell);
-			
+
 			/* expire after 2mins*/
 			sEventMgr.AddEvent(pGo, &GameObject::_Expire, EVENT_GAMEOBJECT_EXPIRE, 120000, 1,0);
 		}break;
@@ -1668,7 +1673,7 @@ void WorldSession::HandleSetSheathedOpcode( WorldPacket & recv_data )
 {
 	uint32 active;
 	recv_data >> active;
-	_player->SetByte(UNIT_FIELD_BYTES_2,0,(uint8)active); 
+	_player->SetByte(UNIT_FIELD_BYTES_2,0,(uint8)active);
 }
 
 void WorldSession::HandlePlayedTimeOpcode( WorldPacket & recv_data )
@@ -1862,11 +1867,11 @@ void WorldSession::HandleAcknowledgementOpcodes( WorldPacket & recv_data )
 	/*uint16 opcode = recv_data.GetOpcode();
 	if (opcode == CMSG_FORCE_RUN_SPEED_CHANGE_ACK)
 	{
- 
+
 		uint64 GUID;
 		uint32 Flags, unk0, unk1, d_time;
 		float X, Y, Z, O, speed;
-		
+
 		recv_data >> GUID;
 		recv_data >> unk0 >> Flags;
 		if (Flags & (0x2000 | 0x6000))			 //0x2000 == jumping  0x6000 == Falling
@@ -1886,7 +1891,7 @@ void WorldSession::HandleAcknowledgementOpcodes( WorldPacket & recv_data )
 			recv_data >> X >> Y >> Z >> O;
 			recv_data >> unk1 >> speed;
 		}
-		
+
 		// if its not good kick player???
 		if (_player->GetPlayerSpeed() != speed)
 		{
@@ -1902,11 +1907,10 @@ void WorldSession::HandleSelfResurrectOpcode(WorldPacket& recv_data)
 	if(self_res_spell)
 	{
 		SpellEntry * sp=dbcSpell.LookupEntry(self_res_spell);
-		Spell *s=SpellPool.PooledNew();
-		s->Init(_player,sp,true,NULL);
+		Spell *s = new Spell(_player,sp,true,NULL);
 		SpellCastTargets tgt;
 		tgt.m_unitTarget=_player->GetGUID();
-		s->prepare(&tgt);	
+		s->prepare(&tgt);
 	}
 }
 
@@ -1925,14 +1929,14 @@ void WorldSession::HandleRandomRollOpcode(WorldPacket &recv_data)
 
 	if(max > RAND_MAX)
 		max = RAND_MAX;
-	
+
 	if(min > max)
 		min = max;
 
 
 	// generate number
 	roll = RandomUInt(max - min) + min;
-	
+
 	// append to packet, and guid
 	data << roll << _player->GetGUID();
 
@@ -1990,7 +1994,7 @@ void WorldSession::HandleLootMasterGiveOpcode(WorldPacket& recv_data)
 	{
 		pCreature = _player->GetMapMgr()->GetCreature(GET_LOWGUID_PART(creatureguid));
 		if (!pCreature)return;
-		pLoot=&pCreature->loot;	
+		pLoot=&pCreature->loot;
 	}
 	else
 	if(GET_TYPE_FROM_GUID(GetPlayer()->GetLootGUID()) == HIGHGUID_TYPE_GAMEOBJECT) // cebernic added it support gomastergive
@@ -2031,10 +2035,10 @@ void WorldSession::HandleLootMasterGiveOpcode(WorldPacket& recv_data)
 	if (!pLoot->items.at(slotid).ffa_loot)
 	{
 		if (!amt)//Test for party loot
-		{  
+		{
 			GetPlayer()->GetItemInterface()->BuildInventoryChangeError(NULL, NULL,INV_ERR_ALREADY_LOOTED);
 			return;
-		} 
+		}
 	}
 	else
 	{
@@ -2059,8 +2063,8 @@ void WorldSession::HandleLootMasterGiveOpcode(WorldPacket& recv_data)
 
 	if(pCreature)
 		CALL_SCRIPT_EVENT(pCreature, OnLootTaken)(player, it);
-	
-	
+
+
 	slotresult = player->GetItemInterface()->FindFreeInventorySlot(it);
 	if(!slotresult.Result)
 	{
@@ -2071,7 +2075,7 @@ void WorldSession::HandleLootMasterGiveOpcode(WorldPacket& recv_data)
 	Item *item = objmgr.CreateItem( itemid, player);
 	if(item==NULL)
 		return;
-	
+
 	item->SetUInt32Value(ITEM_FIELD_STACK_COUNT,amt);
 	if(pLoot->items.at(slotid).iRandomProperty!=NULL)
 	{
@@ -2158,7 +2162,7 @@ void WorldSession::HandleLootRollOpcode(WorldPacket& recv_data)
 	LootRoll *li = NULL;
 
 	uint32 guidtype = GET_TYPE_FROM_GUID(creatureguid);
-	if (guidtype == HIGHGUID_TYPE_GAMEOBJECT) 
+	if (guidtype == HIGHGUID_TYPE_GAMEOBJECT)
 	{
 		GameObject* pGO = _player->GetMapMgr()->GetGameObject((uint32)creatureguid);
 		if (!pGO)
@@ -2167,8 +2171,8 @@ void WorldSession::HandleLootRollOpcode(WorldPacket& recv_data)
 			return;
 		if (pGO->GetInfo() && pGO->GetInfo()->Type == GAMEOBJECT_TYPE_CHEST)
 			li = pGO->loot.items[slotid].roll;
-	} 
-	else if (guidtype == HIGHGUID_TYPE_UNIT) 
+	}
+	else if (guidtype == HIGHGUID_TYPE_UNIT)
 	{
 		// Creatures
 		Creature *pCreature = _player->GetMapMgr()->GetCreature(GET_LOWGUID_PART(creatureguid));
@@ -2307,7 +2311,7 @@ void WorldSession::HandleToggleCloakOpcode(WorldPacket &recv_data)
 {
 	//////////////////////////
 	//	PLAYER_FLAGS									   = 3104 / 0x00C20 / 0000000000000000000110000100000
-	//																							 ^ 
+	//																							 ^
 	// This bit, on = toggled OFF, off = toggled ON.. :S
 
 	//uint32 SetBit = 0 | (1 << 11);
@@ -2322,7 +2326,7 @@ void WorldSession::HandleToggleHelmOpcode(WorldPacket &recv_data)
 {
 	//////////////////////////
 	//	PLAYER_FLAGS									   = 3104 / 0x00C20 / 0000000000000000000110000100000
-	//																							  ^ 
+	//																							  ^
 	// This bit, on = toggled OFF, off = toggled ON.. :S
 
 	//uint32 SetBit = 0 | (1 << 10);
@@ -2346,7 +2350,7 @@ void WorldSession::HandleDungeonDifficultyOpcode(WorldPacket& recv_data)
         _player->iInstanceType = data;
         sInstanceMgr.ResetSavedInstances(_player);
 
-        
+
 
         m_Group->Lock();
 		for(uint32 i = 0; i < m_Group->GetSubGroupCount(); ++i)

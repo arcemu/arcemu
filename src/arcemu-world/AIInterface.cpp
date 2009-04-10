@@ -649,8 +649,7 @@ void AIInterface::Update(uint32 p_time)
 		assert(totemspell != 0);
 		if(p_time >= m_totemspelltimer)
 		{
-			Spell *pSpell = SpellPool.PooledNew();
-			pSpell->Init(m_Unit, totemspell, true, 0);
+			Spell *pSpell = new Spell(m_Unit, totemspell, true, 0);
 
 			SpellCastTargets targets(0);
 			if(!GetNextTarget() ||
@@ -677,7 +676,11 @@ void AIInterface::Update(uint32 p_time)
 				// need proper cooldown time!
 				m_totemspelltimer = m_totemspelltime;
 			}
-			else SpellPool.PooledDelete( pSpell );
+			else
+			{
+				delete pSpell;
+				pSpell = NULL;
+			}
 			// these will *almost always* be AoE, so no need to find a target here.
 //			SpellCastTargets targets(m_Unit->GetGUID());
 //			Spell * pSpell = new Spell(m_Unit, totemspell, true, 0);
@@ -1237,8 +1240,7 @@ void AIInterface::_UpdateCombat(uint32 p_time)
 								if(fabs(our_facing-his_facing)<CREATURE_DAZE_TRIGGER_ANGLE && !GetNextTarget()->HasAura(CREATURE_SPELL_TO_DAZE))
 								{
 									SpellEntry *info = dbcSpell.LookupEntry(CREATURE_SPELL_TO_DAZE);
-									Spell *sp = SpellPool.PooledNew();
-									sp->Init(m_Unit, info, false, NULL);
+									Spell *sp = new Spell(m_Unit, info, false, NULL);
 									SpellCastTargets targets;
 									targets.m_unitTarget = GetNextTarget()->GetGUID();
 									sp->prepare(&targets);
@@ -1312,8 +1314,7 @@ void AIInterface::_UpdateCombat(uint32 p_time)
 							SpellEntry *info = dbcSpell.LookupEntry(SPELL_RANGED_GENERAL);
 							if(info)
 							{
-								Spell *sp = SpellPool.PooledNew();
-								sp->Init(m_Unit, info, false, NULL);
+								Spell *sp = new Spell(m_Unit, info, false, NULL);
 								SpellCastTargets targets;
 								targets.m_unitTarget = GetNextTarget()->GetGUID();
 								sp->prepare(&targets);
@@ -1712,18 +1713,8 @@ Unit* AIInterface::FindTarget()
 				continue;
 			if (tmpPlr->m_invisible)
 				continue;
-			if (tmpPlr->CombatStatus.GetPrimaryAttackTarget() == 0)
+			if( !tmpPlr->HasFlag( PLAYER_FLAGS, 0x100) )//PvP Guard Attackable.
 				continue;
-			else
-			{
-				Unit *pPTarget = GetUnit()->GetMapMgr()->GetUnit( tmpPlr->CombatStatus.GetPrimaryAttackTarget() );
-				if( pPTarget == NULL )
-					continue;
-				if( !pPTarget->IsPlayer() )
-					continue;
-				if( tmpPlr->DuelingWith == static_cast< Player* >( pPTarget ) )
-					continue;
-			}
 
 			dist = m_Unit->GetDistanceSq(tmpPlr);
 
@@ -2559,12 +2550,11 @@ void AIInterface::SendCurrentMove(Player* plyr/*uint64 guid*/)
 
 	*splineBuf << m_sourceX << m_sourceY << m_sourceZ;
 	*splineBuf << m_Unit->GetPositionX() << m_Unit->GetPositionY() << m_Unit->GetPositionZ();
-	*splineBuf << m_destinationX << m_destinationY << m_destinationZ;
-	*splineBuf << m_destinationX << m_destinationY << m_destinationZ;
-	*splineBuf << m_destinationX << m_destinationY << m_destinationZ;
-
+	*splineBuf << m_destinationX << m_destinationY << m_destinationZ + 0.1f;
+	*splineBuf << m_destinationX << m_destinationY << m_destinationZ + 0.2f;
 	*splineBuf << uint8(0);
-
+	*splineBuf << m_destinationX << m_destinationY << m_destinationZ;
+	
 	plyr->AddSplinePacket(m_Unit->GetGUID(), splineBuf);
 
 	//This should only be called by Players AddInRangeObject() ONLY
@@ -3374,8 +3364,7 @@ void AIInterface::CastSpell(Unit* caster, SpellEntry *spellInfo, SpellCastTarget
 #endif
 
 	//i wonder if this will lead to a memory leak :S
-	Spell *nspell = SpellPool.PooledNew();
-	nspell->Init(caster, spellInfo, false, NULL);
+	Spell *nspell = new Spell(caster, spellInfo, false, NULL);
 	nspell->prepare(&targets);
 }
 

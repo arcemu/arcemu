@@ -1792,8 +1792,10 @@ void Object::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
 		return;
 	if( pVictim->IsSpiritHealer() )
 		return;
+
+	damage *= 100;
 	
-	if( damage > 14000 && this != pVictim && this->IsPlayer() && !static_cast< Player* >(this)->GetSession()->HasPermissions() && sWorld.m_limits.enable )
+	if( damage > 0xFFFFFFFF && this != pVictim && this->IsPlayer() && !static_cast< Player* >(this)->GetSession()->HasPermissions() && sWorld.m_limits.enable )
 	{
 		if(spellId && sWorld.m_limits.spellDamageCap > 0)
 		{
@@ -2348,8 +2350,7 @@ void Object::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
 				SpellEntry* sorInfo = dbcSpell.LookupEntry(27827);
 				if( sorInfo != NULL )
 				{
-					Spell *sor = SpellPool.PooledNew();
-					sor->Init( pVictim, sorInfo, true, NULL );
+					Spell *sor = new Spell(pVictim, sorInfo, true, NULL);
 					SpellCastTargets targets;
 					targets.m_unitTarget = pVictim->GetGUID();
 					sor->prepare(&targets);

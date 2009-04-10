@@ -50,7 +50,7 @@ Arena::Arena(MapMgr * mgr, uint32 id, uint32 lgroup, uint32 t, uint32 players_pe
 	case BATTLEGROUND_ARENA_3V3:
 		m_arenateamtype=1;
 		break;
-		
+
 	case BATTLEGROUND_ARENA_2V2:
 		m_arenateamtype=0;
 		break;
@@ -88,7 +88,7 @@ Arena::~Arena()
 
 void Arena::OnAddPlayer(Player * plr)
 {
-	if (plr == NULL) 
+	if (plr == NULL)
 		return;
 
 	plr->m_deathVision = true;
@@ -108,6 +108,8 @@ void Arena::OnAddPlayer(Player * plr)
 	}
 	// On arena start all conjured items are removed
 	plr->GetItemInterface()->RemoveAllConjured();
+	// On arena start remove all temp enchants
+	plr->RemoveTempEnchantsOnArena();
 
 	// Before the arena starts all your cooldowns are reset
 	if( !m_started )
@@ -128,10 +130,9 @@ void Arena::OnAddPlayer(Player * plr)
 		plr->m_bgIsQueued = false;
 
 	/* Add the green/gold team flag */
-	Aura * aura = AuraPool.PooledNew();
-	aura->Init(dbcSpell.LookupEntry((plr->GetTeamInitial()) ? 35775-plr->m_bgTeam : 32725-plr->m_bgTeam), -1, plr, plr, true);
+	Aura * aura = new Aura(dbcSpell.LookupEntry((plr->GetTeamInitial()) ? 35775-plr->m_bgTeam : 32725-plr->m_bgTeam), -1, plr, plr, true);
 	plr->AddAura(aura);
-	
+
 	/* Set FFA PvP Flag */
 	if ( !plr->HasFlag(PLAYER_FLAGS, PLAYER_FLAG_FREE_FOR_ALL_PVP))
 		plr->SetFlag(PLAYER_FLAGS, PLAYER_FLAG_FREE_FOR_ALL_PVP);
@@ -144,7 +145,7 @@ void Arena::OnRemovePlayer(Player * plr)
 	/* remove arena readyness buff */
 	plr->m_deathVision = false;
 
-	// All auras are removed on exit 
+	// All auras are removed on exit
 	// plr->RemoveAura(ARENA_PREPARATION);
 	plr->RemoveAllAuras();
 
@@ -154,7 +155,7 @@ void Arena::OnRemovePlayer(Player * plr)
 	plr->RemoveAura(plr->GetTeamInitial() ? 35775-plr->m_bgTeam : 32725-plr->m_bgTeam);
 	if (plr->HasFlag(PLAYER_FLAGS, PLAYER_FLAG_FREE_FOR_ALL_PVP ))
 		plr->RemoveFlag(PLAYER_FLAGS, PLAYER_FLAG_FREE_FOR_ALL_PVP);
-	
+
 	plr->m_bg = NULL;
 
 	// Reset all their cooldowns and restore their HP/Mana/Energy to max
@@ -285,8 +286,6 @@ void Arena::OnCreate()
 	SetWorldState(0x08D3	,0x0000);
 	SetWorldState(0x0C0D	,0x017B);
 
-	SetWorldState(0x0C77,0x01); // 1 - arena season in progress, 0 - end of season
-	SetWorldState(0x0F3D,0x05); // arena season id
 
 	// Show players count
 	switch(m_mapMgr->GetMapId())
@@ -462,7 +461,7 @@ void Arena::UpdatePlayerCounts()
 	Finish();
 }
 
-uint32 Arena::CalcDeltaRating(uint32 oldRating, uint32 opponentRating, bool outcome) 
+uint32 Arena::CalcDeltaRating(uint32 oldRating, uint32 opponentRating, bool outcome)
 {
 	// ---- Elo Rating System ----
 	// Expected Chance to Win for Team A vs Team B
@@ -656,7 +655,7 @@ void Arena::HookOnAreaTrigger(Player * plr, uint32 id)
 
 	ASSERT(plr != NULL);
 
-	switch (id) 
+	switch (id)
 	{
 		case 4536:
 		case 4538:
@@ -676,12 +675,9 @@ void Arena::HookOnAreaTrigger(Player * plr, uint32 id)
 		{
 			/* apply the buff */
 			SpellEntry * sp = dbcSpell.LookupEntry(m_buffs[buffslot]->GetInfo()->sound3);
-			Spell * s = SpellPool.PooledNew();
-
 			ASSERT(sp != NULL);
-			ASSERT(s != NULL);
 
-			s->Init(plr, sp, true, 0);
+			Spell * s = new Spell(plr, sp, true, 0);
 			SpellCastTargets targets(plr->GetGUID());
 			s->prepare(&targets);
 

@@ -432,8 +432,7 @@ bool ChatHandler::HandleKillCommand(const char *args, WorldSession *m_session)
 		if(se == 0) return false;
 
 		SpellCastTargets targets(target->GetGUID());
-		Spell * sp = SpellPool.PooledNew();
-		sp->Init(m_session->GetPlayer(), se, true, 0);
+		Spell * sp = new Spell(m_session->GetPlayer(), se, true, 0);
 		sp->prepare(&targets);
 
 /*		SpellEntry * se = dbcSpell.LookupEntry(20479);
@@ -490,14 +489,7 @@ bool ChatHandler::HandleCastSpellCommand(const char* args, WorldSession *m_sessi
 		return false;
 	}
 
-	Spell *sp = SpellPool.PooledNew();
-	sp->Init(caster, spellentry, false, NULL);
-	if(!sp)
-	{
-		RedSystemMessage(m_session, "Spell failed creation!");
-		SpellPool.PooledDelete( sp );
-		return false;
-	}
+	Spell *sp = new Spell(caster, spellentry, false, NULL);
 
 	BlueSystemMessage(m_session, "Casting spell %d on target.", spellid);
 	SpellCastTargets targets;
@@ -598,14 +590,7 @@ bool ChatHandler::HandleCastSelfCommand(const char* args, WorldSession *m_sessio
 		return false;
 	}
 
-	Spell *sp = SpellPool.PooledNew();
-	sp->Init(target, spellentry, false, NULL);
-	if(!sp)
-	{
-		RedSystemMessage(m_session, "Spell failed creation!");
-		SpellPool.PooledDelete( sp );
-		return false;
-	}
+	Spell *sp = new Spell(target, spellentry, false, NULL);
 
 	BlueSystemMessage(m_session, "Target is casting spell %d on himself.", spellid);
 	SpellCastTargets targets;
