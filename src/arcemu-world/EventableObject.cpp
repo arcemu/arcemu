@@ -38,16 +38,7 @@ EventableObject::~EventableObject()
 //we virtually are destroying this object that means we will have no more events and we do not belong to any holder anymore
 void EventableObject::Virtual_Destructor()
 {
-	/* decrement event count on all events */
-	EventMap::iterator itr = m_events.begin();
-	for(; itr != m_events.end(); ++itr)
-	{
-		itr->second->deleted = true;
-		itr->second->DecRef();
-	}
-
-	m_events.clear();
-
+	event_RemoveEvents();
 	m_holder = 0;
 	m_event_Instanceid = -1;
 }

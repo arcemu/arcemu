@@ -138,10 +138,19 @@ void SpellCastTargets::write( WorldPacket& data )
 		data << m_strTarget.c_str();
 }
 
-Spell::Spell(Object* Caster, SpellEntry *info, bool triggered, Aura* aur)
+Spell::Spell()
 {
-	ASSERT(Caster != NULL);
-	ASSERT(info != NULL);
+	m_bufferPoolId = OBJECT_WAS_ALLOCATED_STANDARD_WAY;
+}
+
+void Spell::Virtual_Constructor()
+{
+}
+
+void Spell::Init(Object* Caster, SpellEntry *info, bool triggered, Aura* aur)
+{
+	if(info==NULL) return;
+	ASSERT( Caster != NULL && info != NULL );
 
 	chaindamage = 0;
 	bDurSet = 0;
@@ -273,23 +282,23 @@ Spell::Spell(Object* Caster, SpellEntry *info, bool triggered, Aura* aur)
 
 Spell::~Spell()
 {
-	// From virtual destructor
-    if( u_caster != NULL && u_caster->GetCurrentSpell() == this )
-        u_caster->SetCurrentSpell(NULL);
-
-    if( p_caster )
-        if( hadEffect || ( cancastresult == SPELL_CANCAST_OK && !GetSpellFailed() ) )
-            RemoveItems();
-
-    if( m_spellInfo_override != NULL)
-        free(m_spellInfo_override);
-	m_spellInfo_override = NULL;
-
-	// From code as was
 	for(uint32 i=0; i<3; ++i)
 	{
 		m_targetUnits[i].clear();
 	}
+}
+
+void Spell::Virtual_Destructor()
+{
+	if( u_caster != NULL && u_caster->GetCurrentSpell() == this )
+		u_caster->SetCurrentSpell(NULL);
+
+	if( p_caster )
+		if( hadEffect || ( cancastresult == SPELL_CANCAST_OK && !GetSpellFailed() ) )
+			RemoveItems();
+
+	if( m_spellInfo_override != NULL)
+		delete[] m_spellInfo_override;
 }
 
 //i might forget conditions here. Feel free to add them
@@ -2097,7 +2106,7 @@ void Spell::finish()
 		if(!m_triggeredSpell && (GetProto()->ChannelInterruptFlags || m_castTime>0))
 			u_caster->SetCurrentSpell(NULL);
 	}
-	delete this;
+	SpellPool.PooledDelete(this);
 }
 
 void Spell::SendCastResult(uint8 result)
@@ -3025,7 +3034,10 @@ void Spell::HandleAddAura(uint64 guid)
 	{
 		SpellEntry *spellInfo = dbcSpell.LookupEntry( spellid );
 		if(!spellInfo) return;
-		Spell *spell = new Spell(p_caster, spellInfo ,true, NULL);
+		Spell *spell = SpellPool.PooledNew();
+		if (!spell)
+			return;
+		spell->Init(p_caster, spellInfo ,true, NULL);
 		SpellCastTargets targets(Target->GetGUID());
 		spell->prepare(&targets);
 	}
@@ -3058,7 +3070,10 @@ void Spell::HandleAddAura(uint64 guid)
 				}
 				for(int i=0;i<charges-1;i++)
 				{
-					aur = new Aura(itr->second->GetSpellProto(),itr->second->GetDuration(),itr->second->GetCaster(),itr->second->GetTarget(), m_triggeredSpell, i_caster);
+					aur = AuraPool.PooledNew();
+					if (!aur)
+						return;
+					aur->Init(itr->second->GetSpellProto(),itr->second->GetDuration(),itr->second->GetCaster(),itr->second->GetTarget(), m_triggeredSpell, i_caster);
 					Target->AddAura(aur);
 					aur=NULL;
 				}
@@ -5289,7 +5304,10 @@ bool Spell::Reflect(Unit *refunit)
 
 	if(!refspell) return false;
 
-	Spell *spell = new Spell(refunit, refspell, true, NULL);
+	Spell *spell = SpellPool.PooledNew();
+	if (!spell)
+		return false;
+	spell->Init(refunit, refspell, true, NULL);
 	spell->SetReflected();
 	SpellCastTargets targets;
 	targets.m_unitTarget = m_caster->GetGUID();

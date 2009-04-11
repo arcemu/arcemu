@@ -1098,7 +1098,7 @@
 			</Filter>
 		</Filter>
 		<Filter
-			Name="Networking"
+			Name="Networking, Handlers"
 			>
 			<File
 				RelativePath="..\..\src\arcemu-world\NameTables.h"
@@ -1393,6 +1393,14 @@
 				>
 			</File>
 		</Filter>
+		<File
+			RelativePath="..\..\src\arcemu-world\BufferPools\BufferPools.cpp"
+			>
+		</File>
+		<File
+			RelativePath="..\..\src\arcemu-world\BufferPools\BufferPools.h"
+			>
+		</File>
 		<File
 			RelativePath="..\..\src\arcemu-world\Definitions.h"
 			>

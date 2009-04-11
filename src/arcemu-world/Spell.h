@@ -1579,8 +1579,12 @@ class SERVER_DECL Spell
 {
 public:
     friend class DummySpellHandler;
-    Spell(Object* Caster, SpellEntry *info, bool triggered, Aura* aur);
+    Spell( );
+	void Init( Object* Caster, SpellEntry *info, bool triggered, Aura* aur );
+	void Virtual_Constructor();		//when using object pool contructor is not good to be called again sometimes. Use this instead
     ~Spell();
+	void Virtual_Destructor();		//this makes sure we do not leave events on objects that are supposed to be deleted
+	int32 m_bufferPoolId;
 
     // Fills specified targets at the area of effect
     void FillSpecifiedTargetsInArea(float srcx,float srcy,float srcz,uint32 ind, uint32 specification);

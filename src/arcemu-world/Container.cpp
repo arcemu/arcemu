@@ -20,7 +20,7 @@
 
 #include "StdAfx.h"
 
-Container::Container(uint32 high,uint32 low) : Item(high, low)
+Container::Container(uint32 high,uint32 low) : Item()
 {
 	m_objectTypeId = TYPEID_CONTAINER;
 	m_valuesCount = CONTAINER_END;

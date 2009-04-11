@@ -1614,7 +1614,10 @@ Item * ObjectMgr::CreateItem(uint32 entry,Player * owner)
 	}
 	else
 	{
-		Item * pItem = new Item(HIGHGUID_TYPE_ITEM,GenerateLowGuid(HIGHGUID_TYPE_ITEM));
+		Item * pItem = ItemPool.PooledNew();
+		if (!pItem)
+			return NULL;
+		pItem->Init(HIGHGUID_TYPE_ITEM,GenerateLowGuid(HIGHGUID_TYPE_ITEM));
 		pItem->Create(entry, owner);
 		pItem->SetUInt32Value(ITEM_FIELD_STACK_COUNT, 1);
 		return pItem;
@@ -1640,7 +1643,10 @@ Item * ObjectMgr::LoadItem(uint64 guid)
 		}
 		else
 		{
-			Item * pItem = new Item(HIGHGUID_TYPE_ITEM,(uint32)guid);
+			Item * pItem = ItemPool.PooledNew();
+			if (!pItem)
+				return NULL;
+			pItem->Init(HIGHGUID_TYPE_ITEM,(uint32)guid);
 			pItem->LoadFromDB(result->Fetch(), 0, false);
 			pReturn = pItem;
 		}
@@ -1669,7 +1675,10 @@ Item * ObjectMgr::LoadExternalItem(uint64 guid)
 		}
 		else
 		{
-			Item * pItem = new Item(HIGHGUID_TYPE_ITEM,(uint32)guid);
+			Item * pItem = ItemPool.PooledNew();
+			if (!pItem)
+				return NULL;
+			pItem->Init(HIGHGUID_TYPE_ITEM,(uint32)guid);
 			pItem->LoadFromDB(result->Fetch(), 0, false);
 			pReturn = pItem;
 		}

@@ -2350,7 +2350,10 @@ void Object::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
 				SpellEntry* sorInfo = dbcSpell.LookupEntry(27827);
 				if( sorInfo != NULL )
 				{
-					Spell *sor = new Spell(pVictim, sorInfo, true, NULL);
+					Spell *sor = SpellPool.PooledNew();
+					if (!sor)
+						return;
+					sor->Init(pVictim, sorInfo, true, NULL);
 					SpellCastTargets targets;
 					targets.m_unitTarget = pVictim->GetGUID();
 					sor->prepare(&targets);
