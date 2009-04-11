@@ -1793,9 +1793,7 @@ void Object::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
 	if( pVictim->IsSpiritHealer() )
 		return;
 
-	damage *= 100;
-	
-	if( damage > 0xFFFFFFFF && this != pVictim && this->IsPlayer() && !static_cast< Player* >(this)->GetSession()->HasPermissions() && sWorld.m_limits.enable )
+	if( damage > 14000 && this != pVictim && this->IsPlayer() && !static_cast< Player* >(this)->GetSession()->HasPermissions() && sWorld.m_limits.enable )
 	{
 		if(spellId && sWorld.m_limits.spellDamageCap > 0)
 		{
@@ -2101,12 +2099,12 @@ void Object::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
 	uint32 lowGUID = 0;
 	if(pVictim->GetTypeId() == TYPEID_UNIT && ((Creature*)pVictim)->GetCreatureInfo())
 	{
-		uint64 crGUID = pVictim->GetGUID();
-		lowGUID = crGUID & 0x00000000ffffffff;
-		highGUID = crGUID >> 32;
 		if(((Creature*)pVictim)->GetCreatureInfo()->Type == CRITTER)
 		{
 			isCritter = true;
+			uint64 crGUID = pVictim->GetGUID();
+			lowGUID = crGUID & 0x00000000ffffffff;
+			highGUID = crGUID >> 32;
 			if(IsPlayer()) // Player killed a critter
 			{
 				((Player*)this)->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_KILL_CREATURE, pVictim->GetEntry(), 1, 0);
