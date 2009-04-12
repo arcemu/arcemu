@@ -2102,19 +2102,6 @@ void Object::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
 		if(((Creature*)pVictim)->GetCreatureInfo()->Type == CRITTER)
 		{
 			isCritter = true;
-			uint64 crGUID = pVictim->GetGUID();
-			lowGUID = crGUID & 0x00000000ffffffff;
-			highGUID = crGUID >> 32;
-			if(IsPlayer()) // Player killed a critter
-			{
-				((Player*)this)->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_KILL_CREATURE, pVictim->GetEntry(), 1, 0);
-				((Player*)this)->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_KILL_CREATURE_TYPE, highGUID, lowGUID, 0);
-			}
-			else if(IsPet()) // Player's pet killed a critter
-			{
-				((Pet*)this)->GetPetOwner()->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_KILL_CREATURE, pVictim->GetEntry(), 1, 0);
-				((Pet*)this)->GetPetOwner()->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_KILL_CREATURE_TYPE, highGUID, lowGUID, 0);
-			}
 		}
 	}
 	/* -------------------------- HIT THAT CAUSES VICTIM TO DIE ---------------------------*/
@@ -2359,6 +2346,8 @@ void Object::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
 			}
 		}
 		uint64 victimGuid = pVictim->GetGUID();
+		lowGUID = victimGuid & 0x00000000ffffffff;
+		highGUID = victimGuid >> 32;
 
 		if(pVictim->GetTypeId() == TYPEID_UNIT)
 		{
@@ -2692,6 +2681,19 @@ void Object::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
 					Unit *owner=pVictim->GetMapMgr()->GetUnit( pVictim->GetUInt64Value( UNIT_FIELD_CHARMEDBY ) );
 					if( owner != NULL && owner->IsPlayer())
 						static_cast< Player* >( owner )->EventDismissPet();
+				}
+			}
+			if(isCritter)
+			{
+				if(IsPlayer()) // Player killed a critter
+				{
+					((Player*)this)->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_KILL_CREATURE, pVictim->GetEntry(), 1, 0);
+					((Player*)this)->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_KILL_CREATURE_TYPE, highGUID, lowGUID, 0);
+				}
+				else if(IsPet()) // Player's pet killed a critter
+				{
+					((Pet*)this)->GetPetOwner()->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_KILL_CREATURE, pVictim->GetEntry(), 1, 0);
+					((Pet*)this)->GetPetOwner()->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_KILL_CREATURE_TYPE, highGUID, lowGUID, 0);
 				}
 			}
 		}
