@@ -1,4 +1,4 @@
-INCLUDES += -I$(srcdir)/../boost -I$(srcdir)/../arcemu-shared
+INCLUDES += -I$(srcdir)/../arcemu-shared
 
 bin_PROGRAMS = arcemu-world
 
