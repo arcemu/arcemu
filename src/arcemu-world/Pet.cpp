@@ -21,7 +21,7 @@
 #include "StdAfx.h"
 
 #define GROWL_RANK_1	2649
-#define GROWL_RANK_2	14916
+#define COWER_RANK_1	1742
 
 #define WATER_ELEMENTAL	510
 #define PET_IMP			416
@@ -72,8 +72,24 @@ uint32 GetAutoCastTypeForSpell( SpellEntry * ent )
 	/* Mage Pet Spells														*/
 	/************************************************************************/
 
+	case SPELL_HASH_WATERBOLT:			// Waterbolt
+		return AUTOCAST_EVENT_ATTACK;
+		break;
+
+	/************************************************************************/
+	/* Shaman Pet Spells													*/
+	/************************************************************************/
+	case SPELL_HASH_SPIRIT_HUNT:
+		return AUTOCAST_EVENT_ON_SPAWN;
+		break;
+
+	case SPELL_HASH_TWIN_HOWL:
+	case SPELL_HASH_BASH:
+		return AUTOCAST_EVENT_ATTACK;
+		break;
+
 	}
-	return AUTOCAST_EVENT_ATTACK;
+	return AUTOCAST_EVENT_NONE;
 }
 
 void Pet::SetNameForEntry( uint32 entry )
@@ -309,7 +325,7 @@ void Pet::SendSpellsToOwner()
 	if( m_Owner == NULL )
 		return;
 
-	uint16 packetsize = ( GetEntry() != WATER_ELEMENTAL) ? ( ( uint16 )mSpells.size() * 4 + 61 ) : 64;
+	uint16 packetsize = ( GetEntry() != WATER_ELEMENTAL && GetEntry() != SPIRITWOLF ) ? ( ( uint16 )mSpells.size() * 4 + 61 ) : 64;
 	WorldPacket * data = new WorldPacket( SMSG_PET_SPELLS, packetsize );
 	*data << GetGUID();
 	*data << uint32( myFamily != NULL ? myFamily->ID : 0 );	// pet family to determine talent tree
@@ -333,7 +349,7 @@ void Pet::SendSpellsToOwner()
 	}
 
 	// we don't send spells for the water elemental so it doesn't show up in the spellbook
-	if( GetEntry() != WATER_ELEMENTAL )
+	if( GetEntry() != WATER_ELEMENTAL && GetEntry() != SPIRITWOLF )
 	{
 		// Send the rest of the spells.
 		*data << uint8( mSpells.size() );
@@ -848,7 +864,7 @@ void Pet::AddSpell( SpellEntry * sp, bool learning )
 			}
 		}
 
-		if( !has && !learning )
+		if( !has )
 		{
 			for(int i = 0; i < 10; ++i)
 			{

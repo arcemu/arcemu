@@ -4082,8 +4082,8 @@ uint8 Spell::CanCast(bool tolerate)
 				// disable spell
 				case 38554: //Absorb Eye of Grillok
 				{
-					// do not allow spell to be cast
-					return SPELL_FAILED_SPELL_UNAVAILABLE;
+					if( !target->IsCreature() || target->GetEntry()!= 19440 )
+						return SPELL_FAILED_BAD_TARGETS;
 				}break;
 				case 36314: //The Seer's Presence
 				{

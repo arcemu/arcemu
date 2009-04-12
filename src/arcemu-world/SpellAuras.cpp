@@ -3185,8 +3185,6 @@ void Aura::SpellAuraModStun(bool apply)
 {
 	if(!m_target) return;
 
-	if(m_spellProto->Id == 38554) return; // Absorb Eye of Grillok
-
 	if(apply)
 	{
 		// Check Mechanic Immunity

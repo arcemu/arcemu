@@ -3017,15 +3017,21 @@ void Spell::SpellEffectSummon(uint32 i)
 			Instant cast		3 min cooldown
 			Summons two Spirit Wolves under the command of the Shaman, lasting 45 sec.
 			*/
+			//First wolf
 			Pet *summon = objmgr.CreatePet(GetProto()->EffectMiscValue[i]);
 			summon->CreateAsSummon(GetProto()->EffectMiscValue[i], ci, NULL, p_caster, GetProto(), 4, GetDuration());
+
+			//Second wolf
+			Pet *summon2 = objmgr.CreatePet(GetProto()->EffectMiscValue[i]);
+			summon2->CreateAsSummon(GetProto()->EffectMiscValue[i], ci, NULL, p_caster, GetProto(), 4, GetDuration());
+			summon2->GetAIInterface()->SetUnitToFollow(p_caster);
+			summon2->GetAIInterface()->SetUnitToFollowAngle(float(-(M_PI/2)));
+			
+			//Spells
 			summon->AddSpell(dbcSpell.LookupEntry(58877), true); // Spirit Hunt
 			summon->AddSpell(dbcSpell.LookupEntry(58875), true); // Spirit walk
 			summon->AddSpell(dbcSpell.LookupEntry(58857), true); // Twin Howl
 			summon->AddSpell(dbcSpell.LookupEntry(58861), true); // Spirit Bash
-			// Second wolf
-			Unit *summon2 = u_caster->create_guardian(GetProto()->EffectMiscValue[i],GetDuration(),float(-(M_PI/2)),u_caster->getLevel(), NULL, NULL );
-			summon->GetAIInterface()->SetSoulLinkedWith(summon2);
 		}break;
 	case 27893: // Dancing Rune Weapon
 		{
