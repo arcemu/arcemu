@@ -54,6 +54,8 @@
 #include "../arcemu-shared/LocationVector.h"
 
 #include <zlib.h>
+#include <boost/shared_array.hpp>
+#include <boost/shared_ptr.hpp>
 
 #include "../arcemu-shared/Database/DatabaseEnv.h"
 #include "../arcemu-shared/Database/DBCStores.h"
