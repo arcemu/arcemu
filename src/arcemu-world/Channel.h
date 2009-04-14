@@ -21,6 +21,10 @@
 #ifndef __CHANNEL_H
 #define __CHANNEL_H
 
+#define CHANNEL_TRADE 2
+#define CHANNEL_GUILDREC 25
+#define CHANNEL_LFG 26
+
 using namespace std;
 
 enum CHANNEL_FLAGS
@@ -74,6 +78,42 @@ enum CHANNEL_NOTIFY_FLAGS
 	CHANNEL_NOTIFY_FLAG_VOICE_OFF	= 0x23,
 };
 
+enum CHANNEL_DBC_FLAGS
+{
+	CHANNEL_DBC_UNK_1			= 0x01,
+	CHANNEL_DBC_HAS_ZONENAME	= 0x02,
+	CHANNEL_DBC_MUTED_DELAYED	= 0x04,
+	CHANNEL_DBC_ALLOW_LINKS		= 0x08,
+	CHANNEL_DBC_CITY_ONLY_1		= 0x10,
+	CHANNEL_DBC_CITY_ONLY_2		= 0x20, //2 identical columns, who knows?
+	CHANNEL_DBC_UNUSED_1		= 0x40,
+	CHANNEL_DBC_UNUSED_2		= 0x80,
+	CHANNEL_DBC_UNUSED_3		= 0x0100,
+	CHANNEL_DBC_UNUSED_4		= 0x0200,
+	CHANNEL_DBC_UNUSED_5		= 0x0400,
+	CHANNEL_DBC_UNUSED_6		= 0x0800,
+	CHANNEL_DBC_UNUSED_7		= 0x1000,
+	CHANNEL_DBC_UNUSED_8		= 0x2000,
+	CHANNEL_DBC_UNUSED_9		= 0x4000,
+	CHANNEL_DBC_UNUSED_10		= 0x8000,
+	CHANNEL_DBC_UNK_2			= 0x010000, //carried by local and worlddefense
+	CHANNEL_DBC_UNK_3			= 0x020000, //carried by guildrecruitment. Perhaps a LeaveOnGuildJoin flag?
+	CHANNEL_DBC_LFG				= 0x040000,
+	CHANNEL_DBC_UNUSED_11		= 0x080000,
+};
+
+enum CHANNEL_PACKET_FLAGS
+{
+	CHANNEL_PACKET_CUSTOM		= 0x01,
+	CHANNEL_PACKET_UNK1			= 0x02, //not seen yet, perhaps related to worlddefense
+	CHANNEL_PACKET_ALLOWLINKS	= 0x04,
+	CHANNEL_PACKET_ZONESPECIFIC	= 0x08, // i'm sure one of these is zonespecific and the other is 'system channel' but not sure
+	CHANNEL_PACKET_SYSTEMCHAN	= 0x10, // which way round it is. I need a packetlog of worlddefense but i'm guessing this order
+	CHANNEL_PACKET_CITY			= 0x20,
+	CHANNEL_PACKET_LFG			= 0x40,
+	CHANNEL_PACKET_VOICE		= 0x80,
+};
+
 class Channel
 {
 	Mutex m_lock;
@@ -86,6 +126,7 @@ public:
 	string m_name;
 	string m_password;
 	uint8 m_flags;
+	uint32 m_dbcflags;
 	uint32 m_id;
 	bool m_general;
 	bool m_muted;
@@ -103,7 +144,7 @@ public:
 	~Channel();
 
 	void AttemptJoin(Player * plr, const char * password);
-	void Part(Player * plr, bool send_packet = true);
+	void Part(Player * plr, bool send_packet = true, bool automated = false);
 	void Kick(Player * plr, Player * die_player, bool ban);
 	void Invite(Player * plr, Player * new_player);
 	void Moderate(Player * plr);

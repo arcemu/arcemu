@@ -387,6 +387,8 @@ ECHO [Importing] 2084_character_achievement_progress.sql
 mysql -h %server% --user=%user% --password=%pass% --port=%port% %chr% < ..\character_updates\2084_character_achievement_progress.sql
 ECHO [Importing] 2310_guilds.sql
 mysql -h %server% --user=%user% --password=%pass% --port=%port% %chr% < ..\character_updates\2310_guilds.sql
+ECHO [Importing] 2539_feedback.sql
+mysql -h %server% --user=%user% --password=%pass% --port=%port% %chr% < ..\character_updates\2539_feedback.sql
 
 ECHO [Importing] Character Updates Finished
 ECHO.

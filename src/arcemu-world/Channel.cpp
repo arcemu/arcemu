@@ -51,6 +51,7 @@ Channel::Channel(const char * name, uint32 team, uint32 type_id)
 {
 	ChatChannelDBC * pDBC;
 	m_flags = 0;
+	m_dbcflags = 0;
 	m_announce = true;
 	m_muted = false;
 	m_general = false;
@@ -64,7 +65,10 @@ Channel::Channel(const char * name, uint32 team, uint32 type_id)
 #endif
 
 	pDBC = dbcChatChannels.LookupEntryForced(type_id);
-	if( pDBC != NULL )
+	// some servers like a global chat channel, best to make it a special case
+	// otherwise players can end up with owner/moderator permission on the channel
+	// to disable 'global' then either remove or stream-comment out the || stricmp(name, "global")
+	if( pDBC != NULL || stricmp(name, "global") == 0 )
 	{
 		m_general = true;
 		m_announce = false;
@@ -72,29 +76,24 @@ Channel::Channel(const char * name, uint32 team, uint32 type_id)
 #ifdef VOICE_CHAT
 		voice_enabled = false;
 #endif
+		if( pDBC != NULL )
+			m_dbcflags = pDBC->flags;
 
-		m_flags |= 0x10;			// general flag
-		// flags (0x01 = custom?, 0x04 = trade?, 0x20 = city?, 0x40 = lfg?, , 0x80 = voice?,
-
-		if( pDBC->flags & 0x08 )
-			m_flags |= 0x08;		// trade
-
-		if( pDBC->flags & 0x10 || pDBC->flags & 0x20 )
-			m_flags |= 0x20;		// city flag
-
-		if( pDBC->flags & 0x40000 )
-			m_flags |= 0x40;		// lfg flag
+		if ( m_dbcflags & CHANNEL_DBC_HAS_ZONENAME )
+			m_flags |= CHANNEL_PACKET_ZONESPECIFIC;
+		if ( m_dbcflags & CHANNEL_DBC_ALLOW_LINKS )
+			m_flags |= CHANNEL_PACKET_ALLOWLINKS;
+		if ( m_dbcflags & CHANNEL_DBC_CITY_ONLY_1 || m_dbcflags & CHANNEL_DBC_CITY_ONLY_2 ) //until these columns can be separated, use both
+			m_flags |= CHANNEL_PACKET_CITY;
+		if ( m_dbcflags & CHANNEL_DBC_LFG )
+			m_flags |= CHANNEL_PACKET_LFG;
+		m_flags |= CHANNEL_PACKET_SYSTEMCHAN;
 	}
 	else
 		m_flags = 0x01;
 
-	// scape stuff
-	if( !stricmp(name, "global") || !stricmp(name, "mall") || !stricmp(name, "lfg") )
-	{
-		m_minimumLevel = 10;
-		m_general = true;
-		m_announce = false;
-	}
+
+
 }
 
 void Channel::AttemptJoin(Player * plr, const char * password)
@@ -102,6 +101,26 @@ void Channel::AttemptJoin(Player * plr, const char * password)
 	Guard mGuard(m_lock);
 	WorldPacket data(SMSG_CHANNEL_NOTIFY, 100);
 	uint32 flags = CHANNEL_FLAG_NONE;
+
+	if( m_flags & CHANNEL_PACKET_CITY && !( plr->IsInCity() ) )
+		return;
+
+	if( m_flags & CHANNEL_PACKET_LFG )
+	{
+		// make sure we have lfg dungeons
+		bool inlfg=false;
+		for(uint8 i = 0; i < 3; i++)
+		{
+			if(plr->LfgDungeonId[i] != 0)
+				inlfg=true;
+		}
+
+		if(!inlfg)
+		{
+			sLog.outDebug("Channeljoin failed due to: Not lfg");	
+			return;		// don't join lfg
+		}
+	}
 
 	if( !m_general && plr->GetSession()->CanUseCommand('c') )
 		flags |= CHANNEL_FLAG_MODERATOR;
@@ -138,13 +157,12 @@ void Channel::AttemptJoin(Player * plr, const char * password)
 		data << uint8(CHANNEL_NOTIFY_FLAG_JOINED) << m_name << plr->GetGUID();
 		SendToAll(&data, NULL);
 	}
-
 	data.clear();
 	if( m_flags & 0x40 && !plr->GetSession()->HasFlag( ACCOUNT_FLAG_NO_AUTOJOIN ) )
 		data << uint8(CHANNEL_NOTIFY_FLAG_YOUJOINED) << m_name << uint8(0x1A) << uint32(0) << uint32(0);
 	else
 		data << uint8(CHANNEL_NOTIFY_FLAG_YOUJOINED) << m_name << m_flags << m_id << uint32(0);
-
+	
 	plr->GetSession()->SendPacket(&data);
 
 #ifdef VOICE_CHAT
@@ -170,7 +188,7 @@ void Channel::AttemptJoin(Player * plr, const char * password)
 #endif
 }
 
-void Channel::Part(Player * plr, bool send_packet )
+void Channel::Part(Player * plr, bool send_packet, bool automated )
 {
 	m_lock.Acquire();
 	WorldPacket data(SMSG_CHANNEL_NOTIFY, 100);
@@ -205,13 +223,9 @@ void Channel::Part(Player * plr, bool send_packet )
 		SetOwner(NULL, NULL);
 	}
 
-	if(plr->GetSession() && (plr->GetSession()->IsLoggingOut() || plr->m_TeleportState == 1 ))
+	if( plr->GetSession() && send_packet )
 	{
-
-	}
-	else if( send_packet )
-	{
-		data << uint8(CHANNEL_NOTIFY_FLAG_YOULEFT) << m_name << m_id << uint32(0) << uint8(0);
+		data << uint8(CHANNEL_NOTIFY_FLAG_YOULEFT) << m_name << m_id << ((automated)?uint8(1):uint8(0));
 		plr->GetSession()->SendPacket(&data);
 	}
 
@@ -975,7 +989,7 @@ void ChannelMgr::RemoveChannel(Channel * chn)
 
 ChannelMgr::ChannelMgr()
 {
-
+	
 }
 
 #ifdef VOICE_CHAT

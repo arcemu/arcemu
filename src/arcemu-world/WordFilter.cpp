@@ -214,3 +214,111 @@ bool WordFilter::Parse(string& sMessage, bool bAllowReplace /* = true */)
 
 	return false;
 }
+
+/*
+	Perhaps this could use a little documentation:
+
+	it works its way through the string looking for | symbols,
+	if it finds one then it checks the following character and deals with it.
+
+	it really should be a case of ORDER DENY,ALLOW, but atm it is ALLOW,DENY
+	
+	The following should be considered 'unfriendly' sequences. Ones that occur 
+	normally in chat, but only in specific circumstances, these should all be dealt with here:
+	|c[0-9a-fA-F][0-9a-fA-F][0-9a-fA-F][0-9a-fA-F][0-9a-fA-F][0-9a-fA-F][0-9a-fA-F][0-9a-fA-F] - Colour tag, should be followed by a |H *always*
+	|r - end of colour tag, should always follow a |h
+	|H - hyperlink open tag. Should always be followed by two |h. Should be followed by one of the following (not yet enforced)
+		item
+		spell
+		achievement
+		trade
+		quest
+	
+	The following are the 'bad' sequences. These should NEVER be transmitted:
+	|T and |t - open/close icon tags. Not handled here - if detected the entire message is dropped and the player gets a warning sysmsg
+	\n - newline char. Not handled, afaik currently stripped out by the client
+
+	The following are not particularly 'unfriendly' sequences, and aren't handled:
+	|1 and |4 - plural sequence
+	|3 - used to crash the client, appears to do nothing now
+	|H - the following types are registered by default: gm_chat, player. The former opens GM Chat, and the latter when clicked 
+	opens a whisper to the player targetted by the link. Additional types may exist but would be registered by 3rd party addons
+	so any exploit using it would depend on the presence of a specific 3rd party addon in the victim's client.
+
+	This function:
+	Removes invalidly placed |c and |r sequences, leaving the raw text (not blizzlike, but /care)
+	Strips |H|h|h sequences down to the raw link text, minus the first and last characters (which SHOULD be the []) if links aren't enabled on the channel
+
+	Don't worry about the GM tag icons and the raid target icons in chat, the former is inserted clientside depending on the sender flags in the message,
+	the latter is transmitted as the text the user entered: {star}{skull} etc and is replaced client-side at the recipient.
+
+	--Stewart, April 09
+*/
+bool WordFilter::ParseEscapeCodes(char * sMsg, bool bAllowLinks)
+{
+	if(!strstr(sMsg,"|"))
+		return true;
+	
+	uint32 j=0;
+	for( j=0; j<(((string)sMsg).length()); j++)
+	{
+		if( ((string)sMsg).at(j) != char('|') )
+			continue;
+	
+		string newstr;
+		char * i;
+		switch( ((string)sMsg).at(j+1) )
+		{
+			case char('c'):
+				if(((string)sMsg).length() < j + 10 )
+				{
+					sMsg[j] = '\0';
+					break;
+				}
+				i = sMsg + j + 10;
+				if( strncmp(i,"|H",2) == 0 && bAllowLinks)
+					continue;
+				newstr = ((string)sMsg).replace(j,10,"");
+				strcpy(sMsg,newstr.c_str());
+				j=0;
+			break;
+			case char('r'):
+				i = (sMsg + j) - 2;
+				if(strncmp(i,"|h",2) == 0 && bAllowLinks)
+				{
+					continue;
+				}
+				newstr = ((string)sMsg).replace(j,2,"");
+				strcpy(sMsg,newstr.c_str());
+				j=0;
+			break;
+			case char('H'):
+				//abc  |Hitem:111:2:3:4:5:6:7:8:9|h[Tough Jerky]|h|r
+				//    ^=j                         ^=i-sMsg  (approx)
+				i = strstr(sMsg,"|h");
+				if(bAllowLinks && i)
+					continue;
+				if(i)
+					newstr = ((string)sMsg).replace(j,((size_t)(i - sMsg))-(j),"");
+				else
+					newstr = ((string)sMsg).replace(j,strlen(sMsg)-j,"");
+				strcpy(sMsg,newstr.c_str());
+				
+				j=0;
+			break;
+			case char('h'):
+				if(bAllowLinks)
+					continue;
+				if(((string)sMsg).at(j-1) == char(']'))
+					newstr = ((string)sMsg).replace(j-1,3,"");
+				else
+					newstr = ((string)sMsg).replace(j,2,"");
+				strcpy(sMsg,newstr.c_str());
+				j=0;
+			break;
+		}
+		
+		
+	}
+	return true;
+}

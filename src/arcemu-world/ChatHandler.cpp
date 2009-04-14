@@ -127,6 +127,9 @@ void WorldSession::HandleMessagechatOpcode( WorldPacket & recv_data )
 	// Process packet
 	switch(type)
 	{
+		case CHAT_MSG_WHISPER:
+			recv_data >> to;
+			pMisc=to.c_str();
 		case CHAT_MSG_SAY:
 		case CHAT_MSG_EMOTE:
 		case CHAT_MSG_PARTY:
@@ -138,12 +141,7 @@ void WorldSession::HandleMessagechatOpcode( WorldPacket & recv_data )
 		case CHAT_MSG_YELL:
 			recv_data >> msg;
 			pMsg=msg.c_str();
-			pMisc=0;
-			break;
-		case CHAT_MSG_WHISPER:
-			recv_data >> to >> msg;
-			pMsg=msg.c_str();
-			pMisc=to.c_str();
+			g_chatFilter->ParseEscapeCodes((char*)pMsg,true);
 			break;
 		case CHAT_MSG_CHANNEL:
 			recv_data >> channel;
@@ -451,9 +449,11 @@ void WorldSession::HandleMessagechatOpcode( WorldPacket & recv_data )
 				break;
 
 			Channel *chn = channelmgr.GetChannel(channel.c_str(),GetPlayer()); 
-			if(chn) 
+			if(chn)
+			{
+				g_chatFilter->ParseEscapeCodes((char*)pMsg, (chn->m_flags & CHANNEL_PACKET_ALLOWLINKS)>0 );
 				chn->Say(GetPlayer(),msg.c_str(), NULL, false);
-
+			}
 		} break;
 	case CHAT_MSG_AFK:
 		{

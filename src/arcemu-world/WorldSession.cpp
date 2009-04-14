@@ -681,6 +681,7 @@ void WorldSession::InitPacketHandlerTable()
 	WorldPacketHandlers[CMSG_LFM_SET_AUTOFILL].handler					= &WorldSession::HandleEnableAutoAddMembers;
 	WorldPacketHandlers[CMSG_LFM_CLEAR_AUTOFILL].handler					= &WorldSession::HandleDisableAutoAddMembers;
 	WorldPacketHandlers[CMSG_CLEAR_LOOKING_FOR_GROUP].handler				= &WorldSession::HandleLfgClear;
+	WorldPacketHandlers[CMSG_MEETINGSTONE_INFO].handler						= &WorldSession::HandleMeetingStoneInfo;
 	
 	// Taxi / NPC Interaction
 	WorldPacketHandlers[CMSG_ENABLETAXI].handler							= &WorldSession::HandleTaxiQueryAvaibleNodesOpcode;

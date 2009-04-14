@@ -27,26 +27,32 @@ void WorldSession::HandleChannelJoin(WorldPacket& recvPacket)
 	CHECK_PACKET_SIZE(recvPacket, 1);
 	string channelname,pass;
 	uint32 dbc_id = 0;
-	uint16 crap;		// crap = some sort of channel type?
-	uint32 i;
+	uint8 crap;		// crap = some sort of channel type? no, investigation shows a constant 0x1 for all channels
+	uint8 customchannel;
+
 	Channel * chn;
 
-	recvPacket >> dbc_id >> crap;
+	recvPacket >> dbc_id >> crap >> customchannel;
 	recvPacket >> channelname;
 	recvPacket >> pass;
 
-	if(!stricmp(channelname.c_str(), "LookingForGroup") && !sWorld.m_lfgForNonLfg)
+	if( customchannel == 0 )
 	{
-		// make sure we have lfg dungeons
-		for(i = 0; i < 3; ++i)
+		ChatChannelDBC * pDBC;
+		pDBC = dbcChatChannels.LookupEntryForced(dbc_id);
+		if( pDBC == NULL )
 		{
-			if(_player->LfgDungeonId[i] != 0)
-				break;
+			return;
 		}
-
-		if(i == 3)
-			return;		// don't join lfg
 	}
+
+	if( dbc_id == CHANNEL_TRADE ) //as much as i hate to hard-code this, its by far the simpler solution
+		_player->inTrade = true;
+	else if( dbc_id == CHANNEL_GUILDREC )
+		_player->inGuildRecruitment = true;
+	else if( dbc_id == CHANNEL_LFG )
+		_player->inLFGChan = true;
+
 
 	if( sWorld.GmClientChannel.size() && !stricmp(sWorld.GmClientChannel.c_str(), channelname.c_str()) && !GetPermissionCount())
 		return;
@@ -69,10 +75,17 @@ void WorldSession::HandleChannelLeave(WorldPacket& recvPacket)
 	recvPacket >> code;
 	recvPacket >> channelname;
 
+
+
 	chn = channelmgr.GetChannel(channelname.c_str(), _player);
 	if(chn == NULL)
 		return;
-
+	if( chn->m_id == CHANNEL_TRADE )
+		_player->inTrade = false;
+	else if( chn->m_id == CHANNEL_GUILDREC )
+		_player->inGuildRecruitment = false;
+	else if( chn->m_id == CHANNEL_LFG )
+		_player->inLFGChan = false;
 	chn->Part(_player);
 }
 

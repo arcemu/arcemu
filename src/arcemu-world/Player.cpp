@@ -65,6 +65,7 @@ m_curTarget(0),
 m_curSelection(0),
 m_lootGuid(0),
 m_Summon(NULL),
+m_feedbackTimer(0),
 
 m_PetNumberMax(0),
 m_lastShotTime(0),
@@ -8083,6 +8084,18 @@ QuestStatus Player::GetQuestStatus( uint32 quest_id )
 	return QUEST_STATUS_UNAVAILABLE;
 }
 
+bool Player::IsInCity()
+{
+	AreaTable * at = dbcArea.LookupEntry(GetAreaID());
+	AreaTable * zt = NULL;
+	if( at->ZoneId )
+		zt = dbcArea.LookupEntry( at->ZoneId );
+
+	bool areaIsCity = at->AreaFlags & AREA_CITY_AREA || at->AreaFlags & AREA_CITY;
+	bool zoneIsCity = zt && ( zt->AreaFlags & AREA_CITY_AREA || zt->AreaFlags & AREA_CITY );
+	
+	return ( areaIsCity || zoneIsCity );
+}
 
 void Player::ZoneUpdate(uint32 ZoneId)
 {
@@ -8126,7 +8139,7 @@ void Player::ZoneUpdate(uint32 ZoneId)
 
 	at = dbcArea.LookupEntryForced( ZoneId );
 
-	if( !m_channels.empty() && at)
+	/*if( !m_channels.empty() && at)
 	{
 		// change to zone name, not area name
 		for( std::set<Channel*>::iterator itr = m_channels.begin(),nextitr ; itr != m_channels.end() ; itr = nextitr)
@@ -8172,7 +8185,7 @@ void Player::ZoneUpdate(uint32 ZoneId)
 
 			}
 		}
-	}
+	} */
 
 #ifdef OPTIMIZED_PLAYER_SAVING
 	save_Zone();
@@ -8201,7 +8214,9 @@ void Player::UpdateChannels(uint16 AreaID)
 {
 	set<Channel *>::iterator i;
 	Channel * c;
-	string channelname, AreaName;
+	const char * AreaName;
+	char channelname[96];
+	uint32 areaflags = 0;
 
 
 	if(GetMapId()==450)
@@ -8223,7 +8238,8 @@ void Player::UpdateChannels(uint16 AreaID)
 	else
 	{
 		AreaName = at2->name;
-		if(AreaName.length() < 2)
+		areaflags = at2->AreaFlags;
+		if(strlen(AreaName) < 2)
 		{
 			MapInfo *pMapinfo = WorldMapInfoStorage.LookupEntry(GetMapId());
 			AreaName = pMapinfo->name;
@@ -8235,34 +8251,60 @@ void Player::UpdateChannels(uint16 AreaID)
 		c = *i;
 		i++;
 
-		if(!c->m_general || c->m_name == "LookingForGroup")//Not an updatable channel.
+		if( !(c->m_flags & CHANNEL_PACKET_ZONESPECIFIC) )//Not an updatable channel.
 			continue;
 
-		if( strstr(c->m_name.c_str(), "General") )
-			channelname = "General";
-		else if( strstr(c->m_name.c_str(), "Trade") )
-			channelname = "Trade";
-		else if( strstr(c->m_name.c_str(), "LocalDefense") )
-			channelname = "LocalDefense";
-		else if( strstr(c->m_name.c_str(), "GuildRecruitment") )
-			channelname = "GuildRecruitment";
-		else
-			continue;//Those 4 are the only ones we want updated.
-		channelname += " - ";
-		if( (strstr(c->m_name.c_str(), "Trade") || strstr(c->m_name.c_str(), "GuildRecruitment")) && ( at2->AreaFlags &AREA_CITY || at2->AreaFlags &AREA_CITY_AREA ))
-		{
-			channelname += "City";
-		}
-		else
-			channelname += AreaName;
+		ChatChannelDBC * pDBC = dbcChatChannels.LookupEntryForced( c->m_id );
+		if(!pDBC)		
+			continue;
 
-		Channel * chn = channelmgr.GetCreateChannel(channelname.c_str(), this, c->m_id);
+		if( c->m_flags & CHANNEL_PACKET_CITY )
+		{
+			if( !IsInCity() )
+			{
+				c->Part(this, true, true);
+				continue;
+			}
+			else
+			{
+				string aname="City";
+				AreaName = aname.c_str();
+			}
+		}
+
+		snprintf( channelname , 95 , pDBC->name_pattern[0] , AreaName );
+		
+		Channel * chn = channelmgr.GetCreateChannel(channelname, this, c->m_id);
 		if( !chn->HasMember(this) )
 		{
-			c->Part(this);
-			chn->AttemptJoin(this, NULL);
+			chn->AttemptJoin(this, "");
+			c->Part(this,false);
 		}
 	}
+	
+	if( IsInCity() )
+	{
+			
+		if( inTrade )
+		{
+			char channelname[96];
+			ChatChannelDBC * pDBC = dbcChatChannels.LookupEntryForced( CHANNEL_TRADE );
+			sprintf(channelname,pDBC->name_pattern[0],"City");
+			Channel * chn = channelmgr.GetCreateChannel(channelname, this, pDBC->id);
+			if( !chn->HasMember(this) )
+				chn->AttemptJoin(this, "");
+		}
+		if( inGuildRecruitment )
+		{
+			char channelname[96];
+			ChatChannelDBC * pDBC = dbcChatChannels.LookupEntryForced( CHANNEL_GUILDREC );
+			sprintf(channelname,pDBC->name_pattern[0],"City");
+			Channel * chn = channelmgr.GetCreateChannel(channelname, this, pDBC->id);
+			if( !chn->HasMember(this) )
+				chn->AttemptJoin(this, "");
+		}
+	}
+	
 	m_TeleportState = 0;
 }
 void Player::SendTradeUpdate()

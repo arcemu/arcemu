@@ -172,6 +172,11 @@ void WorldSession::HandleLfgClear(WorldPacket & recvPacket)
 	sLfgMgr.RemovePlayerFromLfgQueues(_player);
 }
 
+void WorldSession::HandleMeetingStoneInfo(WorldPacket & recvPacket)
+{
+	_player->SendMeetingStoneQueue(0,6); //values drawn from packet logs, don't appear to change
+}
+
 void WorldSession::HandleLfgInviteAccept(WorldPacket & recvPacket)
 {
 	CHECK_INWORLD_RETURN

@@ -423,6 +423,7 @@ protected:
 	void HandleSetLookingForMore(WorldPacket& recvPacket);
 	void HandleSetLookingForNone(WorldPacket& recvPacket);
 	void HandleLfgClear(WorldPacket & recvPacket);
+	void HandleMeetingStoneInfo(WorldPacket & recvPacket);
 	void HandleLfgInviteAccept(WorldPacket & recvPacket);
 	void HandleLfgInviteDeny(WorldPacket & recvPacket);
 
