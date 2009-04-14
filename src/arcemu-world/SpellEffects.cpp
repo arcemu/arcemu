@@ -2983,6 +2983,7 @@ void Spell::SpellEffectSummon(uint32 i)
 	case 41:
 	case 407:	SpellEffectSummonCritter(i);	return;
 	case 61:
+	case 669:
 	case 881:	SpellEffectSummonGuardian(i);	return;
 	case 64:	SpellEffectSummonWild(i);		return;
 	case 65:
