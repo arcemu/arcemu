@@ -337,6 +337,7 @@ protected:
 	bool HandleGMTicketGetByIdCommand(const char* args, WorldSession *m_session);
 	bool HandleGMTicketRemoveByIdCommand(const char* args, WorldSession *m_session);
 #ifndef GM_TICKET_MY_MASTER_COMPATIBLE
+	void SendGMSurvey();
 	bool HandleGMTicketAssignToCommand(const char* args, WorldSession *m_session);
 	bool HandleGMTicketReleaseCommand(const char* args, WorldSession *m_session);
 	bool HandleGMTicketCommentCommand(const char* args, WorldSession *m_session);
