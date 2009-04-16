@@ -4579,6 +4579,15 @@ void Spell::SpellEffectPowerBurn(uint32 i) // power burn
 		// Resilience - reduces the effect of mana drains by (CalcRating*2)%.
 		damage *= float2int32( 1 - ( ( static_cast<Player*>(unitTarget)->CalcRating( PLAYER_RATING_MODIFIER_SPELL_CRIT_RESILIENCE ) * 2 ) / 100.0f ) );
 	}
+	if ( this ) {
+			int32 mult = damage;
+			damage = mult * unitTarget->GetUInt32Value(UNIT_FIELD_MAXPOWER1) / 100;
+			if (m_caster && m_caster->IsUnit() ) {
+				Unit* caster = static_cast<Unit*> (this->m_caster);
+				if ( (uint32) damage > caster->GetUInt32Value(UNIT_FIELD_MAXPOWER1) * (mult*2) / 100 ) 
+					damage = caster->GetUInt32Value(UNIT_FIELD_MAXPOWER1) * (mult*2) / 100;
+			}
+ 	}
 
 	int32 mana = (int32)min( (int32)unitTarget->GetUInt32Value( UNIT_FIELD_POWER1 ), damage );
 	unitTarget->ModUnsigned32Value(UNIT_FIELD_POWER1,-mana);

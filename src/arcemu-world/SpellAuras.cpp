@@ -5657,6 +5657,18 @@ void Aura::SpellAuraPeriodicManaLeech(bool apply)
 	if(apply)
 	{
 		uint32 amt=mod->m_amount;
+		if ( this ) {
+			uint32 mult = amt;
+			if ( m_target ) {
+				amt = mult * m_target->GetUInt32Value(UNIT_FIELD_MAXPOWER1) / 100;
+				Unit* caster = static_cast<Unit*> (this->GetCaster());
+				if ( caster ) {
+					if ( amt > caster->GetUInt32Value(UNIT_FIELD_MAXPOWER1) * (mult*2) / 100 ) 
+						amt = caster->GetUInt32Value(UNIT_FIELD_MAXPOWER1) * (mult*2) / 100;
+				}
+			}
+			
+		}
 		sEventMgr.AddEvent(this, &Aura::EventPeriodicManaLeech,amt,
 			EVENT_AURA_PERIODIC_LEECH,	 GetSpellProto()->EffectAmplitude[mod->i],0,EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
 	}
