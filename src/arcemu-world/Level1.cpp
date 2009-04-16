@@ -1156,6 +1156,11 @@ bool ChatHandler::HandleLookupAchievementCmd(const char* args, WorldSession* m_s
 	{
 		x = string(args);
 	}
+	if(x.length() < 4)
+	{
+		RedSystemMessage(m_session, "Your search string must be at least 4 characters long.");
+		return true;
+	}
 	arcemu_TOLOWER(x);
 	GreenSystemMessage(m_session, "Starting search of achievement `%s`...", x.c_str());
 	uint32 t = getMSTime();
@@ -1169,7 +1174,7 @@ bool ChatHandler::HandleLookupAchievementCmd(const char* args, WorldSession* m_s
 		std::set<uint32> foundList;
 		j = dbcAchievementStore.GetNumRows();
 		bool foundmatch;
-		for( i=0; i<j && numFound<50; ++i )
+		for( i=0; i<j && numFound<25; ++i )
 		{
 			AchievementEntry const* achievement = dbcAchievementStore.LookupEntry(i);
 			if(achievement)
@@ -1238,13 +1243,13 @@ bool ChatHandler::HandleLookupAchievementCmd(const char* args, WorldSession* m_s
 					break;
 				}
 			}
-		} // for loop (number of rows, up to 50)
+		} // for loop (number of rows, up to 25)
 	} // lookup name or description
-	if(lookupcriteria && numFound<50)
+	if(lookupcriteria && numFound<25)
 	{
 		std::set<uint32> foundList;
 		j = dbcAchievementCriteriaStore.GetNumRows();
-		for( i=0; i<j && numFound<50; ++i )
+		for( i=0; i<j && numFound<25; ++i )
 		{
 			AchievementCriteriaEntry const* criteria = dbcAchievementCriteriaStore.LookupEntry(i);
 			if(criteria)
@@ -1306,7 +1311,7 @@ bool ChatHandler::HandleLookupAchievementCmd(const char* args, WorldSession* m_s
 					break;
 				}
 			}
-		} // for loop (number of rows, up to 50)
+		} // for loop (number of rows, up to 25)
 	} // lookup criteria
 	if(numFound==0)
 	{
