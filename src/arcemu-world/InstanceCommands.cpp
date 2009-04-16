@@ -202,8 +202,8 @@ bool ChatHandler::HandleShutdownInstanceCommand(const char* args, WorldSession *
 	SystemMessage(m_session, "Attempting to shutdown instance with id %u...", instanceId);
 
 	sInstanceMgr.SafeDeleteInstance(instance->m_mapMgr);
-	instance->m_mapMgr = NULL;
 	delete instance->m_mapMgr;
+	instance->m_mapMgr = NULL;
 
 	SystemMessage(m_session, "...done");
 

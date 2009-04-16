@@ -2114,10 +2114,14 @@ void Player::addSpell(uint32 spell_id)
 		// miscvalue1==777 for mounts, 778 for pets
 		m_achievementMgr.UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_NUMBER_OF_MOUNTS, 777, 0, 0);
 	}
-	else if(spell->Effect[0]==SPELL_EFFECT_SUMMON && spell->School==0) // Companion pet?
+	else if(spell->Effect[0]==SPELL_EFFECT_SUMMON) // Companion pet?
 	{
 		// miscvalue1==777 for mounts, 778 for pets
-		m_achievementMgr.UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_NUMBER_OF_MOUNTS, 778, 0, 0);
+		// make sure it's a companion pet, not some other summon-type spell
+		if(strncmp(spell->Description,"Right Cl", 8) == 0) // "Right Click to summon and dismiss " ...
+		{
+			m_achievementMgr.UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_NUMBER_OF_MOUNTS, 778, 0, 0);
+		}
 	}
 }
 
@@ -3409,7 +3413,7 @@ void Player::LoadFromDBProc(QueryResultVector & results)
 	// Load achievements - trying to do this asynchronously causes a crash :/
 	m_achievementMgr.LoadFromDB(CharacterDatabase.Query("SELECT achievement, date FROM character_achievement WHERE guid = '%u'", GetUInt32Value(OBJECT_FIELD_GUID)),CharacterDatabase.Query("SELECT criteria, counter, date FROM character_achievement_progress WHERE guid = '%u'", GetUInt32Value(OBJECT_FIELD_GUID)));
 	m_achievementMgr.CheckAllAchievementCriteria();
-	m_achievementMgr.SendAllAchievementData(this);
+//	m_achievementMgr.SendAllAchievementData(this);
 
 	// Check skills that player shouldn't have
 	if (_HasSkillLine(SKILL_DUAL_WIELD) && !HasSpell(674)) {

@@ -2256,7 +2256,6 @@ bool ChatHandler::HandleIPBanCommand(const char * args, WorldSession * m_session
 	{
 		RedSystemMessage(m_session, "Lack of CIDR address assumes a 32bit match (if you don't understand, dont worry, it worked)");
 		IP.append("/32");
-		pIp = (char*)IP.c_str(); //is this correct? - optical
 	}
 
 	//temporal IP or real pro flooder who will change it tomorrow ?
@@ -2265,7 +2264,7 @@ bool ChatHandler::HandleIPBanCommand(const char * args, WorldSession * m_session
 		pReason = &emptystring;
 
 	SystemMessage(m_session, "Adding [%s] to IP ban table, expires %s.Reason is :%s", pIp, (expire_time == 0)? "Never" : ctime( &expire_time ),pReason);
-	sLogonCommHandler.IPBan_Add( pIp, (uint32)expire_time, pReason );
+	sLogonCommHandler.IPBan_Add( IP.c_str(), (uint32)expire_time, pReason );
 	sWorld.DisconnectUsersWithIP(IP.substr(0,IP.find("/")).c_str(), m_session);
 	sGMLog.writefromsession(m_session, "banned ip address %s, expires %s", pIp, (expire_time == 0)? "Never" : ctime( &expire_time ));
 	return true;

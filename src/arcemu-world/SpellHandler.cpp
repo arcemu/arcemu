@@ -308,8 +308,15 @@ void WorldSession::HandleCastSpellOpcode(WorldPacket& recvPacket)
 	// this could fuck up things but meh it's needed ALOT of the newbs are using WPE now
 	// WPE allows them to mod the outgoing packet and basicly choose what ever spell they want :(
 
-	if( !GetPlayer()->HasSpell(spellId) || spellInfo->Attributes & ATTRIBUTES_PASSIVE )
+	if(!GetPlayer()->HasSpell(spellId))
 	{
+		sCheatLog.writefromsession(this,"Cast spell %lu but doesn't have that spell.", spellId);
+		sLog.outDetail("WORLD: Spell isn't casted because player \"%s\" is cheating", GetPlayer()->GetName());
+		return;
+	}
+	if(spellInfo->Attributes & ATTRIBUTES_PASSIVE)
+	{
+		sCheatLog.writefromsession(this,"Cast passive spell %lu.", spellId);
 		sLog.outDetail("WORLD: Spell isn't casted because player \"%s\" is cheating", GetPlayer()->GetName());
 		return;
 	}
