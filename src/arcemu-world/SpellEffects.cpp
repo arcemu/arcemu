@@ -534,7 +534,7 @@ void Spell::SpellEffectSchoolDMG(uint32 i) // dmg school
 		case SPELL_HASH_THUNDER_CLAP: // Thunderclap
 			{
 				if(u_caster)
-					dmg = (GetProto()->EffectBasePoints[0]+1)+ u_caster->GetAP();
+					dmg = float2int32((GetProto()->EffectBasePoints[0]+1)+ u_caster->GetAP() * 0.20f);
 			}break;
 		case SPELL_HASH_INTERCEPT: // Warrior - Intercept
 			{
@@ -554,7 +554,9 @@ void Spell::SpellEffectSchoolDMG(uint32 i) // dmg school
 		case SPELL_HASH_HEROIC_THROW:   // Heroic Throw
 			{
 				if(u_caster)
-					dmg = ( u_caster->GetAP() >> 1 ) + 12;
+					dmg = u_caster->GetAP()/2 + 12;
+				// hardcoded value are faster I guess
+				// GetProto()->EffectBasePoints[0]+1 == 12 future reference
 			}break;
 		case SPELL_HASH_BLOODTHIRST:	// Bloodthirst
 			{
