@@ -6601,7 +6601,7 @@ void Spell::SpellEffectDummyMelee( uint32 i ) // Normalized Weapon damage +
 				SpellEntry * spinfo = aur->GetSpellProto();
 				aur->Remove();
 				Spell * sp = SpellPool.PooledNew();
-				if (sp)
+				if (!sp)
 					return;
 				sp->Init( this->u_caster , spinfo , true , NULL );
 

@@ -3893,7 +3893,7 @@ void Unit::Strike( Unit* pVictim, uint32 weapon_damage_type, SpellEntry* ability
 				else
 				{
 					cspell = SpellPool.PooledNew();
-					if (cspell)
+					if (!cspell)
 						return;
 					cspell->Init(this, itr->first, true, NULL);
 					cspell->prepare(&targets);
