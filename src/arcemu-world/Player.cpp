@@ -4158,8 +4158,8 @@ void Player::_ApplyItemMods(Item* item, int8 slot, bool apply, bool justdrokedow
 				}
 				else
 				{
-					BaseDamage[0] = apply ? scaledmindmg : 1;
-					BaseDamage[1] = apply ? scaledmaxdmg : 1;
+					BaseDamage[0] = apply ? scaledmindmg : 0;
+					BaseDamage[1] = apply ? scaledmaxdmg : 0;
 				}
 			}
 		}
@@ -4202,8 +4202,8 @@ void Player::_ApplyItemMods(Item* item, int8 slot, bool apply, bool justdrokedow
 				}
 				else
 				{
-					BaseDamage[0] = apply ? proto->Damage[0].Min : 1;
-					BaseDamage[1] = apply ? proto->Damage[0].Max : 1;
+					BaseDamage[0] = apply ? proto->Damage[0].Min : 0;
+					BaseDamage[1] = apply ? proto->Damage[0].Max : 0;
 				}
 			}
 		}

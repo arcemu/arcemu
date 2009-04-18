@@ -2771,6 +2771,8 @@ void ItemInterface::SwapItemSlots(int8 srcslot, int8 dstslot)
  	{
 		if( m_pItems[(int)srcslot] != NULL )		
 			m_pOwner->ApplyItemMods( m_pItems[(int)srcslot], srcslot, true );
+		else if( srcslot == EQUIPMENT_SLOT_MAINHAND || srcslot == EQUIPMENT_SLOT_OFFHAND )
+			m_pOwner->CalcDamage();
  	}
 
 	//dst item is equiped now
@@ -2778,8 +2780,9 @@ void ItemInterface::SwapItemSlots(int8 srcslot, int8 dstslot)
 	{
 		if( m_pItems[(int)dstslot] != NULL )		
 			m_pOwner->ApplyItemMods( m_pItems[(int)dstslot], dstslot, true );
+		else if( dstslot == EQUIPMENT_SLOT_MAINHAND || dstslot == EQUIPMENT_SLOT_OFFHAND )
+			m_pOwner->CalcDamage();
 	}
-
 }
 
 //-------------------------------------------------------------------//
