@@ -199,46 +199,47 @@ void AchievementMgr::LoadFromDB(QueryResult *achievementResult, QueryResult *cri
 }
 
 /**
-	Sends message to player that the achievement has been completed.
+	Sends message to player(s) that the achievement has been completed.
 */
 void AchievementMgr::SendAchievementEarned(AchievementEntry const* achievement)
 {
 	const char *msg = "|Hplayer:$N|h[$N]|h has earned the achievement $a!";
 
-	if(GetPlayer()->IsInGuild())
+	// Send Achievement message to everyone currently on the server
+	if(achievement->flags & (ACHIEVEMENT_FLAG_REALM_FIRST_KILL|ACHIEVEMENT_FLAG_REALM_FIRST_REACH))
 	{
-		//Guild* guild = objmgr.GetGuildByGuildName(GetPlayer()->m_playerInfo->guild->GetGuildName());
-		//Guild * guild = GetPlayer()->getPlayerInfo()->guild;
+		WorldPacket data(SMSG_SERVER_FIRST_ACHIEVEMENT, 200);
+		data << GetPlayer()->GetName();
+		data << uint64(GetPlayer()->GetGUID());
+		data << uint32(achievement->ID);
+		data << uint32(0);
+		sWorld.SendGlobalMessage(&data);
+	}
+	// Send Achievement message to every guild member currently on the server
+	else if(GetPlayer()->IsInGuild())
+	{
+		Guild* guild = GetPlayer()->getPlayerInfo()->guild;
 		WorldPacket data(SMSG_MESSAGECHAT, 200);
-		data << uint8(CHAT_MSG_ACHIEVEMENT);
 		data << uint8(CHAT_MSG_GUILD_ACHIEVEMENT);
 		data << uint32(LANG_UNIVERSAL);
-		data << GetPlayer()->GetNewGUID();
+		data << uint64(GetPlayer()->GetGUID());
 		data << uint32(5);
-		data << GetPlayer()->GetNewGUID();
+		data << uint64(GetPlayer()->GetGUID());
 		data << uint32(strlen(msg)+1);
 		data << msg;
 		data << uint8(0);
 		data << uint32(achievement->ID);
-		GetPlayer()->GetSession()->SendPacket(&data);
+		guild->SendPacket(&data);
 	}
-	if(achievement->flags & (ACHIEVEMENT_FLAG_REALM_FIRST_KILL|ACHIEVEMENT_FLAG_REALM_FIRST_REACH))
-	{
-		WorldPacket data(SMSG_SERVER_FIRST_ACHIEVEMENT, strlen(GetPlayer()->GetName())+1+8+4+4);
-		data << GetPlayer()->GetName();
-		data << GetPlayer()->GetNewGUID();
-		data << uint32(achievement->ID);
-		data << uint32(0);
-		GetPlayer()->GetSession()->SendPacket(&data);
-	}
+	// Send Achievement message to this player only
 	else
 	{
 		WorldPacket data(SMSG_MESSAGECHAT, 200);
 		data << uint8(CHAT_MSG_ACHIEVEMENT);
 		data << uint32(LANG_UNIVERSAL);
-		data << GetPlayer()->GetNewGUID();
-		data << uint32(5 );
-		data << GetPlayer()->GetNewGUID();
+		data << uint64(GetPlayer()->GetGUID());
+		data << uint32(5);
+		data << uint64(GetPlayer()->GetGUID());
 		data << uint32(strlen(msg)+1);
 		data << msg;
 		data << uint8(0);
