@@ -89,7 +89,7 @@ uint32 GetAutoCastTypeForSpell( SpellEntry * ent )
 		break;
 
 	}
-	return AUTOCAST_EVENT_NONE;
+	return AUTOCAST_EVENT_ATTACK;
 }
 
 void Pet::SetNameForEntry( uint32 entry )
