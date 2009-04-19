@@ -1196,6 +1196,7 @@ uint8 Spell::prepare( SpellCastTargets * targets )
 			return SPELL_FAILED_NOT_READY;
 	}
 
+
 	chaindamage = 0;
 	m_targets = *targets;
 
@@ -3308,6 +3309,12 @@ uint8 Spell::CanCast(bool tolerate)
 		 */
 		if (!tolerate && !p_caster->Cooldown_CanCast(GetProto()))
 				return SPELL_FAILED_NOT_READY;
+
+		/**
+		 * Mana check
+		 */
+		if(!HasPower())
+				return SPELL_FAILED_NO_POWER;
 
 		/**
 		 *	Duel request check
