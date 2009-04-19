@@ -2445,7 +2445,7 @@ void Spell::SpellEffectHeal(uint32 i) // Heal
 				}
 			}break;
 		default:
-			Heal((int32)damage);
+			Heal(damage);
 			break;
 		}
 	}
