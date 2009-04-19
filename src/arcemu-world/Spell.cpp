@@ -5077,11 +5077,11 @@ void Spell::Heal(int32 amount, bool ForceCrit)
 
 		//Judgement of Light
 		if( m_spellInfo->Id == 20267 )
-			amount = (int)(0.10f * unitTarget->GetUInt32Value(UNIT_FIELD_ATTACK_POWER) + 0.10f * static_cast<Player*>(u_caster)->GetUInt32Value(PLAYER_FIELD_MOD_DAMAGE_DONE_POS_01));
+			amount = (int)(0.10f * unitTarget->GetUInt32Value(UNIT_FIELD_ATTACK_POWER) + 0.10f * (u_caster)->GetUInt32Value(PLAYER_FIELD_MOD_DAMAGE_DONE_POS_01));
 		
 		//Seal of Light
 		if( m_spellInfo->Id == 20167 )
-			amount = (int)(0.15f * u_caster->GetUInt32Value(UNIT_FIELD_ATTACK_POWER) + 0.15f * static_cast<Player*>(u_caster)->GetUInt32Value(PLAYER_FIELD_MOD_DAMAGE_DONE_POS_01));
+			amount = (int)(0.15f * u_caster->GetUInt32Value(UNIT_FIELD_ATTACK_POWER) + 0.15f * (u_caster)->GetUInt32Value(PLAYER_FIELD_MOD_DAMAGE_DONE_POS_01));
 
 		//amount += float2int32( float( bonus ) * 1.88f ); //apply 3.0.2 spell coeff  //NO. FAIL. COEFFICIENTS WERE ALREADY HANDLED.
 		//3.0.2 spell healing coefficients should be set in database coefficient overrides.
