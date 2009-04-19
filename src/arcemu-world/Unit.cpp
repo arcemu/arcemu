@@ -1292,6 +1292,16 @@ uint32 Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, ui
 					if( myroll > chance )
 						continue;
 				}break;
+				//Warrior - Gag Order
+				case 18498:
+				{
+					if( CastingSpell == NULL )
+						continue;
+
+					if( CastingSpell->NameHash != SPELL_HASH_SHIELD_BASH &&
+						CastingSpell->NameHash != SPELL_HASH_HEROIC_THROW )
+						continue;
+				}break;
 ////////////////////////////////////////////////////////////////////////////
 				// Mage ignite talent only for fire dmg
 				case 12654:
@@ -3918,43 +3928,6 @@ void Unit::Strike( Unit* pVictim, uint32 weapon_damage_type, SpellEntry* ability
 				if(range) range += RandomUInt(range);
 
 				SpellNonMeleeDamageLog(pVictim, itr->second.spellid, dmg, true);
-			}
-		}
-
-		// refresh judgements
-		// TODO: find the opcode to refresh the aura or just remove it and re add it
-		// rather than fuck with duration
-		// DONE: Remove + readded it :P
-		for( uint32 x = MAX_NEGATIVE_AURAS_EXTEDED_START; x < MAX_NEGATIVE_AURAS_EXTEDED_END; x++ )
-		{
-			if( pVictim->m_auras[x] != NULL && pVictim->m_auras[x]->GetUnitCaster() != NULL && pVictim->m_auras[x]->GetUnitCaster()->GetGUID() == GetGUID() && pVictim->m_auras[x]->GetSpellProto()->BGR_one_buff_from_caster_on_1target == SPELL_TYPE_INDEX_JUDGEMENT )
-			{
-				Aura * aur = pVictim->m_auras[x];
-				SpellEntry * spinfo = aur->GetSpellProto();
-				aur->Remove();
-				Spell * sp = SpellPool.PooledNew();
-				if (!sp)
-					return;
-				sp->Init( this , spinfo , true , NULL );
-				SpellCastTargets tgt;
-				tgt.m_unitTarget = pVictim->GetGUID();
-				sp->prepare( &tgt );
-				/*pVictim->m_auras[x]->SetDuration( 20000 ); // 20 seconds?
-				sEventMgr.ModifyEventTimeLeft( pVictim->m_auras[x], EVENT_AURA_REMOVE, 20000 );
-
-				// We have to tell the target that the aura has been refreshed.
-				if( pVictim->IsPlayer() )
-				{
-					WorldPacket data( 5 );
-					data.SetOpcode( SMSG_UPDATE_AURA_DURATION );
-					data << (uint8)pVictim->m_auras[x]->GetAuraSlot() << 20000;
-					static_cast< Player* >( pVictim )->GetSession()->SendPacket( &data );
-				}
-				*/
-				// However, there is also an opcode that tells the caster that the aura has been refreshed.
-				// This isn't implemented anywhere else in the source, so I can't work on that part :P
-				// (The 'cooldown' meter on the target frame that shows how long the aura has until expired does not get reset)=
-				// I would say break; here, but apparently in arcemu, one paladin can have multiple judgements on the target. No idea if this is blizzlike or not.
 			}
 		}
 

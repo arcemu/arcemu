@@ -6589,7 +6589,7 @@ void Spell::SpellEffectDummyMelee( uint32 i ) // Normalized Weapon damage +
 				return; //no damage = no joy
 			damage = damage*sunder_count;
 	}
-	else if( GetProto()->NameHash == SPELL_HASH_CRUSADER_STRIKE ) // Crusader Strike - refreshes *all* judgements, not just your own
+	/*else if( GetProto()->NameHash == SPELL_HASH_CRUSADER_STRIKE ) // Crusader Strike - refreshes *all* judgements, not just your own
 	{
 		for( int x = MAX_NEGATIVE_AURAS_EXTEDED_START ; x < MAX_NEGATIVE_AURAS_EXTEDED_END ; x ++ ) // there are only debuff judgements anyway :P
 		{
@@ -6610,7 +6610,7 @@ void Spell::SpellEffectDummyMelee( uint32 i ) // Normalized Weapon damage +
 				sp->prepare( &tgt );
 			}
 		}
-	}
+	}*/
 	//Hemorrhage
 	if( p_caster && GetProto()->NameHash == SPELL_HASH_HEMORRHAGE )
 		p_caster->AddComboPoints(p_caster->GetSelection(), 1);

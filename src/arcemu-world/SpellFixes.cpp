@@ -1940,6 +1940,26 @@ void ApplyNormalFixes()
 			sp->Effect[1] = SPELL_EFFECT_SCHOOL_DAMAGE;
 			sp->Effect[2] = SPELL_EFFECT_DUMMY;
 		}
+
+		// Gag Order Rank 1
+		sp = dbcSpell.LookupEntryForced(12311);
+		if(sp != NULL)
+		{
+			sp->EffectTriggerSpell[1] = 18498;
+			sp->procFlags = PROC_ON_CAST_SPELL;
+			sp->procChance = 50;
+		}
+
+		// Gag Order Rank 2
+		sp = dbcSpell.LookupEntryForced(12958);
+		if(sp != NULL)
+		{
+			sp->EffectTriggerSpell[1] = 18498;
+			sp->procFlags = PROC_ON_CAST_SPELL;
+			sp->procChance = 100;
+		}
+
+
 		//////////////////////////////////////////
 		// DRUID								//
 		//////////////////////////////////////////
@@ -2855,6 +2875,24 @@ void ApplyNormalFixes()
 	//////////////////////////////////////////
 
 	// Insert rogue spell fixes here
+
+		//Rogue - Blade Twisting Rank 1
+		sp = dbcSpell.LookupEntryForced(31124);
+		if(sp != NULL)
+		{
+			sp->EffectTriggerSpell[1] = 31125;
+			sp->procFlags = PROC_ON_MELEE_ATTACK;
+			sp->procChance = 10;
+		}
+
+		//Rogue - Blade Twisting Rank 2
+		sp = dbcSpell.LookupEntryForced(31126);
+		if(sp != NULL)
+		{
+			sp->EffectTriggerSpell[1] = 51585;
+			sp->procFlags = PROC_ON_MELEE_ATTACK;
+			sp->procChance = 10;
+		}
 
 		// Waylay talent rank 1
 		sp = dbcSpell.LookupEntryForced(51692);
@@ -6577,6 +6615,66 @@ void ApplyNormalFixes()
 		if( sp != NULL )
 		{
 			sp->procFlags = PROC_ON_RANGED_ATTACK | PROC_ON_CAST_SPELL;
+		}
+
+		//Sundial of the Exiled
+		sp = dbcSpell.LookupEntryForced(60063);
+		if(sp != NULL)
+		{
+			sp->EffectTriggerSpell[1] = 60064;
+			sp->procFlags = PROC_ON_SPELL_HIT;
+			sp->procChance = 10;
+			sp->proc_interval = 45000;
+		}
+
+		//Je'Tze's Bell
+		sp = dbcSpell.LookupEntryForced(49622);
+		if(sp != NULL)
+		{
+			sp->EffectTriggerSpell[1] = 49623;
+			sp->procFlags = PROC_ON_CAST_SPELL;
+			sp->procChance = 10;
+			sp->proc_interval = 45000;
+		}
+
+		//Tears of Bitter Anguish
+		sp = dbcSpell.LookupEntryForced(58901);
+		if(sp != NULL)
+		{
+			sp->EffectTriggerSpell[1]=58904;
+			sp->procFlags = PROC_ON_RANGED_CRIT_ATTACK | PROC_ON_CRIT_ATTACK;
+			sp->procChance = 10;
+			sp->proc_interval = 60000;
+		}
+
+		//Embrace of the Spider
+		sp = dbcSpell.LookupEntryForced(60490);
+		if(sp != NULL)
+		{
+			sp->EffectTriggerSpell[1] = 60492;
+			sp->procFlags = PROC_ON_CAST_SPELL;
+			sp->procChance = 10;
+			sp->proc_interval = 30000;
+		}
+
+		//Dying Curse
+		sp = dbcSpell.LookupEntryForced(60493);
+		if(sp != NULL)
+		{
+			sp->EffectTriggerSpell[1] = 60494;
+			sp->procFlags = PROC_ON_CAST_SPELL;
+			sp->procChance = 15;
+			sp->proc_interval = 45000;
+		}
+
+		//Fury of the Five Flights
+		sp = dbcSpell.LookupEntryForced(60313);
+		if(sp != NULL)
+		{
+			sp->EffectTriggerSpell[1] = 60314;
+			sp->procFlags = PROC_ON_MELEE_ATTACK | PROC_ON_RANGED_ATTACK;
+			sp->procChance = 100;
+			sp->maxstack = 20;
 		}
 
 
