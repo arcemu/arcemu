@@ -906,8 +906,6 @@ void WorldSession::HandleSetTargetOpcode( WorldPacket & recv_data )
 	if( GetPlayer( ) != 0 ){
 		GetPlayer( )->SetTarget(guid);
 	}
-
-
 }
 
 void WorldSession::HandleSetSelectionOpcode( WorldPacket & recv_data )

@@ -126,11 +126,11 @@ bool MailMessage::AddMessageDataToPacket(WorldPacket& data)
 	data << cod;			// cod
 	data << message_id;		// itempageid
 	data << uint32(0);
-	data << stationary;
+	data << stationery;
 	data << money;		// money
 	data << uint32(0x10);
 	data << float(float(expire_time - (uint32)UNIXTIME) / 86400.0f);
-	data << uint32(0);
+	data << uint32(0);	// mail template
 	data << subject;
 	pos = data.wpos();
 	data << uint8(items.size());		// item count
@@ -187,7 +187,7 @@ bool MailMessage::AddMessageDataToPacket(WorldPacket& data)
 	data << message_id;	  // itempageid
 	data << message_id;
 
-	data << stationary;
+	data << stationery;
 
 	uint32 itementry = 0, itemcount = 0;
 	uint32 charges = 0, durability = 0, maxdurability = 0;
@@ -267,7 +267,7 @@ void MailSystem::SaveMessageToSQL(MailMessage * message)
 
 	ss << "'," 
 		<< message->cod << ","
-		<< message->stationary << ","
+		<< message->stationery << ","
 		<< message->expire_time << ","
 		<< message->delivery_time << ","
 		<< message->copy_made << ","
@@ -292,7 +292,7 @@ void WorldSession::HandleSendMail(WorldPacket & recv_data )
 	//uint32 err = MAIL_OK;
 
 	recv_data >> gameobject >> recepient;
-	recv_data >> msg.subject >> msg.body >> msg.stationary;
+	recv_data >> msg.subject >> msg.body >> msg.stationery;
 	recv_data >> unk2 >> itemcount;
 
 	if( itemcount > 12 || msg.body.find("%") != string::npos || msg.subject.find("%") != string::npos)
@@ -357,7 +357,7 @@ void WorldSession::HandleSendMail(WorldPacket & recv_data )
 		return;
 	}
 
-	if( msg.stationary == 0x3d && !HasGMPermissions())
+	if( msg.stationery == MAIL_STATIONERY_GM && !HasGMPermissions())
 	{
 		SendMailError(MAIL_ERR_INTERNAL_ERROR);
 		return;
@@ -611,7 +611,7 @@ void WorldSession::HandleTakeItem(WorldPacket & recv_data )
 		_player->ModUnsigned32Value(PLAYER_FIELD_COINAGE, -int32(message->cod));
 		string subject = "COD Payment: ";
 		subject += message->subject;
-		sMailSystem.SendAutomatedMessage(NORMAL, message->player_guid, message->sender_guid, subject, "", message->cod, 0, 0, 1);
+		sMailSystem.SendAutomatedMessage(NORMAL, message->player_guid, message->sender_guid, subject, "", message->cod, 0, 0, MAIL_STATIONERY_TEST1 );
 
 		message->cod = 0;
 		CharacterDatabase.Execute("UPDATE mailbox SET cod = 0 WHERE message_id = %u", message->message_id);
@@ -718,6 +718,7 @@ void WorldSession::HandleMailCreateTextItem(WorldPacket & recv_data )
 
 	WorldPacket data(SMSG_SEND_MAIL_RESULT, 12);
 	data << message_id << uint32(MAIL_RES_MADE_PERMANENT);
+	
 
 	ItemPrototype * proto = ItemPrototypeStorage.LookupEntry(8383);
 	MailMessage * message = _player->m_mailBox.GetMessage(message_id);
@@ -791,7 +792,7 @@ void Mailbox::FillTimePacket(WorldPacket& data)
 			data << uint64(iter->second.sender_guid);
 			data << uint32(0);
 			data << uint32(0);// money or smth?
-			data << uint32(iter->second.stationary);
+			data << uint32(iter->second.stationery);
 			//data << float(UNIXTIME-iter->second.delivery_time);
 			data << float(-9.0f);	// maybe the above?
 		}
@@ -848,7 +849,7 @@ void MailSystem::RemoveMessageIfDeleted(uint32 message_id, Player * plr)
 }
 
 void MailSystem::SendAutomatedMessage(uint32 type, uint64 sender, uint64 receiver, string subject, string body,
-									  uint32 money, uint32 cod, uint64 item_guid, uint32 stationary)
+									  uint32 money, uint32 cod, uint64 item_guid, uint32 stationery)
 {
 	// This is for sending automated messages, for example from an auction house.
 	MailMessage msg;
@@ -862,7 +863,7 @@ void MailSystem::SendAutomatedMessage(uint32 type, uint64 sender, uint64 receive
 	if( GUID_LOPART(item_guid) != 0 )
 		msg.items.push_back( GUID_LOPART(item_guid) );
 
-	msg.stationary = stationary;
+	msg.stationery = stationery;
 	msg.delivery_time = (uint32)UNIXTIME;
 	msg.expire_time = 0;
 	msg.read_flag = false;
@@ -941,7 +942,7 @@ void Mailbox::Load(QueryResult * result)
 		}
 
 		msg.cod = fields[i++].GetUInt32();
-		msg.stationary = fields[i++].GetUInt32();
+		msg.stationery = fields[i++].GetUInt32();
 		msg.expire_time = fields[i++].GetUInt32();
 		msg.delivery_time = fields[i++].GetUInt32();
 		msg.copy_made = fields[i++].GetBool();

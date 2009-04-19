@@ -272,7 +272,6 @@ void WorldSession::HandlePageTextQueryOpcode( WorldPacket & recv_data )
 		pageid = page->next_page;
 		SendPacket(&data);
 	}
-
 }
 //////////////////////////////////////////////////////////////
 /// This function handles CMSG_ITEM_NAME_QUERY:
