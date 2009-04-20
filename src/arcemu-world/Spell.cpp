@@ -4646,8 +4646,6 @@ exit:
         }
 
     }
-
-
 	else if( GetProto()->NameHash == SPELL_HASH_EVISCERATE ) //Eviscerate
 	{
 		if (p_caster != NULL) {
@@ -4668,11 +4666,11 @@ exit:
 			//Increases healing received by 25% of the Tree of Life's total spirit.
 			value = p_caster->GetUInt32Value( UNIT_FIELD_STAT4 ) >> 2;
 		}
+	}
 	else if( GetProto()->Id == 57669 || GetProto()->Id == 61782) //Replenishment
 	{
 		if( i==0 && p_caster != NULL && target != NULL )
 			value = uint32(0.0025*target->GetUInt32Value(UNIT_FIELD_MAXPOWER1));
-	}
 	}
 	// HACK FIX
 	else if( GetProto()->NameHash == SPELL_HASH_VICTORY_RUSH )
