@@ -91,6 +91,78 @@ bool SaveAchievementProgressToDB(const CriteriaProgress* c)
 }
 
 /**
+	true if the achievement should be shown; false otherwise
+*/
+bool ShowCompletedAchievement(uint32 achievementID, const Player* plr)
+{
+	switch(achievementID)
+	{
+		case  457: // Realm First! Level 80
+		case  467: // Realm First! Level 80 Shaman
+		case  466: // Realm First! Level 80 Druid
+		case  465: // Realm First! Level 80 Paladin
+		case  464: // Realm First! Level 80 Priest
+		case  463: // Realm First! Level 80 Warlock
+		case  462: // Realm First! Level 80 Hunter
+		case  461: // Realm First! Level 80 Death Knight
+		case  460: // Realm First! Level 80 Mage
+		case  459: // Realm First! Level 80 Warrior
+		case  458: // Realm First! Level 80 Rogue
+		case 1404: // Realm First! Level 80 Gnome
+		case 1405: // Realm First! Level 80 Blood Elf
+		case 1406: // Realm First! Level 80 Draenei
+		case 1407: // Realm First! Level 80 Dwarf
+		case 1408: // Realm First! Level 80 Human
+		case 1409: // Realm First! Level 80 Night Elf
+		case 1410: // Realm First! Level 80 Orc
+		case 1411: // Realm First! Level 80 Tauren
+		case 1412: // Realm First! Level 80 Troll
+		case 1413: // Realm First! Level 80 Forsaken
+		case 1415: // Realm First! Grand Master Alchemist
+		case 1414: // Realm First! Grand Master Blacksmith
+		case 1416: // Realm First! Cooking Grand Master
+		case 1417: // Realm First! Grand Master Enchanter
+		case 1418: // Realm First! Grand Master Engineer
+		case 1419: // Realm First! First Aid Grand Master
+		case 1420: // Realm First! Grand Master Angler
+		case 1421: // Realm First! Grand Master Herbalist
+		case 1422: // Realm First! Grand Master Scribe
+		case 1423: // Realm First! Grand Master Jewelcrafter
+		case 1424: // Realm First! Grand Master Leatherworker
+		case 1425: // Realm First! Grand Master Miner
+		case 1426: // Realm First! Grand Master Skinner
+		case 1427: // Realm First! Grand Master Tailor
+		case 1463: // Realm First! Northrend Vanguard: First player on the realm to gain exalted reputation with the Argent Crusade, Wyrmrest Accord, Kirin Tor and Knights of the Ebon Blade.
+			{
+				QueryResult* achievementResult = CharacterDatabase.Query("SELECT guid FROM character_achievement WHERE achievement=%u ORDER BY date LIMIT 1", achievementID);
+				if(achievementResult != NULL)
+				{
+					Field* field = achievementResult->Fetch();
+					if(field != NULL) // somebody has this Realm First achievement... is it this player?
+					{
+						uint64 firstguid = field->GetUInt32();
+						if(firstguid != (uint32)plr->GetGUID()) // nope, somebody else was first.
+						{
+							delete achievementResult;
+							return false;
+						}
+					}
+					delete achievementResult;
+				}
+			}
+			break;
+// All raid members should receive these last 3 Realm First achievements when they first occur.
+// (not implemented yet)
+//		case 1400: // Realm First! Magic Seeker: Participated in the realm first defeat of Malygos on Heroic Difficulty.
+//		case  456: // Realm First! Obsidian Slayer: Participated in the realm first defeat of Sartharion the Onyx Guardian on Heroic Difficulty.
+//		case 1402: // Realm First! Conqueror of Naxxramas: Participated in the realm first defeat of Kel'Thuzad on Heroic Difficulty in Naxxramas.
+		default:
+			break;
+	}
+	return true;
+}
+
+/**
 	AchievementMgr constructor
 */
 AchievementMgr::AchievementMgr(Player *player)
@@ -1342,7 +1414,10 @@ void AchievementMgr::CompletedAchievement(AchievementEntry const* achievement)
 		return;
 	}
 
-	SendAchievementEarned( achievement );
+	if(ShowCompletedAchievement(achievement->ID, GetPlayer()))
+	{
+		SendAchievementEarned( achievement );
+	}
 	m_completedAchievements[achievement->ID] = time(NULL);
 
 	objmgr.allCompletedAchievements.insert( achievement->ID );
@@ -1380,8 +1455,11 @@ void AchievementMgr::BuildAllDataPacket(WorldPacket *data, bool self)
 {
 	for( CompletedAchievementMap::iterator iter = m_completedAchievements.begin(); iter!=m_completedAchievements.end(); ++iter )
 	{
-		*data << uint32(iter->first);
-		*data << uint32(secsToTimeBitFields(iter->second));
+		if(ShowCompletedAchievement(iter->first, GetPlayer()))
+		{
+			*data << uint32(iter->first);
+			*data << uint32(secsToTimeBitFields(iter->second));
+		}
 	}
 	*data << int32(-1);
 	for(CriteriaProgressMap::iterator iter = m_criteriaProgress.begin(); iter!=m_criteriaProgress.end(); ++iter)
