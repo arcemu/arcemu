@@ -200,10 +200,15 @@ void AchievementMgr::LoadFromDB(QueryResult *achievementResult, QueryResult *cri
 
 /**
 	Sends message to player(s) that the achievement has been completed.
+	Realm first! achievements get sent to all players currently online.
+	All other achievements get sent to all of the achieving player's guild members, group members, and other in-range players.
 */
 void AchievementMgr::SendAchievementEarned(AchievementEntry const* achievement)
 {
 	const char *msg = "|Hplayer:$N|h[$N]|h has earned the achievement $a!";
+	uint32* guidList = NULL;
+	uint32 guidCount = 0;
+	uint32 guidIndex = 0;
 
 	// Send Achievement message to everyone currently on the server
 	if(achievement->flags & (ACHIEVEMENT_FLAG_REALM_FIRST_KILL|ACHIEVEMENT_FLAG_REALM_FIRST_REACH))
@@ -215,37 +220,124 @@ void AchievementMgr::SendAchievementEarned(AchievementEntry const* achievement)
 		data << uint32(0);
 		sWorld.SendGlobalMessage(&data);
 	}
-	// Send Achievement message to every guild member currently on the server
-	else if(GetPlayer()->IsInGuild())
-	{
-		Guild* guild = GetPlayer()->getPlayerInfo()->guild;
-		WorldPacket data(SMSG_MESSAGECHAT, 200);
-		data << uint8(CHAT_MSG_GUILD_ACHIEVEMENT);
-		data << uint32(LANG_UNIVERSAL);
-		data << uint64(GetPlayer()->GetGUID());
-		data << uint32(5);
-		data << uint64(GetPlayer()->GetGUID());
-		data << uint32(strlen(msg)+1);
-		data << msg;
-		data << uint8(0);
-		data << uint32(achievement->ID);
-		guild->SendPacket(&data);
-	}
-	// Send Achievement message to this player only
 	else
 	{
-		WorldPacket data(SMSG_MESSAGECHAT, 200);
-		data << uint8(CHAT_MSG_ACHIEVEMENT);
-		data << uint32(LANG_UNIVERSAL);
-		data << uint64(GetPlayer()->GetGUID());
-		data << uint32(5);
-		data << uint64(GetPlayer()->GetGUID());
-		data << uint32(strlen(msg)+1);
-		data << msg;
-		data << uint8(0);
-		data << uint32(achievement->ID);
-		GetPlayer()->GetSession()->SendPacket(&data);
- 	}
+		guidList = new uint32[sWorld.GetSessionCount()+256]; // allocate enough space...
+		// Send Achievement message to every guild member currently on the server
+		if(GetPlayer()->IsInGuild())
+		{
+			Guild* guild = GetPlayer()->getPlayerInfo()->guild;
+			WorldPacket data(SMSG_MESSAGECHAT, 200);
+			data << uint8(CHAT_MSG_GUILD_ACHIEVEMENT);
+			data << uint32(LANG_UNIVERSAL);
+			data << uint64(GetPlayer()->GetGUID());
+			data << uint32(5);
+			data << uint64(GetPlayer()->GetGUID());
+			data << uint32(strlen(msg)+1);
+			data << msg;
+			data << uint8(0);
+			data << uint32(achievement->ID);
+//			guild->SendPacket(&data);
+			GuildMemberMap::iterator guildItr = guild->GetGuildMembersBegin();
+			GuildMemberMap::iterator guildItrLast = guild->GetGuildMembersEnd();
+			while(guildItr != guildItrLast)
+			{
+				if(guildItr->first->m_loggedInPlayer && guildItr->first->m_loggedInPlayer->GetSession())
+				{
+					guildItr->first->m_loggedInPlayer->GetSession()->SendPacket(&data);
+					guidList[guidCount++] = guildItr->first->guid; // store guid, so we don't send message to the same one again
+				}
+				++guildItr;
+			}
+		}
+		// Build generic packet for group members and nearby players
+		WorldPacket cdata(SMSG_MESSAGECHAT, 200);
+		cdata << uint8(CHAT_MSG_ACHIEVEMENT);
+		cdata << uint32(LANG_UNIVERSAL);
+		cdata << uint64(GetPlayer()->GetGUID());
+		cdata << uint32(5);
+		cdata << uint64(GetPlayer()->GetGUID());
+		cdata << uint32(strlen(msg)+1);
+		cdata << msg;
+		cdata << uint8(0);
+		cdata << uint32(achievement->ID);
+		bool alreadySent;
+		// Send Achievement message to group members
+		Group* grp = GetPlayer()->GetGroup();
+		if(grp)
+		{
+//			grp->SendPacketToAll(&cdata);
+			uint8 i = 0;
+			GroupMembersSet::iterator groupItr;
+			GroupMembersSet::iterator groupItrLast;
+			for(; i < 7; ++i)
+			{
+				SubGroup* sg = grp->GetSubGroup(i);
+				groupItr = sg->GetGroupMembersBegin();
+				groupItrLast = sg->GetGroupMembersEnd();
+				for(; groupItr != groupItrLast; ++groupItr)
+				{
+					if((*groupItr)->m_loggedInPlayer != NULL && (*groupItr)->m_loggedInPlayer->GetSession())
+					{
+						// check if achievement message has already been sent to this player (if they received a guild achievement message already)
+						alreadySent = false;
+						for(guidIndex = 0; guidIndex < guidCount; ++guidIndex)
+						{
+							if(guidList[guidIndex] == (*groupItr)->guid)
+							{
+								alreadySent = true;
+								guidIndex = guidCount;
+							}
+						}
+						if(!alreadySent)
+						{
+							(*groupItr)->m_loggedInPlayer->GetSession()->SendPacket(&cdata);
+							guidList[guidCount++] = (*groupItr)->guid;
+						}
+					}
+				}
+			}
+		}
+		// Send Achievement message to nearby players
+		std::set<Player*>::iterator inRangeItr = GetPlayer()->GetInRangePlayerSetBegin();
+		std::set<Player*>::iterator inRangeItrLast = GetPlayer()->GetInRangePlayerSetEnd();
+		for(; inRangeItr != inRangeItrLast; ++inRangeItr)
+		{
+			if((*inRangeItr) && (*inRangeItr)->GetSession() &&  !(*inRangeItr)->Social_IsIgnoring( GetPlayer()->GetLowGUID() ) )
+			{
+				// check if achievement message has already been sent to this player (in guild or group)
+				alreadySent = false;
+				for(guidIndex = 0; guidIndex < guidCount; ++guidIndex)
+				{
+					if(guidList[guidIndex] == (*inRangeItr)->GetLowGUID())
+					{
+						alreadySent = true;
+						guidIndex = guidCount;
+					}
+				}
+				if(!alreadySent)
+				{
+					(*inRangeItr)->GetSession()->SendPacket(&cdata);
+					guidList[guidCount++] = (*inRangeItr)->GetLowGUID();
+				}
+			}
+		}
+		// Have we sent the message to the achieving player yet?
+		alreadySent = false;
+		for(guidIndex = 0; guidIndex < guidCount; ++guidIndex)
+		{
+			if(guidList[guidIndex] == GetPlayer()->GetLowGUID())
+			{
+				alreadySent = true;
+				guidIndex = guidCount;
+			}
+			if(!alreadySent)
+			{
+				GetPlayer()->GetSession()->SendPacket(&cdata);
+			}
+		}
+	}
+//	GetPlayer()->SendMessageToSet(&cdata, true);
 
 	WorldPacket data( SMSG_ACHIEVEMENT_EARNED, 30);
 	data << GetPlayer()->GetNewGUID();
@@ -253,6 +345,10 @@ void AchievementMgr::SendAchievementEarned(AchievementEntry const* achievement)
 	data << uint32( secsToTimeBitFields(UNIXTIME) );
 	data << uint32(0);
 	GetPlayer()->GetSession()->SendPacket(&data);
+	if(guidList)
+	{
+		delete [] guidList;
+	}
 }
 
 /**
