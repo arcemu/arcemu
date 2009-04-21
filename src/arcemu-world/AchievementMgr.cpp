@@ -336,15 +336,19 @@ void AchievementMgr::SendAchievementEarned(AchievementEntry const* achievement)
 		bool alreadySent;
 		// Send Achievement message to group members
 		Group* grp = GetPlayer()->GetGroup();
+		
 		if(grp)
 		{
-//			grp->SendPacketToAll(&cdata);
 			uint8 i = 0;
 			GroupMembersSet::iterator groupItr;
 			GroupMembersSet::iterator groupItrLast;
-			for(; i < 7; ++i)
+			grp->Lock();
+			for(; i < grp->GetSubGroupCount(); ++i)
 			{
 				SubGroup* sg = grp->GetSubGroup(i);
+				if(!sg)
+					continue;
+
 				groupItr = sg->GetGroupMembersBegin();
 				groupItrLast = sg->GetGroupMembersEnd();
 				for(; groupItr != groupItrLast; ++groupItr)
@@ -369,6 +373,7 @@ void AchievementMgr::SendAchievementEarned(AchievementEntry const* achievement)
 					}
 				}
 			}
+			grp->Unlock();
 		}
 		// Send Achievement message to nearby players
 		std::set<Player*>::iterator inRangeItr = GetPlayer()->GetInRangePlayerSetBegin();
@@ -409,7 +414,6 @@ void AchievementMgr::SendAchievementEarned(AchievementEntry const* achievement)
 			}
 		}
 	}
-//	GetPlayer()->SendMessageToSet(&cdata, true);
 
 	WorldPacket data( SMSG_ACHIEVEMENT_EARNED, 30);
 	data << GetPlayer()->GetNewGUID();
