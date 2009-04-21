@@ -4738,9 +4738,12 @@ exit:
 	else if ( GetProto()->Id == 34501 && ( i == 0 || i == 1 ) ) //Hunter - Expose Weakness
 	{
 		if (u_caster != NULL) {
-            value = u_caster->GetUInt32Value( UNIT_FIELD_STAT1 ) >> 2;
+			value = u_caster->GetUInt32Value( UNIT_FIELD_STAT1 ) >> 2;
 		}
 	}
+	else if ( GetProto()->NameHash == SPELL_HASH_BACKSTAB && i == 2 ) // Egari: spell 31220 is interfering with combopoints
+		return GetProto()->EffectBasePoints[i] + 1;
+
 /*	else if ( GetProto()->NameHash == SPELL_HASH_HUNTER_S_MARK && target && target->HasAurasWithNameHash( SPELL_HASH_HUNTER_S_MARK ) ) //Hunter - Hunter's Mark
 	{
 		value = value / 10; //aditional stacks only increase value by X

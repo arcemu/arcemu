@@ -4694,6 +4694,19 @@ void Aura::SpellAuraModShapeshift(bool apply)
 	}
 	else
 	{
+		for(uint32 i = MAX_REMOVABLE_AURAS_START; i < MAX_REMOVABLE_AURAS_END; ++i)
+		{
+			if(m_target->m_auras[i] != NULL && m_target->m_auras[i]->GetSpellProto() )
+			{
+				uint32 requiredShapeShift = m_target->m_auras[i]->GetSpellProto()->RequiredShapeShift;
+				if( requiredShapeShift & DecimalToMask(mod->m_miscValue) )
+					m_target->m_auras[i]->Remove();
+			}
+		}
+		if( m_target->IsCasting() && m_target->m_currentSpell && m_target->m_currentSpell->GetProto() 
+			&& ( m_target->m_currentSpell->GetProto()->RequiredShapeShift & DecimalToMask(mod->m_miscValue) ) )
+			m_target->InterruptSpell();
+
 		//execute before changing shape back
 		static_cast< Player* >( m_target )->EventTalentHearthOfWildChange( false );
 		m_target->SetUInt32Value( UNIT_FIELD_DISPLAYID, m_target->GetUInt32Value( UNIT_FIELD_NATIVEDISPLAYID ) );
@@ -9362,15 +9375,15 @@ void Aura::SpellAuraIncreaseAPbyStatPct( bool apply )
 
 void Aura::SpellAuraIgnoreShapeshift( bool apply )
 {
-        if(!m_target->IsPlayer())
-                return;
+	if(!m_target->IsPlayer())
+		return;
 
-        if( apply )
-        {
-                static_cast<Player*>(m_target)->ignoreShapeShiftChecks = true;
-        }
-        else
-        {
-                static_cast<Player*>(m_target)->ignoreShapeShiftChecks = false;
-        }
+	if( apply )
+	{
+		static_cast<Player*>(m_target)->ignoreShapeShiftChecks = true;
+	}
+	else
+	{
+		static_cast<Player*>(m_target)->ignoreShapeShiftChecks = false;
+	}
 }

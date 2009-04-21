@@ -6366,18 +6366,21 @@ int32 Player::CanShootRangedWeapon( uint32 spellid, Unit* target, bool autoshot 
 
 	// Check ammo
 	Item* itm = GetItemInterface()->GetInventoryItem( EQUIPMENT_SLOT_RANGED );
-	if( itm == NULL )
-		return SPELL_FAILED_NO_AMMO;
+	ItemPrototype * iprot = ItemPrototypeStorage.LookupEntry(GetUInt32Value(PLAYER_AMMO_ID));
+	if( !m_requiresNoAmmo )
+	{
+		if( itm == NULL )
+			return SPELL_FAILED_NO_AMMO;
+	
+		// Check ammo level
+		if( iprot && getLevel()< iprot->RequiredLevel)
+			return SPELL_FAILED_LOWLEVEL;
 
-	// Check ammo level
-	ItemPrototype * iprot=ItemPrototypeStorage.LookupEntry(GetUInt32Value(PLAYER_AMMO_ID));
-	if( iprot && getLevel()< iprot->RequiredLevel)
-		return SPELL_FAILED_LOWLEVEL;
-
-	// Check ammo type
-	ItemPrototype * iprot1 = ItemPrototypeStorage.LookupEntry(itm->GetEntry());
-	if( !m_requiresNoAmmo && iprot && iprot1 && iprot->SubClass != iprot1->AmmoType )
-		return SPELL_FAILED_NEED_AMMO;
+		// Check ammo type
+		ItemPrototype * iprot1 = ItemPrototypeStorage.LookupEntry(itm->GetEntry());
+		if( iprot && iprot1 && iprot->SubClass != iprot1->AmmoType )
+			return SPELL_FAILED_NEED_AMMO;
+	}
 
 	// Player has clicked off target. Fail spell.
 	if( m_curSelection != m_AutoShotTarget )
@@ -12333,13 +12336,16 @@ void Player::ConvertRune(uint8 index, uint8 value)
 {
 	ASSERT(index < 6);
 	m_runes[index] = value;
-	if( value >= RUNE_RECHARGE )
+	if( value >= RUNE_RECHARGE || GetSession() == NULL )
 		return;
 
 	WorldPacket data(SMSG_CONVERT_RUNE, 2);
 	data << (uint8)index;
 	data << (uint8)value;
-	SendMessageToSet(&data, true);
+	GetSession()->SendPacket(&data);
+
+// @Egari:	Rune updates should only be sent to the DK himself, sending it to set will cause graphical glitches on the UI of other DKs.
+//	SendMessageToSet(&data, true); 
 }
 
 uint32 Player::HasRunes(uint8 type, uint32 count)

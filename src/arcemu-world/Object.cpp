@@ -172,6 +172,7 @@ Object::~Object( )
 	if (this->IsInWorld() && m_objectTypeId != TYPEID_ITEM && m_objectTypeId != TYPEID_CONTAINER)
 	{
 		this->RemoveFromWorld(false);
+		this->ClearInRangeSet();
 	}
 
 	// for linux
@@ -1091,7 +1092,7 @@ void Object::RemoveFromWorld(bool free_guid)
 {
 	ASSERT(m_mapMgr);
 	MapMgr * m = m_mapMgr;
-	m_mapMgr = 0;
+	m_mapMgr = NULL;
 
 	mSemaphoreTeleport = true;
 
@@ -2884,7 +2885,6 @@ void Object::SpellNonMeleeDamageLog(Unit *pVictim, uint32 spellID, uint32 damage
 				if(caster && !caster->HasAura(55447))	// Glyph of Flame Shock
 						fs->Remove();
 			}
-
 
 //==========================================================================================
 //==============================Spell Critical Hit==========================================

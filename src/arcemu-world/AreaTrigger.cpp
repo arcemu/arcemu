@@ -95,9 +95,11 @@ uint32 CheckTriggerPrerequsites(AreaTrigger * pAreaTrigger, WorldSession * pSess
 		return AREA_TRIGGER_FAILURE_NO_ATTUNE_I;
 
 	if (pPlayer->iInstanceType >= MODE_HEROIC && 
-		pMapInfo->type == INSTANCE_ARENA && 
-		!pPlayer->GetItemInterface()->GetItemCount(pMapInfo->heroic_key_1, false) && 
-		!pPlayer->GetItemInterface()->GetItemCount(pMapInfo->heroic_key_2, false))
+		pMapInfo->type == INSTANCE_ARENA
+		&& (	(pMapInfo->heroic_key_1 > 0 && !pPlayer->GetItemInterface()->GetItemCount(pMapInfo->heroic_key_1, false)) 
+			||	(pMapInfo->heroic_key_2 > 0 && !pPlayer->GetItemInterface()->GetItemCount(pMapInfo->heroic_key_2, false))
+			)
+		)
 		return AREA_TRIGGER_FAILURE_NO_KEY;
 
 	if(pMapInfo->type != INSTANCE_NULL && pPlayer->iInstanceType>=MODE_HEROIC && pPlayer->getLevel()<pMapInfo->minlevel_heroic)

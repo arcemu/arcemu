@@ -153,6 +153,13 @@ MapMgr::~MapMgr()
 		delete itr->second;
 	m_worldStates.clear();
 
+	activeCreatures.clear();
+	activeGameObjects.clear();
+	_sqlids_creatures.clear();
+	_sqlids_gameobjects.clear();
+	_reusable_guids_creature.clear();
+	_reusable_guids_gameobject.clear();
+
 	Log.Notice("MapMgr", "Instance %u shut down. (%s)" , m_instanceID, GetBaseMap()->GetName());
 }
 

@@ -693,6 +693,8 @@ int32 GetTimePeriodFromString(const char * str);
 std::string ConvertTimeStampToString(uint32 timestamp);
 std::string ConvertTimeStampToDataTime(uint32 timestamp);
 
+uint32 DecimalToMask(uint32 dec);
+
 ARCEMU_INLINE void arcemu_TOLOWER(std::string& str)
 {
 	for(size_t i = 0; i < str.length(); ++i)
