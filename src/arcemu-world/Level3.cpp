@@ -421,7 +421,7 @@ bool ChatHandler::HandleExploreCheatCommand(const char* args, WorldSession *m_se
 		}
 		else if(stricmp(args, "off") == 0)
 		{
-			chr->SetFlag(PLAYER_EXPLORED_ZONES_1+i,0);
+			chr->RemoveFlag(PLAYER_EXPLORED_ZONES_1+i,0xFFFFFFFF);
 		}
 	}
 	chr->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_EXPLORE_AREA); // update
