@@ -1644,6 +1644,69 @@ void ApplyNormalFixes()
 
 	// Insert warrior spell fixes here
 
+		//Improved Revenge Rank 1
+		sp = dbcSpell.LookupEntryForced(12797);
+		if(sp != NULL)
+		{
+			sp->EffectTriggerSpell[1] = 12798;
+			sp->procFlags = PROC_ON_CAST_SPECIFIC_SPELL;
+			sp->procChance = 25;
+		}
+
+		//Improved Revenge Rank 2
+		sp = dbcSpell.LookupEntryForced(12799);
+		if(sp != NULL)
+		{
+			sp->EffectTriggerSpell[1] = 12798;
+			sp->procFlags = PROC_ON_CAST_SPECIFIC_SPELL;
+			sp->procChance = 50;
+		}
+
+		//Wrecking Crew Rank 1
+		sp = dbcSpell.LookupEntryForced(46867);
+		if(sp != NULL)
+		{
+			sp->EffectTriggerSpell[1] = 57518;
+			sp->procFlags = PROC_ON_CRIT_ATTACK;
+			sp->procChance = 100;
+		}
+
+		//Wrecking Crew Rank 2
+		sp = dbcSpell.LookupEntryForced(56611);
+		if(sp != NULL)
+		{
+			sp->EffectTriggerSpell[1] = 57519;
+			sp->procFlags = PROC_ON_CRIT_ATTACK;
+			sp->procChance = 100;
+		}
+
+		//Wrecking Crew Rank 3
+		sp = dbcSpell.LookupEntryForced(56612);
+		if(sp != NULL)
+		{
+			sp->EffectTriggerSpell[1] = 57520;
+			sp->procFlags = PROC_ON_CRIT_ATTACK;
+			sp->procChance = 100;
+		}
+
+		//Wrecking Crew Rank 4
+		sp = dbcSpell.LookupEntryForced(56613);
+		if(sp != NULL)
+		{
+			sp->EffectTriggerSpell[1] = 57521;
+			sp->procFlags = PROC_ON_CRIT_ATTACK;
+			sp->procChance = 100;
+		}
+
+		//Wrecking Crew Rank 5
+		sp = dbcSpell.LookupEntryForced(56614);
+		if(sp != NULL)
+		{
+			sp->EffectTriggerSpell[1] = 57522;
+			sp->procFlags = PROC_ON_CRIT_ATTACK;
+			sp->procChance = 100;
+		}
+
 		//Warrior - Enrage Procflags
 		sp = dbcSpell.LookupEntryForced( 12317 );
 		if(sp != NULL)
