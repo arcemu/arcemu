@@ -141,7 +141,7 @@ void WorldSession::HandleMessagechatOpcode( WorldPacket & recv_data )
 		case CHAT_MSG_YELL:
 			recv_data >> msg;
 			pMsg=msg.c_str();
-			g_chatFilter->ParseEscapeCodes((char*)pMsg,true);
+			//g_chatFilter->ParseEscapeCodes((char*)pMsg,true);
 			break;
 		case CHAT_MSG_CHANNEL:
 			recv_data >> channel;
@@ -451,7 +451,7 @@ void WorldSession::HandleMessagechatOpcode( WorldPacket & recv_data )
 			Channel *chn = channelmgr.GetChannel(channel.c_str(),GetPlayer()); 
 			if(chn)
 			{
-				g_chatFilter->ParseEscapeCodes((char*)pMsg, (chn->m_flags & CHANNEL_PACKET_ALLOWLINKS)>0 );
+				//g_chatFilter->ParseEscapeCodes((char*)pMsg, (chn->m_flags & CHANNEL_PACKET_ALLOWLINKS)>0 );
 				chn->Say(GetPlayer(),msg.c_str(), NULL, false);
 			}
 		} break;
