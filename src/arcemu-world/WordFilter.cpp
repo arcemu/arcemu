@@ -265,6 +265,10 @@ bool WordFilter::ParseEscapeCodes(char * sMsg, bool bAllowLinks)
 		if( ((string)sMsg).at(j) != char('|') )
 			continue;
 	
+		//Myth fix server crashes, unhandled null pointers ftw
+		if (j+1>=(((string)sMsg).length()))
+			return true;
+
 		string newstr;
 		char * i;
 		switch( ((string)sMsg).at(j+1) )
