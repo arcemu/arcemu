@@ -1779,6 +1779,11 @@ void Spell::cast(bool check)
 
 					for( i=UniqueTargets.begin(); i!=UniqueTargets.end(); ++i )
 					{
+						Unit *Target = m_caster->GetMapMgr()->GetUnit(*i);
+						if( Target && Target->IsDead() ) // don't apply auras to dead things
+						{
+							continue;
+						}
 						HandleAddAura(*i);
 					}
 				}
