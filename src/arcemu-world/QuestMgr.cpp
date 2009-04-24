@@ -699,6 +699,7 @@ void QuestMgr::OnPlayerKill(Player* plr, Creature* victim)
 	uint32 i, j;
 	uint32 entry = victim->GetEntry();
 	QuestLogEntry *qle;
+	Quest* qst;
 
 	if (plr->HasQuestMob(entry))
 	{
@@ -707,22 +708,26 @@ void QuestMgr::OnPlayerKill(Player* plr, Creature* victim)
 			qle = plr->GetQuestLogInSlot( i );
 			if( qle != NULL )
 			{
-				// dont waste time on quests without mobs
-				if( qle->GetQuest()->count_required_mob == 0 )
-					continue;
-
-				for( j = 0; j < 4; ++j )
+				qst = qle->GetQuest();
+				if(qst != NULL)
 				{
-					if( qle->GetQuest()->required_mob[j] == entry &&
-						qle->GetQuest()->required_mobtype[j] == QUEST_MOB_TYPE_CREATURE &&
-						qle->m_mobcount[j] < qle->GetQuest()->required_mobcount[j] )
+					// dont waste time on quests without mobs
+					if( qst->count_required_mob == 0 )
+						continue;
+
+					for( j = 0; j < qst->count_required_mob; ++j )
 					{
-						// add another kill.(auto-dirtys it)
-						qle->SetMobCount( j, qle->m_mobcount[j] + 1 );
-						qle->SendUpdateAddKill( j );
-						CALL_QUESTSCRIPT_EVENT( qle, OnCreatureKill)( entry, plr, qle );
-						qle->UpdatePlayerFields();
-						break;
+						if( qst->required_mob[j] == entry &&
+							qst->required_mobtype[j] == QUEST_MOB_TYPE_CREATURE &&
+							qle->m_mobcount[j] < qst->required_mobcount[j] )
+						{
+							// add another kill.(auto-dirtys it)
+							qle->SetMobCount( j, qle->m_mobcount[j] + 1 );
+							qle->SendUpdateAddKill( j );
+							CALL_QUESTSCRIPT_EVENT( qle, OnCreatureKill)( entry, plr, qle );
+							qle->UpdatePlayerFields();
+							break;
+						}
 					}
 				}
 			}
@@ -754,26 +759,30 @@ void QuestMgr::OnPlayerKill(Player* plr, Creature* victim)
 							qle = gplr->GetQuestLogInSlot(i);
 							if( qle != NULL )
 							{
-								// dont waste time on quests without mobs
-								if( qle->GetQuest()->count_required_mob == 0 )
-									continue;
-
-								for( j = 0; j < 4; ++j )
+								qst = qle->GetQuest();
+								if(qst != NULL)
 								{
-									if( qle->GetQuest()->required_mob[j] == entry &&
-										qle->GetQuest()->required_mobtype[j] == QUEST_MOB_TYPE_CREATURE &&
-										qle->m_mobcount[j] < qle->GetQuest()->required_mobcount[j] )
-									{
-										// add another kill.
-										// (auto-dirtys it)
-										qle->SetMobCount(j, qle->m_mobcount[j] + 1);
-										qle->SendUpdateAddKill( j );
-										CALL_QUESTSCRIPT_EVENT( qle, OnCreatureKill )( entry, plr, qle );
-										qle->UpdatePlayerFields();
+									// dont waste time on quests without mobs
+									if( qst->count_required_mob == 0 )
+										continue;
 
-										if( qle->CanBeFinished() )
-											qle->SendQuestComplete();
-										break;
+									for( j = 0; j < qst->count_required_mob; ++j )
+									{
+										if( qst->required_mob[j] == entry &&
+											qst->required_mobtype[j] == QUEST_MOB_TYPE_CREATURE &&
+											qle->m_mobcount[j] < qst->required_mobcount[j] )
+										{
+											// add another kill.
+											// (auto-dirtys it)
+											qle->SetMobCount(j, qle->m_mobcount[j] + 1);
+											qle->SendUpdateAddKill( j );
+											CALL_QUESTSCRIPT_EVENT( qle, OnCreatureKill )( entry, plr, qle );
+											qle->UpdatePlayerFields();
+
+											if( qle->CanBeFinished() )
+												qle->SendQuestComplete();
+											break;
+										}
 									}
 								}
 							}
@@ -1802,10 +1811,57 @@ void QuestMgr::LoadExtraQuestStuff()
 			{
 				GameObjectInfo *go_info = GameObjectNameStorage.LookupEntry(qst->required_mob[i]);
 				CreatureInfo   *c_info  = CreatureNameStorage.LookupEntry(qst->required_mob[i]);
-				if(go_info && (go_info->Type == 10 || qst->quest_flags == 10 || !c_info))
-					qst->required_mobtype[i] = QUEST_MOB_TYPE_GAMEOBJECT;
-				else
-					qst->required_mobtype[i] = QUEST_MOB_TYPE_CREATURE;
+				switch(qst->id)
+				{
+					// the following quests need a creature killed whose id is the same as a valid gameobject (goober)
+					case 421:
+					case 784:
+					case 9573:
+					case 11619:
+						qst->required_mobtype[i] = QUEST_MOB_TYPE_CREATURE;
+						break;
+					default:
+						if( go_info && ( go_info->Type == GAMEOBJECT_TYPE_GOOBER || !c_info ) )
+						{
+							qst->required_mobtype[i] = QUEST_MOB_TYPE_GAMEOBJECT;
+
+							// if quest has both valid gameobject and creature, log it (case may need to be added in switch statement above)
+							if( c_info )
+							{
+								sLog.outDebug("Quest %lu has required_mobtype[%d]==%lu, a valid GameObject and Creature.", qst->id, i, qst->required_mob[i]);
+							}
+						}
+						else
+						{
+							qst->required_mobtype[i] = QUEST_MOB_TYPE_CREATURE;
+
+							// if quest has neither valid gameobject nor creature, log it
+							if( !go_info && !c_info )
+							{
+								sLog.outDebug("Quest %lu has required_mobtype[%d]==%lu, not a valid GameObject nor Creature.", qst->id, i, qst->required_mob[i]);
+							}
+						}
+						break;
+				}
+
+				if(qst->required_mobtype[i]==QUEST_MOB_TYPE_GAMEOBJECT && c_info)
+				{
+					FILE* f = fopen("Quest_GO_Creature.log","at");
+					if(f)
+					{
+						fprintf(f,"%10lu %10lu %s %s-or-%s\n", qst->id, qst->required_mob[i], qst->details, go_info->Name, c_info->Name);
+						fclose(f);
+					}
+				}
+				if(!go_info && !c_info)
+				{
+					FILE* f = fopen("Quest_GO_Creature.log","at");
+					if(f)
+					{
+						fprintf(f,"%10lu %10lu %s (NULL)-or-(NULL)\n", qst->id, qst->required_mob[i], qst->details);
+						fclose(f);
+					}
+				}
 
 				qst->count_required_mob++;
 			}
