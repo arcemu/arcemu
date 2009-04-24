@@ -1844,25 +1844,6 @@ void QuestMgr::LoadExtraQuestStuff()
 						break;
 				}
 
-				if(qst->required_mobtype[i]==QUEST_MOB_TYPE_GAMEOBJECT && c_info)
-				{
-					FILE* f = fopen("Quest_GO_Creature.log","at");
-					if(f)
-					{
-						fprintf(f,"%10lu %10lu %s %s-or-%s\n", qst->id, qst->required_mob[i], qst->details, go_info->Name, c_info->Name);
-						fclose(f);
-					}
-				}
-				if(!go_info && !c_info)
-				{
-					FILE* f = fopen("Quest_GO_Creature.log","at");
-					if(f)
-					{
-						fprintf(f,"%10lu %10lu %s (NULL)-or-(NULL)\n", qst->id, qst->required_mob[i], qst->details);
-						fclose(f);
-					}
-				}
-
 				qst->count_required_mob++;
 			}
 
