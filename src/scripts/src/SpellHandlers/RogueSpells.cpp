@@ -44,7 +44,7 @@ bool Shiv(uint32 i, Spell *pSpell){
 	Unit *pTarget = pSpell->GetUnitTarget();
 	if(!pSpell->p_caster || !pTarget) return true;
 
-	pSpell->p_caster->CastSpell(pTarget->GetGUID(), 4950, true);
+	pSpell->p_caster->CastSpell(pTarget->GetGUID(), 5940, true);
 
 	if( pSpell->p_caster->GetItemInterface() )
 	{
