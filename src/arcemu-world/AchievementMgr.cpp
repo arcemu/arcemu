@@ -1024,6 +1024,21 @@ void AchievementMgr::UpdateAchievementCriteria(AchievementCriteriaTypes type, in
 				if(achievementCriteria->use_gameobject.goEntry == miscvalue1)
 					UpdateCriteriaProgress(achievementCriteria, 1);
 				break;
+			case ACHIEVEMENT_CRITERIA_TYPE_FALL_WITHOUT_DYING:
+				// fall distance (>=65) has been checked before UpdateAchievementCriteria() call, but it is sent in miscvalue1 just in case "they" add more...
+				if(achievement->ID==1260) // Fall 65 yards without dying while completely smashed during the Brewfest Holiday.
+				{
+					if(miscvalue2 >= 90) // drunken state, "completely smashed"
+					{
+						// TODO: Check if it is during the Brewfest Holiday ...
+						UpdateCriteriaProgress(achievementCriteria, 1);
+					}
+				}
+				else // achievement->ID==964 // Fall 65 yards without dying.
+				{
+					UpdateCriteriaProgress(achievementCriteria, 1);
+				}
+				break;
 			// these achievement criteria types simply update the progress by the value passed in miscvalue1
 			case ACHIEVEMENT_CRITERIA_TYPE_QUEST_REWARD_GOLD:
 			case ACHIEVEMENT_CRITERIA_TYPE_LOOT_MONEY:
@@ -1288,6 +1303,7 @@ bool AchievementMgr::IsCompletedCriteria(AchievementCriteriaEntry const* achieve
 		case ACHIEVEMENT_CRITERIA_TYPE_EQUIP_EPIC_ITEM:
 		case ACHIEVEMENT_CRITERIA_TYPE_DO_EMOTE:
 		case ACHIEVEMENT_CRITERIA_TYPE_VISIT_BARBER_SHOP:
+		case ACHIEVEMENT_CRITERIA_TYPE_FALL_WITHOUT_DYING:
 			return progresscounter >= 1;
 		//End of Achievement List
 	}

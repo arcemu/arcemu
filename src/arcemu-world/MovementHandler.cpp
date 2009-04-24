@@ -514,21 +514,29 @@ void WorldSession::HandleMovementOpcodes( WorldPacket & recv_data )
 			uint32 falldistance = float2int32( _player->z_axisposition - movement_info.z );
 			if( _player->z_axisposition <= movement_info.z)
 				falldistance = 1;
-            /*Safe Fall*/
-            if( (int)falldistance > _player->m_safeFall )
-                falldistance -= _player->m_safeFall;
-            else
-                falldistance = 1;
+			/*Safe Fall*/
+			if( (int)falldistance > _player->m_safeFall )
+				falldistance -= _player->m_safeFall;
+			else
+				falldistance = 1;
 
 			//checks that player has fallen more than 12 units, otherwise no damage will be dealt
 			//falltime check is also needed here, otherwise sudden changes in Z axis position, such as using !recall, may result in death
-            if( _player->isAlive() && !_player->GodModeCheat && falldistance > 12 && ( UNIXTIME >= _player->m_fallDisabledUntil ) /*&& movement_info.FallTime > 1000*/ && !_player->m_noFallDamage )
+			if( _player->isAlive() && !_player->GodModeCheat && falldistance > 12 && ( UNIXTIME >= _player->m_fallDisabledUntil ) /*&& movement_info.FallTime > 1000*/ && !_player->m_noFallDamage )
 			{
 				// 1.7% damage for each unit fallen on Z axis over 13
 				uint32 health_loss = float2int32( float( _player->GetUInt32Value( UNIT_FIELD_MAXHEALTH ) * ( ( falldistance - 12 ) * 0.017 ) ) );
 
 				if( health_loss >= _player->GetUInt32Value( UNIT_FIELD_HEALTH ) )
 					health_loss = _player->GetUInt32Value( UNIT_FIELD_HEALTH );
+				else if( falldistance >= 65 )
+				{
+					// Rather than Updating achivement progress every time fall damage is taken, all criteria currently have 65 yard requirement...
+					// Achievement 964: Fall 65 yards without dying.
+					// Achievement 1260: Fall 65 yards without dying while completely smashed during the Brewfest Holiday.
+					uint8 drunkenstate = _player->GetByte(PLAYER_BYTES_3,1);
+					_player->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_FALL_WITHOUT_DYING, falldistance, (uint32)drunkenstate, 0);
+				}
 
 				_player->SendEnvironmentalDamageLog( _player->GetGUID(), DAMAGE_FALL, health_loss );
 				_player->DealDamage( _player, health_loss, 0, 0, 0 );
