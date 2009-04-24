@@ -339,6 +339,7 @@ void AchievementMgr::SendAchievementEarned(AchievementEntry const* achievement)
 		
 		if(grp)
 		{
+//			grp->SendPacketToAll(&cdata);
 			uint8 i = 0;
 			GroupMembersSet::iterator groupItr;
 			GroupMembersSet::iterator groupItrLast;
@@ -414,6 +415,7 @@ void AchievementMgr::SendAchievementEarned(AchievementEntry const* achievement)
 			}
 		}
 	}
+//	GetPlayer()->SendMessageToSet(&cdata, true);
 
 	WorldPacket data( SMSG_ACHIEVEMENT_EARNED, 30);
 	data << GetPlayer()->GetNewGUID();
@@ -1867,20 +1869,28 @@ bool AchievementMgr::GMCompleteCriteria(WorldSession* gmSession, uint32 criteria
 /**
 	GM has used a command to reset achievement(s) for this player.
 	If achievementID is -1, all achievements get reset, otherwise only the one specified gets reset.
-	The player's client will not see this change unless they log out and back in.
-	I don't know of any server packet that tells the client that a completed achievement has been removed.
 */
 void AchievementMgr::GMResetAchievement(int32 achievementID)
 {
 	std::ostringstream ss;
 	if(achievementID == -1) // reset all achievements
 	{
+		CompletedAchievementMap::iterator itr = m_completedAchievements.begin();
+		for(; itr != m_completedAchievements.end(); ++itr)
+		{
+			WorldPacket resetData(SMSG_ACHIEVEMENT_DELETED, 4);
+			resetData << uint32(itr->first);
+			GetPlayer()->GetSession()->SendPacket(&resetData);
+		}
 		m_completedAchievements.clear();
 		ss << "DELETE FROM character_achievement WHERE guid = " << m_player->GetLowGUID();
 		CharacterDatabase.Execute( ss.str().c_str() );
 	}
 	else // reset a single achievement
 	{
+		WorldPacket resetData(SMSG_ACHIEVEMENT_DELETED, 4);
+		resetData << uint32(achievementID);
+		GetPlayer()->GetSession()->SendPacket(&resetData);
 		m_completedAchievements.erase(achievementID);
 		ss << "DELETE FROM character_achievement WHERE guid = " << m_player->GetLowGUID() << " AND achievement = " << achievementID;
 		CharacterDatabase.Execute( ss.str().c_str() );
@@ -1897,13 +1907,21 @@ void AchievementMgr::GMResetCriteria(int32 criteriaID)
 	if(criteriaID == -1) // reset all achievement criteria
 	{
 		for(CriteriaProgressMap::iterator iter = m_criteriaProgress.begin(); iter!=m_criteriaProgress.end(); ++iter)
+		{
+			WorldPacket resetData(SMSG_CRITERIA_DELETED, 4);
+			resetData << uint32(iter->first);
+			GetPlayer()->GetSession()->SendPacket(&resetData);
 			delete iter->second;
+		}
 		m_criteriaProgress.clear();
 		ss << "DELETE FROM character_achievement_progress WHERE guid = " << m_player->GetLowGUID();
 		CharacterDatabase.Execute( ss.str().c_str() );
 	}
 	else // reset a single achievement criteria
 	{
+		WorldPacket resetData(SMSG_CRITERIA_DELETED, 4);
+		resetData << uint32(criteriaID);
+		GetPlayer()->GetSession()->SendPacket(&resetData);
 		m_criteriaProgress.erase(criteriaID);
 		ss << "DELETE FROM character_achievement_progress WHERE guid = " << m_player->GetLowGUID() << " AND criteria = " << criteriaID;
 		CharacterDatabase.Execute( ss.str().c_str() );
