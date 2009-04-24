@@ -947,26 +947,20 @@ bool ChatHandler::HandleQuestAddStartCommand(const char * args, WorldSession * m
 			delete insertResult1;
 	}
 
-	std::string my_query2 = "SELECT id FROM gameobject_quest_starter WHERE id = " + quest_giver + " AND quest = " + string(args);
-	QueryResult *selectResult2 = WorldDatabase.Query(my_query2.c_str());
-	if (selectResult2)
-		delete selectResult2;
-	else
-	{
-		std::string my_insert2 = "INSERT INTO gameobject_quest_starter (id, quest) VALUES (" + quest_giver + "," + string(args) + ")";
-		QueryResult *insertResult2 = WorldDatabase.Query(my_insert2.c_str());
-		if (insertResult2)
-			delete insertResult2;
-	}
-
 	sQuestMgr.LoadExtraQuestStuff();
 
 	QuestRelation *qstrel = new QuestRelation;
 	qstrel->qst = qst;
 	qstrel->type = QUESTGIVER_QUEST_START;
-	uint8 qstrelid = (uint8)unit->GetQuestRelation(quest_id);
-	unit->FindQuest(quest_id, qstrelid);
-	unit->AddQuest(qstrel);
+
+	uint8 qstrelid;
+	if ( unit->HasQuests() )
+	{
+		qstrelid = (uint8)unit->GetQuestRelation(quest_id);
+		unit->FindQuest(quest_id, qstrelid);
+		unit->DeleteQuest(qstrel);
+	}
+
 	unit->_LoadQuests();
 
 	const char * qname = qst->title;
@@ -1038,26 +1032,20 @@ bool ChatHandler::HandleQuestAddFinishCommand(const char * args, WorldSession * 
 			delete insertResult1;
 	}
 
-	std::string my_query2 = "SELECT id FROM gameobject_quest_finisher WHERE id = " + quest_giver + " AND quest = " + string(args);
-	QueryResult *selectResult2 = WorldDatabase.Query(my_query2.c_str());
-	if (selectResult2)
-		delete selectResult2;
-	else
-	{
-		string my_insert2 = "INSERT INTO gameobject_quest_finisher (id, quest) VALUES (" + quest_giver + "," + string(args) + ")";
-		QueryResult *insertResult2 = WorldDatabase.Query(my_insert2.c_str());
-		if (insertResult2)
-			delete insertResult2;
-	}
-
 	sQuestMgr.LoadExtraQuestStuff();
 
 	QuestRelation *qstrel = new QuestRelation;
 	qstrel->qst = qst;
 	qstrel->type = QUESTGIVER_QUEST_END;
-	uint8 qstrelid = (uint8)unit->GetQuestRelation(quest_id);
-	unit->FindQuest(quest_id, qstrelid);
-	unit->AddQuest(qstrel);
+
+	uint8 qstrelid;
+	if ( unit->HasQuests() )
+	{
+		qstrelid = (uint8)unit->GetQuestRelation(quest_id);
+		unit->FindQuest(quest_id, qstrelid);
+		unit->DeleteQuest(qstrel);
+	}
+
 	unit->_LoadQuests();
 
 	const char * qname = qst->title;
@@ -1142,26 +1130,19 @@ bool ChatHandler::HandleQuestDelStartCommand(const char * args, WorldSession * m
 	if (deleteResult1)
 		delete deleteResult1;
 
-	std::string my_query2 = "SELECT id FROM gameobject_quest_starter WHERE id = " + quest_giver + " AND quest = " + string(args);
-	QueryResult *selectResult2 = WorldDatabase.Query(my_query2.c_str());
-	if (selectResult2)
-	{
-		delete selectResult2;
-
-		std::string my_delete2 = "DELETE FROM gameobject_quest_starter WHERE id = " + quest_giver + " AND quest = " + string(args);
-		QueryResult *deleteResult2 = WorldDatabase.Query(my_delete2.c_str());
-		if (deleteResult2)
-			delete deleteResult2;
-	}
-
 	sQuestMgr.LoadExtraQuestStuff();
 
 	QuestRelation *qstrel = new QuestRelation;
 	qstrel->qst = qst;
 	qstrel->type = QUESTGIVER_QUEST_START;
-	uint8 qstrelid = (uint8)unit->GetQuestRelation(quest_id);
-	unit->FindQuest(quest_id, qstrelid);
-	unit->DeleteQuest(qstrel);
+	
+	uint8 qstrelid;
+	if ( unit->HasQuests() )
+	{
+		qstrelid = (uint8)unit->GetQuestRelation(quest_id);
+		unit->FindQuest(quest_id, qstrelid);
+		unit->DeleteQuest(qstrel);
+	}
 	unit->_LoadQuests();
 
 	const char * qname = qst->title;
@@ -1234,26 +1215,20 @@ bool ChatHandler::HandleQuestDelFinishCommand(const char * args, WorldSession * 
 	if (deleteResult1)
 		delete deleteResult1;
 
-	std::string my_query2 = "SELECT id FROM gameobject_quest_finisher WHERE id = " + quest_giver + " AND quest = " + string(args);
-	QueryResult *selectResult2 = WorldDatabase.Query(my_query2.c_str());
-	if (selectResult2)
-	{
-		delete selectResult2;
-
-		std::string my_delete2 = "DELETE FROM gameobject_quest_finisher WHERE id = " + quest_giver + " AND quest = " + string(args);
-		QueryResult *deleteResult2 = WorldDatabase.Query(my_delete2.c_str());
-		if (deleteResult2)
-			delete deleteResult2;
-	}
-
 	sQuestMgr.LoadExtraQuestStuff();
 
 	QuestRelation *qstrel = new QuestRelation;
 	qstrel->qst = qst;
 	qstrel->type = QUESTGIVER_QUEST_END;
-	uint8 qstrelid = (uint8)unit->GetQuestRelation(quest_id);
-	unit->FindQuest(quest_id, qstrelid);
-	unit->DeleteQuest(qstrel);
+
+	uint8 qstrelid;
+	if ( unit->HasQuests() )
+	{
+		qstrelid = (uint8)unit->GetQuestRelation(quest_id);
+		unit->FindQuest(quest_id, qstrelid);
+		unit->DeleteQuest(qstrel);
+	}
+
 	unit->_LoadQuests();
 
 	const char * qname = qst->title;

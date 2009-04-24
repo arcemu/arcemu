@@ -1180,6 +1180,11 @@ out:
 		/************************
 		Death Knight Spells
 		*************************/
+	case 48982: //Rune Tap
+		 {
+            p_caster->SetUInt32Value(UNIT_FIELD_HEALTH,( uint32 )((p_caster->GetUInt32Value(UNIT_FIELD_HEALTH))+(p_caster->GetUInt32Value(UNIT_FIELD_MAXHEALTH)) / 10 ));
+	     }break;
+
 	case 46584:
 		{
 			if(p_caster	!= NULL)

@@ -7248,6 +7248,11 @@ void ApplyNormalFixes()
 			sp->EffectBasePoints[0] = 0;
 			sp->EffectBasePoints[1] = 99;
 		}
-		 
-		
+       // Rune Tap
+	   sp = dbcSpell.LookupEntryForced( 48982 );
+       if( sp != NULL )
+       {
+           sp->Effect[0] = SPELL_EFFECT_DUMMY;
+       }
+		 		
 }

@@ -108,7 +108,7 @@ void Channel::AttemptJoin(Player * plr, const char * password)
 	if( m_flags & CHANNEL_PACKET_LFG )
 	{
 		// make sure we have lfg dungeons
-		bool inlfg=false;
+		bool inlfg=true;
 		for(uint8 i = 0; i < 3; i++)
 		{
 			if(plr->LfgDungeonId[i] != 0)

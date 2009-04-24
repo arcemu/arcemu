@@ -4182,9 +4182,9 @@ int luaUnit_GetPlayerLevel(lua_State * L, Unit * ptr)
 	CHECK_TYPEID_RET(TYPEID_PLAYER);
 	if(ptr)
 	{
-		lua_pushnumber(L,static_cast<Player*>( ptr ) ->getLevel());
+		lua_pushinteger(L, ptr->getLevel());
 	}
-	return 0;
+	return 1;
 }
 int luaUnit_SetPlayerLevel(lua_State * L, Unit * ptr)
 {
