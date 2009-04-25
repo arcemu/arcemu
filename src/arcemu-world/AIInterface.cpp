@@ -280,7 +280,12 @@ void AIInterface::HandleEvent(uint32 event, Unit* pUnit, uint32 misc1)
 				if( pUnit == NULL ) return;	
 				
 				if( pUnit->IsCreature() )
-					pUnit->RemoveNegativeAuras();
+				{
+					if( pUnit->IsDead() )
+						pUnit->RemoveAllAuras();
+					else
+						pUnit->RemoveNegativeAuras();
+				}
 
 				Unit* target = NULL;
 				if (m_Unit->GetMapMgr() && m_Unit->GetMapMgr()->GetMapInfo())
