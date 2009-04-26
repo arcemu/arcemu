@@ -957,7 +957,6 @@ bool ChatHandler::HandleQuestAddStartCommand(const char * args, WorldSession * m
 	if ( unit->HasQuests() )
 	{
 		qstrelid = (uint8)unit->GetQuestRelation(quest_id);
-		unit->FindQuest(quest_id, qstrelid);
 		unit->DeleteQuest(qstrel);
 	}
 
@@ -1042,7 +1041,6 @@ bool ChatHandler::HandleQuestAddFinishCommand(const char * args, WorldSession * 
 	if ( unit->HasQuests() )
 	{
 		qstrelid = (uint8)unit->GetQuestRelation(quest_id);
-		unit->FindQuest(quest_id, qstrelid);
 		unit->DeleteQuest(qstrel);
 	}
 
@@ -1140,7 +1138,6 @@ bool ChatHandler::HandleQuestDelStartCommand(const char * args, WorldSession * m
 	if ( unit->HasQuests() )
 	{
 		qstrelid = (uint8)unit->GetQuestRelation(quest_id);
-		unit->FindQuest(quest_id, qstrelid);
 		unit->DeleteQuest(qstrel);
 	}
 	unit->_LoadQuests();
@@ -1225,7 +1222,6 @@ bool ChatHandler::HandleQuestDelFinishCommand(const char * args, WorldSession * 
 	if ( unit->HasQuests() )
 	{
 		qstrelid = (uint8)unit->GetQuestRelation(quest_id);
-		unit->FindQuest(quest_id, qstrelid);
 		unit->DeleteQuest(qstrel);
 	}
 
