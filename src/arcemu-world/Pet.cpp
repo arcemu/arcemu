@@ -216,7 +216,7 @@ void Pet::CreateAsSummon( uint32 entry, CreatureInfo *ci, Creature* created_from
 
 	BaseDamage[0] = 0;
 	BaseDamage[1] = 0;
-	BaseOffhandDamage[0 ] = 0;
+	BaseOffhandDamage[0] = 0;
 	BaseOffhandDamage[1] = 0;
 	BaseRangedDamage[0] = 0;
 	BaseRangedDamage[1] = 0;
@@ -310,13 +310,13 @@ void Pet::Update( uint32 time )
 		if( m_ExpireTime == 0 )
 		{
 			// remove
-			Dismiss();
+			Remove( false, true );
 			return;
 		}
 		else if( time > m_ExpireTime )
-				m_ExpireTime = 0;
+			m_ExpireTime = 0;
 		else
-				m_ExpireTime -= time;
+			m_ExpireTime -= time;
 	}
 }
 
@@ -1306,7 +1306,7 @@ void Pet::LoadPetAuras(int32 id)
 	/*
 	   Talent			   Aura Id
 	Unleashed Fury			8875
-	Thick Hde				19580
+	Thick Hide				19580
 	Endurance Training		19581
 	Bestial Swiftness		19582
 	Bestial Discipline		19589
@@ -1526,17 +1526,20 @@ Group *Pet::GetGroup()
 void Pet::SkillUp()
 {
 	// Pets increase in spell ranks as they level up
-	SpellEntry* tmp;
-	PetSpellMap::iterator itr, itr2;
-	for( itr = mSpells.begin(); itr != mSpells.end(); )
+	SpellEntry *sp;
+	PetSpellMap::iterator itr;
+	list< SpellEntry* > spells_to_add;
+
+	for( itr = mSpells.begin(); itr != mSpells.end(); itr++ )
 	{
-		itr2 = itr++; // itr2 gets deleted in AddSpell(..)
-		tmp = objmgr.GetNextSpellRank( itr2->first, getLevel() );
-		if( itr2->first != tmp )
-			AddSpell( tmp, true ); // old rank is removed in AddSpell(..)
-			//TODO: summon spells should go to m_Owner->SummonSpells too
-			//TODO: send smsg_pet_learnt_spell
+		sp = objmgr.GetNextSpellRank( itr->first, getLevel() );
+		if( itr->first != sp )
+			spells_to_add.push_back( sp );
 	}
+	
+	list< SpellEntry* >::iterator i = spells_to_add.begin();
+	for( ; i != spells_to_add.end(); i++ )
+		AddSpell( (*i), true ); // old rank is removed in AddSpell(..)
 }
 
 
