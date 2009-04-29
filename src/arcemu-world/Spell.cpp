@@ -1778,7 +1778,7 @@ void Spell::cast(bool check)
 						if( m_caster && m_caster->GetMapMgr() )
 						{
 							Unit *Target = m_caster->GetMapMgr()->GetUnit(*i);
-							if( Target && Target->IsDead() ) // don't apply auras to dead things
+							if( Target && Target->IsDead() && !Target->IsPlayer() ) // don't apply auras to dead things
 							{
 								continue;
 							}
