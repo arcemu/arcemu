@@ -940,9 +940,6 @@ void WorldSession::HandleBugOpcode( WorldPacket & recv_data )
 	uint32 typelen;
 	std::string type;
 
-	if( (GetPlayer()->m_feedbackTimer + 300) > (uint32)UNIXTIME ) //5 minute timer, because i feel like it
-		return;
-
 	recv_data >> suggestion >> contentlen >> content >> typelen >> type;
 
 	if( suggestion == 0 )
@@ -950,18 +947,9 @@ void WorldSession::HandleBugOpcode( WorldPacket & recv_data )
 	else
 		sLog.outDebug( "WORLD: Received CMSG_BUG [Suggestion]" );
 
-	std::stringstream query;
-	query << "INSERT INTO feedback (feedback_type,user_content,state_data) VALUES (\"";
-	query << ((suggestion==0)?"Bug":"Suggestion") << "\",\"";
-	query << CharacterDatabase.EscapeString(type.c_str()) << "\",\"";
-	query << CharacterDatabase.EscapeString(content.c_str()) << "\");";
-	CharacterDatabase.Execute(query.str().c_str());
-	GetPlayer()->m_feedbackTimer = (uint32)UNIXTIME;
-	sLog.outDebug("FEEDBACK: %s / %s",type.c_str(),content.c_str());
-	//sLog.outDebug( type.c_str( ) );
-	//sLog.outDebug( content.c_str( ) );
+	sLog.outDebug( type.c_str( ) );
+	sLog.outDebug( content.c_str( ) );
 }
-
 
 void WorldSession::HandleCorpseReclaimOpcode(WorldPacket &recv_data)
 {

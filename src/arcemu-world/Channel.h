@@ -126,7 +126,6 @@ public:
 	string m_name;
 	string m_password;
 	uint8 m_flags;
-	uint32 m_dbcflags;
 	uint32 m_id;
 	bool m_general;
 	bool m_muted;
@@ -144,7 +143,7 @@ public:
 	~Channel();
 
 	void AttemptJoin(Player * plr, const char * password);
-	void Part(Player * plr, bool send_packet = true, bool automated = false);
+	void Part(Player * plr, bool send_packet = true);
 	void Kick(Player * plr, Player * die_player, bool ban);
 	void Invite(Player * plr, Player * new_player);
 	void Moderate(Player * plr);

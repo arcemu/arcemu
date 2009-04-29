@@ -1679,7 +1679,6 @@ public:
 
 public:
 
-	uint32 m_feedbackTimer;
 	std::string Lfgcomment;
 	uint16 LfgDungeonId[3];
 	uint8 LfgType[3];
@@ -2078,11 +2077,6 @@ protected:
 	WorldSession *m_session;
 	// Channels
 	std::set<Channel*> m_channels;
-	
-	bool inTrade;
-	bool inGuildRecruitment;
-	bool inLFGChan;
-
 	// Visible objects
 	std::set<Object*> m_visibleObjects;
 	// Groups/Raids

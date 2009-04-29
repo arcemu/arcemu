@@ -65,7 +65,6 @@ m_curTarget(0),
 m_curSelection(0),
 m_lootGuid(0),
 m_Summon(NULL),
-m_feedbackTimer(0),
 
 m_PetNumberMax(0),
 m_lastShotTime(0),
@@ -8149,7 +8148,7 @@ void Player::ZoneUpdate(uint32 ZoneId)
 
 	at = dbcArea.LookupEntryForced( ZoneId );
 
-	/*if( !m_channels.empty() && at)
+	if( !m_channels.empty() && at)
 	{
 		// change to zone name, not area name
 		for( std::set<Channel*>::iterator itr = m_channels.begin(),nextitr ; itr != m_channels.end() ; itr = nextitr)
@@ -8195,7 +8194,7 @@ void Player::ZoneUpdate(uint32 ZoneId)
 
 			}
 		}
-	} */
+	}
 
 #ifdef OPTIMIZED_PLAYER_SAVING
 	save_Zone();
@@ -8224,9 +8223,7 @@ void Player::UpdateChannels(uint16 AreaID)
 {
 	set<Channel *>::iterator i;
 	Channel * c;
-	const char * AreaName;
-	char channelname[96];
-	uint32 areaflags = 0;
+	string channelname, AreaName;
 
 
 	if(GetMapId()==450)
@@ -8248,8 +8245,7 @@ void Player::UpdateChannels(uint16 AreaID)
 	else
 	{
 		AreaName = at2->name;
-		areaflags = at2->AreaFlags;
-		if(strlen(AreaName) < 2)
+		if(AreaName.length() < 2)
 		{
 			MapInfo *pMapinfo = WorldMapInfoStorage.LookupEntry(GetMapId());
 			AreaName = pMapinfo->name;
@@ -8261,60 +8257,34 @@ void Player::UpdateChannels(uint16 AreaID)
 		c = *i;
 		i++;
 
-		if( !(c->m_flags & CHANNEL_PACKET_ZONESPECIFIC) )//Not an updatable channel.
+		if(!c->m_general || c->m_name == "LookingForGroup")//Not an updatable channel.
 			continue;
 
-		ChatChannelDBC * pDBC = dbcChatChannels.LookupEntryForced( c->m_id );
-		if(!pDBC)		
-			continue;
-
-		if( c->m_flags & CHANNEL_PACKET_CITY )
+		if( strstr(c->m_name.c_str(), "General") )
+			channelname = "General";
+		else if( strstr(c->m_name.c_str(), "Trade") )
+			channelname = "Trade";
+		else if( strstr(c->m_name.c_str(), "LocalDefense") )
+			channelname = "LocalDefense";
+		else if( strstr(c->m_name.c_str(), "GuildRecruitment") )
+			channelname = "GuildRecruitment";
+		else
+			continue;//Those 4 are the only ones we want updated.
+		channelname += " - ";
+		if( (strstr(c->m_name.c_str(), "Trade") || strstr(c->m_name.c_str(), "GuildRecruitment")) && ( at2->AreaFlags &AREA_CITY || at2->AreaFlags &AREA_CITY_AREA ))
 		{
-			if( !IsInCity() )
-			{
-				c->Part(this, true, true);
-				continue;
-			}
-			else
-			{
-				string aname="City";
-				AreaName = aname.c_str();
-			}
+			channelname += "City";
 		}
+		else
+			channelname += AreaName;
 
-		snprintf( channelname , 95 , pDBC->name_pattern[0] , AreaName );
-		
-		Channel * chn = channelmgr.GetCreateChannel(channelname, this, c->m_id);
+		Channel * chn = channelmgr.GetCreateChannel(channelname.c_str(), this, c->m_id);
 		if( !chn->HasMember(this) )
 		{
-			chn->AttemptJoin(this, "");
-			c->Part(this,false);
+			c->Part(this);
+			chn->AttemptJoin(this, NULL);
 		}
 	}
-	
-	if( IsInCity() )
-	{
-			
-		if( inTrade )
-		{
-			char channelname[96];
-			ChatChannelDBC * pDBC = dbcChatChannels.LookupEntryForced( CHANNEL_TRADE );
-			sprintf(channelname,pDBC->name_pattern[0],"City");
-			Channel * chn = channelmgr.GetCreateChannel(channelname, this, pDBC->id);
-			if( !chn->HasMember(this) )
-				chn->AttemptJoin(this, "");
-		}
-		if( inGuildRecruitment )
-		{
-			char channelname[96];
-			ChatChannelDBC * pDBC = dbcChatChannels.LookupEntryForced( CHANNEL_GUILDREC );
-			sprintf(channelname,pDBC->name_pattern[0],"City");
-			Channel * chn = channelmgr.GetCreateChannel(channelname, this, pDBC->id);
-			if( !chn->HasMember(this) )
-				chn->AttemptJoin(this, "");
-		}
-	}
-	
 	m_TeleportState = 0;
 }
 void Player::SendTradeUpdate()
