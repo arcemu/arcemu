@@ -612,6 +612,7 @@ void WorldSession::HandleTextEmoteOpcode( WorldPacket & recv_data )
 
 		GetPlayer()->SendMessageToSet(&data, true);
 		_player->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_DO_EMOTE, text_emote, 0, 0);
+		sQuestMgr.OnPlayerEmote(_player, text_emote, guid);
 	}
 }
 

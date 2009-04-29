@@ -9,14 +9,18 @@ CLS
 ECHO.
 ECHO Welcome to the ArcEmu DB Updater! Please enter your MySQL Info...
 ECHO.
-set /p server= MySQL Server Address (e.g. localhost): 
-set /p port= MySQL Server Port (e.g. 3306): 
+set /p server= MySQL Server Address (default: localhost): 
+if "%server%"=="" set server=localhost
+set /p port= MySQL Server Port (default: 3306): 
+if "%port%"=="" set port=3306
 ECHO.
-set /p user= MySQL Username: 
+set /p user= MySQL Username (default: root): 
+if "%user%"=="" set user=root
 set /p pass= MySQL Password: 
-REM # Logon Database
 ECHO.
-set /p logon= Logon Database (Accounts): 
+REM # Logon Database
+set /p logon= Logon Database (default: Accounts): 
+if "%logon%"=="" set logon=Accounts
 REM # Character Database
 set /p chr= Character Database: 
 REM # World Database

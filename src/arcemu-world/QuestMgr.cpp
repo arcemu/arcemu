@@ -801,11 +801,9 @@ void QuestMgr::OnPlayerCast(Player* plr, uint32 spellid, uint64& victimguid)
 		return;
 
 	Unit * victim = plr->GetMapMgr() ? plr->GetMapMgr()->GetUnit(victimguid) : NULL;
-	if(victim==NULL)
-		return;
 
 	uint32 i, j;
-	uint32 entry = victim->GetEntry();
+	uint32 entry = (victim) ? victim->GetEntry() : 0;
 	QuestLogEntry *qle;
 	for(i = 0; i < 25; ++i)
 	{
@@ -815,19 +813,32 @@ void QuestMgr::OnPlayerCast(Player* plr, uint32 spellid, uint64& victimguid)
 			if(!qle->IsCastQuest())
 				continue;
 
+			Quest* qst = qle->GetQuest();
 			for(j = 0; j < 4; ++j)
 			{
-				if(qle->GetQuest()->required_mob[j] == entry &&
-					qle->GetQuest()->required_spell[j] == spellid &&
-					qle->m_mobcount[j] < qle->GetQuest()->required_mobcount[j] &&
-					!qle->IsUnitAffected(victim))
+				if( qst->required_mob[j] )
 				{
-					// add another kill.(auto-dirtys it)
-					qle->AddAffectedUnit(victim);
-					qle->SetMobCount(j, qle->m_mobcount[j] + 1);
-					qle->SendUpdateAddKill(j);
-					qle->UpdatePlayerFields();
-					break;
+					if( victim && qst->required_mob[j] == entry && qst->required_spell[j] == spellid && (qle->m_mobcount[j] < qst->required_mobcount[j] || qle->m_mobcount[j] == 0) && !qle->IsUnitAffected(victim) )
+					{
+						qle->AddAffectedUnit(victim);
+						qle->SetMobCount(j, qle->m_mobcount[j] + 1);
+						qle->UpdatePlayerFields();
+						if( qle->CanBeFinished() )
+							qle->SendQuestComplete();
+						break;
+					}
+				}
+				// Some quests, like druid's Trial of the Lake (28/29), don't have a required target for spell cast
+				else
+				{
+					if( qst->required_spell[j] == spellid )
+					{
+						qle->SetMobCount(j, qle->m_mobcount[j] + 1);
+						qle->UpdatePlayerFields();
+						if( qle->CanBeFinished() )
+							qle->SendQuestComplete();
+						break;
+					}
 				}
 			}
 		}
@@ -1844,6 +1855,10 @@ void QuestMgr::LoadExtraQuestStuff()
 						break;
 				}
 
+				if( qst->required_emote[i] || qst->required_spell[i] )
+				{
+					qst->required_mobtype[i] = QUEST_MOB_TYPE_CREATURE; // can't textemote or spellcast at a gameobject, right?
+				}
 				qst->count_required_mob++;
 			}
 
@@ -2067,3 +2082,56 @@ QuestAssociationList* QuestMgr::GetQuestAssociationListForItemId (uint32 itemId)
 		return itr->second;
 	}
 }
+
+void QuestMgr::OnPlayerEmote(Player* plr, uint32 emoteid, uint64& victimguid)
+{
+	if(!plr || !emoteid || !victimguid)
+		return;
+
+	Unit * victim = plr->GetMapMgr() ? plr->GetMapMgr()->GetUnit(victimguid) : NULL;
+
+	uint32 i, j;
+	uint32 entry = (victim) ? victim->GetEntry() : 0;
+	QuestLogEntry *qle;
+	for(i = 0; i < 25; ++i)
+	{
+		if((qle = plr->GetQuestLogInSlot(i)) != 0)
+		{
+			// dont waste time on quests without emotes
+			if(!qle->IsEmoteQuest())
+			{
+				continue;
+			}
+
+			Quest* qst = qle->GetQuest();
+			for(j = 0; j < 4; ++j)
+			{
+				if( qst->required_mob[j] )
+				{
+					if( victim && qst->required_mob[j] == entry && qst->required_emote[j] == emoteid && (qle->m_mobcount[j] < qst->required_mobcount[j] || qle->m_mobcount[j] == 0) && !qle->IsUnitAffected(victim) )
+					{
+						qle->AddAffectedUnit(victim);
+						qle->SetMobCount(j, qle->m_mobcount[j] + 1);
+						qle->UpdatePlayerFields();
+						if( qle->CanBeFinished() )
+							qle->SendQuestComplete();
+						break;
+					}
+				}
+				// in case some quest doesn't have a required target for the emote..
+				else
+				{
+					if( qst->required_emote[j] == emoteid )
+					{
+						qle->SetMobCount(j, qle->m_mobcount[j] + 1);
+						qle->UpdatePlayerFields();
+						if( qle->CanBeFinished() )
+							qle->SendQuestComplete();
+						break;
+					}
+				}
+			}
+		}
+	}
+}
+

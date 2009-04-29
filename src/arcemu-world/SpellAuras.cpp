@@ -2647,14 +2647,18 @@ void Aura::SpellAuraDummy(bool apply)
 		}break;
 	}
 
-	if( TamingSpellid && !GetTimeLeft() && GetUnitCaster()->IsPlayer() )
+	if( TamingSpellid && GetUnitCaster()->IsPlayer() )
 	{
-		// Creates a 15 minute pet, if player has the quest that goes with the spell and if target corresponds to quest
 		Player *p_caster = static_cast< Player* >( GetUnitCaster() );
 		SpellEntry *triggerspell = dbcSpell.LookupEntry( TamingSpellid );
 		Quest* tamequest = QuestStorage.LookupEntry( triggerspell->EffectMiscValue[1] );
-		if ( p_caster->GetQuestLogForEntry(tamequest->id )&& m_target->GetEntry() == tamequest->required_mob[0] )
+		if ( !p_caster->GetQuestLogForEntry(tamequest->id ) || m_target->GetEntry() != tamequest->required_mob[0] )
 		{
+			p_caster->SendCastResult( triggerspell->Id, SPELL_FAILED_BAD_TARGETS, 0, 0 );
+		}
+		else if( !GetTimeLeft() )
+		{
+			// Creates a 15 minute pet, if player has the quest that goes with the spell and if target corresponds to quest
 			if( Rand( 75.0f ) )// 75% chance on success
 			{
 				Creature *tamed = ( ( m_target->GetTypeId() == TYPEID_UNIT ) ? ( ( Creature* ) m_target ) : 0 );
@@ -2674,10 +2678,6 @@ void Aura::SpellAuraDummy(bool apply)
 			{
 				p_caster->SendCastResult( triggerspell->Id,SPELL_FAILED_TRY_AGAIN,0,0 );
 			}
-		}
-		else
-		{
-			p_caster->SendCastResult( triggerspell->Id,SPELL_FAILED_BAD_TARGETS,0,0 );
 		}
 		TamingSpellid = 0;
 	}

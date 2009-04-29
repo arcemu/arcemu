@@ -109,8 +109,16 @@ WorldPacket* WorldSession::BuildQuestQueryResponse(Quest *qst)
 
 	for(i = 0; i < 4; ++i)
 	{
-		*data << qst->required_mob[i];			  // Kill mob entry ID [i]
-		*data << qst->required_mobcount[i];		 // Kill mob count [i]
+		if( !qst->required_emote[i] && !qst->required_spell[i] )
+		{
+			*data << qst->required_mob[i];			  // Kill mob entry ID [i]
+			*data << qst->required_mobcount[i];		 // Kill mob count [i]
+		}
+		else // the quest doesn't require a kill here
+		{
+			*data << (uint32)0;
+			*data << (uint32)0;
+		}
 		*data << (uint32)0; // Unknown
 	}
 
@@ -168,17 +176,22 @@ void QuestLogEntry::Init(Quest* quest, Player* plr, uint32 slot)
 	m_slot = slot;
 
 	iscastquest = false;
-	for (uint32 i=0;i<4;++i)
+	isemotequest = false;
+	for(uint32 i = 0; i < 4; ++i)
 	{
-		if (quest->required_spell[i]!=0)
+		if( quest->required_spell[i] != 0 )
 		{
-			iscastquest=true;
-			if (!plr->HasQuestSpell(quest->required_spell[i]))
+			iscastquest = true;
+			if( !plr->HasQuestSpell(quest->required_spell[i]) )
 				plr->quest_spells.insert(quest->required_spell[i]);
 		}
-		else if (quest->required_mob[i]!=0)
+		else if( quest->required_emote[i] != 0 )
 		{
-			if (!plr->HasQuestMob(quest->required_mob[i]))
+			isemotequest = true;
+		}
+		if( quest->required_mob[i] != 0 )
+		{
+			if( !plr->HasQuestMob(quest->required_mob[i]) )
 				plr->quest_mobs.insert(quest->required_mob[i]);
 		}
 	}
@@ -282,6 +295,20 @@ bool QuestLogEntry::CanBeFinished()
 				return false;
 			}
 		}
+		if( m_quest->required_spell[i] ) // requires spell cast, with no required target
+		{
+			if( m_mobcount[i] == 0 || m_mobcount[i] < m_quest->required_mobcount[i] )
+			{
+				return false;
+			}
+		}
+		if( m_quest->required_emote[i] ) // requires emote, with no required target
+		{
+			if( m_mobcount[i] == 0 || m_mobcount[i] < m_quest->required_mobcount[i] )
+			{
+				return false;
+			}
+		}
 	}
 
 	for(i = 0; i < 4; ++i)
@@ -362,6 +389,7 @@ void QuestLogEntry::UpdatePlayerFields()
 
 	uint32 base = GetBaseField(m_slot);
 	m_plr->SetUInt32Value(base + 0, m_quest->id);
+	uint32 field0 = 0;
 
 	// next field is kills and shit like that
 	uint32 field1 = 0;
@@ -387,6 +415,16 @@ void QuestLogEntry::UpdatePlayerFields()
 		}
 	}
 
+	// spell casts / emotes
+	uint8* p = (uint8*)&field0;
+	for(int i = 0; i < 4; ++i)
+	{
+		if( m_quest->required_spell[i] || m_quest->required_emote[i] )
+		{
+			p[i] |= (uint8)m_mobcount[i];
+		}
+	}
+
 	// mob hunting
 	if(m_quest->count_required_mob)
 	{
@@ -402,15 +440,15 @@ void QuestLogEntry::UpdatePlayerFields()
 		}*/
 
 		// optimized this - burlex
-		uint8 * p = (uint8*)&field1;
+		p = (uint8*)&field1;
 		for(int i = 0; i < 4; ++i)
 		{
-			if( m_quest->required_mob[i] && m_mobcount[i] > 0 )
+			if( m_quest->required_mob[i] && m_mobcount[i] > 0 && !m_quest->required_emote[i] && !m_quest->required_spell[i] )
 				p[i] |= (uint8)m_mobcount[i];
 		}
 	}
 
-	m_plr->SetUInt32Value(base + 1, 0);
+	m_plr->SetUInt32Value(base + 1, field0);
 	m_plr->SetUInt32Value(base + 2, field1);
 	m_plr->SetUInt32Value(base + 3, m_time_left);
 }

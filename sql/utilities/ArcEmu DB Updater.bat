@@ -177,6 +177,8 @@ ECHO [Importing] 2243_totemspells.sql
 mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < ..\world_updates\2243_totemspells.sql
 ECHO [Importing] 2387_LightWell.sql
 mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < ..\world_updates\2387_LightWell.sql
+ECHO [Importing] 2582_quests.sql
+mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < ..\world_updates\2582_quests.sql
 ECHO [Importing] ArcScript_full.sql
 mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < ..\ArcScripts\ArcScript_full.sql
 ECHO [Importing] spellfixes.sql
@@ -338,6 +340,8 @@ ECHO [Importing] 2243_totemspells.sql
 mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < ..\world_updates\2243_totemspells.sql
 ECHO [Importing] 2387_LightWell.sql
 mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < ..\world_updates\2387_LightWell.sql
+ECHO [Importing] 2582_quests.sql
+mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < ..\world_updates\2582_quests.sql
 ECHO [Importing] ArcScript_full.sql
 mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < ..\ArcScripts\ArcScript_full.sql
 ECHO [Importing] spellfixes.sql

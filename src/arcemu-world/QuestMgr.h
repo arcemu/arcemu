@@ -70,6 +70,7 @@ public:
 	bool OnGameObjectActivate(Player *plr, GameObject *go);
 	void OnPlayerKill(Player* plr, Creature* victim);
 	void OnPlayerCast(Player* plr, uint32 spellid, uint64& victimguid);
+	void OnPlayerEmote(Player* plr, uint32 emoteid, uint64& victimguid);
 	void OnPlayerItemPickup(Player* plr, Item* item);
 	void OnPlayerExploreArea(Player* plr, uint32 AreaID);
 	void AreaExplored(Player* plr, uint32 QuestID);// scriptdev2

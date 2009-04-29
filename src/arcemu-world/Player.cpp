@@ -2763,11 +2763,6 @@ void Player::LoadFromDBProc(QueryResultVector & results)
 		return;
 	}
 
-	// Load achievements - trying to do this asynchronously causes a crash :/
-	// This needs to be done before loading spells, skills, level, etc. so that Realm-First! stuff doesn't get spammed to everybody every time the player loads.
-	m_achievementMgr.LoadFromDB(CharacterDatabase.Query("SELECT achievement, date FROM character_achievement WHERE guid = '%u'", GetUInt32Value(OBJECT_FIELD_GUID)),CharacterDatabase.Query("SELECT criteria, counter, date FROM character_achievement_progress WHERE guid = '%u'", GetUInt32Value(OBJECT_FIELD_GUID)));
-	m_achievementMgr.CheckAllAchievementCriteria();
-
 	// set level
 	m_uint32Values[UNIT_FIELD_LEVEL] = get_next_field.GetUInt32();
 	/*if(m_uint32Values[UNIT_FIELD_LEVEL] > PLAYER_LEVEL_CAP)
@@ -2790,6 +2785,11 @@ void Player::LoadFromDBProc(QueryResultVector & results)
 
 	// Process exploration data.
 	LoadFieldsFromString(get_next_field.GetString(), PLAYER_EXPLORED_ZONES_1, PLAYER_EXPLORED_ZONES_LENGTH);
+
+	// Load achievements - trying to do this asynchronously causes a crash :/
+	// This needs to be done before loading spells, skills, etc. so that Realm-First! stuff doesn't get spammed to everybody every time the player loads.
+	m_achievementMgr.LoadFromDB(CharacterDatabase.Query("SELECT achievement, date FROM character_achievement WHERE guid = '%u'", GetUInt32Value(OBJECT_FIELD_GUID)),CharacterDatabase.Query("SELECT criteria, counter, date FROM character_achievement_progress WHERE guid = '%u'", GetUInt32Value(OBJECT_FIELD_GUID)));
+	m_achievementMgr.CheckAllAchievementCriteria();
 
 	// Process skill data.
 	uint32 Counter = 0;
@@ -10772,6 +10772,7 @@ void Player::_ModifySkillMaximum(uint32 SkillLine, uint32 NewMax)
 
 		itr->second.MaximumValue = NewMax;
 		_UpdateSkillFields();
+		m_achievementMgr.UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_LEARN_SKILL_LEVEL, SkillLine, NewMax/75, 0);
 	}
 }
 

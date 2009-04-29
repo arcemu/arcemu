@@ -74,24 +74,24 @@ enum QUEST_TYPE
 
 enum QUEST_FLAG
 {
-	QUEST_FLAG_NONE					= 0x00000000,
-	QUEST_FLAG_DELIVER				= 0x00000001,   
-	QUEST_FLAG_KILL					= 0x00000002,   
-	QUEST_FLAG_SPEAKTO				= 0x00000004,
-	QUEST_FLAG_REPEATABLE			= 0x00000008,
-	QUEST_FLAG_EXPLORATION			= 0x00000010,
-	QUEST_FLAG_TIMED				= 0x00000020,
-	QUEST_FLAG_REPUTATION			= 0x00000080,
+	QUEST_FLAG_NONE               = 0x00000000,
+	QUEST_FLAG_DELIVER            = 0x00000001,   
+	QUEST_FLAG_KILL               = 0x00000002,   
+	QUEST_FLAG_SPEAKTO            = 0x00000004,
+	QUEST_FLAG_REPEATABLE         = 0x00000008,
+	QUEST_FLAG_EXPLORATION        = 0x00000010,
+	QUEST_FLAG_TIMED              = 0x00000020,
+	QUEST_FLAG_REPUTATION         = 0x00000080,
 
 	// Custom flags
-	QUEST_FLAG_ONLY_ONE_REQUIRED	= 0x00010000,
+	QUEST_FLAG_ONLY_ONE_REQUIRED  = 0x00010000,
 };
 
 enum FAILED_REASON
 {
 	FAILED_REASON_FAILED			= 0,
 	FAILED_REASON_INV_FULL			= 4,
-    FAILED_REASON_DUPE_ITEM_FOUND   = 17,
+	FAILED_REASON_DUPE_ITEM_FOUND   = 17,
 };
 
 enum INVALID_REASON
@@ -169,6 +169,7 @@ struct Quest
 	uint32 required_mob[4];
 	uint32 required_mobcount[4];
 	uint32 required_spell[4];
+	uint32 required_emote[4];
 
 	uint32 reward_choiceitem[6];
 	uint32 reward_choiceitemcount[6];
@@ -263,6 +264,7 @@ public:
 
 	bool IsUnitAffected(Unit* target);
 	ARCEMU_INLINE bool IsCastQuest() { return iscastquest;}
+	ARCEMU_INLINE bool IsEmoteQuest() { return isemotequest; }
 	void AddAffectedUnit(Unit* target);
 	void ClearAffectedUnits();
 
@@ -293,6 +295,7 @@ private:
 
 	std::set<uint64> m_affected_units;
 	bool iscastquest;
+	bool isemotequest;
 
 	uint32 m_time_left;
 	int32 m_slot;

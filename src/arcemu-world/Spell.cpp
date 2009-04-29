@@ -1433,10 +1433,6 @@ void Spell::cast(bool check)
 
 	if(cancastresult == SPELL_CANCAST_OK)
 	{
-		if (p_caster && !m_triggeredSpell && p_caster->IsInWorld() && GET_TYPE_FROM_GUID(m_targets.m_unitTarget)==HIGHGUID_TYPE_UNIT)
-		{
-			sQuestMgr.OnPlayerCast(p_caster,GetProto()->Id,m_targets.m_unitTarget);
-		}
 		if (hasAttribute(ATTRIBUTE_ON_NEXT_ATTACK))
 		{
 			if(!m_triggeredSpell)
@@ -1846,6 +1842,43 @@ void Spell::cast(bool check)
 
 		//if( u_caster != NULL )
 		//	u_caster->RemoveAurasByInterruptFlagButSkip(AURA_INTERRUPT_ON_CAST_SPELL, GetProto()->Id);
+
+		// Send Spell cast info to QuestMgr
+		if( p_caster && p_caster->IsInWorld() )
+		{
+			// Taming quest spells are handled in SpellAuras.cpp, in SpellAuraDummy
+			// OnPlayerCast shouldn't be called here for taming-quest spells, in case the tame fails (which is handled in SpellAuras)
+			bool isTamingQuestSpell = false;
+			uint32 tamingQuestSpellIds[] = { 19688, 19694, 19693, 19674, 19697, 19696, 19687, 19548, 19689, 19692, 19699, 19700, 30099, 30105, 30102, 30646, 30653, 30654, 0 };
+			uint32* spellidPtr = &tamingQuestSpellIds[0];
+			while( *spellidPtr ) // array ends with 0, so this works
+			{
+				if( *spellidPtr == m_spellInfo->Id ) // it is a spell for taming beast quest
+				{
+					isTamingQuestSpell = true;
+					break;
+				}
+				++spellidPtr;
+			}
+			if( !isTamingQuestSpell )
+			{
+				uint32 numTargets = 0;
+				TargetsList::iterator itr = UniqueTargets.begin();
+				for(; itr != UniqueTargets.end(); ++itr)
+				{
+					if( GET_TYPE_FROM_GUID(*itr) == HIGHGUID_TYPE_UNIT )
+					{
+						++numTargets;
+						sQuestMgr.OnPlayerCast(p_caster,GetProto()->Id,*itr);
+					}
+				}
+				if( numTargets == 0 )
+				{
+					uint64 playerTarget = p_caster->GetUInt64Value(UNIT_FIELD_TARGET);
+					sQuestMgr.OnPlayerCast(p_caster,GetProto()->Id,playerTarget);
+				}
+			}
+		}
 	}
 	else
 	{
@@ -4130,6 +4163,80 @@ uint8 Spell::CanCast(bool tolerate)
 					if( !target->IsCreature() || target->GetEntry() != 28843 ) // castable only on Bloated Abomination
 							return SPELL_FAILED_BAD_TARGETS;
 				}break;
+				case 19688: // Taming rod
+					if( !target || target->GetEntry() != 2956 ) // Adult Plainstrider
+						return SPELL_FAILED_BAD_TARGETS;
+					break;
+				case 19694: // Taming rod
+					if( !target || target->GetEntry() != 3099 ) // Dire Mottled Boar
+						return SPELL_FAILED_BAD_TARGETS;
+					break;
+				case 19693: // Taming rod
+					if( !target || target->GetEntry() != 1998) // Webwood Lurker
+						return SPELL_FAILED_BAD_TARGETS;
+					break;
+				case 19674: // Taming rod
+					if( !target || target->GetEntry() != 1126) // Large Crag Boar
+						return SPELL_FAILED_BAD_TARGETS;
+					break;
+				case 19697: // Taming rod
+					if( !target || target->GetEntry() != 3126) // Armored Scorpid
+						return SPELL_FAILED_BAD_TARGETS;
+					break;
+				case 19696: // Taming rod
+					if( !target || target->GetEntry() != 3107) // Surf Crawler
+						return SPELL_FAILED_BAD_TARGETS;
+					break;
+				case 19687: // Taming rod
+					if( !target || target->GetEntry() != 1201) // Snow Leopard
+						return SPELL_FAILED_BAD_TARGETS;
+					break;
+				case 19548: // Taming rod
+					if( !target || target->GetEntry() != 1196) // Ice Claw Bear
+						return SPELL_FAILED_BAD_TARGETS;
+					break;
+				case 19689: // Taming rod
+					if( !target || target->GetEntry() != 2959) // Prairie Stalker
+						return SPELL_FAILED_BAD_TARGETS;
+					break;
+				case 19692: // Taming rod
+					if( !target || target->GetEntry() != 2970) // Swoop
+						return SPELL_FAILED_BAD_TARGETS;
+					break;
+				case 19699: // Taming rod
+					if( !target || target->GetEntry() != 2043) // Nightsaber Stalker
+						return SPELL_FAILED_BAD_TARGETS;
+					break;
+				case 19700: // Taming rod
+					if( !target || target->GetEntry() != 1996) // Strigid Screecher
+						return SPELL_FAILED_BAD_TARGETS;
+					break;
+				case 30099: // Taming rod
+					if( !target || target->GetEntry() != 15650) // Crazed Dragonhawk
+						return SPELL_FAILED_BAD_TARGETS;
+					break;
+				case 30105: // Taming rod
+					if( !target || target->GetEntry() != 16353) // Mistbat
+						return SPELL_FAILED_BAD_TARGETS;
+					break;
+				case 30102: // Taming rod
+					if( !target || target->GetEntry() != 15652) // Elder Springpaw
+						return SPELL_FAILED_BAD_TARGETS;
+					break;
+				case 30646: // Taming totem
+					if( !target || target->GetEntry() != 17217) // Barbed Crawler
+						return SPELL_FAILED_BAD_TARGETS;
+					break;
+				case 30653: // Taming totem
+					if( !target || target->GetEntry() != 17374) // Greater Timberstrider
+						return SPELL_FAILED_BAD_TARGETS;
+					break;
+				case 30654: // Taming totem
+					if( !target || target->GetEntry() != 17203) // Nightstalker
+						return SPELL_FAILED_BAD_TARGETS;
+					break;
+				default:
+					break;
 			}
 
 			// if the target is not the unit caster and not the masters pet
