@@ -208,10 +208,6 @@ void ApplyNormalFixes()
 		if( !sscanf( sp->Rank, "Rank %d", (unsigned int*)&rank) )
 			rank = 0;
 
-		//seal of light
-		if( namehash == SPELL_HASH_SEAL_OF_LIGHT )
-			sp->procChance = 45;	/* this will do */
-
 		// Seal of Wisdom
 		else if( namehash == SPELL_HASH_SEAL_OF_WISDOM )
 			sp->procChance = 45;
@@ -440,8 +436,6 @@ void ApplyNormalFixes()
 			sp->BGR_one_buff_from_caster_on_1target = SPELL_TYPE_INDEX_BANISH;
 			break;
 
-		//case SPELL_HASH_JUDGEMENT_OF_VENGEANCE:
-		//case SPELL_HASH_JUDGEMENT_OF_THE_CRUSADER:
 		case SPELL_HASH_JUDGEMENT_OF_LIGHT:
 		case SPELL_HASH_JUDGEMENT_OF_WISDOM:
 		case SPELL_HASH_JUDGEMENT_OF_JUSTICE:
@@ -2200,7 +2194,14 @@ void ApplyNormalFixes()
 		//Paladin - Divine Storm
 		sp = dbcSpell.LookupEntryForced( 53385 );
 		if( sp != NULL )
-			sp->Effect[2] = SPELL_EFFECT_DUMMY;
+		{
+			sp->Effect[1] = SPELL_EFFECT_TRIGGER_SPELL;
+			sp->EffectApplyAuraName[1] = SPELL_AURA_PROC_TRIGGER_SPELL;
+			sp->EffectTriggerSpell[1] = 54172;
+			sp->procFlags = PROC_ON_CAST_SPELL;
+			sp->procChance = 100;
+			sp->MaxTargets = 4;
+		}
 
 		//Paladin - Sacred Shield - bonus to flash is not working
 		sp = dbcSpell.LookupEntryForced( 53601 );
@@ -6740,7 +6741,53 @@ void ApplyNormalFixes()
 			sp->maxstack = 20;
 		}
 
+		//Vial of the Sunwell
+		sp = dbcSpell.LookupEntryForced( 45059 );
+		if( sp != NULL )
+		{	
+			sp->procFlags = PROC_ON_CAST_SPELL | static_cast<uint32>(PROC_TARGET_SELF);
+			sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
+			sp->EffectTriggerSpell[0] = 45062;	
+			sp->procChance = 100;		
+		}	
+		sp = dbcSpell.LookupEntryForced( 45062 ); 
+		if( sp != NULL )
+		{	
+			sp->self_cast_only = true;	
+			sp->procChance = 100;	
+		}
 
+		//Pendant of the Violet Eye
+		sp = dbcSpell.LookupEntryForced( 29601 );
+		if( sp != NULL )
+		{
+			sp->procFlags = PROC_ON_CAST_SPELL | static_cast<uint32>(PROC_TARGET_SELF);
+			sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
+			sp->EffectTriggerSpell[0] = 35095;
+			sp->procChance = 100;
+		}
+		sp = dbcSpell.LookupEntryForced( 35095 );
+		if( sp != NULL )
+		{
+			sp->self_cast_only = true;
+			sp->procChance = 100;
+		}
+				
+		sp = dbcSpell.LookupEntryForced( 38332 );		// Ribbon of Sacrifice
+		if( sp != NULL )
+			sp->procFlags = PROC_ON_CAST_SPELL;
+
+		sp = dbcSpell.LookupEntryForced( 40475 );		// Black temple melee trinket
+		if( sp != NULL )
+			sp->procChance = 5;
+
+		sp = dbcSpell.LookupEntryForced( 32642 );		// Sporegarr - Petrified Lichen Guard
+		if( sp != NULL )
+		{	
+			sp->procFlags = PROC_ON_BLOCK_VICTIM;
+			sp->procChance = 100;
+			sp->EffectTriggerSpell[0] = 32643;
+		}
 
 		//////////////////////////////////////////
 		// BOSSES								//
@@ -6793,6 +6840,56 @@ void ApplyNormalFixes()
 		{
 			sp->EffectImplicitTargetA[0] = 0;
 			sp->EffectImplicitTargetA[1] = 0;
+		}
+
+		//Bloodboil
+		sp = dbcSpell.LookupEntryForced( 42005 );
+ 		if( sp != NULL )
+		{
+			sp->MaxTargets = 5;
+		}
+
+		//Acidic Wound
+		sp = dbcSpell.LookupEntryForced( 40484 );
+ 		if( sp != NULL )
+		{
+			sp->procFlags = PROC_ON_MELEE_ATTACK;
+			sp->procChance = 100;
+		}	
+
+		//Inject Poison
+		sp = dbcSpell.LookupEntryForced( 44599 );
+ 		if( sp != NULL )
+		{
+			sp->procFlags = PROC_ON_MELEE_ATTACK;
+			sp->procChance = 100;
+		}
+		sp = dbcSpell.LookupEntryForced( 46046 );
+ 		if( sp != NULL )
+		{
+			sp->procFlags = PROC_ON_MELEE_ATTACK;
+			sp->procChance = 100;
+		}
+
+		//Anthropy
+		sp = dbcSpell.LookupEntryForced( 40327 );
+ 		if( sp != NULL )
+		{
+			sp->maxstack = 10;
+		}
+
+		//Doom
+		sp = dbcSpell.LookupEntryForced( 31347 );
+		if( sp != NULL )
+		{	
+			sp->MaxTargets = 1;
+		}
+		//Shadow of Death
+		sp = dbcSpell.LookupEntryForced( 40251 );
+		if( sp != NULL )
+		{	
+			sp->EffectApplyAuraName[0] = 23;
+			sp->EffectTriggerSpell[0] = 0;
 		}
 
 		// Recently Dropped Flag
@@ -7073,6 +7170,44 @@ void ApplyNormalFixes()
 		sp->Effect[1] = SPELL_EFFECT_DUMMY;
 		}
 
+		sp = dbcSpell.LookupEntryForced( 21050 );		// Melodious Rapture rat quest 
+		if( sp != NULL )
+			sp->RequiresAreaId = 0;
+
+		sp = dbcSpell.LookupEntryForced( 42521 );		// Cleansing Witch Hill q item
+		if( sp != NULL )
+			sp->RequiresAreaId = 0;
+
+		sp = dbcSpell.LookupEntryForced( 24815 );		// Draw Ancient Glyphs - spell for quest
+		if( sp != NULL )
+			sp->RequiresAreaId = 3257;
+
+		sp = dbcSpell.LookupEntryForced( 41423 );		// Hungry Nether Rays quest item
+		if( sp != NULL )
+			sp->RequiresAreaId = 3679;
+
+		sp = dbcSpell.LookupEntryForced( 39844 );		// Fires Over Skettis quest item
+		if( sp != NULL )
+			sp->RequiresAreaId = 0;
+
+		sp = dbcSpell.LookupEntryForced( 39527 );		// Ashtongue Ruse
+		if( sp != NULL )
+			sp->RequiresAreaId = 0;
+
+		sp = dbcSpell.LookupEntryForced( 42090 );		// Ashtongue Ruse
+		if( sp != NULL )
+			sp->RequiresAreaId = 0;
+
+		sp = dbcSpell.LookupEntryForced( 44856 );		// Bash'ir Phasing Device
+		if( sp != NULL )
+			sp->RequiresAreaId = 3864;
+
+		sp = dbcSpell.LookupEntryForced( 27997 );		//Spellsurge
+		if( sp != NULL )
+		{
+			sp->proc_interval = 30000; // Wowhead Comment
+			sp->procChance = 3; //Enchantment Text
+		}
 
 		//STEW's VEHICLE MOUNT TEMP FIXES
 		//MECHANO HOG (Horde bike)
@@ -7248,11 +7383,11 @@ void ApplyNormalFixes()
 			sp->EffectBasePoints[0] = 0;
 			sp->EffectBasePoints[1] = 99;
 		}
+
        // Rune Tap
 	   sp = dbcSpell.LookupEntryForced( 48982 );
        if( sp != NULL )
        {
            sp->Effect[0] = SPELL_EFFECT_DUMMY;
-       }
-		 		
+       } 		
 }

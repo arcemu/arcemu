@@ -1009,8 +1009,7 @@ uint32 Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, ui
 			spe->NameHash == SPELL_HASH_MAGTHERIDON_MELEE_TRINKET ||
 			spe->NameHash == SPELL_HASH_ROMULO_S_POISON ||
 			spe->NameHash == SPELL_HASH_BLACK_TEMPLE_MELEE_TRINKET ||
-			spe->NameHash == SPELL_HASH_FROSTBRAND_ATTACK || spellId == 16870 ||
-			spe->NameHash == SPELL_HASH_HOLY_VENGEANCE ) )
+			spe->NameHash == SPELL_HASH_FROSTBRAND_ATTACK || spellId == 16870 ) )
 		{
 			float ppm = 1.0f;
 			switch( spe->NameHash )
@@ -1027,9 +1026,7 @@ uint32 Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, ui
 				case SPELL_HASH_FROSTBRAND_ATTACK:
 					ppm = 9.0f;
 					break; // Frostbrand Weapon
-				case SPELL_HASH_HOLY_VENGEANCE:
-					ppm = 15.0f; //Seal of Vengeance
-					break;
+
 			}
 			switch( spellId )
 			{
@@ -2182,6 +2179,13 @@ uint32 Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, ui
 						if( !spellInfo )
 							continue;
 					}break;
+				case 54172: //Paladin - Divine Storm heal effect
+					{
+						if( CastingSpell == NULL )
+							continue;
+						if( CastingSpell->NameHash != SPELL_HASH_DIVINE_STORM )
+							continue;
+					}break;
 				//Energized
 				case 43751:
 					{
@@ -2287,6 +2291,7 @@ uint32 Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, ui
 						if (!CastingSpell || CastingSpell->School != SCHOOL_FIRE || !(CastingSpell->c_is_flags & SPELL_FLAG_IS_DAMAGING))
 							continue;
 					}break;
+				case 45062: //Vial of the Sunwel
 				case 39950:
 					{
 						if (!CastingSpell ||  !(CastingSpell->c_is_flags & SPELL_FLAG_IS_HEALING))
@@ -2339,6 +2344,11 @@ uint32 Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, ui
 						if (!CastingSpell || CastingSpell->Id == 37517 || CastingSpell->NameHash != SPELL_HASH_REVENGE)
 							continue;
 					}break;
+				case 38333: // Ribbon of Sacrifice
+					{
+						if( !CastingSpell || !( CastingSpell->c_is_flags & SPELL_FLAG_IS_HEALING ) )
+							continue;
+					}
 				//SETBONUSES END
 					//http://www.wowhead.com/?item=32493 Ashtongue Talisman of Shadows
 				case 40480:
@@ -6436,17 +6446,17 @@ Unit* Unit::create_guardian(uint32 guardian_entry,uint32 duration,float angle, u
 	}
 
 	if ( lvl != 0 )
-		{
-			/* MANA */
-			p->SetPowerType(POWER_TYPE_MANA);
-			p->SetUInt32Value(UNIT_FIELD_MAXPOWER1,p->GetUInt32Value(UNIT_FIELD_MAXPOWER1)+28+10*lvl);
-			p->SetUInt32Value(UNIT_FIELD_POWER1,p->GetUInt32Value(UNIT_FIELD_POWER1)+28+10*lvl);
-			/* HEALTH */
-			p->SetUInt32Value(UNIT_FIELD_MAXHEALTH,p->GetUInt32Value(UNIT_FIELD_MAXHEALTH)+28+30*lvl);
-			p->SetUInt32Value(UNIT_FIELD_HEALTH,p->GetUInt32Value(UNIT_FIELD_HEALTH)+28+30*lvl);
-			/* LEVEL */
-			p->SetUInt32Value(UNIT_FIELD_LEVEL, lvl);
-		}
+	{
+		/* MANA */
+		p->SetPowerType(POWER_TYPE_MANA);
+		p->SetUInt32Value(UNIT_FIELD_MAXPOWER1,p->GetUInt32Value(UNIT_FIELD_MAXPOWER1)+28+10*lvl);
+		p->SetUInt32Value(UNIT_FIELD_POWER1,p->GetUInt32Value(UNIT_FIELD_POWER1)+28+10*lvl);
+		/* HEALTH */
+		p->SetUInt32Value(UNIT_FIELD_MAXHEALTH,p->GetUInt32Value(UNIT_FIELD_MAXHEALTH)+28+30*lvl);
+		p->SetUInt32Value(UNIT_FIELD_HEALTH,p->GetUInt32Value(UNIT_FIELD_HEALTH)+28+30*lvl);
+		/* LEVEL */
+		p->SetUInt32Value(UNIT_FIELD_LEVEL, lvl);
+	}
 
 	p->SetUInt64Value(UNIT_FIELD_SUMMONEDBY, GetGUID());
     p->SetUInt64Value(UNIT_FIELD_CREATEDBY, GetGUID());

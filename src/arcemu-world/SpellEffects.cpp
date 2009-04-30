@@ -1113,7 +1113,6 @@ out:
 
 			p_caster->Energize(p_caster, 31930, uint32(0.15f*p_caster->GetUInt32Value(UNIT_FIELD_BASE_MANA)), POWER_TYPE_MANA );
 			p_caster->CastSpell(p_caster, 57669, false);
-
 		}break;
 		/*************************
 		* PRIEST SPELLS
@@ -1463,11 +1462,6 @@ out:
 			unitTarget = u_caster;
 			if(heal32)
 				Heal(heal32);
-		}break;
-	case 53385: // Divine Storm
-		{
-			if(unitTarget != NULL)
-				u_caster->Heal(u_caster, spellId, float2int32(damage * 0.25f));
 		}break;
 	case 39610://Mana Tide
 		{
@@ -2997,7 +2991,7 @@ void Spell::SpellEffectSummon(uint32 i)
 	case 428:	SpellEffectSummonPossessed(i);	return;
 	case 66:	SpellEffectSummonDemon(i);		return;
 	}
-	if( !p_caster ) return;
+	if( !u_caster ) return;
 
 	if(GetProto()->EffectMiscValue[i] != 24207) //Tempfix
 		u_caster->RemoveFieldSummon();
@@ -3085,8 +3079,8 @@ void Spell::SpellEffectSummon(uint32 i)
 			pCreature->SetUInt32Value(UNIT_FIELD_FACTIONTEMPLATE, u_caster->GetUInt32Value(UNIT_FIELD_FACTIONTEMPLATE));
 			pCreature->_setFaction();
 
-			pCreature->SetUInt64Value(UNIT_FIELD_SUMMONEDBY, p_caster->GetGUID());
-			pCreature->SetUInt64Value(UNIT_FIELD_CREATEDBY, p_caster->GetGUID());
+			pCreature->SetUInt64Value(UNIT_FIELD_SUMMONEDBY, u_caster->GetGUID());
+			pCreature->SetUInt64Value(UNIT_FIELD_CREATEDBY, u_caster->GetGUID());
 			u_caster->SetUInt64Value(UNIT_FIELD_SUMMON, pCreature->GetGUID());
 
 			uint32 MiscValue = m_spellInfo->EffectMiscValue[i];
@@ -4144,6 +4138,9 @@ void Spell::SpellEffectSummonGuardian(uint32 i) // Summon Guardian
 		vec = new LocationVector(m_targets.m_destX, m_targets.m_destY, m_targets.m_destZ);
 	}
 
+	if(GetProto()->Id == 29731)
+		damage = 1;
+
 	float angle_for_each_spawn = -float(M_PI) * 2 / damage;
 	for( int i = 0; i < damage; i++ )
 	{
@@ -4292,7 +4289,7 @@ void Spell::SpellEffectSkillStep(uint32 i) // Skill Step
 
 void Spell::SpellEffectSummonObject(uint32 i)
 {
-	if( !p_caster ) return;
+	if( !u_caster ) return;
 
 	uint32 entry = GetProto()->EffectMiscValue[i];
 
@@ -4303,7 +4300,7 @@ void Spell::SpellEffectSummonObject(uint32 i)
 	float orient = m_caster->GetOrientation();
 	float posx = 0,posy = 0,posz = 0;
 
-	if( entry == GO_FISHING_BOBBER )
+	if( entry == GO_FISHING_BOBBER && p_caster)
 	{
 		float co = cos( orient );
 		float si = sin( orient );
@@ -4388,7 +4385,7 @@ void Spell::SpellEffectSummonObject(uint32 i)
 		go->SetUInt64Value(OBJECT_FIELD_CREATED_BY,m_caster->GetGUID());
 		go->PushToWorld(m_caster->GetMapMgr());
 		sEventMgr.AddEvent(go, &GameObject::ExpireAndDelete, EVENT_GAMEOBJECT_EXPIRE, GetDuration(), 1,0);
-		if ( entry == 17032 ) // this is a portal
+		if ( entry == 17032 && p_caster) // this is a portal
 		{
 			// enable it for party only
 			go->SetByte( GAMEOBJECT_BYTES_1, 0, 0 );
@@ -4408,8 +4405,10 @@ void Spell::SpellEffectSummonObject(uint32 i)
 			}
 			delete pkt;
 		}
-		else if ( entry == 36727 || entry == 177193 ) // Portal of Summoning and portal of doom
+		else if ( entry == 36727 || entry == 177193 || entry == 194108 ) // Portal of Summoning and portal of doom
 		{
+			if(!p_caster) return;
+
 			//Player * pTarget = p_caster->GetMapMgr()->GetPlayer( p_caster->GetSelection() );
 			Player * pTarget = objmgr.GetPlayer( (uint32)p_caster->GetSelection() );
 			if ( !pTarget || !pTarget->IsInWorld() )
@@ -4421,6 +4420,8 @@ void Spell::SpellEffectSummonObject(uint32 i)
 		}
 		else if ( entry == 186811 || entry == 181622 ) // ritual of refreshment, ritual of souls
 		{
+			if(!p_caster) return;
+
 			go->m_ritualmembers[0] = p_caster->GetLowGUID();
 			go->m_ritualcaster = p_caster->GetLowGUID();
 			go->m_ritualtarget = 0;
@@ -4434,7 +4435,8 @@ void Spell::SpellEffectSummonObject(uint32 i)
 		{
 			go->charges = 5;//Max 5 charges
 		}
-		p_caster->SetSummonedObject(go);
+		if(p_caster)
+			p_caster->SetSummonedObject(go);//p_caster
 	}
 }
 
@@ -4629,7 +4631,6 @@ void Spell::SpellEffectTriggerSpell(uint32 i) // Trigger Spell
 		return;
 	sp->Init(m_caster,entry,true,NULL);
 	sp->prepare(&targets);
-
 }
 
 void Spell::SpellEffectPowerFunnel(uint32 i) // Power Funnel
@@ -4890,7 +4891,7 @@ void Spell::SpellEffectSummonObjectWild(uint32 i)
 	// spawn a new one
 	GameObject *GoSummon = u_caster->GetMapMgr()->CreateGameObject(GetProto()->EffectMiscValue[i]);
 	if(!GoSummon->CreateFromProto(GetProto()->EffectMiscValue[i],
-		m_caster->GetMapId(), m_caster->GetPositionX(), m_caster->GetPositionY(), m_caster->GetPositionZ(), m_caster->GetOrientation() ))
+		m_caster->GetMapId(), m_caster->GetPositionX()+1, m_caster->GetPositionY()+1, m_caster->GetPositionZ(), m_caster->GetOrientation() ))
 	{
 		delete GoSummon;
 		return;
@@ -5095,7 +5096,6 @@ void Spell::SpellEffectScriptEffect(uint32 i) // Script Effect
 				tgt.m_targetMask = TARGET_FLAG_UNIT;
 				sp->judgement = true;
 				sp->prepare( &tgt );
-
 			}
 
 			uint32 judge_extra = 0;
@@ -5157,7 +5157,6 @@ void Spell::SpellEffectScriptEffect(uint32 i) // Script Effect
 				sp->Init(unitTarget, dbcSpell.LookupEntry( casted_spell_id ), true, NULL);
 				SpellCastTargets tgt1( unitTarget->GetGUID() );
 				sp->prepare( &tgt1 );
-
 			}
 			if( inc_resist_by_level_spell )
 			{
@@ -5175,7 +5174,6 @@ void Spell::SpellEffectScriptEffect(uint32 i) // Script Effect
 				sp->Init(unitTarget, dbcSpell.LookupEntry( inc_resist_by_level_spell ), true, NULL);
 				SpellCastTargets tgt1( unitTarget->GetGUID() );
 				sp->prepare( &tgt1 );
-
 			}
 		}break;
 	case 23830:
@@ -5219,7 +5217,6 @@ void Spell::SpellEffectScriptEffect(uint32 i) // Script Effect
 				sp->Init(unitTarget, dbcSpell.LookupEntry( casted_spell_id ), true, NULL);
 				SpellCastTargets tgt1( unitTarget->GetGUID() );
 				sp->prepare( &tgt1 );
-
 			}
 			if( inc_resist_by_level_spell )
 			{
@@ -5237,7 +5234,6 @@ void Spell::SpellEffectScriptEffect(uint32 i) // Script Effect
 				sp->Init(unitTarget, dbcSpell.LookupEntry( inc_resist_by_level_spell ), true, NULL);
 				SpellCastTargets tgt1( unitTarget->GetGUID() );
 				sp->prepare( &tgt1 );
-
 			}
 		}break;
 	case 23831:
@@ -5281,7 +5277,6 @@ void Spell::SpellEffectScriptEffect(uint32 i) // Script Effect
 				sp->Init(unitTarget, dbcSpell.LookupEntry( casted_spell_id ), true, NULL);
 				SpellCastTargets tgt1( unitTarget->GetGUID() );
 				sp->prepare( &tgt1 );
-
 			}
 			if( inc_resist_by_level_spell )
 			{
@@ -5299,7 +5294,6 @@ void Spell::SpellEffectScriptEffect(uint32 i) // Script Effect
 				sp->Init( unitTarget, dbcSpell.LookupEntry( inc_resist_by_level_spell ), true, NULL );
 				SpellCastTargets tgt1( unitTarget->GetGUID() );
 				sp->prepare( &tgt1 );
-
 			}
 		}break;
 	case 23832:
@@ -5343,7 +5337,6 @@ void Spell::SpellEffectScriptEffect(uint32 i) // Script Effect
 				sp->Init(  unitTarget, dbcSpell.LookupEntry( casted_spell_id ), true, NULL );
 				SpellCastTargets tgt1( unitTarget->GetGUID() );
 				sp->prepare( &tgt1 );
-
 			}
 			if( inc_resist_by_level_spell )
 			{
@@ -5361,7 +5354,6 @@ void Spell::SpellEffectScriptEffect(uint32 i) // Script Effect
 				sp->Init( unitTarget, dbcSpell.LookupEntry( inc_resist_by_level_spell ), true, NULL );
 				SpellCastTargets tgt1( unitTarget->GetGUID() );
 				sp->prepare( &tgt1 );
-
 			}
 		}break;
 	case 34026: //Hunter: Kill Command
@@ -6140,7 +6132,6 @@ void Spell::SpellEffectDisenchant( uint32 i )
 	}
 	if( it == i_caster )
 		i_caster = NULL;
-
 }
 
 void Spell::SpellEffectInebriate(uint32 i) // lets get drunk!
@@ -6184,7 +6175,6 @@ void Spell::SpellEffectFeedPet(uint32 i)  // Feed Pet
 	SpellCastTargets tgt;
 	tgt.m_unitTarget=pPet->GetGUID();
 	sp->prepare(&tgt);
-
 
 	if(itemTarget->GetUInt32Value(ITEM_FIELD_STACK_COUNT)>1)
 	{

@@ -4127,7 +4127,6 @@ uint8 Spell::CanCast(bool tolerate)
 					if ( target->IsPlayer() || target->getClass()!=TARGET_TYPE_DEMON )
 						return SPELL_FAILED_SPELL_UNAVAILABLE;
 				}break;
-				// disable spell
 				case 38554: //Absorb Eye of Grillok
 				{
 					if( !target->IsCreature() || target->GetEntry()!= 19440 )
@@ -5198,18 +5197,44 @@ void Spell::Heal(int32 amount, bool ForceCrit)
 			}
 		}
 
-		//Judgement of Light
-		if( m_spellInfo->Id == 20267 )
+		switch( m_spellInfo->Id )
 		{
-			if(unitTarget->IsPlayer())
+		case 20267: //Judgement of Light
+			if( unitTarget->IsPlayer() )
 				amount = (int)(0.10f * unitTarget->GetUInt32Value(UNIT_FIELD_ATTACK_POWER) + 0.10f * (unitTarget)->GetUInt32Value(PLAYER_FIELD_MOD_DAMAGE_DONE_POS_01));
 			else
 				amount = (int)(0.10f * unitTarget->GetUInt32Value(UNIT_FIELD_ATTACK_POWER));
-		}
+			break;
+		case 20167: //Seal of Light
+			if( u_caster->IsPlayer() )
+				amount = (int)(0.15f * u_caster->GetUInt32Value(UNIT_FIELD_ATTACK_POWER) + 0.15f * (u_caster)->GetUInt32Value(PLAYER_FIELD_MOD_DAMAGE_DONE_POS_01));
+			break;
+		case 54172: //Paladin - Divine Storm heal effect
+			if( u_caster != NULL )
+			{
+				int dmg = (int)CalculateDamage( u_caster, unitTarget, MELEE, 0, dbcSpell.LookupEntry( 53385 ) );//1 hit
+				int target = 0;
+				uint8 did_hit_result;
+				std::set<Object*>::iterator itr, itr2;
 
-		//Seal of Light
-		if( m_spellInfo->Id == 20167 )
-			amount = (int)(0.15f * u_caster->GetUInt32Value(UNIT_FIELD_ATTACK_POWER) + 0.15f * (u_caster)->GetUInt32Value(PLAYER_FIELD_MOD_DAMAGE_DONE_POS_01));
+				for( itr2 = u_caster->GetInRangeSetBegin(); itr2 != u_caster->GetInRangeSetEnd();)
+				{
+					itr = itr2;
+					itr2++;
+					if( (*itr)->IsUnit() && static_cast<Unit*>(*itr)->isAlive() && IsInrange(u_caster, (*itr), 8) )
+					{
+						did_hit_result = DidHit(dbcSpell.LookupEntry(53385)->Effect[0], static_cast< Unit* >( *itr ) );
+						if( did_hit_result == SPELL_DID_HIT_SUCCESS )
+							target++;
+					}
+				}
+				if(target > 4)
+					target = 4;
+
+				amount = (int)(0.25*dmg*target);
+			}
+			break;
+		}
 
 		//amount += float2int32( float( bonus ) * 1.88f ); //apply 3.0.2 spell coeff  //NO. FAIL. COEFFICIENTS WERE ALREADY HANDLED.
 		//3.0.2 spell healing coefficients should be set in database coefficient overrides.
