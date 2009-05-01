@@ -232,6 +232,8 @@ void Spell::FillTargetMap(uint32 i)
 		(this->*SpellTargetHandler[TypeA])(i, 0); // 0 = A
 	if( TypeB && TypeB < EFF_TARGET_LIST_LENGTH_MARKER )
 		(this->*SpellTargetHandler[TypeB])(i, 1); // 1 = B
+	if( !TypeA && !TypeB && m_targets.m_unitTarget )
+		SafeAddTarget(&m_targetUnits[i], m_targets.m_unitTarget);
 	return;
 }
 
