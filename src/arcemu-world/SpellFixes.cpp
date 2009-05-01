@@ -6789,6 +6789,16 @@ void ApplyNormalFixes()
 			sp->EffectTriggerSpell[0] = 32643;
 		}
 
+        //Flow of Knowledge
+		sp = dbcSpell.LookupEntryForced ( 62114 );
+        if(sp != NULL )
+		{
+			sp->EffectTriggerSpell[1] = 60064;
+			sp->procFlags = PROC_ON_CAST_SPELL;
+			sp->procChance = 10;
+			sp->proc_interval = 45000;
+		}
+
 		//////////////////////////////////////////
 		// BOSSES								//
 		//////////////////////////////////////////
