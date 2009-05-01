@@ -605,7 +605,7 @@ void GameObject::EndFishing(Player* player, bool abort )
 			//FIXME: here 'failed' should appear over progress bar
 			spell->SendChannelUpdate(0);
 			//spell->cancel();
-			spell->finish();
+			spell->finish(false);
 		}
 		else		// spell ended
 		{

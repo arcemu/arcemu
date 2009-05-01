@@ -1742,7 +1742,7 @@ void WorldSession::HandleGuildBankQueryText( WorldPacket & recv_data )
 	if( tab == NULL )
 		return;
 
-	uint32 len = tab->szTabInfo != NULL ? strlen( tab->szTabInfo ) : 1;
+	uint32 len = tab->szTabInfo != NULL ? (uint32)strlen( tab->szTabInfo ) : 1;
 
 	WorldPacket data( MSG_QUERY_GUILD_BANK_TEXT, 1 + len );
 	data << tabid;

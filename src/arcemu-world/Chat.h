@@ -464,6 +464,7 @@ protected:
 	bool HandleAddPetSpellCommand(const char* args, WorldSession* m_session);
 	bool HandleRemovePetSpellCommand(const char* args, WorldSession* m_session);
 	bool HandleRenamePetCommand(const char* args, WorldSession* m_session);
+	bool HandleDismissPetCommand(const char* args, WorldSession* m_session);
 #ifdef USE_SPECIFIC_AIAGENTS
 	bool HandlePetSpawnAIBot(const char * args, WorldSession * m_session);
 #endif

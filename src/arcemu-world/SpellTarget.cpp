@@ -225,42 +225,14 @@ pSpellTarget SpellTargetHandler[EFF_TARGET_LIST_LENGTH_MARKER] =
 /// the targets are specified with numbers and handled accordingly
 void Spell::FillTargetMap(uint32 i)
 {
-	uint32 cur;
-	
 	uint32 TypeA = m_spellInfo->EffectImplicitTargetA[i];
 	uint32 TypeB = m_spellInfo->EffectImplicitTargetB[i];
 
-	// if all secondary targets are 0 then use only primary targets
-	if(!TypeB)
-	{
-		if(TypeA < EFF_TARGET_LIST_LENGTH_MARKER)
-			(this->*SpellTargetHandler[TypeA])(i, 0);		//0=A
-
-		return;
-	}
-
-	// if all primary targets are 0 then use only secondary targets
-	if(!TypeA)
-	{
-		if(TypeB < EFF_TARGET_LIST_LENGTH_MARKER)
-			(this->*SpellTargetHandler[TypeB])(i, 1);		//1=B
-
-		return;
-	}
-
-	// j = 0
-	cur = m_spellInfo->EffectImplicitTargetA[i];
-	if (cur < EFF_TARGET_LIST_LENGTH_MARKER)
-	{
-		(this->*SpellTargetHandler[cur])(i,0);	//0=A
-	}
-
-	// j = 1
-	cur = m_spellInfo->EffectImplicitTargetB[i];
-	if (cur < EFF_TARGET_LIST_LENGTH_MARKER)
-	{
-		(this->*SpellTargetHandler[cur])(i,1);	//1=B
-	}
+	if( TypeA && TypeA < EFF_TARGET_LIST_LENGTH_MARKER )
+		(this->*SpellTargetHandler[TypeA])(i, 0); // 0 = A
+	if( TypeB && TypeB < EFF_TARGET_LIST_LENGTH_MARKER )
+		(this->*SpellTargetHandler[TypeB])(i, 1); // 1 = B
+	return;
 }
 
 //#define I_AM_STUPID_BUT_I_JUST_WANT_TO_TRY_THIS
@@ -858,38 +830,50 @@ void Spell::SpellTargetPartyMember(uint32 i, uint32 j)
 void Spell::SpellTargetDummyTarget(uint32 i, uint32 j)
 {
 	TargetsList* tmpMap=&m_targetUnits[i];
-	if(m_spellInfo->Id == 12938)
+	switch( m_spellInfo->Id )
 	{
-		//FIXME:this ll be immortal targets
-		FillAllTargetsInArea(i,m_targets.m_destX,m_targets.m_destY,m_targets.m_destZ,GetRadius(i));
-	}
-	if(m_spellInfo->Id == 30427)
-	{
-		uint32 cloudtype;
-		Creature *creature;
-
-		if(!p_caster)
-			return;
-
-		Object::InRangeSet::iterator itr,itr2;
-		p_caster->AquireInrangeLock(); //make sure to release lock before exit function !
-		for(itr2 = p_caster->GetInRangeSetBegin(); itr2 != p_caster->GetInRangeSetEnd(); )
-		{
-			itr=itr2;
-			++itr2;
-			if((*itr)->GetTypeId() == TYPEID_UNIT && p_caster->GetDistance2dSq((*itr)) < 400)
+		case 12938:
 			{
-				creature=static_cast<Creature *>((*itr));
-				cloudtype=creature->GetEntry();
-				if(cloudtype == 24222 || cloudtype == 17408 || cloudtype == 17407 || cloudtype == 17378)
-				{
-					p_caster->SetSelection(creature->GetGUID());
-					p_caster->ReleaseInrangeLock();
-					return;
-				}
+				//FIXME:this ll be immortal targets
+				FillAllTargetsInArea(i,m_targets.m_destX,m_targets.m_destY,m_targets.m_destZ,GetRadius(i));
 			}
-		}
-		p_caster->ReleaseInrangeLock();
+			break;
+		case 30427:
+			{
+				uint32 cloudtype;
+				Creature *creature;
+
+				if(!p_caster)
+					return;
+
+				Object::InRangeSet::iterator itr,itr2;
+				p_caster->AquireInrangeLock(); //make sure to release lock before exit function !
+				for(itr2 = p_caster->GetInRangeSetBegin(); itr2 != p_caster->GetInRangeSetEnd(); )
+				{
+					itr=itr2;
+					++itr2;
+					if((*itr)->GetTypeId() == TYPEID_UNIT && p_caster->GetDistance2dSq((*itr)) < 400)
+					{
+						creature=static_cast<Creature *>((*itr));
+						cloudtype=creature->GetEntry();
+						if(cloudtype == 24222 || cloudtype == 17408 || cloudtype == 17407 || cloudtype == 17378)
+						{
+							p_caster->SetSelection(creature->GetGUID());
+							p_caster->ReleaseInrangeLock();
+							return;
+						}
+					}
+				}
+				p_caster->ReleaseInrangeLock();
+			}
+			break;
+		case 51729: // Blessing of Zim'Torga
+		case 51265: // Blessing of Zim'Abwa
+		case 52051: // Blessing of Zim'Rhuk
+			SafeAddTarget(tmpMap, m_targets.m_unitTarget);
+			break;
+		default:
+			break;
 	}
 	SafeAddTarget(tmpMap,m_caster->GetGUID());
 }

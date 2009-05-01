@@ -7389,5 +7389,35 @@ void ApplyNormalFixes()
        if( sp != NULL )
        {
            sp->Effect[0] = SPELL_EFFECT_DUMMY;
-       } 		
+       }
+
+
+	//////////////////////////////////////////////////////
+	// GAME-OBJECT SPELL FIXES                          //
+	//////////////////////////////////////////////////////
+
+	// Blessing of Zim'Torga
+	sp = dbcSpell.LookupEntryForced( 51729 );
+	if( sp )
+	{
+		sp->EffectImplicitTargetA[0] = EFF_TARGET_SCRIPTED_OR_SINGLE_TARGET;
+		sp->c_is_flags |= SPELL_FLAG_IS_FORCEDBUFF;
+	}
+
+	// Blessing of Zim'Abwa
+	sp = dbcSpell.LookupEntryForced( 51265 );
+	if( sp )
+	{
+		sp->EffectImplicitTargetA[0] = EFF_TARGET_SCRIPTED_OR_SINGLE_TARGET;
+		sp->c_is_flags |= SPELL_FLAG_IS_FORCEDBUFF;
+	}
+
+	// Blessing of Zim'Rhuk
+	sp = dbcSpell.LookupEntryForced( 52051 );
+	if( sp )
+	{
+		sp->EffectImplicitTargetA[0] = EFF_TARGET_SCRIPTED_OR_SINGLE_TARGET;
+		sp->c_is_flags |= SPELL_FLAG_IS_FORCEDBUFF;
+	}
+
 }

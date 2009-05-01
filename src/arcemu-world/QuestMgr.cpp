@@ -1251,7 +1251,7 @@ void QuestMgr::OnQuestFinished(Player* plr, Quest* qst, Object *qst_giver, uint3
 			plr->GetItemInterface()->RemoveItemAmt(qst->srcitem, qst->srcitemcount ? qst->srcitemcount : 1);
 
 		// cast learning spell
-		if(qst->reward_spell)
+		if(qst->reward_spell && !qst->effect_on_player) // qst->reward_spell is the spell the quest finisher teaches you, OR the icon of the spell if effect_on_player is not 0
 		{
 			if(!plr->HasSpell(qst->reward_spell))
 			{
@@ -2134,4 +2134,3 @@ void QuestMgr::OnPlayerEmote(Player* plr, uint32 emoteid, uint64& victimguid)
 		}
 	}
 }
-

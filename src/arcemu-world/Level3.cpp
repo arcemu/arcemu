@@ -1619,6 +1619,41 @@ bool ChatHandler::HandleRenamePetCommand(const char* args, WorldSession* m_sessi
 	return true;
 }
 
+bool ChatHandler::HandleDismissPetCommand(const char* args, WorldSession* m_session)
+{
+	Player* plr = getSelectedChar(m_session, false);
+	Pet* pPet = NULL;
+	if(plr)
+	{
+		pPet = plr->GetSummon();
+		if(!pPet)
+		{
+			RedSystemMessage(m_session, "Player has no pet.");
+			return true;
+		}
+	}
+	else // no player selected, see if it is a pet
+	{
+		Creature* pCrt = getSelectedCreature(m_session, false);
+		if(!pCrt)
+		{
+			return false; // show usage string
+		}
+		if(pCrt->IsPet())
+		{
+			pPet = (Pet*)pCrt;
+		}
+		if(!pPet)
+		{
+			RedSystemMessage(m_session, "No player or pet selected.");
+			return true;
+		}
+	}
+
+	pPet->Dismiss();
+	return true;
+}
+
 bool ChatHandler::HandleShutdownCommand(const char* args, WorldSession* m_session)
 {
 	uint32 shutdowntime = atol(args);

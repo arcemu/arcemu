@@ -1287,7 +1287,7 @@ uint8 Spell::prepare( SpellCastTargets * targets )
 				return ccr;
 			}
 		}
-		finish();
+		finish(false);
 		return ccr;
 	}
 	else
@@ -1397,7 +1397,7 @@ void Spell::cancel()
 	// (recursive spells) and we don't wanna have this class delete'd when we return to it.
 	// at the end of cast() it will get freed anyway.
 	if( !m_isCasting )
-		finish();
+		finish(false);
 }
 
 void Spell::AddCooldown()
@@ -1420,7 +1420,7 @@ void Spell::cast(bool check)
 	{
 		// Can't cast that!
 		SendInterrupted( SPELL_FAILED_TARGET_FRIENDLY );
-		finish();
+		finish(false);
 		return;
 	}
 
@@ -1430,7 +1430,6 @@ void Spell::cast(bool check)
 		cancastresult = CanCast(true);
 	else
 		cancastresult = SPELL_CANCAST_OK;
-
 	if(cancastresult == SPELL_CANCAST_OK)
 	{
 		if (hasAttribute(ATTRIBUTE_ON_NEXT_ATTACK))
@@ -1441,17 +1440,19 @@ void Spell::cast(bool check)
 				if(!HasPower())
 				{
 					SendInterrupted(SPELL_FAILED_NO_POWER);
-					finish();
+					SendCastResult(SPELL_FAILED_NO_POWER);
+					finish(false);
 					return;
 				}
 			}
 			else
 			{
 				// this is the actual spell cast
-				if(!TakePower())	// shouldn't happen
+				if( !TakePower() ) // shouldn't happen
 				{
 					SendInterrupted(SPELL_FAILED_NO_POWER);
-					finish();
+					SendCastResult(SPELL_FAILED_NO_POWER);
+					finish(false);
 					return;
 				}
 			}
@@ -1465,7 +1466,7 @@ void Spell::cast(bool check)
 					//sLog.outDebug("Spell::Not Enough Mana");
 					SendInterrupted(SPELL_FAILED_NO_POWER);
 					SendCastResult(SPELL_FAILED_NO_POWER);
-					finish();
+					finish(false);
 					return;
 				}
 			}
@@ -1475,8 +1476,6 @@ void Spell::cast(bool check)
 		{
 			if( GetProto()->Effect[i] && GetProto()->Effect[i] != SPELL_EFFECT_PERSISTENT_AREA_AURA)
 				FillTargetMap(i);
-			if ( i > 3 )
-				return;
 		}
 
 		if(m_magnetTarget){ // Spell was redirected
@@ -1490,11 +1489,10 @@ void Spell::cast(bool check)
 				}
 			}
 		}
-
 		SendCastResult(cancastresult);
 		if(cancastresult != SPELL_CANCAST_OK)
 		{
-			finish();
+			finish(false);
 			return;
 		}
 
@@ -1609,7 +1607,6 @@ void Spell::cast(bool check)
 				}
 			}
 		}
-
 		/*SpellExtraInfo* sp = objmgr.GetSpellExtraData(GetProto()->Id);
 		if(sp)
 		{
@@ -1689,7 +1686,6 @@ void Spell::cast(bool check)
 					}
 				}
 			}
-
 			std::vector<uint64>::iterator i, i2;
 			// this is here to avoid double search in the unique list
 			//bool canreflect = false, reflected = false;
@@ -1726,7 +1722,6 @@ void Spell::cast(bool check)
 			}
 			else
 				SetReflected(false);
-
 			bool isDuelEffect = false;
 			//uint32 spellid = GetProto()->Id;
 
@@ -1752,8 +1747,27 @@ void Spell::cast(bool check)
 						{
 							for( i=m_targetUnits[x].begin(); i!=m_targetUnits[x].end(); )
 							{
-								i2 = i++;
-								HandleEffects(*i2,x);
+								// don't apply auras to dead things
+								if( GetProto()->EffectApplyAuraName[x] )
+								{
+									if( m_caster && m_caster->GetMapMgr() )
+									{
+										Unit* Target = m_caster->GetMapMgr()->GetUnit(*i);
+										if( Target && Target->IsDead() && !Target->IsPlayer() )
+										{
+											continue;
+										}
+									}
+									i2 = i++;
+									HandleEffects(*i2,x);
+									hadEffect = true; // spell has had an effect (for item removal)
+									HandleAddAura(*i2);
+								}
+								else // not an aura
+								{
+									i2 = i++;
+									HandleEffects(*i2,x);
+								}
 							}
 						}
 
@@ -1766,26 +1780,8 @@ void Spell::cast(bool check)
                         }
 					}
 				}
-
 				/* don't call HandleAddAura unless we actually have auras... - Burlex*/
-				if( GetProto()->EffectApplyAuraName[0] != 0 || GetProto()->EffectApplyAuraName[1] != 0 ||
-				   GetProto()->EffectApplyAuraName[2] != 0)
-				{
-					hadEffect = true; // spell has had an effect (for item removal & possibly other things)
 
-					for( i=UniqueTargets.begin(); i!=UniqueTargets.end(); ++i )
-					{
-						if( m_caster && m_caster->GetMapMgr() )
-						{
-							Unit *Target = m_caster->GetMapMgr()->GetUnit(*i);
-							if( Target && Target->IsDead() && !Target->IsPlayer() ) // don't apply auras to dead things
-							{
-								continue;
-							}
-						}
-						HandleAddAura(*i);
-					}
-				}
 				// spells that proc on spell cast, some talents
 				if(p_caster && p_caster->IsInWorld())
 				{
@@ -1884,7 +1880,7 @@ void Spell::cast(bool check)
 	{
 		// cancast failed
 		SendCastResult(cancastresult);
-		finish();
+		finish(false);
 	}
 }
 
@@ -2038,7 +2034,7 @@ void Spell::update(uint32 difftime)
 	}
 }
 
-void Spell::finish()
+void Spell::finish(bool successful)
 {
 	if (m_spellState == SPELL_STATE_FINISHED)
 		return;
@@ -2047,8 +2043,8 @@ void Spell::finish()
 	if( u_caster != NULL )
 	{
 		u_caster->m_canMove = true;
-		// mana           channeled                                                     power type is mana
-		if(m_usesMana && (GetProto()->ChannelInterruptFlags == 0 && !m_triggeredSpell) && u_caster->GetPowerType()==POWER_TYPE_MANA)
+		// mana           channeled                                                     power type is mana                             if spell wasn't cast successfully, don't delay mana regeneration
+		if(m_usesMana && (GetProto()->ChannelInterruptFlags == 0 && !m_triggeredSpell) && u_caster->GetPowerType()==POWER_TYPE_MANA && successful)
 		{
 			/*
 			Five Second Rule
@@ -3617,11 +3613,20 @@ uint8 Spell::CanCast(bool tolerate)
 		/**
 		 *	Area requirement
 		 */
-		if (GetProto()->RequiresAreaId > 0)
+		if( GetProto()->RequiresAreaId > 0 )
 		{
 			AreaGroup *ag = dbcAreaGroup.LookupEntry(GetProto()->RequiresAreaId);
 			uint8 i;
-			uint16 plrarea = p_caster->GetMapMgr()->GetAreaID(p_caster->GetPositionX(), p_caster->GetPositionY());
+			uint16 plrarea;
+			AreaTable * at = dbcArea.LookupEntry(p_caster->GetMapMgr()->GetAreaID(p_caster->GetPositionX(), p_caster->GetPositionY()));
+			if( at->ZoneId == 0 )
+			{
+				plrarea = p_caster->GetMapMgr()->GetAreaID(p_caster->GetPositionX(), p_caster->GetPositionY());
+			}
+			else
+			{
+				plrarea = at->ZoneId;
+			}
 			for(i = 0; i < 7; i++)
 				if( ag->AreaId[i] == plrarea )
 					break;
