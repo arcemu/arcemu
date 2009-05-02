@@ -228,12 +228,18 @@ void Spell::FillTargetMap(uint32 i)
 	uint32 TypeA = m_spellInfo->EffectImplicitTargetA[i];
 	uint32 TypeB = m_spellInfo->EffectImplicitTargetB[i];
 
-	if( TypeA && TypeA < EFF_TARGET_LIST_LENGTH_MARKER )
-		(this->*SpellTargetHandler[TypeA])(i, 0); // 0 = A
-	if( TypeB && TypeB < EFF_TARGET_LIST_LENGTH_MARKER )
-		(this->*SpellTargetHandler[TypeB])(i, 1); // 1 = B
 	if( !TypeA && !TypeB && m_targets.m_unitTarget )
+	{
 		SafeAddTarget(&m_targetUnits[i], m_targets.m_unitTarget);
+	}
+	if( (TypeA || !TypeB) && TypeA < EFF_TARGET_LIST_LENGTH_MARKER )
+	{
+		(this->*SpellTargetHandler[TypeA])(i, 0); // 0 = A
+	}
+	if( (TypeB || !TypeA) && TypeB < EFF_TARGET_LIST_LENGTH_MARKER )
+	{
+		(this->*SpellTargetHandler[TypeB])(i, 1); // 1 = B
+	}
 	return;
 }
 

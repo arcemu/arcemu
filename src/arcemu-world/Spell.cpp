@@ -1489,6 +1489,7 @@ void Spell::cast(bool check)
 				}
 			}
 		}
+
 		SendCastResult(cancastresult);
 		if(cancastresult != SPELL_CANCAST_OK)
 		{
@@ -1607,6 +1608,7 @@ void Spell::cast(bool check)
 				}
 			}
 		}
+
 		/*SpellExtraInfo* sp = objmgr.GetSpellExtraData(GetProto()->Id);
 		if(sp)
 		{
@@ -1686,6 +1688,7 @@ void Spell::cast(bool check)
 					}
 				}
 			}
+
 			std::vector<uint64>::iterator i, i2;
 			// this is here to avoid double search in the unique list
 			//bool canreflect = false, reflected = false;
@@ -1722,6 +1725,7 @@ void Spell::cast(bool check)
 			}
 			else
 				SetReflected(false);
+
 			bool isDuelEffect = false;
 			//uint32 spellid = GetProto()->Id;
 
@@ -1747,27 +1751,8 @@ void Spell::cast(bool check)
 						{
 							for( i=m_targetUnits[x].begin(); i!=m_targetUnits[x].end(); )
 							{
-								// don't apply auras to dead things
-								if( GetProto()->EffectApplyAuraName[x] )
-								{
-									if( m_caster && m_caster->GetMapMgr() )
-									{
-										Unit* Target = m_caster->GetMapMgr()->GetUnit(*i);
-										if( Target && Target->IsDead() && !Target->IsPlayer() )
-										{
-											continue;
-										}
-									}
-									i2 = i++;
-									HandleEffects(*i2,x);
-									hadEffect = true; // spell has had an effect (for item removal)
-									HandleAddAura(*i2);
-								}
-								else // not an aura
-								{
-									i2 = i++;
-									HandleEffects(*i2,x);
-								}
+								i2 = i++;
+								HandleEffects(*i2,x);
 							}
 						}
 
@@ -1781,6 +1766,23 @@ void Spell::cast(bool check)
 					}
 				}
 				/* don't call HandleAddAura unless we actually have auras... - Burlex*/
+				if( m_spellInfo->EffectApplyAuraName[0] || m_spellInfo->EffectApplyAuraName[1] || m_spellInfo->EffectApplyAuraName[2] )
+				{
+					for( i = UniqueTargets.begin(); i != UniqueTargets.end(); ++i )
+					{
+						// don't apply auras to dead things
+						if( m_caster && m_caster->GetMapMgr() )
+						{
+							Unit* Target = m_caster->GetMapMgr()->GetUnit(*i);
+							if( Target && Target->IsDead() && !Target->IsPlayer() )
+							{
+								continue;
+							}
+						}
+						hadEffect = true; // spell has had an effect (for item removal)
+						HandleAddAura(*i);
+					}
+				}
 
 				// spells that proc on spell cast, some talents
 				if(p_caster && p_caster->IsInWorld())
