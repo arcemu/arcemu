@@ -1194,11 +1194,6 @@ uint32 Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, ui
 						CastingSpell->NameHash != SPELL_HASH_GREATER_HEAL )
 						continue;
 				}break;
-				case 46916:
-					{
-						if(CastingSpell->NameHash != SPELL_HASH_BLOODSURGE)
-						continue;
-					}break;
 				case 5530: //Mace Stun Effect
 				{
 					//warrior/rogue mace specialization can trigger only when using maces
@@ -1260,7 +1255,7 @@ uint32 Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, ui
 					}
 					else continue; //no weapon no joy
 				}break;
-				//warrior - Blood Frenzy
+				//Warrior - Blood Frenzy
 				case 30069:
 				case 30070:
 				{
@@ -1270,7 +1265,7 @@ uint32 Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, ui
 							CastingSpell->NameHash != SPELL_HASH_DEEP_WOUND )
 							continue;
 				}break;
-				//warrior - Unbridled Wrath
+				//Warrior - Unbridled Wrath
 				case 12964:
 				{
 					//let's recalc chance to cast since we have a full 100 all time on this one
@@ -1297,6 +1292,17 @@ uint32 Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, ui
 
 					if( CastingSpell->NameHash != SPELL_HASH_SHIELD_BASH &&
 						CastingSpell->NameHash != SPELL_HASH_HEROIC_THROW )
+						continue;
+				}break;
+				//Warrior - Bloodsurge
+				case 46916:
+				{
+					if( CastingSpell == NULL )
+						continue;
+
+					if( CastingSpell->NameHash != SPELL_HASH_HEROIC_STRIKE &&
+						CastingSpell->Id != 23881 &&
+						CastingSpell->NameHash != SPELL_HASH_WHIRLWIND )
 						continue;
 				}break;
 ////////////////////////////////////////////////////////////////////////////
@@ -1732,7 +1738,7 @@ uint32 Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, ui
                     }break;
 
 
-				//shaman - Healing Way
+				//Shaman - Healing Way
 				case 29203:
 					{
 						if( CastingSpell == NULL )
@@ -1741,7 +1747,7 @@ uint32 Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, ui
 						if( CastingSpell->NameHash != SPELL_HASH_HEALING_WAVE ) //healing wave
 							continue;
 					}break;
-				//shaman - Elemental Devastation
+				//Shaman - Elemental Devastation
 				case 29177:
 				case 29178:
 				case 30165:
@@ -1752,7 +1758,7 @@ uint32 Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, ui
 						if( !(CastingSpell->c_is_flags & SPELL_FLAG_IS_DAMAGING)) //healing wave
 							continue;
 					}break;
-				//shaman - Ancestral Fortitude
+				//Shaman - Ancestral Fortitude
 				case 16177:
 				case 16236:
 				case 16237:
@@ -1760,6 +1766,31 @@ uint32 Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, ui
 						if( CastingSpell == NULL )
 							continue;
 						if( !(CastingSpell->c_is_flags & SPELL_FLAG_IS_HEALING) ) //healing spell
+							continue;
+					}break;
+				//Shaman - Earthliving Weapon
+				case 51940:
+				case 51989:
+				case 52004:
+				case 52005:
+				case 52007:
+				case 52008:
+					{
+						if( CastingSpell == NULL )
+							continue;
+						if( !(CastingSpell->c_is_flags & SPELL_FLAG_IS_HEALING) ) //healing spell
+							continue;
+					}break;
+				//Shaman - Tidal Waves
+				case 51562:
+				case 51563:
+				case 51564:
+				case 51565:
+				case 51566:
+					{
+						if( CastingSpell == NULL )
+							continue;
+						if( !(CastingSpell->NameHash == SPELL_HASH_CHAIN_HEAL || CastingSpell->NameHash == SPELL_HASH_RIPTIDE) )
 							continue;
 					}break;
 				// Resilient
@@ -2568,6 +2599,11 @@ uint32 Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, ui
 					case 14177: //cold blood will get removed on offensive spell
 						{
 							if(CastingSpell == NULL || CastingSpell->Id == 36554 || victim==this || isFriendly(this, victim))
+								continue;
+						}break;
+					case 46916: //Bloodsurge - Slam! effect should dissapear after casting Slam only
+						{
+							if( CastingSpell->NameHash != SPELL_HASH_SLAM )
 								continue;
 						}break;
 					}

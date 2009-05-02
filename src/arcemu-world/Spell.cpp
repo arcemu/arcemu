@@ -5163,11 +5163,14 @@ void Spell::Heal(int32 amount, bool ForceCrit)
 				if(u_caster->HasAura(34754))
 					u_caster->RemoveAura(34754, u_caster->GetGUID());
 			}
-		}
 
-		// Paladin: Healing Light talent
-		if(u_caster->IsPlayer())
-		{
+			if( m_spellInfo->NameHash == SPELL_HASH_LESSER_HEALING_WAVE || m_spellInfo->NameHash == SPELL_HASH_HEALING_WAVE )
+			{
+				if(u_caster->HasAura(53390)) //tidal wave
+					u_caster->RemoveAura(53390, u_caster->GetGUID());
+			}
+
+			// Paladin: Healing Light talent
 			if(m_spellInfo->NameHash == SPELL_HASH_FLASH_OF_LIGHT || m_spellInfo->NameHash == SPELL_HASH_HOLY_LIGHT)
 			{
 				uint8 TalentRank = 0;

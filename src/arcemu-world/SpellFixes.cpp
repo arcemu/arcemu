@@ -1638,6 +1638,73 @@ void ApplyNormalFixes()
 
 	// Insert warrior spell fixes here
 
+		//Slam		
+		sp = dbcSpell.LookupEntryForced( 1464 );
+		if (sp != NULL)
+			sp->Effect[0] = SPELL_EFFECT_SCHOOL_DAMAGE;
+
+		sp = dbcSpell.LookupEntryForced( 8820 );
+		if (sp != NULL)
+			sp->Effect[0] = SPELL_EFFECT_SCHOOL_DAMAGE;
+
+		sp = dbcSpell.LookupEntryForced( 11604 );
+		if (sp != NULL)
+			sp->Effect[0] = SPELL_EFFECT_SCHOOL_DAMAGE;
+
+		sp = dbcSpell.LookupEntryForced( 11605 );
+		if (sp != NULL)
+			sp->Effect[0] = SPELL_EFFECT_SCHOOL_DAMAGE;
+
+		sp = dbcSpell.LookupEntryForced( 25241 );
+		if (sp != NULL)
+			sp->Effect[0] = SPELL_EFFECT_SCHOOL_DAMAGE;
+
+		sp = dbcSpell.LookupEntryForced( 25242 );
+		if (sp != NULL)
+			sp->Effect[0] = SPELL_EFFECT_SCHOOL_DAMAGE;
+
+		sp = dbcSpell.LookupEntryForced( 47474 );
+		if (sp != NULL)
+			sp->Effect[0] = SPELL_EFFECT_SCHOOL_DAMAGE;
+
+		sp = dbcSpell.LookupEntryForced( 47475 );
+		if (sp != NULL)
+			sp->Effect[0] = SPELL_EFFECT_SCHOOL_DAMAGE;
+
+		//Bloodsurge
+		sp = dbcSpell.LookupEntryForced(46913);
+		if (sp != NULL)
+		{
+			sp->procFlags = PROC_ON_MELEE_ATTACK | PROC_ON_CAST_SPELL;
+			sp->procChance = 7;
+		}
+		sp = dbcSpell.LookupEntryForced(46914);
+		if (sp != NULL)
+		{
+			sp->procFlags = PROC_ON_MELEE_ATTACK | PROC_ON_CAST_SPELL;
+			sp->procChance = 13;
+		}
+		sp = dbcSpell.LookupEntryForced(46915);
+		if (sp != NULL)
+		{
+			sp->procFlags = PROC_ON_MELEE_ATTACK | PROC_ON_CAST_SPELL;
+			sp->procChance = 20;
+		}
+
+		//Furious Attacks
+		sp = dbcSpell.LookupEntryForced( 46910 );
+		if( sp != NULL )
+		{
+			sp->procFlags = PROC_ON_MELEE_ATTACK;
+			sp->proc_interval = 7000;
+		}
+		sp = dbcSpell.LookupEntryForced( 46911 );
+		if( sp != NULL )
+		{
+			sp->procFlags = PROC_ON_MELEE_ATTACK;
+			sp->proc_interval = 5000;
+		}
+
 		//Improved Revenge Rank 1
 		sp = dbcSpell.LookupEntryForced(12797);
 		if(sp != NULL)
@@ -4265,6 +4332,107 @@ void ApplyNormalFixes()
 		if( sp != NULL )
 			sp->fixed_dddhcoef = 0.0f;
 
+		//Tidal Waves
+		sp = dbcSpell.LookupEntryForced( 51562 );
+		if( sp != NULL )
+		{
+			sp->procFlags = PROC_ON_CAST_SPELL;
+			sp->procChance = 20;
+		}
+		sp = dbcSpell.LookupEntryForced( 51563 );
+		if( sp != NULL )
+		{
+			sp->procFlags = PROC_ON_CAST_SPELL;
+			sp->procChance = 20;
+		}
+		sp = dbcSpell.LookupEntryForced( 51564 );
+		if( sp != NULL )
+		{
+			sp->procFlags = PROC_ON_CAST_SPELL;
+			sp->procChance = 20;
+		}
+		sp = dbcSpell.LookupEntryForced( 51565 );
+		if( sp != NULL )
+		{
+			sp->procFlags = PROC_ON_CAST_SPELL;
+			sp->procChance = 20;
+		}
+		sp = dbcSpell.LookupEntryForced( 51566 );
+		if( sp != NULL )
+		{
+			sp->procFlags = PROC_ON_CAST_SPELL;
+			sp->procChance = 20;
+		}
+
+		//Earthliving Weapon
+		sp = dbcSpell.LookupEntryForced( 51940 );
+		if( sp != NULL )
+		{
+			sp->procFlags = PROC_ON_CAST_SPELL;
+			sp->procChance = 20;
+		}
+		sp = dbcSpell.LookupEntryForced( 51989 );
+		if( sp != NULL )
+		{
+			sp->procFlags = PROC_ON_CAST_SPELL;
+			sp->procChance = 20;
+		}
+		sp = dbcSpell.LookupEntryForced( 52004 );
+		if( sp != NULL )
+		{
+			sp->procFlags = PROC_ON_CAST_SPELL;
+			sp->procChance = 20;
+		}
+		sp = dbcSpell.LookupEntryForced( 52005 );
+		if( sp != NULL )
+		{
+			sp->procFlags = PROC_ON_CAST_SPELL;
+			sp->procChance = 20;
+		}
+		sp = dbcSpell.LookupEntryForced( 52007 );
+		if( sp != NULL )
+		{
+			sp->procFlags = PROC_ON_CAST_SPELL;
+			sp->procChance = 20;
+		}
+		sp = dbcSpell.LookupEntryForced( 52008 );
+		if( sp != NULL )
+		{
+			sp->procFlags = PROC_ON_CAST_SPELL;
+			sp->procChance = 20;
+		}
+
+		//Maelstrom Weapon - does not stack
+		sp = dbcSpell.LookupEntryForced( 51528 );
+		if( sp != NULL )
+		{
+			sp->procFlags = PROC_ON_MELEE_ATTACK;
+			sp->proc_interval = 24000;
+		}
+		sp = dbcSpell.LookupEntryForced( 51529 );
+		if( sp != NULL )
+		{
+			sp->procFlags = PROC_ON_MELEE_ATTACK;
+			sp->proc_interval = 12000;
+		}
+		sp = dbcSpell.LookupEntryForced( 51530 );
+		if( sp != NULL )
+		{
+			sp->procFlags = PROC_ON_MELEE_ATTACK;
+			sp->proc_interval = 8000;
+		}
+		sp = dbcSpell.LookupEntryForced( 51531 );
+		if( sp != NULL )
+		{
+			sp->procFlags = PROC_ON_MELEE_ATTACK;
+			sp->proc_interval = 6000;
+		}
+		sp = dbcSpell.LookupEntryForced( 51532 );
+		if( sp != NULL )
+		{
+			sp->procFlags = PROC_ON_MELEE_ATTACK;
+			sp->proc_interval = 5000;
+		}
 
 		/**********************************************************
 		 *	Healing Way
