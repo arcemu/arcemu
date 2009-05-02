@@ -5168,8 +5168,18 @@ void Spell::Heal(int32 amount, bool ForceCrit)
 
 			if( m_spellInfo->NameHash == SPELL_HASH_LESSER_HEALING_WAVE || m_spellInfo->NameHash == SPELL_HASH_HEALING_WAVE )
 			{
-				if(u_caster->HasAura(53390)) //tidal wave
+				if(u_caster->HasAura(53390)) //Tidal Waves
 					u_caster->RemoveAura(53390, u_caster->GetGUID());
+			}
+
+			if( m_spellInfo->NameHash == SPELL_HASH_LESSER_HEALING_WAVE || 
+				m_spellInfo->NameHash == SPELL_HASH_HEALING_WAVE || 
+				m_spellInfo->NameHash == SPELL_HASH_LIGHTNING_BOLT || 
+				m_spellInfo->NameHash == SPELL_HASH_CHAIN_HEAL || 
+				m_spellInfo->NameHash == SPELL_HASH_CHAIN_LIGHTNING )
+			{
+				if(u_caster->HasAura(53817)) //Maelstrom Weapon
+					u_caster->RemoveAllAuras(53817, u_caster->GetGUID());
 			}
 
 			// Paladin: Healing Light talent

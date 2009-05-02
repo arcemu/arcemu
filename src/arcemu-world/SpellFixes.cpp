@@ -4433,6 +4433,9 @@ void ApplyNormalFixes()
 			sp->procFlags = PROC_ON_MELEE_ATTACK;
 			sp->proc_interval = 5000;
 		}
+		sp = dbcSpell.LookupEntryForced( 53817 );
+		if( sp != NULL )
+			sp->procCharges = 0;
 
 		/**********************************************************
 		 *	Healing Way
