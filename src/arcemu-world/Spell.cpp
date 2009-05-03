@@ -2103,6 +2103,12 @@ void Spell::finish(bool successful)
 				pTarget->RemoveAura(GetProto()->Id, m_caster->GetGUID());
 			}
 		}
+		if(	GetProto()->NameHash == SPELL_HASH_LIGHTNING_BOLT || 
+			GetProto()->NameHash == SPELL_HASH_CHAIN_LIGHTNING )
+		{
+			if(p_caster->HasAura(53817)) //Maelstrom Weapon
+				p_caster->RemoveAllAuras(53817, u_caster->GetGUID());
+		}
 	}
 
 	if( GetProto()->Effect[0] == SPELL_EFFECT_SUMMON_OBJECT ||
@@ -5174,9 +5180,7 @@ void Spell::Heal(int32 amount, bool ForceCrit)
 
 			if( m_spellInfo->NameHash == SPELL_HASH_LESSER_HEALING_WAVE || 
 				m_spellInfo->NameHash == SPELL_HASH_HEALING_WAVE || 
-				m_spellInfo->NameHash == SPELL_HASH_LIGHTNING_BOLT || 
-				m_spellInfo->NameHash == SPELL_HASH_CHAIN_HEAL || 
-				m_spellInfo->NameHash == SPELL_HASH_CHAIN_LIGHTNING )
+				m_spellInfo->NameHash == SPELL_HASH_CHAIN_HEAL )
 			{
 				if(u_caster->HasAura(53817)) //Maelstrom Weapon
 					u_caster->RemoveAllAuras(53817, u_caster->GetGUID());
