@@ -353,6 +353,13 @@ void QuestLogEntry::SetMobCount(uint32 i, uint32 count)
 	mDirty = true;
 }
 
+void QuestLogEntry::IncrementMobCount(uint32 i)
+{
+	ASSERT(i<4);
+	++m_mobcount[i];
+	mDirty = true;
+}
+
 void QuestLogEntry::SetTrigger(uint32 i)
 {
 	ASSERT(i<4);
@@ -389,9 +396,9 @@ void QuestLogEntry::UpdatePlayerFields()
 
 	uint32 base = GetBaseField(m_slot);
 	m_plr->SetUInt32Value(base + 0, m_quest->id);
-	uint32 field0 = 0;
+	uint32 field0 = 0; // 0x01000000 = "Objective Complete" - 0x02 = Quest Failed - 0x04 = Quest Accepted
 
-	// next field is kills and shit like that
+	// next field is count (kills, etc)
 	uint32 field1 = 0;
 
 	// explored areas
@@ -416,16 +423,40 @@ void QuestLogEntry::UpdatePlayerFields()
 	}
 
 	// spell casts / emotes
-	uint8* p = (uint8*)&field0;
-	for(int i = 0; i < 4; ++i)
+	if( iscastquest )
 	{
-		if( m_quest->required_spell[i] || m_quest->required_emote[i] )
+		bool cast_complete = true;
+		for(int i = 0; i < 4; ++i)
 		{
-			p[i] |= (uint8)m_mobcount[i];
+			if( m_quest->required_spell[i] && m_quest->required_mobcount[i] > m_mobcount[i] )
+			{
+				cast_complete = false;
+				break;
+			}
+		}
+		if( cast_complete )
+		{
+			field0 |= 0x01000000; // "Objective Complete"
+		}
+	}
+	else if( isemotequest )
+	{
+		bool emote_complete = true;
+		for( int i = 0; i < 4; ++i )
+		{
+			if( m_quest->required_emote[i] && m_quest->required_mobcount[i] > m_mobcount[i] )
+			{
+				emote_complete = false;
+				break;
+			}
+		}
+		if( emote_complete )
+		{
+			field0 |= 0x01000000; // "Objective Complete"
 		}
 	}
 
-	// mob hunting
+	// mob hunting / counter
 	if(m_quest->count_required_mob)
 	{
 		/*uint8 cnt;
@@ -440,10 +471,10 @@ void QuestLogEntry::UpdatePlayerFields()
 		}*/
 
 		// optimized this - burlex
-		p = (uint8*)&field1;
+		uint8* p = (uint8*)&field1;
 		for(int i = 0; i < 4; ++i)
 		{
-			if( m_quest->required_mob[i] && m_mobcount[i] > 0 && !m_quest->required_emote[i] && !m_quest->required_spell[i] )
+			if( m_quest->required_mob[i] && m_mobcount[i] > 0 )
 				p[i] |= (uint8)m_mobcount[i];
 		}
 	}

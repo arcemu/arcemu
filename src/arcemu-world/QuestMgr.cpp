@@ -675,7 +675,7 @@ bool QuestMgr::OnGameObjectActivate(Player *plr, GameObject *go)
 				{
 					// add another kill.
 					// (auto-dirtys it)
-					qle->SetMobCount( j, qle->m_mobcount[j] + 1 );
+					qle->IncrementMobCount( j );
 					qle->SendUpdateAddKill( j );
 					CALL_QUESTSCRIPT_EVENT( qle, OnGameObjectActivate )( entry, plr, qle );
 
@@ -722,7 +722,7 @@ void QuestMgr::OnPlayerKill(Player* plr, Creature* victim)
 							qle->m_mobcount[j] < qst->required_mobcount[j] )
 						{
 							// add another kill.(auto-dirtys it)
-							qle->SetMobCount( j, qle->m_mobcount[j] + 1 );
+							qle->IncrementMobCount( j );
 							qle->SendUpdateAddKill( j );
 							CALL_QUESTSCRIPT_EVENT( qle, OnCreatureKill)( entry, plr, qle );
 							qle->UpdatePlayerFields();
@@ -774,7 +774,7 @@ void QuestMgr::OnPlayerKill(Player* plr, Creature* victim)
 										{
 											// add another kill.
 											// (auto-dirtys it)
-											qle->SetMobCount(j, qle->m_mobcount[j] + 1);
+											qle->IncrementMobCount( j );
 											qle->SendUpdateAddKill( j );
 											CALL_QUESTSCRIPT_EVENT( qle, OnCreatureKill )( entry, plr, qle );
 											qle->UpdatePlayerFields();
@@ -821,7 +821,7 @@ void QuestMgr::OnPlayerCast(Player* plr, uint32 spellid, uint64& victimguid)
 					if( victim && qst->required_mob[j] == entry && qst->required_spell[j] == spellid && (qle->m_mobcount[j] < qst->required_mobcount[j] || qle->m_mobcount[j] == 0) && !qle->IsUnitAffected(victim) )
 					{
 						qle->AddAffectedUnit(victim);
-						qle->SetMobCount(j, qle->m_mobcount[j] + 1);
+						qle->IncrementMobCount( j );
 						qle->UpdatePlayerFields();
 						if( qle->CanBeFinished() )
 							qle->SendQuestComplete();
@@ -833,7 +833,7 @@ void QuestMgr::OnPlayerCast(Player* plr, uint32 spellid, uint64& victimguid)
 				{
 					if( qst->required_spell[j] == spellid )
 					{
-						qle->SetMobCount(j, qle->m_mobcount[j] + 1);
+						qle->IncrementMobCount( j );
 						qle->UpdatePlayerFields();
 						if( qle->CanBeFinished() )
 							qle->SendQuestComplete();
@@ -2111,7 +2111,11 @@ void QuestMgr::OnPlayerEmote(Player* plr, uint32 emoteid, uint64& victimguid)
 					if( victim && qst->required_mob[j] == entry && qst->required_emote[j] == emoteid && (qle->m_mobcount[j] < qst->required_mobcount[j] || qle->m_mobcount[j] == 0) && !qle->IsUnitAffected(victim) )
 					{
 						qle->AddAffectedUnit(victim);
-						qle->SetMobCount(j, qle->m_mobcount[j] + 1);
+						qle->IncrementMobCount( j );
+						if( qst->id == 11224 ) // Show progress for quest "Send Them Packing"
+						{
+							qle->SendUpdateAddKill( j );
+						}
 						qle->UpdatePlayerFields();
 						if( qle->CanBeFinished() )
 							qle->SendQuestComplete();
@@ -2123,7 +2127,7 @@ void QuestMgr::OnPlayerEmote(Player* plr, uint32 emoteid, uint64& victimguid)
 				{
 					if( qst->required_emote[j] == emoteid )
 					{
-						qle->SetMobCount(j, qle->m_mobcount[j] + 1);
+						qle->IncrementMobCount( j );
 						qle->UpdatePlayerFields();
 						if( qle->CanBeFinished() )
 							qle->SendQuestComplete();

@@ -261,6 +261,7 @@ public:
 
 	void SetTrigger(uint32 i);
 	void SetMobCount(uint32 i, uint32 count);
+	void IncrementMobCount(uint32 i);
 
 	bool IsUnitAffected(Unit* target);
 	ARCEMU_INLINE bool IsCastQuest() { return iscastquest;}
