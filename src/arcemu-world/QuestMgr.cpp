@@ -87,7 +87,7 @@ uint32 QuestMgr::PlayerMeetsReqs(Player* plr, Quest* qst, bool skiplevelcheck)
 		return QMGR_QUEST_NOT_AVAILABLE;
 
 	// Check One of Quest Prequest
-	uint32 questsfailed = 0;
+	bool questscompleted = false;
 	if( !qst->quest_list.empty() )
 	{
 		set<uint32>::iterator iter = qst->quest_list.begin();
@@ -96,11 +96,14 @@ uint32 QuestMgr::PlayerMeetsReqs(Player* plr, Quest* qst, bool skiplevelcheck)
 			Quest * questcheck = QuestStorage.LookupEntry( (*iter) );
 			if( questcheck )
 			{
-				if( !plr->HasFinishedQuest( (*iter) ))
-				questsfailed++;
+				if( plr->HasFinishedQuest( (*iter) ))
+				{
+					questscompleted = true;
+					break;
+				}
 			}
 		}
-		if( questsfailed == qst->quest_list.size() ) // If noone of listed quests is done, next part isnt available.
+		if( !questscompleted ) // If none of listed quests is done, next part isnt available.
 			return QMGR_QUEST_NOT_AVAILABLE;
 	}
 
@@ -657,21 +660,23 @@ bool QuestMgr::OnGameObjectActivate(Player *plr, GameObject *go)
 	uint32 i, j;
 	QuestLogEntry *qle;
 	uint32 entry = go->GetEntry();
+	Quest* qst;
 
 	for(i = 0; i < 25; ++i)
 	{
 		qle = plr->GetQuestLogInSlot( i );
 		if( qle != NULL )
 		{
+			qst = qle->GetQuest();
 			// dont waste time on quests without mobs
-			if( qle->GetQuest()->count_required_mob == 0 )
+			if( qst->count_required_mob == 0 )
 				continue;
 
 			for( j = 0; j < 4; ++j )
 			{
-				if( qle->GetQuest()->required_mob[j] == entry &&
-					qle->GetQuest()->required_mobtype[j] == QUEST_MOB_TYPE_GAMEOBJECT &&
-					qle->m_mobcount[j] < qle->GetQuest()->required_mobcount[j] )
+				if( qst->required_mob[j] == entry &&
+					qst->required_mobtype[j] == QUEST_MOB_TYPE_GAMEOBJECT &&
+					qle->m_mobcount[j] < qst->required_mobcount[j] )
 				{
 					// add another kill.
 					// (auto-dirtys it)
@@ -1855,10 +1860,6 @@ void QuestMgr::LoadExtraQuestStuff()
 						break;
 				}
 
-				if( qst->required_emote[i] || qst->required_spell[i] )
-				{
-					qst->required_mobtype[i] = QUEST_MOB_TYPE_CREATURE; // can't textemote or spellcast at a gameobject, right?
-				}
 				qst->count_required_mob++;
 			}
 

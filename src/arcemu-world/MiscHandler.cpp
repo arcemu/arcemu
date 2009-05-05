@@ -2468,9 +2468,12 @@ void WorldSession::HandleGameobjReportUseOpCode( WorldPacket& recv_data )   // C
 	uint64 guid;
 	recv_data >> guid;
 	GameObject* gameobj = _player->GetMapMgr()->GetGameObject((uint32)guid);
-	if(gameobj==NULL)
+	if( gameobj==NULL )
 		return;
-	sQuestMgr.OnGameObjectActivate(_player, gameobj);
-	_player->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_USE_GAMEOBJECT,gameobj->GetEntry(),0,0);
+	if( gameobj->CanActivate() )
+	{
+		sQuestMgr.OnGameObjectActivate(_player, gameobj);
+		_player->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_USE_GAMEOBJECT,gameobj->GetEntry(),0,0);
+	}
 	return;
 }
