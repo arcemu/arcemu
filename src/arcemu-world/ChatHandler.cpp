@@ -284,6 +284,7 @@ void WorldSession::HandleMessagechatOpcode( WorldPacket & recv_data )
 							(*itr)->m_loggedInPlayer->GetSession()->SendChatPacket(data, 1, lang, this);
 					}
 					_player->GetGroup()->Unlock();
+
 				}
 			}
 			//sLog.outString("[party] %s: %s", _player->GetName(), msg.c_str());
@@ -360,7 +361,7 @@ void WorldSession::HandleMessagechatOpcode( WorldPacket & recv_data )
 				SystemMessage("Your chat message was blocked by a server-side filter.");
 				return;
 			}
-		 
+
 			Player *player = objmgr.GetPlayer(to.c_str(), false);
 			if(!player)
 			{
@@ -386,14 +387,14 @@ void WorldSession::HandleMessagechatOpcode( WorldPacket & recv_data )
 
 			if(lang > 0 && LanguageSkills[lang] && _player->_HasSkillLine(LanguageSkills[lang]) == false)
 				return;
-				
+
 			if( player->Social_IsIgnoring( _player->GetLowGUID() ) )
 			{
 				data = sChatHandler.FillMessageData( CHAT_MSG_IGNORED, LANG_UNIVERSAL,  msg.c_str(), player->GetGUID(), _player->bGMTagOn ? 4 : 0 );
 				SendPacket(data);
 				delete data;
 				break;
-			}				
+			}
 			else if(lang==0 && sWorld.interfaction_chat)
 			{
 				data = sChatHandler.FillMessageData( CHAT_MSG_WHISPER, ((CanUseCommand('0') || player->GetSession()->CanUseCommand('0')) && lang != -1) ? LANG_UNIVERSAL : lang,  msg.c_str(), _player->GetGUID(), _player->bGMTagOn ? 4 : 0 );
@@ -420,7 +421,7 @@ void WorldSession::HandleMessagechatOpcode( WorldPacket & recv_data )
 				SendPacket(data);
 				delete data;
 			}
-			
+
 			if(player->HasFlag(PLAYER_FLAGS, 0x02))
 			{
 				// Has AFK flag, autorespond.
@@ -442,7 +443,7 @@ void WorldSession::HandleMessagechatOpcode( WorldPacket & recv_data )
 
 		} break;
 	case CHAT_MSG_CHANNEL:
-		{		 
+		{
 			if(g_chatFilter->Parse(msg) == true)
 			{
 				SystemMessage("Your chat message was blocked by a server-side filter.");
@@ -452,7 +453,7 @@ void WorldSession::HandleMessagechatOpcode( WorldPacket & recv_data )
 			if (sChatHandler.ParseCommands(msg.c_str(), this) > 0)
 				break;
 
-			chn = channelmgr.GetChannel(channel.c_str(),GetPlayer()); 
+			chn = channelmgr.GetChannel(channel.c_str(),GetPlayer());
 			if(chn)
 			{
 				//g_chatFilter->ParseEscapeCodes((char*)pMsg, (chn->m_flags & CHANNEL_PACKET_ALLOWLINKS)>0 );
@@ -488,7 +489,7 @@ void WorldSession::HandleMessagechatOpcode( WorldPacket & recv_data )
 
 				if(sWorld.GetKickAFKPlayerTime())
 					sEventMgr.AddEvent(GetPlayer(),&Player::SoftDisconnect,EVENT_PLAYER_SOFT_DISCONNECT,sWorld.GetKickAFKPlayerTime(),1,0);
-			}			
+			}
 		} break;
 	case CHAT_MSG_DND:
 		{
@@ -507,7 +508,7 @@ void WorldSession::HandleMessagechatOpcode( WorldPacket & recv_data )
 			else
 			{
 				GetPlayer()->SetFlag(PLAYER_FLAGS, 0x04);
-			}		  
+			}
 		} break;
 	}
 

@@ -759,7 +759,7 @@ void Aura::Remove()
 	m_deleted = true;
 	sEventMgr.RemoveEvents( this );
 
-	if( !IsPassive() || m_spellProto->AttributesEx & 1024 )
+	if( !IsPassive() || m_spellProto->AttributesEx & ATTRIBUTESEX_UNK12 )
 		m_target->ModVisualAuraStackCount( this, -1 );
 
 	ApplyModifiers( false );

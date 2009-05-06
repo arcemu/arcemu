@@ -75,7 +75,7 @@ void EventableObject::event_AddEvent(TimedEvent * ptr)
 	if(!m_holder)
 	{
 		/* relocate to -1 eventholder :/ */
-		m_event_Instanceid = -1;
+		m_event_Instanceid = WORLD_INSTANCE;
 		m_holder = sEventMgr.GetEventHolder(m_event_Instanceid);
 		ASSERT(m_holder);
 	}
@@ -405,7 +405,7 @@ void EventableObject::event_Relocate()
 		
 		// no need to do this if we don't have any events, though.
 		if(!nh)
-			nh = sEventMgr.GetEventHolder(-1);
+			nh = sEventMgr.GetEventHolder( WORLD_INSTANCE );
 
 		nh->AddObject(this);
 

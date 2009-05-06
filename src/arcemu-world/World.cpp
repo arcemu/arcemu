@@ -39,7 +39,7 @@ World::World()
 	GmClientChannel = "";
 
 	m_StartTime = 0;
-	eventholder = new EventableObjectHolder(-1);
+	eventholder = new EventableObjectHolder( WORLD_INSTANCE );
 	m_holder = eventholder;
 	m_event_Instanceid = eventholder->GetInstanceID();
 

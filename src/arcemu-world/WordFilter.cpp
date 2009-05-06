@@ -321,8 +321,6 @@ bool WordFilter::ParseEscapeCodes(char * sMsg, bool bAllowLinks)
 				j=0;
 			break;
 		}
-		
-		
 	}
 	return true;
 }

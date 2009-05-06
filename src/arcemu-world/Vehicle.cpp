@@ -384,7 +384,7 @@ bool ChatHandler::HandleVehicleSpawn(const char * args, WorldSession * m_session
 	sp->bytes2 = 0;
 	//sp->respawnNpcLink = 0;
 	sp->stand_state = 0;
-	sp->channel_spell=sp->channel_target_creature=sp->channel_target_go=0;
+	sp->channel_target_creature = sp->channel_target_go = sp->channel_spell = 0;
 	sp->MountedDisplayID = 0;
 	sp->Item1SlotDisplay = 0;
 	sp->Item2SlotDisplay = 0;
