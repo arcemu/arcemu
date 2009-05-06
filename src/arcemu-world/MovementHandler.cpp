@@ -258,14 +258,6 @@ void WorldSession::HandleMovementOpcodes( WorldPacket & recv_data )
 			((GameObject*)t_go)->EndFishing(GetPlayer(),true);
 	}
 
-	uint32 aurtoremove = 0;
-	if(_player->HasAura(2096))
-		aurtoremove = 2096;
-	if(_player->HasAura(10909))
-		aurtoremove = 10909;
-	if(aurtoremove)
-		_player->RemoveAura(aurtoremove);
-
 	/************************************************************************/
 	/* Clear standing state to stand.				                        */
 	/************************************************************************/
@@ -618,16 +610,15 @@ void WorldSession::HandleMovementOpcodes( WorldPacket & recv_data )
 	/************************************************************************/
 	/* Remove Spells                                                        */
 	/************************************************************************/
-        uint32 flags = AURA_INTERRUPT_ON_MOVEMENT;
-        if( !( movement_info.flags & MOVEFLAG_SWIMMING || movement_info.flags & MOVEFLAG_FALLING ) )
-                flags |= AURA_INTERRUPT_ON_LEAVE_WATER;
-        if( movement_info.flags & MOVEFLAG_SWIMMING )
-                flags |= AURA_INTERRUPT_ON_ENTER_WATER;
-        if( movement_info.flags & ( MOVEFLAG_TURN_LEFT | MOVEFLAG_TURN_RIGHT ) )
-        flags |= AURA_INTERRUPT_ON_TURNING;
-
-        _player->RemoveAurasByInterruptFlag( flags );
-
+	uint32 flags = AURA_INTERRUPT_ON_MOVEMENT;
+	if( !( movement_info.flags & MOVEFLAG_SWIMMING || movement_info.flags & MOVEFLAG_FALLING ) )
+		flags |= AURA_INTERRUPT_ON_LEAVE_WATER;
+	if( movement_info.flags & MOVEFLAG_SWIMMING )
+		flags |= AURA_INTERRUPT_ON_ENTER_WATER;
+	if( movement_info.flags & ( MOVEFLAG_TURN_LEFT | MOVEFLAG_TURN_RIGHT ) )
+		flags |= AURA_INTERRUPT_ON_TURNING;
+	
+	_player->RemoveAurasByInterruptFlag( flags );
 
 	/************************************************************************/
 	/* Update our position in the server.                                   */
