@@ -486,8 +486,8 @@ void AchievementMgr::UpdateAchievementCriteria(AchievementCriteriaTypes type, in
 		if(!achievement)
 			continue;
 
-		if(achievement->factionFlag == ACHIEVEMENT_FACTION_FLAG_HORDE && GetPlayer()->GetTeam() != 1 ||
-			achievement->factionFlag == ACHIEVEMENT_FACTION_FLAG_ALLIANCE && GetPlayer()->GetTeam() != 0 )
+		if(achievement->factionFlag == ACHIEVEMENT_FACTION_FLAG_HORDE && GetPlayer()->GetTeam() != HORDE ||
+			achievement->factionFlag == ACHIEVEMENT_FACTION_FLAG_ALLIANCE && GetPlayer()->GetTeam() != ALLIANCE )
 			continue;
 
 		switch (type)
@@ -1074,8 +1074,8 @@ void AchievementMgr::UpdateAchievementCriteria(AchievementCriteriaTypes type)
 		if(IsCompletedCriteria(achievementCriteria))
 			continue;
 
-		if((achievement->factionFlag == ACHIEVEMENT_FACTION_FLAG_HORDE && GetPlayer()->GetTeam() != 1) ||
-		   (achievement->factionFlag == ACHIEVEMENT_FACTION_FLAG_ALLIANCE && GetPlayer()->GetTeam() != 0) )
+		if((achievement->factionFlag == ACHIEVEMENT_FACTION_FLAG_HORDE && GetPlayer()->GetTeam() != HORDE) ||
+		   (achievement->factionFlag == ACHIEVEMENT_FACTION_FLAG_ALLIANCE && GetPlayer()->GetTeam() != ALLIANCE) )
 			continue;
 
 		switch(type)
