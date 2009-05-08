@@ -4488,7 +4488,7 @@ uint8 Spell::CanCast(bool tolerate)
 
 					case SPELL_HASH_DISPERSION:
 						{
-							if( u_caster->m_special_state & ( UNIT_STATE_FEAR | UNIT_STATE_STUN | UNIT_STATE_SILENCE )
+							if( u_caster->m_special_state & ( UNIT_STATE_FEAR | UNIT_STATE_STUN | UNIT_STATE_SILENCE ) )
 								break;
 						}break;
 
