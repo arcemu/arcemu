@@ -435,7 +435,7 @@ bool ChatHandler::HandleQuestFinishCommand(const char * args, WorldSession * m_s
 			{
 				if( qst->reward_repfaction[z] )
 				{
-					int32 amt;
+					int32 amt = 0;
 					uint32 fact = qst->reward_repfaction[z];
 					if( qst->reward_repvalue[z] )
 					{
