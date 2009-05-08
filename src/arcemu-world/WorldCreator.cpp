@@ -1177,7 +1177,10 @@ void InstanceMgr::DeleteBattlegroundInstance(uint32 mapid, uint32 instanceid)
 		m_mapLock.Release();
 		return;
 	}
-	delete itr->second;
+//- Egari: Perhaps someone could explain to me why this was added... 
+// Doesn't this get done in _DeleteInstance/InstanceShutdown later on in the MapMgr code?
+//	delete itr->second;
+
 	m_instances[mapid]->erase( itr );
 	m_mapLock.Release();
 }

@@ -136,20 +136,30 @@ uint32 QuestMgr::CalcQuestStatus(Object* quest_giver, Player* plr, Quest* qst, u
 		}
 	}
 	else
-	{		
-		if (!qle->CanBeFinished())
+	{
+		if( type & QUESTGIVER_QUEST_END ) 
 		{
-			return QMGR_QUEST_NOT_FINISHED;
-		}
-		else
-		{
-			if (type & QUESTGIVER_QUEST_END) 
+			if(!qle->CanBeFinished())
 			{
-				return QMGR_QUEST_FINISHED;					
+				if( qst->is_repeatable )
+				{
+					return QMGR_QUEST_REPEATABLE;
+				}
+				else
+				{
+					return QMGR_QUEST_NOT_FINISHED;
+				}
 			}
 			else
 			{
-				return QMGR_QUEST_NOT_AVAILABLE;
+				if( qst->is_repeatable )
+				{
+					return QMGR_QUEST_REPEATABLE_FINISHED;
+				}
+				else
+				{
+					return QMGR_QUEST_FINISHED;					
+				}
 			}
 		}
 	}
@@ -159,11 +169,8 @@ uint32 QuestMgr::CalcQuestStatus(Object* quest_giver, Player* plr, Quest* qst, u
 
 uint32 QuestMgr::CalcQuestStatus(Player* plr, uint32 qst)
 {
-	QuestLogEntry* qle;
-
-	qle = plr->GetQuestLogForEntry(qst);
-
-	if (qle)
+	QuestLogEntry* qle = plr->GetQuestLogForEntry(qst);
+	if(qle != NULL )
 	{		
 		if (!qle->CanBeFinished())
 		{

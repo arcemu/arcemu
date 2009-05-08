@@ -661,7 +661,24 @@ void Object::_BuildValuesUpdate(ByteBuffer * data, UpdateMask *updateMask, Playe
 			{
 				if( go->HasQuests() )
 				{
-					activate_quest_object = true;
+					std::list<QuestRelation *>::iterator itr;
+					for( itr = go->QuestsBegin(); itr != go->QuestsEnd(); ++itr ) {
+						QuestRelation * qr = (*itr);
+						if( qr != NULL )
+						{
+							Quest * qst = qr->qst;
+							if( qst != NULL )
+							{
+								if(		( qr->type & QUESTGIVER_QUEST_START && !target->HasQuest(qst->id) ) 
+									||	( qr->type & QUESTGIVER_QUEST_END && target->HasQuest(qst->id) )
+									)
+								{
+									activate_quest_object = true;
+									break;
+								}
+							}
+						}
+					}
 				}
 				else
 				{

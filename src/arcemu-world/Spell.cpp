@@ -4484,7 +4484,13 @@ uint8 Spell::CanCast(bool tolerate)
 					{ // This spell is usable while stunned, frozen, incapacitated, feared or asleep.  Lasts 12 sec.
 						if( u_caster->m_special_state & ( UNIT_STATE_STUN | UNIT_STATE_FEAR | UNIT_STATE_SLEEP ) ) // Uh, what unit_state is Frozen? (freezing trap...)
 							break;
-					}
+					}break;
+
+					case SPELL_HASH_DISPERSION:
+						{
+							if( u_caster->m_special_state & ( UNIT_STATE_FEAR | UNIT_STATE_STUN | UNIT_STATE_SILENCE )
+								break;
+						}break;
 
 					default:
 						return SPELL_FAILED_SILENCED;
@@ -4499,6 +4505,7 @@ uint8 Spell::CanCast(bool tolerate)
 			{
 				case SPELL_HASH_ICE_BLOCK: //Ice Block
 				case SPELL_HASH_DIVINE_SHIELD: //Divine Shield
+				case SPELL_HASH_DISPERSION:
 				break;
 
 				default:
@@ -4560,6 +4567,7 @@ uint8 Spell::CanCast(bool tolerate)
 				case SPELL_HASH_DIVINE_SHIELD: //Divine Shield
 				case SPELL_HASH_DIVINE_PROTECTION: //Divine Protection
 				case SPELL_HASH_BARKSKIN: //Barkskin
+				case SPELL_HASH_DISPERSION:
 					break;
 				
 				/* -Supalosa- For some reason, being charmed or sleep'd is counted as 'Stunned'.

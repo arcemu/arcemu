@@ -649,45 +649,23 @@ bool ChatHandler::HandleAggroRangeCommand(const char* args, WorldSession *m_sess
 
 bool ChatHandler::HandleKnockBackCommand(const char* args, WorldSession *m_session)
 {
-	/*char* X = strtok((char*)args, " ");
-	if (!X)
-		return false;
-	char* Y = strtok(NULL, " ");
-	if (!Y)
-		return false;
-	char* Z = strtok(NULL, " ");
-	if (!Z)
-		return false;
-	char* O = strtok(NULL, " ");
-	if (!O)
-		return false;
-
-	WorldPacket data(SMSG_MOVE_KNOCK_BACK, 25);
-	data << m_session->GetPlayer()->GetNewGUID();
-	data << float(atof(X)) << float(atof(Y)) << float(atof(Z)) << float(atof(O));
-
-	m_session->GetPlayer()->SendMessageToSet(&data, true);*/
-
-	
 	float f = args ? (float)atof(args) : 0.0f;
 	if(f == 0.0f)
 		f = 5.0f;
 
-	//Player * plr = m_session->GetPlayer();
-
-	float dx =sinf(m_session->GetPlayer()->GetOrientation());
-	float dy =cosf(m_session->GetPlayer()->GetOrientation());
+	float dx = sinf(m_session->GetPlayer()->GetOrientation());
+	float dy = cosf(m_session->GetPlayer()->GetOrientation());
 
 	float z = f*0.66f;
 
 	WorldPacket data(SMSG_MOVE_KNOCK_BACK, 50);
 	data << m_session->GetPlayer()->GetNewGUID();
 	data << getMSTime();
-	data << dy << dx;
+	data << dy;
+	data << dx;
 	data << f;
 	data << z;
-	m_session->GetPlayer()->SendMessageToSet(&data, true);
-
+	m_session->SendPacket(&data);
 	return true;
 }
 

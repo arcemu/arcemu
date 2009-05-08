@@ -721,6 +721,7 @@ void Pet::Remove( bool bUpdate, bool bSetOffline )
 	if( IsInWorld() && IsActive() )
 		Deactivate( m_mapMgr );
 
+	sEventMgr.RemoveEvents(this);
 	sEventMgr.AddEvent( this, &Pet::PetSafeDelete, EVENT_CREATURE_SAFE_DELETE, 1, 1,EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT );
 }
 
