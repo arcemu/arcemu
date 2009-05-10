@@ -6680,7 +6680,7 @@ bool Player::removeDeletedSpell( uint32 SpellID )
 
 void Player::EventActivateGameObject(GameObject* obj)
 {
-	obj->BuildFieldUpdatePacket(this, GAMEOBJECT_DYNAMIC, 1);
+	obj->BuildFieldUpdatePacket(this, GAMEOBJECT_DYNAMIC, 1 | 8);
 }
 
 void Player::EventDeActivateGameObject(GameObject* obj)
@@ -6966,23 +6966,23 @@ void Player::UpdateNearbyGameObjects()
 	this->AquireInrangeLock(); //make sure to release lock before exit function !
 	for (Object::InRangeSet::iterator itr = GetInRangeSetBegin(); itr != GetInRangeSetEnd(); ++itr)
 	{
-		if((*itr)->GetTypeId() == TYPEID_GAMEOBJECT)
+		Object * obj = (*itr);
+		if(obj->GetTypeId() == TYPEID_GAMEOBJECT)
 		{
 			bool activate_quest_object = false;
-			GameObject *go = ((GameObject*)*itr);
-			QuestLogEntry *qle;
-			GameObjectInfo *info;
+			GameObject *go = ((GameObject*)obj);
+			QuestLogEntry *qle = NULL;
+			GameObjectInfo *info = go->GetInfo();
 
-			info = go->GetInfo();
 			bool deactivate = false;
 			if(info &&
 				(info->goMap.size() || info->itemMap.size()) )
 			{
-				for(GameObjectGOMap::iterator itr = go->GetInfo()->goMap.begin();
-					itr != go->GetInfo()->goMap.end();
-					++itr)
+				for(GameObjectGOMap::iterator GOitr = go->GetInfo()->goMap.begin();
+					GOitr != go->GetInfo()->goMap.end();
+					++GOitr)
 				{
-					if((qle = GetQuestLogForEntry(itr->first->id)) != 0)
+					if((qle = GetQuestLogForEntry(GOitr->first->id)) != 0)
 					{
 						for(uint32 i = 0; i < qle->GetQuest()->count_required_mob; ++i)
 						{
@@ -7000,12 +7000,12 @@ void Player::UpdateNearbyGameObjects()
 
 				if(!activate_quest_object)
 				{
-					for(GameObjectItemMap::iterator itr = go->GetInfo()->itemMap.begin();
-						itr != go->GetInfo()->itemMap.end();
-						++itr)
+					for(GameObjectItemMap::iterator GOitr = go->GetInfo()->itemMap.begin();
+						GOitr != go->GetInfo()->itemMap.end();
+						++GOitr)
 					{
-						for(std::map<uint32, uint32>::iterator it2 = itr->second.begin();
-							it2 != itr->second.end();
+						for(std::map<uint32, uint32>::iterator it2 = GOitr->second.begin();
+							it2 != GOitr->second.end();
 							++it2)
 						{
 							if(GetItemInterface()->GetItemCount(it2->first) < it2->second)
@@ -7025,23 +7025,25 @@ void Player::UpdateNearbyGameObjects()
 				}
 			}
 			bool bPassed = !deactivate;
-			if((*itr)->GetByte(GAMEOBJECT_BYTES_1, 1) == GAMEOBJECT_TYPE_QUESTGIVER)
+			if( go->isQuestGiver() )
 			{
-				if(((GameObject*)(*itr))->m_quests)
+				if( go->HasQuests() && go->NumOfQuests() > 0 )
 				{
-					if(((GameObject*)(*itr))->m_quests->size() > 0)
+					std::list<QuestRelation*>::iterator itr2 = go->QuestsBegin();
+					for( ; itr2 != go->QuestsEnd(); ++itr2 )
 					{
-						std::list<QuestRelation*>::iterator itr2 = ((GameObject*)(*itr))->m_quests->begin();
-						for(;itr2!=((GameObject*)(*itr))->m_quests->end();++itr2)
+						QuestRelation * qr = (*itr2);
+
+						uint32 status = sQuestMgr.CalcQuestStatus(NULL, this, qr->qst, qr->type, false);
+						if(	status == QMGR_QUEST_CHAT 
+							|| ( qr->type & QUESTGIVER_QUEST_START && ( status == QMGR_QUEST_AVAILABLE || status == QMGR_QUEST_REPEATABLE ) )
+							|| ( qr->type & QUESTGIVER_QUEST_END && status == QMGR_QUEST_FINISHED )
+							)
 						{
-							uint32 status = sQuestMgr.CalcQuestStatus(NULL, this, (*itr2)->qst, (*itr2)->type, false);
-							if(status == QMGR_QUEST_CHAT || status == QMGR_QUEST_AVAILABLE || status == QMGR_QUEST_REPEATABLE || status == QMGR_QUEST_FINISHED)
-							{
-								// Activate gameobject
-								EventActivateGameObject((GameObject*)(*itr));
-								bPassed = true;
-								break;
-							}
+							// Activate gameobject
+							EventActivateGameObject(go);
+							bPassed = true;
+							break;
 						}
 					}
 				}

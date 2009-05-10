@@ -152,14 +152,7 @@ uint32 QuestMgr::CalcQuestStatus(Object* quest_giver, Player* plr, Quest* qst, u
 			}
 			else
 			{
-				if( qst->is_repeatable )
-				{
-					return QMGR_QUEST_REPEATABLE_FINISHED;
-				}
-				else
-				{
-					return QMGR_QUEST_FINISHED;					
-				}
+				return QMGR_QUEST_FINISHED;					
 			}
 		}
 	}
