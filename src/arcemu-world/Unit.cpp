@@ -4452,8 +4452,8 @@ void Unit::AddAura(Aura *aur)
 
 			if(deleteAur)
 			{
-				sEventMgr.RemoveEvents(aur);
-				delete aur;
+				sEventMgr.RemoveEvents( aur );
+				AuraPool.PooledDelete( aur );
 				return;
 			}
 		}
@@ -4485,8 +4485,8 @@ void Unit::AddAura(Aura *aur)
 	if( AuraSlot == 0xFFFF )
 	{
 		sLog.outError("Aura error in active aura. ");
-		sEventMgr.RemoveEvents(aur);
-		delete aur;
+		sEventMgr.RemoveEvents( aur );
+		AuraPool.PooledDelete( aur );
 		return;
 	}
 
@@ -4520,8 +4520,8 @@ void Unit::AddAura(Aura *aur)
 	if( aur->TargetWasImuneToMods() )
 	{
 		//TODO : notify client that we are imune to this spell
-		sEventMgr.RemoveEvents(aur);
-		delete aur;
+		sEventMgr.RemoveEvents( aur );
+		AuraPool.PooledDelete( aur );
 		return;
 	}
 
