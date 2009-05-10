@@ -66,7 +66,7 @@ public:
 	// this func needs to be implemented by all eventable classes. use it to retreive the instance
 	// id that it needs to attach itself to.
 	
-	virtual int32 event_GetInstanceID() { return -1; }
+	virtual int32 event_GetInstanceID() { return WORLD_INSTANCE; }
 
 protected:
 

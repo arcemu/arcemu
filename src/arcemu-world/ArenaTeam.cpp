@@ -346,14 +346,14 @@ ArenaTeamMember * ArenaTeam::GetMemberByGuid(uint32 guid)
 
 void WorldSession::HandleArenaTeamRosterOpcode(WorldPacket & recv_data)
 {
-	uint8 slot;
+	//uint8 slot;
 	uint32 teamId;
 	ArenaTeam * team;
 	recv_data >> teamId;
 	team = objmgr.GetArenaTeamById(teamId);
 	if(team)
 	{
-		slot = TeamCountToId[team->m_type];
+		//slot = TeamCountToId[team->m_type];
 		WorldPacket data(1000);
 		team->Roster(data);
 		SendPacket(&data);

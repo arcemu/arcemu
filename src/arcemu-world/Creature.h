@@ -75,7 +75,7 @@ struct CreatureInfo
 
 	std::string lowercase_name;
 	GossipScript * gossip_script;
-	uint32 GenerateModelId(uint32 * des)
+	uint8 GenerateModelId(uint32 * des)
 	{
 		uint32 models[] = { Male_DisplayID, Male_DisplayID2, Female_DisplayID, Female_DisplayID2 };
 		if(!models[0] && !models[1] && !models[2] && !models[3])

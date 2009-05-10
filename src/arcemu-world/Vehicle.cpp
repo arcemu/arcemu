@@ -366,7 +366,7 @@ bool ChatHandler::HandleVehicleSpawn(const char * args, WorldSession * m_session
 
 	CreatureSpawn * sp = new CreatureSpawn;
 	//sp->displayid = info->DisplayID;
-	gender = (uint8)info->GenerateModelId(&sp->displayid);
+	gender = info->GenerateModelId(&sp->displayid);
  	sp->entry = entry; 
 	sp->entry = entry;
 	sp->form = 0;

@@ -1386,7 +1386,7 @@ void Creature::Load(CreatureProto * proto_, float x, float y, float z, float o)
 	SetUInt32Value(UNIT_FIELD_BASE_MANA,proto->Mana);
 
 	uint32 model = 0;
-	uint32 gender = creature_info->GenerateModelId(&model);
+	uint8 gender = creature_info->GenerateModelId(&model);
 	setGender(gender);
 
 	SetUInt32Value(UNIT_FIELD_DISPLAYID,model);

@@ -130,7 +130,7 @@ Creature* MapScriptInterface::SpawnCreature(uint32 Entry, float cX, float cY, fl
 	CreatureSpawn * sp = new CreatureSpawn;
 	sp->entry = Entry;
 	uint32 DisplayID = 0;
-	uint32 Gender = info->GenerateModelId(&DisplayID);
+	uint8 Gender = info->GenerateModelId(&DisplayID);
 	sp->displayid = DisplayID;
 	sp->form = 0;
 	sp->id = 0;
@@ -147,7 +147,7 @@ Creature* MapScriptInterface::SpawnCreature(uint32 Entry, float cX, float cY, fl
 	sp->bytes2 = 0;
 	//sp->respawnNpcLink = 0;
 	sp->stand_state = 0;
-	sp->channel_spell=sp->channel_target_creature=sp->channel_target_go=0;
+	sp->channel_target_creature = sp->channel_target_go = sp->channel_spell = 0;
 	sp->MountedDisplayID = 0;
 	sp->Item1SlotDisplay = 0;
 	sp->Item2SlotDisplay = 0;
@@ -177,7 +177,7 @@ Creature * MapScriptInterface::SpawnCreature(CreatureSpawn * sp, bool AddToWorld
 		return 0;
 	}
 
-	uint32 Gender = info->GenerateModelId(&sp->displayid);
+	uint8 Gender = info->GenerateModelId(&sp->displayid);
 	Creature * p = this->mapMgr.CreateCreature(sp->entry);
 	ASSERT(p);
 	p->Load(sp, (uint32)NULL, NULL);
