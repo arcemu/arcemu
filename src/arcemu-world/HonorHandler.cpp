@@ -106,9 +106,6 @@ int32 HonorHandler::CalculateHonorPointsForKill( Player *pPlayer, Unit* pVictim 
 
 void HonorHandler::OnPlayerKilledUnit( Player *pPlayer, Unit* pVictim )
 {
-	int PvPToken = 0;
-	int PvPTokenID = 0;
-	Item *PvPTokenItem;
 	if( pVictim == NULL || pPlayer == NULL )
 		return;
 
@@ -241,16 +238,20 @@ void HonorHandler::OnPlayerKilledUnit( Player *pPlayer, Unit* pVictim )
 					data << pvppoints << pVictim->GetGUID() << uint32(static_cast< Player* >(pVictim)->GetPVPRank());
 					pAffectedPlayer->GetSession()->SendPacket(&data);
 				}
-				
-				Config.OptionalConfig.GetInt("Extra","PvPToken",&PvPToken);
-				if( PvPToken )
+				int PvPToken = 0;
+				Config.OptionalConfig.GetInt("Extra", "PvPToken", &PvPToken);
+				if( PvPToken > 0 )
 				{
-					Config.OptionalConfig.GetInt("Extra","PvPTokenID",&PvPTokenID);
-					PvPTokenItem = objmgr.CreateItem(PvPTokenID,pAffectedPlayer);
-					if( PvPTokenItem )
+					int PvPTokenID = 0;
+					Config.OptionalConfig.GetInt("Extra", "PvPTokenID", &PvPTokenID);
+					if( PvPTokenID > 0 ) 
 					{
-						PvPTokenItem->SoulBind();
-						pAffectedPlayer->GetItemInterface()->AddItemToFreeSlot( PvPTokenItem );
+						Item * PvPTokenItem = objmgr.CreateItem(PvPTokenID, pAffectedPlayer);
+						if( PvPTokenItem )
+						{
+							PvPTokenItem->SoulBind();
+							pAffectedPlayer->GetItemInterface()->AddItemToFreeSlot( PvPTokenItem );
+						}
 					}
 				}
 				if(pAffectedPlayer->GetZoneId() == 3518)
