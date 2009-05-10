@@ -916,6 +916,9 @@ bool ChatHandler::HandleDebugDumpCoordsCommmand(const char * args, WorldSession 
 
 //As requested by WaRxHeAd for database development.
 //This should really only be available in special cases and NEVER on real servers... -DGM
+
+//#define _ONLY_FOOLS_TRY_THIS_
+
 bool ChatHandler::HandleSQLQueryCommand(const char* args, WorldSession *m_session)
 {
 	#ifdef _ONLY_FOOLS_TRY_THIS_
@@ -925,7 +928,49 @@ bool ChatHandler::HandleSQLQueryCommand(const char* args, WorldSession *m_sessio
 		return false;
 	}
 	
-	bool isok = WorldDatabase.Execute(args);
+	bool isok = false;
+	//SQL query lenght is seems to be limited to 16384 characters, thus the check
+	if(strlen(args) > 16384)
+	{
+		RedSystemMessage(m_session, "Query is longer than 16384 chars!");
+		//Now let the user now what are we talking about
+		GreenSystemMessage(m_session, args);
+	}
+	else
+	{
+		//First send back what we got. Feedback to the user of the command.
+		GreenSystemMessage(m_session, args);
+			//Sending the query, but this time geting the result back
+			QueryResult * qResult = WorldDatabase.Query(args);
+			if(qResult != NULL)
+			{
+				Field *field;
+				//Creating the line (instancing)
+				std::string line ="";
+				do 
+				{
+					field = qResult->Fetch();
+					for(uint32 i=0;i<(qResult->GetFieldCount());i++)
+					{
+						//Constructing the line
+						line+= field[i].GetString();
+					}
+					//Sending the line as ingame message
+					BlueSystemMessage(m_session,line.data());
+					//Clear the line
+					line.clear();
+				} while(qResult->NextRow());
+				delete field;
+			}
+			else
+			{
+				RedSystemMessage(m_session, "Invalid query, or the Databse might be busy.");
+				isok = false;
+			}
+			//delete qResult anyway, not to cause some leak!
+			delete qResult;
+			isok = true;
+	}
 
 	if(isok)
 		GreenSystemMessage(m_session, "Query was executed successfully.");
@@ -936,8 +981,6 @@ bool ChatHandler::HandleSQLQueryCommand(const char* args, WorldSession *m_sessio
 
 	return true;
 }
-
-//#define _ONLY_FOOLS_TRY_THIS_
 
 bool ChatHandler::HandleSendpacket(const char * args, WorldSession * m_session)
 {
