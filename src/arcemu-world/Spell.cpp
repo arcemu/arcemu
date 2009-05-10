@@ -2683,48 +2683,30 @@ bool Spell::HasPower()
 
 	switch(GetProto()->powerType)
 	{
-	case POWER_TYPE_HEALTH:
-		{
-			powerField = UNIT_FIELD_HEALTH;
-		} break;
-	case POWER_TYPE_MANA:
-		{
-			powerField = UNIT_FIELD_POWER1;
-			m_usesMana = true;
-		} break;
-	case POWER_TYPE_RAGE:
-		{
-			powerField = UNIT_FIELD_POWER2;
-		} break;
-	case POWER_TYPE_FOCUS:
-		{
-			powerField = UNIT_FIELD_POWER3;
-		}	break;
-	case POWER_TYPE_ENERGY:
-		{
-			powerField = UNIT_FIELD_POWER4;
-		} break;
-	case POWER_TYPE_RUNES:
-		{
-			if(GetProto()->RuneCostID && p_caster)
+		case POWER_TYPE_HEALTH:		{	powerField = UNIT_FIELD_HEALTH;						} break;
+		case POWER_TYPE_MANA:		{	powerField = UNIT_FIELD_POWER1;	m_usesMana = true;	} break;
+		case POWER_TYPE_RAGE:		{	powerField = UNIT_FIELD_POWER2;						} break;
+		case POWER_TYPE_FOCUS:		{	powerField = UNIT_FIELD_POWER3;						} break;
+		case POWER_TYPE_ENERGY:		{	powerField = UNIT_FIELD_POWER4;						} break;
+		case POWER_TYPE_HAPPINESS:	{	powerField = UNIT_FIELD_POWER5;						} break;
+		case POWER_TYPE_RUNIC_POWER:{	powerField = UNIT_FIELD_POWER7;						} break;
+		case POWER_TYPE_RUNES:
 			{
-				SpellRuneCostEntry * runecost = dbcSpellRuneCost.LookupEntry(GetProto()->RuneCostID);
-				uint32 credit = p_caster->HasRunes(RUNE_BLOOD, runecost->bloodRuneCost) +
-					p_caster->HasRunes(RUNE_FROST, runecost->frostRuneCost) +
-					p_caster->HasRunes(RUNE_UNHOLY, runecost->unholyRuneCost);
-				if(credit > 0 && p_caster->HasRunes(3, credit) > 0)
-					return false;
+				if(GetProto()->RuneCostID && p_caster)
+				{
+					SpellRuneCostEntry * runecost = dbcSpellRuneCost.LookupEntry(GetProto()->RuneCostID);
+					uint32 credit = p_caster->HasRunes(RUNE_BLOOD, runecost->bloodRuneCost) +
+						p_caster->HasRunes(RUNE_FROST, runecost->frostRuneCost) +
+						p_caster->HasRunes(RUNE_UNHOLY, runecost->unholyRuneCost);
+					if(credit > 0 && p_caster->HasRunes(3, credit) > 0)
+						return false;
+				}
+				return true;
 			}
-			return true;
-		}
-	case POWER_TYPE_RUNIC_POWER:
-		{
-			powerField = UNIT_FIELD_POWER7; //Runic Power
-		} break;
-	default:
+		default:
 		{
 			sLog.outDebug("unknown power type");
-			// we should'nt be here to return
+			// we shouldn't be here to return
 			return false;
 		} break;
 	}
@@ -2821,25 +2803,13 @@ bool Spell::TakePower()
 
 	switch(GetProto()->powerType)
 	{
-		case POWER_TYPE_HEALTH:{
-			powerField = UNIT_FIELD_HEALTH;
-							   }break;
-		case POWER_TYPE_MANA:{
-			powerField = UNIT_FIELD_POWER1;
-			m_usesMana=true;
-							 }break;
-		case POWER_TYPE_RAGE:{
-			powerField = UNIT_FIELD_POWER2;
-							 }break;
-		case POWER_TYPE_FOCUS:{
-			powerField = UNIT_FIELD_POWER3;
-							  }break;
-		case POWER_TYPE_ENERGY:{
-			powerField = UNIT_FIELD_POWER4;
-							  }break;
-		case POWER_TYPE_HAPPINESS:{
-			powerField = UNIT_FIELD_POWER5;
-							   }break;
+		case POWER_TYPE_HEALTH:		{	powerField = UNIT_FIELD_HEALTH;						} break;
+		case POWER_TYPE_MANA:		{	powerField = UNIT_FIELD_POWER1;	m_usesMana = true;	} break;
+		case POWER_TYPE_RAGE:		{	powerField = UNIT_FIELD_POWER2;						} break;
+		case POWER_TYPE_FOCUS:		{	powerField = UNIT_FIELD_POWER3;						} break;
+		case POWER_TYPE_ENERGY:		{	powerField = UNIT_FIELD_POWER4;						} break;
+		case POWER_TYPE_HAPPINESS:	{	powerField = UNIT_FIELD_POWER5;						} break;
+		case POWER_TYPE_RUNIC_POWER:{	powerField = UNIT_FIELD_POWER7;						} break;
 		case POWER_TYPE_RUNES:
 			{
 				if(GetProto()->RuneCostID && p_caster)
@@ -2855,14 +2825,12 @@ bool Spell::TakePower()
 				}
 				return true;
 			}
-		case POWER_TYPE_RUNIC_POWER:{
-			powerField = UNIT_FIELD_POWER7; //Runic Power
-							  }break;
-		default:{
-			sLog.outDebug("unknown power type");
-			// we should'nt be here to return
-			return false;
-				}break;
+		default:
+			{
+				sLog.outDebug("unknown power type");
+				// we shouldn't be here to return
+				return false;
+			}break;
 	}
 
 	//FIXME: add handler for UNIT_FIELD_POWER_COST_MODIFIER
