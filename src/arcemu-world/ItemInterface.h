@@ -88,6 +88,7 @@ public:
 	uint32 GetItemCount(uint32 itemid, bool IncBank = false);
 	uint32 RemoveItemAmt(uint32 id, uint32 amt);
 	uint32 RemoveItemAmt_ProtectPointer(uint32 id, uint32 amt, Item** pointer);
+	uint32 RemoveItemAmtByGuid(uint64 guid, uint32 amt);
 	void RemoveAllConjured();
 	void BuyItem(ItemPrototype *item, uint32 total_amount, Creature * pVendor);
 

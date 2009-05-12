@@ -592,11 +592,12 @@ void WorldSession::HandleLootReleaseOpcode( WorldPacket & recv_data )
 			plr->RemoveFlag(UNIT_DYNAMIC_FLAGS, U_DYN_FLAG_LOOTABLE);
 		}
 	}
-	else if (GUID_HIPART(guid))
+	else if( GET_TYPE_FROM_GUID( guid ) == HIGHGUID_TYPE_ITEM ) // Loot from items, eg. sacks, milling, prospecting...
 	{
-		// suicide!
-		_player->GetItemInterface()->SafeFullRemoveItemByGuid(guid);
+		_player->GetItemInterface()->RemoveItemAmtByGuid( guid, 5 );
 	}
+	else
+		sLog.outDebug("Unhandled loot source object type in HandleLootReleaseOpcode");
 }
 
 void WorldSession::HandleWhoOpcode( WorldPacket & recv_data )
