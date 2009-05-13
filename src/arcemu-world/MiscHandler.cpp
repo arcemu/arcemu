@@ -594,6 +594,18 @@ void WorldSession::HandleLootReleaseOpcode( WorldPacket & recv_data )
 	}
 	else if( GET_TYPE_FROM_GUID( guid ) == HIGHGUID_TYPE_ITEM ) // Loot from items, eg. sacks, milling, prospecting...
 	{
+		Item * item = _player->GetItemInterface()->GetItemByGUID( guid );
+		if( item == NULL )
+			return;
+		
+		// delete current loot, so the next one can be filled
+		if( item->loot != NULL )
+		{
+			delete item->loot;
+			item->loot = NULL;
+		}
+
+		// remove loot source items
 		_player->GetItemInterface()->RemoveItemAmtByGuid( guid, 5 );
 	}
 	else
