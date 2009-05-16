@@ -166,7 +166,7 @@ struct Quest
 	uint32 required_item[4];
 	uint32 required_itemcount[4];
 
-	uint32 required_mob[4];
+	int32 required_mob[4]; //positive is NPC, negative is GO
 	uint32 required_mobcount[4];
 	uint32 required_spell[4];
 	uint32 required_emote[4];

@@ -1823,41 +1823,32 @@ void QuestMgr::LoadExtraQuestStuff()
 
 		for(int i = 0 ; i < 4; ++i)
 		{
-			if(qst->required_mob[i])
+			if( qst->required_mob[i] != 0 )
 			{
-				GameObjectInfo *go_info = GameObjectNameStorage.LookupEntry(qst->required_mob[i]);
-				CreatureInfo   *c_info  = CreatureNameStorage.LookupEntry(qst->required_mob[i]);
-				switch(qst->id)
+				if( qst->required_mob[i] < 0 )
 				{
-					// the following quests need a creature killed whose id is the same as a valid gameobject (goober)
-					case 421:
-					case 784:
-					case 9573:
-					case 11619:
+					GameObjectInfo *go_info = GameObjectNameStorage.LookupEntry(qst->required_mob[i]*-1);
+					if( go_info )
+					{
+						qst->required_mobtype[i] = QUEST_MOB_TYPE_GAMEOBJECT;
+						qst->required_mob[i] *= -1;
+					}
+					else
+					{
+						// if quest has neither valid gameobject, log it.
+						sLog.outDebug("Quest %lu has required_mobtype[%d]==%lu, it's not a valid GameObject.", qst->id, i, qst->required_mob[i]);
+					}
+				}
+				else
+				{
+					CreatureInfo   *c_info  = CreatureNameStorage.LookupEntry(qst->required_mob[i]);
+					if( c_info)
 						qst->required_mobtype[i] = QUEST_MOB_TYPE_CREATURE;
-						break;
-					default:
-						if( go_info && ( go_info->Type == GAMEOBJECT_TYPE_GOOBER || !c_info ) )
-						{
-							qst->required_mobtype[i] = QUEST_MOB_TYPE_GAMEOBJECT;
-
-							// if quest has both valid gameobject and creature, log it (case may need to be added in switch statement above)
-							if( c_info )
-							{
-								sLog.outDebug("Quest %lu has required_mobtype[%d]==%lu, a valid GameObject and Creature.", qst->id, i, qst->required_mob[i]);
-							}
-						}
-						else
-						{
-							qst->required_mobtype[i] = QUEST_MOB_TYPE_CREATURE;
-
-							// if quest has neither valid gameobject nor creature, log it
-							if( !go_info && !c_info )
-							{
-								sLog.outDebug("Quest %lu has required_mobtype[%d]==%lu, not a valid GameObject nor Creature.", qst->id, i, qst->required_mob[i]);
-							}
-						}
-						break;
+					else
+					{
+						// if quest has neither valid creature, log it.
+						sLog.outDebug("Quest %lu has required_mobtype[%d]==%lu, it's not a valid Creature.", qst->id, i, qst->required_mob[i]);
+					}
 				}
 
 				qst->count_required_mob++;
