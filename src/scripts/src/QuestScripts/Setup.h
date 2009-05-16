@@ -35,5 +35,10 @@ void SetupMage(ScriptMgr *mgr);
 void SetupBarrens(ScriptMgr *mgr);
 void SetupUnGoro(ScriptMgr * mgr);
 void SetupIsleOfQuelDanas(ScriptMgr *mgr);
+void SetupGhostlands(ScriptMgr *mgr);
+void SetupEversongWoods(ScriptMgr *mgr);
+void SetupThousandNeedles(ScriptMgr *mgr);
+void SetupSkettis(ScriptMgr *mgr);
+void SetupOrgrimmar(ScriptMgr *mgr);
 
 #endif

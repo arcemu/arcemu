@@ -447,6 +447,14 @@
 				>
 			</File>
 			<File
+				RelativePath="..\src\QuestScripts\Eversong_Woods.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\src\QuestScripts\Ghostlands.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\src\QuestScripts\Hellfire_Peninsula.cpp"
 				>
 			</File>
@@ -463,6 +471,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\src\QuestScripts\Orgrimmar.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\src\QuestScripts\Paladin.cpp"
 				>
 			</File>
@@ -475,11 +487,19 @@
 				>
 			</File>
 			<File
+				RelativePath="..\src\QuestScripts\Skettis.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\src\QuestScripts\Terrokar_Forest.cpp"
 				>
 			</File>
 			<File
 				RelativePath="..\src\QuestScripts\The_Barrens.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\src\QuestScripts\Thousand_Needles.cpp"
 				>
 			</File>
 			<File

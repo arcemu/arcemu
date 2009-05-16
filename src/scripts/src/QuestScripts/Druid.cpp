@@ -195,6 +195,125 @@ bool SwiftForm(uint32 i, Spell* pSpell)
   	return true;
 }
 
+// Moonglade 5921
+class SCRIPT_DECL MoongladeAlliance : public QuestScript
+{
+public:
+  void OnQuestStart(Player* pPlayer, QuestLogEntry *qLogEntry)
+  {
+    if(pPlayer == NULL || pPlayer->GetMapMgr() == NULL || pPlayer->GetMapMgr()->GetSqlIdCreature(374077) == NULL)
+        return;
+    Creature *Mathrengyl = pPlayer->GetMapMgr()->GetSqlIdCreature(374077);
+    if(pPlayer->HasSpell(18960))
+        return;
+    Mathrengyl->CastSpell(pPlayer,19027,false);
+  }
+};
+// Moonglade 5922
+class SCRIPT_DECL MoongladeHorde : public QuestScript
+{
+public:
+  void OnQuestStart(Player* pPlayer, QuestLogEntry *qLogEntry)
+  {
+    if(pPlayer == NULL || pPlayer->GetMapMgr() == NULL || pPlayer->GetMapMgr()->GetSqlIdCreature(380411) == NULL)
+        return;
+    Creature *Turak = pPlayer->GetMapMgr()->GetSqlIdCreature(380411);
+    if(pPlayer->HasSpell(18960))
+        return;
+    Turak->CastSpell(pPlayer,19027,false);
+  }
+};
+// Great Bear Spirit Quest 5929Alliance and 5930Horde
+class SCRIPT_DECL GreatBearSpirit : public GossipScript
+{
+public:
+        void GossipHello(Object* pObject, Player* pPlayer, bool AutoSend)
+        {
+        if(!pPlayer)
+            return;
+        GossipMenu *Menu;
+        Creature *GreatBearSpirit = (Creature*)(pObject);
+        if (GreatBearSpirit == NULL)
+            return;
+            QuestLogEntry *en1 = pPlayer->GetQuestLogForEntry(5929);
+            QuestLogEntry *en2 = pPlayer->GetQuestLogForEntry(5930);
+        if(en1 && en1->GetExploredAreas(0)==0 || en2 && en2->GetExploredAreas(0)==0)
+        {
+            objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 4719, pPlayer);
+            Menu->AddItem( 0, "What do you represent, spirit?", 1);
+        }
+        else
+        {
+            objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 4718, pPlayer);
+        }
+        if(AutoSend)
+            Menu->SendTo(pPlayer);
+        }
+        void GossipSelectOption(Object* pObject, Player* pPlayer, uint32 Id, uint32 IntId, const char * EnteredCode)
+        {
+        if(!pPlayer)
+            return;
+        Creature *GreatBearSpirit = (Creature*)(pObject);
+        if (GreatBearSpirit == NULL)
+            return;
+        GossipMenu *Menu;
+        QuestLogEntry *en1 = pPlayer->GetQuestLogForEntry(5929);
+        QuestLogEntry *en2 = pPlayer->GetQuestLogForEntry(5930);
+        switch (IntId)
+        {
+            case 0:
+                GossipHello(pObject, pPlayer, true);
+                break;
+            case 1:
+            {
+            objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 4721, pPlayer);
+            Menu->AddItem( 0, "I seek to understand the importance of strength of the body.", 2);
+            Menu->SendTo(pPlayer);
+                return;
+            }break;
+            case 2:
+            {
+            objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 4733, pPlayer);
+            Menu->AddItem( 0, "I seek to understand the importance of strength of the heart.", 3);
+            Menu->SendTo(pPlayer);
+                return;
+            }break;
+            case 3:
+            {
+            objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 4734, pPlayer);
+            Menu->AddItem( 0, "I have heard your words, Great Bear Spirit, and I understand. I now seek your blessings to fully learn the way of the Claw.", 4);
+            Menu->SendTo(pPlayer);
+                return;
+            }break;
+            case 4:
+            {
+            if(en1 && en1->GetExploredAreas(0)==0)
+            {
+                en1->SetTrigger(0);
+                en1->UpdatePlayerFields();
+                en1->SendQuestComplete();
+                objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 4735, pPlayer);
+                Menu->SendTo(pPlayer);
+                return;
+            }
+            if (en2 && en2->GetExploredAreas(0)==0)
+            {
+                en2->SetTrigger(0);
+                en2->UpdatePlayerFields();
+                en2->SendQuestComplete();
+                objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 4735, pPlayer);
+                Menu->SendTo(pPlayer);
+                return;
+            }
+            }break;
+        }
+        }
+        void Destroy()
+        {
+            delete this;
+        }
+};
+
 
 void SetupDruid(ScriptMgr * mgr)
 {
@@ -206,4 +325,8 @@ void SetupDruid(ScriptMgr * mgr)
   mgr->register_dummy_spell(18974, &CenarionArcScriptdust);
   mgr->register_dummy_spell(19512, &CurativeAnimalSalve);
   mgr->register_dummy_spell(40098, &SwiftForm);
+  mgr->register_quest_script(5921, CREATE_QUESTSCRIPT(MoongladeAlliance));
+    mgr->register_quest_script(5922, CREATE_QUESTSCRIPT(MoongladeHorde));
+    GossipScript * GreatBearSpiritGossip = (GossipScript*) new GreatBearSpirit();
+    mgr->register_gossip_script(11956, GreatBearSpiritGossip);
 }

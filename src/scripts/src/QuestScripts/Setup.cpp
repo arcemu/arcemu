@@ -44,6 +44,10 @@ extern "C" SCRIPT_DECL void _exp_script_register(ScriptMgr* mgr)
 	SetupMage(mgr);
 	SetupBarrens(mgr);
 	SetupIsleOfQuelDanas(mgr);
+	SetupGhostlands(mgr);
+	SetupEversongWoods(mgr);
+	SetupThousandNeedles(mgr);
+	SetupOrgrimmar(mgr);
 }
 
 #ifdef WIN32
