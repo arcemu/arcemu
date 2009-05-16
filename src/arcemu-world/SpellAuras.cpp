@@ -5435,6 +5435,8 @@ void Aura::SpellAuraTransform(bool apply)
 		case 28272:	 // Polymorph: Pig
 		case 61025:  // Polymorph: Serpent
 		case 61305:  // Polymorph: Black Cat
+		case 61721:  // Polymorph: Rabbit
+		case 61780:  // Polymorph: Turkey
 			{
 				if(!displayId)
 				{
