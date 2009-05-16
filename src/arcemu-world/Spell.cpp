@@ -3178,11 +3178,9 @@ bool Spell::IsAspect()
 bool Spell::IsSeal()
 {
 	return (
-		(GetProto()->Id == 13903) || (GetProto()->Id == 17177) || (GetProto()->Id == 20154) || (GetProto()->Id == 20162) || (GetProto()->Id == 20164) || (GetProto()->Id == 20165) ||
-		(GetProto()->Id == 20166) || (GetProto()->Id == 20287) || (GetProto()->Id == 20288) || (GetProto()->Id == 20289) || (GetProto()->Id == 20290) || (GetProto()->Id == 20291) ||
-		(GetProto()->Id == 20292) || (GetProto()->Id == 20293) || (GetProto()->Id == 20305) || (GetProto()->Id == 20306) || (GetProto()->Id == 20307) || (GetProto()->Id == 20308) ||
-		(GetProto()->Id == 20347) || (GetProto()->Id == 20348) || (GetProto()->Id == 20349) || (GetProto()->Id == 20356) || (GetProto()->Id == 20357) || (GetProto()->Id == 20375) ||
-		(GetProto()->Id == 20915) || (GetProto()->Id == 20918) || (GetProto()->Id == 20919) || (GetProto()->Id == 20920) || (GetProto()->Id == 21082) || (GetProto()->Id == 21084));
+		(GetProto()->Id == 13903) || (GetProto()->Id == 17177) || (GetProto()->Id == 20154) || (GetProto()->Id == 20164) ||
+		(GetProto()->Id == 20165) || (GetProto()->Id == 20166) || (GetProto()->Id == 20375) || (GetProto()->Id == 21084) ||
+		(GetProto()->Id == 31801) || (GetProto()->Id == 31892) || (GetProto()->Id == 53720) || (GetProto()->Id == 53736));
 }
 
 uint8 Spell::CanCast(bool tolerate)
