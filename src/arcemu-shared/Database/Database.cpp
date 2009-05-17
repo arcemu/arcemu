@@ -64,7 +64,7 @@ DatabaseConnection * Database::GetFreeConnection()
 	return NULL;
 }
 
-
+// Use this when we request data that can return a value (not async)
 QueryResult * Database::Query(const char* QueryString, ...)
 {	
 	char sql[16384];
@@ -168,7 +168,7 @@ void Database::PerformQueryBuffer(QueryBuffer * b, DatabaseConnection * ccon)
 	if( ccon == NULL )
 		con->Busy.Release();
 }
-
+// Use this when we do not have a result. ex: INSERT into SQL 1 
 bool Database::Execute(const char* QueryString, ...)
 {
 	char query[16384];
@@ -202,7 +202,7 @@ bool Database::ExecuteNA(const char* QueryString)
 	return true;
 }
 
-//this will wait for completion
+// Wait till the other queries are done, then execute
 bool Database::WaitExecute(const char* QueryString, ...)
 {
 	char sql[16384];

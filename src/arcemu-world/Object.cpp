@@ -383,7 +383,8 @@ uint32 Object::BuildValuesUpdateBlockForPlayer(ByteBuffer *data, Player *target)
 uint32 Object::BuildValuesUpdateBlockForPlayer(ByteBuffer * buf, UpdateMask * mask )
 {
 	// returns: update count
-	*buf << (uint8) UPDATETYPE_VALUES;		// update type == update
+	// update type == update
+	*buf << (uint8) UPDATETYPE_VALUES;		
 
 	ASSERT(m_wowGuid.GetNewGuidLen());
 	*buf << m_wowGuid;
@@ -394,9 +395,11 @@ uint32 Object::BuildValuesUpdateBlockForPlayer(ByteBuffer * buf, UpdateMask * ma
 	return 1;
 }
 
-void Object::DestroyForPlayer(Player *target) const
+void Object::DestroyForPlayer(Player * target) const
 {
-	if(target->GetSession() == 0) return;
+	// If the target doesn't exist, return. If the target exists, but it session is null return
+	 if( target == NULL || target->GetSession() == NULL )
+		return;
 
 	ASSERT(target);
 

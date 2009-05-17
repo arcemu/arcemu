@@ -611,7 +611,7 @@ ARCEMU_INLINE void ApplyFloatPSM(float ** m,int32 v,uint32 mask, float def)
 	}
 }*/
 
-Unit* Aura::GetUnitCaster()
+Unit * Aura::GetUnitCaster()
 {
 	if( !m_target )
 		return NULL;
@@ -3854,10 +3854,11 @@ void Aura::SpellAuraPeriodicTriggerSpell(bool apply)
 void Aura::EventPeriodicTriggerSpell(SpellEntry* spellInfo)
 {
 	// Trigger Spell
-	// check for spell id
+	// check for spell id	
 
-	Unit *m_caster=GetUnitCaster();
-	if(!m_caster || !m_caster->IsInWorld())
+	Unit * m_caster = GetUnitCaster();
+	// Notes: The caster seems to not exist thus it's guid doesn't exist :S - http://arcemu.org/forums/index.php?showtopic=15789
+	if(!m_caster || !m_caster->IsInWorld() )
 		return;
 
 	if( spellInfo->EffectImplicitTargetA[0] == 18 )			// Hellfire, if there are any others insert here
