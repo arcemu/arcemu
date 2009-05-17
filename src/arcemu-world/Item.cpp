@@ -582,7 +582,7 @@ void Item::RemoveFromWorld()
 void Item::SetOwner( Player* owner )
 { 
 	if( owner != NULL )
-		SetUInt64Value( ITEM_FIELD_OWNER, static_cast< Object* >( owner )->GetGUID() );
+		SetUInt64Value( ITEM_FIELD_OWNER, owner->GetGUID() );
 	else SetUInt64Value( ITEM_FIELD_OWNER, 0 );
 
 	m_owner = owner; 
@@ -858,7 +858,7 @@ void Item::ApplyEnchantmentBonus( uint32 Slot, bool Apply )
 					else
 					{
 						if( Entry->spell[c] != 0 )
-								m_owner->RemoveAura( Entry->spell[c] );
+							m_owner->RemoveAura( Entry->spell[c] );
 					}
 
 				}break;

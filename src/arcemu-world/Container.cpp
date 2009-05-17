@@ -168,8 +168,7 @@ bool Container::AddItem(int8 slot, Item *item)
 		uint32 count = item->BuildCreateUpdateBlockForPlayer(&buf, m_owner);
 		m_owner->PushCreationData(&buf, count);
 	}
-	if(m_owner->IsPlayer())
-		((Player*)m_owner)->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_OWN_ITEM, item->GetProto()->ItemId, item->GetUInt32Value(ITEM_FIELD_STACK_COUNT), 0);
+	m_owner->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_OWN_ITEM, item->GetProto()->ItemId, item->GetUInt32Value(ITEM_FIELD_STACK_COUNT), 0);
 	return true;
 }
 
@@ -310,8 +309,7 @@ bool Container::AddItemToFreeSlot(Item *pItem, uint32 * r_slot)
 			}
 			if(r_slot)
 				*r_slot = slot;
-			if(m_owner->IsPlayer())
-				((Player*)m_owner)->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_OWN_ITEM, pItem->GetProto()->ItemId, pItem->GetUInt32Value(ITEM_FIELD_STACK_COUNT), 0);
+			m_owner->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_OWN_ITEM, pItem->GetProto()->ItemId, pItem->GetUInt32Value(ITEM_FIELD_STACK_COUNT), 0);
 			return true;
 		}
 	}
