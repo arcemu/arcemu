@@ -473,7 +473,7 @@ void WorldSession::HandleCharCreateOpcode( WorldPacket & recv_data )
 void WorldSession::HandleCharDeleteOpcode( WorldPacket & recv_data )
 {
 	CHECK_PACKET_SIZE(recv_data, 8);
-	uint8 fail = 0x3E;
+	uint8 fail = E_CHAR_DELETE_SUCCESS;
 
 	uint64 guid;
 	recv_data >> guid;
@@ -481,7 +481,7 @@ void WorldSession::HandleCharDeleteOpcode( WorldPacket & recv_data )
 	if(objmgr.GetPlayer((uint32)guid) != NULL)
 	{
 		// "Char deletion failed"
-		fail = 0x3F;
+		fail = E_CHAR_DELETE_FAILED;
 	}
 	else
 	{
@@ -497,18 +497,18 @@ uint8 WorldSession::DeleteCharacter(uint32 guid)
 	{
 			QueryResult * result = CharacterDatabase.Query("SELECT name FROM characters WHERE guid = %u AND acct = %u", (uint32)guid, _accountId);
 			if(!result)
-				return 0x3F;
+				return E_CHAR_DELETE_FAILED;
+
+			string name = result->Fetch()[0].GetString();
+			delete result;
 
 			if(inf->guild)
 			{
 				if(inf->guild->GetGuildLeader()==inf->guid)
-					return 0x41;
+					return E_CHAR_DELETE_FAILED_GUILD_LEADER;
 				else
 					inf->guild->RemoveGuildMember(inf,NULL);
 			}
-
-			string name = result->Fetch()[0].GetString();
-			delete result;
 
 			for(int i = 0; i < NUM_CHARTER_TYPES; ++i)
 			{
@@ -522,7 +522,7 @@ uint8 WorldSession::DeleteCharacter(uint32 guid)
 			{
 				ArenaTeam * t = objmgr.GetArenaTeamByGuid((uint32)guid, i);
 				if(t != NULL && t->m_leader == guid)
-					return 0x42;
+					return E_CHAR_DELETE_FAILED_ARENA_CAPTAIN;
 				if(t !=NULL)
 					t->RemoveMember(inf);
 			}
@@ -553,12 +553,9 @@ uint8 WorldSession::DeleteCharacter(uint32 guid)
 
 			/* remove player info */
 			objmgr.DeletePlayerInfo((uint32)guid);
-			return 0x3E;
+			return E_CHAR_DELETE_SUCCESS;
 	}
-	else
-		return 0x3F;
-
-	return 0x3F;
+	return E_CHAR_DELETE_FAILED;
 }
 
 void WorldSession::HandleCharRenameOpcode(WorldPacket & recv_data)
