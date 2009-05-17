@@ -3876,6 +3876,10 @@ uint8 Spell::CanCast(bool tolerate)
 					return SPELL_FAILED_OUT_OF_RANGE;
 			}
 
+			/* Target OOC check */
+			if( hasAttributeEx( ATTRIBUTESEX_REQ_OOC_TARGET ) && target->CombatStatus.IsInCombat() )
+				return SPELL_FAILED_TARGET_IN_COMBAT;
+
 			if( p_caster != NULL )
 			{
 				if( GetProto()->Id == SPELL_RANGED_THROW)

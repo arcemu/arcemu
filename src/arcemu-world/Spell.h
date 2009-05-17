@@ -465,7 +465,7 @@ enum AttributesEx
 	ATTRIBUTESEX_NOT_BREAK_STEALTH            = 0x20, // 6
 	ATTRIBUTESEX_UNK8						  = 0x40, // 7 [POSSIBLY: dynamite, grenades from engineering etc..]
 	ATTRIBUTESEX_UNK9						  = 0x80,
-	ATTRIBUTESEX_UNK10                        = 0x100,
+	ATTRIBUTESEX_REQ_OOC_TARGET               = 0x100,
 	ATTRIBUTESEX_UNK11                        = 0x200,
 	ATTRIBUTESEX_UNK12                        = 0x400,
 	ATTRIBUTESEX_UNK13                        = 0x800,
