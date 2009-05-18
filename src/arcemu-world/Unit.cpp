@@ -566,6 +566,11 @@ Unit::~Unit()
 		delete m_damageSplitTarget;
 		m_damageSplitTarget = NULL;
 	}
+	
+	// reflects not created by auras need to be deleted manually
+	for( std::list<struct ReflectSpellSchool*>::iterator i = m_reflectSpellSchool.begin(); i != m_reflectSpellSchool.end(); i++ )
+		delete *i;
+	m_reflectSpellSchool.clear();
 }
 
 void Unit::Update( uint32 p_time )
@@ -7591,6 +7596,23 @@ uint32 Unit::DoDamageSplitTarget(uint32 res, uint32 school_type, bool melee_dmg)
 	}
 
 	return res;
+}
+
+void Unit::RemoveReflect( uint32 spellid )
+{
+	/** 
+	* Removes and deletes reflects from unit by spell id, does not remove aura which created it
+	* In specific cases reflects can be created by a dummy spelleffect (eg. spell 28332 or 13043), then we need to remove it in ~unit
+	*/
+	for( std::list<struct ReflectSpellSchool*>::iterator i = m_reflectSpellSchool.begin(); i != m_reflectSpellSchool.end(); )
+		if( spellid == (*i)->spellId )
+		{
+			delete *i;
+			i = m_reflectSpellSchool.erase( i );
+			//break; better check all list elements
+		}
+		else
+			++i;
 }
 
 void Unit::SetPower(uint32 type, int32 value)

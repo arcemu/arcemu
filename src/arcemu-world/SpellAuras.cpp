@@ -4065,41 +4065,22 @@ void Aura::SpellAuraModSilence(bool apply)
 
 void Aura::SpellAuraReflectSpells(bool apply)
 {
-	if(apply)
+	m_target->RemoveReflect( GetSpellId() );
+
+	if( apply )
 	{
 		SpellEntry *sp = dbcSpell.LookupEntry(GetSpellId());
-		if (sp == NULL) return;
+		if (sp == NULL)
+			return;
 
-		for(std::list<struct ReflectSpellSchool*>::iterator i = m_target->m_reflectSpellSchool.begin();i != m_target->m_reflectSpellSchool.end();)
-		{
-			if(GetSpellId() == (*i)->spellId)
-			{
-				i = m_target->m_reflectSpellSchool.erase(i);
-			}
-			else
-				++i;
-		}
 		ReflectSpellSchool *rss = new ReflectSpellSchool;
-
 		rss->chance = mod->m_amount;
 		rss->spellId = GetSpellId();
 		rss->school = -1;
 		rss->require_aura_hash = 0;
 		rss->charges = sp->procCharges;
+
 		m_target->m_reflectSpellSchool.push_back(rss);
-	}
-	else
-	{
-		for(std::list<struct ReflectSpellSchool*>::iterator i = m_target->m_reflectSpellSchool.begin();i != m_target->m_reflectSpellSchool.end();)
-		{
-			if(GetSpellId() == (*i)->spellId)
-			{
-				delete *i;
-				i = m_target->m_reflectSpellSchool.erase(i);
-			}
-			else
-				++i;
-		}
 	}
 }
 
@@ -5943,45 +5924,21 @@ void Aura::SpellAuraModPowerCostSchool(bool apply)
 
 void Aura::SpellAuraReflectSpellsSchool(bool apply)
 {
-	if(apply)
-	{
-		for(std::list<struct ReflectSpellSchool*>::iterator i = m_target->m_reflectSpellSchool.begin();i != m_target->m_reflectSpellSchool.end();)
-		{
-			if(GetSpellId() == (*i)->spellId)
-			{
-				delete (*i);
-				i = m_target->m_reflectSpellSchool.erase(i);
-			}
-			else
-				++i;
-		}
-		ReflectSpellSchool *rss = new ReflectSpellSchool;
+	m_target->RemoveReflect( GetSpellId() );
 
+	if( apply )
+	{
+		ReflectSpellSchool *rss = new ReflectSpellSchool;
 		rss->chance = mod->m_amount;
 		rss->spellId = GetSpellId();
 		rss->require_aura_hash = 0;
+		
 		if(m_spellProto->Attributes == 0x400D0 && m_spellProto->AttributesEx == 0)
-		{
 			rss->school = (int)(log10((float)mod->m_miscValue) / log10((float)2));
-		}
 		else
 			rss->school = m_spellProto->School;
 
-		m_target->m_reflectSpellSchool.push_back(rss);
-	}
-	else
-	{
-		for(std::list<struct ReflectSpellSchool*>::iterator i = m_target->m_reflectSpellSchool.begin();i != m_target->m_reflectSpellSchool.end();)
-		{
-			if(GetSpellId() == (*i)->spellId)
-			{
-				delete *i;
-				i = m_target->m_reflectSpellSchool.erase(i);
-				break;
-			}
-			else
-				++i;
-		}
+		m_target->m_reflectSpellSchool.push_back( rss );
 	}
 }
 

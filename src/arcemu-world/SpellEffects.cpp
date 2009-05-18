@@ -733,14 +733,8 @@ void Spell::SpellEffectDummy(uint32 i) // Dummy(Scripted events)
 		{
 			if(!unitTarget)
 				break;
-			for(std::list<struct ReflectSpellSchool*>::iterator i = unitTarget->m_reflectSpellSchool.begin(), i2;i != unitTarget->m_reflectSpellSchool.end();)
-				if(GetProto()->Id == (*i)->spellId)
-				{
-					i2 = i++;
-					unitTarget->m_reflectSpellSchool.erase(i2);
-				}
-				else
-					++i;
+
+			unitTarget->RemoveReflect( GetProto()->Id );
 
 			ReflectSpellSchool *rss = new ReflectSpellSchool;
 			rss->chance = GetProto()->procChance;
@@ -761,14 +755,8 @@ void Spell::SpellEffectDummy(uint32 i) // Dummy(Scripted events)
 		{
 			if(!unitTarget)
 				break;
-			for(std::list<struct ReflectSpellSchool*>::iterator i = unitTarget->m_reflectSpellSchool.begin(), i2;i != unitTarget->m_reflectSpellSchool.end();)
-				if(GetProto()->Id == (*i)->spellId)
-				{
-					i2 = i++;
-					unitTarget->m_reflectSpellSchool.erase(i2);
-				}
-				else
-					++i;
+			
+			unitTarget->RemoveReflect( GetProto()->Id );
 
 			ReflectSpellSchool *rss = new ReflectSpellSchool;
 			rss->chance = GetProto()->EffectBasePoints[0];
