@@ -107,18 +107,18 @@ enum Languages
 #define MSG_COLOR_GREEN	 "|c1f40af20"
 #define MSG_COLOR_LIGHTRED  "|cffff6060"*/
 
-#define MSG_COLOR_LIGHTRED	  "|cffff6060"
-#define MSG_COLOR_LIGHTBLUE	 "|cff00ccff"
-#define MSG_COLOR_BLUE		  "|cff0000ff"
-#define MSG_COLOR_GREEN		 "|cff00ff00"
-#define MSG_COLOR_RED		   "|cffff0000"
-#define MSG_COLOR_GOLD		  "|cffffcc00"
-#define MSG_COLOR_GREY		  "|cff888888"
-#define MSG_COLOR_WHITE		 "|cffffffff"
-#define MSG_COLOR_SUBWHITE	  "|cffbbbbbb"
-#define MSG_COLOR_MAGENTA	   "|cffff00ff"
-#define MSG_COLOR_YELLOW		"|cffffff00"
-#define MSG_COLOR_CYAN		  "|cff00ffff"
+#define MSG_COLOR_LIGHTRED       "|cffff6060"
+#define MSG_COLOR_LIGHTBLUE      "|cff00ccff"
+#define MSG_COLOR_BLUE           "|cff0000ff"
+#define MSG_COLOR_GREEN	         "|cff00ff00"
+#define MSG_COLOR_RED            "|cffff0000"
+#define MSG_COLOR_GOLD           "|cffffcc00"
+#define MSG_COLOR_GREY           "|cff888888"
+#define MSG_COLOR_WHITE          "|cffffffff"
+#define MSG_COLOR_SUBWHITE       "|cffbbbbbb"
+#define MSG_COLOR_MAGENTA        "|cffff00ff"
+#define MSG_COLOR_YELLOW         "|cffffff00"
+#define MSG_COLOR_CYAN           "|cff00ffff"
 
 #define CHECKSESSION if(m_session == NULL) return NULL; \
 	if(m_session->GetPlayer() == NULL) return NULL;
@@ -137,11 +137,13 @@ public:
 	ChatCommand *    ChildCommands;
 	uint32			 NormalValueField;
 	uint32			 MaxValueField;
-	uint16			 ValueType;	// 0 = nothing, 1 = uint, 2 = float
+	// ValueType: 0 = nothing, 1 = uint, 2 = float
+	uint16			 ValueType;	
 };
 
 class SERVER_DECL CommandTableStorage : public Singleton<CommandTableStorage>
 {
+	// List command containers ex. .character is a container of .character additem
 	ChatCommand* _modifyCommandTable;
 	ChatCommand* _debugCommandTable;
 	ChatCommand* _waypointCommandTable;
@@ -267,7 +269,7 @@ protected:
 	bool HandleSQLQueryCommand(const char* args, WorldSession *m_session);
 	bool HandleRangeCheckCommand( const char * args , WorldSession * m_session );
 
-	//WayPoint Commands
+	// WayPoint Commands
 	bool HandleWPAddCommand(const char* args, WorldSession *m_session);
 	bool HandleWPShowCommand(const char* args, WorldSession *m_session);
 	bool HandleWPHideCommand(const char* args, WorldSession *m_session);
@@ -404,12 +406,12 @@ protected:
 	bool HandleBanAllCommand(const char* args, WorldSession *m_session);
 	bool HandleUnBanCharacterCommand(const char* args, WorldSession *m_session);
 
-	//BG
+	// BattleGround
 	bool HandleSetBGScoreCommand(const char* args, WorldSession *m_session);
 	bool HandleInitializeAllQueuedBattlegroundsCommand(const char *args, WorldSession *m_session);
 	bool HandleGetBattlegroundQueueCommand(const char *args, WorldSession *m_session);
 
-	//Instance
+	// Instance
 	bool HandleCreateInstanceCommand(const char * args, WorldSession * m_session);
 	bool HandleResetAllInstancesCommand(const char* args, WorldSession *m_session);
 	bool HandleResetInstanceCommand(const char* args, WorldSession *m_session);
@@ -418,6 +420,7 @@ protected:
 	bool HandleGetInstanceInfoCommand(const char* args, WorldSession *m_session);
 	bool HandleShowInstancesCommand(const char* args, WorldSession *m_session);
 
+	// Unsorted?
 	Player* getSelectedChar(WorldSession *m_session, bool showerror = true);
 	Creature * getSelectedCreature(WorldSession *m_session, bool showerror = true);
 	bool HandleGOScale(const char* args, WorldSession *m_session);
@@ -449,7 +452,7 @@ protected:
 	bool HandleRemoveRessurectionSickessAuraCommand(const char *args, WorldSession *m_session);
 	bool HandleDBReloadCommand(const char* args, WorldSession* m_session);
 
-	// honor
+	// Honor
 	bool HandleAddHonorCommand(const char* args, WorldSession* m_session);
 	bool HandleAddKillCommand(const char* args, WorldSession* m_session);
 	bool HandleGlobalHonorDailyMaintenanceCommand(const char* args, WorldSession* m_session);
@@ -459,7 +462,7 @@ protected:
 	bool HandleUnlearnCommand(const char* args, WorldSession * m_session);
 	bool HandleModifyLevelCommand(const char* args, WorldSession* m_session);
 
-	// pet
+	// Pet
 	bool HandleCreatePetCommand(const char* args, WorldSession* m_session);
 	bool HandleAddPetSpellCommand(const char* args, WorldSession* m_session);
 	bool HandleRemovePetSpellCommand(const char* args, WorldSession* m_session);
@@ -469,27 +472,27 @@ protected:
 	bool HandlePetSpawnAIBot(const char * args, WorldSession * m_session);
 #endif
 
-	// shutdown
+	// Shutdown
 	bool HandleShutdownCommand(const char* args, WorldSession* m_session);
 	bool HandleShutdownRestartCommand(const char* args, WorldSession* m_session);
 	bool HandleCancelShutdownCommand(const char* args, WorldSession* m_session);
 
-	// whispers
+	// Whispers
 	bool HandleAllowWhispersCommand(const char* args, WorldSession* m_session);
 	bool HandleBlockWhispersCommand(const char* args, WorldSession* m_session);
 
-	// skills
+	// Skills
 	bool HandleAdvanceAllSkillsCommand(const char* args, WorldSession* m_session);
 
-	// kill
+	// Kill
 	bool HandleKillBySessionCommand(const char* args, WorldSession* m_session);
 	bool HandleKillByPlayerCommand(const char* args, WorldSession* m_session);
 	bool HandleKillByIPCommand(const char* args, WorldSession* m_session);
 
-	// castall
+	// Castall
 	bool HandleCastAllCommand(const char* args, WorldSession* m_session);
 
-	// recall
+	// Recall (Teleport)
 	bool HandleRecallListCommand(const char* args, WorldSession *m_session);
 	bool HandleRecallGoCommand(const char* args, WorldSession *m_session);
 	bool HandleRecallAddCommand(const char* args, WorldSession *m_session);
@@ -499,24 +502,24 @@ protected:
 	bool HandleRecallPortPlayerCommand(const char* args, WorldSession * m_session);
 	bool HandleRecallPortUsCommand(const char* args, WorldSession * m_session);
 
-	// bans
+	// Bans
 	bool HandleIPBanCommand(const char * args, WorldSession * m_session);
 	bool HandleIPUnBanCommand(const char * args, WorldSession * m_session);
 	bool HandleAccountUnbanCommand(const char * args, WorldSession * m_session);
 
-	//
+	// Item removal
 	bool HandleRemoveItemCommand(const char * args, WorldSession * m_session);
 
-	//
+	// Rename 
 	bool HandleRenameCommand(const char * args, WorldSession * m_session);
 	bool HandleForceRenameCommand(const char * args, WorldSession * m_session);
 
-	//
+	// Reputation
 	bool HandleGetStandingCommand(const char * args, WorldSession * m_session);
 	bool HandleSetStandingCommand(const char * args, WorldSession * m_session);
 	bool HandleGetBaseStandingCommand(const char * args, WorldSession * m_session);
 
-	// lookups
+	// Lookups
 	bool HandleLookupItemCommand(const char * args, WorldSession * m_session);
 	bool HandleLookupCreatureCommand(const char * args, WorldSession * m_session);
 	bool HandleLookupObjectCommand(const char * args, WorldSession * m_session);
@@ -525,6 +528,7 @@ protected:
 	bool HandleLookupFactionCommand(const char * args, WorldSession * m_session);
 	bool HandleLookupAchievementCmd(const char* args, WorldSession* m_session);
 
+	// Depricated GMScript reload.
 	//bool HandleReloadScriptsCommand(const char * args, WorldSession * m_session);
 	bool HandleNpcPossessCommand(const char * args, WorldSession * m_session);
 	bool HandleNpcUnPossessCommand(const char * args, WorldSession * m_session);

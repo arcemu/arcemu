@@ -378,9 +378,12 @@ class SERVER_DECL Aura : public EventableObject
 public:
     Aura( );
 	void Init( SpellEntry *proto, int32 duration,Object* caster, Unit *target, bool temporary = false, Item* i_caster = NULL );
-	void Virtual_Constructor();		//when using object pool contructor is not good to be called again sometimes. Use this instead
+	// When using object pool contructor is not good to be called again sometimes. 
+	// Use this instead:
+	void Virtual_Constructor();		
 	~Aura();
-	void Virtual_Destructor();		//this makes sure we do not leave events on objects that are supposed to be deleted
+	// This makes sure we do not leave events on objects that are supposed to be deleted.
+	void Virtual_Destructor();		
 	int32 m_bufferPoolId;
 
 	void ExpireRemove();
@@ -417,7 +420,8 @@ public:
 	void EventUpdateAA(float r);
 	void RemoveAA();
 
-	ARCEMU_INLINE uint32 GetTimeLeft() // in milliseconds
+	//! GetTimeLeft() milliseconds
+	ARCEMU_INLINE uint32 GetTimeLeft() 
 	{
 		if(m_duration==-1)return (uint32)-1;
 		int32 n=int32((UNIXTIME-time_t(timeleft))*1000);
@@ -433,7 +437,7 @@ public:
 				return true;
 		return false;
 	}
-		// Aura Handlers
+	// Aura Handlers
 	void SpellAuraNULL(bool apply);
 	void SpellAuraBindSight(bool apply);
 	void SpellAuraModPossess(bool apply);
@@ -709,17 +713,20 @@ public:
 	bool WasCastInDuel() { return m_castInDuel; }
 
 	SpellEntry * m_spellProto;
-	AreaAuraList targets;//this is only used for AA
+	// This is only used for AA
+	AreaAuraList targets;
 	uint64 m_casterGuid;
 
 	uint16 m_auraSlot;
 
 	uint32 m_castedItemId;
-	bool m_areaAura;		// Area aura stuff -> never passive.
+	// Area aura stuff -> never passive.
+	bool m_areaAura;		
 	uint8 m_visualSlot;
-	uint32 pSpellId; //this represents the triggering spell id
+	// This represents the triggering spell id
+	uint32 pSpellId; 
 
-	// this stuff can be cached in spellproto.
+	// This stuff can be cached in spellproto.
 	ARCEMU_INLINE bool IsCombatStateAffecting()
 	{
 		for(uint32 x = 0; x < 3; ++x) {
@@ -764,7 +771,8 @@ private:
 	Unit* m_target;
 	Player * p_target;
 	uint32 timeleft;
-	int32 m_duration; // in msecs
+	// In Miliseconds
+	int32 m_duration;
 //	bool m_positive;
 	signed char m_positive;
 

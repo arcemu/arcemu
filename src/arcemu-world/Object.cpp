@@ -3203,13 +3203,14 @@ void Object::EventSpellDamage(uint64 Victim, uint32 SpellID, uint32 Damage)
 	SpellNonMeleeDamageLog(pUnit, SpellID, Damage, true);
 }
 
+//! Object has an active state
 bool Object::CanActivate()
 {
 	switch(m_objectTypeId)
 	{
 	case TYPEID_UNIT:
 		{
-			if(!IsPet())
+			if ( !IsPet() )
 				return true;
 		}break;
 
@@ -3225,17 +3226,17 @@ bool Object::CanActivate()
 
 void Object::Activate(MapMgr * mgr)
 {
-	switch(m_objectTypeId)
+	switch ( m_objectTypeId )
 	{
 	case TYPEID_UNIT:
-		mgr->activeCreatures.insert((Creature*)this);
+		mgr->activeCreatures.insert( ( Creature* )this );
 		break;
 
 	case TYPEID_GAMEOBJECT:
-		mgr->activeGameObjects.insert((GameObject*)this);
+		mgr->activeGameObjects.insert( ( GameObject* )this );
 		break;
 	}
-
+	// Objects are active so set to true.
 	Active = true;
 }
 
