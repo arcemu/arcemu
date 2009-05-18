@@ -1343,6 +1343,16 @@ uint32 Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, ui
 							CastingSpell->NameHash != SPELL_HASH_GOUGE ) //gouge
 							continue;
 					}break;
+				//priest - Grace
+				case 47930:
+					{
+						if( CastingSpell == NULL )
+							continue;
+						if( CastingSpell->NameHash != SPELL_HASH_PENANCE &&
+							CastingSpell->NameHash != SPELL_HASH_FLASH_HEAL &&
+							CastingSpell->NameHash != SPELL_HASH_GREATER_HEAL )
+							continue;
+					}break;
 				//warlock - Improved Shadow Bolt
 				case 17794:
 				case 17798:
@@ -1513,6 +1523,7 @@ uint32 Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, ui
 							case SPELL_HASH_INCINERATE: //Incinerate
 							case SPELL_HASH_SEARING_PAIN: //Searing Pain
 							case SPELL_HASH_CONFLAGRATE: //Conflagrate
+							case SPELL_HASH_CHAOS_BOLT: //Chaos Bolt
 							{
 								amount = CastingSpell->EffectBasePoints[0]+1;
 							}break;
@@ -1549,6 +1560,16 @@ uint32 Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, ui
 							CastingSpell->NameHash != SPELL_HASH_SOUL_FIRE ) //Soul Fire
 							continue;
 					}break;
+				case 54274:
+				case 54276:
+				case 54277:
+				{
+					if( CastingSpell == NULL )
+						continue;
+
+					if( CastingSpell->NameHash != SPELL_HASH_CONFLAGRATE )
+						continue;
+				}break;
 				//mage - Improved Scorch
 				case 22959:
 					{
@@ -2263,7 +2284,7 @@ uint32 Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, ui
 						CastingSpell->NameHash != SPELL_HASH_RIPTIDE )
 						continue;
 				}break;
-							//Earthliving
+				//Earthliving
 				case 51945:
 				case 51990:
 				case 51997:
@@ -2298,6 +2319,17 @@ uint32 Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, ui
 						if( !( CastingSpell->c_is_flags & SPELL_FLAG_IS_DAMAGING ) ) //requires offensive spell. ! might not cover all spells
 							continue;
 					}break;
+					//druid - Earth and Moon
+                  case 60431:
+                  case 60432:
+                  case 60433:
+                      {
+                          if ( CastingSpell == NULL)
+                                   continue;
+                          if ( CastingSpell->NameHash != SPELL_HASH_WRATH &&
+                               CastingSpell->NameHash != SPELL_HASH_STARFIRE )
+                                   continue;
+                      }break;
 				// druid - Celestial Focus
 				case 16922:
 					{
@@ -2338,6 +2370,14 @@ uint32 Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, ui
 				case 37237:
 					{
 						if (!CastingSpell || CastingSpell->NameHash != SPELL_HASH_LIGHTNING_BOLT)
+							continue;
+					}break;
+				//Tier 7 Warlock 4er setboni
+				case 61082:
+					{
+						if( CastingSpell == NULL )
+							continue;
+						if( CastingSpell->NameHash != SPELL_HASH_LIFE_TAP )
 							continue;
 					}break;
 				case 37193:

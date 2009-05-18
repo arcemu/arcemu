@@ -2083,6 +2083,33 @@ void ApplyNormalFixes()
 			sp->procChance = 100;
 		}
 
+		//Sudden Death Rank 1
+		sp = dbcSpell.LookupEntryForced(29723);
+		if(sp != NULL)
+		{
+			sp->EffectTriggerSpell[0] = 52437;
+			sp->procFlags = PROC_ON_MELEE_ATTACK;
+			sp->procChance = 3;
+		}		
+
+		//Sudden Death Rank 2
+		sp = dbcSpell.LookupEntryForced(29725);
+		if(sp != NULL)
+		{
+			sp->EffectTriggerSpell[0] = 52437;
+			sp->procFlags = PROC_ON_MELEE_ATTACK;
+			sp->procChance = 6;
+		}	
+
+		//Sudden Death Rank 3
+		sp = dbcSpell.LookupEntryForced(29724);
+		if(sp != NULL)
+		{
+			sp->EffectTriggerSpell[0] = 52437;
+			sp->procFlags = PROC_ON_MELEE_ATTACK;
+			sp->procChance = 9;
+		}	
+
 
 		//////////////////////////////////////////
 		// DRUID								//
@@ -2096,6 +2123,48 @@ void ApplyNormalFixes()
 			sp->EffectImplicitTargetA[0] = EFF_TARGET_SELF; //some land under target is used that gathers multiple targets ...
 			sp->EffectImplicitTargetA[1] = EFF_TARGET_NONE;
 		}
+
+		//Nature's Grace Rank 1
+		sp = dbcSpell.LookupEntryForced(16880);
+		if(sp != NULL)
+		{
+			sp->procFlags = PROC_ON_SPELL_CRIT_HIT;
+			sp->procChance = 33;
+			sp->maxstack = 1;
+		}
+
+		//Nature's Grace Rank 2
+		sp = dbcSpell.LookupEntryForced(61345);
+		if(sp != NULL)
+		{
+			sp->procFlags = PROC_ON_SPELL_CRIT_HIT;
+			sp->procChance = 66;
+			sp->maxstack = 1;
+		}
+
+		//Nature's Grace Rank 3
+		sp = dbcSpell.LookupEntryForced(61346);
+		if(sp != NULL)
+		{
+			sp->procFlags = PROC_ON_SPELL_CRIT_HIT;
+			sp->procChance = 100;
+			sp->maxstack = 1;
+		}
+
+		//Earth and Moon Rank 1
+		sp = dbcSpell.LookupEntryForced(48506);
+		if(sp != NULL)
+			sp->procFlags = PROC_ON_CAST_SPELL;
+
+		//Earth and Moon Rank 2
+		sp = dbcSpell.LookupEntryForced(48510);
+		if(sp != NULL)
+			sp->procFlags = PROC_ON_CAST_SPELL;
+
+		//Earth and Moon Rank 3
+		sp = dbcSpell.LookupEntryForced(48511);
+		if(sp != NULL)
+			sp->procFlags = PROC_ON_CAST_SPELL;
 
 		//////////////////////////////////////////
 		// PALADIN								//
@@ -3790,6 +3859,22 @@ void ApplyNormalFixes()
 		if ( sp != NULL )
 		{
 			sp->EffectImplicitTargetA[0] = EFF_TARGET_SINGLE_FRIEND;
+		}
+
+		//Grace Rank 1
+		sp = dbcSpell.LookupEntryForced(47516);
+		if(sp != NULL)
+		{
+			sp->procFlags = PROC_ON_CAST_SPELL;
+			sp->proc_interval = 100;
+		}
+
+		//Grace Rank 2
+		sp = dbcSpell.LookupEntryForced(47517);
+		if(sp != NULL)
+		{
+			sp->procFlags = PROC_ON_CAST_SPELL;
+			sp->proc_interval = 100;
 		}
 
 	//////////////////////////////////////////
@@ -5689,6 +5774,30 @@ void ApplyNormalFixes()
 			}
 		}
 
+		//Backdraft Rank 1 
+		sp = dbcSpell.LookupEntryForced(47258);
+		if(sp != NULL)
+		{
+			sp->procFlags = PROC_ON_CAST_SPELL;
+			sp->procChance = 100;
+		}	
+
+		//Backdraft Rank 2
+		sp = dbcSpell.LookupEntryForced(47259);
+		if(sp != NULL)
+		{
+			sp->procFlags = PROC_ON_CAST_SPELL;
+			sp->procChance = 100;
+		}
+
+		//Backdraft Rank 3
+		sp = dbcSpell.LookupEntryForced(47260);
+		if(sp != NULL)
+		{
+			sp->procFlags = PROC_ON_CAST_SPELL;
+			sp->procChance = 100;
+		}	
+
 	//////////////////////////////////////////
 	// DRUID								//
 	//////////////////////////////////////////
@@ -5957,6 +6066,12 @@ void ApplyNormalFixes()
 		{
 			sp->MechanicsType = MECHANIC_BLEEDING;
 		}
+		sp = dbcSpell.LookupEntryForced( 49803 );
+		if( sp != NULL )
+		{
+			sp->MechanicsType = MECHANIC_BLEEDING;
+		}
+
 		//rip
 		sp = dbcSpell.LookupEntryForced( 1079 );
 		if( sp != NULL )
@@ -5979,6 +6094,13 @@ void ApplyNormalFixes()
 		sp = dbcSpell.LookupEntryForced( 27008 );
 		if( sp != NULL )
 			sp->MechanicsType = MECHANIC_BLEEDING;
+		sp = dbcSpell.LookupEntryForced( 49799 );
+		if( sp != NULL )
+			sp->MechanicsType = MECHANIC_BLEEDING;
+		sp = dbcSpell.LookupEntryForced( 49800 );
+		if( sp != NULL )
+			sp->MechanicsType = MECHANIC_BLEEDING;
+
 		//rake
 		sp = dbcSpell.LookupEntryForced( 1822 );
 		if( sp != NULL )
@@ -5995,8 +6117,21 @@ void ApplyNormalFixes()
 		sp = dbcSpell.LookupEntryForced( 27003 );
 		if( sp != NULL )
 			sp->MechanicsType = MECHANIC_BLEEDING;
+		sp = dbcSpell.LookupEntryForced( 48573 );
+		if( sp != NULL )
+			sp->MechanicsType = MECHANIC_BLEEDING;
+		sp = dbcSpell.LookupEntryForced( 48574 );
+		if( sp != NULL )
+			sp->MechanicsType = MECHANIC_BLEEDING;
+
 		//lacerate
 		sp = dbcSpell.LookupEntryForced( 33745 );
+		if( sp != NULL )
+			sp->MechanicsType = MECHANIC_BLEEDING;
+		sp = dbcSpell.LookupEntryForced( 48567 );
+		if( sp != NULL )
+			sp->MechanicsType = MECHANIC_BLEEDING;
+		sp = dbcSpell.LookupEntryForced( 48568 );
 		if( sp != NULL )
 			sp->MechanicsType = MECHANIC_BLEEDING;
 
@@ -6011,6 +6146,9 @@ void ApplyNormalFixes()
 		if( sp != NULL )
 			sp->DurationIndex = 18000;
 		sp = dbcSpell.LookupEntryForced( 27007 );
+		if( sp != NULL )
+			sp->DurationIndex = 18000;
+		sp = dbcSpell.LookupEntryForced( 49804 );
 		if( sp != NULL )
 			sp->DurationIndex = 18000;
 
@@ -6719,6 +6857,15 @@ void ApplyNormalFixes()
 			sp->procChance = 7;
 		}
 
+		// Item Set: Warlock Tier 7 Heroes' Plagueheart Garb
+		sp = dbcSpell.LookupEntryForced(60172);
+		if(sp != NULL)
+		{
+			sp->EffectTriggerSpell[0] = 61082;
+			sp->procFlags = PROC_ON_CAST_SPELL;
+			sp->procChance = 100;
+		}
+
 		//all Drums
 		sp = dbcSpell.LookupEntryForced( 35474 );
 		if( sp != NULL )
@@ -6798,6 +6945,36 @@ void ApplyNormalFixes()
 		if(sp != NULL)
 		{
 			sp->InterruptFlags |= ~(CAST_INTERRUPT_ON_MOVEMENT);
+		}
+
+		//Swordguard Embroidery
+		sp = dbcSpell.LookupEntryForced(55776);
+		if(sp != NULL)
+		{
+			sp->EffectTriggerSpell[0] = 55775;
+			sp->procFlags = PROC_ON_MELEE_ATTACK;
+			sp->procChance = 25;
+			sp->proc_interval = 60000;
+		}
+
+		//Lightweave Embroidery - this will work in 3.1
+		/*sp = dbcSpell.LookupEntryForced(55640);
+		if(sp != NULL)
+		{
+			sp->EffectTriggerSpell[0] = 55637;
+			sp->procFlags = PROC_ON_CAST_SPELL;
+			sp->procChance = 50;
+			sp->proc_interval = 45000;
+		}*/
+
+		//Darkglow Embroidery
+		sp = dbcSpell.LookupEntryForced(55768);
+		if(sp != NULL)
+		{
+			sp->EffectTriggerSpell[0] = 55767;
+			sp->procFlags = PROC_ON_CAST_SPELL;
+			sp->procChance = 35;
+			sp->proc_interval = 60000;
 		}
 		/**************************************************************
 		* Trinket Fixes		Please keep nice and clean :)										  *
@@ -6968,6 +7145,22 @@ void ApplyNormalFixes()
 			sp->procFlags = PROC_ON_CAST_SPELL;
 			sp->procChance = 10;
 			sp->proc_interval = 45000;
+		}
+
+		//Majestic Dragon Figurine
+		sp = dbcSpell.LookupEntryForced(60524);
+		if(sp != NULL)
+		{
+			sp->procFlags = PROC_ON_CAST_SPELL;
+			sp->proc_interval = 100;
+		}
+
+		//Illustration of the Dragon Soul
+		sp = dbcSpell.LookupEntryForced(60485);
+		if(sp != NULL)
+		{
+			sp->procFlags = PROC_ON_CAST_SPELL;
+			sp->proc_interval = 100;
 		}
 
 		//////////////////////////////////////////
