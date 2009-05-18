@@ -454,7 +454,7 @@ public:
 	ARCEMU_INLINE const char * GetGuildName() const { return m_guildName; }
 	ARCEMU_INLINE const uint32 GetGuildLeader() const { return m_guildLeader; }
 	ARCEMU_INLINE const uint32 GetGuildId() const { return m_guildId; }
-	ARCEMU_INLINE const uint32 GetBankTabCount() const { return m_bankTabCount; }
+	ARCEMU_INLINE const uint8  GetBankTabCount() const { return ( uint8) m_bankTabs.size(); }
 	ARCEMU_INLINE const uint64 GetBankBalance() const { return m_bankBalance; }
 	ARCEMU_INLINE const size_t GetNumMembers() const { return m_members.size(); }
 	/** Creates a guild rank with the specified permissions.
@@ -490,9 +490,9 @@ public:
 	/** Gets a guild bank tab for editing/viewing
 	 */
 
-	ARCEMU_INLINE GuildBankTab * GetBankTab(uint32 Id)
+	ARCEMU_INLINE GuildBankTab * GetBankTab( uint8 Id )
 	{
-		if(Id >= m_bankTabCount)
+		if( Id >= GetBankTabCount() )
 			return NULL;
 
 		return m_bankTabs[Id];
@@ -550,7 +550,6 @@ protected:
 	uint32 m_backgroundColor;
 	uint32 m_guildLeader;
 	uint32 m_creationTimeStamp;
-	uint32 m_bankTabCount;
 	uint64 m_bankBalance; //use a 64 bit int so we can store more gold in the gbank
 
 	typedef vector<GuildBankTab*> GuildBankTabVector;

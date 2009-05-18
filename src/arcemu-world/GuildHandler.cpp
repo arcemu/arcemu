@@ -1051,7 +1051,7 @@ void WorldSession::HandleGuildBankBuyTab(WorldPacket & recv_data)
 		return;
 	}
 
-	if(_player->m_playerInfo->guild->GetBankTabCount() < 6)
+	if( _player->m_playerInfo->guild->GetBankTabCount() < MAX_GUILD_BANK_TABS )
 	{
 		//                                        tab1, tab2, tab3, tab4, tab5, tab6
 		const static int32 GuildBankPrices[6] = { 100, 250,  500,  1000, 2500, 5000 };
@@ -1098,7 +1098,7 @@ void WorldSession::HandleGuildBankModifyTab(WorldPacket & recv_data)
 	if(_player->m_playerInfo->guild==NULL)
 		return;
 
-	pTab = _player->m_playerInfo->guild->GetBankTab((uint32)slot);
+	pTab = _player->m_playerInfo->guild->GetBankTab( slot );
 	if(pTab==NULL)
 		return;
 
@@ -1242,8 +1242,8 @@ void WorldSession::HandleGuildBankDepositItem(WorldPacket & recv_data)
 			return;
 
 		/* locate the tabs */
-		pSourceTab = pGuild->GetBankTab((uint32)source_bank);
-		pDestTab = pGuild->GetBankTab((uint32)dest_bank);
+		pSourceTab = pGuild->GetBankTab( source_bank );
+		pDestTab = pGuild->GetBankTab( dest_bank );
 		if(pSourceTab == NULL || pDestTab == NULL)
 			return;
 
@@ -1335,7 +1335,7 @@ void WorldSession::HandleGuildBankDepositItem(WorldPacket & recv_data)
 			return;
 
 		/* get tab */
-		pTab = pGuild->GetBankTab((uint32)dest_bank);
+		pTab = pGuild->GetBankTab( dest_bank );
 		if(pTab==NULL)
 			return;
 
@@ -1567,7 +1567,7 @@ void WorldSession::HandleGuildBankViewTab(WorldPacket & recv_data)
 	if(pGuild==NULL)
 		return;
 
-	pTab = pGuild->GetBankTab((uint32)tabid);
+	pTab = pGuild->GetBankTab( tabid );
 	if(pTab==NULL)
 		return;
 
@@ -1586,9 +1586,9 @@ void Guild::SendGuildBankInfo(WorldSession * pClient)
 	data << uint8(0);
 	data << uint32(0);
 	data << uint8(1);
-	data << uint8(m_bankTabCount);
+	data << GetBankTabCount();
 
-	for(uint32 i = 0; i < m_bankTabCount; ++i)
+	for(uint8 i = 0; i < GetBankTabCount(); ++i)
 	{
 		GuildBankTab * pTab = GetBankTab(i);
 		if(pTab==NULL || !pMember->pRank->CanPerformBankCommand(GR_RIGHT_GUILD_BANK_VIEW_TAB, i))
@@ -1701,7 +1701,6 @@ void WorldSession::HandleGuildGetFullPermissions(WorldPacket & recv_data)
 {
 	WorldPacket data(MSG_GUILD_PERMISSIONS, 61);
 	GuildRank * pRank = _player->GetGuildRankS();
-	uint32 i;
 
 	if(_player->GetGuild() == NULL)
 		return;
@@ -1709,9 +1708,9 @@ void WorldSession::HandleGuildGetFullPermissions(WorldPacket & recv_data)
 	data << pRank->iId;
 	data << pRank->iRights;
 	data << pRank->iGoldLimitPerDay;
-	data << uint8(_player->GetGuild()->GetBankTabCount());
+	data << _player->GetGuild()->GetBankTabCount();
 
-	for(i = 0; i < MAX_GUILD_BANK_TABS; ++i) {
+	for( uint8 i = 0; i < MAX_GUILD_BANK_TABS; ++i) {
 		data << pRank->iTabPermissions[i].iFlags;
 		data << pRank->iTabPermissions[i].iStacksPerDay;
 	}

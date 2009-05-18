@@ -35,7 +35,6 @@ Guild::Guild()
 	m_borderStyle=0;
 	m_creationTimeStamp=0;
 	m_bankBalance =0;
-	m_bankTabCount=0;
 	creationDay=creationMonth=creationYear=0;
 	m_hiLogId=1;
 	memset(m_ranks, 0, sizeof(GuildRank*)*MAX_GUILD_RANKS);
@@ -441,7 +440,6 @@ bool Guild::LoadFromDB(Field * f)
 	m_guildInfo = strlen(f[8].GetString()) ? strdup(f[8].GetString()) : NULL;
 	m_motd = strlen(f[9].GetString()) ? strdup(f[9].GetString()) : NULL;
 	m_creationTimeStamp = f[10].GetUInt32();
-	m_bankTabCount = f[11].GetUInt32();
 	m_bankBalance = f[12].GetUInt64();
 
 	// load ranks
@@ -1286,23 +1284,21 @@ void Guild::BuyBankTab(WorldSession * pClient)
 	if(pClient && pClient->GetPlayer()->GetLowGUID() != m_guildLeader)
 		return;
 
-	if(m_bankTabCount>=MAX_GUILD_BANK_TABS)
+	if( GetBankTabCount() >= MAX_GUILD_BANK_TABS )
 		return;
 
 	m_lock.Acquire();
 
 	GuildBankTab * pTab = new GuildBankTab;
-	pTab->iTabId = m_bankTabCount;
+	pTab->iTabId = GetBankTabCount();
 	memset(pTab->pSlots, 0, sizeof(Item*)*MAX_GUILD_BANK_SLOTS);
 	pTab->szTabName = NULL;
 	pTab->szTabIcon = NULL;
 	pTab->szTabInfo = NULL;
 
 	m_bankTabs.push_back(pTab);
-	m_bankTabCount++;
 
 	CharacterDatabase.Execute("INSERT INTO guild_banktabs VALUES(%u, %u, '', '', '')", m_guildId, (uint32)pTab->iTabId);
-	CharacterDatabase.Execute("UPDATE guilds SET bankTabCount = %u WHERE guildId = %u", m_bankTabCount, m_guildId);
 	m_lock.Release();
 }
 
@@ -1488,7 +1484,7 @@ void Guild::SendGuildBankLog(WorldSession * pClient, uint8 iSlot)
 	}
 	else
 	{
-		if(iSlot >= m_bankTabCount)
+		if( iSlot >= GetBankTabCount() )
 		{
 			m_lock.Release();
 			return;
