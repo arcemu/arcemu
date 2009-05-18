@@ -613,11 +613,20 @@ ARCEMU_INLINE void ApplyFloatPSM(float ** m,int32 v,uint32 mask, float def)
 
 Unit * Aura::GetUnitCaster()
 {
-	if( !m_target )
-		return NULL;
 
-	if( m_casterGuid == m_target->GetGUID() )
+	if ( !m_targets )
+	return NULL;
+	
+	/* Don't think these are needed .. 
+	if ( m_target == NULL )
+		return;
+	// Try uncommenting this if it crashes.
+	if ( m_casterGuid == NULL )
+		return NULL; */
+
+	if ( m_casterGuid == m_target->GetGUID() )
 		return m_target;
+
 	if( m_target->GetMapMgr() )
 		return m_target->GetMapMgr()->GetUnit( m_casterGuid );
 	else
@@ -3856,9 +3865,11 @@ void Aura::EventPeriodicTriggerSpell(SpellEntry* spellInfo)
 	// Trigger Spell
 	// check for spell id	
 
+
 	Unit * m_caster = GetUnitCaster();
 	// Notes: The caster seems to not exist thus it's guid doesn't exist :S - http://arcemu.org/forums/index.php?showtopic=15789
-	if(!m_caster || !m_caster->IsInWorld() )
+	// m_caster is set to NULL by default, so !m_caster is like saying your mom weighs more then 0 which isn't giving it a value.
+	if(m_caster == NULL || !m_caster->IsInWorld() )
 		return;
 
 	if( spellInfo->EffectImplicitTargetA[0] == 18 )			// Hellfire, if there are any others insert here

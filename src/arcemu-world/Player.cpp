@@ -1197,12 +1197,12 @@ void Player::_EventCharmAttack()
 	Unit *pVictim = NULL;
 	if(!IsInWorld())
 	{
-		m_CurrentCharm=0;
+		m_CurrentCharm = NULL;
 		sEventMgr.RemoveEvents(this,EVENT_PLAYER_CHARM_ATTACK);
 		return;
 	}
 
-	if(m_curSelection == 0)
+	if(m_curSelection == NULL)
 	{
 		sEventMgr.RemoveEvents(this, EVENT_PLAYER_CHARM_ATTACK);
 		return;
@@ -1228,10 +1228,11 @@ void Player::_EventCharmAttack()
 
 		if (!currentCharm->canReachWithAttack(pVictim))
 		{
-			if(m_AttackMsgTimer == 0)
+			if(m_AttackMsgTimer == NULL)
 			{
 				//m_session->OutPacket(SMSG_ATTACKSWING_NOTINRANGE);
-				m_AttackMsgTimer = 2000;		// 2 sec till next msg.
+				// 2 sec till next msg.
+				m_AttackMsgTimer = 2000;		
 			}
 			// Shorten, so there isnt a delay when the client IS in the right position.
 			sEventMgr.ModifyEventTimeLeft(this, EVENT_PLAYER_CHARM_ATTACK, 100);
@@ -3420,7 +3421,7 @@ void Player::LoadFromDBProc(QueryResultVector & results)
 	}
 
 	m_session->FullLogin(this);
-	m_session->m_loggingInPlayer=NULL;
+	m_session->m_loggingInPlayer = NULL;
 
 	if( !isAlive() )
 		myCorpse = objmgr.GetCorpseByOwner(GetLowGUID());

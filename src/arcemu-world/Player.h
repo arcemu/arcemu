@@ -879,7 +879,7 @@ protected:
 	// END COOLDOWNS
 
 public:
-
+	//! Okay to remove from world
 	bool ok_to_remove;
 	uint64 m_spellIndexTypeTargets[NUM_SPELL_TYPE_INDEX];
 	void OnLogin();//custom stuff on player login.
