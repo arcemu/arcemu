@@ -3950,7 +3950,7 @@ void Spell::SpellEffectDispel(uint32 i) // Dispel
 	for(uint32 x = start; x<end; x++)
 		if(unitTarget->m_auras[x])
 		{
-			bool auraRemoved = false;
+			bool AuraRemoved = false;
 			aur = unitTarget->m_auras[x];
 			//Nothing can dispel resurrection sickness;
 			if(!aur->IsPassive() && !(aur->GetSpellProto()->Attributes & ATTRIBUTES_IGNORE_INVULNERABILITY))
@@ -3964,12 +3964,21 @@ void Spell::SpellEffectDispel(uint32 i) // Dispel
 					data << unitTarget->GetNewGUID();
 					data << (uint32)1;//probably dispel type
 					data << aur->GetSpellId();
-					m_caster->SendMessageToSet(&data,true);
-					unitTarget->RemoveAura(aur);
-					auraRemoved = true;
+					m_caster->SendMessageToSet( &data, true );
+					unitTarget->RemoveAura( aur );
+					/*
+					RemoveAura calls Unit::RemoveAura
+					Which then says:
+						aur->Remove();
+						return true;
+					Can we please start reading. Thanks.
+					*/
+					//AuraRemoved = true;
 
 					if(!--damage)
-						finish = true;
+						// Just return, we're fucking done.
+						//finish = true;
+						return;
 				}
 				else if(aur->GetSpellProto()->DispelType == GetProto()->EffectMiscValue[i])
 				{
@@ -3982,13 +3991,13 @@ void Spell::SpellEffectDispel(uint32 i) // Dispel
 					data << aur->GetSpellId();
 					m_caster->SendMessageToSet(&data,true);
 					unitTarget->RemoveAllAuras(aur->GetSpellProto()->Id,aur->GetCasterGUID());
-					auraRemoved = true;
+					AuraRemoved = true;
 
 					if(!--damage)
 						finish = true;
 				}
 
-				if (auraRemoved)
+				if (AuraRemoved)
 				{
 					if( aur->GetSpellProto()->NameHash == SPELL_HASH_UNSTABLE_AFFLICTION )
 					{

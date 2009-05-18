@@ -325,6 +325,11 @@ public:
 		obj->event_AddEvent(event);
 	}
 
+	// Please remember the Aura class will call remove events!
+	/* Example:
+	Aura::Virtual_Destructor calls: EventableObject::Virtual_Destructor & sEventMgr.RemoveEvents( this );
+	*/
+
 	template <class Class> void RemoveEvents(Class *obj) { obj->event_RemoveEvents(static_cast<uint32>(-1)); }
 	template <class Class> void RemoveEvents(Class *obj, int32 type)
 	{

@@ -4362,10 +4362,11 @@ uint8 Unit::FindVisualSlot(uint32 SpellId,bool IsPos)
 	return visualslot;
 }
 
-void Unit::AddAura(Aura *aur)
+void Unit::AddAura(Aura * aur)
 {
-	if (!aur)
+	if ( !aur )
 		return;
+
 	if(m_mapId!=530 && (m_mapId!=571 || (IsPlayer() && !((Player*)this)->HasSpellwithNameHash(SPELL_HASH_COLD_WEATHER_FLYING))))
 	// can't use flying auras in non-outlands or non-northrend (northrend requires cold weather flying)
 	{
@@ -4373,7 +4374,15 @@ void Unit::AddAura(Aura *aur)
 		{
 			if( aur->GetSpellProto()->EffectApplyAuraName[i] == 208 || aur->GetSpellProto()->EffectApplyAuraName[i] == 207 )
 			{
-				sEventMgr.RemoveEvents(aur);
+				// Pretty sure this gets removed somewhere in the aura pool..
+				// Watch:
+				/*
+				PooledDelete(T* dumped) calls dumped->Virtual_Destructor(); 
+				which calls Aura::Virtual_Destructor() which then calls
+				sEventMgr.RemoveEvents( this ); this refers to the Aura pointer which we've named aur.
+				Cheers!
+				*/
+				//sEventMgr.RemoveEvents(aur);
 				AuraPool.PooledDelete(aur);
 				return;
 			}
@@ -4643,7 +4652,9 @@ void Unit::AddAura(Aura *aur)
 
 bool Unit::RemoveAura(Aura *aur)
 {
-	if ( aur==NULL ) return false;
+	if ( aur == NULL ) 
+		return false;
+
 	aur->Remove();
 	return true;
 }
