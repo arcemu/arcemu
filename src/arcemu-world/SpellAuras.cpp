@@ -617,12 +617,12 @@ Unit * Aura::GetUnitCaster()
 	if ( !m_target )
 	return NULL;
 	
-	/* Don't think these are needed .. 
+	// Don't think these are needed .. 
 	if ( m_target == NULL )
 		return;
 	// Try uncommenting this if it crashes.
 	if ( m_casterGuid == NULL )
-		return NULL; */
+		return;
 
 	if ( m_casterGuid == m_target->GetGUID() )
 		return m_target;
