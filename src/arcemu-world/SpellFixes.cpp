@@ -4660,6 +4660,38 @@ void ApplyNormalFixes()
 
 	// Insert mage spell fixes here
 
+		//Missile Barrage
+		sp = dbcSpell.LookupEntryForced( 44404 );
+        if( sp != NULL )
+        {
+			sp->procFlags = PROC_ON_CAST_SPELL;
+			sp->procChance = 4;
+        }
+		sp = dbcSpell.LookupEntryForced( 54486 );
+        if( sp != NULL )
+        {
+			sp->procFlags = PROC_ON_CAST_SPELL;
+			sp->procChance = 8;
+        }
+		sp = dbcSpell.LookupEntryForced( 54488 );
+        if( sp != NULL )
+        {
+			sp->procFlags = PROC_ON_CAST_SPELL;
+			sp->procChance = 12;
+        }
+		sp = dbcSpell.LookupEntryForced( 54489 );
+        if( sp != NULL )
+        {
+			sp->procFlags = PROC_ON_CAST_SPELL;
+			sp->procChance = 16;
+        }
+		sp = dbcSpell.LookupEntryForced( 54490 );
+        if( sp != NULL )
+        {
+			sp->procFlags = PROC_ON_CAST_SPELL;
+			sp->procChance = 20;
+        }
+
 		// Brain Freeze rank 1
 		sp = dbcSpell.LookupEntryForced( 44546 );
 		if(sp != NULL)
