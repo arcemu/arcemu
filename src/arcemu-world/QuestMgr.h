@@ -102,18 +102,17 @@ public:
 
 	bool CanStoreReward(Player *plyr, Quest *qst, uint32 reward_slot);
 
-	// Fucking pick, either signed or unsigned if we're returning -1 it has to be signed else gcc bitches ><
-	ARCEMU_INLINE signed int32 QuestHasMob(Quest* qst, signed int32 mob)
+	ARCEMU_INLINE int32 QuestHasMob(Quest* qst, uint32 mob)
 	{
-		for(signed int32 i = 0; i < 4; ++i)
+		for(uint32 i = 0; i < 4; ++i)
 			if(qst->required_mob[i] == mob)
 				return qst->required_mobcount[i];
 		return -1;
 	}
 
-	ARCEMU_INLINE signed int32 GetOffsetForMob(Quest *qst, signed int32 mob)
+	ARCEMU_INLINE int32 GetOffsetForMob(Quest *qst, uint32 mob)
 	{
-		for(signed int32 i = 0; i < 4; ++i)
+		for(uint32 i = 0; i < 4; ++i)
 			if(qst->required_mob[i] == mob)
 				return i;
 
