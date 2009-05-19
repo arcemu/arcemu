@@ -40,7 +40,7 @@ enum TimeVariables
 	TIME_HOUR   = TIME_MINUTE * 60,
 	TIME_DAY	= TIME_HOUR * 24,
 	TIME_MONTH	= TIME_DAY * 30,
-	TIME_YEAR	= TIME_MONTH * 12,
+	TIME_YEAR	= TIME_MONTH * 12
 };
 
 enum MsTimeVariables
@@ -48,7 +48,7 @@ enum MsTimeVariables
 	MSTIME_SECOND = 1000,
 	MSTIME_MINUTE = MSTIME_SECOND * 60,
 	MSTIME_HOUR   = MSTIME_MINUTE * 60,
-	MSTIME_DAY	= MSTIME_HOUR * 24,
+	MSTIME_DAY	  = MSTIME_HOUR * 24
 };
 
 #ifdef WIN32
@@ -699,13 +699,13 @@ ARCEMU_INLINE void arcemu_TOLOWER(std::string& str)
 {
 	for(size_t i = 0; i < str.length(); ++i)
 		str[i] = (char)tolower(str[i]);
-};
+}
 
 ARCEMU_INLINE void arcemu_TOUPPER(std::string& str)
 {
 	for(size_t i = 0; i < str.length(); ++i)
 		str[i] = (char)toupper(str[i]);
-};
+}
 
 // returns true if the ip hits the mask, otherwise false
 inline static bool ParseCIDRBan(unsigned int IP, unsigned int Mask, unsigned int MaskBits)
