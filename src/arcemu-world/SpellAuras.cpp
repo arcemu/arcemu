@@ -614,15 +614,16 @@ ARCEMU_INLINE void ApplyFloatPSM(float ** m,int32 v,uint32 mask, float def)
 Unit * Aura::GetUnitCaster()
 {
 
+	/*
 	if ( !m_target )
 	return NULL;
-	
-	// Don't think these are needed .. 
-	if ( m_target == NULL )
+	*/
+	// Exit this if the target doesn't even exist.. 
+	if ( !m_target )
 		return;
-	// Try uncommenting this if it crashes.
-	if ( m_casterGuid == NULL )
-		return;
+	// ..... ignore
+	//if ( m_casterGuid == NULL )
+	//		return;
 
 	if ( m_casterGuid == m_target->GetGUID() )
 		return m_target;
