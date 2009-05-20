@@ -613,7 +613,6 @@ ARCEMU_INLINE void ApplyFloatPSM(float ** m,int32 v,uint32 mask, float def)
 
 Unit * Aura::GetUnitCaster()
 {
-	
 	// Don't think these are needed .. 
 	if ( m_target == NULL  )
 		return NULL;
@@ -627,9 +626,8 @@ Unit * Aura::GetUnitCaster()
 	if( m_target->GetMapMgr() )
 		return m_target->GetMapMgr()->GetUnit( m_casterGuid );
 
-		if ( m_target->GetMapMgr()->GetUnit( m_caster_Guid ) == NULL )
-		return m_target->GetGUID();
-
+	if ( m_target->GetMapMgr()->GetUnit( m_casterGuid ) == NULL )
+		return m_target;	// Is this even reachable? (see previous 'if')
 	else
 		return NULL;
 }

@@ -137,17 +137,19 @@ bool ChatHandler::HandleWAnnounceCommand(const char* args, WorldSession *m_sessi
 
 bool ChatHandler::HandleGMOnCommand(const char* args, WorldSession *m_session)
 {
-	/*uint32 newbytes = m_session->GetPlayer( )->GetUInt32Value(PLAYER_BYTES_2) | 0x8;
-	m_session->GetPlayer( )->SetUInt32Value( PLAYER_BYTES_2, newbytes);
-
-	GreenSystemMessage(m_session, "GM Flag Set.");*/
 	GreenSystemMessage(m_session, "Setting GM Flag on yourself.");
-	if(m_session->GetPlayer()->bGMTagOn)
+
+	Player * _player = m_session->GetPlayer();
+	if(_player->bGMTagOn)
 		RedSystemMessage(m_session, "GM Flag is already set on. Use .gm off to disable it.");
 	else
 	{
-		m_session->GetPlayer()->bGMTagOn = true;
-		m_session->GetPlayer()->SetFlag(PLAYER_FLAGS, PLAYER_FLAG_GM);	// <GM>
+		_player->bGMTagOn = true;
+		_player->SetFlag(PLAYER_FLAGS, PLAYER_FLAG_GM);	// <GM>
+
+		_player->SetFaction( 35 );
+		_player->RemovePvPFlag();
+
 		BlueSystemMessage(m_session, "GM flag set. It will now appear above your name and in chat messages until you use .gm off.");
 	}
 
@@ -157,17 +159,20 @@ bool ChatHandler::HandleGMOnCommand(const char* args, WorldSession *m_session)
 
 bool ChatHandler::HandleGMOffCommand(const char* args, WorldSession *m_session)
 {
-	//uint32 newbytes = m_session->GetPlayer( )->GetUInt32Value(PLAYER_BYTES_2) & ~(0x8);
-	//m_session->GetPlayer( )->SetUInt32Value( PLAYER_BYTES_2, newbytes);
 
-	//GreenSystemMessage(m_session, "GM Flag Unset.");
 	GreenSystemMessage(m_session, "Unsetting GM Flag on yourself...");
-	if(!m_session->GetPlayer()->bGMTagOn)
+
+	Player * _player = m_session->GetPlayer();
+	if(!_player->bGMTagOn)
 		RedSystemMessage(m_session, "GM Flag not set. Use .gm on to enable it.");
 	else
 	{
-		m_session->GetPlayer()->bGMTagOn = false;
-		m_session->GetPlayer()->RemoveFlag(PLAYER_FLAGS, PLAYER_FLAG_GM);	// <GM>
+		_player->bGMTagOn = false;
+		_player->RemoveFlag(PLAYER_FLAGS, PLAYER_FLAG_GM);	// <GM>
+
+		_player->SetFaction( _player->GetInitialFactionId() );
+		_player->UpdatePvPArea();
+
 		BlueSystemMessage(m_session, "GM Flag Removed. <GM> Will no longer show in chat messages or above your name.");
 	}
 

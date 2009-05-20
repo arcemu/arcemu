@@ -6139,9 +6139,9 @@ void Player::SendLoot(uint64 guid,uint8 loot_type)
 
 		//quest items check. type 4/5
         //quest items that dont start quests.
-        if((itemProto->Bonding == ITEM_BIND_QUEST) && !(itemProto->QuestId) && !HasQuestForItem(iter->item.itemproto->ItemId))
+        if((itemProto->Bonding == ITEM_BIND_QUEST) && !(itemProto->QuestId) && !HasQuestForItem(itemProto->ItemId))
             continue;
-        if((itemProto->Bonding == ITEM_BIND_QUEST2) && !(itemProto->QuestId) && !HasQuestForItem(iter->item.itemproto->ItemId))
+        if((itemProto->Bonding == ITEM_BIND_QUEST2) && !(itemProto->QuestId) && !HasQuestForItem(itemProto->ItemId))
             continue;
 
         //quest items that start quests need special check to avoid drops all the time.
@@ -6191,7 +6191,6 @@ void Player::SendLoot(uint64 guid,uint8 loot_type)
 				}
             }
         }
-
 
 		slottype = 0;
 		if(m_Group != NULL && loot_type < 2)
@@ -6265,12 +6264,12 @@ void Player::SendLoot(uint64 guid,uint8 loot_type)
 
 				if(iter->item.itemproto)
 				{
-					iter->roll = new LootRoll(60000, (m_Group != NULL ? m_Group->MemberCount() : 1),  guid, x, iter->item.itemproto->ItemId, factor, uint32(ipid), GetMapMgr());
+					iter->roll = new LootRoll(60000, (m_Group != NULL ? m_Group->MemberCount() : 1),  guid, x, itemProto->ItemId, factor, uint32(ipid), GetMapMgr());
 
 					data2.Initialize(SMSG_LOOT_START_ROLL);
 					data2 << guid;
 					data2 << x;
-					data2 << uint32(iter->item.itemproto->ItemId);
+					data2 << uint32(itemProto->ItemId);
 					data2 << uint32(factor);
 					if(iter->iRandomProperty)
 						data2 << uint32(iter->iRandomProperty->ID);
@@ -8192,9 +8191,6 @@ void Player::ZoneUpdate(uint32 ZoneId)
 				// leave the old channel
 
 				chn->Part( this , false );
-
-
-
 			}
 		}
 	}
@@ -8963,6 +8959,16 @@ void Player::UpdatePvPArea()
 		return;
 	}
 #endif
+
+	if( bGMTagOn )
+	{
+		if(IsPvPFlagged())
+			RemovePvPFlag();
+		else
+			StopPvPTimer();
+		RemoveFFAPvPFlag();
+		return;
+	}
 
 	// This is where all the magic happens :P
 	if((at->category == AREAC_ALLIANCE_TERRITORY && GetTeam() == 0) || (at->category == AREAC_HORDE_TERRITORY && GetTeam() == 1))
@@ -12538,3 +12544,13 @@ void Player::SendTriggerMovie( uint32 movieID )
 	if( m_session )
 		m_session->OutPacket( SMSG_TRIGGER_MOVIE, 4, &movieID );
 }
+
+uint32 Player::GetInitialFactionId()
+{
+	PlayerCreateInfo * pci = objmgr.GetPlayerCreateInfo(getRace(), getClass());
+	if( pci )
+		return pci->factiontemplate;
+	else 
+		return 35;
+}
+

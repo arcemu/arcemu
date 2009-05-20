@@ -105,6 +105,7 @@ enum ShapeshiftForm
 	FORM_AMBIENT            = 6,
 	FORM_GHOUL              = 7,
 	FORM_DIREBEAR           = 8,
+	FORM_SHADOWDANCE		= 13,
 	FORM_CREATUREBEAR       = 14,
 	FORM_GHOSTWOLF          = 16,
 	FORM_BATTLESTANCE       = 17,
@@ -1093,7 +1094,7 @@ public:
     /* Factions                                                             */
     /************************************************************************/
 	void smsg_InitialFactions();
-	uint32 GetFactionId();
+	uint32 GetInitialFactionId();
     // factions variables
     int32 pctReputationMod;
 

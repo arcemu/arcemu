@@ -1075,6 +1075,12 @@ public:
 		return StandState (uint8 (bytes1));
 	}
 
+	ARCEMU_INLINE void SetFaction(uint32 factionId)
+	{
+		SetUInt32Value(UNIT_FIELD_FACTIONTEMPLATE, factionId );
+		_setFaction();
+	}
+
 	void SendChatMessage(uint8 type, uint32 lang, const char *msg);
 	void SendChatMessageToPlayer(uint8 type, uint32 lang, const char *msg, Player *plr);
 	void SendChatMessageAlternateEntry(uint32 entry, uint8 type, uint32 lang, const char * msg);

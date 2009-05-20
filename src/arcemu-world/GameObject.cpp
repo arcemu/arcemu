@@ -761,17 +761,18 @@ void GameObject::RemoveFromWorld(bool free_guid)
 //! Gameobject contains loot ex. chest
 bool GameObject::HasLoot()
 {
-    int count=0;
-    for(vector<__LootItem>::iterator itr = loot.items.begin(); itr != loot.items.end(); ++itr)
+	if( loot.gold > 0 )
+		return true;
+
+	for(vector<__LootItem>::iterator itr = loot.items.begin(); itr != loot.items.end(); ++itr)
 	{
 		if( itr->item.itemproto->Bonding == ITEM_BIND_QUEST || itr->item.itemproto->Bonding == ITEM_BIND_QUEST2 )
 			continue;
 
-		count += (itr)->iItemsCount;
+		if( itr->iItemsCount > 0 )
+			return true;
 	}
-
-    return (count>0);
-
+	return false;
 }
 
 uint32 GameObject::GetGOReqSkill()  

@@ -1382,8 +1382,12 @@ void Spell::cancel()
 					delete ((GameObject*)(p_caster->GetSummonedObject()));
 					p_caster->SetSummonedObject(NULL);
 				}
+
 				if (m_timer > 0)
+				{
 					p_caster->delayAttackTimer(-m_timer);
+					RemoveItems();
+				}
 //				p_caster->setAttackTimer(1000, false);
 			 }
 		}
@@ -2141,12 +2145,10 @@ void Spell::finish(bool successful)
 	if( !m_triggeredSpell && p_caster != NULL && p_caster->CooldownCheat )
 		p_caster->ClearCooldownForSpell( GetProto()->Id );
 
-
 	/*
 	We set current spell only if this spell has cast time or is channeling spell
 	otherwise it's instant spell and we delete it right after completion
 	*/
-
 	if( u_caster != NULL )
 	{
 		if(!m_triggeredSpell && (GetProto()->ChannelInterruptFlags || m_castTime>0))

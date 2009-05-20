@@ -50,7 +50,28 @@ public:
   }
 };
 
+bool DraeneiSurvivor(uint32 i, Spell * pSpell)
+{
+	if( !pSpell->p_caster )
+		return true;
+
+	Unit * target = pSpell->GetUnitTarget();
+	if( !target || target->GetEntry() != 16483 )
+		return true;
+
+	Player * pPlayer = pSpell->p_caster;
+	QuestLogEntry * en = pPlayer->GetQuestLogForEntry( 9283 );
+	if( en && en->GetMobCount( 0 ) < en->GetQuest()->required_mobcount[0] )
+	{
+		en->SetMobCount( 0, en->GetMobCount( 0 ) + 1 );
+		en->SendUpdateAddKill( 0 );
+		en->UpdatePlayerFields();
+	}
+	return true;
+}
+
 void SetupAzuremystIsle(ScriptMgr *mgr)
 {
-  mgr->register_item_gossip_script(23654, CREATE_GOSSIPSCRIPT(DraeneiFishingNet));
+	mgr->register_dummy_spell(28880, &DraeneiSurvivor);
+	mgr->register_item_gossip_script(23654, CREATE_GOSSIPSCRIPT(DraeneiFishingNet));
 }

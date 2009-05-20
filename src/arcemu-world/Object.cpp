@@ -624,7 +624,6 @@ void Object::_BuildValuesUpdate(ByteBuffer * data, UpdateMask *updateMask, Playe
 			uint32 oldFlags = 0;
 
 			if(pThis->TaggerGuid == target->GetGUID())
-
 			{
 				// Our target is our tagger.
 				oldFlags = U_DYN_FLAG_TAGGED_BY_OTHER;
@@ -632,7 +631,7 @@ void Object::_BuildValuesUpdate(ByteBuffer * data, UpdateMask *updateMask, Playe
 				if(Flags & U_DYN_FLAG_TAGGED_BY_OTHER)
 					Flags &= ~oldFlags;
 
-				if(!(Flags & U_DYN_FLAG_LOOTABLE))
+				if( !(Flags & U_DYN_FLAG_LOOTABLE) && pThis->HasLootForPlayer( target ) )
 					Flags |= U_DYN_FLAG_LOOTABLE;
 			}
 			else

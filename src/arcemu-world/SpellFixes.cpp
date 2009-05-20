@@ -1583,6 +1583,13 @@ void ApplyNormalFixes()
 		sp->Effect[0] = SPELL_EFFECT_POWER_DRAIN; // should be Power Burn, not Power Drain. Power Drain leeches mana which is incorrect.
 
 	/**********************************************************
+	* Gift of the Naaru - Draenei RACIAL
+	**********************************************************/
+	sp = dbcSpell.LookupEntryForced( 28880 );
+	if( sp != NULL )
+		sp->Effect[1] = SPELL_EFFECT_DUMMY;
+
+	/**********************************************************
 	 * thrown - add a 1.6 second cooldown
 	 **********************************************************/
 	const static uint32 thrown_spells[] = {SPELL_RANGED_GENERAL,SPELL_RANGED_THROW,SPELL_RANGED_WAND, 26679, 27084, 29436, 37074, 41182, 41346, 0};
@@ -6253,7 +6260,7 @@ void ApplyNormalFixes()
 			sp->procChance=6; //procchance dynamic. 3ppm
 			sp->procFlags = PROC_ON_MELEE_ATTACK | PROC_ON_CRIT_ATTACK;
 		}
-		uint32 mm = (1<<(FORM_BEAR-1))|(1<<(FORM_DIREBEAR-1))|(1<<(FORM_MOONKIN-1))|(1<<(FORM_CAT-1));
+		uint32 mm = DecimalToMask(FORM_BEAR) | DecimalToMask(FORM_DIREBEAR) | DecimalToMask(FORM_MOONKIN) | DecimalToMask(FORM_CAT);
 
 		sp = dbcSpell.LookupEntryForced( 16972 );
 		if( sp != NULL )
