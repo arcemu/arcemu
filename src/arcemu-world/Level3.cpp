@@ -3343,32 +3343,44 @@ bool ChatHandler::HandleWhisperBlockCommand(const char * args, WorldSession * m_
 
 bool ChatHandler::HandleGenderChanger(const char* args, WorldSession *m_session)
 {
-	int gender;
-	Player* target = objmgr.GetPlayer((uint32)m_session->GetPlayer()->GetSelection());
-	if(!target) {
+	uint8 gender;
+	Player* target = objmgr.GetPlayer( (uint32)m_session->GetPlayer()->GetSelection() );
+	if( target == NULL )
+	{
 		SystemMessage(m_session, "Select A Player first.");
 		return true;
 	}
-	uint32 displayId = target->GetUInt32Value(UNIT_FIELD_NATIVEDISPLAYID);
-	if (!*args)
+	uint32 displayId = target->GetUInt32Value( UNIT_FIELD_NATIVEDISPLAYID );
+	if( *args == NULL )
+		gender = target->getGender()== 1 ? 0 : 1;
+	else
 	{
-		if (target->getGender()== 1)
-			gender = 0;
-		else
+		gender = (uint8)atoi( (char*)args );
+		if( gender > 1 )
 			gender = 1;
 	}
-	else
-		gender = min((int)atoi((char*)args),1);
-	target->setGender(gender);
+	
+	if( gender == target->getGender() )
+	{
+		SystemMessage( m_session, "%s's gender is already set to %s(%u).", target->GetName(), gender? "Female" : "Male", gender );
+		return true;
+	}
+
+	target->setGender( gender );
+
 	if( target->getGender() == 0 )
 	{
-		target->SetUInt32Value(UNIT_FIELD_DISPLAYID, (target->getRace()==RACE_BLOODELF)?displayId+1:displayId-1 );
-		target->SetUInt32Value(UNIT_FIELD_NATIVEDISPLAYID, (target->getRace()==RACE_BLOODELF)?displayId+1:displayId-1 );
-	} else {
-		target->SetUInt32Value(UNIT_FIELD_DISPLAYID, (target->getRace()==RACE_BLOODELF)?displayId-1:displayId+1 );
-		target->SetUInt32Value(UNIT_FIELD_NATIVEDISPLAYID, (target->getRace()==RACE_BLOODELF)?displayId-1:displayId+1 );
+		target->SetUInt32Value( UNIT_FIELD_DISPLAYID, ( target->getRace() == RACE_BLOODELF ) ? ++displayId : --displayId );
+		target->SetUInt32Value( UNIT_FIELD_NATIVEDISPLAYID, displayId );
 	}
-	SystemMessage(m_session, "Set %s's gender to %s(%u).", target->GetName(), gender?"Female":"Male", gender);
+	else
+	{
+		target->SetUInt32Value( UNIT_FIELD_DISPLAYID, ( target->getRace() == RACE_BLOODELF )? --displayId : ++displayId );
+		target->SetUInt32Value( UNIT_FIELD_NATIVEDISPLAYID, displayId );
+	}
+	target->EventModelChange();
+
+	SystemMessage( m_session, "Set %s's gender to %s(%u).", target->GetName(), gender ? "Female" : "Male", gender );
 	return true;
 }
 
