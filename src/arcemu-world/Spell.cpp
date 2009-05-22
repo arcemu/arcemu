@@ -4947,10 +4947,9 @@ void Spell::HandleTeleport(uint32 id, Unit* Target)
 
 void Spell::CreateItem(uint32 itemId)
 {
-    if( !itemId )
+	if( !itemId || !p_caster )
         return;
 
-	Player*			pUnit = static_cast< Player* >( m_caster );
 	Item*			newItem;
 	Item*			add;
 	SlotResult		slotresult;
@@ -4960,27 +4959,27 @@ void Spell::CreateItem(uint32 itemId)
 	if( m_itemProto == NULL )
 	    return;
 
-	if (pUnit->GetItemInterface()->CanReceiveItem(m_itemProto, 1))
+	if (p_caster->GetItemInterface()->CanReceiveItem(m_itemProto, 1))
 	{
 		SendCastResult(SPELL_FAILED_TOO_MANY_OF_ITEM);
 		return;
 	}
 
-	add = pUnit->GetItemInterface()->FindItemLessMax(itemId, 1, false);
+	add = p_caster->GetItemInterface()->FindItemLessMax(itemId, 1, false);
 	if (!add)
 	{
-		slotresult = pUnit->GetItemInterface()->FindFreeInventorySlot(m_itemProto);
+		slotresult = p_caster->GetItemInterface()->FindFreeInventorySlot(m_itemProto);
 		if(!slotresult.Result)
 		{
 			SendCastResult(SPELL_FAILED_TOO_MANY_OF_ITEM);
 			return;
 		}
 
-		newItem = objmgr.CreateItem(itemId, pUnit);
+		newItem = objmgr.CreateItem(itemId, p_caster);
 		if (newItem==NULL)
 			return;
 
-		AddItemResult result = pUnit->GetItemInterface()->SafeAddItem(newItem, slotresult.ContainerSlot, slotresult.Slot);
+		AddItemResult result = p_caster->GetItemInterface()->SafeAddItem(newItem, slotresult.ContainerSlot, slotresult.Slot);
 		if(!result)
 		{
 			newItem->DeleteMe();
