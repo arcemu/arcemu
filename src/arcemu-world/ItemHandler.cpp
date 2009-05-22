@@ -2033,10 +2033,18 @@ void WorldSession::HandleInsertGemOpcode(WorldPacket &recvPacket)
 					continue;
 
 				ip = it->GetProto();
-				if (ip->Flags & ITEM_FLAG_UNIQUE_EQUIP && itemi->IsEquipped(ip->ItemId)) {
-					itemi->BuildInventoryChangeError(it, TargetItem, INV_ERR_CANT_CARRY_MORE_OF_THIS);
+				if( ip->Flags & ITEM_FLAG_UNIQUE_EQUIP && itemi->IsEquipped( ip->ItemId ) )
+				{
+					itemi->BuildInventoryChangeError( it, TargetItem, INV_ERR_CANT_CARRY_MORE_OF_THIS );
 					continue;
 				}
+				// Skill requirement
+				if( ip->RequiredSkill )
+					if( ip->RequiredSkillRank > _player->_GetSkillLineCurrent( ip->RequiredSkill, true ) )
+					{
+						itemi->BuildInventoryChangeError( it, TargetItem, INV_ERR_SKILL_ISNT_HIGH_ENOUGH );
+						continue;
+					}
 			}
 
 			it = itemi->SafeRemoveAndRetreiveItemByGuid(gemguid,true);

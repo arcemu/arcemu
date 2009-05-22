@@ -22,11 +22,6 @@
 #define _ITEMPROTOTYPE_H
 class Spell;
 
-#define GEM_META_SOCKET 1
-#define GEM_RED_SOCKET 2
-#define GEM_YELLOW_SOCKET 4
-#define GEM_BLUE_SOCKET 8
-
 #define MAX_INVENTORY_SLOT 118
 #define MAX_BUYBACK_SLOT 12
 //#define MAX_BUYBACK_SLOT ((PLAYER_FIELD_KEYRING_SLOT_1 - PLAYER_FIELD_VENDORBUYBACK_SLOT_1) >> 1)
@@ -502,10 +497,10 @@ enum SPECIAL_ITEM_TYPE // dictates what bag-types an item can go into
 
 enum SOCKET_GEM_COLOR
 {
-	META_SOCKET = 1,
-	RED_SOCKET = 2,
-	YELLOW_SOCKET = 4,
-	BLUE_SOCKET = 8
+	GEM_META_SOCKET		= 1,
+	GEM_RED_SOCKET		= 2,
+	GEM_YELLOW_SOCKET	= 4,
+	GEM_BLUE_SOCKET		= 8
 };
 
 #pragma pack(push,1)
