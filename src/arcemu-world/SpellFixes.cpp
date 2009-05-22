@@ -6084,64 +6084,9 @@ void ApplyNormalFixes()
 			sp->AuraInterruptFlags = 0; //we remove it on proc or timeout
 			sp->procChance = 100;
 		}
-		//pounce
-		sp = dbcSpell.LookupEntryForced( 9007 );
-		if( sp != NULL )
-		{
-			sp->MechanicsType = MECHANIC_BLEEDING;
-		}
-		sp = dbcSpell.LookupEntryForced( 9824 );
-		if( sp != NULL )
-		{
-			sp->MechanicsType = MECHANIC_BLEEDING;
-		}
-		sp = dbcSpell.LookupEntryForced( 9826 );
-		if( sp != NULL )
-		{
-			sp->MechanicsType = MECHANIC_BLEEDING;
-		}
-		sp = dbcSpell.LookupEntryForced( 27007 );
-		if( sp != NULL )
-		{
-			sp->MechanicsType = MECHANIC_BLEEDING;
-		}
-		sp = dbcSpell.LookupEntryForced( 49803 );
-		if( sp != NULL )
-		{
-			sp->MechanicsType = MECHANIC_BLEEDING;
-		}
-
-		//rip
-		sp = dbcSpell.LookupEntryForced( 1079 );
-		if( sp != NULL )
-			sp->MechanicsType = MECHANIC_BLEEDING;
-		sp = dbcSpell.LookupEntryForced( 9492 );
-		if( sp != NULL )
-			sp->MechanicsType = MECHANIC_BLEEDING;
-		sp = dbcSpell.LookupEntryForced( 9493 );
-		if( sp != NULL )
-			sp->MechanicsType = MECHANIC_BLEEDING;
-		sp = dbcSpell.LookupEntryForced( 9752 );
-		if( sp != NULL )
-			sp->MechanicsType = MECHANIC_BLEEDING;
-		sp = dbcSpell.LookupEntryForced( 9894 );
-		if( sp != NULL )
-			sp->MechanicsType = MECHANIC_BLEEDING;
-		sp = dbcSpell.LookupEntryForced( 9896 );
-		if( sp != NULL )
-			sp->MechanicsType = MECHANIC_BLEEDING;
-		sp = dbcSpell.LookupEntryForced( 27008 );
-		if( sp != NULL )
-			sp->MechanicsType = MECHANIC_BLEEDING;
-		sp = dbcSpell.LookupEntryForced( 49799 );
-		if( sp != NULL )
-			sp->MechanicsType = MECHANIC_BLEEDING;
-		sp = dbcSpell.LookupEntryForced( 49800 );
-		if( sp != NULL )
-			sp->MechanicsType = MECHANIC_BLEEDING;
 
 		//rake
-		sp = dbcSpell.LookupEntryForced( 1822 );
+	 /* sp = dbcSpell.LookupEntryForced( 1822 );
 		if( sp != NULL )
 			sp->MechanicsType = MECHANIC_BLEEDING;
 		sp = dbcSpell.LookupEntryForced( 1823 );
@@ -6172,24 +6117,7 @@ void ApplyNormalFixes()
 			sp->MechanicsType = MECHANIC_BLEEDING;
 		sp = dbcSpell.LookupEntryForced( 48568 );
 		if( sp != NULL )
-			sp->MechanicsType = MECHANIC_BLEEDING;
-
-		//Pounce Bleed
-		sp = dbcSpell.LookupEntryForced( 9007 );
-		if( sp != NULL )
-			sp->DurationIndex = 18000;
-		sp = dbcSpell.LookupEntryForced( 9824 );
-		if( sp != NULL )
-			sp->DurationIndex = 18000;
-		sp = dbcSpell.LookupEntryForced( 9826 );
-		if( sp != NULL )
-			sp->DurationIndex = 18000;
-		sp = dbcSpell.LookupEntryForced( 27007 );
-		if( sp != NULL )
-			sp->DurationIndex = 18000;
-		sp = dbcSpell.LookupEntryForced( 49804 );
-		if( sp != NULL )
-			sp->DurationIndex = 18000;
+			sp->MechanicsType = MECHANIC_BLEEDING; */
 
 		//Druid: Natural Shapeshifter
 		sp = dbcSpell.LookupEntryForced( 16833 );
