@@ -20,12 +20,6 @@
 
 #include "StdAfx.h"
 
-//										   <10 <20 <30 <40 <50 <60 <70  70
-static int flagHonorTable[8]			= {  0,  5,  8, 14, 23, 38, 40, 40 };
-static int winHonorTable[8]				= {  0,  2,  4,  7, 11, 19, 20, 20 };
-static int extraCompleteHonorTable[8]	= {  0,  7, 12, 20, 34, 57, 59, 59 }; // extras only for weekends
-static int extraWinHonorTable[8]		= {  0,  5,  8, 14, 23, 38, 40, 40 };
-
 WarsongGulch::WarsongGulch(MapMgr * mgr, uint32 id, uint32 lgroup, uint32 t) : CBattleground(mgr, id, lgroup, t)
 {
 	int i;
@@ -173,7 +167,7 @@ void WarsongGulch::HookOnAreaTrigger(Player * plr, uint32 id)
 		/* remove the bool from the player so the flag doesn't drop */
 		m_flagHolders[plr->GetTeam()] = 0;
 		plr->m_bgHasFlag = 0;
-		
+
 		/* remove flag aura from player */
 		plr->RemoveAura(23333+(plr->GetTeam() * 2));
 
@@ -196,11 +190,15 @@ void WarsongGulch::HookOnAreaTrigger(Player * plr, uint32 id)
 		// Add the Event to respawn the Flags
 		sEventMgr.AddEvent(this, &WarsongGulch::EventReturnFlags, EVENT_BATTLEGROUND_WSG_AUTO_RETURN_FLAG, 20000, 1, 0);
 
-		/* give each player on that team a bonus according to flagHonorTable */
+		/* give each player on that team bonus honor and reputation*/
+		int32 honorToAdd = 2 * m_honorPerKill;
+		uint32 repToAdd = m_isWeekend ? 45 : 35;
+		uint32 fact = plr->GetTeam() ? 889 : 890; /*Warsong Outriders : Sliverwing Sentinels*/
 		for(set<Player*>::iterator itr = m_players[plr->GetTeam()].begin(); itr != m_players[plr->GetTeam()].end(); ++itr)
 		{
-			(*itr)->m_bgScore.BonusHonor += flagHonorTable[m_lgroup];
-			HonorHandler::AddHonorPointsToPlayer((*itr), flagHonorTable[m_lgroup]);
+			(*itr)->m_bgScore.BonusHonor += honorToAdd;
+			HonorHandler::AddHonorPointsToPlayer((*itr), honorToAdd);
+			plr->ModStanding(fact, repToAdd);
 		}
 
 		m_scores[plr->GetTeam()]++;
@@ -213,11 +211,13 @@ void WarsongGulch::HookOnAreaTrigger(Player * plr, uint32 id)
 
 			sEventMgr.RemoveEvents(this, EVENT_BATTLEGROUND_CLOSE);
 			sEventMgr.AddEvent(((CBattleground*)this), &CBattleground::Close, EVENT_BATTLEGROUND_CLOSE, 120000, 1,0);
-
-			m_mainLock.Acquire();
 			/* add the marks of honor to all players */
 			SpellEntry * winner_spell = dbcSpell.LookupEntry(24951);
 			SpellEntry * loser_spell = dbcSpell.LookupEntry(24950);
+			uint32 lostHonorToAdd = m_isWeekend ? 4 * m_honorPerKill : 2 * m_honorPerKill;
+			uint32 winHonorToAdd = lostHonorToAdd + (m_isWeekend ? 3 * m_honorPerKill : m_honorPerKill);
+			
+			m_mainLock.Acquire();
 			for(uint32 i = 0; i < 2; ++i)
 			{
 				for(set<Player*>::iterator itr = m_players[i].begin(); itr != m_players[i].end(); ++itr)
@@ -225,24 +225,18 @@ void WarsongGulch::HookOnAreaTrigger(Player * plr, uint32 id)
 					(*itr)->Root();
 					if(i == m_winningteam)
 					{
-						int honor = winHonorTable[m_lgroup];
-						if (m_isWeekend)
-						{
-							honor+= extraWinHonorTable[m_lgroup];
-							honor+= extraCompleteHonorTable[m_lgroup];
-						}
-						(*itr)->m_bgScore.BonusHonor += honor;
-						HonorHandler::AddHonorPointsToPlayer((*itr), honor);
+						(*itr)->m_bgScore.BonusHonor += winHonorToAdd;
+						HonorHandler::AddHonorPointsToPlayer((*itr), winHonorToAdd);
 						(*itr)->CastSpell((*itr), winner_spell, true);
+						if(i && (*itr)->GetQuestLogForEntry(11342))
+							(*itr)->GetQuestLogForEntry(11342)->SendQuestComplete();
+						else if((*itr)->GetQuestLogForEntry(11338))
+							(*itr)->GetQuestLogForEntry(11338)->SendQuestComplete();
 					}
 					else
 					{
-						if (m_isWeekend)
-						{
-							int honor = extraCompleteHonorTable[m_lgroup];
-							(*itr)->m_bgScore.BonusHonor += honor;
-							HonorHandler::AddHonorPointsToPlayer((*itr), honor);
-						}
+						(*itr)->m_bgScore.BonusHonor += lostHonorToAdd;
+						HonorHandler::AddHonorPointsToPlayer((*itr), lostHonorToAdd);
 						(*itr)->CastSpell((*itr), loser_spell, true);
 					}
 				}
@@ -264,7 +258,8 @@ void WarsongGulch::EventReturnFlags()
 		if (m_homeFlags[x] != NULL)
 			m_homeFlags[x]->PushToWorld(m_mapMgr);
 	}
-	SendChatMessage(CHAT_MSG_BG_EVENT_NEUTRAL, 0, "The flags are now placed at their bases.");
+	SendChatMessage(CHAT_MSG_BG_EVENT_NEUTRAL, 0, "The Alliance's flag is now placed at her base.");
+	SendChatMessage(CHAT_MSG_BG_EVENT_NEUTRAL, 0, "The Horde's flag is now placed at her base.");
 }
 
 void WarsongGulch::HookOnFlagDrop(Player * plr)
@@ -357,6 +352,10 @@ void WarsongGulch::HookFlagDrop(Player * plr, GameObject * obj)
 	SpellCastTargets targets(plr->GetGUID());
 	sp->prepare(&targets);
 	SetWorldState(plr->GetTeam() ? WSG_ALLIANCE_FLAG_CAPTURED : WSG_HORDE_FLAG_CAPTURED, 2);
+	if( plr->GetTeam() == 1 )
+		SendChatMessage( CHAT_MSG_BG_EVENT_HORDE, plr->GetGUID(), "The Alliance's flag has been taken by %s !", plr->GetName() );
+	else
+		SendChatMessage( CHAT_MSG_BG_EVENT_ALLIANCE, plr->GetGUID(), "The Horde's flag has been taken by %s !", plr->GetName() );
 }
 
 void WarsongGulch::ReturnFlag(uint32 team)
@@ -368,9 +367,9 @@ void WarsongGulch::ReturnFlag(uint32 team)
 		m_homeFlags[team]->PushToWorld(m_mapMgr);
 	
 	if( team )
-		SendChatMessage( CHAT_MSG_BG_EVENT_ALLIANCE, 0, "The Alliance flag was returned to its base!" );
+		SendChatMessage( CHAT_MSG_BG_EVENT_NEUTRAL, 0, "The Alliance flag was returned to its base!" );
 	else
-		SendChatMessage( CHAT_MSG_BG_EVENT_HORDE, 0, "The Horde flag was returned to its base!" );
+		SendChatMessage( CHAT_MSG_BG_EVENT_NEUTRAL, 0, "The Horde flag was returned to its base!" );
 }
 
 void WarsongGulch::HookFlagStand(Player * plr, GameObject * obj)
@@ -387,7 +386,7 @@ void WarsongGulch::HookFlagStand(Player * plr, GameObject * obj)
 		return;
 	}
 #endif
-	if(m_flagHolders[plr->GetTeam()] || m_homeFlags[plr->GetTeam()] != obj)
+	if(m_flagHolders[plr->GetTeam()] || m_homeFlags[plr->GetTeam()] != obj || m_flagHolders[plr->GetTeam() ? 0 : 1] != 0 || m_dropFlags[plr->GetTeam() ? 0 : 1]->IsInWorld())
 	{
 		// cheater!
 		return;
@@ -430,8 +429,13 @@ void WarsongGulch::HookOnHK(Player * plr)
 
 void WarsongGulch::OnAddPlayer(Player * plr)
 {
-	if(!m_started)
+	if(!m_started && plr->IsInWorld())
+	{
 		plr->CastSpell(plr, BG_PREPARATION, true);
+		plr->m_bgScore.Misc1 = 0;
+		plr->m_bgScore.Misc2 = 0;
+	}
+	UpdatePvPData();
 }
 
 void WarsongGulch::OnRemovePlayer(Player * plr)
@@ -546,14 +550,17 @@ void WarsongGulch::OnCreate()
 
 	// Alliance Gates
 	GameObject *gate = SpawnGameObject(179921, 489, 1471.554688f, 1458.778076f, 362.633240f, 0, 33, 114, 2.33271f);
+	gate->SetByte(GAMEOBJECT_BYTES_1, 3, 100);
 	gate->PushToWorld(m_mapMgr);
 	m_gates.push_back(gate);
 
 	gate = SpawnGameObject(179919, 489, 1492.477783f, 1457.912354f, 342.968933f, 0, 33, 114, 2.68149f);
+	gate->SetByte(GAMEOBJECT_BYTES_1, 3, 100);
 	gate->PushToWorld(m_mapMgr);
 	m_gates.push_back(gate);
 
 	gate = SpawnGameObject(179918, 489, 1503.335327f, 1493.465820f, 352.188843f, 0, 33, 114, 2.26f);
+	gate->SetByte(GAMEOBJECT_BYTES_1, 3, 100);
 	gate->PushToWorld(m_mapMgr);
 	m_gates.push_back(gate);
 
@@ -563,6 +570,7 @@ void WarsongGulch::OnCreate()
 	gate->SetFloatValue(GAMEOBJECT_PARENTROTATION_01,-0.004956f);
 	gate->SetFloatValue(GAMEOBJECT_PARENTROTATION_02,-0.283972f);
 	gate->SetFloatValue(GAMEOBJECT_PARENTROTATION_03,0.9586736f);
+	gate->SetByte(GAMEOBJECT_BYTES_1, 3, 100);
 	gate->PushToWorld(m_mapMgr);
 	m_gates.push_back(gate);
 
@@ -571,6 +579,7 @@ void WarsongGulch::OnCreate()
 	gate->SetFloatValue(GAMEOBJECT_PARENTROTATION_01,0.1575096f);
 	gate->SetFloatValue(GAMEOBJECT_PARENTROTATION_02,-0.8239487f);
 	gate->SetFloatValue(GAMEOBJECT_PARENTROTATION_03,0.5073640f);
+	gate->SetByte(GAMEOBJECT_BYTES_1, 3, 100);
 	gate->PushToWorld(m_mapMgr);
 	m_gates.push_back(gate);
 
@@ -618,7 +627,8 @@ void WarsongGulch::OnStart()
 			m_homeFlags[i]->PushToWorld(m_mapMgr);
 	}
 
-	SendChatMessage( CHAT_MSG_BG_EVENT_NEUTRAL, 0, "The flags are now placed at their bases." );
+	SendChatMessage(CHAT_MSG_BG_EVENT_NEUTRAL, 0, "The Alliance's flag is now placed at her base.");
+	SendChatMessage(CHAT_MSG_BG_EVENT_NEUTRAL, 0, "The Horde's flag is now placed at her base.");
 
 	/* correct? - burlex */
 	PlaySoundToAll(SOUND_BATTLEGROUND_BEGIN);
@@ -629,6 +639,7 @@ void WarsongGulch::OnStart()
 void WarsongGulch::HookOnShadowSight() 
 {
 }
+
 void WarsongGulch::HookGenerateLoot(Player *plr, Object * pOCorpse)
 {
 }

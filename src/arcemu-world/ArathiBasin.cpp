@@ -167,6 +167,7 @@ static int resHonorTable[8] = { 0,  0,  4,  7,  11, 19, 20, 20 };
 static int winHonorTable[8] = { 0,  0,  4,  7,  11, 19, 20, 20 };
 
 static uint32 resourcesToGainBH = 330;
+static uint32 resourcesToGainBR = 200;
 
 /* End BG Data */
 
@@ -292,7 +293,7 @@ void ArathiBasin::SpawnControlPoint(uint32 Id, uint32 Type)
 	if(m_controlPointAuras[Id] == NULL)
 	{
 		m_controlPointAuras[Id] = SpawnGameObject(gi_aura->ID, m_mapMgr->GetMapId(), ControlPointCoordinates[Id][0], ControlPointCoordinates[Id][1],
-			ControlPointCoordinates[Id][2], ControlPointCoordinates[Id][3], 0, 35, 3.0f);
+			ControlPointCoordinates[Id][2], ControlPointCoordinates[Id][3], 0, 35, 1.0f);
 
 		m_controlPointAuras[Id]->SetFloatValue(GAMEOBJECT_PARENTROTATION_02, ControlPointRotations[Id][0]);
 		m_controlPointAuras[Id]->SetFloatValue(GAMEOBJECT_PARENTROTATION_03, ControlPointRotations[Id][1]);
@@ -454,10 +455,17 @@ ArathiBasin::ArathiBasin(MapMgr * mgr, uint32 id, uint32 lgroup, uint32 t) : CBa
 		m_resources[i] = 0;
 		m_capturedBases[i] = 0;
 		m_lastHonorGainResources[i] = 0;
+		m_lastRepGainResources[i] = 0;
 		m_nearingVictory[i] = false;
 	}
 
 	m_lgroup = lgroup;
+
+	for(i = 0; i < AB_NUM_CONTROL_POINTS; ++i)
+	{
+		DefFlag[i][0] = false;
+		DefFlag[i][1] = true;
+	}
 }
 
 ArathiBasin::~ArathiBasin()
@@ -536,19 +544,31 @@ void ArathiBasin::EventUpdateResources(uint32 Team)
 		current_resources = RESOURCES_WINVAL;
 
 	m_resources[Team] = current_resources;
-	if((current_resources - m_lastHonorGainResources[Team]) >= resourcesToGainBH)
+	if((current_resources - m_lastRepGainResources[Team]) >= resourcesToGainBR)
 	{
-		m_lastHonorGainResources[Team]+= resourcesToGainBH;
-
 		m_mainLock.Acquire();
 		for(set<Player*>::iterator itr = m_players[Team].begin(); itr != m_players[Team].end(); ++itr)
 		{
-			(*itr)->m_bgScore.BonusHonor += resHonorTable[m_lgroup];
-			HonorHandler::AddHonorPointsToPlayer((*itr), resHonorTable[m_lgroup]);
+			uint32 fact = (*itr)->GetTeam() ? 510 : 509; //The Defilers : The League of Arathor
+			(*itr)->ModStanding(fact, 10);
+		}
+		m_mainLock.Release();
+		m_lastRepGainResources[Team] += resourcesToGainBR;
+	}
+
+	if((current_resources - m_lastHonorGainResources[Team]) >= resourcesToGainBH)
+	{
+		uint32 honorToAdd = m_honorPerKill;
+		m_mainLock.Acquire();
+		for(set<Player*>::iterator itr = m_players[Team].begin(); itr != m_players[Team].end(); ++itr)
+		{
+			(*itr)->m_bgScore.BonusHonor += honorToAdd;
+			HonorHandler::AddHonorPointsToPlayer((*itr), honorToAdd);
 		}
 
 		UpdatePvPData();
 		m_mainLock.Release();
+		m_lastHonorGainResources[Team] += resourcesToGainBH;
 	}
 
 	// update the world states
@@ -573,25 +593,32 @@ void ArathiBasin::EventUpdateResources(uint32 Team)
 		sEventMgr.AddEvent(((CBattleground*)this), &CBattleground::Close, EVENT_BATTLEGROUND_CLOSE, 120000, 1,0);
 
 		/* add the marks of honor to all players */
-		m_mainLock.Acquire();
-
-		for(set<Player*>::iterator itr = m_players[Team].begin(); itr != m_players[Team].end(); ++itr)
-		{
-			(*itr)->m_bgScore.BonusHonor += winHonorTable[m_lgroup];
-			HonorHandler::AddHonorPointsToPlayer((*itr), winHonorTable[m_lgroup]);
-		}
-
 		SpellEntry * winner_spell = dbcSpell.LookupEntry(24953);
 		SpellEntry * loser_spell = dbcSpell.LookupEntry(24952);
+		uint32 lostHonorToAdd = m_honorPerKill;
+		uint32 winHonorToAdd = 2 * lostHonorToAdd;
+		m_mainLock.Acquire();
 		for(uint32 i = 0; i < 2; ++i)
 		{
 			for(set<Player*>::iterator itr = m_players[i].begin(); itr != m_players[i].end(); ++itr)
 			{
 				(*itr)->Root();
 				if(i == m_winningteam)
+				{
+					(*itr)->m_bgScore.BonusHonor += winHonorToAdd;
+					HonorHandler::AddHonorPointsToPlayer((*itr), winHonorToAdd);
 					(*itr)->CastSpell((*itr), winner_spell, true);
+					if(i && (*itr)->GetQuestLogForEntry(11339))
+						(*itr)->GetQuestLogForEntry(11339)->SendQuestComplete();
+					else if((*itr)->GetQuestLogForEntry(11335))
+						(*itr)->GetQuestLogForEntry(11335)->SendQuestComplete();
+				}
 				else
+				{
+					(*itr)->m_bgScore.BonusHonor += lostHonorToAdd;
+					HonorHandler::AddHonorPointsToPlayer((*itr), lostHonorToAdd);
 					(*itr)->CastSpell((*itr), loser_spell, true);
+				}
 			}
 		}
 		m_mainLock.Release();
@@ -625,8 +652,13 @@ void ArathiBasin::HookOnHK(Player * plr)
 
 void ArathiBasin::OnAddPlayer(Player * plr)
 {
-	if(!m_started)
+	if(!m_started && plr->IsInWorld())
+	{
 		plr->CastSpell(plr, BG_PREPARATION, true);
+		plr->m_bgScore.Misc1 = 0;
+		plr->m_bgScore.Misc2 = 0;
+	}
+	UpdatePvPData();
 }
 
 void ArathiBasin::OnRemovePlayer(Player * plr)
@@ -684,7 +716,10 @@ void ArathiBasin::HookOnAreaTrigger(Player * plr, uint32 id)
 			RemovePlayer(plr,false);
 			return;
 		}break;
-
+	case 4020:			// Trollbane Hall
+	case 4021:			// Defiler's Den
+		return;
+		break;
 	default:
 		Log.Error("ArathiBasin", "Encountered unhandled areatrigger id %u", id);
 		return;
@@ -727,7 +762,11 @@ bool ArathiBasin::HookHandleRepop(Player * plr)
 
 	for(uint32 i = 0; i < AB_NUM_CONTROL_POINTS; ++i)
 	{
-		if(m_basesOwnedBy[i] == (int32)plr->m_bgTeam)
+		if(m_basesOwnedBy[2] == (int32)plr->m_bgTeam)
+		{
+			dest.ChangeCoords(GraveyardLocations[2][0], GraveyardLocations[2][1], GraveyardLocations[2][2]);
+		}
+		else if(m_basesOwnedBy[i] == (int32)plr->m_bgTeam)
 		{
 			dist = plr->GetPositionV()->Distance2DSq(GraveyardLocations[i][0], GraveyardLocations[i][1]);
 			if(dist < current_distance)
@@ -774,10 +813,35 @@ void ArathiBasin::CaptureControlPoint(uint32 Id, uint32 Team)
 	// send the chat message/sounds out
 	PlaySoundToAll(Team ? SOUND_HORDE_CAPTURE : SOUND_ALLIANCE_CAPTURE);
 	SendChatMessage(Team ? CHAT_MSG_BG_EVENT_HORDE : CHAT_MSG_BG_EVENT_ALLIANCE, 0, "The %s has taken the %s!", Team ? "Horde" : "Alliance", ControlPointNames[Id]);
-	
+	DefFlag[Id][0] = false;
+	DefFlag[Id][1] = false;
+
 	// update the overhead display on the clients (world states)
 	m_capturedBases[Team]++;
 	SetWorldState(Team ? AB_HORDE_CAPTUREBASE : AB_ALLIANCE_CAPTUREBASE, m_capturedBases[Team]);
+
+	if(m_capturedBases[Team] >= 4)
+	{
+		m_mainLock.Acquire();
+		for(set<Player*>::iterator itr = m_players[Team].begin(); itr != m_players[Team].end(); ++itr)
+		{
+			if(Team)
+			{
+				if(m_capturedBases[Team] >= 4 && (*itr)->GetQuestLogForEntry(8121))
+					(*itr)->GetQuestLogForEntry(8121)->SendQuestComplete();
+				if(m_capturedBases[Team] == 5 && (*itr)->GetQuestLogForEntry(8122))
+					(*itr)->GetQuestLogForEntry(8122)->SendQuestComplete();
+			}
+			else
+			{
+				if(m_capturedBases[Team] >= 4 && (*itr)->GetQuestLogForEntry(8114))
+					(*itr)->GetQuestLogForEntry(8114)->SendQuestComplete();
+				if(m_capturedBases[Team] == 5 && (*itr)->GetQuestLogForEntry(8115))
+					(*itr)->GetQuestLogForEntry(8115)->SendQuestComplete();
+			}
+		}
+		m_mainLock.Release();
+	}
 
 	// respawn the control point with the correct aura
 	SpawnControlPoint(Id, Team ? AB_SPAWN_TYPE_HORDE_CONTROLLED : AB_SPAWN_TYPE_ALLIANCE_CONTROLLED);
@@ -892,18 +956,121 @@ void ArathiBasin::AssaultControlPoint(Player * pPlayer, uint32 Id)
 	// spawn the new control point gameobject
 	SpawnControlPoint(Id, Team ? AB_SPAWN_TYPE_HORDE_ASSAULT : AB_SPAWN_TYPE_ALLIANCE_ASSAULT);
 
-	// send out the chat message and sound
-	SendChatMessage(Team ? CHAT_MSG_BG_EVENT_HORDE : CHAT_MSG_BG_EVENT_ALLIANCE, pPlayer->GetGUID(), "$N claims the %s! If left unchallenged, the %s will control it in 1 minute!", ControlPointNames[Id],
-		Team ? "Horde" : "Alliance");
-
-	//NEED THE SOUND ID
-	//PlaySoundToAll(Team ? SOUND:SOUND);
-
 	// update the client's map with the new assaulting field
 	SetWorldState(AssaultFields[Id][Team], 1);
 
-	// create the 60 second event
-	sEventMgr.AddEvent(this, &ArathiBasin::CaptureControlPoint, Id, Team, EVENT_AB_CAPTURE_CP_1 + Id, 60000, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
+	// Check Assault/Defense, the time of capture is not the same.
+	if(DefFlag[Id][0] && !DefFlag[Id][1] )
+	{
+		DefFlag[Id][0] = false;
+		SendChatMessage(Team ? CHAT_MSG_BG_EVENT_HORDE : CHAT_MSG_BG_EVENT_ALLIANCE, pPlayer->GetGUID(), "$N defend %s", ControlPointNames[Id]);
+		sEventMgr.AddEvent(this, &ArathiBasin::CaptureControlPoint, Id, Team, EVENT_AB_CAPTURE_CP_1 + Id, 1000, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
+		pPlayer->m_bgScore.Misc2++;
+		UpdatePvPData();
+	}
+	else if(!DefFlag[Id][0] && !DefFlag[Id][1] )
+	{
+		DefFlag[Id][0] = true;
+		SendChatMessage(Team ? CHAT_MSG_BG_EVENT_HORDE : CHAT_MSG_BG_EVENT_ALLIANCE, pPlayer->GetGUID(), "$N assault %s !", ControlPointNames[Id]);
+		PlaySoundToAll(Team ? 8212 : 8174);
+		if(Team)
+		{
+			QuestLogEntry *en = pPlayer->GetQuestLogForEntry(8120);
+			switch(Id)
+			{
+				case AB_CONTROL_POINT_MINE:
+				{
+					if(en && en->GetMobCount(0) < en->GetQuest()->required_mobcount[0])
+					{
+						en->SetMobCount(0, en->GetMobCount(0) + 1);
+						en->SendUpdateAddKill(0);
+						en->UpdatePlayerFields();
+					}
+				}break;
+				case AB_CONTROL_POINT_LUMBERMILL:
+				{
+					if(en && en->GetMobCount(1) < en->GetQuest()->required_mobcount[1])
+					{
+						en->SetMobCount(1, en->GetMobCount(1) + 1);
+						en->SendUpdateAddKill(1);
+						en->UpdatePlayerFields();
+					}
+				}break;
+				case AB_CONTROL_POINT_BLACKSMITH:
+				{
+					if(en && en->GetMobCount(2) < en->GetQuest()->required_mobcount[2])
+					{
+						en->SetMobCount(2, en->GetMobCount(2) + 1);
+						en->SendUpdateAddKill(2);
+						en->UpdatePlayerFields();
+					}
+				}break;
+				case AB_CONTROL_POINT_STABLE:
+				{
+					if(en && en->GetMobCount(3) < en->GetQuest()->required_mobcount[3])
+					{
+						en->SetMobCount(3, en->GetMobCount(3) + 1);
+						en->SendUpdateAddKill(3);
+						en->UpdatePlayerFields();
+					}
+				}break;
+			}
+		}
+		else
+		{
+			QuestLogEntry *en = pPlayer->GetQuestLogForEntry(8105);
+			switch(Id)
+			{
+				case AB_CONTROL_POINT_MINE:
+				{
+					if(en && en->GetMobCount(0) < en->GetQuest()->required_mobcount[0])
+					{
+						en->SetMobCount(0, en->GetMobCount(0) + 1);
+						en->SendUpdateAddKill(0);
+						en->UpdatePlayerFields();
+					}
+				}break;
+				case AB_CONTROL_POINT_LUMBERMILL:
+				{
+					if(en && en->GetMobCount(1) < en->GetQuest()->required_mobcount[1])
+					{
+						en->SetMobCount(1, en->GetMobCount(1) + 1);
+						en->SendUpdateAddKill(1);
+						en->UpdatePlayerFields();
+					}
+				}break;
+				case AB_CONTROL_POINT_BLACKSMITH:
+				{
+					if(en && en->GetMobCount(2) < en->GetQuest()->required_mobcount[2])
+					{
+						en->SetMobCount(2, en->GetMobCount(2) + 1);
+						en->SendUpdateAddKill(2);
+						en->UpdatePlayerFields();
+					}
+				}break;
+				case AB_CONTROL_POINT_FARM:
+				{
+					if(en && en->GetMobCount(3) < en->GetQuest()->required_mobcount[3])
+					{
+						en->SetMobCount(3, en->GetMobCount(3) + 1);
+						en->SendUpdateAddKill(3);
+						en->UpdatePlayerFields();
+					}
+				}break;
+			}
+		}
+		sEventMgr.AddEvent(this, &ArathiBasin::CaptureControlPoint, Id, Team, EVENT_AB_CAPTURE_CP_1 + Id, 60000, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
+		pPlayer->m_bgScore.Misc1++;
+		UpdatePvPData();
+	}
+	else
+	{
+		DefFlag[Id][0] = true;
+		SendChatMessage(Team ? CHAT_MSG_BG_EVENT_HORDE : CHAT_MSG_BG_EVENT_ALLIANCE, pPlayer->GetGUID(), "$N claims the %s! If left unchallenged, the %s will control it in 1 minute!", ControlPointNames[Id],
+		Team ? "Horde" : "Alliance");
+		PlaySoundToAll(8192);
+		sEventMgr.AddEvent(this, &ArathiBasin::CaptureControlPoint, Id, Team, EVENT_AB_CAPTURE_CP_1 + Id, 60000, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
+	}
 }
 
 bool ArathiBasin::HookSlowLockOpen(GameObject * pGo, Player * pPlayer, Spell * pSpell)
@@ -943,10 +1110,12 @@ void ArathiBasin::SetIsWeekend(bool isweekend)
 	if (isweekend)
 	{
 		resourcesToGainBH = 200;
+		resourcesToGainBR = 150;
 	}
 	else
 	{
 		resourcesToGainBH = 330;
+		resourcesToGainBR = 200;
 	}
 }
 

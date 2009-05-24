@@ -54,7 +54,6 @@ public:
 	void OnStart();
 
 	void UpdateCPs();
-	void UpdateIcons();
 	void GeneratePoints();
 
 	// returns true if that team won
@@ -63,6 +62,7 @@ public:
 	void RespawnCPFlag(uint32 i, uint32 id);		// 0 = Neutral, <0 = Leaning towards alliance, >0 Leaning towards horde
 
 	bool HookSlowLockOpen(GameObject * pGo, Player * pPlayer, Spell * pSpell);
+	void DropFlag2(Player * plr, uint32 id);
 	void HookOnFlagDrop(Player * plr);
 	void EventResetFlag();
 	void RepopPlayersOfTeam(int32 team, Creature * sh);
@@ -78,12 +78,15 @@ protected:
 
 	GameObject * m_CPStatusGO[EOTS_TOWER_COUNT];
 	GameObject * m_CPBanner[EOTS_TOWER_COUNT];
+	GameObject * m_CPBanner2[EOTS_TOWER_COUNT];
+	GameObject * m_CPBanner3[EOTS_TOWER_COUNT];
 	GameObject * m_bubbles[2];
 	GameObject * EOTSm_buffs[4];
 
 	typedef set<Player*> EOTSCaptureDisplayList;
 	EOTSCaptureDisplayList m_CPDisplay[EOTS_TOWER_COUNT];
 
+	uint32 m_lastHonorGainPoints[2];
 	uint32 m_points[2];
 	Creature * m_spiritGuides[EOTS_TOWER_COUNT];
 };

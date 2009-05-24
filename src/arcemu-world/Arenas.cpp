@@ -112,14 +112,14 @@ void Arena::OnAddPlayer(Player * plr)
 	plr->RemoveTempEnchantsOnArena();
 
 	// Before the arena starts all your cooldowns are reset
-	if( !m_started )
+	if( !m_started  && plr->IsInWorld())
 		plr->ResetAllCooldowns();
 
 	// if( plr->m_isGmInvisible == false )
 	// Make sure the player isn't a GM an isn't invisible (monitoring?)
 	if ( !plr->m_isGmInvisible )
 	{
-		if( !m_started )
+		if( !m_started  && plr->IsInWorld())
 			plr->CastSpell(plr, ARENA_PREPARATION, true);
 
 		m_playersCount[plr->GetTeam()]++;
@@ -553,7 +553,10 @@ void Arena::Finish()
 		{
 			Player * plr = (Player *)(*itr);
 			if (plr != NULL)
+			{
 				sHookInterface.OnArenaFinish(plr, plr->m_arenaTeams[m_arenateamtype], victorious, rated_match);
+				plr->ResetAllCooldowns();
+			}
 		}
 	}
 }

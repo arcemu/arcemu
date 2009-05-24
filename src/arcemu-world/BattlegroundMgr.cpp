@@ -812,7 +812,7 @@ bool CBattlegroundManager::CanCreateInstance(uint32 Type, uint32 LevelGroup)
 /* Returns the minimum number of players (Only valid for battlegrounds) */
 uint32 CBattlegroundManager::GetMinimumPlayers(uint32 dbcIndex)
 {
-	switch((int)dbcIndex)
+	switch(dbcIndex)
 	{
 		case BATTLEGROUND_ALTERAC_VALLEY:
 			return Config.MainConfig.GetIntDefault("Battleground", "AV_MIN", dbcBattlemasterListStore.LookupEntry(dbcIndex)->min_players_per_faction);
@@ -838,7 +838,7 @@ uint32 CBattlegroundManager::GetMinimumPlayers(uint32 dbcIndex)
 /* Returns the maximum number of players (Only valid for battlegrounds) */
 uint32 CBattlegroundManager::GetMaximumPlayers(uint32 dbcIndex)
 {
-	switch((int)dbcIndex)
+	switch(dbcIndex)
 	{
 		case BATTLEGROUND_ALTERAC_VALLEY:
 			return Config.MainConfig.GetIntDefault("Battleground", "AV_MAX", dbcBattlemasterListStore.LookupEntry(dbcIndex)->min_players_per_faction);
@@ -914,6 +914,7 @@ CBattleground::CBattleground(MapMgr * mgr, uint32 id, uint32 levelgroup, uint32 
 		m_groups[i]->m_disbandOnNoMembers = false;
 		m_groups[i]->ExpandToRaid();
 	}
+	m_honorPerKill = HonorHandler::CalculateHonorPointsForKill(m_levelGroup * 10, m_levelGroup * 10);
 }
 
 CBattleground::~CBattleground()

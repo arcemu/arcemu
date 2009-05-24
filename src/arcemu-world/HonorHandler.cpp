@@ -45,35 +45,11 @@ void HonorHandler::AddHonorPointsToPlayer(Player *pPlayer, uint32 uAmount)
 	RecalculateHonorFields(pPlayer);
 }
 
-int32 HonorHandler::CalculateHonorPointsForKill( Player *pPlayer, Unit* pVictim )
+int32 HonorHandler::CalculateHonorPointsForKill( uint32 playerLevel, uint32 victimLevel )
 {
-	// this sucks.. ;p
-	if( pVictim == NULL )
-	{
-		int32 pts = rand() % 100 + 100;
-		return pts;
-	}
 
-	// Suicide lol
-	if( pVictim == pPlayer )
-		return 0;
-
-	if( pVictim->GetTypeId() != TYPEID_PLAYER )
-		return 0;
-
-	//use Player::m_honorless, applied with Aura::SpellAuraNoPVPCredit
-	// How dishonorable, you fiend!
-	//if( pVictim->HasActiveAura( PLAYER_HONORLESS_TARGET_SPELL ) )
-	//	return 0;
-
-	if ( pVictim->GetTypeId() == TYPEID_PLAYER && (static_cast< Player* >(pVictim)->m_honorless || static_cast< Player* >(pVictim)->HasAura(15007)) )
-		return 0;
-
-	uint32 k_level = pPlayer->GetUInt32Value( UNIT_FIELD_LEVEL );
-	uint32 v_level = pVictim->GetUInt32Value( UNIT_FIELD_LEVEL );
-
-	int k_honor = pPlayer->m_honorPoints;
-	int v_honor = static_cast< Player* >( pVictim )->m_honorPoints;
+	uint32 k_level = playerLevel;
+	uint32 v_level = victimLevel;
 
 	uint32 k_grey = 0;
 
@@ -86,21 +62,17 @@ int32 HonorHandler::CalculateHonorPointsForKill( Player *pPlayer, Unit* pVictim 
 		k_grey = k_level - 1 - float2int32( floor( ((float)k_level) / 5.0f ) );
 	}
 
-	if( k_honor == 0 )
-		k_honor = 1;
+	if(v_level <= k_grey)
+		return 0;
 
-	float diff_level = ((float)v_level - k_grey) / ((float)k_level - k_grey);
-	if( diff_level > 2 ) diff_level = 2.0f;
-	if( diff_level < 0 ) diff_level = 0.0f;
+	// Correct formula unknown. This one is correct for lvl 70 killing lvl 70 and scales down for lower levels
+	uint32 diff_level = v_level - k_level; // Should somehow affect the result
 
-	float diff_honor = ((float)v_honor) / ((float)k_honor);
-	if( diff_honor > 3 ) diff_honor = 3.0f;
-	if( diff_honor < 0 ) diff_honor = 0.0f;
-
-	float honor_points = diff_level * ( 150.0f + diff_honor * 60 );
+	float honor_points = 20.9f;
 	honor_points *= ((float)k_level) / PLAYER_LEVEL_CAP;
 	honor_points *= World::getSingleton().getRate( RATE_HONOR );
-
+	if(honor_points < 1.0f) // Make sure we get at least 1 point on low levels
+		return 1;
 	return float2int32( honor_points );
 }
 
@@ -134,7 +106,9 @@ void HonorHandler::OnPlayerKilledUnit( Player *pPlayer, Unit* pVictim )
 	}
 
 	// Calculate points
-	int32 Points = CalculateHonorPointsForKill(pPlayer, pVictim);
+	int32 Points = 0;
+	if(pVictim->IsPlayer() && pPlayer != pVictim)
+		Points = CalculateHonorPointsForKill(pPlayer->GetUInt32Value( UNIT_FIELD_LEVEL ), pVictim->GetUInt32Value( UNIT_FIELD_LEVEL ));
 
 	if( Points > 0 )
 	{

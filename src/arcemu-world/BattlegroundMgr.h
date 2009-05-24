@@ -250,6 +250,7 @@ protected:
 	uint32 m_levelGroup;
 	uint32 m_deltaRating[2];
 	uint32 m_invisGMs;
+	uint32 m_honorPerKill;
 
 public:
 	/* Team->Player Map */
