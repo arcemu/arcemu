@@ -342,7 +342,6 @@ mOutOfRangeIdCount(0)
 	m_explorationTimer	  = getMSTime();
 	linkTarget			  = 0;
 	AuraStackCheat			 = false;
-	ItemStackCheat = false;
 	TriggerpassCheat = false;
 	m_pvpTimer			  = 0;
 	m_globalCooldown = 0;
@@ -2285,25 +2284,6 @@ void Player::SaveToDB(bool bNewCharacter /* =false */)
 	m_playedtime[1] += playedt;
 	m_playedtime[2] += playedt;
 
-	// active cheats
-	uint32 active_cheats = 0;
-	if( CooldownCheat )
-		active_cheats |= 0x01;
-	if( CastTimeCheat )
-		active_cheats |= 0x02;
-	if( GodModeCheat )
-		active_cheats |= 0x04;
-	if( PowerCheat )
-		active_cheats |= 0x08;
-	if( FlyCheat )
-		active_cheats |= 0x10;
-	if( AuraStackCheat )
-		active_cheats |= 0x20;
-	if( ItemStackCheat )
-		active_cheats |= 0x40;
-	if( TriggerpassCheat )
-		active_cheats |= 0x80;
-
 	std::stringstream ss;
 	ss << "REPLACE INTO characters VALUES ("
 
@@ -2323,7 +2303,6 @@ void Player::SaveToDB(bool bNewCharacter /* =false */)
 
 	ss << uint32(getLevel()) << ","
 	<< m_uint32Values[PLAYER_XP] << ","
-	<< active_cheats << ","
 
 	// dump exploration data
 	<< "'";
@@ -2715,11 +2694,11 @@ void Player::LoadFromDBProc(QueryResultVector & results)
 		return;
 	}
 
-	if (result->GetFieldCount() != 83)
+	if (result->GetFieldCount() != 82)
 	{
 		Log.Error ("Player::LoadFromDB",
-				"Expected 83 fields from the database, "
-				"but received %u!  You may need to update your character database.",
+				"Expected 82 fields from the database, "
+				"but received %u!",
 				(unsigned int) result->GetFieldCount ());
 		RemovePendingPlayer();
 		return;
@@ -2804,25 +2783,6 @@ void Player::LoadFromDBProc(QueryResultVector & results)
 
 	// set xp
 	m_uint32Values[PLAYER_XP] = get_next_field.GetUInt32();
-
-	// Load active cheats
-	uint32 active_cheats = get_next_field.GetUInt32();
-	if(active_cheats & 0x01)
-		CooldownCheat = true;
-	if(active_cheats & 0x02)
-		CastTimeCheat = true;
-	if(active_cheats & 0x04)
-		GodModeCheat = true;
-	if(active_cheats & 0x08)
-		PowerCheat = true;
-	if(active_cheats & 0x10)
-		FlyCheat = true;
-	if(active_cheats & 0x20)
-		AuraStackCheat = true;
-	if(active_cheats & 0x40)
-		ItemStackCheat = true;
-	if(active_cheats & 0x80)
-		TriggerpassCheat = true;
 
 	// Process exploration data.
 	LoadFieldsFromString(get_next_field.GetString(), PLAYER_EXPLORED_ZONES_1, PLAYER_EXPLORED_ZONES_LENGTH);

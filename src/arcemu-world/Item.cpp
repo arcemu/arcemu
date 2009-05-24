@@ -195,7 +195,7 @@ void Item::LoadFromDB(Field* fields, Player* plr, bool light )
 	m_uint32Values[ITEM_FIELD_CREATOR] = fields[5].GetUInt32();
 
 	count = fields[6].GetUInt32();
-	if( count > m_itemProto->MaxCount && !m_owner->ItemStackCheat )
+	if (count > m_itemProto->MaxCount)
 		count = m_itemProto->MaxCount;
 	SetUInt32Value( ITEM_FIELD_STACK_COUNT, count);
 
@@ -360,7 +360,7 @@ void Item::SaveToDB( int8 containerslot, int8 slot, bool firstsave, QueryBuffer*
 	ss << "REPLACE INTO playeritems VALUES(";
 
 	ss << m_uint32Values[ITEM_FIELD_OWNER] << ",";
-	ss << m_uint32Values[OBJECT_FIELD_GUID] << ",";
+    ss << m_uint32Values[OBJECT_FIELD_GUID] << ",";
 	ss << m_uint32Values[OBJECT_FIELD_ENTRY] << ",";
 	ss << wrapped_item_id << ",";
 	ss << m_uint32Values[ITEM_FIELD_GIFTCREATOR] << ",";
@@ -388,7 +388,7 @@ void Item::SaveToDB( int8 containerslot, int8 slot, bool firstsave, QueryBuffer*
 			int32 remaining_duration = itr->second.Duration - elapsed_duration;
 			if( remaining_duration < 0 )
 				remaining_duration = 0;
-
+		
 			/*
 			if( !itr->second.RemoveAtLogout && (remaining_duration > 5 && itr->second.Slot != 2) || itr->second.Slot == 2)  // no point saving stuff with < 5 seconds... unless is perm enchant
 			{
@@ -397,7 +397,7 @@ void Item::SaveToDB( int8 containerslot, int8 slot, bool firstsave, QueryBuffer*
 				ss << itr->second.Slot << ";";
 			}
 			*/
-
+		  
 			if( itr->second.Enchantment && ( remaining_duration && remaining_duration > 5 || itr->second.Duration == 0 ) )
 			{
 				ss << itr->second.Enchantment->Id << ",";
@@ -407,7 +407,7 @@ void Item::SaveToDB( int8 containerslot, int8 slot, bool firstsave, QueryBuffer*
 		}
 	}
 	ss << "')";
-
+	
 	if( firstsave )
 		CharacterDatabase.WaitExecute( ss.str().c_str() );
 	else

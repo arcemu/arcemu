@@ -1732,7 +1732,6 @@ public:
 	CharRaceEntry * myRace;
 	CharClassEntry * myClass;
 	Unit * linkTarget;
-	bool ItemStackCheat;
 	bool AuraStackCheat;
 	bool TriggerpassCheat;
 	bool SafeTeleport(uint32 MapID, uint32 InstanceID, float X, float Y, float Z, float O);
