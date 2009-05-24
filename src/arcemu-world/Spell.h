@@ -941,8 +941,8 @@ enum SpellEffects
 	SPELL_EFFECT_SUMMON_REFER_A_FRIEND,     //    154
 	SPELL_EFFECT_TAME_CREATURE,             //    155
 	SPELL_EFFECT_UNKNOWN34,                 //    156
-	SPELL_EFFECT_UNKNOWN35,                 //    157
-	SPELL_EFFECT_MILLING,                 //    158
+	SPELL_EFFECT_CREATE_ITEM2,				//    157
+	SPELL_EFFECT_MILLING,					//    158
 	SPELL_EFFECT_UNKNOWN37,                 //    159
 	SPELL_EFFECT_UNKNOWN38,                 //    160
 	SPELL_EFFECT_UNKNOWN39,                 //    161
@@ -1711,6 +1711,7 @@ public:
     void SpellEffectBlock(uint32 i);
     void SpellEffectParry(uint32 i);
     void SpellEffectCreateItem(uint32 i);
+	void SpellEffectCreateItem2(uint32 i);
     void SpellEffectPersistentAA(uint32 i);
     void SpellEffectSummon(uint32 i);
     void SpellEffectLeap(uint32 i);

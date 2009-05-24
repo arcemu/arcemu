@@ -178,7 +178,7 @@ pSpellEffect SpellEffectsHandler[TOTAL_SPELL_EFFECTS]={
 	&Spell::SpellEffectNULL,// unknown - 154
 	&Spell::SpellEffectNULL,// unknown - 155
 	&Spell::SpellEffectNULL,// unknown - 156
-	&Spell::SpellEffectNULL,// unknown - 157
+	&Spell::SpellEffectCreateItem2,	//157
 	&Spell::SpellEffectMilling,// Milling - 158
 	&Spell::SpellEffectNULL,// unknown - 159
 };
@@ -2507,14 +2507,13 @@ void Spell::SpellEffectCreateItem(uint32 i) // Create item
 	SlotResult slotresult;
 
 	skilllinespell* skill = objmgr.GetSpellSkill(GetProto()->Id);
+	if( GetProto()->EffectItemType[i] == NULL )
+		return;
 
-	for(int j=0; j<3; j++) // now create the Items
-	{
 		ItemPrototype *m_itemProto;
-		m_itemProto = ItemPrototypeStorage.LookupEntry( GetProto()->EffectItemType[j] );
-
-		if (!m_itemProto) continue;
-		if(GetProto()->EffectItemType[j] == 0) continue;
+		m_itemProto = ItemPrototypeStorage.LookupEntry( GetProto()->EffectItemType[i] );
+		if (!m_itemProto)
+			return;
 
 		uint32 item_count = damage;
 
@@ -2641,7 +2640,7 @@ void Spell::SpellEffectCreateItem(uint32 i) // Create item
 		}
 
 		slot = 0;
-		add = p_target->GetItemInterface()->FindItemLessMax(GetProto()->EffectItemType[j],1, false);
+		add = p_target->GetItemInterface()->FindItemLessMax(GetProto()->EffectItemType[i],1, false);
 		if (!add)
 		{
 			slotresult = p_target->GetItemInterface()->FindFreeInventorySlot(m_itemProto);
@@ -2764,7 +2763,34 @@ void Spell::SpellEffectCreateItem(uint32 i) // Create item
 					delete data;
 				}
 			}
+	}
+}
+
+void Spell::SpellEffectCreateItem2(uint32 i) // Create item
+{
+	//TODO: This spell effect has also a misc value - meaning is unknown yet
+	if( p_caster == NULL )
+		return;
+
+	uint32 new_item_id = GetProto()->EffectItemType[i];
+
+	if( new_item_id != NULL )
+	{
+		// create item
+		CreateItem( new_item_id );
+	}
+	else if( i_caster )
+	{
+		// provide player with item loot (clams)
+		// TODO: Finish this
+		/*if( !i_caster->loot )
+		{
+			i_caster->loot = new Loot;
+			lootmgr.FillItemLoot( i_caster->loot, i_caster->GetEntry() );
 		}
+		p_caster->SetLootGUID( i_caster->GetGUID() );
+		p_caster->SendLoot( i_caster->GetGUID(), LOOT_DISENCHANTING );
+		*/	
 	}
 }
 
