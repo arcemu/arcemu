@@ -329,7 +329,7 @@ void Player::Reputation_OnKilledUnit( Unit * pUnit, bool InnerLoop )
 	if ( pUnit->GetTypeId() != TYPEID_UNIT || pUnit->IsPet() )
 		return;
 
-	Group * m_Group = m_playerInfo->m_Group;
+	Group * m_Group = GetGroup();
 	if ( !InnerLoop && m_Group )
 	{
 		/* loop the rep for group members */
