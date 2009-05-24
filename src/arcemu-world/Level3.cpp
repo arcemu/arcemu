@@ -1270,6 +1270,7 @@ bool ChatHandler::HandleShowCheatsCommand(const char* args, WorldSession* m_sess
 	print_cheat_status("Power", plyr->PowerCheat);
 	print_cheat_status("Fly", plyr->FlyCheat);
 	print_cheat_status("AuraStack", plyr->AuraStackCheat);
+	print_cheat_status("ItemStack", plyr->ItemStackCheat);
 	print_cheat_status("TriggerPass", plyr->TriggerpassCheat);
 	SystemMessage(m_session, "%u cheats active, %u inactive.", active, inactive);
 
@@ -2028,6 +2029,33 @@ bool ChatHandler::HandleNullFollowCommand(const char* args, WorldSession * m_ses
 	sGMLog.writefromsession( m_session, "cancelled npc follow command on %s, sqlid %u", c->GetCreatureInfo()->Name, c->GetSQL_id() );
 	return true;
 }
+
+bool ChatHandler::HandleItemStackCheatCommand(const char* args, WorldSession* m_session)
+{
+	Player* p = getSelectedChar(m_session, true);
+	if(!p)
+		return true;
+
+	bool turnCheatOn;
+	if(!*args)
+		turnCheatOn = (p->ItemStackCheat) ? false : true;
+	else if(stricmp(args, "on") == 0)
+		turnCheatOn = true;
+	else if(stricmp(args, "off") == 0)
+		turnCheatOn = false;
+	else
+		return false;
+	
+	p->ItemStackCheat = turnCheatOn;
+	BlueSystemMessage(m_session, "%s the item stack cheat on %s.", (turnCheatOn) ? "activated" : "deactivated", p->GetName());
+	GreenSystemMessageToPlr(p, "%s %s the item stack cheat on you.%s", m_session->GetPlayer()->GetName(), (turnCheatOn) ? "activated" : "deactivated", (turnCheatOn) ? "" : "  WARNING!!! Make sure all your item stacks are normal (if possible) before logging off, or else you may lose some items!");
+	if(p != m_session->GetPlayer() )
+	{
+		sGMLog.writefromsession(m_session, "item stack cheat on %s set to %s", p->GetName(), (turnCheatOn) ? "on" : "off");
+	}
+	return true;
+}
+
 
 bool ChatHandler::HandleAuraStackCheatCommand(const char* args, WorldSession * m_session)
 {

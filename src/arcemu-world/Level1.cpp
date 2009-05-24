@@ -302,9 +302,10 @@ bool ChatHandler::HandleAddInvItemCommand(const char *args, WorldSession *m_sess
 	ItemPrototype* it = ItemPrototypeStorage.LookupEntry(itemid);
 	if(it)
 	{
+		uint32 maxStack = (chr->ItemStackCheat) ? 0x7fffffff : it->MaxCount;
 		bool freeslots = true;
 		// more than one stack
-		while( (count > it->MaxCount) && freeslots )
+		while( (count > maxStack) && freeslots )
 		{
 			Item *item;
 			item = objmgr.CreateItem( itemid, chr);
@@ -325,14 +326,14 @@ bool ChatHandler::HandleAddInvItemCommand(const char *args, WorldSession *m_sess
 
 				item->ApplyRandomProperties(false);
 			}
-			item->SetUInt32Value(ITEM_FIELD_STACK_COUNT, it->MaxCount);
+			item->SetUInt32Value(ITEM_FIELD_STACK_COUNT, maxStack);
 			if(chr->GetItemInterface()->AddItemToFreeSlot(item))
 			{
 				SlotResult *lr = chr->GetItemInterface()->LastSearchResult();
-				chr->GetSession()->SendItemPushResult(item,false,true,false,true,lr->ContainerSlot,lr->Slot,it->MaxCount);
+				chr->GetSession()->SendItemPushResult(item,false,true,false,true,lr->ContainerSlot,lr->Slot,maxStack);
 				chr->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_LOOT_ITEM, itemid, 1, 0);
-				count -= it->MaxCount;
-				numadded += it->MaxCount;
+				count -= maxStack;
+				numadded += maxStack;
 			}
 			else
 			{
@@ -364,7 +365,7 @@ bool ChatHandler::HandleAddInvItemCommand(const char *args, WorldSession *m_sess
 				item->ApplyRandomProperties(false);
 			}
 			item->SetUInt32Value(ITEM_FIELD_STACK_COUNT, count);
-	  
+
 			if(chr->GetItemInterface()->AddItemToFreeSlot(item))
 			{
 				SlotResult *lr = chr->GetItemInterface()->LastSearchResult();
