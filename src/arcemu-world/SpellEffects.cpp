@@ -2625,8 +2625,9 @@ void Spell::SpellEffectCreateItem(uint32 i) // Create item
 		}
 
 		// item count cannot be more than allowed in a single stack
-		if (item_count > m_itemProto->MaxCount)
-			item_count = m_itemProto->MaxCount;
+		uint32 itemMaxStack = (p_target->ItemStackCheat) ? 0x7fffffff : m_itemProto->MaxCount;
+		if( item_count > itemMaxStack )
+			item_count = itemMaxStack;
 
 		// item count cannot be more than item unique value
 		if (m_itemProto->Unique && item_count > m_itemProto->Unique)
