@@ -41,11 +41,7 @@ const static uint32 BGMapIds[ BATTLEGROUND_NUM_TYPES ] =
 
 const static CreateBattlegroundFunc BGCFuncs[BATTLEGROUND_NUM_TYPES] = {
 	NULL,								// 0
-#ifdef ENABLE_AV
 	&AlteracValley::Create,				// AV
-#else
-	NULL,								// AV
-#endif
 	&WarsongGulch::Create,				// WSG
 	&ArathiBasin::Create,				// AB
 	NULL,								// 2v2

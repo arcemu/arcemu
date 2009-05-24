@@ -88,10 +88,8 @@ void WorldSession::SendBattlegroundList(Creature* pCreature, uint32 mapid)
 				t = BATTLEGROUND_EYE_OF_THE_STORM;
 			else if(strstr(pCreature->GetCreatureInfo()->SubName, "Warsong") != NULL)
 				t = BATTLEGROUND_WARSONG_GULCH;
-#ifdef ENABLE_AV
 			else if(strstr(pCreature->GetCreatureInfo()->SubName, "Alterac") != NULL)
 				t = BATTLEGROUND_ALTERAC_VALLEY;
-#endif
 			else if(strstr(pCreature->GetCreatureInfo()->SubName, "Strand") != NULL)
 				t = BATTLEGROUND_STRAND_OF_THE_ANCIENT;
 		}
