@@ -1254,3 +1254,21 @@ int32 GetStatScalingStatValueColumn(ItemPrototype *proto, uint32 type)
 	}
 	return 1;
 }
+
+uint32 Item::CountGemsWithLimitId(uint32 LimitId)
+{
+	uint32 result = 0;
+	for( uint32 count = 0; count < GetSocketsCount(); count++ )
+	{
+		EnchantmentInstance *ei = GetEnchantment( 2 + count );
+		if (ei 
+			&& ei->Enchantment->GemEntry //huh ? Gem without entry ?
+			)
+		{
+			ItemPrototype * ip = ItemPrototypeStorage.LookupEntry(ei->Enchantment->GemEntry);
+			if( ip && ip->ItemLimitCategory == LimitId )
+				result++;
+		}
+	}
+	return result;
+}

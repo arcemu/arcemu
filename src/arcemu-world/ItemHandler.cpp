@@ -2028,13 +2028,12 @@ void WorldSession::HandleInsertGemOpcode(WorldPacket &recvPacket)
 
 		if(gemguid)//add or replace gem
 		{
-			Item * it;
-			ItemPrototype * ip;
-
+			Item * it = NULL;
+			ItemPrototype * ip = NULL;
 			if (apply) 
 			{
 				it = itemi->GetItemByGUID(gemguid);
-				if(!it)
+				if( !it )
 					continue;
 
 				ip = it->GetProto();
@@ -2045,11 +2044,22 @@ void WorldSession::HandleInsertGemOpcode(WorldPacket &recvPacket)
 				}
 				// Skill requirement
 				if( ip->RequiredSkill )
+				{
 					if( ip->RequiredSkillRank > _player->_GetSkillLineCurrent( ip->RequiredSkill, true ) )
 					{
 						itemi->BuildInventoryChangeError( it, TargetItem, INV_ERR_SKILL_ISNT_HIGH_ENOUGH );
 						continue;
 					}
+				}
+				if( ip->ItemLimitCategory )
+				{
+					ItemLimitCategoryEntry * ile = dbcItemLimitCategory.LookupEntry( ip->ItemLimitCategory );
+					if( ile != NULL && itemi->GetEquippedCountByItemLimit( ip->ItemLimitCategory ) >= ile->maxAmount )
+					{
+						itemi->BuildInventoryChangeError(it, TargetItem, INV_ERR_ITEM_MAX_COUNT_EQUIPPED_SOCKETED);
+						continue;
+					}
+				}
 			}
 
 			it = itemi->SafeRemoveAndRetreiveItemByGuid(gemguid,true);

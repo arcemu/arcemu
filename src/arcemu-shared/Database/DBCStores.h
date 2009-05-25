@@ -519,6 +519,14 @@ struct ItemSetEntry
 	uint32 RequiredSkillAmt;    //45
 };
 
+struct ItemLimitCategoryEntry
+{
+	uint32 Id;					// 0	- Id
+	char * name;				// 1	- Displayed name
+	uint32 maxAmount;			// 18	- Max amount of items
+	uint32 equippedFlag;		// 19	- equipped (bool?)
+};
+
 struct Lock
 {
 	uint32 Id;
@@ -1791,7 +1799,6 @@ extern SERVER_DECL DBCStorage<DurabilityCostsEntry> dbcDurabilityCosts;
 extern SERVER_DECL DBCStorage<DurabilityQualityEntry> dbcDurabilityQuality;
 extern SERVER_DECL DBCStorage<BankSlotPrice> dbcBankSlotPrices;
 extern SERVER_DECL DBCStorage<BankSlotPrice> dbcStableSlotPrices; //uses same structure as Bank
-extern SERVER_DECL DBCStorage<BarberShopStyleEntry> dbcBarberShopStyle;
 extern SERVER_DECL DBCStorage<gtFloat> dbcBarberShopPrices;
 extern SERVER_DECL DBCStorage<gtFloat> dbcMeleeCrit;
 extern SERVER_DECL DBCStorage<gtFloat> dbcMeleeCritBase;
@@ -1804,6 +1811,7 @@ extern SERVER_DECL DBCStorage<gtFloat> dbcHPRegenBase;
 extern SERVER_DECL DBCStorage<AreaTriggerEntry> dbcAreaTrigger;
 extern SERVER_DECL DBCStorage<ScalingStatDistributionEntry> dbcScalingStatDistribution;
 extern SERVER_DECL DBCStorage<ScalingStatValuesEntry> dbcScalingStatValues;
+extern SERVER_DECL DBCStorage<ItemLimitCategoryEntry> dbcItemLimitCategory;
 
 bool LoadDBCs();
 

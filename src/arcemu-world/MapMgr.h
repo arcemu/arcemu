@@ -60,9 +60,9 @@ enum MapMgrTimers
 
 enum ObjectActiveState
 {
-	OBJECT_STATE_NONE	 = 0,
-	OBJECT_STATE_INACTIVE = 1,
-	OBJECT_STATE_ACTIVE   = 2,
+	OBJECT_STATE_NONE		= 0,
+	OBJECT_STATE_INACTIVE	= 1,
+	OBJECT_STATE_ACTIVE		= 2,
 };
 
 typedef std::set<Object*> ObjectSet;
@@ -86,7 +86,7 @@ class SERVER_DECL MapMgr : public CellHandler <MapCell>, public EventableObject,
 	friend class MapCell;
 	friend class MapScriptInterface;
 public:
-		
+
 	//This will be done in regular way soon
 	std::set< MapCell * > m_forcedcells;
 
@@ -136,11 +136,11 @@ public:
 	typedef HM_NAMESPACE::hash_map<uint32, DynamicObject*> DynamicObjectStorageMap;
 	DynamicObjectStorageMap m_DynamicObjectStorage;
 	DynamicObject * CreateDynamicObject();
-	
+
 	ARCEMU_INLINE DynamicObject * GetDynamicObject(uint32 guid)
 	{
 		DynamicObjectStorageMap::iterator itr = m_DynamicObjectStorage.find(guid);
-		return (itr != m_DynamicObjectStorage.end()) ? itr->second : 0;
+		return (itr != m_DynamicObjectStorage.end()) ? itr->second : NULL;
 	}
 
 //////////////////////////////////////////////////////////
@@ -151,20 +151,20 @@ public:
 	__inline Pet * GetPet(uint32 guid)
 	{
 		PetStorageMap::iterator itr = m_PetStorage.find(guid);
-		return (itr != m_PetStorage.end()) ? itr->second : 0;
+		return (itr != m_PetStorage.end()) ? itr->second : NULL;
 	}
 
 //////////////////////////////////////////////////////////
 // Local (mapmgr) storage of players for faster lookup
 ////////////////////////////////
-    
-    // double typedef lolz// a compile breaker..
-	typedef HM_NAMESPACE::hash_map<uint32, Player*>                     PlayerStorageMap;
+
+	// double typedef lolz// a compile breaker..
+	typedef HM_NAMESPACE::hash_map<uint32, Player*> PlayerStorageMap;
 	PlayerStorageMap m_PlayerStorage;
 	__inline Player * GetPlayer(uint32 guid)
 	{
 		PlayerStorageMap::iterator itr = m_PlayerStorage.find(guid);
-		return (itr != m_PlayerStorage.end()) ? itr->second : 0;
+		return (itr != m_PlayerStorage.end()) ? itr->second : NULL;
 	}
 
 //////////////////////////////////////////////////////////
@@ -237,7 +237,7 @@ public:
 	void EventCorpseDespawn(uint64 guid);
 
 	time_t InactiveMoveTime;
-    uint32 iInstanceMode;
+	uint32 iInstanceMode;
 
 	void UnloadCell(uint32 x,uint32 y);
 	void EventRespawnCreature(Creature * c, MapCell * p);
@@ -255,7 +255,7 @@ public:
 	void SendInitialStates(Player * plr);
 	void SetWorldState(uint32 zoneid, uint32 index, uint32 value);
 	//ARCEMU_INLINE uint32 GetWorldState(uint32 state);
-	
+
 	// better hope to clear any references to us when calling this :P
 	void InstanceShutdown()
 	{
@@ -289,7 +289,7 @@ protected:
 
 private:
 	//! Objects that exist on map
- 
+
 	uint32 _mapId;
 	set<Object*> _mapWideStaticObjects;
 
@@ -311,7 +311,6 @@ private:
 	PUpdateQueue _processQueue;
 
 	/* Sessions */
-	
 	SessionSet Sessions;
 
 	/* Map Information */

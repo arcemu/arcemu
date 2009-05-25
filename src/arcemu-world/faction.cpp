@@ -260,6 +260,7 @@ bool isAttackable(Object* objA, Object* objB, bool CheckStealth)// A can attack 
 	if(objA->IsPet())
 	{
 		if(objB->IsPlayer())
+		{
 			if(
 				static_cast<Pet *>(objA)->GetPetOwner() )
 			{
@@ -274,7 +275,9 @@ bool isAttackable(Object* objA, Object* objB, bool CheckStealth)// A can attack 
 					static_cast<Pet *>(objA)->GetGroup() == static_cast< Player* >( objB )->GetGroup() )
 					return false;
 			}
+		}
 		else if(objB->IsPet())
+		{
 			if(static_cast<Pet *>(objA)->GetPetOwner() && static_cast<Pet *>(objB)->GetPetOwner())
 			{
 				if(	static_cast<Pet *>(objA)->GetPetOwner()->DuelingWith == static_cast<Pet *>(objB)->GetPetOwner() && 
@@ -289,10 +292,12 @@ bool isAttackable(Object* objA, Object* objB, bool CheckStealth)// A can attack 
 					static_cast<Pet *>(objA)->GetGroup() == static_cast<Pet *>(objB)->GetGroup() )
 					return false;
 			}
+		}
 	}
 	if(objB->IsPet())
 	{
 		if(objA->IsPlayer())
+		{
 			if( static_cast<Pet*>(objB)->GetPetOwner() )
 			{
 				if(	static_cast<Pet *>(objB)->GetPetOwner()->DuelingWith == static_cast< Player* >(objA) && 
@@ -303,14 +308,17 @@ bool isAttackable(Object* objA, Object* objB, bool CheckStealth)// A can attack 
 					static_cast<Pet *>(objB)->GetGroup() == static_cast< Player* >( objA )->GetGroup() )
 					return false;
 			}
+		}
 		//we already made this check a few lines before : if A -> B
 /*		else if(objA->IsPet())
+		{
 			if(static_cast<Pet*>(objA)->GetPetOwner() && static_cast<Pet *>(objB)->GetPetOwner() &&
 				static_cast<Pet*>(objB)->GetPetOwner() &&
 				static_cast<Pet *>(objB)->GetPetOwner()->DuelingWith == static_cast<Pet *>(objA)->GetPetOwner() && 
 				static_cast<Pet *>(objB)->GetPetOwner()->GetDuelState() == DUEL_STATE_STARTED
 				)
-				return true;*/
+				return true;
+		}*/
 	}
 
 	// handle for totems
@@ -388,7 +396,7 @@ bool isAttackable(Object* objA, Object* objB, bool CheckStealth)// A can attack 
 	AreaTable *atA = NULL;
 	AreaTable *atB = NULL;
 
-  // cebernic: don't forget totem
+	// cebernic: don't forget totem
 
 	if ( objA->IsCreature() )
 	{
@@ -403,8 +411,7 @@ bool isAttackable(Object* objA, Object* objB, bool CheckStealth)// A can attack 
 	{
 		if( static_cast<Creature *>(objB)->IsTotem() && static_cast< Creature* >( objB )->GetTotemOwner() )
 			atB = dbcArea.LookupEntry( static_cast< Creature* >( objB )->GetTotemOwner()->GetAreaID() );
-		else
-		if( objB->IsPet() && static_cast< Pet* >( objB )->GetPetOwner() )
+		else if( objB->IsPet() && static_cast< Pet* >( objB )->GetPetOwner() )
 			atB = dbcArea.LookupEntry( static_cast< Pet* >( objB )->GetPetOwner()->GetAreaID() );
 /*		if ( atB==NULL ) {
 			Unit *_creator = objB->GetMapMgr()->GetUnit( objB->GetUInt64Value( UNIT_FIELD_CREATEDBY ) );
@@ -495,7 +502,7 @@ bool isCombatSupport(Object* objA, Object* objB)// B combat supports A?
 	}
 
 #ifdef _TEST_EXTENDED_FEATURES_
-  if ( !combatSupport && objA->GetUInt32Value(UNIT_FIELD_FACTIONTEMPLATE) == objB->GetUInt32Value(UNIT_FIELD_FACTIONTEMPLATE) && ((Creature*)objA)->GetCreatureInfo()->Rank >= 1 )
+	if ( !combatSupport && objA->GetUInt32Value(UNIT_FIELD_FACTIONTEMPLATE) == objB->GetUInt32Value(UNIT_FIELD_FACTIONTEMPLATE) && ((Creature*)objA)->GetCreatureInfo()->Rank >= 1 )
 		combatSupport = true;
 
 	if ( objB->GetUInt32Value(UNIT_FIELD_FACTIONTEMPLATE)==1080 || objA->GetUInt32Value(UNIT_FIELD_FACTIONTEMPLATE)==1080 )
@@ -548,10 +555,4 @@ bool isAlliance(Object* objA)// A is alliance?
 
 	return true;
 }
-
-
-
-
-
-
 

@@ -241,6 +241,8 @@ public:
 	ARCEMU_INLINE uint32 GetDurabilityMax() { return GetUInt32Value( ITEM_FIELD_MAXDURABILITY ); }
 	ARCEMU_INLINE bool IsAmmoBag() { return (m_itemProto->Class == ITEM_CLASS_QUIVER); }
 
+	uint32 CountGemsWithLimitId(uint32 Limit);
+
 	void RemoveFromWorld();
 
 	Loot* loot;

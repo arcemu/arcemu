@@ -7639,18 +7639,18 @@ void Aura::SpellAuraResistPushback(bool apply)
 
 	if(m_target->IsPlayer())
 	{
-		int32 val;
+		int32 val = 0;
 		if(apply)
 		{
 			val = mod->m_amount;
 			SetPositive();
 		}
 		else
-			val=-mod->m_amount;
+			val = -mod->m_amount;
 
-		for(uint32 x=0;x<7;x++)
+		for( uint32 x = 0; x < 7; x++ )
 		{
-			if (mod->m_miscValue & (((uint32)1)<<x) )
+			if (mod->m_miscValue & ( ( (uint32) 1 ) << x ) )
 			{
 				static_cast< Player* >( m_target )->SpellDelayResist[x] += val;
 			}
@@ -7665,12 +7665,10 @@ void Aura::SpellAuraModShieldBlockPCT( bool apply )
 		if( apply )
 		{
 			p_target->m_modblockabsorbvalue += ( uint32 )mod->m_amount;
-
 		}
 		else
 		{
 			p_target->m_modblockabsorbvalue -= ( uint32 )mod->m_amount;
-
 		}
 		p_target->UpdateStats();
 	}

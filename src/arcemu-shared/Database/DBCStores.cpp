@@ -21,65 +21,66 @@
 #include "DataStore.h"
 #include "NGLog.h"
 
-SERVER_DECL DBCStorage<WorldMapOverlay> dbcWorldMapOverlayStore;
 SERVER_DECL DBCStorage<AchievementEntry> dbcAchievementStore;
 SERVER_DECL DBCStorage<AchievementCriteriaEntry> dbcAchievementCriteriaStore;
 SERVER_DECL DBCStorage<AchievementCategoryEntry> dbcAchievementCategoryStore;
-SERVER_DECL DBCStorage<BattlemasterListEntry> dbcBattlemasterListStore;
-SERVER_DECL DBCStorage<CharTitlesEntry> dbcCharTitlesEntry;
-SERVER_DECL DBCStorage<BarberShopStyleEntry> dbcBarberShopStyleStore;
-SERVER_DECL DBCStorage<GemPropertyEntry> dbcGemProperty;
-SERVER_DECL DBCStorage<GlyphPropertyEntry> dbcGlyphProperty;
-SERVER_DECL DBCStorage<GlyphSlotEntry> dbcGlyphSlot;
-SERVER_DECL DBCStorage<ItemSetEntry> dbcItemSet;
-SERVER_DECL DBCStorage<Lock> dbcLock;
-SERVER_DECL DBCStorage<SpellEntry> dbcSpell;
-SERVER_DECL DBCStorage<SpellDuration> dbcSpellDuration;
-SERVER_DECL DBCStorage<SpellRange> dbcSpellRange;
-SERVER_DECL DBCStorage<SpellRuneCostEntry> dbcSpellRuneCost;
-SERVER_DECL DBCStorage<emoteentry> dbcEmoteEntry;
-SERVER_DECL DBCStorage<SpellRadius> dbcSpellRadius;
-SERVER_DECL DBCStorage<SpellCastTime> dbcSpellCastTime;
 SERVER_DECL DBCStorage<AreaGroup> dbcAreaGroup;
 SERVER_DECL DBCStorage<AreaTable> dbcArea;
-SERVER_DECL DBCStorage<FactionTemplateDBC> dbcFactionTemplate;
-SERVER_DECL DBCStorage<FactionDBC> dbcFaction;
-SERVER_DECL DBCStorage<EnchantEntry> dbcEnchant;
-SERVER_DECL DBCStorage<RandomProps> dbcRandomProps;
-SERVER_DECL DBCStorage<skilllinespell> dbcSkillLineSpell;
-SERVER_DECL DBCStorage<skilllineentry> dbcSkillLine;
+SERVER_DECL DBCStorage<AreaTriggerEntry> dbcAreaTrigger;
+SERVER_DECL DBCStorage<AuctionHouseDBC> dbcAuctionHouse;
+SERVER_DECL DBCStorage<BankSlotPrice> dbcBankSlotPrices;
+SERVER_DECL DBCStorage<BankSlotPrice> dbcStableSlotPrices;
+SERVER_DECL DBCStorage<BarberShopStyleEntry> dbcBarberShopStyleStore;
+SERVER_DECL DBCStorage<BattlemasterListEntry> dbcBattlemasterListStore;
+SERVER_DECL DBCStorage<CharClassEntry> dbcCharClass;
+SERVER_DECL DBCStorage<CharRaceEntry> dbcCharRace;
+SERVER_DECL DBCStorage<CharTitlesEntry> dbcCharTitlesEntry;
+SERVER_DECL DBCStorage<ChatChannelDBC> dbcChatChannels;
+SERVER_DECL DBCStorage<CombatRatingDBC> dbcCombatRating;
+SERVER_DECL DBCStorage<CreatureSpellDataEntry> dbcCreatureSpellData;
+SERVER_DECL DBCStorage<CreatureFamilyEntry> dbcCreatureFamily;
 SERVER_DECL DBCStorage<DBCTaxiNode> dbcTaxiNode;
 SERVER_DECL DBCStorage<DBCTaxiPath> dbcTaxiPath;
 SERVER_DECL DBCStorage<DBCTaxiPathNode> dbcTaxiPathNode;
-SERVER_DECL DBCStorage<AuctionHouseDBC> dbcAuctionHouse;
+SERVER_DECL DBCStorage<DurabilityCostsEntry> dbcDurabilityCosts;
+SERVER_DECL DBCStorage<DurabilityQualityEntry> dbcDurabilityQuality;
+SERVER_DECL DBCStorage<FactionTemplateDBC> dbcFactionTemplate;
+SERVER_DECL DBCStorage<FactionDBC> dbcFaction;
+SERVER_DECL DBCStorage<emoteentry> dbcEmoteEntry;
+SERVER_DECL DBCStorage<EnchantEntry> dbcEnchant;
+SERVER_DECL DBCStorage<GemPropertyEntry> dbcGemProperty;
+SERVER_DECL DBCStorage<GlyphPropertyEntry> dbcGlyphProperty;
+SERVER_DECL DBCStorage<GlyphSlotEntry> dbcGlyphSlot;
+SERVER_DECL DBCStorage<ItemExtendedCostEntry> dbcItemExtendedCost;
+SERVER_DECL DBCStorage<ItemLimitCategoryEntry> dbcItemLimitCategory;
+SERVER_DECL DBCStorage<ItemRandomSuffixEntry> dbcItemRandomSuffix;
+SERVER_DECL DBCStorage<ItemSetEntry> dbcItemSet;
+SERVER_DECL DBCStorage<Lock> dbcLock;
+SERVER_DECL DBCStorage<MapEntry> dbcMap;
+SERVER_DECL DBCStorage<RandomProps> dbcRandomProps;
+SERVER_DECL DBCStorage<ScalingStatDistributionEntry> dbcScalingStatDistribution;
+SERVER_DECL DBCStorage<ScalingStatValuesEntry> dbcScalingStatValues;
+SERVER_DECL DBCStorage<skilllinespell> dbcSkillLineSpell;
+SERVER_DECL DBCStorage<skilllineentry> dbcSkillLine;
+SERVER_DECL DBCStorage<SpellCastTime> dbcSpellCastTime;
+SERVER_DECL DBCStorage<SpellDuration> dbcSpellDuration;
+SERVER_DECL DBCStorage<SpellEntry> dbcSpell;
+SERVER_DECL DBCStorage<SpellRadius> dbcSpellRadius;
+SERVER_DECL DBCStorage<SpellRange> dbcSpellRange;
+SERVER_DECL DBCStorage<SpellRuneCostEntry> dbcSpellRuneCost;
 SERVER_DECL DBCStorage<TalentEntry> dbcTalent;
 SERVER_DECL DBCStorage<TalentTabEntry> dbcTalentTab;
-SERVER_DECL DBCStorage<CreatureSpellDataEntry> dbcCreatureSpellData;
-SERVER_DECL DBCStorage<CreatureFamilyEntry> dbcCreatureFamily;
-SERVER_DECL DBCStorage<CharClassEntry> dbcCharClass;
-SERVER_DECL DBCStorage<CharRaceEntry> dbcCharRace;
-SERVER_DECL DBCStorage<MapEntry> dbcMap;
-SERVER_DECL DBCStorage<ItemExtendedCostEntry> dbcItemExtendedCost;
-SERVER_DECL DBCStorage<ItemRandomSuffixEntry> dbcItemRandomSuffix;
-SERVER_DECL DBCStorage<CombatRatingDBC> dbcCombatRating;
-SERVER_DECL DBCStorage<ChatChannelDBC> dbcChatChannels;
-SERVER_DECL DBCStorage<DurabilityQualityEntry> dbcDurabilityQuality;
-SERVER_DECL DBCStorage<DurabilityCostsEntry> dbcDurabilityCosts;
-SERVER_DECL DBCStorage<BankSlotPrice> dbcBankSlotPrices;
-SERVER_DECL DBCStorage<BankSlotPrice> dbcStableSlotPrices;
-SERVER_DECL DBCStorage<BarberShopStyleEntry> dbcBarberShopStyle;
+SERVER_DECL DBCStorage<WorldMapOverlay> dbcWorldMapOverlayStore;
+
 SERVER_DECL DBCStorage<gtFloat> dbcBarberShopPrices;
+SERVER_DECL DBCStorage<gtFloat> dbcHPRegen;
+SERVER_DECL DBCStorage<gtFloat> dbcHPRegenBase;
+SERVER_DECL DBCStorage<gtFloat> dbcManaRegen;
+SERVER_DECL DBCStorage<gtFloat> dbcManaRegenBase;
 SERVER_DECL DBCStorage<gtFloat> dbcMeleeCrit;
 SERVER_DECL DBCStorage<gtFloat> dbcMeleeCritBase;
 SERVER_DECL DBCStorage<gtFloat> dbcSpellCrit;
 SERVER_DECL DBCStorage<gtFloat> dbcSpellCritBase;
-SERVER_DECL DBCStorage<gtFloat> dbcManaRegen;
-SERVER_DECL DBCStorage<gtFloat> dbcManaRegenBase;
-SERVER_DECL DBCStorage<gtFloat> dbcHPRegen;
-SERVER_DECL DBCStorage<gtFloat> dbcHPRegenBase;
-SERVER_DECL DBCStorage<AreaTriggerEntry> dbcAreaTrigger;
-SERVER_DECL DBCStorage<ScalingStatDistributionEntry> dbcScalingStatDistribution;
-SERVER_DECL DBCStorage<ScalingStatValuesEntry> dbcScalingStatValues;
 
 const char* WorldMapOverlayStoreFormat="nxiiiixxxxxxxxxxx";
 const char* BarberShopStyleEntryFormat="nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxi";
@@ -92,7 +93,6 @@ const char* GemPropertyEntryFormat = "uuuuu";
 const char* GlyphPropertyEntryFormat = "uuuu";
 const char* GlyphSlotEntryFormat = "uuu";
 const char* skilllineentrYFormat = "uuulxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx";
-
 
 const char* BattlemasterListEntryFormat = "uiiiiiiiiuuuuuiiiiiiiiiiiiiiiiiiuu";
 
@@ -315,6 +315,7 @@ const char* gtfloatformat = "f";
 const char* areatriggerformat = "uuffffffff";
 const char* scalingstatdistributionformat = "uiiiiiiiiiiuuuuuuuuuuu";
 const char* scalingstatvaluesformat = "uuuuuuuuuuuuuuuuuuu";
+const char* itemlimitcategoryformat = "usxxxxxxxxxxxxxxxxuu";
 
 template<class T>
 bool loader_stub(const char * filename, const char * format, bool ind, T& l, bool loadstrs)
@@ -341,7 +342,7 @@ bool LoadDBCs()
 	LOAD_DBC("DBC/SpellItemEnchantment.dbc", EnchantEntrYFormat, true, dbcEnchant, true);
 	LOAD_DBC("DBC/GemProperties.dbc", GemPropertyEntryFormat, true, dbcGemProperty, false);
 	LOAD_DBC("DBC/GlyphProperties.dbc", GlyphPropertyEntryFormat, true, dbcGlyphProperty, false);
-    LOAD_DBC("DBC/GlyphSlot.dbc", GlyphSlotEntryFormat, true, dbcGlyphSlot, false);
+	LOAD_DBC("DBC/GlyphSlot.dbc", GlyphSlotEntryFormat, true, dbcGlyphSlot, false);
 	LOAD_DBC("DBC/SkillLine.dbc", skilllineentrYFormat, true, dbcSkillLine, true);
 	LOAD_DBC("DBC/Spell.dbc", spellentryFormat, true, dbcSpell, true);
 	LOAD_DBC("DBC/ItemExtendedCost.dbc", itemextendedcostFormat, true, dbcItemExtendedCost, false);
@@ -385,5 +386,6 @@ bool LoadDBCs()
 	LOAD_DBC("DBC/AreaTrigger.dbc", areatriggerformat, true, dbcAreaTrigger, true);
 	LOAD_DBC("DBC/ScalingStatDistribution.dbc",scalingstatdistributionformat,true,dbcScalingStatDistribution, false);
 	LOAD_DBC("DBC/ScalingStatValues.dbc",scalingstatvaluesformat,true,dbcScalingStatValues, false);
+	LOAD_DBC("DBC/ItemLimitCategory.dbc", itemlimitcategoryformat, true, dbcItemLimitCategory, true);
 	return true;
 }

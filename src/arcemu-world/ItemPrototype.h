@@ -479,19 +479,19 @@ enum ITEM_FLAG
 
 enum SPECIAL_ITEM_TYPE // dictates what bag-types an item can go into
 {
-	ITEM_TYPE_BOWAMMO	    = 0x1,	// Arrows (quivers)
-	ITEM_TYPE_GUNAMMO	    = 0x2,	// Bullets (ammo pouches)
-    ITEM_TYPE_SOULSHARD     = 0x4,    // Soul Shards (soul bags)
-    ITEM_TYPE_LEATHERWORK   = 0x8,    // Leatherworking Supplies (lw supply bags)
+	ITEM_TYPE_BOWAMMO		= 0x1,		// Arrows (quivers)
+	ITEM_TYPE_GUNAMMO		= 0x2,		// Bullets (ammo pouches)
+	ITEM_TYPE_SOULSHARD		= 0x4,		// Soul Shards (soul bags)
+	ITEM_TYPE_LEATHERWORK	= 0x8,		// Leatherworking Supplies (lw supply bags)
 	ITEM_TYPE_INSCRIPTION	= 0x10,		// Inscription supplies (inscriber supply bags)
-    ITEM_TYPE_HERBALISM     = 0x20,    // Herbalism supplies (herb bags)
-    ITEM_TYPE_ENCHANTMENT   = 0x40,    // Enchanting Supplies (enchanting bags)
-    ITEM_TYPE_ENGINEERING   = 0x80,    // Engineering Supplies (engineering toolboxes)
-    ITEM_TYPE_KEYRING       = 0x100,    // Keys (the keyring)
-    ITEM_TYPE_GEMS          = 0x200,    // Jewelcrafting supplies (JC toolboxes)
-    ITEM_TYPE_MINING        = 0x400,    // Mining Supplies (mining toolboxes)
-    ITEM_TYPE_SBEQUIPMENT   = 0x800,    // Soulbound Equipment (wtf is this anyway?)
-    ITEM_TYPE_VANITYPETS    = 0x1000,    // Vanity Pets (no idea what this is here for, there's no 'vanity-pet bag', although perhaps they started on one then changed their minds and made the pets/mounts window)
+	ITEM_TYPE_HERBALISM		= 0x20,		// Herbalism supplies (herb bags)
+	ITEM_TYPE_ENCHANTMENT	= 0x40,		// Enchanting Supplies (enchanting bags)
+	ITEM_TYPE_ENGINEERING	= 0x80,		// Engineering Supplies (engineering toolboxes)
+	ITEM_TYPE_KEYRING		= 0x100,	// Keys (the keyring)
+	ITEM_TYPE_GEMS			= 0x200,	// Jewelcrafting supplies (JC toolboxes)
+	ITEM_TYPE_MINING		= 0x400,	// Mining Supplies (mining toolboxes)
+	ITEM_TYPE_SBEQUIPMENT	= 0x800,	// Soulbound Equipment (wtf is this anyway?)
+	ITEM_TYPE_VANITYPETS	= 0x1000,	// Vanity Pets (no idea what this is here for, there's no 'vanity-pet bag', although perhaps they started on one then changed their minds and made the pets/mounts window)
 	ITEM_TYPE_CURRENCY		= 0x2000	// currency. duh. (currency tab in char window)
 };
 
@@ -501,6 +501,12 @@ enum SOCKET_GEM_COLOR
 	GEM_RED_SOCKET		= 2,
 	GEM_YELLOW_SOCKET	= 4,
 	GEM_BLUE_SOCKET		= 8
+};
+
+enum ITEM_LIMIT_FLAGS
+{
+	ILFLAG_NONE			= 0,
+	ILFLAG_EQUIP_ONLY	= 1,
 };
 
 #pragma pack(push,1)

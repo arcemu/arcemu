@@ -1693,16 +1693,14 @@ int8 ItemInterface::GetInternalBankSlotFromPlayer(int8 islot)
 //-------------------------------------------------------------------//
 int8 ItemInterface::CanEquipItemInSlot2(int8 DstInvSlot, int8 slot, Item* item, bool ignore_combat /* = false */, bool skip_2h_check /* = false */, bool titansgrip /* = false */)
 {
-	ItemPrototype *proto=item->GetProto();
-	uint32 count;
-	int8 ret;
+	ItemPrototype *proto = item->GetProto();
 
-	ret = CanEquipItemInSlot(DstInvSlot, slot, proto, ignore_combat, skip_2h_check, titansgrip);
-	if (ret) return ret;
+	if( int8 ret = CanEquipItemInSlot(DstInvSlot, slot, proto, ignore_combat, skip_2h_check, titansgrip) )
+		return ret;
 
 	if((slot < INVENTORY_SLOT_BAG_END && DstInvSlot == INVENTORY_SLOT_NOT_SET) || (slot >= BANK_SLOT_BAG_START && slot < BANK_SLOT_BAG_END && DstInvSlot == INVENTORY_SLOT_NOT_SET))
 	{
-		for (count=0; count<item->GetSocketsCount(); count++)
+		for( uint32 count = 0; count < item->GetSocketsCount(); count++ )
 		{
 			EnchantmentInstance *ei = item->GetEnchantment( 2 + count );
 			if (ei 
@@ -1719,6 +1717,23 @@ int8 ItemInterface::CanEquipItemInSlot2(int8 DstInvSlot, int8 slot, Item* item, 
 				{
 					return INV_ERR_CANT_CARRY_MORE_OF_THIS;
 				}
+
+				if( ip->ItemLimitCategory > 0 )
+				{
+					uint32 LimitId = ip->ItemLimitCategory;
+					ItemLimitCategoryEntry * ile = dbcItemLimitCategory.LookupEntry( LimitId );
+					if( ile )
+					{
+						uint32 gemCount = 0;
+						if(		( ile->equippedFlag & ILFLAG_EQUIP_ONLY && slot < EQUIPMENT_SLOT_END ) 
+							||	( !(ile->equippedFlag & ILFLAG_EQUIP_ONLY) && slot > EQUIPMENT_SLOT_END ) )
+							gemCount = item->CountGemsWithLimitId( ile->Id );
+
+						uint32 gCount = GetEquippedCountByItemLimit( ile->Id );
+						if( ( gCount + gemCount ) > ile->maxAmount )
+							return INV_ERR_CANT_CARRY_MORE_OF_THIS;
+					}
+				}
 			}
 		}
 	}
@@ -1734,7 +1749,7 @@ int8 ItemInterface::CanEquipItemInSlot(int8 DstInvSlot, int8 slot, ItemPrototype
 	if ( proto == NULL ) return INV_ERR_ITEMS_CANT_BE_SWAPPED;
 
 	uint32 type = proto->InventoryType;
-	
+
 	if(slot >= INVENTORY_SLOT_BAG_START && slot < INVENTORY_SLOT_BAG_END && DstInvSlot == -1)
 		if(proto->ContainerSlots == 0)
 			return INV_ERR_ITEMS_CANT_BE_SWAPPED;
@@ -1746,7 +1761,7 @@ int8 ItemInterface::CanEquipItemInSlot(int8 DstInvSlot, int8 slot, ItemPrototype
 
 		if( IsEquipped(proto->ItemId) && (proto->Unique || proto->Flags & ITEM_FLAG_UNIQUE_EQUIP ))
 			return INV_ERR_CANT_CARRY_MORE_OF_THIS;
-		
+
 		// Check to see if we have the correct race
 		if(!(proto->AllowableRace& m_pOwner->getRaceMask()))
 			return INV_ERR_YOU_CAN_NEVER_USE_THAT_ITEM;
@@ -2187,6 +2202,16 @@ int8 ItemInterface::CanReceiveItem(ItemPrototype * item, uint32 amount)
 			return INV_ERR_CANT_CARRY_MORE_OF_THIS;
 		}
 	}
+	if( item->ItemLimitCategory > 0 )
+	{
+		ItemLimitCategoryEntry * ile = dbcItemLimitCategory.LookupEntry( item->ItemLimitCategory );
+		if( ile && !(ile->equippedFlag & ILFLAG_EQUIP_ONLY) )
+		{
+			uint32 count = GetItemCountByLimitId( ile->Id, false );
+			if( count >= ile->maxAmount || ( ( count + amount) > ile->maxAmount ) )
+				return INV_ERR_CANT_CARRY_MORE_OF_THIS;
+		}
+	}
 	return (int8)NULL;
 }
 
@@ -2420,14 +2445,14 @@ int8 ItemInterface::GetItemSlotByType(uint32 type)
 //-------------------------------------------------------------------//
 Item* ItemInterface::GetItemByGUID(uint64 Guid)
 {
-	uint32 i ;
+	uint32 i;
 
 	//EQUIPMENT
-	for(i=EQUIPMENT_SLOT_START;i<EQUIPMENT_SLOT_END;i++)
+	for( i = EQUIPMENT_SLOT_START; i < EQUIPMENT_SLOT_END; i++ )
 	{
-		if(m_pItems[i] != 0)
+		if( m_pItems[i] != 0 )
 		{
-			if( m_pItems[i]->GetGUID() == Guid)
+			if( m_pItems[i]->GetGUID() == Guid )
 			{
 				result.ContainerSlot = INVALID_BACKPACK_SLOT;//not a containerslot. In 1.8 client marked wrong slot like this
 				result.Slot = i;
@@ -2437,23 +2462,23 @@ Item* ItemInterface::GetItemByGUID(uint64 Guid)
 	}
 
 	//INVENTORY BAGS
-	for(i=INVENTORY_SLOT_BAG_START;i<INVENTORY_SLOT_BAG_END;i++)
+	for( i = INVENTORY_SLOT_BAG_START; i <INVENTORY_SLOT_BAG_END; i++ )
 	{
-		if(m_pItems[i] != NULL && m_pItems[i]->IsContainer())
+		if( m_pItems[i] != NULL && m_pItems[i]->IsContainer() )
 		{
-			if(m_pItems[i]->GetGUID()==Guid) 
+			if( m_pItems[i]->GetGUID() == Guid ) 
 			{
 				result.ContainerSlot = INVALID_BACKPACK_SLOT;
 				result.Slot = i;
 				return m_pItems[i]; 
 			}
 
-			for (uint32 j =0; j < m_pItems[i]->GetProto()->ContainerSlots;j++)
+			for( uint32 j = 0; j < m_pItems[i]->GetProto()->ContainerSlots; j++ )
 			{
 				Item *item2 = ((Container*)m_pItems[i])->GetItem(j);
-				if (item2)
+				if( item2 )
 				{
-					if (item2->GetGUID() == Guid)
+					if( item2->GetGUID() == Guid )
 					{
 						result.ContainerSlot = i;
 						result.Slot = j;
@@ -2465,7 +2490,7 @@ Item* ItemInterface::GetItemByGUID(uint64 Guid)
 	}
 
 	//INVENTORY
-	for(i=INVENTORY_SLOT_ITEM_START;i<INVENTORY_SLOT_ITEM_END;i++)
+	for( i = INVENTORY_SLOT_ITEM_START; i < INVENTORY_SLOT_ITEM_END; i++ )
 	{
 		if(m_pItems[i] != 0)
 		{
@@ -3314,4 +3339,126 @@ void ItemInterface::CheckAreaItems()
 			}
 		}
 	}
+}
+
+uint32 ItemInterface::GetEquippedCountByItemLimit(uint32 LimitId)
+{
+	uint32 count = 0;
+	for( uint32 x = EQUIPMENT_SLOT_START; x < EQUIPMENT_SLOT_END; ++x )
+	{
+		Item* it = m_pItems[x];
+
+		if( it != NULL )
+		{
+			for( uint32 socketcount = 0; socketcount < it->GetSocketsCount(); socketcount++ )
+			{
+				EnchantmentInstance *ei = it->GetEnchantment( 2 + socketcount );
+				if (ei && ei->Enchantment)
+				{
+					ItemPrototype * ip = ItemPrototypeStorage.LookupEntry(ei->Enchantment->GemEntry);
+					if( ip && ip->ItemLimitCategory == LimitId )
+						count++;
+				}
+			}
+		}
+	}
+	return count;
+}
+
+uint32 ItemInterface::GetItemCountByLimitId(uint32 LimitId, bool IncBank)
+{
+	uint32 cnt = 0;
+	uint32 i = 0;
+	for( i = EQUIPMENT_SLOT_START; i < INVENTORY_SLOT_ITEM_END; i++ )
+	{
+		Item * item = GetInventoryItem(i);
+		if( item != NULL )
+		{
+			if( item->GetProto() 
+				&& item->GetProto()->ItemLimitCategory == LimitId 
+				&& item->wrapped_item_id == 0 )
+			{
+				cnt += item->GetUInt32Value(ITEM_FIELD_STACK_COUNT) ? item->GetUInt32Value(ITEM_FIELD_STACK_COUNT) : 1; 
+			}
+		}
+	}
+
+	for( i = INVENTORY_SLOT_BAG_START; i < INVENTORY_SLOT_BAG_END; i++ )
+	{
+		Item * item = GetInventoryItem(i);
+		if( item && item->IsContainer() )
+		{
+			for( uint32 j = 0; j < item->GetProto()->ContainerSlots; j++ )
+			{
+				Item * item2 = ((Container*)item)->GetItem(j);
+				if( item2 != NULL )
+				{
+					if( item2->GetProto() 
+						&& item2->GetProto()->ItemLimitCategory == LimitId 
+						&& item2->wrapped_item_id == 0 )
+					{
+						cnt += item2->GetUInt32Value(ITEM_FIELD_STACK_COUNT) ? item2->GetUInt32Value(ITEM_FIELD_STACK_COUNT) : 1; 
+					}
+				}
+			}
+		}
+	}
+
+	for( i = INVENTORY_KEYRING_START; i < INVENTORY_KEYRING_END; i++ )
+	{
+		Item * item = GetInventoryItem(i);
+		if( item != NULL )
+		{
+			if( item->GetProto() 
+				&& item->GetProto()->ItemLimitCategory == LimitId 
+				&& item->wrapped_item_id == 0 )
+			{
+				cnt += item->GetUInt32Value(ITEM_FIELD_STACK_COUNT) ? item->GetUInt32Value(ITEM_FIELD_STACK_COUNT) : 1;
+			}
+		}
+	}
+
+	if( IncBank )
+	{
+		for( i = BANK_SLOT_ITEM_START; i < BANK_SLOT_BAG_END; i++ )
+		{
+			Item * item = GetInventoryItem(i);
+			if( item != NULL )
+			{
+				if( item->GetProto() 
+					&& item->GetProto()->ItemLimitCategory == LimitId  
+					&& item->wrapped_item_id == 0 )
+				{
+					cnt += item->GetUInt32Value(ITEM_FIELD_STACK_COUNT) ? item->GetUInt32Value(ITEM_FIELD_STACK_COUNT) : 1;
+				}
+			}
+		}
+
+		for( i = BANK_SLOT_BAG_START; i < BANK_SLOT_BAG_END; i++ )
+		{
+			Item * item = GetInventoryItem(i);
+			if( item != NULL )
+			{
+				if( item->IsContainer() )
+				{
+					for (uint32 j = 0; j < item->GetProto()->ContainerSlots; j++)
+					{
+						Item * item2 = ((Container*)item)->GetItem(j);
+						if( item2 != NULL )
+						{
+							if( item2->GetProto() 
+								&& item2->GetProto()->ItemLimitCategory == LimitId 
+								&& item2->wrapped_item_id == 0 )
+							{
+								cnt += item2->GetUInt32Value(ITEM_FIELD_STACK_COUNT) ? item2->GetUInt32Value(ITEM_FIELD_STACK_COUNT) : 1;
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+	cnt += GetEquippedCountByItemLimit( LimitId );
+
+	return cnt;
 }
