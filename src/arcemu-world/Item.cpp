@@ -195,7 +195,7 @@ void Item::LoadFromDB(Field* fields, Player* plr, bool light )
 	m_uint32Values[ITEM_FIELD_CREATOR] = fields[5].GetUInt32();
 
 	count = fields[6].GetUInt32();
-	if( count > m_itemProto->MaxCount && !m_owner->ItemStackCheat )
+	if( count > m_itemProto->MaxCount && (m_owner && !m_owner->ItemStackCheat) )
 		count = m_itemProto->MaxCount;
 	SetUInt32Value( ITEM_FIELD_STACK_COUNT, count);
 
