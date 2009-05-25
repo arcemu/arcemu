@@ -521,9 +521,9 @@ void ObjectMgr::LoadPlayerCreateInfo()
 	do
 	{
 		Field *fields = result->Fetch();
-		if(result->GetFieldCount() != 24)
+		if(result->GetFieldCount() != 25)
 		{
-			Log.Error("MySQL","Wrong field count in table playercreateinfo (got %lu, need 24)", result->GetFieldCount());
+			Log.Error("MySQL","Wrong field count in table playercreateinfo (got %lu, need 25).  You may need to update your database.", result->GetFieldCount());
 			delete result;
 			return;
 		}
@@ -553,6 +553,17 @@ void ObjectMgr::LoadPlayerCreateInfo()
 		pPlayerCreateInfo->mindmg = fields[21].GetFloat();
 		pPlayerCreateInfo->maxdmg = fields[22].GetFloat();
 		pPlayerCreateInfo->introid = fields[23].GetUInt32();
+
+		string taxiMaskStr = fields[24].GetString();
+		vector<string> tokens = StrSplit(taxiMaskStr, " ");
+
+		memset(pPlayerCreateInfo->taximask, 0, sizeof(pPlayerCreateInfo->taximask));
+		int index;
+		vector<string>::iterator iter;
+		for (iter = tokens.begin(), index = 0; (index < 12) && (iter != tokens.end()); ++iter, ++index)
+		{
+			pPlayerCreateInfo->taximask[index] = atol((*iter).c_str());
+		}
 
 		QueryResult *sk_sql = WorldDatabase.Query(
 			"SELECT * FROM playercreateinfo_skills WHERE indexid=%u",pPlayerCreateInfo->index);

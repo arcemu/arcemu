@@ -673,7 +673,7 @@ bool Player::Create(WorldPacket& data )
 		m_session->Disconnect();
 		// don't use Log.LargeErrorMessage() here, it doesn't handle %s %u in the string.
 		if(class_ == DEATHKNIGHT)
-			sLog.outError("Account Name: %s tried to create a deathknight, however your player creatinfo table does not support this class, please update your database.", m_session->GetAccountName().c_str());
+			sLog.outError("Account Name: %s tried to create a deathknight, however your playercreateinfo table does not support this class, please update your database.", m_session->GetAccountName().c_str());
 		else
 			sLog.outError("Account Name: %s tried to create an invalid character with race %u and class %u, if this is intended please update your playercreateinfo table inside your database.", m_session->GetAccountName().c_str(), race, class_);
 		return false;
@@ -699,8 +699,6 @@ bool Player::Create(WorldPacket& data )
 	m_restAmount = 0;
 	m_restState = 0;
 
-	memset(m_taximask, 0, sizeof(uint32)*12);
-
 	// set race dbc
 	myRace = dbcCharRace.LookupEntry(race);
 	myClass = dbcCharClass.LookupEntry(class_);
@@ -720,20 +718,8 @@ bool Player::Create(WorldPacket& data )
 	uint8 powertype = static_cast<uint8>(myClass->power_type);
 
 	// Automatically add the race's taxi hub to the character's taximask at creation time ( 1 << (taxi_node_id-1) )
-	memset(m_taximask,0,sizeof(m_taximask));
-	switch(race)
-	{
-	case RACE_TAUREN:	m_taximask[0]= 2097152;		break;
-	case RACE_HUMAN:	m_taximask[0]= 2;			break;
-	case RACE_DWARF:	m_taximask[0]= 32;			break;
-	case RACE_GNOME:	m_taximask[0]= 32;			break;
-	case RACE_ORC:		m_taximask[0]= 4194304;		break;
-	case RACE_TROLL:	m_taximask[0]= 4194304;		break;
-	case RACE_UNDEAD:	m_taximask[0]= 1024;		break;
-	case RACE_NIGHTELF:	m_taximask[0]= 100663296;	break;
-	case RACE_BLOODELF:	m_taximask[2]= 131072;		break;
-	case RACE_DRAENEI:	m_taximask[2]= 536870912;	break;
-	}
+	// this is defined in table playercreateinfo, field taximask
+	memcpy(m_taximask, info->taximask, sizeof(m_taximask));
 
 	// Set Starting stats for char
 	//SetFloatValue(OBJECT_FIELD_SCALE_X, ((race==RACE_TAUREN)?1.3f:1.0f));
