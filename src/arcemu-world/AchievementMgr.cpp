@@ -467,7 +467,7 @@ void AchievementMgr::CheckAllAchievementCriteria()
 void AchievementMgr::UpdateAchievementCriteria(AchievementCriteriaTypes type, int32 miscvalue1, int32 miscvalue2, uint32 time)
 {
 	uint64 selectedGUID;
-	if(type==ACHIEVEMENT_CRITERIA_TYPE_DO_EMOTE)
+	if( type == ACHIEVEMENT_CRITERIA_TYPE_DO_EMOTE )
 	{
 		selectedGUID = GetPlayer()->GetSelection();
 	}
@@ -476,18 +476,18 @@ void AchievementMgr::UpdateAchievementCriteria(AchievementCriteriaTypes type, in
 	{
 		AchievementCriteriaEntry const *achievementCriteria = (*i);
 
-		if(IsCompletedCriteria(achievementCriteria))
+		if( IsCompletedCriteria(achievementCriteria) )
 			continue;
 
-		if((achievementCriteria->groupFlag & ACHIEVEMENT_CRITERIA_GROUP_NOT_IN_GROUP) && GetPlayer()->GetGroup())
+		if( (achievementCriteria->groupFlag & ACHIEVEMENT_CRITERIA_GROUP_NOT_IN_GROUP) && GetPlayer()->GetGroup() )
 			continue;
 
 		AchievementEntry const *achievement = dbcAchievementStore.LookupEntry(achievementCriteria->referredAchievement);
-		if(!achievement)
+		if( !achievement )
 			continue;
 
-		if(achievement->factionFlag == ACHIEVEMENT_FACTION_FLAG_HORDE && GetPlayer()->GetTeam() != HORDE ||
-			achievement->factionFlag == ACHIEVEMENT_FACTION_FLAG_ALLIANCE && GetPlayer()->GetTeam() != ALLIANCE )
+		if( (achievement->factionFlag == ACHIEVEMENT_FACTION_FLAG_HORDE && GetPlayer()->GetTeam() != HORDE) ||
+			(achievement->factionFlag == ACHIEVEMENT_FACTION_FLAG_ALLIANCE && GetPlayer()->GetTeam() != ALLIANCE) )
 			continue;
 
 		switch (type)
@@ -1039,6 +1039,22 @@ void AchievementMgr::UpdateAchievementCriteria(AchievementCriteriaTypes type, in
 					UpdateCriteriaProgress(achievementCriteria, 1);
 				}
 				break;
+			case ACHIEVEMENT_CRITERIA_TYPE_HONORABLE_KILL_AT_AREA:
+				if( achievementCriteria->honorable_kill_at_area.areaID == miscvalue1 )
+					UpdateCriteriaProgress(achievementCriteria, 1);
+				break;
+			case ACHIEVEMENT_CRITERIA_TYPE_HK_CLASS:
+				if( achievementCriteria->hk_class.classID == miscvalue1 )
+					UpdateCriteriaProgress(achievementCriteria, 1);
+				break;
+			case ACHIEVEMENT_CRITERIA_TYPE_HK_RACE:
+				if( achievementCriteria->hk_race.raceID == miscvalue1 )
+					UpdateCriteriaProgress(achievementCriteria, 1);
+				break;
+			case ACHIEVEMENT_CRITERIA_TYPE_DEATH_AT_MAP:
+				if( achievementCriteria->death_at_map.mapID == miscvalue1 )
+					UpdateCriteriaProgress(achievementCriteria, 1);
+				break;
 			// these achievement criteria types simply update the progress by the value passed in miscvalue1
 			case ACHIEVEMENT_CRITERIA_TYPE_QUEST_REWARD_GOLD:
 			case ACHIEVEMENT_CRITERIA_TYPE_LOOT_MONEY:
@@ -1047,6 +1063,10 @@ void AchievementMgr::UpdateAchievementCriteria(AchievementCriteriaTypes type, in
 			case ACHIEVEMENT_CRITERIA_TYPE_BUY_BANK_SLOT:
 			case ACHIEVEMENT_CRITERIA_TYPE_VISIT_BARBER_SHOP:
 			case ACHIEVEMENT_CRITERIA_TYPE_GOLD_SPENT_AT_BARBER:
+			case ACHIEVEMENT_CRITERIA_TYPE_EARN_HONORABLE_KILL:
+			case ACHIEVEMENT_CRITERIA_TYPE_KILLED_BY_PLAYER:
+			case ACHIEVEMENT_CRITERIA_TYPE_KILLED_BY_CREATURE:
+			case ACHIEVEMENT_CRITERIA_TYPE_DEATH:
 				UpdateCriteriaProgress(achievementCriteria, miscvalue1);
 				break;
 			//End of Achievement List
@@ -1204,34 +1224,35 @@ bool AchievementMgr::IsCompletedCriteria(AchievementCriteriaEntry const* achieve
 	if( !achievementCriteria )
 		return false;
 	AchievementEntry const* achievement = dbcAchievementStore.LookupEntry(achievementCriteria->referredAchievement);
-	if(!achievement)
+	if( !achievement )
 	{
 		return false;
 	}
 
 
-	if(achievement->flags & ACHIEVEMENT_FLAG_COUNTER)
+	if( achievement->flags & ACHIEVEMENT_FLAG_COUNTER )
 	{
 		return false;
 	}
 
-	if(achievement->flags & (ACHIEVEMENT_FLAG_REALM_FIRST_REACH | ACHIEVEMENT_FLAG_REALM_FIRST_KILL))
+	if( achievement->flags & (ACHIEVEMENT_FLAG_REALM_FIRST_REACH | ACHIEVEMENT_FLAG_REALM_FIRST_KILL) )
 	{
-		if(objmgr.allCompletedAchievements.find(achievement->ID)!=objmgr.allCompletedAchievements.end())
+		if( objmgr.allCompletedAchievements.find(achievement->ID)!=objmgr.allCompletedAchievements.end() )
 		{
 			return false;
 		}
 	}
 
 	CriteriaProgressMap::iterator itr = m_criteriaProgress.find(achievementCriteria->ID);
-	if(itr == m_criteriaProgress.end())
+	if( itr == m_criteriaProgress.end() )
 	{
 		return false;
 	}
 
 	CriteriaProgress *progress = itr->second;
 
-	if(progress->counter < 1) // 0 or negative
+	// 0 or negative, not completed.
+	if( progress->counter < 1 )
 	{
 		return false;
 	}
@@ -1293,6 +1314,14 @@ bool AchievementMgr::IsCompletedCriteria(AchievementCriteriaEntry const* achieve
 			return progresscounter >= achievementCriteria->use_gameobject.useCount;
 		case ACHIEVEMENT_CRITERIA_TYPE_BUY_BANK_SLOT:
 			return progresscounter >= achievementCriteria->buy_bank_slot.numberOfSlots;
+		case ACHIEVEMENT_CRITERIA_TYPE_EARN_HONORABLE_KILL:
+			return progresscounter >= achievementCriteria->honorable_kill.killCount;
+		case ACHIEVEMENT_CRITERIA_TYPE_HONORABLE_KILL_AT_AREA:
+			return progresscounter >= achievementCriteria->honorable_kill_at_area.killCount;
+		case ACHIEVEMENT_CRITERIA_TYPE_HK_CLASS:
+			return progresscounter >= achievementCriteria->hk_class.count;
+		case ACHIEVEMENT_CRITERIA_TYPE_HK_RACE:
+			return progresscounter >= achievementCriteria->hk_race.count;
 		case ACHIEVEMENT_CRITERIA_TYPE_COMPLETE_ACHIEVEMENT:
 			return m_completedAchievements.find(achievementCriteria->complete_achievement.linkedAchievement) != m_completedAchievements.end();
 		// These achievements only require counter to be 1 (or higher)

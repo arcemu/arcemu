@@ -2816,7 +2816,6 @@ void Player::LoadFromDBProc(QueryResultVector & results)
 	// Load achievements - trying to do this asynchronously causes a crash :/
 	// This needs to be done before loading spells, skills, etc. so that Realm-First! stuff doesn't get spammed to everybody every time the player loads.
 	m_achievementMgr.LoadFromDB(CharacterDatabase.Query("SELECT achievement, date FROM character_achievement WHERE guid = '%u'", GetUInt32Value(OBJECT_FIELD_GUID)),CharacterDatabase.Query("SELECT criteria, counter, date FROM character_achievement_progress WHERE guid = '%u'", GetUInt32Value(OBJECT_FIELD_GUID)));
-	m_achievementMgr.CheckAllAchievementCriteria();
 
 	// Process skill data.
 	uint32 Counter = 0;
@@ -3309,36 +3308,6 @@ void Player::LoadFromDBProc(QueryResultVector & results)
 	RolloverHonor();
     iInstanceType = get_next_field.GetUInt32();
 
-	//load achievement status             /*Alice*/  - Must be rewrited.... crash
-/*	m_achievement_points = get_next_field.GetUInt32();
-	start = (char*)get_next_field.GetString();//buff;
-	while(start)
-	{
-		AchievementVal *newachi = new AchievementVal;
-		uint32 achiid;
-
-		end = strchr(start,',');
-		if(!end)break;
-		*end=0;
-		achiid = atol(start);
-		start = end +1;
-
-		end = strchr(start,',');
-		if(!end)break;
-		*end=0;
-		newachi->completed_at_stamp = atol(start);
-		start = end +1;
-
-		end = strchr(start,',');
-		if(!end)break;
-		*end=0;
-		newachi->cur_value = atol(start);
-		start = end +1;
-
-		m_achievements[ achiid ] = newachi;
-	};*/
-	//end loading achievements
-
 	// Load Glyphs and apply their auras
 	LoadFieldsFromString(get_next_field.GetString(), PLAYER_FIELD_GLYPHS_1, 8);
 	GlyphPropertyEntry *glyph;
@@ -3494,6 +3463,8 @@ void Player::LoadFromDBProc(QueryResultVector & results)
 			}
 		}
 	}
+	// Update achievements
+	m_achievementMgr.CheckAllAchievementCriteria();
 }
 
 void Player::SetPersistentInstanceId(Instance *pInstance)
