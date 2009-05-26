@@ -44,19 +44,19 @@ Arena::Arena(MapMgr * mgr, uint32 id, uint32 lgroup, uint32 t, uint32 players_pe
 	switch(t)
 	{
 	case BATTLEGROUND_ARENA_5V5:
-		m_arenateamtype=2;
+		m_arenateamtype = 2;
 		break;
 
 	case BATTLEGROUND_ARENA_3V3:
-		m_arenateamtype=1;
+		m_arenateamtype = 1;
 		break;
 
 	case BATTLEGROUND_ARENA_2V2:
-		m_arenateamtype=0;
+		m_arenateamtype = 0;
 		break;
 
 	default:
-		m_arenateamtype=0;
+		m_arenateamtype = 0;
 		break;
 	}
 	rated_match=false;

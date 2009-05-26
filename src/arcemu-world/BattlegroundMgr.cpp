@@ -49,7 +49,7 @@ const static CreateBattlegroundFunc BGCFuncs[BATTLEGROUND_NUM_TYPES] = {
 	NULL,								// 5v5
 	&EyeOfTheStorm::Create,				// EotS
 	NULL,
-	&StrandOfTheAncient::Create,		// SOTA, needs to be updated when SOTA is in
+	&StrandOfTheAncient::Create,		// SOTA
 	NULL,
 	NULL,
 };

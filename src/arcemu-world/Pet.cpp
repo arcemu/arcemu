@@ -1266,7 +1266,7 @@ void Pet::ApplyPetLevelAbilities()
 	SetUInt32Value( UNIT_FIELD_MAXHEALTH, base_hp );
 
 	//Family Aura
-	if( pet_family > 45 )
+	if( pet_family > 46 )
 		sLog.outError( "PETSTAT: Creature family %i [%s] has missing data.", pet_family, myFamily->name );
 	else if( family_aura[ pet_family ] != 0 )
 		this->CastSpell( this, family_aura[ pet_family ], true );

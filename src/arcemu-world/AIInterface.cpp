@@ -584,9 +584,16 @@ void AIInterface::HandleEvent(uint32 event, Unit* pUnit, uint32 misc1)
 			}*/
 
 			Instance *pInstance = NULL;
-			if(m_Unit->GetMapMgr())
+			if( m_Unit->GetMapMgr() )
 				pInstance = m_Unit->GetMapMgr()->pInstance;
-			if(m_Unit->GetMapMgr() && m_Unit->GetTypeId() == TYPEID_UNIT && !m_Unit->IsPet() && pInstance && (pInstance->m_mapInfo->type == INSTANCE_RAID || pInstance->m_mapInfo->type == INSTANCE_NONRAID || pInstance->m_mapInfo->type == INSTANCE_ARENA))
+
+			if(m_Unit->GetMapMgr()
+				&& m_Unit->GetTypeId() == TYPEID_UNIT 
+				&& !m_Unit->IsPet() 
+				&& pInstance 
+				&& (pInstance->m_mapInfo->type == INSTANCE_RAID 
+				|| pInstance->m_mapInfo->type == INSTANCE_NONRAID 
+				|| pInstance->m_mapInfo->type == MULTIMODE ))
 			{
 				InstanceBossInfoMap *bossInfoMap = objmgr.m_InstanceBossInfoMap[m_Unit->GetMapMgr()->GetMapId()];
 				Creature *pCreature = static_cast< Creature* >( m_Unit );

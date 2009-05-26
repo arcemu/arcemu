@@ -282,7 +282,9 @@ void Creature::CreateWayPoint (uint32 WayPointID, uint32 mapid, float x, float y
 
 void Creature::generateLoot()
 {
-	if (!loot.items.empty()) return;
+	if ( !loot.items.empty() )
+		return;
+
 	lootmgr.FillCreatureLoot(&loot,GetEntry(), m_mapMgr ? (m_mapMgr->iInstanceMode > 0 ? true : false) : false);
 
 	loot.gold = proto ? proto->money : 0;
@@ -321,12 +323,12 @@ void Creature::generateLoot()
 	 * (hopefully) get 24 random bits, which is then used to create a
 	 * normal distribution over 1/24th of the difference.
 	 */
-	if ((loot.gold > 0) && (loot.gold < 12))
+	if (( loot.gold > 0 ) && ( loot.gold < 12 ))
 	{
 		/* Don't use the below formula for very small cash - rouding
 		 * errors will be too bad.. */
 	}
-	else if (loot.gold >= 12)
+	else if ( loot.gold >= 12 )
 	{
 		uint32 random_bits;
 		double chunk_size;
@@ -375,19 +377,20 @@ void Creature::generateLoot()
 		if (info && info->Type != BEAST)
 		{
 			if(m_uint32Values[UNIT_FIELD_MAXHEALTH] <= 1667)
-				loot.gold = (uint32)((info->Rank+1)*getLevel()*(rand()%5 + 1)); //generate copper
+				//generate copper
+				loot.gold = (uint32)((info->Rank+1)*getLevel()*(rand()%5 + 1)); 
 			else
 				loot.gold = (uint32)((info->Rank+1)*getLevel()*(rand()%5 + 1)*(this->GetUInt32Value(UNIT_FIELD_MAXHEALTH)*0.0006)); //generate copper
 		}
 	}
 
-	if(loot.gold)
-		loot.gold = int32(float(loot.gold) * sWorld.getRate(RATE_MONEY));
+	if ( loot.gold )
+		loot.gold = int32(float ( loot.gold ) * sWorld.getRate( RATE_MONEY ));
 }
 
 void Creature::SaveToDB()
 {
-	if(!spawnid)
+	if( !spawnid )
 		spawnid = objmgr.GenerateCreatureSpawnID();
 
 	std::stringstream ss;
@@ -409,7 +412,7 @@ void Creature::SaveToDB()
 		<< m_uint32Values[UNIT_NPC_EMOTESTATE] << ",0,";
 		/*<< ((this->m_spawn ? m_spawn->respawnNpcLink : uint32(0))) << ",";*/
 
-	if(m_spawn)
+	if ( m_spawn )
 		ss << m_spawn->channel_spell << "," << m_spawn->channel_target_go << "," << m_spawn->channel_target_creature << ",";
 	else
 		ss << "0,0,0,";
@@ -466,9 +469,11 @@ void Creature::LoadScript()
 
 void Creature::DeleteFromDB()
 {
-	if(!GetSQL_id())return;
-	WorldDatabase.Execute("DELETE FROM creature_spawns WHERE id=%u", GetSQL_id());
-	WorldDatabase.Execute("DELETE FROM creature_waypoints WHERE spawnid=%u",GetSQL_id());
+	if ( !GetSQL_id() )
+		return;
+
+	WorldDatabase.Execute("DELETE FROM creature_spawns WHERE id=%u", GetSQL_id() );
+	WorldDatabase.Execute("DELETE FROM creature_waypoints WHERE spawnid=%u",GetSQL_id() );
 }
 
 
@@ -485,10 +490,10 @@ void Creature::DeleteQuest(QuestRelation *Q)
 	list<QuestRelation *>::iterator it;
 	for ( it = m_quests->begin(); it != m_quests->end(); ++it )
 	{
-		if (((*it)->type == Q->type) && ((*it)->qst == Q->qst ))
+		if ((( *it )->type == Q->type) && (( *it )->qst == Q->qst ))
 		{
-			delete (*it);
-			m_quests->erase(it);
+			delete ( *it );
+			m_quests->erase( it );
 			break;
 		}
 	}
@@ -501,7 +506,7 @@ Quest* Creature::FindQuest(uint32 quest_id, uint8 quest_relation)
 	{
 		QuestRelation *ptr = (*it);
 
-		if ((ptr->qst->id == quest_id) && (ptr->type & quest_relation))
+		if (( ptr->qst->id == quest_id ) && ( ptr->type & quest_relation ))
 		{
 			return ptr->qst;
 		}
@@ -516,9 +521,9 @@ uint16 Creature::GetQuestRelation(uint32 quest_id)
 
 	for (it = m_quests->begin(); it != m_quests->end(); ++it)
 	{
-		if ((*it)->qst->id == quest_id)
+		if (( *it )->qst->id == quest_id )
 		{
-			quest_relation |= (*it)->type;
+			quest_relation |= ( *it )->type;
 		}
 	}
 	return quest_relation;
@@ -536,38 +541,41 @@ void Creature::_LoadQuests()
 
 void Creature::setDeathState(DeathState s)
 {
-	if(s == ALIVE)
+	if( s == ALIVE )
 		this->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_DEAD);
 
-	if(s == JUST_DIED)
+	if ( s == JUST_DIED )
 	{
 
-		GetAIInterface()->SetUnitToFollow(NULL);
+		GetAIInterface()->SetUnitToFollow( NULL );
 		m_deathState = CORPSE;
-		m_corpseEvent=true;
+		m_corpseEvent = true;
 
 		/*sEventMgr.AddEvent(this, &Creature::OnRemoveCorpse, EVENT_CREATURE_REMOVE_CORPSE, 180000, 1,EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);*/
-		if(m_enslaveSpell)
+		if ( m_enslaveSpell )
 			RemoveEnslave();
 
-		if(m_currentSpell)
+		if ( m_currentSpell )
 			m_currentSpell->cancel();
 
-	}else m_deathState = s;
+	}
+	
+	else m_deathState = s;
 }
 
 void Creature::AddToWorld()
 {
 	// force set faction
-	if(m_faction == 0 || m_factionDBC == 0)
+	if  (m_faction == 0 || m_factionDBC == 0 )
 		_setFaction();
 
-	if(creature_info == 0)
-		creature_info = CreatureNameStorage.LookupEntry(GetEntry());
+	if ( creature_info == 0 )
+		creature_info = CreatureNameStorage.LookupEntry( GetEntry() );
 
-	if(creature_info == 0) return;
+	if ( creature_info == 0 )
+		return;
 
-	if(m_faction == 0 || m_factionDBC == 0)
+	if ( m_faction == 0 || m_factionDBC == 0 )
 		return;
 
 	Object::AddToWorld();
@@ -576,15 +584,16 @@ void Creature::AddToWorld()
 void Creature::AddToWorld(MapMgr * pMapMgr)
 {
 	// force set faction
-	if(m_faction == 0 || m_factionDBC == 0)
+	if ( m_faction == 0 || m_factionDBC == 0 )
 		_setFaction();
 
-	if(creature_info == 0)
-		creature_info = CreatureNameStorage.LookupEntry(GetEntry());
+	if ( creature_info == 0 )
+		creature_info = CreatureNameStorage.LookupEntry( GetEntry() );
 
-	if(creature_info == 0) return;
+	if ( creature_info == 0)
+		return;
 
-	if(m_faction == 0 || m_factionDBC == 0)
+	if ( m_faction == 0 || m_factionDBC == 0 )
 		return;
 
 	Object::AddToWorld(pMapMgr);
