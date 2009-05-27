@@ -6043,7 +6043,10 @@ bool Player::HasItemCount( uint32 item, uint32 count, bool inBankAlso ) const
 void Player::SendLoot(uint64 guid,uint8 loot_type)
 {
 	Group * m_Group = m_playerInfo->m_Group;
-	if(!IsInWorld()) return;
+
+	if( !IsInWorld() )
+		return;
+
 	Loot * pLoot = NULL;
 	uint32 guidtype = GET_TYPE_FROM_GUID(guid);
 	int8 loot_method = -1;

@@ -325,12 +325,15 @@ void Player::UpdateInrangeSetsBasedOnReputation()
 
 void Player::Reputation_OnKilledUnit( Unit * pUnit, bool InnerLoop )
 {
+
 	// add rep for on kill
 	if ( pUnit->GetTypeId() != TYPEID_UNIT || pUnit->IsPet() )
 		return;
 
 	Group * m_Group = GetGroup();
-	if ( !InnerLoop && m_Group )
+
+	// Why would this be accessed if the group didn't exist?
+	if ( !InnerLoop && m_Group != NULL )
 	{
 		/* loop the rep for group members */
 		m_Group->getLock().Acquire();
@@ -434,6 +437,7 @@ bool Player::AddNewFaction( FactionDBC * dbc, int32 standing, bool base ) // if 
 {
 	if ( dbc == NULL || dbc->RepListId < 0 )
 		return false;
+
 	uint32 RaceMask = getRaceMask();
 	uint32 ClassMask = getClassMask();
 	for ( uint32 i = 0; i < 4; i++ )
