@@ -1349,7 +1349,8 @@ void World::Rehash(bool load)
 		flood_lines = flood_seconds = 0;
 
 	m_CustomCharterGiver = (uint32)Config.OptionalConfig.GetIntDefault("Optional", "CustomCharterGiver",0);
-	m_AdditionalFun = (uint32)Config.OptionalConfig.GetBoolDefault("Optional", "AdditionalFun",false);
+	m_AdditionalFun = Config.OptionalConfig.GetBoolDefault("Optional", "AdditionalFun",false);
+	MaxProfs = (uint32)Config.OptionalConfig.GetIntDefault("Optional", "MaxProfessions", 2);
 
 	// Max Gold Settings
 	GoldCapEnabled = Config.OptionalConfig.GetBoolDefault("GoldSettings", "EnableGoldCap", true);

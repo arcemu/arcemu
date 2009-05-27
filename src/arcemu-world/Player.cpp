@@ -761,7 +761,7 @@ bool Player::Create(WorldPacket& data )
 	}
 	UpdateGlyphs();
 
-	SetUInt32Value(PLAYER_CHARACTER_POINTS2, sWorld.MaxProfs );
+	SetUInt32Value(PLAYER_CHARACTER_POINTS2, sWorld.MaxProfs);
 
 	SetUInt32Value(UNIT_FIELD_BYTES_0, ( ( race ) | ( class_ << 8 ) | ( gender << 16 ) | ( powertype << 24 ) ) );
 	//UNIT_FIELD_BYTES_1	(standstate) | (unk1) | (unk2) | (attackstate)
@@ -800,7 +800,6 @@ bool Player::Create(WorldPacket& data )
 	SetUInt32Value(PLAYER_BYTES_3, ((gender) | (0x00 << 8) | (0x00 << 16) | (GetPVPRank() << 24)));
 	SetUInt32Value(PLAYER_NEXT_LEVEL_XP, 400);
 	SetUInt32Value(PLAYER_FIELD_BYTES, 0x08 );
-	SetUInt32Value(PLAYER_CHARACTER_POINTS2,2);
 	SetFloatValue(UNIT_MOD_CAST_SPEED, 1.0f);
 	SetUInt32Value(PLAYER_FIELD_MAX_LEVEL, sWorld.m_levelCap);
 
@@ -2264,8 +2263,8 @@ void Player::SaveToDB(bool bNewCharacter /* =false */)
 	if( m_bg != NULL && IS_ARENA( m_bg->GetType() ) )
 		in_arena = true;
 
-	if(m_uint32Values[PLAYER_CHARACTER_POINTS2]>2)
-		m_uint32Values[PLAYER_CHARACTER_POINTS2]=2;
+	if( m_uint32Values[PLAYER_CHARACTER_POINTS2] > sWorld.MaxProfs )
+		m_uint32Values[PLAYER_CHARACTER_POINTS2] = sWorld.MaxProfs;
 
 	//Calc played times
 	uint32 playedt = (uint32)UNIXTIME - m_playedtime[2];
@@ -6926,7 +6925,8 @@ void Player::Reset_ToLevel1()
 	SetUInt32Value(UNIT_FIELD_STAT4, info->spirit );
 	SetUInt32Value(UNIT_FIELD_ATTACK_POWER, info->attackpower );
 	SetUInt32Value(PLAYER_CHARACTER_POINTS1,0);
-	SetUInt32Value(PLAYER_CHARACTER_POINTS2,2);
+	// resetting level shouldn't change # of available professions (it doesn't change what professions are learned)...
+	// SetUInt32Value(PLAYER_CHARACTER_POINTS2,sWorld.MaxProfs);
 	for(uint32 x=0;x<7;x++)
 		SetFloatValue(PLAYER_FIELD_MOD_DAMAGE_DONE_PCT+x, 1.00);
 
