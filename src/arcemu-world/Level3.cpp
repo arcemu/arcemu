@@ -1388,6 +1388,16 @@ bool ChatHandler::HandleModifyLevelCommand(const char* args, WorldSession* m_ses
 	}
 
 	plr->ApplyLevelInfo(Info, Level);
+	if( plr->getClass() == WARLOCK )
+	{
+		if( plr->GetSummon() && plr->GetSummon()->IsInWorld() && plr->GetSummon()->isAlive() )
+		{
+			plr->GetSummon()->SetUInt32Value(UNIT_FIELD_LEVEL, Level);
+			plr->GetSummon()->ApplyStatsForLevel();
+			plr->GetSummon()->UpdateSpellList();
+		}
+	}
+
 	return true;
 }
 
@@ -3606,6 +3616,15 @@ bool ChatHandler::HandleLevelUpCommand(const char* args, WorldSession *m_session
 	if(!inf)
 		return false;
 	plr->ApplyLevelInfo(inf,levels);
+	if(plr->getClass() == WARLOCK)
+	{
+		if( plr->GetSummon() && plr->GetSummon()->IsInWorld() && plr->GetSummon()->isAlive() )
+		{
+			plr->GetSummon()->SetUInt32Value(UNIT_FIELD_LEVEL, levels);
+			plr->GetSummon()->ApplyStatsForLevel();
+			plr->GetSummon()->UpdateSpellList();
+		}
+	}
 
 	WorldPacket data;
 	std::stringstream sstext;

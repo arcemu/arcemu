@@ -171,13 +171,12 @@ public:
 	void UpdateAP();
 	void PetSafeDelete();
 	void LoadPetAuras(int32 id);
-	void SetDefaultSpells();
 	void SetDefaultActionbar();
 	void SetActionBarSlot(uint32 slot, uint32 spell){ ActionBar[ slot ] = spell; }
 
 	void LoadSpells();
-	void AddSpell(SpellEntry * sp, bool learning);
-	void RemoveSpell(SpellEntry * sp);
+	void AddSpell(SpellEntry * sp, bool learning, bool showLearnSpell = true);
+	void RemoveSpell(SpellEntry * sp, bool showUnlearnSpell = true);
 	void WipeTalents();
 	uint32 GetUntrainCost();
 	void SetSpellState(SpellEntry * sp, uint16 State);
@@ -218,7 +217,7 @@ public:
 	void Rename(string NewName);
 	ARCEMU_INLINE string& GetName() { return m_name; }
 	uint32 CanLearnSpell( SpellEntry* sp );
-	void SkillUp();
+	void UpdateSpellList( bool showLearnSpells = true );
 
 	// talents
 	ARCEMU_INLINE uint8 GetTPsForLevel( uint32 level ) { return ( level >= 20 ) ? uint8( level - 16 ) >> 2 : 0; }	// pet gain first talent point at lvl 20, then every 4 lvls another point

@@ -1708,11 +1708,13 @@ void Player::GiveXP(uint32 xp, const uint64 &guid, bool allowbonus)
 		SetUInt32Value(UNIT_FIELD_HEALTH,GetUInt32Value(UNIT_FIELD_MAXHEALTH));
 		SetUInt32Value(UNIT_FIELD_POWER1,GetUInt32Value(UNIT_FIELD_MAXPOWER1));
 
-		// if warlock has summonned pet, increase its level too
-		if(info->class_ == WARLOCK) {
+		// if warlock has summoned pet, increase its level too
+		if(info->class_ == WARLOCK)
+		{
 			if((m_Summon != NULL) && (m_Summon->IsInWorld()) && (m_Summon->isAlive())) {
 				m_Summon->ModUnsigned32Value(UNIT_FIELD_LEVEL, 1);
 				m_Summon->ApplyStatsForLevel();
+				m_Summon->UpdateSpellList();
 			}
 		}
 		//Event_Achiement_Received(ACHIEVEMENT_CRITERIA_TYPE_REACH_LEVEL,0,level);
