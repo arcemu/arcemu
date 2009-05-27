@@ -779,11 +779,13 @@ bool Player::Create(WorldPacket& data )
 	SetUInt32Value(UNIT_FIELD_STAT4, info->spirit );
 	SetFloatValue(UNIT_FIELD_BOUNDINGRADIUS, 0.388999998569489f );
 	SetFloatValue(UNIT_FIELD_COMBATREACH, 1.5f   );
-	if(race != 10)
+	if( race != RACE_BLOODELF )
 	{
 		SetUInt32Value(UNIT_FIELD_DISPLAYID, info->displayId + gender );
 		SetUInt32Value(UNIT_FIELD_NATIVEDISPLAYID, info->displayId + gender );
-	} else	{
+	} 
+	else	
+	{
 		SetUInt32Value(UNIT_FIELD_DISPLAYID, info->displayId - gender );
 		SetUInt32Value(UNIT_FIELD_NATIVEDISPLAYID, info->displayId - gender );
 	}
@@ -2767,7 +2769,7 @@ void Player::LoadFromDBProc(QueryResultVector & results)
 	info = objmgr.GetPlayerCreateInfo(getRace(), getClass());
 	if(!info)
 	{
-		sLog.outError("%s: player guid %u has no playerCreateInfo!\n", (unsigned int)GetLowGUID());
+ 		sLog.outError("player guid %u has no playerCreateInfo!\n", (unsigned int)GetLowGUID());
 		RemovePendingPlayer();
 		return;
 	}
@@ -3006,11 +3008,13 @@ void Player::LoadFromDBProc(QueryResultVector & results)
 	SetFloatValue(UNIT_FIELD_BOUNDINGRADIUS, 0.388999998569489f );
 	SetFloatValue(UNIT_FIELD_COMBATREACH, 1.5f   );
 
-	if(getRace() != 10)
+	if( getRace() != RACE_BLOODELF )
 	{
 		SetUInt32Value(UNIT_FIELD_DISPLAYID, info->displayId + getGender() );
 		SetUInt32Value(UNIT_FIELD_NATIVEDISPLAYID, info->displayId + getGender() );
-	} else	{
+	}
+	else	
+	{
 		SetUInt32Value(UNIT_FIELD_DISPLAYID, info->displayId - getGender() );
 		SetUInt32Value(UNIT_FIELD_NATIVEDISPLAYID, info->displayId - getGender() );
 	}
@@ -5786,16 +5790,20 @@ bool Player::CanSee(Object* obj) // * Invisibility & Stealth Detection - Partha 
 			{
 				Unit *uObj = static_cast<Unit *>(obj);
 
-				if(uObj->IsSpiritHealer()) // can't see spirit-healers when alive
+				if( uObj->IsSpiritHealer()) // can't see spirit-healers when alive
 					return false;
+				
+				// always see our units
+				if( GetGUID() == uObj->GetUInt64Value( UNIT_FIELD_CREATEDBY ) )
+					return true;
 
-				if(uObj->m_invisible // Invisibility - Detection of Units
+				if( uObj->m_invisible // Invisibility - Detection of Units
 						&& m_invisDetect[uObj->m_invisFlag] < 1) // can't see invisible without proper detection
 					return bGMTagOn; // GM can see invisible units
 
 				if( m_invisible && uObj->m_invisDetect[m_invisFlag] < 1 ) // Invisible - can see those that detect, but not others
 					return m_isGmInvisible;
-
+				
 				return true;
 			}
 		//------------------------------------------------------------------
@@ -12549,6 +12557,7 @@ void Player::SendTriggerMovie( uint32 movieID )
 
 uint32 Player::GetInitialFactionId()
 {
+	
 	PlayerCreateInfo * pci = objmgr.GetPlayerCreateInfo(getRace(), getClass());
 	if( pci )
 		return pci->factiontemplate;
