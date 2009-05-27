@@ -360,7 +360,7 @@ bool ChatHandler::HandleNPCFlagCommand(const char* args, WorldSession *m_session
 	}
 
 	pCreature->SetUInt32Value(UNIT_NPC_FLAGS , npcFlags);
-	pCreature->SaveToDB();
+	WorldDatabase.Execute("UPDATE creature_proto SET npcflags = '%lu' WHERE entry = %lu", npcFlags, pCreature->GetProto()->Id);
 	SystemMessage(m_session, "Value saved, you may need to rejoin or clean your client cache.");
 
 	sGMLog.writefromsession( m_session, "changed npc flags of creature %u [%s] to %u", pCreature->GetEntry(), pCreature->GetCreatureInfo()->Name, npcFlags );
