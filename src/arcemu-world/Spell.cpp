@@ -4945,8 +4945,9 @@ void Spell::HandleTeleport(uint32 id, Unit* Target)
 		sEventMgr.AddEvent(pTarget, &Player::EventTeleport, mapid, x, y, z, EVENT_PLAYER_TELEPORT, 1, 1,EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
 }
 
-void Spell::CreateItem(uint32 itemId)
+void Spell::CreateItem( uint32 itemId )
 {
+	/// Creates number of items equal to a "damage" of the effect
 	if( !itemId || !p_caster )
         return;
 
@@ -4958,51 +4959,49 @@ void Spell::CreateItem(uint32 itemId)
 	m_itemProto = ItemPrototypeStorage.LookupEntry( itemId );
 	if( m_itemProto == NULL )
 	    return;
+	
+	if( damage < 1 )
+		return;
 
-	if (p_caster->GetItemInterface()->CanReceiveItem(m_itemProto, 1))
+	uint32 addcount = (uint32)damage;
+
+	if ( p_caster->GetItemInterface()->CanReceiveItem( m_itemProto, addcount ) )
 	{
-		SendCastResult(SPELL_FAILED_TOO_MANY_OF_ITEM);
+		SendCastResult( SPELL_FAILED_TOO_MANY_OF_ITEM );
 		return;
 	}
 
-	add = p_caster->GetItemInterface()->FindItemLessMax(itemId, 1, false);
-	if (!add)
+	add = p_caster->GetItemInterface()->FindItemLessMax( itemId, addcount, false );
+	if (!add )
 	{
-		slotresult = p_caster->GetItemInterface()->FindFreeInventorySlot(m_itemProto);
-		if(!slotresult.Result)
+		slotresult = p_caster->GetItemInterface()->FindFreeInventorySlot( m_itemProto );
+		if( !slotresult.Result )
 		{
-			SendCastResult(SPELL_FAILED_TOO_MANY_OF_ITEM);
+			SendCastResult( SPELL_FAILED_TOO_MANY_OF_ITEM );
 			return;
 		}
 
-		newItem = objmgr.CreateItem(itemId, p_caster);
-		if (newItem==NULL)
+		newItem = objmgr.CreateItem( itemId, p_caster );
+		if( newItem == NULL )
 			return;
 
-		AddItemResult result = p_caster->GetItemInterface()->SafeAddItem(newItem, slotresult.ContainerSlot, slotresult.Slot);
-		if(!result)
+		AddItemResult result = p_caster->GetItemInterface()->SafeAddItem( newItem, slotresult.ContainerSlot, slotresult.Slot );
+		if( !result )
 		{
 			newItem->DeleteMe();
 			return;
 		}
 
-		newItem->SetUInt64Value(ITEM_FIELD_CREATOR,m_caster->GetGUID());
-		newItem->SetUInt32Value(ITEM_FIELD_STACK_COUNT, damage);
+		newItem->SetUInt64Value( ITEM_FIELD_CREATOR, p_caster->GetGUID() );
+		newItem->SetUInt32Value( ITEM_FIELD_STACK_COUNT, addcount );
 
-		/*WorldPacket data(45);
-		p_caster->GetSession()->BuildItemPushResult(&data, p_caster->GetGUID(), 1, 1, itemId ,0,0xFF,1,0xFFFFFFFF);
-		p_caster->SendMessageToSet(&data, true);*/
-		p_caster->GetSession()->SendItemPushResult(newItem,true,false,true,true,slotresult.ContainerSlot,slotresult.Slot,1);
+		p_caster->GetSession()->SendItemPushResult( newItem, true, false, true, true, slotresult.ContainerSlot, slotresult.Slot, addcount );
 		newItem->m_isDirty = true;
-
 	}
 	else
 	{
-		add->SetUInt32Value(ITEM_FIELD_STACK_COUNT,add->GetUInt32Value(ITEM_FIELD_STACK_COUNT) + damage);
-		/*WorldPacket data(45);
-		p_caster->GetSession()->BuildItemPushResult(&data, p_caster->GetGUID(), 1, 1, itemId ,0,0xFF,1,0xFFFFFFFF);
-		p_caster->SendMessageToSet(&data, true);*/
-		p_caster->GetSession()->SendItemPushResult(add,true,false,true,false,p_caster->GetItemInterface()->GetBagSlotByGuid(add->GetGUID()),0xFFFFFFFF,1);
+		add->ModUnsigned32Value( ITEM_FIELD_STACK_COUNT, addcount );
+		p_caster->GetSession()->SendItemPushResult( add, true, false, true, false, p_caster->GetItemInterface()->GetBagSlotByGuid(add->GetGUID()), 0xFFFFFFFF, addcount );
 		add->m_isDirty = true;
 	}
 }
