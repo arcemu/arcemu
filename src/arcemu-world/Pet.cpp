@@ -1494,8 +1494,11 @@ void Pet::HandleAutoCastEvent( AutoCastEvents Type )
 		}
 		else if( sp->autocast_type != Type )
 		{
-			sLog.outError("Found corrupted spell (%lu) at m_autoCastSpells, skipping", sp->entryId);
-			continue;
+			if( Type != AUTOCAST_EVENT_ON_SPAWN || sp->autocast_type != AUTOCAST_EVENT_LEAVE_COMBAT )
+			{
+				sLog.outError("Found corrupted spell (%lu) at m_autoCastSpells, skipping", sp->spell->Id);
+				continue;
+			}
 		}
 
 		if( sp->spelltargetType == TTYPE_OWNER )
