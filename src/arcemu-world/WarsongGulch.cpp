@@ -172,7 +172,7 @@ void WarsongGulch::HookOnAreaTrigger(Player * plr, uint32 id)
 		plr->RemoveAura(23333+(plr->GetTeam() * 2));
 
 		/* capture flag points */
-		plr->m_bgScore.Misc1++;
+		plr->m_bgScore.MiscData[BG_SCORE_WSG_FLAGS_CAPTURED]++;
 
 		PlaySoundToAll( plr->GetTeam() ? SOUND_HORDE_SCORES : SOUND_ALLIANCE_SCORES );
 
@@ -191,7 +191,7 @@ void WarsongGulch::HookOnAreaTrigger(Player * plr, uint32 id)
 		sEventMgr.AddEvent(this, &WarsongGulch::EventReturnFlags, EVENT_BATTLEGROUND_WSG_AUTO_RETURN_FLAG, 20000, 1, 0);
 
 		/* give each player on that team bonus honor and reputation*/
-		int32 honorToAdd = 2 * m_honorPerKill;
+		uint32 honorToAdd = 2 * m_honorPerKill;
 		uint32 repToAdd = m_isWeekend ? 45 : 35;
 		uint32 fact = plr->GetTeam() ? 889 : 890; /*Warsong Outriders : Sliverwing Sentinels*/
 		for(set<Player*>::iterator itr = m_players[plr->GetTeam()].begin(); itr != m_players[plr->GetTeam()].end(); ++itr)
@@ -307,7 +307,7 @@ void WarsongGulch::HookFlagDrop(Player * plr, GameObject * obj)
 			if(m_homeFlags[x]->IsInWorld() == false)
 				m_homeFlags[x]->PushToWorld(m_mapMgr);
 
-			plr->m_bgScore.Misc2++;
+			plr->m_bgScore.MiscData[BG_SCORE_WSG_FLAGS_RETURNED]++;
 			UpdatePvPData();
 
 			if( plr->GetTeam() == 1 )
@@ -432,8 +432,8 @@ void WarsongGulch::OnAddPlayer(Player * plr)
 	if(!m_started && plr->IsInWorld())
 	{
 		plr->CastSpell(plr, BG_PREPARATION, true);
-		plr->m_bgScore.Misc1 = 0;
-		plr->m_bgScore.Misc2 = 0;
+		plr->m_bgScore.MiscData[BG_SCORE_WSG_FLAGS_CAPTURED] = 0;
+		plr->m_bgScore.MiscData[BG_SCORE_WSG_FLAGS_RETURNED] = 0;
 	}
 	UpdatePvPData();
 }

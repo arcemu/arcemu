@@ -145,12 +145,6 @@ public:
 	void SpawnHomeGuard();
 };
 
-#define BG_SCORE_AV_GRAVEYARDS_ASSAULTED 0
-#define BG_SCORE_AV_GRAVEYARDS_DEFENDED 1
-#define BG_SCORE_AV_TOWERS_ASSAULTED 2
-#define BG_SCORE_AV_TOWERS_DEFENDED 3
-#define BG_SCORE_AV_MINES_CAPTURES 4
-
 // GENERAL AV DEFINES
 #define AV_NUM_REINFORCEMENTS				600		// Amount of reinforcements we start off with
 #define AV_SCORE_WARNING					530		// Dunno what this should be ;p

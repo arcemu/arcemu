@@ -655,8 +655,8 @@ void ArathiBasin::OnAddPlayer(Player * plr)
 	if(!m_started && plr->IsInWorld())
 	{
 		plr->CastSpell(plr, BG_PREPARATION, true);
-		plr->m_bgScore.Misc1 = 0;
-		plr->m_bgScore.Misc2 = 0;
+		plr->m_bgScore.MiscData[BG_SCORE_AB_BASES_ASSAULTED] = 0;
+		plr->m_bgScore.MiscData[BG_SCORE_AB_BASES_CAPTURED] = 0;
 	}
 	UpdatePvPData();
 }
@@ -882,7 +882,7 @@ void ArathiBasin::AssaultControlPoint(Player * pPlayer, uint32 Id)
 	uint32 Team = pPlayer->m_bgTeam;
 	uint32 Owner;
 
-	pPlayer->m_bgScore.Misc1++;
+	pPlayer->m_bgScore.MiscData[BG_SCORE_AB_BASES_ASSAULTED]++;
 
 	if(m_basesOwnedBy[Id]==-1 && m_basesAssaultedBy[Id]==-1)
 	{
@@ -965,7 +965,7 @@ void ArathiBasin::AssaultControlPoint(Player * pPlayer, uint32 Id)
 		DefFlag[Id][0] = false;
 		SendChatMessage(Team ? CHAT_MSG_BG_EVENT_HORDE : CHAT_MSG_BG_EVENT_ALLIANCE, pPlayer->GetGUID(), "$N defend %s", ControlPointNames[Id]);
 		sEventMgr.AddEvent(this, &ArathiBasin::CaptureControlPoint, Id, Team, EVENT_AB_CAPTURE_CP_1 + Id, 1000, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
-		pPlayer->m_bgScore.Misc2++;
+		pPlayer->m_bgScore.MiscData[BG_SCORE_AB_BASES_CAPTURED]++;
 		UpdatePvPData();
 	}
 	else if(!DefFlag[Id][0] && !DefFlag[Id][1] )
@@ -1060,7 +1060,7 @@ void ArathiBasin::AssaultControlPoint(Player * pPlayer, uint32 Id)
 			}
 		}
 		sEventMgr.AddEvent(this, &ArathiBasin::CaptureControlPoint, Id, Team, EVENT_AB_CAPTURE_CP_1 + Id, 60000, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
-		pPlayer->m_bgScore.Misc1++;
+		pPlayer->m_bgScore.MiscData[BG_SCORE_AB_BASES_ASSAULTED]++;
 		UpdatePvPData();
 	}
 	else

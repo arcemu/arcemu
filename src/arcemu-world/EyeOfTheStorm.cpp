@@ -388,7 +388,7 @@ void EyeOfTheStorm::HookOnAreaTrigger(Player * plr, uint32 id)
 	SetWorldState( 2757, 1 );
 
 	plr->RemoveAura( EOTS_NETHERWING_FLAG_SPELL );
-	plr->m_bgScore.Misc1++;
+	plr->m_bgScore.MiscData[BG_SCORE_EOTS_FLAGS_CAPTURED]++;
 	UpdatePvPData();
 }
 
@@ -456,8 +456,7 @@ void EyeOfTheStorm::OnAddPlayer(Player * plr)
 	if(!m_started && plr->IsInWorld())
 	{
 		plr->CastSpell(plr, BG_PREPARATION, true);
-		plr->m_bgScore.Misc1 = 0;
-		plr->m_bgScore.Misc2 = 0;
+		plr->m_bgScore.MiscData[BG_SCORE_EOTS_FLAGS_CAPTURED] = 0;
 	}
 	UpdatePvPData();
 }

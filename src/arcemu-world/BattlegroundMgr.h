@@ -69,10 +69,21 @@ struct BGScore
 	uint32 BonusHonor;
 	uint32 DamageDone;
 	uint32 HealingDone;
-	uint32 Misc1;
-	uint32 Misc2;
 	uint32 MiscData[5];
 };
+
+#define BG_SCORE_AB_BASES_ASSAULTED 0
+#define BG_SCORE_AB_BASES_CAPTURED 1
+#define BG_SCORE_AV_GRAVEYARDS_ASSAULTED 0
+#define BG_SCORE_AV_GRAVEYARDS_DEFENDED 1
+#define BG_SCORE_AV_TOWERS_ASSAULTED 2
+#define BG_SCORE_AV_TOWERS_DEFENDED 3
+#define BG_SCORE_AV_MINES_CAPTURES 4
+#define BG_SCORE_EOTS_FLAGS_CAPTURED 0
+#define BG_SCORE_WSG_FLAGS_CAPTURED 0
+#define BG_SCORE_WSG_FLAGS_RETURNED 1
+#define BG_SCORE_SOTA_DEMOLISHERS_DESTROYED 0
+#define BG_SCORE_SOTA_GATES_DESTROYED 1
 
 #define SOUND_BATTLEGROUND_BEGIN			0xD6F
 #define SOUND_HORDE_SCORES					8213
@@ -148,6 +159,24 @@ static inline uint32 GetLevelGrouping(uint32 level)
 	else
 		return 8;
 }
+
+static inline uint32 GetFieldCount(uint32 BGType)
+{
+	switch( BGType )
+	{
+	case BATTLEGROUND_ALTERAC_VALLEY:
+		return 5;
+	case BATTLEGROUND_ARATHI_BASIN:
+	case BATTLEGROUND_WARSONG_GULCH:
+	case BATTLEGROUND_STRAND_OF_THE_ANCIENT:
+		return 2;
+	case BATTLEGROUND_EYE_OF_THE_STORM:
+		return 1;
+	default:
+		return 0;
+	}
+}
+
 #define MAX_LEVEL_GROUP 9
 #define MINIMUM_PLAYERS_ON_EACH_SIDE_FOR_BG 1
 #define MAXIMUM_BATTLEGROUNDS_PER_LEVEL_GROUP 50

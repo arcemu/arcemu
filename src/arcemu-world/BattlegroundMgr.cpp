@@ -930,6 +930,8 @@ CBattleground::~CBattleground()
 	}
 
 	m_resurrectMap.clear();
+	m_players[0].clear();
+	m_players[1].clear();	
 }
 
 void CBattleground::UpdatePvPData()
@@ -1026,6 +1028,8 @@ void CBattleground::BuildPvPUpdateDataPacket(WorldPacket * data)
 			*data << uint8(0);      // If the game has ended - this will be 1
 
 		*data << uint32((m_players[0].size() + m_players[1].size())-m_invisGMs);
+
+		uint32 FieldCount = GetFieldCount( GetType() );
 		for(uint32 i = 0; i < 2; ++i)
 		{
 			for(set<Player*>::iterator itr = m_players[i].begin(); itr != m_players[i].end(); ++itr)
@@ -1042,9 +1046,10 @@ void CBattleground::BuildPvPUpdateDataPacket(WorldPacket * data)
 				*data << bs->BonusHonor;
 				*data << bs->DamageDone;
 				*data << bs->HealingDone;
-				*data << uint32(0x2);
-				*data << bs->Misc1;
-				*data << bs->Misc2;
+
+				*data << FieldCount;
+				for( uint32 x = 0; x < FieldCount; ++x )
+					*data << bs->MiscData[x];
 			}
 		}
 	}
@@ -1466,9 +1471,9 @@ void CBattlegroundManager::SendBattlefieldStatus(Player * plr, uint32 Status, ui
 			break;
 		case 3:
 			if(Type >= BATTLEGROUND_ARENA_2V2 && Type <= BATTLEGROUND_ARENA_5V5)
-				data << MapId << uint32(0) << Time << uint8(0);
+				data << MapId << uint32(120000) << Time << uint8(0);
 			else
-				data << MapId << uint32(0) << Time << uint8(1);
+				data << MapId << uint32(120000) << Time << uint8(1);
 			break;
 		}
 	}
