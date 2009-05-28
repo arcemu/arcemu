@@ -908,7 +908,8 @@ void Pet::AddSpell( SpellEntry * sp, bool learning, bool showLearnSpell )
 					if(ss==AUTOCAST_SPELL_STATE)
 						SetAutoCast(asp, true);
 
-					if( asp->autocast_type == AUTOCAST_EVENT_ON_SPAWN )
+					if( asp->autocast_type == AUTOCAST_EVENT_ON_SPAWN || 
+						(asp->autocast_type == AUTOCAST_EVENT_LEAVE_COMBAT && !m_Owner->CombatStatus.IsInCombat()) )
 						CastSpell(this, sp, false);
 
 					RemoveSpell(itr->first, showLearnSpell);
@@ -1493,8 +1494,11 @@ void Pet::HandleAutoCastEvent( AutoCastEvents Type )
 		}
 		else if( sp->autocast_type != Type )
 		{
-			sLog.outError("Found corrupted spell (%lu) at m_autoCastSpells, skipping", sp->spell->Id);
-			continue;
+			if( Type != AUTOCAST_EVENT_ON_SPAWN || sp->autocast_type != AUTOCAST_EVENT_LEAVE_COMBAT )
+			{
+				sLog.outError("Found corrupted spell (%lu) at m_autoCastSpells, skipping", sp->entryId);
+				continue;
+			}
 		}
 
 		if( sp->spelltargetType == TTYPE_OWNER )
