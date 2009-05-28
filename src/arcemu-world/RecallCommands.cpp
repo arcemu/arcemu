@@ -136,7 +136,7 @@ bool ChatHandler::HandleRecallAddCommand(const char* args, WorldSession *m_sessi
 
 	ss << "INSERT INTO recall (name, mapid, positionX, positionY, positionZ) VALUES ('"
 	<< WorldDatabase.EscapeString(rc_locname).c_str() << "' , "
-	<< plr->GetMapId() << ", "
+	<< plr->GetMapId()     << ", "
 	<< plr->GetPositionX() << ", " 
 	<< plr->GetPositionY() << ", "
 	<< plr->GetPositionZ() << ");";
@@ -185,30 +185,31 @@ bool ChatHandler::HandleRecallDelCommand(const char* args, WorldSession *m_sessi
 
 bool ChatHandler::HandleRecallListCommand(const char* args, WorldSession *m_session)
 {
-	QueryResult *result = WorldDatabase.Query( "SELECT id,name FROM recall ORDER BY name" );
-	if(!result)
+	QueryResult *result = WorldDatabase.Query( "SELECT name FROM recall WHERE name LIKE '%s%c' ORDER BY name", args, '%' );
+	if( !result )
 		return false;
 	std::string recout;
 	uint32 count = 0;
 
-	recout = "|cff00ff00Recall locations|r:\n\n";
+	recout = MSG_COLOR_GREEN;
+	recout += "Recall locations|r:\n\n";
 	do
 	{
-		Field *fields = result->Fetch();
-		//float id = fields[0].GetFloat();
-		const char * locname = fields[1].GetString();
-		recout += "|cff00ccff";
+	   Field *fields = result->Fetch();
+		const char * locname = fields[0].GetString();
+		recout += MSG_COLOR_LIGHTBLUE;
 		recout += locname;
 		recout += "|r, ";
 		count++;
 		
 		if(count == 5)
 		{
-			recout += "\n";
-			count = 0;
+		   recout += "\n";
+		   count = 0;
 		}
-	}while (result->NextRow());
-	SendMultilineMessage(m_session, recout.c_str());
+	}
+	while ( result->NextRow() );
+	SendMultilineMessage( m_session, recout.c_str() );
 
 	delete result;
 	return true;
