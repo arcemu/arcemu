@@ -1643,12 +1643,14 @@ bool ChatHandler::HandleDismissPetCommand(const char* args, WorldSession* m_sess
 			return true;
 		}
 	}
-	else // no player selected, see if it is a pet
+	else
 	{
+		// no player selected, see if it is a pet
 		Creature* pCrt = getSelectedCreature(m_session, false);
 		if(!pCrt)
 		{
-			return false; // show usage string
+			// show usage string
+			return false;
 		}
 		if(pCrt->IsPet())
 		{
@@ -1659,9 +1661,74 @@ bool ChatHandler::HandleDismissPetCommand(const char* args, WorldSession* m_sess
 			RedSystemMessage(m_session, "No player or pet selected.");
 			return true;
 		}
+		plr = pPet->GetPetOwner();
 	}
 
 	pPet->Dismiss();
+	GreenSystemMessage(m_session, "Dismissed %s's pet.", plr->GetName());
+	plr->GetSession()->SystemMessage("%s dismissed your pet.", m_session->GetPlayer()->GetName());
+	return true;
+}
+
+bool ChatHandler::HandlePetLevelCommand(const char* args, WorldSession* m_session)
+{
+	if( !args )
+	{
+		return false;
+	}
+
+	int32 newLevel = atol(args);
+	if( newLevel < 1 )
+	{
+		return false;
+	}
+
+	Player* plr = getSelectedChar(m_session, false);
+	Pet* pPet = NULL;
+	if(plr)
+	{
+		pPet = plr->GetSummon();
+		if(!pPet)
+		{
+			RedSystemMessage(m_session, "Player has no pet.");
+			return true;
+		}
+	}
+	else
+	{
+		// no player selected, see if it is a pet
+		Creature* pCrt = getSelectedCreature(m_session, false);
+		if(!pCrt)
+		{
+			// show usage string
+			return false;
+		}
+		if(pCrt->IsPet())
+		{
+			pPet = (Pet*)pCrt;
+		}
+		if(!pPet)
+		{
+			RedSystemMessage(m_session, "No player or pet selected.");
+			return true;
+		}
+		plr = pPet->GetPetOwner();
+	}
+
+	// Should GMs be allowed to set a pet higher than its owner?  I don't think so
+	if( (uint32)newLevel > plr->getLevel() )
+	{
+		newLevel = plr->getLevel();
+	}
+
+	pPet->SetUInt32Value( UNIT_FIELD_LEVEL, newLevel );
+	pPet->SetUInt32Value( UNIT_FIELD_PETEXPERIENCE, 0 );
+	pPet->SetUInt32Value( UNIT_FIELD_PETNEXTLEVELEXP, pPet->GetNextLevelXP(newLevel) );
+	pPet->ApplyStatsForLevel();
+	pPet->UpdateSpellList();
+
+	GreenSystemMessage(m_session, "Set %s's pet to level %lu.", plr->GetName(), newLevel);
+	plr->GetSession()->SystemMessage("%s set your pet to level %lu.", m_session->GetPlayer()->GetName(), newLevel);
 	return true;
 }
 
