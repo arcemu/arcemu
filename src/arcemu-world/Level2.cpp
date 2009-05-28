@@ -137,6 +137,7 @@ bool ChatHandler::CreateGuildCommand(const char* args, WorldSession *m_session)
 	pGuild = Guild::Create();
 	pGuild->CreateFromCharter(&tempCharter, ptarget->GetSession());
 	GreenSystemMessage(m_session, "Guild created");
+	sGMLog.writefromsession(m_session, "Created guild '%s'", args);
 	return true;
 }
 

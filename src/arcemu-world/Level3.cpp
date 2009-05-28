@@ -2469,7 +2469,7 @@ bool ChatHandler::HandleCreatureSpawnCommand(const char *args, WorldSession *m_s
 	sp->bytes2 = 0;
 	//sp->respawnNpcLink = 0;
 	sp->stand_state = 0;
-	sp->channel_spell=sp->channel_target_creature=sp->channel_target_go=0;
+	sp->channel_target_creature = sp->channel_target_go = sp->channel_spell = 0;
 	sp->MountedDisplayID = 0;
 	sp->Item1SlotDisplay = 0;
 	sp->Item2SlotDisplay = 0;
@@ -3259,6 +3259,7 @@ bool ChatHandler::HandleRenameGuildCommand(const char* args, WorldSession *m_ses
 
 	GreenSystemMessage(m_session, "Changed guild name of %s to %s. This will take effect next restart.", plr->GetGuild()->GetGuildName(), args);
 	CharacterDatabase.Execute("UPDATE guilds SET `guildName` = \"%s\" WHERE `guildId` = '%u'", CharacterDatabase.EscapeString(string(args)).c_str(), plr->GetGuild()->GetGuildId());
+	sGMLog.writefromsession(m_session, "Changed guild name of '%s' to '%s'", plr->GetGuild()->GetGuildName(), args);
 	return true;
 }
 
@@ -3286,7 +3287,7 @@ bool ChatHandler::HandleGuildDisbandCommand(const char* args, WorldSession *m_se
 		return false;
 
 	GreenSystemMessage(m_session, "Disbanded Guild: %s", plr->GetGuild()->GetGuildName());
-	sGMLog.writefromsession(m_session, "Disbaned Guild %s", plr->GetGuild()->GetGuildName());
+	sGMLog.writefromsession(m_session, "Disbanded Guild %s", plr->GetGuild()->GetGuildName());
 	plr->GetGuild()->Disband();
 	return true;
 }
@@ -3312,6 +3313,7 @@ bool ChatHandler::HandleGuildJoinCommand(const char * args,WorldSession *m_sessi
 	{
 		pGuild->AddGuildMember(ptarget->getPlayerInfo(),m_session,-2);
 		GreenSystemMessage(m_session, "You have joined the guild '%s'",pGuild->GetGuildName());
+		sGMLog.writefromsession(m_session, "Force joined guild '%s'", pGuild->GetGuildName());
 		return true;
 	}
 

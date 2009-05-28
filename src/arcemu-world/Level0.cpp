@@ -487,5 +487,33 @@ bool ChatHandler::HandleSimpleDistanceCommand( const char *args , WorldSession *
 	return true;
 }
 
+bool ChatHandler::HandleSendFailed( const char *args , WorldSession *m_session )
+{
+	Player* plr = getSelectedChar( m_session, true );
+	if( plr == NULL )
+		return false;
 
+	uint32 fail = atol( args );
+	if( SPELL_CANCAST_OK < fail )
+	{
+		RedSystemMessage( m_session, "Argument %u is out of range!", fail );
+		return false;
+	}
+	plr->SendCastResult( 1, ( uint8 )fail, 0, 0 );
+	return true;
+}
+
+bool ChatHandler::HandlePlayMovie( const char *args, WorldSession *m_session )
+{
+	Player* plr = getSelectedChar( m_session, true );
+	if( plr == NULL )
+		return false;
+
+	uint32 movie = atol( args );
+	
+	plr->SendTriggerMovie( movie );
+
+	SystemMessage( m_session, "Movie started." );
+	return true;
+}
 
