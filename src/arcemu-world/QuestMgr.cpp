@@ -716,12 +716,11 @@ void QuestMgr::OnPlayerKill(Player* plr, Creature* victim)
 				qst = qle->GetQuest();
 				if(qst != NULL)
 				{
-					// dont waste time on quests without mobs
-					if( qst->count_required_mob == 0 )
-						continue;
-
-					for( j = 0; j < qst->count_required_mob; ++j )
+					for( j = 0; j < 4; ++j )
 					{
+						if( qst->required_mob[j] == 0 )
+							continue;
+
 						if( qst->required_mob[j] == entry &&
 							qst->required_mobtype[j] == QUEST_MOB_TYPE_CREATURE &&
 							qle->m_mobcount[j] < qst->required_mobcount[j] )
@@ -767,12 +766,11 @@ void QuestMgr::OnPlayerKill(Player* plr, Creature* victim)
 								qst = qle->GetQuest();
 								if(qst != NULL)
 								{
-									// dont waste time on quests without mobs
-									if( qst->count_required_mob == 0 )
-										continue;
-
-									for( j = 0; j < qst->count_required_mob; ++j )
+									for( j = 0; j < 4; ++j )
 									{
+										if( qst->required_mob[j] == 0 )
+											continue;
+
 										if( qst->required_mob[j] == entry &&
 											qst->required_mobtype[j] == QUEST_MOB_TYPE_CREATURE &&
 											qle->m_mobcount[j] < qst->required_mobcount[j] )
