@@ -50,12 +50,12 @@ uint32 GetAutoCastTypeForSpell( SpellEntry * ent )
 
 	case SPELL_HASH_PHASE_SHIFT:		// Phase Shift
 	case SPELL_HASH_CONSUME_SHADOWS:
+	case SPELL_HASH_LESSER_INVISIBILITY:
 		return AUTOCAST_EVENT_LEAVE_COMBAT;
 		break;
 
 	case SPELL_HASH_WAR_STOMP: // Doomguard spell
 	case SPELL_HASH_SACRIFICE: // We don't want auto sacrifice :P
-	case SPELL_HASH_LESSER_INVISIBILITY: // Casting lesser invisibilty causes we can't control succubus - better don't auto cast that
 		return AUTOCAST_EVENT_NONE; 
 		break;
 
@@ -908,8 +908,7 @@ void Pet::AddSpell( SpellEntry * sp, bool learning, bool showLearnSpell )
 					if(ss==AUTOCAST_SPELL_STATE)
 						SetAutoCast(asp, true);
 
-					if( asp->autocast_type == AUTOCAST_EVENT_ON_SPAWN || 
-						(asp->autocast_type == AUTOCAST_EVENT_LEAVE_COMBAT && !m_Owner->CombatStatus.IsInCombat()) )
+					if( asp->autocast_type == AUTOCAST_EVENT_ON_SPAWN )
 						CastSpell(this, sp, false);
 
 					RemoveSpell(itr->first, showLearnSpell);
@@ -957,8 +956,8 @@ void Pet::AddSpell( SpellEntry * sp, bool learning, bool showLearnSpell )
 				if( ss == AUTOCAST_SPELL_STATE )
 					SetAutoCast(asp,true);
 
-				if( asp->autocast_type == AUTOCAST_EVENT_ON_SPAWN || 
-					(asp->autocast_type == AUTOCAST_EVENT_LEAVE_COMBAT && !m_Owner->CombatStatus.IsInCombat()) )
+				// Phase shift gets cast on spawn, right?
+				if( asp->autocast_type == AUTOCAST_EVENT_ON_SPAWN || asp->spell->NameHash == SPELL_HASH_PHASE_SHIFT )
 					CastSpell(this, sp, false);
 			}
 			else
@@ -1045,27 +1044,24 @@ void Pet::RemoveSpell(SpellEntry * sp, bool showUnlearnSpell)
 {
 	mSpells.erase(sp);
 	map<uint32, AI_Spell*>::iterator itr = m_AISpellStore.find(sp->Id);
-	if(itr != m_AISpellStore.end())
+	if( itr != m_AISpellStore.end() )
 	{
+		if( itr->second->autocast_type != AUTOCAST_EVENT_NONE )
+		{
+			list<AI_Spell*>::iterator it3;
+			for(list<AI_Spell*>::iterator it2 = m_autoCastSpells[itr->second->autocast_type].begin(); it2 != m_autoCastSpells[itr->second->autocast_type].end(); )
+			{
+				it3 = it2++;
+				if( (*it3) == itr->second )
+				{
+					m_autoCastSpells[itr->second->autocast_type].erase(it3);
+				}
+			}
+		}
 		for(list<AI_Spell*>::iterator it = m_aiInterface->m_spells.begin(); it != m_aiInterface->m_spells.end(); ++it)
 		{
 			if((*it) == itr->second)
 			{
-				/*if((*it)->autocast_type > 0)
-					m_autoCastSpells[(*it)->autocast_type].remove((*it));*/
-				if((*it)->autocast_type > 0)
-				{
-					for(list<AI_Spell*>::iterator i3 = m_autoCastSpells[(*it)->autocast_type].begin();
-						i3 != m_autoCastSpells[(*it)->autocast_type].end(); ++i3)
-					{
-						if( (*i3) == itr->second )
-						{
-							m_autoCastSpells[(*it)->autocast_type].erase(i3);
-							break;
-						}
-					}
-				}
-
 				m_aiInterface->m_spells.erase(it);
 				m_aiInterface->CheckNextSpell(itr->second);
 				break;
@@ -1433,6 +1429,7 @@ AI_Spell * Pet::HandleAutoCastEvent()
 		else
 		{
 			// bad pointers somehow end up here :S
+			sLog.outError("Bad AI_Spell detected in AutoCastEvent!\n");
 			m_autoCastSpells[AUTOCAST_EVENT_ATTACK].erase(itr);
 		}
 	}
@@ -1494,11 +1491,8 @@ void Pet::HandleAutoCastEvent( AutoCastEvents Type )
 		}
 		else if( sp->autocast_type != Type )
 		{
-			if( Type != AUTOCAST_EVENT_ON_SPAWN || sp->autocast_type != AUTOCAST_EVENT_LEAVE_COMBAT )
-			{
-				sLog.outError("Found corrupted spell (%lu) at m_autoCastSpells, skipping", sp->entryId);
-				continue;
-			}
+			sLog.outError("Found corrupted spell (%lu) at m_autoCastSpells, skipping", sp->entryId);
+			continue;
 		}
 
 		if( sp->spelltargetType == TTYPE_OWNER )
