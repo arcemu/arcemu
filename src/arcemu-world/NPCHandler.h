@@ -35,7 +35,7 @@ enum GOSSIP_SPECIAL
 	GOSSIP_TEXT				 = 0x09,
 	GOSSIP_MENU				 = 0x0A,
 	GOSSIP_BATTLEMASTER		 = 0x0B,
-	GOSSIP_BANKEER			  = 0x0C,
+	GOSSIP_BANKER			  = 0x0C,
 };
 
 enum TrainerServiceType
