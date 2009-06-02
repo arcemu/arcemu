@@ -266,10 +266,8 @@ public:
 	void SaveToDB();
 	void CheckAllAchievementCriteria();
 	void SendAllAchievementData(Player* player);
-	void SendRespondInspectAchievements(Player* player);
 	void UpdateAchievementCriteria(AchievementCriteriaTypes type, int32 miscvalue1, int32 miscvalue2, uint32 time);
 	void UpdateAchievementCriteria(AchievementCriteriaTypes type);
-	void BuildAllDataPacket(WorldPacket *data, bool self=true);
 	bool GMCompleteAchievement(WorldSession* gmSession, uint32 achievementID);
 	bool GMCompleteCriteria(WorldSession* gmSession, uint32 criteriaID);
 	void GMResetAchievement(int achievementID);

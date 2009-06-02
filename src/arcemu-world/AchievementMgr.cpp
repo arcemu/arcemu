@@ -1479,76 +1479,117 @@ void AchievementMgr::CompletedAchievement(AchievementEntry const* achievement)
 }
 
 /**
-	Sends all achievement data to the player.
+	Sends all achievement data to the player. Also used for achievement inspection.
 */
 void AchievementMgr::SendAllAchievementData(Player* player)
 {
-	WorldPacket data( SMSG_ALL_ACHIEVEMENT_DATA,4*3+m_completedAchievements.size()*4*2+GetCriteriaProgressCount()*7*4 );
-	BuildAllDataPacket(&data);
-	player->GetSession()->SendPacket(&data);
-}
+	// maximum size for the SMSG_ALL_ACHIEVEMENT_DATA packet without causing client problems seems to be 0x7fff
+	uint32 packetSize = 18 + ((uint32)m_completedAchievements.size() * 8) + (GetCriteriaProgressCount() * 36);
+	bool doneCompleted = false;
+	bool doneProgress = false;
+	AchievementCriteriaEntry const* acEntry;
+	AchievementEntry const* achievement;
 
-/**
-	Sends data for achievement inspection to the player.
-*/
-void AchievementMgr::SendRespondInspectAchievements(Player* player)
-{
-	WorldPacket data( SMSG_ALL_ACHIEVEMENT_DATA,4+4*3+m_completedAchievements.size()*4*2+GetCriteriaProgressCount()*7*4 );
-	data.append(GetPlayer()->GetGUID());
-	BuildAllDataPacket(&data, false);
-	player->GetSession()->SendPacket(&data);
-}
-
-/**
-	Builds the data packet for SMSG_ALL_ACHIEVEMENT_DATA
-*/
-void AchievementMgr::BuildAllDataPacket(WorldPacket *data, bool self)
-{
-	for( CompletedAchievementMap::iterator iter = m_completedAchievements.begin(); iter!=m_completedAchievements.end(); ++iter )
+	WorldPacket data;
+	if( packetSize < 0x8000 )
 	{
-		if(ShowCompletedAchievement(iter->first, GetPlayer()))
-		{
-			*data << uint32(iter->first);
-			*data << uint32(secsToTimeBitFields(iter->second));
-		}
+		data.resize( packetSize );
 	}
-	*data << int32(-1);
-	for(CriteriaProgressMap::iterator iter = m_criteriaProgress.begin(); iter!=m_criteriaProgress.end(); ++iter)
+	else
 	{
-		AchievementCriteriaEntry const* acEntry = dbcAchievementCriteriaStore.LookupEntry(iter->second->id);
-		if(!acEntry)
-			continue;
-		AchievementEntry const *achievement = dbcAchievementStore.LookupEntry(acEntry->referredAchievement);
-		if(!achievement)
-			continue;
-		if(self) // achievement progress to send to self
+		data.resize( 0x7fff );
+	}
+
+	CompletedAchievementMap::iterator completeIter = m_completedAchievements.begin();
+	CriteriaProgressMap::iterator progressIter = m_criteriaProgress.begin();
+	bool packetFull;
+
+	while( !doneCompleted || !doneProgress )
+	{
+		data.clear();
+		if( player == m_player )
 		{
-			if(SendAchievementProgress(iter->second))
+			data.SetOpcode ( SMSG_ALL_ACHIEVEMENT_DATA );
+		}
+		else
+		{
+			data.SetOpcode( SMSG_RESPOND_INSPECT_ACHIEVEMENTS );
+			FastGUIDPack(data, m_player->GetGUID());
+		}
+		packetFull = false;
+
+		// add the completed achievements
+		if( !doneCompleted )
+		{
+			for( ; completeIter != m_completedAchievements.end() && !packetFull; ++completeIter )
 			{
-				*data << uint32(iter->second->id);
-				data->appendPackGUID(iter->second->counter);
-				*data << GetPlayer()->GetNewGUID();
-				*data << uint32(0);
-				*data << uint32(secsToTimeBitFields(iter->second->date));
-				*data << uint32(0);
-				*data << uint32(0);
+				if(ShowCompletedAchievement(completeIter->first, m_player))
+				{
+					data << uint32(completeIter->first);
+					data << uint32(secsToTimeBitFields(completeIter->second));
+				}
+				packetFull = data.size() > 0x7f00;
+			}
+			if( !packetFull )
+			{
+				doneCompleted = true;
 			}
 		}
-		else // achievement progress to send to other players (inspect)
+		
+		// 0xffffffff separates between completed achievements and ones in progress
+		data << int32(-1);
+		for(; progressIter!=m_criteriaProgress.end() && !packetFull; ++progressIter)
 		{
-			if( (iter->second->counter > 0) && (achievement->flags & ACHIEVEMENT_FLAG_COUNTER) ) // only send statistics, no other unfinished achievement progress, since client only displays them as completed or not completed
+			acEntry = dbcAchievementCriteriaStore.LookupEntry(progressIter->second->id);
+			if( !acEntry )
 			{
-				*data << uint32(iter->second->id);
-				data->appendPackGUID(iter->second->counter);
-				*data << GetPlayer()->GetNewGUID();
-				*data << uint32(0);
-				*data << uint32(secsToTimeBitFields(iter->second->date));
-				*data << uint32(0);
-				*data << uint32(0);
+				continue;
 			}
+			achievement = dbcAchievementStore.LookupEntry(acEntry->referredAchievement);
+			if( !achievement )
+			{
+				continue;
+			}
+			// achievement progress to send to self
+			if( player == m_player )
+			{
+				if(SendAchievementProgress(progressIter->second))
+				{
+					data << uint32(progressIter->second->id);
+					data.appendPackGUID(progressIter->second->counter);
+					data << GetPlayer()->GetNewGUID();
+					data << uint32(0);
+					data << uint32(secsToTimeBitFields(progressIter->second->date));
+					data << uint32(0);
+					data << uint32(0);
+				}
+			}
+			// achievement progress to send to other players (inspect)
+			else
+			{
+				// only send statistics, no other unfinished achievement progress, since client only displays them as completed or not completed
+				if( (progressIter->second->counter > 0) && (achievement->flags & ACHIEVEMENT_FLAG_COUNTER) )
+				{
+					data << uint32(progressIter->second->id);
+					data.appendPackGUID(progressIter->second->counter);
+					data << GetPlayer()->GetNewGUID();
+					data << uint32(0);
+					data << uint32(secsToTimeBitFields(progressIter->second->date));
+					data << uint32(0);
+					data << uint32(0);
+				}
+			}
+			packetFull = data.size() > 0x7f00;
 		}
+		if( !packetFull )
+		{
+			doneProgress = true;
+		}
+
+		// another 0xffffffff denotes end of the packet
+		data << int32(-1);
+		player->GetSession()->SendPacket(&data);
 	}
-	*data << int32(-1);
 }
 
 /**
