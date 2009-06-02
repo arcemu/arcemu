@@ -6925,30 +6925,54 @@ void Aura::SendModifierLog( int32** m, int32 v, uint32* mask, uint8 type, bool p
 	packetSMSG_SET_FLAT_SPELL_MODIFIER data;
 	uint32 intbit = 0, groupnum = 0;
 
-	if( *m == NULL )
-		*m = new int32[SPELL_GROUPS];
-
-	for(uint32 bit = 0; bit < SPELL_GROUPS; ++bit, ++intbit)
+	if( *m == 0 )
 	{
-		if(intbit == 32)
+		*m = new int32[SPELL_GROUPS];
+		for(uint32 bit = 0; bit < SPELL_GROUPS; ++bit, ++intbit)
 		{
-			++groupnum;
-			intbit = 0;
+			if(intbit == 32)
+			{
+				++groupnum;
+				intbit = 0;
+			}
+			if( ( 1 << intbit ) & mask[groupnum] )
+			{
+				(*m)[bit] = v;
+
+				if( !m_target->IsPlayer() )
+					continue;
+
+				data.group = bit;
+				data.type = type;
+				data.v = v;
+				static_cast<Player*>(m_target)->GetSession()->OutPacket( SMSG_SET_FLAT_SPELL_MODIFIER+ pct, sizeof( packetSMSG_SET_FLAT_SPELL_MODIFIER ), &data );
+			}
+			else
+				(*m)[bit] = 0;
 		}
-		if( ( 1 << intbit ) & mask[groupnum] )
+	}
+	else
+	{
+		for(uint8 bit = 0; bit < SPELL_GROUPS; ++bit,++intbit)
 		{
-			(*m)[bit] = v;
+			if(intbit == 32)
+			{
+				++groupnum;
+				intbit = 0;
+			}
+			if( ( 1 << intbit ) & mask[groupnum] )
+			{
+				(*m)[bit] += v;
 
-			if( !m_target->IsPlayer() )
-				continue;
+				if( !m_target->IsPlayer() )
+					continue;
 
-			data.group = bit;
-			data.type = type;
-			data.v = v;
-			static_cast<Player*>(m_target)->GetSession()->OutPacket( SMSG_SET_FLAT_SPELL_MODIFIER+ pct, sizeof( packetSMSG_SET_FLAT_SPELL_MODIFIER ), &data );
+				data.group = bit;
+				data.type = type;
+				data.v = (*m)[bit];
+				static_cast<Player*>(m_target)->GetSession()->OutPacket( SMSG_SET_FLAT_SPELL_MODIFIER+ pct, sizeof( packetSMSG_SET_FLAT_SPELL_MODIFIER ), &data );
+			}
 		}
-		else
-			(*m)[bit] = 0;
 	}
 }
 
