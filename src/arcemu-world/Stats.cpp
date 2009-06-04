@@ -323,7 +323,7 @@ uint32 CalculateStat(uint16 level,double a3, double a2, double a1, double a0)
 		a1*(level-1) +
 		a0);
 
-	//get diffrence
+	//get difference
 	diff = result1-result2;
 	return diff;
 }

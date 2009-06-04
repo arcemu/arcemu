@@ -94,7 +94,7 @@ Range ID|Range|Description
 */
 
 //wooohooo, there are 19 spells that actually require to add a proccounter for these
-//first spell catched is "presence of mind"
+//first spell caught is "presence of mind"
 //an ugly solution would be to add a proc flag to remove aura on event it should expire (like attack or cast) but that is only if count=1
 enum SPELL_MODIFIER_TYPE
 {
@@ -113,20 +113,20 @@ enum SPELL_MODIFIER_TYPE
     SMT_COOLDOWN_DECREASE   =11,// cooldown decrease <-probably fully handled by client // GOOD
     SMT_EFFECT              = 12,//used by shaman elemental weapons and another spell
 //    SMT_SPEED             =12,// movement speed, while given spell is active(flat is %) // TODO CHECK! ok this is not speed and is used with 23 misc to sometimes so is odd
-    // 13 dont exist spells with it
+// 13 don't exist spells with it
     SMT_COST                =14,// mana/energy/rage cost reduction // GOOD
     SMT_CRITICAL_DAMAGE     =15,// increases critical strike damage bonus (no flat)
     SMT_HITCHANCE           =16,// enemy resist chance decrease (flat as %) // GOOD need work
     SMT_ADDITIONAL_TARGET   =17,// Your Healing Wave will now jump to additional nearby targets. Each jump reduces the effectiveness of the heal by 80% // GOOD
-    SMT_TRIGGER             =18,// adds/increases chance to trigger some spell for example increase chance to apply poisons or entaglin // GOOD need work
-    SMT_TIME                =19,// delay for nova, redirection time bonus for totem,maybe smth else // GOOD need work
+    SMT_TRIGGER             =18,// adds/increases chance to trigger some spell for example increase chance to apply poisons or entangle // GOOD need work
+    SMT_TIME                =19,// delay for nova, redirection time bonus for totem, maybe something else // GOOD need work
     SMT_JUMP_REDUCE         =20,// Increases the amount healed by Chain Heal to targets beyond the first by x%. (no flat)
     SMT_CAST_TIME_FLAT      =21,
-	//!!! most spells have both SMT_DAMAGE_DONE and this value. Be carefull case there is no need to apply both !
+	//!!! most spells have both SMT_DAMAGE_DONE and this value. Be careful case there is no need to apply both !
     SMT_SPELL_VALUE_PCT		=22,// damage done by ability by x% : SELECT id,name,description FROM dbc_spell where (EffectApplyAuraName_1=108 and EffectMiscValue_1=22) or (EffectApplyAuraName_2=108 and EffectMiscValue_2=22) or (EffectApplyAuraName_3=108 and EffectMiscValue_3=22)  its DoT actually
     SMT_UNKNOWN23           =23,// this seems to be some scripted effect. From 8 spells not even 1 has description what it does
-    SMT_PENALTY             =24,// This is a modifer for the amount of +spell damage applied to the spell group from spell bonuses
-    // 25 dont exist spells with it
+	SMT_PENALTY             =24,// This is a modifier for the amount of +spell damage applied to the spell group from spell bonuses
+	// 25 don't exist spells with it
     // 26 is obsolete stuff
     SMT_EFFECT_BONUS        =27,// mana lost cost per point of damage taken for mana shield,Health or Mana gained from Drain Life and Drain Mana increased by x%.
     SMT_RESIST_DISPEL       =28,// TODO NEEDS WORK :D
@@ -327,10 +327,10 @@ enum procFlags
 	PROC_ON_ANY_DAMAGE_VICTIM          = 0x2000, // mb wrong
 	PROC_ON_HEALSPELL_LAND             = 0x4000, //on heal (direct or HoT) spell land.
 	PROC_ON_HEALSPELL_LAND_VICTIM      = 0x8000,  //on heal (direct or HoT) spell land victim.
-	PROC_ON_HARMFULSPELL_LAND          = 0x10000, //on harmfull spell land (DoT damage not included in this flag!)
-	PROC_ON_HARMFULSPELL_LAND_VICTIM   = 0x20000, //on harmfull spell land victim (DoT damage not included in this flag!)
-	PROC_ON_DOT_DAMAGE                 = 0x40000, //on harmfull non direct damage (DoTs)
-	PROC_ON_DOT_DAMAGE_VICTIM          = 0x80000,  //on harmfull non direct damage (DoTs) victim
+	PROC_ON_HARMFULSPELL_LAND          = 0x10000, //on harmful spell land (DoT damage not included in this flag!)
+	PROC_ON_HARMFULSPELL_LAND_VICTIM   = 0x20000, //on harmful spell land victim (DoT damage not included in this flag!)
+	PROC_ON_DOT_DAMAGE                 = 0x40000, //on harmful non direct damage (DoTs)
+	PROC_ON_DOT_DAMAGE_VICTIM          = 0x80000,  //on harmful non direct damage (DoTs) victim
 	PROC_REMOVEONUSE                   = 0x100000, //something supercustom. 99% wrong :P used by bombs and grenades in general.
 	PROC_ON_TRAP_TRIGGER               = 0x200000,
 	PROC_UNUSED1                       = 0x400000,
@@ -445,19 +445,19 @@ enum Attributes
 	ATTRIBUTES_UNK24							= 0x400000, // related to ranged
 	ATTRIBUTES_UNK25							= 0x800000,
 	ATTRIBUTES_MOUNT_CASTABLE					= 0x1000000, //castable on mounts
-	ATTRIBUTES_TRIGGER_COOLDOWN			        = 0x2000000, //also requires atributes ex = 32 ?
+	ATTRIBUTES_TRIGGER_COOLDOWN			        = 0x2000000, //also requires attributes ex = 32 ?
 	ATTRIBUTES_UNK28							= 0x4000000,
 	ATTRIBUTES_UNK29							= 0x8000000,
 	ATTRIBUTES_REQ_OOC							= 0x10000000, //     ATTRIBUTES_REQ_OUT_OF_COMBAT
     ATTRIBUTES_IGNORE_INVULNERABILITY           = 0x20000000, //debuffs that can't be removed by any spell and spells that can't be resisted in any case
 	ATTRIBUTES_UNK32							= 0x40000000, // seems like IS_DIMINISHING but some spells not there (f.e. Gouge)
-	ATTRIBUTES_UNK33							= 0x80000000, // seems like aura is not removeable by CMSG_CANCEL_AURA
+	ATTRIBUTES_UNK33							= 0x80000000, // seems like aura is not removable by CMSG_CANCEL_AURA
 };
 
 enum AttributesEx
 {
 	ATTRIBUTESEX_NULL                         = 0x0, // 0
-	ATTRIBUTESEX_UNK2                         = 0x1, // 1, pet summonings
+	ATTRIBUTESEX_UNK2                         = 0x1, // 1, pet summoning's
 	ATTRIBUTESEX_DRAIN_WHOLE_MANA             = 0x2, // 2
 	ATTRIBUTESEX_UNK4                         = 0x4, // 3
 	ATTRIBUTESEX_UNK5                         = 0x8, // 4
@@ -503,7 +503,7 @@ enum Flags3
 	FLAGS3_UNK8               = 0x40,   //Polymorph spells
 	FLAGS3_UNK9               = 0x80,
 	FLAGS3_UNUSED1            = 0x100,
-	FLAGS3_UNK11              = 0x200,  // used by 2 spells, 30421 | Nether Portal - Perseverence and  30466 | Nether Portal - Perseverence
+	FLAGS3_UNK11              = 0x200,  // used by 2 spells, 30421 | Nether Portal - Perseverance and  30466 | Nether Portal - Perseverance
 	FLAGS3_TAME_X             = 0x400,  // tame [creature]
 	FLAGS3_FUNNEL             = 0x800,  // only funnel spells
 	FLAGS3_UNK14              = 0x1000, // swipe / Cleave spells
@@ -522,7 +522,7 @@ enum Flags3
 	FLAGS3_UNK27              = 0x2000000,
 	FLAGS3_UNK28              = 0x4000000,
 	FLAGS3_UNK29              = 0x8000000, // fishing spells and enchanting weapons
-	FLAGS3_UNK30              = 0x10000000, // some secondairy spell triggers, especialy for lightning shield alike spells
+	FLAGS3_UNK30              = 0x10000000, // some secondary spell triggers, especially for lightning shield alike spells
 	FLAGS3_UNK31              = 0x20000000,
 	FLAGS3_UNK32              = 0x40000000,
 	FLAGS3_UNK33              = 0x80000000,
@@ -1008,7 +1008,7 @@ enum SpellIsFlags
     SPELL_FLAG_IS_DAMAGING				= 0x00000001,
     SPELL_FLAG_IS_HEALING				= 0x00000002,
     SPELL_FLAG_IS_TARGETINGSTEALTHED	= 0x00000004,
-    SPELL_FLAG_IS_REQUIRECOOLDOWNUPDATE	= 0x00000008, //it started with rogue cold blood but i'm sure others will come
+	SPELL_FLAG_IS_REQUIRECOOLDOWNUPDATE	= 0x00000008, //it started with rogue cold blood but I'm sure others will come
     SPELL_FLAG_IS_POISON				= 0x00000010, //rogue has a few spells that can stack so can't use the spell_type enum ;)
     SPELL_FLAG_IS_FINISHING_MOVE		= 0x00000020, //rogue has a few spells that can stack so can't use the spell_type enum ;)
     SPELL_FLAG_IS_NOT_USING_DMG_BONUS	= 0x00000040,
@@ -1029,7 +1029,7 @@ enum SpellCoefficientsFlags
 	SPELL_FLAG_IS_DD_OR_DH_SPELL		= 0x00000002, //Direct Damage or Direct Healing Spells
 	SPELL_FLAG_IS_DD_DH_DOT_SPELL		= SPELL_FLAG_IS_DOT_OR_HOT_SPELL | SPELL_FLAG_IS_DD_OR_DH_SPELL, //DoT+(DD|DH) Spells
 	SPELL_FLAG_AOE_SPELL				= 0x00000004, //AoE Spells
-	SPELL_FLAG_ADITIONAL_EFFECT			= 0x00000008, //Spells with aditional effect not DD or DoT or HoT
+	SPELL_FLAG_ADITIONAL_EFFECT			= 0x00000008, //Spells with additional effect not DD or DoT or HoT
 };
 
 enum DiminishingGroup
@@ -1204,7 +1204,7 @@ ARCEMU_INLINE uint32 IsHealingSpell(SpellEntry *sp)
 			default: break;
         }
     }
-	//flash of light, holy light uses scripted effect which is not neceserally heal spell
+	//flash of light, holy light uses scripted effect which is not neciserally heal spell
 	if( sp->NameHash == SPELL_HASH_HOLY_LIGHT || sp->NameHash == SPELL_HASH_FLASH_OF_LIGHT  )
 		return true;
 
@@ -1255,7 +1255,7 @@ ARCEMU_INLINE bool TargetTypeCheck(Object *obj,uint32 ReqCreatureTypeMask)
 	}
 	else if(obj->GetTypeId() == TYPEID_PLAYER && !(UNIT_TYPE_HUMANOID_BIT & ReqCreatureTypeMask))
 		return false;
-	else return false;//omg, how in the hack did we cast it on a GO ? But who cares ?
+	else return false;//mg, how in the hack did we cast it on a GO ? But who cares ?
 	return true;
 }
 
@@ -1390,7 +1390,7 @@ typedef enum {
    EFF_TARGET_ALL_ENEMIES_AROUND_CASTER					= 22,
    EFF_TARGET_GAMEOBJECT								= 23,
    EFF_TARGET_IN_FRONT_OF_CASTER						= 24,
-   EFF_TARGET_DUEL										= 25,//Dont know the real name!!!
+   EFF_TARGET_DUEL										= 25,//Don't know the real name!!!
    EFF_TARGET_GAMEOBJECT_ITEM							= 26,
    EFF_TARGET_PET_MASTER								= 27,
    EFF_TARGET_ALL_ENEMY_IN_AREA_CHANNELED				= 28,
@@ -1435,7 +1435,7 @@ typedef enum {
    EFF_TARGET_ENEMYS_IN_ARE_CHANNELED_WITH_EXCEPTIONS	= 76,
    EFF_TARGET_SELECTED_ENEMY_CHANNELED					= 77,
    EFF_TARGET_SELECTED_ENEMY_DEADLY_POISON				= 86,
-	//these are custom, feel free to move them further if tageting gets extended
+   //these are custom, feel free to move them further if targeting gets extended
    EFF_TARGET_CUSTOM_PARTY_INJURED_SINGLE				= 99,
    EFF_TARGET_CUSTOM_PARTY_INJURED_MULTI				= 100,
    EFF_TARGET_LIST_LENGTH_MARKER						= 101,
@@ -1602,13 +1602,13 @@ public:
     uint64 GetSinglePossibleEnemy(uint32 i, float prange=0);
     //get single Enemy as target
     uint64 GetSinglePossibleFriend(uint32 i, float prange=0);
-    //generate possible target list for a spell. Use as last resort since it is not acurate
+	//generate possible target list for a spell. Use as last resort since it is not accurate
     void GenerateTargets(SpellCastTargets *store_buff);
     // Fills the target map of the spell packet
     void FillTargetMap(uint32);
     // See if we hit the target or can it resist (evade/immune/resist on spellgo) (0=success)
     uint8 DidHit(uint32 effindex,Unit* target);
-    // Prepares the spell thats going to cast to targets
+	// Prepares the spell that's going to cast to targets
     uint8 prepare(SpellCastTargets * targets);
     // Cancels the current spell
     void cancel();
@@ -1851,7 +1851,7 @@ public:
     Player*			p_caster;
     Object*			m_caster;
 
-    // 15007 = resurecting sickness
+	// 15007 = resurrection sickness
 
 	// This returns SPELL_ENTRY_Spell_Dmg_Type where 0 = SPELL_DMG_TYPE_NONE, 1 = SPELL_DMG_TYPE_MAGIC, 2 = SPELL_DMG_TYPE_MELEE, 3 = SPELL_DMG_TYPE_RANGED
 	// It should NOT be used for weapon_damage_type which needs: 0 = MELEE, 1 = OFFHAND, 2 = RANGED

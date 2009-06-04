@@ -41,7 +41,7 @@ void WorldSession::HandlePetAction(WorldPacket & recv_data)
 		if(!pCharm) 
 			return;
 
-		// must be a mind controled creature..
+		// must be a mind controlled creature..
 		if(action == PET_ACTION_ACTION)
 		{
 			recv_data >> targetguid;
@@ -103,7 +103,7 @@ void WorldSession::HandlePetAction(WorldPacket & recv_data)
 					pPet->GetAIInterface()->WipeTargetList();
 					pPet->GetAIInterface()->WipeHateList();
 
-					// Attack target with melee if the owner if we dont have spells - other wise cast. All done by AIInterface.
+					// Attack target with melee if the owner if we don't have spells - other wise cast. All done by AIInterface.
 					if(pPet->GetAIInterface()->getUnitToFollow() == NULL)
 						pPet->GetAIInterface()->SetUnitToFollow(_player);
 
@@ -264,7 +264,7 @@ void WorldSession::HandleUnstablePet(WorldPacket & recv_data)
 	PlayerPet *pet = _player->GetPlayerPet( petnumber );
 	if(!pet)
 	{
-		sLog.outError("PET SYSTEM: Player "I64FMT" tried to unstable non-existant pet %d", _player->GetGUID(), petnumber);
+		sLog.outError("PET SYSTEM: Player "I64FMT" tried to unstable non-existent pet %d", _player->GetGUID(), petnumber);
 		return;
 	}
 	_player->SpawnPet( petnumber );
@@ -286,7 +286,7 @@ void WorldSession::HandleStableSwapPet(WorldPacket & recv_data)
 	PlayerPet *pet = _player->GetPlayerPet(petnumber);
 	if(!pet)
 	{
-		sLog.outError("PET SYSTEM: Player "I64FMT" tried to unstable non-existant pet %d", _player->GetGUID(), petnumber);
+		sLog.outError("PET SYSTEM: Player "I64FMT" tried to unstable non-existent pet %d", _player->GetGUID(), petnumber);
 		return;
 	}
 	Pet *pPet = _player->GetSummon();

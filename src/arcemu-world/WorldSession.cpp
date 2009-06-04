@@ -1101,7 +1101,7 @@ const char* WorldSession::LocalizedBroadCast(uint32 id)
 	WorldBroadCast * wb = WorldBroadCastStorage.LookupEntry(id);
 	if(!wb){
 		memset(szError,0,64);
-		sprintf(szError,"ID:%u is a invaild WorldBroadCast message!",id);
+		sprintf(szError,"ID:%u is a invalid WorldBroadCast message!",id);
 		return szError;
 	}
 

@@ -748,7 +748,7 @@ void Group::SendNullUpdate( Player *pPlayer )
 	pPlayer->GetSession()->OutPacket( SMSG_GROUP_LIST, 24, buffer );
 }
 
-// player is object class becouse its called from unit class
+// player is object class because its called from unit class
 void Group::SendPartyKillLog( Object * player, Object * Unit )
 {
 	if( !player || !Unit || !HasMember( static_cast< Player* >( player ) ) )
@@ -1336,7 +1336,7 @@ void Group::SendVoiceUpdate()
 	data.append( EncryptionKey, 16 );		// encryption key
 
 	// IP
-	// these dont appear to be in network byte order.. gg
+	// these don't appear to be in network byte order.. gg
 	data << uint32(htonl(sVoiceChatHandler.GetVoiceServerIP()));
 	data << uint16(sVoiceChatHandler.GetVoiceServerPort());
 	
@@ -1350,7 +1350,7 @@ void Group::SendVoiceUpdate()
 
 		if( m_voiceMembersList[i]->m_loggedInPlayer == NULL )
 		{
-			// shouldnt happen
+			// shouldn't happen
 			RemoveVoiceMember(m_voiceMembersList[i]);
 			continue;
 		}
@@ -1377,7 +1377,7 @@ void Group::SendVoiceUpdate()
 
 			if( m_voiceMembersList[j]->m_loggedInPlayer == NULL )
 			{
-				// shouldnt happen
+				// shouldn't happen
 				RemoveVoiceMember(m_voiceMembersList[j]);
 				continue;
 			}

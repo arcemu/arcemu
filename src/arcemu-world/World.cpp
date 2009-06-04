@@ -618,7 +618,7 @@ void World::SendGlobalMessage(WorldPacket *packet, WorldSession *self)
 	{
 		if (itr->second->GetPlayer() &&
 			itr->second->GetPlayer()->IsInWorld()
-			&& itr->second != self)  // dont send to self!
+			&& itr->second != self)  // don't send to self!
 		{
 			itr->second->SendPacket(packet);
 		}
@@ -651,7 +651,7 @@ void World::SendGamemasterMessage(WorldPacket *packet, WorldSession *self)
 	{
 	  if (itr->second->GetPlayer() &&
 	  itr->second->GetPlayer()->IsInWorld()
-	  && itr->second != self)  // dont send to self!
+	  && itr->second != self)  // don't send to self!
 	  {
 		if(itr->second->CanUseCommand('u'))
 		itr->second->SendPacket(packet);
@@ -669,7 +669,7 @@ void World::SendZoneMessage(WorldPacket *packet, uint32 zoneid, WorldSession *se
 	{
 		if (itr->second->GetPlayer() &&
 			itr->second->GetPlayer()->IsInWorld()
-			&& itr->second != self)  // dont send to self!
+			&& itr->second != self)  // don't send to self!
 		{
 			if (itr->second->GetPlayer()->GetZoneId() == zoneid)
 				itr->second->SendPacket(packet);
@@ -688,7 +688,7 @@ void World::SendInstanceMessage(WorldPacket *packet, uint32 instanceid, WorldSes
 	{
 		if (itr->second->GetPlayer() &&
 			itr->second->GetPlayer()->IsInWorld()
-			&& itr->second != self)  // dont send to self!
+			&& itr->second != self)  // don't send to self!
 		{
 			if (itr->second->GetPlayer()->GetInstanceID() == (int32)instanceid)
 				itr->second->SendPacket(packet);
@@ -942,7 +942,7 @@ void World::SaveAllPlayers()
 	sLog.outString("Saving all players to database...");
 	uint32 count = 0;
 	PlayerStorageMap::const_iterator itr;
-		// Servers started and obviously runing. lets save all players.
+		// Servers started and obviously running. lets save all players.
 	uint32 mt;
 	objmgr._playerslock.AcquireReadLock();   
 	for (itr = objmgr._players.begin(); itr != objmgr._players.end(); itr++)
@@ -959,7 +959,7 @@ void World::SaveAllPlayers()
 	sLog.outString("Saved %u players.", count);
 }
 
-WorldSession* World::FindSessionByName(const char * Name)//case insensetive
+WorldSession* World::FindSessionByName(const char * Name)//case insensitive
 {
 	m_sessionlock.AcquireReadLock();
 
@@ -1382,7 +1382,7 @@ void World::Rehash(bool load)
 	instance_TakeGroupLeaderID = Config.MainConfig.GetBoolDefault("InstanceHandling", "TakeGroupLeaderID", true);
 	instance_SlidingExpiration = Config.MainConfig.GetBoolDefault("InstanceHandling", "SlidingExpiration", false);
 	instance_DailyHeroicInstanceResetHour = Config.MainConfig.GetIntDefault("InstanceHandling", "DailyHeroicInstanceResetHour", 5);
-	// cebernic: wanna no attunment xD?
+	// cebernic: wanna no attunement xD?
 	instance_CheckTriggerPrerequsites = Config.MainConfig.GetBoolDefault("InstanceHandling", "CheckTriggerPrerequsites", true);
 
 	m_bgSet_AV_MIN = Config.MainConfig.GetIntDefault("Battleground", "AV_MIN", 10);

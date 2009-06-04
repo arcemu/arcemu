@@ -12,12 +12,12 @@ SpeedCheatDetector::SpeedCheatDetector()
 void SpeedCheatDetector::EventSpeedChange()
 {
 #ifdef _DEBUG
-	sLog.outDebug("Speedchange Event occured prevspeed=%f\n",last_used_speed);
+	sLog.outDebug("Speedchange Event occurred prevspeed=%f\n",last_used_speed);
 #endif
 //	last_stamp = 0;
 	//to reset or not to reset, this is the question
 //	cheat_threat = 0;
-	//no need to reset these. they will get their values overwriten
+	//no need to reset these. they will get their values overwritten
 //	last_x = last_y = 0;
 	last_used_speed = 0;
 }
@@ -77,7 +77,7 @@ void SpeedCheatDetector::ReportCheater(Player *_player)
 	if( ( sWorld.no_antihack_on_gm && _player->GetSession()->HasGMPermissions() ) )
 		return; // do not check GMs speed been the config tells us not to.
 
-	//toshik is wonderfull and i can't understand how he managed to make this happen
+	//toshik is wonderful and i can't understand how he managed to make this happen
 	if( bigest_hacked_speed_dif <= 1 )
 	{
 		cheat_threat = 0;
@@ -87,7 +87,7 @@ void SpeedCheatDetector::ReportCheater(Player *_player)
 
 	float speed = ( _player->flying_aura ) ? _player->m_flySpeed : ( _player->m_swimSpeed > _player->m_runSpeed ) ? _player->m_swimSpeed : _player->m_runSpeed;
 	_player->BroadcastMessage( "Speedhack detected. In case server was wrong then make a report how to reproduce this case. You will be logged out in 7 seconds." );
-	sCheatLog.writefromsession( _player->GetSession(), "Caught %s speed hacking last occurence with speed: %f instead of %f", _player->GetName(), speed + bigest_hacked_speed_dif, speed );
+	sCheatLog.writefromsession( _player->GetSession(), "Caught %s speed hacking last occurrence with speed: %f instead of %f", _player->GetName(), speed + bigest_hacked_speed_dif, speed );
 	sEventMgr.AddEvent( _player, &Player::_Kick, EVENT_PLAYER_KICK, 7000, 1, 0 );
 
 	//next check will be very far away

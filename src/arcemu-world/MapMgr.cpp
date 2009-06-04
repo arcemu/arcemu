@@ -461,7 +461,7 @@ void MapMgr::PushStaticObject(Object *obj)
 			break;
 
 		default:
-			// maybe add a warning, shouldnt be needed
+			// maybe add a warning, shouldn't be needed
 			break;
 	}
 }
@@ -484,7 +484,7 @@ void MapMgr::RemoveObject(Object *obj, bool free_guid)
 		obj->Deactivate(this);
 
 	//there is a very small chance that on double player ports on same update player is added to multiple insertpools but not removed
-	//one clear example was the double port proc when exploiting double resurect
+	//one clear example was the double port proc when exploiting double resurrect
 	m_objectinsertlock.Acquire();
 	m_objectinsertpool.erase( obj );
 	m_objectinsertlock.Release();
@@ -863,7 +863,7 @@ void MapMgr::ChangeObjectLocation( Object *obj )
 			UpdateCellActivity(cellX, cellY, 2);
 			if( pOldCell != NULL )
 			{
-				// only do the second check if theres -/+ 2 difference
+				// only do the second check if there's -/+ 2 difference
 				if( abs( (int)cellX - (int)pOldCell->_x ) > 2 ||
 					abs( (int)cellY - (int)pOldCell->_y ) > 2 )
 				{
@@ -977,7 +977,7 @@ void MapMgr::UpdateInRangeSet( Object *obj, Player *plObj, MapCell* cell, ByteBu
 			}
 			else
 			{
-				// Check visiblility
+				// Check visibility
 				if( curObj->IsPlayer() )
 				{
 					plObj2 = static_cast< Player* >( curObj );
@@ -1489,10 +1489,10 @@ void MapMgr::TeleportCorruptedPlayers()
 		}catch(int er)	{ er = 1; }//lols for the warning
 	}
 }
-//an exception ocured somewhere. We try to cleanup if there is anything to clean up and then kill this thread.
-//We should not save data in case some memory corruption ocured
-//we should be prepared that during cleanup process we meet the same exeption and we have to skip that (or handle it)
-//there might be cases when we should restart the mapmanager made for the the map (like always loaded maps)
+//an exception occurred somewhere. We try to cleanup if there is anything to clean up and then kill this thread.
+//We should not save data in case some memory corruption occurred
+//we should be prepared that during cleanup process we meet the same exception and we have to skip that (or handle it)
+//there might be cases when we should restart the mapmanager made for the map (like always loaded maps)
 void MapMgr::KillThreadWithCleanup()
 {
 	try
@@ -1539,7 +1539,7 @@ void MapMgr::KillThreadWithCleanup()
 	catch(int error)
 	{
 		error = 1;//deal with this later
-		//we are just avoiding the process to catch this exeption. We know it was comming
+		//we are just avoiding the process to catch this exception. We know it was coming
 	}
 
 //	KillThread();
@@ -1589,7 +1589,7 @@ bool MapMgr::Do()
 	objmgr.LoadCorpses(this);
 
 	// always declare local variables outside of the loop!
-	// otherwise theres a lot of sub esp; going on.
+	// otherwise there's a lot of sub esp; going on.
 
 	uint32 exec_time, exec_start;
 #ifdef WIN32
@@ -1876,7 +1876,7 @@ void MapMgr::_PerformObjectDuties()
 
 			// Don't update players not on our map.
 			// If we abort in the handler, it means we will "lose" packets, or not process this.
-			// .. and that could be diasterous to our client :P
+			// .. and that could be disastrous to our client :P
 			if(session->GetPlayer() && (session->GetPlayer()->GetMapMgr() != this && session->GetPlayer()->GetMapMgr() != 0))
 			{
 				continue;

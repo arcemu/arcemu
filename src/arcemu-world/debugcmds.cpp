@@ -940,7 +940,7 @@ bool ChatHandler::HandleSQLQueryCommand(const char* args, WorldSession *m_sessio
 	{
 		//First send back what we got. Feedback to the user of the command.
 		GreenSystemMessage(m_session, args);
-			//Sending the query, but this time geting the result back
+			//Sending the query, but this time getting the result back
 			QueryResult * qResult = WorldDatabase.Query(args);
 			if(qResult != NULL)
 			{

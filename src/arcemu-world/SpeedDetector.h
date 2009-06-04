@@ -8,13 +8,13 @@
 // problem : some players advance more then others by using speed cheat
 // solution : check the amount of advance a player does over time to see if it is higher then should be
 // situations :
-//		- player playes with mouse triggering a setfacing packet every 16 ms would flood us with incorrect values
+//		- player plays with mouse triggering a setfacing packet every 16 ms would flood us with incorrect values
 //		- client sends us every 500 ms a movement update
 //		- server makes speed changes -> need to reset detector
-//		- server uses scripts over charater -> delay detector
+//		- server uses scripts over character -> delay detector
 // error recovery :
-//		- speed change is detected then system resets state to start mesuring again
-//		- speed is mesured over interval to avoid small value problems
+//		- speed change is detected then system resets state to start measuring again
+//		- speed is measured over interval to avoid small value problems
 //		- cheat detection has to stack up to trigger real cheat alarm
 // problems :
 //		- it takes SPDT_WINDOW_SIZE*SPDT_SAMPLINGRATE at each speed change until it gives relevant data
@@ -29,13 +29,13 @@ class SpeedCheatDetector
 		void		AddSample(float x, float y, int stamp, float player_speed); // update the detector with new values
 		inline char	IsCheatDetected(){ return cheat_threat >= CHEAT_ALARMS_TO_TRIGGER_CHEAT; } // test cheater status
 		void		SkipSamplingUntil(int stamp);	// delay then reset cheat detector
-		void		ReportCheater(Player *_player);	// take actions agains a cheater
+		void		ReportCheater(Player *_player);	// take actions against a cheater
 		void		EventSpeedChange();				// reset internal values on speed change
 
 	private:
 		float			last_x,last_y;
 		int				last_stamp;
-		signed char		cheat_threat;		//don't draw quick conclusions. If player is suspicios over time then kill him
+		signed char		cheat_threat;		//don't draw quick conclusions. If player is suspicious over time then kill him
 		float			last_used_speed;	//we reset if speed changed since our last measure
 		float			bigest_hacked_speed_dif;
 };

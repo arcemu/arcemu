@@ -34,7 +34,7 @@ GameObject::GameObject(uint64 guid)
 	SetFloatValue( OBJECT_FIELD_SCALE_X, 1);//info->Size  );
 	SetByte(GAMEOBJECT_BYTES_1, 3, 100);
 
-	counter=0;//not needed at all but to prevent errors that var was not inited, can be removed in release
+	counter=0;//not needed at all but to prevent errors that var was not initialized, can be removed in release
 
 	bannerslot = bannerauraslot = -1;
 
@@ -240,7 +240,7 @@ void GameObject::Update(uint32 p_time)
 					spell->EffectImplicitTargetB[0] == 16)
 				{
 					this->ReleaseInrangeLock();
-					return;	 // on area dont continue.
+					return;	 // on area don't continue.
 				}
 			}
 		}
@@ -278,7 +278,7 @@ void GameObject::Despawn(uint32 delay, uint32 respawntime)
 
 	if(respawntime)
 	{
-		/* Get our originiating mapcell */
+		/* Get our originating mapcell */
 		MapCell * pCell = m_mapCell;
 		ASSERT(pCell);
 		pCell->_respawnObjects.insert((Object*)this);
@@ -600,9 +600,9 @@ void GameObject::EndFishing(Player* player, bool abort )
 	
 	if(spell)
 	{
-		if(abort)   // abort becouse of a reason
+		if(abort)   // abort because of a reason
 		{
-			//FIXME: here 'failed' should appear over progress bar
+			//FIX ME: here 'failed' should appear over progress bar
 			spell->SendChannelUpdate(0);
 			//spell->cancel();
 			spell->finish(false);

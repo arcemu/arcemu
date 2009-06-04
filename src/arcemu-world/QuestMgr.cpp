@@ -103,7 +103,7 @@ uint32 QuestMgr::PlayerMeetsReqs(Player* plr, Quest* qst, bool skiplevelcheck)
 				}
 			}
 		}
-		if( !questscompleted ) // If none of listed quests is done, next part isnt available.
+		if( !questscompleted ) // If none of listed quests is done, next part isn't available.
 			return QMGR_QUEST_NOT_AVAILABLE;
 	}
 
@@ -218,7 +218,7 @@ uint32 QuestMgr::CalcStatus(Object* quest_giver, Player* plr)
 
 	if(!bValid)
 	{
-        //anoying msg that is not needed since all objects dont exactly have quests 
+		//annoying message that is not needed since all objects don't exactly have quests 
 		//sLog.outDebug("QUESTS: Warning, invalid NPC "I64FMT" specified for CalcStatus. TypeId: %d.", quest_giver->GetGUID(), quest_giver->GetTypeId());
 		return status;
 	}
@@ -668,7 +668,7 @@ bool QuestMgr::OnGameObjectActivate(Player *plr, GameObject *go)
 		if( qle != NULL )
 		{
 			qst = qle->GetQuest();
-			// dont waste time on quests without mobs
+			// don't waste time on quests without mobs
 			if( qst->count_required_mob == 0 )
 				continue;
 
@@ -679,7 +679,7 @@ bool QuestMgr::OnGameObjectActivate(Player *plr, GameObject *go)
 					qle->m_mobcount[j] < qst->required_mobcount[j] )
 				{
 					// add another kill.
-					// (auto-dirtys it)
+					// (auto-dirty's it)
 					qle->IncrementMobCount( j );
 					qle->SendUpdateAddKill( j );
 					CALL_QUESTSCRIPT_EVENT( qle, OnGameObjectActivate )( entry, plr, qle );
@@ -725,7 +725,7 @@ void QuestMgr::OnPlayerKill(Player* plr, Creature* victim)
 							qst->required_mobtype[j] == QUEST_MOB_TYPE_CREATURE &&
 							qle->m_mobcount[j] < qst->required_mobcount[j] )
 						{
-							// add another kill.(auto-dirtys it)
+							// add another kill.(auto-dirty's it)
 							qle->IncrementMobCount( j );
 							qle->SendUpdateAddKill( j );
 							CALL_QUESTSCRIPT_EVENT( qle, OnCreatureKill)( entry, plr, qle );
@@ -756,7 +756,7 @@ void QuestMgr::OnPlayerKill(Player* plr, Creature* victim)
 				for(gitr = pGroup->GetSubGroup(k)->GetGroupMembersBegin(); gitr != pGroup->GetSubGroup(k)->GetGroupMembersEnd(); ++gitr)
 				{
 					gplr = (*gitr)->m_loggedInPlayer;
-					if(gplr && gplr != plr && plr->isInRange(gplr,300) && gplr->HasQuestMob(entry)) // dont double kills also dont give kills to party members at another side of the world
+					if(gplr && gplr != plr && plr->isInRange(gplr,300) && gplr->HasQuestMob(entry)) // don't double kills also don't give kills to party members at another side of the world
 					{
 						for( i = 0; i < 25; ++i )
 						{
@@ -776,7 +776,7 @@ void QuestMgr::OnPlayerKill(Player* plr, Creature* victim)
 											qle->m_mobcount[j] < qst->required_mobcount[j] )
 										{
 											// add another kill.
-											// (auto-dirtys it)
+											// (auto-dirty's it)
 											qle->IncrementMobCount( j );
 											qle->SendUpdateAddKill( j );
 											CALL_QUESTSCRIPT_EVENT( qle, OnCreatureKill )( entry, plr, qle );
@@ -812,7 +812,7 @@ void QuestMgr::OnPlayerCast(Player* plr, uint32 spellid, uint64& victimguid)
 	{
 		if((qle = plr->GetQuestLogInSlot(i)) != 0)
 		{
-			// dont waste time on quests without casts
+			// don't waste time on quests without casts
 			if(!qle->IsCastQuest())
 				continue;
 
@@ -896,7 +896,7 @@ void QuestMgr::OnPlayerExploreArea(Player* plr, uint32 AreaID)
 	{
 		if((qle = plr->GetQuestLogInSlot(i)) != 0)
 		{
-			// dont waste time on quests without triggers
+			// don't waste time on quests without triggers
 			if( qle->GetQuest()->count_requiredtriggers == 0 )
 				continue;
 
@@ -996,7 +996,7 @@ void QuestMgr::OnQuestFinished(Player* plr, Quest* qst, Object *qst_giver, uint3
 	if ( qst->reward_money < 0 && plr->GetUInt32Value( PLAYER_FIELD_COINAGE ) < uint32(-qst->reward_money) )
 		return;
 
-	// Check they dont have more than the max gold
+	// Check they don't have more than the max gold
 	if(sWorld.GoldCapEnabled && (plr->GetUInt32Value(PLAYER_FIELD_COINAGE) + qst->reward_money) > sWorld.GoldLimit)
 	{
 		plr->GetItemInterface()->BuildInventoryChangeError(NULL, NULL, INV_ERR_TOO_MUCH_GOLD);
@@ -1037,7 +1037,7 @@ void QuestMgr::OnQuestFinished(Player* plr, Quest* qst, Object *qst_giver, uint3
 		}
 	}
 
-    //details: hmm as i can remember, repeatable quests give faction rep still after first completation
+    //details: hmm as i can remember, repeatable quests give faction rep still after first completion
     if(IsQuestRepeatable(qst) || IsQuestDaily(qst))
     {
 		// Reputation reward
@@ -1898,7 +1898,7 @@ void QuestMgr::LoadExtraQuestStuff()
 			qst = QuestStorage.LookupEntry(quest);
 			if(!qst)
 			{
-				//printf("Tried to add starter to npc %d for non-existant quest %d.\n", creature, quest);
+				//printf("Tried to add starter to npc %d for non-existent quest %d.\n", creature, quest);
 			}
 			else 
 			{
@@ -1922,7 +1922,7 @@ void QuestMgr::LoadExtraQuestStuff()
 			qst = QuestStorage.LookupEntry(quest);
 			if(!qst)
 			{
-				//printf("Tried to add finisher to npc %d for non-existant quest %d.\n", creature, quest);
+				//printf("Tried to add finisher to npc %d for non-existent quest %d.\n", creature, quest);
 			} 
 			else 
 			{
@@ -1946,7 +1946,7 @@ void QuestMgr::LoadExtraQuestStuff()
 			qst = QuestStorage.LookupEntry(quest);
 			if(!qst)
 			{
-				//printf("Tried to add starter to go %d for non-existant quest %d.\n", creature, quest);
+				//printf("Tried to add starter to go %d for non-existent quest %d.\n", creature, quest);
 			} 
 			else
 			{
@@ -1970,7 +1970,7 @@ void QuestMgr::LoadExtraQuestStuff()
 			qst = QuestStorage.LookupEntry(quest);
 			if(!qst)
 			{
-				//printf("Tried to add finisher to go %d for non-existant quest %d.\n", creature, quest);
+				//printf("Tried to add finisher to go %d for non-existent quest %d.\n", creature, quest);
 			} 
 			else 
 			{
@@ -2000,7 +2000,7 @@ void QuestMgr::LoadExtraQuestStuff()
 			qst = QuestStorage.LookupEntry(quest);
 			if(!qst)
 			{
-				//printf("Tried to add association to item %d for non-existant quest %d.\n", item, quest);
+				//printf("Tried to add association to item %d for non-existent quest %d.\n", item, quest);
 			} 
 			else 
 			{

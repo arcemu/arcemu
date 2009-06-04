@@ -233,7 +233,7 @@ void Creature::OnRespawn(MapMgr * m)
 
 	sLog.outDetail("Respawning "I64FMT"...", GetGUID());
 	SetUInt32Value(UNIT_FIELD_HEALTH, GetUInt32Value(UNIT_FIELD_MAXHEALTH));
-	SetUInt32Value(UNIT_DYNAMIC_FLAGS, 0); // not tagging shiat
+	SetUInt32Value(UNIT_DYNAMIC_FLAGS, 0); // not tagging shit
 	if(proto && m_spawn)
 	{
 		SetUInt32Value(UNIT_NPC_FLAGS, proto->NPCFLags);
@@ -303,7 +303,7 @@ void Creature::generateLoot()
 					continue;
 
 				// Master Loot Stuff - Let the rest of the raid know what dropped..
-				//TODO: Shouldn't we move this array to a global position? Or maybe it allready exists^^ (VirtualAngel) --- I can see (dead) talking pigs...^^
+				//TODO: Shouldn't we move this array to a global position? Or maybe it already exists^^ (VirtualAngel) --- I can see (dead) talking pigs...^^
 				const char* itemColours[8] = { "9d9d9d", "ffffff", "1eff00", "0070dd", "a335ee", "ff8000", "e6cc80", "e6cc80" };
 				char buffer[256];
 				sprintf(buffer, "\174cff%s\174Hitem:%u:0:0:0:0:0:0:0\174h[%s]\174h\174r", itemColours[itr->item.itemproto->Quality], itr->item.itemproto->ItemId, itr->item.itemproto->Name1);
@@ -854,7 +854,7 @@ void Creature::RegenerateHealth()
 	uint32 mh=GetUInt32Value(UNIT_FIELD_MAXHEALTH);
 	if(cur>=mh)return;
 
-	//though creatures have their stats we use some wierd formula for amt
+	//though creatures have their stats we use some weird formula for amt
 	float amt = 0.0f;
 	uint32 lvl = getLevel();
 
@@ -941,7 +941,7 @@ void Creature::ModAvItemAmount(uint32 itemid, uint32 value)
 		{
 			if(itr->available_amount)
 			{
-				if(value > itr->available_amount)	// shouldnt happen
+				if(value > itr->available_amount)	// shouldn't happen
 				{
 					itr->available_amount=0;
 					return;
@@ -962,7 +962,7 @@ void Creature::UpdateItemAmount(uint32 itemid)
 	{
 		if(itr->itemid == itemid)
 		{
-			if (itr->max_amount==0)		// shouldnt happen
+			if (itr->max_amount==0)		// shouldn't happen
 				itr->available_amount=0;
 			else
 			{
@@ -998,7 +998,7 @@ void Creature::TotemExpire()
 
 void Creature::FormationLinkUp(uint32 SqlId)
 {
-	if(!m_mapMgr)		// shouldnt happen
+	if(!m_mapMgr)		// shouldn't happen
 		return;
 
 	Creature * creature = m_mapMgr->GetSqlIdCreature(SqlId);
@@ -1012,7 +1012,7 @@ void Creature::FormationLinkUp(uint32 SqlId)
 
 void Creature::ChannelLinkUpGO(uint32 SqlId)
 {
-	if(!m_mapMgr)		// shouldnt happen
+	if(!m_mapMgr)		// shouldn't happen
 		return;
 
 	GameObject * go = m_mapMgr->GetSqlIdGameObject(SqlId);
@@ -1026,7 +1026,7 @@ void Creature::ChannelLinkUpGO(uint32 SqlId)
 
 void Creature::ChannelLinkUpCreature(uint32 SqlId)
 {
-	if(!m_mapMgr)		// shouldnt happen
+	if(!m_mapMgr)		// shouldn't happen
 		return;
 
 	Creature * go = m_mapMgr->GetSqlIdCreature(SqlId);

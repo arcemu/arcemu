@@ -700,7 +700,7 @@ void WorldSession::FullLogin(Player * plr)
 	/* world preload */
 	packetSMSG_LOGIN_VERIFY_WORLD vwpck;
 	if (HasGMPermissions() && plr->m_FirstLogin && sWorld.gamemaster_startonGMIsland)
-	/* GMs should start on GM Island and be bound there - Confirmed by Euro WoW GM "We're bound to our startingl location" */
+	/* GMs should start on GM Island and be bound there - Confirmed by Euro WoW GM "We're bound to our starting location" */
 	{
 		vwpck.MapId = 1;
 		vwpck.O = 0;

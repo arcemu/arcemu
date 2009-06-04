@@ -532,7 +532,7 @@ protected:
 	bool HandleLookupFactionCommand(const char * args, WorldSession * m_session);
 	bool HandleLookupAchievementCmd(const char* args, WorldSession* m_session);
 
-	// Depricated GMScript reload.
+	// Deprecated GMScript reload.
 	//bool HandleReloadScriptsCommand(const char * args, WorldSession * m_session);
 	bool HandleNpcPossessCommand(const char * args, WorldSession * m_session);
 	bool HandleNpcUnPossessCommand(const char * args, WorldSession * m_session);

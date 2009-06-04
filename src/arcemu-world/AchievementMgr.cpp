@@ -1061,7 +1061,7 @@ void AchievementMgr::UpdateAchievementCriteria(AchievementCriteriaTypes type, in
 				}
 				break;
 			case ACHIEVEMENT_CRITERIA_TYPE_KILL_CREATURE_TYPE:
-				// Total NPC kills, Kill an NPC that yeilds XP, Beasts, Critters killed, Demons, Dragonkin ...
+				// Total NPC kills, Kill an NPC that yields XP, Beasts, Critters killed, Demons, Dragonkin ...
 				// miscvalue1 = killed creature high GUID
 				// miscvalue2 = killed creature low GUID
 				{

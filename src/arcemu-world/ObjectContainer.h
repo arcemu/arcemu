@@ -24,7 +24,7 @@
 /*	Under Development
  *
  *	This class acts as a single object, but actually consists of multiple
- *  sub-objects that all orient around the location of the the container 
+ *  sub-objects that all orient around the location of the container 
  *  objects (x, y) position. z is constant. A change in parent object
  *  orientation needs to rotate each object.
  *

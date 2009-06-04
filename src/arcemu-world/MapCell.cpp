@@ -245,7 +245,7 @@ void MapCell::LoadObjects(CellSpawns * sp)
 				c->PushToWorld(_mapmgr);
 			}
 			else
-				delete c;//missing proto or smth of that kind
+				delete c;//missing proto or something of that kind
 		}
 	}
 
@@ -259,7 +259,7 @@ void MapCell::LoadObjects(CellSpawns * sp)
 			{
 				//uint32 state = go->GetByte(GAMEOBJECT_BYTES_1, 0);
 
-				// FIXME - burlex
+				// FIX ME - burlex
 				/*
 				if(pInstance && pInstance->FindObject((*i)->stateNpcLink))
 				{
@@ -270,7 +270,7 @@ void MapCell::LoadObjects(CellSpawns * sp)
 				go->PushToWorld(_mapmgr);
 			}
 			else
-				delete go;//missing proto or smth of that kind
+				delete go;//missing proto or something of that kind
 		}
 	}
 }

@@ -24,7 +24,7 @@
 enum WeatherTypes
 {
      WEATHER_TYPE_NORMAL            = 0, // NORMAL
-     WEATHER_TYPE_FOG               = 1, // FOG --> current value irrelant
+     WEATHER_TYPE_FOG               = 1, // FOG --> current value irrelevant
      WEATHER_TYPE_RAIN              = 2, // RAIN
      WEATHER_TYPE_HEAVY_RAIN        = 4, // HEAVY_RAIN
      WEATHER_TYPE_SNOW              = 8, // SNOW
@@ -231,7 +231,7 @@ void WeatherInfo::Update()
 	if (m_currentEffect == 0 || RandomUInt(100) < 66) 
 	{
 		m_currentDensity -= WEATHER_DENSITY_UPDATE;
-		if (m_currentDensity < 0.30f) //0.20 is considered fog, lower values are anoying
+		if (m_currentDensity < 0.30f) //0.20 is considered fog, lower values are annoying
 		{
 			m_currentDensity = 0.0f;
 			m_currentEffect = 0;

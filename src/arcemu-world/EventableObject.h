@@ -63,7 +63,7 @@ public:
 	void event_AddEvent(TimedEvent * ptr);
 	void event_Relocate();
 	
-	// this func needs to be implemented by all eventable classes. use it to retreive the instance
+	// this func needs to be implemented by all eventable classes. use it to retrieve the instance
 	// id that it needs to attach itself to.
 	
 	virtual int32 event_GetInstanceID() { return WORLD_INSTANCE; }

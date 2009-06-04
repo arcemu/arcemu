@@ -337,7 +337,7 @@ void EyeOfTheStorm::HookOnAreaTrigger(Player * plr, uint32 id)
 #ifdef ANTI_CHEAT
 	if(!m_started)
 	{
-		Anticheat_Log->writefromsession(plr->GetSession(), "%s tryed to hook the flag in eye of the storm before battleground (ID %u) started.", plr->GetName(), this->m_id);
+		Anticheat_Log->writefromsession(plr->GetSession(), "%s tried to hook the flag in eye of the storm before battleground (ID %u) started.", plr->GetName(), this->m_id);
 		SendChatMessage(CHAT_MSG_BG_EVENT_NEUTRAL, plr->GetGUID(), "%s will be removed from the game for cheating.", plr->GetName());
 		// Remove player from battleground.
 		this->RemovePlayer(plr, false);
@@ -698,7 +698,7 @@ void EyeOfTheStorm::UpdateCPs()
 
 	for(i = 0; i < EOTS_TOWER_COUNT; ++i)
 	{
-		/* loop players inrange, add any that arent in the set to the set */
+		/* loop players in range, add any that aren't in the set to the set */
 		playercounts[0] = playercounts[1] = 0;
 		go = m_CPStatusGO[i];
 		disp = &m_CPDisplay[i];

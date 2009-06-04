@@ -37,13 +37,13 @@ finished = 8
 
 enum QUEST_STATUS
 {
-	QMGR_QUEST_NOT_AVAILABLE			= 0x00,	// There aren't quests avaiable.				| "No Mark"
-	QMGR_QUEST_AVAILABLELOW_LEVEL		= 0x01,	// Quest avaiable, and your level isnt enough.	| "Gray Quotation Mark !"
-	QMGR_QUEST_CHAT						= 0x02,	// Quest avaiable it shows a talk baloon.		| "No Mark"
-	QMGR_QUEST_NOT_FINISHED				= 0x03,	// Quest isnt finished yet.						| "Gray Question ? Mark"
+	QMGR_QUEST_NOT_AVAILABLE			= 0x00,	// There aren't any quests available.			| "No Mark"
+	QMGR_QUEST_AVAILABLELOW_LEVEL		= 0x01,	// Quest available, and your level isn't enough.| "Gray Quotation Mark !"
+	QMGR_QUEST_CHAT						= 0x02,	// Quest available it shows a talk balloon.		| "No Mark"
+	QMGR_QUEST_NOT_FINISHED				= 0x03,	// Quest isn't finished yet.						| "Gray Question ? Mark"
 	QMGR_QUEST_REPEATABLE_FINISHED		= 0x04,
 	QMGR_QUEST_REPEATABLE				= 0x05,	// Quest repeatable								| "Blue Question ? Mark" 
-	QMGR_QUEST_AVAILABLE				= 0x06,	// Quest avaiable, and your level is enough		| "Yellow Quotation ! Mark" 
+	QMGR_QUEST_AVAILABLE				= 0x06,	// Quest available, and your level is enough		| "Yellow Quotation ! Mark" 
 	QMGR_QUEST_FINISHED					= 0x08,	// Quest has been finished.						| "Yellow Question  ? Mark" (7 has no minimap icon)
 	//QUEST_ITEM_UPDATE					= 0x06	 // Yellow Question "?" Mark. //Unknown
 };
@@ -107,7 +107,7 @@ enum INVALID_REASON
 	INVALID_REASON_DONT_HAVE_EXP_ACCOUNT	= 16,
 	INVALID_REASON_DONT_HAVE_REQ_ITEMS		= 21, //changed for 2.1.3
 	INVALID_REASON_DONT_HAVE_REQ_MONEY		= 23,
-	INVALID_REASON_REACHED_DAILY_LIMIT		= 26, //"you have completed xx daily quests today" confirmd :)
+	INVALID_REASON_REACHED_DAILY_LIMIT		= 26, //"you have completed xx daily quests today" confirmed :)
 	INVALID_REASON_UNKNOW27					= 27,//"You cannot completed quests once you have reached tired time"
 };
 

@@ -266,7 +266,7 @@ void LocalizationMgr::Reload(bool first)
 
 				lid = GetLanguageId(str);
 				if(lid == 0)
-					continue;		// no loading enus stuff.. lawl
+					continue;		// no loading enUS stuff.. lawl
 
 				cn.Name = strdup(f[2].GetString());
 				cn.SubName = strdup(f[3].GetString());
@@ -297,7 +297,7 @@ void LocalizationMgr::Reload(bool first)
 
 				lid = GetLanguageId(str);
 				if(lid == 0)
-					continue;		// no loading enus stuff.. lawl
+					continue;		// no loading enUS stuff.. lawl
 
 				gn.Name = strdup(f[2].GetString());
 				m_GameObjectNames[lid].insert(make_pair(entry, gn));
@@ -327,7 +327,7 @@ void LocalizationMgr::Reload(bool first)
 
 				lid = GetLanguageId(str);
 				if(lid == 0)
-					continue;		// no loading enus stuff.. lawl
+					continue;		// no loading enUS stuff.. lawl
 
 				if(m_Items[lid].find(entry) != m_Items[lid].end())
 				{
@@ -363,7 +363,7 @@ void LocalizationMgr::Reload(bool first)
 
 				lid = GetLanguageId(str);
 				if(lid == 0)
-					continue;		// no loading enus stuff.. lawl
+					continue;		// no loading enUS stuff.. lawl
 
 				q.Title = strdup(f[2].GetString());
 				q.Details = strdup(f[3].GetString());
@@ -404,7 +404,7 @@ void LocalizationMgr::Reload(bool first)
 
 				lid = GetLanguageId(str);
 				if(lid == 0)
-					continue;		// no loading enus stuff.. lawl
+					continue;		// no loading enUS stuff.. lawl
 
 				counter = 2;
 				for(uint32 i = 0; i < 8; ++i)
@@ -439,7 +439,7 @@ void LocalizationMgr::Reload(bool first)
 
 				lid = GetLanguageId(str);
 				if(lid == 0)
-					continue;		// no loading enus stuff.. lawl
+					continue;		// no loading enUS stuff.. lawl
 
 				nt.Text = strdup(f[2].GetString());
 				m_ItemPages[lid].insert(make_pair(entry, nt));

@@ -1266,7 +1266,7 @@ CBattleground * CBattlegroundManager::CreateInstance(uint32 Type, uint32 LevelGr
 	}
 	if (((tm.tm_yday / 7) % 4) == n)
 	{
-		/* Set weekend from thursday night at midnight until tuesday morning */
+		/* Set weekend from Thursday night at midnight until Tuesday morning */
 		isWeekend = tm.tm_wday >= 5 || tm.tm_wday < 2;
 	}
 
@@ -1489,7 +1489,7 @@ void CBattleground::RemovePlayer(Player * plr, bool logout)
 	data << plr->GetGUID();
 	if ( plr->m_isGmInvisible == false )
 	{
-		//Dont show invisble gm's leaving the game.
+		//Don't show invisible gm's leaving the game.
 		DistributePacketToAll(&data);
 	}
 	else
@@ -1703,10 +1703,10 @@ void CBattleground::Close()
 		}
 	}
 
-	/* call the virtual onclose for cleanup etc */
+	/* call the virtual on close for cleanup etc */
 	OnClose();
 
-	/* shut down the map thread. this will delete the battleground from the corrent context. */
+	/* shut down the map thread. this will delete the battleground from the current context. */
 	m_mapMgr->SetThreadState(THREADSTATE_TERMINATE);
 
 	m_mainLock.Release();

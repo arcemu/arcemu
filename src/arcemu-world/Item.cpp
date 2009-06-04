@@ -47,7 +47,7 @@ Item::Item()//this is called when constructing as container
 	Enchantments.clear();
 }
 
-//called instead of parametrized constructor
+//called instead of parameterized constructor
 void Item::Init( uint32 high, uint32 low )
 {
 	SetUInt32Value( OBJECT_FIELD_GUID, low );
@@ -466,7 +466,7 @@ uint32 GetSkillByProto( uint32 Class, uint32 SubClass )
 }
 
 //This map is used for profess.
-//Prof packe strcut: {SMSG_SET_PROFICIENCY,(uint8)item_class,(uint32)1<<item_subclass}
+//Prof packet struct: {SMSG_SET_PROFICIENCY,(uint8)item_class,(uint32)1<<item_subclass}
 //ie: for fishing (it's class=2--weapon, subclass ==20 -- fishing rod) permissive packet
 // will have structure 0x2,524288
 //this table is needed to get class/subclass by skill, valid classes are 2 and 4
@@ -897,7 +897,7 @@ void Item::ApplyEnchantmentBonus( uint32 Slot, bool Apply )
 					if( Apply )
 					{
 						//m_owner->ModUInt32Value(PLAYER_FIELD_MOD_DAMAGE_DONE_POS, Entry->min[c]);
-						//if i'm not wrong then we should apply DMPS formula for this. This will have somewhat a larger value 28->34
+						//if I'm not wrong then we should apply DMPS formula for this. This will have somewhat a larger value 28->34
 						int32 val = Entry->min[c];
 						if( RandomSuffixAmount )
 							val = RANDOM_SUFFIX_MAGIC_CALCULATION( RandomSuffixAmount, GetItemRandomSuffixFactor() );

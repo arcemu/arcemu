@@ -622,7 +622,7 @@ enum INVIS_FLAG
 	INVIS_FLAG_TOTAL
 };
 
-enum FIELD_PADDING//Since this field isnt used you can expand it for you needs
+enum FIELD_PADDING//Since this field isn't used you can expand it for you needs
 {
 	PADDING_NONE
 };
@@ -661,13 +661,13 @@ class SERVER_DECL CombatStatusHandler
 public:
 	CombatStatusHandler() : m_lastStatus(false), m_primaryAttackTarget(0) {}
 	AttackerMap m_attackers;
-	void AddAttackTarget(const uint64& guid);						// this means we clicked attack, not actually striked yet, so they shouldnt be in combat.
+	void AddAttackTarget(const uint64& guid);						// this means we clicked attack, not actually striked yet, so they shouldn't be in combat.
 	void ClearPrimaryAttackTarget();								// means we deselected the unit, stopped attacking it.
 
 	void OnDamageDealt(Unit * pTarget);								// this is what puts the other person in combat.
 	void WeHealed(Unit * pHealTarget);								// called when a player heals another player, regardless of combat state.
 
-	void RemoveAttacker(Unit * pAttacker, const uint64& guid);		// this means we stopped attacking them totally. could be because of deagro, etc.
+	void RemoveAttacker(Unit * pAttacker, const uint64& guid);		// this means we stopped attacking them totally. could be because of deaggro, etc.
 	void RemoveAttackTarget(Unit * pTarget);						// means our DoT expired.
 
 	void UpdateFlag();												// detects if we have changed combat state (in/out), and applies the flag.
@@ -879,7 +879,7 @@ public:
 	//caller is the caster
 	int32 GetSpellDmgBonus(Unit *pVictim, SpellEntry *spellInfo,int32 base_dmg, bool isdot);
    
-	Unit* create_guardian(uint32 guardian_entry,uint32 duration,float angle, uint32 lvl = 0, GameObject * obj = NULL, LocationVector * Vec = NULL);//guardians are temporary spawn that will inherit master faction and will folow them. Apart from that they have their own mind
+	Unit* create_guardian(uint32 guardian_entry,uint32 duration,float angle, uint32 lvl = 0, GameObject * obj = NULL, LocationVector * Vec = NULL);//guardians are temporary spawn that will inherit master faction and will follow them. Apart from that they have their own mind
 
 	uint32 m_addDmgOnce;
 	Creature *m_TotemSlots[4];
@@ -1018,13 +1018,13 @@ public:
 	ARCEMU_INLINE void setEmoteState(uint8 emote) { m_emoteState = emote; };
 	ARCEMU_INLINE uint32 GetOldEmote() { return m_oldEmote; }
 	void EventSummonPetExpire();
-	void EventAurastateExpire(uint32 aurastateflag){RemoveFlag(UNIT_FIELD_AURASTATE,aurastateflag);} //hmm this looks like so not necesary :S
+	void EventAurastateExpire(uint32 aurastateflag){RemoveFlag(UNIT_FIELD_AURASTATE,aurastateflag);} //hmm this looks like so not necessary :S
 	void EventHealthChangeSinceLastUpdate();
 
     /************************************************************************/
     /* Stun Immobilize                                                      */
     /************************************************************************/
-	uint32	    trigger_on_stun;        //bah, warrior talent but this will not get triggered on triggered spells if used on proc so i'm forced to used a special variable
+	uint32	    trigger_on_stun;        //bah, warrior talent but this will not get triggered on triggered spells if used on proc so I'm forced to used a special variable
 	uint32	    trigger_on_stun_chance;
 	uint32	    trigger_on_stun_victim;
 	uint32	    trigger_on_stun_chance_victim;

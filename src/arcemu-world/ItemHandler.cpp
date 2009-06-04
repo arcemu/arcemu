@@ -337,7 +337,7 @@ void WorldSession::HandleSwapItemOpcode(WorldPacket& recv_data)
 			uint32 SrcItemSubClass = SrcItem->GetProto()->SubClass;
 			uint32 DstInvClass = _player->GetItemInterface()->GetInventoryItem(DstInvSlot)->GetProto()->Class;
 
-			// if its not ammo/arrows it shouldnt go there
+			// if its not ammo/arrows it shouldn't go there
 			if( DstInvSubClass != 0  && SrcItemSubClass != DstInvSubClass || 
 				( SrcItemClass == 11 && DstInvClass == 11 ) ) 
 			{
@@ -1141,7 +1141,7 @@ void WorldSession::HandleSellItemOpcode( WorldPacket & recv_data )
 	
 	uint32 price = GetSellPriceForItem(it, quantity);
 
-	// Check they dont have more than the max gold
+	// Check they don't have more than the max gold
 	if(sWorld.GoldCapEnabled)
 	{
 		if((_player->GetUInt32Value(PLAYER_FIELD_COINAGE) + price) > sWorld.GoldLimit)
@@ -1236,10 +1236,10 @@ void WorldSession::HandleBuyItemInSlotOpcode( WorldPacket & recv_data ) // drag 
 
 	uint32 count_per_stack = ci.amount * amount;
 
-	// if slot is diferent than -1, check for validation, else continue for auto storing.
+	// if slot is different than -1, check for validation, else continue for auto storing.
 	if(slot != INVENTORY_SLOT_NOT_SET)
 	{
-		if(!(bagguid>>32))//buy to bakcpack
+		if(!(bagguid>>32))//buy to backpack
 		{
 			if(slot > INVENTORY_SLOT_ITEM_END || slot < INVENTORY_SLOT_ITEM_START)
 			{
@@ -1560,7 +1560,7 @@ void WorldSession::SendInventoryList(Creature* unit)
 	if(!unit->HasItems())
 	{
 		sChatHandler.BlueSystemMessageToPlr(_player, "No sell template found. Report this to devs: %d (%s)", unit->GetEntry(), unit->GetCreatureInfo()->Name);
-		GetPlayer()->Gossip_Complete(); // cebernic: don't getta hang for the NPC
+		GetPlayer()->Gossip_Complete(); // cebernic: don't get a hang for the NPC
 		return;
 	}
 
@@ -1858,7 +1858,7 @@ void WorldSession::HandleRepairItemOpcode(WorldPacket &recvPacket)
 			if (dDurability)
 			{
                 uint32 cDurability = item->GetDurability();
-                //only apply item mods if they are on char equiped
+				//only apply item mods if they are on char equipped
                 if( RepairItem( _player, item ) && cDurability == 0 && searchres->ContainerSlot==INVALID_BACKPACK_SLOT && searchres->Slot<INVENTORY_SLOT_BAG_END)
                     _player->ApplyItemMods(item, searchres->Slot, true);
 			}

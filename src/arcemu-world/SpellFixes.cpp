@@ -155,7 +155,7 @@ void ApplyNormalFixes()
 		{
 			if(sp->EffectTriggerSpell[b] != 0 && dbcSpell.LookupEntryForced(sp->EffectTriggerSpell[b]) == NULL)
 			{
-				/* proc spell referencing non-existant spell. create a dummy spell for use w/ it. */
+				/* proc spell referencing non-existent spell. create a dummy spell for use w/ it. */
 				CreateDummySpell(sp->EffectTriggerSpell[b]);
 			}
 
@@ -226,7 +226,7 @@ void ApplyNormalFixes()
 		else if( namehash == SPELL_HASH_SERPENT_STING )
 			sp->c_is_flags |= SPELL_FLAG_IS_NOT_USING_DMG_BONUS;
 
-		//Rogue: Posion time fix for 2.3
+		//Rogue: Poison time fix for 2.3
 		if( strstr( sp->Name, "Crippling Poison") && sp->Effect[0] == 54 ) //I, II
 			sp->EffectBasePoints[0] = 3599;
 		if( strstr( sp->Name, "Mind-numbing Poison") && sp->Effect[0] == 54 ) //I,II,III
@@ -627,7 +627,7 @@ void ApplyNormalFixes()
 					if( strstr( sp->Description, "giving each melee attack a chance"))
 						pr|=PROC_ON_MELEE_ATTACK;
 					if( strstr( sp->Description, "damage when hit"))
-						pr|=PROC_ON_ANY_DAMAGE_VICTIM; //myabe melee damage ?
+						pr|=PROC_ON_ANY_DAMAGE_VICTIM; //maybe melee damage ?
 					if( strstr( sp->Description, "gives your"))
 					{
 						if( strstr( sp->Description, "melee"))
@@ -763,11 +763,11 @@ void ApplyNormalFixes()
 		//////////////////////////////////////////////////////////////////////////////////////////////////////
 		// procintervals
 		//////////////////////////////////////////////////////////////////////////////////////////////////////
-		//omg lighning shield trigger spell id's are all wrong ?
-		//if you are bored you could make thiese by hand but i guess we might find other spells with this problem..and this way it's safe
+		//omg lightning shield trigger spell id's are all wrong ?
+		//if you are bored you could make these by hand but i guess we might find other spells with this problem..and this way it's safe
 		if( strstr( sp->Name, "Lightning Shield" ) && sp->EffectTriggerSpell[0] )
 		{
-			//check if we can find in the desription
+			//check if we can find in the description
 			char *startofid = strstr(sp->Description, "for $");
 			if( startofid )
 			{
@@ -779,7 +779,7 @@ void ApplyNormalFixes()
 		//mage ignite talent should proc only on some chances
 		else if( strstr( sp->Name, "Ignite") && sp->Id>=11119 && sp->Id<=12848 && sp->EffectApplyAuraName[0] == 4 )
 		{
-			//check if we can find in the desription
+			//check if we can find in the description
 			char *startofid=strstr(sp->Description, "an additional ");
 			if(startofid)
 			{
@@ -819,14 +819,14 @@ void ApplyNormalFixes()
 		}
 		else if( strstr( sp->Name, "Holy Shock"))
 		{
-			//check if we can find in the desription
+			//check if we can find in the description
 			char *startofid=strstr(sp->Description, "causing $");
 			if(startofid)
 			{
 				startofid += strlen("causing $");
 				sp->EffectTriggerSpell[0] = atoi(startofid);
 			}
-			//check if we can find in the desription
+			//check if we can find in the description
 			startofid=strstr(sp->Description, " or $");
 			if(startofid)
 			{
@@ -836,7 +836,7 @@ void ApplyNormalFixes()
 		}
 		else if( strstr( sp->Name, "Touch of Weakness"))
 		{
-			//check if we can find in the desription
+			//check if we can find in the description
 			char *startofid=strstr(sp->Description, "cause $");
 			if(startofid)
 			{
@@ -849,7 +849,7 @@ void ApplyNormalFixes()
 		else if( strstr( sp->Name, "Firestone Passive"))
 		{
 			//Enchants the main hand weapon with fire, granting each attack a chance to deal $17809s1 additional fire damage.
-			//check if we can find in the desription
+			//check if we can find in the description
 			char * startofid=strstr(sp->Description, "to deal $");
 			if(startofid)
 			{
@@ -876,7 +876,7 @@ void ApplyNormalFixes()
 			sp->proc_interval = 10000; //10 seconds
 		else if( strstr( sp->Name, "Aviana's Purpose"))
 			sp->proc_interval = 10000; //10 seconds
-		//don't change to namehash since we are searching only a protion of the name
+		//don't change to namehash since we are searching only a portion of the name
  		else if( strstr( sp->Name, "Crippling Poison"))
 		{
 			sp->c_is_flags |= SPELL_FLAG_IS_POISON;
@@ -941,7 +941,7 @@ void ApplyNormalFixes()
 		if( sp->NameHash == SPELL_HASH_SEAL_OF_COMMAND )
 		{
 			sp->procChance = 25;
-			sp->School = SCHOOL_HOLY; //the procspells of the original seal of command have fizical school instead of holy
+			sp->School = SCHOOL_HOLY; //the procspells of the original seal of command have physical school instead of holy
 			sp->Spell_Dmg_Type = SPELL_DMG_TYPE_MAGIC; //heh, crazy spell uses melee/ranged/magic dmg type for 1 spell. Now which one is correct ?
 		}
 
@@ -974,7 +974,7 @@ void ApplyNormalFixes()
 
 		if( namehash == SPELL_HASH_SHRED || namehash == SPELL_HASH_BACKSTAB || namehash == SPELL_HASH_AMBUSH || namehash == SPELL_HASH_GARROTE || namehash == SPELL_HASH_RAVAGE )
 		{
-			// FIXME: needs different flag check
+			// FIX ME: needs different flag check
 			sp->FacingCasterFlags = SPELL_INFRONT_STATUS_REQUIRE_INBACK;
 		}
 
@@ -1350,7 +1350,7 @@ void ApplyNormalFixes()
 				sp->OTspell_coef_override = f[3].GetFloat();
 			}
 			else
-				Log.Warning("SpellCoefOverride", "Has nonexistant spell %u.", f[0].GetUInt32());
+				Log.Warning("SpellCoefOverride", "Has nonexistent spell %u.", f[0].GetUInt32());
 		} while( resultx->NextRow() );
 		delete resultx;
 	}
@@ -3021,7 +3021,7 @@ void ApplyNormalFixes()
 			sp->EffectMiscValue[0] = SMT_MISC_EFFECT;
 		}
 
-		//Hunter : Rapid Killing - might need to add honor trigger too here. I'm guessing you receive Xp too so i'm avoiding double proc
+		//Hunter : Rapid Killing - might need to add honor trigger too here. I'm guessing you receive Xp too so I'm avoiding double proc
 		sp = dbcSpell.LookupEntryForced( 34948 );
 		if( sp != NULL )
 		{
@@ -3345,7 +3345,7 @@ void ApplyNormalFixes()
 		{
 			sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;//proc spell
 			sp->procFlags = PROC_ON_CAST_SPELL;
-			sp->EffectBasePoints[1] = 20; //client showes 20% chance but whe do not have it ? :O
+			sp->EffectBasePoints[1] = 20; //client showes 20% chance but we do not have it ? :O
 		}
 	#else
 		//Relentless Strikes
@@ -3354,7 +3354,7 @@ void ApplyNormalFixes()
 			sp->EffectSpellGroupRelation[0]= 262144 | 2097152 | 8388608 | 8519680 | 524288 | 1048576 | 8388608;
 	#endif
 	#ifndef NEW_PROCFLAGS
-		//rogue - intiative
+		//rogue - initiative
 		sp = dbcSpell.LookupEntryForced( 13976 );
 		if( sp != NULL )
 		{
@@ -3374,7 +3374,7 @@ void ApplyNormalFixes()
 			sp->procFlags = uint32(PROC_ON_CAST_SPELL|PROC_TARGET_SELF);
 		}
 	#else
-		//rogue - intiative
+		//rogue - initiative
 		sp = dbcSpell.LookupEntryForced( 13976 );
 		if( sp != NULL )
 			sp->EffectSpellGroupRelation[0] = 8389120 | 256 | 1024;
@@ -3407,7 +3407,7 @@ void ApplyNormalFixes()
 	//////////////////////////////////////////
 
 	// Insert priest spell fixes here
-		// Prayer of mending. !very very overwriten
+		// Prayer of mending. !very very overwritten
 		// how it is after rewriten : we simply proc on damage and prochandler will get new target + do healing
 		sp = dbcSpell.LookupEntryForced( 33076 );
 		if( sp != NULL )
@@ -3819,7 +3819,7 @@ void ApplyNormalFixes()
 		if ( sp != NULL )
 		{
 			sp->DurationIndex = 566; // Change to instant cast as script will cast the real channeled spell.
-			sp->ChannelInterruptFlags = 0; // Remove channeling behaviour.
+			sp->ChannelInterruptFlags = 0; // Remove channeling behavior.
 		}
 
 		sp = dbcSpell.LookupEntryForced( 53005 );
@@ -4203,35 +4203,35 @@ void ApplyNormalFixes()
 		if( sp != NULL )
 		{
 			sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
-			sp->EffectTriggerSpell[0] = 39805;//proc something (we will owerride this)
+			sp->EffectTriggerSpell[0] = 39805;//proc something (we will override this)
 			sp->procFlags = PROC_ON_SPELL_HIT;
 		}
 		sp = dbcSpell.LookupEntryForced( 30678 );
 		if( sp != NULL )
 		{
 			sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
-			sp->EffectTriggerSpell[0] = 39805;//proc something (we will owerride this)
+			sp->EffectTriggerSpell[0] = 39805;//proc something (we will override this)
 			sp->procFlags = PROC_ON_SPELL_HIT;
 		}
 		sp = dbcSpell.LookupEntryForced( 30679 );
 		if( sp != NULL )
 		{
 			sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
-			sp->EffectTriggerSpell[0] = 39805;//proc something (we will owerride this)
+			sp->EffectTriggerSpell[0] = 39805;//proc something (we will override this)
 			sp->procFlags = PROC_ON_SPELL_HIT;
 		}
 		sp = dbcSpell.LookupEntryForced( 30680 );
 		if( sp != NULL )
 		{
 			sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
-			sp->EffectTriggerSpell[0] = 39805;//proc something (we will owerride this)
+			sp->EffectTriggerSpell[0] = 39805;//proc something (we will override this)
 			sp->procFlags = PROC_ON_SPELL_HIT;
 		}
 		sp = dbcSpell.LookupEntryForced( 30681 );
 		if( sp != NULL )
 		{
 			sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
-			sp->EffectTriggerSpell[0] = 39805;//proc something (we will owerride this)
+			sp->EffectTriggerSpell[0] = 39805;//proc something (we will override this)
 			sp->procFlags = PROC_ON_SPELL_HIT;
 		}
 		/**********************************************************
@@ -4847,17 +4847,17 @@ void ApplyNormalFixes()
 		sp = dbcSpell.LookupEntryForced( 31579 );
 		if( sp != NULL )
 		{
-			sp->EffectBasePoints[0] *= 5; //heh B thinks he is smart by adding this to description ? If it doesn;t work std then it still needs to made by hand
+			sp->EffectBasePoints[0] *= 5; //heh B thinks he is smart by adding this to description ? If it doesn't work std then it still needs to made by hand
 		}
 		sp = dbcSpell.LookupEntryForced( 31582 );
 		if( sp != NULL )
 		{
-			sp->EffectBasePoints[0] *= 5; //heh B thinks he is smart by adding this to description ? If it doesn;t work std then it still needs to made by hand
+			sp->EffectBasePoints[0] *= 5; //heh B thinks he is smart by adding this to description ? If it doesn't work std then it still needs to made by hand
 		}
 		sp = dbcSpell.LookupEntryForced( 31583 );
 		if( sp != NULL )
 		{
-			sp->EffectBasePoints[0] *= 5; //heh B thinks he is smart by adding this to description ? If it doesn;t work std then it still needs to made by hand
+			sp->EffectBasePoints[0] *= 5; //heh B thinks he is smart by adding this to description ? If it doesn't work std then it still needs to made by hand
 		}
 
 		//Mage - Improved Blizzard
@@ -5269,7 +5269,7 @@ void ApplyNormalFixes()
 		sp = dbcSpell.LookupEntryForced( 30242 );
 		if( sp != NULL )
 		{
-			sp->Effect[0] = 0; //disble this. This is just blizz crap. Pure proove that they suck :P
+			sp->Effect[0] = 0; //disable this. This is just blizz crap. Pure proof that they suck :P
 			sp->EffectImplicitTargetB[1] = EFF_TARGET_PET;
 			sp->EffectApplyAuraName[2] = SPELL_AURA_MOD_SPELL_CRIT_CHANCE; //lvl 1 has it fucked up :O
 			sp->EffectImplicitTargetB[2] = EFF_TARGET_PET;
@@ -5278,7 +5278,7 @@ void ApplyNormalFixes()
 		sp = dbcSpell.LookupEntryForced( 30245 );
 		if( sp != NULL )
 		{
-			sp->Effect[0] = 0; //disble this. This is just blizz crap. Pure proove that they suck :P
+			sp->Effect[0] = 0; //disable this. This is just blizz crap. Pure proof that they suck :P
 			sp->EffectImplicitTargetB[1] = EFF_TARGET_PET;
 			sp->EffectImplicitTargetB[2] = EFF_TARGET_PET;
 			sp->c_is_flags |= SPELL_FLAG_IS_CASTED_ON_PET_SUMMON_PET_OWNER ;
@@ -5286,7 +5286,7 @@ void ApplyNormalFixes()
 		sp = dbcSpell.LookupEntryForced( 30246 );
 		if( sp != NULL )
 		{
-			sp->Effect[0] = 0; //disble this. This is just blizz crap. Pure proove that they suck :P
+			sp->Effect[0] = 0; //disable this. This is just blizz crap. Pure proof that they suck :P
 			sp->EffectImplicitTargetB[1] = EFF_TARGET_PET;
 			sp->EffectImplicitTargetB[2] = EFF_TARGET_PET;
 			sp->c_is_flags |= SPELL_FLAG_IS_CASTED_ON_PET_SUMMON_PET_OWNER ;
@@ -5294,7 +5294,7 @@ void ApplyNormalFixes()
 		sp = dbcSpell.LookupEntryForced( 30247 );
 		if( sp != NULL )
 		{
-			sp->Effect[0] = 0; //disble this. This is just blizz crap. Pure proove that they suck :P
+			sp->Effect[0] = 0; //disable this. This is just blizz crap. Pure proof that they suck :P
 			sp->EffectImplicitTargetB[1] = EFF_TARGET_PET;
 			sp->EffectImplicitTargetB[2] = EFF_TARGET_PET;
 			sp->c_is_flags |= SPELL_FLAG_IS_CASTED_ON_PET_SUMMON_PET_OWNER ;
@@ -5302,7 +5302,7 @@ void ApplyNormalFixes()
 		sp = dbcSpell.LookupEntryForced( 30248 );
 		if( sp != NULL )
 		{
-			sp->Effect[0] = 0; //disble this. This is just blizz crap. Pure proove that they suck :P
+			sp->Effect[0] = 0; //disable this. This is just blizz crap. Pure proof that they suck :P
 			sp->EffectImplicitTargetB[1] = EFF_TARGET_PET;
 			sp->EffectImplicitTargetB[2] = EFF_TARGET_PET;
 			sp->c_is_flags |= SPELL_FLAG_IS_CASTED_ON_PET_SUMMON_PET_OWNER ;
@@ -5759,7 +5759,7 @@ void ApplyNormalFixes()
 		sp = dbcSpell.LookupEntryForced( 18073 );
 		if( sp != NULL )
 		{
-			sp->Effect[0] = 0; //delete this owerride effect :P
+			sp->Effect[0] = 0; //delete this override effect :P
 			sp->EffectTriggerSpell[1] = 18093; //trigger spell was wrong :P
 			sp->procFlags = PROC_ON_ANY_HOSTILE_ACTION;
 			sp->procChance = 13; //god, save us from fixed values !
@@ -5767,7 +5767,7 @@ void ApplyNormalFixes()
 		sp = dbcSpell.LookupEntryForced( 18096 );
 		if( sp != NULL )
 		{
-			sp->Effect[0] = 0; //delete this owerride effect :P
+			sp->Effect[0] = 0; //delete this override effect :P
 			sp->EffectTriggerSpell[1] = 18093; //trigger spell was wrong :P
 			sp->procFlags = PROC_ON_ANY_HOSTILE_ACTION;
 			sp->procChance = 26; //god, save us from fixed values !
@@ -5863,7 +5863,7 @@ void ApplyNormalFixes()
 		sp = dbcSpell.LookupEntryForced(49376); //feral charge cat
 		if( sp != NULL )
 		{
-			sp->Effect[1] = SPELL_EFFECT_CHARGE; //hackfix (mean't to use trigger missile which isn't implemented)
+			sp->Effect[1] = SPELL_EFFECT_CHARGE; //hackfix (meant to use trigger missile which isn't implemented)
 			sp->EffectImplicitTargetA[1] = EFF_TARGET_SINGLE_ENEMY;
 			sp->Effect[2] = NULL;
 		}
@@ -6178,7 +6178,7 @@ void ApplyNormalFixes()
 		{
 			sp->procFlags = PROC_ON_CAST_SPELL;
             sp->procChance = 100;
-			sp->procCharges = 2; // i know.. hacky.. but first charge gets lost when it gets procced
+			sp->procCharges = 2; // I know.. hacky.. but first charge gets lost when it gets proceed
 		}
 
 		// Druid: Omen of Clarity
@@ -6511,7 +6511,7 @@ void ApplyNormalFixes()
 			sp->EffectTriggerSpell[1] = 40440;
 			sp->maxstack = 1;
 		}
-		// Drums of war targets sorounding party members instead of us
+		// Drums of war targets surrounding party members instead of us
 		sp = dbcSpell.LookupEntryForced( 35475 );
 		if( sp != NULL )
 		{
@@ -6522,7 +6522,7 @@ void ApplyNormalFixes()
 			sp->EffectImplicitTargetB[1] = 0;
 			sp->EffectImplicitTargetB[2] = 0;
 		}
-		// Symbol of Hope targets sorounding party members instead of us
+		// Symbol of Hope targets surrounding party members instead of us
 		sp = dbcSpell.LookupEntryForced( 32548 );
 		if( sp != NULL )
 		{
@@ -6534,7 +6534,7 @@ void ApplyNormalFixes()
 			sp->EffectImplicitTargetB[2] = 0;
 		}
 
-		// Drums of Battle targets sorounding party members instead of us
+		// Drums of Battle targets surrounding party members instead of us
 		sp = dbcSpell.LookupEntryForced( 35476 );
 		if( sp != NULL )
 		{
@@ -6546,7 +6546,7 @@ void ApplyNormalFixes()
 			sp->EffectImplicitTargetB[2] = 0;
 		}
 
-		// Drums of Panic targets sorounding creatures instead of us
+		// Drums of Panic targets surrounding creatures instead of us
 		sp = dbcSpell.LookupEntryForced( 35474 );
 		if( sp != NULL )
 		{
@@ -6558,7 +6558,7 @@ void ApplyNormalFixes()
 			sp->EffectImplicitTargetB[2] = 0;
 		}
 
-		// Drums of Restoration targets sorounding party members instead of us
+		// Drums of Restoration targets surrounding party members instead of us
 		sp = dbcSpell.LookupEntryForced( 35478 );
 		if( sp != NULL )
 		{
@@ -6569,7 +6569,7 @@ void ApplyNormalFixes()
 			sp->EffectImplicitTargetB[1] = 0;
 			sp->EffectImplicitTargetB[2] = 0;
 		}
-		// Drums of Speed targets sorounding party members instead of us
+		// Drums of Speed targets surrounding party members instead of us
 		sp = dbcSpell.LookupEntryForced( 35477 );
 		if( sp != NULL )
 		{

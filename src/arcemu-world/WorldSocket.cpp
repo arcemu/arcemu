@@ -309,7 +309,7 @@ void WorldSocket::InformationRetreiveCallback(WorldPacket & recvData, uint32 req
 	delete [] key;
 
 	//checking if player is already connected
-    //disconnect corrent player and login this one(blizzlike)
+	//disconnect current player and login this one(blizzlike)
 
 	if(recvData.rpos() != recvData.wpos())
 		recvData.read((uint8*)lang.data(), 4);
@@ -659,7 +659,7 @@ void WorldLog::LogPacket(uint32 len, uint16 opcode, const uint8* data, uint8 dir
 
 				fprintf(m_file, "%02X ",data[count]);
 
-				//FIX TO PARSE PACKETS WITH LENGHT < OR = TO 16 BYTES.
+				//FIX TO PARSE PACKETS WITH LENGTH < OR = TO 16 BYTES.
 				if (count+1 == lenght && lenght <= 16)
 				{
 					for (unsigned int b = countpos+1; b < 16;b++)
@@ -681,7 +681,7 @@ void WorldLog::LogPacket(uint32 len, uint16 opcode, const uint8* data, uint8 dir
 					fprintf(m_file, "|\n");
 				}
 
-				//FIX TO PARSE THE LAST LINE OF THE PACKETS WHEN THE LENGHT IS > 16 AND ITS IN THE LAST LINE.
+				//FIX TO PARSE THE LAST LINE OF THE PACKETS WHEN THE LENGTH IS > 16 AND ITS IN THE LAST LINE.
 				if (count+1 == lenght && lenght > 16)
 				{
 					for (unsigned int b = countpos+1; b < 16;b++)

@@ -77,7 +77,7 @@ public:
 
 	Item *SafeAddItem(uint32 ItemId, int8 ContainerSlot, int8 slot);
 	AddItemResult SafeAddItem(Item *pItem, int8 ContainerSlot, int8 slot);
-	Item *SafeRemoveAndRetreiveItemFromSlot(int8 ContainerSlot, int8 slot, bool destroy); //doesnt destroy item from memory
+	Item *SafeRemoveAndRetreiveItemFromSlot(int8 ContainerSlot, int8 slot, bool destroy); //doesn't destroy item from memory
 	Item *SafeRemoveAndRetreiveItemByGuid(uint64 guid, bool destroy);
 	bool SafeFullRemoveItemFromSlot(int8 ContainerSlot, int8 slot); //destroys item fully
 	bool SafeFullRemoveItemByGuid(uint64 guid); //destroys item fully

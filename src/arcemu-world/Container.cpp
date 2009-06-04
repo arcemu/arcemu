@@ -86,7 +86,7 @@ void Container::Create( uint32 itemid, Player *owner )
 
 	SetUInt32Value( OBJECT_FIELD_ENTRY, itemid );
 
-	// TODO: this shouldnt get NULL form containers in mail fix me
+	// TODO: this shouldn't get NULL form containers in mail fix me
 	if( owner != NULL )
 	{
 		SetUInt64Value( ITEM_FIELD_OWNER, owner->GetGUID() );

@@ -160,7 +160,7 @@ void LootMgr::LoadLootProp()
 			rp = dbcRandomProps.LookupEntryForced(eid);
 			if(rp == NULL)
 			{
-				Log.Error("LoadLootProp", "RandomProp group %u references non-existant randomprop %u.", id, eid);
+				Log.Error("LoadLootProp", "RandomProp group %u references non-existent randomprop %u.", id, eid);
 				continue;
 			}
 
@@ -192,7 +192,7 @@ void LootMgr::LoadLootProp()
 			rs = dbcItemRandomSuffix.LookupEntryForced(eid);
 			if(rs == NULL)
 			{
-				Log.Error("LoadLootProp", "RandomSuffix group %u references non-existant randomsuffix %u.", id, eid);
+				Log.Error("LoadLootProp", "RandomSuffix group %u references non-existent randomsuffix %u.", id, eid);
 				continue;
 			}
 
@@ -898,7 +898,7 @@ void LootRoll::Finalize()
 void LootRoll::PlayerRolled(Player *player, uint8 choice)
 {
 	if(m_NeedRolls.find(player->GetLowGUID()) != m_NeedRolls.end() || m_GreedRolls.find(player->GetLowGUID()) != m_GreedRolls.end())
-		return; // dont allow cheaters
+		return; // don't allow cheaters
 
 	int roll = RandomUInt(99)+1;
 	// create packet

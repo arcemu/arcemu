@@ -566,7 +566,7 @@ public:
 	void LogoutPlayers();
 
 protected:
-	// update Stuff, FIXME: use diff
+	// update Stuff, FIX ME: use diff
 	time_t _UpdateGameTime()
 	{
 		// Update Server time

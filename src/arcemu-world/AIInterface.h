@@ -28,7 +28,7 @@
 
 #define M_PI	   3.14159265358979323846
 #define UNIT_MOVEMENT_INTERPOLATE_INTERVAL 400/*750*/ // ms smoother server/client side moving vs less cpu/ less b/w
-#define TARGET_UPDATE_INTERVAL_ON_PLAYER 1000 // we most likely will have to kil players and only then check mobs
+#define TARGET_UPDATE_INTERVAL_ON_PLAYER 1000 // we most likely will have to kill players and only then check mobs
 #define TARGET_UPDATE_INTERVAL 5000 // this is a multiple of PLAYER_TARGET_UPDATE_INTERVAL
 #define PLAYER_SIZE 1.5f
 
@@ -41,7 +41,7 @@
 #define DISTANCE_TO_SMALL_TO_WALK 2.0f //this is required so creature will not try to reposition itself to obtain perfect combat range. Not using this might lead to exploits
 
 //!!! it is in seconds and not Milliseconds
-#define MOB_SPELLCAST_GLOBAL_COOLDOWN	2 //there are individual cooldown and global ones. Global cooldown stops mob from casting 1 instant speels on you per second
+#define MOB_SPELLCAST_GLOBAL_COOLDOWN	2 //there are individual cooldown and global ones. Global cooldown stops mob from casting 1 instant spell on you per second
 #define MOB_SPELLCAST_REFRESH_COOLDOWN_INTERVAL	2
 
 //#define INHERIT_FOLLOWED_UNIT_SPEED 1
@@ -63,7 +63,7 @@ enum AIType
 	AITYPE_SOCIAL,
 	AITYPE_PET,
 	AITYPE_TOTEM,
-	AITYPE_GUARDIAN, //we got a master but he cannot control us, we follow and battle oposite factions
+	AITYPE_GUARDIAN, //we got a master but he cannot control us, we follow and battle opposite factions
 };
 
 enum MovementType
@@ -294,7 +294,7 @@ public:
 	void Event_Summon_EE_totem(uint32 summon_duration);
 	void Event_Summon_FE_totem(uint32 summon_duration);
 	void EventAiInterfaceParamsetFinish();
-	void EventChangeFaction( Unit *ForceAttackersToHateThisInstead=NULL );	//we have to tell our current enemies to stop atacking us, we should also forget about our targets
+	void EventChangeFaction( Unit *ForceAttackersToHateThisInstead=NULL );	//we have to tell our current enemies to stop attacking us, we should also forget about our targets
 
 	// Update
 	virtual void Update(uint32 p_time);
@@ -463,7 +463,7 @@ protected:
 
 	Unit*	tauntedBy; //This mob will hit only tauntedBy mob.
 	bool	isTaunted;
-	Unit*	soullinkedWith; //This mob can be hitten only by soullinked unit
+	Unit*	soullinkedWith; //This mob can be hit only by a soul linked unit
 	bool	isSoulLinked;
 #ifdef HACKY_SERVER_CLIENT_POS_SYNC
 	bool	moved_for_attack;
@@ -493,7 +493,7 @@ protected:
 	float m_lastFollowY;
 	//typedef std::map<uint32, WayPoint*> WayPointMap;
 	Unit *UnitToFollow;
-	Unit *UnitToFollow_backup;//used unly when forcing creature to wander (blind spell) so when effect wears off we can follow our master again (guardian)
+	Unit *UnitToFollow_backup;//used only when forcing creature to wander (blind spell) so when effect wears off we can follow our master again (guardian)
 	Unit *UnitToFear;
 	uint32 m_timeToMove;
 	uint32 m_timeMoved;

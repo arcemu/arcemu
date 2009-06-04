@@ -726,7 +726,7 @@ void ArathiBasin::HookOnAreaTrigger(Player * plr, uint32 id)
 		break;
 	}
 
-	if(plr->IsDead())		// dont apply to dead players... :P
+	if(plr->IsDead())		// don't apply to dead players... :P
 		return;	
 
 	uint32 x = (uint32)buffslot;
@@ -786,12 +786,12 @@ void ArathiBasin::CaptureControlPoint(uint32 Id, uint32 Team)
 {
 	if(m_basesOwnedBy[Id] != -1)
 	{
-		// there is a very slim chance of this happening, 2 teams evnets could clash..
+		// there is a very slim chance of this happening, 2 teams events could clash..
 		// just in case...
 		return;
 	}
 
-	// anticheat, not really necessary because this is a server method but anyway
+	// anti cheat, not really necessary because this is a server method but anyway
 	if(m_basesAssaultedBy[Id] != (int32)Team)
 		return;
 
@@ -799,7 +799,7 @@ void ArathiBasin::CaptureControlPoint(uint32 Id, uint32 Team)
 	m_basesAssaultedBy[Id]=-1;
 	m_basesLastOwnedBy[Id] = -1;
 
-	// remove the other spirit guide (if it exists) // burlex: shouldnt' happen
+	// remove the other spirit guide (if it exists) // burlex: shouldn't' happen
 	if(m_spiritGuides[Id] != NULL)
 	{
 		RemoveSpiritGuide(m_spiritGuides[Id]);
@@ -869,7 +869,7 @@ void ArathiBasin::AssaultControlPoint(Player * pPlayer, uint32 Id)
 #ifdef ANTI_CHEAT
 	if(!m_started)
 	{
-		Anticheat_Log->writefromsession(pPlayer->GetSession(), "%s tryed to assault control point in arathi basin before battleground (ID %u) started.", pPlayer->GetName(), this->m_id);
+		Anticheat_Log->writefromsession(pPlayer->GetSession(), "%s tried to assault control point in arathi basin before battleground (ID %u) started.", pPlayer->GetName(), this->m_id);
 		SendChatMessage(CHAT_MSG_BG_EVENT_NEUTRAL, pPlayer->GetGUID(), "%s will be removed from the game for cheating.", pPlayer->GetName());
 		// Remove player from battleground.
 		RemovePlayer(pPlayer, false);
@@ -1075,7 +1075,7 @@ void ArathiBasin::AssaultControlPoint(Player * pPlayer, uint32 Id)
 
 bool ArathiBasin::HookSlowLockOpen(GameObject * pGo, Player * pPlayer, Spell * pSpell)
 {
-	// burlex todo: find a cleaner way to do this that doesnt waste memory.
+	// burlex todo: find a cleaner way to do this that doesn't waste memory.
 	if(pGo->bannerslot >= 0 && pGo->bannerslot < AB_NUM_CONTROL_POINTS)
 	{
 		//Stealthed / invisible players can't cap

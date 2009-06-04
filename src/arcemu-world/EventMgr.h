@@ -249,7 +249,7 @@ struct SERVER_DECL TimedEvent
 	void IncRef() { InterlockedIncrement(&ref); }
 #else
 
-	/* burlex: if anyone knows how to do the equivilent of InterlockedIncrement/Decrement on linux feel free
+	/* burlex: if anyone knows how to do the equivalent of InterlockedIncrement/Decrement on linux feel free
 	   to change this, I couldn't find the atomic functions anymore though :*( */
 
 	void IncRef() { ++ref; }

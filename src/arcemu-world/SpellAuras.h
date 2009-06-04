@@ -147,7 +147,7 @@ enum MOD_TYPES
     SPELL_AURA_MOD_RESIST_CHANCE = 90,                  // Mod Resist Chance
     SPELL_AURA_MOD_DETECT_RANGE = 91,                   // Mod Detect Range
     SPELL_AURA_PREVENTS_FLEEING = 92,                   // Prevent Fleeing
-    SPELL_AURA_MOD_UNATTACKABLE = 93,                   // Mod Uninteractible
+	SPELL_AURA_MOD_UNATTACKABLE = 93,                   // Mod Unintractable
     SPELL_AURA_INTERRUPT_REGEN = 94,                    // Interrupt Regen
     SPELL_AURA_GHOST = 95,                              // Ghost
     SPELL_AURA_SPELL_MAGNET = 96,                       // Spell Magnet
@@ -294,7 +294,7 @@ struct Modifier
 
     ///needed for per level effect
     int32 realamount;
-    //need this to store % values or they cannot be reverted corectly (i think :D )
+	//need this to store % values or they cannot be reverted correctly (i think :D )
     signed int fixed_amount[7];
 };
 
@@ -687,7 +687,7 @@ public:
 		data << (uint32)1;					  // unknown? need research?
 		data << uint32(Flags | 0x1);			// aura school
 		data << Amount;						 // amount of done to target / heal / damage
-		data << (uint32)0;				 // cebernic: unknown?? needs more research,but it should fix unknow damage type with suffered.
+		data << (uint32)0;				 // cebernic: unknown?? needs more research, but it should fix unknown damage type with suffered.
 		data << g_spellSchoolConversionTable[School];
 		data << uint32(abs_dmg);
 		data << uint32(resisted_damage);
@@ -703,7 +703,7 @@ public:
 		data << (uint32)1;					  // unknown?? need research?
 		data << uint32(Flags | 0x1);			// aura school
 		data << Amount;						 // amount of done to target / heal / damage
-		data << (uint32)0;				 // cebernic: unknown?? needs more research,but it should fix unknow damage type with suffered.
+		data << (uint32)0;				 // cebernic: unknown?? needs more research, but it should fix unknown damage type with suffered.
 		data << g_spellSchoolConversionTable[School];
 		data << uint32(abs_dmg);
 		data << uint32(resisted_damage);
@@ -771,7 +771,7 @@ private:
 	Unit* m_target;
 	Player * p_target;
 	uint32 timeleft;
-	// In Miliseconds
+	// In Milliseconds
 	int32 m_duration;
 //	bool m_positive;
 	signed char m_positive;

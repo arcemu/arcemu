@@ -145,7 +145,7 @@ void Arena::OnAddPlayer(Player * plr)
 
 void Arena::OnRemovePlayer(Player * plr)
 {
-	/* remove arena readyness buff */
+	/* remove arena readiness buff */
 	plr->m_deathVision = false;
 
 	// All auras are removed on exit
@@ -377,7 +377,7 @@ void Arena::OnStart()
 {
 	int i;
 
-	/* remove arena readyness buff */
+	/* remove arena readiness buff */
 	for(i = 0; i < 2; ++i) {
 		for(set<Player*>::iterator itr = m_players[i].begin(); itr != m_players[i].end(); ++itr) {
 			Player *plr = *itr;

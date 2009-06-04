@@ -130,7 +130,7 @@ private:
 	CellTerrainInformation *** CellInformation;
 	
 public:
-	/* Initializes the file descriptor and readys it for data retreival.
+	/* Initializes the file descriptor and readies it for data retrieval.
 	   No parameters taken.
 	   Returns true if the index was read successfully, false if not.
 	  */

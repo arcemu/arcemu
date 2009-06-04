@@ -103,9 +103,9 @@ void WorldSession::HandleGMTicketUpdateOpcode(WorldPacket & recv_data)
 
 	// Update Ticket
 	GM_Ticket *ticket = objmgr.GetGMTicketByPlayer(GetPlayer()->GetGUID());
-	if(!ticket) // Player doesnt have a GM Ticket yet
+	if(!ticket) // Player doesn't have a GM Ticket yet
 	{
-		// Response - error couldnt find existing Ticket
+		// Response - error couldn't find existing Ticket
 		data << uint32(1);
 
 		SendPacket(&data);

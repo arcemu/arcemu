@@ -374,7 +374,7 @@ void WorldSession::HandleMessagechatOpcode( WorldPacket & recv_data )
 
 			// Check that the player isn't a gm with his status on
 			// TODO: Game Master's on retail are able to have block whispers after they close the ticket with the current packet.
-			// When a Game Master is visible to your player it says "This player is unavailible for whisper" i need to figure out how this done.
+			// When a Game Master is visible to your player it says "This player is unavailable for whisper" I need to figure out how this done.
 			if(!_player->GetSession()->GetPermissionCount() && player->bGMTagOn && player->gmTargets.count(_player) == 0)
 			{
 				// Build automated reply
@@ -414,7 +414,7 @@ void WorldSession::HandleMessagechatOpcode( WorldPacket & recv_data )
 				delete data;
 			}
 
-			//Sent the to Users id as the channel, this should be fine as it's not used for wisper
+			//Sent the to Users id as the channel, this should be fine as it's not used for whisper
 			if(lang!=-1) //DO NOT SEND if its an addon message!
 			{
 				data = sChatHandler.FillMessageData(CHAT_MSG_WHISPER_INFORM, LANG_UNIVERSAL,msg.c_str(), player->GetGUID(), player->bGMTagOn ? 4 : 0  );

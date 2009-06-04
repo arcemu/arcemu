@@ -150,7 +150,7 @@ bool ChatHandler::HandleGMTicketRemoveByIdCommand(const char* args, WorldSession
 	WorldPacket data(SMSG_GMTICKET_DELETETICKET, 4);
 	data << uint32(9);
 	plr->GetSession()->SendPacket( &data );
-	// Reponse - Send GM Survey
+	// Response - Send GM Survey
 	WorldPacket datab(SMSG_GM_TICKET_STATUS_UPDATE, 1);
 	datab << uint32(3);
 	plr->GetSession()->SendPacket( &datab );
@@ -308,7 +308,7 @@ bool ChatHandler::HandleGMTicketRemoveByIdCommand(const char* args, WorldSession
 	WorldPacket data(SMSG_GMTICKET_DELETETICKET, 4);
 	data << uint32(9);
 	plr->GetSession()->SendPacket( &data );
-	// Reponse - Send GM Survey
+	// Response - Send GM Survey
 	WorldPacket datab(SMSG_GM_TICKET_STATUS_UPDATE,1 );
 	datab << uint32(3);
 	plr->GetSession()->SendPacket( &datab );
@@ -390,7 +390,7 @@ bool ChatHandler::HandleGMTicketAssignToCommand(const char* args, WorldSession *
 	ss << ":" << ticket->guid;
 	ss << ":" << plr->GetName();
 	chn->Say(cplr, ss.str().c_str(), NULL, true);
-	//Send Reponse Packet to update Ticket
+	//Send Response Packet to update Ticket
 	//WorldPacket data(SMSG_GMTICKET_GETTICKET, 400);
 	//data << uint32(6); // Packet Status
 	//data << uint8(0x7);//static Category
@@ -548,7 +548,7 @@ bool ChatHandler::HandleGMTicketDeletePermanentCommand(const char* args, WorldSe
 		data << uint32(9);
 		plr->GetSession()->SendPacket( &data );
 		
-		// Reponse - Send GM Survey
+		// Response - Send GM Survey
 		WorldPacket datab(SMSG_GM_TICKET_STATUS_UPDATE, 1);
 		datab << uint32(3);
 		plr->GetSession()->SendPacket( &datab );

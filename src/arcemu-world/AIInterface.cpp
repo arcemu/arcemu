@@ -499,7 +499,7 @@ void AIInterface::HandleEvent(uint32 event, Unit* pUnit, uint32 misc1)
 
 				m_WanderTimer = 0;
 
-				//CALL_SCRIPT_EVENT(m_Unit, OnWander)(pUnit, 0); FIXME
+				//CALL_SCRIPT_EVENT(m_Unit, OnWander)(pUnit, 0); FIX ME
 				m_AIState = STATE_WANDER;
 				StopMovement(1);
 
@@ -678,7 +678,7 @@ void AIInterface::Update(uint32 p_time)
 			{
 				//we set no target and see if we managed to fid a new one
 				SetNextTarget( (Unit*)NULL );
-				//something happend to our target, pick another one
+				//something happened to our target, pick another one
 				pSpell->GenerateTargets(&targets);
 				if(targets.m_targetMask & TARGET_FLAG_UNIT)
 					SetNextTarget( targets.m_unitTarget );
@@ -747,7 +747,7 @@ void AIInterface::Update(uint32 p_time)
 			m_AIState = STATE_IDLE;
 			m_returnX = m_returnY = m_returnZ = 0.0f;
 			m_moveRun = false;
-			//remowed by zack : in scripted events if we keep reducing this it will bug the world out !
+			//removed by zack : in scripted events if we keep reducing this it will bug the world out !
 			//On Blizz it will return to previous wp but we can accept the fact that it will move on to next one
 			/*
 			if(hasWaypoints())
@@ -799,7 +799,7 @@ void AIInterface::Update(uint32 p_time)
 		}
 	}
 
-	//Pet Dismiss after a certian ditance away
+	//Pet Dismiss after a certain distance away
 	/*if(m_AIType == AITYPE_PET && m_PetOwner != NULL)
 	{
 		float dist = (m_Unit->GetInstanceID() == m_PetOwner->GetInstanceID()) ? 
@@ -1019,14 +1019,14 @@ void AIInterface::_UpdateCombat(uint32 p_time)
 	if( m_AIType != AITYPE_PET && disable_combat )
 		return;
 
-	//just make sure we are not hitting self. This was reported as an exploit.Should never ocure anyway
+	//just make sure we are not hitting self. This was reported as an exploit.Should never occur anyway
 	if( GetNextTarget() == m_Unit )
 		SetNextTarget( GetMostHated() );
 
 	uint16 agent = m_aiCurrentAgent;
 
 	// If creature is very far from spawn point return to spawnpoint
-	// If at instance dont return -- this is wrong ... instance creatures always returns to spawnpoint, dunno how do you got this idea. 
+	// If at instance don't return -- this is wrong ... instance creatures always returns to spawnpoint, dunno how do you got this idea. 
 	// If at instance returns to spawnpoint after empty agrolist
 	if(	m_AIType != AITYPE_PET 
 		&& m_AIState != STATE_EVADE
@@ -1082,7 +1082,7 @@ void AIInterface::_UpdateCombat(uint32 p_time)
 					if ( GetNextTarget()->GetTypeId() != TYPEID_PLAYER )
 					{
 						if ( target_land_z > m_Unit->GetMapMgr()->GetWaterHeight(GetNextTarget()->GetPositionX(), GetNextTarget()->GetPositionY()) )
-							HandleEvent( EVENT_LEAVECOMBAT, m_Unit, 0); //bugged npcs, probly db fault
+							HandleEvent( EVENT_LEAVECOMBAT, m_Unit, 0); //bugged npcs, probably db fault
 					}
 					else if (static_cast<Player*>(GetNextTarget())->GetSession() != NULL)
 					{
@@ -1113,7 +1113,7 @@ void AIInterface::_UpdateCombat(uint32 p_time)
 	else 
 	{
 		if( GetNextTarget() )
-			SetNextTarget( (Unit*)NULL );			// corupt pointer
+			SetNextTarget( (Unit*)NULL );			// corrupt pointer
 
 		cansee = false;
 	}
@@ -1215,7 +1215,7 @@ void AIInterface::_UpdateCombat(uint32 p_time)
 					
 					FollowDistance = 0.0f;
 //					m_moveRun = false;
-					//FIXME: offhand shit
+					//FIX ME: offhand shit
 					if(m_Unit->isAttackReady(false) && !m_fleeTimer)
 					{
 						m_creatureState = ATTACKING;
@@ -1234,7 +1234,7 @@ void AIInterface::_UpdateCombat(uint32 p_time)
 						{
 							m_Unit->setAttackTimer(0, false);
 #ifdef ENABLE_CREATURE_DAZE
-							//we require to know if strike was succesfull. If there was no dmg then target cannot be dazed by it
+							//we require to know if strike was successful. If there was no dmg then target cannot be dazed by it
 							Unit *t_unit = GetNextTarget();
 							if( !t_unit )
 								return; //omg lol, in seconds we lost target. This might be possible due to the Eventrelocated
@@ -1309,7 +1309,7 @@ void AIInterface::_UpdateCombat(uint32 p_time)
 					
 					FollowDistance = 0.0f;
 //					m_moveRun = false;
-					//FIXME: offhand shit
+					//FIX ME: offhand shit
 					if(m_Unit->isAttackReady(false) && !m_fleeTimer)
 					{
 						m_creatureState = ATTACKING;
@@ -1361,7 +1361,7 @@ void AIInterface::_UpdateCombat(uint32 p_time)
 		case AGENT_SPELL:
 			{
 				if(!m_nextSpell || !GetNextTarget())
-					return;  // this shouldnt happen
+					return;  // this shouldn't happen
 
 				SpellCastTime *sd = dbcSpellCastTime.LookupEntry(m_nextSpell->spell->CastingTimeIndex);
 
@@ -1453,7 +1453,7 @@ void AIInterface::_UpdateCombat(uint32 p_time)
 					CALL_SCRIPT_EVENT(m_Unit, OnFlee)(GetNextTarget());
 
 				m_AIState = STATE_FLEEING;
-				//removed by Zack : somehow creature starts to attack sefl. Just making sure it is not this one
+				//removed by Zack : somehow creature starts to attack self. Just making sure it is not this one
 //				m_nextTarget = m_Unit;
 //				m_Unit->SetUInt64Value(UNIT_FIELD_TARGET, 0);
 				SetNextTarget( (Unit*)NULL );
@@ -1991,7 +1991,7 @@ bool AIInterface::FindFriends(float dist)
 	}
 	m_Unit->ReleaseInrangeLock();
 
-	// check if we're a civillan, in which case summon guards on a despawn timer
+	// check if we're a civilian, in which case summon guards on a despawn timer
 	uint8 civilian = (((Creature*)m_Unit)->GetCreatureInfo()) ? (((Creature*)m_Unit)->GetCreatureInfo()->Civilian) : 0;
 	uint32 family = (((Creature*)m_Unit)->GetCreatureInfo()) ? (((Creature*)m_Unit)->GetCreatureInfo()->Type) : 0;
 	if(family == HUMANOID && civilian && getMSTime() > m_guardTimer && !IS_INSTANCE(m_Unit->GetMapId()))
@@ -2161,7 +2161,7 @@ void AIInterface::_CalcDestinationAndMove(Unit *target, float dist)
 		float ResY = target->GetPositionY();
 
 		//avoid eating bandwidth with useless movement packets when target did not move since last position
-		//this will work since it turned into a common mith that when you pull mob you should not move :D
+		//this will work since it turned into a common myth that when you pull mob you should not move :D
 		if( abs(m_last_target_x - ResX) < DISTANCE_TO_SMALL_TO_WALK
 			&& abs(m_last_target_y - ResY) < DISTANCE_TO_SMALL_TO_WALK && m_creatureState == MOVING)
 			return;
@@ -2281,7 +2281,7 @@ Comments: Some comments on the SMSG_MONSTER_MOVE packet:
 		4: there is an extra float that causes the orientation to be set.	known
 		
 		note:	when this field is 1. 
-			there is no need to send  the next 3 uint32's as they are'nt used by the client
+			there is no need to send  the next 3 uint32's as they aren't used by the client
 	
 	the MoveFlags:
 		0x00000000 - Walk
@@ -2289,7 +2289,7 @@ Comments: Some comments on the SMSG_MONSTER_MOVE packet:
 		0x00000200 - Fly
 		some comments on that 0x00000300 - Fly = 0x00000100 | 0x00000200
 
-	waypoints:
+	waypoint's:
 		TODO.... as they somehow seemed to be changed long time ago..
 		
 *************************************************************************************************************/
@@ -2506,12 +2506,12 @@ void AIInterface::UpdateMove()
 	//m_nextPosX = m_nextPosY = m_nextPosZ = 0;
 
 	uint32 moveTime;
-/* #ifdef INHERIT_FOLLOWED_UNIT_SPEED vojta - this is pointless and we dont need it anymore
+	/* #ifdef INHERIT_FOLLOWED_UNIT_SPEED vojta - this is pointless and we don't need it anymore
 	if( UnitToFollow )
 	{
-//		moveTime = (uint32) (distance * 1000 / UnitToFollow->m_runSpeed ); //i wonder if runpeed can ever frop to 0
-		//life sucks, due to calculations the pet will move slower with corect formulas. We add some catch-up speed
-		moveTime = (uint32) (distance * 1000 / ( UnitToFollow->m_runSpeed * sqrt( distance ) ) ); //i wonder if runpeed can ever frop to 0
+//		moveTime = (uint32) (distance * 1000 / UnitToFollow->m_runSpeed ); //I wonder if run peed can ever drop to 0
+//life sucks, due to calculations the pet will move slower with correct formulas. We add some catch-up speed
+		moveTime = (uint32) (distance * 1000 / ( UnitToFollow->m_runSpeed * sqrt( distance ) ) ); //I wonder if run peed can ever drop to 0
 	}
 #endif */
 	if(m_moveFly)
@@ -2578,7 +2578,7 @@ void AIInterface::SendCurrentMove(Player* plyr/*uint64 guid*/)
 	plyr->AddSplinePacket(m_Unit->GetGUID(), splineBuf);
 
 	//This should only be called by Players AddInRangeObject() ONLY
-	//using guid cuz when i atempted to use pointer the player was deleted when this event was called some times
+	//using guid cuz when I attempted to use pointer the player was deleted when this event was called some times
 	//Player* plyr = World::GetPlayer(guid);
 	//if(!plyr) return;
 
@@ -2613,7 +2613,7 @@ bool AIInterface::setInFront(Unit* target) // not the best way to do it, though
 	m_Unit->getEasyAngle(angle);
 	//Convert from degrees to radians (180 deg = PI rad)
 	float orientation = angle / float(180 / M_PI);
-	//Update Orentation Server Side
+	//Update Orientation Server Side
 	m_Unit->SetPosition(m_Unit->GetPositionX(), m_Unit->GetPositionY(), m_Unit->GetPositionZ(), orientation);
 	
 	return m_Unit->isInFront(target);
@@ -3049,7 +3049,7 @@ void AIInterface::_UpdateMovement(uint32 p_time)
 				float wanderDistance = rand()%4 + 2;
 				float wanderX = ((wanderDistance*rand()) / RAND_MAX) - wanderDistance / 2;																											   
 				float wanderY = ((wanderDistance*rand()) / RAND_MAX) - wanderDistance / 2;																											   
-				float wanderZ = 0; // FIX ME ( i dont know how to get apropriate Z coord, maybe use client height map data)																											 
+				float wanderZ = 0; // FIX ME ( I don't know how to get appropriate Z coord, maybe use client height map data)																											 
 
 				if(m_Unit->CalcDistance(m_Unit->GetPositionX(), m_Unit->GetPositionY(), m_Unit->GetPositionZ(), ((Creature*)m_Unit)->respawn_cord[0], ((Creature*)m_Unit)->respawn_cord[1], ((Creature*)m_Unit)->respawn_cord[2])>15)																		   
 				{   
@@ -3887,7 +3887,7 @@ bool AIInterface::taunt(Unit* caster, bool apply)
 {
 	if(apply)
 	{
-		//wowwiki says that we cannot owerride this spell
+		//wowwiki says that we cannot override this spell
 		if(GetIsTaunted())
 			return false;
 
@@ -3903,7 +3903,7 @@ bool AIInterface::taunt(Unit* caster, bool apply)
 			//check if we have to add him to our agro list
 			//GetMostHated(); //update our most hated list/ Note that at this point we do not have a taunter yet. If we would have then this funtion will not give real mosthated
 			int32 oldthreat = getThreatByPtr(caster);
-			//make sure we rush the target anyway. Since we are not tauted yet, this will also set our target
+			//make sure we rush the target anyway. Since we are not taunted yet, this will also set our target
 			modThreatByPtr(caster,abs(m_currentHighestThreat-oldthreat)+1); //we need to be the most hated at this moment
 //			SetNextTarget(caster);
 		}
@@ -4135,7 +4135,7 @@ void AIInterface::Event_Summon_EE_totem(uint32 summon_duration)
 	Unit *ourslave=m_Unit->create_guardian(15352,summon_duration,float(-M_PI*2), new_level );
 	if(ourslave)
 	{
-		static_cast<Creature*>(ourslave)->ResistanceModPct[NATURE_DAMAGE]=100;//we should be imune to nature dmg. This can be also set in db
+		static_cast<Creature*>(ourslave)->ResistanceModPct[NATURE_DAMAGE]=100;//we should be immune to nature dmg. This can be also set in db
 		static_cast<Creature*>(ourslave)->m_noRespawn = true;
 		/*
 		- Earth Stun (37982)
@@ -4159,7 +4159,7 @@ void AIInterface::Event_Summon_FE_totem(uint32 summon_duration)
 	if(ourslave)
 	{
 		//m_Unit->summonPet = ourslave;
-		static_cast<Creature*>(ourslave)->ResistanceModPct[FIRE_DAMAGE]=100;//we should be imune to fire dmg. This can be also set in db
+		static_cast<Creature*>(ourslave)->ResistanceModPct[FIRE_DAMAGE]=100;//we should be immune to fire dmg. This can be also set in db
 		static_cast<Creature*>(ourslave)->m_noRespawn = true;
 		/*
 		- also : select * from dbc_spell where name like "%fire blast%"
@@ -4203,7 +4203,7 @@ void AIInterface::EventChangeFaction( Unit *ForceAttackersToHateThisInstead )
 		m_Unit->AquireInrangeLock(); //make sure to release lock before exit function !
 		for(set<Object*>::iterator itr = m_Unit->GetInRangeSetBegin(); itr != m_Unit->GetInRangeSetEnd(); ++itr)
 			if( (*itr) && (*itr)->GetTypeId() == TYPEID_UNIT && static_cast<Unit*>(*itr)->GetAIInterface() 
-				&& static_cast<Unit*>(*itr)->GetAIInterface()->getThreatByPtr( m_Unit ) )//this guy will join me in fight since i'm telling him "sorry i was controlled"
+				&& static_cast<Unit*>(*itr)->GetAIInterface()->getThreatByPtr( m_Unit ) )//this guy will join me in fight since I'm telling him "sorry i was controlled"
 			{
 				static_cast<Unit*>(*itr)->GetAIInterface()->modThreatByPtr( ForceAttackersToHateThisInstead, 10 ); //just aping to be bale to hate him in case we got nothing else
 				static_cast<Unit*>(*itr)->GetAIInterface()->RemoveThreatByPtr( m_Unit );

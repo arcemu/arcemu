@@ -506,7 +506,7 @@ MapMgr * InstanceMgr::GetInstance(Object* obj)
 			}
 		}
 
-		// instance is non-existant (shouldn't really happen for units...)
+		// instance is non-existent (shouldn't really happen for units...)
 		m_mapLock.Release();
 		return NULL;
 	}

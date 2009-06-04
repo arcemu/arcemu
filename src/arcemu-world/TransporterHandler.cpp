@@ -362,7 +362,7 @@ void Transporter::TransportGossip(uint32 route)
 	{
 		if ( mCurrentWaypoint->second.mapid )
 		{
-			Log.Debug("Transporter","Arrived in Ratched at %u", m_timer);
+			Log.Debug("Transporter","Arrived in Ratchet at %u", m_timer);
 		}
 		else
 		{

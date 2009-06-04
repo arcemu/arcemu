@@ -35,7 +35,7 @@ Unit:RegisterEvent("SunbladeMagister_ArcaneNova", 3000, 40)
 end
 
 function SunbladeMagister_Frostbolt(Unit, Event)
-local frostCheck = Unit:GetReandomPlayer(1)
+local frostCheck = Unit:GetRandomPlayer(1)
 if (frostCheck ~= nil) then
 Unit:FullCastSpellOnTarget(46035, Unit:GetRandomPlayer(1))
 end

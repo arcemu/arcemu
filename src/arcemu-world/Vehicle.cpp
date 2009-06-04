@@ -336,7 +336,7 @@ void Vehicle::SetDeathState(DeathState s)
 
 void WorldSession::HandleVehicleDismiss(WorldPacket & recv_data)
 {
-	//i dont give a crap what this packet structure is :P
+	//I don't give a crap what this packet structure is :P
 	if (GetPlayer() == NULL || GetPlayer()->GetVehicle() == NULL)
 		return;
 

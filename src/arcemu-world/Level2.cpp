@@ -510,10 +510,10 @@ bool ChatHandler::HandleCastSpellCommand(const char* args, WorldSession *m_sessi
 	{
 		case TYPEID_PLAYER:
 			if ( caster != target )
-				sGMLog.writefromsession( m_session, "casted spell %d on PLAYER %s", spellid, static_cast< Player* >( target )->GetName() );
+				sGMLog.writefromsession( m_session, "cast spell %d on PLAYER %s", spellid, static_cast< Player* >( target )->GetName() );
 			break;
 		case TYPEID_UNIT:
-			sGMLog.writefromsession( m_session, "casted spell %d on CREATURE %u [%s], sqlid %u", spellid, static_cast< Creature* >( target )->GetEntry(), static_cast< Creature* >( target )->GetCreatureInfo() ? static_cast< Creature* >( target )->GetCreatureInfo()->Name : "unknown", static_cast< Creature* >( target )->GetSQL_id() );
+			sGMLog.writefromsession( m_session, "cast spell %d on CREATURE %u [%s], sqlid %u", spellid, static_cast< Creature* >( target )->GetEntry(), static_cast< Creature* >( target )->GetCreatureInfo() ? static_cast< Creature* >( target )->GetCreatureInfo()->Name : "unknown", static_cast< Creature* >( target )->GetSQL_id() );
 			break;
 	}
 
@@ -571,10 +571,10 @@ bool ChatHandler::HandleCastSpellNECommand(const char* args, WorldSession *m_ses
 	{
 		case TYPEID_PLAYER:
 			if ( caster != target )
-				sGMLog.writefromsession( m_session, "casted spell %d on PLAYER %s", spellId, static_cast< Player* >( target )->GetName() );
+				sGMLog.writefromsession( m_session, "cast spell %d on PLAYER %s", spellId, static_cast< Player* >( target )->GetName() );
 			break;
 		case TYPEID_UNIT:
-			sGMLog.writefromsession( m_session, "casted spell %d on CREATURE %u [%s], sqlid %u", spellId, static_cast< Creature* >( target )->GetEntry(), static_cast< Creature* >( target )->GetCreatureInfo() ? static_cast< Creature* >( target )->GetCreatureInfo()->Name : "unknown", static_cast< Creature* >( target )->GetSQL_id() );
+			sGMLog.writefromsession( m_session, "cast spell %d on CREATURE %u [%s], sqlid %u", spellId, static_cast< Creature* >( target )->GetEntry(), static_cast< Creature* >( target )->GetCreatureInfo() ? static_cast< Creature* >( target )->GetCreatureInfo()->Name : "unknown", static_cast< Creature* >( target )->GetSQL_id() );
 			break;
 	}
 
@@ -897,7 +897,7 @@ bool ChatHandler::HandleGOInfo(const char *args, WorldSession *m_session)
 		return true;
 	}
 
-	SystemMessage(m_session, "%s Informations:",MSG_COLOR_SUBWHITE);
+	SystemMessage(m_session, "%s Information:",MSG_COLOR_SUBWHITE);
 	SystemMessage(m_session, "%s Entry:%s%u",MSG_COLOR_GREEN,MSG_COLOR_LIGHTBLUE,GObj->GetEntry());
 	SystemMessage(m_session, "%s Model:%s%u",MSG_COLOR_GREEN,MSG_COLOR_LIGHTBLUE,GObj->GetUInt32Value(GAMEOBJECT_DISPLAYID));
 	SystemMessage(m_session, "%s State:%s%u",MSG_COLOR_GREEN,MSG_COLOR_LIGHTBLUE,GObj->GetByte(GAMEOBJECT_BYTES_1, 0));
@@ -944,7 +944,7 @@ bool ChatHandler::HandleGOInfo(const char *args, WorldSession *m_session)
 	GOInfo = GameObjectNameStorage.LookupEntry(GObj->GetEntry());
 	if( !GOInfo )
 	{
-		RedSystemMessage(m_session, "This GameObject doesn't have template, you won't be able to get some informations nor to spawn a GO with this entry.");
+		RedSystemMessage(m_session, "This GameObject doesn't have template, you won't be able to get some information nor to spawn a GO with this entry.");
 		return true;
 	}
 
@@ -1294,14 +1294,14 @@ bool ChatHandler::HandleNPCEquipOneCommand(const char * args, WorldSession * m_s
 	{
 		SelectedCreature->SetUInt32Value(UNIT_VIRTUAL_ITEM_SLOT_ID, 0);
 		SelectedCreature->SaveToDB();
-		m_session->SystemMessage("Resetted item 1 of %s (%u).", SelectedCreature->GetCreatureInfo()->Name, SelectedCreature->GetProto()->Id);
+		m_session->SystemMessage("Reset item 1 of %s (%u).", SelectedCreature->GetCreatureInfo()->Name, SelectedCreature->GetProto()->Id);
 		return true;
 	}
 
 	ItemPrototype * ItemProvided = ItemPrototypeStorage.LookupEntry(ItemID);
 	if(!ItemProvided)
 	{
-		m_session->SystemMessage("Item ID: %u does not excist.", ItemID);
+		m_session->SystemMessage("Item ID: %u does not exist.", ItemID);
 		return true;
 	}
 	SelectedCreature->SetUInt32Value(UNIT_VIRTUAL_ITEM_SLOT_ID, ItemProvided->ItemId);
@@ -1328,14 +1328,14 @@ bool ChatHandler::HandleNPCEquipTwoCommand(const char * args, WorldSession * m_s
 	{
 		SelectedCreature->SetUInt32Value(UNIT_VIRTUAL_ITEM_SLOT_ID_1, 0);
 		SelectedCreature->SaveToDB();
-		m_session->SystemMessage("Resetted item 2 of %s (%u).", SelectedCreature->GetCreatureInfo()->Name, SelectedCreature->GetProto()->Id);
+		m_session->SystemMessage("Reset item 2 of %s (%u).", SelectedCreature->GetCreatureInfo()->Name, SelectedCreature->GetProto()->Id);
 		return true;
 	}
 
 	ItemPrototype * ItemProvided = ItemPrototypeStorage.LookupEntry(ItemID);
 	if(!ItemProvided)
 	{
-		m_session->SystemMessage("Item ID: %u does not excist.", ItemID);
+		m_session->SystemMessage("Item ID: %u does not exist.", ItemID);
 		return true;
 	}
 	SelectedCreature->SetUInt32Value(UNIT_VIRTUAL_ITEM_SLOT_ID_1, ItemProvided->ItemId);
@@ -1362,14 +1362,14 @@ bool ChatHandler::HandleNPCEquipThreeCommand(const char * args, WorldSession * m
 	{
 		SelectedCreature->SetUInt32Value(UNIT_VIRTUAL_ITEM_SLOT_ID_2, 0);
 		SelectedCreature->SaveToDB();
-		m_session->SystemMessage("Resetted item 3 of %s (%u).", SelectedCreature->GetCreatureInfo()->Name, SelectedCreature->GetProto()->Id);
+		m_session->SystemMessage("Reset item 3 of %s (%u).", SelectedCreature->GetCreatureInfo()->Name, SelectedCreature->GetProto()->Id);
 		return true;
 	}
 
 	ItemPrototype * ItemProvided = ItemPrototypeStorage.LookupEntry(ItemID);
 	if(!ItemProvided)
 	{
-		m_session->SystemMessage("Item ID: %u does not excist.", ItemID);
+		m_session->SystemMessage("Item ID: %u does not exist.", ItemID);
 		return true;
 	}
 	SelectedCreature->SetUInt32Value(UNIT_VIRTUAL_ITEM_SLOT_ID_2, ItemProvided->ItemId);

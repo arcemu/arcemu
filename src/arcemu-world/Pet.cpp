@@ -333,7 +333,7 @@ void Pet::SendSpellsToOwner()
 	*data << GetGUID();
 	*data << uint32( myFamily != NULL ? myFamily->ID : 0 );	// pet family to determine talent tree
 	*data << m_ExpireTime;
-	*data << uint8( GetPetState() );	// 0x0 = passive, 0x1 = defensive, 0x2 = agressive
+	*data << uint8( GetPetState() );	// 0x0 = passive, 0x1 = defensive, 0x2 = aggressive
 	*data << uint8( GetPetAction() );	// 0x0 = stay, 0x1 = follow, 0x2 = attack
 	*data << uint16( 0 );				// flags: 0xFF = disabled pet bar (eg. when pet stunned)
 
@@ -446,11 +446,11 @@ AI_Spell * Pet::CreateAISpell(SpellEntry * info)
 	sp->spell = info;
 	sp->cooldown = objmgr.GetPetSpellCooldown(info->Id);
 	if( sp->cooldown == 0 )
-		sp->cooldown = info->StartRecoveryTime; //avoid spell spaming
+		sp->cooldown = info->StartRecoveryTime; //avoid spell spamming
 	if( sp->cooldown == 0 )
 		sp->cooldown = info->StartRecoveryCategory; //still 0 ?
 	if( sp->cooldown == 0 )
-		sp->cooldown = PET_SPELL_SPAM_COOLDOWN; //omg, avoid spaming at least
+		sp->cooldown = PET_SPELL_SPAM_COOLDOWN; //omg, avoid spamming at least
 	sp->cooldowntime = 0;
 
 	if( info->Effect[0] == SPELL_EFFECT_APPLY_AURA || info->Effect[0] == SPELL_EFFECT_APPLY_AREA_AURA || info->Effect[0] == SPELL_EFFECT_APPLY_AREA_AURA2 )
@@ -1516,7 +1516,7 @@ void Pet::HandleAutoCastEvent( AutoCastEvents Type )
 		}
 		else
 		{
-			//modified by Zack: Spell targetting will be generated in the castspell function now.You cannot force to target self all the time
+			//modified by Zack: Spell targeting will be generated in the castspell function now.You cannot force to target self all the time
 			CastSpell( static_cast< Unit* >( NULL ), sp->spell, false);
 		}
 	}

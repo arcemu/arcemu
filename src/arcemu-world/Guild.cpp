@@ -326,7 +326,7 @@ void Guild::PromoteGuildMember(PlayerInfo * pMember, WorldSession * pClient)
 		return;
 	}
 
-	// find the lowest rank that isnt his rank
+	// find the lowest rank that isn't his rank
 	int32 nh = pMember->guildRank->iId - 1;
 	GuildRank * newRank = NULL;
 
@@ -347,7 +347,7 @@ void Guild::PromoteGuildMember(PlayerInfo * pMember, WorldSession * pClient)
 	GuildMemberMap::iterator itr = m_members.find(pMember);
 	if(itr == m_members.end())
 	{
-		// shouldnt happen
+		// shouldn't happen
 		m_lock.Release();
 		return;
 	}
@@ -404,7 +404,7 @@ void Guild::DemoteGuildMember(PlayerInfo * pMember, WorldSession * pClient)
 	GuildMemberMap::iterator itr = m_members.find(pMember);
 	if(itr == m_members.end())
 	{
-		// shouldnt happen
+		// shouldn't happen
 		m_lock.Release();
 		return;
 	}
@@ -717,7 +717,7 @@ void Guild::SetGuildInformation(const char * szGuildInformation, WorldSession * 
 void Guild::AddGuildMember(PlayerInfo * pMember, WorldSession * pClient, int32 ForcedRank /* = -1 */)
 {
 
-	//we dont need useless paranoia checks.
+	//we don't need useless paranoia checks.
 	if(pMember->guild != NULL)
 		return;
 
@@ -741,7 +741,7 @@ void Guild::AddGuildMember(PlayerInfo * pMember, WorldSession * pClient, int32 F
 
 	if(r==NULL)
 	{
-		// shouldnt happen
+		// shouldn't happen
 		m_lock.Release();
 		return;
 	}

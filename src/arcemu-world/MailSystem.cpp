@@ -433,7 +433,7 @@ void WorldSession::HandleSendMail(WorldPacket & recv_data )
 	msg.player_guid = player->guid;
 	msg.sender_guid = _player->GetGUID();
 	
-	// 30 day expiry time for unread mail mail
+	// 30 day expiry time for unread mail
 	if(!sMailSystem.MailOption(MAIL_FLAG_NO_EXPIRY))
 		msg.expire_time = (uint32)UNIXTIME + (TIME_DAY * MAIL_DEFAULT_EXPIRATION_TIME);
 	else
@@ -446,7 +446,7 @@ void WorldSession::HandleSendMail(WorldPacket & recv_data )
 
 	// Great, all our info is filled in. Now we can add it to the other players mailbox.
 	sMailSystem.DeliverMessage(player->guid, &msg);
-	// Save/Update character's gold if they've recieved gold that is. This prevents a rollback.
+	// Save/Update character's gold if they've received gold that is. This prevents a rollback.
 	CharacterDatabase.Execute("UPDATE `characters` SET `gold`='%u' WHERE (`guid`='%u')", _player->GetUInt32Value(PLAYER_FIELD_COINAGE), _player->m_playerInfo->guid);
 	// Success packet :)
 	SendMailError(MAIL_OK);
@@ -617,7 +617,7 @@ void WorldSession::HandleTakeItem(WorldPacket & recv_data )
 		CharacterDatabase.Execute("UPDATE mailbox SET cod = 0 WHERE message_id = %u", message->message_id);
 	}
 
-	// prolly need to send an item push here
+	// probably need to send an item push here
 }
 
 void WorldSession::HandleTakeMoney(WorldPacket & recv_data )
@@ -638,7 +638,7 @@ void WorldSession::HandleTakeMoney(WorldPacket & recv_data )
 		return;
 	}
 
-	// Check they dont have more than the max gold
+	// Check they don't have more than the max gold
 	if(sWorld.GoldCapEnabled)
 	{
 		if((_player->GetUInt32Value(PLAYER_FIELD_COINAGE) + message->money) > sWorld.GoldLimit)
@@ -695,7 +695,7 @@ void WorldSession::HandleReturnToSender(WorldPacket & recv_data )
 	message.deleted_flag = false;
 	message.copy_made = false;
 
-	// null out the cod charges. (the sender doesnt want to have to pay for his own item
+	// null out the cod charges. (the sender doesn't want to have to pay for his own item
 	// that he got nothing for.. :p)
 	message.cod = 0;
 
@@ -791,7 +791,7 @@ void Mailbox::FillTimePacket(WorldPacket& data)
 			++c;
 			data << uint64(iter->second.sender_guid);
 			data << uint32(0);
-			data << uint32(0);// money or smth?
+			data << uint32(0);// money or something?
 			data << uint32(iter->second.stationery);
 			//data << float(UNIXTIME-iter->second.delivery_time);
 			data << float(-9.0f);	// maybe the above?

@@ -171,7 +171,7 @@ void WorldSession::HandleAutostoreLootItemOpcode( WorldPacket & recv_data )
 		_player->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_LOOT_ITEM, add->GetEntry(), 1, 0);
 	}
 
-	//in case of ffa_loot update only the player who recives it.
+	//in case of ffa_loot update only the player who receives it.
 	if (!pLoot->items.at(lootSlot).ffa_loot)
 	{
 		pLoot->items.at(lootSlot).iItemsCount = 0;
@@ -226,7 +226,7 @@ void WorldSession::HandleLootMoneyOpcode( WorldPacket & recv_data )
 	Loot * pLoot = NULL;
 	uint64 lootguid=GetPlayer()->GetLootGUID();
 	if(!lootguid)
-		return;   // duno why this happens
+		return;   // dunno why this happens
 
 	if(_player->IsCasting())
 		_player->InterruptSpell();
@@ -293,7 +293,7 @@ void WorldSession::HandleLootMoneyOpcode( WorldPacket & recv_data )
 	{
 		if(money)
 		{
-			// Check they dont have more than the max gold
+			// Check they don't have more than the max gold
 			if(sWorld.GoldCapEnabled && (GetPlayer()->GetUInt32Value(PLAYER_FIELD_COINAGE) + money) > sWorld.GoldLimit)
 			{
 				GetPlayer()->GetItemInterface()->BuildInventoryChangeError(NULL, NULL, INV_ERR_TOO_MUCH_GOLD);
@@ -308,7 +308,7 @@ void WorldSession::HandleLootMoneyOpcode( WorldPacket & recv_data )
 	}
 	else
 	{
-		//this code is wrong mustbe party not raid!
+		//this code is wrong must be party not raid!
 		Group* party = _player->GetGroup();
 		if(party)
 		{
@@ -340,7 +340,7 @@ void WorldSession::HandleLootMoneyOpcode( WorldPacket & recv_data )
 
 			for(vector<Player*>::iterator itr = targets.begin(); itr != targets.end(); ++itr)
 			{
-				// Check they dont have more than the max gold
+				// Check they don't have more than the max gold
 				if(sWorld.GoldCapEnabled && ((*itr)->GetUInt32Value(PLAYER_FIELD_COINAGE) + share) > sWorld.GoldLimit)
 				{
 					(*itr)->GetItemInterface()->BuildInventoryChangeError(NULL, NULL, INV_ERR_TOO_MUCH_GOLD);
@@ -377,7 +377,7 @@ void WorldSession::HandleLootOpcode( WorldPacket & recv_data )
 		_player->InterruptSpell(); // Cancel spell casting
 
 	if ( _player->IsInvisible() ) // Check if the player is invisible for what ever reason
-		_player->RemoveInvisibility(); // Remove all invsibility
+		_player->RemoveInvisibility(); // Remove all invisibility
 
 
 	if(_player->InGroup() && !_player->m_bg)
@@ -544,7 +544,7 @@ void WorldSession::HandleLootReleaseOpcode( WorldPacket & recv_data )
 									return;
 								}
 							}
-							else //other type of locks that i dont bother to split atm ;P
+							else //other type of locks that i don't bother to split atm ;P
 							{
 								if( pGO->HasLoot() )
 								{
@@ -1237,7 +1237,7 @@ void WorldSession::HandleAmmoSetOpcode(WorldPacket & recv_data)
 
 	if(xproto->Class != ITEM_CLASS_PROJECTILE || GetPlayer()->GetItemInterface()->GetItemCount(ammoId) == 0)
 	{
-		sCheatLog.writefromsession(GetPlayer()->GetSession(), "Definately cheating. tried to add %u as ammo.", ammoId);
+		sCheatLog.writefromsession(GetPlayer()->GetSession(), "Definitely cheating. tried to add %u as ammo.", ammoId);
 		GetPlayer()->GetSession()->Disconnect();
 		return;
 	}

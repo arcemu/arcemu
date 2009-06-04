@@ -4,9 +4,9 @@
 //hmm with 2000 players each have 50 items ...Decrease it if you need the space ;)
 #define INITI_POOL_WITH_SIZE 100000
 #define INITI_CONTAINER_POOL_WITH_SIZE 5000
-//too big values migh create lag spikes on buffer limit extension !
+//too big values might create lag spikes on buffer limit extension !
 #define EXTEND_POOL_WITH_SIZE 100
-//let us have a gap of pool fullness. Some auras get deleted more then once when i write this code and they are overwriting each other
+//let us have a gap of pool fullness. Some auras get deleted more then once when I write this code and they are overwriting each other
 #define MINIMUM_POOL_FULNESS 10
 #define POOL_IS_FULL_INDEX 0
 #define OBJECT_WAS_ALLOCATED_WITHIN_POOL 0x0FFFFFF0
@@ -39,7 +39,7 @@ private:
 
 public:
 	tPPoolClass()
-		//lol i get compile error here. Is it my old VS 2k3 ?
+		//lol I get compile error here. Is it my old VS 2k3 ?
 		//: Singleton()
 	{
 		max_avails = INITI_POOL_WITH_SIZE;
@@ -47,7 +47,7 @@ public:
 		avail_list = (T **)malloc( sizeof(T*) * max_avails );
 
 		if( !avail_list )
-			Log.Error( "PointerPool", "Pool failed to alocate more memory = %u bytes", sizeof(T*) * max_avails );
+			Log.Error( "PointerPool", "Pool failed to allocate more memory = %u bytes", sizeof(T*) * max_avails );
 
 		InitPoolNewSection( 0, max_avails );
 	}
@@ -90,7 +90,7 @@ public:
 		}
 		else if( dumped->m_bufferPoolId == OBJECT_WAS_ALLOCATED_WITHIN_POOL )
 		{
-			sLog.outError("Object not even handed out to a request and it is inserted back into pool (unbeleavable) !");
+			sLog.outError("Object not even handed out to a request and it is inserted back into pool (unbelievable) !");
 		}
 		else if( dumped->m_bufferPoolId == OBJECT_WAS_DEALLOCATED_WITHIN_POOL )
 		{
@@ -137,7 +137,7 @@ private:
 			avail_list[i] = new T;
 			ASSERT( avail_list[i] );
 
-			//to be ablt to track object created not from pool
+			//to be able to track object created not from pool
 			avail_list[i]->m_bufferPoolId = OBJECT_WAS_ALLOCATED_WITHIN_POOL;
 
 			//all avail on creating new
@@ -152,13 +152,13 @@ private:
 		avail_list = (T**)realloc( avail_list, sizeof(T*) * max_avails );
 		
 		if( !avail_list )
-			Log.Error( "PointerPool", "Pool failed to alocate more memory = %u bytes", sizeof(T*) * max_avails );
+			Log.Error( "PointerPool", "Pool failed to allocate more memory = %u bytes", sizeof(T*) * max_avails );
 
 		InitPoolNewSection( prev_max, max_avails );
 	}
 };
 
-/* Grey: ContainerPooling have to come with a sepperate Patch */
+/* Grey: ContainerPooling have to come with a separate Patch */
 
 //#define ContainerPool tPPoolClass<Container>::getSingleton()
 #define ItemPool tPPoolClass<Item>::getSingleton()

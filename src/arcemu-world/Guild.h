@@ -592,11 +592,11 @@ protected:
 3->selection is already in guild
 4->you have been already invited to guild
 5->selection is already invited to guild
-6->guildname contains invalid characters pls rename
+6->guildname contains invalid characters please rename
 7->there is an already guild named "name"
-8->you dont have permission to do that
+8->you don't have permission to do that
 9->you are not in guild
-10->selection isnot in your guild
+10->selection is not in your guild
 11->"name" not found
 12->you cannot invite players from opposite alliance
 13->"name"'s rank is too high

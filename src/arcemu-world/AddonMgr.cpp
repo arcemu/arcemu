@@ -131,7 +131,7 @@ void AddonMgr::SendAddonInfoPacket(WorldPacket *source, uint32 pos, WorldSession
 
 	if((source->size() - position) < 4 || realsize == 0)
 	{
-		// we shouldnt get here.. but just in case this will stop any crash here.
+		// we shouldn't get here.. but just in case this will stop any crash here.
 		sLog.outDebug("Warning: Incomplete auth session sent.");
 		return;
 	}

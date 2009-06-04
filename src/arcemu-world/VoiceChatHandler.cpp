@@ -140,7 +140,7 @@ void VoiceChatHandler::OnRead(WorldPacket* pck)
 			{
 				if(itr->id == request_id)
 				{
-					// zero = error, wehn we pass it to OnChannelCreated
+					// zero = error, when we pass it to OnChannelCreated
 					if( error == 0 )
 						*pck >> channel_id;
 

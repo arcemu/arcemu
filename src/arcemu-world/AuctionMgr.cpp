@@ -81,7 +81,7 @@ void AuctionMgr::Update()
 	{
 		(*itr)->UpdateDeletionQueue();
 
-		// Actual auction loop is on a seperate timer.
+		// Actual auction loop is on a separate timer.
 		if(!(loopcount % 1200))
 			(*itr)->UpdateAuctions();
 	}

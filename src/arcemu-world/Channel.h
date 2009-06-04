@@ -107,8 +107,8 @@ enum CHANNEL_PACKET_FLAGS
 	CHANNEL_PACKET_CUSTOM		= 0x01,
 	CHANNEL_PACKET_UNK1			= 0x02, //not seen yet, perhaps related to worlddefense
 	CHANNEL_PACKET_ALLOWLINKS	= 0x04,
-	CHANNEL_PACKET_ZONESPECIFIC	= 0x08, // i'm sure one of these is zonespecific and the other is 'system channel' but not sure
-	CHANNEL_PACKET_SYSTEMCHAN	= 0x10, // which way round it is. I need a packetlog of worlddefense but i'm guessing this order
+	CHANNEL_PACKET_ZONESPECIFIC	= 0x08, // I'm sure one of these is zone specific and the other is 'system channel' but not sure
+	CHANNEL_PACKET_SYSTEMCHAN	= 0x10, // which way round it is. I need a packet log of worlddefense but I'm guessing this order
 	CHANNEL_PACKET_CITY			= 0x20,
 	CHANNEL_PACKET_LFG			= 0x40,
 	CHANNEL_PACKET_VOICE		= 0x80,

@@ -268,7 +268,7 @@ uint32 Object::BuildCreateUpdateBlockForPlayer(ByteBuffer *data, Player *target)
 					updatetype = UPDATETYPE_CREATE_YOURSELF;
 				}break;
 		}
-		//The above 3 checks FAIL to identify transports, thus their flags remain 0x58, and this is BAAAAAAD! Later they don't get position x,y,z,o updates, so they appear randomly by a client-calculated path, they allways face north, etc... By: VLack aka. VLsoft
+		//The above 3 checks FAIL to identify transports, thus their flags remain 0x58, and this is BAAAAAAD! Later they don't get position x,y,z,o updates, so they appear randomly by a client-calculated path, they always face north, etc... By: VLack aka. VLsoft
 		if( flags != 0x5A && GetTypeId() == TYPEID_GAMEOBJECT && static_cast<GameObject*>(this)->GetInfo()->Type == GAMEOBJECT_TYPE_TRANSPORT )
 			flags = 0x5A;
 	}
@@ -276,7 +276,7 @@ uint32 Object::BuildCreateUpdateBlockForPlayer(ByteBuffer *data, Player *target)
 	// build our actual update
 	*data << updatetype;
 
-	// we shouldn't be here, under any cercumstances, unless we have a wowguid..
+	// we shouldn't be here, under any circumstances, unless we have a wowguid..
 	ASSERT(m_wowGuid.GetNewGuidLen());
 	*data << m_wowGuid;
 
@@ -299,7 +299,7 @@ uint32 Object::BuildCreateUpdateBlockForPlayer(ByteBuffer *data, Player *target)
 
 //That is dirty fix it actually creates update of 1 field with
 //the given value ignoring existing changes in fields and so on
-//usefull if we want update this field for certain players
+//useful if we want update this field for certain players
 //NOTE: it does not change fields. This is also very fast method
 WorldPacket *Object::BuildFieldUpdatePacket( uint32 index,uint32 value)
 {
@@ -973,7 +973,7 @@ void Object::SendMessageToSet(WorldPacket *data, bool bToSelf,bool myteam_only)
 }
 
 ////////////////////////////////////////////////////////////////////////////
-/// Fill the object's Update Values from a space deliminated list of values.
+/// Fill the object's Update Values from a space delimitated list of values.
 void Object::LoadValues(const char* data)
 {
 	// thread-safe ;) strtok is not.
@@ -1732,7 +1732,7 @@ void Object::_setFaction()
 	if(!factT)
 	{
 		factT = dbcFactionTemplate.LookupRow( 0 );
-		//this is causeing a lot of crashes cause people have shitty dbs
+		//this is causing a lot of crashes cause people have shitty dbs
 //		return;
 	}
 	m_faction = factT;
@@ -2172,7 +2172,7 @@ void Object::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
 		}
 
 		/* -------------------------------- HONOR + BATTLEGROUND CHECKS ------------------------ */
-		//Zack : this event should ocure before setting death state !
+		//Zack : this event should occur before setting death state !
 		plr = NULL;
 		if( IsPlayer() )
 			plr = static_cast< Player* >( this );
@@ -2334,7 +2334,7 @@ void Object::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
 		// Wipe our attacker set on death
 		pVictim->CombatStatus.Vanished();
 
-		//		 sent to set. don't send it to the party, becuase if they're out of
+		//		 sent to set. don't send it to the party, because if they're out of
 		//		 range they won't know this guid exists -> possible 132.
 
 		/*if (this->IsPlayer())
@@ -2393,7 +2393,7 @@ void Object::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
 				SendMessageToSet(&data, true);
 			}
 
-			// it Seems that pets some how dont get a name and cause a crash here
+			// it Seems that pets some how don't get a name and cause a crash here
 			//bool isCritter = (pVictim->GetCreatureInfo() != NULL)? pVictim->GetCreatureInfo()->Type : 0;
 
 			//-----------------------------------LOOOT--------------------------------------------
@@ -2409,7 +2409,7 @@ void Object::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
 
 				if(owner == 0)  // no owner
 				{
-					// donno why this would happen, but anyway.. anyone can loot ;p
+					// dunno why this would happen, but anyway.. anyone can loot ;p
 					// no owner no loot
 					//victim->SetFlag(UNIT_DYNAMIC_FLAGS, U_DYN_FLAG_LOOTABLE);
 				}
@@ -2443,7 +2443,7 @@ void Object::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
 									//we force on creature a new tagger
 									victim->TaggerGuid = tp->GetGUID();
 									victim->Tagged = true;
-									if(tp->IsVisible(victim))  // Save updates for non-existant creatures
+									if(tp->IsVisible(victim))  // Save updates for non-existent creatures
 										tp->PushUpdateData(&buf, 1);
 								}
 							}break;*/
@@ -2461,7 +2461,7 @@ void Object::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
 									itr = sGrp->GetGroupMembersBegin();
 									for( ; itr != sGrp->GetGroupMembersEnd(); ++itr )
 									{
-										if( (*itr)->m_loggedInPlayer && (*itr)->m_loggedInPlayer->IsVisible( victim ) )	   // Save updates for non-existant creatures
+										if( (*itr)->m_loggedInPlayer && (*itr)->m_loggedInPlayer->IsVisible( victim ) )	   // Save updates for non-existent creatures
 											(*itr)->m_loggedInPlayer->PushUpdateData( &buf, 1 );
 									}
 								}
@@ -2478,7 +2478,7 @@ void Object::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
 									itr = sGrp->GetGroupMembersBegin();
 									for( ; itr != sGrp->GetGroupMembersEnd(); ++itr )
 									{
-										if( (*itr)->m_loggedInPlayer && (*itr)->m_loggedInPlayer->IsVisible( victim ) )	   // Save updates for non-existant creatures
+										if( (*itr)->m_loggedInPlayer && (*itr)->m_loggedInPlayer->IsVisible( victim ) )	   // Save updates for non-existent creatures
 											(*itr)->m_loggedInPlayer->PushUpdateData( &buf, 1 );
 									}
 								}
@@ -2488,7 +2488,7 @@ void Object::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
 								if( pLooter == NULL )
 									pLooter = pGroup->GetLeader()->m_loggedInPlayer;
 
-								if( pLooter->IsVisible( victim ) )  // Save updates for non-existant creatures
+								if( pLooter->IsVisible( victim ) )  // Save updates for non-existent creatures
 									pLooter->PushUpdateData( &buf, 1 );
 							}break;
 						}

@@ -126,7 +126,7 @@ waypointunit(NULL),
 
 m_banned(false),
 
-//Bind possition
+//Bind position
 m_bind_pos_x(0),
 m_bind_pos_y(0),
 m_bind_pos_z(0),
@@ -236,7 +236,7 @@ mOutOfRangeIdCount(0)
 	m_valuesCount = PLAYER_END;
 	//////////////////////////////////////////////////////////////////////////
 
-	//Why is there a pointer to the same thing in a dirived class? ToDo: sort this out..
+	//Why is there a pointer to the same thing in a derived class? ToDo: sort this out..
 	m_uint32Values = _fields;
 
 	memset(m_uint32Values, 0, (PLAYER_END) * sizeof(uint32));
@@ -726,7 +726,7 @@ bool Player::Create(WorldPacket& data )
 	SetFloatValue(OBJECT_FIELD_SCALE_X, 1.0f);
 	SetUInt32Value(UNIT_FIELD_HEALTH, info->health);
 	SetUInt32Value(UNIT_FIELD_POWER1, info->mana );
-	//SetUInt32Value(UNIT_FIELD_POWER2, 0 ); // this gets devided by 10
+	//SetUInt32Value(UNIT_FIELD_POWER2, 0 ); // this gets divided by 10
 	SetUInt32Value(UNIT_FIELD_POWER3, info->focus );
 	SetUInt32Value(UNIT_FIELD_POWER4, info->energy );
 	SetUInt32Value(UNIT_FIELD_POWER6, 8);
@@ -1361,7 +1361,7 @@ void Player::_EventExploration()
 			// inner city check
 			if (ss_z < 38)
 			{
-				// box with coord 1238, 11 -> 1823, 640; and z < 38 for undeground
+				// box with coord 1238, 11 -> 1823, 640; and z < 38 for underground
 				if (ss_y > 11 && ss_y < 640 && ss_x > 1238 && ss_x < 1823)
 				{
 					AreaId = 1497;
@@ -1480,7 +1480,7 @@ void Player::_EventExploration()
 		}
 	}
 
-	if( !(currFields & val) && !GetTaxiState() && !m_TransporterGUID)//Unexplored Area		// bur: we dont want to explore new areas when on taxi
+	if( !(currFields & val) && !GetTaxiState() && !m_TransporterGUID)//Unexplored Area		// bur: we don't want to explore new areas when on taxi
 	{
 		SetUInt32Value(offset, (uint32)(currFields | val));
 
@@ -1747,7 +1747,7 @@ void Player::smsg_InitialSpells()
 	for (sitr = mSpells.begin(); sitr != mSpells.end(); ++sitr)
 	{
 		// todo: check out when we should send 0x0 and when we should send 0xeeee
-		// this is not slot,values is always eeee or 0,seems to be cooldown
+		// this is not slot, values is always eeee or 0, seems to be cooldown
 		data << uint16(*sitr);				   // spell id
 		data << uint16(0x0000);
 	}
@@ -2080,7 +2080,7 @@ void Player::addSpell(uint32 spell_id)
 		{
 			case SKILL_TYPE_PROFESSION:
 				max=75*((spell->RankNumber)+1);
-				ModUnsigned32Value( PLAYER_CHARACTER_POINTS2, -1 ); // we are learning a proffesion, so substract a point.
+				ModUnsigned32Value( PLAYER_CHARACTER_POINTS2, -1 ); // we are learning a profession, so subtract a point.
 				break;
 			case SKILL_TYPE_SECONDARY:
 				max=75*((spell->RankNumber)+1);
@@ -2563,7 +2563,7 @@ void Player::SaveToDB(bool bNewCharacter /* =false */)
 	_SaveTutorials(buf);
 
 	// GM Ticket
-	//TODO: Is this really necessary? Tickets will allways be saved on creation, update and so on...
+	//TODO: Is this really necessary? Tickets will always be saved on creation, update and so on...
 	GM_Ticket* ticket = objmgr.GetGMTicketByPlayer(GetGUID());
 	if(ticket != NULL)
 		objmgr.SaveGMTicket(ticket, buf);
@@ -3029,7 +3029,7 @@ void Player::LoadFromDBProc(QueryResultVector & results)
 		case 3:	// dwarf
 		case 4: // ne
 		case 8:	// gnome
-		case 927:	// dreinei
+		case 927:	// draenei
 			m_team = m_bgTeam = 0;
 			break;
 
@@ -3868,7 +3868,7 @@ void Player::RemoveFromWorld()
 
 /*
    ScalingStats DBC entry by level
-   FIXME: This should not be neccessary, but I don't know how to lookup dbc rows by the 2nd column
+   FIX ME: This should not be necessary, but I don't know how to lookup dbc rows by the 2nd column
 */
 uint32 SSVDBCEByLevel[81] = {
 1,1,2,3,4,5,6,7,8,9,10,
@@ -4040,7 +4040,7 @@ void Player::_ApplyItemMods(Item* item, int8 slot, bool apply, bool justdrokedow
 	}
 
 	// Resistances
-	//TODO: FIXME: can there be negative resistances from items?
+	//TODO: FIX ME: can there be negative resistances from items?
 	if( proto->FireRes )
 	{
 		if( apply )
@@ -4276,7 +4276,7 @@ void Player::_ApplyItemMods(Item* item, int8 slot, bool apply, bool justdrokedow
 			{
 				std::list<struct ProcTriggerSpell>::iterator i;
 				// Debug: i changed this a bit the if was not indented to the for
-				// so it just set last one to deleted looks like unintended behaviour
+				// so it just set last one to deleted looks like unintended behavior
 				// because you can just use end()-1 to remove last so i put the if
 				// into the for
 				for( i = m_procSpells.begin(); i != m_procSpells.end(); i++ )
@@ -4637,7 +4637,7 @@ void Player::ResurrectPlayer()
 	m_lastFlySpeed = 0;
 
 	// Zack : shit on grill. So auras should be removed on player death instead of making this :P
-	// We can afford this bullshit atm since auras are lost uppon death -> no immunities
+	// We can afford this bullshit atm since auras are lost upon death -> no immunities
 	for(uint32 i = 0; i < 7; i++)
 		SchoolImmunityList[i]=0;
 	
@@ -4985,7 +4985,7 @@ int32 Player::GetOpenQuestSlot()
 
 void Player::AddToFinishedQuests(uint32 quest_id)
 {
-	//maybe that shouldn't be an assert, but i'll leave it for now
+	//maybe that shouldn't be an assert, but I'll leave it for now
 	//ASSERT(m_finishedQuests.find(quest_id) == m_finishedQuests.end());
 	//Removed due to crash
 	//If it failed though, then he's probably cheating.
@@ -5125,7 +5125,7 @@ float Player::GetDodgeChance()
 	// Dodge from spells
 	chance += GetDodgeFromSpell();
 
-	return max( chance, 0.0f ); // Make sure we dont have a negative chance
+	return max( chance, 0.0f ); // Make sure we don't have a negative chance
 }
 
 // Gets block chances before defense skill is applied
@@ -5143,7 +5143,7 @@ float Player::GetBlockChance()
 	// Block chance from spells
 	chance += GetBlockFromSpell();
 
-	return max( chance, 0.0f ); // Make sure we dont have a negative chance
+	return max( chance, 0.0f ); // Make sure we don't have a negative chance
 }
 
 // Get parry chances before defense skill is applied
@@ -5160,7 +5160,7 @@ float Player::GetParryChance()
 	// Parry chance from spells
 	chance += GetParryFromSpell();
 
-	return max( chance, 0.0f ); // Make sure we dont have a negative chance
+	return max( chance, 0.0f ); // Make sure we don't have a negative chance
 }
 
 void Player::UpdateChances()
@@ -5528,7 +5528,7 @@ void Player::UpdateStats()
 		if(level > 80) level = 80;
 		//float amt = ( 0.001f + sqrt((float)Intellect) * Spirit * BaseRegen[level-1] )*PctPowerRegenModifier[POWER_TYPE_MANA];
 		
-		// Mesmer: new Manaregen forumla.
+		// Mesmer: new Manaregen formula.
 		uint32 Spirit = GetUInt32Value( UNIT_FIELD_STAT4 );
 		uint32 Intellect = GetUInt32Value( UNIT_FIELD_STAT3 );
 		float amt = ( 0.001f + sqrt((float)Intellect) * Spirit * BaseRegen[level-1] )* PctPowerRegenModifier[POWER_TYPE_MANA];
@@ -6144,7 +6144,7 @@ void Player::SendLoot(uint64 guid,uint8 loot_type)
 				continue;
 
 		//quest items check. type 4/5
-        //quest items that dont start quests.
+		//quest items that don't start quests.
         if((itemProto->Bonding == ITEM_BIND_QUEST) && !(itemProto->QuestId) && !HasQuestForItem(itemProto->ItemId))
             continue;
         if((itemProto->Bonding == ITEM_BIND_QUEST2) && !(itemProto->QuestId) && !HasQuestForItem(itemProto->ItemId))
@@ -6401,7 +6401,7 @@ int32 Player::CanShootRangedWeapon( uint32 spellid, Unit* target, bool autoshot 
 			return SPELL_FAILED_LINE_OF_SIGHT;
 	}
 
-	// Check if we aren't casting another spell allready
+	// Check if we aren't casting another spell already
 	if( GetCurrentSpell() )
 		return -1;
 
@@ -6506,7 +6506,7 @@ void Player::EventRepeatSpell()
 	Unit* target = GetMapMgr()->GetUnit( m_curSelection );
 	if( target == NULL )
 	{
-		m_AutoShotAttackTimer = 0; //avoid flooding client with error mesages
+		m_AutoShotAttackTimer = 0; //avoid flooding client with error messages
 		m_onAutoShot = false;
 		//sLog.outDebug( "Can't cast Autoshot: Target changed! (Timer: %u)" , m_AutoShotAttackTimer );
 		return;
@@ -6517,7 +6517,7 @@ void Player::EventRepeatSpell()
 	if( m_isMoving )
 	{
 		//sLog.outDebug( "HUNTER AUTOSHOT 2) %i, %i", m_AutoShotAttackTimer, m_AutoShotDuration );
-		//m_AutoShotAttackTimer = m_AutoShotDuration;//avoid flooding client with error mesages
+		//m_AutoShotAttackTimer = m_AutoShotDuration;//avoid flooding client with error messages
 		//sLog.outDebug( "Can't cast Autoshot: You're moving! (Timer: %u)" , m_AutoShotAttackTimer );
 		m_AutoShotAttackTimer = 100; // shoot when we can
 		return;
@@ -6538,7 +6538,7 @@ void Player::EventRepeatSpell()
 		}
 		else
 		{
-			m_AutoShotAttackTimer = m_AutoShotDuration;//avoid flooding client with error mesages
+			m_AutoShotAttackTimer = m_AutoShotDuration;//avoid flooding client with error messages
 		}
 		return;
 	}
@@ -7281,7 +7281,7 @@ void Player::RemoveSpellsFromLine(uint32 skill_line)
 			{
 				// Check ourselves for this spell, and remove it..
 				if ( !removeSpell(sp->spell, 0, 0, 0) )
-					// if we didnt unlearned spell check deleted spells
+					// if we didn't unlearned spell check deleted spells
 					removeDeletedSpell( sp->spell );
 			}
 		}
@@ -7350,7 +7350,7 @@ void Player::RegenerateHealth( bool inCombat )
 	uint32 cur = GetUInt32Value(UNIT_FIELD_HEALTH);
 	uint32 mh = GetUInt32Value(UNIT_FIELD_MAXHEALTH);
 
-	if ( cur==0 ) return; // cebernic: bugfix diying but regenerated?
+	if ( cur==0 ) return; // cebernic: bugfix dying but regenerated?
 
 	if(cur >= mh)
 		return;
@@ -7845,7 +7845,7 @@ void Player::ProcessPendingUpdates()
 	    mCreationCount = 0;
 
         // compress update packet
-	    // while we said 350 before, i'm gonna make it 500 :D
+		// while we said 350 before, I'm gonna make it 500 :D
 	    if(c < (size_t)sWorld.compression_threshold || !CompressAndSendUpdateBuffer((uint32)c, update_buffer))
 	    {
 		    // send uncompressed packet -> because we failed
@@ -7870,7 +7870,7 @@ void Player::ProcessPendingUpdates()
 		mUpdateCount = 0;
 
 		// compress update packet
-		// while we said 350 before, i'm gonna make it 500 :D
+		// while we said 350 before, I'm gonna make it 500 :D
 		if(c < (size_t)sWorld.compression_threshold || !CompressAndSendUpdateBuffer((uint32)c, update_buffer))
 		{
 			// send uncompressed packet -> because we failed
@@ -8033,7 +8033,7 @@ bool Player::ExitInstance()
 void Player::SaveEntryPoint(uint32 mapId)
 {
 	if(IS_INSTANCE(GetMapId()))
-		return; // dont save if we're not on the main continent.
+		return; // don't save if we're not on the main continent.
 	//otherwise we could end up in an endless loop :P
 	MapInfo * pMapinfo = WorldMapInfoStorage.LookupEntry(mapId);
 
@@ -9030,7 +9030,7 @@ void Player::UpdatePvPArea()
 		}
 
 		// I just walked into a sanctuary area
-		// Force remove flag me if i'm not already.
+		// Force remove flag me if I'm not already.
 		if(at->category == AREAC_SANCTUARY || at->AreaFlags & AREA_SANCTUARY)
 		{
 			if(IsPvPFlagged())
@@ -9044,7 +9044,7 @@ void Player::UpdatePvPArea()
 			//contested territory
 			if(sWorld.GetRealmType() == REALM_PVP)
 			{
-				//automaticaly sets pvp flag on contested territorys.
+				//automatically sets pvp flag on contested territory's.
 				if(!IsPvPFlagged())
 					SetPvPFlag();
 				else
@@ -9109,7 +9109,7 @@ void Player::LoginPvPSetup()
 		CastSpell(this, PLAYER_HONORLESS_TARGET_SPELL, true);
 
 #ifdef PVP_REALM_MEANS_CONSTANT_PVP
-	//zack : This might be huge crap. I have no idea how it is on blizz but i think a pvp realm should alow me to gank anybody anywhere :(
+	//zack : This might be huge crap. I have no idea how it is on blizz but i think a pvp realm should allow me to gank anybody anywhere :(
 	if(sWorld.GetRealmType() == REALM_PVP)
     {
 		SetPvPFlag();
@@ -9169,7 +9169,7 @@ void Player::PvPToggle()
 	    }
     }
 #ifdef PVP_REALM_MEANS_CONSTANT_PVP
-	//zack : This might be huge crap. I have no idea how it is on blizz but i think a pvp realm should alow me to gank anybody anywhere :(
+	//zack : This might be huge crap. I have no idea how it is on blizz but i think a pvp realm should allow me to gank anybody anywhere :(
 	else if(sWorld.GetRealmType() == REALM_PVP)
     {
 		SetPvPFlag();
@@ -9306,7 +9306,7 @@ void Player::CalculateBaseStats()
 
 void Player::CompleteLoading()
 {
-    // cast passive initial spells	  -- grep note: these shouldnt require plyr to be in world
+	// cast passive initial spells	  -- grep note: these shouldn't require plyr to be in world
 	SpellSet::iterator itr;
 	SpellEntry *info;
 	SpellCastTargets targets;
@@ -9352,7 +9352,7 @@ void Player::CompleteLoading()
 		//check if we already have this aura
 //		if(this->HasActiveAura((*i).id))
 //			continue;
-		//how many times do we intend to put this oura on us
+		//how many times do we intend to put this aura on us
 /*		uint32 count_appearence=0;
 		std::list<LoginAura>::iterator i2 =  i;
 		for(;i2!=loginauras.end();i2++)
@@ -9407,7 +9407,7 @@ void Player::CompleteLoading()
 			}
 		}
 		this->AddAura( aura );
-		//Somehow we should restore number of appearence. Right now i have no idea how :(
+		//Somehow we should restore number of appearance. Right now I have no idea how :(
 //		if(count_appearence>1)
 //			this->AddAuraVisual((*i).id,count_appearence-1,a->IsPositive());
 	}
@@ -9487,7 +9487,7 @@ void Player::CompleteLoading()
 
 void Player::OnWorldPortAck()
 {
-	//only rezz if player is porting to a instance portal
+	//only resurrect if player is porting to a instance portal
 	MapInfo *pMapinfo = WorldMapInfoStorage.LookupEntry(GetMapId());
 	if(IsDead())
 	{
@@ -9760,7 +9760,7 @@ void Player::SaveAuras(stringstream &ss)
 			}
 
 			if( aur->pSpellId )
-				continue; //these auras were gained due to some proc. We do not save these eighter to avoid exploits of not removing them
+				continue; //these auras were gained due to some proc. We do not save these either to avoid exploits of not removing them
 
 			if ( aur->m_spellProto->c_is_flags & SPELL_FLAG_IS_EXPIREING_WITH_PET )
 				continue;
@@ -9806,7 +9806,7 @@ void Player::SetShapeShift(uint8 ss)
 													// not sure why all priest spell proto's RequiredShapeShift are set [to 134217728]
 				{
 					if(  ( ((uint32)1 << (old_ss-1)) & reqss ) &&		// we were in the form that required it
-						!( ((uint32)1 << (ss-1) & reqss) ) )			// new form doesnt have the right form
+						!( ((uint32)1 << (ss-1) & reqss) ) )			// new form doesn't have the right form
 					{
 						m_auras[x]->Remove();
 						continue;
@@ -9829,7 +9829,7 @@ void Player::SetShapeShift(uint8 ss)
 					break;
 				}
 
-				/*Shady: is this check neccessary? anyway m_auras[x]!=NULL check already done in next iteration. Commented*/
+				/*Shady: is this check necessary? anyway m_auras[x]!=NULL check already done in next iteration. Commented*/
 				//if( m_auras[x] == NULL )
 				//	break;
 			}
@@ -10820,7 +10820,7 @@ void Player::RecalculateHonor()
 	HonorHandler::RecalculateHonorFields(this);
 }
 
-//wooot, crapy code rulez.....NOT
+//wooot, crappy code rulez.....NOT
 void Player::EventTalentHearthOfWildChange(bool apply)
 {
 	if(!hearth_of_wild_pct)
@@ -11258,7 +11258,7 @@ void Player::EventSummonPet( Pet *new_pet )
 	//new_pet->InheritSMMods(); //not required yet. We cast full spell to have visual effect too
 }
 
-//if pet/charm died or whatever hapened we should call this function
+//if pet/charm died or whatever happened we should call this function
 //!! note function might get called multiple times :P
 void Player::EventDismissPet()
 {
@@ -11325,7 +11325,7 @@ void Player::EventDumpCompressedMovement()
 	if(size >= 40000 && rate < 6)
 		rate = 6;
 	if(size <= 100)
-		rate = 0;			// don't bother compressing packet smaller than this, zlib doesnt really handle them well
+		rate = 0;			// don't bother compressing packet smaller than this, zlib doesn't really handle them well
 
 	// set up stream
 	z_stream stream;
@@ -11622,7 +11622,7 @@ void Player::_SavePlayerCooldowns(QueryBuffer * buf)
 			// the server all these timestamps will appear to be messed up.
 
 			seconds = (itr2->second.ExpireTime - mstime) / 1000;
-			// this shouldnt ever be nonzero because of our check before, so no check needed
+			// this shouldn't ever be nonzero because of our check before, so no check needed
 
 			if( buf != NULL )
 			{
@@ -12141,7 +12141,7 @@ void Player::VampiricSpell(uint32 dmg, Unit* pTarget)
 void Player::SpeedCheatDelay(uint32 ms_delay)
 {
 //	SDetector->SkipSamplingUntil( getMSTime() + ms_delay );
-	//add tripple latency to avoid client handleing the spell effect with delay and we detect as cheat
+	//add triple latency to avoid client handling the spell effect with delay and we detect as cheat
 //	SDetector->SkipSamplingUntil( getMSTime() + ms_delay + GetSession()->GetLatency() * 3 );
 	//add constant value to make sure the effect packet was sent to client from network pool
 	SDetector->SkipSamplingUntil( getMSTime() + ms_delay + GetSession()->GetLatency() * 2 + 2000 ); //2 second should be enough to send our packets to client
@@ -12285,7 +12285,7 @@ void Player::PlaySound( uint32 sound_id )
 		if( !m_achievements[ achientry ] )
 			m_achievements[ achientry ] = new AchievementVal;
 
-		//check if we can finish = get archievement points on this
+		//check if we can finish = get achievement points on this
 //		if( pvalue < criteria->requiredAchievementRelatedCount )
 //			SendAchievmentStatus( achientry );
 //		else
@@ -12403,7 +12403,7 @@ void Player::SendAchievmentStatus( uint32 criteriaid, uint32 new_value, uint32 a
 	data << uint32(0); //duration left
 	GetSession()->SendPacket(&data);*/
 }
-//send completed criterias to client
+//send completed criteria's to client
 /*void Player::SendAllAchievementStatus()
 {
 	std::map<uint32,AchievementVal*>::iterator itr;

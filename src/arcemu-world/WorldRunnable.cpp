@@ -54,7 +54,7 @@ bool WorldRunnable::run()
 		ThreadState = THREADSTATE_BUSY;
 
 		uint32 diff;
-		//calce time passed
+		//calc time passed
 		uint32 now,execution_start;
 		now=getMSTime();
 		execution_start=now;

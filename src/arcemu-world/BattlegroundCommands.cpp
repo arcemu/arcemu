@@ -22,7 +22,7 @@
 
 bool ChatHandler::HandleInitializeAllQueuedBattlegroundsCommand(const char *args, WorldSession *m_session)
 {
-	SystemMessage(m_session, "Forcing initialitation of all battlegrounds...");
+	SystemMessage(m_session, "Forcing initialization of all battlegrounds...");
 	BattlegroundManager.EventQueueUpdate(true);
 	SystemMessage(m_session, "...done");
 	return true;

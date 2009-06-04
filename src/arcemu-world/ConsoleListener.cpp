@@ -434,7 +434,7 @@ void HandleConsoleInput(BaseConsole * pConsole, const char * szInput)
 			}
 		}
 
-		pConsole->Write("[!]Error, Command '%s' doesn't exist. Type '?' or 'help'to get a command overview.\r\n\r\n", tokens[0]);
+		pConsole->Write("[!]Error, Command '%s' doesn't exist. Type '?' or 'help' to get a command overview.\r\n\r\n", tokens[0]);
 	}
 }
 

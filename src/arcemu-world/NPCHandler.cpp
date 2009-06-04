@@ -299,7 +299,7 @@ uint8 WorldSession::TrainerGetSpellStatus(TrainerSpell* pSpell)
 		|| (pSpell->RequiredSpell && !_player->HasSpell(pSpell->RequiredSpell))
 		|| (pSpell->Cost && _player->GetUInt32Value(PLAYER_FIELD_COINAGE) < pSpell->Cost)
 		|| (pSpell->RequiredSkillLine && _player->_GetSkillLineCurrent(pSpell->RequiredSkillLine,true) < pSpell->RequiredSkillLineValue)
-		|| (pSpell->IsProfession && pSpell->RequiredSkillLine==0 && _player->GetUInt32Value(PLAYER_CHARACTER_POINTS2) == 0)//check level 1 professions if we can learn a new proffesion
+		|| (pSpell->IsProfession && pSpell->RequiredSkillLine==0 && _player->GetUInt32Value(PLAYER_CHARACTER_POINTS2) == 0)//check level 1 professions if we can learn a new profession
 		)
 		return TRAINER_STATUS_NOT_LEARNABLE;
 	return TRAINER_STATUS_LEARNABLE;
@@ -337,7 +337,7 @@ void WorldSession::SendCharterRequest(Creature* pCreature)
 		data << uint32(0x3F21); //item displayid
 		data << uint32(ARENA_TEAM_CHARTER_2v2_COST); //charter cost
 		data << uint32(0x01); //unknown, (charter type? seems to be 0x0 for guilds and 0x1 for arena charters)
-		data << uint32(0x01); // Signatures required (besides petiton owner)
+		data << uint32(0x01); // Signatures required (besides petition owner)
 		//2v2 arena charters end
 		
 		//3v3 arena charters start
@@ -346,7 +346,7 @@ void WorldSession::SendCharterRequest(Creature* pCreature)
 		data << uint32(0x3F21); //item displayid
 		data << uint32(ARENA_TEAM_CHARTER_3v3_COST); //charter cost
 		data << uint32(0x01);
-		data << uint32(0x02); // Signatures required (besides petiton owner)
+		data << uint32(0x02); // Signatures required (besides petition owner)
 		//3v3 arena charters end
 		
 		//5v5 arena charters start
@@ -355,7 +355,7 @@ void WorldSession::SendCharterRequest(Creature* pCreature)
 		data << uint32(0x3F21); //item displayid
 		data << uint32(ARENA_TEAM_CHARTER_5v5_COST); //charter cost
 		data << uint32(0x01);
-		data << uint32(0x04); // Signatures required (besides petiton owner)
+		data << uint32(0x04); // Signatures required (besides petition owner)
 		//5v5 arena charters end
 		
 		SendPacket(&data);

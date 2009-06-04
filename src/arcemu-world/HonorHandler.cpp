@@ -114,10 +114,10 @@ void HonorHandler::OnPlayerKilledUnit( Player *pPlayer, Unit* pVictim )
 	{
 		if( pPlayer->m_bg )
 		{
-			// hackfix for battlegrounds (since the gorups there are disabled, we need to do this manually)
+			// hackfix for battlegrounds (since the groups there are disabled, we need to do this manually)
 			vector<Player*> toadd;
 			uint32 t = pPlayer->m_bgTeam;
-			toadd.reserve(15);		// shouldnt have more than this
+			toadd.reserve(15);		// shouldn't have more than this
 			pPlayer->m_bg->Lock();
 			set<Player*> * s = &pPlayer->m_bg->m_players[t];
 

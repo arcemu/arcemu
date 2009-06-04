@@ -102,7 +102,7 @@ void WorldSession::HandleQuestgiverHelloOpcode( WorldPacket & recv_data )
 	/*if(qst_giver->GetAIInterface()) // NPC Stops moving for 3 minutes
 		qst_giver->GetAIInterface()->StopMovement(180000);*/
 
-	//qst_giver->Emote(EMOTE_ONESHOT_TALK); // this doesnt work
+	//qst_giver->Emote(EMOTE_ONESHOT_TALK); // this doesn't work
 	sQuestMgr.OnActivateQuestGiver(qst_giver, GetPlayer());
 }
 
@@ -326,7 +326,7 @@ void WorldSession::HandleQuestgiverAcceptQuestOpcode( WorldPacket & recv_data )
 		return;
 	}
 
-	//FIXME
+	//FIX ME
 	/*if(Player Has Timed quest && qst->HasFlag(QUEST_FLAG_TIMED))
 		sQuestMgr.SendQuestInvalid(INVALID_REASON_HAVE_TIMED_QUEST);*/
 
@@ -704,7 +704,7 @@ void WorldSession::HandleQuestgiverChooseRewardOpcode(WorldPacket& recvPacket)
 		return;
 	}
 
-	//FIXME: Some Quest givers talk in the end of the quest.
+	//FIX ME: Some Quest givers talk in the end of the quest.
 	//   qst_giver->SendChatMessage(CHAT_MSG_MONSTER_SAY,LANG_UNIVERSAL,qst->GetQuestEndMessage().c_str());
 	QuestLogEntry *qle = _player->GetQuestLogForEntry(quest_id);
 

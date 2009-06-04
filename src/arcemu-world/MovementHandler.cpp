@@ -170,7 +170,7 @@ void _HandleBreathing(MovementInfo &movement_info, Player * _player, WorldSessio
 		return;
 	}
 
-	//player is swiming and not flagged as in the water
+	//player is swimming and not flagged as in the water
 	if( movement_info.flags & MOVEFLAG_SWIMMING && !( _player->m_UnderwaterState & UNDERWATERSTATE_SWIMMING ) )
 	{
         _player->RemoveAurasByInterruptFlag( AURA_INTERRUPT_ON_ENTER_WATER );
@@ -218,7 +218,7 @@ void _HandleBreathing(MovementInfo &movement_info, Player * _player, WorldSessio
 	// player is flagged as in the water and is flagged as under the water
 	if( _player->m_UnderwaterState & UNDERWATERSTATE_SWIMMING && _player->m_UnderwaterState & UNDERWATERSTATE_UNDERWATER )
 	{
-		//the player is in the water but their face is above water, no breath bar neeeded.
+		//the player is in the water but their face is above water, no breath bar needed.
 		if( ( movement_info.z + _player->m_noseLevel ) > pSession->m_wLevel )
 		{
 			_player->m_UnderwaterState &= ~UNDERWATERSTATE_UNDERWATER;
@@ -231,7 +231,7 @@ void _HandleBreathing(MovementInfo &movement_info, Player * _player, WorldSessio
 	// player is flagged as not in the water and is flagged as under the water
 	if( !( _player->m_UnderwaterState & UNDERWATERSTATE_SWIMMING ) && _player->m_UnderwaterState & UNDERWATERSTATE_UNDERWATER )
 	{
-		//the player is out of the water, no breath bar neeeded.
+		//the player is out of the water, no breath bar needed.
 		if( ( movement_info.z + _player->m_noseLevel ) > pSession->m_wLevel )
 		{
 			_player->m_UnderwaterState &= ~UNDERWATERSTATE_UNDERWATER;
@@ -523,7 +523,7 @@ void WorldSession::HandleMovementOpcodes( WorldPacket & recv_data )
 					health_loss = _player->GetUInt32Value( UNIT_FIELD_HEALTH );
 				else if( falldistance >= 65 )
 				{
-					// Rather than Updating achivement progress every time fall damage is taken, all criteria currently have 65 yard requirement...
+					// Rather than Updating achievement progress every time fall damage is taken, all criteria currently have 65 yard requirement...
 					// Achievement 964: Fall 65 yards without dying.
 					// Achievement 1260: Fall 65 yards without dying while completely smashed during the Brewfest Holiday.
 					uint8 drunkenstate = _player->GetByte(PLAYER_BYTES_3,1);
@@ -538,7 +538,7 @@ void WorldSession::HandleMovementOpcodes( WorldPacket & recv_data )
 			_player->z_axisposition = 0.0f;
 		}
 		else
-			//whilst player is not falling, continuosly update Z axis position.
+			//whilst player is not falling, continuously update Z axis position.
 			//once player lands this will be used to determine how far he fell.
 			if( !( movement_info.flags & MOVEFLAG_FALLING ) )
 				_player->z_axisposition = movement_info.z;

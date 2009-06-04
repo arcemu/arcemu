@@ -229,7 +229,7 @@ void WorldSession::HandleSpellClick(WorldPacket& recvPacket)
 		cast_spell_id = 52263; // steel horse
 	//32633
 	if( target_unit->GetUInt32Value( OBJECT_FIELD_ENTRY ) == 32633 )
-		cast_spell_id = 61425; // Treveler's Tundra Mammoth
+		cast_spell_id = 61425; // Traveler's Tundra Mammoth
 
 	if( target_unit->GetUInt32Value( OBJECT_FIELD_ENTRY ) == 29929 )
 		cast_spell_id = 55531; // Mechano-Hog
@@ -306,18 +306,18 @@ void WorldSession::HandleCastSpellOpcode(WorldPacket& recvPacket)
 
 	// Cheat Detection only if player and not from an item
 	// this could fuck up things but meh it's needed ALOT of the newbs are using WPE now
-	// WPE allows them to mod the outgoing packet and basicly choose what ever spell they want :(
+	// WPE allows them to mod the outgoing packet and basically choose what ever spell they want :(
 
 	if(!GetPlayer()->HasSpell(spellId))
 	{
 		sCheatLog.writefromsession(this,"Cast spell %lu but doesn't have that spell.", spellId);
-		sLog.outDetail("WORLD: Spell isn't casted because player \"%s\" is cheating", GetPlayer()->GetName());
+		sLog.outDetail("WORLD: Spell isn't cast because player \"%s\" is cheating", GetPlayer()->GetName());
 		return;
 	}
 	if(spellInfo->Attributes & ATTRIBUTES_PASSIVE)
 	{
 		sCheatLog.writefromsession(this,"Cast passive spell %lu.", spellId);
-		sLog.outDetail("WORLD: Spell isn't casted because player \"%s\" is cheating", GetPlayer()->GetName());
+		sLog.outDetail("WORLD: Spell isn't cast because player \"%s\" is cheating", GetPlayer()->GetName());
 		return;
 	}
 
@@ -527,7 +527,7 @@ void WorldSession::HandlePetCastSpell(WorldPacket & recvPacket)
 		if( nc )
 		{
 			bool check = false;
-			for(list<AI_Spell*>::iterator itr = nc->GetAIInterface()->m_spells.begin(); itr != nc->GetAIInterface()->m_spells.end(); ++itr)//.......meh. this is a crappy way of doing this, i bet.
+			for(list<AI_Spell*>::iterator itr = nc->GetAIInterface()->m_spells.begin(); itr != nc->GetAIInterface()->m_spells.end(); ++itr)//.......meh. this is a crappy way of doing this, I bet.
 			{
 				if( (*itr)->spell->Id == spellid )
 				{

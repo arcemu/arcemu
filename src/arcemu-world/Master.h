@@ -43,7 +43,7 @@
 #define BUILDTYPE "Release"
 #endif
 
-#define DEFAULT_LOOP_TIME 0 /* 0 millisecs - instant */
+#define DEFAULT_LOOP_TIME 0 /* 0 milliseconds - instant */
 #define DEFAULT_LOG_LEVEL 0
 #define DEFAULT_PLAYER_LIMIT 100
 #define DEFAULT_WORLDSERVER_PORT 8129

@@ -181,7 +181,7 @@ void ObjectMgr::LoadExtraCreatureProtoStuff()
 				spe = dbcSpell.LookupEntryForced(fields[5].GetUInt32());
 				if( spe == NULL )
 				{
-					Log.Warning("AIAgent", "For %u has nonexistant spell %u.", fields[0].GetUInt32(), fields[5].GetUInt32());
+					Log.Warning("AIAgent", "For %u has nonexistent spell %u.", fields[0].GetUInt32(), fields[5].GetUInt32());
 					continue;
 				}
 				if(!cn)
@@ -247,7 +247,7 @@ void ObjectMgr::LoadExtraCreatureProtoStuff()
 					}
 
 					/*
-					//now apply the morron filter
+					//now apply the moron filter
 					if(sp->procChance==0)
 					{
 						//printf("SpellId %u in ai_agent for %u is invalid.\n", (unsigned int)fields[5].GetUInt32(), (unsigned int)sp->entryId);

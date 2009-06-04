@@ -33,7 +33,7 @@
 	rogue - combat - 181
 	rogue - subelty - 183
 
-	warlock - afflication - 302
+	warlock - affliction - 302
 	warlock - demonology - 303
 	warlock - destruction - 301
 
@@ -53,7 +53,7 @@
 	death knight - frost - 399
 	death knight - unholy - 400
 	
-	priest - dicipline - 201
+	priest - discipline - 201
 	priest - holy - 202
 	priest - shadow - 203
 

@@ -78,7 +78,7 @@ pSpellTarget SpellTargetHandler[EFF_TARGET_LIST_LENGTH_MARKER] =
 	&Spell::SpellTargetSimpleTargetAdd,		 // 52
 	&Spell::SpellTargetTargetAreaSelectedUnit,  // 53
 	&Spell::SpellTargetInFrontOfCaster2,		// 54
-	&Spell::SpellTargetNULL,					// 55 Not handled (Not realy handled by the current spell system)
+	&Spell::SpellTargetNULL,					// 55 Not handled (Not really handled by the current spell system)
 	&Spell::SpellTargetAllRaid,		  			// 56
 	&Spell::SpellTargetTargetPartyMember,	   // 57
 	&Spell::SpellTargetNULL,					// 58
@@ -161,7 +161,7 @@ pSpellTarget SpellTargetHandler[EFF_TARGET_LIST_LENGTH_MARKER] =
 
 // type 17:
 // spells like 17278:Cannon Fire and 21117:Summon Son of Flame A
-// A single target at a xyz location or the target is a possition xyz
+// A single target at a xyz location or the target is a position xyz
 
 // select id,name, EffectImplicitTargetA1 from spell where EffectImplicitTargetB1 = 9;
 // +-------+----------------------------+------------------------+
@@ -190,7 +190,7 @@ pSpellTarget SpellTargetHandler[EFF_TARGET_LIST_LENGTH_MARKER] =
 // type 55 related to blink and Netherstep... I think this one sets the xyz where you should end...
 // type 56 is related to aura holder... Player 1 give's me a aura and that aura has as target me. I wear then the aura / spell and it targeting me
 
-// type 58 proc triggeret target... 
+// type 58 proc triggered target... 
 // Apply Aura: Proc Trigger Spell
 // Retching Plague
 // 10% chance.
@@ -609,7 +609,7 @@ void Spell::SpellTargetEnemysAreaOfEffect(uint32 i, uint32 j)
 	FillAllTargetsInArea(i,m_targets.m_destX,m_targets.m_destY,m_targets.m_destZ,GetRadius(i));
 }
 
-// all object around the the caster / object
+// all object around the caster / object
 /*
 mysql> select id,name from spell where EffectImplicitTargetb1 = 29;
 +-------+-----------------------------------------------+
@@ -674,7 +674,7 @@ void Spell::SpellTargetScriptedEffects( uint32 i, uint32 j )
 		else
 		{
 			cancastresult = SPELL_FAILED_OUT_OF_RANGE;
-			return; // No point targetting others if the target is not in casting range.
+			return; // No point targeting others if the target is not in casting range.
 		}
 
 		Group * group = p_caster->GetGroup(); 
@@ -774,7 +774,7 @@ void Spell::SpellTargetNearbyPartyMembers(uint32 i, uint32 j)
 }
 
 /// Spell Target Handling for type 35: Single Target Party Member (if not in party then the target can not be himself)
-/// this one requeres more research
+/// this one requires more research
 void Spell::SpellTargetSingleTargetPartyMember(uint32 i, uint32 j)
 {
 	TargetsList* tmpMap=&m_targetUnits[i];
@@ -838,7 +838,7 @@ void Spell::SpellTargetDummyTarget(uint32 i, uint32 j)
 	{
 		case 12938:
 			{
-				//FIXME:this ll be immortal targets
+				//FIXME: this'll be immortal targets
 				FillAllTargetsInArea(i,m_targets.m_destX,m_targets.m_destY,m_targets.m_destZ,GetRadius(i));
 			}
 			break;

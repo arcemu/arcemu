@@ -899,7 +899,7 @@ bool ChatHandler::HandleModifyGoldCommand(const char* args, WorldSession *m_sess
 		}
 	}
 
-	// Check they dont have more than the max gold
+	// Check they don't have more than the max gold
 	if(sWorld.GoldCapEnabled)
     {
         if((chr->GetUInt32Value(PLAYER_FIELD_COINAGE) + newgold) > sWorld.GoldLimit)

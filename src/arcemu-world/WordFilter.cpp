@@ -194,7 +194,7 @@ bool WordFilter::Parse(string& sMessage, bool bAllowReplace /* = true */)
 				if((n = pcre_exec((const pcre*)pFilter->pCompiledIgnoreExpression,
 					(const pcre_extra*)pFilter->pCompiledIgnoreExpressionOptions, szInput, (int)iLen, 0, 0, ovec, NC)) < 0)
 				{
-					// our string didnt match any of the excludes, so it passes
+					// our string didn't match any of the excludes, so it passes
 					if(n == PCRE_ERROR_NOMATCH)
 						return true;
 

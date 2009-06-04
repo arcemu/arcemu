@@ -118,24 +118,24 @@ struct BGScore
 // AV define's
 #define AV_UNCONTROLED_SNOWFALL_GRAVE	   0x7AE //1 -> show uncontrolled
 
-#define AV_CONTROLED_ICEBLOOD_TOWER_HORDE   0x569 //1 -> horde controled
-#define AV_CONTROLED_TOWER_POINT_HORDE	  0x568 //1 -> horde controled
-#define AV_CONTROLED_FROSTWOLF_RELIFHUNT_HORDE 0x532 //1 -> horde controled
-#define AV_CONTROLED_EAST_FROSTWOLF_TOWER_HORDE 0x567 //1 -> horde controled
-#define AV_CONTROLED_WEST_FROSTWOLF_TOWER_HORDE 0x566 //1 -> horde controled
-#define AV_CONTROLED_ICEBLOOD_GRAVE_HORDE   0x543 //1 -> horde controled
-#define AV_CONTROLED_FROSTWOLF_GRAVE_HORDE   0x53A //1 -> horde controled
+#define AV_CONTROLED_ICEBLOOD_TOWER_HORDE   0x569 //1 -> horde controlled
+#define AV_CONTROLED_TOWER_POINT_HORDE	  0x568 //1 -> horde controlled
+#define AV_CONTROLED_FROSTWOLF_RELIFHUNT_HORDE 0x532 //1 -> horde controlled
+#define AV_CONTROLED_EAST_FROSTWOLF_TOWER_HORDE 0x567 //1 -> horde controlled
+#define AV_CONTROLED_WEST_FROSTWOLF_TOWER_HORDE 0x566 //1 -> horde controlled
+#define AV_CONTROLED_ICEBLOOD_GRAVE_HORDE   0x543 //1 -> horde controlled
+#define AV_CONTROLED_FROSTWOLF_GRAVE_HORDE   0x53A //1 -> horde controlled
 
-#define AV_CONTROLED_IRONDEEP_MINE_TROGG	0x550 //1 -> trogg controled
-#define AV_CONTROLED_COLDTHOOT_MINE_KOBOLT  0x54D //1 -> kobolt controled
+#define AV_CONTROLED_IRONDEEP_MINE_TROGG	0x550 //1 -> trogg controlled
+#define AV_CONTROLED_COLDTHOOT_MINE_KOBOLT  0x54D //1 -> kobolt controlled
 
-#define AV_CONTROLED_STORMPIKE_GRAVE_ALLIANCE  0x535 //1 -> alliance controled
-#define AV_CONTROLED_STONEHEART_BUNKER_ALLIANCE  0x554 //1 -> alliance controled
-#define AV_CONTROLED_ICEWING_BUNKER_ALLIANCE  0x553 //1 -> alliance controled
-#define AV_CONTROLED_DUBALDER_NORTH_BUNKER_ALLIANCE  0x552 //1 -> alliance controled
-#define AV_CONTROLED_DUBALDER_SOUTH_BUNKER_ALLIANCE  0x551 //1 -> alliance controled
-#define AV_CONTROLED_STORMPIKE_AID_STATION_ALLIANCE  0x52D //1 -> alliance controled
-#define AV_CONTROLED_STONEHEART_GRAVE_ALLIANCE  0x516 //1 -> alliance controled
+#define AV_CONTROLED_STORMPIKE_GRAVE_ALLIANCE  0x535 //1 -> alliance controlled
+#define AV_CONTROLED_STONEHEART_BUNKER_ALLIANCE  0x554 //1 -> alliance controlled
+#define AV_CONTROLED_ICEWING_BUNKER_ALLIANCE  0x553 //1 -> alliance controlled
+#define AV_CONTROLED_DUBALDER_NORTH_BUNKER_ALLIANCE  0x552 //1 -> alliance controlled
+#define AV_CONTROLED_DUBALDER_SOUTH_BUNKER_ALLIANCE  0x551 //1 -> alliance controlled
+#define AV_CONTROLED_STORMPIKE_AID_STATION_ALLIANCE  0x52D //1 -> alliance controlled
+#define AV_CONTROLED_STONEHEART_GRAVE_ALLIANCE  0x516 //1 -> alliance controlled
 
 /* get level grouping for player */
 static inline uint32 GetLevelGrouping(uint32 level)
@@ -354,7 +354,7 @@ public:
 	/* On Unit Killing */
 	virtual void HookOnUnitKill(Player * plr, Unit * pVictim) = 0;
 
-	/* Retreival Functions */
+	/* Retrieval Functions */
 	ARCEMU_INLINE uint32 GetId() { return m_id; }
 	ARCEMU_INLINE uint32 GetLevelGroup() { return m_levelGroup; }
 	ARCEMU_INLINE MapMgr* GetMapMgr() { return m_mapMgr; }

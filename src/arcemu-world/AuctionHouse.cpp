@@ -269,7 +269,7 @@ void Auction::AddToPacket(WorldPacket & data)
 	* That is the result of jewelcrafting, the effect is that the
 	* enchantment is variable. That means that a enchantment can be +1 and 
 	* with more Jem's +12 or so.
-	* Decription for lookup: You get the enchantmentSuffixID and search the
+	* Description for lookup: You get the enchantmentSuffixID and search the
 	* DBC for the last 1 - 3 value's(depending on the enchantment).
 	* That value is what I call EnchantmentValue. You guys might find a 
 	* better name but for now its good enough. The formula to calculate
@@ -578,7 +578,7 @@ void WorldSession::HandleAuctionSellItem( WorldPacket & recv_data )
 
 	Creature * pCreature = _player->GetMapMgr()->GetCreature(GET_LOWGUID_PART(guid));
 	if(  !pCreature || !pCreature->auctionHouse )
-		return;		// NPC doesnt exist or isnt an auctioneer
+		return;		// NPC doesn't exist or isn't an auctioneer
 
 	// Get item
 	Item * pItem = _player->GetItemInterface()->GetItemByGUID(item);

@@ -1365,7 +1365,7 @@ void ObjectMgr::LoadVendors()
 			{
 				ec = dbcItemExtendedCost.LookupEntryForced( fields[5].GetUInt32() );
 				if ( ec == NULL )
-					Log.Warning("LoadVendors", "Extendedcost for item %u references nonexistant EC %u", fields[1].GetUInt32(), fields[5].GetUInt32() );
+					Log.Warning("LoadVendors", "Extendedcost for item %u references nonexistent EC %u", fields[1].GetUInt32(), fields[5].GetUInt32() );
 			}
 			else
 				ec = NULL;
@@ -1444,7 +1444,7 @@ void ObjectMgr::LoadAIThreatToSpellId()
 			sp->ThreatForSpellCoef = fields[2].GetFloat();
 		}
 		else
-			Log.Warning("AIThreatSpell", "Cannot apply to spell %u; spell is nonexistant.", fields[0].GetUInt32());
+			Log.Warning("AIThreatSpell", "Cannot apply to spell %u; spell is nonexistent.", fields[0].GetUInt32());
 
 	} while( result->NextRow() );
 
@@ -2245,7 +2245,7 @@ void ObjectMgr::GenerateLevelUpInfo()
 			mLevelInfo.insert( LevelInfoMap::value_type( p, lMap ) );
 		}
 	}
-	Log.Notice("ObjectMgr", "%u level up informations generated.", mLevelInfo.size());
+	Log.Notice("ObjectMgr", "%u level up information generated.", mLevelInfo.size());
 }
 
 LevelInfo* ObjectMgr::GetLevelInfo(uint32 Race, uint32 Class, uint32 Level)
@@ -2514,7 +2514,7 @@ WayPointMap*ObjectMgr::GetWayPointMap(uint32 spawnid)
 	if(i!=m_waypoints.end())
 	{
 		WayPointMap * m=i->second;
-		// we don't wanna erase from the map, becuase some are used more
+		// we don't wanna erase from the map, because some are used more
 		// than once (for instances)
 
 		//m_waypoints.erase(i);

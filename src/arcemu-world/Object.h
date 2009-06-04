@@ -71,7 +71,7 @@ enum TYPEID {
 	TYPEID_CORPSE		= 7,
 	TYPEID_AIGROUP	   = 8,
 	TYPEID_AREATRIGGER   = 9,
-	TYPEID_UNUSED			= 10,//Used to signal invalid reference (object dealocated but someone is still using it)
+	TYPEID_UNUSED			= 10,//Used to signal invalid reference (object deallocated but someone is still using it)
 };
 
 enum OBJECT_UPDATE_TYPE {
@@ -491,7 +491,7 @@ public:
 	ARCEMU_INLINE void SendMessageToSet(StackBufferBase * data, bool self) { OutPacketToSet(data->GetOpcode(), data->GetSize(), data->GetBufferPointer(), self); }
 	void OutPacketToSet(uint16 Opcode, uint16 Len, const void * Data, bool self);
 
-	//! Fill values with data from a space seperated string of uint32s.
+	//! Fill values with data from a space separated string of uint32s.
 	void LoadValues(const char* data);
 
 	ARCEMU_INLINE uint16 GetValuesCount() const { return m_valuesCount; }
@@ -549,7 +549,7 @@ public:
 			RemoveFromWorld(true);
 		delete this;
 	}
-	//! GMScript not used anylonger (Dropped for 64bit compatibility.
+	//! GMScript not used anymore (Dropped for 64bit compatibility).
 	void GMScriptEvent(void * function, uint32 argc, uint32 * argv, uint32 * argt);
 	//! 
 	ARCEMU_INLINE size_t GetInRangeOppFactCount() { return m_oppFactsInRange.size(); }

@@ -187,7 +187,7 @@ AddItemResult ItemInterface::m_AddItem(Item *item, int8 ContainerSlot, int8 slot
 
 	item->m_isDirty = true;
 
-	// doublechecking
+	// double checking
 	uint32 i, j, k;
 	Item * tempitem;
 	for(i = 0; i < MAX_INVENTORY_SLOT; ++i)
@@ -298,7 +298,7 @@ AddItemResult ItemInterface::m_AddItem(Item *item, int8 ContainerSlot, int8 slot
 			}
 			else
 			{
-				item->DeleteFromDB(); //wpe dupefix ..we dont want it reappearing on the next relog now do we?
+				item->DeleteFromDB(); //wpe dupefix ..we don't want it reappearing on the next relog now do we?
 				return ADD_ITEM_RESULT_ERROR;
 			}
 		}
@@ -712,7 +712,7 @@ Item *ItemInterface::GetInventoryItem( int8 ContainerSlot, int8 slot )
 }
 
 //-------------------------------------------------------------------//
-//Description: checks for stacks that didnt reached max capacity
+//Description: checks for stacks that didn't reached max capacity
 //-------------------------------------------------------------------//
 Item* ItemInterface::FindItemLessMax(uint32 itemid, uint32 cnt, bool IncBank)
 {
@@ -1688,7 +1688,7 @@ int8 ItemInterface::GetInternalBankSlotFromPlayer(int8 islot)
 }
 
 //-------------------------------------------------------------------//
-//Description: checks if the item can be equiped on a specific slot
+//Description: checks if the item can be equipped on a specific slot
 //             this will check unique-equipped gems as well
 //-------------------------------------------------------------------//
 int8 ItemInterface::CanEquipItemInSlot2(int8 DstInvSlot, int8 slot, Item* item, bool ignore_combat /* = false */, bool skip_2h_check /* = false */, bool titansgrip /* = false */)
@@ -1742,7 +1742,7 @@ int8 ItemInterface::CanEquipItemInSlot2(int8 DstInvSlot, int8 slot, Item* item, 
 }
 
 //-------------------------------------------------------------------//
-//Description: checks if the item can be equiped on a specific slot
+//Description: checks if the item can be equipped on a specific slot
 //-------------------------------------------------------------------//
 int8 ItemInterface::CanEquipItemInSlot(int8 DstInvSlot, int8 slot, ItemPrototype* proto, bool ignore_combat /* = false */, bool skip_2h_check /* = false */, bool titansgrip /* = false */)
 {
@@ -2072,9 +2072,9 @@ int8 ItemInterface::CanEquipItemInSlot(int8 DstInvSlot, int8 slot, ItemPrototype
 			//we are trying to equip an Ammo Bag
 			if(proto->Class==ITEM_CLASS_QUIVER)
 			{
-				//check if we already have an AB equiped
+				//check if we already have an AB equipped
 				FindAmmoBag();
-				//we do have amo bag but we are not swaping them then we send error
+				//we do have ammo bag but we are not swapping them then we send error
 				if(result.Slot!=ITEM_NO_SLOT_AVAILABLE && result.Slot != slot)
 				{
 					return INV_ERR_CAN_EQUIP_ONLY1_AMMOPOUCH;
@@ -2433,7 +2433,7 @@ int8 ItemInterface::GetItemSlotByType(uint32 type)
 				if (!GetInventoryItem(i))
 					return i;
 			}
-			return ITEM_NO_SLOT_AVAILABLE; //bags are not suposed to be auto-equiped when slots are not free
+			return ITEM_NO_SLOT_AVAILABLE; //bags are not supposed to be auto-equipped when slots are not free
 		}
 	default:
 		return ITEM_NO_SLOT_AVAILABLE;
@@ -2735,14 +2735,14 @@ void ItemInterface::SwapItemSlots(int8 srcslot, int8 dstslot)
 		}
 	}
 
-	//src item was equiped previously
+	//src item was equipped previously
 	if( srcslot < INVENTORY_SLOT_BAG_END ) 
 	{
 		if( m_pItems[(int)srcslot] != NULL )		
 			m_pOwner->ApplyItemMods( m_pItems[(int)srcslot], srcslot, false );
 	}
 
-	//dst item was equiped previously
+	//dst item was equipped previously
 	if( dstslot < INVENTORY_SLOT_BAG_END ) 
 	{
 		if( m_pItems[(int)dstslot] != NULL )		
@@ -2833,7 +2833,7 @@ void ItemInterface::SwapItemSlots(int8 srcslot, int8 dstslot)
 		m_pOwner->SetUInt64Value( PLAYER_FIELD_INV_SLOT_HEAD + (srcslot*2), 0 );
 	}
 
-	if( srcslot < INVENTORY_SLOT_BAG_END )	// source item is equiped
+	if( srcslot < INVENTORY_SLOT_BAG_END )	// source item is equipped
 	{
 		if( m_pItems[(int)srcslot] ) // dstitem goes into here.
 		{
@@ -2928,7 +2928,7 @@ void ItemInterface::SwapItemSlots(int8 srcslot, int8 dstslot)
 			m_pOwner->SetDualWield( false );
 	}
 
-	//src item is equiped now
+	//src item is equipped now
 	if( srcslot < INVENTORY_SLOT_BAG_END ) 
  	{
 		if( m_pItems[(int)srcslot] != NULL )		
@@ -2937,7 +2937,7 @@ void ItemInterface::SwapItemSlots(int8 srcslot, int8 dstslot)
 			m_pOwner->CalcDamage();
  	}
 
-	//dst item is equiped now
+	//dst item is equipped now
 	if( dstslot < INVENTORY_SLOT_BAG_END ) 
 	{
 		if( m_pItems[(int)dstslot] != NULL )		
@@ -3277,7 +3277,7 @@ void ItemInterface::ReduceItemDurability()
 			{
 				pItem->SetUInt32Value( ITEM_FIELD_DURABILITY, ( pItem->GetUInt32Value( ITEM_FIELD_DURABILITY ) - 1 ) );
 				pItem->m_isDirty = true;
-				//check final durabiity
+				//check final durability
 				if( !pItem->GetUInt32Value( ITEM_FIELD_DURABILITY ) ) //no dur left
 				{
 					this->GetOwner()->ApplyItemMods( pItem, slot, false, true );

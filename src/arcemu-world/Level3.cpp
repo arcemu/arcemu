@@ -29,7 +29,7 @@
 void ParseBanArgs(char* args, char** BanDuration, char** BanReason)
 {
 	// Usage: .ban character <char> [duration] [reason]
-	//        .ban ip <ipaddr> [duration] [reaspon]
+	//        .ban ip <ipaddr> [duration] [reason]
 	//        .ban account <acct> [duration] [reason]
 	//        .ban all <char> [duration] [reason]
 	// Duration must be a number optionally followed by a character representing the calendar subdivision to use (h>hours, d>days, w>weeks, m>months, y>years, default minutes)
@@ -530,7 +530,7 @@ bool ChatHandler::HandleBanAllCommand(const char* args, WorldSession *m_session)
 	}
 	pAcc = pBanned->GetSession()->GetAccountName();
 	pIP = pBanned->GetSession()->GetSocket()->GetRemoteIP();
-	//This check is there incase a gm trys to ban someone on their LAN etc.
+	//This check is there incase a gm tries to ban someone on their LAN etc.
 	if (pIP == m_session->GetSocket()->GetRemoteIP())
 	{
 		RedSystemMessage(m_session,"That player has the same IP as you - ban failed");
@@ -657,7 +657,7 @@ bool ChatHandler::HandleNpcInfoCommand(const char *args, WorldSession *m_session
 		if (crt->isTabardDesigner())
 				s.append(" (Tabard Designer)");
 		if (crt->isAuctioner())
-				s.append(" (Auctioner)");
+				s.append(" (Auctioneer)");
 		if (crt->isStableMaster())
 				s.append(" (Stablemaster)");
 		if (crt->isArmorer())
@@ -898,7 +898,7 @@ bool ChatHandler::HandleAccountBannedCommand(const char * args, WorldSession * m
 		timeperiod ? "until " : "forever", timeperiod ? ConvertTimeStampToDataTime(timeperiod+(uint32)UNIXTIME).c_str() : "", pReason);
 
 	sWorld.DisconnectUsersWithAccount(pAccount, m_session);
-	sGMLog.writefromsession(m_session, "banned account %s until %s", pAccount, timeperiod ? ConvertTimeStampToDataTime(timeperiod+(uint32)UNIXTIME).c_str() : "permanant");
+	sGMLog.writefromsession(m_session, "banned account %s until %s", pAccount, timeperiod ? ConvertTimeStampToDataTime(timeperiod+(uint32)UNIXTIME).c_str() : "permanent");
 	return true;
 }
 
@@ -1000,7 +1000,7 @@ bool ChatHandler::HandleRemoveRessurectionSickessAuraCommand(const char *args, W
 	Player *plr = getSelectedChar(m_session, true);
 	if(!plr) return false;
 
-	BlueSystemMessage(m_session, "Removing ressurection sickness...");
+	BlueSystemMessage(m_session, "Removing resurrection sickness...");
 	plr->RemoveAura( 15007 );
 	if(plr != m_session->GetPlayer())
 		sGMLog.writefromsession(m_session, "Removed resurrection sickness from %s", plr->GetName());
@@ -1526,7 +1526,7 @@ bool ChatHandler::HandlePetSpawnAIBot(const char* args, WorldSession *m_session)
 	pPet->SetInstanceID(plr->GetInstanceID());
 	pPet->SetMapId(plr->GetMapId());
 
-	pPet->SetFloatValue ( OBJECT_FIELD_SCALE_X, pTemplate->Scale / 2); //we do not wish to block visualy other players
+	pPet->SetFloatValue ( OBJECT_FIELD_SCALE_X, pTemplate->Scale / 2); //we do not wish to block visually other players
 	AiAgentHealSupport *new_interface = new AiAgentHealSupport;
 	pPet->ReplaceAIInterface( (AIInterface *) new_interface );
 //	new_interface->Init(pPet,AITYPE_PET,MOVEMENTTYPE_NONE,plr); // i think this will get called automatically for pet
@@ -1535,7 +1535,7 @@ bool ChatHandler::HandlePetSpawnAIBot(const char* args, WorldSession *m_session)
 
 	pPet->Rename(name);
 
-	//healer bot should not have any specific ations
+	//healer bot should not have any specific actions
 	pPet->SetActionBarSlot(0,PET_SPELL_FOLLOW);
 	pPet->SetActionBarSlot(1,PET_SPELL_STAY);
 	pPet->SetActionBarSlot(2,0);
@@ -2394,7 +2394,7 @@ bool ChatHandler::HandleIPBanCommand(const char * args, WorldSession * m_session
 	string::size_type i = IP.find("/");
 	if (i == string::npos)
 	{
-		RedSystemMessage(m_session, "Lack of CIDR address assumes a 32bit match (if you don't understand, dont worry, it worked)");
+		RedSystemMessage(m_session, "Lack of CIDR address assumes a 32bit match (if you don't understand, don't worry, it worked)");
 		IP.append("/32");
 	}
 
@@ -2418,11 +2418,11 @@ bool ChatHandler::HandleIPUnBanCommand(const char * args, WorldSession * m_sessi
 
 	if (pIp.find("/") == string::npos)
 	{
-		RedSystemMessage(m_session, "Lack of CIDR address assumes a 32bit match (if you don't understand, dont worry, it worked)");
+		RedSystemMessage(m_session, "Lack of CIDR address assumes a 32bit match (if you don't understand, don't worry, it worked)");
 		pIp.append("/32");
 	}
 	/**
-	 * We can afford to be less fussy with the validty of the IP address given since
+	* We can afford to be less fussy with the validity of the IP address given since
 	 * we are only attempting to remove it.
 	 * Sadly, we can only blindly execute SQL statements on the logonserver so we have
 	 * no idea if the address existed and so the account/IPBanner cache requires reloading.
@@ -3263,7 +3263,7 @@ bool ChatHandler::HandleRenameGuildCommand(const char* args, WorldSession *m_ses
 	return true;
 }
 
-//People seem to get stuck in guilds from time to time. This should be helpfull. -DGM
+//People seem to get stuck in guilds from time to time. This should be helpful. -DGM
 bool ChatHandler::HandleGuildRemovePlayerCommand(const char* args, WorldSession *m_session)
 {
 	Player * plr = getSelectedChar(m_session);

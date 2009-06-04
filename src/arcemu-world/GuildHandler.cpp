@@ -754,7 +754,7 @@ void WorldSession::HandleCharterQuery(WorldPacket & recv_data)
 	*/
 //this is wrong there are 42 bytes after 9 9, 4*9+2=38 not 42,
 	//moreover it can't signature, blizz uses always fullguid so it must be uin64
-	//moreover this does not show ppl who signed this, for this purpose there is another opcde
+	//moreover this does not show people who signed this, for this purpose there is another opcde
 	uint32 charter_id;
 	uint64 item_guid;
 	recv_data >> charter_id;
@@ -911,7 +911,7 @@ void WorldSession::HandleCharterTurnInCharter(WorldPacket & recv_data)
 			return;
 		}
 
-		// dont know hacky or not but only solution for now
+		// don't know hacky or not but only solution for now
 		// If everything is fine create guild
 
 		Guild *pGuild = Guild::Create();
@@ -1417,7 +1417,7 @@ void WorldSession::HandleGuildBankDepositItem(WorldPacket & recv_data)
 
 		pSourceItem = _player->GetItemInterface()->GetInventoryItem(source_bagslot, source_slot);
 
-		/* make sure that both arent null - wtf ? */
+		/* make sure that both aren't null - wtf ? */
 		if(pSourceItem == NULL && pDestItem == NULL)
 			return;
 
@@ -1500,7 +1500,7 @@ void WorldSession::HandleGuildBankDepositItem(WorldPacket & recv_data)
 		if(pDestItem == NULL)
 		{
 			/* the item has already been removed from the players backpack at this stage,
-			   there isnt really much to do at this point. */
+			there isn't really much to do at this point. */
 		}
 		else
 		{
@@ -1720,7 +1720,7 @@ void WorldSession::HandleGuildGetFullPermissions(WorldPacket & recv_data)
 
 void WorldSession::HandleGuildBankViewLog(WorldPacket & recv_data)
 {
-	/* slot 6 = i'm requesting money log */
+	/* slot 6 = I'm requesting money log */
 	uint8 slotid;
 	recv_data >> slotid;
 

@@ -385,7 +385,7 @@ void WorldSession::HandleSetPlayerIconOpcode(WorldPacket& recv_data)
 	{
 		recv_data >> guid;
 		if(icon > 7)
-			return;			// whhopes,buffer overflow :p
+			return;			// whoops, buffer overflow :p
 
 		// setting icon
 		WorldPacket data(MSG_RAID_TARGET_UPDATE, 10);
