@@ -802,10 +802,6 @@ public:
 
 	bool IsPlayer() { return true; }
 
-	ARCEMU_INLINE Guild * GetGuild() { return m_playerInfo->guild; }
-	ARCEMU_INLINE GuildMember * GetGuildMember() { return m_playerInfo->guildMember; }
-	ARCEMU_INLINE GuildRank * GetGuildRankS() { return m_playerInfo->guildRank; }
-
 	void EventGroupFullUpdate();
 
 	/************************************************************************/
@@ -1154,14 +1150,17 @@ public:
     /************************************************************************/
     /* Guilds                                                               */
     /************************************************************************/
-	ARCEMU_INLINE  bool        IsInGuild() {return (m_uint32Values[PLAYER_GUILDID] != 0) ? true : false;}
-	ARCEMU_INLINE uint32       GetGuildId() { return m_uint32Values[PLAYER_GUILDID]; }
-	void                SetGuildId(uint32 guildId);
-	ARCEMU_INLINE uint32       GetGuildRank() { return m_uint32Values[PLAYER_GUILDRANK]; }
-	void                SetGuildRank(uint32 guildRank);
-	uint32              GetGuildInvitersGuid() { return m_invitersGuid; }
-	void                SetGuildInvitersGuid( uint32 guid ) { m_invitersGuid = guid; }
-	void                UnSetGuildInvitersGuid() { m_invitersGuid = 0; }
+	ARCEMU_INLINE Guild *		GetGuild() { return m_playerInfo->guild; }
+	ARCEMU_INLINE bool			IsInGuild() {return (m_uint32Values[PLAYER_GUILDID] != 0) ? true : false;}
+	ARCEMU_INLINE uint32		GetGuildId() { return m_uint32Values[PLAYER_GUILDID]; }
+	void						SetGuildId(uint32 guildId);
+	ARCEMU_INLINE uint32		GetGuildRank() { return m_uint32Values[PLAYER_GUILDRANK]; }
+	ARCEMU_INLINE GuildRank*	GetGuildRankS() { return m_playerInfo->guildRank; }
+	void						SetGuildRank(uint32 guildRank);
+	uint32						GetGuildInvitersGuid() { return m_invitersGuid; }
+	void						SetGuildInvitersGuid( uint32 guid ) { m_invitersGuid = guid; }
+	void						UnSetGuildInvitersGuid() { m_invitersGuid = 0; }
+	ARCEMU_INLINE GuildMember * GetGuildMember() { return m_playerInfo->guildMember; }
 
     /************************************************************************/
     /* Duel                                                                 */
