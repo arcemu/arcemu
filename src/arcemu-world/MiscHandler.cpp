@@ -623,12 +623,13 @@ void WorldSession::HandleWhoOpcode( WorldPacket & recv_data )
 	uint32 name_count;
 	string * names = 0;
 	string chatname;
-	string unkstr;
-	bool cname;
+	string guildname;
+	bool cname = false;
+	bool gname = false;
 	uint32 i;
 
 	recv_data >> min_level >> max_level;
-	recv_data >> chatname >> unkstr >> race_mask >> class_mask;
+	recv_data >> chatname >> guildname >> race_mask >> class_mask;
 	recv_data >> zone_count;
 
 	if ( zone_count > 0 && zone_count < 10 )
@@ -658,8 +659,9 @@ void WorldSession::HandleWhoOpcode( WorldPacket & recv_data )
 
 	if ( chatname.length() > 0 )
 		cname = true;
-	else
-		cname = false;
+
+	if ( guildname.length() > 0 )
+		gname = true;
 
 	sLog.outDebug( "WORLD: Recvd CMSG_WHO Message with %u zones and %u names", zone_count, name_count );
 
@@ -708,6 +710,13 @@ void WorldSession::HandleWhoOpcode( WorldPacket & recv_data )
 		// Chat name
 		if(cname && chatname != *plr->GetNameString())
 			continue;
+		
+		// Guild name
+		if( gname )
+		{
+			if( !plr->GetGuild() || strcmp( plr->GetGuild()->GetGuildName(), guildname.c_str() ) != 0 )
+				continue;
+		}
 
 		// Level check
 		lvl = plr->m_uint32Values[UNIT_FIELD_LEVEL];
