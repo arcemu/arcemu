@@ -32,14 +32,11 @@ enum PETITION_TURNIN_ERRORS
 	ERR_PETITION_CREATOR,
 	ERR_PETITION_NOT_ENOUGH_SIGNATURES,
 
-	//PETITION_YOU_ALREADY_IN_A_GUILD = 0x02,
-	//PETITION_YOU_NEED_MORE_SIGNS	= 0x04,
 	//ERR_PET_SPELL_DEAD
 	//ERR_PETITION_DECLINED_S
 	//ERR_PETITION_SIGNED_S
 	//ERR_PETITION_SIGNED
 	//ERR_PETITION_OFFERED
-
 };
 
 enum GUILDEMBLEM_ERRORS
@@ -401,6 +398,10 @@ public:
 	/** Sends a guild command packet to the client.
 	 */
 	static void SendGuildCommandResult(WorldSession * pClient, uint32 iCmd, const char * szMsg, uint32 iType);
+
+	/** Sends a turn in petition result to the client.
+	 */
+	static void SendTurnInPetitionResult( WorldSession * pClient, uint32 result );
 
 	/** Logs a guild event and sends it to all online players.
 	 */

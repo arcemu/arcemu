@@ -1267,6 +1267,16 @@ void Guild::SendGuildQuery(WorldSession * pClient)
 	m_lock.Release();
 }
 
+void Guild::SendTurnInPetitionResult( WorldSession * pClient, uint32 result )
+{
+	if( pClient == NULL )
+		return;
+
+	WorldPacket data( SMSG_TURN_IN_PETITION_RESULTS, 4 );
+	data << result;
+	pClient->SendPacket( &data );
+}
+
 void Guild::CreateInDB()
 {
 	CharacterDatabase.Execute("INSERT INTO guilds VALUES(%u, \"%s\", %u, %u, %u, %u, %u, %u, '', '', %u, 0, 0)",

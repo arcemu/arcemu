@@ -907,7 +907,7 @@ void WorldSession::HandleCharterTurnInCharter(WorldPacket & recv_data)
 			return;
 		if(gc->SignatureCount < 9 && Config.MainConfig.GetBoolDefault("Server", "RequireAllSignatures", false))
 		{
-			SendNotification(_player->GetSession()->LocalizedWorldSrv(80));
+			Guild::SendTurnInPetitionResult( this, ERR_PETITION_NOT_ENOUGH_SIGNATURES );
 			return;
 		}
 
@@ -960,7 +960,7 @@ void WorldSession::HandleCharterTurnInCharter(WorldPacket & recv_data)
 
 		if(pCharter->SignatureCount < pCharter->GetNumberOfSlotsByType() && Config.MainConfig.GetBoolDefault("Server", "RequireAllSignatures", false))
 		{
-			sChatHandler.SystemMessage(this, _player->GetSession()->LocalizedWorldSrv(80));
+			Guild::SendTurnInPetitionResult( this, ERR_PETITION_NOT_ENOUGH_SIGNATURES );
 			return;
 		}
 
@@ -994,10 +994,7 @@ void WorldSession::HandleCharterTurnInCharter(WorldPacket & recv_data)
 		pCharter->Destroy();
 	}
 
-	WorldPacket data(4);
-	data.SetOpcode(SMSG_TURN_IN_PETITION_RESULTS);
-	data << uint32(0);
-	SendPacket( &data );
+	Guild::SendTurnInPetitionResult( this, ERR_PETITION_OK );
 }
 
 void WorldSession::HandleCharterRename(WorldPacket & recv_data)
