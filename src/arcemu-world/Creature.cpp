@@ -793,7 +793,7 @@ void Creature::CalcStat(uint32 type)
 
 	switch( type )
 	{
-	case 0:
+	case STAT_STRENGTH:
 		{
 			//Attack Power
 			if( !IsPet() )//We calculate pet's later
@@ -805,14 +805,14 @@ void Creature::CalcStat(uint32 type)
 			}
 			CalcDamage();
 		}break;
-	case 1:
+	case STAT_AGILITY:
 		{
 			//Ranged Attack Power (Does any creature use this?)
 			int32 RAP = GetUInt32Value( UNIT_FIELD_LEVEL ) + GetUInt32Value( UNIT_FIELD_STAT1 ) - 10;
 			if( RAP < 0 ) RAP = 0;
 			SetUInt32Value( UNIT_FIELD_RANGED_ATTACK_POWER, RAP );
 		}break;
-	case 2:
+	case STAT_STAMINA:
 		{
 			//Health
 			uint32 hp = GetUInt32Value( UNIT_FIELD_BASE_HEALTH );
@@ -827,7 +827,7 @@ void Creature::CalcStat(uint32 type)
 			if( GetUInt32Value( UNIT_FIELD_HEALTH ) > GetUInt32Value( UNIT_FIELD_MAXHEALTH ) )
 				SetUInt32Value( UNIT_FIELD_HEALTH, GetUInt32Value( UNIT_FIELD_MAXHEALTH ) );
 		}break;
-	case 3:
+	case STAT_INTELLECT:
 		{
 			if( GetPowerType() == POWER_TYPE_MANA )
 			{

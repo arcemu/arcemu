@@ -6960,7 +6960,7 @@ void Player::CalcResistance(uint32 type)
 		res = 1;
 
 	SetUInt32Value(UNIT_FIELD_RESISTANCEBUFFMODSPOSITIVE+type,pos);
-	SetUInt32Value(UNIT_FIELD_RESISTANCEBUFFMODSNEGATIVE+type,neg);
+	SetUInt32Value(UNIT_FIELD_RESISTANCEBUFFMODSNEGATIVE+type,-neg);
 	SetUInt32Value(UNIT_FIELD_RESISTANCES+type,res>0?res:0);
 
 	if( GetSummon() )
@@ -7305,12 +7305,12 @@ void Player::CalcStat( uint32 type )
 		res = 1;
 
 	SetUInt32Value( UNIT_FIELD_POSSTAT0 + type, pos );
-	SetUInt32Value( UNIT_FIELD_NEGSTAT0 + type, neg );
-	SetUInt32Value( UNIT_FIELD_STAT0 + type, res > 0 ?res : 0 );
-	if( type == 1 )
+	SetUInt32Value( UNIT_FIELD_NEGSTAT0 + type, -neg );
+	SetUInt32Value( UNIT_FIELD_STAT0 + type, res > 0 ? res : 0 );
+	if( type == STAT_AGILITY )
 	   CalcResistance( 0 );
 
-	if( GetSummon() && ( type == 2 || type == 3 ) )
+	if( GetSummon() && ( type == STAT_STAMINA || type == STAT_INTELLECT ) )
 		GetSummon()->CalcStat( type );//Re-calculate pet's too
 }
 
