@@ -1021,7 +1021,16 @@ bool ChatHandler::HandleAchievementCompleteCommand(const char * args, WorldSessi
 	{
 		achievement_id = GetAchievementIDFromLink(args);
 		if(achievement_id==0)
+		{
+			if( stricmp(args,"all") == 0 )
+			{
+				plr->GetAchievementMgr().GMCompleteAchievement(m_session, -1);
+				SystemMessage(m_session,"All achievements have now been completed for that player.");
+				sGMLog.writefromsession(m_session,"completed all achievements for player %s", plr->GetName());
+				return true;
+			}
 			return false;
+		}
 	}
 
 	if(plr->GetAchievementMgr().GMCompleteAchievement(m_session, achievement_id))
@@ -1049,8 +1058,17 @@ bool ChatHandler::HandleAchievementCriteriaCommand(const char * args, WorldSessi
 	}
 
 	uint32 criteria_id = atol(args);
-	if(criteria_id==0)
+	if( criteria_id == 0 )
+	{
+		if( stricmp(args,"all")==0 )
+		{
+			plr->GetAchievementMgr().GMCompleteCriteria(m_session, -1);
+			SystemMessage(m_session,"All achievement criteria have now been completed for that player.");
+			sGMLog.writefromsession(m_session,"completed all achievement criteria for player %s", plr->GetName());
+			return true;
+		}
 		return false;
+	}
 
 	if(plr->GetAchievementMgr().GMCompleteCriteria(m_session, criteria_id))
 	{
@@ -1085,7 +1103,11 @@ bool ChatHandler::HandleAchievementResetCommand(const char * args, WorldSession 
 		achievement_id = atol(args+9);
 		if(achievement_id==0)
 		{
-			return false;
+			if(stricmp(args+9,"all") != 0)
+			{
+				return false;
+			}
+			achievement_id = -1;
 		}
 		resetCri = true;
 		resetAch = false;
@@ -1129,29 +1151,29 @@ bool ChatHandler::HandleLookupAchievementCmd(const char* args, WorldSession* m_s
 
 	string x;
 	bool lookupname = true, lookupdesc = false, lookupcriteria = false, lookupreward = false;
-	if(strnicmp(args,"name ",5)==0)
+	if( strnicmp(args,"name ",5) == 0 )
 	{
 		x = string(args+5);
 	}
-	else if(strnicmp(args,"desc ",5)==0)
+	else if( strnicmp(args,"desc ",5) == 0 )
 	{
 		lookupname = false;
 		lookupdesc = true;
 		x = string(args+5);
 	}
-	else if(strnicmp(args,"criteria ",9)==0)
+	else if( strnicmp(args,"criteria ",9) == 0 )
 	{
 		lookupname = false;
 		lookupcriteria = true;
 		x = string(args+9);
 	}
-	else if(strnicmp(args,"reward ",7)==0)
+	else if( strnicmp(args,"reward ",7) == 0 )
 	{
 		lookupname = false;
 		lookupreward = true;
 		x = string(args+7);
 	}
-	else if(strnicmp(args,"all ",4)==0)
+	else if( strnicmp(args,"all ",4) == 0 )
 	{
 		lookupdesc = true;
 		lookupcriteria = true;
@@ -1162,7 +1184,7 @@ bool ChatHandler::HandleLookupAchievementCmd(const char* args, WorldSession* m_s
 	{
 		x = string(args);
 	}
-	if(x.length() < 4)
+	if( x.length() < 4 )
 	{
 		RedSystemMessage(m_session, "Your search string must be at least 4 characters long.");
 		return true;
@@ -1175,155 +1197,175 @@ bool ChatHandler::HandleLookupAchievementCmd(const char* args, WorldSession* m_s
 	std::set<uint8, uint32> foundList;
 	char playerGUID[17];
 	snprintf(playerGUID,17,I64FMT,m_session->GetPlayer()->GetGUID());
-	if(lookupname || lookupdesc || lookupreward)
+
+	if( lookupname || lookupdesc || lookupreward )
 	{
 		std::set<uint32> foundList;
 		j = dbcAchievementStore.GetNumRows();
 		bool foundmatch;
-		for( i=0; i<j && numFound<25; ++i )
+		for( i = 0; i < j && numFound < 25; ++i )
 		{
-			AchievementEntry const* achievement = dbcAchievementStore.LookupEntry(i);
+			AchievementEntry const* achievement = dbcAchievementStore.LookupRow(i);
 			if(achievement)
 			{
-				if(foundList.find(achievement->ID) != foundList.end()) // already listed this achievement (some achievements have multiple entries in dbc)
+				if( foundList.find(achievement->ID) != foundList.end() )
+				{
+					// already listed this achievement (some achievements have multiple entries in dbc)
 					continue;
+				}
 				foundmatch = false;
-				if(lookupname)
+				if( lookupname )
 				{
 					y = string(achievement->name);
 					arcemu_TOLOWER(y);
 					foundmatch = FindXinYString(x,y);
 				}
-				if(!foundmatch && lookupdesc)
+				if( !foundmatch && lookupdesc )
 				{
 					y = string(achievement->description);
 					arcemu_TOLOWER(y);
 					foundmatch = FindXinYString(x,y);
 				}
-				if(!foundmatch && lookupreward)
+				if( !foundmatch && lookupreward )
 				{
 					y = string(achievement->rewardName);
 					arcemu_TOLOWER(y);
 					foundmatch = FindXinYString(x,y);
 				}
-				if(!foundmatch)
+				if( !foundmatch )
+				{
 					continue;
+				}
 				foundList.insert(achievement->ID);
 				std::stringstream strm;
-				strm<<achievement->ID;
-				recout="|cffffffffAchievement ";
-				recout+= strm.str();
-				recout+=": |cfffff000|Hachievement:";
-				recout+=strm.str();
-				recout+=":";
-				recout+=(char*)playerGUID;
+				strm << achievement->ID;
+				// create achievement link
+				recout = "|cffffffffAchievement ";
+				recout += strm.str();
+				recout += ": |cfffff000|Hachievement:";
+				recout += strm.str();
+				recout += ":";
+				recout += (char*)playerGUID;
 				time_t completetime = m_session->GetPlayer()->GetAchievementMgr().GetCompletedTime(achievement);
-				if(completetime) // achievement is complete
+				if( completetime )
 				{
+					// achievement is completed
 					struct tm* ct;
 					ct = localtime(&completetime);
 					strm.str("");
-					strm<<":1:"<<ct->tm_mon+1<<":"<<ct->tm_mday<<":"<<ct->tm_year-100<<":-1:-1:-1:-1|h[";
-					recout+=strm.str();
-				}
-				else // not-completed achievement
-				{
-					recout+=":0:0:0:-1:0:0:0:0|h[";
-				}
-				recout+=achievement->name;
-				if(!lookupreward)
-				{
-					recout+="]|h|r";
+					strm << ":1:" << ct->tm_mon + 1 << ":" << ct->tm_mday << ":" << ct->tm_year - 100 << ":-1:-1:-1:-1|h[";
+					recout += strm.str();
 				}
 				else
 				{
-					recout+="]|h |cffffffff";
-					recout+=achievement->rewardName;
-					recout+="|r";
+					// achievement is not completed
+					recout += ":0:0:0:-1:0:0:0:0|h[";
+				}
+				recout += achievement->name;
+				if( !lookupreward )
+				{
+					recout += "]|h|r";
+				}
+				else
+				{
+					recout += "]|h |cffffffff";
+					recout += achievement->rewardName;
+					recout += "|r";
 				}
 				strm.str("");
 				SendMultilineMessage(m_session,recout.c_str());
-				if(++numFound>=50)
+				if( ++numFound >= 25 )
 				{
-					RedSystemMessage(m_session,"More than 50 results found.");
+					RedSystemMessage(m_session,"More than 25 results found.");
 					break;
 				}
 			}
 		} // for loop (number of rows, up to 25)
 	} // lookup name or description
-	if(lookupcriteria && numFound<25)
+
+	if( lookupcriteria && numFound < 25 )
 	{
 		std::set<uint32> foundList;
 		j = dbcAchievementCriteriaStore.GetNumRows();
-		for( i=0; i<j && numFound<25; ++i )
+		for( i = 0; i < j && numFound < 25; ++i )
 		{
-			AchievementCriteriaEntry const* criteria = dbcAchievementCriteriaStore.LookupEntry(i);
-			if(criteria)
+			AchievementCriteriaEntry const* criteria = dbcAchievementCriteriaStore.LookupRow(i);
+			if( criteria )
 			{
-				if(foundList.find(criteria->ID) != foundList.end()) // already listed this achievement (some achievements have multiple entries in dbc)
+				if( foundList.find(criteria->ID) != foundList.end() )
+				{
+					// already listed this achievement (some achievements have multiple entries in dbc)
 					continue;
+				}
 				y = string(criteria->name);
 				arcemu_TOLOWER(y);
-				if(!FindXinYString(x,y))
+				if( !FindXinYString(x,y) )
+				{
 					continue;
+				}
 				foundList.insert(criteria->ID);
 				std::stringstream strm;
-				strm<<criteria->ID;
-				recout="|cffffffffCriteria ";
-				recout+= strm.str();
-				recout+=": |cfffff000";
-				recout+=criteria->name;
+				strm << criteria->ID;
+				recout = "|cffffffffCriteria ";
+				recout += strm.str();
+				recout += ": |cfffff000";
+				recout += criteria->name;
 				strm.str("");
 				AchievementEntry const* achievement = dbcAchievementStore.LookupEntry(criteria->referredAchievement);
-				if(achievement)
+				if( achievement )
 				{
-					recout+=" |cffffffffAchievement ";
-					strm<<achievement->ID;
-					recout+= strm.str();
-					recout+=": |cfffff000|Hachievement:";
-					recout+=strm.str();
-					recout+=":";
-					recout+=(char*)playerGUID;
+					// create achievement link
+					recout += " |cffffffffAchievement ";
+					strm << achievement->ID;
+					recout +=  strm.str();
+					recout += ": |cfffff000|Hachievement:";
+					recout += strm.str();
+					recout += ":";
+					recout += (char*)playerGUID;
 					time_t completetime = m_session->GetPlayer()->GetAchievementMgr().GetCompletedTime(achievement);
-					if(completetime) // achievement is complete
+					if( completetime )
 					{
+						// achievement is completed
 						struct tm* ct;
 						ct = localtime(&completetime);
 						strm.str("");
-						strm<<":1:"<<ct->tm_mon+1<<":"<<ct->tm_mday<<":"<<ct->tm_year-100<<":-1:-1:-1:-1|h[";
-						recout+=strm.str();
-					}
-					else // not-completed achievement
-					{
-						recout+=":0:0:0:-1:0:0:0:0|h[";
-					}
-					recout+=achievement->name;
-					if(!lookupreward)
-					{
-						recout+="]|h|r";
+						strm << ":1:" << ct->tm_mon + 1 << ":" << ct->tm_mday << ":" << ct->tm_year - 100 << ":-1:-1:-1:-1|h[";
+						recout += strm.str();
 					}
 					else
 					{
-						recout+="]|h |cffffffff";
-						recout+=achievement->rewardName;
-						recout+="|r";
+						// achievement is not completed
+						recout += ":0:0:0:-1:0:0:0:0|h[";
+					}
+					recout += achievement->name;
+					if( !lookupreward )
+					{
+						recout += "]|h|r";
+					}
+					else
+					{
+						recout += "]|h |cffffffff";
+						recout += achievement->rewardName;
+						recout += "|r";
 					}
 					strm.str("");
 				}
 				SendMultilineMessage(m_session,recout.c_str());
-				if(++numFound>=50)
+				if( ++numFound >= 25 )
 				{
-					RedSystemMessage(m_session,"More than 50 results found.");
+					RedSystemMessage(m_session,"More than 25 results found.");
 					break;
 				}
 			}
 		} // for loop (number of rows, up to 25)
 	} // lookup criteria
-	if(numFound==0)
+
+	if( numFound == 0 )
 	{
-		recout="|cff00ccffNo matches found.";
+		recout = "|cff00ccffNo matches found.";
 		SendMultilineMessage(m_session,recout.c_str());
 	}
+
 	BlueSystemMessage(m_session,"Search completed in %u ms.",getMSTime()-t);
 
 	return true;

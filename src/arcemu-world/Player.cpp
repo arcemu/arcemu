@@ -2816,10 +2816,6 @@ void Player::LoadFromDBProc(QueryResultVector & results)
 	// Process exploration data.
 	LoadFieldsFromString(get_next_field.GetString(), PLAYER_EXPLORED_ZONES_1, PLAYER_EXPLORED_ZONES_LENGTH);
 
-	// Load achievements - trying to do this asynchronously causes a crash :/
-	// This needs to be done before loading spells, skills, etc. so that Realm-First! stuff doesn't get spammed to everybody every time the player loads.
-	m_achievementMgr.LoadFromDB(CharacterDatabase.Query("SELECT achievement, date FROM character_achievement WHERE guid = '%u'", GetUInt32Value(OBJECT_FIELD_GUID)),CharacterDatabase.Query("SELECT criteria, counter, date FROM character_achievement_progress WHERE guid = '%u'", GetUInt32Value(OBJECT_FIELD_GUID)));
-
 	// Process skill data.
 	uint32 Counter = 0;
 	char * start = (char*)get_next_field.GetString();//buff;
@@ -3468,7 +3464,8 @@ void Player::LoadFromDBProc(QueryResultVector & results)
 			}
 		}
 	}
-	// Update achievements
+	// load and update achievements
+	m_achievementMgr.LoadFromDB(CharacterDatabase.Query("SELECT achievement, date FROM character_achievement WHERE guid = '%u'", GetUInt32Value(OBJECT_FIELD_GUID)),CharacterDatabase.Query("SELECT criteria, counter, date FROM character_achievement_progress WHERE guid = '%u'", GetUInt32Value(OBJECT_FIELD_GUID)));
 	m_achievementMgr.CheckAllAchievementCriteria();
 }
 

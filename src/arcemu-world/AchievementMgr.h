@@ -268,8 +268,8 @@ public:
 	void SendAllAchievementData(Player* player);
 	void UpdateAchievementCriteria(AchievementCriteriaTypes type, int32 miscvalue1, int32 miscvalue2, uint32 time);
 	void UpdateAchievementCriteria(AchievementCriteriaTypes type);
-	bool GMCompleteAchievement(WorldSession* gmSession, uint32 achievementID);
-	bool GMCompleteCriteria(WorldSession* gmSession, uint32 criteriaID);
+	bool GMCompleteAchievement(WorldSession* gmSession, int32 achievementID);
+	bool GMCompleteCriteria(WorldSession* gmSession, int32 criteriaID);
 	void GMResetAchievement(int achievementID);
 	void GMResetCriteria(int criteriaID);
 	bool HasCompleted(uint32 achievementID);
@@ -282,7 +282,7 @@ private:
 	void GiveAchievementReward(AchievementEntry const* entry);
 	void SendAchievementEarned(AchievementEntry const* achievement);
 	void SendCriteriaUpdate(CriteriaProgress *progress);
-	void SetCriteriaProgress(AchievementCriteriaEntry const* entry, int32 newValue, bool relative=false);
+	void SetCriteriaProgress(AchievementCriteriaEntry const* entry, int32 newValue, bool relative = false);
 	void UpdateCriteriaProgress(AchievementCriteriaEntry const* entry, int32 updateByValue);
 	void CompletedCriteria(AchievementCriteriaEntry const* entry);
 	void CompletedAchievement(AchievementEntry const* entry);
@@ -292,6 +292,7 @@ private:
 	Player* m_player;
 	CriteriaProgressMap m_criteriaProgress;
 	CompletedAchievementMap m_completedAchievements;
+	bool isCharacterLoading;
 };
 
 // Function declarations - related to achievements - not in AchievementMgr class - defined in AchievementMgr.cpp
