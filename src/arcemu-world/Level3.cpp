@@ -687,10 +687,18 @@ bool ChatHandler::HandleNpcInfoCommand(const char *args, WorldSession *m_session
 	ColorSystemMessage(m_session, MSG_COLOR_RED, "SQL Entry ID: %d", crt->GetSQL_id());
 	// show byte
 	std::stringstream sstext;
-	uint32 theBytes = crt->GetUInt32Value(UNIT_FIELD_BYTES_0);
+	uint32 theBytes = crt->GetUInt32Value( UNIT_FIELD_BYTES_0 );
 	sstext << "UNIT_FIELD_BYTES_0 are " << uint16((uint8)theBytes & 0xFF) << " " << uint16((uint8)(theBytes >> 8) & 0xFF) << " ";
+	sstext << uint16((uint8)(theBytes >> 16) & 0xFF) << " " << uint16((uint8)(theBytes >> 24) & 0xFF) << '\n';
+
+	theBytes = crt->GetUInt32Value( UNIT_FIELD_BYTES_1 );
+	sstext << "UNIT_FIELD_BYTES_1 are " << uint16((uint8)theBytes & 0xFF) << " " << uint16((uint8)(theBytes >> 8) & 0xFF) << " ";
+	sstext << uint16((uint8)(theBytes >> 16) & 0xFF) << " " << uint16((uint8)(theBytes >> 24) & 0xFF) << '\n';
+
+	theBytes = crt->GetUInt32Value( UNIT_FIELD_BYTES_2 );
+	sstext << "UNIT_FIELD_BYTES_2 are " << uint16((uint8)theBytes & 0xFF) << " " << uint16((uint8)(theBytes >> 8) & 0xFF) << " ";
 	sstext << uint16((uint8)(theBytes >> 16) & 0xFF) << " " << uint16((uint8)(theBytes >> 24) & 0xFF) << '\0';
-	SystemMessage(m_session, sstext.str().c_str());
+	SendMultilineMessage( m_session, sstext.str().c_str() );
 	return true;
 }
 
