@@ -421,7 +421,12 @@ void Creature::SaveToDB()
 		<< m_uint32Values[UNIT_FIELD_MOUNTDISPLAYID] << ","
 		<< m_uint32Values[UNIT_VIRTUAL_ITEM_SLOT_ID] << ","
 		<< m_uint32Values[UNIT_VIRTUAL_ITEM_SLOT_ID_1] << ","
-		<< m_uint32Values[UNIT_VIRTUAL_ITEM_SLOT_ID_2] << ")";
+		<< m_uint32Values[UNIT_VIRTUAL_ITEM_SLOT_ID_2] << ",";
+
+	if(GetAIInterface()->m_moveFly)
+		ss << 1 << ")";
+	else
+		ss << 0 << ")";
 
 	WorldDatabase.Execute(ss.str().c_str());
 }

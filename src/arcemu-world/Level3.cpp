@@ -2482,6 +2482,7 @@ bool ChatHandler::HandleCreatureSpawnCommand(const char *args, WorldSession *m_s
 	sp->Item1SlotDisplay = 0;
 	sp->Item2SlotDisplay = 0;
 	sp->Item3SlotDisplay = 0;
+	sp->CanFly = 0;
 
 
 	Creature * p = m_session->GetPlayer()->GetMapMgr()->CreateCreature(entry);
