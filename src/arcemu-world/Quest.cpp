@@ -109,16 +109,8 @@ WorldPacket* WorldSession::BuildQuestQueryResponse(Quest *qst)
 
 	for(i = 0; i < 4; ++i)
 	{
-		if( !qst->required_emote[i] && !qst->required_spell[i] )
-		{
-			*data << qst->required_mob[i];			  // Kill mob entry ID [i]
-			*data << qst->required_mobcount[i];		 // Kill mob count [i]
-		}
-		else // the quest doesn't require a kill here
-		{
-			*data << (uint32)0;
-			*data << (uint32)0;
-		}
+		*data << qst->required_mob[i];			  // Kill mob entry ID [i]
+		*data << qst->required_mobcount[i];		 // Kill mob count [i]
 		*data << (uint32)0; // Unknown
 	}
 

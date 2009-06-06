@@ -60,6 +60,7 @@ typedef struct
 	uint32 Item1SlotDisplay;
 	uint32 Item2SlotDisplay;
 	uint32 Item3SlotDisplay;
+	uint32 CanFly;
 
 	/* sets one of the bytes of an uint32 */
 	uint32 setbyte(uint32 buffer, uint8 index, uint32 byte){

@@ -24,7 +24,7 @@
 
 #include "StdAfx.h"
 
-#define CREATURESPAWNSFIELDCOUNT 24
+#define CREATURESPAWNSFIELDCOUNT 25
 #define GOSPAWNSFIELDCOUNT		 16
 
 Map::Map(uint32 mapid, MapInfo * inf)
@@ -191,6 +191,7 @@ void Map::LoadSpawns(bool reload)
 					cspawn->Item1SlotDisplay = fields[21].GetUInt32();
 					cspawn->Item2SlotDisplay = fields[22].GetUInt32();
 					cspawn->Item3SlotDisplay = fields[23].GetUInt32();
+					cspawn->CanFly = fields[24].GetUInt32();
 
 					spawns[cellx][celly]->CreatureSpawns.push_back(cspawn);
 					++CreatureSpawnCount;

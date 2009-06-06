@@ -1328,6 +1328,9 @@ bool Creature::Load(CreatureSpawn *spawn, uint32 mode, MapInfo *info)
 		m_useAI = false;
 	}
 
+	if(spawn->CanFly == 1)
+		GetAIInterface()->m_moveFly = true;
+
 	/* more hacks! */
 	if(proto->Mana != 0)
 		SetPowerType(POWER_TYPE_MANA);
