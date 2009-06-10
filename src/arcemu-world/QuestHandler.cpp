@@ -753,9 +753,13 @@ void WorldSession::HandleQuestgiverChooseRewardOpcode(WorldPacket& recvPacket)
 
 void WorldSession::HandlePushQuestToPartyOpcode(WorldPacket &recv_data)
 {
-    if(!_player) return;
-	if(!_player->IsInWorld()) return;
-	uint32 questid, status;
+	if( !_player )
+		return;
+
+	if( !_player->IsInWorld() )
+		return;
+
+	uint32 questid;
 	recv_data >> questid;
 
 	sLog.outDetail( "WORLD: Received CMSG_PUSHQUESTTOPARTY quest = %u", questid );
@@ -784,46 +788,43 @@ void WorldSession::HandlePushQuestToPartyOpcode(WorldPacket &recv_data)
 						data << uint32(QUEST_SHARE_MSG_SHARING_QUEST);
 						data << uint8(0);
 						_player->GetSession()->SendPacket(&data);
-
+						
 						uint32 response = 0;
-						if(_player->GetDistance2dSq(pPlayer) > 100)
-						{
-							response = QUEST_SHARE_MSG_TOO_FAR;
-							continue;
-						}
-						QuestLogEntry *qst = pPlayer->GetQuestLogForEntry(questid);
-						if(qst)
+						uint32 status = sQuestMgr.PlayerMeetsReqs(pPlayer, pQuest, false);
+
+						// Checks if the player has the quest
+						if( pPlayer->GetQuestLogForEntry( questid ) )
 						{
 							response = QUEST_SHARE_MSG_HAVE_QUEST;
-							continue;
 						}
-						status = sQuestMgr.PlayerMeetsReqs(pPlayer, pQuest, false);
-						if(status != QMGR_QUEST_AVAILABLE && status != QMGR_QUEST_CHAT)
-						{
-							response = QUEST_SHARE_MSG_CANT_TAKE_QUEST;
-							continue;
-						}
-						if(pPlayer->HasFinishedQuest(questid))
+						// Checks if the player has finished the quest
+						else if( pPlayer->HasFinishedQuest( questid ) )
 						{
 							response = QUEST_SHARE_MSG_FINISH_QUEST;
-							continue;
 						}
-						if(pPlayer->GetOpenQuestSlot() == -1)
+						// Checks if the player is able to take the quest
+						else if( status != QMGR_QUEST_AVAILABLE && status != QMGR_QUEST_CHAT )
+						{
+							response = QUEST_SHARE_MSG_CANT_TAKE_QUEST;
+						}
+						// Checks if the player has room in his/her questlog
+						else if( pPlayer->GetOpenQuestSlot() == -1 )
 						{
 							response = QUEST_SHARE_MSG_LOG_FULL;
-							continue;
 						}
-						//Anything more?
-						if(pPlayer->DuelingWith)
+						// Checks if the player is dueling
+						else if( pPlayer->DuelingWith || pPlayer->GetQuestSharer() )
 						{
 							response = QUEST_SHARE_MSG_BUSY;
+						}
+
+						if( response > 0 )
+						{
+							sQuestMgr.SendPushToPartyResponse( _player, pPlayer, response );
 							continue;
 						}
-						if(response > 0)
-							sQuestMgr.SendPushToPartyResponse(_player, pPlayer, response);
-
 						data.clear();
-						sQuestMgr.BuildQuestDetails(&data, pQuest, pPlayer, 1, pPlayer->GetSession()->language, _player);
+						sQuestMgr.BuildQuestDetails(&data, pQuest, _player, 1, pPlayer->GetSession()->language, pPlayer);
 						pPlayer->GetSession()->SendPacket(&data);
 						pPlayer->SetQuestSharer(pguid);
 					}
@@ -842,7 +843,7 @@ void WorldSession::HandleQuestPushResult(WorldPacket& recvPacket)
 	uint8 msg;
 	recvPacket >> guid >> msg;
 
-	sLog.outDetail( "WORLD: Received MSG_QUEST_PUSH_RESULT " );
+	sLog.outDetail( "WORLD: Received MSG_QUEST_PUSH_RESULT" );
 
 	if(GetPlayer()->GetQuestSharer())
 	{

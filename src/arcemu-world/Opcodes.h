@@ -1207,7 +1207,7 @@ enum Opcodes {
     SMSG_PET_UNLEARNED_SPELL                        = 0x49A,    // uint16 spellid, Your pet unlearned %s
     UMSG_UNKNOWN_1179                               = 0x49B,    // not found in client
     CMSG_UNKNOWN_1180                               = 0x49C,    // lua: HearthAndResurrectFromArea
-    SMSG_CONTROL_VECHICLE                               = 0x49D,    // empty
+    SMSG_CONTROL_VECHICLE                           = 0x49D,    // empty
     SMSG_CRITERIA_DELETED                           = 0x49E,    // uint32
     SMSG_ACHIEVEMENT_DELETED                        = 0x49F,    // uint32
     UMSG_UNKNOWN_1184                               = 0x4A0,    // not found in client

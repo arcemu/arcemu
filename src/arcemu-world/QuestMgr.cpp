@@ -298,14 +298,14 @@ uint32 QuestMgr::ActiveQuestsCount(Object* quest_giver, Player* plr)
 
 void QuestMgr::BuildOfferReward(WorldPacket *data, Quest* qst, Object* qst_giver, uint32 menutype, uint32 language, Player * plr)
 {
-	LocalizedQuest * lq = (language>0) ? sLocalizationMgr.GetLocalizedQuest(qst->id,language):NULL;
+	LocalizedQuest * lq = ( language > 0 )?sLocalizationMgr.GetLocalizedQuest( qst->id, language ):NULL;
 	ItemPrototype * it;
 	uint32 i = 0;
 	data->SetOpcode(SMSG_QUESTGIVER_OFFER_REWARD);
 	*data << qst_giver->GetGUID();
 	*data << qst->id;
 
-	if(lq)
+	if( lq )
 	{
 		*data << lq->Title;
 		*data << lq->CompletionText;
@@ -318,41 +318,42 @@ void QuestMgr::BuildOfferReward(WorldPacket *data, Quest* qst, Object* qst_giver
 	
 	//uint32 a = 0, b = 0, c = 1, d = 0, e = 1;
 
-	*data << (qst->next_quest_id ? uint32(1) : uint32(0));	  // next quest shit
-	*data << uint32(0);										 // maybe required money
+	*data << ( qst->next_quest_id ? uint32(1) : uint32(0) );// next quest shit
+	*data << uint32(0);										// maybe required money
+
 	*data << qst->completionemotecount;
-	for(i = 0; i < qst->completionemotecount; i++){
+	for( i = 0; i < qst->completionemotecount; i++ )
+	{
 		*data << qst->completionemote[i];
 		*data << qst->completionemotedelay[i];
 	}
 
 	*data << qst->count_reward_choiceitem;
-	if (qst->count_reward_choiceitem)
+	if( qst->count_reward_choiceitem )
 	{
-		for(i = 0; i < 6; ++i)
+		for( i = 0; i < 6; ++i )
 		{
-			if(qst->reward_choiceitem[i])
+			if( qst->reward_choiceitem[i] )
 			{
 				*data << qst->reward_choiceitem[i];
 				*data << qst->reward_choiceitemcount[i];
-				it = ItemPrototypeStorage.LookupEntry(qst->reward_choiceitem[i]);
-				*data << (it ? it->DisplayInfoID : uint32(0));
+				it = ItemPrototypeStorage.LookupEntry( qst->reward_choiceitem[i] );
+				*data << ( it ? it->DisplayInfoID : uint32(0) );
 			}
 		}
 	}
-    
 
 	*data << qst->count_reward_item;
-	if (qst->count_reward_item)
+	if( qst->count_reward_item )
 	{
-		for(uint32 i = 0; i < 4; ++i)
+		for( uint32 i = 0; i < 4; ++i )
 		{
 			if(qst->reward_item[i])
 			{
 				*data << qst->reward_item[i];
 				*data << qst->reward_itemcount[i];
-				it = ItemPrototypeStorage.LookupEntry(qst->reward_item[i]);
-				*data << (it ? it->DisplayInfoID : uint32(0));
+				it = ItemPrototypeStorage.LookupEntry( qst->reward_item[i] );
+				*data << ( it ? it->DisplayInfoID : uint32(0) );
 			}
 		}
 	}
@@ -369,14 +370,15 @@ void QuestMgr::BuildOfferReward(WorldPacket *data, Quest* qst, Object* qst_giver
 
 void QuestMgr::BuildQuestDetails(WorldPacket *data, Quest* qst, Object* qst_giver, uint32 menutype, uint32 language, Player * plr)
 {
-	LocalizedQuest * lq = (language>0) ? sLocalizationMgr.GetLocalizedQuest(qst->id,language):NULL;
+	LocalizedQuest * lq = ( language > 0 )?sLocalizationMgr.GetLocalizedQuest( qst->id,language ):NULL;
 	std::map<uint32, uint8>::const_iterator itr;
 
 	data->SetOpcode( SMSG_QUESTGIVER_QUEST_DETAILS );
 
-	*data <<  qst_giver->GetGUID();
-	*data <<  (uint32)(0) << (uint32)(0); //new in 3.0.2
-	*data <<  qst->id;
+	*data << qst_giver->GetGUID();			// npc guid
+	*data << uint64(0);						// (questsharer?) guid
+	*data << qst->id;						// quest id
+
 	if(lq)
 	{
 		*data << lq->Title;
@@ -390,52 +392,51 @@ void QuestMgr::BuildQuestDetails(WorldPacket *data, Quest* qst, Object* qst_give
 		*data <<  qst->objectives;
 	}
 
-	*data <<  uint32(1);
-	*data << qst->suggestedplayers;		 // "Suggested players"
-	*data <<  uint8(0);		//3.0.2 no idea. Maybe some text ?
+	*data << uint32(1);						// Activate accept
+	*data << qst->suggestedplayers;			// "Suggested players"
+	*data << uint8(0);						// Added in 3.0.2, name or text(?)
 
-	*data << qst->count_reward_choiceitem;
+
 	ItemPrototype *ip;
 	uint32 i;
 
-	for(i = 0; i < 6; ++i)
+	*data << qst->count_reward_choiceitem;
+	for( i = 0; i < 6; ++i )
 	{
-		ip = ItemPrototypeStorage.LookupEntry(qst->reward_choiceitem[i]);
-		if(!qst->reward_choiceitem[i]) continue;
+		if( !qst->reward_choiceitem[i] )
+			continue;
 
 		*data << qst->reward_choiceitem[i];
 		*data << qst->reward_choiceitemcount[i];
-		if(ip)
-			*data << ip->DisplayInfoID;
-		else
-			*data << uint32(0);
+		ip = ItemPrototypeStorage.LookupEntry(qst->reward_item[i]);
+		*data << ( ip ? ip->DisplayInfoID : uint32(0) );
+
 	}
 
 	*data << qst->count_reward_item;
-
-	for(i = 0; i < 4; ++i)
+	for( i = 0; i < 4; ++i )
 	{
-		ip = ItemPrototypeStorage.LookupEntry(qst->reward_item[i]);
-		if(!qst->reward_item[i]) continue;
+		if( !qst->reward_item[i] )
+			continue;
 
 		*data << qst->reward_item[i];
 		*data << qst->reward_itemcount[i];
-		if(ip)
-			*data << ip->DisplayInfoID;
-		else
-			*data << uint32(0);
+		ip = ItemPrototypeStorage.LookupEntry(qst->reward_item[i]);
+		*data << ( ip ? ip->DisplayInfoID : uint32(0) );
 	}
 
-	*data << GenerateRewardMoney( plr, qst );//14
-	*data << qst->bonushonor; // Bonus Honor
-	*data << qst->reward_spell; // this is the spell the quest finisher teaches you, or the icon of the spell if effect_on_player is not 0
-	*data << qst->effect_on_player; // this is the spell the quest finisher casts on you as a reward
-	*data << qst->rewardtitleid; //10 reward title
-	*data << qst->rewardtalents; // reward talents
-	*data << qst->detailemotecount;
-	for(i = 0; i < qst->detailemotecount; i++){
-		*data << qst->detailemote[i];
-		*data << qst->detailemotedelay[i];
+	*data << GenerateRewardMoney( plr, qst );	// Money reward
+	*data << qst->bonushonor;					// Honor reward
+	*data << qst->reward_spell;					// this is the spell (id) the quest finisher teaches you, or the icon of the spell if effect_on_player is not 0
+	*data << qst->effect_on_player;				// this is the spell (id) the quest finisher casts on you as a reward
+	*data << qst->rewardtitleid;				// Title reward (ID)
+	*data << qst->rewardtalents;				// Talent reward
+
+	*data << qst->detailemotecount;				// Amount of emotes (4?)
+	for( i = 0; i < qst->detailemotecount; i++ )
+	{
+		*data << qst->detailemote[i];			// Emote ID
+		*data << qst->detailemotedelay[i];		// Emote Delay
 	}
 }
 
@@ -471,7 +472,7 @@ void QuestMgr::BuildRequestItems(WorldPacket *data, Quest* qst, Object* qst_give
 
 	// item count
 	*data << qst->count_required_item;
-	
+
 	// (loop for each item)
 	for(uint32 i = 0; i < 4; ++i)
 	{
@@ -485,14 +486,14 @@ void QuestMgr::BuildRequestItems(WorldPacket *data, Quest* qst, Object* qst_give
 	}
 
 	// wtf is this?
-    if(status == QMGR_QUEST_NOT_FINISHED)
-    {
-	    *data << uint32(0); //incomplete button
-    }
-    else
-    {
-        *data << uint32(2);
-    }
+	if(status == QMGR_QUEST_NOT_FINISHED)
+	{
+		*data << uint32(0); //incomplete button
+	}
+	else
+	{
+		*data << uint32(2);
+	}
 
 	*data << uint32(8);
 	*data << uint32(10);
