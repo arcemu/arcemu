@@ -678,6 +678,12 @@ uint8 Spell::DidHit(uint32 effindex,Unit* target)
 	if(u_victim->SchoolImmunityList[GetProto()->School] && !dispelMechanic)
 		return SPELL_DID_HIT_IMMUNE;
 
+	/* Check if player target has god mode */
+	if( p_victim && p_victim->GodModeCheat )
+	{
+		return SPELL_DID_HIT_IMMUNE;
+	}
+
 	/*************************************************************************/
 	/* Check if the target is immune to this mechanic                        */
 	/*************************************************************************/

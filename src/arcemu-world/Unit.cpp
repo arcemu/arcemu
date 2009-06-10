@@ -5554,6 +5554,12 @@ uint32 Unit::AbsorbDamage( uint32 School, uint32* dmg )
 		}
 	}
 
+	if(IsPlayer() && ((Player*)this)->GodModeCheat)
+	{
+		abs += *dmg;
+		*dmg = 0;
+	}
+
 	return abs;
 }
 
