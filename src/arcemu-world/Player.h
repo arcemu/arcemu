@@ -823,6 +823,7 @@ public:
 	void _AddLanguages(bool All);
 	void _AdvanceAllSkills(uint32 count);
 	void _ModifySkillMaximum(uint32 SkillLine, uint32 NewMax);
+	void _LearnSkillSpells(uint32 SkillLine, uint32 Current);
 
 
 	void RecalculateHonor();

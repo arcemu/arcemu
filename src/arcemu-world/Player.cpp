@@ -2939,6 +2939,7 @@ void Player::LoadFromDBProc(QueryResultVector & results)
 			else
 				weapon_proficiency|=prof->subclass;
 		}
+		_LearnSkillSpells(itr->second.Skill->id, itr->second.CurrentValue);
 	}
 
 	// set the rest of the stuff
@@ -10470,13 +10471,7 @@ void Player::_AddSkillLine(uint32 SkillLine, uint32 Curr_sk, uint32 Max_sk)
 		}
 		m_session->OutPacket( SMSG_SET_PROFICIENCY, sizeof( packetSMSG_SET_PROFICICENCY ), &pr );
 	}
-
-	//hackfix for runeforging
-	if(SkillLine==SKILL_RUNEFORGING && !HasSpell(53341) && !HasSpell(53343) )
-	{
-		addSpell( 53341 ); // Rune of Cinderglacier
-		addSpell( 53343 ); // Rune of Razorice
-	}
+	_LearnSkillSpells(SkillLine, Curr_sk);
 
 	// Displaying bug fix
 	_UpdateSkillFields();
@@ -10530,6 +10525,7 @@ bool Player::_HasSkillLine(uint32 SkillLine)
 void Player::_AdvanceSkillLine(uint32 SkillLine, uint32 Count /* = 1 */)
 {
 	SkillMap::iterator itr = m_skills.find(SkillLine);
+	uint32 curr_sk = Count;
 	if(itr == m_skills.end())
 	{
 		/* Add it */
@@ -10541,15 +10537,85 @@ void Player::_AdvanceSkillLine(uint32 SkillLine, uint32 Count /* = 1 */)
 	}
 	else
 	{
-		uint32 curr_sk = itr->second.CurrentValue;
+		curr_sk = itr->second.CurrentValue;
 		itr->second.CurrentValue = min(curr_sk + Count,itr->second.MaximumValue);
 		if (itr->second.CurrentValue != curr_sk)
 		{
+			curr_sk = itr->second.CurrentValue;
 			_UpdateSkillFields();
 			sHookInterface.OnAdvanceSkillLine(this, SkillLine, curr_sk);
 		}
 		m_achievementMgr.UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_LEARN_SKILL_LEVEL, SkillLine, itr->second.MaximumValue/75, 0);
 		m_achievementMgr.UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_REACH_SKILL_LEVEL, SkillLine, itr->second.CurrentValue, 0);
+	}
+	_LearnSkillSpells(SkillLine, curr_sk);
+}
+
+/**
+	_LearnSkillSpells will look up the SkillLine from SkillLineAbility.dbc information, and add spells to the player as needed.
+*/
+void Player::_LearnSkillSpells(uint32 SkillLine, uint32 curr_sk)
+{
+	// check for learn new spells (professions), from SkillLineAbility.dbc
+	skilllinespell* sls, * sl2;
+	uint32 rowcount = dbcSkillLineSpell.GetNumRows();
+	SpellEntry* sp;
+	uint32 removeSpellId = 0;
+	for( uint32 idx = 0; idx < rowcount; ++idx )
+	{
+		sls = dbcSkillLineSpell.LookupRow( idx );
+		// add new "automatic-acquired" spell
+		if( (sls->skilline == SkillLine) && (sls->acquireMethod == 1) )
+		{
+			sp = dbcSpell.LookupEntry( sls->spell );
+			if( sp && (getLevel() >= sp->baseLevel) && (curr_sk >= sls->minSkillLineRank) )
+			{
+				// Player is able to learn this spell; check if they already have it, or a higher rank (shouldn't, but just in case)
+				bool addThisSpell = true;
+				SpellEntry* se;
+				for(SpellSet::iterator itr = mSpells.begin(); itr != mSpells.end(); ++itr)
+				{
+					se = dbcSpell.LookupEntry( *itr );
+					if( (se->NameHash == sp->NameHash) && (se->RankNumber >= sp->RankNumber) )
+					{
+						// Player already has this spell, or a higher rank. Don't add it.
+						addThisSpell = false;
+					}
+				}
+				if( addThisSpell )
+				{
+					// Adding a spell, now check if there was a previous spell, to remove
+					for( uint32 idx2 = 0; idx2 < rowcount; ++idx2 )
+					{
+						sl2 = dbcSkillLineSpell.LookupRow( idx2 );
+						if( (sl2->skilline == SkillLine) && (sl2->next == sls->spell) )
+						{
+							removeSpellId = sl2->spell;
+							idx2 = rowcount;
+						}
+					}
+					addSpell( sls->spell );
+					if( removeSpellId )
+					{
+						removeSpell( removeSpellId, true, true, sls->next );
+					}
+					// if passive spell, apply it now
+					if( sp->Attributes & ATTRIBUTES_PASSIVE )
+					{
+						SpellCastTargets targets;
+						targets.m_unitTarget = this->GetGUID();
+						targets.m_targetMask = TARGET_FLAG_UNIT;
+						Spell* spell = SpellPool.PooledNew();
+						if( spell == NULL )
+						{
+							return;
+						}
+						spell->Init(this,sp,true,NULL);
+						spell->prepare(&targets);
+					}
+				}
+			}
+		}
 	}
 }
 
@@ -12561,4 +12627,3 @@ uint32 Player::GetInitialFactionId()
 	else 
 		return 35;
 }
-

@@ -578,7 +578,7 @@ struct skilllinespell //SkillLineAbility.dbc
 //	uint32 classMask;
 //	uint32 excludeRace;
 //	uint32 excludeClass;
-//	uint32 minSkillLineRank;
+	uint32 minSkillLineRank;
 	uint32 next;
 	uint32 acquireMethod;
 	uint32 grey;
