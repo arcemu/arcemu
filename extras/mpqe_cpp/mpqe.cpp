@@ -208,7 +208,7 @@ int main(int argc, char** argv)
 		// this is probably a slow sorter, but how many mpqs are there going to be anyway?
 		for(index=1; index<nFiles; ++index)
 		{
-			if(fList[index-1].fwtime.QuadPart > fList[index].fwtime.QuadPart) // swap these
+			if(fList[index-1].fwtime.QuadPart < fList[index].fwtime.QuadPart) // swap these
 			{
 				tmp.fname = fList[index].fname;
 				tmp.fwtime = fList[index].fwtime;
