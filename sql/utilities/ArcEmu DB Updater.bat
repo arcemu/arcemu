@@ -183,6 +183,8 @@ ECHO [Importing] 2612_quests.sql
 mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < ..\world_updates\2612_quests.sql
 ECHO [Importing] 2649_playercreateinfo.sql
 mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < ..\world_updates\2649_playercreateinfo.sql
+ECHO [Importing] 2682_creature_spawns.sql
+mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < ..\world_updates\2682_creature_spawns.sql
 ECHO [Importing] ArcScript_full.sql
 mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < ..\ArcScripts\ArcScript_full.sql
 ECHO [Importing] spellfixes.sql
@@ -352,6 +354,8 @@ ECHO [Importing] 2612_quests.sql
 mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < ..\world_updates\2612_quests.sql
 ECHO [Importing] 2649_playercreateinfo.sql
 mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < ..\world_updates\2649_playercreateinfo.sql
+ECHO [Importing] 2682_creature_spawns.sql
+mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < ..\world_updates\2682_creature_spawns.sql
 ECHO [Importing] ArcScript_full.sql
 mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < ..\ArcScripts\ArcScript_full.sql
 ECHO [Importing] spellfixes.sql
