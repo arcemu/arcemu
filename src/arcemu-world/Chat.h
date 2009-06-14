@@ -330,6 +330,8 @@ protected:
 	// Level 3 commands
 	bool HandleMassSummonCommand(const char* args, WorldSession *m_session);
 	bool HandleWorldPortCommand(const char* args, WorldSession *m_session);
+	bool HandlePortToCreatureSpawnCommand(const char* args, WorldSession *m_session);
+	bool HandlePortToGameObjectSpawnCommand(const char* args, WorldSession *m_session);
 	bool HandleMoveCommand(const char* args, WorldSession *m_session);
 	bool HandleLearnCommand(const char* args, WorldSession *m_session);
 	bool HandleReviveCommand(const char* args, WorldSession *m_session);
@@ -391,6 +393,7 @@ protected:
 	bool HandleCreatureSpawnCommand(const char *args, WorldSession *m_session);
 	bool HandleCreatureRespawnCommand(const char *args, WorldSession *m_session);
 	bool HandleSpawnByDisplayId(const char * args, WorldSession * m_session);
+	bool HandleNPCLootCommand(const char* args, WorldSession* m_session);
 
 	// Vehicles
 	bool HandleVehicleSpawn(const char * args, WorldSession * m_session);
@@ -554,7 +557,8 @@ protected:
 	bool HandleQuestLookupCommand(const char * args, WorldSession * m_session);
 	bool HandleQuestRemoveCommand(const char * args, WorldSession * m_session);
 	bool HandleQuestRewardCommand(const char * args, WorldSession * m_session);
-	bool HandleQuestSpawnCommand(const char * args, WorldSession * m_session);
+	bool HandleQuestStarterSpawnCommand(const char * args, WorldSession * m_session);
+	bool HandleQuestFinisherSpawnCommand(const char * args, WorldSession * m_session);
 	bool HandleQuestStartCommand(const char * args, WorldSession * m_session);
 	bool HandleQuestStatusCommand(const char * args, WorldSession * m_session);
 

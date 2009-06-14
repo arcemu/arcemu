@@ -1371,9 +1371,12 @@ bool ChatHandler::HandleQuestFinisherCommand(const char * args, WorldSession * m
 	return true;
 }
 
-bool ChatHandler::HandleQuestSpawnCommand(const char * args, WorldSession * m_session)
+bool ChatHandler::HandleQuestStarterSpawnCommand(const char * args, WorldSession * m_session)
 {
-	if(!*args) return false;
+	if( !*args )
+	{
+		return false;
+	}
 
 	std::string recout;
 
@@ -1381,14 +1384,14 @@ bool ChatHandler::HandleQuestSpawnCommand(const char * args, WorldSession * m_se
 	QueryResult *objectResult = WorldDatabase.Query(my_query.c_str());
 
 	string starterId;
-	if(objectResult)
+	if( objectResult )
 	{
 		Field *fields = objectResult->Fetch();
 		starterId = MyConvertIntToString(fields[0].GetUInt32());
 	}
 	else
 	{
-		recout = "|cff00ccffNo quest starters found.\n\n";
+		recout = "|cff00ccffNo quest starter NPCs found.\n\n";
 		SendMultilineMessage(m_session, recout.c_str());
 		return true;
 	}
@@ -1398,8 +1401,10 @@ bool ChatHandler::HandleQuestSpawnCommand(const char * args, WorldSession * m_se
 	std::string starterName = "N/A";
 	CreatureInfo *creatureResult = CreatureNameStorage.LookupEntry(atol(starterId.c_str()));
 
-	if(creatureResult)
+	if( creatureResult )
+	{
 		starterName = creatureResult->Name;
+	}
 	else
 	{
 		recout = "|cff00ccffNo quest starter info found.\n\n";
@@ -1410,7 +1415,7 @@ bool ChatHandler::HandleQuestSpawnCommand(const char * args, WorldSession * m_se
 	my_query = "SELECT map, position_x, position_y, position_z FROM creature_spawns WHERE entry = " + starterId;
 	QueryResult *spawnResult = WorldDatabase.Query(my_query.c_str());
 
-	if(!spawnResult)
+	if( !spawnResult )
 	{
 		recout = "|cff00ccffNo spawn location for quest starter was found.\n\n";
 		SendMultilineMessage(m_session, recout.c_str());
@@ -1431,7 +1436,81 @@ bool ChatHandler::HandleQuestSpawnCommand(const char * args, WorldSession * m_se
 	recout = "|cff00ccff";
 	recout += starterId.c_str();
 	recout += ", ";
-    recout += starterName.c_str();
+	recout += starterName.c_str();
+	recout += "\n\n";
+	SendMultilineMessage(m_session, recout.c_str());
+
+	m_session->GetPlayer()->SafeTeleport(locmap, 0, LocationVector(x, y, z));
+
+	return true;
+}
+
+bool ChatHandler::HandleQuestFinisherSpawnCommand(const char * args, WorldSession * m_session)
+{
+	if( !*args )
+	{
+		return false;
+	}
+
+	std::string recout;
+
+	std::string my_query = "SELECT id FROM creature_quest_finisher WHERE quest = " + string(args);
+	QueryResult *objectResult = WorldDatabase.Query(my_query.c_str());
+
+	string finisherId;
+	if( objectResult )
+	{
+		Field *fields = objectResult->Fetch();
+		finisherId = MyConvertIntToString(fields[0].GetUInt32());
+	}
+	else
+	{
+		recout = "|cff00ccffNo quest finisher NPCs found.\n\n";
+		SendMultilineMessage(m_session, recout.c_str());
+		return true;
+	}
+
+	delete objectResult;
+
+	std::string finisherName = "N/A";
+	CreatureInfo *creatureResult = CreatureNameStorage.LookupEntry(atol(finisherId.c_str()));
+
+	if( creatureResult )
+	{
+		finisherName = creatureResult->Name;
+	}
+	else
+	{
+		recout = "|cff00ccffNo quest finisher info found.\n\n";
+		SendMultilineMessage(m_session, recout.c_str());
+		return true;
+	}
+
+	my_query = "SELECT map, position_x, position_y, position_z FROM creature_spawns WHERE entry = " + finisherId;
+	QueryResult *spawnResult = WorldDatabase.Query(my_query.c_str());
+
+	if( !spawnResult )
+	{
+		recout = "|cff00ccffNo spawn location for quest finisher was found.\n\n";
+		SendMultilineMessage(m_session, recout.c_str());
+		return true;
+	}
+
+	Field *fields = spawnResult->Fetch();
+	uint32 locmap = fields[0].GetUInt32();
+	float x = fields[1].GetFloat();
+	float y = fields[2].GetFloat();
+	float z = fields[3].GetFloat();
+
+	delete spawnResult;
+
+	recout = "|cff00ccffPorting to Quest Finisher: id, name\n\n";
+	SendMultilineMessage(m_session, recout.c_str());
+
+	recout = "|cff00ccff";
+	recout += finisherId.c_str();
+	recout += ", ";
+	recout += finisherName.c_str();
 	recout += "\n\n";
 	SendMultilineMessage(m_session, recout.c_str());
 

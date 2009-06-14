@@ -381,6 +381,7 @@ void CommandTableStorage::Init()
 		{ "move",         'g', &ChatHandler::HandleGOMove,         "Moves gameobject to player xyz",           NULL, 0, 0, 0 },
 		{ "rotate",       'g', &ChatHandler::HandleGORotate,       "<Axis> <Value> - Rotates the object. <Axis> x,y, Default o.",             NULL, 0, 0, 0 },
 		{ "sdid",		  'g', &ChatHandler::HandleSpawnByDisplayId, "Spawns a generic game object with the specified display id. Clear your client cache after using this!", NULL, 0, 0, 0 },
+		{ "portto",       'v', &ChatHandler::HandlePortToGameObjectSpawnCommand, "Teleports you to the gameobject with spawn id x.", NULL, 0, 0, 0 },
 		{ NULL,           '0', NULL,                               "",                                         NULL, 0, 0, 0 }
 	};
 	dupe_command_table(GameObjectCommandTable, _GameObjectCommandTable);
@@ -418,19 +419,21 @@ void CommandTableStorage::Init()
 		{ "come",             'n', &ChatHandler::HandleNpcComeCommand,        ".npc come - Makes npc move to your position",                                                                                             NULL, 0, 0, 0 },
 		{ "return",           'n', &ChatHandler::HandleNpcReturnCommand,      ".npc return - Returns ncp to spawnpoint.",                                                                                                NULL, 0, 0, 0 },
 		{ "spawn",            'n', &ChatHandler::HandleCreatureSpawnCommand,  ".npc spawn - Spawns npc of entry <id>",                                                                                                   NULL, 0, 0, 0 },
-		{ "respawn",          'n', &ChatHandler::HandleCreatureRespawnCommand,       ".respawn - Respawns a dead npc from it's corpse.",                                                                                        NULL, 0, 0, 0 },
+		{ "respawn",          'n', &ChatHandler::HandleCreatureRespawnCommand,".respawn - Respawns a dead npc from its corpse.",                                                                                         NULL, 0, 0, 0 },
 		{ "spawnlink",        'n', &ChatHandler::HandleNpcSpawnLinkCommand,   ".spawnlink sqlentry",                                                                                                                     NULL, 0, 0, 0 },
 		{ "possess",          'n', &ChatHandler::HandleNpcPossessCommand,     ".npc possess - Possess an npc (mind control)",                                                                                            NULL, 0, 0, 0 },
-		{ "unpossess",        'n', &ChatHandler::HandleNpcUnPossessCommand,   ".npc unpossess - Unpossess any currently possessed npc.",                                                                                  NULL, 0, 0, 0 },
+		{ "unpossess",        'n', &ChatHandler::HandleNpcUnPossessCommand,   ".npc unpossess - Unpossess any currently possessed npc.",                                                                                 NULL, 0, 0, 0 },
 		{ "select",           'n', &ChatHandler::HandleNpcSelectCommand,      ".npc select - selects npc closest",                                                                                                       NULL, 0, 0, 0 },
 		{ "npcfollow",        'm', &ChatHandler::HandleNpcFollowCommand,      "Sets npc to follow you",                                                                                                                  NULL, 0, 0, 0 },
 		{ "nullfollow",       'm', &ChatHandler::HandleNullFollowCommand,     "Sets npc to not follow anything",                                                                                                         NULL, 0, 0, 0 },
 		{ "formationlink1",   'm', &ChatHandler::HandleFormationLink1Command, "Sets formation master.",                                                                                                                  NULL, 0, 0, 0 },
 		{ "formationlink2",   'm', &ChatHandler::HandleFormationLink2Command, "Sets formation slave with distance and angle",                                                                                            NULL, 0, 0, 0 },
 		{ "formationclear",   'm', &ChatHandler::HandleFormationClearCommand, "Removes formation from creature",                                                                                                         NULL, 0, 0, 0 },
-		{ "equip1",			  'm', &ChatHandler::HandleNPCEquipOneCommand,	  "Use: .npc equip1 <itemid> - use .npc equip1 0 to remove the item",                                                                        NULL, 0, 0, 0 },
-		{ "equip2",			  'm', &ChatHandler::HandleNPCEquipTwoCommand,	  "Use: .npc equip2 <itemid> - use .npc equip2 0 to remove the item",                                                                        NULL, 0, 0, 0 },
-		{ "equip3",			  'm', &ChatHandler::HandleNPCEquipThreeCommand,  "Use: .npc equip3 <itemid> - use .npc equip3 0 to remove the item",                                                                        NULL, 0, 0, 0 },
+		{ "equip1",           'm', &ChatHandler::HandleNPCEquipOneCommand,    "Use: .npc equip1 <itemid> - use .npc equip1 0 to remove the item",                                                                        NULL, 0, 0, 0 },
+		{ "equip2",           'm', &ChatHandler::HandleNPCEquipTwoCommand,    "Use: .npc equip2 <itemid> - use .npc equip2 0 to remove the item",                                                                        NULL, 0, 0, 0 },
+		{ "equip3",           'm', &ChatHandler::HandleNPCEquipThreeCommand,  "Use: .npc equip3 <itemid> - use .npc equip3 0 to remove the item",                                                                        NULL, 0, 0, 0 },
+		{ "portto",           'v', &ChatHandler::HandlePortToCreatureSpawnCommand, "Teleports you to the creature with spawn id x.",                                                                                     NULL, 0, 0, 0 },
+		{ "loot",             'm', &ChatHandler::HandleNPCLootCommand,        ".npc loot <quality> - displays possible loot for the selected NPC.",                                                                      NULL, 0, 0, 0 },
 		{ NULL,               '0', NULL,                                      "",                                                                                                                                        NULL, 0, 0, 0 }
 	};
 	dupe_command_table(NPCCommandTable, _NPCCommandTable);
@@ -533,8 +536,9 @@ void CommandTableStorage::Init()
 		{ "remove",    '2', &ChatHandler::HandleQuestRemoveCommand,    "Removes the quest <id> from the targeted player",           NULL, 0, 0, 0 },
 		{ "reward",    '2', &ChatHandler::HandleQuestRewardCommand,    "Shows reward for quest <id>",                               NULL, 0, 0, 0 },
 		{ "status",    '2', &ChatHandler::HandleQuestStatusCommand,    "Lists the status of quest <id>",                            NULL, 0, 0, 0 },
-		{ "spawn",     '2', &ChatHandler::HandleQuestSpawnCommand,     "Port to spawn location for quest <id>",                     NULL, 0, 0, 0 },
 		{ "start",     '2', &ChatHandler::HandleQuestStartCommand,     "Starts quest <id>",                                         NULL, 0, 0, 0 },
+		{ "startspawn",'2', &ChatHandler::HandleQuestStarterSpawnCommand, "Port to spawn location for quest <id> (starter)",        NULL, 0, 0, 0 },
+		{ "finishspawn",'2',&ChatHandler::HandleQuestFinisherSpawnCommand,"Port to spawn location for quest <id> (finisher)",       NULL, 0, 0, 0 },
 		{ NULL,        '0', NULL,                                      "",                                                          NULL, 0, 0, 0 }
 	};
 	dupe_command_table(questCommandTable, _questCommandTable);

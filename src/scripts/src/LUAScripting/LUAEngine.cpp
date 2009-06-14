@@ -665,15 +665,18 @@ void LuaEngine::LoadScripts()
 	while(filecount--)
 	{
 		char* ext = strrchr(list[filecount]->d_name, '.');
-		if(ext != NULL && !strcmp(ext, ".lua"))
+		if( ext != NULL )
+		{
+			if( !strcmp(ext, ".lua") )
 			{
 				string full_path = string(list[filecount]->d_name);
 				luaFiles.insert(string(full_path.c_str()));
-		}
-		else if(!stricmp(ext, ".luc"))
-		{
-		string full_path = string(list[filecount]->d_name);
-		luaBytecodeFiles.insert(string(full_path.c_str()));
+			}
+			else if( !stricmp(ext, ".luc") )
+			{
+			string full_path = string(list[filecount]->d_name);
+			luaBytecodeFiles.insert(string(full_path.c_str()));
+			}
 		}
 
 		free(list[filecount]);

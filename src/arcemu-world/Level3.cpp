@@ -127,6 +127,63 @@ bool ChatHandler::HandleWorldPortCommand(const char* args, WorldSession *m_sessi
 	return true;
 }
 
+bool ChatHandler::HandlePortToCreatureSpawnCommand(const char* args, WorldSession *m_session)
+{
+	if( !*args )
+	{
+		return false;
+	}
+
+	uint32 spawn_id, spawn_map;
+	float spawn_x, spawn_y, spawn_z;
+
+	if( sscanf(args, "%u", (unsigned int*)&spawn_id) != 1 )
+	{
+		return false;
+	}
+	QueryResult* QR = WorldDatabase.Query("SELECT * FROM creature_spawns WHERE id=%u",spawn_id);
+	if( !QR )
+	{
+		RedSystemMessage(m_session, "No spawn found with id %u.", spawn_id);
+		return true;
+	}
+	spawn_map = QR->Fetch()[2].GetUInt32();
+	spawn_x = QR->Fetch()[3].GetFloat();
+	spawn_y = QR->Fetch()[4].GetFloat();
+	spawn_z = QR->Fetch()[5].GetFloat();
+	LocationVector vec(spawn_x, spawn_y, spawn_z);
+	m_session->GetPlayer()->SafeTeleport(spawn_map, 0, vec);
+	return true;
+}
+
+bool ChatHandler::HandlePortToGameObjectSpawnCommand(const char* args, WorldSession *m_session)
+{
+	if( !*args )
+	{
+		return false;
+	}
+
+	uint32 spawn_id, spawn_map;
+	float spawn_x, spawn_y, spawn_z;
+
+	if( sscanf(args, "%u", (unsigned int*)&spawn_id) != 1 )
+	{
+		return false;
+	}
+	QueryResult* QR = WorldDatabase.Query("SELECT * FROM gameobject_spawns WHERE id=%u",spawn_id);
+	if( !QR )
+	{
+		RedSystemMessage(m_session, "No spawn found with id %u.", spawn_id);
+		return true;
+	}
+	spawn_map = QR->Fetch()[2].GetUInt32();
+	spawn_x = QR->Fetch()[3].GetFloat();
+	spawn_y = QR->Fetch()[4].GetFloat();
+	spawn_z = QR->Fetch()[5].GetFloat();
+	LocationVector vec(spawn_x, spawn_y, spawn_z);
+	m_session->GetPlayer()->SafeTeleport(spawn_map, 0, vec);
+	return true;
+}
 
 bool ChatHandler::HandleClearCooldownsCommand(const char *args, WorldSession *m_session)
 {
@@ -3810,3 +3867,89 @@ bool ChatHandler::HandleSetTitle( const char *args, WorldSession *m_session )
 	return true;
 }
 
+bool ChatHandler::HandleNPCLootCommand(const char* args, WorldSession* m_session)
+{
+	Creature * pCreature = getSelectedCreature(m_session, true);
+	if( pCreature == NULL )
+	{
+		return false;
+	}
+
+	QueryResult* _result = WorldDatabase.Query("SELECT itemid, percentchance, heroicpercentchance, mincount, maxcount FROM loot_creatures WHERE entryid=%u;", pCreature->GetEntry());
+	if( _result != NULL )
+	{
+		Field* _field;
+		std::stringstream ss;
+		ItemPrototype* proto;
+		string color;
+		int32 minQuality = 0;
+		uint8 numFound = 0;
+
+		if( *args )
+		{
+			minQuality = atol(args);
+		}
+
+		do
+		{
+			_field = _result->Fetch();
+			ss.str("");
+			proto = ItemPrototypeStorage.LookupEntry( _field[0].GetUInt32() );
+			if( proto == NULL || (int32)proto->Quality < minQuality )
+			{
+				continue;
+			}
+			++numFound;
+			ss << _field[1].GetFloat() << "%c (Heroic " << _field[2].GetFloat() << "%c): ";
+
+			switch( proto->Quality )
+			{
+				case 0: //Poor,gray
+					color = "cff9d9d9d";
+					break;
+				case 1: //Common,white
+					color = "cffffffff";
+					break;
+				case 2: //Uncommon,green
+					color = "cff1eff00";
+					break;
+				case 3: //Rare,blue
+					color = "cff0070dd";
+					break;
+				case 4: //Epic,purple
+					color = "cffa335ee";
+					break;
+				case 5: //Legendary,orange
+					color = "cffff8000";
+					break;
+				case 6: //Artifact,pale gold
+					color = "c00fce080";
+					break;
+				case 7: //Heirloom,pale gold
+					color = "c00fce080";
+					break;
+				default:
+					color = "cff9d9d9d";
+					break;
+			}
+
+			ss << "|" << color.c_str() << "|Hitem:" << proto->ItemId << ":0:0:0:0:0:0:0|h[" << proto->Name1;
+			ss << "]|h|r (" << _field[3].GetUInt32() << "-" << _field[4].GetUInt32() << ")";
+			SystemMessage( m_session, ss.str().c_str(), '%', '%' );
+		} while( _result->NextRow() && (numFound <= 25) );
+		delete _result;
+		if( numFound > 25 )
+		{
+			SystemMessage( m_session, "More than 25 results found." );
+		}
+		else
+		{
+			SystemMessage( m_session, "%lu results found.", numFound );
+		}
+	}
+	else
+	{
+		SystemMessage( m_session, "0 results found." );
+	}
+	return true;
+}
