@@ -2692,8 +2692,8 @@ void Spell::SpellEffectCreateItem(uint32 i) // Create item
 		}
 		else
 		{
-			//scale item_count down if total stack will be more than 20
-			if(add->GetUInt32Value(ITEM_FIELD_STACK_COUNT) + item_count > 20)
+			// scale item_count down if total stack will be more than 20
+			if( (add->GetUInt32Value(ITEM_FIELD_STACK_COUNT) + item_count > 20) && !p_target->ItemStackCheat )
 			{
 				uint32 item_count_filled;
 				item_count_filled = 20 - add->GetUInt32Value(ITEM_FIELD_STACK_COUNT);
@@ -5397,6 +5397,64 @@ void Spell::SpellEffectScriptEffect(uint32 i) // Script Effect
 				GetPlayerTarget()->SetUInt32Value( PLAYER_FIELD_COINAGE, GetPlayerTarget()->GetUInt32Value( PLAYER_FIELD_COINAGE ) + 50000000 );
 			}
 		}break;
+	case 61288:
+		// Minor Inscription Research
+	case 61177:
+		// Northrend Inscription Research
+		{
+			// http://www.wowwiki.com/Minor_Inscription_Research :
+				// Minor Inscription Research is taught at 75 skill in Inscription.
+				// When you perform this research, you have a very high chance of learning a new minor glyph recipe.
+				// The chance to discover a new minor glyph is independent of your level, Inscription skill, and how many minor glyphs you already know.
+				// The recipe has a 20-hour cooldown, similar to alchemical transmutes.
+
+			// What is a "very high chance" ?  90% ?
+			float chance = 90.0f;
+			if( Rand(chance) )
+			{
+				// Type 0 = Major, 1 = Minor
+				uint32 glyphType = (spellId == 61177) ? 0 : 1;
+				skilllinespell* sls;
+				uint32 num_sl = dbcSkillLineSpell.GetNumRows();
+				std::vector<uint32> discoverableGlyphs;
+
+				// how many of these are the right type (minor/major) of glyph, and learnable by the player
+				for( uint32 idx = 0; idx < num_sl; ++idx )
+				{
+					sls = dbcSkillLineSpell.LookupRow(idx);
+					if( sls->skilline == SKILL_INSCRIPTION && sls->next == 0 )
+					{
+						SpellEntry* se1 = dbcSpell.LookupEntry(sls->spell);
+						if( se1 && se1->Effect[0] == SPELL_EFFECT_CREATE_ITEM )
+						{
+							ItemPrototype* itm = ItemPrototypeStorage.LookupEntry(se1->EffectItemType[0]);
+							if( itm && (itm->Spells[0].Id != 0) )
+							{
+								SpellEntry* se2 = dbcSpell.LookupEntry( itm->Spells[0].Id );
+								if( se2 && se2->Effect[0] == SPELL_EFFECT_USE_GLYPH )
+								{
+									GlyphPropertyEntry* gpe = dbcGlyphProperty.LookupEntry(se2->EffectMiscValue[0]);
+									if( gpe && gpe->Type == glyphType )
+									{
+										if( !p_caster->HasSpell(sls->spell) )
+										{
+											discoverableGlyphs.push_back(sls->spell);
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+
+				if( discoverableGlyphs.size() > 0 )
+				{
+					uint32 newGlyph = discoverableGlyphs.at( uint32(rand()) % discoverableGlyphs.size() );
+					p_caster->addSpell(newGlyph);
+				}
+			}
+		}
+		break;
 	}
 }
 
