@@ -4559,7 +4559,13 @@ void Unit::AddAura(Aura * aur)
 		sLog.outError("Aura error in active aura. ");
 		sEventMgr.RemoveEvents( aur );
 		AuraPool.PooledDelete( aur );
-		return;
+/*
+		if ( aur != NULL ) 
+			{
+				delete [] aur;
+				aur = NULL;
+			}
+	*/	return;
 	}
 
 	////////////////////////////////////////////////////////

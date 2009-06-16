@@ -113,7 +113,7 @@ Creature::~Creature()
 {
 	sEventMgr.RemoveEvents(this);
 
-	if(IsTotem())
+	if( IsTotem() )
 		totemOwner->m_TotemSlots[totemSlot] = 0;
 
 	if(m_custom_waypoint_map != 0)

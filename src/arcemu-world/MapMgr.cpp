@@ -92,9 +92,10 @@ MapMgr::MapMgr(Map *map, uint32 mapId, uint32 instanceid) : CellHandler<MapCell>
 
 MapMgr::~MapMgr()
 {
-	_shutdown=true;
+	_shutdown = true;
 	sEventMgr.RemoveEvents(this);
-	if (ScriptInterface != NULL) {
+	if ( ScriptInterface != NULL ) 
+	{
 		delete ScriptInterface;
 		ScriptInterface = NULL;
 	}

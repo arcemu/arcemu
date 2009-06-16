@@ -17,6 +17,13 @@
  *
  */
 
+//////////////////////////////////////////////
+// Notes: .Execute is ASYNC! - 
+// This means that it will wait in a line basically for the other queries executed before it to finish before executing.
+// We use QueryBuffer for ASYNC and NONE-ASYNC queries to not lag the emu.
+// See: Player::_SavePetSpells for example of usage
+// Added: Tuesday, June 16th 2009 - Hasbro 
+//////////////////////////////////////////////
 
 #include "DatabaseEnv.h"
 #include "../CrashHandler.h"

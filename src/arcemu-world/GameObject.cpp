@@ -285,7 +285,7 @@ void GameObject::Despawn(uint32 delay, uint32 respawntime)
 		sEventMgr.RemoveEvents(this);
 		sEventMgr.AddEvent(m_mapMgr, &MapMgr::EventRespawnGameObject, this, pCell, EVENT_GAMEOBJECT_ITEM_SPAWN, respawntime, 1, 0);
 		Object::RemoveFromWorld(false);
-		m_respawnCell=pCell;
+		m_respawnCell = pCell;
 	}
 	else
 	{
@@ -698,16 +698,18 @@ void GameObject::_LoadQuests()
 void GameObject::_Expire()
 {
 	sEventMgr.RemoveEvents(this);
-	if(IsInWorld())
+
+	if( IsInWorld() )
 		RemoveFromWorld(true);
 
 	//sEventMgr.AddEvent(World::getSingletonPtr(), &World::DeleteObject, ((Object*)this), EVENT_DELETE_TIMER, 1000, 1);
 	delete this;
+	//this = NULL;
 }
 
 void GameObject::ExpireAndDelete()
 {
-	if(m_deleted)
+	if( m_deleted )
 		return;
 
 	m_deleted = true;

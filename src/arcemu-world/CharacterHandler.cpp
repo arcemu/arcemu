@@ -760,7 +760,7 @@ void WorldSession::FullLogin(Player * plr)
 
 	// Make sure our name exists (for premade system)
 	PlayerInfo * info = objmgr.GetPlayerInfo(plr->GetLowGUID());
-	if(info == 0)
+	if(info == NULL)
 	{
 		info = new PlayerInfo;
 		info->cl = plr->getClass();
@@ -772,11 +772,11 @@ void WorldSession::FullLogin(Player * plr)
 		info->lastZone = plr->GetZoneId();
 		info->race = plr->getRace();
 		info->team = plr->GetTeam();
-		info->guild=NULL;
-		info->guildRank=NULL;
-		info->guildMember=NULL;
-		info->m_Group=0;
-		info->subGroup=0;
+		info->guild = NULL;
+		info->guildRank = NULL;
+		info->guildMember = NULL;
+		info->m_Group = NULL;
+		info->subGroup = NULL;
 		objmgr.AddPlayerInfo(info);
 	}
 	plr->m_playerInfo = info;
@@ -932,15 +932,19 @@ void WorldSession::FullLogin(Player * plr)
 	// Send MOTD
 	_player->BroadcastMessage(sWorld.GetMotd());
 
+
 	// Send revision (if enabled)
 #ifdef WIN32
-	_player->BroadcastMessage("Powered by: %sArcEmu %s r%u/%s-Win-%s %s(Please report ALL bugs to http://ArcEmu.org/forums/)", MSG_COLOR_WHITE, BUILD_TAG,
-		BUILD_REVISION, CONFIG, ARCH, MSG_COLOR_LIGHTBLUE);		
+	_player->BroadcastMessage("Powered by: %sArcEmu %s r/%s-Win-%s %s(Please report ALL bugs to http://ArcEmu.org/forums/)", MSG_COLOR_WHITE, BUILD_TAG,
+		CONFIG, ARCH, MSG_COLOR_LIGHTBLUE);		
+	_player->BroadCastMessage("Revision: %s%u" MSG_COLOR_RED, BUILD_REVISION); 
 #else
-	_player->BroadcastMessage("Powered by: %sArcEmu %s r%u/%s-%s %s(Please report ALL bugs to ArcEmu.org/forums/)", MSG_COLOR_WHITE, BUILD_TAG,
-		BUILD_REVISION, PLATFORM_TEXT, ARCH, MSG_COLOR_LIGHTBLUE);
+	_player->BroadcastMessage("Powered by: %sArcEmu %s /%s-%s %s(Please report ALL bugs to ArcEmu.org/forums/)", MSG_COLOR_WHITE, BUILD_TAG,
+		PLATFORM_TEXT, ARCH, MSG_COLOR_LIGHTBLUE);
+	_player->BroadCastMessage("Revision: %s%u" MSG_COLOR_RED, BUILD_REVISION); 
 #endif
-
+	// Recruitment message :)
+	_player->BroadcastMessage("ArcEmu is recruiting developers: Join us on irc.emulationnetwork.com:6667 #arcemu");
 	if(sWorld.SendStatsOnJoin || HasGMPermissions() )
 	{
 		_player->BroadcastMessage("Online Players: %s%u |rPeak: %s%u|r Accepted Connections: %s%u",

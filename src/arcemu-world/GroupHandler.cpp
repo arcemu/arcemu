@@ -339,7 +339,8 @@ void WorldSession::HandleLootMethodOpcode( WorldPacket & recv_data )
   }
   else {
     Group* pGroup = plr->GetGroup();
-    if ( !pGroup ) return;
+    if ( !pGroup ) 
+		return;
     pGroup->SetLooter(plr, lootMethod, threshold );
   }
 
@@ -347,9 +348,10 @@ void WorldSession::HandleLootMethodOpcode( WorldPacket & recv_data )
 
 void WorldSession::HandleMinimapPingOpcode( WorldPacket & recv_data )
 {
-	if(!_player->IsInWorld()) return;
+	if( !_player->IsInWorld() ) 
+		return;
 	CHECK_PACKET_SIZE(recv_data, 8);
-	if(!_player->InGroup())
+	if( !_player->InGroup() )
 	return;
 	Group * party= _player->GetGroup();
 	if(!party)return;

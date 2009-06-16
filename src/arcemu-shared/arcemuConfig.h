@@ -88,12 +88,6 @@
 
 //#define _SELF_ITEM_QUERY_TEST_ "\x2d\x50\x32\x57\x4f\x57\0"
 
-/**
- * Enable Alterac Valley
- * At the moment this is incomplete and still needs more work. You can contact Danford for more details.
- * WARNING!!! This code may contain crashes and is completly untested.
- **/
-//#define ENABLE_AV
 
 #endif		// __arcemuCONFIG_H
 
