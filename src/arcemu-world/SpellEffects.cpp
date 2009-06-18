@@ -1950,67 +1950,25 @@ out:
 
 void Spell::SpellEffectTeleportUnits( uint32 i )  // Teleport Units
 {
-
-	if(!unitTarget) return;
+	if( !unitTarget )
+	{
+		return;
+	}
 
 	uint32 spellId = GetProto()->Id;
 
 	// Try a dummy SpellHandler
 	if( sScriptMgr.CallScriptedDummySpell( spellId, i, this ) )
-		return;
-
-	// Shadowstep
-	if( GetProto()->NameHash == SPELL_HASH_SHADOWSTEP && p_caster && p_caster->IsInWorld() )
 	{
-		/* this is rather tricky actually. we have to calculate the orientation of the creature/player, and then calculate a little bit of distance behind that. */
-		float ang;
-		if( unitTarget == m_caster )
-		{
-			/* try to get a selection */
-			unitTarget = m_caster->GetMapMgr()->GetUnit(p_caster->GetSelection());
-			//			if( (unitTarget == NULL ) || !isHostile(p_caster, unitTarget) || (unitTarget->CalcDistance(p_caster) > 25.0f)) //removed by Zack : no idea why hostile is used. Isattackable should give a wider solution range
-			if( (!unitTarget ) || !isAttackable(p_caster, unitTarget, !(GetProto()->c_is_flags & SPELL_FLAG_IS_TARGETINGSTEALTHED) ) || (unitTarget->CalcDistance(p_caster) > 28.0f))
-				return;
-		}
-
-		if( unitTarget->GetTypeId() == TYPEID_UNIT )
-		{
-			if( unitTarget->GetUInt64Value( UNIT_FIELD_TARGET ) != 0 )
-			{
-				/* We're chasing a target. We have to calculate the angle to this target, this is our orientation. */
-				ang = m_caster->calcAngle(m_caster->GetPositionX(), m_caster->GetPositionY(), unitTarget->GetPositionX(), unitTarget->GetPositionY());
-
-				/* convert degree angle to radians */
-				ang = ang * float(M_PI) / 180.0f;
-			}
-			else
-			{
-				/* Our orientation has already been set. */
-				ang = unitTarget->GetOrientation();
-			}
-		}
-		else
-		{
-			/* Players orientation is sent in movement packets */
-			ang = unitTarget->GetOrientation();
-		}
-
-		// avoid teleporting into the model on scaled models
-		const static float shadowstep_distance = 1.6f * unitTarget->GetFloatValue(OBJECT_FIELD_SCALE_X);
-		float new_x = unitTarget->GetPositionX() - (shadowstep_distance * cosf(ang));
-		float new_y = unitTarget->GetPositionY() - (shadowstep_distance * sinf(ang));
-
-		/* Send a movement packet to "charge" at this target. Similar to warrior charge. */
-		p_caster->z_axisposition = 0.0f;
-		p_caster->SafeTeleport(p_caster->GetMapId(), p_caster->GetInstanceID(), LocationVector(new_x, new_y, (unitTarget->GetPositionZ() + 0.1f), unitTarget->GetOrientation()));
-
 		return;
 	}
 
 	/* TODO: Remove Player From bg */
 
-	if(unitTarget->GetTypeId() == TYPEID_PLAYER)
+	if( unitTarget->GetTypeId() == TYPEID_PLAYER )
+	{
 		HandleTeleport(spellId, unitTarget);
+	}
 }
 
 void Spell::SpellEffectApplyAura(uint32 i)  // Apply Aura

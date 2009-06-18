@@ -1326,7 +1326,11 @@ void ApplyNormalFixes()
 		//////////////////////////////////////////
 		// DRUID								//
 		//////////////////////////////////////////
-
+		if( sp->NameHash == SPELL_HASH_DASH )
+		{
+			// mask for FORM_CAT(1) = 1 << (1 - 1), which is 1
+			sp->RequiredShapeShift = 1;
+		}
 
 
 	} // END OF LOOP

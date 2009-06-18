@@ -72,8 +72,78 @@ bool Shiv(uint32 i, Spell *pSpell){
 	return true;
 }
 
+// Shadowstep
+bool Shadowstep(uint32 i, Spell* pSpell)
+{
+	if( !pSpell )
+	{
+		return true;
+	}
+	Unit* unitTarget = pSpell->GetUnitTarget();
+	Object* m_caster = pSpell->m_caster;
+	Player* p_caster = pSpell->p_caster;
+	if( !unitTarget || !m_caster || !p_caster )
+	{
+		return true;
+	}
+
+	/* this is rather tricky actually. we have to calculate the orientation of the creature/player, and then calculate a little bit of distance behind that. */
+	float ang;
+	if( unitTarget == m_caster )
+	{
+		/* try to get a selection */
+		unitTarget = m_caster->GetMapMgr()->GetUnit(pSpell->p_caster->GetSelection());
+		if( (!unitTarget ) || !isAttackable(pSpell->p_caster, unitTarget, !(pSpell->GetProto()->c_is_flags & SPELL_FLAG_IS_TARGETINGSTEALTHED) ) || (unitTarget->CalcDistance(pSpell->p_caster) > 28.0f))
+		{
+			return true;
+		}
+	}
+
+	if( unitTarget->GetTypeId() == TYPEID_UNIT )
+	{
+		if( unitTarget->GetUInt64Value( UNIT_FIELD_TARGET ) != 0 )
+		{
+			/* We're chasing a target. We have to calculate the angle to this target, this is our orientation. */
+			ang = m_caster->calcAngle(m_caster->GetPositionX(), m_caster->GetPositionY(), unitTarget->GetPositionX(), unitTarget->GetPositionY());
+
+			/* convert degree angle to radians */
+			ang = ang * float(M_PI) / 180.0f;
+		}
+		else
+		{
+			/* Our orientation has already been set. */
+			ang = unitTarget->GetOrientation();
+		}
+	}
+	else
+	{
+		/* Players orientation is sent in movement packets */
+		ang = unitTarget->GetOrientation();
+	}
+
+	// avoid teleporting into the model on scaled models
+	const static float shadowstep_distance = 1.6f * unitTarget->GetFloatValue(OBJECT_FIELD_SCALE_X);
+	float new_x = unitTarget->GetPositionX() - (shadowstep_distance * cosf(ang));
+	float new_y = unitTarget->GetPositionY() - (shadowstep_distance * sinf(ang));
+
+	/* Send a movement packet to "charge" at this target. Similar to warrior charge. */
+	p_caster->z_axisposition = 0.0f;
+	p_caster->SafeTeleport(p_caster->GetMapId(), p_caster->GetInstanceID(), LocationVector(new_x, new_y, (unitTarget->GetPositionZ() + 0.1f), unitTarget->GetOrientation()));
+
+	return true;
+}
+
+
 void SetupRogueSpells(ScriptMgr * mgr)
 {
 	mgr->register_dummy_spell(5938, &Shiv);
 	mgr->register_dummy_spell(14185, &Preparation);
+	mgr->register_dummy_spell(36554, &Shadowstep);
+	mgr->register_dummy_spell(36563, &Shadowstep);
+	mgr->register_dummy_spell(41176, &Shadowstep);
+	mgr->register_dummy_spell(44373, &Shadowstep);
+	mgr->register_dummy_spell(45273, &Shadowstep);
+	mgr->register_dummy_spell(46463, &Shadowstep);
+	mgr->register_dummy_spell(55965, &Shadowstep);
+	mgr->register_dummy_spell(55966, &Shadowstep);
 }
