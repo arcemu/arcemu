@@ -941,7 +941,7 @@ void WorldSession::FullLogin(Player * plr)
 #else
 	_player->BroadcastMessage("Powered by: %sArcEmu %s /%s-%s %s(Please report ALL bugs to ArcEmu.org/forums/)", MSG_COLOR_WHITE, BUILD_TAG,
 		PLATFORM_TEXT, ARCH, MSG_COLOR_LIGHTBLUE);
-	_player->BroadCastMessage("Revision: %s%u" MSG_COLOR_RED, BUILD_REVISION); 
+	_player->BroadcastMessage("Revision: %s%u" MSG_COLOR_RED, BUILD_REVISION); 
 #endif
 	// Recruitment message :)
 	_player->BroadcastMessage("ArcEmu is recruiting developers: Join us on irc.emulationnetwork.com:6667 #arcemu");
