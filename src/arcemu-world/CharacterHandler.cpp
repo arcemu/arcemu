@@ -937,7 +937,7 @@ void WorldSession::FullLogin(Player * plr)
 #ifdef WIN32
 	_player->BroadcastMessage("Powered by: %sArcEmu %s r/%s-Win-%s %s(Please report ALL bugs to http://ArcEmu.org/forums/)", MSG_COLOR_WHITE, BUILD_TAG,
 		CONFIG, ARCH, MSG_COLOR_LIGHTBLUE);		
-	_player->BroadCastMessage("Revision: %s%u" MSG_COLOR_RED, BUILD_REVISION); 
+	_player->BroadcastMessage("Revision: %s%u" MSG_COLOR_RED, BUILD_REVISION); 
 #else
 	_player->BroadcastMessage("Powered by: %sArcEmu %s /%s-%s %s(Please report ALL bugs to ArcEmu.org/forums/)", MSG_COLOR_WHITE, BUILD_TAG,
 		PLATFORM_TEXT, ARCH, MSG_COLOR_LIGHTBLUE);
