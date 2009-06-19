@@ -10568,7 +10568,7 @@ void Player::_LearnSkillSpells(uint32 SkillLine, uint32 curr_sk)
 		if( (sls->skilline == SkillLine) && (sls->acquireMethod == 1) )
 		{
 			sp = dbcSpell.LookupEntry( sls->spell );
-			if( sp && (getLevel() >= sp->baseLevel) && (curr_sk >= sls->minSkillLineRank) )
+			if( sp && (curr_sk >= sls->minSkillLineRank) )
 			{
 				// Player is able to learn this spell; check if they already have it, or a higher rank (shouldn't, but just in case)
 				bool addThisSpell = true;
