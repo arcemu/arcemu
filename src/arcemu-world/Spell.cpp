@@ -3465,11 +3465,11 @@ uint8 Spell::CanCast(bool tolerate)
 		/**
 		 *	check if spell requires shapeshift
 		 */
-		// not sure why all priest spell proto's RequiredShapeShift are set [to 134217728]
-		if( GetProto()->RequiredShapeShift && !(GetProto()->RequiredShapeShift == (uint32)1 << (FORM_SHADOW - 1)) && !((uint32)1 << (p_caster->GetShapeShift()-1) & GetProto()->RequiredShapeShift ) )
-		{
-			return SPELL_FAILED_ONLY_SHAPESHIFT;
-		}
+		// I think Spell prototype's RequiredShapeShift is not entirely accurate ....
+		//if( GetProto()->RequiredShapeShift && !(GetProto()->RequiredShapeShift == (uint32)1 << (FORM_SHADOW - 1)) && !((uint32)1 << (p_caster->GetShapeShift()-1) & GetProto()->RequiredShapeShift ) )
+		//{
+		//	return SPELL_FAILED_ONLY_SHAPESHIFT;
+		//}
 
 
 		/**
