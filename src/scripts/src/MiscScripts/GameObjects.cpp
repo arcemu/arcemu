@@ -546,7 +546,8 @@ public:
 
     void OnActivate(Player * pPlayer)
     {
-        pPlayer->CastSpell(pPlayer,53822,true);
+        if( pPlayer->getClass() == DEATHKNIGHT )
+			pPlayer->CastSpell( pPlayer, 53822, true );
     }
 };
 
