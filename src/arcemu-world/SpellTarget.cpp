@@ -378,11 +378,17 @@ void Spell::SpellTargetSingleTargetEnemy(uint32 i, uint32 j)
 	else
 		SafeAddTarget(tmpMap, pTarget->GetGUID());
 
-	if(m_spellInfo->EffectChainTarget[i])
+	if( m_spellInfo->EffectChainTarget[i] )
 	{
-		uint32 jumps=m_spellInfo->EffectChainTarget[i]-1;
-		float range=GetMaxRange(dbcSpellRange.LookupEntry(m_spellInfo->rangeIndex));//this is probably wrong
-		range*=range;
+		//number of additional targets
+		uint32 jumps = m_spellInfo->EffectChainTarget[i] - 1;
+
+		// extra targets by auras
+		if( u_caster )
+			SM_FIValue( u_caster->SM_FAdditionalTargets,(int32*)&jumps, m_spellInfo->SpellGroupType );
+
+		float range = GetMaxRange( dbcSpellRange.LookupEntry( m_spellInfo->rangeIndex ) );//this is probably wrong
+		range *= range;
 		std::set<Object*>::iterator itr,itr2;
 		m_caster->AquireInrangeLock(); //make sure to release lock before exit function !
 		for( itr2 = m_caster->GetInRangeSetBegin(); itr2 != m_caster->GetInRangeSetEnd(); )
