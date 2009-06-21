@@ -4239,6 +4239,10 @@ uint8 Spell::CanCast(bool tolerate)
 					if( !target || target->GetEntry() != 17203) // Nightstalker
 						return SPELL_FAILED_BAD_TARGETS;
 					break;
+				case 47394: // Kurun's Blessing
+					if( !target || target->GetEntry() != 26261) // Grizzly Hills Giant
+						return SPELL_FAILED_BAD_TARGETS;
+					break;
 				default:
 					break;
 			}
