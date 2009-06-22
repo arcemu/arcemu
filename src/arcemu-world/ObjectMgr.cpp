@@ -213,6 +213,11 @@ ObjectMgr::~ObjectMgr()
 	for(HM_NAMESPACE::hash_map<uint32, ArenaTeam*>::iterator itr = m_arenaTeams.begin(); itr != m_arenaTeams.end(); ++itr) {
 		delete (*itr).second;
 	}
+	
+	Log.Notice("ObjectMgr", "Deleting Profession Discoveries...");
+	std::set<ProfessionDiscovery*>::iterator itr = ProfessionDiscoveryTable.begin();
+	for ( ; itr != ProfessionDiscoveryTable.end(); itr++ )
+		delete (*itr);
 
 	Log.Notice("ObjectMgr", "Cleanup BroadCastStorages...");
 	m_BCEntryStorage.clear();
@@ -816,7 +821,8 @@ void ObjectMgr::LoadInstanceBossInfos()
 		this->m_InstanceBossInfoMap[bossInfo->mapid]->insert(InstanceBossInfoMap::value_type(bossInfo->creatureid, bossInfo));
 		cnt++;
 	} while(result->NextRow());
-
+	
+	delete result;
 	Log.Notice("ObjectMgr", "%u boss information loaded.", cnt);
 }
 
@@ -2916,6 +2922,12 @@ void ObjectMgr::LoadMonsterSay()
 
 		if(Event >= NUM_MONSTER_SAY_EVENTS)
 			continue;
+
+		if( mMonsterSays[Event].find( Entry ) != mMonsterSays[Event].end() )
+		{
+			sLog.outError("Duplicate monstersay event %u for entry %u, skipping", Event, Entry	);
+			continue;
+		}
 
 		NpcMonsterSay * ms = new NpcMonsterSay;
 		ms->Chance = fields[2].GetFloat();
