@@ -2295,6 +2295,13 @@ void ApplyNormalFixes()
 			sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
 		}
 
+		//Paladin - Hammer of the Righteous
+		sp = dbcSpell.LookupEntryForced( 53595);
+		if( sp != NULL )
+		{
+			sp->speed = 0;	//without, no damage is done
+		}
+
 		//Paladin - Seal of Blood
 		sp = dbcSpell.LookupEntryForced( 31892 );
 		if( sp != NULL )

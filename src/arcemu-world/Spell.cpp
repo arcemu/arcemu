@@ -4872,6 +4872,14 @@ exit:
 			value = u_caster->GetUInt32Value( UNIT_FIELD_STAT1 ) >> 2;
 		}
 	}
+    else if ( GetProto()->NameHash == SPELL_HASH_HAMMER_OF_THE_RIGHTEOUS )
+	{
+        if( p_caster != NULL )
+		{
+            //4x 1h weapon-dps ->  4*(mindmg+maxdmg)/speed/2 = 2*(mindmg+maxdmg)/speed
+            value = float2int32( ( p_caster->GetFloatValue( UNIT_FIELD_MINDAMAGE ) + p_caster->GetFloatValue( UNIT_FIELD_MAXDAMAGE ) ) / ( float( p_caster->GetUInt32Value( UNIT_FIELD_BASEATTACKTIME ) ) / 1000.0f ) ) << 1;
+        }
+    }
 	else if ( GetProto()->NameHash == SPELL_HASH_BACKSTAB && i == 2 ) // Egari: spell 31220 is interfering with combopoints
 		return GetProto()->EffectBasePoints[i] + 1;
 
