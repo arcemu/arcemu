@@ -109,8 +109,8 @@ public:
 	int8 FindSpecialBag(Item *item);
 
 
-	int8 CanEquipItemInSlot(int8 DstInvSlot, int8 slot, ItemPrototype* item, bool ignore_combat = false, bool skip_2h_check = false, bool titansgrip = false);
-	int8 CanEquipItemInSlot2(int8 DstInvSlot, int8 slot, Item* item, bool ignore_combat = false, bool skip_2h_check = false, bool titansgrip = false);
+	int8 CanEquipItemInSlot(int8 DstInvSlot, int8 slot, ItemPrototype* item, bool ignore_combat = false, bool skip_2h_check = false);
+	int8 CanEquipItemInSlot2(int8 DstInvSlot, int8 slot, Item* item, bool ignore_combat = false, bool skip_2h_check = false);
 	int8 CanReceiveItem(ItemPrototype * item, uint32 amount);
 	int8 CanAffordItem(ItemPrototype * item,uint32 amount, Creature * pVendor);
 	int8 GetItemSlotByType(uint32 type);

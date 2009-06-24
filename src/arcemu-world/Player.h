@@ -1680,6 +1680,9 @@ public:
 	void SendAchievmentStatus(uint32 criteriaid, uint32 new_value, uint32 at_stamp);
 	void SendTriggerMovie( uint32 movieID );
 
+	// DualWield2H (ex: Titan's grip)
+	bool DualWield2H;
+	void ResetDualWield2H();
 public:
 
 	std::string Lfgcomment;

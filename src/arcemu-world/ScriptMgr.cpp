@@ -493,7 +493,7 @@ void GossipScript::GossipHello(Object* pObject, Player* Plr, bool AutoSend)
 	if (pCreature->isVendor())
 		Menu->AddItem(1, Plr->GetSession()->LocalizedWorldSrv(1), 1);
 	
-	if (pCreature->isTrainer() || pCreature->isProf())
+	if( pCreature->isTrainer() || pCreature->isProf() || pCreature->isClass() )
 	{
 		Trainer *pTrainer = pCreature->GetTrainer();
 		if(!pTrainer)
@@ -512,7 +512,8 @@ void GossipScript::GossipHello(Object* pObject, Player* Plr, bool AutoSend)
 			Menu->SetTextID(pTrainer->Can_Train_Gossip_TextId);
 		else
 			Menu->SetTextID(pTrainer->Cannot_Train_GossipTextId);
-        if(pTrainer->TrainerType != TRAINER_TYPE_PET)
+
+		if( pTrainer->TrainerType != TRAINER_TYPE_PET )
 		{
 			string msg = string(Plr->GetSession()->LocalizedWorldSrv(2));
 			if(pTrainer->RequiredClass)
@@ -606,7 +607,12 @@ void GossipScript::GossipHello(Object* pObject, Player* Plr, bool AutoSend)
 		Menu->AddItem(0, Plr->GetSession()->LocalizedWorldSrv(18), 7);
 
 	if (pCreature->isCharterGiver())
-		Menu->AddItem(0, Plr->GetSession()->LocalizedWorldSrv(19), 8);
+	{
+		if( pCreature->isTabardDesigner() )
+			Menu->AddItem(0, "How do I create a guild?", 8);
+		else
+			Menu->AddItem(0, "How do I create a arena team?", 8);
+	}
 
 	if (pCreature->isTabardDesigner())
 		Menu->AddItem(0, Plr->GetSession()->LocalizedWorldSrv(20), 9);

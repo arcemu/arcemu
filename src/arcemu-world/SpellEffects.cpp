@@ -172,11 +172,11 @@ pSpellEffect SpellEffectsHandler[TOTAL_SPELL_EFFECTS]={
 	&Spell::SpellEffectNULL,// unknown - 148
 	&Spell::SpellEffectNULL,// unknown - 149
 	&Spell::SpellEffectNULL,// unknown - 150
-	&Spell::SpellEffectNULL,// Summon Target - 151
+	&Spell::SpellEffectTriggerSpell,// SPELL_EFFECT_TRIGGER_SPELL_2 - 151
 	&Spell::SpellEffectNULL,// Summon Refer-a-Friend - 152
 	&Spell::SpellEffectNULL,// Create tamed pet - 153
 	&Spell::SpellEffectNULL,// unknown - 154
-	&Spell::SpellEffectNULL,// unknown - 155
+	&Spell::SpellEffectDualWield2H,// DualWield2H (ex: Titan's Grip) - 155
 	&Spell::SpellEffectNULL,// unknown - 156
 	&Spell::SpellEffectCreateItem2,	//157
 	&Spell::SpellEffectMilling,// Milling - 158
@@ -7078,4 +7078,12 @@ void Spell::SpellEffectForgetSpecialization(uint32 i)
 	playerTarget->removeSpell( spellid, false, false, 0);
 
 	sLog.outDebug("Player %u have forgot spell %u from spell %u ( caster: %u)", playerTarget->GetLowGUID(), spellid, GetProto()->Id, m_caster->GetLowGUID());
+}
+
+void Spell::SpellEffectDualWield2H( uint32 i )
+{
+	if( !playerTarget )
+		return;
+
+	playerTarget->DualWield2H = true;
 }

@@ -1691,14 +1691,14 @@ int8 ItemInterface::GetInternalBankSlotFromPlayer(int8 islot)
 //Description: checks if the item can be equipped on a specific slot
 //             this will check unique-equipped gems as well
 //-------------------------------------------------------------------//
-int8 ItemInterface::CanEquipItemInSlot2(int8 DstInvSlot, int8 slot, Item* item, bool ignore_combat /* = false */, bool skip_2h_check /* = false */, bool titansgrip /* = false */)
+int8 ItemInterface::CanEquipItemInSlot2( int8 DstInvSlot, int8 slot, Item* item, bool ignore_combat /* = false */, bool skip_2h_check /* = false */ )
 {
 	ItemPrototype *proto = item->GetProto();
 
-	if( int8 ret = CanEquipItemInSlot(DstInvSlot, slot, proto, ignore_combat, skip_2h_check, titansgrip) )
+	if( int8 ret = CanEquipItemInSlot(DstInvSlot, slot, proto, ignore_combat, skip_2h_check) )
 		return ret;
 
-	if((slot < INVENTORY_SLOT_BAG_END && DstInvSlot == INVENTORY_SLOT_NOT_SET) || (slot >= BANK_SLOT_BAG_START && slot < BANK_SLOT_BAG_END && DstInvSlot == INVENTORY_SLOT_NOT_SET))
+	if( ( slot < INVENTORY_SLOT_BAG_END && DstInvSlot == INVENTORY_SLOT_NOT_SET ) || ( slot >= BANK_SLOT_BAG_START && slot < BANK_SLOT_BAG_END && DstInvSlot == INVENTORY_SLOT_NOT_SET ) )
 	{
 		for( uint32 count = 0; count < item->GetSocketsCount(); count++ )
 		{
@@ -1744,7 +1744,7 @@ int8 ItemInterface::CanEquipItemInSlot2(int8 DstInvSlot, int8 slot, Item* item, 
 //-------------------------------------------------------------------//
 //Description: checks if the item can be equipped on a specific slot
 //-------------------------------------------------------------------//
-int8 ItemInterface::CanEquipItemInSlot(int8 DstInvSlot, int8 slot, ItemPrototype* proto, bool ignore_combat /* = false */, bool skip_2h_check /* = false */, bool titansgrip /* = false */)
+int8 ItemInterface::CanEquipItemInSlot( int8 DstInvSlot, int8 slot, ItemPrototype* proto, bool ignore_combat /* = false */, bool skip_2h_check /* = false */ )
 {
 	if ( proto == NULL ) return INV_ERR_ITEMS_CANT_BE_SWAPPED;
 
@@ -1918,15 +1918,15 @@ int8 ItemInterface::CanEquipItemInSlot(int8 DstInvSlot, int8 slot, ItemPrototype
 		}
 	case EQUIPMENT_SLOT_MAINHAND:
 		{
-			if(type == INVTYPE_WEAPON || type == INVTYPE_WEAPONMAINHAND ||
-				(type == INVTYPE_2HWEAPON && (!GetInventoryItem(EQUIPMENT_SLOT_OFFHAND) || skip_2h_check || titansgrip)))
+			if( type == INVTYPE_WEAPON || type == INVTYPE_WEAPONMAINHAND ||
+				( type == INVTYPE_2HWEAPON && ( !GetInventoryItem(EQUIPMENT_SLOT_OFFHAND ) || skip_2h_check || m_pOwner->DualWield2H ) ) )
 				return 0;
 			else
 				return INV_ERR_ITEM_DOESNT_GO_TO_SLOT;
 		}
 	case EQUIPMENT_SLOT_OFFHAND:
 		{
-			if(type == INVTYPE_2HWEAPON && titansgrip)
+			if( ( type == INVTYPE_2HWEAPON || type == INVTYPE_SHIELD ) && m_pOwner->DualWield2H )
 			{
 				return 0;
 			}
@@ -1947,7 +1947,7 @@ int8 ItemInterface::CanEquipItemInSlot(int8 DstInvSlot, int8 slot, ItemPrototype
 						}
 						else
 						{
-							if(!skip_2h_check || !titansgrip)
+							if( !skip_2h_check )
 								return INV_ERR_CANT_EQUIP_WITH_TWOHANDED;
 							else
 								return 0;
@@ -1969,7 +1969,7 @@ int8 ItemInterface::CanEquipItemInSlot(int8 DstInvSlot, int8 slot, ItemPrototype
 				{
 					if(mainweapon->GetProto())
 					{
-						if(mainweapon->GetProto()->InventoryType != INVTYPE_2HWEAPON || titansgrip)
+						if( mainweapon->GetProto()->InventoryType != INVTYPE_2HWEAPON )
 						{
 							return 0;
 						}
@@ -2380,7 +2380,7 @@ int8 ItemInterface::GetItemSlotByType(uint32 type)
 		}
 	case INVTYPE_WEAPON:
 		{
-			if (!GetInventoryItem(EQUIPMENT_SLOT_MAINHAND) )
+			if( !GetInventoryItem( EQUIPMENT_SLOT_MAINHAND ) || !m_pOwner->DualWield2H )
 				return EQUIPMENT_SLOT_MAINHAND;
 			else if(!GetInventoryItem(EQUIPMENT_SLOT_OFFHAND))
 				return EQUIPMENT_SLOT_OFFHAND;

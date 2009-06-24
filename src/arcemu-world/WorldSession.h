@@ -472,6 +472,7 @@ protected:
 	void HandleSwapItemOpcode(WorldPacket& recvPacket);
 	void HandleDestroyItemOpcode(WorldPacket& recvPacket);
 	void HandleAutoEquipItemOpcode(WorldPacket& recvPacket);
+	void HandleAutoEquipItemSlotOpcode(WorldPacket& recvPacket);
 	void HandleItemQuerySingleOpcode(WorldPacket& recvPacket);
 	void HandleSellItemOpcode(WorldPacket& recvPacket);
 	void HandleBuyItemInSlotOpcode(WorldPacket& recvPacket);

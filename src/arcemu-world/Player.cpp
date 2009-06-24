@@ -364,6 +364,7 @@ mOutOfRangeIdCount(0)
 	flying_aura = 0;
 	resend_speed = false;
 	rename_pending = false;
+	DualWield2H = false;
 	iInstanceType		   = 0;
 	memset(reputationByListId, 0, sizeof(FactionReputation*) * 128);
 
@@ -6848,6 +6849,41 @@ void Player::Reset_Spells()
   mDeletedSpells.clear();
 }
 
+void Player::ResetDualWield2H()
+{
+	DualWield2H = false;
+
+	if( !GetItemInterface() )
+		return;
+
+	Item *mainhand = GetItemInterface()->GetInventoryItem( INVENTORY_SLOT_NOT_SET, EQUIPMENT_SLOT_MAINHAND );
+	Item *offhand = GetItemInterface()->GetInventoryItem( INVENTORY_SLOT_NOT_SET, EQUIPMENT_SLOT_OFFHAND );
+	if( offhand && ( offhand->GetProto()->InventoryType == INVTYPE_2HWEAPON ||
+		mainhand && mainhand->GetProto()->InventoryType == INVTYPE_2HWEAPON ) )
+	{
+		// we need to de-equip this
+		offhand = GetItemInterface()->SafeRemoveAndRetreiveItemFromSlot( INVENTORY_SLOT_NOT_SET, EQUIPMENT_SLOT_OFFHAND, false );
+		if( offhand == NULL )
+			return; // should never happen
+		SlotResult result = GetItemInterface()->FindFreeInventorySlot( offhand->GetProto() );
+		if( !result.Result )
+		{
+			// no free slots for this item, try to send it by mail
+			offhand->RemoveFromWorld();
+			offhand->SetOwner( NULL );
+			offhand->SaveToDB( INVENTORY_SLOT_NOT_SET, 0, true, NULL );
+			sMailSystem.SendAutomatedMessage( NORMAL, GetGUID(), GetGUID(), "Your offhand item", "", 0, 0, offhand->GetUInt32Value( OBJECT_FIELD_GUID), MAIL_STATIONERY_GM );
+			offhand->DeleteMe();
+			offhand = NULL;
+		}
+		else if( !GetItemInterface()->SafeAddItem( offhand, result.ContainerSlot, result.Slot) && !GetItemInterface()->AddItemToFreeSlot( offhand ) ) // shouldn't happen either.
+		{
+			offhand->DeleteMe();
+			offhand = NULL;
+		}
+	}
+}
+
 void Player::Reset_Talents()
 {
 	unsigned int numRows = dbcTalent.GetNumRows();
@@ -6900,6 +6936,10 @@ void Player::Reset_Talents()
 		SetUInt32Value(PLAYER_CHARACTER_POINTS1, 0);
 	}
 
+	if( DualWield2H )
+	{
+		ResetDualWield2H();
+	}
 }
 
 void Player::Reset_ToLevel1()

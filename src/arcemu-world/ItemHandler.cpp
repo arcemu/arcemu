@@ -423,7 +423,6 @@ void WorldSession::HandleSwapInvItemOpcode( WorldPacket & recv_data )
 	int8 error=0;
 
 	recv_data >> srcslot >> dstslot;
-	bool titansgrip = GetPlayer()->HasSpell(46917);
 
 	sLog.outDetail("ITEM: swap, src slot: %u dst slot: %u", (uint32)srcslot, (uint32)dstslot);
 
@@ -463,7 +462,7 @@ void WorldSession::HandleSwapInvItemOpcode( WorldPacket & recv_data )
 		return;
 	}
 	
-	if( ( error = _player->GetItemInterface()->CanEquipItemInSlot2( INVENTORY_SLOT_NOT_SET, dstslot, srcitem, skip_combat, false, titansgrip ) )  != 0)
+	if( ( error = _player->GetItemInterface()->CanEquipItemInSlot2( INVENTORY_SLOT_NOT_SET, dstslot, srcitem, skip_combat, false ) )  != 0)
 	{
 		if( dstslot < INVENTORY_KEYRING_END )
 		{
@@ -684,71 +683,28 @@ void WorldSession::HandleAutoEquipItemOpcode( WorldPacket & recv_data )
 		return;
 	}
 
-	bool titansgrip = false; // with Titan's Grip: 2h Axe, 2h Mace, and 2h Sword count as 1h weapon (allow dual wield or shield)
-	bool main1h = false;
-	bool eitem1h = false;
-	bool dualwield = false;
-
-	if(Slot == EQUIPMENT_SLOT_MAINHAND || Slot == EQUIPMENT_SLOT_OFFHAND)
+	// handle equipping of 2h when we have two items equipped! :) special case.
+	if ((Slot == EQUIPMENT_SLOT_MAINHAND || Slot == EQUIPMENT_SLOT_OFFHAND) && !_player->DualWield2H)
 	{
-		titansgrip = GetPlayer()->HasSpell(46917);
-		dualwield = GetPlayer()->_HasSkillLine(SKILL_DUAL_WIELD);
-		Item * mainhandweapon = _player->GetItemInterface()->GetInventoryItem(INVENTORY_SLOT_NOT_SET, EQUIPMENT_SLOT_MAINHAND);
-		if(mainhandweapon!=NULL && (mainhandweapon->GetProto()->InventoryType==INVTYPE_WEAPON ||     // 1h weapon
-			mainhandweapon->GetProto()->InventoryType==INVTYPE_WEAPONMAINHAND ||                      // main hand (1h) weapon
-			(titansgrip && (mainhandweapon->GetProto()->SubClass==ITEM_SUBCLASS_WEAPON_TWOHAND_AXE || // titan's grip - treat 2h axe,
-			mainhandweapon->GetProto()->SubClass==ITEM_SUBCLASS_WEAPON_TWOHAND_MACE ||                // 2h mace
-			mainhandweapon->GetProto()->SubClass==ITEM_SUBCLASS_WEAPON_TWOHAND_SWORD) ) ) )           // 2h sword as 1h
+		Item *mainhandweapon = _player->GetItemInterface()->GetInventoryItem(INVENTORY_SLOT_NOT_SET, EQUIPMENT_SLOT_MAINHAND);
+		if( mainhandweapon != NULL && mainhandweapon->GetProto()->InventoryType == INVTYPE_2HWEAPON )
 		{
-			main1h = true;
-		}
-		switch(eitem->GetProto()->InventoryType)
-		{
-			case INVTYPE_WEAPON:
-			case INVTYPE_WEAPONMAINHAND:
-			case INVTYPE_WEAPONOFFHAND:
-				eitem1h = true; // actual 1h weapon
-				break;
-			case INVTYPE_2HWEAPON: // actual 2h weapon, check titan's grip and weapon type to see if it counts as 1h weapon
-				if(titansgrip && (eitem->GetProto()->SubClass==ITEM_SUBCLASS_WEAPON_TWOHAND_AXE || // 2h axe
-					eitem->GetProto()->SubClass==ITEM_SUBCLASS_WEAPON_TWOHAND_MACE ||               // 2h mace
-					eitem->GetProto()->SubClass==ITEM_SUBCLASS_WEAPON_TWOHAND_SWORD) )              // 2h sword
-				{
-					eitem1h = true; // these count as 1h weapons with titan's grip
-				}
-				break;
-			default: // not a 1h or 2h weapon, other (off-hand) item
-				eitem1h = true;
-				Slot = EQUIPMENT_SLOT_OFFHAND;
-				break;
-		}
-		if(Slot == EQUIPMENT_SLOT_OFFHAND) // check whether it should really go in main hand
-		{
-			if(!dualwield) // not dual-wielding
-			{
-				if(eitem->GetProto()->InventoryType==INVTYPE_WEAPON || eitem->GetProto()->InventoryType==INVTYPE_2HWEAPON || eitem->GetProto()->InventoryType==INVTYPE_WEAPONMAINHAND) // equipping a weapon, should go in main hand.
-				{
-					Slot = EQUIPMENT_SLOT_MAINHAND;
-				}
-			}
-			else if(!eitem1h) // dual-wield is available, but equipping 2h weapon, so replace mainhand weapon
-			{
-				Slot = EQUIPMENT_SLOT_MAINHAND;
-			}
-			else if(!main1h) // dual-wield is available, but main hand is 2h weapon, so replace it
+			if( Slot == EQUIPMENT_SLOT_OFFHAND && eitem->GetProto()->InventoryType == INVTYPE_WEAPON )
 			{
 				Slot = EQUIPMENT_SLOT_MAINHAND;
 			}
 		}
-		if((error = _player->GetItemInterface()->CanEquipItemInSlot2(INVENTORY_SLOT_NOT_SET, Slot, eitem, true, true, titansgrip)) != 0)
+
+		if( error = _player->GetItemInterface()->CanEquipItemInSlot(INVENTORY_SLOT_NOT_SET, Slot, eitem->GetProto(), true, true) )
 		{
 			_player->GetItemInterface()->BuildInventoryChangeError(eitem,NULL, error);
 			return;
 		}
-		if(!eitem1h)
+
+		if( eitem->GetProto()->InventoryType == INVTYPE_2HWEAPON )
 		{
 			// see if we have a weapon equipped in the offhand, if so we need to remove it
-			Item * offhandweapon = _player->GetItemInterface()->GetInventoryItem(INVENTORY_SLOT_NOT_SET, EQUIPMENT_SLOT_OFFHAND);
+			Item *offhandweapon = _player->GetItemInterface()->GetInventoryItem(INVENTORY_SLOT_NOT_SET, EQUIPMENT_SLOT_OFFHAND);
 			if( offhandweapon != NULL )
 			{
 				// we need to de-equip this
@@ -756,56 +712,62 @@ void WorldSession::HandleAutoEquipItemOpcode( WorldPacket & recv_data )
 				if( !result.Result )
 				{
 					// no free slots for this item
-					_player->GetItemInterface()->BuildInventoryChangeError(eitem,NULL, INV_ERR_BAG_FULL);
+					_player->GetItemInterface()->BuildInventoryChangeError(eitem, NULL, INV_ERR_BAG_FULL);
 					return;
 				}
 
 				offhandweapon = _player->GetItemInterface()->SafeRemoveAndRetreiveItemFromSlot(INVENTORY_SLOT_NOT_SET, EQUIPMENT_SLOT_OFFHAND, false);
 				if( offhandweapon == NULL )
-					return;		// should never happen
+					return; // should never happen
 
-				if( !_player->GetItemInterface()->SafeAddItem(offhandweapon, result.ContainerSlot, result.Slot) )
-					if( !_player->GetItemInterface()->AddItemToFreeSlot(offhandweapon) )		// shouldn't happen either.
-						offhandweapon->DeleteMe();
+				if( !_player->GetItemInterface()->SafeAddItem( offhandweapon, result.ContainerSlot, result.Slot ) && !_player->GetItemInterface()->AddItemToFreeSlot( offhandweapon ) ) // shouldn't happen either.
+				{
+					offhandweapon->DeleteMe();
+					offhandweapon = NULL;
+				}
 			}
 		}
-		else if(!main1h)
+		else
 		{
 			// can't equip a non-two-handed weapon with a two-handed weapon
-			if( mainhandweapon )
+			mainhandweapon = _player->GetItemInterface()->GetInventoryItem( INVENTORY_SLOT_NOT_SET, EQUIPMENT_SLOT_MAINHAND );
+			if( mainhandweapon != NULL && mainhandweapon->GetProto()->InventoryType == INVTYPE_2HWEAPON )
 			{
 				// we need to de-equip this
 				SlotResult result = _player->GetItemInterface()->FindFreeInventorySlot(mainhandweapon->GetProto());
 				if( !result.Result )
 				{
 					// no free slots for this item
-					_player->GetItemInterface()->BuildInventoryChangeError(eitem,NULL, INV_ERR_BAG_FULL);
+					_player->GetItemInterface()->BuildInventoryChangeError( eitem, NULL, INV_ERR_BAG_FULL );
 					return;
 				}
 
-				mainhandweapon = _player->GetItemInterface()->SafeRemoveAndRetreiveItemFromSlot(INVENTORY_SLOT_NOT_SET, EQUIPMENT_SLOT_MAINHAND, false);
+				mainhandweapon = _player->GetItemInterface()->SafeRemoveAndRetreiveItemFromSlot( INVENTORY_SLOT_NOT_SET, EQUIPMENT_SLOT_MAINHAND, false );
 				if( mainhandweapon == NULL )
-					return;		// should never happen
+					return; // should never happen
 
-				if( !_player->GetItemInterface()->SafeAddItem(mainhandweapon, result.ContainerSlot, result.Slot) )
-					if( !_player->GetItemInterface()->AddItemToFreeSlot(mainhandweapon) )		// shouldn't happen either.
-						mainhandweapon->DeleteMe();
+				if( !_player->GetItemInterface()->SafeAddItem( mainhandweapon, result.ContainerSlot, result.Slot ) && !_player->GetItemInterface()->AddItemToFreeSlot( mainhandweapon ) )    // shouldn't happen either.
+				{
+					mainhandweapon->DeleteMe();
+					mainhandweapon = NULL;
+				}
 			}
-		}
-	}
-	else if( Slot <= INVENTORY_SLOT_BAG_END )
-	{
-		if((error = _player->GetItemInterface()->CanEquipItemInSlot2(INVENTORY_SLOT_NOT_SET, Slot, eitem, false, false, titansgrip)) != 0)
-		{
-			_player->GetItemInterface()->BuildInventoryChangeError(eitem,NULL, error);
-			return;
 		}
 	}
 	else
 	{
-		if((error = _player->GetItemInterface()->CanEquipItemInSlot2(INVENTORY_SLOT_NOT_SET, Slot, eitem)) != 0)
+		if( error = _player->GetItemInterface()->CanEquipItemInSlot( INVENTORY_SLOT_NOT_SET, Slot, eitem->GetProto(), false, false ) )
 		{
-			_player->GetItemInterface()->BuildInventoryChangeError(eitem,NULL, error);
+			_player->GetItemInterface()->BuildInventoryChangeError( eitem, NULL, error );
+			return;
+		}
+	}
+
+	if( Slot <= INVENTORY_SLOT_BAG_END )
+	{
+		if( error = _player->GetItemInterface()->CanEquipItemInSlot( INVENTORY_SLOT_NOT_SET, Slot, eitem->GetProto(), false, false ) )
+		{
+			_player->GetItemInterface()->BuildInventoryChangeError( eitem, NULL, error );
 			return;
 		}
 	}
@@ -818,19 +780,19 @@ void WorldSession::HandleAutoEquipItemOpcode( WorldPacket & recv_data )
 	}
 	else
 	{
-		eitem=_player->GetItemInterface()->SafeRemoveAndRetreiveItemFromSlot(SrcInvSlot,SrcSlot, false);
-		oitem=_player->GetItemInterface()->SafeRemoveAndRetreiveItemFromSlot(INVENTORY_SLOT_NOT_SET, Slot, false);
+		eitem = _player->GetItemInterface()->SafeRemoveAndRetreiveItemFromSlot( SrcInvSlot, SrcSlot, false );
+		oitem = _player->GetItemInterface()->SafeRemoveAndRetreiveItemFromSlot( INVENTORY_SLOT_NOT_SET, Slot, false );
 		if(oitem)
 		{
-			result = _player->GetItemInterface()->SafeAddItem(oitem,SrcInvSlot,SrcSlot);
-			if(!result)
+			result = _player->GetItemInterface()->SafeAddItem( oitem, SrcInvSlot, SrcSlot );
+			if( !result )
 			{
 				sLog.outError("HandleAutoEquip: Error while adding item to SrcSlot");
 				oitem->DeleteMe();
 				oitem = NULL;
 			}
 		}
-		result = _player->GetItemInterface()->SafeAddItem(eitem, INVENTORY_SLOT_NOT_SET, Slot);
+		result = _player->GetItemInterface()->SafeAddItem( eitem, INVENTORY_SLOT_NOT_SET, Slot );
 		if(!result)
 		{
 			sLog.outError("HandleAutoEquip: Error while adding item to Slot");
@@ -841,16 +803,82 @@ void WorldSession::HandleAutoEquipItemOpcode( WorldPacket & recv_data )
 		
 	}
 
-	if(eitem->GetProto()->Bonding==ITEM_BIND_ON_EQUIP)
+	if( eitem->GetProto()->Bonding==ITEM_BIND_ON_EQUIP )
 		eitem->SoulBind();
-	_player->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_EQUIP_ITEM, eitem->GetProto()->ItemId, 0, 0);
+	_player->GetAchievementMgr().UpdateAchievementCriteria( ACHIEVEMENT_CRITERIA_TYPE_EQUIP_ITEM, eitem->GetProto()->ItemId, 0, 0 );
 	// Achievement ID:556 description Equip an epic item in every slot with a minimum item level of 213.
 	// "213" value not found in achievement or criteria entries, have to hard-code it here? :(
 	// Achievement ID:557 description Equip a superior item in every slot with a minimum item level of 187.
 	// "187" value not found in achievement or criteria entries, have to hard-code it here? :(
-	if( (eitem->GetProto()->Quality == ITEM_QUALITY_RARE_BLUE && eitem->GetProto()->ItemLevel >= 187) ||
-		(eitem->GetProto()->Quality == ITEM_QUALITY_EPIC_PURPLE && eitem->GetProto()->ItemLevel >= 213) )
-		_player->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_EQUIP_EPIC_ITEM, Slot, eitem->GetProto()->Quality, 0);
+	if( ( eitem->GetProto()->Quality == ITEM_QUALITY_RARE_BLUE && eitem->GetProto()->ItemLevel >= 187 ) ||
+		( eitem->GetProto()->Quality == ITEM_QUALITY_EPIC_PURPLE && eitem->GetProto()->ItemLevel >= 213 ) )
+		_player->GetAchievementMgr().UpdateAchievementCriteria( ACHIEVEMENT_CRITERIA_TYPE_EQUIP_EPIC_ITEM, Slot, eitem->GetProto()->Quality, 0 );
+}
+
+void WorldSession::HandleAutoEquipItemSlotOpcode( WorldPacket& recvData )
+{
+	sLog.outDetail( "WORLD: Received CMSG_AUTOEQUIP_ITEM_SLOT");
+	CHECK_PACKET_SIZE( recvData, 8 + 1 );
+	uint64 itemguid;
+	int8 destSlot;
+	int8 error = 0;
+	recvData >> itemguid >> destSlot;
+
+	int8	srcSlot		= _player->GetItemInterface()->GetInventorySlotByGuid(itemguid);
+	Item	*item		= _player->GetItemInterface()->GetItemByGUID(itemguid);
+	int8	slotType	= _player->GetItemInterface()->GetItemSlotByType(item->GetProto()->InventoryType);
+	bool	hasDualWield2H	= false;
+
+	sLog.outDebug("ITEM: AutoEquipItemSlot, ItemGUID: %u, SrcSlot: %i, DestSlot: %i, SlotType: %i", itemguid, srcSlot, destSlot, slotType);
+
+	if (item == NULL || srcSlot == destSlot)
+		return;
+
+	if( _player->DualWield2H && ( slotType == EQUIPMENT_SLOT_OFFHAND || slotType == EQUIPMENT_SLOT_MAINHAND ) )
+		hasDualWield2H = true;
+
+	// Handle destination slot checking.
+	if( destSlot == slotType || hasDualWield2H )
+	{
+		uint32 invType = item->GetProto()->InventoryType;
+		if( invType == INVTYPE_WEAPON        || invType == INVTYPE_WEAPONMAINHAND ||
+			invType == INVTYPE_WEAPONOFFHAND || invType == INVTYPE_2HWEAPON )
+		{
+			Item *mainHand = _player->GetItemInterface()->GetInventoryItem( INVENTORY_SLOT_NOT_SET, EQUIPMENT_SLOT_MAINHAND );
+			Item *offHand  = _player->GetItemInterface()->GetInventoryItem( INVENTORY_SLOT_NOT_SET, EQUIPMENT_SLOT_OFFHAND );
+
+			if( mainHand != NULL && offHand != NULL && !_player->DualWield2H )
+			{ // No DualWield2H like Titan's grip. Unequip offhand.
+				SlotResult result = _player->GetItemInterface()->FindFreeInventorySlot( offHand->GetProto() );
+				if( !result.Result )
+				{
+					// No free slots for this item.
+					_player->GetItemInterface()->BuildInventoryChangeError( offHand, NULL, INV_ERR_BAG_FULL );
+					return;
+				}
+				mainHand = _player->GetItemInterface()->SafeRemoveAndRetreiveItemFromSlot( INVENTORY_SLOT_NOT_SET, EQUIPMENT_SLOT_OFFHAND, false );
+				_player->GetItemInterface()->AddItemToFreeSlot( offHand );
+				_player->GetItemInterface()->SwapItemSlots( srcSlot, destSlot ); // Now swap Main hand with 2H weapon.
+			}
+			else
+			{ // Swap 2H with 2H or 2H with 1H if player has DualWield2H (ex: Titans Grip).
+				_player->GetItemInterface()->SwapItemSlots( srcSlot, destSlot );
+			}
+		}
+		else if( destSlot == slotType )
+		{ // If item slot types match, swap.
+			_player->GetItemInterface()->SwapItemSlots( srcSlot, destSlot );
+		}
+		else
+		{ // Item slots do not match. We get here only for players who have DualWield2H (ex: Titans Grip).
+			_player->GetItemInterface()->BuildInventoryChangeError( item, NULL, INV_ERR_ITEM_DOESNT_GO_TO_SLOT );
+		}
+		return;
+	}
+	else
+	{ // Item slots do not match.
+		_player->GetItemInterface()->BuildInventoryChangeError( item, NULL, INV_ERR_ITEM_DOESNT_GO_TO_SLOT );
+	}
 }
 
 void WorldSession::HandleItemQuerySingleOpcode( WorldPacket & recv_data )
