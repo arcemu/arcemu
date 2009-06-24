@@ -901,7 +901,7 @@ bool ChatHandler::HandleResetSpellsCommand(const char* args, WorldSession *m_ses
 	plr->Reset_Spells();
 
 	SystemMessage(m_session, "Reset spells of %s to level 1.", plr->GetName());;
-	BlueSystemMessage(m_session, "%s reset all your spells to starting values.", m_session->GetPlayer()->GetName());
+	BlueSystemMessageToPlr(plr, "%s reset all your spells to starting values.", m_session->GetPlayer()->GetName());
 	sGMLog.writefromsession(m_session, "reset spells of %s", plr->GetName());
 	return true;
 }
