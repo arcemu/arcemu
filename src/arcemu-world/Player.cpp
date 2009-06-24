@@ -2091,7 +2091,7 @@ void Player::addSpell(uint32 spell_id)
 				break;
 			case SKILL_TYPE_CLASS:
 			case SKILL_TYPE_ARMOR:
-				if(skill->id == SKILL_LOCKPICKING || skill->id == SKILL_POISONS)
+				if(skill->id == SKILL_LOCKPICKING )
 					max=5*getLevel();
 				break;
 		};
@@ -10690,7 +10690,7 @@ void Player::_UpdateMaxSkillCounts()
 	uint32 new_max;
 	for(SkillMap::iterator itr = m_skills.begin(); itr != m_skills.end(); ++itr)
 	{
-		if(itr->second.Skill->type == SKILL_TYPE_WEAPON || itr->second.Skill->id == SKILL_LOCKPICKING || itr->second.Skill->id == SKILL_POISONS)
+		if(itr->second.Skill->type == SKILL_TYPE_WEAPON || itr->second.Skill->id == SKILL_LOCKPICKING )
 		{
 			new_max = 5 * getLevel();
 		}

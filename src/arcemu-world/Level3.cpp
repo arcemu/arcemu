@@ -840,9 +840,6 @@ bool ChatHandler::HandleIncreaseWeaponSkill(const char *args, WorldSession *m_se
 		case 16: // thrown
 			SubClassSkill = SKILL_THROWN;
 			break;
-		case 17: // spears
-			SubClassSkill = SKILL_SPEARS;
-			break;
 		case 18: // crossbows
 			SubClassSkill = SKILL_CROSSBOWS;
 			break;

@@ -8687,7 +8687,6 @@ void Aura::SpellAuraIncreaseAllWeaponSkill(bool apply)
 			static_cast< Player* >( m_target )->_ModifySkillBonus(SKILL_2H_AXES, mod->m_amount);
 			static_cast< Player* >( m_target )->_ModifySkillBonus(SKILL_DAGGERS, mod->m_amount);
 			static_cast< Player* >( m_target )->_ModifySkillBonus(SKILL_CROSSBOWS, mod->m_amount);
-			static_cast< Player* >( m_target )->_ModifySkillBonus(SKILL_SPEARS, mod->m_amount);
 			static_cast< Player* >( m_target )->_ModifySkillBonus(SKILL_WANDS, mod->m_amount);
 			static_cast< Player* >( m_target )->_ModifySkillBonus(SKILL_POLEARMS, mod->m_amount);
 		}
@@ -8705,7 +8704,6 @@ void Aura::SpellAuraIncreaseAllWeaponSkill(bool apply)
 			static_cast< Player* >( m_target )->_ModifySkillBonus(SKILL_2H_AXES, -mod->m_amount);
 			static_cast< Player* >( m_target )->_ModifySkillBonus(SKILL_DAGGERS, -mod->m_amount);
 			static_cast< Player* >( m_target )->_ModifySkillBonus(SKILL_CROSSBOWS, -mod->m_amount);
-			static_cast< Player* >( m_target )->_ModifySkillBonus(SKILL_SPEARS, -mod->m_amount);
 			static_cast< Player* >( m_target )->_ModifySkillBonus(SKILL_WANDS, -mod->m_amount);
 			static_cast< Player* >( m_target )->_ModifySkillBonus(SKILL_POLEARMS, -mod->m_amount);
 		}
