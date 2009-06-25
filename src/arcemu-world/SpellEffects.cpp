@@ -1068,10 +1068,10 @@ out:
 			case 20214:
 			case 20215:
 				{
-					if(!p_caster) return;
+					if( p_caster == NULL )
+						return;
 					SpellEntry * sp = p_caster->last_heal_spell ? p_caster->last_heal_spell : GetProto();
-					uint32 cost = float2int32( float( float(sp->manaCost) * 0.6f ) );
-					p_caster->Energize(p_caster, 20272, cost, POWER_TYPE_MANA );
+					p_caster->Energize( p_caster, 20272, 60 * u_caster->GetUInt32Value( UNIT_FIELD_BASE_MANA ) * sp->ManaCostPercentage / 10000, POWER_TYPE_MANA );
 				}break;
 			case 38443:
 				{
@@ -3232,13 +3232,6 @@ void Spell::SpellEffectEnergize(uint32 i) // Energize
 	//yess there is always someone special : shamanistic rage - talent
 	if(GetProto()->Id == 30824)
 		modEnergy = damage*GetUnitTarget()->GetAP() / 100;
-	//paladin illumination
-	else if(GetProto()->Id == 20272 && ProcedOnSpell)
-	{
-		SpellEntry *motherspell = dbcSpell.LookupEntry(pSpellId);
-		if(motherspell)
-			modEnergy = (motherspell->EffectBasePoints[0]+1)*ProcedOnSpell->manaCost / 100;
-	}
 	//paladin - Spiritual Attunement
 	else if(GetProto()->Id == 31786 && ProcedOnSpell)
 	{
