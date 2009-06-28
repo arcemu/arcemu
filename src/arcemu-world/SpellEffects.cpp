@@ -180,7 +180,7 @@ pSpellEffect SpellEffectsHandler[TOTAL_SPELL_EFFECTS]={
 	&Spell::SpellEffectNULL,// unknown - 156
 	&Spell::SpellEffectCreateItem2,	//157
 	&Spell::SpellEffectMilling,// Milling - 158
-	&Spell::SpellEffectNULL,// unknown - 159
+	&Spell::SpellEffectRenamePet,// Allow pet rename - 159
 };
 
 const char* SpellEffectNames[TOTAL_SPELL_EFFECTS] = {
@@ -7079,4 +7079,13 @@ void Spell::SpellEffectDualWield2H( uint32 i )
 		return;
 
 	playerTarget->DualWield2H = true;
+}
+
+void Spell::SpellEffectRenamePet( uint32 i )
+{
+	if( !unitTarget || !unitTarget->IsPet() || 
+		!static_cast<Pet*>(unitTarget)->GetPetOwner() || static_cast<Pet*>(unitTarget)->GetPetOwner()->getClass() != HUNTER )
+		return;
+
+	unitTarget->SetByte( UNIT_FIELD_BYTES_2, 2, 0x3 );
 }
