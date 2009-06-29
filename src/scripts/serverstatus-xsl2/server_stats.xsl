@@ -228,6 +228,56 @@
 				<xsl:when test="map = 566">Eye of the Storm</xsl:when>
 
 				<xsl:when test="map = 568">Zul'Aman</xsl:when>
+				<!-- WOTLK maps names from NCDB  rev 95-->
+				<xsl:when test="map = 571">Northrend</xsl:when>
+				<xsl:when test="map = 572">Ruins of Lordaeron</xsl:when>
+				<xsl:when test="map = 573">ExteriorTest</xsl:when>
+				<xsl:when test="map = 574">Utgarde Keep</xsl:when>
+				<xsl:when test="map = 575">Utgarde Pinnacle</xsl:when>
+				<xsl:when test="map = 576">The Nexus</xsl:when>
+				<xsl:when test="map = 578">The Oculus</xsl:when>
+				<xsl:when test="map = 580">The Sunwell</xsl:when>
+				<xsl:when test="map = 582">Transport: Ruttheran to Auberdine</xsl:when>
+				<xsl:when test="map = 584">Transport: Menethil to Theramore</xsl:when>
+				<xsl:when test="map = 585">Magisters' Terrace</xsl:when>
+				<xsl:when test="map = 586">Transport: Exodar to Auberdine</xsl:when>
+				<xsl:when test="map = 587">Transport: Feathermoon Ferry</xsl:when>
+				<xsl:when test="map = 588">Transport: Orgrimmar to GromGol</xsl:when>
+				<xsl:when test="map = 589">Transport: Menethil to Auberdine</xsl:when>
+				<xsl:when test="map = 590">Transport: GromGol to Undercity</xsl:when>
+				<xsl:when test="map = 591">Transport: Undercity to Orgrimmar</xsl:when>
+				<xsl:when test="map = 592">Transport: Borean Tundra Test</xsl:when>
+				<xsl:when test="map = 593">Transport: Booty Bay to Ratchet</xsl:when>
+				<xsl:when test="map = 594">Transport: Howling Fjord Sister Mercy (Quest)</xsl:when>
+				<xsl:when test="map = 595">The Culling of Stratholme</xsl:when>
+				<xsl:when test="map = 596">Transport: Naglfar</xsl:when>
+				<xsl:when test="map = 597">Craig Test</xsl:when>
+				<xsl:when test="map = 598">Sunwell Fix (Unused)</xsl:when>
+				<xsl:when test="map = 599">Halls of Stone</xsl:when>
+				<xsl:when test="map = 600">Drak'Tharon Keep</xsl:when>
+				<xsl:when test="map = 601">Azjol-Nerub</xsl:when>
+				<xsl:when test="map = 602">Halls of Lightning</xsl:when>
+				<xsl:when test="map = 603">Ulduar</xsl:when>
+				<xsl:when test="map = 604">Gundrak</xsl:when>
+				<xsl:when test="map = 605">Development Land (non-weighted textures)</xsl:when>
+				<xsl:when test="map = 606">QA and DVD</xsl:when>
+				<xsl:when test="map = 607">Strand of the Ancients</xsl:when>
+				<xsl:when test="map = 608">Violet Hold</xsl:when>
+				<xsl:when test="map = 609">Ebon Hold</xsl:when>
+				<xsl:when test="map = 610">Transport: Tirisfal to Vengeance Landing</xsl:when>
+				<xsl:when test="map = 612">Transport: Menethil to Valgarde</xsl:when>
+				<xsl:when test="map = 613">Transport: Orgrimmar to Warsong Hold</xsl:when>
+				<xsl:when test="map = 614">Transport: Stormwind to Valiance Keep</xsl:when>
+				<xsl:when test="map = 615">The Obsidian Sanctum</xsl:when>
+				<xsl:when test="map = 616">The Eye of Eternity</xsl:when>
+				<xsl:when test="map = 617">Dalaran Sewers</xsl:when>
+				<xsl:when test="map = 618">The Ring of Valor</xsl:when>
+				<xsl:when test="map = 619">Ahn'kahet: The Old Kingdom</xsl:when>
+				<xsl:when test="map = 620">Transport: Moa'ki to Unu'pe</xsl:when>
+				<xsl:when test="map = 621">Transport: Moa'ki to Kamagua</xsl:when>
+				<xsl:when test="map = 622">Transport: Orgrim's Hammer</xsl:when>
+				<xsl:when test="map = 623">Transport: The Skybreaker</xsl:when>
+				<xsl:when test="map = 624">Wintergrasp Raid</xsl:when>
 				</xsl:choose>&quot; , <xsl:value-of select="map" /> , <xsl:value-of select="players" /> , <xsl:value-of select="maxplayers" /> , &quot;<xsl:value-of select="maptype" />&quot; , &quot;<xsl:value-of select="creationtime" />&quot; , &quot;<xsl:value-of select="expirytime" />&quot; );
 </xsl:for-each>
 	FieldSortDirection2[1] = !FieldSortDirection2[1];
@@ -341,6 +391,56 @@ DoSort( 1 , 2 );
 <xsl:when test="map = 565">Gruul's Lair</xsl:when>
 <xsl:when test="map = 566">Eye of the Storm</xsl:when>
 <xsl:when test="map = 568">Zul'Aman</xsl:when>
+<!-- WOTLK maps names from NCDB  rev 95-->
+<xsl:when test="map = 571">Northrend</xsl:when>
+<xsl:when test="map = 572">Ruins of Lordaeron</xsl:when>
+<xsl:when test="map = 573">ExteriorTest</xsl:when>
+<xsl:when test="map = 574">Utgarde Keep</xsl:when>
+<xsl:when test="map = 575">Utgarde Pinnacle</xsl:when>
+<xsl:when test="map = 576">The Nexus</xsl:when>
+<xsl:when test="map = 578">The Oculus</xsl:when>
+<xsl:when test="map = 580">The Sunwell</xsl:when>
+<xsl:when test="map = 582">Transport: Ruttheran to Auberdine</xsl:when>
+<xsl:when test="map = 584">Transport: Menethil to Theramore</xsl:when>
+<xsl:when test="map = 585">Magisters' Terrace</xsl:when>
+<xsl:when test="map = 586">Transport: Exodar to Auberdine</xsl:when>
+<xsl:when test="map = 587">Transport: Feathermoon Ferry</xsl:when>
+<xsl:when test="map = 588">Transport: Orgrimmar to GromGol</xsl:when>
+<xsl:when test="map = 589">Transport: Menethil to Auberdine</xsl:when>
+<xsl:when test="map = 590">Transport: GromGol to Undercity</xsl:when>
+<xsl:when test="map = 591">Transport: Undercity to Orgrimmar</xsl:when>
+<xsl:when test="map = 592">Transport: Borean Tundra Test</xsl:when>
+<xsl:when test="map = 593">Transport: Booty Bay to Ratchet</xsl:when>
+<xsl:when test="map = 594">Transport: Howling Fjord Sister Mercy (Quest)</xsl:when>
+<xsl:when test="map = 595">The Culling of Stratholme</xsl:when>
+<xsl:when test="map = 596">Transport: Naglfar</xsl:when>
+<xsl:when test="map = 597">Craig Test</xsl:when>
+<xsl:when test="map = 598">Sunwell Fix (Unused)</xsl:when>
+<xsl:when test="map = 599">Halls of Stone</xsl:when>
+<xsl:when test="map = 600">Drak'Tharon Keep</xsl:when>
+<xsl:when test="map = 601">Azjol-Nerub</xsl:when>
+<xsl:when test="map = 602">Halls of Lightning</xsl:when>
+<xsl:when test="map = 603">Ulduar</xsl:when>
+<xsl:when test="map = 604">Gundrak</xsl:when>
+<xsl:when test="map = 605">Development Land (non-weighted textures)</xsl:when>
+<xsl:when test="map = 606">QA and DVD</xsl:when>
+<xsl:when test="map = 607">Strand of the Ancients</xsl:when>
+<xsl:when test="map = 608">Violet Hold</xsl:when>
+<xsl:when test="map = 609">Ebon Hold</xsl:when>
+<xsl:when test="map = 610">Transport: Tirisfal to Vengeance Landing</xsl:when>
+<xsl:when test="map = 612">Transport: Menethil to Valgarde</xsl:when>
+<xsl:when test="map = 613">Transport: Orgrimmar to Warsong Hold</xsl:when>
+<xsl:when test="map = 614">Transport: Stormwind to Valiance Keep</xsl:when>
+<xsl:when test="map = 615">The Obsidian Sanctum</xsl:when>
+<xsl:when test="map = 616">The Eye of Eternity</xsl:when>
+<xsl:when test="map = 617">Dalaran Sewers</xsl:when>
+<xsl:when test="map = 618">The Ring of Valor</xsl:when>
+<xsl:when test="map = 619">Ahn'kahet: The Old Kingdom</xsl:when>
+<xsl:when test="map = 620">Transport: Moa'ki to Unu'pe</xsl:when>
+<xsl:when test="map = 621">Transport: Moa'ki to Kamagua</xsl:when>
+<xsl:when test="map = 622">Transport: Orgrim's Hammer</xsl:when>
+<xsl:when test="map = 623">Transport: The Skybreaker</xsl:when>
+<xsl:when test="map = 624">Wintergrasp Raid</xsl:when>
             </xsl:choose>&quot; , &quot;<xsl:choose>
                 <xsl:when test="areaid = 0">Unknown</xsl:when>
                 <xsl:when test="areaid = 1">Dun Morogh</xsl:when>
