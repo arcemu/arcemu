@@ -1931,19 +1931,18 @@ out:
 	case 49894:
 	case 49895:
 		{
-			if(!u_caster)
+			if( u_caster == NULL || unitTarget == NULL )
 				return;
-			if(spellId == 52375)
+			if( spellId == 52375 )
 				damage = damage * 2 / 5;
-			if(isAttackable(u_caster, unitTarget, false))
-				u_caster->SpellNonMeleeDamageLog(unitTarget, spellId, damage, true);
-			else if(unitTarget->IsCreature())
+			if( isAttackable( u_caster, unitTarget, false ) )
+				u_caster->SpellNonMeleeDamageLog( unitTarget, spellId, damage, true );
+			else if( unitTarget->IsCreature() )
 			{
-				CreatureInfo * ci = static_cast< Creature* >(unitTarget)->GetCreatureInfo();
-				if(ci && ci->Type == UNDEAD)
-					u_caster->Heal(unitTarget, spellId, float2int32(damage * 1.5f));
+				CreatureInfo * ci = static_cast< Creature* >( unitTarget )->GetCreatureInfo();
+				if( ci && ci->Type == UNDEAD )
+					u_caster->Heal( unitTarget, spellId, float2int32( damage * 1.5f ) );
 			}
-
 		}break;
 	}
 }
