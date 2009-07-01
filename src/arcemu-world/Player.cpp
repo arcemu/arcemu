@@ -6887,47 +6887,61 @@ void Player::ResetDualWield2H()
 void Player::Reset_Talents()
 {
 	unsigned int numRows = dbcTalent.GetNumRows();
-	for (unsigned int i = 0; i < numRows; i++)		  // Loop through all talents.
+	uint8 playerClass = getClass();
+	SpellEntry* spellInfo;
+	SpellEntry* spellInfo2;
+	uint8 i, j, k;
+
+	// Loop through all talents.
+	for(i = 0; i < numRows; ++i)
 	{
 		TalentEntry *tmpTalent = dbcTalent.LookupRow(i);
-		if(!tmpTalent)
-			continue; //should not ocur
-		//this is a normal talent (i hope )
-		for (int j = 0; j < 5; j++)
+		if( tmpTalent == NULL )
 		{
-			if (tmpTalent->RankID[j] != 0)
+			// should not occur
+			continue;
+		}
+		if( tmpTalent->TalentTree != TalentTreesPerClass[playerClass][0] && 
+			tmpTalent->TalentTree != TalentTreesPerClass[playerClass][1] &&
+			tmpTalent->TalentTree != TalentTreesPerClass[playerClass][2] )
+		{
+			// Not a talent for this class
+			continue;
+		}
+
+		// this is a normal talent (i hope)
+		for(j = 0; j < 5; ++j)
+		{
+			if( tmpTalent->RankID[j] != 0 )
 			{
-				SpellEntry *spellInfo;
 				spellInfo = dbcSpell.LookupEntry( tmpTalent->RankID[j] );
-				if(spellInfo)
+				if( spellInfo != NULL )
 				{
-					if (spellInfo->NameHash == SPELL_HASH_DUAL_WIELD)
+					for(k = 0; k < 3; ++k)
 					{
-						if (getClass() != SHAMAN)
-							continue; //only shamans should lose it when they reset talents - opti
-						if( _HasSkillLine( SKILL_DUAL_WIELD ) )
-							_RemoveSkillLine( SKILL_DUAL_WIELD );
-					}
-					for(int k=0;k<3;k++)
-						if(spellInfo->Effect[k] == SPELL_EFFECT_LEARN_SPELL)
+						if( spellInfo->Effect[k] == SPELL_EFFECT_LEARN_SPELL )
 						{
 							//removeSpell(spellInfo->EffectTriggerSpell[k], false, 0, 0);
 							//remove higher ranks of this spell too (like earth shield lvl 1 is talent and the rest is thought from trainer)
-							SpellEntry *spellInfo2;
 							spellInfo2 = dbcSpell.LookupEntry( spellInfo->EffectTriggerSpell[k] );
-							if(spellInfo2)
+							if( spellInfo2 != NULL )
+							{
 								removeSpellByHashName(spellInfo2->NameHash);
+							}
 						}
+					}
 					//remove them all in 1 shot
 					removeSpellByHashName(spellInfo->NameHash);
 				}
 			}
 			else
+			{
 				break;
+			}
 		}
 	}
-	uint32 l=getLevel();
-	if(l>9)
+	uint32 l = getLevel();
+	if( l > 9 )
 	{
 		SetUInt32Value(PLAYER_CHARACTER_POINTS1, l - 9);
 	}

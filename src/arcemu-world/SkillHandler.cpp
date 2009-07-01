@@ -20,67 +20,6 @@
 
 #include "StdAfx.h"
 
-/************************************************************************/
-/* Talent Anti-Cheat                                                    */
-/************************************************************************/
-
-/*
-	mage - arcane - 81			
-	mage - fire - 41
-	mage - frost - 61
-
-	rogue - assassination - 182
-	rogue - combat - 181
-	rogue - subelty - 183
-
-	warlock - affliction - 302
-	warlock - demonology - 303
-	warlock - destruction - 301
-
-	warrior - arms - 161
-	warrior - fury - 163
-	warrior - protection - 164
-
-	shaman - elemental - 261
-	shaman - enchantment - 263
-	shaman - restoration - 262
-
-	paladin - holy - 382
-	paladin - protection - 383
-	paladin - retribution - 381
-
-	death knight - blood - 398
-	death knight - frost - 399
-	death knight - unholy - 400
-	
-	priest - discipline - 201
-	priest - holy - 202
-	priest - shadow - 203
-
-	hunter - beast - 361
-	hunter - marksmanship - 363
-	hunter - survival - 362
-
-	druid - balance - 283
-	druid - feral combat - 281
-	druid - restoration - 282
-*/
-
-static const uint32 TalentTreesPerClass[DRUID+1][3] =  {
-	{ 0, 0, 0 },		// NONE
-	{ 161, 163, 164 },	// WARRIOR
-	{ 382, 383, 381 },	// PALADIN
-	{ 361, 363, 362 },	// HUNTER
-	{ 182, 181, 183 },	// ROGUE
-	{ 201, 202, 203 },	// PRIEST
-	{ 398, 399, 400 },	// DEATH KNIGHT
-	{ 261, 263, 262 },	// SHAMAN
-	{ 81, 41, 61 },		// MAGE
-	{ 302, 303, 301 },	// WARLOCK
-	{ 0, 0, 0 },		// NONE
-	{ 283, 281, 282 },	// DRUID
-};
-
 void WorldSession::HandleLearnTalentOpcode( WorldPacket & recv_data )
 {
 	if(!_player->IsInWorld()) return;
