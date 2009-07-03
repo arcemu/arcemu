@@ -40,4 +40,5 @@ bool HandleWhisperCommand(BaseConsole * pConsole, int argc, const char * argv[])
 bool HandleNameHashCommand(BaseConsole * pConsole, int argc, const char * argv[]);
 bool HandleRevivePlayer(BaseConsole * pConsole, int argc, const char * argv[]);
 bool HandleClearConsoleCommand(BaseConsole * pConsole, int argc, const char * argv[]);
+bool HandleReloadConsoleCommand(BaseConsole * pConsole, int argc, const char * argv[]);
 #endif

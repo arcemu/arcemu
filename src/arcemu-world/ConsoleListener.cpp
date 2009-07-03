@@ -354,31 +354,136 @@ struct ConsoleCommand
 void HandleConsoleInput(BaseConsole * pConsole, const char * szInput)
 {
 	static ConsoleCommand Commands[] = {
-		{ &HandleAnnounceCommand, "a", "<announce string>", "Shows the message in all client chat boxes." },
-		{ &HandleAnnounceCommand, "announce", "<announce string>", "Shows the message in all client chat boxes." },
-		{ &HandleBanAccountCommand, "ban", "<account> <timeperiod> [reason]", "Bans account x for time y." },
-		{ &HandleBanAccountCommand, "banaccount", "<account> <timeperiod> [reason]", "Bans account x for time y." },
-		{ &HandleCancelCommand, "cancel", "none", "Cancels a pending shutdown." },
-		{ &HandleCreateAccountCommand, "createaccount", "<name> <pass> <email> <flags>", "Creates an account." },
-		{ &HandleInfoCommand, "info", "none", "Gives server runtime information." },
-		{ &HandleNetworkStatusCommand, "netstatus", "none", "Shows network status." },
-		{ &HandleGMsCommand, "gms", "none", "Shows online GMs." },
-		{ &HandleKickCommand, "kick", "<plrname> <reason>", "Kicks player x for reason y." },
-		{ &HandleMOTDCommand, "getmotd", "none", "View the current MOTD" },
-		{ &HandleMOTDCommand, "setmotd", "<new motd>", "Sets a new MOTD" },
-//		{ &HandleOnlinePlayersCommand, "online", "none", "Shows online players." },
-		{ &HandlePlayerInfoCommand, "playerinfo", "<plrname>", "Shows information about a player." },
-		{ &HandleShutDownCommand, "exit", "[delay]", "Shuts down server with optional delay in seconds." },
-		{ &HandleShutDownCommand, "shutdown", "[delay]", "Shuts down server with optional delay in seconds." },
-		{ &HandleRehashCommand, "rehash", "none", "Reloads the config file" },
-		{ &HandleUnbanAccountCommand, "unban", "<account>", "Unbans account x." },
-		{ &HandleUnbanAccountCommand, "unbanaccount", "<account>", "Unbans account x." },
-		{ &HandleWAnnounceCommand, "w", "<wannounce string>", "Shows the message in all client title areas." },
-		{ &HandleWAnnounceCommand, "wannounce", "<wannounce string>", "Shows the message in all client title areas." },
-		{ &HandleWhisperCommand, "whisper","<player> <message>", "Whispers a message to someone from the console." },
-		{ &HandleNameHashCommand, "getnamehash" , "<text>" , "Returns the crc32 hash of <text>" } ,
-		{ &HandleRevivePlayer, "reviveplr", "<name>", "Revives a Player" },
-		{ &HandleClearConsoleCommand, "clear" , "None", "Clears the console screen." } ,
+		{
+			&HandleAnnounceCommand,
+			"a", "<announce string>",
+			"Shows the message in all client chat boxes."
+		},
+		{
+			&HandleAnnounceCommand,
+			"announce", "<announce string>",
+			"Shows the message in all client chat boxes."
+		},
+		{
+			&HandleBanAccountCommand,
+			"ban", "<account> <timeperiod> [reason]",
+			"Bans account x for time y."
+		},
+		{
+			&HandleBanAccountCommand,
+			"banaccount", "<account> <timeperiod> [reason]",
+			"Bans account x for time y."
+		},
+		{
+			&HandleCancelCommand,
+			"cancel", "None",
+			"Cancels a pending shutdown."
+		},
+		{
+			&HandleCreateAccountCommand,
+			"createaccount", "<name> <pass> <email> <flags>",
+			"Creates an account."
+		},
+		{
+			&HandleInfoCommand,
+			"info", "None",
+			"Gives server runtime information."
+		},
+/*		{
+			&HandleNetworkStatusCommand,
+			"netstatus", "none",
+			"Shows network status."
+		},
+*/		{
+			&HandleGMsCommand,
+			"gms", "None",
+			"Shows online GMs."
+		},
+		{
+			&HandleKickCommand,
+			"kick", "<Player Name> <reason>",
+			"Kicks player x for reason y."
+		},
+		{
+			&HandleMOTDCommand,
+			"getmotd", "None",
+			"View the current MOTD"
+		},
+		{
+			&HandleMOTDCommand,
+			"setmotd", "<new motd>",
+			"Sets a new MOTD"
+		},
+		{
+			&HandleOnlinePlayersCommand,
+			"online", "None",
+			"Shows online players."
+		},
+		{
+			&HandlePlayerInfoCommand,
+			"playerinfo", "<Player Name>",
+			"Shows information about a player."
+		},
+		{
+			&HandleShutDownCommand,
+			"exit", "[delay]",
+			"Shuts down server with optional delay in seconds."
+		},
+		{
+			&HandleShutDownCommand,
+			"shutdown", "[delay]",
+			"Shuts down server with optional delay in seconds."
+		},
+		{
+			&HandleRehashCommand,
+			"rehash", "None",
+			"Reloads the config file"
+		},
+		{
+			&HandleUnbanAccountCommand,
+			"unban", "<account>",
+			"Unbans account x."
+		},
+		{
+			&HandleUnbanAccountCommand,
+			"unbanaccount", "<account>",
+			"Unbans account x."
+		},
+		{
+			&HandleWAnnounceCommand,
+			"w", "<wannounce string>",
+			"Shows the message in all client title areas."
+		},
+		{
+			&HandleWAnnounceCommand,
+			"wannounce", "<wannounce string>",
+			"Shows the message in all client title areas."
+		},
+		{
+			&HandleWhisperCommand,
+			"whisper","<player> <message>",
+			"Whispers a message to someone from the console."
+		},
+		{
+			&HandleNameHashCommand,
+			"getnamehash", "<text>",
+			"Returns the crc32 hash of <text>"
+		},
+		{
+			&HandleRevivePlayer,
+			"reviveplr", "<name>",
+			"Revives a Player"
+		},
+		{
+			&HandleClearConsoleCommand,
+			"clear", "None",
+			"Clears the console screen."
+		},
+		{
+			&HandleReloadConsoleCommand,
+			"reload", "<Table>",
+			"Reloads a table from the world database."
+		},
 		{ NULL, NULL, NULL, NULL },
 	};
 
@@ -407,16 +512,33 @@ void HandleConsoleInput(BaseConsole * pConsole, const char * szInput)
 
 	if( !stricmp(tokens[0], "help") || tokens[0][0] == '?' )
 	{
-		pConsole->Write("=========================================================================================================\r\n");
-		pConsole->Write("| %15s | %30s | %50s |\r\n", "Name", "Arguments", "Description");
-		pConsole->Write("=========================================================================================================\r\n");		
+		if( tokens.size() > 1 )
+		{
+			for(i = 0; Commands[i].Name != NULL; ++i)
+			{
+				if( !stricmp( Commands[i].Name, tokens[1] ) )
+				{
+					pConsole->Write( "Command: %s\r\n"
+						"Arguments: %s\r\n"
+						"Description: %s\r\n",
+						Commands[i].Name,
+						Commands[i].ArgumentFormat,
+						Commands[i].Description );
+					return;
+				}
+			}
+		}
+
+		pConsole->Write("===============================================================================\r\n");
+		pConsole->Write("| %15s | %57s |\r\n", "Name", "Arguments");
+		pConsole->Write("===============================================================================\r\n");		
 		for(i = 0; Commands[i].Name != NULL; ++i)
 		{
-			pConsole->Write("| %15s | %30s | %50s |\r\n", Commands[i].Name, Commands[i].ArgumentFormat, Commands[i].Description);
+			pConsole->Write("| %15s | %57s |\r\n", Commands[i].Name, Commands[i].ArgumentFormat);
 		}
-		pConsole->Write("=========================================================================================================\r\n");		
-		pConsole->Write("| type 'quit' to terminate a Remote Console Session                                                     |\r\n");
-		pConsole->Write("=========================================================================================================\r\n");		
+		pConsole->Write("===============================================================================\r\n");
+		pConsole->Write("| type 'quit' to terminate a Remote Console Session                           |\r\n");
+		pConsole->Write("===============================================================================\r\n");
 	}
 	else
 	{

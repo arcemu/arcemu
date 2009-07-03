@@ -396,3 +396,51 @@ bool HandleClearConsoleCommand(BaseConsole * pConsole, int argc, const char * ar
     return true;
 }
 
+bool HandleReloadConsoleCommand(BaseConsole * pConsole, int argc, const char *argv[])
+{
+	if( argc < 2 || strlen(argv[1]) < 3 )
+		return false;
+
+	char str[200];
+	int ret = 0;
+	uint32 mstime = getMSTime();
+
+	snprintf(str, 200, "%sConsole initiated server-side reload of table `%s`. The server may experience some lag while this occurs.",
+		MSG_COLOR_LIGHTRED, argv[1]);
+	sWorld.SendWorldText(str, 0);
+
+	if( !stricmp(argv[1], "spell_disable") )
+	{
+		objmgr.ReloadDisabledSpells();
+		ret = 1;
+	}
+	else if( !stricmp(argv[1], "spellfixes") )
+	{
+		objmgr.LoadSpellFixes();
+		ret = 1;
+	}
+	else if( !stricmp(argv[1], "vendors") )
+	{
+		objmgr.ReloadVendors();
+		ret = 1;
+	}
+	else
+		ret = Storage_ReloadTable(argv[1]);
+
+
+	if (ret == 0)
+	{
+		pConsole->Write( "Database reload failed.\r\n" );
+		snprintf(str, 256, "%sDatabase reload failed.", MSG_COLOR_LIGHTRED);
+	}
+	else
+	{
+		uint32 timediff = (unsigned int)(getMSTime() - mstime);
+		pConsole->Write( "Database reload completed in %u ms.\r\n", timediff );
+		snprintf( str, 256, "%sDatabase reload completed in %u ms.", MSG_COLOR_LIGHTBLUE, timediff );
+	}
+	sWorld.SendWorldText( str, 0 );
+
+	return true;
+}
+
