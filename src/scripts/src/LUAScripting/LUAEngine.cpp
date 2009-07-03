@@ -297,6 +297,7 @@ RegType<Unit> UnitMethods[] = {
 	{ "GetPlayerRace", &luaUnit_GetPlayerRace },
 	{ "RemoveAurasByMechanic", &luaUnit_RemoveAurasByMechanic },
 	{ "RemoveAurasType", &luaUnit_RemoveAurasType },
+	{ "IsGM", &luaUnit_IsGM },
 	//{ "AddAuraVisual", &luaUnit_AddAuraVisual }, N33D F1X
 	{ "AddAuraVisual", NULL },
 
@@ -4267,6 +4268,27 @@ int luaUnit_RemoveAurasType(lua_State * L, Unit * ptr)
 	}
 	return 0;
 }
+
+int luaUnit_IsGM( lua_State * L, Unit * ptr )
+{
+	if( ptr == NULL )
+		lua_pushboolean( L, 0 );
+
+	if( !ptr->IsPlayer() )
+		lua_pushboolean( L, 0 );
+
+	Player * plr = objmgr.GetPlayer( ptr->GetLowGUID() );
+	if( plr == NULL )
+		lua_pushboolean(L, 0);
+
+	if( plr->GetSession() && plr->GetSession()->HasGMPermissions() )
+		lua_pushboolean( L, 1 );
+	else
+		lua_pushboolean( L, 0 );
+	
+	return 1;
+}
+
 /*
 int luaUnit_AddAuraVisual(lua_State * L, Unit * ptr)
 {
