@@ -4271,15 +4271,18 @@ int luaUnit_RemoveAurasType(lua_State * L, Unit * ptr)
 
 int luaUnit_IsGM( lua_State * L, Unit * ptr )
 {
-	if( ptr == NULL )
+	if( ptr == NULL || !ptr->IsPlayer() )
+	{
 		lua_pushboolean( L, 0 );
-
-	if( !ptr->IsPlayer() )
-		lua_pushboolean( L, 0 );
+		return 0;
+	}
 
 	Player * plr = objmgr.GetPlayer( ptr->GetLowGUID() );
 	if( plr == NULL )
-		lua_pushboolean(L, 0);
+	{
+		lua_pushboolean( L, 0 );
+		return 0;
+	}
 
 	if( plr->GetSession() && plr->GetSession()->HasGMPermissions() )
 		lua_pushboolean( L, 1 );
