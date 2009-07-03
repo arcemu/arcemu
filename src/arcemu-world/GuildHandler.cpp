@@ -530,7 +530,7 @@ void WorldSession::HandleCharterBuy(WorldPacket & recv_data)
 		return;
 	}
 
-	if(crt->GetEntry()==19861 || crt->GetEntry()==18897 || crt->GetEntry()==19856 || crt->GetEntry()==sWorld.m_CustomCharterGiver )		/* i am lazy! */
+	if( !crt->isTabardDesigner() )
 	{
 		uint32 arena_type = arena_index - 1;
 		if(arena_type > 2)

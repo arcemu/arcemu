@@ -322,9 +322,10 @@ void WorldSession::HandleCharterShowListOpcode( WorldPacket & recv_data )
 
 void WorldSession::SendCharterRequest(Creature* pCreature)
 {
-	if(!_player->IsInWorld()) return;
-	if(pCreature && ( pCreature->GetEntry()==19861 ||
-			pCreature->GetEntry()==18897 || pCreature->GetEntry()==19856 || pCreature->GetEntry()==sWorld.m_CustomCharterGiver ) )
+	if( !_player->IsInWorld() || !pCreature )
+		return;
+
+	if( !pCreature->isTabardDesigner() )
 	{
 		WorldPacket data(SMSG_PETITION_SHOWLIST, 81);
 

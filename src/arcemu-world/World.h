@@ -621,7 +621,6 @@ public:
 	uint32 m_genLevelCap;
 	bool m_limitedNames;
 	bool m_useAccountData;
-	uint32 m_CustomCharterGiver;
 	bool m_AdditionalFun;
 
 	// Gold Cap
