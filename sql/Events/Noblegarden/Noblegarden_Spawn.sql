@@ -8,10 +8,10 @@ Event Date: Easter Sunday - 12:00am to 11:59pm
 
 /* Brightly Colored Egg */
 INSERT INTO `gameobject_names` VALUES 
-	( '113768', '3', '1410', "Brightly Colored Egg", '43', '4984', '0', '1', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0' );
+	( '113768', '3', '1410', "Brightly Colored Egg", '43', '4984', '0', '1', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0');
 
 /* OBJECT LOOT */
-INSERT INTO `objectloot` VALUES
+INSERT INTO `loot_gameobjects` VALUES
 	( '', '113768', '7807', '35', '', '1', '1', '' ),			-- Candy Bar
 	( '', '113768', '7808', '32', '', '1', '1', '' ),			-- Chocolate Square
 	( '', '113768', '7806', '32', '', '1', '1', '' ),			-- Lollipop
