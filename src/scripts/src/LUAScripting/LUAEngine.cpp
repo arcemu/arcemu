@@ -4271,11 +4271,7 @@ int luaUnit_RemoveAurasType(lua_State * L, Unit * ptr)
 
 int luaUnit_IsGM( lua_State * L, Unit * ptr )
 {
-	if( ptr == NULL || !ptr->IsPlayer() )
-	{
-		lua_pushboolean( L, 0 );
-		return 0;
-	}
+	CHECK_TYPEID_RET( TYPEID_PLAYER );
 
 	Player * plr = objmgr.GetPlayer( ptr->GetLowGUID() );
 	if( plr == NULL )
