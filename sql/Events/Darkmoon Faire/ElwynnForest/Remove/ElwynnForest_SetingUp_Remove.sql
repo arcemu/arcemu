@@ -6,7 +6,7 @@ Location: Elwynn Forest
 */
 
 -- Delete Gameobject Spawns
-delete from `gameobject_spawns` where `id` between '150000' and '150064';
+delete from `gameobject_spawns` where `id` between '100000' and '100064';
 
 -- Delete NPCs
 delete from `creature_spawns` where `id` between '150000' and '150006';
