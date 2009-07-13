@@ -572,6 +572,14 @@ void Spell::SpellEffectSchoolDMG(uint32 i) // dmg school
 				uint32 SPH = p_caster->GetUInt32Value(PLAYER_FIELD_MOD_DAMAGE_DONE_POS + SCHOOL_HOLY); // Holy Spell Damage
 				dmg = float2int32( MWS * ( 0.022f * float( AP ) + 0.044f * float( SPH ) ) );
 			}
+		case SPELL_HASH_SHIELD_OF_RIGHTEOUSNESS: // Shield of Righteousness - a bit like "shield slam", OK for both ranks 
+			{
+				if( p_caster != NULL )
+				{
+					dmg += float2int32(1.30f * float( p_caster->GetUInt32Value( PLAYER_RATING_MODIFIER_BLOCK ) ) + GetProto()->EffectBasePoints[0]);
+				}
+			}break;
+
 		case SPELL_HASH_SHIELD_SLAM:	// Shield Slam - damage is increased by block value
 			{
 				if( p_caster != NULL )

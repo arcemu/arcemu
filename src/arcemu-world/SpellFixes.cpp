@@ -1228,6 +1228,15 @@ void ApplyNormalFixes()
 			if( sp->NameHash == SPELL_HASH_SEAL_OF_RIGHTEOUSNESS )
 				sp->spell_can_crit = false;
 
+			// Shield of Righteousness
+			if( sp->NameHash == SPELL_HASH_SHIELD_OF_RIGHTEOUSNESS)
+			{
+				sp->School = SCHOOL_HOLY;
+				sp->Effect[0] = SPELL_EFFECT_DUMMY;
+				sp->Effect[1] = 0; //hacks, handling it in Spell::SpellEffectSchoolDMG(uint32 i)
+				sp->Effect[2] = SPELL_EFFECT_SCHOOL_DAMAGE; //hack
+			}
+
 		//////////////////////////////////////////
 		// HUNTER								//
 		//////////////////////////////////////////
