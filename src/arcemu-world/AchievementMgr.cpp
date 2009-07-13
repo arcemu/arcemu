@@ -199,10 +199,12 @@ isCharacterLoading(true)
 */
 AchievementMgr::~AchievementMgr()
 {
+	m_lock.AcquireWriteLock();
 	for(CriteriaProgressMap::iterator iter = m_criteriaProgress.begin(); iter!=m_criteriaProgress.end(); ++iter)
 		delete iter->second;
 	m_criteriaProgress.clear();
 	m_completedAchievements.clear();
+	m_lock.ReleaseWriteLock();
 }
 
 /**
@@ -211,12 +213,13 @@ AchievementMgr::~AchievementMgr()
 */
 void AchievementMgr::SaveToDB()
 {
+	m_lock.AcquireReadLock();
 	if( !m_completedAchievements.empty() )
 	{
 		std::ostringstream ss;
 		ss << "REPLACE INTO character_achievement (guid, achievement, date) VALUES ";
 		bool first = true;
-		for(CompletedAchievementMap::iterator iter = m_completedAchievements.begin(); iter!=m_completedAchievements.end(); iter++)
+		for(CompletedAchievementMap::iterator iter = m_completedAchievements.begin(); iter != m_completedAchievements.end(); ++iter)
 		{
 			if( ss.str().length() >= 16000 )
 			{
@@ -274,6 +277,7 @@ void AchievementMgr::SaveToDB()
 			CharacterDatabase.Execute( ss.str().c_str() );
 		}
 	}
+	m_lock.ReleaseReadLock();
 }
 
 /**
@@ -282,6 +286,7 @@ void AchievementMgr::SaveToDB()
 */
 void AchievementMgr::LoadFromDB(QueryResult *achievementResult, QueryResult *criteriaResult)
 {
+	m_lock.AcquireWriteLock();
 	if( achievementResult )
 	{
 		do
@@ -302,6 +307,7 @@ void AchievementMgr::LoadFromDB(QueryResult *achievementResult, QueryResult *cri
 		} while(criteriaResult->NextRow());
 		delete criteriaResult;
 	}
+	m_lock.ReleaseWriteLock();
 }
 
 /**
@@ -520,7 +526,8 @@ void AchievementMgr::UpdateAchievementCriteria(AchievementCriteriaTypes type, in
 		selectedGUID = GetPlayer()->GetSelection();
 	}
 	AchievementCriteriaEntryList const& achievementCriteriaList = objmgr.GetAchievementCriteriaByType(type);
-	for(AchievementCriteriaEntryList::const_iterator i = achievementCriteriaList.begin(); i!=achievementCriteriaList.end(); ++i)
+	m_lock.AcquireWriteLock();
+	for(AchievementCriteriaEntryList::const_iterator i = achievementCriteriaList.begin(); i != achievementCriteriaList.end(); ++i)
 	{
 		AchievementCriteriaEntry const *achievementCriteria = (*i);
 
@@ -1171,6 +1178,7 @@ void AchievementMgr::UpdateAchievementCriteria(AchievementCriteriaTypes type, in
 		}
 		CompletedCriteria(achievementCriteria);
 	}
+	m_lock.ReleaseWriteLock();
 }
 
 /**
@@ -1180,7 +1188,8 @@ void AchievementMgr::UpdateAchievementCriteria(AchievementCriteriaTypes type, in
 void AchievementMgr::UpdateAchievementCriteria(AchievementCriteriaTypes type)
 {
 	AchievementCriteriaEntryList const& achievementCriteriaList = objmgr.GetAchievementCriteriaByType(type);
-	for(AchievementCriteriaEntryList::const_iterator i = achievementCriteriaList.begin(); i!=achievementCriteriaList.end(); ++i)
+	m_lock.AcquireWriteLock();
+	for(AchievementCriteriaEntryList::const_iterator i = achievementCriteriaList.begin(); i != achievementCriteriaList.end(); ++i)
 	{
 		AchievementCriteriaEntry const *achievementCriteria = (*i);
 
@@ -1298,6 +1307,7 @@ void AchievementMgr::UpdateAchievementCriteria(AchievementCriteriaTypes type)
 		}
 		CompletedCriteria(achievementCriteria);
 	}
+	m_lock.ReleaseWriteLock();
 }
 
 /**
@@ -1323,27 +1333,35 @@ bool AchievementMgr::IsCompletedCriteria(AchievementCriteriaEntry const* achieve
 
 	if( achievement->flags & (ACHIEVEMENT_FLAG_REALM_FIRST_REACH | ACHIEVEMENT_FLAG_REALM_FIRST_KILL) )
 	{
-		if( objmgr.allCompletedAchievements.find(achievement->ID)!=objmgr.allCompletedAchievements.end() )
+		m_lock.AcquireReadLock();
+		bool first = objmgr.allCompletedAchievements.find(achievement->ID) == objmgr.allCompletedAchievements.end();
+		m_lock.ReleaseReadLock();
+		if( !first )
 		{
 			return false;
 		}
 	}
 
+	m_lock.AcquireReadLock();
 	CriteriaProgressMap::iterator itr = m_criteriaProgress.find(achievementCriteria->ID);
 	if( itr == m_criteriaProgress.end() )
 	{
+		m_lock.ReleaseReadLock();
 		return false;
 	}
 
-	CriteriaProgress *progress = itr->second;
+	CriteriaProgress* progress = itr->second;
 
 	// 0 or negative, not completed.
 	if( progress->counter < 1 )
 	{
+		m_lock.ReleaseReadLock();
 		return false;
 	}
 
 	uint32 progresscounter = (uint32)progress->counter;
+	m_lock.ReleaseReadLock();
+
 	switch(achievementCriteria->requiredType)
 	{
 		case ACHIEVEMENT_CRITERIA_TYPE_REACH_LEVEL:
@@ -1410,7 +1428,12 @@ bool AchievementMgr::IsCompletedCriteria(AchievementCriteriaEntry const* achieve
 		case ACHIEVEMENT_CRITERIA_TYPE_HK_RACE:
 			return progresscounter >= achievementCriteria->hk_race.count;
 		case ACHIEVEMENT_CRITERIA_TYPE_COMPLETE_ACHIEVEMENT:
-			return m_completedAchievements.find(achievementCriteria->complete_achievement.linkedAchievement) != m_completedAchievements.end();
+			{
+				m_lock.AcquireReadLock();
+				bool iscomplete = m_completedAchievements.find(achievementCriteria->complete_achievement.linkedAchievement) != m_completedAchievements.end();
+				m_lock.ReleaseReadLock();
+				return iscomplete;
+			}
 
 		// These achievements only require counter to be 1 (or higher)
 		case ACHIEVEMENT_CRITERIA_TYPE_EXPLORE_AREA:
@@ -1459,14 +1482,17 @@ void AchievementMgr::CompletedCriteria(AchievementCriteriaEntry const* criteria)
 */
 AchievementCompletionState AchievementMgr::GetAchievementCompletionState(AchievementEntry const* entry)
 {
-	if( m_completedAchievements.find(entry->ID)!=m_completedAchievements.end() )
+	m_lock.AcquireReadLock();
+	bool isComplete = m_completedAchievements.find(entry->ID) != m_completedAchievements.end();
+	m_lock.ReleaseReadLock();
+	if( isComplete )
 	{
 		return ACHIEVEMENT_COMPLETED_COMPLETED_STORED;
 	}
 
 	uint32 completedCount = 0;
 	bool foundOutstanding = false;
-	for ( uint32 rowId = 0; rowId<dbcAchievementCriteriaStore.GetNumRows(); ++rowId )
+	for( uint32 rowId = 0; rowId < dbcAchievementCriteriaStore.GetNumRows(); ++rowId )
 	{
 		AchievementCriteriaEntry const* criteria = dbcAchievementCriteriaStore.LookupRow(rowId);
 		if( criteria == NULL || criteria->referredAchievement!= entry->ID )
@@ -1506,31 +1532,35 @@ AchievementCompletionState AchievementMgr::GetAchievementCompletionState(Achieve
 */
 void AchievementMgr::SetCriteriaProgress(AchievementCriteriaEntry const* entry, int32 newValue, bool relative)
 {
-	CriteriaProgress *progress = NULL;
+	CriteriaProgress* progress = NULL;
+	m_lock.AcquireWriteLock();
 
 	if( m_criteriaProgress.find(entry->ID) == m_criteriaProgress.end() )
 	{
 		if( newValue < 1 )
 		{
+			m_lock.ReleaseWriteLock();
 			return;
 		}
 		progress = new CriteriaProgress(entry->ID, newValue);
-		m_criteriaProgress[entry->ID]=progress;
+		m_criteriaProgress[entry->ID] = progress;
 	}
 	else
 	{
 		progress = m_criteriaProgress[entry->ID];
 		if( progress->counter == newValue )
 		{
+			m_lock.ReleaseWriteLock();
 			return;
 		}
 		progress->counter = newValue;
 	}
+
 	if( progress->counter > 0 )
 	{
-		// Send update only if criteria is started (counter > 0)
 		SendCriteriaUpdate( progress );
 	}
+	m_lock.ReleaseWriteLock();
 }
 
 /**
@@ -1541,24 +1571,27 @@ void AchievementMgr::UpdateCriteriaProgress(AchievementCriteriaEntry const* entr
 {
 	CriteriaProgress *progress = NULL;
 
+	m_lock.AcquireWriteLock();
 	if( m_criteriaProgress.find(entry->ID) == m_criteriaProgress.end() )
 	{
 		if( updateByValue < 1 )
 		{
+			m_lock.ReleaseWriteLock();
 			return;
 		}
 		progress = new CriteriaProgress(entry->ID, updateByValue);
-		m_criteriaProgress[entry->ID]=progress;
+		m_criteriaProgress[entry->ID] = progress;
 	}
 	else
 	{
 		progress = m_criteriaProgress[entry->ID];
 		progress->counter += updateByValue;
 	}
-	if(progress->counter > 0)
+	if( progress->counter > 0 )
 	{
 		SendCriteriaUpdate( progress );
 	}
+	m_lock.ReleaseWriteLock();
 }
 
 /**
@@ -1575,9 +1608,10 @@ void AchievementMgr::CompletedAchievement(AchievementEntry const* achievement)
 	{
 		SendAchievementEarned( achievement );
 	}
+	m_lock.AcquireWriteLock();
 	m_completedAchievements[achievement->ID] = time(NULL);
-
 	objmgr.allCompletedAchievements.insert( achievement->ID );
+	m_lock.ReleaseWriteLock();
 	UpdateAchievementCriteria( ACHIEVEMENT_CRITERIA_TYPE_COMPLETE_ACHIEVEMENT );
 
 	// check for reward
@@ -1590,7 +1624,10 @@ void AchievementMgr::CompletedAchievement(AchievementEntry const* achievement)
 void AchievementMgr::SendAllAchievementData(Player* player)
 {
 	// maximum size for the SMSG_ALL_ACHIEVEMENT_DATA packet without causing client problems seems to be 0x7fff
-	uint32 packetSize = 18 + ((uint32)m_completedAchievements.size() * 8) + (GetCriteriaProgressCount() * 36);
+	// lock before getting size and data...
+	m_lock.AcquireReadLock();
+	bool inspect = (player != m_player);
+	uint32 packetSize = 18 + ((uint32)m_completedAchievements.size() * 8) + (GetCriteriaProgressCount(inspect) * 36);
 	bool doneCompleted = false;
 	bool doneProgress = false;
 	AchievementCriteriaEntry const* acEntry;
@@ -1613,7 +1650,7 @@ void AchievementMgr::SendAllAchievementData(Player* player)
 	while( !doneCompleted || !doneProgress )
 	{
 		data.clear();
-		if( player == m_player )
+		if( !inspect )
 		{
 			data.SetOpcode ( SMSG_ALL_ACHIEVEMENT_DATA );
 		}
@@ -1657,7 +1694,7 @@ void AchievementMgr::SendAllAchievementData(Player* player)
 				continue;
 			}
 			// achievement progress to send to self
-			if( player == m_player )
+			if( !inspect )
 			{
 				if( SendAchievementProgress(progressIter->second) )
 				{
@@ -1696,27 +1733,50 @@ void AchievementMgr::SendAllAchievementData(Player* player)
 		data << int32(-1);
 		player->GetSession()->SendPacket(&data);
 	}
-	if( isCharacterLoading && player == m_player )
+	if( isCharacterLoading && !inspect )
 	{
 		// a SMSG_ALL_ACHIEVEMENT_DATA packet has been sent to the player, so the achievement manager can send SMSG_CRITERIA_UPDATE and SMSG_ACHIEVEMENT_EARNED when it gets them
 		isCharacterLoading = false;
 	}
+	m_lock.ReleaseReadLock();
 }
 
 /**
-	Returns the number of achievement progresses that get sent to the player.
+	Returns the number of achievement progresses that get sent to the player (inspect==true if sending it to another player)
 */
-uint32 AchievementMgr::GetCriteriaProgressCount(void)
+uint32 AchievementMgr::GetCriteriaProgressCount(bool inspect)
 {
+	// locked in AchievementMgr::SendAllAchievementData, which is currently the only place
+	// GetCriteriaProgressCount() is called, and really, if anyone else needs to call this, they should
+	// probably be locking it themselves too.
+	//m_lock.AcquireReadLock();
 	uint32 criteriapc = 0;
-	for(CriteriaProgressMap::iterator iter = m_criteriaProgress.begin(); iter!=m_criteriaProgress.end(); ++iter)
+
+	if( inspect )
+	// Achievement progresses that get sent over inspection
 	{
-		//AchievementEntry const *achievement = dbcAchievementStore.LookupEntry(iter->second->id);
-		if( SendAchievementProgress(iter->second) )
+		for(CriteriaProgressMap::iterator iter = m_criteriaProgress.begin(); iter != m_criteriaProgress.end(); ++iter)
 		{
-			++criteriapc;
+			AchievementEntry const *achievement = dbcAchievementStore.LookupEntry(iter->second->id);
+			if( achievement && (achievement->flags & ACHIEVEMENT_FLAG_COUNTER) && (iter->second->counter > 0) )
+			{
+				++criteriapc;
+			}
 		}
 	}
+	else
+	// Achievement progresses that get sent to the same player
+	{
+		for(CriteriaProgressMap::iterator iter = m_criteriaProgress.begin(); iter != m_criteriaProgress.end(); ++iter)
+		{
+			//AchievementEntry const *achievement = dbcAchievementStore.LookupEntry(iter->second->id);
+			if( SendAchievementProgress(iter->second) )
+			{
+				++criteriapc;
+			}
+		}
+	}
+	//m_lock.ReleaseReadLock();
 	return criteriapc;
 }
 
@@ -1986,7 +2046,8 @@ void AchievementMgr::GiveAchievementReward(AchievementEntry const* entry)
 }
 
 /**
-	Returns the number of completed achievements.
+	Returns the number of completed achievements.  Currently unused.
+	If used in the future, it would be a good idea for the caller to acquire a read lock beforehand.
 */
 uint32 AchievementMgr::GetCompletedAchievementsCount() const
 {
@@ -2028,23 +2089,30 @@ bool AchievementMgr::GMCompleteAchievement(WorldSession* gmSession, int32 achiev
 		m_player->GetSession()->SystemMessage("All achievements completed.");
 		return true;
 	}
-	if( m_completedAchievements.find(achievementID) != m_completedAchievements.end() )
+
+	m_lock.AcquireReadLock();
+	bool hasCompleted = m_completedAchievements.find(achievementID) != m_completedAchievements.end();
+	m_lock.ReleaseReadLock();
+	if( hasCompleted )
 	{
 		gmSession->SystemMessage("Player has already completed that achievement.");
 		return false;
 	}
+
 	AchievementEntry const* achievement = dbcAchievementStore.LookupEntry(achievementID);
 	if( !achievement )
 	{
 		gmSession->SystemMessage("Achievement %lu entry not found.", achievementID);
 		return false;
 	}
+
 	if( achievement->flags & ACHIEVEMENT_FLAG_COUNTER )
 	{
 		gmSession->SystemMessage("Achievement (%lu) |Hachievement:%lu:"I64FMT":0:0:0:-1:0:0:0:0|h[%s]|h is a counter and cannot be completed.",
 			achievement->ID, achievement->ID, gmSession->GetPlayer()->GetGUID(), achievement->name);
 		return false;
 	}
+
 	CompletedAchievement(achievement);
 	return true;
 }
@@ -2059,6 +2127,7 @@ bool AchievementMgr::GMCompleteCriteria(WorldSession* gmSession, int32 criteriaI
 {
 	if( criteriaID == -1 )
 	{
+		m_lock.AcquireWriteLock();
 		uint32 nr = dbcAchievementCriteriaStore.GetNumRows();
 		AchievementCriteriaEntry const* crt;
 		CriteriaProgressMap::iterator itr;
@@ -2089,6 +2158,7 @@ bool AchievementMgr::GMCompleteCriteria(WorldSession* gmSession, int32 criteriaI
 				CompletedCriteria(crt);
 			}
 		}
+		m_lock.ReleaseWriteLock();
 		m_player->GetSession()->SystemMessage("All achievement criteria completed.");
 		return true;
 	}
@@ -2118,20 +2188,21 @@ bool AchievementMgr::GMCompleteCriteria(WorldSession* gmSession, int32 criteriaI
 		return false;
 	}
 
+	m_lock.AcquireWriteLock();
 	CriteriaProgressMap::iterator itr = m_criteriaProgress.find(criteriaID);
 	CriteriaProgress *progress;
 	if( itr == m_criteriaProgress.end() )
 	{
 		// not in progress map
 		progress = new CriteriaProgress(criteriaID, 0);
-		m_criteriaProgress[criteriaID]=progress;
+		m_criteriaProgress[criteriaID] = progress;
 	}
 	else
 	{
 		progress = itr->second;
 	}
-
 	progress->counter = criteria->raw.field4;
+	m_lock.ReleaseWriteLock();
 	SendCriteriaUpdate( progress );
 	CompletedCriteria(criteria);
 	return true;
@@ -2143,6 +2214,7 @@ bool AchievementMgr::GMCompleteCriteria(WorldSession* gmSession, int32 criteriaI
 */
 void AchievementMgr::GMResetAchievement(int32 achievementID)
 {
+	m_lock.AcquireWriteLock();
 	std::ostringstream ss;
 	if( achievementID == -1 )
 	{
@@ -2167,6 +2239,7 @@ void AchievementMgr::GMResetAchievement(int32 achievementID)
 		ss << "DELETE FROM character_achievement WHERE guid = " << m_player->GetLowGUID() << " AND achievement = " << achievementID;
 		CharacterDatabase.Execute( ss.str().c_str() );
 	}
+	m_lock.ReleaseWriteLock();
 }
 
 /**
@@ -2175,6 +2248,7 @@ void AchievementMgr::GMResetAchievement(int32 achievementID)
 */
 void AchievementMgr::GMResetCriteria(int32 criteriaID)
 {
+	m_lock.AcquireWriteLock();
 	std::ostringstream ss;
 	if( criteriaID == -1 )
 	{
@@ -2199,6 +2273,7 @@ void AchievementMgr::GMResetCriteria(int32 criteriaID)
 		ss << "DELETE FROM character_achievement_progress WHERE guid = " << m_player->GetLowGUID() << " AND criteria = " << criteriaID;
 		CharacterDatabase.Execute( ss.str().c_str() );
 	}
+	m_lock.ReleaseWriteLock();
 	CheckAllAchievementCriteria();
 }
 
@@ -2207,12 +2282,15 @@ void AchievementMgr::GMResetCriteria(int32 criteriaID)
 */
 time_t AchievementMgr::GetCompletedTime(AchievementEntry const* achievement)
 {
+	m_lock.AcquireReadLock();
 	CompletedAchievementMap::iterator iter = m_completedAchievements.find(achievement->ID);
 	if( iter != m_completedAchievements.end() )
 	{
 		// achievement is completed, return the date/time it was completed
+		m_lock.ReleaseReadLock();
 		return iter->second;
 	}
+	m_lock.ReleaseReadLock();
 	return 0; // achievement not completed
 }
 
@@ -2221,6 +2299,9 @@ time_t AchievementMgr::GetCompletedTime(AchievementEntry const* achievement)
 */
 bool AchievementMgr::HasCompleted(uint32 achievementID)
 {
-	return (m_completedAchievements.find(achievementID) != m_completedAchievements.end());
+	m_lock.AcquireReadLock();
+	bool completed = m_completedAchievements.find(achievementID) != m_completedAchievements.end();
+	m_lock.ReleaseReadLock();
+	return completed;
 }
 

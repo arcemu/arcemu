@@ -1744,7 +1744,7 @@ public:
 	void SpellEffectPowerBurn(uint32 i);
 	void SpellEffectThreat(uint32 i);
 	void SpellEffectTriggerSpell(uint32 i);
-	void SpellEffectPowerFunnel(uint32 i;
+	void SpellEffectPowerFunnel(uint32 i);
 	void SpellEffectHealMaxHealth(uint32 i);
 	void SpellEffectInterruptCast(uint32 i);
 	void SpellEffectDistract(uint32 i);
