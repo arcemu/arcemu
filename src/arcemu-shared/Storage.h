@@ -811,11 +811,17 @@ public:
 		do 
 		{
 			Entry = fields[0].GetUInt32();
-			Allocated = Storage<T, StorageType>::_storage.LookupEntryAllocate(Entry);
-			if(Allocated)
-				LoadBlock(fields, Allocated, true);
+			Allocated = Storage<T, StorageType>::_storage.LookupEntry( Entry );
+			if( Allocated )
+				LoadBlock( fields, Allocated, true );
+			else
+			{
+				Allocated = Storage<T, StorageType>::_storage.AllocateEntry( Entry );
+				if( Allocated )
+					LoadBlock( fields, Allocated );
+			}
 
-		} while(result->NextRow());
+		} while( result->NextRow() );
 		delete result;
 	}
 };
