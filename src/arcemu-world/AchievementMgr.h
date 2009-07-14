@@ -276,7 +276,7 @@ public:
 	void GMResetCriteria(int criteriaID);
 	bool HasCompleted(uint32 achievementID);
 	uint32 GetCompletedAchievementsCount() const;
-	uint32 GetCriteriaProgressCount(bool inspect);
+	uint32 GetCriteriaProgressCount();
 	time_t GetCompletedTime(AchievementEntry const* achievement);
 	Player* GetPlayer() { return m_player; }
 
