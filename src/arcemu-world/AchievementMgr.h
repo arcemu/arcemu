@@ -261,7 +261,9 @@ class AchievementMgr
 public:
 	AchievementMgr(Player* pl);
 	~AchievementMgr();
-
+	// !IMPORTANT!
+	// Todo: Use QueryBuffer !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+	// THIS IS WHY WE GET SO MUCH LAGGGGGGGGGGGG.
 	void LoadFromDB(QueryResult *achievementResult, QueryResult *criteriaResult);
 	void SaveToDB();
 	void CheckAllAchievementCriteria();
