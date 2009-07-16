@@ -440,7 +440,7 @@ bool Guild::LoadFromDB(Field * f)
 	m_guildInfo = strlen(f[8].GetString()) ? strdup(f[8].GetString()) : NULL;
 	m_motd = strlen(f[9].GetString()) ? strdup(f[9].GetString()) : NULL;
 	m_creationTimeStamp = f[10].GetUInt32();
-	m_bankBalance = f[12].GetUInt64();
+	m_bankBalance = f[11].GetUInt64();
 
 	// load ranks
 	uint32 j;
