@@ -240,6 +240,9 @@ ECHO [Importing] 2310_guilds.sql
 mysql -h %server% --user=%user% --password=%pass% --port=%port% %chr% < ..\character_updates\2310_guilds.sql
 ECHO [Importing] 2642_characters.sql
 mysql -h %server% --user=%user% --password=%pass% --port=%port% %chr% < ..\character_updates\2642_characters.sql
+ECHO [Importing] 2742_guilds.sql
+mysql -h %server% --user=%user% --password=%pass% --port=%port% %chr% < ..\character_updates\2742_guilds.sql
+
 ECHO [Importing] Finished
 ECHO  Update Success.
 ECHO.
@@ -407,6 +410,8 @@ ECHO [Importing] 2310_guilds.sql
 mysql -h %server% --user=%user% --password=%pass% --port=%port% %chr% < ..\character_updates\2310_guilds.sql
 ECHO [Importing] 2642_characters.sql
 mysql -h %server% --user=%user% --password=%pass% --port=%port% %chr% < ..\character_updates\2642_characters.sql
+ECHO [Importing] 2742_guilds.sql
+mysql -h %server% --user=%user% --password=%pass% --port=%port% %chr% < ..\character_updates\2742_guilds.sql
 
 ECHO [Importing] Character Updates Finished
 ECHO.
