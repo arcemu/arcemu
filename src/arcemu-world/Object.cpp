@@ -1896,12 +1896,12 @@ void Object::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
 	//If our pet attacks  - flag us.
 	if( pVictim->IsPlayer() && IsPet() )
 	{
-		Player* owner = static_cast< Player* >( static_cast< Pet* >( this )->GetPetOwner() );
+		Player* owner = static_cast< Pet* >( this )->GetPetOwner();
 		if( owner != NULL )
 			if( owner->isAlive() && static_cast< Player* >( pVictim )->DuelingWith != owner )
 			{
 				owner->SetPvPFlag();
-				static_cast<Unit*>(this)->AggroPvPGuards();
+				static_cast< Unit* >( this )->AggroPvPGuards();
 			}
 	}
 
@@ -3293,11 +3293,13 @@ void Object::SetByte(uint32 index, uint32 index1,uint8 value)
 void Object::SetByteFlag( uint16 index, uint8 offset, uint8 newFlag )
 {
     ASSERT( index < m_valuesCount );
-	ASSERT( offset <= 4 );
+	ASSERT( offset < 4 );
+	
+	offset <<= 3;
 
-    if(!(uint8(m_uint32Values[ index ] >> (offset * 8)) & newFlag))
+    if( !( uint8( m_uint32Values[ index ] >> offset ) & newFlag ) )
     {
-        m_uint32Values[ index ] |= uint32(uint32(newFlag) << (offset * 8));
+        m_uint32Values[ index ] |= uint32( uint32( newFlag ) << offset );
 
         if(IsInWorld())
         {
@@ -3315,11 +3317,13 @@ void Object::SetByteFlag( uint16 index, uint8 offset, uint8 newFlag )
 void Object::RemoveByteFlag( uint16 index, uint8 offset, uint8 oldFlag )
 {
 	ASSERT( index < m_valuesCount );
-	ASSERT( offset <= 4 );
+	ASSERT( offset < 4 );
+	
+	offset <<= 3;
 
-    if(uint8(m_uint32Values[ index ] >> (offset * 8)) & oldFlag)
+    if( uint8( m_uint32Values[ index ] >> offset ) & oldFlag )
     {
-        m_uint32Values[ index ] &= ~uint32(uint32(oldFlag) << (offset * 8));
+        m_uint32Values[ index ] &= ~uint32( uint32( oldFlag ) << offset );
 
         if(IsInWorld())
         {
