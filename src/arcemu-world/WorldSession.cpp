@@ -41,7 +41,7 @@ permissioncount(0),
 _loggingOut(false),
 LoggingOut(false),
 instanceId(0),
-actQueue(false),
+
 m_currMsTime(getMSTime()),
 bDeleted(false),
 m_bIsWLevelSet(false),
@@ -84,10 +84,7 @@ WorldSession::~WorldSession()
 
 	WorldPacket *packet;
 
-	while((packet = _recvQueue[actQueue].Pop()) != 0)
-		delete packet;
-
-	while((packet = _recvQueue[!actQueue].Pop()) != 0)
+	while((packet = _recvQueue.Pop()) != 0)
 		delete packet;
 
 	for(uint32 x=0;x<8;x++)
@@ -147,7 +144,7 @@ int WorldSession::Update(uint32 InstanceID)
 		
 	}
 
-	while ((packet = _recvQueue[actQueue].Pop()) != 0)
+	while ((packet = _recvQueue.Pop()) != 0)
 	{
 		ASSERT(packet);
 
