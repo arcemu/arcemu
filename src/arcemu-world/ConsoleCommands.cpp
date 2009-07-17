@@ -54,6 +54,10 @@ bool HandleInfoCommand(BaseConsole * pConsole, int argc, const char * argv[])
 	pConsole->Write("Average Latency: %.3fms\r\n", count ?  ((float)((float)avg / (float)count)) : 0.0f);
 	pConsole->Write("SQL Query Cache Size (World): %u queries delayed\r\n", WorldDatabase.GetQueueSize());
 	pConsole->Write("SQL Query Cache Size (Character): %u queries delayed\r\n", CharacterDatabase.GetQueueSize());
+	pConsole->Write("=====================Buffer pool information=====================================\r\n");
+	pConsole->Write("Spell Pool: length %u free %u \r\n", SpellPool.GetBufferLength(), SpellPool.GetFreeCount());
+	pConsole->Write("Item Pool: length %u free %u \r\n", ItemPool.GetBufferLength(), ItemPool.GetFreeCount());
+	pConsole->Write("Aura Pool: length %u free %u \r\n", AuraPool.GetBufferLength(), AuraPool.GetFreeCount());
 	pConsole->Write("======================================================================\r\n\r\n");
 
 	return true;

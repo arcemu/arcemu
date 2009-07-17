@@ -284,6 +284,9 @@ bool ChatHandler::HandleInfoCommand(const char* args, WorldSession *m_session)
 	GreenSystemMessage(m_session, "Average Latency: |r%.3fms", (float)((float)avg / (float)count));
 	GreenSystemMessage(m_session, "SQL Query Cache Size (World): |r%u queries delayed", WorldDatabase.GetQueueSize());
 	GreenSystemMessage(m_session, "SQL Query Cache Size (Character): |r%u queries delayed", CharacterDatabase.GetQueueSize());
+	GreenSystemMessage(m_session, "Spell Pool: length %u free %u ", SpellPool.GetBufferLength(), SpellPool.GetFreeCount());
+	GreenSystemMessage(m_session, "Item Pool: length %u free %u ", ItemPool.GetBufferLength(), ItemPool.GetFreeCount());
+	GreenSystemMessage(m_session, "Aura Pool: length %u free %u ", AuraPool.GetBufferLength(), AuraPool.GetFreeCount());
 
 	return true;
 }

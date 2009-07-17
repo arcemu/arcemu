@@ -162,9 +162,10 @@ uint32 buffentrys[3] = {180380,180362,180146};
 		30,
 	};
 
-//								<10 <20 <30 <40 <50 <60 <70 70
-static int resHonorTable[8] = { 0,  0,  4,  7,  11, 19, 20, 20 };
-static int winHonorTable[8] = { 0,  0,  4,  7,  11, 19, 20, 20 };
+//								<10 <20 <30 <40 <50 <60 <70  70  <70 80 
+static int resHonorTable[10] = { 0,  0,  4,  7,  11, 19, 20, 20, 30, 30 };
+static int winHonorTable[10] = { 0,  0,  4,  7,  11, 19, 20, 20, 30, 30 };
+
 
 static uint32 resourcesToGainBH = 330;
 static uint32 resourcesToGainBR = 200;

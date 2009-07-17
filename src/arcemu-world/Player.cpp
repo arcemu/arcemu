@@ -231,7 +231,20 @@ mOutOfRangeIdCount(0)
 	//These should be set in the object constructor..
 	m_runSpeed = PLAYER_NORMAL_RUN_SPEED;
 	m_walkSpeed = 2.5f;
-
+	felSynergyChance = 0;
+	felSynergyPctBonus = 0;
+	demonicEmpathySpell = 0;
+	activePotionSpid = 0;
+	conflagrCritCoef = 0;
+	immolateBonus = 0;		
+	improvedSoulLeech = 0;
+	improvedFearVal = 0;
+	armToApCoeff = 0;
+	armToApValue = 0;
+	lastArmToApBonus = 0;
+	deathEmrDrain = 0;
+	deathEmrShadow = 0;
+	m_MasterShapeshift = 0;
 	m_objectTypeId = TYPEID_PLAYER;
 	m_valuesCount = PLAYER_END;
 	//////////////////////////////////////////////////////////////////////////
@@ -385,7 +398,16 @@ mOutOfRangeIdCount(0)
 	ok_to_remove = false;
 	m_modphyscritdmgPCT = 0;
 	m_RootedCritChanceBonus = 0;
-
+	m_MoltenFuryDmgBonus = 0; // DuKJIoHuyC: in Player.h
+	ShatteredBarrierMod = 0;
+	FieryPaybackModHP35 = 0;
+	TormentTheWeakDmgBns = 0;
+	ArcanePotencyMod = 0;
+	LivingBmbTgt = 0;
+	JungleKingMod = 0;
+	FittestSurvivalMod = -1;
+	StunDamageReductPct = 0;
+	isGuardianSpirit = false;
 	m_ModInterrMRegenPCT = 0;
 	m_ModInterrMRegen =0;
 	m_RegenManaOnSpellResist=0;
@@ -1511,6 +1533,33 @@ void Player::EventDeath()
 		sEventMgr.AddEvent(this,&Player::RepopRequestedPlayer,EVENT_PLAYER_FORECED_RESURECT,PLAYER_FORCED_RESURECT_INTERVAL,1,0); //in case he forgets to release spirit (afk or something)
 
 	RemoveNegativeAuras();
+}
+
+void Player::EventPotionCooldown()
+{
+	if (activePotionSpid == 0)
+		return;
+
+	RemoveAllAuraById(53787);
+
+	// add server cooldown
+	_Cooldown_Add( COOLDOWN_TYPE_CATEGORY, 4, getMSTime() + 60000, 2370, 2456);
+
+	// clear all cooldowns
+	WorldPacket spell_data( SMSG_CLEAR_COOLDOWN, (4+8) );
+	spell_data << uint32(activePotionSpid);
+	spell_data << uint64(GetGUID());
+	GetSession()->SendPacket(&spell_data);
+
+	// resend cooldowns
+	WorldPacket item_data(SMSG_SPELL_COOLDOWN, 8+1+4);
+	item_data << uint64(GetGUID());
+	item_data << uint8(1);
+	item_data << uint32(2597); //a potion spell with 1min cooldown
+	item_data << uint32(0);
+	GetSession()->SendPacket(&item_data);
+	// set to 0 after completion
+	activePotionSpid = 0;
 }
 
 void Player::BuildEnumData( WorldPacket * p_data )

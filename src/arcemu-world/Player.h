@@ -938,6 +938,20 @@ protected:
 	// END COOLDOWNS
 
 public:
+
+	float m_MasterShapeshift;
+	int32 pandemicDamagePerc;
+	int8 improvedFearVal;
+	uint8 deathEmrDrain;
+	uint8 deathEmrShadow;
+	uint8 improvedSoulLeech;
+	int8 conflagrCritCoef;
+	int8 immolateBonus;	
+	int8 felSynergyChance;
+	int8 felSynergyPctBonus;
+	uint32 demonicEmpathySpell;
+	uint32 activePotionSpid;
+
 	//! Okay to remove from world
 	bool ok_to_remove;
 	uint64 m_spellIndexTypeTargets[NUM_SPELL_TYPE_INDEX];
@@ -1387,6 +1401,7 @@ public:
 	void EventAttackStop();
 	void EventAttackUpdateSpeed() { }
 	void EventDeath();
+	void EventPotionCooldown();
 	//Note:ModSkillLine -> value+=amt;ModSkillMax -->value=amt; --weird
 	float GetSkillUpChance(uint32 id);
 	//ARCEMU_INLINE std::list<struct skilllines>getSkillLines() { return m_skilllines; }
@@ -1566,12 +1581,27 @@ public:
 	uint32 BaseResistanceModPctNeg[7];
 	uint32 ResistanceModPctPos[7];
 	uint32 ResistanceModPctNeg[7];
+	uint32 m_ExpertiseMod;
 	float m_resist_critical[2];//when we are a victim we can have talents to decrease chance for critical hit. This is a negative value and it's added to critchances
 	float m_resist_hit[3]; // 0 = melee; 1= ranged; 2=spells
 	float m_attack_speed[3];
 	float SpellHealDoneByAttribute[5][7];
 	uint32 m_modphyscritdmgPCT;
 	uint32 m_RootedCritChanceBonus; // Class Script Override: Shatter
+	uint32 m_MoltenFuryDmgBonus;    // DuKJIoHuyC: для таланта http://www.wowhead.com/?spell=31680
+	uint32 ShatteredBarrierMod;		// For Shattered Barrier http://www.wowhead.com/?spell=54787
+	uint32 FieryPaybackModHP35;		// for Fiery Payback
+	uint32 TormentTheWeakDmgBns;
+	uint32 ArcanePotencyMod;
+	uint64 LivingBmbTgt;
+	uint32 JungleKingMod;
+	uint32 FittestSurvivalMod;
+	uint8  StunDamageReductPct;		// For Primal Tenacity  DK Talent
+	bool isGuardianSpirit;
+ 
+	//megai2: incr type, incr idx, src type, src idx, pct, real amt
+	int32 ModStatByAttr[5][7][5][7][2];
+	void ApplyStatByAttrMod(uint8 dstType, uint8 dstIdx, uint8 srcType, uint8 srcIdx);
 
 	uint32 m_ModInterrMRegenPCT;
 	int32 m_ModInterrMRegen;
@@ -2027,6 +2057,9 @@ public:
 	void CopyAndSendDelayedPacket(WorldPacket * data);
 	void PartLFGChannel();
 	SpeedCheatDetector	*SDetector;
+	int32 armToApValue;
+	int32 armToApCoeff;
+	int32 lastArmToApBonus;
 protected:
 	LocationVector m_summonPos;
 	uint32 m_summonInstanceId;

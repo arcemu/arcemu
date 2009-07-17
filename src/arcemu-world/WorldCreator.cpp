@@ -535,6 +535,9 @@ MapMgr * InstanceMgr::_CreateInstance(uint32 mapid, uint32 instanceid)
 
 MapMgr * InstanceMgr::_CreateInstance(Instance * in)
 {
+	if (!m_maps[in->m_mapId])
+		return NULL;
+
 	Log.Notice("InstanceMgr", "Creating saved instance %u (%s)", in->m_instanceId, m_maps[in->m_mapId]->GetName());
 	ASSERT(in->m_mapMgr==NULL);
 

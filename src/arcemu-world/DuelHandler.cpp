@@ -75,19 +75,31 @@ void WorldSession::HandleDuelCancelled(WorldPacket & recv_data)
 		delete arbiter;
  	}
 
-	_player->DuelingWith->SetUInt64Value( PLAYER_DUEL_ARBITER, 0 );
+	if (_player->DuelingWith->GetMapMgr() == _player->GetMapMgr())
+	{
+		_player->DuelingWith->SetUInt64Value( PLAYER_DUEL_ARBITER, 0 );
+		_player->DuelingWith->SetUInt32Value( PLAYER_DUEL_TEAM, 0 );
+		_player->DuelingWith->m_duelState = DUEL_STATE_FINISHED;
+		_player->DuelingWith->m_duelCountdownTimer = 0;
+		_player->DuelingWith->DuelingWith = NULL;
+	}
 	_player->SetUInt64Value( PLAYER_DUEL_ARBITER, 0 );
-
-	_player->DuelingWith->SetUInt32Value( PLAYER_DUEL_TEAM, 0 );
 	_player->SetUInt32Value( PLAYER_DUEL_TEAM, 0);
-
-	_player->DuelingWith->m_duelState = DUEL_STATE_FINISHED;
 	_player->m_duelState = DUEL_STATE_FINISHED;
-
-	_player->DuelingWith->m_duelCountdownTimer = 0;
 	_player->m_duelCountdownTimer = 0;
-
-	_player->DuelingWith->DuelingWith = NULL;
 	_player->DuelingWith = NULL;
 
+	for(uint32 x=MAX_NEGATIVE_AURAS_EXTEDED_START;x<MAX_NEGATIVE_AURAS_EXTEDED_END;x++)
+	{
+		if(_player->m_auras[x])
+		{
+			_player->m_auras[x]->Remove();
+		}
+	}
+    Pet * pPet = _player->GetSummon();;
+	if(pPet && pPet->isAlive())
+	{
+	    pPet->SetPetAction(PET_ACTION_STAY);
+		pPet->SetPetAction(PET_ACTION_FOLLOW);
+	}
 }

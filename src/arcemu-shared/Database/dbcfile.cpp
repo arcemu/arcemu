@@ -27,10 +27,11 @@ DBCFile::~DBCFile()
 		free ( stringTable );
 }
 
-bool DBCFile::open(const char*fn)
+bool DBCFile::open(const char * fn)
 {
-	FILE*pf=fopen(fn,"rb");
-	if(!pf)return false;
+	FILE * pf=fopen(fn, "rb");
+	if( !pf )
+		return false;
 
 	fread(header,4,1,pf);
 	assert(header[0]=='W' && header[1]=='D' && header[2]=='B' && header[3] == 'C');

@@ -94,7 +94,8 @@ public:
 	virtual bool WaitExecuteNA(const char* QueryString);//Wait For Request Completion
 	virtual bool Execute(const char* QueryString, ...);
 	virtual bool ExecuteNA(const char* QueryString);
-
+	
+	// Initialized on load: Database::Database() : CThread()
 	bool ThreadRunning;
 
 	ARCEMU_INLINE const string& GetHostName() { return mHostname; }

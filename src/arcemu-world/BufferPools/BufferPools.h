@@ -57,6 +57,24 @@ public:
 		//? DestroyPool? :P
 	};
 
+	uint32 GetBufferLength()
+	{
+		ObjLock.Acquire();
+		uint32 val = max_avails;
+		ObjLock.Release();
+
+		return val;
+	};
+
+	uint32 GetFreeCount()
+	{
+		ObjLock.Acquire();
+		uint32 val = avail_indexes.size();
+		ObjLock.Release();
+
+		return val;		
+	};
+
 	//fetch from internal list a new Item object
 	T* PooledNew()
 	{

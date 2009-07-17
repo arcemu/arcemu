@@ -4859,6 +4859,23 @@ uint32 Unit::RemoveAllAuraByNameHash(uint32 namehash)
 	return res;
 }
 
+uint32 Unit::RemoveAllAuraById(uint32 Id)
+{
+	uint32 res = 0;
+	for(uint32 x=MAX_TOTAL_AURAS_START;x<MAX_TOTAL_AURAS_END;x++)
+	{
+		if(m_auras[x])
+		{
+			if(m_auras[x]->GetSpellId()==Id)
+			{
+				m_auras[x]->Remove();
+				res++;
+			}
+		}
+	}
+	return res;
+}
+
 void Unit::RemoveNegativeAuras()
 {
 	for(uint32 x=MAX_NEGATIVE_AURAS_EXTEDED_START;x<MAX_REMOVABLE_AURAS_END;x++)
@@ -5669,7 +5686,14 @@ bool Unit::HasAura(uint32 spellid)
 
 		return false;
 }
-
+uint16 Unit::GetAuraStackCount(uint32 spellid)
+{
+	uint16 count = 0;
+	for(uint32 x=MAX_TOTAL_AURAS_START;x<MAX_TOTAL_AURAS_END;x++)
+		if(m_auras[x] && m_auras[x]->GetSpellId()== spellid)
+			count++;
+	return count;
+}
 
 void Unit::DropAurasOnDeath()
 {
@@ -6265,6 +6289,7 @@ void Unit::EnableFlight()
 		static_cast< Player* >( this )->z_axisposition = 0.0f;
 		static_cast< Player* >( this )->delayedPackets.add( data );
 		static_cast< Player* >( this )->m_setflycheat = true;
+		delete data;
 	}
 }
 
@@ -6289,6 +6314,7 @@ void Unit::DisableFlight()
 		static_cast< Player* >( this )->z_axisposition = 0.0f;
 		static_cast< Player* >( this )->delayedPackets.add( data );
 		static_cast< Player* >( this )->m_setflycheat = false;
+		delete data;
 	}
 }
 

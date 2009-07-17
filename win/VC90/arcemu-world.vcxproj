@@ -1,0 +1,524 @@
+﻿<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGUID>{1DC6C4DA-A028-41F3-877D-D5400C594F88}</ProjectGUID>
+    <RootNamespace>game</RootNamespace>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Debug|X64'">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Release|X64'">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets">
+    <Import Project="$(LocalAppData)\Microsoft\VisualStudio\10.0\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(LocalAppData)\Microsoft\VisualStudio\10.0\Microsoft.Cpp.$(Platform).user.props')" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.20506.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\..\..\bin\Debug\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\arcemu-world___Win32_Debug\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</LinkIncremental>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|X64'">.\..\..\bin\Debug_x64\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|X64'">.\arcemu-world___Win32_Debug_x64\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|X64'">true</LinkIncremental>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\..\..\bin\Release\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\arcemu-world___Win32_Release\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|X64'">.\..\..\bin\Release_x64\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|X64'">.\arcemu-world___Win32_Release_x64\</IntDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <AdditionalOptions>/Zm256 /bigobj %(AdditionalOptions)</AdditionalOptions>
+      <Optimization>Disabled</Optimization>
+      <InlineFunctionExpansion>Disabled</InlineFunctionExpansion>
+      <AdditionalIncludeDirectories>..\..\src\arcemu-shared;..\..\src\arcemu-world\Collision\vmap;..\..\src\arcemu-world\Collision\g3dlite;..\..\extras\arcemu-windows-libraries\VC\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;_CRT_SECURE_NO_WARNINGS;_CRT_NONSTDC_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>false</MinimalRebuild>
+      <ExceptionHandling>Async</ExceptionHandling>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <SmallerTypeCheck>false</SmallerTypeCheck>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <FloatingPointExceptions>true</FloatingPointExceptions>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderOutputFile>$(IntDir)game.pch</PrecompiledHeaderOutputFile>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <ProgramDataBaseFileName>$(IntDir)</ProgramDataBaseFileName>
+      <BrowseInformation>
+      </BrowseInformation>
+      <WarningLevel>Level4</WarningLevel>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <CompileAs>Default</CompileAs>
+      <DisableSpecificWarnings>4127;4100;4121;4714;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <Culture>0x0409</Culture>
+    </ResourceCompile>
+    <Link>
+      <AdditionalDependencies>msvcrtd.lib;ws2_32.lib;libmysql_debug_win32.lib;libeay32_win32.lib;dbghelp.lib;zlib_debug_win32.lib;pcre_debug_win32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\..\extras\collision\collision_dll\Debug;..\..\extras\arcemu-windows-libraries\VC\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
+      <IgnoreSpecificDefaultLibraries>msvcrt.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <GenerateMapFile>true</GenerateMapFile>
+      <MapFileName>$(TargetDir)arcemu-world.map</MapFileName>
+      <MapExports>true</MapExports>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+    </Link>
+    <PostBuildEvent>
+      <Command>
+      </Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|X64'">
+    <Midl>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile>
+      <AdditionalOptions>/Zm256 /bigobj %(AdditionalOptions)</AdditionalOptions>
+      <Optimization>Disabled</Optimization>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <AdditionalIncludeDirectories>..\..\src\boost;..\..\src\arcemu-shared;..\..\extras\arcemu-windows-libraries\VC\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;_CRT_SECURE_NO_WARNINGS;_CRT_NONSTDC_NO_WARNINGS;X64;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>true</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <FunctionLevelLinking>false</FunctionLevelLinking>
+      <RuntimeTypeInfo>false</RuntimeTypeInfo>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderOutputFile>$(IntDir)game.pch</PrecompiledHeaderOutputFile>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <ProgramDataBaseFileName>$(IntDir)</ProgramDataBaseFileName>
+      <BrowseInformation>
+      </BrowseInformation>
+      <WarningLevel>Level4</WarningLevel>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <CompileAs>Default</CompileAs>
+      <DisableSpecificWarnings>4127;4100;4121;4714;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <Culture>0x0409</Culture>
+    </ResourceCompile>
+    <Link>
+      <AdditionalDependencies>ws2_32.lib;libmysql_debug_x64.lib;libeay32_win64.lib;dbghelp.lib;zlib_debug_x64.lib;pcre_debug_x64.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\..\extras\collision\collision_dll\x64\Debug;..\..\extras\arcemu-windows-libraries\VC\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <TargetMachine>MachineX64</TargetMachine>
+    </Link>
+    <PostBuildEvent>
+      <Command>
+      </Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <AdditionalOptions>/MP /Zm256 %(AdditionalOptions)</AdditionalOptions>
+      <Optimization>Full</Optimization>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <OmitFramePointers>true</OmitFramePointers>
+      <WholeProgramOptimization>true</WholeProgramOptimization>
+      <AdditionalIncludeDirectories>..\..\src\boost;..\..\src\arcemu-shared;..\..\src\arcemu-world\Collision\vmap;..\..\src\arcemu-world\Collision\g3dlite;..\..\extras\arcemu-windows-libraries\VC\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_HAS_ITERATOR_DEBUGGING=0;WIN32;NDEBUG;_LIB;_CRT_SECURE_NO_WARNINGS;_CRT_NONSTDC_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <StringPooling>true</StringPooling>
+      <MinimalRebuild>false</MinimalRebuild>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <FunctionLevelLinking>false</FunctionLevelLinking>
+      <EnableEnhancedInstructionSet>NotSet</EnableEnhancedInstructionSet>
+      <FloatingPointModel>Fast</FloatingPointModel>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderOutputFile>$(IntDir)game.pch</PrecompiledHeaderOutputFile>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <ProgramDataBaseFileName>$(IntDir)</ProgramDataBaseFileName>
+      <WarningLevel>Level3</WarningLevel>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <CompileAs>Default</CompileAs>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <Culture>0x0409</Culture>
+    </ResourceCompile>
+    <Link>
+      <AdditionalDependencies>ws2_32.lib;msvcrt.lib;libmysql_release_win32.lib;libeay32_win32.lib;dbghelp.lib;zlib_release_win32.lib;pcre_release_win32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\..\extras\collision\collision_dll\Release;..\..\extras\arcemu-windows-libraries\VC\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <IgnoreSpecificDefaultLibraries>msvcrtd.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <GenerateMapFile>false</GenerateMapFile>
+      <MapFileName>
+      </MapFileName>
+      <OptimizeReferences>true</OptimizeReferences>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+    </Link>
+    <PostBuildEvent>
+      <Command>
+      </Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|X64'">
+    <Midl>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile>
+      <AdditionalOptions>/MP /Zm256 %(AdditionalOptions)</AdditionalOptions>
+      <Optimization>Disabled</Optimization>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <FavorSizeOrSpeed>Neither</FavorSizeOrSpeed>
+      <WholeProgramOptimization>false</WholeProgramOptimization>
+      <AdditionalIncludeDirectories>..\..\src\arcemu-shared;..\..\src\arcemu-world\Collision\vmap;..\..\src\arcemu-world\Collision\g3dlite;..\..\extras\arcemu-windows-libraries\VC\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_HAS_ITERATOR_DEBUGGING=0;WIN32;NDEBUG;_LIB;_CRT_SECURE_NO_WARNINGS;_CRT_NONSTDC_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE;X64;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <StringPooling>true</StringPooling>
+      <MinimalRebuild>false</MinimalRebuild>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <FunctionLevelLinking>false</FunctionLevelLinking>
+      <EnableEnhancedInstructionSet>NotSet</EnableEnhancedInstructionSet>
+      <FloatingPointModel>Precise</FloatingPointModel>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderOutputFile>$(IntDir)game.pch</PrecompiledHeaderOutputFile>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <ProgramDataBaseFileName>$(IntDir)</ProgramDataBaseFileName>
+      <WarningLevel>Level3</WarningLevel>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <CompileAs>Default</CompileAs>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <Culture>0x0409</Culture>
+    </ResourceCompile>
+    <Link>
+      <AdditionalDependencies>ws2_32.lib;libmysql_release_x64.lib;libeay32_win64.lib;dbghelp.lib;zlib_release_x64.lib;pcre_release_x64.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\..\extras\collision\collision_dll\x64\Release;..\..\extras\arcemu-windows-libraries\VC\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <TargetMachine>MachineX64</TargetMachine>
+    </Link>
+    <PostBuildEvent>
+      <Command>
+      </Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\src\arcemu-shared\CoreMemoryAllocator_Core.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+      </PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|X64'">
+      </PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+      </PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|X64'">
+      </PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\..\src\arcemu-world\AchievementMgr.cpp" />
+    <ClCompile Include="..\..\src\arcemu-world\AddonMgr.cpp" />
+    <ClCompile Include="..\..\src\arcemu-world\AIInterface.cpp" />
+    <ClCompile Include="..\..\src\arcemu-world\AlteracValley.cpp" />
+    <ClCompile Include="..\..\src\arcemu-world\ArathiBasin.cpp" />
+    <ClCompile Include="..\..\src\arcemu-world\AreaTrigger.cpp" />
+    <ClCompile Include="..\..\src\arcemu-world\Arenas.cpp" />
+    <ClCompile Include="..\..\src\arcemu-world\ArenaTeam.cpp" />
+    <ClCompile Include="..\..\src\arcemu-world\AuctionHouse.cpp" />
+    <ClCompile Include="..\..\src\arcemu-world\AuctionMgr.cpp" />
+    <ClCompile Include="..\..\src\arcemu-world\BattlegroundCommands.cpp" />
+    <ClCompile Include="..\..\src\arcemu-world\BattlegroundHandler.cpp" />
+    <ClCompile Include="..\..\src\arcemu-world\BattlegroundMgr.cpp" />
+    <ClCompile Include="..\..\src\arcemu-world\BufferPools\BufferPools.cpp" />
+    <ClCompile Include="..\..\src\arcemu-world\CConsole.cpp" />
+    <ClCompile Include="..\..\src\arcemu-world\Channel.cpp" />
+    <ClCompile Include="..\..\src\arcemu-world\ChannelHandler.cpp" />
+    <ClCompile Include="..\..\src\arcemu-world\CharacterHandler.cpp" />
+    <ClCompile Include="..\..\src\arcemu-world\Chat.cpp" />
+    <ClCompile Include="..\..\src\arcemu-world\ChatHandler.cpp" />
+    <ClCompile Include="..\..\src\arcemu-world\CollideInterface.cpp" />
+    <ClCompile Include="..\..\src\arcemu-world\CombatHandler.cpp" />
+    <ClCompile Include="..\..\src\arcemu-world\CommonScheduleThread.cpp" />
+    <ClCompile Include="..\..\src\arcemu-world\ConsoleCommands.cpp" />
+    <ClCompile Include="..\..\src\arcemu-world\ConsoleListener.cpp" />
+    <ClCompile Include="..\..\src\arcemu-world\Container.cpp" />
+    <ClCompile Include="..\..\src\arcemu-world\Corpse.cpp" />
+    <ClCompile Include="..\..\src\arcemu-world\Creature.cpp" />
+    <ClCompile Include="..\..\src\arcemu-world\DatabaseCleaner.cpp" />
+    <ClCompile Include="..\..\src\arcemu-world\DayWatcherThread.cpp" />
+    <ClCompile Include="..\..\src\arcemu-world\debugcmds.cpp" />
+    <ClCompile Include="..\..\src\arcemu-world\DuelHandler.cpp" />
+    <ClCompile Include="..\..\src\arcemu-world\DynamicObject.cpp" />
+    <ClCompile Include="..\..\src\arcemu-world\EventableObject.cpp" />
+    <ClCompile Include="..\..\src\arcemu-world\EventMgr.cpp" />
+    <ClCompile Include="..\..\src\arcemu-world\EyeOfTheStorm.cpp" />
+    <ClCompile Include="..\..\src\arcemu-world\faction.cpp" />
+    <ClCompile Include="..\..\src\arcemu-world\GameObject.cpp" />
+    <ClCompile Include="..\..\src\arcemu-world\GMTicket.cpp" />
+    <ClCompile Include="..\..\src\arcemu-world\GMTicketCommands.cpp" />
+    <ClCompile Include="..\..\src\arcemu-world\Group.cpp" />
+    <ClCompile Include="..\..\src\arcemu-world\GroupHandler.cpp" />
+    <ClCompile Include="..\..\src\arcemu-world\Guild.cpp" />
+    <ClCompile Include="..\..\src\arcemu-world\GuildHandler.cpp" />
+    <ClCompile Include="..\..\src\arcemu-world\HonorHandler.cpp" />
+    <ClCompile Include="..\..\src\arcemu-world\InstanceCommands.cpp" />
+    <ClCompile Include="..\..\src\arcemu-world\Item.cpp" />
+    <ClCompile Include="..\..\src\arcemu-world\ItemHandler.cpp" />
+    <ClCompile Include="..\..\src\arcemu-world\ItemInterface.cpp" />
+    <ClCompile Include="..\..\src\arcemu-world\Level0.cpp" />
+    <ClCompile Include="..\..\src\arcemu-world\Level1.cpp" />
+    <ClCompile Include="..\..\src\arcemu-world\Level2.cpp" />
+    <ClCompile Include="..\..\src\arcemu-world\Level3.cpp" />
+    <ClCompile Include="..\..\src\arcemu-world\LfgHandler.cpp" />
+    <ClCompile Include="..\..\src\arcemu-world\LfgMgr.cpp" />
+    <ClCompile Include="..\..\src\arcemu-world\LocalizationMgr.cpp" />
+    <ClCompile Include="..\..\src\arcemu-world\LogonCommClient.cpp" />
+    <ClCompile Include="..\..\src\arcemu-world\LogonCommHandler.cpp" />
+    <ClCompile Include="..\..\src\arcemu-world\LootMgr.cpp" />
+    <ClCompile Include="..\..\src\arcemu-world\MailSystem.cpp" />
+    <ClCompile Include="..\..\src\arcemu-world\Main.cpp" />
+    <ClCompile Include="..\..\src\arcemu-world\Map.cpp" />
+    <ClCompile Include="..\..\src\arcemu-world\MapCell.cpp" />
+    <ClCompile Include="..\..\src\arcemu-world\MapMgr.cpp" />
+    <ClCompile Include="..\..\src\arcemu-world\MapScriptInterface.cpp" />
+    <ClCompile Include="..\..\src\arcemu-world\Master.cpp" />
+    <ClCompile Include="..\..\src\arcemu-world\MiscHandler.cpp" />
+    <ClCompile Include="..\..\src\arcemu-world\MovementHandler.cpp" />
+    <ClCompile Include="..\..\src\arcemu-world\NPCHandler.cpp" />
+    <ClCompile Include="..\..\src\arcemu-world\Object.cpp" />
+    <ClCompile Include="..\..\src\arcemu-world\ObjectContainer.cpp" />
+    <ClCompile Include="..\..\src\arcemu-world\ObjectMgr.cpp" />
+    <ClCompile Include="..\..\src\arcemu-world\ObjectStorage.cpp" />
+    <ClCompile Include="..\..\src\arcemu-world\Opcodes.cpp" />
+    <ClCompile Include="..\..\src\arcemu-world\Pet.cpp" />
+    <ClCompile Include="..\..\src\arcemu-world\PetHandler.cpp" />
+    <ClCompile Include="..\..\src\arcemu-world\Player.cpp" />
+    <ClCompile Include="..\..\src\arcemu-world\PlayerPacketWrapper.cpp" />
+    <ClCompile Include="..\..\src\arcemu-world\QueryHandler.cpp" />
+    <ClCompile Include="..\..\src\arcemu-world\Quest.cpp" />
+    <ClCompile Include="..\..\src\arcemu-world\QuestCommands.cpp" />
+    <ClCompile Include="..\..\src\arcemu-world\QuestHandler.cpp" />
+    <ClCompile Include="..\..\src\arcemu-world\QuestMgr.cpp" />
+    <ClCompile Include="..\..\src\arcemu-world\RaidHandler.cpp" />
+    <ClCompile Include="..\..\src\arcemu-world\RecallCommands.cpp" />
+    <ClCompile Include="..\..\src\arcemu-world\ReputationHandler.cpp" />
+    <ClCompile Include="..\..\src\arcemu-world\ScriptMgr.cpp" />
+    <ClCompile Include="..\..\src\arcemu-world\SkillHandler.cpp" />
+    <ClCompile Include="..\..\src\arcemu-world\SocialHandler.cpp" />
+    <ClCompile Include="..\..\src\arcemu-world\SpeedDetector.cpp" />
+    <ClCompile Include="..\..\src\arcemu-world\Spell.cpp" />
+    <ClCompile Include="..\..\src\arcemu-world\SpellAuras.cpp" />
+    <ClCompile Include="..\..\src\arcemu-world\SpellEffects.cpp" />
+    <ClCompile Include="..\..\src\arcemu-world\SpellFixes.cpp" />
+    <ClCompile Include="..\..\src\arcemu-world\SpellHandler.cpp" />
+    <ClCompile Include="..\..\src\arcemu-world\SpellTarget.cpp" />
+    <ClCompile Include="..\..\src\arcemu-world\Stats.cpp" />
+    <ClCompile Include="..\..\src\arcemu-world\StdAfx.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|X64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|X64'">Create</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\..\src\arcemu-world\StrandOfTheAncient.cpp" />
+    <ClCompile Include="..\..\src\arcemu-world\TaxiHandler.cpp" />
+    <ClCompile Include="..\..\src\arcemu-world\TaxiMgr.cpp" />
+    <ClCompile Include="..\..\src\arcemu-world\TerrainMgr.cpp" />
+    <ClCompile Include="..\..\src\arcemu-world\TradeHandler.cpp" />
+    <ClCompile Include="..\..\src\arcemu-world\TransporterHandler.cpp" />
+    <ClCompile Include="..\..\src\arcemu-world\Unit.cpp" />
+    <ClCompile Include="..\..\src\arcemu-world\Vehicle.cpp" />
+    <ClCompile Include="..\..\src\arcemu-world\VoiceChatClientSocket.cpp" />
+    <ClCompile Include="..\..\src\arcemu-world\VoiceChatHandler.cpp" />
+    <ClCompile Include="..\..\src\arcemu-world\WarsongGulch.cpp" />
+    <ClCompile Include="..\..\src\arcemu-world\WayPoints.cpp" />
+    <ClCompile Include="..\..\src\arcemu-world\WeatherMgr.cpp" />
+    <ClCompile Include="..\..\src\arcemu-world\WordFilter.cpp" />
+    <ClCompile Include="..\..\src\arcemu-world\World.cpp" />
+    <ClCompile Include="..\..\src\arcemu-world\WorldCreator.cpp" />
+    <ClCompile Include="..\..\src\arcemu-world\WorldRunnable.cpp" />
+    <ClCompile Include="..\..\src\arcemu-world\WorldSession.cpp" />
+    <ClCompile Include="..\..\src\arcemu-world\WorldSocket.cpp" />
+    <ClCompile Include="..\..\src\arcemu-world\WorldState.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\src\arcemu-world\AchievementMgr.h" />
+    <ClInclude Include="..\..\src\arcemu-world\AddonMgr.h" />
+    <ClInclude Include="..\..\src\arcemu-world\AIInterface.h" />
+    <ClInclude Include="..\..\src\arcemu-world\AlteracValley.h" />
+    <ClInclude Include="..\..\src\arcemu-world\ArathiBasin.h" />
+    <ClInclude Include="..\..\src\arcemu-world\AreaTrigger.h" />
+    <ClInclude Include="..\..\src\arcemu-world\Arenas.h" />
+    <ClInclude Include="..\..\src\arcemu-world\ArenaTeam.h" />
+    <ClInclude Include="..\..\src\arcemu-world\AuctionHouse.h" />
+    <ClInclude Include="..\..\src\arcemu-world\AuctionMgr.h" />
+    <ClInclude Include="..\..\src\arcemu-world\BaseConsole.h" />
+    <ClInclude Include="..\..\src\arcemu-world\BattlegroundMgr.h" />
+    <ClInclude Include="..\..\src\arcemu-world\BufferPools\BufferPools.h" />
+    <ClInclude Include="..\..\src\arcemu-world\CConsole.h" />
+    <ClInclude Include="..\..\src\arcemu-world\CellHandler.h" />
+    <ClInclude Include="..\..\src\arcemu-world\Channel.h" />
+    <ClInclude Include="..\..\src\arcemu-world\ChannelMgr.h" />
+    <ClInclude Include="..\..\src\arcemu-world\Chat.h" />
+    <ClInclude Include="..\..\src\arcemu-world\CollideInterface.h" />
+    <ClInclude Include="..\..\src\arcemu-world\CommonScheduleThread.h" />
+    <ClInclude Include="..\..\src\arcemu-world\ConsoleCommands.h" />
+    <ClInclude Include="..\..\src\arcemu-world\Container.h" />
+    <ClInclude Include="..\..\src\arcemu-world\Corpse.h" />
+    <ClInclude Include="..\..\src\arcemu-world\Creature.h" />
+    <ClInclude Include="..\..\src\arcemu-world\DatabaseCleaner.h" />
+    <ClInclude Include="..\..\src\arcemu-world\DayWatcherThread.h" />
+    <ClInclude Include="..\..\src\arcemu-world\Definitions.h" />
+    <ClInclude Include="..\..\src\arcemu-world\DynamicObject.h" />
+    <ClInclude Include="..\..\src\arcemu-world\EventableObject.h" />
+    <ClInclude Include="..\..\src\arcemu-world\EventMgr.h" />
+    <ClInclude Include="..\..\src\arcemu-world\EyeOfTheStorm.h" />
+    <ClInclude Include="..\..\src\arcemu-world\faction.h" />
+    <ClInclude Include="..\..\src\arcemu-world\GameObject.h" />
+    <ClInclude Include="..\..\src\arcemu-world\Group.h" />
+    <ClInclude Include="..\..\src\arcemu-world\Guild.h" />
+    <ClInclude Include="..\..\src\arcemu-world\HonorHandler.h" />
+    <ClInclude Include="..\..\src\arcemu-world\Item.h" />
+    <ClInclude Include="..\..\src\arcemu-world\ItemInterface.h" />
+    <ClInclude Include="..\..\src\arcemu-world\ItemPrototype.h" />
+    <ClInclude Include="..\..\src\arcemu-world\LfgMgr.h" />
+    <ClInclude Include="..\..\src\arcemu-world\LocalizationMgr.h" />
+    <ClInclude Include="..\..\src\arcemu-world\LogonCommClient.h" />
+    <ClInclude Include="..\..\src\arcemu-world\LogonCommHandler.h" />
+    <ClInclude Include="..\..\src\arcemu-world\LootMgr.h" />
+    <ClInclude Include="..\..\src\arcemu-world\MailSystem.h" />
+    <ClInclude Include="..\..\src\arcemu-world\Map.h" />
+    <ClInclude Include="..\..\src\arcemu-world\MapCell.h" />
+    <ClInclude Include="..\..\src\arcemu-world\MapMgr.h" />
+    <ClInclude Include="..\..\src\arcemu-world\MapScriptInterface.h" />
+    <ClInclude Include="..\..\src\arcemu-world\Master.h" />
+    <ClInclude Include="..\..\src\arcemu-world\NameTables.h" />
+    <ClInclude Include="..\..\src\arcemu-world\NPCHandler.h" />
+    <ClInclude Include="..\..\src\arcemu-world\Object.h" />
+    <ClInclude Include="..\..\src\arcemu-world\ObjectContainer.h" />
+    <ClInclude Include="..\..\src\arcemu-world\ObjectMgr.h" />
+    <ClInclude Include="..\..\src\arcemu-world\ObjectStorage.h" />
+    <ClInclude Include="..\..\src\arcemu-world\Opcodes.h" />
+    <ClInclude Include="..\..\src\arcemu-world\Packets.h" />
+    <ClInclude Include="..\..\src\arcemu-world\Pet.h" />
+    <ClInclude Include="..\..\src\arcemu-world\Player.h" />
+    <ClInclude Include="..\..\src\arcemu-world\Quest.h" />
+    <ClInclude Include="..\..\src\arcemu-world\QuestMgr.h" />
+    <ClInclude Include="..\..\src\arcemu-world\ScriptMgr.h" />
+    <ClInclude Include="..\..\src\arcemu-world\ScriptSetup.h" />
+    <ClInclude Include="..\..\src\arcemu-world\SkillNameMgr.h" />
+    <ClInclude Include="..\..\src\arcemu-world\SpeedDetector.h" />
+    <ClInclude Include="..\..\src\arcemu-world\Spell.h" />
+    <ClInclude Include="..\..\src\arcemu-world\SpellAuras.h" />
+    <ClInclude Include="..\..\src\arcemu-world\SpellFailure.h" />
+    <ClInclude Include="..\..\src\arcemu-world\Stats.h" />
+    <ClInclude Include="..\..\src\arcemu-world\StdAfx.h" />
+    <ClInclude Include="..\..\src\arcemu-world\StrandOfTheAncient.h" />
+    <ClInclude Include="..\..\src\arcemu-world\TaxiMgr.h" />
+    <ClInclude Include="..\..\src\arcemu-world\TerrainMgr.h" />
+    <ClInclude Include="..\..\src\arcemu-world\TransporterHandler.h" />
+    <ClInclude Include="..\..\src\arcemu-world\Unit.h" />
+    <ClInclude Include="..\..\src\arcemu-world\UpdateFields.h" />
+    <ClInclude Include="..\..\src\arcemu-world\UpdateMask.h" />
+    <ClInclude Include="..\..\src\arcemu-world\Vehicle.h" />
+    <ClInclude Include="..\..\src\arcemu-world\VoiceChatClientSocket.h" />
+    <ClInclude Include="..\..\src\arcemu-world\VoiceChatHandler.h" />
+    <ClInclude Include="..\..\src\arcemu-world\WarsongGulch.h" />
+    <ClInclude Include="..\..\src\arcemu-world\WeatherMgr.h" />
+    <ClInclude Include="..\..\src\arcemu-world\WordFilter.h" />
+    <ClInclude Include="..\..\src\arcemu-world\World.h" />
+    <ClInclude Include="..\..\src\arcemu-world\WorldCreator.h" />
+    <ClInclude Include="..\..\src\arcemu-world\WorldRunnable.h" />
+    <ClInclude Include="..\..\src\arcemu-world\WorldSession.h" />
+    <ClInclude Include="..\..\src\arcemu-world\WorldSocket.h" />
+    <ClInclude Include="..\..\src\arcemu-world\WorldState.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="..\..\src\arcemu-world\resources.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\extras\arcemu-windows-libraries\Sources\VC90-pcre.vcxproj">
+      <Project>{311f016d-f785-47ef-b032-5350397f16b6}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\extras\arcemu-windows-libraries\Sources\VC90-zlib.vcxproj">
+      <Project>{8f1dea42-6a5b-4b62-839d-c141a7bfacf2}</Project>
+    </ProjectReference>
+    <ProjectReference Include="arcemu-shared.vcxproj">
+      <Project>{90297c34-f231-4df4-848e-a74bcc0e40ed}</Project>
+    </ProjectReference>
+    <ProjectReference Include="collision_vc9.vcxproj">
+      <Project>{4a9e210a-3b0b-4076-be06-778692e5cb93}</Project>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

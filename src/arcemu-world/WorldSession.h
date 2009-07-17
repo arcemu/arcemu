@@ -259,7 +259,7 @@ public:
 	ARCEMU_INLINE void QueuePacket(WorldPacket* packet)
 	{
 		m_lastPing = (uint32)UNIXTIME;
-		_recvQueue.Push(packet);
+		_recvQueue[!actQueue].Push(packet);
 	}
 	
 	void OutPacket(uint16 opcode, uint16 len, const void* data)
@@ -753,7 +753,8 @@ private:
 
 	AccountDataEntry sAccountData[8];
 
-	FastQueue<WorldPacket*, Mutex> _recvQueue;
+	FastQueue<WorldPacket*, Mutex> _recvQueue[2];
+	bool actQueue;
 	char *permissions;
 	int permissioncount;
 

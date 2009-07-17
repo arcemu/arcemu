@@ -122,7 +122,7 @@ Creature::~Creature()
 			delete (*itr);
 		delete m_custom_waypoint_map;
 	}
-	if(m_respawnCell!=NULL)
+	if( m_respawnCell != NULL )
 		m_respawnCell->_respawnObjects.erase(this);
 }
 

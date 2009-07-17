@@ -974,6 +974,7 @@ public:
 	int32 m_invisDetect[INVIS_FLAG_TOTAL];
 
 	bool HasAura(uint32 spellid); //this checks passive auras too
+	uint16 GetAuraStackCount(uint32 spellid);
 	bool HasAuraVisual(uint32 visualid);//not spell id!!!
 	bool HasBuff(uint32 spelllid); //this does not check passive auras & it was visible auras
 	bool HasBuff(uint32 spelllid, uint64 guid);//this does not check passive auras & it was visible auras
@@ -1014,6 +1015,7 @@ public:
     void RemoveAllAuraType(uint32 auratype);//ex:to remove morph spells
     void RemoveAllAuraFromSelfType2(uint32 auratype, uint32 butskip_hash);//ex:to remove morph spells
 	uint32 RemoveAllAuraByNameHash(uint32 namehash);//required to remove weaker instances of a spell
+	uint32 RemoveAllAuraById(uint32 Id); // DuKJIoHuyC: Remove an aura by it's id
 	bool RemoveAllAurasByMechanic( uint32 MechanicType , uint32 MaxDispel , bool HostileOnly ); // Removes all (de)buffs on unit of a specific mechanic type.
 	void RemoveAllMovementImpairing();
 

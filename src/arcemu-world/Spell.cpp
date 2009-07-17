@@ -406,12 +406,14 @@ void Spell::FillAllTargetsInArea(uint32 i,float srcx,float srcy,float srcz, floa
 	for( itr2 = m_caster->GetInRangeSetBegin(); itr2 != m_caster->GetInRangeSetEnd();)
 	{
 		itr = itr2;
-		itr2++; //maybe scripts can change list. Should use lock instead of this to prevent multiple changes. This protects to 1 deletion only
+		//maybe scripts can change list. Should use lock instead of this to prevent multiple changes. This protects to 1 deletion only
+		itr2++;
 		if( !( (*itr)->IsUnit() ) || ! static_cast< Unit* >( *itr )->isAlive() || ( static_cast< Creature* >( *itr )->IsTotem() && !static_cast< Unit* >( *itr )->IsPlayer() ) )
 			continue;
 		if( u_caster && u_caster->IsPlayer() && (*itr)->IsPlayer() && static_cast< Player* >(u_caster)->GetGroup() && static_cast< Player* >( *itr )->GetGroup() && static_cast< Player* >( *itr )->GetGroup() == static_cast< Player* >(u_caster)->GetGroup() )//Don't attack party members!!
 		{
-			if( !static_cast< Player* >(u_caster)->DuelingWith || static_cast< Player* >(u_caster)->DuelingWith != static_cast< Player* >( *itr ) )//Dueling. AoE's should still hit the target party member if you're dueling with him
+			//Dueling - AoE's should still hit the target party member if you're dueling with him
+			if( !static_cast< Player* >(u_caster)->DuelingWith || static_cast< Player* >(u_caster)->DuelingWith != static_cast< Player* >( *itr ) )
 				continue;
 		}
 		if( GetProto()->TargetCreatureType )

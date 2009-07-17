@@ -113,6 +113,14 @@ static float DamageToRageConversionTable[PLAYER_LEVEL_CAP+1]=
 #endif
 };
 
+void Object::SetRotation( uint64 guid )
+{
+	WorldPacket data(SMSG_AI_REACTION, 12);
+	data << guid;
+	data << uint32(2);
+	SendMessageToSet(&data, false);
+}
+
 Object::Object() : m_position(0,0,0,0), m_spawnLocation(0,0,0,0)
 {
 	m_mapId = 0;
@@ -882,13 +890,6 @@ bool Object::SetPosition( float newX, float newY, float newZ, float newOrientati
 	return result;
 }
 
-void Object::SetRotation( uint64 guid )
-{
-	WorldPacket data(SMSG_AI_REACTION, 12);
-	data << guid;
-	data << uint32(2);
-	SendMessageToSet(&data, false);
-}
 
 void Object::OutPacketToSet(uint16 Opcode, uint16 Len, const void * Data, bool self)
 {
@@ -918,7 +919,7 @@ void Object::OutPacketToSet(uint16 Opcode, uint16 Len, const void * Data, bool s
 
 void Object::SendMessageToSet(WorldPacket *data, bool bToSelf,bool myteam_only)
 {
-	if(bToSelf && m_objectTypeId == TYPEID_PLAYER)
+	if(bToSelf && m_objectTypeId == TYPEID_PLAYER && static_cast< Player* >( this )->GetSession())
 	{
 		static_cast< Player* >( this )->GetSession()->SendPacket(data);
 	}
@@ -1057,10 +1058,10 @@ void Object::AddToWorld()
 	m_mapMgr = mapMgr;
 	m_inQueue = true;
 
-	mapMgr->AddObject(this);
-
 	// correct incorrect instance id's
 	m_instanceId = m_mapMgr->GetInstanceID();
+
+	mapMgr->AddObject(this);
 
 	mSemaphoreTeleport = false;
 }
@@ -1085,8 +1086,11 @@ void Object::AddToWorld(MapMgr * pMapMgr)
 //this can only be called from the thread of mapmgr!!!
 void Object::PushToWorld(MapMgr*mgr)
 {
-	if(!mgr/* || (m_mapMgr != NULL && m_mapCell != NULL) */)
-		return; //instance add failed
+	if(!mgr || (GetCurrentThreadId() != mgr->GetThreadId()))
+	{
+		Log.Debug("Object", "Invalid push to world");
+ 		return; //instance add failed
+	}
 
 	m_mapId=mgr->GetMapId();
 	m_instanceId = mgr->GetInstanceID();
@@ -1120,6 +1124,8 @@ void Object::RemoveFromWorld(bool free_guid)
 	// update our event holder
 	event_Relocate();
 }
+
+
 
 //! Set uint32 property
 void Object::SetUInt32Value( const uint32 index, const uint32 value )
@@ -1812,6 +1818,8 @@ void Object::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
 		return;
 	if( pVictim->IsSpiritHealer() )
 		return;
+	if (this->IsPlayer())
+		plr = static_cast<Player* >(this);
 
 	if( damage > 14000 && this != pVictim && this->IsPlayer() && !static_cast< Player* >(this)->GetSession()->HasPermissions() && sWorld.m_limits.enable )
 	{
@@ -1934,6 +1942,16 @@ void Object::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
 		if( static_cast< Unit* >( this )->DamageTakenPctModOnHP35 && HasFlag( UNIT_FIELD_AURASTATE , AURASTATE_FLAG_HEALTH35 ) )
 			damage = damage - float2int32( damage * static_cast< Unit* >( this )->DamageTakenPctModOnHP35 ) / 100 ;
 
+		//Mage: Fiery Payback
+		if(pVictim->IsPlayer() && static_cast< Player* >(pVictim)->FieryPaybackModHP35 == 1)
+			if(pVictim->GetHealthPct() <= 35)
+			{
+				if(!pVictim->HasAura(44441))
+				pVictim->CastSpell(pVictim->GetGUID(), 44441, true);
+			}
+		else if(pVictim->HasAura(44441))
+			pVictim->RemoveAllAuraById(44441);
+		
 		plr = 0;
 		if(IsPet())
 			plr = static_cast<Pet*>(this)->GetPetOwner();
