@@ -6289,7 +6289,6 @@ void Unit::EnableFlight()
 		static_cast< Player* >( this )->z_axisposition = 0.0f;
 		static_cast< Player* >( this )->delayedPackets.add( data );
 		static_cast< Player* >( this )->m_setflycheat = true;
-		delete data;
 	}
 }
 
@@ -6314,7 +6313,6 @@ void Unit::DisableFlight()
 		static_cast< Player* >( this )->z_axisposition = 0.0f;
 		static_cast< Player* >( this )->delayedPackets.add( data );
 		static_cast< Player* >( this )->m_setflycheat = false;
-		delete data;
 	}
 }
 

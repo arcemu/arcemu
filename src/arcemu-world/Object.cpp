@@ -1086,7 +1086,7 @@ void Object::AddToWorld(MapMgr * pMapMgr)
 //this can only be called from the thread of mapmgr!!!
 void Object::PushToWorld(MapMgr*mgr)
 {
-	if(!mgr || (GetCurrentThreadId() != mgr->GetThreadId()))
+	if(!mgr/* || (m_mapMgr != NULL && m_mapCell != NULL) */)
 	{
 		Log.Debug("Object", "Invalid push to world");
  		return; //instance add failed
