@@ -3778,7 +3778,10 @@ void Player::OnPushToWorld()
 	}
 
 	if( m_bg != NULL )
+	{
+		m_bg->OnAddPlayer( this ); // add buffs and so, must be after zone update and related aura removal
 		m_bg->OnPlayerPushed( this );
+	}
 
 	z_axisposition = 0.0f;
 	m_changingMaps = false;

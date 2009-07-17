@@ -1175,13 +1175,17 @@ void CBattleground::PortPlayer(Player * plr, bool skip_teleport /* = false*/)
 	}
 
 	sEventMgr.RemoveEvents(this, EVENT_BATTLEGROUND_CLOSE);
-	OnAddPlayer(plr);
 
 	if(!skip_teleport)
 	{
 		/* This is where we actually teleport the player to the battleground. */
 		plr->SafeTeleport(m_mapMgr,GetStartingCoords(plr->m_bgTeam));
 		BattlegroundManager.SendBattlefieldStatus(plr, 3, m_type, m_id, (uint32)UNIXTIME - m_startTime, m_mapMgr->GetMapId(),Rated());   // Elapsed time is the last argument
+	}
+	else
+	{
+		/* If we are not ported, call this immediatelly, otherwise its called after teleportation in Player::OnPushToWorld */
+		OnAddPlayer( plr );
 	}
 
 	m_mainLock.Release();
