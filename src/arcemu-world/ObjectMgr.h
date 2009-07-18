@@ -86,6 +86,7 @@ struct UnitModelSizeEntry
 {
 	uint32	DisplayId;
 	float	HalfSize;
+	uint32	ModelId;
 };
 
 struct ProfessionDiscovery

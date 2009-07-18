@@ -25,7 +25,7 @@
 const char * gItemPrototypeFormat						= "uuuussssuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuffuffuffuffuffuuuuuuuuuufuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuusuuuuuuuuuuuuuuuuuuuuuuuuuuuu";
 const char * gItemNameFormat							= "usu";
 const char * gCreatureNameFormat						= "usssuuuuuuuuuuffcc";
-const char * gGameObjectNameFormat						= "uuusssssssuuuuuuuuuuuuuuuuuuuuuuuu";
+const char * gGameObjectNameFormat						= "uuusssssssfuuuuuuuuuuuuuuuuuuuuuuuuuuuu";
 const char * gCreatureProtoFormat						= "uuuuuuufuuuffuuffuuuuuuuuffsuuuufffuuuuuuu";
 const char * gVendorRestrictionEntryFormat				= "uuuuuu";
 const char * gAreaTriggerFormat							= "ucuusffffuu";
@@ -39,7 +39,7 @@ const char * gPvPAreaFormat								= "ush";
 const char * gFishingFormat								= "uuu";
 const char * gWorldMapInfoFormat						= "uuuuuufffusuuuuuuufu";
 const char * gZoneGuardsFormat							= "uuu";
-const char * gUnitModelSizeFormat						= "uf";
+const char * gUnitModelSizeFormat						= "ufu";
 const char * gWorldStringTableFormat					= "us"; // p2wow added [for worldserver common message storage]
 const char * gWorldBroadCastFormat						= "usu";// announce message
 
