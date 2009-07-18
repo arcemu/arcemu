@@ -590,6 +590,7 @@ public:
 	uint32 m_respawnTimeOverride;
 	LocationVector * m_transportPosition;
 	uint32 m_transportGuid;
+	WoWGuid m_transportNewGuid;
 
 	float GetBaseParry();
 	bool isattackable(CreatureSpawn *spawn);

@@ -109,7 +109,9 @@ enum ObjectUpdateFlags
     UPDATEFLAG_HIGHGUID     = 0x10,
     UPDATEFLAG_LIVING       = 0x20,
     UPDATEFLAG_HAS_POSITION = 0x40,
-    UPDATEFLAG_VEHICLE      = 0x80
+    UPDATEFLAG_VEHICLE      = 0x80,
+    UPDATEFLAG_UNK1       = 0x0100,
+    UPDATEFLAG_UNK2       = 0x0200
 };
 
 enum SessionStatus
@@ -145,7 +147,7 @@ public:
 	float x, y, z, orientation;
 	uint32 flags;
 	uint32 FallTime;
-	uint64 transGuid;
+	WoWGuid transGuid;
 	float transX, transY, transZ, transO, transUnk;
 	uint8 transUnk_2;
 

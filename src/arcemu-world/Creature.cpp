@@ -420,8 +420,8 @@ void Creature::SaveToDB()
 	ss << uint32(GetStandState()) << ","
 		<< m_uint32Values[UNIT_FIELD_MOUNTDISPLAYID] << ","
 		<< m_uint32Values[UNIT_VIRTUAL_ITEM_SLOT_ID] << ","
-		<< m_uint32Values[UNIT_VIRTUAL_ITEM_SLOT_ID_1] << ","
-		<< m_uint32Values[UNIT_VIRTUAL_ITEM_SLOT_ID_2] << ",";
+		<< m_uint32Values[UNIT_VIRTUAL_ITEM_SLOT_ID+1] << ","
+		<< m_uint32Values[UNIT_VIRTUAL_ITEM_SLOT_ID+2] << ",";
 
 	if(GetAIInterface()->m_moveFly)
 		ss << 1 << ")";
@@ -1205,8 +1205,8 @@ bool Creature::Load(CreatureSpawn *spawn, uint32 mode, MapInfo *info)
 	SetFloatValue(UNIT_FIELD_MAXRANGEDDAMAGE,proto->RangedMaxDamage);
 
 	SetUInt32Value(UNIT_VIRTUAL_ITEM_SLOT_ID, spawn->Item1SlotDisplay);
-	SetUInt32Value(UNIT_VIRTUAL_ITEM_SLOT_ID_1, spawn->Item2SlotDisplay);
-	SetUInt32Value(UNIT_VIRTUAL_ITEM_SLOT_ID_2, spawn->Item3SlotDisplay);
+	SetUInt32Value(UNIT_VIRTUAL_ITEM_SLOT_ID+1, spawn->Item2SlotDisplay);
+	SetUInt32Value(UNIT_VIRTUAL_ITEM_SLOT_ID+2, spawn->Item3SlotDisplay);
 
 	SetUInt32Value(UNIT_FIELD_FACTIONTEMPLATE, spawn->factionid);
 	SetUInt32Value(UNIT_FIELD_FLAGS, spawn->flags);

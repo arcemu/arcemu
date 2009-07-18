@@ -179,7 +179,7 @@ void Pet::CreateAsSummon( uint32 entry, CreatureInfo *ci, Creature* created_from
 	SetUInt64Value( UNIT_FIELD_CREATEDBY, owner->GetGUID() );
 	SetUInt32Value( UNIT_FIELD_BYTES_0, 2048 | (0 << 24) );
 	SetUInt32Value( UNIT_FIELD_BASEATTACKTIME, 2000 );
-	SetUInt32Value( UNIT_FIELD_BASEATTACKTIME_01, 2000 );
+	SetUInt32Value( UNIT_FIELD_BASEATTACKTIME+1, 2000 );
 	SetUInt32Value( UNIT_FIELD_FACTIONTEMPLATE, owner->GetUInt32Value( UNIT_FIELD_FACTIONTEMPLATE ) );
 	SetFloatValue( UNIT_MOD_CAST_SPEED, 1.0f );	// better set this one
 
@@ -328,10 +328,10 @@ void Pet::SendSpellsToOwner()
 	if( m_Owner == NULL )
 		return;
 
-	uint16 packetsize = ( GetEntry() != WATER_ELEMENTAL && GetEntry() != SPIRITWOLF ) ? ( ( uint16 )mSpells.size() * 4 + 61 ) : 64;
+	uint16 packetsize = ( GetEntry() != WATER_ELEMENTAL && GetEntry() != SPIRITWOLF ) ? ( ( uint16 )mSpells.size() * 4 + 59 ) : 62;
 	WorldPacket * data = new WorldPacket( SMSG_PET_SPELLS, packetsize );
 	*data << GetGUID();
-	*data << uint32( myFamily != NULL ? myFamily->ID : 0 );	// pet family to determine talent tree
+	*data << uint16( myFamily != NULL ? myFamily->ID : 0 );	// pet family to determine talent tree
 	*data << m_ExpireTime;
 	*data << uint8( GetPetState() );	// 0x0 = passive, 0x1 = defensive, 0x2 = aggressive
 	*data << uint8( GetPetAction() );	// 0x0 = stay, 0x1 = follow, 0x2 = attack

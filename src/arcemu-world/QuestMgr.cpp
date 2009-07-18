@@ -395,6 +395,7 @@ void QuestMgr::BuildQuestDetails(WorldPacket *data, Quest* qst, Object* qst_give
 	*data << uint32(1);						// Activate accept
 	*data << qst->suggestedplayers;			// "Suggested players"
 	*data << uint8(0);						// Added in 3.0.2, name or text(?)
+	*data << uint8(0); //VLack: some 3.1.x thing
 
 
 	ItemPrototype *ip;

@@ -58,15 +58,20 @@ void WorldSession::HandleBattlefieldStatusOpcode(WorldPacket &recv_data)
 
 void WorldSession::HandleBattlefieldListOpcode(WorldPacket &recv_data)
 {
-	uint64 guid;
-	recv_data >> guid;
+//	uint64 guid;
+//	recv_data >> guid;
+	uint32 BGType;
+	recv_data >> BGType;
+	uint8 from;
+	recv_data >> from; // 0 - battlemaster, 1 - whatever
 
 	CHECK_INWORLD_RETURN;
-	Creature * pCreature = _player->GetMapMgr()->GetCreature( GET_LOWGUID_PART(guid) );
+	/*Creature * pCreature = _player->GetMapMgr()->GetCreature( GET_LOWGUID_PART(guid) );
 	if( pCreature == NULL )
 		return;
 
-	SendBattlegroundList( pCreature, 0 );
+	SendBattlegroundList( pCreature, 0, from );*/
+	BattlegroundManager.HandleBattlegroundListPacket(this, BGType, from);
 }
 
 void WorldSession::SendBattlegroundList(Creature* pCreature, uint32 mapid)

@@ -502,16 +502,16 @@ public:
         {
         case 0:
             _unit->SetUInt32Value(UNIT_VIRTUAL_ITEM_SLOT_ID, 2179);
-            _unit->SetUInt32Value(UNIT_VIRTUAL_ITEM_SLOT_ID_1, 0);
+            _unit->SetUInt32Value(UNIT_VIRTUAL_ITEM_SLOT_ID+1, 0);
             _unit->SetUInt32Value(UNIT_FIELD_BASEATTACKTIME, 1483);   // 1483 is taken from NCDB creature_proto
             break;
         case 1:
-            _unit->SetUInt32Value(UNIT_VIRTUAL_ITEM_SLOT_ID_1, 2147);
+            _unit->SetUInt32Value(UNIT_VIRTUAL_ITEM_SLOT_ID+1, 2147);
             _unit->SetUInt32Value(UNIT_FIELD_BASEATTACKTIME, _unit->GetUInt32Value(UNIT_FIELD_BASEATTACKTIME) / 2);
             break;
         case 2:
             _unit->SetUInt32Value(UNIT_VIRTUAL_ITEM_SLOT_ID, 7230);
-            _unit->SetUInt32Value(UNIT_VIRTUAL_ITEM_SLOT_ID_1, 0);
+            _unit->SetUInt32Value(UNIT_VIRTUAL_ITEM_SLOT_ID+1, 0);
             _unit->SetUInt32Value(UNIT_FIELD_BASEATTACKTIME, _unit->GetUInt32Value(UNIT_FIELD_BASEATTACKTIME) * 2);
 			_unit->CastSpell(_unit, smite_buff, true);
         }

@@ -1071,6 +1071,10 @@ void WorldSession::HandleUpdateAccountData(WorldPacket &recv_data)
 	if(uiDecompressedSize == 0)
 	{
 		SetAccountData(uiID, NULL, false,0);
+		WorldPacket rdata(SMSG_UPDATE_ACCOUNT_DATA_COMPLETE, 4+4); //VLack: seen this in a 3.1.1 packet dump as response
+		rdata << uint32(uiID);
+		rdata << uint32(0);
+		SendPacket(&rdata);
 		return;
 	}
 
@@ -1126,6 +1130,10 @@ void WorldSession::HandleUpdateAccountData(WorldPacket &recv_data)
 		memcpy(data,recv_data.contents() + 8,uiDecompressedSize);
 		SetAccountData(uiID, data, false,uiDecompressedSize);
 	}
+	WorldPacket rdata(SMSG_UPDATE_ACCOUNT_DATA_COMPLETE, 4+4); //VLack: seen this in a 3.1.1 packet dump as response
+	rdata << uint32(uiID);
+	rdata << uint32(0);
+	SendPacket(&rdata);
 }
 
 void WorldSession::HandleRequestAccountData(WorldPacket& recv_data)
@@ -1727,9 +1735,10 @@ void WorldSession::HandlePlayedTimeOpcode( WorldPacket & recv_data )
 		_player->m_playedtime[2] += playedt;
 	}
 
-	WorldPacket data(SMSG_PLAYED_TIME, 8);
+	WorldPacket data(SMSG_PLAYED_TIME, 9); //VLack: again, an Aspire trick, with an uint8(0) -- I hate packet structure changes...
 	data << (uint32)_player->m_playedtime[1];
 	data << (uint32)_player->m_playedtime[0];
+	data << uint8(0);
 	SendPacket(&data);
 }
 
@@ -1758,7 +1767,8 @@ void WorldSession::HandleInspectOpcode( WorldPacket & recv_data )
 	if(_player->m_comboPoints)
 		_player->UpdateComboPoints();
 
-	WorldPacket data( SMSG_INSPECT_TALENT, 4 + talent_points );
+//	WorldPacket data( SMSG_INSPECT_TALENT, 4 + talent_points );
+	WorldPacket data( SMSG_INSPECT_TALENT, 1000 );
 
 	m_Packed_GUID.appendPackGUID( player->GetGUID());
 	uint32 guid_size;
@@ -1767,93 +1777,112 @@ void WorldSession::HandleInspectOpcode( WorldPacket & recv_data )
 	data.append(m_Packed_GUID);
 	data << uint32( talent_points );
 
-	uint32 talent_tab_pos = 0;
-	uint32 talent_max_rank;
-	uint32 talent_tab_id;
-	uint32 talent_index;
-	uint32 rank_index,rank_index2;
-	uint32 rank_slot,rank_slot7;
-	uint32 rank_offset,rank_offset7;
-	uint32 mask;
-
-	for( uint32 i = 0; i < talent_points; ++i )
-		data << uint8( 0 );
-
-	for( uint32 i = 0; i < 3; ++i )
+	data << uint8(player->m_talentSpecsCount);
+	data << uint8(player->m_talentActiveSpec);
+	for(uint8 s = 0; s < player->m_talentSpecsCount; s++)
 	{
-		talent_tab_id = sWorld.InspectTalentTabPages[player->getClass()][i];
+		Player::PlayerSpec spec = player->m_specs[s];
 
-		for( uint32 j = 0; j < dbcTalent.GetNumRows(); ++j )
+		int32 talent_max_rank;
+		uint32 talent_tab_id;
+
+		uint8 talent_count = 0;
+		size_t pos = data.wpos();
+		data << uint8(talent_count); //fake value, will be overwritten at the end
+
+		for( uint32 i = 0; i < 3; ++i )
 		{
-			TalentEntry const* talent_info = dbcTalent.LookupRow( j );
+			talent_tab_id = sWorld.InspectTalentTabPages[player->getClass()][i];
 
-			//sLog.outDebug( "HandleInspectOpcode: i(%i) j(%i)", i, j );
-
-			if( talent_info == NULL )
-				continue;
-
-			//sLog.outDebug( "HandleInspectOpcode: talent_info->TalentTree(%i) talent_tab_id(%i)", talent_info->TalentTree, talent_tab_id );
-
-			if( talent_info->TalentTree != talent_tab_id )
-				continue;
-
-			talent_max_rank = 0;
-			for( uint32 k = 5; k > 0; --k )
+			for( uint32 j = 0; j < dbcTalent.GetNumRows(); ++j )
 			{
-				//sLog.outDebug( "HandleInspectOpcode: k(%i) RankID(%i) HasSpell(%i) TalentTree(%i) Tab(%i)", k, talent_info->RankID[k - 1], player->HasSpell( talent_info->RankID[k - 1] ), talent_info->TalentTree, talent_tab_id );
-				if( talent_info->RankID[k - 1] != 0 && player->HasSpell( talent_info->RankID[k - 1] ) )
+				TalentEntry const* talent_info = dbcTalent.LookupRow( j );
+
+				//sLog.outDebug( "HandleInspectOpcode: i(%i) j(%i)", i, j );
+
+				if( talent_info == NULL )
+					continue;
+
+				//sLog.outDebug( "HandleInspectOpcode: talent_info->TalentTree(%i) talent_tab_id(%i)", talent_info->TalentTree, talent_tab_id );
+
+				if( talent_info->TalentTree != talent_tab_id )
+					continue;
+
+				talent_max_rank = -1;
+				for( int32 k = 4; k > -1; --k )
 				{
-					talent_max_rank = k;
-					break;
+					//sLog.outDebug( "HandleInspectOpcode: k(%i) RankID(%i) HasSpell(%i) TalentTree(%i) Tab(%i)", k, talent_info->RankID[k - 1], player->HasSpell( talent_info->RankID[k - 1] ), talent_info->TalentTree, talent_tab_id );
+					if( talent_info->RankID[k] != 0 && player->HasSpell( talent_info->RankID[k] ) )
+					{
+						talent_max_rank = k;
+						break;
+					}
 				}
+
+				//sLog.outDebug( "HandleInspectOpcode: RankID(%i) talent_max_rank(%i)", talent_info->RankID[talent_max_rank-1], talent_max_rank );
+
+				if( talent_max_rank < 0 )
+					continue;
+
+				data << uint32(talent_info->TalentID);
+				data << uint8(talent_max_rank);
+
+				++talent_count;
+
+				//sLog.outDebug( "HandleInspectOpcode: talent(%i) talent_max_rank(%i) rank_id(%i) talent_index(%i) talent_tab_pos(%i) rank_index(%i) rank_slot(%i) rank_offset(%i) mask(%i)", talent_info->TalentID, talent_max_rank, talent_info->RankID[talent_max_rank-1], talent_index, talent_tab_pos, rank_index, rank_slot, rank_offset , mask);
 			}
-
-			//sLog.outDebug( "HandleInspectOpcode: RankID(%i) talent_max_rank(%i)", talent_info->RankID[talent_max_rank-1], talent_max_rank );
-
-			if( talent_max_rank <= 0 )
-				continue;
-
-			talent_index = talent_tab_pos;
-
-			std::map< uint32, uint32 >::iterator itr = sWorld.InspectTalentTabPos.find( talent_info->TalentID );
-
-			if( itr != sWorld.InspectTalentTabPos.end() )
-				talent_index += itr->second;
-			//else
-				//sLog.outDebug( "HandleInspectOpcode: talent(%i) rank_id(%i) talent_index(%i) talent_tab_pos(%i) rank_index(%i) rank_slot(%i) rank_offset(%i)", talent_info->TalentID, talent_info->RankID[talent_max_rank-1], talent_index, talent_tab_pos, rank_index, rank_slot, rank_offset );
-
-			// not learned talent
-                if(!talent_max_rank)
-                    continue;
-
-
-            rank_index = talent_index + talent_max_rank - 1;
-
-            // slot/offset in 7-bit bytes
-            rank_slot7   = rank_index / 7;
-            rank_offset7 = rank_index % 7;
-
-            // rank pos with skipped 8 bit
-            rank_index2 = rank_slot7 * 8 + rank_offset7;
-
-            // slot/offset in 8-bit bytes with skipped high bit
-            rank_slot = rank_index2 / 8;
-            rank_offset =  rank_index2 % 8;
-
-            // apply mask
-            mask = data.read<uint8>(guid_size + 4 + rank_slot);
-            mask |= (1 << rank_offset);
-            data.put<uint8>(guid_size + 4 + rank_slot, mask & 0xFF);
-
-			sLog.outDebug( "HandleInspectOpcode: talent(%i) talent_max_rank(%i) rank_id(%i) talent_index(%i) talent_tab_pos(%i) rank_index(%i) rank_slot(%i) rank_offset(%i) mask(%i)", talent_info->TalentID, talent_max_rank, talent_info->RankID[talent_max_rank-1], talent_index, talent_tab_pos, rank_index, rank_slot, rank_offset , mask);
 		}
 
-		std::map< uint32, uint32 >::iterator itr = sWorld.InspectTalentTabSize.find( talent_tab_id );
+		data.put<uint8>(pos, talent_count);
 
-		if( itr != sWorld.InspectTalentTabSize.end() )
-			talent_tab_pos += itr->second;
-
+		// Send Glyph info
+		data << uint8(GLYPHS_COUNT);
+		for(uint8 i = 0; i < GLYPHS_COUNT; i++)
+		{
+			data << uint16(spec.glyphs[i]);
+		}
 	}
+
+	// ----[ Build the item list with their enchantments ]----
+	uint32 slot_mask = 0;
+	size_t slot_mask_pos = data.wpos();
+	data << uint32(slot_mask); // VLack: 3.1, this is a mask field, if we send 0 we can skip implementing this for now; here should come the player's enchantments from its items (the ones you would see on the character sheet).
+
+	ItemInterface *iif = player->GetItemInterface();
+
+	for( uint32 i = EQUIPMENT_SLOT_START; i < EQUIPMENT_SLOT_END; ++i ) // Ideally this goes from 0 to 18 (EQUIPMENT_SLOT_END is 19 at the moment)
+	{
+		Item *item = iif->GetInventoryItem( i );
+
+		if( !item )
+			continue;
+
+		slot_mask |= (1 << i);
+
+		data << uint32(item->GetEntry());
+
+		uint16 enchant_mask = 0;
+		size_t enchant_mask_pos = data.wpos();
+		data << uint16(enchant_mask);
+
+		for(uint32 Slot = 0; Slot < 12; ++Slot) // In UpdateFields.h we have ITEM_FIELD_ENCHANTMENT_1_1 to ITEM_FIELD_ENCHANTMENT_12_1, iterate on them...
+		{
+			uint32 enchantId = item->GetUInt32Value(Slot * 3 + ITEM_FIELD_ENCHANTMENT_1_1); // This calculation has to be in sync with Item.cpp line ~614, at the moment it is:    uint32 EnchantBase = Slot * 3 + ITEM_FIELD_ENCHANTMENT_1_1;
+
+			if(!enchantId)
+				continue;
+
+			enchant_mask |= (1 << Slot);
+			data << uint16(enchantId);
+		}
+
+		data.put<uint16>(enchant_mask_pos, enchant_mask);
+
+		data << uint16(0); // UNKNOWN
+		FastGUIDPack(data, item->GetUInt32Value(ITEM_FIELD_CREATOR)); // Usually 0 will do, but if your friend created that item for you, then it is nice to display it when you get inspected.
+		data << uint32(0); // UNKNOWN
+	}
+	data.put<uint32>(slot_mask_pos, slot_mask);
 
 	SendPacket( &data );
 }

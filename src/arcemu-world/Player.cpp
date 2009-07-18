@@ -259,9 +259,9 @@ mOutOfRangeIdCount(0)
 	m_wowGuid.Init(GetGUID());
 	SetUInt32Value( UNIT_FIELD_FLAGS_2, UNIT_FLAG2_ENABLE_POWER_REGEN );
 	SetFloatValue( PLAYER_RUNE_REGEN_1, 0.100000f );
-	SetFloatValue( PLAYER_RUNE_REGEN_01, 0.100000f );
-	SetFloatValue( PLAYER_RUNE_REGEN_02, 0.100000f );
-	SetFloatValue( PLAYER_RUNE_REGEN_03, 0.100000f );
+	SetFloatValue( PLAYER_RUNE_REGEN_1+1, 0.100000f );
+	SetFloatValue( PLAYER_RUNE_REGEN_1+2, 0.100000f );
+	SetFloatValue( PLAYER_RUNE_REGEN_1+3, 0.100000f );
 
 	for(i=0;i<3;i++)
 	{
@@ -395,6 +395,11 @@ mOutOfRangeIdCount(0)
 		m_resist_hit[i]		= 0.0f;
 		m_attack_speed[i]	= 1.0f;
 	}
+
+        m_maxTalentPoints = 0; //VLack: 3 Aspire values initialized
+        m_talentActiveSpec = 0;
+        m_talentSpecsCount = 1;
+
 	ok_to_remove = false;
 	m_modphyscritdmgPCT = 0;
 	m_RootedCritChanceBonus = 0;
@@ -1618,17 +1623,22 @@ void Player::BuildEnumData( WorldPacket * p_data )
 		{
 			*p_data << (uint32)GetItemInterface()->GetInventoryItem(i)->GetProto()->DisplayInfoID;
 			*p_data << (uint8)GetItemInterface()->GetInventoryItem(i)->GetProto()->InventoryType;
+			//*p_data << uint32(enchant ? enchant->aura_id : 0); //VLack: for 3.1.1, we need the enchantment here. Instead I'll send 0 now; this might need to be fixed later!
+			// At the moment BuildEnumData is not used, so it is not necessary to fix this right now, but if someone wants to use it again, then WorldSession::CharacterEnumProc has these implemented, look at it as a reference.
+			*p_data << uint32(0);
 		}
 		else
 		{
 			*p_data << (uint32)0;
 			*p_data << (uint8)0;
+			*p_data << uint32(0); //VLack: 3.1.1 enchant
 		}
 	}
 	//blizz send 20 slots for some reason(or no reason :P)
 
 	 *p_data << (uint32)0;
 	 *p_data << (uint8)0;
+	 *p_data << uint32(0); //VLack: 3.1.1 enchant?
 }
 
 /*  Gives numtps talent points to the player  */
@@ -1770,6 +1780,9 @@ void Player::GiveXP(uint32 xp, const uint64 &guid, bool allowbonus)
 		}
 		//Event_Achiement_Received(ACHIEVEMENT_CRITERIA_TYPE_REACH_LEVEL,0,level);
 		GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_REACH_LEVEL);
+
+		//VLack: 3.1.3, as a final step, send the player's talents, this will set the talent points right too...
+		smsg_TalentsInfo(false, 0, 0);
 	}
 
 	// Set the update bit
@@ -1798,7 +1811,7 @@ void Player::smsg_InitialSpells()
 	{
 		// todo: check out when we should send 0x0 and when we should send 0xeeee
 		// this is not slot, values is always eeee or 0, seems to be cooldown
-		data << uint16(*sitr);				   // spell id
+		data << uint32(*sitr);				   // spell id
 		data << uint16(0x0000);
 	}
 
@@ -1817,7 +1830,7 @@ void Player::smsg_InitialSpells()
 			continue;
 		}
 
-		data << uint16( itr2->first );						// spell id
+		data << uint32( itr2->first );						// spell id
 		data << uint16( itr2->second.ItemId );				// item id
 		data << uint16( 0 );								// spell category
 		data << uint32( itr2->second.ExpireTime - mstime );	// cooldown remaining in ms (for spell)
@@ -1841,7 +1854,7 @@ void Player::smsg_InitialSpells()
 			continue;
 		}
 
-		data << uint16( itr2->second.SpellId );				// spell id
+		data << uint32( itr2->second.SpellId );				// spell id
 		data << uint16( itr2->second.ItemId );				// item id
 		data << uint16( itr2->first );						// spell category
 		data << uint32( 0 );								// cooldown remaining in ms (for spell)
@@ -1866,6 +1879,90 @@ void Player::smsg_InitialSpells()
 	uint32 v = 0;
 	GetSession()->OutPacket(0x041d, 4, &v);
 	//Log::getSingleton( ).outDetail( "CHARACTER: Sent Initial Spells" );
+}
+
+void Player::smsg_TalentsInfo(bool update, uint32 newTalentId, uint8 newTalentRank)
+{
+        WorldPacket data(SMSG_TALENTS_INFO, 1000);
+        update = false;
+        data << uint8(update);
+        if(update)      // send just the update
+        {
+                uint8 count = 1;
+                data << uint32(GetUInt32Value(PLAYER_CHARACTER_POINTS1)); // Unspent talents
+                data << uint8(count);
+                for(uint8 i = 0; i < count; i++)
+                {
+                        data << uint32(newTalentId); // unk     talentid?
+                        data << uint8(1); // unk        rank?
+                }
+        } else  // initialize sending all info
+        {
+                uint8 talent_max_rank = 0;
+                data << uint32(GetUInt32Value(PLAYER_CHARACTER_POINTS1)); // Unspent talents
+                data << uint8(m_talentSpecsCount);
+                data << uint8(m_talentActiveSpec); // unk
+                for(uint8 s = 0; s < m_talentSpecsCount; s++)
+                {
+                        PlayerSpec spec = m_specs[s];
+                        // Send Talents
+/*                        data << uint8(spec.talents.size());
+                        std::map<uint32, uint8>::iterator itr;
+                        for(itr = spec.talents.begin(); itr != spec.talents.end(); itr++)
+                        {
+                                data << uint32(itr->first);     // TalentId
+                                data << uint8(itr->second);     // TalentRank
+                        }*/
+
+			uint8 talent_count = 0;
+			size_t pos = data.wpos();
+			data << uint8(talent_count); //fake value, will be overwritten at the end
+
+			for( uint32 i = 0; i < 3; ++i )
+			{
+				uint32 talent_tab_id = sWorld.InspectTalentTabPages[getClass()][i];
+
+				for( uint32 j = 0; j < dbcTalent.GetNumRows(); ++j )
+				{
+					TalentEntry const* talent_info = dbcTalent.LookupRow( j );
+					if( talent_info == NULL )
+						continue;
+
+					if( talent_info->TalentTree != talent_tab_id ) // we can skip this tree
+						continue;
+
+					int32 talent_maxrank = -1;
+					for( int32 k = 4; k > -1; --k )
+					{
+						if( talent_info->RankID[k] && HasSpell(talent_info->RankID[k]) )
+						{
+							talent_maxrank = k;
+							break;
+						}
+					}
+
+					if( talent_maxrank < 0 ) // player doesn't have this talent, don't send it
+						continue;
+
+					data << uint32(talent_info->TalentID);
+					data << uint8(talent_maxrank);
+
+					++talent_count;
+				}
+			}
+
+			data.put<uint8>(pos, talent_count);
+
+
+                        // Send Glyph info
+                        data << uint8(GLYPHS_COUNT);
+                        for(uint8 i = 0; i < GLYPHS_COUNT; i++)
+                        {
+                                data << uint16(spec.glyphs[i]);
+                        }
+                }
+        }
+        GetSession()->SendPacket(&data);
 }
 
 void Player::_SavePet(QueryBuffer * buf)
@@ -2234,8 +2331,8 @@ void Player::InitVisibleUpdateBits()
 	Player::m_visibleUpdateMask.SetBit(UNIT_FIELD_MAXPOWER7);
 
 	Player::m_visibleUpdateMask.SetBit(UNIT_VIRTUAL_ITEM_SLOT_ID);
-	Player::m_visibleUpdateMask.SetBit(UNIT_VIRTUAL_ITEM_SLOT_ID_1);
-	Player::m_visibleUpdateMask.SetBit(UNIT_VIRTUAL_ITEM_SLOT_ID_2);
+	Player::m_visibleUpdateMask.SetBit(UNIT_VIRTUAL_ITEM_SLOT_ID+1);
+	Player::m_visibleUpdateMask.SetBit(UNIT_VIRTUAL_ITEM_SLOT_ID+2);
 
 	Player::m_visibleUpdateMask.SetBit(UNIT_FIELD_LEVEL);
 	Player::m_visibleUpdateMask.SetBit(UNIT_FIELD_FACTIONTEMPLATE);
@@ -2244,7 +2341,7 @@ void Player::InitVisibleUpdateBits()
 	Player::m_visibleUpdateMask.SetBit(UNIT_FIELD_FLAGS_2);
 
 	Player::m_visibleUpdateMask.SetBit(UNIT_FIELD_BASEATTACKTIME);
-	Player::m_visibleUpdateMask.SetBit(UNIT_FIELD_BASEATTACKTIME_01);
+	Player::m_visibleUpdateMask.SetBit(UNIT_FIELD_BASEATTACKTIME+1);
 	Player::m_visibleUpdateMask.SetBit(UNIT_FIELD_BOUNDINGRADIUS);
 	Player::m_visibleUpdateMask.SetBit(UNIT_FIELD_COMBATREACH);
 	Player::m_visibleUpdateMask.SetBit(UNIT_FIELD_DISPLAYID);
@@ -2277,9 +2374,9 @@ void Player::InitVisibleUpdateBits()
 	// Players visible items are not inventory stuff
     for(uint16 i = 0; i < EQUIPMENT_SLOT_END; ++i)
 	{
-		uint32 offset = i * 18;
+		uint32 offset = i * PLAYER_VISIBLE_ITEM_LENGTH; //VLack: for 3.1.1 "* 18" is a bad idea, now it's "* 2"; but this could have been calculated based on UpdateFields.h! This is PLAYER_VISIBLE_ITEM_LENGTH
 
-		Player::m_visibleUpdateMask.SetBit(PLAYER_VISIBLE_ITEM_1_CREATOR + 0 + offset);
+/*		Player::m_visibleUpdateMask.SetBit(PLAYER_VISIBLE_ITEM_1_CREATOR + 0 + offset);
 		Player::m_visibleUpdateMask.SetBit(PLAYER_VISIBLE_ITEM_1_CREATOR + 1 + offset);
 		Player::m_visibleUpdateMask.SetBit(PLAYER_VISIBLE_ITEM_1_0 + 0 + offset);
 
@@ -2291,7 +2388,11 @@ void Player::InitVisibleUpdateBits()
 
 		Player::m_visibleUpdateMask.SetBit(PLAYER_VISIBLE_ITEM_1_PROPERTIES + offset);
 		Player::m_visibleUpdateMask.SetBit(PLAYER_VISIBLE_ITEM_1_SEED + offset);
-		Player::m_visibleUpdateMask.SetBit(PLAYER_VISIBLE_ITEM_1_PAD + offset);
+		Player::m_visibleUpdateMask.SetBit(PLAYER_VISIBLE_ITEM_1_PAD + offset);*/
+	// item entry
+	Player::m_visibleUpdateMask.SetBit(PLAYER_VISIBLE_ITEM_1_ENTRYID + offset);
+	// enchant
+	Player::m_visibleUpdateMask.SetBit(PLAYER_VISIBLE_ITEM_1_ENCHANTMENT + offset);
      }
 
 	Player::m_visibleUpdateMask.SetBit(PLAYER_CHOSEN_TITLE);
@@ -2416,8 +2517,8 @@ void Player::SaveToDB(bool bNewCharacter /* =false */)
 	ss << "', "
 	<< m_uint32Values[PLAYER_FIELD_WATCHED_FACTION_INDEX] << ","
 	<< m_uint32Values[PLAYER_CHOSEN_TITLE]<< ","
-	<< GetUInt64Value(PLAYER_FIELD_KNOWN_TITLES) << ","
-	<< GetUInt64Value(PLAYER_FIELD_KNOWN_TITLES1) << ","
+	<< GetUInt64Value(PLAYER__FIELD_KNOWN_TITLES) << ","
+	<< GetUInt64Value(PLAYER__FIELD_KNOWN_TITLES1) << ","
 	<< m_uint32Values[PLAYER_FIELD_COINAGE] << ",";
 
 	if((getClass()==MAGE) || (getClass()==PRIEST) || (getClass()==WARLOCK))
@@ -2995,8 +3096,8 @@ void Player::LoadFromDBProc(QueryResultVector & results)
 	// set the rest of the stuff
 	m_uint32Values[ PLAYER_FIELD_WATCHED_FACTION_INDEX ]	= get_next_field.GetUInt32();
 	m_uint32Values[ PLAYER_CHOSEN_TITLE ]					= get_next_field.GetUInt32();
-	SetUInt64Value( PLAYER_FIELD_KNOWN_TITLES, get_next_field.GetUInt64() );
-	SetUInt64Value( PLAYER_FIELD_KNOWN_TITLES1, get_next_field.GetUInt64() );
+	SetUInt64Value( PLAYER__FIELD_KNOWN_TITLES, get_next_field.GetUInt64() );
+	SetUInt64Value( PLAYER__FIELD_KNOWN_TITLES1, get_next_field.GetUInt64() );
 	m_uint32Values[ PLAYER_FIELD_COINAGE ]					= get_next_field.GetUInt32();
 	m_uint32Values[ PLAYER_AMMO_ID ]						= get_next_field.GetUInt32();
 	m_uint32Values[ PLAYER_CHARACTER_POINTS2 ]				= get_next_field.GetUInt32();
@@ -3361,9 +3462,11 @@ void Player::LoadFromDBProc(QueryResultVector & results)
     iInstanceType = get_next_field.GetUInt32();
 
 	// Load Glyphs and apply their auras
-	LoadFieldsFromString(get_next_field.GetString(), PLAYER_FIELD_GLYPHS_1, 8);
+//	LoadFieldsFromString(get_next_field.GetString(), PLAYER_FIELD_GLYPHS_1, 8);
+	LoadFieldsFromString(get_next_field.GetString(), PLAYER_FIELD_GLYPHS_1, 6);
 	GlyphPropertyEntry *glyph;
-	for(uint32 i=0; i < 8; i++)
+//	for(uint32 i=0; i < 8; i++)
+	for(uint32 i=0; i < 6; i++)
 	{
 		uint32 glyphId = GetUInt32Value(PLAYER_FIELD_GLYPHS_1 + i);
 		if(glyphId == 0)
@@ -3417,6 +3520,21 @@ void Player::LoadFromDBProc(QueryResultVector & results)
 	OnlineTime	= (uint32)UNIXTIME;
 	if(GetGuildId())
 		SetUInt32Value(PLAYER_GUILD_TIMESTAMP, (uint32)UNIXTIME);
+
+//VLack: Aspire code block starts
+/*        m_talentActiveSpec = get_next_field.GetUInt32();
+        m_talentSpecsCount = get_next_field.GetUInt32();
+        if(m_talentSpecsCount > MAX_SPEC_COUNT)
+                m_talentSpecsCount = MAX_SPEC_COUNT;
+        if(m_talentActiveSpec >= m_talentSpecsCount )
+                m_talentActiveSpec = 0;
+
+        bool needTalentReset = get_next_field.GetBool();
+        if( needTalentReset )
+        {
+                Reset_Talents();
+        }*/
+//VLack: Aspire code block ends
 
 #undef get_next_field
 
@@ -4997,17 +5115,18 @@ void Player::CleanupChannels()
 
 void Player::SendInitialActions()
 {
-#ifndef USING_BIG_ENDIAN
-	m_session->OutPacket(SMSG_ACTION_BUTTONS, PLAYER_ACTION_BUTTON_SIZE, &mActions);
-#else
+//#ifndef USING_BIG_ENDIAN
+//	m_session->OutPacket(SMSG_ACTION_BUTTONS, PLAYER_ACTION_BUTTON_SIZE + 1, &mActions); //VLack: this is BAD! It does not contain the initial bool!!! Now supposedly BROKEN, but we can still use WorldPacket!
+//#else
 	/* we can't do this the fast way on ppc, due to endianness */
-	WorldPacket data(SMSG_ACTION_BUTTONS, PLAYER_ACTION_BUTTON_SIZE);
+	WorldPacket data(SMSG_ACTION_BUTTONS, PLAYER_ACTION_BUTTON_SIZE + 1);
+	data << uint8(0);       // VLack: 3.1, some bool - 0 or 1. seems to work both ways
 	for(uint32 i = 0; i < PLAYER_ACTION_BUTTON_SIZE; ++i)
 	{
-		data << mActions[i].Action << mActions[i].Type << mActions[i].Misc;
+		data << mActions[i].Action << mActions[i].Type << mActions[i].Misc; //VLack: on 3.1.3, despite the format of CMSG_SET_ACTION_BUTTON, here Type have to be sent before Misc
 	}
 	m_session->SendPacket(&data);
-#endif
+//#endif
 }
 
 void Player::setAction(uint8 button, uint16 action, uint8 type, uint8 misc)
@@ -5355,7 +5474,7 @@ void Player::UpdateAttackSpeed()
 	if( weap != NULL && weap->GetProto()->Class == ITEM_CLASS_WEAPON )
 	{
 		speed = weap->GetProto()->Delay;
-		SetUInt32Value( UNIT_FIELD_BASEATTACKTIME_01,
+		SetUInt32Value( UNIT_FIELD_BASEATTACKTIME+1,
 			( uint32 )( (float) speed / ( m_attack_speed[ MOD_MELEE ] * ( 1.0f + CalcRating( PLAYER_RATING_MODIFIER_MELEE_HASTE ) / 100.0f ) ) ) );
 	}
 
@@ -6794,6 +6913,9 @@ void Player::SendInitialLogonPackets()
 		data << uint32( m_Tutorials[i] );
 	GetSession()->SendPacket(&data);
 
+	//3.1: Send the talents
+	smsg_TalentsInfo(false, 0, 0);
+
 	//Initial Spells
 	smsg_InitialSpells();
 
@@ -6858,6 +6980,7 @@ void Player::SendInitialLogonPackets()
 
     data << (uint32)gameTime;
 	data << (float)0.0166666669777748f;  // Normal Game Speed
+	data << uint32(0); // 3.1.2
 	GetSession()->SendPacket( &data );
 
 	// cebernic for speedhack bug
@@ -7007,6 +7130,8 @@ void Player::Reset_Talents()
 	{
 		ResetDualWield2H();
 	}
+
+	smsg_TalentsInfo(false, 0, 0); //VLack: should we send this as Aspire? Yes...
 }
 
 void Player::Reset_ToLevel1()
@@ -7305,10 +7430,12 @@ void Player::TaxiStart(TaxiPath *path, uint32 modelid, uint32 start_node)
 
 	WorldPacket data(SMSG_MONSTER_MOVE, 38 + ( (endn - start_node) * 12 ) );
 	data << GetNewGUID();
+	data << uint8(0); //VLack: it seems we have a 1 byte stuff after the new GUID
 	data << firstNode->x << firstNode->y << firstNode->z;
 	data << m_taxi_ride_time;
 	data << uint8( 0 );
-	data << uint32( 0x00000300 );
+//	data << uint32( 0x00000300 );
+	data << uint32( 0x00003000 );
 	data << uint32( traveltime );
 
 	if(!cn)
@@ -8816,6 +8943,10 @@ void Player::ApplyLevelInfo(LevelInfo* Info, uint32 Level)
 	m_playerInfo->lastLevel = Level;
 
 	GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_REACH_LEVEL);
+
+	//VLack: 3.1.3, as a final step, send the player's talents, this will set the talent points right too...
+	smsg_TalentsInfo(false, 0, 0);
+
 	sLog.outDetail("Player %s set parameters to level %u", GetName(), Level);
 }
 
@@ -11223,7 +11354,7 @@ void Player::save_Misc()
 void Player::save_PVP()
 {
 	CharacterDatabase.Execute("UPDATE characters SET pvprank = %u, selected_pvp_title = %u, available_pvp_title = %u WHERE guid = %u",
-		uint32(GetPVPRank()), m_uint32Values[PLAYER_CHOSEN_TITLE], GetUInt64Value( PLAYER_FIELD_KNOWN_TITLES ), m_uint32Values[OBJECT_FIELD_GUID]);
+		uint32(GetPVPRank()), m_uint32Values[PLAYER_CHOSEN_TITLE], GetUInt64Value( PLAYER__FIELD_KNOWN_TITLES ), m_uint32Values[OBJECT_FIELD_GUID]);
 }
 
 void Player::save_Auras()
@@ -12708,11 +12839,11 @@ void Player::SetKnownTitle( RankTitles title, bool set )
 	if( !HasTitle( title ) ^ set )
 		return;
 
-	uint64 current = GetUInt64Value( PLAYER_FIELD_KNOWN_TITLES + ( ( title >> 6 ) << 1 ) );
+	uint64 current = GetUInt64Value( PLAYER__FIELD_KNOWN_TITLES + ( ( title >> 6 ) << 1 ) );
 	if( set )
-		SetUInt64Value( PLAYER_FIELD_KNOWN_TITLES + ( ( title >> 6 ) << 1 ), current | uint64(1) << ( title % 64) );
+		SetUInt64Value( PLAYER__FIELD_KNOWN_TITLES + ( ( title >> 6 ) << 1 ), current | uint64(1) << ( title % 64) );
 	else
-		SetUInt64Value( PLAYER_FIELD_KNOWN_TITLES + ( ( title >> 6 ) << 1 ), current & ~uint64(1) << ( title % 64) );
+		SetUInt64Value( PLAYER__FIELD_KNOWN_TITLES + ( ( title >> 6 ) << 1 ), current & ~uint64(1) << ( title % 64) );
 
 	WorldPacket data( SMSG_TITLE_EARNED, 8 );
 	data << uint32( title ) << uint32( set ? 1 : 0 );

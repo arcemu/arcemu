@@ -58,6 +58,7 @@ GameObject::GameObject(uint64 guid)
 	usage_remaining = 1;
 	m_respawnCell=NULL;
 	m_battleground = NULL;
+	m_rotation = 0;
 }
 
 GameObject::~GameObject()
@@ -97,7 +98,7 @@ GameObject::~GameObject()
 	}
 }
 
-bool GameObject::CreateFromProto(uint32 entry,uint32 mapid, float x, float y, float z, float ang)
+bool GameObject::CreateFromProto(uint32 entry,uint32 mapid, float x, float y, float z, float ang, float r0, float r1, float r2, float r3)
 {
 	pInfo= GameObjectNameStorage.LookupEntry(entry);
 	if(!pInfo)return false;
@@ -105,12 +106,17 @@ bool GameObject::CreateFromProto(uint32 entry,uint32 mapid, float x, float y, fl
 	Object::_Create( mapid, x, y, z, ang );
 	SetUInt32Value( OBJECT_FIELD_ENTRY, entry );
 	
-	SetFloatValue( GAMEOBJECT_POS_X, x );
-	SetFloatValue( GAMEOBJECT_POS_Y, y );
-	SetFloatValue( GAMEOBJECT_POS_Z, z );
-	SetFloatValue( GAMEOBJECT_FACING, ang );
-
-	SetRotation(ang);
+//	SetFloatValue( GAMEOBJECT_POS_X, x );
+//	SetFloatValue( GAMEOBJECT_POS_Y, y );
+//	SetFloatValue( GAMEOBJECT_POS_Z, z );
+//	SetFloatValue( GAMEOBJECT_FACING, ang );
+	SetPosition(x, y, z, ang);
+	SetFloatValue(GAMEOBJECT_PARENTROTATION, r0);
+	SetFloatValue(GAMEOBJECT_PARENTROTATION_01, r1);
+	SetFloatValue(GAMEOBJECT_PARENTROTATION_02, r2);
+	SetFloatValue(GAMEOBJECT_PARENTROTATION_03, r3);
+	UpdateRotation();
+//	SetRotation(ang);
 	 
 	//SetUInt32Value( GAMEOBJECT_TIMESTAMP, (uint32)UNIXTIME);
 //    SetUInt32Value( GAMEOBJECT_ARTKIT, 0 );		   //these must be from wdb somewhere i guess
@@ -305,7 +311,8 @@ void GameObject::SaveToDB()
 		<< GetPositionY() << ","
 		<< GetPositionZ() << ","
 		<< GetOrientation() << ","
-		<< GetUInt64Value(GAMEOBJECT_ROTATION) << ","
+//		<< GetUInt64Value(GAMEOBJECT_ROTATION) << ","
+		<< uint64(0) << ","
 		<< GetFloatValue(GAMEOBJECT_PARENTROTATION) << ","
 		<< GetFloatValue(GAMEOBJECT_PARENTROTATION_02) << ","
 		<< GetFloatValue(GAMEOBJECT_PARENTROTATION_03) << ","
@@ -355,7 +362,8 @@ void GameObject::SaveToFile(std::stringstream & name)
 		<< GetPositionY() << ","
 		<< GetPositionZ() << ","
 		<< GetOrientation() << ","
-		<< GetUInt64Value(GAMEOBJECT_ROTATION) << ","
+//		<< GetUInt64Value(GAMEOBJECT_ROTATION) << ","
+		<< uint64(0) << ","
 		<< GetFloatValue(GAMEOBJECT_PARENTROTATION) << ","
 		<< GetFloatValue(GAMEOBJECT_PARENTROTATION_02) << ","
 		<< GetFloatValue(GAMEOBJECT_PARENTROTATION_03) << ","
@@ -810,5 +818,28 @@ void GameObject::SetRotation(float rad)
 		rad = 1.f + 0.125f * sin;
 	else
 		rad = 1.25f + 0.125f * sin;
-	SetFloatValue(GAMEOBJECT_ROTATION, rad);
+//	SetFloatValue(GAMEOBJECT_ROTATION, rad);
+}
+
+void GameObject::UpdateRotation()
+{
+	static double const atan_pow = atan(pow(2.0f, -20.0f));
+
+	double f_rot1 = sin(GetOrientation() / 2.0f);
+	double f_rot2 = cos(GetOrientation() / 2.0f);
+
+	int64 i_rot1 = int64(f_rot1 / atan_pow *(f_rot2 >= 0 ? 1.0f : -1.0f));
+	int64 rotation = (i_rot1 << 43 >> 43) & 0x00000000001FFFFF;
+
+	m_rotation = rotation;
+
+	float r2=GetFloatValue(GAMEOBJECT_PARENTROTATION_02);
+	float r3=GetFloatValue(GAMEOBJECT_PARENTROTATION_03);
+	if(r2==0.0f && r3==0.0f)
+	{
+		r2 = f_rot1;
+		r3 = f_rot2;
+		SetFloatValue(GAMEOBJECT_PARENTROTATION_02, r2);
+		SetFloatValue(GAMEOBJECT_PARENTROTATION_03, r3);
+	}
 }

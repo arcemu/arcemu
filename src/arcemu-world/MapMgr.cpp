@@ -2124,7 +2124,7 @@ GameObject * MapMgr::CreateAndSpawnGameObject(uint32 entryID, float x, float y, 
 	gs->faction = go->GetUInt32Value(GAMEOBJECT_FACTION);
 	gs->flags = go->GetUInt32Value(GAMEOBJECT_FLAGS);
 	gs->id = objmgr.GenerateGameObjectSpawnID();
-	gs->o = go->GetFloatValue(GAMEOBJECT_ROTATION);
+//	gs->o = go->GetFloatValue(GAMEOBJECT_ROTATION);
 	gs->o1 = go->GetFloatValue(GAMEOBJECT_PARENTROTATION);
 	gs->o2 = go->GetFloatValue(GAMEOBJECT_PARENTROTATION_02);
 	gs->o3 = go->GetFloatValue(GAMEOBJECT_PARENTROTATION_03);

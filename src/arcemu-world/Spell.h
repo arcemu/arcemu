@@ -267,7 +267,8 @@ enum SpellCastTargetFlags
     TARGET_FLAG_TRADE_ITEM          = 0x1000,
     TARGET_FLAG_STRING              = 0x2000,
     TARGET_FLAG_UNK9                = 0x4000,
-    TARGET_FLAG_CORPSE2             = 0x8000
+    TARGET_FLAG_CORPSE2             = 0x8000,
+    TARGET_FLAG_GLYPH               = 0x20000
 };
 #ifndef NEW_PROCFLAGS
 enum procFlags

@@ -165,6 +165,7 @@ public:
 	virtual bool IsPlayer() { return m_objectTypeId == TYPEID_PLAYER; }
 	virtual bool IsCreature() { return m_objectTypeId == TYPEID_UNIT; }
 	virtual bool IsPet();
+	virtual bool IsGameObject() { return m_objectTypeId == TYPEID_GAMEOBJECT; }
 
 	//! This includes any nested objects we have, inventory for example.
 	virtual uint32 __fastcall BuildCreateUpdateBlockForPlayer( ByteBuffer *data, Player *target );
@@ -573,7 +574,7 @@ protected:
 	//! Mark values that player should get when he/she/it sees object for first time.
 	virtual void _SetCreateBits(UpdateMask *updateMask, Player *target) const;
 	//! Create updates that player will see
-	void _BuildMovementUpdate( ByteBuffer *data, uint8 flags, uint32 flags2, Player* target );
+	void _BuildMovementUpdate( ByteBuffer *data, uint16 flags, uint32 flags2, Player* target );
 	void _BuildValuesUpdate( ByteBuffer *data, UpdateMask *updateMask, Player* target );
 
 	//! WoWGuid class

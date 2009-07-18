@@ -157,10 +157,10 @@ void Item::Create( uint32 itemid, Player* owner )
 	ASSERT( m_itemProto );
 	 
 	SetUInt32Value( ITEM_FIELD_SPELL_CHARGES, m_itemProto->Spells[0].Charges );
-	SetUInt32Value( ITEM_FIELD_SPELL_CHARGES_01, m_itemProto->Spells[1].Charges );
-	SetUInt32Value( ITEM_FIELD_SPELL_CHARGES_02, m_itemProto->Spells[2].Charges );
-	SetUInt32Value( ITEM_FIELD_SPELL_CHARGES_03, m_itemProto->Spells[3].Charges );
-	SetUInt32Value( ITEM_FIELD_SPELL_CHARGES_04, m_itemProto->Spells[4].Charges );
+	SetUInt32Value( ITEM_FIELD_SPELL_CHARGES+1, m_itemProto->Spells[1].Charges );
+	SetUInt32Value( ITEM_FIELD_SPELL_CHARGES+2, m_itemProto->Spells[2].Charges );
+	SetUInt32Value( ITEM_FIELD_SPELL_CHARGES+3, m_itemProto->Spells[3].Charges );
+	SetUInt32Value( ITEM_FIELD_SPELL_CHARGES+4, m_itemProto->Spells[4].Charges );
 	SetUInt32Value( ITEM_FIELD_MAXDURABILITY, m_itemProto->MaxDurability );
 	SetUInt32Value( ITEM_FIELD_DURABILITY, m_itemProto->MaxDurability );
 
@@ -736,9 +736,12 @@ void Item::ApplyEnchantmentBonus( uint32 Slot, bool Apply )
 	}
 
 	// Apply the visual on the player.
-	uint32 ItemSlot = m_owner->GetItemInterface()->GetInventorySlotByGuid( GetGUID() ) * 18;
-	uint32 VisibleBase = PLAYER_VISIBLE_ITEM_1_0 + ItemSlot;
-	m_owner->SetUInt32Value( VisibleBase + 1 + Slot, Apply ? Entry->Id : 0 );
+	uint32 ItemSlot = m_owner->GetItemInterface()->GetInventorySlotByGuid( GetGUID() ) * PLAYER_VISIBLE_ITEM_LENGTH; //VLack: for 3.1.1 "* 18" is a bad idea, now it's "* 2"; but this could have been calculated based on UpdateFields.h! This is PLAYER_VISIBLE_ITEM_LENGTH
+	uint32 VisibleBase = PLAYER_VISIBLE_ITEM_1_ENCHANTMENT + ItemSlot;
+	if ( VisibleBase <= PLAYER_VISIBLE_ITEM_19_ENCHANTMENT )
+		m_owner->SetUInt32Value( VisibleBase, Apply ? Entry->Id : 0 ); //On 3.1 we can't add a Slot to the base now, as we no longer have multiple fields for storing them. This in some cases will try to write for example 3 visuals into one place, but now every item has only one field for this, and as we can't choose which visual to have, we'll accept the last one.
+	else
+		sLog.outError( "Item::ApplyEnchantmentBonus visual out of range!\n    Tried to address UInt32 field %i !!!\n", VisibleBase );
 
 	// Another one of those for loop that where not indented properly god knows what will break
 	// but i made it actually affect the code below it

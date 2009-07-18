@@ -74,12 +74,12 @@ CBattlegroundManager::~CBattlegroundManager()
 
 }
 
-void CBattlegroundManager::HandleBattlegroundListPacket(WorldSession * m_session, uint32 BattlegroundType)
+void CBattlegroundManager::HandleBattlegroundListPacket(WorldSession * m_session, uint32 BattlegroundType, uint8 from)
 {
 	if(BattlegroundType == BATTLEGROUND_ARENA_2V2 || BattlegroundType == BATTLEGROUND_ARENA_3V3 || BattlegroundType == BATTLEGROUND_ARENA_5V5)
 	{
-		WorldPacket data(SMSG_BATTLEFIELD_LIST, 17);
-		data << m_session->GetPlayer()->GetGUID() << uint32(6) << uint32(0xC) << uint8(0);
+		WorldPacket data(SMSG_BATTLEFIELD_LIST, 18);
+		data << m_session->GetPlayer()->GetGUID() << from << uint32(6) << uint32(0xC) << uint8(0);
 		m_session->SendPacket(&data);
 		return;
 	}
@@ -87,6 +87,7 @@ void CBattlegroundManager::HandleBattlegroundListPacket(WorldSession * m_session
 	uint32 Count = 0;
 	WorldPacket data(SMSG_BATTLEFIELD_LIST, 200);
 	data << m_session->GetPlayer()->GetGUID();
+	data << from;
 	data << BattlegroundType;
 	data << uint8(2);
 	data << uint32(0);      // Count
@@ -972,10 +973,11 @@ void CBattleground::BuildPvPUpdateDataPacket(WorldPacket * data)
 		}
 
 		*data << uint8(1);
+		//In 3.1 this should be the uint32(negative rating), uint32(positive rating), uint32(0)[<-this is the new field in 3.1], and a name if available / which is a null-terminated string, and we send an uint8(0), so we provide a zero length name string /
 		if(!Rated())
 		{
-			*data << uint32(0) << uint32(0) << uint8(0);
-			*data << uint32(0) << uint32(0) << uint8(0);
+			*data << uint32(0) << uint32(0) << uint32(0) << uint8(0);
+			*data << uint32(0) << uint32(0) << uint32(0) << uint8(0);
 		}
 		else
 		{
@@ -983,15 +985,15 @@ void CBattleground::BuildPvPUpdateDataPacket(WorldPacket * data)
 			ArenaTeam **teams = ((Arena*)this)->GetTeams();
 
 			if(teams[0]) {
-				*data << uint32(0) << uint32(3000+m_deltaRating[0]) << uint8(0);
+				*data << uint32(0) << uint32(3000+m_deltaRating[0]) << uint32(0) << uint8(0);
 			} else {
-				*data << uint32(0) << uint32(0) << uint8(0);
+				*data << uint32(0) << uint32(0) << uint32(0) << uint8(0);
 			}
 
 			if(teams[1]) {
-				*data << uint32(0) << uint32(3000+m_deltaRating[1]) << uint8(0);
+				*data << uint32(0) << uint32(3000+m_deltaRating[1]) << uint32(0) << uint8(0);
 			} else {
-				*data << uint32(0) << uint32(0) << uint8(0);
+				*data << uint32(0) << uint32(0) << uint32(0) << uint8(0);
 			}
 		}
 
@@ -1356,10 +1358,11 @@ GameObject * CBattleground::SpawnGameObject(uint32 entry,uint32 MapId , float x,
 	go->_setFaction();
 	go->SetFloatValue(OBJECT_FIELD_SCALE_X,scale);
 	go->SetUInt32Value(GAMEOBJECT_FLAGS, flags);
-	go->SetFloatValue(GAMEOBJECT_POS_X, x);
-	go->SetFloatValue(GAMEOBJECT_POS_Y, y);
-	go->SetFloatValue(GAMEOBJECT_POS_Z, z);
-	go->SetFloatValue(GAMEOBJECT_FACING, o);
+//	go->SetFloatValue(GAMEOBJECT_POS_X, x);
+//	go->SetFloatValue(GAMEOBJECT_POS_Y, y);
+//	go->SetFloatValue(GAMEOBJECT_POS_Z, z);
+//	go->SetFloatValue(GAMEOBJECT_FACING, o);
+	go->SetPosition(x, y, z, o);
 	go->SetInstanceID(m_mapMgr->GetInstanceID());
 	go->m_battleground = this;
 
@@ -1755,7 +1758,7 @@ Creature * CBattleground::SpawnSpiritGuide(float x, float y, float z, float o, u
 	pCreature->SetUInt32Value(UNIT_FIELD_FLAGS, UNIT_FLAG_PLUS_MOB | UNIT_FLAG_NOT_ATTACKABLE_9 | UNIT_FLAG_UNKNOWN_10 | UNIT_FLAG_PVP); // 4928
 
 	pCreature->SetUInt32Value(UNIT_FIELD_BASEATTACKTIME, 2000);
-	pCreature->SetUInt32Value(UNIT_FIELD_BASEATTACKTIME_01, 2000);
+	pCreature->SetUInt32Value(UNIT_FIELD_BASEATTACKTIME+1, 2000);
 	pCreature->SetFloatValue(UNIT_FIELD_BOUNDINGRADIUS, 0.208f);
 	pCreature->SetFloatValue(UNIT_FIELD_COMBATREACH, 1.5f);
 

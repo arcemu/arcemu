@@ -209,7 +209,7 @@ public:
 	void LoadBGSetFromConfig();
 
 	/* Packet Handlers */
-	void HandleBattlegroundListPacket(WorldSession * m_session, uint32 BattlegroundType);
+	void HandleBattlegroundListPacket(WorldSession * m_session, uint32 BattlegroundType, uint8 from=0);
 	void HandleArenaJoin(WorldSession * m_session, uint32 BattlegroundType, uint8 as_group, uint8 rated_match);
 
 	/* Player Logout Handler */

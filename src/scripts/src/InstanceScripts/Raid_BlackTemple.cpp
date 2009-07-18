@@ -2828,7 +2828,7 @@ public:
 		Maiev->SetUInt32Value(UNIT_VIRTUAL_ITEM_INFO_03, 4);
 		Maiev->SetUInt32Value(UNIT_FIELD_BYTES_2, 0);*/
 		Maiev->SetUInt32Value(UNIT_VIRTUAL_ITEM_SLOT_ID, 0);
-		Maiev->SetUInt32Value(UNIT_VIRTUAL_ITEM_SLOT_ID_1, 32425);
+		Maiev->SetUInt32Value(UNIT_VIRTUAL_ITEM_SLOT_ID+1, 32425);
 		Maiev->SetUInt32Value(UNIT_FIELD_BYTES_2, 0);
 	}
 
@@ -2842,7 +2842,7 @@ public:
 		Maiev->SetUInt32Value(UNIT_VIRTUAL_ITEM_INFO_03, 0);
 		Maiev->SetUInt32Value(UNIT_FIELD_BYTES_2, 1);*/	
 		Maiev->SetUInt32Value(UNIT_VIRTUAL_ITEM_SLOT_ID, 32425);
-		Maiev->SetUInt32Value(UNIT_VIRTUAL_ITEM_SLOT_ID_1, 0);
+		Maiev->SetUInt32Value(UNIT_VIRTUAL_ITEM_SLOT_ID+1, 0);
 		Maiev->SetUInt32Value(UNIT_FIELD_BYTES_2, 1);
 	}
 

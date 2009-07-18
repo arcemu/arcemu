@@ -2992,7 +2992,7 @@ public:
 		_unit->SetUInt32Value(UNIT_VIRTUAL_ITEM_SLOT_ID, 0);
 		
 		// Off hand weapon
-		_unit->SetUInt32Value(UNIT_VIRTUAL_ITEM_SLOT_ID_1, 0);
+		_unit->SetUInt32Value(UNIT_VIRTUAL_ITEM_SLOT_ID+1, 0);
 		
 
 		CreatureProto * cp = CreatureProtoStorage.LookupEntry(CN_MALCHEZAAR);
@@ -3136,7 +3136,7 @@ public:
 			_unit->SetUInt32Value(UNIT_VIRTUAL_ITEM_SLOT_ID, AXE_ITEM_MODEL);
 			
 			// Off hand weapon
-			_unit->SetUInt32Value(UNIT_VIRTUAL_ITEM_SLOT_ID_1, AXE_ITEM_MODEL);
+			_unit->SetUInt32Value(UNIT_VIRTUAL_ITEM_SLOT_ID+1, AXE_ITEM_MODEL);
 			
 			CreatureProto * cp = CreatureProtoStorage.LookupEntry(CN_MALCHEZAAR);
 			if(!cp)
@@ -3181,7 +3181,7 @@ public:
 			_unit->SetUInt32Value(UNIT_VIRTUAL_ITEM_SLOT_ID, 0);
 			
 			// Off hand weapon
-			_unit->SetUInt32Value(UNIT_VIRTUAL_ITEM_SLOT_ID_1, 0);
+			_unit->SetUInt32Value(UNIT_VIRTUAL_ITEM_SLOT_ID+1, 0);
 			
 
 			CreatureProto * cp = CreatureProtoStorage.LookupEntry(CN_MALCHEZAAR);

@@ -54,10 +54,12 @@ void Corpse::Create( Player *owner, uint32 mapid, float x, float y, float z, flo
 {
 	Object::_Create( mapid, x, y, z, ang);
 
+	/*
 	SetFloatValue( CORPSE_FIELD_POS_X, x );
 	SetFloatValue( CORPSE_FIELD_POS_Y, y );
 	SetFloatValue( CORPSE_FIELD_POS_Z, z );
 	SetFloatValue( CORPSE_FIELD_FACING, ang );
+	*/
 	SetUInt64Value( CORPSE_FIELD_OWNER, owner->GetGUID() );
 	_loadedfromdb = false;  // can't be created from db ;)
 }

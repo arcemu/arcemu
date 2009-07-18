@@ -76,6 +76,8 @@ protected:
 
 private:
 
+	uint8 K[40];
+
 	uint32 mOpcode;
 	uint32 mRemaining;
 	uint32 mSize;

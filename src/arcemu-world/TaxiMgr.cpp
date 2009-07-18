@@ -224,10 +224,12 @@ void TaxiPath::SendMoveForTime(Player *riding, Player *to, uint32 time)
 	size_t pos;
 
 	*data << riding->GetNewGUID();
+	*data << uint8(0); //VLack: usual uint8 after new style guid
 	*data << riding->GetPositionX( ) << riding->GetPositionY( ) << riding->GetPositionZ( );
 	*data << getMSTime();
 	*data << uint8( 0 );
-	*data << uint32( 0x00000300 );
+//	*data << uint32( 0x00000300 );
+	*data << uint32( 0x00003000 );
 	*data << uint32( uint32((length * TAXI_TRAVEL_SPEED) - time));
 	*data << uint32( nodecounter );
 	pos = data->wpos();

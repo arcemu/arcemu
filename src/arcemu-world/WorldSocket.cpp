@@ -194,7 +194,7 @@ OUTPACKET_RESULT WorldSocket::_OutPacket(uint16 opcode, size_t len, const void* 
 	Header.cmd = opcode;
 	Header.size = ntohs((uint16)len + 2);
 #endif
-    _crypt.EncryptFourSend((uint8*)&Header);
+	_crypt.EncryptSend((uint8*)&Header, sizeof (ServerPktHeader));
 
 	// Pass the header to our send buffer
 	rv = BurstSend((const uint8*)&Header, 4);
@@ -294,19 +294,21 @@ void WorldSocket::InformationRetreiveCallback(WorldPacket & recvData, uint32 req
 
 	mRequestID = 0;
 	// Pull the session key.
-	uint8 K[40];
+//	uint8 K[40];
 	recvData.read(K, 40);
+	
+	_crypt.Init(K);
 	
 	BigNumber BNK;
 	BNK.SetBinary(K, 40);
 	
-	uint8 *key = new uint8[20];
+/*	uint8 *key = new uint8[20];
 	WowCrypt::GenerateKey(key, K);
 	
 	// Initialize crypto.
 	_crypt.SetKey(key, 20);
 	_crypt.Init();
-	delete [] key;
+	delete [] key;*/
 
 	//checking if player is already connected
 	//disconnect current player and login this one(blizzlike)
@@ -477,9 +479,9 @@ void WorldSocket::UpdateQueuePosition(uint32 Position)
 // cebernic: Displays re-correctly until 2.4.3,there will not be always 0
 	WorldPacket QueuePacket(SMSG_AUTH_RESPONSE, 16);
 	QueuePacket << uint8(0x1B) << uint8(0x2C) << uint8(0x73) << uint8(0) << uint8(0);
-	QueuePacket << uint32(0) << uint8(0) << uint8(0);
+	QueuePacket << uint32(0) << uint8(0);// << uint8(0);
 	QueuePacket << Position;
-	QueuePacket << uint8(1);
+//	QueuePacket << uint8(1);
 	SendPacket(&QueuePacket);
 }
 
@@ -554,7 +556,7 @@ void WorldSocket::OnRead()
 			GetReadBuffer().Read((uint8*)&Header, 6);
 
 			// Decrypt the header
-            _crypt.DecryptSixRecv((uint8*)&Header);
+		_crypt.DecryptRecv((uint8*)&Header, sizeof (ClientPktHeader));
 #ifdef USING_BIG_ENDIAN
 			mRemaining = mSize = Header.size - 4;
 			mOpcode = swap32(Header.cmd);

@@ -2285,8 +2285,10 @@ Comments: Some comments on the SMSG_MONSTER_MOVE packet:
 	
 	the MoveFlags:
 		0x00000000 - Walk
-		0x00000100 - Run
-		0x00000200 - Fly
+		0x00000100 - Teleport
+		0x00001000 - Run
+		0x00000200 - Fly - OLD FLAG, IS THIS STILL VALID?
+		0x00003000 - Fly
 		some comments on that 0x00000300 - Fly = 0x00000100 | 0x00000200
 
 	waypoint's:
@@ -2300,11 +2302,12 @@ void AIInterface::SendMoveToPacket(float toX, float toY, float toZ, float toO, u
 	//use MoveTo()
 
 #ifndef USING_BIG_ENDIAN
-	StackWorldPacket<60> data(SMSG_MONSTER_MOVE);
+	StackWorldPacket<100> data(SMSG_MONSTER_MOVE);
 #else
-	WorldPacket data(SMSG_MONSTER_MOVE, 60);
+	WorldPacket data(SMSG_MONSTER_MOVE, 100);
 #endif
 	data << m_Unit->GetNewGUID();
+	data << uint8(0); //VLack: for 3.1.x support; I've discovered this in Mangos code while doing research on how to fix invisible mobs on 3.0.9
 	data << m_Unit->GetPositionX() << m_Unit->GetPositionY() << m_Unit->GetPositionZ();
 	data << getMSTime();
 	
@@ -2317,6 +2320,16 @@ void AIInterface::SendMoveToPacket(float toX, float toY, float toZ, float toO, u
 		data << uint8(0);
 	}
 	data << MoveFlags;
+/*	if(MoveFlags & 0x200000) //VLack: Aspire code for 3.1.x support - I don't know these flags, as the ones I knew are the 3 well known shown in the above comment and their combinations
+	{
+		data << uint8(0);
+		data << uint32(0);
+	}
+	if(MoveFlags & 0x800) //VLack: Aspire code for 3.1.x support
+	{
+		data << float(0);
+		data << uint32(0);
+	}*/
 	data << time;
 	data << uint32(1);	  // 1 waypoint
 	data << toX << toY << toZ;
@@ -2383,9 +2396,10 @@ bool AIInterface::StopMovement(uint32 time)
 	m_timeMoved = 0;
 	m_timeToMove = 0;
 
-	WorldPacket data(26);
+	WorldPacket data(27);
 	data.SetOpcode(SMSG_MONSTER_MOVE);
 	data << m_Unit->GetNewGUID();
+	data << uint8(0); //VLack: 3.1 SMSG_MONSTER_MOVE change...
 	data << m_Unit->GetPositionX() << m_Unit->GetPositionY() << m_Unit->GetPositionZ();
 	data << getMSTime();
 	data << uint8(1);   // "DontMove = 1"
@@ -2458,17 +2472,20 @@ uint32 AIInterface::getMoveFlags()
 	if(m_moveFly == true) //Fly
 	{
 		m_flySpeed = m_Unit->m_flySpeed*0.001f;
-		MoveFlags = 0x300;
+//		MoveFlags = 0x300;
+		MoveFlags = 0x3000; //VLack: flight flag changed on 3.1.1
 	}
 	else if(m_moveSprint == true) //Sprint
 	{
 		m_runSpeed = (m_Unit->m_runSpeed+5.0f)*0.001f;
-		MoveFlags = 0x100;
+//		MoveFlags = 0x100;
+		MoveFlags = 0x1000; //VLack: on 3.1.1 0x100 would teleport the NPC, and this is not what we want here!
 	}
 	else if(m_moveRun == true) //Run
 	{
 		m_runSpeed = m_Unit->m_runSpeed*0.001f;
-		MoveFlags = 0x100;
+//		MoveFlags = 0x100;
+		MoveFlags = 0x1000; //VLack: on 3.1.1 0x100 would teleport the NPC, and this is not what we want here!
 	}
 /*	else //Walk
 	{

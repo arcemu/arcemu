@@ -84,6 +84,8 @@ struct GameObjectInfo
 	char * Category;
 	char * Castbartext;
 	char * Unkstr;
+	float Size;
+	uint32 QuestItems[4];
 	uint32 SpellFocus;
 	uint32 sound1;
 	uint32 sound2;
@@ -177,7 +179,7 @@ public:
 
 	//void Create ( uint32 display_id, uint8 state, uint32 obj_field_entry, float scale, uint16 type, uint16 faction, uint32 mapid, float x, float y, float z, float ang );
    // void Create ( uint32 mapid, float x, float y, float z, float ang);
-	bool CreateFromProto(uint32 entry,uint32 mapid, float x, float y, float z, float ang);
+	bool CreateFromProto(uint32 entry,uint32 mapid, float x, float y, float z, float ang, float r0=0.0f, float r1=0.0f, float r2=0.0f, float r3=0.0f);
    
 	bool Load(GOSpawn *spawn);
 
@@ -197,6 +199,8 @@ public:
 	void EventCloseDoor();
 	void EventCastSpell(uint32 guid, uint32 sp, bool triggered);
 	void SetRotation(float rad);
+	uint64 m_rotation;
+	void UpdateRotation();
 
 	//Fishing stuff
 	void UseFishingNode(Player *player);

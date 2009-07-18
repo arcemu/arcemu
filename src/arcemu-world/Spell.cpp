@@ -119,10 +119,14 @@ void SpellCastTargets::read( WorldPacket & data,uint64 caster )
 
 void SpellCastTargets::write( WorldPacket& data )
 {
+	if( m_targetMask & TARGET_FLAG_DEST_LOCATION ){ //VLack: nice Aspire code, might be useful for us too
+		m_targetMask = TARGET_FLAG_SELF;	// hackfix for client crash. TODO fix
+	}
+
 	data << m_targetMask;
 	data << m_targetMaskExtended;
 
-	if( /*m_targetMask == TARGET_FLAG_SELF || */m_targetMask & (TARGET_FLAG_UNIT | TARGET_FLAG_CORPSE | TARGET_FLAG_CORPSE2 | TARGET_FLAG_OBJECT ) )
+	if( /*m_targetMask == TARGET_FLAG_SELF || */m_targetMask & (TARGET_FLAG_UNIT | TARGET_FLAG_CORPSE | TARGET_FLAG_CORPSE2 | TARGET_FLAG_OBJECT | TARGET_FLAG_GLYPH) )
         FastGUIDPack( data, m_unitTarget );
 
     if( m_targetMask & ( TARGET_FLAG_ITEM | TARGET_FLAG_TRADE_ITEM ) )
@@ -132,7 +136,12 @@ void SpellCastTargets::write( WorldPacket& data )
 		data << m_srcX << m_srcY << m_srcZ;
 
 	if( m_targetMask & TARGET_FLAG_DEST_LOCATION )
-		data << uint8(0) << m_destX << m_destY << m_destZ;
+	{ //VLack: guess what, some Aspire fix
+		if(m_unitTarget) FastGUIDPack( data, m_unitTarget ); 
+		else data << uint8(0); 
+		data << m_destX << m_destY << m_destZ; 
+	}
+//		data << uint8(0) << m_destX << m_destY << m_destZ;
 
 	if( m_targetMask & TARGET_FLAG_STRING )
 		data << m_strTarget.c_str();
@@ -5239,13 +5248,13 @@ void Spell::Heal(int32 amount, bool ForceCrit)
 		{
 		case 20267: //Judgement of Light
 			if( unitTarget->IsPlayer() )
-				amount = (int)(0.10f * unitTarget->GetUInt32Value(UNIT_FIELD_ATTACK_POWER) + 0.10f * (unitTarget)->GetUInt32Value(PLAYER_FIELD_MOD_DAMAGE_DONE_POS_01));
+				amount = (int)(0.10f * unitTarget->GetUInt32Value(UNIT_FIELD_ATTACK_POWER) + 0.10f * (unitTarget)->GetUInt32Value(PLAYER_FIELD_MOD_DAMAGE_DONE_POS+1));
 			else
 				amount = (int)(0.10f * unitTarget->GetUInt32Value(UNIT_FIELD_ATTACK_POWER));
 			break;
 		case 20167: //Seal of Light
 			if( u_caster->IsPlayer() )
-				amount = (int)(0.15f * u_caster->GetUInt32Value(UNIT_FIELD_ATTACK_POWER) + 0.15f * (u_caster)->GetUInt32Value(PLAYER_FIELD_MOD_DAMAGE_DONE_POS_01));
+				amount = (int)(0.15f * u_caster->GetUInt32Value(UNIT_FIELD_ATTACK_POWER) + 0.15f * (u_caster)->GetUInt32Value(PLAYER_FIELD_MOD_DAMAGE_DONE_POS+1));
 			break;
 		case 54172: //Paladin - Divine Storm heal effect
 			if( u_caster != NULL )

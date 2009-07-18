@@ -306,7 +306,7 @@ void ArcScriptCreatureAI::SetDisplayWeaponIds(uint32 pItem1Id, uint32 pItem2Id)
 	_unit->SetUInt32Value(UNIT_VIRTUAL_ITEM_SLOT_ID, pItem1Id);
 	
 	//Off Hand
-	_unit->SetUInt32Value(UNIT_VIRTUAL_ITEM_SLOT_ID_1, pItem2Id);
+	_unit->SetUInt32Value(UNIT_VIRTUAL_ITEM_SLOT_ID+1, pItem2Id);
 	
 }
 

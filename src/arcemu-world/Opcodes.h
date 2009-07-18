@@ -1214,7 +1214,11 @@ enum Opcodes {
     UMSG_UNKNOWN_1185                               = 0x4A1,
     UMSG_UNKNOWN_1186                               = 0x4A2,
     UMSG_UNKNOWN_1187                               = 0x4A3,
-	NUM_MSG_TYPES									= 0x4A4, // max msg number
+//	NUM_MSG_TYPES									= 0x4A4, 
+    CMSG_LFG_SET_ROLES                              = 0x4B8, // CMSG, empty, lua: SetLFGRoles
+    SMSG_EQUIPMENT_SET_LIST                         = 0x4BC, // SMSG, equipment manager list?
+    SMSG_TALENTS_INFO                               = 0x4C0, // SMSG, talents related
+    NUM_MSG_TYPES                                   = 0x4CB, // max msg number
 };
 
 enum FriendsResult {

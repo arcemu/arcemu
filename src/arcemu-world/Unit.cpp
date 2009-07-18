@@ -4171,7 +4171,7 @@ void Unit::Strike( Unit* pVictim, uint32 weapon_damage_type, SpellEntry* ability
 		if( weapon == NULL )
 		{
 			if( weapon_damage_type == OFFHAND )
-				s = GetUInt32Value( UNIT_FIELD_BASEATTACKTIME_01 ) / 1000.0f;
+				s = GetUInt32Value( UNIT_FIELD_BASEATTACKTIME+1 ) / 1000.0f;
 			else
 				s = GetUInt32Value( UNIT_FIELD_BASEATTACKTIME ) / 1000.0f;
 		}
@@ -6539,6 +6539,7 @@ void Unit::SetFacing(float newo)
 
 	/*WorldPacket data(SMSG_MONSTER_MOVE, 60);
 	data << GetNewGUID();
+	data << uint8(0);
 	data << m_position << getMSTime();
 	data << uint8(4) << newo;
 	data << uint32(0x00000000);		// flags
@@ -6546,7 +6547,7 @@ void Unit::SetFacing(float newo)
 	data << m_position;				// position
 	SendMessageToSet(&data, true);*/
 
-	m_aiInterface->SendMoveToPacket(m_position.x,m_position.y,m_position.z,m_position.o,1,0x100); // MoveFlags = 0x100 (run)
+	m_aiInterface->SendMoveToPacket(m_position.x,m_position.y,m_position.z,m_position.o,1,0x1000); // MoveFlags = 0x1000 (run)
 }
 
 //guardians are temporary spawn that will inherit master faction and will follow them. Apart from that they have their own mind
@@ -7413,11 +7414,11 @@ void Unit::RemoveAllMovementImpairing()
 void Unit::setAttackTimer(int32 time, bool offhand)
 {
 	if(!time)
-		time = offhand ? m_uint32Values[UNIT_FIELD_BASEATTACKTIME_01] : m_uint32Values[UNIT_FIELD_BASEATTACKTIME];
+		time = offhand ? m_uint32Values[UNIT_FIELD_BASEATTACKTIME+1] : m_uint32Values[UNIT_FIELD_BASEATTACKTIME];
 
 	time = std::max(1000,float2int32(float(time)*GetFloatValue(UNIT_MOD_CAST_SPEED)));
 	if(time>300000)		// just in case.. shouldn't happen though
-		time=offhand ? m_uint32Values[UNIT_FIELD_BASEATTACKTIME_01] : m_uint32Values[UNIT_FIELD_BASEATTACKTIME];
+		time=offhand ? m_uint32Values[UNIT_FIELD_BASEATTACKTIME+1] : m_uint32Values[UNIT_FIELD_BASEATTACKTIME];
 
 	if(offhand)
 		m_attackTimer_1 = getMSTime() + time;
@@ -7704,7 +7705,7 @@ void Unit::SendPowerUpdate(bool self)
 
 void Unit::UpdatePowerAmm()
 {
-	if( !IsPlayer() )
+//	if( !IsPlayer() ) //VLack: always return :)
 		return;
 	WorldPacket data( SMSG_POWER_UPDATE, 5 );
 	FastGUIDPack( data, GetGUID() );

@@ -855,7 +855,7 @@ bool ChatHandler::HandleGOSpawn(const char *args, WorldSession *m_session)
 	gs->faction = go->GetUInt32Value(GAMEOBJECT_FACTION);
 	gs->flags = go->GetUInt32Value(GAMEOBJECT_FLAGS);
 	gs->id = objmgr.GenerateGameObjectSpawnID();
-	gs->o = go->GetFloatValue(GAMEOBJECT_ROTATION);
+//	gs->o = go->GetFloatValue(GAMEOBJECT_ROTATION);
 	gs->o1 = go->GetFloatValue(GAMEOBJECT_PARENTROTATION);
 	gs->o2 = go->GetFloatValue(GAMEOBJECT_PARENTROTATION_02);
 	gs->o3 = go->GetFloatValue(GAMEOBJECT_PARENTROTATION_03);
@@ -951,9 +951,9 @@ bool ChatHandler::HandleGOInfo(const char *args, WorldSession *m_session)
 	if( GOInfo->Name )
 		SystemMessage(m_session, "%s Name:%s%s",MSG_COLOR_GREEN,MSG_COLOR_LIGHTBLUE,GOInfo->Name);
 	SystemMessage(m_session, "%s Size:%s%u",MSG_COLOR_GREEN,MSG_COLOR_LIGHTBLUE,GObj->GetFloatValue(OBJECT_FIELD_SCALE_X));
-	SystemMessage(m_session, "%s Facing:%s%f",MSG_COLOR_GREEN,MSG_COLOR_LIGHTBLUE,GObj->GetFloatValue(GAMEOBJECT_FACING));
-	SystemMessage(m_session, "%s Rotation:%s%f",MSG_COLOR_GREEN,MSG_COLOR_LIGHTBLUE,GObj->GetFloatValue(GAMEOBJECT_ROTATION));
-	SystemMessage(m_session, "%s Rotation01:%s%f",MSG_COLOR_GREEN,MSG_COLOR_LIGHTBLUE,GObj->GetFloatValue(GAMEOBJECT_ROTATION_01));
+//	SystemMessage(m_session, "%s Facing:%s%f",MSG_COLOR_GREEN,MSG_COLOR_LIGHTBLUE,GObj->GetFloatValue(GAMEOBJECT_FACING));
+//	SystemMessage(m_session, "%s Rotation:%s%f",MSG_COLOR_GREEN,MSG_COLOR_LIGHTBLUE,GObj->GetFloatValue(GAMEOBJECT_ROTATION));
+//	SystemMessage(m_session, "%s Rotation01:%s%f",MSG_COLOR_GREEN,MSG_COLOR_LIGHTBLUE,GObj->GetFloatValue(GAMEOBJECT_ROTATION_01));
 	SystemMessage(m_session, "%s Parent Rotation O1:%s%f",MSG_COLOR_GREEN,MSG_COLOR_LIGHTBLUE,GObj->GetFloatValue(GAMEOBJECT_PARENTROTATION_01));
 	SystemMessage(m_session, "%s Parent Rotation O2:%s%f",MSG_COLOR_GREEN,MSG_COLOR_LIGHTBLUE,GObj->GetFloatValue(GAMEOBJECT_PARENTROTATION_02));
 	SystemMessage(m_session, "%s Parent Rotation O3:%s%f",MSG_COLOR_GREEN,MSG_COLOR_LIGHTBLUE,GObj->GetFloatValue(GAMEOBJECT_PARENTROTATION_03));
@@ -1326,7 +1326,7 @@ bool ChatHandler::HandleNPCEquipTwoCommand(const char * args, WorldSession * m_s
 
 	if(ItemID == 0)
 	{
-		SelectedCreature->SetUInt32Value(UNIT_VIRTUAL_ITEM_SLOT_ID_1, 0);
+		SelectedCreature->SetUInt32Value(UNIT_VIRTUAL_ITEM_SLOT_ID+1, 0);
 		SelectedCreature->SaveToDB();
 		m_session->SystemMessage("Reset item 2 of %s (%u).", SelectedCreature->GetCreatureInfo()->Name, SelectedCreature->GetProto()->Id);
 		return true;
@@ -1338,7 +1338,7 @@ bool ChatHandler::HandleNPCEquipTwoCommand(const char * args, WorldSession * m_s
 		m_session->SystemMessage("Item ID: %u does not exist.", ItemID);
 		return true;
 	}
-	SelectedCreature->SetUInt32Value(UNIT_VIRTUAL_ITEM_SLOT_ID_1, ItemProvided->ItemId);
+	SelectedCreature->SetUInt32Value(UNIT_VIRTUAL_ITEM_SLOT_ID+1, ItemProvided->ItemId);
 	SelectedCreature->SaveToDB();
 	return true;
 }
@@ -1360,7 +1360,7 @@ bool ChatHandler::HandleNPCEquipThreeCommand(const char * args, WorldSession * m
 
 	if(ItemID == 0)
 	{
-		SelectedCreature->SetUInt32Value(UNIT_VIRTUAL_ITEM_SLOT_ID_2, 0);
+		SelectedCreature->SetUInt32Value(UNIT_VIRTUAL_ITEM_SLOT_ID+2, 0);
 		SelectedCreature->SaveToDB();
 		m_session->SystemMessage("Reset item 3 of %s (%u).", SelectedCreature->GetCreatureInfo()->Name, SelectedCreature->GetProto()->Id);
 		return true;
@@ -1372,7 +1372,7 @@ bool ChatHandler::HandleNPCEquipThreeCommand(const char * args, WorldSession * m
 		m_session->SystemMessage("Item ID: %u does not exist.", ItemID);
 		return true;
 	}
-	SelectedCreature->SetUInt32Value(UNIT_VIRTUAL_ITEM_SLOT_ID_2, ItemProvided->ItemId);
+	SelectedCreature->SetUInt32Value(UNIT_VIRTUAL_ITEM_SLOT_ID+2, ItemProvided->ItemId);
 	SelectedCreature->SaveToDB();
 	return true;
 }

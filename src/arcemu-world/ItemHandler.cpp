@@ -946,7 +946,7 @@ void WorldSession::HandleItemQuerySingleOpcode( WorldPacket & recv_data )
 	}
 	data << itemProto->ScalingStatsEntry;
 	data << itemProto->ScalingStatsFlag;
-	for(i = 0; i < 5; i++)
+	for(i = 0; i < 2; i++) //VLack: seen this in Aspire code, originally this went up to 5, now only to 2
 	{
 		data << itemProto->Damage[i].Min;
 		data << itemProto->Damage[i].Max;
@@ -1004,6 +1004,7 @@ void WorldSession::HandleItemQuerySingleOpcode( WorldPacket & recv_data )
 	data << itemProto->ArmorDamageModifier;
 	data << itemProto->ExistingDuration;								// 2.4.2 Item duration in seconds
 	data << itemProto->ItemLimitCategory;
+	data << uint32(0); //VLack: some 3.1.x value
 	SendPacket( &data );
 
 }
@@ -1083,6 +1084,7 @@ void WorldSession::HandleBuyBackOpcode( WorldPacket & recv_data )
 
 		data.Initialize( SMSG_BUY_ITEM );
 		data << uint64(guid);
+		data << getMSTime(); //VLack: seen is Aspire code
 		data << uint32(itemid) << uint32(amount);
 		SendPacket( &data );
 	}
@@ -1216,10 +1218,12 @@ void WorldSession::HandleBuyItemInSlotOpcode( WorldPacket & recv_data ) // drag 
 	uint8 amount = 0;
 	uint8 error;
 	int8 bagslot = INVENTORY_SLOT_NOT_SET;
+	int32 vendorslot; //VLack: 3.1.2
 
 	recv_data >> srcguid >> itemid;
-	recv_data >> bagguid; 
-	recv_data >> slot;
+	recv_data >> vendorslot; //VLack: 3.1.2 This is the slot's number on the vendor's panel, starts from 1
+	recv_data >> bagguid;
+	recv_data >> slot; //VLack: 3.1.2 the target slot the player selected - backpack 23-38, other bags 0-15 (Or how big is the biggest bag? 0-127?)
 	recv_data >> amount;
 
 	if(amount < 1)
@@ -1378,8 +1382,9 @@ void WorldSession::HandleBuyItemInSlotOpcode( WorldPacket & recv_data ) // drag 
 
 	SendItemPushResult(pItem, false, true, false, (pItem==oldItem) ? false : true, bagslot, slot, amount*ci.amount);
 
-	WorldPacket data(SMSG_BUY_ITEM, 12);
+	WorldPacket data(SMSG_BUY_ITEM, 22);
 	data << uint64(srcguid);
+	data << getMSTime();
 	data << uint32(itemid) << uint32(amount);
 
 	SendPacket( &data );
@@ -1404,7 +1409,7 @@ void WorldSession::HandleBuyItemOpcode( WorldPacket & recv_data ) // right-click
 	WorldPacket data(45);
 	uint64 srcguid=0;
 	uint32 itemid=0;
-	int8 slot=0;
+	int32 slot=0;
 	uint8 amount=0;
 //	int8 playerslot = 0;
 //	int8 bagslot = 0;
@@ -1414,7 +1419,7 @@ void WorldSession::HandleBuyItemOpcode( WorldPacket & recv_data ) // right-click
 	AddItemResult result;
 
 	recv_data >> srcguid >> itemid;
-	recv_data >> amount >> slot;
+	recv_data >> slot >> amount;
 
 
 	Creature *unit = _player->GetMapMgr()->GetCreature(GET_LOWGUID_PART(srcguid));
@@ -1521,6 +1526,7 @@ void WorldSession::HandleBuyItemOpcode( WorldPacket & recv_data ) // right-click
 
 	data.Initialize( SMSG_BUY_ITEM );
 	data << uint64(srcguid);
+	data << getMSTime();
 	data << uint32(itemid) << uint32(amount*item.amount);
 	SendPacket( &data );
 

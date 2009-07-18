@@ -1260,14 +1260,15 @@ out:
 
 				uint32 time = uint32( (unitTarget->CalcDistance(m_caster) / ((unitTarget->m_runSpeed * 3.5) * 0.001f)) + 0.5);
 
-				WorldPacket data(SMSG_MONSTER_MOVE, 50);
+				WorldPacket data(SMSG_MONSTER_MOVE, 60);
 				data << unitTarget->GetNewGUID();
+				data << uint8(0); //VLack: the usual change in SMSG_MONSTER_MOVE packets, initial idea from Mangos
 				data << unitTarget->GetPositionX();
 				data << unitTarget->GetPositionY();
 				data << unitTarget->GetPositionZ();
 				data << getMSTime();
 				data << uint8(0x00);
-				data << uint32(0x00000100);
+				data << uint32(0x00001000);
 				data << time;
 				data << uint32(1);
 				data << posX << posY << posZ;
@@ -5781,7 +5782,7 @@ void Spell::SpellEffectSummonTotem(uint32 i) // Summon Totem
 	pTotem->SetUInt32Value(UNIT_FIELD_BYTES_0, (1 << 8) | (2 << 16) | (1 << 24));
 	pTotem->SetUInt32Value(UNIT_FIELD_FLAGS, UNIT_FLAG_PLAYER_CONTROLLED | UNIT_FLAG_SELF_RES);
 	pTotem->SetUInt32Value(UNIT_FIELD_BASEATTACKTIME, 2000);
-	pTotem->SetUInt32Value(UNIT_FIELD_BASEATTACKTIME_01, 2000);
+	pTotem->SetUInt32Value(UNIT_FIELD_BASEATTACKTIME+1, 2000);
 	pTotem->SetFloatValue(UNIT_FIELD_BOUNDINGRADIUS, 1.0f);
 	pTotem->SetFloatValue(UNIT_FIELD_COMBATREACH, 1.0f);
 	pTotem->SetUInt32Value(UNIT_FIELD_DISPLAYID, displayID);
@@ -6072,12 +6073,13 @@ void Spell::SpellEffectCharge(uint32 i)
 
 	WorldPacket data(SMSG_MONSTER_MOVE, 50);
 	data << m_caster->GetNewGUID();
+	data << uint8(0);
 	data << m_caster->GetPositionX();
 	data << m_caster->GetPositionY();
 	data << m_caster->GetPositionZ();
 	data << getMSTime();
 	data << uint8(0x00);
-	data << uint32(0x00000100);
+	data << uint32(0x00001000);
 	data << time;
 	data << uint32(1);
 	data << x << y << z;
@@ -6811,11 +6813,12 @@ void Spell::SpellEffectPlayerPull( uint32 i )
 
 	WorldPacket data( SMSG_MONSTER_MOVE, 60 );
 	data << p_target->GetNewGUID();
+	data << uint8(0);
 	data << p_target->GetPositionX() << p_target->GetPositionY() << p_target->GetPositionZ();
 	data << getMSTime();
 	data << uint8( 4 );
 	data << pullO;
-	data << uint32( 0x00000100 );
+	data << uint32( 0x00001000 );
 	data << time;
 	data << uint32( 1 );
 	data << pullX << pullY << pullZ;

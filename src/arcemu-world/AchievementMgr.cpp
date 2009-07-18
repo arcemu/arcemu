@@ -492,7 +492,10 @@ void AchievementMgr::SendCriteriaUpdate(CriteriaProgress* progress)
 	data << uint32(secsToTimeBitFields(progress->date));
 	data << uint32(0);  // timer 1
 	data << uint32(0);  // timer 2
-	GetPlayer()->GetSession()->SendPacket(&data);
+	if( !GetPlayer()->IsInWorld() ) //VLack: maybe we should NOT send these delayed, for 3.1.1, but seems logical
+		GetPlayer()->CopyAndSendDelayedPacket(&data);
+	else
+		GetPlayer()->GetSession()->SendPacket(&data);
 }
 
 /**
