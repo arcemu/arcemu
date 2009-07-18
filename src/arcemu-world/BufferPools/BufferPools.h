@@ -141,9 +141,7 @@ public:
 	{
 		for( uint32 i = 0; i < max_avails; i++ )
 			delete avail_list[i];
-
 		free( avail_list );
-		avail_list = NULL;
 		avail_indexes.clear();
 		delete this;
 	}
