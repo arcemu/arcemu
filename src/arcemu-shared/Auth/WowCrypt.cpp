@@ -26,61 +26,40 @@
 
 WowCrypt::WowCrypt()
 {
-	_initialized = false;
-	ciphers_setup();
+    m_initialized = false;
 }
 
 
 void WowCrypt::Init(uint8 *K)
 {
-	//VLack: Andy, a thousand thanks for this initialization block below! Don't laugh please, I've kept the SARC4 code too :P
-	HMAC_CTX send_hmac, recv_hmac;
-	const uint8 s[16] = { 0xF4, 0x66, 0x31, 0x59, 0xFC, 0x83, 0x6E, 0x31, 0x31, 0x02, 0x51, 0xD5, 0x44, 0x31, 0x67, 0x98 };
-	const uint8 r[16] = { 0x22, 0xBE, 0xE5, 0xCF, 0xBB, 0x07, 0x64, 0xD9, 0x00, 0x45, 0x1B, 0xD0, 0x24, 0xB8, 0xD5, 0x45 };
-	HMAC_CTX_init(&send_hmac);
-	HMAC_CTX_init(&recv_hmac);
-	HMAC_Init_ex(&send_hmac, r, 16, EVP_sha1(), NULL);
-	HMAC_Init_ex(&recv_hmac, s, 16, EVP_sha1(), NULL);
-	HMAC_Update(&send_hmac, K, 40);
-	HMAC_Update(&recv_hmac, K, 40);
-	unsigned int length = 0;
-	uint8 send_digest[20];
-	uint8 recv_digest[20];
-	HMAC_Final(&send_hmac, send_digest, &length);
-	HMAC_Final(&recv_hmac, recv_digest, &length);
+	static const uint8 s[16] = { 0xF4, 0x66, 0x31, 0x59, 0xFC, 0x83, 0x6E, 0x31, 0x31, 0x02, 0x51, 0xD5, 0x44, 0x31, 0x67, 0x98 };
+	static const uint8 r[16] = { 0x22, 0xBE, 0xE5, 0xCF, 0xBB, 0x07, 0x64, 0xD9, 0x00, 0x45, 0x1B, 0xD0, 0x24, 0xB8, 0xD5, 0x45 };
+    uint8 encryptHash[SHA_DIGEST_LENGTH];
+    uint8 decryptHash[SHA_DIGEST_LENGTH];
+    uint8 pass[1024];
+    uint32 md_len;
 
-	cipher_init(&_Decrypt,(uint8*)recv_digest);
-	cipher_init(&_Encrypt,(uint8*)send_digest);
+    // generate c->s key
+    HMAC(EVP_sha1(), s, 16, K, 40, decryptHash, &md_len);
+    assert(md_len == SHA_DIGEST_LENGTH);
 
-	uint8 decryptRotateBuffer[1024];
-	memset(decryptRotateBuffer, 0, 1024);
-	cipher_update(&_Decrypt, 1024, (uint8*)decryptRotateBuffer);
+    // generate s->c key
+    HMAC(EVP_sha1(), r, 16, K, 40, encryptHash, &md_len);
+    assert(md_len == SHA_DIGEST_LENGTH);
 
-	uint8 encryptRotateBuffer[1024];
-	memset(encryptRotateBuffer, 0, 1024);
-	cipher_update(&_Encrypt, 1024, (uint8*)encryptRotateBuffer);
+    // initialize rc4 structs
+    RC4_set_key(&m_clientDecrypt, SHA_DIGEST_LENGTH, decryptHash);
+    RC4_set_key(&m_serverEncrypt, SHA_DIGEST_LENGTH, encryptHash);
 
-	_initialized = true;
+    // initial encryption pass -- this is just to get key position,
+    // the data doesn't actually have to be initialized as discovered
+    // by client debugging.
+    RC4(&m_serverEncrypt, 1024, pass, pass);
+    RC4(&m_clientDecrypt, 1024, pass, pass);
+    m_initialized = true;
 }
-
-
-void WowCrypt::DecryptRecv(uint8 *data, size_t len)
-{
-	if (!_initialized) return;
-
-	cipher_update(&_Decrypt, len, (uint8*)data);
-}
-
-
-void WowCrypt::EncryptSend(uint8 *data, size_t len)
-{
-	if (!_initialized) return;
-
-	cipher_update(&_Encrypt, len, (uint8*)data);
-}
-
 
 WowCrypt::~WowCrypt()
 {
-	ciphers_cleanup();
+
 }

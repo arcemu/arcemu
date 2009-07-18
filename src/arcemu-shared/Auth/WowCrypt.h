@@ -24,9 +24,8 @@
 #include "../Common.h"
 #include "BigNumber.h"
 #include <vector>
-//#include "Auth/Sha1.h"
-#include <openssl/evp.h>
 #include <openssl/sha.h>
+#include <openssl/rc4.h>
 
 class WowCrypt {
 public:
@@ -34,44 +33,14 @@ public:
 	~WowCrypt();
 
 	void Init(uint8 *K);
-	void DecryptRecv(uint8 * data, size_t len);
-	void EncryptSend(uint8 * data, size_t len);
-
-	bool IsInitialized() { return _initialized; }
+    ARCEMU_INLINE void DecryptRecv(uint8* pData, size_t len) { if( !m_initialized) { return; } RC4(&m_clientDecrypt, (unsigned long)len, pData, pData); }
+    ARCEMU_INLINE void EncryptSend(uint8* pData, size_t len) { if( !m_initialized) { return; } RC4(&m_serverEncrypt, (unsigned long)len, pData, pData); }
+    bool IsInitialized() { return m_initialized; }
 
 private:
-	ARCEMU_INLINE void ciphers_setup()
-	{
-		EVP_CIPHER_CTX_init(&_Decrypt);
-		EVP_EncryptInit_ex(&_Decrypt, EVP_rc4(), NULL, NULL, NULL);
-		EVP_CIPHER_CTX_set_key_length(&_Decrypt, SHA_DIGEST_LENGTH);
-		//----------------------------------------------------------
-		EVP_CIPHER_CTX_init(&_Encrypt);
-		EVP_EncryptInit_ex(&_Encrypt, EVP_rc4(), NULL, NULL, NULL);
-		EVP_CIPHER_CTX_set_key_length(&_Encrypt, SHA_DIGEST_LENGTH);
-	}
-
-	ARCEMU_INLINE void ciphers_cleanup()
-	{
-		EVP_CIPHER_CTX_cleanup(&_Decrypt);
-		EVP_CIPHER_CTX_cleanup(&_Encrypt);
-	}
-
-	ARCEMU_INLINE void cipher_init(EVP_CIPHER_CTX *c, uint8 *seed)
-	{
-		EVP_EncryptInit_ex(c, NULL, NULL, seed, NULL);
-	}
-
-	ARCEMU_INLINE void cipher_update(EVP_CIPHER_CTX *c, int len, uint8 *data)
-	{
-		int outlen = 0;
-		EVP_EncryptUpdate(c, data, &outlen, data, len);
-		EVP_EncryptFinal_ex(c, data, &outlen);
-	}
-
-	bool _initialized;
-	EVP_CIPHER_CTX _Decrypt;
-	EVP_CIPHER_CTX _Encrypt;
+    RC4_KEY m_clientDecrypt;
+    RC4_KEY m_serverEncrypt;
+    bool m_initialized;
 };
 
 #endif
