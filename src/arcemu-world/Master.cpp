@@ -96,13 +96,13 @@ struct Addr
 #define DEF_VALUE_NOT_SET 0xDEADBEEF
 
 #ifdef WIN32
-        static const char* default_config_file = "configs/arcemu-world.conf";
-		static const char* default_optional_config_file = "configs/arcemu-optional.conf";
-        static const char* default_realm_config_file = "configs/arcemu-realms.conf";
+        static const char* default_config_file = "configs/world.conf";
+		static const char* default_optional_config_file = "configs/optional.conf";
+        static const char* default_realm_config_file = "configs/realms.conf";
 #else
-        static const char* default_config_file = CONFDIR "/arcemu-world.conf";
-		static const char* default_optional_config_file = CONFDIR "/arcemu-optional.conf";
-        static const char* default_realm_config_file = CONFDIR "/arcemu-realms.conf";
+        static const char* default_config_file = CONFDIR "/world.conf";
+		static const char* default_optional_config_file = CONFDIR "/optional.conf";
+        static const char* default_realm_config_file = CONFDIR "/realms.conf";
 #endif
 
 bool bServerShutdown = false;
@@ -251,26 +251,26 @@ bool Master::Run(int argc, char ** argv)
 
 	Log.Notice( "Config", "Loading Config Files...\n" );
 	if( Config.MainConfig.SetSource( config_file ) )
-		Log.Success( "Config", ">> configs/arcemu-world.conf" );
+		Log.Success( "Config", ">> configs/world.conf" );
 	else
 	{
-		Log.Error( "Config", ">> configs/arcemu-world.conf" );
+		Log.Error( "Config", ">> configs/world.conf" );
 		return false;
 	}
 
 	if(Config.OptionalConfig.SetSource(optional_config_file))
-		Log.Success( "Config", ">> configs/arcemu-optional.conf");
+		Log.Success( "Config", ">> configs/optional.conf");
 	else
 	{
-		Log.Error("Config", ">> configs/arcemu-optional.conf");
+		Log.Error("Config", ">> configs/optional.conf");
 		return false;
 	}
 
 	if(Config.RealmConfig.SetSource(realm_config_file))
-		Log.Success( "Config", ">> configs/arcemu-realms.conf" );
+		Log.Success( "Config", ">> configs/realms.conf" );
 	else
 	{
-		Log.Error( "Config", ">> configs/arcemu-realms.conf" );
+		Log.Error( "Config", ">> configs/realms.conf" );
 		return false;
 	}
 

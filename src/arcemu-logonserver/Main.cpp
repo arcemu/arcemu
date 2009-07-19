@@ -168,9 +168,9 @@ bool IsServerAllowedMod(unsigned int IP)
 bool Rehash()
 {
 #ifdef WIN32
-	char * config_file = "configs/arcemu-logonserver.conf";
+	char * config_file = "configs/logon.conf";
 #else
-	char * config_file = (char*)CONFDIR "/arcemu-logonserver.conf";
+	char * config_file = (char*)CONFDIR "/logon.conf";
 #endif
 	if(!Config.MainConfig.SetSource(config_file))
 	{
@@ -255,9 +255,9 @@ void LogonServer::Run(int argc, char ** argv)
 	UNIXTIME = time(NULL);
 	g_localTime = *localtime(&UNIXTIME);
 #ifdef WIN32
-	char * config_file = "configs/arcemu-logonserver.conf";
+	char * config_file = "configs/logon.conf";
 #else
-	char * config_file = (char*)CONFDIR "/arcemu-logonserver.conf";
+	char * config_file = (char*)CONFDIR "/logon.conf";
 #endif
 	int file_log_level = DEF_VALUE_NOT_SET;
 	int screen_log_level = DEF_VALUE_NOT_SET;
