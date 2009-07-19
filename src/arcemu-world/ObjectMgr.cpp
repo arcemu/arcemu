@@ -1478,9 +1478,9 @@ void ObjectMgr::LoadSpellFixes()
 			uint32 sf_SpellGroupType = f[2].GetUInt32();
 			uint32 sf_procChance = f[3].GetUInt32();
 			uint32 sf_procCharges = f[4].GetUInt32();
-			uint64 sf_groupRelation0 = f[5].GetUInt64();
+			/*uint64 sf_groupRelation0 = f[5].GetUInt64();
 			uint64 sf_groupRelation1 = f[6].GetUInt64();
-			uint64 sf_groupRelation2 = f[7].GetUInt64();
+			uint64 sf_groupRelation2 = f[7].GetUInt64();*/
 
 			if( sf_spellId )
 			{

@@ -613,7 +613,7 @@ ARCEMU_INLINE void ApplyFloatPSM(float ** m,int32 v,uint32 mask, float def)
 
 Unit * Aura::GetUnitCaster()
 {
-	if( !m_target && GET_TYPE_FROM_GUID(m_casterGuid) == HIGHGUID_TYPE_PLAYER)
+	if( GET_TYPE_FROM_GUID( m_casterGuid ) == HIGHGUID_TYPE_PLAYER )
 	{
 		Unit * unit = objmgr.GetPlayer( (uint32)m_casterGuid );
 		if( unit )

@@ -272,7 +272,6 @@ bool ChatHandler::HandleKickCommand(const char* args, WorldSession *m_session)
 		RedSystemMessage(m_session, "Player is not online at the moment.");
 		return true;
 	}
-	return true;
 }
 
 bool ChatHandler::HandleAddInvItemCommand(const char *args, WorldSession *m_session)

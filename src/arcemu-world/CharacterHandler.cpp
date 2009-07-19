@@ -657,7 +657,6 @@ void WorldSession::HandlePlayerLoginOpcode( WorldPacket & recv_data )
 
 void WorldSession::FullLogin(Player * plr)
 {
-	uint8 class_ = plr->getClass();
 	Log.Debug("WorldSession", "Fully loading player %u", plr->GetLowGUID());
 	SetPlayer(plr); 
 	m_MoverWoWGuid.Init(plr->GetGUID());

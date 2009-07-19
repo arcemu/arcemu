@@ -841,7 +841,6 @@ void Pet::UpdateSpellList( bool showLearnSpells )
 	{
 		skilllinespell* sls;
 		uint32 rowcount = dbcSkillLineSpell.GetNumRows();
-		uint32 current = 0;
 		SpellEntry* sp;
 		for( uint32 idx = 0; idx < rowcount; ++idx )
 		{

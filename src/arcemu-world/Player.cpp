@@ -1898,7 +1898,6 @@ void Player::smsg_TalentsInfo(bool update, uint32 newTalentId, uint8 newTalentRa
                 }
         } else  // initialize sending all info
         {
-                uint8 talent_max_rank = 0;
                 data << uint32(GetUInt32Value(PLAYER_CHARACTER_POINTS1)); // Unspent talents
                 data << uint8(m_talentSpecsCount);
                 data << uint8(m_talentActiveSpec); // unk
