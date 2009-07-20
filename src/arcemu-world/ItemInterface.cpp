@@ -2945,6 +2945,9 @@ void ItemInterface::SwapItemSlots(int8 srcslot, int8 dstslot)
 		else if( dstslot == EQUIPMENT_SLOT_MAINHAND || dstslot == EQUIPMENT_SLOT_OFFHAND )
 			m_pOwner->CalcDamage();
 	}
+
+	//Recalculate Expertise (for Weapon specs)
+	m_pOwner->CalcExpertise();
 }
 
 //-------------------------------------------------------------------//

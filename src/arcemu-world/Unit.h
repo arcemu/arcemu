@@ -67,6 +67,7 @@ struct ReflectSpellSchool
 	int32 school;
 	int32 chance;
 	int32 require_aura_hash;
+	bool infront;
 };
 
 typedef struct
@@ -942,7 +943,7 @@ public:
 
 	bool IsCasting();
 	bool IsInInstance();
-    void CalculateResistanceReduction(Unit *pVictim,dealdamage *dmg,SpellEntry* ability) ;
+    void CalculateResistanceReduction(Unit *pVictim,dealdamage *dmg,SpellEntry* ability, float ArmorPctReduce) ;
 	void RegenerateHealth();
 	void RegeneratePower(bool isinterrupted);
 	ARCEMU_INLINE void setHRegenTimer(uint32 time) {m_H_regenTimer = time; }
@@ -1125,7 +1126,11 @@ public:
 	uint32 MechanicsDispels[32];
 	float MechanicsResistancesPCT[32];
 	float ModDamageTakenByMechPCT[32];
+	int32 DoTPctIncrease[7];
+	float AOEDmgMod;
 	//int32 RangedDamageTakenPct; 
+	float m_ignoreArmorPctMaceSpec;
+	float m_ignoreArmorPct;
 
 	//SM
 	int32 * SM_CriticalChance;//flat
@@ -1314,6 +1319,10 @@ public:
 	int64 m_magnetcaster; // Unit who acts as a magnet for this unit
 	//std::set<SpellEntry*> m_onStrikeSpells;
 	
+	//Combat Mod Results:
+	int32 m_CombatResult_Dodge;
+	int32 m_CombatResult_Parry; //is not implented yet
+
 	// aurastate counters
 	int8 asc_frozen;
 	int8 asc_enraged;
@@ -1556,6 +1565,7 @@ protected:
 	float m_blockfromspell;
 	float m_dodgefromspell;
 	float m_parryfromspell;
+	uint32 m_BlockModPct; // is % but does not need float and does not need /100!
 
 };
 

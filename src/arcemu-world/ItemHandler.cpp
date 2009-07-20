@@ -411,6 +411,9 @@ void WorldSession::HandleSwapItemOpcode(WorldPacket& recv_data)
 			}
 		}
 	}
+
+	//Recalculate Expertise (for Weapon specs)
+	_player->CalcExpertise();
 }
 
 void WorldSession::HandleSwapInvItemOpcode( WorldPacket & recv_data )
@@ -813,6 +816,9 @@ void WorldSession::HandleAutoEquipItemOpcode( WorldPacket & recv_data )
 	if( ( eitem->GetProto()->Quality == ITEM_QUALITY_RARE_BLUE && eitem->GetProto()->ItemLevel >= 187 ) ||
 		( eitem->GetProto()->Quality == ITEM_QUALITY_EPIC_PURPLE && eitem->GetProto()->ItemLevel >= 213 ) )
 		_player->GetAchievementMgr().UpdateAchievementCriteria( ACHIEVEMENT_CRITERIA_TYPE_EQUIP_EPIC_ITEM, Slot, eitem->GetProto()->Quality, 0 );
+
+	//Recalculate Expertise (for Weapon specs)
+	_player->CalcExpertise();
 }
 
 void WorldSession::HandleAutoEquipItemSlotOpcode( WorldPacket& recvData )

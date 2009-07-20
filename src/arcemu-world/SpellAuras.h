@@ -247,7 +247,7 @@ enum MOD_TYPES
     SPELL_AURA_MOD_ALL_WEAPON_SKILLS = 196,
     SPELL_AURA_REDUCE_ATTACKER_CRICTICAL_HIT_CHANCE_PCT = 197,
     SPELL_AURA_INCREASE_SPELL_HIT_PCT = 199,
-    SPELL_AURA_CANNOT_BE_DODGED = 201,
+	SPELL_AURA_CANNOT_BE_DODGED = 201,
 	SPELL_AURA_FINISHING_MOVES_CANNOT_BE_DODGED = 202,
     SPELL_AURA_REDUCE_ATTACKER_CRICTICAL_HIT_DAMAGE_MELEE_PCT = 203,
     SPELL_AURA_REDUCE_ATTACKER_CRICTICAL_HIT_DAMAGE_RANGED_PCT = 204,
@@ -257,10 +257,12 @@ enum MOD_TYPES
     SPELL_AURA_REGEN_MANA_STAT_PCT=219,
     SPELL_AURA_HEALING_STAT_PCT=220,
 	SPELL_AURA_PERIODIC_TRIGGER_SPELL_WITH_VALUE=227, // Used by Mind Flay etc
+	SPELL_AURA_REDUCE_AOE_DAMAGE_TAKEN = 229,
     SPELL_AURA_INCREASE_MAX_HEALTH=230,//Used by Commanding Shout
+	SPELL_AURA_MECHANIC_DURATION_MOD = 232,
 	SPELL_AURA_MOD_HEALING_BY_AP=237,
 	SPELL_AURA_MOD_SPELL_DAMAGE_BY_AP=238,
-	SPELL_AURA_MODIFY_AXE_SKILL=240,
+	SPELL_AURA_EXPERTISE = 240,
 	SPELL_AURA_241 = 241,
     SPELL_AURA_MOD_SPELL_DAMAGE_FROM_HEALING = 242,
     SPELL_AURA_243 = 243,
@@ -272,8 +274,50 @@ enum MOD_TYPES
     SPELL_AURA_249 = 249,
     SPELL_AURA_MOD_INCREASE_HEALTH_2 = 250,
     SPELL_AURA_MOD_ENEMY_DODGE = 251,
+	SPELL_AURA_252 = 252,
+	SPELL_AURA_BLOCK_MULTIPLE_DAMAGE = 253,
+	SPELL_AURA_254 = 254,
+	SPELL_AURA_MOD_MECHANIC_DAMAGE_TAKEN_PERCENT = 255,
+	SPELL_AURA_256 = 256,
+	SPELL_AURA_257 = 257,
+	SPELL_AURA_258 = 258,
+	SPELL_AURA_259 = 259,
+	SPELL_AURA_260 = 260,
+	SPELL_AURA_SET_PHASE = 261,
+	SPELL_AURA_IGNORE_TARGET_AURA_STATE = 262,
+	SPELL_AURA_ALLOW_ONLY_ABILITY = 263,
+	SPELL_AURA_264 = 264,
+	SPELL_AURA_265 = 265,
+	SPELL_AURA_266 = 266,
+	SPELL_AURA_267 = 267,
 	SPELL_AURA_MOD_ATTACK_POWER_BY_STAT_PCT = 268,
-    TOTAL_SPELL_AURAS = 284,
+	SPELL_AURA_269 = 269,
+	SPELL_AURA_270 = 270,
+	SPELL_AURA_INCREASE_SPELL_DOT_DAMAGE_PCT = 271,
+	SPELL_AURA_272 = 272,
+	SPELL_AURA_273 = 273,
+	SPELL_AURA_274 = 274,
+	SPELL_AURA_275 = 275,
+	SPELL_AURA_276 = 276,
+	SPELL_AURA_277 = 277,
+	SPELL_AURA_278 = 278,
+	SPELL_AURA_279 = 279,
+	SPELL_AURA_IGNORE_ARMOR_PCT = 280,
+	SPELL_AURA_281 = 281,
+	SPELL_AURA_MOD_BASE_HEALTH = 282,
+	SPELL_AURA_283 = 283,
+	SPELL_AURA_284 = 284,
+	SPELL_AURA_MOD_ATTACK_POWER_OF_ARMOR = 285,
+	SPELL_AURA_286 = 286,
+	SPELL_AURA_REFLECT_INFRONT = 287,
+	SPELL_AURA_288 = 288,
+	SPELL_AURA_289 = 289,
+	SPELL_AURA_290 = 290,
+	SPELL_AURA_291 = 291,
+	SPELL_AURA_292 = 292,
+	SPELL_AURA_293 = 293,
+	SPELL_AURA_294 = 294,
+    TOTAL_SPELL_AURAS = 295,
 };
 enum AuraTickFlags
 {
@@ -627,8 +671,9 @@ public:
 	void SpellAuraIncreaseRAPbyStatPct(bool apply);
 	//void SpellAuraModRangedDamageTakenPCT(bool apply);
 	void SpellAuraModBlockValue(bool apply);
+	void SpellAuraAllowFlight(bool apply);
 	void SpellAuraFinishingMovesCannotBeDodged(bool apply);
-	void SpellAuraAxeSkillModifier(bool apply);
+	void SpellAuraExpertise(bool apply);
 	void SpellAuraDrinkNew(bool apply);
 	void SpellAuraModPossessPet(bool apply);
 	void SpellAuraModHealingByAP(bool apply);
@@ -637,11 +682,22 @@ public:
 	void SpellAuraReduceEffectDuration(bool apply);
 	void HandleAuraControlVehicle(bool apply);
 	void EventPeriodicDrink(uint32 amount);
+	void SpellAuraModCombatResultChance(bool apply);
 	void SpellAuraAddHealth(bool apply);
 	void SpellAuraRemoveReagentCost(bool apply);
-	void SpellAuraIncreaseAPbyStatPct(bool apply);
 	void SpellAuraPeriodicTriggerSpellWithValue(bool apply);
+	void SpellAuraModMechanicDmgTakenPct(bool apply);
+	void SpellAuraBlockMultipleDamage(bool apply);
+	void SpellAuraSetPhase(bool apply);
+	void SpellAuraIgnoreTargetAuraState(bool apply);
+	void SpellAuraAllowOnlyAbility(bool apply);
+	void SpellAuraIncreaseAPbyStatPct(bool apply);
+	void SpellAuraModSpellDamageDOTPct(bool apply);
     void SpellAuraIgnoreShapeshift(bool apply);
+	void SpellAuraModIgnoreArmorPct(bool apply);
+	void SpellAuraModBaseHealth(bool apply);
+	void SpellAuraModAttackPowerOfArmor(bool apply);
+	void SpellAuraReflectSpellsInfront(bool apply);
 	void UpdateAuraModDecreaseSpeed();
 
 	void SendModifierLog(int32 ** m,int32 v,uint32* mask,uint8 type,bool pct = false);
@@ -750,6 +806,7 @@ public:
 	}
 
 	int32 GetModAmount( uint32 i ) { if(i<3) return m_modList[i].m_amount; return 0; }
+	int32 GetModAmountByMod() { return mod->m_amount; };
 
 private:
 	uint32 GetCasterFaction() { return m_casterfaction; }

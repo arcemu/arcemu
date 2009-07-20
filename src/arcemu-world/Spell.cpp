@@ -3418,6 +3418,15 @@ uint8 Spell::CanCast(bool tolerate)
 				return SPELL_FAILED_NOT_MOUNTED;
 		}
 
+		/**
+		 *	Filter Check
+		 */
+		if(p_caster->m_castFilterEnabled && 
+			!((m_spellInfo->SpellGroupType[0] & p_caster->m_castFilter[0]) || 
+			(m_spellInfo->SpellGroupType[1] & p_caster->m_castFilter[1]) ||
+			(m_spellInfo->SpellGroupType[2] & p_caster->m_castFilter[2])))
+			return SPELL_FAILED_SPELL_IN_PROGRESS;
+
 		// check if spell is allowed while shapeshifted
 		if (p_caster->GetShapeShift())
 		{
@@ -3644,11 +3653,11 @@ uint8 Spell::CanCast(bool tolerate)
 		/**
 		 *	AuraState check
 		 */
-		if (GetProto()->CasterAuraState && !p_caster->HasFlag( UNIT_FIELD_AURASTATE, GetProto()->CasterAuraState ))
+		if (GetProto()->CasterAuraState && !p_caster->HasFlag( UNIT_FIELD_AURASTATE, GetProto()->CasterAuraState ) && !p_caster->ignoreAuraStateCheck)
 		{
 			return SPELL_FAILED_CASTER_AURASTATE;
 		}
-		if (GetProto()->CasterAuraStateNot && p_caster->HasFlag( UNIT_FIELD_AURASTATE, GetProto()->CasterAuraStateNot ))
+		if (GetProto()->CasterAuraStateNot && p_caster->HasFlag( UNIT_FIELD_AURASTATE, GetProto()->CasterAuraStateNot ) && !p_caster->ignoreAuraStateCheck)
 		{
 			return SPELL_FAILED_CASTER_AURASTATE;
 		}
@@ -3928,11 +3937,11 @@ uint8 Spell::CanCast(bool tolerate)
 				}
 
 				// check aurastate
-				if( GetProto()->TargetAuraState && !target->HasFlag( UNIT_FIELD_AURASTATE, GetProto()->TargetAuraState ) )
+				if( GetProto()->TargetAuraState && !target->HasFlag( UNIT_FIELD_AURASTATE, GetProto()->TargetAuraState ) && !p_caster->ignoreAuraStateCheck)
 				{
 					return SPELL_FAILED_TARGET_AURASTATE;
 				}
-				if( GetProto()->TargetAuraStateNot && target->HasFlag( UNIT_FIELD_AURASTATE, GetProto()->TargetAuraStateNot ) )
+				if( GetProto()->TargetAuraStateNot && target->HasFlag( UNIT_FIELD_AURASTATE, GetProto()->TargetAuraStateNot ) && !p_caster->ignoreAuraStateCheck)
 				{
 					return SPELL_FAILED_TARGET_AURASTATE;
 				}
@@ -5468,6 +5477,7 @@ void Spell::SafeAddModeratedTarget(uint64 guid, uint16 type)
 bool Spell::Reflect(Unit *refunit)
 {
 	SpellEntry * refspell = NULL;
+	bool canreflect = false;
 
 	if( m_reflectedParent != NULL || refunit == NULL || m_caster == refunit )
 		return false;
@@ -5502,13 +5512,25 @@ bool Spell::Reflect(Unit *refunit)
 						}
 					}
 				}
+				
+				if( (*i)->infront )
+				{
+					if( m_caster->isInFront(refunit) )
+					{
+						canreflect = true;
+					}
+				}
+				else
+					canreflect = true;
+
 				refspell = GetProto();
 				break;
 			}
 		}
 	}
 
-	if(!refspell) return false;
+	if( !refspell || !canreflect ) 
+		return false;
 
 	Spell *spell = SpellPool.PooledNew();
 	if (!spell)

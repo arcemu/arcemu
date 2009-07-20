@@ -116,6 +116,8 @@ Unit::Unit()
 	m_attackTimer_1 = 0;
 	m_dualWield = false;
 
+	m_ignoreArmorPctMaceSpec = 0;
+	m_ignoreArmorPct = 0;
 	m_fearmodifiers = 0;
 	m_state = 0;
 	m_special_state = 0;
@@ -209,6 +211,9 @@ Unit::Unit()
 	m_modlanguage = -1;
 	m_magnetcaster = 0;
 
+	m_CombatResult_Dodge = 0;
+	m_CombatResult_Parry = 0;
+
 	critterPet = NULL;
 	summonPet = NULL;
 
@@ -282,6 +287,7 @@ Unit::Unit()
 		CritMeleeDamageTakenPctMod[i]=0;
 		CritRangedDamageTakenPctMod[i]=0;
 		m_generatedThreatModifyer[i] = 0;
+		DoTPctIncrease[i] = 0;
 	}
 	DamageTakenPctModOnHP35 = 1;
 	RangedDamageTaken = 0;
@@ -346,6 +352,7 @@ Unit::Unit()
 	m_blockfromspell		= 0;
 	m_dodgefromspell		= 0;
 	m_parryfromspell		= 0;
+	m_BlockModPct			= 0;
 
 	m_damageShields.clear();
 	m_reflectSpellSchool.clear();
@@ -1199,46 +1206,24 @@ uint32 Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, ui
 						CastingSpell->NameHash != SPELL_HASH_GREATER_HEAL )
 						continue;
 				}break;
-				case 5530: //Mace Stun Effect
-				{
-					//warrior/rogue mace specialization can trigger only when using maces
-					Item* it;
-					if( static_cast< Player* >( this )->GetItemInterface() )
-					{
-						it = static_cast< Player* >( this )->GetItemInterface()->GetInventoryItem( EQUIPMENT_SLOT_MAINHAND );
-						if( it != NULL && it->GetProto() )
-						{
-							uint32 reqskill = GetSkillByProto( it->GetProto()->Class, it->GetProto()->SubClass );
-							if( reqskill != SKILL_MACES && reqskill != SKILL_2H_MACES )
-								continue;
-						}
-						else
-							continue; //no weapon no joy
-					}
-					else
-						continue; //no weapon no joy
-					//let's recalc chance to cast since we have a full 100 all time on this one
-					//how lame to get talentpointlevel for this spell :(
-					//float chance=it->GetProto()->Delay*100*talentlevel/60000;
-					float chance = float( it->GetProto()->Delay ) * float( talentlevel ) / 600.0f;
-					if( !Rand( chance ) )
-						continue;
-				}break;
 				case 16459:
-				case 4350:
 				{
 					//sword specialization
 					if( static_cast< Player* >( this )->GetItemInterface())
 					{
-						Item* it = static_cast< Player* >( this )->GetItemInterface()->GetInventoryItem( EQUIPMENT_SLOT_MAINHAND );
-						if( it != NULL && it->GetProto() )
-						{
-							uint32 reqskill=GetSkillByProto( it->GetProto()->Class, it->GetProto()->SubClass );
-							if( reqskill != SKILL_SWORDS && reqskill != SKILL_2H_SWORDS )
-								continue;
-						}
-						else
-							continue; //no weapon no joy
+						Item* itMH = static_cast< Player* >( this )->GetItemInterface()->GetInventoryItem( EQUIPMENT_SLOT_MAINHAND );
+						Item* itOH = static_cast< Player* >( this )->GetItemInterface()->GetInventoryItem( EQUIPMENT_SLOT_OFFHAND );
+						uint32 reqskillMH = 0;
+						uint32 reqskillOH = 0;
+
+						if( itMH != NULL && itMH->GetProto() ) 
+							reqskillMH = GetSkillByProto( itMH->GetProto()->Class, itMH->GetProto()->SubClass );
+
+						if( itOH != NULL && itOH->GetProto() )
+							reqskillOH = GetSkillByProto( itOH->GetProto()->Class, itOH->GetProto()->SubClass );
+
+						if( reqskillMH != SKILL_SWORDS && reqskillMH != SKILL_2H_SWORDS && reqskillOH != SKILL_SWORDS && reqskillOH != SKILL_2H_SWORDS )
+							continue;
 					}
 					else
 						continue; //no weapon no joy
@@ -1259,6 +1244,33 @@ uint32 Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, ui
 						else continue; //no weapon no joy
 					}
 					else continue; //no weapon no joy
+				}break;
+				//Warrior - Sword and Board
+				case 50227:
+				{
+					if( CastingSpell == NULL )
+						continue;
+
+					if( CastingSpell->NameHash != SPELL_HASH_DEVASTATE && CastingSpell->NameHash != SPELL_HASH_REVENGE )
+						continue;
+				}break;
+				//Warrior - Safeguard
+				case 46946:
+				{
+					if( CastingSpell == NULL )
+						continue;
+
+					if( CastingSpell->NameHash != SPELL_HASH_INTERVENE )
+						continue;
+				}break;
+				//Warrior - Taste for Blood
+				case 60503:
+				{
+					if( CastingSpell == NULL )
+						continue;
+
+					if( CastingSpell->NameHash != SPELL_HASH_REND )
+						continue;
 				}break;
 				//Warrior - Blood Frenzy
 				case 30069:
@@ -2622,46 +2634,46 @@ uint32 Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, ui
 	m_chargeSpellsInUse=true;
 	std::map<uint32,struct SpellCharge>::iterator iter,iter2;
 	iter=m_chargeSpells.begin();
-	while(iter!= m_chargeSpells.end())
+	while( iter != m_chargeSpells.end() )
 	{
 		iter2=iter++;
 		if(iter2->second.count)
 		{
-			if((iter2->second.ProcFlag & flag))
+			if( (iter2->second.ProcFlag & flag) )
 			{
 				//Fixes for spells that don't lose charges when dmg is absorbed
-				if(iter2->second.ProcFlag==680&&dmg==0) continue;
-				if(CastingSpell)
+				if( iter2->second.ProcFlag==680 && dmg==0 ) continue;
+				if( CastingSpell )
 				{
 
 					SpellCastTime *sd = dbcSpellCastTime.LookupEntry(CastingSpell->CastingTimeIndex);
-					if(!sd) continue; // this shouldn't happen though :P
+					if( !sd ) continue; // this shouldn't happen though :P
+
 					//if we did not proc these then we should not remove them
 					if( CastingSpell->Id == iter2->second.spellId)
 						continue;
-					switch(iter2->second.spellId)
+
+					switch( iter2->second.spellId )
 					{
-					//Shaman - Shamanist Focus
-					case 43339:
-							{
-								if( CastingSpell->NameHash != SPELL_HASH_EARTH_SHOCK &&
-									CastingSpell->NameHash != SPELL_HASH_FLAME_SHOCK &&
-									CastingSpell->NameHash != SPELL_HASH_FROST_SHOCK )
-									continue;
-							}break;
-					case 12043:
+					case 43339: // Shaman - Shamanist Focus
 						{
-							//Presence of Mind and Nature's Swiftness should only get removed
-							//when a non-instant and bellow 10 sec. Also must be nature :>
-//							if(!sd->CastTime||sd->CastTime>10000) continue;
-							if(sd->CastTime==0)
+							if( CastingSpell->NameHash != SPELL_HASH_EARTH_SHOCK &&
+								CastingSpell->NameHash != SPELL_HASH_FLAME_SHOCK &&
+								CastingSpell->NameHash != SPELL_HASH_FROST_SHOCK )
 								continue;
 						}break;
-					case 17116: //Shaman - Nature's Swiftness
-					case 16188:
+					case 12043: // Mage - Presence of Mind
 						{
-//							if( CastingSpell->School!=SCHOOL_NATURE||(!sd->CastTime||sd->CastTime>10000)) continue;
-							if( CastingSpell->School!=SCHOOL_NATURE||(sd->CastTime==0)) continue;
+							//if(!sd->CastTime||sd->CastTime>10000) continue;
+							if( sd->CastTime == 0 )
+								continue;
+						}break;
+					case 17116: // Shaman - Nature's Swiftness
+					case 16188:	// Druid - Nature's Swiftness
+						{
+							//if( CastingSpell->School!=SCHOOL_NATURE||(!sd->CastTime||sd->CastTime>10000)) continue;
+							if( CastingSpell->School!=SCHOOL_NATURE || sd->CastTime==0 ) 
+								continue;
 						}break;
 					case 16166:
 						{
@@ -2678,9 +2690,14 @@ uint32 Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, ui
 							if( CastingSpell->NameHash != SPELL_HASH_SLAM )
 								continue;
 						}break;
-					case 44401: //Missile Barriage should dissapear after casting Arcane Missiles
+					case 60503: // Taste for Blood should dissapear after casting Overpower
 						{
-							if( CastingSpell->NameHash != SPELL_HASH_ARCANE_MISSILES )
+							if( CastingSpell->NameHash != SPELL_HASH_OVERPOWER )
+								continue;
+						}break;
+					case 23694: // Imp. Hamstring
+						{
+							if( CastingSpell->NameHash != SPELL_HASH_IMPROVED_HAMSTRING )
 								continue;
 						}break;
 					}
@@ -2911,7 +2928,7 @@ void Unit::RegeneratePower(bool isinterrupted)
 	}
 }
 
-void Unit::CalculateResistanceReduction(Unit *pVictim,dealdamage * dmg, SpellEntry* ability)
+void Unit::CalculateResistanceReduction(Unit *pVictim,dealdamage * dmg, SpellEntry* ability, float ArmorPctReduce)
 {
 	float AverageResistance = 0.0f;
 	float ArmorReduce;
@@ -2919,7 +2936,7 @@ void Unit::CalculateResistanceReduction(Unit *pVictim,dealdamage * dmg, SpellEnt
 	if((*dmg).school_type == 0)//physical
 	{
 		if(this->IsPlayer())
-			ArmorReduce = PowerCostPctMod[0];
+			ArmorReduce = PowerCostPctMod[0]+ ((float)pVictim->GetResistance(0) * (ArmorPctReduce + static_cast<Player*>(this)->CalcRating( PLAYER_RATING_MODIFIER_ARMOR_PENETRATION_RATING )) / 100.0f);
 		else
 			ArmorReduce = 0.0f;
 
@@ -3111,6 +3128,16 @@ uint32 Unit::GetSpellDidHitResult( Unit* pVictim, uint32 weapon_damage_type, Spe
 	{
 		hitchance = 100.0f;
 	}
+	//--------------------------------by aura mods-------------------------
+	//Aura 248 SPELL_AURA_MOD_COMBAT_RESULT_CHANCE
+	dodge += m_CombatResult_Dodge;
+	if( dodge < 0 ) 
+		dodge = 0.0f;
+
+	//parry += m_CombatResult_Parry;
+	//if( parry < 0 ) 
+		//parry = 0.0f;
+
 	//--------------------------------by damage type and by weapon type-------------------------
 	if( weapon_damage_type == RANGED )
 	{
@@ -3221,6 +3248,7 @@ void Unit::Strike( Unit* pVictim, uint32 weapon_damage_type, SpellEntry* ability
 	uint32 vproc			 = 0;
 
 	float hitmodifier		 = 0;
+	float ArmorPctReduce	 = m_ignoreArmorPct;
 	int32 self_skill;
 	int32 victim_skill;
 	uint32 SubClassSkill	 = SKILL_UNARMED;
@@ -3332,14 +3360,22 @@ void Unit::Strike( Unit* pVictim, uint32 weapon_damage_type, SpellEntry* ability
 			it = disarmed ? NULL : pr->GetItemInterface()->GetInventoryItem( EQUIPMENT_SLOT_MAINHAND );
 			self_skill = float2int32( pr->CalcRating( PLAYER_RATING_MODIFIER_MELEE_MAIN_HAND_SKILL ) );
 			if (it && it->GetProto())
+			{
 				dmg.school_type = it->GetProto()->Damage[0].Type;
+				if( it->GetProto()->SubClass == ITEM_SUBCLASS_WEAPON_MACE )
+					ArmorPctReduce += m_ignoreArmorPctMaceSpec;
+			}
 			break;
 		case OFFHAND: // melee offhand weapon (dualwield)
 			it = disarmed ? NULL : pr->GetItemInterface()->GetInventoryItem( EQUIPMENT_SLOT_OFFHAND );
 			self_skill = float2int32( pr->CalcRating( PLAYER_RATING_MODIFIER_MELEE_OFF_HAND_SKILL ) );
 			hit_status |= HITSTATUS_DUALWIELD;//animation
 			if (it && it->GetProto())
+			{
 				dmg.school_type = it->GetProto()->Damage[0].Type;
+				if( it->GetProto()->SubClass == ITEM_SUBCLASS_WEAPON_MACE )
+					ArmorPctReduce += m_ignoreArmorPctMaceSpec;
+			}
 			break;
 		case RANGED:  // ranged weapon
 			it = disarmed ? NULL : pr->GetItemInterface()->GetInventoryItem( EQUIPMENT_SLOT_RANGED );
@@ -3477,13 +3513,21 @@ void Unit::Strike( Unit* pVictim, uint32 weapon_damage_type, SpellEntry* ability
 	{
 		Player* plr = static_cast< Player* >(this);
 		hitmodifier += (weapon_damage_type == RANGED) ? plr->CalcRating( PLAYER_RATING_MODIFIER_RANGED_HIT ) : plr->CalcRating( PLAYER_RATING_MODIFIER_MELEE_HIT );
-		dodge -= plr->CalcRating( PLAYER_RATING_MODIFIER_EXPERTISE2 ); // EXPERTISE will give you expertise skill, EXPERTISE2 gives you the % bonus from the rating
-		if(dodge<0) dodge=0.0f;
-		parry -= plr->CalcRating( PLAYER_RATING_MODIFIER_EXPERTISE2 );
-		if(parry<0) parry=0.0f;
+
+		float expertise_bonus = plr->CalcRating( PLAYER_RATING_MODIFIER_EXPERTISE );
+		if( weapon_damage_type == MELEE )
+			expertise_bonus += plr->GetUInt32Value( PLAYER_EXPERTISE );
+		else if( weapon_damage_type == OFFHAND )
+			expertise_bonus += plr->GetUInt32Value( PLAYER_OFFHAND_EXPERTISE );
+
+		dodge -= expertise_bonus;
+		if( dodge < 0 ) 
+			dodge = 0.0f;
+
+		parry -= expertise_bonus;
+		if( parry < 0 ) 
+			parry = 0.0f;
 	}
-
-
 //--------------------------------by damage type and by weapon type-------------------------
 	if( weapon_damage_type == RANGED )
 	{
@@ -3793,6 +3837,8 @@ void Unit::Strike( Unit* pVictim, uint32 weapon_damage_type, SpellEntry* ability
 							if( block_multiplier < 1.0f )block_multiplier = 1.0f;
 
 							blocked_damage = float2int32( (float( shield->GetProto()->Block ) + ( float( static_cast< Player* >( pVictim )->m_modblockvaluefromspells + pVictim->GetUInt32Value( PLAYER_RATING_MODIFIER_BLOCK ) )) + ( ( float( pVictim->GetUInt32Value( UNIT_FIELD_STAT0 ) ) / 20.0f ) - 1.0f ) ) * block_multiplier);
+							if( Rand( m_BlockModPct ) )
+								blocked_damage *= 2;
 						}
 						else
 						{
@@ -3907,12 +3953,12 @@ void Unit::Strike( Unit* pVictim, uint32 weapon_damage_type, SpellEntry* ability
 				{
 					dmg.full_damage -= sh;
 					if(dmg.full_damage && !disable_dR)
-						CalculateResistanceReduction(pVictim,&dmg, ability);
+						CalculateResistanceReduction(pVictim,&dmg, ability, ArmorPctReduce);
 					dmg.full_damage += sh;
 					abs+=sh;
 				}
 				else if(!disable_dR)
-					CalculateResistanceReduction(pVictim,&dmg, ability);
+					CalculateResistanceReduction(pVictim,&dmg, ability, ArmorPctReduce);
 			}
 
 			if(abs)
@@ -5125,7 +5171,11 @@ int32 Unit::GetSpellDmgBonus(Unit *pVictim, SpellEntry *spellInfo,int32 base_dmg
 //==========================================================================================
 	int32 bonus_damage = float2int32(plus_damage * dmgdoneaffectperc);
 
-	//bonus_damage +=pVictim->DamageTakenMod[school]; Bad copy-past i guess :P
+	if( isdot )
+		bonus_damage += float2int32(bonus_damage * (pVictim->DoTPctIncrease[spellInfo->School] / 100.0f));
+	else if( (spellInfo->c_is_flags & SPELL_FLAG_IS_DAMAGING) && (spellInfo->spell_coef_flags & SPELL_FLAG_AOE_SPELL) )
+		bonus_damage *= pVictim->AOEDmgMod;
+
 	if(spellInfo->SpellGroupType)
 	{
 		SM_FIValue(caster->SM_FPenalty, &bonus_damage, spellInfo->SpellGroupType);

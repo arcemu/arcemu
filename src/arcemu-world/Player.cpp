@@ -49,6 +49,7 @@ misdirectionTarget(0),
 bReincarnation(false),
 removeReagentCost(false),
 ignoreShapeShiftChecks(false),
+ignoreAuraStateCheck(false),
 m_furorChance(0),
 Seal(0),
 judgespell(0),
@@ -390,10 +391,13 @@ mOutOfRangeIdCount(0)
 	UpdateLastSpeeds();
 
 	m_resist_critical[0]=m_resist_critical[1]=0;
+	m_castFilterEnabled = false;
+
 	for(i = 0; i < 3; i++ )
 	{
 		m_resist_hit[i]		= 0.0f;
 		m_attack_speed[i]	= 1.0f;
+		m_castFilter[i]		= 0;
 	}
 
         m_maxTalentPoints = 0; //VLack: 3 Aspire values initialized
@@ -9843,7 +9847,7 @@ void Player::ModifyBonuses( uint32 type, int32 val, bool apply )
 			}break;
 		case MELEE_HIT_AVOIDANCE_RATING:
 			{
-	//			ModUnsigned32Value( PLAYER_RATING_MODIFIER_MELEE_HIT_AVOIDANCE, val );
+				ModUnsigned32Value( PLAYER_RATING_MODIFIER_MELEE_HIT_AVOIDANCE, val );
 			}break;
 		case RANGED_HIT_AVOIDANCE_RATING:
 			{
@@ -9891,16 +9895,17 @@ void Player::ModifyBonuses( uint32 type, int32 val, bool apply )
 			}break;
 		case HIT_AVOIDANCE_RATING:// this is guessed based on layout of other fields
 			{
-//				ModUnsigned32Value( PLAYER_RATING_MODIFIER_MELEE_HIT_AVOIDANCE, val );//melee
+				ModUnsigned32Value( PLAYER_RATING_MODIFIER_MELEE_HIT_AVOIDANCE, val );//melee
 				ModUnsigned32Value( PLAYER_RATING_MODIFIER_RANGED_HIT_AVOIDANCE, val );//ranged
 				ModUnsigned32Value( PLAYER_RATING_MODIFIER_SPELL_HIT_AVOIDANCE, val );//spell
 			}break;
+		case CRITICAL_AVOIDANCE_RATING:
+			{
+			
+			}break;
 		case EXPERTISE_RATING:
-		case EXPERTISE_RATING_2:
 			{
 				ModUnsigned32Value( PLAYER_RATING_MODIFIER_EXPERTISE, val );
-				ModUnsigned32Value( PLAYER_RATING_MODIFIER_EXPERTISE2, val );
-				//ModUnsigned32Value( PLAYER_EXPERTISE, val );
 			}break;
 		case RESILIENCE_RATING:
 			{
@@ -9916,8 +9921,8 @@ void Player::ModifyBonuses( uint32 type, int32 val, bool apply )
 			}break;
 		case ATTACK_POWER:
 			{
-				ModUnsigned32Value(UNIT_FIELD_ATTACK_POWER_MODS, val);
-				ModUnsigned32Value(UNIT_FIELD_RANGED_ATTACK_POWER_MODS, val);
+				ModUnsigned32Value( UNIT_FIELD_ATTACK_POWER_MODS, val );
+				ModUnsigned32Value( UNIT_FIELD_RANGED_ATTACK_POWER_MODS, val );
 			}break;
 		case RANGED_ATTACK_POWER:
 			{
@@ -9948,7 +9953,7 @@ void Player::ModifyBonuses( uint32 type, int32 val, bool apply )
 			}break;
 		case ARMOR_PENETRATION_RATING:
 			{
-//				ModUnsigned32Value(PLAYER_RATING_MODIFIER_ARMOR_PENETRATION_RATING, val);
+				ModUnsigned32Value(PLAYER_RATING_MODIFIER_ARMOR_PENETRATION_RATING, val);
 			}break;
 		case SPELL_POWER:
 			{
@@ -9957,7 +9962,6 @@ void Player::ModifyBonuses( uint32 type, int32 val, bool apply )
 					ModUnsigned32Value( PLAYER_FIELD_MOD_DAMAGE_DONE_POS + school, val );
 					HealDoneMod[school] += val;
 				}
-
 				ModUnsigned32Value( PLAYER_FIELD_MOD_HEALING_DONE_POS, uint32( float( val ) * 1.88f ) );
 			}break;
 		}
@@ -12863,4 +12867,47 @@ uint32 Player::GetInitialFactionId()
 		return pci->factiontemplate;
 	else 
 		return 35;
+}
+
+void Player::CalcExpertise()
+{
+	int32 modifier = 0;
+	int32 val = 0;
+	SpellEntry *entry = NULL;
+	Item* itMH = NULL;
+	Item* itOH = NULL;
+
+	SetUInt32Value( PLAYER_EXPERTISE, 0 );
+	SetUInt32Value( PLAYER_OFFHAND_EXPERTISE, 0 );
+
+	for( uint32 x = MAX_TOTAL_AURAS_START; x < MAX_TOTAL_AURAS_END; x++ )
+	{
+		if( m_auras[x] != NULL && m_auras[x]->HasModType( SPELL_AURA_EXPERTISE ) )
+		{
+			entry = m_auras[x]->m_spellProto;
+			val = m_auras[x]->GetModAmountByMod();
+
+			if( GetItemInterface() && entry->EquippedItemSubClass != 0)
+			{
+				itMH = GetItemInterface()->GetInventoryItem( EQUIPMENT_SLOT_MAINHAND );
+				itOH = GetItemInterface()->GetInventoryItem( EQUIPMENT_SLOT_OFFHAND );
+				uint32 reqskillMH = 0;
+				uint32 reqskillOH = 0;
+
+				if( itMH != NULL && itMH->GetProto() ) 
+					reqskillMH = entry->EquippedItemSubClass & ( ( ( uint32 )1 ) << itMH->GetProto()->SubClass );
+				if( itOH != NULL && itOH->GetProto() )
+					reqskillOH = entry->EquippedItemSubClass & ( ( ( uint32 )1 ) << itOH->GetProto()->SubClass );
+
+				if( reqskillMH != 0 || reqskillOH != 0 )
+					modifier = +val;
+			}
+			else
+				modifier += val;
+		}
+	}
+		
+	ModUnsigned32Value( PLAYER_EXPERTISE, CalcRating( PLAYER_RATING_MODIFIER_EXPERTISE ) + modifier );
+	ModUnsigned32Value( PLAYER_OFFHAND_EXPERTISE, CalcRating( PLAYER_RATING_MODIFIER_EXPERTISE ) + modifier );
+	UpdateStats();
 }
