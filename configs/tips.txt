@@ -29,4 +29,17 @@ save the contents and name a file to Restarter.bat put it into same directory of
 save the contents to plain text as a file BAT.
 
 
-:D cEbernic
+Configuration file notes:
+
+#********************************************************************************
+#* How to use this config file:                                                 *
+#* Config files are in a block->variable->setting format.                       *
+#* A < signifies the opening of a block, the block name is expected after that. * 
+#* After the block name, a space and then the settings sperated by = / ' '.     *
+#*                                                                              *
+#* e.g.                                                                         *
+#* <block setting="0" someval = "1">                                            *
+#*                                                                              *
+#* Comments can be in C format, e.g. /* some stuff */, with a // at the start   *
+#* of the line, or in shell format (#).                                         *
+#********************************************************************************/
