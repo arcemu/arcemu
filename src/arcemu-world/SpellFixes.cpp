@@ -2050,11 +2050,12 @@ void ApplyNormalFixes()
 			sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
 			sp->procFlags = PROC_ON_CRIT_ATTACK | static_cast<uint32>(PROC_TARGET_SELF);
 			sp->EffectTriggerSpell[0] = 30029;
-
+		}
 		//warrior - second wind should trigger on self
 		sp = dbcSpell.LookupEntryForced( 29841 );
 		if( sp != NULL )
 			sp->procFlags |= PROC_TARGET_SELF;
+
 		sp = dbcSpell.LookupEntryForced( 29842 );
 		if( sp != NULL )
 			sp->procFlags |= PROC_TARGET_SELF;

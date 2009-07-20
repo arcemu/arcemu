@@ -2054,7 +2054,7 @@ uint32 Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, ui
 
 						if( CastingSpell->Id != 19574 )
 							continue;
-					}
+					}break;
 				//Hunter - Thrill of the Hunt
 				case 34720:
 					{
