@@ -2049,7 +2049,7 @@ void ApplyNormalFixes()
 			sp->Effect[0] = SPELL_EFFECT_APPLY_AURA;
 			sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
 			sp->procFlags = PROC_ON_CRIT_ATTACK | static_cast<uint32>(PROC_TARGET_SELF);
-			sp->EffectTriggerSpell[0] = 3
+			sp->EffectTriggerSpell[0] = 30029;
 
 		//warrior - second wind should trigger on self
 		sp = dbcSpell.LookupEntryForced( 29841 );
@@ -3689,7 +3689,7 @@ void ApplyNormalFixes()
 
 		// Holy Concentration
         sp = dbcSpell.LookupEntryForced( 34753 ); //Rank 1
-            if( sp != NULL )Borrowed Time
+            if( sp != NULL )
             {
             sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
             sp->procChance = 10;
@@ -5418,7 +5418,7 @@ void ApplyNormalFixes()
 		{
 			sp->EffectSpellClassMask[1][0] = 0x111;
 			sp->EffectSpellClassMask[1][1] = 0;
-			sprocFlags = PROC_ON_ANY_HOSTILE_ACTION;
+			sp->procFlags = PROC_ON_ANY_HOSTILE_ACTION;
 			sp->procCharges = -1;
 		}
 
@@ -5437,7 +5437,7 @@ void ApplyNormalFixes()
 			sp->EffectSpellClassMask[1][0] = 0x111;
 			sp->EffectSpellClassMask[1][1] = 0;
 			sp->procFlags = PROC_ON_ANY_HOSTILE_ACTION;
-			sp->procCharges = -1
+			sp->procCharges = -1;
 		}
 
 		sp = dbcSpell.LookupEntryForced( 47202 );
@@ -5446,7 +5446,7 @@ void ApplyNormalFixes()
 			sp->EffectSpellClassMask[1][0] = 0x111;
 			sp->EffectSpellClassMask[1][1] = 0;
 			sp->procFlags = PROC_ON_ANY_HOSTILE_ACTION;
-			sp->procCharges = -1
+			sp->procCharges = -1;
 		}
 
 		sp = dbcSpell.LookupEntryForced( 47201 );

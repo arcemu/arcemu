@@ -335,11 +335,8 @@ Unit::Unit()
 	trigger_on_stun_chance = 100;
 	trigger_on_stun_victim = 0;
 	trigger_on_stun_chance_victim = 100;
-	for(int i=0; i<3; i++)
-	{
-		trigger_on_chill[i] = 0;
-		trigger_on_chill_chance[i] = 100;
-	}
+	trigger_on_chill = 0;
+	trigger_on_chill_chance = 100;
 	trigger_on_chill_victim = 0;
 	trigger_on_chill_chance_victim = 100;
 	m_soulSiphon.amt = 0;
@@ -1646,15 +1643,6 @@ uint32 Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, ui
 						if( CastingSpell == NULL ) 
 							continue;
 						if(CastingSpell->NameHash != SPELL_HASH_POWER_WORD__SHIELD)  
-							continue;						
-					}break;
-				//priest - grace
-				case 47930:
-					{
-						if( CastingSpell == NULL ) 
-							continue;
-						if(CastingSpell->NameHash != SPELL_HASH_FLASH_HEAL && CastingSpell->NameHash != SPELL_HASH_GREATER_HEAL &&
-							CastingSpell->NameHash != SPELL_HASH_PENANCE)  
 							continue;						
 					}break;
 
