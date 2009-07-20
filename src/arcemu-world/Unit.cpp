@@ -3128,16 +3128,6 @@ uint32 Unit::GetSpellDidHitResult( Unit* pVictim, uint32 weapon_damage_type, Spe
 	{
 		hitchance = 100.0f;
 	}
-	//--------------------------------by aura mods-------------------------
-	//Aura 248 SPELL_AURA_MOD_COMBAT_RESULT_CHANCE
-	dodge += m_CombatResult_Dodge;
-	if( dodge < 0 ) 
-		dodge = 0.0f;
-
-	//parry += m_CombatResult_Parry;
-	//if( parry < 0 ) 
-		//parry = 0.0f;
-
 	//--------------------------------by damage type and by weapon type-------------------------
 	if( weapon_damage_type == RANGED )
 	{
@@ -3528,6 +3518,16 @@ void Unit::Strike( Unit* pVictim, uint32 weapon_damage_type, SpellEntry* ability
 		if( parry < 0 ) 
 			parry = 0.0f;
 	}
+//--------------------------------by aura mods-------------------------
+	//Aura 248 SPELL_AURA_MOD_COMBAT_RESULT_CHANCE
+	dodge += m_CombatResult_Dodge;
+	if( dodge < 0 ) 
+		dodge = 0.0f;
+
+	//parry += m_CombatResult_Parry;
+	//if( parry < 0 ) 
+		//parry = 0.0f;
+
 //--------------------------------by damage type and by weapon type-------------------------
 	if( weapon_damage_type == RANGED )
 	{

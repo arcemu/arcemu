@@ -21,7 +21,7 @@
 #include "StdAfx.h"
 
 pSpellAura SpellAuraHandler[TOTAL_SPELL_AURAS]={
-&Aura::SpellAuraNULL,//SPELL_AURA_NONE = 0
+		&Aura::SpellAuraNULL,//SPELL_AURA_NONE = 0
 		&Aura::SpellAuraBindSight,//SPELL_AURA_BIND_SIGHT = 1
 		&Aura::SpellAuraModPossess,//SPELL_AURA_MOD_POSSESS = 2,
 		&Aura::SpellAuraPeriodicDamage,//SPELL_AURA_PERIODIC_DAMAGE = 3,
@@ -9330,13 +9330,12 @@ void Aura::HandleAuraControlVehicle(bool apply)
 	}
 }
 
-
 void Aura::SpellAuraModCombatResultChance(bool apply)
 {
 	if( !m_target )
 		return;
 
-	if (apply)
+	if( apply )
 	{
 		switch( mod->m_miscValue )
 		{
@@ -9364,27 +9363,27 @@ void Aura::SpellAuraModCombatResultChance(bool apply)
 
 void Aura::SpellAuraAddHealth(bool apply)
 {
-	if (apply)
+	if ( apply )
 	{
 		SetPositive();
-		m_target->ModUnsigned32Value(UNIT_FIELD_MAXHEALTH, mod->m_amount);
-		m_target->ModUnsigned32Value(UNIT_FIELD_HEALTH, mod->m_amount);
+		m_target->ModUnsigned32Value( UNIT_FIELD_MAXHEALTH, mod->m_amount );
+		m_target->ModUnsigned32Value( UNIT_FIELD_HEALTH, mod->m_amount );
 	}
 	else
 	{
-		m_target->ModUnsigned32Value(UNIT_FIELD_MAXHEALTH, -mod->m_amount);
-		uint32 maxHealth = m_target->GetUInt32Value(UNIT_FIELD_MAXHEALTH);
-		if(m_target->GetUInt32Value(UNIT_FIELD_HEALTH) > maxHealth)
-			m_target->SetUInt32Value(UNIT_FIELD_MAXHEALTH, maxHealth);
+		m_target->ModUnsigned32Value( NIT_FIELD_MAXHEALTH, -mod->m_amount );
+		uint32 maxHealth = m_target->GetUInt32Value( UNIT_FIELD_MAXHEALTH );
+		if(m_target->GetUInt32Value( UNIT_FIELD_HEALTH) > maxHealth )
+			m_target->SetUInt32Value( UNIT_FIELD_MAXHEALTH, maxHealth );
 	}
 }
 
 void Aura::SpellAuraRemoveReagentCost(bool apply)
 {
-	if(!m_target->IsPlayer())
+	if( !m_target->IsPlayer() )
 		return;
 
-	if (apply)
+	if ( apply )
 	{
 		static_cast<Player*>(m_target)->removeReagentCost = true;
 	}
@@ -9398,7 +9397,7 @@ void Aura::SpellAuraBlockMultipleDamage(bool apply)
 	if( !m_target->IsPlayer() )
 		return;
 
-	if (apply)
+	if ( apply )
 	{
 		static_cast<Player*>(m_target)->m_BlockModPct += mod->m_amount;
 	}
@@ -9410,7 +9409,7 @@ void Aura::SpellAuraBlockMultipleDamage(bool apply)
 
 void Aura::SpellAuraModMechanicDmgTakenPct( bool apply )
 {
-	if(!m_target)
+	if( !m_target )
 		return;
 	
 	if( apply )
@@ -9447,20 +9446,20 @@ void Aura::SpellAuraIgnoreTargetAuraState( bool apply )
 void Aura::SpellAuraAllowOnlyAbility(bool apply)
 {
 	// cannot perform any abilities (other than those in EffectMask), currently only works on players
-	if (!p_target) 
+	if ( !p_target ) 
 		return;
 
 	// Generic
-	if(apply)
+	if( apply )
 	{
 		p_target->m_castFilterEnabled = true;
-		for(uint32 x=0;x<3;x++)
+		for( uint32 x=0; x<3; x++ )
 			p_target->m_castFilter[x] |= m_spellProto->EffectSpellClassMask[mod->i][x];
 	}
 	else
 	{
 		p_target->m_castFilterEnabled = false;	// check if we can turn it off
-		for(uint32 x=0;x<3;x++)
+		for( uint32 x=0; x<3; x++ )
 		{
 			p_target->m_castFilter[x] &= ~m_spellProto->EffectSpellClassMask[mod->i][x];
 			if(p_target->m_castFilter[x])
