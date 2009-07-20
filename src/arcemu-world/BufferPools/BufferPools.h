@@ -143,7 +143,6 @@ public:
 			delete avail_list[i];
 		free( avail_list );
 		avail_indexes.clear();
-		delete this;
 	}
 private:
 	void InitPoolNewSection(uint32 from, uint32 to)
