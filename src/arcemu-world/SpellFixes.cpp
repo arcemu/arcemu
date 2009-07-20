@@ -1861,6 +1861,8 @@ void ApplyNormalFixes()
 		}
 
 		//Warrior - Enrage Procflags
+               sp = dbcSpell.LookupEntryForced( 12317 ); 
+               if(sp != NULL) 
 			sp->procFlags = PROC_ON_MELEE_ATTACK_VICTIM | PROC_ON_RANGED_ATTACK_VICTIM | PROC_ON_SPELL_HIT_VICTIM;
 		sp = dbcSpell.LookupEntryForced( 13045 );
 		if(sp != NULL)
@@ -2047,10 +2049,7 @@ void ApplyNormalFixes()
 			sp->Effect[0] = SPELL_EFFECT_APPLY_AURA;
 			sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
 			sp->procFlags = PROC_ON_CRIT_ATTACK | static_cast<uint32>(PROC_TARGET_SELF);
-			sp->EffectTriggerSpell[0] = 30029;
-		}
-
-		// 
+			sp->EffectTriggerSpell[0] = 3
 
 		//warrior - second wind should trigger on self
 		sp = dbcSpell.LookupEntryForced( 29841 );
