@@ -496,7 +496,7 @@ PlayerInfo* ObjectMgr::GetPlayerInfoByName(const char * name)
 	playernamelock.ReleaseReadLock();
 	return rv;
 }
-
+#ifdef ENABLE_ACHIEVEMENTS
 void ObjectMgr::LoadCompletedAchievements()
 {
 	QueryResult *result = WorldDatabase.Query("SELECT achievement FROM character_achievement GROUP BY achievement");
@@ -510,7 +510,7 @@ void ObjectMgr::LoadCompletedAchievements()
 	} while(result->NextRow());
  delete result;
 }
-
+#endif
 void ObjectMgr::LoadPlayerCreateInfo()
 {
 	QueryResult *result = WorldDatabase.Query( "SELECT * FROM playercreateinfo" );
@@ -1735,6 +1735,7 @@ void ObjectMgr::LoadCorpses(MapMgr * mgr)
 	}
 }
 
+#ifdef ENABLE_ACHIEVEMENTS
 AchievementCriteriaEntryList const& ObjectMgr::GetAchievementCriteriaByType(AchievementCriteriaTypes type)
 {
     return m_AchievementCriteriasByType[type];
@@ -1751,7 +1752,7 @@ void ObjectMgr::LoadAchievementCriteriaList()
 		m_AchievementCriteriasByType[criteria->requiredType].push_back(criteria);
 	}
 }
-
+#endif
 std::list<ItemPrototype*>* ObjectMgr::GetListForItemSet(uint32 setid)
 {
 	return mItemSets[setid];
