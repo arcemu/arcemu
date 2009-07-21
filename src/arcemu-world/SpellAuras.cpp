@@ -811,13 +811,16 @@ void Aura::Virtual_Destructor()
 
 void Aura::Remove()
 {
+	sEventMgr.RemoveEvents( this );
+
+	//TODO: Check this condition - consider there are 3 aura modifiers and m_deleted can be set to true by first one,
+	// other two mods are normally applied, but cant un-apply (?)
 	if( m_deleted )
 		return;
 
 	sLog.outDebug("Removing aura %u from unit %u", m_spellProto->Id, m_target->GetGUID());
 
 	m_deleted = true;
-	sEventMgr.RemoveEvents( this );
 
 	if( !IsPassive() || m_spellProto->AttributesEx & ATTRIBUTESEX_UNK12 )
 		m_target->ModVisualAuraStackCount( this, -1 );
