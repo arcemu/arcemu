@@ -368,13 +368,69 @@ void Pet::SendSpellsToOwner()
 
 void Pet::SendNullSpellsToOwner()
 {
-	if( m_Owner == NULL || m_Owner->GetSession() == NULL)
+	if( m_Owner == NULL || m_Owner->GetSession() == NULL )
 		return;
 
 	WorldPacket data(8);
 	data.SetOpcode( SMSG_PET_SPELLS );
 	data << uint64(0);
 	m_Owner->GetSession()->SendPacket( &data );
+}
+void Pet::SendTalentsToOwner()
+{
+	if( m_Owner == NULL )
+		return;
+
+	WorldPacket data( SMSG_TALENTS_INFO, 50 );
+	data << uint8( 1 );				// Pet talent packet identificator
+	data << uint32( GetTPs() );		// Unspent talent points
+	
+	uint8 count = 0;
+	size_t pos = data.wpos();
+	data << uint8( 0 );				// Amount of known talents (will be filled later)
+	
+	CreatureFamilyEntry* cfe = dbcCreatureFamily.LookupEntry( GetCreatureInfo()->Family );
+	if( !cfe || cfe->talenttree < 0 )
+		return;
+
+	// go through talent trees
+	for( uint32 tte_id = PET_TALENT_TREE_START; tte_id <= PET_TALENT_TREE_END; tte_id++ )
+    {
+        TalentTabEntry * tte = dbcTalentTab.LookupEntry( tte_id );
+        if( tte == NULL )
+            continue;
+
+		// check if we match talent tab
+		if( !( tte->PetTalentMask & ( 1 << cfe->talenttree ) ) )
+			continue;
+		
+		TalentEntry* te; 
+		for( uint32 t_id = 1; t_id < dbcTalent.GetNumRows(); t_id++  )
+		{
+			// get talent entries for our talent tree
+			te = dbcTalent.LookupRow( t_id );
+			if( te == NULL || te->TalentTree != tte_id )
+				continue;
+			
+			// check our spells
+			for( uint8 j = 0; j < 5; j++ )
+				if( te->RankID[ j ] > 0 && HasSpell( te->RankID[ j ] ) )
+				{
+					// if we have the spell, include it in packet
+					data << te->TalentID;	// Talent ID
+					data << j;				// Rank
+					++count;
+				}
+		}
+		// tab loaded, we can exit
+		break;
+	}
+	// fill count of talents
+	data.put< uint8 >( pos, count );
+
+	// send the packet to owner
+	if( m_Owner->GetSession() != NULL )
+		m_Owner->GetSession()->SendPacket( &data );
 }
 
 void Pet::SendCastFailed( uint32 spellid, uint8 fail )
@@ -640,6 +696,8 @@ void Pet::InitializeMe( bool first )
 
 	UpdateSpellList( false );
 	SendSpellsToOwner();
+	if( !Summon )
+		SendTalentsToOwner();
 
 	// set to active
 	if( !bExpires )
@@ -779,6 +837,7 @@ void Pet::GiveXP( uint32 xp )
 		SetUInt32Value( UNIT_FIELD_PETNEXTLEVELEXP, nxp );
 		ApplyStatsForLevel();
 		UpdateSpellList();
+		SendTalentsToOwner();
 	}
 
 	SetUInt32Value( UNIT_FIELD_PETEXPERIENCE, xp );
@@ -1045,7 +1104,7 @@ void Pet::WipeTalents()
 	for( i = 0; i < rows; i++ )
 	{
 		TalentEntry *te = dbcTalent.LookupRow( i );
-		if( te == NULL || te->TalentTree < 409 || te->TalentTree > 411 ) // 409-Tenacity, 410-Ferocity, 411-Cunning
+		if( te == NULL || te->TalentTree < PET_TALENT_TREE_START || te->TalentTree > PET_TALENT_TREE_END ) // 409-Tenacity, 410-Ferocity, 411-Cunning
 			continue;
 		for( j = 0; j < 5; j++ )
 			if( te->RankID[ j ] != NULL && HasSpell( te->RankID[ j ] ) )
@@ -1107,7 +1166,7 @@ void Pet::RemoveSpell(SpellEntry * sp, bool showUnlearnSpell)
 	}
 
 	if( showUnlearnSpell && m_Owner && m_Owner->GetSession() )
-		m_Owner->GetSession()->OutPacket( SMSG_PET_UNLEARNED_SPELL, 2, &sp->Id );
+		m_Owner->GetSession()->OutPacket( SMSG_PET_UNLEARNED_SPELL, 4, &sp->Id );
 }
 
 void Pet::Rename( string NewName )

@@ -989,7 +989,7 @@ struct TalentTabEntry
 //	uint32 unk19;
 //	uint32 unk20;
 	uint32 ClassMask;
-//	uint32 unk21;
+	uint32 PetTalentMask;
 	uint32 TabPage;
 //	char*  InternalName;
 };

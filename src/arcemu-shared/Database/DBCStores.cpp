@@ -265,7 +265,7 @@ const char* spellentryFormat =
 
 const char* itemextendedcostFormat = "uuuuuuuuuuuuuux";
 const char* talententryFormat = "uuuuuuuuuxxxxuxxuxxxxxx";
-const char* talenttabentryFormat = "uxxxxxxxxxxxxxxxxxxxuxux";
+const char* talenttabentryFormat = "uxxxxxxxxxxxxxxxxxxxuuux";
 const char* spellcasttimeFormat = "uuxx";
 const char* spellradiusFormat = "ufxf";
 const char* spellrangeFormat = "uffffxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx";
