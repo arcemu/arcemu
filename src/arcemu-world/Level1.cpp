@@ -330,7 +330,9 @@ bool ChatHandler::HandleAddInvItemCommand(const char *args, WorldSession *m_sess
 			{
 				SlotResult *lr = chr->GetItemInterface()->LastSearchResult();
 				chr->GetSession()->SendItemPushResult(item,false,true,false,true,lr->ContainerSlot,lr->Slot,maxStack);
+#ifdef ENABLE_ACHIEVEMENTS
 				chr->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_LOOT_ITEM, itemid, 1, 0);
+#endif
 				count -= maxStack;
 				numadded += maxStack;
 			}
@@ -369,7 +371,9 @@ bool ChatHandler::HandleAddInvItemCommand(const char *args, WorldSession *m_sess
 			{
 				SlotResult *lr = chr->GetItemInterface()->LastSearchResult();
 				chr->GetSession()->SendItemPushResult(item,false,true,false,true,lr->ContainerSlot,lr->Slot,count);
+#ifdef ENABLE_ACHIEVEMENTS
 				chr->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_LOOT_ITEM, itemid, 1, 0);
+#endif
 				numadded += count;
 				count = 0;
 			}
@@ -998,7 +1002,7 @@ bool ChatHandler::HandleNpcSpawnLinkCommand(const char* args, WorldSession *m_se
 
 	return true;
 }
-
+#ifdef ENABLE_ACHIEVEMENTS
 /**
 	Handles .achieve complete
 	.achieve complete id                : completes achievement "id" (can be an achievement link) for the selected player
@@ -1371,3 +1375,5 @@ bool ChatHandler::HandleLookupAchievementCmd(const char* args, WorldSession* m_s
 }
 
 
+
+#endif

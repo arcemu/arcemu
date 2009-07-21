@@ -859,7 +859,9 @@ void LootRoll::Finalize()
 		{
 			_player->GetSession()->SendItemPushResult(item,false,true,true,true,slotresult.ContainerSlot,slotresult.Slot,1);
 			sQuestMgr.OnPlayerItemPickup(_player,item);
+#ifdef ENABLE_ACHIEVEMENTS
 			_player->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_LOOT_ITEM, item->GetEntry(), 1, 0);
+#endif	
 		}
 		else
 			item->DeleteMe();
@@ -870,7 +872,9 @@ void LootRoll::Finalize()
 		add->m_isDirty = true;
 		sQuestMgr.OnPlayerItemPickup(_player,add);
 		_player->GetSession()->SendItemPushResult(add, false, true, true, false, _player->GetItemInterface()->GetBagSlotByGuid(add->GetGUID()), 0xFFFFFFFF, 1);
+		#ifdef ENABLE_ACHIEVEMENTS
 		_player->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_LOOT_ITEM, add->GetEntry(), 1, 0);
+#endif
 	}
 
 	pLoot->items.at(_slotid).iItemsCount=0;

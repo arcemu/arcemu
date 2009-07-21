@@ -17,7 +17,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-
+#ifdef ENABLE_ACHIEVEMENTS
 #include "StdAfx.h"
 
 /**
@@ -2227,3 +2227,4 @@ bool AchievementMgr::HasCompleted(uint32 achievementID)
 	return (m_completedAchievements.find(achievementID) != m_completedAchievements.end());
 }
 
+#endif

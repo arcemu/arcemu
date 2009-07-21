@@ -2214,6 +2214,7 @@ void Object::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
 		// A Player has died
 		if( pVictim->IsPlayer() )
 		{
+#ifdef ENABLE_ACHIEVEMENTS
 			((Player*)pVictim)->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_DEATH, 1, 0, 0);
 			((Player*)pVictim)->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_DEATH_AT_MAP, pVictim->GetMapId(), 1, 0);
 			// A Player killed a Player
@@ -2232,6 +2233,7 @@ void Object::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
 		{
 			((Player*)this)->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_KILLING_BLOW, GetMapId(), 0, 0);
 		}
+#endif
 		//general hook for die
 		sHookInterface.OnPreUnitDie( static_cast< Unit* >( this ), pVictim);
 		//warlock - seed of corruption
@@ -2277,8 +2279,10 @@ void Object::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
 				bool setAurastateFlag = false;
 				if( plr->getLevel() >= (pVictim->getLevel() - 8) && (plr->GetGUID() != pVictim->GetGUID()) )
 				{
+#ifdef ENABLE_ACHIEVEMENTS
 					plr->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_HONORABLE_KILL_AT_AREA, plr->GetAreaID(), 1, 0);
 					plr->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_EARN_HONORABLE_KILL, 1, 0, 0);
+#endif				
 					HonorHandler::OnPlayerKilledUnit(plr, pVictim);
 					setAurastateFlag = true;
 				}
@@ -2667,14 +2671,18 @@ void Object::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
 										for(int i=0;i<active_player_count;i++)
 										{
 											Player * plr = active_player_list[i];
+#ifdef ENABLE_ACHIEVEMENTS
 											plr->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_KILL_CREATURE, pVictim->GetEntry(), 1, 0);
 											plr->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_KILL_CREATURE_TYPE, highGUID, lowGUID, 0);
+#endif
 										}
 									}
 									else // not in group, just update for pTagger
 									{
+#ifdef ENABLE_ACHIEVEMENTS
 										pTagger->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_KILL_CREATURE, pVictim->GetEntry(), 1, 0);
 										pTagger->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_KILL_CREATURE_TYPE, highGUID, lowGUID, 0);
+#endif
 									}
 								}
 							}
@@ -2755,14 +2763,18 @@ void Object::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
 											for(int i=0;i<active_player_count;i++)
 											{
 												Player * plr = active_player_list[i];
+#ifdef ENABLE_ACHIEVEMENTS
 												plr->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_KILL_CREATURE, pVictim->GetEntry(), 1, 0);
 												plr->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_KILL_CREATURE_TYPE, highGUID, lowGUID, 0);
+#endif
 											}
 										}
 										else // not in group, just update for petOwner
 										{
+#ifdef ENABLE_ACHIEVEMENTS
 											petOwner->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_KILL_CREATURE, pVictim->GetEntry(), 1, 0);
 											petOwner->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_KILL_CREATURE_TYPE, highGUID, lowGUID, 0);
+#endif									
 										}
 									}
 								}
@@ -2797,6 +2809,7 @@ void Object::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
 						static_cast< Player* >( owner )->EventDismissPet();
 				}
 			}
+#ifdef ENABLE_ACHIEVEMENTS
 			if(isCritter)
 			{
 				if(IsPlayer()) // Player killed a critter
@@ -2810,6 +2823,7 @@ void Object::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
 					((Pet*)this)->GetPetOwner()->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_KILL_CREATURE_TYPE, highGUID, lowGUID, 0);
 				}
 			}
+#endif
 		}
 		else if( pVictim->GetTypeId() == TYPEID_PLAYER )
 		{

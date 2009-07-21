@@ -489,7 +489,9 @@ bool ChatHandler::HandleExploreCheatCommand(const char* args, WorldSession *m_se
 			chr->RemoveFlag(PLAYER_EXPLORED_ZONES_1+i,0xFFFFFFFF);
 		}
 	}
+#ifdef ENABLE_ACHIEVEMENTS
 	chr->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_EXPLORE_AREA); // update
+#endif
 	return true;
 }
 

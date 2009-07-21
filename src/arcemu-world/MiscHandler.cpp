@@ -156,7 +156,9 @@ void WorldSession::HandleAutostoreLootItemOpcode( WorldPacket & recv_data )
 		{
 			sQuestMgr.OnPlayerItemPickup(GetPlayer(),item);
 			_player->GetSession()->SendItemPushResult(item,false,true,true,true,slotresult.ContainerSlot,slotresult.Slot,1);
+#ifdef ENABLE_ACHIEVEMENTS
 			_player->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_LOOT_ITEM, item->GetEntry(), 1, 0);
+#endif		
 		}
 		else
 			item->DeleteMe();
@@ -168,7 +170,9 @@ void WorldSession::HandleAutostoreLootItemOpcode( WorldPacket & recv_data )
 
 		sQuestMgr.OnPlayerItemPickup(GetPlayer(),add);
 		_player->GetSession()->SendItemPushResult(add, false, false, true, false, _player->GetItemInterface()->GetBagSlotByGuid(add->GetGUID()), 0xFFFFFFFF,amt);
+#ifdef ENABLE_ACHIEVEMENTS		
 		_player->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_LOOT_ITEM, add->GetEntry(), 1, 0);
+#endif	
 	}
 
 	//in case of ffa_loot update only the player who receives it.
@@ -301,7 +305,9 @@ void WorldSession::HandleLootMoneyOpcode( WorldPacket & recv_data )
 			else
 			{
 				GetPlayer()->ModUnsigned32Value( PLAYER_FIELD_COINAGE , money);
+#ifdef ENABLE_ACHIEVEMENTS
 				GetPlayer()->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_LOOT_MONEY, money, 0, 0);
+#endif
 			}
 			sHookInterface.OnLoot(_player, pt, money, 0);
 		}
@@ -349,7 +355,9 @@ void WorldSession::HandleLootMoneyOpcode( WorldPacket & recv_data )
 				{
 					(*itr)->ModUnsigned32Value(PLAYER_FIELD_COINAGE, share);
 					(*itr)->GetSession()->SendPacket(&pkt);
+#ifdef ENABLE_ACHIEVEMENTS
 					(*itr)->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_LOOT_MONEY, share, 0, 0);
+#endif
 				}
 			}
 		}
@@ -1378,8 +1386,10 @@ void WorldSession::HandleBarberShopResult(WorldPacket & recv_data)
 	_player->ModUnsigned32Value( PLAYER_FIELD_COINAGE, 0-cost );
 
 	_player->SetStandState(0);                              // stand up
+#ifdef ENABLE_ACHIEVEMENTS
 	_player->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_VISIT_BARBER_SHOP, 1, 0, 0);
 	_player->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_GOLD_SPENT_AT_BARBER, cost, 0, 0);
+#endif
 }
 
 void WorldSession::HandleGameObjectUse(WorldPacket & recv_data)
@@ -2165,7 +2175,9 @@ void WorldSession::HandleLootMasterGiveOpcode(WorldPacket& recv_data)
 	{
 		player->GetSession()->SendItemPushResult(item,false,true,true,true,slotresult.ContainerSlot,slotresult.Slot,1);
 		sQuestMgr.OnPlayerItemPickup(player,item);
+#ifdef ENABLE_ACHIEVEMENTS
 		_player->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_LOOT_ITEM, item->GetEntry(), 1, 0);
+#endif
 	}
 	else
 		item->DeleteMe();
@@ -2524,7 +2536,9 @@ void WorldSession::HandleGameobjReportUseOpCode( WorldPacket& recv_data )   // C
 	if( gameobj->CanActivate() )
 	{
 		sQuestMgr.OnGameObjectActivate(_player, gameobj);
+#ifdef ENABLE_ACHIEVEMENTS	
 		_player->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_USE_GAMEOBJECT,gameobj->GetEntry(),0,0);
+#endif	
 	}
 	return;
 }
