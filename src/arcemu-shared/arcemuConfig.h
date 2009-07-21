@@ -47,6 +47,13 @@
 #define VOICE_CHAT 1
 #endif
 
+/** Enable/Disable achievement mgr
+ * In short: This is to test my theory on the achievement system using a fuckton of ram - Hasbro
+ * Default: Enabled
+ * To disable add // before #define below
+ */
+#define ENABLE_ACHIEVEMENTS
+
 /** Enable/disable movement compression.
  * This allows the server to compress long-range creatures movement into a buffer and then flush
  * it periodically, compressed with deflate. This can make a large difference to server bandwidth.
