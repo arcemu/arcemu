@@ -28,7 +28,7 @@
 #include "MainServerDefines.h"
 
 #ifndef _VERSION
-# define _VERSION "3.0.9"
+# define _VERSION "3.1.3"
 #endif
 
 #if PLATFORM == PLATFORM_WIN32
