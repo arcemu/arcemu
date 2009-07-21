@@ -7203,6 +7203,16 @@ void Player::CalcResistance(uint32 type)
 	res=pos-neg+BaseResistance[type];
 	if(type==0)res+=m_uint32Values[UNIT_FIELD_STAT1]*2;//fix armor from agi
 
+	// Dynamic aura 285 application, removing bonus
+	for( uint32 x = MAX_TOTAL_AURAS_START; x < MAX_TOTAL_AURAS_END; x++ )
+	{
+		if( m_auras[x] != NULL )
+		{
+			if( m_auras[x]->HasModType( SPELL_AURA_MOD_ATTACK_POWER_OF_ARMOR ) )
+				m_auras[x]->SpellAuraModAttackPowerOfArmor( false );
+		}
+	}
+
 	if( res < 0 )
 		res = 1;
 
@@ -7212,6 +7222,16 @@ void Player::CalcResistance(uint32 type)
 
 	if( GetSummon() )
 		GetSummon()->CalcResistance( type );//Re-calculate pet's too.
+
+	// Dynamic aura 285 application, adding bonus
+	for( uint32 x = MAX_TOTAL_AURAS_START; x < MAX_TOTAL_AURAS_END; x++ )
+	{
+		if( m_auras[x] != NULL )
+		{
+			if( m_auras[x]->HasModType( SPELL_AURA_MOD_ATTACK_POWER_OF_ARMOR ) )
+				m_auras[x]->SpellAuraModAttackPowerOfArmor( true );
+		}
+	}
 }
 
 
