@@ -34,7 +34,9 @@ static const uint8 baseRunes[6] = {0,0,1,1,2,2};
 Player::Player( uint32 guid )
 :
 m_mailBox(guid),
+#ifdef ENABLE_ACHIEVEMENTS
 m_achievementMgr(this),
+#endif
 m_finishingmovesdodge(false),
 disableAppear(false),
 disableSummon(false),
@@ -1522,9 +1524,9 @@ void Player::_EventExploration()
 		WorldPacket data(SMSG_EXPLORATION_EXPERIENCE, 8);
 		data << at->AreaId << explore_xp;
 		m_session->SendPacket(&data);
-
+#ifdef ENABLE_ACHIEVEMENTS
 		GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_EXPLORE_AREA);
-
+#endif
 		if(getLevel() < GetUInt32Value(PLAYER_FIELD_MAX_LEVEL) && explore_xp)
 			GiveXP(explore_xp, 0, false);
 	}
@@ -1783,7 +1785,9 @@ void Player::GiveXP(uint32 xp, const uint64 &guid, bool allowbonus)
 			}
 		}
 		//Event_Achiement_Received(ACHIEVEMENT_CRITERIA_TYPE_REACH_LEVEL,0,level);
+#ifdef ENABLE_ACHIEVEMENTS
 		GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_REACH_LEVEL);
+#endif
 
 		//VLack: 3.1.3, as a final step, send the player's talents, this will set the talent points right too...
 		smsg_TalentsInfo(false, 0, 0);
@@ -2248,6 +2252,7 @@ void Player::addSpell(uint32 spell_id)
 		_AddSkillLine(sk->skilline, 1, max);
 		_UpdateMaxSkillCounts();
 	}
+#ifdef ENABLE_ACHIEVEMENTS
 	m_achievementMgr.UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_LEARN_SPELL, spell_id, 1, 0);
 	if(spell->MechanicsType == MECHANIC_MOUNTED) // Mounts
 	{
@@ -2263,6 +2268,7 @@ void Player::addSpell(uint32 spell_id)
 			m_achievementMgr.UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_NUMBER_OF_MOUNTS, 778, 0, 0);
 		}
 	}
+#endif
 }
 
 //===================================================================================================================
@@ -2735,8 +2741,9 @@ void Player::SaveToDB(bool bNewCharacter /* =false */)
 
 	if(buf)
 		CharacterDatabase.AddQueryBuffer(buf);
-
+#ifdef ENABLE_ACHIEVEMENTS
 	m_achievementMgr.SaveToDB();
+#endif
 }
 
 void Player::_SaveQuestLogEntry(QueryBuffer * buf)
@@ -3637,8 +3644,10 @@ void Player::LoadFromDBProc(QueryResultVector & results)
 		}
 	}
 	// load and update achievements
+#ifdef ENABLE_ACHIEVEMENTS
 	m_achievementMgr.LoadFromDB(CharacterDatabase.Query("SELECT achievement, date FROM character_achievement WHERE guid = '%u'", GetUInt32Value(OBJECT_FIELD_GUID)),CharacterDatabase.Query("SELECT criteria, counter, date FROM character_achievement_progress WHERE guid = '%u'", GetUInt32Value(OBJECT_FIELD_GUID)));
 	m_achievementMgr.CheckAllAchievementCriteria();
+#endif
 }
 
 void Player::SetPersistentInstanceId(Instance *pInstance)
@@ -3853,7 +3862,9 @@ void Player::AddToWorld(MapMgr * pMapMgr)
 void Player::OnPrePushToWorld()
 {
 	SendInitialLogonPackets();
+#ifdef ENABLE_ACHIEVEMENTS
 	m_achievementMgr.SendAllAchievementData(this);
+#endif
 }
 
 void Player::OnPushToWorld()
@@ -8944,9 +8955,9 @@ void Player::ApplyLevelInfo(LevelInfo* Info, uint32 Level)
 	//UpdateChances();
 	UpdateGlyphs();
 	m_playerInfo->lastLevel = Level;
-
+#ifdef ENABLE_ACHIEVEMENTS
 	GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_REACH_LEVEL);
-
+#endif
 	//VLack: 3.1.3, as a final step, send the player's talents, this will set the talent points right too...
 	smsg_TalentsInfo(false, 0, 0);
 
@@ -10716,8 +10727,10 @@ void Player::_AddSkillLine(uint32 SkillLine, uint32 Curr_sk, uint32 Max_sk)
 
 	// Displaying bug fix
 	_UpdateSkillFields();
+#ifdef ENABLE_ACHIEVEMENTS
 	m_achievementMgr.UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_LEARN_SKILL_LEVEL, SkillLine, Max_sk/75, 0);
 	m_achievementMgr.UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_REACH_SKILL_LEVEL, SkillLine, Curr_sk, 0);
+#endif
 }
 
 void Player::_UpdateSkillFields()
@@ -10737,12 +10750,16 @@ void Player::_UpdateSkillFields()
 		if(itr->second.Skill->type == SKILL_TYPE_PROFESSION)
 		{
 			SetUInt32Value(f++, itr->first | 0x10000);
+#ifdef ENABLE_ACHIEVEMENTS
 			m_achievementMgr.UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_REACH_SKILL_LEVEL, itr->second.Skill->id, itr->second.CurrentValue, 0);
+#endif	
 		}
 		else
 		{
 			SetUInt32Value(f++, itr->first);
+#ifdef ENABLE_ACHIEVEMENTS
 			m_achievementMgr.UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_LEARN_SKILL_LEVEL, itr->second.Skill->id, itr->second.MaximumValue/75, 0);
+#endif
 		}
 
 		SetUInt32Value(f++, (itr->second.MaximumValue << 16) | itr->second.CurrentValue);
@@ -10773,8 +10790,10 @@ void Player::_AdvanceSkillLine(uint32 SkillLine, uint32 Count /* = 1 */)
 		_AddSkillLine(SkillLine, Count, getLevel() * 5);
 		_UpdateMaxSkillCounts();
 		sHookInterface.OnAdvanceSkillLine(this, SkillLine, Count);
+#ifdef ENABLE_ACHIEVEMENTS
 		m_achievementMgr.UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_LEARN_SKILL_LEVEL, SkillLine, _GetSkillLineMax(SkillLine), 0);
 		m_achievementMgr.UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_REACH_SKILL_LEVEL, SkillLine, Count, 0);
+#endif
 	}
 	else
 	{
@@ -10786,8 +10805,10 @@ void Player::_AdvanceSkillLine(uint32 SkillLine, uint32 Count /* = 1 */)
 			_UpdateSkillFields();
 			sHookInterface.OnAdvanceSkillLine(this, SkillLine, curr_sk);
 		}
+#ifdef ENABLE_ACHIEVEMENTS
 		m_achievementMgr.UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_LEARN_SKILL_LEVEL, SkillLine, itr->second.MaximumValue/75, 0);
 		m_achievementMgr.UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_REACH_SKILL_LEVEL, SkillLine, itr->second.CurrentValue, 0);
+#endif
 	}
 	_LearnSkillSpells(SkillLine, curr_sk);
 }
@@ -11095,7 +11116,9 @@ void Player::_ModifySkillMaximum(uint32 SkillLine, uint32 NewMax)
 
 		itr->second.MaximumValue = NewMax;
 		_UpdateSkillFields();
+#ifdef ENABLE_ACHIEVEMENTS
 		m_achievementMgr.UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_LEARN_SKILL_LEVEL, SkillLine, NewMax/75, 0);
+#endif
 	}
 }
 

@@ -21,7 +21,9 @@
 #ifndef _PLAYER_H
 #define _PLAYER_H
 struct BGScore;
+#ifdef ENABLE_ACHIEVEMENTS
 class AchievementMgr;
+#endif
 class Channel;
 class Creature;
 class Battleground;
@@ -54,8 +56,9 @@ class SpeedDetector;
 #define PLAYER_ARENA_MIN_LEVEL  70
 
 #define PLAYER_EXPLORED_ZONES_LENGTH 128
-
+#ifdef ENABLE_ACHIEVEMENTS
 #define ACHIEVEMENT_SEND_DELAY 1000 //we have this delay of sending auras to other players so client will have time to create object first
+#endif
 #define LOGIN_CIENT_SEND_DELAY 1000 //we have this delay of sending auras to other players so client will have time to create object first
 
 #define TOTAL_NORMAL_RUNE_TYPES 3
@@ -718,7 +721,9 @@ struct classScriptOverride
 	uint32 damage;
 	bool percent;
 };
+#ifdef ENABLE_ACHIEVEMENTS
 class AchievementMgr;
+#endif
 class Spell;
 class Item;
 class Container;
@@ -2339,8 +2344,10 @@ public:
 	std::map<uint32,AchievementVal*> m_achievements;
 //	uint32 m_achievement_points; // for quick check in case it is used as currency*/
 
+#ifdef ENABLE_ACHIEVEMENTS
     ARCEMU_INLINE AchievementMgr& GetAchievementMgr() { return m_achievementMgr; }
 	AchievementMgr m_achievementMgr;
+#endif
     /************************************************************************/
 	/* Player Achievements - end				                            */
     /************************************************************************/

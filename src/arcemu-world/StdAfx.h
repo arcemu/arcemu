@@ -92,7 +92,9 @@
 #include "LootMgr.h"
 #include "Unit.h"
 
+#ifdef ENABLE_ACHIEVEMENTS
 #include "AchievementMgr.h"
+#endif
 #include "AddonMgr.h"
 #include "AIInterface.h"
 #include "AreaTrigger.h"

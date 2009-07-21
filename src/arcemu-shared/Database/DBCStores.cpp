@@ -20,10 +20,11 @@
 #include "DBCStores.h"
 #include "DataStore.h"
 #include "NGLog.h"
-
+#ifdef ENABLE_ACHIEVEMENTS
 SERVER_DECL DBCStorage<AchievementEntry> dbcAchievementStore;
 SERVER_DECL DBCStorage<AchievementCriteriaEntry> dbcAchievementCriteriaStore;
 SERVER_DECL DBCStorage<AchievementCategoryEntry> dbcAchievementCategoryStore;
+#endif
 SERVER_DECL DBCStorage<AreaGroup> dbcAreaGroup;
 SERVER_DECL DBCStorage<AreaTable> dbcArea;
 SERVER_DECL DBCStorage<AreaTriggerEntry> dbcAreaTrigger;
@@ -105,7 +106,7 @@ const char* CharTitlesEntryfmt =
 	"u" // name2_flag
 	"u" // bit_index
 ;
-
+#ifdef ENABLE_ACHIEVEMENTS
 const char* AchievementStoreFormat=
 	"n" // ID
 	"i" // factionFlag
@@ -152,6 +153,7 @@ const char* AchievementCriteriaStoreFormat=
 	"i" // timeLimit
 	"u" // index
 ;
+#endif
 
 const char* spellentryFormat =
 	"u" // Id
@@ -330,9 +332,11 @@ bool loader_stub(const char * filename, const char * format, bool ind, T& l, boo
 bool LoadDBCs()
 {
 	LOAD_DBC("DBC/WorldMapOverlay.dbc", WorldMapOverlayStoreFormat, true, dbcWorldMapOverlayStore, true);
+#ifdef ENABLE_ACHIEVEMENTS
 	LOAD_DBC("DBC/Achievement_Category.dbc", AchievementCategoryStoreFormat, true, dbcAchievementCategoryStore, true);
 	LOAD_DBC("DBC/Achievement_Criteria.dbc", AchievementCriteriaStoreFormat, true, dbcAchievementCriteriaStore, true);
 	LOAD_DBC("DBC/Achievement.dbc", AchievementStoreFormat, true, dbcAchievementStore, true);
+#endif
 	LOAD_DBC("DBC/BattlemasterList.dbc", BattlemasterListEntryFormat, true, dbcBattlemasterListStore, true);
 	LOAD_DBC("DBC/CharTitles.dbc", CharTitlesEntryfmt, true, dbcCharTitlesEntry, true);
 	LOAD_DBC("DBC/BarberShopStyle.dbc", BarberShopStyleEntryFormat, true, dbcBarberShopStyleStore, true);
