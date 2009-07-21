@@ -836,7 +836,7 @@ void Aura::Remove()
 		{
 			// I'm not sure about this! FIX ME!!
 			if ( dbcSpell.LookupEntryForced( GetSpellProto()->EffectTriggerSpell[x] )->DurationIndex < m_spellProto->DurationIndex )
-			m_target->RemoveAura(GetSpellProto()->EffectTriggerSpell[x]);
+				m_target->RemoveAura(GetSpellProto()->EffectTriggerSpell[x]);
 		}
 		else if( ( m_spellProto->Effect[x] == SPELL_EFFECT_APPLY_AREA_AURA || m_spellProto->Effect[x] == SPELL_EFFECT_APPLY_AREA_AURA2 )
 			&& m_casterGuid == m_target->GetGUID() )
@@ -1596,7 +1596,7 @@ void Aura::EventPeriodicDamage(uint32 amount)
 
 		if(res > 0 && c && m_spellProto->MechanicsType != MECHANIC_BLEEDING)
 		{
-			c->CalculateResistanceReduction(m_target,&dmg, m_spellProto);
+			c->CalculateResistanceReduction(m_target,&dmg, m_spellProto, 0);
 			if((int32)dmg.resisted_damage > dmg.full_damage)
 				res = 0;
 			else

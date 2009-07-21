@@ -2211,10 +2211,10 @@ void Object::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
 	/* -------------------------- HIT THAT CAUSES VICTIM TO DIE ---------------------------*/
 	if ((isCritter || health <= damage) && !pVictim->bUnbeatable)
 	{
+#ifdef ENABLE_ACHIEVEMENTS
 		// A Player has died
 		if( pVictim->IsPlayer() )
 		{
-#ifdef ENABLE_ACHIEVEMENTS
 			((Player*)pVictim)->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_DEATH, 1, 0, 0);
 			((Player*)pVictim)->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_DEATH_AT_MAP, pVictim->GetMapId(), 1, 0);
 			// A Player killed a Player
