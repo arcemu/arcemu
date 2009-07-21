@@ -9371,7 +9371,7 @@ void Aura::SpellAuraAddHealth(bool apply)
 	}
 	else
 	{
-		m_target->ModUnsigned32Value( NIT_FIELD_MAXHEALTH, -mod->m_amount );
+		m_target->ModUnsigned32Value( UNIT_FIELD_MAXHEALTH, -mod->m_amount );
 		uint32 maxHealth = m_target->GetUInt32Value( UNIT_FIELD_MAXHEALTH );
 		if(m_target->GetUInt32Value( UNIT_FIELD_HEALTH) > maxHealth )
 			m_target->SetUInt32Value( UNIT_FIELD_MAXHEALTH, maxHealth );
