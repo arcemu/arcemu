@@ -24,70 +24,6 @@
 /* Spell Defs                                                           */
 /************************************************************************/
 
-bool Charge(uint32 i, Spell* pSpell)
-{
-    uint32 rage_to_gen;
-    switch(pSpell->GetProto()->Id)
-    {
-    case 100:   // Charge Rank 1
-        rage_to_gen = 90;
-		if(pSpell->p_caster)
-		{
-			for(set<uint32>::iterator itr = pSpell->p_caster->mSpells.begin(); itr != pSpell->p_caster->mSpells.end(); ++itr)
-			{
-				if(*itr == 12697)
-					rage_to_gen += 60;
-				if(*itr == 12285)
-					rage_to_gen += 30;
-			}
-		}		
-        break;
-
-    case 6178:  // Charge Rank 2
-        rage_to_gen = 120;
-		if(pSpell->p_caster)
-		{
-			for(set<uint32>::iterator itr = pSpell->p_caster->mSpells.begin(); itr != pSpell->p_caster->mSpells.end(); ++itr)
-			{
-				if(*itr == 12697)
-					rage_to_gen += 60;
-				if(*itr == 12285)
-					rage_to_gen += 30;
-			}
-		}
-        break;
-
-    default:    // Charge Rank 3 +
-        rage_to_gen = 150;
-		if(pSpell->p_caster)
-		{
-			for(set<uint32>::iterator itr = pSpell->p_caster->mSpells.begin(); itr != pSpell->p_caster->mSpells.end(); ++itr)
-			{
-				if(*itr == 12697)
-					rage_to_gen += 60;
-				if(*itr == 12285)
-					rage_to_gen += 30;
-			}
-		}
-
-        break;
-    }
-
-    // Add the rage to the caster
-    if(!pSpell->u_caster)
-        return true;
-
-    uint32 val = pSpell->u_caster->GetUInt32Value(UNIT_FIELD_POWER2);
-    uint32 max = pSpell->u_caster->GetUInt32Value(UNIT_FIELD_MAXPOWER2);
-    val += rage_to_gen;
-    if(val > max)
-        val = max;
-    
-    pSpell->u_caster->SetUInt32Value(UNIT_FIELD_POWER2, val);
-  //  script_debuglog("WarriorSpells.cpp :: Charge generate %u rage on "I64FMT, rage_to_gen, pSpell->u_caster->GetGUID());
-    return true;
-}
-
 bool Execute(uint32 i, Spell* pSpell)
 {
     uint32 uSpellId = pSpell->GetProto()->Id;
@@ -131,11 +67,6 @@ bool Bloodrage(uint32 i, Spell* pSpell)
 /* Module info */
 void SetupWarriorSpells(ScriptMgr * mgr)
 {
-    /**** Charge ****/
-    mgr->register_dummy_spell(100, &Charge);      // Rank 1
-    mgr->register_dummy_spell(6178, &Charge);     // Rank 2
-    mgr->register_dummy_spell(11578, &Charge);    // Rank 3
-
     /**** Execute ****/
     /* log isn't working */
     /*

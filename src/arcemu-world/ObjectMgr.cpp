@@ -1457,70 +1457,6 @@ void ObjectMgr::LoadAIThreatToSpellId()
 	delete result;
 }
 
-void ObjectMgr::LoadSpellFixes()
-{
-	SpellEntry* sp;
-	QueryResult * result = WorldDatabase.Query("SELECT * FROM spellfixes");
-	if(result)
-	{
-		if( result->GetFieldCount() != 8 )
-		{
-			Log.LargeErrorMessage(LARGERRORMESSAGE_WARNING, "Incorrect column count at spellfixes, skipping, please fix it.",
-				"arcemu has skipped loading this table in order to avoid crashing.", NULL);
-			return;
-		}
-		sLog.outDetail("Loading %u spell fixes from database...",result->GetRowCount());
-		do
-		{
-			Field * f = result->Fetch();
-			uint32 sf_spellId = f[0].GetUInt32();
-			uint32 sf_procFlags = f[1].GetUInt32();
-			uint32 sf_SpellGroupType = f[2].GetUInt32();
-			uint32 sf_procChance = f[3].GetUInt32();
-			uint32 sf_procCharges = f[4].GetUInt32();
-			/*uint64 sf_groupRelation0 = f[5].GetUInt64();
-			uint64 sf_groupRelation1 = f[6].GetUInt64();
-			uint64 sf_groupRelation2 = f[7].GetUInt64();*/
-
-			if( sf_spellId )
-			{
-				sp = dbcSpell.LookupEntryForced( sf_spellId );
-				if( sp != NULL )
-				{
-					if( sf_procFlags )
-						sp->procFlags = sf_procFlags;
-
-//					if( sf_SpellGroupType )
-//						sp->SpellGroupType = sf_SpellGroupType;
-
-					if( sf_procChance )
-						sp->procChance = sf_procChance;
-
-					if ( sf_procCharges )
-						sp->procCharges = sf_procCharges;
-
-/*					if ( sf_groupRelation0)
-					{
-						sp->EffectSpellGroupRelation[0] = (uint32)sf_groupRelation0;
-						sp->EffectSpellGroupRelation_high[0] = (uint32)(sf_groupRelation0>>32);
-					}
-					if ( sf_groupRelation1)
-					{
-						sp->EffectSpellGroupRelation[1] = (uint32)sf_groupRelation1;
-						sp->EffectSpellGroupRelation_high[1] = (uint32)(sf_groupRelation1>>32);
-					}
-					if ( sf_groupRelation2)
-					{
-						sp->EffectSpellGroupRelation[2] = (uint32)sf_groupRelation2;
-						sp->EffectSpellGroupRelation_high[2] = (uint32)(sf_groupRelation2>>32);
-					}*/
-				}
-			}
-		}while(result->NextRow());
-		delete result;
-	}
-}
-
 void ObjectMgr::LoadSpellProcs()
 {
 	SpellEntry* sp;
@@ -1548,7 +1484,25 @@ void ObjectMgr::LoadSpellProcs()
 						sp->ProcOnNameHash[x] = spe_NameHash;
 					}
 					else
-						sLog.outError("Wrong ProcOnNameHash for Spell: %u!",spe_spellId);
+						sLog.outError( "Wrong ProcOnNameHash for Spell: %u!", spe_spellId );
+
+					sp->procFlags = f[2].GetUInt32();
+
+					if( f[3].GetUInt32() == 1 )
+						sp->procFlags |= PROC_TARGET_SELF;
+					if( f[4].GetUInt32() >= 0 )
+						sp->procChance = f[4].GetUInt32();
+					if( f[5].GetUInt32() >= 0 )
+						sp->procCharges = f[5].GetUInt32();
+
+					sp->proc_interval = f[6].GetUInt32();
+
+					if( f[7].GetUInt32() >= 0 )
+						sp->EffectTriggerSpell[0] = f[7].GetUInt32();
+					if( f[8].GetUInt32() >= 0 )
+						sp->EffectTriggerSpell[1] = f[8].GetUInt32();
+					if( f[9].GetUInt32() >= 0 )
+						sp->EffectTriggerSpell[2] = f[9].GetUInt32();
 				}
 			}
 

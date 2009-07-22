@@ -833,7 +833,7 @@ void WorldSession::HandleAutoEquipItemSlotOpcode( WorldPacket& recvData )
 	CHECK_PACKET_SIZE( recvData, 8 + 1 );
 	uint64 itemguid;
 	int8 destSlot;
-	int8 error = 0;
+	//int8 error = 0; // useless?
 	recvData >> itemguid >> destSlot;
 
 	int8	srcSlot		= _player->GetItemInterface()->GetInventorySlotByGuid(itemguid);

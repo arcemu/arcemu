@@ -980,6 +980,9 @@ public:
 	bool HasBuff(uint32 spelllid); //this does not check passive auras & it was visible auras
 	bool HasBuff(uint32 spelllid, uint64 guid);//this does not check passive auras & it was visible auras
 	bool HasVisialPosAurasOfNameHashWithCaster(uint32 namehash, Unit * caster);
+	bool HasAuraWithMechanics(uint32 mechanic); //this checks passive auras too
+
+	uint32 FindAuraCountByHash(uint32 HashName, uint32 maxcount = 0);
 	
 	void GiveGroupXP(Unit *pVictim, Player *PlayerInGroup);
 
@@ -1142,9 +1145,15 @@ public:
 	int32 * SM_FRange;//flat
 	int32 * SM_PCastTime;//pct
 	int32 * SM_FCastTime;//flat
-	int32 * SM_PCriticalDamage;
+	int32 * SM_PCriticalDamage;//Pct
 	int32 * SM_PDOT;//pct
 	int32 * SM_FDOT;//flat
+	int32 * SM_FEffect1_Bonus;//flat
+	int32 * SM_PEffect1_Bonus;//Pct
+	int32 * SM_FEffect2_Bonus;//flat
+	int32 * SM_PEffect2_Bonus;//Pct
+	int32 * SM_FEffect3_Bonus;//flat
+	int32 * SM_PEffect3_Bonus;//Pct
 	int32 * SM_FEffectBonus;//flat
 	int32 * SM_PEffectBonus;//pct
 	int32 * SM_FDamageBonus;//flat
@@ -1153,23 +1162,25 @@ public:
 	int32 * SM_FMiscEffect;//flat
 	int32 * SM_FHitchance;//flat
 	int32 * SM_PAPBonus;//pct
-	int32 * SM_PCost;
-	int32 * SM_FCost;
-	int32 * SM_PNonInterrupt;
-	int32 * SM_PJumpReduce;
-	int32 * SM_FSpeedMod;
-	int32 * SM_FAdditionalTargets;
+	int32 * SM_PCost;//Pct
+	int32 * SM_FCost;//flat
+	int32 * SM_PNonInterrupt;//Pct
+	int32 * SM_PJumpReduce;//Pct
+	int32 * SM_FSpeedMod;//flat
+	int32 * SM_FAdditionalTargets;//flat
 	int32 * SM_FPenalty;//flat
 	int32 * SM_PPenalty;//Pct
-	int32 * SM_PCooldownTime;
-	int32 * SM_FCooldownTime;
-	int32 * SM_FChanceOfSuccess;
-	int32 * SM_FRezist_dispell;
-	int32 * SM_PRezist_dispell;
-	int32 * SM_FCharges;
-	int32 * SM_PCharges;
-	int32 * SM_FThreat;
-	int32 * SM_PThreat;
+	int32 * SM_PCooldownTime;//Pct
+	int32 * SM_FCooldownTime;//flat
+	int32 * SM_FChanceOfSuccess;//flat
+	int32 * SM_FAmptitude;//flat
+	int32 * SM_PAmptitude;//Pct
+	int32 * SM_FRezist_dispell;//flat
+	int32 * SM_PRezist_dispell;//Pct
+	int32 * SM_FCharges;//flat
+	int32 * SM_PCharges;//Pct
+	int32 * SM_FThreat;//flat
+	int32 * SM_PThreat;//Pct
 	void InheritSMMods(Unit *inherit_from);
 
 	//Events
@@ -1285,7 +1296,7 @@ public:
 	uint32 BaseResistance[7]; //there are resistances for silence, fear, mechanics ....
 	uint32 BaseStats[5];
 	int32 HealDoneMod[7];
-	int32 HealDonePctMod[7];
+	float HealDonePctMod[7];
 	int32 HealTakenMod[7];
 	float HealTakenPctMod[7];
 	uint32 SchoolImmunityList[7];
@@ -1415,6 +1426,7 @@ public:
 		case 13116: // Alliance Spirit Guide
 		case 13117: // Horde Spirit Guide
 		case 9299:  // Gaeriyan (Qnpc)
+		case 8888:  // Franclorn Forgewright (Qnpc)
 			{
 				return true;
 			}break;
@@ -1510,6 +1522,7 @@ public:
 	
 	void AggroPvPGuards();
 
+	void CastSpellOnCasterOnCritHit();
 
 protected:
 	Unit ();

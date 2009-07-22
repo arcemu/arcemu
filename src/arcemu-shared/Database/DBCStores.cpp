@@ -308,7 +308,7 @@ const char* mapentryFormat =
 	"u"					// 116 addon
 	"x";				// 117 unk
 
-const char* itemrandomsuffixformat = "uxxxxxxxxxxxxxxxxxxuuuuuuxxxx";
+const char* itemrandomsuffixformat = "uxxxxxxxxxxxxxxxxxxuuuxxuuuxx";//19, 20, 21, 24, 25, 26
 const char* chatchannelformat = "iixssssssssssssssslxxxxxxxxxxxxxxxxxx";
 const char* durabilityqualityFormat = "uf";
 const char* durabilitycostsFormat = "uuuuuuuuuuuuuuuuuuuuuuuuuuuuuu";
