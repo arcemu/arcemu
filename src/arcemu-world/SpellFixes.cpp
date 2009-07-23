@@ -5181,17 +5181,17 @@ void ApplyNormalFixes()
 		sp = dbcSpell.LookupEntryForced( 31579 );
 		if( sp != NULL )
 		{
-			sp->EffectBasePoints[0] = 5 * sp->EffectBasePoints[0] +1; sp->EffectBasePoints[0] = 5 * sp->EffectBasePoints[0] +1; 
+			sp->EffectBasePoints[0] = 5 * (sp->EffectBasePoints[0] + 1); 
 		}
 		sp = dbcSpell.LookupEntryForced( 31582 );
 		if( sp != NULL )
 		{
-			sp->EffectBasePoints[0] = 5 * sp->EffectBasePoints[0] +1;
+			sp->EffectBasePoints[0] = 5 * (sp->EffectBasePoints[0] + 1);
 		}
 		sp = dbcSpell.LookupEntryForced( 31583 );
 		if( sp != NULL )
 		{
-			sp->EffectBasePoints[0] = 5 * sp->EffectBasePoints[0] +1;
+			sp->EffectBasePoints[0] = 5 * (sp->EffectBasePoints[0] + 1);
 		}
 
 		//Mage - Improved Blizzard

@@ -2372,7 +2372,7 @@ void Aura::SpellAuraDummy(bool apply)
 		{
 			if (m_target->IsPlayer())
 			{
-				static_cast< Player* >( m_target )->m_IncreaseDmgSnaredSlowed += ((apply) ? 1:-1)*((float)mod->m_amount)/100;
+				static_cast< Player* >( m_target )->m_IncreaseDmgSnaredSlowed += ((apply) ? 1:-1)*(uint32)(((float)mod->m_amount)/100);
 			}
 		}break;
 	// Mage - Frostbite talent
@@ -9025,7 +9025,7 @@ void Aura::SpellAuraReduceAOEDamageTaken(bool apply)
 	float val = mod->m_amount / 100.0f;
 	if( apply )
 	{
-		mod->fixed_amount[0] = m_target->AOEDmgMod * val;
+		mod->fixed_amount[0] = (int)(m_target->AOEDmgMod * val);
 		m_target->AOEDmgMod += mod->fixed_amount[0];
 	}
 	else

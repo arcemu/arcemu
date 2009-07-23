@@ -837,8 +837,8 @@ void GameObject::UpdateRotation()
 	float r3=GetFloatValue(GAMEOBJECT_PARENTROTATION_03);
 	if(r2==0.0f && r3==0.0f)
 	{
-		r2 = f_rot1;
-		r3 = f_rot2;
+		r2 = (float)f_rot1;
+		r3 = (float)f_rot2;
 		SetFloatValue(GAMEOBJECT_PARENTROTATION_02, r2);
 		SetFloatValue(GAMEOBJECT_PARENTROTATION_03, r3);
 	}

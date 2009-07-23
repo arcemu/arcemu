@@ -4592,6 +4592,7 @@ uint8 Spell::CanCast(bool tolerate)
 				case SPELL_HASH_ICE_BLOCK: //Ice Block
 				case SPELL_HASH_DIVINE_SHIELD: //Divine Shield
 				case SPELL_HASH_WILL_OF_THE_FORSAKEN: //Will of the Forsaken
+				case SPELL_HASH_EVERY_MAN_FOR_HIMSELF: // Every Man for Himself
 				{
 					if( u_caster->m_special_state & (UNIT_STATE_FEAR | UNIT_STATE_CHARM | UNIT_STATE_SLEEP))
 						break;
@@ -5292,7 +5293,7 @@ void Spell::Heal(int32 amount, bool ForceCrit)
 
 		//Sacred Shield
 		if( unitTarget->HasAurasWithNameHash(SPELL_HASH_SACRED_SHIELD) && m_spellInfo->NameHash == SPELL_HASH_FLASH_OF_LIGHT )
-			critchance += 50.0f;
+			critchance += (int32)50.0f;
 
 		if(GetProto()->SpellGroupType)
 		{
@@ -5404,7 +5405,7 @@ void Spell::Heal(int32 amount, bool ForceCrit)
 		//amount += float2int32( float( bonus ) * 1.88f ); //apply 3.0.2 spell coeff  //NO. FAIL. COEFFICIENTS WERE ALREADY HANDLED.
 		//3.0.2 spell healing coefficients should be set in database coefficient overrides.
 		amount += bonus;
-		amount += amount*u_caster->HealDonePctMod[GetProto()->School];
+		amount += amount * (int32)(u_caster->HealDonePctMod[GetProto()->School]);
 		amount += float2int32( float( amount ) * unitTarget->HealTakenPctMod[GetProto()->School] );
 
 		if (GetProto()->SpellGroupType)
@@ -5609,6 +5610,16 @@ bool Spell::Reflect(Unit *refunit)
 				if( (*i)->require_aura_hash && !refunit->HasAurasWithNameHash( (*i)->require_aura_hash ) )
 					continue;
 
+				if( (*i)->infront == true )
+				{
+					if( m_caster->isInFront(refunit) )
+					{
+						canreflect = true;
+					}
+				}
+				else
+					canreflect = true;
+
 				if( (*i)->charges > 0 )
 				{
 					(*i)->charges--;
@@ -5621,16 +5632,6 @@ bool Spell::Reflect(Unit *refunit)
 						}
 					}
 				}
-				
-				if( (*i)->infront == true )
-				{
-					if( m_caster->isInFront(refunit) )
-					{
-						canreflect = true;
-					}
-				}
-				else
-					canreflect = true;
 
 				refspell = GetProto();
 				break;

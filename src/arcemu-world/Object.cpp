@@ -3101,8 +3101,8 @@ void Object::SpellNonMeleeDamageLog(Unit *pVictim, uint32 spellID, uint32 damage
 		else if( pl->HasAura( 44396 ) )
 			pctmod = 0.15f;
 
-		uint32 hp = 0.05f * pl->GetUInt32Value( UNIT_FIELD_MAXHEALTH );
-		uint32 spellpower = pctmod*pl->GetUInt32Value( PLAYER_FIELD_MOD_DAMAGE_DONE_POS );
+		uint32 hp = (uint32)0.05f * pl->GetUInt32Value( UNIT_FIELD_MAXHEALTH );
+		uint32 spellpower = (uint32)pctmod * pl->GetUInt32Value( PLAYER_FIELD_MOD_DAMAGE_DONE_POS );
 
 		if( spellpower > hp )
 			spellpower = hp;

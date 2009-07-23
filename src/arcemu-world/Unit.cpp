@@ -5200,7 +5200,7 @@ int32 Unit::GetSpellDmgBonus(Unit *pVictim, SpellEntry *spellInfo,int32 base_dmg
 	if( isdot )
 		bonus_damage += float2int32(bonus_damage * (pVictim->DoTPctIncrease[spellInfo->School] / 100.0f));
 	else if( (spellInfo->c_is_flags & SPELL_FLAG_IS_DAMAGING) && (spellInfo->spell_coef_flags & SPELL_FLAG_AOE_SPELL) )
-		bonus_damage *= pVictim->AOEDmgMod;
+		bonus_damage *= (int32)pVictim->AOEDmgMod;
 
 	if( ( pVictim->HasAuraWithMechanics(MECHANIC_ENSNARED) || pVictim->HasAuraWithMechanics(MECHANIC_DAZED) ) && caster->IsPlayer() )
 			bonus_damage *= static_cast< Player* >(caster)->m_IncreaseDmgSnaredSlowed;

@@ -12946,8 +12946,8 @@ void Player::CalcExpertise()
 		}
 	}
 		
-	ModUnsigned32Value( PLAYER_EXPERTISE, CalcRating( PLAYER_RATING_MODIFIER_EXPERTISE ) + modifier );
-	ModUnsigned32Value( PLAYER_OFFHAND_EXPERTISE, CalcRating( PLAYER_RATING_MODIFIER_EXPERTISE ) + modifier );
+	ModUnsigned32Value( PLAYER_EXPERTISE, (int32)CalcRating( PLAYER_RATING_MODIFIER_EXPERTISE ) + modifier );
+	ModUnsigned32Value( PLAYER_OFFHAND_EXPERTISE, (int32)CalcRating( PLAYER_RATING_MODIFIER_EXPERTISE ) + modifier );
 	UpdateStats();
 }
 
