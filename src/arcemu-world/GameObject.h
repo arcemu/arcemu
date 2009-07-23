@@ -232,7 +232,8 @@ public:
 
 	ARCEMU_INLINE bool isQuestGiver()
 	{
-		if(m_uint32Values[GAMEOBJECT_BYTES_1] == 2)
+		//from GameObject::CreateFromProto - SetByte( GAMEOBJECT_BYTES_1, 1, pInfo->Type );
+		if(GetByte(GAMEOBJECT_BYTES_1, 1) == 2) 
 			return true;
 		else
 			return false;

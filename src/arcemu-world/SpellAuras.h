@@ -246,7 +246,8 @@ enum MOD_TYPES
     SPELL_AURA_INCREASE_HEALING_PCT_OF_INTELLECT = 195,		// NOT USED ANYMORE - 175 used instead
     SPELL_AURA_MOD_ALL_WEAPON_SKILLS = 196,
     SPELL_AURA_REDUCE_ATTACKER_CRICTICAL_HIT_CHANCE_PCT = 197,
-    SPELL_AURA_INCREASE_SPELL_HIT_PCT = 199,
+	SPELL_AURA_198 = 198,
+    SSPELL_AURA_INCREASE_SPELL_HIT_PCT = 199,
 	SPELL_AURA_CANNOT_BE_DODGED = 201,
 	SPELL_AURA_FINISHING_MOVES_CANNOT_BE_DODGED = 202,
     SPELL_AURA_REDUCE_ATTACKER_CRICTICAL_HIT_DAMAGE_MELEE_PCT = 203,
@@ -664,6 +665,7 @@ public:
 	void SpellAuraRegenManaStatPCT(bool apply);
 	void SpellAuraSpellHealingStatPCT(bool apply);
 	void SpellAuraModStealthDetection(bool apply);
+	void SpellAuraReduceAOEDamageTaken(bool apply);
 	void SpellAuraIncreaseMaxHealth(bool apply);
 	void SpellAuraSpiritOfRedemption(bool apply);
 	void SpellAuraIncreaseAttackerSpellCrit(bool apply);
@@ -708,6 +710,7 @@ public:
 	void EventPeriodicDamagePercent(uint32);
 	void EventPeriodicHeal(uint32);
 	void EventPeriodicTriggerSpell(SpellEntry* spellInfo);
+	void EventPeriodicTrigger(uint32 amount, uint32 type);
 	void EventPeriodicEnergize(uint32,uint32);
 	void EventPeriodicEnergizeVariable(uint32,uint32);
 	void EventPeriodicHeal1(uint32);

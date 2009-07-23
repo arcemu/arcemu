@@ -375,8 +375,8 @@ void QuestLogEntry::Finish()
 	// clear from player log
 	m_plr->SetQuestLogSlot(NULL, m_slot);
 	m_plr->PushToRemovedQuests(m_quest->id);
+	m_plr->UpdateNearbyGameObjects();
 	// delete ourselves
-
 
 	delete this;
 }
@@ -482,6 +482,7 @@ void QuestLogEntry::SendQuestComplete()
 	data.SetOpcode(SMSG_QUESTUPDATE_COMPLETE);
 	data << m_quest->id;
 	m_plr->GetSession()->SendPacket(&data);
+	m_plr->UpdateNearbyGameObjects();
 	CALL_QUESTSCRIPT_EVENT(this, OnQuestComplete)(m_plr, this);
 }
 

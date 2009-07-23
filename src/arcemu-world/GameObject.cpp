@@ -119,8 +119,8 @@ bool GameObject::CreateFromProto(uint32 entry,uint32 mapid, float x, float y, fl
 //	SetRotation(ang);
 	 
 	//SetUInt32Value( GAMEOBJECT_TIMESTAMP, (uint32)UNIXTIME);
-//    SetUInt32Value( GAMEOBJECT_ARTKIT, 0 );		   //these must be from wdb somewhere i guess
-   SetByte( GAMEOBJECT_BYTES_1, 3, 0 );
+	//SetUInt32Value( GAMEOBJECT_ARTKIT, 0 );		   //these must be from wdb somewhere i guess
+    SetByte( GAMEOBJECT_BYTES_1, 3, 0 );
 	SetByte( GAMEOBJECT_BYTES_1, 0, 1 );
 	SetUInt32Value( GAMEOBJECT_DISPLAYID, pInfo->DisplayID );
 	SetByte( GAMEOBJECT_BYTES_1, 1, pInfo->Type );

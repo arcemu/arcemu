@@ -63,7 +63,7 @@ const static uint32 weap_skills[21] = {	SKILL_AXES,
 										0,//<-13
 										SKILL_DAGGERS,
 										SKILL_THROWN,
-										0,
+										SKILL_ASSASSINATION,
 										SKILL_CROSSBOWS,
 										SKILL_WANDS,
 										SKILL_FISHING };
