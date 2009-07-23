@@ -2990,8 +2990,13 @@ void Object::SpellNonMeleeDamageLog(Unit *pVictim, uint32 spellID, uint32 damage
 				if( spellInfo->SpellGroupType )
 				{
 					SM_FFValue(caster->SM_CriticalChance, &CritChance, spellInfo->SpellGroupType);
+	#ifdef COLLECTION_OF_UNTESTED_STUFF_AND_TESTERS
+					float spell_flat_modifers=0;
+					SM_FFValue(caster->SM_CriticalChance,&spell_flat_modifers,spellInfo->SpellGroupType);
+					if(spell_flat_modifers!=0)
+						printf("!!!!spell critchance mod flat %f ,spell group %u\n",spell_flat_modifers,spellInfo->SpellGroupType);
+	#endif
 				}
-
 				if( pVictim->IsPlayer() )
 				CritChance -= static_cast< Player* >(pVictim)->CalcRating( PLAYER_RATING_MODIFIER_SPELL_CRIT_RESILIENCE );
 			}
@@ -3089,38 +3094,6 @@ void Object::SpellNonMeleeDamageLog(Unit *pVictim, uint32 spellID, uint32 damage
 	if(abs_dmg)
 		vproc |= PROC_ON_ABSORB;
 
-	// Incanter's Absorption
-	if( pVictim->IsPlayer() && pVictim->HasAurasWithNameHash( SPELL_HASH_INCANTER_S_ABSORPTION ) )
-	{
-		float pctmod;
-		Player* pl = static_cast< Player* >( pVictim );
-		if( pl->HasAura( 44394 ) )
-			pctmod = 0.05f;
-		else if( pl->HasAura( 44395 ) )
-			pctmod = 0.10f;
-		else if( pl->HasAura( 44396 ) )
-			pctmod = 0.15f;
-
-		uint32 hp = 0.05f * pl->GetUInt32Value( UNIT_FIELD_MAXHEALTH );
-		uint32 spellpower = pctmod*pl->GetUInt32Value( PLAYER_FIELD_MOD_DAMAGE_DONE_POS );
-
-		if( spellpower > hp )
-			spellpower = hp;
-
-		SpellEntry * entry = dbcSpell.LookupEntry( 44413 );
-		if( !entry ) 
-			return;
-
-		Spell * sp = SpellPool.PooledNew();
-		if ( !sp )
-			return;
-		sp->GetProto()->EffectBasePoints[0] = spellpower;
-		sp->Init( pl, entry, true, NULL );
-		SpellCastTargets targets;
-		targets.m_unitTarget = pl->GetGUID();
-		sp->prepare(&targets);
-	}
-
 	if(ress < 0) ress = 0;
 
 	res=(float)ress;
@@ -3160,7 +3133,7 @@ void Object::SpellNonMeleeDamageLog(Unit *pVictim, uint32 spellID, uint32 damage
 	SendSpellNonMeleeDamageLog(this, pVictim, spellID, float2int32(res), school, abs_dmg, dmg.resisted_damage, false, 0, critical, IsPlayer());
 	DealDamage( pVictim, float2int32( res ), 2, 0, spellID );
 
-	if( this->IsUnit() && allowProc && spellInfo->Id != 25501 && spellInfo->noproc == false )
+	if( this->IsUnit() && allowProc && spellInfo->Id != 25501 && spellInfo->noproc == false)
 	{
 		int32 dmg = float2int32(res);
 

@@ -418,6 +418,11 @@ bool HandleReloadConsoleCommand(BaseConsole * pConsole, int argc, const char *ar
 		objmgr.ReloadDisabledSpells();
 		ret = 1;
 	}
+	else if( !stricmp(argv[1], "spellfixes") )
+	{
+		objmgr.LoadSpellFixes();
+		ret = 1;
+	}
 	else if( !stricmp(argv[1], "vendors") )
 	{
 		objmgr.ReloadVendors();

@@ -91,7 +91,7 @@ typedef struct
 	uint32	flags;
 	uint32	state;
 	uint32	faction;
-	//uint32 level;
+//	uint32	level;
 	float scale;
 	//uint32 stateNpcLink;
 } GOSpawn;

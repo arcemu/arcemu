@@ -35,7 +35,7 @@
 #define SKILL_LANG_DEMON_TONGUE       139
 #define SKILL_LANG_TITAN              140
 #define SKILL_LANG_OLD_TONGUE         141
-#define SKILL_SURVIVAL2               142
+#define SKILL_SURVIVAL2                142
 #define SKILL_HORSE_RIDING            148
 #define SKILL_WOLF_RIDING             149
 #define SKILL_TIGER_RIDING            150

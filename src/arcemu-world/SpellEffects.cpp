@@ -151,7 +151,7 @@ pSpellEffect SpellEffectsHandler[TOTAL_SPELL_EFFECTS]={
 	&Spell::SpellEffectProspecting,				// unknown - 127 // Search 5 ore of a base metal for precious gems.  This will destroy the ore in the process.
 	&Spell::SpellEffectApplyAura128,			// unknown - 128 // Adjust a stats by %: Mod Stat // ITS FLAT
 	&Spell::SpellEffectNULL,					// unknown - 129 // Mod Dmg % (Spells)
-	&Spell::SpellEffectRedirectThreat,			// unknown - 130 // http://www.thottbot.com/s34477
+	&Spell::SpellEffectRedirectThreat,// unknown - 130 // http://www.thottbot.com/s34477
 	&Spell::SpellEffectNULL,					// unknown - 131 // test spell
 	&Spell::SpellEffectNULL,					// unknown - 132 // no spells
 	&Spell::SpellEffectForgetSpecialization,	//SPELL_EFFECT_FORGET_SPECIALIZATION - 133 // http://www.thottbot.com/s36441 // I think this is a gm/npc spell
@@ -482,43 +482,21 @@ void Spell::SpellEffectSchoolDMG(uint32 i) // dmg school
 
 	if(GetProto()->EffectChainTarget[i])//chain
 	{
-		if(GetProto()->Id == 32445 || GetProto()->Id ==28883)
-		{
-			int32 reduce = (int32)(GetProto()->dmg_multiplier[i] * 100.0f);
-			reduce -= 100;
+		int32 reduce = (int32)(GetProto()->dmg_multiplier[i] * 100.0f);
 
-			if(reduce && chaindamage)
+		if(reduce && chaindamage)
+		{
+			if(GetProto()->SpellGroupType && u_caster)
 			{
-				if(GetProto()->SpellGroupType && u_caster)
-				{
-					SM_FIValue(u_caster->SM_PJumpReduce, &reduce,GetProto()->SpellGroupType);
-				}
-				chaindamage += ((GetProto()->EffectBasePoints[i]+51) * reduce / 100);
+				SM_FIValue(u_caster->SM_PJumpReduce, &reduce,GetProto()->SpellGroupType);
 			}
-			else
-			{
-				chaindamage = damage;
-			}
-			dmg = chaindamage;
+			chaindamage = chaindamage * reduce / 100;
 		}
 		else
 		{
-			int32 reduce = (int32)(GetProto()->dmg_multiplier[i] * 100.0f);
-
-			if(reduce && chaindamage)
-			{
-				if(GetProto()->SpellGroupType && u_caster)
-				{
-					SM_FIValue(u_caster->SM_PJumpReduce, &reduce,GetProto()->SpellGroupType);
-				}
-				chaindamage = chaindamage * reduce / 100;
-			}
-			else
-			{
-				chaindamage = damage;
-			}
-			dmg = chaindamage;
+			chaindamage = damage;
 		}
+		dmg = chaindamage;
 	}
 	else
 	{
@@ -622,21 +600,13 @@ void Spell::SpellEffectSchoolDMG(uint32 i) // dmg school
 			static_damage=true;
 			break;
 
-		case SPELL_HASH_CONFLAGRATE:
-			unitTarget->RemoveFlag( UNIT_FIELD_AURASTATE, AURASTATE_FLAG_IMMOLATE );
-			break;
-
-		case SPELL_HASH_JUDGEMENT_OF_COMMAND:
-			if( !unitTarget->IsStunned() )
-				dmg = dmg >> 1;
-			break;
 
 		default:
 			break;
 		}
 	}
 
-	if( p_caster && !static_damage ) //this is wrong but with current spell coef system it has to be here...
+	if( p_caster && !static_damage )
 	{
 		switch( p_caster->getClass() )
 		{
@@ -653,11 +623,22 @@ void Spell::SpellEffectSchoolDMG(uint32 i) // dmg school
 
 
 	// check for no more damage left (chains)
-	if( !dmg ) 
-		dmg = GetProto()->EffectBasePoints[i];
+	if(!dmg) dmg = GetProto()->EffectBasePoints[i];
+	if(!dmg) return;
+	/*********************************************************************
+	CONFLAGRATE SHOULD REMOVE THE IMMOLATE DEBUFF
+	**********************************************************************/
+	if( GetProto()->NameHash == SPELL_HASH_CONFLAGRATE )
+		unitTarget->RemoveFlag( UNIT_FIELD_AURASTATE, AURASTATE_FLAG_IMMOLATE );
+	//	unitTarget->RemoveAuraByNameHash(SPELL_HASH_IMMOLATE );
+	// RemoveFlag works better because it updates instead of just removing from the map?
+	// needs testing.
 
-	if( !dmg ) 
-		return;
+	/**************************************************************************
+	* This handles the correct damage of "Judgement of Command" (all ranks)
+	**************************************************************************/
+	if (GetProto()->NameHash == SPELL_HASH_JUDGEMENT_OF_COMMAND && !unitTarget->IsStunned())
+		dmg = dmg >> 1;
 
 	if(GetProto()->speed > 0 && m_triggeredSpell == false )
 	{
@@ -692,7 +673,7 @@ void Spell::SpellEffectSchoolDMG(uint32 i) // dmg school
 					_type = RANGED;
 				else
 				{
-					if (GetProto()->AttributesExC & FLAGS4_TYPE_OFFHAND)
+					if (GetProto()->AttributesExC & 0x1000000)
 						_type =  OFFHAND;
 					else
 						_type = MELEE;
@@ -768,7 +749,6 @@ void Spell::SpellEffectDummy(uint32 i) // Dummy(Scripted events)
 			rss->spellId = GetProto()->Id;
 			rss->require_aura_hash = SPELL_HASH_FROST_WARD;
 			rss->school = SCHOOL_FROST;
-			rss->infront = false;
 
 			unitTarget->m_reflectSpellSchool.push_back(rss);
 		}break;
@@ -791,7 +771,6 @@ void Spell::SpellEffectDummy(uint32 i) // Dummy(Scripted events)
 			rss->spellId = GetProto()->Id;
 			rss->require_aura_hash = SPELL_HASH_FIRE_WARD;
 			rss->school = SCHOOL_FIRE;
-			rss->infront = false;
 
 			unitTarget->m_reflectSpellSchool.push_back(rss);
 		}break;
@@ -802,7 +781,7 @@ void Spell::SpellEffectDummy(uint32 i) // Dummy(Scripted events)
 		* IDs:
 		* 100		Charge			-	RANK 1,		STATUS: 100% DONE
 		* 6178		Charge			-	RANK 2,		STATUS: 100% DONE
-		* 11578		Charge			-	RANK 3,		STATUS: 100% DONE
+		* 11578	Charge			-	RANK 3,		STATUS: 100% DONE
 		*  --------------------------------------------
 		*************************/
 		/*
@@ -845,64 +824,14 @@ out:
 	case 6178:
 	case 11578:
 		{
-			uint32 rage_to_gen;
-			switch(GetProto()->Id)
-			{
-			case 100:   // Charge Rank 1
-				rage_to_gen = 90;
-				if(p_caster)
-				{
-					for(set<uint32>::iterator itr = p_caster->mSpells.begin(); itr != p_caster->mSpells.end(); ++itr)
-					{
-						if(*itr == 12697)
-							rage_to_gen += 100;
-						if(*itr == 12285)
-							rage_to_gen += 50;
-					}
-				}
-				break;
-
-			case 6178:  // Charge Rank 2
-				rage_to_gen = 120;
-				if(p_caster)
-				{
-					for(set<uint32>::iterator itr = p_caster->mSpells.begin(); itr != p_caster->mSpells.end(); ++itr)
-					{
-						if(*itr == 12697)
-							rage_to_gen += 100;
-						if(*itr == 12285)
-							rage_to_gen += 50;
-					}
-				}
-				break;
-
-			default:    // Charge Rank 3 +
-				rage_to_gen = 150;
-				if(p_caster)
-				{
-					for(set<uint32>::iterator itr = p_caster->mSpells.begin(); itr != p_caster->mSpells.end(); ++itr)
-					{
-						if(*itr == 12697)
-							rage_to_gen += 100;
-						if(*itr == 12285)
-							rage_to_gen += 50;
-					}
-				}
-
-				break;
-			}
-
-			// Add the rage to the caster
-			if(!u_caster)
+			if( !p_caster )
 				return;
-
-			uint32 val = u_caster->GetUInt32Value(UNIT_FIELD_POWER2);
-			uint32 max = u_caster->GetUInt32Value(UNIT_FIELD_MAXPOWER2);
-			val += rage_to_gen;
-			if(val > max)
-				val = max;
-
-			u_caster->SetUInt32Value(UNIT_FIELD_POWER2, val);
+			if (p_caster->GetPowerType() == POWER_TYPE_RAGE && p_caster->IsPlayer())
+			{
+				p_caster->ModUnsigned32Value( UNIT_FIELD_POWER2, GetProto()->EffectMiscValue[1] );
+				if( p_caster->GetUInt32Value( UNIT_FIELD_POWER2) > 1000 )
+					p_caster->ModUnsigned32Value( UNIT_FIELD_POWER2, 1000 - p_caster->GetUInt32Value( UNIT_FIELD_POWER2 ) );
+			}
 		}
 		break;
 		/*************************
@@ -2230,14 +2159,13 @@ void Spell::SpellEffectApplyAura(uint32 i)  // Apply Aura
 			SendCastResult(SPELL_FAILED_IMMUNE);
 			return;
 		}
-
 		pAura = AuraPool.PooledNew();
-		if ( !pAura )
+		if (!pAura)
 			return;
-		if( g_caster && g_caster->GetUInt32Value(OBJECT_FIELD_CREATED_BY) && g_caster->m_summoner )
-			pAura->Init( GetProto(), Duration, g_caster->m_summoner, unitTarget, m_triggeredSpell, i_caster );
+		if(g_caster && g_caster->GetUInt32Value(OBJECT_FIELD_CREATED_BY) && g_caster->m_summoner)
+			pAura->Init(GetProto(), Duration, g_caster->m_summoner, unitTarget, m_triggeredSpell, i_caster);
 		else
-			pAura->Init( GetProto(), Duration, m_caster, unitTarget, m_triggeredSpell, i_caster );
+			pAura->Init(GetProto(), Duration, m_caster, unitTarget, m_triggeredSpell, i_caster);
 
 		pAura->pSpellId = pSpellId; //this is required for triggered spells
 
@@ -2247,14 +2175,14 @@ void Spell::SpellEffectApplyAura(uint32 i)  // Apply Aura
 	{
 		pAura=itr->second;
 	}
-	pAura->AddMod( GetProto()->EffectApplyAuraName[i], damage, GetProto()->EffectMiscValue[i], i );
+	pAura->AddMod(GetProto()->EffectApplyAuraName[i],damage,GetProto()->EffectMiscValue[i],i);
 
-	switch( GetProto()->Id )
+	switch(GetProto()->Id)
 	{
 	case 38177: // Blackwhelp Net
 		{
-			p_caster->CastSpell( unitTarget, 38178, true );
-			static_cast<Creature*>(unitTarget)->Despawn( 1000, 360000 );
+			p_caster->CastSpell(unitTarget, 38178, true);
+			static_cast<Creature*>(unitTarget)->Despawn(1000, 360000);
 		} break;
 	}
 
@@ -2497,22 +2425,10 @@ void Spell::SpellEffectHeal(uint32 i) // Heal
 
 void Spell::SpellEffectQuestComplete(uint32 i) // Quest Complete
 {
-	if ( !p_caster ) return;
+	if ( !p_caster) return;
 	QuestLogEntry * en = p_caster->GetQuestLogForEntry( GetProto()->EffectMiscValue[i] );
 	if ( en && !en->CanBeFinished() )
-	{
-		for(int i=0;i<4;i++)
-		{
-			if( en->GetQuest()->required_mob[i] != 0 )
-			{
-				en->SetMobCount( i, 1 );
-				en->SendUpdateAddKill( i );
-			}
-		}
-
-		en->UpdatePlayerFields();
 		en->SendQuestComplete();
-	}
 }
 
 //wand->
@@ -3366,53 +3282,54 @@ void Spell::SpellEffectEnergize(uint32 i) // Energize
 		return;
 
 	uint32 modEnergy = 0;
-	switch( GetProto()->Id )
-	{
-	case 30824: // Shamanistic Rage
+	//yess there is always someone special : shamanistic rage - talent
+	if(GetProto()->Id == 30824)
 		modEnergy = damage*GetUnitTarget()->GetAP() / 100;
-		break;
-	case 31786: // Paladin - Spiritual Attunement
-		if( ProcedOnSpell )
+	//paladin - Spiritual Attunement
+	else if(GetProto()->Id == 31786 && ProcedOnSpell)
+	{
+		SpellEntry *motherspell = dbcSpell.LookupEntry(pSpellId);
+		if(motherspell)
 		{
-			SpellEntry *motherspell = dbcSpell.LookupEntry(pSpellId);
-			if(motherspell)
-			{
-				//heal amount from procspell (we only proceed on a heal spell)
-				uint32 healamt = 0;
-				if(ProcedOnSpell->Effect[0] == SPELL_EFFECT_HEAL || ProcedOnSpell->Effect[0] == SPELL_EFFECT_SCRIPT_EFFECT)
-					healamt=ProcedOnSpell->EffectBasePoints[0]+1;
-				else if(ProcedOnSpell->Effect[1] == SPELL_EFFECT_HEAL || ProcedOnSpell->Effect[1] == SPELL_EFFECT_SCRIPT_EFFECT)
-					healamt=ProcedOnSpell->EffectBasePoints[1]+1;
-				else if(ProcedOnSpell->Effect[2] == SPELL_EFFECT_HEAL || ProcedOnSpell->Effect[2] == SPELL_EFFECT_SCRIPT_EFFECT)
-					healamt = ProcedOnSpell->EffectBasePoints[2]+1;
-				modEnergy = (motherspell->EffectBasePoints[0]+1) * (healamt) / 100;
-			}
+			//heal amount from procspell (we only proceed on a heal spell)
+			uint32 healamt = 0;
+			if(ProcedOnSpell->Effect[0] == SPELL_EFFECT_HEAL || ProcedOnSpell->Effect[0] == SPELL_EFFECT_SCRIPT_EFFECT)
+				healamt=ProcedOnSpell->EffectBasePoints[0]+1;
+			else if(ProcedOnSpell->Effect[1] == SPELL_EFFECT_HEAL || ProcedOnSpell->Effect[1] == SPELL_EFFECT_SCRIPT_EFFECT)
+				healamt=ProcedOnSpell->EffectBasePoints[1]+1;
+			else if(ProcedOnSpell->Effect[2] == SPELL_EFFECT_HEAL || ProcedOnSpell->Effect[2] == SPELL_EFFECT_SCRIPT_EFFECT)
+				healamt = ProcedOnSpell->EffectBasePoints[2]+1;
+			modEnergy = (motherspell->EffectBasePoints[0]+1) * (healamt) / 100;
 		}
-		break;
-	case 20268: //Judgement of Wisdom
-		modEnergy = uint32( 0.02f * unitTarget->GetUInt32Value(UNIT_FIELD_BASE_MANA) );
-		break;
-	case 2687: // Improved Bloodrage, dirty fix
-		{
-			modEnergy = damage;
-			if( p_caster)
-			{
-				if( p_caster->mSpells.find(12818) != p_caster->mSpells.end() )
-					modEnergy += 110; //60
-				if( p_caster->mSpells.find(12301) != p_caster->mSpells.end() )
-					modEnergy += 60; //30
-			}
-		}
-		break;
-	default:
-		modEnergy = damage;
-		break;
 	}
+	else if (GetProto()->Id == 2687){
+		modEnergy = damage;
+		if( p_caster)
+		{
+			/*for(set<uint32>::iterator itr = p_caster->mSpells.begin(); itr != p_caster->mSpells.end(); ++itr)
+			{
+			if(*itr == 12818)
+			modEnergy += 60;
+			else if(*itr == 12301)
+			modEnergy += 30;
+			}*/
+			if(p_caster->mSpells.find(12818) != p_caster->mSpells.end())
+				modEnergy += 60;
+			if(p_caster->mSpells.find(12301) != p_caster->mSpells.end())
+				modEnergy += 30;
+		}
+	}
+	else
+		modEnergy = damage;
 
 	if( unitTarget->HasAura( 17619 ) )
 	{
 		modEnergy = uint32( modEnergy * 1.4f );
 	}
+
+	//Judgement of Wisdom 
+	if( GetProto()->Id == 20268 )
+		modEnergy = uint32(0.02f*unitTarget->GetUInt32Value(UNIT_FIELD_BASE_MANA));
 
 	u_caster->Energize( unitTarget, GetProto()->Id, modEnergy, GetProto()->EffectMiscValue[i] );
 }
@@ -4712,7 +4629,7 @@ void Spell::SpellEffectPowerBurn(uint32 i) // power burn
 	int32 mana = (int32)min( (int32)unitTarget->GetUInt32Value( UNIT_FIELD_POWER1 ), damage );
 	unitTarget->ModUnsigned32Value(UNIT_FIELD_POWER1,-mana);
 
-	m_caster->SpellNonMeleeDamageLog(unitTarget,GetProto()->Id, (uint32)(mana * GetProto()->EffectMultipleValue[i]), pSpellId == 0, true);
+	m_caster->SpellNonMeleeDamageLog(unitTarget,GetProto()->Id, (uint32)(mana * GetProto()->Effectunknown[i]), pSpellId == 0, true);
 }
 
 void Spell::SpellEffectThreat(uint32 i) // Threat
@@ -4733,16 +4650,15 @@ void Spell::SpellEffectThreat(uint32 i) // Threat
 
 void Spell::SpellEffectTriggerSpell(uint32 i) // Trigger Spell
 {
-	SpellEntry *entry = dbcSpell.LookupEntry( GetProto()->EffectTriggerSpell[i] );
-	if( !entry ) 
-		return;
+	SpellEntry *entry = dbcSpell.LookupEntry(GetProto()->EffectTriggerSpell[i]);
+	if (!entry) return;
 
 	SpellCastTargets targets = m_targets;
 	Spell *sp = SpellPool.PooledNew();
-	if( !sp )
+	if (!sp)
 		return;
-	sp->Init( m_caster, entry, true, NULL );
-	sp->prepare( &targets );
+	sp->Init(m_caster,entry,true,NULL);
+	sp->prepare(&targets);
 }
 
 void Spell::SpellEffectPowerFunnel(uint32 i) // Power Funnel
@@ -5614,12 +5530,6 @@ void Spell::SpellEffectScriptEffect(uint32 i) // Script Effect
 			}
 		}
 		break;
-	case 24590: // Zandalarian Hero Badge
-		if( u_caster != NULL )
-		{
-			for(int i=0;i<20;i++)
-				u_caster->CastSpell(u_caster, 24575, true);
-		}break;
 	}
 }
 

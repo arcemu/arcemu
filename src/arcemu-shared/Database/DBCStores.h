@@ -744,7 +744,7 @@ struct SpellEntry
 	uint32 EffectRadiusIndex[3];            //96 - 98
 	uint32 EffectApplyAuraName[3];          //99 - 101
 	uint32 EffectAmplitude[3];              //102 - 104
-	float  EffectMultipleValue[3];          //105 - 107     This value is the $ value from description
+	float  Effectunknown[3];                //105 - 107     This value is the $ value from description
 	uint32 EffectChainTarget[3];            //108 - 110
 	uint32 EffectItemType[3];               //111 - 113     Not sure maybe we should rename it. its the relation to field: SpellGroupType
 	uint32 EffectMiscValue[3];              //114 - 116

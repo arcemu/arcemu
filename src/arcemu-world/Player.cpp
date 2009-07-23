@@ -303,7 +303,6 @@ mOutOfRangeIdCount(0)
 	{
 		for(j = 0; j < 7; j++)
 		{
-			SpellDmgDoneByAttribute[i][j] = 0;
 			SpellHealDoneByAttribute[i][j] = 0;
 		}
 		FlatStatModPos[i] = 0;
@@ -336,9 +335,9 @@ mOutOfRangeIdCount(0)
 	SDetector =  new SpeedCheatDetector;
 
 	cannibalize			 = false;
-	mAvengingWrath		 = true;
+
 	m_AreaID				= 0;
-	m_actionsDirty		 = false;
+	m_actionsDirty		  = false;
 	cannibalizeCount		= 0;
 	rageFromDamageDealt	 = 0;
 	rageFromDamageTaken	 = 0;
@@ -393,7 +392,7 @@ mOutOfRangeIdCount(0)
 
 	UpdateLastSpeeds();
 
-	m_resist_critical[0] = m_resist_critical[1] = 0;
+	m_resist_critical[0]=m_resist_critical[1]=0;
 	m_castFilterEnabled = false;
 
 	for(i = 0; i < 3; i++ )
@@ -410,7 +409,6 @@ mOutOfRangeIdCount(0)
 	ok_to_remove = false;
 	m_modphyscritdmgPCT = 0;
 	m_RootedCritChanceBonus = 0;
-	m_IncreaseDmgSnaredSlowed = 0;
 	m_MoltenFuryDmgBonus = 0; // DuKJIoHuyC: in Player.h
 	ShatteredBarrierMod = 0;
 	FieryPaybackModHP35 = 0;
@@ -5740,7 +5738,7 @@ void Player::UpdateStats()
 	Item* shield = GetItemInterface()->GetInventoryItem(EQUIPMENT_SLOT_OFFHAND);
 	if( shield != NULL && shield->GetProto()->InventoryType == INVTYPE_SHIELD )
 	{
-		float block_multiplier = ( ( 100.0f + float( m_modblockabsorbvalue ) ) / 100.0f );
+		float block_multiplier = ( 100.0f + float( m_modblockabsorbvalue ) ) / 100.0f;
 		if( block_multiplier < 1.0f )block_multiplier = 1.0f;
 
 		int32 blockable_damage = float2int32( (float( shield->GetProto()->Block ) + ( float(m_modblockvaluefromspells + GetUInt32Value( PLAYER_RATING_MODIFIER_BLOCK ) )) + ( ( float( str ) / 20.0f ) - 1.0f ) ) * block_multiplier);
@@ -5750,6 +5748,16 @@ void Player::UpdateStats()
 	{
 		SetUInt32Value( PLAYER_SHIELD_BLOCK, 0 );
 	}
+
+	// Expertise
+	// Expertise is somewhat tricky. Expertise on items is expertise "rating" where as "expertise"
+	// on the character sheet is the rating modified by a factor. The bonus % this value gives is
+	// actually the "rating" modified by another factor.
+	// eg. 100 expertise rating from items
+	// 100 / 3.92 = 25 expertise
+	// 100 / 15.77 = 6.3% reduced dodge/parry chances
+	SetUInt32Value( PLAYER_EXPERTISE, float2int32( CalcRating( PLAYER_RATING_MODIFIER_EXPERTISE ) ) ); // value displayed in char sheet
+	//SetUInt32Value( PLAYER_RATING_MODIFIER_EXPERTISE2, GetUInt32Value( PLAYER_RATING_MODIFIER_EXPERTISE ) );
 
 	// Dynamic aura application, auras 212, 268
 	for( uint32 x = MAX_TOTAL_AURAS_START; x < MAX_TOTAL_AURAS_END; x++ )
@@ -10343,6 +10351,7 @@ void Player::CalcDamage()
 /////////////////////////////////RANGED end
 		if( GetSummon() )
 			GetSummon()->CalcDamage();//Re-calculate pet's too
+
 }
 
 uint32 Player::GetMainMeleeDamage(uint32 AP_owerride)
@@ -11138,7 +11147,7 @@ void Player::RemoveSpellTargets(uint32 Type, Unit* target)
 	if( m_spellIndexTypeTargets[Type] != 0 )
 	{
 		Unit * pUnit = m_mapMgr ? m_mapMgr->GetUnit(m_spellIndexTypeTargets[Type]) : NULL;
-		if( pUnit != NULL /*&& pUnit != target*/ ) //some auras can stack on target. There is no need to remove them if target is same as previous one // KFL: This is wrong and allows casting all Judgements on 1 target
+		if( pUnit != NULL && pUnit != target ) //some auras can stack on target. There is no need to remove them if target is same as previous one
 		{
 			pUnit->RemoveAurasByBuffIndexType(Type, GetGUID());
 			m_spellIndexTypeTargets[Type] = 0;

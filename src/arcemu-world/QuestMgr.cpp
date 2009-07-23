@@ -1145,7 +1145,7 @@ void QuestMgr::OnQuestFinished(Player* plr, Quest* qst, Object *qst_giver, uint3
 				Spell * spe = SpellPool.PooledNew();
 				if (!spe)
 					return;
-				spe->Init(plr,inf,true,NULL);
+				spe->Init(qst_giver,inf,true,NULL);
 				SpellCastTargets tgt;
 				tgt.m_unitTarget = plr->GetGUID();
 				spe->prepare(&tgt);
@@ -1296,7 +1296,7 @@ void QuestMgr::OnQuestFinished(Player* plr, Quest* qst, Object *qst_giver, uint3
 				Spell * spe = SpellPool.PooledNew();
 				if (!spe)
 					return;
-				spe->Init(plr,inf,true,NULL);
+				spe->Init(qst_giver,inf,true,NULL);
 				SpellCastTargets tgt;
 				tgt.m_unitTarget = plr->GetGUID();
 				spe->prepare(&tgt);
@@ -1584,7 +1584,7 @@ bool QuestMgr::OnActivateQuestGiver(Object *qst_giver, Player *plr)
 		return false;
 
 	uint32 questCount = sQuestMgr.ActiveQuestsCount(qst_giver, plr);
-	WorldPacket data(1004);
+	WorldPacket data(1004);	
 
 	if (questCount == 0) 
 	{

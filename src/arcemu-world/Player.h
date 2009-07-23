@@ -812,8 +812,7 @@ enum SPELL_INDEX
 	SPELL_TYPE_INDEX_CYCLONE		= 8,
 	SPELL_TYPE_INDEX_BANISH			= 9,
 	SPELL_TYPE_INDEX_JUDGEMENT		= 10,
-	SPELL_TYPE_INDEX_FOCUS_MAGIC	= 11,
-	NUM_SPELL_TYPE_INDEX			= 12,
+	NUM_SPELL_TYPE_INDEX			= 11,
 };
 
 enum SPELL_INDEX2
@@ -1616,11 +1615,9 @@ public:
 	float m_resist_critical[2];//when we are a victim we can have talents to decrease chance for critical hit. This is a negative value and it's added to critchances
 	float m_resist_hit[3]; // 0 = melee; 1= ranged; 2=spells
 	float m_attack_speed[3];
-	float SpellDmgDoneByAttribute[5][7];
 	float SpellHealDoneByAttribute[5][7];
 	uint32 m_modphyscritdmgPCT;
 	uint32 m_RootedCritChanceBonus; // Class Script Override: Shatter
-	uint32 m_IncreaseDmgSnaredSlowed;
 	uint32 m_MoltenFuryDmgBonus;    // DuKJIoHuyC: для таланта http://www.wowhead.com/?spell=31680
 	uint32 ShatteredBarrierMod;		// For Shattered Barrier http://www.wowhead.com/?spell=54787
 	uint32 FieryPaybackModHP35;		// for Fiery Payback
@@ -2318,9 +2315,7 @@ public:
 	uint32 HasRunes(uint8 type, uint32 count);
 	uint32 m_runetimer[6];
 
-	// Avenging Wrath
-	bool mAvengingWrath;
-	void AvengingWrath() { mAvengingWrath = true; }
+
 
 	int16 m_vampiricEmbrace;
 	int16 m_vampiricTouch;

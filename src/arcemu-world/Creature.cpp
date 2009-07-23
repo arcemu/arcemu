@@ -119,18 +119,11 @@ Creature::~Creature()
 	if(m_custom_waypoint_map != 0)
 	{
 		for(WayPointMap::iterator itr = m_custom_waypoint_map->begin(); itr != m_custom_waypoint_map->end(); ++itr)
-		{
-			if( (*itr) )
-				delete (*itr);
-		}
-		//delete m_custom_waypoint_map;
-		m_custom_waypoint_map->clear();
+			delete (*itr);
+		delete m_custom_waypoint_map;
 	}
 	if( m_respawnCell != NULL )
 		m_respawnCell->_respawnObjects.erase(this);
-
-	if (m_escorter != NULL)
-		m_escorter = NULL;
 }
 
 void Creature::Update( uint32 p_time )
@@ -1168,12 +1161,6 @@ bool Creature::Load(CreatureSpawn *spawn, uint32 mode, MapInfo *info)
 	//SetUInt32Value(UNIT_FIELD_HEALTH, (mode ? long2int32(proto->Health * 1.5)  : proto->Health));
 	//SetUInt32Value(UNIT_FIELD_BASE_HEALTH, (mode ? long2int32(proto->Health * 1.5)  : proto->Health));
 	//SetUInt32Value(UNIT_FIELD_MAXHEALTH, (mode ? long2int32(proto->Health * 1.5)  : proto->Health));
-	if(proto && proto->MinHealth > proto->MaxHealth)
-	{
-		proto->MaxHealth = proto->MinHealth+1;
-		SaveToDB();
-	}
-
 	uint32 health = proto->MinHealth + RandomUInt(proto->MaxHealth - proto->MinHealth);
 	if(mode)
 		health = long2int32(double(health) * 1.5);
@@ -1810,11 +1797,9 @@ void Creature::DestroyCustomWaypointMap()
 	{
 		for(WayPointMap::iterator itr = m_custom_waypoint_map->begin(); itr != m_custom_waypoint_map->end(); ++itr)
 		{
-			if( (*itr) )
-				delete (*itr);
+			delete (*itr);
 		}
-		//delete m_custom_waypoint_map;
-		m_custom_waypoint_map->clear();
+		delete m_custom_waypoint_map;
 		m_custom_waypoint_map = 0;
 		m_aiInterface->SetWaypointMap(0);
 	}
