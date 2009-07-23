@@ -843,3 +843,14 @@ void GameObject::UpdateRotation()
 		SetFloatValue(GAMEOBJECT_PARENTROTATION_03, r3);
 	}
 }
+
+void GameObject::SetState(uint8 state)
+{
+	SetByte(GAMEOBJECT_BYTES_1, 0, state);
+}
+
+uint8 GameObject::GetState()
+{
+	return GetByte(GAMEOBJECT_BYTES_1, 0);
+}
+

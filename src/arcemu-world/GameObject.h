@@ -117,6 +117,14 @@ struct GameObjectInfo
 };
 #pragma pack(pop)
 
+enum GAMEOBJECT_BYTES
+{
+	GAMEOBJECT_BYTES_STATE			= 0,
+	GAMEOBJECT_BYTES_TYPE_ID		= 1,
+	GAMEOBJECT_BYTES_UNK			= 2, // todo: unknown atm
+	GAMEOBJECT_BYTES_ANIMPROGRESS	= 3,
+};
+
 enum GAMEOBJECT_TYPES
 {
 	GAMEOBJECT_TYPE_DOOR					= 0,
