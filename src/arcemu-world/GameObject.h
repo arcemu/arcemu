@@ -299,6 +299,9 @@ public:
 	uint32 GetGOReqSkill();
 	MapCell * m_respawnCell;
 
+	void SetState(uint8 state);
+	uint8 GetState();
+
 protected:
 
 	bool m_summonedGo;
