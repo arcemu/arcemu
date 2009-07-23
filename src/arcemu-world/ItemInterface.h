@@ -106,6 +106,7 @@ public:
 	int8 FindFreeBackPackSlot();
 	uint8 FindFreeBackPackSlotMax();
 	int8 FindFreeKeyringSlot();
+	int8 FindFreeCurrencySlot();
 	int8 FindSpecialBag(Item *item);
 
 

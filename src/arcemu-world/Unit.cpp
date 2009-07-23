@@ -7875,7 +7875,7 @@ void Unit::RemoveReflect( uint32 spellid )
 		else
 			++i;
 
-	if( dbcSpell.LookupEntry(spellid)->Id == 23920 && IsPlayer() && HasAurasWithNameHash(SPELL_HASH_IMPROVED_SPELL_REFLECTION) )
+	if( spellid == 23920 && IsPlayer() && HasAurasWithNameHash(SPELL_HASH_IMPROVED_SPELL_REFLECTION) )
 	{
 		Player *pPlayer = static_cast<Player*>(this);
 		if( !pPlayer )
@@ -7909,7 +7909,7 @@ void Unit::RemoveReflect( uint32 spellid )
 		}
 	}
 
-	if( dbcSpell.LookupEntry(spellid)->Id == 59725 && IsPlayer() )
+	if( spellid == 59725 && IsPlayer() )
 	{
 		Player *pPlayer = static_cast<Player*>(this);
 		if( !pPlayer )

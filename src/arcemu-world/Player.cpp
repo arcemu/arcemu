@@ -7771,7 +7771,7 @@ void Player::_Relocate(uint32 mapid, const LocationVector & v, bool sendpending,
 void Player::AddItemsToWorld()
 {
 	Item * pItem;
-	for(uint8 i = 0; i < INVENTORY_KEYRING_END; i++)
+	for(uint8 i = 0; i < CURRENCYTOKEN_SLOT_END; i++)
 	{
 		pItem = GetItemInterface()->GetInventoryItem(i);
 		if( pItem != NULL )
@@ -7781,6 +7781,11 @@ void Player::AddItemsToWorld()
 			if(i < INVENTORY_SLOT_BAG_END)	  // only equipment slots get mods.
 			{
 				_ApplyItemMods(pItem, i, true, false, true);
+			}
+
+			if(i >= CURRENCYTOKEN_SLOT_START && i < CURRENCYTOKEN_SLOT_END)
+			{
+				UpdateKnownCurrencies(pItem->GetEntry(), true);
 			}
 
 			if(pItem->IsContainer() && GetItemInterface()->IsBagSlot(i))
@@ -7806,7 +7811,7 @@ void Player::AddItemsToWorld()
 void Player::RemoveItemsFromWorld()
 {
 	Item * pItem;
-	for(uint32 i = 0; i < INVENTORY_KEYRING_END; i++)
+	for(uint32 i = 0; i < CURRENCYTOKEN_SLOT_END; i++)
 	{
 		pItem = m_ItemInterface->GetInventoryItem((int8)i);
 		if(pItem)
@@ -12944,4 +12949,23 @@ void Player::CalcExpertise()
 	ModUnsigned32Value( PLAYER_EXPERTISE, CalcRating( PLAYER_RATING_MODIFIER_EXPERTISE ) + modifier );
 	ModUnsigned32Value( PLAYER_OFFHAND_EXPERTISE, CalcRating( PLAYER_RATING_MODIFIER_EXPERTISE ) + modifier );
 	UpdateStats();
+}
+
+void Player::UpdateKnownCurrencies(uint32 itemId, bool apply)
+{
+    if(CurrencyTypesEntry const* ctEntry = dbcCurrencyTypesStore.LookupEntry(itemId))
+    {
+        if(apply)
+		{
+            uint64 oldval = GetUInt64Value( PLAYER_FIELD_KNOWN_CURRENCIES );
+            uint64 newval = oldval | ( (( uint32 )1) << (ctEntry->BitIndex-1) );
+            SetUInt64Value( PLAYER_FIELD_KNOWN_CURRENCIES, newval );
+		}
+        else
+		{
+			uint64 oldval = GetUInt64Value( PLAYER_FIELD_KNOWN_CURRENCIES );
+            uint64 newval = oldval & ~( (( uint32 )1) << (ctEntry->BitIndex-1) );
+            SetUInt64Value( PLAYER_FIELD_KNOWN_CURRENCIES, newval );
+		}
+    }
 }
