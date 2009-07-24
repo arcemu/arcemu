@@ -2395,6 +2395,8 @@ void Object::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
 
 		/* Set victim health to 0 */
 		pVictim->SetUInt32Value(UNIT_FIELD_HEALTH, 0);
+		CALL_INSTANCE_SCRIPT_EVENT( m_mapMgr, OnPlayerDeath )( TO_PLAYER( pVictim ), TO_UNIT(this) );
+
 		if(pVictim->IsPlayer())
 		{
 			uint32 self_res_spell = 0;

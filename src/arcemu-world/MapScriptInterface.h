@@ -21,11 +21,6 @@
 #ifndef _MAP_SCRIPT_INTERFACE_H
 #define _MAP_SCRIPT_INTERFACE_H
 
-/* * Class InstanceScript
-   * Instanced class created for each instance of the map, holds all 
-   * scriptable exports
-*/
-
 /* * Class MapScriptInterface
    * Provides an interface to mapmgr for scripts, to obtain objects,
    * get players, etc.
@@ -110,25 +105,6 @@ public:
 };
 
 #define sStructFactory StructFactory::getSingleton()
-
-class SERVER_DECL InstanceScript
-{
-public:
-	InstanceScript(MapMgr *instance);
-	virtual ~InstanceScript() {}
-
-	virtual GameObject * GetObjectForOpenLock(Player *pCaster, Spell* pSpell, SpellEntry* pProto) { return 0; }
-
-	virtual void SetLockOptions(uint32 uEntryId, GameObject* pGameObject) { }
-	virtual uint32 GetRespawnTimeForCreature(uint32 uEntryId, Creature *pCreature) { return 240000; }
-
-	virtual void Destroy() {}
-	virtual void UpdateEvent() {}
-
-protected:
-	MapMgr * _instance;
-
-};
 
 #endif
 

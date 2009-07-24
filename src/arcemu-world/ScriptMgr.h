@@ -23,6 +23,7 @@
 
 #define SCRIPT_MODULE void*
 #define ADD_CREATURE_FACTORY_FUNCTION(cl) static CreatureAIScript * Create(Creature * c) { return new cl(c); }
+#define ADD_INSTANCE_FACTORY_FUNCTION( ClassName ) static InstanceScript* Create( MapMgr* pMapMgr ) { return new ClassName( pMapMgr ); }; 
 
 class Channel;
 class Guild;
@@ -108,6 +109,7 @@ class Creature;
 class CreatureAIScript;
 class GossipScript;
 class GameObjectAIScript;
+class InstanceScript;
 class ScriptMgr;
 struct ItemPrototype;
 class QuestLogEntry;
@@ -115,6 +117,7 @@ class QuestLogEntry;
 /* Factory Imports (from script lib) */
 typedef CreatureAIScript*(*exp_create_creature_ai)(Creature * pCreature);
 typedef GameObjectAIScript*(*exp_create_gameobject_ai)(GameObject * pGameObject);
+typedef InstanceScript* ( *exp_create_instance_ai )( MapMgr* pMapMgr );
 typedef bool(*exp_handle_dummy_spell)(uint32 i, Spell * pSpell);
 typedef bool(*exp_handle_dummy_aura)(uint32 i, Aura * pAura, bool apply);
 typedef void(*exp_script_register)(ScriptMgr * mgr);
@@ -127,6 +130,7 @@ typedef HM_NAMESPACE::hash_map<uint32, exp_create_creature_ai> CreatureCreateMap
 typedef HM_NAMESPACE::hash_map<uint32, exp_create_gameobject_ai> GameObjectCreateMap;
 typedef HM_NAMESPACE::hash_map<uint32, exp_handle_dummy_aura> HandleDummyAuraMap;
 typedef HM_NAMESPACE::hash_map<uint32, exp_handle_dummy_spell> HandleDummySpellMap;
+typedef HM_NAMESPACE::hash_map<uint32, exp_create_instance_ai> InstanceCreateMap;
 typedef set<GossipScript*> CustomGossipScripts;
 typedef set<QuestScript*> QuestScripts;
 typedef list<void*> ServerHookList;
@@ -150,6 +154,7 @@ public:
 
 	CreatureAIScript * CreateAIScriptClassForEntry(Creature* pCreature);
 	GameObjectAIScript * CreateAIScriptClassForGameObject(uint32 uEntryId, GameObject* pGameObject);
+	InstanceScript* CreateScriptClassForInstance( uint32 pMapId, MapMgr* pMapMgr );
 
 	bool CallScriptedDummySpell(uint32 uSpellId, uint32 i, Spell* pSpell);
 	bool CallScriptedDummyAura( uint32 uSpellId, uint32 i, Aura* pAura, bool apply);
@@ -164,10 +169,12 @@ public:
 	void register_hook(ServerHookEvents event, void * function_pointer);
 	void register_item_gossip_script(uint32 entry, GossipScript * gs);
 	void register_quest_script(uint32 entry, QuestScript * qs);
+	void register_instance_script( uint32 pMapId, exp_create_instance_ai pCallback ); 
 
 	ARCEMU_INLINE GossipScript * GetDefaultGossipScript() { return DefaultGossipScript; }
 
 protected:
+	InstanceCreateMap mInstances; 
 	CreatureCreateMap _creatures;
 	GameObjectCreateMap _gameobjects;
 	HandleDummyAuraMap _auras;
@@ -271,6 +278,57 @@ public:
 	virtual void OnPlayerItemPickup(uint32 itemId, uint32 totalCount, Player* mTarget, QuestLogEntry *qLogEntry) {}
 };
 
+/* * Class InstanceScript 
+* Instanced class created for each instance of the map, holds all  
+* scriptable exports 
+*/
+
+class SERVER_DECL InstanceScript
+{
+public:
+	InstanceScript( MapMgr* pMapMgr ); 
+	virtual ~InstanceScript() {};
+
+	// Procedures that had been here before
+	virtual GameObject*	GetObjectForOpenLock( Player* pCaster, Spell* pSpell, SpellEntry* pSpellEntry ) { return NULL; };
+	virtual void				SetLockOptions( uint32 pEntryId, GameObject* pGameObject ) {};
+	virtual uint32				GetRespawnTimeForCreature( uint32 pEntryId, Creature* pCreature) { return 240000; };
+
+	// Player
+	virtual void				OnPlayerDeath( Player* pVictim, Unit* pKiller ) {};
+
+	// Area and AreaTrigger
+	virtual void				OnPlayerEnter( Player* pPlayer ) {};
+	virtual void				OnAreaTrigger( Player* pPlayer, uint32 pAreaId ) {};
+	virtual void				OnZoneChange( Player* pPlayer, uint32 pNewZone, uint32 pOldZone ) {};
+
+	// Data get / set - idea taken from ScriptDev2
+	virtual void				SetInstanceData( uint32 pType, uint32 pIndex, uint32 pData ) {};
+	virtual uint32				GetInstanceData( uint32 pType, uint32 pIndex ) { return 0; };
+
+	// Creature / GameObject - part of it is simple reimplementation for easier use Creature / GO < --- > Script
+	virtual void				OnCreatureDeath( Creature* pVictim, Unit* pKiller ) {};
+	virtual void				OnCreaturePushToWorld( Creature* pCreature ) {};
+	virtual void				OnGameObjectActivate( GameObject* pGameObject, Player* pPlayer ) {};
+	virtual void				OnGameObjectPushToWorld( GameObject* pGameObject ) {};
+
+	// Standard virtual methods
+	virtual void				OnLoad() {};
+	virtual void				UpdateEvent() {};
+	virtual void				Destroy() {};
+
+	// UpdateEvent
+	void						RegisterUpdateEvent( uint32 pFrequency );
+	void						ModifyUpdateEvent( uint32 pNewFrequency );
+	void						RemoveUpdateEvent();
+
+	// Something to return Instance's MapMgr
+	MapMgr*				GetInstance() { return mInstance; };
+
+protected:
+
+	MapMgr* mInstance;
+};
 class SERVER_DECL HookInterface : public Singleton<HookInterface>
 {
 public:

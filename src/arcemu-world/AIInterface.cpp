@@ -553,6 +553,9 @@ void AIInterface::HandleEvent(uint32 event, Unit* pUnit, uint32 misc1)
 				objmgr.HandleMonsterSayEvent( static_cast< Creature* >( m_Unit ), MONSTER_SAY_EVENT_ON_DIED );
 
 			CALL_SCRIPT_EVENT(m_Unit, OnDied)(pUnit);
+			if ( m_Unit->IsCreature() )
+				CALL_INSTANCE_SCRIPT_EVENT( m_Unit->GetMapMgr(), OnCreatureDeath )( TO_CREATURE( m_Unit ), pUnit );
+
 			m_AIState = STATE_IDLE;
 
 			StopMovement(0);

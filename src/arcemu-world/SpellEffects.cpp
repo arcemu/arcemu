@@ -3654,6 +3654,7 @@ void Spell::SpellEffectOpenLock(uint32 i) // Open Lock
 
 			if( gameObjTarget->GetByte( GAMEOBJECT_BYTES_1, 1 ) == GAMEOBJECT_TYPE_GOOBER)
 				CALL_GO_SCRIPT_EVENT(gameObjTarget, OnActivate)(static_cast<Player*>(p_caster));
+				CALL_INSTANCE_SCRIPT_EVENT( gameObjTarget->GetMapMgr(), OnGameObjectActivate )( gameObjTarget, p_caster ); 
 
 			if(sQuestMgr.OnActivateQuestGiver(gameObjTarget, p_caster))
 				return;
@@ -4526,6 +4527,7 @@ void Spell::SpellEffectOpenLockItem(uint32 i)
 		static_cast<Player*>(caster)->UpdateNearbyGameObjects();
 
 	CALL_GO_SCRIPT_EVENT(gameObjTarget, OnActivate)(static_cast<Player*>(caster));
+	CALL_INSTANCE_SCRIPT_EVENT( gameObjTarget->GetMapMgr(), OnGameObjectActivate )( gameObjTarget, TO_PLAYER( caster ) ); 
 	gameObjTarget->SetByte(GAMEOBJECT_BYTES_1, 0, 0);
 
 	if( gameObjTarget->GetEntry() == 183146)

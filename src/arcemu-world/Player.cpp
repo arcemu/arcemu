@@ -3913,6 +3913,8 @@ void Player::OnPushToWorld()
 	}
 
 	sHookInterface.OnEnterWorld(this);
+	CALL_INSTANCE_SCRIPT_EVENT( m_mapMgr, OnZoneChange )( this, m_zoneId, 0 ); 
+	CALL_INSTANCE_SCRIPT_EVENT( m_mapMgr, OnPlayerEnter )( this );
 
 	if(m_TeleportState == 1)		// First world enter
 		CompleteLoading();
@@ -8383,6 +8385,7 @@ bool Player::IsInCity()
 
 void Player::ZoneUpdate(uint32 ZoneId)
 {
+	uint32 oldzone = m_zoneId;
 	if( m_zoneId != ZoneId )
 	{
 		m_zoneId = ZoneId;
@@ -8402,6 +8405,7 @@ void Player::ZoneUpdate(uint32 ZoneId)
 
 	m_playerInfo->lastZone = ZoneId;
 	sHookInterface.OnZone(this, ZoneId);
+	CALL_INSTANCE_SCRIPT_EVENT( m_mapMgr, OnZoneChange )( this, ZoneId, oldzone );
 
 	AreaTable * at = dbcArea.LookupEntry(GetAreaID());
 	if(at && ( at->category == AREAC_SANCTUARY || at->AreaFlags & AREA_SANCTUARY ) )

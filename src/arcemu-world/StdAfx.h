@@ -29,7 +29,12 @@
 #undef max
 #endif
 
-#define _GAME
+#define TO_CREATURE(ptr) static_cast<Creature*>(ptr) 
+#define TO_PLAYER(ptr) static_cast<Player*>(ptr)
+#define TO_OBJECT(ptr) static_cast<Object*>(ptr)
+#define TO_UNIT(ptr) static_cast<Unit*>(ptr)
+#define TO_PET(ptr) static_cast<Pet*>(ptr)
+
 
 #include "Definitions.h"
 

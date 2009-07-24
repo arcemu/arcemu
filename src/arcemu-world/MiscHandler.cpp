@@ -1410,6 +1410,7 @@ void WorldSession::HandleGameObjectUse(WorldPacket & recv_data)
 	Player *plyr = GetPlayer();
 
 	CALL_GO_SCRIPT_EVENT(obj, OnActivate)(_player);
+	CALL_INSTANCE_SCRIPT_EVENT( _player->GetMapMgr(), OnGameObjectActivate )( obj, _player ); 
 
   _player->RemoveStealth(); // cebernic:RemoveStealth due to GO was using. Blizzlike
 

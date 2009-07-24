@@ -1621,6 +1621,7 @@ void Creature::OnPushToWorld()
 		}
 
 	}
+	CALL_INSTANCE_SCRIPT_EVENT( m_mapMgr, OnCreaturePushToWorld )( this );
 }
 
 void Creature::AISpellUpdate()

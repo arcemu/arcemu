@@ -46,6 +46,7 @@ class Transporter;
 class Corpse;
 class CBattleground;
 class Instance;
+class InstanceScript;
 
 
 enum MapMgrTimers
@@ -80,6 +81,8 @@ typedef HM_NAMESPACE::hash_map<uint32, GameObject*> GameObjectSqlIdMap;
 
 class Transporter;
 #define RESERVE_EXPAND_SIZE 1024
+
+#define CALL_INSTANCE_SCRIPT_EVENT( Mgr, Func ) if ( Mgr != NULL && Mgr->GetScript() != NULL ) Mgr->GetScript()->Func 
 
 class SERVER_DECL MapMgr : public CellHandler <MapCell>, public EventableObject,public CThread
 {
@@ -331,6 +334,11 @@ public:
 	CreatureSqlIdMap _sqlids_creatures;
 	GameObjectSqlIdMap _sqlids_gameobjects;
 
+	// Script related
+	InstanceScript* GetScript() { return mInstanceScript; };
+	void LoadInstanceScript();
+	void CallScriptUpdate();
+
 	Creature * GetSqlIdCreature(uint32 sqlid);
 	GameObject * GetSqlIdGameObject(uint32 sqlid);
 	deque<uint32> _reusable_guids_gameobject;
@@ -339,6 +347,9 @@ public:
 	bool forced_expire;
 	bool thread_kill_only;
 	bool thread_running;
+
+protected:
+	InstanceScript* mInstanceScript;
 };
 
 #endif

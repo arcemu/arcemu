@@ -57,6 +57,8 @@ public:
 	static CBattleground * Create(MapMgr * m, uint32 i, uint32 l, uint32 t) { return new WarsongGulch(m, i, l, t); }
 
 	uint32 GetNameID() { return 39; }
+	uint32 GetAllianceFlagHolderGUID() { return m_flagHolders[0]; } 
+	uint32 GetHordeFlagHolderGUID() { return m_flagHolders[1]; } 
 	void OnStart();
 
 	void SetIsWeekend(bool isweekend);

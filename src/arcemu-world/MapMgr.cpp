@@ -87,6 +87,8 @@ MapMgr::MapMgr(Map *map, uint32 mapId, uint32 instanceid) : CellHandler<MapCell>
 	_sqlids_gameobjects.clear();
 	_reusable_guids_gameobject.clear();
 	_reusable_guids_creature.clear();
+
+	mInstanceScript = NULL;
 }
 
 
@@ -153,6 +155,9 @@ MapMgr::~MapMgr()
 	for (WorldStateHandlerMap::iterator itr=m_worldStates.begin(); itr!= m_worldStates.end(); ++itr)
 		delete itr->second;
 	m_worldStates.clear();
+
+	if ( mInstanceScript != NULL ) 
+		mInstanceScript->Destroy(); 
 
 	activeCreatures.clear();
 	activeGameObjects.clear();
@@ -1567,6 +1572,9 @@ bool MapMgr::Do()
 	ObjectSet::iterator i;
 	uint32 last_exec=getMSTime();
 
+	// Create Instance script 
+	LoadInstanceScript(); 
+
 	/* create static objects */
 	for(GOSpawnList::iterator itr = _map->staticSpawns.GOSpawns.begin(); itr != _map->staticSpawns.GOSpawns.end(); ++itr)
 	{
@@ -1574,6 +1582,9 @@ bool MapMgr::Do()
 		obj->Load((*itr));
 		_mapWideStaticObjects.insert(obj);
 	}
+
+	// Call script OnLoad virtual procedure 
+ 	CALL_INSTANCE_SCRIPT_EVENT( this, OnLoad )(); 
 
 	for(CreatureSpawnList::iterator itr = _map->staticSpawns.CreatureSpawns.begin(); itr != _map->staticSpawns.CreatureSpawns.end(); ++itr)
 	{
@@ -2226,3 +2237,13 @@ void MapMgr::SendPvPCaptureMessage(int32 ZoneMask, uint32 ZoneId, const char * M
 		plr->GetSession()->SendPacket(&data);
 	}
 }
+
+void MapMgr::LoadInstanceScript() 
+{ 
+	mInstanceScript = sScriptMgr.CreateScriptClassForInstance( _mapId, this ); 
+}; 	 
+ void MapMgr::CallScriptUpdate() 
+{ 
+	ASSERT( mInstanceScript ); 
+		mInstanceScript->UpdateEvent(); 
+ };

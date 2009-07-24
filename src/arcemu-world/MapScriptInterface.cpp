@@ -18,10 +18,6 @@
  *
  */
 
-/* * Class InstanceScript
-   * Instanced class created for each instance of the map, holds all 
-   * scriptable exports
-*/
 
 /* * Class MapScriptInterface
    * Provides an interface to mapmgr for scripts, to obtain objects,
