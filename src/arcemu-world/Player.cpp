@@ -12553,14 +12553,15 @@ void Player::FullHPMP()
     SetUInt32Value(UNIT_FIELD_POWER4, GetUInt32Value(UNIT_FIELD_MAXPOWER4));
 }
 
-/***********************************
-* Remove all temporary enchants
-***********************************/
+/**********************************************
+* Remove all temporary enchants from all items
+**********************************************/
 void Player::RemoveTempEnchantsOnArena()
 {
 	ItemInterface *itemi = GetItemInterface();
-
-	for( uint32 x = EQUIPMENT_SLOT_START; x < EQUIPMENT_SLOT_END; ++x ) // all equipment items
+	
+	// Loop through all equipment items
+	for( uint32 x = EQUIPMENT_SLOT_START; x < EQUIPMENT_SLOT_END; ++x )
 	{
 		Item * it = itemi->GetInventoryItem(x);
 
@@ -12570,7 +12571,8 @@ void Player::RemoveTempEnchantsOnArena()
 		}
 	}
 
-	for( uint32 x = INVENTORY_SLOT_BAG_START; x < INVENTORY_SLOT_BAG_END; ++x) // all bags items
+	// Loop through all your bags.. 
+	for( uint32 x = INVENTORY_SLOT_BAG_START; x < INVENTORY_SLOT_BAG_END; ++x)
 	{
 		Item * it = itemi->GetInventoryItem(x);
 		
@@ -12589,7 +12591,8 @@ void Player::RemoveTempEnchantsOnArena()
 		}
 	}
 
-	for( uint32 x = INVENTORY_SLOT_ITEM_START; x < INVENTORY_SLOT_ITEM_END; ++x ) // all inventory items
+	// Loop through all your invintory items
+	for( uint32 x = INVENTORY_SLOT_ITEM_START; x < INVENTORY_SLOT_ITEM_END; ++x )
 	{
 		Item * it = itemi->GetInventoryItem(x);
 
@@ -12688,7 +12691,7 @@ void Player::ConvertRune(uint8 index, uint8 value)
 uint32 Player::HasRunes(uint8 type, uint32 count)
 {
 	uint32 found = 0;
-	for(uint32 i=0; i<6 && count != found; ++i)
+	for(uint32 i = 0; i < 6 && count != found; ++i)
 	{
 		if(GetRune(i) == type)
 			found++;
@@ -12923,7 +12926,7 @@ void Player::CalcExpertise()
 	SetUInt32Value( PLAYER_EXPERTISE, 0 );
 	SetUInt32Value( PLAYER_OFFHAND_EXPERTISE, 0 );
 
-	for( uint32 x = MAX_TOTAL_AURAS_START; x < MAX_TOTAL_AURAS_END; x++ )
+	for( uint32 x = MAX_TOTAL_AURAS_START; x < MAX_TOTAL_AURAS_END; ++x )
 	{
 		if( m_auras[x] != NULL && m_auras[x]->HasModType( SPELL_AURA_EXPERTISE ) )
 		{

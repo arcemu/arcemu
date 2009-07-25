@@ -2644,12 +2644,13 @@ void Object::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
 									if(pTagger->InGroup())
 									{
 										Group *pGroup = pTagger->GetGroup();
-										Player *active_player_list[MAX_GROUP_SIZE_RAID];//since group is small we can afford to do this ratehr then recheck again the whole active player set
+										//since group is small we can afford to do this rather then recheck again the whole active player set
+										Player *active_player_list[MAX_GROUP_SIZE_RAID];
 										Player *pGroupGuy = NULL;
 										int active_player_count=0;
 										GroupMembersSet::iterator itr;
 										pGroup->Lock();
-										for(uint32 i = 0; i < pGroup->GetSubGroupCount(); i++) {
+										for(uint32 i = 0; i < pGroup->GetSubGroupCount(); ++i) {
 											for(itr = pGroup->GetSubGroup(i)->GetGroupMembersBegin(); itr != pGroup->GetSubGroup(i)->GetGroupMembersEnd(); ++itr)
 											{
 												pGroupGuy = (*itr)->m_loggedInPlayer;
@@ -2659,7 +2660,7 @@ void Object::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
 													pGroupGuy->GetDistanceSq(pVictim)<100*100
 												)
 												{
-													active_player_list[active_player_count]=pGroupGuy;
+													active_player_list[active_player_count] = pGroupGuy;
 													active_player_count++;
 												}
 											}
@@ -2667,10 +2668,10 @@ void Object::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
 										pGroup->Unlock();
 										if(active_player_count<1) //killer is always close to the victim. This should never execute
 										{
-											active_player_list[0]=pTagger;
+											active_player_list[0] = pTagger;
 											active_player_count=1;
 										}
-										for(int i=0;i<active_player_count;i++)
+										for(int i = 0; i < active_player_count; ++i)
 										{
 											Player * plr = active_player_list[i];
 #ifdef ENABLE_ACHIEVEMENTS
@@ -2736,33 +2737,37 @@ void Object::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
 										if(petOwner->InGroup())
 										{
 											Group *pGroup = petOwner->GetGroup();
-											Player *active_player_list[MAX_GROUP_SIZE_RAID];//since group is small we can afford to do this ratehr then recheck again the whole active player set
+											// since group is small we can afford to do this rather then recheck again the whole active player set
+											// This needs to be looked at..
+											Player *active_player_list[MAX_GROUP_SIZE_RAID];
 											Player *pGroupGuy = NULL;
-											int active_player_count=0;
+											int active_player_count = 0;
 											GroupMembersSet::iterator itr;
 											pGroup->Lock();
-											for(uint32 i = 0; i < pGroup->GetSubGroupCount(); i++) {
+											for(uint32 i = 0; i < pGroup->GetSubGroupCount(); ++i) {
 												for(itr = pGroup->GetSubGroup(i)->GetGroupMembersBegin(); itr != pGroup->GetSubGroup(i)->GetGroupMembersEnd(); ++itr)
 												{
 													pGroupGuy = (*itr)->m_loggedInPlayer;
 													if( pGroupGuy &&
 														pGroupGuy->isAlive() &&
+														//
 														pVictim->GetMapMgr() == pGroupGuy->GetMapMgr() &&
 														pGroupGuy->GetDistanceSq(pVictim)<100*100
 													)
 													{
-														active_player_list[active_player_count]=pGroupGuy;
+														active_player_list[active_player_count] = pGroupGuy;
 														active_player_count++;
 													}
 												}
 											}
 											pGroup->Unlock();
-											if(active_player_count<1) //killer is always close to the victim. This should never execute
+											//killer is always close to the victim. This should never execute
+											if(active_player_count < 1) 
 											{
-												active_player_list[0]=petOwner;
+												active_player_list[0] = petOwner;
 												active_player_count=1;
 											}
-											for(int i=0;i<active_player_count;i++)
+											for(int i = 0; i < active_player_count; ++i)
 											{
 												Player * plr = active_player_list[i];
 #ifdef ENABLE_ACHIEVEMENTS
