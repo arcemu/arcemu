@@ -128,7 +128,7 @@ void ItemInterface::m_DestroyForPlayer()
 //-------------------------------------------------------------------//
 //Description: Creates and adds a item that can be manipulated after		  
 //-------------------------------------------------------------------//
-Item *ItemInterface::SafeAddItem(uint32 ItemId, int8 ContainerSlot, int8 slot)
+Item *ItemInterface::SafeAddItem(uint32 ItemId, int16 ContainerSlot, int16 slot)
 {
 	Item *pItem;
 	ItemPrototype *pProto = ItemPrototypeStorage.LookupEntry(ItemId);
@@ -170,7 +170,7 @@ Item *ItemInterface::SafeAddItem(uint32 ItemId, int8 ContainerSlot, int8 slot)
 //-------------------------------------------------------------------//
 //Description: Creates and adds a item that can be manipulated after		  
 //-------------------------------------------------------------------//
-AddItemResult ItemInterface::SafeAddItem(Item *pItem, int8 ContainerSlot, int8 slot)
+AddItemResult ItemInterface::SafeAddItem(Item *pItem, int16 ContainerSlot, int16 slot)
 {
 	return m_AddItem( pItem, ContainerSlot, slot );
 }
@@ -178,7 +178,7 @@ AddItemResult ItemInterface::SafeAddItem(Item *pItem, int8 ContainerSlot, int8 s
 //-------------------------------------------------------------------//
 //Description: adds items to player inventory, this includes all types of slots.		  
 //-------------------------------------------------------------------//
-AddItemResult ItemInterface::m_AddItem(Item *item, int8 ContainerSlot, int8 slot)
+AddItemResult ItemInterface::m_AddItem(Item *item, int16 ContainerSlot, int16 slot)
 {
 	ASSERT( slot < MAX_INVENTORY_SLOT );
 	ASSERT( ContainerSlot < MAX_INVENTORY_SLOT );
@@ -352,7 +352,7 @@ AddItemResult ItemInterface::m_AddItem(Item *item, int8 ContainerSlot, int8 slot
 //-------------------------------------------------------------------//
 //Description: Checks if the slot is a Bag slot
 //-------------------------------------------------------------------//
-bool ItemInterface::IsBagSlot(int8 slot)
+bool ItemInterface::IsBagSlot(int16 slot)
 {
 	if((slot >= INVENTORY_SLOT_BAG_START && slot < INVENTORY_SLOT_BAG_END) || (slot >= BANK_SLOT_BAG_START && slot < BANK_SLOT_BAG_END))
 	{
@@ -364,7 +364,7 @@ bool ItemInterface::IsBagSlot(int8 slot)
 //-------------------------------------------------------------------//
 //Description: removes the item safely and returns it back for usage
 //-------------------------------------------------------------------//
-Item *ItemInterface::SafeRemoveAndRetreiveItemFromSlot(int8 ContainerSlot, int8 slot, bool destroy)
+Item *ItemInterface::SafeRemoveAndRetreiveItemFromSlot(int16 ContainerSlot, int16 slot, bool destroy)
 {
 	ASSERT(slot < MAX_INVENTORY_SLOT);
 	ASSERT(ContainerSlot < MAX_INVENTORY_SLOT);
@@ -435,7 +435,7 @@ Item *ItemInterface::SafeRemoveAndRetreiveItemFromSlot(int8 ContainerSlot, int8 
 //-------------------------------------------------------------------//
 Item *ItemInterface::SafeRemoveAndRetreiveItemByGuid(uint64 guid, bool destroy)
 {
-	int8 i = 0;
+	int16 i = 0;
 
 	for(i = EQUIPMENT_SLOT_START; i < EQUIPMENT_SLOT_END; i++)
 	{
@@ -535,7 +535,7 @@ Item *ItemInterface::SafeRemoveAndRetreiveItemByGuid(uint64 guid, bool destroy)
 //Description: completely removes item from player
 //Result: true if item removal was succefull
 //-------------------------------------------------------------------//
-bool ItemInterface::SafeFullRemoveItemFromSlot(int8 ContainerSlot, int8 slot)
+bool ItemInterface::SafeFullRemoveItemFromSlot(int16 ContainerSlot, int16 slot)
 {
 	ASSERT(slot < MAX_INVENTORY_SLOT);
 	ASSERT(ContainerSlot < MAX_INVENTORY_SLOT);
@@ -601,7 +601,7 @@ bool ItemInterface::SafeFullRemoveItemFromSlot(int8 ContainerSlot, int8 slot)
 //-------------------------------------------------------------------//
 bool ItemInterface::SafeFullRemoveItemByGuid(uint64 guid)
 {
-	int8 i = 0;
+	int16 i = 0;
 
 	for(i = EQUIPMENT_SLOT_START; i < EQUIPMENT_SLOT_END; i++)
 	{
@@ -700,7 +700,7 @@ bool ItemInterface::SafeFullRemoveItemByGuid(uint64 guid)
 //-------------------------------------------------------------------//
 //Description: Gets a item from Inventory
 //-------------------------------------------------------------------//
-Item *ItemInterface::GetInventoryItem(int8 slot)
+Item *ItemInterface::GetInventoryItem(int16 slot)
 {
 	if(slot < 0 || slot > MAX_INVENTORY_SLOT)
 		return NULL;
@@ -711,7 +711,7 @@ Item *ItemInterface::GetInventoryItem(int8 slot)
 //-------------------------------------------------------------------//
 //Description: Gets a Item from inventory or container
 //-------------------------------------------------------------------//
-Item *ItemInterface::GetInventoryItem( int8 ContainerSlot, int8 slot )
+Item *ItemInterface::GetInventoryItem( int16 ContainerSlot, int16 slot )
 {
 	if( ContainerSlot <= INVENTORY_SLOT_NOT_SET )
 	{
@@ -1279,7 +1279,7 @@ uint32 ItemInterface::RemoveItemAmt_ProtectPointer(uint32 id, uint32 amt, Item**
 // Removes desired amount of items by guid
 uint32 ItemInterface::RemoveItemAmtByGuid(uint64 guid, uint32 amt)
 {
-	int8 i;
+	int16 i;
 
 	for(i = EQUIPMENT_SLOT_START; i < INVENTORY_SLOT_ITEM_END; i++)
 	{
@@ -1466,9 +1466,9 @@ void ItemInterface::RemoveAllConjured()
 //-------------------------------------------------------------------//
 //Description: Gets slot number by itemid, banks not included
 //-------------------------------------------------------------------//
-int8 ItemInterface::GetInventorySlotById(uint32 ID)
+int16 ItemInterface::GetInventorySlotById(uint32 ID)
 {
-	for(uint8 i=0;i<INVENTORY_SLOT_ITEM_END;i++)
+	for(uint16 i=0;i<INVENTORY_SLOT_ITEM_END;i++)
 	{
 		if(m_pItems[i])
 		{
@@ -1479,18 +1479,18 @@ int8 ItemInterface::GetInventorySlotById(uint32 ID)
 		}
 	}
 
-	for(uint8 i=INVENTORY_KEYRING_START; i<INVENTORY_KEYRING_END; i++)
+	for(uint16 i=INVENTORY_KEYRING_START; i<INVENTORY_KEYRING_END; i++)
 	{
 		if(m_pItems[i])
 		{
 			if(m_pItems[i]->GetProto()->ItemId == ID)
 			{
-				return i;
+				return 16;
 			}
 		}
 	}
 
-	for(uint8 i=CURRENCYTOKEN_SLOT_START; i<CURRENCYTOKEN_SLOT_END; i++)
+	for(uint16 i=CURRENCYTOKEN_SLOT_START; i<CURRENCYTOKEN_SLOT_END; i++)
 	{
 		if(m_pItems[i])
 		{
@@ -1506,9 +1506,9 @@ int8 ItemInterface::GetInventorySlotById(uint32 ID)
 //-------------------------------------------------------------------//
 //Description: Gets slot number by item guid, banks not included
 //-------------------------------------------------------------------//
-int8 ItemInterface::GetInventorySlotByGuid(uint64 guid)
+int16 ItemInterface::GetInventorySlotByGuid(uint64 guid)
 {
-	for(uint8 i=EQUIPMENT_SLOT_START ;i<INVENTORY_SLOT_ITEM_END;i++)
+	for(uint16 i=EQUIPMENT_SLOT_START ;i<INVENTORY_SLOT_ITEM_END;i++)
 	{
 		if(m_pItems[i])
 		{
@@ -1519,7 +1519,7 @@ int8 ItemInterface::GetInventorySlotByGuid(uint64 guid)
 		}
 	}
 
-	for(uint8 i=INVENTORY_KEYRING_START; i<INVENTORY_KEYRING_END; i++)
+	for(uint16 i=INVENTORY_KEYRING_START; i<INVENTORY_KEYRING_END; i++)
 	{
 		if(m_pItems[i])
 		{
@@ -1530,7 +1530,7 @@ int8 ItemInterface::GetInventorySlotByGuid(uint64 guid)
 		}
 	}
 
-	for(uint8 i=CURRENCYTOKEN_SLOT_START; i<CURRENCYTOKEN_SLOT_END; i++)
+	for(uint16 i=CURRENCYTOKEN_SLOT_START; i<CURRENCYTOKEN_SLOT_END; i++)
 	{
 		if(m_pItems[i])
 		{
@@ -1544,9 +1544,9 @@ int8 ItemInterface::GetInventorySlotByGuid(uint64 guid)
 	return ITEM_NO_SLOT_AVAILABLE; //was changed from 0 cuz 0 is the slot for head
 }
 
-int8 ItemInterface::GetBagSlotByGuid(uint64 guid)
+int16 ItemInterface::GetBagSlotByGuid(uint64 guid)
 {
-	for(uint8 i=EQUIPMENT_SLOT_START ;i<INVENTORY_SLOT_ITEM_END;i++)
+	for(uint16 i=EQUIPMENT_SLOT_START ;i<INVENTORY_SLOT_ITEM_END;i++)
 	{
 		if(m_pItems[i])
 		{
@@ -1557,7 +1557,7 @@ int8 ItemInterface::GetBagSlotByGuid(uint64 guid)
 		}
 	}
 
-	for(uint8 i=INVENTORY_KEYRING_START; i<CURRENCYTOKEN_SLOT_END; i++)
+	for(uint16 i=INVENTORY_KEYRING_START; i<CURRENCYTOKEN_SLOT_END; i++)
 	{
 		if(m_pItems[i])
 		{
@@ -1568,7 +1568,7 @@ int8 ItemInterface::GetBagSlotByGuid(uint64 guid)
 		}
 	}
 
-	for(uint8 i=INVENTORY_SLOT_BAG_START; i<INVENTORY_SLOT_BAG_END; ++i)
+	for(uint16 i=INVENTORY_SLOT_BAG_START; i<INVENTORY_SLOT_BAG_END; ++i)
 	{
 		if(m_pItems[i]&&m_pItems[i]->GetTypeId()==TYPEID_CONTAINER)
 		{
@@ -2945,7 +2945,7 @@ void ItemInterface::RemoveBuyBackItem(uint32 index)
 //-------------------------------------------------------------------//
 //Description: swap inventory slots
 //-------------------------------------------------------------------//
-void ItemInterface::SwapItemSlots(int8 srcslot, int8 dstslot)
+void ItemInterface::SwapItemSlots(int16 srcslot, int16 dstslot)
 {
 	// srcslot and dstslot are int... NULL might not be an int depending on arch where it is compiled
 	if( srcslot >= MAX_INVENTORY_SLOT || srcslot < 0 )
@@ -3358,9 +3358,9 @@ int8 ItemInterface::FindFreeKeyringSlot()
 	return ITEM_NO_SLOT_AVAILABLE;
 }
 
-int8 ItemInterface::FindFreeCurrencySlot()
+int16 ItemInterface::FindFreeCurrencySlot()
 {
-	for( uint8 i = CURRENCYTOKEN_SLOT_START; i < CURRENCYTOKEN_SLOT_END; i++ )
+	for( uint16 i = CURRENCYTOKEN_SLOT_START; i < CURRENCYTOKEN_SLOT_END; i++ )
 	{
 		if( m_pItems[i] == NULL )
 		{
