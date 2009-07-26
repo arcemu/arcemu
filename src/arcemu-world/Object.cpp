@@ -3121,8 +3121,8 @@ void Object::SpellNonMeleeDamageLog(Unit *pVictim, uint32 spellID, uint32 damage
 		Spell * sp = SpellPool.PooledNew();
 		if ( !sp )
 			return;
-		sp->GetProto()->EffectBasePoints[0] = spellpower;
 		sp->Init( pl, entry, true, NULL );
+		sp->GetProto()->EffectBasePoints[0] = spellpower;
 		SpellCastTargets targets;
 		targets.m_unitTarget = pl->GetGUID();
 		sp->prepare(&targets);
