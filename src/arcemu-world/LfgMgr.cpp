@@ -185,6 +185,8 @@ void LfgMgr::UpdateLfgQueue(uint32 LfgDungeonId)
 
 	for(itr = m_lookingForMore[LfgDungeonId].begin(); itr != m_lookingForMore[LfgDungeonId].end(); ++itr)
 	{
+		plr = *itr;
+
 		if(plr->GetGroup())
 		{
 			// check if this is a suitable candidate for a group for others to join

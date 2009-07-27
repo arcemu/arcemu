@@ -126,7 +126,7 @@ bool ChatHandler::HandleQuestLookupCommand(const char * args, WorldSession * m_s
 		if(FindXinYString(x, y) || localizedFound)
  		{
  			string questid = MyConvertIntToString(i->id);
-			const char * questtitle = localizedFound ? li->Title : i->title;
+			const char * questtitle = localizedFound ? (li ? li->Title : "") : i->title;
 			// send quest link
 			recout = questid.c_str();
 			recout += ": |cff00ccff|Hquest:";

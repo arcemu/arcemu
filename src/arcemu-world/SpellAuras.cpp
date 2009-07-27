@@ -2700,18 +2700,22 @@ void Aura::SpellAuraDummy(bool apply)
 			// Creates a 15 minute pet, if player has the quest that goes with the spell and if target corresponds to quest
 			if( Rand( 75.0f ) )// 75% chance on success
 			{
-				Creature *tamed = ( ( m_target->GetTypeId() == TYPEID_UNIT ) ? ( ( Creature* ) m_target ) : 0 );
-				QuestLogEntry *qle = p_caster->GetQuestLogForEntry(tamequest->id );
+				
+				if( m_target->GetTypeId() == TYPEID_UNIT )
+				{
+					Creature *tamed = ( Creature* ) m_target;
+					QuestLogEntry *qle = p_caster->GetQuestLogForEntry(tamequest->id );
 
-				tamed->GetAIInterface()->HandleEvent( EVENT_LEAVECOMBAT, p_caster, 0 );
-				Pet *pPet = objmgr.CreatePet( tamed->GetEntry() );
-				pPet->CreateAsSummon( tamed->GetEntry(), tamed->GetCreatureInfo(), tamed, p_caster, triggerspell, 2, 900000 );
-				//pPet->CastSpell( tamed, triggerspell, false );
-				tamed->SafeDelete();
-				qle->SetMobCount( 0, 1 );
-				qle->SendUpdateAddKill( 1 );
-				qle->UpdatePlayerFields();
-				qle->SendQuestComplete();
+					tamed->GetAIInterface()->HandleEvent( EVENT_LEAVECOMBAT, p_caster, 0 );
+					Pet *pPet = objmgr.CreatePet( tamed->GetEntry() );
+					pPet->CreateAsSummon( tamed->GetEntry(), tamed->GetCreatureInfo(), tamed, p_caster, triggerspell, 2, 900000 );
+					//pPet->CastSpell( tamed, triggerspell, false );
+					tamed->SafeDelete();
+					qle->SetMobCount( 0, 1 );
+					qle->SendUpdateAddKill( 1 );
+					qle->UpdatePlayerFields();
+					qle->SendQuestComplete();
+				}
 			}
 			else
 			{
@@ -2837,7 +2841,7 @@ void Aura::SpellAuraModCharm(bool apply)
 		{
 			WorldPacket data(SMSG_PET_SPELLS, 500);
 			data << target->GetGUID();
-			data << uint32(0);
+			data << uint16(0);
 			data << uint32(0x1000);
 			data << uint32(0x100);
 			data << uint32(PET_SPELL_ATTACK);
@@ -9321,7 +9325,7 @@ void Aura::HandleAuraControlVehicle(bool apply)
 
 		WorldPacket data4(SMSG_PET_SPELLS, 62);
 		data4 << m_target->GetGUID();
-		data4 << uint32(0);
+		data4 << uint16(0);
 		data4 << uint32(0);
 		data4 << uint32(0x101);
 		data4 << uint32(0x0800CC28); //cc28 = 52264 =
@@ -9362,8 +9366,7 @@ void Aura::HandleAuraControlVehicle(bool apply)
 
 		//need to send him no more pet spells ?
 		WorldPacket data3(SMSG_PET_SPELLS, 8);
-		data3 << uint32(0);
-		data3 << uint32(0);
+		data3 << uint64(0);
 		pcaster->GetSession()->SendPacket(&data3);
 	}
 }

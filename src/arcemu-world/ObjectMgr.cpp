@@ -1138,7 +1138,7 @@ Player* ObjectMgr::GetPlayer(uint32 guid)
 
 	_playerslock.AcquireReadLock();
 	PlayerStorageMap::const_iterator itr = _players.find(guid);
-	rv = (itr != _players.end()) ? itr->second : 0;
+	rv = (itr != _players.end()) ? itr->second : NULL;
 	_playerslock.ReleaseReadLock();
 
 	return rv;

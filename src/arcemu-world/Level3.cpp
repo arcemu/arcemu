@@ -2902,7 +2902,7 @@ bool ChatHandler::HandleLookupCreatureCommand(const char * args, WorldSession * 
 		if(FindXinYString(x, i->lowercase_name) || localizedFound)
  		{
  			// Print out the name in a cool highlighted fashion
-			SendHighlightedName(m_session, "Creature", localizedFound ? li->Name : i->Name, localizedFound ? liName : i->lowercase_name, x, i->Id);
+			SendHighlightedName(m_session, "Creature", localizedFound ? (li ? li->Name : "") : i->Name, localizedFound ? liName : i->lowercase_name, x, i->Id);
 			++count;
 			if(count == 25)
 			{

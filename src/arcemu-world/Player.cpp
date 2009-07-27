@@ -10590,7 +10590,7 @@ void Player::Possess(Unit * pTarget)
 
 		WorldPacket data(SMSG_PET_SPELLS, pTarget->GetAIInterface()->m_spells.size() * 4 + 20);
 		data << pTarget->GetGUID();
-		data << uint32(0x00000000);//unk1
+		data << uint16(0x00000000);//unk1
 		data << uint32(0x00000101);//unk2
 		data << uint32(0x00000100);//unk3
 
@@ -10662,7 +10662,6 @@ void Player::UnPossess()
 	{
 		data.Initialize( SMSG_PET_SPELLS );
 		data << uint64(0);
-		data << uint32(0);
 		m_session->SendPacket( &data );
 	}
 }
