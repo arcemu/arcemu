@@ -2029,7 +2029,7 @@ void Object::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
 			// Tagging
 			Creature *victim = static_cast<Creature*>(pVictim);
 			bool taggable;
-			if(victim->GetCreatureInfo() && victim->GetCreatureInfo()->Type == CRITTER || victim->IsPet())
+			if(victim->GetCreatureInfo() && victim->GetCreatureInfo()->Type == UNIT_TYPE_CRITTER || victim->IsPet())
 				taggable = false;
 			else taggable = true;
 
@@ -2203,7 +2203,7 @@ void Object::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
 	uint32 lowGUID = 0;
 	if(pVictim->GetTypeId() == TYPEID_UNIT && ((Creature*)pVictim)->GetCreatureInfo())
 	{
-		if(((Creature*)pVictim)->GetCreatureInfo()->Type == CRITTER)
+		if(((Creature*)pVictim)->GetCreatureInfo()->Type == UNIT_TYPE_CRITTER)
 		{
 			isCritter = true;
 		}

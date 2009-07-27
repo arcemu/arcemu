@@ -4064,7 +4064,7 @@ uint8 Spell::CanCast(bool tolerate)
 						result = PETTAME_DEAD;
 					else if( tame->IsPet() )
 						result = PETTAME_CREATUREALREADYOWNED;
-					else if( !tame->GetCreatureInfo() || tame->GetCreatureInfo()->Type != BEAST || !tame->GetCreatureInfo()->Family )
+					else if( !tame->GetCreatureInfo() || tame->GetCreatureInfo()->Type != UNIT_TYPE_BEAST || !tame->GetCreatureInfo()->Family || tame->GetCreatureInfo()->Flags1 & CREATURE_FLAG1_TAMEABLE )
 						result = PETTAME_NOTTAMEABLE;
 					else if( !p_caster->isAlive() || p_caster->getClass() != HUNTER )
 						result = PETTAME_UNITSCANTTAME;
@@ -5500,19 +5500,34 @@ void Spell::Heal(int32 amount, bool ForceCrit)
 	}
 }
 
-void Spell::DetermineSkillUp(uint32 skillid,uint32 targetlevel)
+void Spell::DetermineSkillUp(uint32 skillid,uint32 targetlevel, uint32 multiplicator)
 {
-	if(!p_caster)return;
-	if(p_caster->GetSkillUpChance(skillid)<0.01)return;//to prevent getting higher skill than max
-	int32 diff=p_caster->_GetSkillLineCurrent(skillid,false)/5-targetlevel;
-	if(diff<0)diff=-diff;
+	if(!p_caster)
+		return;
+
+	if(p_caster->GetSkillUpChance(skillid) < 0.01)
+		return;//to preven getting higher skill than max
+
+	int32 diff = p_caster->_GetSkillLineCurrent(skillid, false) / 5 - targetlevel;
+
+	if(diff < 0)
+		diff =- diff;
+
 	float chance;
-	if(diff<=5)chance=95.0;
-	else if(diff<=10)chance=66;
-	else if(diff <=15)chance=33;
-	else return;
-	if(Rand(chance*sWorld.getRate(RATE_SKILLCHANCE)))
-		p_caster->_AdvanceSkillLine(skillid, float2int32( 1.0f * sWorld.getRate(RATE_SKILLRATE)));
+	if(diff <= 5)
+		chance = 95.0f;
+	else if(diff <= 10)
+		chance = 66.0f;
+	else if(diff <= 15)
+		chance = 33.0f;
+	else 
+		return;
+
+	if( multiplicator == 0 )
+		multiplicator = 1;
+
+	if(Rand((chance * sWorld.getRate(RATE_SKILLCHANCE)) * multiplicator))
+		p_caster->_AdvanceSkillLine(skillid, float2int32(1.0f * sWorld.getRate(RATE_SKILLRATE)));
 }
 
 void Spell::DetermineSkillUp(uint32 skillid)

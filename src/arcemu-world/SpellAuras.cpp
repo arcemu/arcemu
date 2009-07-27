@@ -6459,7 +6459,7 @@ void Aura::SpellAuraChannelDeathItem(bool apply)
 	{
 		if( m_target->GetTypeId() == TYPEID_UNIT || m_target->GetTypeId() == TYPEID_PLAYER )
 		{
-			if ( m_target->GetTypeId() == TYPEID_UNIT && ((Creature*)m_target)->GetCreatureInfo() != NULL && ((Creature*)m_target)->GetCreatureInfo()->Type == CRITTER )
+			if ( m_target->GetTypeId() == TYPEID_UNIT && ((Creature*)m_target)->GetCreatureInfo() != NULL && ((Creature*)m_target)->GetCreatureInfo()->Type == UNIT_TYPE_CRITTER )
 				return;
 
 			if(m_target->IsDead())

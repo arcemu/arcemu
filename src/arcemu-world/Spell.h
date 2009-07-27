@@ -1256,7 +1256,9 @@ ARCEMU_INLINE bool TargetTypeCheck(Object *obj,uint32 ReqCreatureTypeMask)
 	}
 	else if(obj->GetTypeId() == TYPEID_PLAYER && !(UNIT_TYPE_HUMANOID_BIT & ReqCreatureTypeMask))
 		return false;
-	else return false;//mg, how in the hack did we cast it on a GO ? But who cares ?
+	else 
+		return false;//mg, how in the hack did we cast it on a GO ? But who cares ?
+
 	return true;
 }
 
@@ -2110,7 +2112,7 @@ public: //Modified by LUAppArc private->public
     void SafeAddModeratedTarget(uint64 guid, uint16 type);
 
     friend class DynamicObject;
-    void DetermineSkillUp(uint32 skillid,uint32 targetlevel);
+    void DetermineSkillUp(uint32 skillid,uint32 targetlevel,uint32 multiplicator = 1);
     void DetermineSkillUp(uint32 skillid);
 
 public:

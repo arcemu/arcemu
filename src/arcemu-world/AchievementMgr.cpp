@@ -1076,7 +1076,7 @@ void AchievementMgr::UpdateAchievementCriteria(AchievementCriteriaTypes type, in
 					if( pUnit )
 					{
 						uint8 crTypeId = pUnit->GetTypeId();
-						uint32 crType = NOUNITTYPE;
+						uint32 crType = UNIT_TYPE_NONE;
 						bool crTotem = false;
 						bool yieldXP = CalculateXpToGive( pUnit, GetPlayer() )  > 0;
 						if( crTypeId == TYPEID_UNIT )
@@ -1088,16 +1088,16 @@ void AchievementMgr::UpdateAchievementCriteria(AchievementCriteriaTypes type, in
 							}
 							if(     (achievementCriteria->ID == 4944)                             // Total NPC kills              refAch==1197
 								|| ( (achievementCriteria->ID == 4946) && (yieldXP)            )   // Kill an NPC that yields XP   refAch==1198
-								|| ( (achievementCriteria->ID == 4948) && (crType==BEAST)      )   // Beasts                       refAch== 107
-								|| ( (achievementCriteria->ID == 4958) && (crType==CRITTER)    )   // Critters killed              refAch== 107
-								|| ( (achievementCriteria->ID == 4949) && (crType==DEMON)      )   // Demons                       refAch== 107
-								|| ( (achievementCriteria->ID == 4950) && (crType==DRAGONSKIN) )   // Dragonkin                    refAch== 107
-								|| ( (achievementCriteria->ID == 4951) && (crType==ELEMENTAL)  )   // Elemental                    refAch== 107
-								|| ( (achievementCriteria->ID == 4952) && (crType==GIANT)      )   // Giant                        refAch== 107
-								|| ( (achievementCriteria->ID == 4953) && (crType==HUMANOID)   )   // Humanoid                     refAch== 107
-								|| ( (achievementCriteria->ID == 4954) && (crType==MECHANICAL) )   // Mechanical                   refAch== 107
-								|| ( (achievementCriteria->ID == 4955) && (crType==UNDEAD)     )   // Undead                       refAch== 107
-								|| ( (achievementCriteria->ID == 4956) && (crType==NOUNITTYPE) )   // Unspecified                  refAch== 107
+								|| ( (achievementCriteria->ID == 4948) && (crType==UNIT_TYPE_BEAST)      )   // Beasts                       refAch== 107
+								|| ( (achievementCriteria->ID == 4958) && (crType==UNIT_TYPE_CRITTER)    )   // Critters killed              refAch== 107
+								|| ( (achievementCriteria->ID == 4949) && (crType==UNIT_TYPE_DEMON)      )   // Demons                       refAch== 107
+								|| ( (achievementCriteria->ID == 4950) && (crType==UNIT_TYPE_DRAGONKIN) )   // Dragonkin                    refAch== 107
+								|| ( (achievementCriteria->ID == 4951) && (crType==UNIT_TYPE_ELEMENTAL)  )   // Elemental                    refAch== 107
+								|| ( (achievementCriteria->ID == 4952) && (crType==UNIT_TYPE_GIANT)      )   // Giant                        refAch== 107
+								|| ( (achievementCriteria->ID == 4953) && (crType==UNIT_TYPE_HUMANOID)   )   // Humanoid                     refAch== 107
+								|| ( (achievementCriteria->ID == 4954) && (crType==UNIT_TYPE_MECHANICAL) )   // Mechanical                   refAch== 107
+								|| ( (achievementCriteria->ID == 4955) && (crType==UNIT_TYPE_UNDEAD)     )   // Undead                       refAch== 107
+								|| ( (achievementCriteria->ID == 4956) && (crType==UNIT_TYPE_NONE)		 )   // Unspecified                  refAch== 107
 								|| ( (achievementCriteria->ID == 4957) && (crTotem)            ) ) // Totems                       refAch== 107
 							{
 								UpdateCriteriaProgress(achievementCriteria, 1);

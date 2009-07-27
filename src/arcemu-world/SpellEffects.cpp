@@ -1569,7 +1569,7 @@ out:
 					if(static_cast<Creature *>((*i))->getDeathState() == CORPSE)
 					{
 						CreatureInfo *cn = static_cast<Creature *>((*i))->GetCreatureInfo();
-						if(cn && ( cn->Type == HUMANOID || cn->Type == UNDEAD ) )
+						if(cn && ( cn->Type == UNIT_TYPE_HUMANOID || cn->Type == UNIT_TYPE_UNDEAD ) )
 						{
 							if(p_caster->GetDistance2dSq((*i)) < rad)
 							{
@@ -2020,7 +2020,7 @@ out:
 			else if( unitTarget->IsCreature() )
 			{
 				CreatureInfo * ci = static_cast< Creature* >( unitTarget )->GetCreatureInfo();
-				if( ci && ci->Type == UNDEAD )
+				if( ci && ci->Type == UNIT_TYPE_UNDEAD )
 					u_caster->Heal( unitTarget, spellId, float2int32( damage * 1.5f ) );
 			}
 		}break;
@@ -3784,6 +3784,13 @@ void Spell::SpellEffectLearnSpell(uint32 i) // Learn Spell
 
 		uint32 spellToLearn = GetProto()->EffectTriggerSpell[i];
 		playerTarget->addSpell(spellToLearn);
+
+		if( spellToLearn == 2575 ) //hacky fix for mining from creatures
+			playerTarget->addSpell( 32606 );
+
+		if( spellToLearn == 2366 ) //hacky fix for herbalism from creatures
+			playerTarget->addSpell( 32605 );
+
 		//smth is wrong here, first we add this spell to player then we may cast it on player...
 		SpellEntry *spellinfo = dbcSpell.LookupEntry(spellToLearn);
 		//remove specializations
@@ -4840,7 +4847,7 @@ void Spell::SpellEffectPickpocket(uint32 i) // pickpocket
 		return;
 
 	Creature *target = static_cast<Creature*>( unitTarget );
-	if(target->IsPickPocketed() || (target->GetCreatureInfo() && target->GetCreatureInfo()->Type != HUMANOID))
+	if(target->IsPickPocketed() || (target->GetCreatureInfo() && target->GetCreatureInfo()->Type != UNIT_TYPE_HUMANOID))
 	{
 		SendCastResult(SPELL_FAILED_TARGET_NO_POCKETS);
 		return;
@@ -4987,7 +4994,7 @@ void Spell::SpellEffectUseGlyph(uint32 i)
 
 void Spell::SpellEffectHealMechanical(uint32 i)
 {
-	if(!unitTarget || unitTarget->GetTypeId() != TYPEID_UNIT || static_cast<Creature*>(unitTarget)->GetCreatureInfo()->Type != MECHANICAL)
+	if(!unitTarget || unitTarget->GetTypeId() != TYPEID_UNIT || static_cast<Creature*>(unitTarget)->GetCreatureInfo()->Type != UNIT_TYPE_MECHANICAL)
 		return;
 
 	Heal((int32)damage);
@@ -6104,35 +6111,33 @@ void Spell::SpellEffectSelfResurrect(uint32 i)
 
 void Spell::SpellEffectSkinning(uint32 i)
 {
-	if( !unitTarget || unitTarget->IsPlayer() ) return;
+	if( !unitTarget || !unitTarget->IsCreature() ) 
+		return;
 
-	uint32 sk = static_cast< Player* >( m_caster )->_GetSkillLineCurrent( SKILL_SKINNING );
-	uint32 lvl = unitTarget->getLevel();
+	Creature * cr = TO_CREATURE( unitTarget );
+	uint32 skill = cr->GetRequiredLootSkill();
+	uint32 sk = TO_PLAYER( m_caster )->_GetSkillLineCurrent( skill );
+	uint32 lvl = cr->getLevel();
 
 	if( ( sk >= lvl * 5 ) || ( ( sk + 100 ) >= lvl * 10 ) )
 	{
 		//Fill loot for Skinning
-		lootmgr.FillSkinningLoot(&static_cast<Creature*>(unitTarget)->loot,unitTarget->GetEntry());
-		static_cast< Player* >( m_caster )->SendLoot( unitTarget->GetGUID(), LOOT_SKINNING );
+		lootmgr.FillSkinningLoot(&cr->loot,unitTarget->GetEntry());
+		TO_PLAYER( m_caster )->SendLoot( unitTarget->GetGUID(), LOOT_SKINNING );
 
 		//Not skinable again
-		unitTarget->BuildFieldUpdatePacket( p_caster, UNIT_FIELD_FLAGS, 0 );
+		cr->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_SKINNABLE);
+		cr->Skinned = true;
 
-		//still lootable
-		//pkt=unitTarget->BuildFieldUpdatePacket(UNIT_DYNAMIC_FLAGS,U_DYN_FLAG_LOOTABLE);
-		//static_cast< Player* >( m_caster )->GetSession()->SendPacket(pkt);
-		// pkt;
-		if (!static_cast<Creature*>(unitTarget)->Skinned)
-			DetermineSkillUp(SKILL_SKINNING,sk<lvl*5?sk/5:lvl);
-
-		static_cast<Creature*>(unitTarget)->Skinned = true;
+		if(cr->GetCreatureInfo()->Rank > 0)
+			DetermineSkillUp(skill ,sk < lvl * 5 ? sk/5 : lvl, 2);
+		else
+			DetermineSkillUp(skill ,sk < lvl * 5 ? sk/5 : lvl, 1);
 	}
 	else
 	{
 		SendCastResult(SPELL_FAILED_TARGET_UNSKINNABLE);
 	}
-
-	//	DetermineSkillUp(SKILL_SKINNING,unitTarget->getLevel());
 }
 
 void Spell::SpellEffectCharge(uint32 i)

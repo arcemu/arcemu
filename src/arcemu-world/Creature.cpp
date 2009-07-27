@@ -381,7 +381,7 @@ void Creature::generateLoot()
 	else /* if(!loot.gold) */
 	{
 		CreatureInfo *info=GetCreatureInfo();
-		if (info && info->Type != BEAST)
+		if (info && info->Type != UNIT_TYPE_BEAST)
 		{
 			if(m_uint32Values[UNIT_FIELD_MAXHEALTH] <= 1667)
 				//generate copper
@@ -570,6 +570,10 @@ void Creature::setDeathState(DeathState s)
 		if ( m_currentSpell )
 			m_currentSpell->cancel();
 
+		if ( lootmgr.IsSkinnable(GetEntry()))
+			SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_SKINNABLE);
+
+
 	}
 	
 	else m_deathState = s;
@@ -674,7 +678,7 @@ void Creature::EnslaveExpire()
 
 	switch(GetCreatureInfo()->Type)
 	{
-	case DEMON:
+	case UNIT_TYPE_DEMON:
 		SetUInt32Value(UNIT_FIELD_FACTIONTEMPLATE, 90);
 		break;
 	default:
@@ -1931,3 +1935,13 @@ bool Creature::HasLootForPlayer(Player * plr)
 	}
 	return false;
 }
+
+uint32 Creature::GetRequiredLootSkill()
+{
+	if(GetCreatureInfo()->Flags1 & CREATURE_FLAG1_HERBLOOT)
+		return SKILL_HERBALISM;     // herbalism
+	else if(GetCreatureInfo()->Flags1 & CREATURE_FLAG1_MININGLOOT)
+		return SKILL_MINING;        // mining   
+	else
+		return SKILL_SKINNING;      // skinning
+};
