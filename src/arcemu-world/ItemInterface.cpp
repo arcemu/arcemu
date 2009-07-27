@@ -1485,7 +1485,7 @@ int16 ItemInterface::GetInventorySlotById(uint32 ID)
 		{
 			if(m_pItems[i]->GetProto()->ItemId == ID)
 			{
-				return 16;
+				return i;
 			}
 		}
 	}
