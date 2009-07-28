@@ -2094,60 +2094,87 @@ bool AIInterface::FindFriends(float dist)
 float AIInterface::_CalcAggroRange(Unit* target)
 {
 	//float baseAR = 15.0f; // Base Aggro Range
-					// -8	 -7	 -6	 -5	 -4	 -3	 -2	 -1	 0	  +1	 +2	 +3	 +4	 +5	 +6	 +7	+8
+	//                    -8     -7     -6      -5    -4      -3     -2     -1     0      +1     +2     +3    +4     +5     +6     +7    +8
 	//float baseAR[17] = {29.0f, 27.5f, 26.0f, 24.5f, 23.0f, 21.5f, 20.0f, 18.5f, 17.0f, 15.5f, 14.0f, 12.5f, 11.0f,  9.5f,  8.0f,  6.5f, 5.0f};
 	float baseAR[17] = {19.0f, 18.5f, 18.0f, 17.5f, 17.0f, 16.5f, 16.0f, 15.5f, 15.0f, 14.5f, 12.0f, 10.5f, 8.5f,  7.5f,  6.5f,  6.5f, 5.0f};
 	// Lvl Diff -8 -7 -6 -5 -4 -3 -2 -1 +0 +1 +2  +3  +4  +5  +6  +7  +8
 	// Arr Pos   0  1  2  3  4  5  6  7  8  9 10  11  12  13  14  15  16
 	int8 lvlDiff = static_cast<int8>(target->getLevel() - m_Unit->getLevel());
 	uint8 realLvlDiff = lvlDiff;
-	if(lvlDiff > 8)
+	if (lvlDiff > 8)
 	{
 		lvlDiff = 8;
 	}
-	if(lvlDiff < -8)
+	if (lvlDiff < -8)
 	{
 		lvlDiff = -8;
 	}
-	if(!((Creature*)m_Unit)->CanSee(target))
+	if (!((Creature*)m_Unit)->CanSee(target))
 		return 0;
-	
+
+	// Retrieve aggrorange from table
 	float AggroRange = baseAR[lvlDiff + 8];
-	if(realLvlDiff > 8)
+
+	// Check to see if the target is a player mining a node
+	bool isMining = false;
+	if (target->IsPlayer())
+	{
+		if (target->IsCasting())
+		{
+			// If nearby miners weren't spotted already we'll give them a little surprise.
+			Spell * sp = target->GetCurrentSpell();
+			if (sp->GetProto()->Effect[0] == SPELL_EFFECT_OPEN_LOCK && sp->GetProto()->EffectMiscValue[0] == LOCKTYPE_MINING)
+			{
+				isMining = true;
+			}
+		}
+	}
+
+	// If the target is of a much higher level the aggro range must be scaled down, unless the target is mining a nearby resource node
+	if (realLvlDiff > 8 && !isMining)
 	{
 		AggroRange += AggroRange * ((lvlDiff - 8) * 5 / 100);
 	}
 
 	// Multiply by elite value
-	if(m_Unit->IsCreature() && ((Creature*)m_Unit)->GetCreatureInfo() && ((Creature*)m_Unit)->GetCreatureInfo()->Rank > 0)
+	if (m_Unit->IsCreature() && ((Creature*)m_Unit)->GetCreatureInfo() && ((Creature*)m_Unit)->GetCreatureInfo()->Rank > 0)
+	{
 		AggroRange *= (((Creature*)m_Unit)->GetCreatureInfo()->Rank) * 1.50f;
+	}
 
-	if(AggroRange > 40.0f) // cap at 40.0f
+	// Cap Aggro range at 40.0f
+	if (AggroRange > 40.0f)
 	{
 		AggroRange = 40.0f;
 	}
-  /*  //printf("aggro range: %f , stealthlvl: %d , detectlvl: %d\n",AggroRange,target->GetStealthLevel(),m_Unit->m_stealthDetectBonus);
+
+/*  //printf("aggro range: %f , stealthlvl: %d , detectlvl: %d\n",AggroRange,target->GetStealthLevel(),m_Unit->m_stealthDetectBonus);
 	if(! ((Creature*)m_Unit)->CanSee(target))
 	{
 		AggroRange =0;
 	//	AggroRange *= ( 100.0f - (target->m_stealthLevel - m_Unit->m_stealthDetectBonus)* 20.0f ) / 100.0f;
 	}
 */
+
 	// SPELL_AURA_MOD_DETECT_RANGE
 	int32 modDetectRange = target->getDetectRangeMod(m_Unit->GetGUID());
 	AggroRange += modDetectRange;
-	if(target->IsPlayer())
-		AggroRange += static_cast< Player* >( target )->DetectedRange;
-	if(AggroRange < 3.0f)
+	if (target->IsPlayer())
+	{
+		AggroRange += static_cast< Player* >(target)->DetectedRange;
+	}
+
+	// Re-check if aggro range exceeds Minimum/Maximum caps
+	if (AggroRange < 3.0f)
 	{
 		AggroRange = 3.0f;
 	}
-	if(AggroRange > 40.0f) // cap at 40.0f
+	if (AggroRange > 40.0f)
 	{
 		AggroRange = 40.0f;
 	}
 
-	return (AggroRange*AggroRange);
+	return (AggroRange * AggroRange);
 }
 
 void AIInterface::_CalcDestinationAndMove(Unit *target, float dist)

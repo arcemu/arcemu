@@ -263,6 +263,10 @@ void HonorHandler::RecalculateHonorFields(Player *pPlayer)
 	pPlayer->SetUInt32Value(PLAYER_FIELD_LIFETIME_HONORBALE_KILLS, pPlayer->m_killsLifetime);
 	pPlayer->SetUInt32Value(PLAYER_FIELD_HONOR_CURRENCY, pPlayer->m_honorPoints);
 	pPlayer->SetUInt32Value(PLAYER_FIELD_ARENA_CURRENCY, pPlayer->m_arenaPoints);
+
+	// Currency tab - (Blizz Placeholders)
+	pPlayer->UpdateKnownCurrencies(43307, true); //Arena Points
+	pPlayer->UpdateKnownCurrencies(43308, true); //Honor Points
 }
 
 bool ChatHandler::HandleAddKillCommand(const char* args, WorldSession* m_session)
