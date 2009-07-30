@@ -1,8 +1,16 @@
+/*
+MySQL Data Transfer
+Source Host: localhost
+Source Database: nowa
+Target Host: localhost
+Target Database: nowa
+Date: 2009-07-30 13:52:38
+*/
+
 SET FOREIGN_KEY_CHECKS=0;
 -- ----------------------------
 -- Table structure for spell_proc
 -- ----------------------------
-DROP TABLE IF EXISTS `spellfixes`;
 DROP TABLE IF EXISTS `spell_proc`;
 CREATE TABLE `spell_proc` (
   `spellID` int(30) NOT NULL default '0',
@@ -12,9 +20,9 @@ CREATE TABLE `spell_proc` (
   `ProcChance` int(30) NOT NULL default '-1',
   `ProcCharges` smallint(30) NOT NULL default '-1',
   `ProcInterval` int(30) NOT NULL default '0',
-  `EffectTriggerSpell[0]` smallint(10) NOT NULL default '-1',
-  `EffectTriggerSpell[1]` smallint(10) NOT NULL default '-1',
-  `EffectTriggerSpell[2]` smallint(10) NOT NULL default '-1',
+  `EffectTriggerSpell[0]` int(10) NOT NULL default '-1',
+  `EffectTriggerSpell[1]` int(10) NOT NULL default '-1',
+  `EffectTriggerSpell[2]` int(10) NOT NULL default '-1',
   PRIMARY KEY  (`spellID`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
@@ -38,3 +46,6 @@ INSERT INTO `spell_proc` VALUES ('49281', '0', '666152', '0', '100', '3', '0', '
 INSERT INTO `spell_proc` VALUES ('43046', '0', '10792', '0', '-1', '-1', '0', '-1', '-1', '-1');
 INSERT INTO `spell_proc` VALUES ('37982', '0', '4', '0', '1', '0', '0', '-1', '-1', '-1');
 INSERT INTO `spell_proc` VALUES ('27521', '0', '16', '0', '5', '0', '0', '-1', '-1', '-1');
+INSERT INTO `spell_proc` VALUES ('38394', '0', '1024', '0', '-1', '-1', '0', '-1', '-1', '-1');
+INSERT INTO `spell_proc` VALUES ('64976', '0', '16', '0', '-1', '-1', '0', '-1', '-1', '-1');
+INSERT INTO `spell_proc` VALUES ('65156', '3808755873', '0', '0', '-1', '-1', '0', '-1', '-1', '-1');

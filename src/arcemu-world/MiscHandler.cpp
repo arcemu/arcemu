@@ -2328,7 +2328,7 @@ void WorldSession::HandleOpenItemOpcode(WorldPacket &recv_data)
 		{
 			if(lock->locktype[i] == 1 && lock->lockmisc[i] > 0)
 			{
-				int8 slot = _player->GetItemInterface()->GetInventorySlotById(lock->lockmisc[i]);
+				int16 slot = _player->GetItemInterface()->GetInventorySlotById(lock->lockmisc[i]);
 				if(slot != ITEM_NO_SLOT_AVAILABLE && slot >= INVENTORY_SLOT_ITEM_START && slot < INVENTORY_SLOT_ITEM_END)
 				{
 					removeLockItems[i] = lock->lockmisc[i];
@@ -2435,8 +2435,6 @@ void WorldSession::HandleDungeonDifficultyOpcode(WorldPacket& recv_data)
 		m_Group->m_difficulty = data;
         _player->iInstanceType = data;
         sInstanceMgr.ResetSavedInstances(_player);
-
-
 
         m_Group->Lock();
 		for(uint32 i = 0; i < m_Group->GetSubGroupCount(); ++i)

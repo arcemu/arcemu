@@ -4445,7 +4445,7 @@ uint8 Spell::CanCast(bool tolerate)
 			}
 
 			// if we're replacing a higher rank, deny it
-			AuraCheckResponse acr = target->AuraCheck(GetProto()->NameHash, GetProto()->RankNumber,m_caster);
+			AuraCheckResponse acr = target->AuraCheck( GetProto(), m_caster );
 			if( acr.Error == AURA_CHECK_RESULT_HIGHER_BUFF_PRESENT )
 				return SPELL_FAILED_AURA_BOUNCED;
 

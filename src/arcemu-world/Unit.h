@@ -1448,7 +1448,7 @@ public:
 //	uint32 CountNegativeAura(uint32 spell_id); //just to reduce search range in some cases
 	bool IsPoisoned();
 
-	AuraCheckResponse AuraCheck(uint32 name_hash, uint32 rank, Object *caster=NULL);
+	AuraCheckResponse AuraCheck(SpellEntry *proto, Object *caster=NULL);
 	AuraCheckResponse AuraCheck(uint32 name_hash, uint32 rank, Aura* aur, Object *caster=NULL);
 
 	uint16 m_diminishCount[DIMINISHING_GROUP_COUNT];

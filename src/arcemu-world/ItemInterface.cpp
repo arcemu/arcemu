@@ -780,6 +780,26 @@ Item* ItemInterface::FindItemLessMax(uint32 itemid, uint32 cnt, bool IncBank)
 		}
 	}
 
+	for(i = CURRENCYTOKEN_SLOT_START; i < CURRENCYTOKEN_SLOT_END; i++)
+	{
+		Item *item = GetInventoryItem(i);
+		if (item)
+		{
+			if (item->GetProto())
+			{
+				uint32 itemMaxStack = (item->GetOwner()->ItemStackCheat) ? 0x7fffffff : item->GetProto()->MaxCount;
+				if((item->GetEntry() == itemid && item->wrapped_item_id==0) && (itemMaxStack >= (item->GetUInt32Value(ITEM_FIELD_STACK_COUNT) + cnt)))
+				{
+					return item; 
+				}
+			}
+			else
+			{
+				sLog.outError("%s: item with no proto :S entry=%d", __FUNCTION__, item->GetEntry());
+			}
+		}
+	}
+
 	if(IncBank)
 	{
 		for(i = BANK_SLOT_ITEM_START; i < BANK_SLOT_ITEM_END; i++)

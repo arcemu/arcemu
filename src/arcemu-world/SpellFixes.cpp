@@ -1676,6 +1676,11 @@ void ApplyNormalFixes()
 		 *	Arms
 		 **********************************************************/
 
+		// Juggernaut
+		sp = dbcSpell.LookupEntryForced( 65156 );
+		if(sp != NULL)
+			sp->AuraInterruptFlags = AURA_INTERRUPT_ON_CAST_SPELL;
+
 		// Trauma Rank 1
 		sp = dbcSpell.LookupEntryForced( 46854 );
 		if(sp != NULL)

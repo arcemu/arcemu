@@ -1298,6 +1298,7 @@ uint32 Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, ui
 				}break;
 				//Warrior - Safeguard
 				case 46946:
+				case 46947:
 				{
 					if( CastingSpell == NULL )
 						continue;
@@ -2729,6 +2730,12 @@ uint32 Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, ui
 					case 23694: // Imp. Hamstring
 						{
 							if( CastingSpell->NameHash != SPELL_HASH_IMPROVED_HAMSTRING )
+								continue;
+						}break;
+					case 65156: // Juggernaut
+						{
+							if( CastingSpell->NameHash != SPELL_HASH_MORTAL_STRIKE &&
+								CastingSpell->NameHash != SPELL_HASH_SLAM )
 								continue;
 						}break;
 					}
@@ -5197,10 +5204,10 @@ int32 Unit::GetSpellDmgBonus(Unit *pVictim, SpellEntry *spellInfo,int32 base_dmg
 //==========================================================================================
 	int32 bonus_damage = float2int32(plus_damage * dmgdoneaffectperc);
 
-	if( isdot )
+	/*if( isdot )
 		bonus_damage += float2int32(bonus_damage * (pVictim->DoTPctIncrease[spellInfo->School] / 100.0f));
 	else if( (spellInfo->c_is_flags & SPELL_FLAG_IS_DAMAGING) && (spellInfo->spell_coef_flags & SPELL_FLAG_AOE_SPELL) )
-		bonus_damage *= (int32)pVictim->AOEDmgMod;
+		bonus_damage *= (int32)pVictim->AOEDmgMod;*/
 
 	if( ( pVictim->HasAuraWithMechanics(MECHANIC_ENSNARED) || pVictim->HasAuraWithMechanics(MECHANIC_DAZED) ) && caster->IsPlayer() )
 			bonus_damage *= static_cast< Player* >(caster)->m_IncreaseDmgSnaredSlowed;
@@ -6092,26 +6099,38 @@ uint32 Unit::FindAuraCountByHash(uint32 HashName, uint32 maxcount)
 	return count;
 }
 
-AuraCheckResponse Unit::AuraCheck(uint32 name_hash, uint32 rank, Object *caster)
+AuraCheckResponse Unit::AuraCheck(SpellEntry *proto, Object *caster)
 {
 	AuraCheckResponse resp;
 
 	// no error for now
 	resp.Error = AURA_CHECK_RESULT_NONE;
 	resp.Misc  = 0;
+	
+	uint32 name_hash = proto->NameHash;
+	uint32 rank = proto->RankNumber;
 
 	// look for spells with same namehash
 	for(uint32 x=MAX_TOTAL_AURAS_START;x<MAX_TOTAL_AURAS_END;x++)
 	{
-//		if(m_auras[x] && m_auras[x]->GetSpellProto()->NameHash == name_hash && m_auras[x]->GetCaster()==caster)
+		//if(m_auras[x] && m_auras[x]->GetSpellProto()->NameHash == name_hash && m_auras[x]->GetCaster()==caster)
 		if(m_auras[x] && m_auras[x]->GetSpellProto()->NameHash == name_hash)
 		{
 			// we've got an aura with the same name as the one we're trying to apply
 			resp.Misc = m_auras[x]->GetSpellProto()->Id;
 
 			// compare the rank to our applying spell
-			if(m_auras[x]->GetSpellProto()->RankNumber > rank)
-				resp.Error = AURA_CHECK_RESULT_HIGHER_BUFF_PRESENT;
+			if( m_auras[x]->GetSpellProto()->RankNumber > rank )
+			{
+				if(	proto->Effect[0] == SPELL_EFFECT_TRIGGER_SPELL ||
+					proto->Effect[1] == SPELL_EFFECT_TRIGGER_SPELL ||
+					proto->Effect[2] == SPELL_EFFECT_TRIGGER_SPELL )
+				{
+					resp.Error = AURA_CHECK_RESULT_LOWER_BUFF_PRESENT;
+				}
+				else
+					resp.Error = AURA_CHECK_RESULT_HIGHER_BUFF_PRESENT;
+			}
 			else
 				resp.Error = AURA_CHECK_RESULT_LOWER_BUFF_PRESENT;
 
@@ -6119,10 +6138,11 @@ AuraCheckResponse Unit::AuraCheck(uint32 name_hash, uint32 rank, Object *caster)
 			break;
 		}
 	}
-
+	sLog.outDebug( "resp = %i", resp.Error );
 	// return it back to our caller
 	return resp;
 }
+
 
 AuraCheckResponse Unit::AuraCheck(uint32 name_hash, uint32 rank, Aura* aur, Object *caster)
 {
@@ -7149,9 +7169,35 @@ void Unit::Energize( Unit* target, uint32 SpellId, uint32 amount, uint32 type )
 	uint32 cur = target->GetUInt32Value( UNIT_FIELD_POWER1 + type );
 	uint32 max = target->GetUInt32Value( UNIT_FIELD_MAXPOWER1 + type );
 
+	//if( max == cur ) // can we show null power gains in client? eg. zero happiness gain should be show...
+		//return;
+
+	if( cur + amount > max )
+		amount = max - cur;
+
+	target->SetUInt32Value( UNIT_FIELD_POWER1 + type, cur + amount );
+
+	WorldPacket datamr( SMSG_SPELLENERGIZELOG, 30 );
+	datamr << target->GetNewGUID();
+	datamr << this->GetNewGUID();
+	datamr << SpellId;
+	datamr << type;
+	datamr << amount;
+	this->SendMessageToSet( &datamr, true );
+}
+/*
+void Unit::Energize( Unit* target, uint32 SpellId, uint32 amount, uint32 type )
+{	
+	//Static energize
+	if( !target || !SpellId || !amount )
+		return;
+
+	uint32 cur = target->GetUInt32Value( UNIT_FIELD_POWER1 + type );
+	uint32 max = target->GetUInt32Value( UNIT_FIELD_MAXPOWER1 + type );
+
 	if(max != cur)
 	{
-		amount = GetSpellDmgBonus( target, dbcSpell.LookupEntry(SpellId), amount, false );
+		amount += GetSpellDmgBonus( target, dbcSpell.LookupEntry(SpellId), amount, false );
 		if( !amount )
 			return;
 
@@ -7175,7 +7221,7 @@ void Unit::Energize( Unit* target, uint32 SpellId, uint32 amount, uint32 type )
 		target->SendPowerUpdate( false );
 	}
 }
-
+*/
 void Unit::InheritSMMods(Unit *inherit_from)
 {
 	if(inherit_from == NULL)

@@ -855,7 +855,7 @@ void LootRoll::Finalize()
 		}
 
 
-		if( _player->GetItemInterface()->SafeAddItem(item,slotresult.ContainerSlot, slotresult.Slot) )
+		if( _player->GetItemInterface()->SafeAddItem(item, slotresult.ContainerSlot, slotresult.Slot) )
 		{
 			_player->GetSession()->SendItemPushResult(item,false,true,true,true,slotresult.ContainerSlot,slotresult.Slot,1);
 			sQuestMgr.OnPlayerItemPickup(_player,item);

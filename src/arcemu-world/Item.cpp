@@ -679,7 +679,7 @@ int32 Item::AddEnchantment( EnchantEntry* Enchantment, uint32 Duration, bool Per
 		}
 	
 		/* Only apply the enchantment bonus if we're equipped */
-		uint8 slot = m_owner->GetItemInterface()->GetInventorySlotByGuid( GetGUID() );
+		uint16 slot = m_owner->GetItemInterface()->GetInventorySlotByGuid( GetGUID() );
 		if( slot >= EQUIPMENT_SLOT_START && slot < EQUIPMENT_SLOT_END )
             ApplyEnchantmentBonus( Slot, APPLY );
 	}
