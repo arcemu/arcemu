@@ -3773,6 +3773,57 @@ uint8 Spell::CanCast(bool tolerate)
 			case SPELL_EFFECT_ENCHANT_ITEM:
 			case SPELL_EFFECT_ENCHANT_ITEM_TEMPORARY:
 			{
+				// If enchant is permanent and we are casting on Vellums
+				if(GetProto()->Effect[0] == SPELL_EFFECT_ENCHANT_ITEM && GetProto()->EffectItemType[0] != 0 &&
+				   (proto->ItemId == 38682 || proto->ItemId == 37602 || proto->ItemId == 43145 || 
+					proto->ItemId == 39349 || proto->ItemId == 39350 || proto->ItemId == 43146 ))
+				{
+					// Weapons enchants
+					if(GetProto()->EquippedItemClass == 2)
+					{
+						// These are armor vellums
+						if( proto->ItemId == 38682 || proto->ItemId == 37602 || proto->ItemId == 43145 )
+							return SPELL_FAILED_BAD_TARGETS;
+
+						// You tried to cast wotlk enchant on bad item
+						if(GetProto()->baseLevel == 60 && proto->ItemId != 43146)
+							return SPELL_FAILED_BAD_TARGETS;
+						
+						// you tried to cast tbc enchant on bad item
+						if(GetProto()->baseLevel == 35 && proto->ItemId == 39349)
+							return SPELL_FAILED_BAD_TARGETS;
+
+						// you tried to cast non-lvl enchant on bad item
+						if(GetProto()->baseLevel == 0 && proto->ItemId != 39349)
+							return SPELL_FAILED_BAD_TARGETS;
+
+						break;
+					}
+
+					// Armors enchants
+					else if(GetProto()->EquippedItemClass == 4)
+					{
+						// These are weapon vellums
+						if( proto->ItemId == 39349 || proto->ItemId == 39350 || proto->ItemId == 43146 )
+							return SPELL_FAILED_BAD_TARGETS;
+
+						// You tried to cast wotlk enchant on bad item
+						if(GetProto()->baseLevel == 60 && proto->ItemId != 43145)
+							return SPELL_FAILED_BAD_TARGETS;
+
+						// you tried to cast tbc enchant on bad item
+						if(GetProto()->baseLevel == 35 && proto->ItemId == 38682)
+							return SPELL_FAILED_BAD_TARGETS;
+
+						// you tried to cast non-lvl enchant on bad item
+						if(GetProto()->baseLevel == 0 && proto->ItemId != 38682)
+							return SPELL_FAILED_BAD_TARGETS;
+					}
+					
+					// If We are here it means that we have right Vellum and right enchant to cast
+					break;
+				}
+		
 				// check if we have the correct class, subclass, and inventory type of target item
 				if (GetProto()->EquippedItemClass != (int32)proto->Class)
 					return SPELL_FAILED_BAD_TARGETS;
@@ -3793,8 +3844,8 @@ uint8 Spell::CanCast(bool tolerate)
 				if (hasAttributeExB(FLAGS3_ENCHANT_OWN_ONLY) && !(i_target->IsSoulbound()))
 					return SPELL_FAILED_BAD_TARGETS;
 
-				break;
-			}
+				break;	
+				}
 
 			// Disenchanting Targeted Item Check
 			case SPELL_EFFECT_DISENCHANT:
@@ -4996,6 +5047,11 @@ exit:
 	{
 		value = value / 10; //additional stacks only increase value by X
 	}*/
+	else if( GetProto()->NameHash == SPELL_HASH_GOUGE ) //gouge
+	{
+		if( u_caster != NULL )
+			value += (uint32)ceilf(u_caster->GetAP() * 0.21f);
+	}
 
 	if( p_caster != NULL )
 	{
@@ -5171,7 +5227,7 @@ void Spell::CreateItem( uint32 itemId )
 	else
 	{
 		add->ModUnsigned32Value( ITEM_FIELD_STACK_COUNT, addcount );
-		p_caster->GetSession()->SendItemPushResult( add, true, false, true, false, p_caster->GetItemInterface()->GetBagSlotByGuid(add->GetGUID()), 0xFFFFFFFF, addcount );
+		p_caster->GetSession()->SendItemPushResult( add, true, false, true, false, (uint8)p_caster->GetItemInterface()->GetBagSlotByGuid(add->GetGUID()), 0xFFFFFFFF, addcount );
 		add->m_isDirty = true;
 	}
 }

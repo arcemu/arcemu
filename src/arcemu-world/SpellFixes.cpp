@@ -2372,7 +2372,10 @@ void ApplyNormalFixes()
 		//Paladin - Seal of Light
 		sp = dbcSpell.LookupEntryForced( 20165 );
 		if( sp != NULL )
+		{
 			sp->proc_interval = 4000;
+			sp->procChance = 90;
+		}
 
 		//Paladin - Seal of Wisdom
 		sp = dbcSpell.LookupEntryForced( 20166 );
@@ -6921,7 +6924,222 @@ void ApplyNormalFixes()
 		if( sp != NULL )
 			sp->procFlags = PROC_ON_CAST_SPELL | static_cast<uint32>(PROC_TARGET_SELF);
 
-		
+		//Enchant Weapon - Deathfrost
+		sp = dbcSpell.LookupEntryForced( 46662 );
+		if( sp != NULL )
+		{
+			sp->procFlags = PROC_ON_MELEE_ATTACK;
+		}
+
+		// Sigil of the Unfaltering Knight
+		sp = dbcSpell.LookupEntryForced( 62147 );
+		if( sp != NULL )
+		{
+			sp->procFlags = PROC_ON_CAST_SPECIFIC_SPELL;
+			sp->ProcOnNameHash[0] = SPELL_HASH_ICY_TOUCH;
+			sp->procChance = 100;
+			sp->proc_interval = 45000;
+		}
+
+		// Deadly Gladiator's Death Knight Relic
+		sp = dbcSpell.LookupEntryForced( 60686 );
+		if( sp != NULL )
+		{
+			sp->procFlags = PROC_ON_CAST_SPECIFIC_SPELL;
+			sp->ProcOnNameHash[0] = SPELL_HASH_PLAGUE_STRIKE;
+			sp->procChance = 100;
+			sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
+			sp->EffectTriggerSpell[0] = 60549;
+		}
+		// Deadly Gladiator's Idol of Resolve
+		sp = dbcSpell.LookupEntryForced( 60696 );
+		if( sp != NULL )
+		{
+			sp->procFlags = PROC_ON_CAST_SPECIFIC_SPELL;
+			sp->ProcOnNameHash[0] = SPELL_HASH_PLAGUE_STRIKE;
+			sp->procChance = 100;
+			sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
+			sp->EffectTriggerSpell[0] = 60549;
+		}
+		// Deadly Gladiator's Libram of Fortitude
+		sp = dbcSpell.LookupEntryForced( 60633 );
+		if( sp != NULL )
+		{
+			sp->procFlags = PROC_ON_CAST_SPECIFIC_SPELL;
+			sp->ProcOnNameHash[0] = SPELL_HASH_PLAGUE_STRIKE;
+			sp->procChance = 100;
+			sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
+			sp->EffectTriggerSpell[0] = 60549;
+		}
+		// Deadly Totem of Indomitability
+		sp = dbcSpell.LookupEntryForced( 60548 );
+		if( sp != NULL )
+		{
+			sp->procFlags = PROC_ON_CAST_SPECIFIC_SPELL;
+			sp->ProcOnNameHash[0] = SPELL_HASH_PLAGUE_STRIKE;
+			sp->procChance = 100;
+			sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
+			sp->EffectTriggerSpell[0] = 60549;
+		}
+		sp = dbcSpell.LookupEntryForced( 60549 );
+		if( sp != NULL )
+		{
+			// it have 2 same effects dunno why
+			sp->EffectApplyAuraName[1] = 0;
+			sp->EffectBasePoints[1] = 0;
+		}
+
+		// Sigil of Haunted Dreams
+		sp = dbcSpell.LookupEntryForced( 60826 );
+		if( sp != NULL )
+		{
+			sp->procFlags = PROC_ON_CAST_SPECIFIC_SPELL;
+			sp->ProcOnNameHash[0] = SPELL_HASH_BLOOD_STRIKE;
+			sp->ProcOnNameHash[1] = SPELL_HASH_HEART_STRIKE;
+			sp->procChance = 15;
+			sp->proc_interval = 45000;
+		}
+
+		// Vestige of Haldor
+		sp = dbcSpell.LookupEntryForced( 60306 );
+		if( sp != NULL )
+		{
+				sp->proc_interval = 45000;
+				sp->procFlags = PROC_ON_MELEE_ATTACK | PROC_ON_RANGED_ATTACK;
+		}
+
+		// Forge Ember
+		sp = dbcSpell.LookupEntryForced( 60473 );
+		if( sp != NULL )
+		{
+				sp->proc_interval = 45000;
+				sp->procFlags = PROC_ON_CAST_SPELL;
+		}
+
+		// Mirror of Truth
+		sp = dbcSpell.LookupEntryForced( 33648 );
+		if( sp != NULL )
+		{
+				sp->proc_interval = 45000;
+				sp->procFlags = PROC_ON_CRIT_ATTACK;
+		}
+
+		// Majestic Dragon Figurine
+		sp = dbcSpell.LookupEntryForced( 60524 );
+		if( sp != NULL )
+		{
+				sp->procFlags = PROC_ON_CAST_SPELL;
+		}
+
+		// Flow of Knowledge
+		sp = dbcSpell.LookupEntryForced( 62114 );
+		if( sp != NULL )
+		{
+				sp->proc_interval = 45000;
+				sp->procFlags = PROC_ON_CAST_SPELL;
+		}
+
+		// Embrace of the Spider
+		sp = dbcSpell.LookupEntryForced( 60490 );
+		if( sp != NULL )
+		{
+				sp->proc_interval = 45000;
+				sp->procFlags = PROC_ON_CAST_SPELL;
+		}
+
+		// Anvil of Titans
+		sp = dbcSpell.LookupEntryForced( 62115 );
+		if( sp != NULL )
+		{
+				sp->proc_interval = 45000;
+				sp->procFlags = PROC_ON_MELEE_ATTACK | PROC_ON_RANGED_ATTACK;
+		}
+
+		// Soul of the Dead
+		sp = dbcSpell.LookupEntryForced( 60537 );
+		if( sp != NULL )
+		{
+				sp->proc_interval = 45000;
+				sp->procFlags = PROC_ON_SPELL_CRIT_HIT;
+		}
+
+		// Illustration of the Dragon Soul
+		sp = dbcSpell.LookupEntryForced( 60485 );
+		if( sp != NULL )
+		{
+			sp->procFlags = PROC_ON_CAST_SPELL;
+		}
+
+		// Grim Toll
+		sp = dbcSpell.LookupEntryForced( 60436 );
+		if( sp != NULL )
+		{
+				sp->proc_interval = 45000;
+				sp->procFlags = PROC_ON_MELEE_ATTACK | PROC_ON_RANGED_ATTACK;
+		}
+
+		// Fury of the Five Flights
+		sp = dbcSpell.LookupEntryForced( 60313 );
+		if( sp != NULL )
+		{
+			sp->procFlags = PROC_ON_MELEE_ATTACK | PROC_ON_RANGED_ATTACK;
+		}
+
+		// Bandit's Insignia
+		sp = dbcSpell.LookupEntryForced( 60442 );
+		if( sp != NULL )
+		{
+				sp->proc_interval = 45000;
+				sp->procFlags = PROC_ON_MELEE_ATTACK | PROC_ON_RANGED_ATTACK;
+		}
+
+		// Meteorite Whetstone
+		sp = dbcSpell.LookupEntryForced( 60301 );
+		if( sp != NULL )
+		{
+				sp->proc_interval = 45000;
+				sp->procFlags = PROC_ON_MELEE_ATTACK | PROC_ON_RANGED_ATTACK;
+		}
+
+		// Sonic Booster
+		sp = dbcSpell.LookupEntryForced( 54707 );
+		if( sp != NULL )
+		{
+				sp->proc_interval = 60000;
+				sp->procFlags = PROC_ON_MELEE_ATTACK;
+		}
+
+		//Totem of the Third Wind - bad range
+		SpellEntry * sp_healing_wave = dbcSpell.LookupEntryForced( 8004 );
+		sp = dbcSpell.LookupEntryForced( 34132 );
+		if( sp != NULL )
+		{
+			sp->rangeIndex = sp_healing_wave->rangeIndex;
+		}
+		sp = dbcSpell.LookupEntryForced( 42371 );
+		if( sp != NULL )
+		{
+			sp->rangeIndex = sp_healing_wave->rangeIndex;
+		}
+		sp = dbcSpell.LookupEntryForced( 43729 );
+		if( sp != NULL )
+		{
+			sp->rangeIndex = sp_healing_wave->rangeIndex;
+		}
+		sp = dbcSpell.LookupEntryForced( 46099 );
+		if( sp != NULL )
+		{
+			sp->rangeIndex = sp_healing_wave->rangeIndex;
+		}
+
+		//Moonkin Starfire Bonus
+		sp = dbcSpell.LookupEntryForced( 46832 );
+		if( sp != NULL )
+		{
+			sp->procFlags = PROC_ON_CAST_SPELL | PROC_TARGET_SELF;
+		}
+
+				
 
 // #ifdef NEW_PROCFLAGS
 

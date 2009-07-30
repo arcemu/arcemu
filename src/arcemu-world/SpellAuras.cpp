@@ -3774,6 +3774,18 @@ void Aura::SpellAuraModResistance(bool apply)
 	if( this->GetSpellProto() && ( this->GetSpellProto()->NameHash == SPELL_HASH_FAERIE_FIRE || this->GetSpellProto()->NameHash == SPELL_HASH_FAERIE_FIRE__FERAL_ ) )
 		m_target->m_can_stealth = !apply;
 
+	if(GetUnitCaster() != NULL && GetUnitCaster()->IsPlayer() && GetSpellProto()->NameHash == SPELL_HASH_DEVOTION_AURA)
+	{
+		// Increases the armor bonus of your Devotion Aura by %u - HACKY
+		Player * plr = static_cast< Player* >(GetUnitCaster());
+		if( plr->HasSpell( 20140 ) ) // Improved Devotion Aura Rank 3
+			amt = (int32)(amt * 1.5);
+		else if( plr->HasSpell( 20139 ) ) // Improved Devotion Aura Rank 2
+			amt = (int32)(amt * 1.34);
+		else if( plr->HasSpell( 20138 ) ) // Improved Devotion Aura Rank 1
+			amt = (int32)(amt * 1.17);
+	}
+
 	if( m_target->GetTypeId() == TYPEID_PLAYER )
 	{
 		for( uint32 x = 0; x < 7; x++ )
@@ -6472,6 +6484,12 @@ void Aura::SpellAuraChannelDeathItem(bool apply)
 					return;*/
 
 				uint32 itemid = GetSpellProto()->EffectItemType[mod->i];
+
+				//Warlocks only get Soul Shards from enemies that grant XP or Honor
+				if (itemid == 6265 && (pCaster->getLevel() > m_target->getLevel()) )                            
+					if ( (pCaster->getLevel() - m_target->getLevel() ) > 9)
+						return;
+
 
 				ItemPrototype *proto = ItemPrototypeStorage.LookupEntry(itemid);
 				if(pCaster->GetItemInterface()->CalculateFreeSlots(proto) > 0)

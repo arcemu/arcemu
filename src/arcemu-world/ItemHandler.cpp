@@ -836,7 +836,7 @@ void WorldSession::HandleAutoEquipItemSlotOpcode( WorldPacket& recvData )
 	//int8 error = 0; // useless?
 	recvData >> itemguid >> destSlot;
 
-	int8	srcSlot		= _player->GetItemInterface()->GetInventorySlotByGuid(itemguid);
+	int8	srcSlot		= (int8)_player->GetItemInterface()->GetInventorySlotByGuid(itemguid);
 	Item	*item		= _player->GetItemInterface()->GetItemByGUID(itemguid);
 	int8	slotType	= _player->GetItemInterface()->GetItemSlotByType(item->GetProto()->InventoryType);
 	bool	hasDualWield2H	= false;
@@ -994,7 +994,7 @@ void WorldSession::HandleItemQuerySingleOpcode( WorldPacket & recv_data )
 	data << itemProto->QuestId;
 	data << itemProto->LockId;
 	data << itemProto->LockMaterial;
-	data << itemProto->Field108;
+	data << itemProto->SheathID;
 	data << itemProto->RandomPropId;
 	data << itemProto->RandomSuffixId;
 	data << itemProto->Block;
@@ -1016,7 +1016,7 @@ void WorldSession::HandleItemQuerySingleOpcode( WorldPacket & recv_data )
 	data << itemProto->ArmorDamageModifier;
 	data << itemProto->ExistingDuration;								// 2.4.2 Item duration in seconds
 	data << itemProto->ItemLimitCategory;
-	data << uint32(0); //VLack: some 3.1.x value
+	data << itemProto->HolidayId; //MesoX: HolidayId - points to HolidayNames.dbc
 	SendPacket( &data );
 
 }
@@ -1293,7 +1293,7 @@ void WorldSession::HandleBuyItemInSlotOpcode( WorldPacket & recv_data ) // drag 
 		{
 			c=(Container*)_player->GetItemInterface()->GetItemByGUID(bagguid);
 			if(!c)return;
-			bagslot = _player->GetItemInterface()->GetBagSlotByGuid(bagguid);
+			bagslot = (int8)_player->GetItemInterface()->GetBagSlotByGuid(bagguid);
 
 			if(bagslot == INVENTORY_SLOT_NOT_SET || (c->GetProto() && (uint32)slot > c->GetProto()->ContainerSlots))
 			{
@@ -1313,7 +1313,7 @@ void WorldSession::HandleBuyItemInSlotOpcode( WorldPacket & recv_data ) // drag 
 				return;//non empty
 			}
 
-			bagslot = _player->GetItemInterface()->GetBagSlotByGuid(bagguid);
+			bagslot = (int8)_player->GetItemInterface()->GetBagSlotByGuid(bagguid);
 			slot = c->FindFreeSlot();
 		}
 		else
@@ -1533,7 +1533,7 @@ void WorldSession::HandleBuyItemOpcode( WorldPacket & recv_data ) // right-click
 	{
 		add->ModUnsigned32Value(ITEM_FIELD_STACK_COUNT, amount*item.amount);
 		add->m_isDirty = true;
-		SendItemPushResult(add, false, true, false, false, _player->GetItemInterface()->GetBagSlotByGuid(add->GetGUID()), 1, amount*item.amount);
+		SendItemPushResult(add, false, true, false, false, (uint8)_player->GetItemInterface()->GetBagSlotByGuid(add->GetGUID()), 1, amount*item.amount);
 	}
 
 	data.Initialize( SMSG_BUY_ITEM );

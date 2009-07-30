@@ -21,12 +21,8 @@
 #include "StdAfx.h"
 
 #define ARENA_PREPARATION 32727
-#define ARENA_WORLD_STATE_LORD_A_PLAYER_COUNT 3000
-#define ARENA_WORLD_STATE_LORD_H_PLAYER_COUNT 3001
-#define ARENA_WORLD_STATE_BLADES_A_PLAYER_COUNT 2544
-#define ARENA_WORLD_STATE_BLADES_H_PLAYER_COUNT 2545
-#define ARENA_WORLD_STATE_NAGRAND_A_PLAYER_COUNT 2575
-#define ARENA_WORLD_STATE_NAGRAND_H_PLAYER_COUNT 2576
+#define ARENA_WORLD_STATE_A_PLAYER_COUNT 3600
+#define ARENA_WORLD_STATE_H_PLAYER_COUNT 3601
 
 #define GREEN_TEAM 0
 #define GOLD_TEAM 1
@@ -441,20 +437,20 @@ void Arena::UpdatePlayerCounts()
 	{
 		/* ruins of lordaeron */
 	case 572:
-		SetWorldState(ARENA_WORLD_STATE_LORD_A_PLAYER_COUNT, m_playersCount[0]);
-		SetWorldState(ARENA_WORLD_STATE_LORD_H_PLAYER_COUNT, m_playersCount[1]);
+		SetWorldState(ARENA_WORLD_STATE_A_PLAYER_COUNT, m_playersCount[0]);
+		SetWorldState(ARENA_WORLD_STATE_H_PLAYER_COUNT, m_playersCount[1]);
 		break;
 
 		/* blades edge arena */
 	case 562:
-		SetWorldState(ARENA_WORLD_STATE_BLADES_A_PLAYER_COUNT, m_playersCount[0]);
-		SetWorldState(ARENA_WORLD_STATE_BLADES_H_PLAYER_COUNT, m_playersCount[1]);
+		SetWorldState(ARENA_WORLD_STATE_A_PLAYER_COUNT, m_playersCount[0]);
+		SetWorldState(ARENA_WORLD_STATE_H_PLAYER_COUNT, m_playersCount[1]);
 		break;
 
 		/* nagrand arena */
 	case 559:
-		SetWorldState(ARENA_WORLD_STATE_NAGRAND_A_PLAYER_COUNT, m_playersCount[0]);
-		SetWorldState(ARENA_WORLD_STATE_NAGRAND_H_PLAYER_COUNT, m_playersCount[1]);
+		SetWorldState(ARENA_WORLD_STATE_A_PLAYER_COUNT, m_playersCount[0]);
+		SetWorldState(ARENA_WORLD_STATE_H_PLAYER_COUNT, m_playersCount[1]);
 		break;
 	}
 

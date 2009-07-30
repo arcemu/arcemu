@@ -2318,6 +2318,28 @@ void Spell::SpellEffectHealthLeech(uint32 i) // Health Leech
 
 void Spell::SpellEffectHeal(uint32 i) // Heal
 {
+	if(p_caster)	
+	{	
+		// HACKY but with SM_FEffect2_bonus it doesnt work
+
+		// Apply this only on targets, which have one of paladins auras
+		if( unitTarget && (unitTarget->HasAurasWithNameHash(SPELL_HASH_DEVOTION_AURA) || unitTarget->HasAurasWithNameHash(SPELL_HASH_RETRIBUTION_AURA) ||
+			unitTarget->HasAurasWithNameHash(SPELL_HASH_CONCENTRATION_AURA) || unitTarget->HasAurasWithNameHash(SPELL_HASH_CRUSADER_AURA) ||  unitTarget->HasAurasWithNameHash(SPELL_HASH_FIRE_RESISTANCE_AURA) ||
+			unitTarget->HasAurasWithNameHash(SPELL_HASH_FROST_RESISTANCE_AURA) ||unitTarget->HasAurasWithNameHash(SPELL_HASH_SHADOW_RESISTANCE_AURA)) )		
+		{
+			if( p_caster->HasSpell( 20140 ) ) // Improved Devotion Aura Rank 3			
+				damage = (int32)(damage * 1.06);		
+			else if( p_caster->HasSpell( 20139 ) ) // Improved Devotion Aura Rank 2			
+				damage = (int32)(damage * 1.04);		
+			else if( p_caster->HasSpell( 20138 ) ) // Improved Devotion Aura Rank 1			
+				damage = (int32)(damage * 1.02);
+		}
+
+		if( p_caster->HasSpell( 54943 ) && p_caster->HasAura( 20165 ) ) // Glyph of Seal of Light
+			damage = (int32)(damage * 1.05); 
+
+	}
+
 	if(GetProto()->EffectChainTarget[i])//chain
 	{
 		if(!chaindamage)
@@ -2475,6 +2497,10 @@ void Spell::SpellEffectHeal(uint32 i) // Heal
 						spell->Heal( (int32)new_dmg );
 					}
 				}
+			}break;
+		case 20167: // Paladin: Seal of Light
+			{
+				damage = ((uint32)ceilf(u_caster->GetAP() * 0.15f)) + ((uint32)ceilf(u_caster->GetUInt32Value(PLAYER_FIELD_MOD_HEALING_DONE_POS) * 0.15f));
 			}break;
 		default:
 			Heal(damage);
@@ -2835,7 +2861,7 @@ void Spell::SpellEffectCreateItem(uint32 i) // Create item
 			{
 				add->SetCount(add->GetUInt32Value(ITEM_FIELD_STACK_COUNT) + item_count);
 				add->m_isDirty = true;
-				p_target->GetSession()->SendItemPushResult(add, true, false, true, false, p_target->GetItemInterface()->GetBagSlotByGuid(add->GetGUID()), 0xFFFFFFFF, item_count);
+				p_target->GetSession()->SendItemPushResult(add, true, false, true, false, (uint8)p_target->GetItemInterface()->GetBagSlotByGuid(add->GetGUID()), 0xFFFFFFFF, item_count);
 			}
 
 			/*WorldPacket data(45);
@@ -4354,9 +4380,37 @@ void Spell::SpellEffectSummonObject(uint32 i)
 
 void Spell::SpellEffectEnchantItem(uint32 i) // Enchant Item Permanent
 {
-	if(!itemTarget || !p_caster) return;
+	if(!itemTarget || !p_caster) 
+		return;
+
+	// Vellums
+	if( GetProto()->EffectItemType[i] && ( itemTarget->GetEntry() == 39349 || 
+		itemTarget->GetEntry() == 39350 || itemTarget->GetEntry() == 43146 ||
+		itemTarget->GetEntry() == 38682 || itemTarget->GetEntry() == 37602 || 
+		itemTarget->GetEntry() == 43145 ))
+	{
+		uint32 itemid = GetProto()->EffectItemType[i];
+		ItemPrototype * it = ItemPrototypeStorage.LookupEntry( itemid );
+		if( it == NULL )
+		{
+			p_caster->GetSession()->SystemMessage("Item is missing, report this to devs. Entry: %u", itemid);
+			return;
+		}
+
+		Item * pItem = objmgr.CreateItem( itemid, p_caster );
+		if( pItem == NULL )
+			return;
+
+		p_caster->GetItemInterface()->RemoveItemAmt( itemTarget->GetEntry(), 1 );
+		p_caster->GetItemInterface()->AddItemToFreeSlot( pItem );
+
+		return;
+	}
+
 	EnchantEntry * Enchantment = dbcEnchant.LookupEntry(GetProto()->EffectMiscValue[i]);
-	if(!Enchantment) return;
+
+	if(!Enchantment) 
+		return;
 
 	if(p_caster->GetSession()->GetPermissionCount() > 0)
 		sGMLog.writefromsession(p_caster->GetSession(), "enchanted item for %s", itemTarget->GetOwner()->GetName());
@@ -4367,7 +4421,8 @@ void Spell::SpellEffectEnchantItem(uint32 i) // Enchant Item Permanent
 	if(Slot < 0)
 		return; // Apply failed
 
-	DetermineSkillUp(SKILL_ENCHANTING);
+	if( GetProto()->EffectItemType[i] == 0 || ( GetProto()->EffectItemType[i] != 0 && GetProto()->EffectItemType[i] != i_caster->GetEntry()) )
+		DetermineSkillUp(SKILL_ENCHANTING);
 }
 
 void Spell::SpellEffectEnchantItemTemporary(uint32 i)  // Enchant Item Temporary

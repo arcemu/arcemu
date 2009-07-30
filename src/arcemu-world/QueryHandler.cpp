@@ -216,7 +216,9 @@ void WorldSession::HandleGameObjectQueryOpcode( WorldPacket & recv_data )
 
 	data << float(goinfo->Size);
 	for(uint32 i = 0; i < 4; ++i)
+	{
 		data << uint32(goinfo->QuestItems[i]);
+	}
 
 	SendPacket( &data );
 }

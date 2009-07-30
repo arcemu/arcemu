@@ -582,9 +582,6 @@ struct ItemPrototype
 	uint32 SubClass;
 	uint32 unknown_bc;
 	char * Name1;
-	char * Name2;
-	char * Name3;
-	char * Name4;
 	uint32 DisplayInfoID;
 	uint32 Quality;
 	uint32 Flags;
@@ -609,7 +606,7 @@ struct ItemPrototype
 	ItemStat Stats[10];
 	uint32 ScalingStatsEntry;
 	uint32 ScalingStatsFlag;
-	ItemDamage Damage[5];
+	ItemDamage Damage[2];
 	uint32 Armor;
 	uint32 HolyRes;
 	uint32 FireRes;
@@ -629,7 +626,7 @@ struct ItemPrototype
 	uint32 QuestId;
 	uint32 LockId;
 	uint32 LockMaterial;
-	uint32 Field108;
+	uint32 SheathID;
 	uint32 RandomPropId;
 	uint32 RandomSuffixId;
 	uint32 Block;
@@ -646,6 +643,7 @@ struct ItemPrototype
 	uint32 ArmorDamageModifier;
 	uint32 ExistingDuration;
 	uint32 ItemLimitCategory;
+	uint32 HolidayId;
 
 	string lowercase_name;	// used in auctions
 	uint32 FoodType;		//pet food type
