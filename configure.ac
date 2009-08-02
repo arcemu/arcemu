@@ -148,7 +148,7 @@ AC_ARG_ENABLE(gcov,
 )
 
 AC_ARG_ENABLE(debug,
-     AC_HELP_STRING([--disable-debug],[disable debug]),
+     AC_HELP_STRING([--enable-debug],[enable debug]),
 	 [enable_debug=$enableval],
 	 [enable_debug=yes]
 )
