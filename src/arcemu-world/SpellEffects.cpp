@@ -4425,7 +4425,7 @@ void Spell::SpellEffectEnchantItem(uint32 i) // Enchant Item Permanent
 	if(Slot < 0)
 		return; // Apply failed
 
-	if( GetProto()->EffectItemType[i] == 0 || ( GetProto()->EffectItemType[i] != 0 && GetProto()->EffectItemType[i] != i_caster->GetEntry()) )
+	if( GetProto()->EffectItemType[i] == 0 || ( GetProto()->EffectItemType[i] != 0 && i_caster != NULL && GetProto()->EffectItemType[i] != i_caster->GetEntry()) )
 		DetermineSkillUp(SKILL_ENCHANTING);
 }
 
