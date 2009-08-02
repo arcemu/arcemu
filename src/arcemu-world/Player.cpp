@@ -204,6 +204,7 @@ m_GM_SelectedGO(0),
 PctIgnoreRegenModifier(0.0f),
 m_retainedrage(0),
 DetectedRange(0),
+m_eyeofkilrogg(0),
 
 m_targetIcon(0),
 bShouldHaveLootableOnCorpse(false),

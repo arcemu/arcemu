@@ -2094,6 +2094,19 @@ void Aura::SpellAuraDummy(bool apply)
 				if(m_target->m_noInterrupt < 0)
 					m_target->m_noInterrupt = 0;
 			}*/
+
+			if(!apply)
+			{
+				if(m_target->IsPlayer())
+				{
+					Player * pCaster = TO_PLAYER(m_target);
+					Creature *summon = pCaster->m_eyeofkilrogg;
+					pCaster->UnPossess();
+					if(summon)
+						summon->DeleteMe();
+					pCaster->m_eyeofkilrogg = 0;
+				}
+			}
 		}break;
 	case 17056://Furor
 	case 17058:

@@ -3128,6 +3128,10 @@ void Spell::SpellEffectSummon(uint32 i)
 
 	switch( GetProto()->EffectMiscValue[i] )
 	{
+	case 4277: // Eye of Kilrogg
+		{
+			SpellEffectSummonPossessed(i);
+		}break;
 	case 510:	// Water Elemental
 		{
 			Pet *summon = objmgr.CreatePet(GetProto()->EffectMiscValue[i]);
@@ -4935,7 +4939,7 @@ void Spell::SpellEffectAddFarsight(uint32 i) // Add Farsight
 	p_caster->GetMapMgr()->ChangeFarsightLocation(p_caster, dynObj);
 }
 
-void Spell::SpellEffectSummonPossessed(uint32 i) // eye of kilrog
+void Spell::SpellEffectSummonPossessed(uint32 i) // eye of kilrogg
 {
 	/*
 	m_target->DisableAI();
@@ -4953,44 +4957,48 @@ void Spell::SpellEffectSummonPossessed(uint32 i) // eye of kilrog
 	data << m_target->GetNewGUID() << uint8(1);
 	pCaster->GetSession()->SendPacket(&data);
 	*/
-
-	/*
-	CreatureInfo *ci = CreatureNameStorage.LookupEntry(GetProto()->EffectMiscValue[i]);
-	if( ci)
+	
+	if( GetProto()->EffectMiscValue[i] == 4277)
 	{
-	Creature* NewSummon = m_caster->GetMapMgr()->CreateCreature();
-	// Create
-	NewSummon->SetInstanceID(m_caster->GetInstanceID());
-	NewSummon->Create( ci->Name, m_caster->GetMapId(),
-	m_caster->GetPositionX()+(3*(cos((float(M_PI)/2)+m_caster->GetOrientation()))), m_caster->GetPositionY()+(3*(cos((float(M_PI)/2)+m_caster->GetOrientation()))), m_caster->GetPositionZ(), m_caster->GetOrientation());
+		Creature* NewSummon = m_caster->GetMapMgr()->CreateCreature(GetProto()->EffectMiscValue[i]);
+		// Create
+		NewSummon->SetInstanceID(m_caster->GetInstanceID());
+		NewSummon->Create( "Eye of Kilrogg", m_caster->GetMapId(), m_caster->GetPositionX()+(3*(cos((float(M_PI)/2)+m_caster->GetOrientation()))), m_caster->GetPositionY()+(3*(cos((float(M_PI)/2)+m_caster->GetOrientation()))), m_caster->GetPositionZ(), m_caster->GetOrientation());
 
-	// Fields
-	NewSummon->SetUInt32Value(UNIT_FIELD_LEVEL,m_caster->GetUInt32Value(UNIT_FIELD_LEVEL));
-	NewSummon->SetUInt32Value(UNIT_FIELD_DISPLAYID,  ci->Male_DisplayID);
-	NewSummon->SetUInt32Value(UNIT_FIELD_NATIVEDISPLAYID, ci->Male_DisplayID);
-	NewSummon->SetUInt64Value(UNIT_FIELD_SUMMONEDBY, m_caster->GetGUID());
-	NewSummon->SetUInt64Value(UNIT_FIELD_CREATEDBY, m_caster->GetGUID());
-	NewSummon->SetUInt32Value(UNIT_FIELD_HEALTH , 100);
-	NewSummon->SetUInt32Value(UNIT_FIELD_MAXHEALTH , 100);
-	NewSummon->SetUInt32Value(UNIT_FIELD_FACTIONTEMPLATE, 35);
-	NewSummon->SetFloatValue(OBJECT_FIELD_SCALE_X,1.0f);
-	NewSummon->SetUInt32Value(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_ATTACKABLE_9 | UNIT_FLAG_PLAYER_CONTROLLED_CREATURE);
+		// Fields
+		NewSummon->SetUInt32Value(OBJECT_FIELD_ENTRY, GetProto()->EffectMiscValue[i]);
+		NewSummon->SetUInt32Value(UNIT_FIELD_LEVEL,m_caster->GetUInt32Value(UNIT_FIELD_LEVEL));
+		NewSummon->SetUInt32Value(UNIT_FIELD_DISPLAYID,  2421);
+		NewSummon->SetUInt32Value(UNIT_FIELD_NATIVEDISPLAYID, 2421);
+		NewSummon->SetUInt64Value(UNIT_FIELD_SUMMONEDBY, m_caster->GetGUID());
+		NewSummon->SetUInt64Value(UNIT_FIELD_CREATEDBY, m_caster->GetGUID());
+		NewSummon->SetUInt32Value(UNIT_FIELD_HEALTH, 12375);
+		NewSummon->SetUInt32Value(UNIT_FIELD_MAXHEALTH, 12375);
+		NewSummon->SetUInt32Value(UNIT_FIELD_FACTIONTEMPLATE, p_caster->GetUInt32Value(UNIT_FIELD_FACTIONTEMPLATE));
+		NewSummon->SetFloatValue(OBJECT_FIELD_SCALE_X,1.0f);
 
-	//Setting faction
-	NewSummon->_setFaction();
-	NewSummon->m_temp_summon=true;
+		if(p_caster->IsPvPFlagged())
+			NewSummon->SetByteFlag(UNIT_FIELD_BYTES_2, 1, U_FIELD_BYTES_FLAG_PVP);
+		if(p_caster->IsFFAPvPFlagged())
+			NewSummon->SetByteFlag(UNIT_FIELD_BYTES_2, 1, U_FIELD_BYTES_FLAG_FFA_PVP);
 
-	// Add To World
-	NewSummon->PushToWorld(m_caster->GetMapMgr());
+		//Setting faction
+		NewSummon->_setFaction();
+		NewSummon->m_temp_summon=true;
 
-	// Force an update on the player to create this guid.
-	p_caster->ProcessPendingUpdates();
+		// Add To World
+		NewSummon->PushToWorld(m_caster->GetMapMgr());
 
-	//p_caster->SetUInt64Value(UNIT_FIELD_SUMMON, NewSummon->GetGUID());
-	//p_caster->SetUInt64Value(PLAYER_FARSIGHT, NewSummon->GetGUID());
-	//p_caster->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_LOCK_PLAYER);
-	p_caster->Possess(NewSummon);
-	}*/
+		// Force an update on the player to create this guid.
+		p_caster->ProcessPendingUpdates();
+
+		p_caster->m_eyeofkilrogg = NewSummon;
+
+		//p_caster->SetUInt64Value(UNIT_FIELD_SUMMON, NewSummon->GetGUID());
+		//p_caster->SetUInt64Value(PLAYER_FARSIGHT, NewSummon->GetGUID());
+		//p_caster->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_LOCK_PLAYER);
+		p_caster->Possess(NewSummon);
+	}
 }
 
 void Spell::SpellEffectUseGlyph(uint32 i)
