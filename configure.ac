@@ -149,8 +149,8 @@ AC_ARG_ENABLE(gcov,
 
 AC_ARG_ENABLE(debug,
      AC_HELP_STRING([--enable-debug],[enable debug]),
-	 [enable_debug=$enableval],
-	 [enable_debug=yes]
+	 [enable_debug=yes],
+	 [enable_debug=no]
 )
 
 if test "x$enable_debug" = "xyes" ; then
@@ -160,7 +160,7 @@ fi
 
 AC_ARG_ENABLE(optimize,
      AC_HELP_STRING([--enable-optimize],[enable code optimization]),
-	 [enable_optimize=$enableval],
+	 [enable_optimize=yes],
 	 [enable_optimize=no]
 )
 

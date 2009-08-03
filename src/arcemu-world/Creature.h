@@ -132,6 +132,7 @@ struct CreatureProto
 	uint32 AISpells[4];
 	uint32 AISpellsFlags;
 	uint32 modImmunities;
+	uint32 isTrainingDummy;
 
 	/* AI Stuff */
 	bool m_canRangedAttack;

@@ -4057,21 +4057,6 @@ void Player::RemoveFromWorld()
 	m_playerInfo->lastOnline = UNIXTIME; // don't destroy conjured items yet
 }
 
-/*
-   ScalingStats DBC entry by level
-   FIX ME: This should not be necessary, but I don't know how to lookup dbc rows by the 2nd column
-*/
-uint32 SSVDBCEByLevel[81] = {
-1,1,2,3,4,5,6,7,8,9,10,
-81,82,83,84,85,136,137,138,139,61,
-141,142,143,144,145,146,147,148,149,150,
-151,152,153,154,155,156,157,158,159,160,
-161,162,163,164,165,166,167,168,169,170,171,
-172,173,174,175,176,177,178,179,180,181,182,
-183,184,185,186,187,188,189,190,191,192,193,
-194,195,196,197,198,199,200
-};
-
 // TODO: perhaps item should just have a list of mods, that will simplify code
 void Player::_ApplyItemMods(Item* item, int16 slot, bool apply, bool justdrokedown /* = false */, bool skip_stat_apply /* = false  */)
 {
@@ -4279,13 +4264,27 @@ void Player::_ApplyItemMods(Item* item, int16 slot, bool apply, bool justdrokedo
 	/* Heirloom scaling items */
 	if(proto->ScalingStatsEntry != 0){
 		int i = 0;
+		int j = 0;
 		ScalingStatDistributionEntry *ssdrow = dbcScalingStatDistribution.LookupEntry( proto->ScalingStatsEntry );
-		ScalingStatValuesEntry *ssvrow = dbcScalingStatValues.LookupEntry( SSVDBCEByLevel[ getLevel() ] );
+		ScalingStatValuesEntry *ssvrow = NULL;
 		uint32 StatType;
 		uint32 StatMod;
+		uint32 plrLevel = getLevel();
 		int32 StatMultiplier;
 		int32 StatValue;
 		int32 col = 0;
+
+		// this is needed because the heirloom items don't scale over lvl80
+		if(plrLevel > 80)
+			plrLevel = 80;
+
+		for(i = 0, j = dbcScalingStatValues.GetNumRows(); i < j; i++){
+			ssvrow = dbcScalingStatValues.LookupRow(i);
+			if(ssvrow->level == plrLevel)
+				break;
+		}
+
+		
 
 		/* Not going to put a check here since unless you put a random id/flag in the tables these should never return NULL */
 

@@ -484,28 +484,6 @@ bool WarpRiftGenerator(uint32 i, Spell * pSpell)
 }
 
 
-bool TrainingDummy(uint32 i, Aura* pAura, bool apply)
-{
-	Unit *u_caster = NULL;
-
-	if(pAura == NULL)
-		return false;
-
-	u_caster = pAura->GetUnitCaster();
-	if(u_caster == NULL)
-		return false;
-
-	if(apply){
-		u_caster->GetAIInterface()->SetAllowedToEnterCombat(false);
-		u_caster->bUnbeatable = true;
-	}else{
-		u_caster->GetAIInterface()->SetAllowedToEnterCombat(true);
-		u_caster->bUnbeatable = false;
-	}
-	
-	return true;
-}
-
 // ADD NEW FUNCTIONS ABOVE THIS LINE
 // *****************************************************************************
 
@@ -538,8 +516,6 @@ void SetupItemSpells_1(ScriptMgr * mgr)
 	mgr->register_dummy_spell(35036, &WarpRiftGenerator);       // Summon a Warp Rift in Void Ridge
 	mgr->register_dummy_spell(17512, &PiccolooftheFlamingFire); //Piccolo of the flaming fire.
 	mgr->register_dummy_spell(18400, &PiccolooftheFlamingFire); //Piccolo of the flaming fire.
-	mgr->register_dummy_aura(61574,&TrainingDummy);
-	mgr->register_dummy_aura(61573,&TrainingDummy);
 
 // REGISTER NEW DUMMY SPELLS ABOVE THIS LINE
 // *****************************************************************************

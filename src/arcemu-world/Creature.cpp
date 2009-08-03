@@ -1160,7 +1160,7 @@ bool Creature::Load(CreatureSpawn *spawn, uint32 mode, MapInfo *info)
 		return false;
 
 	spawnid = spawn->id;
-
+	
 	m_walkSpeed = m_base_walkSpeed = proto->walk_speed; //set speeds
 	m_runSpeed = m_base_runSpeed = proto->run_speed; //set speeds
 	m_flySpeed = proto->fly_speed;
@@ -1313,10 +1313,12 @@ bool Creature::Load(CreatureSpawn *spawn, uint32 mode, MapInfo *info)
 	GetAIInterface()->setMoveType(0);
 	GetAIInterface()->setMoveRunFlag(0);
 
-	if(isattackable(spawn))
+	if(isattackable(spawn) && !(proto->isTrainingDummy) )
 	  GetAIInterface()->SetAllowedToEnterCombat(true);
 	  else GetAIInterface()->SetAllowedToEnterCombat(false);
 
+
+	 
 	// load formation data
 	if( spawn->form != NULL )
 	{
@@ -1398,6 +1400,8 @@ void Creature::Load(CreatureProto * proto_, float x, float y, float z, float o)
 	creature_info = CreatureNameStorage.LookupEntry(proto->Id);
 	if(!creature_info)
 		return;
+
+	GetAIInterface()->SetAllowedToEnterCombat( ~bool(proto_->isTrainingDummy) );
 
 	m_walkSpeed = m_base_walkSpeed = proto->walk_speed; //set speeds
 	m_runSpeed = m_base_runSpeed = proto->run_speed; //set speeds

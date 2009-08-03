@@ -2209,8 +2209,16 @@ void Object::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
 		}
 	}
 	/* -------------------------- HIT THAT CAUSES VICTIM TO DIE ---------------------------*/
-	if ((isCritter || health <= damage) && !pVictim->bUnbeatable)
+	if ((isCritter || health <= damage) )
 	{
+		// If it's a training dummy then we simply set the HP to 1 instead of killing the unit
+		if(pVictim->IsCreature() &&  (static_cast<Creature*>(pVictim))->GetProto()->isTrainingDummy ){
+			pVictim->SetUInt32Value( UNIT_FIELD_HEALTH, 1 );
+			return;
+		}
+
+
+		
 #ifdef ENABLE_ACHIEVEMENTS
 		// A Player has died
 		if( pVictim->IsPlayer() )
@@ -2884,11 +2892,9 @@ void Object::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
 
 		}*/
 
-		if(!pVictim->bUnbeatable)
-			pVictim->SetUInt32Value( UNIT_FIELD_HEALTH, health - damage );
-		else if(health <= damage)
-			pVictim->SetUInt32Value( UNIT_FIELD_HEALTH, 1 );
+		pVictim->SetUInt32Value( UNIT_FIELD_HEALTH, health - damage );
 	}
+		
 }
 
 void Object::SpellNonMeleeDamageLog(Unit *pVictim, uint32 spellID, uint32 damage, bool allowProc, bool static_damage, bool no_remove_auras)

@@ -324,7 +324,6 @@ Unit::Unit()
 	pLastSpell = 0;
 	m_flyspeedModifier = 0;
 	bInvincible = false;
-	bUnbeatable = false;
 	m_redirectSpellPackets = 0;
 	can_parry = false;
 	bProcInUse = false;
