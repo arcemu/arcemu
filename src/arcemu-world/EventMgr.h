@@ -228,7 +228,7 @@ enum EventFlags
 struct SERVER_DECL TimedEvent
 {
 	TimedEvent(void* object, CallbackBase* callback, uint32 type, time_t time, uint32 repeat, uint32 flags) : 
-		obj(object), cb(callback), eventType(type), eventFlag(flags), msTime(time), currTime(time), repeats(repeat), deleted(false),ref(0) {}
+		obj(object), cb(callback), eventType(type), eventFlag( static_cast<uint16>(flags)), msTime(time), currTime(time), repeats( static_cast<uint16>(repeat)), deleted(false),ref(0) {}
 		
 	void *obj;
 	CallbackBase *cb;

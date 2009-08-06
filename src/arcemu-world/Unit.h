@@ -946,9 +946,9 @@ public:
     void CalculateResistanceReduction(Unit *pVictim,dealdamage *dmg,SpellEntry* ability, float ArmorPctReduce) ;
 	void RegenerateHealth();
 	void RegeneratePower(bool isinterrupted);
-	ARCEMU_INLINE void setHRegenTimer(uint32 time) {m_H_regenTimer = time; }
-	ARCEMU_INLINE void setPRegenTimer(uint32 time) {m_P_regenTimer = time; }
-	ARCEMU_INLINE void DelayPowerRegeneration(uint32 time) { m_P_regenTimer = time; if (!m_interruptedRegenTime) m_interruptedRegenTime = 2000; }
+	ARCEMU_INLINE void setHRegenTimer(uint32 time) {m_H_regenTimer = static_cast<uint16>( time ); }
+	ARCEMU_INLINE void setPRegenTimer(uint32 time) {m_P_regenTimer = static_cast<uint16>( time ); }
+	ARCEMU_INLINE void DelayPowerRegeneration(uint32 time) { m_P_regenTimer = static_cast<uint16>( time ); if (!m_interruptedRegenTime) m_interruptedRegenTime = 2000; }
 	void DeMorph();
 	uint32 ManaShieldAbsorb(uint32 dmg);
 	void smsg_AttackStart(Unit* pVictim);

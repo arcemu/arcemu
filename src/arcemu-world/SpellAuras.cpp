@@ -2704,7 +2704,7 @@ void Aura::SpellAuraDummy(bool apply)
 		Player *p_caster = static_cast< Player* >( caster );
 		SpellEntry *triggerspell = dbcSpell.LookupEntry( TamingSpellid );
 		Quest* tamequest = QuestStorage.LookupEntry( triggerspell->EffectMiscValue[1] );
-		if ( !p_caster->GetQuestLogForEntry(tamequest->id ) || m_target->GetEntry() != tamequest->required_mob[0] )
+		if ( !p_caster->GetQuestLogForEntry(tamequest->id ) || m_target->GetEntry() != static_cast<uint32>( tamequest->required_mob[0] ))
 		{
 			p_caster->SendCastResult( triggerspell->Id, SPELL_FAILED_BAD_TARGETS, 0, 0 );
 		}
@@ -3657,7 +3657,7 @@ void Aura::SpellAuraModInvisibility(bool apply)
 	if(apply)
 	{
 		m_target->SetInvisibility(GetSpellId());
-		m_target->m_invisFlag = mod->m_miscValue;
+		m_target->m_invisFlag = static_cast<uint8>( mod->m_miscValue );
 		if( m_target->GetTypeId() == TYPEID_PLAYER )
 		{
 			if( GetSpellId() == 32612 )
@@ -4698,7 +4698,7 @@ void Aura::SpellAuraModShapeshift(bool apply)
 			m_target->EventModelChange();
 		}
 
-		static_cast< Player* >( m_target )->SetShapeShift( mod->m_miscValue );
+		static_cast< Player* >( m_target )->SetShapeShift( static_cast<uint8>( mod->m_miscValue ));
 
 		// check for spell id
 		if( spellId == 0 )
@@ -6304,7 +6304,7 @@ void Aura::SpellAuraSplitDamage(bool apply)
 		ds->m_flatDamageSplit = 0;
 		ds->m_spellId = GetSpellProto()->Id;
 		ds->m_pctDamageSplit = mod->m_miscValue / 100.0f;
-		ds->damage_type = mod->m_type;
+		ds->damage_type = static_cast<uint8>( mod->m_type );
 		ds->creator = (void*)this;
 		ds->m_target = m_target->GetGUID();
 		caster->m_damageSplitTarget = ds;
@@ -6876,7 +6876,7 @@ void Aura::SpellAuraHover( bool apply )
 	//TODO: FIX ME: Find true flag for this
 	if (m_target->GetTypeId() == TYPEID_PLAYER)
 	{
-		WorldPacket data( apply ? SMSG_MOVE_SET_HOVER : SMSG_MOVE_UNSET_HOVER, 13 );
+		WorldPacket data( apply ? uint16( SMSG_MOVE_SET_HOVER ) : uint16( SMSG_MOVE_UNSET_HOVER ), 13 );
 		data << m_target->GetNewGUID();
 		data << uint32( 0 );
 		static_cast< Player* >( m_target )->GetSession()->SendPacket( &data );
@@ -6891,64 +6891,64 @@ void Aura::SpellAuraAddPctMod( bool apply )
 	switch( mod->m_miscValue )//let's generate warnings for unknown types of modifiers
 	{
 	case SMT_DAMAGE_DONE:
-		SendModifierLog( &m_target->SM_PDamageBonus, val, AffectedGroups, mod->m_miscValue, true );
+		SendModifierLog( &m_target->SM_PDamageBonus, val, AffectedGroups, static_cast<uint8>( mod->m_miscValue ), true );
 		break;
 
 	case SMT_DURATION:
-		SendModifierLog( &m_target->SM_PDur, val, AffectedGroups, mod->m_miscValue, true );
+		SendModifierLog( &m_target->SM_PDur, val, AffectedGroups, static_cast<uint8>( mod->m_miscValue ), true );
 		break;
 
 	case SMT_THREAT_REDUCED:
-		SendModifierLog(&m_target->SM_PThreat, val, AffectedGroups, mod->m_miscValue, true);
+		SendModifierLog(&m_target->SM_PThreat, val, AffectedGroups, static_cast<uint8>( mod->m_miscValue ), true);
 		break;
 
 	case SMT_EFFECT_1:
-		SendModifierLog( &m_target->SM_PEffect1_Bonus, val, AffectedGroups, mod->m_miscValue, true );
+		SendModifierLog( &m_target->SM_PEffect1_Bonus, val, AffectedGroups, static_cast<uint8>( mod->m_miscValue ), true );
 		break;
 
 	case SMT_CHARGES:
-		SendModifierLog(&m_target->SM_PCharges, val, AffectedGroups,mod->m_miscValue);
+		SendModifierLog(&m_target->SM_PCharges, val, AffectedGroups,static_cast<uint8>( mod->m_miscValue ));
 		break;
 
 	case SMT_RANGE:
-		SendModifierLog( &m_target->SM_PRange, val, AffectedGroups, mod->m_miscValue, true );
+		SendModifierLog( &m_target->SM_PRange, val, AffectedGroups, static_cast<uint8>( mod->m_miscValue ), true );
 		break;
 
 	case SMT_RADIUS:
-		SendModifierLog( &m_target->SM_PRadius, val, AffectedGroups, mod->m_miscValue, true );
+		SendModifierLog( &m_target->SM_PRadius, val, AffectedGroups, static_cast<uint8>( mod->m_miscValue ), true );
 		break;
 
 	case SMT_CRITICAL:
-		SendModifierLog( &m_target->SM_CriticalChance, val, AffectedGroups, mod->m_miscValue, true );
+		SendModifierLog( &m_target->SM_CriticalChance, val, AffectedGroups, static_cast<uint8>( mod->m_miscValue ), true );
 		break;
 
 	case SMT_MISC_EFFECT:
-		SendModifierLog( &m_target->SM_PMiscEffect, val, AffectedGroups, mod->m_miscValue, true );
+		SendModifierLog( &m_target->SM_PMiscEffect, val, AffectedGroups, static_cast<uint8>( mod->m_miscValue ), true );
 		break;
 
 	case SMT_NONINTERRUPT:
-		SendModifierLog( &m_target->SM_PNonInterrupt, val, AffectedGroups, mod->m_miscValue, true );
+		SendModifierLog( &m_target->SM_PNonInterrupt, val, AffectedGroups, static_cast<uint8>( mod->m_miscValue ), true );
 		//SpellAuraResistPushback(true);
 		break;
 
 	case SMT_CAST_TIME:
-		SendModifierLog( &m_target->SM_PCastTime, val, AffectedGroups, mod->m_miscValue, true );
+		SendModifierLog( &m_target->SM_PCastTime, val, AffectedGroups, static_cast<uint8>( mod->m_miscValue ), true );
 		break;
 
 	case SMT_COOLDOWN_DECREASE:
-		SendModifierLog( &m_target->SM_PCooldownTime, val, AffectedGroups, mod->m_miscValue, true );
+		SendModifierLog( &m_target->SM_PCooldownTime, val, AffectedGroups, static_cast<uint8>( mod->m_miscValue ), true );
 		break;
 
 	case SMT_EFFECT_2:
-		SendModifierLog( &m_target->SM_PEffect2_Bonus, val, AffectedGroups, mod->m_miscValue, true );
+		SendModifierLog( &m_target->SM_PEffect2_Bonus, val, AffectedGroups, static_cast<uint8>( mod->m_miscValue ), true );
 		break;
 
 	case SMT_COST:
-		SendModifierLog( &m_target->SM_PCost, val, AffectedGroups, mod->m_miscValue, true );
+		SendModifierLog( &m_target->SM_PCost, val, AffectedGroups, static_cast<uint8>( mod->m_miscValue ), true );
 		break;
 
 	case SMT_CRITICAL_DAMAGE:
-		SendModifierLog( &m_target->SM_PCriticalDamage, val, AffectedGroups, mod->m_miscValue, true );
+		SendModifierLog( &m_target->SM_PCriticalDamage, val, AffectedGroups, static_cast<uint8>( mod->m_miscValue ), true );
 		break;
 
 	//case SMT_HITCHANCE: - no pct
@@ -6956,35 +6956,35 @@ void Aura::SpellAuraAddPctMod( bool apply )
 	//case SMT_TRIGGER: - todo
 
 	case SMT_AMPTITUDE:
-		SendModifierLog( &m_target->SM_PAmptitude, val, AffectedGroups, mod->m_miscValue, true );
+		SendModifierLog( &m_target->SM_PAmptitude, val, AffectedGroups, static_cast<uint8>( mod->m_miscValue ), true );
 		break;
 
 	case SMT_JUMP_REDUCE:
-		SendModifierLog( &m_target->SM_PJumpReduce, val, AffectedGroups, mod->m_miscValue, true );
+		SendModifierLog( &m_target->SM_PJumpReduce, val, AffectedGroups, static_cast<uint8>( mod->m_miscValue ), true );
 		break;
 
 	case SMT_CAST_TIME_FLAT:
-		SendModifierLog( &m_target->SM_PCastTime, val, AffectedGroups, mod->m_miscValue, true );
+		SendModifierLog( &m_target->SM_PCastTime, val, AffectedGroups, static_cast<uint8>( mod->m_miscValue ), true );
 		break;
 
 	case SMT_SPELL_VALUE_PCT:
-		SendModifierLog( &m_target->SM_PDOT, val, AffectedGroups, mod->m_miscValue, true );
+		SendModifierLog( &m_target->SM_PDOT, val, AffectedGroups, static_cast<uint8>( mod->m_miscValue ), true );
 		break;
 
 	case SMT_EFFECT_3:
-		SendModifierLog( &m_target->SM_PEffect3_Bonus, val, AffectedGroups, mod->m_miscValue, true );
+		SendModifierLog( &m_target->SM_PEffect3_Bonus, val, AffectedGroups, static_cast<uint8>( mod->m_miscValue ), true );
 		break;
 
 	case SMT_PENALTY:
-		SendModifierLog( &m_target->SM_PPenalty, val, AffectedGroups, mod->m_miscValue, true );
+		SendModifierLog( &m_target->SM_PPenalty, val, AffectedGroups, static_cast<uint8>( mod->m_miscValue ), true );
 		break;
 
 	case SMT_EFFECT_BONUS:
-		SendModifierLog( &m_target->SM_PEffectBonus, val, AffectedGroups, mod->m_miscValue, true );
+		SendModifierLog( &m_target->SM_PEffectBonus, val, AffectedGroups, static_cast<uint8>( mod->m_miscValue ), true );
 		break;
 
 	case SMT_RESIST_DISPEL:
-		SendModifierLog( &m_target->SM_PRezist_dispell, val, AffectedGroups, mod->m_miscValue, true );
+		SendModifierLog( &m_target->SM_PRezist_dispell, val, AffectedGroups, static_cast<uint8>( mod->m_miscValue ), true );
 		break;
 
 	default://Unknown modifier type
@@ -7018,7 +7018,7 @@ void Aura::SendModifierLog( int32** m, int32 v, uint32* mask, uint8 type, bool p
 				if( !m_target->IsPlayer() )
 					continue;
 
-				data.group = bit;
+				data.group = static_cast<uint8>( bit );
 				data.type = type;
 				data.v = v;
 				static_cast<Player*>(m_target)->GetSession()->OutPacket( SMSG_SET_FLAT_SPELL_MODIFIER+ pct, sizeof( packetSMSG_SET_FLAT_SPELL_MODIFIER ), &data );
@@ -7816,7 +7816,7 @@ void Aura::SpellAuraSplitDamageFlat(bool apply)
 		ds->m_flatDamageSplit = mod->m_miscValue;
 		ds->m_spellId = GetSpellProto()->Id;
 		ds->m_pctDamageSplit = 0;
-		ds->damage_type = mod->m_type;
+		ds->damage_type = static_cast<uint8>( mod->m_type );
 		ds->creator = (void*)this;
 		ds->m_target = GetCaster()->GetGUID();
 		m_target->m_damageSplitTarget = ds;
@@ -8270,99 +8270,99 @@ void Aura::SpellAuraAddFlatModifier(bool apply)
 	switch (mod->m_miscValue)//let's generate warnings for unknown types of modifiers
 	{
 	case SMT_DAMAGE_DONE:
-		SendModifierLog(&m_target->SM_FDamageBonus,val,AffectedGroups,mod->m_miscValue);
+		SendModifierLog(&m_target->SM_FDamageBonus,val,AffectedGroups, static_cast<uint8>( mod->m_miscValue ));
 		break;
 
 	case SMT_DURATION:
-		SendModifierLog(&m_target->SM_FDur,val,AffectedGroups,mod->m_miscValue);
+		SendModifierLog(&m_target->SM_FDur,val,AffectedGroups, static_cast<uint8>( mod->m_miscValue ));
 		break;
 
 	case SMT_THREAT_REDUCED:
-		SendModifierLog(&m_target->SM_FThreat, val, AffectedGroups,mod->m_miscValue);
+		SendModifierLog(&m_target->SM_FThreat, val, AffectedGroups, static_cast<uint8>( mod->m_miscValue ));
 		break;
 
 	case SMT_EFFECT_1:
-		SendModifierLog(&m_target->SM_FEffect1_Bonus, val, AffectedGroups, mod->m_miscValue);
+		SendModifierLog(&m_target->SM_FEffect1_Bonus, val, AffectedGroups,  static_cast<uint8>( mod->m_miscValue ));
 		break;
 
 	case SMT_CHARGES:
-		SendModifierLog(&m_target->SM_FCharges, val, AffectedGroups,mod->m_miscValue);
+		SendModifierLog(&m_target->SM_FCharges, val, AffectedGroups, static_cast<uint8>( mod->m_miscValue ));
 		break;
 
 	case SMT_RANGE:
-		SendModifierLog(&m_target->SM_FRange,val,AffectedGroups,mod->m_miscValue);
+		SendModifierLog(&m_target->SM_FRange,val,AffectedGroups, static_cast<uint8>( mod->m_miscValue ));
 		break;
 
 	case SMT_RADIUS:
-		SendModifierLog(&m_target->SM_FRadius,val,AffectedGroups,mod->m_miscValue);
+		SendModifierLog(&m_target->SM_FRadius,val,AffectedGroups, static_cast<uint8>( mod->m_miscValue ));
 		break;
 
 	case SMT_CRITICAL:
-		SendModifierLog(&m_target->SM_CriticalChance,val,AffectedGroups,mod->m_miscValue);
+		SendModifierLog(&m_target->SM_CriticalChance,val,AffectedGroups, static_cast<uint8>( mod->m_miscValue ));
 		break;
 
 	case SMT_MISC_EFFECT:
-		SendModifierLog(&m_target->SM_FMiscEffect,val,AffectedGroups,mod->m_miscValue);
+		SendModifierLog(&m_target->SM_FMiscEffect,val,AffectedGroups, static_cast<uint8>( mod->m_miscValue ));
 		break;
 
 	//case SMT_NONINTERRUPT: - no flat
 
 	case SMT_CAST_TIME:
-		SendModifierLog(&m_target->SM_FCastTime,val,AffectedGroups,mod->m_miscValue);
+		SendModifierLog(&m_target->SM_FCastTime,val,AffectedGroups, static_cast<uint8>( mod->m_miscValue ));
 		break;
 
 	case SMT_COOLDOWN_DECREASE:
-		SendModifierLog(&m_target->SM_FCooldownTime, val, AffectedGroups,mod->m_miscValue);
+		SendModifierLog(&m_target->SM_FCooldownTime, val, AffectedGroups, static_cast<uint8>( mod->m_miscValue ));
 		break;
 
 	case SMT_EFFECT_2:
-		SendModifierLog(&m_target->SM_FEffect2_Bonus, val, AffectedGroups, mod->m_miscValue);
+		SendModifierLog(&m_target->SM_FEffect2_Bonus, val, AffectedGroups,  static_cast<uint8>( mod->m_miscValue ));
 		break;
 
 	case SMT_COST:
-		SendModifierLog(&m_target->SM_FCost,val,AffectedGroups,mod->m_miscValue);
+		SendModifierLog(&m_target->SM_FCost,val,AffectedGroups, static_cast<uint8>( mod->m_miscValue ));
 		break;
 
 	//case SMT_CRITICAL_DAMAGE: - no flat
 
 	case SMT_HITCHANCE:
-		SendModifierLog(&m_target->SM_FHitchance,val,AffectedGroups,mod->m_miscValue);
+		SendModifierLog(&m_target->SM_FHitchance,val,AffectedGroups, static_cast<uint8>( mod->m_miscValue ));
 		break;
 
 	case SMT_ADDITIONAL_TARGET:
-		SendModifierLog(&m_target->SM_FAdditionalTargets,val,AffectedGroups,mod->m_miscValue);
+		SendModifierLog(&m_target->SM_FAdditionalTargets,val,AffectedGroups, static_cast<uint8>( mod->m_miscValue ));
 		break;
 
 	case SMT_TRIGGER:
-		SendModifierLog(&m_target->SM_FChanceOfSuccess,val,AffectedGroups,mod->m_miscValue);
+		SendModifierLog(&m_target->SM_FChanceOfSuccess,val,AffectedGroups, static_cast<uint8>( mod->m_miscValue ));
 		break;
 
 	case SMT_AMPTITUDE:
-		SendModifierLog(&m_target->SM_FAmptitude,val,AffectedGroups,mod->m_miscValue);
+		SendModifierLog(&m_target->SM_FAmptitude,val,AffectedGroups, static_cast<uint8>( mod->m_miscValue ));
 		break;
 
 	//case SMT_JUMP_REDUCE: - no flat
 	//case SMT_CAST_TIME_FLAT:
 
 	//case SMT_SPELL_VALUE_PCT: - pct only?
-		//SendModifierLog(&m_target->SM_FDOT,val,AffectedGroups,mod->m_miscValue);
+		//SendModifierLog(&m_target->SM_FDOT,val,AffectedGroups, static_cast<uint8>( mod->m_miscValue ));
 		//break;
 
 	case SMT_EFFECT_3:
-		SendModifierLog(&m_target->SM_FEffect3_Bonus, val, AffectedGroups, mod->m_miscValue);
+		SendModifierLog(&m_target->SM_FEffect3_Bonus, val, AffectedGroups,  static_cast<uint8>( mod->m_miscValue ));
 		break;
 
 	case SMT_PENALTY:
-		SendModifierLog(&m_target->SM_FPenalty,val,AffectedGroups,mod->m_miscValue);
-		//SendModifierLog(&m_target->SM_PPenalty,val,AffectedGroups,mod->m_miscValue,true);
+		SendModifierLog(&m_target->SM_FPenalty,val,AffectedGroups, static_cast<uint8>( mod->m_miscValue ));
+		//SendModifierLog(&m_target->SM_PPenalty,val,AffectedGroups, static_cast<uint8>( mod->m_miscValue ),true);
 		break;
 
 	case SMT_EFFECT_BONUS:
-		SendModifierLog(&m_target->SM_FEffectBonus,val,AffectedGroups,mod->m_miscValue,true);
+		SendModifierLog(&m_target->SM_FEffectBonus,val,AffectedGroups, static_cast<uint8>( mod->m_miscValue ),true);
 		break;
 
 	case SMT_RESIST_DISPEL:
-		SendModifierLog(&m_target->SM_FRezist_dispell, val, AffectedGroups,mod->m_miscValue);
+		SendModifierLog(&m_target->SM_FRezist_dispell, val, AffectedGroups, static_cast<uint8>( mod->m_miscValue ));
 		break;
 
 	default://Unknown modifier type
@@ -9656,7 +9656,7 @@ void Aura::SpellAuraModAttackPowerOfArmor( bool apply )
 		m_target->ModUnsigned32Value( UNIT_FIELD_ATTACK_POWER_MODS,  ( m_target->GetUInt32Value(UNIT_FIELD_RESISTANCES) /mod->m_amount ) );
 	}
 	else
-		m_target->ModUnsigned32Value( UNIT_FIELD_ATTACK_POWER_MODS, -( m_target->GetUInt32Value(UNIT_FIELD_RESISTANCES) /mod->m_amount ) );
+		m_target->ModUnsigned32Value( UNIT_FIELD_ATTACK_POWER_MODS, - static_cast<int32>( m_target->GetUInt32Value(UNIT_FIELD_RESISTANCES) /mod->m_amount ) );
 
 	m_target->CalcDamage();
 }
@@ -9676,7 +9676,7 @@ void Aura::SpellAuraReflectSpellsInfront(bool apply)
 		rss->spellId = GetSpellId();
 		rss->school = -1;
 		rss->require_aura_hash = 0;
-		rss->charges = -1;
+		rss->charges = static_cast<uint32>( -1 );
 		rss->infront = true;
 
 		m_target->m_reflectSpellSchool.push_back(rss);

@@ -878,7 +878,7 @@ bool Player::Create(WorldPacket& data )
 	// Add actionbars
 	for(std::list<CreateInfo_ActionBarStruct>::iterator itr = info->actionbars.begin();itr!=info->actionbars.end();++itr)
 	{
-		setAction(itr->button, itr->action, itr->type, itr->misc);
+		setAction(static_cast<uint8>( itr->button ), static_cast<uint16>( itr->action ), static_cast<uint8>( itr->type), static_cast<uint8>( itr->misc ));
 	}
 
 	for(std::list<CreateInfo_ItemStruct>::iterator is = info->items.begin(); is!=info->items.end(); is++)
@@ -1628,10 +1628,10 @@ void Player::BuildEnumData( WorldPacket * p_data )
 
 	for (uint32 i = 0; i < EQUIPMENT_SLOT_END ; i++)//max equipment slot is 18....this is strange
 	{
-		if (GetItemInterface()->GetInventoryItem(i) != NULL)
+		if (GetItemInterface()->GetInventoryItem(static_cast<int16>( i )) != NULL)
 		{
-			*p_data << (uint32)GetItemInterface()->GetInventoryItem(i)->GetProto()->DisplayInfoID;
-			*p_data << (uint8)GetItemInterface()->GetInventoryItem(i)->GetProto()->InventoryType;
+			*p_data << static_cast<uint32>( GetItemInterface()->GetInventoryItem(static_cast<int16>( i ))->GetProto()->DisplayInfoID );
+			*p_data << static_cast<uint8>( GetItemInterface()->GetInventoryItem(static_cast<int16>( i ))->GetProto()->InventoryType );
 			//*p_data << uint32(enchant ? enchant->aura_id : 0); //VLack: for 3.1.1, we need the enchantment here. Instead I'll send 0 now; this might need to be fixed later!
 			// At the moment BuildEnumData is not used, so it is not necessary to fix this right now, but if someone wants to use it again, then WorldSession::CharacterEnumProc has these implemented, look at it as a reference.
 			*p_data << uint32(0);
@@ -2927,7 +2927,7 @@ void Player::LoadFromDBProc(QueryResultVector & results)
 	SetNoseLevel();
 
 	// set power type
-	SetPowerType(myClass->power_type);
+	SetPowerType( static_cast<uint8>( myClass->power_type ));
 
 	// obtain player create info
 	info = objmgr.GetPlayerCreateInfo(getRace(), getClass());
@@ -3247,7 +3247,7 @@ void Player::LoadFromDBProc(QueryResultVector & results)
 		}
 	}
 
-	m_StableSlotCount = get_next_field.GetUInt32();
+	m_StableSlotCount = static_cast<uint8>( get_next_field.GetUInt32() );
 	m_instanceId = get_next_field.GetUInt32();
 	m_bgEntryPointMap = get_next_field.GetUInt32();
 	m_bgEntryPointX = get_next_field.GetFloat();
@@ -3381,7 +3381,7 @@ void Player::LoadFromDBProc(QueryResultVector & results)
 		rep = new FactionReputation;
 		rep->baseStanding = basestanding;
 		rep->standing = standing;
-		rep->flag = fflag;
+		rep->flag = static_cast<uint8>( fflag );
 		m_reputation[id]=rep;
 		reputationByListId[factdbc->RepListId] = rep;
 	}
@@ -3904,8 +3904,8 @@ void Player::OnPushToWorld()
 	if(m_FirstLogin)
 	{
 		if(class_ == DEATHKNIGHT)
-			startlevel = max(55,sWorld.StartingLevel);
-		else startlevel = sWorld.StartingLevel;
+			startlevel = static_cast<uint8>( max(55,sWorld.StartingLevel) );
+		else startlevel = static_cast<uint8>( sWorld.StartingLevel );
 
 		sHookInterface.OnFirstEnterWorld(this);
 		LevelInfo * Info = objmgr.GetLevelInfo(getRace(), getClass(), startlevel);
@@ -4811,9 +4811,7 @@ void Player::ResurrectPlayer()
 	UpdateVisibility();
 	if ( m_resurrecter && IsInWorld()
 		// Don't pull players inside instances with this trick. Also fixes the part where you were able to double item bonuses
-		&& m_resurrectInstanceID == GetInstanceID()
-		)
-	{
+		&& m_resurrectInstanceID == static_cast<uint32>( GetInstanceID() )	){
 		SafeTeleport( m_resurrectMapId, m_resurrectInstanceID, m_resurrectPosition );
 	}
 	m_resurrecter = 0;
@@ -7254,7 +7252,7 @@ void Player::UpdateNearbyGameObjects()
 					{
 						for(uint32 i = 0; i < qle->GetQuest()->count_required_mob; ++i)
 						{
-							if(qle->GetQuest()->required_mob[i] == go->GetEntry() &&
+							if(qle->GetQuest()->required_mob[i] == static_cast<int32>( go->GetEntry() ) &&
 								qle->GetMobCount(i) < qle->GetQuest()->required_mobcount[i])
 							{
 								activate_quest_object = true;
@@ -7794,7 +7792,7 @@ void Player::AddItemsToWorld()
 			{
 				for(uint32 e=0; e < pItem->GetProto()->ContainerSlots; e++)
 				{
-					Item *item = ((Container*)pItem)->GetItem(e);
+					Item *item = (static_cast<Container*>( pItem ))->GetItem(static_cast<int16>( e ));
 					if(item)
 					{
 						item->PushToWorld(m_mapMgr);
@@ -7822,16 +7820,16 @@ void Player::RemoveItemsFromWorld()
 			{
 				if(i < INVENTORY_SLOT_BAG_END)	  // only equipment+bags slots get mods.
 				{
-					_ApplyItemMods(pItem, i, false, false, true);
+					_ApplyItemMods(pItem, static_cast<int16>( i ), false, false, true);
 				}
 				pItem->RemoveFromWorld();
 			}
 
-			if(pItem->IsContainer() && GetItemInterface()->IsBagSlot(i))
+			if(pItem->IsContainer() && GetItemInterface()->IsBagSlot(static_cast<int16>( i )))
 			{
 				for(uint32 e=0; e < pItem->GetProto()->ContainerSlots; e++)
 				{
-					Item *item = ((Container*)pItem)->GetItem(e);
+					Item *item = (static_cast<Container*>( pItem ))->GetItem( static_cast<int16>( e ));
 					if(item && item->IsInWorld())
 					{
 						item->RemoveFromWorld();
@@ -8479,7 +8477,7 @@ void Player::ZoneUpdate(uint32 ZoneId)
 	if( m_mapMgr != NULL )
 		m_mapMgr->SendInitialStates( this );
 
-	UpdateChannels(ZoneId);
+	UpdateChannels(static_cast<int16>( ZoneId ));
 	/*std::map<uint32, AreaTable*>::iterator iter = sWorld.mZoneIDToTable.find(ZoneId);
 	if(iter == sWorld.mZoneIDToTable.end())
 		return;
@@ -10411,7 +10409,7 @@ void Player::UpdateComboPoints()
 		}
 		else
 		{
-			c = FastGUIDPack(m_comboTarget, buffer, 0);
+			c = static_cast<uint16>( FastGUIDPack(m_comboTarget, buffer, 0) );
 			buffer[c++] = m_comboPoints;
 		}
 	}
@@ -12040,7 +12038,9 @@ void Player::_FlyhackCheck()
 {
 	if(!sWorld.antihack_flight || m_TransporterGUID != 0 || GetTaxiState() || (sWorld.no_antihack_on_gm && GetSession()->HasGMPermissions()))
 		return;
-    return; //disabled
+    return; 
+	//disabled
+	/*
 	MovementInfo * mi = GetSession()->GetMovementInfo();
 	if(!mi) return; //wtf?
 
@@ -12074,6 +12074,8 @@ void Player::_FlyhackCheck()
 			GetSession()->SendPacket(&data);
 		}
 	}
+	*/
+
 }
 
 /************************************************************************/
@@ -12562,7 +12564,7 @@ void Player::RemoveTempEnchantsOnArena()
 	// Loop through all equipment items
 	for( uint32 x = EQUIPMENT_SLOT_START; x < EQUIPMENT_SLOT_END; ++x )
 	{
-		Item * it = itemi->GetInventoryItem(x);
+		Item * it = itemi->GetInventoryItem( static_cast<int16>( x ));
 
 		if( it != NULL )
 		{
@@ -12573,7 +12575,7 @@ void Player::RemoveTempEnchantsOnArena()
 	// Loop through all your bags.. 
 	for( uint32 x = INVENTORY_SLOT_BAG_START; x < INVENTORY_SLOT_BAG_END; ++x)
 	{
-		Item * it = itemi->GetInventoryItem(x);
+		Item * it = itemi->GetInventoryItem(static_cast<int16>( x ));
 		
 		if( it != NULL )
 		{
@@ -12582,7 +12584,7 @@ void Player::RemoveTempEnchantsOnArena()
 				Container *bag = static_cast<Container*>( it );
 				for( uint32 ci = 0; ci < bag->GetProto()->ContainerSlots; ++ci )
 				{
-					it = bag->GetItem( ci );
+					it = bag->GetItem( static_cast<int16>( ci ));
 					if( it != NULL )
 						it->RemoveAllEnchantments(true);
 				}
@@ -12593,7 +12595,7 @@ void Player::RemoveTempEnchantsOnArena()
 	// Loop through all your invintory items
 	for( uint32 x = INVENTORY_SLOT_ITEM_START; x < INVENTORY_SLOT_ITEM_END; ++x )
 	{
-		Item * it = itemi->GetInventoryItem(x);
+		Item * it = itemi->GetInventoryItem( static_cast<int16>( x ));
 
 		if( it != NULL )
 		{

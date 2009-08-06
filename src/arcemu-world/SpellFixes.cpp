@@ -475,7 +475,7 @@ void ApplyNormalFixes()
 
 					uint32 len = (uint32)strlen(sp->Description);
 					for(i = 0; i < len; ++i)
-						sp->Description[i] = tolower(sp->Description[i]);
+						sp->Description[i] = static_cast<char>( tolower(sp->Description[i]) );
 					//dirty code for procs, if any1 got any better idea-> u are welcome
 					//139944 --- some magic number, it will trigger on all hits etc
 						//for seems to be smth like custom check
@@ -6324,7 +6324,7 @@ void ApplyNormalFixes()
 		sp = dbcSpell.LookupEntryForced(47258);
 		if(sp != NULL)
 		{
-			sp->procFlags = PROC_TARGET_SELF | PROC_ON_ANY_HOSTILE_ACTION;
+			sp->procFlags = uint32( PROC_TARGET_SELF | PROC_ON_ANY_HOSTILE_ACTION );
 			sp->procChance = 100;
 		}	
 
@@ -6332,7 +6332,7 @@ void ApplyNormalFixes()
 		sp = dbcSpell.LookupEntryForced(47259);
 		if(sp != NULL)
 		{
-			sp->procFlags = PROC_TARGET_SELF | PROC_ON_ANY_HOSTILE_ACTION;
+			sp->procFlags = uint32( PROC_TARGET_SELF | PROC_ON_ANY_HOSTILE_ACTION );
 			sp->procChance = 100;
 		}
 
@@ -6340,7 +6340,7 @@ void ApplyNormalFixes()
 		sp = dbcSpell.LookupEntryForced(47260);
 		if(sp != NULL)
 		{
-			sp->procFlags = PROC_TARGET_SELF | PROC_ON_ANY_HOSTILE_ACTION;
+			sp->procFlags = uint32( PROC_TARGET_SELF | PROC_ON_ANY_HOSTILE_ACTION );
 			sp->procChance = 100;
 		}	
 
@@ -7136,7 +7136,7 @@ void ApplyNormalFixes()
 		sp = dbcSpell.LookupEntryForced( 46832 );
 		if( sp != NULL )
 		{
-			sp->procFlags = PROC_ON_CAST_SPELL | PROC_TARGET_SELF;
+			sp->procFlags = uint32( PROC_ON_CAST_SPELL | PROC_TARGET_SELF );
 		}
 
 				

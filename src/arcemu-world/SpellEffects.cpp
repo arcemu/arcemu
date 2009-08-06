@@ -4358,7 +4358,7 @@ void Spell::SpellEffectSummonObject(uint32 i)
 			go->m_ritualmembers[0] = p_caster->GetLowGUID();
 			go->m_ritualcaster = p_caster->GetLowGUID();
 			go->m_ritualtarget = pTarget->GetLowGUID();
-			go->m_ritualspell = GetProto()->Id;
+			go->m_ritualspell = static_cast<uint16>( GetProto()->Id );
 		}
 		else if ( entry == 186811 || entry == 181622 ) // ritual of refreshment, ritual of souls
 		{
@@ -4367,7 +4367,7 @@ void Spell::SpellEffectSummonObject(uint32 i)
 			go->m_ritualmembers[0] = p_caster->GetLowGUID();
 			go->m_ritualcaster = p_caster->GetLowGUID();
 			go->m_ritualtarget = 0;
-			go->m_ritualspell = GetProto()->Id;
+			go->m_ritualspell = static_cast<uint16>( GetProto()->Id );
 		}
 		else if ( entry == 186812 || entry == 181621 ) // Refreshment Table, Soulwell
 		{
@@ -5720,10 +5720,10 @@ void Spell::SpellEffectAddComboPoints(uint32 i) // Add Combo Points
 		//re-enabled this by Zack. Explained why it is used + rechecked to make sure initialization is good ...
 		// while casting a spell talent will trigger upon the spell prepare faze
 		// the effect of the talent is to add 1 combo point but when triggering spell finishes it will clear the extra combo point
-		p_caster->m_spellcomboPoints += damage;
+		p_caster->m_spellcomboPoints += static_cast<int8>( damage );
 		return;
 	}
-	p_caster->AddComboPoints(p_caster->GetSelection(), damage);
+	p_caster->AddComboPoints(p_caster->GetSelection(), static_cast<uint8>( damage ));
 }
 
 void Spell::SpellEffectCreateHouse(uint32 i) // Create House
@@ -6386,7 +6386,7 @@ void Spell::SpellEffectInebriate(uint32 i) // lets get drunk!
 
 	// Drunkee!
 	uint8 b2 = m_caster->GetByte(PLAYER_BYTES_3,1);
-	b2 += damage;	// 10 beers will get you smassssshed!
+	b2 += static_cast<uint8>( damage );	// 10 beers will get you smassssshed!
 
 	m_caster->SetByte(PLAYER_BYTES_3,1,b2>90?90:b2);
 	sEventMgr.RemoveEvents(p_caster, EVENT_PLAYER_REDUCEDRUNK);

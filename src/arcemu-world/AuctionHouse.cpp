@@ -687,7 +687,7 @@ void AuctionHouse::SendAuctionList(Player * plr, WorldPacket * packet)
 	if(auctionString.length() > 0)
 	{
 		for(uint32 j = 0; j < auctionString.length(); ++j)
-			auctionString[j] = tolower(auctionString[j]);
+			auctionString[j] = static_cast<char>( tolower(auctionString[j]) );
 	}
 
 	WorldPacket data(SMSG_AUCTION_LIST_RESULT, 7000);

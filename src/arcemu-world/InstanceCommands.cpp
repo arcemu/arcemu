@@ -132,7 +132,7 @@ bool ChatHandler::HandleResetInstanceCommand(const char* args, WorldSession *m_s
 				if(itr == plr->getPlayerInfo()->savedInstanceIds[difficulty].end() || (*itr).second != instance->m_instanceId)
 					continue;
 				plr->SetPersistentInstanceId(instance->m_mapId, difficulty, 0);
-				SystemMessage(m_session, "Instance with id %u (%s) is persistent and will only be revoked from player.", instanceId, GetDifficultyString(difficulty));
+				SystemMessage(m_session, "Instance with id %u (%s) is persistent and will only be revoked from player.", instanceId, GetDifficultyString( static_cast<uint8>( difficulty )));
 				foundSomething = true;
 			}
 			plr->getPlayerInfo()->savedInstanceIdsLock.Release();
@@ -256,10 +256,10 @@ bool ChatHandler::HandleGetInstanceInfoCommand(const char* args, WorldSession *m
 	ss << "Persistent: " << MSG_COLOR_CYAN << (instance->m_persistent ? "Yes" : "No") << "|r\n";
 	if(instance->m_mapInfo != NULL)
 	{
-		ss << "Type: " << MSG_COLOR_CYAN << GetMapTypeString(instance->m_mapInfo->type) << "|r";
+		ss << "Type: " << MSG_COLOR_CYAN << GetMapTypeString( static_cast<uint8>( instance->m_mapInfo->type )) << "|r";
 		if(instance->m_mapInfo->type == INSTANCE_ARENA)
 		{
-			ss << " (" << MSG_COLOR_CYAN << GetDifficultyString(instance->m_difficulty) << "|r)";
+			ss << " (" << MSG_COLOR_CYAN << GetDifficultyString( static_cast<uint8>( instance->m_difficulty )) << "|r)";
 		}
 		ss << "\n";
 	}
@@ -373,10 +373,10 @@ bool ChatHandler::HandleShowInstancesCommand(const char* args, WorldSession* m_s
 				ss << " - " << MSG_COLOR_RED << "Expired!|r";
 			else
 			{
-				ss << " [" << GetMapTypeString(pInstance->m_mapInfo->type) << "]";
+				ss << " [" << GetMapTypeString( static_cast<uint8>( pInstance->m_mapInfo->type )) << "]";
 				if(pInstance->m_mapInfo->type == INSTANCE_ARENA)
 				{
-					ss << " [" << GetDifficultyString(pInstance->m_difficulty) << "]";
+					ss << " [" << GetDifficultyString( static_cast<uint8>( pInstance->m_difficulty )) << "]";
 				}
 				ss << " - ";
 				if(pInstance->m_mapMgr == NULL)

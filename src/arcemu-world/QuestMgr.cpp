@@ -676,7 +676,7 @@ bool QuestMgr::OnGameObjectActivate(Player *plr, GameObject *go)
 
 			for( j = 0; j < 4; ++j )
 			{
-				if( qst->required_mob[j] == entry &&
+				if( qst->required_mob[j] == static_cast<int32>( entry ) &&
 					qst->required_mobtype[j] == QUEST_MOB_TYPE_GAMEOBJECT &&
 					qle->m_mobcount[j] < qst->required_mobcount[j] )
 				{
@@ -723,7 +723,7 @@ void QuestMgr::OnPlayerKill(Player* plr, Creature* victim)
 						if( qst->required_mob[j] == 0 )
 							continue;
 
-						if( qst->required_mob[j] == entry &&
+						if( qst->required_mob[j] ==static_cast<int32>( entry ) &&
 							qst->required_mobtype[j] == QUEST_MOB_TYPE_CREATURE &&
 							qle->m_mobcount[j] < qst->required_mobcount[j] )
 						{
@@ -773,7 +773,7 @@ void QuestMgr::OnPlayerKill(Player* plr, Creature* victim)
 										if( qst->required_mob[j] == 0 )
 											continue;
 
-										if( qst->required_mob[j] == entry &&
+										if( qst->required_mob[j] == static_cast<int32>( entry ) &&
 											qst->required_mobtype[j] == QUEST_MOB_TYPE_CREATURE &&
 											qle->m_mobcount[j] < qst->required_mobcount[j] )
 										{
@@ -823,7 +823,7 @@ void QuestMgr::OnPlayerCast(Player* plr, uint32 spellid, uint64& victimguid)
 			{
 				if( qst->required_mob[j] )
 				{
-					if( victim && qst->required_mob[j] == entry && qst->required_spell[j] == spellid && (qle->m_mobcount[j] < qst->required_mobcount[j] || qle->m_mobcount[j] == 0) && !qle->IsUnitAffected(victim) )
+					if( victim && qst->required_mob[j] == static_cast<int32>( entry ) && qst->required_spell[j] == spellid && (qle->m_mobcount[j] < qst->required_mobcount[j] || qle->m_mobcount[j] == 0) && !qle->IsUnitAffected(victim) )
 					{
 						qle->AddAffectedUnit(victim);
 						qle->IncrementMobCount( j );
@@ -2101,7 +2101,7 @@ void QuestMgr::OnPlayerEmote(Player* plr, uint32 emoteid, uint64& victimguid)
 			{
 				if( qst->required_mob[j] )
 				{
-					if( victim && qst->required_mob[j] == entry && qst->required_emote[j] == emoteid && (qle->m_mobcount[j] < qst->required_mobcount[j] || qle->m_mobcount[j] == 0) && !qle->IsUnitAffected(victim) )
+					if( victim && qst->required_mob[j] == static_cast<int32>( entry ) && qst->required_emote[j] == emoteid && (qle->m_mobcount[j] < qst->required_mobcount[j] || qle->m_mobcount[j] == 0) && !qle->IsUnitAffected(victim) )
 					{
 						qle->AddAffectedUnit(victim);
 						qle->IncrementMobCount( j );

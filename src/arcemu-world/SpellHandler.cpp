@@ -491,7 +491,7 @@ void WorldSession::HandlePetCastSpell(WorldPacket & recvPacket)
 
 	/* burlex: this is.. strange */
 	SpellCastTargets targets;
-	targets.m_targetMask = flags;
+	targets.m_targetMask = static_cast<uint16>( flags );
 
 	if(flags == 0)
 		targets.m_unitTarget = guid;

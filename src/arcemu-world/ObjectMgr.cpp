@@ -2007,7 +2007,7 @@ void ObjectMgr::GenerateLevelUpInfo()
 		// Search for a playercreateinfo.
 		for(uint32 Race = RACE_HUMAN; Race <= RACE_DRAENEI; ++Race )
 		{
-			PCI = GetPlayerCreateInfo(Race, Class);
+			PCI = GetPlayerCreateInfo(static_cast<uint8>( Race ), static_cast<uint8>( Class ));
 
 			if(PCI == 0)
 				continue;   // Class not valid for this race.
@@ -2040,7 +2040,7 @@ void ObjectMgr::GenerateLevelUpInfo()
 				// Calculate Stats
 				for(uint32 s = 0; s < 5; ++s)
 				{
-					val = GainStat(Level, Class, s);
+					val = GainStat(static_cast<uint16>( Level ), static_cast<uint8>( Class ), static_cast<uint8>( s ));
 					lvl->Stat[s] = lastlvl.Stat[s] + val;
 				}
 
@@ -2389,8 +2389,8 @@ void ObjectMgr::LoadCreatureTimedEmotes()
 			memcpy ( te->msg, str, len+1 );
 		}
 		else te->msg = NULL;
-		te->msg_type = fields[5].GetUInt32();
-		te->msg_lang = fields[6].GetUInt32();
+		te->msg_type = static_cast<uint8>( fields[5].GetUInt32() );
+		te->msg_lang = static_cast<uint8>( fields[6].GetUInt32() );
 		te->expire_after = fields[7].GetUInt32();
 
 		HM_NAMESPACE::hash_map<uint32,TimedEmoteList*>::const_iterator i;
@@ -3013,7 +3013,7 @@ void ObjectMgr::HandleMonsterSayEvent(Creature * pCreature, MONSTER_SAY_EVENTS E
 			}
 		}
 
-		pCreature->SendChatMessage(ms->Type, ms->Language, newText.c_str());
+		pCreature->SendChatMessage(static_cast<uint8>( ms->Type ), ms->Language, newText.c_str());
 	}
 }
 

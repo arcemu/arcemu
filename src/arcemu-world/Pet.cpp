@@ -514,7 +514,7 @@ AI_Spell * Pet::CreateAISpell(SpellEntry * info)
 	else
 		sp->spellType = STYPE_DAMAGE;
 
-	sp->spelltargetType = info->ai_target_type;
+	sp->spelltargetType = static_cast<uint8>( info->ai_target_type );
 	sp->autocast_type = GetAutoCastTypeForSpell( info );
 	sp->procCount = 0;
 	m_AISpellStore[ info->Id ] = sp;
@@ -562,7 +562,7 @@ void Pet::LoadFromDB( Player* owner, PlayerPet * pi )
 			ActionBar[i] = spellid;
 			//SetSpellState(dbcSpell.LookupEntry(spellid), spstate);
 			if( !( ActionBar[i] & 0x4000000 ) && spellid )
-				mSpells[ dbcSpell.LookupEntry( spellid ) ] = spstate;
+				mSpells[ dbcSpell.LookupEntry( spellid ) ] = static_cast<unsigned short>( spstate );
 
 			i++;
 
@@ -1562,7 +1562,7 @@ void Pet::HandleAutoCastEvent( AutoCastEvents Type )
 			sLog.outError("Found corrupted spell at m_autoCastSpells, skipping");
 			continue;
 		}
-		else if( sp->autocast_type != Type )
+		else if( sp->autocast_type != static_cast<uint32>( Type ) )
 		{
 			sLog.outError("Found corrupted spell (%lu) at m_autoCastSpells, skipping", sp->entryId);
 			continue;

@@ -81,7 +81,7 @@ WorldPacket * Mailbox::BuildMailboxListingPacket()
 			break;
 	}
 
-	const_cast<uint8*>(data->contents())[0] = count;
+	const_cast<uint8*>(data->contents())[0] = static_cast<uint8>( count );
 
 	// do cleanup on request mail
 	CleanupExpiredMessages();

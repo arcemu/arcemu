@@ -72,7 +72,7 @@ PatchMgr::PatchMgr()
 		pPatch->Data = new uint8[size];
 		pPatch->Version = srcversion;
 		for(i = 0; i < 4; ++i)
-			pPatch->Locality[i] = tolower(locality[i]);
+			pPatch->Locality[i] = static_cast<char>(tolower(locality[i]));
 		pPatch->Locality[4] = 0;
 		pPatch->uLocality = *(uint32*)pPatch->Locality;
 
@@ -203,7 +203,7 @@ Patch * PatchMgr::FindPatchForClient(uint32 Version, const char * Locality)
 	vector<Patch*>::iterator itr;
 	Patch * fallbackPatch = NULL;
 	for(i = 0; i < 4; ++i)
-		tmplocality[i]=tolower(Locality[i]);
+		tmplocality[i]= static_cast<char>( tolower(Locality[i]) );
 	tmplocality[4]=0;
 	ulocality = *(uint32*)tmplocality;
 
@@ -310,7 +310,7 @@ bool PatchJob::Update()
 	TransferDataPacket header;
 	bool result;
 	header.cmd = 0x31;
-	header.chunk_size = (m_bytesLeft>1500)?1500:m_bytesLeft;
+	header.chunk_size = static_cast<uint16>( (m_bytesLeft>1500)?1500:m_bytesLeft );
 	//Log.Debug("PatchJob", "Sending %u byte chunk", header.chunk_size);
 
 	result = m_client->BurstSend((const uint8*)&header,sizeof(TransferDataPacket));

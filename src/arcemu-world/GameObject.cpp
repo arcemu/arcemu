@@ -122,8 +122,8 @@ bool GameObject::CreateFromProto(uint32 entry,uint32 mapid, float x, float y, fl
 	//SetUInt32Value( GAMEOBJECT_ARTKIT, 0 );		   //these must be from wdb somewhere i guess
     SetByte( GAMEOBJECT_BYTES_1, 3, 0 );
 	SetByte( GAMEOBJECT_BYTES_1, 0, 1 );
-	SetUInt32Value( GAMEOBJECT_DISPLAYID, pInfo->DisplayID );
-	SetByte( GAMEOBJECT_BYTES_1, 1, pInfo->Type );
+	SetUInt32Value( GAMEOBJECT_DISPLAYID, static_cast<uint8>( pInfo->DisplayID ));
+	SetByte( GAMEOBJECT_BYTES_1, 1, static_cast<uint8>( pInfo->Type ));
    
 	InitAI();
 
@@ -276,7 +276,7 @@ void GameObject::Despawn(uint32 delay, uint32 respawntime)
 	//This is for go get deleted while looting
 	if(m_spawn)
 	{
-		SetByte(GAMEOBJECT_BYTES_1, 0, m_spawn->state);
+		SetByte(GAMEOBJECT_BYTES_1, 0, static_cast<uint8>( m_spawn->state ));
 		SetUInt32Value(GAMEOBJECT_FLAGS, m_spawn->flags);
 	}
 
@@ -501,7 +501,7 @@ bool GameObject::Load(GOSpawn *spawn)
 	//SetRotation(spawn->o);
 	SetUInt32Value(GAMEOBJECT_FLAGS,spawn->flags);
 //	SetUInt32Value(GAMEOBJECT_LEVEL,spawn->level);
-	SetByte(GAMEOBJECT_BYTES_1, 0,spawn->state);	
+	SetByte(GAMEOBJECT_BYTES_1, 0, static_cast<uint8>( spawn->state ));	
 	if(spawn->faction)
 	{
 		SetUInt32Value(GAMEOBJECT_FACTION,spawn->faction);

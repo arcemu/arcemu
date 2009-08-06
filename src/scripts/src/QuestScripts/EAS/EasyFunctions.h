@@ -270,7 +270,7 @@ public:
       stack->SetCount(stack->GetUInt32Value(ITEM_FIELD_STACK_COUNT) + count);
       stack->m_isDirty = true;
       
-      plr->GetSession()->SendItemPushResult(stack, false, true, true, false, plr->GetItemInterface()->GetBagSlotByGuid(stack->GetGUID()), 0xFFFFFFFF, 1);
+      plr->GetSession()->SendItemPushResult(stack, false, true, true, false, static_cast<uint8>( plr->GetItemInterface()->GetBagSlotByGuid(stack->GetGUID()) ), 0xFFFFFFFF, 1);
        
       return true;
     }

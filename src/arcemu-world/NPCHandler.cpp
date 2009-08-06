@@ -43,7 +43,7 @@ trainertype trainer_types[TRAINER_TYPE_MAX] =
 bool CanTrainAt(Player * plr, Trainer * trn)
 {
 	if ( (trn->RequiredClass && plr->getClass() != trn->RequiredClass) ||
-		 ( (trn->RequiredRace && plr->getRace() != trn->RequiredRace) && ((trn->RequiredRepFaction && trn->RequiredRepValue) && plr->GetStanding(trn->RequiredRepFaction) != trn->RequiredRepValue)) ||
+		 ( (trn->RequiredRace && plr->getRace() != trn->RequiredRace) && ((trn->RequiredRepFaction && trn->RequiredRepValue) && plr->GetStanding(trn->RequiredRepFaction) != static_cast<int32>( trn->RequiredRepValue ))) ||
 		 (trn->RequiredSkill && !plr->_HasSkillLine(trn->RequiredSkill)) ||
 		 (trn->RequiredSkillLine && plr->_GetSkillLineCurrent(trn->RequiredSkill) < trn->RequiredSkillLine) )
 	{

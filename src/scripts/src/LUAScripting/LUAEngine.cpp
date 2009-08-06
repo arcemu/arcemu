@@ -2274,7 +2274,7 @@ int luaUnit_AddItem(lua_State * L, Unit * ptr)
 	else
 	{
 		add->ModSignedInt32Value(ITEM_FIELD_STACK_COUNT,count);
-		plr->GetSession()->SendItemPushResult(add,false,true,false,false,plr->GetItemInterface()->GetBagSlotByGuid(add->GetGUID()),0xFFFFFFFF,count);
+		plr->GetSession()->SendItemPushResult(add,false,true,false,false, static_cast<uint8>( plr->GetItemInterface()->GetBagSlotByGuid(add->GetGUID()) ),0xFFFFFFFF,count);
 	}
 
 	return 0;
@@ -4426,7 +4426,7 @@ int luaGameObject_AddItem(lua_State * L, GameObject * ptr)
 	else
 	{
 		add->ModSignedInt32Value(ITEM_FIELD_STACK_COUNT,count);
-		plr->GetSession()->SendItemPushResult(add,false,true,false,false,plr->GetItemInterface()->GetBagSlotByGuid(add->GetGUID()),0xFFFFFFFF,count);
+		plr->GetSession()->SendItemPushResult(add,false,true,false,false, static_cast<uint8>( plr->GetItemInterface()->GetBagSlotByGuid(add->GetGUID()) ),0xFFFFFFFF,count);
 	}
 
 	return 0;

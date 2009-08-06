@@ -562,7 +562,7 @@ void AchievementMgr::UpdateAchievementCriteria(AchievementCriteriaTypes type, in
 				break;
 			case ACHIEVEMENT_CRITERIA_TYPE_LOOT_ITEM:
 			case ACHIEVEMENT_CRITERIA_TYPE_OWN_ITEM:
-				if( achievementCriteria->loot_item.itemID == miscvalue1 )
+				if( achievementCriteria->loot_item.itemID == static_cast<uint32>( miscvalue1 ))
 				{
 					UpdateCriteriaProgress(achievementCriteria, miscvalue2);
 				}
@@ -574,25 +574,25 @@ void AchievementMgr::UpdateAchievementCriteria(AchievementCriteriaTypes type, in
 				}
 				break;
 			case ACHIEVEMENT_CRITERIA_TYPE_COMPLETE_QUESTS_IN_ZONE:
-				if( achievementCriteria->complete_quests_in_zone.zoneID == miscvalue1 )
+				if( achievementCriteria->complete_quests_in_zone.zoneID == static_cast<uint32>( miscvalue1 ))
 				{
 					UpdateCriteriaProgress(achievementCriteria, 1);
 				}
 				break;
 			case ACHIEVEMENT_CRITERIA_TYPE_COMPLETE_QUEST:
-				if( achievementCriteria->complete_quest.questID == miscvalue1 )
+				if( achievementCriteria->complete_quest.questID == static_cast<uint32>( miscvalue1 ))
 				{
 					UpdateCriteriaProgress(achievementCriteria, 1);
 				}
 				break;
 			case ACHIEVEMENT_CRITERIA_TYPE_GAIN_REPUTATION:
-				if( achievementCriteria->gain_reputation.factionID == miscvalue1 )
+				if( achievementCriteria->gain_reputation.factionID == static_cast<uint32>( miscvalue1 ))
 				{
 					SetCriteriaProgress(achievementCriteria, miscvalue2);
 				}
 				break;
 			case ACHIEVEMENT_CRITERIA_TYPE_LEARN_SPELL:
-				if( achievementCriteria->learn_spell.spellID == miscvalue1 )
+				if( achievementCriteria->learn_spell.spellID == static_cast<uint32>( miscvalue1 ))
 				{
 					SetCriteriaProgress(achievementCriteria, miscvalue2);
 				}
@@ -600,13 +600,13 @@ void AchievementMgr::UpdateAchievementCriteria(AchievementCriteriaTypes type, in
 			case ACHIEVEMENT_CRITERIA_TYPE_NUMBER_OF_MOUNTS:
 				// Vanity pets owned - miscvalue1==778
 				// Number of mounts  - miscvalue1==777
-				if( achievementCriteria->number_of_mounts.unknown == miscvalue1 )
+				if( achievementCriteria->number_of_mounts.unknown == static_cast<uint32>( miscvalue1 ))
 				{
 					UpdateCriteriaProgress(achievementCriteria, 1);
 				}
 				break;
 			case ACHIEVEMENT_CRITERIA_TYPE_KILL_CREATURE:
-				if( achievementCriteria->kill_creature.creatureID == miscvalue1 )
+				if( achievementCriteria->kill_creature.creatureID == static_cast<uint32>( miscvalue1 ))
 				{
 					switch(achievement->ID)
 					{
@@ -814,19 +814,19 @@ void AchievementMgr::UpdateAchievementCriteria(AchievementCriteriaTypes type, in
 				}
 				break;
 			case ACHIEVEMENT_CRITERIA_TYPE_REACH_SKILL_LEVEL:
-				if( achievementCriteria->reach_skill_level.skillID == miscvalue1 )
+				if( achievementCriteria->reach_skill_level.skillID == static_cast<uint32>( miscvalue1 ))
 				{
 					SetCriteriaProgress(achievementCriteria, miscvalue2);
 				}
 				break;
 			case ACHIEVEMENT_CRITERIA_TYPE_LEARN_SKILL_LEVEL:
-				if( achievementCriteria->learn_skill_level.skillID == miscvalue1 )
+				if( achievementCriteria->learn_skill_level.skillID == static_cast<uint32>( miscvalue1 ))
 				{
 					SetCriteriaProgress(achievementCriteria, miscvalue2);
 				}
 				break;
 			case ACHIEVEMENT_CRITERIA_TYPE_EQUIP_ITEM:
-				if( achievementCriteria->equip_item.itemID == miscvalue1 )
+				if( achievementCriteria->equip_item.itemID == static_cast<uint32>( miscvalue1 ))
 				{
 					SetCriteriaProgress(achievementCriteria, 1);
 				}
@@ -839,7 +839,7 @@ void AchievementMgr::UpdateAchievementCriteria(AchievementCriteriaTypes type, in
 				// AchievementType for both Achievement ID:556 (Equip epic items) and ID:557 (Equip superior items)
 				//    is the same (47) ACHIEVEMENT_CRITERIA_TYPE_EQUIP_EPIC_ITEM
 				// Going to send item slot in miscvalue1 and item quality in miscvalue2 when calling UpdateAchievementCriteria.
-				if( achievementCriteria->equip_epic_item.itemSlot == miscvalue1 )
+				if( achievementCriteria->equip_epic_item.itemSlot == static_cast<uint32>( miscvalue1 ))
 				{
 					if( (achievementCriteria->referredAchievement == 556) && (miscvalue2 == ITEM_QUALITY_EPIC_PURPLE) )
 					{
@@ -852,7 +852,7 @@ void AchievementMgr::UpdateAchievementCriteria(AchievementCriteriaTypes type, in
 				}
 				break;
 			case ACHIEVEMENT_CRITERIA_TYPE_DO_EMOTE:
-				if( achievementCriteria->do_emote.emoteID == miscvalue1 )
+				if( achievementCriteria->do_emote.emoteID == static_cast<uint32>( miscvalue1 ))
 				{
 					// emote matches, check the achievement target ... (if required)
 					Unit* pUnit = GetPlayer()->GetMapMgr()->GetUnit(selectedGUID);
@@ -1048,7 +1048,7 @@ void AchievementMgr::UpdateAchievementCriteria(AchievementCriteriaTypes type, in
 				}
 				break;
 			case ACHIEVEMENT_CRITERIA_TYPE_USE_ITEM: // itemID in miscvalue1
-				if( achievementCriteria->use_item.itemID == miscvalue1 )
+				if( achievementCriteria->use_item.itemID == static_cast<uint32>( miscvalue1 ))
 				{
 					switch(achievementCriteria->referredAchievement)
 					{
@@ -1107,7 +1107,7 @@ void AchievementMgr::UpdateAchievementCriteria(AchievementCriteriaTypes type, in
 				}
 				break;
 			case ACHIEVEMENT_CRITERIA_TYPE_USE_GAMEOBJECT:
-				if( achievementCriteria->use_gameobject.goEntry == miscvalue1 )
+				if( achievementCriteria->use_gameobject.goEntry == static_cast<uint32>( miscvalue1 ))
 				{
 					UpdateCriteriaProgress(achievementCriteria, 1);
 				}
@@ -1131,25 +1131,25 @@ void AchievementMgr::UpdateAchievementCriteria(AchievementCriteriaTypes type, in
 				}
 				break;
 			case ACHIEVEMENT_CRITERIA_TYPE_HONORABLE_KILL_AT_AREA:
-				if( achievementCriteria->honorable_kill_at_area.areaID == miscvalue1 )
+				if( achievementCriteria->honorable_kill_at_area.areaID == static_cast<uint32>( miscvalue1 ))
 				{
 					UpdateCriteriaProgress(achievementCriteria, 1);
 				}
 				break;
 			case ACHIEVEMENT_CRITERIA_TYPE_HK_CLASS:
-				if( achievementCriteria->hk_class.classID == miscvalue1 )
+				if( achievementCriteria->hk_class.classID == static_cast<uint32>( miscvalue1 ))
 				{
 					UpdateCriteriaProgress(achievementCriteria, 1);
 				}
 				break;
 			case ACHIEVEMENT_CRITERIA_TYPE_HK_RACE:
-				if( achievementCriteria->hk_race.raceID == miscvalue1 )
+				if( achievementCriteria->hk_race.raceID == static_cast<uint32>( miscvalue1 ))
 				{
 					UpdateCriteriaProgress(achievementCriteria, 1);
 				}
 				break;
 			case ACHIEVEMENT_CRITERIA_TYPE_DEATH_AT_MAP:
-				if( achievementCriteria->death_at_map.mapID == miscvalue1 )
+				if( achievementCriteria->death_at_map.mapID == static_cast<uint32>( miscvalue1 ))
 				{
 					UpdateCriteriaProgress(achievementCriteria, 1);
 				}

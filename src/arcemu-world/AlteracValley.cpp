@@ -1123,7 +1123,7 @@ void AVNode::Spawn()
 		{
 			// initial spawn
 			m_flag = m_bg.SpawnGameObject(g->id[m_state], m_bg.GetMapMgr()->GetMapId(), g->x, g->y, g->z, g->o, 0, 0, 1.0f);
-			m_flag->bannerslot = m_nodeId;
+			m_flag->bannerslot = static_cast<int8>( m_nodeId );
 			m_flag->SetUInt32Value(GAMEOBJECT_FACTION, g_gameObjectFactions[m_state]);
 			m_flag->SetByte(GAMEOBJECT_BYTES_1, 3, 100);
 			m_flag->SetUInt32Value(GAMEOBJECT_DYNAMIC, 1);
@@ -1140,7 +1140,7 @@ void AVNode::Spawn()
 				m_flag->SetNewGuid(m_bg.GetMapMgr()->GenerateGameobjectGuid());
 				m_flag->SetInfo(goi);
 				m_flag->SetUInt32Value(GAMEOBJECT_DISPLAYID, goi->DisplayID);
-				m_flag->SetByte(GAMEOBJECT_BYTES_1, 1, goi->Type);
+				m_flag->SetByte(GAMEOBJECT_BYTES_1, 1, static_cast<uint8>( goi->Type ));
 				m_flag->SetUInt32Value(GAMEOBJECT_FACTION, g_gameObjectFactions[m_state]);
 				m_flag->SetByte(GAMEOBJECT_BYTES_1, 3, 100);
 				m_flag->SetUInt32Value(GAMEOBJECT_DYNAMIC, 1);
@@ -1186,7 +1186,7 @@ void AVNode::Spawn()
 				m_aura->SetNewGuid(m_bg.GetMapMgr()->GenerateGameobjectGuid());
 				m_aura->SetInfo(goi);
 				m_aura->SetUInt32Value(GAMEOBJECT_DISPLAYID, goi->DisplayID);
-				m_aura->SetByte(GAMEOBJECT_BYTES_1, 1, goi->Type);
+				m_aura->SetByte(GAMEOBJECT_BYTES_1, 1, static_cast<uint8>( goi->Type ));
 				m_aura->SetUInt32Value(GAMEOBJECT_FACTION, g_gameObjectFactions[m_state]);
 				m_aura->SetByte(GAMEOBJECT_BYTES_1, 3, 100);
 				m_aura->SetUInt32Value(GAMEOBJECT_FLAGS, 1);
@@ -1237,7 +1237,7 @@ void AVNode::Spawn()
 				m_glow->SetNewGuid(m_bg.GetMapMgr()->GenerateGameobjectGuid());
 				m_glow->SetInfo(goi);
 				m_glow->SetUInt32Value(GAMEOBJECT_DISPLAYID, goi->DisplayID);
-				m_glow->SetByte(GAMEOBJECT_BYTES_1, 1, goi->Type);
+				m_glow->SetByte(GAMEOBJECT_BYTES_1, 1, static_cast<uint8>( goi->Type ));
 				m_glow->SetUInt32Value(GAMEOBJECT_FACTION, g_gameObjectFactions[m_state]);
 				m_glow->SetByte(GAMEOBJECT_BYTES_1, 3, 100);
 				m_glow->SetUInt32Value(GAMEOBJECT_FLAGS, 1);
@@ -1851,7 +1851,7 @@ void AlteracValley::HookGenerateLoot(Player *plr, Object *pCorpse)
 	const AVLoot *loot_ptr = &g_avLoot[0];
 	while(loot_ptr->ItemId != 0)
 	{
-		if( loot_ptr->Faction == -1 || loot_ptr->Faction == plr->GetTeam() )
+		if( loot_ptr->Faction == -1 || loot_ptr->Faction == static_cast<int8>( plr->GetTeam() ))
 		{
 			if( Rand(loot_ptr->Chance * sWorld.getRate(RATE_DROP0)) )
 			{

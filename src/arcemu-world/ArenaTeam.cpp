@@ -454,7 +454,7 @@ void WorldSession::HandleArenaTeamRemoveMemberOpcode(WorldPacket & recv_data)
 		return;
 	}
 
-	slot = team->m_type;
+	slot = static_cast<uint8>( team->m_type );
 
 	if( (team = _player->m_arenaTeams[slot]) == NULL )
 	{
@@ -644,7 +644,7 @@ void WorldSession::HandleArenaTeamPromoteOpcode(WorldPacket & recv_data)
 		return;
 	}
 
-	slot = team->m_type;
+	slot = static_cast<uint8>( team->m_type );
 
 	if( slot >= NUM_ARENA_TEAM_TYPES )
 		return;

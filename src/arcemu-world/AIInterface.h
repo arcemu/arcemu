@@ -245,9 +245,9 @@ public:
 	bool setInFront(Unit* target);
 	ARCEMU_INLINE Unit* getUnitToFollow() { return UnitToFollow; }
 	void setCreatureState(CreatureState state){ m_creatureState = state; }
-	ARCEMU_INLINE uint8 getAIState() { return m_AIState; }
-	ARCEMU_INLINE uint8 getAIType() { return m_AIType; }
-	ARCEMU_INLINE uint8 getCurrentAgent() { return m_aiCurrentAgent; }
+	ARCEMU_INLINE uint8 getAIState() { return static_cast<uint8>( m_AIState ); }
+	ARCEMU_INLINE uint8 getAIType() { return static_cast<uint8>( m_AIType ); }
+	ARCEMU_INLINE uint8 getCurrentAgent() { return static_cast<uint8>( m_aiCurrentAgent ); }
 	void setCurrentAgent(AI_Agent agent) { m_aiCurrentAgent = agent; }
 	uint32	getThreatByGUID(uint64 guid);
 	uint32	getThreatByPtr(Unit* obj);

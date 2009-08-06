@@ -451,7 +451,7 @@ bool Player::AddNewFaction( FactionDBC * dbc, int32 standing, bool base ) // if 
 		if ( dbc->RaceMask[i] & RaceMask && ( dbc->ClassMask[i] & ClassMask || dbc->ClassMask[i] == 0 ) )
 		{
 			FactionReputation * rep = new FactionReputation;
-			rep->flag = dbc->repFlags[i];
+			rep->flag = static_cast<uint8>( dbc->repFlags[i] );
 			rep->baseStanding = dbc->baseRepValue[i];
 			rep->standing = ( base ) ? dbc->baseRepValue[i] : standing;
 			m_reputation[dbc->ID] = rep;

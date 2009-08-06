@@ -176,7 +176,7 @@ void WorldSession::HandleLearnTalentOpcode( WorldPacket & recv_data )
 			}
 
 			_player->SetUInt32Value(PLAYER_CHARACTER_POINTS1, CurTalentPoints-1);
-			_player->smsg_TalentsInfo(false, talent_id, requested_rank);
+			_player->smsg_TalentsInfo(false, talent_id, static_cast<uint8>( requested_rank ));
 		}
 	}
 }

@@ -1971,7 +1971,7 @@ bool ChatHandler::HandleMassSummonCommand(const char* args, WorldSession* m_sess
 		{
 			//plr->SafeTeleport(summoner->GetMapId(), summoner->GetInstanceID(), summoner->GetPosition());
 			/* let's do this the blizz way */
-			if(faction>-1 && plr->GetTeam() == faction)
+			if(faction>-1 && plr->GetTeam() == static_cast<uint32>( faction ))
 			{
                 plr->SummonRequest(summoner->GetLowGUID(), summoner->GetZoneId(), summoner->GetMapId(), summoner->GetInstanceID(), summoner->GetPosition());
                 ++c;
@@ -3054,7 +3054,7 @@ bool ChatHandler::HandleGORotate(const char * args, WorldSession * m_session)
 		return true;
 	}
 
-	float rad = deg * (float(M_PI) / 180.0f);
+	// float rad = deg * (float(M_PI) / 180.0f);
 
 	switch(tolower(Axis))
 	{

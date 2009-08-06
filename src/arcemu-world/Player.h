@@ -1629,7 +1629,7 @@ public:
 	uint32 ArcanePotencyMod;
 	uint64 LivingBmbTgt;
 	uint32 JungleKingMod;
-	uint32 FittestSurvivalMod;
+	int32 FittestSurvivalMod;
 	uint8  StunDamageReductPct;		// For Primal Tenacity  DK Talent
 	bool isGuardianSpirit;
  

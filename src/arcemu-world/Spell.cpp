@@ -831,9 +831,9 @@ uint8 Spell::DidHit(uint32 effindex,Unit* target)
 	{
 		uint8 res;
 		if(resistchance<=1.0)//resist chance >=1
-			res =  (Rand(1.0f) ? SPELL_DID_HIT_RESIST : SPELL_DID_HIT_SUCCESS);
+			res =  (Rand(1.0f) ? uint8( SPELL_DID_HIT_RESIST ) : uint8( SPELL_DID_HIT_SUCCESS ));
 		else
-			res =  (Rand(resistchance) ? SPELL_DID_HIT_RESIST : SPELL_DID_HIT_SUCCESS);
+			res =  (Rand(resistchance) ? uint8( SPELL_DID_HIT_RESIST ): uint8( SPELL_DID_HIT_SUCCESS ));
 
 		if (res == SPELL_DID_HIT_SUCCESS) // proc handling. mb should be moved outside this function
 		{
@@ -3672,7 +3672,7 @@ uint8 Spell::CanCast(bool tolerate)
 			}
 			else
 			{
-				plrarea = at->ZoneId;
+				plrarea = static_cast<uint16>( at->ZoneId );
 			}
 			for(i = 0; i < 7; i++)
 				if( ag->AreaId[i] == plrarea )
@@ -5977,7 +5977,7 @@ void Spell::SendCastSuccess(const uint64& guid)
 	*(uint32*)&buffer[c] = GetProto()->Id;                 c += 4;
 #endif
 
-	plr->GetSession()->OutPacket(SMSG_CLEAR_EXTRA_AURA_INFO_OBSOLETE, c, buffer);
+	plr->GetSession()->OutPacket( uint16( SMSG_CLEAR_EXTRA_AURA_INFO_OBSOLETE ), static_cast<uint16>( c ), buffer);
 }
 /*
 bool IsBeneficSpell(SpellEntry *sp)

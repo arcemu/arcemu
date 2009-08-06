@@ -824,7 +824,7 @@ void AIInterface::Update(uint32 p_time)
 		{
 			if ( (*next_timed_emote)->type == 1) //standstate
 			{
-				m_Unit->SetStandState( (*next_timed_emote)->value );
+				m_Unit->SetStandState( static_cast<uint8>( (*next_timed_emote)->value  ));
 				m_Unit->SetUInt32Value ( UNIT_NPC_EMOTESTATE, 0 );
 			}
 			else if ( (*next_timed_emote)->type == 2) //emotestate
@@ -1029,7 +1029,7 @@ void AIInterface::_UpdateCombat(uint32 p_time)
 	if( GetNextTarget() == m_Unit )
 		SetNextTarget( GetMostHated() );
 
-	uint16 agent = m_aiCurrentAgent;
+	uint16 agent = static_cast<uint16>( m_aiCurrentAgent );
 
 	// If creature is very far from spawn point return to spawnpoint
 	// If at instance don't return -- this is wrong ... instance creatures always returns to spawnpoint, dunno how do you got this idea. 

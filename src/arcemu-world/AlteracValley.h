@@ -66,21 +66,21 @@ struct AVSpawnLocation { float x; float y; float z; float o; };
 struct AVGameObject { uint32 id[AV_NODE_STATE_COUNT]; float x; float y; float z; float o; float rot1; float rot2; };
 struct AVNodeTemplate
 {
-	const char *m_name;										// Stormpike Aid Station
-	const bool m_isGraveyard;								// Is this a graveyard?
-	const bool m_capturable;								// Is this capturable?
-	const AVLocation m_graveyardLocation;					// Revive location, also location of spirit guide
-	const AVGameObject m_flagLocation;						// Flag location (need to add GO id/properties here)
-	const AVGameObject m_auraLocation;						// Aura location
-	const AVGameObject m_glowLocation;						// Aura glow location
-	const uint32 m_guardId[3];								// Horde/alliance guard ids
-	const uint32 m_guardCount;								// Count of guards to spawn
-	const uint32 m_bossId[3];								// Boss ID (e.g. Balinda), 0 = A, 1 = H, 2 = Neutral
-	const AVLocation *m_peonLocations;						// Used by mines.
-	const AVLocation m_bossLocation;						// Location of boss if there is one
-	const uint32 m_initialSpawnId;							// Initial spawn (Bowmen) ID
-	const uint32 m_worldStateFields[AV_NODE_STATE_COUNT];	// State fields
-	const uint32 m_defaultState;							// State of the node when battleground is spawned
+	char *m_name;										// Stormpike Aid Station
+	bool m_isGraveyard;								// Is this a graveyard?
+	bool m_capturable;								// Is this capturable?
+	AVLocation m_graveyardLocation;					// Revive location, also location of spirit guide
+	AVGameObject m_flagLocation;						// Flag location (need to add GO id/properties here)
+	AVGameObject m_auraLocation;						// Aura location
+	AVGameObject m_glowLocation;						// Aura glow location
+	uint32 m_guardId[3];								// Horde/alliance guard ids
+	uint32 m_guardCount;								// Count of guards to spawn
+	uint32 m_bossId[3];								// Boss ID (e.g. Balinda), 0 = A, 1 = H, 2 = Neutral
+	AVLocation *m_peonLocations;						// Used by mines.
+	AVLocation m_bossLocation;						// Location of boss if there is one
+	uint32 m_initialSpawnId;							// Initial spawn (Bowmen) ID
+	uint32 m_worldStateFields[AV_NODE_STATE_COUNT];	// State fields
+	uint32 m_defaultState;							// State of the node when battleground is spawned
 };
 
 class AlteracValley;
@@ -143,6 +143,8 @@ public:
 
 	// spawn home buff guard
 	void SpawnHomeGuard();
+
+	
 };
 
 // GENERAL AV DEFINES

@@ -57,7 +57,7 @@ LogonCommHandler::~LogonCommHandler()
 
 LogonCommClientSocket * LogonCommHandler::ConnectToLogon(string Address, uint32 Port)
 {
-	LogonCommClientSocket * conn = ConnectTCPSocket<LogonCommClientSocket>(Address.c_str(), Port);
+	LogonCommClientSocket * conn = ConnectTCPSocket<LogonCommClientSocket>(Address.c_str(), static_cast<u_short>( Port ));
 	return conn;
 }
 
@@ -397,7 +397,7 @@ void LogonCommHandler::LoadRealmConfiguration()
 			realm->Colour = 0;
 			realm->TimeZone = Config.RealmConfig.GetIntVA("TimeZone", 1, "Realm%u", i);
 			realm->Population = Config.RealmConfig.GetFloatVA("Population", 0, "Realm%u", i);
-			realm->Lock = Config.RealmConfig.GetIntVA("Lock", 0, "Realm%u", i);
+			realm->Lock = static_cast<uint8>( Config.RealmConfig.GetIntVA("Lock", 0, "Realm%u", i) );
 			string rt = Config.RealmConfig.GetStringVA("Icon", "Normal", "Realm%u", i);
 			uint32 type;
 

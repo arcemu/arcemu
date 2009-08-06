@@ -21,7 +21,9 @@
 #ifndef _ITEMINTERFACE_H
 #define _ITEMINTERFACE_H
 
-#define INVALID_BACKPACK_SLOT ((int8)(0xFF)) //In 1.8 client marked wrong slot like this
+//In 1.8 client marked wrong slot like this
+// #define INVALID_BACKPACK_SLOT ((int8)(0xFF))
+const uint8 INVALID_BACKPACK_SLOT = 0xFF;
 
 struct SlotResult
 {
@@ -210,7 +212,7 @@ public:
 			// loop the container.
 			for(; m_containerSlot < m_container->GetProto()->ContainerSlots; ++m_containerSlot)
 			{
-				m_currentItem = m_container->GetItem(m_containerSlot);
+				m_currentItem = m_container->GetItem(static_cast<int16>( m_containerSlot));
 				if(m_currentItem != NULL)
 				{
 					// increment the counter so we don't get the same item again

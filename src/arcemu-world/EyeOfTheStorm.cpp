@@ -359,12 +359,12 @@ void EyeOfTheStorm::HookOnAreaTrigger(Player * plr, uint32 id)
 	else
 		val = EOTS_BANNER_HORDE;
 
-	if(!m_CPBanner[tid] || m_CPBanner[tid]->GetEntry() != val )
+	if(!m_CPBanner[tid] || m_CPBanner[tid]->GetEntry() != static_cast<uint32>( val ) )
 		return;			// not captured by our team
 
 	for(i = 0; i < EOTS_TOWER_COUNT; ++i)
 	{
-		if(m_CPBanner[i] && m_CPBanner[i]->GetEntry() == val)
+		if(m_CPBanner[i] && m_CPBanner[i]->GetEntry() == static_cast<uint32>( val ))
 			towers++;
 	}
 
@@ -906,7 +906,7 @@ bool EyeOfTheStorm::GivePoints(uint32 team, uint32 points)
 		m_points[team] = 2000;
 
 		m_ended = true;
-		m_winningteam = team;
+		m_winningteam = static_cast<uint8>( team );
 		m_nextPvPUpdateTime = 0;
 
 		sEventMgr.RemoveEvents(this);

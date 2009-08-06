@@ -22,7 +22,7 @@
 
 bool CanBuyAt(Player *plr, VendorRestrictionEntry *vendor)
 {
-	uint8 plracemask = plr->getRaceMask();
+	uint8 plracemask = static_cast<uint8>( plr->getRaceMask() );
 	uint32 plrep = plr->GetStanding(vendor->reqrepfaction);
 
 	/* if either the player has the right race or has the right reputation, he/she can buy at the vendor */
@@ -703,7 +703,8 @@ void WorldSession::HandleAutoEquipItemOpcode( WorldPacket & recv_data )
 			}
 		}
 
-		if( error = _player->GetItemInterface()->CanEquipItemInSlot(INVENTORY_SLOT_NOT_SET, Slot, eitem->GetProto(), true, true) )
+		error = _player->GetItemInterface()->CanEquipItemInSlot(INVENTORY_SLOT_NOT_SET, Slot, eitem->GetProto(), true, true);
+		if( error )
 		{
 			_player->GetItemInterface()->BuildInventoryChangeError(eitem,NULL, error);
 			return;
@@ -764,7 +765,8 @@ void WorldSession::HandleAutoEquipItemOpcode( WorldPacket & recv_data )
 	}
 	else
 	{
-		if( error = _player->GetItemInterface()->CanEquipItemInSlot( INVENTORY_SLOT_NOT_SET, Slot, eitem->GetProto(), false, false ) )
+		error = _player->GetItemInterface()->CanEquipItemInSlot( INVENTORY_SLOT_NOT_SET, Slot, eitem->GetProto(), false, false );
+		if( error  )
 		{
 			_player->GetItemInterface()->BuildInventoryChangeError( eitem, NULL, error );
 			return;
@@ -773,7 +775,8 @@ void WorldSession::HandleAutoEquipItemOpcode( WorldPacket & recv_data )
 
 	if( Slot <= INVENTORY_SLOT_BAG_END )
 	{
-		if( error = _player->GetItemInterface()->CanEquipItemInSlot( INVENTORY_SLOT_NOT_SET, Slot, eitem->GetProto(), false, false ) )
+		error = _player->GetItemInterface()->CanEquipItemInSlot( INVENTORY_SLOT_NOT_SET, Slot, eitem->GetProto(), false, false );
+		if( error )
 		{
 			_player->GetItemInterface()->BuildInventoryChangeError( eitem, NULL, error );
 			return;
@@ -1864,7 +1867,7 @@ void WorldSession::HandleRepairItemOpcode(WorldPacket &recvPacket)
 	{
 		for( i = 0; i < MAX_INVENTORY_SLOT; i++ )
 		{
-			pItem = _player->GetItemInterface()->GetInventoryItem( i );
+			pItem = _player->GetItemInterface()->GetInventoryItem( static_cast<int16>( i ) );
 			if( pItem != NULL )
 			{
 				if( pItem->IsContainer() )
@@ -1872,7 +1875,7 @@ void WorldSession::HandleRepairItemOpcode(WorldPacket &recvPacket)
 					pContainer = static_cast<Container*>( pItem );
 					for( j = 0; j < pContainer->GetProto()->ContainerSlots; ++j )
 					{
-						pItem = pContainer->GetItem( j );
+						pItem = pContainer->GetItem( static_cast<int16>( j ) );
 						if( pItem != NULL )
 							RepairItem( _player, pItem );
 					}
@@ -1882,7 +1885,7 @@ void WorldSession::HandleRepairItemOpcode(WorldPacket &recvPacket)
 					if( i < INVENTORY_SLOT_BAG_END )
 					{
 						if( pItem->GetDurability() == 0 && RepairItem( _player, pItem ) )
-							_player->ApplyItemMods( pItem, i, true );
+							_player->ApplyItemMods( pItem, static_cast<int16>( i ), true );
 						else
 							RepairItem( _player, pItem );
 					}
@@ -1902,7 +1905,7 @@ void WorldSession::HandleRepairItemOpcode(WorldPacket &recvPacket)
 			{
                 uint32 cDurability = item->GetDurability();
 				//only apply item mods if they are on char equipped
-                if( RepairItem( _player, item ) && cDurability == 0 && searchres->ContainerSlot==INVALID_BACKPACK_SLOT && searchres->Slot<INVENTORY_SLOT_BAG_END)
+                if( RepairItem( _player, item ) && cDurability == 0 && searchres->ContainerSlot==INVALID_BACKPACK_SLOT && searchres->Slot < static_cast<int8>( INVENTORY_SLOT_BAG_END ))
                     _player->ApplyItemMods(item, searchres->Slot, true);
 			}
 		}
@@ -2031,7 +2034,7 @@ void WorldSession::HandleCancelTemporaryEnchantmentOpcode(WorldPacket &recvPacke
 	uint32 inventory_slot;
 	recvPacket >> inventory_slot;
 
-	Item * item = _player->GetItemInterface()->GetInventoryItem(inventory_slot);
+	Item * item = _player->GetItemInterface()->GetInventoryItem( static_cast<int16>( inventory_slot ));
 	if(!item) return;
 
 	item->RemoveAllEnchantments(true);
@@ -2227,7 +2230,7 @@ void WorldSession::HandleWrapItemOpcode( WorldPacket& recv_data )
 		_player->GetItemInterface()->BuildInventoryChangeError( src, dst, INV_ERR_ITEM_LOCKED );
 		return;
 	}
-	if( destitem_bagslot == (int8)0xFF && ( destitem_slot >= EQUIPMENT_SLOT_START && destitem_slot <= INVENTORY_SLOT_BAG_END ) )
+	if( destitem_bagslot == -1 && ( destitem_slot >= int8( EQUIPMENT_SLOT_START ) && destitem_slot <= int8( INVENTORY_SLOT_BAG_END ) ) )
 	{
 		_player->GetItemInterface()->BuildInventoryChangeError( src, dst, INV_ERR_EQUIPPED_CANT_BE_WRAPPED );
 		return;

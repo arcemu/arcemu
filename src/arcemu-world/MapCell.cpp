@@ -36,8 +36,8 @@ void MapCell::Init(uint32 x, uint32 y, uint32 mapid, MapMgr *mapmgr)
 	_active = false;
 	_loaded = false;
 	_playerCount = 0;
-	_x=x;
-	_y=y;
+	_x= static_cast<uint16>( x );
+	_y= static_cast<uint16>( y );
 	_unloadpending=false;
 	_objects.clear();
 }

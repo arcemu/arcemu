@@ -414,7 +414,7 @@ void WorldSession::HandleLootOpcode( WorldPacket & recv_data )
 					}
 				}
 				party->Unlock();
-				*(uint8*)&data.contents()[0] = real_count;
+				*(uint8*)&data.contents()[0] = static_cast<uint8>( real_count );
 
 				party->SendPacketToAll(&data);
 			}
@@ -1380,9 +1380,9 @@ void WorldSession::HandleBarberShopResult(WorldPacket & recv_data)
 	data << uint32(0);                                  // ok
 	SendPacket(&data);
 
-	_player->SetByte( PLAYER_BYTES, 2, newhair);
-	_player->SetByte( PLAYER_BYTES, 3, newhaircolor);
-	_player->SetByte( PLAYER_BYTES_2, 0, newfacial);
+	_player->SetByte( PLAYER_BYTES, 2, static_cast<uint8>( newhair ));
+	_player->SetByte( PLAYER_BYTES, 3, static_cast<uint8>( newhaircolor ));
+	_player->SetByte( PLAYER_BYTES_2, 0, static_cast<uint8>( newfacial ));
 	_player->ModUnsigned32Value( PLAYER_FIELD_COINAGE, 0-cost );
 
 	_player->SetStandState(0);                              // stand up
@@ -1863,7 +1863,7 @@ void WorldSession::HandleInspectOpcode( WorldPacket & recv_data )
 
 	for( uint32 i = EQUIPMENT_SLOT_START; i < EQUIPMENT_SLOT_END; ++i ) // Ideally this goes from 0 to 18 (EQUIPMENT_SLOT_END is 19 at the moment)
 	{
-		Item *item = iif->GetInventoryItem( i );
+		Item *item = iif->GetInventoryItem( static_cast<uint16>( i ) );
 
 		if( !item )
 			continue;
@@ -2432,7 +2432,7 @@ void WorldSession::HandleDungeonDifficultyOpcode(WorldPacket& recv_data)
 
     if(m_Group && _player->IsGroupLeader())
     {
-		m_Group->m_difficulty = data;
+		m_Group->m_difficulty = static_cast<uint8>( data );
         _player->iInstanceType = data;
         sInstanceMgr.ResetSavedInstances(_player);
 

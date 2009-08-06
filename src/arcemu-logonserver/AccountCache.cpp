@@ -319,7 +319,7 @@ bool IPBanner::Add(const char * ip, uint32 dur)
 
 	IPBan ipb;
 	ipb.db_ip = sip;
-	ipb.Bytes = ipmask;
+	ipb.Bytes = static_cast<unsigned char>(ipmask);
 	ipb.Mask = ipraw;
 	ipb.Expire = dur;
 	
@@ -382,7 +382,7 @@ void IPBanner::Reload()
 				continue;
 			}
 
-			ipb.Bytes = ipmask;
+			ipb.Bytes = static_cast<unsigned char>(ipmask);
 			ipb.Mask = ipraw;
 			ipb.Expire = result->Fetch()[1].GetUInt32();
 			ipb.db_ip = ip;

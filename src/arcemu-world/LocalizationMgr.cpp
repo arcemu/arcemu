@@ -125,7 +125,7 @@ void LocalizationMgr::Shutdown()
 void LocalizationMgr::Lower(string& conv)
 {
 	for(size_t i = 0; i < conv.length(); ++i)
-		conv[i] = tolower(conv[i]);
+		conv[i] = static_cast<char>( tolower(conv[i]) );
 }
 
 void GetDistinctLanguages(set<string>& dest, const char * table)

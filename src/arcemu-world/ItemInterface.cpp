@@ -62,7 +62,7 @@ uint32 ItemInterface::m_CreateForPlayer(ByteBuffer *data)
 				{
 					for(uint32 e=0; e < m_pItems[i]->GetProto()->ContainerSlots; e++)
 					{
-						Item *pItem = ((Container*)(m_pItems[i]))->GetItem(e);
+						Item *pItem = ((Container*)(m_pItems[i]))->GetItem(static_cast<int16>( e ));
 						if(pItem)
 						{
 							if(pItem->IsContainer())
@@ -101,7 +101,7 @@ void ItemInterface::m_DestroyForPlayer()
 				{
 					for(uint32 e=0; e < m_pItems[i]->GetProto()->ContainerSlots; e++)
 					{
-						Item *pItem = ((Container*)(m_pItems[i]))->GetItem(e);
+						Item *pItem = ((Container*)(m_pItems[i]))->GetItem( static_cast<int16>( e ));
 						if(pItem)
 						{
 							if(pItem->IsContainer())
@@ -211,7 +211,7 @@ AddItemResult ItemInterface::m_AddItem(Item *item, int16 ContainerSlot, int16 sl
 				k = tempitem->GetProto()->ContainerSlots;
 				for(j = 0; j < k; ++j)
 				{
-					if( static_cast<Container*>(tempitem)->GetItem( j ) == item )
+					if( static_cast<Container*>(tempitem)->GetItem( static_cast<int16>( j ) ) == item )
 					{
 #ifdef WIN32
 						//OutputCrashLogLine("item duplication in container, callstack:");
@@ -486,10 +486,10 @@ Item *ItemInterface::SafeRemoveAndRetreiveItemByGuid(uint64 guid, bool destroy)
 			{
 				for (uint32 j =0; j < item->GetProto()->ContainerSlots; j++)
 				{
-					Item *item2 = ((Container*)item)->GetItem(j);
+					Item *item2 = ((Container*)item)->GetItem(static_cast<int16>( j ));
 					if (item2 && item2->GetGUID() == guid)
 					{
-						return ((Container*)item)->SafeRemoveAndRetreiveItemFromSlot(j, destroy);
+						return ((Container*)item)->SafeRemoveAndRetreiveItemFromSlot(static_cast<int16>( j ), destroy);
 					}
 				}
 			}
@@ -518,10 +518,10 @@ Item *ItemInterface::SafeRemoveAndRetreiveItemByGuid(uint64 guid, bool destroy)
 			{
 				for (uint32 j =0; j < item->GetProto()->ContainerSlots; j++)
 				{
-					Item *item2 = ((Container*)item)->GetItem(j);
+					Item *item2 = ((Container*)item)->GetItem(static_cast<int16>( j ));
 					if (item2 && item2->GetGUID() == guid)
 					{
-						return ((Container*)item)->SafeRemoveAndRetreiveItemFromSlot(j, destroy);
+						return ((Container*)item)->SafeRemoveAndRetreiveItemFromSlot(static_cast<int16>( j ), destroy);
 					}
 				}
 			}
@@ -652,10 +652,10 @@ bool ItemInterface::SafeFullRemoveItemByGuid(uint64 guid)
 			{
 				for (uint32 j =0; j < item->GetProto()->ContainerSlots; j++)
 				{
-					Item *item2 = ((Container*)item)->GetItem(j);
+					Item *item2 = ((Container*)item)->GetItem(static_cast<int16>( j ));
 					if (item2 && item2->GetGUID() == guid)
 					{
-						return ((Container*)item)->SafeFullRemoveItemFromSlot(j);
+						return ((Container*)item)->SafeFullRemoveItemFromSlot(static_cast<int16>( j ));
 					}
 				}
 			}
@@ -685,10 +685,10 @@ bool ItemInterface::SafeFullRemoveItemByGuid(uint64 guid)
 			{
 				for (uint32 j =0; j < item->GetProto()->ContainerSlots; j++)
 				{
-					Item *item2 = ((Container*)item)->GetItem(j);
+					Item *item2 = ((Container*)item)->GetItem(static_cast<int16>( j ));
 					if (item2 && item2->GetGUID() == guid)
 					{
-						return ((Container*)item)->SafeFullRemoveItemFromSlot(j);
+						return ((Container*)item)->SafeFullRemoveItemFromSlot(static_cast<int16>( j ));
 					}
 				}
 			}
@@ -741,7 +741,7 @@ Item* ItemInterface::FindItemLessMax(uint32 itemid, uint32 cnt, bool IncBank)
 	uint32 i;
 	for(i = INVENTORY_SLOT_ITEM_START; i < INVENTORY_SLOT_ITEM_END; i++)
 	{
-		Item *item = GetInventoryItem(i);
+		Item *item = GetInventoryItem(static_cast<int16>( i ));
 		if (item)
 		{
 			if (item->GetProto())
@@ -761,12 +761,12 @@ Item* ItemInterface::FindItemLessMax(uint32 itemid, uint32 cnt, bool IncBank)
 
 	for(i = INVENTORY_SLOT_BAG_START; i < INVENTORY_SLOT_BAG_END; i++)
 	{
-		Item *item = GetInventoryItem(i);
+		Item *item = GetInventoryItem(static_cast<int16>( i ));
 		if(item && item->IsContainer())
 		{
 			  for (uint32 j =0; j < item->GetProto()->ContainerSlots; j++)
 				{
-					Item *item2 = ((Container*)item)->GetItem(j);
+					Item *item2 = ((Container*)item)->GetItem(static_cast<int16>( j ));
 					if (item2)
 					{
 						uint32 itemMaxStack = (item2->GetOwner()->ItemStackCheat) ? 0x7fffffff : item2->GetProto()->MaxCount;
@@ -782,7 +782,7 @@ Item* ItemInterface::FindItemLessMax(uint32 itemid, uint32 cnt, bool IncBank)
 
 	for(i = CURRENCYTOKEN_SLOT_START; i < CURRENCYTOKEN_SLOT_END; i++)
 	{
-		Item *item = GetInventoryItem(i);
+		Item *item = GetInventoryItem(static_cast<int16>( i ));
 		if (item)
 		{
 			if (item->GetProto())
@@ -804,7 +804,7 @@ Item* ItemInterface::FindItemLessMax(uint32 itemid, uint32 cnt, bool IncBank)
 	{
 		for(i = BANK_SLOT_ITEM_START; i < BANK_SLOT_ITEM_END; i++)
 		{
-			Item *item = GetInventoryItem(i);
+			Item *item = GetInventoryItem(static_cast<int16>( i ));
 			if (item)
 			{
 				uint32 itemMaxStack = (item->GetOwner()->ItemStackCheat) ? 0x7fffffff : item->GetProto()->MaxCount;
@@ -817,13 +817,13 @@ Item* ItemInterface::FindItemLessMax(uint32 itemid, uint32 cnt, bool IncBank)
 
 		for(i = BANK_SLOT_BAG_START; i < BANK_SLOT_BAG_END; i++)
 		{
-			Item *item = GetInventoryItem(i);
+			Item *item = GetInventoryItem(static_cast<int16>( i ));
 			if(item && item->IsContainer())
 			{
 
 					for (uint32 j =0; j < item->GetProto()->ContainerSlots; j++)
 					{
-						Item *item2 = ((Container*)item)->GetItem(j);
+						Item *item2 = ((Container*)item)->GetItem(static_cast<int16>( j ));
 						if (item2)
 						{
 							uint32 itemMaxStack = (item2->GetOwner()->ItemStackCheat) ? 0x7fffffff : item2->GetProto()->MaxCount;
@@ -850,7 +850,7 @@ uint32 ItemInterface::GetItemCount(uint32 itemid, bool IncBank)
 	uint32 i;
 	for(i = EQUIPMENT_SLOT_START; i < INVENTORY_SLOT_ITEM_END; i++)
 	{
-		Item *item = GetInventoryItem(i);
+		Item *item = GetInventoryItem(static_cast<int16>( i ));
 
 		if (item)
 		{
@@ -863,12 +863,12 @@ uint32 ItemInterface::GetItemCount(uint32 itemid, bool IncBank)
 
 	for(i = INVENTORY_SLOT_BAG_START; i < INVENTORY_SLOT_BAG_END; i++)
 	{
-		Item *item = GetInventoryItem(i);
+		Item *item = GetInventoryItem(static_cast<int16>( i ));
 		if(item && item->IsContainer())
 		{
 				for (uint32 j =0; j < item->GetProto()->ContainerSlots;j++)
 				{
-					Item *item2 = ((Container*)item)->GetItem(j);
+					Item *item2 = ((Container*)item)->GetItem(static_cast<int16>( j ));
 					if (item2)
 					{
 						if (item2->GetEntry() == itemid && item->wrapped_item_id==0)
@@ -883,7 +883,7 @@ uint32 ItemInterface::GetItemCount(uint32 itemid, bool IncBank)
 
 	for(i = INVENTORY_KEYRING_START; i < INVENTORY_KEYRING_END; i++)
 	{
-		Item *item = GetInventoryItem(i);
+		Item *item = GetInventoryItem(static_cast<int16>( i ));
 
 		if (item)
 		{
@@ -896,7 +896,7 @@ uint32 ItemInterface::GetItemCount(uint32 itemid, bool IncBank)
 
 	for(i = CURRENCYTOKEN_SLOT_START; i < CURRENCYTOKEN_SLOT_END; i++)
 	{
-		Item *item = GetInventoryItem(i);
+		Item *item = GetInventoryItem(static_cast<int16>( i ));
 
 		if (item)
 		{
@@ -911,7 +911,7 @@ uint32 ItemInterface::GetItemCount(uint32 itemid, bool IncBank)
 	{
 		for(i = BANK_SLOT_ITEM_START; i < BANK_SLOT_BAG_END; i++)
 		{
-			Item *item = GetInventoryItem(i);
+			Item *item = GetInventoryItem(static_cast<int16>( i ));
 			if (item)
 			{
 				if(item->GetProto()->ItemId == itemid && item->wrapped_item_id==0)
@@ -923,14 +923,14 @@ uint32 ItemInterface::GetItemCount(uint32 itemid, bool IncBank)
 
 		for(i = BANK_SLOT_BAG_START; i < BANK_SLOT_BAG_END; i++)
 		{
-			Item *item = GetInventoryItem(i);
+			Item *item = GetInventoryItem(static_cast<int16>( i ));
 			if(item)
 			{
 				if(item->IsContainer())
 				{
 					for (uint32 j =0; j < item->GetProto()->ContainerSlots; j++)
 					{
-						Item *item2 = ((Container*)item)->GetItem(j);
+						Item *item2 = ((Container*)item)->GetItem(static_cast<int16>( j ));
 						if (item2)
 						{
 							if(item2->GetProto()->ItemId == itemid && item->wrapped_item_id==0)
@@ -960,7 +960,7 @@ uint32 ItemInterface::RemoveItemAmt(uint32 id, uint32 amt)
 
 	for(i = EQUIPMENT_SLOT_START; i < INVENTORY_SLOT_ITEM_END; i++)
 	{
-		Item *item = GetInventoryItem(i);
+		Item *item = GetInventoryItem(static_cast<int16>( i ));
 		if (item)
 		{
 			if(item->GetEntry() == id && item->wrapped_item_id==0)
@@ -980,7 +980,7 @@ uint32 ItemInterface::RemoveItemAmt(uint32 id, uint32 amt)
 				}
 				else if (item->GetUInt32Value(ITEM_FIELD_STACK_COUNT)== amt)
 				{
-					bool result = SafeFullRemoveItemFromSlot(INVENTORY_SLOT_NOT_SET, i);
+					bool result = SafeFullRemoveItemFromSlot(INVENTORY_SLOT_NOT_SET, static_cast<int16>( i ));
 					if(result)
 					{
 						return amt;
@@ -993,7 +993,7 @@ uint32 ItemInterface::RemoveItemAmt(uint32 id, uint32 amt)
 				else
 				{
 					amt -= item->GetUInt32Value(ITEM_FIELD_STACK_COUNT);
-					SafeFullRemoveItemFromSlot(INVENTORY_SLOT_NOT_SET, i);
+					SafeFullRemoveItemFromSlot(INVENTORY_SLOT_NOT_SET, static_cast<int16>( i ));
 				}
 			}
 		}
@@ -1001,12 +1001,12 @@ uint32 ItemInterface::RemoveItemAmt(uint32 id, uint32 amt)
 
 	for(i = INVENTORY_SLOT_BAG_START; i < INVENTORY_SLOT_BAG_END; i++)
 	{
-		Item *item = GetInventoryItem(i);
+		Item *item = GetInventoryItem(static_cast<int16>( i ));
 		if(item && item->IsContainer())
 		{
 			for (uint32 j =0; j < item->GetProto()->ContainerSlots;j++)
 			{
-				Item *item2 = ((Container*)item)->GetItem(j);
+				Item *item2 = ((Container*)item)->GetItem(static_cast<int16>( j ));
 				if (item2)
 				{
 					if (item2->GetProto()->ItemId == id && item->wrapped_item_id==0)
@@ -1019,7 +1019,7 @@ uint32 ItemInterface::RemoveItemAmt(uint32 id, uint32 amt)
 						}
 						else if (item2->GetUInt32Value(ITEM_FIELD_STACK_COUNT)== amt)
 						{
-							bool result = SafeFullRemoveItemFromSlot(i, j);
+							bool result = SafeFullRemoveItemFromSlot(static_cast<int16>( i ), static_cast<int16>( j ));
 							if(result)
 							{
 								return amt;
@@ -1032,7 +1032,7 @@ uint32 ItemInterface::RemoveItemAmt(uint32 id, uint32 amt)
 						else
 						{
 							amt -= item2->GetUInt32Value(ITEM_FIELD_STACK_COUNT);
-							SafeFullRemoveItemFromSlot(i, j);
+							SafeFullRemoveItemFromSlot(static_cast<int16>( i ), static_cast<int16>( j ));
 					  
 						}
 					}
@@ -1043,7 +1043,7 @@ uint32 ItemInterface::RemoveItemAmt(uint32 id, uint32 amt)
 
 	for(i = INVENTORY_KEYRING_START; i < INVENTORY_KEYRING_END; i++)
 	{
-		Item *item = GetInventoryItem(i);
+		Item *item = GetInventoryItem(static_cast<int16>( i ));
 		if (item)
 		{
 			if(item->GetProto()->ItemId == id && item->wrapped_item_id==0)
@@ -1056,7 +1056,7 @@ uint32 ItemInterface::RemoveItemAmt(uint32 id, uint32 amt)
 				}
 				else if (item->GetUInt32Value(ITEM_FIELD_STACK_COUNT)== amt)
 				{
-					bool result = SafeFullRemoveItemFromSlot(INVENTORY_SLOT_NOT_SET, i);
+					bool result = SafeFullRemoveItemFromSlot(INVENTORY_SLOT_NOT_SET, static_cast<int16>( i ));
 					if(result)
 					{
 						return amt;
@@ -1069,7 +1069,7 @@ uint32 ItemInterface::RemoveItemAmt(uint32 id, uint32 amt)
 				else
 				{
 					amt -= item->GetUInt32Value(ITEM_FIELD_STACK_COUNT);
-					SafeFullRemoveItemFromSlot(INVENTORY_SLOT_NOT_SET, i);
+					SafeFullRemoveItemFromSlot(INVENTORY_SLOT_NOT_SET, static_cast<int16>( i ));
 				}
 			}
 		}
@@ -1077,7 +1077,7 @@ uint32 ItemInterface::RemoveItemAmt(uint32 id, uint32 amt)
 
 	for(i = CURRENCYTOKEN_SLOT_START; i < CURRENCYTOKEN_SLOT_END; i++)
 	{
-		Item *item = GetInventoryItem(i);
+		Item *item = GetInventoryItem(static_cast<int16>( i ));
 		if (item)
 		{
 			if(item->GetProto()->ItemId == id && item->wrapped_item_id==0)
@@ -1090,7 +1090,7 @@ uint32 ItemInterface::RemoveItemAmt(uint32 id, uint32 amt)
 				}
 				else if (item->GetUInt32Value(ITEM_FIELD_STACK_COUNT)== amt)
 				{
-					bool result = SafeFullRemoveItemFromSlot(INVENTORY_SLOT_NOT_SET, i);
+					bool result = SafeFullRemoveItemFromSlot(INVENTORY_SLOT_NOT_SET, static_cast<int16>( i ));
 					if(result)
 					{
 						return amt;
@@ -1103,7 +1103,7 @@ uint32 ItemInterface::RemoveItemAmt(uint32 id, uint32 amt)
 				else
 				{
 					amt -= item->GetUInt32Value(ITEM_FIELD_STACK_COUNT);
-					SafeFullRemoveItemFromSlot(INVENTORY_SLOT_NOT_SET, i);
+					SafeFullRemoveItemFromSlot(INVENTORY_SLOT_NOT_SET, static_cast<int16>( i ));
 				}
 			}
 		}
@@ -1122,7 +1122,7 @@ uint32 ItemInterface::RemoveItemAmt_ProtectPointer(uint32 id, uint32 amt, Item**
 
 	for(i = EQUIPMENT_SLOT_START; i < INVENTORY_SLOT_ITEM_END; i++)
 	{
-		Item *item = GetInventoryItem(i);
+		Item *item = GetInventoryItem( static_cast<int16>( i ));
 		if (item)
 		{
 			if(item->GetEntry() == id && item->wrapped_item_id==0)
@@ -1142,7 +1142,7 @@ uint32 ItemInterface::RemoveItemAmt_ProtectPointer(uint32 id, uint32 amt, Item**
 				}
 				else if (item->GetUInt32Value(ITEM_FIELD_STACK_COUNT)== amt)
 				{
-					bool result = SafeFullRemoveItemFromSlot(INVENTORY_SLOT_NOT_SET, i);
+					bool result = SafeFullRemoveItemFromSlot(INVENTORY_SLOT_NOT_SET, static_cast<int16>( i ));
 					if( pointer != NULL && *pointer != NULL && *pointer == item )
 						*pointer = NULL;
 
@@ -1158,7 +1158,7 @@ uint32 ItemInterface::RemoveItemAmt_ProtectPointer(uint32 id, uint32 amt, Item**
 				else
 				{
 					amt -= item->GetUInt32Value(ITEM_FIELD_STACK_COUNT);
-					SafeFullRemoveItemFromSlot(INVENTORY_SLOT_NOT_SET, i);
+					SafeFullRemoveItemFromSlot(INVENTORY_SLOT_NOT_SET, static_cast<int16>( i ));
 
 					if( pointer != NULL && *pointer != NULL && *pointer == item )
 						*pointer = NULL;
@@ -1169,12 +1169,12 @@ uint32 ItemInterface::RemoveItemAmt_ProtectPointer(uint32 id, uint32 amt, Item**
 
 	for(i = INVENTORY_SLOT_BAG_START; i < INVENTORY_SLOT_BAG_END; i++)
 	{
-		Item *item = GetInventoryItem(i);
+		Item *item = GetInventoryItem(static_cast<int16>( i ));
 		if(item && item->IsContainer())
 		{
 			for (uint32 j =0; j < item->GetProto()->ContainerSlots;j++)
 			{
-				Item *item2 = ((Container*)item)->GetItem(j);
+				Item *item2 = ((Container*)item)->GetItem(static_cast<int16>( j ));
 				if (item2)
 				{
 					if (item2->GetProto()->ItemId == id && item->wrapped_item_id==0)
@@ -1187,7 +1187,7 @@ uint32 ItemInterface::RemoveItemAmt_ProtectPointer(uint32 id, uint32 amt, Item**
 						}
 						else if (item2->GetUInt32Value(ITEM_FIELD_STACK_COUNT)== amt)
 						{
-							bool result = SafeFullRemoveItemFromSlot(i, j);
+							bool result = SafeFullRemoveItemFromSlot(static_cast<int16>( i ), static_cast<int16>( j ));
 							if( pointer != NULL && *pointer != NULL && *pointer == item2 )
 								*pointer = NULL;
 
@@ -1203,7 +1203,7 @@ uint32 ItemInterface::RemoveItemAmt_ProtectPointer(uint32 id, uint32 amt, Item**
 						else
 						{
 							amt -= item2->GetUInt32Value(ITEM_FIELD_STACK_COUNT);
-							SafeFullRemoveItemFromSlot(i, j);
+							SafeFullRemoveItemFromSlot(static_cast<int16>( i ), static_cast<int16>( j ));
 
 							if( pointer != NULL && *pointer != NULL && *pointer == item2 )
 								*pointer = NULL;
@@ -1216,7 +1216,7 @@ uint32 ItemInterface::RemoveItemAmt_ProtectPointer(uint32 id, uint32 amt, Item**
 
 	for(i = INVENTORY_KEYRING_START; i < INVENTORY_KEYRING_END; i++)
 	{
-		Item *item = GetInventoryItem(i);
+		Item *item = GetInventoryItem(static_cast<int16>( i ));
 		if (item)
 		{
 			if(item->GetProto()->ItemId == id && item->wrapped_item_id==0)
@@ -1229,7 +1229,7 @@ uint32 ItemInterface::RemoveItemAmt_ProtectPointer(uint32 id, uint32 amt, Item**
 				}
 				else if (item->GetUInt32Value(ITEM_FIELD_STACK_COUNT)== amt)
 				{
-					bool result = SafeFullRemoveItemFromSlot(INVENTORY_SLOT_NOT_SET, i);
+					bool result = SafeFullRemoveItemFromSlot(INVENTORY_SLOT_NOT_SET, static_cast<int16>( i ));
 					if( pointer != NULL && *pointer != NULL && *pointer == item )
 						*pointer = NULL;
 
@@ -1245,7 +1245,7 @@ uint32 ItemInterface::RemoveItemAmt_ProtectPointer(uint32 id, uint32 amt, Item**
 				else
 				{
 					amt -= item->GetUInt32Value(ITEM_FIELD_STACK_COUNT);
-					SafeFullRemoveItemFromSlot(INVENTORY_SLOT_NOT_SET, i);
+					SafeFullRemoveItemFromSlot(INVENTORY_SLOT_NOT_SET, static_cast<int16>( i ));
 
 					if( pointer != NULL && *pointer != NULL && *pointer == item )
 						*pointer = NULL;
@@ -1256,7 +1256,7 @@ uint32 ItemInterface::RemoveItemAmt_ProtectPointer(uint32 id, uint32 amt, Item**
 
 	for(i = CURRENCYTOKEN_SLOT_START; i < CURRENCYTOKEN_SLOT_END; i++)
 	{
-		Item *item = GetInventoryItem(i);
+		Item *item = GetInventoryItem(static_cast<int16>( i ));
 		if (item)
 		{
 			if(item->GetProto()->ItemId == id && item->wrapped_item_id==0)
@@ -1269,7 +1269,7 @@ uint32 ItemInterface::RemoveItemAmt_ProtectPointer(uint32 id, uint32 amt, Item**
 				}
 				else if (item->GetUInt32Value(ITEM_FIELD_STACK_COUNT)== amt)
 				{
-					bool result = SafeFullRemoveItemFromSlot(INVENTORY_SLOT_NOT_SET, i);
+					bool result = SafeFullRemoveItemFromSlot(INVENTORY_SLOT_NOT_SET, static_cast<int16>( i ));
 					if( pointer != NULL && *pointer != NULL && *pointer == item )
 						*pointer = NULL;
 
@@ -1285,7 +1285,7 @@ uint32 ItemInterface::RemoveItemAmt_ProtectPointer(uint32 id, uint32 amt, Item**
 				else
 				{
 					amt -= item->GetUInt32Value(ITEM_FIELD_STACK_COUNT);
-					SafeFullRemoveItemFromSlot(INVENTORY_SLOT_NOT_SET, i);
+					SafeFullRemoveItemFromSlot(INVENTORY_SLOT_NOT_SET, static_cast<int16>( i ));
 
 					if( pointer != NULL && *pointer != NULL && *pointer == item )
 						*pointer = NULL;
@@ -1350,7 +1350,7 @@ uint32 ItemInterface::RemoveItemAmtByGuid(uint64 guid, uint32 amt)
 		{
 			for (uint32 j =0; j < item->GetProto()->ContainerSlots;j++)
 			{
-				Item *item2 = ((Container*)item)->GetItem(j);
+				Item *item2 = ((Container*)item)->GetItem( static_cast<int16>( j ));
 				if (item2)
 				{
 					if (item2->GetGUID() == guid && item->wrapped_item_id==0)
@@ -1363,7 +1363,7 @@ uint32 ItemInterface::RemoveItemAmtByGuid(uint64 guid, uint32 amt)
 						}
 						else if (item2->GetUInt32Value(ITEM_FIELD_STACK_COUNT)== amt)
 						{
-							bool result = SafeFullRemoveItemFromSlot(i, j);
+							bool result = SafeFullRemoveItemFromSlot(static_cast<int16>( i ), static_cast<int16>( j ));
 							if(result)
 							{
 								return amt;
@@ -1376,7 +1376,7 @@ uint32 ItemInterface::RemoveItemAmtByGuid(uint64 guid, uint32 amt)
 						else
 						{
 							amt -= item2->GetUInt32Value(ITEM_FIELD_STACK_COUNT);
-							SafeFullRemoveItemFromSlot(i, j);
+							SafeFullRemoveItemFromSlot(static_cast<int16>( i ), static_cast<int16>( j ));
 							return amt;
 						}
 					}
@@ -1463,20 +1463,20 @@ void ItemInterface::RemoveAllConjured()
 	{
 		if (m_pItems[x]!= NULL)
 		{
-			if(IsBagSlot(x) && m_pItems[x]->IsContainer())
+			if(IsBagSlot(static_cast<int16>( x )) && m_pItems[x]->IsContainer())
 			{
-				Container * bag = (Container*)m_pItems[x];
+				Container * bag = static_cast<Container*>( m_pItems[x] );
  
 				for(uint32 i = 0; i < bag->GetProto()->ContainerSlots; i++)
 				{
-					if (bag->GetItem(i) != NULL && bag->GetItem(i)->GetProto() && (bag->GetItem(i)->GetProto()->Flags)& 2)
-						bag->SafeFullRemoveItemFromSlot(i);
+					if (bag->GetItem(static_cast<int16>( i )) != NULL && bag->GetItem(static_cast<int16>( i ))->GetProto() && (bag->GetItem(static_cast<int16>( i ))->GetProto()->Flags)& 2)
+						bag->SafeFullRemoveItemFromSlot(static_cast<int16>( i ));
 				}
 			}
 			else
 			{
 				if(m_pItems[x]->GetProto() && (m_pItems[x]->GetProto()->Flags)& 2 )
-					SafeFullRemoveItemFromSlot(INVENTORY_SLOT_NOT_SET, x);
+					SafeFullRemoveItemFromSlot(INVENTORY_SLOT_NOT_SET, static_cast<int16>( x ));
 			}
 		}
 	}
@@ -1594,7 +1594,7 @@ int16 ItemInterface::GetBagSlotByGuid(uint64 guid)
 		{
 			for(uint32 j = 0; j < m_pItems[i]->GetProto()->ContainerSlots; ++j)
 			{
-				Item * inneritem = ((Container*)m_pItems[i])->GetItem(j);
+				Item * inneritem = ( static_cast<Container*>( m_pItems[i] ))->GetItem(static_cast<int16>( j ));
 				if(inneritem && inneritem->GetGUID()==guid)
 					return i;
 			}
@@ -1620,7 +1620,7 @@ AddItemResult ItemInterface::AddItemToFreeSlot(Item *item)
 	bool result2;
 	AddItemResult result3;
 	Player* p = item->GetOwner();
-	uint32 itemMaxStack;
+	uint32 itemMaxStack = item->GetProto()->MaxCount;
 
 	//detect special bag item
 	if( item->GetProto()->BagFamily )
@@ -1631,11 +1631,11 @@ AddItemResult ItemInterface::AddItemToFreeSlot(Item *item)
 			{
 				if(m_pItems[i] == NULL)
 				{
-					result3 = SafeAddItem( item, INVENTORY_SLOT_NOT_SET, i );
+					result3 = SafeAddItem( item, INVENTORY_SLOT_NOT_SET, static_cast<int16>( i ) );
 					if( result3 )
 					{
 						result.ContainerSlot = INVENTORY_SLOT_NOT_SET;
-						result.Slot = i;
+						result.Slot = static_cast<int8>( i );
 						result.Result = true;
 						return ADD_ITEM_RESULT_OK;
 					}
@@ -1651,11 +1651,11 @@ AddItemResult ItemInterface::AddItemToFreeSlot(Item *item)
 
 				if( m_pItems[i] == NULL )
 				{
-					result3 = SafeAddItem( item, INVENTORY_SLOT_NOT_SET, i );
+					result3 = SafeAddItem( item, INVENTORY_SLOT_NOT_SET, static_cast<int16>( i ) );
 					if( result3 ) 
 					{
 						result.ContainerSlot = INVENTORY_SLOT_NOT_SET;
-						result.Slot = i;
+						result.Slot = static_cast<int8>( i );
 						result.Result = true;
 						p->UpdateKnownCurrencies(m_pItems[i]->GetEntry(), true);
 						return ADD_ITEM_RESULT_OK;
@@ -1666,7 +1666,7 @@ AddItemResult ItemInterface::AddItemToFreeSlot(Item *item)
 						m_pItems[i]->GetUInt32Value( ITEM_FIELD_STACK_COUNT ) + item->GetUInt32Value( ITEM_FIELD_STACK_COUNT ) <= itemMaxStack )
 					{
 						m_pItems[i]->SetUInt32Value( ITEM_FIELD_STACK_COUNT, m_pItems[i]->GetUInt32Value( ITEM_FIELD_STACK_COUNT ) + item->GetUInt32Value( ITEM_FIELD_STACK_COUNT ) );
-						result.Slot=i;
+						result.Slot = static_cast<int8>( i );
 						result.Result=true;
 						p->UpdateKnownCurrencies(m_pItems[i]->GetEntry(), true);
 						return ADD_ITEM_RESULT_OK;
@@ -1686,8 +1686,8 @@ AddItemResult ItemInterface::AddItemToFreeSlot(Item *item)
 							uint32 r_slot;
 							result2 = static_cast<Container*>(m_pItems[i])->AddItemToFreeSlot(item, &r_slot);
 							if (result2) {
-								result.ContainerSlot = i;
-								result.Slot = r_slot;
+								result.ContainerSlot = static_cast<int8>( i );
+								result.Slot = static_cast<int8>( r_slot );
 								result.Result = true;
 								return ADD_ITEM_RESULT_OK;
 							}
@@ -1705,10 +1705,10 @@ AddItemResult ItemInterface::AddItemToFreeSlot(Item *item)
 			itemMaxStack = (p->ItemStackCheat) ? 0x7fffffff : m_pItems[i]->GetProto()->MaxCount;
 		if(m_pItems[i] == NULL)
 		{
-			result3 = SafeAddItem(item, INVENTORY_SLOT_NOT_SET, i);
+			result3 = SafeAddItem(item, INVENTORY_SLOT_NOT_SET, static_cast<int16>( i ));
 			if(result3) {
 				result.ContainerSlot = INVENTORY_SLOT_NOT_SET;
-				result.Slot = i;
+				result.Slot = static_cast<int8>( i );
 				result.Result = true;
 				return ADD_ITEM_RESULT_OK;
 			}
@@ -1719,7 +1719,7 @@ AddItemResult ItemInterface::AddItemToFreeSlot(Item *item)
 				m_pItems[i]->GetUInt32Value( ITEM_FIELD_STACK_COUNT ) + item->GetUInt32Value( ITEM_FIELD_STACK_COUNT ) <= itemMaxStack )
 			{
 				m_pItems[i]->SetUInt32Value( ITEM_FIELD_STACK_COUNT,m_pItems[i]->GetUInt32Value( ITEM_FIELD_STACK_COUNT ) + item->GetUInt32Value( ITEM_FIELD_STACK_COUNT ) );
-				result.Slot=i;
+				result.Slot = static_cast<int8>( i );
 				result.Result=true;
 				return ADD_ITEM_RESULT_OK;
 			}
@@ -1732,15 +1732,15 @@ AddItemResult ItemInterface::AddItemToFreeSlot(Item *item)
 		{
 			for (uint32 j =0; j < m_pItems[i]->GetProto()->ContainerSlots;j++)
 			{
-				Item *item2 = ((Container*)m_pItems[i])->GetItem(j);
+				Item *item2 = ( static_cast<Container*>( m_pItems[i] ))->GetItem(static_cast<int16>( j ));
 				if( item2 )
 					itemMaxStack = (p->ItemStackCheat) ? 0x7fffffff : item2->GetProto()->MaxCount;
 				if( item2 == NULL )
 				{
-					result3 = SafeAddItem(item, i, j);
+					result3 = SafeAddItem(item, static_cast<int16>( i ), static_cast<int16>( j ));
 					if(result3) {
-						result.ContainerSlot = i;
-						result.Slot = j;
+						result.ContainerSlot = static_cast<int8>( i );
+						result.Slot = static_cast<int8>( j );
 						result.Result = true;
 						return ADD_ITEM_RESULT_OK;
 					}
@@ -1751,7 +1751,7 @@ AddItemResult ItemInterface::AddItemToFreeSlot(Item *item)
 					item2->GetUInt32Value( ITEM_FIELD_STACK_COUNT ) + item->GetUInt32Value( ITEM_FIELD_STACK_COUNT ) <= itemMaxStack )
 				{
 					item2->SetUInt32Value( ITEM_FIELD_STACK_COUNT,item2->GetUInt32Value( ITEM_FIELD_STACK_COUNT ) + item->GetUInt32Value( ITEM_FIELD_STACK_COUNT ) );
-					result.Slot=i;
+					result.Slot = static_cast<int8>( i );
 					result.Result=true;
 					return ADD_ITEM_RESULT_OK;
 				}
@@ -1830,7 +1830,7 @@ uint32 ItemInterface::CalculateFreeSlots(ItemPrototype *proto)
 
 				for (uint32 j =0; j < m_pItems[i]->GetProto()->ContainerSlots;j++)
 				{
-					Item *item2 = ((Container*)m_pItems[i])->GetItem(j);
+					Item *item2 = ( static_cast<Container*>( m_pItems[i] ))->GetItem( static_cast<int16>( j ));
 					if (item2 == NULL)
 					{
 						count++;
@@ -2723,7 +2723,7 @@ Item* ItemInterface::GetItemByGUID(uint64 Guid)
 			if( m_pItems[i]->GetGUID() == Guid )
 			{
 				result.ContainerSlot = INVALID_BACKPACK_SLOT;//not a containerslot. In 1.8 client marked wrong slot like this
-				result.Slot = i;
+				result.Slot = static_cast<int8>( i );
 				return m_pItems[i];
 			}
 		}
@@ -2737,19 +2737,19 @@ Item* ItemInterface::GetItemByGUID(uint64 Guid)
 			if( m_pItems[i]->GetGUID() == Guid ) 
 			{
 				result.ContainerSlot = INVALID_BACKPACK_SLOT;
-				result.Slot = i;
+				result.Slot = static_cast<int8>( i );
 				return m_pItems[i]; 
 			}
 
 			for( uint32 j = 0; j < m_pItems[i]->GetProto()->ContainerSlots; j++ )
 			{
-				Item *item2 = ((Container*)m_pItems[i])->GetItem(j);
+				Item *item2 = ( static_cast<Container*>( m_pItems[i] ))->GetItem( static_cast<int16>( j ));
 				if( item2 )
 				{
 					if( item2->GetGUID() == Guid )
 					{
-						result.ContainerSlot = i;
-						result.Slot = j;
+						result.ContainerSlot = static_cast<int8>( i );
+						result.Slot = static_cast<int8>( j );
 						return item2;
 					}
 				}
@@ -2765,7 +2765,7 @@ Item* ItemInterface::GetItemByGUID(uint64 Guid)
 			if(m_pItems[i]->GetGUID() == Guid)
 			{
 				result.ContainerSlot = INVALID_BACKPACK_SLOT;
-				result.Slot = i;
+				result.Slot = static_cast<int8>( i );
 				return m_pItems[i];
 			}
 		}
@@ -2779,7 +2779,7 @@ Item* ItemInterface::GetItemByGUID(uint64 Guid)
 			if(m_pItems[i]->GetGUID() == Guid)
 			{
 				result.ContainerSlot = INVALID_BACKPACK_SLOT;
-				result.Slot = i;
+				result.Slot = static_cast<int8>( i );
 				return m_pItems[i];
 			}
 		}
@@ -2793,7 +2793,7 @@ Item* ItemInterface::GetItemByGUID(uint64 Guid)
 			if(m_pItems[i]->GetGUID() == Guid)
 			{
 				result.ContainerSlot = INVALID_BACKPACK_SLOT;
-				result.Slot = i;
+				result.Slot = static_cast<int8>( i );
 				return m_pItems[i];
 			}
 		}
@@ -3044,13 +3044,13 @@ void ItemInterface::SwapItemSlots(int16 srcslot, int16 dstslot)
 
 		for ( uint32 Slot = 0; Slot < SrcItem->GetProto()->ContainerSlots; Slot++ )
 		{
-			tSrcItem = ((Container*)(m_pItems[(int)srcslot]))->GetItem(Slot);
+			tSrcItem = ( static_cast<Container*>( (m_pItems[(int)srcslot]) ))->GetItem( static_cast<int16>( Slot ));
 
-			m_pOwner->GetItemInterface()->SafeRemoveAndRetreiveItemFromSlot(srcslot, Slot, false);
+			m_pOwner->GetItemInterface()->SafeRemoveAndRetreiveItemFromSlot(srcslot, static_cast<int16>( Slot ), false);
 
 			if ( tSrcItem != NULL )
 			{
-				m_pOwner->GetItemInterface()->SafeAddItem(tSrcItem, dstslot, Slot);
+				m_pOwner->GetItemInterface()->SafeAddItem(tSrcItem, dstslot, static_cast<int16>( Slot ));
 			}
 		}
 	}
@@ -3073,18 +3073,18 @@ void ItemInterface::SwapItemSlots(int16 srcslot, int16 dstslot)
 		// swap items in the bags
 		for( uint32 Slot = 0; Slot < TotalSlots; Slot++ )
 		{
-			tSrcItem = ((Container*)(m_pItems[(int)srcslot]))->GetItem(Slot);
-			tDstItem = ((Container*)(m_pItems[(int)dstslot]))->GetItem(Slot);
+			tSrcItem = (static_cast<Container*>( (m_pItems[(int)srcslot]) ))->GetItem( static_cast<int16>( Slot ));
+			tDstItem = (static_cast<Container*>( (m_pItems[(int)dstslot]) ))->GetItem( static_cast<int16>( Slot ));
 
 			if ( tSrcItem != NULL )
-				m_pOwner->GetItemInterface()->SafeRemoveAndRetreiveItemFromSlot(srcslot, Slot, false);
+				m_pOwner->GetItemInterface()->SafeRemoveAndRetreiveItemFromSlot(srcslot, static_cast<int16>( Slot ), false);
 			if ( tDstItem != NULL )
-				m_pOwner->GetItemInterface()->SafeRemoveAndRetreiveItemFromSlot(dstslot, Slot, false);
+				m_pOwner->GetItemInterface()->SafeRemoveAndRetreiveItemFromSlot(dstslot, static_cast<int16>( Slot ), false);
 
 			if ( tSrcItem != NULL )
-				((Container*)(DstItem))->AddItem(Slot, tSrcItem);
+				(static_cast<Container*>( DstItem ))->AddItem(static_cast<int16>( Slot ), tSrcItem);
 			if ( tDstItem != NULL )
-				((Container*)(SrcItem))->AddItem(Slot, tDstItem);
+				(static_cast<Container*>(SrcItem))->AddItem(static_cast<int16>( Slot ), tDstItem);
 		}
 	}
 
@@ -3286,7 +3286,7 @@ void ItemInterface::mLoadItemsFromDatabase(QueryResult * result)
 //-------------------------------------------------------------------//
 void ItemInterface::mSaveItemsToDatabase(bool first, QueryBuffer * buf)
 {
-	uint32 x;
+	int16 x;
 
 	for( x = EQUIPMENT_SLOT_START; x < CURRENCYTOKEN_SLOT_END; ++x )
 	{
@@ -3296,11 +3296,11 @@ void ItemInterface::mSaveItemsToDatabase(bool first, QueryBuffer * buf)
 			{
 				if( IsBagSlot( x ) && GetInventoryItem( x )->IsContainer() )
 				{
-					static_cast< Container* >( GetInventoryItem( x ) )->SaveBagToDB( x, first, buf );
+					static_cast< Container* >( GetInventoryItem( x ) )->SaveBagToDB( static_cast<int8>( x ), first, buf );
 				}
 				else
 				{
-					GetInventoryItem( x )->SaveToDB( INVENTORY_SLOT_NOT_SET, x, first, buf );
+					GetInventoryItem( x )->SaveToDB( INVENTORY_SLOT_NOT_SET, static_cast<int8>( x ), first, buf );
 				}
 			}
 		}
@@ -3326,7 +3326,7 @@ AddItemResult ItemInterface::AddItemToFreeBankSlot(Item *item)
 		}
 	}
 
-	for( uint32 i= BANK_SLOT_ITEM_START; i < BANK_SLOT_ITEM_END; i++ )
+	for( int16 i= BANK_SLOT_ITEM_START; i < BANK_SLOT_ITEM_END; i++ )
 	{
 		if( m_pItems[i] == NULL )
 		{
@@ -3340,10 +3340,10 @@ AddItemResult ItemInterface::AddItemToFreeBankSlot(Item *item)
 		{
 			for( uint32 j =0; j < m_pItems[i]->GetProto()->ContainerSlots; j++ )
 			{
-				Item *item2 = static_cast< Container* >( m_pItems[i] )->GetItem(j);
+				Item *item2 = static_cast< Container* >( m_pItems[i] )->GetItem( static_cast<int16>( j ));
 				if( item2 == NULL )
 				{
-					return SafeAddItem( item, i, j );
+					return SafeAddItem( item, static_cast<int16>( i ), static_cast<int16>( j ) );
 				}
 			}
 		}
@@ -3406,7 +3406,7 @@ SlotResult ItemInterface::FindFreeInventorySlot(ItemPrototype *proto)
 					if( m_pItems[i] == NULL )
 					{
 						result.ContainerSlot = ITEM_NO_SLOT_AVAILABLE;
-						result.Slot = i;
+						result.Slot = static_cast<int8>( i );
 						result.Result = true;
 						return result;
 					}
@@ -3419,7 +3419,7 @@ SlotResult ItemInterface::FindFreeInventorySlot(ItemPrototype *proto)
 					if( m_pItems[i] == NULL )
 					{
 						result.ContainerSlot = ITEM_NO_SLOT_AVAILABLE;
-						result.Slot = i;
+						result.Slot = static_cast<int8>( i );
 						result.Result = true;
 						return result;
 					}
@@ -3436,8 +3436,8 @@ SlotResult ItemInterface::FindFreeInventorySlot(ItemPrototype *proto)
 							int32 slot = static_cast< Container* >( m_pItems[i] )->FindFreeSlot();
 							if( slot != ITEM_NO_SLOT_AVAILABLE ) 
 							{
-								result.ContainerSlot = i;
-								result.Slot = slot;
+								result.ContainerSlot = static_cast<int8>( i );
+								result.Slot = static_cast<int8>( slot );
 								result.Result = true;
 								return result;
 							}
@@ -3451,11 +3451,11 @@ SlotResult ItemInterface::FindFreeInventorySlot(ItemPrototype *proto)
 	//backpack
 	for( uint32 i = INVENTORY_SLOT_ITEM_START; i < INVENTORY_SLOT_ITEM_END; i++ )
 	{
-		Item *item = GetInventoryItem( i );
+		Item *item = GetInventoryItem( static_cast<int16>( i ) );
 		if( item == NULL ) 
 		{
 			result.ContainerSlot = ITEM_NO_SLOT_AVAILABLE;
-			result.Slot = i;
+			result.Slot = static_cast<int8>( i );
 			result.Result = true;
 			return result;
 		}
@@ -3464,7 +3464,7 @@ SlotResult ItemInterface::FindFreeInventorySlot(ItemPrototype *proto)
 	//bags
 	for( uint32 i = INVENTORY_SLOT_BAG_START; i < INVENTORY_SLOT_BAG_END; i++ )
 	{
-		Item* item = GetInventoryItem(i);
+		Item* item = GetInventoryItem(static_cast<int16>( i ));
 		if( item != NULL )
 		{
 			if( item->IsContainer() && !item->GetProto()->BagFamily )
@@ -3472,8 +3472,8 @@ SlotResult ItemInterface::FindFreeInventorySlot(ItemPrototype *proto)
 				int32 slot = static_cast< Container* >( m_pItems[i] )->FindFreeSlot();
 				if( slot != ITEM_NO_SLOT_AVAILABLE ) 
 				{ 
-					result.ContainerSlot = i;
-					result.Slot = slot;
+					result.ContainerSlot = static_cast<int8>( i );
+					result.Slot = static_cast<int8>( slot );
 					result.Result = true;
 					return result;
 				}
@@ -3505,8 +3505,8 @@ SlotResult ItemInterface::FindFreeBankSlot(ItemPrototype *proto)
 						int32 slot = static_cast< Container* >( m_pItems[i] )->FindFreeSlot();
 						if( slot != ITEM_NO_SLOT_AVAILABLE ) 
 						{
-							result.ContainerSlot = i;
-							result.Slot = slot;
+							result.ContainerSlot = static_cast<int8>( i );
+							result.Slot = static_cast<int8>( slot );
 							result.Result = true;
 							return result;
 						}
@@ -3519,11 +3519,11 @@ SlotResult ItemInterface::FindFreeBankSlot(ItemPrototype *proto)
 	//backpack
 	for( uint32 i = BANK_SLOT_ITEM_START; i < BANK_SLOT_ITEM_END; i++ )
 	{
-		Item* item = GetInventoryItem( i );
+		Item* item = GetInventoryItem( static_cast<int16>( i ) );
 		if( item == NULL ) 
 		{
 			result.ContainerSlot = ITEM_NO_SLOT_AVAILABLE;
-			result.Slot = i;
+			result.Slot = static_cast<int8>( i );
 			result.Result = true;
 			return result;
 		}
@@ -3532,7 +3532,7 @@ SlotResult ItemInterface::FindFreeBankSlot(ItemPrototype *proto)
 	//bags
 	for( uint32 i = BANK_SLOT_BAG_START; i < BANK_SLOT_BAG_END; i++ )
 	{
-		Item* item = GetInventoryItem(i);
+		Item* item = GetInventoryItem( static_cast<int16>( i ));
 		if( item != NULL )
 		{
 			if( item->IsContainer() && !item->GetProto()->BagFamily )
@@ -3540,8 +3540,8 @@ SlotResult ItemInterface::FindFreeBankSlot(ItemPrototype *proto)
 				int32 slot = static_cast< Container* >( m_pItems[i] )->FindFreeSlot();
 				if( slot != ITEM_NO_SLOT_AVAILABLE) 
 				{ 
-					result.ContainerSlot = i;
-					result.Slot = slot;
+					result.ContainerSlot = static_cast<int8>( i );
+					result.Slot = static_cast<int8>( slot );
 					result.Result = true;
 					return result;
 				}
@@ -3562,7 +3562,7 @@ SlotResult ItemInterface::FindAmmoBag()
 		if( m_pItems[i] != NULL && m_pItems[i]->IsAmmoBag())
 		{
 			result.ContainerSlot = ITEM_NO_SLOT_AVAILABLE;
-			result.Slot = i;
+			result.Slot = static_cast<int8>( i );
 			result.Result = true;
 			return result;
 		}
@@ -3580,7 +3580,7 @@ void ItemInterface::ReduceItemDurability()
 	if( f <= 10 ) //10% chance to loose 1 dur from a random valid item.
 	{
 		int32 slot = RandomUInt( EQUIPMENT_SLOT_END );
-		Item* pItem = GetInventoryItem( INVENTORY_SLOT_NOT_SET, slot );
+		Item* pItem = GetInventoryItem( INVENTORY_SLOT_NOT_SET, static_cast<int16>( slot ) );
 		if( pItem != NULL )
 		{
 			if( pItem->GetUInt32Value( ITEM_FIELD_DURABILITY) && pItem->GetUInt32Value( ITEM_FIELD_MAXDURABILITY ) )
@@ -3590,7 +3590,7 @@ void ItemInterface::ReduceItemDurability()
 				//check final durability
 				if( !pItem->GetUInt32Value( ITEM_FIELD_DURABILITY ) ) //no dur left
 				{
-					this->GetOwner()->ApplyItemMods( pItem, slot, false, true );
+					this->GetOwner()->ApplyItemMods( pItem, static_cast<int16>( slot ), false, true );
 				}
 			}
 		}
@@ -3632,20 +3632,20 @@ void ItemInterface::CheckAreaItems()
 	{
 		if( m_pItems[x] != NULL )
 		{
-			if( IsBagSlot(x) && m_pItems[x]->IsContainer() )
+			if( IsBagSlot(static_cast<int16>( x )) && m_pItems[x]->IsContainer() )
 			{
 				Container* bag = (Container*)m_pItems[x];
  
 				for( uint32 i = 0; i < bag->GetProto()->ContainerSlots; i++ )
 				{
-					if( bag->GetItem(i) != NULL && bag->GetItem(i)->GetProto() && bag->GetItem(i)->GetProto()->MapID && bag->GetItem(i)->GetProto()->MapID != GetOwner()->GetMapId() )
-						bag->SafeFullRemoveItemFromSlot( i );
+					if( bag->GetItem(static_cast<int16>( i )) != NULL && bag->GetItem(static_cast<int16>( i ))->GetProto() && bag->GetItem(static_cast<int16>( i ))->GetProto()->MapID && bag->GetItem(static_cast<int16>( i ))->GetProto()->MapID != GetOwner()->GetMapId() )
+						bag->SafeFullRemoveItemFromSlot( static_cast<int16>( i ) );
 				}
 			}
 			else
 			{
 				if( m_pItems[x]->GetProto() != NULL && m_pItems[x]->GetProto()->MapID && m_pItems[x]->GetProto()->MapID != GetOwner()->GetMapId() )
-					SafeFullRemoveItemFromSlot( INVENTORY_SLOT_NOT_SET, x );
+					SafeFullRemoveItemFromSlot( INVENTORY_SLOT_NOT_SET, static_cast<int16>( x ) );
 			}
 		}
 	}
@@ -3681,7 +3681,7 @@ uint32 ItemInterface::GetItemCountByLimitId(uint32 LimitId, bool IncBank)
 	uint32 i = 0;
 	for( i = EQUIPMENT_SLOT_START; i < INVENTORY_SLOT_ITEM_END; i++ )
 	{
-		Item * item = GetInventoryItem(i);
+		Item * item = GetInventoryItem( static_cast<int16>( i ));
 		if( item != NULL )
 		{
 			if( item->GetProto() 
@@ -3695,12 +3695,12 @@ uint32 ItemInterface::GetItemCountByLimitId(uint32 LimitId, bool IncBank)
 
 	for( i = INVENTORY_SLOT_BAG_START; i < INVENTORY_SLOT_BAG_END; i++ )
 	{
-		Item * item = GetInventoryItem(i);
+		Item * item = GetInventoryItem( static_cast<int16>( i ));
 		if( item && item->IsContainer() )
 		{
 			for( uint32 j = 0; j < item->GetProto()->ContainerSlots; j++ )
 			{
-				Item * item2 = ((Container*)item)->GetItem(j);
+				Item * item2 = (static_cast<Container*>( item ))->GetItem(static_cast<int16>( j ));
 				if( item2 != NULL )
 				{
 					if( item2->GetProto() 
@@ -3716,7 +3716,7 @@ uint32 ItemInterface::GetItemCountByLimitId(uint32 LimitId, bool IncBank)
 
 	for( i = INVENTORY_KEYRING_START; i < INVENTORY_KEYRING_END; i++ )
 	{
-		Item * item = GetInventoryItem(i);
+		Item * item = GetInventoryItem(static_cast<int16>( i ));
 		if( item != NULL )
 		{
 			if( item->GetProto() 
@@ -3730,7 +3730,7 @@ uint32 ItemInterface::GetItemCountByLimitId(uint32 LimitId, bool IncBank)
 
 	for( i = CURRENCYTOKEN_SLOT_START; i < CURRENCYTOKEN_SLOT_END; i++ )
 	{
-		Item * item = GetInventoryItem(i);
+		Item * item = GetInventoryItem(static_cast<int16>( i ));
 		if( item != NULL )
 		{
 			if( item->GetProto() 
@@ -3746,7 +3746,7 @@ uint32 ItemInterface::GetItemCountByLimitId(uint32 LimitId, bool IncBank)
 	{
 		for( i = BANK_SLOT_ITEM_START; i < BANK_SLOT_BAG_END; i++ )
 		{
-			Item * item = GetInventoryItem(i);
+			Item * item = GetInventoryItem(static_cast<int16>( i ));
 			if( item != NULL )
 			{
 				if( item->GetProto() 
@@ -3760,14 +3760,14 @@ uint32 ItemInterface::GetItemCountByLimitId(uint32 LimitId, bool IncBank)
 
 		for( i = BANK_SLOT_BAG_START; i < BANK_SLOT_BAG_END; i++ )
 		{
-			Item * item = GetInventoryItem(i);
+			Item * item = GetInventoryItem(static_cast<int16>( i ));
 			if( item != NULL )
 			{
 				if( item->IsContainer() )
 				{
 					for (uint32 j = 0; j < item->GetProto()->ContainerSlots; j++)
 					{
-						Item * item2 = ((Container*)item)->GetItem(j);
+						Item * item2 = (static_cast<Container*>( item ))->GetItem(static_cast<int16>( j ));
 						if( item2 != NULL )
 						{
 							if( item2->GetProto() 

@@ -151,7 +151,7 @@ void WorldSession::HandleGroupAcceptOpcode( WorldPacket & recv_data )
 	
 	// If we're this far, it means we have no existing group, and have to make one.
 	grp = new Group(true);
-	grp->m_difficulty = player->iInstanceType;
+	grp->m_difficulty = static_cast<uint8>( player->iInstanceType );
 	grp->AddMember(player->m_playerInfo);		// add the inviter first, therefore he is the leader
 	grp->AddMember(_player->m_playerInfo);	   // add us.
 	_player->iInstanceType = grp->m_difficulty;
@@ -335,13 +335,13 @@ void WorldSession::HandleLootMethodOpcode( WorldPacket & recv_data )
   if ( _player->m_playerInfo->guid == lootMaster || !plr) {
     Group* pGroup = _player->GetGroup();
     if ( !pGroup ) return;
-    pGroup->SetLooter(_player, lootMethod, threshold );
+    pGroup->SetLooter(_player, static_cast<uint8>( lootMethod ), static_cast<uint16>( threshold ));
   }
   else {
     Group* pGroup = plr->GetGroup();
     if ( !pGroup ) 
 		return;
-    pGroup->SetLooter(plr, lootMethod, threshold );
+    pGroup->SetLooter(plr, static_cast<uint8>( lootMethod ), static_cast<uint16>( threshold ));
   }
 
 }

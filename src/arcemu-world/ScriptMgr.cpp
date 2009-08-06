@@ -107,7 +107,7 @@ void ScriptMgr::LoadScripts()
 				{
 					uint32 version = vcall();
 					uint32 stype = scall();
-					if(SCRIPTLIB_LOPART(version) == SCRIPTLIB_VERSION_MINOR && SCRIPTLIB_HIPART(version) == SCRIPTLIB_VERSION_MAJOR)
+					if(SCRIPTLIB_LOPART(version) == static_cast<uint32>( SCRIPTLIB_VERSION_MINOR ) && SCRIPTLIB_HIPART(version) == static_cast<uint32>( SCRIPTLIB_VERSION_MAJOR ))
 					{
 						if( stype & SCRIPT_TYPE_SCRIPT_ENGINE )
 						{

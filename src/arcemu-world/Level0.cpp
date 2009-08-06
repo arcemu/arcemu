@@ -234,7 +234,7 @@ bool ChatHandler::HandleStartCommand(const char* args, WorldSession *m_session)
 	PlayerCreateInfo *info = NULL;
 	for(uint32 i=1;i<11;i++)
 	{
-		 info = objmgr.GetPlayerCreateInfo(raceid, i);
+		 info = objmgr.GetPlayerCreateInfo(static_cast<uint8>( raceid ), static_cast<uint8>( i ));
 		 if(info != NULL) break;
 	}
 

@@ -106,9 +106,9 @@ bool ChatHandler::HandleRenameAllCharacter(const char * args, WorldSession * m_s
 void CapitalizeString(string& arg)
 {
 	if(arg.length() == 0) return;
-	arg[0] = toupper(arg[0]);
+	arg[0] = static_cast<char>( toupper(arg[0]) );
 	for(uint32 x = 1; x < arg.size(); ++x)
-		arg[x] = tolower(arg[x]);
+		arg[x] = static_cast<char>( tolower(arg[x]) );
 }
 
 void WorldSession::CharacterEnumProc(QueryResult * result)
@@ -240,7 +240,7 @@ void WorldSession::CharacterEnumProc(QueryResult * result)
 								!( slot == EQUIPMENT_SLOT_BACK && ( flags & ( uint32 )PLAYER_FLAG_NOCLOAK ) != 0 ) ) 
 							{
 								items[slot].displayid = proto->DisplayInfoID;
-								items[slot].invtype = proto->InventoryType;
+								items[slot].invtype = static_cast<uint8>( proto->InventoryType );
 								// weapon glows
 								if( slot == EQUIPMENT_SLOT_MAINHAND || slot == EQUIPMENT_SLOT_OFFHAND )
 								{

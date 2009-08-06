@@ -66,7 +66,7 @@ int32 HonorHandler::CalculateHonorPointsForKill( uint32 playerLevel, uint32 vict
 		return 0;
 
 	// Correct formula unknown. This one is correct for lvl 70 killing lvl 70 and scales down for lower levels
-	uint32 diff_level = v_level - k_level; // Should somehow affect the result
+	// uint32 diff_level = v_level - k_level; // Should somehow affect the result
 
 	float honor_points = 20.9f;
 	honor_points *= ((float)k_level) / PLAYER_LEVEL_CAP;

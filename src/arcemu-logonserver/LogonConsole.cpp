@@ -137,7 +137,7 @@ void LogonConsole::ProcessCmd(char *cmd)
 	char cmd2[80];
 	strcpy(cmd2, cmd);
 	for(size_t i = 0; i < strlen(cmd); ++i)
-		cmd2[i] = tolower(cmd[i]);
+		cmd2[i] = static_cast<char>(tolower(cmd[i]));
 
 	for (size_t i = 0; i < sizeof(cmds)/sizeof(SCmd); i++)
 		if (strncmp(cmd2, cmds[i].name, strlen(cmds[i].name)) == 0)

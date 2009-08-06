@@ -330,7 +330,7 @@ void Container::SaveBagToDB(int8 slot, bool first, QueryBuffer * buf)
 	{
 		if (m_Slot[i] && !((m_Slot[i]->GetProto()->Flags)& 2) )
 		{
-			m_Slot[i]->SaveToDB(slot, i, first, buf);
+			m_Slot[i]->SaveToDB(slot, static_cast<int8>( i ), first, buf);
 		}
 	}
 }

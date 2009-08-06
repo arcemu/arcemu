@@ -639,7 +639,7 @@ void Unit::Update( uint32 p_time )
         if( p_time >= m_H_regenTimer )
 		    RegenerateHealth();
 	    else
-		    m_H_regenTimer -= p_time;
+		    m_H_regenTimer -= static_cast<uint16>( p_time );
 
 		if( p_time >= m_P_regenTimer )
 		{
@@ -648,7 +648,7 @@ void Unit::Update( uint32 p_time )
 		}
 		else
 		{
-			m_P_regenTimer -= p_time;
+			m_P_regenTimer -= static_cast<uint16>( p_time );
 			if (m_interruptedRegenTime)
 			{
 				if(p_time>=m_interruptedRegenTime)
@@ -679,7 +679,7 @@ void Unit::Update( uint32 p_time )
 					else
 					{
 						// reducing, still.
-						m_diminishTimer[x] -= p_time;
+						m_diminishTimer[x] -= static_cast<uint16>( p_time );
 						++count;
 					}
 				}
@@ -4178,7 +4178,7 @@ void Unit::Strike( Unit* pVictim, uint32 weapon_damage_type, SpellEntry* ability
 		if( realdamage > 0 )//FIX ME: add log for miss,block etc for ability and ranged
 		{
 			// here we send "dmg.resisted_damage" for "AbsorbedDamage", "0" for "ResistedDamage", and "false" for "PhysicalDamage" even though "School" is "SCHOOL_NORMAL"   o_O
-			SendSpellNonMeleeDamageLog( this, pVictim, ability->Id, realdamage, dmg.school_type, dmg.resisted_damage, 0, false, blocked_damage, ( ( hit_status & HITSTATUS_CRICTICAL ) != 0 ), true );
+			SendSpellNonMeleeDamageLog( this, pVictim, ability->Id, realdamage, static_cast<uint8>( dmg.school_type ), dmg.resisted_damage, 0, false, blocked_damage, ( ( hit_status & HITSTATUS_CRICTICAL ) != 0 ), true );
 		}
 		//FIX ME: add log for miss,block etc for ability and ranged
 		//example how it works
@@ -4467,14 +4467,14 @@ uint8 Unit::FindVisualSlot(uint32 SpellId,bool IsPos)
 	for(uint32 i=from;i<to;i++)
 		if( m_auravisuals[i] == SpellId )
 		{
-			visualslot = i;
+			visualslot = static_cast<uint8>( i );
 			break;
 		}
 	if( visualslot == 0xFF )
 		for(uint32 i=from;i<to;i++)
 			if( m_auravisuals[i] == 0 )
 			{
-				visualslot = i;
+				visualslot = static_cast<uint8>( i );
 				break;
 			}
 	return visualslot;
@@ -4610,7 +4610,7 @@ void Unit::AddAura(Aura * aur)
 				}
 				else if( AuraSlot == 0xFFFF )
 				{
-					AuraSlot = x;
+					AuraSlot = static_cast<uint16>( x );
 				}
 			}
 
@@ -4627,7 +4627,7 @@ void Unit::AddAura(Aura * aur)
 			for( uint32 x = StartCheck; x < CheckLimit; x++ )
 				if( !m_auras[x] )
 				{
-					AuraSlot = x;
+					AuraSlot = static_cast<uint16>( x );
 					break;
 				}
 		}
@@ -4638,7 +4638,7 @@ void Unit::AddAura(Aura * aur)
 		for(uint32 x=MAX_PASSIVE_AURAS_START;x<MAX_PASSIVE_AURAS_END;x++)
 			if( !m_auras[x] )
 			{
-				AuraSlot = x;
+				AuraSlot = static_cast<uint16>( x );
 				break;
 			}
 //			else if( m_auras[x]->GetID()==aur->GetID() ) printf("OMG stacking talents ?\n");
@@ -6380,7 +6380,7 @@ uint32 Unit::ModVisualAuraStackCount(Aura *aur, int32 count)
 		SendMessageToSet(&data, true);
  	}
  	else {
- 		m_auraStackCount[slot] += count;
+ 		m_auraStackCount[slot] += static_cast<uint8>( count );
 		m_auravisuals[slot] = aur->GetSpellId();
 		uint16 flags;
 		if( aur->IsPositive() )
@@ -7897,7 +7897,7 @@ uint32 Unit::DoDamageSplitTarget(uint32 res, uint32 school_type, bool melee_dmg)
 				sdmg.school_type = school_type;
 				SendAttackerStateUpdate(this, splittarget, &sdmg, splitdamage, 0, 0, 0, ATTACK);
 			} else {
-				SendSpellNonMeleeDamageLog(this, splittarget, ds->m_spellId, splitdamage, school_type, 0, 0, true, 0, 0, true);
+				SendSpellNonMeleeDamageLog(this, splittarget, ds->m_spellId, splitdamage, static_cast<uint8>( school_type ), 0, 0, true, 0, 0, true);
 			}
 		}
 	}
@@ -8006,12 +8006,14 @@ void Unit::SendPowerUpdate(bool self)
 void Unit::UpdatePowerAmm()
 {
 //	if( !IsPlayer() ) //VLack: always return :)
-		return;
+	return;
+	/* If it always returns there's no need to have these here, actually why is this even called then? :S
 	WorldPacket data( SMSG_POWER_UPDATE, 5 );
 	FastGUIDPack( data, GetGUID() );
 	data << uint8( GetPowerType() );
 	data << GetUInt32Value( UNIT_FIELD_POWER1 + GetPowerType() );
 	SendMessageToSet( &data, true );
+	*/
 }
 
 void Unit::CastSpellOnCasterOnCritHit()

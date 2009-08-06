@@ -577,7 +577,7 @@ void WorldSocket::OnRead()
 			}
 		}
 
-		Packet = new WorldPacket(mOpcode, mSize);
+		Packet = new WorldPacket( static_cast<uint16>( mOpcode ), mSize);
 		Packet->resize(mSize);
 
 		if(mRemaining > 0)
@@ -587,7 +587,7 @@ void WorldSocket::OnRead()
 			GetReadBuffer().Read((uint8*)Packet->contents(), mRemaining);
 		}
 
-		sWorldLog.LogPacket(mSize, mOpcode, mSize ? Packet->contents() : NULL, 0);
+		sWorldLog.LogPacket(mSize, static_cast<uint16>( mOpcode ), mSize ? Packet->contents() : NULL, 0);
 		mRemaining = mSize = mOpcode = 0;
 
 		// Check for packets that we handle
@@ -625,7 +625,7 @@ void WorldLog::LogPacket(uint32 len, uint16 opcode, const uint8* data, uint8 dir
 		mutex.Acquire();
 		unsigned int line = 1;
 		unsigned int countpos = 0;
-		uint16 lenght = len;
+		uint16 lenght = static_cast<uint16>( len );
 		unsigned int count = 0;
 
 		fprintf(m_file, "{%s} Packet: (0x%04X) %s PacketSize = %u stamp = %u\n", (direction ? "SERVER" : "CLIENT"), opcode,

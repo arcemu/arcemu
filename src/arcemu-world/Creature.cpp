@@ -1138,7 +1138,7 @@ bool Creature::isattackable(CreatureSpawn *spawn){
 }
 
 uint8 get_byte(uint32 buffer, uint32 index){
-	uint32 mask = ~0;
+	uint32 mask = ~0ul;
 	if(index > sizeof(uint32)-1)
 		return 0;
 
@@ -1379,7 +1379,7 @@ bool Creature::Load(CreatureSpawn *spawn, uint32 mode, MapInfo *info)
 		bInvincible = true;
 		SetUInt32Value(UNIT_NPC_EMOTESTATE, EMOTE_STATE_DEAD);
 	}
-	m_invisFlag = proto->invisibility_type;
+	m_invisFlag = static_cast<uint8>( proto->invisibility_type );
 	if( spawn->stand_state )
 		SetStandState( (uint8)spawn->stand_state );
 
@@ -1401,7 +1401,10 @@ void Creature::Load(CreatureProto * proto_, float x, float y, float z, float o)
 	if(!creature_info)
 		return;
 
-	GetAIInterface()->SetAllowedToEnterCombat( ~bool(proto_->isTrainingDummy) );
+	if( proto_->isTrainingDummy == 0)
+		GetAIInterface()->SetAllowedToEnterCombat( true );
+	else
+		GetAIInterface()->SetAllowedToEnterCombat( false );
 
 	m_walkSpeed = m_base_walkSpeed = proto->walk_speed; //set speeds
 	m_runSpeed = m_base_runSpeed = proto->run_speed; //set speeds
@@ -1570,7 +1573,7 @@ void Creature::Load(CreatureProto * proto_, float x, float y, float z, float o)
 		bInvincible = true;
 		SetUInt32Value(UNIT_NPC_EMOTESTATE, EMOTE_STATE_DEAD);
 	}
-	m_invisFlag = proto->invisibility_type;
+	m_invisFlag = static_cast<uint8>( proto->invisibility_type );
 }
 
 void Creature::OnPushToWorld()
