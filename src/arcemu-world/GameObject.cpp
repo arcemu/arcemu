@@ -122,7 +122,7 @@ bool GameObject::CreateFromProto(uint32 entry,uint32 mapid, float x, float y, fl
 	//SetUInt32Value( GAMEOBJECT_ARTKIT, 0 );		   //these must be from wdb somewhere i guess
     SetByte( GAMEOBJECT_BYTES_1, 3, 0 );
 	SetByte( GAMEOBJECT_BYTES_1, 0, 1 );
-	SetUInt32Value( GAMEOBJECT_DISPLAYID, static_cast<uint8>( pInfo->DisplayID ));
+	SetUInt32Value( GAMEOBJECT_DISPLAYID, pInfo->DisplayID );
 	SetByte( GAMEOBJECT_BYTES_1, 1, static_cast<uint8>( pInfo->Type ));
    
 	InitAI();
