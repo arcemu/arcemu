@@ -93,6 +93,14 @@ public:
 	void DeleteGameObject(GameObject *ptr);
 	void DeleteCreature(Creature* ptr);
 
+    MapScriptInterface& operator=( MapScriptInterface& msi ){
+        if(this != &msi){
+            this->mapMgr = msi.mapMgr;
+        }
+
+        return *this;
+    }
+
 private:
 	MapMgr & mapMgr;
 };

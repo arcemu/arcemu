@@ -4264,7 +4264,6 @@ void Player::_ApplyItemMods(Item* item, int16 slot, bool apply, bool justdrokedo
 	/* Heirloom scaling items */
 	if(proto->ScalingStatsEntry != 0){
 		int i = 0;
-		int j = 0;
 		ScalingStatDistributionEntry *ssdrow = dbcScalingStatDistribution.LookupEntry( proto->ScalingStatsEntry );
 		ScalingStatValuesEntry *ssvrow = NULL;
 		uint32 StatType;
@@ -4278,11 +4277,15 @@ void Player::_ApplyItemMods(Item* item, int16 slot, bool apply, bool justdrokedo
 		if(plrLevel > 80)
 			plrLevel = 80;
 
-		for(i = 0, j = dbcScalingStatValues.GetNumRows(); i < j; i++){
-			ssvrow = dbcScalingStatValues.LookupRow(i);
-			if(ssvrow->level == plrLevel)
-				break;
-		}
+        
+        DBCStorage<ScalingStatValuesEntry>::iterator itr;
+
+        for(itr = dbcScalingStatValues.begin(); itr != dbcScalingStatValues.end(); ++itr)
+            if( (*itr)->level == plrLevel ){
+                ssvrow = *itr;
+                break;
+            }
+       
 
 		
 

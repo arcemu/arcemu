@@ -684,24 +684,29 @@ void WorldSession::HandleAutoEquipItemOpcode( WorldPacket & recv_data )
 		return;
 	}
 
-	int8 Slot = _player->GetItemInterface()->GetItemSlotByType(eitem->GetProto()->InventoryType);
-	if(Slot == ITEM_NO_SLOT_AVAILABLE)
+    int8 Slot = _player->GetItemInterface()->GetItemSlotByType(eitem->GetProto()->InventoryType);
+    if(Slot == ITEM_NO_SLOT_AVAILABLE)
 	{
 		_player->GetItemInterface()->BuildInventoryChangeError(eitem,NULL,INV_ERR_ITEM_CANT_BE_EQUIPPED);
 		return;
 	}
 
 	// handle equipping of 2h when we have two items equipped! :) special case.
-	if ((Slot == EQUIPMENT_SLOT_MAINHAND || Slot == EQUIPMENT_SLOT_OFFHAND) && !_player->DualWield2H)
+  	if ((Slot == EQUIPMENT_SLOT_MAINHAND || Slot == EQUIPMENT_SLOT_OFFHAND) && !_player->DualWield2H)
 	{
 		Item *mainhandweapon = _player->GetItemInterface()->GetInventoryItem(INVENTORY_SLOT_NOT_SET, EQUIPMENT_SLOT_MAINHAND);
 		if( mainhandweapon != NULL && mainhandweapon->GetProto()->InventoryType == INVTYPE_2HWEAPON )
 		{
-			if( Slot == EQUIPMENT_SLOT_OFFHAND && eitem->GetProto()->InventoryType == INVTYPE_WEAPON )
+			if( Slot == EQUIPMENT_SLOT_OFFHAND && ( eitem->GetProto()->InventoryType == INVTYPE_WEAPON || eitem->GetProto()->InventoryType == INVTYPE_2HWEAPON ) )
 			{
 				Slot = EQUIPMENT_SLOT_MAINHAND;
 			}
-		}
+        }else{
+            if( Slot == EQUIPMENT_SLOT_OFFHAND && eitem->GetProto()->InventoryType == INVTYPE_2HWEAPON )
+			{
+				Slot = EQUIPMENT_SLOT_MAINHAND;
+			}
+        }
 
 		error = _player->GetItemInterface()->CanEquipItemInSlot(INVENTORY_SLOT_NOT_SET, Slot, eitem->GetProto(), true, true);
 		if( error )

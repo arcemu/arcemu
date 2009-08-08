@@ -2648,7 +2648,7 @@ int8 ItemInterface::GetItemSlotByType(uint32 type)
 		}
 	case INVTYPE_WEAPON:
 		{
-			if( !GetInventoryItem( EQUIPMENT_SLOT_MAINHAND ) || !m_pOwner->DualWield2H )
+			if( !GetInventoryItem( EQUIPMENT_SLOT_MAINHAND ) /* || !m_pOwner->DualWield2H */ )
 				return EQUIPMENT_SLOT_MAINHAND;
 			else if(!GetInventoryItem(EQUIPMENT_SLOT_OFFHAND))
 				return EQUIPMENT_SLOT_OFFHAND;

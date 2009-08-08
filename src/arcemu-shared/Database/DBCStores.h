@@ -1481,6 +1481,23 @@ class SERVER_DECL DBCStorage
 
 public:
 
+    class iterator{
+    private:
+        T *p;
+    public:
+        iterator(T* ip = 0) : p(ip){ }
+        iterator& operator++(){ ++p; return *this; }
+        bool operator!=(const iterator &i){ return (p != i.p); }
+        T* operator*(){ return p; }
+    };
+
+    iterator begin(){ 
+        return iterator(&m_heapBlock[0]);
+    }
+    iterator end(){ 
+        return iterator(&m_heapBlock[m_numrows]); 
+    }
+
 	DBCStorage()
 	{
 		m_heapBlock = NULL;
