@@ -657,7 +657,7 @@ void WorldSession::InitPacketHandlerTable()
 	WorldPacketHandlers[CMSG_GROUP_ACCEPT].handler							  = &WorldSession::HandleGroupAcceptOpcode;
 	WorldPacketHandlers[CMSG_GROUP_DECLINE].handler							 = &WorldSession::HandleGroupDeclineOpcode;
 	WorldPacketHandlers[CMSG_GROUP_UNINVITE].handler							= &WorldSession::HandleGroupUninviteOpcode;
-	WorldPacketHandlers[CMSG_GROUP_UNINVITE_GUID].handler					   = &WorldSession::HandleGroupUninviteGuildOpcode;
+	WorldPacketHandlers[CMSG_GROUP_UNINVITE_GUID].handler					   = &WorldSession::HandleGroupUninviteGuidOpcode;
 	WorldPacketHandlers[CMSG_GROUP_SET_LEADER].handler						  = &WorldSession::HandleGroupSetLeaderOpcode;
 	WorldPacketHandlers[CMSG_GROUP_DISBAND].handler							 = &WorldSession::HandleGroupDisbandOpcode;
 	WorldPacketHandlers[CMSG_LOOT_METHOD].handler							   = &WorldSession::HandleLootMethodOpcode;

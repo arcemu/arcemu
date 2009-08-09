@@ -190,7 +190,7 @@ void WorldSession::HandleGroupDeclineOpcode( WorldPacket & recv_data )
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////
-///This function handles CMSG_GROUP_UNINVITE:
+///This function handles CMSG_GROUP_UNINVITE(unused since 3.1.3):
 //////////////////////////////////////////////////////////////////////////////////////////
 void WorldSession::HandleGroupUninviteOpcode( WorldPacket & recv_data )
 {
@@ -238,11 +238,54 @@ void WorldSession::HandleGroupUninviteOpcode( WorldPacket & recv_data )
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////
-///This function handles CMSG_GROUP_UNINVITE_GUID:
+///This function handles CMSG_GROUP_UNINVITE_GUID(used since 3.1.3):
 //////////////////////////////////////////////////////////////////////////////////////////
-void WorldSession::HandleGroupUninviteGuildOpcode( WorldPacket & recv_data )
+void WorldSession::HandleGroupUninviteGuidOpcode( WorldPacket & recv_data )
 {
-	sLog.outDebug( "WORLD: got CMSG_GROUP_UNINVITE_GUID." );
+	if(!_player->IsInWorld()) return;
+	CHECK_PACKET_SIZE(recv_data, 1);
+	uint64 PlayerGUID;
+	std::string membername = "unknown";
+	Group *group;
+	Player * player;
+	PlayerInfo * info;
+
+	recv_data >> PlayerGUID;
+
+	player = objmgr.GetPlayer(GUID_LOPART(PlayerGUID));
+	info = objmgr.GetPlayerInfo(GUID_LOPART(PlayerGUID));
+	// If both conditions match the player gets thrown out of the group by the server since this means the character is deleted
+	if ( player == NULL && info == NULL )
+	{
+		SendPartyCommandResult(_player, 0, membername, ERR_PARTY_CANNOT_FIND);
+		return;
+	}
+
+	membername = player ? player->GetName() : info->name;
+
+	if ( !_player->InGroup() || info->m_Group != _player->GetGroup() )
+	{
+		SendPartyCommandResult(_player, 0, membername, ERR_PARTY_IS_NOT_IN_YOUR_PARTY);
+		return;
+	}
+
+	if ( !_player->IsGroupLeader() )
+	{
+		if (player == NULL)
+		{
+			SendPartyCommandResult(_player, 0, membername, ERR_PARTY_CANNOT_FIND);
+			return;
+		}
+		else if(_player != player)
+		{
+			SendPartyCommandResult(_player, 0, "", ERR_PARTY_YOU_ARE_NOT_LEADER);
+			return;
+		}
+	}
+
+	group = _player->GetGroup();
+	if(group)
+		group->RemovePlayer(info);
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////

@@ -128,7 +128,7 @@ void ItemInterface::m_DestroyForPlayer()
 //-------------------------------------------------------------------//
 //Description: Creates and adds a item that can be manipulated after		  
 //-------------------------------------------------------------------//
-Item *ItemInterface::SafeAddItem(uint32 ItemId, int16 ContainerSlot, int16 slot)
+Item *ItemInterface::SafeAddItem(uint32 ItemId, int8 ContainerSlot, int16 slot)
 {
 	Item *pItem;
 	ItemPrototype *pProto = ItemPrototypeStorage.LookupEntry(ItemId);
@@ -170,7 +170,7 @@ Item *ItemInterface::SafeAddItem(uint32 ItemId, int16 ContainerSlot, int16 slot)
 //-------------------------------------------------------------------//
 //Description: Creates and adds a item that can be manipulated after		  
 //-------------------------------------------------------------------//
-AddItemResult ItemInterface::SafeAddItem(Item *pItem, int16 ContainerSlot, int16 slot)
+AddItemResult ItemInterface::SafeAddItem(Item *pItem, int8 ContainerSlot, int16 slot)
 {
 	return m_AddItem( pItem, ContainerSlot, slot );
 }
@@ -178,7 +178,7 @@ AddItemResult ItemInterface::SafeAddItem(Item *pItem, int16 ContainerSlot, int16
 //-------------------------------------------------------------------//
 //Description: adds items to player inventory, this includes all types of slots.		  
 //-------------------------------------------------------------------//
-AddItemResult ItemInterface::m_AddItem(Item *item, int16 ContainerSlot, int16 slot)
+AddItemResult ItemInterface::m_AddItem(Item *item, int8 ContainerSlot, int16 slot)
 {
 	ASSERT( slot < MAX_INVENTORY_SLOT );
 	ASSERT( ContainerSlot < MAX_INVENTORY_SLOT );
@@ -364,7 +364,7 @@ bool ItemInterface::IsBagSlot(int16 slot)
 //-------------------------------------------------------------------//
 //Description: removes the item safely and returns it back for usage
 //-------------------------------------------------------------------//
-Item *ItemInterface::SafeRemoveAndRetreiveItemFromSlot(int16 ContainerSlot, int16 slot, bool destroy)
+Item *ItemInterface::SafeRemoveAndRetreiveItemFromSlot(int8 ContainerSlot, int16 slot, bool destroy)
 {
 	ASSERT(slot < MAX_INVENTORY_SLOT);
 	ASSERT(ContainerSlot < MAX_INVENTORY_SLOT);
@@ -535,7 +535,7 @@ Item *ItemInterface::SafeRemoveAndRetreiveItemByGuid(uint64 guid, bool destroy)
 //Description: completely removes item from player
 //Result: true if item removal was succefull
 //-------------------------------------------------------------------//
-bool ItemInterface::SafeFullRemoveItemFromSlot(int16 ContainerSlot, int16 slot)
+bool ItemInterface::SafeFullRemoveItemFromSlot(int8 ContainerSlot, int16 slot)
 {
 	ASSERT(slot < MAX_INVENTORY_SLOT);
 	ASSERT(ContainerSlot < MAX_INVENTORY_SLOT);
@@ -711,7 +711,7 @@ Item *ItemInterface::GetInventoryItem(int16 slot)
 //-------------------------------------------------------------------//
 //Description: Gets a Item from inventory or container
 //-------------------------------------------------------------------//
-Item *ItemInterface::GetInventoryItem( int16 ContainerSlot, int16 slot )
+Item *ItemInterface::GetInventoryItem( int8 ContainerSlot, int16 slot )
 {
 	if( ContainerSlot <= INVENTORY_SLOT_NOT_SET )
 	{
@@ -1019,7 +1019,7 @@ uint32 ItemInterface::RemoveItemAmt(uint32 id, uint32 amt)
 						}
 						else if (item2->GetUInt32Value(ITEM_FIELD_STACK_COUNT)== amt)
 						{
-							bool result = SafeFullRemoveItemFromSlot(static_cast<int16>( i ), static_cast<int16>( j ));
+							bool result = SafeFullRemoveItemFromSlot(static_cast<int8>( i ), static_cast<int16>( j ));
 							if(result)
 							{
 								return amt;
@@ -1032,7 +1032,7 @@ uint32 ItemInterface::RemoveItemAmt(uint32 id, uint32 amt)
 						else
 						{
 							amt -= item2->GetUInt32Value(ITEM_FIELD_STACK_COUNT);
-							SafeFullRemoveItemFromSlot(static_cast<int16>( i ), static_cast<int16>( j ));
+							SafeFullRemoveItemFromSlot(static_cast<int8>( i ), static_cast<int16>( j ));
 					  
 						}
 					}
@@ -1187,7 +1187,7 @@ uint32 ItemInterface::RemoveItemAmt_ProtectPointer(uint32 id, uint32 amt, Item**
 						}
 						else if (item2->GetUInt32Value(ITEM_FIELD_STACK_COUNT)== amt)
 						{
-							bool result = SafeFullRemoveItemFromSlot(static_cast<int16>( i ), static_cast<int16>( j ));
+							bool result = SafeFullRemoveItemFromSlot(static_cast<int8>( i ), static_cast<int16>( j ));
 							if( pointer != NULL && *pointer != NULL && *pointer == item2 )
 								*pointer = NULL;
 
@@ -1203,7 +1203,7 @@ uint32 ItemInterface::RemoveItemAmt_ProtectPointer(uint32 id, uint32 amt, Item**
 						else
 						{
 							amt -= item2->GetUInt32Value(ITEM_FIELD_STACK_COUNT);
-							SafeFullRemoveItemFromSlot(static_cast<int16>( i ), static_cast<int16>( j ));
+							SafeFullRemoveItemFromSlot(static_cast<int8>( i ), static_cast<int16>( j ));
 
 							if( pointer != NULL && *pointer != NULL && *pointer == item2 )
 								*pointer = NULL;
@@ -1363,7 +1363,7 @@ uint32 ItemInterface::RemoveItemAmtByGuid(uint64 guid, uint32 amt)
 						}
 						else if (item2->GetUInt32Value(ITEM_FIELD_STACK_COUNT)== amt)
 						{
-							bool result = SafeFullRemoveItemFromSlot(static_cast<int16>( i ), static_cast<int16>( j ));
+							bool result = SafeFullRemoveItemFromSlot(static_cast<int8>( i ), static_cast<int16>( j ));
 							if(result)
 							{
 								return amt;
@@ -1376,7 +1376,7 @@ uint32 ItemInterface::RemoveItemAmtByGuid(uint64 guid, uint32 amt)
 						else
 						{
 							amt -= item2->GetUInt32Value(ITEM_FIELD_STACK_COUNT);
-							SafeFullRemoveItemFromSlot(static_cast<int16>( i ), static_cast<int16>( j ));
+							SafeFullRemoveItemFromSlot(static_cast<int8>( i ), static_cast<int16>( j ));
 							return amt;
 						}
 					}
@@ -1737,7 +1737,7 @@ AddItemResult ItemInterface::AddItemToFreeSlot(Item *item)
 					itemMaxStack = (p->ItemStackCheat) ? 0x7fffffff : item2->GetProto()->MaxCount;
 				if( item2 == NULL )
 				{
-					result3 = SafeAddItem(item, static_cast<int16>( i ), static_cast<int16>( j ));
+					result3 = SafeAddItem(item, static_cast<int8>( i ), static_cast<int16>( j ));
 					if(result3) {
 						result.ContainerSlot = static_cast<int8>( i );
 						result.Slot = static_cast<int8>( j );
@@ -2965,7 +2965,7 @@ void ItemInterface::RemoveBuyBackItem(uint32 index)
 //-------------------------------------------------------------------//
 //Description: swap inventory slots
 //-------------------------------------------------------------------//
-void ItemInterface::SwapItemSlots(int16 srcslot, int16 dstslot)
+void ItemInterface::SwapItemSlots(int8 srcslot, int8 dstslot)
 {
 	// srcslot and dstslot are int... NULL might not be an int depending on arch where it is compiled
 	if( srcslot >= MAX_INVENTORY_SLOT || srcslot < 0 )
@@ -3343,7 +3343,7 @@ AddItemResult ItemInterface::AddItemToFreeBankSlot(Item *item)
 				Item *item2 = static_cast< Container* >( m_pItems[i] )->GetItem( static_cast<int16>( j ));
 				if( item2 == NULL )
 				{
-					return SafeAddItem( item, static_cast<int16>( i ), static_cast<int16>( j ) );
+					return SafeAddItem( item, static_cast<int8>( i ), static_cast<int16>( j ) );
 				}
 			}
 		}
