@@ -2212,7 +2212,7 @@ void Object::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
 	if ((isCritter || health <= damage) )
 	{
 		// If it's a training dummy then we simply set the HP to 1 instead of killing the unit
-		if(pVictim->IsCreature() &&  (static_cast<Creature*>(pVictim))->GetProto()->isTrainingDummy ){
+		if(pVictim->IsCreature() &&  (static_cast<Creature*>(pVictim))->GetProto() != NULL && (static_cast<Creature*>(pVictim))->GetProto()->isTrainingDummy ){
 			pVictim->SetUInt32Value( UNIT_FIELD_HEALTH, 1 );
 			return;
 		}
