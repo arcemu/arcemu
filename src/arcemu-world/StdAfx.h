@@ -191,3 +191,8 @@
 #include "BufferPools/BufferPools.h"
 #include "ProcCondHandler.h"
 #endif
+
+
+#ifndef WIN32
+#include "UnixMetric.hpp"
+#endif

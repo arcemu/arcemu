@@ -176,6 +176,8 @@ arcemu_world_SOURCES = \
     TransporterHandler.h \
     Unit.cpp \
     Unit.h \
+    UnixMetric.cpp \
+    UnixMetric.hpp \
     UpdateFields.h \
     UpdateMask.h \
     Vehicle.cpp \

@@ -1117,6 +1117,14 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\arcemu-world\UnixMetric.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\arcemu-world\UnixMetric.hpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\arcemu-world\VoiceChatClientSocket.cpp"
 				>
 			</File>

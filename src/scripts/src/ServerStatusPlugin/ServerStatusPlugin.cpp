@@ -51,6 +51,8 @@ extern "C" SCRIPT_DECL uint32 _exp_get_script_type()
 	LONGLONG m_lnOldValue = 0;
 	LARGE_INTEGER m_OldPerfTime100nSec;
 	uint32 number_of_cpus;
+#else
+UnixMetric *UMPTR = NULL;
 #endif
 
 // This is needed because windows is a piece of shit
@@ -102,6 +104,9 @@ void StatDumperThread::OnShutdown()
 
 StatDumperThread::StatDumperThread()
 {
+#ifndef WIN32
+ UMPTR = new UnixMetric;
+#endif
 }
 
 StatDumperThread::~StatDumperThread()
@@ -109,6 +114,7 @@ StatDumperThread::~StatDumperThread()
 #ifdef WIN32
 	CloseHandle(hEvent);
 #else
+	delete UMPTR;
 	pthread_cond_destroy(&cond);
 	pthread_mutex_destroy(&mutex);
 #endif
@@ -265,7 +271,7 @@ float GetCPUUsage()
 #ifdef WIN32
     return GetCPUUsageWin32();
 #else
-    return 0.0f;
+    return UMPTR->GetCPUUsageUnix();
 #endif
 }
 
@@ -274,7 +280,7 @@ float GetRAMUsage()
 #ifdef WIN32
     return GetRAMUsageWin32();
 #else
-     return 0.0f;
+    return UMPTR->GetRAMUsageUnix();
 #endif
 }
 
