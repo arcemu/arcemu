@@ -26,14 +26,16 @@
 #include <time.h>
 
 
-struct {
+struct OPTS{
 	char uptime[256];
 	char *revision;
 	char *details;
-	uint32 online;
-	uint32 peak;
-	uint32 accepted;
-} opts;
+	unsigned long online;
+	unsigned long peak;
+	unsigned long accepted;
+};
+
+struct OPTS opts;
 
 /* Sends a crashdump.log to sf.net, using curl
    TODO: wget support?
@@ -42,7 +44,7 @@ int sendCrashdump() {
 	char cmd[1024];
 	int ret;
 
-	snprintf(cmd, 1024, "curl --silent --header \"Expect:\" --form-string group_id=230683 --form-string atid=1081311 --form-string func=postadd --form-string category_id=100 --form-string artifact_group_id=100 --form-string summary=\"TEST ArcEmu crashdump rev%s\" --form-string details=\"%s; Uptime = %s Connections: Online %u, Peak %u, Accepted %u\" --form-string file_description=crashdump --form input_file=@crashdump.log --form-string submit=SUBMIT http://sourceforge.net/tracker/index.php &> /dev/null", opts.revision, opts.details, opts.uptime, opts.online, opts.peak, opts.accepted);
+	snprintf(cmd, 1024, "curl --silent --header \"Expect:\" --form-string group_id=230683 --form-string atid=1081311 --form-string func=postadd --form-string category_id=100 --form-string artifact_group_id=100 --form-string summary=\"TEST ArcEmu crashdump rev%s\" --form-string details=\"%s; Uptime = %s Connections: Online %lu, Peak %lu, Accepted %lu\" --form-string file_description=crashdump --form input_file=@crashdump.log --form-string submit=SUBMIT http://sourceforge.net/tracker/index.php &> /dev/null", opts.revision, opts.details, opts.uptime, opts.online, opts.peak, opts.accepted);
 	printf("%s: sending crashdump.. '%s'\n", __FUNCTION__, cmd);
 	ret = system(cmd);
 	if (ret != 0) {
@@ -97,7 +99,7 @@ int main(int argc, char *argv[]) {
 	f = fopen("arcemu.uptime", "r");
 	if (f == NULL) return 1;
 
-	fscanf(f, "%ld %u %u %u", &t, &opts.online, &opts.peak, &opts.accepted);
+	fscanf(f, "%ld %lu %lu %lu", &t, &opts.online, &opts.peak, &opts.accepted);
 	fclose(f);
 
 	gmtime_r(&t, &tm);
