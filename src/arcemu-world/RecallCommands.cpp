@@ -35,6 +35,7 @@ bool GetRecallLocation(const char* location, uint32 &map, LocationVector &v)
 		float x = fields[3].GetFloat();
 		float y = fields[4].GetFloat();
 		float z = fields[5].GetFloat();
+		float o = fields[6].GetFloat();
 
 		if( strnicmp( const_cast< char* >( location ), locname, strlen( location ) ) == 0 )
 		{
@@ -42,7 +43,7 @@ bool GetRecallLocation(const char* location, uint32 &map, LocationVector &v)
 			v.x = x;
 			v.y = y;
 			v.z = z;
-			v.o = 0.0;
+			v.o = o;
 			delete result;
 			return true;
 		}
@@ -134,17 +135,18 @@ bool ChatHandler::HandleRecallAddCommand(const char* args, WorldSession *m_sessi
 	
 	string rc_locname = string(args);
 
-	ss << "INSERT INTO recall (name, mapid, positionX, positionY, positionZ) VALUES ('"
+	ss << "INSERT INTO recall (name, mapid, positionX, positionY, positionZ, Orientation) VALUES ('"
 	<< WorldDatabase.EscapeString(rc_locname).c_str() << "' , "
 	<< plr->GetMapId()     << ", "
 	<< plr->GetPositionX() << ", " 
 	<< plr->GetPositionY() << ", "
-	<< plr->GetPositionZ() << ");";
+	<< plr->GetPositionZ() << ", "
+	<< plr->GetOrientation() << ");";
 	WorldDatabase.Execute( ss.str( ).c_str( ) );
 
 	char buf[256]; 
-	snprintf((char*)buf, 256, "Added location to DB with MapID: %d, X: %f, Y: %f, Z: %f",
-		(unsigned int)plr->GetMapId(), plr->GetPositionX(), plr->GetPositionY(), plr->GetPositionZ());
+	snprintf((char*)buf, 256, "Added location to DB with MapID: %d, X: %f, Y: %f, Z: %f, O: %f",
+		(unsigned int)plr->GetMapId(), plr->GetPositionX(), plr->GetPositionY(), plr->GetPositionZ(), plr->GetOrientation());
 	GreenSystemMessage(m_session, buf);
 	sGMLog.writefromsession(m_session, "used recall add, added \"%s\" location to database.", rc_locname.c_str());
 
@@ -237,14 +239,15 @@ bool ChatHandler::HandleRecallPortPlayerCommand(const char* args, WorldSession *
 		float x = fields[3].GetFloat();
 		float y = fields[4].GetFloat();
 		float z = fields[5].GetFloat();
+		float o = fields[6].GetFloat();
 
 		if (strnicmp((char*)location,locname,strlen(args))==0)
 		{
-			sGMLog.writefromsession( m_session, "ported %s to %s ( map: %u, x: %f, y: %f, z: %f )", plr->GetName(), locname, locmap, x, y, z );
+			sGMLog.writefromsession( m_session, "ported %s to %s ( map: %u, x: %f, y: %f, z: %f, 0: %f )", plr->GetName(), locname, locmap, x, y, z, o );
 			if(plr->GetInstanceID() != m_session->GetPlayer()->GetInstanceID())
-				sEventMgr.AddEvent(plr, &Player::EventSafeTeleport, locmap, uint32(0), LocationVector(x, y, z), EVENT_PLAYER_TELEPORT, 1, 1,EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
+				sEventMgr.AddEvent(plr, &Player::EventSafeTeleport, locmap, uint32(0), LocationVector(x, y, z, o), EVENT_PLAYER_TELEPORT, 1, 1,EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
 			else
-				plr->SafeTeleport(locmap, 0, LocationVector(x, y, z));
+				plr->SafeTeleport(locmap, 0, LocationVector(x, y, z, o));
 			delete result;
 			return true;
 		}
