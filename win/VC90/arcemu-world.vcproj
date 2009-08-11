@@ -360,7 +360,7 @@
 				AssemblerListingLocation="$(IntDir)/"
 				ObjectFile="$(IntDir)/"
 				ProgramDataBaseFileName="$(IntDir)/"
-				WarningLevel="3"
+				WarningLevel="1"
 				SuppressStartupBanner="true"
 				Detect64BitPortabilityProblems="false"
 				DebugInformationFormat="3"
@@ -1121,7 +1121,7 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\arcemu-world\UnixMetric.hpp"
+				RelativePath="..\..\src\arcemu-world\UnixMetric.h"
 				>
 			</File>
 			<File

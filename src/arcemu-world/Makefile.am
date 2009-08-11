@@ -177,7 +177,7 @@ arcemu_world_SOURCES = \
     Unit.cpp \
     Unit.h \
     UnixMetric.cpp \
-    UnixMetric.hpp \
+    UnixMetric.h \
     UpdateFields.h \
     UpdateMask.h \
     Vehicle.cpp \
