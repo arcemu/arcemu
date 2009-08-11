@@ -241,7 +241,7 @@ pSpellAura SpellAuraHandler[TOTAL_SPELL_AURAS]={
 		&Aura::SpellAuraNULL,//217 // not used
 		&Aura::SpellAuraNULL,//218 // increases time between ranged attacks
 		&Aura::SpellAuraRegenManaStatPCT,//219 Regenerate mana equal to $s1% of your Intellect every 5 sec, even while casting
-		&Aura::SpellAuraSpellHealingStatPCT,//220 Increases your healing spells  by up to $s1% of your Strength
+		&Aura::SpellAuraSpellHealingStatPCT,//220 Increases your healing spells  by up to $s1% of your Strength // increases your critical strike rating by 35% of your spirit // Molten Armor only?
 		&Aura::SpellAuraNULL,//221 Detaunt "Ignores an enemy, forcing the caster to not attack it unless there is no other target nearby. When the effect wears off, the creature will attack the most threatening target."
 		&Aura::SpellAuraNULL,//222 // not used
 		&Aura::SpellAuraNULL,//223 // used in one spell, cold stare 43593
@@ -8997,17 +8997,29 @@ void Aura::SpellAuraRegenManaStatPCT(bool apply)
 
 void Aura::SpellAuraSpellHealingStatPCT(bool apply)
 {
+	if( !m_target->IsPlayer() )
+		return;
+
 	if(apply)
 	{
-		SetPositive();
-		mod->realamount = (mod->m_amount * m_target->GetUInt32Value(UNIT_FIELD_STAT0 + mod->m_miscValue))/100;
-		for(uint32 x =1; x<7;x++)
-		m_target->HealDoneMod[x]+=mod->realamount;
-	}else
-	{
-		for(uint32 x =1; x<7;x++)
-			m_target->HealDoneMod[x]-=mod->realamount;
+		//SetPositive();
+		/*mod->realamount = ( mod->m_amount * m_target->GetUInt32Value( UNIT_FIELD_STAT0 + mod->m_miscValue ) /1 00;
 
+		for( uint32 x = 1; x < 7; x++ )
+			m_target->HealDoneMod[x] += mod->realamount;*/
+
+		mod->realamount = ( ( m_target->GetUInt32Value(UNIT_FIELD_SPIRIT) * mod->m_amount ) / 100 );
+
+		TO_PLAYER( m_target )->ModifyBonuses( CRITICAL_STRIKE_RATING, mod->realamount, true );
+		TO_PLAYER( m_target )->UpdateChances();
+	}
+	else
+	{
+		/*for( uint32 x = 1; x < 7; x++ )
+			m_target->HealDoneMod[x] -= mod->realamount;*/
+
+		TO_PLAYER( m_target )->ModifyBonuses( CRITICAL_STRIKE_RATING, mod->realamount, false );
+		TO_PLAYER( m_target )->UpdateChances();
 	}
 }
 
