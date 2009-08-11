@@ -7224,7 +7224,7 @@ void Spell::SpellEffectCreatePet(uint32 i)
 		return;
 
 	if(playerTarget->GetSummon())
-		playerTarget->GetSummon()->Remove( true, true )
+		playerTarget->GetSummon()->Remove( true, true );
 	CreatureInfo *ci = CreatureNameStorage.LookupEntry( GetProto()->EffectMiscValue[i] );
 	if( ci )
 	{
