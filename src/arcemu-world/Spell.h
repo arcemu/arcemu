@@ -1706,6 +1706,7 @@ public:
 	void SpellEffectPowerDrain(uint32 i);
 	void SpellEffectHealthLeech(uint32 i);
 	void SpellEffectHeal(uint32 i);
+	void SpellEffectBind(uint32 i);
 	void SpellEffectQuestComplete(uint32 i);
 	void SpellEffectWeapondamageNoschool(uint32 i);
 	void SpellEffectResurrect(uint32 i);
@@ -1728,6 +1729,7 @@ public:
 	void SpellEffectLearnSpell(uint32 i);
 	void SpellEffectSpellDefense(uint32 i);
 	void SpellEffectDispel(uint32 i);
+	void SpellEffectLanguage(uint32 i);
 	void SpellEffectDualWield(uint32 i);
 	void SpellEffectSummonWild(uint32 i);
 	void SpellEffectSummonGuardian(uint32 i);
@@ -1798,7 +1800,10 @@ public:
 	void SpellEffectForgetSpecialization(uint32 i);
 	void SpellEffectRestoreManaPct(uint32 i);
 	void SpellEffectTriggerSpellWithValue(uint32 i);
-	void SpellEffectDualWield2H( uint32 i );
+	void SpellEffectCreatePet(uint32 i);
+	void SpellEffectTeachTaxiPath(uint32 i);
+	void SpellEffectDualWield2H(uint32 i);
+	void SpellEffectEnchantItemPrismatic(uint32 i);
 	void SpellEffectCreateItem2(uint32 i);
 	void SpellEffectMilling(uint32 i);
 	void SpellEffectRenamePet(uint32 i);

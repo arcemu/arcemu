@@ -32,7 +32,7 @@ pSpellEffect SpellEffectsHandler[TOTAL_SPELL_EFFECTS]={
 	&Spell::SpellEffectPowerDrain,				//SPELL_EFFECT_POWER_DRAIN - 8
 	&Spell::SpellEffectHealthLeech,				//SPELL_EFFECT_HEALTH_LEECH - 9
 	&Spell::SpellEffectHeal,					//SPELL_EFFECT_HEAL - 10
-	&Spell::SpellEffectNULL,					//SPELL_EFFECT_BIND - 11
+	&Spell::SpellEffectBind,					//SPELL_EFFECT_BIND - 11
 	&Spell::SpellEffectNULL,					//SPELL_EFFECT_PORTAL - 12
 	&Spell::SpellEffectNULL,					//SPELL_EFFECT_RITUAL_BASE - 13
 	&Spell::SpellEffectNULL,					//SPELL_EFFECT_RITUAL_SPECIALIZE - 14
@@ -60,7 +60,7 @@ pSpellEffect SpellEffectsHandler[TOTAL_SPELL_EFFECTS]={
 	&Spell::SpellEffectLearnSpell,				//SPELL_EFFECT_LEARN_SPELL - 36
 	&Spell::SpellEffectSpellDefense,			//SPELL_EFFECT_SPELL_DEFENSE - 37
 	&Spell::SpellEffectDispel,					//SPELL_EFFECT_DISPEL - 38
-	&Spell::SpellEffectNULL,					//SPELL_EFFECT_LANGUAGE - 39
+	&Spell::SpellEffectLanguage,				//SPELL_EFFECT_LANGUAGE - 39
 	&Spell::SpellEffectDualWield,				//SPELL_EFFECT_DUAL_WIELD - 40
 	&Spell::SpellEffectSummonWild,				//SPELL_EFFECT_SUMMON_WILD - 41
 	&Spell::SpellEffectSummonGuardian,			//SPELL_EFFECT_SUMMON_GUARDIAN - 42
@@ -174,10 +174,10 @@ pSpellEffect SpellEffectsHandler[TOTAL_SPELL_EFFECTS]={
 	&Spell::SpellEffectNULL,// unknown - 150
 	&Spell::SpellEffectTriggerSpell,// SPELL_EFFECT_TRIGGER_SPELL_2 - 151
 	&Spell::SpellEffectNULL,// Summon Refer-a-Friend - 152
-	&Spell::SpellEffectNULL,// Create tamed pet - 153
-	&Spell::SpellEffectNULL,// unknown - 154
+	&Spell::SpellEffectCreatePet,// Create tamed pet - 153
+	&Spell::SpellEffectTeachTaxiPath,// "Teach" a taxi path - 154
 	&Spell::SpellEffectDualWield2H,// DualWield2H (ex: Titan's Grip) - 155
-	&Spell::SpellEffectNULL,// unknown - 156
+	&Spell::SpellEffectEnchantItemPrismatic,// Add a socket to an armor/a weapon - 156
 	&Spell::SpellEffectCreateItem2,	//157
 	&Spell::SpellEffectMilling,// Milling - 158
 	&Spell::SpellEffectRenamePet,// Allow pet rename - 159
@@ -2509,6 +2509,34 @@ void Spell::SpellEffectHeal(uint32 i) // Heal
 	}
 }
 
+void Spell::SpellEffectBind(uint32 i)
+{
+	if(!playerTarget || !playerTarget->isAlive() || !m_caster)
+		return;
+
+	WorldPacket data(45);
+	uint32 areaid = playerTarget->GetZoneId();
+	uint32 mapid = playerTarget->GetMapId();
+	if(GetProto()->EffectMiscValue[i])
+	{
+		areaid = GetProto()->EffectMiscValue[i];
+		AreaTable * at = dbcArea.LookupEntry(areaid);
+		if(!at)
+			return;
+		mapid = at->mapId;
+	}
+
+	playerTarget->SetBindPoint(playerTarget->GetPositionX(), playerTarget->GetPositionY(), playerTarget->GetPositionZ(), mapid, areaid);
+
+	data.Initialize(SMSG_BINDPOINTUPDATE);
+	data << playerTarget->GetBindPositionX() << playerTarget->GetBindPositionY() << playerTarget->GetBindPositionZ() << playerTarget->GetBindMapId() << playerTarget->GetBindZoneId();
+	playerTarget->GetSession()->SendPacket( &data );
+
+	data.Initialize(SMSG_PLAYERBOUND);
+	data << m_caster->GetGUID() << playerTarget->GetBindZoneId();
+	playerTarget->GetSession()->SendPacket(&data);
+}
+
 void Spell::SpellEffectQuestComplete(uint32 i) // Quest Complete
 {
 	if ( !p_caster ) return;
@@ -4012,6 +4040,36 @@ void Spell::SpellEffectDispel(uint32 i) // Dispel
 			if (finish)
 				return;
 		}
+}
+
+void Spell::SpellEffectLanguage(uint32 i)
+{
+	if(!playerTarget || !GetProto()->EffectMiscValue[i])
+		return;
+
+	uint32 skills[15][2] = {
+	{ 0, 0 },
+	{ SKILL_LANG_ORCISH, 669 },
+	{ SKILL_LANG_DARNASSIAN, 671 },
+	{ SKILL_LANG_TAURAHE, 670 },
+	{ SKILL_LANG_DWARVEN, 672 },
+	{ SKILL_LANG_COMMON, 668 },
+	{ SKILL_LANG_DEMON_TONGUE, 815 },
+	{ SKILL_LANG_TITAN, 816 },
+	{ SKILL_LANG_THALASSIAN, 813 },
+	{ SKILL_LANG_DRACONIC, 814 },
+	{ 0, 0 },
+	{ SKILL_LANG_GNOMISH, 7430 },
+	{ SKILL_LANG_TROLL, 7431 },
+	{ SKILL_LANG_GUTTERSPEAK, 17737 },
+	{ SKILL_LANG_DRAENEI, 29932 },
+	};
+
+	if(skills[GetProto()->EffectMiscValue[i]][0])
+	{
+		playerTarget->_AddSkillLine(skills[GetProto()->EffectMiscValue[i]][0], 300, 300);   
+		playerTarget->addSpell(skills[GetProto()->EffectMiscValue[i]][1]);
+	}
 }
 
 void Spell::SpellEffectDualWield(uint32 i)
@@ -7160,12 +7218,61 @@ void Spell::SpellEffectTriggerSpellWithValue(uint32 i)
 	sp->prepare(&tgt);
 }
 
+void Spell::SpellEffectCreatePet(uint32 i)
+{
+	if( !playerTarget )
+		return;
+
+	if(playerTarget->GetSummon())
+		playerTarget->GetSummon()->Remove( true, true )
+	CreatureInfo *ci = CreatureNameStorage.LookupEntry( GetProto()->EffectMiscValue[i] );
+	if( ci )
+	{
+		Pet *pPet = objmgr.CreatePet( GetProto()->EffectMiscValue[i] );
+		pPet->CreateAsSummon( GetProto()->EffectMiscValue[i], ci, NULL, playerTarget, GetProto(), 1, 0 );
+	}
+}
+
+void Spell::SpellEffectTeachTaxiPath( uint32 i )
+{
+	if( !playerTarget || !GetProto()->EffectTriggerSpell[i] )
+		return;
+
+	uint8 field = (uint8)((GetProto()->EffectTriggerSpell[i] - 1) / 32);
+	uint32 submask = 1<<((GetProto()->EffectTriggerSpell[i]-1)%32);
+
+	// Check for known nodes
+	if (!(playerTarget->GetTaximask(field) & submask))
+	{
+		playerTarget->SetTaximask(field, (submask | playerTarget->GetTaximask(field)) );
+
+		playerTarget->GetSession()->OutPacket(SMSG_NEW_TAXI_PATH);
+
+		//Send packet
+		WorldPacket update(SMSG_TAXINODE_STATUS, 9);
+		update << uint64( 0 ) << uint8( 1 );
+		playerTarget->GetSession()->SendPacket( &update );
+	}
+}
+
 void Spell::SpellEffectDualWield2H( uint32 i )
 {
 	if( !playerTarget )
 		return;
 
 	playerTarget->DualWield2H = true;
+}
+
+void Spell::SpellEffectEnchantItemPrismatic(uint32 i)
+{
+	if(!itemTarget || !p_caster) return;
+	EnchantEntry * Enchantment = dbcEnchant.LookupEntry(GetProto()->EffectMiscValue[i]);
+	if(!Enchantment) return;
+
+	itemTarget->RemoveEnchantment(0);
+	int32 Slot = itemTarget->AddEnchantment(Enchantment, 0, true, true, false, 0);
+	if(Slot < 0)
+		return; // Apply failed
 }
 
 void Spell::SpellEffectCreateItem2(uint32 i) // Create item
