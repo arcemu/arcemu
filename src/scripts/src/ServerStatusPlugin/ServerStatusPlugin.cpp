@@ -430,12 +430,12 @@ void StatDumper::DumpStats()
 		if( TotalTrafficInKb < 1024.0 )
                   fprintf(f, "    <bandwithintotal>%lf KB</bandwithintotal>\n", TotalTrafficInKb);
                 else
-                  fprintf(f, "    <bandwithintotal>%lf MB</bandwithintotal>\n", TotalTrafficInKb);
+                  fprintf(f, "    <bandwithintotal>%lf MB</bandwithintotal>\n", ( TotalTrafficInKb / 1024.0));
 		fprintf(f, "    <bandwithout>%lf</bandwithout>\n", TrafficOutKbsec);
 		if( TotalTrafficOutKb < 1024.0 )
                   fprintf(f, "    <bandwithouttotal>%lf KB</bandwithouttotal>\n", TotalTrafficOutKb);
                 else
-		  fprintf(f, "    <bandwithouttotal>%lf MB</bandwithouttotal>\n", TotalTrafficOutKb);
+		  fprintf(f, "    <bandwithouttotal>%lf MB</bandwithouttotal>\n", ( TotalTrafficOutKb / 1024.0 ));
     }
     fprintf(f, "  </status>\n");
 	static const char * race_names[RACE_DRAENEI+1] = {
