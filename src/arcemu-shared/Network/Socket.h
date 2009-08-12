@@ -203,10 +203,14 @@ private:
 public:
     // Polls and resets the traffic data
     void PollTraffic( unsigned long *sent, unsigned long *recieved ){
+
+	m_writeMutex.Acquire();
         *sent = m_BytesSent;
         *recieved = m_BytesRecieved;
         m_BytesSent = 0;
         m_BytesRecieved = 0;
+
+        m_writeMutex.Release();
     }
 };
 
