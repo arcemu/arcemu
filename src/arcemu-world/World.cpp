@@ -75,6 +75,12 @@ World::World()
 	m_limitedNames=false;
 	m_banTable = NULL;
 	DKStartTalentPoints = 0;
+
+    TotalTrafficInKB = 0.0;
+    TotalTrafficOutKB = 0.0;
+    LastTotalTrafficInKB = 0.0;
+    LastTotalTrafficOutKB = 0.0;
+    LastTrafficQuery = 0;
 }
 
 void CleanupRandomNumberGenerators();
@@ -2167,4 +2173,31 @@ void World::SendLocalizedWorldText(bool wide,const char * format, ...) // May no
 		}
 	}
 	m_sessionlock.ReleaseReadLock();
+}
+
+void World::UpdateTotalTraffic(){
+
+    unsigned long sent = 0;
+    unsigned long recieved = 0;
+    double TrafficIn = 0;
+    double TrafficOut = 0;
+
+    LastTrafficQuery = UNIXTIME;
+    LastTotalTrafficInKB = TotalTrafficInKB;
+    LastTotalTrafficOutKB = TotalTrafficOutKB;
+
+    objmgr._playerslock.AcquireReadLock();
+    HM_NAMESPACE::hash_map<uint32, Player*>::const_iterator itr;
+
+    for (itr = objmgr._players.begin(); itr != objmgr._players.end(); ++itr){
+        itr->second->GetSession()->GetSocket()->PollTraffic(&sent,&recieved);
+
+        TrafficIn += ( static_cast<double>(recieved) ); 
+        TrafficOut += ( static_cast<double>(sent) );
+    }
+
+    TotalTrafficInKB += (TrafficIn / 1024.0);
+    TotalTrafficOutKB += (TrafficOut / 1024.0);
+
+    objmgr._playerslock.ReleaseReadLock();
 }

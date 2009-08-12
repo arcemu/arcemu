@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
+﻿<?xml version="1.0" encoding="ISO-8859-1"?>
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 <xsl:output method="html" indent="yes" /> 
 
@@ -25,7 +25,7 @@
 
 <xsl:template match="status">
 	<table width="100%" border="0" cellspacing="1" cellpadding="3">
-		<tr class="head"><th colspan="4">ArcEmu Server Status (<b>www.ArcEmu.org</b>)</th></tr>
+		<tr class="head"><th colspan="4">ArcEmu Server Status (<b><a href="arcemu.org" style="color: #FFF;">www.ArcEmu.org</a></b>)</th></tr>
 		<tr>
 			<th>Platform: </th><td><xsl:value-of select="platform"/></td>
 			<th>Uptime: </th><td><xsl:value-of select="uptime"/></td>
@@ -63,6 +63,18 @@
                 <tr>
                         <th>Free Thread Count: </th><td><xsl:value-of select="fthreads"/></td>
                         <th></th><td></td>
+                </tr>
+                <tr>
+                        <th>Bandwith in: </th>
+                        <td><xsl:value-of select="bandwithin"/> KB/s</td>
+                        <th>Total Bandwidth in:</th>
+						<td><xsl:value-of select="bandwithintotal"/> </td>
+                        </tr>
+                        <tr>
+                        <th>Bandwidth out:</th>
+                        <td><xsl:value-of select="bandwithout"/> KB/s</td>
+						<th>Total Bandwidth out:</th>
+                        <td><xsl:value-of select="bandwithouttotal"/> </td>
                 </tr>
 	<xsl:apply-templates/>
 
@@ -103,6 +115,14 @@
 <xsl:template match="wdbquerysize">
 </xsl:template>
 <xsl:template match="cdbquerysize">
+</xsl:template>
+<xsl:template match="bandwithin">
+</xsl:template>
+<xsl:template match="bandwithintotal">
+</xsl:template>
+<xsl:template match="bandwithout">
+</xsl:template>
+<xsl:template match="bandwithouttotal">
 </xsl:template>
 
 <xsl:template match="statsummary">
@@ -152,6 +172,9 @@
 			<th>Mage: </th><td><xsl:value-of select="mage"/></td>
 			<th>Druid: </th><td><xsl:value-of select="druid"/></td>
 		</tr>
+        <tr>
+        <th>Warlock: </th><td><xsl:value-of select="warlock" /></td>
+        </tr>
 		</table>
 	</td>
 	</tr>
@@ -161,6 +184,7 @@
 	</table>
 
 </xsl:template>
+
 <xsl:template match="human">
 </xsl:template>
 <xsl:template match="orc">
@@ -200,6 +224,9 @@
 </xsl:template>
 <xsl:template match="druid">
 </xsl:template>
+<xsl:template match="warlock">
+</xsl:template>
+
 
 <xsl:template match="instances">
 	<table width="100%" border="0" cellspacing="1" cellpadding="2">

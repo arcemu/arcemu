@@ -44,6 +44,7 @@ void Socket::ReadCallback(uint32 len)
         // call virtual onread()
         OnRead();
     }
+    m_BytesRecieved += bytes;
 
     m_readMutex.Release();
 }
@@ -58,6 +59,8 @@ void Socket::WriteCallback()
         Disconnect();
         return;
     }
+
+    m_BytesSent += bytes_written;
 
     //RemoveWriteBufferBytes(bytes_written, false);
     writeBuffer.Remove(bytes_written);

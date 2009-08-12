@@ -16,6 +16,9 @@ Socket::Socket(SOCKET fd, uint32 sendbuffersize, uint32 recvbuffersize) : m_fd(f
 	readBuffer.Allocate(recvbuffersize);
 	writeBuffer.Allocate(sendbuffersize);
 
+    m_BytesSent = 0;
+    m_BytesRecieved = 0;
+
 	// IOCP Member Variables
 #ifdef CONFIG_USE_IOCP
 	m_writeLock = 0;

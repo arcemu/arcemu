@@ -102,6 +102,9 @@ protected:
 
 	sockaddr_in m_client;
 
+    unsigned long m_BytesSent;
+    unsigned long m_BytesRecieved;
+
 /* Win32 - IOCP Specific Calls */
 #ifdef CONFIG_USE_IOCP
 
@@ -196,6 +199,15 @@ private:
 	unsigned int m_writeLock;
 	Mutex m_writeLockMutex;
 #endif
+
+public:
+    // Polls and resets the traffic data
+    void PollTraffic( unsigned long *sent, unsigned long *recieved ){
+        *sent = m_BytesSent;
+        *recieved = m_BytesRecieved;
+        m_BytesSent = 0;
+        m_BytesRecieved = 0;
+    }
 };
 
 /** Connect to a server.

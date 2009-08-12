@@ -51,10 +51,11 @@ void Socket::WriteCallback()
 				Disconnect();
 			}
 		}
+        m_BytesSent += w_length;
 	}
 	else
 	{
-		// Write operation is completed.
+        // Write operation is completed.
 		DecSendLock();
 	}
 	m_writeMutex.Release();
@@ -91,6 +92,7 @@ void Socket::SetupReadEvent()
 			Disconnect();
 		}
 	}
+    m_BytesRecieved += r_length;
 	//m_readEvent = ov;
 	m_readMutex.Release();
 }

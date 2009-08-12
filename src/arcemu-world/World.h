@@ -636,6 +636,32 @@ public:
 	static float m_movementCompressThresholdCreatures;
 	static uint32 m_movementCompressRate;
 	static uint32 m_movementCompressInterval;
+/*
+ * Traffic meter stuff
+ */
+protected:
+    double TotalTrafficInKB;
+    double TotalTrafficOutKB;
+    double LastTotalTrafficInKB;
+    double LastTotalTrafficOutKB;
+    time_t LastTrafficQuery;
+
+    void UpdateTotalTraffic();
+public:
+    void QueryTotalTraffic( double *totalin, double *totalout ){ 
+        
+        // We don't want to spam this
+        if(LastTrafficQuery == 0 || LastTrafficQuery <= (UNIXTIME - 10))
+            UpdateTotalTraffic();
+
+        *totalin = TotalTrafficInKB;
+        *totalout = TotalTrafficOutKB; 
+    }
+
+    void QueryLastTotalTraffic( double *totalin, double *totalout ){ 
+        *totalin = LastTotalTrafficInKB;
+        *totalout = LastTotalTrafficOutKB; 
+    }
 };
 
 #define sWorld World::getSingleton()
