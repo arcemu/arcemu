@@ -19,6 +19,7 @@ private:
   unsigned long start;
   unsigned long lastupdate;
   unsigned long lastsecusage;
+  unsigned long lastusecusage;
   void m_GetCPUCount();
   
 
@@ -30,6 +31,7 @@ public:
     
     lastupdate = 0;
     lastsecusage = 0;
+    lastusecusage = 0;
     }
   ~UnixMetric(){ }
 
@@ -44,8 +46,10 @@ unsigned long GetCPUCount(){ return nocpus; }
   float GetRAMUsageUnix();
   float GetCPUUsageUnix();
   unsigned long GetLastSecUsage(){ return lastsecusage; }
+  unsigned long GetLastUSecUsage(){ return lastusecusage; }
   unsigned long GetLastUpdate(){ return lastupdate; }
   void SetLastSecUsage(unsigned long sec ){ lastsecusage = sec; }
+  void SetLastUSecUsage(unsigned long usec ){ lastusecusage = usec; }
   void SetLastUpdate(unsigned long utime ){ lastupdate = utime; }
 
 };
