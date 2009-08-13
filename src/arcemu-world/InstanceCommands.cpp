@@ -325,7 +325,7 @@ bool ChatHandler::HandleCreateInstanceCommand(const char * args, WorldSession * 
 	if(mgr == NULL)
 	{
 		Log.Error("CreateInstanceGMCommand", "CreateInstance() call failed for map %u", mapid);
-		return NULL;      // Shouldn't happen
+		return false;      // Shouldn't happen
 	}
 	Log.Notice("CreateInstanceGMCommand", "GM created instance for map %u", mapid);
 

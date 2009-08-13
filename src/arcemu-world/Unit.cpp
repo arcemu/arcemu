@@ -7993,27 +7993,32 @@ void Unit::SetPower(uint32 type, int32 value)
 
 void Unit::SendPowerUpdate(bool self)
 {
+	uint32 amount = GetUInt32Value(UNIT_FIELD_POWER1 + GetPowerType()); //save the amount, so we send the same to the player and everyone else
+
 	WorldPacket data( SMSG_POWER_UPDATE, 14 );
 	FastGUIDPack( data, GetGUID() );
 	data << (uint8)GetPowerType();
-	data << GetUInt32Value( UNIT_FIELD_POWER1 + GetPowerType() );
+	data << amount;
 //	This was added in revision 1726.  Is it necessary?  To me, it seems to just be sending the packet twice.
 //	If it is needed for something, put it back in I guess.
 //	CopyAndSendDelayedPacket(&data);
 	SendMessageToSet( &data, self );
+
+	//VLack: On 3.1.3, create and send a field update packet to everyone else, as this is the only way to update their GUI with the power values.
+	WorldPacket * pkt=BuildFieldUpdatePacket(UNIT_FIELD_POWER1 + GetPowerType(), amount);
+	SendMessageToSet(pkt, false);
+	delete pkt;
 }
 
 void Unit::UpdatePowerAmm()
 {
-//	if( !IsPlayer() ) //VLack: always return :)
-	return;
-	/* If it always returns there's no need to have these here, actually why is this even called then? :S
-	WorldPacket data( SMSG_POWER_UPDATE, 5 );
+	if( !IsPlayer() )
+		return;
+	WorldPacket data( SMSG_POWER_UPDATE, 14 );
 	FastGUIDPack( data, GetGUID() );
 	data << uint8( GetPowerType() );
 	data << GetUInt32Value( UNIT_FIELD_POWER1 + GetPowerType() );
 	SendMessageToSet( &data, true );
-	*/
 }
 
 void Unit::CastSpellOnCasterOnCritHit()

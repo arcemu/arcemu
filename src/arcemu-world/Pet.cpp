@@ -144,6 +144,7 @@ void Pet::CreateAsSummon( uint32 entry, CreatureInfo *ci, Creature* created_from
 
 	m_Owner = owner;
 	m_OwnerGuid = m_Owner->GetGUID();
+	m_phase = m_Owner->GetPhase();
 	m_PetNumber = m_Owner->GeneratePetNumber();
 	creature_info = ci;
 	myFamily = dbcCreatureFamily.LookupEntry( ci->Family );
@@ -525,6 +526,7 @@ void Pet::LoadFromDB( Player* owner, PlayerPet * pi )
 {
 	m_Owner = owner;
 	m_OwnerGuid = m_Owner->GetGUID();
+	m_phase = m_Owner->GetPhase();
 	mPi = pi;
 	creature_info = CreatureNameStorage.LookupEntry( mPi->entry );
 
@@ -1107,7 +1109,7 @@ void Pet::WipeTalents()
 		if( te == NULL || te->TalentTree < PET_TALENT_TREE_START || te->TalentTree > PET_TALENT_TREE_END ) // 409-Tenacity, 410-Ferocity, 411-Cunning
 			continue;
 		for( j = 0; j < 5; j++ )
-			if( te->RankID[ j ] != NULL && HasSpell( te->RankID[ j ] ) )
+			if( te->RankID[ j ] != 0 && HasSpell( te->RankID[ j ] ) )
 				RemoveSpell( te->RankID[ j ] );
 	}
 	SendSpellsToOwner();

@@ -70,7 +70,10 @@ bool isHostile(Object* objA, Object* objB)// B is hostile for A?
 
 	if(objB->GetTypeId() == TYPEID_CORPSE)
 		return false;
-	
+
+	if( !(objA->m_phase & objB->m_phase) ) //What you can't see, can't be hostile!
+		return false;
+
 	if( objA->IsPlayer() && objA->HasFlag( PLAYER_FLAGS, 0x100) && objB->IsCreature() && static_cast<Unit*>(objB)->GetAIInterface()->m_isNeutralGuard )
 		return true;
 	if( objB->IsPlayer() && objB->HasFlag( PLAYER_FLAGS, 0x100) && objA->IsCreature() && static_cast<Unit*>(objA)->GetAIInterface()->m_isNeutralGuard )
@@ -190,11 +193,14 @@ bool isAttackable(Object* objA, Object* objB, bool CheckStealth)// A can attack 
 	if(!objA || !objB )
 		return false;
 
-  if ( !objA->IsInWorld() || !objB->IsInWorld() )  // pending or ...?
-    return false;
+	if ( !objA->IsInWorld() || !objB->IsInWorld() )  // pending or ...?
+		return false;
 
 	if(objA == objB)
 		return false;   // can't attack self.. this causes problems with buffs if we don't have it :p
+
+	if( !(objA->m_phase & objB->m_phase) ) //What you can't see, you can't attack either...
+		return false;
 
 	if(objA->GetTypeId() == TYPEID_CORPSE)
 		return false;
@@ -475,6 +481,9 @@ bool isCombatSupport(Object* objA, Object* objB)// B combat supports A?
 	// also if it's not a unit, it shouldn't support combat anyways.
 
 	if( objA->IsPet() || objB->IsPet() ) // fixes an issue where horde pets would chain aggro horde guards and vice versa for alliance.
+		return false;
+
+	if( !(objA->m_phase & objB->m_phase) ) //What you can't see, you can't support either...
 		return false;
 
 	bool combatSupport = false;

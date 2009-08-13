@@ -1024,6 +1024,10 @@ out:
 			ILotP.spellId = 34299;
 			ILotP.procChance = 100;
 			ILotP.procFlags = PROC_ON_CRIT_ATTACK | static_cast<uint32>(PROC_TARGET_SELF);
+#ifndef NEW_PROCFLAGS
+			ILotP.ProcType = 0;
+#endif
+			ILotP.procCharges = 0;
 			ILotP.deleted = false;
 			ILotP.caster = u_caster->GetGUID();
 			ILotP.LastTrigger = 0;
@@ -2672,7 +2676,7 @@ void Spell::SpellEffectCreateItem(uint32 i) // Create item
 	SlotResult slotresult;
 
 	skilllinespell* skill = objmgr.GetSpellSkill(GetProto()->Id);
-	if( GetProto()->EffectItemType[i] == NULL )
+	if( GetProto()->EffectItemType[i] == 0 )
 		return;
 
 		ItemPrototype *m_itemProto;
@@ -7111,6 +7115,7 @@ void Spell::SpellEffectSpellSteal( uint32 i )
 							charge.spellId=aura->GetSpellId();
 							charge.ProcFlag=aura->GetSpellProto()->procFlags;
 							charge.lastproc = 0;
+							charge.procdiff = 0;
 							u_caster->m_chargeSpells.insert(make_pair(aura->GetSpellId(),charge));
 						}
 					}
@@ -7283,7 +7288,7 @@ void Spell::SpellEffectCreateItem2(uint32 i) // Create item
 
 	uint32 new_item_id = GetProto()->EffectItemType[i];
 
-	if( new_item_id != NULL )
+	if( new_item_id != 0 )
 	{
 		// create item
 		CreateItem( new_item_id );

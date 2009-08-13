@@ -1222,12 +1222,12 @@ void Player::_EventCharmAttack()
 	Unit *pVictim = NULL;
 	if(!IsInWorld())
 	{
-		m_CurrentCharm = NULL;
+		m_CurrentCharm = 0;
 		sEventMgr.RemoveEvents(this,EVENT_PLAYER_CHARM_ATTACK);
 		return;
 	}
 
-	if(m_curSelection == NULL)
+	if(m_curSelection == 0)
 	{
 		sEventMgr.RemoveEvents(this, EVENT_PLAYER_CHARM_ATTACK);
 		return;
@@ -1253,7 +1253,7 @@ void Player::_EventCharmAttack()
 
 		if (!currentCharm->canReachWithAttack(pVictim))
 		{
-			if(m_AttackMsgTimer == NULL)
+			if(m_AttackMsgTimer == 0)
 			{
 				//m_session->OutPacket(SMSG_ATTACKSWING_NOTINRANGE);
 				// 2 sec till next msg.
@@ -2706,8 +2706,9 @@ void Player::SaveToDB(bool bNewCharacter /* =false */)
 	for(uint32 i = 0; i < 8; ++i)
 		ss << m_uint32Values[PLAYER_FIELD_GLYPHS_1 + i] << ",";
 
-	ss << "')";
+	ss << "', ";
 
+	ss << m_phase << ")";
 
 	if(bNewCharacter)
 		CharacterDatabase.WaitExecuteNA(ss.str().c_str());
@@ -2868,10 +2869,10 @@ void Player::LoadFromDBProc(QueryResultVector & results)
 		return;
 	}
 
-	if (result->GetFieldCount() != 83)
+	if (result->GetFieldCount() != 84)
 	{
 		Log.Error ("Player::LoadFromDB",
-				"Expected 83 fields from the database, "
+				"Expected 84 fields from the database, "
 				"but received %u!  You may need to update your character database.",
 				(unsigned int) result->GetFieldCount ());
 		RemovePendingPlayer();
@@ -3491,8 +3492,12 @@ void Player::LoadFromDBProc(QueryResultVector & results)
 		LoginAura la;
 		la.id = glyph->SpellID;
 		la.dur = uint32(-1);
+		la.charges = 0;
+		la.positive = 0; //VLack: check this, as this was uninitialized, 0 is a safe bet, but glyphs should be positive, aren't they?
 		loginauras.push_back(la);
 	}
+
+	m_phase = get_next_field.GetUInt32(); //Load the player's last phase
 
 	HonorHandler::RecalculateHonorFields(this);
 
@@ -5636,7 +5641,7 @@ void Player::UpdateStats()
 	if( sWorld.m_limits.enable && (sWorld.m_limits.healthCap > 0) && (res > sWorld.m_limits.healthCap) && GetSession()->GetPermissionCount() <= 0 ) //hacker?
 	{
 		char logmsg[256];
-		snprintf(logmsg, 256, "has over %lu health (%i)", sWorld.m_limits.healthCap, res);
+		snprintf(logmsg, 256, "has over %u health (%i)", sWorld.m_limits.healthCap, res);
 		sCheatLog.writefromsession(GetSession(), logmsg);
 		if(sWorld.m_limits.broadcast) // send info to online GM
 		{
@@ -5681,11 +5686,11 @@ void Player::UpdateStats()
 
 		res = mana + bonus + manadelta;
 		if( res < mana )
-			res = mana;	
+			res = mana;
 		if( sWorld.m_limits.enable && (sWorld.m_limits.manaCap > 0) && (res > sWorld.m_limits.manaCap) && GetSession()->GetPermissionCount() <= 0 ) //hacker?
 		{
 			char logmsg[256];
-			snprintf(logmsg, 256, "has over %lu mana (%i)", sWorld.m_limits.manaCap, res);
+			snprintf(logmsg, 256, "has over %u mana (%i)", sWorld.m_limits.manaCap, res);
 			sCheatLog.writefromsession(GetSession(), logmsg);
 			if(sWorld.m_limits.broadcast) // send info to online GM
 			{
@@ -5900,6 +5905,9 @@ bool Player::CanSee(Object* obj) // * Invisibility & Stealth Detection - Partha 
 		return false;
 	}
 	//------------------------------------------------------------------
+
+	if (!(m_phase & obj->m_phase)) //What you can't see, you can't see, no need to check things further.
+		return false;
 
 	switch(object_type) // we are alive or we haven't released our spirit yet
 	{
@@ -9678,6 +9686,7 @@ void Player::CompleteLoading()
 				charge.spellId = sp->Id;
 				charge.ProcFlag = sp->procFlags;
 				charge.lastproc = 0;
+				charge.procdiff = 0;
 				m_chargeSpells.insert( make_pair( sp->Id , charge ) );
 			}
 		}

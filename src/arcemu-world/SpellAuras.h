@@ -284,7 +284,7 @@ enum MOD_TYPES
 	SPELL_AURA_258 = 258,
 	SPELL_AURA_259 = 259,
 	SPELL_AURA_260 = 260,
-	SPELL_AURA_SET_PHASE = 261,
+	SPELL_AURA_PHASE = 261,
 	SPELL_AURA_IGNORE_TARGET_AURA_STATE = 262,
 	SPELL_AURA_ALLOW_ONLY_ABILITY = 263,
 	SPELL_AURA_264 = 264,
@@ -690,12 +690,12 @@ public:
 	void SpellAuraPeriodicTriggerSpellWithValue(bool apply);
 	void SpellAuraModMechanicDmgTakenPct(bool apply);
 	void SpellAuraBlockMultipleDamage(bool apply);
-	void SpellAuraSetPhase(bool apply);
 	void SpellAuraIgnoreTargetAuraState(bool apply);
 	void SpellAuraAllowOnlyAbility(bool apply);
 	void SpellAuraIncreaseAPbyStatPct(bool apply);
 	void SpellAuraModSpellDamageDOTPct(bool apply);
-    void SpellAuraIgnoreShapeshift(bool apply);
+	void SpellAuraIgnoreShapeshift(bool apply);
+	void SpellAuraPhase(bool apply);
 	void SpellAuraModIgnoreArmorPct(bool apply);
 	void SpellAuraModBaseHealth(bool apply);
 	void SpellAuraModAttackPowerOfArmor(bool apply);

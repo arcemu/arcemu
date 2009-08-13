@@ -848,6 +848,7 @@ bool ChatHandler::HandleGOSpawn(const char *args, WorldSession *m_session)
 	go->SetInstanceID(chr->GetInstanceID());
 	go->CreateFromProto(EntryID,mapid,x,y,z,o);
 	go->PushToWorld(m_session->GetPlayer()->GetMapMgr());
+	go->Phase(PHASE_SET, m_session->GetPlayer()->GetPhase());
 	// Create spawn instance
 	GOSpawn * gs = new GOSpawn;
 	gs->entry = go->GetEntry();
@@ -865,6 +866,7 @@ bool ChatHandler::HandleGOSpawn(const char *args, WorldSession *m_session)
 	gs->z = go->GetPositionZ();
 	gs->state = go->GetByte(GAMEOBJECT_BYTES_1, 0);
 	//gs->stateNpcLink = 0;
+	gs->phase = go->GetPhase();
 
 	uint32 cx = m_session->GetPlayer()->GetMapMgr()->GetPosX(m_session->GetPlayer()->GetPositionX());
 	uint32 cy = m_session->GetPlayer()->GetMapMgr()->GetPosY(m_session->GetPlayer()->GetPositionY());
@@ -887,6 +889,57 @@ bool ChatHandler::HandleGOSpawn(const char *args, WorldSession *m_session)
 	return true;
 }
 
+bool ChatHandler::HandleGOPhaseCommand(const char *args, WorldSession *m_session)
+{
+	char* sPhase = strtok((char*)args, " ");
+	if (!sPhase)
+		return false;
+
+	uint32 newphase = atoi(sPhase);
+
+	bool Save = false;
+	char* pSave = strtok(NULL, " ");
+	if (pSave)
+		Save = (atoi(pSave)>0?true:false);
+
+	GameObject *go = m_session->GetPlayer()->GetSelectedGo();
+	if( !go )
+	{
+		RedSystemMessage(m_session, "No selected GameObject...");
+		return true;
+	}
+
+	go->Phase(PHASE_SET, newphase);
+
+	GOSpawn * gs = go->m_spawn;
+	if (!gs)
+	{
+		RedSystemMessage(m_session, "The GameObject got no spawn, not saving and not logging...");
+		return true;
+	}
+	//VLack: We have to have a spawn, or SaveToDB would write a 0 into the first column (ID), and would erroneously overwrite something in the DB.
+	//The code which saves creatures is a bit more forgiving, as it creates a new spawn on-demand, but the gameobject code does not.
+
+	gs->phase = go->GetPhase();
+
+	uint32 cx = m_session->GetPlayer()->GetMapMgr()->GetPosX(m_session->GetPlayer()->GetPositionX());
+	uint32 cy = m_session->GetPlayer()->GetMapMgr()->GetPosY(m_session->GetPlayer()->GetPositionY());
+
+	MapCell * mCell = m_session->GetPlayer()->GetMapMgr()->GetCell( cx, cy );
+
+	if( mCell != NULL )
+		mCell->SetLoaded();
+
+	if(Save == true)
+	{
+		// If we're saving, create template and add index
+		go->SaveToDB();
+		go->m_loadedFromDB = true;
+	}
+	sGMLog.writefromsession( m_session, "phased gameobject %s to %u, entry %u at %u %f %f %f%s", GameObjectNameStorage.LookupEntry(gs->entry)->Name, newphase, gs->entry, m_session->GetPlayer()->GetMapId(), gs->x, gs->y, gs->z, Save ? ", saved in DB" : "" );
+	return true;
+}
+
 bool ChatHandler::HandleGOInfo(const char *args, WorldSession *m_session)
 {
 	GameObjectInfo *GOInfo = NULL;
@@ -904,6 +957,7 @@ bool ChatHandler::HandleGOInfo(const char *args, WorldSession *m_session)
 	SystemMessage(m_session, "%s flags:%s%u",MSG_COLOR_GREEN,MSG_COLOR_LIGHTBLUE,GObj->GetUInt32Value(GAMEOBJECT_FLAGS));
 	SystemMessage(m_session, "%s dynflags:%s%u",MSG_COLOR_GREEN,MSG_COLOR_LIGHTBLUE,GObj->GetUInt32Value(GAMEOBJECT_DYNAMIC));
 	SystemMessage(m_session, "%s faction:%s%u",MSG_COLOR_GREEN,MSG_COLOR_LIGHTBLUE,GObj->GetUInt32Value(GAMEOBJECT_FACTION));
+	SystemMessage(m_session, "%s phase:%s%u",MSG_COLOR_GREEN,MSG_COLOR_LIGHTBLUE,GObj->GetPhase());
 
 	char gotypetxt[50];
 	switch( GObj->GetByte(GAMEOBJECT_BYTES_1, 1) )
@@ -1426,3 +1480,4 @@ bool ChatHandler::HandleRepairItemsCommand(const char *args, WorldSession *m_ses
 	SystemMessage(m_session,"Items Repaired");
 	return true;
 }
+

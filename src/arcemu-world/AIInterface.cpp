@@ -916,7 +916,7 @@ void AIInterface::_UpdateTargets()
 		{
 			i2 = i++;
 			if((*i2) == NULL || (*i2)->event_GetCurrentInstanceId() != m_Unit->event_GetCurrentInstanceId() ||
-				!(*i2)->isAlive() || m_Unit->GetDistanceSq((*i2)) >= 2500.0f || !(*i2)->CombatStatus.IsInCombat() )
+				!(*i2)->isAlive() || m_Unit->GetDistanceSq((*i2)) >= 2500.0f || !(*i2)->CombatStatus.IsInCombat() || !((*i2)->m_phase & m_Unit->m_phase) )
 			{
 				m_assistTargets.erase( i2 );
 			}
@@ -963,7 +963,7 @@ void AIInterface::_UpdateTargets()
 					}
 				}
 
-				if( ai_t->event_GetCurrentInstanceId() != m_Unit->event_GetCurrentInstanceId() || !ai_t->isAlive() || (!instance && m_Unit->GetDistanceSq(ai_t) >= 6400.0f)) {
+				if( ai_t->event_GetCurrentInstanceId() != m_Unit->event_GetCurrentInstanceId() || !ai_t->isAlive() || (!instance && m_Unit->GetDistanceSq(ai_t) >= 6400.0f || !(ai_t->m_phase & m_Unit->m_phase))) {
 					m_aiTargets.erase( it2 );
 				}
 			}
@@ -1038,7 +1038,7 @@ void AIInterface::_UpdateCombat(uint32 p_time)
 		&& m_AIState != STATE_EVADE
 		&& m_AIState != STATE_SCRIPTMOVE
 		&& !m_is_in_instance
-		&& (m_outOfCombatRange && m_Unit->GetDistanceSq(m_returnX,m_returnY,m_returnZ) > m_outOfCombatRange) )
+		&& (m_outOfCombatRange && m_Unit->GetDistanceSq(m_returnX,m_returnY,m_returnZ) > m_outOfCombatRange)  )
 	{
 		HandleEvent( EVENT_LEAVECOMBAT, m_Unit, 0 );
 	}
@@ -1050,6 +1050,16 @@ void AIInterface::_UpdateCombat(uint32 p_time)
 		else 
 			SetNextTarget( GetMostHated() );
 
+		if( GetNextTarget() == NULL )
+		{
+			HandleEvent( EVENT_LEAVECOMBAT, m_Unit, 0 );
+		}
+	} else if( GetNextTarget() && !(GetNextTarget()->m_phase & m_Unit->m_phase) ) // the target or we changed phase, stop attacking
+	{
+		if( m_is_in_instance )
+			SetNextTarget( FindTarget() );
+		else 
+			SetNextTarget( GetMostHated() );
 		if( GetNextTarget() == NULL )
 		{
 			HandleEvent( EVENT_LEAVECOMBAT, m_Unit, 0 );
@@ -1656,6 +1666,9 @@ bool AIInterface::UnsafeCanOwnerAttackUnit(Unit *pUnit)
 	if( pUnit->bInvincible )
 		return false;
 
+	if( !(pUnit->m_phase & m_Unit->m_phase) ) //Not in the same phase
+		return false;
+
 	//do not agro units that are faking death. Should this be based on chance ?
 	if( pUnit->HasFlag( UNIT_FIELD_FLAGS, UNIT_FLAG_FEIGN_DEATH ) )
 		return false;
@@ -1741,6 +1754,8 @@ Unit* AIInterface::FindTarget()
 				continue;
 			if( !tmpPlr->HasFlag( PLAYER_FLAGS, 0x100) )//PvP Guard Attackable.
 				continue;
+			if( !(tmpPlr->m_phase & m_Unit->m_phase) ) //Not in the same phase, skip this target
+				continue;
 
 			dist = m_Unit->GetDistanceSq(tmpPlr);
 
@@ -1822,12 +1837,13 @@ Unit* AIInterface::FindTarget()
 
 			pUnit = static_cast< Unit* >( (*itr) );
 
-            // if the target is not attackable we are not going to attack it and find a new target, if possible
-            if( pUnit->IsCreature() ){
-                Creature *pCreature = static_cast<Creature*>( pUnit );
-                if( pCreature->m_spawn && !pCreature->isattackable( pCreature->m_spawn ) )
-                    continue;
-            }
+			// if the target is not attackable we are not going to attack it and find a new target, if possible
+			if( pUnit->IsCreature() )
+			{
+				Creature *pCreature = static_cast<Creature*>( pUnit );
+				if( pCreature->m_spawn && !pCreature->isattackable( pCreature->m_spawn ) )
+					continue;
+			}
 
 			if( UnsafeCanOwnerAttackUnit( pUnit ) == false )
 				continue;
@@ -1978,6 +1994,9 @@ bool AIInterface::FindFriends(float dist)
 		{
 			continue;
 		}
+
+		if( !(pUnit->m_phase & m_Unit->m_phase) ) //We can't help a friendly unit if it is not in our phase
+			continue;
 
 		if( isCombatSupport( m_Unit, pUnit ) && ( pUnit->GetAIInterface()->getAIState() == STATE_IDLE || pUnit->GetAIInterface()->getAIState() == STATE_SCRIPTIDLE ) )//Not sure
 		{

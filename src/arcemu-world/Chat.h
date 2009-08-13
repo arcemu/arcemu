@@ -228,6 +228,7 @@ protected:
 	bool HandleGmLogCommentCommand( const char *args , WorldSession *m_session);
 	bool HandleRatingsCommand( const char *args , WorldSession *m_session );
 	bool HandleSimpleDistanceCommand( const char *args , WorldSession *m_session );
+	bool HandlePhaseCommand( const char *args , WorldSession *m_session );
 
 	// Level 1 commands
 	bool CmdSetValueField(WorldSession *m_session, uint32 field, uint32 fieldmax, const char *fieldname, const char* args);
@@ -317,6 +318,7 @@ protected:
 	bool HandleGOSelect(const char *args, WorldSession *m_session);
 	bool HandleGODelete(const char *args, WorldSession *m_session);
 	bool HandleGOSpawn(const char *args, WorldSession *m_session);
+	bool HandleGOPhaseCommand(const char *args, WorldSession *m_session);
 	bool HandleGOInfo(const char *args, WorldSession *m_session);
 	bool HandleGOEnable(const char *args, WorldSession *m_session);
 	bool HandleGOActivate(const char* args, WorldSession *m_session);
@@ -357,6 +359,7 @@ protected:
 	bool HandleModifySkillCommand(const char* args, WorldSession *m_session);
 	bool HandleRemoveSkillCommand(const char* args, WorldSession *m_session);
 	bool HandleNpcInfoCommand(const char* args, WorldSession *m_session);
+	bool HandleCreaturePhaseCommand(const char *args, WorldSession *m_session);
 	bool HandleEmoteCommand(const char* args, WorldSession *m_session);
 	bool HandleIncreaseWeaponSkill(const char* args, WorldSession *m_session);
 	bool HandleCastSpellCommand(const char* args, WorldSession *m_session);

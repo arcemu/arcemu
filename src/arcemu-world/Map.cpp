@@ -24,8 +24,8 @@
 
 #include "StdAfx.h"
 
-#define CREATURESPAWNSFIELDCOUNT 25
-#define GOSPAWNSFIELDCOUNT		 16
+#define CREATURESPAWNSFIELDCOUNT 26
+#define GOSPAWNSFIELDCOUNT		 17
 
 Map::Map(uint32 mapid, MapInfo * inf)
 {
@@ -192,6 +192,8 @@ void Map::LoadSpawns(bool reload)
 					cspawn->Item2SlotDisplay = fields[22].GetUInt32();
 					cspawn->Item3SlotDisplay = fields[23].GetUInt32();
 					cspawn->CanFly = fields[24].GetUInt32();
+					cspawn->phase = fields[25].GetUInt32();
+					if( cspawn->phase == 0 ) cspawn->phase=0xFFFFFFFF;
 
 					spawns[cellx][celly]->CreatureSpawns.push_back(cspawn);
 					++CreatureSpawnCount;
@@ -234,6 +236,9 @@ void Map::LoadSpawns(bool reload)
 				cspawn->Item1SlotDisplay = fields[21].GetUInt32();
 				cspawn->Item2SlotDisplay = fields[22].GetUInt32();
 				cspawn->Item3SlotDisplay = fields[23].GetUInt32();
+				cspawn->CanFly = fields[24].GetUInt32();
+				cspawn->phase = fields[25].GetUInt32();
+				if( cspawn->phase == 0 ) cspawn->phase=0xFFFFFFFF;
 				staticSpawns.CreatureSpawns.push_back(cspawn);
 				++CreatureSpawnCount;
 			}while(result->NextRow());
@@ -266,6 +271,8 @@ void Map::LoadSpawns(bool reload)
 				gspawn->faction=fields[13].GetUInt32();
 				gspawn->scale = fields[14].GetFloat();
 				//gspawn->stateNpcLink = fields[15].GetUInt32();
+				gspawn->phase = fields[16].GetUInt32();
+				if( gspawn->phase == 0 ) gspawn->phase=0xFFFFFFFF;
 				staticSpawns.GOSpawns.push_back(gspawn);
 				++GameObjectSpawnCount;
 			}while(result->NextRow());
@@ -299,6 +306,8 @@ void Map::LoadSpawns(bool reload)
 					gspawn->faction=fields[13].GetUInt32();
 					gspawn->scale = fields[14].GetFloat();
 					//gspawn->stateNpcLink = fields[15].GetUInt32();
+					gspawn->phase = fields[16].GetUInt32();
+					if( gspawn->phase == 0 ) gspawn->phase=0xFFFFFFFF;
 
 					//uint32 cellx=float2int32(((_maxX-gspawn->x)/_cellSize));
 					//uint32 celly=float2int32(((_maxY-gspawn->y)/_cellSize));

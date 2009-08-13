@@ -182,7 +182,7 @@ OUTPACKET_RESULT WorldSocket::_OutPacket(uint16 opcode, size_t len, const void* 
 	}
 
 	// Packet logger :)
-	sWorldLog.LogPacket((uint32)len, opcode, (const uint8*)data, 1);
+	sWorldLog.LogPacket((uint32)len, opcode, (const uint8*)data, 1, (mSession ? mSession->GetAccountId() : 0) );
 
 	// Encrypt the packet
 	// First, create the header.
@@ -587,7 +587,7 @@ void WorldSocket::OnRead()
 			GetReadBuffer().Read((uint8*)Packet->contents(), mRemaining);
 		}
 
-		sWorldLog.LogPacket(mSize, static_cast<uint16>( mOpcode ), mSize ? Packet->contents() : NULL, 0);
+		sWorldLog.LogPacket(mSize, static_cast<uint16>( mOpcode ), mSize ? Packet->contents() : NULL, 0, (mSession ? mSession->GetAccountId() : 0) );
 		mRemaining = mSize = mOpcode = 0;
 
 		// Check for packets that we handle
@@ -613,7 +613,7 @@ void WorldSocket::OnRead()
 
 
 
-void WorldLog::LogPacket(uint32 len, uint16 opcode, const uint8* data, uint8 direction)
+void WorldLog::LogPacket(uint32 len, uint16 opcode, const uint8* data, uint8 direction, uint32 accountid)
 {
 #ifdef ECHO_PACKET_LOG_TO_CONSOLE
 	sLog.outString("[%s]: %s %s (0x%03X) of %u bytes.", direction ? "SERVER" : "CLIENT", direction ? "sent" : "received",
@@ -628,8 +628,8 @@ void WorldLog::LogPacket(uint32 len, uint16 opcode, const uint8* data, uint8 dir
 		uint16 lenght = static_cast<uint16>( len );
 		unsigned int count = 0;
 
-		fprintf(m_file, "{%s} Packet: (0x%04X) %s PacketSize = %u stamp = %u\n", (direction ? "SERVER" : "CLIENT"), opcode,
-			LookupName(opcode, g_worldOpcodeNames), lenght, getMSTime() );
+		fprintf(m_file, "{%s} Packet: (0x%04X) %s PacketSize = %u stamp = %u accountid = %u\n", (direction ? "SERVER" : "CLIENT"), opcode,
+			LookupName(opcode, g_worldOpcodeNames), lenght, getMSTime(), accountid );
 		fprintf(m_file, "|------------------------------------------------|----------------|\n");
 		fprintf(m_file, "|00 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F |0123456789ABCDEF|\n");
 		fprintf(m_file, "|------------------------------------------------|----------------|\n");

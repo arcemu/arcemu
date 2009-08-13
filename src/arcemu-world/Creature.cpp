@@ -431,9 +431,11 @@ void Creature::SaveToDB()
 		<< m_uint32Values[UNIT_VIRTUAL_ITEM_SLOT_ID+2] << ",";
 
 	if(GetAIInterface()->m_moveFly)
-		ss << 1 << ")";
+		ss << 1 << ",";
 	else
-		ss << 0 << ")";
+		ss << 0 << ",";
+
+	ss << m_phase << ")";
 
 	WorldDatabase.Execute(ss.str().c_str());
 }
@@ -1160,6 +1162,7 @@ bool Creature::Load(CreatureSpawn *spawn, uint32 mode, MapInfo *info)
 		return false;
 
 	spawnid = spawn->id;
+	m_phase = spawn->phase;
 	
 	m_walkSpeed = m_base_walkSpeed = proto->walk_speed; //set speeds
 	m_runSpeed = m_base_runSpeed = proto->run_speed; //set speeds

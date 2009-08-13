@@ -386,17 +386,17 @@ bool ChatHandler::HandleAddInvItemCommand(const char *args, WorldSession *m_sess
 
 		if( count == 0 )
 		{
-			sGMLog.writefromsession(m_session, "used add item command, item id %u [%s], quantity %lu, to %s", it->ItemId, it->Name1, numadded, chr->GetName());
+			sGMLog.writefromsession(m_session, "used add item command, item id %u [%s], quantity %u, to %s", it->ItemId, it->Name1, numadded, chr->GetName());
 		}
 		else
 		{
-			sGMLog.writefromsession(m_session, "used add item command, item id %u [%s], quantity %lu (only %lu added due to full inventory), to %s", it->ItemId, it->Name1, count + numadded, numadded, chr->GetName());
+			sGMLog.writefromsession(m_session, "used add item command, item id %u [%s], quantity %u (only %lu added due to full inventory), to %s", it->ItemId, it->Name1, count + numadded, numadded, chr->GetName());
 		}
 		char messagetext[512];
-		snprintf(messagetext, 512, "Added item %s (id: %d), quantity %lu, to %s's inventory.", GetItemLinkByProto(it, m_session->language).c_str(), (unsigned int)it->ItemId, numadded, chr->GetName());
+		snprintf(messagetext, 512, "Added item %s (id: %d), quantity %u, to %s's inventory.", GetItemLinkByProto(it, m_session->language).c_str(), (unsigned int)it->ItemId, numadded, chr->GetName());
 		SystemMessage(m_session, messagetext);
 		//snprintf(messagetext, 128, "%s added item %d (%s) to your inventory.", m_session->GetPlayer()->GetName(), (unsigned int)itemid, it->Name1);
-		snprintf(messagetext, 512, "%s added item %s, quantity %lu, to your inventory.", m_session->GetPlayer()->GetName(), GetItemLinkByProto(it, chr->GetSession()->language).c_str(), numadded);
+		snprintf(messagetext, 512, "%s added item %s, quantity %u, to your inventory.", m_session->GetPlayer()->GetName(), GetItemLinkByProto(it, chr->GetSession()->language).c_str(), numadded);
 		
 		SystemMessageToPlr(chr,  messagetext);
 		return true;

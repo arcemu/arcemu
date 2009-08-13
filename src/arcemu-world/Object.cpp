@@ -146,6 +146,8 @@ Object::Object() : m_position(0,0,0,0), m_spawnLocation(0,0,0,0)
 	m_backSwimSpeed = 2.5f;
 	m_turnRate = 3.141593f;
 
+	m_phase = 1; //Set the default phase: 00000000 00000000 00000000 00000001
+
 	m_mapMgr = 0;
 	m_mapCell = 0;
 
@@ -3555,4 +3557,42 @@ uint32 Object::GetTeam()
 	return static_cast<uint32>(-1);
 }
 
+//Manipulates the phase value, see "enum PHASECOMMANDS" in Object.h for a longer explanation!
+void Object::Phase(uint8 command, uint32 newphase)
+{
+	switch( command )
+	{
+	case PHASE_SET:
+		m_phase = newphase;
+		break;
+	case PHASE_ADD:
+		m_phase |= newphase;
+		break;
+	case PHASE_DEL:
+		m_phase &= ~newphase;
+		break;
+	case PHASE_RESET:
+		m_phase = 1;
+		break;
+	default:
+		return;
+	}
 
+	if ( IsPlayer() ) {
+		Player * p_player=static_cast< Player* >( this );
+		if ( p_player->GetSummon() )
+			p_player->GetSummon()->Phase(command, newphase);
+		//We should phase other, non-combat "pets" too...
+	}
+
+	for( std::set<Object*>::iterator itr=m_objectsInRange.begin(); itr!=m_objectsInRange.end(); ++itr )
+	{
+		if ( (*itr)->IsUnit() )
+			static_cast< Unit* >( *itr )->UpdateVisibility();
+	}
+
+	if ( IsUnit() )
+		static_cast< Unit* >( this )->UpdateVisibility();
+
+	return;
+}

@@ -282,7 +282,7 @@ pSpellAura SpellAuraHandler[TOTAL_SPELL_AURAS]={
 		&Aura::SpellAuraNULL,//258
 		&Aura::SpellAuraNULL,//259
 		&Aura::SpellAuraNULL,//260
-		&Aura::SpellAuraSetPhase,//261
+		&Aura::SpellAuraPhase,//261
 		&Aura::SpellAuraIgnoreTargetAuraState, //262 SPELL_AURA_IGNORE_TARGET_AURA_STATE
 		&Aura::SpellAuraAllowOnlyAbility,//263 SPELL_AURA_ALLOW_ONLY_ABILITY
 		&Aura::SpellAuraNULL,//264
@@ -2011,22 +2011,26 @@ void Aura::SpellAuraDummy(bool apply)
 					return;
 				pts.procChance = GetSpellProto()->procChance;
 				pts.procFlags = GetSpellProto()->procFlags;
+				pts.groupRelation[0] = 0;
+				pts.groupRelation[1] = 0;
+				pts.groupRelation[2] = 0;
+				pts.ProcType = 0;
 				pts.procCharges = GetSpellProto()->procCharges;
 				pts.LastTrigger = 0;
 				pts.deleted = false;
 				m_target->m_procSpells.push_front(pts);
-            }
-            else
-            {
-                for(std::list<struct ProcTriggerSpell>::iterator itr = m_target->m_procSpells.begin();itr != m_target->m_procSpells.end();itr++)
-                {
-                    if(itr->origId == GetSpellId() && itr->caster == m_casterGuid && !itr->deleted)
-                    {
-                        itr->deleted = true;
-                        break;
-                    }
-                }
-            }
+			}
+			else
+			{
+				for(std::list<struct ProcTriggerSpell>::iterator itr = m_target->m_procSpells.begin();itr != m_target->m_procSpells.end();itr++)
+				{
+					if(itr->origId == GetSpellId() && itr->caster == m_casterGuid && !itr->deleted)
+					{
+						itr->deleted = true;
+						break;
+					}
+				}
+			}
 
 			/* if(apply)
 			{
@@ -3136,6 +3140,9 @@ void Aura::EventPeriodicHeal( uint32 amount )
 		for(std::set<Object*>::iterator itr = u_caster->GetInRangeSetBegin(); itr != u_caster->GetInRangeSetEnd(); ++itr)
 		{
 			if((*itr)->GetTypeId() != TYPEID_UNIT || !static_cast<Unit *>(*itr)->CombatStatus.IsInCombat() || (static_cast<Unit *>(*itr)->GetAIInterface()->getThreatByPtr(u_caster) == 0 && static_cast<Unit *>(*itr)->GetAIInterface()->getThreatByPtr(m_target) == 0))
+				continue;
+
+			if( !(u_caster->GetPhase() & (*itr)->GetPhase()) ) //Can't see, no threat
 				continue;
 
 			target_threat.push_back(static_cast<Unit *>(*itr));
@@ -4917,6 +4924,7 @@ void Aura::SpellAuraProcTriggerSpell(bool apply)
 			SM_FIValue( GetUnitCaster()->SM_FCharges, &charges, GetSpellProto()->SpellGroupType );
 			SM_PIValue( GetUnitCaster()->SM_PCharges, &charges, GetSpellProto()->SpellGroupType );
 		}
+		pts.ProcType = 0;
 		pts.procCharges = charges;
 		pts.LastTrigger = 0;
 		pts.deleted = false;
@@ -9507,11 +9515,6 @@ void Aura::SpellAuraModMechanicDmgTakenPct( bool apply )
 	}
 }
 
-void Aura::SpellAuraSetPhase(bool apply)
-{
-	//TODO
-}
-
 void Aura::SpellAuraIgnoreTargetAuraState( bool apply )
 {
 	if(!m_target->IsPlayer())
@@ -9692,5 +9695,31 @@ void Aura::SpellAuraReflectSpellsInfront(bool apply)
 		rss->infront = true;
 
 		m_target->m_reflectSpellSchool.push_back(rss);
+	}
+}
+
+void Aura::SpellAuraPhase(bool apply)
+{
+	if ( m_target )
+	{
+		if ( m_target->GetAuraStackCount(SPELL_AURA_PHASE) > 1 )
+		{
+			if ( m_target->IsPlayer() )
+				static_cast<Player*>(m_target)->GetSession()->SystemMessage("You can have only one phase aura!");
+			Remove();
+			return;
+		}
+
+		if (apply)
+			m_target->Phase( PHASE_SET, m_spellProto->EffectMiscValue[mod->i] );
+		else
+			m_target->Phase( PHASE_RESET );
+
+		if ( m_target->IsPlayer() )
+		{
+			WorldPacket data(SMSG_SET_PHASE_SHIFT, 4);
+			data << uint32(m_target->m_phase);
+			static_cast<Player*>(m_target)->GetSession()->SendPacket(&data);
+		}
 	}
 }

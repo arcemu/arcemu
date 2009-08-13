@@ -520,3 +520,26 @@ bool ChatHandler::HandlePlayMovie( const char *args, WorldSession *m_session )
 	return true;
 }
 
+bool ChatHandler::HandlePhaseCommand( const char *args , WorldSession *m_session )
+{
+	Player *p_target = getSelectedChar(m_session, false);
+	if(!p_target || !p_target->IsPlayer())
+		return false;
+
+	if(strlen(args)<1) {
+		SystemMessage(m_session, "%s phase:%s%u",MSG_COLOR_GREEN,MSG_COLOR_LIGHTBLUE,p_target->GetPhase());
+		return true;
+	}
+
+	uint32 i = atoi(args);
+	p_target->Phase(PHASE_SET, i);
+
+	if( p_target->GetSession() )
+	{
+		WorldPacket data(SMSG_SET_PHASE_SHIFT, 4);
+		data << i;
+		p_target->GetSession()->SendPacket(&data);
+	}
+
+	return true;
+}

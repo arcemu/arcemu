@@ -305,10 +305,10 @@ void CommandTableStorage::Init()
 		{ "testlos",             'd', &ChatHandler::HandleCollisionTestLOS,        "tests los",                                                                                                         NULL, 0, 0, 0 },
 		{ "testindoor",          'd', &ChatHandler::HandleCollisionTestIndoor,     "tests indoor",                                                                                                      NULL, 0, 0, 0 },
 		{ "getheight",           'd', &ChatHandler::HandleCollisionGetHeight,      "Gets height",                                                                                                       NULL, 0, 0, 0 },
-        { "deathstate",          'd', &ChatHandler::HandleGetDeathState,           "returns current deathstate for target",                                                                         NULL, 0, 0, 0 },
+		{ "deathstate",          'd', &ChatHandler::HandleGetDeathState,           "returns current deathstate for target",                                                                             NULL, 0, 0, 0 },
 		{ "getpos",              'd', &ChatHandler::HandleGetPosCommand,           "",                                                                                                                  NULL, 0, 0, 0 },
-		{ "sendfailed",			 'd', &ChatHandler::HandleSendFailed,	           "",                                                                                                                  NULL, 0, 0, 0 },
-		{ "playmovie",			 'd', &ChatHandler::HandlePlayMovie,			   "Triggers a movie for a player",																						NULL, 0, 0, 0 },
+		{ "sendfailed",			 'd', &ChatHandler::HandleSendFailed,      "",                                                                                                                  NULL, 0, 0, 0 },
+		{ "playmovie",			 'd', &ChatHandler::HandlePlayMovie,			   "Triggers a movie for a player",									NULL, 0, 0, 0 },
 		{ NULL,                  '0', NULL,                                        "",                                                                                                                  NULL, 0, 0, 0 }
 	};
 	dupe_command_table(debugCommandTable, _debugCommandTable);
@@ -372,6 +372,7 @@ void CommandTableStorage::Init()
 		{ "select",       'o', &ChatHandler::HandleGOSelect,       "Selects the nearest GameObject to you",    NULL, 0, 0, 0 },
 		{ "delete",       'o', &ChatHandler::HandleGODelete,       "Deletes selected GameObject",              NULL, 0, 0, 0 },
 		{ "spawn",        'o', &ChatHandler::HandleGOSpawn,        "Spawns a GameObject by ID",                NULL, 0, 0, 0 },
+		{ "phase",        'o', &ChatHandler::HandleGOPhaseCommand, "<phase> <save> - Phase selected GameObject", NULL, 0, 0, 0 },
 		{ "info",         'o', &ChatHandler::HandleGOInfo,         "Gives you information about selected GO", NULL, 0, 0, 0 },
 		{ "activate",     'o', &ChatHandler::HandleGOActivate,     "Activates/Opens the selected GO.",         NULL, 0, 0, 0 },
 		{ "enable",       'o', &ChatHandler::HandleGOEnable,       "Enables the selected GO for use.",         NULL, 0, 0, 0 },
@@ -380,7 +381,7 @@ void CommandTableStorage::Init()
 		{ "export",       'o', &ChatHandler::HandleGOExport,       "Exports the current GO selected",          NULL, 0, 0, 0 },
 		{ "move",         'g', &ChatHandler::HandleGOMove,         "Moves gameobject to player xyz",           NULL, 0, 0, 0 },
 		{ "rotate",       'g', &ChatHandler::HandleGORotate,       "<Axis> <Value> - Rotates the object. <Axis> x,y, Default o.",             NULL, 0, 0, 0 },
-		{ "sdid",		  'g', &ChatHandler::HandleSpawnByDisplayId, "Spawns a generic game object with the specified display id. Clear your client cache after using this!", NULL, 0, 0, 0 },
+		{ "sdid",         'g', &ChatHandler::HandleSpawnByDisplayId, "Spawns a generic game object with the specified display id. Clear your client cache after using this!", NULL, 0, 0, 0 },
 		{ "portto",       'v', &ChatHandler::HandlePortToGameObjectSpawnCommand, "Teleports you to the gameobject with spawn id x.", NULL, 0, 0, 0 },
 		{ NULL,           '0', NULL,                               "",                                         NULL, 0, 0, 0 }
 	};
@@ -412,6 +413,7 @@ void CommandTableStorage::Init()
 		{ "emote",            'n', &ChatHandler::HandleEmoteCommand,          ".emote - Sets emote state",                                                                                                               NULL, 0, 0, 0 },
 		{ "delete",           'n', &ChatHandler::HandleDeleteCommand,         "Deletes mob from db and world.",                                                                                                          NULL, 0, 0, 0 },
 		{ "info",             'n', &ChatHandler::HandleNpcInfoCommand,        "Displays NPC information",                                                                                                                NULL, 0, 0, 0 },
+		{ "phase",            'n', &ChatHandler::HandleCreaturePhaseCommand,  "<phase> <save> - Sets phase of selected mob",                                                                                             NULL, 0, 0, 0 },
 		{ "addAgent",         'n', &ChatHandler::HandleAddAIAgentCommand,     ".npc addAgent <agent> <procEvent> <procChance> <procCount> <spellId> <spellType> <spelltargetType> <spellCooldown> <floatMisc1> <Misc2>", NULL, 0, 0, 0 },
 		{ "listAgent",        'n', &ChatHandler::HandleListAIAgentCommand,    ".npc listAgent",                                                                                                                          NULL, 0, 0, 0 },
 		{ "say",              'n', &ChatHandler::HandleMonsterSayCommand,     ".npc say <text> - Makes selected mob say text <text>.",                                                                                   NULL, 0, 0, 0 },
@@ -599,6 +601,7 @@ void CommandTableStorage::Init()
 		{ "forcerename",         'm', &ChatHandler::HandleForceRenameCommand,      "Forces character x to rename his char next login",                                                                  NULL, 0, 0, 0 },
 		{ "repairitems",         'n', &ChatHandler::HandleRepairItemsCommand,      ".repairitems - Repair all items from selected player",                                                              NULL, 0, 0, 0 },
 		{ "settitle",			 'm', &ChatHandler::HandleSetTitle,				   "Adds title to a player",																					NULL, 0, 0, 0 },
+		{ "phase",               'm', &ChatHandler::HandlePhaseCommand,            "<phase> - Sets phase of selected player",                                                                           NULL, 0, 0, 0 },
 		{ NULL,                  '0', NULL,                                        "",                                                                                                                  NULL, 0, 0, 0 }
 	};
 	dupe_command_table(characterCommandTable, _characterCommandTable);

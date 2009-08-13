@@ -222,7 +222,8 @@ void WorldSession::HandleMessagechatOpcode( WorldPacket & recv_data )
 				SendChatPacket(data, 1, lang, this);
 				for(set<Player*>::iterator itr = _player->m_inRangePlayers.begin(); itr != _player->m_inRangePlayers.end(); ++itr)
 				{
-					(*itr)->GetSession()->SendChatPacket(data, 1, lang, this);
+					if ( _player->GetPhase() & (*itr)->GetPhase() )
+						(*itr)->GetSession()->SendChatPacket(data, 1, lang, this);
 				}
 			}
 			delete data;

@@ -106,8 +106,12 @@ bool ChatHandler::HandleSpawnByDisplayId(const char * args, WorldSession * m_ses
 	if(!plr)
 		return false;
 
-	plr->GetMapMgr()->CreateAndSpawnGameObject(entry, plr->GetPositionX(), plr->GetPositionY(),
+	GameObject* go = plr->GetMapMgr()->CreateAndSpawnGameObject(entry, plr->GetPositionX(), plr->GetPositionY(),
 		plr->GetPositionZ(), plr->GetOrientation(), 1);
+	go->Phase(PHASE_SET, plr->GetPhase());
+	GOSpawn* gs = go->m_spawn;
+	if (gs)
+		gs->phase = go->GetPhase();
 
 	return true;
 }
@@ -699,6 +703,7 @@ bool ChatHandler::HandleNpcInfoCommand(const char *args, WorldSession *m_session
 		BlueSystemMessage(m_session, "Showing creature info for %s", crt->GetCreatureInfo()->Name);
 	SystemMessage(m_session, "GUID: %d", guid);
 	SystemMessage(m_session, "Faction: %d", crt->GetUInt32Value(UNIT_FIELD_FACTIONTEMPLATE));
+	SystemMessage(m_session, "Phase: %u", crt->GetPhase());
 	{
 		string s = "";
 		if (crt->isBattleMaster())
@@ -766,6 +771,40 @@ bool ChatHandler::HandleNpcInfoCommand(const char *args, WorldSession *m_session
 	sstext << "UNIT_FIELD_BYTES_2 are " << uint16((uint8)theBytes & 0xFF) << " " << uint16((uint8)(theBytes >> 8) & 0xFF) << " ";
 	sstext << uint16((uint8)(theBytes >> 16) & 0xFF) << " " << uint16((uint8)(theBytes >> 24) & 0xFF) << '\0';
 	SendMultilineMessage( m_session, sstext.str().c_str() );
+	return true;
+}
+
+bool ChatHandler::HandleCreaturePhaseCommand(const char *args, WorldSession *m_session)
+{
+	char* sPhase = strtok((char*)args, " ");
+	if (!sPhase)
+		return false;
+
+	uint32 newphase = atoi(sPhase);
+
+	bool Save = false;
+	char* pSave = strtok(NULL, " ");
+	if (pSave)
+		Save = (atoi(pSave)>0?true:false);
+
+	Creature *crt = getSelectedCreature(m_session);
+	if(!crt) return false;
+
+	crt->Phase(PHASE_SET, newphase);
+	if (crt->m_spawn) 
+		crt->m_spawn->phase = newphase; 
+	//VLack: at this point we don't care if it has a spawn or not, as it gets one for sure in SaveToDB, that's why we don't return here from within an else statement.
+	//I made this comment in case someone compares this code with the HandleGOPhaseCommand code where we have to have a spawn to be able to save it.
+
+	// Save it to the database.
+	if (Save)
+	{
+		crt->SaveToDB();
+		crt->m_loadedFromDB = true;
+	}
+
+	sGMLog.writefromsession(m_session, "phased creature with entry %u to %u", crt->GetEntry(), newphase);
+
 	return true;
 }
 
@@ -2542,6 +2581,7 @@ bool ChatHandler::HandleCreatureSpawnCommand(const char *args, WorldSession *m_s
 	sp->Item2SlotDisplay = 0;
 	sp->Item3SlotDisplay = 0;
 	sp->CanFly = 0;
+	sp->phase = m_session->GetPlayer()->GetPhase();
 
 
 	Creature * p = m_session->GetPlayer()->GetMapMgr()->CreateCreature(entry);
@@ -3069,6 +3109,8 @@ bool ChatHandler::HandleGORotate(const char * args, WorldSession * m_session)
 			float ori = m_session->GetPlayer()->GetOrientation();
 			go->SetFloatValue(GAMEOBJECT_PARENTROTATION_02, sinf(ori / 2));
 			go->SetFloatValue(GAMEOBJECT_PARENTROTATION_03, cosf(ori / 2));
+			go->SetOrientation(ori);
+			go->UpdateRotation();
 		}
 		break;
 	default:
@@ -3527,7 +3569,7 @@ bool ChatHandler::HandleGenderChanger(const char* args, WorldSession *m_session)
 		return true;
 	}
 	uint32 displayId = target->GetUInt32Value( UNIT_FIELD_NATIVEDISPLAYID );
-	if( *args == NULL )
+	if( *args == 0 )
 		gender = target->getGender()== 1 ? 0 : 1;
 	else
 	{

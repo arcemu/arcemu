@@ -61,6 +61,7 @@ typedef struct
 	uint32 Item2SlotDisplay;
 	uint32 Item3SlotDisplay;
 	uint32 CanFly;
+	uint32 phase;
 
 	/* sets one of the bytes of an uint32 */
 	uint32 setbyte(uint32 buffer, uint8 index, uint32 byte){
@@ -94,6 +95,7 @@ typedef struct
 	//uint32 level;
 	float scale;
 	//uint32 stateNpcLink;
+	uint32 phase;
 } GOSpawn;
 
 typedef std::vector<CreatureSpawn*> CreatureSpawnList;

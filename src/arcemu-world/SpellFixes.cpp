@@ -6316,7 +6316,7 @@ void ApplyNormalFixes()
 			sp = dbcSpell.LookupEntryForced( HealthStoneID[i] );
 			if( sp != NULL )
 			{
-				sp->Reagent[1] = NULL;
+				sp->Reagent[1] = 0;
 			}
 		}
 
@@ -6369,11 +6369,11 @@ void ApplyNormalFixes()
 		{
 			sp->Effect[1] = SPELL_EFFECT_CHARGE; //hackfix (meant to use trigger missile which isn't implemented)
 			sp->EffectImplicitTargetA[1] = EFF_TARGET_SINGLE_ENEMY;
-			sp->Effect[2] = NULL;
+			sp->Effect[2] = 0;
 		}
 		sp = dbcSpell.LookupEntryForced(20719); //feline grace
 		if( sp != NULL )
-			sp->Effect[0] = NULL;
+			sp->Effect[0] = 0;
 
 		//Druid: Feral Swiftness
 		sp = dbcSpell.LookupEntryForced( 17002 );

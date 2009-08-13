@@ -97,6 +97,13 @@ enum OBJECT_UPDATE_TYPE {
 
 };
 
+enum PHASECOMMANDS {
+	PHASE_SET = 0, //overwrites the phase value with the supplied one
+	PHASE_ADD = 1, //adds the new bits to the current phase value
+	PHASE_DEL = 2, //removes the given bits from the current phase value
+	PHASE_RESET = 3 //sets the default phase of 1, same as PHASE_SET with 1 as the new value
+};
+
 typedef struct
 {
 	uint32 school_type;
@@ -509,6 +516,11 @@ public:
 
 	float m_base_runSpeed;
 	float m_base_walkSpeed;
+
+	uint32 m_phase; //This stores the phase, if two objects have the same bit set, then they can see each other. The default phase is 0x1.
+
+	ARCEMU_INLINE const uint32 GetPhase() { return m_phase; }
+	void Phase(uint8 command=PHASE_SET, uint32 newphase=1);
 
 	void EventSpellDamage(uint64 Victim, uint32 SpellID, uint32 Damage);
 	void SpellNonMeleeDamageLog(Unit *pVictim, uint32 spellID, uint32 damage, bool allowProc, bool static_damage = false, bool no_remove_auras = false);

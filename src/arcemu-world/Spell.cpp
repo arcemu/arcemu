@@ -973,7 +973,7 @@ void Spell::GenerateTargets(SpellCastTargets *store_buff)
 								{
 									if(!(*itr)->m_loggedInPlayer || m_caster == (*itr)->m_loggedInPlayer)
 										continue;
-									if(IsInrange(m_caster->GetPositionX(),m_caster->GetPositionY(),m_caster->GetPositionZ(),(*itr)->m_loggedInPlayer,r))
+									if(IsInrange(m_caster->GetPositionX(),m_caster->GetPositionY(),m_caster->GetPositionZ(),(*itr)->m_loggedInPlayer,r) && (m_caster->GetPhase() & (*itr)->m_loggedInPlayer->GetPhase()) )
 									{
 										store_buff->m_unitTarget = (*itr)->m_loggedInPlayer->GetGUID();
 										break;
@@ -988,7 +988,7 @@ void Spell::GenerateTargets(SpellCastTargets *store_buff)
 							//target friendly npcs
 							for( std::set<Object*>::iterator itr = u_caster->GetInRangeSameFactsSetBegin(); itr != u_caster->GetInRangeSameFactsSetEnd(); itr++ )
 							{
-								if ( (*itr) != NULL && ((*itr)->GetTypeId() == TYPEID_UNIT || (*itr)->GetTypeId() == TYPEID_PLAYER) && (*itr)->IsInWorld() && ((Unit*)*itr)->isAlive() && IsInrange(u_caster, (*itr), r) )
+								if ( (*itr) != NULL && ((*itr)->GetTypeId() == TYPEID_UNIT || (*itr)->GetTypeId() == TYPEID_PLAYER) && (*itr)->IsInWorld() && ((Unit*)*itr)->isAlive() && IsInrange(u_caster, (*itr), r) && (u_caster->GetPhase() & (*itr)->GetPhase()) )
 								{
 									store_buff->m_unitTarget = (*itr)->GetGUID();
 									break;
@@ -1015,7 +1015,7 @@ void Spell::GenerateTargets(SpellCastTargets *store_buff)
 								//target friendly npcs
 								for( std::set<Object*>::iterator itr = u_caster->GetInRangeSameFactsSetBegin(); itr != u_caster->GetInRangeSameFactsSetEnd(); itr++ )
 								{
-									if ( (*itr) != NULL && ((*itr)->GetTypeId() == TYPEID_UNIT || (*itr)->GetTypeId() == TYPEID_PLAYER) && (*itr)->IsInWorld() && ((Unit*)*itr)->isAlive() && IsInrange(u_caster, (*itr), r) )
+									if ( (*itr) != NULL && ((*itr)->GetTypeId() == TYPEID_UNIT || (*itr)->GetTypeId() == TYPEID_PLAYER) && (*itr)->IsInWorld() && ((Unit*)*itr)->isAlive() && IsInrange(u_caster, (*itr), r) && (u_caster->GetPhase() & (*itr)->GetPhase()) )
 									{
 
 										//few additional checks
@@ -1097,7 +1097,7 @@ void Spell::GenerateTargets(SpellCastTargets *store_buff)
 								{
 									if(!(*itr)->m_loggedInPlayer || p == (*itr)->m_loggedInPlayer)
 										continue;
-									if(IsInrange(m_caster->GetPositionX(),m_caster->GetPositionY(),m_caster->GetPositionZ(),(*itr)->m_loggedInPlayer,r))
+									if(IsInrange(m_caster->GetPositionX(),m_caster->GetPositionY(),m_caster->GetPositionZ(),(*itr)->m_loggedInPlayer,r) && (m_caster->GetPhase() & (*itr)->m_loggedInPlayer->GetPhase()) )
 									{
 										store_buff->m_unitTarget = (*itr)->m_loggedInPlayer->GetGUID();
 										break;
@@ -1112,7 +1112,8 @@ void Spell::GenerateTargets(SpellCastTargets *store_buff)
 							//target friendly npcs
 							for( std::set<Object*>::iterator itr = u_caster->GetInRangeSameFactsSetBegin(); itr != u_caster->GetInRangeSameFactsSetEnd(); itr++ )
 							{
-								if ( (*itr) != NULL && ((*itr)->GetTypeId() == TYPEID_UNIT || (*itr)->GetTypeId() == TYPEID_PLAYER) && (*itr)->IsInWorld() && ((Unit*)*itr)->isAlive() && IsInrange(u_caster, (*itr), r) )								{
+								if ( (*itr) != NULL && ((*itr)->GetTypeId() == TYPEID_UNIT || (*itr)->GetTypeId() == TYPEID_PLAYER) && (*itr)->IsInWorld() && ((Unit*)*itr)->isAlive() && IsInrange(u_caster, (*itr), r) && (u_caster->GetPhase() & (*itr)->GetPhase()) )
+								{
 									store_buff->m_unitTarget = (*itr)->GetGUID();
 									break;
 								}
@@ -3628,6 +3629,9 @@ uint8 Spell::CanCast(bool tolerate)
 				if ((*itr)->GetByte(GAMEOBJECT_BYTES_1, 1) != GAMEOBJECT_TYPE_SPELL_FOCUS)
 					continue;
 
+				if ( !(p_caster->GetPhase() & (*itr)->GetPhase()) ) //We can't see this, can't be the focus, skip further checks
+					continue;
+
 				GameObjectInfo *info = ((GameObject*)(*itr))->GetInfo();
 				if (!info)
 				{
@@ -5443,7 +5447,7 @@ void Spell::Heal(int32 amount, bool ForceCrit)
 				{
 					itr = itr2;
 					itr2++;
-					if( (*itr)->IsUnit() && static_cast<Unit*>(*itr)->isAlive() && IsInrange(u_caster, (*itr), 8) )
+					if( (*itr)->IsUnit() && static_cast<Unit*>(*itr)->isAlive() && IsInrange(u_caster, (*itr), 8) && (u_caster->GetPhase() & (*itr)->GetPhase()) )
 					{
 						did_hit_result = DidHit(dbcSpell.LookupEntry(53385)->Effect[0], static_cast< Unit* >( *itr ) );
 						if( did_hit_result == SPELL_DID_HIT_SUCCESS )
@@ -5535,6 +5539,9 @@ void Spell::Heal(int32 amount, bool ForceCrit)
 		for(std::set<Object*>::iterator itr = u_caster->GetInRangeSetBegin(); itr != u_caster->GetInRangeSetEnd(); ++itr)
 		{
 			if((*itr)->GetTypeId() != TYPEID_UNIT || !static_cast<Unit *>(*itr)->CombatStatus.IsInCombat() || (static_cast<Unit *>(*itr)->GetAIInterface()->getThreatByPtr(u_caster) == 0 && static_cast<Unit *>(*itr)->GetAIInterface()->getThreatByPtr(unitTarget) == 0))
+				continue;
+
+			if( !(u_caster->GetPhase() & (*itr)->GetPhase()) ) //Can't see, can't be a threat
 				continue;
 
 			target_threat.push_back(static_cast<Unit *>(*itr));
