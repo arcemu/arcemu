@@ -509,7 +509,7 @@ AI_Spell * Pet::CreateAISpell(SpellEntry * info)
 		sp->cooldown = PET_SPELL_SPAM_COOLDOWN; //omg, avoid spamming at least
 	sp->cooldowntime = 0;
 
-	if( info->Effect[0] == SPELL_EFFECT_APPLY_AURA || info->Effect[0] == SPELL_EFFECT_APPLY_AREA_AURA || info->Effect[0] == SPELL_EFFECT_APPLY_AREA_AURA2 )
+	if( /* info->Effect[0] == SPELL_EFFECT_APPLY_AURA || */ info->Effect[0] == SPELL_EFFECT_APPLY_AREA_AURA || info->Effect[0] == SPELL_EFFECT_APPLY_AREA_AURA2 )
 		sp->spellType = STYPE_BUFF;
 	else
 		sp->spellType = STYPE_DAMAGE;

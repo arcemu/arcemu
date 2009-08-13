@@ -161,7 +161,8 @@ void WorldSession::HandlePetAction(WorldPacket & recv_data)
 					if( sp->spellType != STYPE_BUFF )
 					{
 						// make sure the target is attackable
-						if( pTarget == pPet || !isAttackable( pPet, pTarget ) )
+                        if( pTarget == pPet || !isAttackable( pPet, pTarget ) || 
+                            ( pTarget->IsCreature() && static_cast<Creature*>(pTarget)->m_spawn != NULL && !( static_cast<Creature*>(pTarget)->isattackable( static_cast<Creature*>(pTarget)->m_spawn ) ) ))
 						{
 							pPet->SendActionFeedback( PET_FEEDBACK_CANT_ATTACK_TARGET );
 							return;

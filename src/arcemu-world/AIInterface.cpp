@@ -1822,6 +1822,13 @@ Unit* AIInterface::FindTarget()
 
 			pUnit = static_cast< Unit* >( (*itr) );
 
+            // if the target is not attackable we are not going to attack it and find a new target, if possible
+            if( pUnit->IsCreature() ){
+                Creature *pCreature = static_cast<Creature*>( pUnit );
+                if( pCreature->m_spawn && !pCreature->isattackable( pCreature->m_spawn ) )
+                    continue;
+            }
+
 			if( UnsafeCanOwnerAttackUnit( pUnit ) == false )
 				continue;
 

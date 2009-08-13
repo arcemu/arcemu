@@ -4115,7 +4115,7 @@ uint8 Spell::CanCast(bool tolerate)
 						result = PETTAME_DEAD;
 					else if( tame->IsPet() )
 						result = PETTAME_CREATUREALREADYOWNED;
-					else if( !tame->GetCreatureInfo() || tame->GetCreatureInfo()->Type != UNIT_TYPE_BEAST || !tame->GetCreatureInfo()->Family || tame->GetCreatureInfo()->Flags1 & CREATURE_FLAG1_TAMEABLE )
+					else if( !tame->GetCreatureInfo() || tame->GetCreatureInfo()->Type != UNIT_TYPE_BEAST || !tame->GetCreatureInfo()->Family || !( tame->GetCreatureInfo()->Flags1 & CREATURE_FLAG1_TAMEABLE ) )
 						result = PETTAME_NOTTAMEABLE;
 					else if( !p_caster->isAlive() || p_caster->getClass() != HUNTER )
 						result = PETTAME_UNITSCANTTAME;
