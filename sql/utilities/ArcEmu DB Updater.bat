@@ -195,6 +195,8 @@ ECHO [Importing] 2801_items.sql
 mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < ..\world_updates\2801_items.sql
 ECHO [Importing] 2806_trainingdummies.sql
 mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < ..\world_updates\2806_trainingdummies.sql
+ECHO [Importing] 2817_recallorientation.sql
+mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < ..\world_updates\2817_recallorientation.sql
 ECHO [Importing] ArcScript_full.sql
 mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < ..\ArcScripts\ArcScript_full.sql
 ECHO [Importing] spellfixes.sql
@@ -379,6 +381,8 @@ ECHO [Importing] 2801_items.sql
 mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < ..\world_updates\2801_items.sql
 ECHO [Importing] 2806_trainingdummies.sql
 mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < ..\world_updates\2806_trainingdummies.sql
+ECHO [Importing] 2817_recallorientation.sql
+mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < ..\world_updates\2817_recallorientation.sql
 ECHO [Importing] ArcScript_full.sql
 mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < ..\ArcScripts\ArcScript_full.sql
 ECHO [Importing] spellfixes.sql
