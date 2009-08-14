@@ -864,17 +864,6 @@ void Aura::Remove()
 	// reset diminishing return timer if needed
 	::UnapplyDiminishingReturnTimer( m_target, m_spellProto );
 
-	if( GetSpellProto()->SpellGroupType && m_target->GetTypeId() == TYPEID_PLAYER )
-	{
-		int32 speedmod = 0;
-		SM_FIValue( m_target->SM_FSpeedMod, &speedmod, m_spellProto->SpellGroupType );
-		if( speedmod )
-		{
-			m_target->m_speedModifier -= speedmod;
-			m_target->UpdateSpeed();
-		}
-	}
-
 	// remove attacker
 	Unit* caster = GetUnitCaster();
 	if( caster != NULL)
@@ -6971,8 +6960,8 @@ void Aura::SpellAuraAddPctMod( bool apply )
 		SendModifierLog( &m_target->SM_PJumpReduce, val, AffectedGroups, static_cast<uint8>( mod->m_miscValue ), true );
 		break;
 
-	case SMT_CAST_TIME_FLAT:
-		SendModifierLog( &m_target->SM_PCastTime, val, AffectedGroups, static_cast<uint8>( mod->m_miscValue ), true );
+	case SMT_GLOBAL_COOLDOWN:
+		SendModifierLog( &m_target->SM_PGlobalCooldown, val, AffectedGroups, static_cast<uint8>( mod->m_miscValue ), true );
 		break;
 
 	case SMT_SPELL_VALUE_PCT:
@@ -8272,7 +8261,7 @@ void Aura::SpellAuraModHealingByAP(bool apply)
 
 void Aura::SpellAuraAddFlatModifier(bool apply)
 {
-	int32 val = apply?mod->m_amount:-mod->m_amount;
+	int32 val = apply ? mod->m_amount : -mod->m_amount;
 	uint32* AffectedGroups = GetSpellProto()->EffectSpellClassMask[mod->i];
 
 	switch (mod->m_miscValue)//let's generate warnings for unknown types of modifiers
@@ -8350,7 +8339,10 @@ void Aura::SpellAuraAddFlatModifier(bool apply)
 		break;
 
 	//case SMT_JUMP_REDUCE: - no flat
-	//case SMT_CAST_TIME_FLAT:
+
+	case SMT_GLOBAL_COOLDOWN:
+		SendModifierLog(&m_target->SM_FGlobalCooldown,val,AffectedGroups, static_cast<uint8>( mod->m_miscValue ));
+		break;
 
 	//case SMT_SPELL_VALUE_PCT: - pct only?
 		//SendModifierLog(&m_target->SM_FDOT,val,AffectedGroups, static_cast<uint8>( mod->m_miscValue ));
@@ -8362,7 +8354,6 @@ void Aura::SpellAuraAddFlatModifier(bool apply)
 
 	case SMT_PENALTY:
 		SendModifierLog(&m_target->SM_FPenalty,val,AffectedGroups, static_cast<uint8>( mod->m_miscValue ));
-		//SendModifierLog(&m_target->SM_PPenalty,val,AffectedGroups, static_cast<uint8>( mod->m_miscValue ),true);
 		break;
 
 	case SMT_EFFECT_BONUS:

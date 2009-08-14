@@ -591,18 +591,6 @@ uint32 CalculateDamage( Unit* pAttacker, Unit* pVictim, uint32 weapon_damage_typ
 			}
 			else
 				wspeed = (float)pAttacker->GetUInt32Value(UNIT_FIELD_BASEATTACKTIME);
-
-			if(spellgroup)
-			{
-				int32 apall = pAttacker->GetAP();
-				int32 apb=0;
-				SM_FIValue(pAttacker->SM_PAPBonus,&apb,spellgroup);
-
-				if(apb)
-					ap += apall*((float)apb/100);
-				else
-					ap = float(apall);
-			}
 		}
 		else
 		{

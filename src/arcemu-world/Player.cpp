@@ -11839,21 +11839,29 @@ void Player::Cooldown_AddStart(SpellEntry * pSpell)
 		return;
 
 	uint32 mstime = getMSTime();
-	int32 atime = float2int32( float( pSpell->StartRecoveryTime ) / SpellHasteRatingBonus );
+	int32 atime; // = float2int32( float( pSpell->StartRecoveryTime ) / SpellHasteRatingBonus );
 
+	if( m_floatValues[UNIT_MOD_CAST_SPEED] >= 1.0f )
+		atime = pSpell->StartRecoveryTime;
+	else
+		atime = float2int32( float(pSpell->StartRecoveryTime) * m_floatValues[UNIT_MOD_CAST_SPEED] );
 
-	if( atime < 1000 )	// global cooldown is limited to 1s
-		atime = 1000;
+	if( pSpell->SpellGroupType )
+	{
+		SM_FIValue(SM_FGlobalCooldown, &atime, pSpell->SpellGroupType);
+		SM_PIValue(SM_PGlobalCooldown, &atime, pSpell->SpellGroupType);
+	}
 
-	if( pSpell->StartRecoveryCategory )		// if we have a different cool category to the actual spell category - only used by few spells
+	if( atime < 0 )
+		return;
+
+	if( pSpell->StartRecoveryCategory && pSpell->StartRecoveryCategory != 133 )		// if we have a different cool category to the actual spell category - only used by few spells
 		_Cooldown_Add( COOLDOWN_TYPE_CATEGORY, pSpell->StartRecoveryCategory, mstime + atime, pSpell->Id, 0 );
-	/*else if( pSpell->Category )				// cooldowns are grouped
-		_Cooldown_Add( COOLDOWN_TYPE_CATEGORY, pSpell->Category, mstime + pSpell->StartRecoveryTime, pSpell->Id, 0 );*/
+	//else if( pSpell->Category )				// cooldowns are grouped
+		//_Cooldown_Add( COOLDOWN_TYPE_CATEGORY, pSpell->Category, mstime + pSpell->StartRecoveryTime, pSpell->Id, 0 );
 	else									// no category, so it's a gcd
 	{
-#ifdef _DEBUG
-		Log.Debug("Cooldown", "Global cooldown adding: %u ms", atime );
-#endif
+		//Log.Debug("Cooldown", "Global cooldown adding: %u ms", atime );
 		m_globalCooldown = mstime + atime;
 
 	}

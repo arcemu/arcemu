@@ -154,51 +154,76 @@ Unit::Unit()
 	}
 
 	//SM
-	SM_CriticalChance=0;
-	SM_FDur=0;//flat
-	SM_PDur=0;//pct
-	SM_FRadius=0;
-	SM_FRange=0;
-	SM_PCastTime=0;
-	SM_FCastTime=0;
-	SM_PCriticalDamage=0;
-	SM_FDOT=0;
-	SM_PDOT=0;
-	SM_FEffect1_Bonus=0;
-	SM_PEffect1_Bonus=0;
-	SM_FEffect2_Bonus=0;
-	SM_PEffect2_Bonus=0;
-	SM_FEffect3_Bonus=0;
-	SM_PEffect3_Bonus=0;
-	SM_FEffectBonus=0;
-	SM_PEffectBonus=0;
-	SM_FDamageBonus=0;
-	SM_PDamageBonus=0;
-	SM_PMiscEffect=0;
-	SM_FMiscEffect=0;
-	SM_FHitchance=0;
-	SM_PRange=0;//pct
-	SM_PRadius=0;
-	SM_PAPBonus=0;
-	SM_PCost=0;
-	SM_FCost=0;
-	SM_FAdditionalTargets=0;
-	SM_PJumpReduce=0;
-	SM_FSpeedMod=0;
-	SM_PNonInterrupt=0;
-	SM_FPenalty=0;
-	SM_PPenalty=0;
-	SM_FCooldownTime = 0;
-	SM_PCooldownTime = 0;
-	SM_FChanceOfSuccess = 0;
-	SM_FAmptitude = 0;
-	SM_PAmptitude = 0;
-	SM_FRezist_dispell = 0;
-	SM_PRezist_dispell = 0;
-	SM_FCharges = 0;
-	SM_PCharges = 0;
+	SM_FDamageBonus = 0;
+	SM_PDamageBonus = 0;
+
+	SM_FDur = 0;
+	SM_PDur = 0;
+
 	SM_FThreat = 0;
 	SM_PThreat = 0;
+
+	SM_FEffect1_Bonus = 0;
+	SM_PEffect1_Bonus = 0;
+
+	SM_FCharges = 0;
+	SM_PCharges = 0;
+
+	SM_FRange = 0;
+	SM_PRange = 0;
+
+	SM_FRadius = 0;
+	SM_PRadius = 0;
+		
+	SM_CriticalChance = 0;
+
+	SM_FMiscEffect = 0;
+	SM_PMiscEffect = 0;
+		
+	SM_PNonInterrupt = 0;
+
+	SM_FCastTime = 0;
+	SM_PCastTime = 0;
+		
+	SM_FCooldownTime = 0;
+	SM_PCooldownTime = 0;
+		
+	SM_FEffect2_Bonus = 0;
+	SM_PEffect2_Bonus = 0;
+
+	SM_FCost = 0;
+	SM_PCost = 0;
+		
+	SM_PCriticalDamage = 0;
+
+	SM_FHitchance = 0;
+
+	SM_FAdditionalTargets = 0;
+
+	SM_FChanceOfSuccess = 0;
+
+	SM_FAmptitude = 0;
+	SM_PAmptitude = 0;
+
+	SM_PJumpReduce = 0;
+
+	SM_FGlobalCooldown = 0;
+	SM_PGlobalCooldown = 0;
+
+	SM_FDOT = 0;
+	SM_PDOT = 0;
+		
+	SM_FEffect3_Bonus = 0;
+	SM_PEffect3_Bonus = 0;
+
+	SM_FPenalty = 0;
+	SM_PPenalty = 0;
+
+	SM_FEffectBonus = 0;
+	SM_PEffectBonus = 0;	
+		
+	SM_FRezist_dispell = 0;
+	SM_PRezist_dispell = 0;
 
 	m_pacified = 0;
 	m_interruptRegen = 0;
@@ -508,11 +533,6 @@ Unit::~Unit()
 		SM_PRadius = NULL;
 	}
 
-	if(SM_PAPBonus != NULL ) {
-		delete [] SM_PAPBonus;
-		SM_PAPBonus = NULL;
-	}
-
 	if(SM_PCost != NULL ) {
 		delete [] SM_PCost;
 		SM_PCost = NULL;
@@ -533,9 +553,14 @@ Unit::~Unit()
 		SM_PJumpReduce = NULL;
 	}
 
-	if(SM_FSpeedMod != NULL ) {
-		delete [] SM_FSpeedMod;
-		SM_FSpeedMod = NULL;
+	if(SM_FGlobalCooldown != NULL ) {
+		delete [] SM_FGlobalCooldown;
+		SM_FGlobalCooldown = NULL;
+	}
+
+	if(SM_PGlobalCooldown != NULL ) {
+		delete [] SM_PGlobalCooldown;
+		SM_PGlobalCooldown = NULL;
 	}
 
 	if(SM_PNonInterrupt != NULL ) {
@@ -612,12 +637,14 @@ Unit::~Unit()
 	m_aiInterface = NULL;
 
 
-	if( m_currentSpell ) {
+	if( m_currentSpell ) 
+	{
 		m_currentSpell->cancel();
 		m_currentSpell = NULL;
 	}
 
-	if( m_damageSplitTarget ) {
+	if( m_damageSplitTarget ) 
+	{
 		delete m_damageSplitTarget;
 		m_damageSplitTarget = NULL;
 	}
@@ -4660,18 +4687,6 @@ void Unit::AddAura(Aura * aur)
 	*/	return;
 	}
 
-	////////////////////////////////////////////////////////
-	if(aur->GetSpellProto()->SpellGroupType && m_objectTypeId == TYPEID_PLAYER)
-	{
-		int32 speedmod=0;
-		SM_FIValue(SM_FSpeedMod,&speedmod,aur->GetSpellProto()->SpellGroupType);
-		if(speedmod)
-		{
-			m_speedModifier += speedmod;
-			UpdateSpeed();
-		}
-	}
-
 	Unit* target = aur->GetTarget();
 	if (target != NULL)
 	{
@@ -7383,12 +7398,6 @@ void Unit::InheritSMMods(Unit *inherit_from)
 			SM_PRadius = new int32[SPELL_GROUPS];
 		memcpy(SM_PRadius,inherit_from->SM_PRadius,sizeof(int)*SPELL_GROUPS);
 	}
-	if(inherit_from->SM_PAPBonus)
-	{
-		if(SM_PAPBonus==0)
-			SM_PAPBonus = new int32[SPELL_GROUPS];
-		memcpy(SM_PAPBonus,inherit_from->SM_PAPBonus,sizeof(int)*SPELL_GROUPS);
-	}
 	if(inherit_from->SM_PCost)
 	{
 		if(SM_PCost==0)
@@ -7413,11 +7422,17 @@ void Unit::InheritSMMods(Unit *inherit_from)
 			SM_PJumpReduce = new int32[SPELL_GROUPS];
 		memcpy(SM_PJumpReduce,inherit_from->SM_PJumpReduce,sizeof(int)*SPELL_GROUPS);
 	}
-	if(inherit_from->SM_FSpeedMod)
+	if(inherit_from->SM_FGlobalCooldown)
 	{
-		if(SM_FSpeedMod==0)
-			SM_FSpeedMod = new int32[SPELL_GROUPS];
-		memcpy(SM_FSpeedMod,inherit_from->SM_FSpeedMod,sizeof(int)*SPELL_GROUPS);
+		if(SM_FGlobalCooldown==0)
+			SM_FGlobalCooldown = new int32[SPELL_GROUPS];
+		memcpy(SM_FGlobalCooldown,inherit_from->SM_FGlobalCooldown,sizeof(int)*SPELL_GROUPS);
+	}
+	if(inherit_from->SM_PGlobalCooldown)
+	{
+		if(SM_PGlobalCooldown==0)
+			SM_PGlobalCooldown = new int32[SPELL_GROUPS];
+		memcpy(SM_PGlobalCooldown,inherit_from->SM_PGlobalCooldown,sizeof(int)*SPELL_GROUPS);
 	}
 	if(inherit_from->SM_PNonInterrupt)
 	{
@@ -7430,6 +7445,12 @@ void Unit::InheritSMMods(Unit *inherit_from)
 		if(SM_FPenalty==0)
 			SM_FPenalty = new int32[SPELL_GROUPS];
 		memcpy(SM_FPenalty,inherit_from->SM_FPenalty,sizeof(int)*SPELL_GROUPS);
+	}
+	if(inherit_from->SM_PPenalty)
+	{
+		if(SM_PPenalty==0)
+			SM_PPenalty = new int32[SPELL_GROUPS];
+		memcpy(SM_PPenalty,inherit_from->SM_PPenalty,sizeof(int)*SPELL_GROUPS);
 	}
 	if(inherit_from->SM_FCooldownTime)
 	{

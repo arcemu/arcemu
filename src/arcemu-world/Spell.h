@@ -119,7 +119,7 @@ enum SPELL_MODIFIER_TYPE
     SMT_TRIGGER             =18,// adds/increases chance to trigger some spell for example increase chance to apply poisons or entangle // GOOD need work
     SMT_AMPTITUDE           =19,// modifies the amptitude in periodic triggers
     SMT_JUMP_REDUCE         =20,// Increases the amount healed by Chain Heal to targets beyond the first by x%. (no flat)
-    SMT_CAST_TIME_FLAT      =21,
+    SMT_GLOBAL_COOLDOWN     =21,// Reduce Global Cooldown, http://www.wowhead.com/?spell=51183
 	//!!! most spells have both SMT_DAMAGE_DONE and this value. Be carefull case there is no need to apply both !
     SMT_SPELL_VALUE_PCT		=22,// damage done by ability by x% : SELECT id,name,description FROM dbc_spell where (EffectApplyAuraName_1=108 and EffectMiscValue_1=22) or (EffectApplyAuraName_2=108 and EffectMiscValue_2=22) or (EffectApplyAuraName_3=108 and EffectMiscValue_3=22)  its DoT actually
     SMT_EFFECT_3			=23,// modifies the third effect of the spell
@@ -130,7 +130,6 @@ enum SPELL_MODIFIER_TYPE
     SMT_RESIST_DISPEL       =28,// TODO NEEDS WORK :D
 	//SMT_CROWD_DAMAGE		=29,// Mod Crowd Damage Test, 45365 - Increases the critical strike damage bonus of your Frost spells by 100%
 };
-
 
 static void SM_FFValue( int32* m, float* v, uint32* group )
 {
