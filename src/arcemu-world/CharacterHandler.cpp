@@ -947,10 +947,6 @@ void WorldSession::FullLogin(Player * plr)
 	}
 #endif
 
-	// Send MOTD
-	_player->BroadcastMessage(sWorld.GetMotd());
-
-
 	// Send revision (if enabled)
 #ifdef WIN32
 	_player->BroadcastMessage("Powered by: %sArcEmu %s r/%s-Win-%s %s(Please report ALL bugs to http://ArcEmu.org/forums/)", MSG_COLOR_WHITE, BUILD_TAG,

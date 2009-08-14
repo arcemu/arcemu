@@ -3188,40 +3188,30 @@ void Spell::TriggerSpell()
 		spell->prepare(&targets);
 	}
 }*/
-/*
+
 void Spell::DetermineSkillUp()
 {
+	if(!p_caster)return;
+	float chance = 0.0f;
 	skilllinespell* skill = objmgr.GetSpellSkill(GetProto()->Id);
-	if (m_caster->GetTypeId() == TYPEID_PLAYER)
+	if( skill != NULL && static_cast< Player* >( m_caster )->_HasSkillLine( skill->skilline ) )
 	{
-		if ((skill) && static_cast< Player* >( m_caster )->HasSkillLine( skill->skilline ) )
-		{
-			uint32 amt = static_cast< Player* >( m_caster )->GetBaseSkillAmt(skill->skilline);
-			uint32 max = static_cast< Player* >( m_caster )->GetSkillMax(skill->skilline);
-			if (amt >= skill->grey) //grey
-			{
-			}
-			else if ((amt >= (((skill->grey - skill->green) / 2) + skill->green)) && (amt < max))
-			{
-				if (rand()%100 < 33) //green
-					static_cast< Player* >( m_caster )->AdvanceSkillLine(skill->skilline);
-
-			}
-			else if ((amt >= skill->green) && (amt < max))
-			{
-				if (rand()%100 < 66) //yellow
-					static_cast< Player* >( m_caster )->AdvanceSkillLine(skill->skilline);
-
-			}
-			else
-			{
-				if (amt < max) //brown
-					static_cast< Player* >( m_caster )->AdvanceSkillLine(skill->skilline);
-			}
-		}
+		uint32 amt = static_cast< Player* >( m_caster )->_GetSkillLineCurrent( skill->skilline, false );
+		uint32 max = static_cast< Player* >( m_caster )->_GetSkillLineMax( skill->skilline );
+		if( amt >= max )
+			return;
+		if( amt >= skill->grey ) //grey
+			chance = 0.0f;
+		else if( ( amt >= ( ( ( skill->grey - skill->green) / 2 ) + skill->green ) ) ) //green
+			chance = 33.0f;
+		else if( amt >= skill->green ) //yellow
+			chance = 66.0f;
+		else //brown
+			chance=100.0f;
 	}
+	if(Rand(chance*sWorld.getRate(RATE_SKILLCHANCE)))
+		p_caster->_AdvanceSkillLine(skill->skilline, float2int32( 1.0f * sWorld.getRate(RATE_SKILLRATE)));
 }
-*/
 
 bool Spell::IsAspect()
 {
@@ -4958,8 +4948,8 @@ exit:
 	{
 		if( i==0 && p_caster != NULL )
 		{
-			//Increases healing received by 25% of the Tree of Life's total spirit.
-			value = p_caster->GetUInt32Value( UNIT_FIELD_STAT4 ) >> 2;
+			//Heal is increased by 6%
+			value *= (uint32)( 1.06f );
 		}
 	}
 	else if( GetProto()->Id == 57669 || GetProto()->Id == 61782) //Replenishment
@@ -5590,7 +5580,130 @@ void Spell::DetermineSkillUp(uint32 skillid,uint32 targetlevel, uint32 multiplic
 		multiplicator = 1;
 
 	if(Rand((chance * sWorld.getRate(RATE_SKILLCHANCE)) * multiplicator))
+	{
 		p_caster->_AdvanceSkillLine(skillid, float2int32(1.0f * sWorld.getRate(RATE_SKILLRATE)));
+
+		uint32 value = p_caster->_GetSkillLineCurrent(skillid, true);
+		uint32 spellid = 0;
+
+		// Lifeblood
+		if(skillid == SKILL_HERBALISM)
+		{
+			switch(value)
+			{
+				// Rank 1
+				case 75:
+				{
+					spellid = 55428;
+				}break;
+				// Rank 2
+				case 150:
+				{
+					spellid = 55480;
+				}break;
+				// Rank 3
+				case 225:
+				{
+					spellid = 55500;
+				}break;
+				// Rank 4
+				case 300:
+				{
+					spellid = 55501;
+				}break;
+				// Rank 5
+				case 375:
+				{
+					spellid = 55502;
+				}break;
+				// Rank 6
+				case 450:
+				{
+					spellid = 55503;
+				}break;
+			}
+		}
+
+		// Toughness
+		if(skillid == SKILL_MINING)
+		{
+			switch(value)
+			{
+				// Rank 1
+				case 75:
+				{
+						spellid = 53120;
+				}break;
+				// Rank 2
+				case 150:
+				{
+					spellid = 53121;
+				}break;
+				// Rank 3
+				case 225:
+				{
+					spellid = 53122;
+				}break;
+				// Rank 4
+				case 300:
+				{
+					spellid = 53123;
+				}break;
+				// Rank 5
+				case 375:
+				{
+					spellid = 53124;
+				}break;
+				// Rank 6
+				case 450:
+				{
+					spellid = 53040;
+				}break;
+			}
+		}
+
+
+		// Master of Anatomy
+		if(skillid == SKILL_SKINNING)
+		{
+			switch(value)
+			{
+				// Rank 1
+				case 75:
+				{
+					spellid = 53125;
+				}break;
+				// Rank 2
+				case 150:
+				{
+					spellid = 53662;
+				}break;
+				// Rank 3
+				case 225:
+				{
+					spellid = 53663;
+				}break;
+				// Rank 4
+				case 300:
+				{
+					spellid = 53664;
+				}break;
+				// Rank 5
+				case 375:
+				{
+					spellid = 53665;
+				}break;
+				// Rank 6
+				case 450:
+				{
+					spellid = 53666;
+				}break;
+			}
+		}
+
+		if(spellid != 0)
+			p_caster->addSpell(spellid);
+	}
 }
 
 void Spell::DetermineSkillUp(uint32 skillid)
@@ -5599,10 +5712,10 @@ void Spell::DetermineSkillUp(uint32 skillid)
 	if(!p_caster)return;
 	float chance = 0.0f;
 	skilllinespell* skill = objmgr.GetSpellSkill(GetProto()->Id);
-	if( skill != NULL && static_cast< Player* >( m_caster )->_HasSkillLine( skill->skilline ) )
+	if( skill != NULL && skillid == skill->skilline && static_cast< Player* >( m_caster )->_HasSkillLine( skillid ) )
 	{
-		uint32 amt = static_cast< Player* >( m_caster )->_GetSkillLineCurrent( skill->skilline, false );
-		uint32 max = static_cast< Player* >( m_caster )->_GetSkillLineMax( skill->skilline );
+		uint32 amt = static_cast< Player* >( m_caster )->_GetSkillLineCurrent( skillid, false );
+		uint32 max = static_cast< Player* >( m_caster )->_GetSkillLineMax( skillid );
 		if( amt >= max )
 			return;
 		if( amt >= skill->grey ) //grey
