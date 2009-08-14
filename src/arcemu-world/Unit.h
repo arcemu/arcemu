@@ -886,6 +886,10 @@ public:
 	virtual bool IsPlayer() { return false; }
 	virtual bool IsCreature() { return false; }
 
+    virtual bool IsPvPFlagged() = 0;
+	virtual void SetPvPFlag() = 0;
+	virtual void RemovePvPFlag() = 0;
+
     void setAttackTimer(int32 time, bool offhand);
 	bool isAttackReady(bool offhand);
 

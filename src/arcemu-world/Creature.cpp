@@ -1005,6 +1005,15 @@ void Creature::TotemExpire()
 	totemSlot = -1;
 	totemOwner = NULL;
 
+    // If we have a summon then let's remove that first
+    if(summonPet != NULL){
+        if( summonPet->IsInWorld() )
+            summonPet->RemoveFromWorld( false, true );
+        else
+            summonPet->SafeDelete();
+        summonPet = NULL;
+    }
+
 	if(pOwner != NULL)
 		DestroyForPlayer(pOwner); //make sure the client knows it's gone...
 

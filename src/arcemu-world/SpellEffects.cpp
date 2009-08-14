@@ -6001,7 +6001,13 @@ void Spell::SpellEffectSummonTotem(uint32 i) // Summon Totem
 	pTotem->SetUInt32Value(UNIT_FIELD_NATIVEDISPLAYID, ci->Male_DisplayID); //blizzlike :P
 	pTotem->SetFloatValue(UNIT_MOD_CAST_SPEED, 1.0f);
 	pTotem->SetUInt32Value(UNIT_CREATED_BY_SPELL, GetProto()->Id);
-	pTotem->SetUInt32Value(UNIT_FIELD_BYTES_2, 1 | (0x28 << 8));
+	// pTotem->SetUInt32Value(UNIT_FIELD_BYTES_2, 1 | (0x28 << 8));
+    pTotem->SetUInt32Value( UNIT_DYNAMIC_FLAGS, 0 );
+    
+    if( p_caster->IsPvPFlagged() )
+        pTotem->SetPvPFlag();
+    else
+        pTotem->RemovePvPFlag();
 
 	// Initialize faction stuff.
 	pTotem->m_faction = p_caster->m_faction;

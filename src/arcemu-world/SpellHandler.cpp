@@ -554,6 +554,6 @@ void WorldSession::HandleCancelTotem(WorldPacket & recv_data)
 	uint8 slot;
 	recv_data >> slot;
 
-	if( slot < 4 && _player->m_TotemSlots[slot] )
+   	if( slot < 4 && _player->m_TotemSlots[slot] )
 		_player->m_TotemSlots[slot]->TotemExpire();
 }

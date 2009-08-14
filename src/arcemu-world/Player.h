@@ -1900,6 +1900,18 @@ public:
 //		RemoveByteFlag(UNIT_FIELD_BYTES_2, 1, 0x28);
 		SetByteFlag(UNIT_FIELD_BYTES_2, 1, U_FIELD_BYTES_FLAG_PVP);
 		SetFlag(PLAYER_FLAGS, PLAYER_FLAG_PVP);
+        
+        // Adjusting the totems' PVP flag
+        for(int i = 0; i < 4; ++i){
+            if( m_TotemSlots[i] != NULL ){
+                m_TotemSlots[i]->SetPvPFlag();
+                
+                // Adjusting the totems' summons' PVP flag
+                if( static_cast<Unit*>( m_TotemSlots[i] )->summonPet != 0)
+                    static_cast<Unit*>( m_TotemSlots[i] )->summonPet->SetPvPFlag();
+            }
+        }
+
 		if( CombatStatus.IsInCombat() )
 			SetFlag(PLAYER_FLAGS, 0x100);
 	}
@@ -1909,6 +1921,17 @@ public:
 		StopPvPTimer();
 		RemoveByteFlag(UNIT_FIELD_BYTES_2, 1, U_FIELD_BYTES_FLAG_PVP);
 		RemoveFlag(PLAYER_FLAGS, PLAYER_FLAG_PVP);
+
+        // Adjusting the totems' PVP flag
+        for(int i = 0; i < 4; ++i){
+            if( m_TotemSlots[i] != NULL ){
+                m_TotemSlots[i]->RemovePvPFlag();
+
+                // Adjusting the totems' summons' PVP flag
+                if( static_cast<Unit*>( m_TotemSlots[i] )->summonPet != 0)
+                    static_cast<Unit*>( m_TotemSlots[i] )->summonPet->RemovePvPFlag();
+            }
+        }
 	}
 
 	ARCEMU_INLINE bool IsFFAPvPFlagged()

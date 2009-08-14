@@ -305,6 +305,22 @@ public:
 	ARCEMU_INLINE bool HasItems() { return ((m_SellItems != NULL) ? true : false); }
 	ARCEMU_INLINE CreatureProto* GetProto() { return proto; }
 
+    	//! Is PVP flagged?
+	ARCEMU_INLINE bool IsPvPFlagged()
+	{
+		return HasByteFlag(UNIT_FIELD_BYTES_2, 1, U_FIELD_BYTES_FLAG_PVP);
+	}
+
+	ARCEMU_INLINE void SetPvPFlag()
+	{
+		SetByteFlag(UNIT_FIELD_BYTES_2, 1, U_FIELD_BYTES_FLAG_PVP);
+	}
+
+	ARCEMU_INLINE void RemovePvPFlag()
+	{
+		RemoveByteFlag(UNIT_FIELD_BYTES_2, 1, U_FIELD_BYTES_FLAG_PVP);
+	}
+
 	int32 GetSlotByItemId(uint32 itemid)
 	{
 		uint32 slot = 0;

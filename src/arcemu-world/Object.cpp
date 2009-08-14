@@ -2219,6 +2219,48 @@ void Object::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
 			return;
 		}
 
+        // We've just killed a totem
+        if( pVictim->IsCreature() && static_cast<Creature*>(pVictim)->IsTotem() ){
+            Creature *pTotem = static_cast<Creature*>(pVictim);
+            
+            // If we have a summon then let's remove that first
+            if(pTotem->summonPet != NULL){
+                if( pTotem->summonPet->IsInWorld() )
+                    pTotem->summonPet->RemoveFromWorld( false, true );
+                else
+                    pTotem->summonPet->SafeDelete();
+                pTotem->summonPet = NULL;
+            }
+
+            if(pTotem->IsInWorld())
+                pTotem->RemoveFromWorld( false, true );
+            else
+                pTotem->SafeDelete();
+            return;
+        }
+
+        // We've killed some kind of summon
+        if( pVictim->GetUInt64Value( UNIT_FIELD_CREATEDBY ) != 0 ){
+            Unit *pSummoner = pVictim->GetMapMgr()->GetUnit( pVictim->GetUInt64Value( UNIT_FIELD_CREATEDBY ) );
+
+            if( pSummoner && pSummoner->IsInWorld() && pSummoner->IsCreature() ){
+                Creature *pSummonerC = static_cast<Creature*>( pSummoner );
+            
+                // We've killed a summon summoned by a totem
+                if( pSummonerC->IsTotem() ){
+                    pSummoner->summonPet = NULL;
+
+                    // Removing the totem
+                    if(pSummonerC->IsInWorld())
+                      pSummonerC->RemoveFromWorld( false, true );
+                    else
+                      pSummonerC->SafeDelete();
+                }
+            }
+
+            
+        }
+
 
 		
 #ifdef ENABLE_ACHIEVEMENTS
@@ -2497,24 +2539,25 @@ void Object::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
 			//bool isCritter = (pVictim->GetCreatureInfo() != NULL)? pVictim->GetCreatureInfo()->Type : 0;
 
 			//-----------------------------------LOOOT--------------------------------------------
-			if ((!pVictim->IsPet())&& ( !isCritter ))
+            if ((!pVictim->IsPet())&& ( !isCritter ) && pVictim->GetUInt64Value( UNIT_FIELD_CREATEDBY ) == 0)
 			{
 				Creature * victim = static_cast<Creature*>(pVictim);
-				// fill loot vector.
-				victim->generateLoot();
 
-				Player *owner = 0;
+                Player *owner = 0;
 				if(victim->TaggerGuid)
 					owner = GetMapMgr()->GetPlayer( (uint32)victim->TaggerGuid );
 
-				if(owner == 0)  // no owner
+                if(owner == 0 || victim->IsTotem() )  // no owner, or a totem
 				{
-					// dunno why this would happen, but anyway.. anyone can loot ;p
+                    // dunno why this would happen, but anyway.. anyone can loot ;p
 					// no owner no loot
 					//victim->SetFlag(UNIT_DYNAMIC_FLAGS, U_DYN_FLAG_LOOTABLE);
 				}
 				else
 				{
+                    // fill loot vector.
+				    victim->generateLoot();
+
 					// Build the actual update.
 					ByteBuffer buf( 500 );
 
@@ -2602,6 +2645,9 @@ void Object::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
 				}
 			}
 			//---------------------------------looot-----------------------------------------
+
+            
+
 
 			// ----------------------------- XP --------------
 			if ( pVictim->GetUInt64Value( UNIT_FIELD_CREATEDBY ) == 0 &&
@@ -2800,6 +2846,9 @@ void Object::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
 					}
 				}
 				// ----------------------------- XP --------------
+
+                
+
 			/* ----------------------------- PET XP HANDLING END-------------- */
 
 			/* ----------------------------- PET DEATH HANDLING -------------- */
@@ -2826,6 +2875,10 @@ void Object::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
 						static_cast< Player* >( owner )->EventDismissPet();
 				}
 			}
+            // We don't want to reference a possibly logged out player or removed creature, better be safe than sorry!
+            if(pVictim->GetUInt64Value(UNIT_FIELD_CREATEDBY) != 0)
+                pVictim->SetUInt64Value(UNIT_FIELD_CREATEDBY, 0);
+
 #ifdef ENABLE_ACHIEVEMENTS
 			if(isCritter)
 			{
@@ -2896,7 +2949,7 @@ void Object::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
 
 		pVictim->SetUInt32Value( UNIT_FIELD_HEALTH, health - damage );
 	}
-		
+    
 }
 
 void Object::SpellNonMeleeDamageLog(Unit *pVictim, uint32 spellID, uint32 damage, bool allowProc, bool static_damage, bool no_remove_auras)

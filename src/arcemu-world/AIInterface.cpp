@@ -882,7 +882,7 @@ void AIInterface::_UpdateTargets()
 	if(  m_Unit->GetMapMgr() == NULL )
 		return; 
 
-	AssistTargetSet::iterator i, i2;
+    AssistTargetSet::iterator i, i2;
 	TargetMap::iterator itr, it2;
 
 	// Find new Assist Targets and remove old ones
@@ -1721,6 +1721,12 @@ Unit* AIInterface::FindTarget()
 //	Object *pObj;
 	Unit *pUnit;
 	float dist;
+
+    /* Don't remove this please! - dfighter
+    if( m_AIType == AITYPE_PET ){
+        printf("I'm a pet and I'm looking for targets, RAWR!\n");
+    }
+    */
 	
 	/* Commented due to no use
 	bool pvp=true;
@@ -1734,6 +1740,7 @@ Unit* AIInterface::FindTarget()
 		return 0;
 	}
 
+    // Start of neutralguard snippet
 	if (m_isNeutralGuard)
 	{
 		Player *tmpPlr;
@@ -1788,6 +1795,7 @@ Unit* AIInterface::FindTarget()
 		}
 		distance = 999999.0f; //Reset Distance for normal check
 	}
+    // End of neutralguard snippet
 
 	//we have a high chance that we will agro a player
 	//this is slower then oppfaction list BUT it has a lower chance that contains invalid pointers
@@ -1806,6 +1814,14 @@ Unit* AIInterface::FindTarget()
 
 		if(dist > distance)	 // we want to find the CLOSEST target
 			continue;
+
+        // We don't want to attack non-flagged people!
+        if( pUnit->IsPlayer() && !pUnit->IsPvPFlagged())
+            continue;
+
+        // We don't want to accidentally flag ourselves
+        if( pUnit->IsPlayer() && !m_Unit->IsPvPFlagged() )
+            continue;
 	
 		if(dist <= _CalcAggroRange(pUnit) )
 		{
@@ -1835,7 +1851,19 @@ Unit* AIInterface::FindTarget()
 			if( !(*itr)->IsUnit() )
 				continue;
 
+            // We checked for player targets before
+            if( (*itr)->IsPlayer() )
+                continue;
+
 			pUnit = static_cast< Unit* >( (*itr) );
+
+            // We don't want to attack unflagged pets
+            if( pUnit->IsPet() && !pUnit->IsPvPFlagged() )
+                continue;
+
+            // We don't want to accidentally flag ourselves
+            if( pUnit->IsPet() && !m_Unit->IsPvPFlagged() )
+                continue;
 
 			// if the target is not attackable we are not going to attack it and find a new target, if possible
 			if( pUnit->IsCreature() )
@@ -1847,6 +1875,7 @@ Unit* AIInterface::FindTarget()
 
 			if( UnsafeCanOwnerAttackUnit( pUnit ) == false )
 				continue;
+
 
 			//on blizz there is no Z limit check 
 			dist = m_Unit->GetDistance2dSq(pUnit);
@@ -4209,10 +4238,22 @@ void AIInterface::Event_Summon_EE_totem(uint32 summon_duration)
 	m_totemspelltimer = 0xEFFFFFFF;
 	//creatures do not support PETs and the spell uses that effect so we force a summon guardian thing
 	Unit *ourslave=m_Unit->create_guardian(15352,summon_duration,float(-M_PI*2), new_level );
-	if(ourslave)
+
+    if(ourslave)
 	{
+        m_Unit->summonPet = static_cast<Creature*>( ourslave );
 		static_cast<Creature*>(ourslave)->ResistanceModPct[NATURE_DAMAGE]=100;//we should be immune to nature dmg. This can be also set in db
 		static_cast<Creature*>(ourslave)->m_noRespawn = true;
+
+        // we want the elemental to have the same pvp flag as the shaman who popped the totem
+        if( caster->IsPvPFlagged() )
+            ourslave->SetPvPFlag();
+        else
+            ourslave->RemovePvPFlag();
+
+        ourslave->SetUInt32Value(UNIT_FIELD_FLAGS, UNIT_FLAG_PLAYER_CONTROLLED | UNIT_FLAG_SELF_RES);
+        ourslave->SetUInt32Value(UNIT_DYNAMIC_FLAGS, 0);
+        
 		/*
 		- Earth Stun (37982)
 		- taunt
@@ -4234,9 +4275,18 @@ void AIInterface::Event_Summon_FE_totem(uint32 summon_duration)
 	Unit *ourslave=m_Unit->create_guardian(15438,summon_duration,float(-M_PI*2), new_level);
 	if(ourslave)
 	{
-		//m_Unit->summonPet = ourslave;
+		m_Unit->summonPet = static_cast<Creature*>( ourslave );
 		static_cast<Creature*>(ourslave)->ResistanceModPct[FIRE_DAMAGE]=100;//we should be immune to fire dmg. This can be also set in db
 		static_cast<Creature*>(ourslave)->m_noRespawn = true;
+        
+        // we want the elemental to have the same pvp flag as the shaman who popped the totem
+        if( caster->IsPvPFlagged() )
+            ourslave->SetPvPFlag();
+        else
+            ourslave->RemovePvPFlag();
+
+        ourslave->SetUInt32Value(UNIT_FIELD_FLAGS, UNIT_FLAG_PLAYER_CONTROLLED | UNIT_FLAG_SELF_RES);
+        ourslave->SetUInt32Value(UNIT_DYNAMIC_FLAGS, 0);
 		/*
 		- also : select * from dbc_spell where name like "%fire blast%"
 		- also : select * from dbc_spell where name like "%fire nova"
