@@ -1422,8 +1422,9 @@ void Guild::WithdrawMoney(WorldSession * pClient, uint32 uAmount)
 		}
 	}
 
-	if(pMember->pRank->iGoldLimitPerDay <= 0)
+    if(pMember->pRank->iGoldLimitPerDay == 0 )
 	{
+
 		pClient->SystemMessage("You don't have permission to do that.");
 		return;
 	}
