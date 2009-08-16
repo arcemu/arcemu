@@ -2145,6 +2145,16 @@ void Player::SpawnPet( uint32 pet_number )
 	}
 	Pet *pPet = objmgr.CreatePet( itr->second->entry );
 	pPet->LoadFromDB( this, itr->second );
+
+// For some awesomely weird reason they get 41 as bytes2, this keeps me from flagging them - dfighter
+// dfighter hacks
+    pPet->SetUInt32Value( UNIT_FIELD_BYTES_2, 0 );
+
+    if( this->IsPvPFlagged() )
+        pPet->SetPvPFlag();
+    else
+        pPet->RemovePvPFlag();
+////////////////////////////////////////////////////////////////////////////////
 	
 	if( itr->second->spellid )
 	{

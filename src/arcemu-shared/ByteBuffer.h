@@ -355,7 +355,11 @@ public:
 		// then think some more
 		// then use something else
 		// -- qz
-		ASSERT(size() < 10000000);
+		// ASSERT(size() < 10000000);
+        
+        
+        // this way hopefully people will report the callstack after it "crashes"
+        assert( size() < 10000000 );
 
 		if (_storage.size() < _wpos + cnt)
 			_storage.resize(_wpos + cnt);

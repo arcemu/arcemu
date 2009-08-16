@@ -72,6 +72,8 @@ Creature::Creature(uint64 guid)
 	totemOwner = NULL;
 	totemSlot = -1;
 
+    m_owner = NULL;
+
 	m_PickPocketed = false;
 	m_SellItems = NULL;
 	_myScriptClass = NULL;

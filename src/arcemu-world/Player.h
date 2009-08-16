@@ -1912,6 +1912,10 @@ public:
             }
         }
 
+        // flagging the pet too for PvP, if we have one
+        if( m_Summon != NULL )
+            m_Summon->SetPvPFlag();
+
 		if( CombatStatus.IsInCombat() )
 			SetFlag(PLAYER_FLAGS, 0x100);
 	}
@@ -1932,7 +1936,11 @@ public:
                     static_cast<Unit*>( m_TotemSlots[i] )->summonPet->RemovePvPFlag();
             }
         }
-	}
+
+        // If we have a pet we will remove the pvp flag from that too
+        if( m_Summon != NULL )
+          m_Summon->SetPvPFlag();
+    }
 
 	ARCEMU_INLINE bool IsFFAPvPFlagged()
 	{

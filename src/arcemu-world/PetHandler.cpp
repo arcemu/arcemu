@@ -167,6 +167,23 @@ void WorldSession::HandlePetAction(WorldPacket & recv_data)
 							pPet->SendActionFeedback( PET_FEEDBACK_CANT_ATTACK_TARGET );
 							return;
 						}
+
+                        if( pTarget->IsCreature() && static_cast<Creature*>( pTarget )->IsTotem() && !pTarget->IsPvPFlagged() ){
+                            pPet->SendActionFeedback( PET_FEEDBACK_CANT_ATTACK_TARGET );
+							return;
+                        }
+
+                        if( pTarget->IsCreature() ){
+                            Creature *pCreature = static_cast< Creature* >( pTarget );
+
+                            // it's a summon and the owner is a player
+                            if(pCreature->GetOwner() != NULL && pCreature->GetOwner()->IsPlayer()){
+                                if( !pCreature->IsPvPFlagged() ){
+                                    pPet->SendActionFeedback( PET_FEEDBACK_CANT_ATTACK_TARGET );
+                                    return;
+                                }
+                            }
+                        }
 					}
 
 					if(sp->autocast_type != AUTOCAST_EVENT_ATTACK)

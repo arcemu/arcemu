@@ -1962,25 +1962,69 @@ void Object::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
 		pVictim->SetStandState( STANDSTATE_STAND );//probably mobs also must standup
 	}
 
-	// This one is easy. If we're attacking a hostile target, and we're not flagged, flag us.
-	// Also, you WONT get flagged if you are dueling that person - FiShBaIt
-	if( pVictim->IsPlayer() && IsPlayer() )
-	{
-		if( isHostile( this, pVictim ) && static_cast< Player* >( pVictim )->DuelingWith != static_cast< Player* >( this ) )
-			static_cast< Player* >( this )->SetPvPFlag();
-	}
-	//If our pet attacks  - flag us.
-	if( pVictim->IsPlayer() && IsPet() )
-	{
-		Player* owner = static_cast< Pet* >( this )->GetPetOwner();
-		if( owner != NULL )
-			if( owner->isAlive() && static_cast< Player* >( pVictim )->DuelingWith != owner )
-			{
-				owner->SetPvPFlag();
-				static_cast< Unit* >( this )->AggroPvPGuards();
-			}
-	}
+/////////////////////////////////////////////////////// PvP flagging on attack ///////////////////////////////////////////////
+{
+    Player *pOwner = NULL;   // Player we are attacking, or the owner of totem/pet/etc
+    Player *pAttacker = NULL; // This is the player or the player controlling the totem/pet/summon
 
+    if( pVictim->IsPlayer() ){
+      pOwner = static_cast< Player* >( pVictim );
+    }
+    else
+    if( pVictim->IsPet() ){
+      pOwner = static_cast< Pet* >( pVictim )->GetPetOwner();
+    }
+    else
+    if( pVictim->IsCreature() && static_cast< Creature* >( pVictim )->IsTotem() ){
+      pOwner = static_cast< Creature* >( pVictim )->GetTotemOwner();
+    }
+    else
+    if( pVictim->IsCreature() && static_cast< Creature* >( pVictim )->GetOwner() != NULL && static_cast< Creature* >( pVictim )->GetOwner()->IsPlayer() ){
+        pOwner = static_cast< Player* >( static_cast< Creature* >( pVictim )->GetOwner() );
+    }
+
+
+
+
+    if( this->IsPlayer() ){
+        pAttacker = static_cast< Player* >( this );
+	}
+    else
+	if( this->IsPet() ){
+        pAttacker = static_cast< Pet* >( this )->GetPetOwner();
+
+        // Pet must have an owner
+        assert( pAttacker != NULL );                
+	}
+    else // Player totem
+    if( this->IsCreature() && static_cast< Creature* >( this )->IsTotem() ){
+        pAttacker = static_cast< Creature* >( this )->GetTotemOwner();
+
+        // Totem must have an owner
+        assert( pAttacker != NULL );
+
+    }
+    else // Player summon
+    if( this->IsCreature() && static_cast< Creature* >( this )->GetOwner() != NULL && static_cast< Creature* >( this )->GetOwner()->IsPlayer() ){
+        pAttacker = static_cast< Player*>( static_cast< Creature* >( this )->GetOwner() );
+    }
+    
+    // We identified both the attacker and the victim as possible PvP combatants, if we are not dueling we will flag the attacker
+    if( pOwner != NULL && pAttacker != NULL ){
+        if( pOwner != pAttacker->DuelingWith ){
+            pAttacker->SetPvPFlag();
+            pAttacker->AggroPvPGuards();
+        }       
+    }
+
+    // PvP NPCs
+    if( pVictim->IsCreature() && pVictim->IsPvPFlagged() && pAttacker != NULL ){
+        pAttacker->SetPvPFlag();
+        pAttacker->AggroPvPGuards();
+    }
+
+}
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	if(!no_remove_auras)
 	{
 		//zack 2007 04 24 : root should not remove self (and also other unknown spells)
@@ -2878,6 +2922,12 @@ void Object::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
             // We don't want to reference a possibly logged out player or removed creature, better be safe than sorry!
             if(pVictim->GetUInt64Value(UNIT_FIELD_CREATEDBY) != 0)
                 pVictim->SetUInt64Value(UNIT_FIELD_CREATEDBY, 0);
+            // Same as the above
+            if( pVictim->IsCreature() ){
+                Creature *pCreature = static_cast<Creature*>( pVictim );
+                if(pCreature->GetOwner() != NULL)
+                    pCreature->SetOwner( NULL );
+            }
 
 #ifdef ENABLE_ACHIEVEMENTS
 			if(isCritter)

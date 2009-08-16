@@ -1722,11 +1722,13 @@ Unit* AIInterface::FindTarget()
 	Unit *pUnit;
 	float dist;
 
-    /* Don't remove this please! - dfighter
+    // Don't remove this please! - dfighter
+    /*
     if( m_AIType == AITYPE_PET ){
         printf("I'm a pet and I'm looking for targets, RAWR!\n");
     }
     */
+    
 	
 	/* Commented due to no use
 	bool pvp=true;
@@ -1805,8 +1807,8 @@ Unit* AIInterface::FindTarget()
 		++pitr2;
 
 		pUnit = *pitr;
-
-		if( UnsafeCanOwnerAttackUnit( pUnit ) == false )
+        
+        if( UnsafeCanOwnerAttackUnit( pUnit ) == false )
 			continue;
 
 		//on blizz there is no Z limit check 
@@ -1815,13 +1817,21 @@ Unit* AIInterface::FindTarget()
 		if(dist > distance)	 // we want to find the CLOSEST target
 			continue;
 
-        // We don't want to attack non-flagged people!
-        if( pUnit->IsPlayer() && !pUnit->IsPvPFlagged())
-            continue;
+        if( m_Unit->IsCreature() ){
+            Creature *pCreature = static_cast< Creature* >( m_Unit );
 
-        // We don't want to accidentally flag ourselves
-        if( pUnit->IsPlayer() && !m_Unit->IsPvPFlagged() )
-            continue;
+            // We are only interested in pets, totems, and summons
+            if( pCreature->IsPet() || pCreature->IsTotem()  || pCreature->GetOwner() != NULL ){
+                
+                // We don't want to attack unflagged players
+                if( pUnit->IsPlayer() && !pUnit->IsPvPFlagged())
+                    continue;     
+        
+                // We don't want to accidentally flag ourselves
+                if( pUnit->IsPlayer() && !m_Unit->IsPvPFlagged() )
+                    continue;
+            }
+        }        
 	
 		if(dist <= _CalcAggroRange(pUnit) )
 		{
@@ -1851,27 +1861,44 @@ Unit* AIInterface::FindTarget()
 			if( !(*itr)->IsUnit() )
 				continue;
 
-            // We checked for player targets before
+            // We checked for player targets before, so this shouldn't happen
+            // [14:45] <+burlex> but andy
+            // [14:45] <+burlex> dey have dead pointerz
             if( (*itr)->IsPlayer() )
                 continue;
 
 			pUnit = static_cast< Unit* >( (*itr) );
 
-            // We don't want to attack unflagged pets
-            if( pUnit->IsPet() && !pUnit->IsPvPFlagged() )
-                continue;
-
-            // We don't want to accidentally flag ourselves
-            if( pUnit->IsPet() && !m_Unit->IsPvPFlagged() )
-                continue;
-
-			// if the target is not attackable we are not going to attack it and find a new target, if possible
-			if( pUnit->IsCreature() )
+            if( pUnit->IsCreature() )
 			{
-				Creature *pCreature = static_cast<Creature*>( pUnit );
-				if( pCreature->m_spawn && !pCreature->isattackable( pCreature->m_spawn ) )
-					continue;
-			}
+                Creature *pCreature = static_cast<Creature*>( pUnit );
+
+                // We are only interested in pets, totems, and summons
+                if( pCreature->IsPet() || pCreature->IsTotem() || pCreature->GetOwner() != NULL ){
+                    
+                    // We don't want to attack unflagged pets
+                    if( pUnit->IsPet() && !pUnit->IsPvPFlagged() )
+                        continue;
+
+                    // We don't want to accidentally flag ourselves
+                    if( pUnit->IsPet() && !m_Unit->IsPvPFlagged() )
+                        continue;
+
+                    // if the target is not attackable we are not going to attack it and find a new target, if possible
+				    if( pCreature->m_spawn && !pCreature->isattackable( pCreature->m_spawn ) )
+					    continue;
+
+                    // We don't attack non-flagged totems
+                    if( m_Unit->IsPet() && pCreature->IsTotem() && !pCreature->IsPvPFlagged() )
+                      continue;
+
+                    // it's a summon and the owner is a player
+                    if(pCreature->GetOwner() != NULL && pCreature->GetOwner()->IsPlayer()){
+                      if( !pCreature->IsPvPFlagged() )
+                        continue;
+                    }
+			    }
+            }
 
 			if( UnsafeCanOwnerAttackUnit( pUnit ) == false )
 				continue;
@@ -4251,9 +4278,10 @@ void AIInterface::Event_Summon_EE_totem(uint32 summon_duration)
         else
             ourslave->RemovePvPFlag();
 
+        static_cast< Creature* >(ourslave)->SetOwner( caster );
+
         ourslave->SetUInt32Value(UNIT_FIELD_FLAGS, UNIT_FLAG_PLAYER_CONTROLLED | UNIT_FLAG_SELF_RES);
-        ourslave->SetUInt32Value(UNIT_DYNAMIC_FLAGS, 0);
-        
+                
 		/*
 		- Earth Stun (37982)
 		- taunt
@@ -4285,9 +4313,10 @@ void AIInterface::Event_Summon_FE_totem(uint32 summon_duration)
         else
             ourslave->RemovePvPFlag();
 
+        static_cast< Creature* >(ourslave)->SetOwner( caster );
+
         ourslave->SetUInt32Value(UNIT_FIELD_FLAGS, UNIT_FLAG_PLAYER_CONTROLLED | UNIT_FLAG_SELF_RES);
-        ourslave->SetUInt32Value(UNIT_DYNAMIC_FLAGS, 0);
-		/*
+        /*
 		- also : select * from dbc_spell where name like "%fire blast%"
 		- also : select * from dbc_spell where name like "%fire nova"
 		*/

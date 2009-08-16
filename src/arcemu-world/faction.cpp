@@ -129,6 +129,18 @@ bool isHostile(Object* objA, Object* objB)// B is hostile for A?
 	// PvP Flag System Checks
 	// We check this after the normal isHostile test, that way if we're
 	// on the opposite team we'll already know :p
+    
+
+//// If you break these I'm going to pay a visit to you IRL - dfighter
+
+    if( hostile && ( objA->IsPlayer() || objA->IsPet() || ( objA->IsCreature() && static_cast< Creature* >( objA )->IsTotem() ) ) && objB->IsPlayer() && !static_cast<Player*>( objB )->IsPvPFlagged() ){
+        return false;
+    }
+
+    if( hostile && ( objA->IsPlayer() || objA->IsPet() || ( objA->IsCreature() && static_cast< Creature* >( objA )->IsTotem() ) ) && objB->IsPet()&& !static_cast< Pet* >( objB )->GetPetOwner()->IsPvPFlagged()){
+        return false;
+    }
+////////////////////////////////////////////////////////////////////
 
 	if( hostile && ( objA->IsPlayer() || objA->IsPet() || ( objA->IsUnit() && !objA->IsPlayer() && static_cast< Creature* >( objA )->IsTotem() && static_cast< Creature* >( objA )->GetTotemOwner()->IsPvPFlagged() ) ) )
 	{
@@ -140,6 +152,7 @@ bool isHostile(Object* objA, Object* objB)// B is hostile for A?
 			else
 				return false;
 		}
+
 		if( objB->IsPet() )
 		{
 #if defined(WIN32) && defined(HACKY_CRASH_FIXES)
