@@ -426,7 +426,7 @@ void WorldSession::HandleGossipHelloOpcode( WorldPacket & recv_data )
 
 	//stop when talked to
 	if(qst_giver->GetAIInterface())
-		qst_giver->GetAIInterface()->StopMovement(0);
+		qst_giver->GetAIInterface()->StopMovement(30);
 
 	// unstealth meh
 	if( _player->IsStealth() )

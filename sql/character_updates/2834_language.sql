@@ -1,0 +1,1 @@
+UPDATE `characters` SET `spells` = REPLACE(`spells`,'815,','');

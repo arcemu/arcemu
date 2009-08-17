@@ -332,11 +332,20 @@ void WorldSession::HandleStableSwapPet(WorldPacket & recv_data)
 void WorldSession::HandleStabledPetList(WorldPacket & recv_data)
 {
 	if(!_player->IsInWorld()) return;
+
+    uint64 npcguid = 0;
+	recv_data >> npcguid;
+
+    if( _player->getClass() != HUNTER ){
+        GossipMenu * pMenu;
+		objmgr.CreateGossipMenuForPlayer(&pMenu,npcguid,13584,_player);
+		pMenu->SendTo(_player);
+		return;
+    }
+
 	WorldPacket data(10 + (_player->m_Pets.size() * 25));
 	data.SetOpcode(MSG_LIST_STABLED_PETS);
 
-	uint64 npcguid = 0;
-	recv_data >> npcguid;
 	data << npcguid;
 
 	data << uint8(_player->m_Pets.size());

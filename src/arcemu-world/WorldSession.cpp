@@ -1065,6 +1065,8 @@ void WorldSession::Handle38C(WorldPacket & recv_data)
 
 char szError[64];
 
+// Returns a worldstring indexed by id
+// These strings can be found in the worldstring tables in the database
 const char* WorldSession::LocalizedWorldSrv(uint32 id)
 {
 	WorldStringTable * wst = WorldStringTableStorage.LookupEntry(id);

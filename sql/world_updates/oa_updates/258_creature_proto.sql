@@ -1,1 +1,0 @@
-alter table `creature_proto` add column `spell_flags` int(30) DEFAULT '0' NOT NULL after `spell4`;

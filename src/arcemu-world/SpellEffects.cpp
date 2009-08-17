@@ -60,7 +60,7 @@ pSpellEffect SpellEffectsHandler[TOTAL_SPELL_EFFECTS]={
 	&Spell::SpellEffectLearnSpell,				//SPELL_EFFECT_LEARN_SPELL - 36
 	&Spell::SpellEffectSpellDefense,			//SPELL_EFFECT_SPELL_DEFENSE - 37
 	&Spell::SpellEffectDispel,					//SPELL_EFFECT_DISPEL - 38
-	&Spell::SpellEffectLanguage,				//SPELL_EFFECT_LANGUAGE - 39
+	&Spell::SpellEffectNULL,   				//SPELL_EFFECT_LANGUAGE - 39
 	&Spell::SpellEffectDualWield,				//SPELL_EFFECT_DUAL_WIELD - 40
 	&Spell::SpellEffectSummonWild,				//SPELL_EFFECT_SUMMON_WILD - 41
 	&Spell::SpellEffectSummonGuardian,			//SPELL_EFFECT_SUMMON_GUARDIAN - 42
@@ -4063,8 +4063,8 @@ void Spell::SpellEffectLanguage(uint32 i)
 	{ SKILL_LANG_THALASSIAN, 813 },
 	{ SKILL_LANG_DRACONIC, 814 },
 	{ 0, 0 },
-	{ SKILL_LANG_GNOMISH, 7430 },
-	{ SKILL_LANG_TROLL, 7431 },
+	{ SKILL_LANG_GNOMISH, 7340 },
+	{ SKILL_LANG_TROLL, 7341 },
 	{ SKILL_LANG_GUTTERSPEAK, 17737 },
 	{ SKILL_LANG_DRAENEI, 29932 },
 	};
