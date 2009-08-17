@@ -5057,7 +5057,7 @@ void Spell::SpellEffectSummonPossessed(uint32 i) // eye of kilrogg
 		p_caster->m_eyeofkilrogg = NewSummon;
 
 		//p_caster->SetUInt64Value(UNIT_FIELD_SUMMON, NewSummon->GetGUID());
-		//p_caster->SetUInt64Value(PLAYER_FARSIGHT, NewSummon->GetGUID());
+		p_caster->SetUInt64Value(PLAYER_FARSIGHT, NewSummon->GetGUID());
 		//p_caster->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_LOCK_PLAYER);
 		p_caster->Possess(NewSummon);
 	}

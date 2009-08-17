@@ -766,6 +766,8 @@ void MapMgr::ChangeObjectLocation( Object *obj )
 			//If the object announcing it's position is a transport, then it should announce it to everyone and everything; thus deleting it from visible objects should be avoided. - By: VLack aka. VLsoft
 			else if( obj->GetTypeId() == TYPEID_GAMEOBJECT && static_cast<GameObject*>(obj)->GetInfo()->Type == GAMEOBJECT_TYPE_TRANSPORT )
 				fRange = 0.0f;
+			else if( curObj->IsPlayer() && static_cast< Player* >( curObj )->GetUInt64Value(PLAYER_FARSIGHT) == obj->GetGUID())
+				fRange = 0.0f;//Mind Vision, Eye of Kilrogg
 			else
 				fRange = m_UpdateDistance; // normal distance
 

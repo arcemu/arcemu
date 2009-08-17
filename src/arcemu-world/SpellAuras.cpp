@@ -2098,6 +2098,7 @@ void Aura::SpellAuraDummy(bool apply)
 					if(summon)
 						summon->DeleteMe();
 					pCaster->m_eyeofkilrogg = 0;
+					pCaster->SetUInt64Value(PLAYER_FARSIGHT,0);
 				}
 			}
 		}break;
