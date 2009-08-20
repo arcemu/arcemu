@@ -5408,30 +5408,7 @@ void Unit::AddInRangeObject(Object* pObj)
 
 		if ( isFriendly( this, (Unit*)pObj ) )
 			m_sameFactsInRange.insert(pObj);
-
-		// commented - this code won't work anyway due to objects getting added in range before they are created - burlex
-		/*if( GetTypeId() == TYPEID_PLAYER )
-		{
-			if( static_cast< Player* >( this )->InGroup() )
-			{
-				if( pObj->GetTypeId() == TYPEID_UNIT )
-				{
-					if(((Creature*)pObj)->Tagged)
-					{
-						if( static_cast< Player* >( this )->GetGroup()->HasMember( pObj->GetMapMgr()->GetPlayer( (uint32)((Creature*)pObj)->TaggerGuid ) ) )
-						{
-							uint32 Flags;
-							Flags = ((Creature*)pObj)->m_uint32Values[UNIT_DYNAMIC_FLAGS];
-							Flags |= U_DYN_FLAG_TAPPED_BY_PLAYER;
-							ByteBuffer buf1(500);
-							((Creature*)pObj)->BuildFieldUpdatePacket(&buf1, UNIT_DYNAMIC_FLAGS, Flags);
-							static_cast< Player* >( this )->PushUpdateData( &buf1, 1 );
-						}
-					}
-				}
-			}
-		}		*/
-	}
+    }
 
 	Object::AddInRangeObject(pObj);
 }//427
@@ -5942,28 +5919,6 @@ uint8 Unit::CastSpell(Unit* Target, SpellEntry* Sp, bool triggered)
 	if (!newSpell)
 		return SPELL_FAILED_UNKNOWN;
 	newSpell->Init(this, Sp, triggered, 0);
-	SpellCastTargets targets(0);
-	if(Target)
-	{
-		targets.m_targetMask |= TARGET_FLAG_UNIT;
-		targets.m_unitTarget = Target->GetGUID();
-	}
-	else
-	{
-		newSpell->GenerateTargets(&targets);
-	}
-	return newSpell->prepare(&targets);
-}
-
-uint8 Unit::CastTrainerSpell(Unit* Target, SpellEntry* Sp, bool triggered)
-{
-	if( Sp == NULL )
-		return SPELL_FAILED_UNKNOWN;
-
-	Spell *newSpell = SpellPool.PooledNew();
-	if (!newSpell)
-		return SPELL_FAILED_UNKNOWN;
-	newSpell->Init(Target, Sp, triggered, 0);
 	SpellCastTargets targets(0);
 	if(Target)
 	{
@@ -6786,7 +6741,18 @@ Unit* Unit::create_guardian(uint32 guardian_entry,uint32 duration,float angle, u
 	p->GetAIInterface()->SetFollowDistance(3.0f);
 	p->m_noRespawn = true;
 
-	p->PushToWorld(GetMapMgr());
+    // if it's summoned by a totem owned by a player it will be owned by the player, so we can PvP check on them in dealdamage, and isattackable
+    if( this->IsCreature() && static_cast< Creature* >( this )->IsTotem() && static_cast< Creature* >( this )->GetTotemOwner() ){
+        
+        if( static_cast< Creature* >( this )->GetTotemOwner()->IsPlayer() ){
+            p->SetOwner( static_cast< Unit* >( static_cast< Creature* >( this )->GetTotemOwner()));
+        }
+
+    }else{
+        p->SetOwner( this );
+    }
+
+    p->PushToWorld(GetMapMgr());
 
 	sEventMgr.AddEvent(p, &Creature::SummonExpire, EVENT_SUMMON_EXPIRE, duration, 1,0);
 

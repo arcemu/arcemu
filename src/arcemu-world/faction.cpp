@@ -24,6 +24,37 @@
 #define HACKY_CRASH_FIXES 1		// SEH stuff
 #endif
 
+
+Player* GetPlayerOwner( Object *A ){
+
+    Player *pAttacker = NULL;
+
+    if( A->IsPlayer() ){
+        pAttacker = static_cast< Player* >( A );
+	}
+    else
+	if( A->IsPet() ){
+        pAttacker = static_cast< Pet* >( A )->GetPetOwner();
+
+        // Pet must have an owner
+        assert( pAttacker != NULL );                
+	}
+    else // Player totem
+    if( A->IsCreature() && static_cast< Creature* >( A )->IsTotem() ){
+        pAttacker = static_cast< Creature* >( A )->GetTotemOwner();
+
+        // Totem must have an owner
+        assert( pAttacker != NULL );
+
+    }
+    else // Player summon
+    if( A->IsCreature() && static_cast< Creature* >( A )->GetOwner() != NULL && static_cast< Creature* >( A )->GetOwner()->IsPlayer() ){
+        pAttacker = static_cast< Player*>( static_cast< Creature* >( A )->GetOwner() );
+    }
+
+    return pAttacker;
+}
+
 int isBgEnemy(Object* objA, Object* objB)
 {
 	// if objA is in battleground check objB hostile based on teams
@@ -131,51 +162,20 @@ bool isHostile(Object* objA, Object* objB)// B is hostile for A?
 	// on the opposite team we'll already know :p
     
 
-//// If you break these I'm going to pay a visit to you IRL - dfighter
+//////////////////////////////////////////// PvP checks /////////////////////////////////
+    {
+        Player *A = GetPlayerOwner( objA );
+        Player *B = GetPlayerOwner( objB );
 
-    if( hostile && ( objA->IsPlayer() || objA->IsPet() || ( objA->IsCreature() && static_cast< Creature* >( objA )->IsTotem() ) ) && objB->IsPlayer() && !static_cast<Player*>( objB )->IsPvPFlagged() ){
-        return false;
+        if( hostile && A && B ){
+            if( B->IsPvPFlagged() )
+                return true;
+            else
+                return false;
+        }
+
     }
-
-    if( hostile && ( objA->IsPlayer() || objA->IsPet() || ( objA->IsCreature() && static_cast< Creature* >( objA )->IsTotem() ) ) && objB->IsPet()&& !static_cast< Pet* >( objB )->GetPetOwner()->IsPvPFlagged()){
-        return false;
-    }
-////////////////////////////////////////////////////////////////////
-
-	if( hostile && ( objA->IsPlayer() || objA->IsPet() || ( objA->IsUnit() && !objA->IsPlayer() && static_cast< Creature* >( objA )->IsTotem() && static_cast< Creature* >( objA )->GetTotemOwner()->IsPvPFlagged() ) ) )
-	{
-		if( objB->IsPlayer() )
-		{
-			// Check PvP Flags.
-			if( static_cast< Player* >( objB )->IsPvPFlagged() )
-				return true;
-			else
-				return false;
-		}
-
-		if( objB->IsPet() )
-		{
-#if defined(WIN32) && defined(HACKY_CRASH_FIXES)
-			__try {
-				// Check PvP Flags.
-				if( static_cast< Pet* >( objB )->GetPetOwner() != NULL && static_cast< Pet* >( objB )->GetPetOwner()->GetMapMgr() == objB->GetMapMgr() && static_cast< Pet* >( objB )->GetPetOwner()->IsPvPFlagged() )
-					return true;
-				else
-					return false;
-			} __except(EXCEPTION_EXECUTE_HANDLER)
-			{
-				static_cast<Pet*>(objB)->ClearPetOwner();
-				static_cast<Pet*>(objB)->SafeDelete();
-			}
-#else
-			// Check PvP Flags.
-			if( static_cast< Pet* >( objB )->GetPetOwner() != NULL && static_cast< Pet* >( objB )->GetPetOwner()->GetMapMgr() == objB->GetMapMgr() && static_cast< Pet* >( objB )->GetPetOwner()->IsPvPFlagged() )
-				return true;
-			else
-				return false;
-#endif
-		}
-	}
+/////////////////////////////////////////////////////////////////////////////////////////
 
 	// Reputation System Checks
 	if(objA->IsPlayer() && !objB->IsPlayer())	   // PvE

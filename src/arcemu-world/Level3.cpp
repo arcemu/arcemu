@@ -771,6 +771,10 @@ bool ChatHandler::HandleNpcInfoCommand(const char *args, WorldSession *m_session
 	sstext << "UNIT_FIELD_BYTES_2 are " << uint16((uint8)theBytes & 0xFF) << " " << uint16((uint8)(theBytes >> 8) & 0xFF) << " ";
 	sstext << uint16((uint8)(theBytes >> 16) & 0xFF) << " " << uint16((uint8)(theBytes >> 24) & 0xFF) << '\0';
 	SendMultilineMessage( m_session, sstext.str().c_str() );
+
+    if( crt->GetOwner() && crt->GetOwner()->IsPlayer() )
+        SystemMessage(m_session, "Owner: %s", "player" );
+    
 	return true;
 }
 

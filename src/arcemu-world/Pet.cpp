@@ -214,11 +214,17 @@ void Pet::CreateAsSummon( uint32 entry, CreatureInfo *ci, Creature* created_from
 		SetUInt32Value( UNIT_FIELD_PETNEXTLEVELEXP, GetNextLevelXP( level ) );
 		SetUInt32Value( UNIT_FIELD_POWER3, 100 );// Focus
 		SetUInt32Value( UNIT_FIELD_MAXPOWER3, 100 );
-		SetUInt32Value( UNIT_FIELD_BYTES_2, 1 | (0x28 << 8) | (0x3 << 16) );// 0x3 -> Enable pet rename.
+		SetUInt32Value( UNIT_FIELD_BYTES_2, 1  /* | (0x28 << 8) */ | (0x3 << 16) );// 0x3 -> Enable pet rename.
 		SetPowerType( POWER_TYPE_FOCUS);
 	}
+    SetUInt32Value( UNIT_FIELD_FACTIONTEMPLATE, owner->GetUInt32Value( UNIT_FIELD_FACTIONTEMPLATE ) );
 
-	BaseDamage[0] = 0;
+    if( owner->IsPvPFlagged() )
+        this->SetPvPFlag();
+    else
+        this->RemovePvPFlag();
+
+    BaseDamage[0] = 0;
 	BaseDamage[1] = 0;
 	BaseOffhandDamage[0] = 0;
 	BaseOffhandDamage[1] = 0;

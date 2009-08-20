@@ -1964,62 +1964,25 @@ void Object::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
 
 /////////////////////////////////////////////////////// PvP flagging on attack ///////////////////////////////////////////////
 {
-    Player *pOwner = NULL;   // Player we are attacking, or the owner of totem/pet/etc
-    Player *pAttacker = NULL; // This is the player or the player controlling the totem/pet/summon
+    // Player we are attacking, or the owner of totem/pet/etc
+    Player *pOwner = GetPlayerOwner( static_cast< Object* >( pVictim ) );
 
-    if( pVictim->IsPlayer() ){
-      pOwner = static_cast< Player* >( pVictim );
-    }
-    else
-    if( pVictim->IsPet() ){
-      pOwner = static_cast< Pet* >( pVictim )->GetPetOwner();
-    }
-    else
-    if( pVictim->IsCreature() && static_cast< Creature* >( pVictim )->IsTotem() ){
-      pOwner = static_cast< Creature* >( pVictim )->GetTotemOwner();
-    }
-    else
-    if( pVictim->IsCreature() && static_cast< Creature* >( pVictim )->GetOwner() != NULL && static_cast< Creature* >( pVictim )->GetOwner()->IsPlayer() ){
-        pOwner = static_cast< Player* >( static_cast< Creature* >( pVictim )->GetOwner() );
-    }
+    // This is the player or the player controlling the totem/pet/summon
+    Player *pAttacker = GetPlayerOwner( this );
 
-
-
-
-    if( this->IsPlayer() ){
-        pAttacker = static_cast< Player* >( this );
-	}
-    else
-	if( this->IsPet() ){
-        pAttacker = static_cast< Pet* >( this )->GetPetOwner();
-
-        // Pet must have an owner
-        assert( pAttacker != NULL );                
-	}
-    else // Player totem
-    if( this->IsCreature() && static_cast< Creature* >( this )->IsTotem() ){
-        pAttacker = static_cast< Creature* >( this )->GetTotemOwner();
-
-        // Totem must have an owner
-        assert( pAttacker != NULL );
-
-    }
-    else // Player summon
-    if( this->IsCreature() && static_cast< Creature* >( this )->GetOwner() != NULL && static_cast< Creature* >( this )->GetOwner()->IsPlayer() ){
-        pAttacker = static_cast< Player*>( static_cast< Creature* >( this )->GetOwner() );
-    }
-    
     // We identified both the attacker and the victim as possible PvP combatants, if we are not dueling we will flag the attacker
-    if( pOwner != NULL && pAttacker != NULL ){
-        if( pOwner != pAttacker->DuelingWith ){
-            pAttacker->SetPvPFlag();
-            pAttacker->AggroPvPGuards();
-        }       
+    if( pOwner != NULL && pAttacker != NULL && pOwner != pAttacker->DuelingWith ){
+        if( !pAttacker->IsPvPFlagged() ){
+            pAttacker->PvPToggle();
+        }
+        pAttacker->AggroPvPGuards();
     }
 
-    // PvP NPCs
+    // PvP NPCs will flag the player when attacking them 
     if( pVictim->IsCreature() && pVictim->IsPvPFlagged() && pAttacker != NULL ){
-        pAttacker->SetPvPFlag();
+        if( !pAttacker->IsPvPFlagged() ){
+            pAttacker->PvPToggle();
+        }
         pAttacker->AggroPvPGuards();
     }
 
@@ -2533,6 +2496,7 @@ void Object::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
 
 		if( this->IsUnit() )
 		{
+            pVictim->RemoveAllAuras();
 			CALL_SCRIPT_EVENT( this, OnTargetDied )( pVictim );
 			static_cast< Unit* >( this )->smsg_AttackStop( pVictim );
 

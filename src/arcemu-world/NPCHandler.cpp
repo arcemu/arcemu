@@ -181,20 +181,37 @@ void WorldSession::SendTrainerList(Creature* pCreature)
 	SendPacket(&data);
 }
 
+
 void WorldSession::HandleTrainerBuySpellOpcode(WorldPacket& recvPacket)
 {
 	if(!_player->IsInWorld()) return;
+
+    ////////////////////////////////////////////////////////////////////////////////
+    // As of 3.1.3 the client sends this when buying a spell
+    //
+    // {CLIENT} Packet: (0x01B2) CMSG_TRAINER_BUY_SPELL PacketSize = 12 TimeStamp = 39035859
+    // A0 85 00 06 7A 00 30 F1 2D 85 00 00 
+    //
+    // Structure:
+    // uint64 GUID     - GUID of the trainer
+    // uint32 spellid  - ID of the spell being bought
+    ////////////////////////////////////////////////////////////////////////////////
+
 	uint64 Guid;
 	uint32 TeachingSpellID;
 
 	recvPacket >> Guid >> TeachingSpellID;
 	Creature *pCreature = _player->GetMapMgr()->GetCreature(GET_LOWGUID_PART(Guid));
-	if(pCreature == 0) return;
+	
+/////////////////////////////////////////// Checks //////////////////////////////////////
+    
+    if(pCreature == NULL) return;
 
 	Trainer *pTrainer = pCreature->GetTrainer();
-	if(pTrainer == 0 || !CanTrainAt(_player, pTrainer)) return;
+	if(pTrainer == NULL || !CanTrainAt(_player, pTrainer)) return;
 
-	TrainerSpell * pSpell=NULL;
+    // Check if the trainer offers that spell
+	TrainerSpell * pSpell = NULL;
 	for(vector<TrainerSpell>::iterator itr = pTrainer->Spells.begin(); itr != pTrainer->Spells.end(); ++itr)
 	{
 		if( ( itr->pCastSpell && itr->pCastSpell->Id == TeachingSpellID ) ||
@@ -204,68 +221,44 @@ void WorldSession::HandleTrainerBuySpellOpcode(WorldPacket& recvPacket)
 		}
 	}
 	
-	if(pSpell == NULL)
+    // If the trainer doesn't offer it, this is probably some packet mangling
+    if(pSpell == NULL){
+        // Disconnecting the player
+        this->Disconnect();
 		return;
+    }
 
-	if(TrainerGetSpellStatus(pSpell) > 0) return;
+    // We can't learn it
+	if(TrainerGetSpellStatus(pSpell) > 0) 
+        return;
+
+//////////////////////////////////////////// Teaching ////////////////////////////////////
 	
 	_player->ModUnsigned32Value(PLAYER_FIELD_COINAGE, -(int32)pSpell->Cost);
 
 	if( pSpell->pCastSpell)
 	{
-		// Cast teaching spell on player
-		pCreature->CastTrainerSpell(_player, pSpell->pCastSpell, true);
-	}
-
-	if( pSpell->pLearnSpell )
+        _player->CastSpell( _player, pSpell->pCastSpell->Id, true );
+    }
+    else
 	{
-		packetSMSG_PLAY_SPELL_VISUAL pck;
-		pck.guid = pCreature->GetGUID();
-		pck.visualid = 0x5b3;
-		_player->OutPacketToSet( SMSG_PLAY_SPELL_VISUAL, sizeof(packetSMSG_PLAY_SPELL_VISUAL), &pck, true );
+/////////////////////////////////////// Showing the learning spellvisuals//////////////
+            packetSMSG_PLAY_SPELL_VISUAL pck;
 
-		pck.guid = _player->GetGUID();
-		pck.visualid = 0x16a;
-		_player->OutPacketToSet( 0x1F7, sizeof(packetSMSG_PLAY_SPELL_VISUAL), &pck, true );
+	        pck.guid = pCreature->GetGUID();
+	        pck.visualid = 0x5b3;
 
-		// add the spell
+	        _player->OutPacketToSet( SMSG_PLAY_SPELL_VISUAL, sizeof(packetSMSG_PLAY_SPELL_VISUAL), &pck, true );
+
+            pck.guid = _player->GetGUID();
+	        pck.visualid = 0x16a;
+
+	        _player->OutPacketToSet( SMSG_PLAY_SPELL_IMPACT, sizeof(packetSMSG_PLAY_SPELL_VISUAL), &pck, true );
+///////////////////////////////////////////////////////////////////////////////////////
+        
+        // add the spell itself
 		_player->addSpell( pSpell->pLearnSpell->Id );
-
-		uint32 i;
-		for( i = 0; i < 3; ++i )
-		{
-			if( pSpell->pLearnSpell->Effect[i] == SPELL_EFFECT_PROFICIENCY || pSpell->pLearnSpell->Effect[i] == SPELL_EFFECT_WEAPON ||
-				( pSpell->pLearnSpell->Effect[i] == SPELL_EFFECT_LEARN_SPELL && pSpell->pLearnSpell->EffectImplicitTargetA[i] != EFF_TARGET_PET ) )  // avoid direct pet teaching
-			{
-				_player->CastSpell( _player, pSpell->pLearnSpell, true );
-				break;
-			}
-		}
-
-		for( i = 0; i < 3; ++i)
-		{
-			if( pSpell->pLearnSpell->Effect[i] == SPELL_EFFECT_SKILL )
-			{
-				uint32 skill = pSpell->pLearnSpell->EffectMiscValue[i];
-				uint32 val = (pSpell->pLearnSpell->EffectBasePoints[i]+1) * 75;
-				if( val > 375 )
-					val = 375;
-
-				if( _player->_GetSkillLineMax(skill) > val ) // cebernic: eq
-					continue;
-
-				if( skill == SKILL_RIDING )
-					_player->_AddSkillLine( skill, val, val );
-				else
-				{
-					if( _player->_HasSkillLine(skill) )
-						_player->_ModifySkillMaximum(skill, val);
-					else
-						_player->_AddSkillLine( skill, 1, val);
-				}
-			}
-		}
-	}
+    }
 
 	if(pSpell->DeleteSpell)
 	{
@@ -279,6 +272,24 @@ void WorldSession::HandleTrainerBuySpellOpcode(WorldPacket& recvPacket)
 	}
 
 	_player->_UpdateSkillFields();
+
+    /////////////////////////////////////////////////////////////////////////////////
+    // As of 3.1.3 this is sent after buying the spell
+    // 
+    //
+    // {SERVER} Packet: (0x01B3) SMSG_TRAINER_BUY_SUCCEEDED PacketSize = 12 TimeStamp = 39035968
+    // A0 85 00 06 7A 00 30 F1 2D 85 00 00 
+    // 
+    // structure:
+    //
+    // uint64 GUID    -  GUID of the trainer
+    // uint32 spellid -  ID of the spell we bought
+    //////////////////////////////////////////////////////////////////////////////////
+
+    WorldPacket data( SMSG_TRAINER_BUY_SUCCEEDED, 12 );
+
+    data << uint64( Guid ) << uint32( TeachingSpellID );
+    this->SendPacket( &data );
 }
 
 uint8 WorldSession::TrainerGetSpellStatus(TrainerSpell* pSpell)

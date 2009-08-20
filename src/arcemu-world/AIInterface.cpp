@@ -4281,12 +4281,7 @@ void AIInterface::Event_Summon_EE_totem(uint32 summon_duration)
         static_cast< Creature* >(ourslave)->SetOwner( caster );
 
         ourslave->SetUInt32Value(UNIT_FIELD_FLAGS, UNIT_FLAG_PLAYER_CONTROLLED | UNIT_FLAG_SELF_RES);
-                
-		/*
-		- Earth Stun (37982)
-		- taunt
-		*/
-	}
+    }
 }
 
 //we only cast once a spell and we will set his health and resistances. Note that this can be made with db too !
@@ -4316,10 +4311,6 @@ void AIInterface::Event_Summon_FE_totem(uint32 summon_duration)
         static_cast< Creature* >(ourslave)->SetOwner( caster );
 
         ourslave->SetUInt32Value(UNIT_FIELD_FLAGS, UNIT_FLAG_PLAYER_CONTROLLED | UNIT_FLAG_SELF_RES);
-        /*
-		- also : select * from dbc_spell where name like "%fire blast%"
-		- also : select * from dbc_spell where name like "%fire nova"
-		*/
 	}
 }
 /*
