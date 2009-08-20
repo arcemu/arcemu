@@ -1338,26 +1338,6 @@ void ApplyNormalFixes()
 			// mask for FORM_CAT(1) = 1 << (1 - 1), which is 1
 			sp->RequiredShapeShift = 1;
 		}
-
-		//Bash - Interrupt effect
-		sp = dbcSpell.LookupEntryForced( 5211 );
-		if( sp != NULL )
-		{
-			sp->Effect[1] = SPELL_EFFECT_TRIGGER_SPELL;
-			sp->EffectTriggerSpell[1] = 32747;
-		}
-		sp = dbcSpell.LookupEntryForced( 6798 );
-		if( sp != NULL )
-		{
-			sp->Effect[1] = SPELL_EFFECT_TRIGGER_SPELL;
-			sp->EffectTriggerSpell[1] = 32747;
-		}
-		sp = dbcSpell.LookupEntryForced( 8983 );
-		if( sp != NULL )
-		{
-			sp->Effect[1] = SPELL_EFFECT_TRIGGER_SPELL;
-			sp->EffectTriggerSpell[1] = 32747;
-		}
 	} 
 	// END OF LOOP
 
@@ -2272,61 +2252,6 @@ void ApplyNormalFixes()
 			sp->Effect[1] = SPELL_EFFECT_SCHOOL_DAMAGE;
 			sp->Effect[2] = SPELL_EFFECT_DUMMY;
 		}
-	
-		//////////////////////////////////////////
-		// DRUID								//
-		//////////////////////////////////////////
-
-		//Force of Nature
-		sp = dbcSpell.LookupEntryForced(33831);
-		if( sp != NULL )
-		{
-			sp->c_is_flags |= SPELL_FLAG_IS_INHERITING_LEVEL;
-			sp->EffectImplicitTargetA[0] = EFF_TARGET_SELF; //some land under target is used that gathers multiple targets ...
-			sp->EffectImplicitTargetA[1] = EFF_TARGET_NONE;
-		}
-
-		//Nature's Grace Rank 1
-		sp = dbcSpell.LookupEntryForced(16880);
-		if(sp != NULL)
-		{
-			sp->procFlags = PROC_ON_SPELL_CRIT_HIT;
-			sp->procChance = 33;
-			sp->maxstack = 1;
-		}
-
-		//Nature's Grace Rank 2
-		sp = dbcSpell.LookupEntryForced(61345);
-		if(sp != NULL)
-		{
-			sp->procFlags = PROC_ON_SPELL_CRIT_HIT;
-			sp->procChance = 66;
-			sp->maxstack = 1;
-		}
-
-		//Nature's Grace Rank 3
-		sp = dbcSpell.LookupEntryForced(61346);
-		if(sp != NULL)
-		{
-			sp->procFlags = PROC_ON_SPELL_CRIT_HIT;
-			sp->procChance = 100;
-			sp->maxstack = 1;
-		}
-
-		//Earth and Moon Rank 1
-		sp = dbcSpell.LookupEntryForced(48506);
-		if(sp != NULL)
-			sp->procFlags = PROC_ON_CAST_SPELL;
-
-		//Earth and Moon Rank 2
-		sp = dbcSpell.LookupEntryForced(48510);
-		if(sp != NULL)
-			sp->procFlags = PROC_ON_CAST_SPELL;
-
-		//Earth and Moon Rank 3
-		sp = dbcSpell.LookupEntryForced(48511);
-		if(sp != NULL)
-			sp->procFlags = PROC_ON_CAST_SPELL;
 
 		//////////////////////////////////////////
 		// PALADIN								//
@@ -6349,21 +6274,143 @@ void ApplyNormalFixes()
 	//////////////////////////////////////////
 			
 	// Insert druid spell fixes here
-		
-		// Spell 22570 (Maim Rank 1)
+
+		/**********************************************************
+		 *	Balance
+		 **********************************************************/
+
+		// Druid - Nature's Grace
+		sp = dbcSpell.LookupEntryForced( 16880 );
+		if(sp != NULL)
+			sp->procFlags = PROC_ON_SPELL_CRIT_HIT;
+
+		sp = dbcSpell.LookupEntryForced( 61345 );
+		if(sp != NULL)
+			sp->procFlags = PROC_ON_SPELL_CRIT_HIT;
+
+		sp = dbcSpell.LookupEntryForced( 61346 );
+		if(sp != NULL)
+			sp->procFlags = PROC_ON_SPELL_CRIT_HIT;
+
+		// Druid - Earth and Moon
+		sp = dbcSpell.LookupEntryForced(48506);
+		if(sp != NULL)
+			sp->procFlags = PROC_ON_CAST_SPELL;
+
+		sp = dbcSpell.LookupEntryForced(48510);
+		if(sp != NULL)
+			sp->procFlags = PROC_ON_CAST_SPELL;
+
+		sp = dbcSpell.LookupEntryForced(48511);
+		if(sp != NULL)
+			sp->procFlags = PROC_ON_CAST_SPELL;
+
+		// Druid - Nature's Grasp //sp->AuraInterruptFlags = 0; //we remove it on proc or timeout
+		sp = dbcSpell.LookupEntryForced( 16689 );
+		if( sp != NULL )
+			sp->procFlags = PROC_ON_MELEE_ATTACK_VICTIM | PROC_REMOVEONUSE;
+
+		sp = dbcSpell.LookupEntryForced( 16810 );
+		if( sp != NULL )
+			sp->procFlags = PROC_ON_MELEE_ATTACK_VICTIM | PROC_REMOVEONUSE;
+
+		sp = dbcSpell.LookupEntryForced( 16811 );
+		if( sp != NULL )
+			sp->procFlags = PROC_ON_MELEE_ATTACK_VICTIM | PROC_REMOVEONUSE;
+
+		sp = dbcSpell.LookupEntryForced( 16812 );
+		if( sp != NULL )
+			sp->procFlags = PROC_ON_MELEE_ATTACK_VICTIM | PROC_REMOVEONUSE;
+
+		sp = dbcSpell.LookupEntryForced( 16813 );
+		if( sp != NULL )
+			sp->procFlags = PROC_ON_MELEE_ATTACK_VICTIM | PROC_REMOVEONUSE;
+
+		sp = dbcSpell.LookupEntryForced( 17329 );
+		if( sp != NULL )
+			sp->procFlags = PROC_ON_MELEE_ATTACK_VICTIM | PROC_REMOVEONUSE;
+
+		sp = dbcSpell.LookupEntryForced( 27009 );
+		if( sp != NULL )
+			sp->procFlags = PROC_ON_MELEE_ATTACK_VICTIM | PROC_REMOVEONUSE;
+
+		sp = dbcSpell.LookupEntryForced( 53312 );
+		if( sp != NULL )
+			sp->procFlags = PROC_ON_MELEE_ATTACK_VICTIM | PROC_REMOVEONUSE;
+
+		// Druid - Force of Nature
+		sp = dbcSpell.LookupEntryForced(33831);
+		if( sp != NULL )
+		{
+			sp->c_is_flags |= SPELL_FLAG_IS_INHERITING_LEVEL;
+			sp->EffectImplicitTargetA[0] = EFF_TARGET_SELF; //some land under target is used that gathers multiple targets ...
+			sp->EffectImplicitTargetA[1] = EFF_TARGET_NONE;
+		}
+
+		/**********************************************************
+		 *	Feral Combat
+		 **********************************************************/
+
+		// Druid - Natural Reaction
+		sp = dbcSpell.LookupEntryForced( 57878 );
+		if( sp != NULL )
+			sp->procFlags = PROC_ON_DODGE_VICTIM;
+
+		sp = dbcSpell.LookupEntryForced( 57880 );
+		if( sp != NULL )
+			sp->procFlags = PROC_ON_DODGE_VICTIM;
+
+		sp = dbcSpell.LookupEntryForced( 57881 );
+		if( sp != NULL )
+			sp->procFlags = PROC_ON_DODGE_VICTIM;
+
+		// Druid - Infected Wounds
+		sp = dbcSpell.LookupEntryForced( 48483 );
+		if( sp != NULL )
+			sp->procFlags = PROC_ON_CAST_SPELL;
+
+		sp = dbcSpell.LookupEntryForced( 48484 );
+		if( sp != NULL )
+			sp->procFlags = PROC_ON_CAST_SPELL;
+
+		sp = dbcSpell.LookupEntryForced( 48485 );
+		if( sp != NULL )
+			sp->procFlags = PROC_ON_CAST_SPELL;
+
+		// Druid - Bash - Interrupt effect
+		sp = dbcSpell.LookupEntryForced( 5211 );
+		if( sp != NULL )
+		{
+			sp->Effect[1] = SPELL_EFFECT_TRIGGER_SPELL;
+			sp->EffectTriggerSpell[1] = 32747;
+		}
+		sp = dbcSpell.LookupEntryForced( 6798 );
+		if( sp != NULL )
+		{
+			sp->Effect[1] = SPELL_EFFECT_TRIGGER_SPELL;
+			sp->EffectTriggerSpell[1] = 32747;
+		}
+		sp = dbcSpell.LookupEntryForced( 8983 );
+		if( sp != NULL )
+		{
+			sp->Effect[1] = SPELL_EFFECT_TRIGGER_SPELL;
+			sp->EffectTriggerSpell[1] = 32747;
+		}
+
+		// Druid - Maim
 		sp = dbcSpell.LookupEntryForced(22570);
 		if( sp != NULL )
 		{
 			sp->AuraInterruptFlags = AURA_INTERRUPT_ON_UNUSED2;
 			sp->is_melee_spell = true;
 		}
-		// Spell 22570 (Maim Rank 2)
 		sp = dbcSpell.LookupEntryForced(49802);
 		if( sp != NULL )
 		{
 			sp->AuraInterruptFlags = AURA_INTERRUPT_ON_UNUSED2;
 			sp->is_melee_spell = true;
 		}
+
 		sp = dbcSpell.LookupEntryForced(49376); //feral charge cat
 		if( sp != NULL )
 		{
@@ -6371,11 +6418,12 @@ void ApplyNormalFixes()
 			sp->EffectImplicitTargetA[1] = EFF_TARGET_SINGLE_ENEMY;
 			sp->Effect[2] = 0;
 		}
+
 		sp = dbcSpell.LookupEntryForced(20719); //feline grace
 		if( sp != NULL )
 			sp->Effect[0] = 0;
 
-		//Druid: Feral Swiftness
+		// Druid - Feral Swiftness
 		sp = dbcSpell.LookupEntryForced( 17002 );
 		if ( sp != NULL )
 		{
@@ -6389,18 +6437,7 @@ void ApplyNormalFixes()
 			sp->EffectTriggerSpell[1] = 24864;
 		}
 
-		//Druid: Natural Perfection
-		sp = dbcSpell.LookupEntryForced( 33881 );
-		if ( sp != NULL )
-			sp->procFlags = PROC_ON_CRIT_HIT_VICTIM | PROC_ON_SPELL_CRIT_HIT_VICTIM | PROC_ON_RANGED_CRIT_ATTACK_VICTIM;
-		sp = dbcSpell.LookupEntryForced( 33882 );
-		if ( sp != NULL )
-			sp->procFlags = PROC_ON_CRIT_HIT_VICTIM | PROC_ON_SPELL_CRIT_HIT_VICTIM | PROC_ON_RANGED_CRIT_ATTACK_VICTIM;
-		sp = dbcSpell.LookupEntryForced( 33883 );
-		if ( sp != NULL )
-			sp->procFlags = PROC_ON_CRIT_HIT_VICTIM | PROC_ON_SPELL_CRIT_HIT_VICTIM | PROC_ON_RANGED_CRIT_ATTACK_VICTIM;
-
-		//Druid: Frenzied Regeneration
+		// Druid - Frenzied Regeneration
 		sp = dbcSpell.LookupEntryForced( 22842 );
 		if( sp != NULL )
 		{
@@ -6430,41 +6467,16 @@ void ApplyNormalFixes()
 			sp->EffectTriggerSpell[0] = 22845;
 		}
 
-		//Druid - Celestial Focus
-		sp = dbcSpell.LookupEntryForced( 16850 );
-		if( sp != NULL )
-		{
-			sp->procFlags = PROC_ON_CAST_SPELL;
-		}
-		sp = dbcSpell.LookupEntryForced( 16923 );
-		if( sp != NULL )
-		{
-			sp->procFlags = PROC_ON_CAST_SPELL;
-		}
-		sp = dbcSpell.LookupEntryForced( 16924 );
-		if( sp != NULL )
-		{
-			sp->procFlags = PROC_ON_CAST_SPELL;
-		}
-
-		//Druid: Leader of the Pack
-		sp = dbcSpell.LookupEntryForced( 24932 );
-		if( sp != NULL )
-		{
-			sp->Effect[1] = 0;
-			sp->Effect[2] = 0; //removing strange effects.
-		}
-
-		//Druid: Improved Leader of the Pack
+		// Druid - Improved Leader of the Pack
 		sp = dbcSpell.LookupEntryForced( 34297 );
 		if( sp != NULL )
 			sp->proc_interval = 6000;//6 secs
-		//Druid: Improved Leader of the Pack Rank 2
+
 		sp = dbcSpell.LookupEntryForced( 34300 );
 		if( sp != NULL )
 			sp->proc_interval = 6000;//6 secs
 
-		//druid - Primal Fury (talent)
+		// Druid - Primal Fury (talent)
 		sp = dbcSpell.LookupEntryForced( 37116 );
 		if( sp != NULL )
 			sp->RequiredShapeShift = 0;
@@ -6473,7 +6485,7 @@ void ApplyNormalFixes()
 		if( sp != NULL )
 			sp->RequiredShapeShift = 0;
 
-		//druid - Blood Frenzy (proc)
+		// Druid - Blood Frenzy (proc)
 		sp = dbcSpell.LookupEntryForced( 16954 );
 		if( sp != NULL )
 			sp->procFlags = PROC_ON_CRIT_ATTACK;
@@ -6482,7 +6494,7 @@ void ApplyNormalFixes()
 		if( sp != NULL )
 			sp->procFlags = PROC_ON_CRIT_ATTACK;
 
-		//druid - Primal Fury (proc)
+		// Druid - Primal Fury (proc)
 		sp = dbcSpell.LookupEntryForced( 16961 );
 		if( sp != NULL )
 			sp->procFlags = PROC_ON_CRIT_ATTACK;
@@ -6491,207 +6503,7 @@ void ApplyNormalFixes()
 		if( sp != NULL )
 			sp->procFlags = PROC_ON_CRIT_ATTACK;
 
-		//druid - Intensity
-		sp = dbcSpell.LookupEntryForced( 17106 );
-		if( sp != NULL )
-		{
-		   sp->EffectApplyAuraName[1] = SPELL_AURA_PROC_TRIGGER_SPELL;
-		   sp->procFlags = PROC_ON_CAST_SPELL;
-		}
-		sp = dbcSpell.LookupEntryForced( 17107 );
-		if( sp != NULL )
-		{
-			sp->EffectApplyAuraName[1] = SPELL_AURA_PROC_TRIGGER_SPELL;
-			 sp->procFlags = PROC_ON_CAST_SPELL;
-		}
-		sp = dbcSpell.LookupEntryForced( 17108 );
-		if( sp != NULL )
-		{
-			sp->EffectApplyAuraName[1] = SPELL_AURA_PROC_TRIGGER_SPELL;
-			sp->procFlags = PROC_ON_CAST_SPELL;
-		}
-		//Nature's Grasp
-		sp = dbcSpell.LookupEntryForced( 16689 );
-		if( sp != NULL )
-		{
-			sp->Effect[0] = 6;
-			sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
-			sp->EffectTriggerSpell[0] = 339;
-			sp->procChance = 100;
-			sp->Effect[1] = 0;
-			sp->procFlags = PROC_ON_MELEE_ATTACK_VICTIM | PROC_REMOVEONUSE;
-			sp->AuraInterruptFlags = 0; //we remove it on proc or timeout
-		}
-		sp = dbcSpell.LookupEntryForced( 16810 );
-		if( sp != NULL )
-		{
-			sp->Effect[0] = 6;
-			sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
-			sp->EffectTriggerSpell[0] = 1062;
-			sp->Effect[1] = 0;
-			sp->procFlags = PROC_ON_MELEE_ATTACK_VICTIM | PROC_REMOVEONUSE;
-			sp->AuraInterruptFlags = 0; //we remove it on proc or timeout
-			sp->procChance = 100;
-		}
-		sp = dbcSpell.LookupEntryForced( 16811 );
-		if( sp != NULL )
-		{
-			sp->Effect[0] = 6;
-			sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
-			sp->EffectTriggerSpell[0] = 5195;
-			sp->Effect[1] = 0;
-			sp->procFlags = PROC_ON_MELEE_ATTACK_VICTIM | PROC_REMOVEONUSE;
-			sp->AuraInterruptFlags = 0; //we remove it on proc or timeout
-			sp->procChance = 100;
-		}
-		sp = dbcSpell.LookupEntryForced( 16812 );
-		if( sp != NULL )
-		{
-			sp->Effect[0] = 6;
-			sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
-			sp->EffectTriggerSpell[0] = 5196;
-			sp->Effect[1] = 0;
-			sp->procFlags = PROC_ON_MELEE_ATTACK_VICTIM | PROC_REMOVEONUSE;
-			sp->AuraInterruptFlags = 0; //we remove it on proc or timeout
-			sp->procChance = 100;
-		}
-		sp = dbcSpell.LookupEntryForced( 16813 );
-		if( sp != NULL )
-		{
-			sp->Effect[0] = 6;
-			sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
-			sp->EffectTriggerSpell[0] = 9852;
-			sp->Effect[1] = 0;
-			sp->procFlags = PROC_ON_MELEE_ATTACK_VICTIM | PROC_REMOVEONUSE;
-			sp->AuraInterruptFlags = 0; //we remove it on proc or timeout
-			sp->procChance = 100;
-		}
-		sp = dbcSpell.LookupEntryForced( 17329 );
-		if( sp != NULL )
-		{
-			sp->Effect[0] = 6;
-			sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
-			sp->EffectTriggerSpell[0] = 9853;
-			sp->Effect[1] = 0;
-			sp->procFlags = PROC_ON_MELEE_ATTACK_VICTIM | PROC_REMOVEONUSE;
-			sp->AuraInterruptFlags = 0; //we remove it on proc or timeout
-			sp->procChance = 100;
-		}
-		sp = dbcSpell.LookupEntryForced( 27009 );
-		if( sp != NULL )
-		{
-			sp->Effect[0] = 6;
-			sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
-			sp->EffectTriggerSpell[0] = 26989;
-			sp->Effect[1] = 0;
-			sp->procFlags = PROC_ON_MELEE_ATTACK_VICTIM | PROC_REMOVEONUSE;
-			sp->AuraInterruptFlags = 0; //we remove it on proc or timeout
-			sp->procChance = 100;
-		}
-
-		//rake
-	 /* sp = dbcSpell.LookupEntryForced( 1822 );
-		if( sp != NULL )
-			sp->MechanicsType = MECHANIC_BLEEDING;
-		sp = dbcSpell.LookupEntryForced( 1823 );
-		if( sp != NULL )
-			sp->MechanicsType = MECHANIC_BLEEDING;
-		sp = dbcSpell.LookupEntryForced( 1824 );
-		if( sp != NULL )
-			sp->MechanicsType = MECHANIC_BLEEDING;
-		sp = dbcSpell.LookupEntryForced( 9904 );
-		if( sp != NULL )
-			sp->MechanicsType = MECHANIC_BLEEDING;
-		sp = dbcSpell.LookupEntryForced( 27003 );
-		if( sp != NULL )
-			sp->MechanicsType = MECHANIC_BLEEDING;
-		sp = dbcSpell.LookupEntryForced( 48573 );
-		if( sp != NULL )
-			sp->MechanicsType = MECHANIC_BLEEDING;
-		sp = dbcSpell.LookupEntryForced( 48574 );
-		if( sp != NULL )
-			sp->MechanicsType = MECHANIC_BLEEDING;
-
-		//lacerate
-		sp = dbcSpell.LookupEntryForced( 33745 );
-		if( sp != NULL )
-			sp->MechanicsType = MECHANIC_BLEEDING;
-		sp = dbcSpell.LookupEntryForced( 48567 );
-		if( sp != NULL )
-			sp->MechanicsType = MECHANIC_BLEEDING;
-		sp = dbcSpell.LookupEntryForced( 48568 );
-		if( sp != NULL )
-			sp->MechanicsType = MECHANIC_BLEEDING; */
-
-		//Druid: Natural Shapeshifter
-		sp = dbcSpell.LookupEntryForced( 16833 );
-		if( sp != NULL )
-			sp->DurationIndex = 0;
-		sp = dbcSpell.LookupEntryForced( 16834 );
-		if( sp != NULL )
-			sp->DurationIndex = 0;
-		sp = dbcSpell.LookupEntryForced( 16835 );
-		if( sp != NULL )
-			sp->DurationIndex = 0;
-
-		// druid - Naturalist
-		sp = dbcSpell.LookupEntryForced( 17069 );
-		if( sp != NULL )
-		{
-			sp->EffectApplyAuraName[1] = SPELL_AURA_MOD_DAMAGE_PERCENT_DONE;
-			sp->EffectMiscValue[1] = 1;
-		}
-		sp = dbcSpell.LookupEntryForced( 17070 );
-		if( sp != NULL )
-		{
-			sp->EffectApplyAuraName[1] = SPELL_AURA_MOD_DAMAGE_PERCENT_DONE;
-			sp->EffectMiscValue[1] = 1;
-		}
-		sp = dbcSpell.LookupEntryForced( 17071 );
-		if( sp != NULL )
-		{
-			sp->EffectApplyAuraName[1] = SPELL_AURA_MOD_DAMAGE_PERCENT_DONE;
-			sp->EffectMiscValue[1] = 1;
-		}
-		sp = dbcSpell.LookupEntryForced( 17072 );
-		if( sp != NULL )
-		{
-			sp->EffectApplyAuraName[1] = SPELL_AURA_MOD_DAMAGE_PERCENT_DONE;
-			sp->EffectMiscValue[1] = 1;
-		}
-		sp = dbcSpell.LookupEntryForced( 17073 );
-		if( sp != NULL )
-		{
-			sp->EffectApplyAuraName[1] = SPELL_AURA_MOD_DAMAGE_PERCENT_DONE;
-			sp->EffectMiscValue[1] = 1;
-		}
-
-		// druid - Nature's Grace
-		sp = dbcSpell.LookupEntryForced( 16880 );
-		if( sp != NULL )
-		{
-            sp->procFlags = PROC_ON_SPELL_CRIT_HIT | static_cast<uint32>(PROC_TARGET_SELF);
-            sp->procChance = 100;
-            sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
-            sp->EffectTriggerSpell[0] = 16886;
-            sp->Effect[0] = SPELL_EFFECT_APPLY_AURA;
-		}
-
-		sp = dbcSpell.LookupEntryForced( 16886 );
-		if( sp != NULL )
-		{
-			sp->procFlags = PROC_ON_CAST_SPELL;
-            sp->procChance = 100;
-			sp->procCharges = 2; // I know.. hacky.. but first charge gets lost when it gets proceed
-		}
-
-		// Druid: Omen of Clarity
-		sp = dbcSpell.LookupEntryForced( 16864 );
-		if( sp != NULL )
-		{
-			sp->procChance=6; //procchance dynamic. 3ppm
-			sp->procFlags = PROC_ON_MELEE_ATTACK | PROC_ON_CRIT_ATTACK;
-		}
+		// Druid - Predatory Strikes
 		uint32 mm = DecimalToMask(FORM_BEAR) | DecimalToMask(FORM_DIREBEAR) | DecimalToMask(FORM_MOONKIN) | DecimalToMask(FORM_CAT);
 
 		sp = dbcSpell.LookupEntryForced( 16972 );
@@ -6703,6 +6515,58 @@ void ApplyNormalFixes()
 		sp = dbcSpell.LookupEntryForced( 16975 );
 		if( sp != NULL )
 			sp->RequiredShapeShift = mm;
+
+		/**********************************************************
+		 *	Restoration
+		 **********************************************************/
+		
+		// Druid - Tree Form Aura
+		sp = dbcSpell.LookupEntryForced( 34123 );
+		if( sp != NULL )
+			sp->NameHash = 0;
+
+		// Druid - Omen of Clarity
+		sp = dbcSpell.LookupEntryForced( 16864 );
+		if( sp != NULL )
+		{
+			sp->procChance = 6; //procchance dynamic. 3ppm
+			sp->procFlags = PROC_ON_MELEE_ATTACK | PROC_ON_CAST_SPELL;
+		}
+
+		// Druid - Natural Perfection
+		sp = dbcSpell.LookupEntryForced( 33881 );
+		if ( sp != NULL )
+			sp->procFlags = PROC_ON_CRIT_HIT_VICTIM | PROC_ON_SPELL_CRIT_HIT_VICTIM | PROC_ON_RANGED_CRIT_ATTACK_VICTIM;
+		sp = dbcSpell.LookupEntryForced( 33882 );
+		if ( sp != NULL )
+			sp->procFlags = PROC_ON_CRIT_HIT_VICTIM | PROC_ON_SPELL_CRIT_HIT_VICTIM | PROC_ON_RANGED_CRIT_ATTACK_VICTIM;
+		sp = dbcSpell.LookupEntryForced( 33883 );
+		if ( sp != NULL )
+			sp->procFlags = PROC_ON_CRIT_HIT_VICTIM | PROC_ON_SPELL_CRIT_HIT_VICTIM | PROC_ON_RANGED_CRIT_ATTACK_VICTIM;
+
+		// Druid - Intensity
+		sp = dbcSpell.LookupEntryForced( 17106 );
+		if( sp != NULL )
+		   sp->procFlags = PROC_ON_CAST_SPELL;
+
+		sp = dbcSpell.LookupEntryForced( 17107 );
+		if( sp != NULL )
+			 sp->procFlags = PROC_ON_CAST_SPELL;
+
+		sp = dbcSpell.LookupEntryForced( 17108 );
+		if( sp != NULL )
+			sp->procFlags = PROC_ON_CAST_SPELL;
+
+		// Druid - Natural Shapeshifter
+		sp = dbcSpell.LookupEntryForced( 16833 );
+		if( sp != NULL )
+			sp->DurationIndex = 0;
+		sp = dbcSpell.LookupEntryForced( 16834 );
+		if( sp != NULL )
+			sp->DurationIndex = 0;
+		sp = dbcSpell.LookupEntryForced( 16835 );
+		if( sp != NULL )
+			sp->DurationIndex = 0;
 
 	//////////////////////////////////////////
 	// ITEMS								//

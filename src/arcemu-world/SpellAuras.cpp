@@ -4499,10 +4499,10 @@ void Aura::SpellAuraModShapeshift(bool apply)
 		} break;
 	case FORM_TREE:
 		{
-			modelId  = 864;
-			freeMovements=true;
-			spellId = 5420;//3122;
-			spellId2 = 34123;
+			modelId = 864;
+			freeMovements = true;
+			spellId = 34123; // this is area aura
+			//spellId2 = 5420;
 		} break;
 	case FORM_TRAVEL:
 		{//druid
