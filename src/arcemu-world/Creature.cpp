@@ -1377,8 +1377,16 @@ bool Creature::Load(CreatureSpawn *spawn, uint32 mode, MapInfo *info)
 
 	has_combat_text = objmgr.HasMonsterSay(GetEntry(), MONSTER_SAY_EVENT_ENTER_COMBAT);
 	has_waypoint_text = objmgr.HasMonsterSay(GetEntry(), MONSTER_SAY_EVENT_RANDOM_WAYPOINT);
-	m_aiInterface->m_isGuard = isGuard(GetEntry());
-	m_aiInterface->m_isNeutralGuard = isNeutralGuard(GetEntry());
+
+    if( proto->guardtype == GUARDTYPE_CITY )
+        m_aiInterface->m_isGuard = true;
+    else
+        m_aiInterface->m_isGuard = false;
+
+    if( proto->guardtype == GUARDTYPE_NEUTRAL )
+        m_aiInterface->m_isNeutralGuard = true;
+    else
+        m_aiInterface->m_isNeutralGuard = false;
 
 	m_aiInterface->getMoveFlags();
 
@@ -1571,8 +1579,16 @@ void Creature::Load(CreatureProto * proto_, float x, float y, float z, float o)
 
 	has_combat_text = objmgr.HasMonsterSay(GetEntry(), MONSTER_SAY_EVENT_ENTER_COMBAT);
 	has_waypoint_text = objmgr.HasMonsterSay(GetEntry(), MONSTER_SAY_EVENT_RANDOM_WAYPOINT);
-	m_aiInterface->m_isGuard = isGuard(GetEntry());
-	m_aiInterface->m_isNeutralGuard = isNeutralGuard(GetEntry());
+	
+    if( proto->guardtype == GUARDTYPE_CITY )
+        m_aiInterface->m_isGuard = true;
+    else
+        m_aiInterface->m_isGuard = false;
+
+    if( proto->guardtype == GUARDTYPE_NEUTRAL )
+        m_aiInterface->m_isNeutralGuard = true;
+    else
+        m_aiInterface->m_isNeutralGuard = false;
 
 	m_aiInterface->getMoveFlags();
 

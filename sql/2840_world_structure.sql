@@ -262,6 +262,7 @@ CREATE TABLE `creature_proto` (
   `spell_flags` int(30) NOT NULL default '0',
   `modImmunities` int(30) unsigned NOT NULL default '0',
   `isTrainingDummy` int(10) unsigned NOT NULL default '0',
+  `guardtype` int(10) unsigned NOT NULL default '0',
   PRIMARY KEY  (`entry`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Creature System';
 

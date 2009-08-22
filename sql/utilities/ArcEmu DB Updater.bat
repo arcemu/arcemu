@@ -251,6 +251,9 @@ mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < 
 ECHO [Importing] 2834_worldstring.sql
 mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < ..\world_updates\2834_worldstring.sql
 
+ECHO [Importing] 2840_guardtype.sql
+mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < ..\world_updates\2840_guardtype.sql
+
 
 ECHO [Importing] ArcScript_full.sql
 mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < ..\ArcScripts\ArcScript_full.sql
@@ -527,6 +530,9 @@ mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < 
 
 ECHO [Importing] 2834_worldstring.sql
 mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < ..\world_updates\2834_worldstring.sql
+
+ECHO [Importing] 2840_guardtype.sql
+mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < ..\world_updates\2840_guardtype.sql
 
 
 ECHO [Importing] ArcScript_full.sql

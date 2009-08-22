@@ -30,6 +30,12 @@ class GossipScript;
 #define VENDOR_ITEMS_UPDATE_TIME 3600000
 #include "Map.h"
 
+enum creatureguardtype{
+    GUARDTYPE_NONE,
+    GUARDTYPE_CITY,
+    GUARDTYPE_NEUTRAL
+};
+
 struct CreatureItem
 {
 	uint32 itemid;
@@ -133,6 +139,7 @@ struct CreatureProto
 	uint32 AISpellsFlags;
 	uint32 modImmunities;
 	uint32 isTrainingDummy;
+    uint32 guardtype;
 
 	/* AI Stuff */
 	bool m_canRangedAttack;
