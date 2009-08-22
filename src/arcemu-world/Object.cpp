@@ -1971,7 +1971,7 @@ void Object::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
     Player *pAttacker = GetPlayerOwner( this );
 
     // We identified both the attacker and the victim as possible PvP combatants, if we are not dueling we will flag the attacker
-    if( pOwner != NULL && pAttacker != NULL && pOwner != pAttacker->DuelingWith ){
+    if( pOwner != NULL && pAttacker != NULL && pOwner != pAttacker && pOwner != pAttacker->DuelingWith ){
         if( !pAttacker->IsPvPFlagged() ){
             pAttacker->PvPToggle();
         }
@@ -2496,8 +2496,9 @@ void Object::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
 
 		if( this->IsUnit() )
 		{
-            pVictim->RemoveAllAuras();
-			CALL_SCRIPT_EVENT( this, OnTargetDied )( pVictim );
+            pVictim->RemoveAllNonPersistantAuras();
+
+            CALL_SCRIPT_EVENT( this, OnTargetDied )( pVictim );
 			static_cast< Unit* >( this )->smsg_AttackStop( pVictim );
 
 			/* Tell Unit that it's target has Died */

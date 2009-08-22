@@ -2029,7 +2029,8 @@ void Player::_SavePet(QueryBuffer * buf)
 			<< itr->second->summon << "','"
 			<< (long)itr->second->reset_time << "','"
 			<< itr->second->reset_cost << "','"
-			<< itr->second->spellid << "')";
+			<< itr->second->spellid << "','"
+            << itr->second->petstate << "')";
 
 		if(buf == NULL)
 			CharacterDatabase.ExecuteNA(ss.str().c_str());
@@ -2127,6 +2128,7 @@ void Player::_LoadPet(QueryResult * result)
 		pet->reset_time = fields[11].GetUInt32();
 		pet->reset_cost = fields[12].GetUInt32();
 		pet->spellid = fields[13].GetUInt32();
+        pet->petstate = fields[14].GetUInt32();
 
 		m_Pets[pet->number] = pet;
 

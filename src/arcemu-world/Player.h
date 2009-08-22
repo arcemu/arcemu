@@ -687,6 +687,7 @@ struct PlayerPet
 	time_t reset_time;
 	uint32 reset_cost;
 	uint32 spellid;
+    uint32 petstate;
 };
 enum MeetingStoneQueueStatus
 {

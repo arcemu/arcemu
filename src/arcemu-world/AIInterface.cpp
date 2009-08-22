@@ -1728,6 +1728,7 @@ Unit* AIInterface::FindTarget()
         printf("I'm a pet and I'm looking for targets, RAWR!\n");
     }
     */
+
     
 	
 	/* Commented due to no use
@@ -1817,22 +1818,6 @@ Unit* AIInterface::FindTarget()
 		if(dist > distance)	 // we want to find the CLOSEST target
 			continue;
 
-        if( m_Unit->IsCreature() ){
-            Creature *pCreature = static_cast< Creature* >( m_Unit );
-
-            // We are only interested in pets, totems, and summons
-            if( pCreature->IsPet() || pCreature->IsTotem()  || pCreature->GetOwner() != NULL ){
-                
-                // We don't want to attack unflagged players
-                if( pUnit->IsPlayer() && !pUnit->IsPvPFlagged())
-                    continue;     
-        
-                // We don't want to accidentally flag ourselves
-                if( pUnit->IsPlayer() && !m_Unit->IsPvPFlagged() )
-                    continue;
-            }
-        }        
-	
 		if(dist <= _CalcAggroRange(pUnit) )
 		{
 			if (sWorld.Collision) {
@@ -1869,40 +1854,8 @@ Unit* AIInterface::FindTarget()
 
 			pUnit = static_cast< Unit* >( (*itr) );
 
-            if( pUnit->IsCreature() )
-			{
-                Creature *pCreature = static_cast<Creature*>( pUnit );
-
-                // We are only interested in pets, totems, and summons
-                if( pCreature->IsPet() || pCreature->IsTotem() || pCreature->GetOwner() != NULL ){
-                    
-                    // We don't want to attack unflagged pets
-                    if( pUnit->IsPet() && !pUnit->IsPvPFlagged() )
-                        continue;
-
-                    // We don't want to accidentally flag ourselves
-                    if( pUnit->IsPet() && !m_Unit->IsPvPFlagged() )
-                        continue;
-
-                    // if the target is not attackable we are not going to attack it and find a new target, if possible
-				    if( pCreature->m_spawn && !pCreature->isattackable( pCreature->m_spawn ) )
-					    continue;
-
-                    // We don't attack non-flagged totems
-                    if( m_Unit->IsPet() && pCreature->IsTotem() && !pCreature->IsPvPFlagged() )
-                      continue;
-
-                    // it's a summon and the owner is a player
-                    if(pCreature->GetOwner() != NULL && pCreature->GetOwner()->IsPlayer()){
-                      if( !pCreature->IsPvPFlagged() )
-                        continue;
-                    }
-			    }
-            }
-
 			if( UnsafeCanOwnerAttackUnit( pUnit ) == false )
 				continue;
-
 
 			//on blizz there is no Z limit check 
 			dist = m_Unit->GetDistance2dSq(pUnit);

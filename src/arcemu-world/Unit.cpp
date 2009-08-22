@@ -4512,6 +4512,9 @@ void Unit::AddAura(Aura * aur)
 	if ( !aur )
 		return;
 
+    if( !this->isAlive() && !( aur->GetSpellProto()->AttributesExC & CAN_PERSIST_AND_CASTED_WHILE_DEAD ) )
+        return;
+
 	if(m_mapId!=530 && (m_mapId!=571 || (IsPlayer() && !((Player*)this)->HasSpellwithNameHash(SPELL_HASH_COLD_WEATHER_FLYING))))
 	// can't use flying auras in non-outlands or non-northrend (northrend requires cold weather flying)
 	{
@@ -5002,6 +5005,17 @@ void Unit::RemoveAllAuras()
 	for(uint32 x=MAX_TOTAL_AURAS_START;x<MAX_TOTAL_AURAS_END;x++)
 		if(m_auras[x])
 			m_auras[x]->Remove();
+}
+
+void Unit::RemoveAllNonPersistantAuras(){
+	for(uint32 x=MAX_TOTAL_AURAS_START;x<MAX_TOTAL_AURAS_END;x++)
+		if(m_auras[x])
+		{
+            if(m_auras[x]->GetSpellProto()->AttributesExC & CAN_PERSIST_AND_CASTED_WHILE_DEAD)
+                continue;
+            else
+			    m_auras[x]->Remove();
+		}
 }
 
 //ex:to remove morph spells

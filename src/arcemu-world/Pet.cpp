@@ -547,6 +547,7 @@ void Pet::LoadFromDB( Player* owner, PlayerPet * pi )
 	m_HappinessTimer = mPi->happinessupdate;
 	reset_time = mPi->reset_time;
 	reset_cost = mPi->reset_cost;
+    m_State = mPi->petstate;
 
 	bExpires = false;
 
@@ -754,6 +755,7 @@ void Pet::UpdatePetInfo( bool bSetToOffline )
 	pi->summon = Summon;
 	pi->reset_cost = reset_cost;
 	pi->reset_time = reset_time;
+    pi->petstate = m_State;
 }
 
 void Pet::Dismiss() //Abandon pet

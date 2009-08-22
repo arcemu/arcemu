@@ -161,29 +161,11 @@ void WorldSession::HandlePetAction(WorldPacket & recv_data)
 					if( sp->spellType != STYPE_BUFF )
 					{
 						// make sure the target is attackable
-                        if( pTarget == pPet || !isAttackable( pPet, pTarget ) || 
-                            ( pTarget->IsCreature() && static_cast<Creature*>(pTarget)->m_spawn != NULL && !( static_cast<Creature*>(pTarget)->isattackable( static_cast<Creature*>(pTarget)->m_spawn ) ) ))
+                        if( pTarget == pPet || !isAttackable( pPet, pTarget ) )
 						{
 							pPet->SendActionFeedback( PET_FEEDBACK_CANT_ATTACK_TARGET );
 							return;
 						}
-
-                        if( pTarget->IsCreature() && static_cast<Creature*>( pTarget )->IsTotem() && !pTarget->IsPvPFlagged() ){
-                            pPet->SendActionFeedback( PET_FEEDBACK_CANT_ATTACK_TARGET );
-							return;
-                        }
-
-                        if( pTarget->IsCreature() ){
-                            Creature *pCreature = static_cast< Creature* >( pTarget );
-
-                            // it's a summon and the owner is a player
-                            if(pCreature->GetOwner() != NULL && pCreature->GetOwner()->IsPlayer()){
-                                if( !pCreature->IsPvPFlagged() ){
-                                    pPet->SendActionFeedback( PET_FEEDBACK_CANT_ATTACK_TARGET );
-                                    return;
-                                }
-                            }
-                        }
 					}
 
 					if(sp->autocast_type != AUTOCAST_EVENT_ATTACK)
@@ -207,7 +189,15 @@ void WorldSession::HandlePetAction(WorldPacket & recv_data)
 		}break;
 	case PET_ACTION_STATE:
 		{
+             if( misc == PET_STATE_PASSIVE ){
+                // stop attacking and run to owner
+                pPet->GetAIInterface()->WipeTargetList();
+				pPet->GetAIInterface()->WipeHateList();
+                pPet->GetAIInterface()->SetUnitToFollow(_player);
+				pPet->GetAIInterface()->HandleEvent(EVENT_FOLLOWOWNER, pPet, 0);
+            }
 			pPet->SetPetState(misc);
+
 		}break;
 	default:
 		{
