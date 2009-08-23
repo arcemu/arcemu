@@ -44,13 +44,13 @@ class SERVER_DECL EventableObject
 protected:
 	void event_RemoveEvents();
 	void event_RemoveEvents(uint32 EventType);
-	void event_ModifyTimeLeft(uint32 EventType, uint32 TimeLeft,bool unconditioned=false);
-	void event_ModifyTime(uint32 EventType, uint32 Time);
-	void event_ModifyTimeAndTimeLeft(uint32 EventType, uint32 Time);
+	void event_ModifyTimeLeft(uint32 EventType, time_t TimeLeft,bool unconditioned=false);
+	void event_ModifyTime(uint32 EventType, time_t Time);
+	void event_ModifyTimeAndTimeLeft(uint32 EventType, time_t Time);
 	bool event_HasEvent(uint32 EventType);
 	void event_RemoveByPointer(TimedEvent * ev);
 	ARCEMU_INLINE int32 event_GetCurrentInstanceId() { return m_event_Instanceid; }
-	bool event_GetTimeLeft(uint32 EventType, uint32 * Time);
+	bool event_GetTimeLeft(uint32 EventType, time_t * Time);
 
 public:
 	uint32 event_GetEventPeriod(uint32 EventType);
@@ -95,7 +95,7 @@ public:
 	EventableObjectHolder(int32 instance_id);
 	~EventableObjectHolder();
 
-	void Update(uint32 time_difference);
+	void Update(time_t time_difference);
 
 	void AddEvent(TimedEvent * ev);
 	void AddObject(EventableObject * obj);

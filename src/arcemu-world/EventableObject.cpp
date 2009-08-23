@@ -153,7 +153,7 @@ void EventableObject::event_RemoveEvents()
 	event_RemoveEvents(EVENT_REMOVAL_FLAG_ALL);
 }
 
-void EventableObject::event_ModifyTimeLeft(uint32 EventType, uint32 TimeLeft,bool unconditioned)
+void EventableObject::event_ModifyTimeLeft(uint32 EventType, time_t TimeLeft,bool unconditioned)
 {
 	m_lock.Acquire();
 	if(!m_events.size())
@@ -169,7 +169,7 @@ void EventableObject::event_ModifyTimeLeft(uint32 EventType, uint32 TimeLeft,boo
 		{
 			if(unconditioned)
 				itr->second->currTime = TimeLeft;
-			else itr->second->currTime = ((int32)TimeLeft > itr->second->msTime) ? itr->second->msTime : (int32)TimeLeft;
+			else itr->second->currTime = (TimeLeft > itr->second->msTime) ? itr->second->msTime : TimeLeft;
 			++itr;
 		} while(itr != m_events.upper_bound(EventType));
 	}
@@ -177,7 +177,7 @@ void EventableObject::event_ModifyTimeLeft(uint32 EventType, uint32 TimeLeft,boo
 	m_lock.Release();
 }
 
-bool EventableObject::event_GetTimeLeft(uint32 EventType, uint32 * Time)
+bool EventableObject::event_GetTimeLeft(uint32 EventType, time_t * Time)
 {
 	m_lock.Acquire();
 	if(!m_events.size())
@@ -208,7 +208,7 @@ bool EventableObject::event_GetTimeLeft(uint32 EventType, uint32 * Time)
 	return false;
 }
 
-void EventableObject::event_ModifyTime(uint32 EventType, uint32 Time)
+void EventableObject::event_ModifyTime(uint32 EventType, time_t Time)
 {
 	m_lock.Acquire();
 	if(!m_events.size())
@@ -230,7 +230,7 @@ void EventableObject::event_ModifyTime(uint32 EventType, uint32 Time)
 	m_lock.Release();
 }
 
-void EventableObject::event_ModifyTimeAndTimeLeft(uint32 EventType, uint32 Time)
+void EventableObject::event_ModifyTimeAndTimeLeft(uint32 EventType, time_t Time)
 {
 	m_lock.Acquire();
 	if(!m_events.size())
@@ -300,7 +300,7 @@ EventableObjectHolder::~EventableObjectHolder()
 	m_lock.Release();
 }
 
-void EventableObjectHolder::Update(uint32 time_difference)
+void EventableObjectHolder::Update(time_t time_difference)
 {
 	m_lock.Acquire();			// <<<<
 

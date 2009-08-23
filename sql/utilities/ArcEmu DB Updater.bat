@@ -343,6 +343,9 @@ mysql -h %server% --user=%user% --password=%pass% --port=%port% %chr% < ..\chara
 ECHO [Importing] 2839_petstate.sql
 mysql -h %server% --user=%user% --password=%pass% --port=%port% %chr% < ..\character_updates\2839_petstate.sql
 
+ECHO [Importing] 2841_itemdurations.sql
+mysql -h %server% --user=%user% --password=%pass% --port=%port% %chr% < ..\character_updates\2841_itemdurations.sql
+
 ECHO [Importing] Finished
 ECHO  Update Success.
 ECHO.
@@ -618,6 +621,9 @@ mysql -h %server% --user=%user% --password=%pass% --port=%port% %chr% < ..\chara
 
 ECHO [Importing] 2839_petstate.sql
 mysql -h %server% --user=%user% --password=%pass% --port=%port% %chr% < ..\character_updates\2839_petstate.sql
+
+ECHO [Importing] 2841_itemdurations.sql
+mysql -h %server% --user=%user% --password=%pass% --port=%port% %chr% < ..\character_updates\2841_itemdurations.sql
 
 ECHO [Importing] Character Updates Finished
 ECHO.

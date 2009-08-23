@@ -3984,6 +3984,8 @@ void Player::OnPushToWorld()
 
 	z_axisposition = 0.0f;
 	m_changingMaps = false;
+
+    this->GetItemInterface()->HandleItemDurations();
 }
 
 void Player::RemoveFromWorld()
@@ -13010,4 +13012,8 @@ void Player::UpdateKnownCurrencies(uint32 itemId, bool apply)
             SetUInt64Value( PLAYER_FIELD_KNOWN_CURRENCIES, newval );
 		}
     }
+}
+
+void Player::RemoveItemByGuid( uint64 GUID ){
+    this->GetItemInterface()->SafeFullRemoveItemByGuid( GUID );
 }

@@ -225,6 +225,8 @@ public:
 	//! Sends SMSG_ITEM_UPDATE_ENCHANT_TIME
 	void SendEnchantTimeUpdate( uint32 Slot, uint32 Duration );
 
+    void SendDurationUpdate();
+
 	//! Applies any random properties the item has.
 	void ApplyRandomProperties( bool apply );
 
@@ -274,7 +276,11 @@ public:
 	bool HasEnchantments() { return (Enchantments.size() > 0 ) ? true : false; }
 
 	uint32 wrapped_item_id;
-
+    
+    time_t GetItemExpireTime(){ return ItemExpiresOn; }
+    void SetItemExpireTime( time_t timesec ){ ItemExpiresOn = timesec; }
+    void EventRemoveItem();
+    
 protected:
 
 	ItemPrototype* m_itemProto;
@@ -283,6 +289,7 @@ protected:
 	Player* m_owner; // let's not bother the manager with unneeded requests
 	uint32 random_prop;
 	uint32 random_suffix;
+    time_t ItemExpiresOn;
 };
 
 uint32 GetSkillByProto( uint32, uint32 );

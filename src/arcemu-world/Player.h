@@ -968,7 +968,7 @@ protected:
 	// END COOLDOWNS
 
 public:
-
+    void RemoveItemByGuid( uint64 GUID );
 	float m_MasterShapeshift;
 	int32 pandemicDamagePerc;
 	int8 improvedFearVal;

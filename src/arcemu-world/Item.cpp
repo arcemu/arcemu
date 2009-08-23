@@ -43,6 +43,7 @@ Item::Item()//this is called when constructing as container
 	m_inQueue = false;
 	m_extensions = NULL;
 	m_loadedFromDB = false;
+    ItemExpiresOn = 0;
 
 	Enchantments.clear();
 }
@@ -258,8 +259,10 @@ void Item::LoadFromDB(Field* fields, Player* plr, bool light )
 				*/
 			}
 		}
-	}	
+	}
 
+    ItemExpiresOn = fields[16].GetUInt32();
+    
 	ApplyRandomProperties( false );
 
 	// Charter stuff
@@ -406,6 +409,8 @@ void Item::SaveToDB( int8 containerslot, int8 slot, bool firstsave, QueryBuffer*
 			}
 		}
 	}
+    ss << "','";
+    ss << ItemExpiresOn;
 	ss << "')";
 
 	if( firstsave )
@@ -1271,5 +1276,32 @@ uint32 Item::CountGemsWithLimitId(uint32 LimitId)
 				result++;
 		}
 	}
-	return result;
+    return result;
+}
+
+void Item::EventRemoveItem(){
+    assert( this->GetOwner() != NULL );
+
+    this->GetOwner()->GetItemInterface()->SafeFullRemoveItemByGuid( this->GetGUID() );
+}
+
+void Item::SendDurationUpdate(){
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////
+    //  As of 3.1.3 the server sends this to set the actual durationtime ( the time the item exists for)
+    //  of the item
+    //
+    //  {SERVER} Packet: (0x01EA) SMSG_ITEM_TIME_UPDATE PacketSize = 12 TimeStamp = 37339296
+    //  05 76 83 E7 01 00 00 42 10 0E 00 00 
+    //
+    //  Structure:
+    //
+    //  uint64 GUID                      - the identifier of the item (not the itemid)
+    //  uint32 remainingtime             - remaining duration
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    WorldPacket durationupdate( SMSG_ITEM_TIME_UPDATE, 12 );
+    durationupdate << GetGUID();
+    durationupdate << GetItemExpireTime() - UNIXTIME;
+    this->GetOwner()->GetSession()->SendPacket( &durationupdate );
+
 }

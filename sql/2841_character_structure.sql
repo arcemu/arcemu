@@ -856,6 +856,7 @@ CREATE TABLE `playeritems` (
   `containerslot` int(11) default '-1',
   `slot` int(10) NOT NULL default '0',
   `enchantments` longtext NOT NULL,
+  `expireson` int(10) unsigned NOT NULL default '0',
   PRIMARY KEY  (`guid`),
   KEY `ownerguid` (`ownerguid`),
   KEY `itemtext` (`itemtext`)

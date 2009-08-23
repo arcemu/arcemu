@@ -143,6 +143,8 @@ public:
 	uint32 GetItemCountByLimitId(uint32 LimitId, bool IncBank);
 	uint32 GetEquippedCountByItemLimit(uint32 LimitId);
 
+    void HandleItemDurations();
+
 public:
 	ARCEMU_INLINE bool VerifyBagSlots(int8 ContainerSlot, int8 Slot)
 	{

@@ -346,6 +346,23 @@ AddItemResult ItemInterface::m_AddItem(Item *item, int8 ContainerSlot, int16 slo
 #ifdef ENABLE_ACHIEVEMENTS
 	m_pOwner->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_OWN_ITEM, item->GetEntry(), 1, 0);
 #endif
+////////////////////////////////////////////////////// existingduration stuff ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    if( item->GetProto()->ExistingDuration != 0 ){
+        if( item->GetItemExpireTime() == 0 ){
+            sEventMgr.AddEvent( item, &Item::EventRemoveItem, EVENT_REMOVE_ITEM, item->GetProto()->ExistingDuration * 1000 , 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT | EVENT_FLAG_DELETES_OBJECT);
+            item->SetItemExpireTime( UNIXTIME + item->GetProto()->ExistingDuration );
+        }else{
+            sEventMgr.AddEvent( item, &Item::EventRemoveItem, EVENT_REMOVE_ITEM,  ( item->GetItemExpireTime() - UNIXTIME ) * 1000 , 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT | EVENT_FLAG_DELETES_OBJECT);
+        }
+        
+        // if we are already in the world we will send the durationupdate now, so we can see the remaining duration in the client
+        // otherwise we will send the updates in Player::Onpushtoworld anyways
+        if( this->m_pOwner->IsInWorld() )
+            sEventMgr.AddEvent( item, &Item::SendDurationUpdate, EVENT_SEND_PACKET_TO_PLAYER_AFTER_LOGIN, 0, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT );
+    }
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	return ADD_ITEM_RESULT_OK;
 }
 
@@ -3247,7 +3264,7 @@ void ItemInterface::mLoadItemsFromDatabase(QueryResult * result)
 		{
 			Field* fields = result->Fetch();
 
-			containerslot = fields[13].GetInt8();
+            containerslot = fields[13].GetInt8();
 			slot = fields[14].GetInt8();
 			proto = ItemPrototypeStorage.LookupEntry(fields[2].GetUInt32());
 
@@ -3268,6 +3285,14 @@ void ItemInterface::mLoadItemsFromDatabase(QueryResult * result)
 					item->LoadFromDB( fields, m_pOwner, false);
 
 				}
+
+                // if we encounter an item that expired, we remove it from db
+                if( item->GetItemExpireTime() > 0 && UNIXTIME > item->GetItemExpireTime() ){
+                    item->DeleteFromDB();
+                    item->DeleteMe();
+                    continue;
+                }
+                
 				if( SafeAddItem( item, containerslot, slot ) )
 				    item->m_isDirty = false;
 				else
@@ -3785,4 +3810,30 @@ uint32 ItemInterface::GetItemCountByLimitId(uint32 LimitId, bool IncBank)
 	cnt += GetEquippedCountByItemLimit( LimitId );
 
 	return cnt;
+}
+
+// Look for items with limited duration and send the remaining time to the client
+void ItemInterface::HandleItemDurations(){
+    
+    for( uint32 i = EQUIPMENT_SLOT_START; i <= CURRENCYTOKEN_SLOT_END; ++i ){
+        Item *item1 = this->GetInventoryItem( static_cast< int16 >( i ) );
+        Item *realitem = NULL;
+
+        if( item1 != NULL && item1->IsContainer() ){
+            
+            for( uint32 j = 0; j < item1->GetProto()->ContainerSlots; ++j ){
+                Item *item2 = static_cast< Container* >( item1 )->GetItem( static_cast< int16 >( j ));
+                
+                if( item2 != NULL && item2->GetProto() && item2->GetProto()->ExistingDuration > 0 )
+                    realitem = item2;
+            }
+
+        }else{
+            if( item1 != NULL && item1->GetProto())
+                realitem = item1;
+        }
+
+        if( realitem != NULL )
+            sEventMgr.AddEvent( realitem, &Item::SendDurationUpdate, EVENT_SEND_PACKET_TO_PLAYER_AFTER_LOGIN, 0, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT );
+    }
 }
