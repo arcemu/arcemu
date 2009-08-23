@@ -1300,8 +1300,8 @@ void Item::SendDurationUpdate(){
     ///////////////////////////////////////////////////////////////////////////////////////////////////////
 
     WorldPacket durationupdate( SMSG_ITEM_TIME_UPDATE, 12 );
-    durationupdate << GetGUID();
-    durationupdate << GetItemExpireTime() - UNIXTIME;
+    durationupdate << uint64( GetGUID() );
+    durationupdate << uint32( GetItemExpireTime() - UNIXTIME );
     this->GetOwner()->GetSession()->SendPacket( &durationupdate );
 
 }
