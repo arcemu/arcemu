@@ -7942,10 +7942,11 @@ void Unit::RemoveReflect( uint32 spellid )
 			{
 				for(GroupMembersSet::iterator itr = pGroup->GetSubGroup(i)->GetGroupMembersBegin(); itr != pGroup->GetSubGroup(i)->GetGroupMembersEnd(); ++itr)
 				{
-					if( (*itr)->m_loggedInPlayer == NULL || (*itr)->m_loggedInPlayer == pPlayer )
-							continue;
+					Player * member = (*itr)->m_loggedInPlayer;
+					if( member == NULL || member == pPlayer || !member->IsInWorld() )
+						continue;
 
-					(*itr)->m_loggedInPlayer->CastSpell( (*itr)->m_loggedInPlayer, 59725, true );
+					member->CastSpell( member, 59725, true );
 					--targets;
 
 					if( targets == 0 )
@@ -7970,11 +7971,12 @@ void Unit::RemoveReflect( uint32 spellid )
 			{
 				for(GroupMembersSet::iterator itr = pGroup->GetSubGroup(i)->GetGroupMembersBegin(); itr != pGroup->GetSubGroup(i)->GetGroupMembersEnd(); ++itr)
 				{
-					if( (*itr)->m_loggedInPlayer == NULL )
-							continue;
+					Player * member = (*itr)->m_loggedInPlayer;
+					if( member == NULL )
+						continue;
 
-					if( (*itr)->m_loggedInPlayer->HasAura(59725) )
-						(*itr)->m_loggedInPlayer->RemoveAura(59725);
+					if( member->HasAura(59725) )
+						member->RemoveAura(59725);
 				}
 			}
 			pGroup->Unlock();
