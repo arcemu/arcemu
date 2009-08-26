@@ -724,6 +724,9 @@ void WorldSession::InitPacketHandlerTable()
 	WorldPacketHandlers[CMSG_CANCEL_TEMP_ENCHANTMENT].handler					= &WorldSession::HandleCancelTemporaryEnchantmentOpcode;
 	WorldPacketHandlers[CMSG_SOCKET_GEMS].handler								= &WorldSession::HandleInsertGemOpcode;
 	WorldPacketHandlers[CMSG_WRAP_ITEM].handler									= &WorldSession::HandleWrapItemOpcode;
+    WorldPacketHandlers[CMSG_UNKNOWN_1203].handler									= &WorldSession::HandleItemRefundInfoOpcode;
+    WorldPacketHandlers[CMSG_UNKNOWN_1204].handler									= &WorldSession::HandleItemRefundRequestOpcode;
+
 	
 	// Spell System / Talent System
 	WorldPacketHandlers[CMSG_USE_ITEM].handler								  = &WorldSession::HandleUseItemOpcode;
@@ -1113,4 +1116,81 @@ const char* WorldSession::LocalizedBroadCast(uint32 id)
 		return lpi->Text;
 	else
 		return wb->text;
+}
+
+
+void WorldSession::SendRefundInfo( uint64 GUID ){
+    if( !_player || !_player->IsInWorld() )
+        return;
+
+    Item* itm = _player->GetItemInterface()->GetItemByGUID( GUID );
+    if( itm == NULL )
+        return;
+
+    if( itm->IsEligibleForRefund() ){
+        std::pair< time_t, uint32 > RefundEntry;
+
+        RefundEntry = _player->GetItemInterface()->LookupRefundable( GUID );
+
+        if( RefundEntry.first == 0 || RefundEntry.second == 0)
+            return;
+
+        ItemExtendedCostEntry *ex = dbcItemExtendedCost.LookupEntry( RefundEntry.second );
+        if( ex == NULL)
+            return;
+
+        ItemPrototype *proto = itm->GetProto();
+        if( proto == NULL)
+            return;
+
+        //////////////////////////////////////////////////////////////////////////////////////////
+        //  As of 3.1.3 the server sends this packet to provide refund info on an item
+        //
+        //  {SERVER} Packet: (0x04B2) UNKNOWN PacketSize = 68 TimeStamp = 265984265
+        //  E6 EE 09 18 02 00 00 42 00 00 00 00 4B 25 00 00 00 00 00 00 50 50 00 00 0A 00 00 00 00 
+        //  00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 
+        //  00 00 00 00 00 00 D3 12 12 00 
+        //
+        //  Structure:
+        //  uint64 GUID
+        //  uint32 price (in copper)
+        //  uint32 honor
+        //  uint32 arena
+        //  uint32 item1
+        //  uint32 item1cnt
+        //  uint32 item2
+        //  uint32 item2cnt
+        //  uint32 item3
+        //  uint32 item3cnt
+        //  uint32 item4
+        //  uint32 item4cnt
+        //  uint32 item5
+        //  uint32 item5cnt
+        //  uint32 buytime?  always seems 0
+        //  uint32 remainingtime?
+        //////////////////////////////////////////////////////////////////////////////////////////
+
+
+        WorldPacket packet( SMSG_UNKNOWN_1202, 60 );
+        packet << uint64( GUID );
+        packet << uint32( proto->BuyPrice );
+        packet << uint32( ex->honor );
+        packet << uint32( ex->arena );
+
+        for( int i = 0; i < 5; ++i ){
+            packet << uint32( ex->item[i] );
+            packet << uint32( ex->count[i] );
+        }
+
+        packet << uint32( 0 );  // buytime? It always seems 0
+        
+        if( UNIXTIME > ( RefundEntry.first + 60*60*2 ))
+            packet << uint32( 0 );
+        else
+            packet << uint32( ( RefundEntry.first + (60*60*2) ) - UNIXTIME );
+        
+        this->SendPacket( &packet );
+
+        sLog.outDebug("Sent SMSG_ITEMREFUNDINFO.");
+    }
 }

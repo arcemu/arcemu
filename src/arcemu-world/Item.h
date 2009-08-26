@@ -147,6 +147,7 @@ public:
 	bool LoadAuctionItemFromDB( uint64 guid );
 	void DeleteFromDB();
 	void DeleteMe();
+    bool IsEligibleForRefund();
 	
 	ARCEMU_INLINE void SoulBind()
 	{
@@ -280,7 +281,8 @@ public:
     time_t GetItemExpireTime(){ return ItemExpiresOn; }
     void SetItemExpireTime( time_t timesec ){ ItemExpiresOn = timesec; }
     void EventRemoveItem();
-    
+    void RemoveFromRefundableMap();
+        
 protected:
 
 	ItemPrototype* m_itemProto;
@@ -289,7 +291,7 @@ protected:
 	Player* m_owner; // let's not bother the manager with unneeded requests
 	uint32 random_prop;
 	uint32 random_suffix;
-    time_t ItemExpiresOn;
+    time_t ItemExpiresOn; // this is for existingduration
 };
 
 uint32 GetSkillByProto( uint32, uint32 );

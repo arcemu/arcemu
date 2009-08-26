@@ -44,7 +44,6 @@ Item::Item()//this is called when constructing as container
 	m_extensions = NULL;
 	m_loadedFromDB = false;
     ItemExpiresOn = 0;
-
 	Enchantments.clear();
 }
 
@@ -88,7 +87,7 @@ void Item::Virtual_Constructor()
 
 Item::~Item()
 {
-	if( loot != NULL )
+    if( loot != NULL )
 	{
 		delete loot;
 		loot = NULL;
@@ -263,6 +262,19 @@ void Item::LoadFromDB(Field* fields, Player* plr, bool light )
 
     ItemExpiresOn = fields[16].GetUInt32();
     
+///////////////////////////////////////////////////// Refund stuff ////////////////////////
+    std::pair< time_t, uint32 > refundentry;
+
+    refundentry.first = fields[17].GetUInt32();
+    refundentry.second = fields[18].GetUInt32();
+
+    if( refundentry.first != 0 && refundentry.second != 0 ){
+        if( UNIXTIME < ( refundentry.first + 60*60*2 ) )
+            this->GetOwner()->GetItemInterface()->AddRefundable( this, refundentry.second, refundentry.first );
+    }
+
+///////////////////////////////////////////////////////////////////////////////////////////
+    
 	ApplyRandomProperties( false );
 
 	// Charter stuff
@@ -410,8 +422,19 @@ void Item::SaveToDB( int8 containerslot, int8 slot, bool firstsave, QueryBuffer*
 		}
 	}
     ss << "','";
-    ss << ItemExpiresOn;
-	ss << "')";
+    ss << ItemExpiresOn << "','";
+
+////////////////////////////////////////////////// Refund stuff /////////////////////////////////
+
+    std::pair< time_t, uint32 > refundentry;
+
+    refundentry = this->GetOwner()->GetItemInterface()->LookupRefundable( this->GetGUID() );
+
+    ss << refundentry.first << "','";
+    ss << refundentry.second; 
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+    ss << "')";
 
 	if( firstsave )
 		CharacterDatabase.WaitExecute( ss.str().c_str() );
@@ -447,6 +470,7 @@ void Item::DeleteFromDB()
 void Item::DeleteMe()
 {
 	//Don't inline me!
+    this->m_owner->GetItemInterface()->RemoveRefundable( this->GetGUID() );
 	if( IsContainer() ) {
 		delete static_cast<Container*>(this);
 	} else {
@@ -1304,4 +1328,39 @@ void Item::SendDurationUpdate(){
     durationupdate << uint32( GetItemExpireTime() - UNIXTIME );
     this->GetOwner()->GetSession()->SendPacket( &durationupdate );
 
+}
+
+
+
+// "Stackable items (such as Frozen Orbs and gems) and 
+// charged items that can be purchased with an alternate currency are not eligible. "
+bool Item::IsEligibleForRefund(){
+    ItemPrototype *proto = this->GetProto();
+
+    if( proto == NULL)
+        return false;
+
+    if( proto->MaxCount > 1 )
+        return false;
+
+    for( int i = 0; i < 5; ++i ){
+        ItemSpell spell = proto->Spells[i];
+
+        if( spell.Charges != -1  && spell.Charges != 0)
+            return false;
+    }
+
+    return true;
+}
+
+
+void Item::RemoveFromRefundableMap(){
+    Player *owner = NULL;
+    uint64 GUID = 0;
+
+    owner = this->GetOwner();
+    GUID = this->GetGUID();
+
+    if( owner != NULL && GUID != 0 )
+        owner->GetItemInterface()->RemoveRefundable( GUID );
 }

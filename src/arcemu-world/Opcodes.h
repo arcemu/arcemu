@@ -1214,7 +1214,11 @@ enum Opcodes {
     UMSG_UNKNOWN_1185                               = 0x4A1,
     UMSG_UNKNOWN_1186                               = 0x4A2,
     UMSG_UNKNOWN_1187                               = 0x4A3,
-//	NUM_MSG_TYPES									= 0x4A4, 
+//  NUM_MSG_TYPES									= 0x4A4,
+    SMSG_UNKNOWN_1202                               = 0x4B2,
+    CMSG_UNKNOWN_1203                               = 0x4B3,
+    CMSG_UNKNOWN_1204                               = 0x4B4,
+    SMSG_UNKNOWN_1205                               = 0x4B5,
     CMSG_LFG_SET_ROLES                              = 0x4B8, // CMSG, empty, lua: SetLFGRoles
     SMSG_EQUIPMENT_SET_LIST                         = 0x4BC, // SMSG, equipment manager list?
     SMSG_TALENTS_INFO                               = 0x4C0, // SMSG, talents related

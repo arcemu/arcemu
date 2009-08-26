@@ -286,6 +286,8 @@ public:
 	void SendNotification(const char *message, ...);
 	void SendAuctionPlaceBidResultPacket(uint32 itemId, uint32 error);
 
+    void SendRefundInfo( uint64 GUID );
+
 	ARCEMU_INLINE void SetInstance(uint32 Instance) { instanceId = Instance; }
 	ARCEMU_INLINE uint32 GetLatency() { return _latency; }
 	ARCEMU_INLINE string GetAccountName() { return _accountName; }
@@ -489,6 +491,8 @@ protected:
 	void HandleAutoStoreBankItemOpcode(WorldPacket &recvPacket);
 	void HandleCancelTemporaryEnchantmentOpcode(WorldPacket &recvPacket);
 	void HandleInsertGemOpcode(WorldPacket &recvPacket);
+	void HandleItemRefundInfoOpcode( WorldPacket& recvPacket );
+	void HandleItemRefundRequestOpcode( WorldPacket& recvPacket );
 
 	/// Combat opcodes (CombatHandler.cpp)
 	void HandleAttackSwingOpcode(WorldPacket& recvPacket);

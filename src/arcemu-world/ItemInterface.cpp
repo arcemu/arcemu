@@ -30,6 +30,8 @@ ItemInterface::ItemInterface( Player *pPlayer )
 	m_pOwner = pPlayer;
 	memset(m_pItems, 0, sizeof(Item*)*MAX_INVENTORY_SLOT);
 	memset(m_pBuyBack, 0, sizeof(Item*)*MAX_BUYBACK_SLOT);
+    this->m_refundableitems.clear();
+    
 }
 
 //-------------------------------------------------------------------//
@@ -42,6 +44,7 @@ ItemInterface::~ItemInterface()
 			m_pItems[i]->DeleteMe();
 		}
 	}
+    this->m_refundableitems.clear();
 }
 
 //-------------------------------------------------------------------// 100%
@@ -362,7 +365,6 @@ AddItemResult ItemInterface::m_AddItem(Item *item, int8 ContainerSlot, int16 slo
             sEventMgr.AddEvent( item, &Item::SendDurationUpdate, EVENT_SEND_PACKET_TO_PLAYER_AFTER_LOGIN, 0, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT );
     }
 
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	return ADD_ITEM_RESULT_OK;
 }
 
@@ -2476,7 +2478,7 @@ int8 ItemInterface::CanReceiveItem(ItemPrototype * item, uint32 amount)
 {
 	if(!item)
 	{
-		return (int8)NULL;
+		return 0;
 	}
 
 	if(item->Unique)
@@ -2497,7 +2499,7 @@ int8 ItemInterface::CanReceiveItem(ItemPrototype * item, uint32 amount)
 				return INV_ERR_CANT_CARRY_MORE_OF_THIS;
 		}
 	}
-	return (int8)NULL;
+	return 0;
 }
 
 void ItemInterface::BuyItem(ItemPrototype *item, uint32 total_amount, Creature * pVendor)
@@ -2528,7 +2530,7 @@ void ItemInterface::BuyItem(ItemPrototype *item, uint32 total_amount, Creature *
 		{
 			m_pOwner->ModUnsigned32Value(PLAYER_FIELD_ARENA_CURRENCY, -int32(ex->arena*total_amount));
 			m_pOwner->m_arenaPoints -=int32(ex->arena*total_amount);
-		}
+		}        
 	}
 }
 
@@ -3843,7 +3845,11 @@ uint32 ItemInterface::GetItemCountByLimitId(uint32 LimitId, bool IncBank)
 	return cnt;
 }
 
+///////////////////////////////////////////////////////////////////////////////////
+//
 // Look for items with limited duration and send the remaining time to the client
+//
+///////////////////////////////////////////////////////////////////////////////////
 void ItemInterface::HandleItemDurations(){
     
     for( uint32 i = EQUIPMENT_SLOT_START; i <= CURRENCYTOKEN_SLOT_END; ++i ){
@@ -3867,4 +3873,210 @@ void ItemInterface::HandleItemDurations(){
         if( realitem != NULL )
             sEventMgr.AddEvent( realitem, &Item::SendDurationUpdate, EVENT_SEND_PACKET_TO_PLAYER_AFTER_LOGIN, 0, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT );
     }
+}
+
+//////////////////////////////////////////////////////////////////////////
+//
+// Inserts a new entry into the RefundableMap
+// 
+// This should be called when purchasing the item
+//////////////////////////////////////////////////////////////////////////
+void ItemInterface::AddRefundable( uint64 GUID,  uint32 extendedcost ){
+    std::pair< time_t, uint32 > RefundableEntry;
+    std::pair< uint64, std::pair< time_t, uint32 > > insertpair;
+    
+    Item *item = this->GetItemByGUID( GUID );
+
+    if( item == NULL )
+        return;
+
+    RefundableEntry.first = UNIXTIME;               // time of purchase in Unixtime
+    RefundableEntry.second = extendedcost;          // extendedcost
+
+    insertpair.first = GUID;
+    insertpair.second = RefundableEntry;
+
+    this->m_refundableitems.insert( insertpair );
+
+    sEventMgr.AddEvent( item, &Item::RemoveFromRefundableMap, EVENT_REMOVE_ITEM_FROM_REFUNDABLE_MAP, ( UNIXTIME + 60*60*2 ), 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT );
+}
+
+void ItemInterface::AddRefundable( uint64 GUID, uint32 extendedcost, time_t buytime ){
+    std::pair< time_t, uint32 > RefundableEntry;
+    std::pair< uint64, std::pair< time_t, uint32 > > insertpair;
+    
+    Item *item = this->GetItemByGUID( GUID );
+
+    if( item == NULL )
+        return;
+
+    RefundableEntry.first = buytime;            // time of purchase in Unixtime
+    RefundableEntry.second = extendedcost;      // extendedcost
+
+    insertpair.first = GUID;
+    insertpair.second = RefundableEntry;
+
+    this->m_refundableitems.insert( insertpair );
+
+    sEventMgr.AddEvent( item, &Item::RemoveFromRefundableMap, EVENT_REMOVE_ITEM_FROM_REFUNDABLE_MAP, buytime, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT );
+}
+
+void ItemInterface::AddRefundable( Item *item, uint32 extendedcost, time_t buytime ){
+    std::pair< time_t, uint32 > RefundableEntry;
+    std::pair< uint64, std::pair< time_t, uint32 > > insertpair;
+    
+    if( item == NULL )
+        return;
+
+    RefundableEntry.first = buytime;       // time of purchase in Unixtime
+    RefundableEntry.second = extendedcost; // extendedcost
+
+    insertpair.first = item->GetGUID();
+    insertpair.second = RefundableEntry;
+
+    this->m_refundableitems.insert( insertpair );
+
+    sEventMgr.AddEvent( item, &Item::RemoveFromRefundableMap, EVENT_REMOVE_ITEM_FROM_REFUNDABLE_MAP, ( buytime + 60*60*2 ), 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT );
+}
+
+
+//////////////////////////////////////////////////////////////////////////
+//
+//  Removes an entry from the RefundableMap
+//
+//////////////////////////////////////////////////////////////////////////
+void ItemInterface::RemoveRefundable(uint64 GUID){
+
+    this->m_refundableitems.erase( GUID );
+}
+
+
+//////////////////////////////////////////////////////////////////////////
+//
+//  Looks up an item in the RefundableMap, and returns the data
+//
+//////////////////////////////////////////////////////////////////////////
+std::pair< time_t, uint32 > ItemInterface::LookupRefundable(uint64 GUID){
+    std::pair< time_t, uint32 > RefundableEntry;
+    RefundableMap::iterator itr;
+
+    RefundableEntry.first = 0;   // time of purchase in Unixtime
+    RefundableEntry.second = 0;  // extendedcost
+
+    itr = this->m_refundableitems.find( GUID );
+    if( itr != this->m_refundableitems.end() ){
+        RefundableEntry.first = itr->second.first;
+        RefundableEntry.second = itr->second.second;
+    }
+
+    return RefundableEntry;
+}
+
+/////////////////////////////////////////////////////////////////////////////
+//
+//  Adds an item to the Player by itemid
+//  refactored from Level1.cpp
+//
+/////////////////////////////////////////////////////////////////////////////
+bool ItemInterface::AddItemById(uint32 itemid, uint32 count, int32 randomprop)
+{
+	uint32 numadded = 0;
+    Player *chr = this->GetOwner();
+
+    // checking if the iteminterface has owner, impossible to not have one
+    if(chr == NULL)
+        return false;
+
+	ItemPrototype* it = ItemPrototypeStorage.LookupEntry(itemid);
+	if(it)
+	{
+		uint32 maxStack = (chr->ItemStackCheat) ? 0x7fffffff : it->MaxCount;
+		bool freeslots = true;
+		// more than one stack
+		while( (count > maxStack) && freeslots )
+		{
+			Item *item;
+			item = objmgr.CreateItem( itemid, chr);
+			if (item == NULL)
+				return false;
+
+			if(it->Bonding==ITEM_BIND_ON_PICKUP)
+				if(it->Flags & ITEM_FLAG_ACCOUNTBOUND) // don't "Soulbind" account-bound items
+					item->AccountBind();
+				else
+					item->SoulBind();
+			if(randomprop!=0)
+			{
+				if(randomprop<0)
+					item->SetRandomSuffix(abs(int(randomprop)));
+				else
+					item->SetRandomProperty(randomprop);
+
+				item->ApplyRandomProperties(false);
+			}
+			item->SetUInt32Value(ITEM_FIELD_STACK_COUNT, maxStack);
+			if(this->AddItemToFreeSlot(item))
+			{
+				SlotResult *lr = this->LastSearchResult();
+                
+                chr->GetSession()->SendItemPushResult(item,false,true,false,true,lr->ContainerSlot,lr->Slot,maxStack);
+#ifdef ENABLE_ACHIEVEMENTS
+                chr->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_LOOT_ITEM, itemid, 1, 0);
+#endif
+				count -= maxStack;
+				numadded += maxStack;
+			}
+			else
+			{
+				freeslots = false;
+                chr->GetSession()->SendNotification("No free slots were found in your inventory!");
+				item->DeleteMe();
+			}
+		}
+		// last stack
+		if(freeslots)
+		{
+			Item *item;
+			item = objmgr.CreateItem( itemid, chr);
+			if (item == NULL)
+				return false;
+
+			if(it->Bonding==ITEM_BIND_ON_PICKUP)
+				if(it->Flags & ITEM_FLAG_ACCOUNTBOUND) // don't "Soulbind" account-bound items
+					item->AccountBind();
+				else
+					item->SoulBind();
+			if(randomprop!=0)
+			{
+				if(randomprop<0)
+					item->SetRandomSuffix(abs(int(randomprop)));
+				else
+					item->SetRandomProperty(randomprop);
+
+				item->ApplyRandomProperties(false);
+			}
+			item->SetUInt32Value(ITEM_FIELD_STACK_COUNT, count);
+
+			if(this->AddItemToFreeSlot(item))
+			{
+				SlotResult *lr = this->LastSearchResult();
+				chr->GetSession()->SendItemPushResult(item,false,true,false,true,lr->ContainerSlot,lr->Slot,count);
+#ifdef ENABLE_ACHIEVEMENTS
+				chr->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_LOOT_ITEM, itemid, 1, 0);
+#endif
+				numadded += count;
+				count = 0;
+			}
+			else
+			{
+                item->DeleteMe();
+                return false;
+			}
+		}
+
+		return true;
+
+	} else {
+		return false;
+	}
 }

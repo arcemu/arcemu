@@ -47,6 +47,21 @@ enum AddItemResult
 	ADD_ITEM_RESULT_DUPLICATED		= 2,
 };
 
+/////////////////////////////////////////////////////////////////
+//
+//RefundableMap
+//
+//Contains refundable item data.
+//
+//Key:
+// uint64 GUID       - GUID of the item
+//
+//Value:
+// time_t buytime    - time of purchase in Unixtime
+// uint32 costid     - extendedcostID of the cost
+/////////////////////////////////////////////////////////////////
+typedef std::map< uint64, pair< time_t, uint32 > > RefundableMap;
+
 class SERVER_DECL ItemInterface
 {
 private:
@@ -54,6 +69,8 @@ private:
 	Player *m_pOwner;
 	Item* m_pItems[MAX_INVENTORY_SLOT];
 	Item* m_pBuyBack[MAX_BUYBACK_SLOT];
+
+    RefundableMap m_refundableitems;
 
 	AddItemResult m_AddItem(Item *item, int8 ContainerSlot, int16 slot);
 
@@ -145,6 +162,14 @@ public:
 
     void HandleItemDurations();
 
+/////////////////////////////////////////////// Refundable item stuff ////////////////////////////////////
+    void AddRefundable( uint64 GUID,  uint32 extendedcost );
+    void AddRefundable( uint64 GUID,  uint32 extendedcost, time_t buytime );
+    void AddRefundable( Item* item, uint32 extendedcost, time_t buytime );
+    void RemoveRefundable( uint64 GUID );
+    std::pair< time_t, uint32 > LookupRefundable( uint64 GUID );
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 public:
 	ARCEMU_INLINE bool VerifyBagSlots(int8 ContainerSlot, int8 Slot)
 	{
@@ -159,6 +184,8 @@ public:
 			
 		return true;
 	}
+
+    bool AddItemById(uint32 itemid, uint32 count, int32 randomprop);
 };
 class ItemIterator
 {

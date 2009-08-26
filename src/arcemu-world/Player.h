@@ -1962,6 +1962,13 @@ public:
 		RemoveFlag(PLAYER_FLAGS, PLAYER_FLAG_FREE_FOR_ALL_PVP);
 	}
 
+    ARCEMU_INLINE void AddCoins( int32 coins ){ 
+        ModUnsigned32Value( PLAYER_FIELD_COINAGE , coins );
+    }
+    ARCEMU_INLINE void TakeCoins( int32 coins ){ 
+        ModUnsigned32Value(PLAYER_FIELD_COINAGE, -coins);
+    }
+
 	//! Do this on /pvp off
 	ARCEMU_INLINE void ResetPvPTimer();
 	//! Stop the timer for pvp off

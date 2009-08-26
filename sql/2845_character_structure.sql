@@ -2,8 +2,7 @@
 SQLyog Community Edition- MySQL GUI v6.56
 MySQL - 5.0.51a-24+lenny1 : Database - arccharacter
 *********************************************************************
-*/
-
+*/
 /*!40101 SET NAMES utf8 */;
 
 /*!40101 SET SQL_MODE=''*/;
@@ -856,7 +855,9 @@ CREATE TABLE `playeritems` (
   `containerslot` int(11) default '-1',
   `slot` int(10) NOT NULL default '0',
   `enchantments` longtext NOT NULL,
-  `expireson` int(10) unsigned NOT NULL default '0',
+  `duration_expireson` int(10) unsigned NOT NULL default '0',
+  `refund_purchasedon` int(10) unsigned NOT NULL default '0',
+  `refund_costid` int(10) unsigned NOT NULL default '0',
   PRIMARY KEY  (`guid`),
   KEY `ownerguid` (`ownerguid`),
   KEY `itemtext` (`itemtext`)
