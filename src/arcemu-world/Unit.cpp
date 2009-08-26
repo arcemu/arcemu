@@ -7940,17 +7940,15 @@ void Unit::RemoveReflect( uint32 spellid )
 			pGroup->Lock();
 			for(uint32 i = 0; i < pGroup->GetSubGroupCount(); ++i)
 			{
-				for(GroupMembersSet::iterator itr = pGroup->GetSubGroup(i)->GetGroupMembersBegin(); itr != pGroup->GetSubGroup(i)->GetGroupMembersEnd(); ++itr)
+				SubGroup * subGroup = pGroup->GetSubGroup(i);
+				for(GroupMembersSet::iterator itr = subGroup->GetGroupMembersBegin(); itr != subGroup->GetGroupMembersEnd() && targets > 0; ++itr)
 				{
 					Player * member = (*itr)->m_loggedInPlayer;
-					if( member == NULL || member == pPlayer || !member->IsInWorld() )
+					if( member == NULL || member == pPlayer || !member->IsInWorld() || !member->isAlive() )
 						continue;
 
 					member->CastSpell( member, 59725, true );
-					--targets;
-
-					if( targets == 0 )
-						return;
+					targets -= 1;
 				}
 			}
 			pGroup->Unlock();

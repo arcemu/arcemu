@@ -4531,21 +4531,18 @@ void Spell::SpellEffectSummonPet(uint32 i) //summon - pet
 	{
 		if( p_caster->GetSummon() )
 		{
-			p_caster->GetSession()->SendNotification("You already have a pet summoned.");
+			SendCastResult(SPELL_FAILED_ALREADY_HAVE_SUMMON);
 			return;
 		}
 
 		uint32 petno = p_caster->GetUnstabledPetNumber();
-
 		if( petno )
 		{
 			p_caster->SpawnPet(petno);
 		}
 		else
 		{
-			WorldPacket data(SMSG_AREA_TRIGGER_MESSAGE, 50);
-			data << uint32(0) << "You do not have any pets to call." << uint8(0);
-			p_caster->GetSession()->SendPacket(&data);
+			SendCastResult(SPELL_FAILED_NO_PET);
 		}
 		return;
 	}
