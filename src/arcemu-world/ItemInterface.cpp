@@ -3004,8 +3004,39 @@ void ItemInterface::SwapItemSlots(int8 srcslot, int8 dstslot)
 	//else
 	//	sLog.outDebug( "Destination: Empty" );
 
-	uint32 srcItemMaxStack = (SrcItem) ? ((SrcItem->GetOwner()->ItemStackCheat) ? 0x7fffffff : SrcItem->GetProto()->MaxCount) : 0;
-	uint32 dstItemMaxStack = (DstItem) ? ((DstItem->GetOwner()->ItemStackCheat) ? 0x7fffffff : DstItem->GetProto()->MaxCount) : 0;
+	// don't stack equipped items (even with ItemStackCheat), just swap them
+	uint32 srcItemMaxStack, dstItemMaxStack;
+	if( SrcItem != NULL )
+	{
+		if( srcslot < INVENTORY_SLOT_BAG_END || !(SrcItem->GetOwner()->ItemStackCheat) )
+		{
+			srcItemMaxStack = SrcItem->GetProto()->MaxCount;
+		}
+		else
+		{
+			srcItemMaxStack = 0x7fffffff;
+		}
+	}
+	else
+	{
+		srcItemMaxStack = 0;
+	}
+	if( DstItem != NULL )
+	{
+		if( dstslot < INVENTORY_SLOT_BAG_END || !(DstItem->GetOwner()->ItemStackCheat) )
+		{
+			dstItemMaxStack = DstItem->GetProto()->MaxCount;
+		}
+		else
+		{
+			dstItemMaxStack = 0x7fffffff;
+		}
+	}
+	else
+	{
+		dstItemMaxStack = 0;
+	}
+	
 	if( SrcItem != NULL && DstItem != NULL && SrcItem->GetEntry()==DstItem->GetEntry() && srcItemMaxStack > 1 && SrcItem->wrapped_item_id == 0 && DstItem->wrapped_item_id == 0 )
 	{
 		uint32 total = SrcItem->GetUInt32Value( ITEM_FIELD_STACK_COUNT ) + DstItem->GetUInt32Value( ITEM_FIELD_STACK_COUNT );
