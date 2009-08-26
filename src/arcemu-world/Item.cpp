@@ -426,12 +426,18 @@ void Item::SaveToDB( int8 containerslot, int8 slot, bool firstsave, QueryBuffer*
 
 ////////////////////////////////////////////////// Refund stuff /////////////////////////////////
 
-    std::pair< time_t, uint32 > refundentry;
-
-    refundentry = this->GetOwner()->GetItemInterface()->LookupRefundable( this->GetGUID() );
-
-    ss << refundentry.first << "','";
-    ss << refundentry.second; 
+    // Check if the owner is instantiated. When sending mail he/she obviously will not be :P
+    if( this->GetOwner() != NULL ){
+        std::pair< time_t, uint32 > refundentry;
+        
+        refundentry = this->GetOwner()->GetItemInterface()->LookupRefundable( this->GetGUID() );
+        
+        ss << uint32( refundentry.first ) << "','";
+        ss << uint32( refundentry.second ); 
+    }else{
+        ss << uint32( 0 ) << "','";
+        ss << uint32( 0 );
+    }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
     ss << "')";
@@ -470,7 +476,11 @@ void Item::DeleteFromDB()
 void Item::DeleteMe()
 {
 	//Don't inline me!
-    this->m_owner->GetItemInterface()->RemoveRefundable( this->GetGUID() );
+
+    // check to see if our owner is instantiated
+    if( this->m_owner != NULL )
+        this->m_owner->GetItemInterface()->RemoveRefundable( this->GetGUID() );
+
 	if( IsContainer() ) {
 		delete static_cast<Container*>(this);
 	} else {

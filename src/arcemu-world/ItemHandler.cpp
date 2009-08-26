@@ -1542,7 +1542,6 @@ void WorldSession::HandleBuyItemOpcode( WorldPacket & recv_data ) // right-click
                 else{
                     if( itm->IsEligibleForRefund() && ex != NULL ){
                         itm->GetOwner()->GetItemInterface()->AddRefundable( itm->GetGUID(), ex->costid );
-                        itm->SetUInt32Value( ITEM_FIELD_PAD, 1184773 );
                         this->SendRefundInfo( itm->GetGUID() );
                     }
 					SendItemPushResult(itm, false, true, false, true, slotresult.ContainerSlot, slotresult.Result, 1);
