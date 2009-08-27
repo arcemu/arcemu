@@ -34,7 +34,8 @@ extern "C" SCRIPT_DECL void _exp_script_register(ScriptMgr* mgr)	// Comment any 
 	SetupRandomScripts(mgr);
 	SetupMiscCreatures(mgr);
 	SetupEbonHold(mgr);
-	
+	SetupGossipDragonblight(mgr);
+
 	// Sets up gossip scripts for gameobjects in the (optional)
 	// gameobject_teleports table. If the table doesn't exist the
 	// initialization will quietly fail.

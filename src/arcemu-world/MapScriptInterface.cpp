@@ -78,9 +78,9 @@ uint32 MapScriptInterface::GetPlayerCountInRadius(float x, float y, float z /* =
 	return PlayerCount;
 }
 
-GameObject* MapScriptInterface::SpawnGameObject(uint32 Entry, float cX, float cY, float cZ, float cO, bool AddToWorld, uint32 Misc1, uint32 Misc2)
+GameObject* MapScriptInterface::SpawnGameObject(uint32 Entry, float cX, float cY, float cZ, float cO, bool AddToWorld, uint32 Misc1, uint32 Misc2, uint32 phase)
 {
-   
+
 	GameObject *pGameObject = mapMgr.CreateGameObject(Entry);
 	if(!pGameObject->CreateFromProto(Entry, mapMgr.GetMapId(), cX, cY, cZ, cO))
 	{
@@ -88,6 +88,7 @@ GameObject* MapScriptInterface::SpawnGameObject(uint32 Entry, float cX, float cY
 		return NULL;
 	}
 	pGameObject->SetInstanceID(mapMgr.GetInstanceID());
+	pGameObject->m_phase = phase;
 
 	if(AddToWorld)
 		pGameObject->PushToWorld(&mapMgr);
@@ -114,7 +115,7 @@ GameObject * MapScriptInterface::SpawnGameObject(GOSpawn * gs, bool AddToWorld)
 	return pGameObject;
 }
 
-Creature* MapScriptInterface::SpawnCreature(uint32 Entry, float cX, float cY, float cZ, float cO, bool AddToWorld, bool tmplate, uint32 Misc1, uint32 Misc2)
+Creature* MapScriptInterface::SpawnCreature(uint32 Entry, float cX, float cY, float cZ, float cO, bool AddToWorld, bool tmplate, uint32 Misc1, uint32 Misc2, uint32 phase)
 {
 	CreatureProto * proto = CreatureProtoStorage.LookupEntry(Entry);
 	CreatureInfo * info = CreatureNameStorage.LookupEntry(Entry);
@@ -155,6 +156,7 @@ Creature* MapScriptInterface::SpawnCreature(uint32 Entry, float cX, float cY, fl
 	p->setGender(Gender);
 	p->spawnid = 0;
 	p->m_spawn = 0;
+	p->m_phase = phase;
 	delete sp;
 	if (AddToWorld)
 		p->PushToWorld(&mapMgr);

@@ -111,7 +111,7 @@ public:
     creat->m_custom_waypoint_map->clear();
   }
 
-  Creature *SpawnCreature(Player *pThis, uint32 entry, float posX, float posY, float posZ, float posO, uint32 duration = 0)
+  Creature *SpawnCreature(Player *pThis, uint32 entry, float posX, float posY, float posZ, float posO, uint32 duration = 0, uint32 phase = 0xFFFFFFFF)
   {
     PrintMessage("Function call: SpawnCreature()");
     if(pThis == NULL)
@@ -130,6 +130,7 @@ public:
     pCreature->SetOrientation(posO);
     pCreature->Despawn(duration, 0);
     pCreature->SetInstanceID(pThis->GetInstanceID());
+	pCreature->m_phase = phase;
     pCreature->PushToWorld(pThis->GetMapMgr());
 
     return pCreature;
@@ -148,7 +149,7 @@ public:
   Creature *SpawnCreatureExtended(Player *pThis, uint32 entry, float posX, 
                                          float posY, float posZ, float posO, uint32 faction, 
                                          uint32 duration, bool dis_comb = false, bool dis_mel = false, 
-                                         bool dis_target = false)
+                                         bool dis_target = false, uint32 phase = 0xFFFFFFFF)
   {
     PrintMessage("Function call: SpawnCreatureExtended()");
 
@@ -169,7 +170,8 @@ public:
     pCreature->GetAIInterface()->disable_melee = dis_mel;
     pCreature->GetAIInterface()->disable_targeting = dis_target;
     pCreature->SetInstanceID(pThis->GetInstanceID());
-    pCreature->PushToWorld(pThis->GetMapMgr());
+	pCreature->m_phase = phase;
+	pCreature->PushToWorld(pThis->GetMapMgr());
     pCreature->Despawn(duration, 0);
     pCreature->SetUInt32Value(UNIT_FIELD_FACTIONTEMPLATE, faction);
     pCreature->_setFaction();
@@ -187,7 +189,7 @@ public:
     pC->event_AddEvent(te);
   }
 
-  GameObject *SpawnGameobject(Player *plr, uint32 entry_id, float x, float y, float z, float o, float scale)
+  GameObject *SpawnGameobject(Player *plr, uint32 entry_id, float x, float y, float z, float o, float scale, uint32 phase = 0xFFFFFFFF)
   {
     PrintMessage("Function call: SpawnGameobject()");
     if(plr == NULL)
@@ -204,6 +206,7 @@ public:
     pC->SetFloatValue(OBJECT_FIELD_SCALE_X, (float)scale);
     pC->SetMapId(plr->GetMapId());
     pC->SetInstanceID(plr->GetInstanceID());
+	pC->m_phase = phase;
     pC->PushToWorld(plr->GetMapMgr());
 
     return pC;
