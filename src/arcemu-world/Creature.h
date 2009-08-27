@@ -328,6 +328,22 @@ public:
 		RemoveByteFlag(UNIT_FIELD_BYTES_2, 1, U_FIELD_BYTES_FLAG_PVP);
 	}
 
+    ARCEMU_INLINE bool IsFFAPvPFlagged()
+	{
+		return HasByteFlag(UNIT_FIELD_BYTES_2, 1, U_FIELD_BYTES_FLAG_FFA_PVP);
+	}
+
+	ARCEMU_INLINE void SetFFAPvPFlag()
+	{
+		SetByteFlag(UNIT_FIELD_BYTES_2, 1, U_FIELD_BYTES_FLAG_FFA_PVP);
+	}
+
+	ARCEMU_INLINE void RemoveFFAPvPFlag()
+	{
+		RemoveByteFlag(UNIT_FIELD_BYTES_2, 1, U_FIELD_BYTES_FLAG_FFA_PVP);
+	}
+
+
 	int32 GetSlotByItemId(uint32 itemid)
 	{
 		uint32 slot = 0;

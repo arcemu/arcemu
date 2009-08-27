@@ -442,6 +442,11 @@ void WorldSession::HandlePetRename(WorldPacket & recv_data)
         pet->SetPvPFlag();
     else
         pet->RemovePvPFlag();
+
+    if( pet->GetPetOwner()->IsFFAPvPFlagged() )
+        pet->SetFFAPvPFlag();
+    else
+        pet->RemoveFFAPvPFlag();
 }
 
 void WorldSession::HandlePetAbandon(WorldPacket & recv_data)

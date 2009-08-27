@@ -4231,6 +4231,11 @@ void AIInterface::Event_Summon_EE_totem(uint32 summon_duration)
         else
             ourslave->RemovePvPFlag();
 
+        if( caster->IsFFAPvPFlagged() )
+            ourslave->SetFFAPvPFlag();
+        else
+            ourslave->RemoveFFAPvPFlag();
+
         static_cast< Creature* >(ourslave)->SetOwner( caster );
 
         ourslave->SetUInt32Value(UNIT_FIELD_FLAGS, UNIT_FLAG_PLAYER_CONTROLLED | UNIT_FLAG_SELF_RES);
@@ -4260,6 +4265,11 @@ void AIInterface::Event_Summon_FE_totem(uint32 summon_duration)
             ourslave->SetPvPFlag();
         else
             ourslave->RemovePvPFlag();
+
+        if( caster->IsFFAPvPFlagged() )
+            ourslave->SetFFAPvPFlag();
+        else
+            ourslave->RemoveFFAPvPFlag();
 
         static_cast< Creature* >(ourslave)->SetOwner( caster );
 

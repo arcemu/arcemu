@@ -140,8 +140,7 @@ void Arena::OnAddPlayer(Player * plr)
 	plr->AddAura(aura);
 
 	/* Set FFA PvP Flag */
-	if ( !plr->HasFlag(PLAYER_FLAGS, PLAYER_FLAG_FREE_FOR_ALL_PVP))
-		plr->SetFlag(PLAYER_FLAGS, PLAYER_FLAG_FREE_FOR_ALL_PVP);
+    plr->SetFFAPvPFlag();
 
 	m_playersAlive.insert(plr->GetLowGUID());
 }
@@ -159,8 +158,7 @@ void Arena::OnRemovePlayer(Player * plr)
 	HookOnPlayerDeath(plr);
 
 	plr->RemoveAura(plr->GetTeamInitial() ? 35775-plr->m_bgTeam : 32725-plr->m_bgTeam);
-	if (plr->HasFlag(PLAYER_FLAGS, PLAYER_FLAG_FREE_FOR_ALL_PVP ))
-		plr->RemoveFlag(PLAYER_FLAGS, PLAYER_FLAG_FREE_FOR_ALL_PVP);
+    plr->RemoveFFAPvPFlag();
 
 	plr->m_bg = NULL;
 

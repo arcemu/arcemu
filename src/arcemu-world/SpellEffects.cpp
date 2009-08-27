@@ -6006,6 +6006,11 @@ void Spell::SpellEffectSummonTotem(uint32 i) // Summon Totem
     else
         pTotem->RemovePvPFlag();
 
+    if( p_caster->IsFFAPvPFlagged() )
+        pTotem->SetFFAPvPFlag();
+    else
+        pTotem->RemoveFFAPvPFlag();
+
 	// Initialize faction stuff.
 	pTotem->m_faction = p_caster->m_faction;
 	pTotem->m_factionDBC = p_caster->m_factionDBC;

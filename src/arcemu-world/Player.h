@@ -1940,7 +1940,7 @@ public:
 
         // If we have a pet we will remove the pvp flag from that too
         if( m_Summon != NULL )
-          m_Summon->SetPvPFlag();
+          m_Summon->RemovePvPFlag();
     }
 
 	ARCEMU_INLINE bool IsFFAPvPFlagged()
@@ -1953,6 +1953,20 @@ public:
 		StopPvPTimer();
 		SetByteFlag(UNIT_FIELD_BYTES_2, 1, U_FIELD_BYTES_FLAG_FFA_PVP);
 		SetFlag(PLAYER_FLAGS, PLAYER_FLAG_FREE_FOR_ALL_PVP);
+
+        for(int i = 0; i < 4; ++i){
+            if( m_TotemSlots[i] != NULL ){
+                m_TotemSlots[i]->SetFFAPvPFlag();
+                
+                // Adjusting the totems' summons' PVP flag
+                if( static_cast<Unit*>( m_TotemSlots[i] )->summonPet != 0)
+                    static_cast<Unit*>( m_TotemSlots[i] )->summonPet->SetFFAPvPFlag();
+            }
+        }
+
+        // flagging the pet too for PvP, if we have one
+        if( m_Summon != NULL )
+            m_Summon->SetFFAPvPFlag();
 	}
 
 	ARCEMU_INLINE void RemoveFFAPvPFlag()
@@ -1960,6 +1974,21 @@ public:
 		StopPvPTimer();
 		RemoveByteFlag(UNIT_FIELD_BYTES_2, 1, U_FIELD_BYTES_FLAG_FFA_PVP);
 		RemoveFlag(PLAYER_FLAGS, PLAYER_FLAG_FREE_FOR_ALL_PVP);
+
+        // Adjusting the totems' PVP flag
+        for(int i = 0; i < 4; ++i){
+            if( m_TotemSlots[i] != NULL ){
+                m_TotemSlots[i]->RemoveFFAPvPFlag();
+
+                // Adjusting the totems' summons' PVP flag
+                if( static_cast<Unit*>( m_TotemSlots[i] )->summonPet != 0)
+                    static_cast<Unit*>( m_TotemSlots[i] )->summonPet->RemoveFFAPvPFlag();
+            }
+        }
+
+        // If we have a pet we will remove the pvp flag from that too
+        if( m_Summon != NULL )
+          m_Summon->RemoveFFAPvPFlag();
 	}
 
     ARCEMU_INLINE void AddCoins( int32 coins ){ 

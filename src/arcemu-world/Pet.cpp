@@ -224,6 +224,11 @@ void Pet::CreateAsSummon( uint32 entry, CreatureInfo *ci, Creature* created_from
     else
         this->RemovePvPFlag();
 
+    if( owner->IsFFAPvPFlagged() )
+        this->SetFFAPvPFlag();
+    else
+        this->RemoveFFAPvPFlag();
+
     BaseDamage[0] = 0;
 	BaseDamage[1] = 0;
 	BaseOffhandDamage[0] = 0;

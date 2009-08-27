@@ -890,6 +890,10 @@ public:
 	virtual void SetPvPFlag() = 0;
 	virtual void RemovePvPFlag() = 0;
 
+    virtual bool IsFFAPvPFlagged() = 0;
+    virtual void SetFFAPvPFlag() = 0;
+    virtual void RemoveFFAPvPFlag() = 0;
+
     void setAttackTimer(int32 time, bool offhand);
 	bool isAttackReady(bool offhand);
 

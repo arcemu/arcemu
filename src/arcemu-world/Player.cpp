@@ -2152,6 +2152,12 @@ void Player::SpawnPet( uint32 pet_number )
         pPet->SetPvPFlag();
     else
         pPet->RemovePvPFlag();
+
+    if( this->IsFFAPvPFlagged() )
+        pPet->SetFFAPvPFlag();
+    else
+        pPet->RemoveFFAPvPFlag();
+
     pPet->SetUInt32Value( UNIT_FIELD_FACTIONTEMPLATE, this->GetUInt32Value( UNIT_FIELD_FACTIONTEMPLATE ) );
 	
 	if( itr->second->spellid )
