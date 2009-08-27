@@ -451,6 +451,10 @@
 				RelativePath="..\src\MiscScripts\RandomScripts.cpp"
 				>
 			</File>
+			<File
+				RelativePath="..\src\MiscScripts\WyrmrestTemple.cpp"
+				>
+			</File>
 		</Filter>
 	</Files>
 	<Globals>

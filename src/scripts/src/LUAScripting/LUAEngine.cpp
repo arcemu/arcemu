@@ -77,8 +77,8 @@ struct RegType
 /* SCRIPT FUNCTION TABLES                                               */
 /************************************************************************/
 RegType<Item> ItemMethods[] = {
-    // Item Gossip functions
-    { "GossipCreateMenu", &luaItem_GossipCreateMenu },
+	// Item Gossip functions
+	{ "GossipCreateMenu", &luaItem_GossipCreateMenu },
 	{ "GossipMenuAddItem", &luaItem_GossipMenuAddItem },
 	{ "GossipSendMenu", &luaItem_GossipSendMenu },
 	{ "GossipComplete", &luaItem_GossipComplete },
@@ -174,7 +174,7 @@ RegType<Unit> UnitMethods[] = {
 	{ "GetDistance", &luaUnit_GetDistance },
 	{ "GetGUID", &luaUnit_GetGUID },
 	{ "GetCreatureNearestCoords", &luaUnit_GetCreatureNearestCoords },
-    { "CastSpellAoF", &luaUnit_CastSpellAoF },
+	{ "CastSpellAoF", &luaUnit_CastSpellAoF },
 	{ "GetGameObjectNearestCoords", &luaUnit_GetGameObjectNearestCoords },
 	{ "SetInFront", &luaUnit_SetInFront },
 	{ "RemoveAllAuras", &luaUnit_RemoveAllAuras },
@@ -1982,7 +1982,7 @@ int luaUnit_SpawnCreature(lua_State * L, Unit * ptr)
 	float o = (float)luaL_checkint(L, 5);
 	uint32 faction = luaL_checkint(L, 6);
 	uint32 duration = luaL_checkint(L, 7);
-    uint32 phase = luaL_optint(L, 8, ptr->m_phase);
+	uint32 phase = luaL_optint(L, 8, ptr->m_phase);
 
 	if( !x || !y || !z || !entry_id || !faction /*|| !duration*/) //Shady: is it really required?
 	{
@@ -1991,19 +1991,17 @@ int luaUnit_SpawnCreature(lua_State * L, Unit * ptr)
 	}
 
 	CreatureProto *p = CreatureProtoStorage.LookupEntry(entry_id);
-    
-    if( p == NULL )
-      return NULL;
 
-	Creature * pCreature = ptr->GetMapMgr()->GetInterface()->SpawnCreature(entry_id,x,y,z,o,true,true,0,0);
+	if( p == NULL )
+		return NULL;
+
+	Creature * pCreature = ptr->GetMapMgr()->GetInterface()->SpawnCreature(entry_id, x, y, z, o, true, true, 0, 0, phase);
 	pCreature->SetUInt32Value(UNIT_FIELD_FACTIONTEMPLATE,faction);
 	pCreature->_setFaction();
 	pCreature->SetInstanceID(ptr->GetInstanceID());
 	pCreature->SetMapId(ptr->GetMapId());
 
-    pCreature->Phase(PHASE_SET, phase);
-
-    if(duration)
+	if( duration )
 		pCreature->Despawn(duration,0);
 
 	Lunar<Unit>::push(L,pCreature);
@@ -2011,7 +2009,9 @@ int luaUnit_SpawnCreature(lua_State * L, Unit * ptr)
 }
 int luaUnit_SpawnGameObject(lua_State * L, Unit * ptr)
 {
-	if(ptr == NULL) return 0;
+	if( ptr == NULL )
+		return 0;
+
 	uint32 entry_id = luaL_checkint(L, 1);
 	float x = (float)luaL_checkint(L, 2);
 	float y = (float)luaL_checkint(L, 3);
@@ -2019,18 +2019,19 @@ int luaUnit_SpawnGameObject(lua_State * L, Unit * ptr)
 	float o = (float)luaL_checkint(L, 5);
 	uint32 duration = luaL_checkint(L, 6);
 	float scale = (float)luaL_optint(L, 7, 1);
-    uint32 phase = luaL_optint(L, 8, ptr->m_phase);
+	uint32 phase = luaL_optint(L, 8, ptr->m_phase);
 
-	if(entry_id)
+	if( entry_id )
 	{
-		GameObject* pC = ptr->GetMapMgr()->GetInterface()->SpawnGameObject(entry_id,x,y,z,o,false,0,0);
-		pC->SetInstanceID(ptr->GetInstanceID());
-		pC->SetMapId(ptr->GetMapId());
-		pC->SetFloatValue(OBJECT_FIELD_SCALE_X, scale);
-        pC->Phase(PHASE_SET, phase);
-		pC->Spawn(ptr->GetMapMgr());
-		if(duration && duration > 0)
-			sEventMgr.AddEvent(pC,&GameObject::ExpireAndDelete,EVENT_GAMEOBJECT_UPDATE,duration,1,EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
+		GameObject* pC = ptr->GetMapMgr()->GetInterface()->SpawnGameObject( entry_id, x, y, z, o, false, 0, 0, phase );
+		pC->SetInstanceID( ptr->GetInstanceID() );
+		pC->SetMapId( ptr->GetMapId() );
+		pC->SetFloatValue( OBJECT_FIELD_SCALE_X, scale );
+		pC->Spawn( ptr->GetMapMgr() );
+		if( duration && duration > 0 )
+		{
+			sEventMgr.AddEvent( pC, &GameObject::ExpireAndDelete, EVENT_GAMEOBJECT_UPDATE, duration, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT );
+		}
 		Lunar<GameObject>::push(L,pC,false);
 	}
 	return 1;
@@ -4499,7 +4500,9 @@ int luaGameObject_PlaySoundToSet(lua_State * L, GameObject * ptr)
 }
 int luaGameObject_SpawnCreature(lua_State * L, GameObject * ptr)
 {
-	if(ptr == NULL) return 0;
+	if( ptr == NULL )
+		return 0;
+
 	uint32 entry_id = luaL_checkint(L, 1);
 	float x = (float)luaL_checkint(L, 2);
 	float y = (float)luaL_checkint(L, 3);
@@ -4507,7 +4510,7 @@ int luaGameObject_SpawnCreature(lua_State * L, GameObject * ptr)
 	float o = (float)luaL_checkint(L, 5);
 	uint32 faction = luaL_checkint(L, 6);
 	uint32 duration = luaL_checkint(L, 7);
-    uint32 phase = luaL_optint(L, 8, ptr->m_phase);
+	uint32 phase = luaL_optint(L, 8, ptr->m_phase);
 
 	if( !x || !y || !z || !entry_id || !faction /*|| !duration*/) //Shady: is it really required?
 	{
@@ -4516,24 +4519,24 @@ int luaGameObject_SpawnCreature(lua_State * L, GameObject * ptr)
 	}
 
 	CreatureProto *p = CreatureProtoStorage.LookupEntry(entry_id);
-    
-    if(p == NULL)
-      return NULL;
 
-    Creature *pCreature = ptr->GetMapMgr()->CreateCreature(entry_id);
-    pCreature->spawnid = 0;
-    pCreature->m_spawn = 0;
-    pCreature->Load(p,x,y,z);
-	if(faction)
+	if( p == NULL )
+		return NULL;
+
+	Creature *pCreature = ptr->GetMapMgr()->CreateCreature( entry_id );
+	pCreature->spawnid = 0;
+	pCreature->m_spawn = 0;
+	pCreature->Load( p, x, y, z );
+	if( faction )
 		pCreature->SetUInt32Value(UNIT_FIELD_FACTIONTEMPLATE,faction);
 	pCreature->_setFaction();
-    pCreature->SetMapId(ptr->GetMapId());
-    pCreature->SetOrientation(o);
-    pCreature->Despawn(duration, 0);
-    pCreature->SetInstanceID(ptr->GetInstanceID());
-    pCreature->Phase(PHASE_SET, phase);
-    pCreature->PushToWorld(ptr->GetMapMgr());
-	if(duration)
+	pCreature->SetMapId( ptr->GetMapId() );
+	pCreature->SetOrientation( o );
+	pCreature->Despawn( duration, 0 );
+	pCreature->SetInstanceID( ptr->GetInstanceID() );
+	pCreature->m_phase = phase;
+	pCreature->PushToWorld( ptr->GetMapMgr() );
+	if( duration )
 	{
 		pCreature->Despawn(duration,0);
 	}
@@ -4549,7 +4552,9 @@ int luaGameObject_GetItemCount(lua_State * L, GameObject * ptr)
 }
 int luaGameObject_SpawnGameObject(lua_State * L, GameObject * ptr)
 {
-	if(ptr == NULL) return 0;
+	if( ptr == NULL )
+		return 0;
+
 	uint32 entry_id = luaL_checkint(L, 1);
 	float x = (float)luaL_checkint(L, 2);
 	float y = (float)luaL_checkint(L, 3);
@@ -4557,25 +4562,27 @@ int luaGameObject_SpawnGameObject(lua_State * L, GameObject * ptr)
 	float o = (float)luaL_checkint(L, 5);
 	uint32 duration = luaL_checkint(L, 6);
 	float scale = (float)luaL_optint(L, 7, 1);
-    uint32 phase = luaL_optint(L, 8, ptr->m_phase);
+	uint32 phase = luaL_optint(L, 8, ptr->m_phase);
 
-	if(!entry_id || !duration)
+	if( !entry_id || !duration )
 	{
 		lua_pushnil(L);
 		return 1;
 	}
 
 	GameObjectInfo *goi = GameObjectNameStorage.LookupEntry(entry_id);
-	if (goi == NULL) return 0;
-    GameObject *pC = ptr->GetMapMgr()->CreateGameObject(entry_id);
-    pC->m_spawn=0;
-    pC->CreateFromProto(entry_id, ptr->GetMapId(), (float)x, (float)y, (float)z, (float)o);
-    pC->SetMapId(ptr->GetMapId());
-	pC->SetFloatValue(OBJECT_FIELD_SCALE_X, scale);
-    pC->SetInstanceID(ptr->GetInstanceID());
-    pC->Phase(PHASE_SET, phase);
-	pC->Spawn(ptr->GetMapMgr());
-	if(duration)
+	if( goi == NULL )
+		return 0;
+
+	GameObject *pC = ptr->GetMapMgr()->CreateGameObject( entry_id );
+	pC->m_spawn = 0;
+	pC->CreateFromProto( entry_id, ptr->GetMapId(), (float)x, (float)y, (float)z, (float)o );
+	pC->SetMapId( ptr->GetMapId() );
+	pC->SetFloatValue( OBJECT_FIELD_SCALE_X, scale );
+	pC->SetInstanceID( ptr->GetInstanceID() );
+	pC->m_phase = phase;
+	pC->Spawn( ptr->GetMapMgr() );
+	if( duration )
 	{
 		sEventMgr.AddEvent(pC, &GameObject::ExpireAndDelete, EVENT_GAMEOBJECT_UPDATE, duration, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
 	}

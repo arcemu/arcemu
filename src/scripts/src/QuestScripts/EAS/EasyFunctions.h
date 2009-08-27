@@ -130,7 +130,7 @@ public:
     pCreature->SetOrientation(posO);
     pCreature->Despawn(duration, 0);
     pCreature->SetInstanceID(pThis->GetInstanceID());
-	pCreature->m_phase = phase;
+    pCreature->m_phase = phase;
     pCreature->PushToWorld(pThis->GetMapMgr());
 
     return pCreature;
@@ -170,8 +170,8 @@ public:
     pCreature->GetAIInterface()->disable_melee = dis_mel;
     pCreature->GetAIInterface()->disable_targeting = dis_target;
     pCreature->SetInstanceID(pThis->GetInstanceID());
-	pCreature->m_phase = phase;
-	pCreature->PushToWorld(pThis->GetMapMgr());
+    pCreature->m_phase = phase;
+    pCreature->PushToWorld(pThis->GetMapMgr());
     pCreature->Despawn(duration, 0);
     pCreature->SetUInt32Value(UNIT_FIELD_FACTIONTEMPLATE, faction);
     pCreature->_setFaction();
@@ -206,7 +206,7 @@ public:
     pC->SetFloatValue(OBJECT_FIELD_SCALE_X, (float)scale);
     pC->SetMapId(plr->GetMapId());
     pC->SetInstanceID(plr->GetInstanceID());
-	pC->m_phase = phase;
+    pC->m_phase = phase;
     pC->PushToWorld(plr->GetMapMgr());
 
     return pC;
