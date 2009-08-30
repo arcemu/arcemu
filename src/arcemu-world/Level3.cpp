@@ -3913,6 +3913,15 @@ bool ChatHandler::HandleSetTitle( const char *args, WorldSession *m_session )
 
 	plr->SetUInt32Value( PLAYER_CHOSEN_TITLE, 0 ); // better remove chosen one
 	SystemMessage( m_session, "Title has been %s.", title > 0 ? "set" : "reset" );
+
+    std::stringstream logtext;
+    logtext << "has ";
+    if( title > 0 )
+        logtext << "set the title field of " << plr->GetName() << "to " << title << ".";
+    else
+        logtext << "reset the title field of " << plr->GetName();
+
+    sGMLog.writefromsession(m_session, logtext.str().c_str());
 	return true;
 }
 

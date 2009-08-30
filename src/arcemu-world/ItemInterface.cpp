@@ -1956,27 +1956,31 @@ int8 ItemInterface::CanEquipItemInSlot2( int8 DstInvSlot, int8 slot, Item* item,
 
 				if (
 					ip //maybe gem got removed from db due to update ?
-					&& ip->Flags & ITEM_FLAG_UNIQUE_EQUIP 
-					&& IsEquipped(ip->ItemId)
 					)
 				{
-					return INV_ERR_CANT_CARRY_MORE_OF_THIS;
-				}
+                    if(
+                        ip->Flags & ITEM_FLAG_UNIQUE_EQUIP 
+                    &&  IsEquipped( ip->ItemId )
+                    )
+                    {
+                       return INV_ERR_CANT_CARRY_MORE_OF_THIS;
+                    }
 
-				if( ip->ItemLimitCategory > 0 )
-				{
-					uint32 LimitId = ip->ItemLimitCategory;
-					ItemLimitCategoryEntry * ile = dbcItemLimitCategory.LookupEntry( LimitId );
-					if( ile )
-					{
-						uint32 gemCount = 0;
-						if(		( ile->equippedFlag & ILFLAG_EQUIP_ONLY && slot < EQUIPMENT_SLOT_END ) 
-							||	( !(ile->equippedFlag & ILFLAG_EQUIP_ONLY) && slot > EQUIPMENT_SLOT_END ) )
-							gemCount = item->CountGemsWithLimitId( ile->Id );
+                    if( ip->ItemLimitCategory > 0 )
+                    {
+                       uint32 LimitId = ip->ItemLimitCategory;
+                       ItemLimitCategoryEntry * ile = dbcItemLimitCategory.LookupEntry( LimitId );
+                       if( ile )
+                       {
+                          uint32 gemCount = 0;
+                          if(       ( ile->equippedFlag & ILFLAG_EQUIP_ONLY  && slot < EQUIPMENT_SLOT_END ) 
+                             ||   ( !(ile->equippedFlag & ILFLAG_EQUIP_ONLY) && slot > EQUIPMENT_SLOT_END ) )
+                             gemCount = item->CountGemsWithLimitId( ile->Id );
 
-						uint32 gCount = GetEquippedCountByItemLimit( ile->Id );
-						if( ( gCount + gemCount ) > ile->maxAmount )
-							return INV_ERR_CANT_CARRY_MORE_OF_THIS;
+                          uint32 gCount = GetEquippedCountByItemLimit( ile->Id );
+                          if( ( gCount + gemCount ) > ile->maxAmount )
+                             return INV_ERR_CANT_CARRY_MORE_OF_THIS;
+                       }
 					}
 				}
 			}
