@@ -62,8 +62,12 @@ m_fullAccountName(NULL)
 WorldSocket::~WorldSocket()
 {
 	WorldPacket * pck;
-	while((pck = _queue.Pop()) != 0)
+	queueLock.Acquire();
+	while( (pck = _queue.Pop()) != NULL )
+	{
 		delete pck;
+	}
+	queueLock.Release();
 
 	if(pAuthenticationPacket)
 		delete pAuthenticationPacket;
@@ -136,7 +140,7 @@ void WorldSocket::UpdateQueuedPackets()
 	}
 
 	WorldPacket * pck;
-	while((pck = _queue.front()) != 0)
+	while( (pck = _queue.front()) != NULL )
 	{
 		/* try to push out as many as you can */
 		switch(_OutPacket(pck->GetOpcode(), pck->size(), pck->size() ? pck->contents() : NULL))
@@ -157,8 +161,10 @@ void WorldSocket::UpdateQueuedPackets()
 		default:
 			{
 				/* kill everything in the buffer */
-				while((pck == _queue.Pop()))
+				while( (pck == _queue.Pop()) != NULL )
+				{
 					delete pck;
+				}
 				queueLock.Release();
 				return;
 			}break;
@@ -422,9 +428,10 @@ void WorldSocket::InformationRetreiveCallback(WorldPacket & recvData, uint32 req
 #endif
 
 	// Check for queue.
-	if( (sWorld.GetSessionCount() < sWorld.GetPlayerLimit()) || pSession->HasGMPermissions() ) {
+	uint32 playerLimit = sWorld.GetPlayerLimit();
+	if( (sWorld.GetSessionCount() < playerLimit) || pSession->HasGMPermissions() ) {
 		Authenticate();
-	} else {
+	} else if( playerLimit > 0 ){
 		// Queued, sucker.
 		uint32 Position = sWorld.AddQueuedSocket(this);
 		mQueued = true;
@@ -432,6 +439,9 @@ void WorldSocket::InformationRetreiveCallback(WorldPacket & recvData, uint32 req
 
 		// Send packet so we know what we're doing
 		UpdateQueuePosition(Position);
+	} else {
+		OutPacket(SMSG_AUTH_RESPONSE, 1, "\x0E"); // AUTH_REJECT = 14
+		Disconnect();
 	}
 
 	pSession->deleteMutex.Release();
@@ -556,7 +566,7 @@ void WorldSocket::OnRead()
 			GetReadBuffer().Read((uint8*)&Header, 6);
 
 			// Decrypt the header
-		_crypt.DecryptRecv((uint8*)&Header, sizeof (ClientPktHeader));
+			_crypt.DecryptRecv((uint8*)&Header, sizeof (ClientPktHeader));
 #ifdef USING_BIG_ENDIAN
 			mRemaining = mSize = Header.size - 4;
 			mOpcode = swap32(Header.cmd);

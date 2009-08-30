@@ -97,7 +97,7 @@ void WorldSession::SendTaxiList(Creature* pCreature)
 	}
 
 	//Set Mask
-	memset(TaxiMask, 0, sizeof(uint32)*8);
+	memset(TaxiMask, 0, sizeof(TaxiMask));
 	sTaxiMgr.GetGlobalTaxiNodeMask(curloc, TaxiMask);
 	TaxiMask[field] |= 1 << ((curloc-1)%32);
 
