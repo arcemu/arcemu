@@ -151,6 +151,8 @@ bool ChatHandler::HandleGMOnCommand(const char* args, WorldSession *m_session)
 		_player->RemovePvPFlag();
 
 		BlueSystemMessage(m_session, "GM flag set. It will now appear above your name and in chat messages until you use .gm off.");
+
+		_player->UpdateVisibility();
 	}
 
 	return true;
@@ -174,6 +176,8 @@ bool ChatHandler::HandleGMOffCommand(const char* args, WorldSession *m_session)
 		_player->UpdatePvPArea();
 
 		BlueSystemMessage(m_session, "GM Flag Removed. <GM> Will no longer show in chat messages or above your name.");
+
+		_player->UpdateVisibility();
 	}
 
 	return true;

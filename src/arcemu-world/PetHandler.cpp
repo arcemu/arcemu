@@ -434,7 +434,7 @@ void WorldSession::HandlePetRename(WorldPacket & recv_data)
 	pet->Rename(name);
 
 	// Disable pet rename.
-	pet->SetUInt32Value(UNIT_FIELD_BYTES_2, 1 | /* (0x28 << 8) | */ (0x2 << 16) );
+	pet->SetUInt32Value(UNIT_FIELD_BYTES_2, 1 | /* (0x28 << 8) | */ (PET_RENAME_NOT_ALLOWED << 16) );
 
     assert( pet->GetPetOwner() != NULL );
     

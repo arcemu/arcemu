@@ -7130,26 +7130,30 @@ void Unit::Heal(Unit *target, uint32 SpellId, uint32 amount)
 	if(!target || !SpellId || !amount)
 		return;
 
-	uint32 ch=target->GetUInt32Value(UNIT_FIELD_HEALTH);
-	uint32 mh=target->GetUInt32Value(UNIT_FIELD_MAXHEALTH);
-	if(mh!=ch)
+	uint32 ch = target->GetUInt32Value(UNIT_FIELD_HEALTH);
+	uint32 mh = target->GetUInt32Value(UNIT_FIELD_MAXHEALTH);
+	if( mh != ch )
 	{
 		ch += amount;
+		uint32 overheal = 0;
+
 		if(ch > mh)
 		{
 			target->SetUInt32Value(UNIT_FIELD_HEALTH, mh);
-			amount += mh-ch;
+			overheal = amount - mh;
+			amount += (mh - ch);
 		}
 		else
 			target->SetUInt32Value(UNIT_FIELD_HEALTH, ch);
 
-		WorldPacket data(SMSG_SPELLHEALLOG,25);
+		WorldPacket data(SMSG_SPELLHEALLOG, 29);
 		data << target->GetNewGUID();
 		data << this->GetNewGUID();
 		data << uint32(SpellId);
-		data << uint32(amount);
-		data << uint8(0);
-		this->SendMessageToSet(&data,true);
+		data << uint32(amount);							// amt healed
+		data << uint32(overheal);						// Amount Overhealed
+		data << uint8(0);								// critical message
+		this->SendMessageToSet(&data, true);
 
 		target->RemoveAurasByHeal();
 	}

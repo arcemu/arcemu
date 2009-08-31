@@ -1461,6 +1461,7 @@ public:
 		case 13117: // Horde Spirit Guide
 		case 9299:  // Gaeriyan (Qnpc)
 		case 8888:  // Franclorn Forgewright (Qnpc)
+		case 29259: // Scarlet Enclave
 			{
 				return true;
 			}break;

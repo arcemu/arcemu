@@ -1387,6 +1387,11 @@ bool ChatHandler::HandleShowCheatsCommand(const char* args, WorldSession* m_sess
 	print_cheat_status("AuraStack", plyr->AuraStackCheat);
 	print_cheat_status("ItemStack", plyr->ItemStackCheat);
 	print_cheat_status("TriggerPass", plyr->TriggerpassCheat);
+	if( plyr->GetSession() && plyr->GetSession()->CanUseCommand('a') )
+	{
+		print_cheat_status("GM Invisibility", plyr->m_isGmInvisible);
+		print_cheat_status("GM Invincibility", plyr->bInvincible);
+	}
 	SystemMessage(m_session, "%u cheats active, %u inactive.", active, inactive);
 
 #undef print_cheat_status

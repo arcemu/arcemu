@@ -736,7 +736,10 @@ void GossipScript::GossipHello(Object* pObject, Player* Plr, bool AutoSend)
 		Menu->AddItem(0, Plr->GetSession()->LocalizedWorldSrv(17), 6);
 
 	if (pCreature->isSpiritHealer())
-		Menu->AddItem(0, Plr->GetSession()->LocalizedWorldSrv(18), 7);
+	{	// Spirit Healers should NOT have a menu!
+		//Menu->AddItem(0, Plr->GetSession()->LocalizedWorldSrv(18), 7);
+		Plr->GetSession()->SendSpiritHealerRequest(pCreature);
+	}
 
 	if (pCreature->isCharterGiver())
 	{
