@@ -239,10 +239,11 @@ uint32 Object::BuildCreateUpdateBlockForPlayer(ByteBuffer *data, Player *target)
 		// gameobject/dynamicobject
 	case TYPEID_GAMEOBJECT:
 		flags = 0x0350;
+		if( m_uint32Values[GAMEOBJECT_DISPLAYID]==3831 ) flags=0x0252; //Deeprun Tram proper flags as of 3.2.0.
 		break;
 
 	case TYPEID_DYNAMICOBJECT:
-		flags = 0x0050;
+		flags = 0x0150;
 		break;
 
 	case TYPEID_CORPSE:
@@ -275,7 +276,7 @@ uint32 Object::BuildCreateUpdateBlockForPlayer(ByteBuffer *data, Player *target)
 			case GAMEOBJECT_TYPE_TRANSPORT:
 				{
 					/* deeprun tram, etc */
-					flags = 0x352;
+					flags = 0x252;
 				}break;
 
 			case GAMEOBJECT_TYPE_DUEL_ARBITER:
@@ -286,7 +287,7 @@ uint32 Object::BuildCreateUpdateBlockForPlayer(ByteBuffer *data, Player *target)
 				}break;
 		}
 		//The above 3 checks FAIL to identify transports, thus their flags remain 0x58, and this is BAAAAAAD! Later they don't get position x,y,z,o updates, so they appear randomly by a client-calculated path, they always face north, etc... By: VLack
-		if( flags != 0x0352 && GetTypeId() == TYPEID_GAMEOBJECT && static_cast<GameObject*>(this)->GetInfo()->Type == GAMEOBJECT_TYPE_TRANSPORT )
+		if( flags != 0x0352 && GetTypeId() == TYPEID_GAMEOBJECT && static_cast<GameObject*>(this)->GetInfo()->Type == GAMEOBJECT_TYPE_TRANSPORT && !(static_cast<GameObject*>(this)->GetOverrides() & GAMEOBJECT_OVERRIDE_PARENTROT) )
 			flags = 0x0352;
 	}
 
@@ -305,6 +306,12 @@ uint32 Object::BuildCreateUpdateBlockForPlayer(ByteBuffer *data, Player *target)
 	UpdateMask updateMask;
 	updateMask.SetCount( m_valuesCount );
 	_SetCreateBits( &updateMask, target );
+
+	if(GetTypeId() == TYPEID_GAMEOBJECT && (static_cast<GameObject*>(this)->GetOverrides() & GAMEOBJECT_OVERRIDE_PARENTROT) )
+	{
+		updateMask.SetBit(GAMEOBJECT_PARENTROTATION_02);
+		updateMask.SetBit(GAMEOBJECT_PARENTROTATION_03);
+	}
 
 	// this will cache automatically if needed
 	_BuildValuesUpdate( data, &updateMask, target );
@@ -438,6 +445,11 @@ void Object::_BuildMovementUpdate(ByteBuffer * data, uint16 flags, uint32 flags2
 {
 	/* ByteBuffer *splinebuf = (m_objectTypeId == TYPEID_UNIT) ? target->GetAndRemoveSplinePacket(GetGUID()) : 0; */
 	uint16 flag16 = 0;	// some other flag
+	/* VLack: idea from Mangos, for future vehicle implementation
+	if(GetTypeId() == TYPEID_UNIT)
+		if(((Creature*)this)->isVehicle())
+			flag16 |= 0x20;*/
+
 	*data << (uint16)flags;
 
 	Player * pThis = NULL;
@@ -456,9 +468,6 @@ void Object::_BuildMovementUpdate(ByteBuffer * data, uint16 flags, uint32 flags2
 	Creature * uThis = NULL;
 	if (GetTypeId() == TYPEID_UNIT)
 		uThis = static_cast<Creature*>(this);
-
-	if( flags & UPDATEFLAG_UNK1 ) //0x0100
-		*data << uint8( 0 ); //some say it is like parent guid ?
 
 	if (flags & UPDATEFLAG_LIVING) //0x20
 	{
@@ -482,7 +491,6 @@ void Object::_BuildMovementUpdate(ByteBuffer * data, uint16 flags, uint32 flags2
 		{
 			//		 Don't know what this is, but I've only seen it applied to spirit healers.
 			//		 maybe some sort of invisibility flag? :/
-
 			switch(GetEntry())
 			{
 			case 6491:  // Spirit Healer
@@ -494,16 +502,16 @@ void Object::_BuildMovementUpdate(ByteBuffer * data, uint16 flags, uint32 flags2
 			}
 
 			if(uThis->GetAIInterface()->IsFlying())
-//				flags2 |= 0x800; //in 2.3 this is some state that i was not able to decode yet
+				//flags2 |= 0x800; //in 2.3 this is some state that i was not able to decode yet
 				flags2 |= MOVEFLAG_NO_COLLISION; //0x400 Zack : Teribus the Cursed had flag 400 instead of 800 and he is flying all the time 
 			if(uThis->GetProto() && uThis->GetProto()->extra_a9_flags)
 			{
 //do not send shit we can't honor
-#define UNKNOWN_FLAGS2 ( 0x0200 | 0x00002000 | 0x00001000 | 0x00200000 | 0x04000000 | 0x08000000 )
+#define UNKNOWN_FLAGS2 ( 0x00002000 | 0x04000000 | 0x08000000 )
 				uint32 inherit = uThis->GetProto()->extra_a9_flags & UNKNOWN_FLAGS2;
 				flags2 |= inherit;
 			}
-/*			if(GetGUIDHigh() == HIGHGUID_WAYPOINT)
+			/*if(GetGUIDHigh() == HIGHGUID_WAYPOINT)
 			{
 				if(GetUInt32Value(UNIT_FIELD_STAT0) == 768)		// flying waypoint
 					flags2 |= 0x800;
@@ -521,31 +529,8 @@ void Object::_BuildMovementUpdate(ByteBuffer * data, uint16 flags, uint32 flags2
 		//   0x04 -> ??
 		//   0x10 -> disables movement compensation and causes players to jump around all the place
 		//   0x40 -> disables movement compensation and causes players to jump around all the place
-	}
 
-	if( ( flags & 0x0300 ) ) //0x0300=UPDATEFLAG_UNK1 | UPDATEFLAG_UNK2
-	{
-		if( flags & UPDATEFLAG_UNK1 ) //0x0100
-		{
-			*data << (float)m_position.x;
-			*data << (float)m_position.y;
-			*data << (float)m_position.z;
-		}
-		*data << (float)m_position.x;
-		*data << (float)m_position.y;
-		*data << (float)m_position.z;
-//		if( flags & UPDATEFLAG_UNK2 ) //0x0200
-//		{
-			*data << (float)m_position.o;
-//			*data << (float)0; //well no idea atm
-			if (m_objectTypeId == TYPEID_CORPSE)
-				*data << (float)m_position.o; //VLack: repeat the orientation!
-			else
-				*data << (float)0;
-//		}
-	}
-	else if (flags & UPDATEFLAG_HAS_POSITION) //0x40
-	{
+		//Send position data, every living thing has these
 		*data << (float)m_position.x;
 		*data << (float)m_position.y;
 		*data << (float)m_position.z;
@@ -558,7 +543,7 @@ void Object::_BuildMovementUpdate(ByteBuffer * data, uint16 flags, uint32 flags2
 				WoWGuid wowguid(pThis->m_TransporterGUID);
 				*data << wowguid;
 				*data << pThis->m_TransporterX << pThis->m_TransporterY << pThis->m_TransporterZ << pThis->m_TransporterO;
-//				*data << pThis->m_TransporterTime;
+				//*data << pThis->m_TransporterTime;
 				*data << pThis->m_TransporterUnk;
 				*data << (uint8)0;
 			}
@@ -573,11 +558,8 @@ void Object::_BuildMovementUpdate(ByteBuffer * data, uint16 flags, uint32 flags2
 				*data << uint8(0);
 			}
 		}
-	}
 
-	if (flags & UPDATEFLAG_LIVING) //0x20
-	{
-		if( flags2 & MOVEFLAG_SWIMMING ) //0x0200000 flying/swimming, && unk sth to do with vehicles?
+		if( (flags2 & (MOVEFLAG_SWIMMING | MOVEFLAG_AIR_SWIMMING)) || (flag16 & 0x20) ) // 0x2000000+0x0200000 flying/swimming, && unk sth to do with vehicles?
 		{
 			if(pThis && moveinfo)
 				*data << moveinfo->pitch;
@@ -590,9 +572,9 @@ void Object::_BuildMovementUpdate(ByteBuffer * data, uint16 flags, uint32 flags2
 		else
 			*data << (uint32)0; //last fall time
 
-		if( flags2 & MOVEFLAG_FALLING || flags2 & MOVEFLAG_JUMPING ) // 0x00002000 || 0x00001000
+		if( flags2 & MOVEFLAG_JUMPING ) // 0x00001000
 		{
-/*			if(pThis && moveinfo)
+			/*if(pThis && moveinfo)
 			{
 				*data << moveinfo->FallTime;
 				*data << moveinfo->jump_sinAngle;
@@ -600,46 +582,79 @@ void Object::_BuildMovementUpdate(ByteBuffer * data, uint16 flags, uint32 flags2
 				*data << moveinfo->jump_xySpeed;
 			}
 			else
-			{
-*/
+			{*/
 				*data << (float)0;
 				*data << (float)1.0;
 				*data << (float)0;
 				*data << (float)0;
-//			}
+			//}
 		}
-		if( flags2 & MOVEFLAG_AIR_SWIMMING ) //0x02000000
-			*data << (uint32)0; //?
-		if( flags2 & MOVEFLAG_SWIMMING ) //0x00200000
-			*data << (uint32)0; //?
-		if( flags2 & MOVEFLAG_SPLINE_MOVER ) //0x04000000
-			*data << (uint32)0; //?
+
+		if( flags2 & MOVEFLAG_SPLINE_MOVER ) // 0x4000000
+		{
+			int err1, err2; err2=0; err1=10/err2; //FAIL please with divide by zero :)
+		}
 
 		if( m_walkSpeed == 0 )
 			*data << 8.0f;
 		else
-			*data << m_walkSpeed;	 // walk speed
+			*data << m_walkSpeed;	// walk speed
 		if( m_runSpeed == 0 )
 			*data << 8.0f;
 		else
-			*data << m_runSpeed;	  // run speed
-		*data << m_backWalkSpeed; // backwards walk speed
-		*data << m_swimSpeed;	 // swim speed
-		*data << m_backSwimSpeed; // backwards swim speed
+			*data << m_runSpeed;	// run speed
+		*data << m_backWalkSpeed;	// backwards walk speed
+		*data << m_swimSpeed;		// swim speed
+		*data << m_backSwimSpeed;	// backwards swim speed
 		if( m_flySpeed == 0 )
 			*data << 8.0f;
 		else
-			*data << m_flySpeed;		// fly speed
+			*data << m_flySpeed;	// fly speed
 		*data << m_backFlySpeed;	// back fly speed
-		*data << m_turnRate;	  // turn rate
-		*data << float(7);
-		/*if( flags2 & MOVEFLAG_IMMOBILIZED ) //0x08000000
-			if(splinebuf)
-			{
-				data->append(*splinebuf);
-				delete splinebuf;
-			}*/
+		*data << m_turnRate;		// turn rate
+		*data << float(7);		// pitch rate, now a constant...
+
+		if( flags2 & 0x08000000 ) //VLack: On Mangos this is a nice spline movement code, but we never had such... Also, at this point we haven't got this flag, that's for sure, but fail just in case...
+		{
+			int err1, err2; err2=0; err1=10/err2; //FAIL please with divide by zero :)
+		}
 	}
+	else //----------------------------------- No UPDATEFLAG_LIVING -----------------------------------
+	{
+		if( flags & UPDATEFLAG_POSITION ) //0x0100
+		{
+			*data << uint8( 0 ); //some say it is like parent guid ?
+			*data << (float)m_position.x;
+			*data << (float)m_position.y;
+			*data << (float)m_position.z;
+			*data << (float)m_position.x;
+			*data << (float)m_position.y;
+			*data << (float)m_position.z;
+			*data << (float)m_position.o;
+
+			if (m_objectTypeId == TYPEID_CORPSE)
+				*data << (float)m_position.o; //VLack: repeat the orientation!
+			else
+				*data << (float)0;
+		}
+		else if (flags & UPDATEFLAG_HAS_POSITION) //0x40
+		{
+			if(flags & UPDATEFLAG_TRANSPORT && m_uint32Values[GAMEOBJECT_BYTES_1]==GAMEOBJECT_TYPE_MO_TRANSPORT)
+			{
+				*data << (float)0;
+				*data << (float)0;
+				*data << (float)0;
+			}
+			else
+			{
+				*data << (float)m_position.x;
+				*data << (float)m_position.y;
+				*data << (float)m_position.z;
+			}
+			*data << (float)m_position.o;
+		}
+	}
+
 
 	if( flags & UPDATEFLAG_LOWGUID ) //0x08
 		*data << GetUInt32Value(OBJECT_FIELD_GUID);
@@ -648,15 +663,10 @@ void Object::_BuildMovementUpdate(ByteBuffer * data, uint16 flags, uint32 flags2
 		*data << GetUInt32Value(OBJECT_FIELD_GUID+1);
 
 	if( flags & UPDATEFLAG_HAS_TARGET ) //0x04
-		*data << (uint8)0;	//some compressed GUID
+		FastGUIDPack(*data, GetUInt64Value(UNIT_FIELD_TARGET));	//some compressed GUID
 
-	if( flags & UPDATEFLAG_VEHICLE ) //0x80
-	{
-		*data << (uint32)0; //?
-		*data << (uint32)0; //?
-	}
 
-	if(flags & UPDATEFLAG_TRANSPORT) //0x2
+	if( flags & UPDATEFLAG_TRANSPORT ) //0x2
 	{
 		if(target)
 		{
@@ -667,7 +677,13 @@ void Object::_BuildMovementUpdate(ByteBuffer * data, uint16 flags, uint32 flags2
 		else
 			*data << getMSTime();
 	}
-	if( flags & UPDATEFLAG_UNK2 ) //0x0200
+	if( flags & UPDATEFLAG_VEHICLE ) //0x80
+	{
+		*data << (uint32)0; //Vehicle ID
+		*data << (uint32)0; //Facing
+	}
+
+	if( flags & UPDATEFLAG_ROTATION ) //0x0200
 	{
 		if( IsGameObject() )
 			*data << static_cast< GameObject* >( this )->m_rotation;

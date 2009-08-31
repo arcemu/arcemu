@@ -895,6 +895,7 @@ void WorldSession::InitPacketHandlerTable()
 	WorldPacketHandlers[CMSG_SELF_RES].handler								  = &WorldSession::HandleSelfResurrectOpcode;
 	WorldPacketHandlers[MSG_RANDOM_ROLL].handler								= &WorldSession::HandleRandomRollOpcode;
 	WorldPacketHandlers[MSG_SET_DUNGEON_DIFFICULTY].handler                        = &WorldSession::HandleDungeonDifficultyOpcode;
+	WorldPacketHandlers[MSG_SET_RAID_DIFFICULTY].handler							= &WorldSession::HandleRaidDifficultyOpcode;
 
 	// Misc
 	WorldPacketHandlers[CMSG_OPEN_ITEM].handler								 = &WorldSession::HandleOpenItemOpcode;
@@ -907,6 +908,8 @@ void WorldSession::InitPacketHandlerTable()
 	WorldPacketHandlers[CMSG_GAMEOBJ_REPORT_USE].handler = &WorldSession::HandleGameobjReportUseOpCode;
 
 	WorldPacketHandlers[CMSG_PET_CAST_SPELL].handler				= &WorldSession::HandlePetCastSpell;
+
+	WorldPacketHandlers[CMSG_WORLD_STATE_UI_TIMER_UPDATE].handler				= &WorldSession::HandleWorldStateUITimerUpdate;
 
 
 	// Arenas

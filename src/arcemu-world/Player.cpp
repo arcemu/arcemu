@@ -1601,12 +1601,14 @@ void Player::BuildEnumData( WorldPacket * p_data )
 
 	*p_data << GetUInt32Value(PLAYER_GUILDID);// guild
 
-	if(rename_pending)  *p_data << uint32(0x00A04342);  // wtf blizz? :P
+	if(rename_pending)  *p_data << uint32(0x00A04342); // wtf blizz? :P
 	else if(m_banned)   *p_data << (uint32)7;	// Banned (cannot login)
-	else if(IsDead())   *p_data << (uint32)8704; // Dead (displaying as Ghost)
-	else				*p_data << (uint32)1;	// Alive
+	else if(IsDead())   *p_data << (uint32)8704;	// Dead (displaying as Ghost)
+	else		    *p_data << (uint32)1;	// Alive
 
+	*p_data << (uint32)0; //VLack: send 1 for faction change at logon
 	*p_data << (uint8)m_restState;	  // rest state
+	*p_data << (uint8)0; //3.2.0
 
 	// pet stuff
 	CreatureInfo *info = NULL;
@@ -2717,7 +2719,7 @@ void Player::SaveToDB(bool bNewCharacter /* =false */)
 	// dump glyphs
 	ss << "'";
 
-	for(uint32 i = 0; i < 8; ++i)
+	for(uint32 i = 0; i < GLYPHS_COUNT; ++i)
 		ss << m_uint32Values[PLAYER_FIELD_GLYPHS_1 + i] << ",";
 
 	ss << "', ";
@@ -3254,11 +3256,11 @@ void Player::LoadFromDBProc(QueryResultVector & results)
 		m_arenaTeams[z] = objmgr.GetArenaTeamByGuid(GetLowGUID(), z);
 		if(m_arenaTeams[z] != NULL)
 		{
-			SetUInt32Value(PLAYER_FIELD_ARENA_TEAM_INFO_1_1 + (z*6), m_arenaTeams[z]->m_id);
+			SetUInt32Value(PLAYER_FIELD_ARENA_TEAM_INFO_1_1 + (z*7), m_arenaTeams[z]->m_id);
 			if(m_arenaTeams[z]->m_leader == GetLowGUID())
-				SetUInt32Value(PLAYER_FIELD_ARENA_TEAM_INFO_1_1 + (z*6) + 1, 0);
+				SetUInt32Value(PLAYER_FIELD_ARENA_TEAM_INFO_1_1 + (z*7) + 1, 0);
 			else
-				SetUInt32Value(PLAYER_FIELD_ARENA_TEAM_INFO_1_1 + (z*6) + 1, 1);
+				SetUInt32Value(PLAYER_FIELD_ARENA_TEAM_INFO_1_1 + (z*7) + 1, 1);
 		}
 	}
 
@@ -3490,11 +3492,9 @@ void Player::LoadFromDBProc(QueryResultVector & results)
     iInstanceType = get_next_field.GetUInt32();
 
 	// Load Glyphs and apply their auras
-//	LoadFieldsFromString(get_next_field.GetString(), PLAYER_FIELD_GLYPHS_1, 8);
-	LoadFieldsFromString(get_next_field.GetString(), PLAYER_FIELD_GLYPHS_1, 6);
+	LoadFieldsFromString(get_next_field.GetString(), PLAYER_FIELD_GLYPHS_1, GLYPHS_COUNT);
 	GlyphPropertyEntry *glyph;
-//	for(uint32 i=0; i < 8; i++)
-	for(uint32 i=0; i < 6; i++)
+	for(uint32 i=0; i < GLYPHS_COUNT; i++)
 	{
 		uint32 glyphId = GetUInt32Value(PLAYER_FIELD_GLYPHS_1 + i);
 		if(glyphId == 0)
@@ -3509,6 +3509,7 @@ void Player::LoadFromDBProc(QueryResultVector & results)
 		la.charges = 0;
 		la.positive = 0; //VLack: check this, as this was uninitialized, 0 is a safe bet, but glyphs should be positive, aren't they?
 		loginauras.push_back(la);
+		m_specs[0].glyphs[i] = glyphId; //VLack: TempFIX till we properly implement dual specs, make them appear in the first set!
 	}
 
 	m_phase = get_next_field.GetUInt32(); //Load the player's last phase
@@ -4673,6 +4674,15 @@ void Player::SendDungeonDifficulty()
 {
     WorldPacket data(MSG_SET_DUNGEON_DIFFICULTY, 12);
 	data << (uint32)iInstanceType;
+    data << (uint32)0x1;
+    data << (uint32)InGroup();
+    GetSession()->SendPacket(&data);
+}
+
+void Player::SendRaidDifficulty()
+{
+    WorldPacket data(MSG_SET_RAID_DIFFICULTY, 12);
+    data << (uint32)iInstanceType;
     data << (uint32)0x1;
     data << (uint32)InGroup();
     GetSession()->SendPacket(&data);

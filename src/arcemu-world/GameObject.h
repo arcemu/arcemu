@@ -43,6 +43,18 @@ enum GAMEOBJECT_FLAG_BIT
 	GAMEOBJECT_CLICKABLE = 0x20,
 };
 
+enum GAMEOBJECT_OVERRIDES //by VLack
+{
+	GAMEOBJECT_INFVIS = 0x01,		//Makes the gameobject forever visible on the map after you saw it at least once - for various transports; actually it just doesn't erase it while you're on the same map.
+	GAMEOBJECT_MAPWIDE = 0x02,		//When you enter its map, the gameobject gets pushed to you no matter how far it is (but only for players), especially for Deeprun and Ulduar Trams.
+	GAMEOBJECT_AREAWIDE = 0x04,		//UNIMPLEMENTED, but will work like this: the Map will get marked that it contains an object like this, and on player movement these objects will get distance-checked to spawn them from a greater distance than normal if needed - for few objects on smaller maps, like on battlegrounds; maybe they'll get area-triggered, haven't decided yet.
+	GAMEOBJECT_ONMOVEWIDE = 0x08,		//When this gameobject moves and sends updates about it's position, do so in the second range - MapMgr::ChangeObjectLocation, +/- 6 units wide instead of +/- 1.
+	GAMEOBJECT_OVERRIDE_FLAGS = 0x10,	//UNIMPLEMENTED, Let the core decide about the flags sent in the A9 - example: 252 instead of 352 for Deeprun Tram.
+	GAMEOBJECT_OVERRIDE_BYTES1 = 0x20,	//UNIMPLEMENTED, Let the core use the full field instead an uint8 in GAMEOBJECT_BYTES_1, if the database creator knows what to do with it.
+	GAMEOBJECT_OVERRIDE_PARENTROT = 0x40,	//Makes it possible for the core to skip calculating these fields and use whatever was specified in the spawn.
+	//Later other types might folow, or the upper bytes might get used for the AREAWIDE option in the overrides variable...
+};
+
 #if ENABLE_SHITTY_STL_HACKS == 1
 typedef HM_NAMESPACE::hash_map<Quest*, uint32 > GameObjectGOMap;
 #else
@@ -85,7 +97,7 @@ struct GameObjectInfo
 	char * Castbartext;
 	char * Unkstr;
 	float Size;
-	uint32 QuestItems[4];
+	uint32 QuestItems[6];
 	uint32 SpellFocus;
 	uint32 sound1;
 	uint32 sound2;
@@ -187,7 +199,7 @@ public:
 
 	//void Create ( uint32 display_id, uint8 state, uint32 obj_field_entry, float scale, uint16 type, uint16 faction, uint32 mapid, float x, float y, float z, float ang );
    // void Create ( uint32 mapid, float x, float y, float z, float ang);
-	bool CreateFromProto(uint32 entry,uint32 mapid, float x, float y, float z, float ang, float r0=0.0f, float r1=0.0f, float r2=0.0f, float r3=0.0f);
+	bool CreateFromProto(uint32 entry,uint32 mapid, float x, float y, float z, float ang, float r0=0.0f, float r1=0.0f, float r2=0.0f, float r3=0.0f, uint32 overrides=0);
    
 	bool Load(GOSpawn *spawn);
 
@@ -302,6 +314,8 @@ public:
 	void SetState(uint8 state);
 	uint8 GetState();
 
+	ARCEMU_INLINE uint32 GetOverrides() { return m_overrides; }
+
 protected:
 
 	bool m_summonedGo;
@@ -311,6 +325,7 @@ protected:
 	uint32 _fields[GAMEOBJECT_END];
 	uint32 usage_remaining; //used for mining to mark times it can be mined
 
+	uint32 m_overrides; //See enum GAMEOBJECT_OVERRIDES!
 };
 
 #endif

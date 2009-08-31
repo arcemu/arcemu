@@ -110,8 +110,8 @@ enum ObjectUpdateFlags
     UPDATEFLAG_LIVING       = 0x20,
     UPDATEFLAG_HAS_POSITION = 0x40,
     UPDATEFLAG_VEHICLE      = 0x80,
-    UPDATEFLAG_UNK1       = 0x0100,
-    UPDATEFLAG_UNK2       = 0x0200
+    UPDATEFLAG_POSITION   = 0x0100,
+    UPDATEFLAG_ROTATION   = 0x0200
 };
 
 enum SessionStatus
@@ -679,7 +679,8 @@ protected:
 
 	//instances
 	void HandleResetInstanceOpcode(WorldPacket& recv_data);
-    void HandleDungeonDifficultyOpcode(WorldPacket& recv_data);
+	void HandleDungeonDifficultyOpcode(WorldPacket& recv_data);
+	void HandleRaidDifficultyOpcode(WorldPacket& recv_data);
 
 	uint8 TrainerGetSpellStatus(TrainerSpell* pSpell);
 	void SendMailError(uint32 error);
@@ -717,6 +718,9 @@ protected:
 	void HandleRemoveGlyph(WorldPacket & recv_data);
 
 	void HandleSetFactionInactiveOpcode( WorldPacket & recv_data );
+
+	//MISC
+	void HandleWorldStateUITimerUpdate( WorldPacket & recv_data );
 
 public:
 

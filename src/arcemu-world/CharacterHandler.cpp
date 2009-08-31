@@ -196,9 +196,12 @@ void WorldSession::CharacterEnumProc(QueryResult * result)
 			else
 				data << uint32(1);		// alive
 			}
-				data << uint32(0); //Added in 3.0.2
-			
+
+			data << uint32(0); //Added in 3.0.2 - if 1, faction change at logon...
+
 			data << fields[14].GetUInt8();		// Rest State
+
+			data << uint8(0); //3.2.0
 
 			if( Class == WARLOCK || Class == HUNTER )
 			{
@@ -367,7 +370,7 @@ void WorldSession::HandleCharCreateOpcode( WorldPacket & recv_data )
 	if( Config.OptionalConfig.GetBoolDefault( "ClassOptions" , "DeathKnightLimit" , true ) && has_dk 
 		&& ( class_ == DEATHKNIGHT ) )
 	{
-		OutPacket(SMSG_CHAR_CREATE, 1, CHAR_CREATE_ERROR_HERO_CLASS_LIMIT);
+		OutPacket(SMSG_CHAR_CREATE, 1, CHAR_CREATE_UNIQUE_CLASS_LIMIT);
 		return;
 	}
 
@@ -426,7 +429,7 @@ void WorldSession::HandleCharCreateOpcode( WorldPacket & recv_data )
 		data << (uint8)56 + 1; // This errorcode is not the actual one. Need to find a real error code.
 		SendPacket( &data );
 		*/
-		OutPacket( SMSG_CHAR_CREATE, 1, CHAR_CREATE_ERROR_NEED_LVL_55_CHAR);
+		OutPacket( SMSG_CHAR_CREATE, 1, CHAR_CREATE_LEVEL_REQUIREMENT);
 		return;
 	}
 

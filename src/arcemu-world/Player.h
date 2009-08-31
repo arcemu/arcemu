@@ -991,6 +991,7 @@ public:
 	void SetSpellTargetType(uint32 Type, Unit* target);
 	void SendMeetingStoneQueue(uint32 DungeonId, uint8 Status);
 	void SendDungeonDifficulty();
+	void SendRaidDifficulty();
 
 	void AddToWorld();
 	void AddToWorld(MapMgr * pMapMgr);

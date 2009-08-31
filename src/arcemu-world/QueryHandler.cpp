@@ -135,10 +135,10 @@ void WorldSession::HandleCreatureQueryOpcode( WorldPacket & recv_data )
 		data << ci->unkfloat1;
 		data << ci->unkfloat2;
 		data << ci->Leader;
-		data << uint32(0); // VLack: 4 quest items and one movement information
-		data << uint32(0);
-		data << uint32(0);
-		data << uint32(0);
+		for(uint32 i = 0; i < 6; ++i)
+		{
+			data << uint32(ci->QuestItems[i]);
+		}
 		data << uint32(0);
 	}
 
@@ -215,7 +215,7 @@ void WorldSession::HandleGameObjectQueryOpcode( WorldPacket & recv_data )
 	data << goinfo->Unknown14;
 
 	data << float(goinfo->Size);
-	for(uint32 i = 0; i < 4; ++i)
+	for(uint32 i = 0; i < 6; ++i)
 	{
 		data << uint32(goinfo->QuestItems[i]);
 	}

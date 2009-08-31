@@ -315,7 +315,19 @@ pSpellAura SpellAuraHandler[TOTAL_SPELL_AURAS]={
 		&Aura::SpellAuraNULL,//291 unused
 		&Aura::SpellAuraNULL,//292 call stabled pet
 		&Aura::SpellAuraNULL,//293 2 test spells
-		&Aura::SpellAuraNULL //294 2 spells, possible prevent mana regen
+		&Aura::SpellAuraNULL,//294 2 spells, possible prevent mana regen
+		&Aura::SpellAuraNULL,//295
+		&Aura::SpellAuraNULL,//296
+		&Aura::SpellAuraNULL,//297
+		&Aura::SpellAuraNULL,//298
+		&Aura::SpellAuraNULL,//299
+		&Aura::SpellAuraNULL,//300
+		&Aura::SpellAuraNULL,//301
+		&Aura::SpellAuraNULL,//302
+		&Aura::SpellAuraNULL,//303
+		&Aura::SpellAuraNULL,//304
+		&Aura::SpellAuraNULL,//305
+		&Aura::SpellAuraNULL,//306
 };
 
 const char* SpellAuraNames[TOTAL_SPELL_AURAS] = {

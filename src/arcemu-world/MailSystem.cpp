@@ -62,8 +62,10 @@ WorldPacket * Mailbox::BuildMailboxListingPacket()
 {
 	WorldPacket * data = new WorldPacket(SMSG_MAIL_LIST_RESULT, 500);
 	MessageMap::iterator itr;
+	uint32 realcount = 0;
 	uint32 count = 0;
 	uint32 t = (uint32)UNIXTIME;
+	*data << uint32(0);	 // realcount - this can be used to tell the client we have more mail than that fits into this packet
 	*data << uint8(0);	 // size placeholder
 
 	for(itr = Messages.begin(); itr != Messages.end(); ++itr)
@@ -73,15 +75,22 @@ WorldPacket * Mailbox::BuildMailboxListingPacket()
 
 		if((uint32)UNIXTIME < itr->second.delivery_time)
 			continue;		// undelivered
-		
+
+		if(count >= 50) //VLack: We could calculate message sizes instead of this, but the original code did a break at 50, so I won't fix this up if no one felt the need to do so before ;-)
+		{
+			++realcount;
+			continue;
+		}
+
 		if(itr->second.AddMessageDataToPacket(*data))
+		{
 			++count;
-		
-		if(count == 50)
-			break;
+			++realcount;
+		}
 	}
 
-	const_cast<uint8*>(data->contents())[0] = static_cast<uint8>( count );
+	data->put<uint32>(0, realcount); 
+	data->put<uint8>(4, count); 
 
 	// do cleanup on request mail
 	CleanupExpiredMessages();

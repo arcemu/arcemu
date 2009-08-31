@@ -11,7 +11,7 @@ ALTER TABLE `items`
   DROP `dmg_type5`;
 
 /* there is HolidayId column added in 3.1 */
-ALTER TABLE `items` ADD `HolidayId` INT( 32 ) UNSIGNED NOT NULL DEFAULT '0';
+ALTER TABLE `items` ADD `HolidayId` INT( 32 ) UNSIGNED NOT NULL DEFAULT '0' after `ItemLimitCategoryId`;
 
 /* Cosmetic changes */
 ALTER TABLE `items` CHANGE `RequiredSkillSubrank` `RequiredSpell` INT( 30 ) NOT NULL DEFAULT '0';

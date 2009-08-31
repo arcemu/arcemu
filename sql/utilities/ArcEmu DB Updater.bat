@@ -254,6 +254,15 @@ mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < 
 ECHO [Importing] 2840_guardtype.sql
 mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < ..\world_updates\2840_guardtype.sql
 
+ECHO [Importing] 2860_gameobject_overrides.sql
+mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < ..\world_updates\2860_gameobject_overrides.sql
+
+ECHO [Importing] 2860_items.sql
+mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < ..\world_updates\2860_items.sql
+
+ECHO [Importing] 2860_mail_sending.sql
+mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < ..\world_updates\2860_mail_sending.sql
+
 
 ECHO [Importing] ArcScript_full.sql
 mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < ..\ArcScripts\ArcScript_full.sql
@@ -348,6 +357,9 @@ mysql -h %server% --user=%user% --password=%pass% --port=%port% %chr% < ..\chara
 
 ECHO [Importing] 2845_refund.sql
 mysql -h %server% --user=%user% --password=%pass% --port=%port% %chr% < ..\character_updates\2845_refund.sql
+
+ECHO [Importing] 2860_groups.sql
+mysql -h %server% --user=%user% --password=%pass% --port=%port% %chr% < ..\character_updates\2860_groups.sql
 
 ECHO [Importing] Finished
 ECHO  Update Success.
@@ -540,6 +552,15 @@ mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < 
 ECHO [Importing] 2840_guardtype.sql
 mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < ..\world_updates\2840_guardtype.sql
 
+ECHO [Importing] 2860_gameobject_overrides.sql
+mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < ..\world_updates\2860_gameobject_overrides.sql
+
+ECHO [Importing] 2860_items.sql
+mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < ..\world_updates\2860_items.sql
+
+ECHO [Importing] 2860_mail_sending.sql
+mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < ..\world_updates\2860_mail_sending.sql
+
 
 ECHO [Importing] ArcScript_full.sql
 mysql -h %server% --user=%user% --password=%pass% --port=%port% %wdb% --force < ..\ArcScripts\ArcScript_full.sql
@@ -630,6 +651,9 @@ mysql -h %server% --user=%user% --password=%pass% --port=%port% %chr% < ..\chara
 
 ECHO [Importing] 2845_refund.sql
 mysql -h %server% --user=%user% --password=%pass% --port=%port% %chr% < ..\character_updates\2845_refund.sql
+
+ECHO [Importing] 2860_groups.sql
+mysql -h %server% --user=%user% --password=%pass% --port=%port% %chr% < ..\character_updates\2860_groups.sql
 
 
 ECHO [Importing] Character Updates Finished

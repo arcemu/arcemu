@@ -236,6 +236,7 @@ protected:
 	bool m_updateblock;
 public:
 	uint8 m_difficulty;
+	uint8 m_raiddifficulty;
 };
 
 #endif  // _GROUP_H_

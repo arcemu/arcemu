@@ -433,14 +433,19 @@ void MapMgr::PushObject(Object *obj)
 		/* Add the map wide objects */
 		if(_mapWideStaticObjects.size())
 		{
+			uint32 globalcount=0;
 			if(!buf)
 				buf = new ByteBuffer(300);
 
 			for(set<Object*>::iterator itr = _mapWideStaticObjects.begin(); itr != _mapWideStaticObjects.end(); ++itr)
 			{
 				count = (*itr)->BuildCreateUpdateBlockForPlayer(buf, plObj);
-				plObj->PushCreationData(buf, count);
+				globalcount += count;
 			}
+			//VLack: It seems if we use the same buffer then it is a BAD idea to try and push created data one by one, add them at once!
+			//       If you try to add them one by one, then as the buffer already contains data, they'll end up repeating some object.
+			//       Like 6 object updates for Deeprun Tram, but the built package will contain these entries: 2AFD0, 2AFD0, 2AFD1, 2AFD0, 2AFD1, 2AFD2
+			if( globalcount>0 ) plObj->PushCreationData(buf, globalcount);
 		}
 	}
 
@@ -763,8 +768,11 @@ void MapMgr::ChangeObjectLocation( Object *obj )
 				fRange = 0.0f; // unlimited distance for people on same boat
 			else if( curObj->GetTypeFromGUID() == HIGHGUID_TYPE_TRANSPORTER )
 				fRange = 0.0f; // unlimited distance for transporters (only up to 2 cells +/- anyway.)
-			//If the object announcing it's position is a transport, then it should announce it to everyone and everything; thus deleting it from visible objects should be avoided. - By: VLack aka. VLsoft
-			else if( obj->GetTypeId() == TYPEID_GAMEOBJECT && static_cast<GameObject*>(obj)->GetInfo()->Type == GAMEOBJECT_TYPE_TRANSPORT )
+			//If the object announcing its position is a transport, or other special object, then deleting it from visible objects should be avoided. - By: VLack
+			else if( obj->GetTypeId() == TYPEID_GAMEOBJECT && (static_cast<GameObject*>(obj)->GetOverrides() & GAMEOBJECT_INFVIS) && obj->GetMapId() == curObj->GetMapId() )
+				fRange = 0.0f;
+			//If the object we're checking for possible removal is a transport or other special object, and we are players on the same map, don't remove it...
+			else if( plObj && curObj->GetTypeId() == TYPEID_GAMEOBJECT && (static_cast<GameObject*>(curObj)->GetOverrides() & GAMEOBJECT_INFVIS) && obj->GetMapId() == curObj->GetMapId() )
 				fRange = 0.0f;
 			else if( curObj->IsPlayer() && static_cast< Player* >( curObj )->GetUInt64Value(PLAYER_FARSIGHT) == obj->GetGUID())
 				fRange = 0.0f;//Mind Vision, Eye of Kilrogg
@@ -892,8 +900,8 @@ void MapMgr::ChangeObjectLocation( Object *obj )
 	uint32 posX, posY;
 	MapCell *cell;
 
-	//If the object announcing it's position is a transport, then it should do so in a much wider area - like the distance between the two transport towers in Orgrimmar, or more. - By: VLack aka. VLsoft
-	if( obj->GetTypeId() == TYPEID_GAMEOBJECT && static_cast<GameObject*>(obj)->GetInfo()->Type == GAMEOBJECT_TYPE_TRANSPORT ) {
+	//If the object announcing it's position is a special one, then it should do so in a much wider area - like the distance between the two transport towers in Orgrimmar, or more. - By: VLack
+	if( obj->GetTypeId() == TYPEID_GAMEOBJECT && (static_cast<GameObject*>(obj)->GetOverrides() & GAMEOBJECT_ONMOVEWIDE) ) {
 		endX = cellX + 5 <= _sizeX ? cellX + 6 : ( _sizeX - 1 );
 		endY = cellY + 5 <= _sizeY ? cellY + 6 : ( _sizeY - 1 );
 		startX = cellX - 5 > 0 ? cellX - 6 : 0;
@@ -942,8 +950,12 @@ void MapMgr::UpdateInRangeSet( Object *obj, Player *plObj, MapCell* cell, ByteBu
 			fRange = 0.0f; // unlimited distance for people on same boat
 		else if( curObj->GetTypeFromGUID() == HIGHGUID_TYPE_TRANSPORTER )
 			fRange = 0.0f; // unlimited distance for transporters (only up to 2 cells +/- anyway.)
-		//If the object announcing it's position is a transport, then it should announce it to everyone and everything as far as possible. - By: VLack aka. VLsoft
-		else if( obj->GetTypeId() == TYPEID_GAMEOBJECT && static_cast<GameObject*>(obj)->GetInfo()->Type == GAMEOBJECT_TYPE_TRANSPORT )
+
+		//If the object announcing its position is a transport, or other special object, then deleting it from visible objects should be avoided. - By: VLack
+		else if( obj->GetTypeId() == TYPEID_GAMEOBJECT && (static_cast<GameObject*>(obj)->GetOverrides() & GAMEOBJECT_INFVIS) && obj->GetMapId() == curObj->GetMapId() )
+			fRange = 0.0f;
+		//If the object we're checking for possible removal is a transport or other special object, and we are players on the same map, don't remove it, and add it whenever possible...
+		else if( plObj && curObj->GetTypeId() == TYPEID_GAMEOBJECT && (static_cast<GameObject*>(curObj)->GetOverrides() & GAMEOBJECT_INFVIS) && obj->GetMapId() == curObj->GetMapId() )
 			fRange = 0.0f;
 		else
 			fRange = m_UpdateDistance; // normal distance
@@ -2240,12 +2252,13 @@ void MapMgr::SendPvPCaptureMessage(int32 ZoneMask, uint32 ZoneId, const char * M
 	}
 }
 
-void MapMgr::LoadInstanceScript() 
-{ 
-	mInstanceScript = sScriptMgr.CreateScriptClassForInstance( _mapId, this ); 
-}; 	 
- void MapMgr::CallScriptUpdate() 
-{ 
-	ASSERT( mInstanceScript ); 
-		mInstanceScript->UpdateEvent(); 
- };
+void MapMgr::LoadInstanceScript()
+{
+	mInstanceScript = sScriptMgr.CreateScriptClassForInstance( _mapId, this );
+};
+
+void MapMgr::CallScriptUpdate()
+{
+	ASSERT( mInstanceScript );
+	mInstanceScript->UpdateEvent();
+};

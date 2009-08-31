@@ -107,7 +107,7 @@ void WorldSession::SendTaxiList(Creature* pCreature)
 		TaxiMask[i] &= GetPlayer( )->GetTaximask(i);
 	}
 
-	WorldPacket data(48);
+	WorldPacket data(64);
 	data.Initialize( SMSG_SHOWTAXINODES );
 	data << uint32( 1 ) << guid;
 	data << uint32( curloc );
@@ -250,7 +250,6 @@ void WorldSession::HandleMultipleActivateTaxiOpcode(WorldPacket & recvPacket)
 	sLog.outDebug( "WORLD: Received CMSG_ACTIVATETAXI" );
 
 	uint64 guid;
-	uint32 moocost;
 	uint32 nodecount;
 	vector<uint32> pathes;
 	int32 newmoney;
@@ -259,7 +258,7 @@ void WorldSession::HandleMultipleActivateTaxiOpcode(WorldPacket & recvPacket)
 	uint32 submask;
 	WorldPacket data(SMSG_ACTIVATETAXIREPLY, 4);
 
-	recvPacket >> guid >> moocost >> nodecount;
+	recvPacket >> guid >> nodecount;
 	if(nodecount < 2)
 		return;
 

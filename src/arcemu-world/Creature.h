@@ -64,6 +64,7 @@ struct CreatureInfo
 	char * Name;
 	char * SubName;
 	char * info_str;
+	uint32 QuestItems[6];
 	uint32 Flags1;
 	uint32 Type;
 	uint32 Family;

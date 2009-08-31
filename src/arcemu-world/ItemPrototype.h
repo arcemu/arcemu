@@ -318,6 +318,9 @@ enum ITEM_STAT_TYPE
 	MANA_REGENERATION					= 43,
 	ARMOR_PENETRATION_RATING			= 44,
 	SPELL_POWER							= 45, 
+	HEALTH_REGEN					= 46,
+	SPELL_PENETRATION				= 47,
+	BLOCK_VALUE					= 48,
 };
 
 enum ITEM_DAMAGE_TYPE
@@ -585,6 +588,7 @@ struct ItemPrototype
 	uint32 DisplayInfoID;
 	uint32 Quality;
 	uint32 Flags;
+	uint32 Faction;
 	uint32 BuyPrice;
 	uint32 SellPrice;
 	uint32 InventoryType;

@@ -71,9 +71,10 @@ void DynamicObject::Create(Unit * caster, Spell * pSpell, float x, float y, floa
 	m_uint32Values[DYNAMICOBJECT_SPELLID] = m_spellProto->Id;
 
 	m_floatValues[DYNAMICOBJECT_RADIUS] = radius;
-	m_floatValues[DYNAMICOBJECT_POS_X]  = x;
-	m_floatValues[DYNAMICOBJECT_POS_Y]  = y;
-	m_floatValues[DYNAMICOBJECT_POS_Z]  = z;
+	m_position.x = x; //m_floatValues[DYNAMICOBJECT_POS_X]  = x;
+	m_position.y = y; //m_floatValues[DYNAMICOBJECT_POS_Y]  = y;
+	m_position.z = z; //m_floatValues[DYNAMICOBJECT_POS_Z]  = z;
+	
 
 	m_aliveDuration = duration;
 	u_caster = caster;

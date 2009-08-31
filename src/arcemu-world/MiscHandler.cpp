@@ -1923,6 +1923,8 @@ void WorldSession::HandleAcknowledgementOpcodes( WorldPacket & recv_data )
 		break;
 	}
 
+//NOTE: VLack: since 3.2.0, the first field of this packet is a _packed_ GUID, so keep this in mind if you plan to read data (just use WoWGuid, it'll read it correctly).
+
    /* uint16 opcode = recv_data.GetOpcode();
 	std::stringstream ss;
 	ss << "Received ";
@@ -2461,6 +2463,44 @@ void WorldSession::HandleDungeonDifficultyOpcode(WorldPacket& recv_data)
 #endif
 }
 
+void WorldSession::HandleRaidDifficultyOpcode(WorldPacket& recv_data)
+{
+	uint32 data;
+	recv_data >> data;
+
+	Group * m_Group = _player->GetGroup();
+
+	if(m_Group && _player->IsGroupLeader())
+	{
+		m_Group->m_raiddifficulty = data;
+		_player->iInstanceType = data;
+		sInstanceMgr.ResetSavedInstances(_player);
+
+		m_Group->Lock();
+		for(uint32 i = 0; i < m_Group->GetSubGroupCount(); ++i)
+		{
+			for(GroupMembersSet::iterator itr = m_Group->GetSubGroup(i)->GetGroupMembersBegin(); itr != m_Group->GetSubGroup(i)->GetGroupMembersEnd(); ++itr)
+			{
+				if((*itr)->m_loggedInPlayer)
+				{
+					(*itr)->m_loggedInPlayer->iInstanceType = data;
+					(*itr)->m_loggedInPlayer->SendRaidDifficulty();
+				}
+			}
+		}
+		m_Group->Unlock();
+	}
+	else if(!_player->GetGroup())
+	{
+		_player->iInstanceType = data;
+		sInstanceMgr.ResetSavedInstances(_player);
+	}
+
+#ifdef OPTIMIZED_PLAYER_SAVING
+	_player->save_InstanceType();
+#endif
+}
+
 void WorldSession::HandleSummonResponseOpcode(WorldPacket & recv_data)
 {
 	uint32 unk;
@@ -2522,6 +2562,8 @@ void WorldSession::HandleRemoveGlyph(WorldPacket & recv_data)
 		return;
 	_player->SetUInt32Value(PLAYER_FIELD_GLYPHS_1 + glyphNum, 0);
 	_player->RemoveAllAuras(glyph->SpellID, 0);
+	_player->m_specs[0].glyphs[glyphNum] = 0; //VLack: TempFIX till dual spec...
+	_player->smsg_TalentsInfo(false, 0, 0);
 }
 
 void WorldSession::HandleGameobjReportUseOpCode( WorldPacket& recv_data )   // CMSG_GAMEOBJ_REPORT_USE
@@ -2540,4 +2582,11 @@ void WorldSession::HandleGameobjReportUseOpCode( WorldPacket& recv_data )   // C
 #endif	
 	}
 	return;
+}
+
+void WorldSession::HandleWorldStateUITimerUpdate(WorldPacket& recv_data)
+{
+	WorldPacket data(SMSG_WORLD_STATE_UI_TIMER_UPDATE, 4);
+	data << (uint32)UNIXTIME;;
+	SendPacket(&data);
 }

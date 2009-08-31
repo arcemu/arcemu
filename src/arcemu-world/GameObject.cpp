@@ -59,6 +59,8 @@ GameObject::GameObject(uint64 guid)
 	m_respawnCell=NULL;
 	m_battleground = NULL;
 	m_rotation = 0;
+
+	m_overrides = 0;
 }
 
 GameObject::~GameObject()
@@ -98,7 +100,7 @@ GameObject::~GameObject()
 	}
 }
 
-bool GameObject::CreateFromProto(uint32 entry,uint32 mapid, float x, float y, float z, float ang, float r0, float r1, float r2, float r3)
+bool GameObject::CreateFromProto(uint32 entry,uint32 mapid, float x, float y, float z, float ang, float r0, float r1, float r2, float r3, uint32 overrides)
 {
 	pInfo= GameObjectNameStorage.LookupEntry(entry);
 	if(!pInfo)return false;
@@ -106,6 +108,7 @@ bool GameObject::CreateFromProto(uint32 entry,uint32 mapid, float x, float y, fl
 	Object::_Create( mapid, x, y, z, ang );
 	SetUInt32Value( OBJECT_FIELD_ENTRY, entry );
 	
+	m_overrides=overrides;
 //	SetFloatValue( GAMEOBJECT_POS_X, x );
 //	SetFloatValue( GAMEOBJECT_POS_Y, y );
 //	SetFloatValue( GAMEOBJECT_POS_Z, z );
@@ -321,7 +324,8 @@ void GameObject::SaveToDB()
 		<< GetUInt32Value(GAMEOBJECT_FACTION) << ","
 		<< GetFloatValue(OBJECT_FIELD_SCALE_X) << ","
 		<< "0,"
-		<< m_phase << ")";
+		<< m_phase << ","
+		<< m_overrides << ")";
 	WorldDatabase.Execute(ss.str().c_str());
 
   /*  std::stringstream ss;
@@ -373,7 +377,8 @@ void GameObject::SaveToFile(std::stringstream & name)
 		<< GetUInt32Value(GAMEOBJECT_FACTION) << ","
 		<< GetFloatValue(OBJECT_FIELD_SCALE_X) << ","
 		<< "0,"
-		<< m_phase << ")";
+		<< m_phase << ","
+		<< m_overrides << ")";
 
 	FILE * OutFile;
 
@@ -496,7 +501,7 @@ void GameObject::InitAI()
 
 bool GameObject::Load(GOSpawn *spawn)
 {
-	if(!CreateFromProto(spawn->entry,0,spawn->x,spawn->y,spawn->z,spawn->facing))
+	if(!CreateFromProto(spawn->entry,0,spawn->x,spawn->y,spawn->z,spawn->facing,spawn->o,spawn->o1,spawn->o2,spawn->o3,spawn->overrides))
 		return false;
 
 	m_spawn = spawn;
@@ -839,7 +844,7 @@ void GameObject::UpdateRotation()
 
 	float r2=GetFloatValue(GAMEOBJECT_PARENTROTATION_02);
 	float r3=GetFloatValue(GAMEOBJECT_PARENTROTATION_03);
-	if(r2==0.0f && r3==0.0f)
+	if(r2==0.0f && r3==0.0f && !(m_overrides & GAMEOBJECT_OVERRIDE_PARENTROT) )
 	{
 		r2 = (float)f_rot1;
 		r3 = (float)f_rot2;

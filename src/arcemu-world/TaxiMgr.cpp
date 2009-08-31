@@ -456,6 +456,7 @@ bool TaxiMgr::GetGlobalTaxiNodeMask( uint32 curloc, uint32 *Mask )
 		/*if( itr->second->from == curloc )
 		{*/
 			field = (uint8)((itr->second->to - 1) / 32);
+			if ( field>=12 ) continue; //The DBC can contain negative TO values??? That'll be 255 here (because we store everything unsigned), skip them!
 			Mask[field] |= 1 << ( (itr->second->to - 1 ) % 32 );
 		//}
 	}

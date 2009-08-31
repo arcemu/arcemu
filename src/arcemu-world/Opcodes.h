@@ -1222,7 +1222,10 @@ enum Opcodes {
     CMSG_LFG_SET_ROLES                              = 0x4B8, // CMSG, empty, lua: SetLFGRoles
     SMSG_EQUIPMENT_SET_LIST                         = 0x4BC, // SMSG, equipment manager list?
     SMSG_TALENTS_INFO                               = 0x4C0, // SMSG, talents related
-    NUM_MSG_TYPES                                   = 0x4CB, // max msg number
+    MSG_SET_RAID_DIFFICULTY                         = 0x4EB,
+    CMSG_WORLD_STATE_UI_TIMER_UPDATE                = 0x4F6,
+    SMSG_WORLD_STATE_UI_TIMER_UPDATE                = 0x4F7,
+    NUM_MSG_TYPES                                   = 0x4F8, // max msg number
 };
 
 enum FriendsResult {

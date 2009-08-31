@@ -428,7 +428,7 @@ void WorldSession::HandleSwapInvItemOpcode( WorldPacket & recv_data )
 	int8 srcslot=0, dstslot=0;
 	int8 error=0;
 
-	recv_data >> srcslot >> dstslot;
+	recv_data >> dstslot >> srcslot;
 
 	sLog.outDetail("ITEM: swap, src slot: %u dst slot: %u", (uint32)srcslot, (uint32)dstslot);
 
@@ -942,6 +942,7 @@ void WorldSession::HandleItemQuerySingleOpcode( WorldPacket & recv_data )
 	data << itemProto->Quality;
 	data << itemProto->Flags;
 	data << itemProto->BuyPrice;
+	data << itemProto->Faction;
 	data << itemProto->SellPrice;
 	data << itemProto->InventoryType;
 	data << itemProto->AllowableClass;

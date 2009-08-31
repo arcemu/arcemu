@@ -96,6 +96,7 @@ typedef struct
 	float scale;
 	//uint32 stateNpcLink;
 	uint32 phase;
+	uint32 overrides;
 } GOSpawn;
 
 typedef std::vector<CreatureSpawn*> CreatureSpawnList;

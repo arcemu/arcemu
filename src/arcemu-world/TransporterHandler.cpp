@@ -40,6 +40,8 @@ bool Transporter::CreateAsTransporter(uint32 EntryID, const char* Name, int32 Ti
 	else
 		sLog.outString("Transporter id[%i] name[%s] - can't set GAMEOBJECT_TYPE - it will behave badly!",EntryID,Name);
 
+	m_overrides = GAMEOBJECT_INFVIS | GAMEOBJECT_ONMOVEWIDE; //Make it forever visible on the same map
+
 	// Set period
 	m_period = Time;
 

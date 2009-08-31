@@ -346,7 +346,7 @@ void WorldSession::HandleInspectArenaStatsOpcode( WorldPacket & recv_data )
 
     for( uint8 i = 0; i < 3; i++ )
     {
-		id = player->GetUInt32Value( PLAYER_FIELD_ARENA_TEAM_INFO_1_1 + ( i * 6 ) );
+		id = player->GetUInt32Value( PLAYER_FIELD_ARENA_TEAM_INFO_1_1 + ( i * 7 ) );
         if( id > 0 )
         {
             ArenaTeam* team = objmgr.GetArenaTeamById( id );

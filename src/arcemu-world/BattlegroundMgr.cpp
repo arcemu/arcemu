@@ -25,13 +25,13 @@ typedef CBattleground*(*CreateBattlegroundFunc)(MapMgr* mgr,uint32 iid,uint32 gr
 
 const static uint32 BGMapIds[ BATTLEGROUND_NUM_TYPES ] =
 {
-	0,		// 0
-	30,		// AV
+	0,	// 0
+	30,	// AV
 	489,	// WSG
 	529,	// AB
-	0,		// 2v2
-	0,		// 3v3
-	0,		// 5v5
+	0,	// 2v2
+	0,	// 3v3
+	0,	// 5v5
 	566,	// EOTS
 	0,
 	607,	// SOTA
@@ -40,16 +40,16 @@ const static uint32 BGMapIds[ BATTLEGROUND_NUM_TYPES ] =
 };
 
 const static CreateBattlegroundFunc BGCFuncs[BATTLEGROUND_NUM_TYPES] = {
-	NULL,								// 0
-	&AlteracValley::Create,				// AV
-	&WarsongGulch::Create,				// WSG
-	&ArathiBasin::Create,				// AB
-	NULL,								// 2v2
-	NULL,								// 3v3
-	NULL,								// 5v5
-	&EyeOfTheStorm::Create,				// EotS
+	NULL,				// 0
+	&AlteracValley::Create,		// AV
+	&WarsongGulch::Create,		// WSG
+	&ArathiBasin::Create,		// AB
+	NULL,				// 2v2
+	NULL,				// 3v3
+	NULL,				// 5v5
+	&EyeOfTheStorm::Create,		// EotS
 	NULL,
-	&StrandOfTheAncient::Create,		// SOTA
+	&StrandOfTheAncient::Create,	// SOTA
 	NULL,
 	NULL,
 };
@@ -83,6 +83,8 @@ void CBattlegroundManager::HandleBattlegroundListPacket(WorldSession * m_session
 		m_session->SendPacket(&data);
 		return;
 	}
+
+	if( BattlegroundType >= BATTLEGROUND_NUM_TYPES ) return; //VLack: Nasty hackers might try to abuse this packet to crash us...
 
 	uint32 Count = 0;
 	WorldPacket data(SMSG_BATTLEFIELD_LIST, 200);

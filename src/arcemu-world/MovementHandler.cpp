@@ -98,7 +98,7 @@ void WorldSession::HandleMoveWorldportAckOpcode( WorldPacket & recv_data )
 
 void WorldSession::HandleMoveTeleportAckOpcode( WorldPacket & recv_data )
 {
-	uint64 guid;
+	WoWGuid guid;
 	recv_data >> guid;
 	if(guid == _player->GetGUID())
 	{
@@ -271,7 +271,10 @@ void WorldSession::HandleMovementOpcodes( WorldPacket & recv_data )
 	/************************************************************************/
 	/* Read Movement Data Packet                                            */
 	/************************************************************************/
+	WoWGuid guid;
+	recv_data >> guid;
 	movement_info.init(recv_data);
+	m_MoverWoWGuid = guid;
 
 	/************************************************************************/
 	/* Update player movement state                                         */
@@ -426,7 +429,8 @@ void WorldSession::HandleMovementOpcodes( WorldPacket & recv_data )
 	if(_player->m_inRangePlayers.size())
 	{
 		move_time = (movement_info.time - (mstime - m_clientTimeDelay)) + MOVEMENT_PACKET_TIME_DELAY + mstime;
-		memcpy(&movement_packet[pos], recv_data.contents(), recv_data.size());
+//		memcpy(&movement_packet[pos], recv_data.contents(), recv_data.size());
+		memcpy(&movement_packet[0], recv_data.contents(), recv_data.size());
 		movement_packet[pos+6]=0;
 
 		/************************************************************************/
@@ -672,7 +676,22 @@ void WorldSession::HandleMoveTimeSkippedOpcode( WorldPacket & recv_data )
 
 void WorldSession::HandleMoveNotActiveMoverOpcode( WorldPacket & recv_data )
 {
+	WoWGuid guid;
+	recv_data >> guid;
 
+	if(guid == m_MoverWoWGuid)
+		return;
+
+	movement_info.init(recv_data);
+
+	if(guid != uint64(0))
+		m_MoverWoWGuid = guid;
+	else
+		m_MoverWoWGuid.Init(_player->GetGUID());
+
+	// set up to the movement packet
+	movement_packet[0] = m_MoverWoWGuid.GetNewGuidMask();
+	memcpy(&movement_packet[1], m_MoverWoWGuid.GetNewGuid(), m_MoverWoWGuid.GetNewGuidLen());
 }
 
 

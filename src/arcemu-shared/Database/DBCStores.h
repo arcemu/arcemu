@@ -1300,8 +1300,8 @@ struct MapEntry
 	int32  parent_map;   // map_id of parent map
 	float  start_x;      // enter x coordinate (if exist single entry)
 	float  start_y;      // enter y coordinate (if exist single entry)
-	uint32 resetTimeRaid;
-	uint32 resetTimeHeroic;
+	//uint32 resetTimeRaid;   // REMOVED IN 3.2.0
+	//uint32 resetTimeHeroic; // REMOVED IN 3.2.0
 	uint32 addon;        // 0-original maps, 1-tbc addon, 2-wotlk addon
 };
 
@@ -1434,7 +1434,7 @@ struct ScalingStatDistributionEntry{
 struct ScalingStatValuesEntry{
 	uint32 id;
 	uint32 level;
-	uint32 multiplier[17];
+	uint32 multiplier[16];
 };
 
 #pragma pack(pop)

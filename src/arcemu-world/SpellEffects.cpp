@@ -5085,6 +5085,8 @@ void Spell::SpellEffectUseGlyph(uint32 i)
 			if( gp_old )
 				p_caster->RemoveAura( gp_old->SpellID );
 			p_caster->SetUInt32Value( PLAYER_FIELD_GLYPHS_1 + m_glyphslot, 0 );
+			p_caster->m_specs[0].glyphs[m_glyphslot] = 0; //VLack: TempFIX till dual spec...
+			p_caster->smsg_TalentsInfo(false, 0, 0);
 		}
 	}
 
@@ -5098,6 +5100,8 @@ void Spell::SpellEffectUseGlyph(uint32 i)
 		}
 		p_caster->SetUInt32Value( PLAYER_FIELD_GLYPHS_1 + m_glyphslot, g_new );
 		p_caster->CastSpell( p_caster, gp_new->SpellID, true );
+		p_caster->m_specs[0].glyphs[m_glyphslot] = g_new; //VLack: TempFIX till dual spec...
+		p_caster->smsg_TalentsInfo(false, 0, 0);
 	}
 
 }

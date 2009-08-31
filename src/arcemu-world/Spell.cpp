@@ -119,10 +119,6 @@ void SpellCastTargets::read( WorldPacket & data,uint64 caster )
 
 void SpellCastTargets::write( WorldPacket& data )
 {
-	if( m_targetMask & TARGET_FLAG_DEST_LOCATION ){ //VLack: nice Aspire code, might be useful for us too
-		m_targetMask = TARGET_FLAG_SELF;	// hackfix for client crash. TODO fix
-	}
-
 	data << m_targetMask;
 	data << m_targetMaskExtended;
 

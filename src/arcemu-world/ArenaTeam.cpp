@@ -155,7 +155,7 @@ bool ArenaTeam::AddMember(PlayerInfo * info)
 
 	if(plr)
 	{
-		base_field = (m_type*6) + PLAYER_FIELD_ARENA_TEAM_INFO_1_1;
+		base_field = (m_type*7) + PLAYER_FIELD_ARENA_TEAM_INFO_1_1;
 		plr->SetUInt32Value(base_field, m_id);
 		plr->SetUInt32Value(base_field+1,m_leader);
 
@@ -180,7 +180,7 @@ bool ArenaTeam::RemoveMember(PlayerInfo * info)
 
 			if(info->m_loggedInPlayer)
 			{
-				info->m_loggedInPlayer->SetUInt32Value(PLAYER_FIELD_ARENA_TEAM_INFO_1_1 + (m_type*6), 0);
+				info->m_loggedInPlayer->SetUInt32Value(PLAYER_FIELD_ARENA_TEAM_INFO_1_1 + (m_type*7), 0);
 				info->m_loggedInPlayer->m_arenaTeams[m_type]=0;
 			}
 			return true;
@@ -314,12 +314,12 @@ void ArenaTeam::SetLeader(PlayerInfo * info)
 		if(m_members[i].Info == info)		/* new leader */
 		{
 			if(m_members[i].Info->m_loggedInPlayer)
-				m_members[i].Info->m_loggedInPlayer->SetUInt32Value(PLAYER_FIELD_ARENA_TEAM_INFO_1_1 + (m_type*6) + 1, 0);
+				m_members[i].Info->m_loggedInPlayer->SetUInt32Value(PLAYER_FIELD_ARENA_TEAM_INFO_1_1 + (m_type*7) + 1, 0);
 		}
 		else if(m_members[i].Info->guid == old_leader)
 		{
 			if(m_members[i].Info->m_loggedInPlayer)
-				m_members[i].Info->m_loggedInPlayer->SetUInt32Value(PLAYER_FIELD_ARENA_TEAM_INFO_1_1 + (m_type*6) + 1, 1);
+				m_members[i].Info->m_loggedInPlayer->SetUInt32Value(PLAYER_FIELD_ARENA_TEAM_INFO_1_1 + (m_type*7) + 1, 1);
 		}
 	}
 }

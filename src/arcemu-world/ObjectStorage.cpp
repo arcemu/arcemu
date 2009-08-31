@@ -22,10 +22,10 @@
 
 /** Table formats converted to strings
  */
-const char * gItemPrototypeFormat						= "uuuusuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuffuffuuuuuuuuuufuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuusuuuuuuuuuuuuuuuuuuuuuuuuuuuuu";
+const char * gItemPrototypeFormat						= "uuuusuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuffuffuuuuuuuuuufuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuusuuuuuuuuuuuuuuuuuuuuuuuuuuuuu";
 const char * gItemNameFormat							= "usu";
-const char * gCreatureNameFormat						= "usssuuuuuuuuuuffcc";
-const char * gGameObjectNameFormat						= "uuusssssssfuuuuuuuuuuuuuuuuuuuuuuuuuuuu";
+const char * gCreatureNameFormat						= "usssuuuuuuuuuuuuuuuuffcc";
+const char * gGameObjectNameFormat						= "uuusssssssfuuuuuuuuuuuuuuuuuuuuuuuuuuuuuu";
 const char * gCreatureProtoFormat						= "uuuuuuufuuuffuuffuuuuuuuuffsuuuufffuuuuuuuuu";
 const char * gVendorRestrictionEntryFormat				= "uuuuuu";
 const char * gAreaTriggerFormat							= "ucuusffffuu";

@@ -409,7 +409,7 @@ void QuestMgr::BuildQuestDetails(WorldPacket *data, Quest* qst, Object* qst_give
 
 		*data << qst->reward_choiceitem[i];
 		*data << qst->reward_choiceitemcount[i];
-		ip = ItemPrototypeStorage.LookupEntry(qst->reward_item[i]);
+		ip = ItemPrototypeStorage.LookupEntry(qst->reward_choiceitem[i]);
 		*data << ( ip ? ip->DisplayInfoID : uint32(0) );
 
 	}

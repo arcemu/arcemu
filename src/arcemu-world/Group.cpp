@@ -81,6 +81,7 @@ Group::Group(bool Assign)
 	memset(m_targetIcons, 0, sizeof(uint64) * 8);
 	m_isqueued=false;
 	m_difficulty=0;
+	m_raiddifficulty=0;
 	m_assistantLeader=m_mainAssist=m_mainTank=NULL;
 #ifdef VOICE_CHAT
 	m_voiceChannelRequested = false;
@@ -284,7 +285,7 @@ void Group::Update()
 
 				data.Initialize(SMSG_GROUP_LIST);
 				data << uint8(m_GroupType);	//0=party,1=raid
-				data << uint8(0);   // unk
+				data << uint8(0);   // 1 if battleground group
 				data << uint8(sg1->GetID());
 				data << uint8(0);	// unk2
 				//data << uint64(0);	// unk3
@@ -343,6 +344,7 @@ void Group::Update()
 
 				data << uint8( m_LootThreshold );
 				data << uint8( m_difficulty );
+				data << uint8( m_raiddifficulty );
 
 				if( !(*itr1)->m_loggedInPlayer->IsInWorld() )
 					(*itr1)->m_loggedInPlayer->CopyAndSendDelayedPacket( &data );
@@ -775,6 +777,7 @@ void Group::LoadFromDB(Field *fields)
 	m_LootMethod = fields[3].GetUInt8();
 	m_LootThreshold = fields[4].GetUInt8();
 	m_difficulty = fields[5].GetUInt8();
+	m_raiddifficulty = fields[6].GetUInt8();
 
 	LOAD_ASSISTANT(6, m_assistantLeader);
 	LOAD_ASSISTANT(7, m_mainTank);
@@ -848,7 +851,8 @@ void Group::SaveToDB()
 		<< uint32(m_SubGroupCount) << ","
 		<< uint32(m_LootMethod) << ","
 		<< uint32(m_LootThreshold) << ","
-		<< uint32(m_difficulty) << ",";
+		<< uint32(m_difficulty) << ","
+		<< uint32(m_raiddifficulty) << ",";
 
 	if(m_assistantLeader)
 		ss << m_assistantLeader->guid << ",";
