@@ -2472,7 +2472,7 @@ void WorldSession::HandleRaidDifficultyOpcode(WorldPacket& recv_data)
 
 	if(m_Group && _player->IsGroupLeader())
 	{
-		m_Group->m_raiddifficulty = data;
+		m_Group->m_raiddifficulty = static_cast< uint8 >( data );
 		_player->iInstanceType = data;
 		sInstanceMgr.ResetSavedInstances(_player);
 

@@ -3014,8 +3014,11 @@ void Spell::HandleAddAura(uint64 guid)
 	// self casting doesn't flag himself.
 	if(Target->IsPlayer() && p_caster && p_caster != static_cast< Player* >(Target))
 	{
-		if(static_cast< Player* >(Target)->IsPvPFlagged())
-			p_caster->SetPvPFlag();
+        if(static_cast< Player* >(Target)->IsPvPFlagged() )
+            if( p_caster->IsPlayer() && !p_caster->IsPvPFlagged() )
+                static_cast< Player* >( p_caster )->PvPToggle();
+            else
+                p_caster->SetPvPFlag();
 	}
 
 	// remove any auras with same type
@@ -5324,7 +5327,10 @@ void Spell::Heal(int32 amount, bool ForceCrit)
 	{
 		// Healing a flagged target will flag you.
 		if(playerTarget->IsPvPFlagged())
-			p_caster->SetPvPFlag();
+            if(p_caster->IsPlayer() && !p_caster->IsPvPFlagged() )
+                static_cast< Player* >( p_caster )->PvPToggle();
+            else
+                p_caster->SetPvPFlag();
 	}
 
 	//Make it critical

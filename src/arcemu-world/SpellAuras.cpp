@@ -4171,7 +4171,7 @@ void Aura::SpellAuraModSilence(bool apply)
 
 void Aura::SpellAuraReflectSpells(bool apply)
 {
-	m_target->RemoveReflect( GetSpellId() );
+	m_target->RemoveReflect( GetSpellId(), apply );
 
 	if( apply )
 	{
@@ -6005,7 +6005,7 @@ void Aura::SpellAuraModPowerCostSchool(bool apply)
 
 void Aura::SpellAuraReflectSpellsSchool(bool apply)
 {
-	m_target->RemoveReflect( GetSpellId() );
+	m_target->RemoveReflect( GetSpellId(), apply );
 
 	if( apply )
 	{
@@ -9698,7 +9698,7 @@ void Aura::SpellAuraModAttackPowerOfArmor( bool apply )
 
 void Aura::SpellAuraReflectSpellsInfront(bool apply)
 {
-	m_target->RemoveReflect( GetSpellId() );
+	m_target->RemoveReflect( GetSpellId(), apply );
 
 	if( apply )
 	{

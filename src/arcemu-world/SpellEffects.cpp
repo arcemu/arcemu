@@ -749,7 +749,7 @@ void Spell::SpellEffectDummy(uint32 i) // Dummy(Scripted events)
 			if(!unitTarget)
 				break;
 
-			unitTarget->RemoveReflect( GetProto()->Id );
+			unitTarget->RemoveReflect( spellId, true );
 
 			ReflectSpellSchool *rss = new ReflectSpellSchool;
 			rss->chance = GetProto()->procChance;
@@ -764,15 +764,15 @@ void Spell::SpellEffectDummy(uint32 i) // Dummy(Scripted events)
 		Molten Shields	Rank 2
 		Causes your Fire Ward to have a 20% chance to reflect Fire spells while active. In addition, your Molten Armor has a 100% chance to affect ranged and spell attacks.
 		Effect #1	Apply Aura: Dummy
-		11904,13043
+		11094,13043
 		*/
-	case 11904:
+	case 11094:
 	case 13043:
 		{
 			if(!unitTarget)
 				break;
 			
-			unitTarget->RemoveReflect( GetProto()->Id );
+			unitTarget->RemoveReflect( GetProto()->Id, true);
 
 			ReflectSpellSchool *rss = new ReflectSpellSchool;
 			rss->chance = GetProto()->EffectBasePoints[0];
@@ -5117,7 +5117,7 @@ void Spell::SpellEffectUseGlyph(uint32 i)
 		}
 		p_caster->SetUInt32Value( PLAYER_FIELD_GLYPHS_1 + m_glyphslot, g_new );
 		p_caster->CastSpell( p_caster, gp_new->SpellID, true );
-		p_caster->m_specs[0].glyphs[m_glyphslot] = g_new; //VLack: TempFIX till dual spec...
+		p_caster->m_specs[0].glyphs[m_glyphslot] = static_cast< uint16 >( g_new ); //VLack: TempFIX till dual spec...
 		p_caster->smsg_TalentsInfo(false, 0, 0);
 	}
 
@@ -7083,7 +7083,10 @@ void Spell::SpellEffectSpellSteal( uint32 i )
 	if(unitTarget->IsPlayer() && p_caster && p_caster != static_cast< Player* >(unitTarget))
 	{
 		if(static_cast< Player* >(unitTarget)->IsPvPFlagged())
-			p_caster->SetPvPFlag();
+            if(p_caster->IsPlayer())
+                static_cast< Player* >( p_caster )->PvPToggle();
+            else
+                p_caster->SetPvPFlag();
 	}
 
 	Aura *aur;

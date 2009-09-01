@@ -7910,7 +7910,7 @@ uint32 Unit::DoDamageSplitTarget(uint32 res, uint32 school_type, bool melee_dmg)
 	return res;
 }
 
-void Unit::RemoveReflect( uint32 spellid )
+void Unit::RemoveReflect( uint32 spellid, bool apply )
 {
 	/** 
 	* Removes and deletes reflects from unit by spell id, does not remove aura which created it
@@ -7926,7 +7926,7 @@ void Unit::RemoveReflect( uint32 spellid )
 		else
 			++i;
 
-	if( spellid == 23920 && IsPlayer() && HasAurasWithNameHash(SPELL_HASH_IMPROVED_SPELL_REFLECTION) )
+	if( apply && spellid == 23920 && IsPlayer() && HasAurasWithNameHash(SPELL_HASH_IMPROVED_SPELL_REFLECTION) )
 	{
 		Player *pPlayer = static_cast<Player*>(this);
 		if( !pPlayer )
@@ -7948,10 +7948,12 @@ void Unit::RemoveReflect( uint32 spellid )
 				for(GroupMembersSet::iterator itr = subGroup->GetGroupMembersBegin(); itr != subGroup->GetGroupMembersEnd() && targets > 0; ++itr)
 				{
 					Player * member = (*itr)->m_loggedInPlayer;
-					if( member == NULL || member == pPlayer || !member->IsInWorld() || !member->isAlive() )
+					if( member == NULL || member == pPlayer || !member->IsInWorld() || !member->isAlive() || member->HasAura(59725) )
 						continue;
 
-					member->CastSpell( member, 59725, true );
+					if( !IsInrange(pPlayer, member, 20) )
+						continue;
+					pPlayer->CastSpell( member, 59725, true );
 					targets -= 1;
 				}
 			}
@@ -7959,7 +7961,7 @@ void Unit::RemoveReflect( uint32 spellid )
 		}
 	}
 
-	if( spellid == 59725 && IsPlayer() )
+	if( !apply && spellid == 59725 && IsPlayer() )
 	{
 		Player *pPlayer = static_cast<Player*>(this);
 		if( !pPlayer )

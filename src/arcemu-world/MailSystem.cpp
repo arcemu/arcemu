@@ -90,7 +90,7 @@ WorldPacket * Mailbox::BuildMailboxListingPacket()
 	}
 
 	data->put<uint32>(0, realcount); 
-	data->put<uint8>(4, count); 
+	data->put<uint8>(4, static_cast< uint8 >( count )); 
 
 	// do cleanup on request mail
 	CleanupExpiredMessages();

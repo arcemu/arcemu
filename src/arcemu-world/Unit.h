@@ -1061,7 +1061,7 @@ public:
 	bool m_damgeShieldsInUse;
 	std::list<struct DamageProc> m_damageShields;
 	std::list<struct ReflectSpellSchool*> m_reflectSpellSchool;
-	void RemoveReflect( uint32 spellid );
+	void RemoveReflect( uint32 spellid , bool apply);
 	struct DamageSplitTarget *m_damageSplitTarget;
  
 	std::list<struct ProcTriggerSpell> m_procSpells;

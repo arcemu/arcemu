@@ -3509,7 +3509,7 @@ void Player::LoadFromDBProc(QueryResultVector & results)
 		la.charges = 0;
 		la.positive = 0; //VLack: check this, as this was uninitialized, 0 is a safe bet, but glyphs should be positive, aren't they?
 		loginauras.push_back(la);
-		m_specs[0].glyphs[i] = glyphId; //VLack: TempFIX till we properly implement dual specs, make them appear in the first set!
+		m_specs[0].glyphs[i] = static_cast< uint16 >( glyphId ); //VLack: TempFIX till we properly implement dual specs, make them appear in the first set!
 	}
 
 	m_phase = get_next_field.GetUInt32(); //Load the player's last phase
@@ -9312,7 +9312,7 @@ void Player::UpdatePvPArea()
 			if((at->category == AREAC_ALLIANCE_TERRITORY && GetTeam() == 1) || (at->category == AREAC_HORDE_TERRITORY && GetTeam() == 0))
 			{
 				if(!IsPvPFlagged())
-					SetPvPFlag();
+                    PvPToggle();
 				else
 					StopPvPTimer();
 				return;
@@ -9338,7 +9338,7 @@ void Player::UpdatePvPArea()
 				if(at2 && (at2->category == AREAC_ALLIANCE_TERRITORY && GetTeam() == 1 || at2->category == AREAC_HORDE_TERRITORY && GetTeam() == 0))
 				{
 					if(!IsPvPFlagged())
-						SetPvPFlag();
+                        PvPToggle();
 					else
 						StopPvPTimer();
 					return;
@@ -9363,7 +9363,7 @@ void Player::UpdatePvPArea()
 			{
 				//automatically sets pvp flag on contested territory's.
 				if(!IsPvPFlagged())
-					SetPvPFlag();
+                    PvPToggle();
 				else
 					StopPvPTimer();
 			}
@@ -9373,7 +9373,7 @@ void Player::UpdatePvPArea()
 				if(HasFlag(PLAYER_FLAGS, PLAYER_FLAG_PVP_TOGGLE))
 				{
 					if(!IsPvPFlagged())
-						SetPvPFlag();
+						PvPToggle();
 				}
 				else if(!HasFlag(PLAYER_FLAGS, PLAYER_FLAG_PVP_TOGGLE) && IsPvPFlagged() && !m_pvpTimer)
 				{
@@ -9384,7 +9384,7 @@ void Player::UpdatePvPArea()
 			if(at->AreaFlags & AREA_PVP_ARENA)			/* ffa pvp arenas will come later */
 			{
 				if(!IsPvPFlagged())
-					SetPvPFlag();
+					PvPToggle();
 				SetFFAPvPFlag();
 			}
 			else
@@ -9448,7 +9448,7 @@ void Player::PvPToggle()
 			RemoveFlag(PLAYER_FLAGS, PLAYER_FLAG_PVP);
 
             if(!IsPvPFlagged())
-				SetPvPFlag();
+				PvPToggle();
 	    }
 	    else
 	    {
