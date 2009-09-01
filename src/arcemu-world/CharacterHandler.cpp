@@ -950,26 +950,26 @@ void WorldSession::FullLogin(Player * plr)
 	}
 #endif
 
-	// Send revision (if enabled)
+
 #ifdef WIN32
-	_player->BroadcastMessage("Powered by: %sArcEmu %s r/%s-Win-%s %s(Please report ALL bugs to http://ArcEmu.org/forums/)", MSG_COLOR_WHITE, BUILD_TAG,
-		CONFIG, ARCH, MSG_COLOR_LIGHTBLUE);		
-	_player->BroadcastMessage("Revision: %s%u", MSG_COLOR_RED, BUILD_REVISION); 
+	_player->BroadcastMessage("Server: %sArcEmu %s - %s-Windows-%s", MSG_COLOR_WHITE, BUILD_TAG, CONFIG, ARCH);
 #else
-	_player->BroadcastMessage("Powered by: %sArcEmu %s /%s-%s %s(Please report ALL bugs to ArcEmu.org/forums/)", MSG_COLOR_WHITE, BUILD_TAG,
-		PLATFORM_TEXT, ARCH, MSG_COLOR_LIGHTBLUE);
-	_player->BroadcastMessage("Revision: %s%u", MSG_COLOR_RED, BUILD_REVISION); 
+	_player->BroadcastMessage("Server: %sArcEmu %s - %s-%s", MSG_COLOR_WHITE, BUILD_TAG, PLATFORM_TEXT, ARCH);
 #endif
-	// Recruitment message :)
-	_player->BroadcastMessage("ArcEmu is recruiting developers: Join us on irc.emulationnetwork.com:6667 #arcemu");
-	if(sWorld.SendStatsOnJoin || HasGMPermissions() )
-	{
-		_player->BroadcastMessage("Online Players: %s%u |rPeak: %s%u|r Accepted Connections: %s%u",
-			MSG_COLOR_WHITE, sWorld.GetSessionCount(), MSG_COLOR_WHITE, sWorld.PeakSessionCount, MSG_COLOR_WHITE, sWorld.mAcceptedConnections);
-	}
+
+	// Revision
+	_player->BroadcastMessage("Revision: %s%u", MSG_COLOR_CYAN, BUILD_REVISION); 
+	// Bugs
+	_player->BroadCastMessage("Bugs: %s%s", MSG_COLOR_SEXHOTPINK, BUGTRACKER);
+	// Recruiting message
+	_player->BroadcastMessage(RECRUITING);
+	// Shows Online players, and connection peak
+	_player->BroadcastMessage("Online Players: %s%u |rPeak: %s%u|r Accepted Connections: %s%u",
+		MSG_COLOR_SEXGREEN, sWorld.GetSessionCount(), MSG_COLOR_SEXBLUE, sWorld.PeakSessionCount, MSG_COLOR_SEXBLUE, sWorld.mAcceptedConnections);
 
 	//Set current RestState
-	if( plr->m_isResting) 		// We are resting at an inn , turn on Zzz
+	if( plr->m_isResting)
+		// We are resting at an inn , turn on Zzz
 		plr->ApplyPlayerRestState(true);
 
 	//Calculate rest bonus if there is time between lastlogoff and now
@@ -989,9 +989,7 @@ void WorldSession::FullLogin(Player * plr)
 		info->m_Group->Update();
 
 	if(enter_world && !_player->GetMapMgr())
-	{
 		plr->AddToWorld();
-	}
 
 	objmgr.AddPlayer(_player);
 

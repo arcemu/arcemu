@@ -23,7 +23,7 @@
 void WorldStateHandler::SetState(uint32 index, uint32 value)
 {
 	//try and find the state and modify
-	WorldStateMap::iterator itr=m_states.find(index);
+	WorldStateMap::iterator itr = m_states.find(index);
 
 	if (itr == m_states.end())
 		m_states.insert(std::pair<uint32, uint32>(index, value));

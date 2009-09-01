@@ -1025,7 +1025,8 @@ void AIInterface::_UpdateCombat(uint32 p_time)
 	if( m_AIType != AITYPE_PET && disable_combat )
 		return;
 
-	//just make sure we are not hitting self. This was reported as an exploit.Should never occur anyway
+	//just make sure we are not hitting self. 
+	// This was reported as an exploit.Should never occur anyway
 	if( GetNextTarget() == m_Unit )
 		SetNextTarget( GetMostHated() );
 

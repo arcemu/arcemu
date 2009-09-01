@@ -641,7 +641,9 @@ protected:
 	int32 m_instanceId;
 
 	ExtensionSet * m_extensions;
-	void _SetExtension(const string& name, void* ptr);		// so we can set from scripts. :)
+
+	// so we can set from scripts. :)
+	void _SetExtension(const string& name, void* ptr);
 
 public:
 

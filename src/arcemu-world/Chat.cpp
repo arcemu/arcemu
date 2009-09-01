@@ -963,7 +963,8 @@ WorldPacket* ChatHandler::FillSystemMessageData(const char *message) const
 	*data << (uint8)CHAT_MSG_SYSTEM;
 	*data << (uint32)LANG_UNIVERSAL;
 
-	*data << (uint64)0; // Who cares about guid when there's no nickname displayed heh ?
+	// Who cares about guid when there's no nickname displayed heh ?
+	*data << (uint64)0;
 	*data << (uint32)0;
 	*data << (uint64)0;
 
