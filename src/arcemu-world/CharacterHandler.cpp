@@ -960,7 +960,7 @@ void WorldSession::FullLogin(Player * plr)
 	// Revision
 	_player->BroadcastMessage("Revision: %s%u", MSG_COLOR_CYAN, BUILD_REVISION); 
 	// Bugs
-	_player->BroadCastMessage("Bugs: %s%s", MSG_COLOR_SEXHOTPINK, BUGTRACKER);
+	_player->BroadcastMessage("Bugs: %s%s", MSG_COLOR_SEXHOTPINK, BUGTRACKER);
 	// Recruiting message
 	_player->BroadcastMessage(RECRUITING);
 	// Shows Online players, and connection peak
