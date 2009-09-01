@@ -30,9 +30,9 @@ extern const char* SpellEffectNames[TOTAL_SPELL_EFFECTS];
 
 enum SpellTargetSpecification
 {
-    TARGET_SPECT_NONE       = 0,
-    TARGET_SPEC_INVISIBLE   = 1,
-    TARGET_SPEC_DEAD        = 2,
+	TARGET_SPECT_NONE		= 0,
+	TARGET_SPEC_INVISIBLE	= 1,
+	TARGET_SPEC_DEAD		= 2,
 };
 
 void SpellCastTargets::read( WorldPacket & data,uint64 caster )
@@ -3226,11 +3226,11 @@ bool Spell::IsSeal()
 
 uint8 Spell::CanCast(bool tolerate)
 {
-	// cebernic,can get this.
+	// NULL Proto / Invalid Spell
 	if (!GetProto())
 		return SPELL_FAILED_SPELL_UNAVAILABLE;
 
-	// how does this happen? cebernic
+	// Invalid Spell School
 	if (GetProto()->School < NORMAL_DAMAGE || GetProto()->School > ARCANE_DAMAGE)
 		return SPELL_FAILED_SPELL_UNAVAILABLE;
 
@@ -3252,10 +3252,13 @@ uint8 Spell::CanCast(bool tolerate)
 		{
 			// GM Flagged Players should be immune to other players' casts, but not their own.
 			if ((target != m_caster) && target->IsPlayer() && static_cast<Player*>(target)->HasFlag(PLAYER_FLAGS, PLAYER_FLAG_GM))
-	            return SPELL_FAILED_BM_OR_INVISGOD;
+				return SPELL_FAILED_BM_OR_INVISGOD;
 
 			//you can't mind control someone already mind controlled
 			if (GetProto()->NameHash == SPELL_HASH_MIND_CONTROL && target->HasAurasWithNameHash(SPELL_HASH_MIND_CONTROL))
+				return SPELL_FAILED_BAD_TARGETS;
+
+			if( GetProto()->NameHash == SPELL_HASH_DEATH_PACT && target->GetUInt64Value(UNIT_FIELD_SUMMONEDBY) != m_caster->GetGUID() )
 				return SPELL_FAILED_BAD_TARGETS;
 
 		}
@@ -3310,6 +3313,9 @@ uint8 Spell::CanCast(bool tolerate)
 	 */
 	if (u_caster)
 	{
+		if( u_caster->HasAurasWithNameHash(SPELL_HASH_BLADESTORM) && GetProto()->NameHash != SPELL_HASH_WHIRLWIND )
+			return SPELL_FAILED_CANT_DO_THAT_RIGHT_NOW;
+
 		if (hasAttribute(ATTRIBUTES_REQ_OOC) && u_caster->CombatStatus.IsInCombat())
 		{
 			// Warbringer (Warrior 51Prot Talent effect)
@@ -3444,6 +3450,17 @@ uint8 Spell::CanCast(bool tolerate)
 			(m_spellInfo->SpellGroupType[1] & p_caster->m_castFilter[1]) ||
 			(m_spellInfo->SpellGroupType[2] & p_caster->m_castFilter[2])))
 			return SPELL_FAILED_SPELL_IN_PROGRESS;
+
+		/**
+		 *	Shapeshifting checks
+		 */
+		if( !p_caster->ignoreShapeShiftChecks )
+		{
+			// No need to go through this function if the results are gonna be ignored anyway
+			uint8 shapeError = GetErrorAtShapeshiftedCast(GetProto(), p_caster->GetShapeShift());
+			if( shapeError != 0 )
+				return shapeError;
+		}
 
 		// check if spell is allowed while shapeshifted
 		if (p_caster->GetShapeShift())
@@ -3674,13 +3691,12 @@ uint8 Spell::CanCast(bool tolerate)
 		/**
 		 *	AuraState check
 		 */
-		if (GetProto()->CasterAuraState && !p_caster->HasFlag( UNIT_FIELD_AURASTATE, GetProto()->CasterAuraState ) && !p_caster->ignoreAuraStateCheck)
+		if( !p_caster->ignoreAuraStateCheck )
 		{
-			return SPELL_FAILED_CASTER_AURASTATE;
-		}
-		if (GetProto()->CasterAuraStateNot && p_caster->HasFlag( UNIT_FIELD_AURASTATE, GetProto()->CasterAuraStateNot ) && !p_caster->ignoreAuraStateCheck)
-		{
-			return SPELL_FAILED_CASTER_AURASTATE;
+			if(		( GetProto()->CasterAuraState && !p_caster->HasFlag( UNIT_FIELD_AURASTATE, GetProto()->CasterAuraState ) )
+				||	( GetProto()->CasterAuraStateNot && p_caster->HasFlag( UNIT_FIELD_AURASTATE, GetProto()->CasterAuraStateNot ) ) 
+				)
+				return SPELL_FAILED_CASTER_AURASTATE;
 		}
 
 		/**
@@ -3722,7 +3738,7 @@ uint8 Spell::CanCast(bool tolerate)
 				case SPELL_EFFECT_ENCHANT_ITEM_TEMPORARY:
 				{
 					// check for enchants that can only be done on your own items
-					if (hasAttributeExB(FLAGS3_ENCHANT_OWN_ONLY))
+					if (hasAttributeExB(ATTRIBUTESEXB_ENCHANT_OWN_ONLY))
 						return SPELL_FAILED_BAD_TARGETS;
 
 					// get the player we are trading with
@@ -3831,7 +3847,7 @@ uint8 Spell::CanCast(bool tolerate)
 				if (i_caster && i_caster->GetProto()->Flags == 2097216)
 					break;
 
-				if (hasAttributeExB(FLAGS3_ENCHANT_OWN_ONLY) && !(i_target->IsSoulbound()))
+				if (hasAttributeExB(ATTRIBUTESEXB_ENCHANT_OWN_ONLY) && !(i_target->IsSoulbound()))
 					return SPELL_FAILED_BAD_TARGETS;
 
 				break;	
@@ -3996,6 +4012,9 @@ uint8 Spell::CanCast(bool tolerate)
 
 			if( p_caster != NULL )
 			{
+				if( p_caster->HasAurasWithNameHash(SPELL_HASH_BLADESTORM) && GetProto()->NameHash != SPELL_HASH_WHIRLWIND )
+					return SPELL_FAILED_CANT_DO_THAT_RIGHT_NOW;
+
 				if( GetProto()->Id == SPELL_RANGED_THROW)
 				{
 					Item * itm = p_caster->GetItemInterface()->GetInventoryItem(EQUIPMENT_SLOT_RANGED);
@@ -4563,6 +4582,8 @@ uint8 Spell::CanCast(bool tolerate)
 					case 0xC7C45478: //Immune Movement Impairment and Loss of Control
 					case 0x048c32f9:	// insignia of the alliance/horde
 					case 0xDD06F1BF: // Stop fucking renaming the spell, Blizzard! (This time it's PvP Trinket)
+					case 0xAEBB0513: // Every Man for Himself
+					case 0x9840A1A6: //Divine Shield
 						{
 							if( u_caster->m_special_state & ( UNIT_STATE_FEAR | UNIT_STATE_CHARM | UNIT_STATE_SLEEP | UNIT_STATE_ROOT | UNIT_STATE_STUN | UNIT_STATE_CONFUSE | UNIT_STATE_SNARE ) )
 								break;
@@ -4672,6 +4693,7 @@ uint8 Spell::CanCast(bool tolerate)
 
 				case 0x048c32f9:	// insignia of the alliance/horde
 				case SPELL_HASH_PVP_TRINKET:
+				case 0xAEBB0513: // Every Man for Himself
 					break;
 
 				case SPELL_HASH_BERSERKER_RAGE://Berserker Rage frees the caster from fear effects.
@@ -4741,9 +4763,8 @@ void Spell::RemoveItems()
 			}
 		}
 	}
-	
 	// Ammo Removal
-	if (hasAttributeExB(FLAGS3_REQ_RANGED_WEAPON) || hasAttributeExC(FLAGS4_PLAYER_RANGED_SPELLS))
+	if (hasAttributeExB(ATTRIBUTESEXB_REQ_RANGED_WEAPON) || hasAttributeExC(FLAGS4_PLAYER_RANGED_SPELLS))
 	{
 		p_caster->GetItemInterface()->RemoveItemAmt_ProtectPointer(p_caster->GetUInt32Value(PLAYER_AMMO_ID), 1, &i_caster);
 	}
@@ -5259,18 +5280,17 @@ void Spell::CreateItem( uint32 itemId )
 	}
 }*/
 
-void Spell::SendHealSpellOnPlayer(Object* caster, Object* target, uint32 dmg,bool critical)
+void Spell::SendHealSpellOnPlayer(Object* caster, Object* target, uint32 dmg, bool critical, uint32 overheal, uint32 spellid)
 {
 	if(!caster || !target || !target->IsPlayer())
 		return;
-	WorldPacket data(SMSG_SPELLHEALLOG, 27);
-	// Bur: I know it says obsolete, but I just logged this tonight and got this packet.
-
+	WorldPacket data(SMSG_SPELLHEALLOG, 29);
 	data << target->GetNewGUID();
 	data << caster->GetNewGUID();
-	data << (pSpellId ? pSpellId : GetProto()->Id);
-	data << uint32(dmg);	// amt healed
-	data << uint8(critical);	 //this is critical message
+	data << uint32(spellid);
+	data << uint32(dmg);							// amt healed
+	data << uint32(overheal);						// Amount Overhealed
+	data << uint8(critical);						// critical message
 
 	caster->SendMessageToSet(&data, true);
 }
@@ -5489,25 +5509,26 @@ void Spell::Heal(int32 amount, bool ForceCrit)
 	if(amount < 0)
 		amount = 0;
 
+	uint32 overheal = 0;
+	uint32 curHealth = unitTarget->GetUInt32Value(UNIT_FIELD_HEALTH);
+	uint32 maxHealth = unitTarget->GetUInt32Value(UNIT_FIELD_MAXHEALTH);
+	if((curHealth + amount) >= maxHealth)
+	{
+		unitTarget->SetUInt32Value(UNIT_FIELD_HEALTH, maxHealth);
+		overheal = curHealth + amount - maxHealth;
+	} else
+		unitTarget->ModUnsigned32Value(UNIT_FIELD_HEALTH, amount);
+
 	if( p_caster != NULL )
 	{
 		if( unitTarget->IsPlayer() )
 		{
-			SendHealSpellOnPlayer( p_caster, static_cast< Player* >( unitTarget ), amount, critical );
+			SendHealSpellOnPlayer( p_caster, static_cast< Player* >( unitTarget ), amount, critical, overheal, pSpellId ? pSpellId : m_spellInfo->Id );
 		}
 		p_caster->m_bgScore.HealingDone += amount;
 		if( p_caster->m_bg != NULL )
 			p_caster->m_bg->UpdatePvPData();
 	}
-	uint32 curHealth = unitTarget->GetUInt32Value(UNIT_FIELD_HEALTH);
-	uint32 maxHealth = unitTarget->GetUInt32Value(UNIT_FIELD_MAXHEALTH);
-	if((curHealth + amount) >= maxHealth)
-	{
-		amount = maxHealth - curHealth;
-		unitTarget->SetUInt32Value(UNIT_FIELD_HEALTH, maxHealth);
-	}
-	else
-		unitTarget->ModUnsigned32Value(UNIT_FIELD_HEALTH, amount);
 
 	if (p_caster)
 	{
@@ -5987,14 +6008,13 @@ uint32 GetDiminishingGroup(uint32 NameHash)
 		}break;
 
 	case SPELL_HASH_GOUGE:
-	case SPELL_HASH_REPENTANCE:			// Repentance
+	case SPELL_HASH_REPENTANCE:				// Repentance
 	case SPELL_HASH_SAP:
 	case SPELL_HASH_POLYMORPH:				// Polymorph
-	case SPELL_HASH_POLYMORPH___PENGUIN: // Polymorph: Penguin
 	case SPELL_HASH_POLYMORPH__CHICKEN:		// Chicken
-	//case SPELL_HASH_POLYMORPH__PIG:			// Pig
-	//case SPELL_HASH_POLYMORPH__TURTLE:		// Turtle
+	case SPELL_HASH_POLYMORPH__CRAFTY_WOBBLESPROCKET: // Errr right?
 	case SPELL_HASH_POLYMORPH__SHEEP:		// Good ol' sheep
+	case SPELL_HASH_POLYMORPH___PENGUIN:	// Penguiiiin!!! :D
 	case SPELL_HASH_MAIM:					// Maybe here?
 	case SPELL_HASH_HEX:					// Should share diminish group with polymorph, but not interruptflags.
 			grp = DIMINISHING_GROUP_GOUGE_POLY_SAP;
@@ -6027,15 +6047,15 @@ uint32 GetDiminishingGroup(uint32 NameHash)
 	case SPELL_HASH_BANISH:					// Banish
 			grp = DIMINISHING_GROUP_BANISH;
 		break;
-	
+
 	// group where only 10s limit in pvp is applied, not DR
 	case SPELL_HASH_FREEZING_TRAP_EFFECT:	// Freezing Trap Effect
-	case SPELL_HASH_HAMSTRING:	// Hamstring
+	case SPELL_HASH_HAMSTRING:				// Hamstring
 	case SPELL_HASH_CURSE_OF_TONGUES:
 		{
 			grp = DIMINISHING_GROUP_NOT_DIMINISHED;
 		}break;
-	
+
 	case SPELL_HASH_RIPOSTE:		// Riposte
 	case SPELL_HASH_DISARM:			// Disarm
 		{
@@ -6207,3 +6227,58 @@ AI_SpellTargetType RecommandAISpellTargetType(SpellEntry *sp)
 	return TTYPE_NULL;// this means a new spell :P
 }
 */
+
+uint8 Spell::GetErrorAtShapeshiftedCast(SpellEntry *spellInfo, uint32 form)
+{
+	uint32 stanceMask = (form ? DecimalToMask(form) : 0);
+
+	if( spellInfo->ShapeshiftExclude > 0 && spellInfo->ShapeshiftExclude & stanceMask )				// can explicitly not be casted in this stance
+		return SPELL_FAILED_NOT_SHAPESHIFT;
+
+	if( spellInfo->RequiredShapeShift == 0 || spellInfo->RequiredShapeShift & stanceMask )			// can explicitly be casted in this stance
+		return 0;
+
+	bool actAsShifted = false;
+	if (form > FORM_NORMAL)
+	{
+		SpellShapeshiftForm * ssf = dbcSpellShapeshiftForm.LookupEntry( form );
+		if(!ssf)
+		{
+			sLog.outError("GetErrorAtShapeshiftedCast: unknown shapeshift %u", form);
+			return 0;
+		}
+
+		switch( ssf->id )
+		{
+		case FORM_TREE:
+			{
+				skilllinespell * sls = objmgr.GetSpellSkill( spellInfo->Id );
+				if( sls && sls->skilline == SPELLTREE_DRUID_RESTORATION )		// Restoration spells can be cast in Tree of Life form, for the rest: apply the default rules.
+					return 0;
+			}break;
+		case FORM_MOONKIN:
+			{
+				skilllinespell * sls = objmgr.GetSpellSkill( spellInfo->Id );
+				if( sls && sls->skilline == SPELLTREE_DRUID_BALANCE )			// Balance spells can be cast in Moonkin form, for the rest: apply the default rules.
+					return 0;
+			}break;
+		}
+		actAsShifted = !(ssf->Flags & 1);						// shapeshift acts as normal form for spells
+	}
+
+	if(actAsShifted)
+	{
+		if( hasAttributeExB(ATTRIBUTES_NOT_SHAPESHIFT) )	// not while shapeshifted
+			return SPELL_FAILED_NOT_SHAPESHIFT;
+		else //if( spellInfo->RequiredShapeShift != 0 )			// needs other shapeshift
+			return SPELL_FAILED_ONLY_SHAPESHIFT;
+	}
+	else
+	{
+		// Check if it even requires a shapeshift....
+		if( !hasAttributeExB(ATTRIBUTESEXB_NOT_NEED_SHAPESHIFT) && spellInfo->RequiredShapeShift != 0 )
+			return SPELL_FAILED_ONLY_SHAPESHIFT;
+	}
+
+	return 0;
+}

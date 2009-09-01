@@ -57,7 +57,7 @@ MapMgr::MapMgr(Map *map, uint32 mapId, uint32 instanceid) : CellHandler<MapCell>
 	m_DynamicObjectHighGuid=0;
 	lastUnitUpdate = getMSTime();
 	lastGameobjectUpdate = getMSTime();
-	m_battleground = 0;
+	m_battleground = NULL;
 
 	m_holder = &eventHolder;
 	m_event_Instanceid = eventHolder.GetInstanceID();
@@ -159,12 +159,26 @@ MapMgr::~MapMgr()
 	if ( mInstanceScript != NULL ) 
 		mInstanceScript->Destroy(); 
 
+	// Empty remaining containers
+	m_PlayerStorage.clear();
+	m_PetStorage.clear();
+	m_DynamicObjectStorage.clear();
+
+	_combatProgress.clear();
+	_updates.clear();
+	_processQueue.clear();
+	Sessions.clear();
+
 	activeCreatures.clear();
 	activeGameObjects.clear();
 	_sqlids_creatures.clear();
 	_sqlids_gameobjects.clear();
 	_reusable_guids_creature.clear();
 	_reusable_guids_gameobject.clear();
+
+	if( m_battleground ) {
+		m_battleground = NULL;
+	}
 
 	Log.Notice("MapMgr", "Instance %u shut down. (%s)" , m_instanceID, GetBaseMap()->GetName());
 }

@@ -111,13 +111,16 @@ enum ShapeshiftForm
 	FORM_AMBIENT            = 6,
 	FORM_GHOUL              = 7,
 	FORM_DIREBEAR           = 8,
+	FORM_SKELETON			= 10,
 	FORM_SHADOWDANCE		= 13,
 	FORM_CREATUREBEAR       = 14,
 	FORM_GHOSTWOLF          = 16,
 	FORM_BATTLESTANCE       = 17,
 	FORM_DEFENSIVESTANCE    = 18,
 	FORM_BERSERKERSTANCE    = 19,
-	FORM_DEMON				= 22,
+	FORM_ZOMBIE				= 21,
+	FORM_METAMORPHOSIS		= 22,
+	FORM_UNDEAD				= 25,	// Lichborne?
 	FORM_SWIFT              = 27,
 	FORM_SHADOW             = 28,
 	FORM_FLIGHT             = 29,
@@ -1221,6 +1224,8 @@ public:
 		return ( GetUInt64Value( PLAYER__FIELD_KNOWN_TITLES + ( ( title >> 6 ) << 1 )  ) & ( uint64(1) << ( title % 64 ) ) ) != 0;
 	}
 	void SetKnownTitle( RankTitles title, bool set );
+	void SendAvailSpells(SpellShapeshiftForm* ssf,bool active);
+
     /************************************************************************/
     /* Groups                                                               */
     /************************************************************************/
@@ -1477,6 +1482,10 @@ public:
 		return GetByte(UNIT_FIELD_BYTES_2,3);
 	}
 
+	ARCEMU_INLINE uint32 GetShapeShiftMask()
+	{
+		return ( (uint32)1 << (GetShapeShift() - 1) );
+	}
 
 	void delayAttackTimer(int32 delay)
 	{

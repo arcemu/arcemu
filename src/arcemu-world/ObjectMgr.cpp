@@ -502,13 +502,14 @@ void ObjectMgr::LoadCompletedAchievements()
 	QueryResult *result = WorldDatabase.Query("SELECT achievement FROM character_achievement GROUP BY achievement");
 
 	if(!result)
-	return;
- do
+		return;
+
+	do
 	{
 		Field *fields = result->Fetch();
 		allCompletedAchievements.insert(fields[0].GetUInt32());
 	} while(result->NextRow());
- delete result;
+	delete result;
 }
 #endif
 void ObjectMgr::LoadPlayerCreateInfo()
@@ -520,18 +521,18 @@ void ObjectMgr::LoadPlayerCreateInfo()
 		Log.Error("MySQL","Query failed: SELECT * FROM playercreateinfo");
 		return;
 	}
+	if( result->GetFieldCount() != 25 )
+	{
+		Log.Error("MySQL", "Wrong field count in table playercreateinfo (got %lu, need 25)", result->GetFieldCount());
+		delete result;
+		return;
+	}
 
 	PlayerCreateInfo *pPlayerCreateInfo;
 
 	do
 	{
 		Field *fields = result->Fetch();
-		if(result->GetFieldCount() != 25)
-		{
-			Log.Error("MySQL","Wrong field count in table playercreateinfo (got %lu, need 25).  You may need to update your database.", result->GetFieldCount());
-			delete result;
-			return;
-		}
 		pPlayerCreateInfo = new PlayerCreateInfo;
 
 		pPlayerCreateInfo->index = fields[0].GetUInt8();
@@ -1894,6 +1895,7 @@ void ObjectMgr::LoadTrainers()
 			Log.Error("LoadTrainers", "Trainer with no spells, entry %u.", entry);
 			if(tr->UIMessage != NormalTalkMessage)
 				delete [] tr->UIMessage;
+
 			delete tr;
 			continue;
 		}
@@ -1901,6 +1903,8 @@ void ObjectMgr::LoadTrainers()
 		{
 			Log.LargeErrorMessage(LARGERRORMESSAGE_WARNING, "Trainers table format is invalid. Please update your database.");
 			delete tr;
+			delete result;
+			delete result2;
 			return;
 		}
 		else

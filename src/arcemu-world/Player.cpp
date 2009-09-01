@@ -4736,6 +4736,7 @@ void Player::RepopRequestedPlayer()
 	if( myCorpse != NULL ) {
 		// Cebernic: wOOo dead+dead = undead ? :D just resurrect player
 		myCorpse->ResetDeathClock();
+		ResurrectPlayer();
 		RepopAtGraveyard( GetPositionX(), GetPositionY(), GetPositionZ(), GetMapId() );
 		return;
 	}
@@ -10108,7 +10109,7 @@ void Player::SaveAuras(stringstream &ss)
 
 void Player::SetShapeShift(uint8 ss)
 {
-	uint8 old_ss = GetByte( UNIT_FIELD_BYTES_2, 3 );
+	uint8 old_ss = GetShapeShift(); //GetByte( UNIT_FIELD_BYTES_2, 3 );
 	SetByte( UNIT_FIELD_BYTES_2, 3, ss );
 
 	//remove auras that we should not have
@@ -10507,6 +10508,11 @@ void Player::removeSoulStone()
 		{
 			sSoulStone = 27239;
 		}break;
+	case 47882:
+		{//Rank 7
+			sSoulStone = 47883;
+		}break;
+
 	}
 	this->RemoveAura(sSoulStone);
 	this->SoulStone = this->SoulStoneReceiver = 0; //just incase
@@ -13033,4 +13039,33 @@ void Player::UpdateKnownCurrencies(uint32 itemId, bool apply)
 
 void Player::RemoveItemByGuid( uint64 GUID ){
     this->GetItemInterface()->SafeFullRemoveItemByGuid( GUID );
+}
+
+void Player::SendAvailSpells(SpellShapeshiftForm* ssf, bool active)
+{
+	if(active)
+	{
+		if(!ssf)
+			return;
+
+		WorldPacket data(SMSG_PET_SPELLS, 8 * 4 + 20);
+		data << GetGUID();
+		data << uint32(0) << uint32(0);
+		data << uint8(0) << uint8(0) << uint16(0);
+
+		// Send the spells
+		for(uint32 i = 0; i < 8; i++)
+		{
+			data << uint16(ssf->spells[i]) << uint16(DEFAULT_SPELL_STATE);
+		}
+
+		data << uint8(1);
+		data << uint8(0);
+		GetSession()->SendPacket(&data);
+	}else{
+		WorldPacket data(SMSG_PET_SPELLS,10);
+		data << uint64(0);
+		data << uint32(0);
+		GetSession()->SendPacket(&data);
+	}
 }

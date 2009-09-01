@@ -1356,6 +1356,17 @@ struct DurabilityCostsEntry
 	uint32 modifier[29];
 };
 
+struct SpellShapeshiftForm
+{
+	uint32 id;
+	uint32 Flags;
+	uint32 unit_type;
+	uint32 AttackSpeed;
+	uint32 modelId;
+	uint32 modelId2;
+	uint32 spells[8];
+};
+
 struct AreaTriggerEntry
 {
 	uint32    id;           // 0
@@ -1798,6 +1809,7 @@ extern SERVER_DECL DBCStorage<Lock> dbcLock;
 extern SERVER_DECL DBCStorage<SpellEntry> dbcSpell;
 extern SERVER_DECL DBCStorage<SpellDuration> dbcSpellDuration;
 extern SERVER_DECL DBCStorage<SpellRange> dbcSpellRange;
+extern SERVER_DECL DBCStorage<SpellShapeshiftForm> dbcSpellShapeshiftForm;
 extern SERVER_DECL DBCStorage<emoteentry> dbcEmoteEntry;
 extern SERVER_DECL DBCStorage<SpellRadius> dbcSpellRadius;
 extern SERVER_DECL DBCStorage<SpellCastTime> dbcSpellCastTime;

@@ -153,34 +153,34 @@ pSpellEffect SpellEffectsHandler[TOTAL_SPELL_EFFECTS]={
 	&Spell::SpellEffectNULL,					// unknown - 129 // Mod Dmg % (Spells)
 	&Spell::SpellEffectRedirectThreat,			// unknown - 130 // http://www.thottbot.com/s34477
 	&Spell::SpellEffectNULL,					// unknown - 131 // test spell
-	&Spell::SpellEffectNULL,					// unknown - 132 // no spells
+	&Spell::SpellEffectNULL,					// Play Music - 132 // http://www.thottbot.com/s46852
 	&Spell::SpellEffectForgetSpecialization,	//SPELL_EFFECT_FORGET_SPECIALIZATION - 133 // http://www.thottbot.com/s36441 // I think this is a gm/npc spell
-	&Spell::SpellEffectNULL,					// unknown - 134 // related to summoning objects and removing them, http://www.thottbot.com/s39161
-	&Spell::SpellEffectNULL,					// unknown - 135 // no spells
-	&Spell::SpellEffectNULL,					// unknown - 136 // http://www.thottbot.com/s41542 and http://www.thottbot.com/s39703
-	&Spell::SpellEffectRestoreManaPct,			// unknown - 137 // http://www.thottbot.com/s41542
+	&Spell::SpellEffectNULL,					// Quest Credit (Player only, not party) - 134 // related to summoning objects and removing them, http://www.thottbot.com/s39161
+	&Spell::SpellEffectNULL,					// Summon Pet: http://www.thottbot.com/s23498 - 135
+	&Spell::SpellEffectRestoreHealthPct,		// Restore Health % - 136 // http://www.thottbot.com/s41542 and http://www.thottbot.com/s39703
+	&Spell::SpellEffectRestoreManaPct,			// Restore Mana % - 137 // http://www.thottbot.com/s41542
 	&Spell::SpellEffectNULL,					// unknown - 138 // related to superjump or even "*jump" spells http://www.thottbot.com/?e=Unknown%20138
-	&Spell::SpellEffectNULL,					// unknown - 139 // no spells
+	&Spell::SpellEffectNULL,					// Remove Quest - 139 // no spells
 	&Spell::SpellEffectTriggerSpell,			// triggers a spell from target back to caster - used at Malacrass f.e.
 	&Spell::SpellEffectNULL,					// unknown - 141 // triggers spell, magic one,  (Mother spell) http://www.thottbot.com/s41065
 	&Spell::SpellEffectTriggerSpellWithValue,	//SPELL_EFFECT_TRIGGER_SPELL_WITH_VALUE - 142 // triggers some kind of "Put spell on target" thing... (dono for sure) http://www.thottbot.com/s40872 and http://www.thottbot.com/s33076
-	&Spell::SpellEffectNULL,					// unknown - 143 // Master -> demon effecting spell, http://www.thottbot.com/s25228 and http://www.thottbot.com/s35696
-	&Spell::SpellEffectNULL,// unknown - 144
-	&Spell::SpellEffectNULL,// unknown - 145
-	&Spell::SpellEffectNULL,// unknown - 146
-	&Spell::SpellEffectNULL,// Quest Fail - 147
-	&Spell::SpellEffectNULL,// unknown - 148
-	&Spell::SpellEffectNULL,// unknown - 149
-	&Spell::SpellEffectNULL,// unknown - 150
-	&Spell::SpellEffectTriggerSpell,// SPELL_EFFECT_TRIGGER_SPELL_2 - 151
-	&Spell::SpellEffectNULL,// Summon Refer-a-Friend - 152
-	&Spell::SpellEffectCreatePet,// Create tamed pet - 153
-	&Spell::SpellEffectTeachTaxiPath,// "Teach" a taxi path - 154
-	&Spell::SpellEffectDualWield2H,// DualWield2H (ex: Titan's Grip) - 155
-	&Spell::SpellEffectEnchantItemPrismatic,// Add a socket to an armor/a weapon - 156
-	&Spell::SpellEffectCreateItem2,	//157
-	&Spell::SpellEffectMilling,// Milling - 158
-	&Spell::SpellEffectRenamePet,// Allow pet rename - 159
+	&Spell::SpellEffectNULL,					// Apply Aura on summon owner - 143 // Master -> demon effecting spell, http://www.thottbot.com/s25228 and http://www.thottbot.com/s35696
+	&Spell::SpellEffectNULL,					// unknown - 144
+	&Spell::SpellEffectNULL,					// unknown - 145
+	&Spell::SpellEffectNULL,					// Activate Rune - 146
+	&Spell::SpellEffectNULL,					// Quest Fail - 147
+	&Spell::SpellEffectNULL,					// unknown - 148
+	&Spell::SpellEffectNULL,					// unknown - 149
+	&Spell::SpellEffectNULL,					// unknown - 150
+	&Spell::SpellEffectTriggerSpell,			// SPELL_EFFECT_TRIGGER_SPELL_2 - 151
+	&Spell::SpellEffectNULL,					// Summon Refer-a-Friend - 152
+	&Spell::SpellEffectCreatePet,				// Create tamed pet - 153
+	&Spell::SpellEffectTeachTaxiPath,			// "Teach" a taxi path - 154
+	&Spell::SpellEffectDualWield2H,				// DualWield2H (ex: Titan's Grip) - 155
+	&Spell::SpellEffectEnchantItemPrismatic,	// Add a socket to an armor/a weapon - 156
+	&Spell::SpellEffectCreateItem2,				//157 SPELL_EFFECT_CREATE_ITEM_2  
+	&Spell::SpellEffectMilling,					// Milling - 158
+	&Spell::SpellEffectRenamePet,				// Allow Pet Rename - 159
 };
 
 const char* SpellEffectNames[TOTAL_SPELL_EFFECTS] = {
@@ -556,7 +556,7 @@ void Spell::SpellEffectSchoolDMG(uint32 i) // dmg school
 		case SPELL_HASH_THUNDER_CLAP: // Thunderclap
 			{
 				if(u_caster)
-					dmg = float2int32((GetProto()->EffectBasePoints[0]+1)+ u_caster->GetAP() * 0.20f);
+					dmg = (GetProto()->EffectBasePoints[0]+1) + float2int32(u_caster->GetAP() * 0.12f);
 			}break;
 		case SPELL_HASH_INTERCEPT: // Warrior - Intercept
 			{
@@ -1191,25 +1191,42 @@ out:
 		}break;
 		*/
 
-		/*************************
-		* SHAMAN SPELLS
-		*************************
-		* IDs:
-		* NO SPELLS
-		*  --------------------------------------------
-		*************************/
+	/*************************
+	 * DEATHKNIGHT SPELLS
+	 *************************
+	 * IDs:
+	 * 49916 Strangulate
+	 *  --------------------------------------------
+	 *************************/
+	case 47476:
+	case 49913:
+	case 49914:
+	case 49915:
+	case 49916:
+		{
+			if( unitTarget && unitTarget->IsCasting() )
+				unitTarget->InterruptSpell();
+		}break;
 
-		/*************************
-		* WARLOCK SPELLS
-		*************************
-		* IDs:
-		* 19028 Soul Link				STATUS: ToDo
-		*  --------------------------------------------
-		* 19028 soul link effect		STATUS: DONE
-		*  --------------------------------------------
-		*************************/
+	/*************************
+	 * SHAMAN SPELLS
+	 *************************
+	 * IDs:
+	 * NO SPELLS
+	 *  --------------------------------------------
+	 *************************/
 
-		/*
+	/*************************
+	 * WARLOCK SPELLS
+	 *************************
+	 * IDs:
+	 * 19028 Soul Link				STATUS: ToDo
+	 *  --------------------------------------------
+	 * 19028 soul link effect		STATUS: DONE
+	 *  --------------------------------------------
+	 *************************/
+
+	/*
 		Soul Link
 		When active, 20% of all damage taken by the caster is taken by your Imp, Voidwalker, Succubus, Felhunter, Felguard, or enslaved demon instead.  That damage cannot be prevented.  In addition, both the demon and master will inflict 5% more damage.  Lasts as long as the demon is active and controlled.
 
@@ -4260,7 +4277,7 @@ void Spell::SpellEffectAddHonor(uint32 i)
 
 	uint32 val = GetProto()->EffectBasePoints[i];
 
-	if( GetProto()->AttributesExB & FLAGS3_UNK4 )val /= 10;
+	if( GetProto()->AttributesExB & ATTRIBUTESEXB_UNK4 ) val /= 10;
 
 	val += 1;
 
@@ -4882,7 +4899,7 @@ void Spell::SpellEffectHealMaxHealth(uint32 i)   // Heal Max Health
 
 	if( unitTarget->GetTypeId() == TYPEID_PLAYER)
 	{
-		SendHealSpellOnPlayer( static_cast< Player* >( m_caster ), static_cast< Player* >( unitTarget ), dif, false );
+		SendHealSpellOnPlayer( static_cast< Player* >( m_caster ), static_cast< Player* >( unitTarget ), dif, false, 0, m_spellInfo->Id );
 	}
 	unitTarget->ModUnsigned32Value( UNIT_FIELD_HEALTH, dif );
 }
@@ -5748,7 +5765,8 @@ void Spell::SpellEffectScriptEffect(uint32 i) // Script Effect
 
 void Spell::SpellEffectSanctuary(uint32 i) // Stop all attacks made to you
 {
-	if(!u_caster) return;
+	if(!u_caster)
+		return;
 
 	//warning this causes crashes !
 	//	Object::InRangeSet::iterator itr = u_caster->GetInRangeOppFactsSetBegin();
@@ -5773,7 +5791,8 @@ void Spell::SpellEffectSanctuary(uint32 i) // Stop all attacks made to you
 
 void Spell::SpellEffectAddComboPoints(uint32 i) // Add Combo Points
 {
-	if(!p_caster) return;
+	if(!p_caster)
+		return;
 
 	//if this is a procspell Ruthlessness (maybe others later)
 	if(pSpellId && GetProto()->Id==14157)
@@ -5812,8 +5831,8 @@ void Spell::SpellEffectDuel(uint32 i) // Duel
 	TODO: dueling zones ? ( SPELL_FAILED_NO_DUELING )
 	if (player->IsInvisible())
 	{
-	SendCastResult(SPELL_FAILED_CANT_DUEL_WHILE_INVISIBLE);
-	return;
+		SendCastResult(SPELL_FAILED_CANT_DUEL_WHILE_INVISIBLE);
+		return;
 	}
 	*/
 
@@ -6195,6 +6214,7 @@ void Spell::SpellEffectSelfResurrect(uint32 i)
 	case 20760:
 	case 20761:
 	case 27240:
+	case 47882:
 		{
 			health = GetProto()->EffectMiscValue[i];
 			mana = -damage;
@@ -6959,22 +6979,22 @@ void Spell::SpellEffectDummyMelee( uint32 i ) // Normalized Weapon damage +
 			return;
 		}
 
-		//rogue - mutilate ads dmg if target is poisoned
-		uint32 pct_dmg_mod = 100;
-		if(	GetProto()->NameHash == SPELL_HASH_MUTILATE && unitTarget->IsPoisoned() )
-			pct_dmg_mod = 150;
+	//rogue - mutilate ads dmg if target is poisoned
+	uint32 pct_dmg_mod = 100;
+	if(	GetProto()->NameHash == SPELL_HASH_MUTILATE && unitTarget->IsPoisoned() )
+		pct_dmg_mod = 150;
 
-		uint32 _type;
-		if( GetType() == SPELL_DMG_TYPE_RANGED )
-			_type = RANGED;
+	uint32 _type;
+	if( GetType() == SPELL_DMG_TYPE_RANGED )
+		_type = RANGED;
+	else
+	{
+		if (GetProto()->AttributesExC & 0x1000000)
+			_type =  OFFHAND;
 		else
-		{
-			if (GetProto()->AttributesExC & 0x1000000)
-				_type =  OFFHAND;
-			else
-				_type = MELEE;
-		}
-		u_caster->Strike( unitTarget, _type, GetProto(), damage, pct_dmg_mod, 0, false, true );
+			_type = MELEE;
+	}
+	u_caster->Strike( unitTarget, _type, GetProto(), damage, pct_dmg_mod, 0, false, true );
 }
 
 void Spell::SpellEffectFilming( uint32 i )
@@ -7356,5 +7376,26 @@ void Spell::SpellEffectRenamePet( uint32 i )
 		!static_cast<Pet*>(unitTarget)->GetPetOwner() || static_cast<Pet*>(unitTarget)->GetPetOwner()->getClass() != HUNTER )
 		return;
 
-	unitTarget->SetByte( UNIT_FIELD_BYTES_2, 2, 0x3 );
+	unitTarget->SetByte( UNIT_FIELD_BYTES_2, 2, PET_RENAME_ALLOWED );
+}
+
+void Spell::SpellEffectRestoreHealthPct(uint32 i)
+{
+	if(!unitTarget || !unitTarget->isAlive())
+		return;
+
+	uint32 currentHealth = unitTarget->GetUInt32Value(UNIT_FIELD_HEALTH);
+	uint32 maxHealth = unitTarget->GetUInt32Value(UNIT_FIELD_MAXHEALTH);
+	uint32 modHealth = damage * maxHealth / 100;
+	uint32 newHealth = modHealth + currentHealth;
+
+	uint32 overheal = 0;
+	if( newHealth >= maxHealth )
+	{
+		unitTarget->SetUInt32Value(UNIT_FIELD_HEALTH, maxHealth);
+		overheal = newHealth - maxHealth;
+	} else
+		unitTarget->ModUnsigned32Value(UNIT_FIELD_HEALTH, modHealth);
+
+	SendHealSpellOnPlayer( m_caster, static_cast< Player* >( unitTarget ), modHealth, false, overheal, pSpellId ? pSpellId : m_spellInfo->Id  );
 }

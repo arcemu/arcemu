@@ -364,33 +364,33 @@ enum CastInterruptFlags
 
 enum AuraInterruptFlags
 {
-    AURA_INTERRUPT_NULL                       = 0x0,
-    AURA_INTERRUPT_ON_HOSTILE_SPELL_INFLICTED = 0x1,
-    AURA_INTERRUPT_ON_ANY_DAMAGE_TAKEN        = 0x2,
-    AURA_INTERRUPT_ON_UNK1                    = 0x4,
-    AURA_INTERRUPT_ON_MOVEMENT                = 0x8,
-    AURA_INTERRUPT_ON_TURNING                 = 0x10,
-    AURA_INTERRUPT_ON_ENTER_COMBAT            = 0x20,
-    AURA_INTERRUPT_ON_DISMOUNT                = 0x40,
-    AURA_INTERRUPT_ON_ENTER_WATER             = 0x80,
-    AURA_INTERRUPT_ON_LEAVE_WATER             = 0x100, // could be AURA_INTERRUPT_ON_LEAVE_CURRENT_SURFACE
-    AURA_INTERRUPT_ON_UNUSED2                 = 0x200,
-    AURA_INTERRUPT_ON_UNK4                    = 0x400,
-    AURA_INTERRUPT_ON_UNK5                    = 0x800,
-    AURA_INTERRUPT_ON_START_ATTACK            = 0x1000,
-    AURA_INTERRUPT_ON_UNK6                    = 0x2000,
-    AURA_INTERRUPT_ON_UNUSED3                 = 0x4000,
-    AURA_INTERRUPT_ON_CAST_SPELL              = 0x8000,
-    AURA_INTERRUPT_ON_UNK7                    = 0x10000,
-    AURA_INTERRUPT_ON_MOUNT                   = 0x20000,
-    AURA_INTERRUPT_ON_STAND_UP                = 0x40000,
-    AURA_INTERRUPT_ON_LEAVE_AREA              = 0x80000,
-    AURA_INTERRUPT_ON_INVINCIBLE              = 0x100000,
-    AURA_INTERRUPT_ON_STEALTH                 = 0x200000,
-    AURA_INTERRUPT_ON_UNK8                    = 0x400000,
-	AURA_INTERRUPT_ON_PVP_ENTER				  =	0x800000,
-	AURA_INTERRUPT_ON_DIRECT_DAMAGE           = 0x1000000,
-    AURA_INTERRUPT_ON_AFTER_CAST_SPELL        = 0x80000000,
+    AURA_INTERRUPT_NULL							= 0x0,
+    AURA_INTERRUPT_ON_HOSTILE_SPELL_INFLICTED	= 0x1,
+    AURA_INTERRUPT_ON_ANY_DAMAGE_TAKEN			= 0x2,
+    AURA_INTERRUPT_ON_UNK1						= 0x4,
+    AURA_INTERRUPT_ON_MOVEMENT					= 0x8,
+    AURA_INTERRUPT_ON_TURNING					= 0x10,
+    AURA_INTERRUPT_ON_ENTER_COMBAT				= 0x20,
+    AURA_INTERRUPT_ON_DISMOUNT					= 0x40,
+    AURA_INTERRUPT_ON_ENTER_WATER				= 0x80,
+    AURA_INTERRUPT_ON_LEAVE_WATER				= 0x100, // could be AURA_INTERRUPT_ON_LEAVE_CURRENT_SURFACE
+    AURA_INTERRUPT_ON_UNUSED2					= 0x200,
+    AURA_INTERRUPT_ON_UNK4						= 0x400,
+    AURA_INTERRUPT_ON_UNK5						= 0x800,
+    AURA_INTERRUPT_ON_START_ATTACK				= 0x1000,
+    AURA_INTERRUPT_ON_UNK6						= 0x2000,
+    AURA_INTERRUPT_ON_UNUSED3					= 0x4000,
+    AURA_INTERRUPT_ON_CAST_SPELL				= 0x8000,
+    AURA_INTERRUPT_ON_UNK7						= 0x10000,
+    AURA_INTERRUPT_ON_MOUNT						= 0x20000,
+    AURA_INTERRUPT_ON_STAND_UP					= 0x40000,
+    AURA_INTERRUPT_ON_LEAVE_AREA				= 0x80000,
+    AURA_INTERRUPT_ON_INVINCIBLE				= 0x100000,
+    AURA_INTERRUPT_ON_STEALTH					= 0x200000,
+    AURA_INTERRUPT_ON_UNK8						= 0x400000,
+	AURA_INTERRUPT_ON_PVP_ENTER					= 0x800000,
+	AURA_INTERRUPT_ON_DIRECT_DAMAGE				= 0x1000000,
+    AURA_INTERRUPT_ON_AFTER_CAST_SPELL			= 0x80000000,
 };
 
 enum ChannelInterruptFlags
@@ -418,113 +418,113 @@ enum ChannelInterruptFlags
 
 enum Attributes
 {
-	ATTRIBUTES_NULL								= 0x0,
-	ATTRIBUTES_UNK2								= 0x1,
-	ATTRIBUTES_RANGED							= 0x2, // related to ranged??
-	ATTRIBUTE_ON_NEXT_ATTACK					= 0x4,
-	ATTRIBUTES_UNK5								= 0x8, //ATTRIBUTES_UNUSED0
-	ATTRIBUTES_UNK6								= 0x10,
-	ATTRIBUTES_UNK7								= 0x20, // Tradeskill recipies
-	ATTRIBUTES_PASSIVE							= 0x40,
-	ATTRIBUTES_NO_VISUAL_AURA					= 0x80,
-	ATTRIBUTES_NO_CAST							= 0x100,	//seems to be afflicts pet
-	ATTRIBUTES_UNK11							= 0x200, // looks like temp enchants.
-	ATTRIBUTES_ON_NEXT_SWING_2					= 0x400, //completely the same as ATTRIBUTE_ON_NEXT_ATTACK for class spells. So difference somewhere in mob abilities.
-	ATTRIBUTES_UNK13							= 0x800,
-	ATTRIBUTES_DAY_ONLY 						= 0x1000,
-	ATTRIBUTES_NIGHT_ONLY						= 0x2000,
-	ATTRIBUTES_ONLY_INDOORS						= 0x4000,
-	ATTRIBUTES_ONLY_OUTDOORS					= 0x8000,
-	ATTRIBUTES_IS_NOT_SHAPESHIFT				= 0x10000,
-	ATTRIBUTES_REQ_STEALTH						= 0x20000,
-	ATTRIBUTES_UNK20							= 0x40000,//it's not : must be behind
-	ATTRIBUTES_LEVEL_DAMAGE_CALCULATION			= 0x80000,
-	ATTRIBUTES_STOP_ATTACK						= 0x100000,//switch off auto attack on use. Maim,Gouge,Disengage,Polymorph etc
-	ATTRIBUTES_CANT_BE_DPB				    	= 0x200000,//can't be dodged, blocked, parried
-	ATTRIBUTES_UNK24							= 0x400000, // related to ranged
-	ATTRIBUTES_UNK25							= 0x800000,
-	ATTRIBUTES_MOUNT_CASTABLE					= 0x1000000, //castable on mounts
-	ATTRIBUTES_TRIGGER_COOLDOWN			        = 0x2000000, //also requires attributes ex = 32 ?
-	ATTRIBUTES_UNK28							= 0x4000000,
-	ATTRIBUTES_CASTABLE_WHILE_SITTING			= 0x8000000,
-	ATTRIBUTES_REQ_OOC							= 0x10000000, //     ATTRIBUTES_REQ_OUT_OF_COMBAT
-    ATTRIBUTES_IGNORE_INVULNERABILITY           = 0x20000000, //debuffs that can't be removed by any spell and spells that can't be resisted in any case
-	ATTRIBUTES_UNK32							= 0x40000000, // seems like IS_DIMINISHING but some spells not there (f.e. Gouge)
-	ATTRIBUTES_CANT_CANCEL						= 0x80000000, // seems like aura is not removable by CMSG_CANCEL_AURA
+	ATTRIBUTES_NULL									= 0x00000000,
+	ATTRIBUTES_UNK2									= 0x00000001,
+	ATTRIBUTES_RANGED								= 0x00000002,	// related to ranged??
+	ATTRIBUTE_ON_NEXT_ATTACK						= 0x00000004,
+	ATTRIBUTES_UNK5									= 0x00000008, //ATTRIBUTES_UNUSED0
+	ATTRIBUTES_UNK6									= 0x00000010,
+	ATTRIBUTES_UNK7									= 0x00000020,	// Tradeskill recipies
+	ATTRIBUTES_PASSIVE								= 0x00000040,
+	ATTRIBUTES_NO_VISUAL_AURA						= 0x00000080,
+	ATTRIBUTES_NO_CAST								= 0x00000100,	//seems to be afflicts pet
+	ATTRIBUTES_UNK11								= 0x00000200,	// looks like temp enchants.
+	ATTRIBUTES_ON_NEXT_SWING_2						= 0x00000400,	//completely the same as ATTRIBUTE_ON_NEXT_ATTACK for class spells. So difference somewhere in mob abilities.
+	ATTRIBUTES_UNK13								= 0x00000800,
+	ATTRIBUTES_DAY_ONLY								= 0x00001000,
+	ATTRIBUTES_NIGHT_ONLY							= 0x00002000,
+	ATTRIBUTES_ONLY_INDOORS							= 0x00004000,
+	ATTRIBUTES_ONLY_OUTDOORS						= 0x00008000,
+	ATTRIBUTES_NOT_SHAPESHIFT						= 0x00010000,
+	ATTRIBUTES_REQ_STEALTH							= 0x00020000,
+	ATTRIBUTES_UNK20								= 0x00040000,	//it's not : must be behind
+	ATTRIBUTES_LEVEL_DAMAGE_CALCULATION				= 0x00080000,
+	ATTRIBUTES_STOP_ATTACK							= 0x00100000,	//switch off auto attack on use. Maim,Gouge,Disengage,Polymorph etc
+	ATTRIBUTES_CANT_BE_DPB							= 0x00200000,	//can't be dodged, blocked, parried
+	ATTRIBUTES_UNK24								= 0x00400000,	// related to ranged
+	ATTRIBUTES_UNK25								= 0x00800000,
+	ATTRIBUTES_MOUNT_CASTABLE						= 0x01000000,	//castable on mounts
+	ATTRIBUTES_TRIGGER_COOLDOWN						= 0x02000000,	//also requires atributes ex = 32 ?
+	ATTRIBUTES_UNK28								= 0x04000000,
+	ATTRIBUTES_CASTABLE_WHILE_SITTING				= 0x08000000,
+	ATTRIBUTES_REQ_OOC								= 0x10000000,	//     ATTRIBUTES_REQ_OUT_OF_COMBAT
+    ATTRIBUTES_IGNORE_INVULNERABILITY				= 0x20000000,	//debuffs that can't be removed by any spell and spells that can't be resisted in any case
+	ATTRIBUTES_UNK32								= 0x40000000,	// seems like IS_DIMINISHING but some spells not there (f.e. Gouge)
+	ATTRIBUTES_CANT_CANCEL							= 0x80000000,	// seems like aura is not removeable by CMSG_CANCEL_AURA
 };
 
 enum AttributesEx
 {
-	ATTRIBUTESEX_NULL                         = 0x0, // 0
-	ATTRIBUTESEX_UNK2                         = 0x1, // 1, pet summoning's
-	ATTRIBUTESEX_DRAIN_WHOLE_MANA             = 0x2, // 2
-	ATTRIBUTESEX_CHANNELED_1                  = 0x4, // 3
-	ATTRIBUTESEX_UNK5                         = 0x8, // 4
-	ATTRIBUTESEX_UNK6                         = 0x10, // 5, stealth effects but Rockbiter wtf 0_0
-	ATTRIBUTESEX_NOT_BREAK_STEALTH            = 0x20, // 6
-	ATTRIBUTESEX_CHANNELED_2				  = 0x40, // 7 [POSSIBLY: dynamite, grenades from engineering etc..]
-	ATTRIBUTESEX_NEGATIVE					  = 0x80,
-	ATTRIBUTESEX_REQ_OOC_TARGET               = 0x100,
-	ATTRIBUTESEX_UNK11                        = 0x200,
-	ATTRIBUTESEX_NO_INITIAL_AGGRO             = 0x400,
-	ATTRIBUTESEX_UNK13                        = 0x800,
-	ATTRIBUTESEX_UNK14                        = 0x1000, // related to pickpocket
-	ATTRIBUTESEX_UNK15                        = 0x2000, // related to remote control
-	ATTRIBUTESEX_UNK16                        = 0x4000,
-	ATTRIBUTESEX_DISPEL_AURAS_ON_IMMUNITY     = 0x8000, // something like "grant immunity"
-	ATTRIBUTESEX_UNAFFECTED_BY_SCHOOL_IMMUNE  = 0x10000, // something like "grant immunity" too
-	ATTRIBUTESEX_REMAIN_OOC                   = 0x20000,
-	ATTRIBUTESEX_UNK20                        = 0x40000,
-	ATTRIBUTESEX_UNK21                        = 0x80000,
-	ATTRIBUTESEX_REQ_COMBO_POINTS1            = 0x100000, // related to "Finishing move" and "Instantly overpowers"
-	ATTRIBUTESEX_UNK23                        = 0x200000,
-	ATTRIBUTESEX_REQ_COMBO_POINTS2            = 0x400000, // only related to "Finishing move"
-	ATTRIBUTESEX_UNK25                        = 0x800000, // related to spells like "ClearAllBuffs"
-	ATTRIBUTESEX_UNK26                        = 0x1000000, // FISHING SPELLS
-	ATTRIBUTESEX_UNK27                        = 0x2000000, // related to "Detect" spell
-	ATTRIBUTESEX_UNK28                        = 0x4000000,
-	ATTRIBUTESEX_UNK29                        = 0x8000000,
-	ATTRIBUTESEX_UNK30                        = 0x10000000,
-	ATTRIBUTESEX_UNK31                        = 0x20000000,
-	ATTRIBUTESEX_UNK32                        = 0x40000000, // Overpower
-	ATTRIBUTESEX_UNK33                        = 0x80000000,
+	ATTRIBUTESEX_NULL								= 0x00000000,	// 2^x
+	ATTRIBUTESEX_UNK2								= 0x00000001,	// 0, pet summonings
+	ATTRIBUTESEX_DRAIN_WHOLE_MANA					= 0x00000002,	// 1, Uses all power
+	ATTRIBUTESEX_CHANNELED_1						= 0x00000004,	// 2, Channeled
+	ATTRIBUTESEX_UNK5								= 0x00000008,	// 3, 
+	ATTRIBUTESEX_UNK6								= 0x00000010,	// 4, stealth effects but Rockbiter wtf 0_0
+	ATTRIBUTESEX_NOT_BREAK_STEALTH					= 0x00000020,	// 5, does not break stealth
+	ATTRIBUTESEX_CHANNELED_2						= 0x00000040,	// 6, Channeled - [POSSIBLY: dynamite, grenades from engineering etc..]
+	ATTRIBUTESEX_NEGATIVE							= 0x00000080,	// 7,
+	ATTRIBUTESEX_REQ_OOC_TARGET						= 0x00000100,	// 8, Spell req target should not be in combat
+	ATTRIBUTESEX_UNK11								= 0x00000200,	// 9,
+	ATTRIBUTESEX_NO_INITIAL_AGGRO					= 0x00000400,	// 10, guessed
+	ATTRIBUTESEX_UNK13								= 0x00000800,	// 11,
+	ATTRIBUTESEX_UNK14								= 0x00001000,	// 12, related to pickpocket
+	ATTRIBUTESEX_UNK15								= 0x00002000,	// 13, related to remote control
+	ATTRIBUTESEX_UNK16								= 0x00004000,	// 14,
+	ATTRIBUTESEX_DISPEL_AURAS_ON_IMMUNITY			= 0x00008000,	// 15, remove auras on immunity - something like "grant immunity"
+	ATTRIBUTESEX_UNAFFECTED_BY_SCHOOL_IMMUNE		= 0x00010000,	// 16, unaffected by school immunity - something like "grant immunity" too
+	ATTRIBUTESEX_REMAIN_OOC							= 0x00020000,	// 17,
+	ATTRIBUTESEX_UNK20								= 0x00040000,	// 18,
+	ATTRIBUTESEX_UNK21								= 0x00080000,	// 19,
+	ATTRIBUTESEX_REQ_COMBO_POINTS1					= 0x00100000,	// 20, related to "Finishing move" and "Instantly overpowers"
+	ATTRIBUTESEX_UNK23								= 0x00200000,	// 21,
+	ATTRIBUTESEX_REQ_COMBO_POINTS2					= 0x00400000,	// 22, only related to "Finishing move"
+	ATTRIBUTESEX_UNK25								= 0x00800000,	// 23, related to spells like "ClearAllBuffs"
+	ATTRIBUTESEX_UNK26								= 0x01000000,	// 24, req fishing pole? FISHING SPELLS
+	ATTRIBUTESEX_UNK27								= 0x02000000,	// 25, related to "Detect" spell
+	ATTRIBUTESEX_UNK28								= 0x04000000,	// 26,
+	ATTRIBUTESEX_UNK29								= 0x08000000,	// 27,
+	ATTRIBUTESEX_UNK30								= 0x10000000,	// 28,
+	ATTRIBUTESEX_UNK31								= 0x20000000,	// 29,
+	ATTRIBUTESEX_UNK32								= 0x40000000,	// 30, Overpower
+	ATTRIBUTESEX_UNK33								= 0x80000000,	// 31,
 };
 
-enum Flags3
+enum AttributesExB
 {
-	FLAGS3_NULL               = 0x0,
-	FLAGS3_UNK2               = 0x1,
-	FLAGS3_UNK3               = 0x2,    // Can be used while stealthed
-	FLAGS3_UNK4               = 0x4,    // request pet maybe
-	FLAGS3_UNK5               = 0x8,    // something todo with temp enchanted items
-	FLAGS3_PARTY_EFFECTING_AURA = 0x10, // Party affecting aura's
-	FLAGS3_ACTIVATE_AUTO_SHOT = 0x20,   // spell that enable's auto shoot
-	FLAGS3_UNK8               = 0x40,   //Polymorph spells
-	FLAGS3_UNK9               = 0x80,
-	FLAGS3_UNUSED1            = 0x100,
-	FLAGS3_UNK11              = 0x200,  // used by 2 spells, 30421 | Nether Portal - Perseverance and  30466 | Nether Portal - Perseverance
-	FLAGS3_TAME_X             = 0x400,  // tame [creature]
-	FLAGS3_FUNNEL             = 0x800,  // only funnel spells
-	FLAGS3_UNK14              = 0x1000, // swipe / Cleave spells
-	FLAGS3_ENCHANT_OWN_ONLY   = 0x2000, // no trade window targets, BoE items get soulbound to you
-	FLAGS3_SPELL_PLAYER_EVENT = 0x4000, // Player event's like logging in, finishing quests, triggering cinematic, being adored, Heartbroken etc
-	FLAGS3_UNUSED3            = 0x8000,
-	FLAGS3_CONTROL_UNIT       = 0x10000, // PvP Controller, RC, Creature taming, Taming Lesson
-	FLAGS3_REQ_RANGED_WEAPON  = 0x20000, // this is shit and has nothing to do with auto shot
-	FLAGS3_REVIVE_PET         = 0x40000, // actually 1 spell, revive pet
-	FLAGS3_UNK21              = 0x80000, // this is a group of spells that are triggered by something. (I have no clue on how to name this one)
-	FLAGS3_REQ_BEHIND_TARGET  = 0x100000, //wrong
-	FLAGS3_UNK23              = 0x200000,
-	FLAGS3_UNK24              = 0x400000,
-	FLAGS3_UNK25              = 0x800000,
-	FLAGS3_UNK26              = 0x1000000,
-	FLAGS3_UNK27              = 0x2000000,
-	FLAGS3_UNK28              = 0x4000000,
-	FLAGS3_UNK29              = 0x8000000, // fishing spells and enchanting weapons
-	FLAGS3_UNK30              = 0x10000000, // some secondary spell triggers, especially for lightning shield alike spells
-	FLAGS3_UNK31              = 0x20000000,
-	FLAGS3_UNK32              = 0x40000000,
-	FLAGS3_UNK33              = 0x80000000,
+	ATTRIBUTESEXB_NULL								= 0x00000000,	//
+	ATTRIBUTESEXB_UNK2								= 0x00000001,	// 0
+	ATTRIBUTESEXB_UNK3								= 0x00000002,	// 1, Can be used while stealthed
+	ATTRIBUTESEXB_UNK4								= 0x00000004,	// 2, request pet maybe
+	ATTRIBUTESEXB_UNK5								= 0x00000008,	// 3, something todo with temp enchanted items
+	ATTRIBUTESEXB_PARTY_EFFECTING_AURA				= 0x00000010,	// 4, Party affecting aura's
+	ATTRIBUTESEXB_ACTIVATE_AUTO_SHOT				= 0x00000020,	// 5, spell that enable's auto shoot
+	ATTRIBUTESEXB_UNK8								= 0x00000040,	// 6, Polymorph spells
+	ATTRIBUTESEXB_UNK9								= 0x00000080,	// 7, 
+	ATTRIBUTESEXB_UNUSED1							= 0x00000100,	// 8, not set in 3.0.3
+	ATTRIBUTESEXB_UNK11								= 0x00000200,	// 9, used by 2 spells, 30421 | Nether Portal - Perseverence and  30466 | Nether Portal - Perseverence
+	ATTRIBUTESEXB_TAME_X							= 0x00000400,	// 10, tame [creature]
+	ATTRIBUTESEXB_FUNNEL							= 0x00000800,	// 11, only funnel spells
+	ATTRIBUTESEXB_UNK14								= 0x00001000,	// 12, swipe / Cleave spells
+	ATTRIBUTESEXB_ENCHANT_OWN_ONLY					= 0x00002000,	// 13, no trade window targets, BoE items get soulbound to you
+	ATTRIBUTESEXB_SPELL_PLAYER_EVENT				= 0x00004000,	// 14, Player event's like logging in, finishing quests, triggering cinematic, being adored, Heartbroken etc
+	ATTRIBUTESEXB_UNUSED3							= 0x00008000,	// 15, not set in 3.0.3
+	ATTRIBUTESEXB_CONTROL_UNIT						= 0x00010000,	// 16, PvP Controller, RC, Creature taming, Taming Lesson
+	ATTRIBUTESEXB_REQ_RANGED_WEAPON					= 0x00020000,	// 17, used by hunters shot and stings... Possibly triggers autoshot?
+	ATTRIBUTESEXB_REVIVE_PET						= 0x00040000,	// 18, actually 1 spell, revive pet
+	ATTRIBUTESEXB_NOT_NEED_SHAPESHIFT				= 0x00080000,	// 19, does not necessarily need shapeshift
+	ATTRIBUTESEXB_REQ_BEHIND_TARGET					= 0x00100000,	// 20,
+	ATTRIBUTESEXB_UNK23								= 0x00200000,	// 21,
+	ATTRIBUTESEXB_UNK24								= 0x00400000,	// 22,
+	ATTRIBUTESEXB_UNK25								= 0x00800000,	// 23,
+	ATTRIBUTESEXB_UNK26								= 0x01000000,	// 24,
+	ATTRIBUTESEXB_UNK27								= 0x02000000,	// 25,
+	ATTRIBUTESEXB_UNK28								= 0x04000000,	// 26,
+	ATTRIBUTESEXB_UNK29								= 0x08000000,	// 27, fishing spells and enchanting weapons
+	ATTRIBUTESEXB_UNK30								= 0x10000000,	// 28, some secondairy spell triggers, especialy for lightning shield alike spells
+	ATTRIBUTESEXB_CANT_CRIT							= 0x20000000,	// 29, spell can't crit
+	ATTRIBUTESEXB_UNK32								= 0x40000000,	// 30,
+	ATTRIBUTESEXB_UNK33								= 0x80000000,	// 31,
 };
 
 enum Flags4
@@ -1663,6 +1663,8 @@ public:
     void AddTime(uint32 type);
     void AddCooldown();
     void AddStartCooldown();
+	//
+	uint8 GetErrorAtShapeshiftedCast(SpellEntry *spellInfo, uint32 form);
 
 
     bool Reflect(Unit * refunit);
@@ -1679,7 +1681,7 @@ public:
     void SendChannelUpdate(uint32 time);
     void SendChannelStart(uint32 duration);
     void SendResurrectRequest(Player* target);
-    void SendHealSpellOnPlayer(Object* caster, Object* target, uint32 dmg,bool critical);
+    void SendHealSpellOnPlayer(Object* caster, Object* target, uint32 dmg,bool critical, uint32 overheal, uint32 spellid);
 	void SendHealManaSpellOnPlayer(Object * caster, Object * target, uint32 dmg, uint32 powertype);
 	void SendTameFailure( uint8 failure );
 
@@ -1806,6 +1808,8 @@ public:
 	void SpellEffectCreateItem2(uint32 i);
 	void SpellEffectMilling(uint32 i);
 	void SpellEffectRenamePet(uint32 i);
+	void SpellEffectRestoreHealthPct(uint32 i);
+//	void SpellEffectActivateRune(uint32 i);
 
     // Spell Targets Handlers
     void SpellTargetNULL(uint32 i, uint32 j);

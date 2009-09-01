@@ -260,7 +260,7 @@ pSpellAura SpellAuraHandler[TOTAL_SPELL_AURAS]={
 		&Aura::HandleAuraControlVehicle,
 		&Aura::SpellAuraModHealingByAP,//237	//increase spell healing by X pct from attack power
 		&Aura::SpellAuraModSpellDamageByAP,//238	//increase spell dmg by X pct from attack power
-		&Aura::SpellAuraNULL,//239
+		&Aura::SpellAuraModScale,//239
 		&Aura::SpellAuraExpertise,// SPELL_AURA_EXPERTISE = 240 
 		&Aura::SpellAuraNULL,//241
 		&Aura::SpellAuraNULL,//242
@@ -270,41 +270,41 @@ pSpellAura SpellAuraHandler[TOTAL_SPELL_AURAS]={
 		&Aura::SpellAuraNULL,//246
 		&Aura::SpellAuraNULL,//247
 		&Aura::SpellAuraModCombatResultChance,//248 SPELL_AURA_MOD_COMBAT_RESULT_CHANCE
-		&Aura::SpellAuraNULL,//249
+		&Aura::SpellAuraNULL,//249 - SpellAuraConvertRune
 		&Aura::SpellAuraAddHealth,//250
 		&Aura::SpellAuraNULL,//251  Mod Enemy Dodge
-		&Aura::SpellAuraNULL,//252
+		&Aura::SpellAuraNULL,//252 Reduces the target's ranged, melee attack, and casting speed by X pct for Y sec.
 		&Aura::SpellAuraBlockMultipleDamage,//253 SPELL_AURA_BLOCK_MULTIPLE_DAMAGE
 		&Aura::SpellAuraNULL,//254
 		&Aura::SpellAuraModMechanicDmgTakenPct, //255 SPELL_AURA_MOD_MECHANIC_DAMAGE_TAKEN_PERCENT
-		&Aura::SpellAuraNULL,//256
-		&Aura::SpellAuraNULL,//257
-		&Aura::SpellAuraNULL,//258
-		&Aura::SpellAuraNULL,//259
-		&Aura::SpellAuraNULL,//260
+		&Aura::SpellAuraRemoveReagentCost,//256 Remove reagent cost
+		&Aura::SpellAuraNULL,//257 Mod Target Resist By Spell Class ( does damage in the form of X damage, ignoring all resistances, absorption, and immunity mechanics. - http://thottbot.com/s47271 )
+		&Aura::SpellAuraNULL,//258 Mod Spell Visual
+		&Aura::SpellAuraNULL,//259 Mod Periodic Damage Taken Pct - Periodic Shadow damage taken increased by 3% ( http://thottbot.com/s60448 )
+		&Aura::SpellAuraNULL,//260 Screen Effect
 		&Aura::SpellAuraPhase,//261
 		&Aura::SpellAuraIgnoreTargetAuraState, //262 SPELL_AURA_IGNORE_TARGET_AURA_STATE
 		&Aura::SpellAuraAllowOnlyAbility,//263 SPELL_AURA_ALLOW_ONLY_ABILITY
 		&Aura::SpellAuraNULL,//264
 		&Aura::SpellAuraNULL,//265
 		&Aura::SpellAuraNULL,//266
-		&Aura::SpellAuraNULL,//267
+		&Aura::SpellAuraNULL,//267 Prevent the application of harmful magical effects
 		&Aura::SpellAuraIncreaseAPbyStatPct, //268 Increase attack power by % of stat
-		&Aura::SpellAuraNULL,//269
-		&Aura::SpellAuraNULL,//270
+		&Aura::SpellAuraNULL,//269 Damage reduction effects ignored. (?) - http://thottbot.com/s57318
+		&Aura::SpellAuraNULL,//270 Ignore target resist
 		&Aura::SpellAuraModSpellDamageDOTPct,//271
-		&Aura::SpellAuraNULL,//272
-		&Aura::SpellAuraNULL,//273
-		&Aura::SpellAuraNULL,//274
-        &Aura::SpellAuraIgnoreShapeshift,//275
-		&Aura::SpellAuraNULL,//276
+		&Aura::SpellAuraNULL,//272 Unknown
+		&Aura::SpellAuraNULL,//273 Some sort of dummy aura? (http://thottbot.com/s54844 + http://thottbot.com/s26659)
+		&Aura::SpellAuraNULL,//274 Consumes no ammo
+		&Aura::SpellAuraIgnoreShapeshift,//275 Ignore unit states
+		&Aura::SpellAuraNULL,//276 Mod Damage % Mechanic
 		&Aura::SpellAuraNULL,//277 SPELL_AURA_REDIRECT_THREAT or SPELL_AURA_MOD_MAX_AFFECTED_TARGETS ?
-		&Aura::SpellAuraNULL,//278
-		&Aura::SpellAuraNULL,//279
+		&Aura::SpellAuraNULL,//278 Mod Disarm Ranged
+		&Aura::SpellAuraNULL,//279 Modify models(?)
 		&Aura::SpellAuraModIgnoreArmorPct,//280 SPELL_AURA_IGNORE_ARMOR_PCT
-		&Aura::SpellAuraNULL,//281
+		&Aura::SpellAuraNULL,//281 Mod Honor gain increased by X pct. Final Reward Honor increased by X pct for Y Rank and above. (http://thottbot.com/s58560 && http://thottbot.com/s58557)
 		&Aura::SpellAuraModBaseHealth,//282 SPELL_AURA_MOD_BASE_HEALTH
-		&Aura::SpellAuraNULL,//283
+		&Aura::SpellAuraModHealingPCT,//283 Increases all healing received by X pct
 		&Aura::SpellAuraNULL,//284 not used by any spells (3.08a)
 		&Aura::SpellAuraModAttackPowerOfArmor,//285 SPELL_AURA_MOD_ATTACK_POWER_OF_ARMOR
 		&Aura::SpellAuraNULL,//286 SPELL_AURA_ALLOW_CRIT_PERIODIC_DAMAGE
@@ -424,7 +424,7 @@ const char* SpellAuraNames[TOTAL_SPELL_AURAS] = {
     "MOD_RESIST_CHANCE",								//  90 Mod Resist Chance
     "MOD_DETECT_RANGE",									//  91 Mod Detect Range
     "PREVENTS_FLEEING",									//  92 Prevent Fleeing
-	"MOD_UNATTACKABLE",									//  93 Mod Unintractable
+    "MOD_UNATTACKABLE",									//  93 Mod Uninteractible
     "INTERRUPT_REGEN",									//  94 Interrupt Regen
     "GHOST",											//  95 Ghost
     "SPELL_MAGNET",										//  96 Spell Magnet
@@ -2297,6 +2297,19 @@ void Aura::SpellAuraDummy(bool apply)
 			else if(m_target->isAlive())
 				p_target->SoulStone = p_target->SoulStoneReceiver = 0;
 		}break;
+	case 47883:// SoulStone rank 7
+		{
+			if( p_target == NULL )
+				return;
+
+			if(apply)
+			{
+				p_target->SoulStone = 47882;
+				p_target->SoulStoneReceiver = (uint32)m_casterGuid;
+			}
+			else if(m_target->isAlive())
+				p_target->SoulStone = p_target->SoulStoneReceiver = 0;
+		}break;
 	//case 20154://Soulstone Resurrection
 	//case 20287:
 	//case 20288:
@@ -2681,13 +2694,13 @@ void Aura::SpellAuraDummy(bool apply)
 			if( apply )
 			{
 				p_target->m_outStealthDamageBonusPct += mod->m_amount;
-				p_target->m_outStealthDamageBonusPeriod = 6;			// 6 seconds
+				p_target->m_outStealthDamageBonusPeriod = 6;		// 6 seconds
 				p_target->m_outStealthDamageBonusTimer = 0;			// reset it
 			}
 			else
 			{
 				p_target->m_outStealthDamageBonusPct -= mod->m_amount;
-				p_target->m_outStealthDamageBonusPeriod = 6;			// 6 seconds
+				p_target->m_outStealthDamageBonusPeriod = 6;		// 6 seconds
 				p_target->m_outStealthDamageBonusTimer = 0;			// reset it
 			}
 		}break;
@@ -4472,13 +4485,17 @@ void Aura::SpellAuraModShapeshift(bool apply)
 		if( !(mod->m_miscValue & ( FORM_BATTLESTANCE | FORM_DEFENSIVESTANCE | FORM_BERSERKERSTANCE ) ) )
 			m_target->RemoveAura( p_target->m_MountSpellId ); // these spells are not compatible
 
+	SpellShapeshiftForm * ssf = dbcSpellShapeshiftForm.LookupEntry( mod->m_miscValue );
+	if( !ssf)
+		return;
+
 	uint32 spellId = 0;
 	uint32 spellId2 = 0;
-	uint32 modelId = 0;
+	uint32 modelId = (uint32)(apply ? ssf->modelId : 0);
 
 	bool freeMovements = false;
 
-	switch( mod->m_miscValue )
+	switch( ssf->id )
 	{
 	case FORM_CAT:
 		{//druid
@@ -4489,9 +4506,7 @@ void Aura::SpellAuraModShapeshift(bool apply)
 				m_target->SetByte(UNIT_FIELD_BYTES_0,3,POWER_TYPE_ENERGY);
 				m_target->SetUInt32Value(UNIT_FIELD_MAXPOWER4,100);//100 Energy
 				m_target->SetUInt32Value(UNIT_FIELD_POWER4,0);//0 Energy
-				if(m_target->getRace() == RACE_NIGHTELF)//NE
-					modelId = 892;
-				else //TAUREN
+				if(m_target->getRace() != RACE_NIGHTELF)//TAUREN
 					modelId = 8571;
 
 			}
@@ -4511,7 +4526,6 @@ void Aura::SpellAuraModShapeshift(bool apply)
 		} break;
 	case FORM_TREE:
 		{
-			modelId = 864;
 			freeMovements = true;
 			spellId = 34123; // this is area aura
 			//spellId2 = 5420;
@@ -4520,13 +4534,11 @@ void Aura::SpellAuraModShapeshift(bool apply)
 		{//druid
 			freeMovements = true;
 			spellId = 5419;
-			modelId = 918;
 		} break;
 	case FORM_AQUA:
 		{//druid aqua
 			freeMovements = true;
 			spellId = 5421;
-			modelId = 2428;
 		} break;
 	case FORM_BEAR:
 		{//druid only
@@ -4538,9 +4550,7 @@ void Aura::SpellAuraModShapeshift(bool apply)
 				m_target->SetUInt32Value(UNIT_FIELD_MAXPOWER2, 1000);
 				m_target->SetUInt32Value(UNIT_FIELD_POWER2, 0);//0 rage
 
-				if(m_target->getRace() == RACE_NIGHTELF)
-					modelId = 2281;
-				else //TAUREN
+				if( m_target->getRace() != RACE_NIGHTELF ) //TAUREN
 					modelId = 2289;
 
 				//some say there is a second effect
@@ -4569,17 +4579,11 @@ void Aura::SpellAuraModShapeshift(bool apply)
 				m_target->SetByte(UNIT_FIELD_BYTES_0,3,POWER_TYPE_RAGE);
 				m_target->SetUInt32Value(UNIT_FIELD_MAXPOWER2, 1000);
 				m_target->SetUInt32Value(UNIT_FIELD_POWER2, 0);//0 rage
-				if(m_target->getRace() == 4)//NE
-					modelId = 2281;
-				else //TAUREN
+				if( m_target->getRace() != RACE_NIGHTELF ) //TAUREN
 					modelId = 2289;
 			}
 			else //reset back to mana
 				m_target->SetByte(UNIT_FIELD_BYTES_0,3,POWER_TYPE_MANA);
-		} break;
-	case FORM_GHOSTWOLF:
-		{
-			modelId = 4613;
 		} break;
 	case FORM_BATTLESTANCE:
 		{
@@ -4593,19 +4597,10 @@ void Aura::SpellAuraModShapeshift(bool apply)
 		{
 			spellId = 7381;
 		} break;
-	case FORM_DEMON:
-		{
-		if(apply)
-			modelId = 25277;
-		}break;
 	case FORM_SHADOW:
 		{
 			if(apply)
 			{
-				/*WorldPacket data(12);
-				data.SetOpcode(SMSG_COOLDOWN_EVENT);
-				data << (uint32)GetSpellProto()->Id << m_target->GetGUID();
-				static_cast< Player* >( m_target )->GetSession()->SendPacket(&data);*/
 				packetSMSG_COOLDOWN_EVENT cd;
 				cd.spellid = m_spellProto->Id;
 				cd.guid = m_target->GetGUID();
@@ -4618,10 +4613,8 @@ void Aura::SpellAuraModShapeshift(bool apply)
 			spellId = 33948;
 			if(apply)
 			{
-			    if(m_target->getRace() == RACE_NIGHTELF)
-				    modelId = 20857;
-			    else
-				    modelId = 20872;
+				if(m_target->getRace() != RACE_NIGHTELF)
+					modelId = 20872;
 			}
 		}break;
 	case FORM_STEALTH:
@@ -4636,10 +4629,8 @@ void Aura::SpellAuraModShapeshift(bool apply)
 			spellId = 24905;
 			if(apply)
 			{
-				if(m_target->getRace() == RACE_NIGHTELF)
-					modelId = 15374;
-				else
-					modelId = 15375;
+				if(m_target->getRace() != RACE_NIGHTELF)
+					modelId = ssf->modelId2; // Lol, why is this the only one that has it in ShapeShift DBC? =/ lameeee...
 			}
 		}break;
 	case FORM_SWIFT: //not tested yet, right now going on trust
@@ -4648,16 +4639,24 @@ void Aura::SpellAuraModShapeshift(bool apply)
 			spellId = 40121; //Swift Form Passive
 			if(apply)
 			{
-				if(m_target->getRace() == RACE_NIGHTELF)//NE
-					modelId = 21243;
-				else //TAUREN
+				if(m_target->getRace() != RACE_NIGHTELF)//TAUREN
 					modelId = 21244;
 			}
 		}break;
 	case FORM_SPIRITOFREDEMPTION:
 		{
 			spellId = 27795;
-			modelId = 12824;
+			modelId = 12824; // Smaller spirit healer, heehee :3
+		}break;
+	case FORM_GHOUL:
+	case FORM_SKELETON:
+	case FORM_ZOMBIE:
+		{
+			p_target->SendAvailSpells(ssf, apply);
+		}break;
+	case FORM_METAMORPHOSIS:
+		{
+			spellId = 59673;
 		}break;
 	}
 
@@ -6064,10 +6063,9 @@ void Aura::SpellAuraMechanicImmunity(bool apply)
 			{
 				m_target->RemoveAllAurasByMechanic( (uint32)mod->m_miscValue , static_cast<uint32>(-1) , false );
 			}
-
-			if(m_spellProto->Id==42292)
+			//Insignia/Medallion of A/H			//Every Man for Himself
+			if( m_spellProto->Id == 42292 || m_spellProto->Id == 59752 )
 			{
-				// insignia of the A/H
 				for(uint32 x= MAX_NEGATIVE_AURAS_EXTEDED_START; x < MAX_NEGATIVE_AURAS_EXTEDED_END; ++x)
 				{
 					if(m_target->m_auras[x])
@@ -6355,13 +6353,31 @@ void Aura::SpellAuraDrinkNew(bool apply)
 				EVENT_AURA_PERIODIC_TRIGGERSPELL, GetSpellProto()->EffectAmplitude[mod->i], 0, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
 			}
 			break;
-		default:
+	case SPELL_HASH_EXPLOSIVE_SHOT:
+		{
+			if( apply )
+			{
+				SetNegative();
+				int32 dmg	= mod->m_amount;
+				dmg += float2int32( m_target->GetUInt32Value(UNIT_FIELD_RANGED_ATTACK_POWER) * 0.16f );
+				sEventMgr.AddEvent(this, &Aura::EventPeriodicDamage,(uint32)dmg,
+					EVENT_AURA_PERIODIC_DAMAGE,GetSpellProto()->EffectAmplitude[mod->i],0,EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
+			}
+			else
+			{
+				sEventMgr.RemoveEvents( this, EVENT_AURA_PERIODIC_DAMAGE );
+			}
+		}break;
+
+	default:
+		{
 			if( apply )
 			{
 				SetPositive();
 				sEventMgr.AddEvent(this, &Aura::EventPeriodicDrink, uint32(float2int32(float(mod->m_amount)/5.0f)),
 				EVENT_AURA_PERIODIC_REGEN, 1000, 0, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
 			}
+		}
 	}
 }
 
