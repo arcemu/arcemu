@@ -448,10 +448,10 @@ void WorldSession::HandlePetRename(WorldPacket & recv_data)
     else
         pet->RemoveFFAPvPFlag();
 
-	if( pet->GetOwner()->IsSanctuaryFlagged() )
+	if( pet->GetPetOwner()->IsSanctuaryFlagged() )
 		pet->SetSanctuaryFlag();
 	else
-		pet->RemoveSancturayFlag();
+		pet->RemoveSanctuaryFlag();
 }
 
 void WorldSession::HandlePetAbandon(WorldPacket & recv_data)

@@ -897,7 +897,7 @@ public:
 
 	virtual bool IsSanctuaryFlagged() = 0;
 	virtual void SetSanctuaryFlag() = 0;
-	virtual void RemoveSancturayFlag() = 0;
+	virtual void RemoveSanctuaryFlag() = 0;
 
 
     void setAttackTimer(int32 time, bool offhand);

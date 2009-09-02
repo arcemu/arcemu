@@ -2163,7 +2163,7 @@ void Player::SpawnPet( uint32 pet_number )
 	if( this->IsSanctuaryFlagged() )
 		pPet->SetSanctuaryFlag();
 	else
-		pPet->RemoveSancturayFlag();
+		pPet->RemoveSanctuaryFlag();
 
     pPet->SetUInt32Value( UNIT_FIELD_FACTIONTEMPLATE, this->GetUInt32Value( UNIT_FIELD_FACTIONTEMPLATE ) );
 	
@@ -9366,7 +9366,7 @@ void Player::UpdatePvPArea()
 		else
 		{
 			// if we are not in a sanctuary we don't need this flag
-			RemoveSancturayFlag();
+			RemoveSanctuaryFlag();
 
 			//contested territory
 			if(sWorld.GetRealmType() == REALM_PVP)
@@ -13203,22 +13203,22 @@ void Player::SetSanctuaryFlag(){
 		m_Summon->SetSanctuaryFlag();
 }
 
-void Player::RemoveSancturayFlag(){
+void Player::RemoveSanctuaryFlag(){
 	RemoveByteFlag( UNIT_FIELD_BYTES_2, 1, U_FIELD_BYTES_FLAG_SANCTUARY );
 
 	// Adjusting the totems' sanctuary flag	
 	for(int i = 0; i < 4; ++i){
 		if( m_TotemSlots[i] != NULL ){
-			m_TotemSlots[i]->RemoveSancturayFlag();
+			m_TotemSlots[i]->RemoveSanctuaryFlag();
 			
 			// Adjusting the totems' summons' sanctuary flag
 			if( static_cast<Unit*>( m_TotemSlots[i] )->summonPet != NULL)
-				static_cast<Unit*>( m_TotemSlots[i] )->summonPet->RemoveSancturayFlag();
+				static_cast<Unit*>( m_TotemSlots[i] )->summonPet->RemoveSanctuaryFlag();
 		}
 	}
 	
 	// If we have a pet we will remove the sanctuary flag from that too
 	if( m_Summon != NULL )
-		m_Summon->RemoveSancturayFlag();
+		m_Summon->RemoveSanctuaryFlag();
 }
 

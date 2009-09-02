@@ -2020,6 +2020,6 @@ bool Creature::IsSanctuaryFlagged(){
 void Creature::SetSanctuaryFlag(){ 
 	SetByteFlag( UNIT_FIELD_BYTES_2, 1, U_FIELD_BYTES_FLAG_SANCTUARY ); 
 }
-void Creature::RemoveSancturayFlag(){ 
+void Creature::RemoveSanctuaryFlag(){ 
 	RemoveByteFlag( UNIT_FIELD_BYTES_2, 1, U_FIELD_BYTES_FLAG_SANCTUARY ); 
 }

@@ -323,7 +323,7 @@ public:
 
 	bool IsSanctuaryFlagged();
 	void SetSanctuaryFlag();
-	void RemoveSancturayFlag();
+	void RemoveSanctuaryFlag();
 
 
 	int32 GetSlotByItemId(uint32 itemid)

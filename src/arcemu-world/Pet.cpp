@@ -232,7 +232,7 @@ void Pet::CreateAsSummon( uint32 entry, CreatureInfo *ci, Creature* created_from
 	if( owner->IsSanctuaryFlagged() )
 		this->SetSanctuaryFlag();
 	else
-		this->RemoveSancturayFlag();
+		this->RemoveSanctuaryFlag();
 
     BaseDamage[0] = 0;
 	BaseDamage[1] = 0;
@@ -793,7 +793,7 @@ void Pet::Remove( bool bUpdate, bool bSetOffline )
 		m_Owner->SetUInt64Value( UNIT_FIELD_SUMMON, 0 );
 		m_Owner->SetSummon( NULL );
 		SendNullSpellsToOwner();
-		ClearPetOwner();
+		// ClearPetOwner();
 	}
 
 	// has to be next loop - reason because of RemoveFromWorld, iterator gets broken

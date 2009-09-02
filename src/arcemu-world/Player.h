@@ -1908,7 +1908,7 @@ public:
 
 	bool IsSanctuaryFlagged();
 	void SetSanctuaryFlag();
-	void RemoveSancturayFlag();
+	void RemoveSanctuaryFlag();
 
     ARCEMU_INLINE void AddCoins( int32 coins ){ 
         ModUnsigned32Value( PLAYER_FIELD_COINAGE , coins );
