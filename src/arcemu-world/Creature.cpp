@@ -1982,3 +1982,44 @@ uint32 Creature::GetRequiredLootSkill()
 	else
 		return SKILL_SKINNING;      // skinning
 };
+
+//! Is PVP flagged?
+bool Creature::IsPvPFlagged()
+{
+	return HasByteFlag(UNIT_FIELD_BYTES_2, 1, U_FIELD_BYTES_FLAG_PVP);
+}
+
+void Creature::SetPvPFlag()
+{
+	SetByteFlag(UNIT_FIELD_BYTES_2, 1, U_FIELD_BYTES_FLAG_PVP);
+}
+
+void Creature::RemovePvPFlag()
+{
+	RemoveByteFlag(UNIT_FIELD_BYTES_2, 1, U_FIELD_BYTES_FLAG_PVP);
+}
+
+bool Creature::IsFFAPvPFlagged()
+{
+	return HasByteFlag(UNIT_FIELD_BYTES_2, 1, U_FIELD_BYTES_FLAG_FFA_PVP);
+}
+
+void Creature::SetFFAPvPFlag()
+{
+	SetByteFlag(UNIT_FIELD_BYTES_2, 1, U_FIELD_BYTES_FLAG_FFA_PVP);
+}
+
+void Creature::RemoveFFAPvPFlag()
+{
+	RemoveByteFlag(UNIT_FIELD_BYTES_2, 1, U_FIELD_BYTES_FLAG_FFA_PVP);
+}
+
+bool Creature::IsSanctuaryFlagged(){ 
+	return HasByteFlag( UNIT_FIELD_BYTES_2, 1, U_FIELD_BYTES_FLAG_SANCTUARY); 
+}
+void Creature::SetSanctuaryFlag(){ 
+	SetByteFlag( UNIT_FIELD_BYTES_2, 1, U_FIELD_BYTES_FLAG_SANCTUARY ); 
+}
+void Creature::RemoveSancturayFlag(){ 
+	RemoveByteFlag( UNIT_FIELD_BYTES_2, 1, U_FIELD_BYTES_FLAG_SANCTUARY ); 
+}

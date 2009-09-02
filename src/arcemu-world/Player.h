@@ -1898,108 +1898,17 @@ public:
 	******************/
 	uint32 m_pvpTimer;
 
-	//! Is PVP flagged?
-	ARCEMU_INLINE bool IsPvPFlagged()
-	{
-		return HasByteFlag(UNIT_FIELD_BYTES_2, 1, U_FIELD_BYTES_FLAG_PVP);
-	}
+	bool IsPvPFlagged();
+	void SetPvPFlag();
+	void RemovePvPFlag();
 
-	ARCEMU_INLINE void SetPvPFlag()
-	{
-		StopPvPTimer();
-//		This is now done in Player::OnPushToWorld() to allow PvP-off characters to attack PvP-on characters without having to type /pvp
-//		RemoveByteFlag(UNIT_FIELD_BYTES_2, 1, 0x28);
-		SetByteFlag(UNIT_FIELD_BYTES_2, 1, U_FIELD_BYTES_FLAG_PVP);
-		SetFlag(PLAYER_FLAGS, PLAYER_FLAG_PVP);
-        
-        // Adjusting the totems' PVP flag
-        for(int i = 0; i < 4; ++i){
-            if( m_TotemSlots[i] != NULL ){
-                m_TotemSlots[i]->SetPvPFlag();
-                
-                // Adjusting the totems' summons' PVP flag
-                if( static_cast<Unit*>( m_TotemSlots[i] )->summonPet != 0)
-                    static_cast<Unit*>( m_TotemSlots[i] )->summonPet->SetPvPFlag();
-            }
-        }
+	bool IsFFAPvPFlagged();
+	void SetFFAPvPFlag();
+	void RemoveFFAPvPFlag();
 
-        // flagging the pet too for PvP, if we have one
-        if( m_Summon != NULL )
-            m_Summon->SetPvPFlag();
-
-		if( CombatStatus.IsInCombat() )
-			SetFlag(PLAYER_FLAGS, 0x100);
-	}
-
-	ARCEMU_INLINE void RemovePvPFlag()
-	{
-		StopPvPTimer();
-		RemoveByteFlag(UNIT_FIELD_BYTES_2, 1, U_FIELD_BYTES_FLAG_PVP);
-		RemoveFlag(PLAYER_FLAGS, PLAYER_FLAG_PVP);
-
-        // Adjusting the totems' PVP flag
-        for(int i = 0; i < 4; ++i){
-            if( m_TotemSlots[i] != NULL ){
-                m_TotemSlots[i]->RemovePvPFlag();
-
-                // Adjusting the totems' summons' PVP flag
-                if( static_cast<Unit*>( m_TotemSlots[i] )->summonPet != 0)
-                    static_cast<Unit*>( m_TotemSlots[i] )->summonPet->RemovePvPFlag();
-            }
-        }
-
-        // If we have a pet we will remove the pvp flag from that too
-        if( m_Summon != NULL )
-          m_Summon->RemovePvPFlag();
-    }
-
-	ARCEMU_INLINE bool IsFFAPvPFlagged()
-	{
-		return HasByteFlag(UNIT_FIELD_BYTES_2, 1, U_FIELD_BYTES_FLAG_FFA_PVP);
-	}
-
-	ARCEMU_INLINE void SetFFAPvPFlag()
-	{
-		StopPvPTimer();
-		SetByteFlag(UNIT_FIELD_BYTES_2, 1, U_FIELD_BYTES_FLAG_FFA_PVP);
-		SetFlag(PLAYER_FLAGS, PLAYER_FLAG_FREE_FOR_ALL_PVP);
-
-        for(int i = 0; i < 4; ++i){
-            if( m_TotemSlots[i] != NULL ){
-                m_TotemSlots[i]->SetFFAPvPFlag();
-                
-                // Adjusting the totems' summons' PVP flag
-                if( static_cast<Unit*>( m_TotemSlots[i] )->summonPet != 0)
-                    static_cast<Unit*>( m_TotemSlots[i] )->summonPet->SetFFAPvPFlag();
-            }
-        }
-
-        // flagging the pet too for PvP, if we have one
-        if( m_Summon != NULL )
-            m_Summon->SetFFAPvPFlag();
-	}
-
-	ARCEMU_INLINE void RemoveFFAPvPFlag()
-	{
-		StopPvPTimer();
-		RemoveByteFlag(UNIT_FIELD_BYTES_2, 1, U_FIELD_BYTES_FLAG_FFA_PVP);
-		RemoveFlag(PLAYER_FLAGS, PLAYER_FLAG_FREE_FOR_ALL_PVP);
-
-        // Adjusting the totems' PVP flag
-        for(int i = 0; i < 4; ++i){
-            if( m_TotemSlots[i] != NULL ){
-                m_TotemSlots[i]->RemoveFFAPvPFlag();
-
-                // Adjusting the totems' summons' PVP flag
-                if( static_cast<Unit*>( m_TotemSlots[i] )->summonPet != 0)
-                    static_cast<Unit*>( m_TotemSlots[i] )->summonPet->RemoveFFAPvPFlag();
-            }
-        }
-
-        // If we have a pet we will remove the pvp flag from that too
-        if( m_Summon != NULL )
-          m_Summon->RemoveFFAPvPFlag();
-	}
+	bool IsSanctuaryFlagged();
+	void SetSanctuaryFlag();
+	void RemoveSancturayFlag();
 
     ARCEMU_INLINE void AddCoins( int32 coins ){ 
         ModUnsigned32Value( PLAYER_FIELD_COINAGE , coins );

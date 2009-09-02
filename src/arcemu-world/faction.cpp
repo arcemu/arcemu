@@ -170,8 +170,8 @@ bool isHostile(Object* objA, Object* objB)// B is hostile for A?
         Player *A = GetPlayerOwner( objA );
         Player *B = GetPlayerOwner( objB );
 
-        if( hostile && A && B ){
-            if( B->IsPvPFlagged() || B->IsFFAPvPFlagged() )
+        if( hostile && A != NULL && B != NULL ){
+			if( !B->IsSanctuaryFlagged() && ( B->IsPvPFlagged() || B->IsFFAPvPFlagged() ) )
                 return true;
             else
                 return false;

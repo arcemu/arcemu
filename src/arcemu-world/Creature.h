@@ -313,36 +313,17 @@ public:
 	ARCEMU_INLINE bool HasItems() { return ((m_SellItems != NULL) ? true : false); }
 	ARCEMU_INLINE CreatureProto* GetProto() { return proto; }
 
-    	//! Is PVP flagged?
-	ARCEMU_INLINE bool IsPvPFlagged()
-	{
-		return HasByteFlag(UNIT_FIELD_BYTES_2, 1, U_FIELD_BYTES_FLAG_PVP);
-	}
+	bool IsPvPFlagged();
+	void SetPvPFlag();
+	void RemovePvPFlag();
 
-	ARCEMU_INLINE void SetPvPFlag()
-	{
-		SetByteFlag(UNIT_FIELD_BYTES_2, 1, U_FIELD_BYTES_FLAG_PVP);
-	}
+	bool IsFFAPvPFlagged();
+	void SetFFAPvPFlag();
+	void RemoveFFAPvPFlag();
 
-	ARCEMU_INLINE void RemovePvPFlag()
-	{
-		RemoveByteFlag(UNIT_FIELD_BYTES_2, 1, U_FIELD_BYTES_FLAG_PVP);
-	}
-
-    ARCEMU_INLINE bool IsFFAPvPFlagged()
-	{
-		return HasByteFlag(UNIT_FIELD_BYTES_2, 1, U_FIELD_BYTES_FLAG_FFA_PVP);
-	}
-
-	ARCEMU_INLINE void SetFFAPvPFlag()
-	{
-		SetByteFlag(UNIT_FIELD_BYTES_2, 1, U_FIELD_BYTES_FLAG_FFA_PVP);
-	}
-
-	ARCEMU_INLINE void RemoveFFAPvPFlag()
-	{
-		RemoveByteFlag(UNIT_FIELD_BYTES_2, 1, U_FIELD_BYTES_FLAG_FFA_PVP);
-	}
+	bool IsSanctuaryFlagged();
+	void SetSanctuaryFlag();
+	void RemoveSancturayFlag();
 
 
 	int32 GetSlotByItemId(uint32 itemid)

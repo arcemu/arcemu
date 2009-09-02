@@ -229,6 +229,11 @@ void Pet::CreateAsSummon( uint32 entry, CreatureInfo *ci, Creature* created_from
     else
         this->RemoveFFAPvPFlag();
 
+	if( owner->IsSanctuaryFlagged() )
+		this->SetSanctuaryFlag();
+	else
+		this->RemoveSancturayFlag();
+
     BaseDamage[0] = 0;
 	BaseDamage[1] = 0;
 	BaseOffhandDamage[0] = 0;

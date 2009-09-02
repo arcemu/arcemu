@@ -661,6 +661,7 @@ enum UnitFieldBytes2
 {
 	U_FIELD_BYTES_FLAG_PVP     = 0x01,
 	U_FIELD_BYTES_FLAG_FFA_PVP = 0x04,
+	U_FIELD_BYTES_FLAG_SANCTUARY  = 0x08,
 	U_FIELD_BYTES_FLAG_AURAS   = 0x10,
 };
 
@@ -893,6 +894,11 @@ public:
     virtual bool IsFFAPvPFlagged() = 0;
     virtual void SetFFAPvPFlag() = 0;
     virtual void RemoveFFAPvPFlag() = 0;
+
+	virtual bool IsSanctuaryFlagged() = 0;
+	virtual void SetSanctuaryFlag() = 0;
+	virtual void RemoveSancturayFlag() = 0;
+
 
     void setAttackTimer(int32 time, bool offhand);
 	bool isAttackReady(bool offhand);

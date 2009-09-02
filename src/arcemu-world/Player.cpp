@@ -2160,6 +2160,11 @@ void Player::SpawnPet( uint32 pet_number )
     else
         pPet->RemoveFFAPvPFlag();
 
+	if( this->IsSanctuaryFlagged() )
+		pPet->SetSanctuaryFlag();
+	else
+		pPet->RemoveSancturayFlag();
+
     pPet->SetUInt32Value( UNIT_FIELD_FACTIONTEMPLATE, this->GetUInt32Value( UNIT_FIELD_FACTIONTEMPLATE ) );
 	
 	if( itr->second->spellid )
@@ -9312,7 +9317,7 @@ void Player::UpdatePvPArea()
 			if((at->category == AREAC_ALLIANCE_TERRITORY && GetTeam() == 1) || (at->category == AREAC_HORDE_TERRITORY && GetTeam() == 0))
 			{
 				if(!IsPvPFlagged())
-                    PvPToggle();
+					SetPvPFlag();
 				else
 					StopPvPTimer();
 				return;
@@ -9338,7 +9343,7 @@ void Player::UpdatePvPArea()
 				if(at2 && (at2->category == AREAC_ALLIANCE_TERRITORY && GetTeam() == 1 || at2->category == AREAC_HORDE_TERRITORY && GetTeam() == 0))
 				{
 					if(!IsPvPFlagged())
-                        PvPToggle();
+						SetPvPFlag();
 					else
 						StopPvPTimer();
 					return;
@@ -9354,16 +9359,21 @@ void Player::UpdatePvPArea()
 				RemovePvPFlag();
 			else
 				StopPvPTimer();
+			
 			RemoveFFAPvPFlag();
+			SetSanctuaryFlag();
 		}
 		else
 		{
+			// if we are not in a sanctuary we don't need this flag
+			RemoveSancturayFlag();
+
 			//contested territory
 			if(sWorld.GetRealmType() == REALM_PVP)
 			{
-				//automatically sets pvp flag on contested territory's.
+				//automatically sets pvp flag on contested territories.
 				if(!IsPvPFlagged())
-                    PvPToggle();
+					SetPvPFlag();
 				else
 					StopPvPTimer();
 			}
@@ -9373,7 +9383,7 @@ void Player::UpdatePvPArea()
 				if(HasFlag(PLAYER_FLAGS, PLAYER_FLAG_PVP_TOGGLE))
 				{
 					if(!IsPvPFlagged())
-						PvPToggle();
+						SetPvPFlag();
 				}
 				else if(!HasFlag(PLAYER_FLAGS, PLAYER_FLAG_PVP_TOGGLE) && IsPvPFlagged() && !m_pvpTimer)
 				{
@@ -9384,7 +9394,7 @@ void Player::UpdatePvPArea()
 			if(at->AreaFlags & AREA_PVP_ARENA)			/* ffa pvp arenas will come later */
 			{
 				if(!IsPvPFlagged())
-					PvPToggle();
+					SetPvPFlag();
 				SetFFAPvPFlag();
 			}
 			else
@@ -9448,7 +9458,7 @@ void Player::PvPToggle()
 			RemoveFlag(PLAYER_FLAGS, PLAYER_FLAG_PVP);
 
             if(!IsPvPFlagged())
-				PvPToggle();
+				SetPvPFlag();
 	    }
 	    else
 	    {
@@ -13069,3 +13079,146 @@ void Player::SendAvailSpells(SpellShapeshiftForm* ssf, bool active)
 		GetSession()->SendPacket(&data);
 	}
 }
+
+bool Player::IsPvPFlagged()
+{
+	return HasByteFlag(UNIT_FIELD_BYTES_2, 1, U_FIELD_BYTES_FLAG_PVP);
+}
+
+void Player::SetPvPFlag()
+{
+	StopPvPTimer();
+
+	SetByteFlag(UNIT_FIELD_BYTES_2, 1, U_FIELD_BYTES_FLAG_PVP);
+	SetFlag(PLAYER_FLAGS, PLAYER_FLAG_PVP);
+       
+    // Adjusting the totems' PVP flag
+    for(int i = 0; i < 4; ++i){
+		if( m_TotemSlots[i] != NULL ){
+			m_TotemSlots[i]->SetPvPFlag();
+			
+			// Adjusting the totems' summons' PVP flag
+			if( static_cast<Unit*>( m_TotemSlots[i] )->summonPet != NULL)
+				static_cast<Unit*>( m_TotemSlots[i] )->summonPet->SetPvPFlag();
+            }
+        }
+	
+	// flagging the pet too for PvP, if we have one
+	if( m_Summon != NULL )
+		m_Summon->SetPvPFlag();
+	
+	if( CombatStatus.IsInCombat() )
+		SetFlag(PLAYER_FLAGS, 0x100);
+}
+
+void Player::RemovePvPFlag()
+{
+	StopPvPTimer();
+	RemoveByteFlag(UNIT_FIELD_BYTES_2, 1, U_FIELD_BYTES_FLAG_PVP);
+	RemoveFlag(PLAYER_FLAGS, PLAYER_FLAG_PVP);
+	
+	// Adjusting the totems' PVP flag
+	for(int i = 0; i < 4; ++i){
+		if( m_TotemSlots[i] != NULL ){
+			m_TotemSlots[i]->RemovePvPFlag();
+			
+			// Adjusting the totems' summons' PVP flag
+			if( static_cast<Unit*>( m_TotemSlots[i] )->summonPet != NULL )
+				static_cast<Unit*>( m_TotemSlots[i] )->summonPet->RemovePvPFlag();
+		}
+	}
+	
+	// If we have a pet we will remove the pvp flag from that too
+	if( m_Summon != NULL )
+		m_Summon->RemovePvPFlag();
+}
+
+bool Player::IsFFAPvPFlagged()
+{
+	return HasByteFlag(UNIT_FIELD_BYTES_2, 1, U_FIELD_BYTES_FLAG_FFA_PVP);
+}
+
+void Player::SetFFAPvPFlag()
+{
+	StopPvPTimer();
+	SetByteFlag(UNIT_FIELD_BYTES_2, 1, U_FIELD_BYTES_FLAG_FFA_PVP);
+	SetFlag(PLAYER_FLAGS, PLAYER_FLAG_FREE_FOR_ALL_PVP);
+	
+	for(int i = 0; i < 4; ++i){
+		if( m_TotemSlots[i] != NULL ){
+			m_TotemSlots[i]->SetFFAPvPFlag();
+			
+			// Adjusting the totems' summons' FFAPVP flag
+			if( static_cast<Unit*>( m_TotemSlots[i] )->summonPet != NULL)
+				static_cast<Unit*>( m_TotemSlots[i] )->summonPet->SetFFAPvPFlag();
+		}
+	}
+	
+	// flagging the pet too for FFAPvP, if we have one
+	if( m_Summon != NULL )
+		m_Summon->SetFFAPvPFlag();
+}
+
+void Player::RemoveFFAPvPFlag()
+{
+	StopPvPTimer();
+	RemoveByteFlag(UNIT_FIELD_BYTES_2, 1, U_FIELD_BYTES_FLAG_FFA_PVP);
+	RemoveFlag(PLAYER_FLAGS, PLAYER_FLAG_FREE_FOR_ALL_PVP);
+	
+	// Adjusting the totems' FFAPVP flag	
+	for(int i = 0; i < 4; ++i){
+		if( m_TotemSlots[i] != NULL ){
+			m_TotemSlots[i]->RemoveFFAPvPFlag();
+			
+			// Adjusting the totems' summons' FFAPVP flag
+			if( static_cast<Unit*>( m_TotemSlots[i] )->summonPet != NULL)
+				static_cast<Unit*>( m_TotemSlots[i] )->summonPet->RemoveFFAPvPFlag();
+		}
+	}
+	
+	// If we have a pet we will remove the FFA pvp flag from that too
+	if( m_Summon != NULL )
+		m_Summon->RemoveFFAPvPFlag();
+}
+
+bool Player::IsSanctuaryFlagged(){
+	return HasByteFlag( UNIT_FIELD_BYTES_2, 1 , U_FIELD_BYTES_FLAG_SANCTUARY );
+}
+
+void Player::SetSanctuaryFlag(){
+	SetByteFlag( UNIT_FIELD_BYTES_2, 1, U_FIELD_BYTES_FLAG_SANCTUARY );
+
+	for(int i = 0; i < 4; ++i){
+		if( m_TotemSlots[i] != NULL ){
+			m_TotemSlots[i]->SetSanctuaryFlag();
+			
+			// Adjusting the totems' summons' sanctuary flag
+			if( static_cast<Unit*>( m_TotemSlots[i] )->summonPet != NULL)
+				static_cast<Unit*>( m_TotemSlots[i] )->summonPet->SetSanctuaryFlag();
+		}
+	}
+	
+	// flagging the pet too for sanctuary, if we have one
+	if( m_Summon != NULL )
+		m_Summon->SetSanctuaryFlag();
+}
+
+void Player::RemoveSancturayFlag(){
+	RemoveByteFlag( UNIT_FIELD_BYTES_2, 1, U_FIELD_BYTES_FLAG_SANCTUARY );
+
+	// Adjusting the totems' sanctuary flag	
+	for(int i = 0; i < 4; ++i){
+		if( m_TotemSlots[i] != NULL ){
+			m_TotemSlots[i]->RemoveSancturayFlag();
+			
+			// Adjusting the totems' summons' sanctuary flag
+			if( static_cast<Unit*>( m_TotemSlots[i] )->summonPet != NULL)
+				static_cast<Unit*>( m_TotemSlots[i] )->summonPet->RemoveSancturayFlag();
+		}
+	}
+	
+	// If we have a pet we will remove the sanctuary flag from that too
+	if( m_Summon != NULL )
+		m_Summon->RemoveSancturayFlag();
+}
+
