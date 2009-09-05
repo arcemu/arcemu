@@ -161,8 +161,7 @@ void LfgMgr::UpdateLfgQueue(uint32 LfgDungeonId)
 	LfgPlayerList possibleMembers;
 	LfgPlayerList::iterator itr;
 	LfgPlayerList::iterator it2;
-	LfgPlayerList::iterator it3;
-	Player * plr = 0;
+	Player * plr = NULL;
 	uint32 i;
 	//LfgMatch * pMatch;
 
@@ -214,20 +213,13 @@ void LfgMgr::UpdateLfgQueue(uint32 LfgDungeonId)
 			for(it2 = possibleMembers.begin(); it2 != possibleMembers.end();)
 			{
 				if((*itr)->GetGroup()->IsFull())
-				{
-					++it2;
-					continue;
-				}
+					break;
 
 				// found a group for him, lets insert him.
 				if((*itr)->GetGroup()->AddMember((*it2)->getPlayerInfo()))
 				{
 					(*it2)->m_lfgInviterGuid = (*itr)->GetLowGUID();
-
-					it3 = it2;
-					++it2;
-
-					possibleMembers.erase(it2);
+					it2 = possibleMembers.erase(it2);
 				}
 				else
 					++it2;

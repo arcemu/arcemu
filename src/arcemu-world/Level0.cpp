@@ -453,6 +453,10 @@ bool ChatHandler::HandleRatingsCommand( const char *args , WorldSession *m_sessi
 {
 	m_session->SystemMessage("Ratings!!!");
 	Player* m_plyr = getSelectedChar(m_session, false);
+
+	if( m_plyr == NULL )
+		return false;
+
 	for( uint32 i = 0; i < 24; i++ )
 	{
 		m_plyr->ModUnsigned32Value( PLAYER_FIELD_COMBAT_RATING_1 + i, i );

@@ -689,6 +689,7 @@ Corpse* ObjectMgr::LoadCorpse(uint32 guid)
 		if(pCorpse->GetUInt32Value(CORPSE_FIELD_DISPLAY_ID) == 0)
 		{
 			delete pCorpse;
+			pCorpse = NULL;
 			continue;
 		}
 
