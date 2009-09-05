@@ -205,7 +205,7 @@ void WorldSession::HandleGroupUninviteOpcode( WorldPacket & recv_data )
 
 	player = objmgr.GetPlayer(membername.c_str(), false);
 	info = objmgr.GetPlayerInfoByName(membername.c_str());
-	if ( player == NULL && info == NULL )
+	if ( player == NULL || info == NULL )
 	{
 		SendPartyCommandResult(_player, 0, membername, ERR_PARTY_CANNOT_FIND);
 		return;

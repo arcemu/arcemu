@@ -95,7 +95,7 @@ bool ChatHandler::HandleSetWorldStatesCommand(const char* args, WorldSession *m_
 	if(sscanf(args,"%u %u %u", &first, &last, &val)!=3)
 		return false;
 
-	if(m_session->GetPlayer()->m_bg && first < last )
+	if(m_session->GetPlayer()->m_bg)
 	{
 		for (uint32 i=first; i<last; i++)
 		{

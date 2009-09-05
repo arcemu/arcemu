@@ -798,7 +798,7 @@ void WorldSession::HandleAutoEquipItemOpcode( WorldPacket & recv_data )
 	{
 		eitem = _player->GetItemInterface()->SafeRemoveAndRetreiveItemFromSlot( SrcInvSlot, SrcSlot, false );
 		oitem = _player->GetItemInterface()->SafeRemoveAndRetreiveItemFromSlot( INVENTORY_SLOT_NOT_SET, Slot, false );
-		if(oitem)
+		if( oitem != NULL )
 		{
 			result = _player->GetItemInterface()->SafeAddItem( oitem, SrcInvSlot, SrcSlot );
 			if( !result )
@@ -808,13 +808,16 @@ void WorldSession::HandleAutoEquipItemOpcode( WorldPacket & recv_data )
 				oitem = NULL;
 			}
 		}
-		result = _player->GetItemInterface()->SafeAddItem( eitem, INVENTORY_SLOT_NOT_SET, Slot );
-		if(!result)
+		if( eitem != NULL )
 		{
-			sLog.outError("HandleAutoEquip: Error while adding item to Slot");
-			eitem->DeleteMe();
-			eitem = NULL;
-			return;
+			result = _player->GetItemInterface()->SafeAddItem( eitem, INVENTORY_SLOT_NOT_SET, Slot );
+			if(!result)
+			{
+				sLog.outError("HandleAutoEquip: Error while adding item to Slot");
+				eitem->DeleteMe();
+				eitem = NULL;
+				return;
+			}
 		}
 		
 	}
@@ -846,12 +849,16 @@ void WorldSession::HandleAutoEquipItemSlotOpcode( WorldPacket& recvData )
 
 	int8	srcSlot		= (int8)_player->GetItemInterface()->GetInventorySlotByGuid(itemguid);
 	Item	*item		= _player->GetItemInterface()->GetItemByGUID(itemguid);
+
+	if( item == NULL )
+		return;
+
 	int8	slotType	= _player->GetItemInterface()->GetItemSlotByType(item->GetProto()->InventoryType);
 	bool	hasDualWield2H	= false;
 
 	sLog.outDebug("ITEM: AutoEquipItemSlot, ItemGUID: %u, SrcSlot: %i, DestSlot: %i, SlotType: %i", itemguid, srcSlot, destSlot, slotType);
 
-	if (item == NULL || srcSlot == destSlot)
+	if( srcSlot == destSlot )
 		return;
 
 	if( _player->DualWield2H && ( slotType == EQUIPMENT_SLOT_OFFHAND || slotType == EQUIPMENT_SLOT_MAINHAND ) )
