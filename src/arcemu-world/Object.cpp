@@ -3329,17 +3329,17 @@ void Object::SpellNonMeleeDamageLog(Unit *pVictim, uint32 spellID, uint32 damage
 
 void Object::SendSpellLog(Object *Caster, Object *Target,uint32 Ability, uint8 SpellLogType)
 {
-	if ( ( !Caster || !Target ) && Ability )
+	if( Caster == NULL || Target == NULL || Ability == 0 ) 
 		return;
 
 
 	WorldPacket data( SMSG_SPELLLOGMISS, 26 );
-	data << Ability;										// spellid
-	data << Caster->GetGUID();							  // caster / player
-	data << (uint8)1;									   // unknown but I think they are const
-	data << (uint32)1;									  // unknown but I think they are const
-	data << Target->GetGUID();							  // target
-	data << SpellLogType;								   // spelllogtype
+	data << Ability;							// spellid
+	data << Caster->GetGUID();					// caster / player
+	data << (uint8)1;							// unknown but I think they are const
+	data << (uint32)1;							// unknown but I think they are const
+	data << Target->GetGUID();					// target
+	data << SpellLogType;						// spelllogtype
 	Caster->SendMessageToSet( &data, true );
 }
 
