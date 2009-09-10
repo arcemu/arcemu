@@ -1664,9 +1664,6 @@ bool AIInterface::UnsafeCanOwnerAttackUnit(Unit *pUnit)
 	if( !pUnit->isAlive() )
 		return false;
 
-	if( pUnit->bInvincible )
-		return false;
-
 	if( !(pUnit->m_phase & m_Unit->m_phase) ) //Not in the same phase
 		return false;
 
@@ -1753,9 +1750,9 @@ Unit* AIInterface::FindTarget()
 			tmpPlr = (*itrPlr);
 			if (tmpPlr == NULL)
 				continue;
-			if (tmpPlr->GetTaxiState())
+			if (tmpPlr->IsDead())
 				continue;
-			if (tmpPlr->bInvincible)
+			if (tmpPlr->GetTaxiState())
 				continue;
 			if (tmpPlr->HasFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_FEIGN_DEATH))
 				continue;

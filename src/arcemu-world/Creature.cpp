@@ -263,7 +263,7 @@ void Creature::OnRespawn(MapMgr * m)
 			newhealth = 1;*/
 		SetUInt32Value(UNIT_FIELD_HEALTH, 1);
 		m_limbostate = true;
-		bInvincible = true;
+		setDeathState( CORPSE );
 		SetUInt32Value(UNIT_NPC_EMOTESTATE, EMOTE_STATE_DEAD);
 	}
 
@@ -1398,7 +1398,7 @@ bool Creature::Load(CreatureSpawn *spawn, uint32 mode, MapInfo *info)
 			newhealth = 1;*/
 		SetUInt32Value(UNIT_FIELD_HEALTH, 1);
 		m_limbostate = true;
-		bInvincible = true;
+		setDeathState( CORPSE );
 		SetUInt32Value(UNIT_NPC_EMOTESTATE, EMOTE_STATE_DEAD);
 	}
 	m_invisFlag = static_cast<uint8>( proto->invisibility_type );
@@ -1600,7 +1600,7 @@ void Creature::Load(CreatureProto * proto_, float x, float y, float z, float o)
 			newhealth = 1;*/
 		SetUInt32Value(UNIT_FIELD_HEALTH, 1);
 		m_limbostate = true;
-		bInvincible = true;
+		setDeathState( CORPSE );
 		SetUInt32Value(UNIT_NPC_EMOTESTATE, EMOTE_STATE_DEAD);
 	}
 	m_invisFlag = static_cast<uint8>( proto->invisibility_type );

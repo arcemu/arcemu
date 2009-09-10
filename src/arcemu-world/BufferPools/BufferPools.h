@@ -69,7 +69,7 @@ public:
 	uint32 GetFreeCount()
 	{
 		ObjLock.Acquire();
-		uint32 val = avail_indexes.size();
+		uint32 val = static_cast< uint32 >( avail_indexes.size() );
 		ObjLock.Release();
 
 		return val;		

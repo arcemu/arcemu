@@ -2960,7 +2960,7 @@ void ObjectMgr::HandleMonsterSayEvent(Creature * pCreature, MONSTER_SAY_EVENTS E
 			Unit* CurrentTarget = pCreature->GetMapMgr()->GetUnit(targetGUID);
 			if(CurrentTarget)
 			{
-				uint32 testOfs = test-text;
+				ptrdiff_t testOfs = test-text;
 				newText.replace(testOfs, 2, races[CurrentTarget->getRace()]);
 			}
 		}

@@ -1894,11 +1894,13 @@ void Object::EventSetUInt32Value(uint32 index, uint32 value)
 
 void Object::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32 unitEvent, uint32 spellId, bool no_remove_auras)
 {
-	Player* plr = 0;
+	Player* plr = NULL;
 
 	if( !pVictim || !pVictim->isAlive() || !pVictim->IsInWorld() || !IsInWorld() )
 		return;
 	if( pVictim->GetTypeId() == TYPEID_PLAYER && static_cast< Player* >( pVictim )->GodModeCheat == true )
+		return;
+	if( pVictim->bInvincible )
 		return;
 	if( pVictim->IsSpiritHealer() )
 		return;
@@ -2512,7 +2514,8 @@ void Object::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
 
 		if( this->IsUnit() )
 		{
-            pVictim->RemoveAllNonPersistantAuras();
+			if( !pVictim->IsPlayer() && !pVictim->IsPet() )
+				pVictim->RemoveAllNonPersistentAuras();
 
             CALL_SCRIPT_EVENT( this, OnTargetDied )( pVictim );
 			static_cast< Unit* >( this )->smsg_AttackStop( pVictim );

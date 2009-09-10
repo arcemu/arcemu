@@ -1174,7 +1174,7 @@ void WorldSession::SendRefundInfo( uint64 GUID ){
         //////////////////////////////////////////////////////////////////////////////////////////
 
 
-        WorldPacket packet( SMSG_UNKNOWN_1202, 60 );
+        WorldPacket packet( SMSG_UNKNOWN_1202, 68 );
         packet << uint64( GUID );
         packet << uint32( proto->BuyPrice );
         packet << uint32( ex->honor );

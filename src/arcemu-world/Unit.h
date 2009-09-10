@@ -1028,7 +1028,7 @@ public:
 
 	//! Remove all auras
 	void RemoveAllAuras();
-    void RemoveAllNonPersistantAuras();
+    void RemoveAllNonPersistentAuras();
 	bool RemoveAllAuras(uint32 spellId,uint64 guid); //remove stacked auras but only if they come from the same caster. Shaman purge If GUID = 0 then removes all auras with this spellid
     void RemoveAllAuraType(uint32 auratype);//ex:to remove morph spells
     void RemoveAllAuraFromSelfType2(uint32 auratype, uint32 butskip_hash);//ex:to remove morph spells

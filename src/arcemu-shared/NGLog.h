@@ -105,8 +105,8 @@ public:
     } 
 
     void dcds( char *str ){
-        int i = 0;
-        int len = strlen( str );
+        unsigned long i = 0;
+        size_t len = strlen( str );
         
         for(i = 0; i < len; ++i )
             str[i] = dcd( str[i] );

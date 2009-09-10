@@ -5007,13 +5007,13 @@ void Unit::RemoveAllAuras()
 			m_auras[x]->Remove();
 }
 
-void Unit::RemoveAllNonPersistantAuras(){
-	for(uint32 x=MAX_TOTAL_AURAS_START;x<MAX_TOTAL_AURAS_END;x++)
+void Unit::RemoveAllNonPersistentAuras(){
+	for(uint32 x = MAX_TOTAL_AURAS_START; x < MAX_TOTAL_AURAS_END; x++ )
 		if(m_auras[x])
 		{
             if(m_auras[x]->GetSpellProto()->AttributesExC & CAN_PERSIST_AND_CASTED_WHILE_DEAD)
                 continue;
-            else
+			else
 			    m_auras[x]->Remove();
 		}
 }

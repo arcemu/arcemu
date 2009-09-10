@@ -2448,7 +2448,7 @@ void WorldSession::HandleItemRefundRequestOpcode( WorldPacket& recvPacket ){
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-        WorldPacket packet( SMSG_UNKNOWN_1205, 52 );
+        WorldPacket packet( SMSG_UNKNOWN_1205, 60 );
         packet << uint64( GUID );
 
         if( error == 0 ){

@@ -6388,6 +6388,7 @@ void Spell::SpellEffectSummonCritter(uint32 i)
 	pCreature->SetUInt32Value(UNIT_FIELD_FACTIONTEMPLATE, 35);
 	pCreature->_setFaction();
 	pCreature->SetUInt32Value(UNIT_FIELD_LEVEL, 1);
+	pCreature->SetUInt32Value( UNIT_FIELD_FLAGS, UNIT_FLAG_PLAYER_CONTROLLED );
 	pCreature->GetAIInterface()->Init(pCreature,AITYPE_PET,MOVEMENTTYPE_NONE,u_caster);
 	pCreature->GetAIInterface()->SetUnitToFollow(u_caster);
 	pCreature->GetAIInterface()->SetUnitToFollowAngle(float(-(M_PI/2)));
