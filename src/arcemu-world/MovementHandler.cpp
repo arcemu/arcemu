@@ -518,7 +518,7 @@ void WorldSession::HandleMovementOpcodes( WorldPacket & recv_data )
 
 			//checks that player has fallen more than 12 units, otherwise no damage will be dealt
 			//falltime check is also needed here, otherwise sudden changes in Z axis position, such as using !recall, may result in death
-			if( _player->isAlive() && !_player->GodModeCheat && falldistance > 12 && ( UNIXTIME >= _player->m_fallDisabledUntil ) /*&& movement_info.FallTime > 1000*/ && !_player->m_noFallDamage )
+			if( _player->isAlive() && !_player->bInvincible && !_player->GodModeCheat && falldistance > 12 && ( UNIXTIME >= _player->m_fallDisabledUntil ) /*&& movement_info.FallTime > 1000*/ && !_player->m_noFallDamage )
 			{
 				// 1.7% damage for each unit fallen on Z axis over 13
 				uint32 health_loss = float2int32( float( _player->GetUInt32Value( UNIT_FIELD_MAXHEALTH ) * ( ( falldistance - 12 ) * 0.017 ) ) );

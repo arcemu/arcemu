@@ -2389,8 +2389,10 @@ void WorldSession::HandleItemRefundRequestOpcode( WorldPacket& recvPacket ){
             RefundEntry.second = 0;
             
             RefundEntry = _player->GetItemInterface()->LookupRefundable( GUID );
-            
-            ex = dbcItemExtendedCost.LookupEntry( RefundEntry.second );
+
+			// If the item is refundable we look up the extendedcost
+			if( RefundEntry.first != 0 && RefundEntry.second != 0 )
+				ex = dbcItemExtendedCost.LookupEntry( RefundEntry.second );
 
             if( ex != NULL ){
                 proto = itm->GetProto();
@@ -2410,6 +2412,9 @@ void WorldSession::HandleItemRefundRequestOpcode( WorldPacket& recvPacket ){
                     _player->GetItemInterface()->RemoveItemAmtByGuid( GUID, 1 );
 
                     _player->GetItemInterface()->RemoveRefundable( GUID );
+
+					// we were successful!
+					error = 0;
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
                 }
             }
@@ -2467,5 +2472,5 @@ void WorldSession::HandleItemRefundRequestOpcode( WorldPacket& recvPacket ){
 
         this->SendPacket( &packet );
 
-        sLog.outDebug("Recieved CMSG_ITEMREFUNDREQUEST.");
+        sLog.outDebug("Sent SMSG_ITEMREFUNDREQUEST.");
 }

@@ -1130,7 +1130,7 @@ void WorldSession::SendRefundInfo( uint64 GUID ){
     if( itm == NULL )
         return;
 
-    if( itm->IsEligibleForRefund() ){
+	if( itm->IsEligibleForRefund() ){
         std::pair< time_t, uint32 > RefundEntry;
 
         RefundEntry = _player->GetItemInterface()->LookupRefundable( GUID );
@@ -1171,6 +1171,20 @@ void WorldSession::SendRefundInfo( uint64 GUID ){
         //  uint32 item5cnt
         //  uint32 buytime?  always seems 0
         //  uint32 remainingtime?
+		//
+		//
+		//  Remainingtime:
+		//  I can't make heads or tails of it.
+		//
+		//  Values I tried:
+		//
+		//  100000  = 1 day
+		//	50000  = 11 hours
+		//	20000  = 2 hours
+		//	15000  = 12 minutes
+		//	12000  = 19 minutes
+		//
+		//
         //////////////////////////////////////////////////////////////////////////////////////////
 
 
@@ -1190,7 +1204,10 @@ void WorldSession::SendRefundInfo( uint64 GUID ){
         if( UNIXTIME > ( RefundEntry.first + 60*60*2 ))
             packet << uint32( 0 );
         else
-            packet << uint32( ( RefundEntry.first + (60*60*2) ) - UNIXTIME );
+            packet << uint32( 20000 );
+		// FIXME: After we find out how this time field works
+		// someone will have to implement it here correctly
+		// now it will always show 2 hours remaining, until it expires
         
         this->SendPacket( &packet );
 

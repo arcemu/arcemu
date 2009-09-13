@@ -3264,7 +3264,7 @@ void Unit::Strike( Unit* pVictim, uint32 weapon_damage_type, SpellEntry* ability
 //==========================================================================================
 //==============================Unacceptable Cases Processing===============================
 //==========================================================================================
-	if( !pVictim || !pVictim->isAlive() || !isAlive()  || IsStunned() || IsPacified() || IsFeared())
+	if( !pVictim || !pVictim->isAlive() || !isAlive()  || IsStunned() || IsPacified() || IsFeared() )
 		return;
 
 	if(!isInFront(pVictim))
@@ -4214,21 +4214,22 @@ void Unit::Strike( Unit* pVictim, uint32 weapon_damage_type, SpellEntry* ability
 
 	if(this->IsPlayer() && ability)
 		static_cast< Player* >( this )->m_casted_amount[dmg.school_type]=(uint32)(realdamage+abs);
-	if(realdamage)
-	{
-		DealDamage(pVictim, realdamage, 0, targetEvent, 0);
-		//pVictim->HandleProcDmgShield(PROC_ON_MELEE_ATTACK_VICTIM,this);
-//		HandleProcDmgShield(PROC_ON_MELEE_ATTACK_VICTIM,pVictim);
 
-		if(pVictim->GetCurrentSpell())
-			pVictim->GetCurrentSpell()->AddTime(0);
-	}
-	else
-	{
-		// have to set attack target here otherwise it wont be set
-		// because dealdamage is not called.
-		//setAttackTarget(pVictim);
-		this->CombatStatus.OnDamageDealt( pVictim );
+	// invincible people don't take damage
+	if( pVictim->bInvincible == false ){		
+		if(realdamage){
+			DealDamage(pVictim, realdamage, 0, targetEvent, 0);
+			//pVictim->HandleProcDmgShield(PROC_ON_MELEE_ATTACK_VICTIM,this);
+			//		HandleProcDmgShield(PROC_ON_MELEE_ATTACK_VICTIM,pVictim);
+			
+			if(pVictim->GetCurrentSpell())
+				pVictim->GetCurrentSpell()->AddTime(0);
+		}else{
+			// have to set attack target here otherwise it wont be set
+			// because dealdamage is not called.
+			//setAttackTarget(pVictim);
+			this->CombatStatus.OnDamageDealt( pVictim );
+		}
 	}
 //==========================================================================================
 //==============================Post Damage Dealing Processing==============================

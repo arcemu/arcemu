@@ -3984,6 +3984,9 @@ std::pair< time_t, uint32 > ItemInterface::LookupRefundable(uint64 GUID){
 /////////////////////////////////////////////////////////////////////////////
 bool ItemInterface::AddItemById(uint32 itemid, uint32 count, int32 randomprop)
 {
+	if( count == 0 )
+		return false;
+
 	uint32 numadded = 0;
     Player *chr = this->GetOwner();
 
