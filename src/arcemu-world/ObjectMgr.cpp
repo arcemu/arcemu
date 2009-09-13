@@ -1588,7 +1588,7 @@ Item * ObjectMgr::CreateItem(uint32 entry,Player * owner)
 	}
 	else
 	{
-		Item * pItem = ItemPool.PooledNew();
+		Item * pItem = new Item;
 		if (!pItem)
 			return NULL;
 		pItem->Init(HIGHGUID_TYPE_ITEM,GenerateLowGuid(HIGHGUID_TYPE_ITEM));
@@ -1617,7 +1617,7 @@ Item * ObjectMgr::LoadItem(uint64 guid)
 		}
 		else
 		{
-			Item * pItem = ItemPool.PooledNew();
+			Item * pItem = new Item;
 			if (!pItem)
 				return NULL;
 			pItem->Init(HIGHGUID_TYPE_ITEM,(uint32)guid);
@@ -1649,7 +1649,7 @@ Item * ObjectMgr::LoadExternalItem(uint64 guid)
 		}
 		else
 		{
-			Item * pItem = ItemPool.PooledNew();
+			Item * pItem = new Item;
 			if (!pItem)
 				return NULL;
 			pItem->Init(HIGHGUID_TYPE_ITEM,(uint32)guid);

@@ -437,14 +437,11 @@ class SERVER_DECL Aura : public EventableObject
 	uint64 periodic_target;
 public:
     Aura( );
+    Aura( SpellEntry *proto, int32 duration,Object* caster, Unit *target, bool temporary = false, Item* i_caster = NULL );
 	void Init( SpellEntry *proto, int32 duration,Object* caster, Unit *target, bool temporary = false, Item* i_caster = NULL );
 	// When using object pool contructor is not good to be called again sometimes. 
 	// Use this instead:
-	void Virtual_Constructor();		
 	~Aura();
-	// This makes sure we do not leave events on objects that are supposed to be deleted.
-	void Virtual_Destructor();		
-	int32 m_bufferPoolId;
 
 	void ExpireRemove();
     void Remove();

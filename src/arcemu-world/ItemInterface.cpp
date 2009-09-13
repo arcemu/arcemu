@@ -153,7 +153,7 @@ Item *ItemInterface::SafeAddItem(uint32 ItemId, int8 ContainerSlot, int16 slot)
 	}
 	else
 	{
-		pItem = ItemPool.PooledNew();
+		pItem = new Item;
 		if (!pItem)
 			return NULL;
 		pItem->Init(HIGHGUID_TYPE_ITEM,objmgr.GenerateLowGuid(HIGHGUID_TYPE_ITEM));
@@ -164,7 +164,7 @@ Item *ItemInterface::SafeAddItem(uint32 ItemId, int8 ContainerSlot, int16 slot)
 		}
 		else
 		{
-			ItemPool.PooledDelete(pItem);
+			delete pItem;
 			return NULL;
 		}
 	}
@@ -601,7 +601,7 @@ bool ItemInterface::SafeFullRemoveItemFromSlot(int8 ContainerSlot, int16 slot)
 			}
 
 			pItem->DeleteFromDB();
-			ItemPool.PooledDelete(pItem);
+			delete pItem;
 		}
 	}
 	else
@@ -2873,7 +2873,7 @@ void ItemInterface::EmptyBuyBack()
 			 {
 				if (m_pBuyBack[j]->IsInWorld())
 					m_pBuyBack[j]->RemoveFromWorld();
-				ItemPool.PooledDelete(m_pBuyBack[j]);
+				delete m_pBuyBack[j];
 				m_pBuyBack[j] = NULL;
 			 }
 
@@ -2908,7 +2908,7 @@ void ItemInterface::AddBuyBackItem(Item *it,uint32 price)
 			 {
 				if (m_pBuyBack[0]->IsInWorld())
 					m_pBuyBack[0]->RemoveFromWorld();
-				ItemPool.PooledDelete(m_pBuyBack[0]);
+				delete m_pBuyBack[0];
 			 }
 
 			m_pBuyBack[0] = NULL;
@@ -3315,7 +3315,7 @@ void ItemInterface::mLoadItemsFromDatabase(QueryResult * result)
 				}
 				else
 				{
-					item = ItemPool.PooledNew();
+					item = new Item;
 					if (!item)
 						return;
 					item->Init( HIGHGUID_TYPE_ITEM, fields[1].GetUInt32() );
@@ -3334,7 +3334,7 @@ void ItemInterface::mLoadItemsFromDatabase(QueryResult * result)
 				    item->m_isDirty = false;
 				else
 				{
-					ItemPool.PooledDelete(item);
+					delete item;
 					item = NULL;
 				}
 			}

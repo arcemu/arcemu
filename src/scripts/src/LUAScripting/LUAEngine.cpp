@@ -4809,10 +4809,9 @@ int luaGameObject_CastSpell(lua_State * L, GameObject * ptr)
 	uint32 sp = luaL_checkint(L,1);
 	if( !ptr || !sp|| sp == 0) return 0;
 	
-	Spell * spp = SpellPool.PooledNew();
+	Spell * spp = new Spell(ptr,dbcSpell.LookupEntry(sp),true, NULL);
 	if (!spp)
 		return 0;
-	spp->Init(ptr,dbcSpell.LookupEntry(sp),true, NULL);
 	SpellCastTargets tar(ptr->GetGUID());
 	spp->prepare(&tar);
 	return 0;
@@ -4823,10 +4822,9 @@ int luaGameObject_FullCastSpell(lua_State * L, GameObject * ptr)
 	uint32 sp = luaL_checkint(L,1);
 	if( !ptr || !sp|| sp == 0) return 0;
 	
-	Spell * nspell = SpellPool.PooledNew();
+	Spell * nspell = new Spell(ptr,dbcSpell.LookupEntry(sp),false,NULL);
 	if (!nspell)
 		return 0;
-	nspell->Init(ptr,dbcSpell.LookupEntry(sp),false,NULL);
 	SpellCastTargets tar(ptr->GetGUID());
 	nspell->prepare(&tar);
 	return 0;
@@ -4838,10 +4836,9 @@ int luaGameObject_CastSpellOnTarget(lua_State * L, GameObject * ptr)
 	Unit * target = Lunar<Unit>::check(L,2);
 	if( !ptr || !sp || sp == 0) return 0;
 
-	Spell * nspell = SpellPool.PooledNew();
+	Spell * nspell = new Spell(ptr,dbcSpell.LookupEntry(sp),true,NULL);
 	if (nspell)
 		return 0;
-	nspell->Init(ptr,dbcSpell.LookupEntry(sp),true,NULL);
 	SpellCastTargets tar(target->GetGUID());
 	nspell->prepare(&tar);
 	return 0;
@@ -4852,10 +4849,9 @@ int luaGameObject_FullCastSpellOnTarget(lua_State * L, GameObject * ptr)
 	uint32 sp = luaL_checkint(L,1);
 	Unit * target = Lunar<Unit>::check(L,2);
 	if( !ptr || !sp || sp == 0) return 0;
-	Spell * nspell = SpellPool.PooledNew();
+	Spell * nspell = new Spell(ptr,dbcSpell.LookupEntry(sp),false,NULL);
 	if (!nspell)
 		return 0;
-	nspell->Init(ptr,dbcSpell.LookupEntry(sp),false,NULL);
 	SpellCastTargets tar(target->GetGUID());
 	nspell->prepare(&tar);
 	return 0;

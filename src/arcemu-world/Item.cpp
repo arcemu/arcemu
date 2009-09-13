@@ -22,7 +22,6 @@
 
 Item::Item()//this is called when constructing as container
 {
-	m_bufferPoolId = OBJECT_WAS_ALLOCATED_STANDARD_WAY;
 	m_itemProto = NULL;
 	m_owner = NULL;
 	loot = NULL;
@@ -47,17 +46,10 @@ Item::Item()//this is called when constructing as container
 	Enchantments.clear();
 }
 
-//called instead of parameterized constructor
 void Item::Init( uint32 high, uint32 low )
 {
-	SetUInt32Value( OBJECT_FIELD_GUID, low );
-	SetUInt32Value( OBJECT_FIELD_GUID + 1, high );
-	m_wowGuid.Init( GetGUID() );
-}
-
-void Item::Virtual_Constructor()
-{
-	memset( m_uint32Values, 0, (ITEM_END) * sizeof( uint32 ) );
+    ///////////////////////////// from virtual_constructor ///////////////
+    memset( m_uint32Values, 0, (ITEM_END) * sizeof( uint32 ) );
 	SetUInt32Value( OBJECT_FIELD_TYPE,TYPE_ITEM | TYPE_OBJECT );
 	SetFloatValue( OBJECT_FIELD_SCALE_X, 1 );//always 1
 	SetFloatValue( OBJECT_FIELD_SCALE_X, 1 );//always 1
@@ -83,6 +75,10 @@ void Item::Virtual_Constructor()
 	m_inQueue = false;
 	m_extensions = NULL;
 	m_loadedFromDB = false;
+    //////////////////////////////////////////////////////////
+	SetUInt32Value( OBJECT_FIELD_GUID, low );
+	SetUInt32Value( OBJECT_FIELD_GUID + 1, high );
+	m_wowGuid.Init( GetGUID() );
 }
 
 Item::~Item()
@@ -94,34 +90,6 @@ Item::~Item()
 	}
 
 	sEventMgr.RemoveEvents( this );
-
-	EnchantmentMap::iterator itr;
-	for( itr = Enchantments.begin(); itr != Enchantments.end(); ++itr )
-	{
-		if( itr->second.Enchantment->type == 0 && itr->second.Slot == 0 && itr->second.ApplyTime == 0 && itr->second.Duration == 0 )
-		{
-			delete itr->second.Enchantment;
-			itr->second.Enchantment = NULL;
-		}
-	}
-	Enchantments.clear();
-
-	if( IsInWorld() )
-		RemoveFromWorld();
-
-	m_owner = NULL;
-}
-
-void Item::Virtual_Destructor()
-{
-	if( loot != NULL )
-	{
-		delete loot;
-		loot = NULL;
-	}
-
-	// Removes Events
-	EventableObject::Virtual_Destructor();
 
 	EnchantmentMap::iterator itr;
 	for( itr = Enchantments.begin(); itr != Enchantments.end(); ++itr )
@@ -484,7 +452,7 @@ void Item::DeleteMe()
 	if( IsContainer() ) {
 		delete static_cast<Container*>(this);
 	} else {
-		ItemPool.PooledDelete( this );
+		delete this;
 	}
 }
 
@@ -889,8 +857,7 @@ void Item::ApplyEnchantmentBonus( uint32 Slot, bool Apply )
 							if( sp == NULL )
 								continue;
 
-							spell = SpellPool.PooledNew();
-							spell->Init( m_owner, sp, true, 0 );
+							spell = new Spell( m_owner, sp, true, 0 );
 							spell->i_caster = this;
 							spell->prepare( &targets );
 						}
