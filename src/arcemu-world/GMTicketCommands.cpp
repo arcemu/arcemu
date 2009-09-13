@@ -338,15 +338,15 @@ bool ChatHandler::HandleGMTicketAssignToCommand(const char* args, WorldSession *
 	if(!chn)
 		return false;
 
-	GM_Ticket *ticket = objmgr.GetGMTicket(ticketGuid);
-	Player* mplr = objmgr.GetPlayer((uint32)ticket->playerGuid);
+	GM_Ticket *ticket = objmgr.GetGMTicket(ticketGuid)
 
 	if(ticket == NULL || ticket->deleted)
 	{
 		chn->Say(cplr, "GmTicket:0:Ticket not found.", cplr, true);
 		return true;
 	}
-
+	
+	Player* mplr = objmgr.GetPlayer((uint32)ticket->playerGuid);
 	Player *plr = (argc == 1 ? cplr : objmgr.GetPlayer(name, false));
 	if(plr == NULL)
 	{
