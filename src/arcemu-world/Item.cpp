@@ -236,8 +236,10 @@ void Item::LoadFromDB(Field* fields, Player* plr, bool light )
     refundentry.first = fields[17].GetUInt32();
     refundentry.second = fields[18].GetUInt32();
 
+    uint32 *played = this->GetOwner()->GetPlayedtime();
+
     if( refundentry.first != 0 && refundentry.second != 0 ){
-        if( UNIXTIME < ( refundentry.first + 60*60*2 ) )
+        if( played[1] < ( refundentry.first + 60*60*2 ) )
             this->GetOwner()->GetItemInterface()->AddRefundable( this, refundentry.second, refundentry.first );
     }
 
@@ -397,11 +399,15 @@ void Item::SaveToDB( int8 containerslot, int8 slot, bool firstsave, QueryBuffer*
     // Check if the owner is instantiated. When sending mail he/she obviously will not be :P
     if( this->GetOwner() != NULL ){
         std::pair< time_t, uint32 > refundentry;
-        
+
+        refundentry.first = 0;
+        refundentry.second = 0;
+
         refundentry = this->GetOwner()->GetItemInterface()->LookupRefundable( this->GetGUID() );
         
         ss << uint32( refundentry.first ) << "','";
         ss << uint32( refundentry.second ); 
+
     }else{
         ss << uint32( 0 ) << "','";
         ss << uint32( 0 );

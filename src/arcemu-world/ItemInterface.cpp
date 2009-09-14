@@ -3918,7 +3918,7 @@ void ItemInterface::AddRefundable( uint64 GUID, uint32 extendedcost, time_t buyt
 
     uint32 *played = this->GetOwner()->GetPlayedtime();
 
-    RefundableEntry.first = played[1];               // time of purchase in playedtime
+    RefundableEntry.first = buytime;               // time of purchase in playedtime
     RefundableEntry.second = extendedcost;      // extendedcost
 
     insertpair.first = GUID;
@@ -3938,7 +3938,7 @@ void ItemInterface::AddRefundable( Item *item, uint32 extendedcost, time_t buyti
 
     uint32 *played = this->GetOwner()->GetPlayedtime();
 
-    RefundableEntry.first = played[1];      // time of purchase in playedtime
+    RefundableEntry.first = buytime;      // time of purchase in playedtime
     RefundableEntry.second = extendedcost; // extendedcost
 
     insertpair.first = item->GetGUID();

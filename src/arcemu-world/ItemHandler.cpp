@@ -2457,6 +2457,7 @@ void WorldSession::HandleItemRefundRequestOpcode( WorldPacket& recvPacket ){
 
         WorldPacket packet( SMSG_ITEMREFUNDREQUEST, 60 );
         packet << uint64( GUID );
+        packet << uint32( error );
 
         if( error == 0 ){
             packet << uint32( proto->BuyPrice );
@@ -2468,8 +2469,6 @@ void WorldSession::HandleItemRefundRequestOpcode( WorldPacket& recvPacket ){
                 packet << uint32( ex->count[i] );
             }
 
-        }else{
-            packet << uint32( 1 );
         }
 
         this->SendPacket( &packet );
