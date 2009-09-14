@@ -3894,7 +3894,9 @@ void ItemInterface::AddRefundable( uint64 GUID,  uint32 extendedcost ){
     if( item == NULL )
         return;
 
-    RefundableEntry.first = UNIXTIME;               // time of purchase in Unixtime
+    uint32 *played = this->GetOwner()->GetPlayedtime();
+
+    RefundableEntry.first = played[1];               // time of purchase in playedtime
     RefundableEntry.second = extendedcost;          // extendedcost
 
     insertpair.first = GUID;
@@ -3914,7 +3916,9 @@ void ItemInterface::AddRefundable( uint64 GUID, uint32 extendedcost, time_t buyt
     if( item == NULL )
         return;
 
-    RefundableEntry.first = buytime;            // time of purchase in Unixtime
+    uint32 *played = this->GetOwner()->GetPlayedtime();
+
+    RefundableEntry.first = played[1];               // time of purchase in playedtime
     RefundableEntry.second = extendedcost;      // extendedcost
 
     insertpair.first = GUID;
@@ -3932,7 +3936,9 @@ void ItemInterface::AddRefundable( Item *item, uint32 extendedcost, time_t buyti
     if( item == NULL )
         return;
 
-    RefundableEntry.first = buytime;       // time of purchase in Unixtime
+    uint32 *played = this->GetOwner()->GetPlayedtime();
+
+    RefundableEntry.first = played[1];      // time of purchase in playedtime
     RefundableEntry.second = extendedcost; // extendedcost
 
     insertpair.first = item->GetGUID();
@@ -3964,7 +3970,7 @@ std::pair< time_t, uint32 > ItemInterface::LookupRefundable(uint64 GUID){
     std::pair< time_t, uint32 > RefundableEntry;
     RefundableMap::iterator itr;
 
-    RefundableEntry.first = 0;   // time of purchase in Unixtime
+    RefundableEntry.first = 0;   // time of purchase in playedtime
     RefundableEntry.second = 0;  // extendedcost
 
     itr = this->m_refundableitems.find( GUID );

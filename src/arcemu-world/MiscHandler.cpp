@@ -1732,6 +1732,24 @@ void WorldSession::HandleSetSheathedOpcode( WorldPacket & recv_data )
 void WorldSession::HandlePlayedTimeOpcode( WorldPacket & recv_data )
 {
 	uint32 playedt = (uint32)UNIXTIME - _player->m_playedtime[2];
+    uint8 displayinui = 0;
+    
+    ///////////////////////////////////////////////////////////////////////////////////////////
+    // As of 3.2.0a this is what the client sends to poll the /played time
+    //
+    // {CLIENT} Packet: (0x01CC) CMSG_PLAYED_TIME PacketSize = 1 TimeStamp = 691943484
+    // 01 
+    //
+    // Structure:
+    // uint8 displayonui   -  1 when it should be printed on the screen, 0 when it shouldn't
+    //
+    //////////////////////////////////////////////////////////////////////////////////////////
+
+    recv_data >> displayinui;
+
+    sLog.outDebug("Recieved CMSG_PLAYED_TIME.");
+    sLog.outDebug("displayinui: %lu", displayinui );
+
 	if(playedt)
 	{
 		_player->m_playedtime[0] += playedt;
@@ -1739,11 +1757,30 @@ void WorldSession::HandlePlayedTimeOpcode( WorldPacket & recv_data )
 		_player->m_playedtime[2] += playedt;
 	}
 
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+    //
+    // As of 3.2.0a the server sends this as a response to the client /played time packet
+    //
+    //  {SERVER} Packet: (0x01CD) SMSG_PLAYED_TIME PacketSize = 9 TimeStamp = 691944000
+    //  FE 0C 00 00 FE 0C 00 00 01  
+    //
+    //
+    // Structure:
+    //
+    // uint32 playedtotal      -   total time played in seconds
+    // uint32 playedlevel      -   time played on this level in seconds
+    // uint32 displayinui      -   1 when it should be printed on the screen, 0 when it shouldn't
+    //
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
 	WorldPacket data(SMSG_PLAYED_TIME, 9); //VLack: again, an Aspire trick, with an uint8(0) -- I hate packet structure changes...
 	data << (uint32)_player->m_playedtime[1];
 	data << (uint32)_player->m_playedtime[0];
-	data << uint8(0);
+	data << uint8( displayinui );
 	SendPacket(&data);
+
+    sLog.outDebug("Sent SMSG_PLAYED_TIME.");
+    sLog.outDebug(" total: %lu level: %lu", _player->m_playedtime[1], _player->m_playedtime[0] );
 }
 
 void WorldSession::HandleInspectOpcode( WorldPacket & recv_data )

@@ -1317,6 +1317,9 @@ bool Item::IsEligibleForRefund(){
     if( proto == NULL)
         return false;
 
+    if( !(proto->Flags & ITEM_FLAG_REFUNDABLE) )
+        return false;
+
     if( proto->MaxCount > 1 )
         return false;
 

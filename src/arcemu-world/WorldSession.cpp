@@ -724,8 +724,8 @@ void WorldSession::InitPacketHandlerTable()
 	WorldPacketHandlers[CMSG_CANCEL_TEMP_ENCHANTMENT].handler					= &WorldSession::HandleCancelTemporaryEnchantmentOpcode;
 	WorldPacketHandlers[CMSG_SOCKET_GEMS].handler								= &WorldSession::HandleInsertGemOpcode;
 	WorldPacketHandlers[CMSG_WRAP_ITEM].handler									= &WorldSession::HandleWrapItemOpcode;
-    WorldPacketHandlers[CMSG_UNKNOWN_1203].handler									= &WorldSession::HandleItemRefundInfoOpcode;
-    WorldPacketHandlers[CMSG_UNKNOWN_1204].handler									= &WorldSession::HandleItemRefundRequestOpcode;
+    WorldPacketHandlers[CMSG_ITEMREFUNDINFO].handler									= &WorldSession::HandleItemRefundInfoOpcode;
+    WorldPacketHandlers[CMSG_ITEMREFUNDREQUEST].handler									= &WorldSession::HandleItemRefundRequestOpcode;
 
 	
 	// Spell System / Talent System
@@ -1147,7 +1147,7 @@ void WorldSession::SendRefundInfo( uint64 GUID ){
             return;
 
         //////////////////////////////////////////////////////////////////////////////////////////
-        //  As of 3.1.3 the server sends this packet to provide refund info on an item
+        //  As of 3.2.0a the server sends this packet to provide refund info on an item
         //
         //  {SERVER} Packet: (0x04B2) UNKNOWN PacketSize = 68 TimeStamp = 265984265
         //  E6 EE 09 18 02 00 00 42 00 00 00 00 4B 25 00 00 00 00 00 00 50 50 00 00 0A 00 00 00 00 
@@ -1169,26 +1169,18 @@ void WorldSession::SendRefundInfo( uint64 GUID ){
         //  uint32 item4cnt
         //  uint32 item5
         //  uint32 item5cnt
-        //  uint32 buytime?  always seems 0
-        //  uint32 remainingtime?
+        //  uint32 unknown  - always seems 0
+        //  uint32 buytime  - buytime in total playedtime seconds
 		//
 		//
-		//  Remainingtime:
-		//  I can't make heads or tails of it.
-		//
-		//  Values I tried:
-		//
-		//  100000  = 1 day
-		//	50000  = 11 hours
-		//	20000  = 2 hours
-		//	15000  = 12 minutes
-		//	12000  = 19 minutes
+		// Remainingtime:
+        // Seems to be in playedtime format
 		//
 		//
         //////////////////////////////////////////////////////////////////////////////////////////
 
 
-        WorldPacket packet( SMSG_UNKNOWN_1202, 68 );
+        WorldPacket packet( SMSG_ITEMREFUNDINFO, 68 );
         packet << uint64( GUID );
         packet << uint32( proto->BuyPrice );
         packet << uint32( ex->honor );
@@ -1199,15 +1191,14 @@ void WorldSession::SendRefundInfo( uint64 GUID ){
             packet << uint32( ex->count[i] );
         }
 
-        packet << uint32( 0 );  // buytime? It always seems 0
+        packet << uint32( 0 );  // always seems to be 0
+
+        uint32 *played = _player->GetPlayedtime();
         
-        if( UNIXTIME > ( RefundEntry.first + 60*60*2 ))
+        if( played[1] > ( RefundEntry.first + 60*60*2 ))
             packet << uint32( 0 );
         else
-            packet << uint32( 20000 );
-		// FIXME: After we find out how this time field works
-		// someone will have to implement it here correctly
-		// now it will always show 2 hours remaining, until it expires
+            packet << uint32( RefundEntry.first );
         
         this->SendPacket( &packet );
 
