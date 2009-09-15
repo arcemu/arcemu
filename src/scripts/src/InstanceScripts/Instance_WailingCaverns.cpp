@@ -1362,9 +1362,9 @@ public:
 		Unit *Moccasin1 = NULL;
 		Unit *Moccasin2 = NULL;
 		Unit *Moccasin3 = NULL;
-		Moccasin1 = _unit->GetMapMgr()->GetInterface()->SpawnCreature(5762, 134.249207f, 242.194839f, -98.375496f, 3.325373f, false, false, 0, 0);
-		Moccasin2 = _unit->GetMapMgr()->GetInterface()->SpawnCreature(5762, 124.917931f, 255.066635f, -97.796837f, 4.176745f, false, false, 0, 0);
-		Moccasin3 = _unit->GetMapMgr()->GetInterface()->SpawnCreature(5762, 113.077148f, 258.880157f, -97.190590f, 4.688039f, false, false, 0, 0);
+		Moccasin1 = _unit->GetMapMgr()->GetInterface()->SpawnCreature(5762, 134.249207f, 242.194839f, -98.375496f, 3.325373f, true, false, 0, 0);
+		Moccasin2 = _unit->GetMapMgr()->GetInterface()->SpawnCreature(5762, 124.917931f, 255.066635f, -97.796837f, 4.176745f, true, false, 0, 0);
+		Moccasin3 = _unit->GetMapMgr()->GetInterface()->SpawnCreature(5762, 113.077148f, 258.880157f, -97.190590f, 4.688039f, true, false, 0, 0);
 	}
 	void Ectoplasm()
 	{
@@ -1375,17 +1375,17 @@ public:
 		Unit *Ectoplasm5 = NULL;
 		Unit *Ectoplasm6 = NULL;
 		Unit *Ectoplasm7 = NULL;
-		Ectoplasm1 = _unit->GetMapMgr()->GetInterface()->SpawnCreature(5763, 134.249207f, 242.194839f, -98.375496f, 3.325373f, false, false, 0, 0);
-		Ectoplasm2 = _unit->GetMapMgr()->GetInterface()->SpawnCreature(5763, 124.917931f, 255.066635f, -97.796837f, 4.176745f, false, false, 0, 0);
-		Ectoplasm3 = _unit->GetMapMgr()->GetInterface()->SpawnCreature(5763, 113.077148f, 258.880157f, -97.190590f, 4.688039f, false, false, 0, 0);
-		Ectoplasm4 = _unit->GetMapMgr()->GetInterface()->SpawnCreature(5763, 138.794693f, 228.224976f, -100.174332f, 2.471645f, false, false, 0, 0);
-		Ectoplasm5 = _unit->GetMapMgr()->GetInterface()->SpawnCreature(5763, 128.170364f, 225.190247f, -99.392830f, 2.411169f, false, false, 0, 0);
-		Ectoplasm6 = _unit->GetMapMgr()->GetInterface()->SpawnCreature(5763, 136.762009f, 242.685669f, -98.564545f, 3.344223f, false, false, 0, 0);
-		Ectoplasm7 = _unit->GetMapMgr()->GetInterface()->SpawnCreature(5763, 122.403961f, 259.438354f, -98.153984f, 4.366811f, false, false, 0, 0);
+		Ectoplasm1 = _unit->GetMapMgr()->GetInterface()->SpawnCreature(5763, 134.249207f, 242.194839f, -98.375496f, 3.325373f, true, false, 0, 0);
+		Ectoplasm2 = _unit->GetMapMgr()->GetInterface()->SpawnCreature(5763, 124.917931f, 255.066635f, -97.796837f, 4.176745f, true, false, 0, 0);
+		Ectoplasm3 = _unit->GetMapMgr()->GetInterface()->SpawnCreature(5763, 113.077148f, 258.880157f, -97.190590f, 4.688039f, true, false, 0, 0);
+		Ectoplasm4 = _unit->GetMapMgr()->GetInterface()->SpawnCreature(5763, 138.794693f, 228.224976f, -100.174332f, 2.471645f, true, false, 0, 0);
+		Ectoplasm5 = _unit->GetMapMgr()->GetInterface()->SpawnCreature(5763, 128.170364f, 225.190247f, -99.392830f, 2.411169f, true, false, 0, 0);
+		Ectoplasm6 = _unit->GetMapMgr()->GetInterface()->SpawnCreature(5763, 136.762009f, 242.685669f, -98.564545f, 3.344223f, true, false, 0, 0);
+		Ectoplasm7 = _unit->GetMapMgr()->GetInterface()->SpawnCreature(5763, 122.403961f, 259.438354f, -98.153984f, 4.366811f, true, false, 0, 0);
 	}
 	void BMutanus()
 	{		
-		Mutanus = _unit->GetMapMgr()->GetInterface()->SpawnCreature(CN_MUTANUS, 136.337006f, 263.769989f, -102.666000f, 4.002330f, false, false, 0, 0);
+		Mutanus = _unit->GetMapMgr()->GetInterface()->SpawnCreature(CN_MUTANUS, 136.337006f, 263.769989f, -102.666000f, 4.002330f, true, false, 0, 0);
 		Naralex = _unit->GetMapMgr()->GetInterface()->GetCreatureNearestCoords(115.407997f, 240.016998f, -94.021004f, 3679);
 		
 		if(!Mutanus || Mutanus->isAlive())

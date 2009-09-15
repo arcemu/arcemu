@@ -1340,7 +1340,7 @@ public:
 		spells[6].instant = false;
 		spells[6].cooldown = 10;
 
-		Trigger = _unit->GetMapMgr()->GetInterface()->SpawnCreature(CN_ARCHIMONDE_CHANNEL_TRIGGER, 5501.476563f, -3524.868408f, 1604.188965f, 0.393633f, false, false, 0, 0);
+		Trigger = _unit->GetMapMgr()->GetInterface()->SpawnCreature(CN_ARCHIMONDE_CHANNEL_TRIGGER, 5501.476563f, -3524.868408f, 1604.188965f, 0.393633f, true, false, 0, 0);
 
 		if (Trigger && Trigger->IsInWorld())
 		{

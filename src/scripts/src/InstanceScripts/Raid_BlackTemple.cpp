@@ -2109,8 +2109,8 @@ public:
 				}break;
 			case 14:		// Blades spawn
 				{
-					Blade1 = _unit->GetMapMgr()->GetInterface()->SpawnCreature(CN_BLADE_OF_AZZINOTH, 676.717346f, 322.445251f, 354.153320f, 5.732623f, false, false, 0, 0);
-					Blade2 = _unit->GetMapMgr()->GetInterface()->SpawnCreature(CN_BLADE_OF_AZZINOTH, 677.368286f, 285.374725f, 354.242157f, 5.645614f, false, false, 0, 0);
+					Blade1 = _unit->GetMapMgr()->GetInterface()->SpawnCreature(CN_BLADE_OF_AZZINOTH, 676.717346f, 322.445251f, 354.153320f, 5.732623f, true, false, 0, 0);
+					Blade2 = _unit->GetMapMgr()->GetInterface()->SpawnCreature(CN_BLADE_OF_AZZINOTH, 677.368286f, 285.374725f, 354.242157f, 5.645614f, true, false, 0, 0);
 					
 					if (Blade1)
 					{
@@ -2271,7 +2271,7 @@ public:
 						}
 
 						Trigger = NULL;
-						Trigger = _unit->GetMapMgr()->GetInterface()->SpawnCreature(CN_EYE_BEAM_TRIGGER, posX, posY, posZ, 0.0f, false, false, 0, 0);
+						Trigger = _unit->GetMapMgr()->GetInterface()->SpawnCreature(CN_EYE_BEAM_TRIGGER, posX, posY, posZ, 0.0f, true, false, 0, 0);
 						
 						if (Trigger && Trigger->isAlive() && Trigger->IsInWorld())
 						{

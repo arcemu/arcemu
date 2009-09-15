@@ -4755,7 +4755,7 @@ public:
 							for (int x = 0; x < 10; x++)
 							{
 								uint32 SpawnID = 10*i + x;
-								_unit->GetMapMgr()->GetInterface()->SpawnCreature(CN_SOLDIER_OF_THE_FROZEN_WASTES, SFrozenWastes[SpawnID].x, SFrozenWastes[SpawnID].y, SFrozenWastes[SpawnID].z, SFrozenWastes[SpawnID].o, false, false, 0, 0);
+								_unit->GetMapMgr()->GetInterface()->SpawnCreature(CN_SOLDIER_OF_THE_FROZEN_WASTES, SFrozenWastes[SpawnID].x, SFrozenWastes[SpawnID].y, SFrozenWastes[SpawnID].z, SFrozenWastes[SpawnID].o, true, false, 0, 0);
 							}
 
 							FrozenWastes[i] = true;
@@ -4767,7 +4767,7 @@ public:
 							for (int x = 0; x < 3; x++)
 							{
 								uint32 SpawnID = 3*i + x;
-								_unit->GetMapMgr()->GetInterface()->SpawnCreature(CN_UNSTOPPABLE_ABOMINATION, Abomination[SpawnID].x, Abomination[SpawnID].y, Abomination[SpawnID].z, Abomination[SpawnID].o, false, false, 0, 0);
+								_unit->GetMapMgr()->GetInterface()->SpawnCreature(CN_UNSTOPPABLE_ABOMINATION, Abomination[SpawnID].x, Abomination[SpawnID].y, Abomination[SpawnID].z, Abomination[SpawnID].o, true, false, 0, 0);
 							}
 
 							Abominations[i] = true;
@@ -4777,7 +4777,7 @@ public:
 						if (SoulWeavers[i] == false && ((rand()%3 == 0 && Counter < 2) || Counter == 0 || SpawnCounter > 0))
 						{
 							uint32 SpawnID = i;
-							_unit->GetMapMgr()->GetInterface()->SpawnCreature(CN_SOUL_WEAVER, SoulWeaver[SpawnID].x, SoulWeaver[SpawnID].y, SoulWeaver[SpawnID].z, SoulWeaver[SpawnID].o, false, false, 0, 0);
+							_unit->GetMapMgr()->GetInterface()->SpawnCreature(CN_SOUL_WEAVER, SoulWeaver[SpawnID].x, SoulWeaver[SpawnID].y, SoulWeaver[SpawnID].z, SoulWeaver[SpawnID].o, true, false, 0, 0);
 						
 							SoulWeavers[i] = true;
 							Counter++;
@@ -4881,7 +4881,7 @@ public:
 						}
 				}
 
-				_unit->GetMapMgr()->GetInterface()->SpawnCreature(UnitType, Waves[SpawnPoint].x, Waves[SpawnPoint].y, Waves[SpawnPoint].z, Waves[SpawnPoint].o, false, false, 0, 0);
+				_unit->GetMapMgr()->GetInterface()->SpawnCreature(UnitType, Waves[SpawnPoint].x, Waves[SpawnPoint].y, Waves[SpawnPoint].z, Waves[SpawnPoint].o, true, false, 0, 0);
 				WaveTimer = rand()%11+10;
 			}
 		}
@@ -4926,7 +4926,7 @@ public:
 			{
 				Unit *Guardian = NULL;
 				uint32 i = RandomUInt(4);
-				Guardian =_unit->GetMapMgr()->GetInterface()->SpawnCreature(CN_GUARDIAN_OF_ICECROWN, Guardians[i].x, Guardians[i].y, Guardians[i].z, Guardians[i].o, false, false, 0, 0);
+				Guardian =_unit->GetMapMgr()->GetInterface()->SpawnCreature(CN_GUARDIAN_OF_ICECROWN, Guardians[i].x, Guardians[i].y, Guardians[i].z, Guardians[i].o, true, false, 0, 0);
 				if (Guardian  != NULL)
 				{
 					if (Guardian->GetAIInterface()->GetNextTarget() != NULL)

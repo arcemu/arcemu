@@ -1845,7 +1845,7 @@ public:
 			if(RandomTarget)
 			{
 				//1) spawn a trigger
-				_unit->GetMapMgr()->GetInterface()->SpawnCreature(CN_ARCANEORBTARGET, RandomTarget->GetPositionX(), RandomTarget->GetPositionY(), RandomTarget->GetPositionZ(), 0, false, false, 0, 0);
+				_unit->GetMapMgr()->GetInterface()->SpawnCreature(CN_ARCANEORBTARGET, RandomTarget->GetPositionX(), RandomTarget->GetPositionY(), RandomTarget->GetPositionZ(), 0, true, false, 0, 0);
 
 				//2) send the missile
 				_unit->CastSpellAoF(RandomTarget->GetPositionX(), RandomTarget->GetPositionY(), RandomTarget->GetPositionZ(), dbcSpell.LookupEntry(ARCANE_ORB_TRIGGER), true);
@@ -2324,7 +2324,7 @@ public:
 
 		if (_unit->isAlive()) {
 			if (_unit != NULL) _unit->SafeDelete();
-			_unit->GetMapMgr()->GetInterface()->SpawnCreature(19514, fly[11].x, fly[11].y, fly[11].z, 0, false, false, 0, 0);
+			_unit->GetMapMgr()->GetInterface()->SpawnCreature(19514, fly[11].x, fly[11].y, fly[11].z, 0, true, false, 0, 0);
 		}
 
         RemoveAIUpdateEvent();
@@ -2436,7 +2436,7 @@ public:
 		else
 		if (lasttime+35==timer)
 		{
-			_unit->GetMapMgr()->GetInterface()->SpawnCreature(19551, _unit->GetPositionX(), _unit->GetPositionY(), _unit->GetPositionZ(), 0, false, false, 0, 0);
+			_unit->GetMapMgr()->GetInterface()->SpawnCreature(19551, _unit->GetPositionX(), _unit->GetPositionY(), _unit->GetPositionZ(), 0, true, false, 0, 0);
 			//_unit->CastSpell(_unit, spells[2].info, spells[2].instant);
 			lasttime=timer+rand()%10;
 			_unit->GetAIInterface()->SetAllowedToEnterCombat(false);
@@ -2472,8 +2472,8 @@ public:
 		}
 		if (lasttime+35==timer)
 		{
-			_unit->GetMapMgr()->GetInterface()->SpawnCreature(19551, _unit->GetPositionX(), _unit->GetPositionY(), _unit->GetPositionZ(), 0, false, false, 0, 0);
-			_unit->GetMapMgr()->GetInterface()->SpawnCreature(19551, _unit->GetPositionX(), _unit->GetPositionY(), _unit->GetPositionZ(), 0, false, false, 0, 0);
+			_unit->GetMapMgr()->GetInterface()->SpawnCreature(19551, _unit->GetPositionX(), _unit->GetPositionY(), _unit->GetPositionZ(), 0, true, false, 0, 0);
+			_unit->GetMapMgr()->GetInterface()->SpawnCreature(19551, _unit->GetPositionX(), _unit->GetPositionY(), _unit->GetPositionZ(), 0, true, false, 0, 0);
 			lasttime=timer;
 		}
 	}
@@ -3612,7 +3612,7 @@ public:
 	
 	void OnDied(Unit * mKiller)
 	{
-		_unit->GetMapMgr()->GetInterface()->SpawnCreature(21364, _unit->GetPositionX(), _unit->GetPositionY(), _unit->GetPositionZ(), _unit->GetOrientation(), false, false, 0, 0);
+		_unit->GetMapMgr()->GetInterface()->SpawnCreature(21364, _unit->GetPositionX(), _unit->GetPositionY(), _unit->GetPositionZ(), _unit->GetOrientation(), true, false, 0, 0);
 		_unit->Despawn(0,0);
 
 		RemoveAIUpdateEvent();
@@ -3633,7 +3633,7 @@ public:
 
 		else
 		{
-			_unit->GetMapMgr()->GetInterface()->SpawnCreature(21364, _unit->GetPositionX(), _unit->GetPositionY(), _unit->GetPositionZ(), _unit->GetOrientation(), false, false, 0, 0);
+			_unit->GetMapMgr()->GetInterface()->SpawnCreature(21364, _unit->GetPositionX(), _unit->GetPositionY(), _unit->GetPositionZ(), _unit->GetOrientation(), true, false, 0, 0);
 			_unit->Despawn(0,0);
 			
 			RemoveAIUpdateEvent();
@@ -3714,7 +3714,7 @@ public:
 	ADD_CREATURE_FACTORY_FUNCTION(PhoenixEggAI);
 	PhoenixEggAI(Creature* pCreature) : CreatureAIScript(pCreature)
 	{
-		_unit->GetMapMgr()->GetInterface()->SpawnCreature(21369, _unit->GetPositionX(), _unit->GetPositionY(), _unit->GetPositionZ(), _unit->GetOrientation(), false, false, 0, 0);
+		_unit->GetMapMgr()->GetInterface()->SpawnCreature(21369, _unit->GetPositionX(), _unit->GetPositionY(), _unit->GetPositionZ(), _unit->GetOrientation(), true, false, 0, 0);
 		_unit->GetAIInterface()->SetAllowedToEnterCombat(false);
 		_unit->GetAIInterface()->disable_melee = true;
 		_unit->GetAIInterface()->m_canMove = false;
@@ -3735,7 +3735,7 @@ public:
 	
 	void AIUpdate()
 	{
-		_unit->GetMapMgr()->GetInterface()->SpawnCreature(21362, _unit->GetPositionX(), _unit->GetPositionY(), _unit->GetPositionZ(), _unit->GetOrientation(), false, false, 0, 0);
+		_unit->GetMapMgr()->GetInterface()->SpawnCreature(21362, _unit->GetPositionX(), _unit->GetPositionY(), _unit->GetPositionZ(), _unit->GetOrientation(), true, false, 0, 0);
 		_unit->Despawn(0,0);
 	}
 };
@@ -4987,7 +4987,7 @@ public:
 		if(_unit->GetAIInterface()->GetNextTarget())
 		{
 			Unit *Phoenix = NULL;
-			Phoenix = _unit->GetMapMgr()->GetInterface()->SpawnCreature(CN_PHOENIX_EGG, X, Y, Z, _unit->GetOrientation(), false, false, 0, 0);
+			Phoenix = _unit->GetMapMgr()->GetInterface()->SpawnCreature(CN_PHOENIX_EGG, X, Y, Z, _unit->GetOrientation(), true, false, 0, 0);
 			if (Phoenix)
 			{
 				Unit *PhoenixTarget = NULL;

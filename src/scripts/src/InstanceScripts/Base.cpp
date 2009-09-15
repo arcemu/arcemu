@@ -338,7 +338,7 @@ ArcScriptCreatureAI* ArcScriptCreatureAI::SpawnCreature(uint32 pCreatureId, bool
 
 ArcScriptCreatureAI* ArcScriptCreatureAI::SpawnCreature( uint32 pCreatureId, float pX, float pY, float pZ, float pO, bool pForceSameFaction )
 {
-	Creature* NewCreature = _unit->GetMapMgr()->GetInterface()->SpawnCreature( pCreatureId, pX, pY, pZ, pO, false, false, 0, 0 );
+	Creature* NewCreature = _unit->GetMapMgr()->GetInterface()->SpawnCreature( pCreatureId, pX, pY, pZ, pO, true, false, 0, 0 );
 	if( NewCreature != NULL )
 	{
 		NewCreature->LoadScript();

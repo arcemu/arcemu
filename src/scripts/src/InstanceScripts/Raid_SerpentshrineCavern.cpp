@@ -235,21 +235,13 @@ public:
 				float posy = _unit->GetPositionY();
 				float posz = _unit->GetPositionZ();
 				float orientation = _unit->GetOrientation();
-				summon = _unit->GetMapMgr()->GetInterface()->SpawnCreature(CN_TAINTED_SPAWN_OF_HYDROSS, 
-					posx+6.93f, posy-11.25f, posz, orientation,
-					false, false, 0, 0);
+				summon = _unit->GetMapMgr()->GetInterface()->SpawnCreature(CN_TAINTED_SPAWN_OF_HYDROSS, posx+6.93f, posy-11.25f, posz, orientation, true, false, 0, 0);
 				if(summon) summon->SchoolImmunityList[SCHOOL_NATURE] = 1;
-				summon = _unit->GetMapMgr()->GetInterface()->SpawnCreature(CN_TAINTED_SPAWN_OF_HYDROSS, 
-					posx-6.93f, posy+11.25f, posz, orientation,
-					false, false, 0, 0);
+				summon = _unit->GetMapMgr()->GetInterface()->SpawnCreature(CN_TAINTED_SPAWN_OF_HYDROSS, posx-6.93f, posy+11.25f, posz, orientation, true, false, 0, 0);
 				if(summon) summon->SchoolImmunityList[SCHOOL_NATURE] = 1;
-				summon = _unit->GetMapMgr()->GetInterface()->SpawnCreature(CN_TAINTED_SPAWN_OF_HYDROSS, 
-					posx-12.57f, posy-4.72f, posz, orientation,
-					false, false, 0, 0);
+				summon = _unit->GetMapMgr()->GetInterface()->SpawnCreature(CN_TAINTED_SPAWN_OF_HYDROSS, posx-12.57f, posy-4.72f, posz, orientation, true, false, 0, 0);
 				if(summon) summon->SchoolImmunityList[SCHOOL_NATURE] = 1;
-				summon = _unit->GetMapMgr()->GetInterface()->SpawnCreature(CN_TAINTED_SPAWN_OF_HYDROSS, 
-					posx+12.57f, posy+4.72f, posz, orientation,
-					false, false, 0, 0);
+				summon = _unit->GetMapMgr()->GetInterface()->SpawnCreature(CN_TAINTED_SPAWN_OF_HYDROSS, posx+12.57f, posy+4.72f, posz, orientation, true, false, 0, 0);
 				if(summon) summon->SchoolImmunityList[SCHOOL_NATURE] = 1;
 			}
 		}
@@ -319,21 +311,13 @@ public:
 				float posy = _unit->GetPositionY();
 				float posz = _unit->GetPositionZ();
 				float orientation = _unit->GetOrientation();
-				summon = _unit->GetMapMgr()->GetInterface()->SpawnCreature(CN_PURE_SPAWN_OF_HYDROSS, 
-					posx+6.93f, posy-11.25f, posz, orientation,
-					false, false, 0, 0);
+				summon = _unit->GetMapMgr()->GetInterface()->SpawnCreature(CN_PURE_SPAWN_OF_HYDROSS, posx+6.93f, posy-11.25f, posz, orientation, true, false, 0, 0);
 				if(summon) summon->SchoolImmunityList[SCHOOL_FROST] = 1;
-				summon = _unit->GetMapMgr()->GetInterface()->SpawnCreature(CN_PURE_SPAWN_OF_HYDROSS, 
-					posx-6.93f, posy+11.25f, posz, orientation,
-					false, false, 0, 0);
+				summon = _unit->GetMapMgr()->GetInterface()->SpawnCreature(CN_PURE_SPAWN_OF_HYDROSS, posx-6.93f, posy+11.25f, posz, orientation, true, false, 0, 0);
 				if(summon) summon->SchoolImmunityList[SCHOOL_FROST] = 1;
-				summon = _unit->GetMapMgr()->GetInterface()->SpawnCreature(CN_PURE_SPAWN_OF_HYDROSS, 
-					posx-12.57f, posy-4.72f, posz, orientation,
-					false, false, 0, 0);
+				summon = _unit->GetMapMgr()->GetInterface()->SpawnCreature(CN_PURE_SPAWN_OF_HYDROSS, posx-12.57f, posy-4.72f, posz, orientation, true, false, 0, 0);
 				if(summon) summon->SchoolImmunityList[SCHOOL_FROST] = 1;
-				summon = _unit->GetMapMgr()->GetInterface()->SpawnCreature(CN_PURE_SPAWN_OF_HYDROSS, 
-					posx+12.57f, posy+4.72f, posz, orientation,
-					false, false, 0, 0);
+				summon = _unit->GetMapMgr()->GetInterface()->SpawnCreature(CN_PURE_SPAWN_OF_HYDROSS, posx+12.57f, posy+4.72f, posz, orientation, true, false, 0, 0);
 				if(summon) summon->SchoolImmunityList[SCHOOL_FROST] = 1;
 			}
 		}
@@ -2060,7 +2044,7 @@ public:
 			/*SporebatTimer++;
 			if(SporebatTimer > 10)
 			{
-				Creature *cre = _unit->GetMapMgr()->GetInterface()->SpawnCreature(CN_TOXIC_SPORE_BAT,  29.769f, -866.190f, 43, 0, false, false, 0, 0);
+				Creature *cre = _unit->GetMapMgr()->GetInterface()->SpawnCreature(CN_TOXIC_SPORE_BAT,  29.769f, -866.190f, 43, 0, true, false, 0, 0);
 				cre->GetAIInterface()->setOutOfCombatRange(1);		
 				SporebatTimer = 0;
 			}*/
@@ -2122,7 +2106,7 @@ public:
 		{
 			uint32 pos = rand()%8;
 			Creature *elemental = NULL;
-			elemental = _unit->GetMapMgr()->GetInterface()->SpawnCreature(CN_ENCHANTED_ELEMENTAL, ElementalSpawnPoints[pos].x, ElementalSpawnPoints[pos].y, ElementalSpawnPoints[pos].z, ElementalSpawnPoints[pos].o, false, false, 0, 0);
+			elemental = _unit->GetMapMgr()->GetInterface()->SpawnCreature(CN_ENCHANTED_ELEMENTAL, ElementalSpawnPoints[pos].x, ElementalSpawnPoints[pos].y, ElementalSpawnPoints[pos].z, ElementalSpawnPoints[pos].o, true, false, 0, 0);
 			if(elemental)
 			{
 				WayPoint * wp = _unit->CreateWaypointStruct();
@@ -2164,7 +2148,7 @@ public:
 		if(!CoilfangStriderTimer)
 		{
 			Creature *summoned = NULL;
-			summoned = _unit->GetMapMgr()->GetInterface()->SpawnCreature(CN_COILFANG_STRIDER, -29.761278f, -980.252930f, 41.097122f, 0.0f, false, false, 0, 0);
+			summoned = _unit->GetMapMgr()->GetInterface()->SpawnCreature(CN_COILFANG_STRIDER, -29.761278f, -980.252930f, 41.097122f, 0.0f, true, false, 0, 0);
 			if(summoned)
 			{
 				//attack nearest target
@@ -2188,7 +2172,7 @@ public:
 		{
 			uint32 pos = rand()%4;
 			Creature *summoned = NULL;
-			summoned = _unit->GetMapMgr()->GetInterface()->SpawnCreature(CN_COILFANG_ELITE, CoilfangEliteSpawnPoints[pos].x, CoilfangEliteSpawnPoints[pos].y, CoilfangEliteSpawnPoints[pos].z, CoilfangEliteSpawnPoints[pos].o, false, false, 0, 0);
+			summoned = _unit->GetMapMgr()->GetInterface()->SpawnCreature(CN_COILFANG_ELITE, CoilfangEliteSpawnPoints[pos].x, CoilfangEliteSpawnPoints[pos].y, CoilfangEliteSpawnPoints[pos].z, CoilfangEliteSpawnPoints[pos].o, true, false, 0, 0);
 			if(summoned)
 			{
 				//attack nearest target
@@ -2211,7 +2195,7 @@ public:
 		if(!TaintedElementalTimer)
 		{
 			uint32 pos = rand()%8;
-			_unit->GetMapMgr()->GetInterface()->SpawnCreature(CN_TAINTED_ELEMENTAL, ElementalSpawnPoints[pos].x, ElementalSpawnPoints[pos].y, ElementalSpawnPoints[pos].z, ElementalSpawnPoints[pos].o, false, false, 0, 0);
+			_unit->GetMapMgr()->GetInterface()->SpawnCreature(CN_TAINTED_ELEMENTAL, ElementalSpawnPoints[pos].x, ElementalSpawnPoints[pos].y, ElementalSpawnPoints[pos].z, ElementalSpawnPoints[pos].o, true, false, 0, 0);
 			TaintedElementalTimer = 120;
 		}
 
@@ -2280,7 +2264,7 @@ public:
 			Creature *channel = NULL;
 			for(uint8 i = 0; i < 4; i++)
 			{
-				channel = _unit->GetMapMgr()->GetInterface()->SpawnCreature(CN_SHIELD_GENERATOR_CHANNEL, ShieldGeneratorCoords[i][0],  ShieldGeneratorCoords[i][1],  ShieldGeneratorCoords[i][2], 0, false, false, 0, 0);
+				channel = _unit->GetMapMgr()->GetInterface()->SpawnCreature(CN_SHIELD_GENERATOR_CHANNEL, ShieldGeneratorCoords[i][0],  ShieldGeneratorCoords[i][1],  ShieldGeneratorCoords[i][2], 0, true, false, 0, 0);
 				if(channel)
 				{
 					channel->SetUInt64Value(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);

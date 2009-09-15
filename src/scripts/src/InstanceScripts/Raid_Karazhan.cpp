@@ -2376,8 +2376,8 @@ public:
 			break;
 		}
 
-		_unit->GetMapMgr()->GetInterface()->SpawnCreature(CN_FPORTAL, -11249.51f, -1702.182f, 179.237f, 0, false, false, 0, 0);
-		_unit->GetMapMgr()->GetInterface()->SpawnCreature(CN_FPORTAL, -11239.534f, -1715.338f, 179.237f, 0, false, false, 0, 0);
+		_unit->GetMapMgr()->GetInterface()->SpawnCreature(CN_FPORTAL, -11249.51f, -1702.182f, 179.237f, 0, true, false, 0, 0);
+		_unit->GetMapMgr()->GetInterface()->SpawnCreature(CN_FPORTAL, -11239.534f, -1715.338f, 179.237f, 0, true, false, 0, 0);
 	}
 
 	void PlrSacrifice()

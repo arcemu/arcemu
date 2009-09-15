@@ -274,7 +274,7 @@ public:
     {	// This way won't work, especially if Void Walker dies.
         if(!Spawn_Voidwalker)
 		{
-			_unit->GetMapMgr()->GetInterface()->SpawnCreature(CN_VOIDWALKER_SPAWN, _unit->GetPositionX(), _unit->GetPositionY(), _unit->GetPositionZ(), 0.0f, false, false, 0, 0);
+			_unit->GetMapMgr()->GetInterface()->SpawnCreature(CN_VOIDWALKER_SPAWN, _unit->GetPositionX(), _unit->GetPositionY(), _unit->GetPositionZ(), 0.0f, true, false, 0, 0);
 			_unit->GetAIInterface()->AttackReaction(_unit->GetAIInterface()->GetNextTarget(), 1, 0);
 		}
 
