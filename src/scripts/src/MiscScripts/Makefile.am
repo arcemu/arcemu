@@ -12,5 +12,6 @@ GameObjectTeleportTable.cpp \
 GameObjects.cpp \
 RandomScripts.cpp \
 QuelDanasPortal.cpp \
+WyrmrestTemple.cpp \
 EbonHold.cpp \
 Setup.cpp
