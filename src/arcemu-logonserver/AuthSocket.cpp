@@ -636,7 +636,7 @@ void AuthSocket::HandleReconnectProof()
 	// Don't update when IP banned, but update anyway if it's an account ban
 	sLogonSQL->Execute("UPDATE accounts SET lastlogin=NOW(), lastip='%s' WHERE acct=%u;", GetRemoteIP().c_str(), m_account->AccountId);
 	//RemoveReadBufferBytes(GetReadBufferSize(), true);
-	GetReadBuffer().Remove(GetWriteBuffer().GetSize());
+	GetReadBuffer().Remove( GetReadBuffer().GetSize() );
 
 	if(!m_account->SessionKey)
 	{

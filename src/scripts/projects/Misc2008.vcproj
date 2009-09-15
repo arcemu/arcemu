@@ -444,6 +444,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\src\MiscScripts\Logride_GrizzlyHills.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\src\MiscScripts\QuelDanasPortal.cpp"
 				>
 			</File>
