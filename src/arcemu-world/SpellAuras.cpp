@@ -2457,16 +2457,16 @@ void Aura::SpellAuraDummy(bool apply)
 	case 55360:
 		{
 			Unit *caster = GetUnitCaster();
-			if(caster && !apply)
+			if( caster && !apply )
 			{
 				uint32 spellid = 0;
-				if(this->GetSpellId() == 44457)
+				if( GetSpellId() == 44457 )
 					spellid = 44461;
-				else if(GetSpellId() == 55359)
+				else if( GetSpellId() == 55359 )
 					spellid = 55361;
-				else if(GetSpellId() == 55360)
+				else if( GetSpellId() == 55360 )
 					spellid = 55362;
-				caster->CastSpell(m_target, spellid, true);
+				caster->CastSpell( m_target, spellid, true );
 			}
 		}break;
 /*	//warlock - seed of corruption

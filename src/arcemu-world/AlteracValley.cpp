@@ -1480,7 +1480,8 @@ AlteracValley::AlteracValley(MapMgr * mgr, uint32 id, uint32 lgroup, uint32 t) :
 
 AlteracValley::~AlteracValley()
 {
-
+	for( uint8 x = 0; x < AV_NUM_CONTROL_POINTS; ++x )
+		delete m_nodes[x];
 }
 
 bool AlteracValley::HookSlowLockOpen(GameObject * pGo, Player * pPlayer, Spell * pSpell)
@@ -1597,7 +1598,7 @@ void AlteracValley::OnCreate()
 		}
 	}
 	
-	for(uint32 x = 0; x < AV_NUM_CONTROL_POINTS; ++x)
+	for(uint8 x = 0; x < AV_NUM_CONTROL_POINTS; ++x)
 		m_nodes[x] = new AVNode(*this, &g_nodeTemplates[x], x);
 
 	// generals/leaders!

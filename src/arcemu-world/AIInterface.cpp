@@ -1760,7 +1760,7 @@ Unit* AIInterface::FindTarget()
 				continue;
 			if (tmpPlr->m_invisible)
 				continue;
-			if( !tmpPlr->HasFlag( PLAYER_FLAGS, 0x100) )//PvP Guard Attackable.
+			if( !tmpPlr->HasFlag( PLAYER_FLAGS, PLAYER_FLAG_UNKNOWN2 ) )//PvP Guard Attackable.
 				continue;
 			if( !(tmpPlr->m_phase & m_Unit->m_phase) ) //Not in the same phase, skip this target
 				continue;

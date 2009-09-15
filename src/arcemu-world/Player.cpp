@@ -4727,7 +4727,7 @@ void Player::BuildPlayerRepop()
 	StopMirrorTimer(1);
 	StopMirrorTimer(2);
 
-	SetFlag(PLAYER_FLAGS, 0x10);
+	SetFlag( PLAYER_FLAGS, PLAYER_FLAG_DEATH_WORLD_ENABLE );
 
 	SetMovement(MOVE_UNROOT, 1);
 	SetMovement(MOVE_WATER_WALK, 1);
@@ -4847,7 +4847,7 @@ void Player::ResurrectPlayer()
 	uint32 AuraIds[] = {20584,9036,8326,0};
 	RemoveAuras(AuraIds); // Cebernic: removeaura just remove once(bug?).
 
-	RemoveFlag(PLAYER_FLAGS, 0x10);
+	RemoveFlag( PLAYER_FLAGS, PLAYER_FLAG_DEATH_WORLD_ENABLE );
 	setDeathState(ALIVE);
 	UpdateVisibility();
 	if ( m_resurrecter && IsInWorld()
@@ -6867,15 +6867,15 @@ bool Player::removeSpell(uint32 SpellID, bool MoveToDeleted, bool SupercededSpel
 	}
 	else
 	{
-   iter = mDeletedSpells.find(SpellID);
-    if(iter != mDeletedSpells.end())
-    {
+		iter = mDeletedSpells.find(SpellID);
+		if(iter != mDeletedSpells.end())
+		{
 			mDeletedSpells.erase(iter);
-	  }
-    else
-    {
-	    return false;
-    }
+		}
+		else
+		{
+			return false;
+		}
 	}
 
 	if(MoveToDeleted)

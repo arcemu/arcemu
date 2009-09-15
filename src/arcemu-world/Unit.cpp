@@ -7510,7 +7510,7 @@ void CombatStatusHandler::TryToClearAttackTargets()
 	Unit * pt;
 	
 	if( m_Unit->IsPlayer() )
-		static_cast<Player*>(m_Unit)->RemoveFlag(PLAYER_FLAGS, 0x100);
+		static_cast<Player*>(m_Unit)->RemoveFlag( PLAYER_FLAGS, PLAYER_FLAG_UNKNOWN2 );
 
 
 	for(i = m_attackTargets.begin(); i != m_attackTargets.end();)

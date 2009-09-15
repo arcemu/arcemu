@@ -155,6 +155,11 @@ void WorldSession::HandleMessagechatOpcode( WorldPacket & recv_data )
 		case CHAT_MSG_AFK:
 		case CHAT_MSG_DND:
 			break;
+		case CHAT_MSG_BATTLEGROUND:
+		case CHAT_MSG_BATTLEGROUND_LEADER:
+			recv_data >> msg;
+			pMsg = msg.c_str();
+			break;
 		default:
 			sLog.outError("CHAT: unknown msg type %u, lang: %u", type, lang);
 	}
@@ -423,14 +428,14 @@ void WorldSession::HandleMessagechatOpcode( WorldPacket & recv_data )
 				delete data;
 			}
 
-			if(player->HasFlag(PLAYER_FLAGS, 0x02))
+			if( player->HasFlag( PLAYER_FLAGS, PLAYER_FLAG_AFK ) )
 			{
 				// Has AFK flag, autorespond.
 				data = sChatHandler.FillMessageData(CHAT_MSG_AFK, LANG_UNIVERSAL,  player->m_afk_reason.c_str(),player->GetGUID(), _player->bGMTagOn ? 4 : 0);
 				SendPacket(data);
 				delete data;
 			}
-			else if(player->HasFlag(PLAYER_FLAGS, 0x04))
+			else if( player->HasFlag( PLAYER_FLAGS, PLAYER_FLAG_DND ) )
 			{
 				// Has DND flag, autorespond.
 				if (player->GetTeamInitial() == _player->GetTeamInitial()) {
@@ -475,15 +480,15 @@ void WorldSession::HandleMessagechatOpcode( WorldPacket & recv_data )
 			}
 
 			/* WorldPacket *data, WorldSession* session, uint32 type, uint32 language, const char *channelName, const char *message*/
-			if(GetPlayer()->HasFlag(PLAYER_FLAGS, 0x02))
+			if( GetPlayer()->HasFlag( PLAYER_FLAGS, PLAYER_FLAG_AFK ) )
 			{
-				GetPlayer()->RemoveFlag(PLAYER_FLAGS, 0x02);
-				if(sWorld.GetKickAFKPlayerTime())
-					sEventMgr.RemoveEvents(GetPlayer(),EVENT_PLAYER_SOFT_DISCONNECT);
+				GetPlayer()->RemoveFlag( PLAYER_FLAGS, PLAYER_FLAG_AFK );
+				if( sWorld.GetKickAFKPlayerTime() )
+					sEventMgr.RemoveEvents( GetPlayer(),EVENT_PLAYER_SOFT_DISCONNECT );
 			}
 			else
 			{
-				GetPlayer()->SetFlag(PLAYER_FLAGS, 0x02);
+				GetPlayer()->SetFlag( PLAYER_FLAGS, PLAYER_FLAG_AFK );
 
                 if( GetPlayer()->m_bg )
                     GetPlayer()->m_bg->RemovePlayer( GetPlayer(), false );
@@ -504,15 +509,33 @@ void WorldSession::HandleMessagechatOpcode( WorldPacket & recv_data )
 				return;
 			}
 
-			if(GetPlayer()->HasFlag(PLAYER_FLAGS, 0x04))
-				GetPlayer()->RemoveFlag(PLAYER_FLAGS, 0x04);
+			if( GetPlayer()->HasFlag( PLAYER_FLAGS, PLAYER_FLAG_DND ) )
+				GetPlayer()->RemoveFlag( PLAYER_FLAGS, PLAYER_FLAG_DND );
 			else
 			{
-				GetPlayer()->SetFlag(PLAYER_FLAGS, 0x04);
+				GetPlayer()->SetFlag( PLAYER_FLAGS, PLAYER_FLAG_DND );
 			}
 		} break;
-	}
 
+	case CHAT_MSG_BATTLEGROUND:
+	case CHAT_MSG_BATTLEGROUND_LEADER:
+		{
+			if( sChatHandler.ParseCommands( msg.c_str(), this ) > 0 )
+				break;
+
+			if( g_chatFilter->Parse( msg ) == true )
+			{
+				SystemMessage("Your chat message was blocked by a server-side filter.");
+				return;
+			}
+			if( _player->m_bg != NULL && _player->GetTeam() != NULL )
+			{
+				data = sChatHandler.FillMessageData( type, lang, msg.c_str(), _player->GetGUID() );
+				_player->m_bg->DistributePacketToTeam( data, _player->GetTeam() );
+				delete data;
+			}
+		}break;
+	}
 }
 
 void WorldSession::HandleTextEmoteOpcode( WorldPacket & recv_data )
