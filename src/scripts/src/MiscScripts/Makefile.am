@@ -14,4 +14,5 @@ RandomScripts.cpp \
 QuelDanasPortal.cpp \
 WyrmrestTemple.cpp \
 EbonHold.cpp \
+Logride_GrizzlyHills.cpp \
 Setup.cpp

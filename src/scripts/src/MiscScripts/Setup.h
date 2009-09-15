@@ -26,6 +26,7 @@ void SetupRandomScripts(ScriptMgr * mgr);
 void SetupMiscCreatures(ScriptMgr * mgr);
 void SetupEbonHold(ScriptMgr * mgr);
 void SetupWyrmrestTemple(ScriptMgr * mgr);
+void SetupGrizzlyHills(ScriptMgr * mgr);
 void InitializeGameObjectTeleportTable(ScriptMgr * mgr);
 
 #endif
