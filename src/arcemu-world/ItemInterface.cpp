@@ -3092,7 +3092,7 @@ void ItemInterface::SwapItemSlots(int8 srcslot, int8 dstslot)
 	m_pItems[(int)dstslot] = SrcItem;
 
 	// Moving a bag with items to a empty bagslot
-	if ( (DstItem == NULL) && (SrcItem->IsContainer()) )
+	if ( DstItem == NULL && SrcItem != NULL && SrcItem->IsContainer() )
 	{
 		Item *tSrcItem = NULL;
 
@@ -3112,7 +3112,7 @@ void ItemInterface::SwapItemSlots(int8 srcslot, int8 dstslot)
 	m_pItems[(int)srcslot] = DstItem;
 
 	// swapping 2 bags filled with items
-	if ( DstItem && SrcItem->IsContainer() && DstItem->IsContainer() )
+	if ( DstItem != NULL && SrcItem != NULL && SrcItem->IsContainer() && DstItem->IsContainer() )
 	{
 		Item *tDstItem = NULL;
 		Item *tSrcItem = NULL;

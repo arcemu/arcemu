@@ -3089,11 +3089,11 @@ void Spell::SpellEffectPersistentAA(uint32 i) // Persistent Area Aura
 	// kinda have 2 summoners for traps that apply AA.
 	DynamicObject * dynObj = m_caster->GetMapMgr()->CreateDynamicObject();
 
-	if(g_caster && g_caster->m_summoner && !unitTarget)
+	if( g_caster != NULL && g_caster->m_summoner && !unitTarget )
 	{
 		Unit * caster = g_caster->m_summoner;
-		dynObj->Create(caster, this, g_caster->GetPositionX(), g_caster->GetPositionY(),
-			g_caster->GetPositionZ(), dur, r);
+		dynObj->Create( caster, this, g_caster->GetPositionX(), g_caster->GetPositionY(),
+			g_caster->GetPositionZ(), dur, r );
 		m_AreaAura = true;
 		return;
 	}
@@ -3129,14 +3129,14 @@ void Spell::SpellEffectPersistentAA(uint32 i) // Persistent Area Aura
 	case TARGET_FLAG_DEST_LOCATION:
 		{
 			dynObj->SetInstanceID(m_caster->GetInstanceID());
-			dynObj->Create(u_caster?u_caster:g_caster->m_summoner, this,
-				m_targets.m_destX, m_targets.m_destY, m_targets.m_destZ,dur,r);
+			dynObj->Create( u_caster ? u_caster : g_caster->m_summoner, this,
+				m_targets.m_destX, m_targets.m_destY, m_targets.m_destZ,dur,r );
 		}break;
 	default:
 		return;
 	}
 
-	if(u_caster)
+	if( u_caster != NULL )
 		if(GetProto()->ChannelInterruptFlags > 0)
 		{
 			u_caster->SetUInt64Value(UNIT_FIELD_CHANNEL_OBJECT,dynObj->GetGUID());

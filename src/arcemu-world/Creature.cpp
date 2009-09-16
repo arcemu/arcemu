@@ -1166,10 +1166,10 @@ bool Creature::Load(CreatureSpawn *spawn, uint32 mode, MapInfo *info)
 {
 	m_spawn = spawn;
 	proto = CreatureProtoStorage.LookupEntry(spawn->entry);
-	if(!proto)
+	if( proto == NULL )
 		return false;
 	creature_info = CreatureNameStorage.LookupEntry(spawn->entry);
-	if(!creature_info)
+	if( creature_info == NULL )
 		return false;
 
 	spawnid = spawn->id;
@@ -1186,7 +1186,7 @@ bool Creature::Load(CreatureSpawn *spawn, uint32 mode, MapInfo *info)
 	//SetUInt32Value(UNIT_FIELD_HEALTH, (mode ? long2int32(proto->Health * 1.5)  : proto->Health));
 	//SetUInt32Value(UNIT_FIELD_BASE_HEALTH, (mode ? long2int32(proto->Health * 1.5)  : proto->Health));
 	//SetUInt32Value(UNIT_FIELD_MAXHEALTH, (mode ? long2int32(proto->Health * 1.5)  : proto->Health));
-	if(proto && proto->MinHealth > proto->MaxHealth)
+	if( proto->MinHealth > proto->MaxHealth )
 	{
 		proto->MaxHealth = proto->MinHealth+1;
 		SaveToDB();
@@ -1934,7 +1934,7 @@ Group *Creature::GetGroup()
 {
 	if ( IsPet() )
 		static_cast<Pet *>(this)->GetGroup();
-	else if( IsTotem() && totemOwner)
+	else if( IsTotem() && totemOwner != NULL )
 		return totemOwner->GetGroup();
 	else if( GetUInt64Value( UNIT_FIELD_CREATEDBY ) && GetMapMgr() )
 	{

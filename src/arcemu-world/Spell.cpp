@@ -3190,13 +3190,19 @@ void Spell::TriggerSpell()
 
 void Spell::DetermineSkillUp()
 {
-	if(!p_caster)return;
+	if( p_caster != NULL )
+		return;
+
+	skilllinespell* skill = objmgr.GetSpellSkill( GetProto()->Id );
+	if( skill == NULL )
+		return;
+
 	float chance = 0.0f;
-	skilllinespell* skill = objmgr.GetSpellSkill(GetProto()->Id);
-	if( skill != NULL && static_cast< Player* >( m_caster )->_HasSkillLine( skill->skilline ) )
+
+	if( p_caster->_HasSkillLine( skill->skilline ) )
 	{
-		uint32 amt = static_cast< Player* >( m_caster )->_GetSkillLineCurrent( skill->skilline, false );
-		uint32 max = static_cast< Player* >( m_caster )->_GetSkillLineMax( skill->skilline );
+		uint32 amt = p_caster->_GetSkillLineCurrent( skill->skilline, false );
+		uint32 max = p_caster->_GetSkillLineMax( skill->skilline );
 		if( amt >= max )
 			return;
 		if( amt >= skill->grey ) //grey
@@ -3208,8 +3214,8 @@ void Spell::DetermineSkillUp()
 		else //brown
 			chance=100.0f;
 	}
-	if(Rand(chance*sWorld.getRate(RATE_SKILLCHANCE)))
-		p_caster->_AdvanceSkillLine(skill->skilline, float2int32( 1.0f * sWorld.getRate(RATE_SKILLRATE)));
+	if( Rand( chance * sWorld.getRate( RATE_SKILLCHANCE ) ) )
+		p_caster->_AdvanceSkillLine( skill->skilline, float2int32( 1.0f * sWorld.getRate( RATE_SKILLRATE ) ) );
 }
 
 bool Spell::IsAspect()

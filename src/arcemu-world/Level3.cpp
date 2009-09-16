@@ -106,11 +106,15 @@ bool ChatHandler::HandleSpawnByDisplayId(const char * args, WorldSession * m_ses
 	if(!plr)
 		return false;
 
-	GameObject* go = plr->GetMapMgr()->CreateAndSpawnGameObject(entry, plr->GetPositionX(), plr->GetPositionY(),
-		plr->GetPositionZ(), plr->GetOrientation(), 1);
-	go->Phase(PHASE_SET, plr->GetPhase());
+	GameObject* go = plr->GetMapMgr()->CreateAndSpawnGameObject( entry, plr->GetPositionX(), plr->GetPositionY(),
+		plr->GetPositionZ(), plr->GetOrientation(), 1 );
+	
+	if( go == NULL)
+		return false;
+	
+	go->Phase( PHASE_SET, plr->GetPhase() );
 	GOSpawn* gs = go->m_spawn;
-	if (gs)
+	if( gs != NULL )
 		gs->phase = go->GetPhase();
 
 	return true;
@@ -1849,10 +1853,11 @@ bool ChatHandler::HandlePetLevelCommand(const char* args, WorldSession* m_sessio
 
 bool ChatHandler::HandleShutdownCommand(const char* args, WorldSession* m_session)
 {
-	uint32 shutdowntime = atol(args);
-	if(!args)
+	uint32 shutdowntime;
+	if( !args )
 		shutdowntime = 5;
-
+	else
+		shutdowntime = atol( args );
 
 	char msg[500];
 	snprintf(msg, 500, "%sServer shutdown initiated by %s, shutting down in %u seconds.", MSG_COLOR_LIGHTBLUE,
@@ -1869,9 +1874,11 @@ bool ChatHandler::HandleShutdownCommand(const char* args, WorldSession* m_sessio
 
 bool ChatHandler::HandleShutdownRestartCommand(const char* args, WorldSession* m_session)
 {
-	uint32 shutdowntime = atol(args);
-	if(!args)
+	uint32 shutdowntime;
+	if( !args )
 		shutdowntime = 5;
+	else
+		shutdowntime = atol( args );
 
 	char msg[500];
 	snprintf(msg, 500, "%sServer restart initiated by %s, shutting down in %u seconds.", MSG_COLOR_LIGHTBLUE,

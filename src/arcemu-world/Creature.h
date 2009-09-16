@@ -584,7 +584,7 @@ public:
 	void RegenerateFocus();
 
 	CreatureFamilyEntry * myFamily;
-	ARCEMU_INLINE bool IsTotem() { return totemOwner != 0 && totemSlot != -1; }
+	ARCEMU_INLINE bool IsTotem() { return totemOwner != NULL && totemSlot != -1; }
 
 	ARCEMU_INLINE bool IsExotic()
 	{

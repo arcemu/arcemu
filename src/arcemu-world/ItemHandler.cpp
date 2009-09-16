@@ -822,9 +822,9 @@ void WorldSession::HandleAutoEquipItemOpcode( WorldPacket & recv_data )
 		
 	}
 
-	if( eitem->GetProto()->Bonding==ITEM_BIND_ON_EQUIP )
+	if( eitem != NULL && eitem->GetProto()->Bonding == ITEM_BIND_ON_EQUIP )
 		eitem->SoulBind();
-	#ifdef ENABLE_ACHIEVEMENTS
+#ifdef ENABLE_ACHIEVEMENTS
 	_player->GetAchievementMgr().UpdateAchievementCriteria( ACHIEVEMENT_CRITERIA_TYPE_EQUIP_ITEM, eitem->GetProto()->ItemId, 0, 0 );
 	// Achievement ID:556 description Equip an epic item in every slot with a minimum item level of 213.
 	// "213" value not found in achievement or criteria entries, have to hard-code it here? :(

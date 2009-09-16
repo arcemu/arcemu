@@ -4314,9 +4314,6 @@ void Player::_ApplyItemMods(Item* item, int16 slot, bool apply, bool justdrokedo
                 break;
             }
        
-
-		
-
 		/* Not going to put a check here since unless you put a random id/flag in the tables these should never return NULL */
 
 		/* Calculating the stats correct for our level and applying them */
@@ -4324,7 +4321,8 @@ void Player::_ApplyItemMods(Item* item, int16 slot, bool apply, bool justdrokedo
 			StatType = ssdrow->stat[i];
 			StatMod  = ssdrow->statmodifier[i];
 			col = GetStatScalingStatValueColumn(proto,SCALINGSTATSTAT);
-			if(col == -1) continue;
+			if( col == -1 )
+				continue;
 			StatMultiplier = ssvrow->multiplier[col];
 			StatValue = StatMod*StatMultiplier/10000;
 			ModifyBonuses(StatType,StatValue,apply);
@@ -7401,10 +7399,10 @@ void Player::TaxiStart(TaxiPath *path, uint32 modelid, uint32 start_node)
 
 	m_taxiMapChangeNode = 0;
 
-	if(this->m_MountSpellId)
-		RemoveAura(m_MountSpellId);
+	if( m_MountSpellId )
+		RemoveAura( m_MountSpellId );
 	//also remove morph spells
-	if(GetUInt32Value(UNIT_FIELD_DISPLAYID)!=GetUInt32Value(UNIT_FIELD_NATIVEDISPLAYID))
+	if( GetUInt32Value(UNIT_FIELD_DISPLAYID )!= GetUInt32Value( UNIT_FIELD_NATIVEDISPLAYID ) )
 	{
 		RemoveAllAuraType( SPELL_AURA_TRANSFORM );
 		RemoveAllAuraType( SPELL_AURA_MOD_SHAPESHIFT );
@@ -8602,8 +8600,8 @@ void Player::UpdateChannels(uint16 AreaID)
 		else
 			channelname += AreaName;
 
-		Channel * chn = channelmgr.GetCreateChannel(channelname.c_str(), this, c->m_id);
-		if( !chn->HasMember(this) )
+		Channel * chn = channelmgr.GetCreateChannel( channelname.c_str(), this, c->m_id );
+		if( chn != NULL && !chn->HasMember(this) )
 		{
 			c->Part(this);
 			chn->AttemptJoin(this, NULL);

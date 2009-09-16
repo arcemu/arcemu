@@ -1371,15 +1371,12 @@ void Aura::SpellAuraModPossess(bool apply)
 
 void Aura::SpellAuraPeriodicDamage(bool apply)
 {
-	if(apply)
+	if( apply )
 	{
-		if( m_target )
+		if( m_spellProto->MechanicsType == MECHANIC_BLEEDING && m_target->MechanicsDispels[MECHANIC_BLEEDING] )
 		{
-			if( m_spellProto->MechanicsType == MECHANIC_BLEEDING && m_target->MechanicsDispels[MECHANIC_BLEEDING] )
-			{
-				m_flags |= 1 << mod->i;
-				return;
-			}
+			m_flags |= 1 << mod->i;
+			return;
 		}
 		int32 dmg	= mod->m_amount;
 		Unit *c = GetUnitCaster();
@@ -1392,7 +1389,7 @@ void Aura::SpellAuraPeriodicDamage(bool apply)
 			case 8818:
 			case 11289:
 			case 11290:
-				if(c)
+				if( c != NULL )
 					c->RemoveAurasByInterruptFlag(AURA_INTERRUPT_ON_START_ATTACK);  // remove stealth
 				break;
 			//mage talent ignite
@@ -1403,7 +1400,7 @@ void Aura::SpellAuraPeriodicDamage(bool apply)
 				SpellEntry * parentsp = dbcSpell.LookupEntry(pSpellId);
 				if(!parentsp)
 					return;
-				if (c && c->IsPlayer())
+				if( c != NULL && c->IsPlayer())
 				{
 					dmg = float2int32(static_cast< Player* >(c)->m_casted_amount[SCHOOL_FIRE]*parentsp->EffectBasePoints[0]/100.0f);
 				}
@@ -1420,8 +1417,8 @@ void Aura::SpellAuraPeriodicDamage(bool apply)
 					dmg = 0;
 					for(int i=0;i<3;i++)
 					{
-					  //dmg +=parentsp->EffectBasePoints[i]*m_spellProto->EffectBasePoints[0];
-						dmg +=spell->CalculateEffect(i,m_target->IsUnit()?(Unit*)m_target:NULL)*parentsp->EffectBasePoints[0]/100;
+					  //dmg += parentsp->EffectBasePoints[i]*m_spellProto->EffectBasePoints[0];
+						dmg += spell->CalculateEffect( i, m_target->IsUnit() ? (Unit*)m_target: NULL )* parentsp->EffectBasePoints[0] / 100;
 					}
 					SpellPool.PooledDelete( spell );
 					spell = NULL;
@@ -1457,13 +1454,12 @@ void Aura::SpellAuraPeriodicDamage(bool apply)
 			}
 		}
 		uint32* gr = GetSpellProto()->SpellGroupType;
-		if(gr)
+		if( gr )
 		{
-			Unit*c=GetUnitCaster();
-			if(c)
+			if( c != NULL )
 			{
-				SM_FIValue(c->SM_FDOT,(int32*)&dmg,gr);
-				SM_PIValue(c->SM_PDOT,(int32*)&dmg,gr);
+				SM_FIValue( c->SM_FDOT,(int32*)&dmg, gr );
+				SM_PIValue( c->SM_PDOT,(int32*)&dmg, gr );
 			}
 		}
 
@@ -2754,17 +2750,20 @@ void Aura::SpellAuraDummy(bool apply)
 				if( m_target->GetTypeId() == TYPEID_UNIT )
 				{
 					Creature *tamed = ( Creature* ) m_target;
-					QuestLogEntry *qle = p_caster->GetQuestLogForEntry(tamequest->id );
-
 					tamed->GetAIInterface()->HandleEvent( EVENT_LEAVECOMBAT, p_caster, 0 );
+					
 					Pet *pPet = objmgr.CreatePet( tamed->GetEntry() );
 					pPet->CreateAsSummon( tamed->GetEntry(), tamed->GetCreatureInfo(), tamed, p_caster, triggerspell, 2, 900000 );
-					//pPet->CastSpell( tamed, triggerspell, false );
 					tamed->SafeDelete();
-					qle->SetMobCount( 0, 1 );
-					qle->SendUpdateAddKill( 1 );
-					qle->UpdatePlayerFields();
-					qle->SendQuestComplete();
+					
+					QuestLogEntry *qle = p_caster->GetQuestLogForEntry( tamequest->id );
+					if( qle != NULL )
+					{
+						qle->SetMobCount( 0, 1 );
+						qle->SendUpdateAddKill( 1 );
+						qle->UpdatePlayerFields();
+						qle->SendQuestComplete();
+					}
 				}
 			}
 			else
@@ -3279,13 +3278,11 @@ void Aura::SpellAuraModTaunt(bool apply)
 
 void Aura::SpellAuraModStun(bool apply)
 {
-	if(!m_target) return;
-
 	if(apply)
 	{
 		// Check Mechanic Immunity
 		// Stun is a tricky one... it's used for all different kinds of mechanics as a base Aura
-		if( m_target && !IsPositive() && m_spellProto->NameHash != SPELL_HASH_ICE_BLOCK )  // ice block stuns you, don't want our own spells to ignore stun effects
+		if( !IsPositive() && m_spellProto->NameHash != SPELL_HASH_ICE_BLOCK )  // ice block stuns you, don't want our own spells to ignore stun effects
 		{
 			if( ( m_spellProto->MechanicsType == MECHANIC_CHARMED &&  m_target->MechanicsDispels[MECHANIC_CHARMED] )
 			|| ( m_spellProto->MechanicsType == MECHANIC_INCAPACIPATED && m_target->MechanicsDispels[MECHANIC_INCAPACIPATED] )
@@ -3325,11 +3322,12 @@ void Aura::SpellAuraModStun(bool apply)
 
 		//warrior talent - second wind triggers on stun and immobilize. This is not used as proc to be triggered always !
 		Unit *caster = GetUnitCaster();
-		if( caster && m_target )
+		if( caster != NULL )
+		{
 			static_cast<Unit*>(caster)->EventStunOrImmobilize( m_target );
-		if( m_target && caster )
 			static_cast<Unit*>(m_target)->EventStunOrImmobilize( caster, true );
-		if (m_target->IsCasting())
+		}
+		if( m_target->IsCasting() )
 			m_target->CancelSpell(NULL); //cancel spells.
 	}
 	else if( (m_flags & (1 << mod->i)) == 0 ) //add these checks to mods where immunity can cancel only 1 mod and not whole spell
@@ -4122,14 +4120,12 @@ void Aura::SpellAuraModRoot(bool apply)
 	if(apply)
 	{
 		// Check Mechanic Immunity
-		if( m_target )
+		if( m_target->MechanicsDispels[MECHANIC_ROOTED] )
 		{
-			if( m_target->MechanicsDispels[MECHANIC_ROOTED] )
-			{
-				m_flags |= 1 << mod->i;
-				return;
-			}
+			m_flags |= 1 << mod->i;
+			return;
 		}
+
 		SetNegative();
 
 		m_target->m_rooted++;
@@ -4345,13 +4341,10 @@ void Aura::SpellAuraModDecreaseSpeed(bool apply)
 	if(apply)
 	{
 		// Check Mechanic Immunity
-		if( m_target )
+		if( m_target->MechanicsDispels[MECHANIC_ENSNARED] )
 		{
-			if( m_target->MechanicsDispels[MECHANIC_ENSNARED] )
-			{
-				m_flags |= 1 << mod->i;
-				return;
-			}
+			m_flags |= 1 << mod->i;
+			return;
 		}
 		switch(m_spellProto->NameHash)
 		{
@@ -5753,21 +5746,19 @@ void Aura::SpellAuraPeriodicManaLeech(bool apply)
 {
 	if(apply)
 	{
-		uint32 amt=mod->m_amount;
-		if ( this ) {
-			uint32 mult = amt;
-			if ( m_target ) {
-				amt = mult * m_target->GetUInt32Value(UNIT_FIELD_MAXPOWER1) / 100;
-				Unit* caster = static_cast<Unit*> (this->GetCaster());
-				if ( caster ) {
-					if ( amt > caster->GetUInt32Value(UNIT_FIELD_MAXPOWER1) * (mult*2) / 100 ) 
-						amt = caster->GetUInt32Value(UNIT_FIELD_MAXPOWER1) * (mult*2) / 100;
-				}
-			}
-			
+		uint32 amt = mod->m_amount;
+		uint32 mult = amt;
+
+		amt = mult * m_target->GetUInt32Value( UNIT_FIELD_MAXPOWER1 ) / 100;
+		Object* objCaster = GetCaster();
+		if( objCaster && objCaster->IsUnit() )
+		{
+			Unit* caster = static_cast< Unit* >( GetCaster() );
+			if( amt > caster->GetUInt32Value( UNIT_FIELD_MAXPOWER1 ) * ( mult << 1 ) / 100 ) 
+				amt = caster->GetUInt32Value( UNIT_FIELD_MAXPOWER1) * ( mult << 1 ) / 100;
 		}
-		sEventMgr.AddEvent(this, &Aura::EventPeriodicManaLeech,amt,
-			EVENT_AURA_PERIODIC_LEECH,	 GetSpellProto()->EffectAmplitude[mod->i],0,EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
+		sEventMgr.AddEvent( this, &Aura::EventPeriodicManaLeech, amt,
+			EVENT_AURA_PERIODIC_LEECH, GetSpellProto()->EffectAmplitude[mod->i], 0, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT );
 	}
 }
 
@@ -6077,10 +6068,8 @@ void Aura::SpellAuraMechanicImmunity(bool apply)
 		if(mod->m_miscValue != 16 && mod->m_miscValue != 25 && mod->m_miscValue != 19) // don't remove bandages, Power Word and protection effect
 		{
 			/* Supa's test run of Unit::RemoveAllAurasByMechanic */
-			if( m_target ) // just to be sure?
-			{
-				m_target->RemoveAllAurasByMechanic( (uint32)mod->m_miscValue , static_cast<uint32>(-1) , false );
-			}
+			m_target->RemoveAllAurasByMechanic( (uint32)mod->m_miscValue , static_cast<uint32>(-1) , false );
+
 			//Insignia/Medallion of A/H			//Every Man for Himself
 			if( m_spellProto->Id == 42292 || m_spellProto->Id == 59752 )
 			{
@@ -7848,13 +7837,13 @@ void Aura::SpellAuraSplitDamageFlat(bool apply)
 	if( !m_target || !m_target->IsUnit() )
 		return;
 
-	if (m_target->m_damageSplitTarget)
+	if( m_target->m_damageSplitTarget )
 	{
 		delete m_target->m_damageSplitTarget;
 		m_target->m_damageSplitTarget = NULL;
 	}
 
-	if(apply)
+	if( apply )
 	{
 		DamageSplitTarget *ds = new DamageSplitTarget;
 		ds->m_flatDamageSplit = mod->m_miscValue;
@@ -7862,7 +7851,7 @@ void Aura::SpellAuraSplitDamageFlat(bool apply)
 		ds->m_pctDamageSplit = 0;
 		ds->damage_type = static_cast<uint8>( mod->m_type );
 		ds->creator = (void*)this;
-		ds->m_target = GetCaster()->GetGUID();
+		ds->m_target = m_casterGuid;
 		m_target->m_damageSplitTarget = ds;
 //		printf("registering dmg split %u, amount= %u \n",ds->m_spellId, mod->m_amount, mod->m_miscValue, mod->m_type);
 	}
@@ -8192,11 +8181,11 @@ void Aura::SpellAuraModSpellDamageByAP(bool apply)
 	{
 		//!! caster may log out before spell expires on target !
 		Unit * pCaster = GetUnitCaster();
-		if(!pCaster)
+		if( pCaster == NULL )
 			return;
 
-		val = mod->m_amount * GetUnitCaster()->GetAP() / 100;
-		if(val<0)
+		val = mod->m_amount * pCaster->GetAP() / 100;
+		if( val < 0 )
 			SetNegative();
 		else
 			SetPositive();

@@ -930,21 +930,23 @@ bool EyeOfTheStorm::GivePoints(uint32 team, uint32 points)
 				{
 					(*itr)->m_bgScore.BonusHonor += winHonorToAdd;
 					HonorHandler::AddHonorPointsToPlayer((*itr), winHonorToAdd);
-					Item *item;
-					item = objmgr.CreateItem( 29024 , *itr);
-					item->SetUInt32Value(ITEM_FIELD_STACK_COUNT,3);
-					item->SoulBind();
-					if(!(*itr)->GetItemInterface()->AddItemToFreeSlot(item))
+					Item *item = objmgr.CreateItem( 29024 , *itr );
+					if( item != NULL )
 					{
-						(*itr)->GetSession()->SendNotification("No free slots were found in your inventory!");
-						item->DeleteMe();
-					}
-					else
-					{
-						(*itr)->m_bgScore.BonusHonor += lostHonorToAdd;
-						HonorHandler::AddHonorPointsToPlayer((*itr), lostHonorToAdd);
-						SlotResult *lr = (*itr)->GetItemInterface()->LastSearchResult();
-						(*itr)->GetSession()->SendItemPushResult(item,false,true,false,true,lr->ContainerSlot,lr->Slot,3);
+						item->SetUInt32Value( ITEM_FIELD_STACK_COUNT, 3 );
+						item->SoulBind();
+						if( !(*itr)->GetItemInterface()->AddItemToFreeSlot( item ) )
+						{
+							(*itr)->GetSession()->SendNotification("No free slots were found in your inventory!");
+							item->DeleteMe();
+						}
+						else
+						{
+							(*itr)->m_bgScore.BonusHonor += lostHonorToAdd;
+							HonorHandler::AddHonorPointsToPlayer( (*itr), lostHonorToAdd );
+							SlotResult *lr = (*itr)->GetItemInterface()->LastSearchResult();
+							(*itr)->GetSession()->SendItemPushResult( item, false, true, false, true, lr->ContainerSlot, lr->Slot, 3 );
+						}
 					}
 					if(i && (*itr)->GetQuestLogForEntry(11341))
 						(*itr)->GetQuestLogForEntry(11341)->SendQuestComplete();
@@ -953,19 +955,21 @@ bool EyeOfTheStorm::GivePoints(uint32 team, uint32 points)
 				}
 				else
 				{
-					Item *item;
-					item = objmgr.CreateItem( 29024 , *itr);
-					item->SetUInt32Value(ITEM_FIELD_STACK_COUNT,1);
-					item->SoulBind();
-					if(!(*itr)->GetItemInterface()->AddItemToFreeSlot(item))
+					Item *item = objmgr.CreateItem( 29024 , *itr );
+					if( item != NULL )
 					{
-						(*itr)->GetSession()->SendNotification("No free slots were found in your inventory!");
-						item->DeleteMe();
-					}
-					else
-					{
-						SlotResult *lr = (*itr)->GetItemInterface()->LastSearchResult();
-						(*itr)->GetSession()->SendItemPushResult(item,false,true,false,true,lr->ContainerSlot,lr->Slot,1);
+						item->SetUInt32Value( ITEM_FIELD_STACK_COUNT, 1 );
+						item->SoulBind();
+						if( !(*itr)->GetItemInterface()->AddItemToFreeSlot( item ) )
+						{
+							(*itr)->GetSession()->SendNotification("No free slots were found in your inventory!");
+							item->DeleteMe();
+						}
+						else
+						{
+							SlotResult *lr = (*itr)->GetItemInterface()->LastSearchResult();
+							(*itr)->GetSession()->SendItemPushResult( item, false, true, false, true, lr->ContainerSlot, lr->Slot, 1 );
+						}
 					}
 				}
 			}

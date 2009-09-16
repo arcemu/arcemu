@@ -268,9 +268,10 @@ void Item::LoadFromDB(Field* fields, Player* plr, bool light )
     refundentry.first = fields[17].GetUInt32();
     refundentry.second = fields[18].GetUInt32();
 
-    if( refundentry.first != 0 && refundentry.second != 0 ){
+    if( refundentry.first != 0 && refundentry.second != 0 && m_owner != NULL )
+	{
         if( UNIXTIME < ( refundentry.first + 60*60*2 ) )
-            this->GetOwner()->GetItemInterface()->AddRefundable( this, refundentry.second, refundentry.first );
+            m_owner->GetItemInterface()->AddRefundable( this, refundentry.second, refundentry.first );
     }
 
 ///////////////////////////////////////////////////////////////////////////////////////////
@@ -283,7 +284,7 @@ void Item::LoadFromDB(Field* fields, Player* plr, bool light )
 		SetUInt32Value( ITEM_FIELD_FLAGS, 1 );
 		SetUInt32Value( ITEM_FIELD_STACK_COUNT, 1 );
 		SetUInt32Value( ITEM_FIELD_PROPERTY_SEED, 57813883 );
-		if( plr->m_charters[CHARTER_TYPE_GUILD] )
+		if( plr != NULL && plr->m_charters[CHARTER_TYPE_GUILD] )
 			SetUInt32Value( ITEM_FIELD_ENCHANTMENT_1_1, plr->m_charters[CHARTER_TYPE_GUILD]->GetID() );
 	}
 
@@ -292,7 +293,7 @@ void Item::LoadFromDB(Field* fields, Player* plr, bool light )
 		SetUInt32Value( ITEM_FIELD_FLAGS, 1 );
 		SetUInt32Value( ITEM_FIELD_STACK_COUNT, 1 );
 		SetUInt32Value( ITEM_FIELD_PROPERTY_SEED, 57813883 );
-		if( plr->m_charters[CHARTER_TYPE_ARENA_2V2] )
+		if( plr != NULL && plr->m_charters[CHARTER_TYPE_ARENA_2V2] )
 			SetUInt32Value( ITEM_FIELD_ENCHANTMENT_1_1, plr->m_charters[CHARTER_TYPE_ARENA_2V2]->GetID() );
 	}
 
@@ -301,7 +302,7 @@ void Item::LoadFromDB(Field* fields, Player* plr, bool light )
 		SetUInt32Value( ITEM_FIELD_FLAGS, 1 );
 		SetUInt32Value( ITEM_FIELD_STACK_COUNT, 1 );
 		SetUInt32Value( ITEM_FIELD_PROPERTY_SEED, 57813883 );
-		if( plr->m_charters[CHARTER_TYPE_ARENA_3V3] )
+		if( plr != NULL && plr->m_charters[CHARTER_TYPE_ARENA_3V3] )
 			SetUInt32Value( ITEM_FIELD_ENCHANTMENT_1_1, plr->m_charters[CHARTER_TYPE_ARENA_3V3]->GetID() );
 	}
 
@@ -310,7 +311,7 @@ void Item::LoadFromDB(Field* fields, Player* plr, bool light )
 		SetUInt32Value( ITEM_FIELD_FLAGS, 1 );
 		SetUInt32Value( ITEM_FIELD_STACK_COUNT, 1 );
 		SetUInt32Value( ITEM_FIELD_PROPERTY_SEED, 57813883 );
-		if( plr->m_charters[CHARTER_TYPE_ARENA_5V5] )
+		if( plr != NULL && plr->m_charters[CHARTER_TYPE_ARENA_5V5] )
 			SetUInt32Value( ITEM_FIELD_ENCHANTMENT_1_1, plr->m_charters[CHARTER_TYPE_ARENA_5V5]->GetID() );
 	}
 }
