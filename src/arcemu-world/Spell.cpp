@@ -3190,7 +3190,7 @@ void Spell::TriggerSpell()
 
 void Spell::DetermineSkillUp()
 {
-	if( p_caster != NULL )
+	if( p_caster == NULL )
 		return;
 
 	skilllinespell* skill = objmgr.GetSpellSkill( GetProto()->Id );

@@ -44,7 +44,7 @@ int sendCrashdump() {
 	char cmd[1024];
 	int ret;
 
-	snprintf(cmd, 1024, "curl --silent --header \"Expect:\" --form-string group_id=230683 --form-string atid=1081311 --form-string func=postadd --form-string category_id=100 --form-string artifact_group_id=100 --form-string summary=\"TEST ArcEmu crashdump rev%s\" --form-string details=\"%s; Uptime = %s Connections: Online %lu, Peak %lu, Accepted %lu\" --form-string file_description=crashdump --form input_file=@crashdump.log --form-string submit=SUBMIT http://sourceforge.net/tracker/index.php &> /dev/null", opts.revision, opts.details, opts.uptime, opts.online, opts.peak, opts.accepted);
+	snprintf(cmd, 1024, "curl --silent --header \"Expect:\" --form-string group_id=230683 --form-string atid=1081311 --form-string func=postadd --form-string category_id=100 --form-string artifact_group_id=100 --form-string summary=\"ArcEmu crashdump r%s\" --form-string details=\"%s; Uptime = %s Connections: Online %lu, Peak %lu, Accepted %lu\" --form-string file_description=crashdump --form input_file=@crashdump.log --form-string submit=SUBMIT http://sourceforge.net/tracker/index.php &> /dev/null", opts.revision, opts.details, opts.uptime, opts.online, opts.peak, opts.accepted);
 	printf("%s: sending crashdump.. '%s'\n", __FUNCTION__, cmd);
 	ret = system(cmd);
 	if (ret != 0) {
