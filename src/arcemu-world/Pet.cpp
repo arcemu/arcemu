@@ -267,6 +267,7 @@ Pet::Pet( uint64 guid ) : Creature( guid )
 	m_PetXP = 0;
 	Summon = false;
 	memset(ActionBar, 0, sizeof(uint32)*10);
+	ScheduledForDeletion = false;
 
 	m_AutoCombatSpell = 0;
 
@@ -778,6 +779,7 @@ void Pet::Dismiss() //Abandon pet
 
 void Pet::Remove( bool bUpdate, bool bSetOffline )
 {
+	ScheduledForDeletion = true;
 	RemoveAllAuras(); // Prevent pet overbuffing
 	if( m_Owner )
 	{
@@ -793,7 +795,7 @@ void Pet::Remove( bool bUpdate, bool bSetOffline )
 		m_Owner->SetUInt64Value( UNIT_FIELD_SUMMON, 0 );
 		m_Owner->SetSummon( NULL );
 		SendNullSpellsToOwner();
-		// ClearPetOwner();
+		ClearPetOwner();
 	}
 
 	// has to be next loop - reason because of RemoveFromWorld, iterator gets broken

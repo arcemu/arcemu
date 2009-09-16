@@ -240,6 +240,7 @@ public:
 	void SetPetSpellState(uint32 spell, uint16 state);
 	void SetAutoCast(AI_Spell * sp, bool on);
 	float GetHappinessDmgMod() { return 0.25f * GetHappinessState() + 0.5f; };
+	bool IsBeingDeleted(){ return ScheduledForDeletion; }
 
 	virtual Group *GetGroup();
 
@@ -265,6 +266,7 @@ protected:
 	uint32 reset_cost;
 	bool bExpires;
 	bool Summon;
+	bool ScheduledForDeletion;
 	string m_name;
 	HappinessState GetHappinessState();
 	void SetNameForEntry( uint32 entry );

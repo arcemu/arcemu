@@ -36,8 +36,8 @@ Player* GetPlayerOwner( Object *A ){
 	if( A->IsPet() ){
         pAttacker = static_cast< Pet* >( A )->GetPetOwner();
 
-        // Pet must have an owner
-        assert( pAttacker != NULL );                
+        // Pet must have an owner if it's not being deleted
+		assert( static_cast< Pet* >( A )->IsBeingDeleted() || pAttacker != NULL );                
 	}
     else // Player totem
     if( A->IsCreature() && static_cast< Creature* >( A )->IsTotem() ){
