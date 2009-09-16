@@ -2086,10 +2086,9 @@ bool ChatHandler::HandleCastAllCommand(const char* args, WorldSession* m_session
 			}
 			else
 			{
-				Spell * sp = SpellPool.PooledNew();
+				Spell * sp = new Spell(plr, info, true, 0);
 				if (!sp)
 					return true;
-				sp->Init(plr, info, true, 0);
 				SpellCastTargets targets(plr->GetGUID());
 				sp->prepare(&targets);
 			}

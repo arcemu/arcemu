@@ -22,7 +22,6 @@
 
 Item::Item()//this is called when constructing as container
 {
-	m_bufferPoolId = OBJECT_WAS_ALLOCATED_STANDARD_WAY;
 	m_itemProto = NULL;
 	m_owner = NULL;
 	loot = NULL;
@@ -47,17 +46,10 @@ Item::Item()//this is called when constructing as container
 	Enchantments.clear();
 }
 
-//called instead of parameterized constructor
 void Item::Init( uint32 high, uint32 low )
 {
-	SetUInt32Value( OBJECT_FIELD_GUID, low );
-	SetUInt32Value( OBJECT_FIELD_GUID + 1, high );
-	m_wowGuid.Init( GetGUID() );
-}
-
-void Item::Virtual_Constructor()
-{
-	memset( m_uint32Values, 0, (ITEM_END) * sizeof( uint32 ) );
+    ///////////////////////////// from virtual_constructor ///////////////
+    memset( m_uint32Values, 0, (ITEM_END) * sizeof( uint32 ) );
 	SetUInt32Value( OBJECT_FIELD_TYPE,TYPE_ITEM | TYPE_OBJECT );
 	SetFloatValue( OBJECT_FIELD_SCALE_X, 1 );//always 1
 	SetFloatValue( OBJECT_FIELD_SCALE_X, 1 );//always 1
@@ -83,6 +75,10 @@ void Item::Virtual_Constructor()
 	m_inQueue = false;
 	m_extensions = NULL;
 	m_loadedFromDB = false;
+    //////////////////////////////////////////////////////////
+	SetUInt32Value( OBJECT_FIELD_GUID, low );
+	SetUInt32Value( OBJECT_FIELD_GUID + 1, high );
+	m_wowGuid.Init( GetGUID() );
 }
 
 Item::~Item()
@@ -94,34 +90,6 @@ Item::~Item()
 	}
 
 	sEventMgr.RemoveEvents( this );
-
-	EnchantmentMap::iterator itr;
-	for( itr = Enchantments.begin(); itr != Enchantments.end(); ++itr )
-	{
-		if( itr->second.Enchantment->type == 0 && itr->second.Slot == 0 && itr->second.ApplyTime == 0 && itr->second.Duration == 0 )
-		{
-			delete itr->second.Enchantment;
-			itr->second.Enchantment = NULL;
-		}
-	}
-	Enchantments.clear();
-
-	if( IsInWorld() )
-		RemoveFromWorld();
-
-	m_owner = NULL;
-}
-
-void Item::Virtual_Destructor()
-{
-	if( loot != NULL )
-	{
-		delete loot;
-		loot = NULL;
-	}
-
-	// Removes Events
-	EventableObject::Virtual_Destructor();
 
 	EnchantmentMap::iterator itr;
 	for( itr = Enchantments.begin(); itr != Enchantments.end(); ++itr )
@@ -268,9 +236,10 @@ void Item::LoadFromDB(Field* fields, Player* plr, bool light )
     refundentry.first = fields[17].GetUInt32();
     refundentry.second = fields[18].GetUInt32();
 
-    if( refundentry.first != 0 && refundentry.second != 0 && m_owner != NULL )
-	{
-        if( UNIXTIME < ( refundentry.first + 60*60*2 ) )
+    uint32 *played = this->GetOwner()->GetPlayedtime();
+
+    if( refundentry.first != 0 && refundentry.second != 0 ){
+        if( played[1] < ( refundentry.first + 60*60*2 ) )
             m_owner->GetItemInterface()->AddRefundable( this, refundentry.second, refundentry.first );
     }
 
@@ -430,11 +399,15 @@ void Item::SaveToDB( int8 containerslot, int8 slot, bool firstsave, QueryBuffer*
     // Check if the owner is instantiated. When sending mail he/she obviously will not be :P
     if( this->GetOwner() != NULL ){
         std::pair< time_t, uint32 > refundentry;
-        
+
+        refundentry.first = 0;
+        refundentry.second = 0;
+
         refundentry = this->GetOwner()->GetItemInterface()->LookupRefundable( this->GetGUID() );
         
         ss << uint32( refundentry.first ) << "','";
         ss << uint32( refundentry.second ); 
+
     }else{
         ss << uint32( 0 ) << "','";
         ss << uint32( 0 );
@@ -485,7 +458,7 @@ void Item::DeleteMe()
 	if( IsContainer() ) {
 		delete static_cast<Container*>(this);
 	} else {
-		ItemPool.PooledDelete( this );
+		delete this;
 	}
 }
 
@@ -890,8 +863,7 @@ void Item::ApplyEnchantmentBonus( uint32 Slot, bool Apply )
 							if( sp == NULL )
 								continue;
 
-							spell = SpellPool.PooledNew();
-							spell->Init( m_owner, sp, true, 0 );
+							spell = new Spell( m_owner, sp, true, 0 );
 							spell->i_caster = this;
 							spell->prepare( &targets );
 						}
@@ -1349,6 +1321,9 @@ bool Item::IsEligibleForRefund(){
     ItemPrototype *proto = this->GetProto();
 
     if( proto == NULL)
+        return false;
+
+    if( !(proto->Flags & ITEM_FLAG_REFUNDABLE) )
         return false;
 
     if( proto->MaxCount > 1 )

@@ -533,10 +533,9 @@ public:
 				{
 					if (i == 1)
 					{
-						Aura *aura = AuraPool.PooledNew();
+						Aura *aura = new Aura(spells[1].info, 5000, _unit, _unit);
 						if (!aura)
 							return;
-						aura->Init(spells[1].info, 5000, _unit, _unit);
 						_unit->AddAura(aura);
 					}
 
@@ -1075,10 +1074,9 @@ public:
 
 			if (i == 3)
 			{
-				Aura *aura = AuraPool.PooledNew();
+				Aura *aura = new Aura(spells[3].info, 20000, _unit, RTarget);
 				if (!aura)
 					return;
-				aura->Init(spells[3].info, 20000, _unit, RTarget);
 				RTarget->AddAura(aura);
 
 				TargetTable.clear();

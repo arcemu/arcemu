@@ -480,10 +480,9 @@ void Pet::InitializeSpells()
 		if( info->Attributes & ATTRIBUTES_PASSIVE )
 		{
 			// Cast on self..
-			Spell * sp = SpellPool.PooledNew();
+			Spell * sp = new Spell(this, info, true, false);
 			if (!sp)
 				return;
-			sp->Init(this, info, true, false);
 			SpellCastTargets targets( this->GetGUID() );
 			sp->prepare( &targets );
 
@@ -962,10 +961,9 @@ void Pet::AddSpell( SpellEntry * sp, bool learning, bool showLearnSpell )
 	{
 		if( IsInWorld() )
 		{
-			Spell * spell = SpellPool.PooledNew();
+			Spell * spell = new Spell(this, sp, true, false);
 			if (!spell)
 				return;
-			spell->Init(this, sp, true, false);
 			SpellCastTargets targets(this->GetGUID());
 			spell->prepare(&targets);
 			mSpells[sp] = 0x0100;

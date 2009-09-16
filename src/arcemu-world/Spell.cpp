@@ -143,16 +143,9 @@ void SpellCastTargets::write( WorldPacket& data )
 		data << m_strTarget.c_str();
 }
 
-Spell::Spell()
-{
-	m_bufferPoolId = OBJECT_WAS_ALLOCATED_STANDARD_WAY;
-}
+Spell::Spell(){}
 
-void Spell::Virtual_Constructor()
-{
-}
-
-void Spell::Init(Object* Caster, SpellEntry *info, bool triggered, Aura* aur)
+Spell::Spell(Object* Caster, SpellEntry *info, bool triggered, Aura* aur)
 {
 	if(info==NULL) return;
 	ASSERT( Caster != NULL && info != NULL );
@@ -288,15 +281,8 @@ void Spell::Init(Object* Caster, SpellEntry *info, bool triggered, Aura* aur)
 
 Spell::~Spell()
 {
-	for(uint32 i=0; i<3; ++i)
-	{
-		m_targetUnits[i].clear();
-	}
-}
-
-void Spell::Virtual_Destructor()
-{
-	if( u_caster != NULL && u_caster->GetCurrentSpell() == this )
+    ///////////////////////////// This is from the virtual_destructor shit ///////////////
+    if( u_caster != NULL && u_caster->GetCurrentSpell() == this )
 		u_caster->SetCurrentSpell(NULL);
 
 	if( p_caster )
@@ -305,6 +291,13 @@ void Spell::Virtual_Destructor()
 
 	if( m_spellInfo_override != NULL)
 		delete[] m_spellInfo_override;
+    ////////////////////////////////////////////////////////////////////////////////////////
+
+
+	for(uint32 i=0; i<3; ++i)
+	{
+		m_targetUnits[i].clear();
+	}
 }
 
 //i might forget conditions here. Feel free to add them
@@ -1817,8 +1810,10 @@ void Spell::cast(bool check)
 
 			m_isCasting = false;
 
-			if(m_spellState != SPELL_STATE_CASTING)
+			if(m_spellState != SPELL_STATE_CASTING){
 				finish();
+				return;
+			}
 		}
 		else //this shit has nothing to do with instant, this only means it will be on NEXT melee hit
 		{
@@ -1845,6 +1840,8 @@ void Spell::cast(bool check)
 				u_caster->SetOnMeleeSpell( GetProto()->Id, extra_cast_number );
 
 			finish();
+
+			return;
 		}
 
 		//if( u_caster != NULL )
@@ -2154,7 +2151,7 @@ void Spell::finish(bool successful)
 		if( !m_triggeredSpell && (GetProto()->ChannelInterruptFlags || m_castTime>0) )
 			u_caster->SetCurrentSpell(NULL);
 	}
-	SpellPool.PooledDelete(this);
+	delete this;
 }
 
 void Spell::SendCastResult(uint8 result)
@@ -3070,10 +3067,9 @@ void Spell::HandleAddAura(uint64 guid)
 		if(!spellInfo) 
 			return;
 
-		Spell *spell = SpellPool.PooledNew();
+		Spell *spell = new Spell(p_caster, spellInfo ,true, NULL);
 		if (!spell)
 			return;
-		spell->Init(p_caster, spellInfo ,true, NULL);
 		spell->forced_basepoints[0] = p_caster->FindAuraByNameHash(SPELL_HASH_KING_OF_THE_JUNGLE)->m_spellProto->RankNumber * 5;
 		SpellCastTargets targets(p_caster->GetGUID());
 		spell->prepare(&targets);
@@ -3105,11 +3101,10 @@ void Spell::HandleAddAura(uint64 guid)
 		if( !spellInfo )
 			return;
 
-		Spell *spell = SpellPool.PooledNew();
+		Spell *spell = new Spell( u_caster, spellInfo ,true, NULL );
 		if ( !spell )
 			return;
 
-		spell->Init( u_caster, spellInfo ,true, NULL );
 		if( spellid == 31665 && Target->HasAurasWithNameHash(SPELL_HASH_MASTER_OF_SUBTLETY) )
 			spell->forced_basepoints[0] = Target->FindAuraByNameHash(SPELL_HASH_MASTER_OF_SUBTLETY)->m_spellProto->EffectBasePoints[0];
 
@@ -3137,10 +3132,9 @@ void Spell::HandleAddAura(uint64 guid)
 				}
 				for(int i=0;i<charges-1;i++)
 				{
-					aur = AuraPool.PooledNew();
+					aur = new Aura(itr->second->GetSpellProto(),itr->second->GetDuration(),itr->second->GetCaster(),itr->second->GetTarget(), m_triggeredSpell, i_caster);
 					if (!aur)
 						return;
-					aur->Init(itr->second->GetSpellProto(),itr->second->GetDuration(),itr->second->GetCaster(),itr->second->GetTarget(), m_triggeredSpell, i_caster);
 					Target->AddAura(aur);
 					aur=NULL;
 				}
@@ -5862,10 +5856,9 @@ bool Spell::Reflect(Unit *refunit)
 	if( !refspell || !canreflect ) 
 		return false;
 
-	Spell *spell = SpellPool.PooledNew();
+	Spell *spell = new Spell( refunit, refspell, true, NULL );
 	if ( !spell )
 		return false;
-	spell->Init( refunit, refspell, true, NULL );
 	spell->SetReflected();
 	SpellCastTargets targets;
 	targets.m_unitTarget = m_caster->GetGUID();

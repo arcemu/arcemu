@@ -1739,10 +1739,9 @@ void Creature::AISpellUpdate()
 				//get the spell
 				SpellEntry* newspell=dbcSpell.LookupEntry(this->GetProto()->AISpells[i]);
 				SpellCastTime* casttime=dbcSpellCastTime.LookupEntry(newspell->CastingTimeIndex);
-				Spell* spell = SpellPool.PooledNew();
+				Spell* spell = new Spell(this, newspell, false, 0);
 				if (!spell)
 					return;
-				spell->Init(this, newspell, false, 0);
 				SpellCastTargets t(0);
 				spell->GenerateTargets(&t);
 
@@ -1754,7 +1753,7 @@ void Creature::AISpellUpdate()
 				if (t.m_destX == 0.0f && t.m_destY == 0.0f && t.m_destZ == 0.0f && t.m_itemTarget == 0 && t.m_unitTarget == 0)
 				{
 					//printf("\nNo target, not casting!");
-					SpellPool.PooledDelete(spell);
+					delete spell;
 					spell = NULL;
 					continue;
 				}
@@ -1764,7 +1763,7 @@ void Creature::AISpellUpdate()
 
 				if (spell->CanCast(false) != SPELL_CANCAST_OK || !spell->HasPower() || m_silenced || IsStunned() || IsFeared())
 				{
-					SpellPool.PooledDelete(spell);
+					delete spell;
 					spell = NULL;
 					continue;
 				}

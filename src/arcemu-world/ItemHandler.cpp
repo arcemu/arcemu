@@ -1536,7 +1536,6 @@ void WorldSession::HandleBuyItemOpcode( WorldPacket & recv_data ) // right-click
             else{
                 if( itm->IsEligibleForRefund() && ex != NULL ){
                     itm->GetOwner()->GetItemInterface()->AddRefundable( itm->GetGUID(), ex->costid );
-                    this->SendRefundInfo( itm->GetGUID() );
                 }
                 SendItemPushResult(itm, false, true, false, true, static_cast<uint8>(INVENTORY_SLOT_NOT_SET), slotresult.Result, amount*item.amount);
             }
@@ -1550,7 +1549,6 @@ void WorldSession::HandleBuyItemOpcode( WorldPacket & recv_data ) // right-click
                 else{
                     if( itm->IsEligibleForRefund() && ex != NULL ){
                         itm->GetOwner()->GetItemInterface()->AddRefundable( itm->GetGUID(), ex->costid );
-                        this->SendRefundInfo( itm->GetGUID() );
                     }
 					SendItemPushResult(itm, false, true, false, true, slotresult.ContainerSlot, slotresult.Result, 1);
                 }
@@ -2335,7 +2333,7 @@ void WorldSession::HandleItemRefundInfoOpcode( WorldPacket& recvPacket ){
     sLog.outDebug("Recieved CMSG_ITEMREFUNDINFO.");
 
     //////////////////////////////////////////////////////////////////////////////////////////
-    //  As of 3.1.3 the client sends this packet to request refund info on an item
+    //  As of 3.2.0a the client sends this packet to request refund info on an item
     //
     //	{CLIENT} Packet: (0x04B3) UNKNOWN PacketSize = 8 TimeStamp = 265984125
     //	E6 EE 09 18 02 00 00 42 
@@ -2360,7 +2358,7 @@ void WorldSession::HandleItemRefundRequestOpcode( WorldPacket& recvPacket ){
     sLog.outDebug("Recieved CMSG_ITEMREFUNDREQUEST.");
 
     //////////////////////////////////////////////////////////////////////////////////////////
-    //  As of 3.1.3 the client sends this packet to initiate refund of an item
+    //  As of 3.2.0a the client sends this packet to initiate refund of an item
     //
     //	{CLIENT} Packet: (0x04B4) UNKNOWN PacketSize = 8 TimeStamp = 266021296
     //	E6 EE 09 18 02 00 00 42 
@@ -2389,8 +2387,14 @@ void WorldSession::HandleItemRefundRequestOpcode( WorldPacket& recvPacket ){
             RefundEntry.second = 0;
             
             RefundEntry = _player->GetItemInterface()->LookupRefundable( GUID );
-            
-            ex = dbcItemExtendedCost.LookupEntry( RefundEntry.second );
+
+			// If the item is refundable we look up the extendedcost
+            if( RefundEntry.first != 0 && RefundEntry.second != 0 ){
+                uint32 *played = _player->GetPlayedtime();
+
+                if( played[1] < ( RefundEntry.first + 60*60*2 ) )
+                    ex = dbcItemExtendedCost.LookupEntry( RefundEntry.second );
+            }
 
             if( ex != NULL ){
                 proto = itm->GetProto();
@@ -2410,6 +2414,9 @@ void WorldSession::HandleItemRefundRequestOpcode( WorldPacket& recvPacket ){
                     _player->GetItemInterface()->RemoveItemAmtByGuid( GUID, 1 );
 
                     _player->GetItemInterface()->RemoveRefundable( GUID );
+
+					// we were successful!
+					error = 0;
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
                 }
             }
@@ -2448,8 +2455,9 @@ void WorldSession::HandleItemRefundRequestOpcode( WorldPacket& recvPacket ){
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-        WorldPacket packet( SMSG_UNKNOWN_1205, 60 );
+        WorldPacket packet( SMSG_ITEMREFUNDREQUEST, 60 );
         packet << uint64( GUID );
+        packet << uint32( error );
 
         if( error == 0 ){
             packet << uint32( proto->BuyPrice );
@@ -2461,11 +2469,9 @@ void WorldSession::HandleItemRefundRequestOpcode( WorldPacket& recvPacket ){
                 packet << uint32( ex->count[i] );
             }
 
-        }else{
-            packet << uint32( 1 );
         }
 
         this->SendPacket( &packet );
 
-        sLog.outDebug("Recieved CMSG_ITEMREFUNDREQUEST.");
+        sLog.outDebug("Sent SMSG_ITEMREFUNDREQUEST.");
 }

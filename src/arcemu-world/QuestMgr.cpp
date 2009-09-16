@@ -1142,10 +1142,9 @@ void QuestMgr::OnQuestFinished(Player* plr, Quest* qst, Object *qst_giver, uint3
 			SpellEntry  * inf =dbcSpell.LookupEntry(qst->effect_on_player);
 			if(inf)
 			{
-				Spell * spe = SpellPool.PooledNew();
+				Spell * spe = new Spell(plr,inf,true,NULL);
 				if (!spe)
 					return;
-				spe->Init(plr,inf,true,NULL);
 				SpellCastTargets tgt;
 				tgt.m_unitTarget = plr->GetGUID();
 				spe->prepare(&tgt);
@@ -1293,10 +1292,9 @@ void QuestMgr::OnQuestFinished(Player* plr, Quest* qst, Object *qst_giver, uint3
 			SpellEntry  * inf =dbcSpell.LookupEntry(qst->effect_on_player);
 			if(inf)
 			{
-				Spell * spe = SpellPool.PooledNew();
+				Spell * spe = new Spell(plr,inf,true,NULL);
 				if (!spe)
 					return;
-				spe->Init(plr,inf,true,NULL);
 				SpellCastTargets tgt;
 				tgt.m_unitTarget = plr->GetGUID();
 				spe->prepare(&tgt);

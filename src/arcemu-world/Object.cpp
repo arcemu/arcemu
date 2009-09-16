@@ -2531,10 +2531,9 @@ void Object::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
 				SpellEntry* sorInfo = dbcSpell.LookupEntry(27827);
 				if( sorInfo != NULL )
 				{
-					Spell *sor = SpellPool.PooledNew();
+					Spell *sor = new Spell(pVictim, sorInfo, true, NULL);
 					if (!sor)
 						return;
-					sor->Init(pVictim, sorInfo, true, NULL);
 					SpellCastTargets targets;
 					targets.m_unitTarget = pVictim->GetGUID();
 					sor->prepare(&targets);
@@ -3209,10 +3208,9 @@ void Object::SpellNonMeleeDamageLog(Unit *pVictim, uint32 spellID, uint32 damage
 		if( !entry ) 
 			return;
 
-		Spell * sp = SpellPool.PooledNew();
+		Spell * sp = new Spell( pl, entry, true, NULL );
 		if ( !sp )
 			return;
-		sp->Init( pl, entry, true, NULL );
 		sp->GetProto()->EffectBasePoints[0] = spellpower;
 		SpellCastTargets targets;
 		targets.m_unitTarget = pl->GetGUID();

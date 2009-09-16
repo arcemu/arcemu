@@ -1450,10 +1450,9 @@ void WorldSession::HandleGameObjectUse(WorldPacket & recv_data)
 	case GAMEOBJECT_TYPE_CHEST://cast da spell
 		{
 			spellInfo = dbcSpell.LookupEntry( OPEN_CHEST );
-			spell = SpellPool.PooledNew();
+			spell = new Spell(plyr, spellInfo, true, NULL);
 			if (!spell)
 				return;
-			spell->Init(plyr, spellInfo, true, NULL);
 			_player->m_currentSpell = spell;
 			targets.m_unitTarget = obj->GetGUID();
 			spell->prepare(&targets);
@@ -1509,10 +1508,9 @@ void WorldSession::HandleGameObjectUse(WorldPacket & recv_data)
 			SpellEntry *info = dbcSpell.LookupEntry(goinfo->SpellFocus);
 			if(!info)
 				break;
-			Spell * spell = SpellPool.PooledNew();
+			Spell * spell = new Spell(plyr, info, false, NULL);
 			if (!spell)
 				return;
-			spell->Init(plyr, info, false, NULL);
 			//spell->SpellByOther = true;
 			SpellCastTargets targets;
 			targets.m_unitTarget = plyr->GetGUID();
@@ -1570,10 +1568,9 @@ void WorldSession::HandleGameObjectUse(WorldPacket & recv_data)
 					Player * target = objmgr.GetPlayer( obj->m_ritualtarget );
 					if( target == NULL || !target->IsInWorld() )
 						return;
-					spell = SpellPool.PooledNew();
+					spell = new Spell( _player->GetMapMgr()->GetPlayer( obj->m_ritualcaster ), info, true, NULL );
 					if (!spell)
 						return;
-					spell->Init( _player->GetMapMgr()->GetPlayer( obj->m_ritualcaster ), info, true, NULL );
 					SpellCastTargets targets;
 					targets.m_unitTarget = target->GetGUID();
 					spell->prepare( &targets );
@@ -1592,19 +1589,17 @@ void WorldSession::HandleGameObjectUse(WorldPacket & recv_data)
 					info = dbcSpell.LookupEntry(goinfo->sound4);
 					if(!info)
 						break;
-					spell = SpellPool.PooledNew();
+					spell = new Spell(psacrifice, info, true, NULL);
 					if (!spell)
 						return;
-					spell->Init(psacrifice, info, true, NULL);
 					targets.m_unitTarget = psacrifice->GetGUID();
 					spell->prepare(&targets);
 
 					// summons demon
 					info = dbcSpell.LookupEntry(goinfo->sound1);
-					spell = SpellPool.PooledNew();
+					spell = new Spell(pCaster, info, true, NULL);
 					if (!spell)
 						return;
-					spell->Init(pCaster, info, true, NULL);
 					SpellCastTargets targets;
 					targets.m_unitTarget = pCaster->GetGUID();
 					spell->prepare(&targets);
@@ -1620,10 +1615,9 @@ void WorldSession::HandleGameObjectUse(WorldPacket & recv_data)
 						return;
 
 					info = dbcSpell.LookupEntry(goinfo->sound1);
-					Spell * spell = SpellPool.PooledNew();
+					Spell * spell = new Spell( pleader, info, true, NULL );
 					if (!spell)
 						return;
-					spell->Init( pleader, info, true, NULL );
 					SpellCastTargets targets( plr->GetGUID() );
 					spell->prepare(&targets);
 
@@ -1635,10 +1629,9 @@ void WorldSession::HandleGameObjectUse(WorldPacket & recv_data)
 					info = dbcSpell.LookupEntry( goinfo->sound1 );
 					if ( info == NULL )
 						return;
-					Spell * spell = SpellPool.PooledNew();
+					Spell * spell = new Spell( _player->GetMapMgr()->GetPlayer( obj->m_ritualcaster ), info, true, NULL );
 					if (!spell)
 						return;
-					spell->Init( _player->GetMapMgr()->GetPlayer( obj->m_ritualcaster ), info, true, NULL );
 					SpellCastTargets targets( obj->m_ritualcaster );
 					spell->prepare( &targets );
 					obj->ExpireAndDelete();
@@ -1739,6 +1732,24 @@ void WorldSession::HandleSetSheathedOpcode( WorldPacket & recv_data )
 void WorldSession::HandlePlayedTimeOpcode( WorldPacket & recv_data )
 {
 	uint32 playedt = (uint32)UNIXTIME - _player->m_playedtime[2];
+    uint8 displayinui = 0;
+    
+    ///////////////////////////////////////////////////////////////////////////////////////////
+    // As of 3.2.0a this is what the client sends to poll the /played time
+    //
+    // {CLIENT} Packet: (0x01CC) CMSG_PLAYED_TIME PacketSize = 1 TimeStamp = 691943484
+    // 01 
+    //
+    // Structure:
+    // uint8 displayonui   -  1 when it should be printed on the screen, 0 when it shouldn't
+    //
+    //////////////////////////////////////////////////////////////////////////////////////////
+
+    recv_data >> displayinui;
+
+    sLog.outDebug("Recieved CMSG_PLAYED_TIME.");
+    sLog.outDebug("displayinui: %lu", displayinui );
+
 	if(playedt)
 	{
 		_player->m_playedtime[0] += playedt;
@@ -1746,11 +1757,30 @@ void WorldSession::HandlePlayedTimeOpcode( WorldPacket & recv_data )
 		_player->m_playedtime[2] += playedt;
 	}
 
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+    //
+    // As of 3.2.0a the server sends this as a response to the client /played time packet
+    //
+    //  {SERVER} Packet: (0x01CD) SMSG_PLAYED_TIME PacketSize = 9 TimeStamp = 691944000
+    //  FE 0C 00 00 FE 0C 00 00 01  
+    //
+    //
+    // Structure:
+    //
+    // uint32 playedtotal      -   total time played in seconds
+    // uint32 playedlevel      -   time played on this level in seconds
+    // uint32 displayinui      -   1 when it should be printed on the screen, 0 when it shouldn't
+    //
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
 	WorldPacket data(SMSG_PLAYED_TIME, 9); //VLack: again, an Aspire trick, with an uint8(0) -- I hate packet structure changes...
 	data << (uint32)_player->m_playedtime[1];
 	data << (uint32)_player->m_playedtime[0];
-	data << uint8(0);
+	data << uint8( displayinui );
 	SendPacket(&data);
+
+    sLog.outDebug("Sent SMSG_PLAYED_TIME.");
+    sLog.outDebug(" total: %lu level: %lu", _player->m_playedtime[1], _player->m_playedtime[0] );
 }
 
 void WorldSession::HandleInspectOpcode( WorldPacket & recv_data )
@@ -1990,10 +2020,9 @@ void WorldSession::HandleSelfResurrectOpcode(WorldPacket& recv_data)
 	if(self_res_spell)
 	{
 		SpellEntry * sp=dbcSpell.LookupEntry(self_res_spell);
-		Spell *s = SpellPool.PooledNew();
+		Spell *s = new Spell(_player,sp,true,NULL);
 		if (!s)
 			return;
-		s->Init(_player,sp,true,NULL);
 		SpellCastTargets tgt;
 		tgt.m_unitTarget=_player->GetGUID();
 		s->prepare(&tgt);

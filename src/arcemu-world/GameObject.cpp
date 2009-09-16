@@ -162,10 +162,9 @@ void GameObject::Create( uint32 guidlow, uint32 guidhigh,uint32 displayid, uint8
 
 void GameObject::EventCastSpell(uint32 guid, uint32 sp, bool triggered)
 {
-	Spell * spp = SpellPool.PooledNew();
+	Spell * spp = new Spell(this,dbcSpell.LookupEntry(sp),false,NULL);
 	if (!spp)
 		return;
-	spp->Init(this,dbcSpell.LookupEntry(sp),false,NULL);
 	SpellCastTargets tars(guid);
 	spp->prepare(&tars);
 }
@@ -221,10 +220,9 @@ void GameObject::Update(uint32 p_time)
 					if(!isAttackable(m_summoner,pUnit))continue;
 				}
 				
-				Spell * sp = SpellPool.PooledNew();
+				Spell * sp = new Spell((Object*)this,spell,true,NULL);
 				if (!sp)
 					return;
-				sp->Init((Object*)this,spell,true,NULL);
 				SpellCastTargets tgt((*itr)->GetGUID());
 				tgt.m_destX = GetPositionX();
 				tgt.m_destY = GetPositionY();
