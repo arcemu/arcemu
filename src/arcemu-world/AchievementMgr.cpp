@@ -55,13 +55,14 @@ bool SendAchievementProgress(const CriteriaProgress* c)
 	if( !acEntry )
 		return false;
 
-	if( acEntry->requiredType == ACHIEVEMENT_CRITERIA_TYPE_GAIN_REPUTATION || acEntry->requiredType == ACHIEVEMENT_CRITERIA_TYPE_REACH_LEVEL)
+	if( acEntry->requiredType == ACHIEVEMENT_CRITERIA_TYPE_GAIN_REPUTATION )
 		// Exalted with X faction (don't send 12323/42000 progress, it's not shown anyway)
 		return false;
 
 	if( acEntry->requiredType == ACHIEVEMENT_CRITERIA_TYPE_REACH_LEVEL )
 		// Reach level (don't send 7/80 progress, it's not shown anyway)
 		return false;
+
 	return true;
 }
 
@@ -74,7 +75,7 @@ bool SaveAchievementProgressToDB(const CriteriaProgress* c)
 {
 	if( c->counter <= 0 )
 	{
-		// Don't save it if it's not started yet
+		// don't save it if it's not started yet
 		return false;
 	}
 	AchievementCriteriaEntry const* acEntry = dbcAchievementCriteriaStore.LookupEntry(c->id);
