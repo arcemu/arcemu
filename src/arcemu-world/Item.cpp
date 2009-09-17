@@ -1350,3 +1350,40 @@ void Item::RemoveFromRefundableMap(){
     if( owner != NULL && GUID != 0 )
         owner->GetItemInterface()->RemoveRefundable( GUID );
 }
+
+uint32 Item::RepairItemCost()
+{
+	DurabilityCostsEntry * dcosts = dbcDurabilityCosts.LookupEntry( m_itemProto->ItemLevel );
+	if( dcosts == NULL )
+	{
+		sLog.outError("Repair: Unknown item level (%u)", dcosts);
+		return 0;
+	}
+
+	DurabilityQualityEntry * dquality = dbcDurabilityQuality.LookupEntry( ( m_itemProto->Quality + 1 ) * 2);
+	if( dquality == NULL )
+	{
+		sLog.outError("Repair: Unknown item quality (%u)", dquality);
+		return 0;
+	}
+
+	uint32 dmodifier = dcosts->modifier[ m_itemProto->Class == ITEM_CLASS_WEAPON ? m_itemProto->SubClass : m_itemProto->SubClass + 21 ];
+	uint32 cost = long2int32( ( GetDurabilityMax() - GetDurability() ) * dmodifier * double( dquality->quality_modifier ) );
+	return cost;
+}
+
+bool Item::RepairItem(Player * pPlayer)
+{
+	//int32 cost = (int32)pItem->GetUInt32Value( ITEM_FIELD_MAXDURABILITY ) - (int32)pItem->GetUInt32Value( ITEM_FIELD_DURABILITY );
+	int32 cost = RepairItemCost();
+	if( cost <= 0 )
+		return false;
+
+	if( cost > (int32)pPlayer->GetUInt32Value( PLAYER_FIELD_COINAGE ) )
+		return false;
+
+	pPlayer->ModUnsigned32Value( PLAYER_FIELD_COINAGE, -cost );
+	SetDurabilityToMax();
+	m_isDirty = true;
+	return true;
+}

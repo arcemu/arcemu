@@ -54,7 +54,6 @@ public:
 	void RemovePlayerFromLfmList(Player * pl, uint32 LfmDungeonId);
 	void UpdateLfgQueue(uint32 LfgDungeonId);
 	void SendLfgList(Player * plr, uint32 Dungeon);
-	void EventMatchTimeout(LfgMatch * pMatch);
 
 	int32 event_GetInstanceId() { return -1; }
 	

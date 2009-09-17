@@ -194,7 +194,7 @@ public:
 
 	uint32 m_instanceIds[NUM_MAPS][NUM_INSTANCE_MODES];
 
-	void SetDifficulty(uint8 difficulty);
+	//void SetDifficulty(uint8 difficulty);
 	
 	/************************************************************************/
 	/* Voicechat                                                            */

@@ -224,6 +224,8 @@ protected:
 
 	bool ExecuteCommandInTable(ChatCommand *table, const char* text, WorldSession *m_session);
 	bool ShowHelpForCommand(WorldSession *m_session, ChatCommand *table, const char* cmd);
+	void SendHighlightedName(WorldSession * m_session, const char* prefix, char* full_name, string& lowercase_name, string& highlight, uint32 id);
+	void SendItemLinkToPlayer(ItemPrototype * iProto, WorldSession * pSession, bool ItemCount, Player * owner, uint32 language = NULL);
 
 	ChatCommand* getCommandTable();
 
@@ -320,7 +322,6 @@ protected:
 	bool HandleItemRemoveCommand(const char* args, WorldSession *m_session);
 	bool HandleNPCFlagCommand(const char* args, WorldSession *m_session);
 	bool HandleSaveAllCommand(const char* args, WorldSession *m_session);
-	bool HandleRegenerateGossipCommand(const char* args, WorldSession *m_session);
 	bool HandleStartBGCommand(const char* args, WorldSession *m_session);
 	bool HandlePauseBGCommand(const char* args, WorldSession *m_session);
 	bool HandleResetScoreCommand(const char* args, WorldSession *m_session);
@@ -353,7 +354,6 @@ protected:
 	bool HandleReviveCommand(const char* args, WorldSession *m_session);
 	bool HandleGenderChanger(const char* args, WorldSession *m_session);
 	bool HandleAddGraveCommand(const char* args, WorldSession *m_session);
-	bool HandleAddSHCommand(const char* args, WorldSession *m_session);
 	bool HandleExploreCheatCommand(const char* args, WorldSession *m_session);
 	bool HandleGMTicketListCommand(const char* args, WorldSession *m_session);
 	bool HandleGMTicketGetByIdCommand(const char* args, WorldSession *m_session);
@@ -541,7 +541,6 @@ protected:
 	// Reputation
 	bool HandleGetStandingCommand(const char * args, WorldSession * m_session);
 	bool HandleSetStandingCommand(const char * args, WorldSession * m_session);
-	bool HandleGetBaseStandingCommand(const char * args, WorldSession * m_session);
 
 	// Lookups
 	bool HandleLookupItemCommand(const char * args, WorldSession * m_session);

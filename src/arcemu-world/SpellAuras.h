@@ -673,7 +673,7 @@ public:
 	void SpellAuraIncreaseFlightSpeed(bool apply);
 	void SpellAuraIncreaseMovementAndMountedSpeed(bool apply);
 	void SpellAuraIncreaseRating(bool apply);
-	void SpellAuraIncreaseCastTimePCT(bool apply);
+	//void SpellAuraIncreaseCastTimePCT(bool apply);
 	void SpellAuraRegenManaStatPCT(bool apply);
 	void SpellAuraSpellHealingStatPCT(bool apply);
 	void SpellAuraModStealthDetection(bool apply);

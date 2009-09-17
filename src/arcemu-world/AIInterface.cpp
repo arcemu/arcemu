@@ -1084,12 +1084,12 @@ void AIInterface::_UpdateCombat(uint32 p_time)
 #endif
 
 	if (sWorld.Collision) {
-		float target_land_z=0.0f;
+		
 		if ( m_Unit->GetMapMgr() != NULL && GetNextTarget() != NULL )
 		{
 			if (!m_moveFly)
 			{
-				target_land_z = CollideInterface.GetHeight(m_Unit->GetMapId(), GetNextTarget()->GetPositionX(), GetNextTarget()->GetPositionY(), GetNextTarget()->GetPositionZ() + 2.0f);
+				float target_land_z = CollideInterface.GetHeight(m_Unit->GetMapId(), GetNextTarget()->GetPositionX(), GetNextTarget()->GetPositionY(), GetNextTarget()->GetPositionZ() + 2.0f);
 				if ( target_land_z == NO_WMO_HEIGHT )
 					target_land_z = m_Unit->GetMapMgr()->GetLandHeight(GetNextTarget()->GetPositionX(), GetNextTarget()->GetPositionY());
 
@@ -1550,12 +1550,11 @@ void AIInterface::AttackReaction(Unit* pUnit, uint32 damage_dealt, uint32 spellI
 
 	if( sWorld.Collision && pUnit->IsPlayer() )
 	{
-		float target_land_z=0.0f;
 		if ( m_Unit->GetMapMgr() != NULL )
 		{
 			if (!m_moveFly)
 			{
-				target_land_z = CollideInterface.GetHeight(m_Unit->GetMapId(), pUnit->GetPositionX(), pUnit->GetPositionY(), pUnit->GetPositionZ() + 2.0f);
+				float target_land_z = CollideInterface.GetHeight(m_Unit->GetMapId(), pUnit->GetPositionX(), pUnit->GetPositionY(), pUnit->GetPositionZ() + 2.0f);
 				if ( target_land_z == NO_WMO_HEIGHT )
 					target_land_z = m_Unit->GetMapMgr()->GetLandHeight(pUnit->GetPositionX(), pUnit->GetPositionY());
 
@@ -3715,7 +3714,7 @@ __declspec(noinline) bool ___CheckTarget(Unit * ptr, Unit * him)
 //should return a valid target
 Unit *AIInterface::GetMostHated()
 {
-	if(  m_Unit->GetMapMgr() == NULL )
+	if( m_Unit->GetMapMgr() == NULL )
 		return NULL; 
 
 	Unit *ResultUnit= NULL;
@@ -3723,7 +3722,7 @@ Unit *AIInterface::GetMostHated()
 	//override mosthated with taunted target. Basic combat checks are made for it. 
 	//What happens if we can't see tauntedby unit ?
 	ResultUnit = getTauntedBy();
-	if(ResultUnit)
+	if( ResultUnit != NULL )
 		return ResultUnit;
 
 	pair<Unit*, int32> currentTarget;

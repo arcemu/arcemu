@@ -1581,7 +1581,6 @@ class SERVER_DECL Spell
 {
 public:
     friend class DummySpellHandler;
-    Spell();
     Spell(Object* Caster, SpellEntry *info, bool triggered, Aura* aur);
     ~Spell();
 
@@ -1624,7 +1623,7 @@ public:
     // Has power?
     bool HasPower();
     // Trigger Spell function that triggers triggered spells
-    void TriggerSpell();
+    //void TriggerSpell();
     
 	// Checks the caster is ready for cast
     uint8 CanCast(bool);

@@ -128,7 +128,7 @@ void LocalizationMgr::Lower(string& conv)
 		conv[i] = static_cast<char>( tolower(conv[i]) );
 }
 
-void GetDistinctLanguages(set<string>& dest, const char * table)
+void LocalizationMgr::GetDistinctLanguages(set<string>& dest, const char * table)
 {
 	QueryResult * result = WorldDatabase.Query("SELECT DISTINCT language_code FROM %s", table);
 	if(result == NULL)

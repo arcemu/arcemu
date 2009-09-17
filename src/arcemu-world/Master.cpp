@@ -33,7 +33,6 @@
 createFileSingleton( Master );
 std::string LogFileName;
 bool bLogChat;
-bool crashed = false;
 
 volatile bool Master::m_stopEvent = false;
 

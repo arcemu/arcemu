@@ -29,21 +29,21 @@ void WorldSession::HandleGroupInviteOpcode( WorldPacket & recv_data )
 	CHECK_PACKET_SIZE(recv_data, 1);
 	WorldPacket data(100);
 	std::string membername;
-	Player * player = NULL;
 	Group *group = NULL;
 
 	recv_data >> membername;
-	if(_player->HasBeenInvited())return;
+	if( _player->HasBeenInvited() )
+		return;
 
-	player = objmgr.GetPlayer(membername.c_str(), false);
+	Player * player = objmgr.GetPlayer( membername.c_str(), false );
 
-	if ( player == NULL)
+	if( player == NULL)
 	{
 		SendPartyCommandResult(_player, 0, membername, ERR_PARTY_CANNOT_FIND);
 		return;
 	}
 
-	if (player == _player)
+	if( player == _player )
 	{
 		return;
 	}

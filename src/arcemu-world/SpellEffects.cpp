@@ -3124,6 +3124,7 @@ void Spell::SpellEffectPersistentAA(uint32 i) // Persistent Area Aura
 				m_targets.m_destX, m_targets.m_destY, m_targets.m_destZ,dur,r );
 		}break;
 	default:
+		dynObj->Remove();
 		return;
 	}
 

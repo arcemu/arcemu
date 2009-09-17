@@ -433,9 +433,9 @@ double GetZ(double x,double z)
 	vec v[3];
 	vec p;
 	
-	bool inWMO=false;
+	//bool inWMO=false;
 	
-	if(!inWMO)
+	//if(!inWMO)
 	{
 		//find out quadrant
 		int xc=(int)(x/UNITSIZE);

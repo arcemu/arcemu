@@ -26,7 +26,6 @@
 #define __MAP_H
 
 class MapMgr;
-class TemplateMgr;
 struct MapInfo;
 class TerrainMgr;
 

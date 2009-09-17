@@ -1827,43 +1827,6 @@ void WorldSession::HandleReadItemOpcode(WorldPacket &recvPacket)
 	}
 }
 
-ARCEMU_INLINE uint32 RepairItemCost(Player * pPlayer, Item * pItem)
-{
-	DurabilityCostsEntry * dcosts = dbcDurabilityCosts.LookupEntry(pItem->GetProto()->ItemLevel);
-	if(!dcosts)
-	{
-		sLog.outError("Repair: Unknown item level (%u)", dcosts);
-		return 0;
-	}
-
-	DurabilityQualityEntry * dquality = dbcDurabilityQuality.LookupEntry((pItem->GetProto()->Quality + 1) * 2);
-	if(!dquality)
-	{
-		sLog.outError("Repair: Unknown item quality (%u)", dquality);
-		return 0;
-	}
-
-	uint32 dmodifier = dcosts->modifier[pItem->GetProto()->Class == ITEM_CLASS_WEAPON ? pItem->GetProto()->SubClass : pItem->GetProto()->SubClass + 21];
-	uint32 cost = long2int32((pItem->GetDurabilityMax() - pItem->GetDurability()) * dmodifier * double(dquality->quality_modifier));
-	return cost;
-}
-
-ARCEMU_INLINE bool RepairItem(Player * pPlayer, Item * pItem)
-{
-	//int32 cost = (int32)pItem->GetUInt32Value( ITEM_FIELD_MAXDURABILITY ) - (int32)pItem->GetUInt32Value( ITEM_FIELD_DURABILITY );
-	int32 cost = RepairItemCost(pPlayer, pItem);
-	if( cost <= 0 )
-		return FALSE;
-
-	if( cost > (int32)pPlayer->GetUInt32Value( PLAYER_FIELD_COINAGE ) )
-		return FALSE;
-
-	pPlayer->ModUnsigned32Value( PLAYER_FIELD_COINAGE, -cost );
-	pItem->SetDurabilityToMax();
-	pItem->m_isDirty = true;
-	return TRUE;
-}
-
 void WorldSession::HandleRepairItemOpcode(WorldPacket &recvPacket)
 {
 	if( !_player || !_player->IsInWorld() )
@@ -1903,17 +1866,17 @@ void WorldSession::HandleRepairItemOpcode(WorldPacket &recvPacket)
 					{
 						pItem = pContainer->GetItem( static_cast<int16>( j ) );
 						if( pItem != NULL )
-							RepairItem( _player, pItem );
+							pItem->RepairItem( _player );
 					}
 				}
 				else
 				{
 					if( i < INVENTORY_SLOT_BAG_END )
 					{
-						if( pItem->GetDurability() == 0 && RepairItem( _player, pItem ) )
+						if( pItem->GetDurability() == 0 && pItem->RepairItem( _player ) )
 							_player->ApplyItemMods( pItem, static_cast<int16>( i ), true );
 						else
-							RepairItem( _player, pItem );
+							pItem->RepairItem( _player );
 					}
 				}
 			}
@@ -1931,7 +1894,7 @@ void WorldSession::HandleRepairItemOpcode(WorldPacket &recvPacket)
 			{
                 uint32 cDurability = item->GetDurability();
 				//only apply item mods if they are on char equipped
-                if( RepairItem( _player, item ) && cDurability == 0 && searchres->ContainerSlot==INVALID_BACKPACK_SLOT && searchres->Slot < static_cast<int8>( INVENTORY_SLOT_BAG_END ))
+                if( item->RepairItem( _player ) && cDurability == 0 && searchres->ContainerSlot==INVALID_BACKPACK_SLOT && searchres->Slot < static_cast<int8>( INVENTORY_SLOT_BAG_END ))
                     _player->ApplyItemMods(item, searchres->Slot, true);
 			}
 		}

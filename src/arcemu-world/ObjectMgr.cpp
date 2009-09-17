@@ -1839,6 +1839,8 @@ GossipMenuItem GossipMenu::GetItem(uint32 Id)
 	{
 		GossipMenuItem k;
 		k.IntId = 1;
+		k.Extra = 0;
+
 		return k;
 	} else {
 		return Menu[Id];

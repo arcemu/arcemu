@@ -91,6 +91,8 @@ public:
 		return GetLanguageId(lid);
 	}
 
+	void GetDistinctLanguages(set<string>& dest, const char * table);
+
 	LocalizedQuest *			GetLocalizedQuest(uint32 id, uint32 language);
 	LocalizedItem *				GetLocalizedItem(uint32 id, uint32 language);
 	LocalizedNpcText *			GetLocalizedNpcText(uint32 id, uint32 language);

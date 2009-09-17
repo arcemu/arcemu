@@ -5919,13 +5919,12 @@ void Aura::SpellAuraSchoolAbsorb(bool apply)
 					{
 						ab = (*i);
 						m_target->Absorbs[x].erase(i);
+						delete ab;
 						break;
 					}
 				}
 			}
 		}
-		if(ab)
-			delete ab;
 	}
 }
 

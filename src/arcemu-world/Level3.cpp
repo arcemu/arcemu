@@ -2757,7 +2757,7 @@ bool ChatHandler::HandleSetStandingCommand(const char * args, WorldSession * m_s
 	return true;
 }
 
-void SendHighlightedName(WorldSession * m_session, const char* prefix, char* full_name, string& lowercase_name, string& highlight, uint32 id)
+void ChatHandler::SendHighlightedName(WorldSession * m_session, const char* prefix, char* full_name, string& lowercase_name, string& highlight, uint32 id)
 {
 	char message[1024];
 	char start[50];
@@ -2776,10 +2776,10 @@ void SendHighlightedName(WorldSession * m_session, const char* prefix, char* ful
 	strcat(message, MSG_COLOR_WHITE);
 	if(remaining > 0) strncat(message, (fullname.c_str() + offset + hlen), remaining);
 
-	sChatHandler.SystemMessage(m_session, message);
+	SystemMessage(m_session, message);
 }
 
-void SendItemLinkToPlayer(ItemPrototype * iProto, WorldSession * pSession, bool ItemCount, Player * owner = NULL, uint32 language = NULL)
+void ChatHandler::SendItemLinkToPlayer(ItemPrototype * iProto, WorldSession * pSession, bool ItemCount, Player * owner, uint32 language )
 {
 	if(!iProto || !pSession)
 		return;
@@ -2792,22 +2792,22 @@ void SendItemLinkToPlayer(ItemPrototype * iProto, WorldSession * pSession, bool 
 		//int8 slot = owner->GetItemInterface()->GetInventorySlotById(iProto->ItemId); //DISABLED due to being a retarded concept
 		if( iProto->ContainerSlots > 0 )
 		{
-			sChatHandler.SystemMessage(pSession,"Item %u %s Count %u ContainerSlots %u", iProto->ItemId, GetItemLinkByProto(iProto, language).c_str(), count, iProto->ContainerSlots);
+			SystemMessage(pSession,"Item %u %s Count %u ContainerSlots %u", iProto->ItemId, GetItemLinkByProto(iProto, language).c_str(), count, iProto->ContainerSlots);
 		}
 		else
 		{
-			sChatHandler.SystemMessage(pSession,"Item %u %s Count %u", iProto->ItemId, GetItemLinkByProto(iProto, language).c_str(), count);
+			SystemMessage(pSession,"Item %u %s Count %u", iProto->ItemId, GetItemLinkByProto(iProto, language).c_str(), count);
 		}
 	}
  	else
 	{
 		if( iProto->ContainerSlots > 0 )
 		{
-			sChatHandler.SystemMessage(pSession,"Item %u %s ContainerSlots %u", iProto->ItemId, GetItemLinkByProto(iProto, language).c_str(), iProto->ContainerSlots);
+			SystemMessage(pSession,"Item %u %s ContainerSlots %u", iProto->ItemId, GetItemLinkByProto(iProto, language).c_str(), iProto->ContainerSlots);
 		}
 		else
 		{
-			sChatHandler.SystemMessage(pSession,"Item %u %s", iProto->ItemId, GetItemLinkByProto(iProto, language).c_str());
+			SystemMessage(pSession,"Item %u %s", iProto->ItemId, GetItemLinkByProto(iProto, language).c_str());
 		}
 	}
 }

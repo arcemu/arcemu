@@ -614,7 +614,6 @@ protected:
 	void HandleGuildBankDepositMoney(WorldPacket & recv_data);
 	void HandleGuildBankWithdrawMoney(WorldPacket & recv_data);
 	void HandleGuildBankDepositItem(WorldPacket & recv_data);
-	void HandleGuildBankWithdrawItem(WorldPacket & recv_data);
 	void HandleGuildBankGetAvailableAmount(WorldPacket & recv_data);
 	void HandleGuildBankModifyTab(WorldPacket & recv_data);
 	void HandleGuildGetFullPermissions(WorldPacket & recv_data);
@@ -656,7 +655,7 @@ protected:
 	void HandleMoveSplineCompleteOpcode(WorldPacket &recvPacket);
 
 	/// Helper functions
-	void SetNpcFlagsForTalkToQuest(const uint64& guid, const uint64& targetGuid);
+	//void SetNpcFlagsForTalkToQuest(const uint64& guid, const uint64& targetGuid);
 
 	//Tutorials
 	void HandleTutorialFlag ( WorldPacket & recv_data );

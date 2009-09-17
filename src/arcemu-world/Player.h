@@ -38,7 +38,8 @@ class Vehicle;
 class Charter;
 class LFGMatch;
 struct LevelInfo;
-class SpeedDetector;
+class SpeedCheatDetector;
+
 #define PLAYER_NORMAL_RUN_SPEED 7.0f
 #define PLAYER_NORMAL_SWIM_SPEED 4.722222f
 #define PLAYER_NORMAL_FLIGHT_SPEED 7.0f
@@ -1369,7 +1370,6 @@ public:
 		if(bDeleteOnSend) delete data;
 	}
 	float offhand_dmg_mod;
-	float GetSpellTimeMod(uint32 id);
 	int GetSpellDamageMod(uint32 id);
 	int32 GetSpellManaMod(uint32 id);
 
@@ -1674,7 +1674,6 @@ public:
 	ARCEMU_INLINE uint32* GetPlayedtime() { return m_playedtime; };
 	void CalcStat(uint32 t);
 	float CalcRating(uint32 t);
-	void RecalcAllRatings();
 	void RegenerateMana(bool is_interrupted);
 	void RegenerateHealth(bool inCombat);
 	void RegenerateEnergy();

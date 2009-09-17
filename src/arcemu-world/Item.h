@@ -278,6 +278,8 @@ public:
     void SetItemExpireTime( time_t timesec ){ ItemExpiresOn = timesec; }
     void EventRemoveItem();
     void RemoveFromRefundableMap();
+	bool RepairItem(Player * pPlayer);
+	uint32 RepairItemCost();
         
 protected:
 
