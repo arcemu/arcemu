@@ -1504,9 +1504,6 @@ public:
 
 	DynamicObject * dynObj;
 	
-	void RemoveAuraVisual(uint32 spellid, uint8 slot);
-	bool HasVisibleAura(uint32 spellid);
-
 	//! returns: aura stack count
 	uint8 m_auraStackCount[MAX_NEGATIVE_VISUAL_AURAS_END];
 
@@ -1561,8 +1558,6 @@ public:
 	void SetDodgeFromSpell(float value) { m_dodgefromspell = value; }
 	
 	void AggroPvPGuards();
-
-	void CastSpellOnCasterOnCritHit();
 
 protected:
 	Unit ();

@@ -3979,8 +3979,6 @@ void Unit::Strike( Unit* pVictim, uint32 weapon_damage_type, SpellEntry* ability
 						else sEventMgr.ModifyEventTimeLeft( this, EVENT_CRIT_FLAG_EXPIRE, 5000 );
 					}
 
-					CastSpellOnCasterOnCritHit();
-
 					CALL_SCRIPT_EVENT(pVictim, OnTargetCritHit)(this, float(dmg.full_damage));
 					CALL_SCRIPT_EVENT(this, OnCritHit)(pVictim, float(dmg.full_damage));
 				}
@@ -8011,23 +8009,3 @@ void Unit::UpdatePowerAmm()
 	SendMessageToSet( &data, true );
 }
 
-void Unit::CastSpellOnCasterOnCritHit()
-{
-	if( HasAura( 54646 ) )
-	{
-		SpellEntry *spellInfo = dbcSpell.LookupEntry( 54646 );
-		if(!spellInfo)
-			return;
-
-		Spell *spell = new Spell;
-		if (!spell)
-			return;
-
-		Unit *uCaster = NULL;
-		if( spell->u_caster )
-			uCaster = spell->u_caster;
-
-		if( uCaster )
-				uCaster->CastSpell( uCaster, 54648, true );
-	}
-}
