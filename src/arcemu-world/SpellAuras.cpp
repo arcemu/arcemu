@@ -722,7 +722,7 @@ Aura::Aura( SpellEntry* proto, int32 duration, Object* caster, Unit* target, boo
 	m_casterGuid = caster->GetGUID();
 	m_target = target;
 
-	if( m_target && m_target->GetTypeId() == TYPEID_PLAYER )
+	if( m_target->GetTypeId() == TYPEID_PLAYER )
 		p_target = static_cast< Player* >( m_target );
 	else
 		p_target = NULL;
@@ -1391,20 +1391,21 @@ void Aura::SpellAuraPeriodicDamage(bool apply)
 				{
 					dmg = float2int32(static_cast< Player* >(c)->m_casted_amount[SCHOOL_FIRE]*parentsp->EffectBasePoints[0]/100.0f);
 				}
-				else
+				else if( c != NULL )
 				{
 					if (!dmg)
 						return;
-					Spell *spell = new Spell(GetUnitCaster(), parentsp ,false,NULL);
+					Spell *spell = new Spell( c, parentsp, false, NULL );
 					if (!spell)
 						return;
 					SpellCastTargets targets(m_target->GetGUID());
+
 					//this is so not good, maybe parent spell has more then dmg effect and we use it to calc our new dmg :(
 					dmg = 0;
-					for(int i=0;i<3;i++)
+					for( uint8 i = 0; i < 3; i++ )
 					{
 					  //dmg += parentsp->EffectBasePoints[i]*m_spellProto->EffectBasePoints[0];
-						dmg += spell->CalculateEffect( i, m_target->IsUnit() ? (Unit*)m_target: NULL )* parentsp->EffectBasePoints[0] / 100;
+						dmg += spell->CalculateEffect( i, m_target )* parentsp->EffectBasePoints[0] / 100;
 					}
 					delete spell;
 					spell = NULL;
@@ -1412,7 +1413,7 @@ void Aura::SpellAuraPeriodicDamage(bool apply)
 			}
 		};
 		//this is warrior : Deep Wounds
-		if(c && c->IsPlayer() && pSpellId)
+		if( c != NULL && c->IsPlayer() && pSpellId)
 		{
 			uint32 multiplyer=0;
 			if(pSpellId==12834)
@@ -3282,10 +3283,10 @@ void Aura::SpellAuraModStun(bool apply)
 
 		m_target->m_rooted++;
 
-		if(m_target->m_rooted == 1)
+		if( m_target->m_rooted == 1 )
 			m_target->Root();
 
-		if (m_target->IsStealth())
+		if( m_target->IsStealth() )
 			m_target->RemoveStealth();
 
 		m_target->m_stunned++;
@@ -3307,8 +3308,8 @@ void Aura::SpellAuraModStun(bool apply)
 		Unit *caster = GetUnitCaster();
 		if( caster != NULL )
 		{
-			static_cast<Unit*>(caster)->EventStunOrImmobilize( m_target );
-			static_cast<Unit*>(m_target)->EventStunOrImmobilize( caster, true );
+			caster->EventStunOrImmobilize( m_target );
+			m_target->EventStunOrImmobilize( caster, true );
 		}
 		if( m_target->IsCasting() )
 			m_target->CancelSpell(NULL); //cancel spells.
@@ -3332,11 +3333,12 @@ void Aura::SpellAuraModStun(bool apply)
 		if(m_target->GetTypeId() == TYPEID_UNIT)
 		{
 			Unit * target = GetUnitCaster();
-			if(m_target->GetAIInterface()->GetNextTarget() != 0)
+			if( m_target->GetAIInterface()->GetNextTarget() != NULL )
 				target = m_target->GetAIInterface()->GetNextTarget();
 
-			if(!target) return;
-			m_target->GetAIInterface()->AttackReaction(target, 1, 0);
+			if( target == NULL )
+				return;
+			m_target->GetAIInterface()->AttackReaction( target, 1, 0 );
 		}
 	}
 
@@ -3805,13 +3807,14 @@ void Aura::SpellAuraModResistance(bool apply)
 	if (!IsPositive() && GetUnitCaster() != NULL && m_target->GetTypeId() == TYPEID_UNIT)
 		m_target->GetAIInterface()->AttackReaction(GetUnitCaster(), 1, GetSpellId());
 
-	if( this->GetSpellProto() && ( this->GetSpellProto()->NameHash == SPELL_HASH_FAERIE_FIRE || this->GetSpellProto()->NameHash == SPELL_HASH_FAERIE_FIRE__FERAL_ ) )
+	if( GetSpellProto() && ( GetSpellProto()->NameHash == SPELL_HASH_FAERIE_FIRE || GetSpellProto()->NameHash == SPELL_HASH_FAERIE_FIRE__FERAL_ ) )
 		m_target->m_can_stealth = !apply;
-
-	if(GetUnitCaster() != NULL && GetUnitCaster()->IsPlayer() && GetSpellProto()->NameHash == SPELL_HASH_DEVOTION_AURA)
+	
+	Unit* ucaster = GetUnitCaster();
+	if( ucaster != NULL && ucaster->IsPlayer() && GetSpellProto()->NameHash == SPELL_HASH_DEVOTION_AURA)
 	{
 		// Increases the armor bonus of your Devotion Aura by %u - HACKY
-		Player * plr = static_cast< Player* >(GetUnitCaster());
+		Player * plr = static_cast< Player* >( ucaster );
 		if( plr->HasSpell( 20140 ) ) // Improved Devotion Aura Rank 3
 			amt = (int32)(amt * 1.5);
 		else if( plr->HasSpell( 20139 ) ) // Improved Devotion Aura Rank 2
@@ -4057,11 +4060,12 @@ void Aura::EventPeriodicEnergize( uint32 amount, uint32 type )
 	uint32 POWER_TYPE = UNIT_FIELD_POWER1 + type;
 
 	ASSERT( POWER_TYPE <= UNIT_FIELD_POWER5 );
-
-	if( GetUnitCaster() == NULL )
+	
+	Unit* ucaster = GetUnitCaster();
+	if( ucaster == NULL )
 		return;
 
-	GetUnitCaster()->Energize( m_target, m_spellProto->Id, amount, type );
+	ucaster->Energize( m_target, m_spellProto->Id, amount, type );
 
 	if( ( GetSpellProto()->AuraInterruptFlags & AURA_INTERRUPT_ON_STAND_UP ) && type == POWER_TYPE_MANA )
 	{
@@ -4115,10 +4119,11 @@ void Aura::SpellAuraModRoot(bool apply)
 
 		//warrior talent - second wind triggers on stun and immobilize. This is not used as proc to be triggered always !
 		Unit *caster = GetUnitCaster();
-		if( caster && m_target )
-			static_cast<Unit*>(caster)->EventStunOrImmobilize( m_target );
-		if( m_target && caster )
-			static_cast<Unit*>(m_target)->EventStunOrImmobilize( caster, true );
+		if( caster != NULL )
+		{
+			caster->EventStunOrImmobilize( m_target );
+			m_target->EventStunOrImmobilize( caster, true );
+		}
 		
 		if( GetSpellProto()->School == SCHOOL_FROST && !m_target->asc_frozen++ )
 			m_target->SetFlag( UNIT_FIELD_AURASTATE, AURASTATE_FLAG_FROZEN );
@@ -4371,13 +4376,10 @@ void Aura::SpellAuraModDecreaseSpeed(bool apply)
 
 void Aura::UpdateAuraModDecreaseSpeed()
 {
-	if( m_target )
+	if( m_target->MechanicsDispels[MECHANIC_ENSNARED] )
 	{
-		if( m_target->MechanicsDispels[MECHANIC_ENSNARED] )
-		{
-			m_flags |= 1 << mod->i;
-			return;
-		}
+		m_flags |= 1 << mod->i;
+		return;
 	}
 
 	//let's check Mage talents if we proc anything
@@ -4907,17 +4909,19 @@ void Aura::SpellAuraProcTriggerSpell(bool apply)
 		pts.procChance = GetSpellProto()->procChance;
 		pts.procFlags = GetSpellProto()->procFlags;
 		int charges = GetSpellProto()->procCharges;
-		if( GetSpellProto()->SpellGroupType && GetUnitCaster() != NULL )
+
+		Unit* ucaster = GetUnitCaster();
+		if( GetSpellProto()->SpellGroupType && ucaster != NULL )
 		{
-			SM_FIValue( GetUnitCaster()->SM_FCharges, &charges, GetSpellProto()->SpellGroupType );
-			SM_PIValue( GetUnitCaster()->SM_PCharges, &charges, GetSpellProto()->SpellGroupType );
+			SM_FIValue( ucaster->SM_FCharges, &charges, GetSpellProto()->SpellGroupType );
+			SM_PIValue( ucaster->SM_PCharges, &charges, GetSpellProto()->SpellGroupType );
 		}
 		pts.ProcType = 0;
 		pts.procCharges = charges;
 		pts.LastTrigger = 0;
 		pts.deleted = false;
 
-		if( m_spellProto->NameHash == SPELL_HASH_THE_TWIN_BLADES_OF_AZZINOTH )
+		if( m_spellProto->NameHash == SPELL_HASH_THE_TWIN_BLADES_OF_AZZINOTH && m_target->IsPlayer() )
 		{
 			/* The Twin Blades of Azzinoth.
 			 * According to comments on wowhead, this proc has ~0.75ppm (procs-per-minute). */
@@ -6420,9 +6424,10 @@ void Aura::EventPeriodicEnergizeVariable( uint32 amount, uint32 type )
 			//something
 			;
 	}
-
-	if( GetUnitCaster() != NULL )
-		GetUnitCaster()->Energize( m_target, m_spellProto->Id, amount, type );
+	
+	Unit* ucaster = GetUnitCaster();
+	if( ucaster != NULL )
+		ucaster->Energize( m_target, m_spellProto->Id, amount, type );
 }
 
 void Aura::EventPeriodicDrink(uint32 amount)
@@ -7168,14 +7173,14 @@ void Aura::SpellAuraModPowerRegPerc(bool apply)
 
 void Aura::SpellAuraOverrideClassScripts(bool apply)
 {
-	if(!GetUnitCaster())
+	Unit* ucaster = GetUnitCaster();
+	if( ucaster == NULL || !ucaster->IsPlayer() )
 		return;
-	if(!GetUnitCaster()->IsPlayer())
-		return;
+
 	//misc value is spell to add
 	//spell familyname && grouprelation
 
-	Player *plr = static_cast< Player* >(GetUnitCaster());
+	Player *plr = static_cast< Player* >( ucaster );
 
 	//Adding bonus to effect
 	switch(mod->m_miscValue)
@@ -8176,8 +8181,8 @@ void Aura::SpellAuraModSpellDamageByAP(bool apply)
 		for(uint32 x=1;x<7;x++) //melee damage != spell damage.
 			if (mod->m_miscValue & (((uint32)1)<<x) )
 				m_target->ModUnsigned32Value( PLAYER_FIELD_MOD_DAMAGE_DONE_POS + x, val );
-		if(m_target->IsPlayer())
-			static_cast< Player* >( m_target )->UpdateChanceFields();
+		
+		static_cast< Player* >( m_target )->UpdateChanceFields();
 	}
 }
 
@@ -9302,10 +9307,11 @@ void Aura::SpellAuraReduceEffectDuration(bool apply)
 void Aura::HandleAuraControlVehicle(bool apply)
 {
 	//we are casting this spell as player. Just making sure in future noone is dumb enough to forget that
-	if( !GetUnitCaster() || !GetUnitCaster()->IsPlayer() || !m_target->IsUnit() )
+	Unit* ucaster = GetUnitCaster();
+	if( ucaster == NULL || !ucaster->IsPlayer() || !m_target->IsUnit() )
 		return;
 
-	Player *pcaster = static_cast< Player* >( GetUnitCaster() );
+	Player *pcaster = static_cast< Player* >( ucaster );
 
 	if( apply )
 	{

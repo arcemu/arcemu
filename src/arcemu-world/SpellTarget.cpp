@@ -401,7 +401,8 @@ void Spell::SpellTargetSingleTargetEnemy(uint32 i, uint32 j)
 				((*itr)->IsCreature() && ((Creature*)(*itr))->IsTotem()))
 				continue;
 
-			if (sWorld.Collision) {
+			if( sWorld.Collision && u_caster != NULL )
+			{
 				if (u_caster->GetMapId() == (*itr)->GetMapId() && !CollideInterface.CheckLOS(u_caster->GetMapId(),u_caster->GetPositionNC(),(*itr)->GetPositionNC()))
 					continue;
 			}
@@ -966,7 +967,8 @@ void Spell::SpellTargetChainTargeting(uint32 i, uint32 j)
 				if( (*itr)->m_loggedInPlayer->GetUInt32Value( UNIT_FIELD_HEALTH ) == (*itr)->m_loggedInPlayer->GetUInt32Value( UNIT_FIELD_MAXHEALTH ) )
 					continue;
 
-				if (sWorld.Collision) {
+				if( sWorld.Collision && u_caster != NULL )
+				{
 					if (u_caster->GetMapId() == (*itr)->m_loggedInPlayer->GetMapId() && !CollideInterface.CheckLOS(u_caster->GetMapId(),u_caster->GetPositionNC(),(*itr)->m_loggedInPlayer->GetPositionNC()))
 						continue;
 				}

@@ -143,8 +143,6 @@ public:
 
 	// spawn home buff guard
 	void SpawnHomeGuard();
-
-	
 };
 
 // GENERAL AV DEFINES

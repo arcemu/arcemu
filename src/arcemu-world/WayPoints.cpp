@@ -337,7 +337,12 @@ bool ChatHandler::HandleWPFlagsCommand(const char* args, WorldSession *m_session
 	uint32 wpid = GUID_LOPART(guid);
 	if(wpid)
 	{
-		WayPoint* wp = ai->getWayPoint(wpid);
+		WayPoint* wp = ai->getWayPoint( wpid );
+		if( wp == NULL )
+		{
+			SystemMessage(m_session, "Invalid Waypoint.");
+			return true;
+		}
 		uint32 flags = wp->flags;
 
 		char* pNewFlags = strtok((char*)args, " ");

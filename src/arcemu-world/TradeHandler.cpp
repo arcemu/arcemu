@@ -558,7 +558,7 @@ void WorldSession::HandleAcceptTrade(WorldPacket & recv_data)
 			for(uint32 Index = 0; Index < 6; ++Index)
 			{
 				pItem = _player->mTradeItems[Index];
-				if(pItem != 0 && pTarget)
+				if( pItem != NULL )
 				{
 					pItem->SetOwner(pTarget); // crash fixed.
 					if( !pTarget->m_ItemInterface->AddItemToFreeSlot(pItem) )
@@ -566,7 +566,7 @@ void WorldSession::HandleAcceptTrade(WorldPacket & recv_data)
 				}
 
 				pItem = pTarget->mTradeItems[Index];
-				if(pItem != 0 && _player)
+				if( pItem != NULL )
 				{
 					pItem->SetOwner(_player);
 					if( !_player->m_ItemInterface->AddItemToFreeSlot(pItem) )

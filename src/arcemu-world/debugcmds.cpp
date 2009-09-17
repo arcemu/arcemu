@@ -759,32 +759,38 @@ bool ChatHandler::HandleThreatListCommand(const char* args, WorldSession *m_sess
 }
 bool ChatHandler::HandleSendItemPushResult(const char* args, WorldSession* m_session)
 {
-	uint32 itemid, count, type, unk1, unk2, unk3, unk4;
-	char* arg = const_cast<char*>(args);
-	itemid = atol(strtok(arg, " "));
-	if(!itemid) return false;
-	count = atol(strtok(NULL, " "));
-	type = atol(strtok(NULL, " "));
-	unk1 = atol(strtok(NULL, " "));
-	unk2 = atol(strtok(NULL, " "));
-	unk3 = atol(strtok(NULL, " "));
-	unk4 = atol(strtok(NULL, " "));
+	uint32 uint_args[7];
+	char* arg = const_cast<char*>( args );
+	char* token = strtok(arg, " ");
+	
+	uint8 i = 0;
+	while( token != NULL && i < 7 )
+	{
+		uint_args[i] = atol( token );
+		token = strtok(NULL," ");
+		i++;
+	}
+	for( ; i < 7; i++)
+		uint_args[i] = 0;
 
+	if( uint_args[0] == 0 ) // null itemid
+		return false;
+	
 	// lookup item
 //	ItemPrototype *proto = ItemPrototypeStorage.LookupEntry(itemid);
 
 	WorldPacket data;
 	data.SetOpcode(SMSG_ITEM_PUSH_RESULT);
-
-	data << m_session->GetPlayer()->GetGUID();			   // recivee_guid
-	data << type << uint32(1);  // unk
-	data << count;			  // count
-	data << uint8(0xFF);				// uint8 unk const 0xFF
-	data << unk1;	   // unk
-	data << itemid;
-	data << unk2;		  // unk
-	data << unk3;		 // random prop
-	data << unk4;
+	data << m_session->GetPlayer()->GetGUID();	// recivee_guid
+	data << uint_args[2];	// type
+	data << uint32(1);		// unk
+	data << uint_args[1];	// count
+	data << uint8(0xFF);	// uint8 unk const 0xFF
+	data << uint_args[3];	// unk1
+	data << uint_args[0];	// item id
+	data << uint_args[4];	// unk2
+	data << uint_args[5];	// random prop
+	data << uint_args[6];	// unk3
 	m_session->SendPacket(&data);
 	return true;
 	//data << ((proto != NULL) ? proto->Quality : uint32(0)); // quality

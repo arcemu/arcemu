@@ -64,9 +64,12 @@ void SpellCastTargets::read( WorldPacket & data,uint64 caster )
 			case 25387: // Mind Flay (Rank 7)
 			case 48155: // Mind Flay (Rank 8)
 			case 48156: // Mind Flay (Rank 9)
-				m_targetMask = TARGET_FLAG_UNIT;
-				m_unitTarget = objmgr.GetPlayer((uint32)caster)->GetUInt64Value(UNIT_FIELD_TARGET);
-				break;
+				{
+					m_targetMask = TARGET_FLAG_UNIT;
+					Player* plr = objmgr.GetPlayer( (uint32)caster );
+					if( plr != NULL )
+						m_unitTarget = plr->GetUInt64Value( UNIT_FIELD_TARGET );
+				}break;
 			default:
 				m_unitTarget = caster;
 				break;
@@ -2921,13 +2924,13 @@ void Spell::HandleEffects(uint64 guid, uint32 i)
 	}
 	else
 	{
-		if(!m_caster->IsInWorld())
+		if( !m_caster->IsInWorld() )
 		{
-			unitTarget = 0;
-			playerTarget = 0;
-			itemTarget = 0;
-			gameObjTarget = 0;
-			corpseTarget = 0;
+			unitTarget = NULL;
+			playerTarget = NULL;
+			itemTarget = NULL;
+			gameObjTarget = NULL;
+			corpseTarget = NULL;
 		}
 		else if(m_targets.m_targetMask & TARGET_FLAG_TRADE_ITEM)
 		{
@@ -2965,6 +2968,9 @@ void Spell::HandleEffects(uint64 guid, uint32 i)
 			case HIGHGUID_TYPE_CORPSE:
 				corpseTarget = objmgr.GetCorpse( GET_LOWGUID_PART( guid ) );
 				break;
+			default:
+				sLog.outError("unitTarget not set");
+				return;
 			}
 		}
 	}
@@ -5448,7 +5454,6 @@ void Spell::Heal(int32 amount, bool ForceCrit)
 				amount = (int)(0.15f * u_caster->GetUInt32Value(UNIT_FIELD_ATTACK_POWER) + 0.15f * (u_caster)->GetUInt32Value(PLAYER_FIELD_MOD_DAMAGE_DONE_POS+1));
 			break;
 		case 54172: //Paladin - Divine Storm heal effect
-			if( u_caster != NULL )
 			{
 				int dmg = (int)CalculateDamage( u_caster, unitTarget, MELEE, 0, dbcSpell.LookupEntry( 53385 ) );//1 hit
 				int target = 0;
@@ -5578,7 +5583,7 @@ void Spell::Heal(int32 amount, bool ForceCrit)
 
 void Spell::DetermineSkillUp(uint32 skillid,uint32 targetlevel, uint32 multiplicator)
 {
-	if(!p_caster)
+	if( p_caster == NULL )
 		return;
 
 	if(p_caster->GetSkillUpChance(skillid) < 0.01)
@@ -5732,13 +5737,14 @@ void Spell::DetermineSkillUp(uint32 skillid,uint32 targetlevel, uint32 multiplic
 void Spell::DetermineSkillUp(uint32 skillid)
 {
 	//This code is wrong for creating items and disenchanting.
-	if(!p_caster)return;
+	if( p_caster == NULL )
+		return;
 	float chance = 0.0f;
 	skilllinespell* skill = objmgr.GetSpellSkill(GetProto()->Id);
-	if( skill != NULL && skillid == skill->skilline && static_cast< Player* >( m_caster )->_HasSkillLine( skillid ) )
+	if( skill != NULL && skillid == skill->skilline && p_caster->_HasSkillLine( skillid ) )
 	{
-		uint32 amt = static_cast< Player* >( m_caster )->_GetSkillLineCurrent( skillid, false );
-		uint32 max = static_cast< Player* >( m_caster )->_GetSkillLineMax( skillid );
+		uint32 amt = p_caster->_GetSkillLineCurrent( skillid, false );
+		uint32 max = p_caster->_GetSkillLineMax( skillid );
 		if( amt >= max )
 			return;
 		if( amt >= skill->grey ) //grey

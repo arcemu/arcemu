@@ -31,21 +31,23 @@ void Player::SendWorldStateUpdate(uint32 WorldState, uint32 Value)
 
 void Player::Gossip_SendPOI(float X, float Y, uint32 Icon, uint32 Flags, uint32 Data, const char* Name)
 {
-	size_t namelen = strlen(Name);
+	size_t namelen = 0;
+	if( Name != NULL )
+		namelen = strlen( Name );
    
-	WorldPacket data(SMSG_GOSSIP_POI, 11 + namelen);
+	WorldPacket data( SMSG_GOSSIP_POI, 11 + namelen );
 	data << Flags;
 	data << X;
 	data << Y;
 	data << Icon;
 	data << Data;
 
-	if( Name == NULL || namelen == 0 )
+	if( namelen == 0 )
 		data << uint8(0);
 	else
-		data.append((const uint8*)Name, namelen + 1);
+		data.append( (const uint8*)Name, namelen + 1 );
 
-	GetSession()->SendPacket(&data);
+	GetSession()->SendPacket( &data );
 }
   
 void Player::SendLevelupInfo(uint32 level, uint32 Hp, uint32 Mana, uint32 Stat0, uint32 Stat1, uint32 Stat2, uint32 Stat3, uint32 Stat4)

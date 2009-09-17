@@ -3094,7 +3094,7 @@ uint32 Unit::GetSpellDidHitResult( Unit* pVictim, uint32 weapon_damage_type, Spe
 		if(pVictim->m_objectTypeId == TYPEID_UNIT)
 		{
 			Creature * c = (Creature*)(pVictim);
-			if(c&&c->GetCreatureInfo()&&c->GetCreatureInfo()->Rank == ELITE_WORLDBOSS)
+			if( c->GetCreatureInfo() && c->GetCreatureInfo()->Rank == ELITE_WORLDBOSS )
 			{
 				victim_skill = std::max(victim_skill,((int32)this->getLevel()+3)*5); //used max to avoid situation when lowlvl hits boss.
 			}
@@ -3165,7 +3165,7 @@ uint32 Unit::GetSpellDidHitResult( Unit* pVictim, uint32 weapon_damage_type, Spe
 		if(m_objectTypeId == TYPEID_UNIT)
 		{
 			Creature * c = (Creature*)(this);
-			if(c&&c->GetCreatureInfo()&&c->GetCreatureInfo()->Rank == ELITE_WORLDBOSS)
+			if( c->GetCreatureInfo()&&c->GetCreatureInfo()->Rank == ELITE_WORLDBOSS )
 				self_skill = std::max(self_skill,((int32)pVictim->getLevel()+3)*5);//used max to avoid situation when lowlvl hits boss.
 		}
 	}
@@ -3183,7 +3183,7 @@ uint32 Unit::GetSpellDidHitResult( Unit* pVictim, uint32 weapon_damage_type, Spe
 	if(int32(this->getLevel()*5)>self_skill)
 		diffAcapped -=(float)self_skill;
 	else
-		diffAcapped -=(float)(this->getLevel()*5);
+		diffAcapped -=(float)( getLevel() * 5 );
 	//<SHIT END>
 
 	//--------------------------------by victim state-------------------------------------------
@@ -4560,10 +4560,11 @@ void Unit::AddAura(Aura * aur)
 			if( aur->GetSpellProto()->procCharges > 0 )
 			{
 				int charges = aur->GetSpellProto()->procCharges;
-				if( aur->GetSpellProto()->SpellGroupType && aur->GetUnitCaster() != NULL )
+				Unit* ucaster = aur->GetUnitCaster();
+				if( aur->GetSpellProto()->SpellGroupType && ucaster != NULL )
 				{
-					SM_FIValue( aur->GetUnitCaster()->SM_FCharges, &charges, aur->GetSpellProto()->SpellGroupType );
-					SM_PIValue( aur->GetUnitCaster()->SM_PCharges, &charges, aur->GetSpellProto()->SpellGroupType );
+					SM_FIValue( ucaster->SM_FCharges, &charges, aur->GetSpellProto()->SpellGroupType );
+					SM_PIValue( ucaster->SM_PCharges, &charges, aur->GetSpellProto()->SpellGroupType );
 				}
 				maxStack=charges;
 			}
@@ -7915,10 +7916,8 @@ void Unit::RemoveReflect( uint32 spellid, bool apply )
 	if( apply && spellid == 23920 && IsPlayer() && HasAurasWithNameHash(SPELL_HASH_IMPROVED_SPELL_REFLECTION) )
 	{
 		Player *pPlayer = static_cast<Player*>(this);
-		if( !pPlayer )
-			return;
-
 		Group * pGroup = pPlayer->GetGroup();
+		
 		if(pGroup != NULL)
 		{
 			int32 targets = 0;
@@ -7950,10 +7949,8 @@ void Unit::RemoveReflect( uint32 spellid, bool apply )
 	if( !apply && spellid == 59725 && IsPlayer() )
 	{
 		Player *pPlayer = static_cast<Player*>(this);
-		if( !pPlayer )
-			return;
-
 		Group * pGroup = pPlayer->GetGroup();
+
 		if(pGroup != NULL)
 		{
 			pGroup->Lock();
