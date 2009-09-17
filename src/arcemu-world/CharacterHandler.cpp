@@ -966,6 +966,9 @@ void WorldSession::FullLogin(Player * plr)
 	// Shows Online players, and connection peak
 	_player->BroadcastMessage("Online Players: %s%u |rPeak: %s%u|r Accepted Connections: %s%u",
 		MSG_COLOR_SEXGREEN, sWorld.GetSessionCount(), MSG_COLOR_SEXBLUE, sWorld.PeakSessionCount, MSG_COLOR_SEXBLUE, sWorld.mAcceptedConnections);
+	
+	// Shows Server uptime
+	_player->BroadcastMessage("Server Uptime: |r%s", sWorld.GetUptimeString().c_str());
 
 	//Set current RestState
 	if( plr->m_isResting)
