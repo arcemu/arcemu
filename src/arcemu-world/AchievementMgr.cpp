@@ -1642,7 +1642,7 @@ void AchievementMgr::SendAllAchievementData(Player* player)
 		data << int32(-1);
 		for(; progressIter != m_criteriaProgress.end() && !packetFull; ++progressIter)
 		{
-			acEntry = dbcAchievementCriteriaStore.LookupEntry(progressIter->second->id);
+			acEntry = dbcAchievementCriteriaStore.LookupEntry(progressIter->first);
 			if( !acEntry )
 			{
 				continue;
@@ -1657,7 +1657,7 @@ void AchievementMgr::SendAllAchievementData(Player* player)
 			{
 				if( SendAchievementProgress(progressIter->second) )
 				{
-					data << uint32(progressIter->second->id);
+					data << uint32(progressIter->first);
 					data.appendPackGUID(progressIter->second->counter);
 					data << GetPlayer()->GetNewGUID();
 					data << uint32(0);
@@ -1672,7 +1672,7 @@ void AchievementMgr::SendAllAchievementData(Player* player)
 				// only send statistics, no other unfinished achievement progress, since client only displays them as completed or not completed
 				if( (progressIter->second->counter > 0) && (achievement->flags & ACHIEVEMENT_FLAG_COUNTER) )
 				{
-					data << uint32(progressIter->second->id);
+					data << uint32(progressIter->first);
 					data.appendPackGUID(progressIter->second->counter);
 					data << GetPlayer()->GetNewGUID();
 					data << uint32(0);
