@@ -309,7 +309,7 @@ namespace VMAP
             instanceTree->unloadMap(dirFileName, 0);
             if(instanceTree->size() == 0)
             {
-				m_maps[pMapId]=NULL;
+				m_maps[pMapId]= NULL;
                 delete instanceTree;
             }
         }

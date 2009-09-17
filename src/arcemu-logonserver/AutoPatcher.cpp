@@ -76,7 +76,7 @@ PatchMgr::PatchMgr()
 		pPatch->Locality[4] = 0;
 		pPatch->uLocality = *(uint32*)pPatch->Locality;
 
-		if(pPatch->Data==NULL)
+		if(pPatch->Data== NULL)
 		{
 			// shouldn't really happen
 			delete pPatch;
@@ -126,7 +126,7 @@ PatchMgr::PatchMgr()
 	strcpy(Buffer2,Buffer);
 
 	filecount = scandir("./ClientPatches", &list, 0, 0);
-	if(filecount <= 0 || list==NULL)
+	if(filecount <= 0 || list== NULL)
 	{
 		Log.Error("PatchMgr", "No patches found.");
 		return;
@@ -162,7 +162,7 @@ PatchMgr::PatchMgr()
 		pPatch->Locality[4] = 0;
 		pPatch->uLocality = *(uint32*)pPatch->Locality;
 
-		if(pPatch->Data==NULL)
+		if(pPatch->Data== NULL)
 		{
 			// shouldn't really happen
 			delete pPatch;
@@ -213,7 +213,7 @@ Patch * PatchMgr::FindPatchForClient(uint32 Version, const char * Locality)
 		// saving a string compare ;)
 		if((*itr)->uLocality==ulocality)
 		{
-			if(fallbackPatch==NULL && (*itr)->Version==0)
+			if(fallbackPatch== NULL && (*itr)->Version==0)
 				fallbackPatch = (*itr);
 			
 			if((*itr)->Version == Version)
@@ -246,7 +246,7 @@ void PatchMgr::UpdateJobs()
 
 		if(!(*itr2)->Update())
 		{
-			(*itr2)->GetClient()->m_patchJob=NULL;
+			(*itr2)->GetClient()->m_patchJob= NULL;
 			delete (*itr2);
 			m_patchJobs.erase(itr2);
 		}

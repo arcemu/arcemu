@@ -111,7 +111,7 @@ void WorldSession::HandleSplitOpcode(WorldPacket& recv_data)
 			i1->ModUnsigned32Value(ITEM_FIELD_STACK_COUNT,-count);
 
 			i2=objmgr.CreateItem(i1->GetEntry(),_player);
-			if( i2==NULL )
+			if( i2== NULL )
 				return;
 
 			i2->SetUInt32Value(ITEM_FIELD_STACK_COUNT,c);
@@ -653,7 +653,7 @@ void WorldSession::HandleDestroyItemOpcode( WorldPacket & recv_data )
 
 		if(_player->GetCurrentSpell() && _player->GetCurrentSpell()->i_caster==pItem)
 		{
-			_player->GetCurrentSpell()->i_caster=NULL;
+			_player->GetCurrentSpell()->i_caster= NULL;
 			_player->GetCurrentSpell()->cancel();
 		}
 
@@ -1356,7 +1356,7 @@ void WorldSession::HandleBuyItemInSlotOpcode( WorldPacket & recv_data ) // drag 
 
 	// ok our z and slot are set.
 	Item * oldItem= NULL;
-	Item * pItem=NULL;
+	Item * pItem= NULL;
 	if(slot != INVENTORY_SLOT_NOT_SET)
 		oldItem = _player->GetItemInterface()->GetInventoryItem(bagslot, slot);
 
@@ -1998,7 +1998,7 @@ void WorldSession::HandleAutoBankItemOpcode(WorldPacket &recvPacket)
 	else
 	{
 		eitem = _player->GetItemInterface()->SafeRemoveAndRetreiveItemFromSlot(SrcInvSlot,SrcSlot, false);
-		if (eitem==NULL)
+		if (eitem== NULL)
 			return;
 
 		if(!_player->GetItemInterface()->SafeAddItem(eitem, slotresult.ContainerSlot, slotresult.Slot))
@@ -2043,7 +2043,7 @@ void WorldSession::HandleAutoStoreBankItemOpcode(WorldPacket &recvPacket)
 	else
 	{
 		eitem = _player->GetItemInterface()->SafeRemoveAndRetreiveItemFromSlot(SrcInvSlot, SrcSlot, false);
-		if (eitem==NULL)
+		if (eitem== NULL)
 			return;
 		if (!_player->GetItemInterface()->AddItemToFreeSlot(eitem))
 		{

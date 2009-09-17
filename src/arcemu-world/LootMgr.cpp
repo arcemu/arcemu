@@ -324,7 +324,7 @@ void LootMgr::LoadLootTables(const char * szTableName,LootStore * LootTable)
 				proto=ItemPrototypeStorage.LookupEntry(itemid);
 				if(!proto)
 				{
-					list.items[ind].item.itemproto=NULL;
+					list.items[ind].item.itemproto= NULL;
 					Log.Warning("LootMgr", "Loot for %u contains non-existant item. (%s)",entry_id, szTableName);
 				}
 				else
@@ -839,11 +839,11 @@ void LootRoll::Finalize()
 
 		sLog.outDebug("AutoLootItem MISC");
 		Item *item = objmgr.CreateItem( itemid, _player);
-		if (item==NULL)
+		if (item== NULL)
 			return;
 
 		item->SetUInt32Value(ITEM_FIELD_STACK_COUNT,amt);
-		if(pLoot->items.at(_slotid).iRandomProperty!=NULL)
+		if(pLoot->items.at(_slotid).iRandomProperty!= NULL)
 		{
 			item->SetRandomProperty(pLoot->items.at(_slotid).iRandomProperty->ID);
 			item->ApplyRandomProperties(false);

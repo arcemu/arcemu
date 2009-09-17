@@ -3718,7 +3718,7 @@ Unit *AIInterface::GetMostHated()
 	if(  m_Unit->GetMapMgr() == NULL )
 		return NULL; 
 
-	Unit *ResultUnit=NULL;
+	Unit *ResultUnit= NULL;
 
 	//override mosthated with taunted target. Basic combat checks are made for it. 
 	//What happens if we can't see tauntedby unit ?

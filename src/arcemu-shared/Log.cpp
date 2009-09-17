@@ -274,7 +274,7 @@ void SessionLogWriter::write(const char* format, ...)
 WorldLog::WorldLog()
 {
 	bEnabled = false;
-	m_file=NULL;
+	m_file= NULL;
 
 	if (Config.MainConfig.GetBoolDefault("LogLevel", "World", false))
 	{
@@ -310,7 +310,7 @@ void WorldLog::Disable()
 
 	fflush(m_file);
 	fclose(m_file);
-	m_file=NULL;
+	m_file= NULL;
 }
 
 WorldLog::~WorldLog()
@@ -347,13 +347,13 @@ void SessionLogWriter::Close()
 	if(!m_file) return;
 	fflush(m_file);
 	fclose(m_file);
-	m_file=NULL;
+	m_file= NULL;
 }
 
 SessionLogWriter::SessionLogWriter(const char * filename, bool open)
 {
 	m_filename = strdup(filename);
-	m_file=NULL;
+	m_file= NULL;
 	if(open)
 		Open();
 }

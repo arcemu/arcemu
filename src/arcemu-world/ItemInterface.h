@@ -206,8 +206,8 @@ public:
 		ASSERT(!m_searchInProgress);
 		m_atEnd=false;
 		m_searchInProgress=true;
-		m_container=NULL;
-		m_currentItem=NULL;
+		m_container= NULL;
+		m_currentItem= NULL;
 		m_slot=0;
 		Increment();
 	}
@@ -253,7 +253,7 @@ public:
 			}
 
 			// unset this
-			m_container=NULL;
+			m_container= NULL;
 		}
 
 		for(; m_slot < MAX_INVENTORY_SLOT; ++m_slot)
@@ -293,7 +293,7 @@ public:
 
 		// if we're here we've searched all items.
 		m_atEnd=true;
-		m_currentItem=NULL;
+		m_currentItem= NULL;
 	}
 
 	ARCEMU_INLINE Item* Grab() { return m_currentItem; }

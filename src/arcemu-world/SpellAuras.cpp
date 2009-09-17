@@ -2647,7 +2647,7 @@ void Aura::SpellAuraDummy(bool apply)
 
 			uint64 crtguid = p_target->m_areaSpiritHealer_guid;
 			Creature* pCreature = p_target->IsInWorld() ? p_target->GetMapMgr()->GetCreature(GET_LOWGUID_PART(crtguid)) : NULL;
-			if( pCreature==NULL || p_target->m_bg == NULL )
+			if( pCreature== NULL || p_target->m_bg == NULL )
 				return;
 
 			p_target->m_bg->RemovePlayerFromResurrect( p_target, pCreature );
@@ -3981,7 +3981,7 @@ void Aura::EventPeriodicTriggerSpell(SpellEntry* spellInfo)
 	}
 
 	Object * oTarget = m_target->GetMapMgr()->_GetObject(periodic_target);
-	if(oTarget==NULL)
+	if(oTarget== NULL)
 		return;
 
 	if(oTarget->GetTypeId()==TYPEID_DYNAMICOBJECT)
@@ -4363,7 +4363,7 @@ void Aura::SpellAuraModDecreaseSpeed(bool apply)
 		if(itr != m_target->speedReductionMap.end())
 			m_target->speedReductionMap.erase(itr);
 		//m_target->m_speedModifier -= mod->m_amount;
-		//m_target->m_slowdown=NULL;
+		//m_target->m_slowdown= NULL;
 	}
 	if(m_target->GetSpeedDecrease())
 		m_target->UpdateSpeed();

@@ -193,7 +193,7 @@ void WorldSession::HandleGuildPromote(WorldPacket & recv_data)
 	}
 
 	PlayerInfo * dstplr = objmgr.GetPlayerInfoByName(name.c_str());
-	if(dstplr==NULL)
+	if(dstplr== NULL)
 		return;
 
 	_player->m_playerInfo->guild->PromoteGuildMember(dstplr, this);
@@ -213,7 +213,7 @@ void WorldSession::HandleGuildDemote(WorldPacket & recv_data)
 	}
 
 	PlayerInfo * dstplr = objmgr.GetPlayerInfoByName(name.c_str());
-	if(dstplr==NULL)
+	if(dstplr== NULL)
 		return;
 
 	_player->m_playerInfo->guild->DemoteGuildMember(dstplr, this);
@@ -244,7 +244,7 @@ void WorldSession::HandleGuildRemove(WorldPacket & recv_data)
 	}
 
 	PlayerInfo * dstplr = objmgr.GetPlayerInfoByName(name.c_str());
-	if(dstplr==NULL)
+	if(dstplr== NULL)
 		return;
 
 	_player->m_playerInfo->guild->RemoveGuildMember(dstplr, this);
@@ -281,7 +281,7 @@ void WorldSession::HandleGuildLeader(WorldPacket & recv_data)
 	}
 
 	PlayerInfo * dstplr = objmgr.GetPlayerInfoByName(name.c_str());
-	if(dstplr==NULL)
+	if(dstplr== NULL)
 	{
 		Guild::SendGuildCommandResult(this, GUILD_CREATE_S, name.c_str(), GUILD_PLAYER_NOT_FOUND);
 		return;
@@ -461,7 +461,7 @@ void WorldSession::HandleSaveGuildEmblem(WorldPacket & recv_data)
 	CHECK_GUID_EXISTS(guid);
 
 	recv_data >> emblemStyle >> emblemColor >> borderStyle >> borderColor >> backgroundColor;
-	if(pGuild==NULL)
+	if(pGuild== NULL)
 	{
 		data << uint32(ERR_GUILDEMBLEM_NOGUILD);
 		SendPacket(&data);
@@ -1094,11 +1094,11 @@ void WorldSession::HandleGuildBankModifyTab(WorldPacket & recv_data)
 	recv_data >> tabname;
 	recv_data >> tabicon;
 
-	if(_player->m_playerInfo->guild==NULL)
+	if(_player->m_playerInfo->guild== NULL)
 		return;
 
 	pTab = _player->m_playerInfo->guild->GetBankTab( slot );
-	if(pTab==NULL)
+	if(pTab== NULL)
 		return;
 
 	if(_player->m_playerInfo->guild->GetGuildLeader() != _player->GetLowGUID())
@@ -1173,7 +1173,7 @@ void WorldSession::HandleGuildBankWithdrawMoney(WorldPacket & recv_data)
 	recv_data >> guid;
 	recv_data >> money;
 
-	if(_player->m_playerInfo->guild==NULL)
+	if(_player->m_playerInfo->guild== NULL)
 		return;
 
 	_player->m_playerInfo->guild->WithdrawMoney(this, money);
@@ -1187,7 +1187,7 @@ void WorldSession::HandleGuildBankDepositMoney(WorldPacket & recv_data)
 	recv_data >> guid;
 	recv_data >> money;
 
-	if(_player->m_playerInfo->guild==NULL)
+	if(_player->m_playerInfo->guild== NULL)
 		return;
 
 	_player->m_playerInfo->guild->DepositMoney(this, money);
@@ -1204,7 +1204,7 @@ void WorldSession::HandleGuildBankDepositItem(WorldPacket & recv_data)
 	Guild * pGuild = _player->m_playerInfo->guild;
 	GuildMember * pMember = _player->m_playerInfo->guildMember;
 
-	if(pGuild==NULL || pMember==NULL)
+	if(pGuild== NULL || pMember== NULL)
 		return;
 
 	recv_data >> guid >> source_isfrombank;
@@ -1335,7 +1335,7 @@ void WorldSession::HandleGuildBankDepositItem(WorldPacket & recv_data)
 
 		/* get tab */
 		pTab = pGuild->GetBankTab( dest_bank );
-		if(pTab==NULL)
+		if(pTab== NULL)
 			return;
 
 		/* check if we are autoassigning */
@@ -1434,7 +1434,7 @@ void WorldSession::HandleGuildBankDepositItem(WorldPacket & recv_data)
 			{
 				pSourceItem2 = pSourceItem;
 				pSourceItem = objmgr.CreateItem(pSourceItem2->GetEntry(), _player);
-				if (pSourceItem==NULL)
+				if (pSourceItem== NULL)
 					return;
 
 				pSourceItem->SetUInt32Value(ITEM_FIELD_STACK_COUNT, deposit_stack);
@@ -1464,7 +1464,7 @@ void WorldSession::HandleGuildBankDepositItem(WorldPacket & recv_data)
 				pSourceItem2->SaveToDB(0,0,true, NULL);
 
 				pDestItem = objmgr.CreateItem(pSourceItem2->GetEntry(), _player);
-				if (pDestItem==NULL)
+				if (pDestItem== NULL)
 					return;
 
 				pDestItem->SetUInt32Value(ITEM_FIELD_STACK_COUNT, deposit_stack);
@@ -1536,7 +1536,7 @@ void WorldSession::HandleGuildBankOpenVault(WorldPacket & recv_data)
 	GameObject * pObj;
 	uint64 guid;
 
-	if(!_player->IsInWorld() || _player->m_playerInfo->guild==NULL)
+	if(!_player->IsInWorld() || _player->m_playerInfo->guild== NULL)
 	{
 		Guild::SendGuildCommandResult(this, GUILD_CREATE_S, "", GUILD_PLAYER_NOT_IN_GUILD);
 		return;
@@ -1544,7 +1544,7 @@ void WorldSession::HandleGuildBankOpenVault(WorldPacket & recv_data)
 
 	recv_data >> guid;
 	pObj = _player->GetMapMgr()->GetGameObject((uint32)guid);
-	if(pObj==NULL)
+	if(pObj== NULL)
 		return;
 
 	_player->m_playerInfo->guild->SendGuildBankInfo(this);
@@ -1563,11 +1563,11 @@ void WorldSession::HandleGuildBankViewTab(WorldPacket & recv_data)
 	//Log.Warning("HandleGuildBankViewTab", "Tab %u", (uint32)tabid);
 
 	// maybe last uint8 is "show additional info" such as tab names? *shrug*
-	if(pGuild==NULL)
+	if(pGuild== NULL)
 		return;
 
 	pTab = pGuild->GetBankTab( tabid );
-	if(pTab==NULL)
+	if(pTab== NULL)
 		return;
 
 	pGuild->SendGuildBank(this, pTab);
@@ -1577,7 +1577,7 @@ void Guild::SendGuildBankInfo(WorldSession * pClient)
 {
 	GuildMember * pMember = pClient->GetPlayer()->getPlayerInfo()->guildMember;
 
-	if(pMember==NULL)
+	if(pMember== NULL)
 		return;
 
 	WorldPacket data(SMSG_GUILD_BANK_LIST, 500);
@@ -1590,7 +1590,7 @@ void Guild::SendGuildBankInfo(WorldSession * pClient)
 	for(uint8 i = 0; i < GetBankTabCount(); ++i)
 	{
 		GuildBankTab * pTab = GetBankTab(i);
-		if(pTab==NULL || !pMember->pRank->CanPerformBankCommand(GR_RIGHT_GUILD_BANK_VIEW_TAB, i))
+		if(pTab== NULL || !pMember->pRank->CanPerformBankCommand(GR_RIGHT_GUILD_BANK_VIEW_TAB, i))
 		{
 			data << uint16(0);		// shouldn't happen
 			continue;
@@ -1618,7 +1618,7 @@ void Guild::SendGuildBank(WorldSession * pClient, GuildBankTab * pTab, int8 upda
 	WorldPacket data( SMSG_GUILD_BANK_LIST, 1300 );
 	GuildMember * pMember = pClient->GetPlayer()->getPlayerInfo()->guildMember;
 
-	if(pMember==NULL || !pMember->pRank->CanPerformBankCommand(GR_RIGHT_GUILD_BANK_VIEW_TAB, pTab->iTabId))
+	if(pMember== NULL || !pMember->pRank->CanPerformBankCommand(GR_RIGHT_GUILD_BANK_VIEW_TAB, pTab->iTabId))
 		return;
 
 	//Log.Debug("SendGuildBank", "sending tab %u to client.", pTab->iTabId);
@@ -1673,7 +1673,7 @@ void Guild::SendGuildBank(WorldSession * pClient, GuildBankTab * pTab, int8 upda
 	if(updated_slot1 >= 0)
 	{
 		// this should only be hit if the items null though..
-		if(pTab->pSlots[updated_slot1]==NULL)
+		if(pTab->pSlots[updated_slot1]== NULL)
 		{
 			++count;
 			data << uint8(updated_slot1);
@@ -1684,7 +1684,7 @@ void Guild::SendGuildBank(WorldSession * pClient, GuildBankTab * pTab, int8 upda
 	if(updated_slot2 >= 0)
 	{
 		// this should only be hit if the items null though..
-		if(pTab->pSlots[updated_slot2]==NULL)
+		if(pTab->pSlots[updated_slot2]== NULL)
 		{
 			++count;
 			data << uint8(updated_slot2);

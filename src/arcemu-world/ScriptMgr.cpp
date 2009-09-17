@@ -395,7 +395,7 @@ void ScriptMgr::UnloadScripts()
 		(*itr)->Destroy();
 	_customgossipscripts.clear();
 	delete this->DefaultGossipScript;
-	this->DefaultGossipScript=NULL;
+	this->DefaultGossipScript= NULL;
 
 	LibraryHandleMap::iterator itr = _handles.begin();
 	for(; itr != _handles.end(); ++itr)

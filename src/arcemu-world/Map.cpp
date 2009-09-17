@@ -73,7 +73,7 @@ Map::~Map()
 						delete (*it);
 
 					delete sp;
-					spawns[x][y]=NULL;
+					spawns[x][y]= NULL;
 				}
 			}
 			delete [] spawns[x];
@@ -166,7 +166,7 @@ void Map::LoadSpawns(bool reload)
 					uint32 celly=float2int32(((_maxY-cspawn->y)/_cellSize));*/
 					uint32 cellx=CellHandler<MapMgr>::GetPosX(cspawn->x);
 					uint32 celly=CellHandler<MapMgr>::GetPosY(cspawn->y);
-					if(spawns[cellx]==NULL)
+					if(spawns[cellx]== NULL)
 					{
 						spawns[cellx]=new CellSpawns*[_sizeY];
 						memset(spawns[cellx],0,sizeof(CellSpawns*)*_sizeY);
@@ -322,7 +322,7 @@ void Map::LoadSpawns(bool reload)
 						//uint32 celly=float2int32(((_maxY-gspawn->y)/_cellSize));
 						uint32 cellx=CellHandler<MapMgr>::GetPosX(gspawn->x);
 						uint32 celly=CellHandler<MapMgr>::GetPosY(gspawn->y);
-						if(spawns[cellx]==NULL)
+						if(spawns[cellx]== NULL)
 						{
 							spawns[cellx]=new CellSpawns*[_sizeY];
 							memset(spawns[cellx],0,sizeof(CellSpawns*)*_sizeY);

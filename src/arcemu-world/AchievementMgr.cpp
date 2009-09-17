@@ -27,15 +27,11 @@
 uint32 GetAchievementIDFromLink(const char* achievementlink)
 {
 	if( achievementlink == NULL )
-	{
 		return 0;
-	}
 
 	const char* ptr = strstr(achievementlink, "|Hachievement:");
 	if( ptr == NULL )
-	{
 		return 0;
-	}
 
 	// achievement id is just past "|Hachievement:" (14 bytes)
 	return atol(ptr + 14);
@@ -52,25 +48,20 @@ uint32 GetAchievementIDFromLink(const char* achievementlink)
 bool SendAchievementProgress(const CriteriaProgress* c)
 {
 	if( c == NULL || c->counter <= 0 )
-	{
 		// achievement not started yet, don't send progress
 		return false;
-	}
+
 	AchievementCriteriaEntry const* acEntry = dbcAchievementCriteriaStore.LookupEntry(c->id);
 	if( !acEntry )
-	{
 		return false;
-	}
-	if( acEntry->requiredType == ACHIEVEMENT_CRITERIA_TYPE_GAIN_REPUTATION )
-	{
+
+	if( acEntry->requiredType == ACHIEVEMENT_CRITERIA_TYPE_GAIN_REPUTATION || acEntry->requiredType == ACHIEVEMENT_CRITERIA_TYPE_REACH_LEVEL)
 		// Exalted with X faction (don't send 12323/42000 progress, it's not shown anyway)
 		return false;
-	}
+
 	if( acEntry->requiredType == ACHIEVEMENT_CRITERIA_TYPE_REACH_LEVEL )
-	{
 		// Reach level (don't send 7/80 progress, it's not shown anyway)
 		return false;
-	}
 	return true;
 }
 
@@ -83,7 +74,7 @@ bool SaveAchievementProgressToDB(const CriteriaProgress* c)
 {
 	if( c->counter <= 0 )
 	{
-		// don't save it if it's not started yet
+		// Don't save it if it's not started yet
 		return false;
 	}
 	AchievementCriteriaEntry const* acEntry = dbcAchievementCriteriaStore.LookupEntry(c->id);

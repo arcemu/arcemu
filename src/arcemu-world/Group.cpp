@@ -82,7 +82,7 @@ Group::Group(bool Assign)
 	m_isqueued=false;
 	m_difficulty=0;
 	m_raiddifficulty=0;
-	m_assistantLeader=m_mainAssist=m_mainTank=NULL;
+	m_assistantLeader=m_mainAssist=m_mainTank= NULL;
 #ifdef VOICE_CHAT
 	m_voiceChannelRequested = false;
 	m_voiceChannelId = 0;
@@ -174,7 +174,7 @@ bool Group::AddMember(PlayerInfo * info, int32 subgroupid/* =-1 */)
 			if(info->m_Group && info->m_Group != this)
 				info->m_Group->RemovePlayer(info);
 
-			if(m_Leader==NULL && info->m_loggedInPlayer)
+			if(m_Leader== NULL && info->m_loggedInPlayer)
 				m_Leader=info;
 
 			info->m_Group=this;
@@ -186,7 +186,7 @@ bool Group::AddMember(PlayerInfo * info, int32 subgroupid/* =-1 */)
 		else
 		{
 			m_groupLock.Release();
-			info->m_Group=NULL;
+			info->m_Group= NULL;
 			info->subGroup=-1;
 			return false;
 		}
@@ -469,7 +469,7 @@ void Group::RemovePlayer(PlayerInfo * info)
 		BattlegroundManager.RemoveGroupFromQueues(this);
 	}
 	
-	SubGroup *sg=NULL;
+	SubGroup *sg= NULL;
 	if(info->subGroup >= 0 && info->subGroup <= 8)
 		sg = m_SubGroups[info->subGroup];
 
@@ -488,14 +488,14 @@ void Group::RemovePlayer(PlayerInfo * info)
 		}
 	}
 
-	info->m_Group=NULL;
+	info->m_Group= NULL;
 	info->subGroup=-1;
 #ifdef VOICE_CHAT
 	if( info->groupVoiceId <= 0 )
 		RemoveVoiceMember(info);
 #endif
 
-	if(sg==NULL)
+	if(sg== NULL)
 	{
 		m_groupLock.Release();
 		return;
@@ -559,7 +559,7 @@ void Group::RemovePlayer(PlayerInfo * info)
 
 	if(m_Leader == info)
 	{
-		if( newPlayer==NULL )
+		if( newPlayer== NULL )
 			newPlayer=FindFirstPlayer();
 
 		if( newPlayer != NULL )
@@ -697,7 +697,7 @@ void Group::MovePlayer(PlayerInfo *info, uint8 subgroup)
 		return;
 
 	m_groupLock.Acquire();
-	SubGroup *sg=NULL;
+	SubGroup *sg= NULL;
 
 	if(info->subGroup > 0 && info->subGroup <= 8)
 		sg = m_SubGroups[info->subGroup];
@@ -730,7 +730,7 @@ void Group::MovePlayer(PlayerInfo *info, uint8 subgroup)
 	if(!sg->AddPlayer(info))
 	{
 		RemovePlayer(info);
-		info->m_Group=NULL;
+		info->m_Group= NULL;
 	}
 	else
 	{
@@ -973,7 +973,7 @@ void Group::UpdateOutOfRangePlayer(Player * pPlayer, uint32 Flags, bool Distribu
 		m_groupLock.Acquire();
 		for(uint32 i = 0; i < m_SubGroupCount; ++i)
 		{
-			if(m_SubGroups[i]==NULL)
+			if(m_SubGroups[i]== NULL)
 				continue;
 
 			for(GroupMembersSet::iterator itr = m_SubGroups[i]->GetGroupMembersBegin(); itr != m_SubGroups[i]->GetGroupMembersEnd();)
@@ -1017,7 +1017,7 @@ void Group::UpdateAllOutOfRangePlayersFor(Player * pPlayer)
 	m_groupLock.Acquire();
 	for(uint32 i = 0; i < m_SubGroupCount; ++i)
 	{
-		if(m_SubGroups[i]==NULL)
+		if(m_SubGroups[i]== NULL)
 			continue;
 
 		for(GroupMembersSet::iterator itr = m_SubGroups[i]->GetGroupMembersBegin(); itr != m_SubGroups[i]->GetGroupMembersEnd(); ++itr)

@@ -137,7 +137,7 @@ void InstanceMgr::Shutdown()
 			}
 
 			delete m_instances[i];
-			m_instances[i]=NULL;
+			m_instances[i]= NULL;
 		}
 
 		if(m_singleMaps[i] != NULL)
@@ -145,13 +145,13 @@ void InstanceMgr::Shutdown()
 			MapMgr * ptr = m_singleMaps[i];
 			ptr->KillThread();
 			delete ptr;
-			m_singleMaps[i]=NULL;
+			m_singleMaps[i]= NULL;
 		}
 
 		if(m_maps[i] != NULL)
 		{
 			delete m_maps[i];
-			m_maps[i]=NULL;
+			m_maps[i]= NULL;
 		}
 	}
 
@@ -539,7 +539,7 @@ MapMgr * InstanceMgr::_CreateInstance(Instance * in)
 		return NULL;
 
 	Log.Notice("InstanceMgr", "Creating saved instance %u (%s)", in->m_instanceId, m_maps[in->m_mapId]->GetName());
-	ASSERT(in->m_mapMgr==NULL);
+	ASSERT(in->m_mapMgr== NULL);
 
 	// we don't have to check for world map info here, since the instance wouldn't have been saved if it didn't have any.
 	in->m_mapMgr = new MapMgr(m_maps[in->m_mapId], in->m_mapId, in->m_instanceId);
@@ -558,9 +558,9 @@ void InstanceMgr::_CreateMap(uint32 mapid)
 	MapInfo * inf;
 
 	inf = WorldMapInfoStorage.LookupEntry(mapid);
-	if(inf==NULL)
+	if(inf== NULL)
 		return;
-	if(m_maps[mapid]!=NULL)
+	if(m_maps[mapid]!= NULL)
 		return;
 
 	m_maps[mapid] = new Map(mapid, inf);
@@ -657,7 +657,7 @@ void InstanceMgr::BuildXMLStats(char * m_file)
 					in = itr->second;
 					++itr;
 
-					if(in->m_mapMgr==NULL)
+					if(in->m_mapMgr== NULL)
 						continue;
 
 					BuildStats(in->m_mapMgr, m_file, in, in->m_mapInfo);
@@ -729,7 +729,7 @@ void Instance::LoadFromDB(Field * fields)
 	m_creatorGroup = fields[6].GetUInt32();
 	m_creatorGuid = fields[7].GetUInt32();
 	m_persistent = fields[8].GetBool();
-	m_mapMgr=NULL;
+	m_mapMgr= NULL;
 	m_isBattleground = false;
 
 	// Reset group binding if it's a persistent instance

@@ -26,7 +26,7 @@
 
 uint16 GetItemIDFromLink(const char* itemlink, uint32* itemid)
 {
-	if(itemlink==NULL)
+	if(itemlink== NULL)
 	{
 		*itemid = 0;
 		return 0;

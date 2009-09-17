@@ -163,7 +163,7 @@ ObjectMgr::~ObjectMgr()
 		InstanceReputationModifier * mod = itr->second;
 		mod->mods.clear();
 		delete mod;
-	}
+	}	
 
 	Log.Notice("ObjectMgr", "Deleting Groups...");
 	for(GroupMap::iterator itr = m_groups.begin(); itr != m_groups.end();)
@@ -188,7 +188,7 @@ ObjectMgr::~ObjectMgr()
 	Log.Notice("ObjectMgr", "Deleting Player Information...");
 	for(HM_NAMESPACE::hash_map<uint32, PlayerInfo*>::iterator itr = m_playersinfo.begin(); itr != m_playersinfo.end(); ++itr)
 	{
-		itr->second->m_Group=NULL;
+		itr->second->m_Group = NULL;
 		free(itr->second->name);
 		delete itr->second;
 	}
@@ -231,7 +231,7 @@ ObjectMgr::~ObjectMgr()
 Group * ObjectMgr::GetGroupByLeader(Player* pPlayer)
 {
 	GroupMap::iterator itr;
-	Group * ret=NULL;
+	Group * ret= NULL;
 	m_groupLock.AcquireReadLock();
 	for(itr = m_groups.begin(); itr != m_groups.end(); ++itr)
 	{
@@ -249,7 +249,7 @@ Group * ObjectMgr::GetGroupByLeader(Player* pPlayer)
 Group * ObjectMgr::GetGroupById(uint32 id)
 {
 	GroupMap::iterator itr;
-	Group * ret=NULL;
+	Group * ret= NULL;
 	m_groupLock.AcquireReadLock();
 	itr = m_groups.find(id);
 	if(itr!=m_groups.end())
@@ -406,10 +406,10 @@ void ObjectMgr::LoadPlayersInfo()
 			pn->acct = fields[8].GetUInt32();
 			pn->m_Group=0;
 			pn->subGroup=0;
-			pn->m_loggedInPlayer=NULL;
-			pn->guild=NULL;
-			pn->guildRank=NULL;
-			pn->guildMember=NULL;
+			pn->m_loggedInPlayer= NULL;
+			pn->guild= NULL;
+			pn->guildRank= NULL;
+			pn->guildMember= NULL;
 #ifdef VOICE_CHAT
 			pn->groupVoiceId = -1;
 #endif
@@ -2956,7 +2956,7 @@ void ObjectMgr::HandleMonsterSayEvent(Creature * pCreature, MONSTER_SAY_EVENTS E
 		static const char* races[12] = {"None","Human","Orc","Dwarf","Night Elf","Undead","Tauren","Gnome","Troll","None","Blood Elf","Draenei"};
 		static const char* classes[12] = {"None","Warrior", "Paladin", "Hunter", "Rogue", "Priest", "Death Knight", "Shaman", "Mage", "Warlock", "None", "Druid"};
 		char* test=strstr((char*)text,"$R");
-		if(test==NULL)
+		if(test== NULL)
 			test = strstr((char*)text,"$r");
 		if(test != NULL)
 		{
@@ -2969,7 +2969,7 @@ void ObjectMgr::HandleMonsterSayEvent(Creature * pCreature, MONSTER_SAY_EVENTS E
 			}
 		}
 		test = strstr((char*)text,"$N");
-		if(test==NULL)
+		if(test== NULL)
 			test = strstr((char*)text,"$n");
 		if(test != NULL)
 		{
@@ -2982,7 +2982,7 @@ void ObjectMgr::HandleMonsterSayEvent(Creature * pCreature, MONSTER_SAY_EVENTS E
 			}
 		}
 		test = strstr((char*)text,"$C");
-		if(test==NULL)
+		if(test== NULL)
 			test = strstr((char*)text,"$c");
 		if(test != NULL)
 		{
@@ -2995,7 +2995,7 @@ void ObjectMgr::HandleMonsterSayEvent(Creature * pCreature, MONSTER_SAY_EVENTS E
 			}
 		}
 		test = strstr((char*)text,"$G");
-		if(test==NULL)
+		if(test== NULL)
 			test = strstr((char*)text,"$g");
 		if(test != NULL)
 		{

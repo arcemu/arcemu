@@ -102,7 +102,7 @@ bool TerrainMgr::LoadTerrainHeader()
 	{
 		/* file with no data */
 		fclose(FileDescriptor);
-		FileDescriptor=NULL;
+		FileDescriptor= NULL;
 		return false;
 	}
 
@@ -112,7 +112,7 @@ bool TerrainMgr::LoadTerrainHeader()
 	if(dread != TERRAIN_HEADER_SIZE)
 	{
 		fclose(FileDescriptor);
-		FileDescriptor=NULL;
+		FileDescriptor= NULL;
 		return false;
 	}
 
@@ -163,7 +163,7 @@ bool TerrainMgr::LoadTerrainHeader()
 
 	SetFilePointer(hMappedFile, 0, NULL, FILE_BEGIN);
 	m_Memory = (uint8*)MapViewOfFile(hMap, FILE_MAP_READ, 0, TERRAIN_HEADER_SIZE, mFileSize-TERRAIN_HEADER_SIZE);
-	if(m_Memory==NULL)
+	if(m_Memory== NULL)
 	{
 		CloseHandle(hMap);
 		CloseHandle(hMappedFile);

@@ -39,7 +39,7 @@ Creature::Creature(uint64 guid)
 	proto = NULL;
 	spawnid=0;
 
-	creature_info=NULL;
+	creature_info= NULL;
 	m_H_regenTimer=0;
 	m_P_regenTimer=0;
 	m_useAI = true;
@@ -94,7 +94,7 @@ Creature::Creature(uint64 guid)
 	m_escorter = 0;
 	m_limbostate = false;
 	m_corpseEvent=false;
-	m_respawnCell=NULL;
+	m_respawnCell= NULL;
 	m_walkSpeed = 2.5f;
 	m_runSpeed = MONSTER_NORMAL_RUN_SPEED;
 	m_base_runSpeed = m_runSpeed;
@@ -147,7 +147,7 @@ void Creature::Update( uint32 p_time )
 	if(m_corpseEvent)
 	{
 		sEventMgr.RemoveEvents(this);
-		if(this->GetProto()==NULL)
+		if(this->GetProto()== NULL)
 			sEventMgr.AddEvent(this, &Creature::OnRemoveCorpse, EVENT_CREATURE_REMOVE_CORPSE, 1000, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
 		else if (this->creature_info->Rank == ELITE_WORLDBOSS)
 			sEventMgr.AddEvent(this, &Creature::OnRemoveCorpse, EVENT_CREATURE_REMOVE_CORPSE, TIME_CREATURE_REMOVE_BOSSCORPSE, 1,EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);

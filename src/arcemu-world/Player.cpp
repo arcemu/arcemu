@@ -371,9 +371,9 @@ mOutOfRangeIdCount(0)
 	m_TeleportState = 1;
 	m_beingPushed = false;
 	for(i = 0; i < NUM_CHARTER_TYPES; ++i)
-		m_charters[i]=NULL;
+		m_charters[i]= NULL;
 	for(i = 0; i < NUM_ARENA_TEAM_TYPES; ++i)
-		m_arenaTeams[i]=NULL;
+		m_arenaTeams[i]= NULL;
 	for(int i = 0; i < 6; ++i)
 	{
 		m_runes[i] = baseRunes[i];
@@ -452,7 +452,7 @@ mOutOfRangeIdCount(0)
 	m_waterwalk=false;
 	m_setwaterwalk=false;
 	m_areaSpiritHealer_guid=0;
-	m_CurrentTaxiPath=NULL;
+	m_CurrentTaxiPath= NULL;
 	m_setflycheat = false;
 	m_fallDisabledUntil = 0;
 	m_lfgMatch = NULL;
@@ -599,7 +599,7 @@ Player::~Player ( )
 	m_objectTypeId = TYPEID_UNUSED;
 
 	if(m_playerInfo)
-		m_playerInfo->m_loggedInPlayer=NULL;
+		m_playerInfo->m_loggedInPlayer= NULL;
 
 	delete SDetector;
 	SDetector = NULL;
@@ -3449,7 +3449,7 @@ void Player::LoadFromDBProc(QueryResultVector & results)
 		end = strchr(start,',');
                 if(!end)break;
                 *end=0;
-                la.positive = (start!=NULL);
+                la.positive = (start!= NULL);
                 start = end +1;
 		end = strchr(start,',');
 		if(!end)break;
@@ -4808,7 +4808,7 @@ void Player::RepopRequestedPlayer()
 	{
 		SpawnCorpseBody();
 
-		if ( myCorpse!=NULL ) myCorpse->ResetDeathClock();
+		if ( myCorpse!= NULL ) myCorpse->ResetDeathClock();
 
 		/* Send Spirit Healer Location */
 		WorldPacket data( SMSG_DEATH_RELEASE_LOC, 16 );
@@ -7365,7 +7365,7 @@ void Player::UpdateNearbyGameObjects()
 
 void Player::EventTaxiInterpolate()
 {
-	if(!m_CurrentTaxiPath || m_mapMgr==NULL) return;
+	if(!m_CurrentTaxiPath || m_mapMgr== NULL) return;
 
 	float x = 0.0f;
 	float y = 0.0f;
@@ -9751,7 +9751,7 @@ void Player::CompleteLoading()
 
 	if( IsDead() )
 	{
-		if ( myCorpse!=NULL ) {
+		if ( myCorpse!= NULL ) {
 			// cebernic: tempfix. This send a counter for player with just logging in.
 			// TODO: counter will be follow with death time.
 			myCorpse->ResetDeathClock();
@@ -10042,7 +10042,7 @@ void Player::ModifyBonuses( uint32 type, int32 val, bool apply )
 
 bool Player::CanSignCharter(Charter * charter, Player * requester)
 {
-	if(charter==NULL || requester==NULL)
+	if(charter== NULL || requester== NULL)
 		return false;
 	if(charter->CharterType >= CHARTER_TYPE_ARENA_2V2 && m_arenaTeams[charter->CharterType-1] != NULL)
 		return false;
@@ -10144,7 +10144,7 @@ void Player::SetShapeShift(uint8 ss)
 					break;
 				}
 
-				/*Shady: is this check necessary? anyway m_auras[x]!=NULL check already done in next iteration. Commented*/
+				/*Shady: is this check necessary? anyway m_auras[x]!= NULL check already done in next iteration. Commented*/
 				//if( m_auras[x] == NULL )
 				//	break;
 			}

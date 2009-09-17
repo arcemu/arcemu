@@ -354,7 +354,7 @@ void ObjectMgr::LoadExtraItemStuff()
 			ft = iter->second;
 		pItemPrototype->FoodType = ft ;
 	
-		pItemPrototype->gossip_script=NULL;
+		pItemPrototype->gossip_script= NULL;
 
 		// forced pet entries
 		switch( pItemPrototype->ItemId )

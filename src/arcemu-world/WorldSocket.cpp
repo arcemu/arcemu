@@ -75,7 +75,7 @@ WorldSocket::~WorldSocket()
 	if(mSession)
 	{
 		mSession->SetSocket(NULL);
-		mSession=NULL;
+		mSession= NULL;
 	}
 
 	if( m_fullAccountName != NULL )
@@ -90,7 +90,7 @@ void WorldSocket::OnDisconnect()
 	if(mSession)
 	{
 		mSession->SetSocket(0);
-		mSession=NULL;
+		mSession= NULL;
 	}
 
 	if(mRequestID != 0)

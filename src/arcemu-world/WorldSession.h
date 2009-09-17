@@ -219,7 +219,7 @@ public:
 		if(!permissioncount)
 			return false;
 
-		return (strchr(permissions,'a')!=NULL) ? true : false;
+		return (strchr(permissions,'a')!= NULL) ? true : false;
 	}
    
 	bool CanUseCommand(char cmdstr);

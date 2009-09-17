@@ -56,7 +56,7 @@ GameObject::GameObject(uint64 guid)
 	loot.gold = 0;
 	m_deleted = false;
 	usage_remaining = 1;
-	m_respawnCell=NULL;
+	m_respawnCell= NULL;
 	m_battleground = NULL;
 	m_rotation = 0;
 
@@ -82,7 +82,7 @@ GameObject::~GameObject()
 			m_summoner = 0;
 	}
 
-	if(m_respawnCell!=NULL)
+	if(m_respawnCell!= NULL)
 		m_respawnCell->_respawnObjects.erase(this);
 
 	if (m_summonedGo && m_summoner)

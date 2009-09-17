@@ -92,7 +92,7 @@ void CellHandler<Class>::_Init()
 	for (uint32 i = 0; i < _sizeX; i++)
 	{
 		//_cells[i] = new Class*[_sizeY];
-		_cells[i]=NULL;
+		_cells[i]= NULL;
 		//ASSERT(_cells[i]);
 	}
 

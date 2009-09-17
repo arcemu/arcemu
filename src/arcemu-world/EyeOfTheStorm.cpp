@@ -922,7 +922,7 @@ bool EyeOfTheStorm::GivePoints(uint32 team, uint32 points)
 			{
 				(*itr)->Root();
 				
-				if ( (*itr)==NULL )
+				if ( (*itr)== NULL )
 					continue;
 
 				if(i == m_winningteam)

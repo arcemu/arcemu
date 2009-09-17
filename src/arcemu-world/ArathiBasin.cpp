@@ -283,10 +283,10 @@ void ArathiBasin::SpawnControlPoint(uint32 Id, uint32 Type)
 		m_controlPoints[Id]->PushToWorld(m_mapMgr);
 	}
 
-	if(gi_aura==NULL)
+	if(gi_aura== NULL)
 	{
 		// remove it if it exists
-		if(m_controlPointAuras[Id]!=NULL && m_controlPointAuras[Id]->IsInWorld())
+		if(m_controlPointAuras[Id]!= NULL && m_controlPointAuras[Id]->IsInWorld())
 			m_controlPointAuras[Id]->RemoveFromWorld(false);
 			
 		return;

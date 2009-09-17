@@ -1456,7 +1456,7 @@ void World::LoadNameGenData()
 	for(uint32 i = 0; i < dbc.getRecordCount(); ++i)
 	{
 		NameGenData d;
-		if(dbc.getRecord(i).getString(1)==NULL)
+		if(dbc.getRecord(i).getString(1)== NULL)
 			continue;
 
 		d.name = string(dbc.getRecord(i).getString(1));
@@ -1939,11 +1939,11 @@ void World::PollCharacterInsertQueue(DatabaseConnection * con)
 			inf->lastLevel = f[7].GetUInt32();
 			inf->lastOnline = UNIXTIME;
 			inf->lastZone = 0;
-			inf->m_Group=NULL;
-			inf->m_loggedInPlayer=NULL;
-			inf->guild=NULL;
-			inf->guildRank=NULL;
-			inf->guildMember=NULL;
+			inf->m_Group= NULL;
+			inf->m_loggedInPlayer= NULL;
+			inf->guild= NULL;
+			inf->guildRank= NULL;
+			inf->guildMember= NULL;
 			inf->race=f[3].GetUInt32();
 			inf->subGroup=0;
 			switch(inf->race)

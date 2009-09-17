@@ -147,7 +147,7 @@ Spell::Spell(){}
 
 Spell::Spell(Object* Caster, SpellEntry *info, bool triggered, Aura* aur)
 {
-	if(info==NULL) return;
+	if(info== NULL) return;
 	ASSERT( Caster != NULL && info != NULL );
 
 	chaindamage = 0;
@@ -1063,7 +1063,7 @@ void Spell::GenerateTargets(SpellCastTargets *store_buff)
 				case EFF_TARGET_SINGLE_PARTY:// Single Target Party Member
 				case EFF_TARGET_ALL_PARTY: // all Members of the targets party
 					{
-						Player *p=NULL;
+						Player *p= NULL;
 						if( p_caster != NULL )
 								p = p_caster;
 						else if( u_caster && u_caster->GetTypeId() == TYPEID_UNIT && static_cast< Creature* >( u_caster )->IsTotem() )
@@ -3123,7 +3123,7 @@ void Spell::HandleAddAura(uint64 guid)
 		{
 			if(itr->second->GetSpellProto()->procCharges>0)
 			{
-				Aura *aur=NULL;
+				Aura *aur= NULL;
 				int charges = itr->second->GetSpellProto()->procCharges;
 				if( itr->second->GetSpellProto()->SpellGroupType && u_caster != NULL )
 				{
@@ -3136,7 +3136,7 @@ void Spell::HandleAddAura(uint64 guid)
 					if (!aur)
 						return;
 					Target->AddAura(aur);
-					aur=NULL;
+					aur= NULL;
 				}
 				if( !(itr->second->GetSpellProto()->procFlags & PROC_REMOVEONUSE) )
 				{

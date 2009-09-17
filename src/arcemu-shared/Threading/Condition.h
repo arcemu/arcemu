@@ -39,7 +39,7 @@ public:
 	Condition(Mutex*m)
 	{
 		external_mutex=m;
-		wake_sem=NULL;
+		wake_sem= NULL;
 		memset(generations,0,sizeof(generations));
 	}
 
@@ -141,7 +141,7 @@ protected:
 	{
 		SECURITY_ATTRIBUTES attr;
 		attr.nLength=sizeof(SECURITY_ATTRIBUTES);
-		attr.lpSecurityDescriptor=NULL;
+		attr.lpSecurityDescriptor= NULL;
 		attr.bInheritHandle=false;
 		return CreateSemaphore(&attr,cur,max,NULL);
 	}

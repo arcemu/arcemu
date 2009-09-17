@@ -188,7 +188,7 @@ void LocalizationMgr::Reload(bool first)
 		strcpy(lb,(*ztr).c_str());
 
 		char * lbp = strchr(lb,'=');
-		if(lbp==NULL)
+		if(lbp== NULL)
 			continue;
 		*lbp=0;
 		lbp++;

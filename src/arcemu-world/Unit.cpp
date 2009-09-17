@@ -5290,7 +5290,7 @@ void Unit::InterruptSpell()
 		{
 			// shouldn't really happen. but due to spell system bugs there are some cases where this can happen.
 			sEventMgr.AddEvent(this,&Unit::CancelSpell,m_currentSpell,EVENT_UNIT_DELAYED_SPELL_CANCEL,1,1,EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
-			m_currentSpell=NULL;
+			m_currentSpell= NULL;
 		}
 		else*/
 			m_currentSpell->cancel();
@@ -7564,7 +7564,7 @@ void Unit::DispelAll(bool positive)
 {
 	for(uint32 i = MAX_TOTAL_AURAS_START; i < MAX_TOTAL_AURAS_END; ++i)
 	{
-		if(m_auras[i]!=NULL)
+		if(m_auras[i]!= NULL)
 			if((m_auras[i]->IsPositive()&&positive)||!m_auras[i]->IsPositive())
 				m_auras[i]->Remove();
 	}

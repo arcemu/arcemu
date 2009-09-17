@@ -38,6 +38,8 @@ Arena::Arena(MapMgr * mgr, uint32 id, uint32 lgroup, uint32 t, uint32 players_pe
 	//m_worldStates.clear();
 	m_pvpData.clear();
 	m_resurrectMap.clear();
+	m_gates.clear();
+	m_elevators.clear();
 
 	m_started = false;
 	m_playerCountPerTeam = players_per_side;
@@ -91,13 +93,13 @@ Arena::~Arena()
 
 void Arena::OnAddPlayer(Player * plr)
 {
-	if (plr == NULL)
+	if (plr == NULL || plr->m_isGMInvisible)
 		return;
 
 	plr->m_deathVision = true;
 
 	// remove all buffs (exclude talents, include flasks)
-	for(uint32 x=MAX_REMOVABLE_AURAS_START;x<MAX_REMOVABLE_AURAS_END;x++)
+	for(uint32 x=MAX_REMOVABLE_AURAS_START;x<MAX_REMOVABLE_AURAS_END;++x)
 	{
 		if(plr->m_auras[x])
 		{
@@ -158,7 +160,8 @@ void Arena::OnRemovePlayer(Player * plr)
 
 	plr->RemoveAura(plr->GetTeamInitial() ? 35775-plr->m_bgTeam : 32725-plr->m_bgTeam);
     plr->RemoveFFAPvPFlag();
-
+	// Maybe we should set their rated queue to false?
+	//plr->m_bgRatedQueue = false;
 	plr->m_bg = NULL;
 
 	// Reset all their cooldowns and restore their HP/Mana/Energy to max
@@ -171,14 +174,14 @@ void Arena::HookOnPlayerKill(Player * plr, Player * pVictim)
 #ifdef ANTI_CHEAT
 	if (!m_started)
 	{
-		plr->KillPlayer(); //cheater.
+		// If the arena has yet to start, and they're already killing players..
+		// Cheater!
+		plr->KillPlayer();
 		return;
 	}
 #endif
 	if ( pVictim->IsPlayer() )
-	{
 		plr->m_bgScore.KillingBlows++;
-	}
 }
 
 void Arena::HookOnHK(Player * plr)
@@ -190,7 +193,8 @@ void Arena::HookOnPlayerDeath(Player * plr)
 {
 	ASSERT(plr != NULL);
 
-	if( plr->m_isGmInvisible == true ) return;
+	if( plr->m_isGmInvisible == true ) 
+	return;
 
 	if(m_playersAlive.find(plr->GetLowGUID()) != m_playersAlive.end())
 	{
@@ -207,15 +211,15 @@ void Arena::OnCreate()
 	{
 		/* ruins of lordaeron */
 	case 572: {
-		obj = SpawnGameObject(185917, 572, 1278.647705f, 1730.556641f, 31.605574f, 1.684245f, 32, 1375, 1.0f);
-		obj->SetByte(GAMEOBJECT_BYTES_1, 0, 1);
-		obj->SetFloatValue(GAMEOBJECT_PARENTROTATION_02, 0.746058f);
+		obj = SpawnGameObject(185917, 1278.647705f, 1730.556641f, 31.605574f, 1.68f, 32, 1375, 1.0f);
+		obj->SetByte(GAMEOBJECT_BYTES_1,GAMEOBJECT_BYTES_STATE, 1);
+		obj->PushToWorld(m_mapMgr);
 		obj->SetFloatValue(GAMEOBJECT_PARENTROTATION_03, 0.665881f);
 		m_gates.insert(obj);
 
-		obj = SpawnGameObject(185918, 572, 1293.560791f, 1601.937988f, 31.605574f, -1.457349f, 32, 1375, 1.0f);
-		obj->SetByte(GAMEOBJECT_BYTES_1, 0, 1);
-		obj->SetFloatValue(GAMEOBJECT_PARENTROTATION_02, -0.665881f);
+		obj = SpawnGameObject(185918, 1293.560791f, 1601.937988f, 31.605574f, 4.86f, 32, 1375, 1.0f);
+		obj->SetByte(GAMEOBJECT_BYTES_1,GAMEOBJECT_BYTES_STATE, 1);
+		obj->PushToWorld(m_mapMgr);
 		obj->SetFloatValue(GAMEOBJECT_PARENTROTATION_03, 0.746058f);
 		m_gates.insert(obj);
 
@@ -224,9 +228,7 @@ void Arena::OnCreate()
 		/* blades edge arena */
 	case 562: {
 		obj = SpawnGameObject(183972, 562, 6177.707520f, 227.348145f, 3.604374f, -2.260201f, 32, 1375, 1.0f);
-		obj->SetByte(GAMEOBJECT_BYTES_1, 0, 1);
-		obj->SetFloatValue(GAMEOBJECT_PARENTROTATION_02, 0.90445f);
-		obj->SetFloatValue(GAMEOBJECT_PARENTROTATION_03, -0.426569f);
+		obj->SetByte(GAMEOBJECT_BYTES_1,GAMEOBJECT_BYTES_STATE, 1);
 		obj->PushToWorld(m_mapMgr);
 
 		obj = SpawnGameObject(183973, 562, 6189.546387f, 241.709854f, 3.101481f, 0.881392f, 32, 1375, 1.0f);
@@ -275,6 +277,56 @@ void Arena::OnCreate()
 		m_gates.insert(obj);
 
 			  }break;
+
+	/* Orgrimmar Arena */
+	case 618:
+	{
+	struct bgObject objects[] = 
+	{
+		{ 192388, 743.711060f, -284.099609f, 27.542587f, 3.141593f,  0x640020, 114, 1.0f, false, 0 },
+		{ 192387, 783.221252f, -284.133362f, 27.535686f, 0,	         0x640020, 114, 1.0f, false, 0 },
+		{ 192389, 700.722290f, -283.990662f, 39.517582f, 3.141593f,  0x640000, 114, 1.0f, false, 0 },
+		{ 192392, 763.432373f, -294.419464f, 28.276684f, 3.141593f,  0x640020, 114, 1.0f, true , 0 },
+		{ 192705, 782.971802f, -283.799469f, 28.286655f, 3.141593f,  0x640020, 114, 1.0f, false, 0 },
+		{ 192704, 743.543457f, -283.799469f, 28.286655f, 3.141593f,  0x640020, 114, 1.0f, false, 0 },
+		{ 194030, 763.536377f, -294.535767f, 0.505383f,  3.141593f,  0x640028, 114, 1.0f, false, 20133 },
+		{ 192394, 763.578979f, -306.146149f, 26.665222f, 3.141593f,  0x640020, 114, 1.0f, false, 0 },
+		{ 193458, 763.632385f, -306.162384f, 25.909504f, 3.141593f,  0x640028, 114, 1.0f, false, 1667 },
+		{ 194031, 763.506348f, -273.873352f, 0.505383f,  0,          0x640028, 114, 1.0f, false, 20133 },
+		{ 193463, 723.644287f, -284.493256f, 32.382710f, 0,          0x640020, 114, 1.0f, false, 0 },
+		{ 193461, 723.644287f, -284.493256f, 24.648525f, 3.141593f,  0x640028, 114, 1.0f, false, 1667 },
+		{ 192391, 763.432373f, -274.058197f, 28.276695f, 3.141593f,  0x640020, 114, 1.0f, true , 0 },
+		{ 193464, 763.632385f, -306.162384f, 30.639660f, 3.141593f,  0x640020, 114, 1.0f, false, 0 },
+		{ 193460, 802.211609f, -284.493256f, 24.648525f, 0,          0x640000, 114, 1.0f, false, 1667 },
+		{ 193462, 802.211609f, -284.493256f, 32.382710f, 3.141593f,  0x640020, 114, 1.0f, false, 0 },
+		{ 192390, 826.303833f, -283.996429f, 39.517582f, 0,          0x640000, 114, 1.0f, false, 0 },
+		{ 192464, 763.464417f, -235.543198f, 40.604343f, -1.570796f, 0x640000, 114, 1.0f, false, 0 },
+		{ 192393, 763.664551f, -261.872986f, 26.686588f, 0,          0x640020, 114, 1.0f, false, 0 },
+		{ 193459, 763.611145f, -261.856750f, 25.909504f, 0,          0x640028, 114, 1.0f, false, 1667 },
+		{ 193465, 763.611145f, -261.856750f, 30.639660f, 0,          0x640020, 114, 1.0f, false, 0 },
+		{ 0 },
+	};
+	SpawnObjects(objects);
+		m_pcWorldStates[GREEN_TEAM] = WORLDSTATE_ARENA_ORGRIMMAR_GREEN_PLAYER_COUNT;
+		m_pcWorldStates[GOLD_TEAM] = WORLDSTATE_ARENA_ORGRIMMAR_GOLD_PLAYER_COUNT;
+		sm.CreateWorldState(WORLDSTATE_ARENA_ORGRIMMAR_SCORE_SHOW, 1);
+	}break;
+		
+/* Dalaran Sewers */
+	case 617:
+	{
+		struct bgObject objects[] = {
+		{ 192643, 1244.776611f, 771.044250f, 20.896664f, 3.141593f,  32,       1375, 1.297832f, true,  0 },
+		{ 192642, 1339.199341f, 812.920288f, 20.896626f, 3.141593f,  32,       1375, 1.297832f, true,  0 },
+		{ 191877, 1291.987915f, 791.982239f,  9.106480f, 3.141593f,  0x640020, 0,    1.0f,      false, 0 },
+		{ 0 },
+	};
+
+	SpawnObjects(objects);
+		m_pcWorldStates[GREEN_TEAM] = WORLDSTATE_ARENA_DALARAN_GREEN_PLAYER_COUNT;
+		m_pcWorldStates[GOLD_TEAM] = WORLDSTATE_ARENA_DALARAN_GOLD_PLAYER_COUNT;
+		sm.CreateWorldState(WORLDSTATE_ARENA_DALARAN_SCORE_SHOW, 1);
+}break;
 	}
 
 	/* push gates into world */

@@ -621,7 +621,7 @@ public:
     */
    inline T& operator[](int n) {
       debugAssert((n >= 0) && (n < num));
-	  debugAssert(data!=NULL);
+	  debugAssert(data!= NULL);
       return data[n];
    }
 
@@ -635,25 +635,25 @@ public:
     */
     inline const T& operator[](int n) const {
         debugAssert((n >= 0) && (n < num));
-        debugAssert(data!=NULL);
+        debugAssert(data!= NULL);
         return data[n];
     }
 
     inline const T& operator[](unsigned int n) const {
         debugAssert((n < (unsigned int)num));
-        debugAssert(data!=NULL);
+        debugAssert(data!= NULL);
         return data[n];
     }
 
     inline T& randomElement() {
         debugAssert(num > 0);
-        debugAssert(data!=NULL);
+        debugAssert(data!= NULL);
         return data[iRandom(0, num - 1)];
     }
 
     inline const T& randomElement() const {
         debugAssert(num > 0);
-        debugAssert(data!=NULL);
+        debugAssert(data!= NULL);
         return data[iRandom(0, num - 1)];
     }
 
@@ -663,13 +663,13 @@ public:
     */
     inline const T& last() const {
         debugAssert(num > 0);
-        debugAssert(data!=NULL);
+        debugAssert(data!= NULL);
         return data[num - 1];
     }
 
     inline T& last() {
         debugAssert(num > 0);
-        debugAssert(data!=NULL);
+        debugAssert(data!= NULL);
         return data[num - 1];
     }
 

@@ -191,7 +191,7 @@ void LogonCommHandler::Connect(LogonServer * server)
 		{
 			Log.Notice("LogonCommClient", "Authentication timed out.");
 			conn->Disconnect();
-			logons[server]=NULL;
+			logons[server]= NULL;
 			return;
 		}
 

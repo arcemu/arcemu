@@ -290,7 +290,7 @@ public:
 	void Event_Summon_EE_totem(uint32 summon_duration);
 	void Event_Summon_FE_totem(uint32 summon_duration);
 	void EventAiInterfaceParamsetFinish();
-	void EventChangeFaction( Unit *ForceAttackersToHateThisInstead=NULL );	//we have to tell our current enemies to stop attacking us, we should also forget about our targets
+	void EventChangeFaction( Unit *ForceAttackersToHateThisInstead= NULL );	//we have to tell our current enemies to stop attacking us, we should also forget about our targets
 
 	// Update
 	virtual void Update(uint32 p_time);
@@ -312,7 +312,7 @@ public:
 	WayPoint* getWayPoint(uint32 wpid);
 	void deleteWayPoint(uint32 wpid);
 	void deleteWaypoints();
-	ARCEMU_INLINE bool hasWaypoints() { return m_waypoints!=NULL; }
+	ARCEMU_INLINE bool hasWaypoints() { return m_waypoints!= NULL; }
 	ARCEMU_INLINE void setMoveType(uint32 movetype) { m_moveType = movetype; }
 	ARCEMU_INLINE uint32 getMoveType() { return m_moveType; }
 	ARCEMU_INLINE void setMoveRunFlag(bool f) { m_moveRun = f; }

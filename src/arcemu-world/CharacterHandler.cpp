@@ -213,10 +213,10 @@ void WorldSession::CharacterEnumProc(QueryResult * result)
 					delete res;
 				}
 				else
-					info=NULL;
+					info= NULL;
 			}
 			else
-				info=NULL;
+				info= NULL;
 
 			if(info)  //PET INFO uint32 displayid,	uint32 level,		 uint32 familyid
 				data << uint32(info->Male_DisplayID) << uint32(10) << uint32(info->Family);
@@ -455,11 +455,11 @@ void WorldSession::HandleCharCreateOpcode( WorldPacket & recv_data )
 	pn->acct = GetAccountId();
 	pn->m_Group=0;
 	pn->subGroup=0;
-	pn->m_loggedInPlayer=NULL;
+	pn->m_loggedInPlayer= NULL;
 	pn->team = pNewChar->GetTeam ();
-	pn->guild=NULL;
-	pn->guildRank=NULL;
-	pn->guildMember=NULL;
+	pn->guild= NULL;
+	pn->guildRank= NULL;
+	pn->guildMember= NULL;
 #ifdef VOICE_CHAT
 	pn->groupVoiceId = -1;
 #endif
@@ -526,7 +526,7 @@ uint8 WorldSession::DeleteCharacter(uint32 guid)
 				ArenaTeam * t = objmgr.GetArenaTeamByGuid((uint32)guid, i);
 				if(t != NULL && t->m_leader == guid)
 					return E_CHAR_DELETE_FAILED_ARENA_CAPTAIN;
-				if(t !=NULL)
+				if(t != NULL)
 					t->RemoveMember(inf);
 			}
 			

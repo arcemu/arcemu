@@ -122,7 +122,7 @@ public:
 	{
 		ASSERT(cellx < _sizeX);
 		ASSERT(celly < _sizeY);
-		if(spawns[cellx]==NULL) return NULL;
+		if(spawns[cellx]== NULL) return NULL;
 
 		return spawns[cellx][celly];
 	}
@@ -130,7 +130,7 @@ public:
 	{
 		ASSERT(cellx < _sizeX);
 		ASSERT(celly < _sizeY);
-		if(spawns[cellx]==NULL)
+		if(spawns[cellx]== NULL)
 		{
 			spawns[cellx] = new CellSpawns*[_sizeY];
 			memset(spawns[cellx],0,sizeof(CellSpawns*)*_sizeY);

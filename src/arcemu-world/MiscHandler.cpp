@@ -137,11 +137,11 @@ void WorldSession::HandleAutostoreLootItemOpcode( WorldPacket & recv_data )
 
 		sLog.outDebug("AutoLootItem MISC");
 		Item *item = objmgr.CreateItem( itemid, GetPlayer());
-		if(item==NULL)
+		if(item== NULL)
 			return;
 
 		item->SetUInt32Value(ITEM_FIELD_STACK_COUNT,amt);
-		if(pLoot->items.at(lootSlot).iRandomProperty!=NULL)
+		if(pLoot->items.at(lootSlot).iRandomProperty!= NULL)
 		{
 			item->SetRandomProperty(pLoot->items.at(lootSlot).iRandomProperty->ID);
 			item->ApplyRandomProperties(false);
@@ -2188,11 +2188,11 @@ void WorldSession::HandleLootMasterGiveOpcode(WorldPacket& recv_data)
 	}
 
 	Item *item = objmgr.CreateItem( itemid, player);
-	if(item==NULL)
+	if(item== NULL)
 		return;
 
 	item->SetUInt32Value(ITEM_FIELD_STACK_COUNT,amt);
-	if(pLoot->items.at(slotid).iRandomProperty!=NULL)
+	if(pLoot->items.at(slotid).iRandomProperty!= NULL)
 	{
 		item->SetRandomProperty(pLoot->items.at(slotid).iRandomProperty->ID);
 		item->ApplyRandomProperties(false);
@@ -2601,7 +2601,7 @@ void WorldSession::HandleGameobjReportUseOpCode( WorldPacket& recv_data )   // C
 	uint64 guid;
 	recv_data >> guid;
 	GameObject* gameobj = _player->GetMapMgr()->GetGameObject((uint32)guid);
-	if( gameobj==NULL )
+	if( gameobj== NULL )
 		return;
 	if( gameobj->CanActivate() )
 	{

@@ -121,13 +121,13 @@ void MapCell::RemoveObjects()
 				if( !(*itr)->IsPet() )
 				{
 					_mapmgr->_reusable_guids_creature.push_back( (*itr)->GetUIdFromGUID() );
-					static_cast< Creature* >(*itr)->m_respawnCell=NULL;
+					static_cast< Creature* >(*itr)->m_respawnCell= NULL;
 					delete static_cast< Creature* >( *itr );
 				}
 				break;
 			case TYPEID_GAMEOBJECT:
 				_mapmgr->_reusable_guids_gameobject.push_back( (*itr)->GetUIdFromGUID() );
-				static_cast< GameObject* >( *itr )->m_respawnCell=NULL;
+				static_cast< GameObject* >( *itr )->m_respawnCell= NULL;
 				delete static_cast< GameObject* >( *itr );
 				break;
 		}

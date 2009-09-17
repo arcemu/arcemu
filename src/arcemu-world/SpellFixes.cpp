@@ -2248,7 +2248,7 @@ void ApplyNormalFixes()
 
 		// Shockwave Damage - useless?
 		sp = dbcSpell.LookupEntryForced( 46968 );
-		if(sp!=NULL){
+		if(sp!= NULL){
 			sp->Effect[1] = SPELL_EFFECT_SCHOOL_DAMAGE;
 			sp->Effect[2] = SPELL_EFFECT_DUMMY;
 		}
@@ -2759,7 +2759,7 @@ void ApplyNormalFixes()
 
 		//Paladin - Art of War
 		sp = dbcSpell.LookupEntryForced( 53486 );
-		if( sp !=NULL )
+		if( sp != NULL )
 		{
 			sp->Effect[1] = 6;
 			sp->EffectApplyAuraName[0] = SPELL_AURA_MOD_DAMAGE_DONE;
@@ -2772,7 +2772,7 @@ void ApplyNormalFixes()
 			sp->AuraInterruptFlags = AURA_INTERRUPT_ON_CAST_SPELL;
 
 		sp = dbcSpell.LookupEntryForced( 53488 );
-		if( sp !=NULL )
+		if( sp != NULL )
 		{
 			sp->Effect[1] = 6;
 			sp->EffectApplyAuraName[0] = SPELL_AURA_MOD_DAMAGE_DONE;
@@ -3849,19 +3849,19 @@ void ApplyNormalFixes()
 		{
 			uint32 group = sp->EffectSpellGroupRelation[0];
 			sp = dbcSpell.LookupEntryForced(15334);
-			if (sp !=NULL)
+			if (sp != NULL)
 				sp->EffectSpellGroupRelation[0] = group;
 			sp = dbcSpell.LookupEntryForced(15333);
-			if (sp !=NULL)
+			if (sp != NULL)
 				sp->EffectSpellGroupRelation[0] = group;
 			sp = dbcSpell.LookupEntryForced(15332);
-			if (sp !=NULL)
+			if (sp != NULL)
 				sp->EffectSpellGroupRelation[0] = group;
 			sp = dbcSpell.LookupEntryForced(15331);
-			if (sp !=NULL)
+			if (sp != NULL)
 				sp->EffectSpellGroupRelation[0] = group;
 			sp = dbcSpell.LookupEntryForced(15257);
-			if (sp !=NULL)
+			if (sp != NULL)
 				sp->EffectSpellGroupRelation[0] = group;
 		}
 	#endif
@@ -5379,7 +5379,7 @@ void ApplyNormalFixes()
 
 		//Improved Counterspell rank 1
 		sp = dbcSpell.LookupEntryForced( 11255 );
-		if( sp!=NULL )
+		if( sp!= NULL )
 		{
 			sp->procFlags = PROC_ON_CAST_SPECIFIC_SPELL;
 			sp->ProcOnNameHash[0] = SPELL_HASH_COUNTERSPELL;
@@ -5389,7 +5389,7 @@ void ApplyNormalFixes()
 
 		//Improved Counterspell rank 2
 		sp = dbcSpell.LookupEntryForced( 12598 );
-		if( sp!=NULL )
+		if( sp!= NULL )
 		{
 			sp->procFlags = PROC_ON_CAST_SPECIFIC_SPELL;
 			sp->ProcOnNameHash[0] = SPELL_HASH_COUNTERSPELL;

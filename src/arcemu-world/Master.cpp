@@ -631,8 +631,8 @@ bool Master::Run(int argc, char ** argv)
 
 bool Master::_StartDB()
 {
-	Database_World=NULL;
-	Database_Character=NULL;
+	Database_World= NULL;
+	Database_Character= NULL;
 	string hostname, username, password, database;
 	int port = 0;
 	int type = 1;

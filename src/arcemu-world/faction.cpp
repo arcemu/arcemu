@@ -435,9 +435,9 @@ bool isAttackable(Object* objA, Object* objB, bool CheckStealth)// A can attack 
 			atB = dbcArea.LookupEntry( static_cast< Creature* >( objB )->GetTotemOwner()->GetAreaID() );
 		else if( objB->IsPet() && static_cast< Pet* >( objB )->GetPetOwner() )
 			atB = dbcArea.LookupEntry( static_cast< Pet* >( objB )->GetPetOwner()->GetAreaID() );
-/*		if ( atB==NULL ) {
+/*		if ( atB== NULL ) {
 			Unit *_creator = objB->GetMapMgr()->GetUnit( objB->GetUInt64Value( UNIT_FIELD_CREATEDBY ) );
-			if( _creator!=NULL && _creator->IsCreature() && _creator->GetMapMgr() ){
+			if( _creator!= NULL && _creator->IsCreature() && _creator->GetMapMgr() ){
 //				printf("%s\n",__ansi(static_cast< Creature* >( _creator )->GetCreatureInfo()->Name ));
 				atB = dbcArea.LookupEntry( _creator->GetMapMgr()->GetAreaID(_creator->GetPositionX(),_creator->GetPositionY())  );	
 			}*/

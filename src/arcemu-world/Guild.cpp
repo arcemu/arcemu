@@ -25,9 +25,9 @@ Guild::Guild()
 	m_commandLogging=true;
 	m_guildId=0;
 	m_guildLeader=0;
-	m_guildName=NULL;
-	m_guildInfo=NULL;
-	m_motd=NULL;
+	m_guildName= NULL;
+	m_guildInfo= NULL;
+	m_motd= NULL;
 	m_backgroundColor=0;
 	m_emblemColor=0;
 	m_emblemStyle=0;
@@ -337,7 +337,7 @@ void Guild::PromoteGuildMember(PlayerInfo * pMember, WorldSession * pClient)
 		nh--;
 	}
 
-	if(newRank==NULL)
+	if(newRank== NULL)
 	{
 		m_lock.Release();
 		pClient->SystemMessage("Could not find a rank to promote this member to.");
@@ -394,7 +394,7 @@ void Guild::DemoteGuildMember(PlayerInfo * pMember, WorldSession * pClient)
 		++nh;
 	}
 
-	if(newRank==NULL)
+	if(newRank== NULL)
 	{
 		m_lock.Release();
 		pClient->SystemMessage("Could not find a rank to demote this member to.");
@@ -445,7 +445,7 @@ bool Guild::LoadFromDB(Field * f)
 	// load ranks
 	uint32 j;
 	QueryResult * result = CharacterDatabase.Query("SELECT * FROM guild_ranks WHERE guildId = %u ORDER BY rankId ASC", m_guildId);
-	if(result==NULL)
+	if(result== NULL)
 		return false;
 
 	uint32 sid = 0;
@@ -483,7 +483,7 @@ bool Guild::LoadFromDB(Field * f)
 
 	// load members
 	result = CharacterDatabase.Query("SELECT * FROM guild_data WHERE guildid = %u", m_guildId);
-	if(result==NULL)
+	if(result== NULL)
 		return false;
 
 	do
@@ -504,7 +504,7 @@ bool Guild::LoadFromDB(Field * f)
 		}
 
 		gm->pRank = m_ranks[f3[2].GetUInt32()];
-		if(gm->pRank==NULL)
+		if(gm->pRank== NULL)
 			gm->pRank=FindLowestRank();
 		gm->pPlayer->guild=this;
 		gm->pPlayer->guildRank=gm->pRank;
@@ -736,10 +736,10 @@ void Guild::AddGuildMember(PlayerInfo * pMember, WorldSession * pClient, int32 F
 		else r = FindLowestRank();
 	}
 
-	if(r==NULL)
+	if(r== NULL)
 		r=FindLowestRank();
 
-	if(r==NULL)
+	if(r== NULL)
 	{
 		// shouldn't happen
 		m_lock.Release();
@@ -831,9 +831,9 @@ void Guild::RemoveGuildMember(PlayerInfo * pMember, WorldSession * pClient)
 
 	m_lock.Release();
 
-	pMember->guildRank=NULL;
-	pMember->guild=NULL;
-	pMember->guildMember=NULL;
+	pMember->guildRank= NULL;
+	pMember->guild= NULL;
+	pMember->guildMember= NULL;
 
 	if(pMember->m_loggedInPlayer)
 	{
@@ -957,9 +957,9 @@ void Guild::Disband()
 	m_lock.Acquire();
 	for(GuildMemberMap::iterator itr = m_members.begin(); itr != m_members.end(); ++itr)
 	{
-		itr->first->guild=NULL;
-		itr->first->guildRank=NULL;
-		itr->first->guildMember=NULL;
+		itr->first->guild= NULL;
+		itr->first->guildRank= NULL;
+		itr->first->guildMember= NULL;
 		if(itr->first->m_loggedInPlayer != NULL)
 		{
 			itr->first->m_loggedInPlayer->SetGuildId(0);
@@ -990,7 +990,7 @@ void Guild::ChangeGuildMaster(PlayerInfo * pNewMaster, WorldSession * pClient)
 
 	m_lock.Acquire();
 	GuildRank * newRank = FindHighestRank();
-	if(newRank==NULL)
+	if(newRank== NULL)
 	{
 		m_lock.Release();
 		return;
@@ -998,7 +998,7 @@ void Guild::ChangeGuildMaster(PlayerInfo * pNewMaster, WorldSession * pClient)
 
 	GuildMemberMap::iterator itr = m_members.find(pNewMaster);
 	GuildMemberMap::iterator itr2 = m_members.find(pClient->GetPlayer()->getPlayerInfo());
-	ASSERT(m_ranks[0]!=NULL);
+	ASSERT(m_ranks[0]!= NULL);
 	if(itr==m_members.end())
 	{
 		Guild::SendGuildCommandResult(pClient, GUILD_PROMOTE_S, pNewMaster->name, GUILD_PLAYER_NOT_IN_GUILD_S);
@@ -1200,7 +1200,7 @@ void Guild::SendGuildRoster(WorldSession * pClient)
 
 		data << itr->first->guid;
 		data << uint32(0);			// highguid
-		data << uint8( (pPlayer!=NULL) ? 1 : 0 );
+		data << uint8( (pPlayer!= NULL) ? 1 : 0 );
 		data << itr->first->name;
 		data << itr->second->pRank->iId;
 		data << uint8(itr->first->lastLevel);
@@ -1409,7 +1409,7 @@ void Guild::DepositMoney(WorldSession * pClient, uint32 uAmount)
 void Guild::WithdrawMoney(WorldSession * pClient, uint32 uAmount)
 {
 	GuildMember * pMember = pClient->GetPlayer()->getPlayerInfo()->guildMember;
-	if(pMember==NULL)
+	if(pMember== NULL)
 		return;
 
 	// sanity checks

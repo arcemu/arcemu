@@ -1129,7 +1129,7 @@ out:
 		*/
 	case 18350:
 		{
-			switch( m_triggeredByAura==NULL ? pSpellId : m_triggeredByAura->GetSpellId() )
+			switch( m_triggeredByAura== NULL ? pSpellId : m_triggeredByAura->GetSpellId() )
 			{
 			case 20210:
 			case 20212:
@@ -1443,7 +1443,7 @@ out:
 						return;
 					}
 					Item * it=objmgr.CreateItem(item,p_caster);
-					if (it==NULL)
+					if (it== NULL)
 						return;
 
 					it->SetUInt32Value( ITEM_FIELD_STACK_COUNT, count);
@@ -6499,7 +6499,7 @@ void Spell::SpellEffectFeedPet(uint32 i)  // Feed Pet
 	else
 	{
 		p_caster->GetItemInterface()->SafeFullRemoveItemByGuid(itemTarget->GetGUID());
-		itemTarget=NULL;
+		itemTarget= NULL;
 	}
 }
 

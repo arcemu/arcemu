@@ -27,7 +27,7 @@ template<class T>
 class FQueue 
 {
 public:
-	ARCEMU_INLINE FQueue() : cond(&lock) {first=last=NULL;size=0;}
+	ARCEMU_INLINE FQueue() : cond(&lock) {first=last= NULL;size=0;}
 	volatile unsigned int size;
 
 	uint32 get_size()
@@ -43,7 +43,7 @@ public:
 	{
 		h*p=new h;
 		p->value=item;
-		p->pNext=NULL;
+		p->pNext= NULL;
 		
 		//lock.Acquire();
 		cond.BeginSynchronized();
@@ -86,7 +86,7 @@ public:
 		}
 		else//last item
 		{
-			first=last=NULL;
+			first=last= NULL;
 		}
 		//lock.Release();
 		cond.EndSynchronized();
@@ -117,7 +117,7 @@ public:
 		}
 		else//last item
 		{
-			first=last=NULL;
+			first=last= NULL;
 		}
 		//lock.Release();
 		cond.EndSynchronized();

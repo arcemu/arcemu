@@ -63,7 +63,7 @@ void ParseBanArgs(char* args, char** BanDuration, char** BanReason)
 
 int32 GetSpellIDFromLink(const char* spelllink)
 {
-	if(spelllink==NULL)
+	if(spelllink== NULL)
 		return 0;
 
 	const char* ptr = strstr(spelllink, "|Hspell:");
@@ -530,15 +530,15 @@ bool ChatHandler::HandleBanCharacterCommand(const char* args, WorldSession *m_se
 			SystemMessage(m_session, "Player not found.");
 			return true;
 		}
-		SystemMessage(m_session, "Banning player '%s' in database for '%s'.", pCharacter, (pReason==NULL)?"No reason.":pReason);
-		string escaped_reason = (pReason==NULL)?"No reason.":CharacterDatabase.EscapeString(string(pReason));
+		SystemMessage(m_session, "Banning player '%s' in database for '%s'.", pCharacter, (pReason== NULL)?"No reason.":pReason);
+		string escaped_reason = (pReason== NULL)?"No reason.":CharacterDatabase.EscapeString(string(pReason));
 		CharacterDatabase.Execute("UPDATE characters SET banned = %u, banReason = '%s' WHERE guid = %u",
 		BanTime ? BanTime+(uint32)UNIXTIME : 1, escaped_reason.c_str(), pInfo->guid);
 	}
 	else
 	{
-		SystemMessage(m_session, "Banning player '%s' ingame for '%s'.", pCharacter, (pReason==NULL)?"No reason.":pReason);
-		string sReason = (pReason==NULL)?"No Reason.":string(pReason);
+		SystemMessage(m_session, "Banning player '%s' ingame for '%s'.", pCharacter, (pReason== NULL)?"No reason.":pReason);
+		string sReason = (pReason== NULL)?"No Reason.":string(pReason);
 		uint32 uBanTime = BanTime ? BanTime+(uint32)UNIXTIME : 1;
 		pPlayer->SetBanned(uBanTime, sReason);
 		pInfo = pPlayer->getPlayerInfo();
@@ -550,13 +550,13 @@ bool ChatHandler::HandleBanCharacterCommand(const char* args, WorldSession *m_se
 		pPlayer->Kick();
 	}
 
-	sGMLog.writefromsession(m_session, "banned %s, reason %s, for %s", pCharacter, (pReason==NULL)?"No reason":pReason, BanTime ? ConvertTimeStampToString(BanTime).c_str() : "ever");
+	sGMLog.writefromsession(m_session, "banned %s, reason %s, for %s", pCharacter, (pReason== NULL)?"No reason":pReason, BanTime ? ConvertTimeStampToString(BanTime).c_str() : "ever");
 	char msg[200];
-	snprintf( msg, 200, "%sGM: %s has been banned by %s for %s. Reason: %s", MSG_COLOR_RED, pCharacter, m_session->GetPlayer()->GetName(), BanTime ? ConvertTimeStampToString( BanTime ).c_str() : "ever", (pReason==NULL)?"No reason.":pReason );
+	snprintf( msg, 200, "%sGM: %s has been banned by %s for %s. Reason: %s", MSG_COLOR_RED, pCharacter, m_session->GetPlayer()->GetName(), BanTime ? ConvertTimeStampToString( BanTime ).c_str() : "ever", (pReason== NULL)?"No reason.":pReason );
 	sWorld.SendWorldText( msg, NULL );
 	if( sWorld.m_banTable && pInfo )
 	{
-		CharacterDatabase.Execute("INSERT INTO %s VALUES('%s', '%s', %u, %u, '%s')", sWorld.m_banTable, m_session->GetPlayer()->GetName(), pInfo->name, (uint32)UNIXTIME, (uint32)UNIXTIME + BanTime, (pReason==NULL)?"No reason.":CharacterDatabase.EscapeString(string(pReason)).c_str() );
+		CharacterDatabase.Execute("INSERT INTO %s VALUES('%s', '%s', %u, %u, '%s')", sWorld.m_banTable, m_session->GetPlayer()->GetName(), pInfo->name, (uint32)UNIXTIME, (uint32)UNIXTIME + BanTime, (pReason== NULL)?"No reason.":CharacterDatabase.EscapeString(string(pReason)).c_str() );
 	}
 	return true;
 }
@@ -3867,7 +3867,7 @@ bool ChatHandler::HandleAddTrainerSpellCommand( const char * args, WorldSession 
 	}
 
 	SpellEntry* pSpell = dbcSpell.LookupEntryForced(spellid);
-	if(pSpell==NULL)
+	if(pSpell== NULL)
 	{
 		RedSystemMessage(m_session, "Invalid spell.");
 		return true;
