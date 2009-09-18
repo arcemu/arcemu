@@ -489,8 +489,8 @@ void WorldSession::HandleCharDeleteOpcode( WorldPacket & recv_data )
 	else
 	{
 		fail = DeleteCharacter((uint32)guid);
-		OutPacket(SMSG_CHAR_DELETE, 1, &fail);
 	}
+	OutPacket( SMSG_CHAR_DELETE, 1, &fail );
 }
 
 uint8 WorldSession::DeleteCharacter(uint32 guid)

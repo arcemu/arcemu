@@ -824,7 +824,7 @@ void Aura::Remove()
 	for( uint32 x = 0; x < 3; x++ )
 	{
 		if( !m_spellProto->Effect[x] )
-			break;
+			continue;
 
 		if( m_spellProto->Effect[x] == SPELL_EFFECT_TRIGGER_SPELL && !m_spellProto->always_apply )
 		{
