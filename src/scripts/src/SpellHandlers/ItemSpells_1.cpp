@@ -490,11 +490,21 @@ bool OrbOfTheSindorei(uint32 i, Aura * pAura, bool apply)
 		return true;
 	if( apply )
 	{
+		uint32 spellid = 0;
+
 		if( target->getGender() == 0 )
-			target->CastSpell(target, 46355, true);
+			spellid = 46355;
 		else
-			target->CastSpell(target, 46356, true);
+			spellid = 46356;
+
+		SpellEntry *sp = dbcSpell.LookupEntry( spellid );
+
+		// we need to wait because removing an aura while we are applying leads to a crash
+		// this is because the spell this aura belongs to and the casted spells have the same namehash
+		sEventMgr.AddEvent( target ,&Unit::EventCastSpell , target , sp , EVENT_UNK, 1 , 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT );
+
 	}
+
 	return true;
 }
 
