@@ -2837,18 +2837,17 @@ void ItemInterface::BuildInventoryChangeError(Item *SrcItem, Item *DstItem, uint
 
 	data.Initialize( SMSG_INVENTORY_CHANGE_FAILURE );
 	data << Error;
+	data << (SrcItem ? SrcItem->GetGUID() : uint64(0));
+	data << (DstItem ? DstItem->GetGUID() : uint64(0));
+	data << uint8(0);
 
-	if(Error == 1) 
+	if( Error == INV_ERR_YOU_MUST_REACH_LEVEL_N ) 
 	{
 		if(SrcItem)
 		{
 			data << SrcItem->GetProto()->RequiredLevel;
 		}
 	}
-
-	data << (SrcItem ? SrcItem->GetGUID() : uint64(0));
-	data << (DstItem ? DstItem->GetGUID() : uint64(0));
-	data << uint8(0);
 
 	m_pOwner->GetSession()->SendPacket( &data );
 }

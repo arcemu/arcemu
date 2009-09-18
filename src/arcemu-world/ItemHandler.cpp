@@ -477,7 +477,7 @@ void WorldSession::HandleSwapInvItemOpcode( WorldPacket & recv_data )
 		}
 	}
 
-	if(dstitem)
+	if( dstitem != NULL )
 	{
 		if((error=_player->GetItemInterface()->CanEquipItemInSlot2(INVENTORY_SLOT_NOT_SET, srcslot, dstitem, skip_combat)) != 0)
 		{
@@ -485,13 +485,14 @@ void WorldSession::HandleSwapInvItemOpcode( WorldPacket & recv_data )
 			{
 				data.Initialize( SMSG_INVENTORY_CHANGE_FAILURE );
 				data << error;
-				if(error == 1) 
+				data << (srcitem ? srcitem->GetGUID() : uint64(0));
+				data << dstitem->GetGUID();
+				data << uint8(0);
+
+				if( error == INV_ERR_YOU_MUST_REACH_LEVEL_N ) 
 				{
 					data << dstitem->GetProto()->RequiredLevel;
 				}
-				data << (srcitem ? srcitem->GetGUID() : uint64(0));
-				data << (dstitem ? dstitem->GetGUID() : uint64(0));
-				data << uint8(0);
 
 				SendPacket( &data );
 				return;
