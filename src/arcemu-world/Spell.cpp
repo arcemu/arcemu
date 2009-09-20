@@ -1880,8 +1880,8 @@ void Spell::cast(bool check)
 				}
 				if( numTargets == 0 )
 				{
-					uint64 playerTarget = p_caster->GetUInt64Value(UNIT_FIELD_TARGET);
-					sQuestMgr.OnPlayerCast(p_caster,GetProto()->Id,playerTarget);
+					uint64 guid = p_caster->GetUInt64Value( UNIT_FIELD_TARGET );
+					sQuestMgr.OnPlayerCast( p_caster, GetProto()->Id, guid );
 				}
 			}
 		}
@@ -2999,7 +2999,7 @@ void Spell::HandleEffects(uint64 guid, uint32 i)
 
 void Spell::HandleAddAura(uint64 guid)
 {
-	Unit * Target = 0;
+	Unit * Target = NULL;
 	if(guid == 0)
 		return;
 
@@ -3008,7 +3008,7 @@ void Spell::HandleAddAura(uint64 guid)
 	else if(m_caster->IsInWorld())
 		Target = m_caster->GetMapMgr()->GetUnit(guid);
 
-	if(!Target)
+	if( Target == NULL )
 		return;
 
 	// Applying an aura to a flagged target will cause you to get flagged.
@@ -5763,7 +5763,7 @@ void Spell::SafeAddTarget(TargetsList* tgt,uint64 guid)
 	if(guid == 0)
 		return;
 
-	for( TargetsList::iterator i=tgt->begin(); i!=tgt->end(); ++i)
+	for( TargetsList::iterator i=tgt->begin(); i!=tgt->end(); ++i )
 	{
 		if(*i == guid)
 		{

@@ -436,11 +436,7 @@ class SERVER_DECL Aura : public EventableObject
 {
 	uint64 periodic_target;
 public:
-    Aura( );
     Aura( SpellEntry *proto, int32 duration,Object* caster, Unit *target, bool temporary = false, Item* i_caster = NULL );
-	void Init( SpellEntry *proto, int32 duration,Object* caster, Unit *target, bool temporary = false, Item* i_caster = NULL );
-	// When using object pool contructor is not good to be called again sometimes. 
-	// Use this instead:
 	~Aura();
 
 	void ExpireRemove();

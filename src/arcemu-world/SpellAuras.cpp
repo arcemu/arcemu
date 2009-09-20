@@ -706,10 +706,6 @@ Object* Aura::GetCaster()
 		return NULL;
 }
 
-Aura::Aura(){}
-
-void Aura::Init( SpellEntry* proto, int32 duration, Object* caster, Unit* target, bool temporary, Item* i_caster){}
-
 Aura::Aura( SpellEntry* proto, int32 duration, Object* caster, Unit* target, bool temporary, Item* i_caster)
 {
 	m_castInDuel = false;
@@ -902,16 +898,16 @@ void Aura::Remove()
 		caster->OutPacketToSet( SMSG_COOLDOWN_EVENT, sizeof( packetSMSG_COOLDOWN_EVENT ), &data, true );
 	}
 
-	if( caster != NULL && caster->IsPlayer() && caster->IsInWorld() )
+	if( caster != NULL && caster->IsPlayer() && caster->IsInWorld() && caster->GetUInt32Value( PLAYER_FARSIGHT ) != 0 )
 	{
-		int j;
+		uint8 j;
 		for( j = 0; j < 3; ++j )
 			if( m_spellProto->Effect[j] == SPELL_EFFECT_ADD_FARSIGHT )
 				break;
 
-		if(j != 3)
+		if( j != 3 )
 		{
-			caster->SetUInt64Value(PLAYER_FARSIGHT, 0);
+			caster->SetUInt64Value( PLAYER_FARSIGHT, 0 );
 		}
 	}
 
@@ -920,7 +916,8 @@ void Aura::Remove()
 		flag |= AURASTATE_FLAG_ENRAGED;
 	if( m_spellProto->BGR_one_buff_on_target & SPELL_TYPE_SEAL && !--m_target->asc_seal )
         flag |= AURASTATE_FLAG_JUDGEMENT;
-    m_target->RemoveFlag( UNIT_FIELD_AURASTATE, flag );
+    if( flag != 0 )
+		m_target->RemoveFlag( UNIT_FIELD_AURASTATE, flag );
 
 	delete this; // suicide xD	leaking this shit out
 }
@@ -3546,19 +3543,21 @@ void Aura::SpellAuraModStealth(bool apply)
 		{
 
 			m_target->AquireInrangeLock();
-			for (Object::InRangeSet::iterator iter = m_target->GetInRangeSetBegin();iter != m_target->GetInRangeSetEnd(); ++iter)
+			for( Object::InRangeSet::iterator iter = m_target->GetInRangeSetBegin();iter != m_target->GetInRangeSetEnd(); ++iter )
 			{
 				if ((*iter) == NULL || !(*iter)->IsUnit())
 					continue;
 
-				if (!static_cast<Unit*>(*iter)->isAlive())
+				Unit* _unit = static_cast< Unit* >( *iter );
+
+				if( !_unit->isAlive() )
 					continue;
 
-				if (static_cast<Unit*>(*iter)->GetCurrentSpell() && static_cast<Unit*>(*iter)->GetCurrentSpell()->GetUnitTarget() == m_target)
-					static_cast<Unit*>(*iter)->GetCurrentSpell()->cancel();
+				if( _unit->GetCurrentSpell() && _unit->GetCurrentSpell()->GetUnitTarget() == m_target)
+					_unit->GetCurrentSpell()->cancel();
 
-				if(static_cast< Unit* >(*iter)->GetAIInterface() != NULL )
-					static_cast< Unit* >(*iter)->GetAIInterface()->RemoveThreatByPtr( m_target );
+				if( _unit->GetAIInterface() != NULL )
+					_unit->GetAIInterface()->RemoveThreatByPtr( m_target );
 			}
 			m_target->ReleaseInrangeLock();
 
@@ -3586,56 +3585,58 @@ void Aura::SpellAuraModStealth(bool apply)
 			}
 
 			// check for stealth spells
-			Player* p_caster = static_cast< Player* >( m_target );
-			uint32 stealth_id = 0;
-			SpellSet::iterator itr = p_caster->mSpells.begin();
-			SpellSet::iterator end = p_caster->mSpells.end();
-			for(; itr != end; ++itr)
+			if( p_target != NULL )
 			{
-				if(((*itr) == 1787 || (*itr) == 1786 || (*itr) == 1785 || (*itr) == 1784) && stealth_id < (*itr))
+				uint32 stealth_id = 0;
+				SpellSet::iterator itr = p_target->mSpells.begin();
+				SpellSet::iterator end = p_target->mSpells.end();
+				for(; itr != end; ++itr)
 				{
-					stealth_id = *itr;
+					if( ( (*itr) == 1787 || (*itr) == 1786 || (*itr) == 1785 || (*itr) == 1784) && stealth_id < (*itr) )
+					{
+						stealth_id = *itr;
+					}
+				}
+				if( stealth_id != 0 )
+					p_target->CastSpell( p_target, dbcSpell.LookupEntry( stealth_id ), true );
+
+				if( p_target->IsMounted() )
+					p_target->RemoveAura( p_target->m_MountSpellId );
+
+				if( p_target->m_bg && p_target->m_bgHasFlag )
+				{
+					if( p_target->m_bg->GetType() == BATTLEGROUND_WARSONG_GULCH )
+					{
+						((WarsongGulch*)p_target->m_bg)->HookOnFlagDrop( p_target );
+					}
+					if( p_target->m_bg->GetType() == BATTLEGROUND_EYE_OF_THE_STORM)
+					{
+						((EyeOfTheStorm*)p_target->m_bg)->HookOnFlagDrop( p_target );
+					}
 				}
 			}
-			if(stealth_id)
-				p_caster->CastSpell(p_caster, dbcSpell.LookupEntry(stealth_id), true);
-
-			if(p_caster->IsMounted())
-				p_caster->RemoveAura(p_caster->m_MountSpellId);
-
-			if(p_caster->m_bg && p_caster->m_bgHasFlag)
-			{
-				if(p_caster->m_bg->GetType() == BATTLEGROUND_WARSONG_GULCH)
-				{
-					((WarsongGulch*)p_caster->m_bg)->HookOnFlagDrop(p_caster);
-				}
-				if(p_caster->m_bg->GetType() == BATTLEGROUND_EYE_OF_THE_STORM)
-				{
-					((EyeOfTheStorm*)p_caster->m_bg)->HookOnFlagDrop(p_caster);
-				}
-			 }
-		 }
+		}
 	}
 	else
 	{
 		m_target->m_stealthLevel -= mod->m_amount;
 
-		if(m_spellProto->NameHash != SPELL_HASH_VANISH)
+		if( m_spellProto->NameHash != SPELL_HASH_VANISH )
 		{
 			m_target->SetStealth(0);
 			m_target->RemoveFlag(UNIT_FIELD_BYTES_2,0x1E000000);
 
 			m_target->RemoveFlag(UNIT_FIELD_BYTES_1, 0x020000);
 
-			if( m_target->GetTypeId() == TYPEID_PLAYER )
+			if( p_target != NULL )
 			{
-				m_target->RemoveFlag(PLAYER_FIELD_BYTES2, 0x2000);
+				p_target->RemoveFlag( PLAYER_FIELD_BYTES2, 0x2000 );
 				packetSMSG_COOLDOWN_EVENT cd;
-				cd.guid = m_target->GetGUID();
+				cd.guid = p_target->GetGUID();
 				cd.spellid = m_spellProto->Id;
-				static_cast<Player*>(m_target)->GetSession()->OutPacket( SMSG_COOLDOWN_EVENT, sizeof(packetSMSG_COOLDOWN_EVENT), &cd);
-				if( ((Player*)m_target)->m_outStealthDamageBonusPeriod && ((Player*)m_target)->m_outStealthDamageBonusPct )
-					((Player*)m_target)->m_outStealthDamageBonusTimer = (uint32)UNIXTIME + ((Player*)m_target)->m_outStealthDamageBonusPeriod;
+				p_target->GetSession()->OutPacket( SMSG_COOLDOWN_EVENT, sizeof( packetSMSG_COOLDOWN_EVENT ), &cd );
+				if( p_target->m_outStealthDamageBonusPeriod && p_target->m_outStealthDamageBonusPct )
+					p_target->m_outStealthDamageBonusTimer = (uint32)UNIXTIME + p_target->m_outStealthDamageBonusPeriod;
 			}
 		}
 
@@ -4353,7 +4354,7 @@ void Aura::SpellAuraModDecreaseSpeed(bool apply)
 		{
 			//yes we are freezing the bastard, so can we proc anything on this ?
 			Unit *caster = GetUnitCaster();
-			if( caster && caster->IsPlayer() && m_target )
+			if( caster != NULL && caster->IsPlayer() && m_target )
 				static_cast<Unit*>(caster)->EventChill( m_target );
 			if( m_target && m_target->IsPlayer() && caster )
 				static_cast<Unit*>(m_target)->EventChill( caster, true );
@@ -4479,7 +4480,7 @@ void Aura::SpellAuraModShapeshift(bool apply)
 			m_target->RemoveAura( p_target->m_MountSpellId ); // these spells are not compatible
 
 	SpellShapeshiftForm * ssf = dbcSpellShapeshiftForm.LookupEntry( mod->m_miscValue );
-	if( !ssf)
+	if( !ssf )
 		return;
 
 	uint32 spellId = 0;
@@ -4654,12 +4655,12 @@ void Aura::SpellAuraModShapeshift(bool apply)
 
 	if( apply )
 	{
-		if( m_target->getClass() == WARRIOR && m_target->GetUInt32Value( UNIT_FIELD_POWER2 ) > static_cast< Player* >( m_target )->m_retainedrage )
-			m_target->SetUInt32Value(UNIT_FIELD_POWER2, static_cast< Player* >( m_target )->m_retainedrage );
+		if( m_target->getClass() == WARRIOR && m_target->GetUInt32Value( UNIT_FIELD_POWER2 ) > p_target->m_retainedrage )
+			m_target->SetUInt32Value(UNIT_FIELD_POWER2, p_target->m_retainedrage );
 
 		if( m_target->getClass() == DRUID )
 		{
-			if( Rand( static_cast< Player* >( m_target )->m_furorChance ) )
+			if( Rand( p_target->m_furorChance ) )
 			{
 				uint32 furorSpell;
 				if( mod->m_miscValue == FORM_CAT )
@@ -4685,10 +4686,10 @@ void Aura::SpellAuraModShapeshift(bool apply)
 
 		if( spellId != GetSpellId() )
 		{
-			if( static_cast< Player* >( m_target )->m_ShapeShifted )
-				static_cast< Player* >( m_target )->RemoveAura( static_cast< Player* >( m_target )->m_ShapeShifted );
+			if( p_target->m_ShapeShifted )
+				p_target->RemoveAura( p_target->m_ShapeShifted );
 
-			static_cast< Player* >( m_target )->m_ShapeShifted = GetSpellId();
+			p_target->m_ShapeShifted = GetSpellId();
 		}
 
 		if( modelId != 0 )
@@ -4697,7 +4698,7 @@ void Aura::SpellAuraModShapeshift(bool apply)
 			m_target->EventModelChange();
 		}
 
-		static_cast< Player* >( m_target )->SetShapeShift( static_cast<uint8>( mod->m_miscValue ));
+		p_target->SetShapeShift( static_cast<uint8>( mod->m_miscValue ));
 
 		// check for spell id
 		if( spellId == 0 )
@@ -4748,7 +4749,7 @@ void Aura::SpellAuraModShapeshift(bool apply)
 		}
 
 		//execute after we changed shape
-		static_cast< Player* >( m_target )->EventTalentHearthOfWildChange( true );
+		p_target->EventTalentHearthOfWildChange( true );
 	}
 	else
 	{
@@ -4766,7 +4767,7 @@ void Aura::SpellAuraModShapeshift(bool apply)
 			m_target->InterruptSpell();
 
 		//execute before changing shape back
-		static_cast< Player* >( m_target )->EventTalentHearthOfWildChange( false );
+		p_target->EventTalentHearthOfWildChange( false );
 		m_target->SetUInt32Value( UNIT_FIELD_DISPLAYID, m_target->GetUInt32Value( UNIT_FIELD_NATIVEDISPLAYID ) );
 		m_target->EventModelChange();
 		if( spellId != GetSpellId() )
@@ -4774,12 +4775,10 @@ void Aura::SpellAuraModShapeshift(bool apply)
 			if( spellId )
 				m_target->RemoveAura( spellId );
 		}
-		static_cast< Player* >( m_target )->m_ShapeShifted = 0;
-
-		static_cast< Player* >( m_target )->SetShapeShift( 0 );
-
+		p_target->m_ShapeShifted = 0;
+		p_target->SetShapeShift( 0 );
 	}
-	static_cast< Player* >( m_target )->UpdateStats();
+	p_target->UpdateStats();
 }
 
 void Aura::SpellAuraModEffectImmunity(bool apply)
