@@ -105,7 +105,7 @@ bool ADTFile::init(char *map_id)
 					p=p+strlen(p)+1;
 					ModelInstansName[t++] = s;
 	                path.erase(path.length()-2,2);
-	                path.append("2");
+	                path.append("m2");
 					char* szLocalFile[512];
 					sprintf((char*)szLocalFile, ".\\buildings\\%s", s);
 					FILE * output = fopen((char*)szLocalFile,"rb");

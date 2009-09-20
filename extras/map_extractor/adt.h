@@ -52,6 +52,7 @@ chunk ch[16][16];
 }mcell;
 class MPQFile;
 void LoadMapChunk(MPQFile &,chunk*);
+void LoadH2OChunk(MPQFile &,chunk*,uint32);
 bool LoadWMO(char* filename);
 #endif
 
