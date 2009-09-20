@@ -70,14 +70,11 @@ Guild::~Guild()
 
     for( GuildBankTabVector::iterator itr = m_bankTabs.begin(); itr != m_bankTabs.end(); ++itr )
     {
-        /* Deleted in item pool
 		for( uint32 i = 0; i < MAX_GUILD_BANK_SLOTS; ++i )
-        if( (*itr)->pSlots[i] != NULL )
-		{
-			delete (*itr)->pSlots[i];
-		}*/
+			if( (*itr)->pSlots[i] != NULL )
+				(*itr)->pSlots[i]->DeleteMe();
 
-		for(list<GuildBankEvent*>::iterator it2 = (*itr)->lLog.begin(); it2 != (*itr)->lLog.end(); ++it2)
+		for( list<GuildBankEvent*>::iterator it2 = (*itr)->lLog.begin(); it2 != (*itr)->lLog.end(); ++it2 )
 			delete (*it2);
         (*itr)->lLog.clear();
 

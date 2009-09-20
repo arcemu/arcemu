@@ -290,9 +290,16 @@ void AchievementMgr::LoadFromDB(QueryResult *achievementResult, QueryResult *cri
 		do
 		{
 			Field *fields = criteriaResult->Fetch();
-			CriteriaProgress *progress = new CriteriaProgress(fields[0].GetUInt32(), fields[1].GetUInt32(), fields[2].GetUInt64());
-			m_criteriaProgress[progress->id] = progress;
-		} while(criteriaResult->NextRow());
+			uint32 progress_id = fields[0].GetUInt32();
+			if( m_criteriaProgress[ progress_id ] == NULL )
+			{
+				CriteriaProgress *progress = new CriteriaProgress( progress_id, fields[1].GetUInt32(), fields[2].GetUInt64() );
+				m_criteriaProgress[ progress_id ] = progress;
+			}
+			else
+				sLog.outError( "Duplicate criteria progress %u for player %u, skipping", progress_id, (uint32) m_player->GetGUID() );
+
+		}while( criteriaResult->NextRow() );
 		delete criteriaResult;
 	}
 }
@@ -2057,8 +2064,6 @@ bool AchievementMgr::GMCompleteCriteria(WorldSession* gmSession, int32 criteriaI
 	{
 		uint32 nr = dbcAchievementCriteriaStore.GetNumRows();
 		AchievementCriteriaEntry const* crt;
-		CriteriaProgressMap::iterator itr;
-		CriteriaProgress* progress;
 		for(uint32 i = 0, j = 0; j < nr; ++i)
 		{
 			crt = dbcAchievementCriteriaStore.LookupRow(i);
@@ -2070,17 +2075,6 @@ bool AchievementMgr::GMCompleteCriteria(WorldSession* gmSession, int32 criteriaI
 			++j;
 			if( crt->raw.field4 )
 			{
-				itr = m_criteriaProgress.find(crt->ID);
-				if( itr == m_criteriaProgress.end() )
-				{
-					// not in progress map
-					progress = new CriteriaProgress(crt->ID, 0);
-					m_criteriaProgress[criteriaID] = progress;
-				}
-				else
-				{
-					progress = itr->second;
-				}
 				SetCriteriaProgress( crt, crt->raw.field4 );
 				CompletedCriteria(crt);
 			}
