@@ -1,25 +1,25 @@
 /*
-* arcemu MMORPG Server
-* Copyright (C) 2005-2008 arcemu Team <http://www.arcemuemu.com/>
-*
-* Circular Buffer Class
-* Based on the Bip Buffer concept, from http://www.codeproject.com/KB/IP/bipbuffer.aspx
-* Implementation Copyright (C) 2008-2009 Burlex
-*
-* This program is free software: you can redistribute it and/or modify
-* it under the terms of the GNU Affero General Public License as published by
-* the Free Software Foundation, either version 3 of the License, or
-* any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU Affero General Public License for more details.
-*
-* You should have received a copy of the GNU Affero General Public License
-* along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*
-*/
+ * ArcEmu MMORPG Server
+ * Copyright (C) 2008-2009 <http://www.ArcEmu.com/>
+ *
+ * Circular Buffer Class
+ * Based on the Bip Buffer concept, from http://www.codeproject.com/KB/IP/bipbuffer.aspx
+ * Implementation Copyright (C) 2008-2009 Burlex
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
 
 #ifndef _NETLIB_CIRCULARBUFFER_H
 #define _NETLIB_CIRCUALRBUFFER_H

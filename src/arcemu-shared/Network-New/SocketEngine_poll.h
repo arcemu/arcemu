@@ -1,4 +1,4 @@
-/****************************************************************************
+/*
  *
  * Multiplatform High-Performance Async Network Library
  * Implementation of poll() Socket Engine

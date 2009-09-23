@@ -1,8 +1,8 @@
-INCLUDES += -I$(srcdir) -I$(srcdir)/../ascent-shared
+INCLUDES += -I$(srcdir) -I$(srcdir)/../arcemu-shared
 
-bin_PROGRAMS = ascent-realmserver
+bin_PROGRAMS = arcemu-realmserver
 
-ascent_realmserver_SOURCES = \
+arcemu_realmserver_SOURCES = \
 ClientManager.h \
 ClusterManager.h \
 LogonCommClient.h \
@@ -30,8 +30,8 @@ WorkerServer.cpp \
 WorkerServerSocket.cpp \
 WorldSocket.cpp 
 	
-ascent_realmserver_LDADD = -lshared -lz
+arcemu_realmserver_LDADD = -lshared -lz
 
-ascent_realmserver_LDFLAGS = -L$(srcdir)/../ascent-shared \
+arcemu_realmserver_LDFLAGS = -L$(srcdir)/../arcemu-shared \
                -L/usr/lib
                
