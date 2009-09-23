@@ -298,6 +298,7 @@ RegType<Unit> UnitMethods[] = {
 	{ "RemoveAurasByMechanic", &luaUnit_RemoveAurasByMechanic },
 	{ "RemoveAurasType", &luaUnit_RemoveAurasType },
 	{ "IsGM", &luaUnit_IsGM },
+	{ "SetEquip", &luaUnit_SetEquip },
 	//{ "AddAuraVisual", &luaUnit_AddAuraVisual }, N33D F1X
 	{ "AddAuraVisual", NULL },
 
@@ -4296,6 +4297,28 @@ int luaUnit_IsGM( lua_State * L, Unit * ptr )
 	else
 		lua_pushboolean( L, 0 );
 	
+	return 1;
+}
+
+int luaUnit_SetEquip( lua_State * L, Unit * ptr )
+{
+	CHECK_TYPEID( TYPEID_UNIT );
+	
+	uint32 equip;
+	ItemPrototype * ItemProvided;
+
+	for( uint8 i = 0; i < 3; ++i )
+	{
+		equip = luaL_checkint(L, i + 1);
+		if( equip > 0 )
+		{
+			ItemProvided = ItemPrototypeStorage.LookupEntry( equip );
+			if( ItemProvided != NULL )
+				ptr->SetUInt32Value( UNIT_VIRTUAL_ITEM_SLOT_ID + i, equip );
+		}
+		else
+			ptr->SetUInt32Value( UNIT_VIRTUAL_ITEM_SLOT_ID + i, 0 );
+	}
 	return 1;
 }
 

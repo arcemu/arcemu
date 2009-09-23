@@ -274,6 +274,7 @@ int luaUnit_SetUnitToFollow(lua_State * L, Unit * ptr);
 int luaUnit_SetNextTarget(lua_State * L, Unit * ptr);
 int luaUnit_SetPetOwner(lua_State * L, Unit * ptr);
 int luaUnit_SetFacing(lua_State * L, Unit * ptr);
+int luaUnit_SetEquip(lua_State * L, Unit * ptr);
 
 ////////////////////////////////////////////////////////////
 /////////////////END UNIT COMMAND LIST//////////////////////
