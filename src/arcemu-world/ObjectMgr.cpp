@@ -1595,9 +1595,11 @@ Item * ObjectMgr::CreateItem(uint32 entry,Player * owner)
 		pItem->Create(entry, owner);
 		pItem->SetUInt32Value(ITEM_FIELD_STACK_COUNT, 1);
 
-        uint32 *played = owner->GetPlayedtime();
-        pItem->SetUInt32Value( ITEM_FIELD_CREATE_PLAYED_TIME, played[1] );
-        
+        if( owner != NULL ){
+            uint32 *played = owner->GetPlayedtime();
+            pItem->SetUInt32Value( ITEM_FIELD_CREATE_PLAYED_TIME, played[1] );
+        }
+
 		return pItem;
 	}
 }
