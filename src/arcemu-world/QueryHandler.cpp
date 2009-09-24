@@ -231,7 +231,7 @@ void WorldSession::HandleCorpseQueryOpcode(WorldPacket &recv_data)
 	sLog.outDetail("WORLD: Received MSG_CORPSE_QUERY");
 
 	Corpse *pCorpse;
-	WorldPacket data(MSG_CORPSE_QUERY, 21);
+	WorldPacket data(MSG_CORPSE_QUERY, 25);
 	MapInfo *pMapinfo;
 
 	pCorpse = objmgr.GetCorpseByOwner(GetPlayer()->GetLowGUID());
@@ -248,6 +248,7 @@ void WorldSession::HandleCorpseQueryOpcode(WorldPacket &recv_data)
 				data << pCorpse->GetPositionY();
 				data << pCorpse->GetPositionZ();
 				data << pCorpse->GetMapId(); //instance mapid (needs to be same as mapid to be able to recover corpse)
+				data << uint32(0);
 				SendPacket(&data);
 			}
 			else

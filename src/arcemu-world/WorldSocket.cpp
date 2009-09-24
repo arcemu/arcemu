@@ -221,11 +221,37 @@ void WorldSocket::OnConnect()
 	sWorld.mAcceptedConnections++;
 	_latency = getMSTime();
 
+	WorldPacket wp( SMSG_AUTH_CHALLENGE, 24 );
+
 #ifdef USING_BIG_ENDIAN
-	uint32 swapped = swap32(mSeed);
-	OutPacket(SMSG_AUTH_CHALLENGE, 4, &swapped);
+	uint32 swapped = swap32( uint32( 1 ) );
+	wp << uint32( swapped );
+	
+	swapped = swap32( uint32( mSeed ) );
+	wp << uint32( swapped );
+	
+	swapped = swap32( uint32(0xC0FFEEEE) );
+	wp << uint32( swapped );
+	
+	swapped = swap32( uint32(0x00BABE00) );
+	wp << uint32( swapped );
+	
+	swapped = swap32( uint32(0xDF1697E5) );
+	wp << uint32( swapped );
+
+	swapped = swap32( uint32(0x1234ABCD) );
+	wp << uint32( swapped );
 #else
-	OutPacket(SMSG_AUTH_CHALLENGE, 4, &mSeed);
+	
+	wp << uint32(1);
+	wp << uint32( mSeed );
+	wp << uint32(0xC0FFEEEE);
+	wp << uint32(0x00BABE00);
+	wp << uint32(0xDF1697E5);
+	wp << uint32(0x1234ABCD);
+
+	SendPacket( &wp );
+
 #endif
 }
 
@@ -233,6 +259,7 @@ void WorldSocket::_HandleAuthSession(WorldPacket* recvPacket)
 {
 	std::string account;
 	uint32 unk2, unk3;
+	uint64 unk4;
 	
 	_latency = getMSTime() - _latency;
 
@@ -243,6 +270,7 @@ void WorldSocket::_HandleAuthSession(WorldPacket* recvPacket)
 		*recvPacket >> account;
 		*recvPacket >> unk3;
 		*recvPacket >> mClientSeed;
+		*recvPacket >> unk4;
 	}
 	catch(ByteBuffer::error &)
 	{

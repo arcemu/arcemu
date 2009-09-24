@@ -199,7 +199,7 @@ void WorldSession::CharacterEnumProc(QueryResult * result)
 
 			data << uint32(0); //Added in 3.0.2 - if 1, faction change at logon...
 
-			data << fields[14].GetUInt8();		// Rest State
+			// data << fields[14].GetUInt8();		// Rest State
 
 			data << uint8(0); //3.2.0
 
