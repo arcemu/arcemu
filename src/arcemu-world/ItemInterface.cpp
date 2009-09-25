@@ -1161,9 +1161,18 @@ uint32 ItemInterface::RemoveItemAmt_ProtectPointer(uint32 id, uint32 amt, Item**
 				}
 				else if (item->GetUInt32Value(ITEM_FIELD_STACK_COUNT)== amt)
 				{
-					bool result = SafeFullRemoveItemFromSlot(INVENTORY_SLOT_NOT_SET, static_cast<int16>( i ));
+					// bool result = SafeFullRemoveItemFromSlot(INVENTORY_SLOT_NOT_SET, static_cast<int16>( i ));
+					//
+					//  This should be fixed properly. Instead of adding an event to remove it, it should be removed after
+					// we finished all spell related operations.
+
+					bool result = true;
+					sEventMgr.AddEvent( item, &Item::EventRemoveItem, EVENT_REMOVE_ITEM, 1, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT | EVENT_FLAG_DELETES_OBJECT );
+
+					/*
 					if( pointer != NULL && *pointer != NULL && *pointer == item )
 						*pointer = NULL;
+					*/
 
 					if(result)
 					{
