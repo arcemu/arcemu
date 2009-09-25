@@ -200,7 +200,7 @@ void GameObject::Update(uint32 p_time)
 		ObjectSet::iterator iend = GetInRangeSetEnd();
 		Unit * pUnit;
 		float dist;
-		this->AquireInrangeLock(); //make sure to release lock before exit function !
+		AquireInrangeLock(); //make sure to release lock before exit function !
 		for(; it2 != iend;)
 		{
 			itr = it2;
@@ -215,6 +215,7 @@ void GameObject::Update(uint32 p_time)
 					if(!m_summoner)
 					{
 						ExpireAndDelete();
+						ReleaseInrangeLock();
 						return;
 					}
 					if(!isAttackable(m_summoner,pUnit))continue;
@@ -239,19 +240,19 @@ void GameObject::Update(uint32 p_time)
 				if(m_summonedGo)
 				{
 					ExpireAndDelete();
-					this->ReleaseInrangeLock();
+					ReleaseInrangeLock();
 					return;
 				}
 
 				if(spell->EffectImplicitTargetA[0] == 16 ||
 					spell->EffectImplicitTargetB[0] == 16)
 				{
-					this->ReleaseInrangeLock();
+					ReleaseInrangeLock();
 					return;	 // on area don't continue.
 				}
 			}
 		}
-		this->ReleaseInrangeLock();
+		ReleaseInrangeLock();
 	}
 }
 
@@ -389,7 +390,6 @@ void GameObject::SaveToFile(std::stringstream & name)
 
 void GameObject::InitAI()
 {
-	
 	if(!pInfo)
 		return;
 	

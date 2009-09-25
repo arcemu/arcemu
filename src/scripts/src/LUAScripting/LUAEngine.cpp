@@ -2854,9 +2854,10 @@ int luaUnit_TeleportUnit(lua_State * L, Unit * ptr)
 	float posX = (float)luaL_checknumber(L, 2);
 	float posY = (float)luaL_checknumber(L, 3);
 	float posZ = (float)luaL_checknumber(L, 4);
+    float Orientation = luaL_optinteger(L, 5, 0);
 	if(!posX || !posY || !posZ)
 		return 0;
-	LocationVector vec(posX,posY,posZ);
+	LocationVector vec(posX,posY,posZ,Orientation);
 	static_cast<Player*>( ptr ) ->SafeTeleport(mapId,0,vec);
 	return 0;
 }
@@ -4402,9 +4403,10 @@ int luaGameObject_Teleport(lua_State * L, GameObject * ptr)
 	double posX = luaL_checknumber(L, 3);
 	double posY = luaL_checknumber(L, 4);
 	double posZ = luaL_checknumber(L, 5);
+	double Orientation = luaL_optinteger(L, 6, 0);
 	if(!mapId || !posX || !posY || !posZ)
 		return 0;
-	LocationVector vec((float)posX, (float)posY, (float)posZ);
+	LocationVector vec((float)posX, (float)posY, (float)posZ, (float)Orientation);
 	((Player*)target)->SafeTeleport((uint32)mapId, 0, vec);
 	return 0;
 }
