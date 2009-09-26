@@ -1522,14 +1522,16 @@ void Player::_EventExploration()
 		uint32 explore_xp = at->level * 10;
 		explore_xp *= float2int32(sWorld.getRate(RATE_EXPLOREXP));
 
-		WorldPacket data(SMSG_EXPLORATION_EXPERIENCE, 8);
-		data << at->AreaId << explore_xp;
-		m_session->SendPacket(&data);
 #ifdef ENABLE_ACHIEVEMENTS
 		GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_EXPLORE_AREA);
 #endif
-		if(getLevel() < GetUInt32Value(PLAYER_FIELD_MAX_LEVEL) && explore_xp)
+		uint32 maxlevel = GetUInt32Value(PLAYER_FIELD_MAX_LEVEL);
+		if(getLevel() <  maxlevel && explore_xp > 0 ){
+			SendExploreXP( at->AreaId, explore_xp );
 			GiveXP(explore_xp, 0, false);
+		}else{
+			SendExploreXP( at->AreaId, 0 );
+		}
 	}
 }
 
@@ -13203,3 +13205,10 @@ void Player::RemoveSanctuaryFlag(){
 		m_Summon->RemoveSanctuaryFlag();
 }
 
+void Player::SendExploreXP( uint32 areaid, uint32 xp ){
+	
+	WorldPacket data(SMSG_EXPLORATION_EXPERIENCE, 8);
+	data << uint32( areaid );
+	data << uint32( xp );
+	m_session->SendPacket(&data);
+}
