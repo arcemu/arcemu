@@ -10035,9 +10035,9 @@ void Player::ModifyBonuses( uint32 type, int32 val, bool apply )
 				for( uint8 school = 1; school < 7; ++school )
 				{
 					ModUnsigned32Value( PLAYER_FIELD_MOD_DAMAGE_DONE_POS + school, val );
-					HealDoneMod[school] += val;
+					HealDoneMod[ school ] += val;
 				}
-				ModUnsigned32Value( PLAYER_FIELD_MOD_HEALING_DONE_POS, uint32( float( val ) * 1.88f ) );
+				ModUnsigned32Value( PLAYER_FIELD_MOD_HEALING_DONE_POS, val );
 			}break;
 		}
 }

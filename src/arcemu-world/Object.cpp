@@ -3031,7 +3031,10 @@ void Object::SpellNonMeleeDamageLog(Unit *pVictim, uint32 spellID, uint32 damage
 	{
 		Unit* caster = static_cast< Unit* >( this );
 		caster->RemoveAurasByInterruptFlag( AURA_INTERRUPT_ON_START_ATTACK );
-		res += caster->GetSpellDmgBonus( pVictim, spellInfo, ( int )res, false );
+
+		int32 spelldmgbonus = caster->GetSpellDmgBonus( pVictim, spellInfo, ( int )res, false );
+
+		res += spelldmgbonus;
 
 //==========================================================================================
 //==============================Post +SpellDamage Bonus Modifications=======================

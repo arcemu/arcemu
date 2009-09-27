@@ -5231,7 +5231,7 @@ int32 Unit::GetSpellDmgBonus(Unit *pVictim, SpellEntry *spellInfo,int32 base_dmg
 		bonus_damage *= (int32)pVictim->AOEDmgMod;*/
 
 	if( ( pVictim->HasAuraWithMechanics(MECHANIC_ENSNARED) || pVictim->HasAuraWithMechanics(MECHANIC_DAZED) ) && caster->IsPlayer() )
-			bonus_damage *= static_cast< Player* >(caster)->m_IncreaseDmgSnaredSlowed;
+			bonus_damage += static_cast< Player* >(caster)->m_IncreaseDmgSnaredSlowed;
 
 	if(spellInfo->SpellGroupType)
 	{
