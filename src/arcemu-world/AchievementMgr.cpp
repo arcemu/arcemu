@@ -280,7 +280,11 @@ void AchievementMgr::LoadFromDB(QueryResult *achievementResult, QueryResult *cri
 		do
 		{
 			Field *fields = achievementResult->Fetch();
-			m_completedAchievements[fields[0].GetUInt32()] = fields[1].GetUInt32();
+			uint32 id = fields[0].GetUInt32();
+			if( m_completedAchievements[id] == NULL )
+				m_completedAchievements[id] = fields[1].GetUInt32();
+			else 
+				sLog.outError("Duplicate completed achievement %u for player %u, skipping", id, (uint32)m_player->GetGUID() );
 		} while(achievementResult->NextRow());
 		delete achievementResult;
 	}
