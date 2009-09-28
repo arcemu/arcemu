@@ -248,7 +248,6 @@ Unit::Unit()
 	m_CombatResult_Parry = 0;
 
 	critterPet = NULL;
-	summonPet = NULL;
 
 	m_useAI = false;
 	for(i=0;i<10;i++)
@@ -4503,7 +4502,7 @@ void Unit::AddAura(Aura * aur)
 	if ( !aur )
 		return;
 
-    if( !this->isAlive() && !( aur->GetSpellProto()->AttributesExC & CAN_PERSIST_AND_CASTED_WHILE_DEAD ) )
+    if( !isAlive() && !( aur->GetSpellProto()->AttributesExC & CAN_PERSIST_AND_CASTED_WHILE_DEAD ) )
         return;
 
 	if(m_mapId!=530 && (m_mapId!=571 || (IsPlayer() && !((Player*)this)->HasSpellwithNameHash(SPELL_HASH_COLD_WEATHER_FLYING))))
@@ -4513,15 +4512,6 @@ void Unit::AddAura(Aura * aur)
 		{
 			if( aur->GetSpellProto()->EffectApplyAuraName[i] == 208 || aur->GetSpellProto()->EffectApplyAuraName[i] == 207 )
 			{
-				// Pretty sure this gets removed somewhere in the aura pool..
-				// Watch:
-				/*
-				PooledDelete(T* dumped) calls dumped->Virtual_Destructor(); 
-				which calls Aura::Virtual_Destructor() which then calls
-				sEventMgr.RemoveEvents( this ); this refers to the Aura pointer which we've named aur.
-				Cheers!
-				*/
-				//sEventMgr.RemoveEvents(aur);
 				delete aur;
 				return;
 			}
@@ -5890,29 +5880,31 @@ bool Unit::HasVisialPosAurasOfNameHashWithCaster(uint32 namehash, Unit * caster)
 
 void Unit::EventSummonPetExpire()
 {
-	if(summonPet)
+	std::set< Creature* >::iterator itr = m_Guardians.begin();
+	for( ; itr != m_Guardians.end(); ++itr )
 	{
-		if(summonPet->GetEntry() == 7915)//Goblin Bomb
+		if( (*itr)->GetEntry() == 7915 ) //Goblin Bomb
 		{
-			SpellEntry *spInfo = dbcSpell.LookupEntry(13259);
-			if(!spInfo)
+			SpellEntry *spInfo = dbcSpell.LookupEntry( 13259 );
+			if( spInfo == NULL )
 				return;
 
-			Spell * sp = new Spell(summonPet,spInfo,true,NULL);
-			if (!sp)
-				return;
-			SpellCastTargets tgt;
-			tgt.m_unitTarget=summonPet->GetGUID();
-			sp->prepare(&tgt);
+			Spell * sp = new Spell( (*itr), spInfo, true, NULL );
+			if( sp != NULL )
+			{
+				SpellCastTargets tgt;
+				tgt.m_unitTarget = (*itr)->GetGUID();
+				sp->prepare( &tgt );
+			}
 		}
 		else
 		{
-			summonPet->RemoveFromWorld(false, true);
-			delete summonPet;
-			summonPet = NULL;
+			(*itr)->RemoveFromWorld( false, true );
+			delete (*itr);
+			m_Guardians.erase( itr );
 		}
 	}
-	sEventMgr.RemoveEvents(this, EVENT_SUMMON_PET_EXPIRE);
+	sEventMgr.RemoveEvents( this, EVENT_SUMMON_PET_EXPIRE );
 }
 
 uint8 Unit::CastSpell(Unit* Target, SpellEntry* Sp, bool triggered)
@@ -6676,48 +6668,47 @@ void Unit::SetFacing(float newo)
 }
 
 //guardians are temporary spawn that will inherit master faction and will follow them. Apart from that they have their own mind
-Unit* Unit::create_guardian(uint32 guardian_entry,uint32 duration,float angle, uint32 lvl, GameObject * obj, LocationVector * Vec)
+Creature* Unit::create_guardian(uint32 guardian_entry,uint32 duration,float angle, uint32 lvl, GameObject * obj, LocationVector * Vec)
 {
-	CreatureProto * proto = CreatureProtoStorage.LookupEntry(guardian_entry);
-	CreatureInfo * info = CreatureNameStorage.LookupEntry(guardian_entry);
-	float m_fallowAngle = angle;
-	float x = 3 * ( cosf( m_fallowAngle + GetOrientation() ) );
-	float y = 3 * ( sinf( m_fallowAngle + GetOrientation() ) );
-	float z = 0;
-
-	if(!proto || !info)
+	CreatureProto * proto = CreatureProtoStorage.LookupEntry( guardian_entry );
+	CreatureInfo * info = CreatureNameStorage.LookupEntry( guardian_entry );
+	
+	if( proto == NULL || info == NULL )
 	{
 		sLog.outDetail("Warning : Missing summon creature template %u !",guardian_entry);
 		return NULL;
 	}
+	
+	float m_followAngle = angle;
+	float x = 3 * ( cosf( m_followAngle + GetOrientation() ) );
+	float y = 3 * ( sinf( m_followAngle + GetOrientation() ) );
+	float z = 0;
 
-	Creature* p = GetMapMgr()->CreateCreature(guardian_entry);
-	p->SetInstanceID(GetMapMgr()->GetInstanceID());
+	Creature* p = GetMapMgr()->CreateCreature( guardian_entry );
+	p->SetInstanceID( GetMapMgr()->GetInstanceID() );
 
 	if( Vec )
 	{
 		x += Vec->x;
 		y += Vec->y;
 		z += Vec->z;
-		p->Load(proto, x, y, z);
 	}
 	//Summoned by a GameObject?
-	else if ( !obj )
+	else if( obj == NULL )
 	{
 		x += GetPositionX();
 		y += GetPositionY();
 		z += GetPositionZ();
-		p->Load(proto, x, y, z);
 	}
 	else //if so, we should appear on it's location ;)
 	{
 		x += obj->GetPositionX();
 		y += obj->GetPositionY();
 		z += obj->GetPositionZ();
-		p->Load(proto, x, y, z);
 	}
+	p->Load( proto, x, y, z );
 
-	if ( lvl != 0 )
+	if( lvl != 0 )
 	{
 		/* MANA */
 		p->SetPowerType(POWER_TYPE_MANA);
@@ -6731,34 +6722,35 @@ Unit* Unit::create_guardian(uint32 guardian_entry,uint32 duration,float angle, u
 	}
 
 	p->SetUInt64Value(UNIT_FIELD_SUMMONEDBY, GetGUID());
-    p->SetUInt64Value(UNIT_FIELD_CREATEDBY, GetGUID());
-    p->SetZoneId(GetZoneId());
+	p->SetUInt64Value(UNIT_FIELD_CREATEDBY, GetGUID());
+	p->SetZoneId(GetZoneId());
 	p->SetUInt32Value(UNIT_FIELD_FACTIONTEMPLATE,GetUInt32Value(UNIT_FIELD_FACTIONTEMPLATE));
 	p->_setFaction();
 
 	p->GetAIInterface()->Init(p,AITYPE_PET,MOVEMENTTYPE_NONE,this);
 	p->GetAIInterface()->SetUnitToFollow(this);
-	p->GetAIInterface()->SetUnitToFollowAngle(m_fallowAngle);
+	p->GetAIInterface()->SetUnitToFollowAngle(m_followAngle);
 	p->GetAIInterface()->SetFollowDistance(3.0f);
 	p->m_noRespawn = true;
 
-    // if it's summoned by a totem owned by a player it will be owned by the player, so we can PvP check on them in dealdamage, and isattackable
-    if( this->IsCreature() && static_cast< Creature* >( this )->IsTotem() && static_cast< Creature* >( this )->GetTotemOwner() ){
-        
-        if( static_cast< Creature* >( this )->GetTotemOwner()->IsPlayer() ){
-            p->SetOwner( static_cast< Unit* >( static_cast< Creature* >( this )->GetTotemOwner()));
-        }
+	// if it's summoned by a totem owned by a player it will be owned by the player, so we can PvP check on them in dealdamage, and isattackable
+	if( IsCreature() && static_cast< Creature* >( this )->IsTotem() && static_cast< Creature* >( this )->GetTotemOwner() != NULL )
+	{
+		Player* totem_owner = static_cast< Creature* >( this )->GetTotemOwner();
+		p->SetOwner( static_cast< Unit* >( totem_owner ) );
+		totem_owner->AddGuardianRef( p );
+	}
+	else
+	{
+		p->SetOwner( this );
+		AddGuardianRef( p );
+	}
 
-    }else{
-        p->SetOwner( this );
-    }
+	p->PushToWorld( GetMapMgr() );
 
-    p->PushToWorld(GetMapMgr());
+	sEventMgr.AddEvent( p, &Creature::SummonExpire, EVENT_SUMMON_EXPIRE, duration, 1, 0 );
 
-	sEventMgr.AddEvent(p, &Creature::SummonExpire, EVENT_SUMMON_EXPIRE, duration, 1,0);
-
-	return p;//lol, will compiler make the pointer conversion ?
-
+	return p;
 }
 
 float Unit::get_chance_to_daze(Unit *target)
@@ -8007,5 +7999,31 @@ void Unit::UpdatePowerAmm()
 	data << uint8( GetPowerType() );
 	data << GetUInt32Value( UNIT_FIELD_POWER1 + GetPowerType() );
 	SendMessageToSet( &data, true );
+}
+
+void Unit::RemoveGuardianRef( Creature* g )
+{
+	// just remove from the set	
+	std::set< Creature* >::iterator itr = m_Guardians.find( g );
+	if( itr != m_Guardians.end() )
+		m_Guardians.erase( itr );
+}
+
+void Unit::RemoveAllGuardians( bool remove_from_world )
+{
+	// remove all guardians from set and optionally remove from world
+	std::set< Creature* >::iterator itr = m_Guardians.begin();
+	while( itr != m_Guardians.end() )
+	{
+		if( remove_from_world )
+		{
+			if( (*itr)->IsInWorld() )
+				(*itr)->RemoveFromWorld( false, true );
+			else
+				(*itr)->SafeDelete();
+		}
+		(*itr)->SetOwner( NULL );
+		m_Guardians.erase( itr++ );
+	}
 }
 

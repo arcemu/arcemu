@@ -1053,7 +1053,7 @@ public:
 	//caller is the caster
 	int32 GetSpellDmgBonus(Unit *pVictim, SpellEntry *spellInfo,int32 base_dmg, bool isdot);
    
-	Unit* create_guardian(uint32 guardian_entry,uint32 duration,float angle, uint32 lvl = 0, GameObject * obj = NULL, LocationVector * Vec = NULL);//guardians are temporary spawn that will inherit master faction and will follow them. Apart from that they have their own mind
+	
 
 	uint32 m_addDmgOnce;
 	Creature *m_TotemSlots[4];
@@ -1445,7 +1445,19 @@ public:
 	int32 m_modlanguage;
 	
 	Creature *critterPet;
-	Creature *summonPet;
+	
+	/************************************************************************/
+    /* Guardians                                                            */
+    /************************************************************************/
+
+	//guardians are temporary spawn that will inherit master faction and will follow them. Apart from that they have their own mind	
+	std::set<Creature*> m_Guardians;
+	Creature* create_guardian( uint32 guardian_entry, uint32 duration, float angle, uint32 lvl = 0, GameObject * obj = NULL, LocationVector * Vec = NULL); 
+	ARCEMU_INLINE void AddGuardianRef( Creature* guard ){ if( guard != NULL ) m_Guardians.insert( guard );	}
+	void RemoveGuardianRef( Creature* g );
+	void RemoveAllGuardians( bool remove_from_world = true );
+
+	/************************************************************************/
 
 	ARCEMU_INLINE uint32 GetCharmTempVal() { return m_charmtemp; }
 	ARCEMU_INLINE void SetCharmTempVal(uint32 val) { m_charmtemp = val; }

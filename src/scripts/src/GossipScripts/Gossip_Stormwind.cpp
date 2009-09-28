@@ -97,7 +97,6 @@ void SWHarborFlyAround::GossipSelectOption(Object * pObject, Player* Plr, uint32
     {
     case 1:{
 	TaxiPath * taxipath = sTaxiMgr.GetTaxiPath(1041);
-	Plr->DismissActivePet();
 	Plr->TaxiStart(taxipath, 25679, 0);
 	}break;
 	

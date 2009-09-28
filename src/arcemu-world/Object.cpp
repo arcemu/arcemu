@@ -2241,19 +2241,14 @@ void Object::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
 		}
 
         // We've just killed a totem
-        if( pVictim->IsCreature() && static_cast<Creature*>(pVictim)->IsTotem() ){
-            Creature *pTotem = static_cast<Creature*>(pVictim);
+        if( pVictim->IsCreature() && static_cast< Creature* >( pVictim )->IsTotem() )
+		{
+            Creature *pTotem = static_cast< Creature*>( pVictim );
             
-            // If we have a summon then let's remove that first
-            if(pTotem->summonPet != NULL){
-                if( pTotem->summonPet->IsInWorld() )
-                    pTotem->summonPet->RemoveFromWorld( false, true );
-                else
-                    pTotem->summonPet->SafeDelete();
-                pTotem->summonPet = NULL;
-            }
+            // If we have summons then let's remove them first
+			pTotem->RemoveAllGuardians();
 
-            if(pTotem->IsInWorld())
+            if( pTotem->IsInWorld() )
                 pTotem->RemoveFromWorld( false, true );
             else
                 pTotem->SafeDelete();
@@ -2261,28 +2256,25 @@ void Object::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
         }
 
         // We've killed some kind of summon
-        if( pVictim->GetUInt64Value( UNIT_FIELD_CREATEDBY ) != 0 ){
+        if( pVictim->GetUInt64Value( UNIT_FIELD_CREATEDBY ) != 0 )
+		{
             Unit *pSummoner = pVictim->GetMapMgr()->GetUnit( pVictim->GetUInt64Value( UNIT_FIELD_CREATEDBY ) );
 
-            if( pSummoner && pSummoner->IsInWorld() && pSummoner->IsCreature() ){
-                Creature *pSummonerC = static_cast<Creature*>( pSummoner );
+            if( pSummoner && pSummoner->IsInWorld() && pSummoner->IsCreature() )
+			{
+                Creature *pSummonerC = static_cast< Creature* >( pSummoner );
             
                 // We've killed a summon summoned by a totem
-                if( pSummonerC->IsTotem() ){
-                    pSummoner->summonPet = NULL;
-
+                if( pSummonerC->IsTotem() )
+				{
                     // Removing the totem
-                    if(pSummonerC->IsInWorld())
+                    if( pSummonerC->IsInWorld() )
                       pSummonerC->RemoveFromWorld( false, true );
                     else
                       pSummonerC->SafeDelete();
                 }
             }
-
-            
         }
-
-
 		
 #ifdef ENABLE_ACHIEVEMENTS
 		// A Player has died
@@ -2933,8 +2925,9 @@ void Object::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
 			static_cast< Player* >( pVictim )->m_BreathDamageTimer = 0;
 			static_cast< Player* >( pVictim )->m_SwimmingTime = 0;
 
-			/* -------------------- KILL PET WHEN PLAYER DIES ---------------*/
+			/* -------------------- KILL PET / GUARDIANS WHEN PLAYER DIES ---------------*/
 			static_cast< Player* >( pVictim )->DismissActivePet();
+			pVictim->RemoveAllGuardians();
 		}
 		else sLog.outError("DealDamage for Unknown Object.");
 	}
@@ -3442,13 +3435,14 @@ int32 Object::event_GetInstanceID()
 
 void Object::EventSpellDamage(uint64 Victim, uint32 SpellID, uint32 Damage)
 {
-	if(!IsInWorld())
+	if( !IsInWorld() )
 		return;
 
-	Unit * pUnit = GetMapMgr()->GetUnit(Victim);
-	if(pUnit == 0) return;
+	Unit * pUnit = GetMapMgr()->GetUnit( Victim );
+	if( pUnit == NULL )
+		return;
 
-	SpellNonMeleeDamageLog(pUnit, SpellID, Damage, true);
+	SpellNonMeleeDamageLog( pUnit, SpellID, Damage, true );
 }
 
 //! Object has an active state
@@ -3606,7 +3600,7 @@ void Object::_SetExtension(const string& name, void* ptr)
 bool Object::IsInBg()
 {
 	MapInfo *pMapinfo = WorldMapInfoStorage.LookupEntry(this->GetMapId());
-	if(pMapinfo)
+	if( pMapinfo != NULL )
 	{
 		return (pMapinfo->type == INSTANCE_BATTLEGROUND);
 	}

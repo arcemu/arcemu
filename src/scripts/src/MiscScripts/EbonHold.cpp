@@ -82,7 +82,6 @@ public:
 	void GossipHello(Object * pObject, Player* Plr, bool AutoSend)
 	{
 	TaxiPath * taxipath = sTaxiMgr.GetTaxiPath(1053);
-	Plr->DismissActivePet();
 	Plr->TaxiStart(taxipath, 26308, 0);
 	}
 };
@@ -93,7 +92,6 @@ public:
 	void GossipHello(Object * pObject, Player* Plr, bool AutoSend)
 	{
 	TaxiPath * taxipath = sTaxiMgr.GetTaxiPath(1054);
-	Plr->DismissActivePet();
 	Plr->TaxiStart(taxipath, 26308, 0);
 	}
 };

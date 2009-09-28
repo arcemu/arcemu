@@ -2055,146 +2055,142 @@ void Spell::SpellEffectTeleportUnits( uint32 i )  // Teleport Units
 
 void Spell::SpellEffectApplyAura(uint32 i)  // Apply Aura
 {
-	if(!unitTarget)
+	if( unitTarget == NULL )
 		return;
 	// can't apply stuns/fear/polymorph/root etc on boss
-	if ( !playerTarget )
+	if( unitTarget->IsCreature() )
 	{
-		if (u_caster && (u_caster != unitTarget))
+		if( u_caster != NULL && ( u_caster != unitTarget ) )
 		{
-			Creature * c = static_cast<Creature *>(unitTarget);
-			if (c)
+			Creature * c = static_cast< Creature * >( unitTarget );
+			/*
+			Charm (Mind Control, enslave demon): 1
+			Confuse (Blind etc): 2
+			Fear: 4
+			Root: 8
+			Silence : 16
+			Stun: 32
+			Sheep: 64
+			Banish: 128
+			Sap: 256
+			Frozen : 512
+			Ensnared 1024
+			Sleep 2048
+			Taunt (aura): 4096
+			Decrease Speed (Hamstring) (aura): 8192
+			Spell Haste (Curse of Tongues) (aura): 16384
+			Interrupt Cast: 32768
+			Mod Healing % (Mortal Strike) (aura): 65536
+			Total Stats % (Vindication) (aura): 131072
+			*/
+
+			//Spells with Mechanic also add other ugly auras, but if the main aura is the effect --> immune to whole spell
+			if (c->GetProto() && c->GetProto()->modImmunities)
 			{
-
-				/*
-				Charm (Mind Control, enslave demon): 1
-				Confuse (Blind etc): 2
-				Fear: 4
-				Root: 8
-				Silence : 16
-				Stun: 32
-				Sheep: 64
-				Banish: 128
-				Sap: 256
-				Frozen : 512
-				Ensnared 1024
-				Sleep 2048
-				Taunt (aura): 4096
-				Decrease Speed (Hamstring) (aura): 8192
-				Spell Haste (Curse of Tongues) (aura): 16384
-				Interrupt Cast: 32768
-				Mod Healing % (Mortal Strike) (aura): 65536
-				Total Stats % (Vindication) (aura): 131072
-				*/
-
-				//Spells with Mechanic also add other ugly auras, but if the main aura is the effect --> immune to whole spell
-				if (c->GetProto() && c->GetProto()->modImmunities)
+				bool immune = false;
+				if (m_spellInfo->MechanicsType)
 				{
-					bool immune = false;
-					if (m_spellInfo->MechanicsType)
+					switch(m_spellInfo->MechanicsType)
 					{
-						switch(m_spellInfo->MechanicsType)
-						{
-						case MECHANIC_CHARMED:
-							if (c->GetProto()->modImmunities & 1)
-								immune = true;
-							break;
-						case MECHANIC_DISORIENTED:
-							if (c->GetProto()->modImmunities & 2)
-								immune = true;
-							break;
-						case MECHANIC_FLEEING:
-							if (c->GetProto()->modImmunities & 4)
-								immune = true;
-							break;
-						case MECHANIC_ROOTED:
-							if (c->GetProto()->modImmunities & 8)
-								immune = true;
-							break;
-						case MECHANIC_SILENCED:
-							if ( c->GetProto()->modImmunities & 16)
-								immune = true;
-							break;
-						case MECHANIC_STUNNED:
-							if (c->GetProto()->modImmunities & 32)
-								immune = true;
-							break;
-						case MECHANIC_POLYMORPHED:
-							if (c->GetProto()->modImmunities & 64)
-								immune = true;
-							break;
-						case MECHANIC_BANISHED:
-							if (c->GetProto()->modImmunities & 128)
-								immune = true;
-							break;
-						case MECHANIC_SAPPED:
-							if (c->GetProto()->modImmunities & 256)
-								immune = true;
-							break;
-						case MECHANIC_FROZEN:
-							if (c->GetProto()->modImmunities & 512)
-								immune = true;
-							break;
-						case MECHANIC_ENSNARED:
-							if (c->GetProto()->modImmunities & 1024)
-								immune = true;
-							break;
-						case MECHANIC_ASLEEP:
-							if (c->GetProto()->modImmunities & 2048)
-								immune = true;
-							break;
-						}
+					case MECHANIC_CHARMED:
+						if (c->GetProto()->modImmunities & 1)
+							immune = true;
+						break;
+					case MECHANIC_DISORIENTED:
+						if (c->GetProto()->modImmunities & 2)
+							immune = true;
+						break;
+					case MECHANIC_FLEEING:
+						if (c->GetProto()->modImmunities & 4)
+							immune = true;
+						break;
+					case MECHANIC_ROOTED:
+						if (c->GetProto()->modImmunities & 8)
+							immune = true;
+						break;
+					case MECHANIC_SILENCED:
+						if ( c->GetProto()->modImmunities & 16)
+							immune = true;
+						break;
+					case MECHANIC_STUNNED:
+						if (c->GetProto()->modImmunities & 32)
+							immune = true;
+						break;
+					case MECHANIC_POLYMORPHED:
+						if (c->GetProto()->modImmunities & 64)
+							immune = true;
+						break;
+					case MECHANIC_BANISHED:
+						if (c->GetProto()->modImmunities & 128)
+							immune = true;
+						break;
+					case MECHANIC_SAPPED:
+						if (c->GetProto()->modImmunities & 256)
+							immune = true;
+						break;
+					case MECHANIC_FROZEN:
+						if (c->GetProto()->modImmunities & 512)
+							immune = true;
+						break;
+					case MECHANIC_ENSNARED:
+						if (c->GetProto()->modImmunities & 1024)
+							immune = true;
+						break;
+					case MECHANIC_ASLEEP:
+						if (c->GetProto()->modImmunities & 2048)
+							immune = true;
+						break;
 					}
-					if (!immune)
-					{
-						// Spells that do more than just one thing (damage and the effect) don't have a mechanic and we should only cancel the aura to be placed
-						switch (m_spellInfo->EffectApplyAuraName[i])
-						{
-						case SPELL_AURA_MOD_CONFUSE:
-							if (c->GetProto()->modImmunities & 2)
-								immune = true;
-							break;
-						case SPELL_AURA_MOD_FEAR:
-							if (c->GetProto()->modImmunities & 4)
-								immune = true;
-							break;
-						case SPELL_AURA_MOD_TAUNT:
-							if (c->GetProto()->modImmunities & 4096)
-								immune = true;
-							break;
-						case SPELL_AURA_MOD_STUN:
-							if (c->GetProto()->modImmunities & 32)
-								immune = true;
-							break;
-						case SPELL_AURA_MOD_SILENCE:
-							if ((c->GetProto()->modImmunities & 32768) || (c->GetProto()->modImmunities & 16))
-								immune = true;
-							break;
-						case SPELL_AURA_MOD_DECREASE_SPEED:
-							if (c->GetProto()->modImmunities & 8192)
-								immune = true;
-							break;
-						case SPELL_AURA_INCREASE_CASTING_TIME_PCT:
-							if (c->GetProto()->modImmunities & 16384)
-								immune = true;
-							break;
-						case SPELL_AURA_MOD_LANGUAGE: //hacky way to prefer that the COT icon is set to mob
-							if (c->GetProto()->modImmunities & 16384)
-								immune = true;
-							break;
-						case SPELL_AURA_MOD_HEALING_DONE_PERCENT:
-							if (c->GetProto()->modImmunities & 65536)
-								immune = true;
-							break;
-						case SPELL_AURA_MOD_TOTAL_STAT_PERCENTAGE:
-							if (c->GetProto()->modImmunities & 131072)
-								immune = true;
-							break;
-						}
-					}
-					if (immune)
-						return;
 				}
+				if (!immune)
+				{
+					// Spells that do more than just one thing (damage and the effect) don't have a mechanic and we should only cancel the aura to be placed
+					switch (m_spellInfo->EffectApplyAuraName[i])
+					{
+					case SPELL_AURA_MOD_CONFUSE:
+						if (c->GetProto()->modImmunities & 2)
+							immune = true;
+						break;
+					case SPELL_AURA_MOD_FEAR:
+						if (c->GetProto()->modImmunities & 4)
+							immune = true;
+						break;
+					case SPELL_AURA_MOD_TAUNT:
+						if (c->GetProto()->modImmunities & 4096)
+							immune = true;
+						break;
+					case SPELL_AURA_MOD_STUN:
+						if (c->GetProto()->modImmunities & 32)
+							immune = true;
+						break;
+					case SPELL_AURA_MOD_SILENCE:
+						if ((c->GetProto()->modImmunities & 32768) || (c->GetProto()->modImmunities & 16))
+							immune = true;
+						break;
+					case SPELL_AURA_MOD_DECREASE_SPEED:
+						if (c->GetProto()->modImmunities & 8192)
+							immune = true;
+						break;
+					case SPELL_AURA_INCREASE_CASTING_TIME_PCT:
+						if (c->GetProto()->modImmunities & 16384)
+							immune = true;
+						break;
+					case SPELL_AURA_MOD_LANGUAGE: //hacky way to prefer that the COT icon is set to mob
+						if (c->GetProto()->modImmunities & 16384)
+							immune = true;
+						break;
+					case SPELL_AURA_MOD_HEALING_DONE_PERCENT:
+						if (c->GetProto()->modImmunities & 65536)
+							immune = true;
+						break;
+					case SPELL_AURA_MOD_TOTAL_STAT_PERCENTAGE:
+						if (c->GetProto()->modImmunities & 131072)
+							immune = true;
+						break;
+					}
+				}
+				if( immune )
+					return;
 			}
 		}
 	}
@@ -2219,10 +2215,10 @@ void Spell::SpellEffectApplyAura(uint32 i)  // Apply Aura
 	//if we do not make a check to see if the aura owner is the same as the caster then we will stack the 2 auras and they will not be visible client sided
 	if(itr == unitTarget->tmpAura.end())
 	{
-		if( GetProto()->NameHash == SPELL_HASH_BLOOD_FRENZY && this->ProcedOnSpell )//Warrior's Blood Frenzy
-			this->GetProto()->DurationIndex = this->ProcedOnSpell->DurationIndex;
+		if( GetProto()->NameHash == SPELL_HASH_BLOOD_FRENZY && ProcedOnSpell )//Warrior's Blood Frenzy
+			GetProto()->DurationIndex = ProcedOnSpell->DurationIndex;
 
-		uint32 Duration = this->GetDuration();
+		uint32 Duration = GetDuration();
 
 		// Handle diminishing returns, if it should be resisted, it'll make duration 0 here.
 		if(!(GetProto()->Attributes & ATTRIBUTES_PASSIVE)) // Passive
@@ -2239,7 +2235,7 @@ void Spell::SpellEffectApplyAura(uint32 i)  // Apply Aura
 		else
 			pAura = new Aura( GetProto(), Duration, m_caster, unitTarget, m_triggeredSpell, i_caster );
 
-        if ( !pAura )
+        if ( pAura == NULL )
             return;
 
 		pAura->pSpellId = pSpellId; //this is required for triggered spells
@@ -4103,9 +4099,10 @@ void Spell::SpellEffectSummonWild(uint32 i)  // Summon Wild
 {
 	//these are some creatures that have your faction and do not respawn
 	//number of creatures is actually dmg (the usual formula), sometimes =3 sometimes =1
-	if( !u_caster || !u_caster->IsInWorld() ) return;
+	if( u_caster == NULL || !u_caster->IsInWorld() )
+		return;
 
-	uint32 cr_entry=GetProto()->EffectMiscValue[i];
+	uint32 cr_entry = GetProto()->EffectMiscValue[i];
 	CreatureProto * proto = CreatureProtoStorage.LookupEntry(cr_entry);
 	CreatureInfo * info = CreatureNameStorage.LookupEntry(cr_entry);
 	if(!proto || !info)
@@ -4196,9 +4193,10 @@ void Spell::SpellEffectSummonGuardian(uint32 i) // Summon Guardian
 	for( int i = 0; i < damage; i++ )
 	{
 		float m_fallowAngle = angle_for_each_spawn * i;
-		u_caster->create_guardian(cr_entry,GetDuration(), m_fallowAngle, level, obj, vec );
+		u_caster->create_guardian( cr_entry, GetDuration(), m_fallowAngle, level, obj, vec );
 	}
-	if (vec) delete vec;
+	if( vec != NULL )
+		delete vec;
 }
 
 void Spell::SpellEffectSkillStep(uint32 i) // Skill Step
@@ -7016,7 +7014,6 @@ void Spell::SpellEffectFilming( uint32 i )
 		if(!modelid) return;
 	}
 
-	playerTarget->DismissActivePet();
 	playerTarget->TaxiStart( taxipath, modelid, 0 );
 }
 

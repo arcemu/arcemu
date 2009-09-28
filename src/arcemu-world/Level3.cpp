@@ -1629,7 +1629,7 @@ bool ChatHandler::HandlePetSpawnAIBot(const char* args, WorldSession *m_session)
 		return true;
 	}
 	Player * plr = m_session->GetPlayer();
-	Unit *newguard = plr->create_guardian(Entry,2*60*1000,float(-M_PI*2), plr->getLevel() );
+	Creature *newguard = plr->create_guardian( Entry, 2*60*1000, float(-M_PI*2), plr->getLevel() );
 	AiAgentHealSupport *new_interface = new AiAgentHealSupport;
 	new_interface->Init(newguard,AITYPE_PET,MOVEMENTTYPE_NONE,plr);
 	newguard->ReplaceAIInterface( (AIInterface *) new_interface );

@@ -133,6 +133,13 @@ Creature::~Creature()
 
 	if (m_escorter != NULL)
 		m_escorter = NULL;
+
+	// remove our reference from owner
+	if( m_owner != NULL )
+	{
+		m_owner->RemoveGuardianRef( this );
+		m_owner = NULL;
+	}
 }
 
 void Creature::Update( uint32 p_time )
@@ -642,6 +649,9 @@ void Creature::RemoveFromWorld( bool addrespawnevent, bool free_guid )
 	}
 
 	RemoveAllAuras();
+	
+	// If we have a summons then let's remove them
+	RemoveAllGuardians();
 
 	if( IsInWorld() )
 	{
@@ -1007,14 +1017,7 @@ void Creature::TotemExpire()
 	totemSlot = -1;
 	totemOwner = NULL;
 
-    // If we have a summon then let's remove that first
-    if(summonPet != NULL){
-        if( summonPet->IsInWorld() )
-            summonPet->RemoveFromWorld( false, true );
-        else
-            summonPet->SafeDelete();
-        summonPet = NULL;
-    }
+ 
 
 	if(pOwner != NULL)
 		DestroyForPlayer(pOwner); //make sure the client knows it's gone...
@@ -1985,40 +1988,75 @@ uint32 Creature::GetRequiredLootSkill()
 //! Is PVP flagged?
 bool Creature::IsPvPFlagged()
 {
-	return HasByteFlag(UNIT_FIELD_BYTES_2, 1, U_FIELD_BYTES_FLAG_PVP);
+	return HasByteFlag( UNIT_FIELD_BYTES_2, 1, U_FIELD_BYTES_FLAG_PVP );
 }
 
 void Creature::SetPvPFlag()
 {
-	SetByteFlag(UNIT_FIELD_BYTES_2, 1, U_FIELD_BYTES_FLAG_PVP);
+	SetByteFlag( UNIT_FIELD_BYTES_2, 1, U_FIELD_BYTES_FLAG_PVP );
+	
+	// adjust our guardians too
+	std::set< Creature* >::iterator itr = m_Guardians.begin();
+	for( ; itr != m_Guardians.end(); ++itr )
+		(*itr)->SetPvPFlag();
 }
 
 void Creature::RemovePvPFlag()
 {
-	RemoveByteFlag(UNIT_FIELD_BYTES_2, 1, U_FIELD_BYTES_FLAG_PVP);
+	RemoveByteFlag( UNIT_FIELD_BYTES_2, 1, U_FIELD_BYTES_FLAG_PVP );
+	
+	// adjust our guardians too
+	std::set< Creature* >::iterator itr = m_Guardians.begin();
+	for( ; itr != m_Guardians.end(); ++itr )
+		(*itr)->RemovePvPFlag();
 }
 
 bool Creature::IsFFAPvPFlagged()
 {
-	return HasByteFlag(UNIT_FIELD_BYTES_2, 1, U_FIELD_BYTES_FLAG_FFA_PVP);
+	return HasByteFlag( UNIT_FIELD_BYTES_2, 1, U_FIELD_BYTES_FLAG_FFA_PVP );
 }
 
 void Creature::SetFFAPvPFlag()
 {
-	SetByteFlag(UNIT_FIELD_BYTES_2, 1, U_FIELD_BYTES_FLAG_FFA_PVP);
+	SetByteFlag( UNIT_FIELD_BYTES_2, 1, U_FIELD_BYTES_FLAG_FFA_PVP );
+
+	// adjust our guardians too
+	std::set< Creature* >::iterator itr = m_Guardians.begin();
+	for( ; itr != m_Guardians.end(); ++itr )
+		(*itr)->SetFFAPvPFlag();
 }
 
 void Creature::RemoveFFAPvPFlag()
 {
-	RemoveByteFlag(UNIT_FIELD_BYTES_2, 1, U_FIELD_BYTES_FLAG_FFA_PVP);
+	RemoveByteFlag( UNIT_FIELD_BYTES_2, 1, U_FIELD_BYTES_FLAG_FFA_PVP );
+
+	// adjust our guardians too
+	std::set< Creature* >::iterator itr = m_Guardians.begin();
+	for( ; itr != m_Guardians.end(); ++itr )
+		(*itr)->RemoveFFAPvPFlag();
 }
 
-bool Creature::IsSanctuaryFlagged(){ 
+bool Creature::IsSanctuaryFlagged()
+{ 
 	return HasByteFlag( UNIT_FIELD_BYTES_2, 1, U_FIELD_BYTES_FLAG_SANCTUARY); 
 }
-void Creature::SetSanctuaryFlag(){ 
-	SetByteFlag( UNIT_FIELD_BYTES_2, 1, U_FIELD_BYTES_FLAG_SANCTUARY ); 
+
+void Creature::SetSanctuaryFlag()
+{ 
+	SetByteFlag( UNIT_FIELD_BYTES_2, 1, U_FIELD_BYTES_FLAG_SANCTUARY );
+	
+	// adjust our guardians too
+	std::set< Creature* >::iterator itr = m_Guardians.begin();
+	for( ; itr != m_Guardians.end(); ++itr )
+		(*itr)->SetSanctuaryFlag();
 }
-void Creature::RemoveSanctuaryFlag(){ 
-	RemoveByteFlag( UNIT_FIELD_BYTES_2, 1, U_FIELD_BYTES_FLAG_SANCTUARY ); 
+
+void Creature::RemoveSanctuaryFlag()
+{ 
+	RemoveByteFlag( UNIT_FIELD_BYTES_2, 1, U_FIELD_BYTES_FLAG_SANCTUARY );
+
+	// adjust our guardians too
+	std::set< Creature* >::iterator itr = m_Guardians.begin();
+	for( ; itr != m_Guardians.end(); ++itr )
+		(*itr)->RemoveSanctuaryFlag();
 }

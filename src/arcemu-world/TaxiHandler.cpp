@@ -232,14 +232,12 @@ void WorldSession::HandleActivateTaxiOpcode( WorldPacket & recv_data )
 	// 0x000004 locks you so you can't move, no msg_move updates are sent to the server
 	// 0x000008 seems to enable detailed collision checking
 
-	// check for a summon -> if we do, remove.
 	//! Check if the player is casting, obviously they should not be able to cast on a taxi
 	if ( _player->GetCurrentSpell() != NULL )
 		 _player->GetCurrentSpell()->cancel();
 
-	_player->DismissActivePet();
 	_player->taxi_model_id = modelid;
-	GetPlayer()->TaxiStart(taxipath, modelid, 0);
+	_player->TaxiStart(taxipath, modelid, 0);
 
 	//sLog.outString("TAXI: Starting taxi trip. Next update in %d msec.", first_node_time);
 }
@@ -381,8 +379,6 @@ void WorldSession::HandleMultipleActivateTaxiOpcode(WorldPacket & recvPacket)
 	// 0x000004 locks you so you can't move, no msg_move updates are sent to the server
 	// 0x000008 seems to enable detailed collision checking
 
-	// check for a summon -> if we do, remove.
-	_player->DismissActivePet();
 	_player->taxi_model_id = modelid;
 
 	// build the rest of the path list
@@ -402,5 +398,5 @@ void WorldSession::HandleMultipleActivateTaxiOpcode(WorldPacket & recvPacket)
 	}
 
 	// start the first trip :)
-	GetPlayer()->TaxiStart(taxipath, modelid, 0);
+	_player->TaxiStart(taxipath, modelid, 0);
 }

@@ -4209,7 +4209,7 @@ void AIInterface::ResetProcCounts()
 }
 
 //we only cast once a spell and we will set his health and resistances. Note that this can be made with db too !
-void AIInterface::Event_Summon_EE_totem(uint32 summon_duration)
+void AIInterface::Event_Summon_EE_totem( uint32 summon_duration )
 {
 	//some say it should inherit the level of the caster
 	Unit *caster = m_Unit->GetMapMgr()->GetUnit( m_Unit->GetUInt64Value( UNIT_FIELD_CREATEDBY ) );
@@ -4219,64 +4219,59 @@ void AIInterface::Event_Summon_EE_totem(uint32 summon_duration)
 	//timer should not reach this value thus not cast this spell again
 	m_totemspelltimer = 0xEFFFFFFF;
 	//creatures do not support PETs and the spell uses that effect so we force a summon guardian thing
-	Unit *ourslave=m_Unit->create_guardian(15352,summon_duration,float(-M_PI*2), new_level );
+	Creature *ourslave = m_Unit->create_guardian( 15352, summon_duration, float(-M_PI * 2), new_level );
+    if( ourslave == NULL )
+		return;
 
-    if(ourslave)
-	{
-        m_Unit->summonPet = static_cast<Creature*>( ourslave );
-		static_cast<Creature*>(ourslave)->ResistanceModPct[NATURE_DAMAGE]=100;//we should be immune to nature dmg. This can be also set in db
-		static_cast<Creature*>(ourslave)->m_noRespawn = true;
+	m_Unit->AddGuardianRef( ourslave );
+	ourslave->ResistanceModPct[ NATURE_DAMAGE ] = 100; //we should be immune to nature dmg. This can be also set in db
+	ourslave->m_noRespawn = true;
+	ourslave->SetOwner( caster );
+	ourslave->SetUInt32Value( UNIT_FIELD_FLAGS, UNIT_FLAG_PLAYER_CONTROLLED | UNIT_FLAG_SELF_RES );
 
-        // we want the elemental to have the same pvp flag as the shaman who popped the totem
-        if( caster->IsPvPFlagged() )
-            ourslave->SetPvPFlag();
-        else
-            ourslave->RemovePvPFlag();
+    // we want the elemental to have the same pvp flag as the shaman who popped the totem
+    if( caster->IsPvPFlagged() )
+        ourslave->SetPvPFlag();
+    else
+        ourslave->RemovePvPFlag();
 
-        if( caster->IsFFAPvPFlagged() )
-            ourslave->SetFFAPvPFlag();
-        else
-            ourslave->RemoveFFAPvPFlag();
-
-        static_cast< Creature* >(ourslave)->SetOwner( caster );
-
-        ourslave->SetUInt32Value(UNIT_FIELD_FLAGS, UNIT_FLAG_PLAYER_CONTROLLED | UNIT_FLAG_SELF_RES);
-    }
+    if( caster->IsFFAPvPFlagged() )
+        ourslave->SetFFAPvPFlag();
+    else
+        ourslave->RemoveFFAPvPFlag();
 }
 
 //we only cast once a spell and we will set his health and resistances. Note that this can be made with db too !
-void AIInterface::Event_Summon_FE_totem(uint32 summon_duration)
+void AIInterface::Event_Summon_FE_totem( uint32 summon_duration )
 {
 	//some say it should inherit the level of the caster
 	Unit *caster = m_Unit->GetMapMgr()->GetUnit( m_Unit->GetUInt64Value( UNIT_FIELD_CREATEDBY ) );
 	uint32 new_level = 0;
-	if( caster )
+	if( caster != NULL )
 		new_level = caster->getLevel( );
 	//timer should not reach this value thus not cast this spell again
 	m_totemspelltimer = 0xEFFFFFFF;
 	//creatures do not support PETs and the spell uses that effect so we force a summon guardian thing
-	Unit *ourslave=m_Unit->create_guardian(15438,summon_duration,float(-M_PI*2), new_level);
-	if(ourslave)
-	{
-		m_Unit->summonPet = static_cast<Creature*>( ourslave );
-		static_cast<Creature*>(ourslave)->ResistanceModPct[FIRE_DAMAGE]=100;//we should be immune to fire dmg. This can be also set in db
-		static_cast<Creature*>(ourslave)->m_noRespawn = true;
-        
-        // we want the elemental to have the same pvp flag as the shaman who popped the totem
-        if( caster->IsPvPFlagged() )
-            ourslave->SetPvPFlag();
-        else
-            ourslave->RemovePvPFlag();
+	Creature *ourslave = m_Unit->create_guardian( 15438, summon_duration, float(-M_PI * 2), new_level );
+    if( ourslave == NULL )
+		return;
 
-        if( caster->IsFFAPvPFlagged() )
-            ourslave->SetFFAPvPFlag();
-        else
-            ourslave->RemoveFFAPvPFlag();
+	m_Unit->AddGuardianRef( ourslave );
+	ourslave->ResistanceModPct[ FIRE_DAMAGE ] = 100; //we should be immune to nature dmg. This can be also set in db
+	ourslave->m_noRespawn = true;
+	ourslave->SetOwner( caster );
+	ourslave->SetUInt32Value( UNIT_FIELD_FLAGS, UNIT_FLAG_PLAYER_CONTROLLED | UNIT_FLAG_SELF_RES );
 
-        static_cast< Creature* >(ourslave)->SetOwner( caster );
+    // we want the elemental to have the same pvp flag as the shaman who popped the totem
+    if( caster->IsPvPFlagged() )
+        ourslave->SetPvPFlag();
+    else
+        ourslave->RemovePvPFlag();
 
-        ourslave->SetUInt32Value(UNIT_FIELD_FLAGS, UNIT_FLAG_PLAYER_CONTROLLED | UNIT_FLAG_SELF_RES);
-	}
+    if( caster->IsFFAPvPFlagged() )
+        ourslave->SetFFAPvPFlag();
+    else
+        ourslave->RemoveFFAPvPFlag();
 }
 /*
 void AIInterface::CancelSpellCast()

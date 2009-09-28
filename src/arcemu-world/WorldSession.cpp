@@ -342,6 +342,7 @@ void WorldSession::LogoutPlayer(bool Save)
 		_player->load_mana = _player->GetUInt32Value( UNIT_FIELD_POWER1 );
 
 		_player->DismissActivePet();
+		_player->RemoveAllGuardians();
 
 		//_player->SaveAuras();
 

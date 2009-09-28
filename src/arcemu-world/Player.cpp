@@ -7400,6 +7400,8 @@ void Player::TaxiStart(TaxiPath *path, uint32 modelid, uint32 start_node)
 		RemoveAllAuraType( SPELL_AURA_TRANSFORM );
 		RemoveAllAuraType( SPELL_AURA_MOD_SHAPESHIFT );
 	}
+	
+	DismissActivePet();
 
 	SetUInt32Value( UNIT_FIELD_MOUNTDISPLAYID, modelid );
 	SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_MOUNTED_TAXI);
@@ -12893,13 +12895,13 @@ void Player::UpdateGlyphs()
     {
         GlyphSlotEntry * gse;
         uint32 y = 0;
-    for( uint32 i = 0; i < dbcGlyphSlot.GetNumRows(); ++i )
-    {
-        gse = dbcGlyphSlot.LookupRow( i );
-        if( gse->Slot > 0 )
-        SetUInt32Value( PLAYER_FIELD_GLYPH_SLOTS_1 + y++, gse->Id );
-    }
-}
+		for( uint32 i = 0; i < dbcGlyphSlot.GetNumRows(); ++i )
+		{
+			gse = dbcGlyphSlot.LookupRow( i );
+			if( gse->Slot > 0 )
+			SetUInt32Value( PLAYER_FIELD_GLYPH_SLOTS_1 + y++, gse->Id );
+		}
+	}
 
 	// Enable number of glyphs depending on level
 	uint32 glyph_mask = 0;
@@ -13074,15 +13076,11 @@ void Player::SetPvPFlag()
 	SetFlag(PLAYER_FLAGS, PLAYER_FLAG_PVP);
        
     // Adjusting the totems' PVP flag
-    for(int i = 0; i < 4; ++i){
-		if( m_TotemSlots[i] != NULL ){
+    for( uint8 i = 0; i < 4; ++i )
+	{
+		if( m_TotemSlots[i] != NULL )
 			m_TotemSlots[i]->SetPvPFlag();
-			
-			// Adjusting the totems' summons' PVP flag
-			if( static_cast<Unit*>( m_TotemSlots[i] )->summonPet != NULL)
-				static_cast<Unit*>( m_TotemSlots[i] )->summonPet->SetPvPFlag();
-            }
-        }
+	}
 	
 	// flagging the pet too for PvP, if we have one
 	if( m_Summon != NULL )
@@ -13090,6 +13088,11 @@ void Player::SetPvPFlag()
 	
 	if( CombatStatus.IsInCombat() )
 		SetFlag(PLAYER_FLAGS, 0x100);
+
+	// adjust our guardians too
+	std::set< Creature* >::iterator itr = m_Guardians.begin();
+	for( ; itr != m_Guardians.end(); ++itr )
+		(*itr)->SetPvPFlag();
 }
 
 void Player::RemovePvPFlag()
@@ -13099,19 +13102,20 @@ void Player::RemovePvPFlag()
 	RemoveFlag(PLAYER_FLAGS, PLAYER_FLAG_PVP);
 	
 	// Adjusting the totems' PVP flag
-	for(int i = 0; i < 4; ++i){
-		if( m_TotemSlots[i] != NULL ){
+	for( uint8 i = 0; i < 4; ++i )
+	{
+		if( m_TotemSlots[i] != NULL )
 			m_TotemSlots[i]->RemovePvPFlag();
-			
-			// Adjusting the totems' summons' PVP flag
-			if( static_cast<Unit*>( m_TotemSlots[i] )->summonPet != NULL )
-				static_cast<Unit*>( m_TotemSlots[i] )->summonPet->RemovePvPFlag();
-		}
 	}
 	
 	// If we have a pet we will remove the pvp flag from that too
 	if( m_Summon != NULL )
 		m_Summon->RemovePvPFlag();
+
+	// adjust our guardians too
+	std::set< Creature* >::iterator itr = m_Guardians.begin();
+	for( ; itr != m_Guardians.end(); ++itr )
+		(*itr)->RemovePvPFlag();
 }
 
 bool Player::IsFFAPvPFlagged()
@@ -13125,19 +13129,20 @@ void Player::SetFFAPvPFlag()
 	SetByteFlag(UNIT_FIELD_BYTES_2, 1, U_FIELD_BYTES_FLAG_FFA_PVP);
 	SetFlag(PLAYER_FLAGS, PLAYER_FLAG_FREE_FOR_ALL_PVP);
 	
-	for(int i = 0; i < 4; ++i){
-		if( m_TotemSlots[i] != NULL ){
+	for( uint8 i = 0; i < 4; ++i )
+	{
+		if( m_TotemSlots[i] != NULL )
 			m_TotemSlots[i]->SetFFAPvPFlag();
-			
-			// Adjusting the totems' summons' FFAPVP flag
-			if( static_cast<Unit*>( m_TotemSlots[i] )->summonPet != NULL)
-				static_cast<Unit*>( m_TotemSlots[i] )->summonPet->SetFFAPvPFlag();
-		}
 	}
 	
 	// flagging the pet too for FFAPvP, if we have one
 	if( m_Summon != NULL )
 		m_Summon->SetFFAPvPFlag();
+
+	// adjust our guardians too
+	std::set< Creature* >::iterator itr = m_Guardians.begin();
+	for( ; itr != m_Guardians.end(); ++itr )
+		(*itr)->SetFFAPvPFlag();
 }
 
 void Player::RemoveFFAPvPFlag()
@@ -13147,59 +13152,65 @@ void Player::RemoveFFAPvPFlag()
 	RemoveFlag(PLAYER_FLAGS, PLAYER_FLAG_FREE_FOR_ALL_PVP);
 	
 	// Adjusting the totems' FFAPVP flag	
-	for(int i = 0; i < 4; ++i){
-		if( m_TotemSlots[i] != NULL ){
+	for( uint8 i = 0; i < 4; ++i )
+	{
+		if( m_TotemSlots[i] != NULL )
 			m_TotemSlots[i]->RemoveFFAPvPFlag();
-			
-			// Adjusting the totems' summons' FFAPVP flag
-			if( static_cast<Unit*>( m_TotemSlots[i] )->summonPet != NULL)
-				static_cast<Unit*>( m_TotemSlots[i] )->summonPet->RemoveFFAPvPFlag();
-		}
 	}
 	
 	// If we have a pet we will remove the FFA pvp flag from that too
 	if( m_Summon != NULL )
 		m_Summon->RemoveFFAPvPFlag();
+
+	// adjust our guardians too
+	std::set< Creature* >::iterator itr = m_Guardians.begin();
+	for( ; itr != m_Guardians.end(); ++itr )
+		(*itr)->RemoveFFAPvPFlag();
 }
 
-bool Player::IsSanctuaryFlagged(){
+bool Player::IsSanctuaryFlagged()
+{
 	return HasByteFlag( UNIT_FIELD_BYTES_2, 1 , U_FIELD_BYTES_FLAG_SANCTUARY );
 }
 
-void Player::SetSanctuaryFlag(){
+void Player::SetSanctuaryFlag()
+{
 	SetByteFlag( UNIT_FIELD_BYTES_2, 1, U_FIELD_BYTES_FLAG_SANCTUARY );
 
-	for(int i = 0; i < 4; ++i){
-		if( m_TotemSlots[i] != NULL ){
+	for(int i = 0; i < 4; ++i)
+	{
+		if( m_TotemSlots[i] != NULL )
 			m_TotemSlots[i]->SetSanctuaryFlag();
-			
-			// Adjusting the totems' summons' sanctuary flag
-			if( static_cast<Unit*>( m_TotemSlots[i] )->summonPet != NULL)
-				static_cast<Unit*>( m_TotemSlots[i] )->summonPet->SetSanctuaryFlag();
-		}
 	}
 	
 	// flagging the pet too for sanctuary, if we have one
 	if( m_Summon != NULL )
 		m_Summon->SetSanctuaryFlag();
+	
+	// adjust our guardians too
+	std::set< Creature* >::iterator itr = m_Guardians.begin();
+	for( ; itr != m_Guardians.end(); ++itr )
+		(*itr)->SetSanctuaryFlag();
 }
 
-void Player::RemoveSanctuaryFlag(){
+void Player::RemoveSanctuaryFlag()
+{
 	RemoveByteFlag( UNIT_FIELD_BYTES_2, 1, U_FIELD_BYTES_FLAG_SANCTUARY );
 
 	// Adjusting the totems' sanctuary flag	
-	for(int i = 0; i < 4; ++i){
-		if( m_TotemSlots[i] != NULL ){
+	for(int i = 0; i < 4; ++i)
+	{
+		if( m_TotemSlots[i] != NULL )
 			m_TotemSlots[i]->RemoveSanctuaryFlag();
-			
-			// Adjusting the totems' summons' sanctuary flag
-			if( static_cast<Unit*>( m_TotemSlots[i] )->summonPet != NULL)
-				static_cast<Unit*>( m_TotemSlots[i] )->summonPet->RemoveSanctuaryFlag();
-		}
 	}
 	
 	// If we have a pet we will remove the sanctuary flag from that too
 	if( m_Summon != NULL )
 		m_Summon->RemoveSanctuaryFlag();
+
+	// adjust our guardians too
+	std::set< Creature* >::iterator itr = m_Guardians.begin();
+	for( ; itr != m_Guardians.end(); ++itr )
+		(*itr)->RemoveSanctuaryFlag();
 }
 
