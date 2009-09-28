@@ -137,7 +137,6 @@ public:
 	ARCEMU_INLINE uint32 GetXP(void) { return m_PetXP; }
 
 	void InitializeSpells();
-	void ReInitializeSpells();
 	void InitializeMe(bool first);
 	void SendSpellsToOwner();
 	void SendNullSpellsToOwner();
@@ -183,7 +182,6 @@ public:
 	void SetDefaultActionbar();
 	void SetActionBarSlot(uint32 slot, uint32 spell){ ActionBar[ slot ] = spell; }
 
-	void LoadSpells();
 	void AddSpell(SpellEntry * sp, bool learning, bool showLearnSpell = true);
 	void RemoveSpell(SpellEntry * sp, bool showUnlearnSpell = true);
 	void WipeTalents();
@@ -270,6 +268,7 @@ protected:
 	string m_name;
 	HappinessState GetHappinessState();
 	void SetNameForEntry( uint32 entry );
+	uint32 GetAutoCastTypeForSpell( SpellEntry * ent );
 
 	list<AI_Spell*> m_autoCastSpells[AUTOCAST_EVENT_COUNT];
 };

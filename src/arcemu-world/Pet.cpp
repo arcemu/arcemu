@@ -30,7 +30,7 @@
 #define SPIRITWOLF		29264
 #define DANCINGRUNEWEAPON 27893
 
-uint32 GetAutoCastTypeForSpell( SpellEntry * ent )
+uint32 Pet::GetAutoCastTypeForSpell( SpellEntry * ent )
 {
 	switch( ent->NameHash )
 	{
@@ -136,11 +136,14 @@ void Pet::SetNameForEntry( uint32 entry )
 
 void Pet::CreateAsSummon( uint32 entry, CreatureInfo *ci, Creature* created_from_creature, Player* owner, SpellEntry* created_by_spell, uint32 type, uint32 expiretime, LocationVector* Vec )
 {
-	if( !ci || !owner )
+	if( ci == NULL || owner == NULL )
 	{
 		sEventMgr.AddEvent( this, &Pet::PetSafeDelete, EVENT_CREATURE_SAFE_DELETE, 1, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT );
 		return;
 	}
+	
+	if( owner->GetSummon() != NULL )
+		owner->GetSummon()->Dismiss(); // to avoid problems caused by loosing reference to old pet
 
 	m_Owner = owner;
 	m_OwnerGuid = m_Owner->GetGUID();
@@ -823,9 +826,6 @@ void Pet::DelayedRemove( bool bTime, bool bDeath )
 	// called when pet has died
 	if( bTime )
 	{
-		if( !m_Owner )
-			m_Owner = objmgr.GetPlayer( GET_LOWGUID_PART( m_OwnerGuid ) );
-
 		if( Summon )
 			Dismiss();  // remove us..
 		else
