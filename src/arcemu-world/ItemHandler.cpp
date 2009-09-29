@@ -1630,9 +1630,10 @@ void WorldSession::SendInventoryList(Creature* unit)
 		return;
 	}
 
-	if(!unit->HasItems())
+	if( !unit->HasItems() )
 	{
-		sChatHandler.BlueSystemMessageToPlr(_player, "No sell template found. Report this to devs: %d (%s)", unit->GetEntry(), unit->GetCreatureInfo()->Name);
+		sChatHandler.BlueSystemMessageToPlr( _player, "No sell template found. Report this to database's devs: %d (%s)", unit->GetEntry(), unit->GetCreatureInfo()->Name );
+		sLog.outError( "'%s' discovered that a creature with entry %u (%s) has no sell template.", GetPlayer()->GetName(), unit->GetEntry(), unit->GetCreatureInfo()->Name );
 		GetPlayer()->Gossip_Complete(); // cebernic: don't get a hang for the NPC
 		return;
 	}

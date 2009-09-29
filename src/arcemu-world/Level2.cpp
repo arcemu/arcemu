@@ -755,13 +755,13 @@ bool ChatHandler::HandleGOSelect(const char *args, WorldSession *m_session)
 bool ChatHandler::HandleGODelete(const char *args, WorldSession *m_session)
 {
 	GameObject *GObj = m_session->GetPlayer()->GetSelectedGo();
-	if( !GObj )
+	if( GObj == NULL )
 	{
 		RedSystemMessage(m_session, "No selected GameObject...");
 		return true;
 	}
 
-	if( GObj->m_spawn != 0 && GObj->m_spawn->entry == GObj->GetEntry() )
+	if( GObj->m_spawn != NULL && GObj->m_spawn->entry == GObj->GetEntry() )
 	{
 		uint32 cellx = uint32(((_maxX-GObj->m_spawn->x)/_cellSize));
 		uint32 celly = uint32(((_maxY-GObj->m_spawn->y)/_cellSize));
@@ -780,6 +780,7 @@ bool ChatHandler::HandleGODelete(const char *args, WorldSession *m_session)
 			}
 			GObj->DeleteFromDB();
 			delete GObj->m_spawn;
+			GObj->m_spawn = NULL;
 		}
 	}
 	GObj->Despawn(0, 0); // We do not need to delete the object because GameObject::Despawn with no time => ExpireAndDelete() => _Expire() => delete GObj;
@@ -911,7 +912,7 @@ bool ChatHandler::HandleGOPhaseCommand(const char *args, WorldSession *m_session
 	go->Phase(PHASE_SET, newphase);
 
 	GOSpawn * gs = go->m_spawn;
-	if (!gs)
+	if( gs == NULL )
 	{
 		RedSystemMessage(m_session, "The GameObject got no spawn, not saving and not logging...");
 		return true;
@@ -949,14 +950,15 @@ bool ChatHandler::HandleGOInfo(const char *args, WorldSession *m_session)
 		return true;
 	}
 
-	SystemMessage(m_session, "%s Information:",MSG_COLOR_SUBWHITE);
-	SystemMessage(m_session, "%s Entry:%s%u",MSG_COLOR_GREEN,MSG_COLOR_LIGHTBLUE,GObj->GetEntry());
-	SystemMessage(m_session, "%s Model:%s%u",MSG_COLOR_GREEN,MSG_COLOR_LIGHTBLUE,GObj->GetUInt32Value(GAMEOBJECT_DISPLAYID));
-	SystemMessage(m_session, "%s State:%s%u",MSG_COLOR_GREEN,MSG_COLOR_LIGHTBLUE,GObj->GetByte(GAMEOBJECT_BYTES_1, 0));
-	SystemMessage(m_session, "%s flags:%s%u",MSG_COLOR_GREEN,MSG_COLOR_LIGHTBLUE,GObj->GetUInt32Value(GAMEOBJECT_FLAGS));
-	SystemMessage(m_session, "%s dynflags:%s%u",MSG_COLOR_GREEN,MSG_COLOR_LIGHTBLUE,GObj->GetUInt32Value(GAMEOBJECT_DYNAMIC));
-	SystemMessage(m_session, "%s faction:%s%u",MSG_COLOR_GREEN,MSG_COLOR_LIGHTBLUE,GObj->GetUInt32Value(GAMEOBJECT_FACTION));
-	SystemMessage(m_session, "%s phase:%s%u",MSG_COLOR_GREEN,MSG_COLOR_LIGHTBLUE,GObj->GetPhase());
+	SystemMessage(m_session, "%s Information:",	MSG_COLOR_SUBWHITE );
+	SystemMessage(m_session, "%s SpawnID:%s%u",	MSG_COLOR_GREEN,MSG_COLOR_LIGHTBLUE, GObj->m_spawn != NULL ? GObj->m_spawn->id : 0 );
+	SystemMessage(m_session, "%s Entry:%s%u",	MSG_COLOR_GREEN,MSG_COLOR_LIGHTBLUE, GObj->GetEntry() );
+	SystemMessage(m_session, "%s Model:%s%u",	MSG_COLOR_GREEN,MSG_COLOR_LIGHTBLUE, GObj->GetUInt32Value( GAMEOBJECT_DISPLAYID ) );
+	SystemMessage(m_session, "%s State:%s%u",	MSG_COLOR_GREEN,MSG_COLOR_LIGHTBLUE, GObj->GetByte( GAMEOBJECT_BYTES_1, 0 ) );
+	SystemMessage(m_session, "%s flags:%s%u",	MSG_COLOR_GREEN,MSG_COLOR_LIGHTBLUE, GObj->GetUInt32Value( GAMEOBJECT_FLAGS ) );
+	SystemMessage(m_session, "%s dynflags:%s%u",MSG_COLOR_GREEN,MSG_COLOR_LIGHTBLUE, GObj->GetUInt32Value( GAMEOBJECT_DYNAMIC ) );
+	SystemMessage(m_session, "%s faction:%s%u",	MSG_COLOR_GREEN,MSG_COLOR_LIGHTBLUE, GObj->GetUInt32Value( GAMEOBJECT_FACTION ) );
+	SystemMessage(m_session, "%s phase:%s%u",	MSG_COLOR_GREEN,MSG_COLOR_LIGHTBLUE, GObj->GetPhase() );
 
 	char gotypetxt[50];
 	switch( GObj->GetByte(GAMEOBJECT_BYTES_1, 1) )
