@@ -90,6 +90,17 @@ int main(int argc, char** argv)
 	delete LogonServer::getSingletonPtr();
 }
 
+
+/**
+  * Initialises the logon database
+  *
+  * Reads the configs\logon.conf file and parses the <LogonDatabase> tag
+  *
+  * Any errors in this file, such as a missing parameter should be caught 
+  * and the user notified in an intelligent way
+  *
+  * If no errors are found, the database is initialized
+  **/
 bool startdb()
 {
 	string lhostname, lusername, lpassword, ldatabase;
@@ -99,17 +110,48 @@ bool startdb()
 
 	bool result;
 
-	// Configure Logon Database...
-	result = Config.MainConfig.GetString("LogonDatabase", "Username", &lusername);
-	result = !result ? result : Config.MainConfig.GetString("LogonDatabase", "Password", &lpassword);
-	result = !result ? result : Config.MainConfig.GetString("LogonDatabase", "Hostname", &lhostname);
-	result = !result ? result : Config.MainConfig.GetString("LogonDatabase", "Name", &ldatabase);
-	result = !result ? result : Config.MainConfig.GetInt("LogonDatabase", "Port", &lport);
-	result = !result ? result : Config.MainConfig.GetInt("LogonDatabase", "Type", &ltype);
+	// Set up reusable parameter checks for each parameter
+	// Note that the Config.MainConfig.Get[$type] methods returns boolean value and not $type
 
-	if(result == false)
+	bool existsUsername = Config.MainConfig.GetString("LogonDatabase", "Username", &lusername);
+	bool existsPassword = Config.MainConfig.GetString("LogonDatabase", "Password", &lpassword);
+	bool existsHostname = Config.MainConfig.GetString("LogonDatabase", "Hostname", &lhostname);
+	bool existsName     = Config.MainConfig.GetString("LogonDatabase", "Name",     &ldatabase);
+	bool existsPort     = Config.MainConfig.GetInt(   "LogonDatabase", "Port",     &lport    );
+	bool existsType     = Config.MainConfig.GetInt(   "LogonDatabase", "Type",     &ltype    );
+
+	// Configure Logon Database...
+
+	// logical AND every parameter to ensure we catch any error
+	result = existsUsername && existsPassword && existsHostname && existsName && existsPort && existsType;
+
+	if( !result )
 	{
-		sLog.outString("sql: Logon database parameters not found.");
+		//Build informative error message
+		//Built as one string and then printed rather than calling sLog.outString(...) for every line,
+		//  as experiments has seen other thread write to the console inbetween calls to sLog.outString(...)
+		//  resulting in unreadable error messages.
+		//If the <LogonDatabase> tag is malformed, all parameters will fail, and a different error message is given
+
+		string errorMessage = "sql: Certain <LogonDatabase> parameters not found in configs\\logon.conf \r\n";
+		if( !(existsHostname || existsUsername || existsPassword  ||  
+			  existsName     || existsPort     || existsType) )
+		{
+			errorMessage += "  Double check that you have remembered the entire <LogonDatabase> tag.\r\n";
+			errorMessage += "  All parameters missing. It is possible you forgot the first '<' character.\r\n";
+		}
+		else
+		{
+			errorMessage +=                        "  Missing paramer(s):\r\n";
+			if( !existsHostname ){ errorMessage += "    Hostname\r\n" ; }
+			if( !existsUsername ){ errorMessage += "    Username\r\n" ; }
+			if( !existsPassword ){ errorMessage += "    Password\r\n" ; }
+			if( !existsName     ){ errorMessage += "    Name\r\n"; }
+			if( !existsPort     ){ errorMessage += "    Port\r\n"; }
+			if( !existsType     ){ errorMessage += "    Type\r\n"; }
+		}
+
+		sLog.outString( errorMessage.c_str());
 		return false;
 	}
 
@@ -123,7 +165,7 @@ bool startdb()
 	{
 		sLog.outError("sql: Logon database initialization failed. Exiting.");
 		return false;
-	}   
+	}
 
 	return true;
 }
