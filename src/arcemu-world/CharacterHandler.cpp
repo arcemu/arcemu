@@ -19,7 +19,6 @@
  */
 
 #include "StdAfx.h"
-#include "AuthCodes.h"
 #include "svn_revision.h"
 
 LoginErrorCode VerifyName(const char * name, size_t nlen)

@@ -321,11 +321,11 @@ void LootMgr::LoadLootTables(const char * szTableName,LootStore * LootTable)
 				//Omit items that are not in db to prevent future bugs
 				//uint32 itemid=(*itr2).itemid;
 				itemid = itr2->itemid;
-				proto=ItemPrototypeStorage.LookupEntry(itemid);
+				proto = ItemPrototypeStorage.LookupEntry( itemid );
 				if(!proto)
 				{
 					list.items[ind].item.itemproto= NULL;
-					Log.Warning("LootMgr", "Loot for %u contains non-existant item. (%s)",entry_id, szTableName);
+					Log.Warning("LootMgr", "Loot for %u contains non-existant item %u . (%s)",entry_id, itemid, szTableName);
 				}
 				else
 				{

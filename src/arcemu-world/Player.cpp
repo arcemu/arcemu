@@ -2833,7 +2833,7 @@ void Player::RemovePendingPlayer()
 {
 	if(m_session)
 	{
-		uint8 respons = 0x42;		// CHAR_LOGIN_NO_CHARACTER
+		uint8 respons = E_CHAR_LOGIN_NO_CHARACTER;
 		m_session->OutPacket(SMSG_CHARACTER_LOGIN_FAILED, 1, &respons);
 		m_session->m_loggingInPlayer = NULL;
 	}

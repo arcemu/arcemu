@@ -345,7 +345,13 @@ void WorldSession::HandleGuildRank(WorldPacket & recv_data)
 		free(pTmp);
 	}
 
-	recv_data >> pRank->iGoldLimitPerDay;
+	int32 gold_limit;
+	recv_data >> gold_limit;	
+
+	// do not touch guild masters withdraw limit
+	if( pRank->iGoldLimitPerDay != -1 || rankId != 0 )
+		pRank->iGoldLimitPerDay = gold_limit;
+
 
 	for(i = 0; i < MAX_GUILD_BANK_TABS; ++i)
 	{
