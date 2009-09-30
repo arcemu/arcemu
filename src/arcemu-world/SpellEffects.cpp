@@ -6459,15 +6459,17 @@ void Spell::SpellEffectDisenchant( uint32 i )
 
 void Spell::SpellEffectInebriate(uint32 i) // lets get drunk!
 {
-	if(!p_caster) return;
+	if( playerTarget == NULL )
+		return;
 
 	// Drunkee!
-	uint8 b2 = m_caster->GetByte(PLAYER_BYTES_3,1);
-	b2 += static_cast<uint8>( damage );	// 10 beers will get you smassssshed!
-
-	m_caster->SetByte(PLAYER_BYTES_3,1,b2>90?90:b2);
-	sEventMgr.RemoveEvents(p_caster, EVENT_PLAYER_REDUCEDRUNK);
-	sEventMgr.AddEvent(p_caster, &Player::EventReduceDrunk, false, EVENT_PLAYER_REDUCEDRUNK, 300000, 0,EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
+	uint16 currentDrunk = playerTarget->GetDrunkValue();
+	uint16 drunkMod = static_cast<uint16>(damage) * 256;
+	if( currentDrunk + drunkMod > 0xFFFF )
+		currentDrunk = 0xFFFF;
+	else
+		currentDrunk += drunkMod;
+	playerTarget->SetDrunkValue( currentDrunk, i_caster ? i_caster->GetEntry() : 0 );
 }
 
 void Spell::SpellEffectFeedPet(uint32 i)  // Feed Pet

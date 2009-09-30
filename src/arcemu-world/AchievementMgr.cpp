@@ -1120,7 +1120,7 @@ void AchievementMgr::UpdateAchievementCriteria(AchievementCriteriaTypes type, in
 				if( achievement->ID == 1260 )
 				{
 					// Fall 65 yards without dying while completely smashed during the Brewfest Holiday.
-					if( miscvalue2 >= 90 )
+					if( miscvalue2 == DRUNKEN_SMASHED )
 					{
 						// drunken state, "completely smashed"
 						// TODO: Check if it is during the Brewfest Holiday ...

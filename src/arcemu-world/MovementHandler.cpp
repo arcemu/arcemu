@@ -525,16 +525,15 @@ void WorldSession::HandleMovementOpcodes( WorldPacket & recv_data )
 
 				if( health_loss >= _player->GetUInt32Value( UNIT_FIELD_HEALTH ) )
 					health_loss = _player->GetUInt32Value( UNIT_FIELD_HEALTH );
+#ifdef ENABLE_ACHIEVEMENTS
 				else if( falldistance >= 65 )
 				{
 					// Rather than Updating achievement progress every time fall damage is taken, all criteria currently have 65 yard requirement...
 					// Achievement 964: Fall 65 yards without dying.
 					// Achievement 1260: Fall 65 yards without dying while completely smashed during the Brewfest Holiday.
-					uint8 drunkenstate = _player->GetByte(PLAYER_BYTES_3,1);
-#ifdef ENABLE_ACHIEVEMENTS
-					_player->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_FALL_WITHOUT_DYING, falldistance, (uint32)drunkenstate, 0);
-#endif
+					_player->GetAchievementMgr().UpdateAchievementCriteria( ACHIEVEMENT_CRITERIA_TYPE_FALL_WITHOUT_DYING, falldistance, Player::GetDrunkenstateByValue( _player->GetDrunkValue() ), 0 );
 				}
+#endif
 
 				_player->SendEnvironmentalDamageLog( _player->GetGUID(), DAMAGE_FALL, health_loss );
 				_player->DealDamage( _player, health_loss, 0, 0, 0 );

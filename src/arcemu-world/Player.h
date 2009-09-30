@@ -384,6 +384,14 @@ struct spells
 	uint16  slotId;
 };
 
+enum DrunkenState
+{
+	DRUNKEN_SOBER	= 0,
+	DRUNKEN_TIPSY	= 1,
+	DRUNKEN_DRUNK	= 2,
+	DRUNKEN_SMASHED	= 3
+};
+
 /**
 	TalentTree table
 
@@ -1402,6 +1410,17 @@ public:
 	void LoadNamesFromDB(uint32 guid);
 	bool m_FirstLogin;
 
+	/************************************************************************/
+	/* Drunk system                                                         */
+	/************************************************************************/
+	void SetDrunkValue( uint16 newDrunkValue, uint32 itemid = 0 );
+	uint16 GetDrunkValue() const { return m_drunk; }
+	static DrunkenState GetDrunkenstateByValue( uint16 value );
+	void HandleSobering();
+
+	uint32 m_drunkTimer;
+	uint16 m_drunk;
+
     /************************************************************************/
     /* Death system                                                         */
     /************************************************************************/
@@ -1582,7 +1601,6 @@ public:
 	float m_TransporterUnk;
 	// Misc
 	void EventCannibalize(uint32 amount);
-	void EventReduceDrunk(bool full);
 	bool m_AllowAreaTriggerPort;
 	void EventAllowTiggerPort(bool enable);
 	void UpdatePowerAmm();
