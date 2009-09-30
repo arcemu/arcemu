@@ -106,7 +106,7 @@ void dump_as_sql()
 					const char *dstr=dbc.getRecord(j).getString(i);
 					int otherindex=0;
 					for(unsigned int k=0;k<=strlen(dstr);k++)
-						if(dstr[k]=='\'' || dstr[k]=='"')
+						if(dstr[k]=='\'' || dstr[k]=='"' || dstr[k]=='#' || dstr[k]=='-')
 						{
 							tstr[otherindex++] = '\\';
 							tstr[otherindex++] = dstr[k];
