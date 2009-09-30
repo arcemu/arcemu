@@ -15,7 +15,7 @@
 
 #define SPELL_DBC_CLIENT_BUILD 10314 // 3.2
 
-#define SQL_INSERTS_PER_QUERY 1
+#define SQL_INSERTS_PER_QUERY 1000
 
 //this might change from 1 version to another of the DBC
 #define SPELL_COLUMN_COUNT 239
