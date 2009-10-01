@@ -503,7 +503,7 @@ class KilJaedenAI : public ArcScriptBossAI
 			_unit->SetUInt64Value(UNIT_FIELD_FLAGS, ( true ) ? 0 : UNIT_FLAG_NOT_ATTACKABLE_9);
 			_unit->GetAIInterface()->SetAllowedToEnterCombat(true);
 			RemoveAura(46367);
-			ShieldOrb1 = _unit->GetMapMgr()->GetInterface()->SpawnGameObject(CN_SHIELD_ORB, 1678.00f, 610.00f, 28.00f, 0.00f, false, 0, 0);
+			ShieldOrb1 = _unit->GetMapMgr()->GetInterface()->SpawnGameObject(CN_SHIELD_ORB, 1678.00f, 610.00f, 28.00f, 0.00f, true, 0, 0);
 		}
 
 		if (ShieldOrb1)
@@ -569,18 +569,18 @@ class KilJaedenAI : public ArcScriptBossAI
 					AddPhaseSpell(1, AddSpell(SINISTER_REFLECTION, Target_RandomPlayer, 10, 1.5f, 4, 0, 35));
 					AddPhaseSpell(1, AddSpell(SHADOW_SPIKE, Target_RandomDestination, 10, 2.0f, 6, 0, 35));
 					AddPhaseSpell(1, AddSpell(FLAME_DART_EXPLOSION, Target_RandomPlayer, 10, 1.3f, 4, 0, 35));
-					ShieldOrb1 = _unit->GetMapMgr()->GetInterface()->SpawnGameObject(CN_SHIELD_ORB, 1678.00f, 610.00f, 28.00f, -1.72788f, false, 0, 0);
+					ShieldOrb1 = _unit->GetMapMgr()->GetInterface()->SpawnGameObject(CN_SHIELD_ORB, 1678.00f, 610.00f, 28.00f, -1.72788f, true, 0, 0);
 				}
 
 				if(GetHealthPercent()<=55)
 				{
-					ShieldOrb1 = _unit->GetMapMgr()->GetInterface()->SpawnGameObject(CN_SHIELD_ORB, 1684.00f, 651.00f, 28.00f, 0.00f, false, 0, 0);
+					ShieldOrb1 = _unit->GetMapMgr()->GetInterface()->SpawnGameObject(CN_SHIELD_ORB, 1684.00f, 651.00f, 28.00f, 0.00f, true, 0, 0);
 				}
 
 				if(GetHealthPercent()<=25)
 				{
 					//armageddon
-					ShieldOrb1 = _unit->GetMapMgr()->GetInterface()->SpawnGameObject(CN_SHIELD_ORB, 1720.00f, 642.00f, 28.00f, 0.00f, false, 0, 0);
+					ShieldOrb1 = _unit->GetMapMgr()->GetInterface()->SpawnGameObject(CN_SHIELD_ORB, 1720.00f, 642.00f, 28.00f, 0.00f, true, 0, 0);
 					AddPhaseSpell(1, AddSpell(SACRIFICE_OF_ANVEENA, Target_RandomPlayer, 50, 0.5f, 10, 0, 35));
 				}
 			}break;

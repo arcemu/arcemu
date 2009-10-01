@@ -89,7 +89,7 @@ bool TestingTheAntidote(uint32 i, Spell* pSpell)
 		return true;
 
 	Creature *spawned = NULL;
-	spawned = target->GetMapMgr()->GetInterface()->SpawnCreature(16992, target->GetPositionX(), target->GetPositionY(), target->GetPositionZ(), target->GetOrientation(), false, false, 0, 0);
+	spawned = target->GetMapMgr()->GetInterface()->SpawnCreature(16992, target->GetPositionX(), target->GetPositionY(), target->GetPositionZ(), target->GetOrientation(), true, false, 0, 0);
 	if(!spawned)
 		return true;
 
