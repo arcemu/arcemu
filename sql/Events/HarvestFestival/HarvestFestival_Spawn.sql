@@ -3,11 +3,17 @@
 Title: The Harvest Festival
 Author: Nexis
 Duration: Sept 8th - Sept 13th
+Release from revision dependency: this_is_junk
 ===============================
 */
 
+/* REMOVE FIRST, JUST IN CASE */
+DELETE FROM `creature_spawns` WHERE `id` BETWEEN '400000' AND '400026';
+DELETE FROM `creature_waypoints` WHERE `spawnid` BETWEEN '400000' AND '400025';
+DELETE FROM `gameobject_spawns` WHERE `id` BETWEEN '400000' AND '400130';
+
 /* CREATURE SPAWNS */
-INSERT INTO `creature_spawns` VALUES
+INSERT INTO `creature_spawns` (id, entry, map, position_x, position_y, position_z, orientation, movetype, displayid, faction, flags, bytes0, bytes1, bytes2, emote_state, npc_respawn_link, channel_spell, channel_target_sqlid, channel_target_sqlid_creature, standstate, mountdisplayid, slot1item, slot2item, slot3item, CanFly) VALUES
 	/* IRONFORGE */
 	('400000','15113','0','-5069.41','-804.93','495.126','3.17065','2','15225','35','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0'),			-- Honored Hero
 	('400001','15113','0','-5069.88','-801.673','495.126','3.17301','2','15223','35','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0'),			-- Honored Hero
@@ -24,7 +30,7 @@ INSERT INTO `creature_spawns` VALUES
 	('400012','15011','0','-5060.17','-789.024','495.082','1.05087','0','15134','55','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0');			-- Wagner Hammerstrike
 	
 	/* ORGRIMMAR */
-INSERT INTO `creature_spawns` VALUES
+INSERT INTO `creature_spawns` (id, entry, map, position_x, position_y, position_z, orientation, movetype, displayid, faction, flags, bytes0, bytes1, bytes2, emote_state, npc_respawn_link, channel_spell, channel_target_sqlid, channel_target_sqlid_creature, standstate, mountdisplayid, slot1item, slot2item, slot3item, CanFly) VALUES
 	('400014','15115','1','1327.23','-4429.5','26.6199','0.581999','2','15229','35','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0'),			-- Honored Ancestor
 	('400015','15115','1','1324.42','-4423.35','26.6932','0.49168','2','15232','35','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0'),			-- Honored Ancestor
 	('400016','15115','1','1318.31','-4419.07','26.2562','0.148464','2','15229','35','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0'),			-- Honored Ancestor
@@ -40,7 +46,7 @@ INSERT INTO `creature_spawns` VALUES
 	('400026','15012','1','1322.81','-4400','27.1513','2.46147','0','15139','29','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0');				-- Javnir Nashak
 	
 /* CREATURE WAYPOINTS */
-INSERT INTO `creature_waypoints` VALUES
+INSERT INTO `creature_waypoints` (spawnid, waypointid, position_x, position_y, position_z, waittime, flags, forwardemoteoneshot, forwardemoteid, backwardemoteoneshot, backwardemoteid, forwardskinid, backwardskinid) VALUES
 	/* IRONFORGE */
 	-- Honored Hero
 	('400000','3','-5071.46','-793.39','495.133','60000','0','1','0','1','0','15225','15225'),
@@ -103,7 +109,7 @@ INSERT INTO `creature_waypoints` VALUES
 	('400010','2','-5076.57','-789.278','495.451','30000','0','1','0','1','0','15222','15222'),
 	('400010','1','-5081.07','-788.585','495.815','30000','0','1','0','1','0','15222','15222');
 
-INSERT INTO `creature_waypoints` VALUES
+INSERT INTO `creature_waypoints` (spawnid, waypointid, position_x, position_y, position_z, waittime, flags, forwardemoteoneshot, forwardemoteid, backwardemoteoneshot, backwardemoteid, forwardskinid, backwardskinid) VALUES
 	/* ORGRIMMAR */
 	-- Honored Ancestor
 	('400014','6','1325.48','-4431.56','26.6353','60000','0','1','0','1','0','15229','15229'),
@@ -175,7 +181,7 @@ INSERT INTO `creature_waypoints` VALUES
 	('400025','1','1332.11','-4434.94','26.4952','20000','0','1','0','1','0','15230','15230');
 	
 /* GAMEOBJECT SPAWNS */
-INSERT INTO `gameobject_spawns` VALUES
+INSERT INTO `gameobject_spawns` (id, Entry, map, position_x, position_y, position_z, Facing, orientation1, orientation2, orientation3, orientation4, State, Flags, Faction, Scale, stateNpcLink) VALUES
 	/* IRONFORGE */
 	-- Chair
 	('400000','180325','0','-5074.53','-798.131','495.131','4.75166','0','0','0.693086','-0.720855','1','0','0','1','0'),
@@ -249,7 +255,7 @@ INSERT INTO `gameobject_spawns` VALUES
 	('400056','180333','0','-5084.75','-799.804','496.015','4.55925','0','0','0.759126','-0.650944','1','0','0','1','0'),
 	('400057','180333','0','-5078.29','-800.428','496.016','2.53685','0','0','0.954633','0.297785','1','0','0','1','0');
 
-INSERT INTO `gameobject_spawns` VALUES
+INSERT INTO `gameobject_spawns` (id, Entry, map, position_x, position_y, position_z, Facing, orientation1, orientation2, orientation3, orientation4, State, Flags, Faction, Scale, stateNpcLink) VALUES
 	/* ORGRIMMAR */
 	-- Candle 01
 	('400058','180338','1','1341.52','-4414.58','28.0899','3.93096','0','0','0.923118','-0.384518','1','0','0','1','0'),
