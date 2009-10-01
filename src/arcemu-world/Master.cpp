@@ -314,10 +314,13 @@ bool Master::Run(int argc, char ** argv)
 	new EventMgr;
 	new World;
 
+	// optional time stamp in logs
+	bool useTimeStamp = Config.MainConfig.GetBoolDefault("log", "TimeStamp", false);
+
 	// open cheat log file
-	Anticheat_Log = new SessionLogWriter(FormatOutputString( "logs", "cheaters", false).c_str(), false );
-	GMCommand_Log = new SessionLogWriter(FormatOutputString( "logs", "gmcommand", false).c_str(), false );
-	Player_Log = new SessionLogWriter(FormatOutputString( "logs", "players", false).c_str(), false );
+	Anticheat_Log = new SessionLogWriter(FormatOutputString( "logs", "cheaters", useTimeStamp).c_str(), false );
+	GMCommand_Log = new SessionLogWriter(FormatOutputString( "logs", "gmcommand", useTimeStamp).c_str(), false );
+	Player_Log = new SessionLogWriter(FormatOutputString( "logs", "players", useTimeStamp).c_str(), false );
 
 	/* load the config file */
 	sWorld.Rehash(false);
