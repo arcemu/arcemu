@@ -544,7 +544,7 @@ void Spell::SpellEffectSchoolDMG(uint32 i) // dmg school
 			{
 				if(u_caster)
 					dmg += float2int32(float(u_caster->GetRAP())*0.15f);
-				dmg *= float2int32( 0.9f + RandomFloat( 0.2f ) ); // randomized damage
+				dmg = float2int32( dmg * (0.9f + RandomFloat( 0.2f ) ) ); // randomized damage
 			}break;
 		case SPELL_HASH_GORE: // boar/ravager: Gore (50% chance of double damage)
 			{
@@ -2292,7 +2292,7 @@ void Spell::SpellEffectPowerDrain(uint32 i)  // Power Drain
 			return;
 
 		// Resilience - reduces the effect of mana drains by (CalcRating*2)%.
-		damage *= float2int32( 1 - ( ( static_cast<Player*>(unitTarget)->CalcRating( PLAYER_RATING_MODIFIER_SPELL_CRIT_RESILIENCE ) * 2 ) / 100.0f ) );
+		damage = float2int32( damage * (1 - ( ( static_cast<Player*>(unitTarget)->CalcRating( PLAYER_RATING_MODIFIER_SPELL_CRIT_RESILIENCE ) * 2 ) / 100.0f ) ) );
 	}
 	uint32 amt = damage + ( ( u_caster->GetDamageDoneMod( GetProto()->School ) * 80 ) / 100 );
 	if(amt>curPower)
@@ -4823,7 +4823,7 @@ void Spell::SpellEffectPowerBurn(uint32 i) // power burn
 			return;
 
 		// Resilience - reduces the effect of mana drains by (CalcRating*2)%.
-		damage *= float2int32( 1 - ( ( static_cast<Player*>(unitTarget)->CalcRating( PLAYER_RATING_MODIFIER_SPELL_CRIT_RESILIENCE ) * 2 ) / 100.0f ) );
+		damage = float2int32( damage * (1 - ( ( static_cast<Player*>(unitTarget)->CalcRating( PLAYER_RATING_MODIFIER_SPELL_CRIT_RESILIENCE ) * 2 ) / 100.0f ) ) );
 	}
 	int32 mult = damage;
 	damage = mult * unitTarget->GetUInt32Value(UNIT_FIELD_MAXPOWER1) / 100;

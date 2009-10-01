@@ -4973,7 +4973,7 @@ exit:
 		if( i==0 && p_caster != NULL )
 		{
 			//Heal is increased by 6%
-			value *= (uint32)( 1.06f );
+			value = float2int32( value * 1.06f );
 		}
 	}
 	else if( GetProto()->Id == 57669 || GetProto()->Id == 61782) //Replenishment
