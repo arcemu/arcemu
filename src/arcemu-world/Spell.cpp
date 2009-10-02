@@ -722,7 +722,6 @@ uint8 Spell::DidHit( uint32 effindex, Unit* target )
 	if( GetProto()->MechanicsType < MECHANIC_END )
 	{
 		float res = u_victim->MechanicsResistancesPCT[ m_spellInfo->MechanicsType ];
-		resistchance += res; // TODO: SB@L - This mechanic resist chance is handled twice, once one line below, then as part of resistchance
 		if( Rand( res ) )
 			return SPELL_DID_HIT_RESIST;
 	}
@@ -779,7 +778,13 @@ uint8 Spell::DidHit( uint32 effindex, Unit* target )
 				resistchance = baseresist[2] + (((float)lvldiff-2.0f)*11.0f);
 		}
 	}
-
+	// TODO: SB@L - This mechanic resist chance is handled twice, once several lines above, then as part of resistchance here
+	//check mechanical resistance
+	//i have no idea what is the best pace for this code
+	if( GetProto()->MechanicsType < MECHANIC_END )
+	{
+		resistchance += u_victim->MechanicsResistancesPCT[ GetProto()->MechanicsType ];
+	}
 	//rating bonus
 	if( p_caster != NULL )
 	{
@@ -788,7 +793,7 @@ uint8 Spell::DidHit( uint32 effindex, Unit* target )
 	}
 
 	// school hit resistance: check all schools and take the minimal
-	if( p_victim && GetProto()->SchoolMask > 0 )
+	if( p_victim != NULL && GetProto()->SchoolMask > 0 )
 	{
 		int32 min = 100;
 		for( uint8 i = 0; i < SCHOOL_COUNT; i++ )
