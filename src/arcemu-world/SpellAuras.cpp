@@ -4755,11 +4755,14 @@ void Aura::SpellAuraModShapeshift(bool apply)
 	{
 		for(uint32 i = MAX_REMOVABLE_AURAS_START; i < MAX_REMOVABLE_AURAS_END; ++i)
 		{
-			if( m_target->m_auras[i] != NULL && m_target->m_auras[i]->GetSpellProto() && m_target->m_auras[i]->IsPositive() )
-			{
-				uint32 requiredShapeShift = m_target->m_auras[i]->GetSpellProto()->RequiredShapeShift;
-				if( requiredShapeShift & DecimalToMask(mod->m_miscValue) )
-					m_target->m_auras[i]->Remove();
+			if( m_target->m_auras[i] != NULL 
+				&& m_target->m_auras[i]->GetSpellProto() 
+				&& m_target->m_auras[i]->IsPositive()
+				&& ssf->id != FORM_STEALTH 
+				){
+					uint32 requiredShapeShift = m_target->m_auras[i]->GetSpellProto()->RequiredShapeShift;
+					if( requiredShapeShift & DecimalToMask(mod->m_miscValue) )
+						m_target->m_auras[i]->Remove();
 			}
 		}
 		if( m_target->IsCasting() && m_target->m_currentSpell && m_target->m_currentSpell->GetProto() 
