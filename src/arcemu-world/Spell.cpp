@@ -642,35 +642,36 @@ uint64 Spell::GetSinglePossibleFriend(uint32 i,float prange)
 	return 0;
 }
 
-uint8 Spell::DidHit(uint32 effindex,Unit* target)
+uint8 Spell::DidHit( uint32 effindex, Unit* target )
 {
 	//note resistchance is vise versa, is full hit chance
 	Unit* u_victim = target;
+	if( u_victim == NULL )
+		return SPELL_DID_HIT_MISS;
+	
 	Player* p_victim = ( target->GetTypeId() == TYPEID_PLAYER ) ? static_cast< Player* >( target ) : NULL;
 
-	//
 	float baseresist[3] = { 4.0f, 5.0f, 6.0f };
 	int32 lvldiff;
 	float resistchance ;
-	if( u_victim == NULL )
-		return SPELL_DID_HIT_MISS;
+
 
 	/************************************************************************/
 	/* Can't resist non-unit                                                */
 	/************************************************************************/
-	if(!u_caster)
+	if( u_caster == NULL )
 		return SPELL_DID_HIT_SUCCESS;
 
 	/************************************************************************/
 	/* Can't reduce your own spells                                         */
 	/************************************************************************/
-	if(u_caster == u_victim)
+	if( u_caster == u_victim )
 		return SPELL_DID_HIT_SUCCESS;
 
 	/************************************************************************/
 	/* Check if the unit is evading                                         */
 	/************************************************************************/
-	if(u_victim->GetTypeId()==TYPEID_UNIT && u_victim->GetAIInterface()->getAIState()==STATE_EVADE)
+	if( u_victim->GetTypeId()==TYPEID_UNIT && u_victim->GetAIInterface()->getAIState() == STATE_EVADE )
 		return SPELL_DID_HIT_EVADE;
 
 	/************************************************************************/
@@ -678,7 +679,7 @@ uint8 Spell::DidHit(uint32 effindex,Unit* target)
 	/* Unless the spell would actually dispel invulnerabilities             */
 	/************************************************************************/
 	int dispelMechanic = GetProto()->Effect[0] == SPELL_EFFECT_DISPEL_MECHANIC && GetProto()->EffectMiscValue[0] == MECHANIC_INVULNERABLE;
-	if(u_victim->SchoolImmunityList[GetProto()->School] && !dispelMechanic)
+	if( u_victim->SchoolImmunityList[ GetProto()->School ] && !dispelMechanic )
 		return SPELL_DID_HIT_IMMUNE;
 
 	/* Check if player target has god mode */
@@ -690,7 +691,7 @@ uint8 Spell::DidHit(uint32 effindex,Unit* target)
 	/*************************************************************************/
 	/* Check if the target is immune to this mechanic                        */
 	/*************************************************************************/
-	if( m_spellInfo->MechanicsType<27 && u_victim->MechanicsDispels[m_spellInfo->MechanicsType])
+	if( m_spellInfo->MechanicsType < MECHANIC_END && u_victim->MechanicsDispels[ m_spellInfo->MechanicsType ] )
 
 	{
 		// Immune - IF, and ONLY IF, there is no damage component!
@@ -718,16 +719,14 @@ uint8 Spell::DidHit(uint32 effindex,Unit* target)
 	/************************************************************************/
 	/* Check if the target has a % resistance to this mechanic              */
 	/************************************************************************/
-	if( m_spellInfo->MechanicsType<27)
+	if( GetProto()->MechanicsType < MECHANIC_END )
 	{
-		float res;
-		if(p_victim)
-			res = p_victim->MechanicsResistancesPCT[m_spellInfo->MechanicsType];
-		else
-			res = u_victim->MechanicsResistancesPCT[m_spellInfo->MechanicsType];
-		if(Rand(res))
+		float res = u_victim->MechanicsResistancesPCT[ m_spellInfo->MechanicsType ];
+		resistchance += res; // TODO: SB@L - This mechanic resist chance is handled twice, once one line below, then as part of resistchance
+		if( Rand( res ) )
 			return SPELL_DID_HIT_RESIST;
 	}
+
 	/************************************************************************/
 	/* Check if the spell is a melee attack and if it was missed/parried    */
 	/************************************************************************/
@@ -753,7 +752,7 @@ uint8 Spell::DidHit(uint32 effindex,Unit* target)
 	/************************************************************************/
 	/* Check if the spell is resisted.                                      */
 	/************************************************************************/
-	if( GetProto()->School == 0  && !GetProto()->MechanicsType )
+	if( GetProto()->School == 0  && GetProto()->MechanicsType == 0 )
 		return SPELL_DID_HIT_SUCCESS;
 
 	bool pvp =(p_caster && p_victim);
@@ -780,15 +779,7 @@ uint8 Spell::DidHit(uint32 effindex,Unit* target)
 				resistchance = baseresist[2] + (((float)lvldiff-2.0f)*11.0f);
 		}
 	}
-	//check mechanical resistance
-	//i have no idea what is the best pace for this code
-	if( GetProto()->MechanicsType < MECHANIC_END )
-	{
-		if(p_victim)
-			resistchance += p_victim->MechanicsResistancesPCT[GetProto()->MechanicsType];
-		else
-			resistchance += u_victim->MechanicsResistancesPCT[GetProto()->MechanicsType];
-	}
+
 	//rating bonus
 	if( p_caster != NULL )
 	{
@@ -796,19 +787,28 @@ uint8 Spell::DidHit(uint32 effindex,Unit* target)
 		resistchance -= p_caster->GetHitFromSpell();
 	}
 
-	if(p_victim && GetProto()->School != 0)
-		resistchance += p_victim->m_resist_hit[ MOD_SPELL ];
-
-	if( this->GetProto()->Effect[effindex] == SPELL_EFFECT_DISPEL && GetProto()->SpellGroupType && u_caster)
+	// school hit resistance: check all schools and take the minimal
+	if( p_victim && GetProto()->SchoolMask > 0 )
 	{
-		SM_FFValue(u_victim->SM_FRezist_dispell,&resistchance,GetProto()->SpellGroupType);
-		SM_PFValue(u_victim->SM_PRezist_dispell,&resistchance,GetProto()->SpellGroupType);
+		int32 min = 100;
+		for( uint8 i = 0; i < SCHOOL_COUNT; i++ )
+		{
+			if( GetProto()->SchoolMask & ( 1 << i ) && min > p_victim->m_resist_hit_spell[ i ] )
+				min = p_victim->m_resist_hit_spell[ i ];
+		}
+		resistchance += float( min );
 	}
 
-	if(GetProto()->SpellGroupType && u_caster)
+	if( GetProto()->Effect[effindex] == SPELL_EFFECT_DISPEL && GetProto()->SpellGroupType )
+	{
+		SM_FFValue( u_victim->SM_FRezist_dispell,&resistchance,GetProto()->SpellGroupType );
+		SM_PFValue( u_victim->SM_PRezist_dispell,&resistchance,GetProto()->SpellGroupType );
+	}
+
+	if( GetProto()->SpellGroupType )
 	{
 		float hitchance=0;
-		SM_FFValue(u_caster->SM_FHitchance,&hitchance,GetProto()->SpellGroupType);
+		SM_FFValue( u_caster->SM_FHitchance, &hitchance, GetProto()->SpellGroupType );
 		resistchance -= hitchance;
 	}
 

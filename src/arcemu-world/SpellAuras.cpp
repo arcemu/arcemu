@@ -8500,17 +8500,17 @@ void Aura::SpellAuraEmphaty(bool apply)
 void Aura::SpellAuraModOffhandDamagePCT(bool apply)
 {
 	//Used only by talents of rogue and warrior;passive,positive
-	if(m_target->GetTypeId() == TYPEID_PLAYER)
+	if( p_target != NULL )
 	{
-		if(apply)
+		if( apply )
 		{
 			SetPositive();
-			static_cast< Player* >( m_target )->offhand_dmg_mod *= (100+mod->m_amount)/100.0f;
+			p_target->offhand_dmg_mod *= ( 100 + mod->m_amount ) / 100.0f;
 		}
 		else
-			static_cast< Player* >( m_target )->offhand_dmg_mod /= (100+mod->m_amount)/100.0f;
+			p_target->offhand_dmg_mod /= ( 100 + mod->m_amount ) / 100.0f;
 
-		m_target->CalcDamage();
+		p_target->CalcDamage();
 	}
 }
 
@@ -8518,62 +8518,63 @@ void Aura::SpellAuraModPenetration(bool apply) // armor penetration & spell pene
 {
 	if( m_spellProto->NameHash == SPELL_HASH_SERRATED_BLADES )
 	{
-		if(!m_target->IsPlayer())
+		if( p_target == NULL )
 			return;
 
-		Player *plr = static_cast< Player* >(m_target);
 		if( apply )
 		{
 			if( m_spellProto->Id == 14171 )
-				plr->PowerCostPctMod[0] += float( m_target->getLevel() * 2.67 );
+				p_target->PowerCostPctMod[0] += float( m_target->getLevel() * 2.67 );
 			else if( m_spellProto->Id == 14172 )
-				plr->PowerCostPctMod[0] += float( m_target->getLevel() * 5.43 );
+				p_target->PowerCostPctMod[0] += float( m_target->getLevel() * 5.43 );
 			else if( m_spellProto->Id == 14173 )
-				plr->PowerCostPctMod[0] += float( m_target->getLevel() * 8 );
+				p_target->PowerCostPctMod[0] += float( m_target->getLevel() * 8 );
 		}
 		else
 		{
 			if( m_spellProto->Id == 14171 )
-				plr->PowerCostPctMod[0] -= float( m_target->getLevel() * 2.67 );
+				p_target->PowerCostPctMod[0] -= float( m_target->getLevel() * 2.67 );
 			else if( m_spellProto->Id == 14172 )
-				plr->PowerCostPctMod[0] -= float( m_target->getLevel() * 5.43 );
+				p_target->PowerCostPctMod[0] -= float( m_target->getLevel() * 5.43 );
 			else if( m_spellProto->Id == 14173 )
-				plr->PowerCostPctMod[0] -= float( m_target->getLevel() * 8 );
+				p_target->PowerCostPctMod[0] -= float( m_target->getLevel() * 8 );
 		}
 		return;
 	}
-	if(apply)
+	if( apply )
 	{
-		if(mod->m_amount < 0)
+		if( mod->m_amount < 0 )
 			SetPositive();
 		else
 			SetNegative();
 
-		for(uint32 x=0;x<7;x++)
+		for( uint8 x = 0; x < 7; x++ )
 		{
-			if (mod->m_miscValue & (((uint32)1)<<x))
+			if( mod->m_miscValue & (((uint32)1) << x ) )
 				m_target->PowerCostPctMod[x] -= mod->m_amount;
 		}
 
-		if(m_target->IsPlayer()){
-			if(mod->m_miscValue & 124)
-				m_target->ModSignedInt32Value(PLAYER_FIELD_MOD_TARGET_RESISTANCE, mod->m_amount);
-			if(mod->m_miscValue & 1)
-				m_target->ModSignedInt32Value(PLAYER_FIELD_MOD_TARGET_PHYSICAL_RESISTANCE, mod->m_amount);
+		if( p_target != NULL )
+		{
+			if( mod->m_miscValue & 124 )
+				m_target->ModSignedInt32Value( PLAYER_FIELD_MOD_TARGET_RESISTANCE, mod->m_amount );
+			if( mod->m_miscValue & 1 )
+				m_target->ModSignedInt32Value( PLAYER_FIELD_MOD_TARGET_PHYSICAL_RESISTANCE, mod->m_amount );
 		}
 	}
 	else
 	{
-		for(uint32 x=0;x<7;x++)
+		for( uint8 x = 0; x < 7; x++ )
 		{
-			if (mod->m_miscValue & (((uint32)1)<<x))
+			if( mod->m_miscValue & (((uint32)1)<<x) )
 				m_target->PowerCostPctMod[x] += mod->m_amount;
 		}
-		if(m_target->IsPlayer()){
-			if(mod->m_miscValue & 124)
-				m_target->ModSignedInt32Value(PLAYER_FIELD_MOD_TARGET_RESISTANCE, -mod->m_amount);
-			if(mod->m_miscValue & 1)
-				m_target->ModSignedInt32Value(PLAYER_FIELD_MOD_TARGET_PHYSICAL_RESISTANCE, -mod->m_amount);
+		if( p_target != NULL )
+		{
+			if( mod->m_miscValue & 124 )
+				m_target->ModSignedInt32Value( PLAYER_FIELD_MOD_TARGET_RESISTANCE, -mod->m_amount );
+			if( mod->m_miscValue & 1 )
+				m_target->ModSignedInt32Value( PLAYER_FIELD_MOD_TARGET_PHYSICAL_RESISTANCE, -mod->m_amount );
 		}
 	}
 }
@@ -8585,14 +8586,14 @@ void Aura::SpellAuraIncreaseArmorByPctInt(bool apply)
 	int32 amt = float2int32(i_Int * ((float)mod->m_amount / 100.0f));
 	amt *= (!apply) ? -1 : 1;
 
-	for(uint32 x=0;x<7;x++)
+	for( uint8 x = 0; x < 7; x++ )
 	{
 		if(mod->m_miscValue & (((uint32)1)<< x))
 		{
-			if(m_target->GetTypeId() == TYPEID_PLAYER)
+			if( p_target == NULL )
 			{
-				static_cast< Player* >( m_target )->FlatResistanceModifierPos[x] += amt;
-				static_cast< Player* >( m_target )->CalcResistance(x);
+				p_target->FlatResistanceModifierPos[x] += amt;
+				p_target->CalcResistance(x);
 			}
 			else if(m_target->GetTypeId() == TYPEID_UNIT)
 			{
@@ -8605,35 +8606,40 @@ void Aura::SpellAuraIncreaseArmorByPctInt(bool apply)
 
 void Aura::SpellAuraReduceAttackerMHitChance(bool apply)
 {
-	if (!m_target->IsPlayer())
+	if( p_target == NULL )
 		return;
-	if(apply)
-		static_cast< Player* >( m_target )->m_resist_hit[ MOD_MELEE ] += mod->m_amount;
+	if( apply )
+		p_target->m_resist_hit[ MOD_MELEE ] += mod->m_amount;
 	else
-		static_cast< Player* >( m_target )->m_resist_hit[ MOD_MELEE ] -= mod->m_amount;
+		p_target->m_resist_hit[ MOD_MELEE ] -= mod->m_amount;
 }
 
 void Aura::SpellAuraReduceAttackerRHitChance(bool apply)
 {
-	if (!m_target->IsPlayer())
+	if( p_target == NULL )
 		return;
-	if(apply)
-		static_cast< Player* >( m_target )->m_resist_hit[ MOD_RANGED ] += mod->m_amount;
+	if( apply )
+		p_target->m_resist_hit[ MOD_RANGED ] += mod->m_amount;
 	else
-		static_cast< Player* >( m_target )->m_resist_hit[ MOD_RANGED ] -= mod->m_amount;
+		p_target->m_resist_hit[ MOD_RANGED ] -= mod->m_amount;
 }
 
 void Aura::SpellAuraReduceAttackerSHitChance(bool apply)
 {
-	if (!m_target->IsPlayer())
+	if( p_target == NULL )
 		return;
-	if(apply)
-		static_cast< Player* >( m_target )->m_resist_hit[ MOD_SPELL ] -= mod->m_amount;
-	else
-		static_cast< Player* >( m_target )->m_resist_hit[ MOD_SPELL ] += mod->m_amount;
+	for( uint8 i = 0; i < SCHOOL_COUNT; i++ )
+	{
+		if( mod->m_miscValue & ( 1 << i ) ) // check school
+		{
+			// signs reversed intentionally
+			if( apply )
+				p_target->m_resist_hit_spell[ i ] -= mod->m_amount;
+			else
+				p_target->m_resist_hit_spell[ i ] += mod->m_amount;
+		}
+	}
 }
-
-
 
 void Aura::SpellAuraReduceEnemyMCritChance(bool apply)
 {

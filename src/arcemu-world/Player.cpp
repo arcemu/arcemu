@@ -399,10 +399,15 @@ mOutOfRangeIdCount(0)
 
 	for(i = 0; i < 3; i++ )
 	{
-		m_resist_hit[i]		= 0.0f;
 		m_attack_speed[i]	= 1.0f;
 		m_castFilter[i]		= 0;
 	}
+	
+	for( i = 0; i < SCHOOL_COUNT; i++ )
+		m_resist_hit_spell[i] = 0;
+	
+	m_resist_hit[MOD_MELEE]		= 0.0f;
+	m_resist_hit[MOD_RANGED]	= 0.0f;
 
 	m_maxTalentPoints = 0; //VLack: 3 Aspire values initialized
 	m_talentActiveSpec = 0;
