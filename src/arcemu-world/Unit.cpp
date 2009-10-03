@@ -18,6 +18,11 @@
  *
  */
 
+// Last edited by:	$Author$
+// revision:		$Rev$
+// date:			$Date$
+
+
 #include "StdAfx.h"
 
 
@@ -8009,3 +8014,12 @@ void Unit::UpdatePowerAmm()
 	SendMessageToSet( &data, true );
 }
 
+void Unit::SetDualWield(bool enabled)
+{
+	m_dualWield = enabled;
+	
+	
+	// Titan's grip
+	if( !enabled && IsPlayer() )
+		RemoveAllAuraById( 49152 );
+}

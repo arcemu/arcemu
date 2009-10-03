@@ -18,6 +18,11 @@
  *
  */
 
+// Last edited by:	$Author$
+// revision:		$Rev$
+// date:			$Date$
+
+
 #include "StdAfx.h"
 #include "Item.h"
 #include "Container.h"
@@ -343,8 +348,21 @@ AddItemResult ItemInterface::m_AddItem(Item *item, int8 ContainerSlot, int16 slo
 		m_pOwner->UpdateKnownCurrencies(item->GetEntry(), true);
 	}
 
-	if( ContainerSlot == INVENTORY_SLOT_NOT_SET && slot == EQUIPMENT_SLOT_OFFHAND && item->GetProto()->Class == ITEM_CLASS_WEAPON )
+	if( ContainerSlot == INVENTORY_SLOT_NOT_SET && slot == EQUIPMENT_SLOT_OFFHAND && item->GetProto()->Class == ITEM_CLASS_WEAPON ){
 		m_pOwner->SetDualWield( true );
+
+		/////////////////////////////////////////// Titan's grip stuff ////////////////////////////////////////////////////////////
+
+		uint32 subclass = item->GetProto()->SubClass;
+		if( subclass == ITEM_SUBCLASS_WEAPON_TWOHAND_AXE 
+			|| subclass == ITEM_SUBCLASS_WEAPON_TWOHAND_MACE 
+			|| subclass == ITEM_SUBCLASS_WEAPON_TWOHAND_SWORD ){
+				
+				m_pOwner->CastSpell( m_pOwner, 49152, true );
+
+		///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		}
+	}
 
 #ifdef ENABLE_ACHIEVEMENTS
 	m_pOwner->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_OWN_ITEM, item->GetEntry(), 1, 0);
@@ -3266,9 +3284,21 @@ void ItemInterface::SwapItemSlots(int8 srcslot, int8 dstslot)
 	// handle dual wield
 	if( dstslot == EQUIPMENT_SLOT_OFFHAND || srcslot == EQUIPMENT_SLOT_OFFHAND )
 	{
-		if( m_pItems[EQUIPMENT_SLOT_OFFHAND] != NULL && m_pItems[EQUIPMENT_SLOT_OFFHAND]->GetProto()->Class == ITEM_CLASS_WEAPON )
+		if( m_pItems[EQUIPMENT_SLOT_OFFHAND] != NULL && m_pItems[EQUIPMENT_SLOT_OFFHAND]->GetProto()->Class == ITEM_CLASS_WEAPON ){
 			m_pOwner->SetDualWield( true );
-		else
+
+		/////////////////////////////////////////// Titan's grip stuff ////////////////////////////////////////////////////////////
+
+		uint32 subclass = m_pItems[EQUIPMENT_SLOT_OFFHAND]->GetProto()->SubClass;
+		if( subclass == ITEM_SUBCLASS_WEAPON_TWOHAND_AXE 
+			|| subclass == ITEM_SUBCLASS_WEAPON_TWOHAND_MACE 
+			|| subclass == ITEM_SUBCLASS_WEAPON_TWOHAND_SWORD ){
+				
+				m_pOwner->CastSpell( m_pOwner, 49152, true );
+		}
+
+		///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		}else
 			m_pOwner->SetDualWield( false );
 	}
 
