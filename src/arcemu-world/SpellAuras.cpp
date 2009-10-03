@@ -1450,6 +1450,7 @@ void Aura::SpellAuraPeriodicDamage(bool apply)
 		if(dmg<=0)
 			return; //who would want a negative dmg here ?
 
+		sLog.outDebug("Adding periodic dmg aura, spellid: %lu",this->GetSpellId() );
 		sEventMgr.AddEvent(this, &Aura::EventPeriodicDamage,(uint32)dmg,
 			EVENT_AURA_PERIODIC_DAMAGE,GetSpellProto()->EffectAmplitude[mod->i],0,EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
 
@@ -2513,8 +2514,10 @@ void Aura::SpellAuraDummy(bool apply)
 	case 17402:
 	case 27012:		// hurricane
 		{
-			if(apply)
+			if(apply){
+				sLog.outDebug("Adding periodic dmg aura, spellid: %lu",this->GetSpellId() );
 				sEventMgr.AddEvent(this, &Aura::EventPeriodicDamage, (uint32)mod->m_amount, EVENT_AURA_PERIODIC_DAMAGE, 1000, 0, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
+			}
 			else
 				sEventMgr.RemoveEvents(this, EVENT_AURA_PERIODIC_DAMAGE);
 		}break;

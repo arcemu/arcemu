@@ -63,19 +63,18 @@ static const char* colorstrings[TBLUE+1] = {
 };
 #endif
 
-void oLog::outTime()
-{
-#ifndef WIN32
-	char buf[256];
-	time_t t = time(NULL);
-	struct tm *tm = localtime(&t);
+void oLog::outTime(){
+	time_t now;
+	struct tm * timeinfo = NULL;
+	char buffer[10];
+	
+	time( &now );
+	timeinfo = localtime( &now );
 
-	if (tm)
-	{
-		strftime(buf, 256, "[%Y-%m-%d %T] ", tm);
-		fprintf(m_file, buf);
+	if( timeinfo != NULL ){
+		strftime(buffer,10,"[ %H:%M ]",timeinfo);
+		fprintf( m_file, buffer );
 	}
-#endif
 }
 
 void oLog::outString( const char * str, ... )
