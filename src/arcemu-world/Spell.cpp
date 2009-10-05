@@ -2183,17 +2183,7 @@ void Spell::SendCastResult(uint8 result)
 		break;
 
 	case SPELL_FAILED_REQUIRES_AREA:
-		if( GetProto()->RequiresAreaId > 0 )
-		{
-			AreaGroup *ag = dbcAreaGroup.LookupEntry( GetProto()->RequiresAreaId );
-			uint16 plrarea = plr->GetMapMgr()->GetAreaID( plr->GetPositionX(), plr->GetPositionY() );
-			for( uint8 i = 0; i < 7; i++ )
-				if( ag->AreaId[i] != 0 && ag->AreaId[i] != plrarea )
-				{
-					Extra = ag->AreaId[i];
-					break;
-				}
-		}
+		Extra = GetProto()->RequiresAreaId;
 		break;
 
 	case SPELL_FAILED_TOTEMS:
@@ -3304,7 +3294,7 @@ uint8 Spell::CanCast(bool tolerate)
 			if(abysal != NULL)
 			{
 				if(!abysal->isAlive())
-					if(!(p_caster->GetItemInterface()->GetItemCount(31672, FALSE) > 1 && p_caster->GetItemInterface()->GetItemCount(31673, FALSE) > 0 && p_caster->CalcDistance(p_caster, abysal) < 10))
+					if(!(p_caster->GetItemInterface()->GetItemCount(31672) > 1 && p_caster->GetItemInterface()->GetItemCount(31673) > 0 && p_caster->CalcDistance(p_caster, abysal) < 10))
 						return SPELL_FAILED_NOT_HERE;
 			}
 			else
@@ -3585,13 +3575,6 @@ uint8 Spell::CanCast(bool tolerate)
 				// check if the item has the required charges
 				if (i_caster->GetUInt32Value(ITEM_FIELD_SPELL_CHARGES) == 0)
 					return SPELL_FAILED_NO_CHARGES_REMAIN;
-
-				// for items that combine to create a new item, check if we have the required quantity of the item
-				if ((i_caster->GetProto()->ItemId == GetProto()->Reagent[0]) &&
-					(i_caster->GetProto()->Flags != 268435520)) // Enchanting scrolls
-
-					if(p_caster->GetItemInterface()->GetItemCount(GetProto()->Reagent[0]) < 1 + GetProto()->ReagentCount[0])
-						return SPELL_FAILED_ITEM_GONE;
 			}
 		}
 
@@ -3682,21 +3665,11 @@ uint8 Spell::CanCast(bool tolerate)
 		if( GetProto()->RequiresAreaId > 0 )
 		{
 			AreaGroup *ag = dbcAreaGroup.LookupEntry(GetProto()->RequiresAreaId);
-			uint8 i;
-			uint16 plrarea;
-			AreaTable * at = dbcArea.LookupEntry(p_caster->GetMapMgr()->GetAreaID(p_caster->GetPositionX(), p_caster->GetPositionY()));
-			if( at->ZoneId == 0 )
-			{
-				plrarea = p_caster->GetMapMgr()->GetAreaID(p_caster->GetPositionX(), p_caster->GetPositionY());
-			}
-			else
-			{
-				plrarea = static_cast<uint16>( at->ZoneId );
-			}
-			for(i = 0; i < 7; i++)
+			uint16 plrarea = p_caster->GetMapMgr()->GetAreaID( p_caster->GetPositionX(), p_caster->GetPositionY() );
+			for( i = 0; i < 7; i++ )
 				if( ag->AreaId[i] == plrarea )
 					break;
-			if (i == 7)
+			if( i == 7 )
 				return SPELL_FAILED_REQUIRES_AREA;
 		}
 

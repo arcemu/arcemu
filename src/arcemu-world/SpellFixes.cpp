@@ -8185,34 +8185,6 @@ void ApplyNormalFixes()
 			sp->procChance = 100;	
 		}
 
-		sp = dbcSpell.LookupEntryForced( 21050 );		// Melodious Rapture rat quest 
-		if( sp != NULL )
-			sp->RequiresAreaId = 0;
-
-		sp = dbcSpell.LookupEntryForced( 42521 );		// Cleansing Witch Hill q item
-		if( sp != NULL )
-			sp->RequiresAreaId = 0;
-
-		sp = dbcSpell.LookupEntryForced( 24815 );		// Draw Ancient Glyphs - spell for quest
-		if( sp != NULL )
-			sp->RequiresAreaId = 3257;
-
-		sp = dbcSpell.LookupEntryForced( 41423 );		// Hungry Nether Rays quest item
-		if( sp != NULL )
-			sp->RequiresAreaId = 3679;
-
-		sp = dbcSpell.LookupEntryForced( 39844 );		// Fires Over Skettis quest item
-		if( sp != NULL )
-			sp->RequiresAreaId = 0;
-
-		sp = dbcSpell.LookupEntryForced( 39527 );		// Ashtongue Ruse
-		if( sp != NULL )
-			sp->RequiresAreaId = 0;
-
-		sp = dbcSpell.LookupEntryForced( 42090 );		// Ashtongue Ruse
-		if( sp != NULL )
-			sp->RequiresAreaId = 0;
-
 		sp = dbcSpell.LookupEntryForced( 44856 );		// Bash'ir Phasing Device
 		if( sp != NULL )
 			sp->AuraInterruptFlags = AURA_INTERRUPT_ON_LEAVE_AREA;
