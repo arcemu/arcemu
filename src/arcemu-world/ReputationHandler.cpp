@@ -448,7 +448,8 @@ bool Player::AddNewFaction( FactionDBC * dbc, int32 standing, bool base ) // if 
 	uint32 ClassMask = getClassMask();
 	for ( uint32 i = 0; i < 4; i++ )
 	{
-		if ( dbc->RaceMask[i] & RaceMask && ( dbc->ClassMask[i] & ClassMask || dbc->ClassMask[i] == 0 ) )
+		if( ( dbc->RaceMask[i] & RaceMask || ( dbc->RaceMask[i] == 0 && dbc->ClassMask[i] != 0 ) ) &&
+			( dbc->ClassMask[i] & ClassMask || dbc->ClassMask[i] == 0 ) )
 		{
 			FactionReputation * rep = new FactionReputation;
 			rep->flag = static_cast<uint8>( dbc->repFlags[i] );
