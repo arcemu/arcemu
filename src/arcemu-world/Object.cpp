@@ -2232,7 +2232,7 @@ void Object::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
 		}
 	}
 	/* -------------------------- HIT THAT CAUSES VICTIM TO DIE ---------------------------*/
-	if ((isCritter || health <= damage) )
+	if ( health <= damage )
 	{
 		// If it's a training dummy then we simply set the HP to 1 instead of killing the unit
 		if(pVictim->IsCreature() &&  (static_cast<Creature*>(pVictim))->GetProto() != NULL && (static_cast<Creature*>(pVictim))->GetProto()->isTrainingDummy ){
@@ -3024,7 +3024,10 @@ void Object::SpellNonMeleeDamageLog(Unit *pVictim, uint32 spellID, uint32 damage
 	{
 		Unit* caster = static_cast< Unit* >( this );
 		caster->RemoveAurasByInterruptFlag( AURA_INTERRUPT_ON_START_ATTACK );
-		res += caster->GetSpellDmgBonus( pVictim, spellInfo, ( int )res, false );
+
+		int32 spelldmgbonus = caster->GetSpellDmgBonus( pVictim, spellInfo, ( int )res, false );
+
+		res += spelldmgbonus;
 
 //==========================================================================================
 //==============================Post +SpellDamage Bonus Modifications=======================

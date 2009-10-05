@@ -1009,6 +1009,7 @@ public:
 	void SendMeetingStoneQueue(uint32 DungeonId, uint8 Status);
 	void SendDungeonDifficulty();
 	void SendRaidDifficulty();
+	void SendExploreXP( uint32 areaid, uint32 xp );
 
 	void AddToWorld();
 	void AddToWorld(MapMgr * pMapMgr);

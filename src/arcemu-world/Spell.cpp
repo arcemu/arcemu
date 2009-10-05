@@ -3741,7 +3741,8 @@ uint8 Spell::CanCast(bool tolerate)
 		}
 
 		// check to make sure we have a targeted item
-		if (!i_target)
+		// the second check is a temporary exploit fix, people keep stacking enchants on 0 durability items and then 1hit/1shot the other guys
+		if (!i_target || ( i_target->GetDurability() == 0 && i_target->GetDurabilityMax() != 0 ) )
 			return SPELL_FAILED_BAD_TARGETS;
 
 		ItemPrototype* proto = i_target->GetProto();

@@ -181,6 +181,8 @@ pSpellEffect SpellEffectsHandler[TOTAL_SPELL_EFFECTS]={
 	&Spell::SpellEffectCreateItem2,				//157 SPELL_EFFECT_CREATE_ITEM_2  
 	&Spell::SpellEffectMilling,					// Milling - 158
 	&Spell::SpellEffectRenamePet,				// Allow Pet Rename - 159
+	&Spell::SpellEffectNULL,					// unknown - 160
+	&Spell::SpellEffectNULL,					// unknown - 161 //used by spell 63624(dual talents)
 };
 
 const char* SpellEffectNames[TOTAL_SPELL_EFFECTS] = {
@@ -313,7 +315,6 @@ const char* SpellEffectNames[TOTAL_SPELL_EFFECTS] = {
 	"UNKNOWN5",                  //    126
 	"PROSPECTING",               //    127
 	"UNKNOWN7",                  //    128
-	"UNKNOWN8",                  //    129
 	"UNKNOWN9",                  //    129
 	"UNKNOWN10",                 //    130
 	"UNKNOWN11",                 //    131
@@ -343,7 +344,10 @@ const char* SpellEffectNames[TOTAL_SPELL_EFFECTS] = {
 	"UNKNOWN33",                 //    155
 	"UNKNOWN34",                 //    156
 	"UNKNOWN35",                 //    157
-	"MILLING"	                 //    158
+	"MILLING",                   //    158
+	"ALLOW_PET_RENAME",          //    159
+	"UNKNOWN36",                 //    160
+	"UNKNOWN37"                  //    161 //used by spell 63624(dual talents)
 };
 
 void Spell::SpellEffectNULL(uint32 i)

@@ -1538,14 +1538,16 @@ void Player::_EventExploration()
 		uint32 explore_xp = at->level * 10;
 		explore_xp *= float2int32(sWorld.getRate(RATE_EXPLOREXP));
 
-		WorldPacket data(SMSG_EXPLORATION_EXPERIENCE, 8);
-		data << at->AreaId << explore_xp;
-		m_session->SendPacket(&data);
 #ifdef ENABLE_ACHIEVEMENTS
 		GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_EXPLORE_AREA);
 #endif
-		if(getLevel() < GetUInt32Value(PLAYER_FIELD_MAX_LEVEL) && explore_xp)
+		uint32 maxlevel = GetUInt32Value(PLAYER_FIELD_MAX_LEVEL);
+		if(getLevel() <  maxlevel && explore_xp > 0 ){
+			SendExploreXP( at->AreaId, explore_xp );
 			GiveXP(explore_xp, 0, false);
+		}else{
+			SendExploreXP( at->AreaId, 0 );
+		}
 	}
 }
 
@@ -10101,9 +10103,9 @@ void Player::ModifyBonuses( uint32 type, int32 val, bool apply )
 				for( uint8 school = 1; school < 7; ++school )
 				{
 					ModUnsigned32Value( PLAYER_FIELD_MOD_DAMAGE_DONE_POS + school, val );
-					HealDoneMod[school] += val;
+					HealDoneMod[ school ] += val;
 				}
-				ModUnsigned32Value( PLAYER_FIELD_MOD_HEALING_DONE_POS, uint32( float( val ) * 1.88f ) );
+				ModUnsigned32Value( PLAYER_FIELD_MOD_HEALING_DONE_POS, val );
 			}break;
 		}
 }
@@ -10185,7 +10187,10 @@ void Player::SetShapeShift(uint8 ss)
 			uint32 reqss = m_auras[x]->GetSpellProto()->RequiredShapeShift;
 			if( reqss != 0 && m_auras[x]->IsPositive() )
 			{
-				if( old_ss > 0 && old_ss != 28 )	// 28 = FORM_SHADOW - Didn't find any aura that required this form
+				if( old_ss > 0 
+					&& old_ss != FORM_SHADOW 
+					&& old_ss != FORM_STEALTH
+					)	// 28 = FORM_SHADOW - Didn't find any aura that required this form
 													// not sure why all priest spell proto's RequiredShapeShift are set [to 134217728]
 				{
 					if(  ( ((uint32)1 << (old_ss-1)) & reqss ) &&		// we were in the form that required it
@@ -13280,3 +13285,10 @@ void Player::RemoveSanctuaryFlag()
 		(*itr)->RemoveSanctuaryFlag();
 }
 
+void Player::SendExploreXP( uint32 areaid, uint32 xp ){
+	
+	WorldPacket data(SMSG_EXPLORATION_EXPERIENCE, 8);
+	data << uint32( areaid );
+	data << uint32( xp );
+	m_session->SendPacket(&data);
+}

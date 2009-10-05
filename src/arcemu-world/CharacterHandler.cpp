@@ -198,7 +198,7 @@ void WorldSession::CharacterEnumProc(QueryResult * result)
 
 			data << uint32(0); //Added in 3.0.2 - if 1, faction change at logon...
 
-			data << fields[14].GetUInt8();		// Rest State
+			// data << fields[14].GetUInt8();		// Rest State
 
 			data << uint8(0); //3.2.0
 
@@ -809,34 +809,7 @@ void WorldSession::FullLogin(Player * plr)
 	info->m_loggedInPlayer = plr;
 
 	// account data == UI config
-#ifndef USING_BIG_ENDIAN
-	StackWorldPacket<128> data(SMSG_ACCOUNT_DATA_TIMES);
-#else
-	WorldPacket data(SMSG_ACCOUNT_DATA_TIMES, 128);
-#endif
-
-	MD5Hash md5hash;
-
-	for (int i = 0; i < 8; i++)
-	{
-		AccountDataEntry* acct_data = GetAccountData(i);
-
-		if (!acct_data->data)
-		{
-			data << uint64(0) << uint64(0);				// Nothing.
-			continue;
-		}
-		md5hash.Initialize();
-		md5hash.UpdateData((const uint8*)acct_data->data, acct_data->sz);
-		md5hash.Finalize();
-
-#ifndef USING_BIG_ENDIAN
-		data.Write(md5hash.GetDigest(), MD5_DIGEST_LENGTH);
-#else
-		data.append(md5hash.GetDigest(), MD5_DIGEST_LENGTH);
-#endif
-	}
-	SendPacket(&data);
+	SendAccountDataTimes( PER_CHARACTER_CACHE_MASK );
 
 	// Set TIME OF LOGIN
 	CharacterDatabase.Execute("UPDATE characters SET online = 1 WHERE guid = %u" , plr->GetLowGUID());
