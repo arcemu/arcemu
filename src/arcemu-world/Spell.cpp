@@ -2045,7 +2045,7 @@ void Spell::update(uint32 difftime)
 
 void Spell::finish(bool successful)
 {
-	if (m_spellState == SPELL_STATE_FINISHED)
+	if( m_spellState == SPELL_STATE_FINISHED )
 		return;
 
 	m_spellState = SPELL_STATE_FINISHED;
@@ -2183,9 +2183,17 @@ void Spell::SendCastResult(uint8 result)
 		break;
 
 	case SPELL_FAILED_REQUIRES_AREA:
-		Extra = GetProto()->RequiresAreaId;
-		break;
-
+		if( GetProto()->RequiresAreaId > 0 ) 
+		{ 
+			AreaGroup *ag = dbcAreaGroup.LookupEntry( GetProto()->RequiresAreaId ); 
+			uint16 plrarea = plr->GetMapMgr()->GetAreaID( plr->GetPositionX(), plr->GetPositionY() ); 
+			for( uint8 i = 0; i < 7; i++ ) 
+				if( ag->AreaId[i] != 0 && ag->AreaId[i] != plrarea ) 
+				{ 
+					Extra = ag->AreaId[i]; 
+					break;
+				} 
+		} break;
 	case SPELL_FAILED_TOTEMS:
 		Extra = GetProto()->Totem[1] ? GetProto()->Totem[1] : GetProto()->Totem[0];
 		break;
@@ -5297,21 +5305,21 @@ void Spell::SendHealManaSpellOnPlayer(Object * caster, Object * target, uint32 d
 	caster->SendMessageToSet(&data, true);
 }
 
-void Spell::Heal(int32 amount, bool ForceCrit)
+void Spell::Heal( int32 amount, bool ForceCrit )
 {
-	if( !unitTarget || !unitTarget->isAlive() )
+	if( unitTarget == NULL || !unitTarget->isAlive() )
 		return;
 
 	if( p_caster != NULL )
-		p_caster->last_heal_spell=GetProto();
+		p_caster->last_heal_spell = GetProto();
 
     //self healing shouldn't flag himself
-	if(p_caster && playerTarget && p_caster != playerTarget)
+	if( p_caster != NULL && playerTarget != NULL && p_caster != playerTarget )
 	{
 		// Healing a flagged target will flag you.
-		if(playerTarget->IsPvPFlagged())
-            if(p_caster->IsPlayer() && !p_caster->IsPvPFlagged() )
-                static_cast< Player* >( p_caster )->PvPToggle();
+		if( playerTarget->IsPvPFlagged() )
+            if( !p_caster->IsPvPFlagged() )
+                p_caster->PvPToggle();
             else
                 p_caster->SetPvPFlag();
 	}
@@ -5320,18 +5328,22 @@ void Spell::Heal(int32 amount, bool ForceCrit)
 	bool critical = false;
 	int32 critchance = 0;
 	int32 bonus = 0;
+	uint32 school = GetProto()->School;
+
 	if( u_caster != NULL )
 	{
 		//Basic bonus
-		if( !p_caster || !(p_caster->getClass() == ROGUE || p_caster->getClass() == WARRIOR || p_caster->getClass() == HUNTER || p_caster->getClass() == DEATHKNIGHT) )
-			bonus += u_caster->HealDoneMod[GetProto()->School];
-		bonus += unitTarget->HealTakenMod[GetProto()->School];
+		if( p_caster == NULL || 
+			!( p_caster->getClass() == ROGUE || p_caster->getClass() == WARRIOR || p_caster->getClass() == HUNTER || p_caster->getClass() == DEATHKNIGHT ) )
+			bonus += u_caster->HealDoneMod[school];
+		
+		bonus += unitTarget->HealTakenMod[school];
 
 		//Bonus from Intellect & Spirit
 		if( p_caster != NULL )
 		{
-			for(uint32 a = 0; a < 6; a++)
-				bonus += float2int32(p_caster->SpellHealDoneByAttribute[a][GetProto()->School] * p_caster->GetUInt32Value(UNIT_FIELD_STAT0 + a));
+			for( uint8 a = 0; a < 6; a++ )
+				bonus += float2int32( p_caster->SpellHealDoneByAttribute[a][school] * p_caster->GetUInt32Value( UNIT_FIELD_STAT0 + a ) );
 		}
 
 		//Spell Coefficient
@@ -5344,91 +5356,57 @@ void Spell::Heal(int32 amount, bool ForceCrit)
 				bonus = float2int32( float( bonus ) * GetProto()->fixed_dddhcoef );
 		}
 
-		critchance = float2int32(u_caster->spellcritperc + u_caster->SpellCritChanceSchool[GetProto()->School]);
+		critchance = float2int32( u_caster->spellcritperc + u_caster->SpellCritChanceSchool[school] );
 
 		//Sacred Shield
-		if( unitTarget->HasAurasWithNameHash(SPELL_HASH_SACRED_SHIELD) && m_spellInfo->NameHash == SPELL_HASH_FLASH_OF_LIGHT )
-			critchance += (int32)50.0f;
+		if( unitTarget->HasAurasWithNameHash( SPELL_HASH_SACRED_SHIELD ) && m_spellInfo->NameHash == SPELL_HASH_FLASH_OF_LIGHT )
+			critchance += 50;
 
-		if(GetProto()->SpellGroupType)
+		if( GetProto()->SpellGroupType )
 		{
 			int penalty_pct = 0;
 			int penalty_flt = 0;
 			SM_FIValue( u_caster->SM_PPenalty, &penalty_pct, GetProto()->SpellGroupType );
-			bonus += amount*penalty_pct/100;
+			bonus += amount * penalty_pct / 100;
 			SM_FIValue( u_caster->SM_FPenalty, &penalty_flt, GetProto()->SpellGroupType );
 			bonus += penalty_flt;
-			SM_FIValue( u_caster->SM_CriticalChance,&critchance,GetProto()->SpellGroupType);
+			SM_FIValue( u_caster->SM_CriticalChance, &critchance, GetProto()->SpellGroupType );
 		}
 
-		if(u_caster->IsPlayer())
+		if( p_caster != NULL )
 		{
-			if(m_spellInfo->NameHash == SPELL_HASH_FLASH_HEAL || m_spellInfo->NameHash == SPELL_HASH_BINDING_HEAL || m_spellInfo->NameHash == SPELL_HASH_GREATER_HEAL)
+			if( m_spellInfo->NameHash == SPELL_HASH_FLASH_HEAL || m_spellInfo->NameHash == SPELL_HASH_BINDING_HEAL || m_spellInfo->NameHash == SPELL_HASH_GREATER_HEAL )
 			{
-				if(u_caster->HasAura(34754))
-					u_caster->RemoveAura(34754, u_caster->GetGUID());
+				if( p_caster->HasAura( 34754 ) )
+					p_caster->RemoveAura( 34754, p_caster->GetGUID() );
 			}
 
 			if( m_spellInfo->NameHash == SPELL_HASH_LESSER_HEALING_WAVE || m_spellInfo->NameHash == SPELL_HASH_HEALING_WAVE )
 			{
-				if(u_caster->HasAura(53390)) //Tidal Waves
-					u_caster->RemoveAura(53390, u_caster->GetGUID());
+				if( p_caster->HasAura( 53390 ) ) //Tidal Waves
+					p_caster->RemoveAura( 53390, p_caster->GetGUID() );
 			}
 
 			if( m_spellInfo->NameHash == SPELL_HASH_LESSER_HEALING_WAVE || 
 				m_spellInfo->NameHash == SPELL_HASH_HEALING_WAVE || 
 				m_spellInfo->NameHash == SPELL_HASH_CHAIN_HEAL )
 			{
-				if(u_caster->HasAura(53817)) //Maelstrom Weapon
-					u_caster->RemoveAllAuras(53817, u_caster->GetGUID());
-			}
-
-			// Paladin: Healing Light talent
-			if(m_spellInfo->NameHash == SPELL_HASH_FLASH_OF_LIGHT || m_spellInfo->NameHash == SPELL_HASH_HOLY_LIGHT)
-			{
-				uint8 TalentRank = 0;
-				if(static_cast<Player*>(u_caster)->HasSpell(20237))
-					TalentRank = 1;
-				if(static_cast<Player*>(u_caster)->HasSpell(20238))
-					TalentRank = 2;
-				if(static_cast<Player*>(u_caster)->HasSpell(20239))
-					TalentRank = 3;
-
-				if(TalentRank)
-				{
-					float TalentPct = 0.0f;
-					switch(TalentRank)
-					{
-						case 1:
-							TalentPct = 0.04f;
-							break;
-						case 2:
-							TalentPct = 0.08f;
-							break;
-						case 3:
-							TalentPct = 0.12f;
-							break;
-						default:
-							TalentPct = 0.0f;
-							break;
-					}
-					TalentPct += 1.0f;
-					amount = (int)( amount * TalentPct );
-				}
+				if( p_caster->HasAura( 53817 )) //Maelstrom Weapon
+					p_caster->RemoveAllAuras( 53817, p_caster->GetGUID() );
 			}
 		}
 
 		switch( m_spellInfo->Id )
 		{
 		case 20267: //Judgement of Light
-			if( unitTarget->IsPlayer() )
-				amount = (int)(0.10f * unitTarget->GetUInt32Value(UNIT_FIELD_ATTACK_POWER) + 0.10f * (unitTarget)->GetUInt32Value(PLAYER_FIELD_MOD_DAMAGE_DONE_POS+1));
+			if( playerTarget != NULL )
+				amount = (int)(0.10f * playerTarget->GetUInt32Value(UNIT_FIELD_ATTACK_POWER) + 0.10f * playerTarget->GetUInt32Value(PLAYER_FIELD_MOD_DAMAGE_DONE_POS+1));
 			else
 				amount = (int)(0.10f * unitTarget->GetUInt32Value(UNIT_FIELD_ATTACK_POWER));
 			break;
 		case 20167: //Seal of Light
-			if( u_caster->IsPlayer() )
-				amount = (int)(0.15f * u_caster->GetUInt32Value(UNIT_FIELD_ATTACK_POWER) + 0.15f * (u_caster)->GetUInt32Value(PLAYER_FIELD_MOD_DAMAGE_DONE_POS+1));
+			if( p_caster != NULL )
+				amount = (int)(0.15f * p_caster->GetUInt32Value(UNIT_FIELD_ATTACK_POWER) + 0.15f * (p_caster)->GetUInt32Value(PLAYER_FIELD_MOD_DAMAGE_DONE_POS+1));
 			break;
 		case 54172: //Paladin - Divine Storm heal effect
 			{
@@ -5441,37 +5419,30 @@ void Spell::Heal(int32 amount, bool ForceCrit)
 				{
 					itr = itr2;
 					itr2++;
-					if( (*itr)->IsUnit() && static_cast<Unit*>(*itr)->isAlive() && IsInrange(u_caster, (*itr), 8) && (u_caster->GetPhase() & (*itr)->GetPhase()) )
+					if( (*itr)->IsUnit() && static_cast<Unit*>(*itr)->isAlive() && IsInrange( u_caster, (*itr), 8 ) && ( u_caster->GetPhase() & (*itr)->GetPhase()) )
 					{
-						did_hit_result = DidHit(dbcSpell.LookupEntry(53385)->Effect[0], static_cast< Unit* >( *itr ) );
+						did_hit_result = DidHit( dbcSpell.LookupEntry(53385)->Effect[0], static_cast< Unit* >( *itr ) );
 						if( did_hit_result == SPELL_DID_HIT_SUCCESS )
 							target++;
 					}
 				}
-				if(target > 4)
+				if( target > 4 )
 					target = 4;
 
-				amount = (int)(0.25*dmg*target);
+				amount = ( dmg * target ) >> 2; // 25%
 			}
 			break;
 		}
 
-		//amount += float2int32( float( bonus ) * 1.88f ); //apply 3.0.2 spell coeff  //NO. FAIL. COEFFICIENTS WERE ALREADY HANDLED.
-		//3.0.2 spell healing coefficients should be set in database coefficient overrides.
 		amount += bonus;
-		amount += amount * (int32)(u_caster->HealDonePctMod[GetProto()->School]);
-		amount += float2int32( float( amount ) * unitTarget->HealTakenPctMod[GetProto()->School] );
+		amount += amount * (int32)(u_caster->HealDonePctMod[ school ]);
+		amount += float2int32( float( amount ) * unitTarget->HealTakenPctMod[ school ] );
 
-		if (GetProto()->SpellGroupType)
-			SM_PIValue(u_caster->SM_PDamageBonus,&amount,GetProto()->SpellGroupType);
+		if( GetProto()->SpellGroupType )
+			SM_PIValue( u_caster->SM_PDamageBonus, &amount, GetProto()->SpellGroupType );
 
-		if( ((critical = Rand(critchance))  != 0) || ForceCrit )
+		if( ForceCrit || ( ( critical = Rand( critchance ) ) != 0 )  )
 		{
-			/*int32 critbonus = amount >> 1;
-			if( GetProto()->SpellGroupType)
-					SM_PIValue(static_cast<Unit*>(u_caster)->SM_PCriticalDamage, &critbonus, GetProto()->SpellGroupType);
-			amount += critbonus;*/
-
 			int32 critical_bonus = 100;
 			if( GetProto()->SpellGroupType )
 				SM_FIValue( u_caster->SM_PCriticalDamage, &critical_bonus, GetProto()->SpellGroupType );
@@ -5483,44 +5454,39 @@ void Spell::Heal(int32 amount, bool ForceCrit)
 				amount += float2int32( float(amount) * b );
 			}
 
-			//Shady: does it correct> caster casts heal and proc ..._VICTIM ?
-			// Or mb I'm completely wrong? So if true  - just replace with old string.
-			//u_caster->HandleProc(PROC_ON_SPELL_CRIT_HIT_VICTIM, unitTarget, GetProto(), amount);
-			//Replaced with following one:
-
-
-			unitTarget->HandleProc(PROC_ON_SPELL_CRIT_HIT_VICTIM, u_caster, GetProto(), amount);
-			u_caster->HandleProc(PROC_ON_SPELL_CRIT_HIT, unitTarget, GetProto(), amount);
+			unitTarget->HandleProc( PROC_ON_SPELL_CRIT_HIT_VICTIM, u_caster, GetProto(), amount );
+			u_caster->HandleProc( PROC_ON_SPELL_CRIT_HIT, unitTarget, GetProto(), amount );
 		}
 	}
 
-	if(amount < 0)
+	if( amount < 0 )
 		amount = 0;
 
 	uint32 overheal = 0;
-	uint32 curHealth = unitTarget->GetUInt32Value(UNIT_FIELD_HEALTH);
-	uint32 maxHealth = unitTarget->GetUInt32Value(UNIT_FIELD_MAXHEALTH);
+	uint32 curHealth = unitTarget->GetUInt32Value( UNIT_FIELD_HEALTH );
+	uint32 maxHealth = unitTarget->GetUInt32Value( UNIT_FIELD_MAXHEALTH );
 	if((curHealth + amount) >= maxHealth)
 	{
-		unitTarget->SetUInt32Value(UNIT_FIELD_HEALTH, maxHealth);
+		unitTarget->SetUInt32Value( UNIT_FIELD_HEALTH, maxHealth );
 		overheal = curHealth + amount - maxHealth;
-	} else
-		unitTarget->ModUnsigned32Value(UNIT_FIELD_HEALTH, amount);
+	}
+	else
+		unitTarget->ModUnsigned32Value( UNIT_FIELD_HEALTH, amount );
 
 	if( p_caster != NULL )
 	{
-		if( unitTarget->IsPlayer() )
+		if( playerTarget != NULL )
 		{
-			SendHealSpellOnPlayer( p_caster, static_cast< Player* >( unitTarget ), amount, critical, overheal, pSpellId ? pSpellId : m_spellInfo->Id );
+			SendHealSpellOnPlayer( p_caster, playerTarget, amount, critical, overheal, pSpellId ? pSpellId : m_spellInfo->Id );
 		}
 		p_caster->m_bgScore.HealingDone += amount;
 		if( p_caster->m_bg != NULL )
 			p_caster->m_bg->UpdatePvPData();
 	}
 
-	if (p_caster)
+	if( p_caster != NULL )
 	{
-		p_caster->m_casted_amount[GetProto()->School]=amount;
+		p_caster->m_casted_amount[ school ] = amount;
 		p_caster->HandleProc( PROC_ON_CAST_SPECIFIC_SPELL | PROC_ON_CAST_SPELL, unitTarget, GetProto() );
 	}
 
@@ -5531,15 +5497,21 @@ void Spell::Heal(int32 amount, bool ForceCrit)
 	{
 		std::vector<Unit*> target_threat;
 		int count = 0;
+		Unit* tmp_unit;
 		for(std::set<Object*>::iterator itr = u_caster->GetInRangeSetBegin(); itr != u_caster->GetInRangeSetEnd(); ++itr)
 		{
-			if((*itr)->GetTypeId() != TYPEID_UNIT || !static_cast<Unit *>(*itr)->CombatStatus.IsInCombat() || (static_cast<Unit *>(*itr)->GetAIInterface()->getThreatByPtr(u_caster) == 0 && static_cast<Unit *>(*itr)->GetAIInterface()->getThreatByPtr(unitTarget) == 0))
+			if( (*itr)->GetTypeId() != TYPEID_UNIT )
+				continue;
+			
+			tmp_unit = static_cast< Unit* >( *itr );
+
+			if( !tmp_unit->CombatStatus.IsInCombat() || ( tmp_unit->GetAIInterface()->getThreatByPtr( u_caster ) == 0 && tmp_unit->GetAIInterface()->getThreatByPtr( unitTarget ) == 0 ) )
 				continue;
 
-			if( !(u_caster->GetPhase() & (*itr)->GetPhase()) ) //Can't see, can't be a threat
+			if( !( u_caster->GetPhase() & (*itr)->GetPhase() ) ) //Can't see, can't be a threat
 				continue;
 
-			target_threat.push_back(static_cast<Unit *>(*itr));
+			target_threat.push_back( tmp_unit );
 			count++;
 		}
 		if ( count == 0 )
@@ -5549,34 +5521,34 @@ void Spell::Heal(int32 amount, bool ForceCrit)
 
 		for( std::vector<Unit*>::iterator itr = target_threat.begin(); itr != target_threat.end(); ++itr )
 		{
-			static_cast<Unit *>(*itr)->GetAIInterface()->HealReaction( u_caster, unitTarget, m_spellInfo, amount );
+			(*itr)->GetAIInterface()->HealReaction( u_caster, unitTarget, m_spellInfo, amount );
 		}
 
 		// remember that we healed (for combat status)
-		if(unitTarget->IsInWorld() && u_caster->IsInWorld())
-			u_caster->CombatStatus.WeHealed(unitTarget);
+		if( unitTarget->IsInWorld() && u_caster->IsInWorld() )
+			u_caster->CombatStatus.WeHealed( unitTarget );
 	}
 }
 
-void Spell::DetermineSkillUp(uint32 skillid,uint32 targetlevel, uint32 multiplicator)
+void Spell::DetermineSkillUp( uint32 skillid, uint32 targetlevel, uint32 multiplicator )
 {
 	if( p_caster == NULL )
 		return;
 
-	if(p_caster->GetSkillUpChance(skillid) < 0.01)
-		return;//to preven getting higher skill than max
+	if( p_caster->GetSkillUpChance( skillid ) < 0.01 )
+		return;//to prevent getting higher skill than max
 
-	int32 diff = p_caster->_GetSkillLineCurrent(skillid, false) / 5 - targetlevel;
+	int32 diff = p_caster->_GetSkillLineCurrent( skillid, false ) / 5 - targetlevel;
 
-	if(diff < 0)
+	if( diff < 0 )
 		diff =- diff;
 
 	float chance;
-	if(diff <= 5)
+	if( diff <= 5 )
 		chance = 95.0f;
-	else if(diff <= 10)
+	else if( diff <= 10 )
 		chance = 66.0f;
-	else if(diff <= 15)
+	else if( diff <= 15 )
 		chance = 33.0f;
 	else 
 		return;
@@ -5584,130 +5556,58 @@ void Spell::DetermineSkillUp(uint32 skillid,uint32 targetlevel, uint32 multiplic
 	if( multiplicator == 0 )
 		multiplicator = 1;
 
-	if(Rand((chance * sWorld.getRate(RATE_SKILLCHANCE)) * multiplicator))
+	if( Rand( ( chance * sWorld.getRate( RATE_SKILLCHANCE ) ) * multiplicator ) )
 	{
-		p_caster->_AdvanceSkillLine(skillid, float2int32(1.0f * sWorld.getRate(RATE_SKILLRATE)));
+		p_caster->_AdvanceSkillLine( skillid, float2int32( 1.0f * sWorld.getRate( RATE_SKILLRATE ) ) );
 
-		uint32 value = p_caster->_GetSkillLineCurrent(skillid, true);
+		uint32 value = p_caster->_GetSkillLineCurrent( skillid, true );
 		uint32 spellid = 0;
 
 		// Lifeblood
-		if(skillid == SKILL_HERBALISM)
+		if( skillid == SKILL_HERBALISM )
 		{
 			switch(value)
 			{
-				// Rank 1
-				case 75:
-				{
-					spellid = 55428;
-				}break;
-				// Rank 2
-				case 150:
-				{
-					spellid = 55480;
-				}break;
-				// Rank 3
-				case 225:
-				{
-					spellid = 55500;
-				}break;
-				// Rank 4
-				case 300:
-				{
-					spellid = 55501;
-				}break;
-				// Rank 5
-				case 375:
-				{
-					spellid = 55502;
-				}break;
-				// Rank 6
-				case 450:
-				{
-					spellid = 55503;
-				}break;
+				case 75:{	spellid = 55428; }break;// Rank 1
+				case 150:{	spellid = 55480; }break;// Rank 2
+				case 225:{	spellid = 55500; }break;// Rank 3
+				case 300:{	spellid = 55501; }break;// Rank 4
+				case 375:{	spellid = 55502; }break;// Rank 5
+				case 450:{	spellid = 55503; }break;// Rank 6
 			}
 		}
 
 		// Toughness
-		if(skillid == SKILL_MINING)
+		else if( skillid == SKILL_MINING )
 		{
-			switch(value)
+			switch( value )
 			{
-				// Rank 1
-				case 75:
-				{
-						spellid = 53120;
-				}break;
-				// Rank 2
-				case 150:
-				{
-					spellid = 53121;
-				}break;
-				// Rank 3
-				case 225:
-				{
-					spellid = 53122;
-				}break;
-				// Rank 4
-				case 300:
-				{
-					spellid = 53123;
-				}break;
-				// Rank 5
-				case 375:
-				{
-					spellid = 53124;
-				}break;
-				// Rank 6
-				case 450:
-				{
-					spellid = 53040;
-				}break;
+				case 75:{	spellid = 53120; }break;// Rank 1
+				case 150:{	spellid = 53121; }break;// Rank 2
+				case 225:{	spellid = 53122; }break;// Rank 3
+				case 300:{	spellid = 53123; }break;// Rank 4
+				case 375:{	spellid = 53124; }break;// Rank 5
+				case 450:{	spellid = 53040; }break;// Rank 6
 			}
 		}
 
 
 		// Master of Anatomy
-		if(skillid == SKILL_SKINNING)
+		else if( skillid == SKILL_SKINNING )
 		{
-			switch(value)
+			switch( value )
 			{
-				// Rank 1
-				case 75:
-				{
-					spellid = 53125;
-				}break;
-				// Rank 2
-				case 150:
-				{
-					spellid = 53662;
-				}break;
-				// Rank 3
-				case 225:
-				{
-					spellid = 53663;
-				}break;
-				// Rank 4
-				case 300:
-				{
-					spellid = 53664;
-				}break;
-				// Rank 5
-				case 375:
-				{
-					spellid = 53665;
-				}break;
-				// Rank 6
-				case 450:
-				{
-					spellid = 53666;
-				}break;
+				case 75:{	spellid = 53125;} break;// Rank 1
+				case 150:{	spellid = 53662;} break;// Rank 2
+				case 225:{	spellid = 53663;} break;// Rank 3
+				case 300:{	spellid = 53664;} break;// Rank 4
+				case 375:{	spellid = 53665;} break;// Rank 5
+				case 450:{	spellid = 53666;} break;// Rank 6
 			}
 		}
 
-		if(spellid != 0)
-			p_caster->addSpell(spellid);
+		if( spellid != 0 )
+			p_caster->addSpell( spellid );
 	}
 }
 
