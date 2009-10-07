@@ -113,7 +113,7 @@ pSpellTarget SpellTargetHandler[EFF_TARGET_LIST_LENGTH_MARKER] =
 	&Spell::SpellTargetNULL,					// 87
 	&Spell::SpellTargetNULL,					// 88
 	&Spell::SpellTargetNULL,					// 89
-	&Spell::SpellTargetNULL,					// 90
+	&Spell::SpellTargetNonCombatPet,			// 90
 	&Spell::SpellTargetNULL,					// 91
 	&Spell::SpellTargetNULL,					// 92
 	&Spell::SpellTargetNULL,					// 93
@@ -1244,4 +1244,12 @@ void Spell::SpellTargetMultiplePartyInjured(uint32 i, uint32 j)
 {
 }
 
+
+void Spell::SpellTargetNonCombatPet( uint32 i, uint32 j )
+{
+	if( u_caster == NULL || u_caster->critterPet == NULL )
+		return; 
+	
+	SafeAddTarget( &m_targetUnits[i], u_caster->critterPet->GetGUID() );
+}
 

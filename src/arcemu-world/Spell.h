@@ -105,7 +105,7 @@ enum SPELL_MODIFIER_TYPE
     SMT_CHARGES             =4,// additional charges / GOOD
     SMT_RANGE               =5,// spell range bonus // GOOD
     SMT_RADIUS              =6,// spell radius bonus // GOOD
-    SMT_CRITICAL            =7,// critical chance bonus // GOOD //only 1 example in 2.1.1
+    SMT_CRITICAL            =7,// critical chance bonus // GOOD
     SMT_MISC_EFFECT         =8,// dummy effect // needs work is not only pets Hp but effect of spells to
     SMT_NONINTERRUPT        =9,// x% chance not to be interrupted by received damage (no flat)
     SMT_CAST_TIME           =10,// cast time decrease // GOOD
@@ -127,7 +127,7 @@ enum SPELL_MODIFIER_TYPE
 	// 25 don't exist spells with it
     // 26 is obsolete stuff
     SMT_EFFECT_BONUS        =27,// mana lost cost per point of damage taken for mana shield,Health or Mana gained from Drain Life and Drain Mana increased by x%.
-    SMT_RESIST_DISPEL       =28,// TODO NEEDS WORK :D
+    SMT_RESIST_DISPEL       =28,// chance to resist dispell effects, TODO NEEDS WORK :D
 	//SMT_CROWD_DAMAGE		=29,// Mod Crowd Damage Test, 45365 - Increases the critical strike damage bonus of your Frost spells by 100%
 };
 
@@ -1437,6 +1437,7 @@ typedef enum {
    EFF_TARGET_ENEMYS_IN_ARE_CHANNELED_WITH_EXCEPTIONS	= 76,
    EFF_TARGET_SELECTED_ENEMY_CHANNELED					= 77,
    EFF_TARGET_SELECTED_ENEMY_DEADLY_POISON				= 86,
+   EFF_TARGET_NON_COMBAT_PET							= 90,
    //these are custom, feel free to move them further if targeting gets extended
    EFF_TARGET_CUSTOM_PARTY_INJURED_SINGLE				= 99,
    EFF_TARGET_CUSTOM_PARTY_INJURED_MULTI				= 100,
@@ -1849,6 +1850,7 @@ public:
 	//these are custom
     void SpellTargetSinglePartyInjured(uint32 i, uint32 j);
     void SpellTargetMultiplePartyInjured(uint32 i, uint32 j);
+	void SpellTargetNonCombatPet(uint32 i, uint32 j);
 
     void Heal(int32 amount, bool ForceCrit = false);
 
