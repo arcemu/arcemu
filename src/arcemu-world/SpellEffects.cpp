@@ -6970,7 +6970,7 @@ void Spell::SpellEffectDummyMelee( uint32 i ) // Normalized Weapon damage +
 	//rogue - mutilate ads dmg if target is poisoned
 	uint32 pct_dmg_mod = 100;
 	if(	GetProto()->NameHash == SPELL_HASH_MUTILATE && unitTarget->IsPoisoned() )
-		pct_dmg_mod = 150;
+		pct_dmg_mod = 120;
 
 	uint32 _type;
 	if( GetType() == SPELL_DMG_TYPE_RANGED )

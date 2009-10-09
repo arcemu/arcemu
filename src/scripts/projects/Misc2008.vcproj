@@ -448,10 +448,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\src\MiscScripts\QuelDanasPortal.cpp"
-				>
-			</File>
-			<File
 				RelativePath="..\src\MiscScripts\RandomScripts.cpp"
 				>
 			</File>

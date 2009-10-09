@@ -5063,7 +5063,7 @@ exit:
 		if( GetProto()->NameHash == SPELL_HASH_ENVENOM && i == 0 )//Envenom
 		{
 			value *= p_caster->m_comboPoints;
-			value += (uint32)(p_caster->GetAP()*(0.03f*p_caster->m_comboPoints));
+			value += (uint32)(p_caster->GetAP()*(0.09f*p_caster->m_comboPoints));
 			m_requiresCP=true;
 		}
 
@@ -5073,8 +5073,6 @@ exit:
 			ScriptOverrideList::iterator itrSO;
 			for(itrSO = itr->second->begin(); itrSO != itr->second->end(); ++itrSO)
 			{
-				// Capt: WHAT THE FUCK DOES THIS MEAN....
-				// Supa: WHAT THE FUCK DOES THIS MEAN?
 				value += RandomUInt((*itrSO)->damage);
 			}
 		}
@@ -5113,7 +5111,7 @@ exit:
 
 		value += float2int32(value*(float)(spell_pct_modifers/100.0f)) + spell_flat_modifers;
 	}
-	else if( i_caster != NULL && target)
+	else if( i_caster != NULL && target != NULL )
 	{
 		//we should inherit the modifiers from the conjured food caster
 		Unit *item_creator = target->GetMapMgr()->GetUnit( i_caster->GetUInt64Value( ITEM_FIELD_CREATOR ) );

@@ -567,6 +567,28 @@ public:
 
 /*--------------------------------------------------------------------------------------------------------*/
 
+class PortalEffectSunwellIsle : public GameObjectAIScript
+{
+public:
+	PortalEffectSunwellIsle( GameObject* goinstance ) : GameObjectAIScript( goinstance) {}
+	static GameObjectAIScript *Create( GameObject * GO ) { return new PortalEffectSunwellIsle( GO ); }
+	void OnActivate( Player * pPlayer )
+	{
+		if( pPlayer->getLevel() >= 70 && pPlayer->HasFinishedDaily( 11513 ) || pPlayer->HasFinishedDaily( 11514 ) ) // optional you can check for quest 11513
+		{
+			pPlayer->SafeTeleport( 530, 530, 13001.9f, -6907.46f, 9.56139f, 0.616532f );
+		}
+		else if( pPlayer->getLevel() <= 69 )
+		{
+			pPlayer->BroadcastMessage("You must be level 70 to use this!");
+		}
+		else
+		{
+			pPlayer->BroadcastMessage("You must complete the quest first!");
+		}
+	}
+};
+
 void SetupGoHandlers(ScriptMgr * mgr)
 {
 	mgr->register_gameobject_script(179879, &OrbOfCommand::Create);
@@ -596,4 +618,5 @@ void SetupGoHandlers(ScriptMgr * mgr)
 	mgr->register_gameobject_script(179552, &LearnFieldRepairBot::Create);
 	mgr->register_gameobject_script(190942, &DeathKnightDeathGate::Create);
 	mgr->register_gameobject_script(191155, &PortalToAcherus::Create);
+	mgr->register_gameobject_script(187056, &PortalEffectSunwellIsle::Create);  
 }
