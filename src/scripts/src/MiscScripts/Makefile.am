@@ -11,7 +11,6 @@ libMoonMiscScripts_la_SOURCES = Creatures.cpp \
 GameObjectTeleportTable.cpp \
 GameObjects.cpp \
 RandomScripts.cpp \
-QuelDanasPortal.cpp \
 WyrmrestTemple.cpp \
 EbonHold.cpp \
 Logride_GrizzlyHills.cpp \
