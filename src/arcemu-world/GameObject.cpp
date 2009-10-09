@@ -221,9 +221,12 @@ void GameObject::Update(uint32 p_time)
 					if(!isAttackable(m_summoner,pUnit))continue;
 				}
 				
-				Spell * sp = new Spell((Object*)this,spell,true,NULL);
-				if (!sp)
+				Spell * sp = new Spell( this, spell, true, NULL );
+				if( sp == NULL )
+				{	
+					ReleaseInrangeLock();
 					return;
+				}
 				SpellCastTargets tgt((*itr)->GetGUID());
 				tgt.m_destX = GetPositionX();
 				tgt.m_destY = GetPositionY();

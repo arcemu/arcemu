@@ -338,7 +338,7 @@ bool ChatHandler::HandleGMTicketAssignToCommand(const char* args, WorldSession *
 	if(!chn)
 		return false;
 
-	GM_Ticket *ticket = objmgr.GetGMTicket(ticketGuid)
+	GM_Ticket *ticket = objmgr.GetGMTicket(ticketGuid);
 
 	if(ticket == NULL || ticket->deleted)
 	{
