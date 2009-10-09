@@ -1796,7 +1796,7 @@ public:
 	void SpellEffectApplyAura128(uint32 i);
 	void SpellEffectRedirectThreat(uint32 i);
 	void SpellEffectForgetSpecialization(uint32 i);
-	void SpellEffectRestoreManaPct(uint32 i);
+	void SpellEffectRestorePowerPct(uint32 i);
 	void SpellEffectTriggerSpellWithValue(uint32 i);
 	void SpellEffectCreatePet(uint32 i);
 	void SpellEffectTeachTaxiPath(uint32 i);

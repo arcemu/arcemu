@@ -571,9 +571,10 @@ void WorldSession::HandleAuctionSellItem( WorldPacket & recv_data )
 		return;
 
 	uint64 guid,item;
-	uint32 bid,buyout,etime;	// etime is in minutes
+	uint32 bid, buyout, etime, unk1, unk2;	// etime is in minutes
 
-	recv_data >> guid >> item;
+	recv_data >> guid >> unk1 >> item;
+	recv_data >> unk2;
 	recv_data >> bid >> buyout >> etime;
 
 	Creature * pCreature = _player->GetMapMgr()->GetCreature(GET_LOWGUID_PART(guid));

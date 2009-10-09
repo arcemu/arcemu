@@ -158,7 +158,7 @@ pSpellEffect SpellEffectsHandler[TOTAL_SPELL_EFFECTS]={
 	&Spell::SpellEffectNULL,					// Quest Credit (Player only, not party) - 134 // related to summoning objects and removing them, http://www.thottbot.com/s39161
 	&Spell::SpellEffectNULL,					// Summon Pet: http://www.thottbot.com/s23498 - 135
 	&Spell::SpellEffectRestoreHealthPct,		// Restore Health % - 136 // http://www.thottbot.com/s41542 and http://www.thottbot.com/s39703
-	&Spell::SpellEffectRestoreManaPct,			// Restore Mana % - 137 // http://www.thottbot.com/s41542
+	&Spell::SpellEffectRestorePowerPct,			// Restore Power % - 137 // http://www.thottbot.com/s41542
 	&Spell::SpellEffectNULL,					// unknown - 138 // related to superjump or even "*jump" spells http://www.thottbot.com/?e=Unknown%20138
 	&Spell::SpellEffectNULL,					// Remove Quest - 139 // no spells
 	&Spell::SpellEffectTriggerSpell,			// triggers a spell from target back to caster - used at Malacrass f.e.
@@ -7204,17 +7204,20 @@ void Spell::SpellEffectForgetSpecialization(uint32 i)
 	sLog.outDebug("Player %u have forgot spell %u from spell %u ( caster: %u)", playerTarget->GetLowGUID(), spellid, GetProto()->Id, m_caster->GetLowGUID());
 }
 
-void Spell::SpellEffectRestoreManaPct(uint32 i)
+void Spell::SpellEffectRestorePowerPct(uint32 i)
 {
-	if(!unitTarget || !unitTarget->isAlive())
+	if( u_caster == NULL || unitTarget == NULL || !unitTarget->isAlive() )
 		return;
 
-	uint32 curMana = (uint32)unitTarget->GetUInt32Value(UNIT_FIELD_POWER1);
-	uint32 maxMana = (uint32)unitTarget->GetUInt32Value(UNIT_FIELD_MAXPOWER1);
-	uint32 modMana = damage * maxMana / 100;
+	uint32 power = GetProto()->EffectMiscValue[i];
+	if( power > POWER_TYPE_HAPPINESS )
+	{
+		sLog.outError("Unhandled power type %u in %s, report this line to devs.", power, __FUNCTION__ );
+		return;
+	}
 
-	unitTarget->SetPower(0, modMana + curMana);
-	SendHealManaSpellOnPlayer(u_caster, unitTarget, modMana, POWER_TYPE_MANA);
+	uint32 amount = damage * unitTarget->GetUInt32Value( UNIT_FIELD_MAXPOWER1 + power ) / 100;
+	u_caster->Energize( unitTarget, GetProto()->Id, amount, power );
 }
 
 void Spell::SpellEffectTriggerSpellWithValue(uint32 i)
@@ -7368,7 +7371,7 @@ void Spell::SpellEffectRenamePet( uint32 i )
 
 void Spell::SpellEffectRestoreHealthPct(uint32 i)
 {
-	if(!unitTarget || !unitTarget->isAlive())
+	if( unitTarget == NULL || !unitTarget->isAlive() )
 		return;
 
 	uint32 currentHealth = unitTarget->GetUInt32Value(UNIT_FIELD_HEALTH);
@@ -7384,5 +7387,5 @@ void Spell::SpellEffectRestoreHealthPct(uint32 i)
 	} else
 		unitTarget->ModUnsigned32Value(UNIT_FIELD_HEALTH, modHealth);
 
-	SendHealSpellOnPlayer( m_caster, static_cast< Player* >( unitTarget ), modHealth, false, overheal, pSpellId ? pSpellId : m_spellInfo->Id  );
+	SendHealSpellOnPlayer( m_caster, unitTarget, modHealth, false, overheal, pSpellId ? pSpellId : m_spellInfo->Id  );
 }
