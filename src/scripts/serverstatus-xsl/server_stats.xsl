@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml version="1.0" encoding="ISO-8859-1"?>
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 <xsl:output method="html" indent="yes" /> 
 
@@ -156,25 +156,27 @@
 	<td width="20px"></td>
 	<td valign="top">
 		<table border="0" cellspacing="1" cellpadding="3">
-		<tr class="head"><th colspan="6">Class Summary</th></tr>
+		<tr class="head"><th colspan="4">Class Summary</th></tr>
 		<tr>
-			<th width="70px">Warrior: </th><td width="50px"><xsl:value-of select="warrior"/></td>
-			<th width="70px">Paladin: </th><td width="50px"><xsl:value-of select="paladin"/></td>
-			<th width="70px">Hunter: </th><td width="50px"><xsl:value-of select="hunter"/></td>
+			<th width="120px">Warrior: </th><td width="50px"><xsl:value-of select="warrior"/></td>
+			<th width="120px">Paladin: </th><td width="50px"><xsl:value-of select="paladin"/></td>
 		</tr>
 		<tr>
+			<th>Hunter: </th><td><xsl:value-of select="hunter"/></td>
 			<th>Rogue: </th><td><xsl:value-of select="rogue"/></td>
-			<th>Priest: </th><td><xsl:value-of select="priest"/></td>
-			<th>Death Knight: </th><td><xsl:value-of select="deathknight"/></td>
 		</tr>
 		<tr>
+			<th>Priest: </th><td><xsl:value-of select="priest"/></td>
 			<th>Shaman: </th><td><xsl:value-of select="shaman"/></td>
+		</tr>
+		<tr>
 			<th>Mage: </th><td><xsl:value-of select="mage"/></td>
 			<th>Druid: </th><td><xsl:value-of select="druid"/></td>
 		</tr>
-        <tr>
-        <th>Warlock: </th><td><xsl:value-of select="warlock" /></td>
-        </tr>
+		<tr>
+			<th>Warlock: </th><td><xsl:value-of select="warlock"/></td>
+			<th>Death Knight: </th><td><xsl:value-of select="deathknight"/></td>
+		</tr>
 		</table>
 	</td>
 	</tr>
@@ -2373,7 +2375,7 @@
 				<xsl:when test="areaid = 4093">The Sun Forge</xsl:when>
 				<xsl:when test="areaid = 4094">Sunwell Plateau</xsl:when>
 				<xsl:when test="areaid = 4095">Magisters' Terrace</xsl:when>
-				<xsl:when test="areaid = 4096">Claytön's WoWEdit Land</xsl:when>
+				<xsl:when test="areaid = 4096">Clayt�n's WoWEdit Land</xsl:when>
 				<xsl:when test="areaid = 4097">Winterfin Caverns</xsl:when>
 				<xsl:when test="areaid = 4098">Glimmer Bay</xsl:when>
 				<xsl:when test="areaid = 4099">Winterfin Retreat</xsl:when>
