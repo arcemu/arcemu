@@ -652,6 +652,13 @@ void Creature::RemoveFromWorld( bool addrespawnevent, bool free_guid )
 	
 	// If we have a summons then let's remove them
 	RemoveAllGuardians();
+	
+	// remove our reference from owner
+	if( m_owner != NULL )
+	{
+		m_owner->RemoveGuardianRef( this );
+		m_owner = NULL;
+	}
 
 	if( IsInWorld() )
 	{
@@ -1985,6 +1992,8 @@ uint32 Creature::GetRequiredLootSkill()
 		return SKILL_HERBALISM;     // herbalism
 	else if(GetCreatureInfo()->Flags1 & CREATURE_FLAG1_MININGLOOT)
 		return SKILL_MINING;        // mining   
+	else if(GetCreatureInfo()->Flags1 & CREATURE_FLAG1_ENGINEERLOOT)
+		return SKILL_ENGINEERING;
 	else
 		return SKILL_SKINNING;      // skinning
 };

@@ -10077,7 +10077,7 @@ void Player::ModifyBonuses( uint32 type, int32 val, bool apply )
 			}break;
 		case SPELL_HEALING_DONE:
 			{
-				for(uint32 school=1;school < 7; ++school)
+				for( uint8 school = 1; school < SCHOOL_COUNT; ++school )
 				{
 					HealDoneMod[school] += val;
 				}
@@ -10085,7 +10085,7 @@ void Player::ModifyBonuses( uint32 type, int32 val, bool apply )
 			}break;
 		case SPELL_DAMAGE_DONE:
 			{
-				for(uint32 school=1;school < 7; ++school)
+				for( uint8 school = 1; school < SCHOOL_COUNT; ++school )
 				{
 					ModUnsigned32Value( PLAYER_FIELD_MOD_DAMAGE_DONE_POS + school, val );
 				}
@@ -10976,8 +10976,12 @@ void Player::_LearnSkillSpells(uint32 SkillLine, uint32 curr_sk)
 					se = dbcSpell.LookupEntry( *itr );
 					if( (se->NameHash == sp->NameHash) && (se->RankNumber >= sp->RankNumber) )
 					{
-						// Player already has this spell, or a higher rank. Don't add it.
-						addThisSpell = false;
+						// Stupid profession related spells for "skinning" having the same namehash and not ranked
+						if( sp->Id != 32605 && sp->Id != 32606 && sp->Id != 49383 )
+						{
+							// Player already has this spell, or a higher rank. Don't add it.
+							addThisSpell = false;
+						}
 					}
 				}
 				if( addThisSpell )
