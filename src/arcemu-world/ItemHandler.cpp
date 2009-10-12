@@ -949,8 +949,8 @@ void WorldSession::HandleItemQuerySingleOpcode( WorldPacket & recv_data )
 	data << itemProto->DisplayInfoID;
 	data << itemProto->Quality;
 	data << itemProto->Flags;
-	data << itemProto->BuyPrice;
 	data << itemProto->Faction;
+	data << itemProto->BuyPrice;
 	data << itemProto->SellPrice;
 	data << itemProto->InventoryType;
 	data << itemProto->AllowableClass;
