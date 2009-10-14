@@ -1349,7 +1349,6 @@ public:
 	float PctPowerRegenModifier[4];
 	ARCEMU_INLINE uint32 GetPowerType(){ return (GetUInt32Value(UNIT_FIELD_BYTES_0)>> 24);}
 	void UpdatePowerAmm();
-	void RemoveSoloAura(uint32 type);
 
 	void RemoveAurasByInterruptFlag(uint32 flag);
 	void RemoveAurasByInterruptFlagButSkip(uint32 flag, uint32 skip);

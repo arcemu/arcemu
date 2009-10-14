@@ -961,6 +961,7 @@ protected:
 	bool disableSummon;
 
 	// COOLDOWNS
+	uint32 m_lastPotionId;
 	PlayerCooldownMap m_cooldownMap[NUM_COOLDOWN_TYPES];
 	uint32 m_globalCooldown;
 	time_t m_unstuckCooldown; // For the Unstuck Script in ExtraScripts module
@@ -971,11 +972,13 @@ protected:
 ***********************************************************************************/
 
 public:
+	void SetLastPotion( uint32 itemid ) { m_lastPotionId = itemid; }
 	void Cooldown_AddStart(SpellEntry * pSpell);
 	void Cooldown_Add(SpellEntry * pSpell, Item * pItemCaster);
 	void Cooldown_AddItem(ItemPrototype * pProto, uint32 x);
 	bool Cooldown_CanCast(SpellEntry * pSpell);
 	bool Cooldown_CanCast(ItemPrototype * pProto, uint32 x);
+	void UpdatePotionCooldown();
 
 protected:
 	void _Cooldown_Add(uint32 Type, uint32 Misc, uint32 Time, uint32 SpellId, uint32 ItemId);

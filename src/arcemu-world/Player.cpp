@@ -526,6 +526,7 @@ mOutOfRangeIdCount(0)
 	visiblityChangableSet.clear();
 	_splineMap.clear();
 
+	m_lastPotionId		= 0;
 	for (i=0; i<NUM_COOLDOWN_TYPES; i++) {
 		m_cooldownMap[i].clear();
 	}
@@ -572,9 +573,9 @@ Player::~Player ( )
 	DismissActivePet();
 	mTradeTarget = 0;
 
-	if(DuelingWith != 0)
-		DuelingWith->DuelingWith = 0;
-	DuelingWith = 0;
+	if( DuelingWith != NULL )
+		DuelingWith->DuelingWith = NULL;
+	DuelingWith = NULL;
 
 	CleanupGossipMenu();
 	ASSERT(!IsInWorld());
@@ -6396,7 +6397,7 @@ void Player::SendLoot(uint64 guid,uint8 loot_type)
 	// add to looter set
 	pLoot->looters.insert(GetLowGUID());
 
-	WorldPacket data, data2(28);
+	WorldPacket data, data2(32);
 	data.SetOpcode (SMSG_LOOT_RESPONSE);
 
 
@@ -6573,6 +6574,7 @@ void Player::SendLoot(uint64 guid,uint8 loot_type)
 					else
 						data2 << uint32(0);
 
+					data2 << uint32(iter->iItemsCount);
 					data2 << uint32(60000); // countdown
 				}
 
@@ -11883,6 +11885,34 @@ void Player::RemoveShapeShiftSpell(uint32 id)
 }
 
 // COOLDOWNS
+void Player::UpdatePotionCooldown()
+{
+	if( m_lastPotionId == 0 || CombatStatus.IsInCombat() )
+		return;
+
+	ItemPrototype *proto = ItemPrototypeStorage.LookupEntry( m_lastPotionId );
+	if( proto != NULL )
+	{
+		for( uint8 i = 0; i < 5; ++i )
+		{
+			if( proto->Spells[i].Id && proto->Spells[i].Trigger == USE )
+			{
+				SpellEntry *spellInfo = dbcSpell.LookupEntry(proto->Spells[i].Id );
+				if( spellInfo != NULL )
+				{
+					Cooldown_AddItem( proto, i );
+					packetSMSG_COOLDOWN_EVENT cd;
+					cd.spellid = spellInfo->Id;
+					cd.guid = GetGUID();
+					GetSession()->OutPacket( SMSG_COOLDOWN_EVENT, sizeof( packetSMSG_COOLDOWN_EVENT ), &cd );
+				}
+			}
+		}
+	}
+
+	m_lastPotionId = 0;
+}
+
 void Player::_Cooldown_Add(uint32 Type, uint32 Misc, uint32 Time, uint32 SpellId, uint32 ItemId)
 {
 	PlayerCooldownMap::iterator itr = m_cooldownMap[Type].find( Misc );

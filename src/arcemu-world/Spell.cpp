@@ -2138,7 +2138,12 @@ void Spell::finish(bool successful)
 					break;
 			}
 		}
-		i_caster->GetOwner()->Cooldown_AddItem( i_caster->GetProto() , x );
+		// cooldown starts after leaving combat
+		if( i_caster->GetProto()->Class == ITEM_CLASS_CONSUMABLE && i_caster->GetProto()->SubClass == 1 )
+			if( !i_caster->GetOwner()->CombatStatus.IsInCombat() )
+				i_caster->GetOwner()->UpdatePotionCooldown();
+		else
+			i_caster->GetOwner()->Cooldown_AddItem( i_caster->GetProto() , x );
 	}
 
   // cebernic added it

@@ -4022,108 +4022,80 @@ std::pair< time_t, uint32 > ItemInterface::LookupRefundable(uint64 GUID){
 //  refactored from Level1.cpp
 //
 /////////////////////////////////////////////////////////////////////////////
-bool ItemInterface::AddItemById(uint32 itemid, uint32 count, int32 randomprop)
+bool ItemInterface::AddItemById( uint32 itemid, uint32 count, int32 randomprop )
 {
 	if( count == 0 )
 		return false;
 
-	uint32 numadded = 0;
-    Player *chr = this->GetOwner();
+    Player *chr = GetOwner();
 
     // checking if the iteminterface has owner, impossible to not have one
-    if(chr == NULL)
+    if( chr == NULL )
         return false;
 
 	ItemPrototype* it = ItemPrototypeStorage.LookupEntry(itemid);
-	if(it)
-	{
-		uint32 maxStack = (chr->ItemStackCheat) ? 0x7fffffff : it->MaxCount;
-		bool freeslots = true;
-		// more than one stack
-		while( (count > maxStack) && freeslots )
-		{
-			Item *item;
-			item = objmgr.CreateItem( itemid, chr);
-			if (item == NULL)
-				return false;
-
-			if(it->Bonding==ITEM_BIND_ON_PICKUP)
-				if(it->Flags & ITEM_FLAG_ACCOUNTBOUND) // don't "Soulbind" account-bound items
-					item->AccountBind();
-				else
-					item->SoulBind();
-			if(randomprop!=0)
-			{
-				if(randomprop<0)
-					item->SetRandomSuffix(abs(int(randomprop)));
-				else
-					item->SetRandomProperty(randomprop);
-
-				item->ApplyRandomProperties(false);
-			}
-			item->SetUInt32Value(ITEM_FIELD_STACK_COUNT, maxStack);
-			if(this->AddItemToFreeSlot(item))
-			{
-				SlotResult *lr = this->LastSearchResult();
-                
-                chr->GetSession()->SendItemPushResult(item,false,true,false,true,lr->ContainerSlot,lr->Slot,maxStack);
-#ifdef ENABLE_ACHIEVEMENTS
-                chr->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_LOOT_ITEM, itemid, 1, 0);
-#endif
-				count -= maxStack;
-				numadded += maxStack;
-			}
-			else
-			{
-				freeslots = false;
-                chr->GetSession()->SendNotification("No free slots were found in your inventory!");
-				item->DeleteMe();
-			}
-		}
-		// last stack
-		if(freeslots)
-		{
-			Item *item;
-			item = objmgr.CreateItem( itemid, chr);
-			if (item == NULL)
-				return false;
-
-			if(it->Bonding==ITEM_BIND_ON_PICKUP)
-				if(it->Flags & ITEM_FLAG_ACCOUNTBOUND) // don't "Soulbind" account-bound items
-					item->AccountBind();
-				else
-					item->SoulBind();
-			if(randomprop!=0)
-			{
-				if(randomprop<0)
-					item->SetRandomSuffix(abs(int(randomprop)));
-				else
-					item->SetRandomProperty(randomprop);
-
-				item->ApplyRandomProperties(false);
-			}
-			item->SetUInt32Value(ITEM_FIELD_STACK_COUNT, count);
-
-			if(this->AddItemToFreeSlot(item))
-			{
-				SlotResult *lr = this->LastSearchResult();
-				chr->GetSession()->SendItemPushResult(item,false,true,false,true,lr->ContainerSlot,lr->Slot,count);
-#ifdef ENABLE_ACHIEVEMENTS
-				chr->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_LOOT_ITEM, itemid, 1, 0);
-#endif
-				numadded += count;
-				count = 0;
-			}
-			else
-			{
-                item->DeleteMe();
-                return false;
-			}
-		}
-
-		return true;
-
-	} else {
+	if(it == NULL )
 		return false;
+
+	uint32 maxStack = chr->ItemStackCheat ? 0x7fffffff : it->MaxCount;
+	uint32 toadd;
+	bool freeslots = true;
+	
+	while( count > 0 && freeslots )
+	{
+		if( count < maxStack )
+		{
+			// find existing item with free stack
+			Item* free_stack_item = FindItemLessMax( itemid, count, false );
+			if( free_stack_item != NULL )
+			{
+				// increase stack by new amount
+				free_stack_item->ModUnsigned32Value( ITEM_FIELD_STACK_COUNT, count );
+				free_stack_item->m_isDirty = true;
+				return true;
+			}
+		}
+		
+		// create new item
+		Item *item = objmgr.CreateItem( itemid, chr );
+		if( item == NULL )
+			return false;
+
+		if( it->Bonding == ITEM_BIND_ON_PICKUP )
+			if( it->Flags & ITEM_FLAG_ACCOUNTBOUND ) // don't "Soulbind" account-bound items
+				item->AccountBind();
+			else
+				item->SoulBind();
+		
+		if( randomprop != 0 )
+		{
+			if( randomprop < 0 )
+				item->SetRandomSuffix( -randomprop );
+			else
+				item->SetRandomProperty( randomprop );
+
+			item->ApplyRandomProperties( false );
+		}
+		
+		toadd = count > maxStack ? maxStack : count;
+
+		item->SetUInt32Value( ITEM_FIELD_STACK_COUNT, toadd );
+		if( AddItemToFreeSlot( item ) )
+		{
+			SlotResult *lr = LastSearchResult();
+            
+            chr->GetSession()->SendItemPushResult( item, false, true, false, true, lr->ContainerSlot, lr->Slot, toadd );
+#ifdef ENABLE_ACHIEVEMENTS
+            chr->GetAchievementMgr().UpdateAchievementCriteria( ACHIEVEMENT_CRITERIA_TYPE_LOOT_ITEM, itemid, 1, 0 );
+#endif
+			count -= toadd;
+		}
+		else
+		{
+			freeslots = false;
+            chr->GetSession()->SendNotification("No free slots were found in your inventory!");
+			item->DeleteMe();
+		}
 	}
+	return true;
 }
