@@ -2041,7 +2041,7 @@ void Object::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
 		else if(pVictim->HasAura(44441))
 			pVictim->RemoveAllAuraById(44441);
 		
-		plr = 0;
+		plr = NULL;
 		if(IsPet())
 			plr = static_cast<Pet*>(this)->GetPetOwner();
 		else if(IsPlayer())
@@ -2971,7 +2971,6 @@ void Object::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
 
 		pVictim->SetUInt32Value( UNIT_FIELD_HEALTH, health - damage );
 	}
-    
 }
 
 void Object::SpellNonMeleeDamageLog(Unit *pVictim, uint32 spellID, uint32 damage, bool allowProc, bool static_damage, bool no_remove_auras)
@@ -3341,13 +3340,17 @@ void Object::SendSpellNonMeleeDamageLog( Object* Caster, Object* Target, uint32 
 {
 	if( !Caster || !Target || !SpellID )
 		return;
+	
+	uint32 Overkill = 0;
+	if( Damage > Target->GetUInt32Value( UNIT_FIELD_HEALTH ) )
+		Overkill = Damage - Target->GetUInt32Value( UNIT_FIELD_HEALTH );
 
 	WorldPacket data( SMSG_SPELLNONMELEEDAMAGELOG, 48 );
 	data << Target->GetNewGUID();
 	data << Caster->GetNewGUID();
 	data << SpellID;                    // SpellID / AbilityID
 	data << Damage;                     // All Damage
-	data << uint32(0);					// Why is this added?
+	data << Overkill;					// Overkill
 	data << uint8(g_spellSchoolConversionTable[School]);                     // School
 	data << AbsorbedDamage;             // Absorbed Damage
 	data << ResistedDamage;             // Resisted Damage
@@ -3369,16 +3372,21 @@ void Object::SendAttackerStateUpdate( Object* Caster, Object* Target, dealdamage
 	//0x4--dualwield,0x10 miss,0x20 absorbed,0x80 crit,0x4000 -glancing,0x8000-crushing
 	//only for melee!
 
-	if (!(HitStatus & (HITSTATUS_MISS))) {
-//		HitStatus|= 0x00800000;
-	}
+	/*if (!(HitStatus & (HITSTATUS_MISS))) 
+	{
+		HitStatus|= 0x00800000;
+	}*/
 
+	uint32 Overkill = 0;
+	if( Damage > Target->GetUInt32Value( UNIT_FIELD_MAXHEALTH ) )
+		Overkill = Damage - Target->GetUInt32Value( UNIT_FIELD_HEALTH );
+ 
 	data << (uint32)HitStatus;
 	data << Caster->GetNewGUID();
 	data << Target->GetNewGUID();
 
-	data << (uint32)Damage;				// Realdamage
-	data << (uint32)0;					// Overkill
+	data << Damage;						// Realdamage
+	data << Overkill;					// Overkill
 	data << (uint8)1;					// Damage type counter / swing type
 
 	data << (uint32)g_spellSchoolConversionTable[Dmg->school_type];				  // Damage school

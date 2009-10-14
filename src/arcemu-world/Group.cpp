@@ -283,9 +283,14 @@ void Group::Update()
 				}
 #endif
 
-				data.Initialize(SMSG_GROUP_LIST);
-				data << uint8(m_GroupType);	//0=party,1=raid
-				data << uint8(0);   // 1 if battleground group
+				data.Initialize( SMSG_GROUP_LIST );
+				data << uint8(m_GroupType);	//0=party, 1=raid
+				
+				if( m_Leader != NULL && m_Leader->m_loggedInPlayer != NULL && m_Leader->m_loggedInPlayer->IsInBg() )
+					data << uint8(1);   //if the leader is in a BG, then the group is a BG group
+				else
+					data << uint8(0);
+
 				data << uint8(sg1->GetID());
 				data << uint8(0);	// unk2
 				//data << uint64(0);	// unk3
