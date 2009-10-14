@@ -2140,6 +2140,7 @@ void Spell::finish(bool successful)
 		}
 		// cooldown starts after leaving combat
 		if( i_caster->GetProto()->Class == ITEM_CLASS_CONSUMABLE && i_caster->GetProto()->SubClass == 1 )
+			i_caster->GetOwner()->SetLastPotion( i_caster->GetProto()->ItemId );
 			if( !i_caster->GetOwner()->CombatStatus.IsInCombat() )
 				i_caster->GetOwner()->UpdatePotionCooldown();
 		else
