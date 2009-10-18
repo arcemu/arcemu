@@ -4080,17 +4080,14 @@ void Spell::SpellEffectLanguage(uint32 i)
 
 void Spell::SpellEffectDualWield(uint32 i)
 {
-	if(m_caster->GetTypeId() != TYPEID_PLAYER) return;
+	if( p_caster == NULL )
+		return;
 
-	Player *pPlayer = static_cast< Player* >( m_caster );
-
-	if( !pPlayer->_HasSkillLine( SKILL_DUAL_WIELD ) )
-		pPlayer->_AddSkillLine( SKILL_DUAL_WIELD, 1, 1 );
+	if( !p_caster->_HasSkillLine( SKILL_DUAL_WIELD ) )
+		p_caster->_AddSkillLine( SKILL_DUAL_WIELD, 1, 1 );
 
 	// Increase it by one
 	//dual wield is 1/1 , it never increases it's not even displayed in skills tab
-
-	//note: probably here must be not caster but unitVictim
 }
 
 void Spell::SpellEffectSummonWild(uint32 i)  // Summon Wild
@@ -6878,7 +6875,7 @@ void Spell::SpellEffectDummyMelee( uint32 i ) // Normalized Weapon damage +
 	{
 		//count the number of sunder armors on target
 		uint32 sunder_count=0;
-		SpellEntry *spellInfo=dbcSpell.LookupEntry(25225);
+		SpellEntry *spellInfo=dbcSpell.LookupEntry( 7386 );
 		for(uint32 x = MAX_NEGATIVE_AURAS_EXTEDED_START; x < MAX_NEGATIVE_AURAS_EXTEDED_END; ++x)
 			if(unitTarget->m_auras[x] && unitTarget->m_auras[x]->GetSpellProto()->NameHash==SPELL_HASH_SUNDER_ARMOR)
 			{

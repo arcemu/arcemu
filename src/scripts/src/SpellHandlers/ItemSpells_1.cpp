@@ -508,6 +508,127 @@ bool OrbOfTheSindorei(uint32 i, Aura * pAura, bool apply)
 	return true;
 }
 
+bool BigBlizzardBear(uint32 i, Aura * pAura, bool apply)
+{
+	if( pAura->GetTarget()->GetTypeId() != TYPEID_PLAYER )
+		return true;
+
+	if( apply )
+	{
+		uint32 newspell = 0;
+		Player* pPlayer = TO_PLAYER( pAura->GetTarget() );
+
+		if( pPlayer->_GetSkillLineCurrent( SKILL_RIDING, true ) >= 150 )
+			newspell = 58999;
+		else
+			newspell = 58997;
+
+		SpellEntry *sp = dbcSpell.LookupEntry( newspell );
+		sEventMgr.AddEvent( pAura->GetTarget() ,&Unit::EventCastSpell , pAura->GetTarget() , sp , EVENT_UNK, 1 , 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT );
+	}
+
+	return true;
+}
+
+bool WingedSteed(uint32 i, Aura * pAura, bool apply)
+{
+	if( pAura->GetTarget()->GetTypeId() != TYPEID_PLAYER )
+		return true;
+
+	if( apply )
+	{
+		uint32 newspell = 0;
+		Player* pPlayer = TO_PLAYER( pAura->GetTarget() );
+
+		if( pPlayer->_GetSkillLineCurrent( SKILL_RIDING, true ) == 300 )
+			newspell = 54727;
+		else
+			newspell = 54726;
+
+		SpellEntry *sp = dbcSpell.LookupEntry( newspell );
+		sEventMgr.AddEvent( pAura->GetTarget() ,&Unit::EventCastSpell , pAura->GetTarget() , sp , EVENT_UNK, 1 , 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT );
+	}
+
+	return true;
+}
+
+bool HeadlessHorsemanMount(uint32 i, Aura * pAura, bool apply)
+{
+	if( pAura->GetTarget()->GetTypeId() != TYPEID_PLAYER )
+		return true;
+
+	if( apply )
+	{
+		uint32 newspell = 0;
+		Player* pPlayer = TO_PLAYER(pAura->GetTarget());
+		AreaTable *pArea = dbcArea.LookupEntry(pPlayer->GetAreaID());
+
+		if( pPlayer->_GetSkillLineCurrent( SKILL_RIDING, true ) >= 225 && 
+			( ( pArea->AreaFlags & 1024 && pPlayer->GetMapId() != 571 ) ||
+				( pArea->AreaFlags & 1024 && pPlayer->GetMapId() == 571 && pPlayer->HasSpellwithNameHash( SPELL_HASH_COLD_WEATHER_FLYING ) ) ) )
+		{
+			if( pPlayer->_GetSkillLineCurrent( SKILL_RIDING, true) == 300 )
+				newspell = 48023;
+			else
+				newspell = 51617;
+		}
+	else if( pPlayer->_GetSkillLineCurrent( SKILL_RIDING, true ) >= 150 )
+		newspell = 48024;			
+	else
+		newspell = 51621;
+
+	SpellEntry *sp = dbcSpell.LookupEntry( newspell );
+	sEventMgr.AddEvent( pAura->GetTarget() ,&Unit::EventCastSpell , pAura->GetTarget() , sp , EVENT_UNK, 1 , 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT );
+	}
+
+	return true;
+}
+
+bool MagicBroomMount(uint32 i, Aura * pAura, bool apply)
+{
+	if( pAura->GetTarget()->GetTypeId() != TYPEID_PLAYER )
+		return true;
+
+	if( apply )
+	{
+		uint32 newspell = 0;
+		Player* pPlayer = TO_PLAYER( pAura->GetTarget() );
+		AreaTable *pArea = dbcArea.LookupEntry(pPlayer->GetAreaID());
+
+		if( pPlayer->_GetSkillLineCurrent( SKILL_RIDING, true) >= 225 &&
+			( ( pArea->AreaFlags & 1024 && pPlayer->GetMapId() != 571 ) ||
+				( pArea->AreaFlags & 1024 && pPlayer->GetMapId() == 571 && pPlayer->HasSpellwithNameHash( SPELL_HASH_COLD_WEATHER_FLYING ) ) ) )
+	{
+		if( pPlayer->_GetSkillLineCurrent( SKILL_RIDING, true) == 300 )
+			newspell = 42668;
+		else
+			newspell = 42667;
+	}
+	else if( pPlayer->_GetSkillLineCurrent( SKILL_RIDING, true ) >= 150 )
+		newspell = 42683;			
+	else
+		newspell = 42680;
+
+	SpellEntry *sp = dbcSpell.LookupEntry(newspell);
+	sEventMgr.AddEvent( pAura->GetTarget() ,&Unit::EventCastSpell , pAura->GetTarget() , sp , EVENT_UNK, 1 , 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT );
+	}
+
+	return true;
+}
+
+bool MagicRoosterMount(uint32 i, Aura * pAura, bool apply)
+{
+	if( pAura->GetTarget()->GetTypeId() != TYPEID_PLAYER )
+		return true;
+
+	if( apply )
+	{
+		SpellEntry *sp = dbcSpell.LookupEntry( 66122 );
+		sEventMgr.AddEvent( pAura->GetTarget() ,&Unit::EventCastSpell , pAura->GetTarget() , sp , EVENT_UNK, 1 , 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT );
+	}
+
+	return true;
+}
 
 // ADD NEW FUNCTIONS ABOVE THIS LINE
 // *****************************************************************************
@@ -542,6 +663,11 @@ void SetupItemSpells_1(ScriptMgr * mgr)
 	mgr->register_dummy_aura( 46354, &OrbOfTheSindorei);        //Orb of the Sin'dorei
 	mgr->register_dummy_spell(17512, &PiccolooftheFlamingFire); //Piccolo of the flaming fire.
 	mgr->register_dummy_spell(18400, &PiccolooftheFlamingFire); //Piccolo of the flaming fire.
+	mgr->register_dummy_aura( 58983, &BigBlizzardBear);			// Big Blizzard Bear mount
+	mgr->register_dummy_aura( 54729, &WingedSteed);				// DK flying mount
+	mgr->register_dummy_aura( 48025, &HeadlessHorsemanMount);	// Headless Horseman Mount
+	mgr->register_dummy_aura( 47977, &MagicBroomMount);			// Magic Broom Mount
+	mgr->register_dummy_aura( 65917, &MagicRoosterMount);		// Magic Rooster Mount
 
 // REGISTER NEW DUMMY SPELLS ABOVE THIS LINE
 // *****************************************************************************

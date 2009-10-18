@@ -2852,7 +2852,7 @@ public:
 #define SHADOWNOVA				30852
 #define SW_PAIN					30854
 #define THRASH_AURA				12787
-#define SUNDER_ARMOR			25225
+#define SUNDER_ARMOR			7386
 #define AMPLIFY_DMG				39095 // old 12738
 #define SUMMON_AXES				30891
 #define WIELD_AXES				30857
