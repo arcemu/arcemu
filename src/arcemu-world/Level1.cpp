@@ -282,7 +282,7 @@ bool ChatHandler::HandleAddInvItemCommand(const char *args, WorldSession *m_sess
 {
 	uint32 itemid, count=1;
 	int32 randomprop=0;
-	uint32 numadded = 0;
+	int32 numadded = 0;
 
 	if(strlen(args) < 1)
 	{
@@ -305,15 +305,15 @@ bool ChatHandler::HandleAddInvItemCommand(const char *args, WorldSession *m_sess
 	ItemPrototype* it = ItemPrototypeStorage.LookupEntry(itemid);
 	if(it)
 	{
+		numadded -= chr->GetItemInterface()->GetItemCount( itemid );
         bool result = false;
-
         result = chr->GetItemInterface()->AddItemById( itemid, count, randomprop );
-
+		numadded += chr->GetItemInterface()->GetItemCount( itemid );
         if( result == true ){
             if( count == 0 ){
                 sGMLog.writefromsession(m_session, "used add item command, item id %u [%s], quantity %u, to %s", it->ItemId, it->Name1, numadded, chr->GetName());
             }else{
-                sGMLog.writefromsession(m_session, "used add item command, item id %u [%s], quantity %u (only %lu added due to full inventory), to %s", it->ItemId, it->Name1, count + numadded, numadded, chr->GetName());
+                sGMLog.writefromsession(m_session, "used add item command, item id %u [%s], quantity %u (only %lu added due to full inventory), to %s", it->ItemId, it->Name1, numadded, numadded, chr->GetName());
             }
             
             char messagetext[512];

@@ -2333,7 +2333,7 @@ void Spell::SpellEffectHealthLeech(uint32 i) // Health Leech
 
 void Spell::SpellEffectHeal(uint32 i) // Heal
 {
-	if(p_caster)	
+	if( p_caster != NULL )	
 	{	
 		// HACKY but with SM_FEffect2_bonus it doesnt work
 
@@ -3955,6 +3955,7 @@ void Spell::SpellEffectDispel(uint32 i) // Dispel
 
 	Aura *aur;
 	uint32 start, end;
+	SpellEntry *sp = NULL;
 	if(isAttackable(u_caster,unitTarget) || GetProto()->EffectMiscValue[i] == DISPEL_STEALTH ) // IsAttackable returns false for stealthed
 	{
 		start = MAX_POSITIVE_AURAS_EXTEDED_START;
@@ -3990,20 +3991,12 @@ void Spell::SpellEffectDispel(uint32 i) // Dispel
 					data << (uint32)1;//probably dispel type
 					data << aur->GetSpellId();
 					m_caster->SendMessageToSet( &data, true );
+					sp = aur->GetSpellProto();
 					unitTarget->RemoveAura( aur );
-					/*
-					RemoveAura calls Unit::RemoveAura
-					Which then says:
-						aur->Remove();
-						return true;
-					Can we please start reading. Thanks.
-					*/
-					//AuraRemoved = true;
+					AuraRemoved = true;
 
 					if(!--damage)
-						// Just return, we're fucking done.
-						//finish = true;
-						return;
+						finish = true;
 				}
 				else if(aur->GetSpellProto()->DispelType == GetProto()->EffectMiscValue[i])
 				{
@@ -4015,6 +4008,7 @@ void Spell::SpellEffectDispel(uint32 i) // Dispel
 					data << (uint32)1;
 					data << aur->GetSpellId();
 					m_caster->SendMessageToSet(&data,true);
+					sp = aur->GetSpellProto();
 					unitTarget->RemoveAllAuras(aur->GetSpellProto()->Id,aur->GetCasterGUID());
 					AuraRemoved = true;
 
@@ -4022,9 +4016,9 @@ void Spell::SpellEffectDispel(uint32 i) // Dispel
 						finish = true;
 				}
 
-				if (AuraRemoved)
+				if ( AuraRemoved && sp != NULL )
 				{
-					if( aur->GetSpellProto()->NameHash == SPELL_HASH_UNSTABLE_AFFLICTION )
+					if( sp->NameHash == SPELL_HASH_UNSTABLE_AFFLICTION )
 					{
 						SpellEntry *spellInfo = dbcSpell.LookupEntry(31117);
 						if ( spellInfo )
@@ -4032,9 +4026,9 @@ void Spell::SpellEffectDispel(uint32 i) // Dispel
 							Spell *spell = new Spell(u_caster, spellInfo, true, NULL);
                             if(!spell)
                                 return;
-							spell->forced_basepoints[0] = (aur->GetSpellProto()->EffectBasePoints[0]+1)*9; //damage effect
+							spell->forced_basepoints[0] = (sp->EffectBasePoints[0]+1)*9; //damage effect
 							spell->ProcedOnSpell = GetProto();
-							spell->pSpellId = aur->GetSpellId();
+							spell->pSpellId = sp->Id;
 							SpellCastTargets targets;
 							targets.m_unitTarget = u_caster->GetGUID();
 							spell->prepare(&targets);
@@ -6040,7 +6034,8 @@ void Spell::SpellEffectSummonTotem(uint32 i) // Summon Totem
 		pTotem->InheritSMMods(p_caster);
 
 		// Totems get spell damage and healing bonus from the Shaman
-		for(int school = 0; school<7; school++){
+		for( uint8 school = 0; school < SCHOOL_COUNT; school++ )
+		{
 			pTotem->ModDamageDone[school] = (int32)(p_caster->GetUInt32Value( PLAYER_FIELD_MOD_DAMAGE_DONE_POS + school ) - (int32)p_caster->GetUInt32Value( PLAYER_FIELD_MOD_DAMAGE_DONE_NEG + school ));
 			pTotem->HealDoneMod[school] = p_caster->HealDoneMod[school];
 		}

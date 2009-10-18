@@ -122,15 +122,15 @@ bool ChatHandler::HandleSpawnByDisplayId(const char * args, WorldSession * m_ses
 
 bool ChatHandler::HandleWorldPortCommand(const char* args, WorldSession *m_session)
 {
-	float x, y, z;
+	float x, y, z, o = 0;
 	uint32 mapid;
-	if(sscanf(args, "%u %f %f %f", (unsigned int*)&mapid, &x, &y, &z) != 4)
+	if(sscanf(args, "%u %f %f %f %f", (unsigned int*)&mapid, &x, &y, &z, &o) < 4)
 		return false;
 
 	if(x >= _maxX || x <= _minX || y <= _minY || y >= _maxY)
 		return false;
 
-	LocationVector vec(x, y, z);
+	LocationVector vec(x, y, z, o);
 	m_session->GetPlayer()->SafeTeleport(mapid, 0, vec);
 	return true;
 }
