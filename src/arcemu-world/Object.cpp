@@ -2890,14 +2890,18 @@ void Object::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
 						static_cast< Player* >( owner )->EventDismissPet();
 				}
 			}
-            // We don't want to reference a possibly logged out player or removed creature, better be safe than sorry!
-            if(pVictim->GetUInt64Value(UNIT_FIELD_CREATEDBY) != 0)
-                pVictim->SetUInt64Value(UNIT_FIELD_CREATEDBY, 0);
+            // Clear owner, except pets
+            if( !pVictim->IsPet() && pVictim->GetUInt64Value( UNIT_FIELD_CREATEDBY ) != 0 )
+                pVictim->SetUInt64Value( UNIT_FIELD_CREATEDBY, 0 );
             // Same as the above
-            if( pVictim->IsCreature() ){
+            if( pVictim->IsCreature() )
+			{
                 Creature *pCreature = static_cast<Creature*>( pVictim );
-                if(pCreature->GetOwner() != NULL)
-                    pCreature->SetOwner( NULL );
+                if( pCreature->GetOwner() != NULL )
+				{
+                    pCreature->GetOwner()->RemoveGuardianRef( pCreature );
+					pCreature->SetOwner( NULL );
+				}
             }
 
 #ifdef ENABLE_ACHIEVEMENTS
