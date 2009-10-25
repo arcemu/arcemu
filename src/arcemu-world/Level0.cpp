@@ -521,6 +521,108 @@ bool ChatHandler::HandlePlayMovie( const char *args, WorldSession *m_session )
 	return true;
 }
 
+bool ChatHandler::HandleAuraUpdateAdd( const char *args, WorldSession *m_session )
+{
+	if(!args)
+		return false;
+
+	uint32 SpellID = 0;
+	int Flags = 0;
+	int StackCount = 0;
+	if(sscanf(args, "%u 0x%X %i", &SpellID, &Flags, &StackCount) != 3 && sscanf(args, "%u %u %i", &SpellID, &Flags, &StackCount) != 3)
+		return false;
+
+	Player * Pl = m_session->GetPlayer();
+	if(Aura * AuraPtr = Pl->FindAura(SpellID))
+	{
+		uint8 VisualSlot = AuraPtr->m_visualSlot;
+		WorldPacket data(SMSG_AURA_UPDATE, 20);
+		FastGUIDPack(data, Pl->GetGUID());
+		data << (uint8)VisualSlot;
+		data << (uint32)SpellID;
+		data << (uint8)Flags;
+		data << (uint8)Pl->getLevel();
+		data << (uint8)StackCount;
+		if( !(Flags & AFLAG_NOT_CASTER) )
+			data << WoWGuid(Pl->GetSelection());
+		if(Flags & AFLAG_DURATION)
+		{
+			data << (uint32)AuraPtr->GetDuration();
+			data << (uint32)AuraPtr->GetTimeLeft();
+		}
+		m_session->SendPacket(&data);
+		SystemMessage(m_session, "SMSG_AURA_UPDATE (update): VisualSlot %u - SpellID %u - Flags %i (0x%04X) - StackCount %i", VisualSlot, SpellID, Flags, Flags, StackCount);
+	}
+	else
+	{
+		SpellEntry * Sp = dbcSpell.LookupEntry(SpellID);
+		if(!Sp)
+		{
+			SystemMessage(m_session, "SpellID %u is invalid.", SpellID);
+			return true;
+		}
+		Spell * SpellPtr = new Spell(Pl, Sp, false, NULL);
+		if(!SpellPtr)
+		{
+			SystemMessage(m_session, "Error while constructing spell for spellid %u.", SpellID);
+			return true;
+		}
+		AuraPtr = new Aura(Sp, SpellPtr->GetDuration(), Pl, Pl);
+		if(!AuraPtr)
+		{
+			SystemMessage(m_session, "Error while constructing aura for spellid %u.", SpellID);
+			delete SpellPtr;
+			return true;
+		}
+		Pl->AddAura(AuraPtr); // Serves purpose to just add the aura to our auraslots
+		uint8 VisualSlot = Pl->FindVisualSlot(SpellID, AuraPtr->IsPositive());
+		WorldPacket data(SMSG_AURA_UPDATE, 20);
+		FastGUIDPack(data, Pl->GetGUID());
+		data << (uint8)VisualSlot;
+		data << (uint32)SpellID;
+		data << (uint8)Flags;
+		data << (uint8)Pl->getLevel();
+		data << (uint8)StackCount;
+		if( !(Flags & AFLAG_NOT_CASTER) )
+			data << (uint8)0; // caster guid
+		if(Flags & AFLAG_DURATION)
+		{
+			data << (uint32)SpellPtr->GetDuration();
+			data << (uint32)SpellPtr->GetDuration();
+		}
+		m_session->SendPacket(&data);
+		SystemMessage(m_session, "SMSG_AURA_UPDATE (add): VisualSlot %u - SpellID %u - Flags %i (0x%04X) - StackCount %i", VisualSlot, SpellID, Flags, Flags, StackCount);
+		delete SpellPtr;
+	}
+	return true;
+}
+
+bool ChatHandler::HandleAuraUpdateRemove( const char *args, WorldSession *m_session )
+{
+	if(!args)
+		return false;
+
+	char * pArgs = strtok((char*)args, " ");
+	if(!pArgs)
+		return false;
+	uint8 VisualSlot = (uint8)atoi(pArgs);
+	Player * Pl = m_session->GetPlayer();
+	Aura * AuraPtr = Pl->FindAura(Pl->m_auravisuals[VisualSlot]);
+	if(!AuraPtr)
+	{
+		SystemMessage(m_session, "No auraid found in slot %u", VisualSlot);
+		return true;
+	}
+	WorldPacket data(SMSG_AURA_UPDATE, 20);
+	FastGUIDPack(data, Pl->GetGUID());
+	data << (uint8)VisualSlot;
+	data << (uint32)0;
+	m_session->SendPacket(&data);
+	SystemMessage(m_session, "SMSG_AURA_UPDATE (remove): VisualSlot %u - SpellID 0", VisualSlot);
+	AuraPtr->Remove();
+	return true;
+}
+
 bool ChatHandler::HandlePhaseCommand( const char *args , WorldSession *m_session )
 {
 	Player *p_target = getSelectedChar(m_session, false);

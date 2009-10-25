@@ -2704,7 +2704,7 @@ void Player::SaveToDB(bool bNewCharacter /* =false */)
 	ss << "','";
 
 	// Add player action bars
-	for(uint32 i = 0; i < 120; ++i)
+	for(uint32 i = 0; i < PLAYER_ACTION_BUTTON_COUNT; ++i)
 	{
 		ss << uint32(mActions[i].Action) << ","
 			<< uint32(mActions[i].Misc) << ","
@@ -3435,7 +3435,7 @@ void Player::LoadFromDBProc(QueryResultVector & results)
 	// Load saved actionbars
 	start =  (char*)get_next_field.GetString();
 	Counter =0;
-	while(Counter < 120)
+	while(Counter < PLAYER_ACTION_BUTTON_COUNT)
 	{
 		end = strchr(start,',');
 		if(!end)break;
@@ -4027,6 +4027,7 @@ void Player::OnPushToWorld()
 
 	z_axisposition = 0.0f;
 	m_changingMaps = false;
+	SendFullAuraUpdate();
 
     this->GetItemInterface()->HandleItemDurations();
 }
@@ -5218,7 +5219,7 @@ void Player::SendInitialActions()
 
 void Player::setAction(uint8 button, uint16 action, uint8 type, uint8 misc)
 {
-	if( button >= 120 )
+	if( button >= PLAYER_ACTION_BUTTON_COUNT )
 		return; //packet hack to crash server
 	mActions[button].Action = action;
 	mActions[button].Type = type;
@@ -11882,6 +11883,93 @@ void Player::RemoveShapeShiftSpell(uint32 id)
 {
 	mShapeShiftSpells.erase( id );
 	RemoveAura( id );
+}
+
+void Player::SendAuraUpdate(uint32 AuraSlot, bool RemoveAura)
+{
+	ASSERT(AuraSlot <= MAX_TOTAL_AURAS_END);
+	Aura * VisualAura = m_auras[AuraSlot];
+	if(VisualAura == NULL)
+	{
+		sLog.outDebug("Aura Update not sent due to invalid or no aura id in slot %u", AuraSlot);
+		return;
+	}
+
+	if(RemoveAura)
+	{
+		WorldPacket data(SMSG_AURA_UPDATE, 20);
+		FastGUIDPack(data, GetGUID());
+		data << (uint8)VisualAura->m_visualSlot;
+		data << (uint32)0;
+		SendMessageToSet(&data, true);
+		sLog.outDebug("Aura Update: GUID: "I64FMT" - AuraSlot: %u - AuraID: 0", GetGUID(), AuraSlot);
+		return;
+	}
+	WorldPacket data(SMSG_AURA_UPDATE, 20);
+	FastGUIDPack(data, GetGUID());
+	data << (uint8)VisualAura->m_visualSlot;
+	data << (uint32)VisualAura->GetSpellId(); // Client will ignore rest of packet if visual aura is 0
+	uint8 Flags = (uint8)VisualAura->GetAuraFlags();
+	if(VisualAura->IsPositive())
+		Flags |= AFLAG_POSTIVE | AFLAG_SET;
+	else
+		Flags |= AFLAG_NEGATIVE | AFLAG_SET;
+
+	if(VisualAura->GetDuration() > 0)
+		Flags |= AFLAG_DURATION; // Display duration
+	if(VisualAura->GetCasterGUID())
+		Flags |= AFLAG_NOT_CASTER;
+	data << (uint8)Flags;
+	data << (uint8)getLevel();
+	data << (uint8)m_auraStackCount[VisualAura->m_visualSlot];
+	if( !(Flags & AFLAG_NOT_CASTER) )
+		data << WoWGuid(VisualAura->GetCasterGUID());
+	if(Flags & AFLAG_DURATION)
+	{
+		data << (uint32)VisualAura->GetDuration();
+		data << (uint32)VisualAura->GetTimeLeft();
+	}
+	sLog.outDebug("Aura Update: GUID: "I64FMT" - AuraSlot: %u - AuraID: %u - Flags: %u", GetGUID(), AuraSlot, VisualAura->GetSpellId(), Flags);
+	SendMessageToSet(&data, true);
+}
+
+void Player::SendFullAuraUpdate()
+{
+	WorldPacket data;
+	data.Initialize(SMSG_AURA_UPDATE_ALL);
+	FastGUIDPack(data, GetGUID());
+	uint32 Updates = 0;
+	for (uint32 i = MAX_TOTAL_AURAS_START; i < MAX_TOTAL_AURAS_END; ++i)
+	{
+		if(Aura * aur = m_auras[i])
+		{
+			data << (uint8)aur->m_visualSlot;
+			data << (uint32)aur->GetSpellId(); // Client will ignore rest of packet if visual aura is 0
+			uint8 Flags = (uint8)aur->GetAuraFlags();
+			if(aur->IsPositive())
+				Flags |= AFLAG_POSTIVE | AFLAG_SET;
+			else
+				Flags |= AFLAG_NEGATIVE | AFLAG_SET;
+
+			if(aur->GetDuration() > 0)
+				Flags |= AFLAG_DURATION; // Display duration
+			if(aur->GetCasterGUID())
+				Flags |= AFLAG_NOT_CASTER;
+			data << (uint8)Flags;
+			data << (uint8)getLevel();
+			data << (uint8)m_auraStackCount[aur->m_visualSlot];
+			if( !(Flags & AFLAG_NOT_CASTER) )
+				data << WoWGuid(aur->GetCasterGUID());
+			if(Flags & AFLAG_DURATION)
+			{
+				data << (uint32)aur->GetDuration();
+				data << (uint32)aur->GetTimeLeft();
+			}
+			++Updates;
+		}
+	}
+	sLog.outDebug("Full Aura Update: GUID: "I64FMT" - Updates: %u", GetGUID(), Updates);
+	SendMessageToSet(&data, true);
 }
 
 // COOLDOWNS

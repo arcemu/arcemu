@@ -361,6 +361,13 @@ mysql -h %server% --user=%user% --password=%pass% --port=%port% %chr% < ..\chara
 ECHO [Importing] 2860_groups.sql
 mysql -h %server% --user=%user% --password=%pass% --port=%port% %chr% < ..\character_updates\2860_groups.sql
 
+ECHO [Importing] 2928_guildbank_withdraw.sql
+mysql -h %server% --user=%user% --password=%pass% --port=%port% %chr% < ..\character_updates\2928_guildbank_withdraw.sql
+
+ECHO [Importing] 2934_characters.sql
+mysql -h %server% --user=%user% --password=%pass% --port=%port% %chr% < ..\character_updates\2934_characters.sql
+
+
 ECHO [Importing] Finished
 ECHO  Update Success.
 ECHO.

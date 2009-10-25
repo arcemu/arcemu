@@ -46,7 +46,7 @@ class SpeedCheatDetector;
 #define PLAYER_HONORLESS_TARGET_SPELL 2479
 #define MONSTER_NORMAL_RUN_SPEED 8.0f
 /* action button defines */
-#define PLAYER_ACTION_BUTTON_COUNT 132
+#define PLAYER_ACTION_BUTTON_COUNT 136
 #define PLAYER_ACTION_BUTTON_SIZE PLAYER_ACTION_BUTTON_COUNT * sizeof(ActionButton)
 
 #define MAX_SPEC_COUNT 2
@@ -1187,6 +1187,9 @@ public:
 
 	void AddShapeShiftSpell(uint32 id);
 	void RemoveShapeShiftSpell(uint32 id);
+
+	void SendAuraUpdate(uint32 AuraSlot, bool RemoveAura);
+	void SendFullAuraUpdate();
 
 
     /************************************************************************/

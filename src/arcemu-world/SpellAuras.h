@@ -21,8 +21,16 @@
 //! 4-bit flag
 enum AURA_FLAGS
 {
-	AFLAG_EMPTY = 0x0,
-	AFLAG_SET = 0x9
+	AFLAG_EMPTY			= 0x0,
+	AFLAG_EFFECT_1		= 0x1,
+	AFLAG_EFFECT_2		= 0x2,
+	AFLAG_EFFECT_3		= 0x4,
+	AFLAG_NOT_CASTER	= 0x8,
+	AFLAG_SET			= 0x9,
+	AFLAG_POSTIVE		= 0x10,
+	AFLAG_DURATION		= 0x20,
+	AFLAG_HIDE			= 0x40, // Seems to hide the aura and tell client the aura was removed
+	AFLAG_NEGATIVE		= 0x80
 };
 
 enum AURA_INTERNAL_USAGE_FLAGS
@@ -818,6 +826,7 @@ public:
 
 	int32 GetModAmount( uint32 i ) { if(i<3) return m_modList[i].m_amount; return 0; }
 	int32 GetModAmountByMod() { return mod->m_amount; };
+	uint32 GetAuraFlags() { return m_flags; }
 
 private:
 	uint32 GetCasterFaction() { return m_casterfaction; }

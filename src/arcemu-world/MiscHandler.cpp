@@ -1209,7 +1209,7 @@ void WorldSession::HandleSetActionButtonOpcode(WorldPacket& recv_data)
 	}
 	else
 	{
-		if(button >= 120)
+		if(button >= PLAYER_ACTION_BUTTON_COUNT)
 			return;
 
 		if(type == 64 || type == 65)
