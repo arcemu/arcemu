@@ -1285,21 +1285,14 @@ void Aura::SpellAuraBindSight(bool apply)
 {
 	SetPositive();
 	// MindVision
-	if(apply)
-	{
-		Unit *caster = GetUnitCaster();
-		if(!caster || !caster->IsPlayer())
-			return;
-		caster->SetUInt64Value(PLAYER_FARSIGHT, 0);
-		caster->SetUInt64Value(PLAYER_FARSIGHT, m_target->GetGUID());
-	}
+	Unit *caster = GetUnitCaster();
+	if( caster == NULL || !caster->IsPlayer() )
+		return;
+
+	if( apply )
+		caster->SetUInt64Value( PLAYER_FARSIGHT, m_target->GetGUID() );
 	else
-	{
-		Unit *caster = GetUnitCaster();
-		if(!caster || !caster->IsPlayer())
-			return;
-		caster->SetUInt64Value(PLAYER_FARSIGHT, 0 );
-	}
+		caster->SetUInt64Value( PLAYER_FARSIGHT, 0 );
 }
 
 void Aura::SpellAuraModPossess(bool apply)
@@ -9695,11 +9688,12 @@ void Aura::SpellAuraModAttackPowerOfArmor( bool apply )
 			SetPositive();
 		else
 			SetNegative();
-
-		m_target->ModUnsigned32Value( UNIT_FIELD_ATTACK_POWER_MODS,  ( m_target->GetUInt32Value(UNIT_FIELD_RESISTANCES) /mod->m_amount ) );
+		
+		mod->fixed_amount[mod->i] = m_target->GetUInt32Value( UNIT_FIELD_RESISTANCES ) / mod->m_amount;
+		m_target->ModUnsigned32Value( UNIT_FIELD_ATTACK_POWER_MODS, mod->fixed_amount[mod->i] );
 	}
 	else
-		m_target->ModUnsigned32Value( UNIT_FIELD_ATTACK_POWER_MODS, - static_cast<int32>( m_target->GetUInt32Value(UNIT_FIELD_RESISTANCES) /mod->m_amount ) );
+		m_target->ModUnsigned32Value( UNIT_FIELD_ATTACK_POWER_MODS, -mod->fixed_amount[mod->i] );
 
 	m_target->CalcDamage();
 }

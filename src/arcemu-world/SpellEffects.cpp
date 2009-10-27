@@ -3150,7 +3150,8 @@ void Spell::SpellEffectSummon(uint32 i)
 	case 407:	SpellEffectSummonCritter(i);	return;
 	case 61:
 	case 669:
-	case 881:	SpellEffectSummonGuardian(i);	return;
+	case 881:	
+	case 2301:	SpellEffectSummonGuardian(i);	return;
 	case 64:	SpellEffectSummonWild(i);		return;
 	case 65:
 	case 428:	SpellEffectSummonPossessed(i);	return;
@@ -6571,10 +6572,8 @@ void Spell::SpellEffectSummonObjectSlot(uint32 i)
 		GoSummon->checkrate = 1;
 		sEventMgr.AddEvent(GoSummon, &GameObject::TrapSearchTarget, EVENT_GAMEOBJECT_TRAP_SEARCH_TARGET, 100, 0,0);
 	}
-	else
-	{
-		sEventMgr.AddEvent(GoSummon, &GameObject::ExpireAndDelete, EVENT_GAMEOBJECT_EXPIRE, GetDuration(), 1,0);
-	}
+	sEventMgr.AddEvent(GoSummon, &GameObject::ExpireAndDelete, EVENT_GAMEOBJECT_EXPIRE, GetDuration(), 1,0);
+
 	GoSummon->PushToWorld(m_caster->GetMapMgr());
 	GoSummon->SetSummoned(u_caster);
 	u_caster->m_ObjectSlots[slot] = GoSummon->GetUIdFromGUID();
