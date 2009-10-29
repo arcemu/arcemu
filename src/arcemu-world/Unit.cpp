@@ -6164,7 +6164,7 @@ void Unit::RemoveFromWorld(bool free_guid)
 	if(dynObj != 0)
 		dynObj->Remove();
 
-	for(uint32 i = 0; i < 4; ++i)
+	for( uint8 i = 0; i < 4; ++i )
 	{
 		if(m_ObjectSlots[i] != 0)
 		{
@@ -7991,6 +7991,7 @@ void Unit::RemoveAllGuardians( bool remove_from_world )
 	std::set< Creature* >::iterator itr = m_Guardians.begin();
 	while( itr != m_Guardians.end() )
 	{
+		(*itr)->SetOwner( NULL );
 		if( remove_from_world )
 		{
 			if( (*itr)->IsInWorld() )
@@ -7998,7 +7999,6 @@ void Unit::RemoveAllGuardians( bool remove_from_world )
 			else
 				(*itr)->SafeDelete();
 		}
-		(*itr)->SetOwner( NULL );
 		m_Guardians.erase( itr++ );
 	}
 }
