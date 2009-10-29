@@ -27,7 +27,7 @@ void WorldSession::HandleLearnTalentOpcode( WorldPacket & recv_data )
 	uint32 talent_id, requested_rank, unk;
 	recv_data >> talent_id >> requested_rank >> unk;
 
-	uint32 CurTalentPoints =  GetPlayer()->GetUInt32Value(PLAYER_CHARACTER_POINTS1);
+	uint32 CurTalentPoints = _player->m_specs[_player->m_talentActiveSpec].GetFreePoints(_player); // Calculate free points in active spec
 	if(CurTalentPoints == 0)
 		return;
 
@@ -175,7 +175,8 @@ void WorldSession::HandleLearnTalentOpcode( WorldPacket & recv_data )
 			}
 
 			_player->SetUInt32Value(PLAYER_CHARACTER_POINTS1, CurTalentPoints-1);
-			_player->smsg_TalentsInfo(false, talent_id, static_cast<uint8>( requested_rank ));
+			_player->m_specs[_player->m_talentActiveSpec].AddTalent(talent_id, uint8(requested_rank));
+			_player->smsg_TalentsInfo(false);
 		}
 	}
 }

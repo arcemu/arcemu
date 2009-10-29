@@ -367,6 +367,8 @@ mysql -h %server% --user=%user% --password=%pass% --port=%port% %chr% < ..\chara
 ECHO [Importing] 2934_characters.sql
 mysql -h %server% --user=%user% --password=%pass% --port=%port% %chr% < ..\character_updates\2934_characters.sql
 
+ECHO [Importing] 2936_dualspecs.sql
+mysql -h %server% --user=%user% --password=%pass% --port=%port% %chr% < ..\character_updates\2936_dualspecs.sql
 
 ECHO [Importing] Finished
 ECHO  Update Success.

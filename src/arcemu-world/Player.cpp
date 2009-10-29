@@ -366,7 +366,6 @@ mOutOfRangeIdCount(0)
 	m_globalCooldown = 0;
 	m_unstuckCooldown = 0;
 	m_lastHonorResetTime	= 0;
-	memset(&mActions, 0, PLAYER_ACTION_BUTTON_SIZE);
 	tutorialsDirty = true;
 	m_TeleportState = 1;
 	m_beingPushed = false;
@@ -412,6 +411,12 @@ mOutOfRangeIdCount(0)
 	m_maxTalentPoints = 0; //VLack: 3 Aspire values initialized
 	m_talentActiveSpec = 0;
 	m_talentSpecsCount = 1;
+	for (uint8 s = 0; s < MAX_SPEC_COUNT; ++s)
+	{
+		m_specs[s].talents.clear();
+		memset(m_specs[s].glyphs, 0, GLYPHS_COUNT);
+		memset(m_specs[s].mActions, 0, PLAYER_ACTION_BUTTON_SIZE);
+	}
 
 	m_drunkTimer = 0;
 	m_drunk = 0;
@@ -1814,7 +1819,7 @@ void Player::GiveXP(uint32 xp, const uint64 &guid, bool allowbonus)
 #endif
 
 		//VLack: 3.1.3, as a final step, send the player's talents, this will set the talent points right too...
-		smsg_TalentsInfo(false, 0, 0);
+		smsg_TalentsInfo(false);
 	}
 
 	// Set the update bit
@@ -1913,87 +1918,116 @@ void Player::smsg_InitialSpells()
 	//Log::getSingleton( ).outDetail( "CHARACTER: Sent Initial Spells" );
 }
 
-void Player::smsg_TalentsInfo(bool update, uint32 newTalentId, uint8 newTalentRank)
+void Player::smsg_TalentsInfo(bool SendPetTalents)
 {
-        WorldPacket data(SMSG_TALENTS_INFO, 1000);
-        update = false;
-        data << uint8(update);
-        if(update)      // send just the update
+	WorldPacket data(SMSG_TALENTS_INFO, 1000);
+	data << uint8(SendPetTalents ? 1 : 0);
+    if(SendPetTalents)
+    {
+		if(GetSummon())
+			GetSummon()->SendTalentsToOwner();
+		return;
+	}
+	else
+    {
+        //data << uint32(GetUInt32Value(PLAYER_CHARACTER_POINTS1)); // Wrong, calculate the amount of talent points per spec
+		data << uint32(m_specs[m_talentActiveSpec].GetFreePoints(this));
+        data << uint8(m_talentSpecsCount);
+        data << uint8(m_talentActiveSpec);
+        for(uint8 s = 0; s < m_talentSpecsCount; s++)
         {
-                uint8 count = 1;
-                data << uint32(GetUInt32Value(PLAYER_CHARACTER_POINTS1)); // Unspent talents
-                data << uint8(count);
-                for(uint8 i = 0; i < count; i++)
-                {
-                        data << uint32(newTalentId); // unk     talentid?
-                        data << uint8(1); // unk        rank?
-                }
-        } else  // initialize sending all info
-        {
-                data << uint32(GetUInt32Value(PLAYER_CHARACTER_POINTS1)); // Unspent talents
-                data << uint8(m_talentSpecsCount);
-                data << uint8(m_talentActiveSpec); // unk
-                for(uint8 s = 0; s < m_talentSpecsCount; s++)
-                {
-                        PlayerSpec spec = m_specs[s];
-                        // Send Talents
-/*                        data << uint8(spec.talents.size());
-                        std::map<uint32, uint8>::iterator itr;
-                        for(itr = spec.talents.begin(); itr != spec.talents.end(); itr++)
-                        {
-                                data << uint32(itr->first);     // TalentId
-                                data << uint8(itr->second);     // TalentRank
-                        }*/
+            PlayerSpec spec = m_specs[s];
+			data << uint8(spec.talents.size());
+            std::map<uint32, uint8>::iterator itr;
+            for(itr = spec.talents.begin(); itr != spec.talents.end(); itr++)
+            {
+				data << uint32(itr->first);     // TalentId
+				data << uint8(itr->second);     // TalentRank
+            }
 
-			uint8 talent_count = 0;
-			size_t pos = data.wpos();
-			data << uint8(talent_count); //fake value, will be overwritten at the end
-
-			for( uint32 i = 0; i < 3; ++i )
+			// Send Glyph info
+			data << uint8(GLYPHS_COUNT);
+			for(uint8 i = 0; i < GLYPHS_COUNT; i++)
 			{
-				uint32 talent_tab_id = sWorld.InspectTalentTabPages[getClass()][i];
-
-				for( uint32 j = 0; j < dbcTalent.GetNumRows(); ++j )
-				{
-					TalentEntry const* talent_info = dbcTalent.LookupRow( j );
-					if( talent_info == NULL )
-						continue;
-
-					if( talent_info->TalentTree != talent_tab_id ) // we can skip this tree
-						continue;
-
-					int32 talent_maxrank = -1;
-					for( int32 k = 4; k > -1; --k )
-					{
-						if( talent_info->RankID[k] && HasSpell(talent_info->RankID[k]) )
-						{
-							talent_maxrank = k;
-							break;
-						}
-					}
-
-					if( talent_maxrank < 0 ) // player doesn't have this talent, don't send it
-						continue;
-
-					data << uint32(talent_info->TalentID);
-					data << uint8(talent_maxrank);
-
-					++talent_count;
-				}
+				data << uint16(spec.glyphs[i]);
 			}
+		}
+    }
+    GetSession()->SendPacket(&data);
+}
 
-			data.put<uint8>(pos, talent_count);
+void Player::ActivateSpec(uint8 spec)
+{
+	if(spec > MAX_SPEC_COUNT || m_talentActiveSpec > MAX_SPEC_COUNT)
+		return;
 
+	uint8 OldSpec = m_talentActiveSpec;
+	m_talentActiveSpec = spec;
 
-                        // Send Glyph info
-                        data << uint8(GLYPHS_COUNT);
-                        for(uint8 i = 0; i < GLYPHS_COUNT; i++)
-                        {
-                                data << uint16(spec.glyphs[i]);
-                        }
-                }
-        }
-        GetSession()->SendPacket(&data);
+	// remove old glyphs
+	for (uint8 i = 0; i < GLYPHS_COUNT; ++i)
+	{
+		GlyphPropertyEntry * glyph = dbcGlyphProperty.LookupEntry(m_specs[OldSpec].glyphs[i]);
+		if (glyph == NULL)
+			continue;
+
+		RemoveAura(glyph->SpellID);
+	}
+
+	// remove old talents
+	for (std::map<uint32, uint8>::iterator itr = m_specs[OldSpec].talents.begin(); itr != m_specs[OldSpec].talents.end(); ++itr)
+	{
+		TalentEntry * talentInfo = dbcTalent.LookupEntryForced(itr->first);
+		if(talentInfo == NULL)
+			continue;
+
+		removeSpell(talentInfo->RankID[itr->second], true, false, 0);
+	}
+
+	// add new glyphs
+	for (uint8 i = 0; i < GLYPHS_COUNT; ++i)
+	{
+		GlyphPropertyEntry * glyph = dbcGlyphProperty.LookupEntry(m_specs[m_talentActiveSpec].glyphs[i]);
+		if(glyph == NULL)
+			continue;
+
+		CastSpell(this, glyph->SpellID, true);
+	}
+
+	//add talents from new spec
+	for (std::map<uint32, uint8>::iterator itr= m_specs[m_talentActiveSpec].talents.begin();
+		itr != m_specs[m_talentActiveSpec].talents.end(); ++itr)
+	{
+		TalentEntry* talentInfo = dbcTalent.LookupEntryForced(itr->first);
+		if(talentInfo == NULL)
+			continue;
+
+		addSpell(talentInfo->RankID[itr->second]);
+	}
+	smsg_TalentsInfo(false);
+}
+
+uint32 PlayerSpec::GetFreePoints(Player * Pl)
+{
+	uint32 Lvl = Pl->getLevel();
+	uint32 FreePoints = 0;
+
+	if(Lvl > 9)
+	{
+		FreePoints = Lvl - 9;
+		for (std::map<uint32, uint8>::iterator itr = talents.begin(); itr != talents.end(); ++itr)
+			FreePoints -= (itr->second+1);
+	}
+	return FreePoints;
+}
+
+void PlayerSpec::AddTalent(uint32 talentid, uint8 rankid)
+{
+	std::map<uint32, uint8>::iterator itr = talents.find(talentid);
+	if(itr != talents.end())
+		itr->second = rankid;
+	else
+		talents.insert(make_pair(talentid, rankid));
 }
 
 void Player::_SavePet(QueryBuffer * buf)
@@ -2704,13 +2738,16 @@ void Player::SaveToDB(bool bNewCharacter /* =false */)
 	ss << "','";
 
 	// Add player action bars
-	for(uint32 i = 0; i < PLAYER_ACTION_BUTTON_COUNT; ++i)
+	for (uint8 s = 0; s < MAX_SPEC_COUNT; ++s)
 	{
-		ss << uint32(mActions[i].Action) << ","
-			<< uint32(mActions[i].Misc) << ","
-			<< uint32(mActions[i].Type) << ",";
+		for(uint32 i = 0; i < PLAYER_ACTION_BUTTON_COUNT; ++i)
+		{
+			ss	<< uint32(m_specs[s].mActions[i].Action) << ","
+				<< uint32(m_specs[s].mActions[i].Misc) << ","
+				<< uint32(m_specs[s].mActions[i].Type) << ",";
+		}
+		ss << "','";
 	}
-	ss << "','";
 
 	if(!bNewCharacter)
 		SaveAuras(ss);
@@ -2742,13 +2779,18 @@ void Player::SaveToDB(bool bNewCharacter /* =false */)
 
 	ss << (m_uint32Values[PLAYER_BYTES_3] & 0xFFFE) << ", ";
 
-	// dump glyphs
-	ss << "'";
-
-	for(uint32 i = 0; i < GLYPHS_COUNT; ++i)
-		ss << m_uint32Values[PLAYER_FIELD_GLYPHS_1 + i] << ",";
-
-	ss << "', ";
+	for (uint8 s = 0; s < MAX_SPEC_COUNT; ++s)
+	{
+		ss << "'";
+		for (uint8 i = 0; i < GLYPHS_COUNT; ++i)
+			ss << m_specs[s].glyphs[i] << ",";
+		ss << "','";
+		for (std::map<uint32, uint8>::iterator itr = m_specs[s].talents.begin(); itr != m_specs[s].talents.end(); ++itr)
+			ss << itr->first << "," << uint32(itr->second) << ",";
+		ss << "',";
+	}
+	ss << uint32(m_talentSpecsCount) << ", " << uint32(m_talentActiveSpec);
+	ss << ", ";
 
 	ss << m_phase << ")";
 
@@ -2911,10 +2953,10 @@ void Player::LoadFromDBProc(QueryResultVector & results)
 		return;
 	}
 
-	if( result->GetFieldCount() != 85 )
+	if( result->GetFieldCount() != 91 )
 	{
 		Log.Error ("Player::LoadFromDB",
-				"Expected 85 fields from the database, "
+				"Expected 91 fields from the database, "
 				"but received %u!  You may need to update your character database.",
 				(unsigned int) result->GetFieldCount ());
 		RemovePendingPlayer();
@@ -3433,25 +3475,28 @@ void Player::LoadFromDBProc(QueryResultVector & results)
 		_InitialReputation();
 
 	// Load saved actionbars
-	start =  (char*)get_next_field.GetString();
-	Counter =0;
-	while(Counter < PLAYER_ACTION_BUTTON_COUNT)
+	for (uint8 s = 0; s < MAX_SPEC_COUNT; ++s)
 	{
-		end = strchr(start,',');
-		if(!end)break;
-		*end=0;
-		mActions[Counter].Action = (uint16)atol(start);
-		start = end +1;
-		end = strchr(start,',');
-		if(!end)break;
-		*end=0;
-		mActions[Counter].Misc = (uint8)atol(start);
-		start = end +1;
-		end = strchr(start,',');
-		if(!end)break;
-		*end=0;
-		mActions[Counter++].Type = (uint8)atol(start);
-		start = end +1;
+		start =  (char*)get_next_field.GetString();
+		Counter =0;
+		while(Counter < PLAYER_ACTION_BUTTON_COUNT)
+		{
+			end = strchr(start,',');
+			if(!end)break;
+			*end=0;
+			m_specs[s].mActions[Counter].Action = (uint16)atol(start);
+			start = end +1;
+			end = strchr(start,',');
+			if(!end)break;
+			*end=0;
+			m_specs[s].mActions[Counter].Misc = (uint8)atol(start);
+			start = end +1;
+			end = strchr(start,',');
+			if(!end)break;
+			*end=0;
+			m_specs[s].mActions[Counter++].Type = (uint8)atol(start);
+			start = end +1;
+		}
 	}
 
 	//LoadAuras = get_next_field.GetString();
@@ -3526,26 +3571,44 @@ void Player::LoadFromDBProc(QueryResultVector & results)
 		soberFactor = 1 - timediff / 900;
 	SetDrunkValue( uint16( soberFactor * get_next_field.GetUInt32() ) );
 
-	// Load Glyphs and apply their auras
-	LoadFieldsFromString(get_next_field.GetString(), PLAYER_FIELD_GLYPHS_1, GLYPHS_COUNT);
-	GlyphPropertyEntry *glyph;
-	for(uint32 i=0; i < GLYPHS_COUNT; i++)
+	for (uint8 s = 0; s < MAX_SPEC_COUNT; ++s)
 	{
-		uint32 glyphId = GetUInt32Value(PLAYER_FIELD_GLYPHS_1 + i);
-		if(glyphId == 0)
-			continue;
-		// Get info
-		glyph = dbcGlyphProperty.LookupEntry(glyphId);
-		if(!glyph || !glyph->SpellID)
-			continue;
-		LoginAura la;
-		la.id = glyph->SpellID;
-		la.dur = uint32(-1);
-		la.charges = 0;
-		la.positive = 0; //VLack: check this, as this was uninitialized, 0 is a safe bet, but glyphs should be positive, aren't they?
-		loginauras.push_back(la);
-		m_specs[0].glyphs[i] = static_cast< uint16 >( glyphId ); //VLack: TempFIX till we properly implement dual specs, make them appear in the first set!
+		start = (char*)get_next_field.GetString();
+		uint8 glyphid = 0;
+		while(glyphid < GLYPHS_COUNT)
+		{
+			end = strchr(start,',');
+			if(!end)break;
+			*end=0;
+			m_specs[s].glyphs[glyphid] = (uint16)atol(start);
+			++glyphid;
+			start = end + 1;
+		}
+
+		//Load talents for spec
+		start = (char*)get_next_field.GetString();
+		while(end != NULL)
+		{
+			end = strchr(start,',');
+			if(!end)
+				break;
+			*end=0;
+			uint32 talentid = atol(start);
+			start = end + 1;
+
+			end = strchr(start,',');
+			if(!end)
+				break;
+			*end=0;
+			uint8 rank = (uint8)atol(start);
+			start = end + 1;
+
+			m_specs[s].talents.insert(make_pair<uint32, uint8>(talentid, rank));
+		}
 	}
+
+	m_talentSpecsCount = get_next_field.GetUInt8();
+	m_talentActiveSpec = get_next_field.GetUInt8();
 
 	m_phase = get_next_field.GetUInt32(); //Load the player's last phase
 
@@ -5211,7 +5274,9 @@ void Player::SendInitialActions()
 	data << uint8(0);       // VLack: 3.1, some bool - 0 or 1. seems to work both ways
 	for(uint32 i = 0; i < PLAYER_ACTION_BUTTON_SIZE; ++i)
 	{
-		data << mActions[i].Action << mActions[i].Type << mActions[i].Misc; //VLack: on 3.1.3, despite the format of CMSG_SET_ACTION_BUTTON, here Type have to be sent before Misc
+		data << m_specs[m_talentActiveSpec].mActions[i].Action
+			 << m_specs[m_talentActiveSpec].mActions[i].Type
+			 << m_specs[m_talentActiveSpec].mActions[i].Misc; //VLack: on 3.1.3, despite the format of CMSG_SET_ACTION_BUTTON, here Type have to be sent before Misc
 	}
 	m_session->SendPacket(&data);
 //#endif
@@ -5221,9 +5286,9 @@ void Player::setAction(uint8 button, uint16 action, uint8 type, uint8 misc)
 {
 	if( button >= PLAYER_ACTION_BUTTON_COUNT )
 		return; //packet hack to crash server
-	mActions[button].Action = action;
-	mActions[button].Type = type;
-	mActions[button].Misc = misc;
+	m_specs[m_talentActiveSpec].mActions[button].Action = action;
+	m_specs[m_talentActiveSpec].mActions[button].Type = type;
+	m_specs[m_talentActiveSpec].mActions[button].Misc = misc;
 }
 
 // Groupcheck
@@ -7032,7 +7097,7 @@ void Player::SendInitialLogonPackets()
 	GetSession()->SendPacket(&data);
 
 	//3.1: Send the talents
-	smsg_TalentsInfo(false, 0, 0);
+	smsg_TalentsInfo(false);
 
 	//Initial Spells
 	smsg_InitialSpells();
@@ -7249,7 +7314,8 @@ void Player::Reset_Talents()
 		ResetDualWield2H();
 	}
 
-	smsg_TalentsInfo(false, 0, 0); //VLack: should we send this as Aspire? Yes...
+	m_specs[m_talentActiveSpec].talents.clear();
+	smsg_TalentsInfo(false); //VLack: should we send this as Aspire? Yes...
 }
 
 void Player::Reset_ToLevel1()
@@ -9092,7 +9158,7 @@ void Player::ApplyLevelInfo(LevelInfo* Info, uint32 Level)
 	GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_REACH_LEVEL);
 #endif
 	//VLack: 3.1.3, as a final step, send the player's talents, this will set the talent points right too...
-	smsg_TalentsInfo(false, 0, 0);
+	smsg_TalentsInfo(false);
 
 	sLog.outDetail("Player %s set parameters to level %u", GetName(), Level);
 }
@@ -11419,7 +11485,7 @@ void Player::save_Actions()
 
 	for(uint32 i = 0; i < 120; ++i)
 	{
-		p += sprintf(&buffer[p], "%u,%u,%u,", mActions[i].Action, mActions[i].Misc, mActions[i].Type);
+		p += sprintf(&buffer[p], "%u,%u,%u,", m_specs[m_talentActiveSpec].mActions[i].Action, m_specs[m_talentActiveSpec].mActions[i].Misc, m_specs[m_talentActiveSpec].mActions[i].Type);
 	}
 
 	ASSERT(p < 2048);

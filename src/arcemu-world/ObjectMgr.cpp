@@ -1786,7 +1786,7 @@ void GossipMenu::AddMenuItem(uint8 Icon, std::string Message, uint32 dtSender, u
 	Item.m_gBoxMessage = BoxMessage;
 	Item.m_gBoxMoney = BoxMoney;
 	Item.Id = (uint32)Menu.size();
-	Item.IntId = Item.Id;
+	Item.IntId = dtAction;
 
 	Menu.push_back(Item);
 }

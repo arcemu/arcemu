@@ -1824,7 +1824,7 @@ void WorldSession::HandleInspectOpcode( WorldPacket & recv_data )
 	data << uint8(player->m_talentActiveSpec);
 	for(uint8 s = 0; s < player->m_talentSpecsCount; s++)
 	{
-		Player::PlayerSpec spec = player->m_specs[s];
+		PlayerSpec spec = player->m_specs[s];
 
 		int32 talent_max_rank;
 		uint32 talent_tab_id;
@@ -2593,8 +2593,8 @@ void WorldSession::HandleRemoveGlyph(WorldPacket & recv_data)
 		return;
 	_player->SetUInt32Value(PLAYER_FIELD_GLYPHS_1 + glyphNum, 0);
 	_player->RemoveAllAuras(glyph->SpellID, 0);
-	_player->m_specs[0].glyphs[glyphNum] = 0; //VLack: TempFIX till dual spec...
-	_player->smsg_TalentsInfo(false, 0, 0);
+	_player->m_specs[_player->m_talentActiveSpec].glyphs[glyphNum] = 0;
+	_player->smsg_TalentsInfo(false);
 }
 
 void WorldSession::HandleGameobjReportUseOpCode( WorldPacket& recv_data )   // CMSG_GAMEOBJ_REPORT_USE

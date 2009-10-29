@@ -874,6 +874,17 @@ struct PlayerCooldown
 	uint32 SpellId;
 };
 
+struct PlayerSpec
+{
+	std::map<uint32, uint8> talents;	// map of <talentId, talentRank>
+	uint16 glyphs[GLYPHS_COUNT];
+	ActionButton mActions[PLAYER_ACTION_BUTTON_SIZE];
+
+	uint32 GetFreePoints(Player * Pl);
+
+	void AddTalent(uint32 talentid, uint8 rankid);
+};
+
 //====================================================================
 //  Player
 //  Class that holds every created character on the server.
@@ -1149,7 +1160,8 @@ public:
 	bool HasSpellwithNameHash(uint32 hash);
 	bool HasDeletedSpell(uint32 spell);
 	void smsg_InitialSpells();
-	void smsg_TalentsInfo(bool update, uint32 newTalentId, uint8 newTalentRank);
+	void smsg_TalentsInfo(bool SendPetTalents);
+	void ActivateSpec(uint8 spec);
 	void addSpell(uint32 spell_idy);
 	void removeSpellByHashName(uint32 hash);
 	bool removeSpell(uint32 SpellID, bool MoveToDeleted, bool SupercededSpell, uint32 SupercededSpellID);
@@ -2223,7 +2235,7 @@ protected:
 	// Raid
 	uint8 m_targetIcon;
 	//Player Action Bar
-	ActionButton mActions[PLAYER_ACTION_BUTTON_SIZE];
+	// ActionButton mActions[PLAYER_ACTION_BUTTON_SIZE]; // Moved to dual spec
 	// Player Reputation
 	ReputationMap m_reputation;
 	// Pointer to this char's game client
@@ -2383,15 +2395,9 @@ public:
 	uint16 m_maxTalentPoints;
 //	uint16 GetMaxTalentPoints();
 //	void ApplySpec(uint8 spec, bool init);
-//	void ApplyTalent(uint32 spellId);
-//	void RemoveTalent(uint32 spellid);
 	uint8 m_talentSpecsCount;
 	uint8 m_talentActiveSpec;
-	struct PlayerSpec
-	{
-		std::map<uint32, uint8> talents;	// map of <talentId, talentRank>
-		uint16  glyphs[GLYPHS_COUNT];
-	};
+
 	PlayerSpec m_specs[MAX_SPEC_COUNT];
 
     /************************************************************************/

@@ -700,7 +700,7 @@ void GossipScript::GossipHello(Object* pObject, Player* Plr, bool AutoSend)
 			Menu->AddItem(3, Plr->GetSession()->LocalizedWorldSrv(13), 2);
 		}
 
-        // talent reset menuitem
+        // talent reset menuitem and dual spec
 		if (pTrainer->RequiredClass &&					  // class trainer
 			pTrainer->RequiredClass == Plr->getClass() &&   // correct class
 			pCreature->getLevel() > 10 &&				   // creature level
@@ -708,6 +708,8 @@ void GossipScript::GossipHello(Object* pObject, Player* Plr, bool AutoSend)
 			Plr->getLevel() > 10 )						  // player level
 		{
 			Menu->AddItem(0, Plr->GetSession()->LocalizedWorldSrv(22), 11);
+			if(Plr->getLevel() > 40 && Plr->m_talentSpecsCount < 2)
+				Menu->AddItem(0, "Learn about Dual Talent Specialization.", 15);
 		}
 	
         // pet untraining menuitem
@@ -835,6 +837,33 @@ void GossipScript::GossipSelectOption(Object* pObject, Player* Plr, uint32 Id, u
 			Plr->Gossip_Complete();
 			Plr->SendPetUntrainConfirm();
 		}break;
+
+	case 15: // purchase dual spec
+		{
+			GossipMenu *Menu;
+			objmgr.CreateGossipMenuForPlayer(&Menu, pCreature->GetGUID(), 14136, Plr);
+			Menu->AddMenuItem(0, "Purchase a Dual Talent Specialization.", 0, 16, "Are you sure you would like to purchase your second talent specialization", 10000000, false);
+			Menu->SendTo(Plr);
+		}break;
+
+	case 16: // end dual spec dialog
+		{
+			if(Plr->GetUInt32Value(PLAYER_FIELD_COINAGE) < 10000000)
+			{
+				Plr->GetSession()->SendNotification("You do not have enough gold to purchase a dual spec."); // I know this is not correct
+				Plr->Gossip_Complete();
+				return;
+			}
+			Plr->ModUnsigned32Value(PLAYER_FIELD_COINAGE, -10000000);
+			Plr->m_talentSpecsCount = 2;
+			Plr->Reset_Talents();
+			Plr->CastSpell(Plr, 63624, true); // Show activate spec buttons
+			Plr->CastSpell(Plr, 63706, true); // Allow primary spec to be activated
+			Plr->CastSpell(Plr, 63707, true); // Allow secondary spec to be activated
+			Plr->SaveToDB(false); // hai gm i bought dual spec but no werk plis gief mi 1000g back - GTFO you never bought anything
+			Plr->Gossip_Complete();
+		}
+		break;
 
 	default:
 		sLog.outError("Unknown IntId %u on entry %u", IntId, pCreature->GetEntry());

@@ -944,8 +944,9 @@ enum SpellEffects
 	SPELL_EFFECT_MILLING,					//    158
 	SPELL_EFFECT_UNKNOWN37,                 //    159
 	SPELL_EFFECT_UNKNOWN38,                 //    160
-	SPELL_EFFECT_UNKNOWN39,                 //    161
-    TOTAL_SPELL_EFFECTS,                    //    162
+	SPELL_EFFECT_LEARN_SPEC,                //    161
+	SPELL_EFFECT_ACTIVATE_SPEC,             //    162
+    TOTAL_SPELL_EFFECTS,                    //    163
 };
 
 // target type flags
@@ -1560,6 +1561,9 @@ typedef void(Spell::*pSpellTarget)(uint32 i, uint32 j);
 #define POWER_TYPE_RUNIC_POWER 6
 // we have power type 15 and 31 :S
 
+#define SPEC_PRIMARY 0
+#define SPEC_SECONDARY 1
+
 #define GO_FISHING_BOBBER 35591
 
 #define SPELL_SPELL_CHANNEL_UPDATE_INTERVAL 1000
@@ -1806,6 +1810,8 @@ public:
 	void SpellEffectMilling(uint32 i);
 	void SpellEffectRenamePet(uint32 i);
 	void SpellEffectRestoreHealthPct(uint32 i);
+	void SpellEffectLearnSpec(uint32 i);
+	void SpellEffectActivateSpec(uint32 i);
 //	void SpellEffectActivateRune(uint32 i);
 
     // Spell Targets Handlers
