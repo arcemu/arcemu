@@ -7395,6 +7395,28 @@ void Spell::SpellEffectActivateSpec(uint32 i)
 	if(p_caster == NULL)
 		return;
 
+	if(p_caster->CombatStatus.IsInCombat())
+	{
+		SendCastResult(SPELL_FAILED_AFFECTING_COMBAT);
+		return;
+	}
+	else if(p_caster->m_bg)
+	{
+		uint32 Type = p_caster->m_bg->GetType();
+		if(Type >= BATTLEGROUND_ARENA_2V2 && Type <= BATTLEGROUND_ARENA_5V5)
+		{
+			SendCastResult(SPELL_FAILED_AFFECTING_COMBAT); // does the job
+			return;
+		}
+		else
+		{
+			if(p_caster->m_bg->HasStarted())
+			{
+				SendCastResult(SPELL_FAILED_AFFECTING_COMBAT); // does the job
+			}
+		}
+	}
+
 	uint8 NewSpec = p_caster->m_talentActiveSpec == SPEC_PRIMARY ? SPEC_SECONDARY : SPEC_PRIMARY; // Check if primary spec is on or not
 	p_caster->ActivateSpec(NewSpec);
 
@@ -7407,4 +7429,6 @@ void Spell::SpellEffectActivateSpec(uint32 i)
 			 << p_caster->m_specs[NewSpec].mActions[i].Misc;
 	}
 	p_caster->GetSession()->SendPacket(&data);
+	p_caster->SetPower(p_caster->GetPowerType(), 0);
+	p_caster->SendPowerUpdate(false);
 }
