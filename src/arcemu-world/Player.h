@@ -879,6 +879,7 @@ struct PlayerSpec
 	std::map<uint32, uint8> talents;	// map of <talentId, talentRank>
 	uint16 glyphs[GLYPHS_COUNT];
 	ActionButton mActions[PLAYER_ACTION_BUTTON_SIZE];
+	uint32 m_customTalentPointOverride;
 
 	uint32 GetFreePoints(Player * Pl);
 

@@ -414,6 +414,7 @@ mOutOfRangeIdCount(0)
 	for (uint8 s = 0; s < MAX_SPEC_COUNT; ++s)
 	{
 		m_specs[s].talents.clear();
+		m_specs[s].m_customTalentPointOverride = 0;
 		memset(m_specs[s].glyphs, 0, GLYPHS_COUNT);
 		memset(m_specs[s].mActions, 0, PLAYER_ACTION_BUTTON_SIZE);
 	}
@@ -2014,7 +2015,7 @@ uint32 PlayerSpec::GetFreePoints(Player * Pl)
 
 	if(Lvl > 9)
 	{
-		FreePoints = Lvl - 9;
+		FreePoints = m_customTalentPointOverride > 0 ? m_customTalentPointOverride : Lvl - 9; // compensate for additional given talentpoints
 		for (std::map<uint32, uint8>::iterator itr = talents.begin(); itr != talents.end(); ++itr)
 			FreePoints -= (itr->second+1);
 	}
@@ -2613,10 +2614,7 @@ void Player::SaveToDB(bool bNewCharacter /* =false */)
 		ss << m_uint32Values[PLAYER_AMMO_ID] << ",";
 	ss << m_uint32Values[PLAYER_CHARACTER_POINTS2] << ",";
 
-	if (m_uint32Values[PLAYER_CHARACTER_POINTS1] > 71 &&  ! GetSession()->HasGMPermissions())
-            SetUInt32Value(PLAYER_CHARACTER_POINTS1, 71);
-	ss << m_uint32Values[PLAYER_CHARACTER_POINTS1] << ","
-	<< load_health << ","
+	ss << load_health << ","
 	<< load_mana << ","
 	<< uint32(GetPVPRank()) << ","
 	<< m_uint32Values[PLAYER_BYTES] << ","
@@ -2790,7 +2788,9 @@ void Player::SaveToDB(bool bNewCharacter /* =false */)
 		ss << "',";
 	}
 	ss << uint32(m_talentSpecsCount) << ", " << uint32(m_talentActiveSpec);
-	ss << ", ";
+	ss << ", '";
+	ss << uint32(m_specs[SPEC_PRIMARY].m_customTalentPointOverride) << " " << uint32(m_specs[SPEC_SECONDARY].m_customTalentPointOverride);
+	ss << "', ";
 
 	ss << m_phase << ")";
 
@@ -3199,7 +3199,6 @@ void Player::LoadFromDBProc(QueryResultVector & results)
 	m_uint32Values[ PLAYER_FIELD_COINAGE ]					= get_next_field.GetUInt32();
 	m_uint32Values[ PLAYER_AMMO_ID ]						= get_next_field.GetUInt32();
 	m_uint32Values[ PLAYER_CHARACTER_POINTS2 ]				= get_next_field.GetUInt32();
-	m_uint32Values[ PLAYER_CHARACTER_POINTS1 ]				= get_next_field.GetUInt32();
 	load_health												= get_next_field.GetUInt32();
 	load_mana												= get_next_field.GetUInt32();
 	SetUInt32Value( UNIT_FIELD_HEALTH, load_health );
@@ -3609,6 +3608,7 @@ void Player::LoadFromDBProc(QueryResultVector & results)
 
 	m_talentSpecsCount = get_next_field.GetUInt8();
 	m_talentActiveSpec = get_next_field.GetUInt8();
+	sscanf(get_next_field.GetString(), "%u %u", &m_specs[SPEC_PRIMARY].m_customTalentPointOverride, &m_specs[SPEC_SECONDARY].m_customTalentPointOverride);
 
 	m_phase = get_next_field.GetUInt32(); //Load the player's last phase
 

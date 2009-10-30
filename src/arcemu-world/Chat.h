@@ -260,6 +260,7 @@ protected:
 	bool HandleKickCommand(const char* args, WorldSession *m_session);
 	bool HandleTaxiCheatCommand(const char* args, WorldSession *m_session);
 	bool HandleModifySpeedCommand(const char* args, WorldSession *m_session);
+	bool HandleModifyTPsCommand(const char* args, WorldSession *m_session);
 
 	// Debug Commands
 	bool HandleDebugInFrontCommand(const char* args, WorldSession *m_session);
