@@ -158,18 +158,29 @@ void Player::SetStanding( uint32 Faction, int32 Value )
 		return;
 	ReputationMap::iterator itr = m_reputation.find( Faction );
 
+	if( newValue < minReputation )
+		newValue = minReputation;
+	else if( newValue > maxReputation )
+		newValue = maxReputation;
+
 	if( itr == m_reputation.end() )
 	{
-		if ( !AddNewFaction( f, Value, false ) )
+		if( !AddNewFaction( f, newValue, false ) )
 			return;
+
+		itr = m_reputation.find( Faction );
+#ifdef ENABLE_ACHIEVEMENTS
+		if( itr->second->standing >= 42000 ) // check if we are exalted now
+			m_achievementMgr.UpdateAchievementCriteria( ACHIEVEMENT_CRITERIA_TYPE_GAIN_EXALTED_REPUTATION, 1, 0, 0 ); // increment # of exalted
+		
+		m_achievementMgr.UpdateAchievementCriteria( ACHIEVEMENT_CRITERIA_TYPE_GAIN_REPUTATION, f->ID, itr->second->standing, 0 );
+#endif
+		UpdateInrangeSetsBasedOnReputation();
+		OnModStanding( f, itr->second );
 	}
 	else
 	{
-		if(newValue < minReputation)
-			newValue = minReputation;
-		else if(newValue > maxReputation)
-			newValue = maxReputation;
-		// Increment it.
+		// Assign it.
 		if ( RankChangedFlat( itr->second->standing, newValue ) )
 		{
 #ifdef ENABLE_ACHIEVEMENTS
@@ -181,7 +192,7 @@ void Player::SetStanding( uint32 Faction, int32 Value )
 			itr->second->standing = newValue;
 			UpdateInrangeSetsBasedOnReputation();
 #ifdef ENABLE_ACHIEVEMENTS
-m_achievementMgr.UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_GAIN_REPUTATION, f->ID, Value, 0);
+		m_achievementMgr.UpdateAchievementCriteria( ACHIEVEMENT_CRITERIA_TYPE_GAIN_REPUTATION, f->ID, Value, 0 );
 #endif
 		}
 		else
@@ -228,26 +239,40 @@ void Player::ModStanding( uint32 Faction, int32 Value )
 		return;
 	ReputationMap::iterator itr = m_reputation.find( Faction );
 
-	if ( pctReputationMod > 0 )
+	if( itr == m_reputation.end() )
 	{
-		float d = float( float( pctReputationMod ) / 100.0f );
-		newValue = Value + FL2UINT( float( float( Value ) * d ) );
-	}
+		if( newValue < minReputation )
+			newValue = minReputation;
+		else if( newValue > maxReputation )
+			newValue = maxReputation;
 
-	if ( itr == m_reputation.end() )
-	{
-		if ( !AddNewFaction( f, Value, false ) )
+		if( !AddNewFaction( f, newValue, false ) )
 			return;
+
+		itr = m_reputation.find( Faction );
+#ifdef ENABLE_ACHIEVEMENTS
+		if( itr->second->standing >= 42000 ) // check if we are exalted now
+			m_achievementMgr.UpdateAchievementCriteria( ACHIEVEMENT_CRITERIA_TYPE_GAIN_EXALTED_REPUTATION, 1, 0, 0 ); // increment # of exalted
+		
+		m_achievementMgr.UpdateAchievementCriteria( ACHIEVEMENT_CRITERIA_TYPE_GAIN_REPUTATION, f->ID, itr->second->standing, 0 );
+#endif
+		UpdateInrangeSetsBasedOnReputation();
+		OnModStanding( f, itr->second );
 	}
 	else
 	{
+		if( pctReputationMod > 0 )
+		{
+			float d = float( float( pctReputationMod ) / 100.0f );
+			newValue = Value + FL2UINT( float( float( Value ) * d ) );
+		}
 		// Increment it.
 		if ( RankChanged( itr->second->standing, newValue ) )
 		{
 			itr->second->standing += newValue;
 			UpdateInrangeSetsBasedOnReputation();
 #ifdef ENABLE_ACHIEVEMENTS
-			this->m_achievementMgr.UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_GAIN_REPUTATION, f->ID, itr->second->standing, 0);
+			m_achievementMgr.UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_GAIN_REPUTATION, f->ID, itr->second->standing, 0);
 			if(itr->second->standing >= exaltedReputation) // check if we are exalted now
 				m_achievementMgr.UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_GAIN_EXALTED_REPUTATION, 1, 0, 0); // increment # of exalted
 			else if(itr->second->standing-newValue >= exaltedReputation) // somehow we lost exalted status
@@ -255,9 +280,8 @@ void Player::ModStanding( uint32 Faction, int32 Value )
 #endif		
 		}
 		else
-		{
 			itr->second->standing += newValue;
-		}
+
 		if(itr->second->standing < minReputation)
 			itr->second->standing = minReputation;
 		else if(itr->second->standing > maxReputation)

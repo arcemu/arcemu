@@ -5280,9 +5280,10 @@ void Aura::EventPeriodicLeech(uint32 amount)
 		SendPeriodicAuraLog(m_target, m_target, m_spellProto->Id, m_spellProto->School, Amount, 0, 0, FLAG_PERIODIC_LEECH);
 
 		//deal damage before we add healing bonus to damage
-		m_caster->DealDamage(m_target, Amount, 0, 0, GetSpellProto()->Id,true);
+		SpellEntry* m_SpellProto = GetSpellProto();
+		m_caster->DealDamage( m_target, Amount, 0, 0, GetSpellProto()->Id, true );
 
-		m_caster->HandleProc(PROC_ON_ANY_HOSTILE_ACTION,m_target, m_spellProto,Amount);
+		m_caster->HandleProc( PROC_ON_ANY_HOSTILE_ACTION, m_Target, m_SpellProto, Amount );
 		m_caster->m_procCounter = 0;
 
 		//some say this prevents some crashes atm
