@@ -90,14 +90,9 @@ struct GameObjectInfo
 	uint32 Type;
 	uint32 DisplayID;
 	char * Name;
-	char * Name2;
-	char * Name3;
-	char * Name4;
 	char * Category;
 	char * Castbartext;
 	char * Unkstr;
-	float Size;
-	uint32 QuestItems[6];
 	uint32 SpellFocus;
 	uint32 sound1;
 	uint32 sound2;
@@ -122,6 +117,9 @@ struct GameObjectInfo
 	uint32 Unknown12;
 	uint32 Unknown13;
 	uint32 Unknown14;
+    float Size;
+   	uint32 QuestItems[6];
+
 	// Quests
 	GameObjectGOMap goMap;
 	GameObjectItemMap itemMap;

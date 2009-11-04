@@ -105,41 +105,43 @@ void WorldSession::HandleCreatureQueryOpcode( WorldPacket & recv_data )
 		{
 			sLog.outDetail("WORLD: CMSG_CREATURE_QUERY '%s'", ci->Name);
 			data << (uint32)entry;
-			data << ci->Name;
-			data << uint8(0) << uint8(0) << uint8(0);
-			data << ci->SubName;
+			data << ci->Name;       // name of the creature
+			data << uint8(0);       // name2, always seems to be empty
+            data << uint8(0);       // name3, always seems to be empty
+            data << uint8(0);       // name4, always seems to be empty
+			data << ci->SubName;    // this is the title/guild of the creature
 		}
 		else
 		{
 			sLog.outDetail("WORLD: CMSG_CREATURE_QUERY '%s' (localized to %s)", ci->Name, lcn->Name);
 			data << (uint32)entry;
 			data << lcn->Name;
-			data << uint8(0) << uint8(0) << uint8(0);
+			data << uint8(0); 
+            data << uint8(0); 
+            data << uint8(0);
 			data << lcn->SubName;
 		}
-		data << ci->info_str; //!!! this is a string in 2.3.0 Example: stormwind guard has : "Direction"
-		data << ci->Flags1;  
-		data << ci->Type;
-		data << ci->Family;
-		data << ci->Rank;
-		/* removed in 3.0.x
-		data << ci->Unknown1;
-		*/
-		data << ci->Unknown1; //VLack: seen in 3.1.2 packet dumps 2 uint32(0)s here, this field in the DB is also null (at least on NCDB101).
-		//data << ci->SpellDataID; //VLack: I think this is not valid anymore in 3.1, so it's better to send 0 or Unknown1 again.
-		data << ci->Unknown1; //VLack: the pair of Unknown1 on 3.1.2, but as we don't have a separate database field for this yet, I'll just repeat the first one and it'll send a nice 0.
+		data << ci->info_str;     //!!! this is a string in 2.3.0 Example: stormwind guard has : "Direction"
+		data << ci->Flags1;       // flags like skinnable
+		data << ci->Type;         // humanoid, beast, etc
+		data << ci->Family;       // petfamily
+		data << ci->Rank;         // normal, elite, etc
+        data << ci->killcredit1;  // quest kill credit 1
+        data << ci->killcredit2;  // quest kill credit 2
 		data << ci->Male_DisplayID;
 		data << ci->Female_DisplayID;
 		data << ci->Male_DisplayID2;
 		data << ci->Female_DisplayID2;
 		data << ci->unkfloat1;
 		data << ci->unkfloat2;
-		data << ci->Leader;
+		data << ci->Leader;         // faction leader
+
+        // these are the 6 seperate quest items a creature can drop
 		for(uint32 i = 0; i < 6; ++i)
 		{
 			data << uint32(ci->QuestItems[i]);
 		}
-		data << uint32(0);
+        data << ci->waypointid;
 	}
 
 	SendPacket( &data );
@@ -175,21 +177,23 @@ void WorldSession::HandleGameObjectQueryOpcode( WorldPacket & recv_data )
 
 	LocalizedGameObjectName * lgn = (language>0) ? sLocalizationMgr.GetLocalizedGameObjectName(entryID, language) : NULL;
     
-	data << entryID;
-	data << goinfo->Type;
-	data << goinfo->DisplayID;
+	data << entryID;                // unique identifier of the GO template
+	data << goinfo->Type;           // type of the gameobject
+	data << goinfo->DisplayID;      // displayid/modelid of the gameobject
+
+    // Name of the gameobject
 	if(lgn)
 		data << lgn->Name;
 	else
 		data << goinfo->Name;
 
-	data << goinfo->Name2;
-	data << goinfo->Name3;
-	data << goinfo->Name4;
-	data << goinfo->Category;
-	data << goinfo->Castbartext;
+	data << uint8( 0 );            // name2, always seems to be empty
+	data << uint8( 0 );            // name3, always seems to be empty
+	data << uint8( 0 );            // name4, always seems to be empty
+	data << goinfo->Category;       // Category string of the GO, like "attack", "pvp", "point", etc
+	data << goinfo->Castbartext;    // text displayed when using the go, like "collecting", "summoning" etc
 	data << goinfo->Unkstr;
-	data << goinfo->SpellFocus;
+	data << goinfo->SpellFocus;     // spellfocus id, ex.: spell casted when interacting with the GO
 	data << goinfo->sound1;
 	data << goinfo->sound2;
 	data << goinfo->sound3;
@@ -213,11 +217,13 @@ void WorldSession::HandleGameObjectQueryOpcode( WorldPacket & recv_data )
 	data << goinfo->Unknown12;
 	data << goinfo->Unknown13;
 	data << goinfo->Unknown14;
+	data << float(goinfo->Size);       // scaling of the GO
 
-	data << float(goinfo->Size);
+    // questitems that the go can contain
 	for(uint32 i = 0; i < 6; ++i)
 	{
 		data << uint32(goinfo->QuestItems[i]);
+		
 	}
 
 	SendPacket( &data );

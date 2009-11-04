@@ -64,21 +64,21 @@ struct CreatureInfo
 	char * Name;
 	char * SubName;
 	char * info_str;
-	uint32 QuestItems[6];
 	uint32 Flags1;
 	uint32 Type;
 	uint32 Family;
 	uint32 Rank;
-	uint32 Unknown1;
-	uint32 SpellDataID;
+	uint32 killcredit1;
+	uint32 killcredit2;
 	uint32 Male_DisplayID;
 	uint32 Female_DisplayID;
 	uint32 Male_DisplayID2;
 	uint32 Female_DisplayID2;
 	float unkfloat1;
 	float unkfloat2;
-	uint8  Civilian;
 	uint8  Leader;
+    uint32 QuestItems[6];
+    uint32 waypointid;
 
 	std::string lowercase_name;
 	GossipScript * gossip_script;

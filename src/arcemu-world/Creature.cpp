@@ -1362,11 +1362,6 @@ bool Creature::Load(CreatureSpawn *spawn, uint32 mode, MapInfo *info)
 	myFamily = dbcCreatureFamily.LookupEntry(creature_info->Family);
 
 
-// PLACE FOR DIRTY FIX BASTARDS
-	// HACK! set call for help on civ health @ 100%
-	if(creature_info->Civilian >= 1)
-		m_aiInterface->m_CallForHelpHealth = 100;
-
  //HACK!
 	if(m_uint32Values[UNIT_FIELD_DISPLAYID] == 17743 ||
 		m_uint32Values[UNIT_FIELD_DISPLAYID] == 20242 ||
@@ -1572,11 +1567,6 @@ void Creature::Load(CreatureProto * proto_, float x, float y, float z, float o)
 
 	myFamily = dbcCreatureFamily.LookupEntry( creature_info->Family );
 
-
-	// PLACE FOR DIRTY FIX BASTARDS
-	// HACK! set call for help on civ health @ 100%
-	if(creature_info->Civilian >= 1)
-		m_aiInterface->m_CallForHelpHealth = 100;
 
 	//HACK!
 	if( m_uint32Values[ UNIT_FIELD_DISPLAYID ] == 17743 ||
