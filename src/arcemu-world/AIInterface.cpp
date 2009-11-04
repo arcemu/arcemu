@@ -2027,7 +2027,15 @@ bool AIInterface::FindFriends(float dist)
 	m_Unit->ReleaseInrangeLock();
 
 	uint32 family = (((Creature*)m_Unit)->GetCreatureInfo()) ? (((Creature*)m_Unit)->GetCreatureInfo()->Type) : 0;
-	if(family == UNIT_TYPE_HUMANOID && getMSTime() > m_guardTimer && !IS_INSTANCE(m_Unit->GetMapId()))
+	
+	CreatureProto *pt = static_cast< Creature* >( m_Unit )->GetProto();
+
+	uint32 summonguard = 0;
+
+	if( pt != NULL )
+		summonguard = pt->summonguard;
+
+	if(family == UNIT_TYPE_HUMANOID && summonguard > 0 && getMSTime() > m_guardTimer && !IS_INSTANCE(m_Unit->GetMapId()))
 	{
 		m_guardTimer = getMSTime() + 15000;
 		uint16 AreaId = m_Unit->GetMapMgr()->GetAreaID(m_Unit->GetPositionX(),m_Unit->GetPositionY());
@@ -2035,7 +2043,12 @@ bool AIInterface::FindFriends(float dist)
 		if(!at)
 			return result;
 
-		ZoneGuardEntry * zoneSpawn = ZoneGuardStorage.LookupEntry(at->ZoneId);
+		ZoneGuardEntry * zoneSpawn;
+		if( at->ZoneId != 0 )
+			zoneSpawn = ZoneGuardStorage.LookupEntry( at->ZoneId );
+		else
+			zoneSpawn = ZoneGuardStorage.LookupEntry( at->AreaId );
+
 		if(!zoneSpawn) return result;
 
 		uint32 team = 1; // horde default

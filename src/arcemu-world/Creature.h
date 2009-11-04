@@ -141,6 +141,7 @@ struct CreatureProto
 	uint32 modImmunities;
 	uint32 isTrainingDummy;
     uint32 guardtype;
+	uint32 summonguard;
 
 	/* AI Stuff */
 	bool m_canRangedAttack;
