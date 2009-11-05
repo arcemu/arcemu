@@ -155,7 +155,7 @@ pSpellEffect SpellEffectsHandler[TOTAL_SPELL_EFFECTS]={
 	&Spell::SpellEffectNULL,					// unknown - 131 // test spell
 	&Spell::SpellEffectNULL,					// Play Music - 132 // http://www.thottbot.com/s46852
 	&Spell::SpellEffectForgetSpecialization,	//SPELL_EFFECT_FORGET_SPECIALIZATION - 133 // http://www.thottbot.com/s36441 // I think this is a gm/npc spell
-	&Spell::SpellEffectNULL,					// Quest Credit (Player only, not party) - 134 // related to summoning objects and removing them, http://www.thottbot.com/s39161
+	&Spell::SpellEffectKillCredit,				// Quest Credit (Player only, not party) - 134 // related to summoning objects and removing them, http://www.thottbot.com/s39161
 	&Spell::SpellEffectNULL,					// Summon Pet: http://www.thottbot.com/s23498 - 135
 	&Spell::SpellEffectRestoreHealthPct,		// Restore Health % - 136 // http://www.thottbot.com/s41542 and http://www.thottbot.com/s39703
 	&Spell::SpellEffectRestorePowerPct,			// Restore Power % - 137 // http://www.thottbot.com/s41542
@@ -321,7 +321,7 @@ const char* SpellEffectNames[TOTAL_SPELL_EFFECTS] = {
 	"UNKNOWN11",                 //    131
 	"UNKNOWN12",                 //    132
 	"FORGET_SPECIALIZATION",     //    133
-	"UNKNOWN14",                 //    134
+	"KILL_CREDIT",               //    134
 	"UNKNOWN15",                 //    135
 	"UNKNOWN16",                 //    136
 	"UNKNOWN17",                 //    137
@@ -7193,6 +7193,13 @@ void Spell::SpellEffectForgetSpecialization(uint32 i)
 	playerTarget->removeSpell( spellid, false, false, 0);
 
 	sLog.outDebug("Player %u have forgot spell %u from spell %u ( caster: %u)", playerTarget->GetLowGUID(), spellid, GetProto()->Id, m_caster->GetLowGUID());
+}
+
+void Spell::SpellEffectKillCredit(uint32 i)
+{
+	CreatureInfo * ci = CreatureNameStorage.LookupEntry( GetProto()->EffectMiscValue[i] );
+	if ( playerTarget != NULL && ci != NULL )
+		sQuestMgr._OnPlayerKill( playerTarget, GetProto()->EffectMiscValue[i], false );
 }
 
 void Spell::SpellEffectRestorePowerPct(uint32 i)

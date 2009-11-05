@@ -126,8 +126,8 @@ void WorldSession::HandleCreatureQueryOpcode( WorldPacket & recv_data )
 		data << ci->Type;         // humanoid, beast, etc
 		data << ci->Family;       // petfamily
 		data << ci->Rank;         // normal, elite, etc
-        data << ci->killcredit1;  // quest kill credit 1
-        data << ci->killcredit2;  // quest kill credit 2
+        data << ci->killcredit[0];  // quest kill credit 1
+        data << ci->killcredit[1];  // quest kill credit 2
 		data << ci->Male_DisplayID;
 		data << ci->Female_DisplayID;
 		data << ci->Male_DisplayID2;

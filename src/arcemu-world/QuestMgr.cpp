@@ -698,13 +698,29 @@ bool QuestMgr::OnGameObjectActivate(Player *plr, GameObject *go)
 	return false;
 }
 
-void QuestMgr::OnPlayerKill(Player* plr, Creature* victim)
+void QuestMgr::OnPlayerKill(Player* plr, Creature* victim, bool IsGroupKill)
+{
+	uint32 entry = victim->GetEntry();
+	_OnPlayerKill( plr, entry, IsGroupKill );
+
+	// Extra credit (yay we wont have to script this anymore) - Shauren
+	for( uint8 i = 0; i < 2; ++i )
+	{
+		uint32 extracredit = victim->GetCreatureInfo()->killcredit[i];
+		if( extracredit != 0 )
+		{
+			if( CreatureNameStorage.LookupEntry(extracredit) )
+				_OnPlayerKill( plr, extracredit, IsGroupKill );
+		}
+	}
+}
+
+void QuestMgr::_OnPlayerKill(Player* plr, uint32 entry, bool IsGroupKill)
 {
 	if(!plr)
 		return;
 
 	uint32 i, j;
-	uint32 entry = victim->GetEntry();
 	QuestLogEntry *qle;
 	Quest* qst;
 
@@ -740,53 +756,56 @@ void QuestMgr::OnPlayerKill(Player* plr, Creature* victim)
 		}
 	}
 
-	// Shared kills
-	Player *gplr = NULL;
-
-	if(plr->InGroup())
+	if( IsGroupKill )
 	{
-		if(Group* pGroup = plr->GetGroup())
+		// Shared kills
+		Player *gplr = NULL;
+
+		if(plr->InGroup())
 		{
-//			removed by Zack How the hell will healers get the kills then ?
-//			if(pGroup->GetGroupType() != GROUP_TYPE_PARTY) 
-//				return;  // Raid's don't get shared kills.
-
-			GroupMembersSet::iterator gitr;
-			pGroup->Lock();
-			for(uint32 k = 0; k < pGroup->GetSubGroupCount(); k++)
+			if(Group* pGroup = plr->GetGroup())
 			{
-				for(gitr = pGroup->GetSubGroup(k)->GetGroupMembersBegin(); gitr != pGroup->GetSubGroup(k)->GetGroupMembersEnd(); ++gitr)
+				//removed by Zack How the hell will healers get the kills then ?
+				//if(pGroup->GetGroupType() != GROUP_TYPE_PARTY) 
+				//	return;  // Raid's don't get shared kills.
+
+				GroupMembersSet::iterator gitr;
+				pGroup->Lock();
+				for(uint32 k = 0; k < pGroup->GetSubGroupCount(); k++)
 				{
-					gplr = (*gitr)->m_loggedInPlayer;
-					if(gplr && gplr != plr && plr->isInRange(gplr,300) && gplr->HasQuestMob(entry)) // don't double kills also don't give kills to party members at another side of the world
+					for(gitr = pGroup->GetSubGroup(k)->GetGroupMembersBegin(); gitr != pGroup->GetSubGroup(k)->GetGroupMembersEnd(); ++gitr)
 					{
-						for( i = 0; i < 25; ++i )
+						gplr = (*gitr)->m_loggedInPlayer;
+						if(gplr && gplr != plr && plr->isInRange(gplr,300) && gplr->HasQuestMob(entry)) // don't double kills also don't give kills to party members at another side of the world
 						{
-							qle = gplr->GetQuestLogInSlot(i);
-							if( qle != NULL )
+							for( i = 0; i < 25; ++i )
 							{
-								qst = qle->GetQuest();
-								if(qst != NULL)
+								qle = gplr->GetQuestLogInSlot(i);
+								if( qle != NULL )
 								{
-									for( j = 0; j < 4; ++j )
+									qst = qle->GetQuest();
+									if(qst != NULL)
 									{
-										if( qst->required_mob[j] == 0 )
-											continue;
-
-										if( qst->required_mob[j] == static_cast<int32>( entry ) &&
-											qst->required_mobtype[j] == QUEST_MOB_TYPE_CREATURE &&
-											qle->m_mobcount[j] < qst->required_mobcount[j] )
+										for( j = 0; j < 4; ++j )
 										{
-											// add another kill.
-											// (auto-dirty's it)
-											qle->IncrementMobCount( j );
-											qle->SendUpdateAddKill( j );
-											CALL_QUESTSCRIPT_EVENT( qle, OnCreatureKill )( entry, plr, qle );
-											qle->UpdatePlayerFields();
+											if( qst->required_mob[j] == 0 )
+												continue;
 
-											if( qle->CanBeFinished() )
-												qle->SendQuestComplete();
-											break;
+											if( qst->required_mob[j] == static_cast<int32>( entry ) &&
+												qst->required_mobtype[j] == QUEST_MOB_TYPE_CREATURE &&
+												qle->m_mobcount[j] < qst->required_mobcount[j] )
+											{
+												// add another kill.
+												// (auto-dirty's it)
+												qle->IncrementMobCount( j );
+												qle->SendUpdateAddKill( j );
+												CALL_QUESTSCRIPT_EVENT( qle, OnCreatureKill )( entry, plr, qle );
+												qle->UpdatePlayerFields();
+
+												if( qle->CanBeFinished() )
+													qle->SendQuestComplete();
+												break;
+											}
 										}
 									}
 								}
@@ -794,8 +813,8 @@ void QuestMgr::OnPlayerKill(Player* plr, Creature* victim)
 						}
 					}
 				}
+				pGroup->Unlock();
 			}
-			pGroup->Unlock();
 		}
 	}
 }

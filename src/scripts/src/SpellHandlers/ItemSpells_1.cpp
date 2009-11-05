@@ -229,7 +229,7 @@ bool ForemansBlackjack(uint32 i, Spell *pSpell)
 	target->SendChatMessage(CHAT_MSG_MONSTER_SAY, LANG_UNIVERSAL, msg);
 
 	// Increment the quest log
-	sQuestMgr.OnPlayerKill( pSpell->p_caster, c_target );
+	sQuestMgr.OnPlayerKill( pSpell->p_caster, c_target, false );
 
 	// Add timed event to return lazy peon to Zzz after 5-10 minutes (spell 18795)
 	SpellEntry * pSpellEntry = dbcSpell.LookupEntry(18795);
