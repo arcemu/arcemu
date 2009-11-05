@@ -1972,6 +1972,18 @@ public:
 	//! PvP Toggle (called on /pvp)
 	void PvPToggle();
 
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// void HandleSpellLoot( uint32 itemid )
+	//  Generates loot for the spell loot item (clams for example) , then adds the generated loot to the Player
+	//
+	// Parameters:
+	//  uint32 itemid   -  unique numerical identifier of the item the Player is looting
+	//
+	// Return Value:
+	//  None.
+	///////////////////////////////////////////////////////////////////////////////
+	void HandleSpellLoot( uint32 itemid );
+
 	ARCEMU_INLINE uint32 LastHonorResetTime() const { return m_lastHonorResetTime; }
 	ARCEMU_INLINE void LastHonorResetTime(uint32 val) { m_lastHonorResetTime = val; }
 	uint32 OnlineTime;

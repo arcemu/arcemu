@@ -13480,3 +13480,17 @@ void Player::SendExploreXP( uint32 areaid, uint32 xp ){
 	data << uint32( xp );
 	m_session->SendPacket(&data);
 }
+
+void Player::HandleSpellLoot( uint32 itemid ){
+	Loot loot;
+	std::vector< __LootItem >::iterator itr;
+
+	lootmgr.FillItemLoot( &loot, itemid );
+
+	for( itr = loot.items.begin(); itr != loot.items.end(); ++itr ){
+		uint32 looteditemid = itr->item.itemproto->ItemId;
+		uint32 count = itr->iItemsCount;
+
+		m_ItemInterface->AddItemById( looteditemid, count, 0 );
+	}
+}

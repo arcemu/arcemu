@@ -4641,6 +4641,14 @@ void Spell::SpellEffectOpenLockItem(uint32 i)
 	if( caster == NULL || !caster->IsPlayer() )
 		return;
 
+	if( p_caster != NULL && i_caster != NULL ){
+		ItemPrototype *ip = i_caster->GetProto();
+		if( ip == NULL )
+			return;
+		else
+			p_caster->HandleSpellLoot( ip->ItemId );
+	}
+
 	if( gameObjTarget == NULL || !gameObjTarget->IsInWorld() )
 		return;
 
