@@ -739,6 +739,7 @@ void WorldSession::InitPacketHandlerTable()
 	WorldPacketHandlers[CMSG_CANCEL_AUTO_REPEAT_SPELL].handler				  = &WorldSession::HandleCancelAutoRepeatSpellOpcode;
 	WorldPacketHandlers[CMSG_TOTEM_DESTROYED].handler							= &WorldSession::HandleCancelTotem;
 	WorldPacketHandlers[CMSG_LEARN_TALENT].handler							  = &WorldSession::HandleLearnTalentOpcode;
+    WorldPacketHandlers[CMSG_LEARN_TALENTS_MULTIPLE].handler                   = &WorldSession::HandleLearnMultipleTalentsOpcode;
 	WorldPacketHandlers[CMSG_UNLEARN_TALENTS].handler						   = &WorldSession::HandleUnlearnTalents;
 	WorldPacketHandlers[MSG_TALENT_WIPE_CONFIRM].handler						= &WorldSession::HandleUnlearnTalents;
 	
@@ -1219,4 +1220,97 @@ void WorldSession::SendAccountDataTimes(uint32 mask)
 			data << uint32( 0 );
 		}
     SendPacket(&data);
+}
+
+
+void WorldSession::HandleLearnTalentOpcode( WorldPacket & recv_data )
+{
+	if(!_player->IsInWorld()) return;
+ 	 
+	uint32 talent_id, requested_rank, unk;
+	recv_data >> talent_id >> requested_rank >> unk;
+
+    _player->LearnTalent( talent_id, requested_rank );
+
+}
+
+void WorldSession::HandleUnlearnTalents( WorldPacket & recv_data )
+{
+	if(!_player->IsInWorld()) return;
+	
+    uint32 playerGold = GetPlayer()->GetUInt32Value( PLAYER_FIELD_COINAGE );
+	uint32 price = GetPlayer()->CalcTalentResetCost(GetPlayer()->GetTalentResetTimes());
+
+	if( playerGold < price ) return;
+
+	GetPlayer()->SetTalentResetTimes(GetPlayer()->GetTalentResetTimes() + 1);
+	GetPlayer()->SetUInt32Value( PLAYER_FIELD_COINAGE, playerGold - price );
+	GetPlayer()->Reset_Talents();
+}
+
+void WorldSession::HandleUnlearnSkillOpcode(WorldPacket& recv_data)
+{
+	if(!_player->IsInWorld()) return;
+	
+    uint32 skill_line;
+	uint32 points_remaining=_player->GetUInt32Value(PLAYER_CHARACTER_POINTS2);
+	recv_data >> skill_line;
+
+	// Cheater detection
+	// if(!_player->HasSkillLine(skill_line)) return;
+
+	// Remove any spells within that line that the player has
+	_player->RemoveSpellsFromLine(skill_line);
+	
+	// Finally, remove the skill line.
+	_player->_RemoveSkillLine(skill_line);
+
+	//added by Zack : This is probably wrong or already made elsewhere : restore skill learnability
+	if(points_remaining==_player->GetUInt32Value(PLAYER_CHARACTER_POINTS2))
+	{
+		//we unlearned a skill so we enable a new one to be learned
+		skilllineentry *sk=dbcSkillLine.LookupEntry(skill_line);
+		if(!sk)
+			return;
+		if(sk->type==SKILL_TYPE_PROFESSION && points_remaining<2)
+			_player->SetUInt32Value(PLAYER_CHARACTER_POINTS2,points_remaining+1);
+	}
+}
+
+void WorldSession::HandleLearnMultipleTalentsOpcode(WorldPacket &recvPacket){
+    uint32 talentcount;
+    uint32 talentid;
+    uint32 rank;
+
+	sLog.outDebug("Recieved packet CMSG_LEARN_TALENTS_MULTIPLE.");
+
+    if( !_player->IsInWorld() )
+        return;
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // 0x04C1 CMSG_LEARN_TALENTS_MULTIPLE
+    //  As of 3.2.2.10550 the client sends this packet when clicking "learn" on the talent interface (in preview talents mode)
+    //  This packet tells the server which talents to learn
+    //
+    // Structure:
+    //
+    // struct talentdata{
+    //  uint32 talentid;                - unique numeric identifier of the talent (index of talent.dbc)
+    //  uint32 talentrank;              - rank of the talent
+    //  };
+    //
+    // uint32 talentcount;              - number of talentid-rank pairs in the packet
+    // talentdata[ talentcount ];
+    //  
+    //
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    recvPacket >> talentcount;
+
+    for( uint32 i = 0; i < talentcount; ++i ){
+        recvPacket >> talentid;
+        recvPacket >> rank;
+
+        _player->LearnTalent( talentid, rank, true );
+    }
 }

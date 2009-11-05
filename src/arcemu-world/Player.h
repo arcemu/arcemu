@@ -1981,8 +1981,26 @@ public:
 	//
 	// Return Value:
 	//  None.
-	///////////////////////////////////////////////////////////////////////////////
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	void HandleSpellLoot( uint32 itemid );
+
+
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    //  void LearnTalent( uint32 talentid, uint32 rank )
+    //    Teaches a talentspell to the Player and decreases the available talent points
+    //
+    //
+    //  Parameters:
+    //   uint32 talentid     -   unique numeric identifier of the talent (index of talent.dbc )
+    //   uint32 rank         -   rank of the talent
+	//   bool isPreviewed	 -   true if called from the preview system
+    //
+    //  Return Value:
+    //   None.
+    //  
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    void LearnTalent( uint32 talentid, uint32 rank, bool isPreviewed = false ); 
 
 	ARCEMU_INLINE uint32 LastHonorResetTime() const { return m_lastHonorResetTime; }
 	ARCEMU_INLINE void LastHonorResetTime(uint32 val) { m_lastHonorResetTime = val; }

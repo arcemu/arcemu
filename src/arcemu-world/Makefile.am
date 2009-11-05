@@ -148,7 +148,6 @@ arcemu_world_SOURCES = \
     ScriptMgr.cpp \
     ScriptMgr.h \
     Skill.h \
-    SkillHandler.cpp \
     SocialHandler.cpp \
     SpeedDetector.cpp \
     SpeedDetector.h \

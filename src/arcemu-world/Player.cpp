@@ -13494,3 +13494,161 @@ void Player::HandleSpellLoot( uint32 itemid ){
 		m_ItemInterface->AddItemById( looteditemid, count, 0 );
 	}
 }
+
+
+void Player::LearnTalent(uint32 talentid, uint32 rank, bool isPreviewed ){
+    uint32 CurTalentPoints = m_specs[ m_talentActiveSpec ].GetFreePoints( this ); // Calculate free points in active spec
+	
+    if(CurTalentPoints == 0)
+		return;
+
+	if (rank > 4)
+		return;
+
+	TalentEntry * talentInfo = dbcTalent.LookupEntryForced(talentid);
+	if(!talentInfo)return;
+  
+	// Check if it requires another talent
+	if (talentInfo->DependsOn > 0)
+	{
+		TalentEntry *depTalentInfo = NULL;
+		depTalentInfo = dbcTalent.LookupEntryForced(talentInfo->DependsOn);
+		if(depTalentInfo)
+		{
+			bool hasEnoughRank = false;
+			for (int i = 0; i < 5; ++i)
+			{
+				if (depTalentInfo->RankID[i] != 0)
+				{
+					if (HasSpell(depTalentInfo->RankID[i]))
+					{
+						hasEnoughRank = true;
+						break;
+					}
+				}
+			}
+			if (!hasEnoughRank)
+				return;
+		}
+	}
+
+	// Find out how many points we have in this field
+	uint32 spentPoints = 0;
+
+	uint32 tTree = talentInfo->TalentTree;
+	uint32 cl = getClass();
+
+   unsigned int k;
+	for(k = 0; k < 3; ++k)
+   {
+		if(tTree == TalentTreesPerClass[cl][k])
+      {
+			break;
+      }
+   }
+   if (3 == k)
+   {
+      // cheater!
+       m_session->Disconnect();
+      return;
+   }
+
+
+	if (talentInfo->Row > 0)
+	{
+		for (unsigned int i = 0; i < dbcTalent.GetNumRows(); ++i)		  // Loop through all talents.
+		{
+			// Someday, someone needs to revamp
+			TalentEntry *tmpTalent = dbcTalent.LookupRow(i);
+			if (tmpTalent)								  // the way talents are tracked
+			{
+				if (tmpTalent->TalentTree == tTree)
+				{
+					for (int j = 0; j < 5; j++)
+					{
+						if (tmpTalent->RankID[j] != 0)
+						{
+							if (HasSpell(tmpTalent->RankID[j]))
+							{
+								spentPoints += j + 1;
+							//	break;
+							}
+						}
+						else 
+							break;
+					}
+				}
+			}
+		}
+	}
+
+	uint32 spellid = talentInfo->RankID[ rank ];
+	if( spellid == 0 )
+	{
+		sLog.outDetail("Talent: %u Rank: %u = 0", talentid, rank);
+	}
+	else
+	{
+		if(spentPoints < (talentInfo->Row * 5))			 // Min points spent
+		{
+			return;
+		}
+
+		if(rank > 0)
+		{
+			// If we are not learning thru the preview system, check if we have the lower rank of the talent
+			if(talentInfo->RankID[rank-1] && !HasSpell(talentInfo->RankID[rank-1]) && !isPreviewed)
+			{
+				// cheater
+				return;
+			}
+		}
+		// Check if we already have the talent with the same or higher rank
+		for (unsigned int i = rank; i < 5; ++i)
+			if (talentInfo->RankID[i] != 0 && HasSpell(talentInfo->RankID[i]))
+				return; // cheater
+
+		if(!(HasSpell(spellid)))
+		{
+			addSpell(spellid);			
+	
+			SpellEntry *spellInfo = dbcSpell.LookupEntry( spellid );	 
+			
+			if(rank > 0 )
+			{
+				uint32 respellid = talentInfo->RankID[rank-1];
+				if(respellid && !isPreviewed)
+				{
+					removeSpell(respellid, false, false, 0);
+					RemoveAura(respellid);
+				}
+			}
+
+			if( (spellInfo->Attributes & ATTRIBUTES_PASSIVE || (spellInfo->Effect[0] == SPELL_EFFECT_LEARN_SPELL ||
+															   spellInfo->Effect[1] == SPELL_EFFECT_LEARN_SPELL ||
+															   spellInfo->Effect[2] == SPELL_EFFECT_LEARN_SPELL) 
+				&& ( (spellInfo->c_is_flags & SPELL_FLAG_IS_EXPIREING_WITH_PET) == 0 || ( (spellInfo->c_is_flags & SPELL_FLAG_IS_EXPIREING_WITH_PET) && GetSummon() ) ) )
+				)
+			{
+				if( spellInfo->RequiredShapeShift && !( (uint32)1 << (GetShapeShift()-1) & spellInfo->RequiredShapeShift ) )
+				{
+					// do nothing
+				}
+				else
+				{
+					Spell * sp = new Spell( this, spellInfo, true, NULL);
+					if (!sp)
+						return;
+					SpellCastTargets tgt;
+					tgt.m_unitTarget = this->GetGUID();
+					sp->prepare(&tgt);
+				}
+			}
+
+			SetUInt32Value(PLAYER_CHARACTER_POINTS1, CurTalentPoints-1);
+			m_specs[m_talentActiveSpec].AddTalent(talentid, uint8(rank));
+			smsg_TalentsInfo(false);
+		}
+	}
+}
+
