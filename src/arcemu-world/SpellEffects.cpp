@@ -6439,7 +6439,7 @@ void Spell::SpellEffectDisenchant( uint32 i )
 	if( !it->loot )
 	{
 		it->loot = new Loot;
-		lootmgr.FillDisenchantingLoot( it->loot, it->GetEntry() );
+		lootmgr.FillItemLoot( it->loot, it->GetEntry() );
 	}
 
 	Log.Debug( "SpellEffect", "Successfully disenchanted item %d", uint32( itemTarget->GetEntry() ) );
@@ -7161,7 +7161,7 @@ void Spell::SpellEffectProspecting(uint32 i)
 	if( !itemTarget->loot )
 	{
 		itemTarget->loot = new Loot;
-		lootmgr.FillProspectingLoot( itemTarget->loot , itemTarget->GetEntry());
+		lootmgr.FillItemLoot( itemTarget->loot , itemTarget->GetEntry());
 	}
 
 	if ( itemTarget->loot->items.size() > 0 )
@@ -7351,7 +7351,7 @@ void Spell::SpellEffectMilling(uint32 i)
 	if( !itemTarget->loot )
 	{
 		itemTarget->loot = new Loot;
-		lootmgr.FillMillingLoot( itemTarget->loot , itemTarget->GetEntry());
+		lootmgr.FillItemLoot( itemTarget->loot, itemTarget->GetEntry() );
 	}
 
 	if ( itemTarget->loot->items.size() > 0 )

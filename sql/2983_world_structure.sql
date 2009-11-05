@@ -1024,29 +1024,6 @@ insert  into `loot_creatures`(`index`,`entryid`,`itemid`,`percentchance`,`heroic
 
 UNLOCK TABLES;
 
-/*Table structure for table `loot_disenchanting` */
-
-DROP TABLE IF EXISTS `loot_disenchanting`;
-
-CREATE TABLE `loot_disenchanting` (
-  `index` int(11) NOT NULL AUTO_INCREMENT,
-  `entryid` int(11) unsigned NOT NULL DEFAULT '0',
-  `itemid` int(11) unsigned NOT NULL DEFAULT '25',
-  `percentchance` float NOT NULL DEFAULT '0',
-  `heroicpercentchance` float DEFAULT '0',
-  `mincount` int(30) DEFAULT '1',
-  `maxcount` int(30) DEFAULT '1',
-  `ffa_loot` int(10) unsigned NOT NULL DEFAULT '0',
-  PRIMARY KEY (`entryid`,`itemid`),
-  UNIQUE KEY `index` (`index`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
-/*Data for the table `loot_disenchanting` */
-
-LOCK TABLES `loot_disenchanting` WRITE;
-
-UNLOCK TABLES;
-
 /*Table structure for table `loot_fishing` */
 
 DROP TABLE IF EXISTS `loot_fishing`;
@@ -1116,29 +1093,6 @@ LOCK TABLES `loot_items` WRITE;
 
 UNLOCK TABLES;
 
-/*Table structure for table `loot_milling` */
-
-DROP TABLE IF EXISTS `loot_milling`;
-
-CREATE TABLE `loot_milling` (
-  `index` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `entryid` int(11) unsigned NOT NULL DEFAULT '0',
-  `itemid` int(11) unsigned NOT NULL DEFAULT '25',
-  `percentchance` float NOT NULL DEFAULT '0',
-  `heroicpercentchance` float NOT NULL DEFAULT '0',
-  `mincount` int(11) unsigned NOT NULL DEFAULT '1',
-  `maxcount` int(11) unsigned NOT NULL DEFAULT '1',
-  `ffa_loot` int(10) unsigned NOT NULL DEFAULT '0',
-  PRIMARY KEY (`entryid`,`itemid`),
-  UNIQUE KEY `index` (`index`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
-
-/*Data for the table `loot_milling` */
-
-LOCK TABLES `loot_milling` WRITE;
-
-UNLOCK TABLES;
-
 /*Table structure for table `loot_pickpocketing` */
 
 DROP TABLE IF EXISTS `loot_pickpocketing`;
@@ -1159,29 +1113,6 @@ CREATE TABLE `loot_pickpocketing` (
 /*Data for the table `loot_pickpocketing` */
 
 LOCK TABLES `loot_pickpocketing` WRITE;
-
-UNLOCK TABLES;
-
-/*Table structure for table `loot_prospecting` */
-
-DROP TABLE IF EXISTS `loot_prospecting`;
-
-CREATE TABLE `loot_prospecting` (
-  `index` int(11) NOT NULL AUTO_INCREMENT,
-  `entryid` int(11) unsigned NOT NULL DEFAULT '0',
-  `itemid` int(11) unsigned NOT NULL DEFAULT '25',
-  `percentchance` float NOT NULL DEFAULT '0',
-  `heroicpercentchance` float DEFAULT '0',
-  `mincount` int(30) DEFAULT '1',
-  `maxcount` int(30) DEFAULT '1',
-  `ffa_loot` int(10) unsigned NOT NULL DEFAULT '0',
-  PRIMARY KEY (`itemid`,`entryid`),
-  UNIQUE KEY `index` (`index`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
-/*Data for the table `loot_prospecting` */
-
-LOCK TABLES `loot_prospecting` WRITE;
 
 UNLOCK TABLES;
 

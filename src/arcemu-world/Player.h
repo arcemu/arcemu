@@ -1987,7 +1987,7 @@ public:
 
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
-    //  void LearnTalent( uint32 talentid, uint32 rank )
+    //  void LearnTalent( uint32 talentid, uint32 rank, bool isPreviewed )
     //    Teaches a talentspell to the Player and decreases the available talent points
     //
     //
