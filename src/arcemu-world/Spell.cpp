@@ -3847,7 +3847,11 @@ uint8 Spell::CanCast(bool tolerate)
 				if (i_caster && i_caster->GetProto()->Flags == 2097216)
 					break;
 
-				if (hasAttributeExB(ATTRIBUTESEXB_ENCHANT_OWN_ONLY) && !(i_target->IsSoulbound()))
+				// If the spell is castable on our own items only then we can't cast it on someone else's
+				if (hasAttributeExB(ATTRIBUTESEXB_ENCHANT_OWN_ONLY) && 
+					i_target != NULL &&
+					u_caster != NULL &&
+					TO_PLAYER( u_caster ) != i_target->GetOwner() )
 					return SPELL_FAILED_BAD_TARGETS;
 
 				break;	
