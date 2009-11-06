@@ -518,18 +518,29 @@ void WorldSession::HandleCharterBuy(WorldPacket & recv_data)
 	if(!_player->IsInWorld())
 		return;
 
+	uint8 error;
+
+	// Arena team charters are full of crap
 	uint64 creature_guid;
 	uint64 crap;
 	uint32 crap2;
 	string name;
-    uint8 error;
-	uint32 crap3,crap4,crap5,crap6,crap7,crap8,crap9,crap10,crap11,arena_index,crap12;
-	uint16 crap13;
-	uint8 crap14;
-	uint32 crap15;
-	recv_data >> creature_guid >> crap >> crap2 >> name;
-	recv_data >> crap3 >> crap4 >> crap5 >> crap6 >> crap7 >> crap8 >> crap9 >> crap10 >> crap11
-		>> crap12 >> crap13 >> crap14 >> arena_index >> crap15;
+	uint64 crap3, crap4, crap5, crap6, crap7, crap8;
+	uint32 crap9;
+	uint8 crap10;
+	uint32 arena_index;
+	uint32 crap11;
+
+		
+	recv_data >> creature_guid;
+	recv_data >> crap >> crap2;
+	recv_data >> name;
+	recv_data >> crap3 >> crap4 >> crap5 >> crap6 >> crap7 >> crap8;
+	recv_data >> crap9;
+	recv_data >> crap10;
+	recv_data >> arena_index;
+	recv_data >> crap11;
+
 
 	Creature * crt = _player->GetMapMgr()->GetCreature(GET_LOWGUID_PART(creature_guid));
 	if(!crt)
