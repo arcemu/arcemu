@@ -243,6 +243,8 @@ void QuestLogEntry::SaveToDB(QueryBuffer * buf)
 	for(int i = 0; i < 4; ++i)
 		ss << "," << m_mobcount[i];
 
+    ss << "," << uint32( completed );
+
 	ss << ")";
 	
 	if( buf == NULL )
@@ -271,6 +273,9 @@ bool QuestLogEntry::LoadFromDB(Field *fields)
 		else
 			CALL_QUESTSCRIPT_EVENT(this, OnGameObjectActivate)(GetQuest()->required_mob[i], m_plr, this);
 	}
+
+    completed = fields[f].GetUInt32();
+
 	mDirty = false;
 	return true;
 }
@@ -278,6 +283,13 @@ bool QuestLogEntry::LoadFromDB(Field *fields)
 bool QuestLogEntry::CanBeFinished()
 {
 	uint32 i;
+
+    if( m_quest->iscompletedbyspelleffect && !completed )
+        return false;
+
+    if( completed )
+        return true;
+
 	for(i = 0; i < 4; ++i)
 	{
 		if(m_quest->required_mob[i])
@@ -491,5 +503,7 @@ void QuestLogEntry::SendUpdateAddKill(uint32 i)
 	sQuestMgr.SendQuestUpdateAddKill(m_plr, m_quest->id, m_quest->required_mob[i], m_mobcount[i], m_quest->required_mobcount[i], 0);
 }
 
-
+void QuestLogEntry::Complete(){
+    completed = 1;
+}
 

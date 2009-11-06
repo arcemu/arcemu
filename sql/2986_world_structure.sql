@@ -1,6 +1,6 @@
 /*
 SQLyog Community Edition- MySQL GUI v8.01 
-MySQL - 5.1.31-community : Database - aworld
+MySQL - 5.1.31-community : Database - wworld
 *********************************************************************
 */
 
@@ -1613,6 +1613,7 @@ CREATE TABLE `quests` (
   `completionemotedelay4` int(10) unsigned NOT NULL DEFAULT '0',
   `completeemote` int(10) unsigned NOT NULL DEFAULT '0',
   `incompleteemote` int(10) unsigned NOT NULL DEFAULT '0',
+  `iscompletedbyspelleffect` int(10) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`entry`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Quests System';
 

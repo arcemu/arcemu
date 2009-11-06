@@ -217,6 +217,7 @@ struct Quest
 	uint32 completionemotedelay[4];
 	uint32 completeemote;
 	uint32 incompleteemote;
+	uint32 iscompletedbyspelleffect;
 
 	/* this marks the end of the fields loaded from db - don't remove the comment please */
 
@@ -257,6 +258,7 @@ public:
 	void Init(Quest* quest, Player* plr, uint32 slot);
 
 	bool CanBeFinished();
+    void Complete();
 	void SubtractTime(uint32 value);
 	void SaveToDB(QueryBuffer * buf);
 	bool LoadFromDB(Field *fields);

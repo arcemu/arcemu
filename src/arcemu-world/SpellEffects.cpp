@@ -2554,17 +2554,9 @@ void Spell::SpellEffectQuestComplete(uint32 i) // Quest Complete
 {
 	if ( !p_caster ) return;
 	QuestLogEntry * en = p_caster->GetQuestLogForEntry( GetProto()->EffectMiscValue[i] );
-	if ( en && !en->CanBeFinished() )
+	if ( en )
 	{
-		for(int i=0;i<4;i++)
-		{
-			if( en->GetQuest()->required_mob[i] != 0 )
-			{
-				en->SetMobCount( i, 1 );
-				en->SendUpdateAddKill( i );
-			}
-		}
-
+        en->Complete();
 		en->UpdatePlayerFields();
 		en->SendQuestComplete();
 	}
