@@ -1481,3 +1481,41 @@ void Group::VoiceSessionReconnected()
 	m_groupLock.Release();
 }
 #endif
+
+void Group::SetDungeonDifficulty(uint32 diff){
+	m_difficulty = static_cast<uint8>( diff );
+
+    Lock();
+	for(uint32 i = 0; i < GetSubGroupCount(); ++i)
+	{
+		for(GroupMembersSet::iterator itr = GetSubGroup(i)->GetGroupMembersBegin(); itr != GetSubGroup(i)->GetGroupMembersEnd(); ++itr)
+		{
+			if((*itr)->m_loggedInPlayer)
+			{
+				(*itr)->m_loggedInPlayer->SetDungeonDifficulty( diff );
+				(*itr)->m_loggedInPlayer->SendDungeonDifficulty();
+			}
+		}
+	}
+	Unlock();
+}
+
+void Group::SetRaidDifficulty(uint32 diff){
+	m_raiddifficulty = static_cast< uint8 >( diff );
+
+	Lock();
+	
+	for(uint32 i = 0; i < GetSubGroupCount(); ++i)
+	{
+		for(GroupMembersSet::iterator itr = GetSubGroup(i)->GetGroupMembersBegin(); itr != GetSubGroup(i)->GetGroupMembersEnd(); ++itr)
+		{
+			if((*itr)->m_loggedInPlayer)
+			{
+				(*itr)->m_loggedInPlayer->SetRaidDifficulty( diff );
+				(*itr)->m_loggedInPlayer->SendRaidDifficulty();
+			}
+		}
+	}
+	
+	Unlock();
+}

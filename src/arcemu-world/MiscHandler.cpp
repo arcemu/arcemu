@@ -2461,33 +2461,15 @@ void WorldSession::HandleDungeonDifficultyOpcode(WorldPacket& recv_data)
     uint32 data;
     recv_data >> data;
 
+	// Set dungeon difficulty for us
+	_player->iInstanceType = data;
+    sInstanceMgr.ResetSavedInstances(_player);
+
 	Group * m_Group = _player->GetGroup();
 
+	// If we have a group and we are the leader then set it for the entire group as well
     if(m_Group && _player->IsGroupLeader())
-    {
-		m_Group->m_difficulty = static_cast<uint8>( data );
-        _player->iInstanceType = data;
-        sInstanceMgr.ResetSavedInstances(_player);
-
-        m_Group->Lock();
-		for(uint32 i = 0; i < m_Group->GetSubGroupCount(); ++i)
-		{
-			for(GroupMembersSet::iterator itr = m_Group->GetSubGroup(i)->GetGroupMembersBegin(); itr != m_Group->GetSubGroup(i)->GetGroupMembersEnd(); ++itr)
-			{
-				if((*itr)->m_loggedInPlayer)
-				{
-                    (*itr)->m_loggedInPlayer->iInstanceType = data;
-					(*itr)->m_loggedInPlayer->SendDungeonDifficulty();
-				}
-			}
-		}
-		m_Group->Unlock();
-    }
-    else if(!_player->GetGroup())
-    {
-        _player->iInstanceType = data;
-        sInstanceMgr.ResetSavedInstances(_player);
-    }
+		m_Group->SetDungeonDifficulty( data );
 
 #ifdef OPTIMIZED_PLAYER_SAVING
 	_player->save_InstanceType();
@@ -2499,34 +2481,16 @@ void WorldSession::HandleRaidDifficultyOpcode(WorldPacket& recv_data)
 	uint32 data;
 	recv_data >> data;
 
+	// set the raid difficulty for us
+	_player->SetRaidDifficulty( data );
+	sInstanceMgr.ResetSavedInstances(_player);
+
 	Group * m_Group = _player->GetGroup();
 
+	// if we have a group and we are the leader then set it for the entire group as well
 	if(m_Group && _player->IsGroupLeader())
-	{
-		m_Group->m_raiddifficulty = static_cast< uint8 >( data );
-		_player->SetRaidDifficulty( data );
-		sInstanceMgr.ResetSavedInstances(_player);
-
-		m_Group->Lock();
-		for(uint32 i = 0; i < m_Group->GetSubGroupCount(); ++i)
-		{
-			for(GroupMembersSet::iterator itr = m_Group->GetSubGroup(i)->GetGroupMembersBegin(); itr != m_Group->GetSubGroup(i)->GetGroupMembersEnd(); ++itr)
-			{
-				if((*itr)->m_loggedInPlayer)
-				{
-					(*itr)->m_loggedInPlayer->SetRaidDifficulty( data );
-					(*itr)->m_loggedInPlayer->SendRaidDifficulty();
-				}
-			}
-		}
-		m_Group->Unlock();
-	}
-	else if(!_player->GetGroup())
-	{
-		_player->SetRaidDifficulty( data );
-		sInstanceMgr.ResetSavedInstances(_player);
-	}
-
+		m_Group->SetRaidDifficulty( data );
+	
 #ifdef OPTIMIZED_PLAYER_SAVING
 	_player->save_InstanceType();
 #endif

@@ -1924,6 +1924,10 @@ public:
 	void SafeTeleport(MapMgr * mgr, const LocationVector & vec);
 	void EjectFromInstance();
 	bool raidgrouponlysent;
+
+	void SetDungeonDifficulty( uint32 diff );
+	uint32 GetDungeonDifficulty();
+
 	void SetRaidDifficulty( uint32 diff );
 	uint32 GetRaidDifficulty();
 

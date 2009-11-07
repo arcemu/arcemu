@@ -193,6 +193,9 @@ public:
 	ARCEMU_INLINE PlayerInfo * GetMainAssist() { return m_mainAssist; }
 
 	uint32 m_instanceIds[NUM_MAPS][NUM_INSTANCE_MODES];
+	
+	void SetDungeonDifficulty( uint32 diff );
+	void SetRaidDifficulty( uint32 diff );
 
 	//void SetDifficulty(uint8 difficulty);
 	
