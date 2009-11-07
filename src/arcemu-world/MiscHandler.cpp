@@ -2504,7 +2504,7 @@ void WorldSession::HandleRaidDifficultyOpcode(WorldPacket& recv_data)
 	if(m_Group && _player->IsGroupLeader())
 	{
 		m_Group->m_raiddifficulty = static_cast< uint8 >( data );
-		_player->iInstanceType = data;
+		_player->SetRaidDifficulty( data );
 		sInstanceMgr.ResetSavedInstances(_player);
 
 		m_Group->Lock();
@@ -2514,7 +2514,7 @@ void WorldSession::HandleRaidDifficultyOpcode(WorldPacket& recv_data)
 			{
 				if((*itr)->m_loggedInPlayer)
 				{
-					(*itr)->m_loggedInPlayer->iInstanceType = data;
+					(*itr)->m_loggedInPlayer->SetRaidDifficulty( data );
 					(*itr)->m_loggedInPlayer->SendRaidDifficulty();
 				}
 			}
@@ -2523,7 +2523,7 @@ void WorldSession::HandleRaidDifficultyOpcode(WorldPacket& recv_data)
 	}
 	else if(!_player->GetGroup())
 	{
-		_player->iInstanceType = data;
+		_player->SetRaidDifficulty( data );
 		sInstanceMgr.ResetSavedInstances(_player);
 	}
 

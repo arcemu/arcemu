@@ -13652,3 +13652,12 @@ void Player::LearnTalent(uint32 talentid, uint32 rank, bool isPreviewed ){
 	}
 }
 
+
+void Player::SetRaidDifficulty(uint32 diff){
+	m_RaidDifficulty = diff;
+}
+
+uint32 Player::GetRaidDifficulty(){
+	return m_RaidDifficulty;
+}
+

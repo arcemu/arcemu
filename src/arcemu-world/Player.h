@@ -980,7 +980,7 @@ protected:
 
 /***********************************************************************************
 	AFTER THIS POINT, public and private ARE PASSED AROUND LIKE A CHEAP WH*RE :P
-	Let's keeps thing clean (use encapsulation) above this like. Thanks.
+	Let's keeps thing clean (use encapsulation) above this line. Thanks.
 ***********************************************************************************/
 
 public:
@@ -1924,6 +1924,8 @@ public:
 	void SafeTeleport(MapMgr * mgr, const LocationVector & vec);
 	void EjectFromInstance();
 	bool raidgrouponlysent;
+	void SetRaidDifficulty( uint32 diff );
+	uint32 GetRaidDifficulty();
 
 	void EventSafeTeleport(uint32 MapID, uint32 InstanceID, LocationVector vec)
 	{
@@ -2362,6 +2364,7 @@ public:
 	//ToDo: sort out where all the publics and privates go. This will do for now..
 private:
 	PlayerInfo * m_playerInfo;
+	uint32 m_RaidDifficulty;
 
 public:
 

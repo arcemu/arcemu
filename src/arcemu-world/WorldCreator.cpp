@@ -184,16 +184,34 @@ uint32 InstanceMgr::PreTeleport(uint32 mapid, Player * plr, uint32 instanceid)
 	pGroup = plr->GetGroup();
 
 	// players without groups cannot enter raids and heroic instances
-	if(pGroup == NULL && (inf->type == INSTANCE_RAID || (inf->type == INSTANCE_ARENA && plr->iInstanceType >= MODE_HEROIC)) && !plr->TriggerpassCheat)
+	
+	/*
+	if(pGroup == NULL && 
+	(inf->type == INSTANCE_RAID || (inf->type == INSTANCE_ARENA && plr->iInstanceType == MODE_HEROIC)) && 
+	!plr->TriggerpassCheat)
 		return INSTANCE_ABORT_NOT_IN_RAID_GROUP;
+	*/
+
+	if( pGroup == NULL &&
+		inf->type == INSTANCE_RAID &&
+		!plr->TriggerpassCheat )
+		return INSTANCE_ABORT_NOT_IN_RAID_GROUP;
+
+	if( pGroup == NULL &&
+		( inf->type == INSTANCE_NONRAID && plr->iInstanceType == MODE_HEROIC ) &&
+		!plr->TriggerpassCheat )
+		return INSTANCE_ABORT_NOT_IN_RAID_GROUP;
+		
 
 	// players without raid groups cannot enter raid instances
 	if(pGroup != NULL && pGroup->GetGroupType() != GROUP_TYPE_RAID && inf->type == INSTANCE_RAID && !plr->TriggerpassCheat)
 		return INSTANCE_ABORT_NOT_IN_RAID_GROUP;
 
-	// check that heroic mode is available if the player has requested it.
-	if(plr->iInstanceType && inf->type != INSTANCE_ARENA)
+	// We deny transfer if we requested a heroic instance of a map that has no heroic mode
+	if(plr->iInstanceType == MODE_HEROIC && inf->type == INSTANCE_NONRAID )
 		return INSTANCE_ABORT_HEROIC_MODE_NOT_AVAILABLE;
+
+	
 
 	// if we are here, it means:
 	// 1) we're a non-raid instance
