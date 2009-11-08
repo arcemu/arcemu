@@ -1,1 +1,0 @@
-Please read: http://arcemu.org/forums/index.php?showtopic=19095
