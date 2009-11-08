@@ -21,6 +21,15 @@
 #ifndef _LOOTMGR_H
 #define _LOOTMGR_H
 
+
+enum LOOTTYPE{
+	LOOT_NORMAL10,		// normal dungeon / old raid  (10/25/40 men) / normal 10 raid
+	LOOT_NORMAL25,		// heroic dungeon / normal 25 raid
+	LOOT_HEROIC10,		// heroic 10 men raid
+	LOOT_HEROIC25,		// heroic 25 men raid
+	NUM_LOOT_TYPES
+};
+
 struct ItemPrototype;
 class MapMgr;
 class LootRoll : public EventableObject
@@ -73,12 +82,14 @@ typedef struct
 
 typedef struct
 {
-	_LootItem item;
-	float chance;
-	float chance2;
-	uint32 mincount;
-	uint32 maxcount;
-	uint32 ffa_loot;
+	_LootItem item;		// the item that drops
+	float chance;		// normal dungeon / normal 10men raid / old raid (10,25, or 40 men )
+	float chance2;		// heroic dungeon / normal 25men raid
+	float chance3;		// heroic 10men raid
+	float chance4;		// heroic 25men raid
+	uint32 mincount;	// minimum quantity to drop
+	uint32 maxcount;	// maximum quantity to drop
+	uint32 ffa_loot;	// can everyone from the group loot the item?
 }StoreLootItem;
 
 
@@ -100,6 +111,8 @@ struct tempy
 	uint32 itemid;
 	float chance;
 	float chance_2;
+	float chance3;
+	float chance4;
 	uint32 mincount;
 	uint32 maxcount;
 	uint32 ffa_loot;
@@ -127,8 +140,8 @@ public:
 
 	void AddLoot(Loot * loot, uint32 itemid, uint32 mincount, uint32 maxcount, uint32 ffa_loot);
 
-	void FillCreatureLoot(Loot * loot,uint32 loot_id, bool heroic);
-	void FillGOLoot(Loot * loot,uint32 loot_id, bool heroic);
+	void FillCreatureLoot(Loot * loot,uint32 loot_id, uint32 type );
+	void FillGOLoot(Loot * loot,uint32 loot_id, uint32 type );
 	void FillItemLoot(Loot *loot, uint32 loot_id);
 	void FillFishingLoot(Loot * loot,uint32 loot_id);
 	void FillSkinningLoot(Loot * loot,uint32 loot_id);
@@ -157,7 +170,7 @@ public:
 
 private:
 	void LoadLootTables(const char * szTableName,LootStore * LootTable);
-	void PushLoot(StoreLootList *list,Loot * loot, bool heroic);
+	void PushLoot(StoreLootList *list,Loot * loot, uint32 type );
 	
 	map<uint32, RandomPropertyVector> _randomprops;
 	map<uint32, RandomSuffixVector> _randomsuffix;

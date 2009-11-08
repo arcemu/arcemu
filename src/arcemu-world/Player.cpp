@@ -4768,19 +4768,23 @@ void Player::SetPlayerSpeed(uint8 SpeedType, float value)
 void Player::SendDungeonDifficulty()
 {
     WorldPacket data(MSG_SET_DUNGEON_DIFFICULTY, 12);
-	data << (uint32)iInstanceType;
-    data << (uint32)0x1;
-    data << (uint32)InGroup();
+	
+	data << uint32( iInstanceType );
+    data << uint32( 1 );
+    data << uint32( InGroup() );
+
     GetSession()->SendPacket(&data);
 }
 
 void Player::SendRaidDifficulty()
 {
     WorldPacket data(MSG_SET_RAID_DIFFICULTY, 12);
-    data << (uint32)iInstanceType;
-    data << (uint32)0x1;
-    data << (uint32)InGroup();
-    GetSession()->SendPacket(&data);
+	
+	data << uint32( m_RaidDifficulty );
+    data << uint32( 1 );
+    data << uint32( InGroup() );
+    
+	GetSession()->SendPacket(&data);
 }
 
 void Player::BuildPlayerRepop()
@@ -9964,7 +9968,7 @@ void Player::OnWorldPortAck()
 			welcome_msg = string(GetSession()->LocalizedWorldSrv(62))+" ";
 			welcome_msg += string(GetSession()->LocalizedMapName(pMapinfo->mapid));
 			welcome_msg += ". ";
-			if(pMapinfo->type != INSTANCE_NONRAID && !(pMapinfo->type == INSTANCE_ARENA && iInstanceType >= MODE_HEROIC) && m_mapMgr->pInstance)
+			if(pMapinfo->type != INSTANCE_NONRAID && !(pMapinfo->type == INSTANCE_MULTIMODE && iInstanceType >= MODE_HEROIC) && m_mapMgr->pInstance)
 			{
 				/*welcome_msg += "This instance is scheduled to reset on ";
 				welcome_msg += asctime(localtime(&m_mapMgr->pInstance->m_expiration));*/

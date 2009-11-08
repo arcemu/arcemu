@@ -1,6 +1,6 @@
 /*
 SQLyog Community Edition- MySQL GUI v8.01 
-MySQL - 5.1.31-community : Database - wworld
+MySQL - 5.1.31-community : Database - aworld
 *********************************************************************
 */
 
@@ -442,6 +442,23 @@ LOCK TABLES `creature_waypoints` WRITE;
 
 UNLOCK TABLES;
 
+/*Table structure for table `db_version` */
+
+DROP TABLE IF EXISTS `db_version`;
+
+CREATE TABLE `db_version` (
+  `name` varchar(100) NOT NULL COMMENT 'Name of the database',
+  `version` varchar(100) NOT NULL COMMENT 'Version of the database',
+  `author` varchar(100) NOT NULL COMMENT 'Author of the version',
+  `timestamp` int(10) unsigned NOT NULL DEFAULT '0' COMMENT 'Unixtime of this version'
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+/*Data for the table `db_version` */
+
+LOCK TABLES `db_version` WRITE;
+
+UNLOCK TABLES;
+
 /*Table structure for table `fishing` */
 
 DROP TABLE IF EXISTS `fishing`;
@@ -660,6 +677,27 @@ CREATE TABLE `gameobject_staticspawns` (
 /*Data for the table `gameobject_staticspawns` */
 
 LOCK TABLES `gameobject_staticspawns` WRITE;
+
+UNLOCK TABLES;
+
+/*Table structure for table `gameobject_teleports` */
+
+DROP TABLE IF EXISTS `gameobject_teleports`;
+
+CREATE TABLE `gameobject_teleports` (
+  `entry` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `mapid` int(10) unsigned NOT NULL,
+  `x_pos` float NOT NULL,
+  `y_pos` float NOT NULL,
+  `z_pos` float NOT NULL,
+  `orientation` float NOT NULL,
+  `required_level` int(10) unsigned NOT NULL,
+  PRIMARY KEY (`entry`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC COMMENT='Optional table to create custom portals';
+
+/*Data for the table `gameobject_teleports` */
+
+LOCK TABLES `gameobject_teleports` WRITE;
 
 UNLOCK TABLES;
 
@@ -1007,10 +1045,12 @@ CREATE TABLE `loot_creatures` (
   `index` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `entryid` int(11) NOT NULL DEFAULT '0',
   `itemid` int(11) NOT NULL DEFAULT '0',
-  `percentchance` float NOT NULL DEFAULT '0',
-  `heroicpercentchance` float NOT NULL DEFAULT '0',
-  `mincount` int(30) NOT NULL DEFAULT '1',
-  `maxcount` int(30) NOT NULL DEFAULT '1',
+  `normal10percentchance` float NOT NULL DEFAULT '0',
+  `normal25percentchance` float NOT NULL DEFAULT '0',
+  `heroic10percentchance` float NOT NULL DEFAULT '0',
+  `heroic25percentchance` float NOT NULL DEFAULT '0',
+  `mincount` int(30) unsigned NOT NULL DEFAULT '1',
+  `maxcount` int(30) unsigned NOT NULL DEFAULT '1',
   `ffa_loot` int(10) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`entryid`,`itemid`),
   UNIQUE KEY `index` (`index`)
@@ -1020,7 +1060,7 @@ CREATE TABLE `loot_creatures` (
 
 LOCK TABLES `loot_creatures` WRITE;
 
-insert  into `loot_creatures`(`index`,`entryid`,`itemid`,`percentchance`,`heroicpercentchance`,`mincount`,`maxcount`,`ffa_loot`) values (5,20387,24426,0.2,0,1,1,0),(6,18129,24426,0.1,0,1,1,0);
+insert  into `loot_creatures`(`index`,`entryid`,`itemid`,`normal10percentchance`,`normal25percentchance`,`heroic10percentchance`,`heroic25percentchance`,`mincount`,`maxcount`,`ffa_loot`) values (5,20387,24426,0.2,0,0,0,1,1,0),(6,18129,24426,0.1,0,0,0,1,1,0);
 
 UNLOCK TABLES;
 
@@ -1032,10 +1072,12 @@ CREATE TABLE `loot_fishing` (
   `index` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `entryid` int(11) unsigned NOT NULL DEFAULT '0',
   `itemid` int(11) unsigned NOT NULL DEFAULT '0',
-  `percentchance` float NOT NULL DEFAULT '0',
-  `heroicpercentchance` float NOT NULL DEFAULT '0',
-  `mincount` int(11) unsigned NOT NULL DEFAULT '1',
-  `maxcount` int(11) unsigned NOT NULL DEFAULT '1',
+  `normal10percentchance` float NOT NULL DEFAULT '0',
+  `normal25percentchance` float NOT NULL DEFAULT '0',
+  `heroic10percentchance` float NOT NULL DEFAULT '0',
+  `heroic25percentchance` float NOT NULL DEFAULT '0',
+  `mincount` int(30) unsigned NOT NULL DEFAULT '1',
+  `maxcount` int(30) unsigned NOT NULL DEFAULT '1',
   `ffa_loot` int(10) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`itemid`,`entryid`),
   UNIQUE KEY `index` (`index`)
@@ -1055,10 +1097,12 @@ CREATE TABLE `loot_gameobjects` (
   `index` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `entryid` int(11) unsigned NOT NULL DEFAULT '0',
   `itemid` int(11) unsigned NOT NULL DEFAULT '0',
-  `percentchance` float NOT NULL DEFAULT '0',
-  `heroicpercentchance` float NOT NULL DEFAULT '0',
-  `mincount` int(11) unsigned NOT NULL DEFAULT '1',
-  `maxcount` int(11) unsigned NOT NULL DEFAULT '1',
+  `normal10percentchance` float NOT NULL DEFAULT '0',
+  `normal25percentchance` float NOT NULL DEFAULT '0',
+  `heroic10percentchance` float NOT NULL DEFAULT '0',
+  `heroic25percentchance` float NOT NULL DEFAULT '0',
+  `mincount` int(30) unsigned NOT NULL DEFAULT '1',
+  `maxcount` int(30) unsigned NOT NULL DEFAULT '1',
   `ffa_loot` int(10) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`entryid`,`itemid`),
   UNIQUE KEY `index` (`index`)
@@ -1078,10 +1122,12 @@ CREATE TABLE `loot_items` (
   `index` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `entryid` int(11) unsigned NOT NULL DEFAULT '0',
   `itemid` int(11) unsigned NOT NULL DEFAULT '25',
-  `percentchance` float NOT NULL DEFAULT '0',
-  `heroicpercentchance` float NOT NULL DEFAULT '0',
-  `mincount` int(11) unsigned NOT NULL DEFAULT '1',
-  `maxcount` int(11) unsigned NOT NULL DEFAULT '1',
+  `normal10percentchance` float NOT NULL DEFAULT '0',
+  `normal25percentchance` float NOT NULL DEFAULT '0',
+  `heroic10percentchance` float NOT NULL DEFAULT '0',
+  `heroic25percentchance` float NOT NULL DEFAULT '0',
+  `mincount` int(30) unsigned NOT NULL DEFAULT '1',
+  `maxcount` int(30) unsigned NOT NULL DEFAULT '1',
   `ffa_loot` int(10) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`entryid`,`itemid`),
   UNIQUE KEY `index` (`index`)
@@ -1101,10 +1147,12 @@ CREATE TABLE `loot_pickpocketing` (
   `index` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `entryid` int(11) unsigned NOT NULL DEFAULT '0',
   `itemid` int(11) unsigned NOT NULL DEFAULT '25',
-  `percentchance` float NOT NULL DEFAULT '100',
-  `heroicpercentchance` float DEFAULT '0',
-  `mincount` int(30) DEFAULT '1',
-  `maxcount` int(30) DEFAULT '1',
+  `normal10percentchance` float NOT NULL DEFAULT '0',
+  `normal25percentchance` float NOT NULL DEFAULT '0',
+  `heroic10percentchance` float NOT NULL DEFAULT '0',
+  `heroic25percentchance` float NOT NULL DEFAULT '0',
+  `mincount` int(30) unsigned NOT NULL DEFAULT '1',
+  `maxcount` int(30) unsigned NOT NULL DEFAULT '1',
   `ffa_loot` int(10) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`entryid`,`itemid`),
   UNIQUE KEY `index` (`index`)
@@ -1124,10 +1172,12 @@ CREATE TABLE `loot_skinning` (
   `index` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `entryid` int(10) unsigned NOT NULL DEFAULT '0',
   `itemid` int(10) unsigned NOT NULL DEFAULT '0',
-  `percentchance` float NOT NULL DEFAULT '0',
-  `heroicpercentchance` float DEFAULT '0',
-  `mincount` int(30) DEFAULT '1',
-  `maxcount` int(30) DEFAULT '1',
+  `normal10percentchance` float NOT NULL DEFAULT '0',
+  `normal25percentchance` float NOT NULL DEFAULT '0',
+  `heroic10percentchance` float NOT NULL DEFAULT '0',
+  `heroic25percentchance` float NOT NULL DEFAULT '0',
+  `mincount` int(30) unsigned NOT NULL DEFAULT '1',
+  `maxcount` int(30) unsigned NOT NULL DEFAULT '1',
   `ffa_loot` int(10) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`itemid`,`entryid`),
   UNIQUE KEY `index` (`index`)

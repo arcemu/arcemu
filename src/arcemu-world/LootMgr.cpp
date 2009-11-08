@@ -275,39 +275,43 @@ void LootMgr::LoadLootTables(const char * szTableName,LootStore * LootTable)
 		t.itemid = fields[2].GetUInt32();
 		t.chance = fields[3].GetFloat();
 		t.chance_2 = fields[4].GetFloat();
-		t.mincount = fields[5].GetUInt32();
-		t.maxcount = fields[6].GetUInt32();
-		t.ffa_loot = fields[7].GetUInt32();
+
+		t.chance3 = fields[5].GetFloat();
+		t.chance4 = fields[6].GetFloat();
+
+		t.mincount = fields[7].GetUInt32();
+		t.maxcount = fields[8].GetUInt32();
+		t.ffa_loot = fields[9].GetUInt32();
 
 		ttab.push_back( t );
 
 		last_entry = entry_id;
 	} while( result->NextRow() );
+	
 	//last list was not pushed in
 	if(last_entry != 0 && ttab.size())
 		db_cache.push_back( make_pair( last_entry, ttab) );
+
 	pos = 0;
 	total = (uint32)db_cache.size();
 	ItemPrototype* proto;
 	uint32 itemid;
 
-	//for(itr=loot_db.begin();itr!=loot_db.end();++itr)
 	for( itr = db_cache.begin(); itr != db_cache.end(); ++itr)
 	{
 		entry_id = (*itr).first;
 		if(LootTable->end()==LootTable->find(entry_id))
 		{
 			StoreLootList list;
-			//list.count = itr->second.size();			
-			list.count = (uint32)(*itr).second.size();
+
+			list.count = static_cast< uint32 >( itr->second.size() );
 			list.items=new StoreLootItem[list.count];
 		
 			uint32 ind=0;
-			//for(std::vector<loot_tb>::iterator itr2=itr->second.begin();itr2!=itr->second.end();++itr2)
-			for(vector< tempy >::iterator itr2 = (*itr).second.begin(); itr2 != (*itr).second.end(); ++itr2)
+
+			for(vector< tempy >::iterator itr2 = itr->second.begin(); itr2 != itr->second.end(); ++itr2)
 			{
 				//Omit items that are not in db to prevent future bugs
-				//uint32 itemid=(*itr2).itemid;
 				itemid = itr2->itemid;
 				proto = ItemPrototypeStorage.LookupEntry( itemid );
 				if(!proto)
@@ -319,9 +323,10 @@ void LootMgr::LoadLootTables(const char * szTableName,LootStore * LootTable)
 				{
 					list.items[ind].item.itemproto=proto;
 					list.items[ind].item.displayid=proto->DisplayInfoID;
-					//list.items[ind].chance=(*itr2).chance;
 					list.items[ind].chance= itr2->chance;
 					list.items[ind].chance2 = itr2->chance_2;
+					list.items[ind].chance3 = itr2->chance3;
+					list.items[ind].chance4 = itr2->chance4;
 					list.items[ind].mincount = itr2->mincount;
 					list.items[ind].maxcount = itr2->maxcount;
 					list.items[ind].ffa_loot = itr2->ffa_loot;
@@ -342,22 +347,41 @@ void LootMgr::LoadLootTables(const char * szTableName,LootStore * LootTable)
 		}
 	}
 
-	//sLog.outString("  %d loot templates loaded from %s", db_cache.size(), szTableName);
- //   loot_db.clear();
+	sLog.outString("  %d loot templates loaded from %s", db_cache.size(), szTableName);
 	delete result;
 }
 
-void LootMgr::PushLoot(StoreLootList *list,Loot * loot, bool heroic)
+void LootMgr::PushLoot(StoreLootList *list,Loot * loot, uint32 type )
 {
 	uint32 i;
 	uint32 count;
+
+	if( type < LOOT_NORMAL10 || type >= NUM_LOOT_TYPES )
+		return;
 
 	for( uint32 x = 0; x < list->count; x++ )
 	{
 		if( list->items[x].item.itemproto )// this check is needed until loot DB is fixed
 		{
-			float chance = heroic ? list->items[x].chance2 : list->items[x].chance;
-			if(chance == 0.0f) continue;
+			float chance = 0.0f;
+			
+			switch( type ){
+				case LOOT_NORMAL10:
+					chance = list->items[x].chance; break;
+				
+				case LOOT_NORMAL25:
+					chance = list->items[x].chance2; break;
+
+				case LOOT_HEROIC10:
+					chance = list->items[x].chance3; break;
+
+				case LOOT_HEROIC25:
+					chance = list->items[x].chance4; break;
+			}
+
+			// drop chance cannot be larger than 100% or smaller than 0%
+			if(chance <= 0.0f || chance > 100.0f ) 
+				continue;
 			
 			ItemPrototype *itemproto = list->items[x].item.itemproto;
 			if( Rand( chance * sWorld.getRate( RATE_DROP0 + itemproto->Quality ) ) )//|| itemproto->Class == ITEM_CLASS_QUEST)
@@ -523,24 +547,30 @@ void LootMgr::AddLoot(Loot * loot, uint32 itemid, uint32 mincount, uint32 maxcou
 	}
 }
 
-void LootMgr::FillCreatureLoot(Loot * loot,uint32 loot_id, bool heroic)
+void LootMgr::FillCreatureLoot(Loot * loot,uint32 loot_id, uint32 type )
 {
 	loot->items.clear();
 	loot->gold =0;
 	
 	LootStore::iterator tab =CreatureLoot.find(loot_id);
-	if( CreatureLoot.end()==tab)return;
-	else PushLoot(&tab->second,loot, heroic);
+	
+	if( CreatureLoot.end()==tab)
+		return;
+	else
+		PushLoot(&tab->second,loot, type );
 }
 
-void LootMgr::FillGOLoot(Loot * loot,uint32 loot_id, bool heroic)
+void LootMgr::FillGOLoot(Loot * loot,uint32 loot_id, uint32 type)
 {
 	loot->items.clear ();
 	loot->gold =0;
 
 	LootStore::iterator tab =GOLoot.find(loot_id);
-	if( GOLoot.end()==tab)return;
-	else PushLoot(&tab->second,loot, heroic);
+	
+	if( GOLoot.end()==tab)
+		return;
+	else
+		PushLoot(&tab->second,loot, type );
 }
 
 void LootMgr::FillFishingLoot(Loot * loot,uint32 loot_id)
@@ -549,30 +579,37 @@ void LootMgr::FillFishingLoot(Loot * loot,uint32 loot_id)
     loot->gold = 0;
 
     LootStore::iterator tab = FishingLoot.find(loot_id);
-    if( FishingLoot.end() == tab) return;
-    else PushLoot(&tab->second, loot, false);
+    
+	if( FishingLoot.end() == tab)
+		return;
+	else
+		PushLoot(&tab->second, loot, 0 );
 }
 
 void LootMgr::FillSkinningLoot(Loot * loot,uint32 loot_id)
 {
- loot->items.clear();
- loot->gold = 0;
-
- LootStore::iterator tab = SkinningLoot.find(loot_id);
- if( SkinningLoot.end() == tab)return;
- else PushLoot(&tab->second, loot, false);
+	loot->items.clear();
+	loot->gold = 0;
+	
+	LootStore::iterator tab = SkinningLoot.find(loot_id);
+	
+	if( SkinningLoot.end() == tab)
+		return;
+	else
+		PushLoot(&tab->second, loot, 0 );
 }
 
 void LootMgr::FillPickpocketingLoot( Loot * loot,uint32 loot_id )
 {
-	 loot->items.clear();
-	 loot->gold = 0;
-
-	 LootStore::iterator tab = PickpocketingLoot.find( loot_id );
-	 if( PickpocketingLoot.end() == tab )
-		 return;
-	 else 
-		 PushLoot( &tab->second, loot, false );
+	loot->items.clear();
+	loot->gold = 0;
+	
+	LootStore::iterator tab = PickpocketingLoot.find( loot_id );
+	
+	if( PickpocketingLoot.end() == tab )
+		return;
+	else 
+		PushLoot( &tab->second, loot, 0 );
 }
 
 bool LootMgr::CanGODrop(uint32 LootId,uint32 itemid)

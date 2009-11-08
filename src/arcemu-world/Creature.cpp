@@ -301,7 +301,10 @@ void Creature::generateLoot()
 	if ( !loot.items.empty() )
 		return;
 
-	lootmgr.FillCreatureLoot(&loot,GetEntry(), m_mapMgr ? (m_mapMgr->iInstanceMode > 0 ? true : false) : false);
+	if( m_mapMgr != NULL )
+		lootmgr.FillCreatureLoot( &loot, GetEntry(), m_mapMgr->iInstanceMode );
+	else
+		lootmgr.FillCreatureLoot( &loot, GetEntry(), 0 );
 
 	loot.gold = proto ? proto->money : 0;
 

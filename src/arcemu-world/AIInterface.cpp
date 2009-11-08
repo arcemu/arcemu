@@ -300,7 +300,7 @@ void AIInterface::HandleEvent(uint32 event, Unit* pUnit, uint32 misc1)
 
 					case INSTANCE_RAID:
 					case INSTANCE_NONRAID:
-					case INSTANCE_ARENA:
+					case INSTANCE_MULTIMODE:
 						target = FindTarget();
 						break;
 					}
@@ -599,7 +599,7 @@ void AIInterface::HandleEvent(uint32 event, Unit* pUnit, uint32 misc1)
 				&& pInstance 
 				&& (pInstance->m_mapInfo->type == INSTANCE_RAID 
 				|| pInstance->m_mapInfo->type == INSTANCE_NONRAID 
-				|| pInstance->m_mapInfo->type == INSTANCE_ARENA ))
+				|| pInstance->m_mapInfo->type == INSTANCE_MULTIMODE ))
 			{
 				InstanceBossInfoMap *bossInfoMap = objmgr.m_InstanceBossInfoMap[m_Unit->GetMapMgr()->GetMapId()];
 				Creature *pCreature = static_cast< Creature* >( m_Unit );
@@ -956,7 +956,7 @@ void AIInterface::_UpdateTargets()
 					{
 					case INSTANCE_RAID:
 					case INSTANCE_NONRAID:
-					case INSTANCE_ARENA:
+					case INSTANCE_MULTIMODE:
 						instance = true;
 						break;
 					}
@@ -982,7 +982,7 @@ void AIInterface::_UpdateTargets()
 				{
 				case INSTANCE_RAID:
 				case INSTANCE_NONRAID:
-				case INSTANCE_ARENA:
+				case INSTANCE_MULTIMODE:
 					target = FindTarget();
 					break;
 

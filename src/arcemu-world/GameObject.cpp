@@ -590,10 +590,16 @@ void GameObject::UseFishingNode(Player *player)
 
 	if ( school != NULL ) // open school loot if school exists
 	{
-		lootmgr.FillGOLoot( &school->loot, school->GetEntry(), school->GetMapMgr() ? ( school->GetMapMgr()->iInstanceMode ? true : false ) : false );
+		
+		if( school->GetMapMgr() != NULL )
+			lootmgr.FillGOLoot( &school->loot, school->GetEntry(), school->GetMapMgr()->iInstanceMode );
+		else
+			lootmgr.FillGOLoot( &school->loot, school->GetEntry(), 0 );
+		
 		player->SendLoot( school->GetGUID(), LOOT_FISHING );
 		EndFishing( player, false );
 		school->CatchFish();
+		
 		if ( !school->CanFish() )
 			sEventMgr.AddEvent( school, &GameObject::Despawn, (uint32)0, ( 1800000 + RandomUInt( 3600000 ) ), EVENT_GAMEOBJECT_EXPIRE, 10000, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT ); // respawn in 30 - 90 minutes
 	}

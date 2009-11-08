@@ -270,6 +270,7 @@ uint32 InstanceMgr::PreTeleport(uint32 mapid, Player * plr, uint32 instanceid)
 	m_mapLock.Acquire();
 	instancemap = m_instances[mapid];
 
+	// If there are no instances of this map yet, we need to create the map
 	if(instancemap == NULL)
 	{
 		if(instanceid != 0)
@@ -278,7 +279,6 @@ uint32 InstanceMgr::PreTeleport(uint32 mapid, Player * plr, uint32 instanceid)
 			return INSTANCE_ABORT_NOT_FOUND;
 		}
 
-		// gotta create the hashmap.
 		m_instances[mapid] = new InstanceMap;
 		instancemap = m_instances[mapid];
 	}
@@ -286,6 +286,7 @@ uint32 InstanceMgr::PreTeleport(uint32 mapid, Player * plr, uint32 instanceid)
 	{
 		InstanceMap::iterator itr;
 
+		// this is the case when we enter an already existing instance ( with summons for example )
 		if(instanceid != 0)
 		{
 			itr = instancemap->find(instanceid);
@@ -314,12 +315,13 @@ uint32 InstanceMgr::PreTeleport(uint32 mapid, Player * plr, uint32 instanceid)
 				return INSTANCE_ABORT_NOT_FOUND;
 			}
 		}
-		else
+		else  // this is the case when we enter the normal way (e.g. we enter thru the portal )
 		{
 			in = NULL;
 			if(pGroup != NULL)
 			{
-				if((inf->type == INSTANCE_ARENA && pGroup->m_difficulty >= MODE_HEROIC) || inf->type == INSTANCE_RAID)
+				
+				if((inf->type == INSTANCE_MULTIMODE && pGroup->m_difficulty == MODE_HEROIC) || inf->type == INSTANCE_RAID)
 				{
 					if(plr->GetPersistentInstanceId(mapid, pGroup->m_difficulty) == 0)
 					{
@@ -409,7 +411,16 @@ uint32 InstanceMgr::PreTeleport(uint32 mapid, Player * plr, uint32 instanceid)
 	// if we're here, it means we need to create a new instance.
 	in = new Instance;
 	in->m_creation = UNIXTIME;
-	in->m_difficulty = pGroup ? pGroup->m_difficulty : plr->iInstanceType;
+
+	switch( inf->type ){
+		case INSTANCE_NONRAID:
+		case INSTANCE_MULTIMODE:
+			in->m_difficulty = plr->GetDungeonDifficulty(); break;
+
+		case INSTANCE_RAID:
+			in->m_difficulty = plr->GetRaidDifficulty(); break;
+	}
+
 	in->m_instanceId = GenerateInstanceID();
 	in->m_mapId = mapid;
 	in->m_mapInfo = inf;
@@ -418,16 +429,17 @@ uint32 InstanceMgr::PreTeleport(uint32 mapid, Player * plr, uint32 instanceid)
 	in->m_persistent = IS_PERSISTENT_INSTANCE(in) && objmgr.m_InstanceBossInfoMap[mapid] == NULL;
 	in->m_creatorGuid = pGroup ? 0 : plr->GetLowGUID();		// creator guid is 0 if its owned by a group.
 	in->m_creatorGroup = pGroup ? pGroup->GetID() : 0;
+	
 	if(sWorld.instance_SlidingExpiration)
 	{
-		if(inf->type == INSTANCE_ARENA && in->m_difficulty >= MODE_HEROIC)
+		if(inf->type == INSTANCE_MULTIMODE && in->m_difficulty == MODE_HEROIC)
 			in->m_expiration = UNIXTIME + TIME_DAY;
 		else
-			in->m_expiration = (inf->type == INSTANCE_NONRAID || (inf->type == INSTANCE_ARENA && in->m_difficulty == MODE_NORMAL)) ? 0 : UNIXTIME + inf->cooldown;
+			in->m_expiration = (inf->type == INSTANCE_NONRAID || (inf->type == INSTANCE_MULTIMODE && in->m_difficulty == MODE_NORMAL)) ? 0 : UNIXTIME + inf->cooldown;
 	}
 	else
 	{
-		if(inf->type == INSTANCE_ARENA && in->m_difficulty >= MODE_HEROIC)
+		if(inf->type == INSTANCE_MULTIMODE && in->m_difficulty >= MODE_HEROIC)
 		{
 			in->m_expiration = UNIXTIME - (UNIXTIME % TIME_DAY) + ( (UNIXTIME % TIME_DAY) > (sWorld.instance_DailyHeroicInstanceResetHour * TIME_HOUR) ? 82800 : -3600 ) + ((sWorld.instance_DailyHeroicInstanceResetHour - sWorld.GMTTimeZone) * TIME_HOUR);
 		}
@@ -452,7 +464,7 @@ uint32 InstanceMgr::PreTeleport(uint32 mapid, Player * plr, uint32 instanceid)
 		}
 		else
 		{
-			in->m_expiration = (inf->type == INSTANCE_NONRAID || (inf->type == INSTANCE_ARENA && in->m_difficulty == MODE_NORMAL)) ? 0 : UNIXTIME + inf->cooldown;
+			in->m_expiration = (inf->type == INSTANCE_NONRAID || (inf->type == INSTANCE_MULTIMODE && in->m_difficulty == MODE_NORMAL)) ? 0 : UNIXTIME + inf->cooldown;
 		}
 	}
 	plr->SetInstanceID(in->m_instanceId);
@@ -469,6 +481,7 @@ uint32 InstanceMgr::PreTeleport(uint32 mapid, Player * plr, uint32 instanceid)
 
 	// instance created ok, i guess? return the ok for him to transport.
 	m_mapLock.Release();
+	
 	return INSTANCE_OK;
 }
 
@@ -988,7 +1001,7 @@ void InstanceMgr::CheckForExpiredInstances()
 				++itr;
 
 				// use a "soft" delete here.
-				if(in->m_mapInfo->type != INSTANCE_NONRAID && !(in->m_mapInfo->type == INSTANCE_ARENA && in->m_difficulty == MODE_NORMAL) && HasInstanceExpired(in))
+				if(in->m_mapInfo->type != INSTANCE_NONRAID && !(in->m_mapInfo->type == INSTANCE_MULTIMODE && in->m_difficulty == MODE_NORMAL) && HasInstanceExpired(in))
 					_DeleteInstance(in, false);
 			}
 
