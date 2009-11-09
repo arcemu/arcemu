@@ -22,6 +22,86 @@
 
 #define M_PI	   3.14159265358979323846
 
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// float CalcHPCoefficient( MapInfo *mi, uint32 mode, bool boss )
+//  Returns the HP coefficient that is suited for the map, mode, and creature
+//
+// Parameters:
+//  MapInfo *mi		-		pointer to the mapinfo structure
+//	uint32  mode	-		numeric representation of the version of the map (normal, heroic, 10-25 men, etc )
+//	bool	boss	-		true if the creature is a boss, false if not
+//
+// Return Values:
+//	Returns the hp coefficient in a float
+//
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+float CalcHPCoefficient( MapInfo *mi, uint32 mode, bool boss ){
+	float coeff = 1.0f;
+
+	// This calculation is purely speculation as we have no way of finding out how Blizzard generates these values
+	// These cases are based on simple observation of trash/boss hp values for different modes
+	// If you know they are wrong AND you know a better calculation formula then DO change it.
+
+	// raid
+	if( mi->type == INSTANCE_RAID ){
+		bool hasheroic = false;
+
+		// check if we have heroic mode avaiable
+		if( mi->HasFlag( WMI_INSTANCE_HAS_HEROIC_10MEN ) && mi->HasFlag( WMI_INSTANCE_HAS_HEROIC_25MEN ) )
+			hasheroic = true;
+		
+		// boss hp coeff calculations 
+		if( boss == true ){
+
+			switch( mode ){
+				case MODE_NORMAL_10MEN:
+					coeff = 1.0f; break;
+
+				case MODE_HEROIC_10MEN:
+					coeff = 1.25f; break;
+
+				case MODE_NORMAL_25MEN:
+					if( hasheroic )
+						coeff = 5.0f;
+					else
+						coeff = 3.0f;
+					break;
+
+				case MODE_HEROIC_25MEN:
+					coeff = 5.0f * 1.25f;
+			}
+
+			// trash hp coeff calculation
+		}else{
+			switch( mode ){
+				case MODE_NORMAL_10MEN:
+					coeff = 1.0f; break;
+
+				case MODE_HEROIC_10MEN:
+					coeff = 1.5f; break;
+
+				case MODE_NORMAL_25MEN:
+					coeff = 2.0f; break;
+
+				case MODE_HEROIC_25MEN:
+					coeff = 2.5f; break;
+			}
+		}
+	}
+
+	// heroic dungeon
+	if( mi->type == INSTANCE_MULTIMODE ){
+		
+		if( mode > 0 )
+			coeff = 1.5f;
+		else
+			coeff = 1.0f;
+	}
+
+	return coeff;
+}
+
 Creature::Creature(uint64 guid)
 {
 	proto = 0;
@@ -1206,8 +1286,18 @@ bool Creature::Load(CreatureSpawn *spawn, uint32 mode, MapInfo *info)
 	}
 
 	uint32 health = proto->MinHealth + RandomUInt(proto->MaxHealth - proto->MinHealth);
-	if(mode)
-		health = long2int32(double(health) * 1.5);
+	
+	// difficutly coefficient
+	float diff_coeff = 1.0f;
+	
+	if( creature_info->Rank == ELITE_WORLDBOSS )
+		diff_coeff = CalcHPCoefficient( info, mode, true );
+	else
+	if( creature_info->Type != UNIT_TYPE_CRITTER )
+		diff_coeff = CalcHPCoefficient( info, mode, false );
+
+	health = static_cast< uint32 >( health * diff_coeff );
+
 	SetUInt32Value(UNIT_FIELD_HEALTH, health);
 	SetUInt32Value(UNIT_FIELD_MAXHEALTH, health);
 	SetUInt32Value(UNIT_FIELD_BASE_HEALTH, health);
@@ -1232,17 +1322,17 @@ bool Creature::Load(CreatureSpawn *spawn, uint32 mode, MapInfo *info)
 
 	EventModelChange();
 
-    //SetUInt32Value(UNIT_FIELD_LEVEL, (mode ? proto->Level + (info ? info->lvl_mod_a : 0) : proto->Level));
-	SetUInt32Value(UNIT_FIELD_LEVEL, proto->MinLevel + (RandomUInt(proto->MaxLevel - proto->MinLevel)));
-	if(mode && info)
+    SetUInt32Value(UNIT_FIELD_LEVEL, proto->MinLevel + (RandomUInt(proto->MaxLevel - proto->MinLevel)));
+	
+	if( mode && info )
 		ModUnsigned32Value(UNIT_FIELD_LEVEL, min(73 - GetUInt32Value(UNIT_FIELD_LEVEL), info->lvl_mod_a));
 
 	for(uint32 i = 0; i < 7; ++i)
 		SetUInt32Value(UNIT_FIELD_RESISTANCES+i,proto->Resistances[i]);
 
 	SetUInt32Value(UNIT_FIELD_BASEATTACKTIME,proto->AttackTime);
-	SetFloatValue(UNIT_FIELD_MINDAMAGE, (mode ? proto->MinDamage * 1.5f  : proto->MinDamage));
-	SetFloatValue(UNIT_FIELD_MAXDAMAGE, (mode ? proto->MaxDamage * 1.5f  : proto->MaxDamage));
+	SetFloatValue(UNIT_FIELD_MINDAMAGE, (mode ? proto->MinDamage * ( 1.0f + ( mode * 0.5f ) )  : proto->MinDamage));
+	SetFloatValue(UNIT_FIELD_MAXDAMAGE, (mode ? proto->MaxDamage * ( 1.0f + ( mode * 0.5f ) )  : proto->MaxDamage));
 
 	SetUInt32Value(UNIT_FIELD_RANGEDATTACKTIME,proto->RangedAttackTime);
 	SetFloatValue(UNIT_FIELD_MINRANGEDDAMAGE,proto->RangedMinDamage);
