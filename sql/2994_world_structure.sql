@@ -1,6 +1,6 @@
 /*
 SQLyog Community Edition- MySQL GUI v8.01 
-MySQL - 5.1.31-community : Database - aworld
+MySQL - 5.1.31-community : Database - wworld
 *********************************************************************
 */
 
@@ -17,6 +17,7 @@ DROP TABLE IF EXISTS `ai_agents`;
 
 CREATE TABLE `ai_agents` (
   `entry` int(11) unsigned NOT NULL DEFAULT '0',
+  `instance_mode` int(10) unsigned NOT NULL DEFAULT '4',
   `type` smallint(5) unsigned NOT NULL DEFAULT '0',
   `event` int(11) unsigned NOT NULL DEFAULT '0',
   `chance` int(11) unsigned NOT NULL DEFAULT '0',

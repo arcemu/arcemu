@@ -39,6 +39,9 @@
 float CalcHPCoefficient( MapInfo *mi, uint32 mode, bool boss ){
 	float coeff = 1.0f;
 
+	if( mi == NULL )
+		return 1.0f;
+
 	// This calculation is purely speculation as we have no way of finding out how Blizzard generates these values
 	// These cases are based on simple observation of trash/boss hp values for different modes
 	// If you know they are wrong AND you know a better calculation formula then DO change it.
@@ -100,6 +103,50 @@ float CalcHPCoefficient( MapInfo *mi, uint32 mode, bool boss ){
 	}
 
 	return coeff;
+}
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// float CalcDMGCoefficient( MapInfo *mi, uint32 mode )
+//  Calculates the creature damage coefficient that is suitable for the map type and difficulty
+//
+// Parameters:
+//  MapInfo *mi		-		pointer to the MapInfo structure
+//  uint32 mode		-		numeric representation of the version of the map (normal, heroic, 10-25 men, etc )
+//
+// Return Value:
+//  Returns the suitable damage coefficient in a float
+//
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////
+float CalcDMGCoefficient( MapInfo *mi, uint32 mode ){
+	
+	// This calculation is purely speculation as we have no way of finding out how Blizzard generates these values
+	// These cases are based on simple observation of trash/boss damage values for different modes
+	// If you know they are wrong AND you know a better calculation formula then DO change it.
+
+	if( mi == NULL )
+		return 1.0f;
+
+	switch( mode ){
+		case MODE_NORMAL_10MEN:
+			return 1.0f; break;
+
+		case MODE_NORMAL_25MEN:
+			if( mi->type == INSTANCE_MULTIMODE )
+				return 1.5f;
+			else
+				return 2.0;
+
+			break;
+
+		case MODE_HEROIC_10MEN:
+			return 1.5f; break;
+
+		case MODE_HEROIC_25MEN:
+			return 2.5f; break;
+	}
+
+	return 1.0f;
 }
 
 Creature::Creature(uint64 guid)
@@ -1331,8 +1378,11 @@ bool Creature::Load(CreatureSpawn *spawn, uint32 mode, MapInfo *info)
 		SetUInt32Value(UNIT_FIELD_RESISTANCES+i,proto->Resistances[i]);
 
 	SetUInt32Value(UNIT_FIELD_BASEATTACKTIME,proto->AttackTime);
-	SetFloatValue(UNIT_FIELD_MINDAMAGE, (mode ? proto->MinDamage * ( 1.0f + ( mode * 0.5f ) )  : proto->MinDamage));
-	SetFloatValue(UNIT_FIELD_MAXDAMAGE, (mode ? proto->MaxDamage * ( 1.0f + ( mode * 0.5f ) )  : proto->MaxDamage));
+
+	float dmg_coeff = CalcDMGCoefficient( info, mode );
+
+	SetFloatValue(UNIT_FIELD_MINDAMAGE, (mode ? proto->MinDamage * dmg_coeff  : proto->MinDamage ) );
+	SetFloatValue(UNIT_FIELD_MAXDAMAGE, (mode ? proto->MaxDamage * dmg_coeff  : proto->MaxDamage ) );
 
 	SetUInt32Value(UNIT_FIELD_RANGEDATTACKTIME,proto->RangedAttackTime);
 	SetFloatValue(UNIT_FIELD_MINRANGEDDAMAGE,proto->RangedMinDamage);
@@ -1418,8 +1468,11 @@ bool Creature::Load(CreatureSpawn *spawn, uint32 mode, MapInfo *info)
 	// kek
 	for(list<AI_Spell*>::iterator itr = proto->spells.begin(); itr != proto->spells.end(); ++itr)
 	{
-		m_aiInterface->addSpellToList(*itr);
+		// Load all spells that are not bound to a specific difficulty, OR mathces this maps' difficulty
+		if( (*itr)->instance_mode == mode || (*itr)->instance_mode == AISPELL_ANY_DIFFICULTY )
+			m_aiInterface->addSpellToList(*itr);
 	}
+
 	//m_aiInterface->m_canCallForHelp = proto->m_canCallForHelp;
 	//m_aiInterface->m_CallForHelpHealth = proto->m_callForHelpHealth;
 	m_aiInterface->m_canFlee = proto->m_canFlee;
@@ -1639,7 +1692,9 @@ void Creature::Load(CreatureProto * proto_, float x, float y, float z, float o)
 	// kek
 	for(list<AI_Spell*>::iterator itr = proto->spells.begin(); itr != proto->spells.end(); ++itr)
 	{
-		m_aiInterface->addSpellToList(*itr);
+		// Load all spell that are not set for a specific difficulty
+		if( (*itr)->instance_mode == AISPELL_ANY_DIFFICULTY )
+			m_aiInterface->addSpellToList(*itr);
 	}
 	m_aiInterface->m_canCallForHelp = proto->m_canCallForHelp;
 	m_aiInterface->m_CallForHelpHealth = proto->m_callForHelpHealth;

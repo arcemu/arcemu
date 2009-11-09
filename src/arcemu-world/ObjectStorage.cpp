@@ -177,10 +177,10 @@ void ObjectMgr::LoadExtraCreatureProtoStuff()
 				Field *fields = result->Fetch();
 				entry = fields[0].GetUInt32();
 				cn = CreatureProtoStorage.LookupEntry(entry);
-				spe = dbcSpell.LookupEntryForced(fields[5].GetUInt32());
+				spe = dbcSpell.LookupEntryForced(fields[6].GetUInt32());
 				if( spe == NULL )
 				{
-					Log.Warning("AIAgent", "For %u has nonexistent spell %u.", fields[0].GetUInt32(), fields[5].GetUInt32());
+					Log.Warning("AIAgent", "For %u has nonexistent spell %u.", fields[0].GetUInt32(), fields[6].GetUInt32());
 					continue;
 				}
 				if(!cn)
@@ -188,28 +188,29 @@ void ObjectMgr::LoadExtraCreatureProtoStuff()
 
 				sp = new AI_Spell;
 				sp->entryId = fields[0].GetUInt32();
-				sp->agent = fields[1].GetUInt16();
-				sp->procChance = fields[3].GetUInt32();
-				sp->procCount = fields[4].GetUInt32();
+				sp->instance_mode = fields[1].GetUInt32();
+				sp->agent = fields[2].GetUInt16();
+				sp->procChance = fields[4].GetUInt32();
+				sp->procCount = fields[5].GetUInt32();
 				sp->spell = spe;
-				sp->spellType = static_cast<uint8>( fields[6].GetUInt32() );
+				sp->spellType = static_cast<uint8>( fields[7].GetUInt32() );
 
-				int32  targettype = fields[7].GetInt32();
+				int32  targettype = fields[8].GetInt32();
 				if( targettype == -1 )
 					sp->spelltargetType = static_cast<uint8>( GetAiTargetType( spe ) );
 				else sp->spelltargetType = static_cast<uint8>( targettype );
 
-				sp->cooldown = fields[8].GetInt32();
-				sp->floatMisc1 = fields[9].GetFloat();
+				sp->cooldown = fields[9].GetInt32();
+				sp->floatMisc1 = fields[10].GetFloat();
 				sp->autocast_type=(uint32)-1;
 				sp->cooldowntime=getMSTime();
 				sp->procCounter=0;
-				sp->Misc2 = fields[10].GetUInt32();
+				sp->Misc2 = fields[11].GetUInt32();
 				if(sp->agent == AGENT_SPELL)
 				{
 					if(!sp->spell)
 					{
-						sLog.outDebug("SpellId %u in ai_agent for %u is invalid.\n", (unsigned int)fields[5].GetUInt32(), (unsigned int)sp->entryId);
+						sLog.outDebug("SpellId %u in ai_agent for %u is invalid.\n", (unsigned int)fields[6].GetUInt32(), (unsigned int)sp->entryId);
 						delete sp;
 						sp = NULL;
 						continue;
@@ -218,7 +219,7 @@ void ObjectMgr::LoadExtraCreatureProtoStuff()
 					if(sp->spell->Effect[0] == SPELL_EFFECT_LEARN_SPELL || sp->spell->Effect[1] == SPELL_EFFECT_LEARN_SPELL ||
 						sp->spell->Effect[2] == SPELL_EFFECT_LEARN_SPELL)
 					{
-						sLog.outDebug("Teaching spell %u in ai_agent for %u\n", (unsigned int)fields[5].GetUInt32(), (unsigned int)sp->entryId);
+						sLog.outDebug("Teaching spell %u in ai_agent for %u\n", (unsigned int)fields[6].GetUInt32(), (unsigned int)sp->entryId);
 						delete sp;
 						sp = NULL;
 						continue;

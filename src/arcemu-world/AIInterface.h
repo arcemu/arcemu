@@ -168,10 +168,13 @@ enum AiEvents
 struct SpellEntry;
 //enum MOD_TYPES;
 
+const uint32 AISPELL_ANY_DIFFICULTY = 4;
+
 struct AI_Spell
 {
 	~AI_Spell() { autocast_type=(uint32)-1; }
 	uint32 entryId;
+	uint32 instance_mode;
 	uint16 agent;
 	uint32 procChance;
 	//int32 procCount;
