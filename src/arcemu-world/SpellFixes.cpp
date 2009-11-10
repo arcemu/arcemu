@@ -1208,6 +1208,11 @@ void ApplyNormalFixes()
 			sp->Effect[2] = SPELL_EFFECT_SCHOOL_DAMAGE; //hack
 		}
 
+		// Exorcism
+		if( sp->NameHash == SPELL_HASH_EXORCISM ){
+			sp->TargetCreatureType = TARGET_TYPE_UNDEAD | TARGET_TYPE_DEMON;
+		}
+
 		//////////////////////////////////////////
 		// HUNTER								//
 		//////////////////////////////////////////

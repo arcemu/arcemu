@@ -3277,6 +3277,17 @@ uint8 Spell::CanCast(bool tolerate)
 			if( GetProto()->NameHash == SPELL_HASH_DEATH_PACT && target->GetUInt64Value(UNIT_FIELD_SUMMONEDBY) != m_caster->GetGUID() )
 				return SPELL_FAILED_BAD_TARGETS;
 
+			if( target->IsCreature() ){
+				Creature *cp = static_cast< Creature* >( target );
+				uint32 type = cp->GetCreatureInfo()->Type;
+				uint32 targettype = GetProto()->TargetCreatureType;
+				uint32 cmask = 1 << ( type - 1 );
+
+				if( type != 0 && 
+					targettype != 0 && 
+					( ( targettype & cmask ) == 0 ) )
+					return SPELL_FAILED_BAD_TARGETS;
+			}
 		}
 
 		/**
