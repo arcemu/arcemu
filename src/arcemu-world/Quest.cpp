@@ -49,20 +49,6 @@ WorldPacket* WorldSession::BuildQuestQueryResponse(Quest *qst)
 	*data << uint32(0);							 // Unknown (always 0)
 	*data << uint32(qst->next_quest_id);			// Next Quest ID
 	*data << uint32( sQuestMgr.GenerateRewardMoney( _player, qst ) );			 // Copper reward
- // disabled for dirty fix remove this   *data << uint32(qst->reward_xp_as_money);	   // Copper given instead of XP
-	/**data << uint32(0);
-	*data << uint32(0);			
-	*data << uint32(271);
-	*data << uint32(69);
-	*data << uint32(56);
-	*data << uint32(2);*/
-	// unk
-	// effect
-	// unk
-	// bonus honor
-	// srcitem
-	// flags
-	
 	*data << uint32(qst->reward_money<0 ? -qst->reward_money : 0);		   // Required Money
 	*data << uint32(qst->effect_on_player);		 // Spell casted on player upon completion
 	*data << uint32(qst->reward_spell);			 // Spell added to spellbook upon completion
@@ -111,16 +97,14 @@ WorldPacket* WorldSession::BuildQuestQueryResponse(Quest *qst)
 	{
 		*data << qst->required_mob[i];			  // Kill mob entry ID [i]
 		*data << qst->required_mobcount[i];		 // Kill mob count [i]
-		*data << (uint32)0; // Unknown
+		*data << uint32( 0 ); // Unknown
 	}
 
-	for(i = 0; i < 4; ++i)
+	for(i = 0; i < 6; ++i)
 	{
 		*data << qst->required_item[i];			 // Collect item [i]
 		*data << qst->required_itemcount[i];		// Collect item count [i]
 	}
-	*data << (uint32)0; // 5th Collect item id
-	*data << (uint32)0; // 5th Collect item count
 
 	if(lci)
 	{

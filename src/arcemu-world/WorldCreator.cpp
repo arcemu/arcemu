@@ -318,16 +318,26 @@ uint32 InstanceMgr::PreTeleport(uint32 mapid, Player * plr, uint32 instanceid)
 		else  // this is the case when we enter the normal way (e.g. we enter thru the portal )
 		{
 			in = NULL;
-			if(pGroup != NULL)
+			if(pGroup != NULL) // we are in a group
 			{
+
+				uint32 grpdiff;
+
+				// We want to use the raid difficulty for raids, and dungeon difficulty for dungeons
+				if( inf->type == INSTANCE_RAID )
+					grpdiff = pGroup->m_raiddifficulty;
+				else
+					grpdiff = pGroup->m_difficulty;
 				
-				if((inf->type == INSTANCE_MULTIMODE && pGroup->m_difficulty == MODE_HEROIC) || inf->type == INSTANCE_RAID)
+				if( (inf->type == INSTANCE_MULTIMODE && grpdiff == MODE_HEROIC) || inf->type == INSTANCE_RAID )
 				{
-					if(plr->GetPersistentInstanceId(mapid, pGroup->m_difficulty) == 0)
+					// This is the case when we don't have this map on this difficulty saved yet for the player entering
+					if( plr->GetPersistentInstanceId(mapid, grpdiff ) == 0)
 					{
-						if(pGroup->m_instanceIds[mapid][pGroup->m_difficulty] != 0)
+						// The group has this instance saved already so we will use it
+						if(pGroup->m_instanceIds[mapid][ grpdiff ] != 0)
 						{
-							in = sInstanceMgr.GetInstanceByIds(mapid, pGroup->m_instanceIds[mapid][pGroup->m_difficulty]);
+							in = sInstanceMgr.GetInstanceByIds(mapid, pGroup->m_instanceIds[mapid][ grpdiff ]);
 						}
 						else if(sWorld.instance_TakeGroupLeaderID)
 						{
@@ -335,8 +345,8 @@ uint32 InstanceMgr::PreTeleport(uint32 mapid, Player * plr, uint32 instanceid)
 							if(pLeaderInfo)
 							{
 								pLeaderInfo->savedInstanceIdsLock.Acquire();
-								PlayerInstanceMap::iterator itrLeader = pLeaderInfo->savedInstanceIds[pGroup->m_difficulty].find(mapid);
-								if(itrLeader != pLeaderInfo->savedInstanceIds[pGroup->m_difficulty].end())
+								PlayerInstanceMap::iterator itrLeader = pLeaderInfo->savedInstanceIds[ grpdiff ].find(mapid);
+								if(itrLeader != pLeaderInfo->savedInstanceIds[ grpdiff ].end())
 								{
 									in = sInstanceMgr.GetInstanceByIds(mapid, (*itrLeader).second);
 								}
@@ -345,33 +355,45 @@ uint32 InstanceMgr::PreTeleport(uint32 mapid, Player * plr, uint32 instanceid)
 						}
 					}
 
-					if(in == NULL && plr->GetPersistentInstanceId(mapid, pGroup->m_difficulty) != 0)
+					// If we have it saved to the player then use that
+					if(in == NULL && plr->GetPersistentInstanceId(mapid, grpdiff ) != 0)
 					{
-						in = sInstanceMgr.GetInstanceByIds(mapid, plr->GetPersistentInstanceId(mapid, pGroup->m_difficulty));
+						in = sInstanceMgr.GetInstanceByIds(mapid, plr->GetPersistentInstanceId(mapid, grpdiff ));
 					}
 				}
 				else
 				{
-					if(pGroup->m_instanceIds[mapid][pGroup->m_difficulty] != 0)
+					if(pGroup->m_instanceIds[mapid][ grpdiff ] != 0)
 					{
-						in = sInstanceMgr.GetInstanceByIds(mapid, pGroup->m_instanceIds[mapid][pGroup->m_difficulty]);
+						in = sInstanceMgr.GetInstanceByIds(mapid, pGroup->m_instanceIds[mapid][ grpdiff ]);
 					}
 				}
 			}
 
 			if(in == NULL)
 			{
-				// search the instance and see if we have one here.
+				// We are not in a group, so we will look for an instance that we own and has the right difficulty
+
+				uint32 diff;
+
+				if( inf->type == INSTANCE_RAID )
+					diff = plr->GetRaidDifficulty();
+				else
+					diff = plr->GetDungeonDifficulty();
+
 				for(itr = instancemap->begin(); itr != instancemap->end();)
 				{
 					in = itr->second;
 					++itr;
-					if(in->m_difficulty == plr->iInstanceType && PlayerOwnsInstance(in, plr))
-						break;						
+
+					if(in->m_difficulty == diff && PlayerOwnsInstance(in, plr))
+						break;
+					
 					in = NULL;
 				}
 			}
 
+			// We've found an instance!
 			if(in != NULL)
 			{
 				m_mapLock.Release();
@@ -1079,10 +1101,18 @@ void InstanceMgr::BuildRaidSavedInstancesForPlayer(Player * plr)
 
 				if(in->m_persistent && PlayerOwnsInstance(in, plr))
 				{
-					data << in->m_mapId;
-					data << uint32(in->m_expiration - UNIXTIME);
-					data << in->m_instanceId;
-					data << ++counter;
+					data << uint32( in->m_mapId );						// obviously the mapid
+					data << uint32( in->m_difficulty );					// instance difficulty
+					data << uint64( in->m_instanceId );					// self-explanatory
+					data << uint8( 1 );									// expired = 0
+					data << uint8( 0 );									// extended = 1
+					
+					if( in->m_expiration > UNIXTIME  )
+						data << uint32( in->m_expiration - UNIXTIME );
+					else
+						data << uint32( 0 );
+
+					++counter;
 				}
 			}
 		}
@@ -1094,6 +1124,7 @@ void InstanceMgr::BuildRaidSavedInstancesForPlayer(Player * plr)
 #else
 	*(uint32*)&data.contents()[0] = counter;
 #endif
+
 	plr->GetSession()->SendPacket(&data);
 }
 

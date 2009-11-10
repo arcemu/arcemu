@@ -443,23 +443,6 @@ LOCK TABLES `creature_waypoints` WRITE;
 
 UNLOCK TABLES;
 
-/*Table structure for table `db_version` */
-
-DROP TABLE IF EXISTS `db_version`;
-
-CREATE TABLE `db_version` (
-  `name` varchar(100) NOT NULL COMMENT 'Name of the database',
-  `version` varchar(100) NOT NULL COMMENT 'Version of the database',
-  `author` varchar(100) NOT NULL COMMENT 'Author of the version',
-  `timestamp` int(10) unsigned NOT NULL DEFAULT '0' COMMENT 'Unixtime of this version'
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
-/*Data for the table `db_version` */
-
-LOCK TABLES `db_version` WRITE;
-
-UNLOCK TABLES;
-
 /*Table structure for table `fishing` */
 
 DROP TABLE IF EXISTS `fishing`;
@@ -1559,10 +1542,14 @@ CREATE TABLE `quests` (
   `ReqItemId2` int(10) unsigned NOT NULL DEFAULT '0',
   `ReqItemId3` int(10) unsigned NOT NULL DEFAULT '0',
   `ReqItemId4` int(10) unsigned NOT NULL DEFAULT '0',
+  `ReqItemId5` int(10) unsigned NOT NULL DEFAULT '0',
+  `ReqItemId6` int(10) unsigned NOT NULL DEFAULT '0',
   `ReqItemCount1` int(10) unsigned NOT NULL DEFAULT '0',
   `ReqItemCount2` int(10) unsigned NOT NULL DEFAULT '0',
   `ReqItemCount3` int(10) unsigned NOT NULL DEFAULT '0',
   `ReqItemCount4` int(10) unsigned NOT NULL DEFAULT '0',
+  `ReqItemCount5` int(10) unsigned NOT NULL DEFAULT '0',
+  `ReqItemCount6` int(10) unsigned NOT NULL DEFAULT '0',
   `ReqKillMobOrGOId1` int(10) NOT NULL DEFAULT '0',
   `ReqKillMobOrGOId2` int(10) NOT NULL DEFAULT '0',
   `ReqKillMobOrGOId3` int(10) NOT NULL DEFAULT '0',

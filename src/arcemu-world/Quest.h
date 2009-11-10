@@ -166,8 +166,8 @@ struct Quest
 
 	char * objectivetexts[4];
 
-	uint32 required_item[4];
-	uint32 required_itemcount[4];
+	uint32 required_item[6];
+	uint32 required_itemcount[6];
 
 	int32 required_mob[4]; //positive is NPC, negative is GO
 	uint32 required_mobcount[4];

@@ -382,7 +382,8 @@ mOutOfRangeIdCount(0)
 	resend_speed = false;
 	rename_pending = false;
 	DualWield2H = false;
-	iInstanceType		   = 0;
+	iInstanceType		= 0;
+	m_RaidDifficulty	= 0;
 	memset(reputationByListId, 0, sizeof(FactionReputation*) * 128);
 
 	m_comboTarget = 0;
