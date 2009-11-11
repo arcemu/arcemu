@@ -384,6 +384,7 @@ mOutOfRangeIdCount(0)
 	DualWield2H = false;
 	iInstanceType		= 0;
 	m_RaidDifficulty	= 0;
+	m_XpGain = true;
 	memset(reputationByListId, 0, sizeof(FactionReputation*) * 128);
 
 	m_comboTarget = 0;
@@ -1691,6 +1692,10 @@ void Player::GiveXP(uint32 xp, const uint64 &guid, bool allowbonus)
 	if ( xp < 1 )
 		return;
 
+	// Obviously if Xp gaining is disabled we don't want to gain XP
+	if( !m_XpGain )
+		return;
+
 	if(getLevel() >= GetUInt32Value(PLAYER_FIELD_MAX_LEVEL))
 		return;
 
@@ -2793,7 +2798,16 @@ void Player::SaveToDB(bool bNewCharacter /* =false */)
 	ss << uint32(m_specs[SPEC_PRIMARY].m_customTalentPointOverride) << " " << uint32(m_specs[SPEC_SECONDARY].m_customTalentPointOverride);
 	ss << "', ";
 
-	ss << m_phase << ")";
+	ss << "'" << m_phase << "','";
+
+	uint32 xpfield;
+
+	if( m_XpGain )
+		xpfield = 1;
+	else
+		xpfield = 0;
+
+	ss << xpfield << "'" << ")";
 
 	if(bNewCharacter)
 		CharacterDatabase.WaitExecuteNA(ss.str().c_str());
@@ -2954,12 +2968,13 @@ void Player::LoadFromDBProc(QueryResultVector & results)
 		return;
 	}
 
-	if( result->GetFieldCount() != 91 )
+	const uint32 fieldcount = 92;
+
+	if( result->GetFieldCount() != fieldcount )
 	{
 		Log.Error ("Player::LoadFromDB",
-				"Expected 91 fields from the database, "
-				"but received %u!  You may need to update your character database.",
-				(unsigned int) result->GetFieldCount ());
+				"Expected %u fields from the database, "
+				"but received %u!  You may need to update your character database.", fieldcount,	uint32( result->GetFieldCount() ) );
 		RemovePendingPlayer();
 		return;
 	}
@@ -3612,6 +3627,13 @@ void Player::LoadFromDBProc(QueryResultVector & results)
 	sscanf(get_next_field.GetString(), "%u %u", &m_specs[SPEC_PRIMARY].m_customTalentPointOverride, &m_specs[SPEC_SECONDARY].m_customTalentPointOverride);
 
 	m_phase = get_next_field.GetUInt32(); //Load the player's last phase
+
+	uint32 xpfield = get_next_field.GetUInt32();
+
+	if( xpfield == 0 )
+		m_XpGain = false;
+	else
+		m_XpGain = true;
 
 	HonorHandler::RecalculateHonorFields(this);
 
@@ -13673,3 +13695,15 @@ uint32 Player::GetRaidDifficulty(){
 	return m_RaidDifficulty;
 }
 
+void Player::ToggleXpGain(){
+	
+	if( m_XpGain )
+		m_XpGain = false;
+	else
+		m_XpGain = true;
+
+}
+
+bool Player::CanGainXp(){
+	return m_XpGain;
+}

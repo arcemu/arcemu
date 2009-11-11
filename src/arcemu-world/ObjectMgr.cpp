@@ -1763,12 +1763,14 @@ GossipMenu::GossipMenu(uint64 Creature_Guid, uint32 Text_Id) : TextId(Text_Id), 
 void GossipMenu::AddItem(uint8 Icon, const char* Text, int32 Id /* = -1 */, int8 Extra /* = 0 */)
 {
 	GossipMenuItem Item;
+
 	Item.Icon = Icon;
 	Item.Extra = Extra;
 	Item.Text = Text;
 	Item.m_gBoxMessage = "";
 	Item.m_gBoxMoney = 0;
-	Item.Id = (uint32)Menu.size();
+	Item.Id = uint32( Menu.size() );
+	
 	if(Id > 0)
 		Item.IntId = Id;
 	else
@@ -1777,15 +1779,16 @@ void GossipMenu::AddItem(uint8 Icon, const char* Text, int32 Id /* = -1 */, int8
 	Menu.push_back(Item);
 }
 
-void GossipMenu::AddMenuItem(uint8 Icon, std::string Message, uint32 dtSender, uint32 dtAction, std::string BoxMessage, uint32 BoxMoney, bool Coded)
+void GossipMenu::AddMenuItem(uint8 Icon, char* Message, uint32 dtSender, uint32 dtAction, char* BoxMessage, uint32 BoxMoney, bool Coded)
 {
 	GossipMenuItem Item;
+
 	Item.Icon = Icon;
 	Item.Extra = Coded;
-	Item.Text = Message.c_str();
+	Item.Text = Message;
 	Item.m_gBoxMessage = BoxMessage;
 	Item.m_gBoxMoney = BoxMoney;
-	Item.Id = (uint32)Menu.size();
+	Item.Id = uint32( Menu.size() );
 	Item.IntId = dtAction;
 
 	Menu.push_back(Item);

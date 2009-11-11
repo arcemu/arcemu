@@ -35,6 +35,17 @@ enum SpellTargetSpecification
 	TARGET_SPEC_DEAD		= 2,
 };
 
+bool CanAttackCreatureType( uint32 TargetTypeMask, uint32 type ){
+	uint32 cmask = 1 << ( type - 1 );
+	
+	if( type != 0 && 
+		TargetTypeMask != 0 && 
+		( ( TargetTypeMask & cmask ) == 0 ) )
+		return false;
+	else 
+		return true;
+}
+
 void SpellCastTargets::read( WorldPacket & data,uint64 caster )
 {
 	m_unitTarget = m_itemTarget = 0;
@@ -3277,15 +3288,13 @@ uint8 Spell::CanCast(bool tolerate)
 			if( GetProto()->NameHash == SPELL_HASH_DEATH_PACT && target->GetUInt64Value(UNIT_FIELD_SUMMONEDBY) != m_caster->GetGUID() )
 				return SPELL_FAILED_BAD_TARGETS;
 
+			// Check if we can attack this creature type
 			if( target->IsCreature() ){
 				Creature *cp = static_cast< Creature* >( target );
 				uint32 type = cp->GetCreatureInfo()->Type;
 				uint32 targettype = GetProto()->TargetCreatureType;
-				uint32 cmask = 1 << ( type - 1 );
 
-				if( type != 0 && 
-					targettype != 0 && 
-					( ( targettype & cmask ) == 0 ) )
+				if( !CanAttackCreatureType( targettype, type ) )
 					return SPELL_FAILED_BAD_TARGETS;
 			}
 		}

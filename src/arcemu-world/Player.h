@@ -1966,6 +1966,15 @@ public:
         ModUnsigned32Value(PLAYER_FIELD_COINAGE, -coins);
     }
 
+	bool HasCoins( uint32 coins ){
+		uint32 coinage = GetUInt32Value( PLAYER_FIELD_COINAGE );
+
+		if( coinage >= coins )
+			return true;
+		else 
+			return false;
+	}
+
 	//! Do this on /pvp off
 	ARCEMU_INLINE void ResetPvPTimer();
 	//! Stop the timer for pvp off
@@ -2369,6 +2378,7 @@ public:
 private:
 	PlayerInfo * m_playerInfo;
 	uint32 m_RaidDifficulty;
+	bool m_XpGain;
 
 public:
 
@@ -2394,6 +2404,9 @@ public:
 	int16 m_vampiricEmbrace;
 	int16 m_vampiricTouch;
 	void VampiricSpell(uint32 dmg, Unit* pTarget);
+
+	void ToggleXpGain();
+	bool CanGainXp();
 
 	/************************************************************************/
 	/* Player Achievements						                            */
