@@ -50,9 +50,9 @@ void LogonCommServerSocket::OnDisconnect()
 	if(!removed)
 	{
 		set<uint32>::iterator itr = server_ids.begin();
+
 		for(; itr != server_ids.end(); ++itr)
-			//sInfoCore.RemoveRealm((*itr));
-			sInfoCore.UpdateRealmStatus((*itr), 2);
+			sInfoCore.RemoveRealm((*itr));
 
 		sInfoCore.RemoveServerSocket(this);
 	}
