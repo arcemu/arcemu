@@ -579,7 +579,7 @@ void InformationCore::TimeoutSockets()
 			set<uint32>::iterator RealmITR;
 
 			// Removing the realms that are associated with this server from the realmlist			
-			for( RealmITR = s->server_ids.begin(); RealmITR != s->server_ids.end(); ++itr ){
+			for( RealmITR = s->server_ids.begin(); RealmITR != s->server_ids.end(); ++RealmITR ){
 				RemoveRealm( *RealmITR );
 			}
 
@@ -588,12 +588,10 @@ void InformationCore::TimeoutSockets()
 			s->Disconnect();
 
 		}
-
-		slist.clear();
-
 	}
 
 	serverSocketLock.Release();
+	slist.clear();
 }
 
 void InformationCore::CheckServers()
