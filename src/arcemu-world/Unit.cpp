@@ -5930,6 +5930,10 @@ uint8 Unit::CastSpell(Unit* Target, SpellEntry* Sp, bool triggered)
 	{
 		newSpell->GenerateTargets(&targets);
 	}
+
+	if( Target != NULL && Target->IsPlayer() )
+		static_cast<Player*>(Target)->m_achievementMgr.UpdateAchievementCriteria( ACHIEVEMENT_CRITERIA_TYPE_BE_SPELL_TARGET, Sp->Id, 0, 0 );
+
 	return newSpell->prepare(&targets);
 }
 
