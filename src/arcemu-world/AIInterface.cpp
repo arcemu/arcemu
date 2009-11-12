@@ -1261,7 +1261,7 @@ void AIInterface::_UpdateCombat(uint32 p_time)
 							//now if the target is facing his back to us then we could just cast dazed on him :P
 							//as far as i know dazed is casted by most of the creatures but feel free to remove this code if you think otherwise
 							if(GetNextTarget() && m_Unit->m_factionDBC &&
-								!(m_Unit->m_factionDBC->RepListId == -1 && m_Unit->m_faction->FriendlyMask==0 && m_Unit->m_faction->HostileMask==0) /* neutral creature */
+								!(m_Unit->m_factionDBC->RepListId == -1 && m_Unit->m_faction->FriendlyMask== 0 && m_Unit->m_faction->HostileMask== 0) /* neutral creature */
 								&& GetNextTarget()->IsPlayer() && !m_Unit->IsPet() && health_before_strike>GetNextTarget()->GetUInt32Value(UNIT_FIELD_HEALTH)
 								&& Rand(m_Unit->get_chance_to_daze(GetNextTarget())))
 							{
@@ -2111,7 +2111,7 @@ bool AIInterface::FindFriends(float dist)
 			if(guard->CanAddToWorld())
 			{
 				uint32 t = RandomUInt(8)*1000;
-				if(t==0)
+				if(t== 0)
 					guard->PushToWorld(m_Unit->GetMapMgr());
 				else
 					sEventMgr.AddEvent(guard,&Creature::AddToWorld, m_Unit->GetMapMgr(), EVENT_UNK, t, 1, 0);
@@ -2191,7 +2191,7 @@ float AIInterface::_CalcAggroRange(Unit* target)
 /*  //printf("aggro range: %f , stealthlvl: %d , detectlvl: %d\n",AggroRange,target->GetStealthLevel(),m_Unit->m_stealthDetectBonus);
 	if(! ((Creature*)m_Unit)->CanSee(target))
 	{
-		AggroRange =0;
+		AggroRange = 0;
 	//	AggroRange *= ( 100.0f - (target->m_stealthLevel - m_Unit->m_stealthDetectBonus)* 20.0f ) / 100.0f;
 	}
 */
@@ -2268,7 +2268,7 @@ void AIInterface::_CalcDestinationAndMove(Unit *target, float dist)
 
 /*
 	if (sWorld.Collision) {
-		float target_land_z=0.0f;
+		float target_land_z= 0.0f;
 		if( m_Unit->GetMapMgr() != NULL )
 		{
 			if(m_moveFly != true)
@@ -2334,7 +2334,7 @@ float AIInterface::_CalcDistanceFromHome()
 	else if(m_Unit->GetTypeId() == TYPEID_UNIT)
 	{
 
-		if(m_returnX !=0.0f && m_returnY != 0.0f)
+		if(m_returnX != 0.0f && m_returnY != 0.0f)
 		{
 			return m_Unit->GetDistanceSq(m_returnX,m_returnY,m_returnZ);
 		}
@@ -2500,7 +2500,7 @@ void AIInterface::MoveTo(float x, float y, float z, float o)
 
 /*	//Andy
 #ifdef COLLISION
-	float target_land_z=0.0f;
+	float target_land_z= 0.0f;
 	if( m_Unit->GetMapMgr() != NULL )
 	{
 		if(m_moveFly != true)
@@ -3060,7 +3060,7 @@ void AIInterface::_UpdateMovement(uint32 p_time)
 
 				//Andy
 				if (sWorld.Collision) {
-					float target_land_z=0.0f;
+					float target_land_z= 0.0f;
 					if( m_Unit->GetMapMgr() != NULL )
 					{
 						if(m_moveFly != true)
@@ -3130,11 +3130,11 @@ void AIInterface::_UpdateMovement(uint32 p_time)
 			int destpoint = -1;
 
 			// If creature has no waypoints just wander aimlessly around spawnpoint
-			if(GetWayPointsCount()==0) //no waypoints
+			if(GetWayPointsCount()== 0) //no waypoints
 			{
 				/*	if(m_moveRandom)
 				{
-				if((rand()%10)==0)																																	
+				if((rand()%10)== 0)																																	
 				{																																								  
 				float wanderDistance = rand()%4 + 2;
 				float wanderX = ((wanderDistance*rand()) / RAND_MAX) - wanderDistance / 2;																											   
@@ -3548,7 +3548,7 @@ AI_Spell *AIInterface::getSpell()
 	// look at our spells
 	AI_Spell *  sp = NULL;
 	AI_Spell *  def_spell = NULL;
-	uint32 cool_time=0;
+	uint32 cool_time= 0;
 	uint32 cool_time2;
 	uint32 nowtime = getMSTime();
 
@@ -3594,7 +3594,7 @@ AI_Spell *AIInterface::getSpell()
 				}
 				else
 				{
-					if(def_spell!=0)
+					if(def_spell!= 0)
 						continue;
 
 					// cast the spell at requested percent.
@@ -4216,7 +4216,7 @@ void AIInterface::ResetProcCounts()
 {
 	for(list<AI_Spell*>::iterator itr = m_spells.begin(); itr != m_spells.end(); ++itr)
 		if((*itr)->procCount)
-			(*itr)->procCounter=0;
+			(*itr)->procCounter= 0;
 }
 
 //we only cast once a spell and we will set his health and resistances. Note that this can be made with db too !

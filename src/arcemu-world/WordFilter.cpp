@@ -150,7 +150,7 @@ void WordFilter::Load(const char * szTableName)
 	} while (pResult->NextRow());
 	delete pResult;
 
-	if(lItems.size()==0)
+	if(lItems.size()== 0)
 		return;
 
 	m_filters = new WordFilterMatch*[lItems.size()];
@@ -259,8 +259,8 @@ bool WordFilter::ParseEscapeCodes(char * sMsg, bool bAllowLinks)
 	if(!strstr(sMsg,"|"))
 		return true;
 	
-	uint32 j=0;
-	for( j=0; j<(((string)sMsg).length()); j++)
+	uint32 j= 0;
+	for( j= 0; j<(((string)sMsg).length()); j++)
 	{
 		if( ((string)sMsg).at(j) != char('|') )
 			continue;
@@ -284,7 +284,7 @@ bool WordFilter::ParseEscapeCodes(char * sMsg, bool bAllowLinks)
 					continue;
 				newstr = ((string)sMsg).replace(j,10,"");
 				strcpy(sMsg,newstr.c_str());
-				j=0;
+				j= 0;
 			break;
 			case char('r'):
 				i = (sMsg + j) - 2;
@@ -294,7 +294,7 @@ bool WordFilter::ParseEscapeCodes(char * sMsg, bool bAllowLinks)
 				}
 				newstr = ((string)sMsg).replace(j,2,"");
 				strcpy(sMsg,newstr.c_str());
-				j=0;
+				j= 0;
 			break;
 			case char('H'):
 				//abc  |Hitem:111:2:3:4:5:6:7:8:9|h[Tough Jerky]|h|r
@@ -308,7 +308,7 @@ bool WordFilter::ParseEscapeCodes(char * sMsg, bool bAllowLinks)
 					newstr = ((string)sMsg).replace(j,strlen(sMsg)-j,"");
 				strcpy(sMsg,newstr.c_str());
 				
-				j=0;
+				j= 0;
 			break;
 			case char('h'):
 				if(bAllowLinks)
@@ -318,7 +318,7 @@ bool WordFilter::ParseEscapeCodes(char * sMsg, bool bAllowLinks)
 				else
 					newstr = ((string)sMsg).replace(j,2,"");
 				strcpy(sMsg,newstr.c_str());
-				j=0;
+				j= 0;
 			break;
 		}
 	}

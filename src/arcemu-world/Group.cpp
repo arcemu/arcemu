@@ -80,8 +80,8 @@ Group::Group(bool Assign)
 	m_disbandOnNoMembers = true;
 	memset(m_targetIcons, 0, sizeof(uint64) * 8);
 	m_isqueued=false;
-	m_difficulty=0;
-	m_raiddifficulty=0;
+	m_difficulty= 0;
+	m_raiddifficulty= 0;
 	m_assistantLeader=m_mainAssist=m_mainTank= NULL;
 #ifdef VOICE_CHAT
 	m_voiceChannelRequested = false;
@@ -890,9 +890,9 @@ void Group::SaveToDB()
 		ss << "0,0,0,0,0,";
 
 	ss << (uint32)UNIXTIME << ",'";
-	for(int i=0; i<NUM_MAPS; i++)
+	for(int i= 0; i<NUM_MAPS; i++)
 	{
-		for(int j=0; j<NUM_INSTANCE_MODES; j++)
+		for(int j= 0; j<NUM_INSTANCE_MODES; j++)
 		{
 			if(m_instanceIds[i][j] > 0)
 			{

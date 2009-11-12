@@ -81,7 +81,7 @@ TerrainMgr::~TerrainMgr()
 
 bool TerrainMgr::LoadTerrainHeader()
 {
-	// Create the path
+	// Create the path on stack
 	char File[200];
 
 	snprintf(File, 200, "%s/Map_%u.bin", mapPath.c_str(), (unsigned int)mapId);
@@ -130,8 +130,8 @@ bool TerrainMgr::LoadTerrainHeader()
 
 #ifdef USING_BIG_ENDIAN
 	uint32 x,y;
-	for(x=0;x<512;++x) {
-		for(y=0;y<512;++y) {
+	for(x= 0;x<512;++x) {
+		for(y= 0;y<512;++y) {
 			CellOffsets[x][y] = swap32(CellOffsets[x][y]);
 		}
 	}
@@ -194,7 +194,7 @@ bool TerrainMgr::LoadTerrainHeader()
 bool TerrainMgr::LoadCellInformation(uint32 x, uint32 y)
 {
 #ifdef USE_MEMORY_MAPPING_FOR_MAPS
-	if(CellOffsets[x][y]==0)
+	if(CellOffsets[x][y]== 0)
 		return false;
 	else
 		return true;

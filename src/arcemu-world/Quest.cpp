@@ -134,7 +134,7 @@ QuestLogEntry::QuestLogEntry()
 	m_quest = NULL;
 	mDirty = false;
 	m_slot = -1;
-	completed=0;
+	completed= 0;
 }
 
 QuestLogEntry::~QuestLogEntry()

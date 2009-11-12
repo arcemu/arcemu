@@ -281,7 +281,7 @@ bool ChatHandler::HandleKickCommand(const char* args, WorldSession *m_session)
 bool ChatHandler::HandleAddInvItemCommand(const char *args, WorldSession *m_session)
 {
 	uint32 itemid, count=1;
-	int32 randomprop=0;
+	int32 randomprop= 0;
 	int32 numadded = 0;
 
 	if(strlen(args) < 1)
@@ -541,7 +541,7 @@ bool ChatHandler::HandleTaxiCheatCommand(const char* args, WorldSession *m_sessi
 	else
 		return false;
 
-	for (uint8 i=0; i<12; i++)
+	for (uint8 i= 0; i<12; i++)
 	{
 		if(stricmp(args, "on") == 0)
 		{
@@ -686,7 +686,7 @@ bool ChatHandler::HandleGetSkillLevelCommand(const char *args, WorldSession *m_s
 
     char * SkillName = SkillNameManager->SkillNames[skill];
 
-    if (SkillName==0)
+    if (SkillName== 0)
     {
         BlueSystemMessage(m_session, "Skill: %u does not exists", skill);
         return false;
@@ -976,10 +976,10 @@ bool ChatHandler::HandleAchievementCompleteCommand(const char * args, WorldSessi
 	}
 
 	uint32 achievement_id = atol(args);
-	if(achievement_id==0)
+	if(achievement_id== 0)
 	{
 		achievement_id = GetAchievementIDFromLink(args);
-		if(achievement_id==0)
+		if(achievement_id== 0)
 		{
 			if( stricmp(args,"all") == 0 )
 			{
@@ -1019,7 +1019,7 @@ bool ChatHandler::HandleAchievementCriteriaCommand(const char * args, WorldSessi
 	uint32 criteria_id = atol(args);
 	if( criteria_id == 0 )
 	{
-		if( stricmp(args,"all")==0 )
+		if( stricmp(args,"all")== 0 )
 		{
 			plr->GetAchievementMgr().GMCompleteCriteria(m_session, -1);
 			SystemMessage(m_session,"All achievement criteria have now been completed for that player.");
@@ -1060,7 +1060,7 @@ bool ChatHandler::HandleAchievementResetCommand(const char * args, WorldSession 
 	if(strnicmp(args, "criteria ", 9) == 0)
 	{
 		achievement_id = atol(args+9);
-		if(achievement_id==0)
+		if(achievement_id== 0)
 		{
 			if(stricmp(args+9,"all") != 0)
 			{
@@ -1079,10 +1079,10 @@ bool ChatHandler::HandleAchievementResetCommand(const char * args, WorldSession 
 	else
 	{
 		achievement_id = atol(args);
-		if(achievement_id==0)
+		if(achievement_id== 0)
 		{
 			achievement_id = GetAchievementIDFromLink(args);
-			if(achievement_id==0)
+			if(achievement_id== 0)
 				return false;
 		}
 	}
@@ -1151,7 +1151,7 @@ bool ChatHandler::HandleLookupAchievementCmd(const char* args, WorldSession* m_s
 	arcemu_TOLOWER(x);
 	GreenSystemMessage(m_session, "Starting search of achievement `%s`...", x.c_str());
 	uint32 t = getMSTime();
-	uint32 i, j, numFound=0;
+	uint32 i, j, numFound= 0;
 	string y, recout;
 	std::set<uint8, uint32> foundList;
 	char playerGUID[17];

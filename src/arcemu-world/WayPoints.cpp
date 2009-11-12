@@ -733,7 +733,7 @@ bool ChatHandler::HandleGenerateWaypoints(const char* args, WorldSession * m_ses
 	}
 	int n = atol(pC);
 
-	for(int i=0;i<n;i++)
+	for(int i= 0;i<n;i++)
 	{
 		float ang = rand()/100.0f;
 		float ran = (rand()%(r*10))/10.0f;

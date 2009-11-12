@@ -509,7 +509,7 @@ void AchievementMgr::SendCriteriaUpdate(CriteriaProgress* progress)
 */
 void AchievementMgr::CheckAllAchievementCriteria()
 {
-	for(uint32 i=0; i<ACHIEVEMENT_CRITERIA_TYPE_TOTAL; i++)
+	for(uint32 i= 0; i<ACHIEVEMENT_CRITERIA_TYPE_TOTAL; i++)
 		UpdateAchievementCriteria(AchievementCriteriaTypes(i));
 }
 

@@ -486,7 +486,7 @@ bool ChatHandler::HandleExploreCheatCommand(const char* args, WorldSession *m_se
 	else
 		return false;
 
-	for (uint8 i=0; i<PLAYER_EXPLORED_ZONES_LENGTH; ++i)
+	for (uint8 i= 0; i<PLAYER_EXPLORED_ZONES_LENGTH; ++i)
 	{
 		if (stricmp(args, "on") == 0)
 		{
@@ -1555,7 +1555,7 @@ bool ChatHandler::HandleCreatePetCommand(const char* args, WorldSession* m_sessi
 	sp->y = plr->GetPositionY();
 	//sp->respawnNpcLink = 0;
 	sp->stand_state = 0;
-	sp->channel_spell=sp->channel_target_creature=sp->channel_target_go=0;
+	sp->channel_spell=sp->channel_target_creature=sp->channel_target_go= 0;
 	pCreature->Load(sp, (uint32)NULL, NULL);
 
 	Pet *old_tame = plr->GetSummon();
@@ -1600,7 +1600,7 @@ bool ChatHandler::HandlePetSpawnAIBot(const char* args, WorldSession *m_session)
 
 	uint8 botType = (uint8)atof((char*)args);
 
-	if ( botType!=0 )
+	if ( botType!= 0 )
 	{
 		RedSystemMessage(m_session, "Incorrect value. Accepting value 0 only = healbot :)");
 		return true;
@@ -2006,7 +2006,7 @@ bool ChatHandler::HandleMassSummonCommand(const char* args, WorldSession* m_sess
 	char Buffer[170];
         if(*args == 'a' || *args == 'A')
         {
-            faction=0;
+            faction= 0;
            	snprintf(Buffer,170,"%s%s Has requested a mass summon of all Alliance players. Do not feel obliged to accept the summon, as it is most likely for an event or a test of sorts",MSG_COLOR_GOLD,m_session->GetPlayer()->GetName());
 
         }
@@ -2017,7 +2017,7 @@ bool ChatHandler::HandleMassSummonCommand(const char* args, WorldSession* m_sess
         }
         else  snprintf(Buffer,170,"%s%s Has requested a mass summon of all players. Do not feel obliged to accept the summon, as it is most likely for an event or a test of sorts",MSG_COLOR_GOLD,m_session->GetPlayer()->GetName());
 
-	uint32 c=0;
+	uint32 c= 0;
 
 	for (itr = objmgr._players.begin(); itr != objmgr._players.end(); itr++)
 	{
@@ -2385,9 +2385,9 @@ bool ChatHandler::HandlePlayerInfo(const char* args, WorldSession * m_session)
 	char playedTotal[64];
 
 	int seconds = (plr->GetPlayedtime())[0];
-	int mins=0;
-	int hours=0;
-	int days=0;
+	int mins= 0;
+	int hours= 0;
+	int days= 0;
 	if(seconds >= 60)
 	{
 		mins = seconds / 60;
@@ -2413,9 +2413,9 @@ bool ChatHandler::HandlePlayerInfo(const char* args, WorldSession * m_session)
 	snprintf(playedLevel, 64, "[%d days, %d hours, %d minutes, %d seconds]", days, hours, mins, seconds);
 
 	seconds = (plr->GetPlayedtime())[1];
-	mins=0;
-	hours=0;
-	days=0;
+	mins= 0;
+	hours= 0;
+	days= 0;
 	if(seconds >= 60)
 	{
 		mins = seconds / 60;
@@ -2914,7 +2914,7 @@ bool ChatHandler::HandleLookupObjectCommand(const char * args, WorldSession * m_
 		if(!itr->Inc()) break;
 	}
 	itr->Destruct();
-	if (count==0)
+	if (count== 0)
 	{
 		recout="|cff00ccffNo matches found.";
 		SendMultilineMessage(m_session,recout.c_str());
@@ -3481,7 +3481,7 @@ bool ChatHandler::HandleArenaCreateTeamCommand(const char * args, WorldSession *
 	switch(arena_team_type)
 	{
 	case 2:
-		real_type=0;
+		real_type= 0;
 		break;
 	case 3:
 		real_type=1;
@@ -3531,7 +3531,7 @@ bool ChatHandler::HandleArenaSetTeamLeaderCommand(const char * args, WorldSessio
 	switch(arena_team_type)
 	{
 	case 2:
-		real_type=0;
+		real_type= 0;
 		break;
 	case 3:
 		real_type=1;
@@ -3619,7 +3619,7 @@ bool ChatHandler::HandleGenderChanger(const char* args, WorldSession *m_session)
 
 bool ChatHandler::HandleDispelAllCommand(const char * args, WorldSession * m_session)
 {
-	uint32 pos=0;
+	uint32 pos= 0;
 	if(*args)
 		pos=atoi(args);
 
@@ -3657,7 +3657,7 @@ bool ChatHandler::HandleShowItems(const char * args, WorldSession * m_session)
 	Player * plr = getSelectedChar(m_session, true);
 	if(!plr) return true;
 	BlueSystemMessage(m_session, "Listing items for player %s",plr->GetName());
-	int itemcount=0;
+	int itemcount= 0;
 	ItemIterator itr(plr->GetItemInterface());
 	itr.BeginSearch();
 	for(; !itr.End(); itr.Increment())
@@ -3682,7 +3682,7 @@ bool ChatHandler::HandleShowSkills(const char * args, WorldSession * m_session)
 		return true;
 
 	BlueSystemMessage(m_session, "Listing items for player %s",plr->GetName());
-	int itemcount=0;
+	int itemcount= 0;
 	SkillIterator itr2(plr);
 	itr2.BeginSearch();
 	for(; !itr2.End(); itr2.Increment())

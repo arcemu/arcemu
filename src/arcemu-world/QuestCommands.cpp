@@ -173,10 +173,10 @@ bool ChatHandler::HandleQuestStatusCommand(const char * args, WorldSession * m_s
 	}
 
 	uint32 quest_id = atol(args);
-	if(quest_id==0)
+	if(quest_id== 0)
 	{
 		quest_id = GetQuestIDFromLink(args);
-		if(quest_id==0)
+		if(quest_id== 0)
 			return false;
 	}
 	std::string recout = "|cff00ff00";
@@ -221,10 +221,10 @@ bool ChatHandler::HandleQuestStartCommand(const char * args, WorldSession * m_se
 	}
 
 	uint32 quest_id = atol(args);
-	if(quest_id==0)
+	if(quest_id== 0)
 	{
 		quest_id = GetQuestIDFromLink(args);
-		if(quest_id==0)
+		if(quest_id== 0)
 			return false;
 	}
 	std::string recout = "|cff00ff00";
@@ -322,10 +322,10 @@ bool ChatHandler::HandleQuestFinishCommand(const char * args, WorldSession * m_s
 	// reward_slot is for when quest has choice of rewards (0 is the first choice, 1 is the second choice, ...)
 	// reward_slot will default to 0 if none is specified
 	uint32 reward_slot;
-	if(quest_id==0)
+	if(quest_id== 0)
 	{
 		quest_id = GetQuestIDFromLink(args);
-		if(quest_id==0)
+		if(quest_id== 0)
 			return false;
 		if(strstr(args,"|r"))
 		{
@@ -917,10 +917,10 @@ bool ChatHandler::HandleQuestAddStartCommand(const char * args, WorldSession * m
 	}
 
 	uint32 quest_id = atol(args);
-	if(quest_id==0)
+	if(quest_id== 0)
 	{
 		quest_id = GetQuestIDFromLink(args);
-		if(quest_id==0)
+		if(quest_id== 0)
 			return false;
 	}
 	Quest * qst = QuestStorage.LookupEntry(quest_id);
@@ -1002,10 +1002,10 @@ bool ChatHandler::HandleQuestAddFinishCommand(const char * args, WorldSession * 
 	}
 
 	uint32 quest_id = atol(args);
-	if(quest_id==0)
+	if(quest_id== 0)
 	{
 		quest_id = GetQuestIDFromLink(args);
-		if(quest_id==0)
+		if(quest_id== 0)
 			return false;
 	}
 	Quest * qst = QuestStorage.LookupEntry(quest_id);
@@ -1100,10 +1100,10 @@ bool ChatHandler::HandleQuestDelStartCommand(const char * args, WorldSession * m
 	}
 
 	uint32 quest_id = atol(args);
-	if(quest_id==0)
+	if(quest_id== 0)
 	{
 		quest_id = GetQuestIDFromLink(args);
-		if(quest_id==0)
+		if(quest_id== 0)
 			return false;
 	}
 	Quest * qst = QuestStorage.LookupEntry(quest_id);
@@ -1184,10 +1184,10 @@ bool ChatHandler::HandleQuestDelFinishCommand(const char * args, WorldSession * 
 	}
 
 	uint32 quest_id = atol(args);
-	if(quest_id==0)
+	if(quest_id== 0)
 	{
 		quest_id = GetQuestIDFromLink(args);
-		if(quest_id==0)
+		if(quest_id== 0)
 			return false;
 	}
 	Quest * qst = QuestStorage.LookupEntry(quest_id);
@@ -1561,10 +1561,10 @@ bool ChatHandler::HandleQuestRemoveCommand(const char * args, WorldSession * m_s
 
 	string recout = "";
 	uint32 quest_id = atol(args);
-	if(quest_id==0)
+	if(quest_id== 0)
 	{
 		quest_id = GetQuestIDFromLink(args);
-		if(quest_id==0)
+		if(quest_id== 0)
 			return false;
 	}
 	Quest * qst = QuestStorage.LookupEntry(quest_id);
@@ -1589,10 +1589,10 @@ bool ChatHandler::HandleQuestRewardCommand(const char * args, WorldSession * m_s
 	stringstream recout;
 
 	uint32 qu_id = atol(args);
-	if(qu_id==0)
+	if(qu_id== 0)
 	{
 		qu_id = GetQuestIDFromLink(args);
-		if(qu_id==0)
+		if(qu_id== 0)
 			return false;
 	}
 	Quest* q = QuestStorage.LookupEntry(qu_id);

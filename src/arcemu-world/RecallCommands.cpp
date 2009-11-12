@@ -121,7 +121,7 @@ bool ChatHandler::HandleRecallAddCommand(const char* args, WorldSession *m_sessi
 	{
 		Field *fields = result->Fetch();
 		const char * locname = fields[0].GetString();
-		if (strncmp((char*)args,locname,strlen(locname))==0)
+		if (strncmp((char*)args,locname,strlen(locname))== 0)
 		{
 			RedSystemMessage(m_session, "Name in use, please use another name for your location.");
 			delete result;
@@ -168,7 +168,7 @@ bool ChatHandler::HandleRecallDelCommand(const char* args, WorldSession *m_sessi
 		float id = fields[0].GetFloat();
 		const char * locname = fields[1].GetString();
 
-		if (strnicmp((char*)args,locname,strlen(locname))==0)
+		if (strnicmp((char*)args,locname,strlen(locname))== 0)
 		{
 			std::stringstream ss;
 			ss << "DELETE FROM recall WHERE id = "<< (int)id <<";";
@@ -241,7 +241,7 @@ bool ChatHandler::HandleRecallPortPlayerCommand(const char* args, WorldSession *
 		float z = fields[5].GetFloat();
 		float o = fields[6].GetFloat();
 
-		if (strnicmp((char*)location,locname,strlen(args))==0)
+		if (strnicmp((char*)location,locname,strlen(args))== 0)
 		{
 			sGMLog.writefromsession( m_session, "ported %s to %s ( map: %u, x: %f, y: %f, z: %f, 0: %f )", plr->GetName(), locname, locmap, x, y, z, o );
 			if( plr->GetSession() && ( plr->GetSession()->CanUseCommand('a') || !m_session->GetPlayer()->m_isGmInvisible ) )

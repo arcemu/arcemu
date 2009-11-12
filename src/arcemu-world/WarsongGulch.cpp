@@ -24,7 +24,7 @@ WarsongGulch::WarsongGulch(MapMgr * mgr, uint32 id, uint32 lgroup, uint32 t) : C
 {
 	int i;
 
-	for (i=0; i<2; i++) {
+	for (i= 0; i<2; i++) {
 		m_players[i].clear();
 		m_pendPlayers[i].clear();
 	}

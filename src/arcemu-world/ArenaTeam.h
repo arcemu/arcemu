@@ -46,7 +46,7 @@ class SERVER_DECL ArenaTeam
 		m_members = new ArenaTeamMember[Slots];
 		memset(m_members,0,sizeof(ArenaTeamMember)*Slots);
 		m_slots = Slots;
-		m_memberCount=0;
+		m_memberCount= 0;
 	}
 
 public:

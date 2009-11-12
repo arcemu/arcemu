@@ -233,7 +233,7 @@ public:
 		value.clear();
 		while (true) {
 			char c=read<char>();
-			if (c==0)
+			if (c== 0)
 				break;
 			value+=c;
 		}

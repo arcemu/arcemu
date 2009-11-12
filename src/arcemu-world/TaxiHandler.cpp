@@ -187,7 +187,7 @@ void WorldSession::HandleActivateTaxiOpcode( WorldPacket & recv_data )
 	// hippogryph: 479
 	// fer0x: Incorrect system. Need take values from TaxiNodes.dbc
 
-	uint32 modelid =0;
+	uint32 modelid = 0;
 	if( _player->GetTeam() )
 	{
 		/*
@@ -334,7 +334,7 @@ void WorldSession::HandleMultipleActivateTaxiOpcode(WorldPacket & recvPacket)
 	// wyvern: 295
 	// hippogryph: 479
 
-	uint32 modelid =0;
+	uint32 modelid = 0;
 	if( _player->GetTeam() )
 	{
 		/*

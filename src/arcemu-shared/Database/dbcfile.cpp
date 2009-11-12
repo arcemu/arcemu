@@ -196,9 +196,9 @@ void DBCFile::DumpAsCVS(char *filename)
 		return; //error
 
 	signed int *tdata = (signed int *)data;
-	for(unsigned int i=0;i<recordCount;i++)
+	for(unsigned int i= 0;i<recordCount;i++)
 	{
-		for(unsigned int j=0;j<fieldCount;j++)
+		for(unsigned int j= 0;j<fieldCount;j++)
 			fprintf(fout,"%d,",tdata[j]);
 		fprintf(fout,"\n");
 		tdata += recordSize/4;

@@ -433,7 +433,7 @@ ArathiBasin::ArathiBasin(MapMgr * mgr, uint32 id, uint32 lgroup, uint32 t) : CBa
 {
 	int i;
 
-	for (i=0; i<2; i++) {
+	for (i= 0; i<2; i++) {
 		m_players[i].clear();
 		m_pendPlayers[i].clear();
 	}
@@ -688,7 +688,7 @@ LocationVector ArathiBasin::GetStartingCoords(uint32 Team)
 
 void ArathiBasin::HookOnAreaTrigger(Player * plr, uint32 id)
 {
-	uint32 spellid=0;
+	uint32 spellid= 0;
 	int32 buffslot = -1;
 	switch(id)
 	{
@@ -925,7 +925,7 @@ void ArathiBasin::AssaultControlPoint(Player * pPlayer, uint32 Id)
 		SetWorldState(OwnedFields[Id][Owner], 0);
 
 		// modify the resource update time period
-		if(m_capturedBases[Owner]==0)
+		if(m_capturedBases[Owner]== 0)
 			this->event_RemoveEvents(EVENT_AB_RESOURCES_UPDATE_TEAM_0+Owner);
 		else
 			this->event_ModifyTime(EVENT_AB_RESOURCES_UPDATE_TEAM_0 + Owner, ResourceUpdateIntervals[m_capturedBases[Owner]]);

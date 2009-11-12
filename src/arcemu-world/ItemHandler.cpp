@@ -36,8 +36,8 @@ void WorldSession::HandleSplitOpcode(WorldPacket& recv_data)
 {
 	CHECK_INWORLD_RETURN;
 	CHECK_PACKET_SIZE(recv_data, 8);
-	int8 DstInvSlot=0, DstSlot=0, SrcInvSlot=0, SrcSlot=0;
-	int32 count=0;
+	int8 DstInvSlot= 0, DstSlot= 0, SrcInvSlot= 0, SrcSlot= 0;
+	int32 count= 0;
 
 	AddItemResult result;
 
@@ -163,7 +163,7 @@ void WorldSession::HandleSwapItemOpcode(WorldPacket& recv_data)
 	//Item *SrcTemp = NULL;
 	//Item *DstTemp = NULL;
 
-	int8 DstInvSlot=0, DstSlot=0, SrcInvSlot=0, SrcSlot=0, error=0;
+	int8 DstInvSlot= 0, DstSlot= 0, SrcInvSlot= 0, SrcSlot= 0, error= 0;
 
 	recv_data >> DstInvSlot >> DstSlot >> SrcInvSlot >> SrcSlot;
 
@@ -425,8 +425,8 @@ void WorldSession::HandleSwapInvItemOpcode( WorldPacket & recv_data )
 		return;
 	CHECK_PACKET_SIZE(recv_data, 2);
 	WorldPacket data;
-	int8 srcslot=0, dstslot=0;
-	int8 error=0;
+	int8 srcslot= 0, dstslot= 0;
+	int8 error= 0;
 
 	recv_data >> dstslot >> srcslot;
 
@@ -671,7 +671,7 @@ void WorldSession::HandleAutoEquipItemOpcode( WorldPacket & recv_data )
 	WorldPacket data;
 
 	AddItemResult result;
-	int8 SrcInvSlot, SrcSlot, error=0;
+	int8 SrcInvSlot, SrcSlot, error= 0;
 	
 	recv_data >> SrcInvSlot >> SrcSlot;
 
@@ -914,7 +914,7 @@ void WorldSession::HandleItemQuerySingleOpcode( WorldPacket & recv_data )
 	CHECK_PACKET_SIZE(recv_data, 4);
  
 	uint32 i;
-	uint32 itemid=0;
+	uint32 itemid= 0;
 	recv_data >> itemid;
 
 	ItemPrototype *itemProto = ItemPrototypeStorage.LookupEntry(itemid);
@@ -1126,8 +1126,8 @@ void WorldSession::HandleSellItemOpcode( WorldPacket & recv_data )
 	CHECK_PACKET_SIZE(recv_data, 17);
 	sLog.outDetail( "WORLD: Received CMSG_SELL_ITEM" );
 
-	uint64 vendorguid=0, itemguid=0;
-	int8 amount=0;
+	uint64 vendorguid= 0, itemguid= 0;
+	int8 amount= 0;
 	//uint8 slot = INVENTORY_NO_SLOT_AVAILABLE;
 	//uint8 bagslot = INVENTORY_NO_SLOT_AVAILABLE;
 	//int check = 0;
@@ -1436,10 +1436,10 @@ void WorldSession::HandleBuyItemOpcode( WorldPacket & recv_data ) // right-click
 	sLog.outDetail( "WORLD: Received CMSG_BUY_ITEM" );
 
 	WorldPacket data(45);
-	uint64 srcguid=0;
-	uint32 itemid=0;
-	int32 slot=0;
-	uint8 amount=0;
+	uint64 srcguid= 0;
+	uint32 itemid= 0;
+	int32 slot= 0;
+	uint8 amount= 0;
 //	int8 playerslot = 0;
 //	int8 bagslot = 0;
 	Item *add = NULL;
@@ -1697,7 +1697,7 @@ void WorldSession::HandleAutoStoreBagItemOpcode( WorldPacket & recv_data )
 	
 	//WorldPacket data;
 	WorldPacket packet;
-	int8 SrcInv=0, Slot=0, DstInv=0;
+	int8 SrcInv= 0, Slot= 0, DstInv= 0;
 //	Item *item= NULL;
 	Item *srcitem = NULL;
 	Item *dstitem= NULL;
@@ -1809,7 +1809,7 @@ void WorldSession::HandleReadItemOpcode(WorldPacket &recvPacket)
 	if( !_player || !_player->IsInWorld() )
 		return;
 	CHECK_PACKET_SIZE(recvPacket, 2);
-	int8 uslot=0, slot=0;
+	int8 uslot= 0, slot= 0;
 	recvPacket >> uslot >> slot;
 
 	Item *item = _player->GetItemInterface()->GetInventoryItem(uslot, slot);
@@ -1939,7 +1939,7 @@ void WorldSession::HandleAutoBankItemOpcode(WorldPacket &recvPacket)
 	//WorldPacket data;
 
 	SlotResult slotresult;
-	int8 SrcInvSlot, SrcSlot;//, error=0;
+	int8 SrcInvSlot, SrcSlot;//, error= 0;
 
 	recvPacket >> SrcInvSlot >> SrcSlot;
 
@@ -1984,7 +1984,7 @@ void WorldSession::HandleAutoStoreBankItemOpcode(WorldPacket &recvPacket)
 
 	//WorldPacket data;
 
-	int8 SrcInvSlot, SrcSlot;//, error=0, slot=-1, specialbagslot=-1;
+	int8 SrcInvSlot, SrcSlot;//, error= 0, slot=-1, specialbagslot=-1;
 
 	recvPacket >> SrcInvSlot >> SrcSlot;
 
@@ -2044,8 +2044,8 @@ void WorldSession::HandleInsertGemOpcode(WorldPacket &recvPacket)
 	if(!TargetItem)
 		return;
 	int slot =itemi->GetInventorySlotByGuid(itemguid);
-	bool apply = (slot>=0 && slot <19);
-	uint32 FilledSlots=0;
+	bool apply = (slot>= 0 && slot <19);
+	uint32 FilledSlots= 0;
 
 	bool ColorMatch = true;
 	for(uint32 i = 0;i<TargetItem->GetSocketsCount();i++)

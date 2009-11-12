@@ -1770,7 +1770,7 @@ public:
 	uint32 m_ShapeShifted;
 	uint32 m_MountSpellId;
 
-	ARCEMU_INLINE bool IsMounted() {return (m_MountSpellId!=0 ? true : false); }
+	ARCEMU_INLINE bool IsMounted() {return (m_MountSpellId!= 0 ? true : false); }
 
 	void SendMountResult(uint32 result)
 	{
@@ -2063,7 +2063,7 @@ public:
 		UpdateComboPoints();
 	}
 
-	ARCEMU_INLINE void NullComboPoints() { if(!m_retainComboPoints) { m_comboTarget = 0; m_comboPoints = 0; m_spellcomboPoints=0; } UpdateComboPoints(); }
+	ARCEMU_INLINE void NullComboPoints() { if(!m_retainComboPoints) { m_comboTarget = 0; m_comboPoints = 0; m_spellcomboPoints= 0; } UpdateComboPoints(); }
 	uint32 m_speedChangeCounter;
 
 	void SendAreaTriggerMessage(const char * message, ...);
@@ -2415,8 +2415,8 @@ public:
 	//this may change in time, We will call it each time a new monitored position is reached
 	//it is up to this function to decide if we actually made an achievement in that type or not
 	void Event_Achiement_Received(uint32 achievementtype,uint32 pentry,uint32 pvalue); //entry is not always used
-	void SendAchievmentStatus( uint32 criteriaid, uint32 new_value, uint32 at_stamp=0 );
-	void SendAchievmentEarned( uint32 archiId, uint32 at_stamp=0 );
+	void SendAchievmentStatus( uint32 criteriaid, uint32 new_value, uint32 at_stamp= 0 );
+	void SendAchievmentEarned( uint32 archiId, uint32 at_stamp= 0 );
 	void SendAllAchievementEarned();
 	void SendAllAchievementStatus();
 	void SendAllAchievementData(); //used on login

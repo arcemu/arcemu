@@ -23,19 +23,19 @@
 Guild::Guild()
 {
 	m_commandLogging=true;
-	m_guildId=0;
-	m_guildLeader=0;
+	m_guildId= 0;
+	m_guildLeader= 0;
 	m_guildName= NULL;
 	m_guildInfo= NULL;
 	m_motd= NULL;
-	m_backgroundColor=0;
-	m_emblemColor=0;
-	m_emblemStyle=0;
-	m_borderColor=0;
-	m_borderStyle=0;
-	m_creationTimeStamp=0;
-	m_bankBalance =0;
-	creationDay=creationMonth=creationYear=0;
+	m_backgroundColor= 0;
+	m_emblemColor= 0;
+	m_emblemStyle= 0;
+	m_borderColor= 0;
+	m_borderStyle= 0;
+	m_creationTimeStamp= 0;
+	m_bankBalance = 0;
+	creationDay=creationMonth=creationYear= 0;
 	m_hiLogId=1;
 	memset(m_ranks, 0, sizeof(GuildRank*)*MAX_GUILD_RANKS);
 }
@@ -785,7 +785,7 @@ void Guild::RemoveGuildMember(PlayerInfo * pMember, WorldSession * pClient)
 			return;
 		}
 	}
-	if(pMember->guildRank->iId==0)
+	if(pMember->guildRank->iId== 0)
 	{
 		if(pClient)
 			pClient->SystemMessage("You cannot remove the guild master.");
@@ -1134,7 +1134,7 @@ void Guild::SendGuildRoster(WorldSession * pClient)
 	GuildRank * r;
 	Player * pPlayer;
 	uint32 i;
-	uint32 c =0;
+	uint32 c = 0;
 	size_t pos;
 	GuildRank * myRank;
 	bool ofnote;

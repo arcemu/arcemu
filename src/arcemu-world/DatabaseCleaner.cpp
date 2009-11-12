@@ -69,7 +69,7 @@ void DatabaseCleaner::CleanCharacters()
 	if(result)
 	{
 		do {
-			if(result->Fetch()[0].GetUInt32()!=0 && chr_guids.find(result->Fetch()[0].GetUInt32()) == chr_guids.end())
+			if(result->Fetch()[0].GetUInt32()!= 0 && chr_guids.find(result->Fetch()[0].GetUInt32()) == chr_guids.end())
 			{
 				tokill_items.push_back(result->Fetch()[1].GetUInt64());
 			}

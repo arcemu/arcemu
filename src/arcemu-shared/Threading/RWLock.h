@@ -63,7 +63,7 @@ public:
 		//_lock.Release();
 		_cond.EndSynchronized();
 	}
-	ARCEMU_INLINE RWLock() : _cond(&_lock) {_readers=0;_writers=0;}
+	ARCEMU_INLINE RWLock() : _cond(&_lock) {_readers= 0;_writers= 0;}
   
 	private:
 		Mutex _lock;

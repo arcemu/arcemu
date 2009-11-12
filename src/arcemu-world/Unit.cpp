@@ -149,7 +149,7 @@ Unit::Unit()
 	}
 	m_speedModifier = 0;
 	m_slowdown = 0;
-	m_mountedspeedModifier=0;
+	m_mountedspeedModifier= 0;
 	m_maxSpeed = 0;
 	for( i = 0; i < 32 ; i++ )
 	{
@@ -234,13 +234,13 @@ Unit::Unit()
 	m_interruptRegen = 0;
 	m_resistChance = 0;
 	m_powerRegenPCT = 0;
-	RAPvModifier=0;
-	APvModifier=0;
-	stalkedby=0;
+	RAPvModifier= 0;
+	APvModifier= 0;
+	stalkedby= 0;
 
 	m_extraattacks = 0;
 	m_stunned = 0;
-	m_manashieldamt=0;
+	m_manashieldamt= 0;
 	m_rooted = 0;
 	m_triggerSpell = 0;
 	m_triggerDamage = 0;
@@ -255,9 +255,9 @@ Unit::Unit()
 	critterPet = NULL;
 
 	m_useAI = false;
-	for(i=0;i<10;i++)
+	for(i= 0;i<10;i++)
 	{
-		dispels[i]=0;
+		dispels[i]= 0;
 		CreatureAttackPowerMod[i] = 0;
 		CreatureRangedAttackPowerMod[i] = 0;
 	}
@@ -282,8 +282,8 @@ Unit::Unit()
 	m_stealth = 0;
 	m_can_stealth = true;
 
-	for(i=0;i<5;i++)
-		BaseStats[i]=0;
+	for(i= 0;i<5;i++)
+		BaseStats[i]= 0;
 
 	m_H_regenTimer = 2000;
 	m_P_regenTimer = 2000;
@@ -297,12 +297,12 @@ Unit::Unit()
 	m_emoteState = 0;
 	m_oldEmote = 0;
 
-	BaseDamage[0]=0;
-	BaseOffhandDamage[0]=0;
-	BaseRangedDamage[0]=0;
-	BaseDamage[1]=0;
-	BaseOffhandDamage[1]=0;
-	BaseRangedDamage[1]=0;
+	BaseDamage[0]= 0;
+	BaseOffhandDamage[0]= 0;
+	BaseRangedDamage[0]= 0;
+	BaseDamage[1]= 0;
+	BaseOffhandDamage[1]= 0;
+	BaseRangedDamage[1]= 0;
 
 	m_CombatUpdateTimer = 0;
 	for( i = 0; i < SCHOOL_COUNT; i++ )
@@ -315,14 +315,14 @@ Unit::Unit()
 		HealTakenPctMod[i] = 0;
 		DamageTakenMod[i] = 0;
 		DamageDoneModPCT[i]= 0;
-		SchoolCastPrevent[i]=0;
+		SchoolCastPrevent[i]= 0;
 		DamageTakenPctMod[i] = 0;
 		SpellCritChanceSchool[i] = 0;
 		PowerCostMod[i] = 0;
 		PowerCostPctMod[i] = 0; // armor penetration & spell penetration
-		AttackerCritChanceMod[i]=0;
-		CritMeleeDamageTakenPctMod[i]=0;
-		CritRangedDamageTakenPctMod[i]=0;
+		AttackerCritChanceMod[i]= 0;
+		CritMeleeDamageTakenPctMod[i]= 0;
+		CritRangedDamageTakenPctMod[i]= 0;
 		m_generatedThreatModifyer[i] = 0;
 		DoTPctIncrease[i] = 0;
 	}
@@ -398,7 +398,7 @@ Unit::Unit()
 	m_chargeSpellRemoveQueue.clear();
 	tmpAura.clear();
 	m_extraStrikeTargets.clear();
-	for (i=0; i<7; i++) {
+	for (i= 0; i<7; i++) {
 		Absorbs[i].clear();
 	}
 
@@ -675,7 +675,7 @@ void Unit::Update( uint32 p_time )
 		if( p_time >= m_P_regenTimer )
 		{
 			RegeneratePower( false );
-			m_interruptedRegenTime=0;
+			m_interruptedRegenTime= 0;
 		}
 		else
 		{
@@ -815,9 +815,9 @@ void Unit::GiveGroupXP(Unit *pVictim, Player *PlayerInGroup)
 	//Get Highest Level Player, Calc Xp and give it to each group member
 	Player *pHighLvlPlayer = NULL;
 	Player *pGroupGuy = NULL;
-	  int active_player_count=0;
+	  int active_player_count= 0;
 	Player *active_player_list[MAX_GROUP_SIZE_RAID];//since group is small we can afford to do this ratehr then recheck again the whole active player set
-	int total_level=0;
+	int total_level= 0;
 	float xp_mod = 1.0f;
 
 /*	if(pGroup->GetGroupType() == GROUP_TYPE_RAID)
@@ -893,7 +893,7 @@ void Unit::GiveGroupXP(Unit *pVictim, Player *PlayerInGroup)
 			else xp_mod=1;//in case we have only 2 members ;)
 		}
 		else if(pGroup->GetGroupType() == GROUP_TYPE_RAID)
-			xp_mod=0.5f;
+			xp_mod= 0.5f;
 
 		if(pHighLvlPlayer == 0)
 		{
@@ -906,7 +906,7 @@ void Unit::GiveGroupXP(Unit *pVictim, Player *PlayerInGroup)
 
 		xp = CalculateXpToGive(pVictim, pHighLvlPlayer);
 		//I'm not sure about this formula is correct or not. Maybe some brackets are wrong placed ?
-		for(int i=0;i<active_player_count;i++)
+		for(int i= 0;i<active_player_count;i++)
 		{
 			Player * plr = active_player_list[i];
 			plr->GiveXP( float2int32( ( ( xp * plr->getLevel() ) / total_level ) * xp_mod ), pVictim->GetGUID(), true );
@@ -1612,7 +1612,7 @@ uint32 Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, ui
 								amount = CastingSpell->EffectBasePoints[1]+1;
 							}break;
 							default:
-								amount=0;
+								amount= 0;
 						}
 						if(!amount)
 							continue;
@@ -2696,7 +2696,7 @@ uint32 Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, ui
 			if( (iter2->second.ProcFlag & flag) )
 			{
 				//Fixes for spells that don't lose charges when dmg is absorbed
-				if( iter2->second.ProcFlag==680 && dmg==0 ) 
+				if( iter2->second.ProcFlag==680 && dmg== 0 ) 
 					continue;
 
 				if( CastingSpell )
@@ -2728,7 +2728,7 @@ uint32 Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, ui
 					case 16188:	// Druid - Nature's Swiftness
 						{
 							//if( CastingSpell->School!=SCHOOL_NATURE||(!sd->CastTime||sd->CastTime>10000)) continue;
-							if( CastingSpell->School!=SCHOOL_NATURE || sd->CastTime==0 ) 
+							if( CastingSpell->School!=SCHOOL_NATURE || sd->CastTime== 0 ) 
 								continue;
 						}break;
 					case 16166:
@@ -3043,7 +3043,7 @@ void Unit::CalculateResistanceReduction(Unit *pVictim,dealdamage * dmg, SpellEnt
 		if(AverageResistance>0)
 			(*dmg).resisted_damage = (uint32)(((*dmg).full_damage)*AverageResistance);
 		else
-			(*dmg).resisted_damage=0;
+			(*dmg).resisted_damage= 0;
 	}
 }
 
@@ -3199,8 +3199,8 @@ uint32 Unit::GetSpellDidHitResult( Unit* pVictim, uint32 weapon_damage_type, Spe
 	//--------------------------------by damage type and by weapon type-------------------------
 	if( weapon_damage_type == RANGED )
 	{
-		dodge=0.0f;
-		parry=0.0f;
+		dodge= 0.0f;
+		parry= 0.0f;
 	}
 
 	//--------------------------------by skill difference---------------------------------------
@@ -3225,9 +3225,9 @@ uint32 Unit::GetSpellDidHitResult( Unit* pVictim, uint32 weapon_damage_type, Spe
 	{
 		SM_FFValue( SM_FHitchance, &hitchance, ability->SpellGroupType );
 #ifdef COLLECTION_OF_UNTESTED_STUFF_AND_TESTERS
-		float spell_flat_modifers=0;
+		float spell_flat_modifers= 0;
 		SM_FFValue(SM_FHitchance,&spell_flat_modifers,ability->SpellGroupType);
-		if(spell_flat_modifers!=0 )
+		if(spell_flat_modifers!= 0 )
 			printf("!!!!!spell resist mod flat %f,  spell resist bonus %f, spell group %u\n",spell_flat_modifers,hitchance,ability->SpellGroupType);
 #endif
 	}
@@ -3344,7 +3344,7 @@ void Unit::Strike( Unit* pVictim, uint32 weapon_damage_type, SpellEntry* ability
 			{
 				// cannot dodge/parry ranged attacks
 
-				if(pVictim->m_stunned<=0)
+				if(pVictim->m_stunned<= 0)
 				{
 					// can dodge as long as we're not stunned
 					dodge = plr->GetDodgeChance();
@@ -3560,7 +3560,7 @@ void Unit::Strike( Unit* pVictim, uint32 weapon_damage_type, SpellEntry* ability
 	}
 //--------------------------------by ratings------------------------------------------------
 	crit -= pVictim->IsPlayer() ? static_cast< Player* >(pVictim)->CalcRating( PLAYER_RATING_MODIFIER_MELEE_CRIT_RESILIENCE ) : 0.0f;
-	if(crit<0) crit=0.0f;
+	if(crit<0) crit= 0.0f;
 	if (this->IsPlayer())
 	{
 		Player* plr = static_cast< Player* >(this);
@@ -3593,9 +3593,9 @@ void Unit::Strike( Unit* pVictim, uint32 weapon_damage_type, SpellEntry* ability
 //--------------------------------by damage type and by weapon type-------------------------
 	if( weapon_damage_type == RANGED )
 	{
-		dodge=0.0f;
-		parry=0.0f;
-		glanc=0.0f;
+		dodge= 0.0f;
+		parry= 0.0f;
+		glanc= 0.0f;
 	}
 
 	if ( this->IsPlayer() )
@@ -4025,7 +4025,7 @@ void Unit::Strike( Unit* pVictim, uint32 weapon_damage_type, SpellEntry* ability
 			if (dmg.school_type == SCHOOL_NORMAL)
 			{
 				abs+=dmg.resisted_damage;
-				dmg.resisted_damage=0;
+				dmg.resisted_damage= 0;
 			}
 
 			realdamage = dmg.full_damage-abs-dmg.resisted_damage-blocked_damage;
@@ -4206,7 +4206,7 @@ void Unit::Strike( Unit* pVictim, uint32 weapon_damage_type, SpellEntry* ability
 		//SendSpellLog(this,pVictim,ability->Id,SPELL_LOG_MISS);
 	}
 
-	if(ability && realdamage==0)
+	if(ability && realdamage== 0)
 	{
 		SendSpellLog(this,pVictim,ability->Id,SPELL_LOG_RESIST);
 	}
@@ -4700,7 +4700,7 @@ void Unit::AddAura(Aura * aur)
 		return;
 	}
 
-	uint8 visualslot=0xFF;
+	uint8 visualslot= 0xFF;
 	//search for a visual slot
 	if( !aur->IsPassive() || (aur->m_spellProto->AttributesEx & 1024))
 		visualslot = FindVisualSlot( aur->GetSpellId(), aur->IsPositive() );
@@ -4813,7 +4813,7 @@ bool Unit::RemoveAuras(uint32 * SpellIds)
 	{
 		if(m_auras[x])
 		{
-			for(y=0;SpellIds[y] != 0;y++)
+			for(y= 0;SpellIds[y] != 0;y++)
 			{
 				if( m_auras[x] && m_auras[x]->GetSpellId()==SpellIds[y] )
 				{
@@ -5233,7 +5233,7 @@ int32 Unit::GetSpellDmgBonus(Unit *pVictim, SpellEntry *spellInfo,int32 base_dmg
 		SM_FIValue(caster->SM_FPenalty, &bonus_damage, spellInfo->SpellGroupType);
 		SM_FIValue(caster->SM_FDamageBonus, &bonus_damage, spellInfo->SpellGroupType);
 
-		int dmg_bonus_pct=0;
+		int dmg_bonus_pct= 0;
 		SM_FIValue(caster->SM_PPenalty, &dmg_bonus_pct, spellInfo->SpellGroupType);
 		SM_FIValue(caster->SM_PDamageBonus,&dmg_bonus_pct,spellInfo->SpellGroupType);
 
@@ -5483,7 +5483,7 @@ void Unit::MoveToWaypoint(uint32 wp_id)
 		}
 
 		ai->m_currentWaypoint = wp_id;
-		if(wp->flags!=0)
+		if(wp->flags!= 0)
 			ai->m_moveRun = true;
 		ai->MoveTo(wp->x, wp->y, wp->z, 0);
 	}
@@ -5676,7 +5676,7 @@ uint32 Unit::AbsorbDamage( uint32 School, uint32* dmg )
 		{
 			abs += *dmg;
 			(*i)->amt -= *dmg;
-			*dmg=0;
+			*dmg= 0;
 			break;
 		}
 	}
@@ -6203,7 +6203,7 @@ void Unit::RemoveAurasByInterruptFlagButSkip(uint32 flag, uint32 skip)
 			continue;
 
 		//some spells do not get removed all the time only at specific intervals
-		if((a->m_spellProto->AuraInterruptFlags & flag) && (a->m_spellProto->Id != skip) && a->m_spellProto->proc_interval==0)
+		if((a->m_spellProto->AuraInterruptFlags & flag) && (a->m_spellProto->Id != skip) && a->m_spellProto->proc_interval== 0)
 		{
 			//the black sheep's of society
 			if(a->m_spellProto->AuraInterruptFlags & AURA_INTERRUPT_ON_CAST_SPELL)
@@ -6310,7 +6310,7 @@ bool Unit::HasNegativeAura(uint32 spell_id)
 
 uint32 Unit::CountNegativeAura(uint32 spell_id)
 {
-	uint32 ret=0;
+	uint32 ret= 0;
 	for(uint32 x = MAX_POSITIVE_AURAS; x < MAX_AURAS + MAX_PASSIVE_AURAS; ++x)
 	{
 		if(m_auras[x] && m_auras[x]->GetSpellProto()->Id == spell_id)
@@ -6447,7 +6447,7 @@ bool Unit::IsDazed()
 		{
 			if(m_auras[x]->GetSpellProto()->MechanicsType == MECHANIC_ENSNARED)
 			return true;
-			for(uint32 y=0;y<3;y++)
+			for(uint32 y= 0;y<3;y++)
 			if(m_auras[x]->GetSpellProto()->EffectMechanic[y]==MECHANIC_ENSNARED)
 				return true;
 		}
@@ -6576,7 +6576,7 @@ int32 Unit::GetAP()
 {
     int32 baseap = GetUInt32Value(UNIT_FIELD_ATTACK_POWER) + GetUInt32Value(UNIT_FIELD_ATTACK_POWER_MODS);
     float totalap = float(baseap)*(GetFloatValue(UNIT_FIELD_ATTACK_POWER_MULTIPLIER)+1);
-	if(totalap>=0)
+	if(totalap>= 0)
 		return float2int32(totalap);
 	return	0;
 }
@@ -6585,7 +6585,7 @@ int32 Unit::GetRAP()
 {
     int32 baseap = GetUInt32Value(UNIT_FIELD_RANGED_ATTACK_POWER) + GetUInt32Value(UNIT_FIELD_RANGED_ATTACK_POWER_MODS);
     float totalap = float(baseap)*(GetFloatValue(UNIT_FIELD_RANGED_ATTACK_POWER_MULTIPLIER)+1);
-	if(totalap>=0)
+	if(totalap>= 0)
 		return float2int32(totalap);
 	return	0;
 }
@@ -7037,7 +7037,7 @@ bool CombatStatusHandler::IsInCombat()
 			else if (m_Unit->IsPet())
 				return m_lastStatus;
 			else
-				return m_Unit->GetAIInterface()->getAITargetsCount()==0? false:true;
+				return m_Unit->GetAIInterface()->getAITargetsCount()== 0? false:true;
 		} break;
 		case TYPEID_PLAYER:
 		{
@@ -7183,277 +7183,277 @@ void Unit::InheritSMMods(Unit *inherit_from)
 
 	if(inherit_from->SM_CriticalChance)
 	{
-		if(SM_CriticalChance==0)
+		if(SM_CriticalChance== 0)
 			SM_CriticalChance = new int32[SPELL_GROUPS];
 		memcpy(SM_CriticalChance,inherit_from->SM_CriticalChance,sizeof(int)*SPELL_GROUPS);
 	}
 	if(inherit_from->SM_FDur)
 	{
-		if(SM_FDur==0)
+		if(SM_FDur== 0)
 			SM_FDur = new int32[SPELL_GROUPS];
 		memcpy(SM_FDur,inherit_from->SM_FDur,sizeof(int)*SPELL_GROUPS);
 	}
 	if(inherit_from->SM_PDur)
 	{
-		if(SM_PDur==0)
+		if(SM_PDur== 0)
 			SM_PDur = new int32[SPELL_GROUPS];
 		memcpy(SM_PDur,inherit_from->SM_PDur,sizeof(int)*SPELL_GROUPS);
 	}
 	if(inherit_from->SM_PRadius)
 	{
-		if(SM_PRadius==0)
+		if(SM_PRadius== 0)
 			SM_PRadius = new int32[SPELL_GROUPS];
 		memcpy(SM_PRadius,inherit_from->SM_PRadius,sizeof(int)*SPELL_GROUPS);
 	}
 	if(inherit_from->SM_FRadius)
 	{
-		if(SM_FRadius==0)
+		if(SM_FRadius== 0)
 			SM_FRadius = new int32[SPELL_GROUPS];
 		memcpy(SM_FRadius,inherit_from->SM_FRadius,sizeof(int)*SPELL_GROUPS);
 	}
 	if(inherit_from->SM_FRange)
 	{
-		if(SM_FRange==0)
+		if(SM_FRange== 0)
 			SM_FRange = new int32[SPELL_GROUPS];
 		memcpy(SM_FRange,inherit_from->SM_FRange,sizeof(int)*SPELL_GROUPS);
 	}
 	if(inherit_from->SM_PCastTime)
 	{
-		if(SM_PCastTime==0)
+		if(SM_PCastTime== 0)
 			SM_PCastTime = new int32[SPELL_GROUPS];
 		memcpy(SM_PCastTime,inherit_from->SM_PCastTime,sizeof(int)*SPELL_GROUPS);
 	}
 	if(inherit_from->SM_FCastTime)
 	{
-		if(SM_FCastTime==0)
+		if(SM_FCastTime== 0)
 			SM_FCastTime = new int32[SPELL_GROUPS];
 		memcpy(SM_FCastTime,inherit_from->SM_FCastTime,sizeof(int)*SPELL_GROUPS);
 	}
 	if(inherit_from->SM_PCriticalDamage)
 	{
-		if(SM_PCriticalDamage==0)
+		if(SM_PCriticalDamage== 0)
 			SM_PCriticalDamage = new int32[SPELL_GROUPS];
 		memcpy(SM_PCriticalDamage,inherit_from->SM_PCriticalDamage,sizeof(int)*SPELL_GROUPS);
 	}
 	if(inherit_from->SM_FDOT)
 	{
-		if(SM_FDOT==0)
+		if(SM_FDOT== 0)
 			SM_FDOT = new int32[SPELL_GROUPS];
 		memcpy(SM_FDOT,inherit_from->SM_FDOT,sizeof(int)*SPELL_GROUPS);
 	}
 	if(inherit_from->SM_PDOT)
 	{
-		if(SM_PDOT==0)
+		if(SM_PDOT== 0)
 			SM_PDOT = new int32[SPELL_GROUPS];
 		memcpy(SM_PDOT,inherit_from->SM_PDOT,sizeof(int)*SPELL_GROUPS);
 	}
 	if(inherit_from->SM_FEffect1_Bonus)
 	{
-		if(SM_FEffect1_Bonus==0)
+		if(SM_FEffect1_Bonus== 0)
 			SM_FEffect1_Bonus = new int32[SPELL_GROUPS];
 		memcpy(SM_FEffect1_Bonus,inherit_from->SM_FEffect1_Bonus,sizeof(int)*SPELL_GROUPS);
 	}
 	if(inherit_from->SM_PEffect1_Bonus)
 	{
-		if(SM_PEffect1_Bonus==0)
+		if(SM_PEffect1_Bonus== 0)
 			SM_PEffect1_Bonus = new int32[SPELL_GROUPS];
 		memcpy(SM_PEffect1_Bonus,inherit_from->SM_PEffect1_Bonus,sizeof(int)*SPELL_GROUPS);
 	}
 	if(inherit_from->SM_FEffect2_Bonus)
 	{
-		if(SM_FEffect2_Bonus==0)
+		if(SM_FEffect2_Bonus== 0)
 			SM_FEffect2_Bonus = new int32[SPELL_GROUPS];
 		memcpy(SM_FEffect2_Bonus,inherit_from->SM_FEffect2_Bonus,sizeof(int)*SPELL_GROUPS);
 	}
 	if(inherit_from->SM_PEffect2_Bonus)
 	{
-		if(SM_PEffect2_Bonus==0)
+		if(SM_PEffect2_Bonus== 0)
 			SM_PEffect2_Bonus = new int32[SPELL_GROUPS];
 		memcpy(SM_PEffect2_Bonus,inherit_from->SM_PEffect2_Bonus,sizeof(int)*SPELL_GROUPS);
 	}
 	if(inherit_from->SM_FEffect3_Bonus)
 	{
-		if(SM_FEffect3_Bonus==0)
+		if(SM_FEffect3_Bonus== 0)
 			SM_FEffect3_Bonus = new int32[SPELL_GROUPS];
 		memcpy(SM_FEffect3_Bonus,inherit_from->SM_FEffect3_Bonus,sizeof(int)*SPELL_GROUPS);
 	}
 	if(inherit_from->SM_PEffect3_Bonus)
 	{
-		if(SM_PEffect3_Bonus==0)
+		if(SM_PEffect3_Bonus== 0)
 			SM_PEffect3_Bonus = new int32[SPELL_GROUPS];
 		memcpy(SM_PEffect3_Bonus,inherit_from->SM_PEffect3_Bonus,sizeof(int)*SPELL_GROUPS);
 	}
 	if(inherit_from->SM_FEffectBonus)
 	{
-		if(SM_FEffectBonus==0)
+		if(SM_FEffectBonus== 0)
 			SM_FEffectBonus = new int32[SPELL_GROUPS];
 		memcpy(SM_FEffectBonus,inherit_from->SM_FEffectBonus,sizeof(int)*SPELL_GROUPS);
 	}
 	if(inherit_from->SM_PEffectBonus)
 	{
-		if(SM_PEffectBonus==0)
+		if(SM_PEffectBonus== 0)
 			SM_PEffectBonus = new int32[SPELL_GROUPS];
 		memcpy(SM_PEffectBonus,inherit_from->SM_PEffectBonus,sizeof(int)*SPELL_GROUPS);
 	}
 	if(inherit_from->SM_FDamageBonus)
 	{
-		if(SM_FDamageBonus==0)
+		if(SM_FDamageBonus== 0)
 			SM_FDamageBonus = new int32[SPELL_GROUPS];
 		memcpy(SM_FDamageBonus,inherit_from->SM_FDamageBonus,sizeof(int)*SPELL_GROUPS);
 	}
 	if(inherit_from->SM_PDamageBonus)
 	{
-		if(SM_PDamageBonus==0)
+		if(SM_PDamageBonus== 0)
 			SM_PDamageBonus = new int32[SPELL_GROUPS];
 		memcpy(SM_PDamageBonus,inherit_from->SM_PDamageBonus,sizeof(int)*SPELL_GROUPS);
 	}
 	if(inherit_from->SM_PMiscEffect)
 	{
-		if(SM_PMiscEffect==0)
+		if(SM_PMiscEffect== 0)
 			SM_PMiscEffect = new int32[SPELL_GROUPS];
 		memcpy(SM_PMiscEffect,inherit_from->SM_PMiscEffect,sizeof(int)*SPELL_GROUPS);
 	}
 	if(inherit_from->SM_FMiscEffect)
 	{
-		if(SM_FMiscEffect==0)
+		if(SM_FMiscEffect== 0)
 			SM_FMiscEffect = new int32[SPELL_GROUPS];
 		memcpy(SM_FMiscEffect,inherit_from->SM_FMiscEffect,sizeof(int)*SPELL_GROUPS);
 	}
 	if(inherit_from->SM_FHitchance)
 	{
-		if(SM_FHitchance==0)
+		if(SM_FHitchance== 0)
 			SM_FHitchance = new int32[SPELL_GROUPS];
 		memcpy(SM_FHitchance,inherit_from->SM_FHitchance,sizeof(int)*SPELL_GROUPS);
 	}
 	if(inherit_from->SM_PRange)
 	{
-		if(SM_PRange==0)
+		if(SM_PRange== 0)
 			SM_PRange = new int32[SPELL_GROUPS];
 		memcpy(SM_PRange,inherit_from->SM_PRange,sizeof(int)*SPELL_GROUPS);
 	}
 	if(inherit_from->SM_PRadius)
 	{
-		if(SM_PRadius==0)
+		if(SM_PRadius== 0)
 			SM_PRadius = new int32[SPELL_GROUPS];
 		memcpy(SM_PRadius,inherit_from->SM_PRadius,sizeof(int)*SPELL_GROUPS);
 	}
 	if(inherit_from->SM_PCost)
 	{
-		if(SM_PCost==0)
+		if(SM_PCost== 0)
 			SM_PCost = new int32[SPELL_GROUPS];
 		memcpy(SM_PCost,inherit_from->SM_PCost,sizeof(int)*SPELL_GROUPS);
 	}
 	if(inherit_from->SM_FCost)
 	{
-		if(SM_FCost==0)
+		if(SM_FCost== 0)
 			SM_FCost = new int32[SPELL_GROUPS];
 		memcpy(SM_FCost,inherit_from->SM_FCost,sizeof(int)*SPELL_GROUPS);
 	}
 	if(inherit_from->SM_FAdditionalTargets)
 	{
-		if(SM_FAdditionalTargets==0)
+		if(SM_FAdditionalTargets== 0)
 			SM_FAdditionalTargets = new int32[SPELL_GROUPS];
 		memcpy(SM_FAdditionalTargets,inherit_from->SM_FAdditionalTargets,sizeof(int)*SPELL_GROUPS);
 	}
 	if(inherit_from->SM_PJumpReduce)
 	{
-		if(SM_PJumpReduce==0)
+		if(SM_PJumpReduce== 0)
 			SM_PJumpReduce = new int32[SPELL_GROUPS];
 		memcpy(SM_PJumpReduce,inherit_from->SM_PJumpReduce,sizeof(int)*SPELL_GROUPS);
 	}
 	if(inherit_from->SM_FGlobalCooldown)
 	{
-		if(SM_FGlobalCooldown==0)
+		if(SM_FGlobalCooldown== 0)
 			SM_FGlobalCooldown = new int32[SPELL_GROUPS];
 		memcpy(SM_FGlobalCooldown,inherit_from->SM_FGlobalCooldown,sizeof(int)*SPELL_GROUPS);
 	}
 	if(inherit_from->SM_PGlobalCooldown)
 	{
-		if(SM_PGlobalCooldown==0)
+		if(SM_PGlobalCooldown== 0)
 			SM_PGlobalCooldown = new int32[SPELL_GROUPS];
 		memcpy(SM_PGlobalCooldown,inherit_from->SM_PGlobalCooldown,sizeof(int)*SPELL_GROUPS);
 	}
 	if(inherit_from->SM_PNonInterrupt)
 	{
-		if(SM_PNonInterrupt==0)
+		if(SM_PNonInterrupt== 0)
 			SM_PNonInterrupt = new int32[SPELL_GROUPS];
 		memcpy(SM_PNonInterrupt,inherit_from->SM_PNonInterrupt,sizeof(int)*SPELL_GROUPS);
 	}
 	if(inherit_from->SM_FPenalty)
 	{
-		if(SM_FPenalty==0)
+		if(SM_FPenalty== 0)
 			SM_FPenalty = new int32[SPELL_GROUPS];
 		memcpy(SM_FPenalty,inherit_from->SM_FPenalty,sizeof(int)*SPELL_GROUPS);
 	}
 	if(inherit_from->SM_PPenalty)
 	{
-		if(SM_PPenalty==0)
+		if(SM_PPenalty== 0)
 			SM_PPenalty = new int32[SPELL_GROUPS];
 		memcpy(SM_PPenalty,inherit_from->SM_PPenalty,sizeof(int)*SPELL_GROUPS);
 	}
 	if(inherit_from->SM_FCooldownTime)
 	{
-		if(SM_FCooldownTime==0)
+		if(SM_FCooldownTime== 0)
 			SM_FCooldownTime = new int32[SPELL_GROUPS];
 		memcpy(SM_FCooldownTime,inherit_from->SM_FCooldownTime,sizeof(int)*SPELL_GROUPS);
 	}
 	if(inherit_from->SM_PCooldownTime)
 	{
-		if(SM_PCooldownTime==0)
+		if(SM_PCooldownTime== 0)
 			SM_PCooldownTime = new int32[SPELL_GROUPS];
 		memcpy(SM_PCooldownTime,inherit_from->SM_PCooldownTime,sizeof(int)*SPELL_GROUPS);
 	}
 	if(inherit_from->SM_FChanceOfSuccess)
 	{
-		if(SM_FChanceOfSuccess==0)
+		if(SM_FChanceOfSuccess== 0)
 			SM_FChanceOfSuccess = new int32[SPELL_GROUPS];
 		memcpy(SM_FChanceOfSuccess,inherit_from->SM_FChanceOfSuccess,sizeof(int)*SPELL_GROUPS);
 	}
 	if(inherit_from->SM_FAmptitude)
 	{
-		if(SM_FAmptitude==0)
+		if(SM_FAmptitude== 0)
 			SM_FAmptitude = new int32[SPELL_GROUPS];
 		memcpy(SM_FAmptitude,inherit_from->SM_FAmptitude,sizeof(int)*SPELL_GROUPS);
 	}
 	if(inherit_from->SM_PAmptitude)
 	{
-		if(SM_PAmptitude==0)
+		if(SM_PAmptitude== 0)
 			SM_PAmptitude = new int32[SPELL_GROUPS];
 		memcpy(SM_PAmptitude,inherit_from->SM_PAmptitude,sizeof(int)*SPELL_GROUPS);
 	}
 	if(inherit_from->SM_FRezist_dispell)
 	{
-		if(SM_FRezist_dispell==0)
+		if(SM_FRezist_dispell== 0)
 			SM_FRezist_dispell = new int32[SPELL_GROUPS];
 		memcpy(SM_FRezist_dispell,inherit_from->SM_FRezist_dispell,sizeof(int)*SPELL_GROUPS);
 	}
 	if(inherit_from->SM_PRezist_dispell)
 	{
-		if(SM_PRezist_dispell==0)
+		if(SM_PRezist_dispell== 0)
 			SM_PRezist_dispell = new int32[SPELL_GROUPS];
 		memcpy(SM_PRezist_dispell,inherit_from->SM_PRezist_dispell,sizeof(int)*SPELL_GROUPS);
 	}
 	if(inherit_from->SM_FCharges)
 	{
-		if(SM_FCharges==0)
+		if(SM_FCharges== 0)
 			SM_FCharges = new int32[SPELL_GROUPS];
 		memcpy(SM_FCharges,inherit_from->SM_FCharges,sizeof(int)*SPELL_GROUPS);
 	}
 	if(inherit_from->SM_PCharges)
 	{
-		if(SM_PCharges==0)
+		if(SM_PCharges== 0)
 			SM_PCharges = new int32[SPELL_GROUPS];
 		memcpy(SM_PCharges,inherit_from->SM_PCharges,sizeof(int)*SPELL_GROUPS);
 	}
 	if(inherit_from->SM_FThreat)
 	{
-		if(SM_FThreat==0)
+		if(SM_FThreat== 0)
 			SM_FThreat = new int32[SPELL_GROUPS];
 		memcpy(SM_FThreat,inherit_from->SM_FThreat,sizeof(int)*SPELL_GROUPS);
 	}
 	if(inherit_from->SM_PThreat)
 	{
-		if(SM_PThreat==0)
+		if(SM_PThreat== 0)
 			SM_PThreat = new int32[SPELL_GROUPS];
 		memcpy(SM_PThreat,inherit_from->SM_PThreat,sizeof(int)*SPELL_GROUPS);
 	}
@@ -7568,7 +7568,7 @@ bool Unit::RemoveAllAurasByMechanic( uint32 MechanicType , uint32 MaxDispel = -1
 					}
 					else if( MechanicType == MECHANIC_ENSNARED ) // if got immunity for slow, remove some that are not in the mechanics
 					{
-						for( int i=0 ; i<3 ; i++ )
+						for( int i= 0 ; i<3 ; i++ )
 						{
 							// SNARE + ROOT
 							if( m_auras[x]->GetSpellProto()->EffectApplyAuraName[i] == SPELL_AURA_MOD_DECREASE_SPEED || m_auras[x]->GetSpellProto()->EffectApplyAuraName[i] == SPELL_AURA_MOD_ROOT )

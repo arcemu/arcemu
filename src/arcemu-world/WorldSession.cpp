@@ -87,7 +87,7 @@ WorldSession::~WorldSession()
 	while((packet = _recvQueue.Pop()) != 0)
 		delete packet;
 
-	for(uint32 x=0;x<8;x++)
+	for(uint32 x= 0;x<8;x++)
 	{
 		if(sAccountData[x].data)
 			delete [] sAccountData[x].data;
@@ -370,7 +370,7 @@ void WorldSession::LogoutPlayer(bool Save)
 		{
 			std::stringstream ss;
 			ss << "UPDATE account_data SET ";
-			for(uint32 ui=0;ui<8;ui++)
+			for(uint32 ui= 0;ui<8;ui++)
 			{
 				if(sAccountData[ui].bIsDirty)
 				{

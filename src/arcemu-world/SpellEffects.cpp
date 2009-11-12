@@ -658,7 +658,7 @@ void Spell::SpellEffectSchoolDMG(uint32 i) // dmg school
 		float dist = m_caster->CalcDistance( unitTarget );
 		float time = ((dist*1000.0f)/GetProto()->speed);
 		if(time <= 100)
-			m_caster->SpellNonMeleeDamageLog(unitTarget,GetProto()->Id, dmg, pSpellId==0);
+			m_caster->SpellNonMeleeDamageLog(unitTarget,GetProto()->Id, dmg, pSpellId== 0);
 		else
 		{
 			damageToHit = dmg;
@@ -1096,7 +1096,7 @@ out:
 			if(!unitTarget || !u_caster)
 				break;
 			Unit *targets[3];
-			int targets_got=0;
+			int targets_got= 0;
 			for(std::set<Object*>::iterator itr = unitTarget->GetInRangeSetBegin(), i2; itr != unitTarget->GetInRangeSetEnd(); )
 			{
 				i2 = itr++;
@@ -1110,7 +1110,7 @@ out:
 				if(targets_got==3)
 					break;
 			}
-			for(int i=0;i<targets_got;i++)
+			for(int i= 0;i<targets_got;i++)
 			{
 				//set threat to this target so we are the msot hated
 				uint32 threat_to_him = targets[i]->GetAIInterface()->getThreatByPtr( unitTarget );
@@ -1157,7 +1157,7 @@ out:
 						Aura *aur = new Aura(dbcSpell.LookupEntry(38437), 5000, p_caster, p_caster, true);
 						if (!aur)
 							return;
-						for( uint32 i=0; i<3; i++ )
+						for( uint32 i= 0; i<3; i++ )
 							aur->AddMod( aur->GetSpellProto()->EffectApplyAuraName[i], aur->GetSpellProto()->EffectBasePoints[i]+1, aur->GetSpellProto()->EffectMiscValue[i], i );
 						p_caster->AddAura(aur);
 					}
@@ -1472,7 +1472,7 @@ out:
 		if(unitTarget->IsDazed())
 		{
 		//			u_caster->SpellNonMeleeDamageLog(unitTarget,spellId,damage,false);
-		u_caster->SpellNonMeleeDamageLog(unitTarget,spellId,damage,pSpellId==0);
+		u_caster->SpellNonMeleeDamageLog(unitTarget,spellId,damage,pSpellId== 0);
 		}
 
 		}break;*/
@@ -2274,7 +2274,7 @@ void Spell::SpellEffectEnvironmentalDamage(uint32 i)
 		return;
 	}
 	//this is GO, not unit
-	m_caster->SpellNonMeleeDamageLog(unitTarget,GetProto()->Id,damage, pSpellId==0);
+	m_caster->SpellNonMeleeDamageLog(unitTarget,GetProto()->Id,damage, pSpellId== 0);
 
 	WorldPacket data(SMSG_ENVIRONMENTALDAMAGELOG, 13);
 	data << unitTarget->GetGUID();
@@ -2610,7 +2610,7 @@ void Spell::SpellEffectResurrect(uint32 i) // Resurrect (Flat)
 					unitTarget->setDeathState(ALIVE);
 					static_cast<Creature*>(unitTarget)->Tagged=false;
 					static_cast<Creature*>(unitTarget)->TaggerGuid=false;
-					static_cast<Creature*>(unitTarget)->loot.gold=0;
+					static_cast<Creature*>(unitTarget)->loot.gold= 0;
 					static_cast<Creature*>(unitTarget)->loot.looters.clear();
 					static_cast<Creature*>(unitTarget)->loot.items.clear();
 				}
@@ -3314,7 +3314,7 @@ void Spell::SpellEffectLeap(uint32 i) // Leap
 		int _POS_BREAK     = 0x10;
 		int _BLOCK_BREAK   = 0x20;
 
-		int flag=0;
+		int flag= 0;
 
 		float newposX, newposY, newposZ;
 		// init first variables
@@ -3331,7 +3331,7 @@ void Spell::SpellEffectLeap(uint32 i) // Leap
 
 		uint8 steps = 20; // higher precision, but more performance waste, radius =20.0f may each 1y will be checked.
 		float radius_steps = radius / steps;
-		uint8 i =0;
+		uint8 i = 0;
 
 		float _SharpCounter = 0.0f;
 		for ( i = 1; i < steps; i++ )
@@ -3582,7 +3582,7 @@ void Spell::SpellEffectOpenLock(uint32 i) // Open Lock
 				if(lock == 0)
 					return;
 
-				for(int i=0;i<5;i++)
+				for(int i= 0;i<5;i++)
 				{
 					if(lock->locktype[i] == 2 && lock->minlockskill[i] && lockskill >= lock->minlockskill[i])
 					{
@@ -4126,7 +4126,7 @@ void Spell::SpellEffectSummonWild(uint32 i)  // Summon Wild
 		y = u_caster->GetPositionY();
 		z = u_caster->GetPositionZ();
 	}
-	for(int i=0;i<damage;i++)
+	for(int i= 0;i<damage;i++)
 	{
 		float m_fallowAngle=-((float(M_PI)/2)*i);
 		x += (GetRadius(i)*(cosf(m_fallowAngle+u_caster->GetOrientation())));
@@ -5755,7 +5755,7 @@ void Spell::SpellEffectScriptEffect(uint32 i) // Script Effect
 	case 24590: // Zandalarian Hero Badge
 		if( u_caster != NULL )
 		{
-			for(int i=0;i<20;i++)
+			for(int i= 0;i<20;i++)
 				u_caster->CastSpell(u_caster, 24575, true);
 		}break;
 	}
@@ -6238,7 +6238,7 @@ void Spell::SpellEffectSelfResurrect(uint32 i)
 	}
 
 	if(class_ == WARRIOR || class_ == ROGUE)
-		mana=0;
+		mana= 0;
 
 	playerTarget->m_resurrectHealth = health;
 	playerTarget->m_resurrectMana = mana;
@@ -6656,7 +6656,7 @@ void Spell::SpellEffectDestroyAllTotems(uint32 i)
 	if(!p_caster || !p_caster->IsInWorld()) return;
 
 	float RetreivedMana = 0.0f;
-	for(uint32 x=0;x<4;x++)
+	for(uint32 x= 0;x<4;x++)
 	{
 		// atm totems are considered creatures
 		if(p_caster->m_TotemSlots[x])
@@ -6754,7 +6754,7 @@ void Spell::SpellEffectResurrectNew(uint32 i)
 					unitTarget->setDeathState(ALIVE);
 					static_cast<Creature*>(unitTarget)->Tagged=false;
 					static_cast<Creature*>(unitTarget)->TaggerGuid=false;
-					static_cast<Creature*>(unitTarget)->loot.gold=0;
+					static_cast<Creature*>(unitTarget)->loot.gold= 0;
 					static_cast<Creature*>(unitTarget)->loot.looters.clear();
 					static_cast<Creature*>(unitTarget)->loot.items.clear();
 				}
@@ -6892,7 +6892,7 @@ void Spell::SpellEffectDummyMelee( uint32 i ) // Normalized Weapon damage +
 	else if( GetProto()->NameHash == SPELL_HASH_DEVASTATE)
 	{
 		//count the number of sunder armors on target
-		uint32 sunder_count=0;
+		uint32 sunder_count= 0;
 		SpellEntry *spellInfo=dbcSpell.LookupEntry( 7386 );
 		for(uint32 x = MAX_NEGATIVE_AURAS_EXTEDED_START; x < MAX_NEGATIVE_AURAS_EXTEDED_END; ++x)
 			if(unitTarget->m_auras[x] && unitTarget->m_auras[x]->GetSpellProto()->NameHash==SPELL_HASH_SUNDER_ARMOR)
@@ -6970,7 +6970,7 @@ void Spell::SpellEffectDummyMelee( uint32 i ) // Normalized Weapon damage +
 	}
 
 	// rogue ambush etc
-	for (uint32 x =0;x<3;x++)
+	for (uint32 x = 0;x<3;x++)
 		if(GetProto()->Effect[x] == SPELL_EFFECT_WEAPON_PERCENT_DAMAGE)
 		{
 			add_damage = damage * (GetProto()->EffectBasePoints[x]+1) /100;
@@ -7013,7 +7013,7 @@ void Spell::SpellEffectFilming( uint32 i )
 	if( !taxinode )
 		return;
 
-	uint32 modelid =0;
+	uint32 modelid = 0;
 
 	if( playerTarget->GetTeam() )
 	{

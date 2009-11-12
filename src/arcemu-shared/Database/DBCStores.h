@@ -403,7 +403,7 @@ struct AchievementCriteriaEntry
 		// ACHIEVEMENT_CRITERIA_TYPE_HIGHEST_POWER = 96
 		struct
 		{
-			uint32  powerType;                              // 3 mana=0, 1=rage, 3=energy, 6=runic power
+			uint32  powerType;                              // 3 mana= 0, 1=rage, 3=energy, 6=runic power
 		} highest_power;
 
 		// ACHIEVEMENT_CRITERIA_TYPE_HIGHEST_STAT = 97
@@ -1519,7 +1519,7 @@ public:
 		m_firstEntry = NULL;
 		m_max = 0;
 		m_numrows = 0;
-		m_stringlength=0;
+		m_stringlength= 0;
 		m_stringData = NULL;
 	}
 

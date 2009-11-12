@@ -275,7 +275,7 @@ Spell::Spell(Object* Caster, SpellEntry *info, bool triggered, Aura* aur)
 
 	UniqueTargets.clear();
 	ModeratedTargets.clear();
-	for( uint32 i=0; i<3; ++i )
+	for( uint32 i= 0; i<3; ++i )
 	{
 		m_targetUnits[i].clear();
 	}
@@ -285,7 +285,7 @@ Spell::Spell(Object* Caster, SpellEntry *info, bool triggered, Aura* aur)
 	{
 		m_rune_avail_before = 0;
 		m_runes_to_update = 0;
-		for( uint8 i=0; i < TOTAL_USED_RUNES;i++ )
+		for( uint8 i= 0; i < TOTAL_USED_RUNES;i++ )
 			if( p_caster->m_runes[ i ] < RUNE_RECHARGE )
 				m_rune_avail_before |= (1 << i);
 	}
@@ -306,7 +306,7 @@ Spell::~Spell()
     ////////////////////////////////////////////////////////////////////////////////////////
 
 
-	for(uint32 i=0; i<3; ++i)
+	for(uint32 i= 0; i<3; ++i)
 	{
 		m_targetUnits[i].clear();
 	}
@@ -823,7 +823,7 @@ uint8 Spell::DidHit( uint32 effindex, Unit* target )
 
 	if( GetProto()->SpellGroupType )
 	{
-		float hitchance=0;
+		float hitchance= 0;
 		SM_FFValue( u_caster->SM_FHitchance, &hitchance, GetProto()->SpellGroupType );
 		resistchance -= hitchance;
 	}
@@ -861,10 +861,10 @@ void Spell::GenerateTargets(SpellCastTargets *store_buff)
 		SM_PFValue(u_caster->SM_PRadius,&r,GetProto()->SpellGroupType);
 	}
 	uint32 cur;
-	for(uint32 i=0;i<3;i++)
-		for(uint32 j=0;j<2;j++)
+	for(uint32 i= 0;i<3;i++)
+		for(uint32 j= 0;j<2;j++)
 		{
-			if(j==0)
+			if(j== 0)
 				cur = GetProto()->EffectImplicitTargetA[i];
 			else // if(j==1)
 				cur = GetProto()->EffectImplicitTargetB[i];
@@ -1030,7 +1030,7 @@ void Spell::GenerateTargets(SpellCastTargets *store_buff)
 
 										//check if an aura is being applied, and check if it already exists
 										bool applies_aura=false;
-										for (int i=0; i<3; i++)
+										for (int i= 0; i<3; i++)
 										{
 											if (GetProto()->Effect[i] == SPELL_EFFECT_APPLY_AURA || GetProto()->Effect[i] == SPELL_EFFECT_APPLY_AREA_AURA || GetProto()->Effect[i] == SPELL_EFFECT_APPLY_AREA_AURA2 )
 											{
@@ -1166,7 +1166,7 @@ void Spell::GenerateTargets(SpellCastTargets *store_buff)
 
 								//check if an aura is being applied, and check if it already exists
 								bool applies_aura=false;
-								for (int i=0; i<3; i++)
+								for (int i= 0; i<3; i++)
 								{
 									if (m_spellInfo->Effect[i] == SPELL_EFFECT_APPLY_AURA || m_spellInfo->Effect[i] == SPELL_EFFECT_APPLY_AREA_AURA || m_spellInfo->Effect[i] == SPELL_EFFECT_APPLY_AREA_AURA2 )
 									{
@@ -1478,7 +1478,7 @@ void Spell::cast(bool check)
 			}
 		}
 
-		for(uint32 i=0;i<3;i++)
+		for(uint32 i= 0;i<3;i++)
 		{
 			if( GetProto()->Effect[i] && GetProto()->Effect[i] != SPELL_EFFECT_PERSISTENT_AREA_AURA)
 				FillTargetMap(i);
@@ -1710,7 +1710,7 @@ void Spell::cast(bool check)
 			std::vector<uint64>::iterator i, i2;
 			// this is here to avoid double search in the unique list
 			// bool canreflect = false, reflected = false;
-			for(int j=0;j<3;j++)
+			for(int j= 0;j<3;j++)
 			{
 				switch(GetProto()->EffectImplicitTargetA[j])
 				{
@@ -1756,7 +1756,7 @@ void Spell::cast(bool check)
             // if the spell is not reflected
 			if( !IsReflected() )
 			{
-				for( uint32 x=0; x<3; x++ )
+				for( uint32 x= 0; x<3; x++ )
 				{
 					// check if we actually have a effect
 					if( GetProto()->Effect[x])
@@ -1921,7 +1921,7 @@ void Spell::AddTime(uint32 type)
 		}
 		if( GetProto()->SpellGroupType && u_caster)
 		{
-			float ch=0;
+			float ch= 0;
 			SM_FFValue( u_caster->SM_PNonInterrupt, &ch, GetProto()->SpellGroupType );
 			if(Rand(ch))
 				return;
@@ -1973,7 +1973,7 @@ void Spell::AddTime(uint32 type)
 			++m_DelayStep;
 			m_timer-=delay;
 			if(m_timer<0)
-				m_timer=0;
+				m_timer= 0;
 			else
 				p_caster->delayAttackTimer(-delay);
 
@@ -2423,7 +2423,7 @@ void Spell::SendSpellGo()
 	if (p_caster && p_caster->getClass() == DEATHKNIGHT) //send our rune updates ^^
 	{
 		//see what we will have after cast
-		for( uint8 i=0; i < TOTAL_USED_RUNES; i++ )
+		for( uint8 i= 0; i < TOTAL_USED_RUNES; i++ )
 			if( p_caster->m_runes[ i ] < RUNE_RECHARGE )
 				cur_have_runes |= (1 << i);
 		if( cur_have_runes != m_rune_avail_before )
@@ -2498,7 +2498,7 @@ void Spell::SendSpellGo()
 		//we already subtracted power
 		data << uint8( m_rune_avail_before );
 		data << uint8( cur_have_runes );
-		for(uint8 i=0;i<m_runes_to_update;i++)
+		for(uint8 i= 0;i<m_runes_to_update;i++)
 			data << uint8( 0 ); //values of the rune converted into byte. We just think it is 0 but maybe it is not :P
 	}
 	if( m_targets.m_targetMask & 0x40 )
@@ -2787,7 +2787,7 @@ bool Spell::HasPower()
 		SM_PIValue(u_caster->SM_PCost,&cost,GetProto()->SpellGroupType);
 	}
 
-	if (cost <=0)
+	if (cost <= 0)
 		return true;
 
 	//FIXME:DK:if field value < cost what happens
@@ -2908,7 +2908,7 @@ bool Spell::TakePower()
 		SM_PIValue(u_caster->SM_PCost,&cost,GetProto()->SpellGroupType);
 	}
 
-	if (cost <=0)
+	if (cost <= 0)
 		return true;
 
 	//FIXME:DK:if field value < cost what happens
@@ -3154,7 +3154,7 @@ void Spell::HandleAddAura(uint64 guid)
 					SM_FIValue( u_caster->SM_FCharges, &charges, itr->second->GetSpellProto()->SpellGroupType );
 					SM_PIValue( u_caster->SM_PCharges, &charges, itr->second->GetSpellProto()->SpellGroupType );
 				}
-				for(int i=0;i<charges-1;i++)
+				for(int i= 0;i<charges-1;i++)
 				{
 					aur = new Aura(itr->second->GetSpellProto(),itr->second->GetDuration(),itr->second->GetCaster(),itr->second->GetTarget(), m_triggeredSpell, i_caster);
 					if (!aur)
@@ -3620,7 +3620,7 @@ uint8 Spell::CanCast(bool tolerate)
 			// Skip this with enchanting scrolls
 			if (!i_caster || (i_caster->GetProto() && i_caster->GetProto()->Flags != 268435520))
 			{
-				for(i=0; i<8 ;i++)
+				for(i= 0; i<8 ;i++)
 				{
 					if( GetProto()->Reagent[i] == 0 || GetProto()->ReagentCount[i] == 0)
 						continue;
@@ -3634,7 +3634,7 @@ uint8 Spell::CanCast(bool tolerate)
 		/**
 		 *	check if we have the required tools, totems, etc
 		 */
-		for(i=0; i<2 ;i++)
+		for(i= 0; i<2 ;i++)
 		{
 			if( GetProto()->Totem[i] != 0)
 			{
@@ -3990,11 +3990,11 @@ uint8 Spell::CanCast(bool tolerate)
 		SM_FFValue( u_caster->SM_FRange, &maxRange, GetProto()->SpellGroupType );
 		SM_PFValue( u_caster->SM_PRange, &maxRange, GetProto()->SpellGroupType );
 #ifdef COLLECTION_OF_UNTESTED_STUFF_AND_TESTERS
-		float spell_flat_modifers=0;
-		float spell_pct_modifers=0;
+		float spell_flat_modifers= 0;
+		float spell_pct_modifers= 0;
 		SM_FFValue(u_caster->SM_FRange,&spell_flat_modifers,GetProto()->SpellGroupType);
 		SM_FFValue(u_caster->SM_PRange,&spell_pct_modifers,GetProto()->SpellGroupType);
-		if(spell_flat_modifers!=0 || spell_pct_modifers!=0)
+		if(spell_flat_modifers!= 0 || spell_pct_modifers!= 0)
 			printf("!!!!!spell range bonus mod flat %f , spell range bonus pct %f , spell range %f, spell group %u\n",spell_flat_modifers,spell_pct_modifers,maxRange,GetProto()->SpellGroupType);
 #endif
 	}
@@ -4546,7 +4546,7 @@ uint8 Spell::CanCast(bool tolerate)
 			{
 				if(isAttackable(u_caster,target))//negative, replace only our own spell
 				{
-					for(uint32 x=0;x<rp->count;x++)
+					for(uint32 x= 0;x<rp->count;x++)
 					{
 						if(target->HasActiveAura(rp->spells[x],m_caster->GetGUID()))
 						{
@@ -4556,7 +4556,7 @@ uint8 Spell::CanCast(bool tolerate)
 				}
 				else
 				{
-					for(uint32 x=0;x<rp->count;x++)
+					for(uint32 x= 0;x<rp->count;x++)
 					{
 						if(target->HasActiveAura(rp->spells[x]))
 						{
@@ -4796,7 +4796,7 @@ void Spell::RemoveItems()
 	// Reagent Removal
 	if (!(p_caster->removeReagentCost && hasAttributeExD(FLAGS6_REAGENT_REMOVAL)))
 	{
-		for(uint32 i=0; i<8 ;i++)
+		for(uint32 i= 0; i<8 ;i++)
 		{
 			if( GetProto()->Reagent[i])
 			{
@@ -4894,7 +4894,7 @@ exit:
     // Causes Weapon Damage + Ammo + RAP * 0.1 + EffectBasePoints[0] and additional EffectBasePoints[1] if the target is dazed
     if( GetProto()->NameHash == SPELL_HASH_STEADY_SHOT )
     {
-		if(i==0 && u_caster)
+		if(i== 0 && u_caster)
 		{
 			if( p_caster != NULL )
 			{
@@ -4987,7 +4987,7 @@ exit:
 	}
 	else if( GetProto()->Id == 34123) //Druid - Tree of Life
 	{
-		if( i==0 && p_caster != NULL )
+		if( i== 0 && p_caster != NULL )
 		{
 			//Heal is increased by 6%
 			value = float2int32( value * 1.06f );
@@ -4995,13 +4995,13 @@ exit:
 	}
 	else if( GetProto()->Id == 57669 || GetProto()->Id == 61782) //Replenishment
 	{
-		if( i==0 && p_caster != NULL && target != NULL )
+		if( i== 0 && p_caster != NULL && target != NULL )
 			value = uint32(0.0025*target->GetUInt32Value(UNIT_FIELD_MAXPOWER1));
 	}
 	// HACK FIX
 	else if( GetProto()->NameHash == SPELL_HASH_VICTORY_RUSH )
 	{//causing ${$AP*$m1/100} damage
-		if(i==0 && u_caster)
+		if(i== 0 && u_caster)
 			value = (value*u_caster->GetAP())/100;
 	}
 	else if( GetProto()->NameHash == SPELL_HASH_RAKE )//rake
@@ -5010,7 +5010,7 @@ exit:
 		if( u_caster != NULL )
 		{
 			float ap = (float)u_caster->GetAP();
-			if(i==0)
+			if(i== 0)
 				value+=(uint32)ceilf((ap*0.01f));	// / 100
 			else if(i==1)
 				value=(int32)ceilf((float(value * 3) + ceilf((ap*0.06f))) / 3.0f);
@@ -5112,8 +5112,8 @@ exit:
 
 	if( u_caster != NULL )
 	{
-		int32 spell_flat_modifers=0;
-		int32 spell_pct_modifers=0;
+		int32 spell_flat_modifers= 0;
+		int32 spell_pct_modifers= 0;
 
 		SM_FIValue(u_caster->SM_FMiscEffect, &spell_flat_modifers, GetProto()->SpellGroupType);
 		SM_PIValue(u_caster->SM_PMiscEffect, &spell_pct_modifers, GetProto()->SpellGroupType);
@@ -5147,8 +5147,8 @@ exit:
 		Unit *item_creator = target->GetMapMgr()->GetUnit( i_caster->GetUInt64Value( ITEM_FIELD_CREATOR ) );
 		if( item_creator != NULL )
 		{
-			int32 spell_flat_modifers=0;
-			int32 spell_pct_modifers=0;
+			int32 spell_flat_modifers= 0;
+			int32 spell_pct_modifers= 0;
 
 			SM_FIValue(item_creator->SM_FMiscEffect ,&spell_flat_modifers, GetProto()->SpellGroupType);
 			SM_PIValue(item_creator->SM_PMiscEffect, &spell_pct_modifers, GetProto()->SpellGroupType);
@@ -6035,10 +6035,10 @@ void Spell::SendCastSuccess(const uint64& guid)
 bool IsBeneficSpell(SpellEntry *sp)
 {
 	uint32 cur;
-	for(uint32 i=0;i<3;i++)
-		for(uint32 j=0;j<2;j++)
+	for(uint32 i= 0;i<3;i++)
+		for(uint32 j= 0;j<2;j++)
 		{
-			if(j==0)
+			if(j== 0)
 				cur = sp->EffectImplicitTargetA[i];
 			else // if(j==1)
 				cur = sp->EffectImplicitTargetB[i];
@@ -6076,10 +6076,10 @@ bool IsBeneficSpell(SpellEntry *sp)
 AI_SpellTargetType RecommandAISpellTargetType(SpellEntry *sp)
 {
 	uint32 cur;
-	for(uint32 i=0;i<3;i++)
-		for(uint32 j=0;j<2;j++)
+	for(uint32 i= 0;i<3;i++)
+		for(uint32 j= 0;j<2;j++)
 		{
-			if(j==0)
+			if(j== 0)
 				cur = sp->EffectImplicitTargetA[i];
 			else // if(j==1)
 				cur = sp->EffectImplicitTargetB[i];

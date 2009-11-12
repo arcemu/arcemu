@@ -137,7 +137,7 @@ void InstanceMgr::Shutdown()
 			}
 
 			delete m_instances[i];
-			m_instances[i]= NULL;
+			m_instances[i] = NULL;
 		}
 
 		if(m_singleMaps[i] != NULL)
@@ -145,13 +145,13 @@ void InstanceMgr::Shutdown()
 			MapMgr * ptr = m_singleMaps[i];
 			ptr->KillThread();
 			delete ptr;
-			m_singleMaps[i]= NULL;
+			m_singleMaps[i] = NULL;
 		}
 
 		if(m_maps[i] != NULL)
 		{
 			delete m_maps[i];
-			m_maps[i]= NULL;
+			m_maps[i] = NULL;
 		}
 	}
 
@@ -161,12 +161,12 @@ void InstanceMgr::Shutdown()
 uint32 InstanceMgr::PreTeleport(uint32 mapid, Player * plr, uint32 instanceid)
 {
 	// preteleport is where all the magic happens :P instance creation, etc.
-	MapInfo * inf = WorldMapInfoStorage.LookupEntry(mapid);
-	Group * pGroup;
-	InstanceMap * instancemap;
-	Instance * in;
+	MapInfo *inf = WorldMapInfoStorage.LookupEntry(mapid);
+	Group *pGroup;
+	InstanceMap *instancemap;
+	Instance *in;
 
-	if(inf == NULL || mapid>=NUM_MAPS)
+	if(inf == NULL || mapid >= NUM_MAPS)
 		return INSTANCE_ABORT_NOT_FOUND;
 
 	// main continent check.
@@ -178,7 +178,7 @@ uint32 InstanceMgr::PreTeleport(uint32 mapid, Player * plr, uint32 instanceid)
 	}
 
 	// shouldn't happen
-	if(inf->type==INSTANCE_BATTLEGROUND)
+	if(inf->type == INSTANCE_BATTLEGROUND)
 		return INSTANCE_ABORT_NOT_FOUND;
 
 	pGroup = plr->GetGroup();

@@ -112,7 +112,7 @@ VoiceChatHandler::VoiceChatHandler()
 	request_high=1;
 	next_connect = 0;
 	m_client = 0;
-	port =0;
+	port = 0;
 	ip = 0;
 	enabled=false;
 }

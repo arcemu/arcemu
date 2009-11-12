@@ -62,7 +62,7 @@ void BuildWeatherPacket(WorldPacket * data, uint32 Effect, float Density )
 uint32 GetSound(uint32 Effect, float Density)
 {
     uint32 sound;
-    if(Density<=0.30f)
+    if(Density<= 0.30f)
 		return WEATHER_NOSOUND;
 
 	switch(Effect)

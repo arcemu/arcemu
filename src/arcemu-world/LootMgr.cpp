@@ -112,7 +112,7 @@ RandomProps * LootMgr::GetRandomProperties(ItemPrototype * proto)
 {
 	map<uint32,RandomPropertyVector>::iterator itr;
 
-	if(proto->RandomPropId==0)
+	if(proto->RandomPropId== 0)
 		return NULL;
 
     itr = _randomprops.find(proto->RandomPropId);
@@ -126,7 +126,7 @@ ItemRandomSuffixEntry * LootMgr::GetRandomSuffix(ItemPrototype * proto)
 {
 	map<uint32,RandomSuffixVector>::iterator itr;
 
-	if(proto->RandomSuffixId==0)
+	if(proto->RandomSuffixId== 0)
 		return NULL;
 
 	itr = _randomsuffix.find(proto->RandomSuffixId);
@@ -307,7 +307,7 @@ void LootMgr::LoadLootTables(const char * szTableName,LootStore * LootTable)
 			list.count = static_cast< uint32 >( itr->second.size() );
 			list.items=new StoreLootItem[list.count];
 		
-			uint32 ind=0;
+			uint32 ind= 0;
 
 			for(vector< tempy >::iterator itr2 = itr->second.begin(); itr2 != itr->second.end(); ++itr2)
 			{
@@ -550,7 +550,7 @@ void LootMgr::AddLoot(Loot * loot, uint32 itemid, uint32 mincount, uint32 maxcou
 void LootMgr::FillCreatureLoot(Loot * loot,uint32 loot_id, uint32 type )
 {
 	loot->items.clear();
-	loot->gold =0;
+	loot->gold = 0;
 	
 	LootStore::iterator tab =CreatureLoot.find(loot_id);
 	
@@ -563,7 +563,7 @@ void LootMgr::FillCreatureLoot(Loot * loot,uint32 loot_id, uint32 type )
 void LootMgr::FillGOLoot(Loot * loot,uint32 loot_id, uint32 type)
 {
 	loot->items.clear ();
-	loot->gold =0;
+	loot->gold = 0;
 
 	LootStore::iterator tab =GOLoot.find(loot_id);
 	
@@ -618,7 +618,7 @@ bool LootMgr::CanGODrop(uint32 LootId,uint32 itemid)
 	if( GOLoot.end()==tab)
 	return false;
 	StoreLootList *list=&(tab->second);
-	for(uint32 x=0;x<list->count;x++)
+	for(uint32 x= 0;x<list->count;x++)
 		if(list->items[x].item.itemproto->ItemId==itemid)
 			return true;
 	return false;
@@ -866,7 +866,7 @@ void LootRoll::Finalize()
 #endif
 	}
 
-	pLoot->items.at(_slotid).iItemsCount=0;
+	pLoot->items.at(_slotid).iItemsCount= 0;
 	// this gets sent to all looters
 	data.Initialize(SMSG_LOOT_REMOVED);
 	data << uint8(_slotid);
@@ -933,7 +933,7 @@ void LootRoll::PlayerRolled(Player *player, uint8 choice)
 void LootMgr::FillItemLoot(Loot *loot, uint32 loot_id)
 {
 	loot->items.clear ();
-	loot->gold =0;
+	loot->gold = 0;
 
 	LootStore::iterator tab =ItemLoot.find(loot_id);
 	if( ItemLoot.end()==tab)return;

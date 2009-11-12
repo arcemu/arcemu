@@ -204,7 +204,7 @@ void ObjectMgr::LoadExtraCreatureProtoStuff()
 				sp->floatMisc1 = fields[10].GetFloat();
 				sp->autocast_type=(uint32)-1;
 				sp->cooldowntime=getMSTime();
-				sp->procCounter=0;
+				sp->procCounter= 0;
 				sp->Misc2 = fields[11].GetUInt32();
 				if(sp->agent == AGENT_SPELL)
 				{
@@ -234,8 +234,8 @@ void ObjectMgr::LoadExtraCreatureProtoStuff()
 						//now this will not be exact cooldown but maybe a bigger one to not make him spam spells to often
 						int cooldown;
 						SpellDuration *sd=dbcSpellDuration.LookupEntry(sp->spell->DurationIndex);
-						int Dur=0;
-						int Casttime=0;//most of the time 0
+						int Dur= 0;
+						int Casttime= 0;//most of the time 0
 						int RecoveryTime=sp->spell->RecoveryTime;
 						if(sp->spell->DurationIndex)
 							Dur =::GetDuration(sd);
@@ -248,21 +248,21 @@ void ObjectMgr::LoadExtraCreatureProtoStuff()
 
 					/*
 					//now apply the moron filter
-					if(sp->procChance==0)
+					if(sp->procChance== 0)
 					{
 						//printf("SpellId %u in ai_agent for %u is invalid.\n", (unsigned int)fields[5].GetUInt32(), (unsigned int)sp->entryId);
 						delete sp;
 						sp = NULL;
 						continue;
 					}
-					if(sp->spellType==0)
+					if(sp->spellType== 0)
 					{
 						//right now only these 2 are used
 						if(IsBeneficSpell(sp->spell))
 							sp->spellType==STYPE_HEAL;
 						else sp->spellType==STYPE_BUFF;
 					}
-					if(sp->spelltargetType==0)
+					if(sp->spelltargetType== 0)
 						sp->spelltargetType = RecommandAISpellTargetType(sp->spell);
 						*/
 				}

@@ -133,7 +133,7 @@ bool ChatHandler::CreateGuildCommand(const char* args, WorldSession *m_session)
 	}
 
 	Charter tempCharter(0, ptarget->GetLowGUID(), CHARTER_TYPE_GUILD);
-	tempCharter.SignatureCount=0;
+	tempCharter.SignatureCount= 0;
 	tempCharter.GuildName = string(args);
 
 	pGuild = Guild::Create();
@@ -1213,9 +1213,9 @@ bool ChatHandler::HandleAddAIAgentCommand(const char* args, WorldSession *m_sess
 	sp->floatMisc1 = (float)atof(floatMisc1);
 	sp->Misc2 = (uint32)atof(Misc2);
 	sp->cooldown = (uint32)atoi(spellCooldown);
-	sp->procCount=0;
-	sp->procCounter=0;
-	sp->cooldowntime=0;
+	sp->procCount= 0;
+	sp->procCounter= 0;
+	sp->cooldowntime= 0;
 	sp->minrange = GetMinRange(dbcSpellRange.LookupEntry(dbcSpell.LookupEntry(atoi(spellId))->rangeIndex));
 	sp->maxrange = GetMaxRange(dbcSpellRange.LookupEntry(dbcSpell.LookupEntry(atoi(spellId))->rangeIndex));
 

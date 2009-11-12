@@ -431,7 +431,7 @@ void WorldSession::HandleMovementOpcodes( WorldPacket & recv_data )
 		move_time = (movement_info.time - (mstime - m_clientTimeDelay)) + MOVEMENT_PACKET_TIME_DELAY + mstime;
 //		memcpy(&movement_packet[pos], recv_data.contents(), recv_data.size());
 		memcpy(&movement_packet[0], recv_data.contents(), recv_data.size());
-		movement_packet[pos+6]=0;
+		movement_packet[pos+6]= 0;
 
 		/************************************************************************/
 		/* Distribute to all inrange players.                                   */

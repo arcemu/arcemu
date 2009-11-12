@@ -66,7 +66,7 @@ public:
 	virtual bool getObjectHitPos(unsigned int pMapId, LocationVector & v1, LocationVector & v2, LocationVector & vout, float pModifyDist) = 0;
 
 
-	virtual std::string getDirFileName(unsigned int pMapId, int x, int y) const =0;
+	virtual std::string getDirFileName(unsigned int pMapId, int x, int y) const = 0;
 };
 
 COLLISION_IMPORT void * collision_init();

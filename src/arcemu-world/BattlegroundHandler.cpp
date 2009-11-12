@@ -263,7 +263,7 @@ void WorldSession::HandleArenaJoinOpcode(WorldPacket &recv_data)
     if(_player->m_bgIsQueued)
 		BattlegroundManager.RemovePlayerFromQueues(_player);
 
-	uint32 bgtype=0;
+	uint32 bgtype= 0;
 	uint64 guid;
 	uint8 arenacategory;
 	uint8 as_group;

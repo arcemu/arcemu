@@ -63,7 +63,7 @@ World::World()
 	NameinAnnounce = false;
 	NameinWAnnounce = false;
 	announce_output = true;
-	map_unload_time=0;
+	map_unload_time= 0;
 	antiMasterLootNinja = false;
 
 	SocketSendBufSize = WORLDSOCKET_SENDBUF_SIZE;
@@ -284,7 +284,7 @@ bool World::SetInitialWorldSettings()
 
 	CharacterDatabase.WaitExecute("UPDATE characters SET online = 0 WHERE online = 1");
 	//CharacterDatabase.WaitExecute("UPDATE characters SET level = 70 WHERE level > 70");
-	CharacterDatabase.WaitExecute("UPDATE characters SET banned=0,banReason='' WHERE banned > 100 AND banned < %u", UNIXTIME);
+	CharacterDatabase.WaitExecute("UPDATE characters SET banned= 0,banReason='' WHERE banned > 100 AND banned < %u", UNIXTIME);
    
 	m_lastTick = UNIXTIME;
 
@@ -1657,7 +1657,7 @@ void World::CleanupCheaters()
 		{
 			end = strchr(start,',');
 			if(!end)break;
-			*end=0;
+			*end= 0;
 			sp = dbcSpell.LookupEntry(atol(start));
 			start = end +1;
 
@@ -1947,7 +1947,7 @@ void World::PollCharacterInsertQueue(DatabaseConnection * con)
 			inf->guildRank= NULL;
 			inf->guildMember= NULL;
 			inf->race=f[3].GetUInt32();
-			inf->subGroup=0;
+			inf->subGroup= 0;
 			switch(inf->race)
 			{
 			case RACE_HUMAN:
@@ -1955,7 +1955,7 @@ void World::PollCharacterInsertQueue(DatabaseConnection * con)
 			case RACE_DWARF:
 			case RACE_NIGHTELF:
 			case RACE_DRAENEI:
-				inf->team=0;
+				inf->team= 0;
 				break;
 
 			default:

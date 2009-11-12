@@ -34,7 +34,7 @@ GameObject::GameObject(uint64 guid)
 	SetFloatValue( OBJECT_FIELD_SCALE_X, 1);//info->Size  );
 	SetByte(GAMEOBJECT_BYTES_1, 3, 100);
 
-	counter=0;//not needed at all but to prevent errors that var was not initialized, can be removed in release
+	counter= 0;//not needed at all but to prevent errors that var was not initialized, can be removed in release
 
 	bannerslot = bannerauraslot = -1;
 
@@ -439,7 +439,7 @@ void GameObject::InitAI()
         Lock *pLock = dbcLock.LookupEntry(GetInfo()->SpellFocus);
         if(pLock)
         {
-            for(uint32 i=0; i < 5; i++)
+            for(uint32 i= 0; i < 5; i++)
             {
                 if(pLock->locktype[i])
                 {
@@ -482,7 +482,7 @@ void GameObject::InitAI()
 	
 	float r = 0;
 
-	for(uint32 i=0;i<3;i++)
+	for(uint32 i= 0;i<3;i++)
 	{
 		if(sp->Effect[i])
 		{
@@ -814,7 +814,7 @@ uint32 GameObject::GetGOReqSkill()
 	//! Here we check the SpellFocus table against the dbcs
 	Lock *lock = dbcLock.LookupEntry( GetInfo()->SpellFocus );
 	if(!lock) return 0;
-	for(uint32 i=0;i<5;i++)
+	for(uint32 i= 0;i<5;i++)
 		if(lock->locktype[i] == 2 && lock->minlockskill[i])
 		{
 			return lock->minlockskill[i];
@@ -851,7 +851,7 @@ void GameObject::UpdateRotation()
 
 	float r2=GetFloatValue(GAMEOBJECT_PARENTROTATION_02);
 	float r3=GetFloatValue(GAMEOBJECT_PARENTROTATION_03);
-	if(r2==0.0f && r3==0.0f && !(m_overrides & GAMEOBJECT_OVERRIDE_PARENTROT) )
+	if(r2== 0.0f && r3== 0.0f && !(m_overrides & GAMEOBJECT_OVERRIDE_PARENTROT) )
 	{
 		r2 = (float)f_rot1;
 		r3 = (float)f_rot2;

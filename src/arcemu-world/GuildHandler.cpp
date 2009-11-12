@@ -1323,8 +1323,8 @@ void WorldSession::HandleGuildBankDepositItem(WorldPacket & recv_data)
 		uint8 source_slot;
 		uint8 dest_bank;
 		uint8 dest_bankslot;
-		uint8 withdraw_stack=0;
-		uint8 deposit_stack=0;
+		uint8 withdraw_stack= 0;
+		uint8 deposit_stack= 0;
 		GuildBankTab * pTab;
 		Item * pSourceItem;
 		Item * pDestItem;
@@ -1341,7 +1341,7 @@ void WorldSession::HandleGuildBankDepositItem(WorldPacket & recv_data)
 		recv_data >> source_bagslot;
 		recv_data >> source_slot;
 
-		if(!(source_bagslot == 1 && source_slot==0))
+		if(!(source_bagslot == 1 && source_slot== 0))
 			recv_data >> wtf2 >> deposit_stack;
 
 		/* sanity checks to avoid overflows */
@@ -1371,7 +1371,7 @@ void WorldSession::HandleGuildBankDepositItem(WorldPacket & recv_data)
 				}
 			}
 
-			if(dest_bankslot==0xff)
+			if(dest_bankslot== 0xff)
 			{
 				_player->GetItemInterface()->BuildInventoryChangeError(NULL, NULL, INV_ERR_BAG_FULL);
 				return;
@@ -1406,7 +1406,7 @@ void WorldSession::HandleGuildBankDepositItem(WorldPacket & recv_data)
 			source_slot = sr.Slot;
 		}
 
-		if( source_bagslot==0xff && source_slot < INVENTORY_SLOT_ITEM_START && pDestItem != NULL)
+		if( source_bagslot== 0xff && source_slot < INVENTORY_SLOT_ITEM_START && pDestItem != NULL)
 		{
 			sCheatLog.writefromsession(this,"Tried to equip an item from the guild bank (WPE HACK)");
 			SystemMessage("You don't have permission to do that.");
@@ -1635,7 +1635,7 @@ void Guild::SendGuildBankInfo(WorldSession * pClient)
 void Guild::SendGuildBank(WorldSession * pClient, GuildBankTab * pTab, int8 updated_slot1 /* = -1 */, int8 updated_slot2 /* = -1 */)
 {
 	size_t pos;
-	uint32 count=0;
+	uint32 count= 0;
 	WorldPacket data( SMSG_GUILD_BANK_LIST, 1300 );
 	GuildMember * pMember = pClient->GetPlayer()->getPlayerInfo()->guildMember;
 

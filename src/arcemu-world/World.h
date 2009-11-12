@@ -37,7 +37,7 @@ class Battleground;
 
 enum Rates
 {
-	RATE_HEALTH=0,// hp regen
+	RATE_HEALTH= 0,// hp regen
 	RATE_POWER1,  // mp regen
 	RATE_POWER2,  // rage (rate unused)
 	RATE_POWER3,  // focus regen (pets)
@@ -70,7 +70,7 @@ enum Rates
 
 enum IntRates
 {
-	INTRATE_SAVE=0,
+	INTRATE_SAVE= 0,
 	INTRATE_COMPRESSION,
 	INTRATE_PVPTIMER,
 	MAX_INTRATES
@@ -371,7 +371,7 @@ public:
 					if ( found==2 ) 
 					{
 						temp += _session->LocalizedWorldSrv((uint32) atoi((char*)num.c_str()) );
-						found=0;
+						found= 0;
 						num.clear();
 					}
 				}

@@ -255,7 +255,7 @@ StrandOfTheAncient::StrandOfTheAncient(MapMgr * mgr, uint32 id, uint32 lgroup, u
 		//char *crash = 0;
 		//*crash = 10;
 
-		for (i=0; i<2; i++) {
+		for (i= 0; i<2; i++) {
 			m_players[i].clear();
 			m_pendPlayers[i].clear();
 		}

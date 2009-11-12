@@ -24,7 +24,7 @@
 #define NUMBER_OF_GENERATORS 5
 Mutex * m_locks[NUMBER_OF_GENERATORS];
 CRandomMersenne * m_generators[NUMBER_OF_GENERATORS];
-uint32 counter=0;
+uint32 counter= 0;
 
 uint32 generate_seed()
 {
@@ -172,7 +172,7 @@ void CRandomMersenne::RandomInitByArray(uint32 seeds[], int length) {
 		mt[i] = (mt[i] ^ ((mt[i-1] ^ (mt[i-1] >> 30)) * 1664525UL)) + seeds[j] + j;
 		i++; j++;
 		if (i >= MERS_N) {mt[0] = mt[MERS_N-1]; i=1;}
-		if (j >= length) j=0;}
+		if (j >= length) j= 0;}
 	for (k = MERS_N-1; k; k--) {
 		mt[i] = (mt[i] ^ ((mt[i-1] ^ (mt[i-1] >> 30)) * 1566083941UL)) - i;
 		if (++i >= MERS_N) {mt[0] = mt[MERS_N-1]; i=1;}}
@@ -195,7 +195,7 @@ uint32 CRandomMersenne::BRandom() {
 		static const uint32 mag01[2] = {0, MERS_A};
 
 		int kk;
-		for (kk=0; kk < MERS_N-MERS_M; kk++) {    
+		for (kk= 0; kk < MERS_N-MERS_M; kk++) {    
 			y = (mt[kk] & UPPER_MASK) | (mt[kk+1] & LOWER_MASK);
 			mt[kk] = mt[kk+MERS_M] ^ (y >> 1) ^ mag01[y & 1];}
 

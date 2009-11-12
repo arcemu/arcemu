@@ -33,8 +33,8 @@ ObjectMgr::ObjectMgr()
 	m_mailid = 0;
 	m_hiPlayerGuid = 1;
 	m_hiCorpseGuid = 0;
-	m_hiArenaTeamId=0;
-	m_hiGuildId=0;
+	m_hiArenaTeamId= 0;
+	m_hiGuildId= 0;
 	m_ticketid = 0;
 	memset(m_InstanceBossInfoMap , 0, sizeof(InstanceBossInfoMap*) * NUM_MAPS);
 }
@@ -198,7 +198,7 @@ ObjectMgr::~ObjectMgr()
 		delete (*itr);
 
 	Log.Notice("ObjectMgr", "Deleting Boss Information...");
-	for(int i=0; i<NUM_MAPS; i++)
+	for(int i= 0; i<NUM_MAPS; i++)
 	{
 		if(this->m_InstanceBossInfoMap[i] != NULL)
 		{
@@ -404,8 +404,8 @@ void ObjectMgr::LoadPlayersInfo()
 			pn->lastZone=fields[6].GetUInt32();
 			pn->lastOnline=fields[7].GetUInt32();
 			pn->acct = fields[8].GetUInt32();
-			pn->m_Group=0;
-			pn->subGroup=0;
+			pn->m_Group= 0;
+			pn->subGroup= 0;
 			pn->m_loggedInPlayer= NULL;
 			pn->guild= NULL;
 			pn->guildRank= NULL;
@@ -739,7 +739,7 @@ void ObjectMgr::DelinkPlayerCorpses(Player *pOwner)
 
 void ObjectMgr::LoadGMTickets()
 {
-	QueryResult *result = CharacterDatabase.Query( "SELECT `guid`, `playerGuid`, `name`, `level`, `map`, `posX`, `posY`, `posZ`, `message`, `timestamp`, `deleted`, `assignedto`, `comment` FROM gm_tickets WHERE deleted=0" );
+	QueryResult *result = CharacterDatabase.Query( "SELECT `guid`, `playerGuid`, `name`, `level`, `map`, `posX`, `posY`, `posZ`, `message`, `timestamp`, `deleted`, `assignedto`, `comment` FROM gm_tickets WHERE deleted= 0" );
 
 	GM_Ticket *ticket;
 	if(result == 0)
@@ -2031,7 +2031,7 @@ void ObjectMgr::GenerateLevelUpInfo()
 
 			// Generate each level's information
 			uint32 MaxLevel = sWorld.m_genLevelCap + 1;
-			LevelInfo* lvl=0, lastlvl;
+			LevelInfo* lvl= 0, lastlvl;
 			lastlvl.HP = PCI->health;
 			lastlvl.Mana = PCI->mana;
 			lastlvl.Stat[0] = PCI->strength;
@@ -3023,7 +3023,7 @@ void ObjectMgr::HandleMonsterSayEvent(Creature * pCreature, MONSTER_SAY_EVENTS E
 						++gEnd;
 						*test = 0x00;
 						newText = text;
-						newText += (CurrentTarget->getGender()==0) ? g0 : g1;
+						newText += (CurrentTarget->getGender()== 0) ? g0 : g1;
 						newText += gEnd;
 					}
 				}

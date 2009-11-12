@@ -63,8 +63,8 @@ public:
 		oldguid = 0;
 		guidmask = 0;
 
-		*((uint32*)guidfields)=0;
-		*((uint32*)&guidfields[4])=0;
+		*((uint32*)guidfields)= 0;
+		*((uint32*)&guidfields[4])= 0;
 		compiled = false;
 		fieldcount = 0;
 	}
@@ -148,7 +148,7 @@ private:
 
 		fieldcount = 0;
 
-		for(uint32 x=0;x<8;x++)
+		for(uint32 x= 0;x<8;x++)
 		{
 #ifdef USING_BIG_ENDIAN
 			uint8 p = ((uint8*)&t)[x];

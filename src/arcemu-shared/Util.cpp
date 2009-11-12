@@ -185,11 +185,11 @@ void MakeIntStringNoZero(char * buf, int num)
 string ConvertTimeStampToString(uint32 timestamp)
 {
 	int seconds = (int)timestamp;
-	int mins=0;
-	int hours=0;
-	int days=0;
-	int months=0;
-	int years=0;
+	int mins= 0;
+	int hours= 0;
+	int days= 0;
+	int months= 0;
+	int years= 0;
 	if(seconds >= 60)
 	{
 		mins = seconds / 60;
@@ -358,7 +358,7 @@ SERVER_DECL bool _IsStringUTF8(const char *str)
     long iLen = (long)strlen(str);
  
     cOctets= 0;
-    for( i=0; i <iLen; i++ ) {
+    for( i= 0; i <iLen; i++ ) {
  
      chr = (unsigned char)str[i];
  

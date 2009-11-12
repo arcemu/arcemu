@@ -197,7 +197,7 @@ public:
 
 	//void Create ( uint32 display_id, uint8 state, uint32 obj_field_entry, float scale, uint16 type, uint16 faction, uint32 mapid, float x, float y, float z, float ang );
    // void Create ( uint32 mapid, float x, float y, float z, float ang);
-	bool CreateFromProto(uint32 entry,uint32 mapid, float x, float y, float z, float ang, float r0=0.0f, float r1=0.0f, float r2=0.0f, float r3=0.0f, uint32 overrides=0);
+	bool CreateFromProto(uint32 entry,uint32 mapid, float x, float y, float z, float ang, float r0= 0.0f, float r1= 0.0f, float r2= 0.0f, float r3= 0.0f, uint32 overrides= 0);
    
 	bool Load(GOSpawn *spawn);
 

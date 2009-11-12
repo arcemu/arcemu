@@ -402,11 +402,11 @@ void LogonCommHandler::LoadRealmConfiguration()
 			uint32 type;
 
 			// process realm type
-			if( stricmp(rt.c_str(), "pvp")==0 )
+			if( stricmp(rt.c_str(), "pvp")== 0 )
 				type = REALMTYPE_PVP;
-			else if( stricmp(rt.c_str(), "rp")==0 )
+			else if( stricmp(rt.c_str(), "rp")== 0 )
 				type = REALMTYPE_RP;
-			else if( stricmp(rt.c_str(), "rppvp")==0 )
+			else if( stricmp(rt.c_str(), "rppvp")== 0 )
 				type = REALMTYPE_RPPVP;
 			else
 				type = REALMTYPE_NORMAL;

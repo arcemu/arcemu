@@ -208,7 +208,7 @@ public:
 		m_searchInProgress=true;
 		m_container= NULL;
 		m_currentItem= NULL;
-		m_slot=0;
+		m_slot= 0;
 		Increment();
 	}
 

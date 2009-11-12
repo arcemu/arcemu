@@ -239,7 +239,7 @@ uint32 Object::BuildCreateUpdateBlockForPlayer(ByteBuffer *data, Player *target)
 		// gameobject/dynamicobject
 	case TYPEID_GAMEOBJECT:
 		flags = 0x0350;
-		if( m_uint32Values[GAMEOBJECT_DISPLAYID]==3831 ) flags=0x0252; //Deeprun Tram proper flags as of 3.2.0.
+		if( m_uint32Values[GAMEOBJECT_DISPLAYID]==3831 ) flags= 0x0252; //Deeprun Tram proper flags as of 3.2.0.
 		break;
 
 	case TYPEID_DYNAMICOBJECT:
@@ -592,7 +592,7 @@ void Object::_BuildMovementUpdate(ByteBuffer * data, uint16 flags, uint32 flags2
 
 		if( flags2 & MOVEFLAG_SPLINE_MOVER ) // 0x4000000
 		{
-			int err1, err2; err2=0; err1=10/err2; //FAIL please with divide by zero :)
+			int err1, err2; err2= 0; err1=10/err2; //FAIL please with divide by zero :)
 		}
 
 		if( m_walkSpeed == 0 )
@@ -616,7 +616,7 @@ void Object::_BuildMovementUpdate(ByteBuffer * data, uint16 flags, uint32 flags2
 
 		if( flags2 & 0x08000000 ) //VLack: On Mangos this is a nice spline movement code, but we never had such... Also, at this point we haven't got this flag, that's for sure, but fail just in case...
 		{
-			int err1, err2; err2=0; err1=10/err2; //FAIL please with divide by zero :)
+			int err1, err2; err2= 0; err1=10/err2; //FAIL please with divide by zero :)
 		}
 	}
 	else //----------------------------------- No UPDATEFLAG_LIVING -----------------------------------
@@ -1527,7 +1527,7 @@ void Object::RemoveFlag( const uint32 index, uint32 oldFlag )
 	ASSERT( index < m_valuesCount );
 
 	//no change -> no update
-	if((m_uint32Values[ index ] & oldFlag)==0)
+	if((m_uint32Values[ index ] & oldFlag)== 0)
 		return;
 
 	m_uint32Values[ index ] &= ~oldFlag;
@@ -1610,7 +1610,7 @@ float Object::calcAngle( float Position1X, float Position1Y, float Position2X, f
 {
 	float dx = Position2X-Position1X;
 	float dy = Position2Y-Position1Y;
-	double angle=0.0f;
+	double angle= 0.0f;
 
 	// Calculate angle
 	if (dx == 0.0)
@@ -1650,7 +1650,7 @@ float Object::calcRadAngle( float Position1X, float Position1Y, float Position2X
 {
 	double dx = double(Position2X-Position1X);
 	double dy = double(Position2Y-Position1Y);
-	double angle=0.0;
+	double angle= 0.0;
 
 	// Calculate angle
 	if (dx == 0.0)
@@ -2718,7 +2718,7 @@ void Object::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
 										//since group is small we can afford to do this rather then recheck again the whole active player set
 										Player *active_player_list[MAX_GROUP_SIZE_RAID];
 										Player *pGroupGuy = NULL;
-										int active_player_count=0;
+										int active_player_count= 0;
 										GroupMembersSet::iterator itr;
 										pGroup->Lock();
 										for(uint32 i = 0; i < pGroup->GetSubGroupCount(); ++i) {
@@ -3041,7 +3041,7 @@ void Object::SpellNonMeleeDamageLog(Unit *pVictim, uint32 spellID, uint32 damage
 		{
 //------------------------------critical strike chance--------------------------------------
 			// lol ranged spells were using spell crit chance
-			float CritChance=0.0f;
+			float CritChance= 0.0f;
 			if( spellInfo->is_ranged_spell )
 			{
 

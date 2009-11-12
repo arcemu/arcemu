@@ -956,7 +956,7 @@ bool ChatHandler::HandleSQLQueryCommand(const char* args, WorldSession *m_sessio
 				do 
 				{
 					field = qResult->Fetch();
-					for(uint32 i=0;i<(qResult->GetFieldCount());i++)
+					for(uint32 i= 0;i<(qResult->GetFieldCount());i++)
 					{
 						//Constructing the line
 						line+= field[i].GetString();

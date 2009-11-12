@@ -62,7 +62,7 @@ CBattlegroundManager::CBattlegroundManager()
 
 	sEventMgr.AddEvent(this, &CBattlegroundManager::EventQueueUpdate, EVENT_BATTLEGROUND_QUEUE_UPDATE, 15000, 0,0);
 
-	for (i=0; i<BATTLEGROUND_NUM_TYPES; i++) {
+	for (i= 0; i<BATTLEGROUND_NUM_TYPES; i++) {
 		m_instances[i].clear();
 		m_maxBattlegroundId[i] = 0;
 	}
@@ -326,8 +326,8 @@ uint32 CBattlegroundManager::GetArenaGroupQInfo(Group * group, int type, uint32 
 	ArenaTeam *team;
 	ArenaTeamMember *atm;
 	Player *plr;
-	uint32 count=0;
-	uint32 rating=0;
+	uint32 count= 0;
+	uint32 rating= 0;
 
 	if (group == NULL || group->GetLeader() == NULL) return 0;
 
@@ -651,7 +651,7 @@ void CBattlegroundManager::EventQueueUpdate(bool forceStart)
 			continue;
 		}
 
-		for (j=0; j<(uint32)m_queuedGroups[i].size(); j++)
+		for (j= 0; j<(uint32)m_queuedGroups[i].size(); j++)
 		{
 			group1 = group2 = NULL;
 			n =	RandomUInt((uint32)m_queuedGroups[i].size()) - 1;
@@ -757,7 +757,7 @@ void CBattlegroundManager::RemovePlayerFromQueues(Player * plr)
 
 	plr->m_bgIsQueued = false;
 	plr->m_bgTeam=plr->GetTeam();
-	plr->m_pendingBattleground=0;
+	plr->m_pendingBattleground= 0;
 	SendBattlefieldStatus(plr,0,0,0,0,0,0);
 	m_queueLock.Release();
 
@@ -1084,7 +1084,7 @@ void CBattleground::RemovePendingPlayer(Player * plr)
 
 	/* send a null bg update (so they don't join) */
 	BattlegroundManager.SendBattlefieldStatus(plr, 0, 0, 0, 0, 0,0);
-	plr->m_pendingBattleground =0;
+	plr->m_pendingBattleground = 0;
 	plr->m_bgTeam=plr->GetTeam();
 	
 	m_mainLock.Release();
@@ -1794,7 +1794,7 @@ void CBattleground::RemovePlayerFromResurrect(Player * plr, Creature * spirit_he
 	map<Creature*,set<uint32> >::iterator itr = m_resurrectMap.find(spirit_healer);
 	if(itr != m_resurrectMap.end())
 		itr->second.erase(plr->GetLowGUID());
-	plr->m_areaSpiritHealer_guid=0;
+	plr->m_areaSpiritHealer_guid= 0;
 	m_mainLock.Release();
 }
 
@@ -1917,7 +1917,7 @@ void CBattlegroundManager::HandleArenaJoin(WorldSession * m_session, uint32 Batt
 			pGroup->Lock();
 			for(itx = pGroup->GetSubGroup(0)->GetGroupMembersBegin(); itx != pGroup->GetSubGroup(0)->GetGroupMembersEnd(); ++itx)
 			{
-				if(maxplayers==0)
+				if(maxplayers== 0)
 				{
 					m_session->SystemMessage(m_session->LocalizedWorldSrv(58));
 					pGroup->Unlock();

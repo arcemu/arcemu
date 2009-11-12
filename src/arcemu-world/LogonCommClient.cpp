@@ -36,7 +36,7 @@ LogonCommClientSocket::LogonCommClientSocket(SOCKET fd) : Socket(fd, 724288, 262
 	// do nothing
 	last_ping = last_pong = (uint32)UNIXTIME;
 	remaining = opcode = 0;
-	_id=0;
+	_id= 0;
 	latency = 0;
 	use_crypto = false;
 	authenticated = 0;

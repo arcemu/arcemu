@@ -149,7 +149,7 @@ void Vehicle::SendRideSpellPacket(Player * player)
 	data << uint32(0);
 	data << uint32(0x00000101);
 
-	for(uint32 i=0; i<10; ++i)
+	for(uint32 i= 0; i<10; ++i)
 	{
 		data << uint16(0);
 		data << uint8(0);
@@ -168,7 +168,7 @@ void Vehicle::AddPassenger(Player * player, int8 seat)
 
 	if (seat == -1) //choose a seat for us
 	{
-		for (uint8 i=0; i < GetOccupancyLimit(); i++)
+		for (uint8 i= 0; i < GetOccupancyLimit(); i++)
 			if (m_passengers[i] == NULL)
 			{
 				seat = i;
@@ -319,7 +319,7 @@ void Vehicle::MoveVehicle(float x, float y, float z, float o)
 	SetPosition(x, y, z, o);
 
 	int8 passengercount = GetPassengerCount();
-	for (int8 i=0; i < passengercount; ++i)
+	for (int8 i= 0; i < passengercount; ++i)
 		if (m_passengers[i] != NULL)
 			m_passengers[i]->SetPosition(x, y, z, o);
 }
@@ -329,7 +329,7 @@ void Vehicle::SetDeathState(DeathState s)
 	Creature::setDeathState(s);
 
 	int8 passengercount = GetPassengerCount();
-	for (int8 i=0; i < passengercount; ++i)
+	for (int8 i= 0; i < passengercount; ++i)
 		if (m_passengers[i] != NULL)
 			RemovePassenger(m_passengers[i]);
 }

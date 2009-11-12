@@ -54,7 +54,7 @@ MapMgr::MapMgr(Map *map, uint32 mapId, uint32 instanceid) : CellHandler<MapCell>
 	m_GOStorage = (GameObject**)malloc(sizeof(GameObject*) * m_GOArraySize);
 	memset(m_GOStorage,0,sizeof(GameObject*)*m_GOArraySize);
 	m_GOHighGuid = m_CreatureHighGuid = 0;
-	m_DynamicObjectHighGuid=0;
+	m_DynamicObjectHighGuid= 0;
 	lastUnitUpdate = getMSTime();
 	lastGameobjectUpdate = getMSTime();
 	m_battleground = NULL;
@@ -63,7 +63,7 @@ MapMgr::MapMgr(Map *map, uint32 mapId, uint32 instanceid) : CellHandler<MapCell>
 	m_event_Instanceid = eventHolder.GetInstanceID();
 	forced_expire = false;
 	InactiveMoveTime = 0;
-	mLoopCounter=0;
+	mLoopCounter= 0;
 	pInstance = NULL;
 	thread_kill_only = false;
 	thread_running = false;
@@ -447,7 +447,7 @@ void MapMgr::PushObject(Object *obj)
 		/* Add the map wide objects */
 		if(_mapWideStaticObjects.size())
 		{
-			uint32 globalcount=0;
+			uint32 globalcount= 0;
 			if(!buf)
 				buf = new ByteBuffer(300);
 
@@ -2231,7 +2231,7 @@ float MapMgr::GetFirstZWithCPZ( float x, float y, float z )
     float posZ = NO_WMO_HEIGHT;
     for( int i = Z_SEARCH_RANGE; i >= -Z_SEARCH_RANGE; i-- )
 	{
-		//if ( i==0 && !IsUnderground(x,y,z) ) return GetBaseMap()->GetLandHeight(x, y);
+		//if ( i== 0 && !IsUnderground(x,y,z) ) return GetBaseMap()->GetLandHeight(x, y);
         posZ = CollideInterface.GetHeight( GetMapId(), x, y, z + ( float )i );
         if( posZ != NO_WMO_HEIGHT )
             break;

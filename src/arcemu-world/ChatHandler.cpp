@@ -139,7 +139,7 @@ void WorldSession::HandleMessagechatOpcode( WorldPacket & recv_data )
 			recv_data >> msg;
 			pMsg=msg.c_str();
 			//g_chatFilter->ParseEscapeCodes((char*)pMsg,true);
-			pMisc=0;
+			pMisc= 0;
 			break;
 		case CHAT_MSG_WHISPER:
 			recv_data >> to >> msg;
@@ -182,11 +182,11 @@ void WorldSession::HandleMessagechatOpcode( WorldPacket & recv_data )
 	case CHAT_MSG_EMOTE:
 		{
 			if(sWorld.interfaction_chat && lang > 0)
-				lang=0;
+				lang= 0;
 
-			if(GetPlayer()->m_modlanguage >=0)
+			if(GetPlayer()->m_modlanguage >= 0)
 				data = sChatHandler.FillMessageData( CHAT_MSG_EMOTE, GetPlayer()->m_modlanguage,  msg.c_str(), _player->GetGUID(), _player->bGMTagOn ? 4 : 0 );
-			else if (lang==0 && sWorld.interfaction_chat)
+			else if (lang== 0 && sWorld.interfaction_chat)
 				data = sChatHandler.FillMessageData( CHAT_MSG_EMOTE, CanUseCommand('0') ? LANG_UNIVERSAL : lang,  msg.c_str(), _player->GetGUID(), _player->bGMTagOn ? 4 : 0 );
 			else	
 				data = sChatHandler.FillMessageData( CHAT_MSG_EMOTE, CanUseCommand('c') ? LANG_UNIVERSAL : lang,  msg.c_str(), _player->GetGUID(), _player->bGMTagOn ? 4 : 0 );
@@ -199,7 +199,7 @@ void WorldSession::HandleMessagechatOpcode( WorldPacket & recv_data )
 	case CHAT_MSG_SAY:
 		{
 			if(sWorld.interfaction_chat && lang > 0)
-				lang=0;
+				lang= 0;
 
 			if (sChatHandler.ParseCommands(msg.c_str(), this) > 0)
 				break;
@@ -210,7 +210,7 @@ void WorldSession::HandleMessagechatOpcode( WorldPacket & recv_data )
 				return;
 			}
 
-			if(GetPlayer()->m_modlanguage >=0)
+			if(GetPlayer()->m_modlanguage >= 0)
 			{
 				data = sChatHandler.FillMessageData( CHAT_MSG_SAY, GetPlayer()->m_modlanguage,  msg.c_str(), _player->GetGUID(), _player->bGMTagOn ? 4 : 0 );
 				GetPlayer()->SendMessageToSet( data, true );
@@ -220,7 +220,7 @@ void WorldSession::HandleMessagechatOpcode( WorldPacket & recv_data )
 				if(lang > 0 && LanguageSkills[lang] && _player->_HasSkillLine(LanguageSkills[lang]) == false)
 					return;
 
-				if(lang==0 && !CanUseCommand('c') && !sWorld.interfaction_chat)
+				if(lang== 0 && !CanUseCommand('c') && !sWorld.interfaction_chat)
 					return;
 
 				data = sChatHandler.FillMessageData( CHAT_MSG_SAY, lang, msg.c_str(), _player->GetGUID(), _player->bGMTagOn ? 4 : 0 );
@@ -243,7 +243,7 @@ void WorldSession::HandleMessagechatOpcode( WorldPacket & recv_data )
 				break;
 
 			if(sWorld.interfaction_chat && lang > 0)
-				lang=0;
+				lang= 0;
 
 			if(g_chatFilter->Parse(msg) == true)
 			{
@@ -254,9 +254,9 @@ void WorldSession::HandleMessagechatOpcode( WorldPacket & recv_data )
 			Group *pGroup = _player->GetGroup();
 			if(pGroup == NULL) break;
 			
-			if(GetPlayer()->m_modlanguage >=0)
+			if(GetPlayer()->m_modlanguage >= 0)
 				data=sChatHandler.FillMessageData( type, GetPlayer()->m_modlanguage,  msg.c_str(), _player->GetGUID(), _player->bGMTagOn ? 4 : 0 );
-			else if(lang==0 && sWorld.interfaction_chat)
+			else if(lang== 0 && sWorld.interfaction_chat)
 				data=sChatHandler.FillMessageData( type, (CanUseCommand('0') && lang != -1) ? LANG_UNIVERSAL : lang, msg.c_str(), _player->GetGUID(), _player->bGMTagOn ? 4 : 0);
 			else
 				data=sChatHandler.FillMessageData( type, (CanUseCommand('c') && lang != -1) ? LANG_UNIVERSAL : lang, msg.c_str(), _player->GetGUID(), _player->bGMTagOn ? 4 : 0);
@@ -331,7 +331,7 @@ void WorldSession::HandleMessagechatOpcode( WorldPacket & recv_data )
 	case CHAT_MSG_YELL:
 		{
 			if(sWorld.interfaction_chat && lang > 0)
-				lang=0;
+				lang= 0;
 
 			if (sChatHandler.ParseCommands(msg.c_str(), this) > 0)
 				break;
@@ -344,13 +344,13 @@ void WorldSession::HandleMessagechatOpcode( WorldPacket & recv_data )
 			if(lang > 0 && LanguageSkills[lang] && _player->_HasSkillLine(LanguageSkills[lang]) == false)
 				return;
 
-			if(lang==0 && sWorld.interfaction_chat)
+			if(lang== 0 && sWorld.interfaction_chat)
 				data = sChatHandler.FillMessageData( CHAT_MSG_YELL, (CanUseCommand('0') && lang != -1) ? LANG_UNIVERSAL : lang,  msg.c_str(), _player->GetGUID(), _player->bGMTagOn ? 4 : 0 );
 
-			else if(lang==0 && !CanUseCommand('c'))
+			else if(lang== 0 && !CanUseCommand('c'))
 				return;
 
-			else if(GetPlayer()->m_modlanguage >=0)
+			else if(GetPlayer()->m_modlanguage >= 0)
 				data = sChatHandler.FillMessageData( CHAT_MSG_YELL, GetPlayer()->m_modlanguage,  msg.c_str(), _player->GetGUID(), _player->bGMTagOn ? 4 : 0 );
 			else
 				data = sChatHandler.FillMessageData( CHAT_MSG_YELL, (CanUseCommand('c') && lang != -1) ? LANG_UNIVERSAL : lang,  msg.c_str(), _player->GetGUID(), _player->bGMTagOn ? 4 : 0 );
@@ -361,7 +361,7 @@ void WorldSession::HandleMessagechatOpcode( WorldPacket & recv_data )
 	case CHAT_MSG_WHISPER:
 		{
 			if(sWorld.interfaction_chat && lang > 0)
-				lang=0;
+				lang= 0;
 			if(g_chatFilter->Parse(msg) == true)
 			{
 				SystemMessage("Your chat message was blocked by a server-side filter.");
@@ -401,17 +401,17 @@ void WorldSession::HandleMessagechatOpcode( WorldPacket & recv_data )
 				delete data;
 				break;
 			}
-			else if(lang==0 && sWorld.interfaction_chat)
+			else if(lang== 0 && sWorld.interfaction_chat)
 			{
 				data = sChatHandler.FillMessageData( CHAT_MSG_WHISPER, ((CanUseCommand('0') || player->GetSession()->CanUseCommand('0')) && lang != -1) ? LANG_UNIVERSAL : lang,  msg.c_str(), _player->GetGUID(), _player->bGMTagOn ? 4 : 0 );
 				player->GetSession()->SendPacket(data);
 				delete data;
 			}
-			else if(lang==0 && !CanUseCommand('c'))
+			else if(lang== 0 && !CanUseCommand('c'))
 				return;
 			else
 			{
-				if(GetPlayer()->m_modlanguage >=0)
+				if(GetPlayer()->m_modlanguage >= 0)
 					data = sChatHandler.FillMessageData( CHAT_MSG_WHISPER, GetPlayer()->m_modlanguage,  msg.c_str(), _player->GetGUID(), _player->bGMTagOn ? 4 : 0 );
 				else
 					data = sChatHandler.FillMessageData( CHAT_MSG_WHISPER, ((CanUseCommand('c') || player->GetSession()->CanUseCommand('c')) && lang != -1) ? LANG_UNIVERSAL : lang,  msg.c_str(), _player->GetGUID(), _player->bGMTagOn ? 4 : 0 );

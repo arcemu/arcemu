@@ -164,11 +164,11 @@ Creature::Creature(uint64 guid)
 
 	m_quests = NULL;
 	proto = NULL;
-	spawnid=0;
+	spawnid= 0;
 
 	creature_info= NULL;
-	m_H_regenTimer=0;
-	m_P_regenTimer=0;
+	m_H_regenTimer= 0;
+	m_P_regenTimer= 0;
 	m_useAI = true;
 	mTaxiNode = 0;
 
@@ -180,20 +180,20 @@ Creature::Creature(uint64 guid)
     m_enslaveCount = 0;
 	m_enslaveSpell = 0;
 
-	for(uint32 x=0;x<7;x++)
+	for(uint32 x= 0;x<7;x++)
 	{
-		FlatResistanceMod[x]=0;
-		BaseResistanceModPct[x]=0;
-		ResistanceModPct[x]=0;
-		ModDamageDone[x]=0;
+		FlatResistanceMod[x]= 0;
+		BaseResistanceModPct[x]= 0;
+		ResistanceModPct[x]= 0;
+		ModDamageDone[x]= 0;
 		ModDamageDonePct[x]=1.0;
 	}
 
-	for(uint32 x=0;x<5;x++)
+	for(uint32 x= 0;x<5;x++)
 	{
-		TotalStatModPct[x]=0;
-		StatModPct[x]=0;
-		FlatStatMod[x]=0;
+		TotalStatModPct[x]= 0;
+		StatModPct[x]= 0;
+		FlatStatMod[x]= 0;
 	}
 
 	totemOwner = NULL;
@@ -227,7 +227,7 @@ Creature::Creature(uint64 guid)
 	m_base_runSpeed = m_runSpeed;
 	m_base_walkSpeed = m_walkSpeed;
 	m_noRespawn=false;
-	m_respawnTimeOverride=0;
+	m_respawnTimeOverride= 0;
     m_canRegenerateHP = true;
 	m_transportGuid = 0;
 	m_transportPosition = NULL;
@@ -1110,7 +1110,7 @@ void Creature::ModAvItemAmount(uint32 itemid, uint32 value)
 			{
 				if(value > itr->available_amount)	// shouldn't happen
 				{
-					itr->available_amount=0;
+					itr->available_amount= 0;
 					return;
 				}
 				else
@@ -1129,8 +1129,8 @@ void Creature::UpdateItemAmount(uint32 itemid)
 	{
 		if(itr->itemid == itemid)
 		{
-			if (itr->max_amount==0)		// shouldn't happen
-				itr->available_amount=0;
+			if (itr->max_amount== 0)		// shouldn't happen
+				itr->available_amount= 0;
 			else
 			{
 				itr->available_amount = itr->max_amount;
@@ -1445,9 +1445,9 @@ bool Creature::Load(CreatureSpawn *spawn, uint32 mode, MapInfo *info)
 	 m_aiInterface->m_waypoints=objmgr.GetWayPointMap(spawn->id);
 
 	//load resistances
-	for(uint32 x=0;x<7;x++)
+	for(uint32 x= 0;x<7;x++)
 		BaseResistance[x]=GetUInt32Value(UNIT_FIELD_RESISTANCES+x);
-	for(uint32 x=0;x<5;x++)
+	for(uint32 x= 0;x<5;x++)
 		BaseStats[x]=GetUInt32Value(UNIT_FIELD_STAT0+x);
 
 	BaseDamage[0]=GetFloatValue(UNIT_FIELD_MINDAMAGE);
@@ -1672,9 +1672,9 @@ void Creature::Load(CreatureProto * proto_, float x, float y, float z, float o)
 		auctionHouse = sAuctionMgr.GetAuctionHouse(GetEntry());
 
 	//load resistances
-	for(uint32 x=0;x<7;x++)
+	for(uint32 x= 0;x<7;x++)
 		BaseResistance[x]=GetUInt32Value(UNIT_FIELD_RESISTANCES+x);
-	for(uint32 x=0;x<5;x++)
+	for(uint32 x= 0;x<5;x++)
 		BaseStats[x]=GetUInt32Value(UNIT_FIELD_STAT0+x);
 
 	BaseDamage[0]=GetFloatValue(UNIT_FIELD_MINDAMAGE);
@@ -1808,7 +1808,7 @@ void Creature::OnPushToWorld()
 		for(std::vector<CreatureItem>::iterator itr = m_SellItems->begin(); itr != m_SellItems->end(); ++itr)
 		{
 				if (itr->max_amount == 0)
-					itr->available_amount=0;
+					itr->available_amount= 0;
 				else if (itr->available_amount<itr->max_amount)
 					sEventMgr.AddEvent(this, &Creature::UpdateItemAmount, itr->itemid, EVENT_ITEM_UPDATE, VENDOR_ITEMS_UPDATE_TIME, 1,0);
 		}
@@ -1820,12 +1820,12 @@ void Creature::OnPushToWorld()
 void Creature::AISpellUpdate()
 {
 	//lower cooldowns
-	for (int i=0; i<4; i++)
+	for (int i= 0; i<4; i++)
 	{
 		if (AISpellsCooldown[i]>=500)
 			AISpellsCooldown[i]-=500;
 		else
-			AISpellsCooldown[i]=0;
+			AISpellsCooldown[i]= 0;
 	}
 
 	if (!IsInWorld() || !isAlive())
@@ -1862,15 +1862,15 @@ void Creature::AISpellUpdate()
 			GCD=1500;
 
 		//do we have a spell to use?
-		for (int i=0; i<4; i++)
+		for (int i= 0; i<4; i++)
 		{
 			if (this->GetProto()->AISpellsFlags & CREATURE_AI_FLAG_RANDOMCAST && !random_chosen)
 			{
 				//find the max spell
-				uint32 maxindex=0;
-				for (int j=0; j<4; j++)
+				uint32 maxindex= 0;
+				for (int j= 0; j<4; j++)
 				{
-					if (this->GetProto()->AISpells[j]==0)
+					if (this->GetProto()->AISpells[j]== 0)
 						break;
 					else
 						maxindex=j;
@@ -1883,10 +1883,10 @@ void Creature::AISpellUpdate()
 				random_chosen=true;
 			}
 
-			if (this->GetProto()->AISpells[i]==0)
+			if (this->GetProto()->AISpells[i]== 0)
 				continue;
 
-			if (AISpellsCooldown[i]==0) //we can cast?
+			if (AISpellsCooldown[i]== 0) //we can cast?
 			{
 				//get the spell
 				SpellEntry* newspell=dbcSpell.LookupEntry(this->GetProto()->AISpells[i]);
@@ -1933,7 +1933,7 @@ void Creature::AISpellUpdate()
 
 
 				//weve cast, set GCD
-				for (int j=0; j<4; j++)
+				for (int j= 0; j<4; j++)
 					if (AISpellsCooldown[j] < GCD)
 						AISpellsCooldown[j] = GCD;
 			}

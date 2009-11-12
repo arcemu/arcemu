@@ -204,7 +204,7 @@ Patch * PatchMgr::FindPatchForClient(uint32 Version, const char * Locality)
 	Patch * fallbackPatch = NULL;
 	for(i = 0; i < 4; ++i)
 		tmplocality[i]= static_cast<char>( tolower(Locality[i]) );
-	tmplocality[4]=0;
+	tmplocality[4]= 0;
 	ulocality = *(uint32*)tmplocality;
 
 	for(itr = m_patches.begin(); itr != m_patches.end(); ++itr)
@@ -213,7 +213,7 @@ Patch * PatchMgr::FindPatchForClient(uint32 Version, const char * Locality)
 		// saving a string compare ;)
 		if((*itr)->uLocality==ulocality)
 		{
-			if(fallbackPatch== NULL && (*itr)->Version==0)
+			if(fallbackPatch== NULL && (*itr)->Version== 0)
 				fallbackPatch = (*itr);
 			
 			if((*itr)->Version == Version)
@@ -300,7 +300,7 @@ bool PatchJob::Update()
 {
 	// don't update unless the write buffer is empty
 	m_client->BurstBegin();
-	if(m_client->GetWriteBuffer().GetSize()!=0)
+	if(m_client->GetWriteBuffer().GetSize()!= 0)
 	{
 		m_client->BurstEnd();
 		return true;

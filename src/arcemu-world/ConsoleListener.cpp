@@ -182,7 +182,7 @@ ConsoleSocket::~ConsoleSocket( )
 	if(m_requestNo)
 	{
 		ConsoleAuthMgr::getSingleton().SetRequest(m_requestNo, NULL);
-		m_requestNo=0;
+		m_requestNo= 0;
 	}
 }
 
@@ -275,7 +275,7 @@ void ConsoleSocket::OnDisconnect()
 	if(m_requestNo)
 	{
 		ConsoleAuthMgr::getSingleton().SetRequest(m_requestNo, NULL);
-		m_requestNo=0;
+		m_requestNo= 0;
 	}
 	if(m_state == STATE_LOGGED)
 	{
@@ -286,7 +286,7 @@ void ConsoleSocket::OnDisconnect()
 void ConsoleSocket::AuthCallback(bool result)
 {
 	ConsoleAuthMgr::getSingleton().SetRequest(m_requestNo, NULL);
-	m_requestNo=0;
+	m_requestNo= 0;
 
 	if( !result )
 	{

@@ -452,8 +452,8 @@ void WorldSession::HandleCharCreateOpcode( WorldPacket & recv_data )
 	pn->race = pNewChar->getRace();
 	pn->gender = pNewChar->getGender();
 	pn->acct = GetAccountId();
-	pn->m_Group=0;
-	pn->subGroup=0;
+	pn->m_Group= 0;
+	pn->subGroup= 0;
 	pn->m_loggedInPlayer= NULL;
 	pn->team = pNewChar->GetTeam ();
 	pn->guild= NULL;

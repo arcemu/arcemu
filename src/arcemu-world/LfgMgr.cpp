@@ -129,8 +129,8 @@ void LfgMgr::RemovePlayerFromLfgQueues(Player * pl)
 		if( pl->LfmDungeonId < MAX_DUNGEONS )
 			m_lookingForMore[pl->LfmDungeonId].remove(pl);
 
-		pl->LfmDungeonId=0;
-		pl->LfmType=0;
+		pl->LfmDungeonId= 0;
+		pl->LfmType= 0;
 	}
 
 	m_lock.Release();

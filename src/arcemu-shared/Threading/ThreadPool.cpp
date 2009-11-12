@@ -125,7 +125,7 @@ void CThreadPool::Startup()
 	int i;
 	int tcount = THREAD_RESERVE;
 
-	for(i=0; i < tcount; ++i)
+	for(i= 0; i < tcount; ++i)
 		StartThread(NULL);
 
 	Log.Debug("ThreadPool", "Startup, launched %u threads.", tcount);
@@ -153,7 +153,7 @@ void CThreadPool::IntegrityCheck()
 		// this means we requested more threads than we had in the pool last time.
         // spawn "gobbled" + THREAD_RESERVE extra threads.
 		uint32 new_threads = abs(gobbled) + THREAD_RESERVE;
-		_threadsEaten=0;
+		_threadsEaten= 0;
 
 		for(uint32 i = 0; i < new_threads; ++i)
 			StartThread(NULL);

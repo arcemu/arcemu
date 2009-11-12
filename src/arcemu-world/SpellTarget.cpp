@@ -254,7 +254,7 @@ void Spell::SpellTargetNULL(uint32 i, uint32 j)
 /// Spell Target Handling for type 0: Default targeting
 void Spell::SpellTargetDefault(uint32 i, uint32 j)
 {
-	if(j==0 || (m_caster->IsPet() && j==1))
+	if(j== 0 || (m_caster->IsPet() && j==1))
 	{
 		TargetsList* tmpMap=&m_targetUnits[i];
 

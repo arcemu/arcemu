@@ -1031,14 +1031,14 @@ void QuestMgr::OnQuestFinished(Player* plr, Quest* qst, Object *qst_giver, uint3
     
     BuildQuestComplete(plr, qst);
     CALL_QUESTSCRIPT_EVENT(qle, OnQuestComplete)(plr, qle);
-	for (uint32 x=0;x<4;x++)
+	for (uint32 x= 0;x<4;x++)
 	{
-		if (qst->required_spell[x]!=0)
+		if (qst->required_spell[x]!= 0)
 		{
 			if (plr->HasQuestSpell(qst->required_spell[x]))
 				plr->RemoveQuestSpell(qst->required_spell[x]);
 		}
-		else if (qst->required_mob[x]!=0)
+		else if (qst->required_mob[x]!= 0)
 		{
 			if (plr->HasQuestMob(qst->required_mob[x]))
 				plr->RemoveQuestMob(qst->required_mob[x]);

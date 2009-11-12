@@ -43,7 +43,7 @@ public:
 	void GuessFormat();
 	DBCFmat GuessFormat(int row, int col);
 	void FormatCSV(const char *filename, bool info = false);
-	void Lookup(char* out, int row, int col,char isstr=0,bool onlystr=false);
+	void Lookup(char* out, int row, int col,char isstr= 0,bool onlystr=false);
 	void LookupFormat(char* out, int row, int col);
 	void RowToStruct(void* out, int row);
 	bool IsLoaded() { return loaded; }

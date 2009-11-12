@@ -142,7 +142,7 @@ EyeOfTheStorm::EyeOfTheStorm(MapMgr * mgr, uint32 id, uint32 lgroup, uint32 t) :
 {
 	int i;
 
-	for (i=0; i<2; i++) {
+	for (i= 0; i<2; i++) {
 		m_players[i].clear();
 		m_pendPlayers[i].clear();
 	}
@@ -312,7 +312,7 @@ void EyeOfTheStorm::HookOnAreaTrigger(Player * plr, uint32 id)
 		return;
 
 	if(bonusid > -1){
-		uint32 spellid=0;
+		uint32 spellid= 0;
 		uint32 x = (uint32)bonusid;
 		if(EOTSm_buffs[x] && EOTSm_buffs[x]->IsInWorld())
 		{

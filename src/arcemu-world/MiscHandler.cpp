@@ -216,7 +216,7 @@ void WorldSession::HandleAutostoreLootItemOpcode( WorldPacket & recv_data )
 	/* any left yet? (for fishing bobbers) */
 	if(pGO && pGO->GetEntry() ==GO_FISHING_BOBBER)
 	{
-		int count=0;
+		int count= 0;
 		for(vector<__LootItem>::iterator itr = pLoot->items.begin(); itr != pLoot->items.end(); ++itr)
 			count += (*itr).iItemsCount;
 		if(!count)
@@ -282,7 +282,7 @@ void WorldSession::HandleLootMoneyOpcode( WorldPacket & recv_data )
 
 	uint32 money = pLoot->gold;
 
-	pLoot->gold=0;
+	pLoot->gold= 0;
 	WorldPacket data(1);
 	data.SetOpcode(SMSG_LOOT_CLEAR_MONEY);
 	// send to all looters
@@ -504,7 +504,7 @@ void WorldSession::HandleLootReleaseOpcode( WorldPacket & recv_data )
 				Lock* pLock = dbcLock.LookupEntry( pGO->GetInfo()->SpellFocus );
 				if( pLock )
 				{
-					for( uint32 i=0; i < 5; i++ )
+					for( uint32 i= 0; i < 5; i++ )
 					{
 						if( pLock->locktype[i] )
 						{
@@ -1201,7 +1201,7 @@ void WorldSession::HandleSetActionButtonOpcode(WorldPacket& recv_data)
 	uint16 action;
 	recv_data >> button >> action >> misc >> type;
 	sLog.outDebug( "BUTTON: %u ACTION: %u TYPE: %u MISC: %u", button, action, type, misc );
-	if(action==0)
+	if(action== 0)
 	{
 		sLog.outDebug( "MISC: Remove action from button %u", button );
 		//remove the action button from the db
@@ -1465,7 +1465,7 @@ void WorldSession::HandleGameObjectUse(WorldPacket & recv_data)
 		}break;
 	case GAMEOBJECT_TYPE_DOOR:
 		{
-			// cebernic modified this state =0 org =1
+			// cebernic modified this state = 0 org =1
 			if((obj->GetByte(GAMEOBJECT_BYTES_1, 0) == 0) ) //&& (obj->GetUInt32Value(GAMEOBJECT_FLAGS) == 33) )
 				obj->EventCloseDoor();
 			else
@@ -2216,12 +2216,12 @@ void WorldSession::HandleLootMasterGiveOpcode(WorldPacket& recv_data)
 	else
 		item->DeleteMe();
 
-	pLoot->items.at(slotid).iItemsCount=0;
+	pLoot->items.at(slotid).iItemsCount= 0;
 
 	// this gets sent to all looters
 	if (!pLoot->items.at(slotid).ffa_loot)
 	{
-		pLoot->items.at(slotid).iItemsCount=0;
+		pLoot->items.at(slotid).iItemsCount= 0;
 
 		// this gets sent to all looters
 		WorldPacket data(1);
@@ -2332,7 +2332,7 @@ void WorldSession::HandleOpenItemOpcode(WorldPacket &recv_data)
 
 		pItem->SetUInt32Value(ITEM_FIELD_GIFTCREATOR,0);
 		pItem->SetUInt32Value(OBJECT_FIELD_ENTRY,pItem->wrapped_item_id);
-		pItem->wrapped_item_id=0;
+		pItem->wrapped_item_id= 0;
 		pItem->SetProto(it);
 
 		if(it->Bonding==ITEM_BIND_ON_PICKUP)
@@ -2357,7 +2357,7 @@ void WorldSession::HandleOpenItemOpcode(WorldPacket &recv_data)
 
 	if(lock) // locked item
 	{
-		for(int i=0;i<5;i++)
+		for(int i= 0;i<5;i++)
 		{
 			if(lock->locktype[i] == 1 && lock->lockmisc[i] > 0)
 			{
@@ -2378,7 +2378,7 @@ void WorldSession::HandleOpenItemOpcode(WorldPacket &recv_data)
 				return;
 			}
 		}
-		for(int i=0;i<5;i++)
+		for(int i= 0;i<5;i++)
 			if(removeLockItems[i])
 				_player->GetItemInterface()->RemoveItemAmt(removeLockItems[i],1);
 	}
@@ -2539,7 +2539,7 @@ void WorldSession::HandleSetAutoLootPassOpcode(WorldPacket & recv_data)
 	if( _player->IsInWorld() )
 		_player->BroadcastMessage(_player->GetSession()->LocalizedWorldSrv(67), on ? _player->GetSession()->LocalizedWorldSrv(68) : _player->GetSession()->LocalizedWorldSrv(69));
 
-	_player->m_passOnLoot = (on!=0) ? true : false;
+	_player->m_passOnLoot = (on!= 0) ? true : false;
 }
 
 void WorldSession::HandleRemoveGlyph(WorldPacket & recv_data)

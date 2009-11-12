@@ -807,12 +807,12 @@ void Mailbox::FillTimePacket(WorldPacket& data)
 		}
 	}
 
-	if(c==0)
+	if(c== 0)
 	{
 #ifdef USING_BIG_ENDIAN
 		*(uint32*)(&data.contents()[0])=swap32(0xc7a8c000);
 #else
-		*(uint32*)(&data.contents()[0])=0xc7a8c000;
+		*(uint32*)(&data.contents()[0])= 0xc7a8c000;
 #endif
 	}
 	else

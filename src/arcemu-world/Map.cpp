@@ -58,11 +58,11 @@ Map::~Map()
 	Log.Notice("Map", "~Map %u", this->_mapId);
 	delete _terrain;
 
-	for(uint32 x=0;x<_sizeX;x++)
+	for(uint32 x= 0;x<_sizeX;x++)
 	{
 		if(spawns[x])
 		{
-			for(uint32 y=0;y<_sizeY;y++)
+			for(uint32 y= 0;y<_sizeY;y++)
 			{
 				if(spawns[x][y])
 				{	
@@ -193,7 +193,7 @@ void Map::LoadSpawns(bool reload)
 					cspawn->Item3SlotDisplay = fields[23].GetUInt32();
 					cspawn->CanFly = fields[24].GetUInt32();
 					cspawn->phase = fields[25].GetUInt32();
-					if( cspawn->phase == 0 ) cspawn->phase=0xFFFFFFFF;
+					if( cspawn->phase == 0 ) cspawn->phase= 0xFFFFFFFF;
 
 					spawns[cellx][celly]->CreatureSpawns.push_back(cspawn);
 					++CreatureSpawnCount;
@@ -228,9 +228,9 @@ void Map::LoadSpawns(bool reload)
 				cspawn->bytes2 = fields[13].GetUInt32();
 				cspawn->emote_state = fields[14].GetUInt32();
 				//cspawn->respawnNpcLink = fields[15].GetUInt32();
-				cspawn->channel_spell=0;
-				cspawn->channel_target_creature=0;
-				cspawn->channel_target_go=0;
+				cspawn->channel_spell= 0;
+				cspawn->channel_target_creature= 0;
+				cspawn->channel_target_go= 0;
 				cspawn->stand_state = fields[19].GetUInt16();
 				cspawn->MountedDisplayID = fields[20].GetUInt32();
 				cspawn->Item1SlotDisplay = fields[21].GetUInt32();
@@ -238,7 +238,7 @@ void Map::LoadSpawns(bool reload)
 				cspawn->Item3SlotDisplay = fields[23].GetUInt32();
 				cspawn->CanFly = fields[24].GetUInt32();
 				cspawn->phase = fields[25].GetUInt32();
-				if( cspawn->phase == 0 ) cspawn->phase=0xFFFFFFFF;
+				if( cspawn->phase == 0 ) cspawn->phase= 0xFFFFFFFF;
 				staticSpawns.CreatureSpawns.push_back(cspawn);
 				++CreatureSpawnCount;
 			}while(result->NextRow());
@@ -272,7 +272,7 @@ void Map::LoadSpawns(bool reload)
 				gspawn->scale = fields[14].GetFloat();
 				//gspawn->stateNpcLink = fields[15].GetUInt32();
 				gspawn->phase = fields[16].GetUInt32();
-				if( gspawn->phase == 0 ) gspawn->phase=0xFFFFFFFF;
+				if( gspawn->phase == 0 ) gspawn->phase= 0xFFFFFFFF;
 				gspawn->overrides = fields[17].GetUInt32();
 				staticSpawns.GOSpawns.push_back(gspawn);
 				++GameObjectSpawnCount;
@@ -308,7 +308,7 @@ void Map::LoadSpawns(bool reload)
 					gspawn->scale = fields[14].GetFloat();
 					//gspawn->stateNpcLink = fields[15].GetUInt32();
 					gspawn->phase = fields[16].GetUInt32();
-					if( gspawn->phase == 0 ) gspawn->phase=0xFFFFFFFF;
+					if( gspawn->phase == 0 ) gspawn->phase= 0xFFFFFFFF;
 					gspawn->overrides = fields[17].GetUInt32();
 
 					if( gspawn->overrides & GAMEOBJECT_MAPWIDE )

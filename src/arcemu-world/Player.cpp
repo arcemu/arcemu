@@ -267,14 +267,14 @@ mOutOfRangeIdCount(0)
 	SetFloatValue( PLAYER_RUNE_REGEN_1+2, 0.100000f );
 	SetFloatValue( PLAYER_RUNE_REGEN_1+3, 0.100000f );
 
-	for(i=0;i<3;i++)
+	for(i= 0;i<3;i++)
 	{
-		LfgType[i]=0;
-		LfgDungeonId[i]=0;
+		LfgType[i]= 0;
+		LfgDungeonId[i]= 0;
 	}
 
-	for(i=0;i<28;i++){
-		MechanicDurationPctMod[i]=0;
+	for(i= 0;i<28;i++){
+		MechanicDurationPctMod[i]= 0;
 	}
 
 	//Trade
@@ -439,8 +439,8 @@ mOutOfRangeIdCount(0)
 	StunDamageReductPct = 0;
 	isGuardianSpirit = false;
 	m_ModInterrMRegenPCT = 0;
-	m_ModInterrMRegen =0;
-	m_RegenManaOnSpellResist=0;
+	m_ModInterrMRegen = 0;
+	m_RegenManaOnSpellResist= 0;
 	m_rap_mod_pct = 0;
 	m_modblockabsorbvalue = 0;
 	m_modblockvaluefromspells = 0;
@@ -459,15 +459,15 @@ mOutOfRangeIdCount(0)
 	memset(&m_spellIndexTypeTargets, 0, sizeof(uint64)*NUM_SPELL_TYPE_INDEX);
 	m_base_runSpeed = m_runSpeed;
 	m_base_walkSpeed = m_walkSpeed;
-	m_arenateaminviteguid=0;
-	m_arenaPoints=0;
-	m_honorRolloverTime=0;
+	m_arenateaminviteguid= 0;
+	m_arenaPoints= 0;
+	m_honorRolloverTime= 0;
 	hearth_of_wild_pct = 0;
 	raidgrouponlysent=false;
-	loot.gold=0;
+	loot.gold= 0;
 	m_waterwalk=false;
 	m_setwaterwalk=false;
-	m_areaSpiritHealer_guid=0;
+	m_areaSpiritHealer_guid= 0;
 	m_CurrentTaxiPath= NULL;
 	m_setflycheat = false;
 	m_fallDisabledUntil = 0;
@@ -535,7 +535,7 @@ mOutOfRangeIdCount(0)
 	_splineMap.clear();
 
 	m_lastPotionId		= 0;
-	for (i=0; i<NUM_COOLDOWN_TYPES; i++) {
+	for (i= 0; i<NUM_COOLDOWN_TYPES; i++) {
 		m_cooldownMap[i].clear();
 	}
 //	m_achievement_points = 0;
@@ -863,7 +863,7 @@ bool Player::Create(WorldPacket& data )
 	SetUInt32Value(PLAYER_FIELD_COINAGE, sWorld.GoldStartAmount);
 
 
-	for(uint32 x=0;x<7;x++)
+	for(uint32 x= 0;x<7;x++)
 		SetFloatValue(PLAYER_FIELD_MOD_DAMAGE_DONE_PCT+x, 1.00);
 
 	SetUInt32Value(PLAYER_FIELD_WATCHED_FACTION_INDEX, 0xEEEEEEEE);
@@ -2166,7 +2166,7 @@ set<uint32>* Player::GetSummonSpells(uint32 Entry)
 
 void Player::_LoadPet(QueryResult * result)
 {
-	m_PetNumberMax=0;
+	m_PetNumberMax= 0;
 	if(!result)
 		return;
 
@@ -3395,7 +3395,7 @@ void Player::LoadFromDBProc(QueryResultVector & results)
 	{
 		end = strchr(start,',');
 		if(!end)break;
-		*end=0;
+		*end= 0;
 		//mSpells.insert(atol(start));
 		spProto = dbcSpell.LookupEntryForced(atol(start));
 //#define _language_fix_ 1
@@ -3430,7 +3430,7 @@ void Player::LoadFromDBProc(QueryResultVector & results)
 	{
 		end = strchr(start,',');
 		if(!end)break;
-		*end=0;
+		*end= 0;
 		spProto = dbcSpell.LookupEntryForced(atol(start));
 		if(spProto)
 			mDeletedSpells.insert(spProto->Id);
@@ -3449,25 +3449,25 @@ void Player::LoadFromDBProc(QueryResultVector & results)
 	{
 		end = strchr(start,',');
 		if(!end)break;
-		*end=0;
+		*end= 0;
 		id = atol(start);
 		start = end +1;
 
 		end = strchr(start,',');
 		if(!end)break;
-		*end=0;
+		*end= 0;
 		fflag = atol(start);
 		start = end +1;
 
 		end = strchr(start,',');
 		if(!end)break;
-		*end=0;
+		*end= 0;
 		basestanding = atoi(start);//atol(start);
 		start = end +1;
 
 		end = strchr(start,',');
 		if(!end)break;
-		*end=0;
+		*end= 0;
 		standing  = atoi(start);// atol(start);
 		start = end +1;
 
@@ -3493,22 +3493,22 @@ void Player::LoadFromDBProc(QueryResultVector & results)
 	for (uint8 s = 0; s < MAX_SPEC_COUNT; ++s)
 	{
 		start =  (char*)get_next_field.GetString();
-		Counter =0;
+		Counter = 0;
 		while(Counter < PLAYER_ACTION_BUTTON_COUNT)
 		{
 			end = strchr(start,',');
 			if(!end)break;
-			*end=0;
+			*end= 0;
 			m_specs[s].mActions[Counter].Action = (uint16)atol(start);
 			start = end +1;
 			end = strchr(start,',');
 			if(!end)break;
-			*end=0;
+			*end= 0;
 			m_specs[s].mActions[Counter].Misc = (uint8)atol(start);
 			start = end +1;
 			end = strchr(start,',');
 			if(!end)break;
-			*end=0;
+			*end= 0;
 			m_specs[s].mActions[Counter++].Type = (uint8)atol(start);
 			start = end +1;
 		}
@@ -3520,23 +3520,23 @@ void Player::LoadFromDBProc(QueryResultVector & results)
 	{
 		end = strchr(start,',');
 		if(!end)break;
-		*end=0;
+		*end= 0;
 		LoginAura la;
 		la.id = atol(start);
 		start = end +1;
 		end = strchr(start,',');
 		if(!end)break;
-		*end=0;
+		*end= 0;
 		la.dur = atol(start);
 		start = end +1;
 		end = strchr(start,',');
                 if(!end)break;
-                *end=0;
+                *end= 0;
                 la.positive = (start!= NULL);
                 start = end +1;
 		end = strchr(start,',');
 		if(!end)break;
-		*end=0;
+		*end= 0;
 		la.charges = atol(start);
 		start = end +1;
 		loginauras.push_back(la);
@@ -3549,7 +3549,7 @@ void Player::LoadFromDBProc(QueryResultVector & results)
 	{
 		end = strchr(start,',');
 		if(!end)break;
-		*end=0;
+		*end= 0;
 		m_finishedQuests.insert(atol(start));
 		start = end +1;
 	}
@@ -3594,7 +3594,7 @@ void Player::LoadFromDBProc(QueryResultVector & results)
 		{
 			end = strchr(start,',');
 			if(!end)break;
-			*end=0;
+			*end= 0;
 			m_specs[s].glyphs[glyphid] = (uint16)atol(start);
 			++glyphid;
 			start = end + 1;
@@ -3607,14 +3607,14 @@ void Player::LoadFromDBProc(QueryResultVector & results)
 			end = strchr(start,',');
 			if(!end)
 				break;
-			*end=0;
+			*end= 0;
 			uint32 talentid = atol(start);
 			start = end + 1;
 
 			end = strchr(start,',');
 			if(!end)
 				break;
-			*end=0;
+			*end= 0;
 			uint8 rank = (uint8)atol(start);
 			start = end + 1;
 
@@ -3637,7 +3637,7 @@ void Player::LoadFromDBProc(QueryResultVector & results)
 
 	HonorHandler::RecalculateHonorFields(this);
 
-	for(uint32 x=0;x<5;x++)
+	for(uint32 x= 0;x<5;x++)
 		BaseStats[x]=GetUInt32Value(UNIT_FIELD_STAT0+x);
 
 	_setFaction();
@@ -3748,7 +3748,7 @@ void Player::LoadFromDBProc(QueryResultVector & results)
 	// check for multiple gems with unique-equipped flag
 	uint32 count;
 	uint32 uniques[64];
-	int nuniques=0;
+	int nuniques= 0;
 
 	for( uint8 x = EQUIPMENT_SLOT_START; x < EQUIPMENT_SLOT_END; ++x )
 	{
@@ -3757,7 +3757,7 @@ void Player::LoadFromDBProc(QueryResultVector & results)
 
 		if( it != NULL )
 		{
-			for( count=0; count<it->GetSocketsCount(); count++ )
+			for( count= 0; count<it->GetSocketsCount(); count++ )
 			{
 				EnchantmentInstance *ei = it->GetEnchantment(2+count);
 
@@ -3770,7 +3770,7 @@ void Player::LoadFromDBProc(QueryResultVector & results)
 					{
 						int i;
 
-						for (i=0; i<nuniques; i++)
+						for (i= 0; i<nuniques; i++)
 						{
 							if (uniques[i] == ip->ItemId)
 							{
@@ -4145,7 +4145,7 @@ void Player::RemoveFromWorld()
 	//clear buyback
 	GetItemInterface()->EmptyBuyBack();
 
-	for(uint32 x=0;x<4;x++)
+	for(uint32 x= 0;x<4;x++)
 	{
 		if(m_TotemSlots[x])
 			m_TotemSlots[x]->TotemExpire();
@@ -4323,7 +4323,7 @@ void Player::_ApplyItemMods(Item* item, int16 slot, bool apply, bool justdrokedo
 
 			if( !set->RequiredSkillID || ( _GetSkillLineCurrent( set->RequiredSkillID, true ) >= set->RequiredSkillAmt ) )
 			{
-				for( uint32 x=0;x<8;x++)
+				for( uint32 x= 0;x<8;x++)
 				{
 					if( Set->itemscount==set->itemscount[x])
 					{//cast new spell
@@ -4983,7 +4983,7 @@ void Player::ResurrectPlayer()
 	// Zack : shit on grill. So auras should be removed on player death instead of making this :P
 	// We can afford this bullshit atm since auras are lost upon death -> no immunities
 	for(uint32 i = 0; i < 7; i++)
-		SchoolImmunityList[i]=0;
+		SchoolImmunityList[i]= 0;
 	
 	SpawnActivePet();
 }
@@ -5245,7 +5245,7 @@ void Player::RepopAtGraveyard(float ox, float oy, float oz, uint32 mapid)
 //	float mx=ox,my=oy;
 //	float last_distance=9e10;
 //
-//	for(uint32 x=0;x<entries;x++)
+//	for(uint32 x= 0;x<entries;x++)
 //	{
 //		g=sWorldSafeLocsStore.LookupEntry(x);
 //		if(g->mapid!=mymapid)continue;
@@ -5365,7 +5365,7 @@ void Player::_LoadTutorials(QueryResult * result)
 	if(result)
 	{
 		 Field *fields = result->Fetch();
-		 for (int iI=0; iI<8; iI++)
+		 for (int iI= 0; iI<8; iI++)
 			 m_Tutorials[iI] = fields[iI + 1].GetUInt32();
 	}
 	tutorialsDirty = false;
@@ -6212,7 +6212,7 @@ void Player::AddInRangeObject(Object* pObj)
 
 		if (GetSession() != NULL)
 		{
-			for (uint32 i=0; i<MAX_TOTAL_AURAS_START; ++i)
+			for (uint32 i= 0; i<MAX_TOTAL_AURAS_START; ++i)
 			{
 				if (pUnit->m_auras[i] != NULL)
 				{
@@ -6260,7 +6260,7 @@ void Player::OnRemoveInRangeObject(Object* pObj)
 		UnPossess();
 		if(m_currentSpell)
 			m_currentSpell->cancel();	   // cancel the spell
-		m_CurrentCharm=0;
+		m_CurrentCharm= 0;
 
 		if( p->m_temp_summon && p->GetTypeId() == TYPEID_UNIT )
 			static_cast< Creature* >( p )->SafeDelete();
@@ -6504,10 +6504,10 @@ void Player::SendLoot(uint64 guid,uint8 loot_type)
 
 
 	std::vector<__LootItem>::iterator iter=pLoot->items.begin();
-	uint32 count=0;
+	uint32 count= 0;
 	uint8 slottype = 0;
 
-	for(uint32 x=0;iter!=pLoot->items.end();iter++,x++)
+	for(uint32 x= 0;iter!=pLoot->items.end();iter++,x++)
 	{
 		if (iter->iItemsCount == 0)
 			continue;
@@ -6642,7 +6642,7 @@ void Player::SendLoot(uint64 guid,uint8 loot_type)
 			if(iter->roll == NULL && !iter->passed)
 			{
 				int32 ipid = 0;
-				uint32 factor=0;
+				uint32 factor= 0;
 				if(iter->iRandomProperty)
 					ipid=iter->iRandomProperty->ID;
 				else if(iter->iRandomSuffix)
@@ -6713,7 +6713,7 @@ void Player::EventAllowTiggerPort(bool enable)
 uint32 Player::CalcTalentResetCost(uint32 resetnum)
 {
 
-	if(resetnum ==0 )
+	if(resetnum == 0 )
 		return  10000;
 	else
 	{
@@ -6803,11 +6803,11 @@ int32 Player::CanShootRangedWeapon( uint32 spellid, Unit* target, bool autoshot 
 		SM_FFValue( this->SM_FRange, &maxr, spellinfo->SpellGroupType );
 		SM_PFValue( this->SM_PRange, &maxr, spellinfo->SpellGroupType );
 #ifdef COLLECTION_OF_UNTESTED_STUFF_AND_TESTERS
-		float spell_flat_modifers=0;
-		float spell_pct_modifers=0;
+		float spell_flat_modifers= 0;
+		float spell_pct_modifers= 0;
 		SM_FFValue(this->SM_FRange,&spell_flat_modifers,spellinfo->SpellGroupType);
 		SM_FFValue(this->SM_PRange,&spell_pct_modifers,spellinfo->SpellGroupType);
-		if(spell_flat_modifers!=0 || spell_pct_modifers!=0)
+		if(spell_flat_modifers!= 0 || spell_pct_modifers!= 0)
 			printf("!!!!!spell range bonus mod flat %f , spell range bonus pct %f , spell range %f, spell group %u\n",spell_flat_modifers,spell_pct_modifers,maxr,spellinfo->SpellGroupType);
 #endif
 	}
@@ -7376,7 +7376,7 @@ void Player::Reset_ToLevel1()
 	SetUInt32Value(PLAYER_CHARACTER_POINTS1,0);
 	// resetting level shouldn't change # of available professions (it doesn't change what professions are learned)...
 	// SetUInt32Value(PLAYER_CHARACTER_POINTS2,sWorld.MaxProfs);
-	for(uint32 x=0;x<7;x++)
+	for(uint32 x= 0;x<7;x++)
 		SetFloatValue(PLAYER_FIELD_MOD_DAMAGE_DONE_PCT+x, 1.00);
 
 }
@@ -7393,12 +7393,12 @@ void Player::CalcResistance(uint32 type)
 	pos+=FlatResistanceModifierPos[type];
 	neg+=FlatResistanceModifierNeg[type];
 	res=BaseResistance[type]+pos-neg;
-	if(type==0)res+=m_uint32Values[UNIT_FIELD_STAT1]*2;//fix armor from agi
-	if(res<0)res=0;
+	if(type== 0)res+=m_uint32Values[UNIT_FIELD_STAT1]*2;//fix armor from agi
+	if(res<0)res= 0;
 	pos+=(res*ResistanceModPctPos[type])/100;
 	neg+=(res*ResistanceModPctNeg[type])/100;
 	res=pos-neg+BaseResistance[type];
-	if(type==0)res+=m_uint32Values[UNIT_FIELD_STAT1]*2;//fix armor from agi
+	if(type== 0)res+=m_uint32Values[UNIT_FIELD_STAT1]*2;//fix armor from agi
 
 	// Dynamic aura 285 application, removing bonus
 	for( uint32 x = MAX_TOTAL_AURAS_START; x < MAX_TOTAL_AURAS_END; x++ )
@@ -7740,7 +7740,7 @@ void Player::JumpToEndTaxiNode(TaxiPath * path)
 void Player::RemoveSpellsFromLine(uint32 skill_line)
 {
 	uint32 cnt = dbcSkillLineSpell.GetNumRows();
-	for(uint32 i=0; i < cnt; i++)
+	for(uint32 i= 0; i < cnt; i++)
 	{
 		skilllinespell * sp = dbcSkillLineSpell.LookupRow(i);
 		if(sp)
@@ -7818,7 +7818,7 @@ void Player::RegenerateHealth( bool inCombat )
 	uint32 cur = GetUInt32Value(UNIT_FIELD_HEALTH);
 	uint32 mh = GetUInt32Value(UNIT_FIELD_MAXHEALTH);
 
-	if ( cur==0 ) return; // cebernic: bugfix dying but regenerated?
+	if ( cur== 0 ) return; // cebernic: bugfix dying but regenerated?
 
 	if(cur >= mh)
 		return;
@@ -7997,7 +7997,7 @@ void Player::AddItemsToWorld()
 
 			if(pItem->IsContainer() && GetItemInterface()->IsBagSlot(i))
 			{
-				for(uint32 e=0; e < pItem->GetProto()->ContainerSlots; e++)
+				for(uint32 e= 0; e < pItem->GetProto()->ContainerSlots; e++)
 				{
 					Item *item = (static_cast<Container*>( pItem ))->GetItem(static_cast<int16>( e ));
 					if(item)
@@ -8034,7 +8034,7 @@ void Player::RemoveItemsFromWorld()
 
 			if(pItem->IsContainer() && GetItemInterface()->IsBagSlot(static_cast<int16>( i )))
 			{
-				for(uint32 e=0; e < pItem->GetProto()->ContainerSlots; e++)
+				for(uint32 e= 0; e < pItem->GetProto()->ContainerSlots; e++)
 				{
 					Item *item = (static_cast<Container*>( pItem ))->GetItem( static_cast<int16>( e ));
 					if(item && item->IsInWorld())
@@ -9380,7 +9380,7 @@ void Player::SafeTeleport(MapMgr * mgr, const LocationVector & vec)
 	// can only fly in outlands or northrend (northrend requires cold weather flying)
 	{
 		RemoveAura(flying_aura);
-		flying_aura=0;
+		flying_aura= 0;
 	}
 
 	if(IsInWorld())
@@ -9836,7 +9836,7 @@ void Player::CompleteLoading()
 //		if(this->HasActiveAura((*i).id))
 //			continue;
 		//how many times do we intend to put this aura on us
-/*		uint32 count_appearence=0;
+/*		uint32 count_appearence= 0;
 		std::list<LoginAura>::iterator i2 =  i;
 		for(;i2!=loginauras.end();i2++)
 			if((*i).id==(*i2).id)
@@ -10505,7 +10505,7 @@ void Player::CalcDamage()
 
 /////////////second hand end
 ///////////////////////////RANGED
-		cr=0;
+		cr= 0;
 		if((it = GetItemInterface()->GetInventoryItem(EQUIPMENT_SLOT_RANGED)) != 0)
 		{
 			i = damagedone.begin();
@@ -10536,7 +10536,7 @@ void Player::CalcDamage()
 						bonus+=((xproto->Damage[0].Min+xproto->Damage[0].Max)*it->GetProto()->Delay)/2000.0f;
 					}
 				}
-			}else bonus =0;
+			}else bonus = 0;
 
 			r = BaseRangedDamage[0]+delta+bonus;
 			r *= tmp;
@@ -11558,7 +11558,7 @@ void Player::save_Spells()
 {
 	char buffer[10000] = {0};
 	char buffer2[10000] = {0};
-	uint32 p=0,q=0;
+	uint32 p= 0,q= 0;
 
 	SpellSet::iterator itr = mSpells.begin();
 	for(; itr != mSpells.end(); ++itr)
@@ -11621,9 +11621,9 @@ void Player::save_PVP()
 void Player::save_Auras()
 {
 	char buffer[10000];
-	uint32 p =0;
+	uint32 p = 0;
 
-	for(uint32 x=0;x<MAX_AURAS+MAX_PASSIVE_AURAS;x++)
+	for(uint32 x= 0;x<MAX_AURAS+MAX_PASSIVE_AURAS;x++)
 	{
 		if(m_auras[x])
 		{
@@ -11729,7 +11729,7 @@ bool Player::HasQuestMob(uint32 entry) //Only for Kill Quests
 
 bool Player::HasQuest(uint32 entry)
 {
-	for(uint32 i=0;i<25;i++)
+	for(uint32 i= 0;i<25;i++)
 	{
 		if ( m_questlog[i] != NULL && m_questlog[i]->GetQuest()->id == entry)
 		return true;
@@ -12861,7 +12861,7 @@ uint32 Player::GetMaxPersonalRating()
 
 	ASSERT(m_playerInfo != NULL);
 
-	for (i=0; i<NUM_ARENA_TEAM_TYPES; i++)
+	for (i= 0; i<NUM_ARENA_TEAM_TYPES; i++)
 	{
 		if(m_arenaTeams[i] != NULL)
 		{
@@ -12952,7 +12952,7 @@ void Player::PlaySound( uint32 sound_id )
 //really need to work on the speed of this. This will be called on a lot of events
 /*void Player::Event_Achiement_Received(uint32 achievementtype,uint32 pentry,uint32 pvalue)
 {
-    for (uint32 i=0; i<dbcAchievementCriteriaStore.GetNumRows(); i++)
+    for (uint32 i= 0; i<dbcAchievementCriteriaStore.GetNumRows(); i++)
     {
 		AchievementCriteriaEntry *criteria = dbcAchievementCriteriaStore.LookupRow(i);
 		uint32 achientry = criteria->ID;
@@ -13041,7 +13041,7 @@ uint32 Player::HasRunes(uint8 type, uint32 count)
 uint32 Player::TakeRunes(uint8 type, uint32 count)
 {
 	uint8 found = 0;
-	for(uint8 i=0; i<6 && count != found; ++i)
+	for(uint8 i= 0; i<6 && count != found; ++i)
 	{
 		if(GetRune(i) == type)
 		{
@@ -13128,7 +13128,7 @@ void Player::SendAllAchievementEarned()
 {
 	//we are cheating with these. Something is enabling client side the achievemnts menu
 	WorldPacket data(SMSG_ALL_ACHIEVEMENT_DATA, 500);
-	uint32 found_finished=0;
+	uint32 found_finished= 0;
 
 	//generate block of finished acheivemnts
 	std::map<uint32,AchievementVal*>::iterator itr;

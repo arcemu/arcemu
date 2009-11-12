@@ -64,7 +64,7 @@ void ApplyNormalFixes()
 
 	}
 
-	for(uint32 x=0; x < cnt; x++)
+	for(uint32 x= 0; x < cnt; x++)
 	{
 		// Read every SpellEntry row
 		SpellEntry * sp = dbcSpell.LookupRow(x);
@@ -100,7 +100,7 @@ void ApplyNormalFixes()
 
 		// Save School as SchoolMask, and set School as an index
 		sp->SchoolMask = sp->School;
-		for (i=0; i<8; i++)
+		for (i= 0; i<8; i++)
 		{
 			if (sp->School & (1<<i))
 			{
@@ -150,7 +150,7 @@ void ApplyNormalFixes()
 					ftemp = sp->EffectPointsPerComboPoint[col1_swap];	sp->EffectPointsPerComboPoint[col1_swap] = sp->EffectPointsPerComboPoint[col2_swap] ;	sp->EffectPointsPerComboPoint[col2_swap] = ftemp;
 				}
 
-		for(uint32 b=0;b<3;++b)
+		for(uint32 b= 0;b<3;++b)
 		{
 			if(sp->EffectTriggerSpell[b] != 0 && dbcSpell.LookupEntryForced(sp->EffectTriggerSpell[b]) == NULL)
 			{
@@ -446,7 +446,7 @@ void ApplyNormalFixes()
 		sp->RankNumber = rank;
 
 		uint32 pr=sp->procFlags;
-		for(uint32 y=0;y < 3; y++)
+		for(uint32 y= 0;y < 3; y++)
 		{
 			// get the effect number from the spell
 			effect = sp->Effect[y];
@@ -471,7 +471,7 @@ void ApplyNormalFixes()
 							result=atoi(p);
 						}
 					}
-					pr=0;
+					pr= 0;
 
 					uint32 len = (uint32)strlen(sp->Description);
 					for(i = 0; i < len; ++i)
@@ -960,7 +960,7 @@ void ApplyNormalFixes()
 	//////////////////////////////////////////////////////////////////
 	SpellEntry * sp;
 
-	for(uint32 x=0; x < cnt; x++)
+	for(uint32 x= 0; x < cnt; x++)
 	{
 		// get spellentry
 		sp = dbcSpell.LookupRow(x);
@@ -1362,7 +1362,7 @@ void ApplyNormalFixes()
 	}
 
 	//Fully loaded coefficients, we must share channeled coefficient to its triggered spells
-	for(uint32 x=0; x < cnt; x++)
+	for(uint32 x= 0; x < cnt; x++)
 	{
 		// get spellentry
 		SpellEntry * sp = dbcSpell.LookupRow(x);
@@ -1602,7 +1602,7 @@ void ApplyNormalFixes()
 	for(i = 0; thrown_spells[i] != 0; ++i)
 	{
 		sp = dbcSpell.LookupEntryForced( thrown_spells[i] );
-		if( sp != NULL && sp->RecoveryTime==0 && sp->StartRecoveryTime == 0 ){
+		if( sp != NULL && sp->RecoveryTime== 0 && sp->StartRecoveryTime == 0 ){
 			if ( sp->Id == SPELL_RANGED_GENERAL ) sp->RecoveryTime = 500; // cebernic: hunter general with 0.5s
 			else sp->RecoveryTime = 1500; // 1.5cd
 		}
@@ -1622,7 +1622,7 @@ void ApplyNormalFixes()
 	sp = dbcSpell.LookupEntryForced( 30877 );
 	if( sp != NULL )
 	{
-		sp->EffectImplicitTargetB[0]=0;
+		sp->EffectImplicitTargetB[0]= 0;
 	}
 
 	sp = dbcSpell.LookupEntryForced( 23179 );
@@ -2557,9 +2557,9 @@ void ApplyNormalFixes()
 		if( sp != NULL )
 		{
 			sp->SpellFamilyName = 0;
-			sp->SpellGroupType[0] =0;
-			sp->SpellGroupType[1] =0;
-			sp->SpellGroupType[2] =0;
+			sp->SpellGroupType[0] = 0;
+			sp->SpellGroupType[1] = 0;
+			sp->SpellGroupType[2] = 0;
 			sp->RankNumber = 0;
 		}
 
@@ -3929,7 +3929,7 @@ void ApplyNormalFixes()
 		// Mind Flay - Reduce movements by 50% and deal periodic damage to target.
 /*
 		const uint32 MindFlayRanks[] = { 15407, 17311, 17312, 17313, 17314, 18807, 25387, 48155, 48156, 0 };
-		for(uint8 _i=0; MindFlayRanks[_i]!=0; ++_i)
+		for(uint8 _i= 0; MindFlayRanks[_i]!= 0; ++_i)
 		{
 			sp = dbcSpell.LookupEntryForced( MindFlayRanks[_i] );
 			if( sp != NULL )
@@ -4846,7 +4846,7 @@ void ApplyNormalFixes()
 		sp = dbcSpell.LookupEntryForced( 20608 ); //Reincarnation
 		if( sp != NULL )
 		{
-			for(uint32 i=0;i<8;i++)
+			for(uint32 i= 0;i<8;i++)
 			{
 				if(sp->Reagent[i])
 				{
@@ -4913,7 +4913,7 @@ void ApplyNormalFixes()
 		if( sp != NULL )
 		{
 			sp->Effect[0] = SPELL_EFFECT_APPLY_AURA;
-			sp->Effect[1]=0;
+			sp->Effect[1]= 0;
 			sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
 			sp->EffectTriggerSpell[0] = 48108;
 			sp->procChance= 33;
@@ -4925,7 +4925,7 @@ void ApplyNormalFixes()
 		if( sp != NULL )
 		{
 			sp->Effect[0] = SPELL_EFFECT_APPLY_AURA;
-			sp->Effect[1]=0;
+			sp->Effect[1]= 0;
 			sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
 			sp->EffectTriggerSpell[0] = 48108;
 			sp->procChance= 66;
@@ -4937,7 +4937,7 @@ void ApplyNormalFixes()
 		if( sp != NULL )
 		{
 			sp->Effect[0] = SPELL_EFFECT_APPLY_AURA;
-			sp->Effect[1]=0;
+			sp->Effect[1]= 0;
 			sp->EffectApplyAuraName[0] = SPELL_AURA_PROC_TRIGGER_SPELL;
 			sp->EffectTriggerSpell[0] = 48108;
 			sp->procChance= 100;
@@ -6236,7 +6236,7 @@ void ApplyNormalFixes()
 
 		//Warlock Healthstones
 		int HealthStoneID[8]={6201,6202,5699,11729,11730,27230,47871,47878};
-		for(int i=0;i<8;i++)
+		for(int i= 0;i<8;i++)
 		{
 			sp = dbcSpell.LookupEntryForced( HealthStoneID[i] );
 			if( sp != NULL )
@@ -7710,7 +7710,7 @@ void ApplyNormalFixes()
 		sp = dbcSpell.LookupEntryForced(20619);
 		if(sp != NULL)
 		{
-			for(int i=0; i<3; i++)
+			for(int i= 0; i<3; i++)
 			{
 				if(sp->EffectImplicitTargetA[i] > 0)
 					sp->EffectImplicitTargetA[i] = EFF_TARGET_ALL_FRIENDLY_IN_AREA;
@@ -7723,7 +7723,7 @@ void ApplyNormalFixes()
 		sp = dbcSpell.LookupEntryForced(21075);
 		if(sp != NULL)
 		{
-			for(int i=0; i<3; i++)
+			for(int i= 0; i<3; i++)
 			{
 				if(sp->EffectImplicitTargetA[i] > 0)
 					sp->EffectImplicitTargetA[i] = EFF_TARGET_ALL_FRIENDLY_IN_AREA;

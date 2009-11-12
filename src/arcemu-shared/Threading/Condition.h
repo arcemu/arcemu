@@ -46,7 +46,7 @@ public:
 			
 	~Condition()
 	{
-		for(unsigned int i=0;i<MAX_AWAITING_THREADS;++i)
+		for(unsigned int i= 0;i<MAX_AWAITING_THREADS;++i)
 				dispose_entry(generations[i]);
 		
 		CloseHandle(wake_sem);
@@ -59,7 +59,7 @@ public:
 		if(wake_sem)
 		{
 			ReleaseSemaphore(wake_sem,1,NULL);
-			for(unsigned int generation=MAX_AWAITING_THREADS;generation!=0;--generation)
+			for(unsigned int generation=MAX_AWAITING_THREADS;generation!= 0;--generation)
 			{
 				list_entry& entry=generations[generation-1];
 				if(entry.count)
@@ -81,7 +81,7 @@ public:
 		internal_mutex.Acquire();
 		if(wake_sem)
 		{
-			for(unsigned int generation=MAX_AWAITING_THREADS;generation!=0;--generation)
+			for(unsigned int generation=MAX_AWAITING_THREADS;generation!= 0;--generation)
 			{
 				list_entry& entry=generations[generation-1];
 				if(entry.count)
@@ -124,7 +124,7 @@ public:
 			sem=duplicate_handle(generations[0].semaphore);
 			internal_mutex.Release();
 				
-			ASSERT(WaitForSingleObject(sem,INFINITE)==0);
+			ASSERT(WaitForSingleObject(sem,INFINITE)== 0);
 			ASSERT(CloseHandle(sem));
 
 			
@@ -148,7 +148,7 @@ protected:
 
 		static bool no_waiters(list_entry const& entry)
 		{
-			return entry.count==0;
+			return entry.count== 0;
 		}
 
 		ARCEMU_INLINE void shift_generations_down()
@@ -158,8 +158,8 @@ protected:
 				broadcast_entry(generations[MAX_AWAITING_THREADS-1]);
 			}
 			std::copy_backward(generations,generations+MAX_AWAITING_THREADS,generations+MAX_AWAITING_THREADS);
-			generations[0].semaphore=0;
-			generations[0].count=0;
+			generations[0].semaphore= 0;
+			generations[0].count= 0;
 			generations[0].notified=false;
 		}
 
@@ -167,18 +167,18 @@ protected:
 		{
 			ReleaseSemaphore(wake_sem,entry.count,NULL);
 			ReleaseSemaphore(entry.semaphore,entry.count,NULL);
-			entry.count=0;
+			entry.count= 0;
 			dispose_entry(entry);
 		}
 
 		ARCEMU_INLINE void dispose_entry(list_entry& entry)
 		{
-			ASSERT(entry.count==0);
+			ASSERT(entry.count== 0);
 			if(entry.semaphore)
 			{
 				ASSERT(CloseHandle(entry.semaphore));
 			}
-			entry.semaphore=0;
+			entry.semaphore= 0;
 			entry.notified=false;
 		}
 
@@ -186,7 +186,7 @@ protected:
 		{
 			HANDLE const current_process=GetCurrentProcess();
 
-			HANDLE new_handle=0;
+			HANDLE new_handle= 0;
 			ASSERT(DuplicateHandle(
 				current_process,
 				source,current_process,&new_handle,0,false,DUPLICATE_SAME_ACCESS))
@@ -246,7 +246,7 @@ public:
 
 		// Release the synchronization lock the appropriate number of times.
 		// Win32 allows no error checking here.
-		for( int i=0; i<nThisThreadsLockCount; ++i)
+		for( int i= 0; i<nThisThreadsLockCount; ++i)
 		{
 			//::LeaveCriticalSection(&m_critsecSynchronized);
 			m_externalMutex->Release();
@@ -277,7 +277,7 @@ public:
 
 		// Acquire the synchronization lock the appropriate number of times.
 		// Win32 allows no error checking here.
-		for( int j=0; j<nThisThreadsLockCount; ++j)
+		for( int j= 0; j<nThisThreadsLockCount; ++j)
 		{
 			//::EnterCriticalSection(&m_critsecSynchronized);
 			m_externalMutex->Acquire();
@@ -313,7 +313,7 @@ public:
 
 		// Release the synchronization lock the appropriate number of times.
 		// Win32 allows no error checking here.
-		for( int i=0; i<nThisThreadsLockCount; ++i)
+		for( int i= 0; i<nThisThreadsLockCount; ++i)
 		{
 			//::LeaveCriticalSection(&m_critsecSynchronized);
 			m_externalMutex->Release();
@@ -344,7 +344,7 @@ public:
 
 		// Acquire the synchronization lock the appropriate number of times.
 		// Win32 allows no error checking here.
-		for( int j=0; j<nThisThreadsLockCount; ++j)
+		for( int j= 0; j<nThisThreadsLockCount; ++j)
 		{
 			//::EnterCriticalSection(&m_critsecSynchronized);
 			m_externalMutex->Acquire();

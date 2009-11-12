@@ -123,7 +123,7 @@ void WorldSession::SendTrainerList(Creature* pCreature)
 {
 	Trainer * pTrainer = pCreature->GetTrainer();
 	//if(pTrainer == 0 || !CanTrainAt(_player, pTrainer)) return;
-	if(pTrainer==0)
+	if(pTrainer== 0)
 		return;
 
 	if(!CanTrainAt(_player,pTrainer))
@@ -137,7 +137,7 @@ void WorldSession::SendTrainerList(Creature* pCreature)
 	WorldPacket data(SMSG_TRAINER_LIST, 5000);
 	TrainerSpell * pSpell;
 	uint32 Spacer = 0;
-	uint32 Count=0;
+	uint32 Count= 0;
 	uint8 Status;
 	string Text;
 
@@ -174,7 +174,7 @@ void WorldSession::SendTrainerList(Creature* pCreature)
 #else
 	*(uint32*)&data.contents()[12] = Count;
 #endif
-	if ( stricmp(pTrainer->UIMessage,"DMSG")==0 )
+	if ( stricmp(pTrainer->UIMessage,"DMSG")== 0 )
 		data << _player->GetSession()->LocalizedWorldSrv(37);
 	else
 		data << pTrainer->UIMessage;
@@ -310,7 +310,7 @@ uint8 WorldSession::TrainerGetSpellStatus(TrainerSpell* pSpell)
 		|| (pSpell->RequiredSpell && !_player->HasSpell(pSpell->RequiredSpell))
 		|| (pSpell->Cost && _player->GetUInt32Value(PLAYER_FIELD_COINAGE) < pSpell->Cost)
 		|| (pSpell->RequiredSkillLine && _player->_GetSkillLineCurrent(pSpell->RequiredSkillLine,true) < pSpell->RequiredSkillLineValue)
-		|| (pSpell->IsProfession && pSpell->RequiredSkillLine==0 && _player->GetUInt32Value(PLAYER_CHARACTER_POINTS2) == 0)//check level 1 professions if we can learn a new profession
+		|| (pSpell->IsProfession && pSpell->RequiredSkillLine== 0 && _player->GetUInt32Value(PLAYER_CHARACTER_POINTS2) == 0)//check level 1 professions if we can learn a new profession
 		)
 		return TRAINER_STATUS_NOT_LEARNABLE;
 	return TRAINER_STATUS_LEARNABLE;
@@ -461,7 +461,7 @@ void WorldSession::HandleGossipHelloOpcode( WorldPacket & recv_data )
 			return;
 
 		_player->CurrentGossipMenu->BuildPacket(data);
-		uint32 count=0;//sQuestMgr.ActiveQuestsCount(qst_giver, GetPlayer());
+		uint32 count= 0;//sQuestMgr.ActiveQuestsCount(qst_giver, GetPlayer());
 		size_t pos=data.wpos();
 		data << uint32(count);
 		for (it = qst_giver->QuestsBegin(); it != qst_giver->QuestsEnd(); ++it)
@@ -524,7 +524,7 @@ void WorldSession::HandleGossipSelectOptionOpcode( WorldPacket & recv_data )
 	uint32 option;
 	uint32 unk24;
 	uint64 guid;
-	int8 extra=0;
+	int8 extra= 0;
 
 	recv_data >> guid >> unk24 >> option;
 
@@ -645,7 +645,7 @@ void WorldSession::HandleNpcTextQueryOpcode( WorldPacket & recv_data )
 	if(pGossip)
 	{
 		data << float(1.0f);		// Unknown
-		for(uint32 i=0;i<8;i++)
+		for(uint32 i= 0;i<8;i++)
 		{
 			if(lnc)
 			{
@@ -660,7 +660,7 @@ void WorldSession::HandleNpcTextQueryOpcode( WorldPacket & recv_data )
 
 			data << pGossip->Texts[i].Lang;
 			data << uint32(0x00);		// Was prob.. but if you set it to 0 emotes work ;)
-			for(uint32 e=0;e<6;e++)
+			for(uint32 e= 0;e<6;e++)
 				data << uint32(pGossip->Texts[i].Emote[e]);
 
 			if(i!=7) data << uint32(0x00);	// don't append to last
@@ -673,16 +673,16 @@ void WorldSession::HandleNpcTextQueryOpcode( WorldPacket & recv_data )
 		data << (char*)_player->GetSession()->LocalizedWorldSrv(70);
 		data << uint32(0x00);	// ?
 		data << uint32(0x00);	// ?
-		for(uint32 e=0;e<6;e++)
+		for(uint32 e= 0;e<6;e++)
 			data << uint32(0x00);
 
-		for(int i=0;i<7;i++)
+		for(int i= 0;i<7;i++)
 		{
 			data << uint32(0x00);
 			data << uint8(0x00) << uint8(0x00);
 			data << uint32(0x00);	// ?
 			data << uint32(0x00);	// ?
-			for(uint32 e=0;e<6;e++)
+			for(uint32 e= 0;e<6;e++)
 				data << uint32(0x00);	// emote 1
 		}
 	}
