@@ -3140,6 +3140,7 @@ void Spell::SpellEffectSummon(uint32 i)
 	case 83:
 	case 121:	SpellEffectSummonTotem(i);		return;
 	case 41:
+	case 1341:
 	case 407:	SpellEffectSummonCritter(i);	return;
 	case 61:
 	case 669:
@@ -6388,9 +6389,11 @@ void Spell::SpellEffectSummonCritter(uint32 i)
 	pCreature->SetUInt32Value(UNIT_FIELD_LEVEL, 1);
 	pCreature->SetUInt32Value( UNIT_FIELD_FLAGS, UNIT_FLAG_PLAYER_CONTROLLED );
 	pCreature->GetAIInterface()->Init(pCreature,AITYPE_PET,MOVEMENTTYPE_NONE,u_caster);
+	pCreature->SetUInt64Value( UNIT_FIELD_CREATEDBY, u_caster->GetGUID() );
+	pCreature->SetUInt32Value( UNIT_CREATED_BY_SPELL, this->GetProto()->Id );
 	pCreature->GetAIInterface()->SetUnitToFollow(u_caster);
 	pCreature->GetAIInterface()->SetUnitToFollowAngle(float(-(M_PI/2)));
-	pCreature->GetAIInterface()->SetFollowDistance(GetRadius(i));
+	pCreature->GetAIInterface()->SetFollowDistance( GetRadius( i ) );
 	pCreature->GetAIInterface()->disable_melee = true;
 	pCreature->bInvincible = true;
 	pCreature->PushToWorld(u_caster->GetMapMgr());
