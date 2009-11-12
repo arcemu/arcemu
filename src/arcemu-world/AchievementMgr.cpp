@@ -609,6 +609,7 @@ void AchievementMgr::UpdateAchievementCriteria(AchievementCriteriaTypes type, in
 				}
 				break;
 			case ACHIEVEMENT_CRITERIA_TYPE_BE_SPELL_TARGET:
+			case ACHIEVEMENT_CRITERIA_TYPE_BE_SPELL_TARGET2:
 				if( achievementCriteria->be_spell_target.spellID == static_cast<uint32>( miscvalue1))
 				{
 					UpdateCriteriaProgress(achievementCriteria, 1);
@@ -1402,7 +1403,8 @@ bool AchievementMgr::IsCompletedCriteria(AchievementCriteriaEntry const* achieve
 			return progresscounter >= achievementCriteria->gain_exalted_reputation.numberOfExaltedFactions;
 		case ACHIEVEMENT_CRITERIA_TYPE_NUMBER_OF_MOUNTS:
 			return progresscounter >= achievementCriteria->number_of_mounts.mountCount;
-		case ACHIEVEMENT_CRITERIA_TYPE_CAST_SPELL:
+		case ACHIEVEMENT_CRITERIA_TYPE_BE_SPELL_TARGET:
+		case ACHIEVEMENT_CRITERIA_TYPE_BE_SPELL_TARGET2:
 			return progresscounter >= achievementCriteria->be_spell_target.spellCount;
 		case ACHIEVEMENT_CRITERIA_TYPE_KILL_CREATURE:
 			return progresscounter >= achievementCriteria->kill_creature.creatureCount;

@@ -5931,9 +5931,13 @@ uint8 Unit::CastSpell(Unit* Target, SpellEntry* Sp, bool triggered)
 		newSpell->GenerateTargets(&targets);
 	}
 
+#ifdef ENABLE_ACHIEVEMENTS
 	if( Target != NULL && Target->IsPlayer() )
+	{
 		static_cast<Player*>(Target)->m_achievementMgr.UpdateAchievementCriteria( ACHIEVEMENT_CRITERIA_TYPE_BE_SPELL_TARGET, Sp->Id, 0, 0 );
-
+		static_cast<Player*>(Target)->m_achievementMgr.UpdateAchievementCriteria( ACHIEVEMENT_CRITERIA_TYPE_BE_SPELL_TARGET2, Sp->Id, 0, 0 );
+	}
+#endif
 	return newSpell->prepare(&targets);
 }
 
