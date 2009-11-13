@@ -20,15 +20,16 @@
 
 #include "StdAfx.h"
 
-#define WATER_ELEMENTAL	510
-#define PET_IMP			416
-#define PET_VOIDWALKER	1860
-#define PET_SUCCUBUS	1863
-#define PET_FELHUNTER	417
-#define PET_FELGUARD	17252
-#define SHADOWFIEND		19668
-#define SPIRITWOLF		29264
-#define DANCINGRUNEWEAPON 27893
+#define WATER_ELEMENTAL		510
+#define PET_IMP				416
+#define PET_VOIDWALKER		1860
+#define PET_SUCCUBUS		1863
+#define PET_FELHUNTER		417
+#define PET_FELGUARD		17252
+#define SHADOWFIEND			19668
+#define SPIRITWOLF			29264
+#define DANCINGRUNEWEAPON	27893
+#define TREANT				1964
 
 uint32 Pet::GetAutoCastTypeForSpell( SpellEntry * ent )
 {
@@ -111,6 +112,9 @@ void Pet::SetNameForEntry( uint32 entry )
 		case DANCINGRUNEWEAPON:
 			m_name = "Rune Weapon";
 			break;
+		case TREANT:
+			m_name = "Treant";
+			break;
 		case PET_IMP:
 		case PET_VOIDWALKER:
 		case PET_SUCCUBUS:
@@ -142,7 +146,7 @@ void Pet::CreateAsSummon( uint32 entry, CreatureInfo *ci, Creature* created_from
 		return;
 	}
 	
-	if( owner->GetSummon() != NULL )
+	if( owner->GetSummon() != NULL && type != 4 )
 		owner->GetSummon()->Dismiss(); // to avoid problems caused by loosing reference to old pet
 
 	m_Owner = owner;
@@ -1251,6 +1255,9 @@ void Pet::ApplySummonLevelAbilities()
 		m_aiInterface->disable_melee = true;
 		break;
 	case SHADOWFIEND:
+		stat_index = 5;
+		break;
+	case TREANT:
 		stat_index = 5;
 		break;
 	case 26125:

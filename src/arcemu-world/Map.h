@@ -30,7 +30,7 @@ struct MapInfo;
 class TerrainMgr;
 
 #include "TerrainMgr.h"
-
+//#define UDB_DATABASE
 struct Formation;
 
 typedef struct
@@ -46,11 +46,23 @@ typedef struct
 	uint32 displayid;
 	uint32 factionid;
 	uint32 flags;
+
+#ifdef UDB_DATABASE
+	uint32 creatureclass;
+#else
 	uint32 bytes0;
+#endif
+
 	uint32 bytes1;
 	uint32 bytes2;
 	uint32 emote_state;
+
+#ifdef UDB_DATABASE
+	uint32 creaturegender;
+#else
 	//uint32 respawnNpcLink;
+#endif
+
 	uint16 channel_spell;
 	uint32 channel_target_go;
 	uint32 channel_target_creature;

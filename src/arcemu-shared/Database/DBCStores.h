@@ -694,16 +694,16 @@ struct SpellEntry
 	uint32 Attributes;                      //5
 	uint32 AttributesEx;                    //6
 	uint32 AttributesExB;                   //7
-	uint32 AttributesExC;                   //8 // Flags to
-	uint32 AttributesExD;                   //9  // Flags....
-	uint32 AttributesExE;                   //10 // Flags 2.0.1 unknown one
+	uint32 AttributesExC;                   //8				Flags to
+	uint32 AttributesExD;                   //9				Flags....
+	uint32 AttributesExE;                   //10			Flags 2.0.1 unknown one
 	uint32 AttributesExF;                   //11
-						//12 UNK
-	uint32 RequiredShapeShift;              //13 // Flags BitMask for shapeshift spells
-						//14 UNK
-	uint32 ShapeshiftExclude;               //15-> this is wrong // Flags BitMask for which shapeshift forms this spell can NOT be used in.
-						//16 UNK
-	uint32 Targets;                         //17 - N / M
+	//uint32 AttributesExG,					//12			Flags maybe?
+	uint32 RequiredShapeShift;              //13			Flags BitMask for shapeshift spells Float?
+	//uint32 Unknown2,						//14			Float?
+	uint32 ShapeshiftExclude;               //15			this is wrong // Flags BitMask for which shapeshift forms this spell can NOT be used in. Float?
+	//uint32 Unknown3						//16
+	uint32 Targets;                         //17			N / M
 	uint32 TargetCreatureType;              //18
 	uint32 RequiresSpellFocus;              //19
 	uint32 FacingCasterFlags;               //20
@@ -717,7 +717,7 @@ struct SpellEntry
 	uint32 targetAuraSpellNot;              //28
 	uint32 CastingTimeIndex;                //29
 	uint32 RecoveryTime;                    //30
-	uint32 CategoryRecoveryTime;            //31 recoverytime
+	uint32 CategoryRecoveryTime;            //31			recoverytime
 	uint32 InterruptFlags;                  //32
 	uint32 AuraInterruptFlags;              //33
 	uint32 ChannelInterruptFlags;           //34
@@ -732,7 +732,7 @@ struct SpellEntry
 	uint32 manaCost;                        //43
 	uint32 manaCostPerlevel;                //44
 	uint32 manaPerSecond;                   //45
-	uint32 manaPerSecondPerLevel;           //46
+	uint32 manaPerSecondPerLevel;           //46			float?
 	uint32 rangeIndex;                      //47
 	float  speed;                           //48
 	uint32 modalNextSpell;                  //49
@@ -746,7 +746,7 @@ struct SpellEntry
 	uint32 Effect[3];                       //72 - 74
 	uint32 EffectDieSides[3];               //75 - 77
 	uint32 EffectBaseDice[3];               //78 - 80
-	float  EffectDicePerLevel[3];           //81 - 83
+	float  EffectDicePerLevel[3];           //81 - 83		1st is uint?
 	float  EffectRealPointsPerLevel[3];     //84 - 86
 	int32  EffectBasePoints[3];             //87 - 89
 	int32  EffectMechanic[3];               //90 - 92       Related to SpellMechanic.dbc
@@ -759,90 +759,95 @@ struct SpellEntry
 	uint32 EffectChainTarget[3];            //111 - 113
 	uint32 EffectItemType[3];               //114 - 116     Not sure maybe we should rename it. its the relation to field: SpellGroupType
 	uint32 EffectMiscValue[3];              //117 - 119
-	uint32 EffectMiscValueB[3];             //120 - 122  2.4.3
+	uint32 EffectMiscValueB[3];             //120 - 122		2.4.3
 	uint32 EffectTriggerSpell[3];           //123 - 125
 	float  EffectPointsPerComboPoint[3];    //126 - 128
 	uint32 EffectSpellClassMask[3][3];      //129 - 137
 	uint32 SpellVisual;                     //138
 	uint32 field114;                        //139
 	uint32 spellIconID;                     //140
-	uint32 activeIconID;                    //141   activeIconID;
+	uint32 activeIconID;                    //141
 	uint32 spellPriority;                   //142
 	char*  Name;                            //143
-//	char*  NameAlt[15];                     //144-158 not used
-//	uint32 NameFlags;                       //159 not used
+//	char*  NameAlt[15];                     //144 - 158		not used
+//	uint32 NameFlags;                       //159			not used
 	char*  Rank;                            //160
-//	char*  RankAlt[15];                     //161-175 not used
-//	uint32 RankFlags;                       //176 not used
+//	char*  RankAlt[15];                     //161 - 175		not used
+//	uint32 RankFlags;                       //176			not used
 	char*  Description;                     //177
-//	char*  DescriptionAlt[15];              //178-192 not used
-//	uint32 DescriptionFlags;                //193 not used
+//	char*  DescriptionAlt[15];              //178 - 192		not used
+//	uint32 DescriptionFlags;                //193			not used
 	char*  BuffDescription;                 //194
-//	char*  BuffDescription[15];             //195-209 not used
-//	uint32 buffdescflags;                   //210 not used
+//	char*  BuffDescription[15];             //195 - 209		not used
+//	uint32 buffdescflags;                   //210			not used
 	uint32 ManaCostPercentage;              //211
 	uint32 StartRecoveryCategory;           //212
-	uint32 StartRecoveryTime;		//213
+	uint32 StartRecoveryTime;				//213
 	uint32 MaxTargetLevel;                  //214
 	uint32 SpellFamilyName;                 //215
-	uint32 SpellGroupType[3];               //216-218
+	uint32 SpellGroupType[3];               //216 - 218
 	uint32 MaxTargets;                      //219
-	uint32 Spell_Dmg_Type;                  //220   dmg_class Integer      0=None, 1=Magic, 2=Melee, 3=Ranged
-	uint32 PreventionType;                  //221   0,1,2 related to Spell_Dmg_Type I think
-	int32  StanceBarOrder;                  //222   related to paladin aura's
-	float  dmg_multiplier[3];               //223 - 225   if the name is correct I dono
-	uint32 MinFactionID;                    //226   only one spellid:6994 has this value = 369 UNUSED
-	uint32 MinReputation;                   //227   only one spellid:6994 has this value = 4 UNUSED
-	uint32 RequiredAuraVision;              //228  3 spells 1 or 2
-	uint32 TotemCategory[2];                //229-230
+	uint32 Spell_Dmg_Type;                  //220			dmg_class Integer 0=None, 1=Magic, 2=Melee, 3=Ranged
+	uint32 PreventionType;                  //221			0,1,2 related to Spell_Dmg_Type I think
+	int32  StanceBarOrder;                  //222			related to paladin aura's
+	float  dmg_multiplier[3];               //223 - 225		if the name is correct I dono
+	uint32 MinFactionID;                    //226			only one spellid:6994 has this value = 369 UNUSED
+	uint32 MinReputation;                   //227			only one spellid:6994 has this value = 4 UNUSED
+	uint32 RequiredAuraVision;              //228			3 spells 1 or 2
+	uint32 TotemCategory[2];                //229 - 230
 	int32  RequiresAreaId;                  //231
 	uint32 School;                          //232
-	uint32 RuneCostID;                      //233 from 3.0.1
-//	uint32 SpellMissileID;                  //234 from 3.0.1
+	uint32 RuneCostID;                      //233			from 3.0.1
+//	uint32 SpellMissileID;                  //234			from 3.0.1
+//	uint32 PowerDisplayId;					//235			PowerDisplayId.dbc from 3.1.0
+//	uint32 Unknown5[3];						//236			from 3.2.0
+//	uint32 spellDescriptionVariableID;		//237			from 3.2.0
 
 	/// CUSTOM: these fields are used for the modifications made in the world.cpp
-	uint32 DiminishStatus;                  //
-	uint32 proc_interval;                   //!!! CUSTOM, <Fill description for variable>
+	uint32 DiminishStatus;						//!!! CUSTOM, <Fill description for variable>
+	uint32 proc_interval;						//!!! CUSTOM, <Fill description for variable>
+
 	//Buff Groupin Rule -> caster can cast this spell only on 1 target. Value represents the group spell is part of. Can be part of only 1 group
-	//caster can only cast on 1 target these spells
-	uint32 BGR_one_buff_from_caster_on_1target; //!!! CUSTOM, <Fill description for variable>
-	//target can have only buff of this type on self. Value represents the group spell is part of. Can be part of only 1 group
-	uint32 BGR_one_buff_on_target;          //!!! CUSTOM, these are related to creating a item through a spell
-	//caster can have only 1 Aura per spell group, ex pal auras
-	uint32 BGR_one_buff_from_caster_on_self;//!!! CUSTOM, these are related to creating a item through a spell
-//	uint32 buffIndexType;                   //!!! CUSTOM, <Fill description for variable>
-	uint32 c_is_flags;                      //!!! CUSTOM, store spell checks in a static way : isdamageind,ishealing
-//	uint32 buffType;                        //!!! CUSTOM, these are related to creating a item through a spell
-	uint32 RankNumber;                      //!!! CUSTOM, this protects players from having >1 rank of a spell
-	uint32 NameHash;                        //!!! CUSTOM, related to custom spells, summon spell quest related spells
-	uint32 talent_tree;                     //!!! CUSTOM,
-	uint32 in_front_status;                 //!!! CUSTOM,
-	uint32 EffectSpellGroupRelation_high[3];     //!!! this is not contained in client dbc but server must have it
-	uint32 ThreatForSpell;
-	float  ThreatForSpellCoef;
-	uint32 ProcOnNameHash[3];
-	uint32 spell_coef_flags;                //!!! CUSTOM, store flags for spell coefficient calculations
+	uint32 BGR_one_buff_from_caster_on_1target; //!!! CUSTOM, caster can only cast on 1 target these spells
+	uint32 BGR_one_buff_on_target;				//!!! CUSTOM, target can have only buff of this type on self. Value represents the group spell is part of. Can be part of only 1 group
+	uint32 BGR_one_buff_from_caster_on_self;	//!!! CUSTOM, caster can have only 1 Aura per spell group, ex pal auras
 
-	float  base_range_or_radius_sqr;        //!!! CUSTOM, needed for aoe spells most of the time
-	// love me or hate me, all "In a cone in front of the caster" spells don't necessarily mean "in front"
-	float  cone_width;
+//	uint32 buffIndexType;						//!!! CUSTOM, <Fill description for variable>
+//	uint32 buffType;							//!!! CUSTOM, <Fill description for variable>
+
+	uint32 c_is_flags;							//!!! CUSTOM, store spell checks in a static way : isdamageind,ishealing
+	uint32 RankNumber;							//!!! CUSTOM, this protects players from having >1 rank of a spell
+	uint32 NameHash;							//!!! CUSTOM, related to custom spells, summon spell quest related spells
+	uint32 EffectSpellGroupRelation_high[3];    //!!! CUSTOM, this is not contained in client dbc but server must have it
+	uint32 talent_tree;							//!!! CUSTOM, <Fill description for variable>
+	uint32 in_front_status;						//!!! CUSTOM, <Fill description for variable>
+	uint32 ThreatForSpell;						//!!! CUSTOM, <Fill description for variable>
+	float  ThreatForSpellCoef;					//!!! CUSTOM, <Fill description for variable>
+
+	uint32 procFlagExtra;						//!!! CUSTOM, Extra proc flags like proc on parry, dodge, block, crit etc. Check Spell.h for all flags.
+	uint32 ProcOnNameHash[3];					//!!! CUSTOM, Spell will trigger only if we're casting spell with name hash contained here.
+
+	float  base_range_or_radius_sqr;			//!!! CUSTOM, needed for aoe spells most of the time
+	float  cone_width;							//!!! CUSTOM, love me or hate me, all "In a cone in front of the caster" spells don't necessarily mean "in front"
+
 	//Spell Coefficient
-	float  casttime_coef;                   //!!! CUSTOM, faster spell bonus calculation
-	float  fixed_dddhcoef;                  //!!! CUSTOM, fixed DD-DH coefficient for some spells
-	float  fixed_hotdotcoef;                //!!! CUSTOM, fixed HOT-DOT coefficient for some spells
-	float  Dspell_coef_override;            //!!! CUSTOM, overrides any spell coefficient calculation and use this value in DD&DH
-	float  OTspell_coef_override;           //!!! CUSTOM, overrides any spell coefficient calculation and use this value in HOT&DOT
-	int    ai_target_type;
+	float  Base_coef_override;					//!!! CUSTOM, overrides any spell coefficient calculation and use this value in DD&DH
+	float  Misc_coef_override;					//!!! CUSTOM, overrides any spell coefficient calculation and use this value in HOT&DOT
+	float  AP_coef;								//!!! CUSTOM, Additional coef from AP
+	float  RAP_coef;							//!!! CUSTOM, Additional coef from RAP
+	uint32 spell_coef_flags;					//!!! CUSTOM, store flags for spell coefficient calculations
 
-	bool   self_cast_only;
-	bool   apply_on_shapeshift_change;
-	bool   always_apply;
-	bool   is_melee_spell;                  //!!! CUSTOM,
-	bool   is_ranged_spell;                 //!!! CUSTOM,
-	bool   spell_can_crit;                  //!!! CUSTOM,
+	int    ai_target_type;						//!!! CUSTOM, <Fill description for variable>
+
+	bool   self_cast_only;						//!!! CUSTOM, <Fill description for variable>
+	bool   apply_on_shapeshift_change;			//!!! CUSTOM, <Fill description for variable>
+	bool   always_apply;						//!!! CUSTOM, <Fill description for variable>
+	bool   is_melee_spell;						//!!! CUSTOM, <Fill description for variable>
+	bool   is_ranged_spell;						//!!! CUSTOM, <Fill description for variable>
+	bool   spell_can_crit;						//!!! CUSTOM, <Fill description for variable>
 	bool   noproc;
 
-	uint32 SchoolMask;                      // Custom
+	uint32 SchoolMask;							//!!! CUSTOM, <Fill description for variable>
 /*
 //3.0.1 client column namings
 m_id

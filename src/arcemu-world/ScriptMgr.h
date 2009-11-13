@@ -90,7 +90,7 @@ typedef void(*tOnTick)();
 typedef bool(*tOnLogoutRequest)(Player * pPlayer);
 typedef void(*tOnLogout)(Player * pPlayer);
 typedef void(*tOnQuestAccept)(Player * pPlayer, Quest * pQuest, Object * pQuestGiver);
-typedef void(*tOnZone)(Player * pPlayer, uint32 Zone);
+typedef void(*tOnZone)(Player * pPlayer, uint32 Zone, uint32 OldZone);
 typedef bool(*tOnChat)(Player * pPlayer, uint32 Type, uint32 Lang, const char * Message, const char * Misc);
 typedef void(*tOnLoot)(Player * pPlayer, Unit * pTarget, uint32 Money, uint32 ItemId);
 typedef bool(*ItemScript)(Item * pItem, Player * pPlayer);
@@ -330,6 +330,7 @@ protected:
 
 	MapMgr* mInstance;
 };
+
 class SERVER_DECL HookInterface : public Singleton<HookInterface>
 {
 public:
@@ -349,7 +350,7 @@ public:
 	bool OnLogoutRequest(Player * pPlayer);
 	void OnLogout(Player * pPlayer);
 	void OnQuestAccept(Player * pPlayer, Quest * pQuest, Object * pQuestGiver);
-	void OnZone(Player * pPlayer, uint32 Zone);
+	void OnZone(Player * pPlayer, uint32 Zone, uint32 OldZone);
 	bool OnChat(Player * pPlayer, uint32 Type, uint32 Lang, const char * Message, const char * Misc);
 	void OnLoot(Player * pPlayer, Unit * pTarget, uint32 Money, uint32 ItemId);
 	void OnEnterWorld2(Player * pPlayer);

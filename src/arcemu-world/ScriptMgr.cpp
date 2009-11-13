@@ -574,8 +574,6 @@ void GameObjectAIScript::RegisterAIUpdateEvent(uint32 frequency)
 	sEventMgr.AddEvent(_gameobject, &GameObject::CallScriptUpdate, EVENT_SCRIPT_UPDATE_EVENT, frequency, 0,0);
 }
 
-
-
 /* QuestScript Stuff */
 
 /* Gossip Stuff*/
@@ -606,9 +604,16 @@ void GossipScript::GossipHello(Object* pObject, Player* Plr, bool AutoSend)
 		if(text != 0)
 			TextID = Text;
 	}
+	else
+	{
+		Text = 1;
+		GossipText * text = NpcTextStorage.LookupEntry(Text);
+		if(text != 0)
+			TextID = Text;
+	}
 
 	objmgr.CreateGossipMenuForPlayer(&Menu, pCreature->GetGUID(), TextID, Plr);
-	
+
 	if (pCreature->isVendor())
 		Menu->AddItem(1, Plr->GetSession()->LocalizedWorldSrv(1), 1);
 	
@@ -1032,11 +1037,11 @@ void HookInterface::OnQuestAccept(Player * pPlayer, Quest * pQuest, Object * pQu
 		((tOnQuestAccept)*itr)(pPlayer, pQuest, pQuestGiver);
 }
 
-void HookInterface::OnZone(Player * pPlayer, uint32 zone)
+void HookInterface::OnZone(Player * pPlayer, uint32 zone, uint32 oldzone)
 {
 	ServerHookList hookList = sScriptMgr._hooks[SERVER_HOOK_EVENT_ON_ZONE];
 	for(ServerHookList::iterator itr = hookList.begin(); itr != hookList.end(); ++itr)
-		((tOnZone)*itr)(pPlayer, zone);
+		((tOnZone)*itr)(pPlayer, zone, oldzone);
 }
 
 bool HookInterface::OnChat(Player * pPlayer, uint32 type, uint32 lang, const char * message, const char * misc)

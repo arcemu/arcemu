@@ -22,22 +22,22 @@
 
 trainertype trainer_types[TRAINER_TYPE_MAX] = 
 {
-{	"Warrior",			   0 },
-{	"Paladin",			   0 },
-{	"Rogue"  ,			   0 },
-{	"Warlock",			   0 },
-{	"Mage",				  0 },
+{	"Warrior",				0 },
+{	"Paladin",				0 },
+{	"Rogue"  ,				0 },
+{	"Warlock",				0 },
+{	"Mage",					0 },
 {	"Shaman",				0 },
 {	"Priest",				0 },
 {	"Hunter",				0 },
-{	"Druid",				 0 },
-{	"Leatherwork",		   2 },
-{	"Skinning",			  2 },
-{	"Fishing",			   2 },
-{	"First Aid",			 2 },
-{	"Physician",			 2 },
-{	"Engineer",			  2 },
-{	"Weapon Master",		 0 },
+{	"Druid",				0 },
+{	"Leatherwork",			2 },
+{	"Skinning",				2 },
+{	"Fishing",				2 },
+{	"First Aid",			2 },
+{	"Physician",			2 },
+{	"Engineer",				2 },
+{	"Weapon Master",		0 },
 };
 
 bool CanTrainAt(Player * plr, Trainer * trn)
@@ -425,93 +425,37 @@ void WorldSession::SendAuctionList(Creature* auctioneer)
 //////////////////////////////////////////////////////////////
 void WorldSession::HandleGossipHelloOpcode( WorldPacket & recv_data )
 {
-	if(!_player->IsInWorld()) return;
-	uint64 guid;
-	list<QuestRelation *>::iterator it;
-	std::set<uint32> ql;
+	if( !_player->IsInWorld() )
+		return;
 
+	uint64 guid;
 	recv_data >> guid;
-	Creature *qst_giver = _player->GetMapMgr()->GetCreature(GET_LOWGUID_PART(guid));
+
+	Creature *qst_giver = _player->GetMapMgr()->GetCreature( GET_LOWGUID_PART(guid) );
 	if(!qst_giver) 
 		return;
 
 	//stop when talked to
-	if(qst_giver->GetAIInterface())
-		qst_giver->GetAIInterface()->StopMovement(30);
+	if( qst_giver->GetAIInterface() )
+		qst_giver->GetAIInterface()->StopMovement( 30 );
 
 	// unstealth meh
 	if( _player->IsStealth() )
 		_player->RemoveAllAuraType( SPELL_AURA_MOD_STEALTH );
 
 	// reputation
-	_player->Reputation_OnTalk(qst_giver->m_factionDBC);
+	_player->Reputation_OnTalk( qst_giver->m_factionDBC );
 
-	sLog.outDebug( "WORLD: Received CMSG_GOSSIP_HELLO from %u",GUID_LOPART(guid) );
+	sLog.outDebug( "WORLD: Received CMSG_GOSSIP_HELLO from %u", GUID_LOPART(guid) );
 
 	GossipScript * Script = qst_giver->GetCreatureInfo() ? qst_giver->GetCreatureInfo()->gossip_script : NULL;
-	if(!Script)
+	if( !Script )
+	{
+		sLog.outDebug( "WORLD: CMSG_GOSSIP_HELLO, %u has no gossip_script", GUID_LOPART(guid) );
 		return;
-
-	if (qst_giver->isQuestGiver() && qst_giver->HasQuests())
-	{
-		WorldPacket data;
-		data.SetOpcode(SMSG_GOSSIP_MESSAGE);
-		Script->GossipHello(qst_giver, _player, false);
-		if(!_player->CurrentGossipMenu)
-			return;
-
-		_player->CurrentGossipMenu->BuildPacket(data);
-		uint32 count= 0;//sQuestMgr.ActiveQuestsCount(qst_giver, GetPlayer());
-		size_t pos=data.wpos();
-		data << uint32(count);
-		for (it = qst_giver->QuestsBegin(); it != qst_giver->QuestsEnd(); ++it)
-		{
-			uint32 status = sQuestMgr.CalcQuestStatus(qst_giver, GetPlayer(), *it);
-			if (status >= QMGR_QUEST_CHAT)
-			{
-				if (!ql.count((*it)->qst->id) )
-				{	
-					ql.insert((*it)->qst->id);
-					count++;
-					data << (*it)->qst->id;
-					/*data << status;//sQuestMgr.CalcQuestStatus(qst_giver, GetPlayer(), *it);
-					data << uint32(0);*/
-					switch(status)
-					{
-					case QMGR_QUEST_NOT_FINISHED:
-						data << uint32(4) << uint32(0);
-						break;
-
-					case QMGR_QUEST_FINISHED:
-						data << uint32(4) << uint32(1);
-						break;
-
-					case QMGR_QUEST_CHAT:
-						data << QMGR_QUEST_AVAILABLE << uint32(0);
-						break;
-
-					default:
-						data << status << uint32(0);
-						break;
-					}
-
-					LocalizedQuest * lq = (language>0) ? sLocalizationMgr.GetLocalizedQuest((*it)->qst->id,language):NULL;
-					if(lq)
-						data << lq->Title;
-					else
-						data << (*it)->qst->title;
-				}
-			}
-		}
-		data.wpos(pos);
-		data << count;
-		SendPacket(&data);
-		sLog.outDebug( "WORLD: Sent SMSG_GOSSIP_MESSAGE" );
 	}
-	else
-	{
-		Script->GossipHello(qst_giver, _player, true);
-	}
+
+	Script->GossipHello( qst_giver, _player, true );
 }
 
 //////////////////////////////////////////////////////////////
@@ -637,7 +581,7 @@ void WorldSession::HandleNpcTextQueryOpcode( WorldPacket & recv_data )
 	GetPlayer()->SetUInt64Value(UNIT_FIELD_TARGET, targetGuid);
 
 	pGossip = NpcTextStorage.LookupEntry(textID);
-	LocalizedNpcText * lnc = (language>0) ? sLocalizationMgr.GetLocalizedNpcText(textID,language) : NULL;
+	LocalizedNpcText * lnc = (language>0) ? sLocalizationMgr.GetLocalizedNpcText(textID, language) : NULL;
 
 	data.Initialize( SMSG_NPC_TEXT_UPDATE );
 	data << textID;
@@ -645,7 +589,8 @@ void WorldSession::HandleNpcTextQueryOpcode( WorldPacket & recv_data )
 	if(pGossip)
 	{
 		data << float(1.0f);		// Unknown
-		for(uint32 i= 0;i<8;i++)
+		
+		for( uint32 i = 0; i < 8; i++ )
 		{
 			if(lnc)
 			{
@@ -663,7 +608,8 @@ void WorldSession::HandleNpcTextQueryOpcode( WorldPacket & recv_data )
 			for(uint32 e= 0;e<6;e++)
 				data << uint32(pGossip->Texts[i].Emote[e]);
 
-			if(i!=7) data << uint32(0x00);	// don't append to last
+			if(i != 7) 
+				data << uint32(0x00);	// don't append to last
 		}
 	} 
 	else 
@@ -673,16 +619,16 @@ void WorldSession::HandleNpcTextQueryOpcode( WorldPacket & recv_data )
 		data << (char*)_player->GetSession()->LocalizedWorldSrv(70);
 		data << uint32(0x00);	// ?
 		data << uint32(0x00);	// ?
-		for(uint32 e= 0;e<6;e++)
+		for( uint32 e = 0; e < 6; e++ )
 			data << uint32(0x00);
 
-		for(int i= 0;i<7;i++)
+		for( int i = 0; i < 7; i++ )
 		{
 			data << uint32(0x00);
 			data << uint8(0x00) << uint8(0x00);
 			data << uint32(0x00);	// ?
 			data << uint32(0x00);	// ?
-			for(uint32 e= 0;e<6;e++)
+			for( uint32 e = 0; e < 6; e++ )
 				data << uint32(0x00);	// emote 1
 		}
 	}

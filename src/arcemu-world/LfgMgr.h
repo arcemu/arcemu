@@ -75,7 +75,7 @@ public:
 	uint32 DungeonId;
     Group * pGroup;
 
-	LfgMatch(uint32 did) : DungeonId(did),pGroup(NULL) { }
+	LfgMatch(uint32 did) : DungeonId(did), pGroup(NULL) { }
 };
 
 extern uint32 LfgDungeonTypes[MAX_DUNGEONS];

@@ -170,6 +170,7 @@
 #define UNIT_FIELD_HOVERHEIGHT                    OBJECT_END + 0x008C // Size: 1, Type: FLOAT, Flags: PUBLIC
 #define UNIT_FIELD_PADDING                        OBJECT_END + 0x008D // Size: 1, Type: INT, Flags: NONE
 #define UNIT_END                                  OBJECT_END + 0x008E
+
 #define PLAYER_DUEL_ARBITER                       UNIT_END + 0x0000 // Size: 2, Type: LONG, Flags: PUBLIC
 #define PLAYER_FLAGS                              UNIT_END + 0x0002 // Size: 1, Type: INT, Flags: PUBLIC
 #define PLAYER_GUILDID                            UNIT_END + 0x0003 // Size: 1, Type: INT, Flags: PUBLIC

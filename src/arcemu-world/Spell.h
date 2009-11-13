@@ -62,7 +62,7 @@ Range ID|Range|Description
 135     0-100   Tower 100 Tower
 */
 
-/*FLAT PCT
+/*  FLAT PCT
 0    x    x
 1    x    x
 2    x    x
@@ -121,14 +121,15 @@ enum SPELL_MODIFIER_TYPE
     SMT_JUMP_REDUCE         =20,// Increases the amount healed by Chain Heal to targets beyond the first by x%. (no flat)
     SMT_GLOBAL_COOLDOWN     =21,// Reduce Global Cooldown, http://www.wowhead.com/?spell=51183
 	//!!! most spells have both SMT_DAMAGE_DONE and this value. Be carefull case there is no need to apply both !
-    SMT_SPELL_VALUE_PCT		=22,// damage done by ability by x% : SELECT id,name,description FROM dbc_spell where (EffectApplyAuraName_1=108 and EffectMiscValue_1=22) or (EffectApplyAuraName_2=108 and EffectMiscValue_2=22) or (EffectApplyAuraName_3=108 and EffectMiscValue_3=22)  its DoT actually
+    SMT_DAMAGE_DONE_DOTS	=22,// damage done by ability by x% : SELECT id,name,description FROM dbc_spell where (EffectApplyAuraName_1=108 and EffectMiscValue_1=22) or (EffectApplyAuraName_2=108 and EffectMiscValue_2=22) or (EffectApplyAuraName_3=108 and EffectMiscValue_3=22)  its DoT actually
     SMT_EFFECT_3			=23,// modifies the third effect of the spell
 	SMT_PENALTY             =24,// This is a modifier for the amount of +spell damage applied to the spell group from spell bonuses
 	// 25 don't exist spells with it
-    // 26 is obsolete stuff
+    SMT_FREQ_OF_SUCCESS		=26,// Only used with SPELL_AURA_ADD_PCT_MODIFIER and affects used on proc spells
     SMT_EFFECT_BONUS        =27,// mana lost cost per point of damage taken for mana shield,Health or Mana gained from Drain Life and Drain Mana increased by x%.
     SMT_RESIST_DISPEL       =28,// chance to resist dispell effects, TODO NEEDS WORK :D
 	//SMT_CROWD_DAMAGE		=29,// Mod Crowd Damage Test, 45365 - Increases the critical strike damage bonus of your Frost spells by 100%
+	SMT_REFUND_COST_ON_FAIL	=30,// "(...)you are refunded x% of the energy cost of a finishing move if it fails to land." http://www.wowhead.com/?spell=48410 TODO
 };
 
 static void SM_FFValue( int32* m, float* v, uint32* group )
@@ -268,89 +269,74 @@ enum SpellCastTargetFlags
     TARGET_FLAG_CORPSE2             = 0x8000,
     TARGET_FLAG_GLYPH               = 0x20000
 };
-#ifndef NEW_PROCFLAGS
-enum procFlags
-{
-	PROC_NULL							= 0x0,			//0
-	PROC_ON_ANY_HOSTILE_ACTION			= 0x1,			//1
-	PROC_ON_GAIN_EXPIERIENCE			= 0x2,			//2
-	PROC_ON_MELEE_ATTACK				= 0x4,			//4
-	PROC_ON_CRIT_HIT_VICTIM				= 0x8,			//8
-	PROC_ON_CAST_SPELL					= 0x10,			//16
-	PROC_ON_PHYSICAL_ATTACK_VICTIM		= 0x20,			//32
-	PROC_ON_RANGED_ATTACK				= 0x40,			//64
-	PROC_ON_RANGED_CRIT_ATTACK			= 0x80,			//128
-	PROC_ON_PHYSICAL_ATTACK				= 0x100,		//256
-	PROC_ON_MELEE_ATTACK_VICTIM			= 0x200,		//512
-	PROC_ON_SPELL_HIT					= 0x400,		//1024
-	PROC_ON_RANGED_CRIT_ATTACK_VICTIM	= 0x800,		//2048
-	PROC_ON_CRIT_ATTACK					= 0x1000,		//4096
-	PROC_ON_RANGED_ATTACK_VICTIM		= 0x2000,		//8192
-	PROC_ON_PRE_DISPELL_AURA_VICTIM		= 0x4000,		//16384
-	PROC_ON_SPELL_LAND_VICTIM			= 0x8000,		//32768
-	PROC_ON_CAST_SPECIFIC_SPELL			= 0x10000,		//65536
-	PROC_ON_SPELL_HIT_VICTIM			= 0x20000,		//131072
-	PROC_ON_SPELL_CRIT_HIT_VICTIM		= 0x40000,		//262144
-	PROC_ON_TARGET_DIE					= 0x80000,		//524288
-	PROC_ON_ANY_DAMAGE_VICTIM			= 0x100000,		//1048576
-	PROC_ON_TRAP_TRIGGER				= 0x200000,		//2097152 triggers on trap activation)
-	PROC_ON_AUTO_SHOT_HIT				= 0x400000,		//4194304
-	PROC_ON_ABSORB						= 0x800000,		//8388608
-	PROC_ON_RESIST_VICTIM				= 0x1000000,	//16777216
-	PROC_ON_DODGE_VICTIM				= 0x2000000,	//33554432
-	PROC_ON_DIE							= 0x4000000,	//67108864
-	PROC_REMOVEONUSE					= 0x8000000,	//134217728 remove prochcharge only when it is used
-	PROC_MISC							= 0x10000000,	//268435456 our custom flag to decide if proc dmg or shield
-	PROC_ON_BLOCK_VICTIM				= 0x20000000,	//536870912
-	PROC_ON_SPELL_CRIT_HIT				= 0x40000000,	//1073741824
-	PROC_TARGET_SELF					= 0x80000000,	//-2147483648 our custom flag to decide if proc target is self or victim
-};
-#else
+
 //REMEMBER: Wands r not ranged based weapons. So it shouldn't be any ranged proc when u hit with wands!
 enum procFlags
 {
 	PROC_NULL                          = 0x0,
-	PROC_ON_NPC_ACTION                 = 0x1, //on GO action too btw. related to quests in general.
-	PROC_ON_XP_GAIN                    = 0x2, //on honor gain too btw.
-	PROC_ON_MELEE_HIT                  = 0x4, //on successful white melee attack
-	PROC_ON_MELEE_HIT_VICTIM           = 0x8, //on successful white melee attack victim
-	PROC_ON_MELEE_ABILITY_LAND         = 0x10, //on successful melee ability attack. Abilities that was resisted/dodged etc doesn't proc with this flag
-	PROC_ON_MELEE_ABILITY_LAND_VICTIM  = 0x20, //on successful melee ability victim but not white damage. Abilities that was resisted/dodged etc doesn't proc with this flag
-	PROC_ON_RANGED_HIT                 = 0x40,  //on successful ranged white attack
-	PROC_ON_RANGED_HIT_VICTIM          = 0x80,  //on successful ranged white attack victim
-	PROC_ON_RANGED_ABILITY_LAND        = 0x100, //on successful ranged ability attack. Abilities that was resisted/dodged etc doesn't proc with this flag
-	PROC_ON_RANGED_ABILITY_LAND_VICTIM = 0x200,  //on successful ranged ability victim but not white damage. Abilities that was resisted/dodged etc doesn't proc with this flag
-	PROC_ON_CAST_SPELL                 = 0x400, //on nonability (spell) cast. Spells that was resisted don't proc with this flag
-	PROC_ON_CAST_SPELL_VICTIM          = 0x800,  //on nonability (spell) cast victim. Spells that was resisted don't proc with this flag.
-	PROC_ON_ANY_DAMAGE                 = 0x1000, // mb wrong
-	PROC_ON_ANY_DAMAGE_VICTIM          = 0x2000, // mb wrong
-	PROC_ON_HEALSPELL_LAND             = 0x4000, //on heal (direct or HoT) spell land.
-	PROC_ON_HEALSPELL_LAND_VICTIM      = 0x8000,  //on heal (direct or HoT) spell land victim.
-	PROC_ON_HARMFULSPELL_LAND          = 0x10000, //on harmful spell land (DoT damage not included in this flag!)
-	PROC_ON_HARMFULSPELL_LAND_VICTIM   = 0x20000, //on harmful spell land victim (DoT damage not included in this flag!)
-	PROC_ON_DOT_DAMAGE                 = 0x40000, //on harmful non direct damage (DoTs)
-	PROC_ON_DOT_DAMAGE_VICTIM          = 0x80000,  //on harmful non direct damage (DoTs) victim
-	PROC_REMOVEONUSE                   = 0x100000, //something supercustom. 99% wrong :P used by bombs and grenades in general.
-	PROC_ON_TRAP_TRIGGER               = 0x200000,
-	PROC_UNUSED1                       = 0x400000,
-	PROC_ON_OFFHAND_HIT                = 0x800000, //only 1 spellname "Combat Potency"
-	PROC_ON_UNK1                       = 0x1000000,//only 1 spellname "Captured Totem"
+	PROC_ON_NPC_ACTION                 = 0x1,		//on GO action too btw. related to quests in general. //PROC_ON_KILLED Killed by agressor
+	PROC_ON_GAIN_EXPIERIENCE           = 0x2,		//on honor gain too btw. //PROC_FLAG_KILL Kill target
+	PROC_ON_MELEE_HIT                  = 0x4,		//on successful white melee attack
+	PROC_ON_MELEE_HIT_VICTIM           = 0x8,		//on successful white melee attack victim
+	PROC_ON_MELEE_ABILITY_LAND         = 0x10,		//on successful melee ability attack. Abilities that was resisted/dodged etc doesn't proc with this flag
+	PROC_ON_MELEE_ABILITY_LAND_VICTIM  = 0x20,		//on successful melee ability victim but not white damage. Abilities that was resisted/dodged etc doesn't proc with this flag
+	PROC_ON_RANGED_HIT                 = 0x40,		//on successful ranged white attack
+	PROC_ON_RANGED_HIT_VICTIM          = 0x80,		//on successful ranged white attack victim
+	PROC_ON_RANGED_ABILITY_LAND        = 0x100,		//on successful ranged ability attack. Abilities that was resisted/dodged etc doesn't proc with this flag
+	PROC_ON_RANGED_ABILITY_LAND_VICTIM = 0x200,		//on successful ranged ability victim but not white damage. Abilities that was resisted/dodged etc doesn't proc with this flag
+	PROC_ON_CAST_SPELL                 = 0x400,		//on nonability (spell) cast. Spells that was resisted don't proc with this flag //PROC_ON_SUCCESSFUL_POSITIVE_AOE_HIT
+	PROC_ON_CAST_SPELL_VICTIM          = 0x800,		//on nonability (spell) cast victim. Spells that was resisted don't proc with this flag. //PROC_ON_TAKEN_POSITIVE_AOE
+	PROC_ON_SUCCESSFUL_AOE_SPELL_HIT   = 0x1000,	//on successful aoe damage done
+	PROC_ON_TAKEN_AOE_SPELL_HIT        = 0x2000,	//on successful aoe damage taken
+	PROC_ON_HEALSPELL_LAND             = 0x4000,	//on heal (direct or HoT) spell land.
+	PROC_ON_HEALSPELL_LAND_VICTIM      = 0x8000,	//on heal (direct or HoT) spell land victim.
+	PROC_ON_HARMFULSPELL_LAND          = 0x10000,	//on harmful spell land (DoT damage not included in this flag!)
+	PROC_ON_HARMFULSPELL_LAND_VICTIM   = 0x20000,	//on harmful spell land victim (DoT damage not included in this flag!)
+	PROC_ON_DOT_DAMAGE                 = 0x40000,	//on harmful non direct damage (DoTs)
+	PROC_ON_DOT_DAMAGE_VICTIM          = 0x80000,	//on harmful non direct damage (DoTs) victim
+	PROC_ON_ANY_DAMAGE                 = 0x100000,	//on any damage taken
+	PROC_ON_TRAP_TRIGGER               = 0x200000,	//on trap activating (TODO cster or victim?)
+	PROC_ON_OFFHAND_HIT_VICTIM         = 0x400000,	//untested
+	PROC_ON_OFFHAND_HIT                = 0x800000,	//untested
+	PROC_ON_UNK1                       = 0x1000000,	//untested
 };
-enum customProcFlags
+
+enum customProcFlags // procs in comments and CUSTOMPROC_NORMAL_HIT aren't set yet
 {
-	CUSTOMPROC_NULL                       = 0x0;
-	CUSTOMPROC_ON_CRIT                    = 0x1; //doesn't matter victim or not.
-	CUSTOMPROC_ON_MISS_VICTIM             = 0x2;
-	CUSTOMPROC_ON_DODGE_VICTIM            = 0x4;
-	CUSTOMPROC_ON_BLOCK_VICTIM            = 0x8;
-	CUSTOMPROC_ON_PARRY_VICTIM            = 0x10;
-	CUSTOMPROC_ON_RESIST_VICTIM           = 0x20;
-	CUSTOMPROC_ON_DIE                     = 0x40;//proc on our death
-	CUSTOMPROC_ON_FINISHMOVE              = 0x80; //procs when we use finish move ability
-	CUSTOMPROC_ON_ADDCOMBO                = 0x100; //procs when we use ability with +combo point
-	CUSTOMPROC_PROC_ON_SELF               = 0x200; //proc on self
+	CUSTOMPROC_NULL						= 0x0,			// If none can tigger on Hit/Crit only (passive spells MUST defined by SpellFamily flag)
+	CUSTOMPROC_NORMAL_HIT				= 0x1,			// If set only from normal hit (only damage spells)
+	CUSTOMPROC_ON_CRIT					= 0x2,			// Doesn't matter victim or not.
+	CUSTOMPROC_ON_MISS_VICTIM			= 0x4,
+	CUSTOMPROC_ON_RESIST_VICTIM			= 0x8,
+	CUSTOMPROC_ON_DODGE_VICTIM			= 0x10,
+	CUSTOMPROC_ON_PARRY_VICTIM			= 0x20,
+	CUSTOMPROC_ON_BLOCK_VICTIM			= 0x40,
+
+	/*
+	CUSTOMPROC_ON_EVADE					= 0x80,
+	CUSTOMPROC_ON_IMMUNE				= 0x100,
+	CUSTOMPROC_ON_DEFLECT				= 0x200,
+	*/
+
+	CUSTOMPROC_ON_ABSORB				= 0x400,
+
+    //CUSTOMPROC_ON_REFLECT				= 0x800,
+    CUSTOMPROC_ON_OFFHAND_HIT			= 0x1000,		// For spells like Combat Potency
+    CUSTOMPROC_ON_FROST_WARDING			= 0x2000,		// For Frost Warding spell
+    CUSTOMPROC_ON_IGNORE_XP_HONOR_KILL	= 0x4000,
+	
+	/*
+	CUSTOMPROC_ON_RESERVED3				= 0x8000,
+	CUSTOMPROC_ON_TRIGGER_ALWAYS		= 0x10000,
+	*/
+	
+	CUSTOMPROC_ON_ONE_TIME_TRIGGER		= 0x20000,		// Trigger spell once. Used for AddTargetTriggerProc like Relentless Strikes
+	CUSTOMPROC_ON_DIE					= 0x40000,		// proc on our death
+	CUSTOMPROC_ON_FINISHMOVE			= 0x80000,		// procs when we use finish move ability
+	CUSTOMPROC_ON_ADDCOMBO				= 0x100000,		// procs when we use ability with +combo point
+	CUSTOMPROC_PROC_ON_SELF				= 0x200000,		// proc on self
+	CUSTOMPROC_ON_DISPEL				= 0x400000,
 };
-#endif
 
 enum CastInterruptFlags
 {
@@ -374,9 +360,9 @@ enum AuraInterruptFlags
     AURA_INTERRUPT_ON_DISMOUNT					= 0x40,
     AURA_INTERRUPT_ON_ENTER_WATER				= 0x80,
     AURA_INTERRUPT_ON_LEAVE_WATER				= 0x100, // could be AURA_INTERRUPT_ON_LEAVE_CURRENT_SURFACE
-    AURA_INTERRUPT_ON_UNUSED2					= 0x200,
+    AURA_INTERRUPT_ON_UNUSED2					= 0x200, // AURA_INTERRUPT_FLAG_NOT_SHEATHED 
     AURA_INTERRUPT_ON_UNK4						= 0x400,
-    AURA_INTERRUPT_ON_UNK5						= 0x800,
+    AURA_INTERRUPT_ON_LOOTING					= 0x800, 
     AURA_INTERRUPT_ON_START_ATTACK				= 0x1000,
     AURA_INTERRUPT_ON_UNK6						= 0x2000,
     AURA_INTERRUPT_ON_UNUSED3					= 0x4000,
@@ -390,7 +376,6 @@ enum AuraInterruptFlags
     AURA_INTERRUPT_ON_UNK8						= 0x400000,
 	AURA_INTERRUPT_ON_PVP_ENTER					= 0x800000,
 	AURA_INTERRUPT_ON_DIRECT_DAMAGE				= 0x1000000,
-    AURA_INTERRUPT_ON_AFTER_CAST_SPELL			= 0x80000000,
 };
 
 enum ChannelInterruptFlags
@@ -424,7 +409,7 @@ enum Attributes
 	ATTRIBUTE_ON_NEXT_ATTACK						= 0x00000004,
 	ATTRIBUTES_UNK5									= 0x00000008, //ATTRIBUTES_UNUSED0
 	ATTRIBUTES_UNK6									= 0x00000010,
-	ATTRIBUTES_UNK7									= 0x00000020,	// Tradeskill recipies
+	ATTRIBUTES_TRADESPELL 							= 0x00000020,	// Tradeskill recipies
 	ATTRIBUTES_PASSIVE								= 0x00000040,
 	ATTRIBUTES_NO_VISUAL_AURA						= 0x00000080,
 	ATTRIBUTES_NO_CAST								= 0x00000100,	//seems to be afflicts pet
@@ -440,11 +425,11 @@ enum Attributes
 	ATTRIBUTES_UNK20								= 0x00040000,	//it's not : must be behind
 	ATTRIBUTES_LEVEL_DAMAGE_CALCULATION				= 0x00080000,
 	ATTRIBUTES_STOP_ATTACK							= 0x00100000,	//switch off auto attack on use. Maim,Gouge,Disengage,Polymorph etc
-	ATTRIBUTES_CANT_BE_DPB							= 0x00200000,	//can't be dodged, blocked, parried
+	ATTRIBUTES_CANT_BE_DPB							= 0x00200000,	//can't be dodged, blocked, parried 2097152
 	ATTRIBUTES_UNK24								= 0x00400000,	// related to ranged
 	ATTRIBUTES_UNK25								= 0x00800000,
 	ATTRIBUTES_MOUNT_CASTABLE						= 0x01000000,	//castable on mounts
-	ATTRIBUTES_TRIGGER_COOLDOWN						= 0x02000000,	//also requires atributes ex = 32 ?
+	ATTRIBUTES_TRIGGER_COOLDOWN						= 0x02000000,	//also requires atributes ex = 32 ? SPELL_ATTR_DISABLED_WHILE_ACTIVE ?
 	ATTRIBUTES_UNK28								= 0x04000000,
 	ATTRIBUTES_CASTABLE_WHILE_SITTING				= 0x08000000,
 	ATTRIBUTES_REQ_OOC								= 0x10000000,	//     ATTRIBUTES_REQ_OUT_OF_COMBAT
@@ -495,7 +480,7 @@ enum AttributesExB
 	ATTRIBUTESEXB_NULL								= 0x00000000,	//
 	ATTRIBUTESEXB_UNK2								= 0x00000001,	// 0
 	ATTRIBUTESEXB_UNK3								= 0x00000002,	// 1, Can be used while stealthed
-	ATTRIBUTESEXB_UNK4								= 0x00000004,	// 2, request pet maybe
+	ATTRIBUTESEXB_CANT_REFLECTED					= 0x00000004,	// 2, request pet maybe
 	ATTRIBUTESEXB_UNK5								= 0x00000008,	// 3, something todo with temp enchanted items
 	ATTRIBUTESEXB_PARTY_EFFECTING_AURA				= 0x00000010,	// 4, Party affecting aura's
 	ATTRIBUTESEXB_ACTIVATE_AUTO_SHOT				= 0x00000020,	// 5, spell that enable's auto shoot
@@ -514,7 +499,7 @@ enum AttributesExB
 	ATTRIBUTESEXB_REVIVE_PET						= 0x00040000,	// 18, actually 1 spell, revive pet
 	ATTRIBUTESEXB_NOT_NEED_SHAPESHIFT				= 0x00080000,	// 19, does not necessarily need shapeshift
 	ATTRIBUTESEXB_REQ_BEHIND_TARGET					= 0x00100000,	// 20,
-	ATTRIBUTESEXB_UNK23								= 0x00200000,	// 21,
+	ATTRIBUTESEXB_DAMAGE_REDUCED_SHIELD				= 0x00200000,	// 21,
 	ATTRIBUTESEXB_UNK24								= 0x00400000,	// 22,
 	ATTRIBUTESEXB_UNK25								= 0x00800000,	// 23,
 	ATTRIBUTESEXB_UNK26								= 0x01000000,	// 24,
@@ -524,7 +509,7 @@ enum AttributesExB
 	ATTRIBUTESEXB_UNK30								= 0x10000000,	// 28, some secondairy spell triggers, especialy for lightning shield alike spells
 	ATTRIBUTESEXB_CANT_CRIT							= 0x20000000,	// 29, spell can't crit
 	ATTRIBUTESEXB_UNK32								= 0x40000000,	// 30,
-	ATTRIBUTESEXB_UNK33								= 0x80000000,	// 31,
+	ATTRIBUTESEXB_FOOD_BUFF							= 0x80000000,	// 31,
 };
 
 enum Flags4
@@ -540,9 +525,9 @@ enum Flags4
 	FLAGS4_UNK9							= 0x80,
 	FLAGS4_UNK10						= 0x100,
 	FLAGS4_UNK11						= 0x200,
-	FLAGS4_UNK12						= 0x400,
+	FLAGS4_MAIN_HAND					= 0x400,
 	FLAGS4_BG_ONLY                      = 0x800,
-	FLAGS4_UNK14						= 0x1000,
+	FLAGS4_CAST_ON_DEAD					= 0x1000,
 	FLAGS4_UNK15						= 0x2000,
 	FLAGS4_UNK16						= 0x4000,
 	FLAGS4_PLAYER_RANGED_SPELLS         = 0x8000,
@@ -573,18 +558,18 @@ enum Flags5
 	FLAGS5_UNK5							= 0x8,
 	FLAGS5_UNK6							= 0x10,
 	FLAGS5_UNK7							= 0x20,
-	FLAGS5_UNK8							= 0x40,
+	FLAGS5_NOT_STEALABLE				= 0x40,
 	FLAGS5_UNK9							= 0x80,
 	FLAGS5_UNK10						= 0x100,
 	FLAGS5_UNK11						= 0x200,
-	FLAGS5_UNK12						= 0x400,
+	FLAGS5_SPELL_VS_EXTEND_COST 		= 0x400,
 	FLAGS5_UNK13						= 0x800,
 	FLAGS5_UNK14						= 0x1000,
 	FLAGS5_UNK15						= 0x2000,
 	FLAGS5_UNK16						= 0x4000,
 	FLAGS5_UNK17						= 0x8000,
-	FLAGS5_UNK18						= 0x10000,
-	FLAGS5_UNK19						= 0x20000,
+	FLAGS5_NOT_USABLE_IN_ARENA			= 0x10000,
+	FLAGS5_USABLE_IN_ARENA				= 0x20000,
 	FLAGS5_UNK20						= 0x40000,
 	FLAGS5_UNK21						= 0x80000,
 	FLAGS5_UNK22						= 0x100000,
@@ -607,13 +592,13 @@ enum Flags6
 	FLAGS6_UNK2							= 0x1,
 	FLAGS6_REAGENT_REMOVAL				= 0x2,
 	FLAGS6_UNK4							= 0x4,
-	FLAGS6_UNK5							= 0x8,
+	FLAGS6_USABLE_WHILE_STUNNED			= 0x8,
 	FLAGS6_UNK6							= 0x10,
-	FLAGS6_UNK7							= 0x20,
+	FLAGS6_SINGLE_TARGET_SPELL			= 0x20,
 	FLAGS6_UNK8							= 0x40,
 	FLAGS6_UNK9							= 0x80,
 	FLAGS6_UNK10						= 0x100,
-	FLAGS6_UNK11						= 0x200,
+	FLAGS6_START_PERIODIC_AT_APPLY		= 0x200,
 	FLAGS6_UNK12						= 0x400,
 	FLAGS6_UNK13						= 0x800,
 	FLAGS6_UNK14						= 0x1000,
@@ -621,8 +606,8 @@ enum Flags6
 	FLAGS6_UNK16						= 0x4000,
 	FLAGS6_UNK17						= 0x8000,
 	FLAGS6_UNK18						= 0x10000,
-	FLAGS6_UNK19						= 0x20000,
-	FLAGS6_UNK20						= 0x40000,
+	FLAGS6_USABLE_WHILE_FEARED			= 0x20000,
+	FLAGS6_USABLE_WHILE_CONFUSED		= 0x40000,
 	FLAGS6_UNK21						= 0x80000,
 	FLAGS6_UNK22						= 0x100000,
 	FLAGS6_UNK23						= 0x200000,
@@ -642,7 +627,7 @@ enum Flags7
 {
 	FLAGS7_NULL							= 0x0,
 	FLAGS7_UNK2							= 0x1,
-	FLAGS7_UNUSED1						= 0x2, // unused 2.4.3
+	FLAGS7_ONLY_IN_ARENA				= 0x2,
 	FLAGS7_UNK4							= 0x4,
 	FLAGS7_UNK5							= 0x8,
 	FLAGS7_UNUSED2						= 0x10, // unused 2.4.3
@@ -652,13 +637,19 @@ enum Flags7
 	FLAGS7_UNK10						= 0x100,
 	FLAGS7_UNUSED3						= 0x200, // unused 2.4.3
 	FLAGS7_UNK12						= 0x400,
-	FLAGS7_UNK13						= 0x800,
+	FLAGS7_NOT_IN_RAID_INSTANCE			= 0x800,
 	FLAGS7_UNUSED4						= 0x1000, // unused 2.4.3
 	FLAGS7_UNK15						= 0x2000,
 	FLAGS7_UNUSED5						= 0x4000, // unused 2.4.3
 	FLAGS7_UNUSED6						= 0x8000, // unused 2.4.3
 	FLAGS7_UNUSED7						= 0x10000, // unused 2.4.3 - 20-33 also unused 2.4.3
 	FLAGS7_UNK19						= 0x20000,
+	FLAGS7_UNK20						= 0x40000,
+	FLAGS7_UNK21						= 0x80000,
+	FLAGS7_UNK22						= 0x100000,
+	FLAGS7_UNK23						= 0x200000,
+	FLAGS7_UNK24						= 0x400000,
+	FLAGS7_UNK25						= 0x800000,
 };
 
 enum SpellCastFlags
@@ -832,7 +823,7 @@ enum SpellEffects
 	SPELL_EFFECT_STEALTH,                   //    48
 	SPELL_EFFECT_DETECT,                    //    49
 	SPELL_EFFECT_SUMMON_OBJECT,             //    50
-	//SPELL_EFFECT_TRANS_DOOR,              //    50
+	//SPELL_EFFECT_TRANS_DOOR,				//    50
 	SPELL_EFFECT_FORCE_CRITICAL_HIT,        //    51
 	SPELL_EFFECT_GUARANTEE_HIT,             //    52
 	SPELL_EFFECT_ENCHANT_ITEM,              //    53
@@ -920,8 +911,8 @@ enum SpellEffects
 	SPELL_EFFECT_KILL_CREDIT,               //    134
 	SPELL_EFFECT_UNKNOWN15,                 //    135
 	SPELL_EFFECT_UNKNOWN16,                 //    136
-	SPELL_EFFECT_UNKNOWN17,                 //    137
-	SPELL_EFFECT_UNKNOWN18,                 //    138
+	SPELL_EFFECT_RESTORE_MANA_PCT,          //    137
+	SPELL_EFFECT_JUMP,						//    138
 	SPELL_EFFECT_UNKNOWN19,                 //    139
 	SPELL_EFFECT_UNKNOWN20,                 //    140
 	SPELL_EFFECT_UNKNOWN21,                 //    141
@@ -1006,22 +997,22 @@ enum SpellTypes // SPELL_ENTRY_buffType
 //custom stuff generated for spells that will not change in time
 enum SpellIsFlags
 {
-    SPELL_FLAG_IS_DAMAGING				= 0x00000001,
-    SPELL_FLAG_IS_HEALING				= 0x00000002,
-    SPELL_FLAG_IS_TARGETINGSTEALTHED	= 0x00000004,
-	SPELL_FLAG_IS_REQUIRECOOLDOWNUPDATE	= 0x00000008, //it started with rogue cold blood but I'm sure others will come
-    SPELL_FLAG_IS_POISON				= 0x00000010, //rogue has a few spells that can stack so can't use the spell_type enum ;)
-    SPELL_FLAG_IS_FINISHING_MOVE		= 0x00000020, //rogue has a few spells that can stack so can't use the spell_type enum ;)
-    SPELL_FLAG_IS_NOT_USING_DMG_BONUS	= 0x00000040,
-    SPELL_FLAG_IS_CHILD_SPELL			= 0x00000080, //auras proc auras that have same name, these should not remove mother aura when adding to target
+    SPELL_FLAG_IS_DAMAGING							= 0x00000001,
+    SPELL_FLAG_IS_HEALING							= 0x00000002,
+    SPELL_FLAG_IS_TARGETINGSTEALTHED				= 0x00000004,
+	SPELL_FLAG_IS_REQUIRECOOLDOWNUPDATE				= 0x00000008, //it started with rogue cold blood but I'm sure others will come
+    SPELL_FLAG_IS_POISON							= 0x00000010, //rogue has a few spells that can stack so can't use the spell_type enum ;)
+    SPELL_FLAG_IS_FINISHING_MOVE					= 0x00000020, //rogue has a few spells that can stack so can't use the spell_type enum ;)
+    SPELL_FLAG_IS_NOT_USING_DMG_BONUS				= 0x00000040,
+    SPELL_FLAG_IS_CHILD_SPELL						= 0x00000080, //auras proc auras that have same name, these should not remove mother aura when adding to target
     SPELL_FLAG_IS_CASTED_ON_PET_SUMMON_ON_PET		= 0x00000100, //we should cast these on pet too
     SPELL_FLAG_IS_CASTED_ON_PET_SUMMON_PET_OWNER	= 0x00000200, //we should cast these on owner too
-    SPELL_FLAG_IS_EXPIREING_WITH_PET	= 0x00000400, //when pet dies, we remove this too
-    SPELL_FLAG_IS_EXPIREING_ON_PET		= 0x00000800, //when pet is summoned
-	SPELL_FLAG_IS_FORCEDDEBUFF			= 0x00001000, // forced to be a debuff
-	SPELL_FLAG_IS_FORCEDBUFF			= 0x00002000, // forced to be a buff
-	SPELL_FLAG_IS_INHERITING_LEVEL		= 0x00004000, // summons to inherit caster level or not
-	SPELL_FLAG_IS_MAXSTACK_FOR_DEBUFF	= 0x00008000, // summons to inherit caster level or not
+    SPELL_FLAG_IS_EXPIREING_WITH_PET				= 0x00000400, //when pet dies, we remove this too
+    SPELL_FLAG_IS_EXPIREING_ON_PET					= 0x00000800, //when pet is summoned
+	SPELL_FLAG_IS_FORCEDDEBUFF						= 0x00001000, // forced to be a debuff
+	SPELL_FLAG_IS_FORCEDBUFF						= 0x00002000, // forced to be a buff
+	SPELL_FLAG_IS_INHERITING_LEVEL					= 0x00004000, // summons to inherit caster level or not
+	SPELL_FLAG_IS_MAXSTACK_FOR_DEBUFF				= 0x00008000, // summons to inherit caster level or not
 };
 
 enum SpellCoefficientsFlags
@@ -1369,7 +1360,7 @@ enum MECHANICS
 	MECHANIC_INTERRUPTED, // 26
 	MECHANIC_DAZED, // 27
 	MECHANIC_DISCOVERY, // 28
-	MECHANIC_INVULNERABLE, // 29
+	MECHANIC_INVULNERABLE, // 29 for shields and ice block
 	MECHANIC_SAPPED, // 30
 	MECHANIC_ENRAGED, // 31
 	MECHANIC_END
@@ -1437,12 +1428,19 @@ typedef enum {
    EFF_TARGET_LOCATION_INFRONT_CASTER_AT_RANGE			= 75,
    EFF_TARGET_ENEMYS_IN_ARE_CHANNELED_WITH_EXCEPTIONS	= 76,
    EFF_TARGET_SELECTED_ENEMY_CHANNELED					= 77,
+   EFF_TARGET_POINT_AT_NORTH							= 78,                // 78-85 possible _COORDINATES at radius with pi/4 step around target in unknown order, N?
+   EFF_TARGET_POINT_AT_SOUTH							= 79,                // S?
+   EFF_TARGET_POINT_AT_EAST								= 80,                // 80/81 must be symmetric from line caster->target, E (base at 82/83, 84/85 order) ?
+   EFF_TARGET_POINT_AT_WEST								= 81,                // 80/81 must be symmetric from line caster->target, W (base at 82/83, 84/85 order) ?
+   EFF_TARGET_POINT_AT_NE								= 82,                // from spell desc: "(NE)"
+   EFF_TARGET_POINT_AT_NW								= 83,                // from spell desc: "(NW)"
+   EFF_TARGET_POINT_AT_SE								= 84,                // from spell desc: "(SE)"
+   EFF_TARGET_POINT_AT_SW								= 85,                // from spell desc: "(SW)"
    EFF_TARGET_SELECTED_ENEMY_DEADLY_POISON				= 86,
+   EFF_TARGET_DIRECTLY_FORWARD							= 89,
    EFF_TARGET_NON_COMBAT_PET							= 90,
-   //these are custom, feel free to move them further if targeting gets extended
-   EFF_TARGET_CUSTOM_PARTY_INJURED_SINGLE				= 99,
-   EFF_TARGET_CUSTOM_PARTY_INJURED_MULTI				= 100,
-   EFF_TARGET_LIST_LENGTH_MARKER						= 101,
+   EFF_TARGET_IN_FRONT_OF_CASTER_30						= 104,
+   EFF_TARGET_LIST_LENGTH_MARKER						= 105,
 } SpellEffectTarget;
 
 
@@ -1582,13 +1580,15 @@ enum SpellDidHitResult
 };
 
 // Spell instance
-class SERVER_DECL Spell
+class SERVER_DECL Spell : public EventableObject
 {
 public:
     friend class DummySpellHandler;
     Spell(Object* Caster, SpellEntry *info, bool triggered, Aura* aur);
     ~Spell();
 
+	// Fills  targets at the area of effect with Unit exception
+	void FillAllTargetsInAreaWithException(uint32 i, float srcx, float srcy, float srcz, float range, Unit *target);
     // Fills specified targets at the area of effect
     void FillSpecifiedTargetsInArea(float srcx,float srcy,float srcz,uint32 ind, uint32 specification);
     // Fills specified targets at the area of effect. We suppose we already inited this spell and know the details
@@ -1667,6 +1667,7 @@ public:
 	//
 	uint8 GetErrorAtShapeshiftedCast(SpellEntry *spellInfo, uint32 form);
 
+	void RemoveAuraOnSpellCast();
 
     bool Reflect(Unit * refunit);
 
@@ -1802,6 +1803,7 @@ public:
 	void SpellEffectForgetSpecialization(uint32 i);
 	void SpellEffectKillCredit(uint32 i);
 	void SpellEffectRestorePowerPct(uint32 i);
+	void SpellEffectJump(uint32 i);
 	void SpellEffectTriggerSpellWithValue(uint32 i);
 	void SpellEffectCreatePet(uint32 i);
 	void SpellEffectTeachTaxiPath(uint32 i);
@@ -1854,10 +1856,11 @@ public:
     void SpellTargetInFrontOfCaster2(uint32 i, uint32 j);
     void SpellTargetTargetPartyMember(uint32 i, uint32 j);
     void SpellTargetSameGroupSameClass(uint32 i, uint32 j);
-	//these are custom
-    void SpellTargetSinglePartyInjured(uint32 i, uint32 j);
-    void SpellTargetMultiplePartyInjured(uint32 i, uint32 j);
+	void SpellTargetAllTargetsInArea(uint32 i, uint32 j);
+	void SpellTargetAreaOfEffect87(uint32 i, uint32 j);
+	void SpellTargetDirectlyForward(uint32 i, uint32 j);
 	void SpellTargetNonCombatPet(uint32 i, uint32 j);
+	//void SpellTargetDirectlyForward30y(uint32 i, uint32 j);
 
     void Heal(int32 amount, bool ForceCrit = false);
 
@@ -1942,14 +1945,6 @@ public:
                 {
                     SM_FIValue(u_caster->SM_FDur,(int32*)&this->Dur,GetProto()->SpellGroupType);
                     SM_PIValue(u_caster->SM_PDur,(int32*)&this->Dur,GetProto()->SpellGroupType);
-#ifdef COLLECTION_OF_UNTESTED_STUFF_AND_TESTERS
-					int spell_flat_modifers= 0;
-					int spell_pct_modifers= 0;
-					SM_FIValue(u_caster->SM_FDur,&spell_flat_modifers,GetProto()->SpellGroupType);
-					SM_FIValue(u_caster->SM_PDur,&spell_pct_modifers,GetProto()->SpellGroupType);
-					if(spell_flat_modifers!= 0 || spell_pct_modifers!= 0)
-						printf("!!!!!spell duration mod flat %d , spell duration mod pct %d , spell duration %d, spell group %u\n",spell_flat_modifers,spell_pct_modifers,Dur,GetProto()->SpellGroupType);
-#endif
                 }
             }
             else
@@ -1967,21 +1962,15 @@ public:
 
     ARCEMU_INLINE float GetRadius(uint32 i)
     {
-        if(bRadSet[i])return Rad[i];
-        bRadSet[i]=true;
-        Rad[i]=::GetRadius(dbcSpellRadius.LookupEntry(GetProto()->EffectRadiusIndex[i]));
-		if(GetProto()->SpellGroupType && u_caster)
+        if( bRadSet[i] )
+			return Rad[i];
+
+        bRadSet[i] = true;
+        Rad[i] = ::GetRadius( dbcSpellRadius.LookupEntry(GetProto()->EffectRadiusIndex[i]) );
+		if( GetProto()->SpellGroupType && u_caster )
         {
-            SM_FFValue(u_caster->SM_FRadius,&Rad[i],GetProto()->SpellGroupType);
-            SM_PFValue(u_caster->SM_PRadius,&Rad[i],GetProto()->SpellGroupType);
-#ifdef COLLECTION_OF_UNTESTED_STUFF_AND_TESTERS
-			float spell_flat_modifers= 0;
-			float spell_pct_modifers=1;
-			SM_FFValue(u_caster->SM_FRadius,&spell_flat_modifers,GetProto()->SpellGroupType);
-			SM_PFValue(u_caster->SM_PRadius,&spell_pct_modifers,GetProto()->SpellGroupType);
-			if(spell_flat_modifers!= 0 || spell_pct_modifers!=1)
-				printf("!!!!!spell radius mod flat %f , spell radius mod pct %f , spell radius %f, spell group %u\n",spell_flat_modifers,spell_pct_modifers,Rad[i],GetProto()->SpellGroupType);
-#endif
+            SM_FFValue( u_caster->SM_FRadius, &Rad[i], GetProto()->SpellGroupType );
+            SM_PFValue( u_caster->SM_PRadius, &Rad[i], GetProto()->SpellGroupType );
         }
 
         return Rad[i];

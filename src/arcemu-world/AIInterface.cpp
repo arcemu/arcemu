@@ -424,8 +424,7 @@ void AIInterface::HandleEvent(uint32 event, Unit* pUnit, uint32 misc1)
 				if( static_cast< Creature* >( m_Unit )->has_combat_text )
 					objmgr.HandleMonsterSayEvent( static_cast< Creature* >( m_Unit ), MONSTER_SAY_EVENT_ON_DAMAGE_TAKEN );
 
-				if( pUnit->HasAura(24575) )
-					pUnit->RemoveAura(24575);
+				pUnit->RemoveAura(24575);
 
 				CALL_SCRIPT_EVENT(m_Unit, OnDamageTaken)(pUnit, float(misc1));
 				if(!modThreatByPtr(pUnit, misc1))
@@ -1574,10 +1573,10 @@ void AIInterface::AttackReaction(Unit* pUnit, uint32 damage_dealt, uint32 spellI
 		}
 	}
 
-	if (pUnit->GetTypeId() == TYPEID_PLAYER && static_cast<Player *>(pUnit)->GetMisdirectionTarget() != 0)
+	if ( pUnit->GetTypeId() == TYPEID_PLAYER && static_cast<Player *>(pUnit)->GetMisdirectionTarget() != 0 && static_cast<Player *>(pUnit)->GetMisdirectionValue() == 100 )
 	{
 		Unit *mTarget = m_Unit->GetMapMgr()->GetUnit(static_cast<Player *>(pUnit)->GetMisdirectionTarget());
-		if (mTarget != NULL && mTarget->isAlive())
+		if( mTarget != NULL && mTarget->isAlive() )
 			pUnit = mTarget;
 	}
 
@@ -1727,7 +1726,7 @@ Unit* AIInterface::FindTarget()
 	
 	/* Commented due to no use
 	bool pvp=true;
-	if(m_Unit->GetTypeId()==TYPEID_UNIT&&((Creature*)m_Unit)->GetCreatureInfo()&&((Creature*)m_Unit)->GetCreatureInfo()->Civilian)
+	if(m_Unit->GetTypeId()==TYPEID_UNIT&&((Creature*)m_Unit)->GetCreatureInfo()&&((Creature*)m_Unit)->GetCreatureInfo()->FlagsExtra & 2)
 		pvp=false;*/
 
 	//target is immune to all form of attacks, cant attack either.
@@ -1756,7 +1755,7 @@ Unit* AIInterface::FindTarget()
 				continue;
 			if (tmpPlr->m_invisible)
 				continue;
-			if( !tmpPlr->HasFlag( PLAYER_FLAGS, PLAYER_FLAG_UNKNOWN2 ) )//PvP Guard Attackable.
+			if( !tmpPlr->HasFlag( PLAYER_FLAGS, PLAYER_FLAG_CONTESTED_PVP ) )//PvP Guard Attackable.
 				continue;
 			if( !(tmpPlr->m_phase & m_Unit->m_phase) ) //Not in the same phase, skip this target
 				continue;
@@ -2027,15 +2026,10 @@ bool AIInterface::FindFriends(float dist)
 	m_Unit->ReleaseInrangeLock();
 
 	uint32 family = (((Creature*)m_Unit)->GetCreatureInfo()) ? (((Creature*)m_Unit)->GetCreatureInfo()->Type) : 0;
-	
+
 	CreatureProto *pt = static_cast< Creature* >( m_Unit )->GetProto();
 
-	uint32 summonguard = 0;
-
-	if( pt != NULL )
-		summonguard = pt->summonguard;
-
-	if(family == UNIT_TYPE_HUMANOID && summonguard > 0 && getMSTime() > m_guardTimer && !IS_INSTANCE(m_Unit->GetMapId()))
+	if( family == UNIT_TYPE_HUMANOID && pt->FlagsExtra & 2 && getMSTime() > m_guardTimer && !IS_INSTANCE( m_Unit->GetMapId() ) )
 	{
 		m_guardTimer = getMSTime() + 15000;
 		uint16 AreaId = m_Unit->GetMapMgr()->GetAreaID(m_Unit->GetPositionX(),m_Unit->GetPositionY());
@@ -2374,11 +2368,7 @@ void AIInterface::SendMoveToPacket(float toX, float toY, float toZ, float toO, u
 	//this should NEVER be called directly !!!!!!
 	//use MoveTo()
 
-#ifndef USING_BIG_ENDIAN
-	StackWorldPacket<100> data(SMSG_MONSTER_MOVE);
-#else
 	WorldPacket data(SMSG_MONSTER_MOVE, 100);
-#endif
 	data << m_Unit->GetNewGUID();
 	data << uint8(0); //VLack: for 3.1.x support; I've discovered this in Mangos code while doing research on how to fix invisible mobs on 3.0.9
 	data << m_Unit->GetPositionX() << m_Unit->GetPositionY() << m_Unit->GetPositionZ();
@@ -4188,6 +4178,16 @@ uint32 AIInterface::_CalcThreat(uint32 damage, SpellEntry * sp, Unit* Attacker)
 
 	if (mod < 1)
 		mod = 1;
+
+	if( Attacker->IsPlayer() )
+	{
+		Player * attacker = static_cast< Player* >(Attacker);
+
+		mod -= ( ( attacker->GetMisdirectionValue() * mod ) / 100 );
+		Unit *target = attacker->GetMapMgr()->GetUnit( attacker->GetMisdirectionTarget() );
+		if( target )
+			modThreatByPtr( target, ( attacker->GetMisdirectionValue() * mod ) / 100 );
+	}
 
 	return mod;
 }

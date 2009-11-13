@@ -53,7 +53,7 @@ class SpeedCheatDetector;
 #define GLYPHS_COUNT 6
 
 #define PLAYER_LEVEL_CAP_70     80
-#define PLAYER_LEVEL_CAP                80
+#define PLAYER_LEVEL_CAP        80
 #define PLAYER_ARENA_MIN_LEVEL  70
 
 #define PLAYER_EXPLORED_ZONES_LENGTH 128
@@ -75,30 +75,30 @@ class SpeedCheatDetector;
 
 enum Classes
 {
-	WARRIOR = 1,
-	PALADIN = 2,
-	HUNTER = 3,
-	ROGUE = 4,
-	PRIEST = 5,
+	WARRIOR		= 1,
+	PALADIN		= 2,
+	HUNTER		= 3,
+	ROGUE		= 4,
+	PRIEST		= 5,
 	DEATHKNIGHT = 6,
-	SHAMAN = 7,
-	MAGE = 8,
-	WARLOCK = 9,
-	DRUID = 11,
+	SHAMAN		= 7,
+	MAGE		= 8,
+	WARLOCK		= 9,
+	DRUID		= 11,
 };
 
 enum Races
 {
-	RACE_HUMAN = 1,
-	RACE_ORC = 2,
-	RACE_DWARF = 3,
-	RACE_NIGHTELF = 4,
-	RACE_UNDEAD = 5,
-	RACE_TAUREN = 6,
-	RACE_GNOME = 7,
-	RACE_TROLL = 8,
-	RACE_BLOODELF = 10,
-	RACE_DRAENEI = 11,
+	RACE_HUMAN		= 1,
+	RACE_ORC		= 2,
+	RACE_DWARF		= 3,
+	RACE_NIGHTELF	= 4,
+	RACE_UNDEAD		= 5,
+	RACE_TAUREN		= 6,
+	RACE_GNOME		= 7,
+	RACE_TROLL		= 8,
+	RACE_BLOODELF	= 10,
+	RACE_DRAENEI	= 11,
 };
 
 enum ShapeshiftForm
@@ -326,13 +326,28 @@ enum PlayerFlags
     PLAYER_FLAG_RESTING				= 0x20,
     PLAYER_FLAG_UNKNOWN1            = 0x40,
     PLAYER_FLAG_FREE_FOR_ALL_PVP	= 0x80,
-    PLAYER_FLAG_UNKNOWN2            = 0x100,
+    PLAYER_FLAG_CONTESTED_PVP       = 0x100,
     PLAYER_FLAG_PVP_TOGGLE			= 0x200,
     PLAYER_FLAG_NOHELM				= 0x400,
     PLAYER_FLAG_NOCLOAK				= 0x800,
     PLAYER_FLAG_NEED_REST_3_HOURS	= 0x1000,
     PLAYER_FLAG_NEED_REST_5_HOURS	= 0x2000,
 	PLAYER_FLAG_PVP					= 0x40000,
+	PLAYER_FLAG_NO_XP_GAIN			= 0x2000000,
+};
+
+enum PlayerFieldBytesFlags
+{
+	PLAYER_FIELD_BYTES_NONE              = 0x0,
+    PLAYER_FIELD_BYTES_TRACK_STEALTHED   = 0x2,
+    PLAYER_FIELD_BYTES_RELEASE_TIMER     = 0x8,       // Display time till auto release spirit
+    PLAYER_FIELD_BYTES_NO_RELEASE_WINDOW = 0x10,      // Display no "release spirit" window at all
+};
+
+enum PlayerFieldBytes2Flags
+{
+    PLAYER_FIELD_BYTES2_NONE              = 0x0,
+    PLAYER_FIELD_BYTES2_INVISIBILITY_GLOW = 0x4000,
 };
 
 enum CharterTypes
@@ -538,11 +553,29 @@ struct LoginAura
 	uint32 charges;
 };
 
-// Dodge ( class base ) - UNUSED, Warrior, Paladin, Hunter, Rogue, Priest, Death Knight(taken from pala), Shaman, Mage, Warlock, UNUSED, Druid
-const float baseDodge[12] = { 0.0f, 0.7580f, 0.6520f, -5.4500f, -0.5900f, 3.1830f, 0.6520f, 1.6750f, 3.4575f, 2.0350f, 0.0f, -1.8720f };
+// Dodge ( class base ) - UNUSED, Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, UNUSED, Druid // UPDATED to 3.2.0 http://elitistjerks.com/f31/t29453-combat_ratings_level_80_a/#post834904
+const float baseDodge[12] = { 0.0f, 3.6640f, 3.4943f, -4.0873f, 2.0957f, 3.4178f, 3.6640f, 2.1080f, 3.5687f, 2.4211f, 0.0f, 5.6109f };
+
+/* Maybe this is better?
+// Crit/agility to dodge/agility coefficient multipliers
+float crit_to_dodge[12] = {
+	0.0f		// UNUSED
+	1.1f,		// Warrior
+	1.0f,		// Paladin
+	1.6f,		// Hunter
+	2.0f,		// Rogue
+	1.0f,		// Priest
+	1.0f,		// Death Knight
+	1.0f,		// Shaman
+	1.0f,		// Mage
+	1.0f,		// Warlock
+	0.0f,		// UNUSED
+	1.7f		// Druid
+};
+*/
 
 // Dodge ( class ratio ) - UNUSED, Warrior, Paladin, Hunter, Rogue, Priest, Death Knight(taken from pala), Shaman, Mage, Warlock, UNUSED, Druid
-// TODO: get proper ratios for all levels, we only have values for level 70 currently
+// TODO: get proper ratios for all levels, it's probably wrong at all
 const float dodgeRatio[PLAYER_LEVEL_CAP][12] = {
 {0.000000f , 5.000000f , 5.000000f , 5.000000f , 5.000000f , 5.000000f , 5.000000f , 5.000000f , 5.000000f , 5.000000f , 0.000000f , 5.000000f , } , // Level 1
 {0.000000f , 5.000000f , 5.000000f , 5.000000f , 5.000000f , 5.000000f , 5.000000f , 5.000000f , 5.000000f , 5.000000f , 0.000000f , 5.000000f , } , // Level 2
@@ -625,7 +658,7 @@ const float dodgeRatio[PLAYER_LEVEL_CAP][12] = {
 {0.000000f , 31.400000f , 26.400000f , 26.400000f , 20.800000f , 26.400000f , 26.400000f , 26.400000f , 26.400000f , 26.400000f , 0.000000f , 15.405900f , } , // Level 77
 {0.000000f , 31.600000f , 26.600000f , 26.600000f , 21.000000f , 26.600000f , 26.600000f , 26.600000f , 26.600000f , 26.600000f , 0.000000f , 15.505900f , } , // Level 78
 {0.000000f , 31.800000f , 26.800000f , 26.800000f , 21.100000f , 26.800000f , 26.800000f , 26.800000f , 26.800000f , 26.800000f , 0.000000f , 15.605900f , } , // Level 79
-{0.000000f , 32.000000f , 27.000000f , 27.000000f , 22.200000f , 27.000000f , 27.000000f , 27.000000f , 27.000000f , 27.000000f , 0.000000f , 15.705900f , } , // Level 80
+{0.000000f , 84.74576271f , 59.88023952f , 86.20689655f , 47.84688995f , 59.88023952f , 84.74576271f , 59.88023952f , 58.82352941f , 59.88023952f , 0.000000f , 47.84688995f , } , // Level 80 from 3.2.0
 #endif
 };
 
@@ -731,13 +764,14 @@ struct PetActionBar
 {
 	uint32 spell[10];
 };
-struct classScriptOverride
+struct SpellOverride
 {
-	uint32 id;
-	uint32 effect;
-	uint32 aura;
-	uint32 damage;
-	bool percent;
+	uint32 miscHP;
+	float damage;
+	uint32 reqaura;
+	uint32 addreqaura;
+	uint32 miscCheck[3];
+	uint32 overridemask; //1 - percent, 2 - selfcheck, 4 - spellpower, 8 - checkclassmask, 16 - reqaurafromcaster, 256 - heal only, 32 - MISC FLAG (64 - nourish heal boost, 128 - soul siphon)
 };
 #ifdef ENABLE_ACHIEVEMENTS
 class AchievementMgr;
@@ -820,18 +854,22 @@ struct PlayerSkill
 
 enum SPELL_INDEX
 {
-	SPELL_TYPE_INDEX_MARK			= 1,
-	SPELL_TYPE_INDEX_POLYMORPH		= 2,
-	SPELL_TYPE_INDEX_FEAR			= 3,
-	SPELL_TYPE_INDEX_SAP			= 4,
-	SPELL_TYPE_INDEX_SCARE_BEAST	= 5,
-	SPELL_TYPE_INDEX_HIBERNATE		= 6,
-	SPELL_TYPE_INDEX_EARTH_SHIELD	= 7,
-	SPELL_TYPE_INDEX_CYCLONE		= 8,
-	SPELL_TYPE_INDEX_BANISH			= 9,
-	SPELL_TYPE_INDEX_JUDGEMENT		= 10,
-	SPELL_TYPE_INDEX_FOCUS_MAGIC	= 11,
-	NUM_SPELL_TYPE_INDEX			= 12,
+	SPELL_TYPE_INDEX_MARK				= 1,
+	SPELL_TYPE_INDEX_POLYMORPH			= 2,
+	SPELL_TYPE_INDEX_FEAR				= 3,
+	SPELL_TYPE_INDEX_SAP				= 4,
+	SPELL_TYPE_INDEX_SCARE_BEAST		= 5,
+	SPELL_TYPE_INDEX_HIBERNATE			= 6,
+	SPELL_TYPE_INDEX_EARTH_SHIELD		= 7,
+	SPELL_TYPE_INDEX_CYCLONE			= 8,
+	SPELL_TYPE_INDEX_BANISH				= 9,
+	SPELL_TYPE_INDEX_JUDGEMENT			= 10,
+	SPELL_TYPE_INDEX_BEACON_OF_LIGHT	= 11,
+	SPELL_TYPE_INDEX_FOCUS_MAGIC		= 12,
+	SPELL_TYPE_INDEX_GRACE				= 13,
+	SPELL_TYPE_INDEX_VIGILANCE			= 14,
+	SPELL_TYPE_INDEX_HEX				= 15,
+	NUM_SPELL_TYPE_INDEX				= 16,
 };
 
 enum SPELL_INDEX2
@@ -893,11 +931,9 @@ struct PlayerSpec
 //  TODO:  Attach characters to user accounts
 //====================================================================
 typedef std::set<uint32>	                        SpellSet;
-typedef std::list<classScriptOverride*>             ScriptOverrideList;
+typedef std::map<uint32, SpellOverride*>			SpellOverrideList;
 typedef std::set<uint32>                            SaveSet;
 typedef std::map<uint64, ByteBuffer*>               SplineMap;
-typedef std::map<uint32, ScriptOverrideList* >      SpellOverrideMap;
-typedef std::map<uint32, uint32>                    SpellOverrideExtraAuraMap;
 typedef std::map<uint32, FactionReputation*>        ReputationMap;
 typedef std::map<uint32, uint64>                    SoloSpells;
 typedef std::map<SpellEntry*, pair<uint32, uint32> >StrikeSpellMap;
@@ -1147,7 +1183,7 @@ public:
 		//Shady: actually ghostwolf form doesn't use weapon too.
 	}
 	void CalcDamage();
-	uint32 GetMainMeleeDamage(uint32 AP_owerride); //i need this for windfury
+	uint32 GetMeleeDamage(uint32 AP_owerride, bool offhand);
 
     const uint64& GetSelection( ) const { return m_curSelection; }
 	const uint64& GetTarget( ) const { return m_curTarget; }
@@ -1167,6 +1203,7 @@ public:
 	void removeSpellByHashName(uint32 hash);
 	bool removeSpell(uint32 SpellID, bool MoveToDeleted, bool SupercededSpell, uint32 SupercededSpellID);
 	bool removeDeletedSpell( uint32 SpellID );
+	void FillSpellOverride(uint32 hash, float amount, uint32 reqaura, uint32 addreqaura, uint32 HP, uint32 *SCM, uint32 overridemask);
 
     // PLEASE DO NOT INLINE!
     void AddOnStrikeSpell(SpellEntry* sp, uint32 delay)
@@ -1193,7 +1230,7 @@ public:
     //Spells variables
     StrikeSpellMap      m_onStrikeSpells;
     StrikeSpellDmgMap   m_onStrikeSpellDmg;
-    SpellOverrideMap    mSpellOverrideMap;
+    SpellOverrideList   m_SpellOverrideList;
     SpellSet            mSpells;
     SpellSet            mDeletedSpells;
 	SpellSet			mShapeShiftSpells;
@@ -1677,24 +1714,10 @@ public:
 	uint32 m_modphyscritdmgPCT;
 	uint32 m_RootedCritChanceBonus; // Class Script Override: Shatter
 	uint32 m_IncreaseDmgSnaredSlowed;
-	uint32 m_MoltenFuryDmgBonus;    // http://www.wowhead.com/?spell=31680
-	uint32 ShatteredBarrierMod;		// For Shattered Barrier http://www.wowhead.com/?spell=54787
-	uint32 FieryPaybackModHP35;		// for Fiery Payback
-	uint32 TormentTheWeakDmgBns;
-	uint32 ArcanePotencyMod;
-	uint64 LivingBmbTgt;
-	uint32 JungleKingMod;
-	int32 FittestSurvivalMod;
-	uint8  StunDamageReductPct;		// For Primal Tenacity  DK Talent
-	bool isGuardianSpirit;
- 
-	//megai2: incr type, incr idx, src type, src idx, pct, real amt
-	int32 ModStatByAttr[5][7][5][7][2];
-	void ApplyStatByAttrMod(uint8 dstType, uint8 dstIdx, uint8 srcType, uint8 srcIdx);
 
 	uint32 m_ModInterrMRegenPCT;
 	int32 m_ModInterrMRegen;
-	float m_RegenManaOnSpellResist;
+	int32 m_ManaCostSpellCrit;
 	uint32 m_casted_amount[7]; //Last casted spells amounts. Need for some spells. Like Ignite etc. DOesn't count HoTs and DoTs. Only directs
 
 	uint32 FlatStatModPos[5];
@@ -1733,9 +1756,12 @@ public:
     ARCEMU_INLINE void SetSoulStone(uint32 StoneID){SoulStone = StoneID;}
 
 	uint64 misdirectionTarget;
+	uint8 misdirectionValue;
 
 	ARCEMU_INLINE uint64 GetMisdirectionTarget(){return misdirectionTarget;}
 	ARCEMU_INLINE void SetMisdirectionTarget(uint64 PlayerGUID){misdirectionTarget = PlayerGUID;}
+	ARCEMU_INLINE uint8 GetMisdirectionValue(){return misdirectionValue;}
+	ARCEMU_INLINE void SetMisdirectionValue(uint8 val){misdirectionValue = val;}
 
 	bool bReincarnation;
 	bool removeReagentCost;
@@ -2053,13 +2079,14 @@ public:
 
 	ARCEMU_INLINE void AddComboPoints(uint64 target, uint8 count)
 	{
-        if(m_comboTarget == target)
+        if( m_comboTarget == target )
 			m_comboPoints += count;
 		else
 		{
 			m_comboTarget = target;
 			m_comboPoints = count;
 		}
+
 		UpdateComboPoints();
 	}
 
@@ -2246,6 +2273,7 @@ protected:
 	uint32 m_bind_mapid;
 	uint32 m_bind_zoneid;
 	std::list<ItemSet> m_itemsets;
+	Item* m_items[MAX_INVENTORY_SLOT];
 	//Duel
 	uint32 m_duelCountdownTimer;
 	uint8 m_duelStatus;
@@ -2369,10 +2397,6 @@ public:
 
 	bool m_castFilterEnabled;
 	uint32 m_castFilter[3];	// spell group relation of only spells that player can currently cast
-
-	uint32 m_outStealthDamageBonusPct;
-	uint32 m_outStealthDamageBonusPeriod;
-	uint32 m_outStealthDamageBonusTimer;
 
 	//ToDo: sort out where all the publics and privates go. This will do for now..
 private:

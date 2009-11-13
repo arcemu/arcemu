@@ -378,8 +378,14 @@ void WorldSession::HandleLootOpcode( WorldPacket & recv_data )
 	if ( _player->IsDead() ) // If the player is dead they can't loot!
 		return;
 
+	// Remove auras by interrupt flag.
+	_player->RemoveAurasByInterruptFlag(AURA_INTERRUPT_ON_LOOTING);
+
 	if ( _player->IsStealth() ) // Check if the player is stealthed
+	{
+		sLog.outDebug("Player was stealthed and spell does not has AURA_INTERRUPT_ON_LOOTING. Report spell with id =% to Devs", _player->m_stealth);
 		_player->RemoveStealth(); // cebernic:RemoveStealth on looting. Blizzlike
+	}
 
 	if ( _player->IsCasting() ) // Check if the player is casting
 		_player->InterruptSpell(); // Cancel spell casting
@@ -1411,11 +1417,11 @@ void WorldSession::HandleGameObjectUse(WorldPacket & recv_data)
 
 	Player *plyr = GetPlayer();
 
+	sQuestMgr.OnGameObjectActivate(_player, obj);
 	CALL_GO_SCRIPT_EVENT(obj, OnActivate)(_player);
 	CALL_INSTANCE_SCRIPT_EVENT( _player->GetMapMgr(), OnGameObjectActivate )( obj, _player ); 
 
-  _player->RemoveStealth(); // cebernic:RemoveStealth due to GO was using. Blizzlike
-
+	_player->RemoveStealth(); // cebernic:RemoveStealth due to GO was using. Blizzlike
 
 	uint32 type = obj->GetByte(GAMEOBJECT_BYTES_1, 1);
 	switch (type)
@@ -2577,6 +2583,26 @@ void WorldSession::HandleGameobjReportUseOpCode( WorldPacket& recv_data )   // C
 #endif	
 	}
 	return;
+}
+
+void WorldSession::HandleTimeSyncRespOpcode( WorldPacket & recv_data )
+{
+    CHECK_PACKET_SIZE(recv_data, 8);
+
+    sLog.outDebug( "WORLD: Recived CMSG_TIME_SYNC_RESP Message" );
+
+    uint32 counter, time_;
+    recv_data >> counter >> time_;
+
+    // time_ seems always more than getMSTime()
+    uint32 diff = getMSTimeDiff( getMSTime(), time_ );
+
+    sLog.outDebug( "Response: Counter %u, Time %u (HEX: %X), MSTime %u, Difference %u", counter, time_, time_, getMSTime(), diff );
+}
+
+void WorldSession::HandleKeepAlive( WorldPacket& recvPacket )
+{
+	sLog.outDebug( "WORLD: Recived CMSG_KEEP_ALIVE, size: %d", recvPacket.size() );
 }
 
 void WorldSession::HandleWorldStateUITimerUpdate(WorldPacket& recv_data)

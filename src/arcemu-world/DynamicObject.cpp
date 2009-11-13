@@ -43,7 +43,7 @@ DynamicObject::DynamicObject(uint32 high, uint32 low)
 
 DynamicObject::~DynamicObject()
 {
-	if(u_caster->dynObj == this)
+	if( u_caster && u_caster->dynObj == this )
 		u_caster->dynObj = 0;
 }
 
@@ -54,6 +54,7 @@ void DynamicObject::Create(Unit * caster, Spell * pSpell, float x, float y, floa
 	{
 		m_parentSpell = pSpell;
 	}
+
 	if( pSpell->p_caster == NULL )
 	{
 		// try to find player caster here
@@ -159,9 +160,9 @@ void DynamicObject::UpdateTargets()
 					}
 				}
 				target->AddAura(pAura);
-				if(p_caster)
+				if( p_caster )
 				{
-					p_caster->HandleProc(PROC_ON_CAST_SPECIFIC_SPELL | PROC_ON_CAST_SPELL,target, m_spellProto);
+					p_caster->HandleProc( PROC_ON_CAST_SPELL, 0, target, m_spellProto );
 					p_caster->m_procCounter = 0;
 				}
 
@@ -220,6 +221,7 @@ void DynamicObject::Remove()
 
 	if(IsInWorld())
 		RemoveFromWorld(true);
+
 	delete this;
 }
 

@@ -38,7 +38,6 @@ InstanceMgr::InstanceMgr()
 void InstanceMgr::Load(TaskList * l)
 {
 	new FormationMgr;
-
 	// Create all non-instance type maps.
 	QueryResult *result = CharacterDatabase.Query( "SELECT MAX(id) FROM instances" );
 	if( result )
@@ -117,7 +116,6 @@ void InstanceMgr::Load(TaskList * l)
 
 InstanceMgr::~InstanceMgr()
 {
-
 }
 
 void InstanceMgr::Shutdown()

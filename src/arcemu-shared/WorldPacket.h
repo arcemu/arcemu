@@ -46,17 +46,16 @@ protected:
     uint16 m_opcode;
 };
 
-template<uint32 Size>
-class SERVER_DECL StackWorldPacket : public StackBuffer<Size>
+class SERVER_DECL StackPacket : public StackBuffer
 {
 	uint16 m_opcode;
 public:
-	__inline StackWorldPacket(uint16 opcode) : StackBuffer<Size>(), m_opcode(opcode) { }
+	__inline StackPacket(uint16 opcode, uint8* ptr, uint32 sz) : StackBuffer(ptr, sz), m_opcode(opcode) { }
 
 	//! Clear packet and set opcode all in one mighty blow
 	__inline void Initialize(uint16 opcode )
 	{
-		StackBuffer<Size>::Clear();
+		StackBuffer::Clear();
 		m_opcode = opcode;
 	}
 

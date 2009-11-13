@@ -79,12 +79,15 @@ uint32 CalculateXpToGive(Unit *pVictim, Unit *pAttacker)
 	if(((Creature*)pVictim)->IsTotem())
 		return 0;
 
-	CreatureInfo *victimI;
-	victimI = ((Creature*)pVictim)->GetCreatureInfo();
+	CreatureInfo* victimI = ((Creature*)pVictim)->GetCreatureInfo();
+	CreatureProto* victimproto = ((Creature*)pVictim)->GetProto();
 
-	if(victimI)
-		if(victimI->Type == UNIT_TYPE_CRITTER)
+	if( victimI )
+	{
+		if( victimI->Type == UNIT_TYPE_CRITTER || victimproto->FlagsExtra & 64 )
 			return 0;
+	}
+
 	uint32 VictimLvl = pVictim->getLevel();
 	uint32 AttackerLvl = pAttacker->getLevel();
 
@@ -476,7 +479,7 @@ uint32 GainStat(uint16 level, uint8 playerclass,uint8 Stat)
 	return gain;
 }
 
-uint32 CalculateDamage( Unit* pAttacker, Unit* pVictim, uint32 weapon_damage_type, uint32 *spellgroup, SpellEntry* ability ) // spellid is used only for 2-3 spells, that have AP bonus
+uint32 CalculateDamage( Unit* pAttacker, Unit* pVictim, uint32 weapon_damage_type, uint32 *spellgroup, SpellEntry* ability )
 {
 	//TODO: Some awesome formula to determine how much damage to deal
 	//consider this is melee damage
@@ -662,17 +665,7 @@ uint32 CalculateDamage( Unit* pAttacker, Unit* pVictim, uint32 weapon_damage_typ
 		result += float(RandomDouble(diff));
 
 	if(result >= 0)
-	{
-		if( pAttacker->IsPlayer() && ((Player*)pAttacker)->m_outStealthDamageBonusTimer )
-		{
-			if( (uint32)UNIXTIME >= ((Player*)pAttacker)->m_outStealthDamageBonusTimer )
-				((Player*)pAttacker)->m_outStealthDamageBonusTimer = 0;
-			else
-				result *= ((float(((Player*)pAttacker)->m_outStealthDamageBonusPct) / 100.0f) + 1.0f);
-		}
-
 		return FL2UINT(result);
-	}
 
 	return 0;
 }

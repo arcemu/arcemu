@@ -379,10 +379,22 @@ bool ChatHandler::HandleVehicleSpawn(const char * args, WorldSession * m_session
 	sp->emote_state = 0;
 	sp->flags = 0;
 	sp->factionid = proto->Faction;
+
+	#ifdef UDB_DATABASE
+	sp->creatureclass = 0;
+	#else
 	sp->bytes0 = sp->setbyte(0,2,gender);
+	#endif
+
 	sp->bytes1 = 0;
 	sp->bytes2 = 0;
+
+	#ifdef UDB_DATABASE
+	sp->creaturegender = 0;
+	#else
 	//sp->respawnNpcLink = 0;
+	#endif
+
 	sp->stand_state = 0;
 	sp->channel_target_creature = sp->channel_target_go = sp->channel_spell = 0;
 	sp->MountedDisplayID = 0;

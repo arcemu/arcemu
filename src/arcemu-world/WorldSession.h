@@ -110,8 +110,9 @@ enum ObjectUpdateFlags
     UPDATEFLAG_LIVING       = 0x20,
     UPDATEFLAG_HAS_POSITION = 0x40,
     UPDATEFLAG_VEHICLE      = 0x80,
-    UPDATEFLAG_POSITION   = 0x0100,
-    UPDATEFLAG_ROTATION   = 0x0200
+    UPDATEFLAG_POSITION		= 0x0100,
+    UPDATEFLAG_ROTATION		= 0x0200
+
 };
 
 enum SessionStatus
@@ -198,7 +199,7 @@ public:
 			_socket->SendPacket(packet);
 	}
 
-	ARCEMU_INLINE void SendPacket(StackBufferBase * packet)
+	ARCEMU_INLINE void SendPacket(StackPacket * packet)
 	{
 		if(_socket && _socket->IsConnected())
 			_socket->SendPacket(packet);
@@ -384,6 +385,8 @@ protected:
 	void HandleCompleteCinematic(WorldPacket & recv_data);
 	void HandleInspectOpcode( WorldPacket & recv_data );
 	void HandleGameobjReportUseOpCode( WorldPacket& recv_data ); // CMSG_GAMEOBJ_REPORT_USE
+	void HandleTimeSyncRespOpcode( WorldPacket & recv_data );
+	void HandleKeepAlive( WorldPacket& recvPacket );
 
 	/// Gm Ticket System in GMTicket.cpp:
 	void HandleGMTicketCreateOpcode(WorldPacket& recvPacket);

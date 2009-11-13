@@ -139,10 +139,22 @@ Creature* MapScriptInterface::SpawnCreature(uint32 Entry, float cX, float cY, fl
 	sp->emote_state = 0;
 	sp->flags = 0;
 	sp->factionid = proto->Faction;
+	
+	#ifdef UDB_DATABASE
+	sp->creatureclass = 0;
+	#else
 	sp->bytes0 = 0;
+	#endif
+
 	sp->bytes1 = 0;
 	sp->bytes2 = 0;
+
+	#ifdef UDB_DATABASE
+	sp->creaturegender = 0;
+	#else
 	//sp->respawnNpcLink = 0;
+	#endif
+
 	sp->stand_state = 0;
 	sp->channel_target_creature = sp->channel_target_go = sp->channel_spell = 0;
 	sp->MountedDisplayID = 0;

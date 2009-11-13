@@ -22,6 +22,7 @@
 #define _OBJECT_H
 
 class Unit;
+class Aura;
 class Group;
 
 enum HIGHGUID_TYPE
@@ -197,6 +198,13 @@ public:
 	bool SetPosition( float newX, float newY, float newZ, float newOrientation, bool allowPorting = false );
 	bool SetPosition( const LocationVector & v, bool allowPorting = false);
 	void SetRotation( uint64 guid );
+
+	ARCEMU_INLINE const float& GetLastPositionX( ) const { return m_last_position.x; }
+	ARCEMU_INLINE const float& GetLastPositionY( ) const { return m_last_position.y; }
+	ARCEMU_INLINE const float& GetLastPositionZ( ) const { return m_last_position.z; }
+	ARCEMU_INLINE void SetLastPositionX( float &x ) { m_last_position.x = x; }
+	ARCEMU_INLINE void SetLastPositionY( float &y ) { m_last_position.y = y; }
+	ARCEMU_INLINE void SetLastPositionZ( float &z ) { m_last_position.z = z; }
 
 	ARCEMU_INLINE const float& GetPositionX( ) const { return m_position.x; }
 	ARCEMU_INLINE const float& GetPositionY( ) const { return m_position.y; }
@@ -496,7 +504,7 @@ public:
 	ARCEMU_INLINE std::set<Player*> * GetInRangePlayerSet() { return &m_inRangePlayers; };
 
 	void __fastcall SendMessageToSet(WorldPacket *data, bool self,bool myteam_only=false);
-	ARCEMU_INLINE void SendMessageToSet(StackBufferBase * data, bool self) { OutPacketToSet(data->GetOpcode(), static_cast<uint16>( data->GetSize() ), data->GetBufferPointer(), self); }
+	ARCEMU_INLINE void SendMessageToSet(StackPacket * data, bool self) { OutPacketToSet(data->GetOpcode(), (uint16)data->GetSize(), data->GetBufferPointer(), self); }
 	void OutPacketToSet(uint16 Opcode, uint16 Len, const void * Data, bool self);
 
 	//! Fill values with data from a space separated string of uint32s.
@@ -516,6 +524,8 @@ public:
 
 	float m_base_runSpeed;
 	float m_base_walkSpeed;
+
+	Object * m_CasterHitTrigger;
 
 	uint32 m_phase; //This stores the phase, if two objects have the same bit set, then they can see each other. The default phase is 0x1.
 
@@ -605,6 +615,7 @@ protected:
 	/* Main Function called by isInFront(); */
 	bool inArc(float Position1X, float Position1Y, float FOV, float Orientation, float Position2X, float Position2Y );
 
+	LocationVector m_last_position;
 	LocationVector m_position;
 	LocationVector m_lastMapUpdatePosition;
 	LocationVector m_spawnLocation;

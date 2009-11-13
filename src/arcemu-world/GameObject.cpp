@@ -237,7 +237,7 @@ void GameObject::Update(uint32 p_time)
 				if( pInfo->Type == GAMEOBJECT_TYPE_TRAP )
 				{
 					if( m_summoner != NULL )
-						m_summoner->HandleProc( PROC_ON_TRAP_TRIGGER, pUnit, spell );
+						m_summoner->HandleProc( PROC_ON_TRAP_TRIGGER, 0, pUnit, spell );
 				} 
 
 				if(m_summonedGo)
@@ -281,8 +281,8 @@ void GameObject::Despawn(uint32 delay, uint32 respawntime)
 	//This is for go get deleted while looting
 	if(m_spawn)
 	{
-		SetByte(GAMEOBJECT_BYTES_1, 0, static_cast<uint8>( m_spawn->state ));
-		SetUInt32Value(GAMEOBJECT_FLAGS, m_spawn->flags);
+		SetByte( GAMEOBJECT_BYTES_1, 0, static_cast<uint8>( m_spawn->state ) );
+		SetUInt32Value( GAMEOBJECT_FLAGS, m_spawn->flags );
 	}
 
 	CALL_GO_SCRIPT_EVENT(this, OnDespawn)();
@@ -510,7 +510,7 @@ bool GameObject::Load(GOSpawn *spawn)
 	//SetRotation(spawn->o);
 	SetUInt32Value(GAMEOBJECT_FLAGS,spawn->flags);
 //	SetUInt32Value(GAMEOBJECT_LEVEL,spawn->level);
-	SetByte(GAMEOBJECT_BYTES_1, 0, static_cast<uint8>( spawn->state ));	
+	SetByte( GAMEOBJECT_BYTES_1, 0, static_cast<uint8>( spawn->state ) );	
 	if(spawn->faction)
 	{
 		SetUInt32Value(GAMEOBJECT_FACTION,spawn->faction);

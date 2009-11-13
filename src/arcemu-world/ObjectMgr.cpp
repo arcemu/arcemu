@@ -69,12 +69,6 @@ ObjectMgr::~ObjectMgr()
 		delete i->second;
 	}
 
-	Log.Notice("ObjectMgr", "Deleting Spell Override...");
-	for(OverrideIdMap::iterator i = mOverrideIdMap.begin(); i != mOverrideIdMap.end(); ++i)
-	{
-		delete i->second;
-	}
-
 	Log.Notice("ObjectMgr", "Deleting Trainers...");
 	for( TrainerMap::iterator i = mTrainers.begin( ); i != mTrainers.end( ); ++ i) {
 		Trainer * t = i->second;
@@ -1487,12 +1481,12 @@ void ObjectMgr::LoadSpellProcs()
 						sp->ProcOnNameHash[x] = spe_NameHash;
 					}
 					else
-						sLog.outError( "Wrong ProcOnNameHash for Spell: %u!", spe_spellId );
+						sLog.outError( "Wrong ProcOnNameHash for Spell: %u!", spe_spellId ); 
 
-					sp->procFlags = f[2].GetUInt32();
-
-					if( f[3].GetUInt32() == 1 )
-						sp->procFlags |= PROC_TARGET_SELF;
+					if( f[2].GetInt32() != NULL )
+						sp->procFlags = f[2].GetUInt32();
+					if( f[3].GetUInt32() != NULL )
+						sp->procFlagExtra = f[3].GetUInt32();
 					if( f[4].GetInt32() >= 0 )
 						sp->procChance = f[4].GetUInt32();
 					if( f[5].GetInt32() >= 0 )
@@ -1581,7 +1575,7 @@ Item * ObjectMgr::CreateItem(uint32 entry,Player * owner)
 
 	if(proto->InventoryType == INVTYPE_BAG)
 	{
-		Container * pContainer = new Container(HIGHGUID_TYPE_CONTAINER,GenerateLowGuid(HIGHGUID_TYPE_CONTAINER));
+		Container * pContainer = new Container(HIGHGUID_TYPE_CONTAINER, GenerateLowGuid(HIGHGUID_TYPE_CONTAINER));
 		pContainer->Create( entry, owner);
 		pContainer->SetUInt32Value(ITEM_FIELD_STACK_COUNT, 1);
 		return pContainer;
@@ -1591,7 +1585,7 @@ Item * ObjectMgr::CreateItem(uint32 entry,Player * owner)
 		Item * pItem = new Item;
         if (!pItem)
 			return NULL;
-		pItem->Init(HIGHGUID_TYPE_ITEM,GenerateLowGuid(HIGHGUID_TYPE_ITEM));
+		pItem->Init(HIGHGUID_TYPE_ITEM, GenerateLowGuid(HIGHGUID_TYPE_ITEM));
 		pItem->Create(entry, owner);
 		pItem->SetUInt32Value(ITEM_FIELD_STACK_COUNT, 1);
 
@@ -1820,9 +1814,60 @@ void GossipMenu::BuildPacket(WorldPacket& Packet)
 
 void GossipMenu::SendTo(Player* Plr)
 {
-	WorldPacket data(SMSG_GOSSIP_MESSAGE, Menu.size() * 50 + 12);
+	WorldPacket data(SMSG_GOSSIP_MESSAGE, (100)/*Menu.size() * 50 + 12*/);
 	BuildPacket(data);
-	data << uint32(0);  // 0 quests obviously
+
+	list<QuestRelation *>::iterator it;
+	std::set<uint32> ql;
+	
+	Creature *qst_giver = Plr->GetMapMgr()->GetCreature(GET_LOWGUID_PART(CreatureGuid));
+	if( qst_giver )
+	{
+		uint32 count = sQuestMgr.ActiveQuestsCount(qst_giver, Plr);
+		data << uint32(count);
+		if( count > 0 )
+		{
+			for (it = qst_giver->QuestsBegin(); it != qst_giver->QuestsEnd(); ++it)
+			{
+				uint32 status = sQuestMgr.CalcQuestStatus(qst_giver, Plr, *it);
+				if (status >= QMGR_QUEST_CHAT)
+				{
+					if (!ql.count((*it)->qst->id) )
+					{	
+						ql.insert((*it)->qst->id);
+						count++;
+						data << (*it)->qst->id;
+
+						switch(status)
+						{
+						case QMGR_QUEST_NOT_FINISHED:
+							data << uint32(4) << uint32(0);
+							break;
+
+						case QMGR_QUEST_FINISHED:
+							data << uint32(4) << uint32(1);
+							break;
+
+						case QMGR_QUEST_CHAT:
+							data << QMGR_QUEST_AVAILABLE << uint32(0);
+							break;
+
+						default:
+							data << status << uint32(0);
+							break;
+						}
+
+						LocalizedQuest * lq = ( Plr->GetSession()->language > 0 ) ? sLocalizationMgr.GetLocalizedQuest( (*it)->qst->id, Plr->GetSession()->language ) : NULL;
+						if( lq )
+							data << lq->Title;
+						else
+							data << (*it)->qst->title;
+					}
+				}
+			}
+		}
+	}
+
 	Plr->GetSession()->SendPacket(&data);
 }
 
@@ -2340,44 +2385,18 @@ void ObjectMgr::LoadSpellOverride()
 {
 //	int i = 0;
 	std::stringstream query;
-	QueryResult *result = WorldDatabase.Query( "SELECT DISTINCT overrideId FROM spelloverride" );
+	QueryResult *result = WorldDatabase.Query( "SELECT * FROM spelloverride" );
 
-	if(!result)
-	{
+	if( !result )
 		return;
-	}
-
-//	int num = 0;
-//	uint32 total =(uint32) result->GetRowCount();
-	SpellEntry * sp;
-	uint32 spellid;
 
 	do
 	{
 		Field *fields = result->Fetch();
-		query.rdbuf()->str("");
-		query << "SELECT spellId FROM spelloverride WHERE overrideId = ";
-		query << fields[0].GetUInt32();
-		QueryResult *resultIn = WorldDatabase.Query(query.str().c_str());
-		std::list<SpellEntry*>* list = new std::list<SpellEntry*>;
-		if(resultIn)
-		{
-			do
-			{
-				Field *fieldsIn = resultIn->Fetch();
-				spellid = fieldsIn[0].GetUInt32();
-				sp = dbcSpell.LookupEntry(spellid);
-				if(!spellid || !sp)
-					continue;
-				list->push_back(sp);
-			}while(resultIn->NextRow());
-			delete resultIn;
-		}
-		if(list->size() == 0)
-			delete list;
-		else
-			mOverrideIdMap.insert( OverrideIdMap::value_type( fields[0].GetUInt32(), list ));
-	} while( result->NextRow() );
+		mOverrideIdMap.insert( OverrideIdMap::value_type( fields[0].GetUInt32(), fields[1].GetUInt32() ));
+	} 
+	while( result->NextRow() );
+
 	delete result;
 	Log.Notice("ObjectMgr", "%u spell overrides loaded.", mOverrideIdMap.size());
 }

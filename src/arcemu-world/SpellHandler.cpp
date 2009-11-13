@@ -260,20 +260,21 @@ void WorldSession::HandleSpellClick(WorldPacket& recvPacket)
 	if( target_unit->GetUInt32Value( OBJECT_FIELD_ENTRY ) == 29929 )
 		cast_spell_id = 55531; // Mechano-Hog
 
+	// Lightwell
 	if( target_unit->HasAura(59907) )
 	{
 		if( target_unit->GetUInt32Value( OBJECT_FIELD_ENTRY ) == 31897 )
-			cast_spell_id = 7001; // Lightwell Rank 1
+			cast_spell_id = 7001;
 		if( target_unit->GetUInt32Value( OBJECT_FIELD_ENTRY ) == 31896 )
-			cast_spell_id = 27873; // Lightwell Rank 2
+			cast_spell_id = 27873;
 		if( target_unit->GetUInt32Value( OBJECT_FIELD_ENTRY ) == 31895 )
-			cast_spell_id = 27874; // Lightwell Rank 3
+			cast_spell_id = 27874;
 		if( target_unit->GetUInt32Value( OBJECT_FIELD_ENTRY ) == 31894 )
-			cast_spell_id = 28276; // Lightwell Rank 4
+			cast_spell_id = 28276;
 		if( target_unit->GetUInt32Value( OBJECT_FIELD_ENTRY ) == 31893 )
-			cast_spell_id = 48084; // Lightwell Rank 5
+			cast_spell_id = 48084;
 		if( target_unit->GetUInt32Value( OBJECT_FIELD_ENTRY ) == 31883 )
-			cast_spell_id = 48085; // Lightwell Rank 6
+			cast_spell_id = 48085;
 
 		target_unit->CastSpell(_player, cast_spell_id, true);
 
@@ -304,7 +305,7 @@ void WorldSession::HandleCastSpellOpcode(WorldPacket& recvPacket)
 
 	recvPacket >> cn >> spellId  >> unk;
 	// check for spell id
-	SpellEntry *spellInfo = dbcSpell.LookupEntryForced(spellId );
+	SpellEntry *spellInfo = dbcSpell.LookupEntryForced( spellId );
 
 	if(!spellInfo)
 	{
@@ -419,7 +420,7 @@ void WorldSession::HandleCastSpellOpcode(WorldPacket& recvPacket)
 			}
         }
 
-		SpellCastTargets targets(recvPacket,GetPlayer()->GetGUID());
+		SpellCastTargets targets( recvPacket, GetPlayer()->GetGUID() );
 
 		// some anticheat stuff
 		if( spellInfo->self_cast_only )
@@ -433,10 +434,11 @@ void WorldSession::HandleCastSpellOpcode(WorldPacket& recvPacket)
 		}
 
 		Spell *spell = new Spell(GetPlayer(), spellInfo, false, NULL);
-		if (!spell)
+		if ( !spell )
 			return;
-		spell->extra_cast_number=cn;
-		spell->prepare(&targets);
+
+		spell->extra_cast_number = cn;
+		spell->prepare( &targets );
 	}
 }
 

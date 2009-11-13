@@ -437,7 +437,7 @@ ArathiBasin::ArathiBasin(MapMgr * mgr, uint32 id, uint32 lgroup, uint32 t) : CBa
 		m_players[i].clear();
 		m_pendPlayers[i].clear();
 	}
-	//m_worldStates.clear();
+
 	m_pvpData.clear();
 	m_resurrectMap.clear();
 
@@ -521,7 +521,6 @@ ArathiBasin::~ArathiBasin()
 	}
 
 	m_resurrectMap.clear();
-	//m_worldStates.clear();
 }
 
 void ArathiBasin::EventUpdateResources(uint32 Team)
@@ -1080,7 +1079,6 @@ bool ArathiBasin::HookSlowLockOpen(GameObject * pGo, Player * pPlayer, Spell * p
 	if(pGo->bannerslot >= 0 && pGo->bannerslot < AB_NUM_CONTROL_POINTS)
 	{
 		//Stealthed / invisible players can't cap
-		//if(pPlayer->GetStealthLevel() > 0 || pPlayer->HasAurasWithNameHash(SPELL_HASH_PROWL) || pPlayer->HasAurasWithNameHash(SPELL_HASH_SHADOWMELD))
 		if(pPlayer->IsStealth() || pPlayer->m_invisible)
 			return false;
 
