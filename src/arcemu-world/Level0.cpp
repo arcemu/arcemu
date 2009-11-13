@@ -574,7 +574,7 @@ bool ChatHandler::HandleAuraUpdateAdd( const char *args, WorldSession *m_session
 			delete SpellPtr;
 			return true;
 		}
-		Pl->AddAura(AuraPtr); // Serves purpose to just add the aura to our auraslots
+		Pl->AddAura(AuraPtr, NULL); // Serves purpose to just add the aura to our auraslots
 		uint8 VisualSlot = Pl->FindVisualSlot(SpellID, AuraPtr->IsPositive());
 		WorldPacket data(SMSG_AURA_UPDATE, 20);
 		FastGUIDPack(data, Pl->GetGUID());

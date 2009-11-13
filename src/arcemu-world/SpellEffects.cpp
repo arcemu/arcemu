@@ -651,6 +651,12 @@ void Spell::SpellEffectSchoolDMG(uint32 i) // dmg school
 		}
 	}
 
+	if( GetProto()->Id == 65279 )
+	{
+		if( !IsInrange( m_caster, unitTarget, 20*20 ) ) //range is square and i have no idea what is "immediate vicinity of the caster"
+			dmg = dmg/2; //deal 50% less dmg?
+	}
+
 	if(dmg < 0) 
 		return;
 
@@ -688,6 +694,9 @@ void Spell::SpellEffectSchoolDMG(uint32 i) // dmg school
 void Spell::SpellEffectDummy(uint32 i) // Dummy(Scripted events)
 {
 	uint32 spellId = GetProto()->Id;
+
+	if(m_spellScript != NULL)
+		m_spellScript->DummyMeleeEffect(i);
 
 	// Try a dummy SpellHandler
 	if(sScriptMgr.CallScriptedDummySpell(spellId, i, this))
@@ -1048,7 +1057,7 @@ void Spell::SpellEffectDummy(uint32 i) // Dummy(Scripted events)
 						for( uint32 i=0; i<3; i++ )
 							aur->AddMod( aur->GetSpellProto()->EffectApplyAuraName[i], aur->GetSpellProto()->EffectBasePoints[i]+1, aur->GetSpellProto()->EffectMiscValue[i], i );
 
-						p_caster->AddAura( aur );
+						p_caster->AddAura( aur, m_spellScript );
 					}
 				}break;
 			default:
@@ -1367,6 +1376,12 @@ void Spell::SpellEffectDummy(uint32 i) // Dummy(Scripted events)
 				return;
 
 			u_caster->RemoveAllMovementImpairing();
+		}break;
+	// Rogue - Killing Spree
+	case 51690:
+		{
+			if( u_caster )
+				u_caster->CastSpell( u_caster, 61851, true );
 		}break;
 
 	/*************************
@@ -2248,7 +2263,6 @@ void Spell::SpellEffectTeleportUnits( uint32 i )  // Teleport Units
 	case 46463:
 	case 55966:
 		{
-			Unit* unitTarget = GetUnitTarget();
 			if( !unitTarget || !m_caster || !p_caster )
 				return;
 
@@ -4334,6 +4348,9 @@ void Spell::SpellEffectDispel(uint32 i) // Dispel
 
 				if ( ( AuraRemoved || AuraRemovedALL ) )
 				{
+					if( aur->m_spellScript != NULL )
+						aur->m_spellScript->OnDispel(aur, this);
+
 					unitTarget->OnDispelOrFullAbsorb( aur, aur->GetUnitCaster(), u_caster, 1 );
 				}
 
@@ -5473,6 +5490,9 @@ void Spell::SpellEffectSummonObjectWild(uint32 i)
 void Spell::SpellEffectScriptEffect(uint32 i) // Script Effect
 {
 	uint32 spellId = GetProto()->Id;
+
+	if(m_spellScript != NULL)
+		m_spellScript->ScriptEffect(i);
 
 	// Try a dummy SpellHandler
 	if(sScriptMgr.CallScriptedDummySpell(spellId, i, this))
@@ -7253,6 +7273,9 @@ void Spell::SpellEffectDummyMelee( uint32 i ) // Normalized Weapon damage +
 	if( !unitTarget || !u_caster )
 		return;
 
+	if(m_spellScript != NULL)
+		m_spellScript->DummyMeleeEffect(i);
+
 	if( GetProto()->NameHash == SPELL_HASH_OVERPOWER && p_caster ) // Warrior - Overpower - let us clear the event and the combopoint count
 	{
 		p_caster->NullComboPoints(); //some say that we should only remove 1 point per dodge. Due to cooldown you can't cast it twice anyway..
@@ -7482,7 +7505,7 @@ void Spell::SpellEffectSpellSteal( uint32 i )
 							aur = new Aura(aura->GetSpellProto(), aurdur, u_caster, u_caster);
 							if (!aur)
 								return;
-							u_caster->AddAura(aur);
+							u_caster->AddAura(aur, m_spellScript);
 						}
 
 						SpellCharge charge;
@@ -7494,7 +7517,7 @@ void Spell::SpellEffectSpellSteal( uint32 i )
 						charge.ProcFlagExtra = aura->GetSpellProto()->procFlagExtra;
 						u_caster->m_chargeSpells.insert( make_pair(aura->GetSpellId(), charge) );
 					}
-					u_caster->AddAura(aura);
+					u_caster->AddAura(aura, m_spellScript);
 					break;
 				}
 			}

@@ -33,6 +33,7 @@ DynamicObject::DynamicObject(uint32 high, uint32 low)
 	m_wowGuid.Init(GetGUID());
 	m_floatValues[OBJECT_FIELD_SCALE_X] = 1;
 
+	m_spellScript = NULL;
 
 	m_parentSpell= NULL;
 	m_aliveDuration = 0;
@@ -45,6 +46,9 @@ DynamicObject::~DynamicObject()
 {
 	if( u_caster && u_caster->dynObj == this )
 		u_caster->dynObj = 0;
+
+	if(m_spellScript != NULL)
+		m_spellScript->RemoveRef(this);
 }
 
 void DynamicObject::Create(Unit * caster, Spell * pSpell, float x, float y, float z, uint32 duration, float radius)
@@ -54,6 +58,9 @@ void DynamicObject::Create(Unit * caster, Spell * pSpell, float x, float y, floa
 	{
 		m_parentSpell = pSpell;
 	}
+
+	if(pSpell->m_spellScript != NULL)
+		pSpell->m_spellScript->AddRef(this);
 
 	if( pSpell->p_caster == NULL )
 	{
@@ -159,7 +166,7 @@ void DynamicObject::UpdateTargets()
 							m_spellProto->EffectBasePoints[i]+1, m_spellProto->EffectMiscValue[i], i);
 					}
 				}
-				target->AddAura(pAura);
+				target->AddAura(pAura, m_spellScript);
 				if( p_caster )
 				{
 					p_caster->HandleProc( PROC_ON_CAST_SPELL, 0, target, m_spellProto );

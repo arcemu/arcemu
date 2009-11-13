@@ -828,6 +828,9 @@ Aura::Aura( SpellEntry* proto, int32 duration, Object* caster, Unit* target, boo
 
 Aura::~Aura()
 {
+	if(m_spellScript != NULL)
+		m_spellScript->RemoveRef(this);
+
 	// Call EventableObject virtual destructor
 	EventableObject::Virtual_Destructor();
 
@@ -847,6 +850,14 @@ void Aura::Remove()
 	sLog.outDebug("Removing aura %u from unit %u", m_spellProto->Id, m_target->GetGUID());
 
 	m_deleted = true;
+
+	if(m_spellScript != NULL)
+	{
+		if(GetTimeLeft() == 0 && !m_ignoreunapply && !m_wasremoved)
+			m_spellScript->OnExpire(this);
+
+		m_spellScript->OnRemove(this);
+	}
 
 	// Removing - Aura Mastery, Swift Retribution, Sanctified Retribution, Improved Concentration and Devotion Auras
 	if( GetUnitCaster() && m_target && GetSpellProto()->BGR_one_buff_from_caster_on_self == SPELL_TYPE2_PALADIN_AURA && GetUnitCaster()->getClass() == PALADIN && m_target->GetGUID() == GetUnitCaster()->GetGUID() )
@@ -942,6 +953,8 @@ void Aura::Remove()
 	*************************************************************/
 	if( caster != NULL && caster->IsPlayer() && caster->IsInWorld() && m_spellProto->c_is_flags & SPELL_FLAG_IS_REQUIRECOOLDOWNUPDATE )
 	{
+		sHookInterface.OnAuraRemove(TO_PLAYER(m_caster), m_spellProto->Id);
+
 		/*WorldPacket data( 12 );
 		data.SetOpcode( SMSG_COOLDOWN_EVENT );
 		data << m_spellProto->Id << caster->GetGUID();
@@ -1146,7 +1159,7 @@ void Aura::EventUpdateAA(float r)
 			}
 			if(aura)
 			{
-				plr->AddAura(aura);
+				plr->AddAura(aura, m_spellScript);
 				NewTargets.push_back(plr->GetLowGUID());
 			}
 		}
@@ -1169,7 +1182,7 @@ void Aura::EventUpdateAA(float r)
 				return;
 			aura->m_areaAura = true;
 			aura->AddMod( mod->m_type, mod->m_amount, mod->m_miscValue, mod->i);
-			summon->AddAura( aura );
+			summon->AddAura( aura, m_spellScript );
 			//make sure we remove this
 //			sEventMgr.AddEvent(((Unit*)summon), &Unit::EventRemoveAura, m_spellProto->Id, EVENT_DELETE_TIMER, 10, 1,0);
 		}
@@ -1211,7 +1224,7 @@ void Aura::EventUpdateAA(float r)
 					}
 					if(aura)
 					{
-						(*itr)->m_loggedInPlayer->AddAura(aura);
+						(*itr)->m_loggedInPlayer->AddAura(aura, m_spellScript);
 						NewTargets.push_back((*itr)->m_loggedInPlayer->GetLowGUID());
 					}
 				}
@@ -1758,6 +1771,9 @@ void Aura::EventPeriodicDamage(uint32 amount)
 
 void Aura::SpellAuraDummy(bool apply)
 {
+	if( m_spellScript != NULL )
+		m_spellScript->DummyAura( apply );
+
 	// Try a dummy SpellHandler
 	if(sScriptMgr.CallScriptedDummyAura( GetSpellId(), mod->i, this, apply ) )
 		return;
@@ -8527,11 +8543,11 @@ void Aura::SpellAuraModDamagePercTaken(bool apply)
 		val= -mod->m_amount/100.0f;
 	}
 
-	for(uint32 x= 0;x<7;x++)
+	for( uint32 x = 0; x < 7; x++ )
 	{
-		if (mod->m_miscValue & (((uint32)1)<<x) )
+		if( mod->m_miscValue & (((uint32)1) << x) )
 		{
-			m_target->DamageTakenPctMod[x]+=val;
+			m_target->DamageTakenPctMod[x] += val;
 		}
 	}
 }

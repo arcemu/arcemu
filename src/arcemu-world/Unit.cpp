@@ -2263,7 +2263,7 @@ uint32 Unit::HandleProc( uint32 flag, uint32 flagextra, Unit* victim, SpellEntry
 
 						RemoveAura(spellId);
 						Aura *aur = new Aura( dbcSpell.LookupEntry(spellId), 20000, this, this );
-						AddAura( aur );
+						AddAura( aur, 0 );
 						continue;
 					}break;
 				// Rogue - Ruthlessness
@@ -5415,7 +5415,7 @@ uint8 Unit::FindVisualSlot(uint32 SpellId,bool IsPos)
 	return visualslot;
 }
 
-void Unit::AddAura(Aura *aur)
+void Unit::AddAura(Aura *aur, SpellScript* script)
 {
 	if ( !aur )
 		return;
@@ -5683,6 +5683,10 @@ void Unit::AddAura(Aura *aur)
 		flag |= AURASTATE_FLAG_JUDGEMENT;
 
 	SetFlag( UNIT_FIELD_AURASTATE, flag );
+
+	//we got here, add the script reference
+	if (script != NULL)
+		script->AddRef(aur);
 }
 
 bool Unit::RemoveAura(Aura *aur)
@@ -9466,7 +9470,7 @@ void Unit::OnDispelOrFullAbsorb(Aura* aur, Unit *caster, Unit *dispel_caster, ui
 			if( spell->NameHash == SPELL_HASH_WYVERN_STING && caster->HasAurasWithNameHash(SPELL_HASH_NOXIOUS_STINGS) )
 			{
 				aur->SetDuration( aur->GetTimeLeft() /( caster->FindAuraByNameHash(SPELL_HASH_NOXIOUS_STINGS)->GetSpellProto()->EffectBasePoints[1] + 1 ) );
-				dispel_caster->AddAura( aur );
+				dispel_caster->AddAura( aur ,NULL );
 			}
 
 			// Priest - Shadow Affinity

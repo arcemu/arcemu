@@ -136,7 +136,7 @@ void Arena::OnAddPlayer(Player * plr)
 	Aura * aura = new Aura(dbcSpell.LookupEntry((plr->GetTeamInitial()) ? 35775-plr->m_bgTeam : 32725-plr->m_bgTeam), -1, plr, plr, true);
 	if (!aura)
 		return;
-	plr->AddAura(aura);
+	plr->AddAura(aura, NULL);
 
 	/* Set FFA PvP Flag */
     plr->SetFFAPvPFlag();

@@ -1579,6 +1579,7 @@ enum SpellDidHitResult
 	SPELL_DID_HIT_IMMUNE					= 7,
 };
 
+class SpellScript;
 // Spell instance
 class SERVER_DECL Spell : public EventableObject
 {
@@ -1586,6 +1587,8 @@ public:
     friend class DummySpellHandler;
     Spell(Object* Caster, SpellEntry *info, bool triggered, Aura* aur);
     ~Spell();
+
+	void ScriptUpdate();
 
 	// Fills  targets at the area of effect with Unit exception
 	void FillAllTargetsInAreaWithException(uint32 i, float srcx, float srcy, float srcz, float range, Unit *target);
@@ -2050,6 +2053,8 @@ public:
 
 
 	Spell * m_reflectedParent;
+
+	SpellScript* m_spellScript;
 
 protected:
 

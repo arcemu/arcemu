@@ -1040,7 +1040,7 @@ public:
 	void OnDamageTaken();
 
 	//! Add Aura to unit
-	void AddAura(Aura *aur);
+	void AddAura(Aura *aur, SpellScript* script);
 	//! Remove aura from unit
 	bool RemoveAura(Aura *aur);
 	bool RemoveAura(uint32 spellId);

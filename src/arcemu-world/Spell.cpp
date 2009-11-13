@@ -176,6 +176,8 @@ Spell::Spell(Object* Caster, SpellEntry *info, bool triggered, Aura* aur)
 	duelSpell = false;
 	m_DelayStep = 0;
 
+	m_spellScript = sScriptMgr.CreateAIScriptClassForSpell(m_spellInfo->Id, this);
+
 	switch( Caster->GetTypeId() )
 	{
 		case TYPEID_PLAYER:
@@ -293,6 +295,9 @@ Spell::Spell(Object* Caster, SpellEntry *info, bool triggered, Aura* aur)
 
 Spell::~Spell()
 {
+	if(m_spellScript != NULL)
+		m_spellScript->TryDelete();
+
     ///////////////////////////// This is from the virtual_destructor shit ///////////////
     if( u_caster != NULL && u_caster->GetCurrentSpell() == this )
 		u_caster->SetCurrentSpell(NULL);
@@ -1594,6 +1599,9 @@ void Spell::cast(bool check)
 
 		m_isCasting = true;
 
+		if(m_spellScript != NULL)
+			m_spellScript->OnCast();
+
 		//sLog.outString( "CanCastResult: %u" , cancastresult );
 		if(!m_triggeredSpell)
 			AddCooldown();
@@ -2097,7 +2105,7 @@ void Spell::AddTime(uint32 type)
 		}
 		if( GetProto()->SpellGroupType && u_caster)
 		{
-			float ch= 0;
+			float ch = 0;
 			SM_FFValue( u_caster->SM_FNonInterrupt, &ch, GetProto()->SpellGroupType );
 			SM_PFValue( u_caster->SM_PNonInterrupt, &ch, GetProto()->SpellGroupType );
 			if(Rand(ch))
@@ -3106,6 +3114,9 @@ bool Spell::TakePower()
 
 void Spell::HandleEffects(uint64 guid, uint32 i)
 {
+	if(m_spellScript != NULL)
+		m_spellScript->OnEffect(i);
+
 	uint32 id;
 
 	if(guid == m_caster->GetGUID() || guid == 0)
@@ -3334,7 +3345,8 @@ void Spell::HandleAddAura(uint64 guid)
 					aur = new Aura( itr->second->GetSpellProto(), itr->second->GetDuration(), itr->second->GetCaster(), itr->second->GetTarget(), m_triggeredSpell, i_caster );
 					if( !aur )
 						return;
-					Target->AddAura(aur);
+
+					Target->AddAura(aur, m_spellScript);
 					aur = NULL;
 				}
 
@@ -3347,7 +3359,7 @@ void Spell::HandleAddAura(uint64 guid)
 				charge.ProcFlagExtra = pSpellId != NULL ? dbcSpell.LookupEntry( pSpellId )->procFlagExtra : itr->second->GetSpellProto()->procFlagExtra;
 				Target->m_chargeSpells.insert(make_pair(itr->second->GetSpellId(),charge));
 			}
-			Target->AddAura(itr->second); // the real spell is added last so the modifier is removed last
+			Target->AddAura(itr->second, m_spellScript); // the real spell is added last so the modifier is removed last
 			Target->tmpAura.erase(itr);
 		}
 	}
@@ -3445,6 +3457,13 @@ uint8 Spell::CanCast(bool tolerate)
 	 */
 	if( m_caster && m_caster->IsInWorld() )
 	{
+		if( m_spellScript != NULL )
+		{
+			SpellCastError scriptresult = m_spellScript->CanCast( tolerate );
+			if( ( m_spellScript->flags & SSCRIPT_FLAG_COMPLETE_CHECK ) || scriptresult != SPELL_CANCAST_OK )
+				return scriptresult;
+		}
+
 		Unit *target = m_caster->GetMapMgr()->GetUnit( m_targets.m_unitTarget );
 
 		/**
@@ -5111,6 +5130,8 @@ int32 Spell::CalculateEffect(uint32 i, Unit *target)
 			value += (uint32)ceilf(u_caster->GetAP() * 0.21f);
 	}
 
+	if(m_spellScript != NULL)
+		m_spellScript->CalculateEffect(i, target, &value);
 
 	// TODO: INHERIT ITEM MODS FROM REAL ITEM OWNER - BURLEX BUT DO IT PROPERLY
 	if( u_caster != NULL )
@@ -6152,6 +6173,12 @@ AI_SpellTargetType RecommandAISpellTargetType(SpellEntry *sp)
 	return TTYPE_NULL;// this means a new spell :P
 }
 */
+
+void Spell::ScriptUpdate()
+{
+	ASSERT(m_spellScript);
+	m_spellScript->SpellUpdate();
+}
 
 uint8 Spell::GetErrorAtShapeshiftedCast(SpellEntry *spellInfo, uint32 form)
 {

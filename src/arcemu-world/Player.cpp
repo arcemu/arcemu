@@ -9860,7 +9860,7 @@ void Player::CompleteLoading()
 				a = new Aura( sp, (*i).dur, this, this, false );
 				if (!a)
 					return;
-				this->AddAura( a );
+				this->AddAura( a, NULL );
 				a = NULL;
 			}
 			if ( m_chargeSpells.find( sp->Id ) == m_chargeSpells.end() )
@@ -9878,7 +9878,7 @@ void Player::CompleteLoading()
 				m_chargeSpells.insert( make_pair( sp->Id , charge ) );
 			}
 		}
-		this->AddAura( aura );
+		this->AddAura( aura, NULL );
 		//Somehow we should restore number of appearance. Right now I have no idea how :(
 //		if(count_appearence>1)
 //			this->AddAuraVisual((*i).id,count_appearence-1,a->IsPositive());
