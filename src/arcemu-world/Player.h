@@ -1985,9 +1985,12 @@ public:
 	void SetSanctuaryFlag();
 	void RemoveSanctuaryFlag();
 
+	//////////////////////////////////////////////////////////////////////////
+	// EASY FUNCTIONS - PLAYER GOLD
+	//////////////////////////////////////////////////////////////////////////
     ARCEMU_INLINE void AddCoins( int32 coins ){ 
         ModUnsigned32Value( PLAYER_FIELD_COINAGE , coins );
-    }
+	}
     ARCEMU_INLINE void TakeCoins( int32 coins ){ 
         ModUnsigned32Value(PLAYER_FIELD_COINAGE, -coins);
     }

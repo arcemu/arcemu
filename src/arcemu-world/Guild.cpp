@@ -1382,7 +1382,7 @@ void GuildMember::OnMoneyWithdraw(uint32 amt)
 
 void Guild::DepositMoney(WorldSession * pClient, uint32 uAmount)
 {
-	if(pClient->GetPlayer()->GetUInt32Value(PLAYER_FIELD_COINAGE) < uAmount)
+	if(pClient->GetPlayer()->HasCoins(uAmount))
 		return;
 
 	// add to the bank balance
@@ -1392,7 +1392,7 @@ void Guild::DepositMoney(WorldSession * pClient, uint32 uAmount)
 	CharacterDatabase.Execute("UPDATE guilds SET bankBalance = %llu WHERE guildId = %u", m_bankBalance, m_guildId);
 
 	// take the money, oh noes gm pls gief gold mi hero poor
-	pClient->GetPlayer()->ModUnsigned32Value(PLAYER_FIELD_COINAGE, -(int32)uAmount);
+	pClient->GetPlayer()->TakeCoins(uAmount);
 
 	// broadcast guild event telling everyone the new balance
 	char buf[20];
@@ -1406,7 +1406,7 @@ void Guild::DepositMoney(WorldSession * pClient, uint32 uAmount)
 void Guild::WithdrawMoney(WorldSession * pClient, uint32 uAmount)
 {
 	GuildMember * pMember = pClient->GetPlayer()->getPlayerInfo()->guildMember;
-	if(pMember== NULL)
+	if(pMember == NULL)
 		return;
 
 	// sanity checks
