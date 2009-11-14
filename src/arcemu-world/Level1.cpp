@@ -796,7 +796,7 @@ bool ChatHandler::HandleModifyGoldCommand(const char* args, WorldSession *m_sess
 	
 	sGMLog.writefromsession( m_session, "used modify gold on %s, gold: %d", chr->GetName(), total );
 
-	int32 newgold = chr->GetUInt32Value( PLAYER_FIELD_COINAGE ) + total;
+	int32 newgold = chr->GetGold() + total;
 
 	if(newgold < 0)
 	{
@@ -832,14 +832,14 @@ bool ChatHandler::HandleModifyGoldCommand(const char* args, WorldSession *m_sess
 	// Check they don't have more than the max gold
 	if(sWorld.GoldCapEnabled)
     {
-        if((chr->GetUInt32Value(PLAYER_FIELD_COINAGE) + newgold) > sWorld.GoldLimit)
+        if( (chr->GetGold() + newgold) > sWorld.GoldLimit)
         {
-			RedSystemMessage(m_session, "Maximum amount of gold is %u and %s already has %u", (sWorld.GoldLimit/10000), chr->GetName(), (chr->GetUInt32Value(PLAYER_FIELD_COINAGE)/10000));
+			RedSystemMessage(m_session, "Maximum amount of gold is %u and %s already has %u", (sWorld.GoldLimit/10000), chr->GetName(), (chr->GetGold()/10000));
             return true;
         }
     }
 
-	chr->SetUInt32Value( PLAYER_FIELD_COINAGE, newgold );
+	chr->SetGold( newgold );
 	
 	return true;
 }

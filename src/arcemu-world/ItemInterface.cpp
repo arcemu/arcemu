@@ -2545,10 +2545,10 @@ void ItemInterface::BuyItem(ItemPrototype *item, uint32 total_amount, Creature *
 	if(item->BuyPrice)
 	{
 		uint32 itemprice = GetBuyPriceForItem(item, total_amount, m_pOwner, pVendor);
-		if(itemprice>m_pOwner->GetUInt32Value(PLAYER_FIELD_COINAGE))
-			m_pOwner->SetUInt32Value(PLAYER_FIELD_COINAGE,0);
+		if( !m_pOwner->HasGold(itemprice) )
+			m_pOwner->SetGold( 0 );
 		else
-			m_pOwner->ModUnsigned32Value(PLAYER_FIELD_COINAGE, -(int32)itemprice);
+			m_pOwner->ModGold( -(int32)itemprice );
 	}
 	ItemExtendedCostEntry * ex = pVendor->GetItemExtendedCostByItemId( item->ItemId );
 	if( ex != NULL )
@@ -2609,7 +2609,7 @@ int8 ItemInterface::CanAffordItem(ItemPrototype * item,uint32 amount, Creature *
 	if(item->BuyPrice)
 	{
 		int32 price = GetBuyPriceForItem(item, amount, m_pOwner, pVendor) * amount;
-		if((int32)m_pOwner->GetUInt32Value(PLAYER_FIELD_COINAGE) < price)
+		if( !m_pOwner->HasGold(price) )
 		{
 			return CAN_AFFORD_ITEM_ERROR_NOT_ENOUGH_MONEY;
 		}

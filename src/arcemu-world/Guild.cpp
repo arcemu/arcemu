@@ -1382,7 +1382,7 @@ void GuildMember::OnMoneyWithdraw(uint32 amt)
 
 void Guild::DepositMoney(WorldSession * pClient, uint32 uAmount)
 {
-	if(pClient->GetPlayer()->HasCoins(uAmount))
+	if( pClient->GetPlayer()->HasGold(uAmount) )
 		return;
 
 	// add to the bank balance
@@ -1392,7 +1392,7 @@ void Guild::DepositMoney(WorldSession * pClient, uint32 uAmount)
 	CharacterDatabase.Execute("UPDATE guilds SET bankBalance = %llu WHERE guildId = %u", m_bankBalance, m_guildId);
 
 	// take the money, oh noes gm pls gief gold mi hero poor
-	pClient->GetPlayer()->TakeCoins(uAmount);
+	pClient->GetPlayer()->ModGold( -uAmount );
 
 	// broadcast guild event telling everyone the new balance
 	char buf[20];
@@ -1432,7 +1432,7 @@ void Guild::WithdrawMoney(WorldSession * pClient, uint32 uAmount)
 	// Check they dont have more than the max gold
 	if(sWorld.GoldCapEnabled)
 	{
-		if((pClient->GetPlayer()->GetUInt32Value(PLAYER_FIELD_COINAGE) + uAmount) > sWorld.GoldLimit)
+		if( (pClient->GetPlayer()->GetGold() + uAmount) > sWorld.GoldLimit )
 		{
 			pClient->GetPlayer()->GetItemInterface()->BuildInventoryChangeError(NULL, NULL, INV_ERR_TOO_MUCH_GOLD);
 			return;
@@ -1443,7 +1443,7 @@ void Guild::WithdrawMoney(WorldSession * pClient, uint32 uAmount)
 	pMember->OnMoneyWithdraw(uAmount);
 
 	// give the gold! GM PLS GOLD PLS 1 COIN
-	pClient->GetPlayer()->ModUnsigned32Value(PLAYER_FIELD_COINAGE, (uint32)uAmount);
+	pClient->GetPlayer()->ModGold( (uint32)uAmount );
 
 	// subtract the balance
 	m_bankBalance -= uAmount;

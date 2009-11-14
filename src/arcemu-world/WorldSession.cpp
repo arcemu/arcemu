@@ -1237,15 +1237,15 @@ void WorldSession::HandleLearnTalentOpcode( WorldPacket & recv_data )
 
 void WorldSession::HandleUnlearnTalents( WorldPacket & recv_data )
 {
-	if(!_player->IsInWorld()) return;
+	if( !_player->IsInWorld() )
+		return;
 	
-    uint32 playerGold = GetPlayer()->GetUInt32Value( PLAYER_FIELD_COINAGE );
 	uint32 price = GetPlayer()->CalcTalentResetCost(GetPlayer()->GetTalentResetTimes());
+	if( !GetPlayer()->HasGold(price) )
+		return;
 
-	if( playerGold < price ) return;
-
-	GetPlayer()->SetTalentResetTimes(GetPlayer()->GetTalentResetTimes() + 1);
-	GetPlayer()->SetUInt32Value( PLAYER_FIELD_COINAGE, playerGold - price );
+	GetPlayer()->SetTalentResetTimes( GetPlayer()->GetTalentResetTimes() + 1 );
+	GetPlayer()->ModGold( -price );
 	GetPlayer()->Reset_Talents();
 }
 

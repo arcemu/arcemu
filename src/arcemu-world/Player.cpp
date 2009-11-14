@@ -856,7 +856,7 @@ bool Player::Create(WorldPacket& data )
 	SetUInt32Value(PLAYER_FIELD_MAX_LEVEL, sWorld.m_levelCap);
 
 	// Gold Starting Amount
-	SetUInt32Value(PLAYER_FIELD_COINAGE, sWorld.GoldStartAmount);
+	SetGold( sWorld.GoldStartAmount );
 
 
 	for(uint32 x= 0;x<7;x++)
@@ -1114,7 +1114,7 @@ void Player::Update( uint32 p_time )
 
 void Player::EventDismount(uint32 money, float x, float y, float z)
 {
-	ModUnsigned32Value( PLAYER_FIELD_COINAGE , -(int32)money );
+	ModGold( -(int32)money );
 
 	SetPosition(x, y, z, true);
 	if(!m_taxiPaths.size())
@@ -7697,7 +7697,7 @@ void Player::JumpToEndTaxiNode(TaxiPath * path)
 	TaxiPathNode * pathnode = path->GetPathNode((uint32)path->GetNodeCount()-1);
 	if(!pathnode) return;
 
-	ModUnsigned32Value( PLAYER_FIELD_COINAGE , -(int32)path->GetPrice());
+	ModGold( -(uint32)path->GetPrice() );
 
 	SetTaxiState(false);
 	SetTaxiPath(NULL);

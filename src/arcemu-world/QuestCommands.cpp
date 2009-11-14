@@ -548,9 +548,9 @@ bool ChatHandler::HandleQuestFinishCommand(const char * args, WorldSession * m_s
 			{
 				// Money reward
 				// Check they don't have more than the max gold
-				if(sWorld.GoldCapEnabled && (plr->GetUInt32Value(PLAYER_FIELD_COINAGE) + qst->reward_money) <= sWorld.GoldLimit)
+				if( sWorld.GoldCapEnabled && (plr->GetGold() + qst->reward_money) <= sWorld.GoldLimit )
 				{
-					plr->ModUnsigned32Value( PLAYER_FIELD_COINAGE, qst->reward_money );
+					plr->ModGold( qst->reward_money );
 				}
 				plr->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_QUEST_REWARD_GOLD, qst->reward_money, 0, 0);
 			}

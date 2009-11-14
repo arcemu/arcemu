@@ -1014,11 +1014,11 @@ void QuestMgr::OnQuestAccepted(Player* plr, Quest* qst, Object *qst_giver)
 void QuestMgr::OnQuestFinished(Player* plr, Quest* qst, Object *qst_giver, uint32 reward_slot)
 {
 	//Re-Check for Gold Requirement (needed for possible xploit) - reward money < 0 means required money
-	if ( qst->reward_money < 0 && plr->GetUInt32Value( PLAYER_FIELD_COINAGE ) < uint32(-qst->reward_money) )
+	if ( qst->reward_money < 0 && plr->GetGold() < uint32(-qst->reward_money) )
 		return;
 
 	// Check they don't have more than the max gold
-	if(sWorld.GoldCapEnabled && (plr->GetUInt32Value(PLAYER_FIELD_COINAGE) + qst->reward_money) > sWorld.GoldLimit)
+	if(sWorld.GoldCapEnabled && (plr->GetGold() + qst->reward_money) > sWorld.GoldLimit)
 	{
 		plr->GetItemInterface()->BuildInventoryChangeError(NULL, NULL, INV_ERR_TOO_MUCH_GOLD);
 		return;
@@ -1170,7 +1170,7 @@ void QuestMgr::OnQuestFinished(Player* plr, Quest* qst, Object *qst_giver, uint3
 			}
 		}
 
-		plr->ModUnsigned32Value( PLAYER_FIELD_COINAGE, GenerateRewardMoney( plr, qst ) );
+		plr->ModGold( GenerateRewardMoney( plr, qst ) );
 
 		// if daily then append to finished dailies
 		if ( qst->is_repeatable == arcemu_QUEST_REPEATABLE_DAILY )
@@ -1178,7 +1178,7 @@ void QuestMgr::OnQuestFinished(Player* plr, Quest* qst, Object *qst_giver, uint3
 	}
 	else
 	{
-		plr->ModUnsigned32Value( PLAYER_FIELD_COINAGE, GenerateRewardMoney( plr, qst ) );
+		plr->ModGold( GenerateRewardMoney( plr, qst ) );
 	  
 		// Reputation reward
 		GiveQuestRewardReputation(plr, qst, qst_giver);

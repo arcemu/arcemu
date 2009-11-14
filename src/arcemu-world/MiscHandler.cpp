@@ -298,13 +298,13 @@ void WorldSession::HandleLootMoneyOpcode( WorldPacket & recv_data )
 		if(money)
 		{
 			// Check they don't have more than the max gold
-			if(sWorld.GoldCapEnabled && (GetPlayer()->GetUInt32Value(PLAYER_FIELD_COINAGE) + money) > sWorld.GoldLimit)
+			if( sWorld.GoldCapEnabled && (GetPlayer()->GetGold() + money) > sWorld.GoldLimit )
 			{
 				GetPlayer()->GetItemInterface()->BuildInventoryChangeError(NULL, NULL, INV_ERR_TOO_MUCH_GOLD);
 			}
 			else
 			{
-				GetPlayer()->ModUnsigned32Value( PLAYER_FIELD_COINAGE , money);
+				GetPlayer()->ModGold( money );
 #ifdef ENABLE_ACHIEVEMENTS
 				GetPlayer()->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_LOOT_MONEY, money, 0, 0);
 #endif
@@ -347,13 +347,13 @@ void WorldSession::HandleLootMoneyOpcode( WorldPacket & recv_data )
 			for(vector<Player*>::iterator itr = targets.begin(); itr != targets.end(); ++itr)
 			{
 				// Check they don't have more than the max gold
-				if(sWorld.GoldCapEnabled && ((*itr)->GetUInt32Value(PLAYER_FIELD_COINAGE) + share) > sWorld.GoldLimit)
+				if( sWorld.GoldCapEnabled && ((*itr)->GetGold() + share) > sWorld.GoldLimit )
 				{
 					(*itr)->GetItemInterface()->BuildInventoryChangeError(NULL, NULL, INV_ERR_TOO_MUCH_GOLD);
 				}
 				else
 				{
-					(*itr)->ModUnsigned32Value(PLAYER_FIELD_COINAGE, share);
+					(*itr)->ModGold( share );
 					(*itr)->GetSession()->SendPacket(&pkt);
 #ifdef ENABLE_ACHIEVEMENTS
 					(*itr)->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_LOOT_MONEY, share, 0, 0);
@@ -1377,7 +1377,7 @@ void WorldSession::HandleBarberShopResult(WorldPacket & recv_data)
 		cost+= (uint32)(cutcosts->val * 0.75f);
 	}
 
-	if(_player->GetUInt32Value( PLAYER_FIELD_COINAGE ) < cost)
+	if( !_player->HasGold(cost) )
 	{
 		WorldPacket data( SMSG_BARBER_SHOP_RESULT, 4);
 		data << uint32(1);                                  // no money
@@ -1391,7 +1391,7 @@ void WorldSession::HandleBarberShopResult(WorldPacket & recv_data)
 	_player->SetByte( PLAYER_BYTES, 2, static_cast<uint8>( newhair ));
 	_player->SetByte( PLAYER_BYTES, 3, static_cast<uint8>( newhaircolor ));
 	_player->SetByte( PLAYER_BYTES_2, 0, static_cast<uint8>( newfacial ));
-	_player->ModUnsigned32Value( PLAYER_FIELD_COINAGE, 0-cost );
+	_player->ModGold( -cost );
 
 	_player->SetStandState(0);                              // stand up
 #ifdef ENABLE_ACHIEVEMENTS

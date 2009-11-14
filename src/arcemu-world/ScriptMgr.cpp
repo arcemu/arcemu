@@ -868,13 +868,13 @@ void GossipScript::GossipSelectOption(Object* pObject, Player* Plr, uint32 Id, u
 
 	case 16: // end dual spec dialog
 		{
-			if(Plr->GetUInt32Value(PLAYER_FIELD_COINAGE) < 10000000)
+			if( !Plr->HasGold(10000000) )
 			{
 				Plr->GetSession()->SendNotification("You do not have enough gold to purchase a dual spec."); // I know this is not correct
 				Plr->Gossip_Complete();
 				return;
 			}
-			Plr->ModUnsigned32Value(PLAYER_FIELD_COINAGE, -10000000);
+			Plr->ModGold( -10000000 );
 			Plr->m_talentSpecsCount = 2;
 			Plr->Reset_Talents();
 			Plr->CastSpell(Plr, 63624, true); // Show activate spec buttons

@@ -6067,14 +6067,14 @@ void Spell::SpellEffectScriptEffect(uint32 i) // Script Effect
 	case 46642: // 5,000 Gold
 		if( GetPlayerTarget() != NULL )
 		{
-			if( sWorld.GoldCapEnabled && ( GetPlayerTarget()->GetUInt32Value( PLAYER_FIELD_COINAGE ) + 50000000 ) > sWorld.GoldLimit )
+			if( sWorld.GoldCapEnabled && ( GetPlayerTarget()->GetGold() + 50000000 ) > sWorld.GoldLimit )
 			{
-				GetPlayerTarget()->SetUInt32Value( PLAYER_FIELD_COINAGE, sWorld.GoldLimit );
+				GetPlayerTarget()->SetGold( sWorld.GoldLimit );
 				GetPlayerTarget()->GetItemInterface()->BuildInventoryChangeError( NULL, NULL, INV_ERR_TOO_MUCH_GOLD );
 			}
 			else
 			{
-				GetPlayerTarget()->SetUInt32Value( PLAYER_FIELD_COINAGE, GetPlayerTarget()->GetUInt32Value( PLAYER_FIELD_COINAGE ) + 50000000 );
+				GetPlayerTarget()->ModGold( 50000000 );
 			}
 		}break;
 	case 61288:

@@ -1378,10 +1378,10 @@ bool Item::RepairItem(Player * pPlayer)
 	if( cost <= 0 )
 		return false;
 
-	if( cost > (int32)pPlayer->GetUInt32Value( PLAYER_FIELD_COINAGE ) )
+	if( !pPlayer->HasGold(cost) )
 		return false;
 
-	pPlayer->ModUnsigned32Value( PLAYER_FIELD_COINAGE, -cost );
+	pPlayer->ModGold( -(int32)cost );
 	SetDurabilityToMax();
 	m_isDirty = true;
 	return true;

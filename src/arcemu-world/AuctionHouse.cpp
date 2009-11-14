@@ -200,8 +200,8 @@ void AuctionHouse::RemoveAuction(Auction * auct)
 			snprintf(subject, 100, "%u:0:5", (unsigned int)auct->pItem->GetEntry());
 			uint32 cut = uint32(float(cut_percent * auct->HighestBid));
 			Player * plr = objmgr.GetPlayer(auct->Owner);
-			if(cut && plr && plr->GetUInt32Value(PLAYER_FIELD_COINAGE) >= cut)
-				plr->ModUnsigned32Value(PLAYER_FIELD_COINAGE, -((int32)cut));
+			if( cut && plr && plr->HasGold(cut) )
+				plr->ModGold( -(int32)cut );
 
 			sMailSystem.SendAutomatedMessage(AUCTION, GetID(), auct->Owner, subject, "", 0, 0, auct->pItem->GetGUID(), MAIL_STATIONERY_AUCTION );
 
@@ -494,13 +494,13 @@ void WorldSession::HandleAuctionPlaceBid( WorldPacket & recv_data )
 		return;
 	}
 
-	if(_player->GetUInt32Value(PLAYER_FIELD_COINAGE) < price)
+	if( !_player->HasGold(price) )
 	{
 		SendAuctionPlaceBidResultPacket(0, AUCTION_ERROR_MONEY);
 		return;
 	}
 
-	_player->ModUnsigned32Value(PLAYER_FIELD_COINAGE, -((int32)price));
+	_player->ModGold( -(int32)price );
 	if(auct->HighestBidder != 0)
 	{
 		// Return the money to the last highest bidder.
@@ -598,7 +598,7 @@ void WorldSession::HandleAuctionSellItem( WorldPacket & recv_data )
 	uint32 item_worth = pItem->GetProto()->SellPrice * pItem->GetUInt32Value(ITEM_FIELD_STACK_COUNT);
 	uint32 item_deposit = (uint32)(item_worth * ah->deposit_percent) * (uint32)(etime / 240.0f); // deposit is per 4 hours
 
-	if (_player->GetUInt32Value(PLAYER_FIELD_COINAGE) < item_deposit)	// player cannot afford deposit
+	if( !_player->HasGold(item_deposit) ) // player cannot afford deposit
 	{
 		WorldPacket data(SMSG_AUCTION_COMMAND_RESULT, 8);
 		data << uint32(0);
@@ -641,7 +641,7 @@ void WorldSession::HandleAuctionSellItem( WorldPacket & recv_data )
 	auct->DepositAmount = item_deposit;
 
 	// remove deposit
-	_player->ModUnsigned32Value(PLAYER_FIELD_COINAGE, -(int32)item_deposit);
+	_player->ModGold( -(int32)item_deposit );
 
 	// Add and save auction to DB
 	ah->AddAuction(auct);

@@ -234,7 +234,7 @@ void WorldSession::HandleTrainerBuySpellOpcode(WorldPacket& recvPacket)
 
 //////////////////////////////////////////// Teaching ////////////////////////////////////
 	
-	_player->ModUnsigned32Value(PLAYER_FIELD_COINAGE, -(int32)pSpell->Cost);
+	_player->ModGold( -(int32)pSpell->Cost );
 
 	if( pSpell->pCastSpell)
 	{
@@ -308,7 +308,7 @@ uint8 WorldSession::TrainerGetSpellStatus(TrainerSpell* pSpell)
 
 	if(	(pSpell->RequiredLevel && _player->getLevel()<pSpell->RequiredLevel)
 		|| (pSpell->RequiredSpell && !_player->HasSpell(pSpell->RequiredSpell))
-		|| (pSpell->Cost && _player->GetUInt32Value(PLAYER_FIELD_COINAGE) < pSpell->Cost)
+		|| (pSpell->Cost && !_player->HasGold(pSpell->Cost))
 		|| (pSpell->RequiredSkillLine && _player->_GetSkillLineCurrent(pSpell->RequiredSkillLine,true) < pSpell->RequiredSkillLineValue)
 		|| (pSpell->IsProfession && pSpell->RequiredSkillLine== 0 && _player->GetUInt32Value(PLAYER_CHARACTER_POINTS2) == 0)//check level 1 professions if we can learn a new profession
 		)

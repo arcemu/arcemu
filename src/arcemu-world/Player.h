@@ -1985,24 +1985,32 @@ public:
 	void SetSanctuaryFlag();
 	void RemoveSanctuaryFlag();
 
-	//////////////////////////////////////////////////////////////////////////
+	/////////////////////////////////////////////////
 	// EASY FUNCTIONS - PLAYER GOLD
-	//////////////////////////////////////////////////////////////////////////
-    ARCEMU_INLINE void AddCoins( int32 coins ){ 
-        ModUnsigned32Value( PLAYER_FIELD_COINAGE , coins );
+	/////////////////////////////////////////////////
+	ARCEMU_INLINE void SetGold( int32 coins ){
+		SetUInt32Value( PLAYER_FIELD_COINAGE, coins );
 	}
-    ARCEMU_INLINE void TakeCoins( int32 coins ){ 
+	ARCEMU_INLINE void ModGold( int32 coins ){
+		ModUnsigned32Value( PLAYER_FIELD_COINAGE, coins );
+	}
+	ARCEMU_INLINE uint32 GetGold(){
+		return GetUInt32Value( PLAYER_FIELD_COINAGE );
+	}
+	ARCEMU_INLINE bool HasGold( uint32 coins ){
+		return (GetUInt32Value(PLAYER_FIELD_COINAGE) >= coins);
+	}
+
+	/////////////////////////////////////////////////
+	// DEPRICATED FUNCTIONS USE 
+	// SetGold and ModGold
+	/////////////////////////////////////////////////
+    ARCEMU_INLINE void GiveGold( int32 coins ){ 
+        ModUnsigned32Value( PLAYER_FIELD_COINAGE , coins );
+    }
+    ARCEMU_INLINE void TakeGold( int32 coins ){ 
         ModUnsigned32Value(PLAYER_FIELD_COINAGE, -coins);
     }
-
-	bool HasCoins( uint32 coins ){
-		uint32 coinage = GetUInt32Value( PLAYER_FIELD_COINAGE );
-
-		if( coinage >= coins )
-			return true;
-		else 
-			return false;
-	}
 
 	//! Do this on /pvp off
 	ARCEMU_INLINE void ResetPvPTimer();

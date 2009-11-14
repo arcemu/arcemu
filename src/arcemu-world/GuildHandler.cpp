@@ -481,7 +481,7 @@ void WorldSession::HandleSaveGuildEmblem(WorldPacket & recv_data)
 		return;
 	}
 
-	if(_player->GetUInt32Value(PLAYER_FIELD_COINAGE) < (uint32)cost)
+	if( !_player->HasGold((uint32)cost) )
 	{
 		data << uint32(ERR_GUILDEMBLEM_NOTENOUGHMONEY);
 		SendPacket(&data);
@@ -590,7 +590,7 @@ void WorldSession::HandleCharterBuy(WorldPacket & recv_data)
 		static uint32 item_ids[] = {ARENA_TEAM_CHARTER_2v2, ARENA_TEAM_CHARTER_3v3, ARENA_TEAM_CHARTER_5v5};
 		static uint32 costs[] = {ARENA_TEAM_CHARTER_2v2_COST,ARENA_TEAM_CHARTER_3v3_COST,ARENA_TEAM_CHARTER_5v5_COST};
 
-		if(_player->GetUInt32Value(PLAYER_FIELD_COINAGE) < costs[arena_type])
+		if( !_player->HasGold(costs[arena_type]) )
 			return;			// error message needed here
 
 		ItemPrototype * ip = ItemPrototypeStorage.LookupEntry(item_ids[arena_type]);
@@ -635,16 +635,16 @@ void WorldSession::HandleCharterBuy(WorldPacket & recv_data)
 			BuildItemPushResult(&data, _player->GetGUID(), ITEM_PUSH_TYPE_RECEIVE, 1, item_ids[arena_type], 0);
 			SendPacket(&data);*/
 			SendItemPushResult(i, false, true, false, true, _player->GetItemInterface()->LastSearchItemBagSlot(), _player->GetItemInterface()->LastSearchItemSlot(), 1);
-			_player->ModUnsigned32Value(PLAYER_FIELD_COINAGE, -(int32)costs[arena_type]);
+			_player->ModGold( -(int32)costs[arena_type] );
 			_player->m_charters[arena_index] = c;
 			_player->SaveToDB(false);
 		}
 	}
 	else
 	{
-        if( _player->GetUInt32Value( PLAYER_FIELD_COINAGE ) < 1000 )
+        if( !_player->HasGold(1000) )
         {
-            SendNotification("You don't have enough money.");
+            _player->GetItemInterface()->BuildInventoryChangeError(NULL, NULL, INV_ERR_NOT_ENOUGH_MONEY);
             return;
         }
 
@@ -714,7 +714,7 @@ void WorldSession::HandleCharterBuy(WorldPacket & recv_data)
 			SendItemPushResult(i, false, true, false, true, _player->GetItemInterface()->LastSearchItemBagSlot(), _player->GetItemInterface()->LastSearchItemSlot(), 1);
 
 			_player->m_charters[CHARTER_TYPE_GUILD] = c;
-            _player->ModUnsigned32Value( PLAYER_FIELD_COINAGE, -1000 );
+            _player->ModGold( -1000 );
 			_player->SaveToDB(false);
 		}
 	}
@@ -1077,10 +1077,10 @@ void WorldSession::HandleGuildBankBuyTab(WorldPacket & recv_data)
 		const static int32 GuildBankPrices[6] = { 100, 250,  500,  1000, 2500, 5000 };
 		int32 cost = MONEY_ONE_GOLD * GuildBankPrices[_player->m_playerInfo->guild->GetBankTabCount()];
 
-		if(_player->GetUInt32Value(PLAYER_FIELD_COINAGE) < (unsigned)cost)
+		if( !_player->HasGold((uint32)cost) )
 			return;
 
-		_player->ModUnsigned32Value(PLAYER_FIELD_COINAGE, -cost);
+		_player->ModGold( -cost );
 		_player->m_playerInfo->guild->BuyBankTab(this);
 		_player->m_playerInfo->guild->LogGuildEvent(GUILD_EVENT_BANKTABBOUGHT, 1, "");
 	}

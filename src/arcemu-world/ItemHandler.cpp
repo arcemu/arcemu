@@ -1073,7 +1073,7 @@ void WorldSession::HandleBuyBackOpcode( WorldPacket & recv_data )
 		
 		// Check for gold
 		int32 cost =_player->GetUInt32Value(PLAYER_FIELD_BUYBACK_PRICE_1 + stuff);
-		if((int32)_player->GetUInt32Value(PLAYER_FIELD_COINAGE) < cost )
+		if( !_player->HasGold(cost) )
 		{
 			WorldPacket data(SMSG_BUY_FAILED, 12);
 			data << uint64(guid);
@@ -1088,7 +1088,7 @@ void WorldSession::HandleBuyBackOpcode( WorldPacket & recv_data )
 			_player->GetItemInterface()->BuildInventoryChangeError(NULL, NULL, error);
 			return;
 		}
-		_player->ModUnsigned32Value( PLAYER_FIELD_COINAGE , -cost);
+		_player->ModGold( -cost );
 		_player->GetItemInterface()->RemoveBuyBackItem(stuff);
 
 		if (!add)
@@ -1200,14 +1200,14 @@ void WorldSession::HandleSellItemOpcode( WorldPacket & recv_data )
 	// Check they don't have more than the max gold
 	if(sWorld.GoldCapEnabled)
 	{
-		if((_player->GetUInt32Value(PLAYER_FIELD_COINAGE) + price) > sWorld.GoldLimit)
+		if( (_player->GetGold() + price) > sWorld.GoldLimit )
 		{
 			_player->GetItemInterface()->BuildInventoryChangeError(NULL, NULL, INV_ERR_TOO_MUCH_GOLD);
 			return;
 		}
 	}
 
-	_player->ModUnsigned32Value(PLAYER_FIELD_COINAGE,price);
+	_player->ModGold( price );
  
 	if(quantity < stackcount)
 	{
@@ -1919,10 +1919,10 @@ void WorldSession::HandleBuyBankSlotOpcode(WorldPacket& recvPacket)
 	BankSlotPrice* bsp = dbcBankSlotPrices.LookupEntry(slots+1);
 	price = (bsp != NULL ) ? bsp->Price : 99999999;
 
-	if ((int32)_player->GetUInt32Value(PLAYER_FIELD_COINAGE) >= price) 
+	if( _player->HasGold(price) )
 	{
 	   _player->SetUInt32Value(PLAYER_BYTES_2, (bytes&0xff00ffff) | ((slots+1) << 16) );
-	   _player->ModUnsigned32Value(PLAYER_FIELD_COINAGE, -price);
+	   _player->ModGold( -price );
 #ifdef ENABLE_ACHIEVEMENTS
 		_player->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_BUY_BANK_SLOT, 1, 0, 0);
 #endif
@@ -2374,7 +2374,7 @@ void WorldSession::HandleItemRefundRequestOpcode( WorldPacket& recvPacket ){
 
                     _player->GetItemInterface()->AddItemById( 43308, ex->honor, 0 );   // honor points
                     _player->GetItemInterface()->AddItemById( 43307, ex->arena, 0 );  // arena points
-                    _player->AddCoins( proto->BuyPrice );
+                    _player->ModGold( proto->BuyPrice );
 
                     _player->GetItemInterface()->RemoveItemAmtByGuid( GUID, 1 );
 

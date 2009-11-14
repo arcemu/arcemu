@@ -399,7 +399,7 @@ void WorldSession::HandleSendMail(WorldPacket & recv_data )
 	}	
 	
 	// check that we have enough in our backpack
-	if( (int32)_player->GetUInt32Value( PLAYER_FIELD_COINAGE ) < cost )
+	if( !_player->HasGold(cost) )
 	{
 		SendMailError( MAIL_ERR_NOT_ENOUGH_MONEY );
 		return;
@@ -436,7 +436,7 @@ void WorldSession::HandleSendMail(WorldPacket & recv_data )
 	}
 
 	// take the money
-	_player->ModUnsigned32Value(PLAYER_FIELD_COINAGE, -cost);
+	_player->ModGold( -cost );
 
 	// Fill in the rest of the info
 	msg.player_guid = player->guid;
@@ -456,7 +456,7 @@ void WorldSession::HandleSendMail(WorldPacket & recv_data )
 	// Great, all our info is filled in. Now we can add it to the other players mailbox.
 	sMailSystem.DeliverMessage(player->guid, &msg);
 	// Save/Update character's gold if they've received gold that is. This prevents a rollback.
-	CharacterDatabase.Execute("UPDATE `characters` SET `gold`='%u' WHERE (`guid`='%u')", _player->GetUInt32Value(PLAYER_FIELD_COINAGE), _player->m_playerInfo->guid);
+	CharacterDatabase.Execute("UPDATE `characters` SET `gold`='%u' WHERE (`guid`='%u')", _player->GetGold(), _player->m_playerInfo->guid);
 	// Success packet :)
 	SendMailError(MAIL_OK);
 }
@@ -558,7 +558,7 @@ void WorldSession::HandleTakeItem(WorldPacket & recv_data )
 	// check for cod credit
 	if(message->cod > 0)
 	{
-		if(_player->GetUInt32Value(PLAYER_FIELD_COINAGE) < message->cod)
+		if( !_player->HasGold(message->cod) )
 		{
 			data << uint32(MAIL_ERR_NOT_ENOUGH_MONEY);
 			SendPacket(&data);
@@ -617,7 +617,7 @@ void WorldSession::HandleTakeItem(WorldPacket & recv_data )
 	
 	if( message->cod > 0 )
 	{
-		_player->ModUnsigned32Value(PLAYER_FIELD_COINAGE, -int32(message->cod));
+		_player->ModGold( -(int32)message->cod );
 		string subject = "COD Payment: ";
 		subject += message->subject;
 		sMailSystem.SendAutomatedMessage(NORMAL, message->player_guid, message->sender_guid, subject, "", message->cod, 0, 0, MAIL_STATIONERY_TEST1 );
@@ -650,7 +650,7 @@ void WorldSession::HandleTakeMoney(WorldPacket & recv_data )
 	// Check they don't have more than the max gold
 	if(sWorld.GoldCapEnabled)
 	{
-		if((_player->GetUInt32Value(PLAYER_FIELD_COINAGE) + message->money) > sWorld.GoldLimit)
+		if( (_player->GetGold() + message->money) > sWorld.GoldLimit )
 		{
 			_player->GetItemInterface()->BuildInventoryChangeError(NULL, NULL, INV_ERR_TOO_MUCH_GOLD);
 			return;
@@ -658,7 +658,7 @@ void WorldSession::HandleTakeMoney(WorldPacket & recv_data )
 	}
 
 	// add the money to the player
-	_player->ModUnsigned32Value(PLAYER_FIELD_COINAGE, message->money);
+	_player->ModGold( message->money );
 
 	// message no longer has any money
 	message->money = 0;

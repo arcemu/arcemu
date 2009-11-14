@@ -172,7 +172,7 @@ void WorldSession::HandleActivateTaxiOpcode( WorldPacket & recv_data )
 	}
 
 	// Check for gold
-	newmoney = ((GetPlayer()->GetUInt32Value(PLAYER_FIELD_COINAGE)) - taxipath->GetPrice());
+	newmoney = (GetPlayer()->GetGold() - taxipath->GetPrice());
 	if(newmoney < 0 )
 	{
 		data << uint32( 3 );
@@ -320,7 +320,7 @@ void WorldSession::HandleMultipleActivateTaxiOpcode(WorldPacket & recvPacket)
 	}
 
 	// Check for gold
-	newmoney = ((GetPlayer()->GetUInt32Value(PLAYER_FIELD_COINAGE)) - totalcost);
+	newmoney = (GetPlayer()->GetGold() - totalcost);
 	if(newmoney < 0 )
 	{
 		data << uint32( 3 );

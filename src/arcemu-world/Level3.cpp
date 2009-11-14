@@ -1592,7 +1592,7 @@ bool ChatHandler::HandlePetSpawnAIBot(const char* args, WorldSession *m_session)
 
 	uint32 botprice = m_session->GetPlayer()->GetUInt32Value(UNIT_FIELD_LEVEL)*10000; //1 gold per level ?
 
-	if( m_session->GetPlayer()->GetUInt32Value(PLAYER_FIELD_COINAGE) < botprice )
+	if( !m_session->GetPlayer()->HasGold(botprice) )
 	{
 		GreenSystemMessage(m_session, "You need a total of %u coins to afford a bot", botprice);
 		return false;

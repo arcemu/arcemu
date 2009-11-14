@@ -369,13 +369,13 @@ void WorldSession::HandleBuyStableSlot( WorldPacket &recv_data )
 	
 	WorldPacket data( SMSG_STABLE_RESULT, 1 );
 	
-	if( cost > (int32)_player->GetUInt32Value( PLAYER_FIELD_COINAGE ) )
+	if( !_player->HasGold(cost) )
 	{
 		data << uint8(1); // not enough money
 		SendPacket( &data );
  		return;
 	}
- 	_player->ModUnsigned32Value( PLAYER_FIELD_COINAGE, -cost );
+ 	_player->ModGold( -cost );
  	
 	data << uint8( 0x0A );
 	SendPacket( &data );
@@ -478,7 +478,7 @@ void WorldSession::HandlePetUnlearn( WorldPacket & recv_data )
 	}
 
 	int32 cost = pPet->GetUntrainCost();
-	if( cost > ( int32 )_player->GetUInt32Value( PLAYER_FIELD_COINAGE ) )
+	if( !_player->HasGold(cost) )
 	{
 		WorldPacket data( SMSG_BUY_FAILED, 12 );
 		data << uint64( _player->GetGUID() );
@@ -487,7 +487,7 @@ void WorldSession::HandlePetUnlearn( WorldPacket & recv_data )
 		SendPacket( &data );
 		return;	
 	}
-	_player->ModUnsigned32Value( PLAYER_FIELD_COINAGE, -cost );
+	_player->ModGold( -cost );
 	
 	pPet->WipeTalents();
 	pPet->SetTPs( pPet->GetTPsForLevel( pPet->getLevel() ) );

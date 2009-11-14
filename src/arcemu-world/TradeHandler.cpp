@@ -398,7 +398,7 @@ void WorldSession::HandleSetTradeGold(WorldPacket & recv_data)
 
 	if(_player->mTradeGold != Gold)
 	{
-		_player->mTradeGold = (Gold > _player->GetUInt32Value(PLAYER_FIELD_COINAGE) ? _player->GetUInt32Value(PLAYER_FIELD_COINAGE) : Gold);
+		_player->mTradeGold = (Gold > _player->GetGold() ? _player->GetGold() : Gold);
 		_player->SendTradeUpdate();
 	}
 }
@@ -580,28 +580,28 @@ void WorldSession::HandleAcceptTrade(WorldPacket & recv_data)
 			if(pTarget->mTradeGold)
 			{
 				// Check they don't have more than the max gold
-				if(sWorld.GoldCapEnabled && (_player->GetUInt32Value(PLAYER_FIELD_COINAGE) + pTarget->mTradeGold) > sWorld.GoldLimit)
+				if(sWorld.GoldCapEnabled && (_player->GetGold() + pTarget->mTradeGold) > sWorld.GoldLimit)
 				{
 					_player->GetItemInterface()->BuildInventoryChangeError(NULL, NULL, INV_ERR_TOO_MUCH_GOLD);
 				}
 				else
 				{
-					_player->ModUnsigned32Value(PLAYER_FIELD_COINAGE, pTarget->mTradeGold);
-					pTarget->ModUnsigned32Value(PLAYER_FIELD_COINAGE, -(int32)pTarget->mTradeGold);
+					_player->ModGold( pTarget->mTradeGold );
+					pTarget->ModGold( -(int32)pTarget->mTradeGold );
 				}
 			}
 
 			if(_player->mTradeGold)
 			{
 				// Check they don't have more than the max gold
-				if(sWorld.GoldCapEnabled && (pTarget->GetUInt32Value(PLAYER_FIELD_COINAGE) + _player->mTradeGold) > sWorld.GoldLimit)
+				if(sWorld.GoldCapEnabled && (pTarget->GetGold() + _player->mTradeGold) > sWorld.GoldLimit)
 				{
 					pTarget->GetItemInterface()->BuildInventoryChangeError(NULL, NULL, INV_ERR_TOO_MUCH_GOLD);
 				}
 				else
 				{
-					pTarget->ModUnsigned32Value(PLAYER_FIELD_COINAGE, _player->mTradeGold);
-					_player->ModUnsigned32Value(PLAYER_FIELD_COINAGE, -(int32)_player->mTradeGold);
+					pTarget->ModGold( _player->mTradeGold );
+					_player->ModGold( -(int32)_player->mTradeGold );
 				}
 			}
 

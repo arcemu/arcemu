@@ -311,7 +311,7 @@ bool QuestLogEntry::CanBeFinished()
 	}
 
 	//Check for Gold & AreaTrigger Requirements
-	if ( m_quest->reward_money < 0 && m_plr->GetUInt32Value( PLAYER_FIELD_COINAGE ) < uint32(-m_quest->reward_money) )
+	if ( m_quest->reward_money < 0 && m_plr->GetGold() < uint32(-m_quest->reward_money) )
 		return false;
 
 	for(i = 0; i < 4; ++i)
