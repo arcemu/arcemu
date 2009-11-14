@@ -1392,7 +1392,7 @@ void Guild::DepositMoney(WorldSession * pClient, uint32 uAmount)
 	CharacterDatabase.Execute("UPDATE guilds SET bankBalance = %llu WHERE guildId = %u", m_bankBalance, m_guildId);
 
 	// take the money, oh noes gm pls gief gold mi hero poor
-	pClient->GetPlayer()->ModGold( -uAmount );
+	pClient->GetPlayer()->ModGold( -(int32)uAmount );
 
 	// broadcast guild event telling everyone the new balance
 	char buf[20];

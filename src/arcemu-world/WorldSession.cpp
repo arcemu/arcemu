@@ -1245,7 +1245,7 @@ void WorldSession::HandleUnlearnTalents( WorldPacket & recv_data )
 		return;
 
 	GetPlayer()->SetTalentResetTimes( GetPlayer()->GetTalentResetTimes() + 1 );
-	GetPlayer()->ModGold( -price );
+	GetPlayer()->ModGold( -(int32)price );
 	GetPlayer()->Reset_Talents();
 }
 

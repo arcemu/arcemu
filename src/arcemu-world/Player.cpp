@@ -7697,7 +7697,7 @@ void Player::JumpToEndTaxiNode(TaxiPath * path)
 	TaxiPathNode * pathnode = path->GetPathNode((uint32)path->GetNodeCount()-1);
 	if(!pathnode) return;
 
-	ModGold( -(uint32)path->GetPrice() );
+	ModGold( -(int32)path->GetPrice() );
 
 	SetTaxiState(false);
 	SetTaxiPath(NULL);

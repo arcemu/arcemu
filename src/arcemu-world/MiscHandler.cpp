@@ -1391,7 +1391,7 @@ void WorldSession::HandleBarberShopResult(WorldPacket & recv_data)
 	_player->SetByte( PLAYER_BYTES, 2, static_cast<uint8>( newhair ));
 	_player->SetByte( PLAYER_BYTES, 3, static_cast<uint8>( newhaircolor ));
 	_player->SetByte( PLAYER_BYTES_2, 0, static_cast<uint8>( newfacial ));
-	_player->ModGold( -cost );
+	_player->ModGold( -(int32)cost );
 
 	_player->SetStandState(0);                              // stand up
 #ifdef ENABLE_ACHIEVEMENTS
