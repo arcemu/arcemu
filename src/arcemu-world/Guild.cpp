@@ -1382,7 +1382,8 @@ void GuildMember::OnMoneyWithdraw(uint32 amt)
 
 void Guild::DepositMoney(WorldSession * pClient, uint32 uAmount)
 {
-	if( pClient->GetPlayer()->HasGold(uAmount) )
+	// does player have required money?
+	if( !pClient->GetPlayer()->HasGold(uAmount) )
 		return;
 
 	// add to the bank balance
