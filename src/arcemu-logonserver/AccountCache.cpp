@@ -529,18 +529,30 @@ void InformationCore::SendRealms(AuthSocket * Socket)
 	// Send to the socket.
 	Socket->Send((const uint8*)data.contents(), uint32(data.size()));
 
+	std::list< LogonCommServerSocket* > ss;
+	std::list< LogonCommServerSocket* >::iterator SSitr;
+
+	ss.clear();
+
 	serverSocketLock.Acquire();
 
 	if( m_serverSockets.empty() )
 		return;
 
-	// this is kinda bad, it's like Arp Arp Arp
 	set<LogonCommServerSocket*>::iterator itr1;
 
-	for( itr1 = m_serverSockets.begin(); itr1 != m_serverSockets.end(); ++itr1)
-		(*itr1)->RefreshRealmsPop();
+	// We copy the sockets to a list and call RefreshRealmsPop() from there because if the socket is dead,
+	//then calling the method deletes the socket and removes it from the set corrupting the iterator and causing a crash!
+	for( itr1 = m_serverSockets.begin(); itr1 != m_serverSockets.end(); ++itr1){
+		ss.push_back( *itr1 );
+	}
+
+	for( SSitr = ss.begin(); SSitr != ss.end(); ++SSitr )
+		(*SSitr)->RefreshRealmsPop();
 
 	serverSocketLock.Release();
+
+	ss.clear();
 }
 
 void InformationCore::TimeoutSockets()

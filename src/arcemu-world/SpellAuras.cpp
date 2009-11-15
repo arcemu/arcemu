@@ -5647,9 +5647,14 @@ void Aura::EventPeriodicTriggerSpell(SpellEntry* spellInfo)
 		}
 		else if( pTarget->m_standtime != 6 )
 		{
-			pTarget->SetLastPositionX( (float)pTarget->GetPositionX() );
-			pTarget->SetLastPositionY( (float)pTarget->GetPositionY() );
-			pTarget->SetLastPositionZ( (float)pTarget->GetPositionY() );
+
+			float px = pTarget->GetPositionX();
+			float py = pTarget->GetPositionY();
+			float pz = pTarget->GetPositionZ();
+
+			pTarget->SetLastPositionX( px );
+			pTarget->SetLastPositionY( py );
+			pTarget->SetLastPositionZ( pz );
 			return;
 		}
 
