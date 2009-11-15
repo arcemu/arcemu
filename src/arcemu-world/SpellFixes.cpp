@@ -1868,6 +1868,11 @@ void ApplyNormalFixes()
 		if( sp != NULL )
 			sp->is_ranged_spell = true;
 
+		// Rogue - Master of Subtlety
+		sp = dbcSpell.LookupEntryForced( 31665 );
+		if( sp != NULL )
+			sp->AttributesEx |= ATTRIBUTESEX_NOT_BREAK_STEALTH;
+
 	//////////////////////////////////////////
 	// SHAMAN								//
 	//////////////////////////////////////////

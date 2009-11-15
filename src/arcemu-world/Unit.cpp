@@ -1143,7 +1143,6 @@ uint32 Unit::HandleProc( uint32 flag, uint32 flagextra, Unit* victim, SpellEntry
 
 		SM_FIValue( SM_FChanceOfSuccess, (int32*)&proc_Chance, ospinfo->SpellGroupType );
 		SM_FIValue( SM_PChanceOfSuccess, (int32*)&proc_Chance, ospinfo->SpellGroupType );
-		sLog.outError("proc_Chance = %i, spellId = %i, originId = %i, castingspell->id = %i", proc_Chance, spellId, origId, CastingSpell ? CastingSpell->Id : 0);
 		if( !Rand( proc_Chance ) )
 			continue;
 
@@ -2973,6 +2972,12 @@ uint32 Unit::HandleProc( uint32 flag, uint32 flagextra, Unit* victim, SpellEntry
 				// WARRIOR								//
 				//////////////////////////////////////////
 
+				// Warrior - Improved Revenge
+				case 12798:
+					{
+						if( !CastingSpell || CastingSpell->NameHash != SPELL_HASH_REVENGE )
+							continue;
+					}break;
 				// Warrior - Unrelenting Assault
 				case 64849:
 				case 64850:
@@ -3436,7 +3441,7 @@ uint32 Unit::HandleProc( uint32 flag, uint32 flagextra, Unit* victim, SpellEntry
 					}break;
 				case 37517:
 					{
-						if (!CastingSpell || CastingSpell->Id == 37517 || CastingSpell->NameHash != SPELL_HASH_REVENGE)
+						if ( !CastingSpell || CastingSpell->Id == 37517 || CastingSpell->NameHash != SPELL_HASH_REVENGE )
 							continue;
 					}break;
 			}
