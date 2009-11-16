@@ -536,8 +536,10 @@ void InformationCore::SendRealms(AuthSocket * Socket)
 
 	serverSocketLock.Acquire();
 
-	if( m_serverSockets.empty() )
+	if( m_serverSockets.empty() ){
+		serverSocketLock.Release();
 		return;
+	}
 
 	set<LogonCommServerSocket*>::iterator itr1;
 
@@ -547,10 +549,10 @@ void InformationCore::SendRealms(AuthSocket * Socket)
 		ss.push_back( *itr1 );
 	}
 
+	serverSocketLock.Release();
+
 	for( SSitr = ss.begin(); SSitr != ss.end(); ++SSitr )
 		(*SSitr)->RefreshRealmsPop();
-
-	serverSocketLock.Release();
 
 	ss.clear();
 }
@@ -578,6 +580,8 @@ void InformationCore::TimeoutSockets()
 			slist.push_back( s );
 
 	}
+	
+	serverSocketLock.Release();
 
 	if( slist.size() > 0 ){
 		sLog.outDebug("Closing %lu socket(s) because of ping timeout.", slist.size() );
@@ -602,7 +606,6 @@ void InformationCore::TimeoutSockets()
 		}
 	}
 
-	serverSocketLock.Release();
 	slist.clear();
 }
 
