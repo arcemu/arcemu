@@ -92,30 +92,18 @@ struct AreaAura
 	Unit* caster;
 };
 
-typedef struct 
-{
+typedef struct {
 	SpellEntry *spell_info;
 	uint32 charges;
 	bool deleted;
 } ExtraStrike;
 
-typedef struct
-{
-	uint32 spell;
-	uint32 chance;
-	bool self;
-	bool deleted;
-} onAuraRemove;
-
 enum DeathState
 {
-	ALIVE			= 0, // Unit is alive and well
-	JUST_DIED		= 1, // Unit has JUST died
-	CORPSE			= 2, // Unit has died but remains in the world as a corpse
-	DEAD			= 3, // Unit is dead and his corpse is gone from the world
-	JUST_ALIVED		= 4,
-    DEAD_FALLING	= 5,
-    GHOULED			= 6
+	ALIVE = 0,  // Unit is alive and well
+	JUST_DIED,  // Unit has JUST died
+	CORPSE,	 // Unit has died but remains in the world as a corpse
+	DEAD		// Unit is dead and his corpse is gone from the world
 };
 
 #define HIGHEST_FACTION = 46
@@ -666,35 +654,31 @@ enum UnitSpecialStates
 
 enum UnitFieldBytes1
 {
-	U_FIELD_BYTES_ANIMATION_FROZEN	= 0x01,
+	U_FIELD_BYTES_ANIMATION_FROZEN = 0x01,
 };
 
 enum UnitFieldBytes2
 {
-	U_FIELD_BYTES_FLAG_PVP			= 0x01,
-    U_FIELD_BYTES_FLAG_UNK1			= 0x02,
-    U_FIELD_BYTES_FLAG_FFA_PVP		= 0x04,
-    U_FIELD_BYTES_FLAG_SANCTUARY	= 0x08,
-    U_FIELD_BYTES_FLAG_AURAS		= 0x10,
-    U_FIELD_BYTES_FLAG_UNK5			= 0x20,
-    U_FIELD_BYTES_FLAG_UNK6			= 0x40,
-    U_FIELD_BYTES_FLAG_UNK7			= 0x80
+	U_FIELD_BYTES_FLAG_PVP     = 0x01,
+	U_FIELD_BYTES_FLAG_FFA_PVP = 0x04,
+	U_FIELD_BYTES_FLAG_SANCTUARY  = 0x08,
+	U_FIELD_BYTES_FLAG_AURAS   = 0x10,
 };
 
 enum UnitFieldFlags // UNIT_FIELD_FLAGS #46 - these are client flags
 {	//                                            Hex    Bit     Decimal  Comments
 	UNIT_FLAG_UNKNOWN_1                  = 0x00000001, // 1            1
 	UNIT_FLAG_NOT_ATTACKABLE_2           = 0x00000002, // 2            2  client won't let you attack them
-	UNIT_FLAG_LOCK_PLAYER                = 0x00000004, // 3            4  ? does nothing to client (probably wrong) - only taxi code checks this, UNIT_FLAG_DISABLE_MOVE 
-	UNIT_FLAG_PLAYER_CONTROLLED          = 0x00000008, // 4            8  makes players and NPCs attackable / not, UNIT_FLAG_PVP_ATTACKABLE allow apply pvp rules to attackable state in addition to faction dependent state
-	UNIT_FLAG_RENAME                     = 0x00000010, // 5           16  ? some NPCs have this
-	UNIT_FLAG_PREPARATION                = 0x00000020, // 6           32  don't take reagents for spells with SPELL_ATTR_EX5_NO_REAGENT_WHILE_PREP
+	UNIT_FLAG_LOCK_PLAYER                = 0x00000004, // 3            4  ? does nothing to client (probably wrong) - only taxi code checks this
+	UNIT_FLAG_PLAYER_CONTROLLED          = 0x00000008, // 4            8  makes players and NPCs attackable / not attackable
+	UNIT_FLAG_UNKNOWN_5                  = 0x00000010, // 5           16  ? some NPCs have this
+	UNIT_FLAG_UNKNOWN_6                  = 0x00000020, // 6           32
 	UNIT_FLAG_PLUS_MOB                   = 0x00000040, // 7           64  ? some NPCs have this (Rare/Elite/Boss?)
-	UNIT_FLAG_NOT_ATTACKABLE_1           = 0x00000080, // 8          128  ? can change attackable status, UNIT_FLAG_PVP_ATTACKABLE + UNIT_FLAG_NOT_ATTACKABLE_1) is NON_PVP_ATTACKABLE
+	UNIT_FLAG_UNKNOWN_8                  = 0x00000080, // 8          128  ? can change attackable status 
 	UNIT_FLAG_NOT_ATTACKABLE_9           = 0x00000100, // 9          256  changes attackable status
-	UNIT_FLAG_UNKNOWN_10                 = 0x00000200, // 10         512  // 3.0.3 - makes you unable to attack everything
-	UNIT_FLAG_LOOTING                    = 0x00000400, // 11        1024  // loot animation
-	UNIT_FLAG_SELF_RES                   = 0x00000800, // 12        2048  ? some NPCs have this, UNIT_FLAG_PET_IN_COMBAT (in combat?, 2.0.8) 
+	UNIT_FLAG_UNKNOWN_10                 = 0x00000200, // 10         512  ? some NPCs have this
+	UNIT_FLAG_LOOTING                    = 0x00000400, // 11        1024
+	UNIT_FLAG_SELF_RES                   = 0x00000800, // 12        2048  ? some NPCs have this
 	UNIT_FLAG_PVP                        = 0x00001000, // 13        4096  sets PvP flag
 	UNIT_FLAG_SILENCED                   = 0x00002000, // 14        8192
 	UNIT_FLAG_DEAD                       = 0x00004000, // 15       16384  used for special "dead" NPCs like Withered Corpses
@@ -710,30 +694,26 @@ enum UnitFieldFlags // UNIT_FIELD_FLAGS #46 - these are client flags
 	UNIT_FLAG_PLAYER_CONTROLLED_CREATURE = 0x01000000, // 25    16777216
 	UNIT_FLAG_NOT_SELECTABLE             = 0x02000000, // 26    33554432  cannot select the unit
 	UNIT_FLAG_SKINNABLE                  = 0x04000000, // 27    67108864
-	UNIT_FLAG_MOUNT                      = 0x08000000, // 28   134217728  ? was MAKE_CHAR_UNTOUCHABLE (probably wrong), nothing ever set it
+	UNIT_FLAG_UNKNOWN_28                 = 0x08000000, // 28   134217728  ? was MAKE_CHAR_UNTOUCHABLE (probably wrong), nothing ever set it
 	UNIT_FLAG_UNKNOWN_29                 = 0x10000000, // 29   268435456
 	UNIT_FLAG_FEIGN_DEATH                = 0x20000000, // 30   536870912
-	UNIT_FLAG_SHEATHE                    = 0x40000000, // 31  1073741824  ? was WEAPON_OFF and being used for disarm
+	UNIT_FLAG_UNKNOWN_31                 = 0x40000000, // 31  1073741824  ? was WEAPON_OFF and being used for disarm
 	UNIT_FLAG_UNKNOWN_32                 = 0x80000000, // 32  2147483648
 };
 
 enum UnitFieldFlags2
 {
-	UNIT_FLAG2_FEIGN_DEATH			= 0x1,
-    UNIT_FLAG2_UNK1					= 0x2,               // Hide unit model (show only player equip)
-    UNIT_FLAG2_COMPREHEND_LANG		= 0x8,
-    UNIT_FLAG2_FORCE_MOVE			= 0x40,
-	UNIT_FLAG2_ENABLE_POWER_REGEN	= 0x800,
+	UNIT_FLAG2_ENABLE_POWER_REGEN				= 0x800,
 };
 
 enum UnitDynamicFlags
 {
-	U_DYN_FLAG_LOOTABLE				= 0x01,
-	U_DYN_FLAG_UNIT_TRACKABLE		= 0x02,
-	U_DYN_FLAG_TAGGED_BY_OTHER		= 0x04,
-	U_DYN_FLAG_TAPPED_BY_PLAYER		= 0x08,
-	U_DYN_FLAG_PLAYER_INFO			= 0x10,
-	U_DYN_FLAG_DEAD					= 0x20,
+	U_DYN_FLAG_LOOTABLE				 = 0x01,
+	U_DYN_FLAG_UNIT_TRACKABLE		   = 0x02,
+	U_DYN_FLAG_TAGGED_BY_OTHER		  = 0x04,
+	U_DYN_FLAG_TAPPED_BY_PLAYER		 = 0x08,
+	U_DYN_FLAG_PLAYER_INFO			  = 0x10,
+	U_DYN_FLAG_DEAD					 = 0x20,
 };
 
 enum DamageFlags
@@ -768,18 +748,18 @@ enum VisualState
 
 enum HitStatus
 {
-	HITSTATUS_unk				= 0x01,
-	HITSTATUS_HITANIMATION		= 0x02,
-	HITSTATUS_DUALWIELD			= 0x04,
-	HITSTATUS_MISS				= 0x10,
-	HITSTATUS_ABSORBED			= 0x20,
-	HITSTATUS_RESIST			= 0x40,
-	HITSTATUS_CRICTICAL			= 0x200,
-	HITSTATUS_BLOCK				= 0x800,
-	HITSTATUS_CRUSHINGBLOW		= 0x8000,
-	HITSTATUS_GLANCING			= 0x10000,
-	HITSTATUS_NOACTION			= 0x10000,
-	HITSTATUS_SWINGNOHITSOUND	= 0x80000 // as in miss?
+	HITSTATUS_unk			= 0x01,
+	HITSTATUS_HITANIMATION  = 0x02,
+	HITSTATUS_DUALWIELD     = 0x04,
+	HITSTATUS_MISS          = 0x10,
+	HITSTATUS_ABSORBED      = 0x20,
+	HITSTATUS_RESIST        = 0x40,
+	HITSTATUS_CRICTICAL     = 0x200,
+	HITSTATUS_BLOCK         = 0x800,
+	HITSTATUS_CRUSHINGBLOW  = 0x8000,
+	HITSTATUS_GLANCING      = 0x10000,
+	HITSTATUS_NOACTION      = 0x10000,
+	HITSTATUS_SWINGNOHITSOUND = 0x80000 // as in miss?
 };
 
 enum INVIS_FLAG
@@ -811,18 +791,9 @@ struct AuraCheckResponse
 
 enum AURA_CHECK_RESULT
 {
-	AURA_CHECK_RESULT_NONE					= 1,
+	AURA_CHECK_RESULT_NONE				  = 1,
 	AURA_CHECK_RESULT_HIGHER_BUFF_PRESENT   = 2,
 	AURA_CHECK_RESULT_LOWER_BUFF_PRESENT	= 3,
-};
-
-enum CUSTOM_TIMERS
-{
-	CUSTOM_TIMER_ECLIPSE,
-	CUSTOM_TIMER_ERADICATION,
-	CUSTOM_TIMER_CHEATDEATH,
-	CUSTOM_TIMER_RAPTURE,
-	NUM_CUSTOM_TIMERS
 };
 
 typedef std::list<struct ProcTriggerSpellOnSpell> ProcTriggerSpellOnSpellList;
@@ -887,7 +858,6 @@ protected:
 //  Base object for Players and Creatures
 //====================================================================
 
-class SpellScript;
 class SERVER_DECL Unit : public Object
 {
 public:
@@ -953,7 +923,7 @@ public:
 	ARCEMU_INLINE uint32 getClassMask() { return 1 << (getClass() - 1); }
 	ARCEMU_INLINE uint32 getRaceMask() { return 1 << (getRace() - 1); }
 	ARCEMU_INLINE uint8 getGender() { return GetByte(UNIT_FIELD_BYTES_0,2); }
-	ARCEMU_INLINE void setGender(uint8 gender) { SetByte(UNIT_FIELD_BYTES_0, 2, gender); }
+	ARCEMU_INLINE void setGender(uint8 gender) { SetByte(UNIT_FIELD_BYTES_0,2,gender); }
 	ARCEMU_INLINE uint8 getStandState() { return ((uint8)m_uint32Values[UNIT_FIELD_BYTES_1]); }
  
 	//// Combat
@@ -964,7 +934,7 @@ public:
 //	void PeriodicAuraLog(Unit *pVictim, SpellEntry* spellID, uint32 damage, uint32 damageType);
 	//void SpellNonMeleeDamageLog(Unit *pVictim, uint32 spellID, uint32 damage);
 	uint32 m_procCounter;
-	uint32 HandleProc(uint32 flag, uint32 flagextra, Unit* Victim, SpellEntry* CastingSpell,uint32 dmg=-1,uint32 abs=0);
+	uint32 HandleProc(uint32 flag, Unit* Victim, SpellEntry* CastingSpell,uint32 dmg=-1,uint32 abs= 0);
 	void HandleProcDmgShield(uint32 flag, Unit* attacker);//almost the same as handleproc :P
 //	void HandleProcSpellOnSpell(Unit* Victim,uint32 damage,bool critical);//nasty, some spells proc other spells
 
@@ -1003,7 +973,7 @@ public:
 	ARCEMU_INLINE int32 GetStealthLevel() { return m_stealthLevel; }
 	ARCEMU_INLINE int32 GetStealthDetectBonus() { return m_stealthDetectBonus; }
 	ARCEMU_INLINE void SetStealth(uint32 id) { m_stealth = id; }
-	ARCEMU_INLINE bool IsStealth() { return (m_stealth != 0 ? true : false); }
+	ARCEMU_INLINE bool IsStealth() { return (m_stealth!= 0 ? true : false); }
 	float detectRange;
 
 	// Invisibility
@@ -1016,12 +986,9 @@ public:
 
 	bool HasAura(uint32 spellid); //this checks passive auras too
 	uint16 GetAuraStackCount(uint32 spellid);
-	uint16 GetAuraStackCountByType(uint32 type);
 	bool HasAuraVisual(uint32 visualid);//not spell id!!!
 	bool HasBuff(uint32 spelllid); //this does not check passive auras & it was visible auras
 	bool HasBuff(uint32 spelllid, uint64 guid);//this does not check passive auras & it was visible auras
-	bool HasDeBuff(uint32 spelllid);//this checks negative auras only
-	bool HasDeBuffWithNameHash(uint32 namehash);//this checks negative auras only
 	bool HasVisialPosAurasOfNameHashWithCaster(uint32 namehash, Unit * caster);
 	bool HasAuraWithMechanics(uint32 mechanic); //this checks passive auras too
 
@@ -1040,14 +1007,13 @@ public:
 	void OnDamageTaken();
 
 	//! Add Aura to unit
-	void AddAura(Aura *aur, SpellScript* script);
+	void AddAura(Aura *aur);
 	//! Remove aura from unit
 	bool RemoveAura(Aura *aur);
 	bool RemoveAura(uint32 spellId);
 	bool RemoveAura(uint32 spellId,uint64 guid);
 	bool RemoveAuraFirst(uint32 spellId);
 	bool RemoveAuraFirst(uint32 spellId,uint64 guid);
-	bool RemoveAuraType(uint32 type);
 	bool RemoveAuraByNameHash(uint32 namehash);//required to remove weaker instances of a spell
 	bool RemoveAuras(uint32 * SpellIds);
 	bool RemoveAurasByHeal();
@@ -1063,7 +1029,6 @@ public:
 	bool RemoveAllAuras(uint32 spellId,uint64 guid); //remove stacked auras but only if they come from the same caster. Shaman purge If GUID = 0 then removes all auras with this spellid
     void RemoveAllAuraType(uint32 auratype);//ex:to remove morph spells
     void RemoveAllAuraFromSelfType2(uint32 auratype, uint32 butskip_hash);//ex:to remove morph spells
-	uint32 RemoveAuraCountByNameHash(uint32 namehash, uint32 count);
 	uint32 RemoveAllAuraByNameHash(uint32 namehash);//required to remove weaker instances of a spell
 	uint32 RemoveAllAuraById(uint32 Id); // DuKJIoHuyC: Remove an aura by it's id
 	bool RemoveAllAurasByMechanic( uint32 MechanicType , uint32 MaxDispel , bool HostileOnly ); // Removes all (de)buffs on unit of a specific mechanic type.
@@ -1083,7 +1048,9 @@ public:
 	void InterruptSpell();
 
 	//caller is the caster
-	int32 GetSpellDmgBonus(Unit *pVictim, SpellEntry *spellInfo, int32 base_dmg, bool isdot, bool healing);
+	int32 GetSpellDmgBonus(Unit *pVictim, SpellEntry *spellInfo,int32 base_dmg, bool isdot);
+   
+	
 
 	uint32 m_addDmgOnce;
 	Creature *m_TotemSlots[4];
@@ -1109,20 +1076,10 @@ public:
 	ARCEMU_INLINE uint32 GetOnMeleeSpell() { return m_meleespell; }
 	ARCEMU_INLINE uint8 GetOnMeleeSpellEcn() { return m_meleespell_ecn; }
 
-	// On Aura Remove Procs
-	HM_NAMESPACE::hash_map<uint32, onAuraRemove* > m_onAuraRemoveSpells;
-
-	void AddOnAuraRemoveSpell(uint32 NameHash, uint32 procSpell, uint32 procChance, bool procSelf);
-	void RemoveOnAuraRemoveSpell(uint32 NameHash);
-	void OnAuraRemove(uint32 NameHash, Unit* m_target);
-
 	uint32 DoDamageSplitTarget(uint32 res, uint32 school_type, bool melee_dmg);
 
 	// Spell Crit
 	float spellcritperc;
-
-	//Custom timers
-	uint32 m_CustomTimers[NUM_CUSTOM_TIMERS];
 
 	// AIInterface
 	AIInterface *GetAIInterface() { return m_aiInterface; }
@@ -1160,7 +1117,6 @@ public:
 	Loot loot;
 	uint32 SchoolCastPrevent[7];
 	int32 MechanicDurationPctMod[28];
-	int32 DispelDurationPctMod[10];
 	int32 GetDamageDoneMod(uint32 school);
 	float GetDamageDonePctMod(uint32 school);
 	float DamageDoneModPCT[7];
@@ -1180,20 +1136,15 @@ public:
 	int32 APvModifier;
 	uint64 stalkedby;
 	uint32 dispels[10];
+	bool trackStealth;
 	uint32 MechanicsDispels[32];
 	float MechanicsResistancesPCT[32];
 	float ModDamageTakenByMechPCT[32];
-	int32 DmgIncreaseFromCaster;
-	int32 DmgIncreaseFromCasterDoT;
-	uint64 DmgIncreaseCaster;
+	int32 DoTPctIncrease[7];
 	float AOEDmgMod;
 	//int32 RangedDamageTakenPct; 
 	float m_ignoreArmorPctMaceSpec;
 	float m_ignoreArmorPct;
-
-	int8 m_RemoveEnvenom;
-
-	bool allowDoTHoTCrit;
 
 	//SM
 	int32 * SM_FDamageBonus;//flat
@@ -1217,13 +1168,11 @@ public:
 	int32 * SM_FRadius;//flat
 	int32 * SM_PRadius;//pct
 	
-	int32 * SM_FCriticalChance;//flat
-	int32 * SM_PCriticalChance;//pct
+	int32 * SM_CriticalChance;//flat
 
 	int32 * SM_FMiscEffect;//flat
 	int32 * SM_PMiscEffect;//pct
 	
-	int32 * SM_FNonInterrupt;//flat
 	int32 * SM_PNonInterrupt;//Pct
 
 	int32 * SM_FCastTime;//flat
@@ -1238,22 +1187,17 @@ public:
 	int32 * SM_FCost;//flat
 	int32 * SM_PCost;//Pct
 	
-	int32 * SM_FCriticalDamage;//flat
 	int32 * SM_PCriticalDamage;//Pct
 
 	int32 * SM_FHitchance;//flat
-	int32 * SM_PHitchance;//pct
 
 	int32 * SM_FAdditionalTargets;//flat
-	int32 * SM_PAdditionalTargets;//pct
 
 	int32 * SM_FChanceOfSuccess;//flat
-	int32 * SM_PChanceOfSuccess;//pct
 
 	int32 * SM_FAmptitude;//flat
 	int32 * SM_PAmptitude;//Pct
 
-	int32 * SM_FJumpReduce;//flat
 	int32 * SM_PJumpReduce;//Pct
 
 	int32 * SM_FGlobalCooldown;//flat
@@ -1268,17 +1212,11 @@ public:
 	int32 * SM_FPenalty;//flat
 	int32 * SM_PPenalty;//Pct
 
-	int32 * SM_FFreq_Of_Success;//flat
-	int32 * SM_PFreq_Of_Success;//Pct
-
 	int32 * SM_FEffectBonus;//flat
 	int32 * SM_PEffectBonus;//pct	
 	
 	int32 * SM_FRezist_dispell;//flat
-	int32 * SM_PRezist_dispell;//Pct
-
-	int32 * SM_FRefund_Cost;//flat
-	int32 * SM_PRefund_Cost;//Pct
+	int32 * SM_PRezist_dispell;//Pct	
 
 	void InheritSMMods(Unit *inherit_from);
 
@@ -1426,11 +1364,8 @@ public:
 	std::list<ExtraStrike*> m_extraStrikeTargets;
 	int32 m_fearmodifiers;
 	int64 m_magnetcaster; // Unit who acts as a magnet for this unit
-	SpellEntry* m_windfuryspell;
-	uint32 m_HauntDamageDone;
-	uint32 PeriodicDamageDone[10]; // 3.2.2 - last spell ID is 69016
 	//std::set<SpellEntry*> m_onStrikeSpells;
-
+	
 	//Combat Mod Results:
 	int32 m_CombatResult_Dodge;
 	int32 m_CombatResult_Parry; //is not implented yet
@@ -1501,8 +1436,6 @@ public:
 	uint32 m_stealth;
 	bool m_can_stealth;
 
-	uint8 m_HotStreakCount;
-
 	Aura* m_auras[MAX_TOTAL_AURAS_END];   
 
 	int32 m_modlanguage;
@@ -1548,42 +1481,6 @@ public:
 			}break;
 		}
 		return false;
-	}
-
-	ARCEMU_INLINE bool ClassMaskAffect(uint32 *classmask, SpellEntry* testSpell)
-	{
-		bool cl1 = false, cl2 = false, cl3 = false;
-
-		if( testSpell->SpellGroupType[0] )
-		{
-			if( classmask[0] & testSpell->SpellGroupType[0] )
-				cl1 = true;
-		}
-		else
-			cl1 = true;
-
-		if( testSpell->SpellGroupType[1] )
-		{
-			if( classmask[1] & testSpell->SpellGroupType[1] )
-				cl2 = true;
-		}
-		else
-			cl2 = true;
-
-		if( testSpell->SpellGroupType[2] )
-		{
-			if( testSpell->SpellGroupType[0] == 0 && testSpell->SpellGroupType[1] == 0 )
-			{
-				if( classmask[2] & testSpell->SpellGroupType[2] )
-					cl3 = true;
-			}
-			else
-				cl3 = true;
-		}
-		else
-			cl3 = true;
-
-		return cl1 && cl2 && cl3;
 	}
 
 	void Root();
@@ -1633,13 +1530,17 @@ public:
 	uint32 polySpell;
 	uint32 m_special_state; //flags for special states (stunned,rooted etc)
 
+	struct {
+		int32 amt;
+		int32 max;
+	} m_soulSiphon;
+
 //	uint32 fearSpell;
 	uint32 m_cTimer;
 	void EventUpdateFlag();
 	CombatStatusHandler CombatStatus;
 	bool m_temp_summon;
 	bool m_mageInvisibility;
-	uint8 m_standtime;
 
 	void CancelSpell(Spell * ptr);
 	void EventStrikeWithAbility(uint64 guid, SpellEntry * sp, uint32 damage);
@@ -1665,8 +1566,6 @@ public:
 	void SetDodgeFromSpell(float value) { m_dodgefromspell = value; }
 	
 	void AggroPvPGuards();
-
-	void OnDispelOrFullAbsorb(Aura* aur, Unit *u_caster, Unit *dispel_caster, uint8 effect); // 1 - dispel, 2 - full absorb
 
 protected:
 	Unit ();

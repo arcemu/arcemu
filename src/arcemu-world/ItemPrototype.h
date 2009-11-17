@@ -318,9 +318,9 @@ enum ITEM_STAT_TYPE
 	MANA_REGENERATION					= 43,
 	ARMOR_PENETRATION_RATING			= 44,
 	SPELL_POWER							= 45, 
-	HEALTH_REGEN						= 46,
-	SPELL_PENETRATION					= 47,
-	BLOCK_VALUE							= 48,
+	HEALTH_REGEN					= 46,
+	SPELL_PENETRATION				= 47,
+	BLOCK_VALUE					= 48,
 };
 
 enum ITEM_DAMAGE_TYPE
@@ -340,7 +340,6 @@ enum ITEM_SPELLTRIGGER_TYPE
 	ON_EQUIP		= 1,
 	CHANCE_ON_HIT	= 2,
 	SOULSTONE		= 4,
-	NO_COOLDOWN		= 5,
 	LEARNING		= 6,
 };
 
@@ -411,16 +410,6 @@ enum ITEM_CLASS
 
 enum Item_Subclass
 {
-   // Consumable
-   ITEM_SUBCLASS_POTION                     = 0,
-   ITEM_SUBCLASS_ELIXIR                     = 1,
-   ITEM_SUBCLASS_FLASK                      = 2,
-   ITEM_SUBCLASS_SCROLL                     = 3,
-   ITEM_SUBCLASS_FOOD                       = 4,
-   ITEM_SUBCLASS_ITEM_ENHANCEMENT           = 5,
-   ITEM_SUBCLASS_BANDAGE                    = 6,
-   ITEM_SUBCLASS_CONSUMABLE_OTHER           = 7,
-
    // Weapon
    ITEM_SUBCLASS_WEAPON_AXE					= 0,
    ITEM_SUBCLASS_WEAPON_TWOHAND_AXE			= 1,

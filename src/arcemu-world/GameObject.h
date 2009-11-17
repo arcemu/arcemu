@@ -308,8 +308,6 @@ public:
 	uint32 GetGOReqSkill();
 	MapCell * m_respawnCell;
 
-	ARCEMU_INLINE void SetScript(GameObjectAIScript *pScript) { myScript = pScript; }
-
 	void SetState(uint8 state);
 	uint8 GetState();
 

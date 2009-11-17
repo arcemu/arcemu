@@ -348,23 +348,16 @@ AddItemResult ItemInterface::m_AddItem(Item *item, int8 ContainerSlot, int16 slo
 		m_pOwner->UpdateKnownCurrencies(item->GetEntry(), true);
 	}
 
-	if( ContainerSlot == INVENTORY_SLOT_NOT_SET && slot == EQUIPMENT_SLOT_OFFHAND && item->GetProto()->Class == ITEM_CLASS_WEAPON )
-	{
+	if( ContainerSlot == INVENTORY_SLOT_NOT_SET && slot == EQUIPMENT_SLOT_OFFHAND && item->GetProto()->Class == ITEM_CLASS_WEAPON ){
 		m_pOwner->SetDualWield( true );
 
 		/////////////////////////////////////////// Titan's grip stuff ////////////////////////////////////////////////////////////
 
-		uint32 subclassM = m_pItems[EQUIPMENT_SLOT_MAINHAND] != NULL ? m_pItems[EQUIPMENT_SLOT_MAINHAND]->GetProto()->SubClass : NULL;
 		uint32 subclass = item->GetProto()->SubClass;
-		if( ( subclass == ITEM_SUBCLASS_WEAPON_TWOHAND_AXE 
+		if( subclass == ITEM_SUBCLASS_WEAPON_TWOHAND_AXE 
 			|| subclass == ITEM_SUBCLASS_WEAPON_TWOHAND_MACE 
-			|| subclass == ITEM_SUBCLASS_WEAPON_TWOHAND_SWORD ) || 
-			( subclassM == ITEM_SUBCLASS_WEAPON_TWOHAND_AXE 
-			|| subclassM == ITEM_SUBCLASS_WEAPON_TWOHAND_MACE 
-			|| subclassM == ITEM_SUBCLASS_WEAPON_TWOHAND_SWORD ) )
-		{
+			|| subclass == ITEM_SUBCLASS_WEAPON_TWOHAND_SWORD ){
 				
-			if( m_pOwner->DualWield2H == true )
 				m_pOwner->CastSpell( m_pOwner, 49152, true );
 
 		///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -3291,22 +3284,16 @@ void ItemInterface::SwapItemSlots(int8 srcslot, int8 dstslot)
 	// handle dual wield
 	if( dstslot == EQUIPMENT_SLOT_OFFHAND || srcslot == EQUIPMENT_SLOT_OFFHAND )
 	{
-		if( m_pItems[EQUIPMENT_SLOT_OFFHAND] != NULL && m_pItems[EQUIPMENT_SLOT_OFFHAND]->GetProto()->Class == ITEM_CLASS_WEAPON )
-		{
+		if( m_pItems[EQUIPMENT_SLOT_OFFHAND] != NULL && m_pItems[EQUIPMENT_SLOT_OFFHAND]->GetProto()->Class == ITEM_CLASS_WEAPON ){
 			m_pOwner->SetDualWield( true );
 
 		/////////////////////////////////////////// Titan's grip stuff ////////////////////////////////////////////////////////////
 
-		uint32 subclassM = m_pItems[EQUIPMENT_SLOT_MAINHAND] != NULL ? m_pItems[EQUIPMENT_SLOT_MAINHAND]->GetProto()->SubClass : NULL;
-		uint32 subclassO = m_pItems[EQUIPMENT_SLOT_OFFHAND]->GetProto()->SubClass;
-		if( ( subclassO == ITEM_SUBCLASS_WEAPON_TWOHAND_AXE 
-			|| subclassO == ITEM_SUBCLASS_WEAPON_TWOHAND_MACE 
-			|| subclassO == ITEM_SUBCLASS_WEAPON_TWOHAND_SWORD ) ||
-			( subclassM == ITEM_SUBCLASS_WEAPON_TWOHAND_AXE 
-			|| subclassM == ITEM_SUBCLASS_WEAPON_TWOHAND_MACE 
-			|| subclassM == ITEM_SUBCLASS_WEAPON_TWOHAND_SWORD ) )
-		{
-			if( m_pOwner->DualWield2H == true )
+		uint32 subclass = m_pItems[EQUIPMENT_SLOT_OFFHAND]->GetProto()->SubClass;
+		if( subclass == ITEM_SUBCLASS_WEAPON_TWOHAND_AXE 
+			|| subclass == ITEM_SUBCLASS_WEAPON_TWOHAND_MACE 
+			|| subclass == ITEM_SUBCLASS_WEAPON_TWOHAND_SWORD ){
+				
 				m_pOwner->CastSpell( m_pOwner, 49152, true );
 		}
 

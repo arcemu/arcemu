@@ -178,9 +178,7 @@ void WorldSession::HandleIgnoreTrade(WorldPacket & recv_data)
 
 void WorldSession::HandleCancelTrade(WorldPacket & recv_data)
 {
-	if(!_player->IsInWorld()) 
-		return;
-
+	if(!_player->IsInWorld()) return;
 	if(_player->mTradeTarget == 0 || _player->mTradeStatus == TRADE_STATUS_COMPLETE)
 		return;
 

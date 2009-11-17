@@ -342,7 +342,7 @@ public:
 	ARCEMU_INLINE bool IsFull() { return (SignatureCount == Slots); }
 };
 
-typedef std::map<uint32, uint32>				                    OverrideIdMap;
+typedef std::map<uint32, std::list<SpellEntry*>* >                  OverrideIdMap;
 typedef HM_NAMESPACE::hash_map<uint32, Player*>                     PlayerStorageMap;
 typedef std::list<GM_Ticket*>                                       GmTicketList;
 typedef std::map<uint32, InstanceBossInfo*>                         InstanceBossInfoMap;

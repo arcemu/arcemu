@@ -121,7 +121,7 @@ void Object::SetRotation( uint64 guid )
 	SendMessageToSet(&data, false);
 }
 
-Object::Object() : m_last_position(0,0,0,0), m_position(0,0,0,0), m_spawnLocation(0,0,0,0)
+Object::Object() : m_position(0,0,0,0), m_spawnLocation(0,0,0,0)
 {
 	m_mapId = 0;
 	m_zoneId = 0;
@@ -153,7 +153,6 @@ Object::Object() : m_last_position(0,0,0,0), m_position(0,0,0,0), m_spawnLocatio
 
 	mSemaphoreTeleport = false;
 
-	m_CasterHitTrigger = NULL;
 
 	m_faction = NULL;
 	m_factionDBC = NULL;
@@ -196,6 +195,7 @@ Object::~Object( )
 	//avoid leaving traces in eventmanager. Have to work on the speed. Not all objects ever had events so list iteration can be skipped
 	sEventMgr.RemoveEvents( this );
 }
+
 
 void Object::_Create( uint32 mapid, float x, float y, float z, float ang )
 {
@@ -1019,7 +1019,7 @@ void Object::SendMessageToSet(WorldPacket *data, bool bToSelf,bool myteam_only)
 		{
 			for(; itr != it_end; ++itr)
 			{
-				if( (*itr) && (*itr)->GetSession() && (*itr)->GetSession()->GetPermissionCount() > 0 && (*itr)->GetTeam()==myteam )
+				if((*itr) && (*itr)->GetSession() && (*itr)->GetSession()->GetPermissionCount() > 0 && (*itr)->GetTeam()==myteam)
 					(*itr)->GetSession()->SendPacket(data);
 			}
 		}
@@ -1027,7 +1027,7 @@ void Object::SendMessageToSet(WorldPacket *data, bool bToSelf,bool myteam_only)
 		{
 			for(; itr != it_end; ++itr)
 			{
-				if( (*itr) && (*itr)->GetSession() && (*itr)->GetTeam()==myteam && !(*itr)->Social_IsIgnoring( GetLowGUID() ) )
+				if((*itr) && (*itr)->GetSession() && (*itr)->GetTeam()==myteam && !(*itr)->Social_IsIgnoring( GetLowGUID() ))
 					(*itr)->GetSession()->SendPacket(data);
 			}
 		}
@@ -1038,7 +1038,7 @@ void Object::SendMessageToSet(WorldPacket *data, bool bToSelf,bool myteam_only)
 		{
 			for(; itr != it_end; ++itr)
 			{
-				if( (*itr) && (*itr)->GetSession() && (*itr)->GetSession()->GetPermissionCount() > 0 )
+				if((*itr) && (*itr)->GetSession() && (*itr)->GetSession()->GetPermissionCount() > 0)
 					(*itr)->GetSession()->SendPacket(data);
 			}
 		}
@@ -1046,7 +1046,7 @@ void Object::SendMessageToSet(WorldPacket *data, bool bToSelf,bool myteam_only)
 		{
 			for(; itr != it_end; ++itr)
 			{
-				if( (*itr) && (*itr)->GetSession() && !(m_objectTypeId == TYPEID_PLAYER && (*itr)->Social_IsIgnoring( GetLowGUID() )) )
+				if((*itr) && (*itr)->GetSession() &&  !(m_objectTypeId == TYPEID_PLAYER && (*itr)->Social_IsIgnoring( GetLowGUID() )) )
 					(*itr)->GetSession()->SendPacket(data);
 			}
 		}
@@ -1888,7 +1888,7 @@ void Object::EventSetUInt32Value(uint32 index, uint32 value)
 	SetUInt32Value(index,value);
 }
 
-void Object::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32 unitEvent, uint32 spellId, bool no_remove_auras) //erm no log?
+void Object::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32 unitEvent, uint32 spellId, bool no_remove_auras)
 {
 	Player* plr = NULL;
 
@@ -2002,19 +2002,19 @@ void Object::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
 
 }
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	if( !no_remove_auras )
+	if(!no_remove_auras)
 	{
 		//zack 2007 04 24 : root should not remove self (and also other unknown spells)
-		if( spellId )
+		if(spellId)
 		{
-			pVictim->RemoveAurasByInterruptFlagButSkip(AURA_INTERRUPT_ON_ANY_DAMAGE_TAKEN, spellId);
-			if( Rand(35.0f) )
-				pVictim->RemoveAurasByInterruptFlagButSkip(AURA_INTERRUPT_ON_UNUSED2, spellId);
+			pVictim->RemoveAurasByInterruptFlagButSkip(AURA_INTERRUPT_ON_ANY_DAMAGE_TAKEN,spellId);
+			if(Rand(35.0f))
+				pVictim->RemoveAurasByInterruptFlagButSkip(AURA_INTERRUPT_ON_UNUSED2,spellId);
 		}
 		else
 		{
 			pVictim->RemoveAurasByInterruptFlag(AURA_INTERRUPT_ON_ANY_DAMAGE_TAKEN);
-			if( Rand(35.0f) )
+			if(Rand(35.0f))
 				pVictim->RemoveAurasByInterruptFlag(AURA_INTERRUPT_ON_UNUSED2);
 		}
 	}
@@ -2030,6 +2030,16 @@ void Object::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
 		//the black sheep , no actually it is paladin : Ardent Defender
 		if( static_cast< Unit* >( this )->DamageTakenPctModOnHP35 && HasFlag( UNIT_FIELD_AURASTATE , AURASTATE_FLAG_HEALTH35 ) )
 			damage = damage - float2int32( damage * static_cast< Unit* >( this )->DamageTakenPctModOnHP35 ) / 100 ;
+
+		//Mage: Fiery Payback
+		if(pVictim->IsPlayer() && static_cast< Player* >(pVictim)->FieryPaybackModHP35 == 1)
+			if(pVictim->GetHealthPct() <= 35)
+			{
+				if(!pVictim->HasAura(44441))
+				pVictim->CastSpell(pVictim->GetGUID(), 44441, true);
+			}
+		else if(pVictim->HasAura(44441))
+			pVictim->RemoveAllAuraById(44441);
 		
 		plr = NULL;
 		if(IsPet())
@@ -2037,7 +2047,7 @@ void Object::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
 		else if(IsPlayer())
 			plr = static_cast< Player* >( this );
 
-		if(pVictim->GetTypeId() == TYPEID_UNIT && plr && plr->GetTypeId() == TYPEID_PLAYER) // Units can't tag..
+		if(pVictim->GetTypeId()==TYPEID_UNIT && plr && plr->GetTypeId() == TYPEID_PLAYER) // Units can't tag..
 		{
 			// Tagging
 			Creature *victim = static_cast<Creature*>(pVictim);
@@ -2298,9 +2308,9 @@ void Object::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
 			if( spellId )
 				killerspell = dbcSpell.LookupEntry( spellId );
 			else killerspell = NULL;
-			pVictim->HandleProc( 0, CUSTOMPROC_ON_DIE, static_cast< Unit* >( this ), killerspell );//todo
+			pVictim->HandleProc( PROC_ON_DIE, static_cast< Unit* >( this ), killerspell );
 			pVictim->m_procCounter = 0;
-			static_cast< Unit* >( this )->HandleProc( 0, CUSTOMPROC_ON_DIE, pVictim, killerspell );
+			static_cast< Unit* >( this )->HandleProc( PROC_ON_TARGET_DIE, pVictim, killerspell );
 			static_cast< Unit* >( this )->m_procCounter = 0;
 		}
 		// check if pets owner is combat participant
@@ -2849,9 +2859,6 @@ void Object::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
 							}
 						}
 					}
-
-					SpellEntry* spell = dbcSpell.LookupEntry( spellId );
-					uTagger->HandleProc( PROC_ON_GAIN_EXPIERIENCE, CUSTOMPROC_ON_IGNORE_XP_HONOR_KILL, pVictim, spell != NULL ? spell : NULL );
 				}
 				// ----------------------------- XP --------------
 
@@ -2975,65 +2982,40 @@ void Object::SpellNonMeleeDamageLog(Unit *pVictim, uint32 spellID, uint32 damage
 //==========================================================================================
 //==============================Unacceptable Cases Processing===============================
 //==========================================================================================
+	if(!pVictim || !pVictim->isAlive())
+		return;
 
 	SpellEntry *spellInfo = dbcSpell.LookupEntry( spellID );
 	if(!spellInfo)
         return;
 
-	// edit victim before we check him - for aura 111 SpellAuraAddCasterHitTrigger
-	if( pVictim->m_CasterHitTrigger != NULL && pVictim->m_CasterHitTrigger->IsUnit() && spellInfo->Spell_Dmg_Type != SPELL_DMG_TYPE_MAGIC )
-	{
-		Unit *oVictim = pVictim;
-		pVictim = TO_UNIT( pVictim->m_CasterHitTrigger );
-		pVictim->m_CasterHitTrigger = NULL;	
-		oVictim->RemoveAuraType(SPELL_AURA_ADD_CASTER_HIT_TRIGGER);
-	}
-
-	if(!pVictim || !pVictim->isAlive())
-		return;
-
-	if( IsPlayer() && !static_cast< Player* >( this )->canCast(spellInfo) )
+	if (this->IsPlayer() && !static_cast< Player* >( this )->canCast(spellInfo))
 		return;
 //==========================================================================================
 //==============================Variables Initialization====================================
 //==========================================================================================
 	uint32 school = spellInfo->School;
 	float res = float(damage);
-	uint32 aproc = 0;
-	uint32 vproc = PROC_ON_ANY_DAMAGE;
-	uint32 procextra = 0;
+	uint32 aproc = PROC_ON_ANY_HOSTILE_ACTION; /*| PROC_ON_SPELL_HIT;*/
+	uint32 vproc = PROC_ON_ANY_HOSTILE_ACTION | PROC_ON_ANY_DAMAGE_VICTIM; /*| PROC_ON_SPELL_HIT_VICTIM;*/
 
 	//A school damage is not necessarily magic
 	switch( spellInfo->Spell_Dmg_Type )
 	{
-	case SPELL_DMG_TYPE_RANGED: {
-			aproc |= PROC_ON_RANGED_ABILITY_LAND;
-			vproc |= PROC_ON_RANGED_ABILITY_LAND_VICTIM;
+	case SPELL_DMG_TYPE_RANGED:	{
+			aproc |= PROC_ON_RANGED_ATTACK;
+			vproc |= PROC_ON_RANGED_ATTACK_VICTIM;
 		}break;
 
 	case SPELL_DMG_TYPE_MELEE:{
-			aproc |= PROC_ON_MELEE_ABILITY_LAND;
-			vproc |= PROC_ON_MELEE_ABILITY_LAND_VICTIM;
+			aproc |= PROC_ON_MELEE_ATTACK;
+			vproc |= PROC_ON_MELEE_ATTACK_VICTIM;
 		}break;
 
 	case SPELL_DMG_TYPE_MAGIC:{
-			aproc |= PROC_ON_CAST_SPELL;
-			vproc |= PROC_ON_CAST_SPELL_VICTIM;
+			aproc |= PROC_ON_SPELL_HIT;
+			vproc |= PROC_ON_SPELL_HIT_VICTIM;
 		}break;
-	}
-
-	if( IsPlayer() )
-	{
-		Player *plr = TO_PLAYER(this);
-		uint32 toset = pVictim->GetUInt32Value( UNIT_FIELD_AURASTATE );
-		bool frozen = pVictim->HasFlag( UNIT_FIELD_AURASTATE, AURASTATE_FLAG_FROZEN );
-		if( plr->HasAura(57761) )
-		{
-			toset |= AURASTATE_FLAG_FROZEN;
-			pVictim->SetFlag( UNIT_FIELD_AURASTATE, toset );
-		}
-		else if( !frozen )
-			pVictim->RemoveFlag( UNIT_FIELD_AURASTATE, AURASTATE_FLAG_FROZEN );
 	}
 
 	bool critical = false;
@@ -3045,7 +3027,10 @@ void Object::SpellNonMeleeDamageLog(Unit *pVictim, uint32 spellID, uint32 damage
 	{
 		Unit* caster = static_cast< Unit* >( this );
 		caster->RemoveAurasByInterruptFlag( AURA_INTERRUPT_ON_START_ATTACK );
-		res = float(caster->GetSpellDmgBonus( pVictim, spellInfo, damage, false, false ));
+
+		int32 spelldmgbonus = caster->GetSpellDmgBonus( pVictim, spellInfo, ( int )res, false );
+
+		res += spelldmgbonus;
 
 //==========================================================================================
 //==============================Post +SpellDamage Bonus Modifications=======================
@@ -3100,19 +3085,7 @@ void Object::SpellNonMeleeDamageLog(Unit *pVictim, uint32 spellID, uint32 damage
 
 				if( spellInfo->SpellGroupType )
 				{
-					SM_FFValue(caster->SM_FCriticalChance, &CritChance, spellInfo->SpellGroupType);
-					SM_FFValue(caster->SM_PCriticalChance, &CritChance, spellInfo->SpellGroupType);
-
-					if( caster->IsPlayer() )
-					{
-						Player *plrCaster = TO_PLAYER( caster );
-						// Druid - Improved Insect Swarm - Crit chance
-						if( spellInfo->NameHash == SPELL_HASH_STARFIRE )
-						{
-							if( plrCaster->HasAurasWithNameHash(SPELL_HASH_IMPROVED_INSECT_SWARM) && pVictim->HasDeBuffWithNameHash(SPELL_HASH_MOONFIRE) )
-								CritChance += (float)( plrCaster->FindAuraByNameHash(SPELL_HASH_IMPROVED_INSECT_SWARM)->GetSpellProto()->EffectBasePoints[0] );
-						}
-					}
+					SM_FFValue(caster->SM_CriticalChance, &CritChance, spellInfo->SpellGroupType);
 				}
 
 				if( pVictim->IsPlayer() )
@@ -3128,7 +3101,7 @@ void Object::SpellNonMeleeDamageLog(Unit *pVictim, uint32 spellID, uint32 damage
 			{
 				critical = true;
 				if( !caster->HasAura(55447) )	// Glyph of Flame Shock
-					fs->Remove();
+						fs->Remove();
 			}
 
 //==========================================================================================
@@ -3138,23 +3111,7 @@ void Object::SpellNonMeleeDamageLog(Unit *pVictim, uint32 spellID, uint32 damage
 			{
 				int32 critical_bonus = 100;
 				if( spellInfo->SpellGroupType )
-				{
-					SM_FIValue( caster->SM_FCriticalDamage, &critical_bonus, spellInfo->SpellGroupType );
 					SM_FIValue( caster->SM_PCriticalDamage, &critical_bonus, spellInfo->SpellGroupType );
-
-					if( caster->IsPlayer() )
-					{
-						Player *plrCaster = TO_PLAYER( caster );
-						// Druid - Improved Faerie Fire - Crit damage
-						if( spellInfo->c_is_flags & SPELL_FLAG_IS_DAMAGING )
-						{
-							if( plrCaster->HasAurasWithNameHash(SPELL_HASH_IMPROVED_FAERIE_FIRE) && 
-								( pVictim->HasDeBuffWithNameHash(SPELL_HASH_FAERIE_FIRE) ||
-								  pVictim->HasDeBuffWithNameHash(SPELL_HASH_FAERIE_FIRE__FERAL_) ) )
-								critical_bonus += plrCaster->FindAuraByNameHash(SPELL_HASH_IMPROVED_FAERIE_FIRE)->GetSpellProto()->EffectBasePoints[0];
-						}
-					}
-				}
 
 				if( critical_bonus > 0 )
 				{
@@ -3163,7 +3120,7 @@ void Object::SpellNonMeleeDamageLog(Unit *pVictim, uint32 spellID, uint32 damage
 					if( spellInfo->School == 0 || spellInfo->is_melee_spell || spellInfo->is_ranged_spell )		// physical || hackfix SoCommand/JoCommand
 						b = ( ( float(critical_bonus) ) / 100.0f ) + 1.0f;
 					else
-						b = ( ( (float(critical_bonus)) / 2.0f ) / 100.0f ) + 1.0f;
+						b = ( ( float(critical_bonus) / 2.0f ) / 100.0f ) + 1.0f;
 
 					res *= b;
 				}
@@ -3180,43 +3137,31 @@ void Object::SpellNonMeleeDamageLog(Unit *pVictim, uint32 spellID, uint32 damage
 					if( dmg_reduction_pct > 1.0f )
 						dmg_reduction_pct = 1.0f; //we cannot resist more then he is criticalling us, there is no point of the critical then :P
 					res = res - res * dmg_reduction_pct;
-
-				}
-	
-				if( IsPlayer() )
-				{
-					Player* pl = static_cast< Player* >( this );
-
-					//Burnout
-					if( spellInfo->Spell_Dmg_Type == SPELL_DMG_TYPE_MAGIC && pl->m_ManaCostSpellCrit )
-					{
-						uint32 cur = pl->GetUInt32Value( UNIT_FIELD_POWER1 );
-						uint32 manacost = spellInfo->manaCost;
-						if( manacost == 0 )
-							manacost = ( spellInfo->ManaCostPercentage * pl->GetUInt32Value( UNIT_FIELD_BASE_MANA ) ) /100;
-
-						manacost = ( pl->m_ManaCostSpellCrit * manacost ) /100;
-						
-						if( cur )
-						{
-							cur -= manacost;
-							if( cur )
-							{
-								pl->SetUInt32Value( UNIT_FIELD_POWER1, cur );
-							}
-							else 
-								pl->SetUInt32Value( UNIT_FIELD_POWER1, 0 );
-						}
-					}
 				}
 
 				if (pVictim->GetTypeId() == TYPEID_UNIT && static_cast<Creature*>(pVictim)->GetCreatureInfo() && static_cast<Creature*>(pVictim)->GetCreatureInfo()->Rank != ELITE_WORLDBOSS)
 					pVictim->Emote( EMOTE_ONESHOT_WOUNDCRITICAL );
+				/*aproc |= PROC_ON_SPELL_CRIT_HIT;
+				vproc |= PROC_ON_SPELL_CRIT_HIT_VICTIM;*/
 
-				procextra |= CUSTOMPROC_ON_CRIT;
+				switch( spellInfo->Spell_Dmg_Type )
+				{
+				case SPELL_DMG_TYPE_RANGED:	{
+						aproc |= PROC_ON_RANGED_CRIT_ATTACK;
+						vproc |= PROC_ON_RANGED_CRIT_ATTACK_VICTIM;
+					}break;
+
+				case SPELL_DMG_TYPE_MELEE:{
+						aproc |= PROC_ON_CRIT_ATTACK;
+						vproc |= PROC_ON_CRIT_HIT_VICTIM;
+					}break;
+
+				case SPELL_DMG_TYPE_MAGIC:{
+						aproc |= PROC_ON_SPELL_CRIT_HIT;
+						vproc |= PROC_ON_SPELL_CRIT_HIT_VICTIM;
+					}break;
+				}
 			}
-			else if( IsUnit() )
-				TO_UNIT(this)->m_HotStreakCount = 0;
 		}
 	}
 //==========================================================================================
@@ -3224,7 +3169,7 @@ void Object::SpellNonMeleeDamageLog(Unit *pVictim, uint32 spellID, uint32 damage
 //==========================================================================================
 
 //------------------------------absorption--------------------------------------------------
-	uint32 ress = (uint32)res;
+	uint32 ress=(uint32)res;
 	uint32 abs_dmg = pVictim->AbsorbDamage(school, &ress);
 	uint32 ms_abs_dmg= pVictim->ManaShieldAbsorb(ress);
 	if (ms_abs_dmg)
@@ -3232,27 +3177,55 @@ void Object::SpellNonMeleeDamageLog(Unit *pVictim, uint32 spellID, uint32 damage
 		if(ms_abs_dmg > ress)
 			ress = 0;
 		else
-			ress -= ms_abs_dmg;
+			ress-=ms_abs_dmg;
 
 		abs_dmg += ms_abs_dmg;
 	}
 
 	if(abs_dmg)
-		procextra |= CUSTOMPROC_ON_ABSORB;
+		vproc |= PROC_ON_ABSORB;
+
+	// Incanter's Absorption
+	if( pVictim->IsPlayer() && pVictim->HasAurasWithNameHash( SPELL_HASH_INCANTER_S_ABSORPTION ) )
+	{
+		float pctmod = 0.0f;
+		Player* pl = static_cast< Player* >( pVictim );
+		if( pl->HasAura( 44394 ) )
+			pctmod = 0.05f;
+		else if( pl->HasAura( 44395 ) )
+			pctmod = 0.10f;
+		else if( pl->HasAura( 44396 ) )
+			pctmod = 0.15f;
+
+		uint32 hp = static_cast<uint32>( 0.05f * pl->GetUInt32Value( UNIT_FIELD_MAXHEALTH ) );
+		uint32 spellpower = static_cast<uint32>( pctmod * pl->GetUInt32Value( PLAYER_FIELD_MOD_DAMAGE_DONE_POS ) );
+
+		if( spellpower > hp )
+			spellpower = hp;
+
+		SpellEntry * entry = dbcSpell.LookupEntry( 44413 );
+		if( !entry ) 
+			return;
+
+		Spell * sp = new Spell( pl, entry, true, NULL );
+		if ( !sp )
+			return;
+		sp->GetProto()->EffectBasePoints[0] = spellpower;
+		SpellCastTargets targets;
+		targets.m_unitTarget = pl->GetGUID();
+		sp->prepare(&targets);
+	}
 
 	if(ress < 0) ress = 0;
 
-	res = (float)ress;
+	res=(float)ress;
 	dealdamage dmg;
 	dmg.school_type = school;
 	dmg.full_damage = ress;
 	dmg.resisted_damage = 0;
 
-	if( res <= 0 )
-	{
+	if(res <= 0)
 		dmg.resisted_damage = dmg.full_damage;
-		procextra |= CUSTOMPROC_ON_RESIST_VICTIM;
-	}
 
 	//------------------------------resistance reducing-----------------------------------------
 	if(res > 0 && this->IsUnit())
@@ -3268,7 +3241,6 @@ void Object::SpellNonMeleeDamageLog(Unit *pVictim, uint32 spellID, uint32 damage
 	{
 		res = float(dmg.full_damage);
 		dmg.resisted_damage = dmg.full_damage;
-		procextra |= CUSTOMPROC_ON_RESIST_VICTIM;
 	}
 
 	// Paladin: Blessing of Sacrifice, and Warlock: Soul Link
@@ -3283,29 +3255,18 @@ void Object::SpellNonMeleeDamageLog(Unit *pVictim, uint32 spellID, uint32 damage
 	SendSpellNonMeleeDamageLog(this, pVictim, spellID, float2int32(res), static_cast<uint8>( school ), abs_dmg, dmg.resisted_damage, false, 0, critical, IsPlayer());
 	DealDamage( pVictim, float2int32( res ), 2, 0, spellID );
 
-	// Warlock - Haunt
-	if( spellInfo->NameHash == SPELL_HASH_HAUNT && IsUnit() )
-		TO_UNIT( this )->m_HauntDamageDone = float2int32( res );
-
-	if( spellInfo->Spell_Dmg_Type == SPELL_DMG_TYPE_MAGIC )
-	{
-		aproc |= PROC_ON_HARMFULSPELL_LAND;
-		vproc |= PROC_ON_HARMFULSPELL_LAND_VICTIM;
-	}
-
 	if( this->IsUnit() && allowProc && spellInfo->Id != 25501 && spellInfo->noproc == false )
 	{
 		int32 dmg = float2int32(res);
 
-		pVictim->HandleProc( vproc, procextra, static_cast< Unit* >( this ), spellInfo, dmg, abs_dmg);
+		pVictim->HandleProc( vproc, static_cast< Unit* >( this ), spellInfo, dmg, abs_dmg);
 		pVictim->m_procCounter = 0;
-		static_cast< Unit* >( this )->HandleProc( aproc, procextra, pVictim, spellInfo, dmg, abs_dmg);
+		static_cast< Unit* >( this )->HandleProc( aproc, pVictim, spellInfo, dmg, abs_dmg);
 		static_cast< Unit* >( this )->m_procCounter = 0;
 	}
-
 	if( this->IsPlayer() )
 	{
-		static_cast< Player* >( this )->m_casted_amount[school] = ( uint32 )res;
+			static_cast< Player* >( this )->m_casted_amount[school] = ( uint32 )res;
 	}
 
 	if( !(dmg.full_damage == 0 && abs_dmg) )
@@ -3320,8 +3281,19 @@ void Object::SpellNonMeleeDamageLog(Unit *pVictim, uint32 spellID, uint32 damage
 //==========================================================================================
 	if( (int32)dmg.resisted_damage == dmg.full_damage && !abs_dmg )
 	{
+		//Magic Absorption
 		if( pVictim->IsPlayer() )
 		{
+			if( static_cast< Player* >( pVictim )->m_RegenManaOnSpellResist )
+			{
+				Player* pl = static_cast< Player* >( pVictim );
+				uint32 maxmana = pl->GetUInt32Value( UNIT_FIELD_MAXPOWER1 );
+
+				//TODO: wtf is this ugly mess of casting bullshit
+				uint32 amount = uint32(float( float(maxmana)*pl->m_RegenManaOnSpellResist));
+
+				pVictim->Energize( pVictim, 29442, amount, POWER_TYPE_MANA );
+			}
 			// we still stay in combat dude
 			static_cast< Player* >(pVictim)->CombatStatusHandler_ResetPvPTimeout();
 		}

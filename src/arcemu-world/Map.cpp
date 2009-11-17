@@ -178,23 +178,11 @@ void Map::LoadSpawns(bool reload)
 					cspawn->displayid = fields[8].GetUInt32();
 					cspawn->factionid = fields[9].GetUInt32();
 					cspawn->flags = fields[10].GetUInt32();
-
-					#ifdef UDB_DATABASE
-					cspawn->creatureclass = fields[11].GetUInt32();
-					#else
 					cspawn->bytes0 = fields[11].GetUInt32();
-					#endif
-
 					cspawn->bytes1 = fields[12].GetUInt32();
 					cspawn->bytes2 = fields[13].GetUInt32();
 					cspawn->emote_state = fields[14].GetUInt32();
-
-					#ifdef UDB_DATABASE
-					cspawn->creaturegender = fields[15].GetUInt32();
-					#else
 					//cspawn->respawnNpcLink = fields[15].GetUInt32();
-					#endif
-
 					cspawn->channel_spell = fields[16].GetUInt16();
 					cspawn->channel_target_go = fields[17].GetUInt32();
 					cspawn->channel_target_creature = fields[18].GetUInt32();
@@ -235,23 +223,11 @@ void Map::LoadSpawns(bool reload)
 				cspawn->displayid = fields[8].GetUInt32();
 				cspawn->factionid = fields[9].GetUInt32();
 				cspawn->flags = fields[10].GetUInt32();
-
-				#ifdef UDB_DATABASE
-				cspawn->creatureclass = fields[11].GetUInt32();;
-				#else
-				cspawn->bytes0 = fields[11].GetUInt32();;
-				#endif
-
+				cspawn->bytes0 = fields[11].GetUInt32();
 				cspawn->bytes1 = fields[12].GetUInt32();
 				cspawn->bytes2 = fields[13].GetUInt32();
 				cspawn->emote_state = fields[14].GetUInt32();
-
-				#ifdef UDB_DATABASE
-				cspawn->creaturegender = fields[15].GetUInt32();;
-				#else
-				//cspawn->respawnNpcLink = fields[15].GetUInt32();;
-				#endif
-
+				//cspawn->respawnNpcLink = fields[15].GetUInt32();
 				cspawn->channel_spell= 0;
 				cspawn->channel_target_creature= 0;
 				cspawn->channel_target_go= 0;

@@ -57,7 +57,7 @@ enum AURA_STATE_FLAGS
 	AURASTATE_FLAG_REJUVENATE			= 0x004000,	//15
 	AURASTATE_FLAG_POISON				= 0x008000,	//16
 	AURASTATE_FLAG_ENRAGED				= 0x010000,	//17
-	AURASTATE_FLAG_BLEEDING				= 0x020000,	//18
+	AURASTATE_FLAG_MAELSTROM_READY		= 0x020000,	//18
 	AURASTATE_FLAG_EVASIVE_CHARGE		= 0x200000,	//22
 	AURASTATE_FLAG_HEALTH75				= 0x400000,	//23 (Health ABOVE 75%)
 };
@@ -257,7 +257,7 @@ enum MOD_TYPES
     SPELL_AURA_MOD_ALL_WEAPON_SKILLS = 196,
     SPELL_AURA_REDUCE_ATTACKER_CRICTICAL_HIT_CHANCE_PCT = 197,
 	SPELL_AURA_198 = 198,
-    SPELL_AURA_INCREASE_SPELL_HIT_PCT = 199,
+    SSPELL_AURA_INCREASE_SPELL_HIT_PCT = 199,
 	SPELL_AURA_CANNOT_BE_DODGED = 201,
 	SPELL_AURA_FINISHING_MOVES_CANNOT_BE_DODGED = 202,
     SPELL_AURA_REDUCE_ATTACKER_CRICTICAL_HIT_DAMAGE_MELEE_PCT = 203,
@@ -267,22 +267,19 @@ enum MOD_TYPES
     SPELL_AURA_INCREASE_CASTING_TIME_PCT = 216,
     SPELL_AURA_REGEN_MANA_STAT_PCT=219,
     SPELL_AURA_HEALING_STAT_PCT=220,
-	SPELL_AURA_PERIODIC_DUMMY = 226,
 	SPELL_AURA_PERIODIC_TRIGGER_SPELL_WITH_VALUE=227, // Used by Mind Flay etc
 	SPELL_AURA_REDUCE_AOE_DAMAGE_TAKEN = 229,
-    SPELL_AURA_INCREASE_MAX_HEALTH = 230,//Used by Commanding Shout
-	SPELL_AURA_PROC_TRIGGER_SPELL_WITH_VALUE = 231, // info from mangos
+    SPELL_AURA_INCREASE_MAX_HEALTH=230,//Used by Commanding Shout
 	SPELL_AURA_MECHANIC_DURATION_MOD = 232,
-	SPELL_AURA_MECHANIC_DURATION_MOD_NOT_STACK = 234,
-	SPELL_AURA_MOD_HEALING_BY_AP = 237,
-	SPELL_AURA_MOD_SPELL_DAMAGE_BY_AP = 238,
+	SPELL_AURA_MOD_HEALING_BY_AP=237,
+	SPELL_AURA_MOD_SPELL_DAMAGE_BY_AP=238,
 	SPELL_AURA_EXPERTISE = 240,
 	SPELL_AURA_241 = 241,
     SPELL_AURA_MOD_SPELL_DAMAGE_FROM_HEALING = 242,
     SPELL_AURA_243 = 243,
     SPELL_AURA_244 = 244,
     SPELL_AURA_MOD_DURATION_OF_MAGIC_EFFECTS = 245,
-    SPELL_AURA_MOD_DURATION_OF_EFFECTS_BY_DISPEL = 246,
+    SPELL_AURA_246 = 246,
     SPELL_AURA_247 = 247,
     SPELL_AURA_MOD_COMBAT_RESULT_CHANCE = 248,
     SPELL_AURA_249 = 249,
@@ -307,14 +304,14 @@ enum MOD_TYPES
 	SPELL_AURA_MOD_ATTACK_POWER_BY_STAT_PCT = 268,
 	SPELL_AURA_269 = 269,
 	SPELL_AURA_270 = 270,
-	SPELL_AURA_MOD_DAMAGE_FROM_CASTER = 271,
+	SPELL_AURA_INCREASE_SPELL_DOT_DAMAGE_PCT = 271,
 	SPELL_AURA_272 = 272,
 	SPELL_AURA_273 = 273,
 	SPELL_AURA_274 = 274,
 	SPELL_AURA_275 = 275,
 	SPELL_AURA_276 = 276,
 	SPELL_AURA_277 = 277,
-	SPELL_AURA_MOD_DISARM_RANGED = 278,
+	SPELL_AURA_278 = 278,
 	SPELL_AURA_279 = 279,
 	SPELL_AURA_IGNORE_ARMOR_PCT = 280,
 	SPELL_AURA_281 = 281,
@@ -322,11 +319,11 @@ enum MOD_TYPES
 	SPELL_AURA_283 = 283,
 	SPELL_AURA_284 = 284,
 	SPELL_AURA_MOD_ATTACK_POWER_OF_ARMOR = 285,
-	SPELL_AURA_ALLOW_CRIT_PERIODIC_DAMAGE = 286,
+	SPELL_AURA_286 = 286,
 	SPELL_AURA_REFLECT_INFRONT = 287,
 	SPELL_AURA_288 = 288,
 	SPELL_AURA_289 = 289,
-	SPELL_AURA_MOD_CRIT_CHANCE_ALL = 290,
+	SPELL_AURA_290 = 290,
 	SPELL_AURA_291 = 291,
 	SPELL_AURA_292 = 292,
 	SPELL_AURA_293 = 293,
@@ -402,27 +399,41 @@ struct DamageSplitTarget
 	void * creator;
 };
 
+#ifndef NEW_PROCFLAGS
 struct ProcTriggerSpell
 {
+	//  ProcTriggerSpell() : origId(0), trigger(0), spellId(0), caster(0), procChance(0), procFlags(0), procCharges(0) { }
 	uint32 origId;
+	// uint32 trigger;
 	uint32 spellId;
 	uint64 caster;
 	uint32 procChance;
 	uint32 procFlags;
-	uint32 procFlagsExtra;
 	uint32 procCharges;
+	//    SpellEntry *ospinfo;
+	//    SpellEntry *spinfo;
 	uint32 LastTrigger;
-	uint32 ProcType; // 0 = triggerspell, 1 = trigger class spell
+	uint32 ProcType; //0=triggerspell/1=triggerclassspell
 	uint32 groupRelation[3];
 	bool deleted;
 };
+#else
+struct ProcTriggerSpell
+{
+	uint32 spellId;
+	uint32 parentId;
+	uint32 procFlags;
+	uint32 procChance;
+	uint32 procCharges;
+	uint32 LastTrigger;
+};
+#endif
 
 struct SpellCharge
 {
     uint32 spellId;
     uint32 count;
     uint32 ProcFlag;
-	uint32 ProcFlagExtra;
     uint32 lastproc;
     uint32 procdiff;
 };
@@ -435,9 +446,6 @@ class SERVER_DECL Aura : public EventableObject
 public:
     Aura( SpellEntry *proto, int32 duration,Object* caster, Unit *target, bool temporary = false, Item* i_caster = NULL );
 	~Aura();
-
-	bool m_wasremoved;
-	SpellScript* m_spellScript;
 
 	void ExpireRemove();
     void Remove();
@@ -457,8 +465,6 @@ public:
 
     ARCEMU_INLINE uint16 GetAuraSlot() const { return m_auraSlot; }
 	void SetAuraSlot( uint16 slot ) { m_auraSlot = slot; }
-	uint32 GetModCount() { return m_modcount; }
-	Modifier GetModList( uint8 i ) { return m_modList[i]; }
 
 	ARCEMU_INLINE bool IsPositive() { return m_positive>0; }
 	void SetNegative(signed char value=1) { m_positive -= value; }
@@ -492,7 +498,6 @@ public:
 				return true;
 		return false;
 	}
-
 	// Aura Handlers
 	void SpellAuraNULL(bool apply);
 	void SpellAuraBindSight(bool apply);
@@ -600,7 +605,6 @@ public:
 	void SpellAuraAddPctMod(bool apply);
 	void SpellAuraAddTargetTrigger(bool apply);
 	void SpellAuraModPowerRegPerc(bool apply);
-	void SpellAuraAddCasterHitTrigger(bool apply);
 	void SpellAuraOverrideClassScripts(bool apply);
 	void SpellAuraModRangedDamageTaken(bool apply);
 	void SpellAuraModHealing(bool apply);
@@ -631,7 +635,6 @@ public:
 	void SpellAuraModBaseResistancePerc(bool apply);
 	void SpellAuraModResistanceExclusive(bool apply);
 	void SpellAuraSafeFall(bool apply);
-	void SpellAuraAddCreatureImmunity(bool apply);
 	void SpellAuraRetainComboPoints(bool apply);
 	void SpellAuraResistPushback(bool apply);
 	void SpellAuraModShieldBlockPCT(bool apply);
@@ -680,7 +683,6 @@ public:
 	void SpellAuraModStealthDetection(bool apply);
 	void SpellAuraReduceAOEDamageTaken(bool apply);
 	void SpellAuraIncreaseMaxHealth(bool apply);
-	void SpellAuraProcTriggerSpellWithValue(bool apply);
 	void SpellAuraSpiritOfRedemption(bool apply);
 	void SpellAuraIncreaseAttackerSpellCrit(bool apply);
 	void SpellAuraIncreaseRepGainPct(bool apply);
@@ -690,11 +692,7 @@ public:
 	void SpellAuraAllowFlight(bool apply);
 	void SpellAuraFinishingMovesCannotBeDodged(bool apply);
 	void SpellAuraExpertise(bool apply);
-	void SpellAuraForceMoveForward(bool apply);
-	void SpellAuraComprehendLanguage(bool apply);
-	void SpellAuraReduceEffectDurationByDispelType(bool apply);
-	void SpellAuraHealAndJump(bool apply);
-	void SpellAuraPeriodicDummy(bool apply);
+	void SpellAuraDrinkNew(bool apply);
 	void SpellAuraModPossessPet(bool apply);
 	void SpellAuraModHealingByAP(bool apply);
 	void SpellAuraModSpellDamageByAP(bool apply);
@@ -703,7 +701,6 @@ public:
 	void HandleAuraControlVehicle(bool apply);
 	void EventPeriodicDrink(uint32 amount);
 	void SpellAuraModCombatResultChance(bool apply);
-	void SpellAuraConvertRune(bool apply);
 	void SpellAuraAddHealth(bool apply);
 	void SpellAuraRemoveReagentCost(bool apply);
 	void SpellAuraPeriodicTriggerSpellWithValue(bool apply);
@@ -712,16 +709,13 @@ public:
 	void SpellAuraIgnoreTargetAuraState(bool apply);
 	void SpellAuraAllowOnlyAbility(bool apply);
 	void SpellAuraIncreaseAPbyStatPct(bool apply);
-	void SpellAuraModSpellDamageFromCaster(bool apply);
+	void SpellAuraModSpellDamageDOTPct(bool apply);
 	void SpellAuraIgnoreShapeshift(bool apply);
 	void SpellAuraPhase(bool apply);
-	void SpellAuraModDisarmRanged(bool apply);
 	void SpellAuraModIgnoreArmorPct(bool apply);
 	void SpellAuraModBaseHealth(bool apply);
 	void SpellAuraModAttackPowerOfArmor(bool apply);
-	void SpellAuraAllowDotHotCrit(bool apply);
 	void SpellAuraReflectSpellsInfront(bool apply);
-	void SpellAuraModCritChanceAll(bool apply);
 	void UpdateAuraModDecreaseSpeed();
 
 	void SendModifierLog(int32 ** m,int32 v,uint32* mask,uint8 type,bool pct = false);
@@ -732,6 +726,7 @@ public:
 	void EventPeriodicDamagePercent(uint32);
 	void EventPeriodicHeal(uint32);
 	void EventPeriodicTriggerSpell(SpellEntry* spellInfo);
+	void EventPeriodicTrigger(uint32 amount, uint32 type);
 	void EventPeriodicEnergize(uint32,uint32);
 	void EventPeriodicEnergizeVariable(uint32,uint32);
 	void EventPeriodicHeal1(uint32);
@@ -742,11 +737,10 @@ public:
 	void EventPeriodicHealPct(float);
 	void EventPeriodicManaPct(float);
 	void EventPeriodicRegenManaStatPct(uint32 perc,uint32 stat);
-	void EventPeriodicDummyWithValue(uint32 amount);
 	void RelocateEvents();
 	int32 event_GetInstanceID();
 
-	ARCEMU_INLINE void SendPeriodicHealAuraLog(uint32 amt, /*uint32 overheal,*/ bool critical)
+	ARCEMU_INLINE void SendPeriodicHealAuraLog(uint32 amt)
 	{
 		WorldPacket data(32);
 		data.SetOpcode(SMSG_PERIODICAURALOG);
@@ -756,42 +750,38 @@ public:
 		data << uint32(1);
 		data << uint32(FLAG_PERIODIC_HEAL);
 		data << uint32(amt);
-		//data << uint32(overheal);
-		data << uint32(critical ? 1 : 0);
 		m_target->SendMessageToSet(&data,true);
 	}
 	// log message's
-	ARCEMU_INLINE void SendPeriodicAuraLog(Unit * Caster, Unit * Target, uint32 SpellID, uint32 School, uint32 Amount, uint32 abs_dmg, uint32 resisted_damage, bool critical, uint32 Flags)
+	ARCEMU_INLINE void SendPeriodicAuraLog(Unit * Caster, Unit * Target, uint32 SpellID, uint32 School, uint32 Amount, uint32 abs_dmg, uint32 resisted_damage, uint32 Flags)
 	{
 		WorldPacket data(SMSG_PERIODICAURALOG, 46);
-		data << Target->GetNewGUID();			// target guid
-		data << Caster->GetNewGUID();			// caster guid
+		data << Target->GetNewGUID();		   // target guid
+		data << Caster->GetNewGUID();		   // caster guid
 		data << SpellID;						// spellid
-		data << (uint32)1;						// count?
+		data << (uint32)1;					  // unknown? need research?
 		data << uint32(Flags | 0x1);			// aura school
-		data << Amount;							// amount of done to target / heal / damage
-		data << (uint32)0;						// overkill?
+		data << Amount;						 // amount of done to target / heal / damage
+		data << (uint32)0;				 // cebernic: unknown?? needs more research, but it should fix unknown damage type with suffered.
 		data << g_spellSchoolConversionTable[School];
 		data << uint32(abs_dmg);
 		data << uint32(resisted_damage);
-		data << uint32(critical ? 1 : 0);
 		Caster->SendMessageToSet(&data, true);
 	}
 
-	void SendPeriodicAuraLog(const uint64& CasterGuid, Unit * Target, uint32 SpellID, uint32 School, uint32 Amount, uint32 abs_dmg, uint32 resisted_damage, bool critical, uint32 Flags)
+	void SendPeriodicAuraLog(const uint64& CasterGuid, Unit * Target, uint32 SpellID, uint32 School, uint32 Amount, uint32 abs_dmg, uint32 resisted_damage, uint32 Flags)
 	{
 		WorldPacket data(SMSG_PERIODICAURALOG, 46);
-		data << Target->GetNewGUID();			// target guid
-		FastGUIDPack(data, CasterGuid);			// caster guid
+		data << Target->GetNewGUID();		   // target guid
+		FastGUIDPack(data, CasterGuid);		 // caster guid
 		data << SpellID;						// spellid
-		data << (uint32)1;						// count?
+		data << (uint32)1;					  // unknown?? need research?
 		data << uint32(Flags | 0x1);			// aura school
-		data << Amount;							// amount of done to target / heal / damage
-		data << (uint32)0;						// overkill?
+		data << Amount;						 // amount of done to target / heal / damage
+		data << (uint32)0;				 // cebernic: unknown?? needs more research, but it should fix unknown damage type with suffered.
 		data << g_spellSchoolConversionTable[School];
 		data << uint32(abs_dmg);
 		data << uint32(resisted_damage);
-		data << uint32(critical ? 1 : 0);
 		Target->SendMessageToSet(&data, true);
 	}
 
@@ -810,9 +800,6 @@ public:
 	uint8 m_visualSlot;
 	// This represents the triggering spell id
 	uint32 pSpellId; 
-
-	Player *Heal_And_Jump_Next_new_target;
-	uint32 Heal_And_Jump_procCharges;
 
 	// This stuff can be cached in spellproto.
 	ARCEMU_INLINE bool IsCombatStateAffecting()
@@ -883,7 +870,6 @@ public:
 	bool m_deleted;
 	int16 m_interrupted;
 	bool m_ignoreunapply; // \\\"special\\\" case, for unapply
-	bool m_periodicmodapply;
 
 	ARCEMU_INLINE bool IsInterrupted() { return ( m_interrupted >= 0 ); }
 };

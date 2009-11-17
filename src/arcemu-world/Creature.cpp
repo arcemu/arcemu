@@ -552,23 +552,11 @@ void Creature::SaveToDB()
 		<< m_uint32Values[UNIT_FIELD_DISPLAYID] << ","
 		<< m_uint32Values[UNIT_FIELD_FACTIONTEMPLATE] << ","
 		<< m_uint32Values[UNIT_FIELD_FLAGS] << ","
-
-		#ifdef UDB_DATABASE
-		<< GetByte(UNIT_FIELD_BYTES_0, 1) << ","
-		#else
 		<< m_uint32Values[UNIT_FIELD_BYTES_0] << ","
-		#endif
-
 		<< m_uint32Values[UNIT_FIELD_BYTES_1] << ","
 		<< m_uint32Values[UNIT_FIELD_BYTES_2] << ","
-		<< m_uint32Values[UNIT_NPC_EMOTESTATE] << ",";
-		
-		#ifdef UDB_DATABASE
-		ss << GetByte(UNIT_FIELD_BYTES_0, 2) << ",";
-		#else
-		ss << "0,";
+		<< m_uint32Values[UNIT_NPC_EMOTESTATE] << ",0,";
 		/*<< ((this->m_spawn ? m_spawn->respawnNpcLink : uint32(0))) << ",";*/
-		#endif
 
 	if ( m_spawn )
 		ss << m_spawn->channel_spell << "," << m_spawn->channel_target_go << "," << m_spawn->channel_target_creature << ",";
@@ -1318,10 +1306,8 @@ bool Creature::Load(CreatureSpawn *spawn, uint32 mode, MapInfo *info)
 {
 	m_spawn = spawn;
 	proto = CreatureProtoStorage.LookupEntry(spawn->entry);
-
 	if( proto == NULL )
 		return false;
-
 	creature_info = CreatureNameStorage.LookupEntry(spawn->entry);
 	if( creature_info == NULL )
 		return false;
@@ -1334,8 +1320,8 @@ bool Creature::Load(CreatureSpawn *spawn, uint32 mode, MapInfo *info)
 	m_flySpeed = proto->fly_speed;
 
 	//Set fields
-	SetUInt32Value(OBJECT_FIELD_ENTRY, proto->Id);
-	SetFloatValue(OBJECT_FIELD_SCALE_X, proto->Scale);
+	SetUInt32Value(OBJECT_FIELD_ENTRY,proto->Id);
+	SetFloatValue(OBJECT_FIELD_SCALE_X,proto->Scale);
 
 	//SetUInt32Value(UNIT_FIELD_HEALTH, (mode ? long2int32(proto->Health * 1.5)  : proto->Health));
 	//SetUInt32Value(UNIT_FIELD_BASE_HEALTH, (mode ? long2int32(proto->Health * 1.5)  : proto->Health));
@@ -1363,24 +1349,23 @@ bool Creature::Load(CreatureSpawn *spawn, uint32 mode, MapInfo *info)
 	SetUInt32Value(UNIT_FIELD_MAXHEALTH, health);
 	SetUInt32Value(UNIT_FIELD_BASE_HEALTH, health);
 
-	SetUInt32Value(UNIT_FIELD_POWER1, proto->Mana);
-	SetUInt32Value(UNIT_FIELD_MAXPOWER1, proto->Mana);
-	SetUInt32Value(UNIT_FIELD_BASE_MANA, proto->Mana);
+	SetUInt32Value(UNIT_FIELD_POWER1,proto->Mana);
+	SetUInt32Value(UNIT_FIELD_MAXPOWER1,proto->Mana);
+	SetUInt32Value(UNIT_FIELD_BASE_MANA,proto->Mana);
 
-	if( spawn->displayid > 0 )
-	{
-		SetUInt32Value(UNIT_FIELD_DISPLAYID, spawn->displayid);
-		SetUInt32Value(UNIT_FIELD_NATIVEDISPLAYID, spawn->displayid);
-	}
-	else
-	{
-		uint32 model = 0;
-		uint8 gender = creature_info->GenerateModelId(&model);
-		setGender(gender);
+	// Whee, thank you blizz, I love patch 2.2! Later on, we can randomize male/female mobs! xD
+	// Determine gender (for voices)
+	//if(spawn->displayid != creature_info->Male_DisplayID)
+	//	setGender(1);   // Female
 
-		SetUInt32Value(UNIT_FIELD_DISPLAYID, model);
-		SetUInt32Value(UNIT_FIELD_NATIVEDISPLAYID, model);
-	}
+	// uint32 model = 0;
+	// uint32 gender = creature_info->GenerateModelId(&model);
+	// setGender(gender);
+
+	SetByte(UNIT_FIELD_BYTES_0,2,get_byte(spawn->bytes0,2));
+	SetUInt32Value(UNIT_FIELD_DISPLAYID,spawn->displayid);
+	SetUInt32Value(UNIT_FIELD_NATIVEDISPLAYID,spawn->displayid);
+	SetUInt32Value(UNIT_FIELD_MOUNTDISPLAYID,spawn->MountedDisplayID);
 
 	EventModelChange();
 
@@ -1474,26 +1459,9 @@ bool Creature::Load(CreatureSpawn *spawn, uint32 mode, MapInfo *info)
 	BaseAttackType=proto->AttackType;
 
 	SetFloatValue(UNIT_MOD_CAST_SPEED, 1.0f);   // better set this one
-
-#ifdef UDB_DATABASE
-	SetByte( UNIT_FIELD_BYTES_0, 0, 0 );
-	SetByte( UNIT_FIELD_BYTES_0, 1, (uint8)spawn->creatureclass );
-	//SetByte( UNIT_FIELD_BYTES_0, 2, (uint8)spawn->creaturegender );
-	
-	if( proto->NPCFLags & 1 )
-		SetByte( UNIT_FIELD_BYTES_0, 2, 1 );
-	else
-		SetByte( UNIT_FIELD_BYTES_0, 2, (uint8)spawn->creaturegender );
-
-	SetByte( UNIT_FIELD_BYTES_0, 3, 0 );
-#else
 	SetUInt32Value(UNIT_FIELD_BYTES_0, spawn->bytes0);
-#endif
-
 	SetUInt32Value(UNIT_FIELD_BYTES_1, spawn->bytes1);
 	SetUInt32Value(UNIT_FIELD_BYTES_2, spawn->bytes2);
-
-	SetUInt32Value(UNIT_FIELD_MOUNTDISPLAYID,spawn->MountedDisplayID);
 
 ////////////AI
 
@@ -1518,6 +1486,8 @@ bool Creature::Load(CreatureSpawn *spawn, uint32 mode, MapInfo *info)
 	if(isattackable(spawn) && !(proto->isTrainingDummy) )
 	  GetAIInterface()->SetAllowedToEnterCombat(true);
 	  else GetAIInterface()->SetAllowedToEnterCombat(false);
+
+
 	 
 	// load formation data
 	if( spawn->form != NULL )
@@ -1537,16 +1507,8 @@ bool Creature::Load(CreatureSpawn *spawn, uint32 mode, MapInfo *info)
 
 	myFamily = dbcCreatureFamily.LookupEntry(creature_info->Family);
 
-	// FLAGS_EXTRA
-	// PLACE FOR DIRTY FIX BASTARDS
-	// HACK! set call for help on civ health @ 100%
-	if( proto->FlagsExtra & 2 )
-		m_aiInterface->m_CallForHelpHealth = 100;
 
-	if( proto->FlagsExtra & 128 )
-		m_invisible = true;
-
-	//HACK!
+ //HACK!
 	if(m_uint32Values[UNIT_FIELD_DISPLAYID] == 17743 ||
 		m_uint32Values[UNIT_FIELD_DISPLAYID] == 20242 ||
 		m_uint32Values[UNIT_FIELD_DISPLAYID] == 15435 ||
@@ -1583,7 +1545,7 @@ bool Creature::Load(CreatureSpawn *spawn, uint32 mode, MapInfo *info)
 	if(proto->death_state == 1)
 	{
 		/*uint32 newhealth = m_uint32Values[UNIT_FIELD_HEALTH] / 100;
-		if( !newhealth )
+		if(!newhealth)
 			newhealth = 1;*/
 		SetUInt32Value(UNIT_FIELD_HEALTH, 1);
 		m_limbostate = true;
@@ -1591,10 +1553,8 @@ bool Creature::Load(CreatureSpawn *spawn, uint32 mode, MapInfo *info)
 		SetUInt32Value(UNIT_NPC_EMOTESTATE, EMOTE_STATE_DEAD);
 	}
 	m_invisFlag = static_cast<uint8>( proto->invisibility_type );
-
 	if( m_invisFlag > 0 )
 		m_invisible = true;
-
 	if( spawn->stand_state )
 		SetStandState( (uint8)spawn->stand_state );
 
@@ -1631,13 +1591,6 @@ void Creature::Load(CreatureProto * proto_, float x, float y, float z, float o)
 	//SetUInt32Value(UNIT_FIELD_HEALTH, (mode ? long2int32(proto->Health * 1.5)  : proto->Health));
 	//SetUInt32Value(UNIT_FIELD_BASE_HEALTH, (mode ? long2int32(proto->Health * 1.5)  : proto->Health));
 	//SetUInt32Value(UNIT_FIELD_MAXHEALTH, (mode ? long2int32(proto->Health * 1.5)  : proto->Health));
-
-	if( proto && proto->MinHealth > proto->MaxHealth )
-	{
-		proto->MaxHealth = proto->MinHealth+1;
-		SaveToDB();
-	}
-
 	uint32 health = proto->MinHealth + RandomUInt(proto->MaxHealth - proto->MinHealth);
 
 	SetUInt32Value(UNIT_FIELD_HEALTH, health);
@@ -1652,9 +1605,9 @@ void Creature::Load(CreatureProto * proto_, float x, float y, float z, float o)
 	uint8 gender = creature_info->GenerateModelId(&model);
 	setGender(gender);
 
-	SetUInt32Value(UNIT_FIELD_DISPLAYID, model);
-	SetUInt32Value(UNIT_FIELD_NATIVEDISPLAYID, model);
-	SetUInt32Value(UNIT_FIELD_MOUNTDISPLAYID, 0);
+	SetUInt32Value(UNIT_FIELD_DISPLAYID,model);
+	SetUInt32Value(UNIT_FIELD_NATIVEDISPLAYID,model);
+	SetUInt32Value(UNIT_FIELD_MOUNTDISPLAYID,0);
 
 	EventModelChange();
 
@@ -1724,13 +1677,13 @@ void Creature::Load(CreatureProto * proto_, float x, float y, float z, float o)
 	for(uint32 x= 0;x<5;x++)
 		BaseStats[x]=GetUInt32Value(UNIT_FIELD_STAT0+x);
 
-	BaseDamage[0] = GetFloatValue(UNIT_FIELD_MINDAMAGE);
-	BaseDamage[1] = GetFloatValue(UNIT_FIELD_MAXDAMAGE);
-	BaseOffhandDamage[0] = GetFloatValue(UNIT_FIELD_MINOFFHANDDAMAGE);
-	BaseOffhandDamage[1] = GetFloatValue(UNIT_FIELD_MAXOFFHANDDAMAGE);
-	BaseRangedDamage[0] = GetFloatValue(UNIT_FIELD_MINRANGEDDAMAGE);
-	BaseRangedDamage[1] = GetFloatValue(UNIT_FIELD_MAXRANGEDDAMAGE);
-	BaseAttackType = proto->AttackType;
+	BaseDamage[0]=GetFloatValue(UNIT_FIELD_MINDAMAGE);
+	BaseDamage[1]=GetFloatValue(UNIT_FIELD_MAXDAMAGE);
+	BaseOffhandDamage[0]=GetFloatValue(UNIT_FIELD_MINOFFHANDDAMAGE);
+	BaseOffhandDamage[1]=GetFloatValue(UNIT_FIELD_MAXOFFHANDDAMAGE);
+	BaseRangedDamage[0]=GetFloatValue(UNIT_FIELD_MINRANGEDDAMAGE);
+	BaseRangedDamage[1]=GetFloatValue(UNIT_FIELD_MAXRANGEDDAMAGE);
+	BaseAttackType=proto->AttackType;
 
 	SetFloatValue(UNIT_MOD_CAST_SPEED, 1.0f);   // better set this one
 
@@ -1762,14 +1715,6 @@ void Creature::Load(CreatureProto * proto_, float x, float y, float z, float o)
 
 	myFamily = dbcCreatureFamily.LookupEntry( creature_info->Family );
 
-	// FLAGS_EXTRA
-	// PLACE FOR DIRTY FIX BASTARDS
-	// HACK! set call for help on civ health @ 100%
-	if( proto->FlagsExtra & 2 )
-		m_aiInterface->m_CallForHelpHealth = 100;
-
-	if( proto->FlagsExtra & 128 )
-		m_invisible = true;
 
 	//HACK!
 	if( m_uint32Values[ UNIT_FIELD_DISPLAYID ] == 17743 ||
@@ -2063,6 +2008,7 @@ void Creature::DestroyCustomWaypointMap()
 		}
 		//delete m_custom_waypoint_map;
 		m_custom_waypoint_map->clear();
+		m_custom_waypoint_map = 0;
 		m_aiInterface->SetWaypointMap(0);
 	}
 }

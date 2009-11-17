@@ -31,15 +31,6 @@ ARCEMU_INLINE uint32 getMSTime()
 }
 #endif
 
-inline uint32 getMSTimeDiff(uint32 oldMSTime, uint32 newMSTime)
-{
-    // getMSTime() have limited data range and this is case when it overflow in this tick
-    if (oldMSTime > newMSTime)
-        return (0xFFFFFFFF - oldMSTime) + newMSTime;
-    else
-        return newMSTime - oldMSTime;
-}
-
 #endif
 
 

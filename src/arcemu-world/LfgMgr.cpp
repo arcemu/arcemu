@@ -86,7 +86,7 @@ bool LfgMgr::AttemptLfgJoin(Player * pl, uint32 LfgDungeonId)
 	return false;
 }
 
-void LfgMgr::SetPlayerInLFGqueue(Player *pl, uint32 LfgDungeonId)
+void LfgMgr::SetPlayerInLFGqueue(Player *pl,uint32 LfgDungeonId)
 {
 	if( pl == NULL )
 		return;

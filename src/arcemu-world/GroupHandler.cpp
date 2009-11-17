@@ -242,9 +242,7 @@ void WorldSession::HandleGroupUninviteOpcode( WorldPacket & recv_data )
 //////////////////////////////////////////////////////////////////////////////////////////
 void WorldSession::HandleGroupUninviteGuidOpcode( WorldPacket & recv_data )
 {
-	if( !_player->IsInWorld() )
-		return;
-
+	if(!_player->IsInWorld()) return;
 	CHECK_PACKET_SIZE(recv_data, 1);
 	uint64 PlayerGUID;
 	std::string membername = "unknown";
@@ -336,15 +334,12 @@ void WorldSession::HandleGroupSetLeaderOpcode( WorldPacket & recv_data )
 //////////////////////////////////////////////////////////////////////////////////////////
 void WorldSession::HandleGroupDisbandOpcode( WorldPacket & recv_data )
 {
-	if( !_player->IsInWorld() )
-		return;
-
+	if(!_player->IsInWorld()) return;
 	Group* pGroup = _player->GetGroup();
-	if( !pGroup ) 
-		return;
+	if(!pGroup) return;
 
 	//pGroup->Disband();
-	pGroup->RemovePlayer( _player->m_playerInfo );
+	pGroup->RemovePlayer(_player->m_playerInfo);
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////

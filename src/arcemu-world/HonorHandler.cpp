@@ -33,7 +33,7 @@ void WorldSession::HandleSetVisibleRankOpcode( WorldPacket& recv_data )
 
 void HonorHandler::AddHonorPointsToPlayer(Player *pPlayer, uint32 uAmount)
 {
-	pPlayer->HandleProc(PROC_ON_GAIN_EXPIERIENCE, 0, pPlayer, NULL);
+	pPlayer->HandleProc(PROC_ON_GAIN_EXPIERIENCE, pPlayer, NULL);
 	pPlayer->m_procCounter = 0;
 	
 	if( pPlayer->GetMapId() == 559 || pPlayer->GetMapId() == 562 || pPlayer->GetMapId() == 572)

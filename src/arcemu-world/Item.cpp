@@ -773,8 +773,8 @@ void Item::ApplyEnchantmentBonus( uint32 Slot, bool Apply )
 
 						ProcTriggerSpell TS;
 						TS.caster = m_owner->GetGUID();
-						TS.origId = Entry->spell[c];
-						TS.procFlags = PROC_ON_MELEE_HIT;
+						TS.origId = 0;
+						TS.procFlags = PROC_ON_MELEE_ATTACK;
 						TS.procCharges = 0;
 						/* This needs to be modified based on the attack speed of the weapon.
 						 * Secondly, need to assign some static chance for instant attacks (ss,
@@ -909,6 +909,7 @@ void Item::ApplyEnchantmentBonus( uint32 Slot, bool Apply )
 				{
 					if( Apply )
 					{
+						//m_owner->ModUInt32Value(PLAYER_FIELD_MOD_DAMAGE_DONE_POS, Entry->min[c]);
 						//if I'm not wrong then we should apply DMPS formula for this. This will have somewhat a larger value 28->34
 						int32 val = Entry->min[c];
 						if( RandomSuffixAmount )

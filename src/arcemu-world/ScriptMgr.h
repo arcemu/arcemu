@@ -25,7 +25,6 @@
 #define ADD_CREATURE_FACTORY_FUNCTION(cl) static CreatureAIScript * Create(Creature * c) { return new cl(c); }
 #define ADD_INSTANCE_FACTORY_FUNCTION( ClassName ) static InstanceScript* Create( MapMgr* pMapMgr ) { return new ClassName( pMapMgr ); }; 
 #define ADD_GAMEOBJECT_FACTORY_FUNCTION( ClassName ) static GameObjectAIScript* Create(GameObject* GO) { return new ClassName(GO); }; 
-#define ADD_SPELL_FACTORY_FUNCTION(cl) static SpellScript * Create(Spell * c) { return new cl (c); }
 
 class Channel;
 class Guild;
@@ -60,9 +59,7 @@ enum ServerHookEvents
 	SERVER_HOOK_EVENT_ON_AREATRIGGER		= 26,
 	SERVER_HOOK_EVENT_ON_POST_LEVELUP       = 27,
 	SERVER_HOOK_EVENT_ON_PRE_DIE	        = 28,	//general unit die, not only based on players
-	SERVER_HOOK_EVENT_ON_ADVANCE_SKILLLINE	= 29,
-	SERVER_HOOK_EVENT_ON_AURA_REMOVE		= 30,
-	SERVER_HOOK_EVENT_ON_CONTINENT_CREATE	= 31,
+	SERVER_HOOK_EVENT_ON_ADVANCE_SKILLLINE  = 29,
 
 	NUM_SERVER_HOOKS,
 };
@@ -73,14 +70,8 @@ enum ScriptTypes
 	SCRIPT_TYPE_INFODUMPER					= 0x02,
 	SCRIPT_TYPE_SCRIPT_ENGINE				= 0x20,
 	SCRIPT_TYPE_SCRIPT_ENGINE_LUA			= 0x21,
-	SCRIPT_TYPE_SCRIPT_ENGINE_AS			= 0x22,
 };
 
-enum ScriptFlags
-{
-	SCRIPT_FLAG_NONE						= 0x00,
-	SSCRIPT_FLAG_COMPLETE_CHECK				= 0x01,
-};
 
 /* Hook typedefs */
 typedef bool(*tOnNewCharacter)(uint32 Race, uint32 Class, WorldSession * Session, const char * Name);
@@ -99,7 +90,7 @@ typedef void(*tOnTick)();
 typedef bool(*tOnLogoutRequest)(Player * pPlayer);
 typedef void(*tOnLogout)(Player * pPlayer);
 typedef void(*tOnQuestAccept)(Player * pPlayer, Quest * pQuest, Object * pQuestGiver);
-typedef void(*tOnZone)(Player * pPlayer, uint32 Zone, uint32 OldZone);
+typedef void(*tOnZone)(Player * pPlayer, uint32 Zone);
 typedef bool(*tOnChat)(Player * pPlayer, uint32 Type, uint32 Lang, const char * Message, const char * Misc);
 typedef void(*tOnLoot)(Player * pPlayer, Unit * pTarget, uint32 Money, uint32 ItemId);
 typedef bool(*ItemScript)(Item * pItem, Player * pPlayer);
@@ -112,8 +103,6 @@ typedef void(*tOnAreaTrigger)(Player * pPlayer, uint32 areaTrigger);
 typedef void(*tOnPostLevelUp)(Player * pPlayer);
 typedef void(*tOnPreUnitDie)(Unit *killer, Unit *target);
 typedef void(*tOnAdvanceSkillLine)(Player * pPlayer, uint32 SkillLine, uint32 Current);
-typedef void(*tOnAuraRemove)(Player* pPlayer, uint32 spellID);
-typedef void(*tOnContinentCreate)(MapMgr* mgr);
 
 class Spell;
 class Aura;
@@ -122,7 +111,6 @@ class CreatureAIScript;
 class GossipScript;
 class GameObjectAIScript;
 class InstanceScript;
-class SpellScript;
 class ScriptMgr;
 struct ItemPrototype;
 class QuestLogEntry;
@@ -131,7 +119,6 @@ class QuestLogEntry;
 typedef CreatureAIScript*(*exp_create_creature_ai)(Creature * pCreature);
 typedef GameObjectAIScript*(*exp_create_gameobject_ai)(GameObject * pGameObject);
 typedef InstanceScript* ( *exp_create_instance_ai )( MapMgr* pMapMgr );
-typedef SpellScript*(*exp_create_spell)(Spell * pSpell);
 typedef bool(*exp_handle_dummy_spell)(uint32 i, Spell * pSpell);
 typedef bool(*exp_handle_dummy_aura)(uint32 i, Aura * pAura, bool apply);
 typedef void(*exp_script_register)(ScriptMgr * mgr);
@@ -142,7 +129,6 @@ typedef uint32(*exp_get_version)();
 /* Hashmap typedefs */
 typedef HM_NAMESPACE::hash_map<uint32, exp_create_creature_ai> CreatureCreateMap;
 typedef HM_NAMESPACE::hash_map<uint32, exp_create_gameobject_ai> GameObjectCreateMap;
-typedef HM_NAMESPACE::hash_map<uint32, exp_create_spell> SpellCreateMap;
 typedef HM_NAMESPACE::hash_map<uint32, exp_handle_dummy_aura> HandleDummyAuraMap;
 typedef HM_NAMESPACE::hash_map<uint32, exp_handle_dummy_spell> HandleDummySpellMap;
 typedef HM_NAMESPACE::hash_map<uint32, exp_create_instance_ai> InstanceCreateMap;
@@ -152,8 +138,8 @@ typedef list<void*> ServerHookList;
 typedef list<SCRIPT_MODULE> LibraryHandleMap;
 
 #define VISIBLE_RANGE (26.46f)
-#define MAX_SCRIPTS 2000
-#define MAX_INSTANCE_SCRIPTS 2000
+#define MAX_SCRIPTS 1000
+#define MAX_INSTANCE_SCRIPTS 1000
 
 class SERVER_DECL ScriptMgr : public Singleton<ScriptMgr>
 {
@@ -170,7 +156,6 @@ public:
 	CreatureAIScript * CreateAIScriptClassForEntry(Creature* pCreature);
 	GameObjectAIScript * CreateAIScriptClassForGameObject(uint32 uEntryId, GameObject* pGameObject);
 	InstanceScript* CreateScriptClassForInstance( uint32 pMapId, MapMgr* pMapMgr );
-	SpellScript * CreateAIScriptClassForSpell(uint32 uEntryId, Spell* pSpell);
 
 	bool CallScriptedDummySpell(uint32 uSpellId, uint32 i, Spell* pSpell);
 	bool CallScriptedDummyAura( uint32 uSpellId, uint32 i, Aura* pAura, bool apply);
@@ -178,7 +163,6 @@ public:
 
 	void register_creature_script(uint32 entry, exp_create_creature_ai callback);
 	void register_gameobject_script(uint32 entry, exp_create_gameobject_ai callback);
-	void register_spell_script(uint32 entry, exp_create_spell callback);
 	void register_gossip_script(uint32 entry, GossipScript * gs);
 	void register_go_gossip_script(uint32 entry, GossipScript * gs);
 	void register_dummy_aura(uint32 entry, exp_handle_dummy_aura callback);
@@ -194,7 +178,6 @@ protected:
 	InstanceCreateMap mInstances; 
 	CreatureCreateMap _creatures;
 	GameObjectCreateMap _gameobjects;
-	SpellCreateMap _spellscripts;
 	HandleDummyAuraMap _auras;
 	HandleDummySpellMap _spells;
 	LibraryHandleMap _handles;
@@ -267,43 +250,6 @@ public:
 protected:
 
 	GameObject* _gameobject;
-};
-
-class SERVER_DECL SpellScript : public EventableObject
-{
-protected:
-	Spell* _spell;
-public:
-	SpellScript(Spell* pSpell);
-	~SpellScript();
-
-	std::set<Aura*> Auras;
-	std::set<DynamicObject*> DynamicObjects;
-	uint32 flags;
-
-	virtual SpellCastError CanCast(bool tolerate=false) { return SPELL_CANCAST_OK; }
-	virtual void OnCast() {}
-	virtual void CalculateEffect(uint32 EffectIndex, Unit* target, int32* value) {}
-	virtual void OnEffect(uint32 EffectIndex) {}
-	virtual void SpellUpdate() {}
-	virtual void OnDispel(Aura* pDispelledAura, Spell* pDispellingSpell) {}
-	virtual void OnExpire(Aura* pExpiredAura) {}
-	virtual void OnRemove(Aura* pRemovedAura) {}
-
-	void RegisterSpellUpdate(uint32 time);
-	void RemoveSpellUpdate();
-	void ModfiySpellUpdate(uint32 newtime);
-	void AddRef(Aura* obj);
-	void RemoveRef(Aura* obj);
-	void AddRef(DynamicObject* obj);
-	void RemoveRef(DynamicObject* obj);
-	void TryDelete();
-
-	//dummy/script stuff
-	virtual void DummyEffect(uint32 EffectIndex) {}
-	virtual void DummyMeleeEffect(uint32 EffectIndex) {}
-	virtual void ScriptEffect(uint32 EffectIndex) {}
-	virtual void DummyAura(bool Apply) {}
 };
 
 class SERVER_DECL GossipScript
@@ -384,7 +330,6 @@ protected:
 
 	MapMgr* mInstance;
 };
-
 class SERVER_DECL HookInterface : public Singleton<HookInterface>
 {
 public:
@@ -404,7 +349,7 @@ public:
 	bool OnLogoutRequest(Player * pPlayer);
 	void OnLogout(Player * pPlayer);
 	void OnQuestAccept(Player * pPlayer, Quest * pQuest, Object * pQuestGiver);
-	void OnZone(Player * pPlayer, uint32 Zone, uint32 OldZone);
+	void OnZone(Player * pPlayer, uint32 Zone);
 	bool OnChat(Player * pPlayer, uint32 Type, uint32 Lang, const char * Message, const char * Misc);
 	void OnLoot(Player * pPlayer, Unit * pTarget, uint32 Money, uint32 ItemId);
 	void OnEnterWorld2(Player * pPlayer);
@@ -418,8 +363,6 @@ public:
 	void OnPostLevelUp(Player * pPlayer);
 	void OnPreUnitDie(Unit *Killer, Unit *Victim);
 	void OnAdvanceSkillLine(Player * pPlayer, uint32 SkillLine, uint32 Current);
-	void OnAuraRemove(Player* pPlayer, uint32 spellID);
-	void OnContinentCreate(MapMgr* pMgr);
 };
 
 #define sScriptMgr ScriptMgr::getSingleton()

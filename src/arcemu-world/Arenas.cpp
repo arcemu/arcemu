@@ -35,7 +35,7 @@ Arena::Arena(MapMgr * mgr, uint32 id, uint32 lgroup, uint32 t, uint32 players_pe
 		m_players[i].clear();
 		m_pendPlayers[i].clear();
 	}
-
+	//m_worldStates.clear();
 	m_pvpData.clear();
 	m_resurrectMap.clear();
 
@@ -136,7 +136,7 @@ void Arena::OnAddPlayer(Player * plr)
 	Aura * aura = new Aura(dbcSpell.LookupEntry((plr->GetTeamInitial()) ? 35775-plr->m_bgTeam : 32725-plr->m_bgTeam), -1, plr, plr, true);
 	if (!aura)
 		return;
-	plr->AddAura(aura, NULL);
+	plr->AddAura(aura);
 
 	/* Set FFA PvP Flag */
     plr->SetFFAPvPFlag();

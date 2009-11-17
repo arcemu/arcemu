@@ -146,7 +146,7 @@ EyeOfTheStorm::EyeOfTheStorm(MapMgr * mgr, uint32 id, uint32 lgroup, uint32 t) :
 		m_players[i].clear();
 		m_pendPlayers[i].clear();
 	}
-
+	//m_worldStates.clear();
 	m_pvpData.clear();
 	m_resurrectMap.clear();
 
@@ -226,6 +226,7 @@ EyeOfTheStorm::~EyeOfTheStorm()
 	}
 
 	m_resurrectMap.clear();
+	//m_worldStates.clear();
 }
 
 void EyeOfTheStorm::RepopPlayersOfTeam(int32 team, Creature * sh)

@@ -419,11 +419,6 @@ void ScriptMgr::register_gameobject_script(uint32 entry, exp_create_gameobject_a
 	_gameobjects.insert( GameObjectCreateMap::value_type( entry, callback ) );
 }
 
-void ScriptMgr::register_spell_script(uint32 entry, exp_create_spell callback)
-{
-	_spellscripts.insert( SpellCreateMap::value_type(entry, callback) );
-}
-
 void ScriptMgr::register_dummy_aura(uint32 entry, exp_handle_dummy_aura callback)
 {
 	_auras.insert( HandleDummyAuraMap::value_type( entry, callback ) );
@@ -474,16 +469,6 @@ CreatureAIScript* ScriptMgr::CreateAIScriptClassForEntry(Creature* pCreature)
 
 	exp_create_creature_ai function_ptr = itr->second;
 	return (function_ptr)(pCreature);
-}
-
-SpellScript * ScriptMgr::CreateAIScriptClassForSpell(uint32 uEntryId, Spell* pSpell)
-{
-	SpellCreateMap::iterator itr = _spellscripts.find(uEntryId);
-	if( itr == _spellscripts.end() )
-		return NULL;
-
-	exp_create_spell function_ptr = itr->second;
-	return (function_ptr)(pSpell);
 }
 
 GameObjectAIScript * ScriptMgr::CreateAIScriptClassForGameObject(uint32 uEntryId, GameObject* pGameObject)
@@ -589,6 +574,8 @@ void GameObjectAIScript::RegisterAIUpdateEvent(uint32 frequency)
 	sEventMgr.AddEvent(_gameobject, &GameObject::CallScriptUpdate, EVENT_SCRIPT_UPDATE_EVENT, frequency, 0,0);
 }
 
+
+
 /* QuestScript Stuff */
 
 /* Gossip Stuff*/
@@ -619,16 +606,9 @@ void GossipScript::GossipHello(Object* pObject, Player* Plr, bool AutoSend)
 		if(text != 0)
 			TextID = Text;
 	}
-	else
-	{
-		Text = 1;
-		GossipText * text = NpcTextStorage.LookupEntry(Text);
-		if(text != 0)
-			TextID = Text;
-	}
 
 	objmgr.CreateGossipMenuForPlayer(&Menu, pCreature->GetGUID(), TextID, Plr);
-
+	
 	if (pCreature->isVendor())
 		Menu->AddItem(1, Plr->GetSession()->LocalizedWorldSrv(1), 1);
 	
@@ -1052,11 +1032,11 @@ void HookInterface::OnQuestAccept(Player * pPlayer, Quest * pQuest, Object * pQu
 		((tOnQuestAccept)*itr)(pPlayer, pQuest, pQuestGiver);
 }
 
-void HookInterface::OnZone(Player * pPlayer, uint32 zone, uint32 oldzone)
+void HookInterface::OnZone(Player * pPlayer, uint32 zone)
 {
 	ServerHookList hookList = sScriptMgr._hooks[SERVER_HOOK_EVENT_ON_ZONE];
 	for(ServerHookList::iterator itr = hookList.begin(); itr != hookList.end(); ++itr)
-		((tOnZone)*itr)(pPlayer, zone, oldzone);
+		((tOnZone)*itr)(pPlayer, zone);
 }
 
 bool HookInterface::OnChat(Player * pPlayer, uint32 type, uint32 lang, const char * message, const char * misc)
@@ -1147,86 +1127,4 @@ void HookInterface::OnAdvanceSkillLine(Player * pPlayer, uint32 skillLine, uint3
 	ServerHookList hookList = sScriptMgr._hooks[SERVER_HOOK_EVENT_ON_ADVANCE_SKILLLINE];
 	for(ServerHookList::iterator itr = hookList.begin(); itr != hookList.end(); ++itr)
 		((tOnAdvanceSkillLine)*itr)(pPlayer, skillLine, current);
-}
-
-void HookInterface::OnAuraRemove(Player* pPlayer, uint32 spellID)
-{
-	ServerHookList hookList = sScriptMgr._hooks[SERVER_HOOK_EVENT_ON_AURA_REMOVE];
-	for(ServerHookList::iterator itr = hookList.begin(); itr != hookList.end(); ++itr)
-		((tOnAuraRemove)*itr)(pPlayer, spellID);
-}
-
-void HookInterface::OnContinentCreate(MapMgr* pMgr)
-{
-	ServerHookList hookList = sScriptMgr._hooks[SERVER_HOOK_EVENT_ON_CONTINENT_CREATE];
-	for(ServerHookList::iterator itr = hookList.begin(); itr != hookList.end(); ++itr)
-		((tOnContinentCreate)*itr)(pMgr);
-}
-
-SpellScript::SpellScript(Spell *pSpell) : _spell(pSpell)
-{
-
-}
-
-SpellScript::~SpellScript()
-{
-	_spell = NULL;
-	sEventMgr.RemoveEvents(this);
-}
-
-void SpellScript::RegisterSpellUpdate(uint32 time)
-{
-	sEventMgr.AddEvent(_spell, &Spell::ScriptUpdate, EVENT_SCRIPT_UPDATE_EVENT, time, 0, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
-}
-
-void SpellScript::RemoveSpellUpdate()
-{
-	sEventMgr.RemoveEvents(_spell, EVENT_SCRIPT_UPDATE_EVENT);
-}
-
-void SpellScript::ModfiySpellUpdate(uint32 newtime)
-{
-	sEventMgr.ModifyEventTimeAndTimeLeft(_spell, EVENT_SCRIPT_UPDATE_EVENT, newtime);
-}
-
-void SpellScript::AddRef(Aura* obj)
-{
-	Auras.insert(obj);
-	obj->m_spellScript=this;
-}
-
-void SpellScript::AddRef(DynamicObject* obj)
-{
-	DynamicObjects.insert(obj);
-	obj->m_spellScript=this;
-}
-
-void SpellScript::RemoveRef(Aura* obj)
-{
-	if (Auras.find(obj) != Auras.end())
-	{
-		obj->m_spellScript = NULL;
-		Auras.erase(obj);
-	}
-
-	//all auras removed and spell removed?
-	TryDelete();
-}
-
-void SpellScript::RemoveRef(DynamicObject* obj)
-{
-	if (DynamicObjects.find(obj) != DynamicObjects.end())
-	{
-		obj->m_spellScript = NULL;
-		DynamicObjects.erase(obj);
-	}
-
-	//all auras removed and spell removed?
-	TryDelete();
-}
-
-void SpellScript::TryDelete()
-{
-	if (Auras.size() == 0 && DynamicObjects.size() == 0 && _spell == NULL)
-		delete this;
 }

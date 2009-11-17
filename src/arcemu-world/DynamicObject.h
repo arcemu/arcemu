@@ -28,8 +28,6 @@ typedef std::set<uint64>  DynamicObjectList;
 class SERVER_DECL DynamicObject : public Object
 {
 public:
-	SpellScript* m_spellScript;
-
 	DynamicObject( uint32 high, uint32 low );
 	~DynamicObject( );
 

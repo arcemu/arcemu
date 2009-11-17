@@ -68,7 +68,7 @@ struct CreatureInfo
 	uint32 Type;
 	uint32 Family;
 	uint32 Rank;
-	uint32 KillCredit[2];
+	uint32 killcredit[2];
 	uint32 Male_DisplayID;
 	uint32 Female_DisplayID;
 	uint32 Male_DisplayID2;
@@ -113,7 +113,7 @@ struct CreatureProto
 	uint32 MaxHealth;
 	uint32 Mana;
 	float  Scale;
-	uint32 NPCFLags;
+	uint32	NPCFLags;
 	uint32 AttackTime;
 	uint32 AttackType;
 	float MinDamage;
@@ -126,13 +126,13 @@ struct CreatureProto
 	uint32 Resistances[7];
 	float CombatReach;
 	float BoundingRadius;
-	char *aura_string;
+	char * aura_string;
 	uint32 boss;
 	uint32 money;
 	uint32 invisibility_type;
 	uint32 death_state;
-	float walk_speed;//base movement
-	float run_speed;//most of the time mobs use this
+	float	walk_speed;//base movement
+	float	run_speed;//most of the time mobs use this
 	float fly_speed;
 	uint32 extra_a9_flags;
 	uint32 AISpells[4];
@@ -140,7 +140,7 @@ struct CreatureProto
 	uint32 modImmunities;
 	uint32 isTrainingDummy;
     uint32 guardtype;
-	uint32 FlagsExtra;
+	uint32 summonguard;
 
 	/* AI Stuff */
 	bool m_canRangedAttack;
@@ -194,15 +194,9 @@ enum UNIT_TYPE
 
 enum CreatureFlag1
 {
-	CREATURE_FLAG1_TAMEABLE				= 0x0001,
-	CREATURE_FLAG1_NOT_ATTACKABLE		= 0x0002,
-	CREATURE_FLAG1_ATTACKABLE			= 0x0008,
-	CREATURE_FLAG1_NOT_ATTACKABLE_1		= 0x0080,
-	CREATURE_FLAG1_NON_PVP_PLAYER		= 0x0088,
-	CREATURE_FLAG1_HERBLOOT				= 0x0100,
-	CREATURE_FLAG1_MININGLOOT			= 0x0200,
-	CREATURE_FLAG1_ANIMATION_FROZEN		= 0x0400,
-	CREATURE_FLAG1_WAR_PLAYER			= 0x0800,
+	CREATURE_FLAG1_TAMEABLE   = 0x0001,
+	CREATURE_FLAG1_HERBLOOT   = 0x0100,
+	CREATURE_FLAG1_MININGLOOT = 0x0200,
 	CREATURE_FLAG1_ENGINEERLOOT = 0x08000,
 };
 

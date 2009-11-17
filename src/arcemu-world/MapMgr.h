@@ -247,9 +247,16 @@ public:
 	void EventRespawnGameObject(GameObject * o, MapCell * c);
 	void SendMessageToCellPlayers(Object * obj, WorldPacket * packet, uint32 cell_radius = 2);
 	void SendChatMessageToCellPlayers(Object * obj, WorldPacket * packet, uint32 cell_radius, uint32 langpos, int32 lang, WorldSession * originator);
-	
+	void SendPvPCaptureMessage(int32 ZoneMask, uint32 ZoneId, const char * Message, ...);
 	Instance * pInstance;
 	void BeginInstanceExpireCountdown();
+
+	//worldstates
+	WorldStateHandlerMap m_worldStates;
+
+	void SendInitialStates(Player * plr);
+	void SetWorldState(uint32 zoneid, uint32 index, uint32 value);
+	//ARCEMU_INLINE uint32 GetWorldState(uint32 state);
 
 	// better hope to clear any references to us when calling this :P
 	void InstanceShutdown()
@@ -288,8 +295,12 @@ private:
 	uint32 _mapId;
 	set<Object*> _mapWideStaticObjects;
 
+	//std::map<uint32,uint32> _worldStateSet;
+
 	bool _CellActive(uint32 x, uint32 y);
 	void UpdateInRangeSet(Object *obj, Player *plObj, MapCell* cell, ByteBuffer ** buf);
+
+	//WorldPacket* BuildInitialWorldState();
 
 public:
 	// Distance a Player can "see" other objects and receive updates from them (!! ALREADY dist*dist !!)

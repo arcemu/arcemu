@@ -748,7 +748,12 @@ void WorldSession::FullLogin(Player * plr)
 	-------------------------------------------------------------------
 	*/
 
-WorldPacket datab(SMSG_FEATURE_SYSTEM_STATUS, 20);
+
+#ifndef USING_BIG_ENDIAN
+	StackWorldPacket<20> datab(SMSG_FEATURE_SYSTEM_STATUS);
+#else
+	WorldPacket datab(SMSG_FEATURE_SYSTEM_STATUS, 20);
+#endif
 
 #ifdef VOICE_CHAT
 	datab.Initialize(SMSG_FEATURE_SYSTEM_STATUS);
@@ -830,8 +835,11 @@ WorldPacket datab(SMSG_FEATURE_SYSTEM_STATUS, 20);
 			if(plr->GetMapId() != pTrans->GetMapId())	   // loaded wrong map
 			{
 				plr->SetMapId(pTrans->GetMapId());
-
+#ifndef USING_BIG_ENDIAN
+				StackWorldPacket<20> dataw(SMSG_NEW_WORLD);
+#else
 				WorldPacket dataw(SMSG_NEW_WORLD, 20);
+#endif
 				dataw << pTrans->GetMapId() << c_tposx << c_tposy << c_tposz << plr->GetOrientation();
 				SendPacket(&dataw);
 

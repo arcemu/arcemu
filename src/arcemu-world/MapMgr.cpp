@@ -75,6 +75,7 @@ MapMgr::MapMgr(Map *map, uint32 mapId, uint32 instanceid) : CellHandler<MapCell>
 
 	_combatProgress.clear();
 	_mapWideStaticObjects.clear();
+	//_worldStateSet.clear();
 	_updates.clear();
 	_processQueue.clear();
 	Sessions.clear();
@@ -150,6 +151,11 @@ MapMgr::~MapMgr()
 	}
 	m_corpses.clear();
 
+	//clear worldstates
+	for (WorldStateHandlerMap::iterator itr=m_worldStates.begin(); itr!= m_worldStates.end(); ++itr)
+		delete itr->second;
+	m_worldStates.clear();
+
 	if ( mInstanceScript != NULL ) 
 		mInstanceScript->Destroy(); 
 
@@ -175,6 +181,63 @@ MapMgr::~MapMgr()
 	}
 
 	Log.Notice("MapMgr", "Instance %u shut down. (%s)" , m_instanceID, GetBaseMap()->GetName());
+}
+
+/*WorldPacket* MapMgr::BuildInitialWorldState()
+{
+	WorldPacket * data = new WorldPacket(SMSG_INIT_WORLD_STATES, 99);
+	*data << GetMapId();
+	*data << (uint32)0; // zone id?
+	*data << (uint32)0; // area id?
+	*data << (uint16)_worldStateSet.size();
+	std::map<uint32,uint32>::iterator itr = _worldStateSet.begin();
+	for(; itr != _worldStateSet.end(); itr++)
+	{
+		*data << (uint32)itr->first;
+		*data << (uint32)itr->second;
+	}
+
+	return data;
+}*/
+
+void MapMgr::SetWorldState(uint32 zoneid, uint32 index, uint32 value)
+{
+	//do we have a worldstate already?
+	WorldStateHandlerMap::iterator itr=m_worldStates.find(zoneid);
+
+	if (itr != m_worldStates.end())
+		itr->second->SetState(index, value);
+	else
+	{
+		//we got here, no state set
+		WorldStateHandler* ws=new WorldStateHandler;
+		ws->SetState(index, value);
+		m_worldStates.insert(std::make_pair<uint32, WorldStateHandler*>(zoneid, ws));
+	}
+
+	WorldPacket data(SMSG_UPDATE_WORLD_STATE, 8);
+	data << index << value;
+
+	//update all players in this zone
+	for (PlayerStorageMap::iterator itr=m_PlayerStorage.begin(); itr!=m_PlayerStorage.end(); ++itr)
+		if (itr->second->GetSession() != NULL && itr->second->GetZoneId() == zoneid)
+			itr->second->GetSession()->SendPacket(&data);
+}
+
+void MapMgr::SendInitialStates(Player * plr)
+{
+	std::map<uint32, WorldStateHandler*>::iterator itr=m_worldStates.find(plr->GetZoneId());
+
+	if (itr == m_worldStates.end())
+		return;
+
+	WorldPacket data(SMSG_INIT_WORLD_STATES, 14 + (itr->second->m_states.size() * 8));
+	data << GetMapId() << uint32(0) << uint32(0) << uint16(itr->second->m_states.size());
+
+	for (WorldStateMap::iterator itr2=itr->second->m_states.begin(); itr2!=itr->second->m_states.end(); ++itr2)
+		data << itr2->first << itr2->second;
+
+	plr->GetSession()->SendPacket(&data);
 }
 
 uint32 MapMgr::GetTeamPlayersCount(uint32 teamId)
@@ -1531,7 +1594,7 @@ bool MapMgr::Do()
 	threadid=GetCurrentThreadId();
 #endif
 	thread_running = true;
-	ThreadState = THREADSTATE_BUSY;
+	ThreadState =THREADSTATE_BUSY;
 	SetThreadName("Map mgr - M%u|I%u",this->_mapId ,this->m_instanceID);
 	ObjectSet::iterator i;
 	uint32 last_exec=getMSTime();
@@ -1543,19 +1606,16 @@ bool MapMgr::Do()
 	for(GOSpawnList::iterator itr = _map->staticSpawns.GOSpawns.begin(); itr != _map->staticSpawns.GOSpawns.end(); ++itr)
 	{
 		GameObject * obj = CreateGameObject((*itr)->entry);
-		if(obj == NULL)
-			continue;
-
 		obj->Load((*itr));
 		_mapWideStaticObjects.insert(obj);
-	} 
+	}
+
+	// Call script OnLoad virtual procedure 
+ 	CALL_INSTANCE_SCRIPT_EVENT( this, OnLoad )(); 
 
 	for(CreatureSpawnList::iterator itr = _map->staticSpawns.CreatureSpawns.begin(); itr != _map->staticSpawns.CreatureSpawns.end(); ++itr)
 	{
 		Creature * obj = CreateCreature((*itr)->entry);
-		if( !obj )
-			continue;
-
 		obj->Load(*itr, 0, pMapInfo);
 		_mapWideStaticObjects.insert(obj);
 	}
@@ -1581,9 +1641,11 @@ bool MapMgr::Do()
 		m_objectinsertlock.Acquire();//<<<<<<<<<<<<<<<<
 		if(m_objectinsertpool.size())
 		{
-			for(i=m_objectinsertpool.begin();i!=m_objectinsertpool.end();++i)//i++
+			for(i=m_objectinsertpool.begin();i!=m_objectinsertpool.end();i++)
+			{
+				//PushObject(*i);
 				(*i)->PushToWorld(this);
-
+			}
 			m_objectinsertpool.clear();
 		}
 		m_objectinsertlock.Release();//>>>>>>>>>>>>>>>>
@@ -2175,6 +2237,33 @@ float MapMgr::GetFirstZWithCPZ( float x, float y, float z )
             break;
 	}
 	return posZ;
+}
+
+void MapMgr::SendPvPCaptureMessage(int32 ZoneMask, uint32 ZoneId, const char * Message, ...)
+{
+	va_list ap;
+	va_start(ap, Message);
+
+	WorldPacket data(SMSG_DEFENSE_MESSAGE, 208);
+	char msgbuf[200];
+	vsnprintf(msgbuf, 200, Message, ap);
+	va_end(ap);
+
+	data << ZoneId;
+	data << uint32(strlen(msgbuf)+1);
+	data << msgbuf;
+
+	PlayerStorageMap::iterator itr = m_PlayerStorage.begin();
+	for(; itr !=  m_PlayerStorage.end();)
+	{
+		Player *plr = itr->second;
+		++itr;
+
+		if( ( ZoneMask != ZONE_MASK_ALL && plr->GetZoneId() != (uint32)ZoneMask) )
+			continue;
+
+		plr->GetSession()->SendPacket(&data);
+	}
 }
 
 void MapMgr::LoadInstanceScript()
