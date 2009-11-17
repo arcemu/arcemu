@@ -5,7 +5,7 @@ CREATE TABLE `flagextra` (
   `entry` int(10) NOT NULL,
   `flagextra` int(10) NOT NULL,
   PRIMARY KEY  (`entry`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=MyIsam DEFAULT CHARSET=latin1;
 
 -- ----------------------------
 -- Records 
