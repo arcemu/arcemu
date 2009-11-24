@@ -657,6 +657,11 @@ Unit::~Unit()
 	for( std::list<struct ReflectSpellSchool*>::iterator i = m_reflectSpellSchool.begin(); i != m_reflectSpellSchool.end(); i++ )
 		delete *i;
 	m_reflectSpellSchool.clear();
+
+	// delete auras which did not get added to unit yet
+	for( std::map< uint32, Aura* >::iterator i = tmpAura.begin(); i != tmpAura.end(); i++ )
+		delete i->second;
+	tmpAura.clear();
 }
 
 void Unit::Update( uint32 p_time )
@@ -4498,7 +4503,10 @@ void Unit::AddAura(Aura * aur)
 		return;
 
     if( !isAlive() && !( aur->GetSpellProto()->AttributesExC & CAN_PERSIST_AND_CASTED_WHILE_DEAD ) )
-        return;
+	{
+		delete aur;     
+		return;
+	}
 
 	if(m_mapId!=530 && (m_mapId!=571 || (IsPlayer() && !((Player*)this)->HasSpellwithNameHash(SPELL_HASH_COLD_WEATHER_FLYING))))
 	// can't use flying auras in non-outlands or non-northrend (northrend requires cold weather flying)
