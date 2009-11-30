@@ -2037,25 +2037,22 @@ out:
 
 void Spell::SpellEffectTeleportUnits( uint32 i )  // Teleport Units
 {
-	if( !unitTarget )
-	{
+	if( !unitTarget || !u_caster )
 		return;
-	}
 
 	uint32 spellId = GetProto()->Id;
 
 	// Try a dummy SpellHandler
 	if( sScriptMgr.CallScriptedDummySpell( spellId, i, this ) )
-	{
 		return;
-	}
+
+	if( unitTarget->IsCreature() )
+		HandleTeleportCreature( spellId, unitTarget );
 
 	/* TODO: Remove Player From bg */
 
 	if( unitTarget->GetTypeId() == TYPEID_PLAYER )
-	{
 		HandleTeleport(spellId, unitTarget);
-	}
 }
 
 void Spell::SpellEffectApplyAura(uint32 i)  // Apply Aura
@@ -4824,7 +4821,6 @@ void Spell::SpellEffectSendEvent(uint32 i) //Send Event
 			pCreature->PushToWorld(p_caster->GetMapMgr());
 			sEventMgr.AddEvent(pCreature, &Creature::SafeDelete, EVENT_CREATURE_REMOVE_CORPSE,60000, 1, 0);
 		}break;
-
 	}
 }
 

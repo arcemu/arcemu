@@ -1658,6 +1658,7 @@ public:
     int32 CalculateEffect(uint32, Unit *target);
     // Handles Teleport function
     void HandleTeleport(uint32 id, Unit* Target);
+	void HandleTeleportCreature( uint32 id, Unit* Target );
     // Determines how much skill caster going to gain
     void DetermineSkillUp();
     // Increases cast time of the spell

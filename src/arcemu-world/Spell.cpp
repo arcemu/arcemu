@@ -5204,6 +5204,21 @@ void Spell::HandleTeleport(uint32 id, Unit* Target)
 	}
 }
 
+void Spell::HandleTeleportCreature( uint32 id, Unit* Target )
+{
+	if( !Target->IsCreature() )
+		return;
+
+	TeleportCoords* TC = TeleportCoordStorage.LookupEntry(id);
+	if( !TC )
+		return;
+
+	if( TC->mapId != Target->GetMapId() ) // we cannot teleport creatures to other instances
+		return;
+
+	Target->SetPosition( TC->x, TC->y, TC->z, 0.5f );
+}
+
 void Spell::CreateItem( uint32 itemId )
 {
 	/// Creates number of items equal to a "damage" of the effect
