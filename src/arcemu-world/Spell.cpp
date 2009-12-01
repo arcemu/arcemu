@@ -5216,7 +5216,21 @@ void Spell::HandleTeleportCreature( uint32 id, Unit* Target )
 	if( TC->mapId != Target->GetMapId() ) // we cannot teleport creatures to other instances
 		return;
 
-	Target->SetPosition( TC->x, TC->y, TC->z, 0.5f );
+	WorldPacket data(SMSG_MONSTER_MOVE, 50);
+	data << Target->GetNewGUID();
+	data << uint8(0);
+	data << Target->GetPositionX();
+	data << Target->GetPositionY();
+	data << Target->GetPositionZ();
+	data << getMSTime();
+	data << uint8(0x00);
+	data << uint32(256);
+	data << uint32(1);
+	data << uint32(1);
+	data << TC->x << TC->y << TC->z;
+
+	Target->SendMessageToSet(&data, true);
+	Target->SetPosition( TC->x, TC->y, TC->z, 0.5f ); // need correct orentation
 }
 
 void Spell::CreateItem( uint32 itemId )
