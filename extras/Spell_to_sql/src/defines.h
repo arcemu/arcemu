@@ -252,7 +252,7 @@ const char sql_translation_table[SPELL_COLUMN_COUNT][3][300] =
 	{"uint32",	"MinReputation", "0"},				 	//227 - only one spellid:6994 has this value = 4 UNUSED
 	{"uint32",	"RequiredAuraVision", "0"},				//228 - 3 spells 1 or 2
 	{"uint32",	"TotemCategory_1", "0"},				//229
-	{"uint32",	"TotemCategory_2]", "0"},				//230
+	{"uint32",	"TotemCategory_2", "0"},				//230
 	{"int32",	"RequiresAreaId", "0"},					//231
 	{"uint32",	"School", "0"},							//232
 	{"uint32",	"RuneCostID", "0"},						//233
