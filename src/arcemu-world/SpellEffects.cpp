@@ -543,7 +543,7 @@ void Spell::SpellEffectSchoolDMG(uint32 i) // dmg school
 			{
 				float _distance = u_caster->CalcDistance( unitTarget );
 				if( _distance >= 2.0f )
-					dmg *= static_cast<int32>(_distance);
+					dmg = static_cast<uint32>( dmg * _distance );
 			}break;
 		case SPELL_HASH_ICE_LANCE: // Ice Lance
 			{
@@ -642,6 +642,25 @@ void Spell::SpellEffectSchoolDMG(uint32 i) // dmg school
 		default:
 			break;
 		}
+		
+		switch( GetProto()->Id )
+		{
+		case 64422: // Sonic Screech, Auriaya encounter
+		case 64688:
+			{
+				int splitCount = 0;
+				for( std::set<Object*>::iterator itr = u_caster->GetInRangeOppFactsSetBegin(); itr != u_caster->GetInRangeOppFactsSetEnd(); ++itr )
+				{
+					if( (*itr)->isInFront( u_caster ) )
+						splitCount++;
+				};
+
+				dmg = dmg / splitCount;
+			}break;
+		
+		default:
+			break;
+		};
 	}
 
 	if( p_caster && !static_damage ) //this is wrong but with current spell coef system it has to be here...
