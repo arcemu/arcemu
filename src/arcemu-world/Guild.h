@@ -242,6 +242,7 @@ enum GuildBankLogEvents
 	GUILD_BANK_LOG_EVENT_WITHDRAW_ITEM	= 2,
 	GUILD_BANK_LOG_EVENT_DEPOSIT_MONEY	= 4,
 	GUILD_BANK_LOG_EVENT_WITHDRAW_MONEY	= 5,
+	GUILD_BANK_LOG_EVENT_REPAIR         = 6,
 };
 
 #define ITEM_ENTRY_GUILD_CHARTER 5863
@@ -287,6 +288,7 @@ struct SERVER_DECL GuildMember
 	void OnItemWithdraw(uint32 tabid);
 	
 	uint32 CalculateAvailableAmount();
+	bool RepairItem(uint32 cost);
 	void OnMoneyWithdraw(uint32 amt);
 };
 
@@ -477,6 +479,10 @@ public:
 	/** Withdraws money from the guild bank, usable by members with that permission.
 	 */
 	void WithdrawMoney(WorldSession * pClient, uint32 uAmount);
+
+	/** Decrease the guild balance of uAmount
+	 */
+	void SpendMoney(uint32 uAmount);
 
 	/** Retrieves a guild rank for editing
 	 */

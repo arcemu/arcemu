@@ -1833,15 +1833,16 @@ void WorldSession::HandleRepairItemOpcode(WorldPacket &recvPacket)
 {
 	if( !_player || !_player->IsInWorld() )
 		return;
-	CHECK_PACKET_SIZE(recvPacket, 12);
+	CHECK_PACKET_SIZE(recvPacket, 17);//8+8+1
 
 	uint64 npcguid;
 	uint64 itemguid;
 	Item * pItem;
 	Container * pContainer;
 	uint32 j, i;
+	bool guildmoney;
 
-	recvPacket >> npcguid >> itemguid;
+	recvPacket >> npcguid >> itemguid >> guildmoney;
 
 	Creature * pCreature = _player->GetMapMgr()->GetCreature( GET_LOWGUID_PART(npcguid) );
 	if( pCreature == NULL )
@@ -1853,9 +1854,23 @@ void WorldSession::HandleRepairItemOpcode(WorldPacket &recvPacket)
 	//this is a blizzlike check
 	if( _player->GetDistanceSq( pCreature ) > 100 )
 		return; //avoid talking to anyone by guid hacking. Like repair items anytime in raid ? Low chance hack
+	
+	if( guildmoney )
+	{
+		if( _player->IsInGuild() )
+		{
+			if( !(_player->GetGuildRankS()->iRights & GR_RIGHT_GUILD_BANK_REPAIR) )
+			{
+				return; //we have not permissions to do that
+			}
+		}
+		else
+			return;//can't repair with guild money if player is not in guild.
+	}
 
 	if( !itemguid ) 
 	{
+		int32 totalcost = 0;
 		for( i = 0; i < MAX_INVENTORY_SLOT; i++ )
 		{
 			pItem = _player->GetItemInterface()->GetInventoryItem( static_cast<int16>( i ) );
@@ -1868,21 +1883,23 @@ void WorldSession::HandleRepairItemOpcode(WorldPacket &recvPacket)
 					{
 						pItem = pContainer->GetItem( static_cast<int16>( j ) );
 						if( pItem != NULL )
-							pItem->RepairItem( _player );
+							pItem->RepairItem( _player, guildmoney, &totalcost );
 					}
 				}
 				else
 				{
 					if( i < INVENTORY_SLOT_BAG_END )
 					{
-						if( pItem->GetDurability() == 0 && pItem->RepairItem( _player ) )
+						if( pItem->GetDurability() == 0 && pItem->RepairItem( _player, guildmoney, &totalcost ) )
 							_player->ApplyItemMods( pItem, static_cast<int16>( i ), true );
 						else
-							pItem->RepairItem( _player );
+							pItem->RepairItem( _player, guildmoney, &totalcost );
 					}
 				}
 			}
 		}
+		if( totalcost > 0) //we already checked if it's in guild in RepairItem()
+			_player->GetGuild()->LogGuildBankActionMoney(GUILD_BANK_LOG_EVENT_REPAIR, _player->GetLowGUID(), totalcost);
 	}
 	else 
 	{

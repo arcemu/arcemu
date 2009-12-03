@@ -278,7 +278,7 @@ public:
     void SetItemExpireTime( time_t timesec ){ ItemExpiresOn = timesec; }
     void EventRemoveItem();
     void RemoveFromRefundableMap();
-	bool RepairItem(Player * pPlayer);
+	bool RepairItem(Player * pPlayer, bool guildmoney = false, int32 * pCost = NULL);
 	uint32 RepairItemCost();
         
 protected:

@@ -1358,6 +1358,27 @@ uint32 GuildMember::CalculateAvailableAmount()
 		return (pRank->iGoldLimitPerDay - uWithdrawlsSinceLastReset);
 }
 
+bool GuildMember::RepairItem(uint32 cost)
+{
+	// sanity checks(from Guild::WithdrawMoney)
+	if( !(pRank->iRights & GR_RIGHT_GUILD_BANK_REPAIR) )
+	{
+		return false; //we have not permissions to do that //this is checked in ::HandleRepairItemOpcode(), we could remove this check.
+	}
+	if( pRank->iGoldLimitPerDay > 0 )
+	{
+		if( CalculateAvailableAmount() < cost)
+			return false;//can't withdraw anymore
+	}
+	if( pRank->iGoldLimitPerDay == 0)
+		return false;//can't withdraw anymore
+	if( pPlayer->guild->GetBankBalance() < cost)
+		return false;//not enough gold in guildbank
+	OnMoneyWithdraw(cost);
+	pPlayer->guild->SpendMoney(cost);//decrease the bank balance of "cost" amount
+	return true;
+}
+
 void GuildMember::OnMoneyWithdraw(uint32 amt)
 {
 	if(pRank->iGoldLimitPerDay <= 0)		// Unlimited
@@ -1446,8 +1467,16 @@ void Guild::WithdrawMoney(WorldSession * pClient, uint32 uAmount)
 	// give the gold! GM PLS GOLD PLS 1 COIN
 	pClient->GetPlayer()->ModGold( (uint32)uAmount );
 
+	SpendMoney(uAmount);
+
+	// log it!
+	LogGuildBankActionMoney(GUILD_BANK_LOG_EVENT_WITHDRAW_MONEY, pClient->GetPlayer()->GetLowGUID(), uAmount);
+}
+
+void Guild::SpendMoney(uint32 uAmount)
+{
 	// subtract the balance
-	m_bankBalance -= uAmount;
+	m_bankBalance -= uAmount;//check if(m_bankBalance >= uAmount) before calling this, thank you.
 
 	// update in db
 	CharacterDatabase.Execute("UPDATE guilds SET bankBalance = %llu WHERE guildId = %u", (m_bankBalance>0)?m_bankBalance:0, m_guildId);
@@ -1456,11 +1485,7 @@ void Guild::WithdrawMoney(WorldSession * pClient, uint32 uAmount)
 	char buf[20];
 	snprintf(buf, 20, I64FMT, (uint64)m_bankBalance);
 	LogGuildEvent(GUILD_EVENT_SETNEWBALANCE, 1, buf);
-
-	// log it!
-	LogGuildBankActionMoney(GUILD_BANK_LOG_EVENT_WITHDRAW_MONEY, pClient->GetPlayer()->GetLowGUID(), uAmount);
 }
-
 void Guild::SendGuildBankLog(WorldSession * pClient, uint8 iSlot)
 {
 	uint32 count = 0;
