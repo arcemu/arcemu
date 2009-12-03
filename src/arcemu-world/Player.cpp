@@ -2807,7 +2807,16 @@ void Player::SaveToDB(bool bNewCharacter /* =false */)
 	else
 		xpfield = 0;
 
-	ss << xpfield << "'" << ")";
+	ss << xpfield << "'" << ", '";
+ 
+	bool saveData = Config.MainConfig.GetBoolDefault( "Server", "SaveExtendedCharData", false );
+	if(saveData)
+	{
+		for (uint32 offset = OBJECT_END; offset < PLAYER_END; offset++)
+			ss << uint32(m_uint32Values[ offset ]) << ";";
+	}
+
+	ss << "')";
 
 	if(bNewCharacter)
 		CharacterDatabase.WaitExecuteNA(ss.str().c_str());
@@ -2968,7 +2977,7 @@ void Player::LoadFromDBProc(QueryResultVector & results)
 		return;
 	}
 
-	const uint32 fieldcount = 92;
+	const uint32 fieldcount = 93;
 
 	if( result->GetFieldCount() != fieldcount )
 	{
