@@ -528,6 +528,23 @@ void Spell::SpellEffectSchoolDMG(uint32 i) // dmg school
 		dmg = damage;
 		switch(GetProto()->NameHash)
 		{
+		case SPELL_HASH_METEOR_SLASH:
+			{
+				int splitCount = 0;
+				for( std::set<Object*>::iterator itr = u_caster->GetInRangeOppFactsSetBegin(); itr != u_caster->GetInRangeOppFactsSetEnd(); ++itr )
+				{
+					if( (*itr)->isInFront( u_caster ) && u_caster->CalcDistance( (*itr) ) <= 65 )
+						splitCount++;
+				};
+
+				dmg = dmg / splitCount;
+			}break;
+		case SPELL_HASH_PULSING_SHOCKWAVE: // loken Pulsing shockwave 
+			{
+				float _distance = u_caster->CalcDistance( unitTarget );
+				if( _distance >= 2.0f )
+					dmg *= static_cast<int32>(_distance);
+			}break;
 		case SPELL_HASH_ICE_LANCE: // Ice Lance
 			{
 				if( unitTarget->HasFlag( UNIT_FIELD_AURASTATE, AURASTATE_FLAG_FROZEN))
