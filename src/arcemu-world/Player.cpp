@@ -635,6 +635,8 @@ Player::~Player ( )
 	for( ; itr != m_Pets.end(); itr++ )
 		delete itr->second;
 	m_Pets.clear();
+
+    RemoveGarbageItems();
 }
 
 ARCEMU_INLINE uint32 GetSpellForLanguage(uint32 SkillID)
@@ -934,6 +936,8 @@ void Player::Update( uint32 p_time )
 
 	Unit::Update( p_time );
 	uint32 mstime = getMSTime();
+
+    RemoveGarbageItems();
 
 	if(m_attacking)
 	{
@@ -13715,4 +13719,20 @@ void Player::ToggleXpGain(){
 
 bool Player::CanGainXp(){
 	return m_XpGain;
+}
+
+void Player::RemoveGarbageItems(){
+    std::list< Item* >::iterator itr;
+
+    for( itr = m_GarbageItems.begin(); itr != m_GarbageItems.end(); ++itr ){
+        Item *it = *itr;
+
+        delete it;
+    }
+
+    m_GarbageItems.clear();
+}
+
+void Player::AddGarbageItem( Item *it ){
+    m_GarbageItems.push_back( it );
 }

@@ -2390,8 +2390,13 @@ private:
 	PlayerInfo * m_playerInfo;
 	uint32 m_RaidDifficulty;
 	bool m_XpGain;
+    std::list< Item* > m_GarbageItems;
+
+    void RemoveGarbageItems();
 
 public:
+
+    void AddGarbageItem( Item *it );
 
 	ARCEMU_INLINE PlayerInfo * getPlayerInfo() const { return m_playerInfo; }
 

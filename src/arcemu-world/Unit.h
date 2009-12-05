@@ -1569,6 +1569,9 @@ public:
 
 protected:
 	Unit ();
+    void RemoveGarbage();
+    void AddGarbageAura( Aura *aur );
+    void AddGarbageSpell( Spell *sp );
 
 	uint32 m_meleespell;
 	uint8 m_meleespell_ecn; // extra_cast_number
@@ -1581,6 +1584,9 @@ protected:
 	uint32 m_attackTimer;   // timer for attack
 	uint32 m_attackTimer_1;
 	bool m_dualWield;
+
+    std::list< Aura* > m_GarbageAuras;
+    std::list< Spell* > m_GarbageSpells;
 
 	/// Combat
 	DeathState m_deathState;

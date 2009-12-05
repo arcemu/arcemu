@@ -919,7 +919,10 @@ void Aura::Remove()
     if( flag != 0 )
 		m_target->RemoveFlag( UNIT_FIELD_AURASTATE, flag );
 
-	delete this; // suicide xD	leaking this shit out
+	// delete this; // suicide xD	leaking this shit out
+    
+    // We will delete this on the next update, eluding some spell crashes :|
+    m_target->AddGarbageAura( this );
 }
 
 void Aura::AddMod( uint32 t, int32 a, uint32 miscValue, uint32 i )
@@ -5171,13 +5174,10 @@ void Aura::EventPeriodicLeech(uint32 amount)
 {
 	Unit* m_caster = GetUnitCaster();
 	
-	// this is needed because if the victim dies while the Aura is being processed we go BOOM (crash)
-	Unit* m_Target   = m_target;
-
-	if( m_caster == NULL || m_Target == NULL )
+	if( m_caster == NULL || m_target == NULL )
 		return;
 
-	if( m_Target->isAlive() && m_caster->isAlive() )
+	if( m_target->isAlive() && m_caster->isAlive() )
 	{
 		if(m_target->SchoolImmunityList[GetSpellProto()->School])
 			return;
@@ -5190,7 +5190,7 @@ void Aura::EventPeriodicLeech(uint32 amount)
 
 		if(GetDuration())
 		{
-			float fbonus = float( m_caster->GetSpellDmgBonus(m_Target,GetSpellProto(),amount,true) ) * 0.5f;
+			float fbonus = float( m_caster->GetSpellDmgBonus(m_target,GetSpellProto(),amount,true) ) * 0.5f;
 			if(fbonus < 0) fbonus = 0.0f;
 			float ticks= float((amp) ? GetDuration()/amp : 0);
 			fbonus = (ticks) ? fbonus/ticks : 0;
@@ -5199,7 +5199,7 @@ void Aura::EventPeriodicLeech(uint32 amount)
 
 		amount += bonus;
 
-		uint32 Amount = (uint32)min( amount, m_Target->GetUInt32Value( UNIT_FIELD_HEALTH ) );
+		uint32 Amount = (uint32)min( amount, m_target->GetUInt32Value( UNIT_FIELD_HEALTH ) );
 
 		// Apply bonus from [Warlock] Soul Siphon
 		if (m_caster->m_soulSiphon.amt) {
@@ -5213,9 +5213,9 @@ void Aura::EventPeriodicLeech(uint32 amount)
 			auras.clear();
 			for(uint32 x=MAX_NEGATIVE_AURAS_EXTEDED_START;x<MAX_NEGATIVE_AURAS_EXTEDED_END;x++)
 			{
-				if(m_Target->m_auras[x])
+				if(m_target->m_auras[x])
 				{
-					Aura *aura = m_Target->m_auras[x];
+					Aura *aura = m_target->m_auras[x];
 					if (aura->GetSpellProto()->SpellFamilyName == 5)
 					{
 						skilllinespell *sk;
@@ -5270,7 +5270,7 @@ void Aura::EventPeriodicLeech(uint32 amount)
 		//SendPeriodicHealAuraLog(Amount);
 		WorldPacket data(SMSG_PERIODICAURALOG, 32);
 		data << m_caster->GetNewGUID();
-		data << m_Target->GetNewGUID();
+		data << m_target->GetNewGUID();
 		data << m_spellProto->Id;
 		data << uint32(1);
 		data << uint32(FLAG_PERIODIC_HEAL);
@@ -5283,11 +5283,11 @@ void Aura::EventPeriodicLeech(uint32 amount)
 		SpellEntry* m_SpellProto = GetSpellProto();
 		m_caster->DealDamage( m_target, Amount, 0, 0, GetSpellProto()->Id, true );
 
-		m_caster->HandleProc( PROC_ON_ANY_HOSTILE_ACTION, m_Target, m_SpellProto, Amount );
+		m_caster->HandleProc( PROC_ON_ANY_HOSTILE_ACTION, m_target, m_SpellProto, Amount );
 		m_caster->m_procCounter = 0;
 
 		//some say this prevents some crashes atm
-		if( !m_Target->isAlive() )
+		if( !m_target->isAlive() )
 			return;
 
 		m_target->HandleProc(PROC_ON_ANY_HOSTILE_ACTION|PROC_ON_ANY_DAMAGE_VICTIM|PROC_ON_SPELL_HIT_VICTIM,m_caster,m_spellProto,Amount);

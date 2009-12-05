@@ -662,11 +662,15 @@ Unit::~Unit()
 	for( std::map< uint32, Aura* >::iterator i = tmpAura.begin(); i != tmpAura.end(); i++ )
 		delete i->second;
 	tmpAura.clear();
+
+    RemoveGarbage();
 }
 
 void Unit::Update( uint32 p_time )
 {
 	_UpdateSpells( p_time );
+    
+    RemoveGarbage();
 
 	if(!IsDead())
 	{
@@ -4616,7 +4620,7 @@ void Unit::AddAura(Aura * aur)
 							{
 								// remove the lower aura
 								m_auras[x]->Remove();
-
+                                
 								// no more checks on bad ptr
 								continue;
 							}
@@ -8010,5 +8014,36 @@ void Unit::SetDualWield(bool enabled)
 	// Titan's grip
 	if( !enabled && IsPlayer() )
 		RemoveAllAuraById( 49152 );
+}
+
+void Unit::AddGarbageAura( Aura *aur ){
+    m_GarbageAuras.push_back( aur );
+}
+
+void Unit::AddGarbageSpell( Spell *sp ){
+    m_GarbageSpells.push_back( sp );
+}
+
+void Unit::RemoveGarbage(){
+    
+    std::list< Aura* >::iterator itr1;
+
+    for( itr1 = m_GarbageAuras.begin(); itr1 != m_GarbageAuras.end(); ++itr1 ){
+        Aura *aur = *itr1;
+
+        delete aur;
+    }
+
+    std::list< Spell* >::iterator itr2;
+
+    for( itr2 = m_GarbageSpells.begin(); itr2 != m_GarbageSpells.end(); ++itr2 ){
+        Spell *sp = *itr2;
+
+        delete sp;
+    }
+
+    m_GarbageAuras.clear();
+    m_GarbageSpells.clear();
+
 }
 
