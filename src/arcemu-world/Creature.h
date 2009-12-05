@@ -581,6 +581,8 @@ public:
 
 	ARCEMU_INLINE CreatureInfo *GetCreatureInfo() { return creature_info; }
 	ARCEMU_INLINE void SetCreatureInfo(CreatureInfo *ci) { creature_info = ci; }
+    void SetCreatureProto( CreatureProto *cp ){ proto = cp; }
+
 	ARCEMU_INLINE Trainer* GetTrainer() { return mTrainer; }
 	void RegenerateFocus();
 

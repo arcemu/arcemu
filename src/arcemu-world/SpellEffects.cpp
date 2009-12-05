@@ -5972,11 +5972,17 @@ void Spell::SpellEffectSummonTotem(uint32 i) // Summon Totem
 	uint32 entry = GetProto()->EffectMiscValue[i];
 
 	CreatureInfo* ci = CreatureNameStorage.LookupEntry(entry);
-	if(!ci)
+	if(!ci )
 	{
 		sLog.outDebug("Missing totem creature entry : %u \n",entry);
 		return;
 	}
+
+    CreatureProto *cp = CreatureProtoStorage.LookupEntry( entry );
+    if( !cp ){
+        sLog.outDebug("Missing totem proto entry: %u\n", entry );
+        return;
+    }
 
 	Creature * pTotem = p_caster->GetMapMgr()->CreateCreature(entry);
 
@@ -5994,6 +6000,9 @@ void Spell::SpellEffectSummonTotem(uint32 i) // Summon Totem
 	p_caster->m_TotemSlots[slot] = pTotem;
 	pTotem->SetTotemOwner(p_caster);
 	pTotem->SetTotemSlot(slot);
+
+    pTotem->SetCreatureInfo( ci );
+    pTotem->SetCreatureProto( cp );
 
 	float landh = p_caster->GetMapMgr()->GetLandHeight(x,y);
 	float landdiff = landh - p_caster->GetPositionZ();
