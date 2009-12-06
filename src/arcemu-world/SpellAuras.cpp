@@ -923,6 +923,7 @@ void Aura::Remove()
     
     // We will delete this on the next update, eluding some spell crashes :|
     m_target->AddGarbageAura( this );
+    m_target->m_auras[ m_auraSlot ] = NULL;
 }
 
 void Aura::AddMod( uint32 t, int32 a, uint32 miscValue, uint32 i )
