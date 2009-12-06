@@ -249,7 +249,7 @@ struct SERVER_DECL TimedEvent
 	void DecRef()
 	{
 		InterlockedDecrement(&ref);
-		if(ref <= 0)
+		if(ref == 0)
 		{
 			delete cb;
 			delete this;
@@ -267,7 +267,7 @@ struct SERVER_DECL TimedEvent
 	void DecRef()
 	{
 		--ref;
-		if(ref <= 0)
+		if(ref == 0)
 		{
 			 delete cb;
 			 delete this;

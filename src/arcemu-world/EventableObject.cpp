@@ -332,9 +332,13 @@ void EventableObjectHolder::Update(time_t time_difference)
 		if((*it2)->instanceId != mInstanceId || (*it2)->deleted || 
 			( mInstanceId == WORLD_INSTANCE && (*it2)->eventFlag & EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT))
 		{
+			if( !(*it2)->deleted ){
+				(*it2)->DecRef();
+			}
+			
 			// remove from this list.
-			(*it2)->DecRef();
 			m_events.erase(it2);
+			
 			continue;
 		}
 
