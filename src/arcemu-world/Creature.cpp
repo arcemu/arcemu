@@ -1482,8 +1482,8 @@ bool Creature::Load(CreatureSpawn *spawn, uint32 mode, MapInfo *info)
 			m_aiInterface->addSpellToList(*itr);
 	}
 
-	//m_aiInterface->m_canCallForHelp = proto->m_canCallForHelp;
-	//m_aiInterface->m_CallForHelpHealth = proto->m_callForHelpHealth;
+	// m_aiInterface->m_canCallForHelp = proto->m_canCallForHelp;
+	// m_aiInterface->m_CallForHelpHealth = proto->m_callForHelpHealth;
 	m_aiInterface->m_canFlee = proto->m_canFlee;
 	m_aiInterface->m_FleeHealth = proto->m_fleeHealth;
 	m_aiInterface->m_FleeDuration = proto->m_fleeDuration;
@@ -1492,11 +1492,13 @@ bool Creature::Load(CreatureSpawn *spawn, uint32 mode, MapInfo *info)
 	GetAIInterface()->setMoveType(0);
 	GetAIInterface()->setMoveRunFlag(0);
 
-	if(isattackable(spawn) && !(proto->isTrainingDummy) )
+    if(isattackable(spawn) && !(proto->isTrainingDummy) ){
 	  GetAIInterface()->SetAllowedToEnterCombat(true);
-	  else GetAIInterface()->SetAllowedToEnterCombat(false);
-
-
+    }else{
+        GetAIInterface()->SetAllowedToEnterCombat(false);
+        GetAIInterface()->SetAIType( AITYPE_PASSIVE );
+        Root();
+    }
 	 
 	// load formation data
 	if( spawn->form != NULL )
@@ -1585,10 +1587,13 @@ void Creature::Load(CreatureProto * proto_, float x, float y, float z, float o)
 	if(!creature_info)
 		return;
 
-	if( proto_->isTrainingDummy == 0)
+    if( proto_->isTrainingDummy == 0){
 		GetAIInterface()->SetAllowedToEnterCombat( true );
-	else
-		GetAIInterface()->SetAllowedToEnterCombat( false );
+    }else{
+        GetAIInterface()->SetAllowedToEnterCombat( false );
+        GetAIInterface()->SetAIType( AITYPE_PASSIVE );
+        Root();
+    }
 
 	m_walkSpeed = m_base_walkSpeed = proto->walk_speed; //set speeds
 	m_runSpeed = m_base_runSpeed = proto->run_speed; //set speeds

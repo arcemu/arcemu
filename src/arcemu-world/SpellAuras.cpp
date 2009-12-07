@@ -2912,7 +2912,8 @@ void Aura::SpellAuraModFear(bool apply)
 {
 	Unit* u_caster = GetUnitCaster();
 
-	if( m_target->GetTypeId() == TYPEID_UNIT && static_cast<Creature*>(m_target)->IsTotem() )
+	if( m_target->GetTypeId() == TYPEID_UNIT && 
+        ( static_cast<Creature*>(m_target)->IsTotem() || static_cast< Creature* >( m_target )->isRooted() ) )
 		return;
 
 	if(apply)

@@ -1485,6 +1485,13 @@ public:
 
 	void Root();
 	void Unroot();
+    bool isRooted(){
+
+        if( m_rooted )
+            return true;
+        else
+            return false;
+    }
 
 	void SetFacing(float newo);//only working if creature is idle
 

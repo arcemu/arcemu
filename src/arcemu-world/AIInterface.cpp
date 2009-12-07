@@ -199,6 +199,11 @@ void AIInterface::HandleEvent(uint32 event, Unit* pUnit, uint32 misc1)
 {
 	if( m_Unit == NULL ) return;
 
+    // Passive NPCs (like target dummies) shouldn't do anything.
+    if( m_AIType == AITYPE_PASSIVE ){
+        return;
+    }
+
 	if(m_AIState != STATE_EVADE)
 	{
 		switch(event)

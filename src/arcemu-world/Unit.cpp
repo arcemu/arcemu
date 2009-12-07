@@ -5999,6 +5999,8 @@ void Unit::Root()
 		m_aiInterface->m_canMove = false;
 		m_aiInterface->StopMovement(1);
 	}
+
+    m_rooted = 1;
 }
 
 void Unit::Unroot()
@@ -6013,6 +6015,8 @@ void Unit::Unroot()
 	{
 		m_aiInterface->m_canMove = true;
 	}
+
+    m_rooted = 0;
 }
 
 void Unit::RemoveAurasByBuffType(uint32 buff_type, const uint64 &guid, uint32 skip)

@@ -1344,6 +1344,10 @@ out:
 			if(!u_caster || !u_caster->isAlive() || !unitTarget || !unitTarget->isAlive())
 				return;
 
+            // rooted units can't be death gripped
+            if( unitTarget->isRooted() )
+                return;
+
 			if(unitTarget->IsPlayer())
 			{
 
