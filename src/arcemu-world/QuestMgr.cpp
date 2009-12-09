@@ -506,12 +506,11 @@ void QuestMgr::BuildQuestComplete(Player*plr, Quest* qst)
 	uint32 currtalentpoints = plr->GetUInt32Value(PLAYER_CHARACTER_POINTS1);
 	uint32 rewardtalents = qst->rewardtalents;
 	uint32 playerlevel = plr->getLevel();
-	if(playerlevel >= plr->GetUInt32Value(PLAYER_FIELD_MAX_LEVEL))
+	
+    if( playerlevel >= plr->GetMaxLevel() )
 	{
-		//plr->ModUnsigned32Value(PLAYER_FIELD_COINAGE, qst->reward_xp_as_money);
-		xp = 0;
-	}else
-	{
+        xp = 0;
+	}else{
 		xp = float2int32(GenerateQuestXP(plr,qst) * sWorld.getRate(RATE_QUESTXP));
 		plr->GiveXP(xp, 0, false);
 	}
@@ -525,22 +524,22 @@ void QuestMgr::BuildQuestComplete(Player*plr, Quest* qst)
 
 	WorldPacket data( SMSG_QUESTGIVER_QUEST_COMPLETE,72 );
 
-	data << qst->id;
-	data << xp;
+	data << uint32( qst->id );
+	data << uint32( xp );
 	data << uint32( GenerateRewardMoney( plr, qst ) );
-	data << uint32(0);
-	data << uint32(rewardtalents);
-	data << uint32(qst->count_reward_item); //Reward item count
+	data << uint32( 0 );
+	data << uint32( rewardtalents );
+	data << uint32( qst->count_reward_item ); //Reward item count
 
-	for(uint32 i = 0; i < 4; ++i)
+	for( uint32 i = 0; i < 4; ++i)
 	{
-		if(qst->reward_item[i])
+		if( qst->reward_item[i] )
 		{
-			data << qst->reward_item[i];
-			data << qst->reward_itemcount[i];
+			data << uint32( qst->reward_item[i] );
+			data << uint32( qst->reward_itemcount[i] );
 		}
 	}
-	plr->GetSession()->SendPacket(&data);
+	plr->SendPacket( &data );
 }
 
 void QuestMgr::BuildQuestList(WorldPacket *data, Object* qst_giver, Player *plr, uint32 language)

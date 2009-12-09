@@ -949,7 +949,7 @@ bool EyeOfTheStorm::GivePoints(uint32 team, uint32 points)
 							HonorHandler::AddHonorPointsToPlayer( p, lostHonorToAdd );
 							SlotResult *lr = p->GetItemInterface()->LastSearchResult();
 							
-                            p->SendItemPushResult( item->GetGUID(), false, true, false, true, lr->ContainerSlot, lr->Slot, 3, item->GetEntry(), item->GetItemRandomSuffixFactor(), item->GetItemRandomPropertyId(), item->GetCount() );
+                            p->SendItemPushResult( false, true, false, true, lr->ContainerSlot, lr->Slot, 3, item->GetEntry(), item->GetItemRandomSuffixFactor(), item->GetItemRandomPropertyId(), item->GetCount() );
 						}
 					}
 					if(i && p->GetQuestLogForEntry(11341))
@@ -973,7 +973,7 @@ bool EyeOfTheStorm::GivePoints(uint32 team, uint32 points)
 						{
 							SlotResult *lr = p->GetItemInterface()->LastSearchResult();
 							
-                            p->SendItemPushResult( item->GetGUID(), false, true, false, true, lr->ContainerSlot, lr->Slot, 1, item->GetEntry(), item->GetItemRandomSuffixFactor(), item->GetItemRandomPropertyId(), item->GetCount() );
+                            p->SendItemPushResult( false, true, false, true, lr->ContainerSlot, lr->Slot, 1, item->GetEntry(), item->GetItemRandomSuffixFactor(), item->GetItemRandomPropertyId(), item->GetCount() );
 						}
 					}
 				}

@@ -1282,3 +1282,13 @@ void WorldSession::HandleLearnMultipleTalentsOpcode(WorldPacket &recvPacket){
         _player->LearnTalent( talentid, rank, true );
     }
 }
+
+void WorldSession::SendMOTD(){
+
+    WorldPacket data( SMSG_MOTD, 100 );
+
+    data << uint32( 4 );
+    data << sWorld.GetMotd();
+
+    SendPacket( &data );
+}

@@ -846,7 +846,7 @@ void LootRoll::Finalize()
 
 		if( _player->GetItemInterface()->SafeAddItem(item, slotresult.ContainerSlot, slotresult.Slot) )
 		{
-            _player->SendItemPushResult( item->GetGUID(), false,true,true,true,slotresult.ContainerSlot,slotresult.Slot,1, item->GetEntry(), item->GetItemRandomSuffixFactor(), item->GetItemRandomPropertyId(), item->GetCount() );
+            _player->SendItemPushResult( false,true,true,true,slotresult.ContainerSlot,slotresult.Slot,1, item->GetEntry(), item->GetItemRandomSuffixFactor(), item->GetItemRandomPropertyId(), item->GetCount() );
 			sQuestMgr.OnPlayerItemPickup(_player,item);
 #ifdef ENABLE_ACHIEVEMENTS
 			_player->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_LOOT_ITEM, item->GetEntry(), 1, 0);
@@ -860,7 +860,7 @@ void LootRoll::Finalize()
 		add->SetCount(add->GetUInt32Value(ITEM_FIELD_STACK_COUNT) + amt);
 		add->m_isDirty = true;
 		sQuestMgr.OnPlayerItemPickup(_player,add);
-        _player->SendItemPushResult( add->GetGUID(), false, true, true, false, (uint8)_player->GetItemInterface()->GetBagSlotByGuid(add->GetGUID()), 0xFFFFFFFF, 1, add->GetEntry(), add->GetItemRandomSuffixFactor(), add->GetItemRandomPropertyId(), add->GetCount() );
+        _player->SendItemPushResult( false, true, true, false, (uint8)_player->GetItemInterface()->GetBagSlotByGuid(add->GetGUID()), 0xFFFFFFFF, 1, add->GetEntry(), add->GetItemRandomSuffixFactor(), add->GetItemRandomPropertyId(), add->GetCount() );
 		#ifdef ENABLE_ACHIEVEMENTS
 		_player->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_LOOT_ITEM, add->GetEntry(), 1, 0);
 #endif

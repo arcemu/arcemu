@@ -1230,7 +1230,7 @@ bool ChatHandler::HandleAddItemSetCommand(const char* args, WorldSession* m_sess
 		} else {
 			//SystemMessage(m_session, "Added item: %s [%u]", (*itr)->Name1, (*itr)->ItemId);
 			SlotResult * le = chr->GetItemInterface()->LastSearchResult();
-            chr->SendItemPushResult( itm->GetGUID(), false,true,false,true,le->ContainerSlot,le->Slot,1 , itm->GetEntry(), itm->GetItemRandomSuffixFactor(), itm->GetItemRandomPropertyId(), itm->GetCount() );
+            chr->SendItemPushResult( false,true,false,true,le->ContainerSlot,le->Slot,1 , itm->GetEntry(), itm->GetItemRandomSuffixFactor(), itm->GetItemRandomPropertyId(), itm->GetCount() );
 		}
 	}
 	GreenSystemMessage(m_session, "Added set to inventory complete. Time: %u ms", getMSTime() - start);
@@ -1590,7 +1590,7 @@ bool ChatHandler::HandlePetSpawnAIBot(const char* args, WorldSession *m_session)
 	if( !m_session->GetPlayer() )
 		return false; //wtf ?
 
-	uint32 botprice = m_session->GetPlayer()->GetUInt32Value(UNIT_FIELD_LEVEL)*10000; //1 gold per level ?
+	uint32 botprice = m_session->GetPlayer()->getLevel() * 10000; //1 gold per level ?
 
 	if( !m_session->GetPlayer()->HasGold(botprice) )
 	{

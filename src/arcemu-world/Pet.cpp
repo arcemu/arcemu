@@ -170,7 +170,7 @@ void Pet::CreateAsSummon( uint32 entry, CreatureInfo *ci, Creature* created_from
 	Create( m_name.c_str(), owner->GetMapId(), x, y, z, owner->GetOrientation() );
 
 	// Hunter pet should be max 5 levels below owner
-	uint32 level = owner->GetUInt32Value( UNIT_FIELD_LEVEL );
+	uint32 level = owner->getLevel();
 	if( type & 0x2 && created_from_creature != NULL )
 		level = created_from_creature->getLevel() < ( level - 5 ) ? level - 5 : created_from_creature->getLevel();
 
@@ -854,7 +854,7 @@ void Pet::GiveXP( uint32 xp )
 		SetTPs( GetTPsForLevel( getLevel() + 1 ) - GetSpentTPs() );
 		ModUnsigned32Value( UNIT_FIELD_LEVEL, 1 );
 		xp -= nxp;
-		nxp = GetNextLevelXP( m_uint32Values[ UNIT_FIELD_LEVEL ] );
+		nxp = GetNextLevelXP( getLevel() );
 		SetUInt32Value( UNIT_FIELD_PETNEXTLEVELEXP, nxp );
 		ApplyStatsForLevel();
 		UpdateSpellList();
@@ -1413,7 +1413,7 @@ void Pet::ApplyStatsForLevel()
 	// Apply scale for this family.
 	if( myFamily )
 	{
-		float pet_level = float( m_uint32Values[ UNIT_FIELD_LEVEL ] );
+		float pet_level = float( getLevel() );
 		float level_diff = float( myFamily->maxlevel - myFamily->minlevel );
 		float scale_diff = float( myFamily->maxsize - myFamily->minsize );
 		float factor = scale_diff / level_diff;

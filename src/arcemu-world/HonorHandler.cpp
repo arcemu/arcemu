@@ -108,7 +108,7 @@ void HonorHandler::OnPlayerKilledUnit( Player *pPlayer, Unit* pVictim )
 	// Calculate points
 	int32 Points = 0;
 	if(pVictim->IsPlayer() && pPlayer != pVictim)
-		Points = CalculateHonorPointsForKill(pPlayer->GetUInt32Value( UNIT_FIELD_LEVEL ), pVictim->GetUInt32Value( UNIT_FIELD_LEVEL ));
+		Points = CalculateHonorPointsForKill( pPlayer->getLevel(), pVictim->getLevel() );
 
 	if( Points > 0 )
 	{

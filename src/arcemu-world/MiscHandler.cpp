@@ -155,7 +155,7 @@ void WorldSession::HandleAutostoreLootItemOpcode( WorldPacket & recv_data )
 		if( GetPlayer()->GetItemInterface()->SafeAddItem(item,slotresult.ContainerSlot, slotresult.Slot) )
 		{
 			sQuestMgr.OnPlayerItemPickup(GetPlayer(),item);
-            _player->SendItemPushResult( item->GetGUID(), false,true,true,true,slotresult.ContainerSlot,slotresult.Slot,1, item->GetEntry(), item->GetItemRandomSuffixFactor(), item->GetItemRandomPropertyId(), item->GetCount() );
+            _player->SendItemPushResult( false,true,true,true,slotresult.ContainerSlot,slotresult.Slot,1, item->GetEntry(), item->GetItemRandomSuffixFactor(), item->GetItemRandomPropertyId(), item->GetCount() );
 #ifdef ENABLE_ACHIEVEMENTS
 			_player->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_LOOT_ITEM, item->GetEntry(), 1, 0);
 #endif		
@@ -169,7 +169,7 @@ void WorldSession::HandleAutostoreLootItemOpcode( WorldPacket & recv_data )
 		add->m_isDirty = true;
 
 		sQuestMgr.OnPlayerItemPickup(GetPlayer(),add);
-        _player->SendItemPushResult( add->GetGUID(), false, false, true, false, (uint8)_player->GetItemInterface()->GetBagSlotByGuid(add->GetGUID()), 0xFFFFFFFF,amt , add->GetEntry(), add->GetItemRandomSuffixFactor(), add->GetItemRandomPropertyId(), add->GetCount() );
+        _player->SendItemPushResult( false, false, true, false, (uint8)_player->GetItemInterface()->GetBagSlotByGuid(add->GetGUID()), 0xFFFFFFFF,amt , add->GetEntry(), add->GetItemRandomSuffixFactor(), add->GetItemRandomPropertyId(), add->GetCount() );
 #ifdef ENABLE_ACHIEVEMENTS		
 		_player->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_LOOT_ITEM, add->GetEntry(), 1, 0);
 #endif	
@@ -727,7 +727,8 @@ void WorldSession::HandleWhoOpcode( WorldPacket & recv_data )
 		}
 
 		// Level check
-		lvl = plr->m_uint32Values[UNIT_FIELD_LEVEL];
+		lvl = plr->getLevel();
+
 		if(min_level && max_level)
 		{
 			// skip players outside of level range
@@ -783,7 +784,7 @@ void WorldSession::HandleWhoOpcode( WorldPacket & recv_data )
 		else
 			data << uint8(0);	   // Guild name
 
-		data << plr->m_uint32Values[UNIT_FIELD_LEVEL];
+		data << plr->getLevel();
 		data << uint32(plr->getClass());
 		data << uint32(plr->getRace());
 		data << plr->getGender();
@@ -2207,7 +2208,7 @@ void WorldSession::HandleLootMasterGiveOpcode(WorldPacket& recv_data)
 
 	if( player->GetItemInterface()->SafeAddItem(item,slotresult.ContainerSlot, slotresult.Slot) )
 	{
-        player->SendItemPushResult( item->GetGUID(), false,true,true,true,slotresult.ContainerSlot,slotresult.Slot,1 , item->GetEntry(), item->GetItemRandomSuffixFactor(), item->GetItemRandomPropertyId(), item->GetCount() );
+        player->SendItemPushResult( false,true,true,true,slotresult.ContainerSlot,slotresult.Slot,1 , item->GetEntry(), item->GetItemRandomSuffixFactor(), item->GetItemRandomPropertyId(), item->GetCount() );
 		sQuestMgr.OnPlayerItemPickup(player,item);
 #ifdef ENABLE_ACHIEVEMENTS
 		_player->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_LOOT_ITEM, item->GetEntry(), 1, 0);

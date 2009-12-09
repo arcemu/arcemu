@@ -976,7 +976,7 @@ void Creature::CalcStat(uint32 type)
 	case STAT_AGILITY:
 		{
 			//Ranged Attack Power (Does any creature use this?)
-			int32 RAP = GetUInt32Value( UNIT_FIELD_LEVEL ) + GetUInt32Value( UNIT_FIELD_STAT1 ) - 10;
+			int32 RAP = getLevel() + GetUInt32Value( UNIT_FIELD_STAT1 ) - 10;
 			if( RAP < 0 ) RAP = 0;
 			SetUInt32Value( UNIT_FIELD_RANGED_ATTACK_POWER, RAP );
 		}break;

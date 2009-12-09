@@ -631,7 +631,7 @@ void WorldSession::HandleCharterBuy(WorldPacket & recv_data)
 
 			c->SaveToDB();
 
-            _player->SendItemPushResult(i->GetGUID(), false, true, false, true, _player->GetItemInterface()->LastSearchItemBagSlot(), _player->GetItemInterface()->LastSearchItemSlot(), 1, i->GetEntry(), i->GetItemRandomSuffixFactor(), i->GetItemRandomPropertyId(), i->GetCount() );
+            _player->SendItemPushResult( false, true, false, true, _player->GetItemInterface()->LastSearchItemBagSlot(), _player->GetItemInterface()->LastSearchItemSlot(), 1, i->GetEntry(), i->GetItemRandomSuffixFactor(), i->GetItemRandomPropertyId(), i->GetCount() );
 
 			_player->ModGold( -(int32)costs[arena_type] );
 			_player->m_charters[arena_index] = c;
@@ -705,7 +705,7 @@ void WorldSession::HandleCharterBuy(WorldPacket & recv_data)
 
 			c->SaveToDB();
 
-            _player->SendItemPushResult(i->GetGUID(), false, true, false, true, _player->GetItemInterface()->LastSearchItemBagSlot(), _player->GetItemInterface()->LastSearchItemSlot(), 1, i->GetEntry(), i->GetItemRandomSuffixFactor(), i->GetItemRandomPropertyId(), i->GetCount() );
+            _player->SendItemPushResult( false, true, false, true, _player->GetItemInterface()->LastSearchItemBagSlot(), _player->GetItemInterface()->LastSearchItemSlot(), 1, i->GetEntry(), i->GetItemRandomSuffixFactor(), i->GetItemRandomPropertyId(), i->GetCount() );
 
 			_player->m_charters[CHARTER_TYPE_GUILD] = c;
             _player->ModGold( -1000 );

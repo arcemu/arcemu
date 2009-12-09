@@ -2889,7 +2889,7 @@ void Spell::SpellEffectCreateItem(uint32 i) // Create item
 
 		if(p_target->GetItemInterface()->SafeAddItem(newItem,slotresult.ContainerSlot, slotresult.Slot))
 		{
-            p_target->SendItemPushResult( newItem->GetGUID(),true,false,true,true,slotresult.ContainerSlot,slotresult.Slot,item_count , newItem->GetEntry(), newItem->GetItemRandomSuffixFactor(), newItem->GetItemRandomPropertyId(), newItem->GetCount() );
+            p_target->SendItemPushResult( true,false,true,true,slotresult.ContainerSlot,slotresult.Slot,item_count , newItem->GetEntry(), newItem->GetItemRandomSuffixFactor(), newItem->GetItemRandomPropertyId(), newItem->GetCount() );
 		} else {
 			newItem->DeleteMe();
 		}
@@ -2921,14 +2921,14 @@ void Spell::SpellEffectCreateItem(uint32 i) // Create item
 					item_count = item_count_filled;
 				}
 				else
-                    p_target->SendItemPushResult( newItem->GetGUID(), true, false, true, true, slotresult.ContainerSlot, slotresult.Slot, item_count , newItem->GetEntry(), newItem->GetItemRandomSuffixFactor(), newItem->GetItemRandomPropertyId(), newItem->GetCount() );
+                    p_target->SendItemPushResult( true, false, true, true, slotresult.ContainerSlot, slotresult.Slot, item_count , newItem->GetEntry(), newItem->GetItemRandomSuffixFactor(), newItem->GetItemRandomPropertyId(), newItem->GetCount() );
 			}
 		}
 		else
 		{
 			add->SetCount(add->GetUInt32Value(ITEM_FIELD_STACK_COUNT) + item_count);
 			add->m_isDirty = true;
-            p_target->SendItemPushResult( add->GetGUID(), true, false, true, false, (uint8)p_target->GetItemInterface()->GetBagSlotByGuid(add->GetGUID()), 0xFFFFFFFF, item_count , add->GetEntry(), add->GetItemRandomSuffixFactor(), add->GetItemRandomPropertyId(), add->GetCount() );
+            p_target->SendItemPushResult( true, false, true, false, (uint8)p_target->GetItemInterface()->GetBagSlotByGuid(add->GetGUID()), 0xFFFFFFFF, item_count , add->GetEntry(), add->GetItemRandomSuffixFactor(), add->GetItemRandomPropertyId(), add->GetCount() );
 		}
 	}
 	if (p_caster && skill)
@@ -5081,7 +5081,7 @@ void Spell::SpellEffectSummonPossessed(uint32 i) // eye of kilrogg
 
 		// Fields
 		NewSummon->SetUInt32Value(OBJECT_FIELD_ENTRY, GetProto()->EffectMiscValue[i]);
-		NewSummon->SetUInt32Value(UNIT_FIELD_LEVEL,m_caster->GetUInt32Value(UNIT_FIELD_LEVEL));
+		NewSummon->SetUInt32Value(UNIT_FIELD_LEVEL, m_caster->GetUInt32Value(UNIT_FIELD_LEVEL) );
 		NewSummon->SetUInt32Value(UNIT_FIELD_DISPLAYID,  2421);
 		NewSummon->SetUInt32Value(UNIT_FIELD_NATIVEDISPLAYID, 2421);
 		NewSummon->SetUInt64Value(UNIT_FIELD_SUMMONEDBY, m_caster->GetGUID());
@@ -6046,7 +6046,7 @@ void Spell::SpellEffectSummonTotem(uint32 i) // Summon Totem
 	pTotem->SetUInt32Value(UNIT_FIELD_MAXHEALTH, damage);
 	pTotem->SetUInt32Value(UNIT_FIELD_POWER3, p_caster->getLevel() * 30);
 	pTotem->SetUInt32Value(UNIT_FIELD_MAXPOWER3, p_caster->getLevel() * 30);
-	pTotem->SetUInt32Value(UNIT_FIELD_LEVEL, p_caster->getLevel());
+	pTotem->SetUInt32Value(UNIT_FIELD_LEVEL, p_caster->getLevel() );
 	pTotem->SetUInt32Value(UNIT_FIELD_FACTIONTEMPLATE, p_caster->GetUInt32Value(UNIT_FIELD_FACTIONTEMPLATE));
 	pTotem->SetUInt32Value(UNIT_FIELD_BYTES_0, (1 << 8) | (2 << 16) | (1 << 24));
 	pTotem->SetUInt32Value(UNIT_FIELD_FLAGS, UNIT_FLAG_PLAYER_CONTROLLED | UNIT_FLAG_SELF_RES);

@@ -959,7 +959,7 @@ void World::SaveAllPlayers()
 			{
 				mt = getMSTime();
 				itr->second->SaveToDB(false);
-				sLog.outString("Saved player `%s` (level %u) in %ums.", itr->second->GetName(), itr->second->GetUInt32Value(UNIT_FIELD_LEVEL), getMSTime() - mt);
+				sLog.outString("Saved player `%s` (level %u) in %ums.", itr->second->GetName(), itr->second->getLevel(), getMSTime() - mt);
 				++count;
 			}
 		}

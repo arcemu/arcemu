@@ -2055,7 +2055,7 @@ int8 ItemInterface::CanEquipItemInSlot( int8 DstInvSlot, int8 slot, ItemPrototyp
 		}
 
 		// Check to see if we have the correct level.
-		if(proto->RequiredLevel>m_pOwner->GetUInt32Value(UNIT_FIELD_LEVEL))
+		if( proto->RequiredLevel > m_pOwner->getLevel() )
 			return INV_ERR_YOU_MUST_REACH_LEVEL_N;
 
 		if(proto->Class == 4)
@@ -4084,7 +4084,7 @@ bool ItemInterface::AddItemById( uint32 itemid, uint32 count, int32 randomprop )
 		{
 			SlotResult *lr = LastSearchResult();
             
-            chr->SendItemPushResult( item->GetGUID(), false, true, false, true, lr->ContainerSlot, lr->Slot, toadd , item->GetEntry(), item->GetItemRandomSuffixFactor(), item->GetItemRandomPropertyId(), item->GetCount()  );
+            chr->SendItemPushResult( false, true, false, true, lr->ContainerSlot, lr->Slot, toadd , item->GetEntry(), item->GetItemRandomSuffixFactor(), item->GetItemRandomPropertyId(), item->GetCount()  );
 #ifdef ENABLE_ACHIEVEMENTS
             chr->GetAchievementMgr().UpdateAchievementCriteria( ACHIEVEMENT_CRITERIA_TYPE_LOOT_ITEM, itemid, 1, 0 );
 #endif

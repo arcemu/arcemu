@@ -5266,13 +5266,13 @@ void Spell::CreateItem( uint32 itemId )
 		newItem->SetUInt64Value( ITEM_FIELD_CREATOR, p_caster->GetGUID() );
 		newItem->SetUInt32Value( ITEM_FIELD_STACK_COUNT, addcount );
 
-        p_caster->SendItemPushResult( newItem->GetGUID(), true, false, true, true, slotresult.ContainerSlot, slotresult.Slot, addcount, newItem->GetEntry(), newItem->GetItemRandomSuffixFactor(), newItem->GetItemRandomPropertyId(), newItem->GetCount()  );
+        p_caster->SendItemPushResult( true, false, true, true, slotresult.ContainerSlot, slotresult.Slot, addcount, newItem->GetEntry(), newItem->GetItemRandomSuffixFactor(), newItem->GetItemRandomPropertyId(), newItem->GetCount()  );
 		newItem->m_isDirty = true;
 	}
 	else
 	{
 		add->ModUnsigned32Value( ITEM_FIELD_STACK_COUNT, addcount );
-        p_caster->SendItemPushResult( add->GetGUID(), true, false, true, false, (uint8)p_caster->GetItemInterface()->GetBagSlotByGuid(add->GetGUID()), 0xFFFFFFFF, addcount , add->GetEntry(), add->GetItemRandomSuffixFactor(), add->GetItemRandomPropertyId(), add->GetCount()  );
+        p_caster->SendItemPushResult( true, false, true, false, (uint8)p_caster->GetItemInterface()->GetBagSlotByGuid(add->GetGUID()), 0xFFFFFFFF, addcount , add->GetEntry(), add->GetItemRandomSuffixFactor(), add->GetItemRandomPropertyId(), add->GetCount()  );
 		add->m_isDirty = true;
 	}
 }
