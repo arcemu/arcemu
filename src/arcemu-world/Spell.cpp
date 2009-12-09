@@ -3070,7 +3070,7 @@ void Spell::HandleAddAura(uint64 guid)
 		p_caster->GetShapeShift() == FORM_DIREBEAR ) &&
 		p_caster->HasAurasWithNameHash(SPELL_HASH_KING_OF_THE_JUNGLE) )
 	{
-		SpellEntry *spellInfo = dbcSpell.LookupEntry( 51185 );
+		SpellEntry *spellInfo = dbcSpell.LookupEntryForced( 51185 );
 		if(!spellInfo) 
 			return;
 
@@ -3104,7 +3104,7 @@ void Spell::HandleAddAura(uint64 guid)
 
 	if( spellid && Target )
 	{
-		SpellEntry *spellInfo = dbcSpell.LookupEntry( spellid );
+		SpellEntry *spellInfo = dbcSpell.LookupEntryForced( spellid );
 		if( !spellInfo )
 			return;
 
@@ -4082,7 +4082,7 @@ uint8 Spell::CanCast(bool tolerate)
 						return SPELL_FAILED_NO_PET;
 
 					// other checks
-					SpellEntry* trig = dbcSpell.LookupEntry( GetProto()->EffectTriggerSpell[0] );
+					SpellEntry* trig = dbcSpell.LookupEntryForced( GetProto()->EffectTriggerSpell[0] );
 					if( trig == NULL )
 						return SPELL_FAILED_SPELL_UNAVAILABLE;
 
@@ -4145,7 +4145,7 @@ uint8 Spell::CanCast(bool tolerate)
 						result = PETTAME_CANTCONTROLEXOTIC;
 					else
 					{
-						CreatureFamilyEntry* cf = dbcCreatureFamily.LookupEntry( tame->GetCreatureInfo()->Family );
+						CreatureFamilyEntry* cf = dbcCreatureFamily.LookupEntryForced( tame->GetCreatureInfo()->Family );
 						if( cf && !cf->tameable )
 							result = PETTAME_NOTTAMEABLE;
 					}
@@ -6132,7 +6132,7 @@ uint8 Spell::GetErrorAtShapeshiftedCast(SpellEntry *spellInfo, uint32 form)
 	bool actAsShifted = false;
 	if (form > FORM_NORMAL)
 	{
-		SpellShapeshiftForm * ssf = dbcSpellShapeshiftForm.LookupEntry( form );
+		SpellShapeshiftForm * ssf = dbcSpellShapeshiftForm.LookupEntryForced( form );
 		if(!ssf)
 		{
 			sLog.outError("GetErrorAtShapeshiftedCast: unknown shapeshift %u", form);

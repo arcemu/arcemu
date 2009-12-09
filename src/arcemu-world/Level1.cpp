@@ -200,7 +200,7 @@ bool ChatHandler::HandleGPSCommand(const char* args, WorldSession *m_session)
 	else
 		obj = (Object*)m_session->GetPlayer();
 
-	AreaTable * at = dbcArea.LookupEntry(obj->GetMapMgr()->GetAreaID(obj->GetPositionX(), obj->GetPositionY()));
+	AreaTable * at = dbcArea.LookupEntryForced(obj->GetMapMgr()->GetAreaID(obj->GetPositionX(), obj->GetPositionY()));
 	if(!at) return true;
 
 	char buf[328];
@@ -859,7 +859,7 @@ bool ChatHandler::HandleTriggerCommand(const char* args, WorldSession* m_session
 	if(valcount == 1)
 		instance_id = 0;
 
-	AreaTriggerEntry *entry = dbcAreaTrigger.LookupEntry(trigger_id);
+	AreaTriggerEntry *entry = dbcAreaTrigger.LookupEntryForced(trigger_id);
 	if(trigger_id == 0 || entry == NULL)
 	{
 		RedSystemMessage(m_session, "Could not find trigger %s", args);
@@ -1164,7 +1164,7 @@ bool ChatHandler::HandleLookupAchievementCmd(const char* args, WorldSession* m_s
 		bool foundmatch;
 		for( i = 0; i < j && numFound < 25; ++i )
 		{
-			AchievementEntry const* achievement = dbcAchievementStore.LookupRow(i);
+			AchievementEntry const* achievement = dbcAchievementStore.LookupRowForced(i);
 			if(achievement)
 			{
 				if( foundList.find(achievement->ID) != foundList.end() )
@@ -1248,7 +1248,7 @@ bool ChatHandler::HandleLookupAchievementCmd(const char* args, WorldSession* m_s
 		j = dbcAchievementCriteriaStore.GetNumRows();
 		for( i = 0; i < j && numFound < 25; ++i )
 		{
-			AchievementCriteriaEntry const* criteria = dbcAchievementCriteriaStore.LookupRow(i);
+			AchievementCriteriaEntry const* criteria = dbcAchievementCriteriaStore.LookupRowForced(i);
 			if( criteria )
 			{
 				if( foundList.find(criteria->ID) != foundList.end() )
@@ -1270,7 +1270,7 @@ bool ChatHandler::HandleLookupAchievementCmd(const char* args, WorldSession* m_s
 				recout += ": |cfffff000";
 				recout += criteria->name;
 				strm.str("");
-				AchievementEntry const* achievement = dbcAchievementStore.LookupEntry(criteria->referredAchievement);
+				AchievementEntry const* achievement = dbcAchievementStore.LookupEntryForced(criteria->referredAchievement);
 				if( achievement )
 				{
 					// create achievement link

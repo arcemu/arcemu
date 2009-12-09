@@ -410,14 +410,14 @@ void Pet::SendTalentsToOwner()
 	size_t pos = data.wpos();
 	data << uint8( 0 );				// Amount of known talents (will be filled later)
 	
-	CreatureFamilyEntry* cfe = dbcCreatureFamily.LookupEntry( GetCreatureInfo()->Family );
+	CreatureFamilyEntry* cfe = dbcCreatureFamily.LookupEntryForced( GetCreatureInfo()->Family );
 	if( !cfe || cfe->talenttree < 0 )
 		return;
 
 	// go through talent trees
 	for( uint32 tte_id = PET_TALENT_TREE_START; tte_id <= PET_TALENT_TREE_END; tte_id++ )
     {
-        TalentTabEntry * tte = dbcTalentTab.LookupEntry( tte_id );
+        TalentTabEntry * tte = dbcTalentTab.LookupEntryForced( tte_id );
         if( tte == NULL )
             continue;
 
@@ -429,7 +429,7 @@ void Pet::SendTalentsToOwner()
 		for( uint32 t_id = 1; t_id < dbcTalent.GetNumRows(); t_id++  )
 		{
 			// get talent entries for our talent tree
-			te = dbcTalent.LookupRow( t_id );
+			te = dbcTalent.LookupRowForced( t_id );
 			if( te == NULL || te->TalentTree != tte_id )
 				continue;
 			
@@ -697,7 +697,7 @@ void Pet::InitializeMe( bool first )
 			do
 			{
 				Field * f = query->Fetch();
-				SpellEntry* spell = dbcSpell.LookupEntry( f[2].GetUInt32() );
+				SpellEntry* spell = dbcSpell.LookupEntryForced( f[2].GetUInt32() );
 				uint16 flags = f[3].GetUInt16();
 				if( spell != NULL && mSpells.find( spell ) == mSpells.end() )
 					mSpells.insert( make_pair( spell, flags ) );
@@ -908,7 +908,7 @@ void Pet::UpdateSpellList( bool showLearnSpells )
 		else
 		{
 			// Get Creature family from DB (table creature_names, field family), load the skill line from CreatureFamily.dbc for use with SkillLineAbiliby.dbc entry
-			CreatureFamilyEntry* f = dbcCreatureFamily.LookupEntry( GetCreatureInfo()->Family );
+			CreatureFamilyEntry* f = dbcCreatureFamily.LookupEntryForced( GetCreatureInfo()->Family );
 			if( f )
 			{
 				s = f->skilline;
@@ -928,7 +928,7 @@ void Pet::UpdateSpellList( bool showLearnSpells )
 			// Update existing spell, or add new "automatic-acquired" spell
 			if( (sls->skilline == s || sls->skilline == s2) && sls->acquireMethod == 2 )
 			{
-				sp = dbcSpell.LookupEntry( sls->spell );
+				sp = dbcSpell.LookupEntryForced( sls->spell );
 				if( sp && getLevel() >= sp->baseLevel )
 				{
 					// Pet is able to learn this spell; now check if it already has it, or a higher rank of it
@@ -1123,7 +1123,7 @@ void Pet::WipeTalents()
 	rows = dbcTalent.GetNumRows();
 	for( i = 0; i < rows; i++ )
 	{
-		TalentEntry *te = dbcTalent.LookupRow( i );
+		TalentEntry *te = dbcTalent.LookupRowForced( i );
 		if( te == NULL || te->TalentTree < PET_TALENT_TREE_START || te->TalentTree > PET_TALENT_TREE_END ) // 409-Tenacity, 410-Ferocity, 411-Cunning
 			continue;
 		for( j = 0; j < 5; j++ )

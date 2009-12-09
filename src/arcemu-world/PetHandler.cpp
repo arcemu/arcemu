@@ -143,7 +143,7 @@ void WorldSession::HandlePetAction(WorldPacket & recv_data)
 	case PET_ACTION_SPELL:
 		{
 			// misc == spellid
-			SpellEntry * entry = dbcSpell.LookupEntry( misc );
+			SpellEntry * entry = dbcSpell.LookupEntryForced( misc );
 			if( entry == NULL ) 
 				return;
 
@@ -364,7 +364,7 @@ void WorldSession::HandleBuyStableSlot( WorldPacket &recv_data )
 	if( !_player->IsInWorld() || _player->GetStableSlotCount() >= 4 ) 
 		return;
 
-	BankSlotPrice* bsp = dbcStableSlotPrices.LookupEntry( _player->GetStableSlotCount() + 1 );
+	BankSlotPrice* bsp = dbcStableSlotPrices.LookupEntryForced( _player->GetStableSlotCount() + 1 );
 	int32 cost = ( bsp != NULL ) ? bsp->Price : 99999999;
 	
 	WorldPacket data( SMSG_STABLE_RESULT, 1 );
@@ -559,7 +559,7 @@ void WorldSession::HandlePetLearnTalent( WorldPacket & recvPacket )
 		return;
 
 	// find talent entry
-	TalentEntry *te = dbcTalent.LookupEntry( talentid );
+	TalentEntry *te = dbcTalent.LookupEntryForced( talentid );
 	if( te == NULL )
 		return;
 
@@ -595,7 +595,7 @@ void WorldSession::HandlePetLearnTalent( WorldPacket & recvPacket )
 		pPet->RemoveSpell( te->RankID[ talentcol - 1 ] );
 
 	// add spell, discount talent point
-	SpellEntry* sp = dbcSpell.LookupEntry( te->RankID[ talentcol ] );
+	SpellEntry* sp = dbcSpell.LookupEntryForced( te->RankID[ talentcol ] );
 	if( sp != NULL )
 	{
 		pPet->AddSpell( sp, true );

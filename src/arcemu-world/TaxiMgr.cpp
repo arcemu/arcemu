@@ -324,7 +324,7 @@ void TaxiMgr::_LoadTaxiNodes()
 
 	for(i = 0; i < dbcTaxiNode.GetNumRows(); i++)
 	{
-		DBCTaxiNode *node = dbcTaxiNode.LookupRow(i);
+		DBCTaxiNode *node = dbcTaxiNode.LookupRowForced(i);
 		if (node)
 		{
 			TaxiNode *n = new TaxiNode;
@@ -349,7 +349,7 @@ void TaxiMgr::_LoadTaxiPaths()
 
 	for(i = 0; i < dbcTaxiPath.GetNumRows(); i++)
 	{
-		DBCTaxiPath *path = dbcTaxiPath.LookupRow(i);
+		DBCTaxiPath *path = dbcTaxiPath.LookupRowForced(i);
 
 		if (path)
 		{
@@ -362,7 +362,7 @@ void TaxiMgr::_LoadTaxiPaths()
 			//Load Nodes
 			for(j = 0; j < dbcTaxiPathNode.GetNumRows(); j++)
 			{
-				DBCTaxiPathNode *pathnode = dbcTaxiPathNode.LookupRow(j);
+				DBCTaxiPathNode *pathnode = dbcTaxiPathNode.LookupRowForced(j);
 
 				if (pathnode)
 				{

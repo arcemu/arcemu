@@ -352,7 +352,7 @@ void ObjectMgr::LoadSpellSkills()
 
 	for(i = 0; i < dbcSkillLineSpell.GetNumRows(); i++)
 	{
-		skilllinespell *sp = dbcSkillLineSpell.LookupRow(i);
+		skilllinespell *sp = dbcSkillLineSpell.LookupRowForced(i);
 		if (sp)
 		{
 			mSpellSkills[sp->spell] = sp;
@@ -1417,7 +1417,7 @@ void ObjectMgr::LoadTotemSpells()
 	{
 		Field *fields = result->Fetch();
 		spellid = fields[1].GetUInt32();
-		sp = dbcSpell.LookupEntry(spellid);
+		sp = dbcSpell.LookupEntryForced(spellid);
 		if(!spellid || !sp) continue;
 
 		m_totemSpells.insert( TotemSpellMap::value_type( fields[0].GetUInt32(), sp ));
@@ -1708,7 +1708,7 @@ void ObjectMgr::LoadAchievementCriteriaList()
 {
 	for (uint32 rowId = 0; rowId<dbcAchievementCriteriaStore.GetNumRows(); ++rowId)
 	{
-		AchievementCriteriaEntry const* criteria = dbcAchievementCriteriaStore.LookupRow(rowId);
+		AchievementCriteriaEntry const* criteria = dbcAchievementCriteriaStore.LookupRowForced(rowId);
 		if(!criteria)
 			continue;
 
@@ -1732,7 +1732,7 @@ void ObjectMgr::CorpseAddEventDespawn(Corpse *pCorpse)
 void ObjectMgr::DespawnCorpse(uint64 Guid)
 {
 	Corpse * pCorpse = objmgr.GetCorpse((uint32)Guid);
-	if(pCorpse == 0)	// Already Deleted
+	if(pCorpse == NULL)	// Already Deleted
 		return;
 
 	pCorpse->Despawn();
@@ -2260,7 +2260,7 @@ void ObjectMgr::LoadDefaultPetSpells()
 			Field * f = result->Fetch();
 			uint32 Entry = f[0].GetUInt32();
 			uint32 spell = f[1].GetUInt32();
-			SpellEntry * sp = dbcSpell.LookupEntry(spell);
+			SpellEntry * sp = dbcSpell.LookupEntryForced(spell);
 
 			if(spell && Entry && sp)
 			{
@@ -2366,7 +2366,7 @@ void ObjectMgr::LoadSpellOverride()
 			{
 				Field *fieldsIn = resultIn->Fetch();
 				spellid = fieldsIn[0].GetUInt32();
-				sp = dbcSpell.LookupEntry(spellid);
+				sp = dbcSpell.LookupEntryForced(spellid);
 				if(!spellid || !sp)
 					continue;
 				list->push_back(sp);

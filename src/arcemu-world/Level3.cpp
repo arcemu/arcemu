@@ -410,7 +410,7 @@ bool ChatHandler::HandleLearnCommand(const char* args, WorldSession *m_session)
 		spell = GetSpellIDFromLink( args );
 	}
 
-	SpellEntry * sp = dbcSpell.LookupEntry( spell );
+	SpellEntry * sp = dbcSpell.LookupEntryForced( spell );
 	if( !sp )
 	{
 		SystemMessage(m_session, "Invalid spell %u", spell);
@@ -1201,7 +1201,7 @@ bool ChatHandler::HandleAddItemSetCommand(const char* args, WorldSession* m_sess
 	return true;
 	}
 
-	ItemSetEntry *entry = dbcItemSet.LookupEntry(setid);
+	ItemSetEntry *entry = dbcItemSet.LookupEntryForced(setid);
 	std::list<ItemPrototype*>* l = objmgr.GetListForItemSet(setid);
 	if(!entry || !l)
 	{
@@ -1690,7 +1690,7 @@ bool ChatHandler::HandleAddPetSpellCommand(const char* args, WorldSession* m_ses
 	}
 
 	uint32 SpellId = atol(args);
-	SpellEntry * spell = dbcSpell.LookupEntry(SpellId);
+	SpellEntry * spell = dbcSpell.LookupEntryForced(SpellId);
 	if(!SpellId || !spell)
 	{
 		RedSystemMessage(m_session, "Invalid spell id requested.");
@@ -1716,7 +1716,7 @@ bool ChatHandler::HandleRemovePetSpellCommand(const char* args, WorldSession* m_
 	}
 
 	uint32 SpellId = atol(args);
-	SpellEntry * spell = dbcSpell.LookupEntry(SpellId);
+	SpellEntry * spell = dbcSpell.LookupEntryForced(SpellId);
 	if(!SpellId || !spell)
 	{
 		RedSystemMessage(m_session, "Invalid spell id requested.");
@@ -2053,7 +2053,7 @@ bool ChatHandler::HandleCastAllCommand(const char* args, WorldSession* m_session
 	}
 	Player * plr;
 	uint32 spellid = atol(args);
-	SpellEntry * info = dbcSpell.LookupEntry(spellid);
+	SpellEntry * info = dbcSpell.LookupEntryForced(spellid);
 	if(!info)
 	{
 		RedSystemMessage(m_session, "Invalid spell specified.");

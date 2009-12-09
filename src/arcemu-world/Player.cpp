@@ -756,8 +756,8 @@ bool Player::Create(WorldPacket& data )
 	m_restState = 0;
 
 	// set race dbc
-	myRace = dbcCharRace.LookupEntry(race);
-	myClass = dbcCharClass.LookupEntry(class_);
+	myRace = dbcCharRace.LookupEntryForced(race);
+	myClass = dbcCharClass.LookupEntryForced(class_);
 	if(!myRace || !myClass)
 	{
 		// information not found
@@ -1370,7 +1370,7 @@ bool Player::HasOverlayUncovered(uint32 overlayID)
 
 bool Player::HasAreaExplored(AreaTable const * at)
 {
-	if (at == 0)
+	if (at == NULL)
 		return false;
 
 	int offset = at->explorationFlag / 32;
@@ -1447,8 +1447,8 @@ void Player::_EventExploration()
 		}
 	}
 
-	AreaTable * at = dbcArea.LookupEntry(AreaId);
-	if(at == 0)
+	AreaTable * at = dbcArea.LookupEntryForced(AreaId);
+	if(at == NULL)
 		return;
 
 	/*char areaname[200];
@@ -1511,7 +1511,7 @@ void Player::_EventExploration()
 		//second AT check for subzones.
 		if(at->ZoneId)
 		{
-			AreaTable * at2 = dbcArea.LookupEntry(at->ZoneId);
+			AreaTable * at2 = dbcArea.LookupEntryForced(at->ZoneId);
 			if(at2 && (at2->AreaFlags & AREA_CITY_AREA || at2->AreaFlags & AREA_CITY ) )
 			{
 				if((at2->category == AREAC_ALLIANCE_TERRITORY && GetTeam() == 0) || (at2->category == AREAC_HORDE_TERRITORY && GetTeam() == 1) )
@@ -1950,7 +1950,7 @@ void Player::ActivateSpec(uint8 spec)
 	// remove old glyphs
 	for (uint8 i = 0; i < GLYPHS_COUNT; ++i)
 	{
-		GlyphPropertyEntry * glyph = dbcGlyphProperty.LookupEntry(m_specs[OldSpec].glyphs[i]);
+		GlyphPropertyEntry * glyph = dbcGlyphProperty.LookupEntryForced(m_specs[OldSpec].glyphs[i]);
 		if (glyph == NULL)
 			continue;
 
@@ -1970,7 +1970,7 @@ void Player::ActivateSpec(uint8 spec)
 	// add new glyphs
 	for (uint8 i = 0; i < GLYPHS_COUNT; ++i)
 	{
-		GlyphPropertyEntry * glyph = dbcGlyphProperty.LookupEntry(m_specs[m_talentActiveSpec].glyphs[i]);
+		GlyphPropertyEntry * glyph = dbcGlyphProperty.LookupEntryForced(m_specs[m_talentActiveSpec].glyphs[i]);
 		if(glyph == NULL)
 			continue;
 
@@ -4281,7 +4281,7 @@ void Player::_ApplyItemMods(Item* item, int16 slot, bool apply, bool justdrokedo
 	// Set
 	if( setid != 0 )
 	{
-		ItemSetEntry* set = dbcItemSet.LookupEntry( setid );
+		ItemSetEntry* set = dbcItemSet.LookupEntryForced( setid );
 		ASSERT( set );
 		ItemSet* Set = NULL;
 		std::list<ItemSet>::iterator i;
@@ -5187,7 +5187,7 @@ void Player::RepopAtGraveyard(float ox, float oy, float oz, uint32 mapid)
 	else
 	{
 		uint32 areaid = sInstanceMgr.GetMap(mapid)->GetAreaID(ox,oy);
-		AreaTable * at = dbcArea.LookupEntry(areaid);
+		AreaTable * at = dbcArea.LookupEntryForced(areaid);
 		if(!at) return;
 
 		// uint32 mzone = ( at->ZoneId ? at->ZoneId : at->AreaId);
@@ -6682,7 +6682,7 @@ void Player::SendPetUntrainConfirm()
 
 int32 Player::CanShootRangedWeapon( uint32 spellid, Unit* target, bool autoshot )
 {
-	SpellEntry* spellinfo = dbcSpell.LookupEntry( spellid );
+	SpellEntry* spellinfo = dbcSpell.LookupEntryForced( spellid );
 
 	if( spellinfo == NULL )
 		return -1;
@@ -7209,7 +7209,7 @@ void Player::Reset_Talents()
 	// Loop through all talents.
 	for(i = 0; i < numRows; ++i)
 	{
-		TalentEntry *tmpTalent = dbcTalent.LookupRow(i);
+		TalentEntry *tmpTalent = dbcTalent.LookupRowForced(i);
 		if( tmpTalent == NULL )
 		{
 			// should not occur
@@ -7228,7 +7228,7 @@ void Player::Reset_Talents()
 		{
 			if( tmpTalent->RankID[j] != 0 )
 			{
-				spellInfo = dbcSpell.LookupEntry( tmpTalent->RankID[j] );
+				spellInfo = dbcSpell.LookupEntryForced( tmpTalent->RankID[j] );
 				if( spellInfo != NULL )
 				{
 					for(k = 0; k < 3; ++k)
@@ -7237,7 +7237,7 @@ void Player::Reset_Talents()
 						{
 							// removeSpell(spellInfo->EffectTriggerSpell[k], false, 0, 0);
 							// remove higher ranks of this spell too (like earth shield lvl 1 is talent and the rest is taught from trainer)
-							spellInfo2 = dbcSpell.LookupEntry( spellInfo->EffectTriggerSpell[k] );
+							spellInfo2 = dbcSpell.LookupEntryForced( spellInfo->EffectTriggerSpell[k] );
 							if( spellInfo2 != NULL )
 							{
 								removeSpellByHashName(spellInfo2->NameHash);
@@ -7670,7 +7670,7 @@ void Player::RemoveSpellsFromLine(uint32 skill_line)
 	uint32 cnt = dbcSkillLineSpell.GetNumRows();
 	for(uint32 i= 0; i < cnt; i++)
 	{
-		skilllinespell * sp = dbcSkillLineSpell.LookupRow(i);
+		skilllinespell * sp = dbcSkillLineSpell.LookupRowForced(i);
 		if(sp)
 		{
 			if(sp->skilline == skill_line)
@@ -8027,7 +8027,7 @@ void Player::ClearCooldownForSpell(uint32 spell_id)
 	// remove cooldown data from Server side lists
 	uint32 i;
 	PlayerCooldownMap::iterator itr, itr2;
-	SpellEntry * spe = dbcSpell.LookupEntry(spell_id);
+	SpellEntry * spe = dbcSpell.LookupEntryForced(spell_id);
 	if(!spe) return;
 
 	for(i = 0; i < NUM_COOLDOWN_TYPES; ++i)
@@ -8538,7 +8538,7 @@ void Player::ZoneUpdate(uint32 ZoneId)
 	sHookInterface.OnZone(this, ZoneId);
 	CALL_INSTANCE_SCRIPT_EVENT( m_mapMgr, OnZoneChange )( this, ZoneId, oldzone );
 
-	AreaTable * at = dbcArea.LookupEntry(GetAreaID());
+	AreaTable * at = dbcArea.LookupEntryForced(GetAreaID());
 	if(at && ( at->category == AREAC_SANCTUARY || at->AreaFlags & AREA_SANCTUARY ) )
 	{
 		Unit * pUnit = (GetSelection() == 0) ? 0 : (m_mapMgr ? m_mapMgr->GetUnit(GetSelection()) : 0);
@@ -9286,7 +9286,7 @@ void Player::ForceZoneUpdate()
 	if(!GetMapMgr()) return;
 
 	uint16 areaId = GetMapMgr()->GetAreaID(GetPositionX(), GetPositionY());
-	AreaTable * at = dbcArea.LookupEntry(areaId);
+	AreaTable * at = dbcArea.LookupEntryForced(areaId);
 	if(!at) return;
 
 	if(at->ZoneId && at->ZoneId != m_zoneId)
@@ -9359,8 +9359,8 @@ void Player::SetGuildRank(uint32 guildRank)
 
 void Player::UpdatePvPArea()
 {
-	AreaTable * at = dbcArea.LookupEntry(m_AreaID);
-	if(at == 0)
+	AreaTable * at = dbcArea.LookupEntryForced(m_AreaID);
+	if(at == NULL)
 		return;
 
 #ifdef PVP_REALM_MEANS_CONSTANT_PVP
@@ -9410,7 +9410,7 @@ void Player::UpdatePvPArea()
 		//fix for zone areas.
 		if(at->ZoneId)
 		{
-			AreaTable * at2 = dbcArea.LookupEntry(at->ZoneId);
+			AreaTable * at2 = dbcArea.LookupEntryForced(at->ZoneId);
 			if(at2 && (at2->category == AREAC_ALLIANCE_TERRITORY && GetTeam() == 0 || at2->category == AREAC_HORDE_TERRITORY && GetTeam() == 1))
 			{
 				if(!HasFlag(PLAYER_FLAGS, PLAYER_FLAG_PVP_TOGGLE) && !m_pvpTimer)
@@ -9423,7 +9423,7 @@ void Player::UpdatePvPArea()
 			//enemy territory check
 			if(at2 && ( at2->AreaFlags & AREA_CITY_AREA || at2->AreaFlags & AREA_CITY ) )
 			{
-				if(at2 && (at2->category == AREAC_ALLIANCE_TERRITORY && GetTeam() == 1 || at2->category == AREAC_HORDE_TERRITORY && GetTeam() == 0))
+				if(at2->category == AREAC_ALLIANCE_TERRITORY && GetTeam() == 1 || at2->category == AREAC_HORDE_TERRITORY && GetTeam() == 0)
 				{
 					if(!IsPvPFlagged())
 						SetPvPFlag();
@@ -9513,7 +9513,7 @@ void Player::LoginPvPSetup()
 	// Make sure we know our area ID.
 	_EventExploration();
 
-	AreaTable * at = dbcArea.LookupEntry( ( m_AreaID != 0 ) ? m_AreaID : m_zoneId );
+	AreaTable * at = dbcArea.LookupEntryForced( ( m_AreaID != 0 ) ? m_AreaID : m_zoneId );
 
 	if ( at != NULL && isAlive() && ( at->category == AREAC_CONTESTED || ( GetTeam() == 0 && at->category == AREAC_HORDE_TERRITORY ) || ( GetTeam() == 1 && at->category == AREAC_ALLIANCE_TERRITORY ) ) )
 		CastSpell(this, PLAYER_HONORLESS_TARGET_SPELL, true);
@@ -9547,10 +9547,10 @@ void Player::PvPToggle()
 	    {
 		    if(IsPvPFlagged())
 		    {
-                AreaTable * at = dbcArea.LookupEntry(m_AreaID);
+                AreaTable * at = dbcArea.LookupEntryForced(m_AreaID);
                 if(at && ( at->AreaFlags & AREA_CITY_AREA || at->AreaFlags & AREA_CITY ) )
                 {
-                    if(at && (at->category == AREAC_ALLIANCE_TERRITORY && GetTeam() == 1 || at->category == AREAC_HORDE_TERRITORY && GetTeam() == 0))
+                    if( at->category == AREAC_ALLIANCE_TERRITORY && GetTeam() == 1 || at->category == AREAC_HORDE_TERRITORY && GetTeam() == 0 )
                     {
                     }
                     else
@@ -9588,8 +9588,8 @@ void Player::PvPToggle()
 #else
     else if(sWorld.GetRealmType() == REALM_PVP)
     {
-        AreaTable * at = dbcArea.LookupEntry(m_AreaID);
-	    if(at == 0)
+        AreaTable * at = dbcArea.LookupEntryForced(m_AreaID);
+	    if(at == NULL)
             return;
 
 	    // This is where all the magic happens :P
@@ -9631,7 +9631,7 @@ void Player::PvPToggle()
         {
             if(at->ZoneId)
             {
-                AreaTable * at2 = dbcArea.LookupEntry(at->ZoneId);
+                AreaTable * at2 = dbcArea.LookupEntryForced(at->ZoneId);
                 if(at2 && (at2->category == AREAC_ALLIANCE_TERRITORY && GetTeam() == 0 || at2->category == AREAC_HORDE_TERRITORY && GetTeam() == 1))
                 {
                     if(m_pvpTimer > 0)
@@ -9733,7 +9733,7 @@ void Player::CompleteLoading()
 
 	for (itr = mSpells.begin(); itr != mSpells.end(); ++itr)
 	{
-		info = dbcSpell.LookupEntry(*itr);
+		info = dbcSpell.LookupEntryForced(*itr);
 
 		if(	info
 			&& (info->Attributes & ATTRIBUTES_PASSIVE)  // passive
@@ -9830,7 +9830,7 @@ void Player::CompleteLoading()
 	{
 		// Check if we have an existing corpse.
 		Corpse * corpse = objmgr.GetCorpseByOwner(GetLowGUID());
-		if(corpse == 0)
+		if(corpse == NULL)
 		{
 			sEventMgr.AddEvent(this, &Player::RepopAtGraveyard, GetPositionX(),GetPositionY(),GetPositionZ(), GetMapId(), EVENT_PLAYER_CHECKFORCHEATS, 1000, 1,EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
 		}
@@ -10829,7 +10829,7 @@ void Player::RemoveFromBattlegroundQueue()
 
 void Player::_AddSkillLine(uint32 SkillLine, uint32 Curr_sk, uint32 Max_sk)
 {
-	skilllineentry * CheckedSkill = dbcSkillLine.LookupEntry(SkillLine);
+	skilllineentry * CheckedSkill = dbcSkillLine.LookupEntryForced(SkillLine);
 	if (!CheckedSkill) //skill doesn't exist, exit here
 		return;
 
@@ -10982,7 +10982,7 @@ void Player::_LearnSkillSpells(uint32 SkillLine, uint32 curr_sk)
 		// add new "automatic-acquired" spell
 		if( (sls->skilline == SkillLine) && (sls->acquireMethod == 1) )
 		{
-			sp = dbcSpell.LookupEntry( sls->spell );
+			sp = dbcSpell.LookupEntryForced( sls->spell );
 			if( sp && (curr_sk >= sls->minSkillLineRank) )
 			{
 				// Player is able to learn this spell; check if they already have it, or a higher rank (shouldn't, but just in case)
@@ -11999,7 +11999,7 @@ void Player::UpdatePotionCooldown()
 		{
 			if( proto->Spells[i].Id && proto->Spells[i].Trigger == USE )
 			{
-				SpellEntry *spellInfo = dbcSpell.LookupEntry(proto->Spells[i].Id );
+				SpellEntry *spellInfo = dbcSpell.LookupEntryForced(proto->Spells[i].Id );
 				if( spellInfo != NULL )
 				{
 					Cooldown_AddItem( proto, i );
@@ -13217,7 +13217,7 @@ void Player::CalcExpertise()
 
 void Player::UpdateKnownCurrencies(uint32 itemId, bool apply)
 {
-    if(CurrencyTypesEntry const* ctEntry = dbcCurrencyTypesStore.LookupEntry(itemId))
+    if(CurrencyTypesEntry const* ctEntry = dbcCurrencyTypesStore.LookupEntryForced(itemId))
     {
         if(apply)
 		{
@@ -13504,7 +13504,7 @@ void Player::LearnTalent(uint32 talentid, uint32 rank, bool isPreviewed ){
 		for (unsigned int i = 0; i < dbcTalent.GetNumRows(); ++i)		  // Loop through all talents.
 		{
 			// Someday, someone needs to revamp
-			TalentEntry *tmpTalent = dbcTalent.LookupRow(i);
+			TalentEntry *tmpTalent = dbcTalent.LookupRowForced(i);
 			if (tmpTalent)								  // the way talents are tracked
 			{
 				if (tmpTalent->TalentTree == tTree)

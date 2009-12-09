@@ -1697,14 +1697,14 @@ void Object::_setFaction()
 
 	if(GetTypeId() == TYPEID_UNIT || GetTypeId() == TYPEID_PLAYER)
 	{
-		factT = dbcFactionTemplate.LookupEntry(GetUInt32Value(UNIT_FIELD_FACTIONTEMPLATE));
+		factT = dbcFactionTemplate.LookupEntryForced(GetUInt32Value(UNIT_FIELD_FACTIONTEMPLATE));
 		if( !factT )
 			sLog.outDetail("Unit does not have a valid faction. It will make him act stupid in world. Don't blame us, blame yourself for not checking :P, faction %u set to entry %u",GetUInt32Value(UNIT_FIELD_FACTIONTEMPLATE),GetUInt32Value(OBJECT_FIELD_ENTRY) );
 	}
 	else
 	if(GetTypeId() == TYPEID_GAMEOBJECT)
 	{
-		factT = dbcFactionTemplate.LookupEntry(GetUInt32Value(GAMEOBJECT_FACTION));
+		factT = dbcFactionTemplate.LookupEntryForced(GetUInt32Value(GAMEOBJECT_FACTION));
 		if( !factT )
 			sLog.outDetail("Game Object does not have a valid faction. It will make him act stupid in world. Don't blame us, blame yourself for not checking :P, faction %u set to entry %u",GetUInt32Value(GAMEOBJECT_FACTION),GetUInt32Value(OBJECT_FIELD_ENTRY) );
 	}
@@ -1716,7 +1716,7 @@ void Object::_setFaction()
 //		return;
 	}
 	m_faction = factT;
-	m_factionDBC = dbcFaction.LookupEntry(factT->Faction);
+	m_factionDBC = dbcFaction.LookupEntryForced(factT->Faction);
 	if( !m_factionDBC )
 		m_factionDBC = dbcFaction.LookupRow( 0 );
 }
@@ -2429,7 +2429,7 @@ void Object::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
 		{
 			if( static_cast< Player* >( pVictim)->HasSpell( 20711 ) ) //check for spirit of Redemption
 			{
-				SpellEntry* sorInfo = dbcSpell.LookupEntry(27827);
+				SpellEntry* sorInfo = dbcSpell.LookupEntryForced(27827);
 				if( sorInfo != NULL )
 				{
 					Spell *sor = new Spell(pVictim, sorInfo, true, NULL);
@@ -2894,7 +2894,7 @@ void Object::SpellNonMeleeDamageLog(Unit *pVictim, uint32 spellID, uint32 damage
 	if(!pVictim || !pVictim->isAlive())
 		return;
 
-	SpellEntry *spellInfo = dbcSpell.LookupEntry( spellID );
+	SpellEntry *spellInfo = dbcSpell.LookupEntryForced( spellID );
 	if(!spellInfo)
         return;
 
@@ -3112,7 +3112,7 @@ void Object::SpellNonMeleeDamageLog(Unit *pVictim, uint32 spellID, uint32 damage
 		if( spellpower > hp )
 			spellpower = hp;
 
-		SpellEntry * entry = dbcSpell.LookupEntry( 44413 );
+		SpellEntry * entry = dbcSpell.LookupEntryForced( 44413 );
 		if( !entry ) 
 			return;
 

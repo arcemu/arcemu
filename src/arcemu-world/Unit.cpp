@@ -1625,7 +1625,7 @@ uint32 Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, ui
 						}
 						if(!amount)
 							continue;
-						SpellEntry *spellInfo = dbcSpell.LookupEntry(spellId );
+						SpellEntry *spellInfo = dbcSpell.LookupEntryForced(spellId );
 						if(!spellInfo)
 							continue;
 						Spell *spell = new Spell(this, spellInfo ,true, NULL);
@@ -1856,8 +1856,8 @@ uint32 Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, ui
                     {
                         if(!IsPlayer() || !dmg)
                             continue;
-                        SpellEntry *parentproc= dbcSpell.LookupEntry(origId);
-                        SpellEntry *spellInfo = dbcSpell.LookupEntry(spellId);
+                        SpellEntry *parentproc= dbcSpell.LookupEntryForced(origId);
+                        SpellEntry *spellInfo = dbcSpell.LookupEntryForced(spellId);
 						if (!parentproc || !spellInfo)
 							continue;
 						int32 val = parentproc->EffectBasePoints[0] + 1;
@@ -2345,7 +2345,7 @@ uint32 Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, ui
 						Player* c = static_cast< Player* >( this );
 						if( !c->LastSeal )
 							continue;
-						SpellEntry *spellInfo = dbcSpell.LookupEntry( c->LastSeal );
+						SpellEntry *spellInfo = dbcSpell.LookupEntryForced( c->LastSeal );
 						if( !spellInfo )
 							continue;
 					}break;
@@ -2705,7 +2705,7 @@ uint32 Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, ui
 
 				if( CastingSpell )
 				{
-					SpellCastTime *sd = dbcSpellCastTime.LookupEntry(CastingSpell->CastingTimeIndex);
+					SpellCastTime *sd = dbcSpellCastTime.LookupEntryForced(CastingSpell->CastingTimeIndex);
 					if( !sd ) 
 						continue; // this shouldn't happen though :P
 
@@ -5608,7 +5608,7 @@ uint32 Unit::AbsorbDamage( uint32 School, uint32* dmg )
 	for( i = Absorbs[School].begin(); i != Absorbs[School].end(); )
 	{
 		if(IsPlayer()){
-			SpellEntry *aSpell = dbcSpell.LookupEntry((*i)->spellid);
+			SpellEntry *aSpell = dbcSpell.LookupEntryForced((*i)->spellid);
 			//Cheat death
 			if( aSpell != NULL && aSpell->SpellFamilyName == 8 && aSpell->spellIconID == 2109 )
 			{
@@ -5892,7 +5892,7 @@ void Unit::EventSummonPetExpire()
 	{
 		if( (*itr)->GetEntry() == 7915 ) //Goblin Bomb
 		{
-			SpellEntry *spInfo = dbcSpell.LookupEntry( 13259 );
+			SpellEntry *spInfo = dbcSpell.LookupEntryForced( 13259 );
 			if( spInfo == NULL )
 				return;
 
@@ -5938,8 +5938,8 @@ uint8 Unit::CastSpell(Unit* Target, SpellEntry* Sp, bool triggered)
 
 uint8 Unit::CastSpell(Unit* Target, uint32 SpellID, bool triggered)
 {
-	SpellEntry * ent = dbcSpell.LookupEntry(SpellID);
-	if(ent == 0) return SPELL_FAILED_UNKNOWN;
+	SpellEntry * ent = dbcSpell.LookupEntryForced(SpellID);
+	if(ent == NULL) return SPELL_FAILED_UNKNOWN;
 
 	return CastSpell(Target, ent, triggered);
 }
@@ -5958,8 +5958,8 @@ uint8 Unit::CastSpell(uint64 targetGuid, SpellEntry* Sp, bool triggered)
 
 uint8 Unit::CastSpell(uint64 targetGuid, uint32 SpellID, bool triggered)
 {
-	SpellEntry * ent = dbcSpell.LookupEntry(SpellID);
-	if(ent == 0) return SPELL_FAILED_UNKNOWN;
+	SpellEntry * ent = dbcSpell.LookupEntryForced(SpellID);
+	if(ent == NULL) return SPELL_FAILED_UNKNOWN;
 
 	return CastSpell(targetGuid, ent, triggered);
 }
@@ -6225,7 +6225,7 @@ void Unit::RemoveAurasByInterruptFlagButSkip(uint32 flag, uint32 skip)
 								continue;
 
 							//this spell gets removed only when casting smite
-						    SpellEntry *spi = dbcSpell.LookupEntry( skip );
+						    SpellEntry *spi = dbcSpell.LookupEntryForced( skip );
 							if( spi && spi->NameHash != SPELL_HASH_SMITE )
 								continue;
 						}break;
@@ -6235,7 +6235,7 @@ void Unit::RemoveAurasByInterruptFlagButSkip(uint32 flag, uint32 skip)
 								continue;
 							if( m_currentSpell && m_currentSpell->GetProto()->NameHash == SPELL_HASH_INCINERATE )
 								continue;
-							SpellEntry *spi = dbcSpell.LookupEntry( skip );
+							SpellEntry *spi = dbcSpell.LookupEntryForced( skip );
 							if( spi && spi->NameHash != SPELL_HASH_SHADOW_BOLT && spi->NameHash != SPELL_HASH_INCINERATE )
 								continue;
 						}break;
@@ -6244,7 +6244,7 @@ void Unit::RemoveAurasByInterruptFlagButSkip(uint32 flag, uint32 skip)
 						{
 							if( m_currentSpell && m_currentSpell->m_spellInfo->NameHash == SPELL_HASH_FLASH_OF_LIGHT)
 								continue;
-							SpellEntry *spi = dbcSpell.LookupEntry( skip );
+							SpellEntry *spi = dbcSpell.LookupEntryForced( skip );
 							if( spi && spi->NameHash != SPELL_HASH_FLASH_OF_LIGHT )
 								continue;
 						}break;
@@ -6252,13 +6252,13 @@ void Unit::RemoveAurasByInterruptFlagButSkip(uint32 flag, uint32 skip)
 						{
 							if( m_currentSpell && m_currentSpell->GetProto()->NameHash == SPELL_HASH_SHADOW_BOLT)
 								continue;
-							SpellEntry *spi = dbcSpell.LookupEntry( skip );
+							SpellEntry *spi = dbcSpell.LookupEntryForced( skip );
 							if( spi && spi->NameHash != SPELL_HASH_SHADOW_BOLT )
 								continue;
 						}break;
 					case 16166: // [Shaman] Elemental Mastery
 						{
-						    SpellEntry *spi = dbcSpell.LookupEntry( skip );
+						    SpellEntry *spi = dbcSpell.LookupEntryForced( skip );
 							if (spi && !(spi->School==SCHOOL_FIRE||spi->School==SCHOOL_FROST||spi->School==SCHOOL_NATURE))
 								continue;
 						}break;
@@ -7732,7 +7732,7 @@ void Unit::EventStunOrImmobilize(Unit *proc_target, bool is_victim)
 		if( t_trigger_on_stun_chance < 100 && !Rand( t_trigger_on_stun_chance ) )
 			return;
 
-		SpellEntry *spellInfo = dbcSpell.LookupEntry(t_trigger_on_stun);
+		SpellEntry *spellInfo = dbcSpell.LookupEntryForced(t_trigger_on_stun);
 
 		if(!spellInfo)
 			return;
@@ -7775,7 +7775,7 @@ void Unit::EventChill(Unit *proc_target, bool is_victim)
 		if( t_trigger_on_chill_chance < 100 && !Rand( t_trigger_on_chill_chance ) )
 			return;
 
-		SpellEntry *spellInfo = dbcSpell.LookupEntry(t_trigger_on_chill);
+		SpellEntry *spellInfo = dbcSpell.LookupEntryForced(t_trigger_on_chill);
 
 		if(!spellInfo)
 			return;

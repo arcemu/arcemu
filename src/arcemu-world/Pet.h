@@ -190,19 +190,19 @@ public:
 	uint16 GetSpellState(SpellEntry * sp);
 	bool HasSpell( uint32 SpellID )
 	{
-		SpellEntry * sp = dbcSpell.LookupEntry( SpellID );
+		SpellEntry * sp = dbcSpell.LookupEntryForced( SpellID );
 		if( sp )
 			return mSpells.find( sp ) != mSpells.end();
 		return false;
 	}
 	ARCEMU_INLINE void RemoveSpell( uint32 SpellID )
 	{
-		SpellEntry * sp = dbcSpell.LookupEntry( SpellID );
+		SpellEntry * sp = dbcSpell.LookupEntryForced( SpellID );
 		if( sp ) RemoveSpell( sp );
 	}
 	ARCEMU_INLINE void SetSpellState( uint32 SpellID, uint16 State )
 	{
-		SpellEntry * sp = dbcSpell.LookupEntry( SpellID );
+		SpellEntry * sp = dbcSpell.LookupEntryForced( SpellID );
 		if( sp ) SetSpellState(sp, State);
 	}
 	ARCEMU_INLINE uint16 GetSpellState( uint32 SpellID )
@@ -210,7 +210,7 @@ public:
 		if( SpellID == 0 )
 			return DEFAULT_SPELL_STATE;
 
-		SpellEntry * sp = dbcSpell.LookupEntry( SpellID );
+		SpellEntry * sp = dbcSpell.LookupEntryForced( SpellID );
 		if( sp )
 			return GetSpellState( sp );
 		return DEFAULT_SPELL_STATE;

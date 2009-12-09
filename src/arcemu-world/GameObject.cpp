@@ -436,7 +436,7 @@ void GameObject::InitAI()
 	}
     else if(pInfo->Type == GAMEOBJECT_TYPE_CHEST)
     {
-        Lock *pLock = dbcLock.LookupEntry(GetInfo()->SpellFocus);
+        Lock *pLock = dbcLock.LookupEntryForced(GetInfo()->SpellFocus);
         if(pLock)
         {
             for(uint32 i= 0; i < 5; i++)
@@ -467,7 +467,7 @@ void GameObject::InitAI()
 	if(!spellid || spellid == 22247)
 		return;
 
-	SpellEntry *sp= dbcSpell.LookupEntry(spellid);
+	SpellEntry *sp= dbcSpell.LookupEntryForced(spellid);
 	if(!sp)
 	{
 		spell = NULL;
@@ -514,7 +514,7 @@ bool GameObject::Load(GOSpawn *spawn)
 	if(spawn->faction)
 	{
 		SetUInt32Value(GAMEOBJECT_FACTION,spawn->faction);
-		m_faction = dbcFactionTemplate.LookupEntry(spawn->faction);
+		m_faction = dbcFactionTemplate.LookupEntryForced(spawn->faction);
 		if(m_faction)
 			m_factionDBC = dbcFaction.LookupEntry(m_faction->Faction);
 	}
@@ -812,7 +812,7 @@ uint32 GameObject::GetGOReqSkill()
 		return 0;
 	
 	//! Here we check the SpellFocus table against the dbcs
-	Lock *lock = dbcLock.LookupEntry( GetInfo()->SpellFocus );
+	Lock *lock = dbcLock.LookupEntryForced( GetInfo()->SpellFocus );
 	if(!lock) return 0;
 	for(uint32 i= 0;i<5;i++)
 		if(lock->locktype[i] == 2 && lock->minlockskill[i])

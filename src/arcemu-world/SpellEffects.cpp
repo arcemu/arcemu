@@ -409,7 +409,7 @@ void Spell::SpellEffectInstantKill(uint32 i)
 		}
 		if( DemonicSacEffectSpellId )
 		{
-			SpellEntry *se = dbcSpell.LookupEntry( DemonicSacEffectSpellId );
+			SpellEntry *se = dbcSpell.LookupEntryForced( DemonicSacEffectSpellId );
 			if( se && u_caster )
 				u_caster->CastSpell( u_caster, se, true );
 		}
@@ -424,7 +424,7 @@ void Spell::SpellEffectInstantKill(uint32 i)
 
 			//static_cast<Pet*>(u_caster)->Dismiss( true );
 
-			SpellEntry * se = dbcSpell.LookupEntry(5);
+			SpellEntry * se = dbcSpell.LookupEntryForced(5);
 			if( !se || static_cast< Pet* >( u_caster )->GetPetOwner() == NULL )
 				return;
 
@@ -442,7 +442,7 @@ void Spell::SpellEffectInstantKill(uint32 i)
 
 			//static_cast<Pet*>(unitTarget)->Dismiss( true );
 
-			SpellEntry * se = dbcSpell.LookupEntry(5);
+			SpellEntry * se = dbcSpell.LookupEntryForced(5);
 			if(!se) return;
 
 			SpellCastTargets targets( unitTarget->GetGUID() );
@@ -963,7 +963,7 @@ out:
 					{
 						if( Entry->type[c] && Entry->spell[c] )
 						{
-							SpellEntry *sp = dbcSpell.LookupEntry( Entry->spell[c] );
+							SpellEntry *sp = dbcSpell.LookupEntryForced( Entry->spell[c] );
 							if( sp == NULL )
 								return;
 
@@ -1574,7 +1574,7 @@ out:
 		{
 			if(!pSpellId)
 				return;
-			SpellEntry *spellInfo = dbcSpell.LookupEntry(pSpellId);
+			SpellEntry *spellInfo = dbcSpell.LookupEntryForced(pSpellId);
 			if(!spellInfo)
 				return;
 			uint32 heal32 = CalculateEffect(i,u_caster);
@@ -2422,7 +2422,7 @@ void Spell::SpellEffectHeal(uint32 i) // Heal
 				if(unitTarget && unitTarget->IsPlayer() && pSpellId && unitTarget->GetHealthPct()<30)
 				{
 					//check for that 10 second cooldown
-					SpellEntry *spellInfo = dbcSpell.LookupEntry(pSpellId );
+					SpellEntry *spellInfo = dbcSpell.LookupEntryForced(pSpellId );
 					if(spellInfo)
 					{
 						//heal value is received by the level of current active talent :s
@@ -2570,7 +2570,7 @@ void Spell::SpellEffectBind(uint32 i)
 	if(GetProto()->EffectMiscValue[i])
 	{
 		areaid = GetProto()->EffectMiscValue[i];
-		AreaTable * at = dbcArea.LookupEntry(areaid);
+		AreaTable * at = dbcArea.LookupEntryForced(areaid);
 		if(!at)
 			return;
 		mapid = at->mapId;
@@ -2822,7 +2822,7 @@ void Spell::SpellEffectCreateItem(uint32 i) // Create item
 
 		if ( learn_spell && p_caster->getLevel() > 60 && !p_caster->HasSpell( learn_spell ) && Rand( cast_chance ) )
 		{
-			SpellEntry* _spellproto = dbcSpell.LookupEntry( learn_spell );
+			SpellEntry* _spellproto = dbcSpell.LookupEntryForced( learn_spell );
 			if( _spellproto )
 			{
 				p_caster->BroadcastMessage( "%sDISCOVERY! You discovered the %s !|r", MSG_COLOR_YELLOW, _spellproto->Name );
@@ -2951,7 +2951,7 @@ void Spell::SpellEffectCreateItem(uint32 i) // Create item
 		// if something discovered learn p_caster that recipe and broadcast message
 		if ( discovered_recipe != 0 )
 		{
-			SpellEntry * se = dbcSpell.LookupEntry( discovered_recipe );
+			SpellEntry * se = dbcSpell.LookupEntryForced( discovered_recipe );
 			if ( se )
 			{
 				p_caster->addSpell( discovered_recipe );
@@ -3462,7 +3462,7 @@ void Spell::SpellEffectEnergize(uint32 i) // Energize
 	case 31786: // Paladin - Spiritual Attunement
 		if( ProcedOnSpell )
 		{
-			SpellEntry *motherspell = dbcSpell.LookupEntry(pSpellId);
+			SpellEntry *motherspell = dbcSpell.LookupEntryForced(pSpellId);
 			if(motherspell)
 			{
 				//heal amount from procspell (we only proceed on a heal spell)
@@ -3541,7 +3541,7 @@ void Spell::SpellEffectTriggerMissile(uint32 i) // Trigger Missile
 	uint32 spellid = GetProto()->EffectTriggerSpell[i];
 	if(!spellid) return;
 
-	SpellEntry *spInfo = dbcSpell.LookupEntry(spellid);
+	SpellEntry *spInfo = dbcSpell.LookupEntryForced(spellid);
 	if(!spInfo) return;
 
 	float spellRadius = GetRadius(i);
@@ -3593,7 +3593,7 @@ void Spell::SpellEffectOpenLock(uint32 i) // Open Lock
 				if(!itemTarget->locked)
 					return;
 
-				Lock *lock = dbcLock.LookupEntry( itemTarget->GetProto()->LockId );
+				Lock *lock = dbcLock.LookupEntryForced( itemTarget->GetProto()->LockId );
 				if(!lock) return;
 				for(int i = 0; i<5; i++)
 					if(lock->locktype[i] == 2 && lock->minlockskill[i] && lockskill >= lock->minlockskill[i])
@@ -4059,7 +4059,7 @@ void Spell::SpellEffectDispel(uint32 i) // Dispel
 				{
 					if( sp->NameHash == SPELL_HASH_UNSTABLE_AFFLICTION )
 					{
-						SpellEntry *spellInfo = dbcSpell.LookupEntry(31117);
+						SpellEntry *spellInfo = dbcSpell.LookupEntryForced(31117);
 						if ( spellInfo )
 						{
 							Spell *spell = new Spell(u_caster, spellInfo, true, NULL);
@@ -4178,7 +4178,7 @@ void Spell::SpellEffectSummonWild(uint32 i)  // Summon Wild
 			p->SetUInt32Value( UNIT_FIELD_FACTIONTEMPLATE, proto->Faction );
 		}
 
-		p->m_faction = dbcFactionTemplate.LookupEntry(proto->Faction);
+		p->m_faction = dbcFactionTemplate.LookupEntryForced(proto->Faction);
 		if(p->m_faction)
 			p->m_factionDBC = dbcFaction.LookupEntry(p->m_faction->Faction);
 		p->PushToWorld(u_caster->GetMapMgr());
@@ -4255,7 +4255,7 @@ void Spell::SpellEffectSkillStep(uint32 i) // Skill Step
 	if( skill == 242 )
 		skill = SKILL_LOCKPICKING; // somehow for lockpicking misc is different than the skill :s
 
-	skilllineentry* sk = dbcSkillLine.LookupEntry( skill );
+	skilllineentry* sk = dbcSkillLine.LookupEntryForced( skill );
 
 	if( !sk ) return;
 
@@ -4513,7 +4513,7 @@ void Spell::SpellEffectEnchantItem(uint32 i) // Enchant Item Permanent
 		return;
 	}
 
-	EnchantEntry * Enchantment = dbcEnchant.LookupEntry(GetProto()->EffectMiscValue[i]);
+	EnchantEntry * Enchantment = dbcEnchant.LookupEntryForced(GetProto()->EffectMiscValue[i]);
 
 	if(!Enchantment) 
 		return;
@@ -4539,7 +4539,7 @@ void Spell::SpellEffectEnchantItemTemporary(uint32 i)  // Enchant Item Temporary
 	// don't allow temporary enchants unless we're the owner of the item
 	if(itemTarget->GetOwner() != p_caster) return;
 
-	EnchantEntry * Enchantment = dbcEnchant.LookupEntry(GetProto()->EffectMiscValue[i]);
+	EnchantEntry * Enchantment = dbcEnchant.LookupEntryForced(GetProto()->EffectMiscValue[i]);
 	if(!Enchantment) return;
 
 	itemTarget->RemoveEnchantment(1);
@@ -4733,7 +4733,7 @@ void Spell::SpellEffectProficiency(uint32 i)
 	skilllinespell *skillability = objmgr.GetSpellSkill(GetProto()->Id);
 	if (skillability)
 		skill = skillability->skilline;
-	skilllineentry *sk = dbcSkillLine.LookupEntry(skill);
+	skilllineentry *sk = dbcSkillLine.LookupEntryForced(skill);
 	if(skill)
 	{
 		if(playerTarget)
@@ -4904,7 +4904,7 @@ void Spell::SpellEffectThreat(uint32 i) // Threat
 
 void Spell::SpellEffectTriggerSpell(uint32 i) // Trigger Spell
 {
-	SpellEntry *entry = dbcSpell.LookupEntry( GetProto()->EffectTriggerSpell[i] );
+	SpellEntry *entry = dbcSpell.LookupEntryForced( GetProto()->EffectTriggerSpell[i] );
 	if( !entry ) 
 		return;
 
@@ -5120,7 +5120,7 @@ void Spell::SpellEffectUseGlyph(uint32 i)
 	if( !p_caster ) return;
 
 	uint32 g_new = m_spellInfo->EffectMiscValue[i];
-	GlyphPropertyEntry * gp_new = dbcGlyphProperty.LookupEntry( g_new );
+	GlyphPropertyEntry * gp_new = dbcGlyphProperty.LookupEntryForced( g_new );
 	if( !gp_new )
 		return;
 
@@ -5138,13 +5138,13 @@ void Spell::SpellEffectUseGlyph(uint32 i)
 			return;
 		else
 		{
-			GlyphPropertyEntry * gp_old = dbcGlyphProperty.LookupEntry( g_old );
+			GlyphPropertyEntry * gp_old = dbcGlyphProperty.LookupEntryForced( g_old );
 			if( gp_old )
 				p_caster->RemoveAura( gp_old->SpellID );
 		}
 	}
 
-	GlyphSlotEntry * gs = dbcGlyphSlot.LookupEntry( p_caster->GetUInt32Value( PLAYER_FIELD_GLYPH_SLOTS_1 + m_glyphslot ) );
+	GlyphSlotEntry * gs = dbcGlyphSlot.LookupEntryForced( p_caster->GetUInt32Value( PLAYER_FIELD_GLYPH_SLOTS_1 + m_glyphslot ) );
 	if( gs )
 	{
 		if( gs->Type != gp_new->Type )
@@ -5751,16 +5751,16 @@ void Spell::SpellEffectScriptEffect(uint32 i) // Script Effect
 					sls = dbcSkillLineSpell.LookupRow(idx);
 					if( sls->skilline == SKILL_INSCRIPTION && sls->next == 0 )
 					{
-						SpellEntry* se1 = dbcSpell.LookupEntry(sls->spell);
+						SpellEntry* se1 = dbcSpell.LookupEntryForced(sls->spell);
 						if( se1 && se1->Effect[0] == SPELL_EFFECT_CREATE_ITEM )
 						{
 							ItemPrototype* itm = ItemPrototypeStorage.LookupEntry(se1->EffectItemType[0]);
 							if( itm && (itm->Spells[0].Id != 0) )
 							{
-								SpellEntry* se2 = dbcSpell.LookupEntry( itm->Spells[0].Id );
+								SpellEntry* se2 = dbcSpell.LookupEntryForced( itm->Spells[0].Id );
 								if( se2 && se2->Effect[0] == SPELL_EFFECT_USE_GLYPH )
 								{
-									GlyphPropertyEntry* gpe = dbcGlyphProperty.LookupEntry(se2->EffectMiscValue[0]);
+									GlyphPropertyEntry* gpe = dbcGlyphProperty.LookupEntryForced(se2->EffectMiscValue[0]);
 									if( gpe && gpe->Type == glyphType )
 									{
 										if( !p_caster->HasSpell(sls->spell) )
@@ -6221,7 +6221,7 @@ void Spell::SpellEffectEnchantHeldItem( uint32 i )
 			Duration = 10;
 		}
 	}
-	EnchantEntry * Enchantment = dbcEnchant.LookupEntry( GetProto()->EffectMiscValue[i] );
+	EnchantEntry * Enchantment = dbcEnchant.LookupEntryForced( GetProto()->EffectMiscValue[i] );
 
 	if( !Enchantment )
 		return;
@@ -6703,7 +6703,7 @@ void Spell::SpellEffectDestroyAllTotems(uint32 i)
 		if(p_caster->m_TotemSlots[x])
 		{
 			uint32 SpellID = p_caster->m_TotemSlots[x]->GetUInt32Value(UNIT_CREATED_BY_SPELL);
-			SpellEntry * sp = dbcSpell.LookupEntry(SpellID);
+			SpellEntry * sp = dbcSpell.LookupEntryForced(SpellID);
 			if (!sp)
 				continue;
 
@@ -7351,7 +7351,7 @@ void Spell::SpellEffectDualWield2H( uint32 i )
 void Spell::SpellEffectEnchantItemPrismatic(uint32 i)
 {
 	if(!itemTarget || !p_caster) return;
-	EnchantEntry * Enchantment = dbcEnchant.LookupEntry(GetProto()->EffectMiscValue[i]);
+	EnchantEntry * Enchantment = dbcEnchant.LookupEntryForced(GetProto()->EffectMiscValue[i]);
 	if(!Enchantment) return;
 
 	itemTarget->RemoveEnchantment(0);

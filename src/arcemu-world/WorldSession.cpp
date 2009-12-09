@@ -1108,7 +1108,7 @@ void WorldSession::SendRefundInfo( uint64 GUID ){
         if( RefundEntry.first == 0 || RefundEntry.second == 0)
             return;
 
-        ItemExtendedCostEntry *ex = dbcItemExtendedCost.LookupEntry( RefundEntry.second );
+        ItemExtendedCostEntry *ex = dbcItemExtendedCost.LookupEntryForced( RefundEntry.second );
         if( ex == NULL)
             return;
 
@@ -1237,7 +1237,7 @@ void WorldSession::HandleUnlearnSkillOpcode(WorldPacket& recv_data)
 	if(points_remaining==_player->GetUInt32Value(PLAYER_CHARACTER_POINTS2))
 	{
 		//we unlearned a skill so we enable a new one to be learned
-		skilllineentry *sk=dbcSkillLine.LookupEntry(skill_line);
+		skilllineentry *sk=dbcSkillLine.LookupEntryForced(skill_line);
 		if(!sk)
 			return;
 		if(sk->type==SKILL_TYPE_PROFESSION && points_remaining<2)

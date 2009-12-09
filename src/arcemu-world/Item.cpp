@@ -206,7 +206,7 @@ void Item::LoadFromDB(Field* fields, Player* plr, bool light )
 	{
 		if( sscanf( (*itr).c_str(), "%u,%u,%u", (unsigned int*)&enchant_id, (unsigned int*)&time_left, (unsigned int*)&enchslot) == 3 )
 		{
-			entry = dbcEnchant.LookupEntry( enchant_id );
+			entry = dbcEnchant.LookupEntryForced( enchant_id );
 			if( entry && entry->Id == enchant_id && m_itemProto->SubClass != ITEM_SUBCLASS_WEAPON_THROWN)
 			{
 				AddEnchantment( entry, time_left, ( time_left == 0 ), false, false, enchslot );
@@ -784,7 +784,7 @@ void Item::ApplyEnchantmentBonus( uint32 Slot, bool Apply )
 							float speed = (float)GetProto()->Delay;
 							/////// procChance calc ///////
 							float ppm = 0;
-							SpellEntry* sp = dbcSpell.LookupEntry( Entry->spell[c] );
+							SpellEntry* sp = dbcSpell.LookupEntryForced( Entry->spell[c] );
 							if( sp )
 							{
 								switch( sp->NameHash )
@@ -859,7 +859,7 @@ void Item::ApplyEnchantmentBonus( uint32 Slot, bool Apply )
 						
 						if( Entry->spell[c] != 0 )
 						{
-							sp = dbcSpell.LookupEntry( Entry->spell[c] );
+							sp = dbcSpell.LookupEntryForced( Entry->spell[c] );
 							if( sp == NULL )
 								continue;
 
@@ -1353,14 +1353,14 @@ void Item::RemoveFromRefundableMap(){
 
 uint32 Item::RepairItemCost()
 {
-	DurabilityCostsEntry * dcosts = dbcDurabilityCosts.LookupEntry( m_itemProto->ItemLevel );
+	DurabilityCostsEntry * dcosts = dbcDurabilityCosts.LookupEntryForced( m_itemProto->ItemLevel );
 	if( dcosts == NULL )
 	{
 		sLog.outError("Repair: Unknown item level (%u)", dcosts);
 		return 0;
 	}
 
-	DurabilityQualityEntry * dquality = dbcDurabilityQuality.LookupEntry( ( m_itemProto->Quality + 1 ) * 2);
+	DurabilityQualityEntry * dquality = dbcDurabilityQuality.LookupEntryForced( ( m_itemProto->Quality + 1 ) * 2);
 	if( dquality == NULL )
 	{
 		sLog.outError("Repair: Unknown item quality (%u)", dquality);

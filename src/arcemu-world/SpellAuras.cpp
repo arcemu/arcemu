@@ -1372,7 +1372,7 @@ void Aura::SpellAuraPeriodicDamage(bool apply)
 			{
 				if(!pSpellId) //we need a parent spell and should always have one since it procs on it
 					break;
-				SpellEntry * parentsp = dbcSpell.LookupEntry(pSpellId);
+				SpellEntry * parentsp = dbcSpell.LookupEntryForced(pSpellId);
 				if(!parentsp)
 					return;
 				if( c != NULL && c->IsPlayer())
@@ -3914,7 +3914,7 @@ void Aura::SpellAuraPeriodicTriggerSpell(bool apply)
 	{
 		//FIX ME: positive or negative?
 		uint32 sp = GetSpellProto()->EffectTriggerSpell[mod->i];
-		SpellEntry *spe = dbcSpell.LookupEntry(sp);
+		SpellEntry *spe = dbcSpell.LookupEntryForced(sp);
 		if(!sp || !spe)
 		{
 			//	sp=22845;

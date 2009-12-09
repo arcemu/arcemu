@@ -119,7 +119,7 @@ void WorldSession::_HandleAreaTriggerOpcode(uint32 id)
     // Search quest log, find any exploration quests
 	sQuestMgr.OnPlayerExploreArea(GetPlayer(),id);
 
-	AreaTriggerEntry* entry = dbcAreaTrigger.LookupEntry(id);
+	AreaTriggerEntry* entry = dbcAreaTrigger.LookupEntryForced(id);
 	AreaTrigger* pAreaTrigger = AreaTriggerStorage.LookupEntry(id);
 
 	if( entry == NULL )

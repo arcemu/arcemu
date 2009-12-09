@@ -1996,7 +1996,7 @@ int8 ItemInterface::CanEquipItemInSlot2( int8 DstInvSlot, int8 slot, Item* item,
                     if( ip->ItemLimitCategory > 0 )
                     {
                        uint32 LimitId = ip->ItemLimitCategory;
-                       ItemLimitCategoryEntry * ile = dbcItemLimitCategory.LookupEntry( LimitId );
+                       ItemLimitCategoryEntry * ile = dbcItemLimitCategory.LookupEntryForced( LimitId );
                        if( ile )
                        {
                           uint32 gemCount = 0;
@@ -2522,7 +2522,7 @@ int8 ItemInterface::CanReceiveItem(ItemPrototype * item, uint32 amount)
 	}
 	if( item->ItemLimitCategory > 0 )
 	{
-		ItemLimitCategoryEntry * ile = dbcItemLimitCategory.LookupEntry( item->ItemLimitCategory );
+		ItemLimitCategoryEntry * ile = dbcItemLimitCategory.LookupEntryForced( item->ItemLimitCategory );
 		if( ile && !(ile->equippedFlag & ILFLAG_EQUIP_ONLY) )
 		{
 			uint32 count = GetItemCountByLimitId( ile->Id, false );
@@ -2609,7 +2609,7 @@ int8 ItemInterface::CanAffordItem(ItemPrototype * item,uint32 amount, Creature *
 	}
 	if(item->RequiredFaction)
 	{
-		FactionDBC *factdbc = dbcFaction.LookupEntry(item->RequiredFaction);
+		FactionDBC *factdbc = dbcFaction.LookupEntryForced(item->RequiredFaction);
 		if(!factdbc || factdbc->RepListId < 0)
 			return (int8)NULL;
 		

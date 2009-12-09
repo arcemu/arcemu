@@ -608,7 +608,7 @@ void WorldSession::HandleTextEmoteOpcode( WorldPacket & recv_data )
 		}
 	}
 
-	emoteentry *em = dbcEmoteEntry.LookupEntry(text_emote);
+	emoteentry *em = dbcEmoteEntry.LookupEntryForced(text_emote);
 	if(em)
 	{
 		WorldPacket data(SMSG_EMOTE, 28 + namelen);

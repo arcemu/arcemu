@@ -431,8 +431,8 @@ bool ChatHandler::HandleKillCommand(const char *args, WorldSession *m_session)
 	{
 
 		// Cast insta-kill.
-		SpellEntry * se = dbcSpell.LookupEntry(5);
-		if(se == 0) return false;
+		SpellEntry * se = dbcSpell.LookupEntryForced(5);
+		if(se == NULL) return false;
 
 		SpellCastTargets targets(target->GetGUID());
 		Spell * sp = new Spell(m_session->GetPlayer(), se, true, 0);
@@ -487,7 +487,7 @@ bool ChatHandler::HandleCastSpellCommand(const char* args, WorldSession *m_sessi
 	}
 
 	uint32 spellid = atol(args);
-	SpellEntry *spellentry = dbcSpell.LookupEntry(spellid);
+	SpellEntry *spellentry = dbcSpell.LookupEntryForced(spellid);
 	if(!spellentry)
 	{
 		RedSystemMessage(m_session, "Invalid spell id!");
@@ -533,7 +533,7 @@ bool ChatHandler::HandleCastSpellNECommand(const char* args, WorldSession *m_ses
 	}
 
 	uint32 spellId = atol(args);
-	SpellEntry *spellentry = dbcSpell.LookupEntry(spellId);
+	SpellEntry *spellentry = dbcSpell.LookupEntryForced(spellId);
 	if(!spellentry)
 	{
 		RedSystemMessage(m_session, "Invalid spell id!");
@@ -593,7 +593,7 @@ bool ChatHandler::HandleCastSelfCommand(const char* args, WorldSession *m_sessio
 	}
 
 	uint32 spellid = atol(args);
-	SpellEntry *spellentry = dbcSpell.LookupEntry(spellid);
+	SpellEntry *spellentry = dbcSpell.LookupEntryForced(spellid);
 	if(!spellentry)
 	{
 		RedSystemMessage(m_session, "Invalid spell id!");

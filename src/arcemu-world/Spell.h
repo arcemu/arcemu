@@ -1903,7 +1903,7 @@ public:
 
         if(GetProto()->DurationIndex)
         {
-            SpellDuration *sd=dbcSpellDuration.LookupEntry(GetProto()->DurationIndex);
+            SpellDuration *sd=dbcSpellDuration.LookupEntryForced(GetProto()->DurationIndex);
             if(sd)
             {
                 //check for negative and 0 durations.

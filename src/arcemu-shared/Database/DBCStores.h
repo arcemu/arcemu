@@ -1723,6 +1723,14 @@ public:
 #endif
 	}
 
+	T * LookupRowForced(uint32 i)
+	{
+		if(i >= m_numrows)
+			return NULL;
+		else
+			return &m_heapBlock[i];
+	}
+
 	T * CreateCopy(T * obj)
 	{
 		T * oCopy = (T*)malloc(sizeof(T));
@@ -1736,7 +1744,6 @@ public:
 			m_entries[i] = t;
 	}
 
-#ifdef SAFE_DBC_CODE_RETURNS
 	T * LookupEntry(uint32 i)
 	{
 		if(m_entries)
@@ -1763,35 +1770,6 @@ public:
 			return &m_heapBlock[i];
 	}
 
-#else
-
-	T * LookupEntry(uint32 i)
-	{
-		if(m_entries)
-		{
-			if(i > m_max || m_entries[i] == NULL)
-				return NULL;
-			else
-				return m_entries[i];
-		}
-		else
-		{
-			if(i >= m_numrows)
-				return NULL;
-			else
-				return m_heapBlock[i];
-		}
-	}
-
-	T * LookupRow(uint32 i)
-	{
-		if(i >= m_numrows)
-			return NULL;
-		else
-			return m_heapBlock[i];
-	}
-
-#endif
 };
 
 extern SERVER_DECL DBCStorage<WorldMapOverlay> dbcWorldMapOverlayStore;

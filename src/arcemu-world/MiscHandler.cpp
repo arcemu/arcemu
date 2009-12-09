@@ -501,7 +501,7 @@ void WorldSession::HandleLootReleaseOpcode( WorldPacket & recv_data )
 				pGO->loot.looters.erase( _player->GetLowGUID() );
 				//check for locktypes
 
-				Lock* pLock = dbcLock.LookupEntry( pGO->GetInfo()->SpellFocus );
+				Lock* pLock = dbcLock.LookupEntryForced( pGO->GetInfo()->SpellFocus );
 				if( pLock )
 				{
 					for( uint32 i= 0; i < 5; i++ )
@@ -1338,20 +1338,20 @@ void WorldSession::HandleBarberShopResult(WorldPacket & recv_data)
 	uint32 cost = 0;
 	BarberShopStyleEntry *bbse;
 
-	bbse = dbcBarberShopStyleStore.LookupEntry( hair );
+	bbse = dbcBarberShopStyleStore.LookupEntryForced( hair );
 	if( !bbse )		return;
 	newhair = bbse->type;
 
 	newhaircolor = haircolor;
 
-	bbse = dbcBarberShopStyleStore.LookupEntry( facialhairorpiercing );
+	bbse = dbcBarberShopStyleStore.LookupEntryForced( facialhairorpiercing );
 	if( !bbse )		return;
 	newfacial = bbse->type;
 
 	uint32 level = _player->getLevel();
 	if(level >= 100)
 		level = 100;
-	gtFloat *cutcosts = dbcBarberShopPrices.LookupEntry(level - 1);
+	gtFloat *cutcosts = dbcBarberShopPrices.LookupEntryForced(level - 1);
 	if(!cutcosts)
 		return;
 
@@ -1507,7 +1507,7 @@ void WorldSession::HandleGameObjectUse(WorldPacket & recv_data)
 					break;
 			}
 
-			SpellEntry *info = dbcSpell.LookupEntry(goinfo->SpellFocus);
+			SpellEntry *info = dbcSpell.LookupEntryForced(goinfo->SpellFocus);
 			if(!info)
 				break;
 			Spell * spell = new Spell(plyr, info, false, NULL);
@@ -1564,7 +1564,7 @@ void WorldSession::HandleGameObjectUse(WorldPacket & recv_data)
 				{
 					if ( !obj->m_ritualtarget )
 						return;
-					info = dbcSpell.LookupEntry( goinfo->sound1 );
+					info = dbcSpell.LookupEntryForced( goinfo->sound1 );
 					if ( !info )
 						break;
 					Player * target = objmgr.GetPlayer( obj->m_ritualtarget );
@@ -1588,7 +1588,7 @@ void WorldSession::HandleGameObjectUse(WorldPacket & recv_data)
 					if(!psacrifice || !pCaster)
 						return;
 
-					info = dbcSpell.LookupEntry(goinfo->sound4);
+					info = dbcSpell.LookupEntryForced(goinfo->sound4);
 					if(!info)
 						break;
 					spell = new Spell(psacrifice, info, true, NULL);
@@ -1628,7 +1628,7 @@ void WorldSession::HandleGameObjectUse(WorldPacket & recv_data)
 				}
 				else if ( goinfo->ID == 186811 || goinfo->ID == 181622 )
 				{
-					info = dbcSpell.LookupEntry( goinfo->sound1 );
+					info = dbcSpell.LookupEntryForced( goinfo->sound1 );
 					if ( info == NULL )
 						return;
 					Spell * spell = new Spell( _player->GetMapMgr()->GetPlayer( obj->m_ritualcaster ), info, true, NULL );
@@ -1839,7 +1839,7 @@ void WorldSession::HandleInspectOpcode( WorldPacket & recv_data )
 
 			for( uint32 j = 0; j < dbcTalent.GetNumRows(); ++j )
 			{
-				TalentEntry const* talent_info = dbcTalent.LookupRow( j );
+				TalentEntry const* talent_info = dbcTalent.LookupRowForced( j );
 
 				//sLog.outDebug( "HandleInspectOpcode: i(%i) j(%i)", i, j );
 
@@ -2351,7 +2351,7 @@ void WorldSession::HandleOpenItemOpcode(WorldPacket &recv_data)
 		return;
 	}
 
-	Lock *lock = dbcLock.LookupEntry( pItem->GetProto()->LockId );
+	Lock *lock = dbcLock.LookupEntryForced( pItem->GetProto()->LockId );
 
 	uint32 removeLockItems[5] = {0,0,0,0,0};
 
@@ -2552,7 +2552,7 @@ void WorldSession::HandleRemoveGlyph(WorldPacket & recv_data)
 	uint32 glyphId = _player->GetUInt32Value(PLAYER_FIELD_GLYPHS_1 + glyphNum);
 	if(glyphId == 0)
 		return;
-	GlyphPropertyEntry *glyph = dbcGlyphProperty.LookupEntry(glyphId);
+	GlyphPropertyEntry *glyph = dbcGlyphProperty.LookupEntryForced(glyphId);
 	if(!glyph)
 		return;
 	_player->SetUInt32Value(PLAYER_FIELD_GLYPHS_1 + glyphNum, 0);

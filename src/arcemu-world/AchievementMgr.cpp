@@ -51,7 +51,7 @@ bool SendAchievementProgress(const CriteriaProgress* c)
 		// achievement not started yet, don't send progress
 		return false;
 
-	AchievementCriteriaEntry const* acEntry = dbcAchievementCriteriaStore.LookupEntry(c->id);
+	AchievementCriteriaEntry const* acEntry = dbcAchievementCriteriaStore.LookupEntryForced(c->id);
 	if( !acEntry )
 		return false;
 
@@ -546,7 +546,7 @@ void AchievementMgr::UpdateAchievementCriteria(AchievementCriteriaTypes type, in
 			continue;
 		}
 
-		AchievementEntry const *achievement = dbcAchievementStore.LookupEntry(achievementCriteria->referredAchievement);
+		AchievementEntry const *achievement = dbcAchievementStore.LookupEntryForced(achievementCriteria->referredAchievement);
 		if( !achievement )
 		{
 			// referred achievement not found (shouldn't normally happen)
@@ -1201,7 +1201,7 @@ void AchievementMgr::UpdateAchievementCriteria(AchievementCriteriaTypes type)
 	{
 		AchievementCriteriaEntry const *achievementCriteria = (*i);
 
-		AchievementEntry const *achievement = dbcAchievementStore.LookupEntry(achievementCriteria->referredAchievement);
+		AchievementEntry const *achievement = dbcAchievementStore.LookupEntryForced(achievementCriteria->referredAchievement);
 		if( !achievement //|| IsCompletedCriteria(achievementCriteria)
 			|| (achievement->flags & ACHIEVEMENT_FLAG_COUNTER)
 			|| (achievement->factionFlag == ACHIEVEMENT_FACTION_FLAG_HORDE && m_player->GetTeam() != HORDE)
@@ -1279,7 +1279,7 @@ void AchievementMgr::UpdateAchievementCriteria(AchievementCriteriaTypes type)
 				uint32 nm = 0;
 				while(sl != GetPlayer()->mSpells.end())
 				{
-					SpellEntry* sp = dbcSpell.LookupEntry(*sl);
+					SpellEntry* sp = dbcSpell.LookupEntryForced(*sl);
 					if( achievementCriteria->number_of_mounts.unknown == 777 && sp && sp->MechanicsType == MECHANIC_MOUNTED )
 					{
 						// mount spell
@@ -1326,7 +1326,7 @@ bool AchievementMgr::IsCompletedCriteria(AchievementCriteriaEntry const* achieve
 	{
 		return false;
 	}
-	AchievementEntry const* achievement = dbcAchievementStore.LookupEntry(achievementCriteria->referredAchievement);
+	AchievementEntry const* achievement = dbcAchievementStore.LookupEntryForced(achievementCriteria->referredAchievement);
 	if( achievement == NULL )
 	{
 		return false;
@@ -1488,7 +1488,7 @@ AchievementCompletionState AchievementMgr::GetAchievementCompletionState(Achieve
 	bool foundOutstanding = false;
 	for ( uint32 rowId = 0; rowId<dbcAchievementCriteriaStore.GetNumRows(); ++rowId )
 	{
-		AchievementCriteriaEntry const* criteria = dbcAchievementCriteriaStore.LookupRow(rowId);
+		AchievementCriteriaEntry const* criteria = dbcAchievementCriteriaStore.LookupRowForced(rowId);
 		if( criteria == NULL || criteria->referredAchievement!= entry->ID )
 		{
 			continue;
@@ -1666,12 +1666,12 @@ void AchievementMgr::SendAllAchievementData(Player* player)
 		data << int32(-1);
 		for(; progressIter != m_criteriaProgress.end() && !packetFull; ++progressIter)
 		{
-			acEntry = dbcAchievementCriteriaStore.LookupEntry(progressIter->first);
+			acEntry = dbcAchievementCriteriaStore.LookupEntryForced(progressIter->first);
 			if( !acEntry )
 			{
 				continue;
 			}
-			achievement = dbcAchievementStore.LookupEntry(acEntry->referredAchievement);
+			achievement = dbcAchievementStore.LookupEntryForced(acEntry->referredAchievement);
 			if( !achievement )
 			{
 				continue;
@@ -2027,7 +2027,7 @@ bool AchievementMgr::GMCompleteAchievement(WorldSession* gmSession, int32 achiev
 		AchievementEntry const* ach;
 		for(uint32 i = 0; i < nr; ++i)
 		{
-			ach = dbcAchievementStore.LookupRow(i);
+			ach = dbcAchievementStore.LookupRowForced(i);
 			if( ach == NULL )
 			{
 				m_player->GetSession()->SystemMessage("Achievement %lu entry not found.", i);
@@ -2053,7 +2053,7 @@ bool AchievementMgr::GMCompleteAchievement(WorldSession* gmSession, int32 achiev
 		gmSession->SystemMessage("Player has already completed that achievement.");
 		return false;
 	}
-	AchievementEntry const* achievement = dbcAchievementStore.LookupEntry(achievementID);
+	AchievementEntry const* achievement = dbcAchievementStore.LookupEntryForced(achievementID);
 	if( !achievement )
 	{
 		gmSession->SystemMessage("Achievement %lu entry not found.", achievementID);
@@ -2083,7 +2083,7 @@ bool AchievementMgr::GMCompleteCriteria(WorldSession* gmSession, int32 criteriaI
 		AchievementCriteriaEntry const* crt;
 		for(uint32 i = 0, j = 0; j < nr; ++i)
 		{
-			crt = dbcAchievementCriteriaStore.LookupRow(i);
+			crt = dbcAchievementCriteriaStore.LookupRowForced(i);
 			if( crt == NULL )
 			{
 				sLog.outError("Achievement Criteria %lu entry not found.", i);
@@ -2099,7 +2099,7 @@ bool AchievementMgr::GMCompleteCriteria(WorldSession* gmSession, int32 criteriaI
 		m_player->GetSession()->SystemMessage("All achievement criteria completed.");
 		return true;
 	}
-	AchievementCriteriaEntry const* criteria = dbcAchievementCriteriaStore.LookupEntry(criteriaID);
+	AchievementCriteriaEntry const* criteria = dbcAchievementCriteriaStore.LookupEntryForced(criteriaID);
 	if( !criteria )
 	{
 		gmSession->SystemMessage("Achievement criteria %lu not found.", criteriaID);
@@ -2110,7 +2110,7 @@ bool AchievementMgr::GMCompleteCriteria(WorldSession* gmSession, int32 criteriaI
 		gmSession->SystemMessage("Achievement criteria %lu already completed.", criteriaID);
 		return false;
 	}
-	AchievementEntry const* achievement = dbcAchievementStore.LookupEntry(criteria->referredAchievement);
+	AchievementEntry const* achievement = dbcAchievementStore.LookupEntryForced(criteria->referredAchievement);
 	if( !achievement )
 	{
 		// achievement not found

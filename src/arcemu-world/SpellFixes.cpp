@@ -996,7 +996,7 @@ void ApplyNormalFixes()
 		{
 			if ( sp->EffectApplyAuraName[i] == SPELL_AURA_PERIODIC_TRIGGER_SPELL && sp->EffectTriggerSpell[i] )
 			{
-				spz = dbcSpell.LookupEntry( sp->EffectTriggerSpell[i] );
+				spz = dbcSpell.LookupEntryForced( sp->EffectTriggerSpell[i] );
 				if( spz &&
 					( spz->Effect[i] == SPELL_EFFECT_SCHOOL_DAMAGE ||
 						spz->Effect[i] == SPELL_EFFECT_HEAL )
@@ -1373,7 +1373,7 @@ void ApplyNormalFixes()
 		{
 			if ( sp->EffectApplyAuraName[i] == SPELL_AURA_PERIODIC_TRIGGER_SPELL )
 			{
-				spz = dbcSpell.LookupEntry( sp->EffectTriggerSpell[i] );
+				spz = dbcSpell.LookupEntryForced( sp->EffectTriggerSpell[i] );
 				if( spz != NULL )
 				{
 					if( sp->Dspell_coef_override >= 0 )
@@ -1880,15 +1880,15 @@ void ApplyNormalFixes()
 			sp->Attributes |= ATTRIBUTES_CANT_BE_DPB;
 
 		// Warrior - Tactical Mastery Rank 1
-		sp = dbcSpell.LookupEntry( 0x00003007 );
+		sp = dbcSpell.LookupEntryForced( 0x00003007 );
 		if(sp != NULL)
 			sp->RequiredShapeShift = 0x00070000;
 		// Warrior - Tactical Mastery Rank 2
-		sp = dbcSpell.LookupEntry( 0x00003184 );
+		sp = dbcSpell.LookupEntryForced( 0x00003184 );
 		if(sp != NULL)
 			sp->RequiredShapeShift = 0x00070000;
 		// Warrior - Tactical Mastery Rank 3
-		sp = dbcSpell.LookupEntry( 0x00003185 );
+		sp = dbcSpell.LookupEntryForced( 0x00003185 );
 		if(sp != NULL)
 			sp->RequiredShapeShift = 0x00070000;
 

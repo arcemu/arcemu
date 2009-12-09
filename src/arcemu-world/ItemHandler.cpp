@@ -1938,7 +1938,7 @@ void WorldSession::HandleBuyBankSlotOpcode(WorldPacket& recvPacket)
 	slots =(uint8) (bytes >> 16);
 
 	sLog.outDetail("PLAYER: Buy bytes bag slot, slot number = %d", slots);
-	BankSlotPrice* bsp = dbcBankSlotPrices.LookupEntry(slots+1);
+	BankSlotPrice* bsp = dbcBankSlotPrices.LookupEntryForced(slots+1);
 	price = (bsp != NULL ) ? bsp->Price : 99999999;
 
 	if( _player->HasGold(price) )
@@ -2079,7 +2079,7 @@ void WorldSession::HandleInsertGemOpcode(WorldPacket &recvPacket)
 			FilledSlots++;
 			ItemPrototype * ip = ItemPrototypeStorage.LookupEntry(EI->Enchantment->GemEntry);
 			if(!ip)
-				gp = 0;
+				gp = NULL;
 			else
 				gp = dbcGemProperty.LookupEntry(ip->GemProperties);
 	
@@ -2114,7 +2114,7 @@ void WorldSession::HandleInsertGemOpcode(WorldPacket &recvPacket)
 				}
 				if( ip->ItemLimitCategory )
 				{
-					ItemLimitCategoryEntry * ile = dbcItemLimitCategory.LookupEntry( ip->ItemLimitCategory );
+					ItemLimitCategoryEntry * ile = dbcItemLimitCategory.LookupEntryForced( ip->ItemLimitCategory );
 					if( ile != NULL && itemi->GetEquippedCountByItemLimit( ip->ItemLimitCategory ) >= ile->maxAmount )
 					{
 						itemi->BuildInventoryChangeError(it, TargetItem, INV_ERR_ITEM_MAX_COUNT_EQUIPPED_SOCKETED);
@@ -2128,7 +2128,7 @@ void WorldSession::HandleInsertGemOpcode(WorldPacket &recvPacket)
 				return; //someone sending hacked packets to crash server
 			ip = it->GetProto();
 
-			gp = dbcGemProperty.LookupEntry(it->GetProto()->GemProperties);
+			gp = dbcGemProperty.LookupEntryForced(it->GetProto()->GemProperties);
 			it->DeleteMe();
 		
 			if(!gp)
@@ -2146,7 +2146,7 @@ void WorldSession::HandleInsertGemOpcode(WorldPacket &recvPacket)
 			else//add gem
 				FilledSlots++;
 
-			Enchantment = dbcEnchant.LookupEntry(gp->EnchantmentID);
+			Enchantment = dbcEnchant.LookupEntryForced(gp->EnchantmentID);
 			if(Enchantment && TargetItem->GetProto()->SubClass != ITEM_SUBCLASS_WEAPON_THROWN)
 				TargetItem->AddEnchantment(Enchantment, 0, true,apply,false,2+i);
 		}
@@ -2160,7 +2160,7 @@ void WorldSession::HandleInsertGemOpcode(WorldPacket &recvPacket)
 			if(TargetItem->HasEnchantment(TargetItem->GetProto()->SocketBonus) > 0)
 				return;
 
-			Enchantment = dbcEnchant.LookupEntry(TargetItem->GetProto()->SocketBonus);
+			Enchantment = dbcEnchant.LookupEntryForced(TargetItem->GetProto()->SocketBonus);
 			if(Enchantment && TargetItem->GetProto()->SubClass != ITEM_SUBCLASS_WEAPON_THROWN)
 			{
 				uint32 Slot = TargetItem->FindFreeEnchantSlot(Enchantment,0);

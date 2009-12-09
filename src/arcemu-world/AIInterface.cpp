@@ -1348,7 +1348,7 @@ void AIInterface::_UpdateCombat(uint32 p_time)
 						if(infront)
 						{
 							m_Unit->setAttackTimer(0, false);
-							SpellEntry *info = dbcSpell.LookupEntry(SPELL_RANGED_GENERAL);
+							SpellEntry *info = dbcSpell.LookupEntryForced(SPELL_RANGED_GENERAL);
 							if(info)
 							{
 								Spell *sp = new Spell(m_Unit, info, false, NULL);
@@ -2041,7 +2041,7 @@ bool AIInterface::FindFriends(float dist)
 	{
 		m_guardTimer = getMSTime() + 15000;
 		uint16 AreaId = m_Unit->GetMapMgr()->GetAreaID(m_Unit->GetPositionX(),m_Unit->GetPositionY());
-		AreaTable * at = dbcArea.LookupEntry(AreaId);
+		AreaTable * at = dbcArea.LookupEntryForced(AreaId);
 		if(!at)
 			return result;
 

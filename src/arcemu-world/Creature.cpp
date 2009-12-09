@@ -1415,7 +1415,7 @@ bool Creature::Load(CreatureSpawn *spawn, uint32 mode, MapInfo *info)
 
 	m_aiInterface->timed_emotes = objmgr.GetTimedEmoteList(spawn->id);
 
-	m_faction = dbcFactionTemplate.LookupEntry(spawn->factionid);
+	m_faction = dbcFactionTemplate.LookupEntryForced(spawn->factionid);
 	if(m_faction)
 	{
 		m_factionDBC = dbcFaction.LookupEntry(m_faction->Faction);
@@ -1649,7 +1649,7 @@ void Creature::Load(CreatureProto * proto_, float x, float y, float z, float o)
 
 	m_position.ChangeCoords( x, y, z, o );
 	m_spawnLocation.ChangeCoords(x, y, z, o);
-	m_faction = dbcFactionTemplate.LookupEntry(proto->Faction);
+	m_faction = dbcFactionTemplate.LookupEntryForced(proto->Faction);
 
 	if(m_faction)
 	{
@@ -1780,8 +1780,8 @@ void Creature::OnPushToWorld()
 		SpellEntry * sp;
 		for(; itr != proto->start_auras.end(); ++itr)
 		{
-			sp = dbcSpell.LookupEntry((*itr));
-			if(sp == 0) continue;
+			sp = dbcSpell.LookupEntryForced((*itr));
+			if(sp == NULL) continue;
 
 			CastSpell(this, sp, 0);
 		}
@@ -1849,7 +1849,7 @@ void Creature::AISpellUpdate()
 	if (s != NULL) //check everythings going well on current spells
 	{
 
-		SpellRange* range=dbcSpellRange.LookupEntry(s->GetProto()->rangeIndex);
+		SpellRange* range=dbcSpellRange.LookupEntryForced(s->GetProto()->rangeIndex);
 
 		if (s->GetUnitTarget() != NULL && range != NULL && (CalcDistance(s->GetUnitTarget()) > range->maxRange || CalcDistance(s->GetUnitTarget()) < range->minRange))
 			s->cancel();

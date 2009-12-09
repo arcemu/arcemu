@@ -250,7 +250,7 @@ void WorldSession::CharacterEnumProc(QueryResult * result)
 									const char * enchant_field = res->Fetch()[3].GetString();	
 									if( sscanf( enchant_field , "%u,0,0;" , (unsigned int *)&enchantid ) == 1 && enchantid > 0 )
 									{
-										enc = dbcEnchant.LookupEntry( enchantid );
+										enc = dbcEnchant.LookupEntryForced( enchantid );
 										if( enc != NULL )
 											items[slot].enchantment = enc->visual;
 										else

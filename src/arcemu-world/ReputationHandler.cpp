@@ -153,7 +153,7 @@ void Player::SetStanding( uint32 Faction, int32 Value )
 	const int32 exaltedReputation = 42000;   //   0/1000  Exalted
 	const int32 maxReputation = 42999;       // 999/1000  Exalted
 	int32 newValue = Value;
-	FactionDBC * f = dbcFaction.LookupEntry( Faction );
+	FactionDBC * f = dbcFaction.LookupEntryForced( Faction );
 	if ( f == NULL || f->RepListId < 0 )
 		return;
 	ReputationMap::iterator itr = m_reputation.find( Faction );
@@ -233,7 +233,7 @@ void Player::ModStanding( uint32 Faction, int32 Value )
 	const int32 minReputation = -42000;      //   0/36000 Hated
 	const int32 exaltedReputation = 42000;   //   0/1000  Exalted
 	const int32 maxReputation = 42999;       // 999/1000  Exalted
-	FactionDBC * f = dbcFaction.LookupEntry( Faction );
+	FactionDBC * f = dbcFaction.LookupEntryForced( Faction );
 	int32 newValue = Value;
 	if ( f == NULL || f->RepListId < 0 )
 		return;
