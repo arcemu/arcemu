@@ -4171,64 +4171,70 @@ void Player::_ApplyItemMods(Item* item, int16 slot, bool apply, bool justdrokedo
 	if( setid != 0 )
 	{
 		ItemSetEntry* set = dbcItemSet.LookupEntryForced( setid );
-		ASSERT( set );
-		ItemSet* Set = NULL;
-		std::list<ItemSet>::iterator i;
-		for( i = m_itemsets.begin(); i != m_itemsets.end(); i++ )
+		if( set == NULL)
 		{
-			if( i->setid == setid )
-			{
-				Set = &(*i);
-				break;
-			}
-		}
-
-		if( apply )
-		{
-			if( Set == NULL )
-			{
-				Set = new ItemSet;
-				memset( Set, 0, sizeof( ItemSet ) );
-				Set->itemscount = 1;
-				Set->setid = setid;
-			}
-			else
-				Set->itemscount++;
-
-			if( !set->RequiredSkillID || ( _GetSkillLineCurrent( set->RequiredSkillID, true ) >= set->RequiredSkillAmt ) )
-			{
-				for( uint32 x= 0;x<8;x++)
-				{
-					if( Set->itemscount==set->itemscount[x])
-					{//cast new spell
-						SpellEntry *info = dbcSpell.LookupEntry( set->SpellID[x] );
-						Spell * spell = new Spell( this, info, true, NULL );
-						if (!spell)
-							return;
-						SpellCastTargets targets;
-						targets.m_unitTarget = this->GetGUID();
-						spell->prepare( &targets );
-					}
-				}
-			}
-			if( i == m_itemsets.end() )
-			{
-				m_itemsets.push_back( *Set );
-				delete Set;
-			}
+			sLog.outError("Item %u has wrong ItemSet %u\n", proto->ItemId, setid);
 		}
 		else
 		{
-			if( Set )
+			ItemSet* Set = NULL;
+			std::list<ItemSet>::iterator i;
+			for( i = m_itemsets.begin(); i != m_itemsets.end(); i++ )
 			{
-				for( uint32 x = 0; x < 8; x++ )
-				if( Set->itemscount == set->itemscount[x] )
+				if( i->setid == setid )
 				{
-					this->RemoveAura( set->SpellID[x], GetGUID() );
+					Set = &(*i);
+					break;
 				}
+			}
 
-				if(!(--Set->itemscount))
-				m_itemsets.erase(i);
+			if( apply )
+			{
+				if( Set == NULL )
+				{
+					Set = new ItemSet;
+					memset( Set, 0, sizeof( ItemSet ) );
+					Set->itemscount = 1;
+					Set->setid = setid;
+				}
+				else
+					Set->itemscount++;
+
+				if( !set->RequiredSkillID || ( _GetSkillLineCurrent( set->RequiredSkillID, true ) >= set->RequiredSkillAmt ) )
+				{
+					for( uint32 x= 0;x<8;x++)
+					{
+						if( Set->itemscount==set->itemscount[x])
+						{//cast new spell
+							SpellEntry *info = dbcSpell.LookupEntry( set->SpellID[x] );
+							Spell * spell = new Spell( this, info, true, NULL );
+							if (!spell)
+								return;
+							SpellCastTargets targets;
+							targets.m_unitTarget = this->GetGUID();
+							spell->prepare( &targets );
+						}
+					}
+				}
+				if( i == m_itemsets.end() )
+				{
+					m_itemsets.push_back( *Set );
+					delete Set;
+				}
+			}
+			else
+			{
+				if( Set )
+				{
+					for( uint32 x = 0; x < 8; x++ )
+					if( Set->itemscount == set->itemscount[x] )
+					{
+						this->RemoveAura( set->SpellID[x], GetGUID() );
+					}
+
+					if(!(--Set->itemscount))
+					m_itemsets.erase(i);
+				}
 			}
 		}
 	}
