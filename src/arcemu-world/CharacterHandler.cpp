@@ -711,32 +711,39 @@ void WorldSession::FullLogin(Player * plr)
 	SendPacket(&datamo);
 
 	/* world preload */
-	packetSMSG_LOGIN_VERIFY_WORLD vwpck;
-	if (HasGMPermissions() && plr->m_FirstLogin && sWorld.gamemaster_startonGMIsland)
+    uint32 VMapId;
+    float VO;
+    float VX;
+    float VY;
+    float VZ;
+
+	if ( HasGMPermissions() && plr->m_FirstLogin && sWorld.gamemaster_startonGMIsland )
 	/* GMs should start on GM Island and be bound there - Confirmed by Euro WoW GM "We're bound to our starting location" */
 	{
-		vwpck.MapId = 1;
-		vwpck.O = 0;
-		vwpck.X = 16222.6f;
-		vwpck.Y = 16265.9f;
-		vwpck.Z = 14.2085f;
-		plr->m_position.x = 16222.6f;
-		plr->m_position.y = 16265.9f;
-		plr->m_position.z = 14.2085f;
-		plr->m_position.o = 0;
-		plr->m_mapId = 1;
-		plr->SetBindPoint(plr->GetPositionX(), plr->GetPositionY(), plr->GetPositionZ(), plr->GetMapId(), plr->GetZoneId());
+		VMapId = 1;
+		VO = 0;
+		VX = 16222.6f;
+		VY = 16265.9f;
+		VZ = 14.2085f;
+
+        plr->m_position.x = VX;
+		plr->m_position.y = VY;
+		plr->m_position.z = VZ;
+		plr->m_position.o = VO;
+		plr->m_mapId = VMapId;
+		
+        plr->SetBindPoint(plr->GetPositionX(), plr->GetPositionY(), plr->GetPositionZ(), plr->GetMapId(), plr->GetZoneId());
 	} 
 	else
 	{
-		vwpck.MapId = plr->GetMapId();
-		vwpck.O = plr->GetOrientation();
-		vwpck.X = plr->GetPositionX();
-		vwpck.Y = plr->GetPositionY();
-		vwpck.Z = plr->GetPositionZ();
+		VMapId = plr->GetMapId();
+		VO = plr->GetOrientation();
+		VX = plr->GetPositionX();
+		VY = plr->GetPositionY();
+		VZ = plr->GetPositionZ();
 	}
-		
-	OutPacket( SMSG_LOGIN_VERIFY_WORLD, sizeof(packetSMSG_LOGIN_VERIFY_WORLD), &vwpck );
+
+    plr->SendLoginVerifyWorld( VMapId, VX, VY, VZ, VO );
 
 	// send voicechat state - active/inactive
 	/*

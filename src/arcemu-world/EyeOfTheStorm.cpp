@@ -686,7 +686,7 @@ void EyeOfTheStorm::RespawnCPFlag(uint32 i, uint32 id)
 void EyeOfTheStorm::UpdateCPs()
 {
 	uint32 i;
-	set<Player*>::iterator itr, itrend;
+	set< Object* >::iterator itr, itrend;
 	Player * plr;
 	GameObject * go;
 	int32 delta = 0;
@@ -705,9 +705,10 @@ void EyeOfTheStorm::UpdateCPs()
 		go->AquireInrangeLock();
 		itr = go->GetInRangePlayerSetBegin();
 		itrend = go->GetInRangePlayerSetEnd();
+
 		for( ; itr != itrend; ++itr )
 		{
-			plr = *itr;
+			plr = static_cast< Player* >( *itr );
 			if( plr->isAlive() && !(plr->IsStealth()) && !(plr->m_invisible) && !(plr->SchoolImmunityList[0]) && plr->GetDistance2dSq( go ) <= EOTS_CAPTURE_DISTANCE )
 			{
 				playercounts[plr->GetTeam()]++;
@@ -920,54 +921,59 @@ bool EyeOfTheStorm::GivePoints(uint32 team, uint32 points)
 		{
 			for(set<Player*>::iterator itr = m_players[i].begin(); itr != m_players[i].end(); ++itr)
 			{
-				(*itr)->Root();
+
+                Player *p = *itr;
+
+				p->Root();
 				
-				if ( (*itr)== NULL )
+				if ( p == NULL )
 					continue;
 
 				if(i == m_winningteam)
 				{
-					(*itr)->m_bgScore.BonusHonor += winHonorToAdd;
-					HonorHandler::AddHonorPointsToPlayer((*itr), winHonorToAdd);
-					Item *item = objmgr.CreateItem( 29024 , *itr );
+					p->m_bgScore.BonusHonor += winHonorToAdd;
+					HonorHandler::AddHonorPointsToPlayer( p, winHonorToAdd);
+					Item *item = objmgr.CreateItem( 29024 , p );
 					if( item != NULL )
 					{
 						item->SetUInt32Value( ITEM_FIELD_STACK_COUNT, 3 );
 						item->SoulBind();
-						if( !(*itr)->GetItemInterface()->AddItemToFreeSlot( item ) )
+						if( !p->GetItemInterface()->AddItemToFreeSlot( item ) )
 						{
-							(*itr)->GetSession()->SendNotification("No free slots were found in your inventory!");
+							p->GetSession()->SendNotification("No free slots were found in your inventory!");
 							item->DeleteMe();
 						}
 						else
 						{
-							(*itr)->m_bgScore.BonusHonor += lostHonorToAdd;
-							HonorHandler::AddHonorPointsToPlayer( (*itr), lostHonorToAdd );
-							SlotResult *lr = (*itr)->GetItemInterface()->LastSearchResult();
-							(*itr)->GetSession()->SendItemPushResult( item, false, true, false, true, lr->ContainerSlot, lr->Slot, 3 );
+							p->m_bgScore.BonusHonor += lostHonorToAdd;
+							HonorHandler::AddHonorPointsToPlayer( p, lostHonorToAdd );
+							SlotResult *lr = p->GetItemInterface()->LastSearchResult();
+							
+                            p->SendItemPushResult( item->GetGUID(), false, true, false, true, lr->ContainerSlot, lr->Slot, 3, item->GetEntry(), item->GetItemRandomSuffixFactor(), item->GetItemRandomPropertyId(), item->GetCount() );
 						}
 					}
-					if(i && (*itr)->GetQuestLogForEntry(11341))
-						(*itr)->GetQuestLogForEntry(11341)->SendQuestComplete();
-					else if((*itr)->GetQuestLogForEntry(11337))
-						(*itr)->GetQuestLogForEntry(11337)->SendQuestComplete();
+					if(i && p->GetQuestLogForEntry(11341))
+						p->GetQuestLogForEntry(11341)->SendQuestComplete();
+					else if( p->GetQuestLogForEntry(11337) )
+						p->GetQuestLogForEntry(11337)->SendQuestComplete();
 				}
 				else
 				{
-					Item *item = objmgr.CreateItem( 29024 , *itr );
+					Item *item = objmgr.CreateItem( 29024 , p );
 					if( item != NULL )
 					{
 						item->SetUInt32Value( ITEM_FIELD_STACK_COUNT, 1 );
 						item->SoulBind();
-						if( !(*itr)->GetItemInterface()->AddItemToFreeSlot( item ) )
+						if( !p->GetItemInterface()->AddItemToFreeSlot( item ) )
 						{
-							(*itr)->GetSession()->SendNotification("No free slots were found in your inventory!");
+							p->GetSession()->SendNotification("No free slots were found in your inventory!");
 							item->DeleteMe();
 						}
 						else
 						{
-							SlotResult *lr = (*itr)->GetItemInterface()->LastSearchResult();
-							(*itr)->GetSession()->SendItemPushResult( item, false, true, false, true, lr->ContainerSlot, lr->Slot, 1 );
+							SlotResult *lr = p->GetItemInterface()->LastSearchResult();
+							
+                            p->SendItemPushResult( item->GetGUID(), false, true, false, true, lr->ContainerSlot, lr->Slot, 1, item->GetEntry(), item->GetItemRandomSuffixFactor(), item->GetItemRandomPropertyId(), item->GetCount() );
 						}
 					}
 				}

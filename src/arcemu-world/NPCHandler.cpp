@@ -243,17 +243,8 @@ void WorldSession::HandleTrainerBuySpellOpcode(WorldPacket& recvPacket)
     else
 	{
 /////////////////////////////////////// Showing the learning spellvisuals//////////////
-            packetSMSG_PLAY_SPELL_VISUAL pck;
-
-	        pck.guid = pCreature->GetGUID();
-	        pck.visualid = 0x5b3;
-
-	        _player->OutPacketToSet( SMSG_PLAY_SPELL_VISUAL, sizeof(packetSMSG_PLAY_SPELL_VISUAL), &pck, true );
-
-            pck.guid = _player->GetGUID();
-	        pck.visualid = 0x16a;
-
-	        _player->OutPacketToSet( SMSG_PLAY_SPELL_IMPACT, sizeof(packetSMSG_PLAY_SPELL_VISUAL), &pck, true );
+            _player->SendPlaySpellVisual( pCreature->GetGUID(), 0x5B3 );
+            _player->SendPlaySpellVisual( _player->GetGUID(), 0x16A );
 ///////////////////////////////////////////////////////////////////////////////////////
         
         // add the spell itself

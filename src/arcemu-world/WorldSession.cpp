@@ -1013,38 +1013,6 @@ void WorldSession::SendChatPacket(WorldPacket * data, uint32 langpos, int32 lang
 	SendPacket(data);
 }
 
-void WorldSession::SendItemPushResult(Item * pItem, bool Created, bool Received, bool SendToSet, bool NewItem, uint8 DestBagSlot, uint32 DestSlot, uint32 AddCount)
-{
-	packetSMSG_ITEM_PUSH_RESULT data;
-	data.guid = _player->GetGUID();
-	data.received = uint32(0); 
-	// cebernic: 2.4.3 temp 0 forced.
-	// guys from party will always see the looter what item he has been taken.
-	// I will check more on packets back around.
-	data.created = Created;
-	data.unk1 = 1;
-	data.destbagslot = DestBagSlot;
-	data.destslot = NewItem ? DestSlot : 0xFFFFFFFF;
-	data.entry = pItem->GetEntry();
-	data.suffix = pItem->GetItemRandomSuffixFactor();
-	data.randomprop = pItem->GetUInt32Value( ITEM_FIELD_RANDOM_PROPERTIES_ID );
-	data.count = AddCount;
-	data.stackcount = pItem->GetUInt32Value(ITEM_FIELD_STACK_COUNT);
-
-	if(SendToSet)
-	{
-
-		if( _player->GetGroup() )
-			_player->GetGroup()->OutPacketToAll( SMSG_ITEM_PUSH_RESULT, sizeof( packetSMSG_ITEM_PUSH_RESULT ), &data );
-		else
-			OutPacket( SMSG_ITEM_PUSH_RESULT, sizeof( packetSMSG_ITEM_PUSH_RESULT ), &data );
-	}
-	else
-	{
-		OutPacket( SMSG_ITEM_PUSH_RESULT, sizeof( packetSMSG_ITEM_PUSH_RESULT ), &data );
-	}
-}
-
 void WorldSession::Delete()
 {
 	delete this;

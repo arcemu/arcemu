@@ -1409,14 +1409,16 @@ void WorldSession::HandleBuyItemInSlotOpcode( WorldPacket & recv_data ) // drag 
 			return;
 	}
 
-	SendItemPushResult(pItem, false, true, false, (pItem==oldItem) ? false : true, bagslot, slot, amount*ci.amount);
+    _player->SendItemPushResult(pItem->GetGUID(), false, true, false, (pItem==oldItem) ? false : true, bagslot, slot, amount*ci.amount, pItem->GetEntry(), pItem->GetItemRandomSuffixFactor(), pItem->GetItemRandomPropertyId(), pItem->GetCount() );
 
 	WorldPacket data(SMSG_BUY_ITEM, 22);
 	data << uint64(srcguid);
 	data << getMSTime();
-	data << uint32(itemid) << uint32(amount);
+	data << uint32(itemid); 
+    data << uint32(amount);
 
 	SendPacket( &data );
+
 	sLog.outDetail( "WORLD: Sent SMSG_BUY_ITEM" );
 
 	_player->GetItemInterface()->BuyItem(it,amount,unit);
@@ -1538,7 +1540,7 @@ void WorldSession::HandleBuyItemOpcode( WorldPacket & recv_data ) // right-click
                 if( itm->IsEligibleForRefund() && ex != NULL ){
                     itm->GetOwner()->GetItemInterface()->AddRefundable( itm->GetGUID(), ex->costid );
                 }
-                SendItemPushResult(itm, false, true, false, true, static_cast<uint8>(INVENTORY_SLOT_NOT_SET), slotresult.Result, amount*item.amount);
+                _player->SendItemPushResult( itm->GetGUID(), false, true, false, true, static_cast<uint8>(INVENTORY_SLOT_NOT_SET), slotresult.Result, amount*item.amount, itm->GetEntry(), itm->GetItemRandomSuffixFactor(), itm->GetItemRandomPropertyId(), itm->GetCount() );
             }
 		}
 		else
@@ -1551,7 +1553,7 @@ void WorldSession::HandleBuyItemOpcode( WorldPacket & recv_data ) // right-click
                     if( itm->IsEligibleForRefund() && ex != NULL ){
                         itm->GetOwner()->GetItemInterface()->AddRefundable( itm->GetGUID(), ex->costid );
                     }
-					SendItemPushResult(itm, false, true, false, true, slotresult.ContainerSlot, slotresult.Result, 1);
+                    _player->SendItemPushResult( itm->GetGUID(), false, true, false, true, slotresult.ContainerSlot, slotresult.Result, 1, itm->GetEntry(), itm->GetItemRandomSuffixFactor(), itm->GetItemRandomPropertyId(), itm->GetCount() );
                 }
 			}
 		}
@@ -1560,7 +1562,7 @@ void WorldSession::HandleBuyItemOpcode( WorldPacket & recv_data ) // right-click
 	{
 		add->ModUnsigned32Value(ITEM_FIELD_STACK_COUNT, amount*item.amount);
 		add->m_isDirty = true;
-        SendItemPushResult(add, false, true, false, false, (uint8)_player->GetItemInterface()->GetBagSlotByGuid(add->GetGUID()), 1, amount*item.amount);
+        _player->SendItemPushResult(add->GetGUID(), false, true, false, false, (uint8)_player->GetItemInterface()->GetBagSlotByGuid(add->GetGUID()), 1, amount*item.amount , add->GetEntry(), add->GetItemRandomSuffixFactor(), add->GetItemRandomPropertyId(), add->GetCount() );
 	}
 
 
@@ -1568,9 +1570,12 @@ void WorldSession::HandleBuyItemOpcode( WorldPacket & recv_data ) // right-click
     _player->GetItemInterface()->BuyItem(it,amount,unit);
 
 	data.Initialize( SMSG_BUY_ITEM );
-	data << uint64(srcguid);
+	
+    data << uint64(srcguid);
 	data << getMSTime();
-	data << uint32(itemid) << uint32(amount*item.amount);
+	data << uint32(itemid);
+    data << uint32(amount*item.amount);
+
 	SendPacket( &data );
 
 	if(item.max_amount)

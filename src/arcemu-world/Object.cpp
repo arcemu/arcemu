@@ -885,29 +885,6 @@ void Object::BuildHeartBeatMsg(WorldPacket *data) const
 	*data << m_position.o;
 }
 
-WorldPacket * Object::BuildTeleportAckMsg(const LocationVector & v)
-{
-	///////////////////////////////////////
-	//Update player on the client with TELEPORT_ACK
-	static_cast< Player* >( this )->SetPlayerStatus( TRANSFER_PENDING );
-
-	WorldPacket * data = new WorldPacket(MSG_MOVE_TELEPORT_ACK, 80);
-	*data << GetNewGUID();
-
-	//First 4 bytes = no idea what it is
-	*data << uint32(2); // flags
-//	*data << uint32(0); // mysterious value #1
-	*data << getMSTime();
-	*data << uint16(0);
-
-	*data << float(0);
-	*data << v;
-	*data << v.o;
-	*data << uint16(2);
-	*data << uint8(0);
-	return data;
-}
-
 bool Object::SetPosition(const LocationVector & v, bool allowPorting /* = false */)
 {
 	bool updateMap = false, result = true;
@@ -968,89 +945,6 @@ bool Object::SetPosition( float newX, float newY, float newZ, float newOrientati
 	}
 
 	return result;
-}
-
-
-void Object::OutPacketToSet(uint16 Opcode, uint16 Len, const void * Data, bool self)
-{
-	if( self && m_objectTypeId == TYPEID_PLAYER )
-		static_cast< Player* >( this )->GetSession()->OutPacket( Opcode, Len, Data );
-
-	if( !IsInWorld() )
-		return;
-
-	std::set<Player*>::iterator itr = m_inRangePlayers.begin();
-	std::set<Player*>::iterator it_end = m_inRangePlayers.end();
-	int gm = ( m_objectTypeId == TYPEID_PLAYER ? static_cast< Player* >( this )->m_isGmInvisible : 0 );
-	for(; itr != it_end; ++itr)
-	{
-		ASSERT((*itr)->GetSession());
-		if( gm )
-		{
-			if( (*itr)->GetSession()->GetPermissionCount() > 0 )
-				(*itr)->GetSession()->OutPacket(Opcode, Len, Data);
-		}
-		else
-		{
-			(*itr)->GetSession()->OutPacket(Opcode, Len, Data);
-		}
-	}
-}
-
-void Object::SendMessageToSet(WorldPacket *data, bool bToSelf,bool myteam_only)
-{
-	if(bToSelf && m_objectTypeId == TYPEID_PLAYER && static_cast< Player* >( this )->GetSession())
-	{
-		static_cast< Player* >( this )->GetSession()->SendPacket(data);
-	}
-
-	if(!IsInWorld())
-		return;
-
-	std::set<Player*>::iterator itr = m_inRangePlayers.begin();
-	std::set<Player*>::iterator it_end = m_inRangePlayers.end();
-	bool gminvis = (m_objectTypeId == TYPEID_PLAYER ? static_cast< Player* >( this )->m_isGmInvisible : false);
-	//Zehamster: Splitting into if/else allows us to avoid testing "gminvis==true" at each loop...
-	//		   saving cpu cycles. Chat messages will be sent to everybody even if player is invisible.
-	if(myteam_only)
-	{
-		uint32 myteam=static_cast< Player* >( this )->GetTeam();
-		if(gminvis && data->GetOpcode()!=SMSG_MESSAGECHAT)
-		{
-			for(; itr != it_end; ++itr)
-			{
-				if((*itr) && (*itr)->GetSession() && (*itr)->GetSession()->GetPermissionCount() > 0 && (*itr)->GetTeam()==myteam)
-					(*itr)->GetSession()->SendPacket(data);
-			}
-		}
-		else
-		{
-			for(; itr != it_end; ++itr)
-			{
-				if((*itr) && (*itr)->GetSession() && (*itr)->GetTeam()==myteam && !(*itr)->Social_IsIgnoring( GetLowGUID() ))
-					(*itr)->GetSession()->SendPacket(data);
-			}
-		}
-	}
-	else
-	{
-		if(gminvis && data->GetOpcode()!=SMSG_MESSAGECHAT)
-		{
-			for(; itr != it_end; ++itr)
-			{
-				if((*itr) && (*itr)->GetSession() && (*itr)->GetSession()->GetPermissionCount() > 0)
-					(*itr)->GetSession()->SendPacket(data);
-			}
-		}
-		else
-		{
-			for(; itr != it_end; ++itr)
-			{
-				if((*itr) && (*itr)->GetSession() &&  !(m_objectTypeId == TYPEID_PLAYER && (*itr)->Social_IsIgnoring( GetLowGUID() )) )
-					(*itr)->GetSession()->SendPacket(data);
-			}
-		}
-	}
 }
 
 ////////////////////////////////////////////////////////////////////////////
@@ -1830,57 +1724,67 @@ void Object::_setFaction()
 void Object::UpdateOppFactionSet()
 {
 	m_oppFactsInRange.clear();
-	this->AquireInrangeLock(); //make sure to release lock before exit function !
-	for(Object::InRangeSet::iterator i = GetInRangeSetBegin(); i != GetInRangeSetEnd(); ++i)
+	
+    AquireInrangeLock();
+    
+    for( std::set< Object* >::iterator itr = GetInRangeSetBegin(); itr != GetInRangeSetEnd(); ++itr)
 	{
-		if (((*i)->GetTypeId() == TYPEID_UNIT) || ((*i)->GetTypeId() == TYPEID_PLAYER) || ((*i)->GetTypeId() == TYPEID_GAMEOBJECT))
+        Object *i = *itr;
+
+		if( ( i->GetTypeId() == TYPEID_UNIT) || ( i->GetTypeId() == TYPEID_PLAYER ) || ( i->GetTypeId() == TYPEID_GAMEOBJECT ) )
 		{
-			if (isHostile(this, (*i)))
+			if(isHostile( this, i) )
 			{
-				if(!(*i)->IsInRangeOppFactSet(this))
-					(*i)->m_oppFactsInRange.insert(this);
-				if (!IsInRangeOppFactSet((*i)))
-					m_oppFactsInRange.insert((*i));
+				if(!i->IsInRangeOppFactSet( this ) )
+					i->m_oppFactsInRange.insert( this );
+				if (!IsInRangeOppFactSet( i ) )
+					m_oppFactsInRange.insert( i );
 
 			}
 			else
 			{
-				if((*i)->IsInRangeOppFactSet(this))
-					(*i)->m_oppFactsInRange.erase(this);
-				if (IsInRangeOppFactSet((*i)))
-					m_oppFactsInRange.erase((*i));
+				if( i->IsInRangeOppFactSet( this ) )
+					i->m_oppFactsInRange.erase( this );
+				if( IsInRangeOppFactSet( i ) )
+					m_oppFactsInRange.erase( i );
 			}
 		}
 	}
-	this->ReleaseInrangeLock();
+	ReleaseInrangeLock();
 }
 
 void Object::UpdateSameFactionSet()
 {
 	m_sameFactsInRange.clear();
-	this->AquireInrangeLock(); //make sure to release lock before exit function !
-	for(Object::InRangeSet::iterator i = GetInRangeSetBegin(); i != GetInRangeSetEnd(); ++i)
+
+	AquireInrangeLock();
+
+    for( std::set< Object* >::iterator itr = GetInRangeSetBegin(); itr != GetInRangeSetEnd(); ++itr)
 	{
-		if (((*i)->GetTypeId() == TYPEID_UNIT) || ((*i)->GetTypeId() == TYPEID_PLAYER) || ((*i)->GetTypeId() == TYPEID_GAMEOBJECT))
+        Object *i = *itr;
+
+		if(( i->GetTypeId() == TYPEID_UNIT) || ( i->GetTypeId() == TYPEID_PLAYER) || ( i->GetTypeId() == TYPEID_GAMEOBJECT))
 		{
-			if (isFriendly(this, (*i)))
+			if( isFriendly( this, i ) )
 			{
-				if(!(*i)->IsInRangeSameFactSet(this))
-					(*i)->m_sameFactsInRange.insert(this);
-				if (!IsInRangeOppFactSet((*i)))
-					m_sameFactsInRange.insert((*i));
+				if(!i->IsInRangeSameFactSet( this ) )
+					i->m_sameFactsInRange.insert( this );
+				
+                if (!IsInRangeOppFactSet( i ) )
+					m_sameFactsInRange.insert( i );
 
 			}
 			else
 			{
-				if((*i)->IsInRangeSameFactSet(this))
-					(*i)->m_sameFactsInRange.erase(this);
-				if (IsInRangeSameFactSet((*i)))
-					m_sameFactsInRange.erase((*i));
+				if( i->IsInRangeSameFactSet( this ) )
+					i->m_sameFactsInRange.erase( this );
+				
+                if( IsInRangeSameFactSet( i ) )
+					m_sameFactsInRange.erase( i );
 			}
 		}
 	}
-	this->ReleaseInrangeLock();
+	ReleaseInrangeLock();
 }
 
 void Object::EventSetUInt32Value(uint32 index, uint32 value)
@@ -2079,23 +1983,26 @@ void Object::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
 				pVictim->BuildFieldUpdatePacket(&buf, UNIT_DYNAMIC_FLAGS, pVictim->m_uint32Values[UNIT_DYNAMIC_FLAGS]);
 
 				// Loop inrange set, append to their update data.
-				for(std::set<Player*>::iterator itr = m_inRangePlayers.begin(); itr != m_inRangePlayers.end(); ++itr)
+				for( std::set< Object* >::iterator itr = m_inRangePlayers.begin(); itr != m_inRangePlayers.end(); ++itr)
 				{
-					if (static_cast< Player* >(plr)->InGroup())
+
+                    Player *p = static_cast< Player* >( *itr );
+
+					if ( plr->InGroup())
 					{
-						if (static_cast< Player* >(*itr)->GetGroup() && static_cast< Player* >(plr)->GetGroup()->GetID() == static_cast< Player* >(*itr)->GetGroup()->GetID())
+						if ( p->GetGroup() && plr->GetGroup()->GetID() == p->GetGroup()->GetID())
 						{
-							(*itr)->PushUpdateData(&buf1, 1);
+							p->PushUpdateData(&buf1, 1);
 						}
 						else
 						{
-							(*itr)->PushUpdateData(&buf, 1);
+							p->PushUpdateData(&buf, 1);
 						}
 
 					}
 					else
 					{
-						(*itr)->PushUpdateData(&buf, 1);
+						p->PushUpdateData(&buf, 1);
 					}
 				}
 
@@ -2410,9 +2317,7 @@ void Object::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
 
 				    if(AreaID)
 				    {
-					    WorldPacket data(SMSG_ZONE_UNDER_ATTACK, 4);
-					    data << AreaID;
-					    sWorld.SendFactionMessage(&data, teamId);
+                        sWorld.SendZoneUnderAttackMsg( AreaID, teamId );
 				    }
                 }
 			}
@@ -2442,13 +2347,17 @@ void Object::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
 
 
 		/* Stop players from casting */
-		std::set<Player*>::iterator itr;
+		std::set< Object* >::iterator itr;
+
 		for( itr = pVictim->GetInRangePlayerSetBegin() ; itr != pVictim->GetInRangePlayerSetEnd() ; itr ++ )
 		{
-			if( (*itr)->GetCurrentSpell() != NULL)
+
+            Player *p = static_cast< Player* >( *itr );
+
+			if( p->GetCurrentSpell() != NULL)
 			{
-				if ((*itr)->GetCurrentSpell()->m_targets.m_unitTarget == pVictim->GetGUID())
-					(*itr)->GetCurrentSpell()->cancel();
+				if ( p->GetCurrentSpell()->m_targets.m_unitTarget == pVictim->GetGUID())
+					p->GetCurrentSpell()->cancel();
 			}
 		}
 		/* Stop victim from attacking */
@@ -3255,7 +3164,7 @@ void Object::SpellNonMeleeDamageLog(Unit *pVictim, uint32 spellID, uint32 damage
 	SendSpellNonMeleeDamageLog(this, pVictim, spellID, float2int32(res), static_cast<uint8>( school ), abs_dmg, dmg.resisted_damage, false, 0, critical, IsPlayer());
 	DealDamage( pVictim, float2int32( res ), 2, 0, spellID );
 
-	if( this->IsUnit() && allowProc && spellInfo->Id != 25501 && spellInfo->noproc == false )
+	if( IsUnit() && allowProc && spellInfo->Id != 25501 && spellInfo->noproc == false )
 	{
 		int32 dmg = float2int32(res);
 
@@ -3287,10 +3196,9 @@ void Object::SpellNonMeleeDamageLog(Unit *pVictim, uint32 spellID, uint32 damage
 			if( static_cast< Player* >( pVictim )->m_RegenManaOnSpellResist )
 			{
 				Player* pl = static_cast< Player* >( pVictim );
-				uint32 maxmana = pl->GetUInt32Value( UNIT_FIELD_MAXPOWER1 );
 
-				//TODO: wtf is this ugly mess of casting bullshit
-				uint32 amount = uint32(float( float(maxmana)*pl->m_RegenManaOnSpellResist));
+				uint32 maxmana = pl->GetUInt32Value( UNIT_FIELD_MAXPOWER1 );
+				uint32 amount = uint32( maxmana * pl->m_RegenManaOnSpellResist );
 
 				pVictim->Energize( pVictim, 29442, amount, POWER_TYPE_MANA );
 			}
@@ -3310,10 +3218,10 @@ void Object::SpellNonMeleeDamageLog(Unit *pVictim, uint32 spellID, uint32 damage
 			//Shadow Word:Death
 			if( spellID == 32379 || spellID == 32996 || spellID == 48157 || spellID == 48158 ) 
 			{
-				uint32 damage = (uint32)( res + abs_dmg );
+				uint32 damage = uint32( res + abs_dmg );
 				uint32 absorbed = static_cast< Unit* >( this )->AbsorbDamage( school, &damage );
 				DealDamage( static_cast< Unit* >( this ), damage, 2, 0, spellID );
-				SendSpellNonMeleeDamageLog( this, this, spellID, damage, static_cast<uint8>( school ), absorbed, 0, false, 0, false, this->IsPlayer() );
+				SendSpellNonMeleeDamageLog( this, this, spellID, damage, static_cast<uint8>( school ), absorbed, 0, false, 0, false, IsPlayer() );
 			}
 		}
 	}
@@ -3330,13 +3238,15 @@ void Object::SendSpellLog(Object *Caster, Object *Target,uint32 Ability, uint8 S
 
 
 	WorldPacket data( SMSG_SPELLLOGMISS, 26 );
-	data << Ability;							// spellid
+	
+    data << uint32( Ability );					// spellid
 	data << Caster->GetGUID();					// caster / player
-	data << (uint8)1;							// unknown but I think they are const
-	data << (uint32)1;							// unknown but I think they are const
+	data << uint8( 1 );							// unknown but I think they are const
+	data << uint32( 1 );						// unknown but I think they are const
 	data << Target->GetGUID();					// target
-	data << SpellLogType;						// spelllogtype
-	Caster->SendMessageToSet( &data, true );
+	data << uint8( SpellLogType );				// spelllogtype
+	
+    Caster->SendMessageToSet( &data, true );
 }
 
 
@@ -3346,23 +3256,31 @@ void Object::SendSpellNonMeleeDamageLog( Object* Caster, Object* Target, uint32 
 		return;
 	
 	uint32 Overkill = 0;
-	if( Damage > Target->GetUInt32Value( UNIT_FIELD_HEALTH ) )
+	
+    if( Damage > Target->GetUInt32Value( UNIT_FIELD_HEALTH ) )
 		Overkill = Damage - Target->GetUInt32Value( UNIT_FIELD_HEALTH );
 
 	WorldPacket data( SMSG_SPELLNONMELEEDAMAGELOG, 48 );
+
 	data << Target->GetNewGUID();
 	data << Caster->GetNewGUID();
-	data << SpellID;                    // SpellID / AbilityID
-	data << Damage;                     // All Damage
-	data << Overkill;					// Overkill
-	data << uint8(g_spellSchoolConversionTable[School]);                     // School
-	data << AbsorbedDamage;             // Absorbed Damage
-	data << ResistedDamage;             // Resisted Damage
-	data << uint8(PhysicalDamage);      // Physical Damage (true/false)
-	data << uint8(0);                   // unknown or it binds with Physical Damage
-	data << BlockedDamage;		     // Physical Damage (true/false)
-	data << uint8(CriticalHit ? 7 : 5);                   // unknown const
-	data << uint32(0);
+	data << uint32( SpellID );                    // SpellID / AbilityID
+	data << uint32( Damage );                     // All Damage
+	data << uint32( Overkill );					// Overkill
+	data << uint8( g_spellSchoolConversionTable[School] );   // School
+	data << uint32( AbsorbedDamage );             // Absorbed Damage
+	data << uint32( ResistedDamage );             // Resisted Damage
+	data << uint8( PhysicalDamage );      // Physical Damage (true/false)
+	data << uint8( 0 );                   // unknown or it binds with Physical Damage
+    data << uint32( BlockedDamage );		     // Physical Damage (true/false)
+
+    // unknown const
+    if( CriticalHit )
+        data << uint8( 7 );
+    else
+        data << uint8( 5 );
+
+    data << uint32( 0 );
 
 	Caster->SendMessageToSet( &data, bToset );
 }
@@ -3372,69 +3290,63 @@ void Object::SendAttackerStateUpdate( Object* Caster, Object* Target, dealdamage
 	if (!Caster || !Target || !Dmg)
 		return;
 
-	WorldPacket data(SMSG_ATTACKERSTATEUPDATE, 70);
-	//0x4--dualwield,0x10 miss,0x20 absorbed,0x80 crit,0x4000 -glancing,0x8000-crushing
-	//only for melee!
-
-	/*if (!(HitStatus & (HITSTATUS_MISS))) 
-	{
-		HitStatus|= 0x00800000;
-	}*/
+	WorldPacket data( SMSG_ATTACKERSTATEUPDATE, 70 );
 
 	uint32 Overkill = 0;
+
 	if( Damage > Target->GetUInt32Value( UNIT_FIELD_MAXHEALTH ) )
 		Overkill = Damage - Target->GetUInt32Value( UNIT_FIELD_HEALTH );
  
-	data << (uint32)HitStatus;
+	data << uint32( HitStatus );
 	data << Caster->GetNewGUID();
 	data << Target->GetNewGUID();
 
-	data << Damage;						// Realdamage
-	data << Overkill;					// Overkill
-	data << (uint8)1;					// Damage type counter / swing type
+	data << uint32( Damage );						// Realdamage
+	data << uint32( Overkill );					// Overkill
+	data << uint8( 1 );					// Damage type counter / swing type
 
-	data << (uint32)g_spellSchoolConversionTable[Dmg->school_type];				  // Damage school
-	data << (float)Dmg->full_damage;	// Damage float
-	data << (uint32)Dmg->full_damage;	// Damage amount
-	if (HitStatus & HITSTATUS_ABSORBED) {
-		data << (uint32)Abs;				// Damage absorbed
+	data << uint32( g_spellSchoolConversionTable[Dmg->school_type] );				  // Damage school
+	data << float( Dmg->full_damage );	// Damage float
+	data << uint32( Dmg->full_damage );	// Damage amount
+
+    if( HitStatus & HITSTATUS_ABSORBED) {
+		data << uint32( Abs );				// Damage absorbed
 	}
-	if (HitStatus & HITSTATUS_RESIST) {
-		data << (uint32)Dmg->resisted_damage;	// Damage resisted
+
+    if( HitStatus & HITSTATUS_RESIST ){
+		data << uint32( Dmg->resisted_damage );	// Damage resisted
 	}
-//	data << (uint8)1;					// unknown - VLack: Victim state or target state on other emulators; maybe this is in the VState variable...
-	data << (uint8)VState;
-//	if(HitStatus & HITSTATUS_BLOCK)
-		data << (uint32)0;				// can be 0,1000 or -1
-//	else
-//		data << (uint32)0x03e8;				// can be 0,1000 or -1
-	data << (uint32)0;
-	if (HitStatus & HITSTATUS_BLOCK) {
-		data << (uint32)BlockedDamage;		// Damage amount blocked
+
+    data << uint8( VState );
+	data << uint32( 0 );				// can be 0,1000 or -1
+	data << uint32( 0 );
+	
+    if( HitStatus & HITSTATUS_BLOCK ){
+		data << uint32( BlockedDamage );		// Damage amount blocked
 	}
-	if (HitStatus & 0x00800000) {
-		data << (uint32)0;				// unknown
+	
+    if ( HitStatus & 0x00800000 ){
+		data << uint32( 0 );				// unknown
 	}
-	if(HitStatus & HITSTATUS_unk)
+
+	if( HitStatus & HITSTATUS_unk )
 	{
-		data << uint32(0);
-		data << float(0);
-		data << float(0);
-		data << float(0);
-		data << float(0);
-		data << float(0);
-		data << float(0);
-		data << float(0);
-		data << float(0);
+		data << uint32( 0 );
+		data << float( 0 );
+		data << float( 0 );
+		data << float( 0 );
+		data << float( 0 );
+		data << float( 0 );
+		data << float( 0 );
+		data << float( 0 );
+		data << float( 0 );
 		for(uint8 i = 0; i < 5; ++i)
 		{
-			data << float(0);
-			data << float(0);
+			data << float( 0 );
+			data << float( 0 );
 		}
-		data << uint32(0);
+		data << uint32( 0 );
 	}
-//	data << (uint32)0;					// HitNumber?
-//	data << (uint32)VState;				// new victim state
 
 	SendMessageToSet(&data, Caster->IsPlayer());
 }
@@ -3593,6 +3505,7 @@ void Object::RemoveByteFlag( uint16 index, uint8 offset, uint8 oldFlag )
 void Object::SetZoneId(uint32 newZone)
 {
 	m_zoneId = newZone;
+
 	if( m_objectTypeId == TYPEID_PLAYER && static_cast< Player* >( this )->GetGroup() )
 		static_cast< Player* >( this )->GetGroup()->HandlePartialChange( PARTY_UPDATE_FLAG_ZONEID, static_cast< Player* >( this ) );
 }
@@ -3601,7 +3514,8 @@ void Object::PlaySoundToSet(uint32 sound_entry)
 {
 	WorldPacket data(SMSG_PLAY_SOUND, 4);
 	data << sound_entry;
-	SendMessageToSet(&data, true);
+	
+    SendMessageToSet(&data, true);
 }
 
 void Object::_SetExtension(const string& name, void* ptr)
@@ -3614,10 +3528,11 @@ void Object::_SetExtension(const string& name, void* ptr)
 
 bool Object::IsInBg()
 {
-	MapInfo *pMapinfo = WorldMapInfoStorage.LookupEntry(this->GetMapId());
-	if( pMapinfo != NULL )
+	MapInfo *pMapinfo = WorldMapInfoStorage.LookupEntry( GetMapId() );
+	
+    if( pMapinfo != NULL )
 	{
-		return (pMapinfo->type == INSTANCE_BATTLEGROUND);
+		return ( pMapinfo->type == INSTANCE_BATTLEGROUND );
 	}
 
 	return false;
@@ -3685,4 +3600,43 @@ void Object::Phase(uint8 command, uint32 newphase)
 		static_cast< Unit* >( this )->UpdateVisibility();
 
 	return;
+}
+
+void Object::AddInRangeObject(Object *pObj){
+
+    assert( pObj != NULL );
+
+	if( pObj == this )
+        sLog.outError( "We are in range of ourselves!" );
+
+	m_objectsInRange.insert( pObj );
+
+	if( pObj->GetTypeId() == TYPEID_PLAYER )
+        m_inRangePlayers.insert( pObj ); 
+}
+
+void Object::OutPacketToSet(uint16 Opcode, uint16 Len, const void * Data, bool self)
+{
+	if( !IsInWorld() )
+		return;
+
+    // We are on Object level, which means we can't send it to ourselves so we only send to Players inrange
+	for( std::set< Object* >::iterator itr = m_inRangePlayers.begin(); itr != m_inRangePlayers.end(); ++itr )
+	{
+        Object *o = *itr;
+
+        o->OutPacket( Opcode, Len, Data );
+	}
+}
+
+void Object::SendMessageToSet(WorldPacket *data, bool bToSelf,bool myteam_only)
+{
+    if(!IsInWorld())
+        return;
+
+    for( std::set< Object* >::iterator itr = m_inRangePlayers.begin(); itr != m_inRangePlayers.end(); ++itr ){
+        Object *o = *itr;
+
+        o->SendPacket( data );
+    }
 }

@@ -1712,12 +1712,8 @@ Unit* AIInterface::FindTarget()
 	Unit* target = NULL;
 	Unit* critterTarget = NULL;
 	float distance = 999999.0f; // that should do it.. :p
-//	float crange;
-//	float z_diff;
-
 	std::set<Object*>::iterator itr, itr2;
-	std::set<Player *>::iterator pitr, pitr2;
-//	Object *pObj;
+	std::set< Object* >::iterator pitr, pitr2;
 	Unit *pUnit;
 	float dist;
 
@@ -1746,9 +1742,10 @@ Unit* AIInterface::FindTarget()
 	if (m_isNeutralGuard)
 	{
 		Player *tmpPlr;
-		for (std::set<Player*>::iterator itrPlr = m_Unit->GetInRangePlayerSetBegin(); itrPlr != m_Unit->GetInRangePlayerSetEnd(); ++itrPlr)
+		for (std::set< Object*>::iterator itrPlr = m_Unit->GetInRangePlayerSetBegin(); itrPlr != m_Unit->GetInRangePlayerSetEnd(); ++itrPlr)
 		{
-			tmpPlr = (*itrPlr);
+			tmpPlr = static_cast< Player* >( *itrPlr );
+
 			if (tmpPlr == NULL)
 				continue;
 			if (tmpPlr->IsDead())
@@ -1806,7 +1803,7 @@ Unit* AIInterface::FindTarget()
 		pitr = pitr2;
 		++pitr2;
 
-		pUnit = *pitr;
+		pUnit = static_cast< Player* >( *pitr );
         
         if( UnsafeCanOwnerAttackUnit( pUnit ) == false )
 			continue;
@@ -2091,13 +2088,16 @@ bool AIInterface::FindFriends(float dist)
 
 		uint8 spawned = 0;
 	
-		std::set<Player*>::iterator hostileItr = m_Unit->GetInRangePlayerSetBegin();
+		std::set< Object* >::iterator hostileItr = m_Unit->GetInRangePlayerSetBegin();
 		for(; hostileItr != m_Unit->GetInRangePlayerSetEnd(); hostileItr++)
 		{
+
+            Player *p = static_cast< Player* >( *hostileItr );
+
 			if(spawned >= 3)
 				break;
 
-			if(!isHostile(*hostileItr, m_Unit))
+			if(!isHostile( p, m_Unit))
 				continue;
 
 			if (spawned == 0)

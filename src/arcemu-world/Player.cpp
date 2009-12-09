@@ -1715,34 +1715,6 @@ void Player::GiveXP(uint32 xp, const uint64 &guid, bool allowbonus)
 	UpdateRestState();
 	SendLogXPGain(guid,xp,restxp,guid == 0 ? true : false);
 
-	/*
-	uint32 curXP = GetUInt32Value(PLAYER_XP);
-	uint32 nextLvlXP = GetUInt32Value(PLAYER_NEXT_LEVEL_XP);
-	uint32 newXP = curXP + xp;
-	uint32 level = GetUInt32Value(UNIT_FIELD_LEVEL);
-	bool levelup = false;
-
-	if(m_Summon != NULL && m_Summon->GetUInt32Value(UNIT_CREATED_BY_SPELL) == 0)
-		m_Summon->GiveXP(xp);
-
-	uint32 TotalHealthGain = 0, TotalManaGain = 0;
-	uint32 cl=getClass();
-	// Check for level-up
-	while (newXP >= nextLvlXP)
-	{
-		levelup = true;
-		// Level-Up!
-		newXP -= nextLvlXP;  // reset XP to 0, but add extra from this xp add
-		level ++;	// increment the level
-		if( level > 9)
-		{
-			//Give Talent Point
-			uint32 curTalentPoints = GetUInt32Value(PLAYER_CHARACTER_POINTS1);
-			SetUInt32Value(PLAYER_CHARACTER_POINTS1,curTalentPoints+1);
-		}
-	}
-	*/
-
 	int32 newxp = m_uint32Values[PLAYER_XP] + xp;
 	int32 nextlevelxp = lvlinfo->XPToNextLevel;
 	uint32 level = m_uint32Values[UNIT_FIELD_LEVEL];
@@ -6213,50 +6185,11 @@ void Player::AddInRangeObject(Object* pObj)
 	//if the object is a unit send a move packet if they have a destination
 	if(pObj->GetTypeId() == TYPEID_UNIT)
 	{
-		//add an event to send move update have to send guid as pointer was causing a crash :(
-		//sEventMgr.AddEvent( static_cast< Creature* >( pObj )->GetAIInterface(), &AIInterface::SendCurrentMove, this->GetGUID(), EVENT_UNIT_SENDMOVE, 200, 1);
 		static_cast< Creature* >( pObj )->GetAIInterface()->SendCurrentMove(this);
-
-/*
-	//unit based objects, send aura data
-	if (pObj->IsUnit())
-	{
-		Unit* pUnit=static_cast<Unit*>(pObj);
-
-		if (GetSession() != NULL)
-		{
-			for (uint32 i= 0; i<MAX_TOTAL_AURAS_START; ++i)
-			{
-				if (pUnit->m_auras[i] != NULL)
-				{
-					uint8 flags = pUnit->m_auras[i]->IsPositive()? 0x1F : 0x09;
-					if (pUnit->m_auras[i]->GetDuration() > 0)
-						flags |= 0x20;
-					WorldPacket data(SMSG_AURA_UPDATE, 28);
-					FastGUIDPack(data, pUnit->GetGUID());
-					data << pUnit->m_auras[i]->m_visualSlot; //flags unknown
-					data << pUnit->m_auras[i]->m_spellProto->Id;
-					data << pUnit->m_auras[i]->m_spellProto->maxstack;
-					data << flags; //flags2 unknown
-					if (flags & 0x20)
-					{
-						data << pUnit->m_auras[i]->GetDuration();
-						data << pUnit->m_auras[i]->GetTimeLeft();
-					}
-					GetSession()->SendPacket(&data);
-				}
-			}
-		}
-	}*/
-}
+    }
 }
 void Player::OnRemoveInRangeObject(Object* pObj)
 {
-	//if (/*!CanSee(pObj) && */IsVisible(pObj))
-	//{
-		//RemoveVisibleObject(pObj);
-	//}
-
 	//object was deleted before reaching here
 	if (pObj == NULL)
 		return;
@@ -6285,13 +6218,6 @@ void Player::OnRemoveInRangeObject(Object* pObj)
 	if( pObj->GetGUID() == GetUInt64Value( UNIT_FIELD_SUMMON ) )
 		RemoveFieldSummon();
 
-	/* wehee loop unrolling */
-/*	if(m_spellTypeTargets[0] == pObj)
-		m_spellTypeTargets[0] = NULL;
-	if(m_spellTypeTargets[1] == pObj)
-		m_spellTypeTargets[1] = NULL;
-	if(m_spellTypeTargets[2] == pObj)
-		m_spellTypeTargets[2] = NULL;*/
 	if(pObj->IsUnit())
 	{
 		for(uint32 x = 0; x < NUM_SPELL_TYPE_INDEX; ++x)
@@ -6876,13 +6802,9 @@ int32 Player::CanShootRangedWeapon( uint32 spellid, Unit* target, bool autoshot 
 */
 	if( fail > 0 )// && fail != SPELL_FAILED_OUT_OF_RANGE)
 	{
-		//SendCastResult( autoshot ? 75 : spellid, fail, 0, 0 );
-		packetSMSG_CASTRESULT cr;
-		cr.SpellId = autoshot ? 75 : spellid;
-		cr.ErrorMessage = fail;
-		cr.MultiCast = 0;
-		m_session->OutPacket( SMSG_CAST_FAILED, sizeof(packetSMSG_CASTRESULT), &cr );
-		if( fail != SPELL_FAILED_OUT_OF_RANGE )
+		SendCastResult( autoshot ? 75 : spellid, fail, 0, 0 );
+		
+        if( fail != SPELL_FAILED_OUT_OF_RANGE )
 		{
 			uint32 spellid2 = autoshot ? 75 : spellid;
 			m_session->OutPacket( SMSG_CANCEL_AUTO_REPEAT, 4, &spellid2 );
@@ -7120,16 +7042,9 @@ void Player::SendInitialLogonPackets()
     GetSession()->SendPacket( &data );
 
 	//Proficiencies
-    //SendSetProficiency(4,armor_proficiency);
-    //SendSetProficiency(2,weapon_proficiency);
-	packetSMSG_SET_PROFICICENCY pr;
-	pr.ItemClass = 4;
-	pr.Profinciency = armor_proficiency;
-	m_session->OutPacket( SMSG_SET_PROFICIENCY, sizeof(packetSMSG_SET_PROFICICENCY), &pr );
-	pr.ItemClass = 2;
-	pr.Profinciency = weapon_proficiency;
-	m_session->OutPacket( SMSG_SET_PROFICIENCY, sizeof(packetSMSG_SET_PROFICICENCY), &pr );
-
+    SendSetProficiency(4,armor_proficiency);
+    SendSetProficiency(2,weapon_proficiency);
+	
 	//Tutorial Flags
 	data.Initialize( SMSG_TUTORIAL_FLAGS );
 	for (int i = 0; i < 8; i++)
@@ -7969,9 +7884,7 @@ void Player::_Relocate(uint32 mapid, const LocationVector & v, bool sendpending,
 	else
 	{
 		// via teleport ack msg
-		WorldPacket * data = BuildTeleportAckMsg(v);
-		m_session->SendPacket(data);
-		delete data;
+        SendTeleportAckMsg( v );
 	}
 	SetPlayerStatus(TRANSFER_PENDING);
 	m_sentTeleportPosition = v;
@@ -10950,23 +10863,18 @@ void Player::_AddSkillLine(uint32 SkillLine, uint32 Curr_sk, uint32 Max_sk)
 		_UpdateSkillFields();
 	}
 	//Add to proficiency
-	if((prof=(ItemProf *)GetProficiencyBySkill(SkillLine)) != 0)
+	if(( prof = (ItemProf *)GetProficiencyBySkill(SkillLine)) != 0)
 	{
-		packetSMSG_SET_PROFICICENCY pr;
-		pr.ItemClass = prof->itemclass;
-		if(prof->itemclass==4)
+		if( prof->itemclass == 4 )
 		{
-				armor_proficiency|=prof->subclass;
-				//SendSetProficiency(prof->itemclass,armor_proficiency);
-				pr.Profinciency = armor_proficiency;
+				armor_proficiency |= prof->subclass;
+				SendSetProficiency( prof->itemclass,armor_proficiency );
 		}
 		else
 		{
-				weapon_proficiency|=prof->subclass;
-				//SendSetProficiency(prof->itemclass,weapon_proficiency);
-				pr.Profinciency = weapon_proficiency;
+				weapon_proficiency |= prof->subclass;
+				SendSetProficiency( prof->itemclass, weapon_proficiency );				
 		}
-		m_session->OutPacket( SMSG_SET_PROFICIENCY, sizeof( packetSMSG_SET_PROFICICENCY ), &pr );
 	}
 	_LearnSkillSpells(SkillLine, Curr_sk);
 
@@ -12095,10 +12003,7 @@ void Player::UpdatePotionCooldown()
 				if( spellInfo != NULL )
 				{
 					Cooldown_AddItem( proto, i );
-					packetSMSG_COOLDOWN_EVENT cd;
-					cd.spellid = spellInfo->Id;
-					cd.guid = GetGUID();
-					GetSession()->OutPacket( SMSG_COOLDOWN_EVENT, sizeof( packetSMSG_COOLDOWN_EVENT ), &cd );
+                    SendSpellCooldownEvent( spellInfo->Id );
 				}
 			}
 		}
@@ -13735,4 +13640,121 @@ void Player::RemoveGarbageItems(){
 
 void Player::AddGarbageItem( Item *it ){
     m_GarbageItems.push_back( it );
+}
+
+void Player::SendTeleportAckMsg( const LocationVector &v ){
+	
+    ///////////////////////////////////////
+	//Update player on the client with TELEPORT_ACK
+	SetPlayerStatus( TRANSFER_PENDING );
+
+	WorldPacket data(MSG_MOVE_TELEPORT_ACK, 80);
+	
+    data << GetNewGUID();
+	data << uint32( 2 ); // flags
+	data << getMSTime();
+	data << uint16( 0 );
+	data << float( 0 );
+	data << v;
+	data << v.o;
+	data << uint16( 2 );
+	data << uint8(0);
+
+    m_session->SendPacket( &data );
+}
+
+void Player::OutPacket( uint16 opcode, uint16 len, const void *data ){
+    m_session->OutPacket( opcode, len, data );
+}
+
+void Player::SendPacket( WorldPacket *packet ){
+    m_session->SendPacket( packet );
+}
+
+void Player::OutPacketToSet(uint16 Opcode, uint16 Len, const void * Data, bool self)
+{
+	if( !IsInWorld() )
+		return;
+
+    bool gm = m_isGmInvisible;
+
+    if( self )
+        OutPacket( Opcode, Len, Data );
+
+	for( std::set< Object* >::iterator itr = m_inRangePlayers.begin(); itr != m_inRangePlayers.end(); ++itr )
+	{
+        Player *p = static_cast< Player* >( *itr );
+        
+        if( gm ){
+            if( p->GetSession()->GetPermissionCount() > 0 )
+                p->OutPacket(Opcode, Len, Data);
+		}else{
+			p->OutPacket(Opcode, Len, Data);
+		} 
+	}
+}
+
+void Player::SendMessageToSet(WorldPacket *data, bool bToSelf,bool myteam_only)
+{
+    if(!IsInWorld())
+        return;
+
+    bool gminvis = false;
+
+    if( bToSelf ){
+        SendPacket(data);
+    }
+
+    gminvis = m_isGmInvisible;
+
+	//Zehamster: Splitting into if/else allows us to avoid testing "gminvis==true" at each loop...
+	//		   saving cpu cycles. Chat messages will be sent to everybody even if player is invisible.
+	if(myteam_only)
+	{
+		uint32 myteam = GetTeam();
+
+		if( gminvis && data->GetOpcode() != SMSG_MESSAGECHAT )
+		{
+            for( std::set< Object* >::iterator itr = m_inRangePlayers.begin(); itr != m_inRangePlayers.end(); ++itr )
+			{
+                Player *p = static_cast< Player* >( *itr );
+
+				if( p->GetSession() && p->GetSession()->GetPermissionCount() > 0 && p->GetTeam() == myteam)
+					p->SendPacket(data);
+			}
+		}
+		else
+		{
+			for( std::set< Object* >::iterator itr = m_inRangePlayers.begin(); itr != m_inRangePlayers.end(); ++itr )
+			{
+                Player *p = static_cast< Player* >( *itr );
+
+				if( p->GetSession() && p->GetTeam() == myteam && !p->Social_IsIgnoring( GetLowGUID() ))
+					p->SendPacket(data);
+			}
+		}
+	}
+	else
+	{
+		if( gminvis && data->GetOpcode() != SMSG_MESSAGECHAT )
+		{
+			for( std::set< Object* >::iterator itr = m_inRangePlayers.begin(); itr != m_inRangePlayers.end(); ++itr )
+			{
+                Player *p = static_cast< Player* >( *itr );
+
+				if( p->GetSession() && p->GetSession()->GetPermissionCount() > 0)
+					p->SendPacket(data);
+			}
+		}
+		else
+		{
+			for( std::set< Object* >::iterator itr = m_inRangePlayers.begin(); itr != m_inRangePlayers.end(); ++itr )
+			{
+                Player *p = static_cast< Player* >( *itr );
+
+				if( p->GetSession() &&  !( p->Social_IsIgnoring( GetLowGUID() )) )
+					p->SendPacket(data);
+			}
+		}
+	}
 }

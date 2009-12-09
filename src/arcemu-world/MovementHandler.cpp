@@ -429,27 +429,29 @@ void WorldSession::HandleMovementOpcodes( WorldPacket & recv_data )
 	if(_player->m_inRangePlayers.size())
 	{
 		move_time = (movement_info.time - (mstime - m_clientTimeDelay)) + MOVEMENT_PACKET_TIME_DELAY + mstime;
-//		memcpy(&movement_packet[pos], recv_data.contents(), recv_data.size());
 		memcpy(&movement_packet[0], recv_data.contents(), recv_data.size());
 		movement_packet[pos+6]= 0;
 
 		/************************************************************************/
 		/* Distribute to all inrange players.                                   */
 		/************************************************************************/
-		for(set<Player*>::iterator itr = _player->m_inRangePlayers.begin(); itr != _player->m_inRangePlayers.end(); ++itr)
+		for(set<Object*>::iterator itr = _player->m_inRangePlayers.begin(); itr != _player->m_inRangePlayers.end(); ++itr)
 		{
+
+            Player *p = static_cast< Player* >( (*itr) );
+
 #ifdef USING_BIG_ENDIAN
-			*(uint32*)&movement_packet[pos+6] = swap32(move_time + (*itr)->GetSession()->m_moveDelayTime);
+			*(uint32*)&movement_packet[pos+6] = swap32(move_time + p->GetSession()->m_moveDelayTime);
 #else
-			*(uint32*)&movement_packet[pos+6] = uint32(move_time + (*itr)->GetSession()->m_moveDelayTime);
+			*(uint32*)&movement_packet[pos+6] = uint32(move_time + p->GetSession()->m_moveDelayTime);
 #endif
 #if defined(ENABLE_COMPRESSED_MOVEMENT) && defined(ENABLE_COMPRESSED_MOVEMENT_FOR_PLAYERS)
-			if( _player->GetPositionNC().Distance2DSq((*itr)->GetPosition()) >= World::m_movementCompressThreshold )
-				(*itr)->AppendMovementData( recv_data.GetOpcode(), uint16(recv_data.size() + pos), movement_packet );
+			if( _player->GetPositionNC().Distance2DSq( p->GetPosition()) >= World::m_movementCompressThreshold )
+				p->AppendMovementData( recv_data.GetOpcode(), uint16(recv_data.size() + pos), movement_packet );
 			else
-				(*itr)->GetSession()->OutPacket(recv_data.GetOpcode(), uint16(recv_data.size() + pos), movement_packet);
+				p->GetSession()->OutPacket(recv_data.GetOpcode(), uint16(recv_data.size() + pos), movement_packet);
 #else
-			(*itr)->GetSession()->OutPacket(recv_data.GetOpcode(), uint16(recv_data.size() + pos), movement_packet);
+			p->GetSession()->OutPacket(recv_data.GetOpcode(), uint16(recv_data.size() + pos), movement_packet);
 #endif
 		}
 	}

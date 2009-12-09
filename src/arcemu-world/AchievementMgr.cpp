@@ -424,17 +424,20 @@ void AchievementMgr::SendAchievementEarned(AchievementEntry const* achievement)
 			grp->Unlock();
 		}
 		// Send Achievement message to nearby players
-		std::set<Player*>::iterator inRangeItr = GetPlayer()->GetInRangePlayerSetBegin();
-		std::set<Player*>::iterator inRangeItrLast = GetPlayer()->GetInRangePlayerSetEnd();
+		std::set<Object*>::iterator inRangeItr = GetPlayer()->GetInRangePlayerSetBegin();
+		std::set<Object*>::iterator inRangeItrLast = GetPlayer()->GetInRangePlayerSetEnd();
 		for(; inRangeItr != inRangeItrLast; ++inRangeItr)
 		{
-			if( (*inRangeItr) && (*inRangeItr)->GetSession() &&  !(*inRangeItr)->Social_IsIgnoring( GetPlayer()->GetLowGUID() ) )
+
+            Player *p = static_cast< Player* >( (*inRangeItr) );
+
+			if( p && p->GetSession() &&  !p->Social_IsIgnoring( GetPlayer()->GetLowGUID() ) )
 			{
 				// check if achievement message has already been sent to this player (in guild or group)
 				alreadySent = false;
 				for(guidIndex = 0; guidIndex < guidCount; ++guidIndex)
 				{
-					if( guidList[guidIndex] == (*inRangeItr)->GetLowGUID() )
+					if( guidList[guidIndex] == p->GetLowGUID() )
 					{
 						alreadySent = true;
 						guidIndex = guidCount;
@@ -442,8 +445,8 @@ void AchievementMgr::SendAchievementEarned(AchievementEntry const* achievement)
 				}
 				if( !alreadySent )
 				{
-					(*inRangeItr)->GetSession()->SendPacket(&cdata);
-					guidList[guidCount++] = (*inRangeItr)->GetLowGUID();
+					p->GetSession()->SendPacket(&cdata);
+					guidList[guidCount++] = p->GetLowGUID();
 				}
 			}
 		}

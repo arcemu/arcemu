@@ -343,6 +343,8 @@ public:
 	void SendBCMessageByID(uint32 id);
 	void SendLocalizedWorldText(bool wide,const char * format, ...);
 
+    void SendZoneUnderAttackMsg( uint32 areaid, uint8 team );
+
 	ARCEMU_INLINE void SetStartTime(uint32 val) { m_StartTime = val; }
 	ARCEMU_INLINE uint32 GetUptime(void) { return (uint32)UNIXTIME - m_StartTime; }
 	ARCEMU_INLINE uint32 GetStartTime(void) { return m_StartTime; }

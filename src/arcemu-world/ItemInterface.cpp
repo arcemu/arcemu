@@ -4084,7 +4084,7 @@ bool ItemInterface::AddItemById( uint32 itemid, uint32 count, int32 randomprop )
 		{
 			SlotResult *lr = LastSearchResult();
             
-            chr->GetSession()->SendItemPushResult( item, false, true, false, true, lr->ContainerSlot, lr->Slot, toadd );
+            chr->SendItemPushResult( item->GetGUID(), false, true, false, true, lr->ContainerSlot, lr->Slot, toadd , item->GetEntry(), item->GetItemRandomSuffixFactor(), item->GetItemRandomPropertyId(), item->GetCount()  );
 #ifdef ENABLE_ACHIEVEMENTS
             chr->GetAchievementMgr().UpdateAchievementCriteria( ACHIEVEMENT_CRITERIA_TYPE_LOOT_ITEM, itemid, 1, 0 );
 #endif

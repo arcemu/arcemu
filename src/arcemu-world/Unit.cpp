@@ -5406,10 +5406,10 @@ void Unit::AddInRangeObject(Object* pObj)
 {
 	if((pObj->GetTypeId() == TYPEID_UNIT) || (pObj->GetTypeId() == TYPEID_PLAYER))
 	{
-		if( isHostile( this, (Unit*)pObj ) )
+		if( isHostile( this, pObj ) )
 			m_oppFactsInRange.insert(pObj);
 
-		if ( isFriendly( this, (Unit*)pObj ) )
+		if ( isFriendly( this, pObj ) )
 			m_sameFactsInRange.insert(pObj);
     }
 
@@ -6532,16 +6532,19 @@ void Unit::UpdateVisibility()
 	}
 	else			// For units we can save a lot of work
 	{
-		for(set<Player*>::iterator it2 = GetInRangePlayerSetBegin(); it2 != GetInRangePlayerSetEnd(); ++it2)
+		for(set< Object* >::iterator it2 = GetInRangePlayerSetBegin(); it2 != GetInRangePlayerSetEnd(); ++it2)
 		{
-			can_see = (*it2)->CanSee(this);
-			is_visible = (*it2)->GetVisibility(this, &itr);
+
+            Player *p = static_cast< Player* >( *it2 );
+
+			can_see = p->CanSee(this);
+			is_visible = p->GetVisibility(this, &itr);
 			if(!can_see)
 			{
 				if(is_visible)
 				{
-					DestroyForPlayer(*it2);
-					(*it2)->RemoveVisibleObject(itr);
+					DestroyForPlayer( p );
+					p->RemoveVisibleObject(itr);
 				}
 			}
 			else
@@ -6549,9 +6552,9 @@ void Unit::UpdateVisibility()
 				if(!is_visible)
 				{
 					buf.clear();
-					count = BuildCreateUpdateBlockForPlayer(&buf, *it2);
-					(*it2)->PushCreationData(&buf, count);
-					(*it2)->AddVisibleObject(this);
+					count = BuildCreateUpdateBlockForPlayer(&buf, p);
+					p->PushCreationData(&buf, count);
+					p->AddVisibleObject(this);
 				}
 			}
 		}

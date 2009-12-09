@@ -290,10 +290,8 @@ void MapMgr::PushObject(Object *obj)
 			else
 			{
 				obj->GetPositionV()->ChangeCoords(plr->GetBindPositionX(),plr->GetBindPositionY(),plr->GetBindPositionZ(),0);
-				plr->GetSession()->SystemMessage("Teleported you to your hearthstone location as you were out of the map boundaries.");
-				WorldPacket * data = plr->BuildTeleportAckMsg(plr->GetPosition());
-				plr->GetSession()->SendPacket(data);
-				delete data;
+				plr->GetSession()->SystemMessage("Teleported you to your hearthstone location as you were out of the map boundaries.");		
+                plr->SendTeleportAckMsg( plr->GetPosition() );
 			}
 		}
 		else
@@ -326,10 +324,8 @@ void MapMgr::PushObject(Object *obj)
 			else
 			{
 				obj->GetPositionV()->ChangeCoords(plr->GetBindPositionX(),plr->GetBindPositionY(),plr->GetBindPositionZ(),0);
-				plr->GetSession()->SystemMessage("Teleported you to your hearthstone location as you were out of the map boundaries.");
-				WorldPacket * data = plr->BuildTeleportAckMsg(plr->GetPosition());
-				plr->GetSession()->SendPacket(data);
-				delete data;
+				plr->GetSession()->SystemMessage("Teleported you to your hearthstone location as you were out of the map boundaries.");				
+                plr->SendTeleportAckMsg( plr->GetPosition() );
 			}
 		}
 		else
@@ -839,9 +835,7 @@ void MapMgr::ChangeObjectLocation( Object *obj )
 			{
 				obj->GetPositionV()->ChangeCoords( plObj->GetBindPositionX(), plObj->GetBindPositionY(), plObj->GetBindPositionZ(), 0 );
 				plObj->GetSession()->SystemMessage("Teleported you to your hearthstone location as you were out of the map boundaries.");
-				WorldPacket * data = plObj->BuildTeleportAckMsg( plObj->GetPosition() );
-				plObj->GetSession()->SendPacket(data);
-				delete data;
+                plObj->SendTeleportAckMsg( plObj->GetPosition());
 			}
 		}
 		else
@@ -1187,8 +1181,7 @@ void MapMgr::_UpdateObjects()
 
 	Object *pObj;
 	Player *pOwner;
-	//std::set<Object*>::iterator it_start, it_end, itr;
-	std::set<Player*>::iterator it_start, it_end, itr;
+	std::set< Object* >::iterator it_start, it_end, itr;
 	Player * lplr;
 	ByteBuffer update(2500);
 	uint32 count = 0;
@@ -1244,9 +1237,10 @@ void MapMgr::_UpdateObjects()
 				{
 					it_start = pObj->GetInRangePlayerSetBegin();
 					it_end = pObj->GetInRangePlayerSetEnd();
+
 					for(itr = it_start; itr != it_end;)
 					{
-						lplr = *itr;
+						lplr = static_cast< Player* >( *itr );
 						++itr;
 						// Make sure that the target player can see us.
 						if( lplr->GetTypeId() == TYPEID_PLAYER && lplr->IsVisible( pObj ) )

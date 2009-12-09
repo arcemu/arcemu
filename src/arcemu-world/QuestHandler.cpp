@@ -362,9 +362,9 @@ void WorldSession::HandleQuestgiverAcceptQuestOpcode( WorldPacket & recv_data )
 				item->DeleteMe();
 			}
 			else
-				SendItemPushResult(item, false, true, false, true, 
+                _player->SendItemPushResult( item->GetGUID(), false, true, false, true, 
 				_player->GetItemInterface()->LastSearchItemBagSlot(), _player->GetItemInterface()->LastSearchItemSlot(),
-				1);
+				1, item->GetEntry(), item->GetItemRandomSuffixFactor(), item->GetItemRandomPropertyId(), item->GetCount() );
 		}
 	}
 

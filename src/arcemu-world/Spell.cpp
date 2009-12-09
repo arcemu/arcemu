@@ -2221,24 +2221,7 @@ void Spell::SendCastResult(uint8 result)
 	//case SPELL_FAILED_TOTEM_CATEGORY: seems to be fully client sided.
 	}
 
-	//plr->SendCastResult(GetProto()->Id, result, extra_cast_number, Extra);
-	if( Extra )
-	{
-		packetSMSG_CASTRESULT_EXTRA pe;
-		pe.SpellId = GetProto()->Id;
-		pe.ErrorMessage = result;
-		pe.MultiCast = extra_cast_number;
-		pe.Extra = Extra;
-		plr->GetSession()->OutPacket( SMSG_CAST_FAILED, sizeof( packetSMSG_CASTRESULT_EXTRA ), &pe );
-	}
-	else
-	{
-		packetSMSG_CASTRESULT pe;
-		pe.SpellId = GetProto()->Id;
-		pe.ErrorMessage = result;
-		pe.MultiCast = extra_cast_number;
-		plr->GetSession()->OutPacket( SMSG_CAST_FAILED, sizeof( packetSMSG_CASTRESULT ), &pe );
-	}
+	plr->SendCastResult(GetProto()->Id, result, extra_cast_number, Extra);	
 }
 
 // uint16 0xFFFF
@@ -5283,53 +5266,16 @@ void Spell::CreateItem( uint32 itemId )
 		newItem->SetUInt64Value( ITEM_FIELD_CREATOR, p_caster->GetGUID() );
 		newItem->SetUInt32Value( ITEM_FIELD_STACK_COUNT, addcount );
 
-		p_caster->GetSession()->SendItemPushResult( newItem, true, false, true, true, slotresult.ContainerSlot, slotresult.Slot, addcount );
+        p_caster->SendItemPushResult( newItem->GetGUID(), true, false, true, true, slotresult.ContainerSlot, slotresult.Slot, addcount, newItem->GetEntry(), newItem->GetItemRandomSuffixFactor(), newItem->GetItemRandomPropertyId(), newItem->GetCount()  );
 		newItem->m_isDirty = true;
 	}
 	else
 	{
 		add->ModUnsigned32Value( ITEM_FIELD_STACK_COUNT, addcount );
-		p_caster->GetSession()->SendItemPushResult( add, true, false, true, false, (uint8)p_caster->GetItemInterface()->GetBagSlotByGuid(add->GetGUID()), 0xFFFFFFFF, addcount );
+        p_caster->SendItemPushResult( add->GetGUID(), true, false, true, false, (uint8)p_caster->GetItemInterface()->GetBagSlotByGuid(add->GetGUID()), 0xFFFFFFFF, addcount , add->GetEntry(), add->GetItemRandomSuffixFactor(), add->GetItemRandomPropertyId(), add->GetCount()  );
 		add->m_isDirty = true;
 	}
 }
-
-/*void Spell::_DamageRangeUpdate()
-{
-	if(unitTarget)
-	{
-		if(unitTarget->isAlive())
-		{
-			m_caster->SpellNonMeleeDamageLog(unitTarget,GetProto()->Id, damageToHit);
-		}
-		else
-		{	if( u_caster != NULL )
-			if(u_caster->GetCurrentSpell() != this)
-			{
-					if(u_caster->GetCurrentSpell() != NULL)
-					{
-						u_caster->GetCurrentSpell()->SendChannelUpdate(0);
-						u_caster->GetCurrentSpell()->cancel();
-					}
-			}
-			SendChannelUpdate(0);
-			cancel();
-		}
-		sEventMgr.RemoveEvents(this, EVENT_SPELL_DAMAGE_HIT);
-		delete this;
-	}
-	else if(gameObjTarget)
-	{
-		sEventMgr.RemoveEvents(this, EVENT_SPELL_DAMAGE_HIT);
-		delete this;
-		//Go Support
-	}
-	else
-	{
-		sEventMgr.RemoveEvents(this, EVENT_SPELL_DAMAGE_HIT);
-		delete this;
-	}
-}*/
 
 void Spell::SendHealSpellOnPlayer(Object* caster, Object* target, uint32 dmg, bool critical, uint32 overheal, uint32 spellid)
 {

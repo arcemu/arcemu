@@ -190,7 +190,6 @@ public:
 	virtual void DestroyForPlayer( Player *target ) const;
 
 	void BuildHeartBeatMsg( WorldPacket *data ) const;
-	WorldPacket * BuildTeleportAckMsg( const LocationVector & v);
 	bool IsBeingTeleported() { return mSemaphoreTeleport; }
 	void SetSemaphoreTeleport(bool semphsetting) { mSemaphoreTeleport = semphsetting; }
 
@@ -386,25 +385,7 @@ public:
 		return !( m_objectsInRange.find( pObj ) == m_objectsInRange.end() );
 	}
 
-	virtual void AddInRangeObject(Object* pObj)
-	{
-		if( pObj == NULL )
-			return;
-
-		if( pObj == this )
-			printf("We are in range of self!!!\n");
-
-		//Zack: as far as i know list inserts do not corrupt iterators
-		m_objectsInRange.insert( pObj );
-
-		// NOTES: Since someone will come along and try and change it.
-		// Don't reinrepret_cast has to be used static_cast will not work when we are
-		// inside the class we are casting from if we want to cast up the inheritance
-		// chain, as Object has no concept of Player.
-
-		if( pObj->GetTypeId() == TYPEID_PLAYER )
-			m_inRangePlayers.insert( reinterpret_cast< Player* >( pObj ) );
-	}
+	virtual void AddInRangeObject(Object* pObj);
 
 	Mutex m_inrangechangelock;
 	ARCEMU_INLINE void AquireInrangeLock(){ m_inrangechangelock.Acquire(); }
@@ -431,7 +412,7 @@ public:
 	virtual void OnRemoveInRangeObject( Object * pObj )
 	{
 		if( pObj->GetTypeId() == TYPEID_PLAYER )
-			ASSERT( m_inRangePlayers.erase( reinterpret_cast< Player* >( pObj ) ) == 1 );
+			ASSERT( m_inRangePlayers.erase( pObj ) == 1 );
 	}
 
 	virtual void ClearInRangeSet()
@@ -460,7 +441,7 @@ public:
 	{
 		InRangeSet::iterator itr = m_objectsInRange.find(obj);
 		if( obj->GetTypeId() == TYPEID_PLAYER )
-			m_inRangePlayers.erase( reinterpret_cast< Player* >( obj ) );
+			m_inRangePlayers.erase( obj );
 
 		if( itr == m_objectsInRange.end() )
 			return false;
@@ -473,12 +454,12 @@ public:
 
 	ARCEMU_INLINE void AddInRangePlayer( Object * obj )
 	{
-		m_inRangePlayers.insert( reinterpret_cast< Player* >( obj ) );
+		m_inRangePlayers.insert( obj );
 	}
 
 	ARCEMU_INLINE void RemoveInRangePlayer( Object * obj )
 	{
-		m_inRangePlayers.erase( reinterpret_cast< Player* >( obj ) );
+		m_inRangePlayers.erase( obj );
 	}
 
 	bool IsInRangeSameFactSet(Object* pObj) { return (m_sameFactsInRange.count(pObj) > 0); }
@@ -491,13 +472,46 @@ public:
 	ARCEMU_INLINE size_t GetInRangeOppFactsSize(){ return m_oppFactsInRange.size(); }
 	ARCEMU_INLINE std::set<Object*>::iterator GetInRangeOppFactsSetBegin() { return m_oppFactsInRange.begin(); }
 	ARCEMU_INLINE std::set<Object*>::iterator GetInRangeOppFactsSetEnd() { return m_oppFactsInRange.end(); }
-	ARCEMU_INLINE std::set<Player*>::iterator GetInRangePlayerSetBegin() { return m_inRangePlayers.begin(); }
-	ARCEMU_INLINE std::set<Player*>::iterator GetInRangePlayerSetEnd() { return m_inRangePlayers.end(); }
-	ARCEMU_INLINE std::set<Player*> * GetInRangePlayerSet() { return &m_inRangePlayers; };
+	ARCEMU_INLINE std::set<Object*>::iterator GetInRangePlayerSetBegin() { return m_inRangePlayers.begin(); }
+	ARCEMU_INLINE std::set<Object*>::iterator GetInRangePlayerSetEnd() { return m_inRangePlayers.end(); }
+	ARCEMU_INLINE std::set<Object*> * GetInRangePlayerSet() { return &m_inRangePlayers; };
 
-	void __fastcall SendMessageToSet(WorldPacket *data, bool self,bool myteam_only=false);
-	ARCEMU_INLINE void SendMessageToSet(StackBufferBase * data, bool self) { OutPacketToSet(data->GetOpcode(), static_cast<uint16>( data->GetSize() ), data->GetBufferPointer(), self); }
-	void OutPacketToSet(uint16 Opcode, uint16 Len, const void * Data, bool self);
+    ///////////////////////////////////////////////////////////////////////////
+    //void OutPacket( uint16 opcode, uint16 len, const void *data )
+    // Sends a packet to the Player
+    //
+    //
+    // Parameters
+    //  uint16 opcode      -   opcode of the packet
+    //  uint16 len         -   length/size of the packet
+    //  const void *data   -   the data that needs to be sent
+    //
+    //
+    // Return value
+    //  none
+    //
+    //////////////////////////////////////////////////////////////////////////
+    virtual void OutPacket( uint16 opcode, uint16 len, const void *data ){};
+
+
+
+    /////////////////////////////////////////////////////////////////////////
+    //void SendPacket( WorldPacket *packet )
+    // Sends a packet to the Player
+    //
+    // Parameters
+    //  WorldPAcket *packet      -     the packet that needs to be sent
+    //
+    //
+    // Return value
+    //  none
+    //
+    ////////////////////////////////////////////////////////////////////////
+    virtual void SendPacket( WorldPacket* packet ){};
+
+	virtual void SendMessageToSet(WorldPacket *data, bool self,bool myteam_only=false);
+	void SendMessageToSet(StackBufferBase * data, bool self) { OutPacketToSet(data->GetOpcode(), static_cast<uint16>( data->GetSize() ), data->GetBufferPointer(), self); }
+	virtual void OutPacketToSet(uint16 Opcode, uint16 Len, const void * Data, bool self);
 
 	//! Fill values with data from a space separated string of uint32s.
 	void LoadValues(const char* data);
@@ -630,7 +644,7 @@ protected:
 	//! Set of Objects in range.
 	//! TODO: that functionality should be moved into WorldServer.
 	std::set<Object*> m_objectsInRange;
-	std::set<Player*> m_inRangePlayers;
+	std::set<Object*> m_inRangePlayers;
 	std::set<Object*> m_oppFactsInRange;
 	std::set<Object*> m_sameFactsInRange;
 

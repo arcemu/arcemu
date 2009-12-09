@@ -887,15 +887,9 @@ void Aura::Remove()
 	*************************************************************/
 	if( caster != NULL && caster->IsPlayer() && caster->IsInWorld() && m_spellProto->c_is_flags & SPELL_FLAG_IS_REQUIRECOOLDOWNUPDATE )
 	{
-		/*WorldPacket data( 12 );
-		data.SetOpcode( SMSG_COOLDOWN_EVENT );
-		data << m_spellProto->Id << caster->GetGUID();
-		caster->SendMessageToSet( &data, true );*/
-
-		packetSMSG_COOLDOWN_EVENT data;
-		data.spellid = m_spellProto->Id;
-		data.guid = caster->GetGUID();
-		caster->OutPacketToSet( SMSG_COOLDOWN_EVENT, sizeof( packetSMSG_COOLDOWN_EVENT ), &data, true );
+        Player *p = static_cast< Player* >( caster );
+        
+        p->SendSpellCooldownEvent( m_spellProto->Id );
 	}
 
 	if( caster != NULL && caster->IsPlayer() && caster->IsInWorld() && caster->GetUInt32Value( PLAYER_FARSIGHT ) != 0 )
@@ -3632,10 +3626,8 @@ void Aura::SpellAuraModStealth(bool apply)
 			if( p_target != NULL )
 			{
 				p_target->RemoveFlag( PLAYER_FIELD_BYTES2, 0x2000 );
-				packetSMSG_COOLDOWN_EVENT cd;
-				cd.guid = p_target->GetGUID();
-				cd.spellid = m_spellProto->Id;
-				p_target->GetSession()->OutPacket( SMSG_COOLDOWN_EVENT, sizeof( packetSMSG_COOLDOWN_EVENT ), &cd );
+                p_target->SendSpellCooldownEvent( m_spellProto->Id );
+
 				if( p_target->m_outStealthDamageBonusPeriod && p_target->m_outStealthDamageBonusPct )
 					p_target->m_outStealthDamageBonusTimer = (uint32)UNIXTIME + p_target->m_outStealthDamageBonusPeriod;
 			}
@@ -4607,10 +4599,7 @@ void Aura::SpellAuraModShapeshift(bool apply)
 		{
 			if(apply)
 			{
-				packetSMSG_COOLDOWN_EVENT cd;
-				cd.spellid = m_spellProto->Id;
-				cd.guid = m_target->GetGUID();
-				((Player*)m_target)->GetSession()->OutPacket(SMSG_COOLDOWN_EVENT, sizeof(packetSMSG_COOLDOWN_EVENT), &cd);
+                static_cast< Player* >( m_target )->SendSpellCooldownEvent( m_spellProto->Id );
 			}
 		}break;
 	case FORM_FLIGHT:
@@ -6544,11 +6533,9 @@ void Aura::SpellAuraChannelDeathItem(bool apply)
 						item->DeleteMe();
 						return;
 					}
-					/*WorldPacket data(45);
-					pCaster->GetSession()->BuildItemPushResult(&data, pCaster->GetGUID(), 1, 1, itemid ,0,0xFF,1,0xFFFFFFFF);
-					pCaster->SendMessageToSet(&data, true);					*/
 					SlotResult * lr = pCaster->GetItemInterface()->LastSearchResult();
-					pCaster->GetSession()->SendItemPushResult(item,true,false,true,true,lr->ContainerSlot,lr->Slot,1);
+
+                    pCaster->SendItemPushResult( item->GetGUID(),true,false,true,true,lr->ContainerSlot,lr->Slot,1 , item->GetEntry(), item->GetItemRandomSuffixFactor(), item->GetItemRandomPropertyId(), item->GetCount() );
 				}
 			}
 		}
@@ -7022,8 +7009,6 @@ void Aura::SpellAuraAddPctMod( bool apply )
 
 void Aura::SendModifierLog( int32** m, int32 v, uint32* mask, uint8 type, bool pct )
 {
-	//WorldPacket data( SMSG_SET_FLAT_SPELL_MODIFIER + pct, 6 );
-	packetSMSG_SET_FLAT_SPELL_MODIFIER data;
 	uint32 intbit = 0, groupnum = 0;
 
 	if( *m == 0 )
@@ -7041,12 +7026,10 @@ void Aura::SendModifierLog( int32** m, int32 v, uint32* mask, uint8 type, bool p
 				(*m)[bit] = v;
 
 				if( !m_target->IsPlayer() )
-					continue;
-
-				data.group = static_cast<uint8>( bit );
-				data.type = type;
-				data.v = v;
-				static_cast<Player*>(m_target)->GetSession()->OutPacket( SMSG_SET_FLAT_SPELL_MODIFIER+ pct, sizeof( packetSMSG_SET_FLAT_SPELL_MODIFIER ), &data );
+                    continue;
+                
+                static_cast<Player*>(m_target)->SendFlatSpellModifier( static_cast< uint8 >( bit ), type, v );
+                
 			}
 			else
 				(*m)[bit] = 0;
@@ -7068,10 +7051,8 @@ void Aura::SendModifierLog( int32** m, int32 v, uint32* mask, uint8 type, bool p
 				if( !m_target->IsPlayer() )
 					continue;
 
-				data.group = bit;
-				data.type = type;
-				data.v = (*m)[bit];
-				static_cast<Player*>(m_target)->GetSession()->OutPacket( SMSG_SET_FLAT_SPELL_MODIFIER+ pct, sizeof( packetSMSG_SET_FLAT_SPELL_MODIFIER ), &data );
+                static_cast<Player*>(m_target)->SendFlatSpellModifier( bit, type, (*m)[ bit ] );
+
 			}
 		}
 	}
@@ -7079,9 +7060,6 @@ void Aura::SendModifierLog( int32** m, int32 v, uint32* mask, uint8 type, bool p
 
 void Aura::SendDummyModifierLog( std::map< SpellEntry*, uint32 >* m, SpellEntry* spellInfo, uint32 i, bool apply, bool pct )
 {
-	//WorldPacket data( SMSG_SET_FLAT_SPELL_MODIFIER + pct, 6 );
-	packetSMSG_SET_FLAT_SPELL_MODIFIER data;
-
 	int32 v = spellInfo->EffectBasePoints[i] + 1;
 	uint32* mask = spellInfo->EffectSpellClassMask[i];
 	uint8 type = static_cast<uint8>(spellInfo->EffectMiscValue[i]);
@@ -7111,10 +7089,7 @@ void Aura::SendDummyModifierLog( std::map< SpellEntry*, uint32 >* m, SpellEntry*
 			if( p_target == NULL)
 				continue;
 
-			data.group = bit;
-			data.type = type;
-			data.v = v;
-			p_target->GetSession()->OutPacket( SMSG_SET_FLAT_SPELL_MODIFIER + pct, sizeof( packetSMSG_SET_FLAT_SPELL_MODIFIER ), &data );
+            p_target->SendFlatSpellModifier( bit, type, v );
 		}
 	}
 }

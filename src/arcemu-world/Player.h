@@ -1026,6 +1026,11 @@ public:
 	void SendRaidDifficulty();
 	void SendExploreXP( uint32 areaid, uint32 xp );
 
+    void OutPacket( uint16 opcode, uint16 len, const void *data );
+    void SendPacket( WorldPacket *packet );
+    void SendMessageToSet(WorldPacket *data, bool self, bool myteam_only = false );
+    void OutPacketToSet(uint16 Opcode, uint16 Len, const void * Data, bool self );
+
 	void AddToWorld();
 	void AddToWorld(MapMgr * pMapMgr);
 	void RemoveFromWorld();
@@ -2160,6 +2165,13 @@ public:
 	void SendWorldStateUpdate(uint32 WorldState, uint32 Value);
 	void SendCastResult(uint32 SpellId, uint8 ErrorMessage, uint8 MultiCast, uint32 Extra);
 	void Gossip_SendPOI(float X, float Y, uint32 Icon, uint32 Flags, uint32 Data, const char* Name);
+    void SendSpellCooldownEvent( uint32 SpellId );
+    void SendFlatSpellModifier( uint8 spellgroup, uint8 spelltype, int32 v );
+    void SendItemPushResult( uint64 guid, bool created, bool recieved, bool sendtoset, bool newitem,  uint8 destbagslot, uint32 destslot, uint32 count, uint32 entry, uint32 suffix, uint32 randomprop, uint32 stack );
+    void SendSetProficiency( uint8 ItemClass, uint32 Proficiency );
+    void SendLoginVerifyWorld( uint32 MapId, float X, float Y, float Z, float O );
+    void SendPlaySpellVisual( uint64 guid, uint32 visualid );
+
     /************************************************************************/
     /* End of SpellPacket wrapper                                           */
     /************************************************************************/
@@ -2424,29 +2436,6 @@ public:
 	void ToggleXpGain();
 	bool CanGainXp();
 
-	/************************************************************************/
-	/* Player Achievements						                            */
-    /************************************************************************/
-/*public:
-	//this may change in time, We will call it each time a new monitored position is reached
-	//it is up to this function to decide if we actually made an achievement in that type or not
-	void Event_Achiement_Received(uint32 achievementtype,uint32 pentry,uint32 pvalue); //entry is not always used
-	void SendAchievmentStatus( uint32 criteriaid, uint32 new_value, uint32 at_stamp= 0 );
-	void SendAchievmentEarned( uint32 archiId, uint32 at_stamp= 0 );
-	void SendAllAchievementEarned();
-	void SendAllAchievementStatus();
-	void SendAllAchievementData(); //used on login
-public:
-	struct AchievementVal
-	{
-		AchievementVal(){ cur_value = completed_at_stamp = 0; }
-		uint32 cur_value;
-		uint32 completed_at_stamp;
-	};
-	//id and the status
-	std::map<uint32,AchievementVal*> m_achievements;
-//	uint32 m_achievement_points; // for quick check in case it is used as currency*/
-
 #ifdef ENABLE_ACHIEVEMENTS
     ARCEMU_INLINE AchievementMgr& GetAchievementMgr() { return m_achievementMgr; }
 	AchievementMgr m_achievementMgr;
@@ -2460,8 +2449,6 @@ public:
     /************************************************************************/
 	// VLack: Talent Specs from Aspire, now just the values for an empty packet
 	uint16 m_maxTalentPoints;
-//	uint16 GetMaxTalentPoints();
-//	void ApplySpec(uint8 spec, bool init);
 	uint8 m_talentSpecsCount;
 	uint8 m_talentActiveSpec;
 
@@ -2488,6 +2475,10 @@ public:
 private:
 	Unit *		m_vehicle;
 	int8		m_vehicleSeat;
+
+
+public:
+    void SendTeleportAckMsg( const LocationVector &v );
 
 };
 

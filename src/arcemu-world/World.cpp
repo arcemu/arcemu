@@ -2157,19 +2157,19 @@ void World::SendLocalizedWorldText(bool wide,const char * format, ...) // May no
 
 			if ( wide ){
 				data.Initialize(SMSG_AREA_TRIGGER_MESSAGE);
-				data << (uint32)0 << (char*)buffer << (uint8)0x00;
-			}
-			else {
+				data << uint32( 0 );
+                data << (char*)buffer;
+                data << uint8( 0 );
+			}else {
 				data.Initialize(SMSG_MESSAGECHAT);
-				data << uint8(CHAT_MSG_SYSTEM);
-				data << uint32(LANG_UNIVERSAL);
-		
-				data << (uint64)0; // Who cares about guid when there's no nickname displayed heh ?
-				data << (uint32)0;
-				data << (uint64)0;
-				data << textLen;
+				data << uint8( CHAT_MSG_SYSTEM );
+				data << uint32( LANG_UNIVERSAL );		
+				data << uint64( 0 ); // Who cares about guid when there's no nickname displayed heh ?
+				data << uint32( 0 );
+				data << uint64( 0 );
+				data << uint32( textLen );
 				data << buffer;
-				data << uint8(0);
+				data << uint8( 0 );
 			}
 			itr->second->SendPacket(&data);
 		}
@@ -2208,4 +2208,11 @@ void World::UpdateTotalTraffic(){
     TotalTrafficOutKB += (TrafficOut / 1024.0);
 
     objmgr._playerslock.ReleaseReadLock();
+}
+
+void World::SendZoneUnderAttackMsg( uint32 areaid, uint8 team ){
+    WorldPacket data( SMSG_ZONE_UNDER_ATTACK, 4 );
+    data << uint32( areaid );
+    
+    SendFactionMessage( &data, team );
 }
