@@ -265,22 +265,20 @@ void WorldSession::HandleSetTradeItem(WorldPacket & recv_data)
 
 	Item * pItem = _player->GetItemInterface()->GetInventoryItem(SourceBag, SourceSlot);
 
-	if( pTarget == NULL || pItem == 0 || TradeSlot > 6 || ( TradeSlot < 6 && pItem->IsSoulbound() ) )
- 		return;
-	if(pItem->IsAccountbound())
+	if( pTarget == NULL || pItem == NULL || TradeSlot > 6 )
+		return;
+	if( TradeSlot < 6 )
 	{
-		PlayerInfo* pinfo = ObjectMgr::getSingleton().GetPlayerInfo(_player->mTradeTarget);
-		if(pinfo == NULL || GetAccountId() != pinfo->acct) // can't trade account-based items
+		if( pItem->IsAccountbound() )
+			return;//dual accounting is not allowed so noone can trade Accountbound items. Btw the client doesn't send any client-side notification
+		if( pItem->IsSoulbound() )
+		{
+			sCheatLog.writefromsession(this, "tried to cheat trade a soulbound item");
+			Disconnect();
 			return;
+		}
 	}
 
-/*	if( pItem->IsContainer() )
-	{
-		if(_player->GetItemInterface()->IsBagSlot(SourceSlot))
-		return;*/
-		
-  // Cebernic: bag trading?
-	//printf("This slot %u\n",TradeSlot);
 	uint32 TradeStatus = TRADE_STATUS_STATE_CHANGED;
 	Player * plr = _player->GetTradeTarget();
 	if(!plr) return;
@@ -327,25 +325,6 @@ void WorldSession::HandleSetTradeItem(WorldPacket & recv_data)
 		}
 	}			
 		
-
-	if(TradeSlot < 6)
-		if(pItem->IsSoulbound())
-		{
-			sCheatLog.writefromsession(this, "tried to cheat trade a soulbound item");
-			Disconnect();
-			return;
-		}
-		else if(pItem->IsAccountbound())
-		{
-			PlayerInfo* pinfo = ObjectMgr::getSingleton().GetPlayerInfo(_player->mTradeTarget);
-			if(pinfo == NULL || GetAccountId() != pinfo->acct) // can't trade account-based items
-			{
-				sCheatLog.writefromsession(this, "tried to cheat trade an accountbound item");
-				Disconnect();
-				return;
-			}
-		}
-
 	for(uint32 i = 0; i < 8; ++i)
 	{
 		// duping little shits
@@ -357,11 +336,15 @@ void WorldSession::HandleSetTradeItem(WorldPacket & recv_data)
 		}
 	}
 
-	if(SourceSlot >= INVENTORY_SLOT_BAG_START && SourceSlot < INVENTORY_SLOT_BAG_END)
+	if( SourceSlot >= INVENTORY_SLOT_BAG_START && SourceSlot < INVENTORY_SLOT_BAG_END )
 	{
-		//More duping woohoo
-		sCheatLog.writefromsession(this, "tried to cheat trade a soulbound item");
-		Disconnect();
+		Item * itm =  _player->GetItemInterface()->GetInventoryItem(SourceBag);//NULL if it's the backpack or the item is equipped
+		if( itm == NULL || SourceSlot >= itm->GetProto()->ContainerSlots)//Required as there are bags with SourceSlot > INVENTORY_SLOT_BAG_START
+		{
+			//More duping woohoo
+			sCheatLog.writefromsession(this, "tried to cheat trade a soulbound item");
+			Disconnect();
+		}
 	}
 
 	_player->mTradeItems[TradeSlot] = pItem;
