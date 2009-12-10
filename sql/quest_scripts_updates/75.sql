@@ -1,1 +1,0 @@
-UPDATE `quests` SET `flags`='8' WHERE (`entry`='863');
