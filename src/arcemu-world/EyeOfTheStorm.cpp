@@ -636,7 +636,7 @@ void EyeOfTheStorm::OnCreate()
 			return;
 		}
 
-		m_bubbles[i]->SetFloatValue(OBJECT_FIELD_SCALE_X,0.1f);
+		m_bubbles[i]->SetScale( 0.1f);
 		m_bubbles[i]->SetByte(GAMEOBJECT_BYTES_1, 0,1);
 		m_bubbles[i]->SetUInt32Value(GAMEOBJECT_FLAGS,32);
 		m_bubbles[i]->SetUInt32Value(GAMEOBJECT_FACTION,114);
@@ -655,14 +655,14 @@ void EyeOfTheStorm::OnCreate()
 	m_standFlag->CreateFromProto( 184141, m_mapMgr->GetMapId(), 2174.782227f, 1569.054688f, 1160.361938f, -1.448624f );
 	m_standFlag->SetFloatValue( GAMEOBJECT_PARENTROTATION_02, 0.662620f );
 	m_standFlag->SetFloatValue( GAMEOBJECT_PARENTROTATION_03, -0.748956f );
-	m_standFlag->SetFloatValue( OBJECT_FIELD_SCALE_X, 2.5f );
+	m_standFlag->SetScale(  2.5f );
 	m_standFlag->PushToWorld( m_mapMgr );
 
 	m_dropFlag = m_mapMgr->CreateGameObject(184142);
 	m_dropFlag->CreateFromProto( 184142, m_mapMgr->GetMapId(), 2174.782227f, 1569.054688f, 1160.361938f, -1.448624f );
 	m_dropFlag->SetFloatValue( GAMEOBJECT_PARENTROTATION_02, 0.885448f );
 	m_dropFlag->SetFloatValue( GAMEOBJECT_PARENTROTATION_03, -0.464739f );
-	m_dropFlag->SetFloatValue( OBJECT_FIELD_SCALE_X, 2.5f );
+	m_dropFlag->SetScale(  2.5f );
 }
 
 void EyeOfTheStorm::RespawnCPFlag(uint32 i, uint32 id)
@@ -1027,7 +1027,7 @@ void EyeOfTheStorm::SpawnBuff(uint32 x)
 		if(chosen_buffid != EOTSm_buffs[x]->GetEntry())
 		{
 			EOTSm_buffs[x]->SetNewGuid(m_mapMgr->GenerateGameobjectGuid());
-			EOTSm_buffs[x]->SetUInt32Value(OBJECT_FIELD_ENTRY, chosen_buffid);
+			EOTSm_buffs[x]->SetEntry(  chosen_buffid);
 			EOTSm_buffs[x]->SetInfo(goi);
 		}
 

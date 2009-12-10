@@ -748,18 +748,9 @@ bool ChatHandler::HandleNpcInfoCommand(const char *args, WorldSession *m_session
 	SystemMessage(m_session, "Mana (cur/max): %d/%d", crt->GetUInt32Value(UNIT_FIELD_POWER1), crt->GetUInt32Value(UNIT_FIELD_MAXPOWER1));
 	SystemMessage(m_session, "Armor/Holy/Fire/Nature/Frost/Shadow/Arcane");
 	SystemMessage(m_session, "%d/%d/%d/%d/%d/%d/%d", crt->GetUInt32Value(UNIT_FIELD_RESISTANCES), crt->GetUInt32Value(UNIT_FIELD_RESISTANCES+1), crt->GetUInt32Value(UNIT_FIELD_RESISTANCES+2), crt->GetUInt32Value(UNIT_FIELD_RESISTANCES+3), crt->GetUInt32Value(UNIT_FIELD_RESISTANCES+4), crt->GetUInt32Value(UNIT_FIELD_RESISTANCES+5), crt->GetUInt32Value(UNIT_FIELD_RESISTANCES+6));
-
-	/*GreenSystemMessage(m_session, "Base Armor: %d", crt->GetUInt32Value(UNIT_FIELD_RESISTANCES));
-	GreenSystemMessage(m_session, "Base Mana: %d", crt->GetUInt32Value(UNIT_FIELD_MAXPOWER1));
-	GreenSystemMessage(m_session, "Base Holy: %d", crt->GetUInt32Value(UNIT_FIELD_RESISTANCES_01));
-	GreenSystemMessage(m_session, "Base Fire: %d", crt->GetUInt32Value(UNIT_FIELD_RESISTANCES_02));
-	GreenSystemMessage(m_session, "Base Nature: %d", crt->GetUInt32Value(UNIT_FIELD_RESISTANCES_03));
-	GreenSystemMessage(m_session, "Base Frost: %d", crt->GetUInt32Value(UNIT_FIELD_RESISTANCES_04));
-	GreenSystemMessage(m_session, "Base Shadow: %d", crt->GetUInt32Value(UNIT_FIELD_RESISTANCES_05));
-	GreenSystemMessage(m_session, "Base Arcane: %d", crt->GetUInt32Value(UNIT_FIELD_RESISTANCES_06));*/
 	SystemMessage(m_session, "Damage (min/max): %f/%f", crt->GetFloatValue(UNIT_FIELD_MINDAMAGE),crt->GetFloatValue(UNIT_FIELD_MAXDAMAGE));
 
-	ColorSystemMessage(m_session, MSG_COLOR_RED, "Entry ID: %d", crt->GetUInt32Value(OBJECT_FIELD_ENTRY));
+	ColorSystemMessage(m_session, MSG_COLOR_RED, "Entry ID: %d", crt->GetEntry() );
 	ColorSystemMessage(m_session, MSG_COLOR_RED, "SQL Entry ID: %d", crt->GetSQL_id());
 	// show byte
 	std::stringstream sstext;
@@ -3843,7 +3834,7 @@ bool ChatHandler::HandleFixScaleCommand(const char * args, WorldSession * m_sess
 		return false;
 	}
 
-	pCreature->SetFloatValue(OBJECT_FIELD_SCALE_X, sc);
+	pCreature->SetScale(  sc);
 	pCreature->GetProto()->Scale = sc;
 	WorldDatabase.Execute("UPDATE creature_proto SET scale = '%f' WHERE entry = %u", sc, pCreature->GetEntry());
 	return true;

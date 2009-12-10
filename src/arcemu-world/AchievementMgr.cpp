@@ -227,7 +227,7 @@ void AchievementMgr::SaveToDB()
 			{
 				first = false;
 			}
-			ss << "("<<GetPlayer()->GetUInt32Value(OBJECT_FIELD_GUID) << ", " << iter->first << ", " << iter->second << ")";
+            ss << "(" << m_player->GetLowGUID() << ", " << iter->first << ", " << iter->second << ")";
 		}
 		CharacterDatabase.Execute( ss.str().c_str() );
 	}
@@ -258,7 +258,7 @@ void AchievementMgr::SaveToDB()
 				{
 					first = false;
 				}
-				ss << "(" << GetPlayer()->GetUInt32Value(OBJECT_FIELD_GUID) << ", " << iter->first << ", " << iter->second->counter << ", " << iter->second->date << ")";
+                ss << "(" << m_player->GetLowGUID() << ", " << iter->first << ", " << iter->second->counter << ", " << iter->second->date << ")";
 			}
 		}
 		if( !first )

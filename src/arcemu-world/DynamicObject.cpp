@@ -28,10 +28,10 @@ DynamicObject::DynamicObject(uint32 high, uint32 low)
 	memset(m_uint32Values, 0,(DYNAMICOBJECT_END)*sizeof(uint32));
 	m_updateMask.SetCount(DYNAMICOBJECT_END);
 	m_uint32Values[OBJECT_FIELD_TYPE] = TYPE_DYNAMICOBJECT|TYPE_OBJECT;
-	m_uint32Values[OBJECT_FIELD_GUID] = low;
-	m_uint32Values[OBJECT_FIELD_GUID+1] = high;
+	m_uint32Values[LOWGUID] = low;
+	m_uint32Values[HIGHGUID] = high;
 	m_wowGuid.Init(GetGUID());
-	m_floatValues[OBJECT_FIELD_SCALE_X] = 1;
+	SetScale( 1 );
 
 
 	m_parentSpell= NULL;
@@ -66,7 +66,7 @@ void DynamicObject::Create(Unit * caster, Spell * pSpell, float x, float y, floa
 	m_spellProto = pSpell->GetProto();
 	SetUInt64Value(DYNAMICOBJECT_CASTER, caster->GetGUID());
 
-	m_uint32Values[OBJECT_FIELD_ENTRY] = m_spellProto->Id;
+	SetEntry( m_spellProto->Id );
 	m_uint32Values[DYNAMICOBJECT_BYTES] = 0x01eeeeee;
 	m_uint32Values[DYNAMICOBJECT_SPELLID] = m_spellProto->Id;
 

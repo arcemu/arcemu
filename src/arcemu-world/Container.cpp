@@ -28,11 +28,11 @@ Container::Container(uint32 high,uint32 low) : Item()
 	memset(m_uint32Values, 0,(CONTAINER_END)*sizeof(uint32));
 	m_updateMask.SetCount(CONTAINER_END);
 	SetUInt32Value( OBJECT_FIELD_TYPE,TYPE_CONTAINER|TYPE_ITEM|TYPE_OBJECT);
-	SetUInt32Value( OBJECT_FIELD_GUID,low);
-	SetUInt32Value( OBJECT_FIELD_GUID+1,high);
+    SetLowGUID( low );
+	SetHighGUID( high );
 	m_wowGuid.Init(GetGUID());
 
-	SetFloatValue( OBJECT_FIELD_SCALE_X, 1 );//always 1
+	SetScale(  1 );//always 1
 
 
 	m_Slot = NULL;
@@ -58,7 +58,7 @@ void Container::LoadFromDB( Field*fields )
 	m_itemProto = ItemPrototypeStorage.LookupEntry( itemid );
 
 	ASSERT(m_itemProto);
-	SetUInt32Value( OBJECT_FIELD_ENTRY, itemid );
+	SetEntry(  itemid );
 	
 
 	SetUInt32Value( ITEM_FIELD_CREATOR, fields[5].GetUInt32() );
@@ -84,7 +84,7 @@ void Container::Create( uint32 itemid, Player *owner )
 	m_itemProto = ItemPrototypeStorage.LookupEntry( itemid );
 	ASSERT(m_itemProto);
 
-	SetUInt32Value( OBJECT_FIELD_ENTRY, itemid );
+	SetEntry(  itemid );
 
 	// TODO: this shouldn't get NULL form containers in mail fix me
 	if( owner != NULL )

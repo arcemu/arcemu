@@ -201,7 +201,7 @@ void ArathiBasin::SpawnBuff(uint32 x)
 		if(chosen_buffid != m_buffs[x]->GetEntry())
 		{
 			m_buffs[x]->SetNewGuid(m_mapMgr->GenerateGameobjectGuid());
-			m_buffs[x]->SetUInt32Value(OBJECT_FIELD_ENTRY, chosen_buffid);
+			m_buffs[x]->SetEntry(  chosen_buffid);
 			m_buffs[x]->SetInfo(goi);
 		}
 
@@ -258,7 +258,7 @@ void ArathiBasin::SpawnControlPoint(uint32 Id, uint32 Type)
 
 		// assign it a new guid (client needs this to see the entry change?)
 		m_controlPoints[Id]->SetNewGuid(m_mapMgr->GenerateGameobjectGuid());
-		m_controlPoints[Id]->SetUInt32Value(OBJECT_FIELD_ENTRY, gi->ID);
+		m_controlPoints[Id]->SetEntry(  gi->ID);
 		m_controlPoints[Id]->SetUInt32Value(GAMEOBJECT_DISPLAYID, gi->DisplayID);
 		m_controlPoints[Id]->SetByte(GAMEOBJECT_BYTES_1, 1, static_cast<uint8>( gi->Type ));
 
@@ -312,7 +312,7 @@ void ArathiBasin::SpawnControlPoint(uint32 Id, uint32 Type)
 
 		// re-spawn the aura
 		m_controlPointAuras[Id]->SetNewGuid(m_mapMgr->GenerateGameobjectGuid());
-		m_controlPointAuras[Id]->SetUInt32Value(OBJECT_FIELD_ENTRY, gi_aura->ID);
+		m_controlPointAuras[Id]->SetEntry(  gi_aura->ID);
 		m_controlPointAuras[Id]->SetUInt32Value(GAMEOBJECT_DISPLAYID, gi_aura->DisplayID);
 		m_controlPointAuras[Id]->SetInfo(gi_aura);
 		m_controlPointAuras[Id]->PushToWorld(m_mapMgr);

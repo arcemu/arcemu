@@ -1561,7 +1561,7 @@ public:
 	int8 m_hasVampiricEmbrace;
 
 	void			EventModelChange();			//model size changes when model changes
-	inline float	GetModelHalfSize() { return ModelHalfSize*GetFloatValue(OBJECT_FIELD_SCALE_X);	}	//used to calculate combat reach and stuff
+	inline float	GetModelHalfSize() { return ModelHalfSize * GetScale();	}	//used to calculate combat reach and stuff
 
 	void RemoveFieldSummon();
 

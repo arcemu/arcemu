@@ -21,8 +21,8 @@
 /** 3.2.0 UpdateFields as of whenever i extracted them.
  */
 
-#ifndef __arcemu_UPDATEFIELDS_H
-#define __arcemu_UPDATEFIELDS_H
+#ifndef ARCEMU_UPDATEFIELDS_H
+#define ARCEMU_UPDATEFIELDS_H
 
 //ObjectFields
 #define OBJECT_FIELD_GUID                         0x0000 // Size: 2, Type: LONG, Flags: PUBLIC
@@ -31,6 +31,9 @@
 #define OBJECT_FIELD_SCALE_X                      0x0004 // Size: 1, Type: FLOAT, Flags: PUBLIC
 #define OBJECT_FIELD_PADDING                      0x0005 // Size: 1, Type: INT, Flags: NONE
 #define OBJECT_END                                0x0006
+
+#define LOWGUID                                   OBJECT_FIELD_GUID
+#define HIGHGUID                                  ( OBJECT_FIELD_GUID + 1 )
 
 //ItemFields
 #define ITEM_FIELD_OWNER                          OBJECT_END + 0x0000 // Size: 2, Type: LONG, Flags: PUBLIC

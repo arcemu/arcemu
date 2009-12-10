@@ -2146,7 +2146,7 @@ GameObject * MapMgr::CreateAndSpawnGameObject(uint32 entryID, float x, float y, 
 	// Setup game object
 	go->SetInstanceID(GetInstanceID());
 	go->CreateFromProto(entryID,mapid,x,y,z,o);
-	go->SetFloatValue(OBJECT_FIELD_SCALE_X, scale);
+	go->SetScale(  scale);
 	go->InitAI();
 	go->PushToWorld(this);
 
@@ -2161,7 +2161,7 @@ GameObject * MapMgr::CreateAndSpawnGameObject(uint32 entryID, float x, float y, 
 	gs->o1 = go->GetFloatValue(GAMEOBJECT_PARENTROTATION);
 	gs->o2 = go->GetFloatValue(GAMEOBJECT_PARENTROTATION_02);
 	gs->o3 = go->GetFloatValue(GAMEOBJECT_PARENTROTATION_03);
-	gs->scale = go->GetFloatValue(OBJECT_FIELD_SCALE_X);
+	gs->scale = go->GetScale();
 	gs->x = go->GetPositionX();
 	gs->y = go->GetPositionY();
 	gs->z = go->GetPositionZ();

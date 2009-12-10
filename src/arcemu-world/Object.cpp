@@ -657,10 +657,10 @@ void Object::_BuildMovementUpdate(ByteBuffer * data, uint16 flags, uint32 flags2
 
 
 	if( flags & UPDATEFLAG_LOWGUID ) //0x08
-		*data << GetUInt32Value(OBJECT_FIELD_GUID);
+		*data << GetLowGUID();
 
 	if( flags & UPDATEFLAG_HIGHGUID ) //0x10
-		*data << GetUInt32Value(OBJECT_FIELD_GUID+1);
+		*data << GetHighGUID();
 
 	if( flags & UPDATEFLAG_HAS_TARGET ) //0x04
 		FastGUIDPack(*data, GetUInt64Value(UNIT_FIELD_TARGET));	//some compressed GUID
@@ -668,19 +668,12 @@ void Object::_BuildMovementUpdate(ByteBuffer * data, uint16 flags, uint32 flags2
 
 	if( flags & UPDATEFLAG_TRANSPORT ) //0x2
 	{
-		if(target)
-		{
-			/*int32 m_time = TimeStamp() - target->GetSession()->m_clientTimeDelay;
-			*data << m_time;*/
-			*data << getMSTime();
-		}
-		else
-			*data << getMSTime();
-	}
+        *data << getMSTime();
+    }
 	if( flags & UPDATEFLAG_VEHICLE ) //0x80
 	{
-		*data << (uint32)0; //Vehicle ID
-		*data << (uint32)0; //Facing
+		*data << uint32( 0 ); //Vehicle ID
+		*data << float( 0 ); //Facing
 	}
 
 	if( flags & UPDATEFLAG_ROTATION ) //0x0200
@@ -688,7 +681,7 @@ void Object::_BuildMovementUpdate(ByteBuffer * data, uint16 flags, uint32 flags2
 		if( IsGameObject() )
 			*data << static_cast< GameObject* >( this )->m_rotation;
 		else
-			*data << (uint64)0; //?
+			*data << uint64( 0 ); //?
 	}
 }
 
@@ -1699,14 +1692,14 @@ void Object::_setFaction()
 	{
 		factT = dbcFactionTemplate.LookupEntryForced(GetUInt32Value(UNIT_FIELD_FACTIONTEMPLATE));
 		if( !factT )
-			sLog.outDetail("Unit does not have a valid faction. It will make him act stupid in world. Don't blame us, blame yourself for not checking :P, faction %u set to entry %u",GetUInt32Value(UNIT_FIELD_FACTIONTEMPLATE),GetUInt32Value(OBJECT_FIELD_ENTRY) );
+			sLog.outDetail("Unit does not have a valid faction. It will make him act stupid in world. Don't blame us, blame yourself for not checking :P, faction %u set to entry %u",GetUInt32Value(UNIT_FIELD_FACTIONTEMPLATE),GetEntry() );
 	}
 	else
 	if(GetTypeId() == TYPEID_GAMEOBJECT)
 	{
 		factT = dbcFactionTemplate.LookupEntryForced(GetUInt32Value(GAMEOBJECT_FACTION));
 		if( !factT )
-			sLog.outDetail("Game Object does not have a valid faction. It will make him act stupid in world. Don't blame us, blame yourself for not checking :P, faction %u set to entry %u",GetUInt32Value(GAMEOBJECT_FACTION),GetUInt32Value(OBJECT_FIELD_ENTRY) );
+			sLog.outDetail("Game Object does not have a valid faction. It will make him act stupid in world. Don't blame us, blame yourself for not checking :P, faction %u set to entry %u",GetUInt32Value(GAMEOBJECT_FACTION),GetEntry() );
 	}
 
 	if(!factT)

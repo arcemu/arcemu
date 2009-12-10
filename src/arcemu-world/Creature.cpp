@@ -158,7 +158,7 @@ Creature::Creature(uint64 guid)
 	memset(m_uint32Values, 0,(UNIT_END)*sizeof(uint32));
 	m_updateMask.SetCount(UNIT_END);
 	SetUInt32Value( OBJECT_FIELD_TYPE,TYPE_UNIT|TYPE_OBJECT);
-	SetUInt64Value( OBJECT_FIELD_GUID,guid);
+    SetGUID( guid );
 	m_wowGuid.Init(GetGUID());
 
 
@@ -1329,8 +1329,8 @@ bool Creature::Load(CreatureSpawn *spawn, uint32 mode, MapInfo *info)
 	m_flySpeed = proto->fly_speed;
 
 	//Set fields
-	SetUInt32Value(OBJECT_FIELD_ENTRY,proto->Id);
-	SetFloatValue(OBJECT_FIELD_SCALE_X,proto->Scale);
+	SetEntry( proto->Id);
+	SetScale( proto->Scale);
 
 	//SetUInt32Value(UNIT_FIELD_HEALTH, (mode ? long2int32(proto->Health * 1.5)  : proto->Health));
 	//SetUInt32Value(UNIT_FIELD_BASE_HEALTH, (mode ? long2int32(proto->Health * 1.5)  : proto->Health));
@@ -1599,12 +1599,9 @@ void Creature::Load(CreatureProto * proto_, float x, float y, float z, float o)
 	m_runSpeed = m_base_runSpeed = proto->run_speed; //set speeds
 
 	//Set fields
-	SetUInt32Value(OBJECT_FIELD_ENTRY,proto->Id);
-	SetFloatValue(OBJECT_FIELD_SCALE_X,proto->Scale);
+	SetEntry( proto->Id);
+	SetScale( proto->Scale);
 
-	//SetUInt32Value(UNIT_FIELD_HEALTH, (mode ? long2int32(proto->Health * 1.5)  : proto->Health));
-	//SetUInt32Value(UNIT_FIELD_BASE_HEALTH, (mode ? long2int32(proto->Health * 1.5)  : proto->Health));
-	//SetUInt32Value(UNIT_FIELD_MAXHEALTH, (mode ? long2int32(proto->Health * 1.5)  : proto->Health));
 	uint32 health = proto->MinHealth + RandomUInt(proto->MaxHealth - proto->MinHealth);
 
 	SetUInt32Value(UNIT_FIELD_HEALTH, health);

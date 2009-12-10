@@ -27,11 +27,11 @@ GameObject::GameObject(uint64 guid)
 	memset(m_uint32Values, 0,(GAMEOBJECT_END)*sizeof(uint32));
 	m_updateMask.SetCount(GAMEOBJECT_END);
 	SetUInt32Value( OBJECT_FIELD_TYPE,TYPE_GAMEOBJECT|TYPE_OBJECT);
-	SetUInt64Value( OBJECT_FIELD_GUID,guid);
+	SetGUID( guid );
 	SetByte(GAMEOBJECT_BYTES_1, 3, 100);
 	m_wowGuid.Init(GetGUID());
 
-	SetFloatValue( OBJECT_FIELD_SCALE_X, 1);//info->Size  );
+	SetScale(  1);//info->Size  );
 	SetByte(GAMEOBJECT_BYTES_1, 3, 100);
 
 	counter= 0;//not needed at all but to prevent errors that var was not initialized, can be removed in release
@@ -106,7 +106,7 @@ bool GameObject::CreateFromProto(uint32 entry,uint32 mapid, float x, float y, fl
 	if(!pInfo)return false;
 
 	Object::_Create( mapid, x, y, z, ang );
-	SetUInt32Value( OBJECT_FIELD_ENTRY, entry );
+	SetEntry(  entry );
 	
 	m_overrides=overrides;
 //	SetFloatValue( GAMEOBJECT_POS_X, x );
@@ -152,8 +152,8 @@ void GameObject::Create( uint32 guidlow, uint32 guidhigh,uint32 displayid, uint8
 {
 	Object::_Create( mapid, x, y, z, ang);
 
-	SetUInt32Value( OBJECT_FIELD_ENTRY, entryid );
-	SetFloatValue( OBJECT_FIELD_SCALE_X, scale );
+	SetEntry(  entryid );
+	SetScale(  scale );
 	SetUInt32Value( GAMEOBJECT_DISPLAYID, displayid );
 	SetByte( GAMEOBJECT_BYTES_1, 0, state  );
 	SetByte( GAMEOBJECT_BYTES_1, 1, typeId  );
@@ -324,7 +324,7 @@ void GameObject::SaveToDB()
 		<< GetUInt32Value(GAMEOBJECT_BYTES_1) << ","
 		<< GetUInt32Value(GAMEOBJECT_FLAGS) << ","
 		<< GetUInt32Value(GAMEOBJECT_FACTION) << ","
-		<< GetFloatValue(OBJECT_FIELD_SCALE_X) << ","
+		<< GetScale() << ","
 		<< "0,"
 		<< m_phase << ","
 		<< m_overrides << ")";
@@ -377,7 +377,7 @@ void GameObject::SaveToFile(std::stringstream & name)
 		<< GetByte(GAMEOBJECT_BYTES_1, 0) << ","
 		<< GetUInt32Value(GAMEOBJECT_FLAGS) << ","
 		<< GetUInt32Value(GAMEOBJECT_FACTION) << ","
-		<< GetFloatValue(OBJECT_FIELD_SCALE_X) << ","
+		<< GetScale() << ","
 		<< "0,"
 		<< m_phase << ","
 		<< m_overrides << ")";
@@ -518,7 +518,7 @@ bool GameObject::Load(GOSpawn *spawn)
 		if(m_faction)
 			m_factionDBC = dbcFaction.LookupEntry(m_faction->Faction);
 	}
-	SetFloatValue(OBJECT_FIELD_SCALE_X,spawn->scale);
+	SetScale( spawn->scale);
 	_LoadQuests();
 	CALL_GO_SCRIPT_EVENT(this, OnCreate)();
 	CALL_GO_SCRIPT_EVENT(this, OnSpawn)();

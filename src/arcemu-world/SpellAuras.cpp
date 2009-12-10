@@ -5687,10 +5687,10 @@ void Aura::SpellAuraPacifySilence(bool apply)
 
 void Aura::SpellAuraModScale(bool apply)
 {
-	float current = m_target->GetFloatValue(OBJECT_FIELD_SCALE_X);
+	float current = m_target->GetScale();
 	float delta = mod->m_amount/100.0f;
 
-	m_target->SetFloatValue(OBJECT_FIELD_SCALE_X, apply ? (current+current*delta) : current/(1.0f+delta));
+	m_target->SetScale(  apply ? (current+current*delta) : current/(1.0f+delta));
 }
 
 void Aura::SpellAuraPeriodicHealthFunnel(bool apply)
@@ -9110,7 +9110,7 @@ void Aura::SpellAuraSpiritOfRedemption(bool apply)
 
 	if(apply)
 	{
-		m_target->SetFloatValue(OBJECT_FIELD_SCALE_X, 0.5);
+		m_target->SetScale(  0.5);
 		m_target->SetUInt32Value(UNIT_FIELD_HEALTH, 1);
 		SpellEntry * sorInfo = dbcSpell.LookupEntry(27792);
 		if(!sorInfo) return;
@@ -9123,7 +9123,7 @@ void Aura::SpellAuraSpiritOfRedemption(bool apply)
 	}
 	else
 	{
-		m_target->SetFloatValue(OBJECT_FIELD_SCALE_X, 1);
+		m_target->SetScale(  1);
 		m_target->RemoveAura(27792);
 		m_target->SetUInt32Value(UNIT_FIELD_HEALTH, 0);
 	}

@@ -153,7 +153,7 @@ bool MailMessage::AddMessageDataToPacket(WorldPacket& data)
 				continue;
 
 			data << uint8(i++);
-			data << pItem->GetUInt32Value(OBJECT_FIELD_GUID);
+            data << pItem->GetLowGUID();
 			data << pItem->GetEntry();
 
 			for( j = 0; j < 6; ++j )
@@ -417,7 +417,7 @@ void WorldSession::HandleSendMail(WorldPacket & recv_data )
 			pItem->RemoveFromWorld();
 			pItem->SetOwner( NULL );
 			pItem->SaveToDB( INVENTORY_SLOT_NOT_SET, 0, true, NULL );
-			msg.items.push_back( pItem->GetUInt32Value(OBJECT_FIELD_GUID) );
+            msg.items.push_back( pItem->GetLowGUID() );
 
 			if( GetPermissionCount() > 0 )
 			{
@@ -606,7 +606,7 @@ void WorldSession::HandleTakeItem(WorldPacket & recv_data )
 
 	// send complete packet
 	data << uint32(MAIL_OK);
-	data << item->GetUInt32Value(OBJECT_FIELD_GUID);
+    data << item->GetLowGUID();
 	data << item->GetUInt32Value(ITEM_FIELD_STACK_COUNT);
 
 	message->items.erase( itr );

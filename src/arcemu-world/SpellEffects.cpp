@@ -3254,7 +3254,7 @@ void Spell::SpellEffectSummon(uint32 i)
 			Item * item = p_caster->GetItemInterface()->GetInventoryItem( EQUIPMENT_SLOT_MAINHAND );
 			if( item != NULL )
 			{
-				summon->SetUInt32Value( UNIT_VIRTUAL_ITEM_SLOT_ID, item->GetUInt32Value( OBJECT_FIELD_ENTRY ) );
+				summon->SetUInt32Value( UNIT_VIRTUAL_ITEM_SLOT_ID, item->GetEntry()  );
 				summon->SetUInt32Value( UNIT_FIELD_BASEATTACKTIME, item->GetProto()->Delay );
 			}
 			else
@@ -5080,7 +5080,7 @@ void Spell::SpellEffectSummonPossessed(uint32 i) // eye of kilrogg
 		NewSummon->Create( "Eye of Kilrogg", m_caster->GetMapId(), m_caster->GetPositionX()+(3*(cos((float(M_PI)/2)+m_caster->GetOrientation()))), m_caster->GetPositionY()+(3*(cos((float(M_PI)/2)+m_caster->GetOrientation()))), m_caster->GetPositionZ(), m_caster->GetOrientation());
 
 		// Fields
-		NewSummon->SetUInt32Value(OBJECT_FIELD_ENTRY, GetProto()->EffectMiscValue[i]);
+		NewSummon->SetEntry(  GetProto()->EffectMiscValue[i]);
 		NewSummon->SetUInt32Value(UNIT_FIELD_LEVEL, m_caster->GetUInt32Value(UNIT_FIELD_LEVEL) );
 		NewSummon->SetUInt32Value(UNIT_FIELD_DISPLAYID,  2421);
 		NewSummon->SetUInt32Value(UNIT_FIELD_NATIVEDISPLAYID, 2421);
@@ -5089,7 +5089,7 @@ void Spell::SpellEffectSummonPossessed(uint32 i) // eye of kilrogg
 		NewSummon->SetUInt32Value(UNIT_FIELD_HEALTH, 12375);
 		NewSummon->SetUInt32Value(UNIT_FIELD_MAXHEALTH, 12375);
 		NewSummon->SetUInt32Value(UNIT_FIELD_FACTIONTEMPLATE, p_caster->GetUInt32Value(UNIT_FIELD_FACTIONTEMPLATE));
-		NewSummon->SetFloatValue(OBJECT_FIELD_SCALE_X,1.0f);
+		NewSummon->SetScale( 1.0f);
 
 		if(p_caster->IsPvPFlagged())
 			NewSummon->SetByteFlag(UNIT_FIELD_BYTES_2, 1, U_FIELD_BYTES_FLAG_PVP);
@@ -5406,19 +5406,19 @@ void Spell::SpellEffectScriptEffect(uint32 i) // Script Effect
 			uint32 casted_spell_id = 0 ;
 			uint32 inc_resist_by_level = 0 ;
 			uint32 inc_resist_by_level_spell = 0 ;
-			if ( unitTarget->GetUInt32Value( OBJECT_FIELD_ENTRY ) == 416 ) //in case it is imp
+			if ( unitTarget->GetEntry()  == 416 ) //in case it is imp
 				casted_spell_id = 23759 ;
-			else if ( unitTarget->GetUInt32Value( OBJECT_FIELD_ENTRY ) == 1860 ) //VoidWalker
+			else if ( unitTarget->GetEntry()  == 1860 ) //VoidWalker
 				casted_spell_id = 23760 ;
-			else if ( unitTarget->GetUInt32Value( OBJECT_FIELD_ENTRY ) == 1863 ) //Succubus
+			else if ( unitTarget->GetEntry()  == 1863 ) //Succubus
 				casted_spell_id = 23761 ;
-			else if ( unitTarget->GetUInt32Value( OBJECT_FIELD_ENTRY ) == 417 ) //Felhunter
+			else if ( unitTarget->GetEntry()  == 417 ) //Felhunter
 			{
 				casted_spell_id = 0 ;
 				inc_resist_by_level_spell = 23762 ;
 				inc_resist_by_level = 20 ;
 			}
-			else if ( unitTarget->GetUInt32Value( OBJECT_FIELD_ENTRY ) == 17252 ) //Felguard
+			else if ( unitTarget->GetEntry()  == 17252 ) //Felguard
 			{
 				casted_spell_id = 35702 ;
 				inc_resist_by_level_spell = 23762 ;
@@ -5464,19 +5464,19 @@ void Spell::SpellEffectScriptEffect(uint32 i) // Script Effect
 			uint32 casted_spell_id = 0 ;
 			uint32 inc_resist_by_level = 0 ;
 			uint32 inc_resist_by_level_spell = 0 ;
-			if ( unitTarget->GetUInt32Value( OBJECT_FIELD_ENTRY ) == 416 ) //in case it is imp
+			if ( unitTarget->GetEntry()  == 416 ) //in case it is imp
 				casted_spell_id = 23826 ;
-			else if ( unitTarget->GetUInt32Value( OBJECT_FIELD_ENTRY ) == 1860 ) //VoidWalker
+			else if ( unitTarget->GetEntry()  == 1860 ) //VoidWalker
 				casted_spell_id = 23841 ;
-			else if ( unitTarget->GetUInt32Value( OBJECT_FIELD_ENTRY ) == 1863 ) //Succubus
+			else if ( unitTarget->GetEntry()  == 1863 ) //Succubus
 				casted_spell_id = 23833 ;
-			else if ( unitTarget->GetUInt32Value( OBJECT_FIELD_ENTRY ) == 417 ) //Felhunter
+			else if ( unitTarget->GetEntry()  == 417 ) //Felhunter
 			{
 				casted_spell_id = 1 ;
 				inc_resist_by_level_spell = 23837 ;
 				inc_resist_by_level = 40 ;
 			}
-			else if ( unitTarget->GetUInt32Value( OBJECT_FIELD_ENTRY ) == 17252 ) //Felguard
+			else if ( unitTarget->GetEntry()  == 17252 ) //Felguard
 			{
 				casted_spell_id = 35703 ;
 				inc_resist_by_level_spell = 23837 ;
@@ -5522,19 +5522,19 @@ void Spell::SpellEffectScriptEffect(uint32 i) // Script Effect
 			uint32 casted_spell_id = 0 ;
 			uint32 inc_resist_by_level = 0 ;
 			uint32 inc_resist_by_level_spell = 0 ;
-			if ( unitTarget->GetUInt32Value( OBJECT_FIELD_ENTRY ) == 416 ) //in case it is imp
+			if ( unitTarget->GetEntry()  == 416 ) //in case it is imp
 				casted_spell_id = 23827 ;
-			else if ( unitTarget->GetUInt32Value( OBJECT_FIELD_ENTRY ) == 1860 ) //VoidWalker
+			else if ( unitTarget->GetEntry()  == 1860 ) //VoidWalker
 				casted_spell_id = 23842 ;
-			else if ( unitTarget->GetUInt32Value( OBJECT_FIELD_ENTRY ) == 1863 ) //Succubus
+			else if ( unitTarget->GetEntry()  == 1863 ) //Succubus
 				casted_spell_id = 23834 ;
-			else if ( unitTarget->GetUInt32Value( OBJECT_FIELD_ENTRY ) == 417 ) //Felhunter
+			else if ( unitTarget->GetEntry()  == 417 ) //Felhunter
 			{
 				casted_spell_id = 0 ;
 				inc_resist_by_level_spell = 23838 ;
 				inc_resist_by_level = 60 ;
 			}
-			else if ( unitTarget->GetUInt32Value( OBJECT_FIELD_ENTRY ) == 17252 ) //Felguard
+			else if ( unitTarget->GetEntry()  == 17252 ) //Felguard
 			{
 				casted_spell_id = 35704 ;
 				inc_resist_by_level_spell = 23838 ;
@@ -5580,19 +5580,19 @@ void Spell::SpellEffectScriptEffect(uint32 i) // Script Effect
 			uint32 casted_spell_id = 0 ;
 			uint32 inc_resist_by_level = 0 ;
 			uint32 inc_resist_by_level_spell = 0 ;
-			if ( unitTarget->GetUInt32Value( OBJECT_FIELD_ENTRY ) == 416 ) //in case it is imp
+			if ( unitTarget->GetEntry()  == 416 ) //in case it is imp
 				casted_spell_id = 23828 ;
-			else if ( unitTarget->GetUInt32Value( OBJECT_FIELD_ENTRY ) == 1860 ) //VoidWalker
+			else if ( unitTarget->GetEntry()  == 1860 ) //VoidWalker
 				casted_spell_id = 23843 ;
-			else if ( unitTarget->GetUInt32Value( OBJECT_FIELD_ENTRY ) == 1863 ) //Succubus
+			else if ( unitTarget->GetEntry()  == 1863 ) //Succubus
 				casted_spell_id = 23835 ;
-			else if ( unitTarget->GetUInt32Value( OBJECT_FIELD_ENTRY ) == 417 ) //Felhunter
+			else if ( unitTarget->GetEntry()  == 417 ) //Felhunter
 			{
 				casted_spell_id = 0 ;
 				inc_resist_by_level_spell = 23839 ;
 				inc_resist_by_level = 80 ;
 			}
-			else if ( unitTarget->GetUInt32Value( OBJECT_FIELD_ENTRY ) == 17252 ) //Felguard
+			else if ( unitTarget->GetEntry()  == 17252 ) //Felguard
 			{
 				casted_spell_id = 35705 ;
 				inc_resist_by_level_spell = 23839 ;
@@ -5660,19 +5660,19 @@ void Spell::SpellEffectScriptEffect(uint32 i) // Script Effect
 			uint32 casted_spell_id = 0 ;
 			uint32 inc_resist_by_level = 0 ;
 			uint32 inc_resist_by_level_spell = 0 ;
-			if ( unitTarget->GetUInt32Value( OBJECT_FIELD_ENTRY ) == 416 ) //in case it is imp
+			if ( unitTarget->GetEntry()  == 416 ) //in case it is imp
 				casted_spell_id = 23829 ;
-			else if ( unitTarget->GetUInt32Value( OBJECT_FIELD_ENTRY ) == 1860 ) //VoidWalker
+			else if ( unitTarget->GetEntry()  == 1860 ) //VoidWalker
 				casted_spell_id = 23844 ;
-			else if ( unitTarget->GetUInt32Value( OBJECT_FIELD_ENTRY ) == 1863 ) //Succubus
+			else if ( unitTarget->GetEntry()  == 1863 ) //Succubus
 				casted_spell_id = 23836 ;
-			else if ( unitTarget->GetUInt32Value( OBJECT_FIELD_ENTRY ) == 417 ) //Felhunter
+			else if ( unitTarget->GetEntry()  == 417 ) //Felhunter
 			{
 				casted_spell_id = 0 ;
 				inc_resist_by_level_spell = 23840 ;
 				inc_resist_by_level = 100 ;
 			}
-			else if ( unitTarget->GetUInt32Value( OBJECT_FIELD_ENTRY ) == 17252 ) //Felguard
+			else if ( unitTarget->GetEntry()  == 17252 ) //Felguard
 			{
 				casted_spell_id = 35706 ;
 				inc_resist_by_level_spell = 23840 ;
@@ -6039,8 +6039,8 @@ void Spell::SpellEffectSummonTotem(uint32 i) // Summon Totem
 	}
 
 	// Set up the creature.
-	pTotem->SetUInt32Value(OBJECT_FIELD_ENTRY, entry);
-	pTotem->SetFloatValue(OBJECT_FIELD_SCALE_X, 1.0f);
+	pTotem->SetEntry(  entry);
+	pTotem->SetScale(  1.0f);
 	pTotem->SetUInt64Value(UNIT_FIELD_CREATEDBY, p_caster->GetGUID());
 	pTotem->SetUInt32Value(UNIT_FIELD_HEALTH, damage);
 	pTotem->SetUInt32Value(UNIT_FIELD_MAXHEALTH, damage);

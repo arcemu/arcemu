@@ -259,7 +259,7 @@ mOutOfRangeIdCount(0)
 	memset(m_uint32Values, 0, (PLAYER_END) * sizeof(uint32));
 	m_updateMask.SetCount(PLAYER_END);
 	SetUInt32Value( OBJECT_FIELD_TYPE,TYPE_PLAYER|TYPE_UNIT|TYPE_OBJECT);
-	SetUInt32Value( OBJECT_FIELD_GUID,guid);
+	SetLowGUID( guid );
 	m_wowGuid.Init(GetGUID());
 	SetUInt32Value( UNIT_FIELD_FLAGS_2, UNIT_FLAG2_ENABLE_POWER_REGEN );
 	SetFloatValue( PLAYER_RUNE_REGEN_1, 0.100000f );
@@ -778,8 +778,8 @@ bool Player::Create(WorldPacket& data )
 	memcpy(m_taximask, info->taximask, sizeof(m_taximask));
 
 	// Set Starting stats for char
-	//SetFloatValue(OBJECT_FIELD_SCALE_X, ((race==RACE_TAUREN)?1.3f:1.0f));
-	SetFloatValue(OBJECT_FIELD_SCALE_X, 1.0f);
+	//SetScale(  ((race==RACE_TAUREN)?1.3f:1.0f));
+	SetScale(  1.0f);
 	SetUInt32Value(UNIT_FIELD_HEALTH, info->health);
 	SetUInt32Value(UNIT_FIELD_POWER1, info->mana );
 	//SetUInt32Value(UNIT_FIELD_POWER2, 0 ); // this gets divided by 10
@@ -1944,9 +1944,9 @@ void Player::_SavePet(QueryBuffer * buf)
 {
 	// Remove any existing info
 	if(buf == NULL)
-		CharacterDatabase.Execute("DELETE FROM playerpets WHERE ownerguid=%u", GetUInt32Value(OBJECT_FIELD_GUID));
+		CharacterDatabase.Execute("DELETE FROM playerpets WHERE ownerguid=%u", GetLowGUID() );
 	else
-		buf->AddQuery("DELETE FROM playerpets WHERE ownerguid=%u", GetUInt32Value(OBJECT_FIELD_GUID));
+		buf->AddQuery("DELETE FROM playerpets WHERE ownerguid=%u", GetLowGUID() );
 
 	if( m_Summon && m_Summon->IsInWorld() && m_Summon->GetPetOwner() == this )	// update PlayerPets array with current pet's info
 	{
@@ -2819,7 +2819,7 @@ bool Player::LoadFromDB(uint32 guid)
 	q->AddQuery("SELECT ignore_guid FROM social_ignores WHERE character_guid = %u", guid);
 
     // queue it!
-	m_uint32Values[OBJECT_FIELD_GUID] = guid;
+	SetLowGUID( guid );
 	CharacterDatabase.QueueAsyncQuery(q);
 	return true;
 
@@ -3125,7 +3125,7 @@ void Player::LoadFromDBProc(QueryResultVector & results)
 	UpdateStats();
 
 	// Initialize 'normal' fields
-	SetFloatValue(OBJECT_FIELD_SCALE_X, 1.0f);
+	SetScale(  1.0f);
 	//SetUInt32Value(UNIT_FIELD_POWER2, 0);
 	SetUInt32Value(UNIT_FIELD_POWER3, info->focus);
 	SetUInt32Value(UNIT_FIELD_POWER4, info->energy );
@@ -3663,7 +3663,7 @@ void Player::LoadFromDBProc(QueryResultVector & results)
 	}
 	// load and update achievements
 #ifdef ENABLE_ACHIEVEMENTS
-	m_achievementMgr.LoadFromDB(CharacterDatabase.Query("SELECT achievement, date FROM character_achievement WHERE guid = '%u'", GetUInt32Value(OBJECT_FIELD_GUID)),CharacterDatabase.Query("SELECT criteria, counter, date FROM character_achievement_progress WHERE guid = '%u'", GetUInt32Value(OBJECT_FIELD_GUID)));
+	m_achievementMgr.LoadFromDB(CharacterDatabase.Query("SELECT achievement, date FROM character_achievement WHERE guid = '%u'", GetLowGUID() ),CharacterDatabase.Query("SELECT criteria, counter, date FROM character_achievement_progress WHERE guid = '%u'", GetLowGUID() ));
 	m_achievementMgr.CheckAllAchievementCriteria();
 #endif
 
@@ -6546,7 +6546,7 @@ void Player::ResetDualWield2H()
 			offhand->RemoveFromWorld();
 			offhand->SetOwner( NULL );
 			offhand->SaveToDB( INVENTORY_SLOT_NOT_SET, 0, true, NULL );
-			sMailSystem.SendAutomatedMessage( NORMAL, GetGUID(), GetGUID(), "Your offhand item", "", 0, 0, offhand->GetUInt32Value( OBJECT_FIELD_GUID), MAIL_STATIONERY_GM );
+            sMailSystem.SendAutomatedMessage( NORMAL, GetGUID(), GetGUID(), "Your offhand item", "", 0, 0, offhand->GetLowGUID(), MAIL_STATIONERY_GM );
 			offhand->DeleteMe();
 			offhand = NULL;
 		}
@@ -10020,7 +10020,7 @@ void Player::Possess(Unit * pTarget)
 	{
 		list<uint32> avail_spells;
 		//Steam Tonks
-		if(pTarget->GetUInt32Value(OBJECT_FIELD_ENTRY) == 15328)
+		if(pTarget->GetEntry() == 15328)
 		{
 			uint32 rand_spellid = TonkSpecials[RandomUInt(3)];
 			avail_spells.push_back(CANNON);
@@ -11508,9 +11508,9 @@ void Player::_SavePlayerCooldowns(QueryBuffer * buf)
 
 	// clear them (this should be replaced with an update queue later)
 	if( buf != NULL )
-		buf->AddQuery("DELETE FROM playercooldowns WHERE player_guid = %u", m_uint32Values[OBJECT_FIELD_GUID] );		// 0 is guid always
+		buf->AddQuery("DELETE FROM playercooldowns WHERE player_guid = %u", GetLowGUID() );		// 0 is guid always
 	else
-		CharacterDatabase.Execute("DELETE FROM playercooldowns WHERE player_guid = %u", m_uint32Values[OBJECT_FIELD_GUID] );		// 0 is guid always
+		CharacterDatabase.Execute("DELETE FROM playercooldowns WHERE player_guid = %u", GetLowGUID() );		// 0 is guid always
 
 	for( i = 0; i < NUM_COOLDOWN_TYPES; ++i )
 	{
@@ -11540,12 +11540,12 @@ void Player::_SavePlayerCooldowns(QueryBuffer * buf)
 
 			if( buf != NULL )
 			{
-				buf->AddQuery( "INSERT INTO playercooldowns VALUES(%u, %u, %u, %u, %u, %u)", m_uint32Values[OBJECT_FIELD_GUID],
+				buf->AddQuery( "INSERT INTO playercooldowns VALUES(%u, %u, %u, %u, %u, %u)", GetLowGUID(),
 					i, itr2->first, seconds + (uint32)UNIXTIME, itr2->second.SpellId, itr2->second.ItemId );
 			}
 			else
 			{
-				CharacterDatabase.Execute( "INSERT INTO playercooldowns VALUES(%u, %u, %u, %u, %u, %u)", m_uint32Values[OBJECT_FIELD_GUID],
+				CharacterDatabase.Execute( "INSERT INTO playercooldowns VALUES(%u, %u, %u, %u, %u, %u)", GetLowGUID(),
 					i, itr2->first, seconds + (uint32)UNIXTIME, itr2->second.SpellId, itr2->second.ItemId );
 			}
 		}

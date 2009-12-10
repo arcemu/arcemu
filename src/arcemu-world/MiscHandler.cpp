@@ -2332,7 +2332,7 @@ void WorldSession::HandleOpenItemOpcode(WorldPacket &recv_data)
 			return;
 
 		pItem->SetUInt32Value(ITEM_FIELD_GIFTCREATOR,0);
-		pItem->SetUInt32Value(OBJECT_FIELD_ENTRY,pItem->wrapped_item_id);
+		pItem->SetEntry( pItem->wrapped_item_id);
 		pItem->wrapped_item_id= 0;
 		pItem->SetProto(it);
 

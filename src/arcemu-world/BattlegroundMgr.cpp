@@ -1358,12 +1358,8 @@ GameObject * CBattleground::SpawnGameObject(uint32 entry,uint32 MapId , float x,
 
 	go->SetUInt32Value(GAMEOBJECT_FACTION,faction);
 	go->_setFaction();
-	go->SetFloatValue(OBJECT_FIELD_SCALE_X,scale);
+	go->SetScale( scale);
 	go->SetUInt32Value(GAMEOBJECT_FLAGS, flags);
-//	go->SetFloatValue(GAMEOBJECT_POS_X, x);
-//	go->SetFloatValue(GAMEOBJECT_POS_Y, y);
-//	go->SetFloatValue(GAMEOBJECT_POS_Z, z);
-//	go->SetFloatValue(GAMEOBJECT_FACING, o);
 	go->SetPosition(x, y, z, o);
 	go->SetInstanceID(m_mapMgr->GetInstanceID());
 	go->m_battleground = this;
@@ -1737,8 +1733,8 @@ Creature * CBattleground::SpawnSpiritGuide(float x, float y, float z, float o, u
 	pCreature->Create(pInfo->Name, m_mapMgr->GetMapId(), x, y, z, o);
 
 	pCreature->SetInstanceID(m_mapMgr->GetInstanceID());
-	pCreature->SetUInt32Value(OBJECT_FIELD_ENTRY, 13116 + horde);
-	pCreature->SetFloatValue(OBJECT_FIELD_SCALE_X, 1.0f);
+	pCreature->SetEntry(  13116 + horde);
+	pCreature->SetScale(  1.0f);
 
 	pCreature->SetUInt32Value(UNIT_FIELD_HEALTH, 100000);
 	pCreature->SetUInt32Value(UNIT_FIELD_POWER1, 4868);

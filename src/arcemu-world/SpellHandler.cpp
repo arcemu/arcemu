@@ -251,28 +251,28 @@ void WorldSession::HandleSpellClick(WorldPacket& recvPacket)
 		return;
 
 	uint32 cast_spell_id = 0;
-	if( target_unit->GetUInt32Value( OBJECT_FIELD_ENTRY ) == 28605 )
+	if( target_unit->GetEntry()  == 28605 )
 		cast_spell_id = 52263; // steel horse
 	//32633
-	if( target_unit->GetUInt32Value( OBJECT_FIELD_ENTRY ) == 32633 )
+	if( target_unit->GetEntry()  == 32633 )
 		cast_spell_id = 61425; // Traveler's Tundra Mammoth
 
-	if( target_unit->GetUInt32Value( OBJECT_FIELD_ENTRY ) == 29929 )
+	if( target_unit->GetEntry()  == 29929 )
 		cast_spell_id = 55531; // Mechano-Hog
 
 	if( target_unit->HasAura(59907) )
 	{
-		if( target_unit->GetUInt32Value( OBJECT_FIELD_ENTRY ) == 31897 )
+		if( target_unit->GetEntry()  == 31897 )
 			cast_spell_id = 7001; // Lightwell Rank 1
-		if( target_unit->GetUInt32Value( OBJECT_FIELD_ENTRY ) == 31896 )
+		if( target_unit->GetEntry()  == 31896 )
 			cast_spell_id = 27873; // Lightwell Rank 2
-		if( target_unit->GetUInt32Value( OBJECT_FIELD_ENTRY ) == 31895 )
+		if( target_unit->GetEntry()  == 31895 )
 			cast_spell_id = 27874; // Lightwell Rank 3
-		if( target_unit->GetUInt32Value( OBJECT_FIELD_ENTRY ) == 31894 )
+		if( target_unit->GetEntry()  == 31894 )
 			cast_spell_id = 28276; // Lightwell Rank 4
-		if( target_unit->GetUInt32Value( OBJECT_FIELD_ENTRY ) == 31893 )
+		if( target_unit->GetEntry()  == 31893 )
 			cast_spell_id = 48084; // Lightwell Rank 5
-		if( target_unit->GetUInt32Value( OBJECT_FIELD_ENTRY ) == 31883 )
+		if( target_unit->GetEntry()  == 31883 )
 			cast_spell_id = 48085; // Lightwell Rank 6
 
 		target_unit->CastSpell(_player, cast_spell_id, true);

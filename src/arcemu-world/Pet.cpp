@@ -174,7 +174,7 @@ void Pet::CreateAsSummon( uint32 entry, CreatureInfo *ci, Creature* created_from
 	if( type & 0x2 && created_from_creature != NULL )
 		level = created_from_creature->getLevel() < ( level - 5 ) ? level - 5 : created_from_creature->getLevel();
 
-	SetUInt32Value( OBJECT_FIELD_ENTRY, entry );
+	SetEntry(  entry );
 	SetUInt32Value( UNIT_FIELD_LEVEL, level );
 	SetUInt32Value( UNIT_FIELD_DISPLAYID, ci->Male_DisplayID );
 	SetUInt32Value( UNIT_FIELD_NATIVEDISPLAYID, ci->Male_DisplayID );
@@ -1263,7 +1263,7 @@ void Pet::ApplySummonLevelAbilities()
 		stat_index = 4;
 		break;
 	}
-	if(m_uint32Values[OBJECT_FIELD_ENTRY] == 89)
+	if( GetEntry() == 89)
 		has_mana = false;
 
 	if(stat_index < 0)
@@ -1346,7 +1346,7 @@ void Pet::ApplySummonLevelAbilities()
 	double mana = has_mana ? (pet_int * pet_int_to_mana) : 0.0;
 	if( health == 0 )
 	{
-		sLog.outError("Pet with entry %u has 0 health !! \n",m_uint32Values[OBJECT_FIELD_ENTRY]);
+		sLog.outError("Pet with entry %u has 0 health !! \n", GetEntry() );
 		health = 100;
 	}
 	SetUInt32Value(UNIT_FIELD_BASE_HEALTH, FL2UINT(health));
@@ -1418,7 +1418,7 @@ void Pet::ApplyStatsForLevel()
 		float scale_diff = float( myFamily->maxsize - myFamily->minsize );
 		float factor = scale_diff / level_diff;
 		float scale = factor * pet_level + myFamily->minsize;
-		SetFloatValue( OBJECT_FIELD_SCALE_X, scale );
+		SetScale(  scale );
 	}
 
 	// Apply health fields.

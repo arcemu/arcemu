@@ -266,7 +266,7 @@ bool ChatHandler::HandleItemCommand(const char* args, WorldSession *m_session)
 	if(tmpItem)
 	{
 		std::stringstream ss;
-		ss << "INSERT INTO vendors VALUES ('" << pCreature->GetUInt32Value(OBJECT_FIELD_ENTRY) << "', '" << item << "', '" << amount << "', 0, 0, " << costid << " )" << '\0';
+		ss << "INSERT INTO vendors VALUES ('" << pCreature->GetEntry() << "', '" << item << "', '" << amount << "', 0, 0, " << costid << " )" << '\0';
 		WorldDatabase.Execute( ss.str().c_str() );
 
 		pCreature->AddVendorItem( item, amount, ec );
@@ -313,7 +313,7 @@ bool ChatHandler::HandleItemRemoveCommand(const char* args, WorldSession *m_sess
 	std::stringstream sstext;
 	if(slot != -1)
 	{
-		uint32 creatureId = pCreature->GetUInt32Value(OBJECT_FIELD_ENTRY);
+		uint32 creatureId = pCreature->GetEntry();
 
 		std::stringstream ss;
 		ss << "DELETE FROM vendors WHERE entry = " << creatureId << " AND item = " << itemguid << '\0';
@@ -860,7 +860,7 @@ bool ChatHandler::HandleGOSpawn(const char *args, WorldSession *m_session)
 	gs->o1 = go->GetFloatValue(GAMEOBJECT_PARENTROTATION);
 	gs->o2 = go->GetFloatValue(GAMEOBJECT_PARENTROTATION_02);
 	gs->o3 = go->GetFloatValue(GAMEOBJECT_PARENTROTATION_03);
-	gs->scale = go->GetFloatValue(OBJECT_FIELD_SCALE_X);
+	gs->scale = go->GetScale();
 	gs->x = go->GetPositionX();
 	gs->y = go->GetPositionY();
 	gs->z = go->GetPositionZ();
@@ -1005,10 +1005,7 @@ bool ChatHandler::HandleGOInfo(const char *args, WorldSession *m_session)
 
 	if( GOInfo->Name )
 		SystemMessage(m_session, "%s Name:%s%s",MSG_COLOR_GREEN,MSG_COLOR_LIGHTBLUE,GOInfo->Name);
-	SystemMessage(m_session, "%s Size:%s%u",MSG_COLOR_GREEN,MSG_COLOR_LIGHTBLUE,GObj->GetFloatValue(OBJECT_FIELD_SCALE_X));
-//	SystemMessage(m_session, "%s Facing:%s%f",MSG_COLOR_GREEN,MSG_COLOR_LIGHTBLUE,GObj->GetFloatValue(GAMEOBJECT_FACING));
-//	SystemMessage(m_session, "%s Rotation:%s%f",MSG_COLOR_GREEN,MSG_COLOR_LIGHTBLUE,GObj->GetFloatValue(GAMEOBJECT_ROTATION));
-//	SystemMessage(m_session, "%s Rotation01:%s%f",MSG_COLOR_GREEN,MSG_COLOR_LIGHTBLUE,GObj->GetFloatValue(GAMEOBJECT_ROTATION_01));
+	SystemMessage(m_session, "%s Size:%s%u",MSG_COLOR_GREEN,MSG_COLOR_LIGHTBLUE,GObj->GetScale());
 	SystemMessage(m_session, "%s Parent Rotation O1:%s%f",MSG_COLOR_GREEN,MSG_COLOR_LIGHTBLUE,GObj->GetFloatValue(GAMEOBJECT_PARENTROTATION_01));
 	SystemMessage(m_session, "%s Parent Rotation O2:%s%f",MSG_COLOR_GREEN,MSG_COLOR_LIGHTBLUE,GObj->GetFloatValue(GAMEOBJECT_PARENTROTATION_02));
 	SystemMessage(m_session, "%s Parent Rotation O3:%s%f",MSG_COLOR_GREEN,MSG_COLOR_LIGHTBLUE,GObj->GetFloatValue(GAMEOBJECT_PARENTROTATION_03));
@@ -1077,7 +1074,7 @@ bool ChatHandler::HandleGOScale(const char* args, WorldSession* m_session)
 	}
 	float scale = (float)atof(args);
 	if(!scale) scale = 1;
-	go->SetFloatValue(OBJECT_FIELD_SCALE_X, scale);
+	go->SetScale(  scale);
 	BlueSystemMessage(m_session, "Set scale to %.3f", scale);
 	sGMLog.writefromsession(m_session,"set scale on gameobject %s to %.3f, entry %u",GameObjectNameStorage.LookupEntry(go->GetEntry())->Name,scale,go->GetEntry());
 	uint32 NewGuid = m_session->GetPlayer()->GetMapMgr()->GenerateGameobjectGuid();
@@ -1200,7 +1197,7 @@ bool ChatHandler::HandleAddAIAgentCommand(const char* args, WorldSession *m_sess
 	}
 
 	std::stringstream qry;
-	qry << "INSERT INTO ai_agents SET entry = '" << target->GetUInt32Value(OBJECT_FIELD_ENTRY) << "', type = '" << atoi(agent) << "', event = '" << atoi(procEvent)<< "', chance = '" << atoi(procChance)<< "', maxcount = '" << atoi(procCount)<< "', spell = '" << atoi(spellId)<< "', spelltype = '" << atoi(spellType)<< "', targettype_overwrite = '" << atoi(spelltargetType)<< "', cooldown_overwrite = '" << atoi(spellCooldown)<< "', floatMisc1 = '" << atof(floatMisc1)<< "', Misc2  ='" << atoi(Misc2)<< "'";
+	qry << "INSERT INTO ai_agents SET entry = '" << target->GetEntry() << "', type = '" << atoi(agent) << "', event = '" << atoi(procEvent)<< "', chance = '" << atoi(procChance)<< "', maxcount = '" << atoi(procCount)<< "', spell = '" << atoi(spellId)<< "', spelltype = '" << atoi(spellType)<< "', targettype_overwrite = '" << atoi(spelltargetType)<< "', cooldown_overwrite = '" << atoi(spellCooldown)<< "', floatMisc1 = '" << atof(floatMisc1)<< "', Misc2  ='" << atoi(Misc2)<< "'";
 	WorldDatabase.Execute( qry.str().c_str( ) );
 
 	AI_Spell * sp = new AI_Spell;
@@ -1246,7 +1243,7 @@ bool ChatHandler::HandleListAIAgentCommand(const char* args, WorldSession *m_ses
 	sstext << "agentlist of creature: " << target->GetGUID() << '\n';
 
 	std::stringstream ss;
-	ss << "SELECT * FROM ai_agents where entry=" << target->GetUInt32Value(OBJECT_FIELD_ENTRY);
+	ss << "SELECT * FROM ai_agents where entry=" << target->GetEntry();
 	QueryResult *result = WorldDatabase.Query( ss.str().c_str() );
 
 	if( !result )

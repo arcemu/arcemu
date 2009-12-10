@@ -2321,8 +2321,8 @@ float AIInterface::_CalcCombatRange(Unit* target, bool ranged)
 	float selfradius;
 //	selfradius = m_Unit->GetFloatValue(UNIT_FIELD_BOUNDINGRADIUS); //this is plain wrong. Represents i have no idea what :)
 	selfradius = m_Unit->GetModelHalfSize();
-//	float targetscale = target->GetFloatValue(OBJECT_FIELD_SCALE_X);
-//	float selfscale = m_Unit->GetFloatValue(OBJECT_FIELD_SCALE_X);
+//	float targetscale = target->GetScale();
+//	float selfscale = m_Unit->GetScale();
 
 //	range = ((((targetradius*targetradius)*targetscale) + selfreach) + ((selfradius*selfscale) + rang));
 	range = targetradius + selfreach + selfradius + rang;
@@ -2820,8 +2820,8 @@ bool AIInterface::showWayPoints(Player* pPlayer, bool Backwards)
 			//Create
 			Creature* pWayPoint = new Creature((uint64)HIGHGUID_TYPE_WAYPOINT << 32 | wp->id);
 			pWayPoint->CreateWayPoint(wp->id,pPlayer->GetMapId(),wp->x,wp->y,wp->z,0);
-			pWayPoint->SetUInt32Value(OBJECT_FIELD_ENTRY, 300000);
-			pWayPoint->SetFloatValue(OBJECT_FIELD_SCALE_X, 0.5f);
+            pWayPoint->SetEntry( 3000000 );
+			pWayPoint->SetScale(  0.5f );
 			if(Backwards)
 			{
 				uint32 DisplayID = (wp->backwardskinid == 0)? GetUnit()->GetUInt32Value(UNIT_FIELD_NATIVEDISPLAYID) : wp->backwardskinid;

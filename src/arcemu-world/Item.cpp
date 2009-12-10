@@ -51,8 +51,8 @@ void Item::Init( uint32 high, uint32 low )
     ///////////////////////////// from virtual_constructor ///////////////
     memset( m_uint32Values, 0, (ITEM_END) * sizeof( uint32 ) );
 	SetUInt32Value( OBJECT_FIELD_TYPE,TYPE_ITEM | TYPE_OBJECT );
-	SetFloatValue( OBJECT_FIELD_SCALE_X, 1 );//always 1
-	SetFloatValue( OBJECT_FIELD_SCALE_X, 1 );//always 1
+	SetScale(  1 );//always 1
+	SetScale(  1 );//always 1
 	m_itemProto = NULL;
 	m_owner = NULL;
 	loot = NULL;
@@ -76,8 +76,8 @@ void Item::Init( uint32 high, uint32 low )
 	m_extensions = NULL;
 	m_loadedFromDB = false;
     //////////////////////////////////////////////////////////
-	SetUInt32Value( OBJECT_FIELD_GUID, low );
-	SetUInt32Value( OBJECT_FIELD_GUID + 1, high );
+	SetLowGUID( low );
+	SetHighGUID( high );
 	m_wowGuid.Init( GetGUID() );
 }
 
@@ -110,7 +110,7 @@ Item::~Item()
 
 void Item::Create( uint32 itemid, Player* owner )
 {
-	SetUInt32Value( OBJECT_FIELD_ENTRY, itemid );
+	SetEntry(  itemid );
  
 	if( owner != NULL )
 	{
@@ -155,7 +155,7 @@ void Item::LoadFromDB(Field* fields, Player* plr, bool light )
 	else
 		locked = false;
 	
-	SetUInt32Value( OBJECT_FIELD_ENTRY, itemid );
+	SetEntry(  itemid );
 	m_owner = plr;
 
 	wrapped_item_id=fields[3].GetUInt32();
@@ -248,7 +248,7 @@ void Item::LoadFromDB(Field* fields, Player* plr, bool light )
 	ApplyRandomProperties( false );
 
 	// Charter stuff
-	if(m_uint32Values[OBJECT_FIELD_ENTRY] == ITEM_ENTRY_GUILD_CHARTER)
+	if( GetEntry() == ITEM_ENTRY_GUILD_CHARTER)
 	{
 		SetUInt32Value( ITEM_FIELD_FLAGS, 1 );
 		SetUInt32Value( ITEM_FIELD_STACK_COUNT, 1 );
@@ -257,7 +257,7 @@ void Item::LoadFromDB(Field* fields, Player* plr, bool light )
 			SetUInt32Value( ITEM_FIELD_ENCHANTMENT_1_1, plr->m_charters[CHARTER_TYPE_GUILD]->GetID() );
 	}
 
-	if( m_uint32Values[OBJECT_FIELD_ENTRY] == ARENA_TEAM_CHARTER_2v2 )
+	if( GetEntry() == ARENA_TEAM_CHARTER_2v2 )
 	{
 		SetUInt32Value( ITEM_FIELD_FLAGS, 1 );
 		SetUInt32Value( ITEM_FIELD_STACK_COUNT, 1 );
@@ -266,7 +266,7 @@ void Item::LoadFromDB(Field* fields, Player* plr, bool light )
 			SetUInt32Value( ITEM_FIELD_ENCHANTMENT_1_1, plr->m_charters[CHARTER_TYPE_ARENA_2V2]->GetID() );
 	}
 
-	if( m_uint32Values[OBJECT_FIELD_ENTRY] == ARENA_TEAM_CHARTER_3v3 )
+	if( GetEntry() == ARENA_TEAM_CHARTER_3v3 )
 	{
 		SetUInt32Value( ITEM_FIELD_FLAGS, 1 );
 		SetUInt32Value( ITEM_FIELD_STACK_COUNT, 1 );
@@ -275,7 +275,7 @@ void Item::LoadFromDB(Field* fields, Player* plr, bool light )
 			SetUInt32Value( ITEM_FIELD_ENCHANTMENT_1_1, plr->m_charters[CHARTER_TYPE_ARENA_3V3]->GetID() );
 	}
 
-	if( m_uint32Values[OBJECT_FIELD_ENTRY] == ARENA_TEAM_CHARTER_5v5 )
+	if( GetEntry() == ARENA_TEAM_CHARTER_5v5 )
 	{
 		SetUInt32Value( ITEM_FIELD_FLAGS, 1 );
 		SetUInt32Value( ITEM_FIELD_STACK_COUNT, 1 );
@@ -345,8 +345,8 @@ void Item::SaveToDB( int8 containerslot, int8 slot, bool firstsave, QueryBuffer*
 	ss << "REPLACE INTO playeritems VALUES(";
 
 	ss << m_uint32Values[ITEM_FIELD_OWNER] << ",";
-	ss << m_uint32Values[OBJECT_FIELD_GUID] << ",";
-	ss << m_uint32Values[OBJECT_FIELD_ENTRY] << ",";
+	ss << GetLowGUID() << ",";
+	ss << GetEntry() << ",";
 	ss << wrapped_item_id << ",";
 	ss << m_uint32Values[ITEM_FIELD_GIFTCREATOR] << ",";
 	ss << m_uint32Values[ITEM_FIELD_CREATOR] << ",";
@@ -444,7 +444,7 @@ void Item::DeleteFromDB()
 		}
 	}
 
-	CharacterDatabase.Execute( "DELETE FROM playeritems WHERE guid = %u", m_uint32Values[OBJECT_FIELD_GUID] );
+	CharacterDatabase.Execute( "DELETE FROM playeritems WHERE guid = %u", m_uint32Values[LOWGUID] );
 }
 
 void Item::DeleteMe()
@@ -681,10 +681,10 @@ int32 Item::AddEnchantment( EnchantEntry* Enchantment, uint32 Duration, bool Per
 		WorldPacket EnchantLog( SMSG_ENCHANTMENTLOG, 25 );
 		EnchantLog << m_owner->GetGUID();
 		EnchantLog << m_owner->GetGUID();
-		EnchantLog << m_uint32Values[OBJECT_FIELD_ENTRY];
+		EnchantLog << GetEntry();
 		EnchantLog << Enchantment->Id;
 		EnchantLog << uint8(0);
-		m_owner->GetSession()->SendPacket( &EnchantLog );
+		m_owner->SendPacket( &EnchantLog );
 
 		if( m_owner->GetTradeTarget() )
 		{

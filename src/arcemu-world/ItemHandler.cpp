@@ -1060,7 +1060,7 @@ void WorldSession::HandleBuyBackOpcode( WorldPacket & recv_data )
 	{
 		// Find free slot and break if inv full
 		uint32 amount = it->GetUInt32Value(ITEM_FIELD_STACK_COUNT);
-		uint32 itemid = it->GetUInt32Value(OBJECT_FIELD_ENTRY);
+		uint32 itemid = it->GetEntry();
 	  
 		add = _player->GetItemInterface()->FindItemLessMax(itemid,amount, false);
 	 
@@ -2300,7 +2300,7 @@ void WorldSession::HandleWrapItemOpcode( WorldPacket& recv_data )
 
 	// change the dest item's entry
 	dst->wrapped_item_id = dst->GetEntry();
-	dst->SetUInt32Value( OBJECT_FIELD_ENTRY, itemid );
+	dst->SetEntry(  itemid );
 
 	// set the giftwrapper fields
 	dst->SetUInt32Value( ITEM_FIELD_GIFTCREATOR, _player->GetLowGUID() );
