@@ -135,6 +135,18 @@ public:
 	Player* GetOwner() const { return m_owner; }
 	void SetOwner( Player* owner );
 
+    void SetOWnerGUID( uint64 GUID ){ SetUInt64Value( ITEM_FIELD_OWNER, GUID );   }
+    uint64 GetOwnerGUID(){ return GetUInt64Value( ITEM_FIELD_OWNER );  }
+    void SetContainerGUID( uint64 GUID ){ SetUInt64Value( ITEM_FIELD_CONTAINED, GUID );   }
+    uint64 GetContainerGUID(){ return GetUInt64Value( ITEM_FIELD_CONTAINED );   }
+    void SetCreatorGUID( uint64 GUID ){ SetUInt64Value( ITEM_FIELD_CREATOR, GUID ); }
+    void SetGiftCreatorGUID( uint64 GUID ){ SetUInt64Value( ITEM_FIELD_GIFTCREATOR, GUID ); }
+    uint64 GetCreatorGUID(){ return GetUInt64Value( ITEM_FIELD_CREATOR ); }
+    uint64 GetGiftCreatorGUID(){ return GetUInt64Value( ITEM_FIELD_GIFTCREATOR ); }
+	void SetStackCount( uint32 amt ) { SetUInt32Value( ITEM_FIELD_STACK_COUNT,  amt ); }
+    uint32 GetStackCount(){ return GetUInt32Value( ITEM_FIELD_STACK_COUNT ); }
+    void ModStackCount( int32 val ){ ModUnsigned32Value( ITEM_FIELD_STACK_COUNT, val ); }
+
 	bool IsContainer(){ return ( m_objectTypeId == TYPEID_CONTAINER ) ? true : false; }
 	
 	//! DB Serialization
@@ -145,25 +157,10 @@ public:
 	void DeleteMe();
     bool IsEligibleForRefund();
 	
-	void SoulBind()
-	{
-		this->SetFlag( ITEM_FIELD_FLAGS, ITEM_FLAG_SOULBOUND );
-	}
-
-	bool IsSoulbound()
-	{
-		return this->HasFlag( ITEM_FIELD_FLAGS, ITEM_FLAG_QUEST | ITEM_FLAG_SOULBOUND );
-	}
-
-	void AccountBind()
-	{
-		this->SetFlag( ITEM_FIELD_FLAGS, ITEM_FLAG_ACCOUNTBOUND );
-	}
-
-	bool IsAccountbound()
-	{
-		return this->HasFlag( ITEM_FIELD_FLAGS, ITEM_FLAG_ACCOUNTBOUND );  // 134217728 = 0x8000000
-	}
+	void SoulBind(){ SetFlag( ITEM_FIELD_FLAGS, ITEM_FLAG_SOULBOUND ); }
+	bool IsSoulbound(){ return HasFlag( ITEM_FIELD_FLAGS, ITEM_FLAG_QUEST | ITEM_FLAG_SOULBOUND ); }
+	void AccountBind(){ SetFlag( ITEM_FIELD_FLAGS, ITEM_FLAG_ACCOUNTBOUND ); }
+	bool IsAccountbound(){ return HasFlag( ITEM_FIELD_FLAGS, ITEM_FLAG_ACCOUNTBOUND );  }
 
 	uint32 GetChargesLeft()
 	{
@@ -233,8 +230,6 @@ public:
 	// gets the itemlink for a message to the player
 	string GetItemLink(uint32 language);
 
-	void SetCount( uint32 amt ) { SetUInt32Value( ITEM_FIELD_STACK_COUNT, amt ); }
-    uint32 GetCount(){ return GetUInt32Value( ITEM_FIELD_STACK_COUNT ); }
 	void SetDurability( uint32 Value ) { SetUInt32Value(ITEM_FIELD_DURABILITY, Value ); };
 	void SetDurabilityToMax() { SetUInt32Value( ITEM_FIELD_DURABILITY, GetUInt32Value( ITEM_FIELD_MAXDURABILITY ) ); }
 	uint32 GetDurability() { return GetUInt32Value( ITEM_FIELD_DURABILITY ); }

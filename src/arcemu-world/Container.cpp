@@ -61,8 +61,8 @@ void Container::LoadFromDB( Field*fields )
 	SetEntry(  itemid );
 	
 
-	SetUInt32Value( ITEM_FIELD_CREATOR, fields[5].GetUInt32() );
-	SetUInt32Value( ITEM_FIELD_STACK_COUNT, 1);
+	SetCreatorGUID( fields[5].GetUInt32() );
+	SetStackCount(  1);
 	
 	SetUInt32Value( ITEM_FIELD_FLAGS, fields[8].GetUInt32());
 	SetUInt32Value( ITEM_FIELD_RANDOM_PROPERTIES_ID, fields[9].GetUInt32());
@@ -89,10 +89,10 @@ void Container::Create( uint32 itemid, Player *owner )
 	// TODO: this shouldn't get NULL form containers in mail fix me
 	if( owner != NULL )
 	{
-		SetUInt64Value( ITEM_FIELD_OWNER, owner->GetGUID() );
-		SetUInt64Value( ITEM_FIELD_CONTAINED, owner->GetGUID() );
+        SetOWnerGUID( 0 );
+        SetContainerGUID( owner->GetGUID() );
 	}
-	SetUInt32Value( ITEM_FIELD_STACK_COUNT, 1 );
+	SetStackCount(  1 );
 	SetUInt32Value( CONTAINER_FIELD_NUM_SLOTS, m_itemProto->ContainerSlots);
 
 	m_Slot = new Item*[m_itemProto->ContainerSlots];
@@ -147,7 +147,8 @@ bool Container::AddItem(int16 slot, Item *item)
 	m_Slot[slot] = item;
 	item->m_isDirty = true;
 
-	item->SetUInt64Value(ITEM_FIELD_CONTAINED, GetGUID());
+	
+    item->SetContainerGUID( GetGUID() );
 	item->SetOwner(m_owner);
 
 	if(item->GetProto()->Bonding == ITEM_BIND_ON_PICKUP)
@@ -169,7 +170,7 @@ bool Container::AddItem(int16 slot, Item *item)
 		m_owner->PushCreationData(&buf, count);
 	}
 #ifdef ENABLE_ACHIEVEMENTS
-	m_owner->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_OWN_ITEM, item->GetProto()->ItemId, item->GetUInt32Value(ITEM_FIELD_STACK_COUNT), 0);
+	m_owner->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_OWN_ITEM, item->GetProto()->ItemId, item->GetStackCount(), 0);
 #endif
 	return true;
 }
@@ -186,25 +187,25 @@ void Container::SwapItems(int8 SrcSlot, int8 DstSlot)
 	uint32 destMaxCount = (m_owner->ItemStackCheat) ? 0x7fffffff : ((m_Slot[DstSlot]) ? m_Slot[DstSlot]->GetProto()->MaxCount : 0);
 	if( m_Slot[DstSlot] &&  m_Slot[SrcSlot]&&m_Slot[DstSlot]->GetEntry() == m_Slot[SrcSlot]->GetEntry() && m_Slot[SrcSlot]->wrapped_item_id == 0 && m_Slot[DstSlot]->wrapped_item_id == 0 && destMaxCount > 1 )
 	{
-		uint32 total=m_Slot[SrcSlot]->GetUInt32Value(ITEM_FIELD_STACK_COUNT)+m_Slot[DstSlot]->GetUInt32Value(ITEM_FIELD_STACK_COUNT);
+		uint32 total=m_Slot[SrcSlot]->GetStackCount()+m_Slot[DstSlot]->GetStackCount();
 		m_Slot[DstSlot]->m_isDirty = m_Slot[SrcSlot]->m_isDirty = true;
 		if( total <= destMaxCount )
 		{
-			m_Slot[DstSlot]->ModUnsigned32Value(ITEM_FIELD_STACK_COUNT,m_Slot[SrcSlot]->GetUInt32Value(ITEM_FIELD_STACK_COUNT));
+			m_Slot[DstSlot]->ModStackCount( m_Slot[SrcSlot]->GetStackCount());
 			SafeFullRemoveItemFromSlot(SrcSlot);
 			return;
 		}
 		else
 		{
-			if( m_Slot[DstSlot]->GetUInt32Value(ITEM_FIELD_STACK_COUNT) == destMaxCount )
+			if( m_Slot[DstSlot]->GetStackCount() == destMaxCount )
 			{
 
 			}
 			else
 			{
-				int32 delta = destMaxCount - m_Slot[DstSlot]->GetUInt32Value(ITEM_FIELD_STACK_COUNT);
-				m_Slot[DstSlot]->SetUInt32Value(ITEM_FIELD_STACK_COUNT,destMaxCount);
-				m_Slot[SrcSlot]->ModUnsigned32Value(ITEM_FIELD_STACK_COUNT,-delta);
+				int32 delta = destMaxCount - m_Slot[DstSlot]->GetStackCount();
+				m_Slot[DstSlot]->SetStackCount( destMaxCount);
+				m_Slot[SrcSlot]->ModStackCount( -delta);
 				return;
 			}
 		}
@@ -248,7 +249,7 @@ Item *Container::SafeRemoveAndRetreiveItemFromSlot(int16 slot, bool destroy)
 	if( pItem->GetOwner() == m_owner )
 	{
 		SetUInt64Value(CONTAINER_FIELD_SLOT_1  + slot*2, 0 );
-		pItem->SetUInt64Value(ITEM_FIELD_CONTAINED, 0);
+        pItem->SetContainerGUID( 0 );
 
 		if(destroy)
 		{
@@ -276,7 +277,7 @@ bool Container::SafeFullRemoveItemFromSlot(int16 slot)
 	m_Slot[slot] = NULL;
 
 	SetUInt64Value(CONTAINER_FIELD_SLOT_1  + slot*2, 0 );
-	pItem->SetUInt64Value(ITEM_FIELD_CONTAINED, 0);
+	pItem->SetContainerGUID( 0 );
 
 	if(pItem->IsInWorld())
 	{
@@ -298,7 +299,7 @@ bool Container::AddItemToFreeSlot(Item *pItem, uint32 * r_slot)
 			m_Slot[slot] = pItem;
 			pItem->m_isDirty = true;
 
-			pItem->SetUInt64Value(ITEM_FIELD_CONTAINED, GetGUID());
+            pItem->SetContainerGUID( GetGUID() );
 			pItem->SetOwner(m_owner);
 
 			SetUInt64Value(CONTAINER_FIELD_SLOT_1  + (slot*2), pItem->GetGUID());
@@ -313,7 +314,7 @@ bool Container::AddItemToFreeSlot(Item *pItem, uint32 * r_slot)
 			if(r_slot)
 				*r_slot = slot;
 #ifdef ENABLE_ACHIEVEMENTS
-			m_owner->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_OWN_ITEM, pItem->GetProto()->ItemId, pItem->GetUInt32Value(ITEM_FIELD_STACK_COUNT), 0);
+			m_owner->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_OWN_ITEM, pItem->GetProto()->ItemId, pItem->GetStackCount(), 0);
 #endif
 			return true;
 		}

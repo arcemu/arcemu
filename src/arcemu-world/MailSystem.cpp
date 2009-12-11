@@ -169,7 +169,7 @@ bool MailMessage::AddMessageDataToPacket(WorldPacket& data)
 			else
 				data << uint32( 0 );
 
-			data << uint8( pItem->GetUInt32Value(ITEM_FIELD_STACK_COUNT) );
+			data << uint8( pItem->GetStackCount() );
 			data << uint32( pItem->GetChargesLeft() );
 			data << pItem->GetUInt32Value( ITEM_FIELD_MAXDURABILITY );
 			data << pItem->GetUInt32Value( ITEM_FIELD_DURABILITY );
@@ -607,7 +607,7 @@ void WorldSession::HandleTakeItem(WorldPacket & recv_data )
 	// send complete packet
 	data << uint32(MAIL_OK);
     data << item->GetLowGUID();
-	data << item->GetUInt32Value(ITEM_FIELD_STACK_COUNT);
+	data << item->GetStackCount();
 
 	message->items.erase( itr );
 
@@ -809,19 +809,13 @@ void Mailbox::FillTimePacket(WorldPacket& data)
 
 	if(c== 0)
 	{
-#ifdef USING_BIG_ENDIAN
-		*(uint32*)(&data.contents()[0])=swap32(0xc7a8c000);
-#else
+
 		*(uint32*)(&data.contents()[0])= 0xc7a8c000;
-#endif
 	}
 	else
 	{
-#ifdef USING_BIG_ENDIAN
-		*(uint32*)(&data.contents()[4])=swap32(c);
-#else
+
 		*(uint32*)(&data.contents()[4])=c;
-#endif
 	}
 }
 

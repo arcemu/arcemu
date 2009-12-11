@@ -40,13 +40,6 @@ bool DBCFile::open(const char * fn)
 	fread(&recordSize,4,1,pf); // Size of a record
 	fread(&stringSize,4,1,pf); // String size
 
-#ifdef USING_BIG_ENDIAN
-	recordCount = swap32(recordCount);
-	fieldCount = swap32(fieldCount);
-	recordSize = swap32(recordSize);
-	stringSize = swap32(stringSize);
-#endif
-	
 	data = (unsigned char *)malloc (recordSize*recordCount); 
 	stringTable = (unsigned char *)malloc ( stringSize ) ;
 
@@ -57,12 +50,6 @@ bool DBCFile::open(const char * fn)
 	fread( stringTable , stringSize,1,pf);
 
 	/* swap all the rows */
-#ifdef USING_BIG_ENDIAN
-	/* burlex: this is a real hack. it'll mess up floats. i'm gonna rewrite the dbc interface soon :P */
-	uint32 * tbl = (uint32*)data;
-	for(int i = 0; i < (fieldCount * recordCount); ++i)
-		tbl[i] = swap32((uint32)tbl[i]);
-#endif
 	fclose(pf);
 	return true;
 }

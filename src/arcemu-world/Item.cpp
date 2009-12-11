@@ -111,14 +111,16 @@ Item::~Item()
 void Item::Create( uint32 itemid, Player* owner )
 {
 	SetEntry(  itemid );
+
+    uint64 OwnerGUID = owner->GetGUID();
  
 	if( owner != NULL )
 	{
-		SetUInt64Value( ITEM_FIELD_OWNER, owner->GetGUID() );
-		SetUInt64Value( ITEM_FIELD_CONTAINED, owner->GetGUID() );
+        SetOWnerGUID( OwnerGUID );
+		SetContainerGUID( OwnerGUID );
 	}
 
-	SetUInt32Value( ITEM_FIELD_STACK_COUNT, 1 );
+	SetStackCount(  1 );
 
 	m_itemProto = ItemPrototypeStorage.LookupEntry( itemid );
 
@@ -159,13 +161,13 @@ void Item::LoadFromDB(Field* fields, Player* plr, bool light )
 	m_owner = plr;
 
 	wrapped_item_id=fields[3].GetUInt32();
-	m_uint32Values[ITEM_FIELD_GIFTCREATOR] = fields[4].GetUInt32();
-	m_uint32Values[ITEM_FIELD_CREATOR] = fields[5].GetUInt32();
+	SetGiftCreatorGUID( fields[4].GetUInt32() );
+    SetCreatorGUID( fields[5].GetUInt32() );
 
 	count = fields[6].GetUInt32();
 	if( count > m_itemProto->MaxCount && (m_owner && !m_owner->ItemStackCheat) )
 		count = m_itemProto->MaxCount;
-	SetUInt32Value( ITEM_FIELD_STACK_COUNT, count);
+	SetStackCount(  count);
 
 	// Again another for that did not indent to make it do anything for more than 
 	// one iteration x == 0 was the only one executed
@@ -251,7 +253,7 @@ void Item::LoadFromDB(Field* fields, Player* plr, bool light )
 	if( GetEntry() == ITEM_ENTRY_GUILD_CHARTER)
 	{
 		SetUInt32Value( ITEM_FIELD_FLAGS, 1 );
-		SetUInt32Value( ITEM_FIELD_STACK_COUNT, 1 );
+		SetStackCount(  1 );
 		SetUInt32Value( ITEM_FIELD_PROPERTY_SEED, 57813883 );
 		if( plr != NULL && plr->m_charters[CHARTER_TYPE_GUILD] )
 			SetUInt32Value( ITEM_FIELD_ENCHANTMENT_1_1, plr->m_charters[CHARTER_TYPE_GUILD]->GetID() );
@@ -260,7 +262,7 @@ void Item::LoadFromDB(Field* fields, Player* plr, bool light )
 	if( GetEntry() == ARENA_TEAM_CHARTER_2v2 )
 	{
 		SetUInt32Value( ITEM_FIELD_FLAGS, 1 );
-		SetUInt32Value( ITEM_FIELD_STACK_COUNT, 1 );
+		SetStackCount(  1 );
 		SetUInt32Value( ITEM_FIELD_PROPERTY_SEED, 57813883 );
 		if( plr != NULL && plr->m_charters[CHARTER_TYPE_ARENA_2V2] )
 			SetUInt32Value( ITEM_FIELD_ENCHANTMENT_1_1, plr->m_charters[CHARTER_TYPE_ARENA_2V2]->GetID() );
@@ -269,7 +271,7 @@ void Item::LoadFromDB(Field* fields, Player* plr, bool light )
 	if( GetEntry() == ARENA_TEAM_CHARTER_3v3 )
 	{
 		SetUInt32Value( ITEM_FIELD_FLAGS, 1 );
-		SetUInt32Value( ITEM_FIELD_STACK_COUNT, 1 );
+		SetStackCount(  1 );
 		SetUInt32Value( ITEM_FIELD_PROPERTY_SEED, 57813883 );
 		if( plr != NULL && plr->m_charters[CHARTER_TYPE_ARENA_3V3] )
 			SetUInt32Value( ITEM_FIELD_ENCHANTMENT_1_1, plr->m_charters[CHARTER_TYPE_ARENA_3V3]->GetID() );
@@ -278,7 +280,7 @@ void Item::LoadFromDB(Field* fields, Player* plr, bool light )
 	if( GetEntry() == ARENA_TEAM_CHARTER_5v5 )
 	{
 		SetUInt32Value( ITEM_FIELD_FLAGS, 1 );
-		SetUInt32Value( ITEM_FIELD_STACK_COUNT, 1 );
+		SetStackCount(  1 );
 		SetUInt32Value( ITEM_FIELD_PROPERTY_SEED, 57813883 );
 		if( plr != NULL && plr->m_charters[CHARTER_TYPE_ARENA_5V5] )
 			SetUInt32Value( ITEM_FIELD_ENCHANTMENT_1_1, plr->m_charters[CHARTER_TYPE_ARENA_5V5]->GetID() );
@@ -340,18 +342,21 @@ void Item::SaveToDB( int8 containerslot, int8 slot, bool firstsave, QueryBuffer*
 	if( !m_isDirty && !firstsave )
 		return;
 
+    uint64 GiftCreatorGUID = GetGiftCreatorGUID();
+    uint64 CreatorGUID = GetCreatorGUID();
+
 	std::stringstream ss;
 
 	ss << "REPLACE INTO playeritems VALUES(";
 
-	ss << m_uint32Values[ITEM_FIELD_OWNER] << ",";
+    ss << m_owner->GetLowGUID() << ",";
 	ss << GetLowGUID() << ",";
 	ss << GetEntry() << ",";
 	ss << wrapped_item_id << ",";
-	ss << m_uint32Values[ITEM_FIELD_GIFTCREATOR] << ",";
-	ss << m_uint32Values[ITEM_FIELD_CREATOR] << ",";
+	ss << ( GUID_LOPART( GiftCreatorGUID ) ) << ",";
+    ss << ( GUID_LOPART( CreatorGUID ) ) << ",";
 
-	ss << GetUInt32Value(ITEM_FIELD_STACK_COUNT) << ",";
+	ss << GetStackCount() << ",";
 	ss << GetChargesLeft() << ",";
 	ss << GetUInt32Value(ITEM_FIELD_FLAGS) << ",";
 	ss << random_prop << ", " << random_suffix << ", ";
@@ -593,8 +598,9 @@ void Item::RemoveFromWorld()
 void Item::SetOwner( Player* owner )
 { 
 	if( owner != NULL )
-		SetUInt64Value( ITEM_FIELD_OWNER, owner->GetGUID() );
-	else SetUInt64Value( ITEM_FIELD_OWNER, 0 );
+		SetOWnerGUID( owner->GetGUID() );
+	else 
+        SetOWnerGUID( 0 );
 
 	m_owner = owner; 
 }

@@ -45,12 +45,6 @@ void DBC::Load(const char *filename) {
 	fread(&weird2, 4, 1, f);
 	//int percol = weird2/cols;
 	fread(&dblength, 4, 1, f);
-#ifdef USING_BIG_ENDIAN
-	swap32(&rows);
-	swap32(&cols);
-	swap32(&weird2);
-	swap32(&dblength);
-#endif
 
 	tbl = new unsigned int[rows * cols];
 	db = new char[dblength];
@@ -58,12 +52,6 @@ void DBC::Load(const char *filename) {
 	strcpy(name,filename);
 	fread(tbl,rows*cols*4,1,f);
 	fread(db,dblength,1,f);
-
-#ifdef USING_BIG_ENDIAN
-	/* burlex: this is a real hack. it'll mess up floats. i'm gonna rewrite the dbc interface soon :P */
-	for(int i = 0; i < (rows*cols); ++i)
-		tbl[i] = swap32((uint32)tbl[i]);
-#endif
 
 	fclose(f);
 	loaded = true;

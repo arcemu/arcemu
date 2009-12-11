@@ -294,7 +294,7 @@ public:
 			_socket->Disconnect();
 	}
 
-	int __fastcall Update(uint32 InstanceID);
+	int  Update(uint32 InstanceID);
 
 	void SendBuyFailed(uint64 guid, uint32 itemid, uint8 error);
 	void SendSellItem(uint64 vendorguid, uint64 itemid, uint8 error);

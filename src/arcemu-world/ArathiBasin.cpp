@@ -24,8 +24,10 @@
 #define RESOURCES_WARNING_THRESHOLD 1800
 #define RESOURCES_WINVAL 2000
 #define RESOURCES_WARNINGVAL 1800
-uint32 buffentrys[3] = {180380,180362,180146};
-// AB define's
+
+uint32 buffentries[3] = {180380,180362,180146};
+
+// AB defines
 #define AB_CAPTURED_STABLES_ALLIANCE		0x6E7 //1767
 #define AB_CAPTURED_STABLES_HORDE		   0x6E8 //1768
 #define AB_CAPTURING_STABLES_ALLIANCE	   0x6E9 //1769
@@ -175,7 +177,7 @@ static uint32 resourcesToGainBR = 200;
 
 void ArathiBasin::SpawnBuff(uint32 x)
 {
-	uint32 chosen_buffid = buffentrys[RandomUInt(2)];
+	uint32 chosen_buffid = buffentries[RandomUInt(2)];
 	GameObjectInfo * goi = GameObjectNameStorage.LookupEntry(chosen_buffid);
 	if(goi == NULL)
 		return;

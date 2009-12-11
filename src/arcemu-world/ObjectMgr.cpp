@@ -1583,7 +1583,7 @@ Item * ObjectMgr::CreateItem(uint32 entry,Player * owner)
 	{
 		Container * pContainer = new Container(HIGHGUID_TYPE_CONTAINER,GenerateLowGuid(HIGHGUID_TYPE_CONTAINER));
 		pContainer->Create( entry, owner);
-		pContainer->SetUInt32Value(ITEM_FIELD_STACK_COUNT, 1);
+		pContainer->SetStackCount(  1);
 		return pContainer;
 	}
 	else
@@ -1593,7 +1593,7 @@ Item * ObjectMgr::CreateItem(uint32 entry,Player * owner)
 			return NULL;
 		pItem->Init(HIGHGUID_TYPE_ITEM,GenerateLowGuid(HIGHGUID_TYPE_ITEM));
 		pItem->Create(entry, owner);
-		pItem->SetUInt32Value(ITEM_FIELD_STACK_COUNT, 1);
+		pItem->SetStackCount(  1);
 
         if( owner != NULL ){
             uint32 *played = owner->GetPlayedtime();

@@ -364,7 +364,7 @@ void WorldSession::HandleQuestgiverAcceptQuestOpcode( WorldPacket & recv_data )
 			else
                 _player->SendItemPushResult( false, true, false, true, 
 				_player->GetItemInterface()->LastSearchItemBagSlot(), _player->GetItemInterface()->LastSearchItemSlot(),
-				1, item->GetEntry(), item->GetItemRandomSuffixFactor(), item->GetItemRandomPropertyId(), item->GetCount() );
+				1, item->GetEntry(), item->GetItemRandomSuffixFactor(), item->GetItemRandomPropertyId(), item->GetStackCount()  );
 		}
 	}
 
@@ -373,7 +373,7 @@ void WorldSession::HandleQuestgiverAcceptQuestOpcode( WorldPacket & recv_data )
 		Item * item = objmgr.CreateItem( qst->srcitem, _player );
 		if(item)
 		{
-			item->SetUInt32Value(ITEM_FIELD_STACK_COUNT, qst->srcitemcount ? qst->srcitemcount : 1);
+			item->SetStackCount(  qst->srcitemcount ? qst->srcitemcount : 1);
 			if(!_player->GetItemInterface()->AddItemToFreeSlot(item))
 				item->DeleteMe();
 		}

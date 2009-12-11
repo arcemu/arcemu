@@ -53,11 +53,7 @@ void WorldSession::HandleNameQueryOpcode( WorldPacket & recv_data )
 //////////////////////////////////////////////////////////////
 void WorldSession::HandleQueryTimeOpcode( WorldPacket & recv_data )
 {
-//	uint32 t = (uint32)UNIXTIME;
-//#ifdef USING_BIG_ENDIAN
-//	swap32(&t);
-//#endif
-//	OutPacket(SMSG_QUERY_TIME_RESPONSE, 4, &t);
+
 	WorldPacket data( SMSG_QUERY_TIME_RESPONSE, 4+4 );
 	data << (uint32)UNIXTIME;
 	data << (uint32)0; //VLack: 3.1; thanks Stewart for reminding me to have the correct structure even if it seems the old one still works.

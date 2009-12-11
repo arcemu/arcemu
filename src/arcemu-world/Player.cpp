@@ -907,7 +907,7 @@ bool Player::Create(WorldPacket& data )
 			item=objmgr.CreateItem((*is).protoid,this);
 			if(item)
 			{
-				item->SetUInt32Value(ITEM_FIELD_STACK_COUNT,(*is).amount);
+				item->SetStackCount( (*is).amount);
 				if((*is).slot<INVENTORY_SLOT_BAG_END)
 				{
 					if( !GetItemInterface()->SafeAddItem(item, INVENTORY_SLOT_NOT_SET, (*is).slot) )
@@ -1815,11 +1815,7 @@ void Player::smsg_InitialSpells()
 	}
 
 
-#ifdef USING_BIG_ENDIAN
-	*(uint16*)&data.contents()[pos] = swap16((uint16)itemCount);
-#else
 	*(uint16*)&data.contents()[pos] = (uint16)itemCount;
-#endif
 
 	GetSession()->SendPacket(&data);
 
@@ -7541,23 +7537,16 @@ void Player::ProcessPendingUpdates()
     //build out of range updates if creation updates are queued
     if(bCreationBuffer.size() || mOutOfRangeIdCount)
     {
-        #ifdef USING_BIG_ENDIAN
-	        *(uint32*)&update_buffer[c] = swap32(uint32(((mOutOfRangeIds.size() > 0) ? (mCreationCount + 1) : mCreationCount)));	c += 4;
-        #else
 	        *(uint32*)&update_buffer[c] = ((mOutOfRangeIds.size() > 0) ? (mCreationCount + 1) : mCreationCount);	c += 4;
-        #endif
-	        //update_buffer[c] = 1;																			   ++c;
 
             // append any out of range updates
 	    if(mOutOfRangeIdCount)
 	    {
 		    update_buffer[c]				= UPDATETYPE_OUT_OF_RANGE_OBJECTS;			 ++c;
-            #ifdef USING_BIG_ENDIAN
-		            *(uint32*)&update_buffer[c]	 = swap32(mOutOfRangeIdCount);						  c += 4;
-            #else
-		            *(uint32*)&update_buffer[c]	 = mOutOfRangeIdCount;						  c += 4;
-            #endif
-		    memcpy(&update_buffer[c], mOutOfRangeIds.contents(), mOutOfRangeIds.size());   c += mOutOfRangeIds.size();
+
+            *(uint32*)&update_buffer[c]	 = mOutOfRangeIdCount;						  c += 4;
+
+            memcpy(&update_buffer[c], mOutOfRangeIds.contents(), mOutOfRangeIds.size());   c += mOutOfRangeIds.size();
 		    mOutOfRangeIds.clear();
 		    mOutOfRangeIdCount = 0;
 	    }
@@ -7582,11 +7571,8 @@ void Player::ProcessPendingUpdates()
 	{
 		c = 0;
 
-		#ifdef USING_BIG_ENDIAN
-			*(uint32*)&update_buffer[c] = swap32(uint32(((mOutOfRangeIds.size() > 0) ? (mUpdateCount + 1) : mUpdateCount)));	c += 4;
-		#else
 			*(uint32*)&update_buffer[c] = ((mOutOfRangeIds.size() > 0) ? (mUpdateCount + 1) : mUpdateCount);	c += 4;
-		#endif
+
 		//update_buffer[c] = 1;																			   ++c;
 		memcpy(&update_buffer[c], bUpdateBuffer.contents(), bUpdateBuffer.size());  c += bUpdateBuffer.size();
 
@@ -7680,11 +7666,8 @@ bool Player::CompressAndSendUpdateBuffer(uint32 size, const uint8* update_buffer
 	}
 
 	// fill in the full size of the compressed stream
-#ifdef USING_BIG_ENDIAN
-	*(uint32*)&buffer[0] = swap32(size);
-#else
+
 	*(uint32*)&buffer[0] = size;
-#endif
 
 	// send it
 	m_session->OutPacket(SMSG_COMPRESSED_UPDATE_OBJECT, (uint16)stream.total_out + 4, buffer);
@@ -8027,10 +8010,8 @@ void Player::SendTradeUpdate()
 		return;
 
 	WorldPacket data( SMSG_TRADE_STATUS_EXTENDED, 532 );
-	/*data << uint8(1);
-	data << uint32(2) << uint32(2);
-	data << mTradeGold << uint32(0);*/
-	data << uint8(1);
+
+    data << uint8(1);
 	data << uint32(0x19);
 	data << m_tradeSequence;
 	data << m_tradeSequence++;
@@ -8051,11 +8032,11 @@ void Player::SendTradeUpdate()
 
 			data << pProto->ItemId;
 			data << pProto->DisplayInfoID;
-			data << pItem->GetUInt32Value( ITEM_FIELD_STACK_COUNT );	// Amount		   OK
+			data << pItem->GetStackCount();	// Amount		   OK
 
 			// Enchantment stuff
 			data << uint32(0);											// unknown
-			data << pItem->GetUInt64Value( ITEM_FIELD_GIFTCREATOR );	// gift creator	 OK
+            data << pItem->GetGiftCreatorGUID();	// gift creator	 OK
 			data << pItem->GetUInt32Value( ITEM_FIELD_ENCHANTMENT_1_1 );	// Item Enchantment OK
 			for( uint8 i = 2; i < 5; i++ )								// Gem enchantments
 			{
@@ -8064,10 +8045,10 @@ void Player::SendTradeUpdate()
 				else
 					data << uint32( 0 );
 			}
-			data << pItem->GetUInt64Value( ITEM_FIELD_CREATOR );		// item creator	 OK
+            data << pItem->GetCreatorGUID();		// item creator	 OK
 			data << pItem->GetUInt32Value( ITEM_FIELD_SPELL_CHARGES );	// Spell Charges	OK
 
-			data << uint32(0);											// seems like time stamp or something like that
+			data << uint32( 0 );											// seems like time stamp or something like that
 			data << pItem->GetUInt32Value( ITEM_FIELD_RANDOM_PROPERTIES_ID );
 			data << pProto->LockId;										// lock ID		  OK
 			data << pItem->GetUInt32Value( ITEM_FIELD_MAXDURABILITY );
@@ -8186,12 +8167,9 @@ void Player::DuelBoundaryTest()
 			m_duelCountdownTimer = 10000;
 
 			// let us know
-#ifdef USING_BIG_ENDIAN
-			uint32 swapped = swap32(m_duelCountdownTimer);
-			m_session->OutPacket(SMSG_DUEL_OUTOFBOUNDS, 4, &swapped);
-#else
+
 			m_session->OutPacket(SMSG_DUEL_OUTOFBOUNDS, 4, &m_duelCountdownTimer);
-#endif
+
 			m_duelStatus = DUEL_STATUS_OUTOFBOUNDS;
 		}
 	}
@@ -8341,12 +8319,8 @@ void Player::EndDuel(uint8 WinCondition)
 
 void Player::StopMirrorTimer(uint32 Type)
 {
-#ifdef USING_BIG_ENDIAN
-	uint32 swapped = swap32(Type);
-	m_session->OutPacket(SMSG_STOP_MIRROR_TIMER, 4, &swapped);
-#else
+
 	m_session->OutPacket(SMSG_STOP_MIRROR_TIMER, 4, &Type);
-#endif
 }
 
 void Player::EventTeleport(uint32 mapid, float x, float y, float z)
@@ -11172,11 +11146,8 @@ void Player::EventDumpCompressedMovement()
 	}
 
 	// fill in the full size of the compressed stream
-#ifdef USING_BIG_ENDIAN
-	*(uint32*)&buffer[0] = swap32(size);
-#else
+
 	*(uint32*)&buffer[0] = size;
-#endif
 
 	// send it
 	m_session->OutPacket(763, (uint16)stream.total_out + 4, buffer);

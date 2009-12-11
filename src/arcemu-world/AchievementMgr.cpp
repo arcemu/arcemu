@@ -1975,7 +1975,7 @@ void AchievementMgr::GiveAchievementReward(AchievementEntry const* entry)
 					GetPlayer()->GetSession()->SendNotification("Unable to create item with id %lu!", r.itemId);
 					return;
 				}
-				item->SetUInt32Value(ITEM_FIELD_STACK_COUNT, 1);
+				item->SetStackCount(  1);
 				if( it->Bonding==ITEM_BIND_ON_PICKUP )
 				{
 					if( it->Flags & ITEM_FLAG_ACCOUNTBOUND )

@@ -49,15 +49,15 @@ public:
 	ARCEMU_INLINE void SendPacket(WorldPacket* packet) { if(!packet) return; OutPacket(packet->GetOpcode(), packet->size(), (packet->size() ? (const void*)packet->contents() : NULL)); }
 	ARCEMU_INLINE void SendPacket(StackBufferBase * packet) { if(!packet) return; OutPacket(packet->GetOpcode(), packet->GetSize(), (packet->GetSize() ? (const void*)packet->GetBufferPointer() : NULL)); }
 
-	void __fastcall OutPacket(uint16 opcode, size_t len, const void* data);
-	OUTPACKET_RESULT __fastcall _OutPacket(uint16 opcode, size_t len, const void* data);
+	void  OutPacket(uint16 opcode, size_t len, const void* data);
+	OUTPACKET_RESULT  _OutPacket(uint16 opcode, size_t len, const void* data);
    
 	ARCEMU_INLINE uint32 GetLatency() { return _latency; }
 
 	void Authenticate();
 	void InformationRetreiveCallback(WorldPacket & recvData, uint32 requestid);
 
-	void __fastcall UpdateQueuePosition(uint32 Position);
+	void  UpdateQueuePosition(uint32 Position);
 
 	void OnRead();
 	void OnConnect();
@@ -169,12 +169,8 @@ static inline unsigned int FastGUIDPack(const uint64 & oldguid, unsigned char * 
 	uint8 guidmask = 0;
 
 	int j = 1 + pos;
-#ifdef USING_BIG_ENDIAN
-	uint64 t = swap64(oldguid);
-	uint8 * test = (uint8*)&t;
-#else
+
 	uint8 * test = (uint8*)&oldguid;
-#endif
 
 	if (*test) //7*8
 	{

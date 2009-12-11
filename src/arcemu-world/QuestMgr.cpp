@@ -1090,14 +1090,14 @@ void QuestMgr::OnQuestFinished(Player* plr, Quest* qst, Object *qst_giver, uint3
 							if (itm== NULL)
 								return;
 
-							itm->SetUInt32Value(ITEM_FIELD_STACK_COUNT, uint32(qst->reward_itemcount[i]));
+							itm->SetStackCount(  uint32(qst->reward_itemcount[i]));
 							if( !plr->GetItemInterface()->SafeAddItem(itm,slotresult.ContainerSlot, slotresult.Slot) )
 								itm->DeleteMe();
 						}
 					}
 					else
 					{
-						add->SetCount(add->GetUInt32Value(ITEM_FIELD_STACK_COUNT) + qst->reward_itemcount[i]);
+						add->SetStackCount( add->GetStackCount() + qst->reward_itemcount[i]);
 						add->m_isDirty = true;
 					}
 				}
@@ -1130,7 +1130,7 @@ void QuestMgr::OnQuestFinished(Player* plr, Quest* qst, Object *qst_giver, uint3
 						if (itm== NULL)
 								return;
 
-						itm->SetUInt32Value(ITEM_FIELD_STACK_COUNT, uint32(qst->reward_choiceitemcount[reward_slot]));
+						itm->SetStackCount(  uint32(qst->reward_choiceitemcount[reward_slot]));
 						if( !plr->GetItemInterface()->SafeAddItem(itm,slotresult.ContainerSlot, slotresult.Slot) )
 							itm->DeleteMe();
 
@@ -1138,7 +1138,7 @@ void QuestMgr::OnQuestFinished(Player* plr, Quest* qst, Object *qst_giver, uint3
 				}
 				else
 				{
-					add->SetCount(add->GetUInt32Value(ITEM_FIELD_STACK_COUNT) + qst->reward_choiceitemcount[reward_slot]);
+					add->SetStackCount( add->GetStackCount() + qst->reward_choiceitemcount[reward_slot]);
 					add->m_isDirty = true;
 				}
 			}
@@ -1209,14 +1209,14 @@ void QuestMgr::OnQuestFinished(Player* plr, Quest* qst, Object *qst_giver, uint3
 							if (itm== NULL)
 								return;
 
-							itm->SetUInt32Value(ITEM_FIELD_STACK_COUNT, uint32(qst->reward_itemcount[i]));
+							itm->SetStackCount(  uint32(qst->reward_itemcount[i]));
 							if( !plr->GetItemInterface()->SafeAddItem(itm,slotresult.ContainerSlot, slotresult.Slot) )
 								itm->DeleteMe();
 						}
 					}
 					else
 					{
-						add->SetCount(add->GetUInt32Value(ITEM_FIELD_STACK_COUNT) + qst->reward_itemcount[i]);
+						add->SetStackCount( add->GetStackCount() + qst->reward_itemcount[i]);
 						add->m_isDirty = true;
 					}
 				}
@@ -1249,14 +1249,14 @@ void QuestMgr::OnQuestFinished(Player* plr, Quest* qst, Object *qst_giver, uint3
 						if (itm== NULL)
 							return;
 
-						itm->SetUInt32Value(ITEM_FIELD_STACK_COUNT, uint32(qst->reward_choiceitemcount[reward_slot]));
+						itm->SetStackCount(  uint32(qst->reward_choiceitemcount[reward_slot]));
 						if( !plr->GetItemInterface()->SafeAddItem(itm,slotresult.ContainerSlot, slotresult.Slot) )
 							itm->DeleteMe();
 					}
 				}
 				else
 				{
-					add->SetCount(add->GetUInt32Value(ITEM_FIELD_STACK_COUNT) + qst->reward_choiceitemcount[reward_slot]);
+					add->SetStackCount( add->GetStackCount() + qst->reward_choiceitemcount[reward_slot]);
 					add->m_isDirty = true;
 				}
 			}
@@ -1499,12 +1499,8 @@ void QuestMgr::SendQuestInvalid(INVALID_REASON reason, Player *plyr)
 {
 	if(!plyr)
 		return;
-#ifdef USING_BIG_ENDIAN
-	uint32 swapped = swap32((uint32)reason);
 	plyr->GetSession()->OutPacket(SMSG_QUESTGIVER_QUEST_INVALID, 4, &reason);
-#else
-	plyr->GetSession()->OutPacket(SMSG_QUESTGIVER_QUEST_INVALID, 4, &reason);
-#endif	
+
 	sLog.outDebug("WORLD:Sent SMSG_QUESTGIVER_QUEST_INVALID");
 }
 

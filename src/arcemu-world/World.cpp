@@ -1789,7 +1789,7 @@ void World::PollMailboxInsertQueue(DatabaseConnection * con)
 				pItem = objmgr.CreateItem( itemid, NULL );
 				if( pItem != NULL )
 				{
-					pItem->SetUInt32Value( ITEM_FIELD_STACK_COUNT, stackcount );
+					pItem->SetStackCount(  stackcount );
 					pItem->SaveToDB( 0, 0, true, NULL );
 				}
 			}

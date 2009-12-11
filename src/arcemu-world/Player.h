@@ -1413,7 +1413,7 @@ public:
 
 	// Talents
 	// These functions build a specific type of A9 packet
-	uint32 __fastcall BuildCreateUpdateBlockForPlayer( ByteBuffer *data, Player *target );
+	uint32  BuildCreateUpdateBlockForPlayer( ByteBuffer *data, Player *target );
 	void DestroyForPlayer( Player *target ) const;
 	void SetTalentHearthOfWildPCT(int value){hearth_of_wild_pct=value;}
 	void EventTalentHearthOfWildChange(bool apply);
@@ -1814,7 +1814,7 @@ public:
     void PushCreationData(ByteBuffer *data, uint32 updatecount);
 	void PushOutOfRange(const WoWGuid & guid);
 	void ProcessPendingUpdates();
-	bool __fastcall CompressAndSendUpdateBuffer(uint32 size, const uint8* update_buffer);
+	bool  CompressAndSendUpdateBuffer(uint32 size, const uint8* update_buffer);
 	void ClearAllPendingUpdates();
 
 	uint32 GetArmorProficiency() { return armor_proficiency; }

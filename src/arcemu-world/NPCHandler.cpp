@@ -169,11 +169,8 @@ void WorldSession::SendTrainerList(Creature* pCreature)
 		++Count;
 	}
 
-#ifdef USING_BIG_ENDIAN
-	*(uint32*)&data.contents()[12] = swap32(Count);
-#else
 	*(uint32*)&data.contents()[12] = Count;
-#endif
+
 	if ( stricmp(pTrainer->UIMessage,"DMSG")== 0 )
 		data << _player->GetSession()->LocalizedWorldSrv(37);
 	else

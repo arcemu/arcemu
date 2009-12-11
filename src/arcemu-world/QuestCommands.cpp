@@ -275,7 +275,7 @@ bool ChatHandler::HandleQuestStartCommand(const char * args, WorldSession * m_se
 						Item * item = objmgr.CreateItem( qst->srcitem, plr);
 						if(item)
 						{
-							item->SetUInt32Value(ITEM_FIELD_STACK_COUNT, qst->srcitemcount ? qst->srcitemcount : 1);
+							item->SetStackCount(  qst->srcitemcount ? qst->srcitemcount : 1);
 							if(!plr->GetItemInterface()->AddItemToFreeSlot(item))
 								item->DeleteMe();
 						}
@@ -476,7 +476,7 @@ bool ChatHandler::HandleQuestFinishCommand(const char * args, WorldSession * m_s
 								Item *itm = objmgr.CreateItem(qst->reward_item[i], plr);
 								if( itm )
 								{
-									itm->SetUInt32Value(ITEM_FIELD_STACK_COUNT, uint32(qst->reward_itemcount[i]));
+									itm->SetStackCount(  uint32(qst->reward_itemcount[i]));
 									if( !plr->GetItemInterface()->SafeAddItem(itm,slotresult.ContainerSlot, slotresult.Slot) )
 									{
 										itm->DeleteMe();
@@ -486,7 +486,7 @@ bool ChatHandler::HandleQuestFinishCommand(const char * args, WorldSession * m_s
 						}
 						else
 						{
-							add->SetCount(add->GetUInt32Value(ITEM_FIELD_STACK_COUNT) + qst->reward_itemcount[i]);
+							add->SetStackCount( add->GetStackCount() + qst->reward_itemcount[i]);
 							add->m_isDirty = true;
 						}
 					}
@@ -517,7 +517,7 @@ bool ChatHandler::HandleQuestFinishCommand(const char * args, WorldSession * m_s
 							Item *itm = objmgr.CreateItem(qst->reward_choiceitem[reward_slot], plr);
 							if( itm )
 							{
-								itm->SetUInt32Value(ITEM_FIELD_STACK_COUNT, uint32(qst->reward_choiceitemcount[reward_slot]));
+								itm->SetStackCount(  uint32(qst->reward_choiceitemcount[reward_slot]));
 								if( !plr->GetItemInterface()->SafeAddItem(itm,slotresult.ContainerSlot, slotresult.Slot) )
 								{
 									itm->DeleteMe();
@@ -527,7 +527,7 @@ bool ChatHandler::HandleQuestFinishCommand(const char * args, WorldSession * m_s
 					}
 					else
 					{
-						add->SetCount(add->GetUInt32Value(ITEM_FIELD_STACK_COUNT) + qst->reward_choiceitemcount[reward_slot]);
+						add->SetStackCount( add->GetStackCount() + qst->reward_choiceitemcount[reward_slot]);
 						add->m_isDirty = true;
 					}
 				}

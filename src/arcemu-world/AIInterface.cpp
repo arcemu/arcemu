@@ -2379,42 +2379,37 @@ void AIInterface::SendMoveToPacket(float toX, float toY, float toZ, float toO, u
 	//this should NEVER be called directly !!!!!!
 	//use MoveTo()
 
-#ifndef USING_BIG_ENDIAN
 	StackWorldPacket<100> data(SMSG_MONSTER_MOVE);
-#else
-	WorldPacket data(SMSG_MONSTER_MOVE, 100);
-#endif
+
 	data << m_Unit->GetNewGUID();
-	data << uint8(0); //VLack: for 3.1.x support; I've discovered this in Mangos code while doing research on how to fix invisible mobs on 3.0.9
-	data << m_Unit->GetPositionX() << m_Unit->GetPositionY() << m_Unit->GetPositionZ();
-	data << getMSTime();
+	data << uint8( 0 ); //VLack: for 3.1.x support; I've discovered this in Mangos code while doing research on how to fix invisible mobs on 3.0.9
+	data << float( m_Unit->GetPositionX() );
+    data << float( m_Unit->GetPositionY() );
+    data << float( m_Unit->GetPositionZ() );
+	data << uint32( getMSTime() );
 	
 	// Check if we have an orientation
 	if(toO != 0.0f)
 	{
-		data << uint8(4);
-		data << toO;
+		data << uint8( 4 );
+		data << float( toO );
 	} else {
-		data << uint8(0);
+		data << uint8( 0 );
 	}
-	data << MoveFlags;
-/*	if(MoveFlags & 0x200000) //VLack: Aspire code for 3.1.x support - I don't know these flags, as the ones I knew are the 3 well known shown in the above comment and their combinations
-	{
-		data << uint8(0);
-		data << uint32(0);
-	}
-	if(MoveFlags & 0x800) //VLack: Aspire code for 3.1.x support
-	{
-		data << float(0);
-		data << uint32(0);
-	}*/
-	data << time;
-	data << uint32(1);	  // 1 waypoint
-	data << toX << toY << toZ;
+	data << uint32( MoveFlags );
+
+	data << uint32( time );
+	data << uint32( 1 );	  // 1 waypoint
+	data << float( toX );
+    data << float( toY );
+    data << float( toZ );
 
 #ifndef ENABLE_COMPRESSED_MOVEMENT_FOR_CREATURES
-	bool self = m_Unit->GetTypeId() == TYPEID_PLAYER;
+	
+    bool self = m_Unit->GetTypeId() == TYPEID_PLAYER;
+
 	m_Unit->SendMessageToSet( &data, self );
+
 #else
 	if( m_Unit->GetTypeId() == TYPEID_PLAYER )
 		static_cast<Player*>(m_Unit)->GetSession()->SendPacket(&data);
@@ -2429,41 +2424,6 @@ void AIInterface::SendMoveToPacket(float toX, float toY, float toZ, float toO, u
 #endif
 }
 
-/*
-void AIInterface::SendMoveToSplinesPacket(std::list<Waypoint> wp, bool run)
-{
-	if(!m_canMove)
-	{
-		return;
-	}
-
-	WorldPacket data;
-
-	uint8 DontMove = 0;
-	uint32 travelTime = 0;
-	for(std::list<Waypoint>::iterator i = wp.begin(); i != wp.end(); i++)
-	{
-		travelTime += i->time;
-	}
-
-	data.Initialize( SMSG_MONSTER_MOVE );
-	data << m_Unit->GetNewGUID();
-	data << m_Unit->GetPositionX() << m_Unit->GetPositionY() << m_Unit->GetPositionZ();
-	data << getMSTime();
-	data << uint8(DontMove);
-	data << uint32(run ? 0x00000100 : 0x00000000);
-	data << travelTime;
-	data << (uint32)wp.size();
-	for(std::list<Waypoint>::iterator i = wp.begin(); i != wp.end(); i++)
-	{
-		data << i->x;
-		data << i->y;
-		data << i->z;
-	}
-
-	m_Unit->SendMessageToSet( &data, false );
-}
-*/
 bool AIInterface::StopMovement(uint32 time)
 {
 	m_moveTimer = time; //set pause after stopping

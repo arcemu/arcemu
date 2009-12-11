@@ -905,7 +905,7 @@ public:
 	
 	void SetDualWield(bool enabled);
 
-	bool __fastcall canReachWithAttack(Unit *pVictim);
+	bool  canReachWithAttack(Unit *pVictim);
 
   //void StrikeWithAbility( Unit* pVictim, Spell* spell, uint32 addspelldmg, uint32 weapon_damage_type );
 

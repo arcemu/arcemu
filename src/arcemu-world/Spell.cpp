@@ -4743,9 +4743,9 @@ void Spell::RemoveItems()
 	if(i_caster)
 	{
 		// Stackable Item -> remove 1 from stack
-		if ( i_caster->GetUInt32Value(ITEM_FIELD_STACK_COUNT) > 1 )
+		if ( i_caster->GetStackCount() > 1 )
 		{
-			i_caster->ModUnsigned32Value( ITEM_FIELD_STACK_COUNT, -1 );
+			i_caster->ModStackCount(  -1 );
 			i_caster->m_isDirty = true;
 		}
 		else
@@ -5127,7 +5127,8 @@ exit:
 	else if( i_caster != NULL && target != NULL )
 	{
 		//we should inherit the modifiers from the conjured food caster
-		Unit *item_creator = target->GetMapMgr()->GetUnit( i_caster->GetUInt64Value( ITEM_FIELD_CREATOR ) );
+        Unit *item_creator = target->GetMapMgr()->GetUnit( i_caster->GetCreatorGUID() );
+
 		if( item_creator != NULL )
 		{
 			int32 spell_flat_modifers= 0;
@@ -5263,16 +5264,16 @@ void Spell::CreateItem( uint32 itemId )
 			return;
 		}
 
-		newItem->SetUInt64Value( ITEM_FIELD_CREATOR, p_caster->GetGUID() );
-		newItem->SetUInt32Value( ITEM_FIELD_STACK_COUNT, addcount );
+        newItem->SetCreatorGUID( p_caster->GetGUID() );
+		newItem->SetStackCount(  addcount );
 
-        p_caster->SendItemPushResult( true, false, true, true, slotresult.ContainerSlot, slotresult.Slot, addcount, newItem->GetEntry(), newItem->GetItemRandomSuffixFactor(), newItem->GetItemRandomPropertyId(), newItem->GetCount()  );
+        p_caster->SendItemPushResult( true, false, true, true, slotresult.ContainerSlot, slotresult.Slot, addcount, newItem->GetEntry(), newItem->GetItemRandomSuffixFactor(), newItem->GetItemRandomPropertyId(), newItem->GetStackCount()   );
 		newItem->m_isDirty = true;
 	}
 	else
 	{
-		add->ModUnsigned32Value( ITEM_FIELD_STACK_COUNT, addcount );
-        p_caster->SendItemPushResult( true, false, true, false, (uint8)p_caster->GetItemInterface()->GetBagSlotByGuid(add->GetGUID()), 0xFFFFFFFF, addcount , add->GetEntry(), add->GetItemRandomSuffixFactor(), add->GetItemRandomPropertyId(), add->GetCount()  );
+		add->ModStackCount(  addcount );
+        p_caster->SendItemPushResult( true, false, true, false, (uint8)p_caster->GetItemInterface()->GetBagSlotByGuid(add->GetGUID()), 0xFFFFFFFF, addcount , add->GetEntry(), add->GetItemRandomSuffixFactor(), add->GetItemRandomPropertyId(), add->GetStackCount()   );
 		add->m_isDirty = true;
 	}
 }
@@ -5998,126 +5999,11 @@ void Spell::SendCastSuccess(const uint64& guid)
 	// fuck bytebuffers
 	unsigned char buffer[13];
 	uint32 c = FastGUIDPack(guid, buffer, 0);
-#ifdef USING_BIG_ENDIAN
-	*(uint32*)&buffer[c] = swap32(GetProto()->Id);         c += 4;
-#else
+
 	*(uint32*)&buffer[c] = GetProto()->Id;                 c += 4;
-#endif
 
 	plr->GetSession()->OutPacket( uint16( SMSG_CLEAR_EXTRA_AURA_INFO_OBSOLETE ), static_cast<uint16>( c ), buffer);
 }
-/*
-bool IsBeneficSpell(SpellEntry *sp)
-{
-	uint32 cur;
-	for(uint32 i= 0;i<3;i++)
-		for(uint32 j= 0;j<2;j++)
-		{
-			if(j== 0)
-				cur = sp->EffectImplicitTargetA[i];
-			else // if(j==1)
-				cur = sp->EffectImplicitTargetB[i];
-			switch(cur)
-			{
-				case EFF_TARGET_SELF:
-				case EFF_TARGET_PET:
-				case EFF_TARGET_ALL_PARTY_AROUND_CASTER:
-				case EFF_TARGET_SINGLE_FRIEND:
-				case 45:// Chain,!!only for healing!! for chain lightning =6
-				case 57:// Targeted Party Member
-				case 27: // target is owner of pet
-				case EFF_TARGET_MINION:// Minion Target
-				case 33://Party members of totem, inside given range
-				case EFF_TARGET_SINGLE_PARTY:// Single Target Party Member
-				case EFF_TARGET_ALL_PARTY: // all Members of the targets party
-				case EFF_TARGET_SELF_FISHING://Fishing
-				case 46://Unknown Summon Atal'ai Skeleton
-				case 47:// Portal
-				case 52:	// Lightwells, etc
-				case 40://Activate Object target(probably based on focus)
-				case EFF_TARGET_TOTEM_EARTH:
-				case EFF_TARGET_TOTEM_WATER:
-				case EFF_TARGET_TOTEM_AIR:
-				case EFF_TARGET_TOTEM_FIRE:// Totem
-				case 61: // targets with the same group/raid and the same class
-				case 32:
-				case 73:
-					return true;
-			}//end switch
-		}//end for
-	return false;
-}
-
-AI_SpellTargetType RecommandAISpellTargetType(SpellEntry *sp)
-{
-	uint32 cur;
-	for(uint32 i= 0;i<3;i++)
-		for(uint32 j= 0;j<2;j++)
-		{
-			if(j== 0)
-				cur = sp->EffectImplicitTargetA[i];
-			else // if(j==1)
-				cur = sp->EffectImplicitTargetB[i];
-			switch(cur)
-			{
-				case EFF_TARGET_NONE:
-				case EFF_TARGET_GAMEOBJECT:
-				case EFF_TARGET_GAMEOBJECT_ITEM:// Gameobject/Item Target
-				case EFF_TARGET_SELF_FISHING://Fishing
-				case 47:// Portal
-				case 52:	// Lightwells, etc
-				case 40://Activate Object target(probably based on focus)
-					return TTYPE_NULL;
-
-				case EFF_TARGET_SELF:
-				case 38://Dummy Target
-				case 32:
-				case 73:
-					return TTYPE_CASTER;
-
-				case EFF_TARGET_ALL_ENEMY_IN_AREA: // All Enemies in Area of Effect (TEST)
-				case EFF_TARGET_ALL_ENEMY_IN_AREA_INSTANT: // All Enemies in Area of Effect instant (e.g. Flamestrike)
-				case EFF_TARGET_ALL_ENEMY_IN_AREA_CHANNELED:// All Enemies in Area of Effect(Blizzard/Rain of Fire/volley) channeled
-					return TTYPE_DESTINATION;
-
-				case 4: // dono related to "Wandering Plague", "Spirit Steal", "Contagion of Rot", "Retching Plague" and "Copy of Wandering Plague"
-				case EFF_TARGET_PET:
-				case EFF_TARGET_SINGLE_ENEMY:// Single Target Enemy
-				case 77:					// grep: i think this fits
-				case 8: // related to Chess Move (DND), Firecrackers, Spotlight, aedm, Spice Mortar
-				case EFF_TARGET_IN_FRONT_OF_CASTER:
-				case 31:// related to scripted effects
-				case 53:// Target Area by Players CurrentSelection()
-				case 54:// Targets in Front of the Caster
-				case EFF_TARGET_ALL_PARTY_AROUND_CASTER:
-				case EFF_TARGET_SINGLE_FRIEND:
-				case 45:// Chain,!!only for healing!! for chain lightning =6
-				case 57:// Targeted Party Member
-				case EFF_TARGET_DUEL:
-				case 27: // target is owner of pet
-				case EFF_TARGET_MINION:// Minion Target
-				case 33://Party members of totem, inside given range
-				case EFF_TARGET_SINGLE_PARTY:// Single Target Party Member
-				case EFF_TARGET_ALL_PARTY: // all Members of the targets party
-				case EFF_TARGET_TOTEM_EARTH:
-				case EFF_TARGET_TOTEM_WATER:
-				case EFF_TARGET_TOTEM_AIR:
-				case EFF_TARGET_TOTEM_FIRE:// Totem
-				case 61: // targets with the same group/raid and the same class
-					return TTYPE_SINGLETARGET;
-
-					// spells like 17278:Cannon Fire and 21117:Summon Son of Flame A
-				case 17: // A single target at a xyz location or the target is a possition xyz
-				case 18:// Land under caster.Maybe not correct
-				case 46://Unknown Summon Atal'ai Skeleton
-				case EFF_TARGET_ALL_ENEMIES_AROUND_CASTER:
-					return TTYPE_SOURCE;
-
-			}//end switch
-		}//end for
-	return TTYPE_NULL;// this means a new spell :P
-}
-*/
 
 uint8 Spell::GetErrorAtShapeshiftedCast(SpellEntry *spellInfo, uint32 form)
 {

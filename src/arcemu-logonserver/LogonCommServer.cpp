@@ -26,7 +26,7 @@ typedef struct
 }logonpacket;
 #pragma pack(pop)
 
-ARCEMU_INLINE static void swap32(uint32* p) { *p = ((*p >> 24 & 0xff)) | ((*p >> 8) & 0xff00) | ((*p << 8) & 0xff0000) | (*p << 24); }
+static void swap32( uint32* p ) { *p = ((*p >> 24 & 0xff)) | ((*p >> 8) & 0xff00) | ((*p << 8) & 0xff0000) | (*p << 24); }
 
 LogonCommServerSocket::LogonCommServerSocket(SOCKET fd) : Socket(fd, 65536, 524288)
 {
@@ -91,12 +91,8 @@ void LogonCommServerSocket::OnRead()
 				recvCrypto.Process((unsigned char*)&remaining, (unsigned char*)&remaining, 4);
 			}
 
-#ifdef USING_BIG_ENDIAN
-			opcode = swap16(opcode);
-#else
 			/* reverse byte order */
 			swap32(&remaining);
-#endif
 		}
 
 		// do we have a full packet?
@@ -267,15 +263,10 @@ void LogonCommServerSocket::SendPacket(WorldPacket * data)
 	BurstBegin();
 
 	logonpacket header;
-#ifndef USING_BIG_ENDIAN
 	header.opcode = data->GetOpcode();
 	//header.size   = ntohl((u_long)data->size());
 	header.size = (uint32)data->size();
 	swap32(&header.size);
-#else
-	header.opcode = swap16(uint16(data->GetOpcode()));
-	header.size   = data->size();
-#endif
 
 	if(use_crypto)
 		sendCrypto.Process((unsigned char*)&header, (unsigned char*)&header, 6);

@@ -79,11 +79,9 @@ void AuthSocket::HandleChallenge()
 
 	// Check the rest of the packet is complete.
 	uint8 * ReceiveBuffer = (uint8*)GetReadBuffer().GetBufferStart();
-#ifdef USING_BIG_ENDIAN
-	uint16 full_size = swap16(*(uint16*)&ReceiveBuffer[2]);
-#else
+
 	uint16 full_size = *(uint16*)&ReceiveBuffer[2];
-#endif
+
 
 	sLog.outDetail("[AuthChallenge] got header, body is 0x%02X bytes", full_size);
 
@@ -102,17 +100,10 @@ void AuthSocket::HandleChallenge()
 	//memcpy(&m_challenge, ReceiveBuffer, full_size + 4);
 	//RemoveReadBufferBytes(full_size + 4, true);
 	GetReadBuffer().Read(&m_challenge, full_size + 4);
-//#ifdef USING_BIG_ENDIAN
-//	uint16 build = swap16(m_challenge.build);
-//	printf("Build: %u\n", build);
-//#endif
 
 	// Check client build.
-#ifdef USING_BIG_ENDIAN
-	uint16 build = swap16(m_challenge.build);
-#else
+
 	uint16 build = m_challenge.build;
-#endif
 
 	// Check client build.
 	if(build > LogonServer::getSingleton().max_build)
@@ -402,11 +393,9 @@ void AuthSocket::SendProofError(uint8 Error, uint8 * M2)
 	buffer[1] = Error;
 	if(M2 == 0)
 	{
-#ifdef USING_BIG_ENDIAN
-		*(uint32*)&buffer[2] = swap32(3);
-#else
+
 		*(uint32*)&buffer[2] = 3;
-#endif
+
 		Send(buffer, 6);
 		return;
 	}

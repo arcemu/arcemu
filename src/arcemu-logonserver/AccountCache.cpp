@@ -520,11 +520,8 @@ void InformationCore::SendRealms(AuthSocket * Socket)
 	realmLock.Release();
 
 	// Re-calculate size.
-#ifdef USING_BIG_ENDIAN
-	*(uint16*)&data.contents()[1] = swap16(uint16(data.size() - 3));
-#else
+
 	*(uint16*)&data.contents()[1] = uint16(data.size() - 3);
-#endif
 
 	// Send to the socket.
 	Socket->Send((const uint8*)data.contents(), uint32(data.size()));

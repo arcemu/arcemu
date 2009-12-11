@@ -242,15 +242,11 @@ double CRandomMersenne::Random() {
 	Architecture = BIG_ENDIAN1;
 #endif
 
-#ifdef USING_BIG_ENDIAN
-	convert.i[1] =  r << 20;
-	convert.i[0] = (r >> 12) | 0x3FF00000;
-	return convert.f - 1.0;
-#else
+
 	convert.i[0] =  r << 20;
 	convert.i[1] = (r >> 12) | 0x3FF00000;
 	return convert.f - 1.0;
-#endif
+
 	// This somewhat slower method works for all architectures, including 
 	// non-IEEE floating point representation:
 	//return (double)r * (1./((double)(uint32)(-1L)+1.));

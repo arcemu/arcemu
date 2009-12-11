@@ -78,13 +78,13 @@ void WorldSession::HandleSplitOpcode(WorldPacket& recv_data)
 		{
 			//check if player has the required stacks to avoid exploiting.
 			//safe exploit check
-			if(c < i1->GetUInt32Value(ITEM_FIELD_STACK_COUNT))
+			if(c < i1->GetStackCount())
 			{
 				//check if there is room on the other item.
-				if( ((c + i2->GetUInt32Value(ITEM_FIELD_STACK_COUNT)) <= itemMaxStack2) )
+				if( ((c + i2->GetStackCount()) <= itemMaxStack2) )
 				{
-					i1->ModUnsigned32Value(ITEM_FIELD_STACK_COUNT, -count);
-					i2->ModUnsigned32Value(ITEM_FIELD_STACK_COUNT, c);
+					i1->ModStackCount(  -count);
+					i2->ModStackCount(  c);
 					i1->m_isDirty = true;
 					i2->m_isDirty = true;
 				}
@@ -106,15 +106,15 @@ void WorldSession::HandleSplitOpcode(WorldPacket& recv_data)
 	}
 	else
 	{
-		if( c < i1->GetUInt32Value(ITEM_FIELD_STACK_COUNT) )
+		if( c < i1->GetStackCount() )
 		{
-			i1->ModUnsigned32Value(ITEM_FIELD_STACK_COUNT,-count);
+			i1->ModStackCount( -count);
 
 			i2=objmgr.CreateItem(i1->GetEntry(),_player);
 			if( i2== NULL )
 				return;
 
-			i2->SetUInt32Value(ITEM_FIELD_STACK_COUNT,c);
+			i2->SetStackCount( c);
 			i1->m_isDirty = true;
 			i2->m_isDirty = true;
 
@@ -354,10 +354,10 @@ void WorldSession::HandleSwapItemOpcode(WorldPacket& recv_data)
 		uint32 dstItemMaxStack = (DstItem) ? ((DstItem->GetOwner()->ItemStackCheat) ? 0x7fffffff : DstItem->GetProto()->MaxCount) : 0;
 		if(DstItem && SrcItem && SrcItem->GetEntry()==DstItem->GetEntry() && srcItemMaxStack>1 && SrcItem->wrapped_item_id == 0 && DstItem->wrapped_item_id == 0)
 		{
-			uint32 total=SrcItem->GetUInt32Value(ITEM_FIELD_STACK_COUNT)+DstItem->GetUInt32Value(ITEM_FIELD_STACK_COUNT);
+			uint32 total=SrcItem->GetStackCount()+DstItem->GetStackCount();
 			if( total <= dstItemMaxStack )
 			{
-				DstItem->ModUnsigned32Value(ITEM_FIELD_STACK_COUNT,SrcItem->GetUInt32Value(ITEM_FIELD_STACK_COUNT));
+				DstItem->ModStackCount( SrcItem->GetStackCount());
 				DstItem->m_isDirty = true;
 				bool result = _player->GetItemInterface()->SafeFullRemoveItemFromSlot(SrcInvSlot,SrcSlot);
 				if(!result)
@@ -368,15 +368,15 @@ void WorldSession::HandleSwapItemOpcode(WorldPacket& recv_data)
 			}
 			else
 			{
-				if( DstItem->GetUInt32Value(ITEM_FIELD_STACK_COUNT) == dstItemMaxStack )
+				if( DstItem->GetStackCount() == dstItemMaxStack )
 				{
 
 				}
 				else
 				{
-					int32 delta = dstItemMaxStack - DstItem->GetUInt32Value(ITEM_FIELD_STACK_COUNT);
-					DstItem->SetUInt32Value(ITEM_FIELD_STACK_COUNT,dstItemMaxStack);
-					SrcItem->ModUnsigned32Value(ITEM_FIELD_STACK_COUNT,-delta);
+					int32 delta = dstItemMaxStack - DstItem->GetStackCount();
+					DstItem->SetStackCount( dstItemMaxStack);
+					SrcItem->ModStackCount( -delta);
 					SrcItem->m_isDirty = true;
 					DstItem->m_isDirty = true;
 					return;
@@ -1059,7 +1059,7 @@ void WorldSession::HandleBuyBackOpcode( WorldPacket & recv_data )
 	if (it)
 	{
 		// Find free slot and break if inv full
-		uint32 amount = it->GetUInt32Value(ITEM_FIELD_STACK_COUNT);
+		uint32 amount = it->GetStackCount();
 		uint32 itemid = it->GetEntry();
 	  
 		add = _player->GetItemInterface()->FindItemLessMax(itemid,amount, false);
@@ -1103,7 +1103,7 @@ void WorldSession::HandleBuyBackOpcode( WorldPacket & recv_data )
 		}
 		else
 		{
-			add->SetCount(add->GetUInt32Value(ITEM_FIELD_STACK_COUNT) + amount);
+			add->SetStackCount( add->GetStackCount() + amount);
 			add->m_isDirty = true;
 
 			// delete the item
@@ -1181,7 +1181,7 @@ void WorldSession::HandleSellItemOpcode( WorldPacket & recv_data )
 		return;
 	}
 	
-	uint32 stackcount = item->GetUInt32Value(ITEM_FIELD_STACK_COUNT);
+	uint32 stackcount = item->GetStackCount();
 	uint32 quantity = 0;
 
 	if (amount != 0)
@@ -1211,7 +1211,7 @@ void WorldSession::HandleSellItemOpcode( WorldPacket & recv_data )
  
 	if(quantity < stackcount)
 	{
-		item->SetCount(stackcount - quantity);
+		item->SetStackCount( stackcount - quantity);
 		item->m_isDirty = true;
 	}
 	else
@@ -1370,14 +1370,14 @@ void WorldSession::HandleBuyItemInSlotOpcode( WorldPacket & recv_data ) // drag 
 			return;
 		}
 
-		if( (oldItem->GetUInt32Value(ITEM_FIELD_STACK_COUNT) + count_per_stack) > itemMaxStack )
+		if( (oldItem->GetStackCount() + count_per_stack) > itemMaxStack )
 		{
 //			sLog.outDebug( "SUPADBG can't carry #2" );
 			_player->GetItemInterface()->BuildInventoryChangeError(0, 0, INV_ERR_CANT_CARRY_MORE_OF_THIS);
 			return;
 		}
 
-		oldItem->ModUnsigned32Value(ITEM_FIELD_STACK_COUNT, count_per_stack);
+		oldItem->ModStackCount(  count_per_stack);
 		oldItem->m_isDirty = true;
 		pItem=oldItem;
 	}
@@ -1396,7 +1396,7 @@ void WorldSession::HandleBuyItemInSlotOpcode( WorldPacket & recv_data ) // drag 
 		pItem = objmgr.CreateItem(it->ItemId, _player);
 		if(pItem)
 		{
-			pItem->SetUInt32Value(ITEM_FIELD_STACK_COUNT, count_per_stack);
+			pItem->SetStackCount(  count_per_stack);
 			pItem->m_isDirty = true;
 //			sLog.outDebug( "SUPADBG bagslot=%u, slot=%u" , bagslot, slot );
 			if(!_player->GetItemInterface()->SafeAddItem(pItem, bagslot, slot))
@@ -1409,7 +1409,7 @@ void WorldSession::HandleBuyItemInSlotOpcode( WorldPacket & recv_data ) // drag 
 			return;
 	}
 
-    _player->SendItemPushResult( false, true, false, (pItem==oldItem) ? false : true, bagslot, slot, amount*ci.amount, pItem->GetEntry(), pItem->GetItemRandomSuffixFactor(), pItem->GetItemRandomPropertyId(), pItem->GetCount() );
+    _player->SendItemPushResult( false, true, false, (pItem==oldItem) ? false : true, bagslot, slot, amount*ci.amount, pItem->GetEntry(), pItem->GetItemRandomSuffixFactor(), pItem->GetItemRandomPropertyId(), pItem->GetStackCount()  );
 
 	WorldPacket data(SMSG_BUY_ITEM, 22);
 	data << uint64(srcguid);
@@ -1527,7 +1527,7 @@ void WorldSession::HandleBuyItemOpcode( WorldPacket & recv_data ) // right-click
 		}
 
 		itm->m_isDirty=true;
-		itm->SetUInt32Value(ITEM_FIELD_STACK_COUNT, amount*item.amount);
+		itm->SetStackCount(  amount*item.amount);
         
 		if(slotresult.ContainerSlot == ITEM_NO_SLOT_AVAILABLE)
 		{
@@ -1540,7 +1540,7 @@ void WorldSession::HandleBuyItemOpcode( WorldPacket & recv_data ) // right-click
                 if( itm->IsEligibleForRefund() && ex != NULL ){
                     itm->GetOwner()->GetItemInterface()->AddRefundable( itm->GetGUID(), ex->costid );
                 }
-                _player->SendItemPushResult( false, true, false, true, static_cast<uint8>(INVENTORY_SLOT_NOT_SET), slotresult.Result, amount*item.amount, itm->GetEntry(), itm->GetItemRandomSuffixFactor(), itm->GetItemRandomPropertyId(), itm->GetCount() );
+                _player->SendItemPushResult( false, true, false, true, static_cast<uint8>(INVENTORY_SLOT_NOT_SET), slotresult.Result, amount*item.amount, itm->GetEntry(), itm->GetItemRandomSuffixFactor(), itm->GetItemRandomPropertyId(), itm->GetStackCount()  );
             }
 		}
 		else
@@ -1553,16 +1553,16 @@ void WorldSession::HandleBuyItemOpcode( WorldPacket & recv_data ) // right-click
                     if( itm->IsEligibleForRefund() && ex != NULL ){
                         itm->GetOwner()->GetItemInterface()->AddRefundable( itm->GetGUID(), ex->costid );
                     }
-                    _player->SendItemPushResult( false, true, false, true, slotresult.ContainerSlot, slotresult.Result, 1, itm->GetEntry(), itm->GetItemRandomSuffixFactor(), itm->GetItemRandomPropertyId(), itm->GetCount() );
+                    _player->SendItemPushResult( false, true, false, true, slotresult.ContainerSlot, slotresult.Result, 1, itm->GetEntry(), itm->GetItemRandomSuffixFactor(), itm->GetItemRandomPropertyId(), itm->GetStackCount()  );
                 }
 			}
 		}
 	}
 	else
 	{
-		add->ModUnsigned32Value(ITEM_FIELD_STACK_COUNT, amount*item.amount);
+		add->ModStackCount(  amount*item.amount);
 		add->m_isDirty = true;
-        _player->SendItemPushResult( false, true, false, false, (uint8)_player->GetItemInterface()->GetBagSlotByGuid(add->GetGUID()), 1, amount*item.amount , add->GetEntry(), add->GetItemRandomSuffixFactor(), add->GetItemRandomPropertyId(), add->GetCount() );
+        _player->SendItemPushResult( false, true, false, false, (uint8)_player->GetItemInterface()->GetBagSlotByGuid(add->GetGUID()), 1, amount*item.amount , add->GetEntry(), add->GetItemRandomSuffixFactor(), add->GetItemRandomPropertyId(), add->GetStackCount()  );
 	}
 
 
@@ -2201,7 +2201,7 @@ void WorldSession::HandleWrapItemOpcode( WorldPacket& recv_data )
 		return;
 	}
 
-	if( dst->GetUInt32Value( ITEM_FIELD_STACK_COUNT ) > 1 )
+	if( dst->GetStackCount() > 1 )
 	{
 		_player->GetItemInterface()->BuildInventoryChangeError( src, dst, INV_ERR_STACKABLE_CANT_BE_WRAPPED );
 		return;
@@ -2286,7 +2286,7 @@ void WorldSession::HandleWrapItemOpcode( WorldPacket& recv_data )
 
 	dst->SetProto( src->GetProto() );
 
-	if( src->GetUInt32Value( ITEM_FIELD_STACK_COUNT ) <= 1 )
+	if( src->GetStackCount() <= 1 )
 	{
 		// destroy the source item
 		_player->GetItemInterface()->SafeFullRemoveItemByGuid( src->GetGUID() );
@@ -2294,7 +2294,7 @@ void WorldSession::HandleWrapItemOpcode( WorldPacket& recv_data )
 	else
 	{
 		// reduce stack count by one
-		src->ModUnsigned32Value( ITEM_FIELD_STACK_COUNT, -1 );
+		src->ModStackCount(  -1 );
 		src->m_isDirty = true;
 	}
 
@@ -2303,7 +2303,7 @@ void WorldSession::HandleWrapItemOpcode( WorldPacket& recv_data )
 	dst->SetEntry(  itemid );
 
 	// set the giftwrapper fields
-	dst->SetUInt32Value( ITEM_FIELD_GIFTCREATOR, _player->GetLowGUID() );
+    dst->SetGiftCreatorGUID( _player->GetGUID() );
 	dst->SetUInt32Value( ITEM_FIELD_DURABILITY, 0 );
 	dst->SetUInt32Value( ITEM_FIELD_MAXDURABILITY, 0 );
 	dst->SetUInt32Value( ITEM_FIELD_FLAGS, 0x8008 );

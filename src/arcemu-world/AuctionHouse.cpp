@@ -280,7 +280,7 @@ void Auction::AddToPacket(WorldPacket & data)
 	data << uint32(0);				  // Unknown
 	data << uint32(0);				  // Unknown
 	data << uint32(0);				  // Unknown
-	data << pItem->GetUInt32Value(ITEM_FIELD_STACK_COUNT); // Amount
+	data << pItem->GetStackCount(); // Amount
 	data << uint32(0);				  // Unknown
 	data << uint32(0);				  // Unknown
 	data << uint64(Owner);			  // Owner guid
@@ -315,10 +315,8 @@ void AuctionHouse::SendBidListPacket(Player * plr, WorldPacket * packet)
 			++count;
 		}			
 	}
-#ifdef USING_BIG_ENDIAN
-	swap32((uint32*)&data.contents()[0]);
-#endif
-	data << count;
+
+    data << count;
 	auctionLock.ReleaseReadLock();
 	plr->GetSession()->SendPacket(&data);
 }
@@ -365,9 +363,6 @@ void AuctionHouse::SendOwnerListPacket(Player * plr, WorldPacket * packet)
 		}			
 	}
 	data << count;
-#ifdef USING_BIG_ENDIAN
-	swap32((uint32*)&data.contents()[0]);
-#endif
 	auctionLock.ReleaseReadLock();
 	plr->GetSession()->SendPacket(&data);
 }
@@ -595,7 +590,7 @@ void WorldSession::HandleAuctionSellItem( WorldPacket & recv_data )
 
 	AuctionHouse * ah = pCreature->auctionHouse;
 
-	uint32 item_worth = pItem->GetProto()->SellPrice * pItem->GetUInt32Value(ITEM_FIELD_STACK_COUNT);
+	uint32 item_worth = pItem->GetProto()->SellPrice * pItem->GetStackCount();
 	uint32 item_deposit = (uint32)(item_worth * ah->deposit_percent) * (uint32)(etime / 240.0f); // deposit is per 4 hours
 
 	if( !_player->HasGold(item_deposit) ) // player cannot afford deposit
@@ -766,9 +761,6 @@ void AuctionHouse::SendAuctionList(Player * plr, WorldPacket * packet)
 
 	// total count
 	data << uint32(1 + counted_items);
-#ifdef USING_BIG_ENDIAN
-	swap32((uint32*)&data.contents()[0]);
-#endif
 
 	auctionLock.ReleaseReadLock();
 	plr->GetSession()->SendPacket(&data);

@@ -825,7 +825,7 @@ void Object::_BuildValuesUpdate(ByteBuffer * data, UpdateMask *updateMask, Playe
 		reset = true;
 	}
 
-	ASSERT( updateMask && updateMask->GetCount() == m_valuesCount );
+	ASSERT( updateMask && updateMask->GetCount()  == m_valuesCount );
 	uint32 bc;
 	uint32 values_count;
 	if( m_valuesCount > ( 2 * 0x20 ) )//if number of blocks > 2->  unit and player+item container
@@ -973,11 +973,7 @@ void Object::_SetUpdateBits(UpdateMask *updateMask, Player *target) const
 
 void Object::_SetCreateBits(UpdateMask *updateMask, Player *target) const
 {
-	/*for( uint16 index = 0; index < m_valuesCount; index++ )
-	{
-		if(GetUInt32Value(index) != 0)
-			updateMask->SetBit(index);
-	}*/
+
 	for(uint32 i = 0; i < m_valuesCount; ++i)
 		if(m_uint32Values[i] != 0)
 			updateMask->SetBit(i);
@@ -1167,29 +1163,7 @@ void Object::SetUInt32Value( const uint32 index, const uint32 value )
 		}
 	}
 }
-/*
-//must be in %
-void Object::ModPUInt32Value(const uint32 index, const int32 value, bool apply )
-{
-	ASSERT( index < m_valuesCount );
-	int32 basevalue = (int32)m_uint32Values[ index ];
-	if(apply)
-		m_uint32Values[ index ] += ((basevalue*value)/100);
-	else
-		m_uint32Values[ index ] = (basevalue*100)/(100+value);
 
-	if(IsInWorld())
-	{
-		m_updateMask.SetBit( index );
-
-		if(!m_objectUpdated )
-		{
-			m_mapMgr->ObjectUpdated(this);
-			m_objectUpdated = true;
-		}
-	}
-}
-*/
 uint32 Object::GetModPUInt32Value(const uint32 index, const int32 value)
 {
 	ASSERT( index < m_valuesCount );
@@ -1340,16 +1314,13 @@ void Object::ModFloatValueByPCT( const uint32 index, int32 byPct )
 void Object::SetUInt64Value( const uint32 index, const uint64 value )
 {
 	assert( index + 1 < m_valuesCount );
-#ifndef USING_BIG_ENDIAN
-	if(m_uint32Values[index] == GUID_LOPART(value) && m_uint32Values[index+1] == GUID_HIPART(value))
-		return;
 
-	m_uint32Values[ index ] = *((uint32*)&value);
-	m_uint32Values[ index + 1 ] = *(((uint32*)&value) + 1);
-#else
-	m_uint32Values[index] = value & 0xffffffff;
-	m_uint32Values[index+1] = (value >> 32) & 0xffffffff;
-#endif
+    uint64 *p = reinterpret_cast< uint64* >( &m_uint32Values[ index ] );
+
+    if( *p == value )
+        return;
+    else
+        *p = value;
 
 	if(IsInWorld())
 	{
@@ -1358,7 +1329,7 @@ void Object::SetUInt64Value( const uint32 index, const uint64 value )
 
 		if(!m_objectUpdated)
 		{
-			m_mapMgr->ObjectUpdated(this);
+			m_mapMgr->ObjectUpdated( this );
 			m_objectUpdated = true;
 		}
 	}
@@ -3424,11 +3395,9 @@ void Object::SetByte(uint32 index, uint32 index1,uint8 value)
 {
 	ASSERT( index < m_valuesCount );
 	// save updating when val isn't changing.
-	#ifndef USING_BIG_ENDIAN
-	uint8 * v =&((uint8*)m_uint32Values)[index*4+index1];
-	#else
-	uint8 * v = &((uint8*)m_uint32Values)[index*4+(3-index1)];
-	#endif
+
+    uint8 * v =&((uint8*)m_uint32Values)[index*4+index1];
+
 	if(*v == value)
 		return;
 

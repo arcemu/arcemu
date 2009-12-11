@@ -1565,10 +1565,6 @@ public:
 		fread(&string_length, 4, 1, f);
 		pos = ftell(f);
 
-#ifdef USING_BIG_ENDIAN
-		swap32(&rows); swap32(&cols); swap32(&useless_shit); swap32(&string_length);
-#endif
-
 		if( load_strings )
 		{
 			fseek( f, 20 + ( rows * cols * 4 ), SEEK_SET );
@@ -1643,9 +1639,7 @@ public:
 				++t;
 				continue;		// skip!
 			}
-#ifdef USING_BIG_ENDIAN
-			swap32(&val);
-#endif
+
 			if(( *t == 's' ) || ( *t=='l' ))
 			{
 				char ** new_ptr = (char**)dest_ptr;
@@ -1657,9 +1651,7 @@ public:
 					val == 0 && count > 0 && *(t+1) == 'x'; t++, count--)
 				{
 					fread(&val, 4, 1, f);
-#ifdef USING_BIG_ENDIAN
-					swap32(&val);
-#endif
+
 				}
 				if( val < m_stringlength )
 					ptr = m_stringData + val;

@@ -936,7 +936,7 @@ bool EyeOfTheStorm::GivePoints(uint32 team, uint32 points)
 					Item *item = objmgr.CreateItem( 29024 , p );
 					if( item != NULL )
 					{
-						item->SetUInt32Value( ITEM_FIELD_STACK_COUNT, 3 );
+						item->SetStackCount(  3 );
 						item->SoulBind();
 						if( !p->GetItemInterface()->AddItemToFreeSlot( item ) )
 						{
@@ -949,7 +949,7 @@ bool EyeOfTheStorm::GivePoints(uint32 team, uint32 points)
 							HonorHandler::AddHonorPointsToPlayer( p, lostHonorToAdd );
 							SlotResult *lr = p->GetItemInterface()->LastSearchResult();
 							
-                            p->SendItemPushResult( false, true, false, true, lr->ContainerSlot, lr->Slot, 3, item->GetEntry(), item->GetItemRandomSuffixFactor(), item->GetItemRandomPropertyId(), item->GetCount() );
+                            p->SendItemPushResult( false, true, false, true, lr->ContainerSlot, lr->Slot, 3, item->GetEntry(), item->GetItemRandomSuffixFactor(), item->GetItemRandomPropertyId(), item->GetStackCount()  );
 						}
 					}
 					if(i && p->GetQuestLogForEntry(11341))
@@ -962,7 +962,7 @@ bool EyeOfTheStorm::GivePoints(uint32 team, uint32 points)
 					Item *item = objmgr.CreateItem( 29024 , p );
 					if( item != NULL )
 					{
-						item->SetUInt32Value( ITEM_FIELD_STACK_COUNT, 1 );
+						item->SetStackCount(  1 );
 						item->SoulBind();
 						if( !p->GetItemInterface()->AddItemToFreeSlot( item ) )
 						{
@@ -973,7 +973,7 @@ bool EyeOfTheStorm::GivePoints(uint32 team, uint32 points)
 						{
 							SlotResult *lr = p->GetItemInterface()->LastSearchResult();
 							
-                            p->SendItemPushResult( false, true, false, true, lr->ContainerSlot, lr->Slot, 1, item->GetEntry(), item->GetItemRandomSuffixFactor(), item->GetItemRandomPropertyId(), item->GetCount() );
+                            p->SendItemPushResult( false, true, false, true, lr->ContainerSlot, lr->Slot, 1, item->GetEntry(), item->GetItemRandomSuffixFactor(), item->GetItemRandomPropertyId(), item->GetStackCount()  );
 						}
 					}
 				}

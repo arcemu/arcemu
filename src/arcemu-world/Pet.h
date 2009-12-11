@@ -220,7 +220,7 @@ public:
 	ARCEMU_INLINE PetSpellMap* GetSpells() { return &mSpells; }
 	ARCEMU_INLINE bool IsSummon() { return Summon; }
 
-	void __fastcall SetAutoCastSpell(AI_Spell * sp);
+	void  SetAutoCastSpell(AI_Spell * sp);
 	void Rename(string NewName);
 	ARCEMU_INLINE string& GetName() { return m_name; }
 	uint32 CanLearnSpell( SpellEntry* sp );

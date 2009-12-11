@@ -143,18 +143,8 @@ public:
 	virtual void RemoveFromWorld(bool free_guid);
 
 	//! Guid always comes first
-	const uint64& GetGUID() const{ 
-        uint64 *guid = reinterpret_cast< uint64* >( m_uint32Values );
-
-        return *guid; 
-    }
-
-    void SetGUID( uint64 GUID ){ 
-        uint64 *guid = reinterpret_cast< uint64* >( m_uint32Values );
-
-        *guid = GUID;        
-    }
-
+	const uint64& GetGUID() const{ return GetUInt64Value( OBJECT_FIELD_GUID ); }
+    void SetGUID( uint64 GUID ){ SetUInt64Value( OBJECT_FIELD_GUID, GUID );  }
     const uint32 GetLowGUID() const { return m_uint32Values[ LOWGUID ]; }
     uint32 GetHighGUID(){ return m_uint32Values[ HIGHGUID ]; }
     void SetLowGUID( uint32 val ){ m_uint32Values[ LOWGUID ] = val; }
@@ -180,10 +170,10 @@ public:
 	virtual bool IsGameObject() { return m_objectTypeId == TYPEID_GAMEOBJECT; }
 
 	//! This includes any nested objects we have, inventory for example.
-	virtual uint32 __fastcall BuildCreateUpdateBlockForPlayer( ByteBuffer *data, Player *target );
-	uint32 __fastcall BuildValuesUpdateBlockForPlayer( ByteBuffer *buf, Player *target );
-	uint32 __fastcall BuildValuesUpdateBlockForPlayer( ByteBuffer * buf, UpdateMask * mask );
-	uint32 __fastcall BuildOutOfRangeUpdateBlock( ByteBuffer *buf );
+	virtual uint32  BuildCreateUpdateBlockForPlayer( ByteBuffer *data, Player *target );
+	uint32  BuildValuesUpdateBlockForPlayer( ByteBuffer *buf, Player *target );
+	uint32  BuildValuesUpdateBlockForPlayer( ByteBuffer * buf, UpdateMask * mask );
+	uint32  BuildOutOfRangeUpdateBlock( ByteBuffer *buf );
 
 	WorldPacket* BuildFieldUpdatePacket(uint32 index,uint32 value);
 	void BuildFieldUpdatePacket(Player* Target, uint32 Index, uint32 Value);
@@ -252,7 +242,10 @@ public:
     const uint64& GetUInt64Value( uint32 index ) const
 	{
 		ASSERT( index + uint32(1) < m_valuesCount );
-		return *((uint64*)&(m_uint32Values[ index ]));
+
+        uint64 *p = reinterpret_cast< uint64* >( &m_uint32Values[ index ] );
+
+		return *p;
 	}
 
 	//! Get float property
@@ -262,7 +255,7 @@ public:
 		return m_floatValues[ index ];
 	}
 
-	void __fastcall ModFloatValue(const uint32 index, const float value );
+	void  ModFloatValue(const uint32 index, const float value );
 	void ModFloatValueByPCT(const uint32 index, int32 byPct );
 	void ModSignedInt32Value(uint32 index, int32 value);
 	void ModUnsigned32Value(uint32 index, int32 mod);
@@ -278,8 +271,8 @@ public:
 		return ((uint8*)m_uint32Values)[i*4+i1];
 	}
 
-	void __fastcall SetByteFlag( uint16 index, uint8 offset, uint8 newFlag );
-    void __fastcall RemoveByteFlag( uint16 index, uint8 offset, uint8 newFlag );
+	void  SetByteFlag( uint16 index, uint8 offset, uint8 newFlag );
+    void  RemoveByteFlag( uint16 index, uint8 offset, uint8 newFlag );
 
 	bool HasByteFlag(uint32 index, uint32 index1, uint8 flag)
 	{
@@ -293,17 +286,17 @@ public:
 	}
 
 	void EventSetUInt32Value(uint32 index, uint32 value);
-	void __fastcall SetUInt32Value( const uint32 index, const uint32 value );
+	void  SetUInt32Value( const uint32 index, const uint32 value );
 
 	//! Set uint64 property
-	void __fastcall SetUInt64Value( const uint32 index, const uint64 value );
+	void  SetUInt64Value( const uint32 index, const uint64 value );
 
 	//! Set float property
-	void __fastcall SetFloatValue( const uint32 index, const float value );
+	void  SetFloatValue( const uint32 index, const float value );
 
-	void __fastcall SetFlag( const uint32 index, uint32 newFlag );
+	void  SetFlag( const uint32 index, uint32 newFlag );
 
-	void __fastcall RemoveFlag( const uint32 index, uint32 oldFlag );
+	void  RemoveFlag( const uint32 index, uint32 oldFlag );
 
 	bool HasFlag( const uint32 index, uint32 flag ) const
 	{

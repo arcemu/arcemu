@@ -1119,11 +1119,8 @@ void InstanceMgr::BuildRaidSavedInstancesForPlayer(Player * plr)
 	}
 	m_mapLock.Release();
 
-#ifdef USING_BIG_ENDIAN
-	*(uint32*)&data.contents()[0] = swap32(counter);
-#else
+
 	*(uint32*)&data.contents()[0] = counter;
-#endif
 
 	plr->GetSession()->SendPacket(&data);
 }

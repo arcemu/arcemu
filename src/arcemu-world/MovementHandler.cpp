@@ -440,11 +440,8 @@ void WorldSession::HandleMovementOpcodes( WorldPacket & recv_data )
 
             Player *p = static_cast< Player* >( (*itr) );
 
-#ifdef USING_BIG_ENDIAN
-			*(uint32*)&movement_packet[pos+6] = swap32(move_time + p->GetSession()->m_moveDelayTime);
-#else
 			*(uint32*)&movement_packet[pos+6] = uint32(move_time + p->GetSession()->m_moveDelayTime);
-#endif
+
 #if defined(ENABLE_COMPRESSED_MOVEMENT) && defined(ENABLE_COMPRESSED_MOVEMENT_FOR_PLAYERS)
 			if( _player->GetPositionNC().Distance2DSq( p->GetPosition()) >= World::m_movementCompressThreshold )
 				p->AppendMovementData( recv_data.GetOpcode(), uint16(recv_data.size() + pos), movement_packet );
@@ -576,7 +573,7 @@ void WorldSession::HandleMovementOpcodes( WorldPacket & recv_data )
 				if(_player->IsMounted())
 					_player->RemoveAura(_player->m_MountSpellId);
 
-				_player->m_CurrentTransporter = objmgr.GetTransporter(GUID_LOPART(movement_info.transGuid));
+				_player->m_CurrentTransporter = objmgr.GetTransporter( uint32( GUID_LOPART(movement_info.transGuid ) ));
 				if(_player->m_CurrentTransporter)
 					_player->m_CurrentTransporter->AddPlayer(_player);
 

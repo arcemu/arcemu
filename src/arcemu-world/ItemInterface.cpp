@@ -269,7 +269,7 @@ AddItemResult ItemInterface::m_AddItem(Item *item, int8 ContainerSlot, int16 slo
 			if(!GetInventoryItem(slot)) //slot is free, add item.
 			{
 				item->SetOwner( m_pOwner );
-				item->SetUInt64Value(ITEM_FIELD_CONTAINED, m_pOwner->GetGUID());
+				item->SetContainerGUID( m_pOwner->GetGUID() );
 				m_pItems[(int)slot] = item;
 
 				if(item->GetProto()->Bonding == ITEM_BIND_ON_PICKUP)
@@ -788,7 +788,7 @@ Item* ItemInterface::FindItemLessMax(uint32 itemid, uint32 cnt, bool IncBank)
 			if (item->GetProto())
 			{
 				uint32 itemMaxStack = (item->GetOwner()->ItemStackCheat) ? 0x7fffffff : item->GetProto()->MaxCount;
-				if((item->GetEntry() == itemid && item->wrapped_item_id== 0) && (itemMaxStack >= (item->GetUInt32Value(ITEM_FIELD_STACK_COUNT) + cnt)))
+				if((item->GetEntry() == itemid && item->wrapped_item_id== 0) && (itemMaxStack >= (item->GetStackCount() + cnt)))
 				{
 					return item; 
 				}
@@ -811,7 +811,7 @@ Item* ItemInterface::FindItemLessMax(uint32 itemid, uint32 cnt, bool IncBank)
 					if (item2)
 					{
 						uint32 itemMaxStack = (item2->GetOwner()->ItemStackCheat) ? 0x7fffffff : item2->GetProto()->MaxCount;
-						if( (item2->GetProto()->ItemId == itemid && item2->wrapped_item_id== 0) && (itemMaxStack >= (item2->GetUInt32Value(ITEM_FIELD_STACK_COUNT) + cnt)) )
+						if( (item2->GetProto()->ItemId == itemid && item2->wrapped_item_id== 0) && (itemMaxStack >= (item2->GetStackCount() + cnt)) )
 						{
 							return item2;
 						}
@@ -829,7 +829,7 @@ Item* ItemInterface::FindItemLessMax(uint32 itemid, uint32 cnt, bool IncBank)
 			if (item->GetProto())
 			{
 				uint32 itemMaxStack = (item->GetOwner()->ItemStackCheat) ? 0x7fffffff : item->GetProto()->MaxCount;
-				if((item->GetEntry() == itemid && item->wrapped_item_id== 0) && (itemMaxStack >= (item->GetUInt32Value(ITEM_FIELD_STACK_COUNT) + cnt)))
+				if((item->GetEntry() == itemid && item->wrapped_item_id== 0) && (itemMaxStack >= (item->GetStackCount() + cnt)))
 				{
 					return item; 
 				}
@@ -849,7 +849,7 @@ Item* ItemInterface::FindItemLessMax(uint32 itemid, uint32 cnt, bool IncBank)
 			if (item)
 			{
 				uint32 itemMaxStack = (item->GetOwner()->ItemStackCheat) ? 0x7fffffff : item->GetProto()->MaxCount;
-				if((item->GetEntry() == itemid && item->wrapped_item_id== 0) && (itemMaxStack >= (item->GetUInt32Value(ITEM_FIELD_STACK_COUNT) + cnt)))
+				if((item->GetEntry() == itemid && item->wrapped_item_id== 0) && (itemMaxStack >= (item->GetStackCount() + cnt)))
 				{
 					return item; 
 				}
@@ -868,7 +868,7 @@ Item* ItemInterface::FindItemLessMax(uint32 itemid, uint32 cnt, bool IncBank)
 						if (item2)
 						{
 							uint32 itemMaxStack = (item2->GetOwner()->ItemStackCheat) ? 0x7fffffff : item2->GetProto()->MaxCount;
-							if( (item2->GetProto()->ItemId == itemid && item2->wrapped_item_id== 0) && (itemMaxStack >= (item2->GetUInt32Value(ITEM_FIELD_STACK_COUNT) + cnt)) )
+							if( (item2->GetProto()->ItemId == itemid && item2->wrapped_item_id== 0) && (itemMaxStack >= (item2->GetStackCount() + cnt)) )
 							{
 								return item2;
 							}
@@ -897,7 +897,7 @@ uint32 ItemInterface::GetItemCount(uint32 itemid, bool IncBank)
 		{
 			if(item->GetEntry() == itemid && item->wrapped_item_id== 0)
 			{
-				cnt += item->GetUInt32Value(ITEM_FIELD_STACK_COUNT) ? item->GetUInt32Value(ITEM_FIELD_STACK_COUNT) : 1; 
+				cnt += item->GetStackCount() ? item->GetStackCount() : 1; 
 			}
 		}
 	}
@@ -914,7 +914,7 @@ uint32 ItemInterface::GetItemCount(uint32 itemid, bool IncBank)
 					{
 						if (item2->GetEntry() == itemid && item->wrapped_item_id== 0)
 						{
-							cnt += item2->GetUInt32Value(ITEM_FIELD_STACK_COUNT) ? item2->GetUInt32Value(ITEM_FIELD_STACK_COUNT) : 1; 
+							cnt += item2->GetStackCount() ? item2->GetStackCount() : 1; 
 						}
 					}
 				}
@@ -930,7 +930,7 @@ uint32 ItemInterface::GetItemCount(uint32 itemid, bool IncBank)
 		{
 			if(item->GetProto()->ItemId == itemid && item->wrapped_item_id== 0)
 			{
-				cnt += item->GetUInt32Value(ITEM_FIELD_STACK_COUNT) ? item->GetUInt32Value(ITEM_FIELD_STACK_COUNT) : 1;
+				cnt += item->GetStackCount() ? item->GetStackCount() : 1;
 			}
 		}
 	}
@@ -943,7 +943,7 @@ uint32 ItemInterface::GetItemCount(uint32 itemid, bool IncBank)
 		{
 			if(item->GetProto()->ItemId == itemid && item->wrapped_item_id== 0)
 			{
-				cnt += item->GetUInt32Value(ITEM_FIELD_STACK_COUNT) ? item->GetUInt32Value(ITEM_FIELD_STACK_COUNT) : 1;
+				cnt += item->GetStackCount() ? item->GetStackCount() : 1;
 			}
 		}
 	}
@@ -957,7 +957,7 @@ uint32 ItemInterface::GetItemCount(uint32 itemid, bool IncBank)
 			{
 				if(item->GetProto()->ItemId == itemid && item->wrapped_item_id== 0)
 				{
-					cnt += item->GetUInt32Value(ITEM_FIELD_STACK_COUNT) ? item->GetUInt32Value(ITEM_FIELD_STACK_COUNT) : 1;
+					cnt += item->GetStackCount() ? item->GetStackCount() : 1;
 				}
 			}
 		}
@@ -976,7 +976,7 @@ uint32 ItemInterface::GetItemCount(uint32 itemid, bool IncBank)
 						{
 							if(item2->GetProto()->ItemId == itemid && item->wrapped_item_id== 0)
 							{
-								cnt += item2->GetUInt32Value(ITEM_FIELD_STACK_COUNT) ? item2->GetUInt32Value(ITEM_FIELD_STACK_COUNT) : 1;
+								cnt += item2->GetStackCount() ? item2->GetStackCount() : 1;
 							}
 						}
 					}
@@ -1013,13 +1013,13 @@ uint32 ItemInterface::RemoveItemAmt(uint32 id, uint32 amt)
 					continue;
 				}
 
-				if (item->GetUInt32Value(ITEM_FIELD_STACK_COUNT) > amt)
+				if (item->GetStackCount() > amt)
 				{
-					item->SetCount(item->GetUInt32Value(ITEM_FIELD_STACK_COUNT) - amt);
+					item->SetStackCount( item->GetStackCount() - amt);
 					item->m_isDirty = true;
 					return amt;
 				}
-				else if (item->GetUInt32Value(ITEM_FIELD_STACK_COUNT)== amt)
+				else if (item->GetStackCount()== amt)
 				{
 					bool result = SafeFullRemoveItemFromSlot(INVENTORY_SLOT_NOT_SET, static_cast<int16>( i ));
 					if(result)
@@ -1033,7 +1033,7 @@ uint32 ItemInterface::RemoveItemAmt(uint32 id, uint32 amt)
 				}
 				else
 				{
-					amt -= item->GetUInt32Value(ITEM_FIELD_STACK_COUNT);
+					amt -= item->GetStackCount();
 					SafeFullRemoveItemFromSlot(INVENTORY_SLOT_NOT_SET, static_cast<int16>( i ));
 				}
 			}
@@ -1052,13 +1052,13 @@ uint32 ItemInterface::RemoveItemAmt(uint32 id, uint32 amt)
 				{
 					if (item2->GetProto()->ItemId == id && item->wrapped_item_id== 0)
 					{
-						if (item2->GetUInt32Value(ITEM_FIELD_STACK_COUNT) > amt)
+						if (item2->GetStackCount() > amt)
 						{
-							item2->SetCount(item2->GetUInt32Value(ITEM_FIELD_STACK_COUNT) - amt);
+							item2->SetStackCount( item2->GetStackCount() - amt);
 							item2->m_isDirty = true;
 							return amt;
 						}
-						else if (item2->GetUInt32Value(ITEM_FIELD_STACK_COUNT)== amt)
+						else if (item2->GetStackCount()== amt)
 						{
 							bool result = SafeFullRemoveItemFromSlot(static_cast<int8>( i ), static_cast<int16>( j ));
 							if(result)
@@ -1072,7 +1072,7 @@ uint32 ItemInterface::RemoveItemAmt(uint32 id, uint32 amt)
 						}
 						else
 						{
-							amt -= item2->GetUInt32Value(ITEM_FIELD_STACK_COUNT);
+							amt -= item2->GetStackCount();
 							SafeFullRemoveItemFromSlot(static_cast<int8>( i ), static_cast<int16>( j ));
 					  
 						}
@@ -1089,13 +1089,13 @@ uint32 ItemInterface::RemoveItemAmt(uint32 id, uint32 amt)
 		{
 			if(item->GetProto()->ItemId == id && item->wrapped_item_id== 0)
 			{
-				if (item->GetUInt32Value(ITEM_FIELD_STACK_COUNT) > amt)
+				if (item->GetStackCount() > amt)
 				{
-					item->SetCount(item->GetUInt32Value(ITEM_FIELD_STACK_COUNT) - amt);
+					item->SetStackCount( item->GetStackCount() - amt);
 					item->m_isDirty = true;
 					return amt;
 				}
-				else if (item->GetUInt32Value(ITEM_FIELD_STACK_COUNT)== amt)
+				else if (item->GetStackCount()== amt)
 				{
 					bool result = SafeFullRemoveItemFromSlot(INVENTORY_SLOT_NOT_SET, static_cast<int16>( i ));
 					if(result)
@@ -1109,7 +1109,7 @@ uint32 ItemInterface::RemoveItemAmt(uint32 id, uint32 amt)
 				}
 				else
 				{
-					amt -= item->GetUInt32Value(ITEM_FIELD_STACK_COUNT);
+					amt -= item->GetStackCount();
 					SafeFullRemoveItemFromSlot(INVENTORY_SLOT_NOT_SET, static_cast<int16>( i ));
 				}
 			}
@@ -1123,13 +1123,13 @@ uint32 ItemInterface::RemoveItemAmt(uint32 id, uint32 amt)
 		{
 			if(item->GetProto()->ItemId == id && item->wrapped_item_id== 0)
 			{
-				if (item->GetUInt32Value(ITEM_FIELD_STACK_COUNT) > amt)
+				if (item->GetStackCount() > amt)
 				{
-					item->SetCount(item->GetUInt32Value(ITEM_FIELD_STACK_COUNT) - amt);
+					item->SetStackCount( item->GetStackCount() - amt);
 					item->m_isDirty = true;
 					return amt;
 				}
-				else if (item->GetUInt32Value(ITEM_FIELD_STACK_COUNT)== amt)
+				else if (item->GetStackCount()== amt)
 				{
 					bool result = SafeFullRemoveItemFromSlot(INVENTORY_SLOT_NOT_SET, static_cast<int16>( i ));
 					if(result)
@@ -1143,7 +1143,7 @@ uint32 ItemInterface::RemoveItemAmt(uint32 id, uint32 amt)
 				}
 				else
 				{
-					amt -= item->GetUInt32Value(ITEM_FIELD_STACK_COUNT);
+					amt -= item->GetStackCount();
 					SafeFullRemoveItemFromSlot(INVENTORY_SLOT_NOT_SET, static_cast<int16>( i ));
 				}
 			}
@@ -1175,13 +1175,13 @@ uint32 ItemInterface::RemoveItemAmt_ProtectPointer(uint32 id, uint32 amt, Item**
 					continue;
 				}
 
-				if (item->GetUInt32Value(ITEM_FIELD_STACK_COUNT) > amt)
+				if (item->GetStackCount() > amt)
 				{
-					item->SetCount(item->GetUInt32Value(ITEM_FIELD_STACK_COUNT) - amt);
+					item->SetStackCount( item->GetStackCount() - amt);
 					item->m_isDirty = true;
 					return amt;
 				}
-				else if (item->GetUInt32Value(ITEM_FIELD_STACK_COUNT)== amt)
+				else if (item->GetStackCount()== amt)
 				{
 					bool result = SafeFullRemoveItemFromSlot(INVENTORY_SLOT_NOT_SET, static_cast<int16>( i ));
 
@@ -1203,7 +1203,7 @@ uint32 ItemInterface::RemoveItemAmt_ProtectPointer(uint32 id, uint32 amt, Item**
 				}
 				else
 				{
-					amt -= item->GetUInt32Value(ITEM_FIELD_STACK_COUNT);
+					amt -= item->GetStackCount();
 					SafeFullRemoveItemFromSlot(INVENTORY_SLOT_NOT_SET, static_cast<int16>( i ));
 
 					if( pointer != NULL && *pointer != NULL && *pointer == item )
@@ -1225,13 +1225,13 @@ uint32 ItemInterface::RemoveItemAmt_ProtectPointer(uint32 id, uint32 amt, Item**
 				{
 					if (item2->GetProto()->ItemId == id && item->wrapped_item_id== 0)
 					{
-						if (item2->GetUInt32Value(ITEM_FIELD_STACK_COUNT) > amt)
+						if (item2->GetStackCount() > amt)
 						{
-							item2->SetCount(item2->GetUInt32Value(ITEM_FIELD_STACK_COUNT) - amt);
+							item2->SetStackCount( item2->GetStackCount() - amt);
 							item2->m_isDirty = true;
 							return amt;
 						}
-						else if (item2->GetUInt32Value(ITEM_FIELD_STACK_COUNT)== amt)
+						else if (item2->GetStackCount()== amt)
 						{
 							bool result = SafeFullRemoveItemFromSlot(static_cast<int8>( i ), static_cast<int16>( j ));
 							if( pointer != NULL && *pointer != NULL && *pointer == item2 )
@@ -1248,7 +1248,7 @@ uint32 ItemInterface::RemoveItemAmt_ProtectPointer(uint32 id, uint32 amt, Item**
 						}
 						else
 						{
-							amt -= item2->GetUInt32Value(ITEM_FIELD_STACK_COUNT);
+							amt -= item2->GetStackCount();
 							SafeFullRemoveItemFromSlot(static_cast<int8>( i ), static_cast<int16>( j ));
 
 							if( pointer != NULL && *pointer != NULL && *pointer == item2 )
@@ -1267,13 +1267,13 @@ uint32 ItemInterface::RemoveItemAmt_ProtectPointer(uint32 id, uint32 amt, Item**
 		{
 			if(item->GetProto()->ItemId == id && item->wrapped_item_id== 0)
 			{
-				if (item->GetUInt32Value(ITEM_FIELD_STACK_COUNT) > amt)
+				if (item->GetStackCount() > amt)
 				{
-					item->SetCount(item->GetUInt32Value(ITEM_FIELD_STACK_COUNT) - amt);
+					item->SetStackCount( item->GetStackCount() - amt);
 					item->m_isDirty = true;
 					return amt;
 				}
-				else if (item->GetUInt32Value(ITEM_FIELD_STACK_COUNT)== amt)
+				else if (item->GetStackCount()== amt)
 				{
 					bool result = SafeFullRemoveItemFromSlot(INVENTORY_SLOT_NOT_SET, static_cast<int16>( i ));
 					if( pointer != NULL && *pointer != NULL && *pointer == item )
@@ -1290,7 +1290,7 @@ uint32 ItemInterface::RemoveItemAmt_ProtectPointer(uint32 id, uint32 amt, Item**
 				}
 				else
 				{
-					amt -= item->GetUInt32Value(ITEM_FIELD_STACK_COUNT);
+					amt -= item->GetStackCount();
 					SafeFullRemoveItemFromSlot(INVENTORY_SLOT_NOT_SET, static_cast<int16>( i ));
 
 					if( pointer != NULL && *pointer != NULL && *pointer == item )
@@ -1307,13 +1307,13 @@ uint32 ItemInterface::RemoveItemAmt_ProtectPointer(uint32 id, uint32 amt, Item**
 		{
 			if(item->GetProto()->ItemId == id && item->wrapped_item_id== 0)
 			{
-				if (item->GetUInt32Value(ITEM_FIELD_STACK_COUNT) > amt)
+				if (item->GetStackCount() > amt)
 				{
-					item->SetCount(item->GetUInt32Value(ITEM_FIELD_STACK_COUNT) - amt);
+					item->SetStackCount( item->GetStackCount() - amt);
 					item->m_isDirty = true;
 					return amt;
 				}
-				else if (item->GetUInt32Value(ITEM_FIELD_STACK_COUNT)== amt)
+				else if (item->GetStackCount()== amt)
 				{
 					bool result = SafeFullRemoveItemFromSlot(INVENTORY_SLOT_NOT_SET, static_cast<int16>( i ));
 					if( pointer != NULL && *pointer != NULL && *pointer == item )
@@ -1330,7 +1330,7 @@ uint32 ItemInterface::RemoveItemAmt_ProtectPointer(uint32 id, uint32 amt, Item**
 				}
 				else
 				{
-					amt -= item->GetUInt32Value(ITEM_FIELD_STACK_COUNT);
+					amt -= item->GetStackCount();
 					SafeFullRemoveItemFromSlot(INVENTORY_SLOT_NOT_SET, static_cast<int16>( i ));
 
 					if( pointer != NULL && *pointer != NULL && *pointer == item )
@@ -1361,13 +1361,13 @@ uint32 ItemInterface::RemoveItemAmtByGuid(uint64 guid, uint32 amt)
 					continue;
 				}
 
-				if (item->GetUInt32Value(ITEM_FIELD_STACK_COUNT) > amt)
+				if (item->GetStackCount() > amt)
 				{
-					item->SetCount(item->GetUInt32Value(ITEM_FIELD_STACK_COUNT) - amt);
+					item->SetStackCount( item->GetStackCount() - amt);
 					item->m_isDirty = true;
 					return amt;
 				}
-				else if (item->GetUInt32Value(ITEM_FIELD_STACK_COUNT)== amt)
+				else if (item->GetStackCount()== amt)
 				{
 					bool result = SafeFullRemoveItemFromSlot(INVENTORY_SLOT_NOT_SET, i);
 					if(result)
@@ -1381,7 +1381,7 @@ uint32 ItemInterface::RemoveItemAmtByGuid(uint64 guid, uint32 amt)
 				}
 				else
 				{
-					amt -= item->GetUInt32Value(ITEM_FIELD_STACK_COUNT);
+					amt -= item->GetStackCount();
 					SafeFullRemoveItemFromSlot(INVENTORY_SLOT_NOT_SET, i);
 					return amt;
 				}
@@ -1401,13 +1401,13 @@ uint32 ItemInterface::RemoveItemAmtByGuid(uint64 guid, uint32 amt)
 				{
 					if (item2->GetGUID() == guid && item->wrapped_item_id== 0)
 					{
-						if (item2->GetUInt32Value(ITEM_FIELD_STACK_COUNT) > amt)
+						if (item2->GetStackCount() > amt)
 						{
-							item2->SetCount(item2->GetUInt32Value(ITEM_FIELD_STACK_COUNT) - amt);
+							item2->SetStackCount( item2->GetStackCount() - amt);
 							item2->m_isDirty = true;
 							return amt;
 						}
-						else if (item2->GetUInt32Value(ITEM_FIELD_STACK_COUNT)== amt)
+						else if (item2->GetStackCount()== amt)
 						{
 							bool result = SafeFullRemoveItemFromSlot(static_cast<int8>( i ), static_cast<int16>( j ));
 							if(result)
@@ -1421,7 +1421,7 @@ uint32 ItemInterface::RemoveItemAmtByGuid(uint64 guid, uint32 amt)
 						}
 						else
 						{
-							amt -= item2->GetUInt32Value(ITEM_FIELD_STACK_COUNT);
+							amt -= item2->GetStackCount();
 							SafeFullRemoveItemFromSlot(static_cast<int8>( i ), static_cast<int16>( j ));
 							return amt;
 						}
@@ -1438,13 +1438,13 @@ uint32 ItemInterface::RemoveItemAmtByGuid(uint64 guid, uint32 amt)
 		{
 			if(item->GetGUID() == guid && item->wrapped_item_id== 0)
 			{
-				if (item->GetUInt32Value(ITEM_FIELD_STACK_COUNT) > amt)
+				if (item->GetStackCount() > amt)
 				{
-					item->SetCount(item->GetUInt32Value(ITEM_FIELD_STACK_COUNT) - amt);
+					item->SetStackCount( item->GetStackCount() - amt);
 					item->m_isDirty = true;
 					return amt;
 				}
-				else if (item->GetUInt32Value(ITEM_FIELD_STACK_COUNT)== amt)
+				else if (item->GetStackCount()== amt)
 				{
 					bool result = SafeFullRemoveItemFromSlot(INVENTORY_SLOT_NOT_SET, i);
 					if(result)
@@ -1458,7 +1458,7 @@ uint32 ItemInterface::RemoveItemAmtByGuid(uint64 guid, uint32 amt)
 				}
 				else
 				{
-					amt -= item->GetUInt32Value(ITEM_FIELD_STACK_COUNT);
+					amt -= item->GetStackCount();
 					SafeFullRemoveItemFromSlot(INVENTORY_SLOT_NOT_SET, i);
 					return amt;
 				}
@@ -1473,13 +1473,13 @@ uint32 ItemInterface::RemoveItemAmtByGuid(uint64 guid, uint32 amt)
 		{
 			if(item->GetGUID() == guid && item->wrapped_item_id== 0)
 			{
-				if (item->GetUInt32Value(ITEM_FIELD_STACK_COUNT) > amt)
+				if (item->GetStackCount() > amt)
 				{
-					item->SetCount(item->GetUInt32Value(ITEM_FIELD_STACK_COUNT) - amt);
+					item->SetStackCount( item->GetStackCount() - amt);
 					item->m_isDirty = true;
 					return amt;
 				}
-				else if (item->GetUInt32Value(ITEM_FIELD_STACK_COUNT)== amt)
+				else if (item->GetStackCount()== amt)
 				{
 					bool result = SafeFullRemoveItemFromSlot(INVENTORY_SLOT_NOT_SET, i);
 					if(result)
@@ -1493,7 +1493,7 @@ uint32 ItemInterface::RemoveItemAmtByGuid(uint64 guid, uint32 amt)
 				}
 				else
 				{
-					amt -= item->GetUInt32Value(ITEM_FIELD_STACK_COUNT);
+					amt -= item->GetStackCount();
 					SafeFullRemoveItemFromSlot(INVENTORY_SLOT_NOT_SET, i);
 					return amt;
 				}
@@ -1708,10 +1708,10 @@ AddItemResult ItemInterface::AddItemToFreeSlot(Item *item)
 					}
 				}
 				else if( m_pItems[i]->GetProto()->ItemId == item->GetProto()->ItemId && itemMaxStack > 1 &&
-						m_pItems[i]->GetUInt32Value( ITEM_FIELD_STACK_COUNT ) < itemMaxStack  &&
-						m_pItems[i]->GetUInt32Value( ITEM_FIELD_STACK_COUNT ) + item->GetUInt32Value( ITEM_FIELD_STACK_COUNT ) <= itemMaxStack )
+						m_pItems[i]->GetStackCount() < itemMaxStack  &&
+						m_pItems[i]->GetStackCount() + item->GetStackCount() <= itemMaxStack )
 					{
-						m_pItems[i]->SetUInt32Value( ITEM_FIELD_STACK_COUNT, m_pItems[i]->GetUInt32Value( ITEM_FIELD_STACK_COUNT ) + item->GetUInt32Value( ITEM_FIELD_STACK_COUNT ) );
+						m_pItems[i]->SetStackCount(  m_pItems[i]->GetStackCount() + item->GetStackCount() );
 						result.Slot = static_cast<int8>( i );
 						result.Result=true;
 						p->UpdateKnownCurrencies(m_pItems[i]->GetEntry(), true);
@@ -1761,10 +1761,10 @@ AddItemResult ItemInterface::AddItemToFreeSlot(Item *item)
 		}
 		else if(m_pItems[i]->GetProto()->ItemId == item->GetProto()->ItemId &&
 				itemMaxStack > 1 &&
-				m_pItems[i]->GetUInt32Value( ITEM_FIELD_STACK_COUNT ) < itemMaxStack  &&
-				m_pItems[i]->GetUInt32Value( ITEM_FIELD_STACK_COUNT ) + item->GetUInt32Value( ITEM_FIELD_STACK_COUNT ) <= itemMaxStack )
+				m_pItems[i]->GetStackCount() < itemMaxStack  &&
+				m_pItems[i]->GetStackCount() + item->GetStackCount() <= itemMaxStack )
 			{
-				m_pItems[i]->SetUInt32Value( ITEM_FIELD_STACK_COUNT,m_pItems[i]->GetUInt32Value( ITEM_FIELD_STACK_COUNT ) + item->GetUInt32Value( ITEM_FIELD_STACK_COUNT ) );
+				m_pItems[i]->SetStackCount( m_pItems[i]->GetStackCount() + item->GetStackCount() );
 				result.Slot = static_cast<int8>( i );
 				result.Result=true;
 				return ADD_ITEM_RESULT_OK;
@@ -1793,10 +1793,10 @@ AddItemResult ItemInterface::AddItemToFreeSlot(Item *item)
 				}
 				else if(item2->GetProto()->ItemId == item->GetProto()->ItemId &&
 					itemMaxStack > 1 &&
-					item2->GetUInt32Value(ITEM_FIELD_STACK_COUNT) < itemMaxStack &&
-					item2->GetUInt32Value( ITEM_FIELD_STACK_COUNT ) + item->GetUInt32Value( ITEM_FIELD_STACK_COUNT ) <= itemMaxStack )
+					item2->GetStackCount() < itemMaxStack &&
+					item2->GetStackCount() + item->GetStackCount() <= itemMaxStack )
 				{
-					item2->SetUInt32Value( ITEM_FIELD_STACK_COUNT,item2->GetUInt32Value( ITEM_FIELD_STACK_COUNT ) + item->GetUInt32Value( ITEM_FIELD_STACK_COUNT ) );
+					item2->SetStackCount( item2->GetStackCount() + item->GetStackCount() );
 					result.Slot = static_cast<int8>( i );
 					result.Result=true;
 					return ADD_ITEM_RESULT_OK;
@@ -3071,25 +3071,25 @@ void ItemInterface::SwapItemSlots(int8 srcslot, int8 dstslot)
 	
 	if( SrcItem != NULL && DstItem != NULL && SrcItem->GetEntry()==DstItem->GetEntry() && srcItemMaxStack > 1 && SrcItem->wrapped_item_id == 0 && DstItem->wrapped_item_id == 0 )
 	{
-		uint32 total = SrcItem->GetUInt32Value( ITEM_FIELD_STACK_COUNT ) + DstItem->GetUInt32Value( ITEM_FIELD_STACK_COUNT );
+		uint32 total = SrcItem->GetStackCount() + DstItem->GetStackCount();
 		if( total <= dstItemMaxStack )
 		{
-			DstItem->ModUnsigned32Value( ITEM_FIELD_STACK_COUNT, SrcItem->GetUInt32Value( ITEM_FIELD_STACK_COUNT ) );
+			DstItem->ModStackCount(  SrcItem->GetStackCount() );
 			SafeFullRemoveItemFromSlot( INVENTORY_SLOT_NOT_SET, srcslot );
 			DstItem->m_isDirty = true;
 			return;
 		}
 		else
 		{
-			if( DstItem->GetUInt32Value( ITEM_FIELD_STACK_COUNT ) == dstItemMaxStack )
+			if( DstItem->GetStackCount() == dstItemMaxStack )
 			{
 
 			}
 			else
 			{
-				int32 delta = dstItemMaxStack - DstItem->GetUInt32Value( ITEM_FIELD_STACK_COUNT );
-				DstItem->SetUInt32Value( ITEM_FIELD_STACK_COUNT, dstItemMaxStack );
-				SrcItem->ModUnsigned32Value( ITEM_FIELD_STACK_COUNT, -delta );
+				int32 delta = dstItemMaxStack - DstItem->GetStackCount();
+				DstItem->SetStackCount(  dstItemMaxStack );
+				SrcItem->ModStackCount(  -delta );
 				SrcItem->m_isDirty = true;
 				DstItem->m_isDirty = true;
 				return;
@@ -3788,7 +3788,7 @@ uint32 ItemInterface::GetItemCountByLimitId(uint32 LimitId, bool IncBank)
 				&& item->GetProto()->ItemLimitCategory == LimitId 
 				&& item->wrapped_item_id == 0 )
 			{
-				cnt += item->GetUInt32Value(ITEM_FIELD_STACK_COUNT) ? item->GetUInt32Value(ITEM_FIELD_STACK_COUNT) : 1; 
+				cnt += item->GetStackCount() ? item->GetStackCount() : 1; 
 			}
 		}
 	}
@@ -3807,7 +3807,7 @@ uint32 ItemInterface::GetItemCountByLimitId(uint32 LimitId, bool IncBank)
 						&& item2->GetProto()->ItemLimitCategory == LimitId 
 						&& item2->wrapped_item_id == 0 )
 					{
-						cnt += item2->GetUInt32Value(ITEM_FIELD_STACK_COUNT) ? item2->GetUInt32Value(ITEM_FIELD_STACK_COUNT) : 1; 
+						cnt += item2->GetStackCount() ? item2->GetStackCount() : 1; 
 					}
 				}
 			}
@@ -3823,7 +3823,7 @@ uint32 ItemInterface::GetItemCountByLimitId(uint32 LimitId, bool IncBank)
 				&& item->GetProto()->ItemLimitCategory == LimitId 
 				&& item->wrapped_item_id == 0 )
 			{
-				cnt += item->GetUInt32Value(ITEM_FIELD_STACK_COUNT) ? item->GetUInt32Value(ITEM_FIELD_STACK_COUNT) : 1;
+				cnt += item->GetStackCount() ? item->GetStackCount() : 1;
 			}
 		}
 	}
@@ -3837,7 +3837,7 @@ uint32 ItemInterface::GetItemCountByLimitId(uint32 LimitId, bool IncBank)
 				&& item->GetProto()->ItemLimitCategory == LimitId 
 				&& item->wrapped_item_id == 0 )
 			{
-				cnt += item->GetUInt32Value(ITEM_FIELD_STACK_COUNT) ? item->GetUInt32Value(ITEM_FIELD_STACK_COUNT) : 1;
+				cnt += item->GetStackCount() ? item->GetStackCount() : 1;
 			}
 		}
 	}
@@ -3853,7 +3853,7 @@ uint32 ItemInterface::GetItemCountByLimitId(uint32 LimitId, bool IncBank)
 					&& item->GetProto()->ItemLimitCategory == LimitId  
 					&& item->wrapped_item_id == 0 )
 				{
-					cnt += item->GetUInt32Value(ITEM_FIELD_STACK_COUNT) ? item->GetUInt32Value(ITEM_FIELD_STACK_COUNT) : 1;
+					cnt += item->GetStackCount() ? item->GetStackCount() : 1;
 				}
 			}
 		}
@@ -3874,7 +3874,7 @@ uint32 ItemInterface::GetItemCountByLimitId(uint32 LimitId, bool IncBank)
 								&& item2->GetProto()->ItemLimitCategory == LimitId 
 								&& item2->wrapped_item_id == 0 )
 							{
-								cnt += item2->GetUInt32Value(ITEM_FIELD_STACK_COUNT) ? item2->GetUInt32Value(ITEM_FIELD_STACK_COUNT) : 1;
+								cnt += item2->GetStackCount() ? item2->GetStackCount() : 1;
 							}
 						}
 					}
@@ -4050,7 +4050,7 @@ bool ItemInterface::AddItemById( uint32 itemid, uint32 count, int32 randomprop )
 			if( free_stack_item != NULL )
 			{
 				// increase stack by new amount
-				free_stack_item->ModUnsigned32Value( ITEM_FIELD_STACK_COUNT, count );
+				free_stack_item->ModStackCount(  count );
 				free_stack_item->m_isDirty = true;
 				return true;
 			}
@@ -4079,12 +4079,12 @@ bool ItemInterface::AddItemById( uint32 itemid, uint32 count, int32 randomprop )
 		
 		toadd = count > maxStack ? maxStack : count;
 
-		item->SetUInt32Value( ITEM_FIELD_STACK_COUNT, toadd );
+		item->SetStackCount(  toadd );
 		if( AddItemToFreeSlot( item ) )
 		{
 			SlotResult *lr = LastSearchResult();
             
-            chr->SendItemPushResult( false, true, false, true, lr->ContainerSlot, lr->Slot, toadd , item->GetEntry(), item->GetItemRandomSuffixFactor(), item->GetItemRandomPropertyId(), item->GetCount()  );
+            chr->SendItemPushResult( false, true, false, true, lr->ContainerSlot, lr->Slot, toadd , item->GetEntry(), item->GetItemRandomSuffixFactor(), item->GetItemRandomPropertyId(), item->GetStackCount()   );
 #ifdef ENABLE_ACHIEVEMENTS
             chr->GetAchievementMgr().UpdateAchievementCriteria( ACHIEVEMENT_CRITERIA_TYPE_LOOT_ITEM, itemid, 1, 0 );
 #endif

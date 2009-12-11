@@ -193,13 +193,10 @@ OUTPACKET_RESULT WorldSocket::_OutPacket(uint16 opcode, size_t len, const void* 
 	// Encrypt the packet
 	// First, create the header.
 	ServerPktHeader Header;
-#ifdef USING_BIG_ENDIAN
-	Header.size = len + 2;
-	Header.cmd = swap16(opcode);
-#else
+
 	Header.cmd = opcode;
 	Header.size = ntohs((uint16)len + 2);
-#endif
+
 	_crypt.EncryptSend((uint8*)&Header, sizeof (ServerPktHeader));
 
 	// Pass the header to our send buffer
@@ -223,36 +220,15 @@ void WorldSocket::OnConnect()
 
 	WorldPacket wp( SMSG_AUTH_CHALLENGE, 24 );
 
-#ifdef USING_BIG_ENDIAN
-	uint32 swapped = swap32( uint32( 1 ) );
-	wp << uint32( swapped );
-	
-	swapped = swap32( uint32( mSeed ) );
-	wp << uint32( swapped );
-	
-	swapped = swap32( uint32(0xC0FFEEEE) );
-	wp << uint32( swapped );
-	
-	swapped = swap32( uint32(0x00BABE00) );
-	wp << uint32( swapped );
-	
-	swapped = swap32( uint32(0xDF1697E5) );
-	wp << uint32( swapped );
-
-	swapped = swap32( uint32(0x1234ABCD) );
-	wp << uint32( swapped );
-#else
-	
-	wp << uint32(1);
+	wp << uint32( 1 );
 	wp << uint32( mSeed );
-	wp << uint32(0xC0FFEEEE);
-	wp << uint32(0x00BABE00);
-	wp << uint32(0xDF1697E5);
-	wp << uint32(0x1234ABCD);
+	wp << uint32( 0xC0FFEEEE );
+	wp << uint32( 0x00BABE00 );
+	wp << uint32( 0xDF1697E5 );
+	wp << uint32( 0x1234ABCD );
 
 	SendPacket( &wp );
 
-#endif
 }
 
 void WorldSocket::_HandleAuthSession(WorldPacket* recvPacket)
@@ -336,14 +312,6 @@ void WorldSocket::InformationRetreiveCallback(WorldPacket & recvData, uint32 req
 	BigNumber BNK;
 	BNK.SetBinary(K, 40);
 	
-/*	uint8 *key = new uint8[20];
-	WowCrypt::GenerateKey(key, K);
-	
-	// Initialize crypto.
-	_crypt.SetKey(key, 20);
-	_crypt.Init();
-	delete [] key;*/
-
 	//checking if player is already connected
 	//disconnect current player and login this one(blizzlike)
 
@@ -415,10 +383,6 @@ void WorldSocket::InformationRetreiveCallback(WorldPacket & recvData, uint32 req
 	for(uint32 i = 0; i < 8; ++i)
 		pSession->SetAccountData(i, NULL, true, 0);
 
-	// queue the account loading
-	/*AsyncQuery * aq = new AsyncQuery( new SQLClassCallbackP1<World, uint32>(World::getSingletonPtr(), &World::LoadAccountDataProc, AccountID) );
-	aq->AddQuery("SELECT * FROM account_data WHERE acct = %u", AccountID);
-	CharacterDatabase.QueueAsyncQuery(aq);*/
 	if(sWorld.m_useAccountData)
 	{
 		QueryResult * pResult = CharacterDatabase.Query("SELECT * FROM account_data WHERE acct = %u", AccountID);
@@ -545,10 +509,6 @@ void WorldSocket::_HandlePing(WorldPacket* recvPacket)
 		mSession->m_clientTimeDelay = 0;
 	}
 
-#ifdef USING_BIG_ENDIAN
-	swap32(&ping);
-#endif
-
 	OutPacket(SMSG_PONG, 4, &ping);
 
 #ifdef WIN32
@@ -595,13 +555,9 @@ void WorldSocket::OnRead()
 
 			// Decrypt the header
 			_crypt.DecryptRecv((uint8*)&Header, sizeof (ClientPktHeader));
-#ifdef USING_BIG_ENDIAN
-			mRemaining = mSize = Header.size - 4;
-			mOpcode = swap32(Header.cmd);
-#else
+
 			mRemaining = mSize = ntohs(Header.size) - 4;
 			mOpcode = Header.cmd;
-#endif
 		}
 
 		WorldPacket * Packet;

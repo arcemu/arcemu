@@ -1491,13 +1491,13 @@ out:
 					if (it== NULL)
 						return;
 
-					it->SetUInt32Value( ITEM_FIELD_STACK_COUNT, count);
+					it->SetStackCount(  count);
 					p_caster->GetItemInterface()->SafeAddItem(it,slotresult.ContainerSlot, slotresult.Slot);
 					creature->Despawn(3500,creature->GetProto()->RespawnTime);
 				}
 				else
 				{
-					add->SetCount(add->GetUInt32Value(ITEM_FIELD_STACK_COUNT) + count);
+					add->SetStackCount( add->GetStackCount() + count);
 					add->m_isDirty = true;
 					creature->Despawn(3500,creature->GetProto()->RespawnTime);
 				}
@@ -2861,8 +2861,8 @@ void Spell::SpellEffectCreateItem(uint32 i) // Create item
 		if (!newItem)
 			return;
 
-		newItem->SetUInt64Value(ITEM_FIELD_CREATOR,m_caster->GetGUID());
-		newItem->SetUInt32Value(ITEM_FIELD_STACK_COUNT, item_count);
+        newItem->SetCreatorGUID( m_caster->GetGUID() );
+		newItem->SetStackCount(  item_count);
 
 		if (m_itemProto->RandomPropId)
 		{
@@ -2889,7 +2889,7 @@ void Spell::SpellEffectCreateItem(uint32 i) // Create item
 
 		if(p_target->GetItemInterface()->SafeAddItem(newItem,slotresult.ContainerSlot, slotresult.Slot))
 		{
-            p_target->SendItemPushResult( true,false,true,true,slotresult.ContainerSlot,slotresult.Slot,item_count , newItem->GetEntry(), newItem->GetItemRandomSuffixFactor(), newItem->GetItemRandomPropertyId(), newItem->GetCount() );
+            p_target->SendItemPushResult( true,false,true,true,slotresult.ContainerSlot,slotresult.Slot,item_count , newItem->GetEntry(), newItem->GetItemRandomSuffixFactor(), newItem->GetItemRandomPropertyId(), newItem->GetStackCount()  );
 		} else {
 			newItem->DeleteMe();
 		}
@@ -2897,11 +2897,11 @@ void Spell::SpellEffectCreateItem(uint32 i) // Create item
 	else
 	{
 		// scale item_count down if total stack will be more than 20
-		if( (add->GetUInt32Value(ITEM_FIELD_STACK_COUNT) + item_count > 20) && !p_target->ItemStackCheat )
+		if( (add->GetStackCount() + item_count > 20) && !p_target->ItemStackCheat )
 		{
 			uint32 item_count_filled;
-			item_count_filled = 20 - add->GetUInt32Value(ITEM_FIELD_STACK_COUNT);
-			add->SetCount(20);
+			item_count_filled = 20 - add->GetStackCount();
+			add->SetStackCount( 20);
 			add->m_isDirty = true;
 
 			slotresult = p_target->GetItemInterface()->FindFreeInventorySlot(m_itemProto);
@@ -2913,22 +2913,22 @@ void Spell::SpellEffectCreateItem(uint32 i) // Create item
 				if (!newItem)
 					return;
 
-				newItem->SetUInt64Value(ITEM_FIELD_CREATOR,m_caster->GetGUID());
-				newItem->SetUInt32Value(ITEM_FIELD_STACK_COUNT, item_count - item_count_filled);
+                newItem->SetCreatorGUID( m_caster->GetGUID() );
+				newItem->SetStackCount(  item_count - item_count_filled);
 				if(!p_target->GetItemInterface()->SafeAddItem(newItem,slotresult.ContainerSlot, slotresult.Slot))
 				{
 					newItem->DeleteMe();
 					item_count = item_count_filled;
 				}
 				else
-                    p_target->SendItemPushResult( true, false, true, true, slotresult.ContainerSlot, slotresult.Slot, item_count , newItem->GetEntry(), newItem->GetItemRandomSuffixFactor(), newItem->GetItemRandomPropertyId(), newItem->GetCount() );
+                    p_target->SendItemPushResult( true, false, true, true, slotresult.ContainerSlot, slotresult.Slot, item_count , newItem->GetEntry(), newItem->GetItemRandomSuffixFactor(), newItem->GetItemRandomPropertyId(), newItem->GetStackCount()  );
 			}
 		}
 		else
 		{
-			add->SetCount(add->GetUInt32Value(ITEM_FIELD_STACK_COUNT) + item_count);
+			add->SetStackCount( add->GetStackCount() + item_count);
 			add->m_isDirty = true;
-            p_target->SendItemPushResult( true, false, true, false, (uint8)p_target->GetItemInterface()->GetBagSlotByGuid(add->GetGUID()), 0xFFFFFFFF, item_count , add->GetEntry(), add->GetItemRandomSuffixFactor(), add->GetItemRandomPropertyId(), add->GetCount() );
+            p_target->SendItemPushResult( true, false, true, false, (uint8)p_target->GetItemInterface()->GetBagSlotByGuid(add->GetGUID()), 0xFFFFFFFF, item_count , add->GetEntry(), add->GetItemRandomSuffixFactor(), add->GetItemRandomPropertyId(), add->GetStackCount()  );
 		}
 	}
 	if (p_caster && skill)
@@ -6557,9 +6557,9 @@ void Spell::SpellEffectFeedPet(uint32 i)  // Feed Pet
 	tgt.m_unitTarget=pPet->GetGUID();
 	sp->prepare(&tgt);
 
-	if(itemTarget->GetUInt32Value(ITEM_FIELD_STACK_COUNT)>1)
+	if(itemTarget->GetStackCount()>1)
 	{
-		itemTarget->ModUnsigned32Value(ITEM_FIELD_STACK_COUNT, -1);
+		itemTarget->ModStackCount(  -1);
 		itemTarget->m_isDirty=true;
 	}
 	else

@@ -427,12 +427,7 @@ void Player::Reputation_OnTalk( FactionDBC * dbc )
 
 	if ( SetFlagVisible( rep->flag, true ) && IsInWorld() )
 	{
-#ifdef USING_BIG_ENDIAN
-		uint32 swapped = swap32( dbc->RepListId );
-		m_session->OutPacket( SMSG_SET_FACTION_VISIBLE, 4, &swapped );
-#else
 		m_session->OutPacket( SMSG_SET_FACTION_VISIBLE, 4, &dbc->RepListId );
-#endif
 
 #ifdef OPTIMIZED_PLAYER_SAVING
 		save_Reputation();
@@ -491,12 +486,8 @@ void Player::OnModStanding( FactionDBC * dbc, FactionReputation * rep )
 {
 	if ( SetFlagVisible( rep->flag, true ) && IsInWorld() )
 	{
-#ifdef USING_BIG_ENDIAN
-		uint32 swapped = swap32( dbc->RepListId );
-		m_session->OutPacket( SMSG_SET_FACTION_VISIBLE, 4, &swapped );
-#else
+
 		m_session->OutPacket( SMSG_SET_FACTION_VISIBLE, 4, &dbc->RepListId );
-#endif
 	}
 
 	SetFlagAtWar( rep->flag, ( GetReputationRankFromStanding( rep->standing ) <= STANDING_HOSTILE ) );

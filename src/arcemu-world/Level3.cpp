@@ -1221,7 +1221,7 @@ bool ChatHandler::HandleAddItemSetCommand(const char* args, WorldSession* m_sess
 		} else {
 			//SystemMessage(m_session, "Added item: %s [%u]", (*itr)->Name1, (*itr)->ItemId);
 			SlotResult * le = chr->GetItemInterface()->LastSearchResult();
-            chr->SendItemPushResult( false,true,false,true,le->ContainerSlot,le->Slot,1 , itm->GetEntry(), itm->GetItemRandomSuffixFactor(), itm->GetItemRandomPropertyId(), itm->GetCount() );
+            chr->SendItemPushResult( false,true,false,true,le->ContainerSlot,le->Slot,1 , itm->GetEntry(), itm->GetItemRandomSuffixFactor(), itm->GetItemRandomPropertyId(), itm->GetStackCount()  );
 		}
 	}
 	GreenSystemMessage(m_session, "Added set to inventory complete. Time: %u ms", getMSTime() - start);

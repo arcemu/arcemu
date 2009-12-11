@@ -66,27 +66,20 @@ public:
 		return *this;
 	}
 	ByteBuffer &operator<<(uint16 value) {
-#ifdef USING_BIG_ENDIAN
-		append<uint16>(swap16(value));
-#else
+
 		append<uint16>(value);
-#endif
+
 		return *this;
 	}
 	ByteBuffer &operator<<(uint32 value) {
-#ifdef USING_BIG_ENDIAN
-		append<uint32>(swap32(value));
-#else
+
 		append<uint32>(value);
-#endif
 		return *this;
 	}
 	ByteBuffer &operator<<(uint64 value) {
-#ifdef USING_BIG_ENDIAN
-		append<uint64>(swap64(value));
-#else
+
 		append<uint64>(value);
-#endif
+
 		return *this;
 	}
 	// signed as in 2e complement
@@ -95,43 +88,33 @@ public:
 		return *this;
 	}
 	ByteBuffer &operator<<(int16 value) {
-#ifdef USING_BIG_ENDIAN
-		append<int16>(swap16(value));
-#else
+
 		append<int16>(value);
-#endif
+
 		return *this;
 	}
 	ByteBuffer &operator<<(int32 value) {
-#ifdef USING_BIG_ENDIAN
-		append<int32>(swap32(value));
-#else
+
 		append<int32>(value);
-#endif
-		return *this;
+
+        return *this;
 	}
 	ByteBuffer &operator<<(int64 value) {
-#ifdef USING_BIG_ENDIAN
-		append<int64>(swap64(value));
-#else
+
 		append<int64>(value);
-#endif
+
 		return *this;
 	}
 	ByteBuffer &operator<<(float value) {
-#ifdef USING_BIG_ENDIAN
-		append<float>(swapfloat(value));
-#else
+
 		append<float>(value);
-#endif
+
 		return *this;
 	}
 	ByteBuffer &operator<<(double value) {
-#ifdef USING_BIG_ENDIAN
-		append<double>(swapdouble(value));
-#else
+
 		append<double>(value);
-#endif
+
 		return *this;
 	}
 	ByteBuffer &operator<<(const std::string &value) {
@@ -161,27 +144,20 @@ public:
 		return *this;
 	}
 	ByteBuffer &operator>>(uint16 &value) {
-#ifdef USING_BIG_ENDIAN
-		value = swap16(read<uint16>());
-#else
+
 		value = read<uint16>();
-#endif
+
 		return *this;
 	}
 	ByteBuffer &operator>>(uint32 &value) {
-#ifdef USING_BIG_ENDIAN
-		value = swap32(read<uint32>());
-#else
+
 		value = read<uint32>();
-#endif
 		return *this;
 	}
 	ByteBuffer &operator>>(uint64 &value) {
-#ifdef USING_BIG_ENDIAN
-		value = swap64(read<uint64>());
-#else
+
 		value = read<uint64>();
-#endif
+
 		return *this;
 	}
 	//signed as in 2e complement
@@ -190,43 +166,32 @@ public:
 		return *this;
 	}
 	ByteBuffer &operator>>(int16 &value) {
-#ifdef USING_BIG_ENDIAN
-		value = swap16(read<int16>());
-#else
+
 		value = read<int16>();
-#endif
+
 		return *this;
 	}
 	ByteBuffer &operator>>(int32 &value) {
-#ifdef USING_BIG_ENDIAN
-		value = swap32(read<int32>());
-#else
+
 		value = read<int32>();
-#endif
+
 		return *this;
 	}
 	ByteBuffer &operator>>(int64 &value) {
-#ifdef USING_BIG_ENDIAN
-		value = swap64(read<uint64>());
-#else
+
 		value = read<int64>();
-#endif
 		return *this;
 	}
 	ByteBuffer &operator>>(float &value) {
-#ifdef USING_BIG_ENDIAN
-		value = swapfloat(read<float>());
-#else
+
 		value = read<float>();
-#endif
-		return *this;
+
+        return *this;
 	}
 	ByteBuffer &operator>>(double &value) {
-#ifdef USING_BIG_ENDIAN
-		value = swapdouble(read<double>());
-#else
+
 		value = read<double>();
-#endif
+
 		return *this;
 	}
 	ByteBuffer &operator>>(std::string& value) {
@@ -242,30 +207,22 @@ public:
 	//! Only does X,Y,Z!
 	ByteBuffer & operator << (const LocationVector & vec)
 	{
-#ifdef USING_BIG_ENDIAN
-		append<float>(swapfloat(vec.x));
-		append<float>(swapfloat(vec.y));
-		append<float>(swapfloat(vec.z));
-#else
+
 		append<float>(vec.x);
 		append<float>(vec.y);
 		append<float>(vec.z);
-#endif
+
 		return *this;
 	}
 
 	//! Only does X,Y,Z!
 	ByteBuffer & operator >> (LocationVector & vec)
 	{
-#ifdef USING_BIG_ENDIAN
-		vec.x = swapfloat(read<float>());
-		vec.y = swapfloat(read<float>());
-		vec.z = swapfloat(read<float>());
-#else
+
 		vec.x = read<float>();
 		vec.y = read<float>();
 		vec.z = read<float>();
-#endif
+
 		return * this;
 	}
 

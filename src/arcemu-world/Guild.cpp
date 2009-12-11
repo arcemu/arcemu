@@ -1185,11 +1185,7 @@ void Guild::SendGuildRoster(WorldSession * pClient)
 			++c;
 		}
 	}
-#ifdef USING_BIG_ENDIAN
-	*(uint32*)&data.contents()[pos] = swap32(c);
-#else
 	*(uint32*)&data.contents()[pos] = c;
-#endif
 
 	for(itr = m_members.begin(); itr != m_members.end(); ++itr)
 	{

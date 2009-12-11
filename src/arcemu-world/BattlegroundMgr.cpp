@@ -105,12 +105,10 @@ void CBattlegroundManager::HandleBattlegroundListPacket(WorldSession * m_session
 		}
 	}
 	m_instanceLock.Release();
-#ifdef USING_BIG_ENDIAN
-	*(uint32*)&data.contents()[13] = swap32(Count);
-#else
+
 	*(uint32*)&data.contents()[13] = Count;
-#endif
-	m_session->SendPacket(&data);
+
+    m_session->SendPacket(&data);
 }
 
 void CBattlegroundManager::HandleBattlegroundJoin(WorldSession * m_session, WorldPacket & pck)
