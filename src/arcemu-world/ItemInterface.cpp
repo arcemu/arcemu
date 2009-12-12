@@ -159,8 +159,6 @@ Item *ItemInterface::SafeAddItem(uint32 ItemId, int8 ContainerSlot, int16 slot)
 	else
 	{
 		pItem = new Item;
-		if (!pItem)
-			return NULL;
 		pItem->Init(HIGHGUID_TYPE_ITEM,objmgr.GenerateLowGuid(HIGHGUID_TYPE_ITEM));
 		pItem->Create( ItemId, m_pOwner);
 		if(m_AddItem(pItem, ContainerSlot, slot))
@@ -3354,8 +3352,6 @@ void ItemInterface::mLoadItemsFromDatabase(QueryResult * result)
 				else
 				{
 					item = new Item;
-					if (!item)
-						return;
 					item->Init( HIGHGUID_TYPE_ITEM, fields[1].GetUInt32() );
 					item->LoadFromDB( fields, m_pOwner, false);
 

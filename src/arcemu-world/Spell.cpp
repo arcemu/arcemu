@@ -3125,7 +3125,6 @@ void Spell::HandleAddAura(uint64 guid)
 		{
 			if(itr->second->GetSpellProto()->procCharges>0)
 			{
-				Aura *aur= NULL;
 				int charges = itr->second->GetSpellProto()->procCharges;
 				if( itr->second->GetSpellProto()->SpellGroupType && u_caster != NULL )
 				{
@@ -3134,11 +3133,8 @@ void Spell::HandleAddAura(uint64 guid)
 				}
 				for(int i= 0;i<charges-1;i++)
 				{
-					aur = new Aura(itr->second->GetSpellProto(),itr->second->GetDuration(),itr->second->GetCaster(),itr->second->GetTarget(), m_triggeredSpell, i_caster);
-					if (!aur)
-						return;
+					Aura *aur = new Aura(itr->second->GetSpellProto(),itr->second->GetDuration(),itr->second->GetCaster(),itr->second->GetTarget(), m_triggeredSpell, i_caster);
 					Target->AddAura(aur);
-					aur= NULL;
 				}
 				if( !(itr->second->GetSpellProto()->procFlags & PROC_REMOVEONUSE) )
 				{

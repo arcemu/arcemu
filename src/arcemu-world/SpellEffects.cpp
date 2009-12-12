@@ -1186,8 +1186,6 @@ out:
 					if(p_caster->m_TotemSlots[0] && p_caster->m_TotemSlots[1] && p_caster->m_TotemSlots[2] && p_caster->m_TotemSlots[3])
 					{
 						Aura *aur = new Aura(dbcSpell.LookupEntry(38437), 5000, p_caster, p_caster, true);
-						if (!aur)
-							return;
 						for( uint32 i= 0; i<3; i++ )
 							aur->AddMod( aur->GetSpellProto()->EffectApplyAuraName[i], aur->GetSpellProto()->EffectBasePoints[i]+1, aur->GetSpellProto()->EffectMiscValue[i], i );
 						p_caster->AddAura(aur);
@@ -2265,9 +2263,6 @@ void Spell::SpellEffectApplyAura(uint32 i)  // Apply Aura
 			pAura = new Aura( GetProto(), Duration, g_caster->m_summoner, unitTarget, m_triggeredSpell, i_caster );
 		else
 			pAura = new Aura( GetProto(), Duration, m_caster, unitTarget, m_triggeredSpell, i_caster );
-
-		if ( pAura == NULL )
-			return;
 
 		pAura->pSpellId = pSpellId; //this is required for triggered spells
 
@@ -3805,8 +3800,6 @@ void Spell::SpellEffectApplyAA(uint32 i) // Apply Area Aura
 	if(itr==unitTarget->tmpAura.end())
 	{
 		pAura = new Aura(GetProto(),GetDuration(),m_caster,unitTarget);
-		if (!pAura)
-			return;
 
 		unitTarget->tmpAura [GetProto()->Id]= pAura;
 
@@ -7069,8 +7062,6 @@ void Spell::SpellEffectSpellSteal( uint32 i )
 
 					uint32 aurdur = ( aur->GetDuration()>120000 ? 120000 : aur->GetDuration() );
 					Aura *aura = new Aura(aur->GetSpellProto(), aurdur, u_caster, u_caster );
-					if (!aura)
-						return;
 					uint32 aur_removed = unitTarget->RemoveAllAuraByNameHash( aur->GetSpellProto()->NameHash );
 					for ( uint32 i = 0; i < 3; i++ )
 					{
@@ -7085,8 +7076,6 @@ void Spell::SpellEffectSpellSteal( uint32 i )
 						for(uint32 i = 0; i<aur_removed-1; i++)
 						{
 							aur = new Aura(aura->GetSpellProto(), aurdur, u_caster, u_caster);
-							if (!aur)
-								return;
 							u_caster->AddAura(aur);
 						}
 						if(!(aura->GetSpellProto()->procFlags & PROC_REMOVEONUSE))

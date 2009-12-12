@@ -563,12 +563,6 @@ bool ChatHandler::HandleAuraUpdateAdd( const char *args, WorldSession *m_session
 		}
 		Spell * SpellPtr = new Spell(Pl, Sp, false, NULL);
 		AuraPtr = new Aura(Sp, SpellPtr->GetDuration(), Pl, Pl);
-		if(!AuraPtr)
-		{
-			SystemMessage(m_session, "Error while constructing aura for spellid %u.", SpellID);
-			delete SpellPtr;
-			return true;
-		}
 		Pl->AddAura(AuraPtr); // Serves purpose to just add the aura to our auraslots
 		uint8 VisualSlot = Pl->FindVisualSlot(SpellID, AuraPtr->IsPositive());
 		WorldPacket data(SMSG_AURA_UPDATE, 20);

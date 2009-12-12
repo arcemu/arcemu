@@ -9046,8 +9046,6 @@ void Player::CompleteLoading()
 			continue; //do not load auras that only exist while pet exist. We should recast these when pet is created anyway
 
 		Aura * aura = new Aura(sp,(*i).dur,this,this, false);
-		if (!aura)
-			return;
 		//if ( !(*i).positive ) // do we need this? - vojta
 		//	aura->SetNegative();
 
@@ -9061,14 +9059,10 @@ void Player::CompleteLoading()
 
 		if ( sp->procCharges > 0 && (*i).charges > 0 )
 		{
-			Aura * a = NULL;
 			for ( uint32 x = 0; x < (*i).charges - 1; x++ )
 			{
-				a = new Aura( sp, (*i).dur, this, this, false );
-				if (!a)
-					return;
+				Aura * a = new Aura( sp, (*i).dur, this, this, false );
 				this->AddAura( a );
-				a = NULL;
 			}
 			if ( m_chargeSpells.find( sp->Id ) == m_chargeSpells.end() && !( sp->procFlags & PROC_REMOVEONUSE ) )
 			{

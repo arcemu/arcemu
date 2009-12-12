@@ -1049,8 +1049,6 @@ void Aura::EventUpdateAA(float r)
 					if(!aura)
 					{
 						aura = new Aura(m_spellProto, -1, u_caster, plr, true);
-						if (!aura)
-							return;
 						aura->m_areaAura = true;
 					}
 					aura->AddMod(m_modList[i].m_type, m_modList[i].m_amount,
@@ -1078,8 +1076,6 @@ void Aura::EventUpdateAA(float r)
 		if( summon && summon->isAlive() && summon->GetDistanceSq(u_caster) <= r && !summon->HasAura( m_spellProto->Id ))
 		{
 			Aura * aura = new Aura(m_spellProto, -1, u_caster, summon, true );
-			if (!aura)
-				return;
 			aura->m_areaAura = true;
 			aura->AddMod( mod->m_type, mod->m_amount, mod->m_miscValue, mod->i);
 			summon->AddAura( aura );
@@ -1114,8 +1110,6 @@ void Aura::EventUpdateAA(float r)
 							if(!aura)
 							{
 								aura = new Aura(m_spellProto, -1, u_caster, (*itr)->m_loggedInPlayer, true);
-								if (!aura)
-									return;
 								aura->m_areaAura = true;
 							}
 							aura->AddMod(m_modList[i].m_type, m_modList[i].m_amount,
