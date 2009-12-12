@@ -1454,8 +1454,6 @@ void WorldSession::HandleGameObjectUse(WorldPacket & recv_data)
 		{
 			spellInfo = dbcSpell.LookupEntry( OPEN_CHEST );
 			spell = new Spell(plyr, spellInfo, true, NULL);
-			if (!spell)
-				return;
 			_player->m_currentSpell = spell;
 			targets.m_unitTarget = obj->GetGUID();
 			spell->prepare(&targets);
@@ -1512,8 +1510,6 @@ void WorldSession::HandleGameObjectUse(WorldPacket & recv_data)
 			if(!info)
 				break;
 			Spell * spell = new Spell(plyr, info, false, NULL);
-			if (!spell)
-				return;
 			//spell->SpellByOther = true;
 			SpellCastTargets targets;
 			targets.m_unitTarget = plyr->GetGUID();
@@ -1572,8 +1568,6 @@ void WorldSession::HandleGameObjectUse(WorldPacket & recv_data)
 					if( target == NULL || !target->IsInWorld() )
 						return;
 					spell = new Spell( _player->GetMapMgr()->GetPlayer( obj->m_ritualcaster ), info, true, NULL );
-					if (!spell)
-						return;
 					SpellCastTargets targets;
 					targets.m_unitTarget = target->GetGUID();
 					spell->prepare( &targets );
@@ -1593,16 +1587,12 @@ void WorldSession::HandleGameObjectUse(WorldPacket & recv_data)
 					if(!info)
 						break;
 					spell = new Spell(psacrifice, info, true, NULL);
-					if (!spell)
-						return;
 					targets.m_unitTarget = psacrifice->GetGUID();
 					spell->prepare(&targets);
 
 					// summons demon
 					info = dbcSpell.LookupEntry(goinfo->sound1);
 					spell = new Spell(pCaster, info, true, NULL);
-					if (!spell)
-						return;
 					SpellCastTargets targets;
 					targets.m_unitTarget = pCaster->GetGUID();
 					spell->prepare(&targets);
@@ -1619,8 +1609,6 @@ void WorldSession::HandleGameObjectUse(WorldPacket & recv_data)
 
 					info = dbcSpell.LookupEntry(goinfo->sound1);
 					Spell * spell = new Spell( pleader, info, true, NULL );
-					if (!spell)
-						return;
 					SpellCastTargets targets( plr->GetGUID() );
 					spell->prepare(&targets);
 
@@ -1633,8 +1621,6 @@ void WorldSession::HandleGameObjectUse(WorldPacket & recv_data)
 					if ( info == NULL )
 						return;
 					Spell * spell = new Spell( _player->GetMapMgr()->GetPlayer( obj->m_ritualcaster ), info, true, NULL );
-					if (!spell)
-						return;
 					SpellCastTargets targets( obj->m_ritualcaster );
 					spell->prepare( &targets );
 					obj->ExpireAndDelete();
@@ -2024,8 +2010,6 @@ void WorldSession::HandleSelfResurrectOpcode(WorldPacket& recv_data)
 	{
 		SpellEntry * sp=dbcSpell.LookupEntry(self_res_spell);
 		Spell *s = new Spell(_player,sp,true,NULL);
-		if (!s)
-			return;
 		SpellCastTargets tgt;
 		tgt.m_unitTarget=_player->GetGUID();
 		s->prepare(&tgt);

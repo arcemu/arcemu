@@ -669,12 +669,10 @@ void AIInterface::Update(uint32 p_time)
 	float tdist;
 	if(m_AIType == AITYPE_TOTEM)
 	{
-		assert(totemspell != 0);
+		ASSERT(totemspell != 0);
 		if(p_time >= m_totemspelltimer)
 		{
 			Spell *pSpell = new Spell(m_Unit, totemspell, true, 0);
-			if (!pSpell)
-				return;
 			SpellCastTargets targets(0);
 			if(!GetNextTarget() ||
 				(GetNextTarget() && 
@@ -1276,8 +1274,6 @@ void AIInterface::_UpdateCombat(uint32 p_time)
 								{
 									SpellEntry *info = dbcSpell.LookupEntry(CREATURE_SPELL_TO_DAZE);
 									Spell *sp = new Spell(m_Unit, info, false, NULL);
-									if (!sp)
-										return;
 									SpellCastTargets targets;
 									targets.m_unitTarget = GetNextTarget()->GetGUID();
 									sp->prepare(&targets);
@@ -1352,8 +1348,6 @@ void AIInterface::_UpdateCombat(uint32 p_time)
 							if(info)
 							{
 								Spell *sp = new Spell(m_Unit, info, false, NULL);
-								if (!sp)
-									return;
 								SpellCastTargets targets;
 								targets.m_unitTarget = GetNextTarget()->GetGUID();
 								sp->prepare(&targets);
@@ -3428,6 +3422,7 @@ void AIInterface::_UpdateMovement(uint32 p_time)
 
 void AIInterface::CastSpell(Unit* caster, SpellEntry *spellInfo, SpellCastTargets targets)
 {
+	ASSERT(spellInfo != NULL);
 	if( m_AIType != AITYPE_PET && disable_spell )
 		return;
 
@@ -3440,8 +3435,6 @@ void AIInterface::CastSpell(Unit* caster, SpellEntry *spellInfo, SpellCastTarget
 
 	//i wonder if this will lead to a memory leak :S
 	Spell *nspell = new Spell(caster, spellInfo, false, NULL);
-	if (!nspell)
-		return;
 	nspell->prepare(&targets);
 }
 

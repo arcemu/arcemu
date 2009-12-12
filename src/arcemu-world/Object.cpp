@@ -2397,8 +2397,6 @@ void Object::DealDamage(Unit *pVictim, uint32 damage, uint32 targetEvent, uint32
 				if( sorInfo != NULL )
 				{
 					Spell *sor = new Spell(pVictim, sorInfo, true, NULL);
-					if (!sor)
-						return;
 					SpellCastTargets targets;
 					targets.m_unitTarget = pVictim->GetGUID();
 					sor->prepare(&targets);
@@ -3081,8 +3079,6 @@ void Object::SpellNonMeleeDamageLog(Unit *pVictim, uint32 spellID, uint32 damage
 			return;
 
 		Spell * sp = new Spell( pl, entry, true, NULL );
-		if ( !sp )
-			return;
 		sp->GetProto()->EffectBasePoints[0] = spellpower;
 		SpellCastTargets targets;
 		targets.m_unitTarget = pl->GetGUID();

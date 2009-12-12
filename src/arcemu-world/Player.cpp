@@ -1227,8 +1227,6 @@ void Player::_EventAttack( bool offhand )
 		{
 			SpellEntry *spellInfo = dbcSpell.LookupEntry( GetOnMeleeSpell() );
 			Spell *spell = new Spell( this, spellInfo, true, NULL );
-			if (!spell)
-				return;
 			spell->extra_cast_number = GetOnMeleeSpellEcn();
 			SpellCastTargets targets;
 			targets.m_unitTarget = GetSelection();
@@ -1320,8 +1318,6 @@ void Player::_EventCharmAttack()
 				SpellEntry *spellInfo = dbcSpell.LookupEntry(currentCharm->GetOnMeleeSpell());
 				currentCharm->SetOnMeleeSpell(0);
 				Spell *spell = new Spell(currentCharm,spellInfo,true,NULL);
-				if (!spell)
-					return;
 				SpellCastTargets targets;
 				targets.m_unitTarget = GetSelection();
 				spell->prepare(&targets);
@@ -4204,8 +4200,6 @@ void Player::_ApplyItemMods(Item* item, int16 slot, bool apply, bool justdrokedo
 						{//cast new spell
 							SpellEntry *info = dbcSpell.LookupEntry( set->SpellID[x] );
 							Spell * spell = new Spell( this, info, true, NULL );
-							if (!spell)
-								return;
 							SpellCastTargets targets;
 							targets.m_unitTarget = this->GetGUID();
 							spell->prepare( &targets );
@@ -4441,8 +4435,6 @@ void Player::_ApplyItemMods(Item* item, int16 slot, bool apply, bool justdrokedo
 				}
 
 				Spell *spell = new Spell( this, spells ,true, NULL );
-				if (!spell)
-					return;
 				SpellCastTargets targets;
 				targets.m_unitTarget = this->GetGUID();
 				spell->castedItemId = item->GetEntry();
@@ -4651,16 +4643,12 @@ void Player::BuildPlayerRepop()
 	{
 		SpellEntry *inf=dbcSpell.LookupEntry(9036); // Cebernic:20584 triggered.
 		Spell * sp = new Spell(this,inf,true,NULL);
-		if (!sp)
-			return;
 		sp->prepare(&tgt);
 	}
 	else
 	{
 		SpellEntry *inf=dbcSpell.LookupEntry(8326);
 		Spell * sp = new Spell(this,inf,true,NULL);
-		if (!sp)
-			return;
 		sp->prepare(&tgt);
 	}
 
@@ -6338,9 +6326,8 @@ void Player::EventRepeatSpell()
 	{
 		m_AutoShotAttackTimer = m_AutoShotDuration;
 
+		ASSERT(m_AutoShotSpell != NULL);
 		Spell * sp = new Spell(this, m_AutoShotSpell, true, NULL);
-		if (!sp)
-			return;
 		SpellCastTargets tgt;
 		tgt.m_unitTarget = m_curSelection;
 		tgt.m_targetMask = TARGET_FLAG_UNIT;
@@ -9020,7 +9007,7 @@ void Player::CompleteLoading()
 	{
 		info = dbcSpell.LookupEntryForced(*itr);
 
-		if(	info
+		if(	info != NULL
 			&& (info->Attributes & ATTRIBUTES_PASSIVE)  // passive
 			&& !( info->c_is_flags & SPELL_FLAG_IS_EXPIREING_WITH_PET ) //on pet summon talents
 			 )
@@ -9032,8 +9019,6 @@ void Player::CompleteLoading()
 			}
 
 			Spell * spell = new Spell(this,info,true,NULL);
-			if (!spell)
-				return;
 			spell->prepare(&targets);
 		}
 	}
@@ -9144,8 +9129,6 @@ void Player::CompleteLoading()
 
 	// useless logon spell
 	Spell *logonspell = new Spell(this, dbcSpell.LookupEntry(836), false, NULL);
-	if (!logonspell)
-		return;
 	logonspell->prepare(&targets);
 
 	// Banned
@@ -9545,8 +9528,6 @@ void Player::SetShapeShift(uint8 ss)
 			if( sp->RequiredShapeShift && ((uint32)1 << (ss-1)) & sp->RequiredShapeShift )
 			{
 				spe = new Spell( this, sp, true, NULL );
-				if (!spe)
-					return;
 				spe->prepare( &t );
 			}
 		}
@@ -9559,8 +9540,6 @@ void Player::SetShapeShift(uint8 ss)
 		if( sp->RequiredShapeShift && ((uint32)1 << (ss-1)) & sp->RequiredShapeShift )
 		{
 			spe = new Spell( this, sp, true, NULL );
-			if (!spe)
-				return;
 			spe->prepare( &t );
 		}
 	}
@@ -10310,10 +10289,6 @@ void Player::_LearnSkillSpells(uint32 SkillLine, uint32 curr_sk)
 						targets.m_unitTarget = this->GetGUID();
 						targets.m_targetMask = TARGET_FLAG_UNIT;
 						Spell* spell = new Spell(this,sp,true,NULL);
-						if( !spell )
-						{
-							return;
-						}
 						spell->prepare(&targets);
 					}
 				}
@@ -11005,8 +10980,6 @@ void Player::EventSummonPet( Pet *new_pet )
 			this->RemoveAllAuras( SpellID, this->GetGUID() ); //this is required since unit::addaura does not check for talent stacking
 			SpellCastTargets targets( this->GetGUID() );
 			Spell *spell = new Spell(this, spellInfo ,true, NULL);	//we cast it as a proc spell, maybe we should not !
-			if (!spell)
-				return;
 			spell->prepare(&targets);
 		}
 		if( spellInfo->c_is_flags & SPELL_FLAG_IS_CASTED_ON_PET_SUMMON_ON_PET )
@@ -11014,8 +10987,6 @@ void Player::EventSummonPet( Pet *new_pet )
 			this->RemoveAllAuras( SpellID, this->GetGUID() ); //this is required since unit::addaura does not check for talent stacking
 			SpellCastTargets targets( new_pet->GetGUID() );
 			Spell *spell = new Spell(this, spellInfo ,true, NULL);	//we cast it as a proc spell, maybe we should not !
-			if (!spell)
-				return;
 			spell->prepare(&targets);
 		}
 	}
@@ -11168,8 +11139,6 @@ void Player::AddShapeShiftSpell(uint32 id)
 	if( sp->RequiredShapeShift && ((uint32)1 << (GetShapeShift()-1)) & sp->RequiredShapeShift )
 	{
 		Spell * spe = new Spell( this, sp, true, NULL );
-		if (!spe)
-			return;
 		SpellCastTargets t(this->GetGUID());
 		spe->prepare( &t );
 	}
@@ -12864,8 +12833,6 @@ void Player::LearnTalent(uint32 talentid, uint32 rank, bool isPreviewed ){
 				else
 				{
 					Spell * sp = new Spell( this, spellInfo, true, NULL);
-					if (!sp)
-						return;
 					SpellCastTargets tgt;
 					tgt.m_unitTarget = this->GetGUID();
 					sp->prepare(&tgt);

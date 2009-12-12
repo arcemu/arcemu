@@ -591,8 +591,6 @@ void WorldSession::HandleSpiritHealerActivateOpcode( WorldPacket & recv_data )
 			SpellCastTargets targets;
 			targets.m_unitTarget = GetPlayer()->GetGUID();
 			Spell * sp = new Spell(_player,spellInfo,true,NULL);
-			if (!sp)
-				return;
 			sp->prepare(&targets);
 		}
 

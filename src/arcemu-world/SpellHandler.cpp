@@ -215,8 +215,6 @@ void WorldSession::HandleUseItemOpcode(WorldPacket& recvPacket)
 				}
 
 				Spell *spell = new Spell(_player, spellInfo, false, NULL);
-				if (!spell)
-					return;
 				spell->extra_cast_number=cn;
 				spell->i_caster = tmpItem;
 				spell->m_glyphslot = glyphIndex;
@@ -288,9 +286,9 @@ void WorldSession::HandleSpellClick(WorldPacket& recvPacket)
 		return;
 
 	SpellEntry *spellInfo = dbcSpell.LookupEntryForced( cast_spell_id );
- 	Spell *spell = new Spell(_player, spellInfo, false, NULL);
-	if (!spell)
+	if( spellInfo == NULL )
 		return;
+ 	Spell *spell = new Spell(_player, spellInfo, false, NULL);
 	SpellCastTargets targets( target_guid );
 	spell->prepare(&targets);
 }
@@ -433,8 +431,6 @@ void WorldSession::HandleCastSpellOpcode(WorldPacket& recvPacket)
 		}
 
 		Spell *spell = new Spell(GetPlayer(), spellInfo, false, NULL);
-		if (!spell)
-			return;
 		spell->extra_cast_number=cn;
 		spell->prepare(&targets);
 	}
@@ -498,7 +494,7 @@ void WorldSession::HandlePetCastSpell(WorldPacket & recvPacket)
 	recvPacket >> guid >> spellid >> flags;
 
 	SpellEntry * sp = dbcSpell.LookupEntryForced(spellid);
-	if ( !sp )
+	if ( sp == NULL )
 		return;
 	// Summoned Elemental's Freeze
     if (spellid == 33395)
@@ -540,8 +536,6 @@ void WorldSession::HandlePetCastSpell(WorldPacket & recvPacket)
 	if(spellid == 33395)	// Summoned Water Elemental's freeze
 	{
 		Spell * pSpell = new Spell(_player->m_Summon, sp, false, 0);
-		if (!pSpell)
-			return;
 		pSpell->prepare(&targets);
 	}
 	else			// trinket?
@@ -562,8 +556,6 @@ void WorldSession::HandlePetCastSpell(WorldPacket & recvPacket)
 				return;
 
 			Spell * pSpell = new Spell(nc, sp, false, 0);
-			if (!pSpell)
-				return;
 			pSpell->prepare(&targets);
 		}
 	}

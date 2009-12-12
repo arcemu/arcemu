@@ -484,8 +484,6 @@ void Pet::InitializeSpells()
 		{
 			// Cast on self..
 			Spell * sp = new Spell(this, info, true, false);
-			if (!sp)
-				return;
 			SpellCastTargets targets( this->GetGUID() );
 			sp->prepare( &targets );
 
@@ -962,8 +960,6 @@ void Pet::AddSpell( SpellEntry * sp, bool learning, bool showLearnSpell )
 		if( IsInWorld() )
 		{
 			Spell * spell = new Spell(this, sp, true, false);
-			if (!spell)
-				return;
 			SpellCastTargets targets(this->GetGUID());
 			spell->prepare(&targets);
 			mSpells[sp] = 0x0100;

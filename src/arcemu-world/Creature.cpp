@@ -1903,8 +1903,6 @@ void Creature::AISpellUpdate()
 				SpellEntry* newspell=dbcSpell.LookupEntry(this->GetProto()->AISpells[i]);
 				SpellCastTime* casttime=dbcSpellCastTime.LookupEntry(newspell->CastingTimeIndex);
 				Spell* spell = new Spell(this, newspell, false, 0);
-				if (!spell)
-					return;
 				SpellCastTargets t(0);
 				spell->GenerateTargets(&t);
 

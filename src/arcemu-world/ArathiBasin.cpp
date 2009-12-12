@@ -748,8 +748,6 @@ void ArathiBasin::HookOnAreaTrigger(Player * plr, uint32 id)
 		if(sp)
 		{
 			Spell * pSpell = new Spell(plr, sp, true, NULL);
-			if (!pSpell)
-				return;
 			SpellCastTargets targets(plr->GetGUID());
 			pSpell->prepare(&targets);
 		}

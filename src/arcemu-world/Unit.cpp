@@ -1492,8 +1492,6 @@ uint32 Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, ui
 						{
 							SpellEntry *spellInfo = dbcSpell.LookupEntry( spellId ); //we already modified this spell on server loading so it must exist
 							Spell *spell = new Spell( new_caster, spellInfo ,true, NULL );
-							if (!spell)
-								return 0;
 							SpellCastTargets targets;
 							targets.m_destX = GetPositionX();
 							targets.m_destY = GetPositionY();
@@ -1537,8 +1535,6 @@ uint32 Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, ui
 						{
 							SpellEntry* spellInfo = dbcSpell.LookupEntry( 25228 ); //we already modified this spell on server loading so it must exist
 							Spell* spell = new Spell( new_caster, spellInfo, true, NULL );
-							if (!spell)
-								return 0;
 							spell->forced_basepoints[0] = dmg;
 							SpellCastTargets targets;
 							targets.m_unitTarget = GetGUID();
@@ -1625,12 +1621,8 @@ uint32 Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, ui
 						}
 						if(!amount)
 							continue;
-						SpellEntry *spellInfo = dbcSpell.LookupEntryForced(spellId );
-						if(!spellInfo)
-							continue;
+						SpellEntry *spellInfo = dbcSpell.LookupEntry(spellId );
 						Spell *spell = new Spell(this, spellInfo ,true, NULL);
-						if (!spell)
-							return 0;
 						spell->SetUnitTarget(this);
 						spell->Heal(amount*(ospinfo->EffectBasePoints[0]+1)/100);
 						delete spell;
@@ -1807,8 +1799,6 @@ uint32 Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, ui
 						if( Next_new_target )
 						{
 							Spell *spell = new Spell(p_caster, ospinfo ,true, NULL);
-							if (!spell)
-								return 0;
 							spell->forced_basepoints[0] = pa->GetModAmount( 0 ) - 1 ;
 							SpellCastTargets targets( Next_new_target->GetGUID() ); //no target so spelltargeting will get an injured party member
 							spell->prepare( &targets );
@@ -1862,8 +1852,6 @@ uint32 Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, ui
 							continue;
 						int32 val = parentproc->EffectBasePoints[0] + 1;
                         Spell *spell = new Spell(this, spellInfo ,true, NULL);
-						if (!spell)
-							return 0;
 						spell->forced_basepoints[0] = (val*dmg)/300; //per tick
                         SpellCastTargets targets;
                         targets.m_unitTarget = GetGUID();
@@ -2664,8 +2652,6 @@ uint32 Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, ui
 
 		SpellEntry *spellInfo = dbcSpell.LookupEntry(spellId );
 		Spell *spell = new Spell(this, spellInfo ,true, NULL);
-		if (!spell)
-			return 0;
 		spell->forced_basepoints[0] = dmg_overwrite;
 		spell->ProcedOnSpell = CastingSpell;
 		//Spell *spell = new Spell(this,spellInfo,false,0,true,false);
@@ -4125,15 +4111,11 @@ void Unit::Strike( Unit* pVictim, uint32 weapon_damage_type, SpellEntry* ability
 
 					// Cast.
 					cspell = new Spell(this, itr->first, true, NULL);
-					if (!cspell)
-						return;
 					cspell->prepare(&targets);
 				}
 				else
 				{
 					cspell = new Spell(this, itr->first, true, NULL);
-					if (!cspell)
-						return;
 					cspell->prepare(&targets);
 				}
 			}
@@ -5920,8 +5902,6 @@ uint8 Unit::CastSpell(Unit* Target, SpellEntry* Sp, bool triggered)
 		return SPELL_FAILED_UNKNOWN;
 
 	Spell *newSpell = new Spell(this, Sp, triggered, 0);
-	if (!newSpell)
-		return SPELL_FAILED_UNKNOWN;
 	SpellCastTargets targets(0);
 	if(Target)
 	{
@@ -5951,8 +5931,6 @@ uint8 Unit::CastSpell(uint64 targetGuid, SpellEntry* Sp, bool triggered)
 
 	SpellCastTargets targets(targetGuid);
 	Spell *newSpell = new Spell(this, Sp, triggered, 0);
-	if (!newSpell)
-		return 0;
 	return newSpell->prepare(&targets);
 }
 
@@ -5974,8 +5952,6 @@ void Unit::CastSpellAoF(float x,float y,float z,SpellEntry* Sp, bool triggered)
 	targets.m_destZ = z;
 	targets.m_targetMask=TARGET_FLAG_DEST_LOCATION;
 	Spell *newSpell = new Spell(this, Sp, triggered, 0);
-	if (!newSpell)
-		return;
 	newSpell->prepare(&targets);
 }
 
@@ -6621,9 +6597,8 @@ bool Unit::GetSpeedDecrease()
 
 void Unit::EventCastSpell(Unit * Target, SpellEntry * Sp)
 {
+	ASSERT(Sp != NULL);
 	Spell * pSpell = new Spell(Target, Sp, true, NULL);
-	if (!pSpell)
-		return;
 	SpellCastTargets targets(Target->GetGUID());
 	pSpell->prepare(&targets);
 }
@@ -7738,8 +7713,6 @@ void Unit::EventStunOrImmobilize(Unit *proc_target, bool is_victim)
 			return;
 
 		Spell *spell = new Spell(this, spellInfo ,true, NULL);
-		if (!spell)
-			return;
 		SpellCastTargets targets;
 
 		if ( spellInfo->procFlags & PROC_TARGET_SELF )
@@ -7781,8 +7754,6 @@ void Unit::EventChill(Unit *proc_target, bool is_victim)
 			return;
 
 		Spell *spell = new Spell(this, spellInfo ,true, NULL);
-		if (!spell)
-			return;
 		SpellCastTargets targets;
 
 		if ( spellInfo->procFlags & PROC_TARGET_SELF )

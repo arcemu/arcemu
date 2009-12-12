@@ -684,8 +684,6 @@ void Arena::HookOnAreaTrigger(Player * plr, uint32 id)
 			ASSERT(sp != NULL);
 
 			Spell * s = new Spell(plr, sp, true, 0);
-			if (!s)
-				return;
 			SpellCastTargets targets(plr->GetGUID());
 			s->prepare(&targets);
 

@@ -562,11 +562,6 @@ bool ChatHandler::HandleAuraUpdateAdd( const char *args, WorldSession *m_session
 			return true;
 		}
 		Spell * SpellPtr = new Spell(Pl, Sp, false, NULL);
-		if(!SpellPtr)
-		{
-			SystemMessage(m_session, "Error while constructing spell for spellid %u.", SpellID);
-			return true;
-		}
 		AuraPtr = new Aura(Sp, SpellPtr->GetDuration(), Pl, Pl);
 		if(!AuraPtr)
 		{

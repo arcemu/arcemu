@@ -159,7 +159,6 @@ void SpellCastTargets::write( WorldPacket& data )
 
 Spell::Spell(Object* Caster, SpellEntry *info, bool triggered, Aura* aur)
 {
-	if(info== NULL) return;
 	ASSERT( Caster != NULL && info != NULL );
 
 	chaindamage = 0;
@@ -3075,8 +3074,6 @@ void Spell::HandleAddAura(uint64 guid)
 			return;
 
 		Spell *spell = new Spell(p_caster, spellInfo ,true, NULL);
-		if (!spell)
-			return;
 		spell->forced_basepoints[0] = p_caster->FindAuraByNameHash(SPELL_HASH_KING_OF_THE_JUNGLE)->m_spellProto->RankNumber * 5;
 		SpellCastTargets targets(p_caster->GetGUID());
 		spell->prepare(&targets);
@@ -3109,8 +3106,6 @@ void Spell::HandleAddAura(uint64 guid)
 			return;
 
 		Spell *spell = new Spell( u_caster, spellInfo ,true, NULL );
-		if ( !spell )
-			return;
 
 		if( spellid == 31665 && Target->HasAurasWithNameHash(SPELL_HASH_MASTER_OF_SUBTLETY) )
 			spell->forced_basepoints[0] = Target->FindAuraByNameHash(SPELL_HASH_MASTER_OF_SUBTLETY)->m_spellProto->EffectBasePoints[0];
@@ -5744,8 +5739,6 @@ bool Spell::Reflect(Unit *refunit)
 		return false;
 
 	Spell *spell = new Spell( refunit, refspell, true, NULL );
-	if ( !spell )
-		return false;
 	spell->SetReflected();
 	SpellCastTargets targets;
 	targets.m_unitTarget = m_caster->GetGUID();

@@ -2078,8 +2078,6 @@ bool ChatHandler::HandleCastAllCommand(const char* args, WorldSession* m_session
 			else
 			{
 				Spell * sp = new Spell(plr, info, true, 0);
-				if (!sp)
-					return true;
 				SpellCastTargets targets(plr->GetGUID());
 				sp->prepare(&targets);
 			}

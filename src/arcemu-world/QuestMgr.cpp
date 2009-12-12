@@ -1161,8 +1161,6 @@ void QuestMgr::OnQuestFinished(Player* plr, Quest* qst, Object *qst_giver, uint3
 			if(inf)
 			{
 				Spell * spe = new Spell(plr,inf,true,NULL);
-				if (!spe)
-					return;
 				SpellCastTargets tgt;
 				tgt.m_unitTarget = plr->GetGUID();
 				spe->prepare(&tgt);
@@ -1311,8 +1309,6 @@ void QuestMgr::OnQuestFinished(Player* plr, Quest* qst, Object *qst_giver, uint3
 			if(inf)
 			{
 				Spell * spe = new Spell(plr,inf,true,NULL);
-				if (!spe)
-					return;
 				SpellCastTargets tgt;
 				tgt.m_unitTarget = plr->GetGUID();
 				spe->prepare(&tgt);

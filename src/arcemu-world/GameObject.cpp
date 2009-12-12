@@ -163,8 +163,6 @@ void GameObject::Create( uint32 guidlow, uint32 guidhigh,uint32 displayid, uint8
 void GameObject::EventCastSpell(uint32 guid, uint32 sp, bool triggered)
 {
 	Spell * spp = new Spell(this,dbcSpell.LookupEntry(sp),false,NULL);
-	if (!spp)
-		return;
 	SpellCastTargets tars(guid);
 	spp->prepare(&tars);
 }
@@ -222,11 +220,6 @@ void GameObject::Update(uint32 p_time)
 				}
 				
 				Spell * sp = new Spell( this, spell, true, NULL );
-				if( sp == NULL )
-				{	
-					ReleaseInrangeLock();
-					return;
-				}
 				SpellCastTargets tgt((*itr)->GetGUID());
 				tgt.m_destX = GetPositionX();
 				tgt.m_destY = GetPositionY();
