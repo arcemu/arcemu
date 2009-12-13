@@ -241,18 +241,18 @@ enum MsTimeVariables
 #  if defined (__GNUC__)
 #	if GCC_VERSION >= 30400
 #         ifdef HAVE_DARWIN
-#	      define 
+#	      define __fastcall
 #         else
-#    	      define  __attribute__((__))
+#    	      define __fastcall __attribute__((__fastcall__))
 #         endif
 #	else
-#	  define  __attribute__((__regparm__(3)))
+#	  define __fastcall __attribute__((__regparm__(3)))
 #	endif
 #  else
-#	define  __attribute__((__))
+#	define __fastcall __attribute__((__fastcall__))
 #  endif
 #else
-#define   
+#define __fastcall  
 #endif
 #endif
 

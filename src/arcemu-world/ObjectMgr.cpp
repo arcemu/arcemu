@@ -2731,7 +2731,7 @@ void Charter::SaveToDB()
 	std::stringstream ss;
 	uint32 i;
 
-    ss << "DELETE FROM charters WHERE guid = ";
+    ss << "DELETE FROM charters WHERE charterId = ";
     ss << CharterId;
     ss << ";";
 

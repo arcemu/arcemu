@@ -818,16 +818,16 @@ void WorldSession::HandleCharterQuery(WorldPacket & recv_data)
 
 	if( c->CharterType == CHARTER_TYPE_GUILD )
 	{
-		data << uint32(1);                                      // 10 Required level?
-		data << uint32(1);
+		data << uint32(1);                                  // 10 min level to sign a guild charter
+		data << uint32(80);									// 11 max level to sign a guild charter
 	}
 	else
 	{
-		data << uint32(80);                                      // 10  Required level?
-		data << uint32(80);
+		data << uint32(80);                                 // 10 min level to sign an arena charter
+		data << uint32(80);									// 11 max level to sign an arena charter
 	}
 
-    data << uint32(0);                                      // 11
+    data << uint32(0);                                      // 12
     data << uint32(0);                                      // 13 count of next strings?
     data << uint32(0);                                      // 14
 	data << uint32(0);
